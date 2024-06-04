@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenAL Audio Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -58,6 +61,8 @@ pRayCount( 0 ),
 pListenProbe( NULL ),
 pSourceProbe( NULL )
 {
+	(void)pOwner; // silence compiler warning
+	
 	pWOVRayHitsElement.SetResult( &pRTResult );
 	pRTWOVRayHitsElement.SetResult( &pRTResult );
 	SetMarkFinishedAfterRun( true );
@@ -159,7 +164,7 @@ void deoalRTPTListen::Run(){
 	pLimitRevTimeCount = 0;
 	pUnlimitRevTimeCount = 0;
 	
-	pDirectSoundDistance = ( pListenPosition - pSourceProbe->GetPosition() ).Length();
+	pDirectSoundDistance = ( float )( ( pListenPosition - pSourceProbe->GetPosition() ).Length() );
 	
 	pSepDistFirstLateRefl = pDirectSoundDistance;
 	if( pListenProbe ){
@@ -362,7 +367,7 @@ void deoalRTPTListen::RunLinearBeam(){
 		
 		// calculate weight
 		float factor = /* beamNormalize * */
-			decMath::max( 1.0f - sqrt( closestDistSquared )
+			decMath::max( 1.0f - sqrtf( closestDistSquared )
 				/ ( baseBeamRadius * closestBeamDistance ), 0.0f );
 		
 		// precalc already applied distance attenuation so no need to do it here again unless
@@ -405,11 +410,16 @@ void deoalRTPTListen::ClosestToRay( float &closestBeamDistance, float &closestDi
 int &closestSegment, int &closestBounces, const deoalSoundRayList &soundRayList,
 const deoalSoundRay &soundRay, const decVector &targetPosition, float baseBeamRadius,
 deoalWorldOctree &octree, const decVector &targetPositionWorld ){
+	const int soundRayCount = soundRayList.GetRayCount();
 	const int segmentCount = soundRay.GetSegmentCount();
 	const int firstSegment = soundRay.GetFirstSegment();
 	int i;
 	
-	for( i=0; i<segmentCount; i++ ){
+	// firstSegment + segmentCount should be never larger than soundRayCount but for some
+	// strange reason it can happen once in a blue moon. avoid an exception this rare case
+	const int safeEndIndex = decMath::min( segmentCount, soundRayCount - firstSegment );
+	
+	for( i=0; i<safeEndIndex; i++ ){
 		const deoalSoundRaySegment &segment = soundRayList.GetSegmentAt( firstSegment + i );
 		
 		const decVector rayTargetDirection( targetPosition - segment.GetPosition() );
@@ -476,18 +486,18 @@ deoalWorldOctree &octree, const decVector &targetPositionWorld ){
 
 
 deoalRTPTListen::sSphereReceiverParams::sSphereReceiverParams(
-	const deoalSoundRayList& soundRayList, const decVector& targetPosition,
-	deoalWorldOctree& octree, const decVector& targetPositionWorld,
-	const decVector& gainPosition, float receiverRadius,
-	float receiverRadiusSquared, float invReceiverVolume ) :
-soundRayList( soundRayList ),
-targetPosition( targetPosition ),
-octree( octree ),
-targetPositionWorld( targetPositionWorld ),
-gainPosition( gainPosition ),
-receiverRadius( receiverRadius ),
-receiverRadiusSquared( receiverRadiusSquared ),
-invReceiverVolume( invReceiverVolume ){
+	const deoalSoundRayList& psoundRayList, const decVector& ptargetPosition,
+	deoalWorldOctree& poctree, const decVector& ptargetPositionWorld,
+	const decVector& pgainPosition, float preceiverRadius,
+	float preceiverRadiusSquared, float pinvReceiverVolume ) :
+soundRayList( psoundRayList ),
+targetPosition( ptargetPosition ),
+octree( poctree ),
+targetPositionWorld( ptargetPositionWorld ),
+gainPosition( pgainPosition ),
+receiverRadius( preceiverRadius ),
+receiverRadiusSquared( preceiverRadiusSquared ),
+invReceiverVolume( pinvReceiverVolume ){
 }
 
 deoalRTPTListen::sSphereReceiverImpinge::sSphereReceiverImpinge() :
@@ -531,7 +541,8 @@ void deoalRTPTListen::RunSphereReceiver(){
 // 	const float receiverRadius = powf( 15.0f * pSourceProbe->GetRoomVolume()
 // 		/ ( 2.0f * PI * rayCount ), 1.0f / 3.0f );
 	const float receiverRadiusSquared = receiverRadius * receiverRadius;
-	const float receiverVolume = ( 4.0f / 3.0f ) * PI * receiverRadiusSquared * receiverRadius;
+	const float receiverVolume = decMath::max( 0.01f,
+		( 4.0f / 3.0f ) * PI * receiverRadiusSquared * receiverRadius );
 	const float invReceiverVolume = fixGainScaleRecRad/*1.0f*/ / receiverVolume;
 	
 	// TODO receiver radius can explode if speaker is located on an open plane. in this case
@@ -571,8 +582,13 @@ const deoalSoundRay &soundRay, const sSphereReceiverImpinge *firstImpinge ){
 	sSphereReceiverImpinge lastImpinge;
 	
 	const float initialDistance = params.soundRayList.GetSegmentAt( firstSegment ).GetDistance();
+	const int soundRayCount = params.soundRayList.GetRayCount();
 	
-	for( i=0; i<segmentCount; i++ ){
+	// firstSegment + segmentCount should be never larger than soundRayCount but for some
+	// strange reason it can happen once in a blue moon. avoid an exception this rare case
+	const int safeEndIndex = decMath::min( segmentCount, soundRayCount - firstSegment );
+	
+	for( i=0; i<safeEndIndex; i++ ){
 		const deoalSoundRaySegment &segment = params.soundRayList.GetSegmentAt( firstSegment + i );
 		
 		// we could ignore closest points if they are outside the ray segment. this would
@@ -799,7 +815,7 @@ const deoalSoundRay &soundRay, const sSphereReceiverImpinge *firstImpinge ){
 		// the artistic values to take effect we need to apply an artificial attenuation factor.
 		// this is done by taking the ratio between the artistic attenuation curve and the
 		// realistic attenuation curve. this is (1/r')/(1/r) = aa/(1/r) = aa*r
-		float factor = dri * params.invReceiverVolume;
+		factor = dri * params.invReceiverVolume;
 		#endif
 		#endif
 		

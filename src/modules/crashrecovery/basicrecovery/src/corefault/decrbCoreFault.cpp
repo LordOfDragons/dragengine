@@ -1,28 +1,34 @@
-/* 
- * Drag[en]gine Basic Crash Recovery Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
+
+#include <dragengine/dragengine_configuration.h>
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <signal.h>
+#include <inttypes.h>
 #ifdef OS_W32
 #include <dragengine/app/include_windows.h>
 #include <dbghelp.h>
@@ -72,9 +78,9 @@ static sExceptionInfo vExceptionInfo[ EXCEPTION_INFO_COUNT ] = {
 	{ EXCEPTION_STACK_OVERFLOW, "The thread used up its stack." }
 };
 
-static LONG WINAPI unhandledException( _EXCEPTION_POINTERS *ei){
+static LONG WINAPI unhandledException( _EXCEPTION_POINTERS *ei ){
 	decrbCoreFault *coreFault = decrbCoreFault::GetGlobalCoreFault();
-	deCRBasic *module = NULL;
+	deCRBasic *module = nullptr;
 	int i;
 	
 	if( coreFault ){
@@ -104,18 +110,11 @@ static LONG WINAPI unhandledException( _EXCEPTION_POINTERS *ei){
 		}
 	}
 	
-	// stack trace
-	void *stack[ 100 ];
-	unsigned short frames;
-	char symbolData[ sizeof( SYMBOL_INFO ) + 1024 ];
-	memset( &symbolData, 0, sizeof( symbolData ) );
-	
-	void *hack1 = ( void* )&symbolData;
-	SYMBOL_INFO symbol = *( ( SYMBOL_INFO* )hack1 );
-	const HANDLE process = GetCurrentProcess();
-	
-	if( ! SymSetOptions( SYMOPT_DEBUG | SYMOPT_DEFERRED_LOADS
-	| SYMOPT_INCLUDE_32BIT_MODULES | SYMOPT_CASE_INSENSITIVE | SYMOPT_LOAD_LINES ) ){
+	DWORD symOptions = SYMOPT_LOAD_LINES | SYMOPT_CASE_INSENSITIVE;
+	symOptions |= SYMOPT_DEBUG | SYMOPT_DEFERRED_LOADS | SYMOPT_UNDNAME;
+	symOptions |= SYMOPT_INCLUDE_32BIT_MODULES;
+
+	if( ! SymSetOptions( symOptions ) ){
 		if( module ){
 			module->LogError( "Failed calling SymSetOptions\n" );
 		}else{
@@ -123,6 +122,7 @@ static LONG WINAPI unhandledException( _EXCEPTION_POINTERS *ei){
 		}
 	}
 	
+	const HANDLE process = GetCurrentProcess();
 	if( ! SymInitialize( process, NULL, true ) ){
 		if( module ){
 			module->LogError( "Failed calling SymInitialize\n" );
@@ -130,6 +130,126 @@ static LONG WINAPI unhandledException( _EXCEPTION_POINTERS *ei){
 			printf( "Failed calling SymInitialize\n" );
 		}
 	}
+	
+	// stack trace
+	#ifdef OS_W32_VS
+	/*
+	CONTEXT capuredContext;
+	memset( &capuredContext, 0, sizeof( capuredContext ) );
+	capuredContext.ContextFlags = CONTEXT_FULL;
+	RtlCaptureContext( &capuredContext );
+	CONTEXT &context = capuredContext;
+	*/
+	
+	CONTEXT &context = *ei->ContextRecord;
+	
+	const int symbolBufferLen = sizeof( IMAGEHLP_SYMBOL64 ) + MAX_SYM_NAME;
+	char * const symbolBuffer = new char[ symbolBufferLen + 1 ];
+	memset( symbolBuffer, 0, symbolBufferLen + 1 );
+	PIMAGEHLP_SYMBOL64 const symbol = ( PIMAGEHLP_SYMBOL64 )symbolBuffer;
+	symbol->SizeOfStruct = sizeof( IMAGEHLP_SYMBOL64 );
+	symbol->MaxNameLength = MAX_SYM_NAME;
+
+	const HANDLE thread = GetCurrentThread();
+	DWORD machineType;
+
+	STACKFRAME_EX stack;
+	memset( &stack, 0, sizeof( stack ) );
+
+	#ifdef _WIN64
+		machineType = IMAGE_FILE_MACHINE_IA64;
+		stack.AddrPC.Offset = context.Rip;
+		stack.AddrPC.Mode = AddrModeFlat;
+		stack.AddrStack.Offset = context.Rsp;
+		stack.AddrStack.Mode = AddrModeFlat;
+		stack.AddrFrame.Offset = context.Rbp;
+		stack.AddrFrame.Mode = AddrModeFlat;
+	#else
+		machineType = IMAGE_FILE_MACHINE_I386;
+		stack.AddrPC.Offset = context.Eip;
+		stack.AddrPC.Mode = AddrModeFlat;
+		stack.AddrStack.Offset = context.Esp;
+		stack.AddrStack.Mode = AddrModeFlat;
+		stack.AddrFrame.Offset = context.Ebp;
+		stack.AddrFrame.Mode = AddrModeFlat;
+	#endif
+	
+	BOOL result;
+	char undecoratedName[ 256 ];
+
+	IMAGEHLP_MODULE64 moduleInfo;
+	memset( &moduleInfo, 0, sizeof( moduleInfo ) );
+	moduleInfo.SizeOfStruct = sizeof( IMAGEHLP_MODULE64 );
+
+	char symbolInfoBuffer[ sizeof( SYMBOL_INFO ) + MAX_SYM_NAME * sizeof( TCHAR ) ];
+	memset( &symbolInfoBuffer, 0, sizeof( symbolInfoBuffer ) );
+	PSYMBOL_INFO symbolInfo = ( PSYMBOL_INFO )&symbolInfoBuffer;
+	symbolInfo->SizeOfStruct = sizeof( SYMBOL_INFO );
+	symbolInfo->MaxNameLen = MAX_SYM_NAME;
+
+	for( i=0; i<50; i++ ){
+		result = StackWalkEx( machineType, process, thread, &stack, &context, NULL,
+			SymFunctionTableAccess64, SymGetModuleBase64, NULL, 0 );
+		if( ! result || ! stack.AddrPC.Offset ){
+			break;
+		}
+
+		symbol->SizeOfStruct = sizeof( IMAGEHLP_SYMBOL64 );
+		symbol->MaxNameLength = 255;
+
+		DWORD64 offsetSymbol = 0;
+		DWORD offsetLine = 0;
+		IMAGEHLP_LINE64 symbolLine = ( IMAGEHLP_LINE64 )0;
+
+		const void *address = 0;
+		const char *name = "??";
+		const char *sourceFile = "??";
+		int sourceLine = 0;
+
+		if( SymFromAddr( process, stack.AddrPC.Offset, &offsetSymbol, symbolInfo ) ){
+			address = ( void* )symbolInfo->Address;
+			
+			UnDecorateSymbolName( symbolInfo->Name, ( PSTR )undecoratedName, sizeof( undecoratedName ), UNDNAME_COMPLETE );
+			name = undecoratedName;
+		}
+		/*
+		if( SymGetSymFromAddr64( process, ( ULONG64 )stack.AddrPC.Offset, &offsetSymbol, symbol ) ){
+			address = ( void* )symbol->Address;
+			//name = symbol->Name;
+
+			UnDecorateSymbolName( symbol->Name, ( PSTR )undecoratedName, sizeof( undecoratedName ), UNDNAME_COMPLETE );
+			name = undecoratedName;
+		}
+		*/
+
+		if( SymGetLineFromAddr64( process, stack.AddrPC.Offset, &offsetLine, &symbolLine ) ){
+			sourceLine = ( int )symbolLine.LineNumber;
+			sourceFile = symbolLine.FileName;
+		}
+		/*
+		if( SymGetModuleInfo64( process, stack.AddrPC.Offset, &moduleInfo ) ){
+			sourceFile = moduleInfo.ImageName;
+		}
+		*/
+		
+		if( module ){
+			module->LogErrorFormat( "%p: %s ; %s:%d", address, name, sourceFile, sourceLine );
+			
+		}else{
+			printf( "%p: %s ; %s:%d\n", address, name, sourceFile, sourceLine );
+		}
+	}
+	
+	delete [] symbolBuffer;
+	
+	#else
+	void *stack[ 100 ];
+	unsigned short frames;
+	char symbolData[ sizeof( SYMBOL_INFO ) + 1024 ];
+	memset( &symbolData, 0, sizeof( symbolData ) );
+	
+	void *hack1 = ( void* )&symbolData;
+	SYMBOL_INFO symbol = *( ( SYMBOL_INFO* )hack1 );
 	
 	symbol.MaxNameLen = 1020;
 	
@@ -139,14 +259,15 @@ static LONG WINAPI unhandledException( _EXCEPTION_POINTERS *ei){
 		SymFromAddr( process, ( DWORD64 )stack[ i ], 0, &symbol );
 		
 		if( module ){
-			module->LogErrorFormat( "%I64x: %s", symbol.Address, symbol.Name );
+			module->LogErrorFormat( PRId64 "x: %s", symbol.Address, symbol.Name );
 			
 		}else{
-			printf( "%I64x: %s\n", symbol.Address, symbol.Name );
+			printf( "%p: %s\n", ( void* )symbol.Address, ( char* )symbol.Name );
 		}
 	}
-	
-	exit( -1 );
+	#endif
+
+	exit( EXCEPTION_CONTINUE_SEARCH );
 }
 
 #else
@@ -219,7 +340,7 @@ static void signalSegV( int number, siginfo_t *infos, void *ptrContext ){
 		}
 		
 	}else{
-		printf( "No global core fault found. Can not gather crash informations!\n" );
+		printf( "No global core fault found. Can not gather crash information!\n" );
 	}
 	
 	if( module ){
@@ -287,7 +408,7 @@ static void signalAbort( int number, siginfo_t *infos, void *ptrContext ){
 		coreFault->HandleAbort( ptrContext );
 		
 	}else{
-		printf( "No global core fault found. Can not gather crash informations!\n" );
+		printf( "No global core fault found. Can not gather crash information!\n" );
 	}
 	
 	if( module ){

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Conversation Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _CECONVERSATIONACTOR_H_
@@ -37,7 +40,7 @@ class ceConversation;
 class ceSpeechAnimation;
 class ceGesture;
 class ceFacePose;
-class ceLookAt;
+class ceTarget;
 
 class igdeEnvironment;
 class deComponent;
@@ -53,6 +56,11 @@ class deSound;
  * \brief Conversation actor.
  */
 class ceConversationActor : public deObject{
+public:
+	typedef deTObjectReference<ceConversationActor> Ref;
+	
+	
+	
 private:
 	struct sGesture{
 		ceGesture *gesture;
@@ -67,7 +75,7 @@ private:
 	};
 	
 	struct sLookAt{
-		ceLookAt *lookAt;
+		ceTarget *lookAt;
 		float pause;
 		float duration;
 	};
@@ -91,6 +99,8 @@ private:
 	decString pNameGesturePlayback;
 	decString pNameGestureVariation;
 	decString pNameGestureBlink;
+	decString pNameGestureFadeIn;
+	decString pNameGestureFadeOut;
 	
 	decString pPathModel;
 	decString pPathSkin;
@@ -139,8 +149,8 @@ private:
 	int pPlayHeadLAPos;
 	float pPlayHeadLAElapsed;
 	bool pPlayHeadLARunning;
-	ceLookAt *pPlayLastHeadLA;
-	ceLookAt *pPlayCurHeadLA;
+	ceTarget *pPlayLastHeadLA;
+	ceTarget *pPlayCurHeadLA;
 	
 	sLookAt *pPlayEyesLAs;
 	int pPlayEyesLACount;
@@ -148,8 +158,8 @@ private:
 	int pPlayEyesLAPos;
 	float pPlayEyesLAElapsed;
 	bool pPlayEyesLARunning;
-	ceLookAt *pPlayLastEyesLA;
-	ceLookAt *pPlayCurEyesLA;
+	ceTarget *pPlayLastEyesLA;
+	ceTarget *pPlayCurEyesLA;
 	int pPlayEyesBoneDisable;
 	
 	float pBlinkFreqMin;
@@ -304,12 +314,12 @@ public:
 	/** Remove all play head look-ats. */
 	void RemoveAllPlayHeadLookAts();
 	/** Adds a play head look-at. */
-	void AddPlayHeadLookAt( ceLookAt *lookAt, float pause, float duration );
+	void AddPlayHeadLookAt( ceTarget *lookAt, float pause, float duration );
 	
 	/** Remove all play head look-ats. */
 	void RemoveAllPlayEyesLookAts();
 	/** Adds a play head look-at. */
-	void AddPlayEyesLookAt( ceLookAt *lookAt, float pause, float duration );
+	void AddPlayEyesLookAt( ceTarget *lookAt, float pause, float duration );
 	
 	/** \brief Determines if the actor causes waiting if the playback checks for actor waiting. */
 	inline bool GetWaiting() const{ return pWaiting; }

@@ -1,0 +1,549 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.StateMachineSystem
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief Behavior element behavior adding StateMachine support.
+ * 
+ * Loads state machine from file and creates a SMContext. Other behaviors can add actions
+ * and conditions to this state machine allowing to compose state machine actions and
+ * conditions easily.
+ * 
+ * This behavior can be used in different ways depending on the needs.
+ * 
+ * \par Single State Machine Usage
+ * 
+ * This is the most simple solution where only one state machine is used. For many
+ * situations this is enough and is the most simple solution to use. Add one
+ * ECBehaviorStateMachine with no ID to the element and as many other behaviors adding
+ * actions and conditions as required. Set the "stateMachine.path" property to define
+ * the state machine to load. Then use behavior listeners to run events on the state
+ * machine at the appropriate time. This is an example code for such a setup:
+ * 
+ * \code{.ds}
+ * class MyElementClass extends BehaviorElementClass
+ *    public func new()
+ *       var ECBehaviorStateMachine smbehavior = ECBehaviorStateMachine.new(this)
+ *       smbehavior.getPath().setValue("/content/myBehavior.desm")
+ *       
+ *       // here you can add now behaviors assigining actions and conditions for
+ *       // the state machine to use
+ *       ...
+ *       
+ *       // add listeners to behaviors to send events to the state machine
+ *       var ECBehaviorTwoStateAnimated animated = ...
+ *       animated.addActionConditionFactory(MyEventListener.Factory.new(smbehavior))
+ *    end
+ *    
+ *    // two state listeners used to send events
+ *    class MyEventListener extends ECBehaviorTwoStateAnimated.DefaultListener
+ *       class Factory implements ECBehaviorTwoStateAnimated.ActionConditionFactory
+ *          public var ECBehaviorStateMachine stateMachine
+ *          
+ *          public func new(ECBehaviorStateMachine stateMachine)
+ *             this.stateMachine = stateMachine
+ *          end
+ *          
+ *          public func ECBehaviorTwoStateAnimated.Listener createListener(ECBehaviorTwoStateAnimated.Instance instance)
+ *             return MyEventListener.new(stateMachine.instance(instance.getElement()))
+ *          end
+ *      end
+ *      
+ *      public var ECBehaviorStateMachine.Instance stateMachine
+ *      
+ *      public func new(ECBehaviorStateMachine.Instance stateMachine)
+ *         this.stateMachine = stateMachine
+ *      end
+ *      
+ *      public func void stopActivate(ECBehaviorTwoStateAnimated.Instance instance)
+ *         stateMachine.runEvent("animated activated")
+ *      end
+ *      
+ *      public func void stopDeactivate(ECBehaviorTwoStateAnimated.Instance instance)
+ *         stateMachine.runEvent("animated deactivated")
+ *      end
+ *   end
+ * end
+ * \endcode
+ * 
+ * \par Multiple State Machine Usage
+ * 
+ * You can add multiple instances of ECBehaviorStateMachine to the element to load and
+ * use multiple state machines. This can be for using multiple state machines together
+ * to model complex logic. In this situation behaviors assigining actions and conditions
+ * do add them to all instances of ECBehaviorStateMachine. This is usually not a problem
+ * since the state machines are written to use only the actions and conditions making
+ * sense to be used. This is an example code for such a setup:
+ * 
+ * \code{.ds}
+ * class MyElementClass extends BehaviorElementClass
+ *    public func new()
+ *       var ECBehaviorStateMachine smSpecific = ECBehaviorStateMachine.new(this, "specific")
+ *       smSpecific.getPath().setValue("/content/mySpecificBehavior.desm")
+ *       
+ *       var ECBehaviorStateMachine smGeneric = ECBehaviorStateMachine.new(this, "idle")
+ *       smGeneric.getPath().setValue("/content/myGenericBehavior.desm")
+ *       
+ *       // here you can add now behaviors assigining actions and conditions for both
+ *       // state machines to use
+ *       ...
+ *       
+ *       // add listeners to behaviors to send events to the state machine. the same
+ *       // MyEventListener is used as in the single state machine example. the example
+ *       // here uses two animated behaviors each sending events to one of the state
+ *       // machines. in general using multiple state machines the events should be
+ *       // disjoint but it is fully valid to send the same event to both if the
+ *       // state machines are written to deal with this properly.
+ *       var ECBehaviorTwoStateAnimated animated1 = ...
+ *       animated1.addActionConditionFactory(MyEventListener.Factory.new(smSpecific))
+ *       
+ *       var ECBehaviorTwoStateAnimated animated2 = ...
+ *       animated2.addActionConditionFactory(MyEventListener.Factory.new(smGeneric))
+ *    end
+ * end
+ * \endcode
+ * 
+ * The above example loads and runs two state machines. The first one is running specific
+ * state machine. The second state machine provides two separate state machines able to
+ * handle multiple logic at the same time. By writing the state machines properly the two
+ * state machienes do not interfere with each other and allow to split up state machines
+ * into multiple ones which can help create complex logic more simple and stable.
+ * 
+ * \par Action and Condition Factory
+ * 
+ * You can assign actions and conditions without using other behaviors by using one or more
+ * factories. The factories are added to the behavior. Upon creating the behavior instances
+ * the factories are asked to create and assign SMAction and SMCondition. The example below
+ * shows how to use a factory to add a condition checking for a trigger and an action
+ * manipulating a trigger.
+ * 
+ * \code{.ds}
+ * class MyElementClass extends BehaviorElementClass
+ *    public func new()
+ *       var ECBehaviorStateMachine smbehavior = ECBehaviorStateMachine.new(this)
+ *       smbehavior.getPath().setValue("/content/mySpecificBehavior.desm")
+ *       
+ *       // add factory to create actions and conditions later on. this example uses
+ *       // a code block for simplicity. using classes implementing ActionConditionFactory
+ *       // is preferred since it allows to reuse factories across element classes.
+ *       smbehavior.setActionConditionFactory( block ECBehaviorStateMachine.Instance instance
+ *          // add condition evaluating to true if "player.insideZone" trigger is in fired state.
+ *          // the condition can be used in the state machine using the name "player is inside zone".
+ *          instance.setCondition("player is inside zone", SMConditionTrigger.new( \
+ *             "player.insideZone", SMConditionTrigger.TestMode.fired))
+ *          
+ *          // add action pulsing (fire and immediately reset) "player.damage" trigger.
+ *          // the action can be run in the state machine using the name "hurt playe".
+ *          instance.setAction("hurt player", SMActionTrigger.new("player.damage", SMActionTrigger.Action.pulse))
+ *       end )
+ *    end
+ * end
+ * \endcode
+ * 
+ * This behavior does require the element class to be persistable (setPersistable) only if
+ * the context is run by the behavior itself.
+ */
+class ECBehaviorStateMachine extends DefaultECBehavior
+	/** \brief Factory assigining actions and conditions to state machine. */
+	interface ActionConditionFactory
+		/** \brief Assign actions and conditions to state machine. */
+		func void setActionsConditions( Instance instance )
+	end
+	
+	/** \brief Factory assigining actions and conditions to state machine using a block. */
+	class BlockActionConditionFactory implements ActionConditionFactory
+		private var Block pBlock
+		
+		/** \brief Create factory using block receiving Instance as parameter. */
+		public func new( Block factoryBlock )
+			if factoryBlock == null
+				throw ENullPointer.new()
+			end
+			this.pBlock = factoryBlock
+		end
+		
+		/** \brief Assign actions and conditions to state machine. */
+		public func void setActionsConditions( Instance instance )
+			this.pBlock.run( instance )
+		end
+	end
+	
+	
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		private var ECBehaviorStateMachine pECBehavior
+		private var StateMachine pStateMachine
+		private var SMContext pContext
+		
+		
+		
+		/** \brief Create element. */
+		public func new( ECBehaviorStateMachine ecbehavior, BehaviorElement element ) super( element )
+			this.pECBehavior = ecbehavior
+		end
+		
+		/** \brief Dispose of composeable instance. */
+		public func void dispose()
+			this.pContext = null
+			this.pStateMachine = null
+			super.dispose()
+		end
+		
+		
+		
+		/** \brief Initialize element from stub. */
+		public func void init( StubElement stub )
+			this.pStateMachine = this.loadStateMachine( stub )
+			if this.pStateMachine == null
+				return
+			end
+			
+			this.pContext = this.createContext( stub, this.pStateMachine )
+			if BaseGameApp.getApp() != null
+				this.pContext.setConsole( BaseGameApp.getApp().getConsole() )
+			end
+			
+			this.pECBehavior.setActionsConditions( this )
+		end
+		
+		/** \brief Load state machine. */
+		protected func StateMachine loadStateMachine( StubElement stub )
+			return this.pECBehavior.getStateMachine().getStateMachine( stub, this.getElement().getClass() )
+		end
+		
+		/** \brief Create context. */
+		protected func SMContext createContext( StubElement stub, StateMachine stateMachine )
+			return SMContext.new( stateMachine )
+		end
+		
+		
+		
+		/** \brief Behavior. */
+		public func ECBehaviorStateMachine getECBehavior()
+			return this.pECBehavior
+		end
+		
+		/** \brief State machine or null if not loaded. */
+		public func StateMachine getStateMachine()
+			return this.pStateMachine
+		end
+		
+		/** \brief Context or null if state machine is null. */
+		public func SMContext getContext()
+			return this.pContext
+		end
+		
+		
+		
+		/**
+		 * \brief Run event on state machine.
+		 * 
+		 * Does nothing if no context is present.
+		 */
+		public func void runEvent( String event )
+			if this.pContext != null
+				this.pContext.runEvent( event )
+			end
+		end
+		
+		/**
+		 * \brief Reset state machine to initial state.
+		 * 
+		 * Does nothing if no context is present.
+		 */
+		protected func void reset()
+			if this.pContext != null
+				this.pContext.reset()
+			end
+		end
+		
+		/**
+		 * \brief Set action to state machine.
+		 * 
+		 * Does nothing if no context is present.
+		 */
+		public func void setAction( String name, SMAction action )
+			if this.pContext != null
+				this.pContext.setAction( name, action )
+			end
+		end
+		
+		/**
+		 * \brief Set action to state machine using block.
+		 * 
+		 * Block receives arguments SMContext context and Dictionary parameters.
+		 * 
+		 * Does nothing if no context is present.
+		 */
+		public func void setAction( String name, Block actionBlock )
+			if this.pContext != null
+				this.pContext.setAction( name, actionBlock )
+			end
+		end
+		
+		/**
+		 * \brief Set condition to state machine.
+		 * 
+		 * Does nothing if no context is present.
+		 */
+		public func void setCondition( String name, SMCondition condition )
+			if this.pContext != null
+				this.pContext.setCondition( name, condition )
+			end
+		end
+		
+		/**
+		 * \brief Set condition to state machine using block.
+		 * 
+		 * Block receives arguments SMContext context and Dictionary parameters and returns bool.
+		 * 
+		 * Does nothing if no context is present.
+		 */
+		public func void setCondition( String name, Block conditionBlock )
+			if this.pContext != null
+				this.pContext.setCondition( name, conditionBlock )
+			end
+		end
+		
+		
+		
+		/** \brief Read element from file. */
+		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+			select reader.readByte() // version
+			case 0
+				var PersistencyFlags flags = PersistencyFlags.new( 1, reader )
+				
+				if flags.getAt( 0 )
+					if this.pContext == null
+						throw EInvalidParam.new( "state machine missing" )
+					end
+					this.pContext.readFromFile( env, reader )
+				end
+				
+			else
+				throw EInvalidParam.new( "unsupported version" )
+			end
+		end
+		
+		/** \brief Write element to file. */
+		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			writer.writeByte( 0 ) // version
+			
+			var PersistencyFlags flags = PersistencyFlags.new( 1 )
+			flags.setAt( 0, this.pContext != null )
+			flags.writeToFile( writer )
+			
+			if this.pContext != null
+				this.pContext.writeToFile( env, writer )
+			end
+		end
+	end
+	
+	
+	
+	private var ECPStateMachine pStateMachine
+	private var Array pActionConditionFactories
+	
+	
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass ) \
+	this( eclass, BaseGameApp.getApp().getLoaders(), "" )
+	end
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass, String id ) \
+	this( eclass, BaseGameApp.getApp().getLoaders(), id )
+	end
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass, String id, String prefix ) \
+	this( eclass, BaseGameApp.getApp().getLoaders(), id, prefix )
+	end
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass, Loaders loaders ) this( eclass, loaders, "" )
+	end
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass, Loaders loaders, String id ) \
+	this( eclass, loaders, id, id.empty() if "stateMachine" else "stateMachine(" + id + ")" )
+	end
+	
+	public func new( BehaviorElementClass eclass, Loaders loaders, String id, String subID ) \
+	this( eclass, loaders, id, subID, subID + "." )
+	end
+	
+	public func new( BehaviorElementClass eclass, Loaders loaders, String id, String subID, \
+	String prefix ) super( eclass, id )
+		this.pStateMachine = ECPStateMachine.new( prefix + "path", loaders.getStateMachine() )
+		eclass.addProperty( this.pStateMachine )
+		
+		this.pActionConditionFactories = Array.new()
+		
+		eclass.addBehavior( this )
+	end
+	
+	/** \brief Dispose of behavior. */
+	public func void dispose()
+		this.pActionConditionFactories = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief State machine. */
+	public func ECPStateMachine getStateMachine()
+		return this.pStateMachine
+	end
+	
+	/** \brief Add action and condition factory. */
+	public func void addActionConditionFactory( ActionConditionFactory factory )
+		if factory == null
+			throw ENullPointer.new()
+		end
+		this.pActionConditionFactories.add( factory )
+	end
+	
+	/**
+	 * \brief Add action and condition factory using block receiving Instance as parameter.
+	 * 
+	 * This is a convenience method for using BlockActionConditionFactory.
+	 */
+	public func void addActionConditionFactory( Block factory )
+		this.addActionConditionFactory( BlockActionConditionFactory.new( factory ) )
+	end
+	
+	/** \brief Visit listener factories with block with argument ActionConditionFactory. */
+	public func void forEachActionConditionFactory( Block ablock )
+		this.pActionConditionFactories.forEach( ablock )
+	end
+	
+	/** \brief Assign actions and conditions to behavior instance. */
+	public func void setActionsConditions( Instance instance )
+		this.pActionConditionFactories.forEach( block ActionConditionFactory each
+			each.setActionsConditions( instance )
+		end )
+	end
+	
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	public func Instance instance( BehaviorElement element )
+		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	end
+	
+	
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorCollider.
+	 */
+	static public func ECBehaviorStateMachine getBehaviorIn( BehaviorElementClass eclass )
+		return eclass.findBehavior( block ECBehaviorStateMachine each
+			return true
+		end ) cast ECBehaviorStateMachine
+	end
+	
+	/**
+	 * \brief Get behavior with id in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorStateMachine with specific identifier.
+	 */
+	static public func ECBehaviorStateMachine getBehaviorIn( BehaviorElementClass eclass, String id )
+		return eclass.findBehavior( block ECBehaviorStateMachine each
+			return each.getID().equals( id )
+		end ) cast ECBehaviorStateMachine
+	end
+	
+	/**
+	 * \brief Get list of all behaviors in element.
+	 * 
+	 * Returns list contains ECBehaviorStateMachine behaviors in the order they have
+	 * been created in the element.
+	 */
+	static public func Array getAllBehaviorsIn( BehaviorElementClass eclass )
+		return eclass.collectBehaviors( block ECBehaviorStateMachine each
+			return true
+		end )
+	end
+	
+	
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorStateMachine.Instance . If more than one instance is present returns
+	 * the first instance.
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element )
+		return element.findInstance( block Instance each
+			return true
+		end ) cast Instance
+	end
+	
+	/**
+	 * \brief Get instance with id in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorStateMachine.Instance with specific identifier.
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element, String id )
+		return element.findInstance( block Instance each
+			return each.getECBehavior().getID().equals( id )
+		end ) cast Instance
+	end
+	
+	/**
+	 * \brief Get list of all instances in element.
+	 * 
+	 * Returns list contains ECBehaviorStateMachine.Instance instances in the order they have
+	 * been created in the element.
+	 */
+	static public func Array getAllInstancesIn( BehaviorElement element )
+		return element.collectInstances( block Instance each
+			return true
+		end )
+	end
+	
+	
+	
+	/** \brief Create Behavior instance. */
+	public func ECBehaviorInstance createInstance( BehaviorElement element )
+		return Instance.new( this, element )
+	end
+end

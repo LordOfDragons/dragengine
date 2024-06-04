@@ -1,0 +1,72 @@
+name: Build Live Launcher
+
+on:
+  workflow_call:
+    inputs:
+      releaseVersion:
+        required: true
+        type: string
+      artifactLinux:
+        required: true
+        type: string
+      artifactWindows:
+        required: true
+        type: string
+      artifactLauncher:
+        required: true
+        type: string
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Get Linux Archives
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.artifactLinux }}
+      
+      - name: Get Windows Archives
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.artifactWindows }}
+      
+      - name: Assemble Linxu64
+        run: |
+          mkdir -p build/linux64/share
+          mkdir -p source/linux/dragengine
+          tar -xvjf dragengine-${{ inputs.releaseVersion }}-linux64.tar.bz2 -C source/linux/dragengine
+          cp -a source/linux/dragengine/usr/lib build/linux64
+          cp -a source/linux/dragengine/usr/share/dragengine build/linux64/share
+          mkdir -p source/linux/special
+          tar -xvjf despecial-${{ inputs.releaseVersion }}-linux64.tar.bz2 -C source/linux/special
+          cp -a source/linux/special/launchLinux64 build
+      
+      - name: Assemble Windows64
+        run: |
+          mkdir -p build/windows64
+          mkdir -p source/windows/dragengine
+          unzip dragengine-${{ inputs.releaseVersion }}-windows64.zip -d source/windows/dragengine
+          cp -a source/windows/dragengine/@ProgramFiles/Dragengine/Data build/windows64
+          cp -a source/windows/dragengine/@ProgramFiles/Dragengine/Share build/windows64
+          cp -a source/windows/dragengine/@ProgramFiles/Dragengine/Launchers/Bin/fox*.dll build/windows64
+          cp -a source/windows/dragengine/@System/dragengine.dll build
+          cp -a source/windows/dragengine/@System/delauncher.dll build
+          mkdir -p source/windows/special
+          unzip despecial-${{ inputs.releaseVersion }}-windows64.zip -d source/windows/special
+          cp -a source/windows/special/LaunchWindows64.exe build
+          cp -a source/windows/special/*.dll build
+      
+      - name: Build Archive
+        run: |
+          sudo apt -y update
+          sudo apt -y install zip
+          cd build
+          zip -r ../dragengine-live-${{ inputs.releaseVersion }}.zip *
+        
+      - name: Store Archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.artifactLauncher }}
+          path: dragengine-live-${{ inputs.releaseVersion }}.zip
+          if-no-files-found: error

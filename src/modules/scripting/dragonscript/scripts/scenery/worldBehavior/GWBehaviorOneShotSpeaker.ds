@@ -1,0 +1,249 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.Preloading
+pin Dragengine.Utils
+pin Dragengine.Scenery
+
+
+/**
+ * \brief GameWorld Behavior adding support for one-shot speakers.
+ * 
+ * One shot speakers are deploy-and-forget type speakers playing a sound or synthesizer once
+ * then self-destroy.
+ * 
+ * This behavior can be present only once in a GameWorld.
+ */
+class GWBehaviorOneShotSpeaker extends DefaultGWBehavior
+	private var LayerMask pLayerMask
+	private var Array pSpeakers
+	
+	
+	
+	/** \brief Create element. */
+	public func new(GameWorld gameWorld) super(gameWorld)
+		pLayerMask = LayerMask.newWith(BaseGameApp.WorldLayerBit.audio)
+		pSpeakers = Array.new()
+	end
+	
+	/** \brief Dispose of behavior. */
+	public func void dispose()
+		if pSpeakers != null
+			pSpeakers.removeAll()
+		end
+		
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Layer mask to use for one shot speaker. */
+	public func LayerMask getLayerMask()
+		return pLayerMask
+	end
+	
+	/** \brief Set layer mask to use for one shot speaker. */
+	public func void setLayerMask(LayerMask layerMask)
+		if layerMask == null
+			throw ENullPointer.new("layerMask")
+		end
+		
+		pLayerMask = layerMask
+	end
+	
+	
+	
+	/** \brief Count of speakers. */
+	public func int getSpeakerCount()
+		return pSpeakers.getCount()
+	end
+	
+	/** \brief Speaker at index. */
+	public func Speaker getSpeakerAt(int index)
+		return pSpeakers.getAt(index) cast Speaker
+	end
+	
+	/**
+	 * \brief Add one shot speaker.
+	 * 
+	 * Plays a short sound once and will be deleted once finished playing.
+	 */
+	public func void addSpeaker(Speaker speaker)
+		speaker.setLooping(false) // just in case somebody forgot it
+		speaker.play()
+		
+		getGameWorld().getWorld().addSpeaker(speaker)
+		
+		pSpeakers.add(speaker)
+	end
+	
+	
+	
+	/**
+	 * \brief Play sound once.
+	 * 
+	 * Create speaker with sound and parameters playing it once. Does nothing if sound is null.
+	 */
+	public func void playSoundOnce(Sound sound, Element element, float volume, float range)
+		playSoundOnce(sound, element.getPosition(), element.getOrientation(), volume, range)
+	end
+	
+	/**
+	 * \brief Play sound once.
+	 * 
+	 * Create speaker with sound and parameters playing it once. Does nothing if sound is null.
+	 */
+	public func void playSoundOnce(Sound sound, DVector position, float volume, float range)
+		playSoundOnce(sound, position, Quaternion.new(), volume, range)
+	end
+	
+	/**
+	 * \brief Play sound once.
+	 * 
+	 * Create speaker with sound and parameters playing it once. Does nothing if sound is null.
+	 */
+	public func void playSoundOnce(Sound sound, DVector position, Quaternion orientation, \
+	float volume, float range)
+		if sound == null
+			return
+		end
+		
+		var Speaker speaker = Speaker.new()
+		speaker.setSound(sound)
+		speaker.setPosition(position)
+		speaker.setOrientation(orientation)
+		speaker.setLooping(false)
+		speaker.setVolume(volume)
+		speaker.setRange(range)
+		speaker.setLayerMask(pLayerMask)
+		speaker.play()
+		
+		getGameWorld().getWorld().addSpeaker(speaker)
+		
+		pSpeakers.add(speaker)
+	end
+	
+	/**
+	 * \brief Play synthesizer instance once.
+	 * 
+	 * Create speaker with synthesizer instance and parameters playing it once.
+	 * Does nothing if synthesizer is null.
+	 */
+	public func void playSynthesizerOnce(SynthesizerInstance synthesizer, Element element, \
+	float volume, float range)
+		playSynthesizerOnce(synthesizer, element.getPosition(), \
+			element.getOrientation(), volume, range)
+	end
+	
+	/**
+	 * \brief Play synthesizer instance once.
+	 * 
+	 * Create speaker with synthesizer instance and parameters playing it once.
+	 * Does nothing if synthesizer is null.
+	 */
+	public func void playSynthesizerOnce(SynthesizerInstance synthesizer, DVector position, \
+	float volume, float range)
+		playSynthesizerOnce(synthesizer, position, Quaternion.new(), volume, range)
+	end
+	
+	/**
+	 * \brief Play synthesizer instance once.
+	 * 
+	 * Create speaker with synthesizer instance and parameters playing it once.
+	 * Does nothing if synthesizer is null.
+	 */
+	public func void playSynthesizerOnce(SynthesizerInstance synthesizer, DVector position, \
+	Quaternion orientation, float volume, float range)
+		if synthesizer == null
+			return
+		end
+		
+		var Speaker speaker = Speaker.new()
+		
+		speaker.setSynthesizer(synthesizer)
+		speaker.setPosition(position)
+		speaker.setOrientation(orientation)
+		speaker.setLooping(false)
+		speaker.setVolume(volume)
+		speaker.setRange(range)
+		speaker.setLayerMask(pLayerMask)
+		speaker.play()
+		
+		getGameWorld().getWorld().addSpeaker(speaker)
+		
+		pSpeakers.add(speaker)
+	end
+	
+	
+	
+	/** \brief Remove one shot speakers that finished playing. */
+	public func void removeFinishedSpeakers()
+		pSpeakers.removeIf(block Speaker each
+			if each.getStopped()
+				getGameWorld().getWorld().removeSpeaker(each)
+				return true
+				
+			else
+				return false
+			end
+		end)
+	end
+	
+	/** \brief Stop and remove all one shot speakers. */
+	public func void removeAllSpeakers()
+		pSpeakers.forEach(block Speaker each
+			each.stop()
+			getGameWorld().getWorld().removeSpeaker(each)
+		end)
+		pSpeakers.removeAll()
+	end
+	
+	
+	
+	/**
+	 * \brief Post thinking after physics processing is finished.
+	 * 
+	 * Post think is called first on all elements then on all behaviors.
+	 */
+	public func void postThink(float elapsed)
+		removeFinishedSpeakers()
+	end
+	
+	
+	
+	/**
+	 * \brief Get behavior in game world or null if absent.
+	 * 
+	 * Use this method to check if GameWorld contains behavior of type GWBehaviorOneShotSpeaker.
+	 */
+	static public func GWBehaviorOneShotSpeaker getBehaviorIn(GameWorld gameWorld)
+		return gameWorld.findBehavior(block GWBehaviorOneShotSpeaker each
+			return true
+		end) cast GWBehaviorOneShotSpeaker
+	end
+end

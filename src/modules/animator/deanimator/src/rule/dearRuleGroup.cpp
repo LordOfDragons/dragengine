@@ -1,32 +1,36 @@
-/* 
- * Drag[en]gine Animator Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
 #include <string.h>
-#include <unistd.h>
 
 #include "dearRuleGroup.h"
 #include "dearCreateRuleVisitor.h"
 #include "../dearBoneState.h"
 #include "../dearBoneStateList.h"
+#include "../dearVPSState.h"
+#include "../dearVPSStateList.h"
 #include "../dearAnimatorInstance.h"
 
 #include <dragengine/deEngine.h>
@@ -61,16 +65,19 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-dearRuleGroup::dearRuleGroup( dearAnimatorInstance &instance, int firstLink,
-const deAnimatorRuleGroup &rule, const deAnimator &animator,
-const decIntList &controllerMapping ) :
-dearRule( instance, firstLink, rule ),
+dearRuleGroup::dearRuleGroup( dearAnimatorInstance &instance, const dearAnimator &animator,
+	int firstLink, const deAnimatorRuleGroup &rule, const decIntList &controllerMapping ) :
+dearRule( instance, animator, firstLink, rule ),
 
 pGroup( rule ),
-pStateList( NULL ),
-pStateList2( NULL ),
 
-pRules( NULL ),
+pStateList( nullptr ),
+pStateList2( nullptr ),
+
+pVPSStateList( nullptr ),
+pVPSStateList2( nullptr ),
+
+pRules( nullptr ),
 pRuleCount( 0 ),
 
 pTargetSelect( rule.GetTargetSelect(), firstLink ),
@@ -79,10 +86,11 @@ pApplicationType( rule.GetApplicationType() ),
 pUseCurrentState( rule.GetUseCurrentState() ),
 pEnablePosition( rule.GetEnablePosition() ),
 pEnableOrientation( rule.GetEnableOrientation() ),
-pEnableSize( rule.GetEnableSize() )
+pEnableSize( rule.GetEnableSize() ),
+pEnableVPS( rule.GetEnableVertexPositionSet() )
 {
 	try{
-		pCreateRules( firstLink, animator, controllerMapping );
+		pCreateRules( firstLink, controllerMapping );
 		RuleChanged();
 		
 	}catch( const deException & ){
@@ -114,7 +122,7 @@ void dearRuleGroup::StoreFrameInto( int identifier, const char *moveName, float 
 	}
 }
 
-bool dearRuleGroup::RebuildInstance(){
+bool dearRuleGroup::RebuildInstance() const{
 	int i;
 	bool rebuild = false;
 	for( i=0; i<pRuleCount; i++ ){
@@ -124,13 +132,9 @@ bool dearRuleGroup::RebuildInstance(){
 	return rebuild;
 }
 
-void dearRuleGroup::Apply( dearBoneStateList &stalist ){
+void dearRuleGroup::Apply( dearBoneStateList &stalist, dearVPSStateList &vpsstalist ){
 DEBUG_RESET_TIMERS;
-	if( pRuleCount < 1 ){
-		return;
-	}
-	
-	if( ! GetEnabled() ){
+	if( pRuleCount < 1 || ! GetEnabled() ){
 		return;
 	}
 	
@@ -142,6 +146,7 @@ DEBUG_RESET_TIMERS;
 	dearAnimatorInstance &instance = GetInstance();
 	const deAnimatorRule::eBlendModes blendMode = GetBlendMode();
 	const int boneCount = GetBoneMappingCount();
+	const int vpsCount = GetVPSMappingCount();
 	int i;
 	
 	// controller affected values
@@ -176,15 +181,21 @@ DEBUG_RESET_TIMERS;
 				if( animatorBone == -1 ){
 					continue;
 				}
-				
-				const dearBoneState &stateFrom = *stalist.GetStateAt( animatorBone );
-				pStateList->GetStateAt( animatorBone )->SetFrom( stateFrom );
+				pStateList->GetStateAt( animatorBone )->SetFrom( *stalist.GetStateAt( animatorBone ) );
+			}
+			
+			for( i=0; i<vpsCount; i++ ){
+				const int animatorVps = GetVPSMappingFor( i );
+				if( animatorVps == -1 ){
+					continue;
+				}
+				pVPSStateList->GetStateAt( animatorVps ).SetFrom( vpsstalist.GetStateAt( animatorVps ) );
 			}
 		}
 		
 		// apply rules
 		for( i=0; i<pRuleCount; i++ ){
-			pRules[ i ]->Apply( *pStateList );
+			pRules[ i ]->Apply( *pStateList, *pVPSStateList );
 		}
 		
 		// apply the state
@@ -194,11 +205,18 @@ DEBUG_RESET_TIMERS;
 				continue;
 			}
 			
-			const dearBoneState &stateFrom = *pStateList->GetStateAt( animatorBone );
-			dearBoneState &stateTo = *stalist.GetStateAt( animatorBone );
+			stalist.GetStateAt( animatorBone )->BlendWith( *pStateList->GetStateAt( animatorBone ),
+				blendMode, blendFactor, pEnablePosition, pEnableOrientation, pEnableSize );
+		}
+		
+		for( i=0; i<vpsCount; i++ ){
+			const int animatorVps = GetVPSMappingFor( i );
+			if( animatorVps == -1 ){
+				continue;
+			}
 			
-			stateTo.BlendWith( stateFrom, blendMode, blendFactor,
-				pEnablePosition, pEnableOrientation, pEnableSize );
+			vpsstalist.GetStateAt( animatorVps ).BlendWith(
+				pVPSStateList->GetStateAt( animatorVps ), blendMode, blendFactor, pEnableVPS );
 		}
 		break;
 		
@@ -213,6 +231,14 @@ DEBUG_RESET_TIMERS;
 				}
 				stalist.GetStateAt( animatorBone )->BlendWithDefault( blendMode,
 					blendFactor, pEnablePosition, pEnableOrientation, pEnableSize );
+			}
+			
+			for( i=0; i<vpsCount; i++ ){
+				const int animatorVps = GetVPSMappingFor( i );
+				if( animatorVps == -1 ){
+					continue;
+				}
+				vpsstalist.GetStateAt( animatorVps ).BlendWithDefault( blendMode, blendFactor, pEnableVPS );
 			}
 		}
 		
@@ -230,6 +256,19 @@ DEBUG_RESET_TIMERS;
 					pStateList2->GetStateAt( animatorBone )->SetFrom( stateFrom );
 				}
 			}
+			
+			for( i=0; i<vpsCount; i++ ){
+				const int animatorVps = GetVPSMappingFor( i );
+				if( animatorVps == -1 ){
+					continue;
+				}
+				
+				const dearVPSState &stateFrom = vpsstalist.GetStateAt( animatorVps );
+				pVPSStateList->GetStateAt( animatorVps ).SetFrom( stateFrom );
+				if( pVPSStateList2 ){
+					pVPSStateList2->GetStateAt( animatorVps ).SetFrom( stateFrom );
+				}
+			}
 		}
 		
 		// apply the blend between the two selected rules
@@ -239,10 +278,10 @@ DEBUG_RESET_TIMERS;
 		//      state if rule->Apply(instance,statelist) is called. it is though required
 		//      to merge in our own blending. in case of blending being blend(1) this
 		//      shortcut though would work
-		pRules[ selectIndex ]->Apply( *pStateList );
+		pRules[ selectIndex ]->Apply( *pStateList, *pVPSStateList );
 		
 		if( selectIndex < pRuleCount - 1 ){
-			pRules[ selectIndex + 1 ]->Apply( *pStateList2 );
+			pRules[ selectIndex + 1 ]->Apply( *pStateList2, *pVPSStateList2 );
 			
 			for( i=0; i<boneCount; i++ ){
 				const int animatorBone = GetBoneMappingFor( i );
@@ -250,11 +289,20 @@ DEBUG_RESET_TIMERS;
 					continue;
 				}
 				
-				const dearBoneState &stateFrom = *pStateList2->GetStateAt( animatorBone );
-				dearBoneState &stateTo = *pStateList->GetStateAt( animatorBone );
+				pStateList->GetStateAt( animatorBone )->BlendWith(
+					*pStateList2->GetStateAt( animatorBone ), deAnimatorRule::ebmBlend,
+					selectBlend, pEnablePosition, pEnableOrientation, pEnableSize );
+			}
+			
+			for( i=0; i<vpsCount; i++ ){
+				const int animatorVps = GetVPSMappingFor( i );
+				if( animatorVps == -1 ){
+					continue;
+				}
 				
-				stateTo.BlendWith( stateFrom, deAnimatorRule::ebmBlend, selectBlend,
-					pEnablePosition, pEnableOrientation, pEnableSize );
+				pVPSStateList->GetStateAt( animatorVps ).BlendWith(
+					pVPSStateList2->GetStateAt( animatorVps ),
+					deAnimatorRule::ebmBlend, selectBlend, pEnableVPS );
 			}
 		}
 		
@@ -265,11 +313,18 @@ DEBUG_RESET_TIMERS;
 				continue;
 			}
 			
-			const dearBoneState &stateFrom = *pStateList->GetStateAt( animatorBone );
-			dearBoneState &stateTo = *stalist.GetStateAt( animatorBone );
+			stalist.GetStateAt( animatorBone )->BlendWith( *pStateList->GetStateAt( animatorBone ),
+				blendMode, blendFactor, pEnablePosition, pEnableOrientation, pEnableSize );
+		}
+		
+		for( i=0; i<vpsCount; i++ ){
+			const int animatorVps = GetVPSMappingFor( i );
+			if( animatorVps == -1 ){
+				continue;
+			}
 			
-			stateTo.BlendWith( stateFrom, blendMode, blendFactor,
-				pEnablePosition, pEnableOrientation, pEnableSize );
+			vpsstalist.GetStateAt( animatorVps ).BlendWith(
+				pVPSStateList->GetStateAt( animatorVps ), blendMode, blendFactor, pEnableVPS );
 		}
 		break;
 	}
@@ -280,7 +335,6 @@ void dearRuleGroup::ControllerChanged( int controller ){
 	dearRule::ControllerChanged( controller );
 	
 	int i;
-	
 	for( i=0; i<pRuleCount; i++ ){
 		pRules[ i ]->ControllerChanged( controller );
 	}
@@ -292,13 +346,22 @@ void dearRuleGroup::RuleChanged(){
 	dearAnimatorInstance &instance = GetInstance();
 	
 	// free old state lists. they are potentially out of date
+	if( pVPSStateList2 ){
+		delete pVPSStateList2;
+		pVPSStateList2 = nullptr;
+	}
+	if( pVPSStateList ){
+		delete pVPSStateList;
+		pVPSStateList = nullptr;
+	}
+	
 	if( pStateList2 ){
 		delete pStateList2;
-		pStateList2 = NULL;
+		pStateList2 = nullptr;
 	}
 	if( pStateList ){
 		delete pStateList;
-		pStateList = NULL;
+		pStateList = nullptr;
 	}
 	
 	// update all child rules
@@ -309,8 +372,11 @@ void dearRuleGroup::RuleChanged(){
 	
 	// create copies of the current bone state list if required
 	pStateList = instance.GetBoneStateList().CreateCopy();
+	pVPSStateList = instance.GetVPSStateList().CreateCopy();
+	
 	if( pApplicationType == deAnimatorRuleGroup::eatSelect && pRuleCount > 1 ){
 		pStateList2 = instance.GetBoneStateList().CreateCopy();
+		pVPSStateList2 = instance.GetVPSStateList().CreateCopy();
 	}
 }
 
@@ -337,13 +403,13 @@ void dearRuleGroup::pCleanUp(){
 	}
 }
 
-void dearRuleGroup::pCreateRules( int firstLink, const deAnimator &animator, const decIntList &controllerMapping ){
+void dearRuleGroup::pCreateRules( int firstLink, const decIntList &controllerMapping ){
 	const int ruleCount = pGroup.GetRuleCount();
 	if( ruleCount == 0 ){
 		return;
 	}
 	
-	dearCreateRuleVisitor visitor( GetInstance(), animator, controllerMapping, firstLink );
+	dearCreateRuleVisitor visitor( GetInstance(), GetAnimator(), controllerMapping, firstLink );
 	int i;
 	
 	pRules = new dearRule*[ ruleCount ];

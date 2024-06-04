@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Animator Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <math.h>
@@ -129,35 +132,41 @@ void aeCamera::Update(){
 	
 	if( pDirty || pAttachToBone || locomotion.GetEnabled() ){
 		if( pAttachToBone ){
-			decMatrix matrix = decMatrix::CreateRT( pRelOrientation * DEG2RAD, pRelPosition );
+			decMatrix matrix( decMatrix::CreateRT( pRelOrientation * DEG2RAD, pRelPosition ) );
 			deComponent *engComponent = pAnimator->GetEngineComponent();
 			
 			if( engComponent ){
+				decMatrix compMat;
+				
 				engComponent->PrepareBones();
 				
 				if( ! pBone.IsEmpty() && engComponent->GetRig() ){
 					const int index = engComponent->GetRig()->IndexOfBoneNamed( pBone );
 					if( index != -1 ){
-						matrix *= engComponent->GetBoneAt( index ).GetMatrix();
+						compMat = engComponent->GetBoneAt( index ).GetMatrix();
 					}
 				}
 				
-				matrix *= engComponent->GetMatrix();
+				compMat = compMat.QuickMultiply( engComponent->GetMatrix() );
+				
+				matrix = matrix.QuickMultiply( compMat.Normalized() );
 			}
 			
 			SetPosition( matrix.GetPosition() );
-			SetOrientation( matrix.GetEulerAngles() / DEG2RAD );
+			SetOrientation( matrix.GetEulerAngles() * RAD2DEG );
 			SetDistance( 0.0f );
 			
 			pDirty = false;
 			
 		}else if( locomotion.GetEnabled() ){
-			decDMatrix matrix = decDMatrix::CreateRT( decDVector( pFreeOrientation * DEG2RAD ), pFreePosition )
-				* decDMatrix::CreateRotationY( ( double )( ( locomotion.GetOrientation().GetValue() + locomotion.GetLookLeftRight().GetValue() ) * DEG2RAD ) )
-				* decDMatrix::CreateTranslation( locomotion.GetPosition() );
+			const float orientation = locomotion.GetOrientation().GetValue();
+			const float lookLeftRight = locomotion.GetLookLeftRight().GetValue();
+			decDMatrix matrix( decDMatrix::CreateRT( decDVector( pFreeOrientation * DEG2RAD ), pFreePosition )
+				.QuickMultiply( decDMatrix::CreateRotationY( ( orientation + lookLeftRight ) * DEG2RAD ) )
+				.QuickMultiply( decDMatrix::CreateTranslation( locomotion.GetPosition() ) ) );
 			
 			SetPosition( matrix.GetPosition() );
-			SetOrientation( matrix.GetEulerAngles().ToVector() / DEG2RAD );
+			SetOrientation( matrix.GetEulerAngles().ToVector() * RAD2DEG );
 			SetDistance( pFreeDistance );
 			
 			pDirty = true; // so that when we stop the testing an update is done to recover

@@ -1,0 +1,16 @@
+diff -rupN dragonscript-1.3-org/src/scriptengine/packages/default/dsClassTimeDate.cpp dragonscript-1.3-patched/src/scriptengine/packages/default/dsClassTimeDate.cpp
+--- dragonscript-1.3-org/src/scriptengine/packages/default/dsClassTimeDate.cpp	2022-03-31 01:27:00.909007593 +0200
++++ dragonscript-1.3-patched/src/scriptengine/packages/default/dsClassTimeDate.cpp	2022-03-31 01:27:28.724048609 +0200
+@@ -95,7 +95,11 @@ misc stuff:
+ 
+ #ifdef OS_W32
+ struct tm *localtime_r( const time_t *timep, struct tm *result ){
+-	return result = localtime( timep );
++	struct tm * const temp = localtime( timep );
++	if( temp ){
++		memcpy( result, temp, sizeof( struct tm ) );
++	}
++	return result;
+ }
+ #endif
+ 

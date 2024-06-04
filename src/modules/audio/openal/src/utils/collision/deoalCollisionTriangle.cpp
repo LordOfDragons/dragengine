@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenAL Audio Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <math.h>
@@ -165,7 +168,7 @@ void deoalCollisionTriangle::GetEnclosingSphere( deoalCollisionSphere *sphere ){
 	distVector = pCorners[ 2 ] - center;
 	distSquared = distVector * distVector;
 	if( distSquared > radiusSquared ) radiusSquared = distSquared;
-	sphere->SetAll( center, sqrt( radiusSquared ) );
+	sphere->SetAll( center, sqrtf( radiusSquared ) );
 }
 
 void deoalCollisionTriangle::GetEnclosingBox( deoalCollisionBox *box ){
@@ -401,7 +404,7 @@ float deoalCollisionTriangle::SphereMoveHitsTriangle( deoalCollisionSphere *sphe
 		if( disc < 0.0f ){
 			lambda = 1.0f;
 		}else{
-			lambda = ( b - sqrt( disc ) ) / a; // payed respect to left out -
+			lambda = ( b - sqrtf( disc ) ) / a; // payed respect to left out -
 		}
 		if( lambda < 0.0f || lambda > 1.0f ) lambda = 1.0f;
 		return lambda;
@@ -645,7 +648,7 @@ float deoalCollisionTriangle::BoxMoveHitsTriangle( deoalCollisionBox *box, const
 		tnormal = pEdges[ i ] % bax;
 		if( ! tnormal.IsZero() ){
 			tnormal.Normalize();
-			projBox = fabs( tnormal * bay ) * bhs.y + fabs( tnormal * baz ) * bhs.z;
+			projBox = fabsf( tnormal * bay ) * bhs.y + fabsf( tnormal * baz ) * bhs.z;
 			dot1 = corners[ id1 ] * tnormal;
 			if( dot1 > 0.0f ){
 				dot2 = corners[ id2 ] * tnormal - projBox;
@@ -686,7 +689,7 @@ float deoalCollisionTriangle::BoxMoveHitsTriangle( deoalCollisionBox *box, const
 		tnormal = pEdges[ i ] % bay;
 		if( ! tnormal.IsZero() ){
 			tnormal.Normalize();
-			projBox = fabs( tnormal * bax ) * bhs.x + fabs( tnormal * baz ) * bhs.z;
+			projBox = fabsf( tnormal * bax ) * bhs.x + fabsf( tnormal * baz ) * bhs.z;
 			dot1 = corners[ id1 ] * tnormal;
 			if( dot1 > 0.0f ){
 				dot2 = corners[ id2 ] * tnormal - projBox;
@@ -727,7 +730,7 @@ float deoalCollisionTriangle::BoxMoveHitsTriangle( deoalCollisionBox *box, const
 		tnormal = pEdges[ i ] % baz;
 		if( ! tnormal.IsZero() ){
 			tnormal.Normalize();
-			projBox = fabs( tnormal * bax ) * bhs.x + fabs( tnormal * bay ) * bhs.y;
+			projBox = fabsf( tnormal * bax ) * bhs.x + fabsf( tnormal * bay ) * bhs.y;
 			dot1 = corners[ id1 ] * tnormal;
 			if( dot1 > 0.0f ){
 				dot2 = corners[ id2 ] * tnormal - projBox;
@@ -775,9 +778,9 @@ float deoalCollisionTriangle::BoxMoveHitsTriangle( deoalCollisionBox *box, const
 			}else{
 				projPoint = deoalCollisionDetection::ClosestPointOnTriangleEdge( pCorners[ 0 ],
 					pCorners[ 1 ], pCorners[ 2 ], projPoint ) - bc;
-				float fx = fabs( projPoint.x );
-				float fy = fabs( projPoint.y );
-				float fz = fabs( projPoint.z );
+				float fx = fabsf( projPoint.x );
+				float fy = fabsf( projPoint.y );
+				float fz = fabsf( projPoint.z );
 				if( fx > fy ){
 					if( fx > fz ){
 						if( projPoint.x > 0.0f ){

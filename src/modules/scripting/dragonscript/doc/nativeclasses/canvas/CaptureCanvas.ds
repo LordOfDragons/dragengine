@@ -6,7 +6,9 @@
 //                                                                              //
 //////////////////////////////////////////////////////////////////////////////////
 
-namespace Dragengine.Gui
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
 
 /**
  * \brief Capture canvas.
@@ -41,6 +43,7 @@ fixed class CaptureCanvas
 	/*@{*/
 	/** \brief Canvas view to capture. */
 	public func CanvasView getCanvasView()
+		return null
 	end
 	
 	/**
@@ -52,6 +55,7 @@ fixed class CaptureCanvas
 	
 	/** \brief Image to capture canvas view into. */
 	public func Image getImage()
+		return null
 	end
 	
 	/**
@@ -71,6 +75,7 @@ fixed class CaptureCanvas
 	
 	/** \brief Capture in progress. */
 	public func bool getCapture()
+		return false
 	end
 	
 	/** \brief Set if capture is in progress. */
@@ -85,6 +90,7 @@ fixed class CaptureCanvas
 	 * \returns \em true if \em other is of type capture canvas and components are equal.
 	 */
 	public func bool equals( Object other )
+		return false
 	end
 	
 	/**
@@ -92,6 +98,7 @@ fixed class CaptureCanvas
 	 * \details Implements Object.hashCode().
 	 */
 	public func int hashCode()
+		return 0
 	end
 	/*@}*/
 end

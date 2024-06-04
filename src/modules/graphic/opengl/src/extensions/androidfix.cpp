@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifdef ANDROID
@@ -26,12 +29,12 @@
 
 #include <dragengine/common/exceptions.h>
 
-#include "deoglExtResult.h"
+#include "deoglGL.h"
 
 
 
 /**
- * \brief Wraps eglGetProcAddress returning replacement functions if not found.
+ * Wraps eglGetProcAddress returning replacement functions if not found.
  */
 __eglMustCastToProperFunctionPointerType androidGetProcAddress( const char *name ){
 	// find native method
@@ -85,7 +88,7 @@ __eglMustCastToProperFunctionPointerType androidGetProcAddress( const char *name
 
 
 /**
- * \brief glGetTexImage replacement.
+ * glGetTexImage replacement.
  * 
  * Method is not existing in EGL. Potentially simulate it using glBlitFramebuffer.
  * 
@@ -112,7 +115,7 @@ void glGetTexImage( GLenum target, GLint level, GLenum format, GLenum type, GLvo
 
 
 /**
- * \brief glPolygonMode replacement.
+ * glPolygonMode replacement.
  * 
  * Method does not exist in EGL. EGL supports only GL_FILL thus the entire method call is missing.
  * No direct solution except using GL_LINES rendering with modified buffers. Since this is currently
@@ -124,7 +127,7 @@ void glPolygonMode( GLenum face, GLenum mode ){
 
 
 /**
- * \brief glGetBufferSubData replacement.
+ * glGetBufferSubData replacement.
  * 
  * EGL does not have glGetBuffer*. As replacement glMapBufferRange has to be used.
  */
@@ -146,7 +149,7 @@ void glGetBufferSubData( GLenum target, GLintptr offset, GLsizeiptr size, void *
 
 
 /**
- * \brief glTexImage1D replacement.
+ * glTexImage1D replacement.
  * 
  * 1D textures are not supported under EGL. Replace with a 2D texture variant.
  * 
@@ -160,7 +163,7 @@ GLint border, GLenum format, GLenum type, const GLvoid *data ){
 
 
 /**
- * \brief glTexSubImage1D replacement.
+ * glTexSubImage1D replacement.
  * 
  * 1D textures are not supported under EGL. Replace with a 2D texture variant.
  * 
@@ -174,7 +177,7 @@ GLenum format, GLenum type, const void *pixels ){
 
 
 /**
- * \brief glCompressedTexImage1D replacement.
+ * glCompressedTexImage1D replacement.
  * 
  * 1D textures are not supported under EGL. Replace with a 2D texture variant.
  * 
@@ -188,7 +191,7 @@ GLsizei width, GLint border, GLsizei imageSize, const void *data ){
 
 
 /**
- * \brief glFramebufferTexture replacement.
+ * glFramebufferTexture replacement.
  * 
  * Use glFramebufferTexture2D instead which fails if not used on a supported type.
  */
@@ -201,7 +204,7 @@ void glFramebufferTexture( GLenum target, GLenum attachment, GLuint texture, GLi
 
 
 /**
- * \brief glBindFragDataLocation replacement.
+ * glBindFragDataLocation replacement.
  * 
  * EGL supports no custom named and placed output variables.
  * Replacement is a no-op. Shaders fix this.
@@ -212,7 +215,7 @@ void glBindFragDataLocation( GLuint program, GLuint color, const GLchar *name ){
 
 
 /**
- * \brief glTexBuffer replacement.
+ * glTexBuffer replacement.
  * 
  * Supported from 3.1 onwards but android has egl 3.0. for the time being the call
  * is silently ignored. problems have to be fixed once known.
@@ -223,7 +226,7 @@ void glTexBuffer( GLenum target, GLenum internalformat, GLuint buffer ){
 
 
 /**
- * \brief glDrawElementsBaseVertex replacement.
+ * glDrawElementsBaseVertex replacement.
  * 
  * Supported since 3.2 but android is egl 3.0. this call can not be easily simulated
  * since it requires modifying the VBO data. the shared vbo shifts the indices into
@@ -236,7 +239,7 @@ void glDrawElementsBaseVertex( GLenum mode, GLsizei count, GLenum type, const vo
 
 
 /**
- * \brief glDrawRangeElementsBaseVertex replacement.
+ * glDrawRangeElementsBaseVertex replacement.
  * 
  * Supported since 3.2 but android is egl 3.0. this call can not be easily simulated
  * since it requires modifying the VBO data. the shared vbo shifts the indices into
@@ -250,7 +253,7 @@ GLenum type, const void *indices, GLint basevertex ){
 
 
 /**
- * \brief glDrawElementsInstancedBaseVertex replacement.
+ * glDrawElementsInstancedBaseVertex replacement.
  * 
  * Supported since 3.2 but android is egl 3.0. this call can not be easily simulated
  * since it requires modifying the VBO data. the shared vbo shifts the indices into
@@ -264,7 +267,7 @@ const void *indices, GLsizei instancecount, GLint basevertex ){
 
 
 /**
- * \brief glQueryCounter replacement.
+ * glQueryCounter replacement.
  * 
  * Not used so simply blanked.
  */
@@ -274,7 +277,7 @@ void glQueryCounter( GLuint id, GLenum target ){
 
 
 /**
- * \brief glGetQueryObjectui64v replacement.
+ * glGetQueryObjectui64v replacement.
  * 
  * Not used so simply blanked.
  */
@@ -284,7 +287,7 @@ void glGetQueryObjectui64v( GLuint id, GLenum pname, GLuint64 *params ){
 
 
 /**
- * \brief glShaderStorageBlockBinding replacement.
+ * glShaderStorageBlockBinding replacement.
  * 
  * Set to empty since under OpenGL ES the shader has to set the binding.
  */

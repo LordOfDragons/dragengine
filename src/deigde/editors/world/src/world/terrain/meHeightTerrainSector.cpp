@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE World Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <math.h>
@@ -1462,7 +1465,9 @@ void meHeightTerrainSector::SetActiveNavSpace( meHeightTerrainNavSpace *navspace
 		navspace->SetActive( true );
 	}
 	
-	pHeightTerrain->GetWorld().NotifyHTActiveNavSpaceChanged();
+	if( pHeightTerrain ){
+		pHeightTerrain->GetWorld().NotifyHTActiveNavSpaceChanged();
+	}
 }
 
 void meHeightTerrainSector::SetSelectedNavPoints( const decIntList &points ){
@@ -1474,7 +1479,9 @@ void meHeightTerrainSector::SetSelectedNavPoints( const decIntList &points ){
 	
 	pUpdateDDSelNavPointsShapes();
 	
-	pHeightTerrain->GetWorld().NotifyHTNavSpaceSelectedPointsChanged();
+	if( pHeightTerrain ){
+		pHeightTerrain->GetWorld().NotifyHTNavSpaceSelectedPointsChanged();
+	}
 }
 
 
@@ -1684,15 +1691,15 @@ void meHeightTerrainSector::pUpdatePropFieldPositions(){
 	
 	for( y=0, p=0; y<pPropFieldCellCount; y++ ){
 		position.z = sectorOffsetZ + cellOffset - cellSize * ( double )y;
-		minExtend.y = position.z - halfCellSize;
-		maxExtend.y = position.z + halfCellSize;
+		minExtend.y = ( float )position.z - halfCellSize;
+		maxExtend.y = ( float )position.z + halfCellSize;
 		
 		for( x=0; x<pPropFieldCellCount; x++, p++ ){
 			engPF = pPropFields[ p ]->GetEnginePropField();
 			
 			position.x = sectorOffsetX - cellOffset + cellSize * ( double )x;
-			minExtend.x = position.x - halfCellSize;
-			maxExtend.x = position.x + halfCellSize;
+			minExtend.x = ( float )position.x - halfCellSize;
+			maxExtend.x = ( float )position.x + halfCellSize;
 			
 			engPF->SetPosition( position );
 			//engPF->SetSize( size );
@@ -1721,6 +1728,10 @@ void meHeightTerrainSector::pRepositionDebugDrawers(){
 	
 	for( i=0; i<count; i++ ){
 		( ( deDebugDrawer* )pDDEdges.GetAt( i ) )->SetPosition( position );
+	}
+	
+	if( pDDSelNavPoints ){
+		pDDSelNavPoints->SetPosition( position );
 	}
 }
 
@@ -2014,18 +2025,19 @@ void meHeightTerrainSector::pUpdateDDSelNavPointsShapes(){
 	
 	if( pHeightImage && pHeightTerrain ){
 		const sGrayscale32 * const heights = pHeightImage->GetDataGrayscale32();
+		const float sectorSize = pHeightTerrain->GetSectorSize();
 		const int sectorResolution = pHeightTerrain->GetSectorResolution();
 		const float heightScale = pHeightTerrain->GetHeightScaling();
-		const float radius = 0.25f / ( float )sectorResolution;
+		const float radius = 0.25f; // / ( float )sectorResolution;
 		const int count = pSelectedNavPoints.GetCount();
 		const float invPointLast = 1.0f / ( float )( sectorResolution - 1 );
 		
 		for( i=0; i<count; i++ ){
 			const int navpoint = pSelectedNavPoints.GetAt( i );
 			const decVector center(
-				( float )( navpoint % sectorResolution ) * invPointLast - 0.5f,
+				sectorSize * ( ( float )( navpoint % sectorResolution ) * invPointLast - 0.5f ),
 				heightScale * heights[ navpoint ].value,
-				0.5f - ( float )( navpoint / sectorResolution ) * invPointLast );
+				sectorSize * ( 0.5f - ( float )( navpoint / sectorResolution ) * invPointLast ) );
 			shapes.Add( new decShapeSphere( radius, center ) );
 		}
 	}

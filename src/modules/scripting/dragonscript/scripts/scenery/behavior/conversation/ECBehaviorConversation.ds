@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -69,7 +72,7 @@ pin Dragengine.TriggerSystem
  * \code{.ds}
  * // this method is assumed to be called by the player implementation when he uses
  * // an element. this method is usually part of an ElementVisitor subclass
- * public func void visitBehaviorElement(BehaviorElement element)
+ * func void visitBehaviorElement(BehaviorElement element)
  *    var ECBehaviorConversation.Instance instance = ECBehaviorConversation.getInstanceIn(element)
  *    if instance != null and instance.canStartConversation()
  *        instance.startConversation()
@@ -101,41 +104,39 @@ class ECBehaviorConversation extends DefaultECBehavior
 	class Instance extends DefaultECBehaviorInstance
 		/** \brief Trigger listener to start conversation. */
 		public class StartConversationListener extends ECBehaviorTriggered.DefaultListener
-			private var Instance pInstance
+			var Instance pInstance
 			
-			public func new( Instance instance )
-				this.pInstance = instance
+			func new(Instance instance)
+				pInstance = instance
 			end
 			
-			public func void triggerExpressionTrue( ECBehaviorTriggered.Instance instance )
-				this.pInstance.startConversation()
+			func void triggerExpressionTrue(ECBehaviorTriggered.Instance instance)
+				pInstance.startConversation()
 			end
 		end
 		
 		
-		
-		private var ECBehaviorConversation pECBehavior
-		private var Conversation pConversation
-		private var StringID pAddPlayer
-		private var ConversationPlayback pConversationPlayback
-		private var ECBehaviorConversationActor.Instance pConversationActor
-		private var ECBehaviorTriggered.Instance pTrigger
-		private var StringID pTopicGroup
-		private var StringID pTopic
-		private var bool pDirectCamera
+		var ECBehaviorConversation pECBehavior
+		var Conversation pConversation
+		var StringID pAddPlayer
+		var ConversationPlayback pConversationPlayback
+		var ECBehaviorConversationActor.Instance pConversationActor
+		var ECBehaviorTriggered.Instance pTrigger
+		var StringID pTopicGroup
+		var StringID pTopic
+		var bool pDirectCamera
 		
 		
 		/** \brief Create element. */
-		public func new( ECBehaviorConversation ecbehavior, BehaviorElement element ) super( element )
-			this.pECBehavior = ecbehavior
-			this.setRequiresThink( true )
+		func new(ECBehaviorConversation ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
 		end
 		
 		/** \brief Dispose of behavior instance. */
-		public func void dispose()
-			this.stopConversation()
-			this.pConversationActor = null
-			this.pTrigger = null
+		func void dispose()
+			stopConversation()
+			pConversationActor = null
+			pTrigger = null
 			
 			super.dispose()
 		end
@@ -143,110 +144,115 @@ class ECBehaviorConversation extends DefaultECBehavior
 		
 		
 		/** \brief Initialize element from stub. */
-		public func void init( StubElement stub )
-			var BehaviorElement element = this.getElement()
+		func void init(StubElement stub)
+			var BehaviorElement element = getElement()
 			
-			if this.pECBehavior.getConversationActor() != null
-				this.pConversationActor = this.pECBehavior.getConversationActor().instance( element )
+			if pECBehavior.getConversationActor() != null
+				pConversationActor = pECBehavior.getConversationActor().instance(element)
 			end
 			
-			this.pDirectCamera = this.pECBehavior.getDirectCamera().getValue( stub )
-			this.pAddPlayer = this.pECBehavior.getAddPlayer().getValue( stub )
+			pDirectCamera = pECBehavior.getDirectCamera().getValue(stub)
+			pAddPlayer = pECBehavior.getAddPlayer().getValue(stub)
 			
-			this.pConversation = this.loadConversation( stub )
+			pConversation = loadConversation(stub)
 			
-			this.pTopicGroup = this.pECBehavior.getTopicGroup().getValue( stub )
-			this.pTopic = this.pECBehavior.getTopic().getValue( stub )
+			pTopicGroup = pECBehavior.getTopicGroup().getValue(stub)
+			pTopic = pECBehavior.getTopic().getValue(stub)
 			
-			this.pTrigger = this.pECBehavior.getTriggered().instance( element )
-			this.pTrigger.addListener( StartConversationListener.new( this ) )
+			pTrigger = pECBehavior.getTriggered().instance(element)
+			pTrigger.addListener(StartConversationListener.new(this))
 		end
 		
 		/**
 		 * \brief Load conversation.
 		 */
-		protected func Conversation loadConversation( StubElement stub )
-			return this.pECBehavior.getConversation().getConversation( stub, this.getElement().getClass() )
+		protected func Conversation loadConversation(StubElement stub)
+			return pECBehavior.getConversation().getConversation(stub, getElement().getClass())
 		end
 		
 		
 		
 		/** \brief Behavior. */
-		public func ECBehaviorConversation getECBehavior()
-			return this.pECBehavior
+		func ECBehaviorConversation getECBehavior()
+			return pECBehavior
 		end
 		
 		/** \brief Conversation. */
-		public func Conversation getConversation()
-			return this.pConversation
+		func Conversation getConversation()
+			return pConversation
 		end
 		
 		/** \brief Set conversation. */
-		protected func void setConversation( Conversation conversation )
-			this.pConversation = conversation
+		protected func void setConversation(Conversation conversation)
+			pConversation = conversation
 		end
 		
 		/** \brief Add player as first actor if identifier is not null. */
-		public func StringID getAddPlayer()
-			return this.pAddPlayer
+		func StringID getAddPlayer()
+			return pAddPlayer
 		end
 		
 		/** \brief Set if player is added as first actor if identifier is not null. */
-		protected func void setAddPlayer( StringID id )
-			this.pAddPlayer = id
+		protected func void setAddPlayer(StringID id)
+			pAddPlayer = id
 		end
 		
 		/** \brief Conversation playback if running or null if not running. */
-		public func ConversationPlayback getConversationPlayback()
-			return this.pConversationPlayback
+		func ConversationPlayback getConversationPlayback()
+			return pConversationPlayback
 		end
 		
 		/** \brief Set conversation playback if running or null if not running. */
-		protected func void setConversationPlayback( ConversationPlayback playback )
-			this.stopConversation()
-			this.pConversationPlayback = playback
+		protected func void setConversationPlayback(ConversationPlayback playback)
+			stopConversation()
+			
+			pConversationPlayback = playback
+			
+			if playback != null
+				setRequiresThink(true)
+			end
 		end
 		
 		/** \brief Conversation actor behavior instance or null if not present. */
-		public func ECBehaviorConversationActor.Instance getConversationActor()
-			return this.pConversationActor
+		func ECBehaviorConversationActor.Instance getConversationActor()
+			return pConversationActor
 		end
 		
 		/** \brief Topic group to use for conversation. */
-		public func StringID getTopicGroup()
-			return this.pTopicGroup
+		func StringID getTopicGroup()
+			return pTopicGroup
 		end
 		
 		/** \brief Set topic group to use for conversation. */
-		protected func void setTopicGroup( StringID id )
-			this.pTopicGroup = id
+		protected func void setTopicGroup(StringID id)
+			pTopicGroup = id
 		end
 		
 		/** \brief Topic to use for conversation. */
-		public func StringID getTopic()
-			return this.pTopic
+		func StringID getTopic()
+			return pTopic
 		end
 		
 		/** \brief Set topic to use for conversation. */
-		public func void setTopic( StringID id )
-			this.pTopic = id
+		func void setTopic(StringID id)
+			pTopic = id
 		end
 		
 		/** \brief Conversation directs camera. */
-		public func bool getDirectCamera()
-			return this.pDirectCamera
+		func bool getDirectCamera()
+			return pDirectCamera
 		end
 		
 		/** \brief Set if conversation directs camera. */
-		public func void setDirectCamera( bool directCamera )
-			this.pDirectCamera = directCamera
+		func void setDirectCamera(bool directCamera)
+			pDirectCamera = directCamera
 		end
 		
 		
 		
 		/** \brief Player conversation actor or null if not supported. */
-		public func ConversationActor getPlayerConversationActor()
-			var ECBehaviorPlayerControllable.Tracker tracker = this.pECBehavior.getPlayerControlledActor()
+		func ConversationActor getPlayerConversationActor()
+			var ECBehaviorPlayerControllable.Tracker tracker = pECBehavior.getPlayerControlledActor()
 			if tracker == null
 				return null
 			end
@@ -257,7 +263,7 @@ class ECBehaviorConversation extends DefaultECBehavior
 			end
 			
 			var ECBehaviorConversationActor.Instance conversationActor = \
-				ECBehaviorConversationActor.getInstanceIn( actor.getElement() )
+				ECBehaviorConversationActor.getInstanceIn(actor.getElement())
 			if conversationActor == null
 				return null
 			end
@@ -268,8 +274,8 @@ class ECBehaviorConversation extends DefaultECBehavior
 		
 		
 		/** \brief Trigger or \em null. */
-		public func ECBehaviorTriggered.Instance getTrigger()
-			return this.pTrigger
+		func ECBehaviorTriggered.Instance getTrigger()
+			return pTrigger
 		end
 		
 		
@@ -282,19 +288,19 @@ class ECBehaviorConversation extends DefaultECBehavior
 		 * - AddPlayer is null or player is not in a conversation
 		 * - ECBehaviorConversationActor is not present or actor is not in a conversation
 		 */
-		public func bool canStartConversation()
-			if this.pConversationPlayback != null
+		func bool canStartConversation()
+			if pConversationPlayback != null
 				return false
 			end
-			if this.pAddPlayer != null
-				var ConversationActor actor = this.getPlayerConversationActor()
+			if pAddPlayer != null
+				var ConversationActor actor = getPlayerConversationActor()
 				if actor == null or actor.getPlayback() != null
 					return false
 				end
 			end
-			if this.pConversationActor != null \
-			and this.pConversationActor.getConversationActor() != null \
-			and this.pConversationActor.getConversationActor().getPlayback() != null
+			if pConversationActor != null \
+			and pConversationActor.getConversationActor() != null \
+			and pConversationActor.getConversationActor().getPlayback() != null
 				return false
 			end
 			return true
@@ -305,38 +311,38 @@ class ECBehaviorConversation extends DefaultECBehavior
 		 * 
 		 * Throws exception if canStartConversation() returns false.
 		 */
-		public func void startConversation()
-			if not this.canStartConversation() or this.pConversationPlayback != null
+		func void startConversation()
+			if not canStartConversation() or pConversationPlayback != null
 				throw EInvalidParam.new()
 			end
 			
-			var ConversationPlayback playback = this.createPlayback()
+			var ConversationPlayback playback = createPlayback()
 			
 			try
-				var ConversationTopicGroup topicGroup = this.pConversation.getTopicGroupWithID( this.pTopicGroup )
+				var ConversationTopicGroup topicGroup = pConversation.getTopicGroupWithID(pTopicGroup)
 				if topicGroup == null
-					BaseGameApp.getApp().getConsole().addMessage( \
-						"ECBehaviorConversation: Not found '" + this.pTopicGroup + "' => '" + this.pTopic )
+					BaseGameApp.getApp().getConsole().addMessage(\
+						"ECBehaviorConversation: Not found '" + pTopicGroup + "' => '" + pTopic)
 					throw EInvalidParam.new()
 				end
 				
-				var ConversationTopic topic = topicGroup.getTopicWithID( this.pTopic )
+				var ConversationTopic topic = topicGroup.getTopicWithID(pTopic)
 				
 				if topic == null
-					BaseGameApp.getApp().getConsole().addMessage( \
-						"ECBehaviorConversation: Not found '" + this.pTopicGroup + "' => '" + this.pTopic )
+					BaseGameApp.getApp().getConsole().addMessage(\
+						"ECBehaviorConversation: Not found '" + pTopicGroup + "' => '" + pTopic)
 					throw EInvalidParam.new()
 				end
 				
-				playback.setTopic( topicGroup, topic )
+				playback.setTopic(topicGroup, topic)
 				
-				if this.pAddPlayer != null
-					playback.addActor( this.getPlayerConversationActor(), this.pAddPlayer )
+				if pAddPlayer != null
+					playback.addActor(getPlayerConversationActor(), pAddPlayer)
 				end
 				
-				if this.pConversationActor != null \
-				and this.pConversationActor.getConversationActor() != null
-					playback.addActor( this.pConversationActor.getConversationActor() )
+				if pConversationActor != null \
+				and pConversationActor.getConversationActor() != null
+					playback.addActor(pConversationActor.getConversationActor())
 				end
 				
 			catch Exception e
@@ -344,9 +350,10 @@ class ECBehaviorConversation extends DefaultECBehavior
 				throw
 			end
 			
-			this.pConversationPlayback = playback
+			pConversationPlayback = playback
 			
-			playback.setRunning( true )
+			playback.setRunning(true)
+			setRequiresThink(true)
 		end
 		
 		/**
@@ -360,224 +367,231 @@ class ECBehaviorConversation extends DefaultECBehavior
 		 */
 		protected func ConversationPlayback createPlayback()
 			var BaseConversationPlayback playback = \
-				BaseGameApp.getApp().createConversationPlayback( this.pConversation )
+				BaseGameApp.getApp().createConversationPlayback(pConversation)
 			
-			if not this.pDirectCamera
-				playback.setCameraDirector( null )
+			if not pDirectCamera
+				playback.setCameraDirector(null)
 			end
 			
-			if this.pAddPlayer == null
-				playback.setInputProcessor( null )  // allow player to continue give input
+			if pAddPlayer == null
+				playback.setInputProcessor(null)  // allow player to continue give input
 			end
 			
 			return playback
 		end
 		
 		/** \brief Stop conversation immediately if running. */
-		public func void stopConversation()
-			if this.pConversationPlayback == null
+		func void stopConversation()
+			if pConversationPlayback == null
 				return
 			end
 			
-			this.pConversationPlayback.stopConversation()
-			this.pConversationPlayback.dispose()
-			this.pConversationPlayback = null
+			pConversationPlayback.stopConversation()
+			pConversationPlayback.dispose()
+			pConversationPlayback = null
+			setRequiresThink(false)
 		end
-		
 		
 		
 		/** \brief Think about what the element is going to do in this frame. */
-		public func void think( float elapsed )
-			if this.pConversationPlayback == null
+		func void think(float elapsed)
+			if pConversationPlayback == null
 				return
 			end
 			
-			this.pConversationPlayback.update( elapsed )
+			pConversationPlayback.update(elapsed)
 			
-			if not this.pConversationPlayback.getRunning()
-				this.stopConversation()
+			if not pConversationPlayback.getRunning()
+				stopConversation()
 			end
 		end
-		
 		
 		
 		/** \brief Read element from file. */
-		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
-			// we can save the conversation playback but not load it right now.
-			// the problem is that the self-actor is not registered anywhere.
-			// we need a change in the playback loading procedure so we can add the
-			// player actor before the playback loads so it can use the actor already
-			// present.
-			/*
-			if not env.readBool()
-				return
+		func void readFromFile(PersistencyEnvironment env, FileReader reader)
+			select reader.readByte() // version
+			case 0
+				// we can save the conversation playback but not load it right now.
+				// the problem is that the self-actor is not registered anywhere.
+				// we need a change in the playback loading procedure so we can add the
+				// player actor before the playback loads so it can use the actor already
+				// present.
+				/*
+				if not env.readBool()
+					return
+				end
+				
+				var int size = reader.readInt()
+				var MemoryFile data = MemoryFile.new("ECBehaviorConversation.data")
+				data.writeData(reader, size)
+				
+				// store away for enterFrame():
+				// - MemoryFile data
+				// - PersistencyEnvironment env (this requires env to be never changed)
+				// 
+				// during enterFrame():
+				// 
+				// pConversationPlayback = env.readObject(data.getReader())
+				*/
+				
+			else
+				throw EInvalidParam.new("unsupported version")
 			end
-			
-			var int size = reader.readInt()
-			var MemoryFile data = MemoryFile.new( "ECBehaviorConversation.data" )
-			data.writeData( reader, size )
-			
-			// store away for enterFrame():
-			// - MemoryFile data
-			// - PersistencyEnvironment env (this requires env to be never changed)
-			// 
-			// during enterFrame():
-			// 
-			// this.pConversationPlayback = env.readObject( data.getReader() )
-			*/
 		end
 		
 		/** \brief Write element to file. */
-		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+		func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+			writer.writeByte(0) // version
+			
 			/*
-			env.writeBool( this.pConversationPlayback != null )
-			if this.pConversationPlayback == null
+			env.writeBool(pConversationPlayback != null)
+			if pConversationPlayback == null
 				return
 			end
 			
-			var MemoryFile data = MemoryFile.new( "ECBehaviorConversation.data" )
-			env.writeObject( data.getWriter( false ), this.pConversationPlayback )
-			writer.writeInt( data.getSize() )
-			env.writeData( data.getReader(), data.getSize() )
+			var MemoryFile data = MemoryFile.new("ECBehaviorConversation.data")
+			env.writeObject(data.getWriter(false), pConversationPlayback)
+			writer.writeInt(data.getSize())
+			env.writeData(data.getReader(), data.getSize())
 			*/
 		end
 	end
 	
 	
 	
-	private var ECBehaviorConversationActor pConversationActor
-	private var ECPConversation pConversation
-	private var ECPStringID pAddPlayer
-	private var ECPStringID pTopicGroup
-	private var ECPStringID pTopic
-	private var ECPBoolean pDirectCamera
-	private var ECBehaviorTriggered pTriggered
-	private var ECBehaviorPlayerControllable.Tracker pPlayerControlledActor
+	var ECBehaviorConversationActor pConversationActor
+	var ECPConversation pConversation
+	var ECPStringID pAddPlayer
+	var ECPStringID pTopicGroup
+	var ECPStringID pTopic
+	var ECPBoolean pDirectCamera
+	var ECBehaviorTriggered pTriggered
+	var ECBehaviorPlayerControllable.Tracker pPlayerControlledActor
 	
 	
 	
 	/** \brief Create behavior element class. */
-	public func new( BehaviorElementClass eclass ) this( eclass, BaseGameApp.getApp().getLoaders(), \
-	null, BaseGameApp.getApp().getPlayerControlledActor(), "" )
+	func new(BehaviorElementClass eclass) this(eclass, BaseGameApp.getApp().getLoaders(), \
+	null, BaseGameApp.getApp().getPlayerControlledActor(), "")
 	end
 	
 	/** \brief Create behavior element class. */
-	public func new( BehaviorElementClass eclass, String id ) this( eclass, \
-	BaseGameApp.getApp().getLoaders(), null, BaseGameApp.getApp().getPlayerControlledActor(), id )
+	func new(BehaviorElementClass eclass, String id) this(eclass, \
+	BaseGameApp.getApp().getLoaders(), null, BaseGameApp.getApp().getPlayerControlledActor(), id)
 	end
 	
 	/** \brief Create behavior element class. */
-	public func new( BehaviorElementClass eclass, String id, String prefix ) this( eclass, \
-	BaseGameApp.getApp().getLoaders(), null, BaseGameApp.getApp().getPlayerControlledActor(), id, prefix )
+	func new(BehaviorElementClass eclass, String id, String prefix) this(eclass, \
+	BaseGameApp.getApp().getLoaders(), null, BaseGameApp.getApp().getPlayerControlledActor(), id, prefix)
 	end
 	
 	/** \brief Create behavior element class. */
-	public func new( BehaviorElementClass eclass, Loaders loaders, TSTriggerTable triggerTable, \
-	ECBehaviorPlayerControllable.Tracker playerControlledActor ) \
-	this( eclass, loaders, triggerTable, playerControlledActor, "" )
+	func new(BehaviorElementClass eclass, Loaders loaders, TSTriggerTable triggerTable, \
+	ECBehaviorPlayerControllable.Tracker playerControlledActor) \
+	this(eclass, loaders, triggerTable, playerControlledActor, "")
 	end
 	
 	/** \brief Create behavior element class. */
-	public func new( BehaviorElementClass eclass, Loaders loaders, TSTriggerTable triggerTable, \
-	ECBehaviorPlayerControllable.Tracker playerControlledActor, String id ) \
-	this( eclass, loaders, triggerTable, playerControlledActor, id, \
-	id.empty() if "conversation" else "conversation(" + id + ")" )
+	func new(BehaviorElementClass eclass, Loaders loaders, TSTriggerTable triggerTable, \
+	ECBehaviorPlayerControllable.Tracker playerControlledActor, String id) \
+	this(eclass, loaders, triggerTable, playerControlledActor, id, \
+	id.empty() if "conversation" else "conversation(" + id + ")")
 	end
 	
-	public func new( BehaviorElementClass eclass, Loaders loaders, TSTriggerTable triggerTable, \
-	ECBehaviorPlayerControllable.Tracker playerControlledActor, String id, String subID ) \
-	this( eclass, loaders, triggerTable, playerControlledActor, id, subID, subID + "." )
+	func new(BehaviorElementClass eclass, Loaders loaders, TSTriggerTable triggerTable, \
+	ECBehaviorPlayerControllable.Tracker playerControlledActor, String id, String subID) \
+	this(eclass, loaders, triggerTable, playerControlledActor, id, subID, subID + ".")
 	end
 	
-	public func new( BehaviorElementClass eclass, Loaders loaders, TSTriggerTable triggerTable, \
-	ECBehaviorPlayerControllable.Tracker playerControlledActor, String id, String subID, String prefix ) \
-	super( eclass, id )
-		this.pPlayerControlledActor = playerControlledActor
+	func new(BehaviorElementClass eclass, Loaders loaders, TSTriggerTable triggerTable, \
+	ECBehaviorPlayerControllable.Tracker playerControlledActor, String id, String subID, String prefix) \
+	super(eclass, id)
+		pPlayerControlledActor = playerControlledActor
 		
-		this.pConversation = ECPConversation.new( prefix + "path", loaders.getConversation() )
-		eclass.addProperty( this.pConversation )
+		pConversation = ECPConversation.new(prefix + "path", loaders.getConversation())
+		eclass.addProperty(pConversation)
 		
-		this.pAddPlayer = ECPStringID.new( prefix + "addPlayer", StringID.new( "player" ) )
-		eclass.addProperty( this.pAddPlayer )
+		pAddPlayer = ECPStringID.new(prefix + "addPlayer", StringID.new("player"))
+		eclass.addProperty(pAddPlayer)
 		
-		this.pTopicGroup = ECPStringID.new( prefix + "topicGroup" )
-		eclass.addProperty( this.pTopicGroup )
+		pTopicGroup = ECPStringID.new(prefix + "topicGroup")
+		eclass.addProperty(pTopicGroup)
 		
-		this.pTopic = ECPStringID.new( prefix + "topic" )
-		eclass.addProperty( this.pTopic )
+		pTopic = ECPStringID.new(prefix + "topic")
+		eclass.addProperty(pTopic)
 		
-		this.pDirectCamera = ECPBoolean.new( prefix + "directCamera", true )
-		eclass.addProperty( this.pDirectCamera )
+		pDirectCamera = ECPBoolean.new(prefix + "directCamera", true)
+		eclass.addProperty(pDirectCamera)
 		
-		this.pTriggered = ECBehaviorTriggered.new( eclass, triggerTable, subID, prefix + "trigger" )
+		pTriggered = ECBehaviorTriggered.new(eclass, triggerTable, subID, prefix + "trigger")
 		
-		eclass.addBehavior( this )
+		eclass.addBehavior(this)
 	end
 	
 	/** \brief Dispose of behavior. */
-	public func void dispose()
-		this.pPlayerControlledActor = null
-		this.pConversationActor = null
+	func void dispose()
+		pPlayerControlledActor = null
+		pConversationActor = null
 		super.dispose()
 	end
 	
 	
 	
 	/** \brief Conversation actor behavior or null if not used. */
-	public func ECBehaviorConversationActor getConversationActor()
-		return this.pConversationActor
+	func ECBehaviorConversationActor getConversationActor()
+		return pConversationActor
 	end
 	
 	/** \brief Set conversation actor behavior or null if not used. */
-	public func void setConversationActor( ECBehaviorConversationActor conversationActor )
-		this.pConversationActor = conversationActor
+	func void setConversationActor(ECBehaviorConversationActor conversationActor)
+		pConversationActor = conversationActor
 	end
 	
 	/** \brief Conversation. */
-	public func ECPConversation getConversation()
-		return this.pConversation
+	func ECPConversation getConversation()
+		return pConversation
 	end
 	
 	/** \brief Add player to conversation with identifier or null otherwise. */
-	public func ECPStringID getAddPlayer()
-		return this.pAddPlayer
+	func ECPStringID getAddPlayer()
+		return pAddPlayer
 	end
 	
 	/** \brief Topic group to use for conversation. */
-	public func ECPStringID getTopicGroup()
-		return this.pTopicGroup
+	func ECPStringID getTopicGroup()
+		return pTopicGroup
 	end
 	
 	/** \brief Topic to use for conversation. */
-	public func ECPStringID getTopic()
-		return this.pTopic
+	func ECPStringID getTopic()
+		return pTopic
 	end
 	
 	/** \brief Conversation directs camera. */
-	public func ECPBoolean getDirectCamera()
-		return this.pDirectCamera
+	func ECPBoolean getDirectCamera()
+		return pDirectCamera
 	end
 	
 	/** \brief Trigger conversation. */
-	public func ECBehaviorTriggered getTriggered()
-		return this.pTriggered
+	func ECBehaviorTriggered getTriggered()
+		return pTriggered
 	end
 	
 	/** \brief Player controlled actor or null. */
-	public func ECBehaviorPlayerControllable.Tracker getPlayerControlledActor()
-		return this.pPlayerControlledActor
+	func ECBehaviorPlayerControllable.Tracker getPlayerControlledActor()
+		return pPlayerControlledActor
 	end
 	
 	/** \brief Set player controllable tracker or null. */
-	public func void setPlayerControlledActor( ECBehaviorPlayerControllable.Tracker playerControlledActor )
-		this.pPlayerControlledActor = playerControlledActor
+	func void setPlayerControlledActor(ECBehaviorPlayerControllable.Tracker playerControlledActor)
+		pPlayerControlledActor = playerControlledActor
 	end
 	
 	
 	
 	/** \brief Get instance in element from owner element class. */
-	public func Instance instance( BehaviorElement element )
-		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
 	
 	
@@ -588,10 +602,10 @@ class ECBehaviorConversation extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorConversation.
 	 */
-	static public func ECBehaviorConversation getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehavior each
-			return each castable ECBehaviorConversation
-		end ) cast ECBehaviorConversation
+	static func ECBehaviorConversation getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorConversation each
+			return true
+		end) cast ECBehaviorConversation
 	end
 	
 	/**
@@ -600,16 +614,16 @@ class ECBehaviorConversation extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
 	 * of type ECBehaviorConversation.Instance .
 	 */
-	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance
-		end ) cast Instance
+	static func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
+			return true
+		end) cast Instance
 	end
 	
 	
 	
 	/** \brief Create Behavior instance. */
-	public func ECBehaviorInstance createInstance( BehaviorElement element )
-		return Instance.new( this, element )
+	func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
 	end
 end

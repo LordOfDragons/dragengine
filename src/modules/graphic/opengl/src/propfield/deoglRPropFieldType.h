@@ -1,48 +1,52 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLRPROPFIELDTYPE_H_
 #define _DEOGLRPROPFIELDTYPE_H_
 
+#include "../skin/deoglSkinTexture.h"
+#include "../shaders/paramblock/deoglSPBlockUBO.h"
+
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/collection/decPointerList.h>
 #include <dragengine/deObject.h>
-#include "../skin/deoglSkinTexture.h"
 
 class deoglPFClusterGenerator;
 class deoglPropFieldCluster;
 class deoglRModel;
 class deoglRPropField;
 class deoglRSkin;
-class deoglSPBlockUBO;
 class deoglSkinShader;
 class deoglSkinTexture;
 class deoglTexUnitsConfig;
+class deoglWorldCompute;
 
 class dePropFieldType;
 
 
-
 /**
- * \brief Render prop field type.
+ * Render prop field type.
  */
 class deoglRPropFieldType : public deObject{
 private:
@@ -54,25 +58,28 @@ private:
 	deoglSkinTexture *pUseSkinTexture;
 	
 	decPointerList pClusters;
+	bool pClustersRequirePrepareForRender;
 	
 	decVector pMinExtend;
 	decVector pMaxExtend;
 	float pBendFactor;
 	
-	deoglSPBlockUBO *pParamBlock;
+	deoglSPBlockUBO::Ref pParamBlock;
 	
 	bool pValidParamBlock;
 	bool pDirtyParamBlock;
 	
 	bool pDirtyModel;
 	
+	
+	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create prop field type. */
+	/** Create prop field type. */
 	deoglRPropFieldType( deoglRPropField &propField );
 	
-	/** \brief Clean up prop field type. */
+	/** Clean up prop field type. */
 	virtual ~deoglRPropFieldType();
 	/*@}*/
 	
@@ -80,106 +87,135 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Prop field. */
+	/** Prop field. */
 	inline deoglRPropField &GetPropField() const{ return pPropField; }
 	
 	
 	
-	/** \brief Model or \em NULL if not set. */
+	/** Model or NULL if not set. */
 	inline deoglRModel *GetModel() const{ return pModel; }
 	
-	/** \brief Set model or \em NULL if not set. */
+	/**
+	 * Set model or NULL if not set.
+	 * \warning Called during synchronization from main thread.
+	 */
 	void SetModel( deoglRModel *model );
 	
-	/** \brief Skin or \em NULL if not set. */
+	/** Skin or NULL if not set. */
 	inline deoglRSkin *GetSkin() const{ return pSkin; }
 	
-	/** \brief Set skin or \em NULL if not set. */
+	/**
+	 * Set skin or NULL if not set.
+	 * \warning Called during synchronization from main thread.
+	 */
 	void SetSkin( deoglRSkin *skin );
 	
-	/** \brief Skin texture to use or \em NULL if not valid. */
+	/** Skin texture to use or NULL if not valid. */
 	inline deoglSkinTexture *GetUseSkinTexture() const{ return pUseSkinTexture; }
 	
 	
 	
-	/** \brief Minimum extend. */
+	/** Minimum extend. */
 	inline const decVector &GetMinimumExtend() const{ return pMinExtend; }
 	
-	/** \brief Maximum extend. */
+	/** Maximum extend. */
 	inline const decVector &GetMaximumExtend() const{ return pMaxExtend; }
 	
-	/** \brief Bending factor. */
+	/** Bending factor. */
 	inline float GetBendFactor() const{ return pBendFactor; }
 	
 	
 	
-	/** \brief Rebuild instances. */
+	/**
+	 * Rebuild instances.
+	 * \warning Called during synchronization from main thread.
+	 */
 	void RebuildInstances( const dePropFieldType &type );
 	
-	/** \brief Add clusters with a point sieve. */
+	/** Add clusters with a point sieve. */
 	void AddClustersWithSieve( const dePropFieldType &type );
 	
-	/** \brief Add clusters with a cluster generator. */
+	/** Add clusters with a cluster generator. */
 	void AddClustersWithGenerator( const dePropFieldType &type );
 	
-	/** \brief Add clusters from a cluster generator. */
+	/** Add clusters from a cluster generator. */
 	void AddClustersFromGenerator(  const dePropFieldType &type, const deoglPFClusterGenerator &generator );
 	
 	
 	
-	/** \brief Prepare for rendering. */
+	/** Prepare for render. Called by deoglRWorld if registered previously. */
 	void PrepareForRender();
 	
-	/** \brief Update instances. */
+	/** Update instances. */
 	void UpdateInstances( const decDVector &cameraPosition, const decDMatrix &cameraMatrix );
 	
 	
 	
-	/** \brief Number of clusters. */
+	/** Number of clusters. */
 	int GetClusterCount() const;
 	
-	/** \brief Cluster at index. */
+	/** Cluster at index. */
 	deoglPropFieldCluster *GetClusterAt( int index ) const;
 	
-	/** \brief Add cluster. */
+	/** Add cluster. */
 	void AddCluster( deoglPropFieldCluster *cluster );
 	
-	/** \brief Remove all clusters. */
+	/** Remove all clusters. */
 	void RemoveAllClusters();
 	
+	/** Cluster requires prepare for render. */
+	void ClusterRequiresPrepareForRender();
 	
 	
-	/** \brief Prepare bend states. */
+	
+	/**
+	 * Prepare bend states.
+	 * \warning Called during synchronization from main thread.
+	 */
 	void PrepareBendStateData( const dePropFieldType &type );
 	
 	
 	
-	/** \brief Shader parameter block for a shader type. */
-	deoglSPBlockUBO *GetParamBlockFor( deoglSkinTexture::eShaderTypes shaderType );
+	/** Parameter block or NULL if there is no valid skin texture. */
+	inline const deoglSPBlockUBO::Ref &GetParamBlock() const{ return pParamBlock; }
 	
-	/**
-	 * \brief Sarameter block or \em NULL if there is no valid skin texture.
-	 * \details This texture units configuration works for the shader types estComponent*.
-	 */
-	deoglSPBlockUBO *GetParamBlock();
-	
-	/** \brief Invalidate parameter blocks. */
+	/** Invalidate parameter blocks. */
 	void InvalidateParamBlocks();
 	
-	/** \brief Mark parameter blocks dirty. */
+	/** Mark parameter blocks dirty. */
 	void MarkParamBlocksDirty();
 	
-	/** \brief Marks texture units configurations dirty. */
+	/** Marks texture units configurations dirty. */
 	void MarkTUCsDirty();
 	
-	/** \brief Update instance parameter shader parameter block. */
+	/** Update instance parameter shader parameter block. */
 	void UpdateInstanceParamBlock( deoglSPBlockUBO &paramBlock, deoglSkinShader &skinShader );
 	
 	
 	
-	/** \brief World reference point changed. */
+	/** World reference point changed. */
 	void WorldReferencePointChanged();
+	
+	
+	
+	/** Add to world compute. */
+	void AddToWorldCompute( deoglWorldCompute &worldCompute );
+	
+	/** Update world compute. */
+	void UpdateWorldCompute();
+	
+	/** Update world compute textures. */
+	void UpdateWorldComputeTextures();
+	
+	/** Remove from world compute. */
+	void RemoveFromWorldCompute();
 	/*@}*/
+	
+	
+	
+private:
+	void pPrepareModel();
+	void pPrepareParamBlock();
 };
 
 #endif

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine AI Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -30,6 +33,10 @@
 #include "../spaces/dedaiSpace.h"
 #include "../spaces/grid/dedaiSpaceGrid.h"
 #include "../spaces/mesh/dedaiSpaceMesh.h"
+#include "../spaces/mesh/dedaiSpaceMeshEdge.h"
+#include "../spaces/mesh/dedaiSpaceMeshFace.h"
+#include "../spaces/mesh/dedaiSpaceMeshCorner.h"
+#include "../spaces/mesh/dedaiSpaceMeshLink.h"
 #include "../blocker/dedaiNavBlocker.h"
 #include "../dedaiNavSpace.h"
 #include "../../world/dedaiWorld.h"
@@ -244,6 +251,87 @@ dedaiSpaceMeshFace *dedaiLayer::GetMeshFaceClosestTo( const decDVector &position
 	return bestFace;
 }
 
+dedaiSpaceGridEdge *dedaiLayer::GetGridNearestPoint( const decDVector &point,
+float radius, decDVector &nearestPoint, float &nearestLambda ){
+	float testNearestDistance, testLambda, bestDistanceSquared = radius;
+	dedaiSpaceGridEdge *bestEdge = NULL;
+	decVector testNearestPosition;
+	
+	// height terrain navspaces
+	const dedaiHeightTerrain * const heightTerrain = pWorld.GetHeightTerrain();
+	if( heightTerrain ){
+		const int sectorCount = heightTerrain->GetSectorCount();
+		int i, j;
+		
+		for( i=0; i<sectorCount; i++ ){
+			dedaiHeightTerrainSector &sector = *heightTerrain->GetSectorAt( i );
+			const int navSpaceCount = sector.GetNavSpaceCount();
+			for( j=0; j<navSpaceCount; j++ ){
+				dedaiSpace &space = *sector.GetNavSpaceAt( j )->GetSpace();
+				if( space.GetLayer() != this ){
+					continue;
+				}
+				
+				dedaiSpaceGrid * const grid = space.GetGrid();
+				if( ! grid ){
+					continue;
+				}
+				
+				const decVector testPoint( space.GetInverseMatrix() * point );
+				dedaiSpaceGridEdge * const testEdge = grid->NearestPoint( testPoint, radius,
+					testNearestPosition, testNearestDistance, testLambda );
+				if( ! testEdge || testNearestDistance > bestDistanceSquared ){
+					continue;
+				}
+				
+				bestEdge = testEdge;
+				bestDistanceSquared = testNearestDistance;
+				nearestPoint = space.GetMatrix() * decDVector( testNearestPosition );
+				nearestLambda = testLambda;
+			}
+		}
+	}
+	
+	// navigation spaces
+	deNavigationSpace *engNavSpace = pWorld.GetWorld().GetRootNavigationSpace();
+	while( engNavSpace ){
+		dedaiNavSpace * const navspace = ( dedaiNavSpace* )engNavSpace->GetPeerAI();
+		if( ! navspace ){
+			engNavSpace = engNavSpace->GetLLWorldNext();
+			continue;
+		}
+		
+		dedaiSpace &space = *navspace->GetSpace();
+		if( space.GetLayer() != this ){
+			engNavSpace = engNavSpace->GetLLWorldNext();
+			continue;
+		}
+		
+		dedaiSpaceGrid * const grid = space.GetGrid();
+		if( ! grid ){
+			engNavSpace = engNavSpace->GetLLWorldNext();
+			continue;
+		}
+		
+		const decVector testPosition( space.GetInverseMatrix() * point );
+		dedaiSpaceGridEdge * const testEdge = grid->NearestPoint( testPosition, radius,
+			testNearestPosition, testNearestDistance, testLambda );
+		if( ! testEdge || testNearestDistance > bestDistanceSquared ){
+			engNavSpace = engNavSpace->GetLLWorldNext();
+			continue;
+		}
+		
+		bestEdge = testEdge;
+		bestDistanceSquared = testNearestDistance;
+		nearestPoint = space.GetMatrix() * decDVector( testNearestPosition );
+		nearestLambda = testLambda;
+		
+		engNavSpace = engNavSpace->GetLLWorldNext();
+	}
+	
+	return bestEdge;
+}
+
 dedaiSpaceMeshFace *dedaiLayer::GetNavMeshNearestPoint( const decDVector &point, float radius, decDVector &nearest ){
 	const decDVector testMinExtend( point - decDVector( ( double )radius, ( double )radius, ( double )radius ) );
 	const decDVector testMaxExtend( point + decDVector( ( double )radius, ( double )radius, ( double )radius ) );
@@ -328,6 +416,107 @@ dedaiSpaceMeshFace *dedaiLayer::GetNavMeshNearestPoint( const decDVector &point,
 	}
 	
 	return bestFace;
+}
+
+bool dedaiLayer::NavMeshLineCollide( const decDVector &origin, const decVector &direction, float &distance ){
+	dedaiSpaceMeshFace *curFace = GetMeshFaceClosestTo( origin, distance );
+	if( ! curFace ){
+		return false;
+	}
+	
+	const decDVector target( origin + decDVector( direction ) );
+	decDVector curOrigin( origin );
+	
+	while( true ){
+		// find edge crossed by line. the direction is not required to be co-planar with the
+		// face or edges. to solve this problem the face normal is used together with the edge
+		// vertices to form planes to do plane-side tests against the target position.
+		// if this test passes the edge is direction is considered crossing this
+		// edge. with the first found edge the test moves on to the neight face until no
+		// neighbor face exists or the direction is exhausted (no edge found)
+		const dedaiSpaceMesh * const navmesh = curFace->GetMesh();
+		if( ! navmesh ){
+			DETHROW( deeInvalidParam );
+		}
+		
+		const int cornerCount = curFace->GetCornerCount();
+		if( cornerCount == 0 ){
+			return false;
+		}
+		
+		const decDMatrix &invMatrix = navmesh->GetSpace().GetInverseMatrix();
+		const decVector localTarget( invMatrix * target );
+		const decVector localOrigin( invMatrix * curOrigin );
+		const decVector localDirection( localTarget - localOrigin );
+		const int firstCorner = curFace->GetFirstCorner();
+		int i;
+		
+		const decVector &normal = curFace->GetNormal();
+		
+		for( i=0; i<cornerCount; i++ ){
+			const dedaiSpaceMeshCorner &c1 = navmesh->GetCornerAt( firstCorner + i );
+			const dedaiSpaceMeshCorner &c2 = navmesh->GetCornerAt( firstCorner + ( i + 1 ) % cornerCount );
+			const decVector &v1 = navmesh->GetVertexAt( c1.GetVertex() );
+			const decVector &v2 = navmesh->GetVertexAt( c2.GetVertex() );
+			
+			const decVector dotDir( v2 - v1 );
+			if( dotDir.IsZero() ){
+				continue; // sanity check
+			}
+			
+			if( ( normal % ( v1 - localOrigin ) ) * localDirection < 0.0f ){
+				continue; // outside left side of edge
+			}
+			if( ( normal % ( v2 - localOrigin ) ) * localDirection > 0.0f ){
+				continue; // outside right side of edge
+			}
+			
+			const decVector dotNormal( normal % dotDir.Normalized() );
+			const float denominator = dotNormal * localDirection;
+			if( fabsf( denominator ) < FLOAT_SAFE_EPSILON ){
+				continue; // co-linear to edge
+			}
+			
+			const float lambda = ( dotNormal * ( v1 - localOrigin ) ) / denominator;
+			if( lambda < 0.0f || lambda > 1.0f ){
+				continue; // line is not crossing the edge
+			}
+			
+			curOrigin += ( target - curOrigin ) * lambda;
+			
+			// determine if this edge leads somewhere
+			const dedaiSpaceMeshEdge &edge = navmesh->GetEdgeAt( c1.GetEdge() );
+			dedaiSpaceMeshFace *nextFace = NULL;
+			
+			if( edge.GetFace2() == -1 ){
+				if( c1.GetLink() != -1 ){
+					const dedaiSpaceMeshLink &link = navmesh->GetLinkAt( c1.GetLink() );
+					nextFace = link.GetMesh()->GetFaces() + link.GetFace();
+					//linkedCorner = link.GetCorner();
+				}
+				
+			}else{
+				nextFace = &navmesh->GetFaceAt( edge.GetFace1() == curFace->GetIndex() ? edge.GetFace2() : edge.GetFace1() );
+			}
+			
+			// if the next face exists test it
+			if( nextFace ){
+				curFace = nextFace;
+				break;
+			}
+			
+			// otherwise this is the end of the line
+			distance = ( float )( ( curOrigin - origin ).Length() / ( target - origin ).Length() );
+			return true;
+		}
+		
+		// if no edge matches the line ends inside the current face
+		if( i == cornerCount ){
+			return false;
+		}
+	}
+	
+	return false;
 }
 
 

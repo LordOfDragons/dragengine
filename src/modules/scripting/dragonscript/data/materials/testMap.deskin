@@ -1,5 +1,4 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<!DOCTYPE skin SYSTEM 'DragengineSkin.dtd'>
 <skin>
 	<texture name='material'>
 		<image property='color'>testMap.png</image>

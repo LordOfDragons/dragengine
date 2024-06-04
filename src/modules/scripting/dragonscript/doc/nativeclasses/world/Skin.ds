@@ -8,6 +8,8 @@
 
 namespace Dragengine.Scenery
 
+pin Dragengine.Gui
+
 /**
  * \brief Immutable skin resources.
  * 
@@ -73,8 +75,8 @@ fixed class Skin
 	 * \brief Number of properties in texture at index.
 	 * \throws EInvalidParam \em texture is less than 0 or greater than or equal to getTextureCount().
 	 */
-	public func String textureGetPropertyCount( int texture )
-		return null
+	public func int textureGetPropertyCount( int texture )
+		return 0
 	end
 	
 	/**
@@ -116,7 +118,7 @@ fixed class Skin
 	 *                        textureGetPropertyCount().
 	 */
 	public func SkinPropertyType propertyGetType( int texture, int property )
-		return 0
+		return null
 	end
 	
 	/**

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -40,38 +43,46 @@ class ECPEnumerationInt extends ElementClassProperty
 	
 	
 	/** \brief Create property. */
-	public func new( String name, int value ) super( name )
-		this.pValue = value
-		this.pMapping = Dictionary.new()
+	public func new(String name, int value) super(name)
+		pValue = value
+		pMapping = Dictionary.new()
 	end
 	
 	
 	
 	/** \brief Value. */
 	public func int getValue()
-		return this.pValue
+		return pValue
 	end
 	
 	/** \brief Set value. */
-	public func void setValue( int value )
-		this.pValue = value
+	public func void setValue(int value)
+		pValue = value
 	end
 	
 	/** \brief Mapping between strings and enumerations. */
 	public func Dictionary getMapping()
-		return this.pMapping
+		return pMapping
 	end
 	
 	/** \brief Set mapping between strings and enumerations. */
-	public func void setMapping( Dictionary mapping )
-		this.pMapping = mapping
+	public func void setMapping(Dictionary mapping)
+		pMapping = mapping
 	end
 	
 	
 	
 	/** \brief Set value of property from XML decoded value. */
-	public func void setValue( Object value )
-		this.pValue = this.pMapping.getAt( value cast String ) cast int
+	public func void setValue(Object value)
+		pValue = pMapping.getAt(value cast String) cast int
+	end
+	
+	/**
+	 * \brief Copy value from another element class property of the same type.
+	 * \version 1.17
+	 */
+	public func void copyValue(ElementClass elementClass, ElementClassProperty property)
+		pValue = (property cast ECPEnumerationInt).pValue
 	end
 	
 	
@@ -83,13 +94,13 @@ class ECPEnumerationInt extends ElementClassProperty
 	 * is returned. If the named stub property is present it is mapped against the mapping
 	 * and the matching enumeration value returned. If no match is found an exception is thrown.
 	 */
-	public func int getValue( StubWithProperties stub )
-		var String value = stub.getPropertyValueFor( this.getName(), "" )
+	public func int getValue(StubWithProperties stub)
+		var String value = stub.getPropertyValueFor(getName(), "")
 		if value.empty()
-			return this.pValue
+			return pValue
 			
 		else
-			return this.pMapping.getAt( value ) cast int
+			return pMapping.getAt(value) cast int
 		end
 	end
 end

@@ -8,11 +8,56 @@
 
 namespace Dragengine
 
-
 /**
  * \brief Runtime meter.
  * 
  * Support for time consumption testing for debugging purpose.
+ * 
+ * TO do timing measuring reset the count of counters you would like to keep track off.
+ * Then reset the count of meters matching the count of concurrent timers you want to
+ * keep track off. At appropriate times call counterAdd() to add the accumulated time
+ * in a meter to a counter. The meter is reset at the time counterAdd() is called.
+ * Once finished you can retrieve the accumulated time from the counters.
+ * 
+ * The following code shows an example flow:
+ * 
+ * \code{.ds}
+ * class MyClass
+ *    public func new()
+ *       // Create run time meter
+ *       var RuntimeMeter rm = RuntimeMeter.new()
+ *       
+ *       // Reset 3 counters. The first two counters will be used to time individual
+ *       // function calls while the third one is used to time the grand total.
+ *       // This is an example of concurrent timming sampling
+ *       rm.counterReset(0, 3)
+ *       
+ *       // Start sampling. Reset 2 meters. They start running now
+ *       rm.reset(0, 2)
+ *       
+ *       // Run first function then sample the time from meter 0 and add it to counter 0.
+ *       // The meter is reset now
+ *       runFunction1()
+ *       rm.counterAdd(0, 0)
+ *       
+ *       // Run second function the sample the time from meter 0 and add it to counter 1.
+ *       // The meter is reset now
+ *       runFunction2()
+ *       rm.counterAdd(0, 1)
+ *       
+ *       // During this time the second meter continued running. Sample time from
+ *       // meter 1 and add it to counter 2.
+ *       rm.counterAdd(1, 2)
+ *       
+ *       // Now we can print out the timings of counter 0 (runFunction1), counter 1
+ *       // (runFunction2) and counter 2 (runFunction1 + runFunction2)
+ *       var Console c = BaseGameApp.getApp().getConsole()
+ *       c.addMessage("Timings: runFunction1: " + rm.counterTime(0))
+ *       c.addMessage("Timings: runFunction2: " + rm.counterTime(1))
+ *       c.addMessage("Timings: runFunction1 and runFunction2: " + rm.counterTime(2))
+ *    end
+ * end
+ * \endcode
  * 
  * This is a native class.
  */
@@ -30,68 +75,99 @@ class RuntimeMeter
 	/*@{*/
 	/**
 	 * \brief Reset meter by 0-based index.
-	 * \details If not used yet the meter is created.
+	 * 
+	 * If not used yet the meter is created.
 	 */
-	public func void reset( int meter )
+	public func void reset(int meter)
 	end
 	
 	/**
 	 * \brief Reset range of meters by 0-based index.
-	 * \details If not used yet the meters are created.
+	 * 
+	 * If not used yet the meters are created.
 	 */
-	public func void reset( int meterFirst, int meterCount )
+	public func void reset(int meterFirst, int meterCount)
 	end
 	
 	/**
 	 * \brief Elapsed time in seconds for meter.
-	 * \details Resets the meter to 0 after returning.
+	 * 
+	 * Resets the meter to 0 after returning.
 	 */
-	public func float elapsed( int meter )
+	public func float elapsed(int meter)
+		return 0.0
 	end
 	
 	/**
 	 * \brief Elapsed time in micro-seconds for meter.
-	 * \details Resets the meter to 0 after returning.
+	 * 
+	 * Resets the meter to 0 after returning.
 	 */
-	public func int elapsedMicroSec( int meter )
+	public func int elapsedMicroSec(int meter)
+		return 0
 	end
 	
 	
 	
 	/**
 	 * \brief Reset counter.
-	 * \details If not used yet the counter is created.
+	 * 
+	 * If not used yet the counter is created.
 	 */
-	public func void counterReset( int counter )
+	public func void counterReset(int counter)
 	end
 	
 	/**
 	 * \brief Reset range of counters.
-	 * \details If not used yet the counters are created.
+	 * 
+	 * If not used yet the counters are created.
 	 */
-	public func void counterReset( int counterFirst, int counterCount )
+	public func void counterReset(int counterFirst, int counterCount)
 	end
 	
 	/**
 	 * \brief Add elapsed time in micro-seconds off meter to a counter.
-	 * \details Resets the meter to 0 afterwards.
+	 * 
+	 * Resets the meter to 0 afterwards.
 	 */
-	public func void counterAdd( int meter, int counter )
+	public func void counterAdd(int meter, int counter)
 	end
 	
 	/** \brief Accumulated time in a counter in micro-seconds. */
-	public func int counterTime( int counter )
-	end
-	
-	/** \brief Number of times a counter has been incremented. */
-	public func int counterUpdates( int counter )
+	public func int counterTime(int counter)
+		return 0
 	end
 	
 	/**
-	 * \brief Average time per update from a counter.
-	 * \details If no updates have been done 0 is returned.
+	 * \brief Accumulated time in a counter in seconds.
+	 * \version 1.7
 	 */
-	public func int counterAverageTime( int counter )
+	public func float counterTimeSeconds(int counter)
+		return 0.0
+	end
+	
+	/** \brief Number of times a counter has been incremented. */
+	public func int counterUpdates(int counter)
+		return 0
+	end
+	
+	/**
+	 * \brief Average time per update from a counter in micro-seconds.
+	 * 
+	 * If no updates have been done 0 is returned.
+	 */
+	public func int counterAverageTime(int counter)
+		return 0
+	end
+	
+	/**
+	 * \brief Average time per update from a counter in seconds.
+	 * \version 1.7
+	 * 
+	 * If no updates have been done 0 is returned.
+	 */
+	public func float counterAverageTimeSeconds(int counter)
+		return 0.0
 	end
 	/*@}*/
 end

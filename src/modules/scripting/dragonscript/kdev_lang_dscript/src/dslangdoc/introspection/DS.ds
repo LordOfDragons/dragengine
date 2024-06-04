@@ -14,6 +14,9 @@ namespace Introspection
  * Use \code{.ds} requires Introspection \endcode in your script files to load the introspection package.
  * 
  * This is a native class. This class is for static use only and can not be subclassed nor instanciated.
+ * \author DragonDreams GmbH
+ * \version 1.0
+ * \date 2024
  */
 fixed class DS
 	/** \name Management */

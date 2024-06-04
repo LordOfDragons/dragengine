@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Basic Network Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -77,11 +80,7 @@ debnServer::~debnServer(){
 // Management
 ///////////////
 
-void debnServer::ProcessConnectionRequest( debnAddress *address, decBaseFileReader &reader ){
-	if( ! address ){
-		DETHROW( deeInvalidParam );
-	}
-	
+void debnServer::ProcessConnectionRequest( debnAddress &address, decBaseFileReader &reader ){
 	// reject connection if not listening or there is no script module peer
 	deBaseScriptingServer * const scrSvr = pServer->GetPeerScripting();
 	if( ! pListening || ! scrSvr ){
@@ -90,7 +89,7 @@ void debnServer::ProcessConnectionRequest( debnAddress *address, decBaseFileRead
 		pNetBasic->GetSharedSendDatagram()->Clear();
 		sendWriter.WriteByte( ( uint8_t )eccConnectionAck );
 		sendWriter.WriteByte( ( uint8_t )ecaRejected );
-		pSocket->SendDatagram( pNetBasic->GetSharedSendDatagram(), address );
+		pSocket->SendDatagram( *pNetBasic->GetSharedSendDatagram(), address );
 		return;
 	}
 	
@@ -108,7 +107,7 @@ void debnServer::ProcessConnectionRequest( debnAddress *address, decBaseFileRead
 		pNetBasic->GetSharedSendDatagram()->Clear();
 		sendWriter.WriteByte( ( uint8_t )eccConnectionAck );
 		sendWriter.WriteByte( ( uint8_t )ecaNoCommonProtocol );
-		pSocket->SendDatagram( pNetBasic->GetSharedSendDatagram(), address );
+		pSocket->SendDatagram( *pNetBasic->GetSharedSendDatagram(), address );
 		return;
 	}
 	
@@ -126,7 +125,7 @@ void debnServer::ProcessConnectionRequest( debnAddress *address, decBaseFileRead
 	sendWriter.WriteByte( ( uint8_t )eccConnectionAck );
 	sendWriter.WriteByte( ( uint8_t )ecaAccepted );
 	sendWriter.WriteUShort( protocol );
-	pSocket->SendDatagram( pNetBasic->GetSharedSendDatagram(), address );
+	pSocket->SendDatagram( *pNetBasic->GetSharedSendDatagram(), address );
 	
 	// notify script about client connected
 	scrSvr->ClientConnected( connection );
@@ -134,7 +133,7 @@ void debnServer::ProcessConnectionRequest( debnAddress *address, decBaseFileRead
 
 bool debnServer::ListenOn( const char *address ){
 	if( pListening ){
-		pNetBasic->LogInfo( "Already listening." );
+		pNetBasic->LogWarn( "Already listening." );
 		return false;
 	}
 	
@@ -143,15 +142,22 @@ bool debnServer::ListenOn( const char *address ){
 	if( useAddress == "*" ){
 		decStringList publicAddresses;
 		pNetBasic->FindPublicAddresses( publicAddresses );
-		useAddress = publicAddresses.GetAt( 0 );
+		
+		if( publicAddresses.GetCount() > 0 ){
+			useAddress = publicAddresses.GetAt( 0 );
+			
+		}else{
+			pNetBasic->LogWarn( "debnServer.ListenOn: No public address found. Using localhost" );
+			useAddress = "localhost";
+		}
 	}
 	
-// 	pNetBasic->LogInfoFormat( "Listening on %s", useAddress.GetString() );
+	pNetBasic->LogInfoFormat( "debnServer.ListenOn: Listening on '%s'", useAddress.GetString() );
 	
 	try{
-		pSocket = new debnSocket( pNetBasic );
+		pSocket = new debnSocket( *pNetBasic );
 		
-		pSocket->GetAddress()->SetIPv4FromString( useAddress );
+		pSocket->GetAddress().SetFromString( useAddress );
 		pSocket->Bind();
 		
 		pListening = true;
@@ -161,6 +167,7 @@ bool debnServer::ListenOn( const char *address ){
 	}catch( const deException &e ){
 		if( pSocket ){
 			pSocket->FreeReference();
+			pSocket = nullptr;
 		}
 		pNetBasic->LogException( e );
 		return false;
@@ -175,6 +182,10 @@ void debnServer::StopListening(){
 	}
 	
 	if( pNetBasic ){
+		if( pSocket ){
+			pNetBasic->CloseConnections( pSocket );
+		}
+		
 		pNetBasic->UnregisterServer( this );
 	}
 	

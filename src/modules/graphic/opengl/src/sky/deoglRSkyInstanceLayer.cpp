@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -28,20 +31,22 @@
 #include "deoglRSkyInstance.h"
 #include "deoglRSkyInstanceLayer.h"
 #include "deoglRSkyControllerTarget.h"
-#include "deoglSkyLayerShadowCaster.h"
 #include "deoglSkyLayerTracker.h"
+#include "deoglSkyLayerGICascade.h"
 #include "../configuration/deoglConfiguration.h"
+#include "../gi/deoglGIState.h"
 #include "../light/shader/deoglLightShader.h"
 #include "../light/shader/deoglLightShaderManager.h"
+#include "../pipeline/deoglPipelineConfiguration.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTShader.h"
 #include "../renderthread/deoglRTLogger.h"
-#include "../shaders/paramblock/deoglSPBlockUBO.h"
+#include "../renderthread/deoglRTChoices.h"
 #include "../skin/channel/deoglSkinChannel.h"
 #include "../skin/deoglRSkin.h"
 #include "../skin/deoglSkin.h"
 #include "../skin/deoglSkinTexture.h"
-#include "../delayedoperation/deoglDelayedDeletion.h"
+#include "../shadow/deoglShadowCaster.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
 
 #include <dragengine/common/exceptions.h>
@@ -63,84 +68,19 @@ pInstance( instance ),
 pIndex( index ),
 
 pTrackerEnvMap( NULL ),
-pSkyNeedsUpdate( false ),
-
-pParamBlockLight( NULL ),
-pParamBlockInstance( NULL )
+pSkyNeedsUpdate( false )
 {
-	int i;
-	for( i=0; i<EST_COUNT; i++ ){
-		pShaders[ i ] = NULL;
-	}
-	
-	pShadowCaster = new deoglSkyLayerShadowCaster( instance.GetRenderThread() );
+	pShadowCaster = new deoglShadowCaster( instance.GetRenderThread() );
 }
 
-class deoglRSkyInstanceLayerDeletion : public deoglDelayedDeletion{
-public:
-	deoglLightShader *shaders[ deoglRSkyInstanceLayer::EST_COUNT ];
-	deoglSPBlockUBO *paramBlockLight;
-	deoglSPBlockUBO *paramBlockInstance;
-	deoglSkyLayerShadowCaster *shadowCaster;
-	
-	deoglRSkyInstanceLayerDeletion() :
-	paramBlockLight( NULL ),
-	paramBlockInstance( NULL ),
-	shadowCaster( NULL ){
-		int i;
-		for( i=0; i<deoglRSkyInstanceLayer::EST_COUNT; i++ ){
-			shaders[ i ] = NULL;
-		}
-	}
-	
-	virtual ~deoglRSkyInstanceLayerDeletion(){
-	}
-	
-	virtual void DeleteObjects( deoglRenderThread &renderThread ){
-		int i;
-		
-		if( shadowCaster ){
-			delete shadowCaster;
-		}
-		if( paramBlockInstance ){
-			paramBlockInstance->FreeReference();
-		}
-		if( paramBlockLight ){
-			paramBlockLight->FreeReference();
-		}
-		for( i=0; i<deoglRSkyInstanceLayer::EST_COUNT; i++ ){
-			if( shaders[ i ] ){
-				shaders[ i ]->FreeReference();
-			}
-		}
-	}
-};
-
 deoglRSkyInstanceLayer::~deoglRSkyInstanceLayer(){
+	RemoveAllGICascades();
+	
 	if( pTrackerEnvMap ){
 		delete pTrackerEnvMap;
 	}
-	
-	// delayed deletion of opengl containing objects
-	deoglRSkyInstanceLayerDeletion *delayedDeletion = NULL;
-	
-	try{
-		delayedDeletion = new deoglRSkyInstanceLayerDeletion;
-		delayedDeletion->shadowCaster = pShadowCaster;
-		delayedDeletion->paramBlockInstance = pParamBlockInstance;
-		delayedDeletion->paramBlockLight = pParamBlockLight;
-		int i;
-		for( i=0; i<EST_COUNT; i++ ){
-			delayedDeletion->shaders[ i ] = pShaders[ i ];
-		}
-		pInstance.GetRenderThread().GetDelayedOperations().AddDeletion( delayedDeletion );
-		
-	}catch( const deException &e ){
-		if( delayedDeletion ){
-			delete delayedDeletion;
-		}
-		pInstance.GetRenderThread().GetLogger().LogException( e );
-		//throw; -> otherwise terminate
+	if( pShadowCaster ){
+		delete pShadowCaster;
 	}
 }
 
@@ -187,106 +127,96 @@ bool deoglRSkyInstanceLayer::GetHasLightAmbient() const{
 
 
 
-deoglLightShader *deoglRSkyInstanceLayer::GetShaderFor( int shaderType ){
-	if( shaderType < 0 || shaderType >= EST_COUNT ){
-		DETHROW( deeInvalidParam );
+deoglLightPipelines &deoglRSkyInstanceLayer::GetPipelines(){
+	if( ! pPipelines ){
+		pPipelines.TakeOver( new deoglLightPipelinesSky( *this ) );
+		pPipelines->Prepare();
 	}
-	
-	if( ! pShaders[ shaderType ] ){
-		deoglLightShaderConfig config;
-		
-		if( GetShaderConfigFor( shaderType, config ) ){
-			pShaders[ shaderType ] = pInstance.GetRenderThread().GetShader().
-				GetLightShaderManager().GetShaderWith( config );
-		}
-	}
-	
-	return pShaders[ shaderType ];
+	return pPipelines;
 }
 
-bool deoglRSkyInstanceLayer::GetShaderConfigFor( int shaderType, deoglLightShaderConfig &config ){
-	if( shaderType < 0 || shaderType >= EST_COUNT ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	const deoglConfiguration &oglconfig = pInstance.GetRenderThread().GetConfiguration();
-	
-	config.Reset();
-	
-	config.SetLightMode( deoglLightShaderConfig::elmSky );
-	config.SetShadowMappingAlgorithm1( deoglLightShaderConfig::esma2D );
-	
-	config.SetHWDepthCompare( true );
-	config.SetDecodeInShadow( false );
-	
-	config.SetShadowTapMode( deoglLightShaderConfig::estmPcf9 );
-	config.SetTextureNoise( false );
-	
-	config.SetDecodeInDepth( oglconfig.GetDefRenEncDepth() );
-	config.SetFullScreenQuad( true );
-	
-	config.SetSubSurface( oglconfig.GetSSSSSEnable() );
-	
-	switch( shaderType ){
-	case estNoShadow:
-		config.SetAmbientLighting( true );
-		break;
-		
-	case estAmbient:
-		config.SetAmbientLighting( true );
-		break;
-		
-	case estSolid:
-		config.SetAmbientLighting( true );
-		config.SetTextureShadow1Solid( true );
-		break;
-	}
-	
-	return true;
-}
-
-deoglSPBlockUBO *deoglRSkyInstanceLayer::GetLightParameterBlock(){
+const deoglSPBlockUBO::Ref &deoglRSkyInstanceLayer::GetLightParameterBlock(){
 	if( ! pParamBlockLight ){
-		deoglLightShader *shader = NULL;
-		int i;
-		
-		for( i=0; i<EST_COUNT; i++ ){
-			if( pShaders[ i ] ){
-				shader = pShaders[ i ];
-				break;
-			}
-		}
-		if( ! shader ){
-			shader = GetShaderFor( estNoShadow );
-		}
-		
-		shader->EnsureShaderExists();
-		pParamBlockLight = shader->CreateSPBLightParam();
+		pParamBlockLight = GetPipelines().GetWithRef(
+			deoglLightPipelines::etNoShadow, 0 ).GetShader()->CreateSPBLightParam();
 	}
-	
 	return pParamBlockLight;
 }
 
-deoglSPBlockUBO *deoglRSkyInstanceLayer::GetInstanceParameterBlock(){
+const deoglSPBlockUBO::Ref &deoglRSkyInstanceLayer::GetInstanceParameterBlock(){
 	if( ! pParamBlockInstance ){
-		deoglLightShader *shader = NULL;
-		int i;
-		
-		for( i=0; i<EST_COUNT; i++ ){
-			if( pShaders[ i ] ){
-				shader = pShaders[ i ];
-				break;
-			}
+		pParamBlockInstance = GetPipelines().GetWithRef(
+			deoglLightPipelines::etNoShadow, 0 ).GetShader()->CreateSPBInstParam();
+	}
+	return pParamBlockInstance;
+}
+
+void deoglRSkyInstanceLayer::NotifyUpdateStaticComponent( deoglRComponent *component ){
+	const int count = pGICascades.GetCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		( ( deoglSkyLayerGICascade* )pGICascades.GetAt( i ) )->NotifyUpdateStaticComponent( component );
+	}
+}
+
+
+
+int deoglRSkyInstanceLayer::GetGICascadeCount() const{
+	return pGICascades.GetCount();
+}
+
+deoglSkyLayerGICascade *deoglRSkyInstanceLayer::GetGICascade( const deoglGICascade &cascade ) const{
+	const int count = pGICascades.GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		deoglSkyLayerGICascade * const slgc = ( deoglSkyLayerGICascade* )pGICascades.GetAt( i );
+		if( &slgc->GetGICascade() == &cascade ){
+			return slgc;
 		}
-		if( ! shader ){
-			shader = GetShaderFor( estNoShadow );
-		}
-		
-		shader->EnsureShaderExists();
-		pParamBlockInstance = shader->CreateSPBInstParam();
 	}
 	
-	return pParamBlockInstance;
+	return NULL;
+}
+
+deoglSkyLayerGICascade *deoglRSkyInstanceLayer::AddGICascade( const deoglGICascade &cascade ){
+	deoglSkyLayerGICascade *slgc = GetGICascade( cascade );
+	if( slgc ){
+		return slgc;
+	}
+	
+	slgc = new deoglSkyLayerGICascade( *this, cascade );
+	pGICascades.Add( slgc );
+	return slgc;
+}
+
+void deoglRSkyInstanceLayer::RemoveGICascade( const deoglGICascade &cascade ){
+	const int count = pGICascades.GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		deoglSkyLayerGICascade * const slgc = ( deoglSkyLayerGICascade* )pGICascades.GetAt( i );
+		if( &slgc->GetGICascade() == &cascade ){
+			delete slgc;
+			pGICascades.RemoveFrom( i );
+			return;
+		}
+	}
+}
+
+void deoglRSkyInstanceLayer::RemoveAllGICascades( const deoglGIState &state ){
+	const int count = state.GetCascadeCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		RemoveGICascade( state.GetCascadeAt( i ) );
+	}
+}
+
+void deoglRSkyInstanceLayer::RemoveAllGICascades(){
+	int count = pGICascades.GetCount();
+	while( count > 0 ){
+		delete ( deoglSkyLayerGICascade* )pGICascades.GetAt( --count );
+	}
 }
 
 

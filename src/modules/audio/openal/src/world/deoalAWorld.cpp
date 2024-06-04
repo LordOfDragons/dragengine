@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenAL Audio Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -48,23 +51,24 @@
 deoalAWorld::deoalAWorld( deoalAudioThread &audioThread, const decDVector &size ) :
 pAudioThread( audioThread ),
 
-pRootComponent( NULL ),
-pTailComponent( NULL ),
+pRootComponent( nullptr ),
+pTailComponent( nullptr ),
 pComponentCount( 0 ),
 
-pRootSpeaker( NULL ),
-pTailSpeaker( NULL ),
+pRootSpeaker( nullptr ),
+pTailSpeaker( nullptr ),
 pSpeakerCount( 0 ),
 
-pRootMicrophone( NULL ),
-pTailMicrophone( NULL ),
+pRootMicrophone( nullptr ),
+pTailMicrophone( nullptr ),
 pMicrophoneCount( 0 ),
 
-pRootSoundLevelMeter( NULL ),
-pTailSoundLevelMeter( NULL ),
+pRootSoundLevelMeter( nullptr ),
+pTailSoundLevelMeter( nullptr ),
 pSoundLevelMeterCount( 0 ),
 
-pOctree( NULL )
+pOctree( nullptr ),
+pSpeakerGain( 1.0f )
 {
 	try{
 		pOctree = new deoalWorldOctree( decDVector(), size * 0.5 );
@@ -149,6 +153,10 @@ void deoalAWorld::SetAllMicLayerMask( const decLayerMask &layerMask ){
 	pAllMicLayerMask = layerMask;
 }
 
+void deoalAWorld::SetSpeakerGain( float gain ){
+	pSpeakerGain = gain;
+}
+
 
 
 // Components
@@ -171,14 +179,14 @@ void deoalAWorld::AddComponent( deoalAComponent *component ){
 	if( pTailComponent ){
 		pTailComponent->SetLLWorldNext( component );
 		component->SetLLWorldPrev( pTailComponent );
-		component->SetLLWorldNext( NULL );
+		component->SetLLWorldNext( nullptr );
 		pTailComponent = component;
 		
 	}else{
 		pTailComponent = component;
 		pRootComponent = component;
-		component->SetLLWorldPrev( NULL );
-		component->SetLLWorldNext( NULL );
+		component->SetLLWorldPrev( nullptr );
+		component->SetLLWorldNext( nullptr );
 	}
 	
 	component->AddReference();
@@ -192,7 +200,7 @@ void deoalAWorld::RemoveComponent( deoalAComponent *component ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	component->SetParentWorld( NULL );
+	component->SetParentWorld( nullptr );
 	component->SetWorldMarkedRemove( false );
 	
 	if( component->GetLLWorldPrev() ){
@@ -216,9 +224,9 @@ void deoalAWorld::RemoveComponent( deoalAComponent *component ){
 void deoalAWorld::RemoveAllComponents(){
 	while( pRootComponent ){
 		deoalAComponent * const next = pRootComponent->GetLLWorldNext();
-		pRootComponent->SetLLWorldPrev( NULL ); // ensure root has no prev
+		pRootComponent->SetLLWorldPrev( nullptr ); // ensure root has no prev
 		
-		pRootComponent->SetParentWorld( NULL );
+		pRootComponent->SetParentWorld( nullptr );
 		pRootComponent->SetWorldMarkedRemove( false );
 		pComponentCount--;
 		pRootComponent->FreeReference();
@@ -266,14 +274,14 @@ void deoalAWorld::AddSpeaker( deoalASpeaker *speaker ){
 	if( pTailSpeaker ){
 		pTailSpeaker->SetLLWorldNext( speaker );
 		speaker->SetLLWorldPrev( pTailSpeaker );
-		speaker->SetLLWorldNext( NULL );
+		speaker->SetLLWorldNext( nullptr );
 		pTailSpeaker = speaker;
 		
 	}else{
 		pTailSpeaker = speaker;
 		pRootSpeaker = speaker;
-		speaker->SetLLWorldPrev( NULL );
-		speaker->SetLLWorldNext( NULL );
+		speaker->SetLLWorldPrev( nullptr );
+		speaker->SetLLWorldNext( nullptr );
 	}
 	
 	speaker->AddReference();
@@ -295,8 +303,9 @@ void deoalAWorld::RemoveSpeaker( deoalASpeaker *speaker ){
 		pAudioThread.GetActiveMicrophone()->InvalidateSpeaker( speaker );
 	}
 	
-	speaker->SetParentWorld( NULL );
+	speaker->SetParentWorld( nullptr );
 	speaker->SetEnabled( false );
+	speaker->SetPositionless( true );
 	speaker->SetWorldMarkedRemove( false );
 	
 	if( speaker->GetLLWorldPrev() ){
@@ -322,13 +331,13 @@ void deoalAWorld::RemoveAllSpeakers(){
 	
 	while( pRootSpeaker ){
 		deoalASpeaker * const next = pRootSpeaker->GetLLWorldNext();
-		pRootSpeaker->SetLLWorldPrev( NULL ); // ensure root has no prev
+		pRootSpeaker->SetLLWorldPrev( nullptr ); // ensure root has no prev
 		
 		if( pAudioThread.GetActiveMicrophone() ){
 			pAudioThread.GetActiveMicrophone()->InvalidateSpeaker( pRootSpeaker );
 		}
 		
-		pRootSpeaker->SetParentWorld( NULL );
+		pRootSpeaker->SetParentWorld( nullptr );
 		pRootSpeaker->SetWorldMarkedRemove( false );
 		pRootSpeaker->SetEnabled( false );
 		
@@ -378,14 +387,14 @@ void deoalAWorld::AddMicrophone( deoalAMicrophone *microphone ){
 	if( pTailMicrophone ){
 		pTailMicrophone->SetLLWorldNext( microphone );
 		microphone->SetLLWorldPrev( pTailMicrophone );
-		microphone->SetLLWorldNext( NULL );
+		microphone->SetLLWorldNext( nullptr );
 		pTailMicrophone = microphone;
 		
 	}else{
 		pTailMicrophone = microphone;
 		pRootMicrophone = microphone;
-		microphone->SetLLWorldPrev( NULL );
-		microphone->SetLLWorldNext( NULL );
+		microphone->SetLLWorldPrev( nullptr );
+		microphone->SetLLWorldNext( nullptr );
 	}
 	
 	microphone->AddReference();
@@ -399,7 +408,7 @@ void deoalAWorld::RemoveMicrophone( deoalAMicrophone *microphone ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	microphone->SetParentWorld( NULL );
+	microphone->SetParentWorld( nullptr );
 	microphone->SetWorldMarkedRemove( false );
 	
 	if( microphone->GetLLWorldPrev() ){
@@ -423,9 +432,9 @@ void deoalAWorld::RemoveMicrophone( deoalAMicrophone *microphone ){
 void deoalAWorld::RemoveAllMicrophones(){
 	while( pRootMicrophone ){
 		deoalAMicrophone * const next = pRootMicrophone->GetLLWorldNext();
-		pRootMicrophone->SetLLWorldPrev( NULL ); // ensure root has no prev
+		pRootMicrophone->SetLLWorldPrev( nullptr ); // ensure root has no prev
 		
-		pRootMicrophone->SetParentWorld( NULL );
+		pRootMicrophone->SetParentWorld( nullptr );
 		pRootMicrophone->SetWorldMarkedRemove( false );
 		pMicrophoneCount--;
 		pRootMicrophone->FreeReference();
@@ -473,14 +482,14 @@ void deoalAWorld::AddSoundLevelMeter( deoalASoundLevelMeter *soundLevelMeter ){
 	if( pTailSoundLevelMeter ){
 		pTailSoundLevelMeter->SetLLWorldNext( soundLevelMeter );
 		soundLevelMeter->SetLLWorldPrev( pTailSoundLevelMeter );
-		soundLevelMeter->SetLLWorldNext( NULL );
+		soundLevelMeter->SetLLWorldNext( nullptr );
 		pTailSoundLevelMeter = soundLevelMeter;
 		
 	}else{
 		pTailSoundLevelMeter = soundLevelMeter;
 		pRootSoundLevelMeter = soundLevelMeter;
-		soundLevelMeter->SetLLWorldPrev( NULL );
-		soundLevelMeter->SetLLWorldNext( NULL );
+		soundLevelMeter->SetLLWorldPrev( nullptr );
+		soundLevelMeter->SetLLWorldNext( nullptr );
 	}
 	
 	soundLevelMeter->AddReference();
@@ -496,7 +505,7 @@ void deoalAWorld::RemoveSoundLevelMeter( deoalASoundLevelMeter *soundLevelMeter 
 		DETHROW( deeInvalidParam );
 	}
 	
-	soundLevelMeter->SetParentWorld( NULL );
+	soundLevelMeter->SetParentWorld( nullptr );
 	soundLevelMeter->SetWorldMarkedRemove( false );
 	
 	if( soundLevelMeter->GetLLWorldPrev() ){
@@ -522,9 +531,9 @@ void deoalAWorld::RemoveAllSoundLevelMeters(){
 	
 	while( pRootSoundLevelMeter ){
 		deoalASoundLevelMeter * const next = pRootSoundLevelMeter->GetLLWorldNext();
-		pRootSoundLevelMeter->SetLLWorldPrev( NULL ); // ensure root has no prev
+		pRootSoundLevelMeter->SetLLWorldPrev( nullptr ); // ensure root has no prev
 		
-		pRootSoundLevelMeter->SetParentWorld( NULL );
+		pRootSoundLevelMeter->SetParentWorld( nullptr );
 		pRootSoundLevelMeter->SetWorldMarkedRemove( false );
 		
 		pSoundLevelMeterCount--;

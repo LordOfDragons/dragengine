@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -33,18 +36,22 @@ pin Dragengine.Utils
  */
 class BaseActorAI implements Persistable
 	/** \brief Factory for loading actor ai. */
-	public class Factory implements PersistencyFactory
+	public class Factory implements PersistencyFactory, ECBehaviorActorAIAction.AIFactory
 		public static fixed var String NAME = "BaseActorAI"
 		
-		public func new()
+		func new()
 		end
 		
-		public func Persistable readObjectFromFile( PersistencyEnvironment env, FileReader reader )
+		func Persistable readObjectFromFile(PersistencyEnvironment env, FileReader reader)
 			return BaseActorAI.new()
 		end
 		
-		public static func void registerFactory( Persistency persistency )
-			persistency.addFactory( NAME, Factory.new() )
+		public static func void registerFactory(Persistency persistency)
+			persistency.addFactory(NAME, Factory.new())
+		end
+		
+		func BaseActorAI createAI(ECBehaviorActorAIAction.Instance instance)
+			return BaseActorAI.new()
 		end
 	end
 	
@@ -62,92 +69,128 @@ class BaseActorAI implements Persistable
 	
 	
 	/** \brief Create base actor ai. */
-	public func new()
+	func new()
 	end
 	
 	/** \brief Dispose of base actor ai. */
-	public func void dispose()
-		this.actor = null
+	func void dispose()
+		actor = null
 	end
 	
 	
 	
 	/** \brief Actor owning the action. */
-	public func BehaviorElement getActor()
-		return this.actor
+	func BehaviorElement getActor()
+		return actor
 	end
 	
 	/** \brief Behavior player controllable or \em null. */
-	public func ECBehaviorPlayerControllable.Instance getPlayerControllable()
-		return this.playerControllable
+	func ECBehaviorPlayerControllable.Instance getPlayerControllable()
+		return playerControllable
 	end
 	
 	/** \brief Behavior actor ai-action or \em null. */
-	public func ECBehaviorActorAIAction.Instance getAIAction()
-		return this.aiAction
+	func ECBehaviorActorAIAction.Instance getAIAction()
+		return aiAction
 	end
 	
 	/** \brief Actor is controlled by player. */
-	public func bool isControlledByPlayer() 
-		return this.playerControllable != null and this.playerControllable.isPlayerControlled()
+	func bool isControlledByPlayer() 
+		return playerControllable != null and playerControllable.isPlayerControlled()
+	end
+	
+	/**
+	 * \brief AI is active actor AI.
+	 * \version 1.4
+	 */
+	func bool isActive()
+		return aiAction.getAI() == this
+	end
+	
+	/**
+	 * \brief AI is not active actor AI.
+	 * \version 1.4
+	 */
+	func bool isNotActive()
+		return aiAction.getAI() != this
 	end
 	
 	
 	
 	/**
-	 * \brief Action has been set as active action in an actor.
+	 * \brief AI has been set as active AI in an actor.
 	 * 
 	 * Calls these hook methods:
 	 * - initBehaviors()
 	 */
-	public func void activate( BehaviorElement actor )
+	func void activate(BehaviorElement actor)
 		this.actor = actor
-		this.initBehaviors()
+		initBehaviors()
+	end
+	
+	/**
+	 * \brief AI has been set as active AI in an actor while loading.
+	 * 
+	 * Similar to activate(BehaviorElement) but only stores the actor and calls initBehaviors().
+	 * This is required since while loading behaviors load their state and AIs load their states.
+	 * If activate(BehaviorElement) is called these states would be reset to initial values.
+	 */
+	func void activateWhileLoading(BehaviorElement actor)
+		this.actor = actor
+		initBehaviors()
 	end
 	
 	/** \brief Action has been unset as active action in an actor. */
-	public func void deactivate()
-		this.actor = null
+	func void deactivate()
+		actor = null
 	end
 	
 	/** \brief Player takes control of actor. */
-	public func void playerTakesControl()
+	func void playerTakesControl()
 	end
 	
 	/** \brief Player released control of actor. */
-	public func void playerReleasesControl()
+	func void playerReleasesControl()
 	end
 	
 	
 	
 	/** \brief Thinking. */
-	public func void think( float elapsed )
+	func void think(float elapsed)
 	end
 	
 	
 	
 	/** \brief Action finished successfully. */
-	public func void actionFinished()
+	func void actionFinished()
 	end
 	
 	/** \brief Action failed. */
-	public func void actionFailed()
+	func void actionFailed()
 	end
 	
 	
 	
+	/** \brief Actor entered game world. */
+	func void enteredGameWorld()
+	end
+	
+	/** \brief Actor left game world. */
+	func void leftGameWorld()
+	end
+	
 	/** \brief Actor has been added to game world and enterFrame() is called once. */
-	public func void enterFrame()
+	func void enterFrame()
 	end
 	
 	
 	
 	/** \brief Actor has been added to a conversation playback. */
-	public func void enterConversation()
+	func void enterConversation()
 	end
 	
 	/** \brief Actor has been removed from a conversation playback. */
-	public func void leaveConversation()
+	func void leaveConversation()
 	end
 	
 	
@@ -158,7 +201,7 @@ class BaseActorAI implements Persistable
 	 * Action does collision response and changes the parameters of \em owner. AI is only
 	 * notified about the collision and should not interfere with collision response.
 	 */
-	public func void collision( Collider owner, CollisionInfo info )
+	func void collision(Collider owner, CollisionInfo info)
 	end
 	
 	
@@ -169,53 +212,53 @@ class BaseActorAI implements Persistable
 	 * Retrieve and store required and optional behavior instances from the actor element.
 	 */
 	protected func void initBehaviors()
-		if this.actor castable BaseActor
-			var BaseActor baseActor = this.actor cast BaseActor
-			this.playerControllable = baseActor.getPlayerControllable()
-			this.aiAction = baseActor.getAIAction()
+		if actor castable BaseActor
+			var BaseActor baseActor = actor cast BaseActor
+			playerControllable = baseActor.getPlayerControllable()
+			aiAction = baseActor.getAIAction()
 			
 		else
-			this.playerControllable = ECBehaviorPlayerControllable.getInstanceIn( this.actor )
-			this.aiAction = ECBehaviorActorAIAction.getInstanceIn( this.actor )
+			playerControllable = ECBehaviorPlayerControllable.getInstanceIn(actor)
+			aiAction = ECBehaviorActorAIAction.getInstanceIn(actor)
 		end
 	end
 	
 	
 	
 	/** \brief Log text to BaseGameApp console prefixed with actor information. */
-	public func void log( String text )
-		this.log( BaseGameApp.getApp().getConsole(), text )
+	func void log(String text)
+		log(BaseGameApp.getApp().getConsole(), text)
 	end
 	
 	/** \brief Log text to console prefixed with actor information. */
-	public func void log( Console console, String text )
-		console.addMessage( this.loggingPrefix() + ": " + text )
+	func void log(Console console, String text)
+		console.addMessage(loggingPrefix() + ": " + text)
 	end
 	
 	/** \brief Log text about element to BaseGameApp console prefixed with actor information. */
-	public func void log( Element element, String text )
-		this.log( BaseGameApp.getApp().getConsole(), element, text )
+	func void log(Element element, String text)
+		log(BaseGameApp.getApp().getConsole(), element, text)
 	end
 	
 	/** \brief Log text about element to console prefixed with actor information. */
-	public func void log( Console console, Element element, String text )
+	func void log(Console console, Element element, String text)
 		if element == null
-			console.addMessage( this.loggingPrefix() + " <null>: " + text )
+			console.addMessage(loggingPrefix() + " <null>: " + text)
 			
 		else
-			console.addMessage( this.loggingPrefix() + " " + element.getClass().getClassname() \
-				+ " " + element.getPosition() + ": " + text )
+			console.addMessage(loggingPrefix() + " " + element.getClass().getClassname() \
+				+ " " + element.getPosition() + ": " + text)
 		end
 	end
 	
 	/** \brief Log exception to BaseGameApp console prefixed with actor information. */
-	public func void log( Exception exception )
-		this.log( BaseGameApp.getApp().getConsole(), exception )
+	func void log(Exception exception)
+		log(BaseGameApp.getApp().getConsole(), exception)
 	end
 	
 	/** \brief Log exception to console prefixed with actor information. */
-	public func void log( Console console, Exception exception )
-		console.addError( this.loggingPrefix(), exception )
+	func void log(Console console, Exception exception)
+		console.addError(loggingPrefix(), exception)
 	end
 	
 	/**
@@ -223,9 +266,9 @@ class BaseActorAI implements Persistable
 	 * 
 	 * Returns string in the form "<actor-class>/<ai-class>".
 	 */
-	public func String loggingPrefix()
-		return this.actor.getClass().getClassname().split( '.' ).getAt( -1 ).toString() \
-			+ "/" + this.className().split( '.' ).getAt( -1 )
+	func String loggingPrefix()
+		return actor.getClass().getClassname().splitExact('.').getAt(-1).toString() \
+			+ "/" + className().splitExact('.').getAt(-1)
 	end
 	
 	
@@ -240,11 +283,11 @@ class BaseActorAI implements Persistable
 	 * instance used for loading objects. Object is read using
 	 * PersistencyFactory.readObjectFromFile() of the matching PersistencyFactory.
 	 */
-	public func String persistencyFactoryName()
+	func String persistencyFactoryName()
 		return Factory.NAME
 	end
 	
 	/** \brief Write object to file writer. */
-	public func void writeObjectToFile( PersistencyEnvironment env, FileWriter writer )
+	func void writeObjectToFile(PersistencyEnvironment env, FileWriter writer)
 	end
 end

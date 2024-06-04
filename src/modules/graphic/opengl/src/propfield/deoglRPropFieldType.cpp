@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -38,7 +41,7 @@
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTLogger.h"
 #include "../renderthread/deoglRTBufferObject.h"
-#include "../shaders/paramblock/deoglSPBlockUBO.h"
+#include "../shaders/paramblock/deoglSPBMapBuffer.h"
 #include "../skin/channel/deoglSkinChannel.h"
 #include "../skin/deoglRSkin.h"
 #include "../skin/deoglSkinTexture.h"
@@ -50,8 +53,8 @@
 #include "../texture/texunitsconfig/deoglTexUnitConfig.h"
 #include "../texture/texunitsconfig/deoglTexUnitsConfig.h"
 #include "../texture/texunitsconfig/deoglTexUnitsConfigList.h"
+#include "../vbo/deoglSharedVBOBlock.h"
 #include "../world/deoglRWorld.h"
-#include "../delayedoperation/deoglDelayedDeletion.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
 
 #include <dragengine/common/exceptions.h>
@@ -76,62 +79,21 @@ pSkin( NULL ),
 
 pUseSkinTexture( NULL ),
 
-pBendFactor( 1.0f ),
+pClustersRequirePrepareForRender( true ),
 
-pParamBlock( NULL ),
+pBendFactor( 1.0f ),
 
 pValidParamBlock( false ),
 pDirtyParamBlock( true ),
 
-pDirtyModel( true ){
+pDirtyModel( true )
+{
 	LEAK_CHECK_CREATE( propField.GetRenderThread(), PropFieldType );
 }
 
-class deoglRPropFieldDeletion : public deoglDelayedDeletion{
-public:
-	deoglSPBlockUBO *paramBlock;
-	decPointerList clusters;
-	
-	deoglRPropFieldDeletion() :
-	paramBlock( NULL ){
-	}
-	
-	virtual ~deoglRPropFieldDeletion(){
-	}
-	
-	virtual void DeleteObjects( deoglRenderThread &renderThread ){
-		const int clusterCount = clusters.GetCount();
-		int i;
-		for( i=0; i<clusterCount; i++ ){
-			delete ( deoglPropFieldCluster* )clusters.GetAt( i );
-		}
-		if( paramBlock ){
-			paramBlock->FreeReference();
-		}
-	}
-};
-
-class deoglRPropFieldRemoveAllClustersDeletion : public deoglDelayedDeletion{
-public:
-	decPointerList clusters;
-	
-	deoglRPropFieldRemoveAllClustersDeletion(){
-	}
-	
-	virtual ~deoglRPropFieldRemoveAllClustersDeletion(){
-	}
-	
-	virtual void DeleteObjects( deoglRenderThread &renderThread ){
-		const int clusterCount = clusters.GetCount();
-		int i;
-		for( i=0; i<clusterCount; i++ ){
-			delete ( deoglPropFieldCluster* )clusters.GetAt( i );
-		}
-	}
-};
-
 deoglRPropFieldType::~deoglRPropFieldType(){
 	LEAK_CHECK_FREE( pPropField.GetRenderThread(), PropFieldType );
+	
 	if( pSkin ){
 		pSkin->FreeReference();
 	}
@@ -139,21 +101,10 @@ deoglRPropFieldType::~deoglRPropFieldType(){
 		pModel->FreeReference();
 	}
 	
-	// delayed deletion of opengl containing objects
-	deoglRPropFieldDeletion *delayedDeletion = NULL;
-	
-	try{
-		delayedDeletion = new deoglRPropFieldDeletion;
-		delayedDeletion->paramBlock = pParamBlock;
-		delayedDeletion->clusters = pClusters;
-		pPropField.GetRenderThread().GetDelayedOperations().AddDeletion( delayedDeletion );
-		
-	}catch( const deException &e ){
-		if( delayedDeletion ){
-			delete delayedDeletion;
-		}
-		pPropField.GetRenderThread().GetLogger().LogException( e );
-		//throw; -> otherwise terminate
+	const int clusterCount = pClusters.GetCount();
+	int i;
+	for( i=0; i<clusterCount; i++ ){
+		delete ( deoglPropFieldCluster* )pClusters.GetAt( i );
 	}
 }
 
@@ -178,6 +129,13 @@ void deoglRPropFieldType::SetModel( deoglRModel *model ){
 	}
 	
 	pDirtyModel = true;
+	pPropField.TypeRequiresPrepareForRender();
+	
+	const int count = pClusters.GetCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		( ( deoglPropFieldCluster* )pClusters.GetAt( i ) )->DirtyRTSInstance();
+	}
 }
 
 void deoglRPropFieldType::SetSkin( deoglRSkin *skin ){
@@ -202,7 +160,7 @@ void deoglRPropFieldType::SetSkin( deoglRSkin *skin ){
 	
 	InvalidateParamBlocks();
 	MarkTUCsDirty();
-	//pComponent->MarkTextureUseSkinDirty();
+	UpdateWorldComputeTextures();
 }
 
 
@@ -213,6 +171,7 @@ void deoglRPropFieldType::RebuildInstances( const dePropFieldType &type ){
 	RemoveAllClusters();
 	
 	if( ! pModel || ! pSkin ){
+		ClusterRequiresPrepareForRender();
 		return;
 	}
 	
@@ -238,6 +197,7 @@ void deoglRPropFieldType::RebuildInstances( const dePropFieldType &type ){
 		AddClustersWithSieve( type );
 		//AddClustersWithGenerator();
 		//printf( "prop field %p, type %p, %i clusters\n", pPropField, this, pClusterCount );
+		ClusterRequiresPrepareForRender();
 	}
 	
 	// determine the bending factor
@@ -445,21 +405,19 @@ void deoglRPropFieldType::AddClustersFromGenerator( const dePropFieldType &type,
 
 
 void deoglRPropFieldType::PrepareForRender(){
-	if( pDirtyModel ){
-		if( pModel ){
-			pModel->PrepareImposterBillboard();
-		}
-		
-		pDirtyModel = false;
-	}
+	pPrepareModel();
+	pPrepareParamBlock();
 	
-	// update tbos before they are used to avoid hick-ups
-// 	const int count = pClusters.GetCount();
-// 	int i;
-// 	
-// 	for( i=0; i<count; i++ ){
-// 		( ( deoglPropFieldCluster* )pClusters.GetAt( i ) )->UpdateTBOs();
-// 	}
+	if( pClustersRequirePrepareForRender ){
+		pClustersRequirePrepareForRender = false;
+		
+		const int count = pClusters.GetCount();
+		int i;
+		
+		for( i=0; i<count; i++ ){
+			( ( deoglPropFieldCluster* )pClusters.GetAt( i ) )->PrepareForRender();
+		}
+	}
 }
 
 void deoglRPropFieldType::UpdateInstances( const decDVector &cameraPosition, const decDMatrix &cameraMatrix ){
@@ -477,96 +435,54 @@ deoglPropFieldCluster *deoglRPropFieldType::GetClusterAt( int index ) const{
 }
 
 void deoglRPropFieldType::AddCluster( deoglPropFieldCluster *cluster ){
-	if( ! cluster ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( cluster )
+	
 	pClusters.Add( cluster );
+	ClusterRequiresPrepareForRender();
+	
+	if( pPropField.GetParentWorld() ){
+		cluster->AddToWorldCompute( pPropField.GetParentWorld()->GetCompute() );
+	}
 }
 
 void deoglRPropFieldType::RemoveAllClusters(){
-	// this is called during synchronization. clusters use though opengl objects a lot so
-	// they have to be delayed deleted
-	deoglRPropFieldRemoveAllClustersDeletion *delayedDeletion = NULL;
-	
-	try{
-		delayedDeletion = new deoglRPropFieldRemoveAllClustersDeletion;
-		delayedDeletion->clusters = pClusters;
-		pPropField.GetRenderThread().GetDelayedOperations().AddDeletion( delayedDeletion );
-		pClusters.RemoveAll();
-		
-	}catch( const deException &e ){
-		if( delayedDeletion ){
-			delete delayedDeletion;
-		}
-		pPropField.GetRenderThread().GetLogger().LogException( e );
-		throw;
-	}
-	
-	/*
-	const int count = pClusters.GetCount();
+	// this is called during synchronization
+	const int clusterCount = pClusters.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
+	if( pPropField.GetParentWorld() ){
+		for( i=0; i<clusterCount; i++ ){
+			( ( deoglPropFieldCluster* )pClusters.GetAt( i ) )->RemoveFromWorldCompute();
+		}
+	}
+	
+	for( i=0; i<clusterCount; i++ ){
 		delete ( deoglPropFieldCluster* )pClusters.GetAt( i );
 	}
 	pClusters.RemoveAll();
-	*/
+}
+
+void deoglRPropFieldType::ClusterRequiresPrepareForRender(){
+	pClustersRequirePrepareForRender = true;
+	pPropField.TypeRequiresPrepareForRender();
 }
 
 
 
 void deoglRPropFieldType::PrepareBendStateData( const dePropFieldType &type ){
+	// WARNING Called during synchronization by main thread
+	
 	const int count = pClusters.GetCount();
 	int i;
 	
 	for( i=0; i<count; i++ ){
 		( ( deoglPropFieldCluster* )pClusters.GetAt( i ) )->PrepareBendStateData( type );
 	}
+	
+	ClusterRequiresPrepareForRender();
 }
 
 
-
-deoglSPBlockUBO *deoglRPropFieldType::GetParamBlockFor( deoglSkinTexture::eShaderTypes shaderType ){
-	if( shaderType < deoglSkinTexture::estPropFieldGeometry || shaderType > deoglSkinTexture::estPropFieldEnvMap ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	return GetParamBlock();
-}
-
-deoglSPBlockUBO *deoglRPropFieldType::GetParamBlock(){
-	if( ! pValidParamBlock ){
-		if( pParamBlock ){
-			pParamBlock->FreeReference();
-			pParamBlock = NULL;
-		}
-		
-		if( pUseSkinTexture ){
-			deoglSkinShader &skinShader = *pUseSkinTexture->GetShaderFor( deoglSkinTexture::estPropFieldGeometry );
-			
-			/*if( deoglSkinShader::USE_SHARED_SPB ){
-				pParamBlock = new deoglSPBlockUBO( *pPropField.GetRenderThread()
-					.GetBufferObject().GetLayoutSkinInstanceUBO() );
-				
-			}else{*/
-				pParamBlock = skinShader.CreateSPBInstParam();
-			//}
-		}
-		
-		pValidParamBlock = true;
-		pDirtyParamBlock = true;
-	}
-	
-	if( pDirtyParamBlock ){
-		if( pParamBlock ){
-			UpdateInstanceParamBlock( *pParamBlock, *pUseSkinTexture->GetShaderFor( deoglSkinTexture::estPropFieldGeometry ) );
-		}
-		
-		pDirtyParamBlock = false;
-	}
-	
-	return pParamBlock;
-}
 
 void deoglRPropFieldType::InvalidateParamBlocks(){
 	pValidParamBlock = false;
@@ -575,6 +491,7 @@ void deoglRPropFieldType::InvalidateParamBlocks(){
 
 void deoglRPropFieldType::MarkParamBlocksDirty(){
 	pDirtyParamBlock = true;
+	pPropField.TypeRequiresPrepareForRender();
 }
 
 void deoglRPropFieldType::MarkTUCsDirty(){
@@ -584,6 +501,8 @@ void deoglRPropFieldType::MarkTUCsDirty(){
 	for( i=0; i<count; i++ ){
 		( ( deoglPropFieldCluster* )pClusters.GetAt( i ) )->MarkTUCsDirty();
 	}
+	
+	pPropField.TypeRequiresPrepareForRender();
 }
 
 
@@ -596,100 +515,199 @@ void deoglRPropFieldType::UpdateInstanceParamBlock( deoglSPBlockUBO &paramBlock,
 		return;
 	}
 	
-	paramBlock.MapBuffer();
-	try{
-		// prop field matrix
-		const decDVector &referencePosition = pPropField.GetParentWorld()->GetReferencePosition();
-		const decDVector &pfpos = pPropField.GetPosition();
-		decDMatrix matrixModel = decDMatrix::CreateTranslation( pfpos - referencePosition );
-		
-		//printf( "propfield=%p type=%p pos=(%f,%f,%f)\n", pPropField->GetPropField(), pType, matrixModel.a14, matrixModel.a24, matrixModel.a34 );
-		
-		// update shader parameter block
-		int target;
-		
-		target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutMatrixModel );
-		if( target != -1 ){
-			paramBlock.SetParameterDataMat4x3( target, matrixModel );
-		}
-		
-		target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutMatrixNormal );
-		if( target != -1 ){
-			paramBlock.SetParameterDataMat3x3( target, decDMatrix() ); // inverse of 0-rotation
-		}
-		
-		// per texture properties
-		target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutMatrixTexCoord );
-		if( target != -1 ){
-			paramBlock.SetParameterDataMat3x2( target, decTexMatrix() );
-		}
-		
-		target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutPropFieldParams );
-		if( target != -1 ){
-			paramBlock.SetParameterDataFloat( target, pBendFactor );
-		}
-		
-		target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutDoubleSided );
-		if( target != -1 ){
-			if( pModel ){
-				paramBlock.SetParameterDataBool( target, pModel->GetLODAt( 0 ).GetTextureAt( 0 ).GetDoubleSided() );
-				
-			}else{
-				paramBlock.SetParameterDataBool( target, false );
-			}
-		}
-		
-		target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutEnvMapFade );
-		if( target != -1 ){
-			paramBlock.SetParameterDataFloat( target, 0.0f );
-		}
-		
-		target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutVariationSeed );
-		if( target != -1 ){
-			if( useSkinState ){
-				paramBlock.SetParameterDataVec2( target, useSkinState->GetVariationSeed() );
-				
-			}else{
-				paramBlock.SetParameterDataVec2( target, 0.0f, 0.0f );
-			}
-		}
-		
-		target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutBillboardPosTransform );
-		if( target != -1 ){
-			decVector2 scale = decVector2( 1.0f, 1.0f );
-			decVector2 offset;
-			
-			if( pModel && pModel->GetImposterBillboard() ){
-				const deoglImposterBillboard &billboard = *pModel->GetImposterBillboard();
-				const decVector2 &minExtend = billboard.GetMinExtend();
-				const decVector2 &maxExtend = billboard.GetMaxExtend();
-				
-				scale.x = ( maxExtend.x - minExtend.x ) * 0.5f;
-				scale.y = ( maxExtend.y - minExtend.y ) * 0.5f;
-				offset.x = ( maxExtend.x + minExtend.x ) * 0.5f;
-				offset.y = ( maxExtend.y + minExtend.y ) * 0.5f;
-			}
-			
-			paramBlock.SetParameterDataVec4( target, scale.x, scale.y, offset.x, offset.y );
-		}
-		
-		target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutBillboardParams );
-		if( target != -1 ){
-			paramBlock.SetParameterDataBVec3( target, false, false, false );
-		}
-		
-		// per texture dynamic texture properties
-		skinShader.SetDynTexParamsInInstParamSPB( paramBlock, *pUseSkinTexture, useSkinState, useDynamicSkin );
-		
-	}catch( const deException & ){
-		paramBlock.UnmapBuffer();
-		throw;
+	const deoglSPBMapBuffer mapped( paramBlock );
+	
+	// prop field matrix
+	const decDVector &referencePosition = pPropField.GetParentWorld()->GetReferencePosition();
+	const decDVector &pfpos = pPropField.GetPosition();
+	decDMatrix matrixModel = decDMatrix::CreateTranslation( pfpos - referencePosition );
+	
+	//printf( "propfield=%p type=%p pos=(%f,%f,%f)\n", pPropField->GetPropField(), pType, matrixModel.a14, matrixModel.a24, matrixModel.a34 );
+	
+	// update shader parameter block
+	int target;
+	
+	target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutMatrixModel );
+	if( target != -1 ){
+		paramBlock.SetParameterDataMat4x3( target, matrixModel );
 	}
-	paramBlock.UnmapBuffer();
+	
+	target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutMatrixNormal );
+	if( target != -1 ){
+		paramBlock.SetParameterDataMat3x3( target, decDMatrix() ); // inverse of 0-rotation
+	}
+	
+	// per texture properties
+	target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutMatrixTexCoord );
+	if( target != -1 ){
+		paramBlock.SetParameterDataMat3x2( target, decTexMatrix() );
+	}
+	
+	target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutPropFieldParams );
+	if( target != -1 ){
+		paramBlock.SetParameterDataFloat( target, pBendFactor );
+	}
+	
+	target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutDoubleSided );
+	if( target != -1 ){
+		if( pModel ){
+			paramBlock.SetParameterDataBool( target, pModel->GetLODAt( 0 ).GetTextureAt( 0 ).GetDoubleSided() );
+			
+		}else{
+			paramBlock.SetParameterDataBool( target, false );
+		}
+	}
+	
+	target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutEnvMapFade );
+	if( target != -1 ){
+		paramBlock.SetParameterDataFloat( target, 0.0f );
+	}
+	
+	target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutVariationSeed );
+	if( target != -1 ){
+		if( useSkinState ){
+			paramBlock.SetParameterDataVec2( target, useSkinState->GetVariationSeed() );
+			
+		}else{
+			paramBlock.SetParameterDataVec2( target, 0.0f, 0.0f );
+		}
+	}
+	
+	target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutBillboardPosTransform );
+	if( target != -1 ){
+		decVector2 scale = decVector2( 1.0f, 1.0f );
+		decVector2 offset;
+		
+		if( pModel && pModel->GetImposterBillboard() ){
+			const deoglImposterBillboard &billboard = *pModel->GetImposterBillboard();
+			const decVector2 &minExtend = billboard.GetMinExtend();
+			const decVector2 &maxExtend = billboard.GetMaxExtend();
+			
+			scale.x = ( maxExtend.x - minExtend.x ) * 0.5f;
+			scale.y = ( maxExtend.y - minExtend.y ) * 0.5f;
+			offset.x = ( maxExtend.x + minExtend.x ) * 0.5f;
+			offset.y = ( maxExtend.y + minExtend.y ) * 0.5f;
+		}
+		
+		paramBlock.SetParameterDataVec4( target, scale.x, scale.y, offset.x, offset.y );
+	}
+	
+	target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutBillboardParams );
+	if( target != -1 ){
+		paramBlock.SetParameterDataBVec3( target, false, false, false );
+	}
+	
+	target = skinShader.GetInstanceUniformTarget( deoglSkinShader::eiutInstSkinClipPlaneNormal );
+	if( target != -1 ){
+		paramBlock.SetParameterDataVec4( target, 0.0f, 0.0f, 1.0f, 0.0f );
+	}
+	
+	skinShader.SetTexParamsInInstParamSPB( paramBlock, *pUseSkinTexture );
+	
+	// per texture dynamic texture properties
+	skinShader.SetDynTexParamsInInstParamSPB( paramBlock, *pUseSkinTexture, useSkinState, useDynamicSkin );
 }
 
 
 
 void deoglRPropFieldType::WorldReferencePointChanged(){
 	pDirtyParamBlock = true;
+	UpdateWorldCompute();
+}
+
+
+
+void deoglRPropFieldType::AddToWorldCompute( deoglWorldCompute &worldCompute ){
+	const int clusterCount = pClusters.GetCount();
+	int i;
+	for( i=0; i<clusterCount; i++ ){
+		( ( deoglPropFieldCluster* )pClusters.GetAt( i ) )->AddToWorldCompute( worldCompute );
+	}
+}
+
+void deoglRPropFieldType::UpdateWorldCompute(){
+	if( ! pPropField.GetParentWorld() ){
+		return;
+	}
+	
+	const int clusterCount = pClusters.GetCount();
+	int i;
+	for( i=0; i<clusterCount; i++ ){
+		( ( deoglPropFieldCluster* )pClusters.GetAt( i ) )->UpdateWorldCompute();
+	}
+}
+
+void deoglRPropFieldType::UpdateWorldComputeTextures(){
+	if( ! pPropField.GetParentWorld() ){
+		return;
+	}
+	
+	const int clusterCount = pClusters.GetCount();
+	int i;
+	for( i=0; i<clusterCount; i++ ){
+		( ( deoglPropFieldCluster* )pClusters.GetAt( i ) )->UpdateWorldComputeTextures();
+	}
+}
+
+void deoglRPropFieldType::RemoveFromWorldCompute(){
+	if( ! pPropField.GetParentWorld() ){
+		return;
+	}
+	
+	const int clusterCount = pClusters.GetCount();
+	int i;
+	for( i=0; i<clusterCount; i++ ){
+		( ( deoglPropFieldCluster* )pClusters.GetAt( i ) )->RemoveFromWorldCompute();
+	}
+}
+
+
+
+// Private Functions
+//////////////////////
+
+void deoglRPropFieldType::pPrepareModel(){
+	if( ! pDirtyModel ){
+		return;
+	}
+	
+	if( pModel ){
+		pModel->PrepareImposterBillboard();
+		pModel->GetLODAt( 0 ).PrepareVBOBlock();
+	}
+	
+	pDirtyModel = false;
+}
+
+void deoglRPropFieldType::pPrepareParamBlock(){
+	if( ! pValidParamBlock ){
+		pParamBlock = nullptr;
+		
+		if( pUseSkinTexture ){
+			const deoglSkinShader &skinShader = *pUseSkinTexture->GetPipelines().
+				GetAt( deoglSkinTexturePipelinesList::eptPropField ).
+				GetWithRef( deoglSkinTexturePipelines::etGeometry ).GetShader();
+			
+			/*if( deoglSkinShader::USE_SHARED_SPB ){
+				pParamBlock.TakeOver( new deoglSPBlockUBO( *pPropField.GetRenderThread()
+					.GetBufferObject().GetLayoutSkinInstanceUBO() ) );
+				
+			}else{*/
+				pParamBlock = skinShader.CreateSPBInstParam();
+			//}
+		}
+		
+		pValidParamBlock = true;
+		pDirtyParamBlock = true;
+	}
+	
+	if( pDirtyParamBlock ){
+		if( pParamBlock ){
+			UpdateInstanceParamBlock( pParamBlock, *pUseSkinTexture->GetPipelines().
+				GetAt( deoglSkinTexturePipelinesList::eptPropField ).
+				GetWithRef( deoglSkinTexturePipelines::etGeometry ).GetShader() );
+		}
+		
+		pDirtyParamBlock = false;
+	}
 }

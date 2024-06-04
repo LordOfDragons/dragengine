@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenAL Audio Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -57,8 +60,10 @@ pEnvProbe( NULL ),
 pProbeConfig( NULL ),
 pFirstRay( 0 ),
 pRayCount( 0 ),
-pBackStepDistance( 1e-4 )
+pBackStepDistance( 1e-4f )
 {
+	(void)pOwner; // silence compiler warning
+	
 	pWOVRayHitsElement.SetResult( &pRTResult );
 	SetMarkFinishedAfterRun( true );
 	SetLowPriority( true );
@@ -113,14 +118,14 @@ decString thanTemp;
 // #define BOUNCE_HACK2 *0.2
 
 // gaussA = 1.0 / sqrt( 2.0 * pi)
-#define RAY_GAUSS_A 0.3989422804014327
+#define RAY_GAUSS_A 0.3989422804014327f
 
 // gaussB = -0.5
-#define RAY_GAUSS_B -0.5
+#define RAY_GAUSS_B -0.5f
 
 // gauss beam width factor
-#define RAY_GAUSS_WIDTH_SIGMA ( 1.0 / 2.35482 )
-#define RAY_GAUSS_WIDTH_INV_SIGMA 2.35482
+#define RAY_GAUSS_WIDTH_SIGMA ( 1.0f / 2.35482f )
+#define RAY_GAUSS_WIDTH_INV_SIGMA 2.35482f
 
 
 void deoalRTPTEnvProbeFull::Run(){
@@ -145,7 +150,7 @@ void deoalRTPTEnvProbeFull::Run(){
 	gain.medium = 1.0f;
 	gain.high = 1.0f;
 	
-	pRayGaussWidthFactor = tan( pProbeConfig->GetOpeningAngle() ) * 2.0;
+	pRayGaussWidthFactor = tanf( pProbeConfig->GetOpeningAngle() ) * 2.0f;
 	
 	for( pRayIndex=0; pRayIndex<pRayCount; pRayIndex++ ){
 		ray.direction = rayDirections[ pRayIndex ];
@@ -234,17 +239,17 @@ void deoalRTPTEnvProbeFull::pTraceRay( const sTraceRay &ray, const sTraceGain &g
 	//   const float angle = 0.085680; // 4.91 deg
 	//   const float tanOpenAngle = 0.173057; // 9.82 deg
 	// 
-	const double beamWidth = pRayGaussWidthFactor * ray.distance;
-	const double beamWidthSquared = beamWidth * beamWidth;
+	const float beamWidth = pRayGaussWidthFactor * ray.distance;
+	const float beamWidthSquared = beamWidth * beamWidth;
 	
-	const double closestOnRayLambda = ray.direction * ( pListenerPosition - ray.position );
-	const double closestOnRayDistance = hitElement ? hitElement->GetDistance() : ray.remainingDistance;
-	if( closestOnRayLambda > 0.0 && closestOnRayLambda < closestOnRayDistance ){
+	const float closestOnRayLambda = ( float )( ray.direction * ( pListenerPosition - ray.position ) );
+	const float closestOnRayDistance = hitElement ? hitElement->GetDistance() : ray.remainingDistance;
+	if( closestOnRayLambda > 0.0f && closestOnRayLambda < closestOnRayDistance ){
 		const decDVector closestOnRay( ray.position + ray.direction * closestOnRayLambda );
-		const double distSquared = ( closestOnRay - pListenerPosition ).LengthSquared();
+		const float distSquared = ( float )( ( closestOnRay - pListenerPosition ).LengthSquared() );
 		if( distSquared < beamWidthSquared ){
-			const double invSigma = RAY_GAUSS_WIDTH_INV_SIGMA / beamWidth;
-			const double factor = ( RAY_GAUSS_A * invSigma ) * exp( ( RAY_GAUSS_B * invSigma * invSigma ) * distSquared );
+			const float invSigma = RAY_GAUSS_WIDTH_INV_SIGMA / beamWidth;
+			const float factor = ( RAY_GAUSS_A * invSigma ) * expf( ( RAY_GAUSS_B * invSigma * invSigma ) * distSquared );
 			pGainLow += gain.low * factor;
 			pGainMedium += gain.medium * factor;
 			pGainHigh += gain.high * factor;

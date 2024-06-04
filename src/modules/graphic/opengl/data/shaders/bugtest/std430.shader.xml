@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shader>
+	<name>Test std430 Support</name>
+	<shaderStorageBlock name='Output' target='0'/>
+	<sourceCode unit='compute'>compute/bugtest/std430.glsl</sourceCode>
+</shader>

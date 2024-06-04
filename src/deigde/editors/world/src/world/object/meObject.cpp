@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE World Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <string.h>
@@ -33,6 +36,10 @@
 #include "../meWorldGuiParameters.h"
 #include "../idgroup/meMapIDGroup.h"
 #include "../idgroup/meIDGroup.h"
+#include "../../collisions/meCLInvalidateDecals.h"
+#include "../../configuration/meConfiguration.h"
+#include "../../gui/meWindowMain.h"
+#include "../../utils/meHelpers.h"
 
 #include <deigde/gamedefinition/igdeGameDefinition.h>
 #include <deigde/gamedefinition/class/igdeGDClass.h>
@@ -50,6 +57,7 @@
 #include <deigde/gui/wrapper/object/igdeWOSOVisitor.h>
 #include <deigde/gui/wrapper/object/igdeWOSOLight.h>
 #include <deigde/gui/wrapper/object/igdeWOSONavigationSpace.h>
+#include <deigde/gui/wrapper/object/igdeWOSONavigationBlocker.h>
 #include <deigde/gui/wrapper/debugdrawer/igdeWDebugDrawerShape.h>
 #include <deigde/gui/wrapper/debugdrawer/igdeWCoordSysArrows.h>
 #include <deigde/triggersystem/igdeTriggerTarget.h>
@@ -111,6 +119,7 @@
 #include <dragengine/resources/sound/deSpeakerManager.h>
 #include <dragengine/resources/sound/deSound.h>
 #include <dragengine/resources/sound/deSoundManager.h>
+#include <dragengine/resources/navigation/blocker/deNavigationBlocker.h>
 #include <dragengine/resources/navigation/space/deNavigationSpace.h>
 #include <dragengine/common/shape/decShapeBox.h>
 #include <dragengine/common/exceptions.h>
@@ -136,6 +145,18 @@ void meObject::cWOAsyncFinished::LoadFinished( igdeWObject&, bool ){
 
 
 
+// class cWOTexture
+/////////////////////
+
+meObject::cWOTexture::cWOTexture( const deComponentTexture &componentTexture ) :
+skin( componentTexture.GetSkin() ),
+texture( componentTexture.GetTexture() ),
+dynamicSkin( componentTexture.GetDynamicSkin() ),
+texCoordTransform( componentTexture.GetTransform() ){
+}
+
+
+
 // Class meObject
 ///////////////////
 
@@ -153,39 +174,39 @@ pWOAsyncFinished( *this )
 	deEngine * const engine = environment->GetEngineController()->GetEngine();
 	
 	pEnvironment = environment;
-	pWorld = NULL;
+	pWorld = nullptr;
 	
-	pDebugDrawer = NULL;
-	pDDSObject = NULL;
-	pDDSLightAoE = NULL;
-	pDDSOcclusionMesh = NULL;
-	pDDSObjectShapes = NULL;
-	pDDSCoordSysArrows = NULL;
+	pDebugDrawer = nullptr;
+	pDDSObject = nullptr;
+	pDDSLightAoE = nullptr;
+	pDDSOcclusionMesh = nullptr;
+	pDDSObjectShapes = nullptr;
+	pDDSCoordSysArrows = nullptr;
 	
-	pWObject = NULL;
-	pEngComponentBroken = NULL;
-	pColDetCollider = NULL;
-	pCamera = NULL;
+	pWObject = nullptr;
+	pEngComponentBroken = nullptr;
+	pColDetCollider = nullptr;
+	pCamera = nullptr;
 	
 	pRange = 10.0f; //pGetRangeFor( 1.0f, 2.0f, 0.01f );
 	
-	pTextures = NULL;
+	pTextures = nullptr;
 	pTextureCount = 0;
 	pTextureSize = 0;
-	pActiveTexture = NULL;
+	pActiveTexture = nullptr;
 	
-	pDecals = NULL;
+	pDecals = nullptr;
 	pDecalCount = 0;
 	pDecalSize = 0;
 	
-	pClassDef = NULL;
+	pClassDef = nullptr;
 	pSelected = false;
 	pActive = false;
 	pVisible = true;
 	pShowMissingTextures = false;
 	pSize.Set( 0.5f, 0.5f, 0.5f );
 	pScaling.Set( 1.0f, 1.0f, 1.0f );
-	pAttachedTo = NULL;
+	pAttachedTo = nullptr;
 	
 	try{
 		pWObject = new igdeWObject( *environment );
@@ -195,8 +216,8 @@ pWOAsyncFinished( *this )
 		collisionCategory.SetBit( meWorld::eclmObjects );
 		
 		decLayerMask collisionFilter;
-		collisionFilter.SetBit( meWorld::eclmEditing );
 		collisionFilter.SetBit( meWorld::eclmParticles );
+		collisionFilter.SetBit( meWorld::eclmEditing );
 		
 		pWObject->SetCollisionFilter( decCollisionFilter( collisionCategory, collisionFilter ) );
 		
@@ -222,7 +243,7 @@ pWOAsyncFinished( *this )
 		
 		pWObject->SetCollisionFilterForceFields( decCollisionFilter( collisionCategory, collisionFilter ) );
 		
-		// collision filter fallback
+		// collision filter fallback and selection
 		collisionCategory = decLayerMask();
 		collisionCategory.SetBit( meWorld::eclmObjects );
 		
@@ -230,6 +251,7 @@ pWOAsyncFinished( *this )
 		collisionFilter.SetBit( meWorld::eclmEditing );
 		
 		pWObject->SetCollisionFilterFallback( decCollisionFilter( collisionCategory, collisionFilter ) );
+		// pWObject->SetCollisionFilterInteract( decCollisionFilter( collisionCategory, collisionFilter ) );
 		
 		// other parameters
 		pWObject->SetRenderEnvMapMask( 1 << meWorld::elmEnvMapProbes );
@@ -434,7 +456,6 @@ void meObject::OnGameDefinitionChanged(){
 		UpdateTriggerTargets();
 		UpdateNavPathTest();
 		UpdateIDGroupList();
-		IncrementIDGroupIDUsage();
 	}
 	
 	if( classDef == pClassDef ){
@@ -446,11 +467,15 @@ void meObject::OnGameDefinitionChanged(){
 	
 	pClassDef = classDef;
 	
+	UpdateIDGroupList();
+	IncrementIDGroupIDUsage();
 	pCreateSnapPoints();
 }
 
 void meObject::OnActiveCameraChanged(){
-	pWObject->SetCamera( pWorld && pWorld->GetActiveCamera() ? pWorld->GetActiveCamera()->GetEngineCamera() : NULL );
+	const meCamera * const camera = pWorld && pWorld->GetActiveCamera() ? pWorld->GetActiveCamera() : nullptr;
+	pWObject->SetCamera( camera ? camera->GetEngineCamera() : nullptr );
+	SetVisible( ! camera || camera != pCamera );
 }
 
 
@@ -474,6 +499,9 @@ void meObject::SetPosition( const decDVector &position ){
 		return;
 	}
 	
+	meCLInvalidateDecals::Helper invalidateDecals( pWorld );
+	invalidateDecals.Collect( *pWObject );
+	
 	pPosition = position;
 	
 	pDebugDrawer->SetPosition( position );
@@ -490,6 +518,9 @@ void meObject::SetPosition( const decDVector &position ){
 	pRepositionCamera();
 	UpdateNavPathTest();
 	
+	invalidateDecals.Collect( *pWObject );
+	invalidateDecals.InvalidateDecals();
+	
 	pNotifyDecalsAboutChange();
 }
 
@@ -497,6 +528,9 @@ void meObject::SetSize( const decVector &size ){
 	if( size.IsEqualTo( pSize ) ){
 		return;
 	}
+	
+	meCLInvalidateDecals::Helper InvalidateDecals( pWorld );
+	InvalidateDecals.Collect( *pWObject );
 	
 	pSize = decVector( 1e-5f, 1e-5f, 1e-5f ).Largest( size );
 	
@@ -511,6 +545,9 @@ void meObject::SetSize( const decVector &size ){
 	pRepositionDDSNavSpaces();
 	UpdateNavPathTest();
 	
+	InvalidateDecals.Collect( *pWObject );
+	InvalidateDecals.InvalidateDecals();
+	
 	pNotifyDecalsAboutChange();
 }
 
@@ -518,6 +555,9 @@ void meObject::SetScaling( const decVector &scaling ){
 	if( scaling.IsEqualTo( pScaling ) ){
 		return;
 	}
+	
+	meCLInvalidateDecals::Helper InvalidateDecals( pWorld );
+	InvalidateDecals.Collect( *pWObject );
 	
 	pScaling = decVector( 1e-5f, 1e-5f, 1e-5f ).Largest( scaling );
 	
@@ -533,31 +573,69 @@ void meObject::SetScaling( const decVector &scaling ){
 	pRepositionDDSNavSpaces();
 	UpdateNavPathTest();
 	
+	InvalidateDecals.Collect( *pWObject );
+	InvalidateDecals.InvalidateDecals();
+	
+	pNotifyDecalsAboutChange();
+}
+
+void meObject::SetSizeAndScaling( const decVector &size, const decVector &scaling ){
+	if( size.IsEqualTo( pSize ) && scaling.IsEqualTo( pScaling ) ){
+		return;
+	}
+	
+	meCLInvalidateDecals::Helper InvalidateDecals( pWorld );
+	InvalidateDecals.Collect( *pWObject );
+	
+	pSize = decVector( 1e-5f, 1e-5f, 1e-5f ).Largest( size );
+	pScaling = decVector( 1e-5f, 1e-5f, 1e-5f ).Largest( scaling );
+	
+	if( pWorld ){
+		pWorld->SetChanged( true );
+	}
+	
+	pUpdateDDSCoordSysArrowsLength();
+	
+	pUpdateShapes();
+	pRepositionDDSNavSpaces();
+	UpdateNavPathTest();
+	
+	InvalidateDecals.Collect( *pWObject );
+	InvalidateDecals.InvalidateDecals();
+	
 	pNotifyDecalsAboutChange();
 }
 
 void meObject::SetRotation( const decVector &rotation ){
-	if( ! rotation.IsEqualTo( pRotation ) ){
-		const decQuaternion orientation = decQuaternion::CreateFromEuler( rotation * DEG2RAD );
-		
-		pRotation = rotation;
-		
-		if( pWorld ) pWorld->SetChanged( true );
-		
-		pDebugDrawer->SetOrientation( orientation );
-		pWObject->SetOrientation( orientation );
-		if( pEngComponentBroken ){
-			pEngComponentBroken->SetOrientation( orientation );
-		}
-		if( pColDetCollider ){
-			pColDetCollider->SetOrientation( orientation );
-		}
-		
-		pRepositionCamera();
-		UpdateNavPathTest();
-		
-		pNotifyDecalsAboutChange();
+	if( rotation.IsEqualTo( pRotation ) ){
+		return;
 	}
+	
+	const decQuaternion orientation = decQuaternion::CreateFromEuler( rotation * DEG2RAD );
+	
+	meCLInvalidateDecals::Helper InvalidateDecals( pWorld );
+	InvalidateDecals.Collect( *pWObject );
+	
+	pRotation = rotation;
+	
+	if( pWorld ) pWorld->SetChanged( true );
+	
+	pDebugDrawer->SetOrientation( orientation );
+	pWObject->SetOrientation( orientation );
+	if( pEngComponentBroken ){
+		pEngComponentBroken->SetOrientation( orientation );
+	}
+	if( pColDetCollider ){
+		pColDetCollider->SetOrientation( orientation );
+	}
+	
+	pRepositionCamera();
+	UpdateNavPathTest();
+	
+	InvalidateDecals.Collect( *pWObject );
+	InvalidateDecals.InvalidateDecals();
+	
+	pNotifyDecalsAboutChange();
 }
 
 void meObject::SetID( const decUniqueID &id ){
@@ -592,14 +670,14 @@ void meObject::UpdateDDSObjectShapes(){
 				codec.DecodeShapeList( pProperties.GetAt( key ), shapeList );
 				
 				const int shapeCount = shapeList.GetCount();
-				decShape *shape = NULL;
+				decShape *shape = nullptr;
 				int j;
 				
 				try{
 					for( j=0; j<shapeCount; j++ ){
 						shape = shapeList.GetAt( j )->Copy();
 						pDDSObjectShapes->AddShape( shape );
-						shape = NULL;
+						shape = nullptr;
 					}
 					
 				}catch( const deException & ){
@@ -630,6 +708,7 @@ void meObject::SetAttachedTo( meObject *object ){
 		pAttachedTo->FreeReference();
 	}
 	
+	meObject * const oldObject = pAttachedTo;
 	pAttachedTo = object;
 	
 	if( object ){
@@ -641,6 +720,9 @@ void meObject::SetAttachedTo( meObject *object ){
 		pWorld->SetChanged( true );
 	}
 	
+	if( oldObject ){
+		oldObject->CheckLinks();
+	}
 	if( object ){
 		object->CheckLinks();
 	}
@@ -656,12 +738,8 @@ void meObject::UpdateNavPathTest(){
 	bool affectsPath = false;
 	
 	if( pClassDef && pWorld ){
-		if( pClassDef->GetNavigationSpaceList().GetCount() > 0 ){
-			affectsPath = true;
-		}
-		if( pClassDef->GetNavigationBlockerList().GetCount() > 0 ){
-			affectsPath = true;
-		}
+		affectsPath |= meHelpers::FindFirstNavigationSpace( *pClassDef )
+			|| meHelpers::FindFirstNavigationBlocker( *pClassDef );
 	}
 	
 	if( affectsPath ){
@@ -686,7 +764,7 @@ void meObject::DecrementIDGroupIDUsage(){
 	
 	for( i=0; i<mapCount; i++ ){
 		const meMapIDGroup &map = *( ( meMapIDGroup* )pMapIDGroup.GetAt( i ) );
-		const decString &name = map.GetProperty()->GetName();
+		const decString name( map.GetPropertyPrefix() + map.GetProperty()->GetName() );
 		
 		if( ! pProperties.Has( name ) ){
 			continue;
@@ -708,7 +786,7 @@ void meObject::DecrementIDGroupIDUsage(){
 	
 	for( i=0; i<texMapCount; i++ ){
 		const meMapIDGroup &map = *( ( meMapIDGroup* )pTexMapIDGroup.GetAt( i ) );
-		const decString &name = map.GetProperty()->GetName();
+		const decString name( map.GetPropertyPrefix() + map.GetProperty()->GetName() );
 		
 		for( j=0; j<pTextureCount; j++ ){
 			const meObjectTexture &texture = *pTextures[ j ];
@@ -743,20 +821,20 @@ void meObject::IncrementIDGroupIDUsage(){
 	
 	for( i=0; i<mapCount; i++ ){
 		const meMapIDGroup &map = *( ( meMapIDGroup* )pMapIDGroup.GetAt( i ) );
-		const decString &name = map.GetProperty()->GetName();
+		const decString name( map.GetPropertyPrefix() + map.GetProperty()->GetName() );
+		const decString *value = nullptr;
 		
-		if( ! pProperties.Has( name ) ){
+		if( ! pProperties.GetAt( name, &value ) ){
 			continue;
 		}
 		
-		const decString &value = pProperties.GetAt( name );
-		if( value.IsEmpty() ){
+		if( value->IsEmpty() ){
 			continue; // ignore empty identifier
 		}
 		
-		//printf( "Object %p Class '%s' IDGroup %s Add '%s' (%i)\n", this, pClassDef->GetName().GetString(),
-		//	map.GetGroup()->GetName().GetString(), value, map.GetGroup()->GetUsageCountFor( value ) );
-		map.GetGroup()->Add( value );
+		map.GetGroup()->Add( value->GetString() );
+		// printf( "Object %p Class '%s' IDGroup %s Add '%s' (%i)\n", this, pClassDef->GetName().GetString(),
+			// map.GetGroup()->GetName().GetString(), value->GetString(), map.GetGroup()->GetUsageCountFor( *value ) );
 	}
 	
 	// texture properties
@@ -765,7 +843,7 @@ void meObject::IncrementIDGroupIDUsage(){
 	
 	for( i=0; i<texMapCount; i++ ){
 		const meMapIDGroup &map = *( ( meMapIDGroup* )pTexMapIDGroup.GetAt( i ) );
-		const decString &name = map.GetProperty()->GetName();
+		const decString name( map.GetPropertyPrefix() + map.GetProperty()->GetName() );
 		
 		for( j=0; j<pTextureCount; j++ ){
 			const meObjectTexture &texture = *pTextures[ j ];
@@ -793,77 +871,8 @@ void meObject::UpdateIDGroupList(){
 	pMapIDGroup.RemoveAll();
 	pTexMapIDGroup.RemoveAll();
 	
-	if( ! pClassDef || ! pWorld ){
-		return;
-	}
-	
-	meIDGroupList &groupList = pWorld->GetIDGroupList();
-	igdeGDClass *gdClass = pClassDef;
-	meMapIDGroup *mapIDGroup = NULL;
-	
-	try{
-		while( gdClass ){
-			// object properties
-			const igdeGDPropertyList &gdProperties = gdClass->GetListProperties();
-			const int gdPropertyCount = gdProperties.GetCount();
-			int i;
-			
-			for( i=0; i<gdPropertyCount; i++ ){
-				igdeGDProperty * const gdProperty = gdProperties.GetAt( i );
-				
-				if( gdProperty->GetType() != igdeGDProperty::eptIdentifier ){
-					continue;
-				}
-				if( gdProperty->GetIdentifierGroup().IsEmpty() ){
-					continue;
-				}
-				if( ! gdProperty->GetIdentifierUsage() ){
-					continue;
-				}
-				
-				//printf( "Object %p Class '%s' Add IDGroup '%s'\n", this, pClassDef->GetName().GetString(),
-				//	gdProperty->GetIdentifierGroup().GetString() );
-				mapIDGroup = new meMapIDGroup( gdProperty, groupList.GetOrAddNamed( gdProperty->GetIdentifierGroup() ) );
-				pMapIDGroup.Add( mapIDGroup );
-				mapIDGroup->FreeReference();
-				mapIDGroup = NULL;
-			}
-			
-			// texture properties
-			const igdeGDPropertyList &gdTexProperties = gdClass->GetTextureProperties();
-			const int gdTexPropertyCount = gdTexProperties.GetCount();
-			
-			for( i=0; i<gdTexPropertyCount; i++ ){
-				igdeGDProperty * const gdProperty = gdTexProperties.GetAt( i );
-				
-				if( gdProperty->GetType() != igdeGDProperty::eptIdentifier ){
-					continue;
-				}
-				if( gdProperty->GetIdentifierGroup().IsEmpty() ){
-					continue;
-				}
-				if( ! gdProperty->GetIdentifierUsage() ){
-					continue;
-				}
-				
-				//printf( "Object %p Class '%s' Texture Add IDGroup '%s'\n", this,
-				//	pClassDef->GetName().GetString(), gdProperty->GetIdentifierGroup().GetString() );
-				mapIDGroup = new meMapIDGroup( gdProperty, groupList.GetOrAddNamed( gdProperty->GetIdentifierGroup() ) );
-				pTexMapIDGroup.Add( mapIDGroup );
-				mapIDGroup->FreeReference();
-				mapIDGroup = NULL;
-			}
-			
-			// go to parent class
-// 			gdClass = gdClass->GetParentClass(); // TODO support inherited classes
-			break;
-		}
-		
-	}catch( const deException & ){
-		if( mapIDGroup ){
-			mapIDGroup->FreeReference();
-		}
-		throw;
+	if( pClassDef && pWorld ){
+		pUpdateIDGroupList( *pClassDef, decString() );
 	}
 }
 
@@ -907,6 +916,19 @@ void meObject::ShowStateChanged(){
 }
 
 void meObject::WOAsyncFinished(){
+	// store WObject textures to properly apply missing texture
+	pWOTextures.RemoveAll();
+	
+	const deComponent * const component = pWObject->GetComponent();
+	if( component ){
+		const int textureCount = component->GetTextureCount();
+		int i;
+		for( i=0; i<textureCount; i++ ){
+			pWOTextures.Add( deObject::Ref::New( new cWOTexture( component->GetTextureAt( i ) ) ) );
+		}
+	}
+	
+	// continue updating
 	pSizeFromScaling();
 	pUpdateComponent();
 	pUpdateShapes();
@@ -942,6 +964,12 @@ void meObject::WOAsyncFinished(){
 	
 	// comes last to ensure all visibilities are correct
 	ShowStateChanged();
+	
+	if( pWorld ){
+		meCLInvalidateDecals InvalidateDecals( pWorld );
+		InvalidateDecals.Collect( *pWObject );
+		InvalidateDecals.InvalidateDecals();
+	}
 }
 
 
@@ -1052,7 +1080,7 @@ void meObject::CheckLinks(){
 	if( ! pActive || ! pClassDef ){
 		for( i=0; i<pLinks.GetCount(); i++ ){
 			meObjectLink * const link = ( meObjectLink* )pLinks.GetAt( i );
-			meObject *object = NULL;
+			meObject *object = nullptr;
 			
 			if( link->GetAnchor() == this ){
 				object = link->GetTarget();
@@ -1103,7 +1131,7 @@ void meObject::CheckLinks(){
 					}
 					
 				}else{
-					link = NULL;
+					link = nullptr;
 					try{
 						// create the link in the proper direction
 						if( isAnchor ){
@@ -1321,18 +1349,20 @@ void meObject::UpdateComponentTextures(){
 	const int textureCount = engModel->GetTextureCount();
 	int i;
 	
-	deSkin * const defaultSkin = pEnvironment->GetGameProject()->GetGameDefinition()->GetDefaultSkin();
+	// deSkin * const defaultSkin = pEnvironment->GetGameProject()->GetGameDefinition()->GetDefaultSkin();
+	deSkin * const defaultSkin = pEnvironment->GetStockSkin( igdeEnvironment::essTestMap );
 	const int defaultTexture = 0;
 	
 	for( i=0; i<textureCount; i++ ){
 		deComponentTexture &componentTexture = component->GetTextureAt( i );
-		const char * const textureName = engModel->GetTextureAt( i )->GetName();
+		const decString &textureName = engModel->GetTextureAt( i )->GetName();
 		meObjectTexture * const texture = GetTextureNamed( textureName );
 		
-		deSkin *useSkin = componentTexture.GetSkin();
-		int useTexture = componentTexture.GetTexture();
-		deDynamicSkin *useDynamicSkin = componentTexture.GetDynamicSkin();
-		decTexMatrix2 texCoordTransform = componentTexture.GetTransform();
+		const cWOTexture &wotexture = *( ( cWOTexture* )pWOTextures.GetAt( i ) );
+		deSkin *useSkin = wotexture.skin;
+		int useTexture = wotexture.texture;
+		deDynamicSkin *useDynamicSkin = wotexture.dynamicSkin;
+		decTexMatrix2 texCoordTransform = wotexture.texCoordTransform;
 		
 		if( texture ){
 			if( texture->GetEngineSkin() ){
@@ -1382,7 +1412,7 @@ bool meObject::IsComponentBroken() const{
 		return false;
 	}
 	
-	// if the model is missnig the component is broken
+	// if the model is missing the component is broken
 	const deModel * const engModel = component->GetModel();
 	if( ! engModel ){
 		return false;
@@ -1460,7 +1490,7 @@ void meObject::GetModelTextureNameList( decStringList &list ) const{
 ///////////////
 
 void meObject::SetProperty( const char *key, const char *value ){
-	const decString *checkString = NULL;
+	const decString *checkString = nullptr;
 	if( pProperties.GetAt( key, &checkString ) && *checkString == value ){
 		return;
 	}
@@ -1478,6 +1508,7 @@ void meObject::SetProperty( const char *key, const char *value ){
 	
 	IncrementIDGroupIDUsage();
 	pUpdateProperties();
+	pUpdateCamera();
 	
 	if( pClassDef ){
 		if( pClassDef->HasNavSpaceLinkedProperty( key ) ){
@@ -1515,6 +1546,7 @@ void meObject::SetProperties( const decStringDictionary &properties ){
 	pUpdateProperties();
 	pUpdateDDSNavSpaces();
 	UpdateNavPathTest();
+	pUpdateCamera();
 	
 	if( pWorld ){
 		pWorld->SetChanged( true );
@@ -1890,8 +1922,8 @@ void meObject::pUpdateDDSNavSpaces(){
 		int count;
 		bool requiresReposition;
 		
-		cWOSONavSpaceVisitor( deDebugDrawer *debugDrawer, igdeWDebugDrawerShapeList &ddShapes ) :
-		debugDrawer( debugDrawer ), ddShapes( ddShapes ), count( 0 ), requiresReposition( false ){
+		cWOSONavSpaceVisitor( deDebugDrawer *ddebugDrawer, igdeWDebugDrawerShapeList &dddShapes ) :
+		debugDrawer( ddebugDrawer ), ddShapes( dddShapes ), count( 0 ), requiresReposition( false ){
 		}
 		
 		virtual ~cWOSONavSpaceVisitor(){
@@ -1905,7 +1937,8 @@ void meObject::pUpdateDDSNavSpaces(){
 				return;
 			}
 			
-			igdeWDebugDrawerShape *ddshape = NULL;
+			// navigation space
+			igdeWDebugDrawerShape *ddshape = nullptr;
 			
 			if( count < ddShapes.GetCount() ){
 				ddshape = ddShapes.GetAt( count );
@@ -1931,6 +1964,47 @@ void meObject::pUpdateDDSNavSpaces(){
 			ddshape->RemoveAllFaces();
 			ddshape->RemoveAllShapes();
 			ddshape->AddNavSpaceFaces( *navigationSpace.GetNavigationSpace() );
+			
+			// navigation blocker
+			if( navigationSpace.GetNavigationSpace()->GetBlockerShapeList().GetCount() > 0 ){
+				Blocker( navigationSpace.GetNavigationSpace()->GetBlockerShapeList() );
+			}
+		}
+		
+		virtual void VisitNavigationBlocker( igdeWOSONavigationBlocker &navigationBlocker ){
+			if( navigationBlocker.GetNavigationBlocker()
+			&& navigationBlocker.GetNavigationBlocker()->GetShapeList().GetCount() > 0 ){
+				Blocker( navigationBlocker.GetNavigationBlocker()->GetShapeList() );
+			}
+		}
+		
+		void Blocker( const decShapeList &shapes ){
+			igdeWDebugDrawerShape *ddshape = nullptr;
+			
+			if( count < ddShapes.GetCount() ){
+				ddshape = ddShapes.GetAt( count );
+				
+			}else{
+				try{
+					ddshape = new igdeWDebugDrawerShape;
+					ddshape->SetParentDebugDrawer( debugDrawer );
+					ddshape->SetEdgeColor( decColor( 0.25f, 0.25f, 0.35f, 1.0f ) );
+					ddshape->SetFillColor( decColor( 0.25f, 0.25f, 0.35f, 0.1f ) );
+					ddShapes.Add( ddshape );
+					requiresReposition = true;
+					
+				}catch( const deException & ){
+					if( ddshape ){
+						delete ddshape;
+					}
+					throw;
+				}
+			}
+			
+			count++;
+			ddshape->RemoveAllFaces();
+			ddshape->RemoveAllShapes();
+			ddshape->AddShapes( shapes );
 		}
 	} wosoNavSpaceVisitor( pDebugDrawer, pDDSListNavSpaces );
 	pWObject->VisitSubObjects( wosoNavSpaceVisitor );
@@ -1978,15 +2052,15 @@ void meObject::pRepositionDDSNavSpaces(){
 
 void meObject::pUpdateOutline(){
 	if( pActive ){
-		pWObject->SetOutlineSkinSharedEditing();
+		pWObject->SetOutlineSkin( pEnvironment->GetStockSkin( igdeEnvironment::essEditOutline ) );
 		pWObject->SetOutlineColor( decColor( 1.0f, 0.5f, 0.0f ) );
 		
 	}else if( pSelected ){
-		pWObject->SetOutlineSkinSharedEditing();
+		pWObject->SetOutlineSkin( pEnvironment->GetStockSkin( igdeEnvironment::essEditOutline ) );
 		pWObject->SetOutlineColor( decColor( 1.0f, 0.0f, 0.0f ) );
 		
 	}else{
-		pWObject->SetOutlineSkin( NULL );
+		pWObject->SetOutlineSkin( nullptr );
 	}
 }
 
@@ -2023,13 +2097,13 @@ void meObject::pUpdateShapes(){
 	
 	// update collider shape
 	if( pColDetCollider ){
-		decShapeBox *box = NULL;
+		decShapeBox *box = nullptr;
 		decShapeList shapeList;
 		
 		try{
 			box = new decShapeBox( halfExtends, position );
 			shapeList.Add( box );
-			box = NULL;
+			box = nullptr;
 			
 		}catch( const deException & ){
 			if( box ) delete box;
@@ -2045,7 +2119,7 @@ void meObject::pUpdateShapeLight(){
 		igdeWDebugDrawerShape &shape;
 		
 	public:
-		cWOSOLightVisitor( igdeWDebugDrawerShape &shape ) : shape( shape ){
+		cWOSOLightVisitor( igdeWDebugDrawerShape &sshape ) : shape( sshape ){
 			shape.RemoveAllShapes();
 			shape.RemoveAllFaces();
 		}
@@ -2081,7 +2155,7 @@ void meObject::pUpdateShapeLight(){
 					light.GetPosition(), light.GetOrientation() ) );
 				const float height = range * tanf( angleY * 0.5f );
 				const float width = range * tanf( angleX * 0.5f );
-				deDebugDrawerShapeFace *face = NULL;
+				deDebugDrawerShapeFace *face = nullptr;
 				
 				try{
 					face = new deDebugDrawerShapeFace;
@@ -2090,7 +2164,7 @@ void meObject::pUpdateShapeLight(){
 					face->AddVertex( matrix.Transform( width, height, range ) );
 					face->CalculateNormal();
 					shape.AddFace( face );
-					face = NULL;
+					face = nullptr;
 					
 					face = new deDebugDrawerShapeFace;
 					face->AddVertex( decVector() );
@@ -2098,7 +2172,7 @@ void meObject::pUpdateShapeLight(){
 					face->AddVertex( matrix.Transform( width, -height, range ) );
 					face->CalculateNormal();
 					shape.AddFace( face );
-					face = NULL;
+					face = nullptr;
 					
 					face = new deDebugDrawerShapeFace;
 					face->AddVertex( decVector() );
@@ -2106,7 +2180,7 @@ void meObject::pUpdateShapeLight(){
 					face->AddVertex( matrix.Transform( -width, -height, range ) );
 					face->CalculateNormal();
 					shape.AddFace( face );
-					face = NULL;
+					face = nullptr;
 					
 					face = new deDebugDrawerShapeFace;
 					face->AddVertex( decVector() );
@@ -2114,7 +2188,7 @@ void meObject::pUpdateShapeLight(){
 					face->AddVertex( matrix.Transform( -width, height, range ) );
 					face->CalculateNormal();
 					shape.AddFace( face );
-					face = NULL;
+					face = nullptr;
 					
 					face = new deDebugDrawerShapeFace;
 					face->AddVertex( matrix.Transform( width, height, range ) );
@@ -2166,10 +2240,9 @@ void meObject::pUpdateComponent(){
 		}
 		
 		bool componentVisible = pWObject->GetVisible();
-		if( pWObject->GetGDClass() && pWObject->GetGDClass()->GetComponentList().GetCount() > 0 ){
-			if( pWObject->GetGDClass()->GetComponentList().GetAt( 0 )->GetPartialHide() ){
-				componentVisible = ! pWObject->GetPartiallyHidden();
-			}
+		const igdeGDCComponent * const gdccomponent = meHelpers::FindFirstComponent( pWObject->GetGDClass() );
+		if( gdccomponent && gdccomponent->GetPartialHide() ){
+			componentVisible = ! pWObject->GetPartiallyHidden();
 		}
 		pEngComponentBroken->SetVisible( componentVisible );
 		
@@ -2182,7 +2255,7 @@ void meObject::pUpdateComponent(){
 			pWorld->GetEngineWorld()->RemoveComponent( pEngComponentBroken );
 		}
 		pEngComponentBroken->FreeReference();
-		pEngComponentBroken = NULL;
+		pEngComponentBroken = nullptr;
 	}
 }
 
@@ -2199,48 +2272,55 @@ void meObject::pUpdateProperties(){
 
 void meObject::pUpdateCamera(){
 	if( pClassDef && pClassDef->GetHasCamera() ){
-		if( ! pCamera ){
+		if( ! pCamera && pWorld ){
 			pCamera = new meCamera( GetEnvironment()->GetEngineController()->GetEngine() );
+			pCamera->SetEnableGI( pWorld->GetWindowMain().GetConfiguration().GetEnableGI() );
 			pCamera->SetHostObject( this );
 			pCamera->SetWorld( pWorld );
 		}
 		
 	}else if( pCamera ){
 		delete pCamera;
-		pCamera = NULL;
+		pCamera = nullptr;
 	}
 	
-	if( pCamera ){
-		igdeGDCamera *gdCamera = pClassDef->GetCamera();
-		
-		pCamera->SetFov( gdCamera->GetFov() );
-		pCamera->SetFovRatio( gdCamera->GetFovRatio() );
-		pCamera->SetImageDistance( gdCamera->GetImageDistance() );
-		pCamera->SetViewDistance( gdCamera->GetViewDistance() );
-		
-		pRepositionCamera();
-		pCheckCameraProps();
+	if( ! pCamera ){
+		return;
 	}
+	
+	igdeGDCamera *gdCamera = pClassDef->GetCamera();
+	
+	pCamera->SetFov( gdCamera->GetFov() );
+	pCamera->SetFovRatio( gdCamera->GetFovRatio() );
+	pCamera->SetImageDistance( gdCamera->GetImageDistance() );
+	pCamera->SetViewDistance( gdCamera->GetViewDistance() );
+	
+	pRepositionCamera();
+	pCheckCameraProps();
 }
 
 void meObject::pCheckCameraProps(){
-	decString value;
-	
-	if( pCamera ){
-		igdeGDCamera *gdCamera = pClassDef->GetCamera();
-		
-		// name property
-		const decString &propname = gdCamera->GetPropName();
-		
-		if( pProperties.Has( propname ) ){
-			value.Format( "%s: %s", pClassDef->GetName().GetString(), pProperties.GetAt( propname ).GetString() );
-			
-		}else{
-			value.Format( "%s: <unnamed>", pClassDef->GetName().GetString() );
-		}
-		
-		pCamera->SetName( value );
+	if( ! pCamera ){
+		return;
 	}
+	
+	igdeGDCamera *gdCamera = pClassDef->GetCamera();
+	decString value, defaultValue;
+	
+	// name property
+	const decString &propname = gdCamera->GetPropName();
+	
+	if( pProperties.Has( propname ) ){
+		value.Format( "%s: %s", pClassDef->GetName().GetString(), pProperties.GetAt( propname ).GetString() );
+		
+	}else if( pClassDef->GetDefaultPropertyValue( propname, defaultValue ) ){
+		value.Format( "%s: %s", pClassDef->GetName().GetString(), defaultValue.GetString() );
+		
+	}else{
+		value.Format( "%s: <unnamed>", pClassDef->GetName().GetString() );
+	}
+	
+	pCamera->SetName( value );
 }
 
 void meObject::pRepositionCamera(){
@@ -2287,7 +2367,7 @@ void meObject::pCreateSnapPoints(){
 		return;
 	}
 	
-	meObjectSnapPoint *snapPoint = NULL;
+	meObjectSnapPoint *snapPoint = nullptr;
 	int i;
 	
 	try{
@@ -2296,7 +2376,7 @@ void meObject::pCreateSnapPoints(){
 			snapPoint->SetWorld( pWorld );
 			pSnapPoints.Add( snapPoint );
 			snapPoint->FreeReference();
-			snapPoint = NULL;
+			snapPoint = nullptr;
 		}
 		
 	}catch( const deException & ){
@@ -2378,4 +2458,54 @@ bool meObject::pAnyGDClassHasAnyPartialVisOf( const igdeGDClass &gdclass, const 
 	}
 	
 	return false;
+}
+
+void meObject::pUpdateIDGroupList( const igdeGDClass &gdclass, const decString &prefix ){
+	meIDGroupList &groupList = pWorld->GetIDGroupList();
+	
+	// object properties
+	const igdeGDPropertyList &gdProperties = gdclass.GetListProperties();
+	const int gdPropertyCount = gdProperties.GetCount();
+	int i;
+	
+	for( i=0; i<gdPropertyCount; i++ ){
+		igdeGDProperty &gdProperty = *gdProperties.GetAt( i );
+		
+		if( gdProperty.GetType() != igdeGDProperty::eptIdentifier
+		|| gdProperty.GetIdentifierGroup().IsEmpty() || ! gdProperty.GetIdentifierUsage() ){
+			continue;
+		}
+		
+		// printf( "Object %p Class '%s' Add IDGroup '%s'\n", this, pClassDef->GetName().GetString(),
+		// 	gdProperty.GetIdentifierGroup().GetString() );
+		pMapIDGroup.Add( meMapIDGroup::Ref::New( new meMapIDGroup( &gdProperty,
+			groupList.GetOrAddNamed( gdProperty.GetIdentifierGroup() ), prefix ) ) );
+	}
+	
+	// texture properties
+	const igdeGDPropertyList &gdTexProperties = gdclass.GetTextureProperties();
+	const int gdTexPropertyCount = gdTexProperties.GetCount();
+	
+	for( i=0; i<gdTexPropertyCount; i++ ){
+		igdeGDProperty &gdProperty = *gdTexProperties.GetAt( i );
+		
+		if( gdProperty.GetType() != igdeGDProperty::eptIdentifier
+		|| gdProperty.GetIdentifierGroup().IsEmpty() || ! gdProperty.GetIdentifierUsage() ){
+			continue;
+		}
+		
+		//printf( "Object %p Class '%s' Texture Add IDGroup '%s'\n", this,
+		//	pClassDef->GetName().GetString(), gdProperty->GetIdentifierGroup().GetString() );
+		pTexMapIDGroup.Add( meMapIDGroup::Ref::New( new meMapIDGroup( &gdProperty,
+			groupList.GetOrAddNamed( gdProperty.GetIdentifierGroup() ), prefix ) ) );
+	}
+	
+	// inherits
+	const int inheritCount = gdclass.GetInheritClassCount();
+	for( i=0; i<inheritCount; i++ ){
+		const igdeGDClassInherit &inherit = *gdclass.GetInheritClassAt( i );
+		if( inherit.GetClass() ){
+			pUpdateIDGroupList( *inherit.GetClass(), prefix + inherit.GetPropertyPrefix() );
+		}
+	}
 }

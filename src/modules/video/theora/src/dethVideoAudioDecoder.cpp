@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Theora Video Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -47,11 +50,11 @@ pDecoderContextInited( false ),
 pDecoderBlockInited( false ),
 pFileSize( reader.GetLength() ),
 pFileRemaining( pFileSize - reader.GetPosition() ),
-pBytesPerSample( 0 ),
+pBytesPerSample( 2 ),
 pSampleCount( 0 ),
-pSampleRate( 0 ),
-pChannelCount( 0 ),
-pBufferSampleSize( 0 ),
+pSampleRate( 44100 ),
+pChannelCount( 1 ),
+pBufferSampleSize( 2 ),
 pCurSample( 0 )
 {
 	// WARNING info and comment struct have to stay alive while the decoder context and
@@ -109,19 +112,15 @@ int dethVideoAudioDecoder::ReadSamples( void *buffer, int size ){
 					if( vorbis_synthesis( &pDecoderBlock, &packet ) ){
 						continue; // not data packet (for example header) or bad packet. read on
 					}
-					if( vorbis_synthesis_blockin( &pDecoderContext, &pDecoderBlock ) ){
-						DETHROW( deeInvalidAction );
-					}
+					DEASSERT_TRUE( vorbis_synthesis_blockin( &pDecoderContext, &pDecoderBlock ) == 0 )
 					keepGoing = true;
 					break;
 					
-				}else if( pReadPage( page ) == 0 ){
+				}else if( pReadPage( page ) ){
 					if( ogg_page_serialno( &page ) != pSerial ){
 						continue;
 					}
-					if( ogg_stream_pagein( &pStreamState, &page ) ){
-						DETHROW( deeInvalidAction );
-					}
+					DEASSERT_TRUE( ogg_stream_pagein( &pStreamState, &page ) == 0 )
 					
 				}else{
 					break;
@@ -311,18 +310,14 @@ bool dethVideoAudioDecoder::pReadPage( ogg_page &page ){
 	
 	while( ogg_sync_pageout( &pSyncState, &page ) != 1 ){
 		char * const buffer = ogg_sync_buffer( &pSyncState, bufferSize );
-		if( ! buffer ){
-			DETHROW( deeOutOfMemory );
-		}
+		DEASSERT_NOTNULL( buffer )
 		
 		const int readBytes = pReadFromFile( buffer, bufferSize );
 		if( readBytes == 0 ){
 			return false; // end of file
 		}
 		
-		if( ogg_sync_wrote( &pSyncState, readBytes ) ){
-			DETHROW( deeOutOfMemory );
-		}
+		DEASSERT_TRUE( ogg_sync_wrote( &pSyncState, readBytes ) == 0 )
 	}
 	
 	return true;
@@ -386,19 +381,15 @@ void dethVideoAudioDecoder::pSeek( int position ){
 					if( vorbis_synthesis( &pDecoderBlock, &packet ) ){
 						continue; // not data packet (for example header) or bad packet. read on
 					}
-					if( vorbis_synthesis_blockin( &pDecoderContext, &pDecoderBlock ) ){
-						DETHROW( deeInvalidAction );
-					}
+					DEASSERT_TRUE( vorbis_synthesis_blockin( &pDecoderContext, &pDecoderBlock ) == 0 )
 					keepGoing = true;
 					break;
 					
-				}else if( pReadPage( page ) == 0 ){
+				}else if( pReadPage( page ) ){
 					if( ogg_page_serialno( &page ) != pSerial ){
 						continue;
 					}
-					if( ogg_stream_pagein( &pStreamState, &page ) ){
-						DETHROW( deeInvalidAction );
-					}
+					DEASSERT_TRUE( ogg_stream_pagein( &pStreamState, &page ) == 0 )
 					
 				}else{
 					break;

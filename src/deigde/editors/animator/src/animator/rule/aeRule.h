@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Animator Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _AERULE_H_
@@ -39,9 +42,15 @@ class deAnimatorRuleVisitor;
 
 
 /**
- * \brief Animator rule.
+ * Animator rule.
  */
 class aeRule : public deObject{
+public:
+	/** Type holding strong reference. */
+	typedef deTObjectReference<aeRule> Ref;
+	
+	
+	
 private:
 	aeAnimator *pAnimator;
 	aeRuleGroup *pParentGroup;
@@ -51,9 +60,11 @@ private:
 	deAnimatorRuleVisitorIdentify::eRuleTypes pType;
 	
 	decStringSet pListBones;
+	decStringSet pListVertexPositionSets;
 	
 	deAnimatorRule::eBlendModes pBlendMode;
 	float pBlendFactor;
+	bool pInvertBlendFactor;
 	bool pEnabled;
 	
 	aeControllerTarget pTargetBlendFactor;
@@ -61,107 +72,140 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create a new animator rule. */
+	/** Create a new animator rule. */
 	aeRule( deAnimatorRuleVisitorIdentify::eRuleTypes type );
-	/** \brief Create a copy of an animator rule. */
+	/** Create a copy of an animator rule. */
 	aeRule( const aeRule &copy );
-	/** \brief Clean up the animator rule. */
+	/** Clean up the animator rule. */
 	virtual ~aeRule();
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Retrieve the parent animator. */
+	/** Retrieve the parent animator. */
 	aeAnimator *GetAnimator() const;
-	/** \brief Set the parent animator. */
+	/** Set the parent animator. */
 	void SetAnimator( aeAnimator *animator );
 	
-	/** \brief Retrieve the engine animator rule or NULL. */
+	/** Retrieve the engine animator rule or NULL. */
 	inline deAnimatorRule *GetEngineRule() const{ return pEngRule; }
-	/** \brief Set the engine animator rule or NULL. */
+	/** Set the engine animator rule or NULL. */
 	void SetEngineRule( deAnimatorRule *rule );
-	/** \brief Create an engine animator rule. */
+	/** Create an engine animator rule. */
 	virtual deAnimatorRule *CreateEngineRule() = 0;
-	/** \brief Init the given engine rule with the default rule properties. */
+	/** Init the given engine rule with the default rule properties. */
 	void InitEngineRule( deAnimatorRule *engRule ) const;
 	
-	/** \brief Retrieve the rule type. */
+	/** Retrieve the rule type. */
 	inline deAnimatorRuleVisitorIdentify::eRuleTypes GetType() const{ return pType; }
 	
-	/** \brief Retrieve the parent group or NULL if there is none. */
+	/** Retrieve the parent group or NULL if there is none. */
 	inline aeRuleGroup *GetParentGroup() const{ return pParentGroup; }
-	/** \brief Set the parent group or NULL if there is none. */
+	/** Set the parent group or NULL if there is none. */
 	void SetParentGroup( aeRuleGroup *group );
 	
-	/** \brief Retrieve the name. */
+	/** Retrieve the name. */
 	inline const decString &GetName() const{ return pName; }
-	/** \brief Set the name. */
+	/** Set the name. */
 	void SetName( const char *filename );
 	
-	/** \brief Determine if the rule is enabled. */
+	/** Determine if the rule is enabled. */
 	inline bool GetEnabled() const{ return pEnabled; }
-	/** \brief Set if the rule is enabled. */
+	/** Set if the rule is enabled. */
 	void SetEnabled( bool enabled );
 	inline deAnimatorRule::eBlendModes GetBlendMode() const{ return pBlendMode; }
-	/** \brief \brief Set the blend mode. */
+	/** Set the blend mode. */
 	void SetBlendMode( deAnimatorRule::eBlendModes mode );
-	/** \brief \brief Retrieve the blend factor. */
+	/** Retrieve the blend factor. */
 	inline float GetBlendFactor() const{ return pBlendFactor; }
-	/** \brief \brief Set the source blend factor. */
+	/** Set the source blend factor. */
 	void SetBlendFactor( float factor );
 	
-	/** \brief Update Component and Animation. */
+	/** Invert blend factor. */
+	inline bool GetInvertBlendFactor() const{ return pInvertBlendFactor; }
+	
+	/** Set invert blend factor. */
+	void SetInvertBlendFactor( bool invert );
+	
+	/** Update Component and Animation. */
 	virtual void UpdateCompAnim();
-	/** \brief Update targets. */
+	/** Update targets. */
 	virtual void UpdateTargets();
-	/** \brief Retrieve the number of targets using a given link. */
+	/** Retrieve the number of targets using a given link. */
 	virtual int CountLinkUsage( aeLink *link ) const;
-	/** \brief Remove a link from all targets using it. */
+	/** Remove a link from all targets using it. */
 	virtual void RemoveLinkFromTargets( aeLink *link );
-	/** \brief Remove all links from all targets. */
+	/** Remove all links from all targets. */
 	virtual void RemoveLinksFromAllTargets();
 	
-	/** \brief Retrieve the source factor target. */
+	/** Retrieve the source factor target. */
 	inline aeControllerTarget &GetTargetBlendFactor(){ return pTargetBlendFactor; }
+	inline const aeControllerTarget &GetTargetBlendFactor() const{ return pTargetBlendFactor; }
 	
-	/** \brief List all links of all rule targets. */
+	/** List all links of all rule targets. */
 	virtual void ListLinks( aeLinkList& list );
 	
-	/** \brief Notify the engine that the rule changed. */
+	/** Notify the engine that the rule changed. */
 	void NotifyRuleChanged();
 	
-	/** \brief Create a copy of this rule. */
+	/** Create a copy of this rule. */
 	virtual aeRule *CreateCopy() const = 0;
 	
-	/** \brief Parent animator changed. */
+	/** Parent animator changed. */
 	virtual void OnParentAnimatorChanged();
 	/*@}*/
 	
+	
+	
 	/** \name Bone Management */
 	/*@{*/
-	/** \brief Retrieve the list of bones. */
+	/** Retrieve the list of bones. */
 	inline const decStringSet &GetListBones() const{ return pListBones; }
 	
-	/** \brief Set list of bones. */
+	/** Set list of bones. */
 	void SetListBones( const decStringSet &bones );
 	
-	/** \brief Add a bone. */
+	/** Add a bone. */
 	void AddBone( const char *bone );
-	/** \brief Remove the given bone. */
+	
+	/** Remove the given bone. */
 	void RemoveBone( const char *bone );
-	/** \brief Remove all bones. */
+	
+	/** Remove all bones. */
 	void RemoveAllBones();
 	/*@}*/
 	
+	
+	
+	/** \name Vertex position set management */
+	/*@{*/
+	/** List of vertex position sets. */
+	inline const decStringSet &GetListVertexPositionSets() const{ return pListVertexPositionSets; }
+	
+	/** Set list of vertex position sets. */
+	void SetListVertexPositionSets( const decStringSet &sets );
+	
+	/** Add a vertex position set. */
+	void AddVertexPositionSet( const char *vertexPositionSet );
+	
+	/** Remove vertex position set. */
+	void RemoveVertexPositionSet( const char *vertexPositionSet );
+	
+	/** Remove all vertex position sets. */
+	void RemoveAllVertexPositionSets();
+	/*@}*/
+	
+	
+	
 	/** \name Operators */
 	/*@{*/
-	/** \brief Copy another animator rule to this animator rule. */
-	virtual aeRule &operator=( const aeRule &copy );
+	/** Copy another animator rule to this animator rule. */
+	aeRule &operator=( const aeRule &copy );
 	/*@}*/
 	
 	/** \name Helper */
 	/*@{*/
-	/** \brief Create a new rule from a rule type. */
+	/** Create a new rule from a rule type. */
 	static aeRule *CreateRuleFromType( deAnimatorRuleVisitorIdentify::eRuleTypes type );
 	/*@}*/
 };

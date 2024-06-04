@@ -1,0 +1,94 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.Gui.Events
+
+
+/**
+ * \brief Key listener forwarding key press of specific key to widget.
+ * 
+ * Allows to create for example default buttons in dialogs and windows being pressed if the
+ * user presses InputEventKey.enter . Add this listener to Window instance with the widget
+ * (for example Button) to send InputEventKey.enter event to like this:
+ * 
+ * \code{.ds}
+ * var Window window = ...create window...
+ * var Button button = ...create default button you want to forward to..
+ * window.addKeyListener(ForwardKeyPressListener.new(InputEventKey.enter, button))
+ * \endcode
+ */
+class ForwardKeyPressListener extends DefaultKeyListener
+	private var int pKey
+	private var Widget pWidget
+	
+	
+	
+	/** \brief Create listener forwarding key to widget. */
+	public func new( int key, Widget widget )
+		if widget == null
+			throw ENullPointer.new( "widget" )
+		end
+		
+		this.pKey = key
+		this.pWidget = widget
+	end
+	
+	
+	
+	/** \brief Key to listen on. */
+	public func int getKey()
+		return this.pKey
+	end
+	
+	/** \brief Set key to listen on. */
+	public func void setKey( int key )
+		this.pKey = key
+	end
+	
+	/** \brief Widget to send event to. */
+	public func Widget getWidget()
+		return this.pWidget
+	end
+	
+	/** \brief Set widget to send event to. */
+	public func void setWidget( Widget widget )
+		if widget == null
+			throw ENullPointer.new()
+		end
+		
+		this.pWidget = widget
+	end
+	
+	
+	
+	/** \brief Keyboard key has been pressed. */
+	public func void onKeyPress( KeyEvent event )
+		if event.getKeyCode() == this.pKey and event.getSource() != this.pWidget
+			this.pWidget.sendEvent( event )
+		end
+	end
+end

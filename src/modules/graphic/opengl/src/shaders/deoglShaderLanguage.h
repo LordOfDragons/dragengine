@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLSHADERLANGUAGE_H_
@@ -26,6 +29,7 @@
 #include "../deoglBasics.h"
 
 #include <dragengine/common/string/decStringList.h>
+#include <dragengine/threading/deMutex.h>
 
 class deoglShaderDefines;
 class deoglShaderSources;
@@ -40,9 +44,9 @@ class deoglShaderBindingList;
 
 
 /**
- * @brief Shader Language.
+ * Shader Language.
  *
- * A shader language object is responsible for storing all informations required
+ * A shader language object is responsible for storing all information required
  * for compiling shaders using a specific language as well as handling activation
  * of shaders.
  */
@@ -56,10 +60,21 @@ private:
 	decString pGLSLVersion;
 	decStringList pGLSLExtensions;
 	
+	int pGLSLVersionNumber;
+	
+	bool pHasLoadingShader;
+	bool pGuardHasLoadingShader;
+	bool pHasCompilingShader;
+	bool pGuardHasCompilingShader;
+	
 	deoglShaderPreprocessor pPreprocessor;
+	deMutex pMutexCompile;
+	deMutex pMutexChecks;
+	
+	
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new shader language object. */
 	deoglShaderLanguage( deoglRenderThread &renderThread );
@@ -67,13 +82,29 @@ public:
 	~deoglShaderLanguage();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Compieles a shader from the given sources using the specified defines. */
 	deoglShaderCompiled *CompileShader( deoglShaderProgram &program );
+	
+	/**
+	 * Check if shader is loading or has been loaded since the last call.
+	 * Resets flag if no loading is in progress right now.
+	 */
+	bool GetHasLoadingShader();
+	
+	/**
+	 * Check if shader is compiling or has been compiled since the last call.
+	 * Resets flag if no compiling is in progress right now.
+	 */
+	bool GetHasCompilingShader();
 	/*@}*/
 	
 private:
+	deoglShaderCompiled *pCompileShader( deoglShaderProgram &program );
+	void pAfterLinkShader( const deoglShaderProgram &program, deoglShaderCompiled &compiled );
+	deoglShaderCompiled *pCacheLoadShader( deoglShaderProgram &program );
+	void pCacheSaveShader( const deoglShaderProgram &program, const deoglShaderCompiled &compiled );
 	void pPreparePreprocessor( const deoglShaderDefines &defines );
 	
 	#ifdef ANDROID
@@ -86,6 +117,7 @@ private:
 	bool pLinkShader( GLuint handle );
 	
 	void pOutputShaderToFile( const char *file );
+	void pLogFailedShaderSources();
 	void pPrintErrorLog();
 };
 

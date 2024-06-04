@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Animator Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEARBONESTATE_H_
@@ -26,7 +29,6 @@
 #include <dragengine/resources/animator/rule/deAnimatorRule.h>
 
 class dearComponentBoneState;
-class dearComponentBoneState;
 class dearAnimationState;
 class deComponentBone;
 class deRigBone;
@@ -34,7 +36,7 @@ class deRigBone;
 
 
 /**
- * @brief Bone state class.
+ * Bone state class.
  * Stores the state of a bone driven by an animator. Contains also
  * the mappings of the bone to an animation if present.
  */
@@ -44,7 +46,6 @@ private:
 	const char *pRigBoneName;
 	int pIndex;
 	int pRigIndex;
-	int pAnimBone;
 	dearBoneState *pParentState;
 	dearBoneState **pChildStates;
 	int pChildStateCount, pChildStateSize;
@@ -61,7 +62,7 @@ private:
 	bool pDirty;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new bone state object. */
 	dearBoneState();
@@ -69,7 +70,7 @@ public:
 	~dearBoneState();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the rig bone or NULL if not linked. */
 	inline deRigBone *GetRigBone() const{ return pRigBone; }
@@ -87,10 +88,6 @@ public:
 	inline int GetRigIndex() const{ return pRigIndex; }
 	/** Sets the rig index. */
 	void SetRigIndex( int index );
-	/** Retrieves the animation bone index. */
-	inline int GetAnimationBone() const{ return pAnimBone; }
-	/** Sets the animation bone index. */
-	void SetAnimationBone( int index );
 	/** Retrieves the parent bone state or NULL if not existing. */
 	inline dearBoneState *GetParentState() const{ return pParentState; }
 	/** Sets the parent bone state or NULL if not existing. */
@@ -153,52 +150,52 @@ public:
 	void UpdateMatricesKeepGlobal();
 	/** Updates the local parameters from the global matrix. */
 	void UpdateFromGlobalMatrix();
-	/** \brief Calculate local matric from global matrix. */
+	/** Calculate local matric from global matrix. */
 	decMatrix CalcLocalFromGlobal( const decMatrix &globalMatrix ) const;
 	/** Resets the matrices to identity. */
 	void ResetMatrices();
 	
-	/** \brief Copy another state to this state. */
+	/** Copy another state to this state. */
 	void SetFrom( const dearBoneState &state );
 	
-	/** \brief Copy component bone state to this state. */
+	/** Copy component bone state to this state. */
 	void SetFrom( const deComponentBone &bone );
 	
-	/** \brief Copy component bone state to this state. */
+	/** Copy component bone state to this state. */
 	void SetFrom( const dearComponentBoneState &state );
 	
-	/** \brief Update state by blending it with an empty state. */
+	/** Update state by blending it with an empty state. */
 	void BlendWithDefault( deAnimatorRule::eBlendModes blendMode, float blendFactor,
 		bool enablePosition, bool enableOrientation, bool enableScale );
 	
-	/** \brief Update state by blending it with an incoming state. */
+	/** Update state by blending it with an incoming state. */
 	void BlendWith( const dearBoneState &state, deAnimatorRule::eBlendModes blendMode,
 		float blendFactor, bool enablePosition, bool enableOrientation, bool enableScale );
 	
-	/** \brief Update state by blending it with an incoming state. */
+	/** Update state by blending it with an incoming state. */
 	void BlendWith( const dearAnimationState &state, deAnimatorRule::eBlendModes blendMode,
 		float blendFactor, bool enablePosition, bool enableOrientation, bool enableScale );
 	
-	/** \brief Update state by blending it with an incoming state. */
+	/** Update state by blending it with an incoming state. */
 	void BlendWith( const deComponentBone &bone, deAnimatorRule::eBlendModes blendMode,
 		float blendFactor, bool enablePosition, bool enableOrientation, bool enableScale );
 	
-	/** \brief Update state by blending it with an incoming state. */
+	/** Update state by blending it with an incoming state. */
 	void BlendWith( const dearComponentBoneState &state, deAnimatorRule::eBlendModes blendMode,
 		float blendFactor, bool enablePosition, bool enableOrientation, bool enableScale );
 	
-	/** \brief Update state by blending it with an incoming state. */
+	/** Update state by blending it with an incoming state. */
 	void BlendWith( const decVector &position, const decQuaternion &orientation,
 		deAnimatorRule::eBlendModes blendMode, float blendFactor,
 		bool enablePosition, bool enableOrientation );
 	
-	/** \brief Update state by blending it with an incoming state. */
+	/** Update state by blending it with an incoming state. */
 	void BlendWith( const decVector &position, const decQuaternion &orientation,
 		const decVector &scale, deAnimatorRule::eBlendModes blendMode, float blendFactor,
 		bool enablePosition, bool enableOrientation, bool enableScale );
 	/*@}*/
 	
-	/** @name Child states */
+	/** \name Child states */
 	/*@{*/
 	/** Retrieves the number of child states. */
 	inline int GetChildStateCount() const{ return pChildStateCount; }

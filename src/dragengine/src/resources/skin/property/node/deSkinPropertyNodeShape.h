@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Game Engine
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DESKINPROPERTYNODESHAPE_H_
@@ -28,7 +31,7 @@
 /**
  * \brief Skin property shape node for constructed texture property.
  */
-class deSkinPropertyNodeShape : public deSkinPropertyNode{
+class DE_DLL_EXPORT deSkinPropertyNodeShape : public deSkinPropertyNode{
 public:
 	/** \brief Shape types. */
 	enum eShapeTypes{
@@ -39,6 +42,21 @@ public:
 		estEllipse
 	};
 	
+	/** \brief Mapped. */
+	enum eShapeMapped{
+		esmFillColorRed, //<! Fill color red component
+		esmFillColorGreen, //<! Fill color green component
+		esmFillColorBlue, //<! Fill color blue component
+		esmFillColorAlpha, //<! Fill color alpha component
+		esmLineColorRed, //<! Line color red component
+		esmLineColorGreen, //<! Line color green component
+		esmLineColorBlue, //<! Line color blue component
+		esmLineColorAlpha, //<! Line color alpha component
+		esmThickness //<! Thickness
+	};
+	
+	static const int ShapeMappedCount = esmThickness + 1;
+	
 	
 	
 private:
@@ -46,6 +64,8 @@ private:
 	decColor pFillColor;
 	decColor pLineColor;
 	float pThickness;
+	
+	int pShapeMapped[ ShapeMappedCount ];
 	
 	
 	
@@ -86,6 +106,14 @@ public:
 	
 	/** \brief Set thicknss in pixels. */
 	void SetThickness( float thickness );
+	
+	
+	
+	/** \brief Index of mapped value or -1 to use static value. */
+	int GetShapeMappedFor( eShapeMapped mapped ) const;
+	
+	/** \brief Set index of mapped value or -1 to use static value. */
+	void SetShapeMappedFor( eShapeMapped mapped, int index );
 	/*@}*/
 	
 	

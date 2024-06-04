@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -28,6 +31,8 @@
 #include "../deClassModuleParameter.h"
 #include "../canvas/deClassCanvasView.h"
 #include "../math/deClassPoint.h"
+#include "../math/deClassDVector.h"
+#include "../math/deClassQuaternion.h"
 #include "../../deScriptingDragonScript.h"
 #include "../../deClassPathes.h"
 
@@ -147,7 +152,7 @@ void deClassGraphicSystem::nfGetParameterInfo::RunFunction(dsRunTime *RT, dsValu
 	int index = RT->GetValue(0)->GetInt();
 	// check
 	if(index < 0 || index >= module->GetParameterCount()) DSTHROW(dueInvalidParam);
-	// retrieve informations
+	// retrieve information
 	clsGraSys->GetDS().GetClassModuleParameter()->PushParameter(RT, module, index);
 }
 
@@ -213,10 +218,36 @@ void deClassGraphicSystem::nfSendCommand::RunFunction( dsRunTime *rt, dsValue *m
 	rt->PushString( answer.ToUTF8().GetString() );
 }
 
+// public static func int getFPSRate()
+deClassGraphicSystem::nfGetFPSRate::nfGetFPSRate( const sInitData &init ) :
+dsFunction( init.clsGraSys, "getFPSRate", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsInt ){
+}
+void deClassGraphicSystem::nfGetFPSRate::RunFunction( dsRunTime *rt, dsValue* ){
+	const deScriptingDragonScript &ds = ( ( deClassGraphicSystem* )GetOwnerClass() )->GetDS();
+	rt->PushInt( ds.GetGameEngine()->GetGraphicSystem()->GetActiveModule()->GetFPSRate() );
+}
+
+// public static func void setVRDebugPanelPosition( DVector position, Orientation orientation )
+deClassGraphicSystem::nfSetVRDebugPanelPosition::nfSetVRDebugPanelPosition( const sInitData &init ) :
+dsFunction( init.clsGraSys, "setVRDebugPanelPosition", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid ){
+	p_AddParameter( init.clsDVector ); // position
+	p_AddParameter( init.clsQuaternion ); // orientation
+}
+void deClassGraphicSystem::nfSetVRDebugPanelPosition::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deScriptingDragonScript &ds = ( ( deClassGraphicSystem* )GetOwnerClass() )->GetDS();
+	
+	const decDVector &position = ds.GetClassDVector()->GetDVector( rt->GetValue( 0 )->GetRealObject() );
+	const decQuaternion &orientation = ds.GetClassQuaternion()->GetQuaternion( rt->GetValue( 1 )->GetRealObject() );
+	
+	ds.GetGameEngine()->GetGraphicSystem()->GetActiveModule()->SetVRDebugPanelPosition( position, orientation );
+}
+
 
 
 // class deClassGraphicSystem
-////////////////////////////////
+///////////////////////////////
 // constructor
 deClassGraphicSystem::deClassGraphicSystem( deScriptingDragonScript &ds ) :
 dsClass("GraphicSystem", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE),
@@ -243,6 +274,8 @@ void deClassGraphicSystem::CreateClassMembers(dsEngine *engine){
 	init.clsModPar = pDS.GetClassModuleParameter();
 	init.clsCView = pDS.GetClassCanvasView();
 	init.clsPoint = pDS.GetClassPoint();
+	init.clsDVector = pDS.GetClassDVector();
+	init.clsQuaternion = pDS.GetClassQuaternion();
 	
 	// add functions
 	AddFunction( new nfGetWindowWidth( init ) );
@@ -251,10 +284,12 @@ void deClassGraphicSystem::CreateClassMembers(dsEngine *engine){
 	AddFunction( new nfSetWindowGeometry( init ) );
 	AddFunction( new nfSetWindowTitle( init ) );
 	AddFunction( new nfGetPrimaryCanvas( init ) );
-	AddFunction(new nfGetParameterCount(init));
-	AddFunction(new nfGetParameterInfo(init));
-	AddFunction(new nfGetParameterInfo2(init));
-	AddFunction(new nfGetParameterValue(init));
-	AddFunction(new nfSetParameterValue(init));
+	AddFunction( new nfGetParameterCount( init ) );
+	AddFunction( new nfGetParameterInfo( init ) ) ;
+	AddFunction( new nfGetParameterInfo2( init ) );
+	AddFunction( new nfGetParameterValue( init ) );
+	AddFunction( new nfSetParameterValue( init ) );
 	AddFunction( new nfSendCommand( init ) );
+	AddFunction( new nfGetFPSRate( init ) );
+	AddFunction( new nfSetVRDebugPanelPosition( init ) );
 }

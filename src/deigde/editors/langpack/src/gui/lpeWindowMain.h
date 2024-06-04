@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Language Pack Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _LPEWINDOWMAIN_H_
@@ -43,7 +46,7 @@ class lpeIGDEModule;
 
 
 /**
- * \brief Main window.
+ * Main window.
  */
 class lpeWindowMain : public igdeEditorWindow{
 private:
@@ -55,8 +58,10 @@ private:
 	igdeActionReference pActionLangPackOpen;
 	igdeActionReference pActionLangPackSave;
 	igdeActionReference pActionLangPackSaveAs;
+	igdeActionReference pActionLangPackOpenRef;
 	igdeActionReference pActionEntryAdd;
 	igdeActionReference pActionEntryRemove;
+	igdeActionReference pActionEntryNextMissing;
 	
 	igdeActionUndoReference pActionEditUndo;
 	igdeActionRedoReference pActionEditRedo;
@@ -81,11 +86,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create window. */
+	/** Create window. */
 	lpeWindowMain( igdeEditorModule &module );
 	
 protected:
-	/** \brief Clean up window. */
+	/** Clean up window. */
 	virtual ~lpeWindowMain();
 	/*@}*/
 	
@@ -94,16 +99,18 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Icons. */
+	/** Icons. */
 	//inline igdeIcon* GetIconLangPackNew() const{ return pIconLangPackNew; }
 	
-	/** \brief Actions. */
+	/** Actions. */
 	inline igdeAction *GetActionLangPackNew() const{ return pActionLangPackNew; }
 	inline igdeAction *GetActionLangPackOpen() const{ return pActionLangPackOpen; }
 	inline igdeAction *GetActionLangPackSave() const{ return pActionLangPackSave; }
 	inline igdeAction *GetActionLangPackSaveAs() const{ return pActionLangPackSaveAs; }
+	inline igdeAction *GetActionLangPackOpenRef() const{ return pActionLangPackOpenRef; }
 	inline igdeAction *GetActionEntryAdd() const{ return pActionEntryAdd; }
 	inline igdeAction *GetActionEntryRemove() const{ return pActionEntryRemove; }
+	inline igdeAction *GetActionEntryNextMissing() const{ return pActionEntryNextMissing; }
 	
 	inline igdeActionUndo *GetActionEditUndo() const{ return pActionEditUndo; }
 	inline igdeActionRedo *GetActionEditRedo() const{ return pActionEditRedo; }
@@ -111,47 +118,56 @@ public:
 	inline igdeAction *GetActionEditCopy() const{ return pActionEditCopy; }
 	inline igdeAction *GetActionEditPaste() const{ return pActionEditPaste; }
 	
-	/** \brief Asks the user if it is okay to quit the application. */
+	/** Asks the user if it is okay to quit the application. */
 	bool QuitRequest();
 	
-	/** \brief Configuration. */
+	/** Configuration. */
 	inline lpeConfiguration &GetConfiguration() const{ return *pConfiguration; }
 	
-	/** \brief Clipboard. */
+	/** Clipboard. */
 	inline igdeClipboard &GetClipboard(){ return pClipboard; }
 	
-	/** \brief Load save system. */
+	/** Load save system. */
 	inline lpeLoadSaveSystem &GetLoadSaveSystem() const{ return *pLoadSaveSystem; }
 	
-	/** \brief Language pack. */
+	/** Language pack. */
 	inline lpeLangPack *GetLangPack() const{ return pLangPack; }
 	
-	/** \brief Set language pack. */
+	/** Set language pack. */
 	void SetLangPack( lpeLangPack *langpack );
 	
-	/** \brief Create new language pack. */
+	/** Create new language pack. */
 	void CreateNewLangPack();
 	
-	/** \brief Save language pack under the given file. */
+	/** Save language pack under the given file. */
 	void SaveLangPack( const char *filename );
 	
-	/** \brief List of unsaved open documents. */
+	/** Get reference language pack. */
+	lpeLangPack *GetReferenceLangPack() const;
+	
+	/** Set reference language pack. */
+	void SetReferenceLangPack( lpeLangPack *langpack );
+	
+	/** Select next missing language pack entry. */
+	void SelectNextMissingEntry();
+	
+	/** List of unsaved open documents. */
 	void GetChangedDocuments( decStringList &list );
 	
 	/**
-	 * \brief Requests a document to be loaded.
+	 * Requests a document to be loaded.
 	 */
 	virtual void LoadDocument( const char *filename );
 	
-	/** \brief Request document to be saved. */
+	/** Request document to be saved. */
 	bool SaveDocument( const char *filename );
 	
 	/**
-	 * \brief Recent files changed.
+	 * Recent files changed.
 	 */
 	virtual void RecentFilesChanged();
 	
-	/** \brief Game project changed. */
+	/** Game project changed. */
 	void OnGameProjectChanged();
 	/*@}*/
 	

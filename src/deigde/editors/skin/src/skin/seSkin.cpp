@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Skin Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <math.h>
@@ -27,6 +30,7 @@
 #include "seSkin.h"
 #include "seSkinBuilder.h"
 #include "seSkinListener.h"
+#include "mapped/seMapped.h"
 #include "texture/seTexture.h"
 #include "property/seProperty.h"
 #include "dynamicskin/seDynamicSkin.h"
@@ -61,6 +65,8 @@
 #include <dragengine/resources/debug/deDebugDrawerShape.h>
 #include <dragengine/resources/debug/deDebugDrawerManager.h>
 #include <dragengine/resources/debug/deDebugDrawerShapeFace.h>
+#include <dragengine/resources/light/deLight.h>
+#include <dragengine/resources/light/deLightManager.h>
 #include <dragengine/resources/model/deModel.h>
 #include <dragengine/resources/model/deModelManager.h>
 #include <dragengine/resources/model/deModelTexture.h>
@@ -91,7 +97,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-seSkin::seSkin( igdeEnvironment *environment) : igdeEditableEntity( environment ){
+seSkin::seSkin( igdeEnvironment *environment) :
+igdeEditableEntity( environment ),
+pPreviewMode( epmModel )
+{
 	deEngine * const engine = GetEngine();
 	
 	deAnimatorController *amController = NULL;
@@ -120,7 +129,8 @@ seSkin::seSkin( igdeEnvironment *environment) : igdeEditableEntity( environment 
 	pRewindTextures = 0;
 	pEnableSkinUpdate = true;
 	
-	pActiveTexture = NULL;
+	pActiveMapped = nullptr;
+	pActiveTexture = nullptr;
 	
 	try{
 		SetFilePath( "new.deskin" );
@@ -129,19 +139,16 @@ seSkin::seSkin( igdeEnvironment *environment) : igdeEditableEntity( environment 
 		pEngAnimator = engine->GetAnimatorManager()->CreateAnimator();
 		
 		amController = new deAnimatorController;
-		if( ! amController ) DETHROW( deeOutOfMemory );
 		amController->SetClamp( false );
 		pEngAnimator->AddController( amController );
 		amController = NULL;
 		
 		engLink = new deAnimatorLink;
-		if( ! engLink ) DETHROW( deeOutOfMemory );
 		engLink->SetController( 0 );
 		pEngAnimator->AddLink( engLink );
 		engLink = NULL;
 		
 		amRuleAnim = new deAnimatorRuleAnimation;
-		if( ! amRuleAnim ) DETHROW( deeOutOfMemory );
 		amRuleAnim->SetEnabled( true );
 		
 		amRuleAnim->GetTargetMoveTime().AddLink( 0 );
@@ -188,6 +195,7 @@ seSkin::seSkin( igdeEnvironment *environment) : igdeEditableEntity( environment 
 		
 		pEnvObject->SetGDClassName( "IGDETestTerrain" );
 		
+		pCreateLight();
 		pCreateParticleEmitter();
 		
 		// create empty skin
@@ -221,71 +229,119 @@ seSkin::~seSkin(){
 // Management
 ///////////////
 
-void seSkin::SetModelPath( const char *path ){
-	if( ! path ) DETHROW( deeInvalidParam );
-	
-	if( ! pModelPath.Equals( path ) ){
-		pModelPath = path;
-		
-		pUpdateComponent();
-		pUpdateTextureDynamicSkins();
-		NotifyViewChanged();
+void seSkin::SetPreviewMode( ePreviewMode mode ){
+	if( mode == pPreviewMode ){
+		return;
 	}
+	
+	pPreviewMode = mode;
+	
+	// make appropriate engine resource visible
+	if( pEngComponent ){
+		pEngComponent->SetVisible( mode == epmModel );
+	}
+	pEngLight->SetActivated( mode == epmLight );
+	
+	// reset environment model, sky and camera
+	pCamera->Reset();
+	pCamera->SetOrientation( decVector( 0.0f, 180.0f, 0.0f ) );
+	pCamera->SetDistance( 5.0f );
+	pCamera->SetHighestIntensity( 20.0f );
+	pCamera->SetLowestIntensity( 20.0f );
+	pCamera->SetAdaptionTime( 4.0f );
+	
+	switch( mode ){
+	case epmModel:
+		pEnvObject->SetGDClassName( "IGDETestTerrain" );
+		pEnvObject->SetPosition( decDVector( 0.0, -2.0, 0.0 ) );
+		pSky->SetGDDefaultSky();
+		pCamera->SetPosition( decDVector() );
+		break;
+		
+	case epmLight:
+		pEnvObject->SetGDClassName( "IGDELightSkinBox" );
+		pEnvObject->SetPosition( decDVector( 0.0, -1.0, 0.0 ) );
+		pSky->SetPath( "/igde/skies/black.desky" );
+		pCamera->SetPosition( decDVector( 0.0, -1.0, 0.0 ) );
+		break;
+	}
+	
+	// notify ui
+	NotifyViewChanged();
+	NotifyEnvObjectChanged();
+	NotifySkyChanged();
+	NotifyCameraChanged();
+}
+
+void seSkin::SetModelPath( const char *path ){
+	if( pModelPath.Equals( path ) ){
+		return;
+	}
+	
+	pModelPath = path;
+	
+	pUpdateComponent();
+	pUpdateTextureDynamicSkins();
+	NotifyViewChanged();
 }
 
 void seSkin::SetRigPath( const char *path ){
-	if( ! path ) DETHROW( deeInvalidParam );
-	
-	if( ! pRigPath.Equals( path ) ){
-		pRigPath = path;
-		
-		pUpdateComponent();
-		pUpdateTextureDynamicSkins();
-		NotifyViewChanged();
+	if( pRigPath.Equals( path ) ){
+		return;
 	}
+	
+	pRigPath = path;
+	
+	pUpdateComponent();
+	pUpdateTextureDynamicSkins();
+	NotifyViewChanged();
 }
 
 void seSkin::SetAnimationPath( const char *path ){
-	if( ! path ) DETHROW( deeInvalidParam );
-	
-	if( ! pAnimationPath.Equals( path ) ){
-		pAnimationPath = path;
-		
-		pUpdateAnimator();
-		NotifyViewChanged();
+	if( pAnimationPath.Equals( path ) ){
+		return;
 	}
+	
+	pAnimationPath = path;
+	
+	pUpdateAnimator();
+	NotifyViewChanged();
 }
 
 void seSkin::SetMoveName( const char *moveName ){
-	if( ! moveName ) DETHROW( deeInvalidParam );
-	
-	if( ! pMoveName.Equals( moveName ) ){
-		pMoveName = moveName;
-		
-		pUpdateAnimatorMove();
-		NotifyViewChanged();
+	if( pMoveName.Equals( moveName ) ){
+		return;
 	}
+	
+	pMoveName = moveName;
+	
+	pUpdateAnimatorMove();
+	NotifyViewChanged();
 }
 
 void seSkin::SetMoveTime( float moveTime ){
-	if( fabs( moveTime - pMoveTime ) > 1e-5f ){
-		pMoveTime = moveTime;
-		
-		pEngAnimatorInstance->GetControllerAt( 0 ).SetCurrentValue( pMoveTime );
-		pEngAnimatorInstance->NotifyControllerChangedAt( 0 );
-		
-		NotifyViewChanged();
+	if( fabs( moveTime - pMoveTime ) < FLOAT_SAFE_EPSILON ){
+		return;
 	}
+	
+	pMoveTime = moveTime;
+	
+	pEngAnimatorInstance->GetControllerAt( 0 ).SetCurrentValue( pMoveTime );
+	pEngAnimatorInstance->NotifyControllerChangedAt( 0 );
+	
+	NotifyViewChanged();
 }
 
 void seSkin::SetPlayback( bool playback ){
-	if( playback != pPlayback ){
-		pPlayback = playback;
-		
-		pEngAnimatorInstance->GetControllerAt( 0 ).SetFrozen( ! playback );
-		
-		NotifyViewChanged();
+	if( playback == pPlayback ){
+		return;
 	}
+	
+	pPlayback = playback;
+	
+	pEngAnimatorInstance->GetControllerAt( 0 ).SetFrozen( ! playback );
+	
+	NotifyViewChanged();
 }
 
 void seSkin::SetEnableSkinUpdate( bool enableSkinUpdate ){
@@ -296,6 +352,7 @@ void seSkin::SetEnableSkinUpdate( bool enableSkinUpdate ){
 
 void seSkin::Dispose(){
 	RemoveAllTextures();
+	RemoveAllMapped();
 	
 	GetUndoSystem()->RemoveAll();
 }
@@ -320,19 +377,19 @@ void seSkin::Update( float elapsed ){
 		
 	}else if( pRewindTextures == 1 ){
 		if( pEngComponent && pEngComponent->GetModel() ){
-			const int textureCount = pEngComponent->GetTextureCount();
-			for( i=0; i<textureCount; i++ ){
+			const int textureCount2 = pEngComponent->GetTextureCount();
+			for( i=0; i<textureCount2; i++ ){
 				deComponentTexture &engComponentTexture = pEngComponent->GetTextureAt( i );
 				engComponentTexture.SetSkin( NULL );
 				engComponentTexture.SetTexture( 0 );
 				pEngComponent->NotifyTextureChanged( i );
 			}
+			pEngLight->SetLightSkin( NULL );
 		}
 		pRewindTextures = 2;
 		
 	}else if( pRewindTextures == 2 ){
 		if( pEngComponent && pEngComponent->GetModel() ){
-			const int textureCount = pTextureList.GetCount();
 			for( i=0; i<textureCount; i++ ){
 				pTextureList.GetAt( i )->AssignSkinToComponentTexture();
 			}
@@ -390,6 +447,10 @@ void seSkin::AssignTextureSkins(){
 		pEngComponent->NotifyTextureChanged( i );
 	}
 	
+	if( pTextureList.GetCount() > 0 ){
+		pEngLight->SetLightSkin( pTextureList.GetAt( 0 )->GetEngineSkin() );
+	}
+	
 	pDirtySkinAssignment = false;
 }
 
@@ -404,6 +465,82 @@ void seSkin::UpdateResources(){
 	for( i=0; i<count; i++ ){
 		pTextureList.GetAt( i )->UpdateResources();
 	}
+}
+
+
+
+// Mapped
+///////////
+
+void seSkin::AddMapped( seMapped *mapped ){
+	pMappedList.Add( mapped );
+	mapped->SetSkin( this );
+	NotifyMappedStructureChanged();
+	
+	if( ! pActiveMapped ){
+		SetActiveMapped( mapped );
+	}
+}
+
+void seSkin::RemoveMapped( seMapped *mapped ){
+	DEASSERT_NOTNULL( mapped )
+	DEASSERT_TRUE( mapped->GetSkin() == this )
+	
+	if( mapped->GetActive() ){
+		if( pMappedList.GetCount() > 1 ){
+			seMapped *activeMapped = pMappedList.GetAt( 0 );
+			
+			if( activeMapped == mapped ){
+				activeMapped = pMappedList.GetAt( 1 );
+			}
+			
+			SetActiveMapped( activeMapped );
+			
+		}else{
+			SetActiveMapped( nullptr );
+		}
+	}
+	
+	mapped->SetSkin( nullptr );
+	pMappedList.Remove( mapped );
+	NotifyMappedStructureChanged();
+}
+
+void seSkin::RemoveAllMapped(){
+	const int count = pMappedList.GetCount();
+	int i;
+	
+	SetActiveMapped( nullptr );
+	
+	for( i=0; i<count; i++ ){
+		pMappedList.GetAt( i )->SetSkin( nullptr );
+	}
+	pMappedList.RemoveAll();
+	NotifyMappedStructureChanged();
+}
+
+bool seSkin::HasActiveMapped() const{
+	return pActiveMapped != nullptr;
+}
+
+void seSkin::SetActiveMapped( seMapped *mapped ){
+	if( mapped == pActiveMapped ){
+		return;
+	}
+	
+	if( pActiveMapped ){
+		pActiveMapped->SetActive( false );
+		pActiveMapped->FreeReference();
+	}
+	
+	pActiveMapped = mapped;
+	
+	if( mapped ){
+		mapped->AddReference();
+		mapped->SetActive( true );
+	}
+	
+	NotifyActiveMappedChanged();
 }
 
 
@@ -559,6 +696,58 @@ void seSkin::NotifyCameraChanged(){
 	
 	for( l=0; l<listenerCount; l++ ){
 		( ( seSkinListener* )pListeners.GetAt( l ) )->CameraChanged( this );
+	}
+}
+
+
+
+void seSkin::NotifyMappedStructureChanged(){
+	const int count = pListeners.GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		( ( seSkinListener* )pListeners.GetAt( i ) )->MappedStructureChanged( this );
+	}
+	
+	SetChanged( true );
+	Invalidate();
+}
+
+void seSkin::NotifyMappedChanged( seMapped *mapped ){
+	const int count = pListeners.GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		( ( seSkinListener* )pListeners.GetAt( i ) )->MappedChanged( this, mapped );
+	}
+	
+	SetChanged( true );
+	Invalidate();
+	
+	const int textureCount = pTextureList.GetCount();
+	for( i=0; i<textureCount; i++ ){
+		pTextureList.GetAt( i )->InvalidateEngineSkin();
+	}
+}
+
+void seSkin::NotifyMappedNameChanged( seMapped *mapped ){
+	const int count = pListeners.GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		( ( seSkinListener* )pListeners.GetAt( i ) )->MappedNameChanged( this, mapped );
+	}
+	
+	SetChanged( true );
+	Invalidate();
+}
+
+void seSkin::NotifyActiveMappedChanged(){
+	const int count = pListeners.GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		( ( seSkinListener* )pListeners.GetAt( i ) )->ActiveMappedChanged( this );
 	}
 }
 
@@ -763,8 +952,11 @@ void seSkin::pCleanUp(){
 	
 	if( pCamera ) delete pCamera;
 	
-	SetActiveTexture( NULL );
+	SetActiveTexture( nullptr );
 	RemoveAllTextures();
+	
+	SetActiveMapped( nullptr );
+	RemoveAllMapped();
 	
 	if( pEngSkin ){
 		pEngSkin->FreeReference();
@@ -782,7 +974,10 @@ void seSkin::pCleanUp(){
 	}
 	
 	if( pEngWorld ){
-		if( pEngComponent ){
+		if( pEngLight && pEngLight->GetParentWorld() ){
+			pEngWorld->RemoveLight( pEngLight );
+		}
+		if( pEngComponent && pEngComponent->GetParentWorld() ){
 			pEngWorld->RemoveComponent( pEngComponent );
 			pEngComponent->FreeReference();
 		}
@@ -791,6 +986,23 @@ void seSkin::pCleanUp(){
 }
 
 
+
+void seSkin::pCreateLight(){
+	pEngLight.TakeOver( GetEngine()->GetLightManager()->CreateLight() );
+	pEngLight->SetType( deLight::eltPoint );
+	pEngLight->SetActivated( false );
+	pEngLight->SetAmbientRatio( 0.0f );
+	pEngLight->SetHalfIntensityDistance( 0.25f );
+	pEngLight->SetIntensity( 20.0f );
+	
+	decLayerMask layerMask;
+	layerMask.SetBit( 0 );
+	pEngLight->SetLayerMask( layerMask );
+	pEngLight->SetLayerMaskShadow( layerMask );
+	
+	pEngLight->SetRange( 25.0f );
+	pEngWorld->AddLight( pEngLight );
+}
 
 void seSkin::pCreateParticleEmitter(){
 #if 0
@@ -875,6 +1087,10 @@ void seSkin::pUpdateComponent(){
 			pEngComponent->SetVisible( true );
 			pEngComponent->SetPosition( decDVector( 0.0f, 0.0f, 0.0f ) );
 			pEngComponent->SetOrientation( decQuaternion() );
+			
+			decLayerMask layerMask;
+			layerMask.SetBit( 0 );
+			pEngComponent->SetLayerMask( layerMask );
 		}
 		
 		if( model ) model->FreeReference();

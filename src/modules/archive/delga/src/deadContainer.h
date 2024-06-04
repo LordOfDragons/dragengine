@@ -1,26 +1,31 @@
-/* 
- * Drag[en]gine DELGA Archive Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEADCONTAINER_H_
 #define _DEADCONTAINER_H_
+
+#include "deadArchiveDirectory.h"
 
 #include <dragengine/common/collection/decPointerList.h>
 #include <dragengine/common/string/decString.h>
@@ -29,7 +34,6 @@
 
 
 class deArchiveDelga;
-class deadArchiveDirectory;
 class deadContextUnpack;
 
 
@@ -42,7 +46,7 @@ private:
 	deArchiveDelga &pModule;
 	
 	decString pFilename;
-	deadArchiveDirectory *pArchiveDirectory;
+	deadArchiveDirectory::Ref pArchiveDirectory;
 	
 	decPointerList pContextsUnpack;
 	decPointerList pContextsUnpackFree;
@@ -54,7 +58,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create module. */
-	deadContainer( deArchiveDelga &module, decBaseFileReader *reader );
+	deadContainer( deArchiveDelga &module, decBaseFileReader &reader );
 	
 	/** \brief Clean up module. */
 	virtual ~deadContainer();
@@ -69,16 +73,8 @@ public:
 	
 	
 	
-	/** \brief Lock mutex. */
-	void Lock();
-	
-	/** \brief Unlock mutex. */
-	void Unlock();
-	
-	
-	
 	/** \brief Archive root directory. */
-	inline deadArchiveDirectory *GetArchiveDirectory() const{ return pArchiveDirectory; }
+	inline const deadArchiveDirectory::Ref &GetArchiveDirectory() const{ return pArchiveDirectory; }
 	
 	/** \brief Acquire next free unpacking context. */
 	deadContextUnpack *AcquireContextUnpack();

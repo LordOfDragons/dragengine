@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -33,104 +36,110 @@ pin Dragengine.Utils
  */
 class CActionWait extends ConversationAction
 	/** \brief Factory for loading actor actions. */
-	public class Factory implements PersistencyFactory
+	class Factory implements PersistencyFactory
 		public static fixed var String NAME = "CActionWait"
 		
-		public func new()
+		func new()
 		end
 		
-		public func Persistable readObjectFromFile( PersistencyEnvironment env, FileReader reader )
-			return CActionWait.new( env, reader )
+		func Persistable readObjectFromFile(PersistencyEnvironment env, FileReader reader)
+			return CActionWait.new(env, reader)
 		end
 		
-		public static func void registerFactory( Persistency persistency )
-			persistency.addFactory( NAME, Factory.new() )
+		public static func void registerFactory(Persistency persistency)
+			persistency.addFactory(NAME, Factory.new())
 		end
 	end
 	
 	
 	
-	private var ConversationCondition pCondition
-	private var float pInterval
-	private var Array pActions
+	var ConversationCondition pCondition
+	var float pInterval
+	var Array pActions
 	
 	
 	
 	/** \brief Create conversation action. */
-	public func new()
-		this.pInterval = 0.2
-		this.pActions = Array.new()
+	func new()
+		pInterval = 0.2
+		pActions = Array.new()
 	end
 	
 	/** \brief Read from file. */
-	public func new( PersistencyEnvironment env, FileReader reader )
-		this.pCondition = env.readObjectOrNull( reader ) cast ConversationCondition
-		this.pInterval = reader.readFloat()
-		
-		var int i, count = reader.readUShort()
-		this.pActions = Array.new()
-		for i = 0 to count
-			this.pActions.add( env.readObject( reader ) )
+	func new(PersistencyEnvironment env, FileReader reader) super(env, reader)
+		select reader.readByte() // version
+		case 0
+			pCondition = env.readObjectOrNull(reader) cast ConversationCondition
+			pInterval = reader.readFloat()
+			
+			var int i, count = reader.readUShort()
+			pActions = Array.new()
+			for i = 0 to count
+				pActions.add(env.readObject(reader))
+			end
+			
+		else
+			throw EInvalidParam.new("unsupported version")
 		end
 	end
 	
 	
 	
 	/** \brief Condition or \em null to skip action. */
-	public func ConversationCondition getCondition()
-		return this.pCondition
+	func ConversationCondition getCondition()
+		return pCondition
 	end
 	
 	/** \brief Set condition or \em null to skip action. */
-	public func void setCondition( ConversationCondition condition )
-		this.pCondition = condition
+	func void setCondition(ConversationCondition condition)
+		pCondition = condition
 	end
 	
 	/** \brief Interval to wait before testing the condition again to improve performance. */
-	public func float getInterval()
-		return this.pInterval
+	func float getInterval()
+		return pInterval
 	end
 	
 	/** \brief Set interval to wait before testing the condition again to improve performance. */
-	public func void setInterval( float interval )
-		this.pInterval = DEMath.max( interval, 0.0 )
+	func void setInterval(float interval)
+		pInterval = DEMath.max(interval, 0.0)
 	end
 	
 	
 	
 	/** \brief Visits actions. */
-	public func void forEachAction( Block aBlock )
-		this.pActions.forEach( aBlock )
+	func void forEachAction(Block aBlock)
+		pActions.forEach(aBlock)
 	end
 	
 	/** \brief Add action. */
-	public func void addAction( ConversationAction action )
+	func void addAction(ConversationAction action)
 		if action == null
 			throw EInvalidParam.new()
 		end
-		this.pActions.add( action )
+		pActions.add(action)
 	end
 	
 	/** \brief Actions to loop while condition is true. */
-	public func ConversationActionIterator getIteratorActions()
-		return ConversationActionIterator.new( this.pActions, 0 )
+	func ConversationActionIterator getIteratorActions()
+		return ConversationActionIterator.new(pActions, 0)
 	end
 	
 	
 	
 	/** \brief Execute action. */
-	public func void execute( ConversationPlayback playback )
-		if this.pCondition == null
+	func void execute(ConversationPlayback playback)
+		if pCondition == null
 			playback.advanceToNextAction()
 			return
 		end
 		
-		var ConversationPlaybackLayer layer = ConversationPlaybackLayer.new( this.getIteratorActions() )
-		layer.setLoopCondition( this.pCondition )
-		layer.setLoopEvalConditionInterval( this.pInterval )
-		layer.setLooping( true )
+		var ConversationPlaybackLayer layer = ConversationPlaybackLayer.new(getIteratorActions())
+		layer.setLoopCondition(pCondition)
+		layer.setLoopEvalConditionInterval(pInterval)
+		layer.setLooping(true)
 		
-		playback.pushLayer( layer )
+		playback.pushLayer(layer)
 	end
 	
 	
@@ -145,18 +154,22 @@ class CActionWait extends ConversationAction
 	 * instance used for loading objects. Object is read using
 	 * PersistencyFactory.readObjectFromFile() of the matching PersistencyFactory.
 	 */
-	public func String persistencyFactoryName()
+	func String persistencyFactoryName()
 		return Factory.NAME
 	end
 	
 	/** \brief Write object to file writer. */
-	public func void writeObjectToFile( PersistencyEnvironment env, FileWriter writer )
-		env.writeObjectOrNull( writer, this.pCondition )
-		writer.writeFloat( this.pInterval )
+	func void writeObjectToFile(PersistencyEnvironment env, FileWriter writer)
+		super.writeObjectToFile(env, writer)
 		
-		writer.writeUShort( this.pActions.getCount() )
-		this.pActions.forEach( block ConversationAction each
-			env.writeObject( writer, each )
-		end )
+		writer.writeByte(0) // version
+		
+		env.writeObjectOrNull(writer, pCondition)
+		writer.writeFloat(pInterval)
+		
+		writer.writeUShort(pActions.getCount())
+		pActions.forEach(block ConversationAction each
+			env.writeObject(writer, each)
+		end)
 	end
 end

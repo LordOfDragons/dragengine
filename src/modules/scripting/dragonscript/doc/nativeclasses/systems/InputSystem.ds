@@ -19,10 +19,11 @@ fixed class InputSystem
 	/*@{*/
 	/** \brief Input devices are captured by the active input module if supported. */
 	public static func bool getCaptureInputDevices()
+		return false
 	end
 	
 	/** \brief Set if input devices are captured by the active input module if supported. */
-	public static func void setCaptureInputDevices( bool captureInputDevices )
+	public static func void setCaptureInputDevices(bool captureInputDevices)
 	end
 	/*@}*/
 	
@@ -32,42 +33,56 @@ fixed class InputSystem
 	/*@{*/
 	/** \brief Number of input devices. */
 	public static func int getDeviceCount()
+		return 0
 	end
 	
 	/** \brief Information for input device at index. */
-	public static func InputDevice getDeviceAt( int index )
+	public static func InputDevice getDeviceAt(int index)
+		return null
 	end
 	
 	/** \brief Index of device with identifier or -1 if absent. */
-	public static func int indexOfDeviceWithID( String id )
+	public static func int indexOfDeviceWithID(String id)
+		return 0
 	end
 	
 	/** \brief Index of button with identifier on device at index or -1 if absent. */
-	public static func int indexOfButtonWithID( int device, String id )
+	public static func int indexOfButtonWithID(int device, String id)
+		return 0
 	end
 	
 	/** \brief Index of axis with identifier on device at index or -1 if absent. */
-	public static func int indexOfAxisWithID( int device, String id )
+	public static func int indexOfAxisWithID(int device, String id)
+		return 0
 	end
 	
 	/** \brief Index of feedback with identifier on device at index or -1 if absent. */
-	public static func int indexOfFeedbackWithID( int device, String id )
+	public static func int indexOfFeedbackWithID(int device, String id)
+		return 0
 	end
 	
 	/** \brief Button at index on device at index is pressed down. */
-	public static func bool getButtonPressed( int device, int button )
+	public static func bool getButtonPressed(int device, int button)
+		return false
+	end
+	
+	/** \brief Button at index on device at index is touched. */
+	public static func bool getButtonTouched(int device, int button)
+		return false
 	end
 	
 	/** \brief Value of axis at index on device at index. */
-	public static func int getAxisValue( int device, int axis )
+	public static func float getAxisValue(int device, int axis)
+		return 0
 	end
 	
 	/** \brief Value of feedback at index on device at index. */
-	public static func int getFeedbackValue( int device, int feedback )
+	public static func float getFeedbackValue(int device, int feedback)
+		return 0
 	end
 	
 	/** \brief Set value of feedback at index on device at index. */
-	public static func void setFeedbackValue( int device, int feedback, int value )
+	public static func void setFeedbackValue(int device, int feedback, float value)
 	end
 	
 	/**
@@ -81,7 +96,8 @@ fixed class InputSystem
 	 * Can be used for example to locate keyboard keys to create default binding
 	 * layouts without the user pressing input keys.
 	 */
-	public func int buttonMatchingKeyCode( int device, int keyCode )
+	public static func int buttonMatchingKeyCode(int device, int keyCode)
+		return 0
 	end
 	
 	/**
@@ -101,7 +117,30 @@ fixed class InputSystem
 	 * Can be used for example to locate keyboard keys to create default binding
 	 * layouts without the user pressing input keys.
 	 */
-	public func int buttonMatchingKeyChar( int device, int character )
+	public static func int buttonMatchingKeyChar(int device, int character)
+		return 0
+	end
+	
+	/**
+	 * \brief Index of button best matching key code or -1 if not found.
+	 * \version 1.7
+	 * 
+	 * Same as buttonMatchingKeyChar(int,int) but allows to distinguish between multiple
+	 * keys of the same type, for example left and right shift key.
+	 */
+	public func int buttonMatchingKeyCode(int device, int keyCode, InputEventKeyLocation location)
+		return 0
+	end
+	
+	/**
+	 * \brief Index of button best matching character or -1 if not found.
+	 * \version 1.7
+	 * 
+	 * Same as buttonMatchingKeyChar(int,int) but allows to distinguish between multiple
+	 * keys of the same type, for example left and right shift key.
+	 */
+	public func int buttonMatchingKeyChar(int device, int character, InputEventKeyLocation location)
+		return 0
 	end
 	/*@}*/
 	
@@ -111,35 +150,40 @@ fixed class InputSystem
 	/*@{*/
 	/** \brief Number of parameters available. */
 	public static func int getParameterCount()
+		return 0
 	end
 	
 	/**
 	 * \brief Parameter information.
 	 * \throws EOutOfBoundary \em index less than 0 or greater than or equal to getParameterCount().
 	 */
-	public static func ModuleParameter getParameterInfo( int index )
+	public static func ModuleParameter getParameterInfo(int index)
+		return null
 	end
 	
 	/** \brief Named parameter information or \em null if not found. */
-	public static func ModuleParameter getParameterInfo( String name )
+	public static func ModuleParameter getParameterInfo(String name)
+		return null
 	end
 	
 	/**
 	 * \brief Parameter value.
 	 * \throws EInvalidParam Parameter with name not found.
 	 */
-	public static func String getParameterValue( String name )
+	public static func String getParameterValue(String name)
+		return null
 	end
 	
 	/**
 	 * \brief Set named parameter value.
 	 * \throws EInvalidParam Parameter with name not found.
 	 */
-	public static func void setParameterValue( String name, String value )
+	public static func void setParameterValue(String name, String value)
 	end
 	
 	/** \brief Send command. */
-	public static func String sendCommand( String command )
+	public static func String sendCommand(String command)
+		return null
 	end
 	/*@}*/
 end

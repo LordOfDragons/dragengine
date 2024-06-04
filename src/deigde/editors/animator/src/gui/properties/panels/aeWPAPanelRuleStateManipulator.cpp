@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Animator Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <math.h>
@@ -34,9 +37,12 @@
 #include "../../../undosys/rule/statemanip/aeUSetRuleSModMaxRotation.h"
 #include "../../../undosys/rule/statemanip/aeUSetRuleSModMinSize.h"
 #include "../../../undosys/rule/statemanip/aeUSetRuleSModMaxSize.h"
+#include "../../../undosys/rule/statemanip/aeUSetRuleSModMinVertexPositionSet.h"
+#include "../../../undosys/rule/statemanip/aeUSetRuleSModMaxVertexPositionSet.h"
 #include "../../../undosys/rule/statemanip/aeUSetRuleSModEnablePos.h"
 #include "../../../undosys/rule/statemanip/aeUSetRuleSModEnableRot.h"
 #include "../../../undosys/rule/statemanip/aeUSetRuleSModEnableSize.h"
+#include "../../../undosys/rule/statemanip/aeUSetRuleSModEnableVertexPositionSet.h"
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeCommonDialogs.h>
@@ -44,6 +50,7 @@
 #include <deigde/gui/igdeCheckBox.h>
 #include <deigde/gui/igdeComboBoxFilter.h>
 #include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/composed/igdeEditVectorListener.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
@@ -136,6 +143,30 @@ public:
 	virtual igdeUndo *OnChanged( igdeEditVector *editVector, aeAnimator *animator, aeRuleStateManipulator *rule ) = 0;
 };
 
+class cBaseTextFieldListener : public igdeTextFieldListener{
+protected:
+	aeWPAPanelRuleStateManipulator &pPanel;
+	
+public:
+	cBaseTextFieldListener( aeWPAPanelRuleStateManipulator &panel ) : pPanel( panel ){ }
+	
+	virtual void OnTextChanged( igdeTextField *textField ){
+		aeAnimator * const animator = pPanel.GetAnimator();
+		aeRuleStateManipulator * const rule = ( aeRuleStateManipulator* )pPanel.GetRule();
+		if( ! animator || ! rule ){
+			return;
+		}
+		
+		igdeUndoReference undo;
+		undo.TakeOver( OnChanged( textField, animator, rule ) );
+		if( undo ){
+			animator->GetUndoSystem()->Add( undo );
+		}
+	}
+	
+	virtual igdeUndo *OnChanged( igdeTextField *textField, aeAnimator *animator, aeRuleStateManipulator *rule ) = 0;
+};
+
 
 class cEditPositionMinimum : public cBaseEditVectorListener{
 public:
@@ -197,6 +228,28 @@ public:
 	}
 };
 
+class cEditVertexPositionSetMinimum : public cBaseTextFieldListener{
+public:
+	cEditVertexPositionSetMinimum( aeWPAPanelRuleStateManipulator &panel ) : cBaseTextFieldListener( panel ){ }
+	
+	virtual igdeUndo *OnChanged( igdeTextField *textField, aeAnimator*, aeRuleStateManipulator *rule ){
+		const float value = textField->GetFloat();
+		return fabsf( value - rule->GetMinimumVertexPositionSet() ) > FLOAT_SAFE_EPSILON
+			? new aeUSetRuleSModMinVertexPositionSet( rule, value ) : nullptr;
+	}
+};
+
+class cEditVertexPositionSetMaximum : public cBaseTextFieldListener{
+public:
+	cEditVertexPositionSetMaximum( aeWPAPanelRuleStateManipulator &panel ) : cBaseTextFieldListener( panel ){ }
+	
+	virtual igdeUndo *OnChanged( igdeTextField *textField, aeAnimator*, aeRuleStateManipulator *rule ){
+		const float value = textField->GetFloat();
+		return fabsf( value - rule->GetMaximumVertexPositionSet() ) > FLOAT_SAFE_EPSILON
+			? new aeUSetRuleSModMaxVertexPositionSet( rule, value ) : nullptr;
+	}
+};
+
 
 class cActionEnablePosition : public cBaseAction{
 public:
@@ -243,6 +296,22 @@ public:
 	}
 };
 
+class cActionEnableVertexPositionSet : public cBaseAction{
+public:
+	cActionEnableVertexPositionSet( aeWPAPanelRuleStateManipulator &panel ) : cBaseAction( panel,
+		"Enable vertex position set manipulation", nullptr,
+		"Determines if vertex position set is modified or kept as it is" ){ }
+	
+	virtual igdeUndo *OnAction( aeAnimator*, aeRuleStateManipulator *rule ){
+		return new aeUSetRuleSModEnableVertexPositionSet( rule );
+	}
+	
+	virtual void Update( const aeAnimator & , const aeRuleStateManipulator &rule ){
+		SetEnabled( true );
+		SetSelected( rule.GetEnableVertexPositionSet() );
+	}
+};
+
 }
 
 
@@ -278,9 +347,15 @@ aeWPAPanelRule( wpRule, deAnimatorRuleVisitorIdentify::ertStateManipulator )
 	helper.EditVector( groupBox, "Max Scaling:", "Maximum scaling",
 		pEditMaxSize, new cEditScalingMaximum( *this ) );
 	
+	helper.EditFloat( groupBox, "Min Vertex Position Set:", "Minimum vertex position set",
+		pEditMinVertexPositionSet, new cEditVertexPositionSetMinimum( *this ) );
+	helper.EditFloat( groupBox, "Max Vertex Position Set:", "Maximum vertex position set",
+		pEditMaxVertexPositionSet, new cEditVertexPositionSetMaximum( *this ) );
+	
 	helper.CheckBox( groupBox, pChkEnablePosition, new cActionEnablePosition( *this ), true );
 	helper.CheckBox( groupBox, pChkEnableRotation, new cActionEnableRotation( *this ), true );
 	helper.CheckBox( groupBox, pChkEnableSize, new cActionEnableSize( *this ), true );
+	helper.CheckBox( groupBox, pChkEnableVertexPositionSet, new cActionEnableVertexPositionSet( *this ), true );
 }
 
 aeWPAPanelRuleStateManipulator::~aeWPAPanelRuleStateManipulator(){
@@ -303,6 +378,8 @@ void aeWPAPanelRuleStateManipulator::UpdateRule(){
 		pEditMaxRot->SetVector( rule->GetMaximumRotation() );
 		pEditMinSize->SetVector( rule->GetMinimumSize() );
 		pEditMaxSize->SetVector( rule->GetMaximumSize() );
+		pEditMinVertexPositionSet->SetFloat( rule->GetMinimumVertexPositionSet() );
+		pEditMaxVertexPositionSet->SetFloat( rule->GetMaximumVertexPositionSet() );
 		
 	}else{
 		pEditMinPos->SetVector( decVector() );
@@ -311,11 +388,14 @@ void aeWPAPanelRuleStateManipulator::UpdateRule(){
 		pEditMaxRot->SetVector( decVector() );
 		pEditMinSize->SetVector( decVector() );
 		pEditMaxSize->SetVector( decVector() );
+		pEditMinVertexPositionSet->SetFloat( 0.0f );
+		pEditMaxVertexPositionSet->SetFloat( 1.0f );
 	}
 	
 	pChkEnablePosition->GetAction()->Update();
 	pChkEnableRotation->GetAction()->Update();
 	pChkEnableSize->GetAction()->Update();
+	pChkEnableVertexPositionSet->GetAction()->Update();
 }
 
 void aeWPAPanelRuleStateManipulator::UpdateTargetList(){
@@ -326,5 +406,6 @@ void aeWPAPanelRuleStateManipulator::UpdateTargetList(){
 		AddTarget( "Position", &rule->GetTargetPosition() );
 		AddTarget( "Rotation ", &rule->GetTargetRotation() );
 		AddTarget( "Size", &rule->GetTargetSize() );
+		AddTarget( "Vertex Position Set", &rule->GetTargetVertexPositionSet() );
 	}
 }

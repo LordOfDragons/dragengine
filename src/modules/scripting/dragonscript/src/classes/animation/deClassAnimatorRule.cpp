@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -38,6 +41,7 @@
 #include "rules/deClassARTrackTo.h"
 #include "rules/deClassARLimit.h"
 #include "rules/deClassARGroup.h"
+#include "rules/deClassARMirror.h"
 #include "../../deScriptingDragonScript.h"
 #include "../../deClassPathes.h"
 
@@ -55,6 +59,7 @@
 #include <dragengine/resources/animator/rule/deAnimatorRuleTrackTo.h>
 #include <dragengine/resources/animator/rule/deAnimatorRuleLimit.h>
 #include <dragengine/resources/animator/rule/deAnimatorRuleGroup.h>
+#include <dragengine/resources/animator/rule/deAnimatorRuleMirror.h>
 #include <dragengine/deEngine.h>
 
 #include <libdscript/exceptions.h>
@@ -171,6 +176,25 @@ void deClassAnimatorRule::nfSetBlendFactor::RunFunction( dsRunTime *rt, dsValue 
 	}
 }
 
+// public func void setInvertBlendFactor(bool invertBlendFactor)
+deClassAnimatorRule::nfSetInvertBlendFactor::nfSetInvertBlendFactor( const sInitData &init ) :
+dsFunction( init.clsArR, "setInvertBlendFactor", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsBool ); // invertBlendFactor
+}
+void deClassAnimatorRule::nfSetInvertBlendFactor::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const sArRNatDat &nd = *( ( sArRNatDat* )p_GetNativeData( myself ) );
+	
+	if( ! nd.rule ){
+		DSTHROW( dueNullPointer );
+	}
+	
+	nd.rule->SetInvertBlendFactor( rt->GetValue( 0 )->GetBool() );
+	
+	if( nd.animator ){
+		nd.animator->NotifyRulesChanged();
+	}
+}
+
 
 
 // public func void addBone( String boneName )
@@ -237,6 +261,70 @@ void deClassAnimatorRule::nfCopyBonesFrom::RunFunction( dsRunTime *rt, dsValue *
 
 
 
+// public func void addVertexPositionSet(String name)
+deClassAnimatorRule::nfAddVertexPositionSet::nfAddVertexPositionSet( const sInitData &init ) :
+dsFunction( init.clsArR, "addVertexPositionSet", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsStr ); // name
+}
+void deClassAnimatorRule::nfAddVertexPositionSet::RunFunction( dsRunTime *rt, dsValue *myself ){
+	sArRNatDat &nd = *( ( sArRNatDat* )p_GetNativeData( myself ) );
+	
+	if( ! nd.rule ){
+		DSTHROW( dueNullPointer );
+	}
+	
+	nd.rule->GetListVertexPositionSets().Add( rt->GetValue( 0 )->GetString() );
+	
+	if( nd.animator ){
+		nd.animator->NotifyRulesChanged();
+	}
+}
+
+// public func void removeAllVertexPositionSets()
+deClassAnimatorRule::nfRemoveAllVertexPositionSets::nfRemoveAllVertexPositionSets( const sInitData &init ) :
+dsFunction( init.clsArR, "removeAllVertexPositionSets", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+}
+void deClassAnimatorRule::nfRemoveAllVertexPositionSets::RunFunction( dsRunTime *rt, dsValue *myself ){
+	sArRNatDat &nd = *( ( sArRNatDat* )p_GetNativeData( myself ) );
+	
+	if( ! nd.rule ){
+		DSTHROW( dueNullPointer );
+	}
+	
+	nd.rule->GetListVertexPositionSets().RemoveAll();
+	
+	if( nd.animator ){
+		nd.animator->NotifyRulesChanged();
+	}
+}
+
+// public func void copyVertexPositionSetsFrom(AnimatorRule rule)
+deClassAnimatorRule::nfCopyVertexPositionSetsFrom::nfCopyVertexPositionSetsFrom( const sInitData &init ) :
+dsFunction( init.clsArR, "copyVertexPositionSetsFrom", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsArR ); // rule
+}
+void deClassAnimatorRule::nfCopyVertexPositionSetsFrom::RunFunction( dsRunTime *rt, dsValue *myself ){
+	sArRNatDat &nd = *( ( sArRNatDat* )p_GetNativeData( myself ) );
+	deClassAnimatorRule &clsArR = *( ( deClassAnimatorRule* )GetOwnerClass() );
+	
+	if( ! nd.rule ){
+		DSTHROW( dueNullPointer );
+	}
+	
+	const deAnimatorRule *rule = clsArR.GetRule( rt->GetValue( 0 )->GetRealObject() );
+	if( ! rule ){
+		DSTHROW( dueNullPointer );
+	}
+	
+	nd.rule->GetListVertexPositionSets() = rule->GetListVertexPositionSets();
+	
+	if( nd.animator ){
+		nd.animator->NotifyRulesChanged();
+	}
+}
+
+
+
 // Class deClassAnimatorRule
 //////////////////////////////
 
@@ -280,10 +368,15 @@ void deClassAnimatorRule::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfSetEnabled( init ) );
 	AddFunction( new nfSetBlendMode( init ) );
 	AddFunction( new nfSetBlendFactor( init ) );
+	AddFunction( new nfSetInvertBlendFactor( init ) );
 	
 	AddFunction( new nfAddBone( init ) );
 	AddFunction( new nfRemoveAllBones( init ) );
 	AddFunction( new nfCopyBonesFrom( init ) );
+	
+	AddFunction( new nfAddVertexPositionSet( init ) );
+	AddFunction( new nfRemoveAllVertexPositionSets( init ) );
+	AddFunction( new nfCopyVertexPositionSetsFrom( init ) );
 	
 	// calculate member offsets
 	CalcMemberOffsets();
@@ -401,6 +494,10 @@ void deClassAnimatorRule::PushRule( dsRunTime *rt, deAnimator *animator, deAnima
 		
 	case deAnimatorRuleVisitorIdentify::ertGroup:
 		pDS.GetClassARGroup()->PushRule( rt, animator, &visitor.CastToGroup() );
+		break;
+		
+	case deAnimatorRuleVisitorIdentify::ertMirror:
+		pDS.GetClassARMirror()->PushRule( rt, animator, &visitor.CastToMirror() );
 		break;
 		
 	default:

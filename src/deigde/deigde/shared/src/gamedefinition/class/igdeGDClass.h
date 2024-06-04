@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _IGDEGDCLASS_H_
@@ -24,6 +27,7 @@
 
 #include "billboard/igdeGDCBillboardList.h"
 #include "component/igdeGDCComponentList.h"
+#include "component/igdeGDCCTextureList.h"
 #include "envmapprobe/igdeGDCEnvMapProbeList.h"
 #include "light/igdeGDCLightList.h"
 #include "snappoint/igdeGDCSnapPointList.h"
@@ -57,7 +61,7 @@ class deImage;
  *
  * Stores the definition of a class in a game definition.
  */
-class igdeGDClass : public deObject{
+class DE_DLL_EXPORT igdeGDClass : public deObject{
 public:
 	/** \brief Scale modes. */
 	enum eScaleModes{
@@ -71,6 +75,22 @@ public:
 		esmFree
 	};
 	
+	/** \brief Sub objects filter. */
+	enum eFilterSubObjects{
+		efsoBillboards = 0x1,
+		efsoComponents = 0x2,
+		efsoLights = 0x4,
+		efsoSnapPoints = 0x8,
+		efsoParticleEmitters = 0x10,
+		efsoForceFields = 0x20,
+		efsoEnvMapProbes = 0x40,
+		efsoSpeakers = 0x80,
+		efsoNavigationSpaces = 0x100,
+		efsoNavigationBlockers = 0x200
+	};
+	
+	static const int FilterSubObjectsAll = 0x3ff;
+	
 	
 	
 private:
@@ -80,7 +100,7 @@ private:
 	igdeGDCamera *pCamera;
 	bool pHasCamera;
 	bool pIsGhost;
-	bool pCanInstanciate;
+	bool pCanInstantiate;
 	decString pCategory;
 	igdeGDPropertyList pListProperties;
 	decStringDictionary pPropertyValues;
@@ -95,6 +115,7 @@ private:
 	igdeGDCSpeakerList pListSpeakers;
 	igdeGDCNavigationSpaceList pListNavigationSpaces;
 	igdeGDCNavigationBlockerList pListNavigationBlockers;
+	int pInheritSubObjects;
 	
 	igdeTagManager pHideTags;
 	igdeTagManager pPartialHideTags;
@@ -102,6 +123,7 @@ private:
 	decObjectOrderedSet pInheritClasses;
 	
 	decString pPathEClass;
+	igdeGDCCTextureList pComponentTextures;
 	
 	deImage *pPreviewImage;
 	
@@ -165,10 +187,10 @@ public:
 	void SetIsGhost( bool isGhost );
 	
 	/** \brief Object can be instantiated. */
-	inline bool GetCanInstanciate() const{ return pCanInstanciate; }
+	inline bool GetCanInstantiate() const{ return pCanInstantiate; }
 	
 	/** \brief Set if object can be instantiated. */
-	void SetCanInstanciate( bool canInstanciate );
+	void SetCanInstantiate( bool canInstantiate );
 	
 	/** \brief Hide tags. */
 	inline igdeTagManager &GetHideTags(){ return pHideTags; }
@@ -177,6 +199,12 @@ public:
 	/** \brief Partial hide tags. */
 	inline igdeTagManager &GetPartialHideTags(){ return pPartialHideTags; }
 	inline const igdeTagManager &GetPartialHideTags() const{ return pPartialHideTags; }
+	
+	/** \brief Inherit sub objects filter. */
+	inline int GetInheritSubObjects() const{ return pInheritSubObjects; }
+	
+	/** \brief Set inherit sub objects filter. */
+	void SetInheritSubObjects( int filter );
 	
 	
 	
@@ -214,6 +242,13 @@ public:
 	
 	/** \brief Set element class path or empty string if defined manually. */
 	void SetPathEClass( const decString &pathEClass );
+	
+	/** \brief Component texture replacements. */
+	inline igdeGDCCTextureList &GetComponentTextures(){ return pComponentTextures; }
+	inline const igdeGDCCTextureList &GetComponentTextures() const{ return pComponentTextures; }
+	
+	/** \brief Build flattened component texture replacements list. */
+	void GetDeepComponentTextures( igdeGDCCTextureList &list ) const;
 	/*@}*/
 	
 	

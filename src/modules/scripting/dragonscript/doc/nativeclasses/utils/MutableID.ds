@@ -8,9 +8,6 @@
 
 namespace Dragengine
 
-pin Dragengine.Gui
-
-
 /**
  * \brief Mutable unique ID.
  * 
@@ -42,6 +39,7 @@ class MutableID
 	/*@{*/
 	/** \brief Bit count. */
 	public func int getBitCount()
+		return 0
 	end
 	
 	/**
@@ -56,6 +54,7 @@ class MutableID
 	 * \throws EOutOfBoundary \em position is less than 0 or larger than or equal to getBitCount().
 	 */
 	public func int getByteAt( int position )
+		return 0
 	end
 	
 	/**
@@ -123,6 +122,7 @@ class MutableID
 	
 	/** \brief Create unique id from id. */
 	public func UniqueID toUniqueID()
+		return null
 	end
 	
 	/**
@@ -130,12 +130,14 @@ class MutableID
 	 * \details Convenience call equal to calling toUniqueID() then increment().
 	 */
 	public func UniqueID nextID()
+		return null
 	end
 	
 	
 	
 	/** \brief Hex string representation. */
 	public func String toHexString()
+		return null
 	end
 	
 	/** \brief Set from hex string. */
@@ -146,6 +148,7 @@ class MutableID
 	
 	/** \brief String representation of mutable id. */
 	public func String toString()
+		return null
 	end
 	
 	/**
@@ -154,6 +157,7 @@ class MutableID
 	 * \returns \em true if \em other is of type MutableID and both IDs are equal.
 	 */
 	public func bool equals( Object other )
+		return false
 	end
 	
 	/**
@@ -161,6 +165,7 @@ class MutableID
 	 * \details Implements Object.hashCode().
 	 */
 	public func int hashCode()
+		return 0
 	end
 	/*@}*/
 	
@@ -183,18 +188,22 @@ class MutableID
 	/*@{*/
 	/** \brief ID is less than another ID. */
 	public func bool <( MutableID id )
+		return false
 	end
 	
 	/** \brief ID is less than or equal to another ID. */
 	public func bool <=( MutableID id )
+		return false
 	end
 	
 	/** \brief ID is greater than another ID. */
 	public func bool >( MutableID id )
+		return false
 	end
 	
 	/** \brief ID is greater than or equal to another ID. */
 	public func bool >=( MutableID id )
+		return false
 	end
 	/*@}*/
 end

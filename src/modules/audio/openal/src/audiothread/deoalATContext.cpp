@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenAL Audio Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -43,8 +46,8 @@
 
 deoalATContext::deoalATContext( deoalAudioThread &audioThread ) :
 pAudioThread( audioThread ),
-pDevice( NULL ),
-pContext( NULL ){
+pDevice( nullptr ),
+pContext( nullptr ){
 }
 
 deoalATContext::~deoalATContext(){
@@ -63,7 +66,7 @@ void deoalATContext::OpenDevice(){
 	
 	if( deviceName.IsEmpty() ){
 		logger.LogInfo( "Open default device" );
-		pDevice = alcOpenDevice( NULL );
+		pDevice = alcOpenDevice( nullptr );
 		
 	}else{
 		logger.LogInfoFormat( "Open device '%s' instead of default", deviceName.GetString() );
@@ -94,10 +97,10 @@ void deoalATContext::CreateContext(){
 	
 	if( extensions.GetHasEFX() ){
 		attributes[ index++ ] = ALC_MAX_AUXILIARY_SENDS;
-		attributes[ index++ ] = 8;
-			// NOTE a send can have both an effect and a filter. to do environment simulation
-			//      it is enough to have a reverb effect and a low-pass filter. thus 1 send
-			//      is enough to simulate 1 indirect sound path
+		attributes[ index++ ] = 1;
+			// a send can have both an effect and a filter. to do environment simulation
+			// it is enough to have a reverb effect and a low-pass filter. thus 1 send
+			// is enough to simulate 1 indirect sound path
 	}
 	
 	if( extensions.GetHasHRTF() ){
@@ -107,6 +110,10 @@ void deoalATContext::CreateContext(){
 			// it is possible the user is using a surround system where HRTF is not good.
 			// we check later on though if HRTF is currently in use.
 	}
+	
+	//ALC_FREQUENCY = 48000 // Hz
+	//ALC_REFRESH = 50 // Hz => ignored by OpenALSoft
+ 
 	
 	attributes[ index++ ] = ALC_INVALID;
 	
@@ -121,9 +128,6 @@ void deoalATContext::CreateContext(){
 		logger.LogError( "alcMakeContextCurrent failed" );
 		DETHROW( deeInvalidParam );
 	}
-	
-	// set default parameters
-	alDistanceModel( AL_INVERSE_DISTANCE_CLAMPED );
 }
 
 void deoalATContext::LogContextInfo(){
@@ -140,14 +144,14 @@ void deoalATContext::LogContextInfo(){
 
 void deoalATContext::CleanUp(){
 	if( pContext ){
-		alcMakeContextCurrent( NULL );
+		alcMakeContextCurrent( nullptr );
 		alcDestroyContext( pContext );
-		pContext = NULL;
+		pContext = nullptr;
 	}
 	
 	if( pDevice ){
 		alcCloseDevice( pDevice );
-		pDevice = NULL;
+		pDevice = nullptr;
 	}
 }
 
@@ -157,19 +161,19 @@ void deoalATContext::CleanUp(){
 //////////////////////
 
 void deoalATContext::pScanForDevices(){
-	const ALCchar *defaultDevice = NULL;
-	const ALCchar *devices = NULL;
+	const ALCchar *defaultDevice = nullptr;
+	const ALCchar *devices = nullptr;
 	int position, len;
 	
-	// query for the informations
-	defaultDevice = alcGetString( NULL, ALC_DEFAULT_DEVICE_SPECIFIER );
+	// query for the information
+	defaultDevice = alcGetString( nullptr, ALC_DEFAULT_DEVICE_SPECIFIER );
 	
-	if( alcIsExtensionPresent( NULL, "ALC_ENUMERATE_ALL_EXT" ) == AL_TRUE ){
-		defaultDevice = alcGetString( NULL, ALC_DEFAULT_ALL_DEVICES_SPECIFIER );
-		devices = alcGetString( NULL, ALC_ALL_DEVICES_SPECIFIER );
+	if( alcIsExtensionPresent( nullptr, "ALC_ENUMERATE_ALL_EXT" ) == AL_TRUE ){
+		defaultDevice = alcGetString( nullptr, ALC_DEFAULT_ALL_DEVICES_SPECIFIER );
+		devices = alcGetString( nullptr, ALC_ALL_DEVICES_SPECIFIER );
 		
-	}else if( alcIsExtensionPresent( NULL, "ALC_ENUMERATION_EXT" ) == AL_TRUE ){
-		devices = alcGetString( NULL, ALC_DEVICE_SPECIFIER );
+	}else if( alcIsExtensionPresent( nullptr, "ALC_ENUMERATION_EXT" ) == AL_TRUE ){
+		devices = alcGetString( nullptr, ALC_DEVICE_SPECIFIER );
 	}
 	
 	// log devices
@@ -179,7 +183,7 @@ void deoalATContext::pScanForDevices(){
 		logger.LogInfo( "devices:" );
 		position = 0;
 		while( devices[ position ] ){
-			len = strlen( devices + position );
+			len = ( int )strlen( devices + position );
 			if( len > 0 ){
 				logger.LogInfoFormat( "- %s", devices + position );
 				position += len + 1;

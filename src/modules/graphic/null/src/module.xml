@@ -1,13 +1,13 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<!DOCTYPE module SYSTEM "DragengineModule.dtd">
 <module>
 	<name>NullGraphic</name>
 	<description>Renders nothing at all. Null modules are useful
 		for testing purpose or servers without a graphic system.</description>
 	<author>Plüss Roland (roland@rptd.ch)</author>
-	<version>1.0</version>
+	<version>VERSION</version>
 	<type>Graphic</type>
 	<fallback/>
+	<priority>0</priority>
 	<library>
 		<file>FILENAME</file>
 		<size>FILESIZE</size>

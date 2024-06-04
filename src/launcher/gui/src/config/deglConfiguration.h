@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine GUI Launcher
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEGLCONFIGURATION_H_
@@ -32,17 +35,12 @@ class deglLauncher;
 
 
 /**
- * \brief Launcher Configuration.
+ * Launcher Configuration.
  */
 class deglConfiguration{
 private:
-	deglLauncher *pLauncher;
-	
-	decString pPathConfigSystem;
-	decString pPathConfigUser;
-	decString pPathShares;
-	decString pPathGames;
-	decString pPathLogs;
+	deglLauncher &pLauncher;
+	bool pCanSave;
 	
 	deglConfigWindow pWindowMain;
 	
@@ -51,78 +49,51 @@ private:
 	FXColor pClrProblemBack;
 	FXColor pClrProblemText;
 	
+	
+	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new configuration. */
-	deglConfiguration( deglLauncher *launcher );
-	/** Cleans up the configuration. */
+	/** Create configuration. */
+	deglConfiguration( deglLauncher &launcher );
+	
+	/** Clean up configuration. */
 	~deglConfiguration();
 	/*@}*/
 	
+	
+	
 	/** \name Management */
 	/*@{*/
-	/** Retrieves the system config path. */
-	inline const decString &GetPathConfigSystem() const{ return pPathConfigSystem; }
-	/** Sets the system config path. */
-	void SetPathConfigSystem( const char *path );
-	/** Retrieves the user config path. */
-	inline const decString &GetPathConfigUser() const{ return pPathConfigUser; }
-	/** Sets the user config path. */
-	void SetPathConfigUser( const char *path );
-	
-	/** \brief Shares path. */
-	inline const decString &GetPathShares() const{ return pPathShares; }
-	
-	/** \brief Set shares path. */
-	void SetPathShares( const char *path );
-	
-	/** \brief Games path. */
-	inline const decString &GetPathGames() const{ return pPathGames; }
-	
-	/** \brief Set games path. */
-	void SetPathGames( const char *path );
-	
-	/** Retrieves the logs path. */
-	inline const decString &GetPathLogs() const{ return pPathLogs; }
-	/** Sets the logs path. */
-	void SetPathLogs( const char *path );
-	
-	/** Locate path. */
-	void LocatePath();
-	/** Initialize virtual file system. */
-	void InitVirtualFileSystem();
-	/** Log some important value. */
-	void LogImportantValues();
-	
 	/**
-	 * Load the configuration. Tries to locate the configuration file in
-	 * the known places reading first the system wide configuration and
-	 * then the user configuration if found. For all not found configuration
-	 * values the default value is used.
+	 * Load the configuration. Tries to locate the configuration file in the known places
+	 * reading first the system wide configuration and then the user configuration if found.
+	 * For all not found configuration values the default value is used.
 	 */
 	void LoadConfiguration();
+	
 	/**
-	 * Saves the configuration to the user configuration directory. If the
-	 * directory or files do not exist they are created.
+	 * Saves the configuration to the user configuration directory. If the directory or
+	 * files do not exist they are created.
 	 */
 	void SaveConfiguration();
 	
-	/** Retrieves the main window configuration. */
+	/** Main window configuration. */
 	inline deglConfigWindow &GetWindowMain(){ return pWindowMain; }
 	inline const deglConfigWindow &GetWindowMain() const{ return pWindowMain; }
 	
-	/** Retrieves the background color for valid elements. */
+	/** Background color for valid elements. */
 	inline FXColor GetBackColorValid() const{ return pClrValidBack; }
-	/** Retrieves the background color for problem elements. */
+	
+	/** Background color for problem elements. */
 	inline FXColor GetBackColorProblem() const{ return pClrProblemBack; }
-	/** Retrieves the text color for valid elements. */
+	
+	/** Text color for valid elements. */
 	inline FXColor GetTextColorValid() const{ return pClrValidText; }
-	/** Retrieves the text color for problem elements. */
+	
+	/** Text color for problem elements. */
 	inline FXColor GetTextColorProblem() const{ return pClrProblemText; }
 	/*@}*/
-	
-private:
 };
 
-#endif // _DEGLGAME_H_
+#endif

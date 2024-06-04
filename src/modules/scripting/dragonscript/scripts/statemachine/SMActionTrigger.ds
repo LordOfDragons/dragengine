@@ -1,0 +1,165 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+
+namespace Dragengine.StateMachineSystem
+
+pin Dragengine.Scenery
+pin Dragengine.TriggerSystem
+pin Dragengine.Utils
+
+
+
+/**
+ * \brief State machine action manipulating trigger target.
+ */
+class SMActionTrigger implements SMAction
+	/** \brief Actions. */
+	public enum Action
+		/** \brief Fire the trigger. */
+		fire
+		
+		/** \brief Reset the trigger. */
+		reset
+		
+		/** \brief Fire and immediately reset the trigger. */
+		pulse
+		
+		/** \brief Fully resets the trigger. */
+		fullReset
+	end
+	
+	
+	
+	/** \brief Trigger table. */
+	private var TSTriggerTable pTriggerTable
+	
+	/** \brief Name of trigger target to manipulate. */
+	private var StringID pName
+	
+	/** \brief Cached trigger target. */
+	private var TSTriggerTarget pTriggerTarget
+	
+	/** \brief Action to apply to trigger target. */
+	private var Action pAction
+	
+	
+	
+	/** \brief Create action using BaseGameApp trigger table. */
+	public func new( StringID name, Action action ) \
+	this( BaseGameApp.getApp().getTriggerTable(), name, action )
+	end
+	
+	/** \brief Create action. */
+	public func new( TSTriggerTable triggerTable, StringID name, Action action )
+		if triggerTable == null
+			throw ENullPointer.new( "triggerTable" )
+		end
+		if name == null
+			throw ENullPointer.new( "name" )
+		end
+		if action == null
+			throw ENullPointer.new( "action" )
+		end
+		
+		this.pTriggerTable = triggerTable
+		this.pName = name
+		this.pAction = action
+	end
+	
+	/** \brief Create copy of action. */
+	public func new( SMActionTrigger action )
+		this.pTriggerTable = action.pTriggerTable
+		this.pName = action.pName
+		this.pAction = action.pAction
+	end
+	
+	
+	
+	/** \brief Trigger table. */
+	public func TSTriggerTable getTriggerTable()
+		return this.pTriggerTable
+	end
+	
+	/** \brief Set trigger table. */
+	protected func void setTriggerTable( TSTriggerTable triggerTable )
+		this.pTriggerTable = triggerTable
+		this.pTriggerTarget = null
+	end
+	
+	/** \brief Name of the trigger to set. */
+	public func StringID getName()
+		return this.pName
+	end
+	
+	/** \brief Set name of the trigger to set. */
+	public func void setName( StringID name )
+		this.pName = name
+		this.pTriggerTarget = null
+	end
+	
+	/** \brief Cached trigger target. */
+	public func TSTriggerTarget getTriggerTarget()
+		if this.pTriggerTarget == null
+			this.pTriggerTarget = pTriggerTable.getOrAddNamed( this.pName )
+		end
+		return this.pTriggerTarget
+	end
+	
+	/** \brief Action. */
+	public func Action getAction()
+		return this.pAction
+	end
+	
+	/** \brief Set action. */
+	public func void setAction( Action action )
+		this.pAction = action
+	end
+	
+	
+	
+	/**
+	 * \brief Run action.
+	 * \param parameters Dictionary with parameters of type String key and String value.
+	 *                   Do not change the content of the dictionary as it is shared.
+	 */
+	public func void runAction( SMContext context, Dictionary parameters )
+		var TSTriggerTarget target = this.getTriggerTarget()
+		
+		select this.pAction
+		case Action.fire
+			target.fire()
+			
+		case Action.reset
+			target.reset()
+			
+		case Action.pulse
+			target.fire()
+			target.reset()
+			
+		case Action.fullReset
+			target.fullReset()
+		end
+	end
+end

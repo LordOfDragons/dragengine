@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -35,40 +38,38 @@ pin Dragengine.Gui.Events
  * Supports designing using designer selector "TextField.ComboBoxEditor".
  */
 class DefaultComboBoxEditor extends TextField implements ComboBoxEditor
-	/** \brief Action listeners. */
-	private var Array pActionListeners
+	var Array pEditorActionListeners
 	
 	
 	
 	/** \brief Create default combo box editor. */
-	public func new() this( DefaultTextModel.new() )
+	func new() this(DefaultTextModel.new())
 	end
 	
 	/** \brief Create default combo box editor. */
-	public func new( TextModel model ) super( model )
-		this.pActionListeners = Array.new()
-		this.setDesignerSelector( this.getDesignerSelector() + ".ComboBoxEditor" )
-		//this.setBorder( null )
+	func new(TextModel model) super(model)
+		pEditorActionListeners = Array.new()
+		setDesignerSelector(getDesignerSelector() + ".ComboBoxEditor")
 	end
 	
 	/** \brief Create default combo box editor. */
-	public func new( TextModel model, int displayCharCount ) this( model )
-		this.setDisplayCharCount( displayCharCount )
+	func new(TextModel model, int displayCharCount) this(model)
+		setDisplayCharCount(displayCharCount)
 	end
 	
 	/** \brief Dispose of widget. */
-	public func void dispose()
+	func void dispose()
 		// it is possible the dispose is triggered due to an action listener call.
 		// if Array.removeAll() is called in this case an exception is thrown due to
 		// modifying the array while iterating over it. dropping the array is enough
-		this.pActionListeners = null
+		pEditorActionListeners = null
 		super.dispose()
 	end
 	
 	
 	
 	/** \brief Get widget to use for editing. */
-	public func Widget getWidget()
+	func Widget getWidget()
 		return this
 	end
 	
@@ -77,34 +78,58 @@ class DefaultComboBoxEditor extends TextField implements ComboBoxEditor
 	 * \details The returned object can be the one previously set by
 	 *          setEditorValue() if unchanged or a new object if changed.
 	 */
-	public func Object getEditorValue()
-		return this.getModel().getText()
+	func Object getEditorValue()
+		return getModel().getText()
 	end
 	
 	/**
 	 * \brief Set editor value to object or \em null to clear.
 	 * \details \em object is garanteed to not be modified by the editor.
 	 */
-	public func void setEditorValue( Object object )
+	func void setEditorValue(Object object)
 		if object == null
-			this.getModel().setText( "" )
+			getModel().setText("")
 			
 		else
-			this.getModel().setText( object.toString() )
+			getModel().setText(object.toString())
 		end
+		
+		fireAction(0)
 	end
 	
 	/**
 	 * \brief Add action listener.
 	 * \details Action listener is called whenever the edited object changes.
+	 * \note This shadows TextWidget.addActionListener(). To use it use addTextActionListener().
 	 */
-	public func void addActionListener( ActionListener listener )
-		this.pActionListeners.add( listener )
+	func void addActionListener(ActionListener listener)
+		pEditorActionListeners.add(listener)
 	end
 	
-	/** \brief Remove action listener. */
-	public func void removeActionListener( ActionListener listener )
-		this.pActionListeners.remove( listener )
+	/**
+	 * \brief Remove action listener.
+	 * \note This shadows TextWidget.removeActionListener(). To use it use removeTextActionListener().
+	 */
+	func void removeActionListener(ActionListener listener)
+		pEditorActionListeners.remove(listener)
+	end
+	
+	/**
+	 * \brief Add text widget action listener.
+	 * \version 1.8
+	 * \note Forwards to shadowed TextWidget.addActionListener().
+	 */
+	func void addTextActionListener(ActionListener listener)
+		super.addActionListener(listener)
+	end
+	
+	/**
+	 * \brief Remove text widget action listener.
+	 * \version 1.8
+	 * \note Forwards to shadowed TextWidget.removeActionListener().
+	 */
+	func void removeTextActionListener(ActionListener listener)
+		super.removeActionListener(listener)
 	end
 	
 	/**
@@ -113,21 +138,65 @@ class DefaultComboBoxEditor extends TextField implements ComboBoxEditor
 	 *          editor for directly manipulating the set value. There is no
 	 *          stop editing call since the widget is hidden in this case.
 	 */
-	public func void startEditing()
-		// selection not implemented yet on TextField
-		this.grabFocus()
+	func void startEditing()
+		setCursorPosition(getModel().getText().getLength())
+		setSelectionAll()
+		grabFocus()
+	end
+	
+	/**
+	 * \brief Get parent ComboBox.
+	 * \version 1.17
+	 */
+	func ComboBox getComboBox()
+		var Container container = getParent()
+		while container != null
+			if container castable ComboBox
+				return container cast ComboBox
+			end
+			container = container.getParent()
+		end
+		return null
 	end
 	
 	
 	
 	/** \brief Text string has changed. */
-	public func void textChanged( TextModel textModel )
-		super.textChanged( textModel )
+	func void textChanged(TextModel textModel)
+		super.textChanged(textModel)
 		
-		var ActionEvent event = ActionEvent.new( this, ActionEvent.idAction, 0 )
+		var ActionEvent event = ActionEvent.new(this, ActionEvent.idAction, 0)
 		
-		this.pActionListeners.forEach( block ActionListener each
-			each.onAction( event )
-		end )
+		pEditorActionListeners.forEach(block ActionListener each
+			each.onAction(event)
+		end)
+	end
+	
+	
+	
+	/** \brief Key pressed. */
+	func void onKeyPress(KeyEvent event)
+		select event.getKeyCode()
+		case InputEventKey.arrowDown
+			var ComboBox comboBox = getComboBox()
+			if comboBox != null
+				comboBox.onArrowDown()
+			end
+			
+		case InputEventKey.arrowUp
+			var ComboBox comboBox = getComboBox()
+			if comboBox != null
+				comboBox.onArrowUp()
+			end
+			
+		case InputEventKey.escape
+			var ComboBox comboBox = getComboBox()
+			if comboBox != null
+				comboBox.rollUp()
+			end
+			
+		else
+			super.onKeyPress(event)
+		end
 	end
 end

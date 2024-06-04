@@ -1,0 +1,118 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+
+namespace Dragengine
+
+
+/**
+ * \brief InputDeviceButtonType type.
+ * \version 1.6
+ */
+enum InputDeviceButtonType
+	/**
+	 * \brief Generic button.
+	 * \version 1.6
+	 */
+	generic
+	
+	/**
+	 * \brief Action button.
+	 * \version 1.6
+	 * 
+	 * Button with label or symbol like "A", "B", "X", "Y" or "1", "2". These buttons
+	 * are used to trigger game actions and are typically grouped together in blocks
+	 * of 4 or 6 buttons.
+	 */
+	action
+	
+	/**
+	 * \brief Start/Home button.
+	 * \version 1.6
+	 * 
+	 * Button with label "Start" or "Home" or showing a symbol version thereof.
+	 * This button is used to pause a game or returning to a home screen.
+	 */
+	home
+	
+	/**
+	 * \brief Select button.
+	 * \version 1.6
+	 * 
+	 * Button with label "Select" or showing a symbol version thereof. This button
+	 * is usually used to trigger in-game or application menus or to alter the
+	 * functionality of action buttons.
+	 */
+	selection
+	
+	/**
+	 * \brief Left shoulder button.
+	 * \version 1.6
+	 * 
+	 * Buttons located at the top left side of the device. They are usually labelled
+	 * or are color coded to distinguish them. Buttons of this type are ordered from
+	 * top to bottom.
+	 */
+	shoulderLeft
+	
+	/**
+	 * \brief Right shoulder button.
+	 * \version 1.6
+	 * 
+	 * Buttons located at the top right side of the device. They are usually labelled
+	 * or are color coded to distinguish them. Buttons of this type are ordered from
+	 * top to bottom.
+	 */
+	shoulderRight
+	
+	/**
+	 * \brief Trigger button.
+	 * \version 1.6
+	 * 
+	 * Click point of a trigger.
+	 */
+	trigger
+	
+	/**
+	 * \brief Stick button.
+	 * \version 1.6
+	 * 
+	 * Click point of a stick.
+	 */
+	stick
+	
+	/**
+	 * \brief Touch pad tap.
+	 * \version 1.6
+	 * 
+	 * Tap of a touch pad.
+	 */
+	touchPad
+	
+	/**
+	 * \brief Battery is charging.
+	 * \version 1.20
+	 */
+	batteryCharging
+end

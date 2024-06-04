@@ -27,6 +27,7 @@ class Decal
 	/*@{*/
 	/** \brief Position. */
 	public func Vector getPosition()
+		return null
 	end
 	
 	/** \brief Set position. */
@@ -34,7 +35,8 @@ class Decal
 	end
 	
 	/** \brief Orientation. */
-	public func Quaterion getOrientation()
+	public func Quaternion getOrientation()
+		return null
 	end
 	
 	/** \brief Set orientation. */
@@ -43,16 +45,27 @@ class Decal
 	
 	/** \brief Size. */
 	public func Vector getSize()
+		return null
 	end
 	
 	/** \brief Set size. */
 	public func void setSize( Vector size )
 	end
 	
+	/** \brief Transformation. */
+	public func TexMatrix2 getTransform()
+		return null
+	end
+	
+	/** \brief Set transformation. */
+	public func void setTransform( TexMatrix2 transform )
+	end
+	
 	
 	
 	/** \brief Skin. */
 	public func Skin getSkin()
+		return null
 	end
 	
 	/** \brief Set skin. */
@@ -61,6 +74,7 @@ class Decal
 	
 	/** \brief Texture number in the skin. */
 	public func int getTexture()
+		return 0
 	end
 	
 	/** \brief Set texture number in the skin. */
@@ -69,6 +83,7 @@ class Decal
 	
 	/** \brief Dynamic skin. */
 	public func DynamicSkin getDynamicSkin()
+		return null
 	end
 	
 	/** \brief Set dynamic skin. */
@@ -79,6 +94,7 @@ class Decal
 	
 	/** \brief Decal is visible. */
 	public func bool getVisible()
+		return false
 	end
 	
 	/** \brief Set if decal is visible. */
@@ -89,6 +105,7 @@ class Decal
 	
 	/** \brief Parent component or \em null. */
 	public func Component getParentComponent()
+		return null
 	end
 	/*@}*/
 end

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -24,6 +27,7 @@
 #include <string.h>
 
 #include "deoglRenderTaskInstance.h"
+#include "deoglComputeRenderTask.h"
 #include "../../shaders/paramblock/deoglSPBlockUBO.h"
 #include "../../shaders/paramblock/deoglSPBlockSSBO.h"
 #include "../../shaders/paramblock/deoglSPBlockMemory.h"
@@ -40,29 +44,22 @@
 ////////////////////////////
 
 deoglRenderTaskInstance::deoglRenderTaskInstance() :
-pParamBlock( NULL ),
-pParamBlockSpecial( NULL ),
+pInstance( NULL ),
 
-pFirstPoint( 0 ),
-pPointCount( 0 ),
-pFirstIndex( 0 ),
-pIndexCount( 0 ),
+pSubInstances( NULL ),
 pSubInstanceCount( 0 ),
-pSubInstanceSPB( NULL ),
-pGroup( NULL ),
-pDoubleSided( false ),
-pPrimitiveType( GL_TRIANGLES ),
-pTessPatchVertexCount( 3 ),
+pSubInstanceSize( 0 ),
 
 pSIIndexInstanceSPB( NULL ),
 pSIIndexInstanceFirst( 0 ),
-
-pNextInstance( NULL ),
-
-pLLNext( NULL ){
+pDrawIndirectIndex( 0 ),
+pDrawIndirectCount( 0 ){
 }
 
 deoglRenderTaskInstance::~deoglRenderTaskInstance(){
+	if( pSubInstances ){
+		delete [] pSubInstances;
+	}
 }
 
 
@@ -70,64 +67,34 @@ deoglRenderTaskInstance::~deoglRenderTaskInstance(){
 // Management
 ///////////////
 
-void deoglRenderTaskInstance::SetParameterBlock( deoglShaderParameterBlock *block ){
-	pParamBlock = block;
-}
-
-void deoglRenderTaskInstance::SetParameterBlockSpecial( deoglShaderParameterBlock *block ){
-	pParamBlockSpecial = block;
-}
-
-void deoglRenderTaskInstance::SetFirstPoint( int firstPoint ){
-	pFirstPoint = firstPoint;
-}
-
-void deoglRenderTaskInstance::SetPointCount( int pointCount ){
-	pPointCount = pointCount;
-}
-
-void deoglRenderTaskInstance::SetFirstIndex( int firstIndex ){
-	pFirstIndex = firstIndex;
-}
-
-void deoglRenderTaskInstance::SetIndexCount( int indexCount ){
-	pIndexCount = indexCount;
-}
-
-void deoglRenderTaskInstance::SetSubInstanceCount( int subInstanceCount ){
-	pSubInstanceCount = subInstanceCount;
-}
-
-void deoglRenderTaskInstance::SetSubInstanceSPB( deoglSharedSPB *spb ){
-	pSubInstanceSPB = spb;
-}
-
-void deoglRenderTaskInstance::SetGroup( deoglRenderTaskInstanceGroup *group ){
-	pGroup = group;
-}
-
-void deoglRenderTaskInstance::SetDoubleSided( bool doubleSided ){
-	pDoubleSided = doubleSided;
-}
-
-void deoglRenderTaskInstance::SetPrimitiveType( GLenum primitiveType ){
-	pPrimitiveType = primitiveType;
-}
-
-void deoglRenderTaskInstance::SetTessPatchVertexCount( int count ){
-	pTessPatchVertexCount = count;
-}
-
-void deoglRenderTaskInstance::SetNextInstance( deoglRenderTaskInstance *instance ){
-	pNextInstance = instance;
+void deoglRenderTaskInstance::SetInstance( const deoglRenderTaskSharedInstance *instance ){
+	pInstance = instance;
 }
 
 
+
+const deoglRenderTaskInstance::sSubInstance & deoglRenderTaskInstance::GetSubInstanceAt( int index ) const{
+	if( index < 0 || index >= pSubInstanceCount ){
+		DETHROW( deeInvalidParam );
+	}
+	return pSubInstances[ index ];
+}
 
 void deoglRenderTaskInstance::AddSubInstance( int indexInstance, int flags ){
-	pSIIndexInstance.Add( indexInstance );
-	pSIFlags.Add( flags );
-	pSubInstanceCount++;
+	if( pSubInstanceCount == pSubInstanceSize ){
+		const int newSize = pSubInstanceCount * 3 / 2 + 1;
+		sSubInstance * const newArray = new sSubInstance[ newSize ];
+		if( pSubInstances ){
+			memcpy( newArray, pSubInstances, sizeof( sSubInstance ) * pSubInstanceCount );
+			delete [] pSubInstances;
+		}
+		pSubInstances = newArray;
+		pSubInstanceSize = newSize;
+	}
+	
+	sSubInstance &subInstance = pSubInstances[ pSubInstanceCount++ ];
+	subInstance.instance = indexInstance;
+	subInstance.flags = flags;
 }
 
 void deoglRenderTaskInstance::SetSIIndexInstanceParam( deoglShaderParameterBlock *paramBlock,
@@ -137,11 +104,7 @@ int firstIndex ){
 }
 
 void deoglRenderTaskInstance::WriteSIIndexInstanceInt( bool useFlags ){
-	if( ! pSIIndexInstanceSPB ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	const int count = pSIIndexInstance.GetCount();
+	DEASSERT_NOTNULL( pSIIndexInstanceSPB )
 	int i;
 	
 	if( useFlags ){
@@ -149,81 +112,53 @@ void deoglRenderTaskInstance::WriteSIIndexInstanceInt( bool useFlags ){
 			GLuint index;
 			GLuint flags;
 		};
-		sIndexFlags * const data = ( sIndexFlags* )pSIIndexInstanceSPB->GetMappedBuffer()
-			+ pSIIndexInstanceFirst;
-		for( i=0; i<count; i++ ){
-			data[ i ].index = ( GLuint )pSIIndexInstance.GetAt( i );
-			data[ i ].flags = ( GLuint )pSIFlags.GetAt( i );
+		sIndexFlags * const data = ( sIndexFlags* )pSIIndexInstanceSPB->GetMappedBuffer() + pSIIndexInstanceFirst;
+		for( i=0; i<pSubInstanceCount; i++ ){
+			const sSubInstance &subInstance = pSubInstances[ i ];
+			data[ i ].index = ( GLuint )subInstance.instance;
+			data[ i ].flags = ( GLuint )subInstance.flags;
 		}
 		
 	}else{
 		struct sIndex{
 			GLuint index;
 		};
-		sIndex * const data = ( sIndex* )pSIIndexInstanceSPB->GetMappedBuffer()
-			+ pSIIndexInstanceFirst;
-		for( i=0; i<count; i++ ){
-			data[ i ].index = ( GLuint )pSIIndexInstance.GetAt( i );
+		sIndex * const data = ( sIndex* )pSIIndexInstanceSPB->GetMappedBuffer() + pSIIndexInstanceFirst;
+		for( i=0; i<pSubInstanceCount; i++ ){
+			data[ i ].index = ( GLuint )pSubInstances[ i ].instance;
 		}
 	}
 }
 
-void deoglRenderTaskInstance::WriteSIIndexInstanceShort( bool useFlags ){
-	const int count = pSIIndexInstance.GetCount();
+void deoglRenderTaskInstance::WriteSIIndexInstanceCompute(){
+	DEASSERT_NOTNULL( pSIIndexInstanceSPB )
+	
+	deoglComputeRenderTask::sStep * const data = ( deoglComputeRenderTask::sStep* )
+		pSIIndexInstanceSPB->GetMappedBuffer() + pSIIndexInstanceFirst;
+	
 	int i;
-	
-	if( useFlags ){
-		struct sIndexFlags{
-			GLushort index;
-			GLushort flags;
-		};
-		sIndexFlags * const data = ( sIndexFlags* )pSIIndexInstanceSPB->GetMappedBuffer()
-			+ pSIIndexInstanceFirst;
-		for( i=0; i<count; i++ ){
-			data[ i ].index = ( GLushort )pSIIndexInstance.GetAt( i );
-			data[ i ].flags = ( GLushort )pSIFlags.GetAt( i );
-		}
-		
-	}else{
-		struct sIndex{
-			GLuint index;
-		};
-		sIndex * const data = ( sIndex* )pSIIndexInstanceSPB->GetMappedBuffer()
-			+ pSIIndexInstanceFirst;
-		for( i=0; i<count; i++ ){
-			data[ i ].index = ( GLushort )pSIIndexInstance.GetAt( i );
-		}
+	for( i=0; i<pSubInstanceCount; i++ ){
+		const sSubInstance &subInstance = pSubInstances[ i ];
+		data[ i ].spbInstance = ( uint32_t )( subInstance.instance + 1 );
+		data[ i ].specialFlags = ( uint32_t )subInstance.flags;
 	}
+}
+
+void deoglRenderTaskInstance::SetDrawIndirectIndex( int index ){
+	pDrawIndirectIndex = index;
+}
+
+void deoglRenderTaskInstance::SetDrawIndirectCount( int count ){
+	pDrawIndirectCount = count;
 }
 
 
 
-void deoglRenderTaskInstance::Clear(){
-	pParamBlock = NULL;
-	pParamBlockSpecial = NULL;
-	
-	pFirstPoint = 0;
-	pPointCount = 0;
-	pFirstIndex = 0;
-	pIndexCount = 0;
+void deoglRenderTaskInstance::Reset(){
+	pInstance = NULL;
 	pSubInstanceCount = 0;
-	pSubInstanceSPB = NULL;
-	pGroup = NULL;
-	pDoubleSided = false;
-	pPrimitiveType = GL_TRIANGLES;
-	pTessPatchVertexCount = 3;
-	
-	pSIIndexInstance.RemoveAll();
-	pSIFlags.RemoveAll();
 	pSIIndexInstanceSPB = NULL;
 	pSIIndexInstanceFirst = 0;
-}
-
-
-
-// Linked List
-////////////////
-
-void deoglRenderTaskInstance::SetLLNext( deoglRenderTaskInstance *instance ){
-	pLLNext = instance;
+	pDrawIndirectIndex = 0;
+	pDrawIndirectCount = 0;
 }

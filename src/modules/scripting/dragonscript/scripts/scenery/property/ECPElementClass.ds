@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -45,85 +48,93 @@ class ECPElementClass extends ElementClassProperty
 	
 	
 	/** \brief Create property. */
-	public func new( String name, ElementClassList elementClassList ) super( name )
+	public func new(String name, ElementClassList elementClassList) super(name)
 		if elementClassList == null
 			throw EInvalidParam.new()
 		end
-		this.pElementClassList = elementClassList
+		pElementClassList = elementClassList
 	end
 	
 	/** \brief Create property with initial element class name. */
-	public func new( String name, ElementClassList elementClassList, String elementClassName ) super( name )
+	public func new(String name, ElementClassList elementClassList, String elementClassName) super(name)
 		if elementClassList == null
 			throw EInvalidParam.new()
 		end
-		this.pElementClassList = elementClassList
-		this.pElementClassName = elementClassName
+		pElementClassList = elementClassList
+		pElementClassName = elementClassName
 	end
 	
 	/** \brief Dispose of element class property to break reference loops. */
 	public func void dispose()
-		this.pElementClassList = null
-		this.pElementClass = null
+		pElementClassList = null
+		pElementClass = null
 	end
 	
 	
 	
 	/** \brief Element class manager to look up element class in. */
 	public func ElementClassList getElementClassList()
-		return this.pElementClassList
+		return pElementClassList
 	end
 	
 	/** \brief Name of element class. */
 	public func String getElementClassName()
-		return this.pElementClassName
+		return pElementClassName
 	end
 	
 	/** \brief Set name of element class. */
-	public func void setElementClassName( String elementClassName )
-		this.pElementClassName = elementClassName
+	public func void setElementClassName(String elementClassName)
+		pElementClassName = elementClassName
 	end
 	
 	/** \brief Element class or \em null if not found. */
 	public func ElementClass getElementClass()
-		return this.pElementClass
+		return pElementClass
 	end
 	
 	/** \brief Set element class or \em null if not found. */
-	public func void setElementClass( ElementClass elementClass )
-		this.pElementClass = elementClass
+	public func void setElementClass(ElementClass elementClass)
+		pElementClass = elementClass
 	end
 	
 	/** \brief Property has been preloaded. */
 	public func bool getHasPreloaded()
-		return this.pHasPreloaded
+		return pHasPreloaded
 	end
 	
 	
 	
 	/** \brief Set value of property from XML decoded value. */
-	public func void setValue( Object value )
-		this.pElementClassName = value cast String
+	public func void setValue(Object value)
+		pElementClassName = value cast String
+	end
+	
+	/**
+	 * \brief Copy value from another element class property of the same type.
+	 * \version 1.17
+	 */
+	public func void copyValue(ElementClass elementClass, ElementClassProperty property)
+		pElementClassName = (property cast ECPElementClass).pElementClassName
 	end
 	
 	
 	
 	/** \brief Preload resources if supported. */
-	public func void preloadResources( ElementClass elementClass, PreloadCounter counter )
-		if this.pHasPreloaded
+	public func void preloadResources(ElementClass elementClass, PreloadCounter counter)
+		if pHasPreloaded
 			return
 		end
 		
-		this.pHasPreloaded = true
+		pHasPreloaded = true
 		
-		if this.pElementClassName == null or this.pElementClassName.empty()
+		if pElementClassName == null or pElementClassName.empty()
 			return
 		end
 		
-		this.pElementClass = this.pElementClassList.getNamed( this.pElementClassName )
+		pElementClass = pElementClassList.getNamed(pElementClassName)
 		
-		if this.pElementClass != null
-			this.pElementClass.preloadResources( counter )
+		if pElementClass != null
+			pElementClass.preloadResources(counter)
 		end
 	end
 	
@@ -131,10 +142,10 @@ class ECPElementClass extends ElementClassProperty
 	 * \brief Log preloading problems.
 	 * \returns True if problems are present.
 	 */
-	public func bool logPreloadProblems( ElementClass elementClass, Console console )
-		if this.pElementClassName != null and not this.pElementClassName.empty() and this.pElementClass == null
-			console.addMessage( "Property " + elementClass.getClassname() + "." \
-				+ this.getName() + ": Unknown element class " + this.pElementClassName )
+	public func bool logPreloadProblems(ElementClass elementClass, Console console)
+		if pElementClassName != null and not pElementClassName.empty() and pElementClass == null
+			console.addMessage("Property " + elementClass.getClassname() + "." \
+				+ getName() + ": Unknown element class " + pElementClassName)
 			return true
 		end
 		return false
@@ -148,13 +159,13 @@ class ECPElementClass extends ElementClassProperty
 	 * If named stub property is not present or empty string the stored element class is returned.
 	 * If the named stub property is present it is matched against the list of element classes.
 	 */
-	public func ElementClass getElementClass( StubWithProperties stub )
-		var String value = stub.getPropertyValueFor( this.getName(), "" )
+	public func ElementClass getElementClass(StubWithProperties stub)
+		var String value = stub.getPropertyValueFor(getName(), "")
 		if value.empty()
-			return this.pElementClass
+			return pElementClass
 		end
 		
-		var ElementClass eclass = this.pElementClassList.getNamed( value )
+		var ElementClass eclass = pElementClassList.getNamed(value)
 		if eclass == null
 			throw EInvalidParam.new()
 		end

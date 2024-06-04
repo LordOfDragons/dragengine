@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <math.h>
@@ -332,6 +335,26 @@ void deClassUnicodeString::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myse
 	rt->PushInt( string->Hash() );
 }
 
+// public func int compare( Object other )
+deClassUnicodeString::nfCompare::nfCompare( const sInitData &init ) :
+dsFunction( init.clsUS, "compare", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsInt ){
+	p_AddParameter( init.clsObj ); // other
+}
+void deClassUnicodeString::nfCompare::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const decUnicodeString &string = *( ( ( sUSNatDat* )p_GetNativeData( myself ) )->string );
+	deClassUnicodeString * const clsUS = ( deClassUnicodeString* )GetOwnerClass();
+	dsValue * const object = rt->GetValue( 0 );
+	
+	if( ! p_IsObjOfType( object, clsUS ) ){
+		rt->PushInt( 0 );
+		
+	}else{
+		const decUnicodeString &otherString = *( ( ( sUSNatDat* )p_GetNativeData( object ) )->string );
+		rt->PushInt( string.Compare( otherString ) );
+	}
+}
+
 
 
 // Conversion
@@ -439,7 +462,9 @@ void deClassUnicodeString::nfOpAddBool::RunFunction( dsRunTime *rt, dsValue *mys
 	decUnicodeString *string = ( ( sUSNatDat* )p_GetNativeData( myself ) )->string;
 	deClassUnicodeString &clsUS = *( ( deClassUnicodeString* )GetOwnerClass() );
 	
-	clsUS.PushUnicodeString( rt, *string + rt->GetValue( 0 )->GetBool() );
+	decUnicodeString unicode( *string );
+	unicode.AppendFromUTF8( rt->GetValue( 0 )->GetBool() ? "true" : "false" );
+	clsUS.PushUnicodeString( rt, unicode );
 }
 
 // public func UnicodeString +( int value )
@@ -451,7 +476,9 @@ void deClassUnicodeString::nfOpAddInt::RunFunction( dsRunTime *rt, dsValue *myse
 	decUnicodeString *string = ( ( sUSNatDat* )p_GetNativeData( myself ) )->string;
 	deClassUnicodeString &clsUS = *( ( deClassUnicodeString* )GetOwnerClass() );
 	
-	clsUS.PushUnicodeString( rt, *string + rt->GetValue( 0 )->GetInt() );
+	decUnicodeString unicode( *string );
+	unicode.AppendValue( rt->GetValue( 0 )->GetInt() );
+	clsUS.PushUnicodeString( rt, unicode );
 }
 
 // public func UnicodeString +( float value )
@@ -463,7 +490,9 @@ void deClassUnicodeString::nfOpAddFloat::RunFunction( dsRunTime *rt, dsValue *my
 	decUnicodeString *string = ( ( sUSNatDat* )p_GetNativeData( myself ) )->string;
 	deClassUnicodeString &clsUS = *( ( deClassUnicodeString* )GetOwnerClass() );
 	
-	clsUS.PushUnicodeString( rt, *string + rt->GetValue( 0 )->GetFloat() );
+	decUnicodeString unicode( *string );
+	unicode.AppendValue( rt->GetValue( 0 )->GetFloat() );
+	clsUS.PushUnicodeString( rt, unicode );
 }
 
 // public func UnicodeString +( Object object )
@@ -564,6 +593,7 @@ void deClassUnicodeString::CreateClassMembers( dsEngine *engine ){
 	
 	AddFunction( new nfEquals( init ) );
 	AddFunction( new nfHashCode( init ) );
+	AddFunction( new nfCompare( init ) );
 	
 	// calculate member offsets
 	CalcMemberOffsets();

@@ -1,0 +1,161 @@
+{
+	"category": "steamvr_input",
+	"controller_type": "vive_controller",
+	"description": "Drag[en]gine Bindings for Vive Controller",
+	"name": "Drag[en]gine Bindings for Vive Controller",
+	"options": {},
+	"simulated_actions": [],
+	"action_manifest_version": 0,
+	"alias_info": {},
+	"bindings": {
+		"/actions/dragengine": {
+			"poses": [
+				{
+					"output": "/actions/dragengine/in/pose",
+					"path": "/user/hand/left/pose/raw"
+				},
+				{
+					"output": "/actions/dragengine/in/pose",
+					"path": "/user/hand/right/pose/raw"
+				}
+			],
+			"skeleton": [
+				{
+					"output" : "/actions/dragengine/in/skeleton_hand_left",
+					"path" : "/user/hand/left/input/skeleton/left"
+				},
+				{
+					"output" : "/actions/dragengine/in/skeleton_hand_right",
+					"path" : "/user/hand/right/input/skeleton/right"
+				}
+			],
+			"haptics": [
+				{
+					"output": "/actions/dragengine/out/grip_haptic",
+					"path": "/user/hand/right/output/haptic"
+				},
+				{
+					"output": "/actions/dragengine/out/grip_haptic",
+					"path": "/user/hand/left/output/haptic"
+				}
+			],
+			"chords": [],
+			"sources": [
+				{
+					"inputs": {
+						"touch": {
+							"output": "/actions/dragengine/in/trigger_touch"
+						},
+						"click": {
+							"output": "/actions/dragengine/in/trigger_press"
+						},
+						"pull" : {
+							"output": "/actions/dragengine/in/trigger_analog"
+						}
+					},
+					"mode": "trigger",
+					"path": "/user/hand/left/input/trigger"
+				},
+				{
+					"inputs": {
+						"touch": {
+							"output": "/actions/dragengine/in/trigger_touch"
+						},
+						"click": {
+							"output": "/actions/dragengine/in/trigger_press"
+						},
+						"pull" : {
+							"output": "/actions/dragengine/in/trigger_analog"
+						}
+					},
+					"mode": "trigger",
+					"path": "/user/hand/right/input/trigger"
+				},
+				{
+					"inputs": {
+						"touch": {
+							"output": "/actions/dragengine/in/trackpad_touch"
+						},
+						"click": {
+							"output": "/actions/dragengine/in/trackpad_press"
+						},
+						"position": {
+							"output": "/actions/dragengine/in/trackpad_analog"
+						}
+					},
+					"mode": "trackpad",
+					"path": "/user/hand/left/input/trackpad"
+				},
+				{
+					"inputs": {
+						"touch": {
+							"output": "/actions/dragengine/in/trackpad_touch"
+						},
+						"click": {
+							"output": "/actions/dragengine/in/trackpad_press"
+						},
+						"position": {
+							"output": "/actions/dragengine/in/trackpad_analog"
+						}
+					},
+					"mode": "trackpad",
+					"path": "/user/hand/right/input/trackpad"
+				},
+				{
+					"inputs": {
+						"touch": {
+							"output": "/actions/dragengine/in/grip_touch"
+						},
+						"click": {
+							"output": "/actions/dragengine/in/grip_press"
+						},
+						"pull" : {
+							"output": "/actions/dragengine/in/grip_analog"
+						}
+					},
+					"mode": "trigger",
+					"path": "/user/hand/left/input/grip"
+				},
+				{
+					"inputs": {
+						"touch": {
+							"output": "/actions/dragengine/in/grip_touch"
+						},
+						"click": {
+							"output": "/actions/dragengine/in/grip_press"
+						},
+						"pull" : {
+							"output": "/actions/dragengine/in/grip_analog"
+						}
+					},
+					"mode": "trigger",
+					"path": "/user/hand/right/input/grip"
+				},
+				{
+					"inputs": {
+						"touch": {
+							"output": "/actions/dragengine/in/button_primary_touch"
+						},
+						"click": {
+							"output": "/actions/dragengine/in/button_primary_press"
+						}
+					},
+					"mode": "button",
+					"path": "/user/hand/left/input/application_menu"
+				},
+				{
+					"inputs": {
+						"touch": {
+							"output": "/actions/dragengine/in/button_primary_touch"
+						},
+						"click": {
+							"output": "/actions/dragengine/in/button_primary_press"
+						}
+					},
+					"mode": "button",
+					"path": "/user/hand/right/input/application_menu"
+				}
+			]
+		}
+	}
+}

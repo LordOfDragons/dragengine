@@ -281,8 +281,8 @@ static void plane_3d
     }
     norm_c = (CH_FLOAT)0.0;
     for(i=0; i<3; i++)
-        norm_c += (pow(c[i], 2.0));
-    norm_c = sqrt(norm_c);
+        norm_c += (powf(c[i], 2.0));
+    norm_c = sqrtf(norm_c);
     for(i=0; i<3; i++)
         c[i] /= norm_c;
     (*d) = (CH_FLOAT)0.0;
@@ -340,7 +340,7 @@ void convhull_3d_build
     d = 3;
     span = (CH_FLOAT*)malloc(d*sizeof(CH_FLOAT));
     for(j=0; j<d; j++){
-        max_p = 2.23e-13; min_p = 2.23e+13;
+        max_p = 2.23e-13f; min_p = 2.23e+13f;
         for(i=0; i<nVert; i++){
             max_p = MAX(max_p, in_vertices[i].v[j]);
             min_p = MIN(min_p, in_vertices[i].v[j]);
@@ -452,11 +452,14 @@ void convhull_3d_build
             absdist[k*d+j] = (points[i*(d+1)+j] -  meanp[j])/span[j];
     
     /* Relative distance of points from the center */
+    if((nVert-d-1) * sizeof(CH_FLOAT) > PTRDIFF_MAX){
+        return; // protection against bogus -Walloc-size-larger-than=
+    }
     reldist = (CH_FLOAT*)calloc((nVert-d-1), sizeof(CH_FLOAT));
     desReldist = (CH_FLOAT*)malloc((nVert-d-1) * sizeof(CH_FLOAT));
     for(i=0; i<(nVert-d-1); i++)
         for(j=0; j<d; j++)
-            reldist[i] += pow(absdist[i*d+j], 2.0);
+            reldist[i] += powf(absdist[i*d+j], 2.0);
     
     /* Sort from maximum to minimum relative distance */
     int num_pleft, cnt;

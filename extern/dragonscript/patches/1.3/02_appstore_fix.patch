@@ -1,0 +1,15 @@
+diff -rupN dragonscript-1.3/SConstruct dragonscript-1.3-patched/SConstruct
+--- dragonscript-1.3/SConstruct	2021-12-04 23:49:03.803866549 +0100
++++ dragonscript-1.3-patched/SConstruct	2021-12-05 00:05:15.208991296 +0100
+@@ -110,9 +110,11 @@ for x in applyEnvVars:
+ 
+ if 'CPPFLAGS' in applyEnvVars and 'CPPFLAGS' in os.environ:
+ 	globalEnv.Append(MODULE_CPPFLAGS = shlex.split(os.environ['CPPFLAGS']))
++	globalEnv.Append(CPPFLAGS = shlex.split(os.environ['CPPFLAGS']))
+ 
+ if 'LDFLAGS' in applyEnvVars and 'LDFLAGS' in os.environ:
+ 	globalEnv.Append(MODULE_LINKFLAGS = shlex.split(os.environ['LDFLAGS']))
++	globalEnv.Append(LINKFLAGS = shlex.split(os.environ['LDFLAGS']))
+ 
+ if globalEnv['with_debug']:
+ 	globalEnv.Append(CPPFLAGS = ['-g', '-fno-omit-frame-pointer'])

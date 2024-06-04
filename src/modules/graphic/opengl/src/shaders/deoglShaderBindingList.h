@@ -1,37 +1,41 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOSLSHADERBINDINGLIST_H_
 #define _DEOSLSHADERBINDINGLIST_H_
 
+#include <dragengine/common/string/decString.h>
 
 
 /**
- * \brief Shader Shader Binding List.
+ * Shader Shader Binding List.
  */
 class deoglShaderBindingList{
 private:
-	/** \brief Bindings. */
+	/** Bindings. */
 	struct sBinding{
-		char *name;
+		decString name;
 		int target;
 	};
 	
@@ -40,16 +44,17 @@ private:
 private:
 	sBinding *pBindings;
 	int pCount;
+	int pSize;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create binding list. */
+	/** Create binding list. */
 	deoglShaderBindingList();
 	
-	/** \brief Clean up binding list. */
+	/** Clean up binding list. */
 	~deoglShaderBindingList();
 	/*@}*/
 	
@@ -57,25 +62,25 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Number of bindings. */
+	/** Number of bindings. */
 	inline int GetCount() const{ return pCount; }
 	
-	/** \brief Named binding is present. */
+	/** Named binding is present. */
 	bool HasNamed( const char *name );
 	
-	/** \brief Index of named binding or -1 if absent. */
+	/** Index of named binding or -1 if absent. */
 	int IndexOfNamed( const char *name ) const;
 	
-	/** \brief Binding name at index. */
-	const char *GetNameAt( int index ) const;
+	/** Binding name at index. */
+	const decString &GetNameAt( int index ) const;
 	
-	/** \brief Binding target at index. */
+	/** Binding target at index. */
 	int GetTargetAt( int index ) const;
 	
-	/** \brief Add binding. */
+	/** Add binding. */
 	void Add( const char *name, int target );
 	
-	/** \brief Remove all bindings. */
+	/** Remove all bindings. */
 	void RemoveAll();
 	/*@}*/
 };

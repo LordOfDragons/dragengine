@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<skin>
+	<texture name='material'>
+		<image property='color.omnidir.equirect'>profiles/defined.ies</image>
+		<color property='omnidir.rotate.spot' r='0.25'/>
+	</texture>
+</skin>

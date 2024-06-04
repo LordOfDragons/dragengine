@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -825,7 +828,8 @@ void deClassCollider::nfAttachStatic2::RunFunction( dsRunTime *rt, dsValue *myse
 		DSTHROW( dueNullPointer );
 	}
 	
-	clsCol.AttachStatic( *nd.collider, resource, position, orientation );
+	clsCol.AttachStatic( *nd.collider, resource, position, orientation,
+		deClassCollider::GetResourceScale( *resource ) );
 }
 
 // public func void attachRelativeMovement( Object resource )
@@ -924,15 +928,19 @@ void deClassCollider::nfAddConstraint::RunFunction( dsRunTime *rt, dsValue *myse
 		DSTHROW( dueNullPointer );
 	}
 	
-	const deScriptingDragonScript &ds = ( ( deClassCollider* )GetOwnerClass() )->GetDS();
-	deColliderConstraint *constraint = NULL;
+	const deClassCollider &clsCollider = *( ( deClassCollider* )GetOwnerClass() );
+	const deScriptingDragonScript &ds = clsCollider.GetDS();
 	
-	const deColliderConstraint * const workConstraint =
+	const deColliderConstraint * const workConstraint = 
 		ds.GetClassColliderConstraint()->GetConstraint( rt->GetValue( 0 )->GetRealObject() );
 	if( ! workConstraint ){
-		DSTHROW( dueNullPointer );
+		DSTHROW_INFO( dueNullPointer, "constraint" );
+	}
+	if( clsCollider.FindConstraint( *nd.collider, *workConstraint ) ){
+		DSTHROW_INFO( dueInvalidParam, "constraint with same target exists already" );
 	}
 	
+	deColliderConstraint *constraint = nullptr;
 	try{
 		constraint = new deColliderConstraint( *workConstraint );
 		nd.collider->AddConstraint( constraint );
@@ -945,7 +953,82 @@ void deClassCollider::nfAddConstraint::RunFunction( dsRunTime *rt, dsValue *myse
 	}
 }
 
-// public func void setConstaintAt( int index, ColliderConstraint constraint )
+// public func bool hasConstraint(ColliderConstraint constraint)
+deClassCollider::nfHasConstraint::nfHasConstraint( const sInitData &init ) :
+dsFunction( init.clsCol, "hasConstraint", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
+	p_AddParameter( init.clsCCon ); // constraint
+}
+void deClassCollider::nfHasConstraint::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const sColNatDat &nd = *( ( sColNatDat* )p_GetNativeData( myself ) );
+	if( ! nd.collider ){
+		DSTHROW( dueNullPointer );
+	}
+	
+	const deClassCollider &clsCollider = *( ( deClassCollider* )GetOwnerClass() );
+	const deScriptingDragonScript &ds = clsCollider.GetDS();
+	
+	const deColliderConstraint * const constraint = 
+		ds.GetClassColliderConstraint()->GetConstraint( rt->GetValue( 0 )->GetRealObject() );
+	rt->PushBool( constraint && clsCollider.FindConstraint( *nd.collider, *constraint ) );
+}
+
+// public func int indexOfConstraint(ColliderConstraint constraint)
+deClassCollider::nfIndexOfConstraint::nfIndexOfConstraint( const sInitData &init ) :
+dsFunction( init.clsCol, "indexOfConstraint", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt ){
+	p_AddParameter( init.clsCCon ); // constraint
+}
+void deClassCollider::nfIndexOfConstraint::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const sColNatDat &nd = *( ( sColNatDat* )p_GetNativeData( myself ) );
+	if( ! nd.collider ){
+		DSTHROW( dueNullPointer );
+	}
+	
+	const deClassCollider &clsCollider = *( ( deClassCollider* )GetOwnerClass() );
+	const deScriptingDragonScript &ds = clsCollider.GetDS();
+	int index = -1;
+	
+	deColliderConstraint *constraint =
+		ds.GetClassColliderConstraint()->GetConstraint( rt->GetValue( 0 )->GetRealObject() );
+	if( constraint ){
+		constraint = clsCollider.FindConstraint( *nd.collider, *constraint );
+		if( constraint ){
+			index = nd.collider->IndexOfConstraint( constraint );
+		}
+	}
+	
+	rt->PushInt( index );
+}
+
+// public func ColliderConstraint getConstraintAt(int index)
+deClassCollider::nfGetConstraintAt::nfGetConstraintAt( const sInitData &init ) :
+dsFunction( init.clsCol, "getConstraintAt", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsCCon ){
+	p_AddParameter( init.clsInt ); // index
+}
+void deClassCollider::nfGetConstraintAt::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const sColNatDat &nd = *( ( sColNatDat* )p_GetNativeData( myself ) );
+	if( ! nd.collider ){
+		DSTHROW( dueNullPointer );
+	}
+	
+	const deScriptingDragonScript &ds = ( ( deClassCollider* )GetOwnerClass() )->GetDS();
+	
+	const deColliderConstraint * const workConstraint =
+		nd.collider->GetConstraintAt( rt->GetValue( 0 )->GetInt() );
+	
+	deColliderConstraint *constraint = nullptr;
+	try{
+		constraint = new deColliderConstraint( *workConstraint );
+		ds.GetClassColliderConstraint()->PushConstraint( rt, constraint );
+		
+	}catch( ... ){
+		if( constraint ){
+			delete constraint;
+		}
+		throw;
+	}
+}
+
+// public func void setConstraintAt( int index, ColliderConstraint constraint )
 deClassCollider::nfSetConstraintAt::nfSetConstraintAt( const sInitData &init ) : dsFunction( init.clsCol,
 "addConstraint", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
 	p_AddParameter( init.clsInt ); // index
@@ -957,17 +1040,54 @@ void deClassCollider::nfSetConstraintAt::RunFunction( dsRunTime *rt, dsValue *my
 		DSTHROW( dueNullPointer );
 	}
 	
-	const deScriptingDragonScript &ds = ( ( deClassCollider* )GetOwnerClass() )->GetDS();
+	const deClassCollider &clsCollider = *( ( deClassCollider* )GetOwnerClass() );
+	const deScriptingDragonScript &ds = clsCollider.GetDS();
 	
 	const int index = rt->GetValue( 0 )->GetInt();
+	deColliderConstraint &constraint = *nd.collider->GetConstraintAt( index );
+	
 	const deColliderConstraint * const workConstraint =
 		ds.GetClassColliderConstraint()->GetConstraint( rt->GetValue( 1 )->GetRealObject() );
 	if( ! workConstraint ){
+		DSTHROW_INFO( dueNullPointer, "constraint" );
+	}
+	
+	if( workConstraint->GetTargetCollider() != constraint.GetTargetCollider()
+	|| workConstraint->GetTargetBone() != constraint.GetTargetBone()
+	|| workConstraint->GetBone() != constraint.GetBone() ){
+		DSTHROW_INFO( dueInvalidParam, "new constraint target has to match old constraint target" );
+	}
+	
+	constraint = *workConstraint;
+	nd.collider->NotifyConstraintChanged( index );
+}
+
+// public func void removeConstraint(ColliderConstraint constraint)
+deClassCollider::nfRemoveConstraint::nfRemoveConstraint( const sInitData &init ) :
+dsFunction( init.clsCol, "removeConstraint", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsCCon ); // constraint
+}
+void deClassCollider::nfRemoveConstraint::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const sColNatDat &nd = *( ( sColNatDat* )p_GetNativeData( myself ) );
+	if( ! nd.collider ){
 		DSTHROW( dueNullPointer );
 	}
 	
-	*nd.collider->GetConstraintAt( index ) = *workConstraint;
-	nd.collider->NotifyConstraintChanged( index );
+	const deClassCollider &clsCollider = *( ( deClassCollider* )GetOwnerClass() );
+	const deScriptingDragonScript &ds = clsCollider.GetDS();
+	
+	const deColliderConstraint * const workConstraint =
+		ds.GetClassColliderConstraint()->GetConstraint( rt->GetValue( 0 )->GetRealObject() );
+	if( ! workConstraint ){
+		DSTHROW_INFO( dueNullPointer, "constraint" );
+	}
+	
+	deColliderConstraint * const constraint = clsCollider.FindConstraint( *nd.collider, *workConstraint );
+	if( ! constraint ){
+		DSTHROW_INFO( dueOutOfBoundary, "constraint not found" );
+	}
+	
+	nd.collider->RemoveConstraint( constraint );
 }
 
 // public func void removeConstraintFrom( int index )
@@ -981,9 +1101,7 @@ void deClassCollider::nfRemoveConstraintFrom::RunFunction( dsRunTime *rt, dsValu
 		DSTHROW( dueNullPointer );
 	}
 	
-	const int index = rt->GetValue( 0 )->GetInt();
-	
-	nd.collider->RemoveConstraint( nd.collider->GetConstraintAt( index ) );
+	nd.collider->RemoveConstraint( nd.collider->GetConstraintAt( rt->GetValue( 0 )->GetInt() ) );
 }
 
 // public func void removeAllConstraints()
@@ -1753,7 +1871,7 @@ dsFunction( init.clsCol, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, i
 void deClassCollider::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
 	deCollider *collider = ( ( sColNatDat* )p_GetNativeData( myself ) )->collider;
 	// hash code = memory location
-	rt->PushInt( ( intptr_t )collider );
+	rt->PushInt( ( int )( intptr_t )collider );
 }
 
 // public func bool equals( Object obj )
@@ -1897,7 +2015,11 @@ void deClassCollider::CreateClassMembers( dsEngine *engine ){
 	
 	AddFunction( new nfGetConstraintCount( init ) );
 	AddFunction( new nfAddConstraint( init ) );
+	AddFunction( new nfHasConstraint( init ) );
+	AddFunction( new nfIndexOfConstraint( init ) );
+	AddFunction( new nfGetConstraintAt( init ) );
 	AddFunction( new nfSetConstraintAt( init ) );
+	AddFunction( new nfRemoveConstraint( init ) );
 	AddFunction( new nfRemoveConstraintFrom( init ) );
 	AddFunction( new nfRemoveAllConstraints( init ) );
 	
@@ -2179,117 +2301,150 @@ void deClassCollider::PushResource( dsRunTime &rt, deResource *resource ){
 	}
 }
 
-decDMatrix deClassCollider::GetResourceMatrix( const deResource &resource ) const{
+decDMatrix deClassCollider::GetResourceMatrix( const deResource &resource ){
 	switch( resource.GetResourceManager()->GetResourceType() ){
 	case deResourceManager::ertCollider:{
 		const deCollider &collider = ( const deCollider & )resource;
-		return decDMatrix::CreateWorld( collider.GetPosition(), collider.GetOrientation() );
-		}break;
+		return decDMatrix::CreateWorld( collider.GetPosition(),
+			collider.GetOrientation(), collider.GetScale() );
+		};
 		
 	case deResourceManager::ertBillboard:{
 		const deBillboard &billboard = ( const deBillboard & )resource;
 		return decDMatrix::CreateTranslation( billboard.GetPosition() );
-		}break;
+		};
 		
 	case deResourceManager::ertCamera:{
 		const deCamera &camera = ( const deCamera & )resource;
 		return decDMatrix::CreateWorld( camera.GetPosition(), camera.GetOrientation() );
-		}break;
+		};
 		
 	case deResourceManager::ertComponent:{
 		const deComponent &component = ( const deComponent & )resource;
-		return decDMatrix::CreateWorld( component.GetPosition(), component.GetOrientation() );
-		}break;
+		return decDMatrix::CreateWorld( component.GetPosition(),
+			component.GetOrientation(), component.GetScaling() );
+		};
 		
 	case deResourceManager::ertDebugDrawer:{
 		const deDebugDrawer &debugDrawer = ( const deDebugDrawer & )resource;
-		return decDMatrix::CreateWorld( debugDrawer.GetPosition(), debugDrawer.GetOrientation() );
-		}break;
+		return decDMatrix::CreateWorld( debugDrawer.GetPosition(),
+			debugDrawer.GetOrientation(), debugDrawer.GetScale() );
+		};
 		
 	case deResourceManager::ertEnvMapProbe:{
 		const deEnvMapProbe &envMapProbe = ( const deEnvMapProbe & )resource;
 		return decDMatrix::CreateWorld( envMapProbe.GetPosition(), envMapProbe.GetOrientation() );
-		}break;
+		};
 		
 	case deResourceManager::ertForceField:{
 		const deForceField &forceField = ( const deForceField & )resource;
 		return decDMatrix::CreateWorld( forceField.GetPosition(), forceField.GetOrientation() );
-		}break;
+		};
 		
 	case deResourceManager::ertLight:{
 		const deLight &light = ( const deLight & )resource;
 		return decDMatrix::CreateWorld( light.GetPosition(), light.GetOrientation() );
-		}break;
+		};
 		
 	case deResourceManager::ertLumimeter:{
 		const deLumimeter &lumimeter = ( const deLumimeter & )resource;
 		return decDMatrix::CreateTranslation( lumimeter.GetPosition() );
-		}break;
+		};
 		
 	case deResourceManager::ertMicrophone:{
 		const deMicrophone &microphone = ( const deMicrophone & )resource;
 		return decDMatrix::CreateWorld( microphone.GetPosition(), microphone.GetOrientation() );
-		}break;
+		};
 		
 	case deResourceManager::ertNavigationSpace:{
 		const deNavigationSpace &navigationSpace = ( const deNavigationSpace & )resource;
 		return decDMatrix::CreateWorld( navigationSpace.GetPosition(), navigationSpace.GetOrientation() );
-		}break;
+		};
 		
 	case deResourceManager::ertNavigationBlocker:{
 		const deNavigationBlocker &navigationBlocker = ( const deNavigationBlocker & )resource;
-		return decDMatrix::CreateWorld( navigationBlocker.GetPosition(), navigationBlocker.GetOrientation() );
-		}break;
+		return decDMatrix::CreateWorld( navigationBlocker.GetPosition(),
+			navigationBlocker.GetOrientation(), navigationBlocker.GetScaling() );
+		};
 		
 	case deResourceManager::ertNavigator:{
 		return decDMatrix(); // because navigator path is in world space
-		}break;
+		};
 		
 	case deResourceManager::ertParticleEmitterInstance:{
 		const deParticleEmitterInstance &instance = ( const deParticleEmitterInstance & )resource;
 		return decDMatrix::CreateWorld( instance.GetPosition(), instance.GetOrientation() );
-		}break;
+		};
 		
 	case deResourceManager::ertPropField:{
 		const dePropField &propField = ( const dePropField & )resource;
 		return decDMatrix::CreateTranslation( propField.GetPosition() );
-		}break;
+		};
 		
 	case deResourceManager::ertSpeaker:{
 		const deSpeaker &speaker = ( const deSpeaker & )resource;
 		return decDMatrix::CreateWorld( speaker.GetPosition(), speaker.GetOrientation() );
-		}break;
+		};
 		
 	case deResourceManager::ertTouchSensor:{
 		const deTouchSensor &touchSensor = ( const deTouchSensor & )resource;
 		return decDMatrix::CreateWorld( touchSensor.GetPosition(), touchSensor.GetOrientation() );
-		}break;
+		};
 		
 	case deResourceManager::ertSoundLevelMeter:{
 		const deSoundLevelMeter &soundLevelMeter = ( const deSoundLevelMeter & )resource;
 		return decDMatrix::CreateWorld( soundLevelMeter.GetPosition(), soundLevelMeter.GetOrientation() );
-		}break;
+		};
 		
 	default:
 		return decDMatrix();
 	}
 }
 
+decVector deClassCollider::GetResourceScale( const deResource &resource ){
+	switch( resource.GetResourceManager()->GetResourceType() ){
+	case deResourceManager::ertCollider:{
+		const deCollider &collider = ( const deCollider & )resource;
+		return collider.GetScale();
+		};
+		
+	case deResourceManager::ertComponent:{
+		const deComponent &component = ( const deComponent & )resource;
+		return component.GetScaling();
+		};
+		
+	case deResourceManager::ertDebugDrawer:{
+		const deDebugDrawer &debugDrawer = ( const deDebugDrawer & )resource;
+		return debugDrawer.GetScale();
+		};
+		
+	case deResourceManager::ertNavigationBlocker:{
+		const deNavigationBlocker &navigationBlocker = ( const deNavigationBlocker & )resource;
+		return navigationBlocker.GetScaling();
+		};
+		
+	default:
+		return decVector( 1.0, 1.0, 1.0 );
+	}
+}
+
 void deClassCollider::AttachStatic( deCollider &collider, deResource *resource ) const{
 	const decDMatrix matrix( GetResourceMatrix( *resource ).QuickMultiply(
-		decDMatrix::CreateWorld( collider.GetPosition(), collider.GetOrientation() ).QuickInvert() ) );
+		decDMatrix::CreateWorld( collider.GetPosition(),
+			collider.GetOrientation(), collider.GetScale() ).QuickInvert() ) );
 	
-	AttachStatic( collider, resource, matrix.GetPosition(), matrix.ToQuaternion() );
+	AttachStatic( collider, resource, matrix.GetPosition(), matrix.Normalized().ToQuaternion(), matrix.GetScale() );
 }
 
 void deClassCollider::AttachStatic( deCollider &collider, deResource *resource,
-const decVector &position, const decQuaternion &orientation ) const{
+const decVector &position, const decQuaternion &orientation, const decVector &scale ) const{
 	deColliderAttachment *attachment = NULL;
 	
 	try{
 		attachment = new deColliderAttachment( resource );
 		attachment->SetPosition( position );
 		attachment->SetOrientation( orientation );
+		attachment->SetScaling( scale );
 		attachment->SetAttachType( deColliderAttachment::eatStatic );
 		collider.AddAttachment( attachment );
 		
@@ -2342,20 +2497,22 @@ void deClassCollider::AttachBone( deCollider &collider, deResource *resource, co
 	}
 	
 	matrix = GetResourceMatrix( *resource ).QuickMultiply(
-		matrix.QuickMultiply( decDMatrix::CreateWorld( collider.GetPosition(), collider.GetOrientation() ) )
-			.QuickInvert() );
+		matrix.QuickMultiply( decDMatrix::CreateWorld( collider.GetPosition(),
+			collider.GetOrientation(), collider.GetScale() ) ).QuickInvert() );
 	
-	AttachBone( collider, resource, targetBone, matrix.GetPosition(), matrix.ToQuaternion() );
+	AttachBone( collider, resource, targetBone, matrix.GetPosition(),
+		matrix.Normalized().ToQuaternion(), matrix.GetScale() );
 }
 
 void deClassCollider::AttachBone( deCollider &collider, deResource *resource, const char *targetBone,
-const decVector &position, const decQuaternion &orientation  ) const{
+const decVector &position, const decQuaternion &orientation, const decVector &scale ) const{
 	deColliderAttachment *attachment = NULL;
 	
 	try{
 		attachment = new deColliderAttachment( resource );
 		attachment->SetPosition( position );
 		attachment->SetOrientation( orientation );
+		attachment->SetScaling( scale );
 		attachment->SetTrackBone( targetBone );
 		attachment->SetAttachType( deColliderAttachment::eatBone );
 		collider.AddAttachment( attachment );
@@ -2412,7 +2569,7 @@ void deClassCollider::AttachWeight( deCollider &collider, deResource *resource, 
 						.QuickMultiply( decDMatrix::CreateWorld( collider.GetPosition(),
 							collider.GetOrientation() ) ).QuickInvert() ) );
 				AttachBone( collider, resource, rig->GetBoneAt( bone ).GetName(),
-					matrix.GetPosition(), matrix.ToQuaternion() );
+					matrix.GetPosition(), matrix.Normalized().ToQuaternion(), matrix.GetScale() );
 				
 			}else{
 				pDS.LogWarnFormat( "Collider.AttachWeight: bone(%i) outside range(%i). "
@@ -2437,14 +2594,15 @@ void deClassCollider::AttachWeight( deCollider &collider, deResource *resource, 
 			}
 			
 			const decDMatrix matrix( GetResourceMatrix( *resource )
-				.QuickMultiply( decDMatrix::CreateWorld( collider.GetPosition(), collider.GetOrientation() ) )
-					.QuickInvert() );
+				.QuickMultiply( decDMatrix::CreateWorld( collider.GetPosition(),
+					collider.GetOrientation(), collider.GetScale() ) ).QuickInvert() );
 			
 			try{
 				attachment = new deColliderAttachment( resource );
 				attachment->SetAttachType( deColliderAttachment::eatStatic );
 				attachment->SetPosition( matrix.GetPosition().ToVector() );
-				attachment->SetOrientation( matrix.ToQuaternion() );
+				attachment->SetOrientation( matrix.Normalized().ToQuaternion() );
+				attachment->SetScaling( matrix.GetScale() );
 				colliderComponent.InitWeightAttachment( *attachment, face );
 				collider.AddAttachment( attachment );
 				
@@ -2481,4 +2639,21 @@ void deClassCollider::AttachRelativeMovement( deCollider &collider, deResource *
 		}
 		throw;
 	}
+}
+
+deColliderConstraint *deClassCollider::FindConstraint( deCollider &collider,
+const deColliderConstraint &constraint ) const{
+	const int count = collider.GetConstraintCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		deColliderConstraint * const checkConstraint = collider.GetConstraintAt( i );
+		if( checkConstraint->GetTargetCollider() == constraint.GetTargetCollider()
+		&& checkConstraint->GetTargetBone() == constraint.GetTargetBone()
+		&& checkConstraint->GetBone() == constraint.GetBone() ){
+			return checkConstraint;
+		}
+	}
+	
+	return nullptr;
 }

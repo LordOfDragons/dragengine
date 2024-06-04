@@ -1,24 +1,26 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
-
 
 namespace Dragengine.Gui
 
@@ -34,241 +36,298 @@ pin Dragengine.Utils
  * \brief Drop down list displaying the currently selected element.
  * 
  * Supports designing using designer selector "ComboBox". The drop-down list box supports
- * desining using designer selector "ListBox.ComboBox". 
+ * desining using designer selector "ListBox.ComboBox".
  */
 class ComboBox extends Container implements ListModelListener
-	/** \brief Start edit mouse listener. */
-	class StartEditMouseListener extends DefaultMouseListener
-		/** \brief Combo box. */
-		private var ComboBox pComboBox
-		
-		/** \brief Create mouse listener. */
-		public func new( ComboBox comboBox )
-			this.pComboBox = comboBox
-		end
-		
-		/** \brief Mouse button has been pressed. */
-		public func void onButtonPress( MouseEvent event )
-			if event.getButton() == InputEventMouseButton.left
-				this.pComboBox.startEditing()
-			end
-		end
-	end
-	
-	/** \brief Editor focus lost listener. */
+	/** \deprecated Editor focus lost listener. */
 	class EditorFocusLost extends DefaultFocusListener
-		/** \brief Combo box. */
-		private var ComboBox pComboBox
+		var ComboBox pComboBox
 		
-		/** \brief Create mouse listener. */
-		public func new( ComboBox comboBox )
-			this.pComboBox = comboBox
+		func new(ComboBox comboBox)
+			pComboBox = comboBox
 		end
 		
-		/** \brief Widget lost focus. */
-		public func void onFocusLost( FocusEvent event )
-			this.pComboBox.rollUp()
-			this.pComboBox.setSelectedFromEditorValue()
-			this.pComboBox.updateSelectedWidget()
+		func void onFocusReceived(FocusEvent event)
+			pComboBox.onFocusReceived(event)
+		end
+		
+		func void onFocusLost(FocusEvent event)
+			pComboBox.onFocusLost(event)
 		end
 	end
 	
 	/** \brief Editor value changed listener. */
 	class EditorValueChanged extends DefaultActionListener
-		/** \brief Combo box. */
-		private var ComboBox pComboBox
+		var ComboBox pComboBox
 		
-		/** \brief Create listener. */
-		public func new( ComboBox comboBox )
-			this.pComboBox = comboBox
+		func new(ComboBox comboBox)
+			pComboBox = comboBox
 		end
 		
-		/** \brief Action run. */
-		public func void onAction( ActionEvent event )
-			this.pComboBox.setSelectedFromEditorValue()
-			this.pComboBox.updateSelectedWidget()
+		func void onAction(ActionEvent event)
+			pComboBox.setSelectedFromEditorValue()
+			pComboBox.updateSelectedWidget()
 		end
 	end
 	
 	/** \brief Roll up mouse listener. */
 	class RollUpMouseListener extends DefaultMouseListener
-		/** \brief Combo box. */
-		private var ComboBox pComboBox
+		var ComboBox pComboBox
+		var bool pPressed
 		
-		/** \brief Count mouse release only if pressed before. */
-		private var bool pPressed
-		
-		/** \brief Create mouse listener. */
-		public func new( ComboBox comboBox )
-			this.pComboBox = comboBox
-			this.pPressed = false
+		func new(ComboBox comboBox)
+			pComboBox = comboBox
+			pPressed = false
 		end
 		
-		/** \brief Mouse button has been pressed. */
-		public func void onButtonPress( MouseEvent event )
+		func void onButtonPress(MouseEvent event)
 			if event.getButton() == InputEventMouseButton.left
-				this.pPressed = true
+				pPressed = true
 			end
 		end
 		
-		/** \brief Mouse button has been released. */
-		public func void onButtonRelease( MouseEvent event )
-			if event.getButton() == InputEventMouseButton.left and this.pPressed
-				this.pComboBox.rollUp()
+		func void onButtonRelease(MouseEvent event)
+			if event.getButton() == InputEventMouseButton.left and pPressed
+				pComboBox.rollUp()
 			end
 		end
 	end
 	
-	/** \brief Popup widget listener. */
+	/** \deprecated Popup widget listener. */
 	class PopupWidgetListener extends DefaultWidgetListener
-		/** \brief Combo box. */
-		private var ComboBox pComboBox
+		var ComboBox pComboBox
 		
-		/** \brief Create widget listener. */
-		public func new( ComboBox comboBox )
-			this.pComboBox = comboBox
+		func new(ComboBox comboBox)
+			pComboBox = comboBox
 		end
 		
-		/** \brief Widget has been hidden. */
-		public func void onWidgetHidden( WidgetEvent event )
-			this.pComboBox.rollUp()
+		func void onWidgetHidden(WidgetEvent event)
+			pComboBox.rollUp()
 		end
 	end
 	
-	/** \brief Change combo box selectiong using mouse wheel. */
-	class WheelChangeSelection extends DefaultMouseListener
-		/** \brief List box. */
-		private var ListBox pListBox
+	/**
+	 * \brief Popup window.
+	 * \version 1.17
+	 */
+	class ComboPopup extends WindowPopup
+		var ComboBox pComboBox
+		var ListBox pListBox
 		
-		/** \brief Create mouse listener. */
-		public func new( ListBox listBox )
-			this.pListBox = listBox
+		func new(ComboBox comboBox)
+			pComboBox = comboBox
+			setCloseOnPopDown(false)
 		end
 		
-		/** \brief Mouse wheel moved. */
-		public func void onMouseWheel( MouseEvent event )
-			var int y = event.getPosition().getY()
-			if y == 0
+		func void dispose()
+			if pListBox != null
+				// disposing of pListBox removes listeners but only if model has been created
+				// by pListBox. hence we need to remove combox from listener here but only if
+				// model still exists. this catches the situation of the listbox being disposed
+				// early. this should actually not be possible but better safe than sorry
+				var ListModel model = pListBox.getModel()
+				if model != null
+					model.removeListener(pComboBox)
+				end
+				pListBox = null
+			end
+			
+			super.dispose()
+			
+			pComboBox = null
+		end
+		
+		func void setListBox(ListBox listBox)
+			pListBox = listBox
+		end
+		
+		func bool requiresPopdown(MouseEvent event)
+			if not super.requiresPopdown(event)
+				return false
+			end
+			if pComboBox.getEditor() == null
+				return true
+			end
+			
+			var Widget source = event.getSource() cast Widget
+			var Point desktopPosition = source.getDesktopPosition() + event.getPosition()
+			var Point comboBoxPosition = desktopPosition - pComboBox.getDesktopPosition()
+			if not pComboBox.isPointInside(comboBoxPosition)
+				return true
+			end
+			
+			var Widget dropDownButton = pComboBox.getButtonDropDownWidget()
+			if dropDownButton == null
+				return true
+			end
+			
+			return dropDownButton.isPointInside(comboBoxPosition - dropDownButton.getPosition())
+		end
+		
+		func void popdown()
+			super.popdown()
+			pComboBox.rollUp()
+			pComboBox.onStateChanged(StateChangeEvent.new(this, StateChangeEvent.idStateChanged))
+		end
+		
+		func void sendEvent(Event event)
+			if event.getSource() != this
 				return
 			end
 			
-			var int selection = this.pListBox.getSelectedElement()
-			var int count = this.pListBox.getModel().getCount()
-			var int newSelection = selection
+			var int id = event.getIdentifier()
+			var Desktop desktop = getDesktop()
+			var Point desktopPosition
 			
-			if selection == -1 and count > 0
-				newSelection = 0
+			if MouseEvent.isMouseEvent(id)
+				desktopPosition = getDesktopPosition() + (event cast MouseEvent).getPosition()
 				
 			else
-				newSelection = DEMath.clamp( selection - y, 0, count - 1 )
+				desktopPosition = desktop.getMouseLocation()
 			end
 			
-			if newSelection != selection
-				this.pListBox.setSelectedElement( newSelection )
+			var Widget target = desktop.widgetAcceptingInputAt(desktopPosition)
+			if target == null or not target.hasParent(pComboBox)
+				super.sendEvent(event)
+				return
+			end
+			
+			if MouseEvent.isMouseEvent(id)
+				var MouseEvent mouseEvent = event cast MouseEvent
+				var Point mousePosition
+				
+				if id == MouseEvent.idMouseWheeled
+					mousePosition = mouseEvent.getPosition()
+					
+				else
+					mousePosition = desktopPosition - target.getDesktopPosition()
+				end
+				
+				target.sendEvent(MouseEvent.new(target, id, mouseEvent.getButton(),\
+					mouseEvent.getModifiers(), mousePosition, mouseEvent.getSystem(),\
+					mouseEvent.getDevice()))
+				
+			elif KeyEvent.isKeyEvent(id)
+				var KeyEvent keyEvent = event cast KeyEvent
+				target.sendEvent(KeyEvent.new(target, id, keyEvent.getKeyCode(), \
+					keyEvent.getModifiers(), keyEvent.getKeyChar(), \
+					keyEvent.getSystem(), keyEvent.getDevice() , keyEvent.getButtonCode()))
+				
+			elif GamepadEvent.isGamepadEvent(id)
+				var GamepadEvent gevent = event cast GamepadEvent
+				target.sendEvent(GamepadEvent.new(target, id, gevent.getSystem(),\
+					gevent.getDevice(), gevent.getCode(), gevent.getModifiers(), gevent.getAxisValue()))
+				
+			else
+				target.sendEvent(event)
 			end
 		end
 	end
 	
 	
 	
-	private var WindowPopup pDropDown
-	private var ListBox pListBox
-	private var Widget pWidgetButtonDropDown
-	private var Panel pPanelSelectedElement
-	private var Widget pSelectedElement
-	private var Panel pSpacer
-	private var ComboBoxEditor pEditor
-	private var EditorFocusLost pEditorFocusLost
-	private var EditorValueChanged pEditorValueChanged
-	private var Point pDefaultElementSize
+	var ComboPopup pDropDown
+	var ListBox pListBox
+	var Widget pWidgetButtonDropDown
+	var Container pWidgetButtonDropDownContainer
+	var Panel pPanelSelectedElement
+	var Widget pSelectedElement
+	var Panel pSpacer
+	var ComboBoxEditor pEditor
+	var EditorFocusLost pEditorFocusLost
+	var EditorValueChanged pEditorValueChanged
+	var Point pDefaultElementSize
+	var bool pSelFromEditorOnDropDown
+	var bool pDropDownRequiresSelFromEditor
+	var String pSelectedElementDesignerSelector
+	var bool pPreventUpdateEditor
+// 	var bool pFirstDropDown
 	
 	
 	
 	/** \brief Create combo box widget. */
-	public func new() this( DefaultListModel.new(), DefaultListElementRenderer.new() )
+	func new() this(DefaultListModel.new(), DefaultListElementRenderer.new())
 	end
 	
 	/** \brief Create combo box widget. */
-	public func new( ListModel model ) this( model, DefaultListElementRenderer.new() )
+	func new(ListModel model) this(model, DefaultListElementRenderer.new())
 	end
 	
 	/** \brief Create combo box widget. */
-	public func new( ListModel model, ListElementRenderer renderer )
-// 		this.setCanFocus( true ) // this is not working correctly. needs fixing
+	func new(ListModel model, ListElementRenderer renderer)
+		setCanFocus(true) // this is not working correctly. needs fixing
 		
-		this.pDefaultElementSize = Point.new( 1, 1 )
+		pSelFromEditorOnDropDown = true
+// 		pFirstDropDown = true
 		
-		this.pEditorFocusLost = EditorFocusLost.new( this )
-		this.pEditorValueChanged = EditorValueChanged.new( this )
+		pDefaultElementSize = Point.new(1, 1)
 		
-		this.pListBox = ListBox.new( model, renderer )
-		this.pListBox.setNumberDisplayLines( 8 )
-		this.pListBox.setBorder( BevelBorder.new() )
-		this.pListBox.addMouseListener( RollUpMouseListener.new( this ) )
-		this.pListBox.setDesignerSelector( this.pListBox.getDesignerSelector() + ".ComboBox" )
+		pEditorFocusLost = EditorFocusLost.new(this)
+		pEditorValueChanged = EditorValueChanged.new(this)
 		
-		this.pDropDown = WindowPopup.new()
-		this.pDropDown.setCloseOnPopDown( false )
-		this.pDropDown.addWidget( ScrollPanel.new( this.pListBox ) )
+		pListBox = ListBox.new(model, renderer)
+		pListBox.setNumberDisplayLines(8)
+		pListBox.setBorder(BevelBorder.new())
+		pListBox.addMouseListener(RollUpMouseListener.new(this))
+		pListBox.setDesignerSelector("ListBox.ComboBox")
 		
-		this.pSpacer = Panel.new()
-		this.pSpacer.setMinimumSize( Point.new( 50, 0 ) )
-		this.pSpacer.setProtectMinimumSize( true )
-		this.pDropDown.addWidget( this.pSpacer, BorderLayout.Area.bottom )
-		this.pDropDown.addWidgetListener( PopupWidgetListener.new( this ) )
+		pDropDown = ComboPopup.new(this)
+		pDropDown.setDesignerSelector("WindowPopup.ComboBox")
+		pDropDown.addWidget(ScrollPanel.new(pListBox))
+		pDropDown.setListBox(pListBox)
 		
-		this.setDesignerSelector( "ComboBox" )
-		this.setLayout( BorderLayout.new() )
+		pSpacer = Panel.new()
+		pSpacer.setMinimumSize(Point.new(50, 0))
+		pSpacer.setProtectMinimumSize(true)
+		pDropDown.addWidget(pSpacer, BorderLayout.Area.bottom)
 		
-		this.pPanelSelectedElement = Panel.new()
-		this.pPanelSelectedElement.setLayout( StackLayout.new() )
-		this.addWidget( this.pPanelSelectedElement, BorderLayout.Area.content  )
+		setLayout(BorderLayout.new())
 		
-		this.updateSelectedWidget()
+		pPanelSelectedElement = Panel.new(StackLayout.new())
+		addWidget(pPanelSelectedElement, BorderLayout.Area.content)
 		
-		this.addMouseListener( StartEditMouseListener.new( this ) )
-		this.addMouseListener( WheelChangeSelection.new( this.pListBox ) )
+		setDesignerSelector("ComboBox")
+		updateSelectedWidget()
 		
-		model.addListener( this )
+		model.addListener(this)
 	end
 	
 	/** \brief Create combo box widget. */
-	public func new( ListModel model, ComboBoxEditor editor ) \
-	this( model, DefaultListElementRenderer.new() )
-		this.setEditor( editor )
+	func new(ListModel model, ComboBoxEditor editor) this(model, DefaultListElementRenderer.new())
+		setEditor(editor)
 	end
 	
 	/** \brief Create combo box widget. */
-	public func new( ListModel model, ListElementRenderer renderer, ComboBoxEditor editor ) \
-	this( model, renderer )
-		this.setEditor( editor )
+	func new(ListModel model, ListElementRenderer renderer, ComboBoxEditor editor) this(model, renderer)
+		setEditor(editor)
 	end
 	
 	/** \brief Dispose of widget. */
-	public func void dispose()
-		if this.pEditor != null
-			if this.pEditorFocusLost != null
-				this.pEditor.getWidget().removeFocusListener( this.pEditorFocusLost )
+	func void dispose()
+		if pEditor != null
+			if pEditorFocusLost != null
+				pEditor.getWidget().removeFocusListener(pEditorFocusLost)
 			end
-			if this.pEditorValueChanged != null
-				this.pEditor.removeActionListener( this.pEditorValueChanged )
+			if pEditorValueChanged != null
+				pEditor.removeActionListener(pEditorValueChanged)
 			end
 		end
-		this.pEditor = null
-		this.pEditorFocusLost = null
-		this.pEditorValueChanged = null
+		pEditor = null
+		pEditorFocusLost = null
+		pEditorValueChanged = null
 		
-		this.pSpacer = null
-		this.pSelectedElement = null
-		this.pPanelSelectedElement = null
-		this.pWidgetButtonDropDown = null
+		pSpacer = null
+		pSelectedElement = null
+		pPanelSelectedElement = null
+		pWidgetButtonDropDown = null
+		pWidgetButtonDropDownContainer = null
 		
-		this.pListBox = null // no remove listener since popwindow does this on dispose
-		
-		if this.pDropDown != null
-			this.pDropDown.close()
-			this.pDropDown = null
+		if pDropDown != null
+			pDropDown.close()
+			pDropDown = null
 		end
+		
+		pListBox = null
 		
 		super.dispose()
 	end
@@ -276,186 +335,244 @@ class ComboBox extends Container implements ListModelListener
 	
 	
 	/** \brief List model. */
-	public func ListModel getModel()
-		return this.pListBox.getModel()
+	func ListModel getModel()
+		return pListBox.getModel()
 	end
 	
 	/** \brief Set list model. */
-	public func void setModel( ListModel model )
-		this.pListBox.setModel( model )
+	func void setModel(ListModel model)
+		if model == null
+			throw ENullPointer.new("model")
+		end
+		
+		pListBox.getModel().removeListener(this)
+		pListBox.setModel(model)
+		model.addListener(this)
 	end
 	
 	/** \brief List element renderer. */
-	public func ListElementRenderer getElementRenderer()
-		return this.pListBox.getElementRenderer()
+	func ListElementRenderer getElementRenderer()
+		return pListBox.getElementRenderer()
 	end
 	
 	/** \brief Set list element renderer. */
-	public func void setElementRenderer( ListElementRenderer renderer )
-		this.pListBox.setElementRenderer( renderer )
-		
-		this.updateDefaultElementSize()
-		if this.pSelectedElement != null
-			this.pSelectedElement.setMinimumSize( this.getDefaultElementSize() )
-		end
-	end
-	
-	/** \brief Number of lines to display in the drop down list box. */
-	public func int getNumberDisplayLines()
-		return this.pListBox.getNumberDisplayLines()
-	end
-	
-	/** \brief Set number of lines to display in the drop down list box. */
-	public func void setNumberDisplayLines( int lines )
-		this.pListBox.setNumberDisplayLines( lines )
-	end
-	
-	/** \brief Combo box editor if editable or \em null if not editable. */
-	public func ComboBoxEditor getEditor()
-		return this.pEditor
-	end
-	
-	/** \brief Set combo box editor if editable or \em null if not editable. */
-	public func void setEditor( ComboBoxEditor editor )
-		if editor == this.pEditor
+	func void setElementRenderer(ListElementRenderer renderer)
+		if renderer == pListBox.getElementRenderer()
 			return
 		end
 		
-		if this.pEditor != null
-			this.pPanelSelectedElement.removeWidget( this.pEditor.getWidget() )
-			this.pEditor.getWidget().removeFocusListener( this.pEditorFocusLost )
-			this.pEditor.removeActionListener( this.pEditorValueChanged )
+		if pSelectedElement != null
+			pSelectedElement.safeDispose()
+			pSelectedElement = null
+			pSelectedElementDesignerSelector = null
 		end
 		
-		this.pEditor = editor
+		pListBox.setElementRenderer(renderer)
+		
+		updateDefaultElementSize()
+	end
+	
+	/** \brief Number of lines to display in the drop down list box. */
+	func int getNumberDisplayLines()
+		return pListBox.getNumberDisplayLines()
+	end
+	
+	/** \brief Set number of lines to display in the drop down list box. */
+	func void setNumberDisplayLines(int lines)
+		pListBox.setNumberDisplayLines(lines)
+	end
+	
+	/** \brief Combo box editor if editable or \em null if not editable. */
+	func ComboBoxEditor getEditor()
+		return pEditor
+	end
+	
+	/** \brief Set combo box editor if editable or \em null if not editable. */
+	func void setEditor(ComboBoxEditor editor)
+		if editor == pEditor
+			return
+		end
+		
+		if pEditor != null
+			pPanelSelectedElement.removeWidget(pEditor.getWidget())
+			pEditor.getWidget().removeFocusListener(pEditorFocusLost)
+			pEditor.removeActionListener(pEditorValueChanged)
+		end
+		
+		pEditor = editor
 		
 		if editor != null
-			this.pPanelSelectedElement.addWidget( editor.getWidget() )
-			editor.addActionListener( this.pEditorValueChanged )
-			editor.getWidget().addFocusListener( this.pEditorFocusLost )
-			editor.getWidget().setVisible( false )
+			var Widget widget = editor.getWidget()
+			pPanelSelectedElement.addWidget(widget)
+			editor.addActionListener(pEditorValueChanged)
+			widget.addFocusListener(pEditorFocusLost)
+			widget.setVisible(false)
 		end
 		
-		this.setEditorValueFromSelection()
-		this.updateSelectedWidget()
+		setEditorValueFromSelection()
+		updateSelectedWidget()
 		// does implicitely updateSelectedVisibility()
 		
-		this.updateDefaultElementSize()
-		if this.pSelectedElement != null
-			this.pSelectedElement.setMinimumSize( this.getDefaultElementSize() )
+		updateDefaultElementSize()
+		if pSelectedElement != null
+			pSelectedElement.setMinimumSize(getDefaultElementSize())
 		end
 	end
 	
 	
 	
 	/** \brief Index of the selected item or -1 if none is selected. */
-	public func int getSelectedElement()
-		return this.pListBox.getSelectedElement()
+	func int getSelectedElement()
+		return pListBox.getSelectedElement()
 	end
 	
 	/** \brief Set index of the selected item or -1 if none is selected. */
-	public func void setSelectedElement( int index )
-		this.pListBox.setSelectedElement( index )
+	func void setSelectedElement(int index)
+		pListBox.setSelectedElement(index)
 	end
 	
 	
 	
 	/** \brief Drop down list visible. */
-	public func bool droppedDown()
-		return this.pDropDown.getVisible()
+	func bool droppedDown()
+		return pDropDown.getVisible()
 	end
 	
 	/** \brief Drop down the list box if not already dropped down. */
-	public func void dropDown()
-		if this.pDropDown.getVisible()
+	func void dropDown()
+		if pDropDown.getVisible()
 			return
 		end
 		
-		var Desktop desktop = this.pDropDown.getDesktop()
+		var Desktop desktop = pDropDown.getDesktop()
 		
 		if desktop == null
-			desktop = this.getDesktop()
+			desktop = getDesktop()
 			if desktop == null
 				return
 			end
-			desktop.addWindow( this.pDropDown )
+			desktop.addWindow(pDropDown)
 		end
 		
-		this.pDropDown.popupInside( \
-			this.getDesktopPosition() + Point.new( 0, this.getHeight() ), \
-			RectArea.new( Point.new(), desktop.getSize() ) )
-		this.pListBox.makeSelectedElementVisible()
+// 		pFirstDropDown = false
 		
-		this.onStateChanged( StateChangeEvent.new( this, StateChangeEvent.idStateChanged ) )
+		pDropDown.popupInside(\
+			getDesktopPosition() + Point.new(0, getHeight()), \
+			RectArea.new(Point.new(), desktop.getSize()))
+		pListBox.makeSelectedElementVisible()
 		
-		if this.pEditor != null
-			this.pEditor.startEditing()
+		onStateChanged(StateChangeEvent.new(this, StateChangeEvent.idStateChanged))
+		
+		if pDropDownRequiresSelFromEditor
+			pDropDownRequiresSelFromEditor = false
+			setSelectedFromEditorValue() // has to be done once drop down is visible
+		end
+		
+		if pEditor != null
+			if not pEditor.getWidget().getVisible()
+				pEditor.startEditing()
+			end
 			
 		else
-			this.grabFocus()
+			grabFocus()
 		end
-		
-		/*
-		if this.pEditor == null
-			this.pListBox.grabFocus()
-		end
-		*/
 	end
 	
 	/** \brief Roll up the list box if dropped down. */
-	public func void rollUp()
-		if not this.pDropDown.getVisible()
+	func void rollUp()
+		if not pDropDown.getVisible()
 			return
 		end
 		
-		this.pDropDown.popdown()
-		
-		/* this fails if rollUp() is called due to focus lost event
-		if this.pEditor != null
-			this.pEditor.startEditing()
-			
-		else
-			this.grabFocus()
-		end
-		*/
-		
-		this.onStateChanged( StateChangeEvent.new( this, StateChangeEvent.idStateChanged ) )
+		pDropDown.popdown()
 	end
 	
 	/** \brief Toggle between dropped down and rolled up state. */
-	public func void toggleDropDown()
-		if this.pDropDown.getVisible()
-			this.rollUp()
+	func void toggleDropDown()
+		if pDropDown.getVisible()
+			rollUp()
 			
 		else
-			this.dropDown()
+			dropDown()
 		end
 	end
 	
-	/** \brief Start editing if an editor is set otherwise toggle drop down. */
-	public func void startEditing()
-		if this.pEditor == null
-			this.toggleDropDown()
+	/** \brief Start editing if an editor is set. */
+	func void startEditing()
+		if pEditor == null
 			return
 		end
 		
-		this.dropDown()
-		
-		if this.pSelectedElement != null
-			this.pSelectedElement.setVisible( false )
+		if pSelectedElement != null
+			pSelectedElement.setVisible(false)
 		end
-		this.pEditor.getWidget().setVisible( true )
-		this.pEditor.startEditing()
 		
-		this.pDropDown.moveToTop() // startEditing grabs the focus raising the window. we need an alwaysOnTop
+		pEditor.getWidget().setVisible(true)
+		pEditor.startEditing()
+	end
+	
+	/**
+	 * \brief Set selected from editor value on drop down.
+	 * \version 1.7
+	 * 
+	 * If true delays sets selected from editor value until drop down. If false sets selected
+	 * from editor immediately. This can be slow down UI if the list has many elements.
+	 * 
+	 * Default value is true.
+	 */
+	func bool getSelectFromEditorOnDropDown()
+		return pSelFromEditorOnDropDown
+	end
+	
+	/**
+	 * \brief Set selected from editor value on drop down.
+	 * \version 1.7
+	 * 
+	 * If true delays sets selected from editor value until drop down. If false sets selected
+	 * from editor immediately. This can be slow down UI if the list has many elements.
+	 * 
+	 * Default value is true.
+	 */
+	func void setSelectFromEditorOnDropDown(bool selectedFromEditorOnDropDown)
+		pSelFromEditorOnDropDown = selectedFromEditorOnDropDown
+		pDropDownRequiresSelFromEditor = true
+	end
+	
+	/**
+	 * \brief Select from editor value is required during next drop down.
+	 * \version 1.7
+	 */
+	protected func bool getDropDownRequiresSelectFromEditor()
+		return pDropDownRequiresSelFromEditor
+	end
+	
+	/**
+	 * \brief Set select from editor value is required during next drop down.
+	 * \version 1.7
+	 */
+	protected func void setDropDownRequiresSelectFromEditor(bool requiresSelectFromEditor)
+		pDropDownRequiresSelFromEditor = requiresSelectFromEditor
 	end
 	
 	
 	
-	/** \brief Request to focus the specified widget. */
-	public func void requestGrabFocus( Widget widget )
-		super.requestGrabFocus( widget )
-		this.updateSelectedWidget()
+	/**
+	 * \brief Grab focus if possible.
+	 * 
+	 * If an editor is set grabs focus of edit widget instead.
+	 */
+	func void grabFocus()
+		if pEditor != null
+			if pEditor.getWidget().getVisible()
+				pEditor.getWidget().grabFocus()
+				
+			else
+				startEditing()
+			end
+			
+		else
+			super.grabFocus()
+		end
 	end
 	
 	
@@ -464,57 +581,165 @@ class ComboBox extends Container implements ListModelListener
 	 * \brief Drop down button widget or \em null if not set.
 	 * \details For use by button designers.
 	 */
-	public func Widget getButtonDropDownWidget()
-		return this.pWidgetButtonDropDown
+	func Widget getButtonDropDownWidget()
+		return pWidgetButtonDropDown
 	end
 	
 	/**
 	 * \brief Set drop down button widget or \em null if not set.
 	 * \details For use by button designers.
 	 */
-	public func void setDropDownButtonWidget( Widget widget )
-		if widget == this.pWidgetButtonDropDown
+	func void setDropDownButtonWidget(Widget widget)
+		if widget == pWidgetButtonDropDown
 			return
 		end
 		
-		if this.pWidgetButtonDropDown != null
-			this.removeWidget( this.pWidgetButtonDropDown )
-			this.pWidgetButtonDropDown.dispose()
+		if pWidgetButtonDropDown != null
+			pWidgetButtonDropDown.safeDispose()
 		end
 		
-		this.pWidgetButtonDropDown = widget
+		pWidgetButtonDropDown = widget
+		
+		if widget castable Container
+			pWidgetButtonDropDownContainer = widget cast Container
+			
+		else
+			pWidgetButtonDropDownContainer = null
+		end
 		
 		if widget != null
-			this.addWidget( widget, BorderLayout.Area.right )
+			addWidget(widget, BorderLayout.Area.right)
 		end
 	end
 	
 	
 	
 	/** \brief Size changed. */
-	public func void onResize( WidgetEvent event )
-		super.onResize( event )
-		this.pSpacer.setMinimumSize( Point.new( this.getWidth(), 0 ) )
+	func void onResize(WidgetEvent event)
+		super.onResize(event)
+		pSpacer.setMinimumSize(Point.new(getWidth(), 0))
+	end
+	
+	/** \brief Mouse button pressed. */
+	func void onButtonPress(MouseEvent event)
+		var Widget source = event.getSource() cast Widget
+		
+		if source == this
+			grabFocus()
+		end
+		
+		if event.getButton() == InputEventMouseButton.left
+			if pEditor != null
+				if pEditor.getWidget().getVisible()
+					if source == pWidgetButtonDropDown\
+					or (pWidgetButtonDropDownContainer != null and source.hasParent(pWidgetButtonDropDownContainer))
+						toggleDropDown()
+						
+// 					elif pFirstDropDown
+					else
+						dropDown()
+					end
+					
+				else
+					dropDown()
+					startEditing()
+				end
+				
+			else
+				toggleDropDown()
+				startEditing()
+			end
+		end
+		
+		sendEventToListeners(event, true)
+// 		super.onButtonPress(event)
+	end
+	
+	/** Mouse wheeled. */
+	func void onMouseWheel(MouseEvent event)
+		var int y = event.getPosition().getY()
+		if y == 0
+			return
+		end
+		
+		var int selection = pListBox.getSelectedElement()
+		var int count = pListBox.getModel().getCount()
+		var int newSelection = selection
+		
+		if selection == -1 and count > 0
+			newSelection = 0
+			
+		else
+			newSelection = DEMath.clamp(selection - y, 0, count - 1)
+		end
+		
+		if newSelection != selection
+			pListBox.setSelectedElement(newSelection)
+		end
+		
+		// do not send event up the chain
+	end
+	
+	/** \brief Key pressed. */
+	func void onKeyPress(KeyEvent event)
+		super.onKeyPress(event)
+		
+		select event.getKeyCode()
+		case InputEventKey.arrowDown
+			onArrowDown()
+			
+		case InputEventKey.arrowUp
+			onArrowUp()
+			
+		case InputEventKey.pageUp
+			onPageUp()
+			
+		case InputEventKey.pageDown
+			onPageDown()
+			
+		case InputEventKey.space
+			if pEditor == null
+				toggleDropDown()
+			end
+			
+		case InputEventKey.enter
+			rollUp()
+		end
 	end
 	
 	/** \brief Widget received focus. */
-	public func void onFocusReceived( FocusEvent event )
-		super.onFocusReceived( event )
+	func void onFocusReceived(FocusEvent event)
+		super.onFocusReceived(event)
 		
-		this.updateSelectedWidget()
-		if this.pEditor != null
-			this.pEditor.startEditing()
-		end
+// 		pFirstDropDown = true
+		updateSelectedWidget()
+		startEditing()
 	end
 	
 	/** \brief Widget lost focus. */
-	public func void onFocusLost( FocusEvent event )
-		super.onFocusLost( event )
+	func void onFocusLost(FocusEvent event)
+		super.onFocusLost(event)
 		
-		if this.pEditor != null and this.pEditor.getWidget().getVisible()
-			this.setSelectedFromEditorValue()
+		updateSelectedWidget()
+		rollUp()
+// 		pFirstDropDown = false
+	end
+	
+	/**
+	 * \brief Request to release mouse capture.
+	 * 
+	 * Capture mouse to popup window if visible. Required if editor widget captures mouse.
+	 */
+	func bool requestReleaseMouse(Widget widget)
+		if not super.requestReleaseMouse(widget)
+			return false
 		end
-		this.updateSelectedWidget()
+		
+		if pDropDown.getVisible()
+			pDropDown.captureMouse()
+		end
+		
+		return true
 	end
 	
 	/**
@@ -522,146 +747,322 @@ class ComboBox extends Container implements ListModelListener
 	 * \details Called if setGuiTheme is used or parent changed.
 	 * \warning You have to super-call this method since it is used a bit differently than the other callback methods.
 	 */
-	public func void onGuiThemeChanged()
+	func void onGuiThemeChanged()
 		super.onGuiThemeChanged()
-		this.pDropDown.setGuiTheme( this.getGuiTheme() )
+		pDropDown.setGuiTheme(getGuiTheme())
 		
-		this.updateDefaultElementSize()
-		if this.pSelectedElement != null
-			this.pSelectedElement.setMinimumSize( this.getDefaultElementSize() )
+		updateDefaultElementSize()
+		if pSelectedElement != null
+			pSelectedElement.setMinimumSize(getDefaultElementSize())
 		end
+	end
+	
+	/**
+	 * \brief Designer selector changed.
+	 */
+	func void onDesignerSelectorChanged()
+		super.onDesignerSelectorChanged()
+		
+		if pSelectedElement != null
+			pSelectedElement.safeDispose()
+			pSelectedElement = null
+			pSelectedElementDesignerSelector = null
+		end
+		
+		var String selector = getDesignerSelector()
+		pListBox.setDesignerSelector("ListBox." + selector)
+		
+		updateSelectedWidget()
+		
+		pDropDown.setDesignerSelector("WindowPopup." + selector)
 	end
 	
 	
 	
 	/** \brief Elements have been added. */
-	public func void elementsAdded( ListModel listModel, int fromIndex, int toIndex )
+	func void elementsAdded(ListModel listModel, int fromIndex, int toIndex)
+		setSelectedFromEditorValue()
 	end
 	
 	/** \brief Elements have been removed. */
-	public func void elementsRemoved( ListModel listModel, int fromIndex, int toIndex )
+	func void elementsRemoved(ListModel listModel, int fromIndex, int toIndex)
 	end
 	
 	/** \brief Content of the model changed. */
-	public func void contentChanged( ListModel listModel, int fromIndex, int toIndex )
+	func void contentChanged(ListModel listModel, int fromIndex, int toIndex)
+		var int selection = listModel.getSelected()
+		if selection >= fromIndex and selection <= toIndex
+			selectionChanged(listModel)
+			
+		else
+			setSelectedFromEditorValue()
+		end
 	end
 	
 	/** \brief Selection in the list box changed. */
-	public func void selectionChanged( ListModel listModel )
-		this.setEditorValueFromSelection()
-		this.updateSelectedWidget()
+	func void selectionChanged(ListModel listModel)
+		if pPreventUpdateEditor
+			updateSelectedWidget()
+			return
+		end
 		
-		if this.pEditor != null
-			this.pEditor.startEditing()
+		setEditorValueFromSelection()
+		updateSelectedWidget()
+		
+		if pEditor != null and pEditor.getWidget().getVisible()
+			pEditor.startEditing()
 		end
 	end
 	
 	
 	
 	/** \brief Update selected widget. */
-	public func void updateSelectedWidget()
+	func void updateSelectedWidget()
 		var Object selection
 		
-		var int selectionIndex = this.pListBox.getSelectedElement()
+		var int selectionIndex = pListBox.getSelectedElement()
 		if selectionIndex != -1
-			selection = this.pListBox.getModel().getAt( selectionIndex )
+			selection = pListBox.getModel().getAt(selectionIndex)
 		end
 		
-		if this.pSelectedElement != null
-			this.pPanelSelectedElement.removeWidget( this.pSelectedElement )
-			this.pSelectedElement.dispose()
-			this.pSelectedElement = null
-		end
+		var ListElementRenderer renderer = pListBox.getElementRenderer()
 		
-		var ListElementRenderer renderer = this.pListBox.getElementRenderer()
-		this.pSelectedElement = renderer.createRenderer( this.pListBox )
-		
-		this.pSelectedElement.setMinimumSize( this.getDefaultElementSize() )
-		this.pSelectedElement.setProtectMinimumSize( true )
-		
-		if this.pEditor != null and selection == null
-			renderer.updateRenderer( this.pListBox, this.pSelectedElement, \
-				this.pEditor.getEditorValue(), false, this.getHasFocus() )
+		runWhileBlockingLayout(block
+			if pSelectedElement == null
+				pSelectedElementDesignerSelector = null
+				pSelectedElement = renderer.createRenderer(pListBox)
+				pSelectedElement.setMinimumSize(getDefaultElementSize())
+				pSelectedElement.setProtectMinimumSize(true)
+				pPanelSelectedElement.addWidget(pSelectedElement)
+			end
 			
-		else
-			renderer.updateRenderer( this.pListBox, this.pSelectedElement, \
-				selection, false, this.getHasFocus() )
-		end
-		
-		this.pPanelSelectedElement.addWidget( this.pSelectedElement )
-		
-		this.updateSelectedVisibility()
+			if pEditor != null
+				renderer.updateRenderer(pListBox, pSelectedElement,\
+					pEditor.getEditorValue(), false, getHasFocus())
+				
+			else
+				renderer.updateRenderer(pListBox, pSelectedElement, selection, false, getHasFocus())
+			end
+			
+			if pSelectedElement != null
+				if pSelectedElementDesignerSelector == null
+					pSelectedElementDesignerSelector = pSelectedElement.getDesignerSelector()
+				end
+				pSelectedElement.setDesignerSelector(pSelectedElementDesignerSelector + ".ComboBoxSelected")
+			end
+			
+			updateSelectedVisibility()
+		end)
+		doLayoutIfBlocked()
 	end
 	
 	/** \brief Set editor value from selection if anything is selected. */
-	public func void setEditorValueFromSelection()
-		if this.pEditor == null
+	func void setEditorValueFromSelection()
+		if pEditor == null
 			return
 		end
 		
-		var int selection = this.pListBox.getSelectedElement()
+		var int selection = pListBox.getSelectedElement()
 		if selection != -1
-			this.pEditor.setEditorValue( this.pListBox.getModel().getAt( selection ) )
+			pEditor.setEditorValue(pListBox.getModel().getAt(selection))
 		end
 	end
 	
 	/** \brief Set selection from editor value. */
-	public func void setSelectedFromEditorValue()
-		if this.pEditor == null
+	func void setSelectedFromEditorValue()
+		if pEditor == null
 			return
 		end
 		
-		this.pListBox.setSelectedElement( this.pListBox.getModel().indexOf( \
-			this.pEditor.getEditorValue() ) )
+		if pSelFromEditorOnDropDown and not pDropDown.getVisible()
+			pDropDownRequiresSelFromEditor = true
+			return
+		end
+		
+		runWhilePreventUpdateEditor(block
+			pListBox.setSelectedElement(pListBox.getModel().indexOf(pEditor.getEditorValue()))
+		end)
+	end
+	
+	/**
+	 * \brief Run block while preventing updating editor.
+	 * \version 1.22
+	 */
+	protected func void runWhilePreventUpdateEditor(Block ablock)
+		try
+			pPreventUpdateEditor = true
+			ablock.run()
+			pPreventUpdateEditor = false
+			
+		catch Exception e
+			pPreventUpdateEditor = false
+			throw
+		end
 	end
 	
 	/** \brief Update visibility of editor and selected element renderer. */
-	public func void updateSelectedVisibility()
-		if this.pEditor == null
-			if this.pSelectedElement != null
-				this.pSelectedElement.setVisible( true )
+	func void updateSelectedVisibility()
+		if pEditor == null
+			if pSelectedElement != null
+				pSelectedElement.setVisible(true)
 			end
 			return
 		end
 		
 		var bool hasFocus = false
 		
-		var Desktop desktop = this.getDesktop()
+		var Desktop desktop = getDesktop()
 		if desktop != null
 			var Widget focusWidget = desktop.getFocusWidget()
 			if focusWidget != null
-				hasFocus = focusWidget.hasParent( this ) or focusWidget.hasParent( this.pDropDown )
+				hasFocus = focusWidget.hasParent(this) or focusWidget.hasParent(pDropDown)
 			end
 		end
 		
 		if hasFocus
-			if this.pSelectedElement != null
-				this.pSelectedElement.setVisible( false )
+			if pSelectedElement != null
+				pSelectedElement.setVisible(false)
 			end
-			this.pEditor.getWidget().setVisible( true )
+			pEditor.getWidget().setVisible(true)
 			
 		else
-			if this.pSelectedElement != null
-				this.pSelectedElement.setVisible( true )
+			if pSelectedElement != null
+				pSelectedElement.setVisible(true)
 			end
-			this.pEditor.getWidget().setVisible( false )
+			pEditor.getWidget().setVisible(false)
 		end
 	end
 	
 	/** \brief Get default element size. */
-	public func Point getDefaultElementSize()
-		return this.pDefaultElementSize
+	func Point getDefaultElementSize()
+		return pDefaultElementSize
 	end
 	
 	/** \brief Update default element size. */
-	public func void updateDefaultElementSize()
-		this.pDefaultElementSize = Point.new( 1, 1 )
-		if this.getGuiTheme() != null
-			this.pDefaultElementSize = this.pDefaultElementSize.largest( Point.new( \
-				this.pListBox.getElementWidth(), this.pListBox.getElementHeight() ) )
+	func void updateDefaultElementSize()
+		pDefaultElementSize = Point.new(1, 1)
+		if getGuiTheme() != null
+			pDefaultElementSize = pDefaultElementSize.largest(Point.new(\
+				pListBox.getElementWidth(), pListBox.getElementHeight()))
 		end
-		if this.pEditor != null
-			this.pDefaultElementSize = this.pDefaultElementSize.largest( this.pEditor.getWidget().getMinimumSize() )
+		if pEditor != null
+			pDefaultElementSize = pDefaultElementSize.largest(pEditor.getWidget().getMinimumSize())
 		end
+	end
+	
+	/**
+	 * \brief Selected element widget or null.
+	 * \version 1.7
+	 */
+	func Widget getWidgetSelectedElement()
+		return pSelectedElement
+	end
+	
+	/**
+	 * \brief Arrow down pressed.
+	 * \version 1.17
+	 */
+	func void onArrowDown()
+		var int selection = pListBox.getSelectedElement()
+		var int count = pListBox.getModel().getCount()
+		var int newSelection = selection
+		
+		if selection == -1 and count > 0
+			newSelection = 0
+			
+		else
+			newSelection = DEMath.min(selection + 1, count - 1)
+		end
+		
+		if newSelection != selection
+			pListBox.setSelectedElement(newSelection)
+		end
+		
+		dropDown()
+	end
+	
+	/**
+	 * \brief Arrow up pressed.
+	 * \version 1.17
+	 */
+	func void onArrowUp()
+		var int selection = pListBox.getSelectedElement()
+		var int count = pListBox.getModel().getCount()
+		var int newSelection = selection
+		
+		if selection == -1 and count > 0
+			newSelection = 0
+			
+		else
+			newSelection = DEMath.max(selection - 1, 0)
+		end
+		
+		if newSelection != selection
+			pListBox.setSelectedElement(newSelection)
+		end
+		
+		dropDown()
+	end
+	
+	/**
+	 * \brief Page up pressed.
+	 * \version 1.17
+	 */
+	func void onPageUp()
+		var int selection = pListBox.getSelectedElement()
+		var int count = pListBox.getModel().getCount()
+		var int newSelection = selection
+		var int rowCount
+		
+		if pListBox.getVisible()
+			rowCount = pListBox.getpVisibleRowCount() - 2
+			
+		else
+			rowCount = 10
+		end
+		
+		if selection == -1 and count > 0
+			newSelection = 0
+			
+		else
+			newSelection = DEMath.max(selection - rowCount, 0)
+		end
+		
+		if newSelection != selection
+			pListBox.setSelectedElement(newSelection)
+		end
+		
+		dropDown()
+	end
+	
+	/**
+	 * \brief Page down pressed.
+	 * \version 1.17
+	 */
+	func void onPageDown()
+		var int selection = pListBox.getSelectedElement()
+		var int count = pListBox.getModel().getCount()
+		var int newSelection = selection
+		var int rowCount
+		
+		if pListBox.getVisible()
+			rowCount = pListBox.getpVisibleRowCount() - 2
+			
+		else
+			rowCount = 10
+		end
+		
+		if selection == -1 and count > 0
+			newSelection = 0
+			
+		else
+			newSelection = DEMath.min(selection + rowCount, count - 1)
+		end
+		
+		if newSelection != selection
+			pListBox.setSelectedElement(newSelection)
+		end
+		
+		dropDown()
 	end
 end

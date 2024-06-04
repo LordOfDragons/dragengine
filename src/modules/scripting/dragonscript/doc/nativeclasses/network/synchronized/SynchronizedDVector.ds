@@ -40,6 +40,7 @@ class SynchronizedDVector
 	/*@{*/
 	/** \brief Value of network state or local value if not set. */
 	public func DVector getValue()
+		return null
 	end
 	
 	/** \brief Set value and update network state if set. */
@@ -48,10 +49,12 @@ class SynchronizedDVector
 	
 	/** \brief Linked network state or \em null if not set. */
 	public func NetworkState getNetworkState()
+		return null
 	end
 	
 	/** \brief Linked network state value index or -1 if not set. */
 	public func int getNetworkStateValue()
+		return 0
 	end
 	
 	/**
@@ -64,7 +67,8 @@ class SynchronizedDVector
 	
 	
 	/** \brief String representation. */
-	public String toString()
+	public func String toString()
+		return null
 	end
 	/*@}*/
 end

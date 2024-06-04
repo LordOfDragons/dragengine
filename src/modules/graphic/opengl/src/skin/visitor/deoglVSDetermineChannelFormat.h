@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLVSDETERMINECHANNELFORMAT_H_
@@ -39,7 +42,7 @@ class deSkinTexture;
 
 
 /**
- * \brief Required channel format visitor.
+ * Required channel format visitor.
  */
 class deoglVSDetermineChannelFormat{
 public:
@@ -55,6 +58,7 @@ public:
 	bool pIsDefined;
 	int pRequiredComponentCount;
 	bool pRequiresFloat;
+	bool pAllowMipMap;
 	deoglRImage *pSharedImage;
 	
 	
@@ -62,11 +66,11 @@ public:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create visitor. */
+	/** Create visitor. */
 	deoglVSDetermineChannelFormat( deoglRenderThread &renderThread, const deoglRSkin &skin,
 		const deoglSkinTexture &oglTex, const deSkinTexture &tex );
 	
-	/** \brief Clean up visitor. */
+	/** Clean up visitor. */
 	virtual ~deoglVSDetermineChannelFormat();
 	/*@}*/
 	
@@ -74,62 +78,65 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Process channel to determine required channel format. */
+	/** Process channel to determine required channel format. */
 	void ProcessChannel( deoglSkinChannel::eChannelTypes channel );
 	
 	
 	
-	/** \brief Channel has defined format. */
+	/** Channel has defined format. */
 	inline bool GetIsDefined() const{ return pIsDefined; }
 	
-	/** \brief Required texture size. */
+	/** Required texture size. */
 	inline const decPoint3 &GetRequiredSize() const{ return pRequiredSize; }
 	
-	/** \brief Required component count. */
+	/** Required component count. */
 	inline int GetRequiredComponentCount() const{ return pRequiredComponentCount; }
 	
-	/** \brief Float format is required. */
+	/** Float format is required. */
 	inline bool GetRequiresFloat() const{ return pRequiresFloat; }
 	
-	/** \brief Channel is uniform. */
+	/** Channel is uniform. */
 	inline bool GetIsUniform() const{ return pIsUniform; }
 	
-	/** \brief Channel is dynamic. */
+	/** Channel is dynamic. */
 	inline bool GetIsDynamic() const{ return pIsDynamic; }
 	
-	/** \brief Shared image. */
+	/** Mip mapping is allowed. */
+	inline bool GetAllowMipMap() const{ return pAllowMipMap; }
+	
+	/** Shared image. */
 	inline deoglRImage *GetSharedImage() const{ return pSharedImage; }
 	
 	
 	
-	/** \brief Visit property. */
+	/** Visit property. */
 	void VisitProperty( deSkinProperty &property );
 	
-	/** \brief Set required size. */
+	/** Set required size. */
 	bool SetRequiredSize( const decPoint3 &size );
 	
-	/** \brief Set use image if possible. */
+	/** Set use image if possible. */
 	void SetSharedImage( deoglRImage *image );
 	
-	/** \brief Log warning for an image not having square size. */
+	/** Log warning for an image not having square size. */
 	void WarnImageNotSquareSize( const deSkinPropertyImage &property ) const;
 	
-	/** \brief Log warning for an image not support for omnidirection mapping. */
+	/** Log warning for an image not support for omnidirection mapping. */
 	void WarnImageNotOmnidirectional( const deSkinPropertyImage &property ) const;
 	
-	/** \brief Log warning for an image with a size not matching the other images in a combined channel. */
+	/** Log warning for an image with a size not matching the other images in a combined channel. */
 	void WarnImageIncompatibleSize( const deSkinPropertyImage &property ) const;
 	
-	/** \brief Log warning for an image with an unsupported number of components. */
+	/** Log warning for an image with an unsupported number of components. */
 	void WarnImageIncompatibleComponentCount( const deSkinPropertyImage &property, int componentCount ) const;
 	
-	/** \brief Log warning for an image with a size not matching the other images in a combined channel. */
+	/** Log warning for an image with a size not matching the other images in a combined channel. */
 	void WarnImageIncompatibleSize( const deSkinPropertyConstructed &property ) const;
 	
-	/** \brief Log warning for an image not having square size. */
+	/** Log warning for an image not having square size. */
 	void WarnImageNotSquareSize( const deSkinPropertyConstructed &property ) const;
 	
-	/** \brief Log warning for an image not support for omnidirection mapping. */
+	/** Log warning for an image not support for omnidirection mapping. */
 	void WarnImageNotOmnidirectional( const deSkinPropertyConstructed &property ) const;
 	/*@}*/
 	
@@ -143,6 +150,12 @@ private:
 	void pProcessPropertyValue( const deoglSkinPropertyMap::ePropertyTypes channelType );
 	void pProcessPropertyConstructed( const deSkinPropertyConstructed &property,
 		const deoglSkinPropertyMap::ePropertyTypes channelType );
+	
+	void pSetFromNoSize( int requiredComponentCount, int requiredDepth = 1 );
+	void pSetFromImage( const deSkinPropertyImage &property, deoglRImage *image, int requiredComponentCount = 1 );
+	void pSetFromImageCube( const deSkinPropertyImage &property, deoglRImage *image, int requiredComponentCount = 1 );
+	void pSetFromConstructed( const deSkinPropertyConstructed &property, int requiredComponentCount );
+	void pSetFromConstructedCube( const deSkinPropertyConstructed &property, int requiredComponentCount );
 };
 
 #endif

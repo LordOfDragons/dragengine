@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Animator Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _AECONFIGURATION_H_
@@ -31,7 +34,7 @@ class aeWindowMain;
 
 
 /**
- * \brief Editor Configuration.
+ * Editor Configuration.
  */
 class aeConfiguration{
 private:
@@ -51,10 +54,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create configuration. */
+	/** Create configuration. */
 	aeConfiguration( aeWindowMain &windowMain );
 	
-	/** \brief Clean up configuration. */
+	/** Clean up configuration. */
 	~aeConfiguration();
 	/*@}*/
 	
@@ -62,61 +65,61 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Main window. */
+	/** Main window. */
 	inline aeWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	
 	
-	/** \brief Locomotion testing forward key. */
+	/** Locomotion testing forward key. */
 	inline deInputEvent::eKeyCodes GetLocoKeyForward() const{ return pLocoKeyForward; }
 	
-	/** \brief Set locomotion testing forward key. */
+	/** Set locomotion testing forward key. */
 	void SetLocoKeyForward( deInputEvent::eKeyCodes key );
 	
-	/** \brief Locomotion testing backwards key. */
+	/** Locomotion testing backwards key. */
 	inline deInputEvent::eKeyCodes GetLocoKeyBackwards() const{ return pLocoKeyBackwards; }
 	
-	/** \brief Set locomotion testing backwards key. */
+	/** Set locomotion testing backwards key. */
 	void SetLocoKeyBackwards( deInputEvent::eKeyCodes key );
 	
-	/** \brief Locomotion testing left key. */
+	/** Locomotion testing left key. */
 	inline deInputEvent::eKeyCodes GetLocoKeyLeft() const{ return pLocoKeyLeft; }
 	
-	/** \brief Set locomotion testing left key. */
+	/** Set locomotion testing left key. */
 	void SetLocoKeyLeft( deInputEvent::eKeyCodes key );
 	
-	/** \brief Locomotion testing right key. */
+	/** Locomotion testing right key. */
 	inline deInputEvent::eKeyCodes GetLocoKeyRight() const{ return pLocoKeyRight; }
 	
-	/** \brief Set locomotion testing right key. */
+	/** Set locomotion testing right key. */
 	void SetLocoKeyRight( deInputEvent::eKeyCodes key );
 	
-	/** \brief Locomotion testing crouch key. */
+	/** Locomotion testing crouch key. */
 	inline deInputEvent::eKeyCodes GetLocoKeyCrouch() const{ return pLocoKeyCrouch; }
 	
-	/** \brief Set locomotion testing crouch key. */
+	/** Set locomotion testing crouch key. */
 	void SetLocoKeyCrouch( deInputEvent::eKeyCodes key );
 	
-	/** \brief Locomotion testing run key. */
+	/** Locomotion testing run key. */
 	inline deInputEvent::eKeyCodes GetLocoKeyRun() const{ return pLocoKeyRun; }
 	
-	/** \brief Set locomotion testing run key. */
+	/** Set locomotion testing run key. */
 	void SetLocoKeyRun( deInputEvent::eKeyCodes key );
 	
 	
 	
-	/** \brief Prevent saving. */
+	/** Prevent saving. */
 	inline bool GetPreventSaving() const{ return pPreventSaving; }
 	
-	/** \brief Set prevent saving. */
+	/** Set prevent saving. */
 	void SetPreventSaving( bool preventSaving );
 	
 	
 	
-	/** \brief Load configuration. */
+	/** Load configuration. */
 	void LoadConfiguration();
 	
-	/** \brief Save configuration. */
+	/** Save configuration. */
 	void SaveConfiguration();
 	/*@}*/
 	
@@ -124,6 +127,7 @@ public:
 	
 private:
 	void pCleanUp();
+	void pReset();
 };
 
 #endif

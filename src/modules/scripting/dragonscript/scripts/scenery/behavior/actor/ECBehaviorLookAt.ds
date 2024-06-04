@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -55,24 +58,48 @@ class ECBehaviorLookAt extends DefaultECBehavior
 	/** \brief Listener for behavior instance events. */
 	interface Listener
 		/** \brief Enabled changed. */
-		func void enabledChanged( Instance instance )
+		func void enabledChanged(Instance instance)
 		
 		/** \brief Looking at element changed. */
-		func void lookAtChanged( Instance instance )
+		func void lookAtChanged(Instance instance)
 	end
 	
 	/** \brief Default implementation of behavior instance listener. */
 	class DefaultListener implements Listener
 		/** \brief Create default listener. */
-		public func new()
+		func new()
 		end
 		
 		/** \brief Enabled changed. */
-		public func void enabledChanged( Instance instance )
+		func void enabledChanged(Instance instance)
 		end
 		
 		/** \brief Looking at element changed. */
-		public func void lookAtChanged( Instance instance )
+		func void lookAtChanged(Instance instance)
+		end
+	end
+	
+	/** \brief Factory creating listeners. */
+	interface ListenerFactory
+		/** \brief Create listener. */
+		func Listener createListener(Instance instance)
+	end
+	
+	/** \brief Factory creating listeners using block. */
+	class BlockListenerFactory implements ListenerFactory
+		var Block pBlock
+		
+		/** \brief Create factory using block receiving Instance as parameter returning Listener. */
+		func new(Block blockFactory)
+			if blockFactory == null
+				throw ENullPointer.new()
+			end
+			pBlock = blockFactory
+		end
+		
+		/** \brief Create listener. */
+		func Listener createListener(Instance instance)
+			return pBlock.run(instance) cast Listener
 		end
 	end
 	
@@ -80,56 +107,56 @@ class ECBehaviorLookAt extends DefaultECBehavior
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
-		private var ECBehaviorLookAt pECBehavior
-		private var ECBehaviorColliderAI.Instance pColliderAI
-		private var ECBehaviorCollider.Instance pCollider
-		private var ECBehaviorComponent.Instance pComponent
-		private var ECBehaviorLocomotion.Instance pLocomotion
+		var ECBehaviorLookAt pECBehavior
+		var ECBehaviorColliderAI.Instance pColliderAI
+		var ECBehaviorCollider.Instance pCollider
+		var ECBehaviorComponent.Instance pComponent
+		var ECBehaviorLocomotion.Instance pLocomotion
 		
-		private var ColliderCollisionTest pTest
-		private var Vector pOrigin
-		private var bool pHasOrigin
-		private var bool pUseLocomotion
+		var ColliderCollisionTest pTest
+		var Vector pOrigin
+		var bool pHasOrigin
+		var bool pUseLocomotion
+		var String pTestBone
+		var float pRange
 		
-		private var float pRange
+		var DVector pLookAtOrigin
+		var DVector pLookAtDirection
+		var Element pLookAtElement
+		var int pLookAtBone
+		var String pLookAtBoneName
+		var float pLookAtDistance
+		var DVector pLookAtHitPoint
 		
-		private var DVector pLookAtOrigin
-		private var DVector pLookAtDirection
-		private var Element pLookAtElement
-		private var int pLookAtBone
-		private var String pLookAtBoneName
-		private var float pLookAtDistance
-		private var DVector pLookAtHitPoint
-		
-		private var Array pListeners
+		var Array pListeners
 		
 		
 		
 		/** \brief Create element. */
-		public func new( ECBehaviorLookAt ecbehavior, BehaviorElement element ) super( element )
-			this.pECBehavior = ecbehavior
-			this.pListeners = Array.new()
-			this.pUseLocomotion = false
+		func new(ECBehaviorLookAt ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
+			pListeners = Array.new()
+			pUseLocomotion = false
 			
 			if ecbehavior.getColliderAI() != null
-				this.pColliderAI = ecbehavior.getColliderAI().instance( element )
+				pColliderAI = ecbehavior.getColliderAI().instance(element)
 				
 			else
-				this.pCollider = ecbehavior.getCollider().instance( element )
+				pCollider = ecbehavior.getCollider().instance(element)
 			end
 			
-			this.setRequiresThink( true )
+			setRequiresThink(true)
 		end
 		
 		/** \brief Dispose of composeable instance. */
-		public func void dispose()
-			this.pTest = null
-			this.pLocomotion = null
-			this.pColliderAI = null
-			this.pCollider = null
-			this.pComponent = null
-			this.pLookAtElement = null
-			this.pListeners = null
+		func void dispose()
+			pTest = null
+			pLocomotion = null
+			pColliderAI = null
+			pCollider = null
+			pComponent = null
+			pLookAtElement = null
+			pListeners = null
 			
 			super.dispose()
 		end
@@ -137,103 +164,107 @@ class ECBehaviorLookAt extends DefaultECBehavior
 		
 		
 		/** \brief Initialize element from stub. */
-		public func void init( StubElement stub )
-			var BehaviorElement element = this.getElement()
+		func void init(StubElement stub)
+			var BehaviorElement element = getElement()
 			var Collider collider
 			
-			if this.pColliderAI != null
-				collider = this.pColliderAI.getCollider()
+			if pColliderAI != null
+				collider = pColliderAI.getCollider()
 				
 			else
-				collider = this.pCollider.getCollider()
+				collider = pCollider.getCollider()
 			end
 			
 			if collider == null
 				throw EInvalidParam.new()
 			end
 			
-			if this.pECBehavior.getComponent() != null
-				this.pComponent = this.pECBehavior.getComponent().instance( element )
+			if pECBehavior.getComponent() != null
+				pComponent = pECBehavior.getComponent().instance(element)
 			end
-			if this.pECBehavior.getLocomotion() != null
-				this.pLocomotion = this.pECBehavior.getLocomotion().instance( element )
+			if pECBehavior.getLocomotion() != null
+				pLocomotion = pECBehavior.getLocomotion().instance(element)
 			end
 			
 			var CodecPropertyString codec = element.getClass().getCodecPropertyString()
 			
-			this.pRange = DEMath.max( this.pECBehavior.getRange().getValue( stub ), 0.0 )
-			this.pOrigin = this.pECBehavior.getOrigin().getVector( stub, codec )
-			this.pHasOrigin = not this.pOrigin.isZero()
+			pRange = DEMath.max(pECBehavior.getRange().getValue(stub), 0.0)
+			pOrigin = pECBehavior.getOrigin().getVector(stub, codec)
+			pHasOrigin = not pOrigin.isZero()
 			
 			// create colliision test and add it to element collider
-			var CollisionFilter collisionFilter = this.pECBehavior.getCollisionFilter().getCollisionFilter()
-			var Vector testDirection = Vector.new( 0, 0, this.pRange )
-			var String testBone = this.pECBehavior.getTestBone().getValue( stub )
+			var CollisionFilter collisionFilter = pECBehavior.getCollisionFilter().getCollisionFilter()
+			var Vector testDirection = Vector.new(0, 0, pRange)
+			pTestBone = pECBehavior.getTestBone().getValueOrNull(stub)
 			
-			if testBone != null and not testBone.empty()
-				this.pTest = ColliderCollisionTest.new( collisionFilter, \
-					this.pComponent.getComponent(), testBone, this.pOrigin, testDirection )
+			if pTestBone != null
+				pTest = ColliderCollisionTest.new(collisionFilter, \
+					pComponent.getComponent(), pTestBone, pOrigin, testDirection)
 				
 			else
-				this.pTest = ColliderCollisionTest.new( collisionFilter, this.pOrigin, testDirection )
-				if this.pLocomotion != null
-					this.pTest.setLocalDirection( false )
-					this.pUseLocomotion = true
+				pTest = ColliderCollisionTest.new(collisionFilter, pOrigin, testDirection)
+				if pLocomotion != null
+					pTest.setLocalDirection(false)
+					pUseLocomotion = true
 				end
 			end
 			
-			collider.addCollisionTest( this.pTest )
+			collider.addCollisionTest(pTest)
+			
+			pECBehavior.createListeners(this)
 		end
 		
 		
 		
 		/** \brief Behavior. */
-		public func ECBehaviorLookAt getECBehavior()
-			return this.pECBehavior
+		func ECBehaviorLookAt getECBehavior()
+			return pECBehavior
 		end
 		
 		/** \brief ColliderAI behavior instance. */
-		public func ECBehaviorColliderAI.Instance getColliderAI()
-			return this.pColliderAI
+		func ECBehaviorColliderAI.Instance getColliderAI()
+			return pColliderAI
 		end
 		
 		/** \brief Collider behavior instance. */
-		public func ECBehaviorCollider.Instance getCollider()
-			return this.pCollider
+		func ECBehaviorCollider.Instance getCollider()
+			return pCollider
 		end
 		
 		/** \brief Component behavior instance or null if not used. */
-		public func ECBehaviorComponent.Instance getComponent()
-			return this.pComponent
+		func ECBehaviorComponent.Instance getComponent()
+			return pComponent
 		end
 		
 		/** \brief Locomotion behavior instance or null if not used. */
-		public func ECBehaviorLocomotion.Instance getLocomotion()
-			return this.pLocomotion
+		func ECBehaviorLocomotion.Instance getLocomotion()
+			return pLocomotion
 		end
 		
 		
 		
 		/** \brief Enable look-at. */
-		public func bool getEnabled()
-			return this.pTest.getEnabled()
+		func bool getEnabled()
+			return pTest.getEnabled()
 		end
 		
 		/** \brief Set if look-at is enabled. */
-		public func void setEnabled( bool enabled )
-			if enabled == this.pTest.getEnabled()
+		func void setEnabled(bool enabled)
+			if enabled == pTest.getEnabled()
 				return
 			end
 			
-			this.pTest.setEnabled( enabled )
+			pTest.setEnabled(enabled)
 			
 			if not enabled
-				this.setLookAtElement( null, -1, null, 0 )
+				setLookAtElement(null, -1, null, 0)
 			end
 			
-			this.pListeners.forEach( block Listener each
-				each.enabledChanged( this )
-			end )
+			pListeners.forEach(block Listener each
+				each.enabledChanged(this)
+			end)
+			
+			setRequiresThink(enabled)
 		end
 		
 		
@@ -244,10 +275,10 @@ class ECBehaviorLookAt extends DefaultECBehavior
 		 * By default no test collider is set in which case ra-ytesting is used. Using shapes
 		 * like a sphere is useful to enlarge the hit area for example with 3rd person views.
 		 */
-		public func void setTestCollider( ShapeList shape )
+		func void setTestCollider(ShapeList shape)
 			var ColliderVolume collider = ColliderVolume.new()
-			collider.setShape( shape )
-			this.pTest.setCollider( collider )
+			collider.setShape(shape)
+			pTest.setCollider(collider)
 		end
 		
 		/**
@@ -256,229 +287,250 @@ class ECBehaviorLookAt extends DefaultECBehavior
 		 * By default no shape is set in which case ra-ytesting is used. Using shapes like a
 		 * sphere is useful to enlarge the hit area for example with 3rd person views.
 		 */
-		public func void setSphereTestCollider( float radius )
+		func void setSphereTestCollider(float radius)
 			var ShapeList shape = ShapeList.new()
-			shape.addSphere( Vector.new(), DEMath.max( radius, 0.0 ) )
-			this.setTestCollider( shape )
+			shape.addSphere(Vector.new(), DEMath.max(radius, 0.0))
+			setTestCollider(shape)
 		end
 		
 		/** \brief Clear test collider reverting to ray-tracing. */
-		public func void clearTestCollider()
-			this.pTest.setCollider( null )
+		func void clearTestCollider()
+			pTest.setCollider(null)
 		end
 		
 		/** \brief Set test collision filter. */
-		public func void setCollisionFilter( CollisionFilter filter )
-			this.pTest.setCollisionFilter( filter )
+		func void setCollisionFilter(CollisionFilter filter)
+			pTest.setCollisionFilter(filter)
 		end
 		
 		
 		
 		/** \brief Test range. */
-		public func float getRange()
-			return this.pRange
+		func float getRange()
+			return pRange
 		end
 		
 		/** \brief Set test range. */
-		public func void setRange( float range )
-			range = DEMath.max( range, 0.0 )
-			if DEMath.fabs( range - this.pRange ) < 0.001
+		func void setRange(float range)
+			range = DEMath.max(range, 0.0)
+			if DEMath.fabs(range - pRange) < 0.001
 				return
 			end
 			
-			this.pRange = range
-			this.updateTestParameters()
+			pRange = range
+			updateTestParameters()
 		end
 		
 		/** \brief Test origin. */
-		public func Vector getOrigin()
-			return this.pOrigin
+		func Vector getOrigin()
+			return pOrigin
 		end
 		
 		/** \brief Use locomotion. */
-		public func bool getUseLocomotion()
-			return this.pUseLocomotion
+		func bool getUseLocomotion()
+			return pUseLocomotion
+		end
+		
+		/**
+		 * \brief Name of test bone name or null to use component.
+		 * \version 1.19
+		 */
+		func String getTestBone()
+			return pTestBone
 		end
 		
 		
 		
 		/** \brief Look-at element or null. */
-		public func Element getLookAtElement()
-			return this.pLookAtElement
+		func Element getLookAtElement()
+			return pLookAtElement
+		end
+		
+		/**
+		 * \brief Look-at element if of type BehaviorElement or null.
+		 * \version 1.4 
+		 */
+		func BehaviorElement getLookAtBehaviorElement()
+			if pLookAtElement != null and pLookAtElement castable BehaviorElement
+				return pLookAtElement cast BehaviorElement
+			end
+			return null
 		end
 		
 		/** \brief Is looking at an element. */
-		public func bool hasLookAtElement()
-			return this.pLookAtElement != null
+		func bool hasLookAtElement()
+			return pLookAtElement != null
 		end
 		
 		/** \brief Is not looking at an element. */
-		public func bool hasNotLookAtElement()
-			return this.pLookAtElement == null
+		func bool hasNotLookAtElement()
+			return pLookAtElement == null
 		end
 		
 		/** \brief Look-at bone or -1. */
-		public func int getLookAtBone()
-			return this.pLookAtBone
+		func int getLookAtBone()
+			return pLookAtBone
 		end
 		
 		/** \brief Look-at bone name or null. */
-		public func String getLookAtBoneName()
-			return this.pLookAtBoneName
+		func String getLookAtBoneName()
+			return pLookAtBoneName
 		end
 		
 		/** \brief Distance in meters to look-at hit point. */
-		public func float getLookAtDistance()
-			return this.pLookAtDistance
+		func float getLookAtDistance()
+			return pLookAtDistance
 		end
 		
 		/** \brief Look-at hit point or \em null. */
-		public func DVector getLookAtHitPoint()
-			if this.pLookAtHitPoint == null
-				this.pLookAtHitPoint = this.pLookAtOrigin \
-					+ this.pLookAtDirection.normalize() * this.pLookAtDistance
+		func DVector getLookAtHitPoint()
+			if pLookAtHitPoint == null and pLookAtElement != null
+				pLookAtHitPoint = pLookAtOrigin + pLookAtDirection.normalize() * pLookAtDistance
 			end
-			return this.pLookAtHitPoint
+			return pLookAtHitPoint
 		end
 		
 		/** \brief Test origin used for last look-at test. */
-		public func DVector getLookAtOrigin()
-			return this.pLookAtOrigin
+		func DVector getLookAtOrigin()
+			return pLookAtOrigin
 		end
 		
 		/** \brief Test direction used for last look-at test. */
-		public func DVector getLookAtDirection()
-			return this.pLookAtDirection
+		func DVector getLookAtDirection()
+			return pLookAtDirection
 		end
 		
 		
 		
 		/** \brief Add listener. */
-		public func void addListener( Listener listener )
+		func void addListener(Listener listener)
 			if listener == null
 				throw EInvalidParam.new()
 			end
-			this.pListeners.add( listener )
+			pListeners.add(listener)
 		end
 		
 		/** \brief Remove listener. */
-		public func void removeListener( Listener listener )
-			this.pListeners.remove( listener )
+		func void removeListener(Listener listener)
+			pListeners.remove(listener)
 		end
 		
 		
 		
 		/** \brief Post thinking after physics processing is finished. */
-		public func void postThink( float elapsed )
-			this.update( elapsed )
+		func void postThink(float elapsed)
+			update(elapsed)
 		end
 		
 		/** \brief Update. */
-		protected func void update( float elapsed )
-			if not this.pTest.getEnabled()
+		protected func void update(float elapsed)
+			if not pTest.getEnabled()
 				return
 			end
 			
-			this.evaluateTest()
-			this.updateTestParameters()
+			evaluateTest()
+			updateTestParameters()
 		end
 		
 		/** \brief Evaluate last test. */
 		protected func void evaluateTest()
-			this.pLookAtOrigin = this.pTest.getTestOrigin()
-			this.pLookAtDirection = this.pTest.getTestDirection()
+			pLookAtOrigin = pTest.getTestOrigin()
+			pLookAtDirection = pTest.getTestDirection()
 			
 			var Collider collider
-			if this.pTest.getHasCollision()
-				collider = this.pTest.hitCollider( 0 )
+			if pTest.getHasCollision()
+				collider = pTest.hitCollider(0)
 			end
 			
 			if collider == null
-				this.setLookAtElement( null, -1, null, 0 )
+				setLookAtElement(null, -1, null, 0)
 				return
 			end
 			
-			var int bone = this.pTest.hitBone( 0 )
+			var int bone = pTest.hitBone(0)
 			var String boneName = null
 			
 			if bone != -1 and collider castable ColliderRig
-				var Rig rig = ( collider cast ColliderRig ).getRig()
+				var Rig rig = (collider cast ColliderRig).getRig()
 				if rig != null
-					boneName = rig.boneGetName( bone )
+					boneName = rig.boneGetName(bone)
 				end
 			end
 			
-			this.setLookAtElement( collider.getOwner() cast Element, bone, boneName, \
-				this.pTest.hitDistance( 0 ) )
+			var Element element = collider.getOwner() cast Element
+			if element != null and element.isDisposed()
+				element = null
+			end
+			
+			setLookAtElement(element, bone, boneName, pTest.hitDistance(0))
 		end
 		
 		/** \brief Collision test. */
 		protected func ColliderCollisionTest getTest()
-			return this.pTest
+			return pTest
 		end
 		
 		/** \brief Update test parameters. */
 		protected func void updateTestParameters()
-			if this.pUseLocomotion
-				this.pTest.setDirection( this.pLocomotion.getViewDirection() * this.pRange )
+			if pUseLocomotion
+				pTest.setDirection(pLocomotion.getViewDirection() * pRange)
 				
-				if this.pHasOrigin
-					this.pTest.setOrigin( this.getElement().getElementMatrix() \
-						.transformNormal( DVector.new( this.pOrigin ) ).toVector() )
+				if pHasOrigin
+					pTest.setOrigin(getElement().getElementMatrix() \
+						.transformNormal(DVector.new(pOrigin)).toVector())
 				end
 				
 			else
-				this.pTest.setDirection( Vector.new( 0, 0, this.pRange ) )
+				pTest.setDirection(Vector.new(0, 0, pRange))
 			end
 		end
 		
 		/** \brief Set look-at element. */
-		public func void setLookAtElement( Element element, int bone, String boneName, float distance )
-			if this.pLookAtElement == element and this.pLookAtBone == bone
-				this.pLookAtHitPoint = null
-				this.pLookAtDistance = distance
+		func void setLookAtElement(Element element, int bone, String boneName, float distance)
+			if pLookAtElement == element and pLookAtBone == bone
+				pLookAtHitPoint = null
+				pLookAtDistance = distance
 				return
 			end
 			
-			if this.pLookAtElement != null and this.pLookAtElement castable BehaviorElement
-				var ECBehaviorLookedAt.Instance behavior = \
-					ECBehaviorLookedAt.getInstanceIn( this.pLookAtElement cast BehaviorElement )
+			if pLookAtElement != null and pLookAtElement castable BehaviorElement and not pLookAtElement.isDisposed()
+				var ECBehaviorLookedAt.Instance behavior = ECBehaviorLookedAt.getInstanceIn(pLookAtElement cast BehaviorElement)
 				if behavior != null
-					behavior.removeLookingActor( this.getElement() )
+					behavior.removeLookingActor(getElement())
 				end
 			end
 			
-			this.pLookAtElement = element
-			this.pLookAtBone = bone
-			this.pLookAtBoneName = boneName
-			this.pLookAtHitPoint = null
-			this.pLookAtDistance = distance
+			pLookAtElement = element
+			pLookAtBone = bone
+			pLookAtBoneName = boneName
+			pLookAtHitPoint = null
+			pLookAtDistance = distance
 			
 			if element != null and element castable BehaviorElement
 				var ECBehaviorLookedAt.Instance behavior = \
-					ECBehaviorLookedAt.getInstanceIn( element cast BehaviorElement )
+					ECBehaviorLookedAt.getInstanceIn(element cast BehaviorElement)
 				if behavior != null
-					behavior.addLookingActor( this.getElement() )
+					behavior.addLookingActor(getElement())
 				end
 			end
 			
-			this.pListeners.forEach( block Listener each
-				each.lookAtChanged( this )
-			end )
+			pListeners.forEach(block Listener each
+				each.lookAtChanged(this)
+			end)
 		end
 	end
 	
 	
 	
-	private var ECBehaviorColliderAI pColliderAI
-	private var ECBehaviorCollider pCollider
-	private var ECBehaviorComponent pComponent
-	private var ECBehaviorLocomotion pLocomotion
-	
-	private var ECPFloat pRange
-	private var ECPVector pOrigin
-	private var ECPString pTestBone
-	private var ECComposeCollisionFilter pCollisionFilter
+	var ECBehaviorColliderAI pColliderAI
+	var ECBehaviorCollider pCollider
+	var ECBehaviorComponent pComponent
+	var ECBehaviorLocomotion pLocomotion
+	var ECPFloat pRange
+	var ECPVector pOrigin
+	var ECPString pTestBone
+	var ECComposeCollisionFilter pCollisionFilter
+	var Array pListenerFactories
 	
 	
 	
@@ -487,122 +539,152 @@ class ECBehaviorLookAt extends DefaultECBehavior
 	 * 
 	 * These values are optional and can be null: \em component, \em locomotion.
 	 */
-	public func new( BehaviorElementClass eclass, ECBehaviorColliderAI colliderAI, \
-	ECBehaviorComponent component, ECBehaviorLocomotion locomotion ) \
-	this( eclass, colliderAI, component, locomotion, "lookAt." )
+	func new(BehaviorElementClass eclass, ECBehaviorColliderAI colliderAI, \
+	ECBehaviorComponent component, ECBehaviorLocomotion locomotion) \
+	this(eclass, colliderAI, component, locomotion, "lookAt.")
 	end
 	
-	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider, \
-	ECBehaviorComponent component, ECBehaviorLocomotion locomotion ) \
-	this( eclass, collider, component, locomotion, "lookAt." )
+	func new(BehaviorElementClass eclass, ECBehaviorCollider collider, \
+	ECBehaviorComponent component, ECBehaviorLocomotion locomotion) \
+	this(eclass, collider, component, locomotion, "lookAt.")
 	end
 	
-	public func new( BehaviorElementClass eclass, ECBehaviorColliderAI colliderAI, \
-	ECBehaviorComponent component, ECBehaviorLocomotion locomotion, String prefix ) \
-	this( eclass, colliderAI, null, component, locomotion, prefix )
+	func new(BehaviorElementClass eclass, ECBehaviorColliderAI colliderAI, \
+	ECBehaviorComponent component, ECBehaviorLocomotion locomotion, String prefix) \
+	this(eclass, colliderAI, null, component, locomotion, prefix)
 		if colliderAI == null
-			throw ENullPointer.new( "colliderAI" )
+			throw ENullPointer.new("colliderAI")
 		end
 	end
 	
-	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider, \
-	ECBehaviorComponent component, ECBehaviorLocomotion locomotion, String prefix ) \
-	this( eclass, null, collider, component, locomotion, prefix )
+	func new(BehaviorElementClass eclass, ECBehaviorCollider collider, \
+	ECBehaviorComponent component, ECBehaviorLocomotion locomotion, String prefix) \
+	this(eclass, null, collider, component, locomotion, prefix)
 		if collider == null
-			throw ENullPointer.new( "collider" )
+			throw ENullPointer.new("collider")
 		end
 	end
 	
-	private func new( BehaviorElementClass eclass, ECBehaviorColliderAI colliderAI, \
+	private func new(BehaviorElementClass eclass, ECBehaviorColliderAI colliderAI, \
 	ECBehaviorCollider collider, ECBehaviorComponent component, \
-	ECBehaviorLocomotion locomotion, String prefix ) super( eclass )
-		if this.getBehaviorIn( eclass ) != null
-			throw BEMultipleInstanceException.new( eclass, this )
+	ECBehaviorLocomotion locomotion, String prefix) super(eclass)
+		if getBehaviorIn(eclass) != null
+			throw BEMultipleInstanceException.new(eclass, this)
 		end
 		
-		this.pColliderAI = colliderAI
-		this.pCollider = collider
-		this.pComponent = component
-		this.pLocomotion = locomotion
+		pColliderAI = colliderAI
+		pCollider = collider
+		pComponent = component
+		pLocomotion = locomotion
+		pListenerFactories = Array.new()
 		
-		this.pRange = ECPFloat.new( prefix + "range", 2, 0 )
-		eclass.addProperty( this.pRange )
+		pRange = ECPFloat.new(prefix + "range", 2, 0)
+		eclass.addProperty(pRange)
 		
-		this.pOrigin = ECPVector.new( prefix + "origin", Vector.new( 0, 1.6, 0 ) )
-		eclass.addProperty( this.pOrigin )
+		pOrigin = ECPVector.new(prefix + "origin", Vector.new(0, 1.6, 0))
+		eclass.addProperty(pOrigin)
 		
-		this.pTestBone = ECPString.new( prefix + "bone", null )
-		eclass.addProperty( this.pTestBone )
+		pTestBone = ECPString.new(prefix + "bone", null)
+		eclass.addProperty(pTestBone)
 		
-		var LayerMask cfCategory = LayerMask.newWith( BaseGameApp.CollisionFilterBit.geometry )
+		var LayerMask cfCategory = LayerMask.newWith(BaseGameApp.CollisionFilterBit.dynamic)
 		
 		var LayerMask cfFilter = LayerMask.new()
-		cfFilter.setBit( BaseGameApp.CollisionFilterBit.geometry )
-		cfFilter.setBit( BaseGameApp.CollisionFilterBit.actorAI )
+		cfFilter.setBit(BaseGameApp.CollisionFilterBit.geometry)
+		cfFilter.setBit(BaseGameApp.CollisionFilterBit.dynamic)
+		cfFilter.setBit(BaseGameApp.CollisionFilterBit.actorAI)
 		
-		this.pCollisionFilter = ECComposeCollisionFilter.new( CollisionFilter.new( cfCategory, cfFilter ) )
+		pCollisionFilter = ECComposeCollisionFilter.new(CollisionFilter.new(cfCategory, cfFilter))
 		
-		eclass.addBehavior( this )
+		eclass.addBehavior(this)
 	end
 	
 	/** \brief Dispose of behavior. */
-	public func void dispose()
-		this.pColliderAI = null
-		this.pCollider = null
-		this.pComponent = null
-		this.pLocomotion = null
+	func void dispose()
+		pColliderAI = null
+		pCollider = null
+		pComponent = null
+		pLocomotion = null
+		pListenerFactories = null
 		super.dispose()
 	end
 	
 	
 	
 	/** \brief Collider AI behavior or null. */
-	public func ECBehaviorColliderAI getColliderAI()
-		return this.pColliderAI
+	func ECBehaviorColliderAI getColliderAI()
+		return pColliderAI
 	end
 	
 	/** \brief Collider behavior or null. */
-	public func ECBehaviorCollider getCollider()
-		return this.pCollider
+	func ECBehaviorCollider getCollider()
+		return pCollider
 	end
 	
 	/** \brief Component behavior or null. */
-	public func ECBehaviorComponent getComponent()
-		return this.pComponent
+	func ECBehaviorComponent getComponent()
+		return pComponent
 	end
 	
 	/** \brief Locomotion behavior or null. */
-	public func ECBehaviorLocomotion getLocomotion()
-		return this.pLocomotion
+	func ECBehaviorLocomotion getLocomotion()
+		return pLocomotion
 	end
 	
-	
-	
 	/** \brief Test range. */
-	public func ECPFloat getRange()
-		return this.pRange
+	func ECPFloat getRange()
+		return pRange
 	end
 	
 	/** \brief Test origin. */
-	public func ECPVector getOrigin()
-		return this.pOrigin
+	func ECPVector getOrigin()
+		return pOrigin
 	end
 	
 	/** \brief Test bone. */
-	public func ECPString getTestBone()
-		return this.pTestBone
+	func ECPString getTestBone()
+		return pTestBone
 	end
 	
 	/** \brief Collision filter for AI collider. */
-	public func ECComposeCollisionFilter getCollisionFilter()
-		return this.pCollisionFilter
+	func ECComposeCollisionFilter getCollisionFilter()
+		return pCollisionFilter
+	end
+	
+	/** \brief Add listener factory. */
+	func void addListenerFactory(ListenerFactory factory)
+		if factory == null
+			throw ENullPointer.new()
+		end
+		pListenerFactories.add(factory)
+	end
+	
+	/**
+	 * \brief Add listener factory using block.
+	 * 
+	 * Block receives as parameter Instance and returns Listener.
+	 */
+	func void addListenerFactory(Block blockFactory)
+		pListenerFactories.add(BlockListenerFactory.new(blockFactory))
+	end
+	
+	/** \brief Visit listener factories with block with argument ListenerFactory. */
+	func void forEachListenerFactory(Block ablock)
+		pListenerFactories.forEach(ablock)
+	end
+	
+	/** \brief Create listeners from factories adding them to behavior instance. */
+	func void createListeners(Instance instance)
+		pListenerFactories.forEach(block ListenerFactory each
+			instance.addListener(each.createListener(instance))
+		end)
 	end
 	
 	
 	
 	/** \brief Get instance in element from owner element class. */
-	public func Instance instance( BehaviorElement element )
-		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
 	
 	
@@ -613,10 +695,10 @@ class ECBehaviorLookAt extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorLookAt.
 	 */
-	static public func ECBehaviorLookAt getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehavior each
-			return each castable ECBehaviorLookAt
-		end ) cast ECBehaviorLookAt
+	static func ECBehaviorLookAt getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorLookAt each
+			return true
+		end) cast ECBehaviorLookAt
 	end
 	
 	/**
@@ -625,16 +707,16 @@ class ECBehaviorLookAt extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
 	 * of type ECBehaviorLookAt.Instance .
 	 */
-	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance
-		end ) cast Instance
+	static func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
+			return true
+		end) cast Instance
 	end
 	
 	
 	
 	/** \brief Create Behavior instance. */
-	public func ECBehaviorInstance createInstance( BehaviorElement element )
-		return Instance.new( this, element )
+	func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
 	end
 end

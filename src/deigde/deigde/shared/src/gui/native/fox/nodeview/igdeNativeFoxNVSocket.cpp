@@ -1,23 +1,28 @@
-/* 
- * Drag[en]gine IGDE
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
+
+#ifdef IGDE_TOOLKIT_FOX
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -51,18 +56,18 @@ igdeNativeFoxNVSocket::igdeNativeFoxNVSocket(){
 	this->flags |= FLAG_ENABLED | FLAG_DROPTARGET;
 }
 
-igdeNativeFoxNVSocket::igdeNativeFoxNVSocket( FXComposite *parent, FXObject *target,
-	int selector, int flags, const igdeGuiTheme & ) :
-FXFrame( parent, flags, 0, 0, 0, 0, 0, 0, 0, 0 ),
+igdeNativeFoxNVSocket::igdeNativeFoxNVSocket( FXComposite *pparent, FXObject *ttarget,
+	int selector, int fflags, const igdeGuiTheme & ) :
+FXFrame( pparent, fflags, 0, 0, 0, 0, 0, 0, 0, 0 ),
 pChecked( false ),
 pRadius( 6 ),
 pColorFrame( FXRGB( 0, 0, 0 ) ),
 pColorFillChecked( FXRGB( 0, 0, 255 ) ),
-pColorFillUnchecked( parent->getApp()->getBackColor() ),
+pColorFillUnchecked( pparent->getApp()->getBackColor() ),
 pWindowShape( NULL )
 {
 	this->flags |= FLAG_ENABLED | FLAG_DROPTARGET;
-	this->target = target;
+	this->target = ttarget;
 	message = selector;
 	backColor = getApp()->getBackColor();
 }
@@ -157,8 +162,8 @@ long igdeNativeFoxNVSocket::onResize( FXObject*, FXSelector, void* ){
 	return 1;
 }
 
-long igdeNativeFoxNVSocket::onPaint( FXObject*, FXSelector, void *data ){
-	FXEvent * const event = ( FXEvent* )data;
+long igdeNativeFoxNVSocket::onPaint( FXObject*, FXSelector, void *pdata ){
+	FXEvent * const event = ( FXEvent* )pdata;
 	FXDCWindow dc( this, event );
 	const decPoint center( getWidth() / 2, getHeight() / 2 );
 	const decPoint position( center - decPoint( pRadius, pRadius ) );
@@ -220,3 +225,5 @@ void igdeNativeFoxNVSocket::pUpdateWindowShape(){
 	
 	setShape( pWindowShape );
 }
+
+#endif

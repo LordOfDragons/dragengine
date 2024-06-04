@@ -23,14 +23,14 @@ class StartGame extends WindowGameWorld.Loader
 	 * \param window Game world window from BaseGameApp.
 	 * \param pathWorld Path to world file to load
 	 */
-	public func new( WindowGameWorld window, String pathWorld ) super( window )
-		setPathWorld( pathWorld )
+	func new(WindowGameWorld window, String pathWorld) super(window)
+		setPathWorld(pathWorld)
 	end
 	
 	/**
 	 * \brief Loading world finished successfully.
 	 */
-	public func void onLoadWorldFinished()
+	func void onLoadWorldFinished()
 		var GameApp app = BaseGameApp.getApp() cast GameApp
 		var GameWorld gameWorld = getStubWorld().getGameWorld()
 		
@@ -44,21 +44,67 @@ class StartGame extends WindowGameWorld.Loader
 		// set properties and add texture replacements to alter the created actor. Calling
 		// createElement() creates the actor. The cast is required since spawn points require
 		// a BaseActor object instance.
-		var ElementClass eclass = app.getElementClassList().getNamed( "Actor" )
+		var ElementClass eclass = app.getElementClassList().getNamed("Actor")
 		var UniqueID id = app.getIDGenerator().nextID()
-		var BaseActor player = StubElement.new( eclass, id ).createElement() cast BaseActor
-		player.getAIAction().setAction( BAAFirstPerson.new() )
+		var BaseActor player = StubElement.new(eclass, id).createElement() cast BaseActor
+		player.getAIAction().setAction(BAAFirstPerson.new())
 		
 		// To spawn the actor find a suitable spawn point in the game world. For this code
 		// here to work you have to add a spawn point in your world named "player". Once
 		// you have obtained the spawn point calling spawn() takes care of the rest.
-		gameWorld.getSpawnPoints().getNamed( "player" ).spawn( gameWorld, player )
+		gameWorld.getSpawnPoints().getNamed("player").spawn(gameWorld, player)
 		
 		// To take control of the actor
 		player.getPlayerControllable().takeControl()
 		
-		// Set a camera directory placing the camera and microphone relative to the actor.
-		getWindow().setCameraDirector( PlayerControlledActorCameraDirector.new() )
+		// Assign camera director attaching the camera to the player controlled actor
+		// at eye level.
+		// 
+		// You can also set camera related parameters like enabling Global Illumination
+		// if supported by the Graphic Module. Parameters set to the camera director
+		// will be applied to all cameras the director takes control of so you do not
+		// have to do this by hand all the time.
+		// 
+		// Despite the name the camera director also directs microphone resource
+		var PlayerControlledActorCameraDirector director = PlayerControlledActorCameraDirector.new()
+		
+		// Set the view distance of the camera. Everything beyond the view distance
+		// in meters is not rendered. The graphic module decides how to handle
+		// content beyond the view distance the best way possible
+		director.setViewDistance(300)
+		
+		// Set light adaption parameters. The graphic module automatically adjusts
+		// the scene intensity of the camera depending on the content seen by the
+		// camera. The intensity is adjusted inside the range defined below.
+		// 
+		// The Drag[en]gine uses scaled real-world intensities. These are example
+		// values for light source intensites:
+		// - Moon light of full moon: 0.01
+		// - Candle in a dark room: 0.1
+		// - Living room lit at night: 1
+		// - Bright lit office room: 2-4
+		// - Overcast day light: 10
+		// - Clear sky day light: 20
+		// 
+		// If the light conditions encountered in your game world do not cover all
+		// the range from very bright to pitch black you can narrow the range.
+		// 
+		// The default value is 1 for both intensites which disables dynamic
+		// intensity adjustment.
+		director.setLowestIntensity(1)
+		director.setHighestIntensity(20)
+		
+		// The adaption time indicates how fast the camera adjusts the intensity
+		// to match the scene intensity. The default value is 0.1 which adjusts
+		// very fast. For scenes with outdoor and indoor areas it is better to
+		// use slower adjustment. The human eye can fully adjust to darkness
+		// out of bright daylight between 20-30 minutes. This is a bit much for
+		// game situations so using something like 30-60 seconds is good for
+		// most situations. Lower values can be used to make this faster if required
+		director.setAdaptionTime(30)
+		
+		// Assign the camera director
+		getWindow().setCameraDirector(director)
 		
 		// Do more start game tasks here.
 		
@@ -82,7 +128,7 @@ class StartGame extends WindowGameWorld.Loader
 	 * This method is called if any exceptions are thrown during loading the game world
 	 * or if problems with element classes have been found.
 	 */
-	public func void onLoadWorldFailed()
+	func void onLoadWorldFailed()
 		// super-call this first
 		super.onLoadWorldFailed()
 		

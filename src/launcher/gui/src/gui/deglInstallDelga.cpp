@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine GUI Launcher
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -27,23 +30,17 @@
 #include "deglWindowMain.h"
 #include "../deglLauncher.h"
 #include "../config/deglConfiguration.h"
-#include "../engine/deglEngine.h"
-#include "../engine/deglEngineInstance.h"
-#include "../game/deglGame.h"
-#include "../game/deglGameManager.h"
-#include "../game/patch/deglPatch.h"
-#include "../game/patch/deglPatchManager.h"
+
+#include <delauncher/engine/delEngineInstance.h>
+#include <delauncher/game/patch/delPatch.h>
 
 #include <dragengine/common/exceptions.h>
-#include <dragengine/common/file/decBaseFileReaderReference.h>
-#include <dragengine/common/file/decBaseFileWriterReference.h>
 #include <dragengine/common/file/decDiskFileReader.h>
 #include <dragengine/common/file/decDiskFileWriter.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
 #include <dragengine/filesystem/deVFSDiskDirectory.h>
-#include <dragengine/filesystem/deVFSContainerReference.h>
 #include <dragengine/logger/deLogger.h>
 
 
@@ -85,24 +82,24 @@ public:
 	};
 	
 	virtual FXint run(){
-		decBaseFileReaderReference reader;
-		decBaseFileWriterReference writer;
-		deVFSContainerReference container;
-		char *buffer = NULL;
+		char *buffer = nullptr;
 		
 		try{
-			container.TakeOver( new deVFSDiskDirectory( decPath::CreatePathNative(
-				pLauncher.GetConfiguration()->GetPathGames() ) ) );
+			const deVFSDiskDirectory::Ref container( deVFSDiskDirectory::Ref::New(
+				new deVFSDiskDirectory( decPath::CreatePathNative( pLauncher.GetPathGames() ) ) ) );
 			
-			reader.TakeOver( new decDiskFileReader( pFilename ) );
+			const decDiskFileReader::Ref reader( decDiskFileReader::Ref::New(
+				new decDiskFileReader( pFilename ) ) );
 			
 			decPath target( decPath::CreatePathUnix( "/" ) );
 			target.AddComponent( decPath::CreatePathNative( pFilename ).GetLastComponent() );
-			writer.TakeOver( container->OpenFileForWriting( target ) );
+			
+			decBaseFileWriter::Ref writer( decBaseFileWriter::Ref::New(
+				container->OpenFileForWriting( target ) ) );
 			
 			const int totalSize = reader->GetLength();
 			const double percentageFactor = 100.0 / ( double )totalSize;
-			char * const buffer = new char[ 8192 ];
+			buffer = new char[ 8192 ];
 			FXuint progressPercentage = 0;
 			int bytesCopied = 0;
 			
@@ -128,22 +125,20 @@ public:
 			if( buffer ){
 				delete [] buffer;
 			}
-			writer = NULL;
 			pDeleteTarget();
 			
-			pMessageChannel.message( pDialogProgress, FXSEL( SEL_COMMAND, FXProgressDialog::ID_CANCEL ), NULL );
+			pMessageChannel.message( pDialogProgress, FXSEL( SEL_COMMAND, FXProgressDialog::ID_CANCEL ), nullptr );
 			pFinished = true;
 			return -1;
 		}
 		
 		if( pAbort ){
-			writer = NULL;
 			pDeleteTarget();
 			pFinished = true;
 			return -1;
 		}
 		
-		pMessageChannel.message( pDialogProgress, FXSEL( SEL_COMMAND, FXProgressDialog::ID_ACCEPT ), NULL );
+		pMessageChannel.message( pDialogProgress, FXSEL( SEL_COMMAND, FXProgressDialog::ID_ACCEPT ), nullptr );
 		pFinished = true;
 		return 0;
 	}
@@ -162,9 +157,9 @@ public:
 private:
 	void pDeleteTarget(){
 		try{
-			deVFSContainerReference container;
-			container.TakeOver( new deVFSDiskDirectory( decPath::CreatePathNative(
-				pLauncher.GetConfiguration()->GetPathGames() ) ) );
+			deVFSDiskDirectory::Ref container( deVFSDiskDirectory::Ref::New(
+				new deVFSDiskDirectory( decPath::CreatePathNative( pLauncher.GetPathGames() ) ) ) );
+			
 			decPath target( decPath::CreatePathUnix( "/" ) );
 			target.AddComponent( decPath::CreatePathNative( pFilename ).GetLastComponent() );
 			
@@ -198,14 +193,17 @@ bool deglInstallDelga::Run( const char *forceFilename ){
 	
 	// load delga file
 	deglLauncher &launcher = *pWindow.GetLauncher();
-	deglPatchList patches;
-	deglGameList games;
+	delPatchList patches;
+	delGameList games;
 	
 	try{
-		deglEngineInstance instance( launcher, launcher.GetEngine()->GetLogFile() );
-		instance.StartEngine();
-		instance.LoadModules();
-		launcher.GetGameManager()->LoadGameFromDisk( instance, filename, games );
+		const delEngineInstance::Ref instance( delEngineInstance::Ref::New(
+			launcher.GetEngineInstanceFactory().CreateEngineInstance(
+				launcher, launcher.GetEngine().GetLogFile() ) ) );
+		instance->StartEngine();
+		instance->LoadModules();
+		
+		launcher.GetGameManager().LoadGameFromDisk( instance, filename, games );
 		launcher.GetPatchManager().LoadPatchFromDisk( instance, filename, patches );
 		
 	}catch( const deException &e ){
@@ -217,7 +215,7 @@ bool deglInstallDelga::Run( const char *forceFilename ){
 	const int gameCount = games.GetCount();
 	int i;
 	for( i=0; i<gameCount; i++ ){
-		if( launcher.GetGameManager()->GetGameList().HasWithID( games.GetAt( i )->GetIdentifier() ) ){
+		if( launcher.GetGameManager().GetGames().HasWithID( games.GetAt( i )->GetIdentifier() ) ){
 			FXMessageBox::information( &pWindow, MBOX_OK, "Install DELGA",
 				"Game '%s' is already installed", games.GetAt( i )->GetTitle().ToUTF8().GetString() );
 			return false;
@@ -236,12 +234,12 @@ bool deglInstallDelga::Run( const char *forceFilename ){
 	// show what would be installed and ask to continue
 	decString text( "The following content will be installed:\n\n" );
 	for( i=0; i<games.GetCount(); i++ ){
-		const deglGame &game = *games.GetAt( i );
+		const delGame &game = *games.GetAt( i );
 		text.AppendFormat( "- Game '%s'\n", game.GetTitle().ToUTF8().GetString() );
 	}
 	for( i=0; i<patches.GetCount(); i++ ){
-		const deglPatch &patch = *patches.GetAt( i );
-		const deglGame *game = launcher.GetGameManager()->GetGameList().GetWithID( patch.GetGameID() );
+		const delPatch &patch = *patches.GetAt( i );
+		const delGame *game = launcher.GetGameManager().GetGames().GetWithID( patch.GetGameID() );
 		if( ! game ){
 			game = games.GetWithID( patch.GetGameID() );
 		}

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Game Engine
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DESCRIPTINGSYSTEM_H_
@@ -38,6 +41,7 @@ class dePropField;
 class deParticleEmitterInstance;
 class deSoundLevelMeter;
 class deSpeaker;
+class deService;
 
 
 /**
@@ -59,9 +63,10 @@ class deSpeaker;
  * input system writes to and that the scripting system retrieves from.
  * Conversion of events has to be done anyways.
  */
-class deScriptingSystem : public deBaseSystem{
+class DE_DLL_EXPORT deScriptingSystem : public deBaseSystem{
 private:
 	decString pScriptDirectory;
+	decString pScriptVersion;
 	decString pGameObject;
 	deBaseScriptingModule *pActiveModule;
 	bool pEditMode;
@@ -91,6 +96,18 @@ public:
 	
 	/** \brief Set directory relative to the game directory where the scripts are located. */
 	void SetScriptDirectory( const char *scriptDirectory );
+	
+	/**
+	 * \brief Script version for compatibility.
+	 * \version 1.9
+	 */
+	inline const decString &GetScriptVersion() const{ return pScriptVersion; }
+	
+	/**
+	 * \brief Set script version for compatibility.
+	 * \version 1.9
+	 */
+	void SetScriptVersion( const char *scriptVersion );
 	
 	/** \brief Initial game object to create. */
 	inline const decString &GetGameObject() const{ return pGameObject; }
@@ -136,6 +153,12 @@ public:
 	/** \brief Render window has changed size. */
 	void OnResizeRenderWindow();
 	
+	/**
+	 * \brief Application received or lost focus.
+	 * \version 1.22
+	 */
+	void OnAppActivate();
+	
 	/** \brief Event has to be processed. */
 	void SendEvent( deInputEvent *event );
 	
@@ -165,6 +188,9 @@ public:
 	
 	/** \brief Create deSpeaker peer using active module and assigns it. */
 	void LoadSpeaker( deSpeaker *speaker );
+	
+	/** \brief Create deService peer using active module and assigns it. */
+	void CreateService( deService *service );
 	/*@}*/
 	
 	

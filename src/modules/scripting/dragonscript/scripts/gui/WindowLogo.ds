@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -81,46 +84,46 @@ class WindowLogo extends Window
 	 * To use this action listener assign the WindowLogo to show an appropriate action
 	 * listener before using ShowLogoAction.
 	 */
-	public class ShowLogoAction implements ActionListener
+	class ShowLogoAction implements ActionListener
 		/** \brief Desktop to show window in. */
-		private var Desktop pDesktop
+		var Desktop pDesktop
 		
 		/** \brief Window to show. */
-		private var WindowLogo pWindow
+		var WindowLogo pWindow
 		
 		
 		
 		/** \brief Create action showing window if called in BaseGameApp.getDesktop(). */
-		public func new( WindowLogo window ) this( BaseGameApp.getApp().getDesktop(), window )
+		func new(WindowLogo window) this(BaseGameApp.getApp().getDesktop(), window)
 		end
 		
 		/** \brief Create action showing window if called. */
-		public func new( Desktop desktop, WindowLogo window )
+		func new(Desktop desktop, WindowLogo window)
 			if desktop == null or window == null
 				throw EInvalidParam.new()
 			end
 			
-			this.pDesktop = desktop
-			this.pWindow = window
+			pDesktop = desktop
+			pWindow = window
 		end
 		
 		
 		
 		/** \brief Desktop to show window in. */
-		public func Desktop getDesktop()
-			return this.pDesktop
+		func Desktop getDesktop()
+			return pDesktop
 		end
 		
 		/** \brief Window to show if action is called. */
-		public func WindowLogo getWindow()
-			return this.pWindow
+		func WindowLogo getWindow()
+			return pWindow
 		end
 		
 		
 		
 		/** \brief Run action. */
-		public func void onAction( ActionEvent event )
-			this.pWindow.showLogo( this.pDesktop )
+		func void onAction(ActionEvent event)
+			pWindow.showLogo(pDesktop)
 		end
 	end
 	
@@ -130,74 +133,74 @@ class WindowLogo extends Window
 	 * Upon showing window stores current active microphone and activates the window one.
 	 * Upon closing the window reactivates the previous microphone.
 	 */
-	public class ActivateMicrophoneWhileShown extends DefaultWidgetListener
-		private var Microphone pRestoreMicrophone
-		private var Microphone pMicrophone
+	class ActivateMicrophoneWhileShown extends DefaultWidgetListener
+		var Microphone pRestoreMicrophone
+		var Microphone pMicrophone
 		
 		/** \brief Create listener with microphone to activate while window is shown. */
-		public func new( Microphone microphone )
-			this.pMicrophone = microphone
+		func new(Microphone microphone)
+			pMicrophone = microphone
 		end
 		
 		/** \brief Widget has been shown. */
-		public func void onWidgetShown( WidgetEvent event )
-			this.pRestoreMicrophone = AudioSystem.getActiveMicrophone()
-			AudioSystem.setActiveMicrophone( this.pMicrophone )
+		func void onWidgetShown(WidgetEvent event)
+			pRestoreMicrophone = AudioSystem.getActiveMicrophone()
+			AudioSystem.setActiveMicrophone(pMicrophone)
 		end
 		
 		/** \brief Widget has been hidden. */
-		public func void onWidgetHidden( WidgetEvent event )
-			AudioSystem.setActiveMicrophone( this.pRestoreMicrophone )
+		func void onWidgetHidden(WidgetEvent event)
+			AudioSystem.setActiveMicrophone(pRestoreMicrophone)
 		end
 	end
 	
 	
 	
-	private var float pTimeDelayFadeIn
-	private var float pTimeFadeIn
-	private var float pTimeFadeOut
-	private var float pTimeDelayAction
-	private var float pTimeout
-	private var bool pAllowSkip
-	private var ActionListener pActionFinished
+	var float pTimeDelayFadeIn
+	var float pTimeFadeIn
+	var float pTimeFadeOut
+	var float pTimeDelayAction
+	var float pTimeout
+	var bool pAllowSkip
+	var ActionListener pActionFinished
 	
-	private var float pElapsed
-	private var State pState
+	var float pElapsed
+	var State pState
 	
-	private var DisplayVideo pDisplayVideo
-	private var DisplayImage pDisplayImage
-	private var Panel pPanelContent
+	var DisplayVideo pDisplayVideo
+	var DisplayImage pDisplayImage
+	var Panel pPanelContent
 	
-	private var Microphone pMicrophone
-	private var Speaker pSpeakerSound
-	private var Speaker pSpeakerVideo
+	var Microphone pMicrophone
+	var Speaker pSpeakerSound
+	var Speaker pSpeakerVideo
 	
 	
 	
 	/** \brief Create window. */
-	public func new()
-		this.pTimeDelayFadeIn = 0
-		this.pTimeFadeIn = 0
-		this.pTimeFadeOut = 0
-		this.pTimeDelayAction = 0
-		this.pTimeout = 0
-		this.pAllowSkip = true
-		this.pElapsed = 0
-		this.pState = State.init
+	func new()
+		pTimeDelayFadeIn = 0
+		pTimeFadeIn = 0
+		pTimeFadeOut = 0
+		pTimeDelayAction = 0
+		pTimeout = 0
+		pAllowSkip = true
+		pElapsed = 0
+		pState = State.init
 		
-		this.pMicrophone = Microphone.new()
+		pMicrophone = Microphone.new()
 		
-		this.createWindowContent()
-		this.startFrameUpdater()
+		createWindowContent()
+		startFrameUpdater()
 		
-		this.addWidgetListener( ActivateMicrophoneWhileShown.new( this.pMicrophone ) )
+		addWidgetListener(ActivateMicrophoneWhileShown.new(pMicrophone))
 	end
 	
 	/** \brief Dispose of Widget. */
-	public func void dispose()
-		this.pDisplayVideo = null
-		this.pDisplayImage = null
-		this.pActionFinished = null
+	func void dispose()
+		pDisplayVideo = null
+		pDisplayImage = null
+		pActionFinished = null
 		
 		super.dispose()
 	end
@@ -205,173 +208,173 @@ class WindowLogo extends Window
 	
 	
 	/** \brief Time in seconds to wait before fade in content. */
-	public func float getTimeDelayFadeIn()
-		return this.pTimeDelayFadeIn
+	func float getTimeDelayFadeIn()
+		return pTimeDelayFadeIn
 	end
 	
 	/** \brief Set time in seconds to wait before fade in content. */
-	public func void setTimeDelayFadeIn( float time )
-		this.pTimeDelayFadeIn = DEMath.max( time, 0.0 )
+	func void setTimeDelayFadeIn(float time)
+		pTimeDelayFadeIn = DEMath.max(time, 0.0)
 	end
 	
 	/** \brief Time in seconds to fade in content. */
-	public func float getTimeFadeIn()
-		return this.pTimeFadeIn
+	func float getTimeFadeIn()
+		return pTimeFadeIn
 	end
 	
 	/** \brief Set time in seconds to fade in content. */
-	public func void setTimeFadeIn( float time )
-		this.pTimeFadeIn = DEMath.max( time, 0.0 )
+	func void setTimeFadeIn(float time)
+		pTimeFadeIn = DEMath.max(time, 0.0)
 	end
 	
 	/** \brief Time in seconds to fade out content. */
-	public func float getTimeFadeOut()
-		return this.pTimeFadeOut
+	func float getTimeFadeOut()
+		return pTimeFadeOut
 	end
 	
 	/** \brief Set time in seconds to fade out content. */
-	public func void setTimeFadeOut( float time )
-		this.pTimeFadeOut = DEMath.max( time, 0.0 )
+	func void setTimeFadeOut(float time)
+		pTimeFadeOut = DEMath.max(time, 0.0)
 	end
 	
 	/** \brief Time in seconds to wait before calling action. */
-	public func float getTimeDelayAction()
-		return this.pTimeDelayAction
+	func float getTimeDelayAction()
+		return pTimeDelayAction
 	end
 	
 	/** \brief Set time in seconds to wait before calling action. */
-	public func void setTimeDelayAction( float time )
-		this.pTimeDelayAction = DEMath.max( time, 0.0 )
+	func void setTimeDelayAction(float time)
+		pTimeDelayAction = DEMath.max(time, 0.0)
 	end
 	
 	/** \brief Time in seconds to show content. */
-	public func float getTimeout()
-		return this.pTimeout
+	func float getTimeout()
+		return pTimeout
 	end
 	
 	/** \brief Set time in seconds to show content. */
-	public func void setTimeout( float time )
-		this.pTimeout = DEMath.max( time, 0.0 )
+	func void setTimeout(float time)
+		pTimeout = DEMath.max(time, 0.0)
 	end
 	
 	/** \brief Allow player to skip the logo. */
-	public func bool getAllowSkip()
-		return this.pAllowSkip
+	func bool getAllowSkip()
+		return pAllowSkip
 	end
 	
 	/** \brief Set if player is allowed to skip the logo. */
-	public func void setAllowSkip( bool allowSkip )
-		this.pAllowSkip = allowSkip
+	func void setAllowSkip(bool allowSkip)
+		pAllowSkip = allowSkip
 	end
 	
 	/** \brief Action listener to call when the window closes. */
-	public func ActionListener getActionFinished()
-		return this.pActionFinished
+	func ActionListener getActionFinished()
+		return pActionFinished
 	end
 	
 	/** \brief Set action listener to call when the window closes. */
-	public func void setActionFinished( ActionListener listener )
-		this.pActionFinished = listener
+	func void setActionFinished(ActionListener listener)
+		pActionFinished = listener
 	end
 	
 	
 	
 	/** \brief Image logo or null if not set. */
-	public func Image getImageLogo()
-		return this.pDisplayImage.getImage()
+	func Image getImageLogo()
+		return pDisplayImage.getImage()
 	end
 	
 	/** \brief Set image logo or null if not set. */
-	public func void setImageLogo( Image image )
-		this.pDisplayImage.setImage( image )
+	func void setImageLogo(Image image)
+		pDisplayImage.setImage(image)
 	end
 	
 	/** \brief Video logo or null if not set. */
-	public func Video getVideoLogo()
-		return this.pDisplayVideo.getVideo()
+	func Video getVideoLogo()
+		return pDisplayVideo.getVideo()
 	end
 	
 	/** \brief Set video logo or null if not set. */
-	public func void setVideoLogo( Video video )
-		this.pDisplayVideo.setVideo( video )
+	func void setVideoLogo(Video video)
+		pDisplayVideo.setVideo(video)
 	end
 	
 	/** \brief Sound to play or null if not set. */
-	public func Sound getSound()
-		return this.pSpeakerSound.getSound()
+	func Sound getSound()
+		return pSpeakerSound.getSound()
 	end
 	
 	/** \brief Set sound to play or null if not set. */
-	public func void setSound( Sound sound )
-		this.pSpeakerSound.setSound( sound )
+	func void setSound(Sound sound)
+		pSpeakerSound.setSound(sound)
 	end
 	
 	
 	
 	/** \brief Elapsed time in the current state. */
-	public func float getElapsed()
-		return this.pElapsed
+	func float getElapsed()
+		return pElapsed
 	end
 	
 	/** \brief Set elapsed time in the current state. */
-	protected func void setElapsed( float elapsed )
-		this.pElapsed = elapsed
+	protected func void setElapsed(float elapsed)
+		pElapsed = elapsed
 	end
 	
 	/** \brief Current state. */
-	public func State getState()
-		return this.pState
+	func State getState()
+		return pState
 	end
 	
 	/** \brief Set current state. */
-	protected func void setState( State state )
-		this.pState = state
+	protected func void setState(State state)
+		pState = state
 	end
 	
 	
 	
 	/** \brief Display video widget. */
 	protected func DisplayVideo getDisplayVideo()
-		return this.pDisplayVideo
+		return pDisplayVideo
 	end
 	
 	/** \brief Display image widget. */
 	protected func DisplayImage getDisplayImage()
-		return this.pDisplayImage
+		return pDisplayImage
 	end
 	
 	/** \brief Content panel. */
 	protected func Panel getPanelContent()
-		return this.pPanelContent
+		return pPanelContent
 	end
 	
 	
 	
 	/** \brief Set window style, for example "Bg1". */
-	public func void setBgStyle( String style )
+	func void setBgStyle(String style)
 		if style != null
-			this.setDesignerSelector( "WindowLogo." + style )
+			setDesignerSelector("WindowLogo." + style)
 			
 		else
-			this.setDesignerSelector( "WindowLogo" )
+			setDesignerSelector("WindowLogo")
 		end
 	end
 	
 	
 	
 	/** \brief Window microphone. */
-	public func Microphone getMicrophone()
-		return this.pMicrophone
+	func Microphone getMicrophone()
+		return pMicrophone
 	end
 	
 	/** \brief Video speaker. */
-	public func Speaker getSpeakerVideo()
-		return this.pSpeakerVideo
+	func Speaker getSpeakerVideo()
+		return pSpeakerVideo
 	end
 	
 	/** \brief Sound speaker. */
-	public func Speaker getSpeakerSound()
-		return this.pSpeakerSound
+	func Speaker getSpeakerSound()
+		return pSpeakerSound
 	end
 	
 	
@@ -381,8 +384,8 @@ class WindowLogo extends Window
 	 * 
 	 * Once finished stored action finished is called.
 	 */
-	public func void showLogo( Desktop desktop )
-		this.showLogo( desktop, this.pActionFinished )
+	func void showLogo(Desktop desktop)
+		showLogo(desktop, pActionFinished)
 	end
 	
 	/**
@@ -390,14 +393,14 @@ class WindowLogo extends Window
 	 * 
 	 * Once finished \em actionFinished is called.
 	 */
-	public func void showLogo( Desktop desktop, ActionListener actionFinished )
-		this.setVisible( true )
-		desktop.addWindow( this )
-		this.grabFocus()
-		this.pActionFinished = actionFinished
-		this.pState = State.delayFadeIn
-		this.pElapsed = 0
-		this.updateTransparency()
+	func void showLogo(Desktop desktop, ActionListener actionFinished)
+		setVisible(true)
+		desktop.addWindow(this)
+		grabFocus()
+		pActionFinished = actionFinished
+		pState = State.delayFadeIn
+		pElapsed = 0
+		updateTransparency()
 		Engine.resetTimers() // ensures we start with 0 timers in case of loading sdelays
 	end
 	
@@ -406,24 +409,24 @@ class WindowLogo extends Window
 	 * 
 	 * Sets the state to State.finished, hides the window then calls the action finished if present.
 	 */
-	public func void skip()
-		if this.pState == State.delayFadeIn or this.pState == State.fadeIn
-			this.pState = State.operational
-			this.onFadeInEnd()
+	func void skip()
+		if pState == State.delayFadeIn or pState == State.fadeIn
+			pState = State.operational
+			onFadeInEnd()
 		end
 		
-		if this.pState == State.operational
-			this.pState = State.fadeOut
-			this.onFadeOutBegin()
+		if pState == State.operational
+			pState = State.fadeOut
+			onFadeOutBegin()
 		end
 		
-		if this.pState == State.fadeOut or this.pState == State.delayAction
-			this.pState = State.finished
-			this.onFadeOutEnd()
-			if this.pActionFinished != null
-				this.pActionFinished.onAction( ActionEvent.new( this, ActionEvent.idAction, 0 ) )
+		if pState == State.fadeOut or pState == State.delayAction
+			pState = State.finished
+			onFadeOutEnd()
+			if pActionFinished != null
+				pActionFinished.onAction(ActionEvent.new(this, ActionEvent.idAction, 0))
 			end
-			this.close()
+			close()
 		end
 	end
 	
@@ -440,14 +443,14 @@ class WindowLogo extends Window
 	 * - Time delay action: 1s
 	 * - Timeout before fade out: 5s
 	 */
-	static public func WindowLogo showImageLogo( Desktop desktop, Image image, \
-	ActionListener actionFinished )
-		return showImageLogo( desktop, image, null, actionFinished )
+	static func WindowLogo showImageLogo(Desktop desktop, Image image, \
+	ActionListener actionFinished)
+		return showImageLogo(desktop, image, null, actionFinished)
 	end
 	
-	static public func WindowLogo showImageLogo( Desktop desktop, Image image, Sound sound, \
-	ActionListener actionFinished )
-		return showImageLogo( desktop, image, sound, 1, 2, 2, 1, 5, actionFinished )
+	static func WindowLogo showImageLogo(Desktop desktop, Image image, Sound sound, \
+	ActionListener actionFinished)
+		return showImageLogo(desktop, image, sound, 1, 2, 2, 1, 5, actionFinished)
 	end
 	
 	/**
@@ -455,26 +458,26 @@ class WindowLogo extends Window
 	 * 
 	 * Same as creating window, assigining the image and calling showLogo().
 	 */
-	static public func WindowLogo showImageLogo( Desktop desktop, Image image, \
+	static func WindowLogo showImageLogo(Desktop desktop, Image image, \
 	float timeDelayFadeIn, float timeFadeIn, float timeFadeOut, float timeDelayAction, \
-	float timeout, ActionListener actionFinished )
-		return showImageLogo( desktop, image, null, timeDelayFadeIn, \
-			timeFadeIn, timeFadeOut, timeDelayAction, timeout, actionFinished )
+	float timeout, ActionListener actionFinished)
+		return showImageLogo(desktop, image, null, timeDelayFadeIn, \
+			timeFadeIn, timeFadeOut, timeDelayAction, timeout, actionFinished)
 	end
 	
-	static public func WindowLogo showImageLogo( Desktop desktop, Image image, Sound sound, \
+	static func WindowLogo showImageLogo(Desktop desktop, Image image, Sound sound, \
 	float timeDelayFadeIn, float timeFadeIn, float timeFadeOut, float timeDelayAction, \
-	float timeout, ActionListener actionFinished )
+	float timeout, ActionListener actionFinished)
 		var WindowLogo window = WindowLogo.new()
 		try
-			window.setTimeDelayFadeIn( timeDelayFadeIn )
-			window.setTimeFadeIn( timeFadeIn )
-			window.setTimeFadeOut( timeFadeOut )
-			window.setTimeDelayAction( timeDelayAction )
-			window.setTimeout( timeout )
-			window.setImageLogo( image )
-			window.setSound( sound )
-			window.showLogo( desktop, actionFinished )
+			window.setTimeDelayFadeIn(timeDelayFadeIn)
+			window.setTimeFadeIn(timeFadeIn)
+			window.setTimeFadeOut(timeFadeOut)
+			window.setTimeDelayAction(timeDelayAction)
+			window.setTimeout(timeout)
+			window.setImageLogo(image)
+			window.setSound(sound)
+			window.showLogo(desktop, actionFinished)
 			return window
 			
 		catch Exception e
@@ -494,9 +497,9 @@ class WindowLogo extends Window
 	 * - Time fade out: 0s
 	 * - Time delay action: 1s
 	 */
-	static public func WindowLogo showVideoLogo( Desktop desktop, Video video, \
-	ActionListener actionFinished )
-		return showVideoLogo( desktop, video, 1, 0, 0, 1, actionFinished )
+	static func WindowLogo showVideoLogo(Desktop desktop, Video video, \
+	ActionListener actionFinished)
+		return showVideoLogo(desktop, video, 1, 0, 0, 1, actionFinished)
 	end
 	
 	/**
@@ -504,17 +507,17 @@ class WindowLogo extends Window
 	 * 
 	 * Same as creating window, assigining the video and calling showLogo().
 	 */
-	static public func WindowLogo showVideoLogo( Desktop desktop, Video video, \
+	static func WindowLogo showVideoLogo(Desktop desktop, Video video, \
 	float timeDelayFadeIn, float timeFadeIn, float timeFadeOut, float timeDelayAction, \
-	ActionListener actionFinished )
+	ActionListener actionFinished)
 		var WindowLogo window = WindowLogo.new()
 		try
-			window.setTimeDelayFadeIn( timeDelayFadeIn )
-			window.setTimeFadeIn( timeFadeIn )
-			window.setTimeFadeOut( timeFadeOut )
-			window.setTimeDelayAction( timeDelayAction )
-			window.setVideoLogo( video )
-			window.showLogo( desktop, actionFinished )
+			window.setTimeDelayFadeIn(timeDelayFadeIn)
+			window.setTimeFadeIn(timeFadeIn)
+			window.setTimeFadeOut(timeFadeOut)
+			window.setTimeDelayAction(timeDelayAction)
+			window.setVideoLogo(video)
+			window.showLogo(desktop, actionFinished)
 			return window
 			
 		catch Exception e
@@ -529,10 +532,10 @@ class WindowLogo extends Window
 	 * It is not required to show the Drag[en]gine Game Engine logo if you are using this
 	 * game engine for whatever purpose but we would appreciate it if you do so.
 	 */
-	static public func WindowLogo showDragengineLogo( Desktop desktop, ActionListener actionFinished )
-		return showImageLogo( desktop, \
-			Image.new( "/shareddata/images/logoDragengine.jpg" ), \
-			1, 2, 2, 1, 5, actionFinished )
+	static func WindowLogo showDragengineLogo(Desktop desktop, ActionListener actionFinished)
+		return showImageLogo(desktop, \
+			Image.new("/shareddata/images/logoDragengine.jpg"), \
+			1, 2, 2, 1, 5, actionFinished)
 	end
 	
 	
@@ -544,64 +547,64 @@ class WindowLogo extends Window
 	 * 
 	 * \param elapsed Elapsed time since the last frame update. Equals Engine.getElapsedTime().
 	 */
-	public func void onFrameUpdate( float elapsed )
-		select this.pState
+	func void onFrameUpdate(float elapsed)
+		select pState
 		case State.delayFadeIn
-			this.pElapsed += elapsed
-			if this.pElapsed < this.pTimeDelayFadeIn
+			pElapsed += elapsed
+			if pElapsed < pTimeDelayFadeIn
 				break
 			end
 			
-			this.pState = State.fadeIn
-			this.pElapsed = 0
-			if this.pDisplayVideo.getVideo() != null
-				this.pDisplayVideo.play()
+			pState = State.fadeIn
+			pElapsed = 0
+			if pDisplayVideo.getVideo() != null
+				pDisplayVideo.play()
 			end
-			if this.pSpeakerSound.getSound() != null
-				this.pSpeakerSound.play()
+			if pSpeakerSound.getSound() != null
+				pSpeakerSound.play()
 			end
-			this.onFadeInBegin()
+			onFadeInBegin()
 			
 		case State.fadeIn
-			this.pElapsed += elapsed
-			this.updateTransparency()
-			if this.pElapsed < this.pTimeFadeIn
+			pElapsed += elapsed
+			updateTransparency()
+			if pElapsed < pTimeFadeIn
 				break
 			end
 			
-			this.pElapsed = 0
-			this.pState = State.operational
-			this.updateTransparency()
-			this.onFadeInEnd()
+			pElapsed = 0
+			pState = State.operational
+			updateTransparency()
+			onFadeInEnd()
 			
 		case State.operational
-			this.pElapsed += elapsed
-			if this.pElapsed < this.pTimeout or this.pDisplayVideo.isPlaying() or this.pSpeakerSound.getPlaying()
+			pElapsed += elapsed
+			if pElapsed < pTimeout or pDisplayVideo.isPlaying() or pSpeakerSound.getPlaying()
 				break
 			end
 			
-			this.pElapsed = 0
-			this.pState = State.fadeOut
-			this.onFadeOutBegin()
+			pElapsed = 0
+			pState = State.fadeOut
+			onFadeOutBegin()
 			
 		case State.fadeOut
-			this.pElapsed += elapsed
-			this.updateTransparency()
-			if this.pElapsed < this.pTimeFadeOut
+			pElapsed += elapsed
+			updateTransparency()
+			if pElapsed < pTimeFadeOut
 				break
 			end
 			
-			this.pElapsed = 0
-			this.pState = State.delayAction
-			this.updateTransparency()
-			this.onFadeOutEnd()
+			pElapsed = 0
+			pState = State.delayAction
+			updateTransparency()
+			onFadeOutEnd()
 			
 		case State.delayAction
-			this.pElapsed += elapsed
-			if this.pElapsed < this.pTimeDelayAction
+			pElapsed += elapsed
+			if pElapsed < pTimeDelayAction
 				break
 			end
-			this.skip()
+			skip()
 		end
 	end
 	
@@ -636,51 +639,39 @@ class WindowLogo extends Window
 	protected func void onFadeOutEnd()
 	end
 	
-	/**
-	 * \brief Mouse button has been released.
-	 */
-	public func void onButtonRelease( MouseEvent event )
-		super.onButtonRelease( event )
-		this.onPlayerSkip()
+	/** \brief Mouse button has been released. */
+	func void onButtonRelease(MouseEvent event)
+		super.onButtonRelease(event)
+		onPlayerSkip()
 	end
 	
-	/**
-	 * \brief Key on the keyboard has been released.
-	 */
-	public func void onKeyRelease( KeyEvent event )
-		super.onKeyRelease( event )
-		this.onPlayerSkip()
-	end
-	
-	/**
-	 * \brief Gamepad button has been released.
-	 */
-	public func void onGamepadButtonReleased( GamepadEvent event )
-		super.onGamepadButtonReleased( event )
-		this.onPlayerSkip()
+	/** \brief Key on the keyboard has been released. */
+	func void onKeyRelease(KeyEvent event)
+		super.onKeyRelease(event)
+		onPlayerSkip()
 	end
 	
 	/** \brief Player wants to skip. */
 	protected func void onPlayerSkip()
-		if this.pAllowSkip
-			this.skip()
+		if pAllowSkip
+			skip()
 		end
 	end
 	
 	/** \brief Update content transparency depending on state and elapsed time. */
 	protected func void updateTransparency()
-		select this.pState
+		select pState
 		case State.init, State.finished, State.delayFadeIn, State.delayAction
-			this.pPanelContent.setTransparency( 0 )
+			pPanelContent.setTransparency(0)
 			
 		case State.operational
-			this.pPanelContent.setTransparency( 1 )
+			pPanelContent.setTransparency(1)
 			
 		case State.fadeIn
-			this.pPanelContent.setTransparency( DEMath.linearStep( this.pElapsed, 0, this.pTimeFadeIn, 0, 1 ) )
+			pPanelContent.setTransparency(DEMath.linearStep(pElapsed, 0, pTimeFadeIn, 0, 1))
 			
 		case State.fadeOut
-			this.pPanelContent.setTransparency( DEMath.linearStep( this.pElapsed, 0, this.pTimeFadeOut, 1, 0 ) )
+			pPanelContent.setTransparency(DEMath.linearStep(pElapsed, 0, pTimeFadeOut, 1, 0))
 		end
 	end
 	
@@ -692,21 +683,21 @@ class WindowLogo extends Window
 	 * Called during constructor time.
 	 */
 	protected func void createWindowContent()
-		this.runWhileBlockingLayout( block
-			this.setVisible( false )
-			this.setDesignerSelector( "WindowLogo" )
-			this.setLayout( StackLayout.new() )
-			this.setWindowState( Window.WindowState.maximized )
-			this.setCanReorder( false )
-			this.setCanMove( false )
-			this.setCanResize( false )
-			this.setCanClose( false )
-			this.setCanMaximize( false )
-			this.setCanMinimize( false )
-			this.setCanFocus( true ) // on purpose
-			this.pPanelContent = this.createPanelContent()
-			this.addWidget( this.pPanelContent )
-		end )
+		runWhileBlockingLayout(block
+			setVisible(false)
+			setDesignerSelector("WindowLogo")
+			setLayout(StackLayout.new())
+			setWindowState(Window.WindowState.maximized)
+			setCanReorder(false)
+			setCanMove(false)
+			setCanResize(false)
+			setCanClose(false)
+			setCanMaximize(false)
+			setCanMinimize(false)
+			setCanFocus(true) // on purpose
+			pPanelContent = createPanelContent()
+			addWidget(pPanelContent)
+		end)
 	end
 	
 	/**
@@ -716,23 +707,23 @@ class WindowLogo extends Window
 	 * Called from createWindowContent() during constructor time.
 	 */
 	protected func Panel createPanelContent()
-		return Panel.new( StackLayout.new( StackLayout.AspectRatio.fit ), block Panel panel
-			panel.setDesignerSelector( "Panel.WindowLogo" )
+		return Panel.new(StackLayout.new(StackLayout.AspectRatio.fit), block Panel panel
+			panel.setDesignerSelector("Panel.WindowLogo")
 			
-			this.pSpeakerVideo = Speaker.new()
-			this.pMicrophone.addSpeaker( this.pSpeakerVideo )
+			pSpeakerVideo = Speaker.new()
+			pMicrophone.addSpeaker(pSpeakerVideo)
 			
-			this.pDisplayVideo = DisplayVideo.new( null, RepeatMode.stretch, false, this.pSpeakerVideo )
-			this.pDisplayVideo.setDesignerSelector( "Video.WindowLogo" )
-			this.pDisplayVideo.setLooping( false )
-			panel.addWidget( this.pDisplayVideo )
+			pDisplayVideo = DisplayVideo.new(null, RepeatMode.stretch, false, pSpeakerVideo)
+			pDisplayVideo.setDesignerSelector("Video.WindowLogo")
+			pDisplayVideo.setLooping(false)
+			panel.addWidget(pDisplayVideo)
 			
-			this.pSpeakerSound = Speaker.new()
-			this.pMicrophone.addSpeaker( this.pSpeakerSound )
+			pSpeakerSound = Speaker.new()
+			pMicrophone.addSpeaker(pSpeakerSound)
 			
-			this.pDisplayImage = DisplayImage.new( null, RepeatMode.stretch )
-			this.pDisplayImage.setDesignerSelector( "Image.WindowLogo" )
-			panel.addWidget( this.pDisplayImage )
-		end )
+			pDisplayImage = DisplayImage.new(null, RepeatMode.stretch)
+			pDisplayImage.setDesignerSelector("Image.WindowLogo")
+			panel.addWidget(pDisplayImage)
+		end)
 	end
 end

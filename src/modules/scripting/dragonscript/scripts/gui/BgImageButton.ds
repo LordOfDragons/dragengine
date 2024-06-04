@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -30,62 +33,51 @@ pin Dragengine.Gui.Layouts
  * \brief Button with state dependent background image and optional text and image.
  */
 class BgButton extends Button
-	/** \brief Pressed background image. */
-	private var Image pImageBgPressed
-	
-	/** \brief Unpressed background image. */
-	private var Image pImageBgUnpressed
-	
-	/** \brief Background display image. */
-	private var DisplayImage pBackground
-	
-	/** \brief Text panel. */
-	private var Panel pPanelText
-	
-	/** \brief Label. */
-	private var Label pLabel
-	
-	/** \brief Image. */
-	private var DisplayImage pImage
+	var Image pImageBgPressed
+	var Image pImageBgUnpressed
+	var DisplayImage pBackground
+	var Panel pPanelText
+	var Label pLabel
+	var DisplayImage pImage
 	
 	
 	
 	/** \brief Create button. */
-	public func new( Image bgUnpressed, Image bgPressed ) this( bgUnpressed, bgPressed, "", null )
+	func new(Image bgUnpressed, Image bgPressed) this(bgUnpressed, bgPressed, "", null)
 	end
 	
 	/** \brief Create button. */
-	public func new( Image bgUnpressed, Image bgPressed, String text, Image image )
-		this.pImageBgPressed = bgPressed
-		this.pImageBgUnpressed = bgUnpressed
+	func new(Image bgUnpressed, Image bgPressed, String text, Image image)
+		pImageBgPressed = bgPressed
+		pImageBgUnpressed = bgUnpressed
 		
-		this.setLayout( StackLayout.new() )
+		setLayout(StackLayout.new())
 		
-		this.pBackground = DisplayImage.new( bgUnpressed, RepeatMode.stretch )
-		this.addWidget( this.pBackground )
+		pBackground = DisplayImage.new(bgUnpressed, RepeatMode.stretch)
+		addWidget(pBackground)
 		
-		this.pPanelText = Panel.new()
-		this.pPanelText.setLayout( CentrizedBoxLayout.new( LayoutAxis.y ) )
+		pPanelText = Panel.new()
+		pPanelText.setLayout(CentrizedBoxLayout.new(LayoutAxis.y))
 		
-		this.pImage = DisplayImage.new( image )
-		this.pPanelText.addWidget( this.pImage )
-		this.pImage.setVisible( image != null )
+		pImage = DisplayImage.new(image)
+		pPanelText.addWidget(pImage)
+		pImage.setVisible(image != null)
 		
-		this.pLabel = Label.new( text )
-		this.pPanelText.addWidget( this.pLabel )
-		this.pLabel.setVisible( not text.empty() )
+		pLabel = Label.new(text)
+		pPanelText.addWidget(pLabel)
+		pLabel.setVisible(not text.empty())
 		
-		this.addWidget( this.pPanelText )
+		addWidget(pPanelText)
 		
-		this.setBorder( null )
+		setBorder(null)
 	end
 	
 	/** \brief Dispose of widget. */
-	public func void dispose()
-		this.pImage = null
-		this.pLabel = null
-		this.pPanelText = null
-		this.pBackground = null
+	func void dispose()
+		pImage = null
+		pLabel = null
+		pPanelText = null
+		pBackground = null
 		
 		super.dispose()
 	end
@@ -93,127 +85,127 @@ class BgButton extends Button
 	
 	
 	/** \brief Text of the button. */
-	public func String getText()
-		return this.pLabel.getText()
+	func String getText()
+		return pLabel.getText()
 	end
 	
 	/** \brief Set text of the button. */
-	public func void setText( String text )
-		this.pLabel.setText( text )
-		this.pLabel.setVisible( not text.empty() )
+	func void setText(String text)
+		pLabel.setText(text)
+		pLabel.setVisible(not text.empty())
 	end
 	
 	/** \brief Image of the button. */
-	public func Image getImage()
-		return this.pImage.getImage()
+	func Image getImage()
+		return pImage.getImage()
 	end
 	
 	/** \brief Set image of the button. */
-	public func void setImage( Image image )
-		this.pImage.setImage( image )
-		this.pImage.setVisible( image != null )
+	func void setImage(Image image)
+		pImage.setImage(image)
+		pImage.setVisible(image != null)
 	end
 	
 	/** \brief Text padding. */
-	public func BorderSize getTextPadding()
-		return BorderSize.new( this.pPanelText.getPadding().getLeft(), this.pPanelText.getPadding().getTop(), \
-			this.pPanelText.getPadding().getRight(), this.pPanelText.getPadding().getBottom() )
+	func BorderSize getTextPadding()
+		return BorderSize.new(pPanelText.getPadding().getLeft(), pPanelText.getPadding().getTop(), \
+			pPanelText.getPadding().getRight(), pPanelText.getPadding().getBottom())
 	end
 	
 	/** \brief Set text padding. */
-	public func void setTextPadding( BorderSize padding )
-		this.pPanelText.setPadding( padding )
+	func void setTextPadding(BorderSize padding)
+		pPanelText.setPadding(padding)
 	end
 	
 	/** \brief Set text padding. */
-	public func void setTextPadding( int padding )
-		this.pPanelText.setPadding( BorderSize.new( padding ) )
+	func void setTextPadding(int padding)
+		pPanelText.setPadding(BorderSize.new(padding))
 	end
 	
 	/** \brief Pressed background image. */
-	public func Image getImageBgPressed()
-		return this.pImageBgPressed
+	func Image getImageBgPressed()
+		return pImageBgPressed
 	end
 	
 	/** \brief Set pressed background image. */
-	public func void setImageBgPressed( Image image )
-		if image == this.pImageBgPressed
+	func void setImageBgPressed(Image image)
+		if image == pImageBgPressed
 			return
 		end
 		
-		this.pImageBgPressed = image
-		this.updateBackgroundImage()
+		pImageBgPressed = image
+		updateBackgroundImage()
 	end
 	
 	/** \brief Unpressed background image. */
-	public func Image getImageBgUnpressed()
-		return this.pImageBgUnpressed
+	func Image getImageBgUnpressed()
+		return pImageBgUnpressed
 	end
 	
 	/** \brief Set unpressed background image. */
-	public func void setImageBgUnpressed( Image image )
-		if image == this.pImageBgUnpressed
+	func void setImageBgUnpressed(Image image)
+		if image == pImageBgUnpressed
 			return
 		end
 		
-		this.pImageBgUnpressed = image
-		this.updateBackgroundImage()
+		pImageBgUnpressed = image
+		updateBackgroundImage()
 	end
 	
 	
 	
 	/** \brief Lock size to unpressed or presed image size, whichever exists. */
-	public func void lockSize()
+	func void lockSize()
 		var Point size
 		
-		if this.pImageBgUnpressed != null
-			size = this.pImageBgUnpressed.getSize()
+		if pImageBgUnpressed != null
+			size = pImageBgUnpressed.getSize()
 			
-		elif this.pImageBgPressed != null
-			size = this.pImageBgPressed.getSize()
+		elif pImageBgPressed != null
+			size = pImageBgPressed.getSize()
 		end
 		
-		this.setMinimumSize( size )
+		setMinimumSize(size)
 	end
 	
 	/** \brief Unlock size. */
-	public func void unlockSize()
-		this.setMinimumSize( null )
+	func void unlockSize()
+		setMinimumSize(null)
 	end
 	
 	
 	
 	/** Set font of the button text. */
-	public func void setFont( Font font )
-		super.setFont( font )
-		this.pLabel.setFont( font )
+	func void setFont(Font font)
+		super.setFont(font)
+		pLabel.setFont(font)
 	end
 	
 	/** Set foreground color of button text. */
-	public func void setTextColor( Color color )
-		super.setTextColor( color )
-		this.pLabel.setTextColor( color )
+	func void setTextColor(Color color)
+		super.setTextColor(color)
+		pLabel.setTextColor(color)
 	end
 	
 	
 	
 	/** \brief State changed. */
-	public func void onStateChanged( StateChangeEvent event )
-		super.onStateChanged( event )
-		this.updateBackgroundImage()
+	func void onStateChanged(StateChangeEvent event)
+		super.onStateChanged(event)
+		updateBackgroundImage()
 	end
 	
 	/** Update background image. */
-	public func void updateBackgroundImage()
-		if this.pBackground == null
+	func void updateBackgroundImage()
+		if pBackground == null
 			return // constructor call protection
 		end
 		
-		if this.getPressed()
-			this.pBackground.setImage( this.pImageBgPressed )
+		if getPressed()
+			pBackground.setImage(pImageBgPressed)
 			
 		else
-			this.pBackground.setImage( this.pImageBgUnpressed )
+			pBackground.setImage(pImageBgUnpressed)
 		end
 	end
 end

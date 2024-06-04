@@ -1,33 +1,36 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
 
 #include <libdscript/libdscript.h>
 
 #include "deClassVector.h"
 #include "deClassDVector.h"
+#include "deClassPoint3.h"
 #include "../file/deClassFileReader.h"
 #include "../file/deClassFileWriter.h"
 #include "../../deScriptingDragonScript.h"
@@ -208,6 +211,16 @@ void deClassDVector::nfNormalize::RunFunction( dsRunTime *rt, dsValue *myself ){
 	clsDVector->PushDVector( rt, vector / len );
 }
 
+// public func DVector absolute()
+deClassDVector::nfAbsolute::nfAbsolute( const sInitData &init ) : dsFunction( init.clsDVec,
+"absolute", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsDVec ){
+}
+void deClassDVector::nfAbsolute::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const decDVector &vector = ( ( sDVecNatDat* )p_GetNativeData( myself ) )->vector;
+	deClassDVector *clsDVector = ( deClassDVector* )GetOwnerClass();
+	clsDVector->PushDVector( rt, vector.Absolute() );
+}
+
 // public func DVector compMultiply( DVector v )
 deClassDVector::nfCompMultiply::nfCompMultiply( const sInitData &init ) : dsFunction( init.clsDVec,
 "compMultiply", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsDVec ){
@@ -331,6 +344,50 @@ void deClassDVector::nfClamped::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const decDVector &max = clsDVector.GetDVector( rt->GetValue( 1 )->GetRealObject() );
 	
 	clsDVector.PushDVector( rt, vector.Clamped( min, max ) );
+}
+
+// public func Point3 round()
+deClassDVector::nfRound::nfRound( const sInitData &init ) :
+dsFunction( init.clsDVec, "round", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsPoint3 ){
+}
+void deClassDVector::nfRound::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const decDVector &vector = ( ( sDVecNatDat* )p_GetNativeData( myself ) )->vector;
+	
+	( ( deClassDVector* )GetOwnerClass() )->GetScriptModule()->
+		GetClassPoint3()->PushPoint( rt, vector.Round() );
+}
+
+// public func DVector round(float unit)
+deClassDVector::nfRound2::nfRound2( const sInitData &init ) :
+dsFunction( init.clsDVec, "round", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsDVec ){
+	p_AddParameter( init.clsFlt ); // unit
+}
+void deClassDVector::nfRound2::RunFunction( dsRunTime *rt, dsValue *myself ){
+	decDVector vector( ( ( sDVecNatDat* )p_GetNativeData( myself ) )->vector );
+	deClassDVector &clsDVector = *( ( deClassDVector* )GetOwnerClass() );
+	const double unit = ( double )rt->GetValue( 0 )->GetFloat();
+	
+	vector /= unit;
+	vector.x = floor( vector.x + 0.5 );
+	vector.y = floor( vector.y + 0.5 );
+	vector.z = floor( vector.z + 0.5 );
+	vector *= unit;
+	clsDVector.PushDVector( rt, vector );
+}
+
+// public func DVector mix(DVector vector, float factor)
+deClassDVector::nfMix::nfMix( const sInitData &init ) :
+dsFunction( init.clsDVec, "mix", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsDVec ){
+	p_AddParameter( init.clsDVec ); // vector
+	p_AddParameter( init.clsFlt ); // factor
+}
+void deClassDVector::nfMix::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const decDVector &vector = ( ( sDVecNatDat* )p_GetNativeData( myself ) )->vector;
+	deClassDVector &clsDVector = *( ( deClassDVector* )GetOwnerClass() );
+	const decDVector &other = clsDVector.GetDVector( rt->GetValue( 0 )->GetRealObject() );
+	const float factor = rt->GetValue( 1 )->GetFloat();
+	
+	clsDVector.PushDVector( rt, vector.Mix( other, factor ) );
 }
 
 // public func Vector toVector()
@@ -523,7 +580,7 @@ void deClassDVector::nfOpDot::RunFunction( dsRunTime *rt, dsValue *myself ){
 	dsRealObject *objVec = rt->GetValue( 0 )->GetRealObject();
 	if( ! objVec ) DSTHROW( dueNullPointer );
 	
-	rt->PushFloat( vector * clsDVector->GetDVector( objVec ) );
+	rt->PushFloat( ( float )( vector * clsDVector->GetDVector( objVec ) ) );
 }
 
 // public func DVector %( DVector v )
@@ -641,10 +698,34 @@ deClassDVector::nfToString::nfToString( const sInitData &init ) : dsFunction( in
 }
 void deClassDVector::nfToString::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const decDVector &vector = ( ( sDVecNatDat* )p_GetNativeData( myself ) )->vector;
-	char buffer[ 50 ];
+	decString str;
+	str.Format( "(%f,%f,%f)", vector.x, vector.y, vector.z );
+	rt->PushString( str );
+}
+
+// public func String toString( int precision )
+deClassDVector::nfToStringPrecision::nfToStringPrecision( const sInitData &init ) :
+dsFunction( init.clsDVec, "toString", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsStr ){
+	p_AddParameter( init.clsInt ); // precision
+}
+void deClassDVector::nfToStringPrecision::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const int precision = rt->GetValue( 0 )->GetInt();
+	if( precision < 0 ){
+		DSTHROW_INFO( dueInvalidParam, "precision < 0" );
+	}
+	if( precision > 17 ){
+		DSTHROW_INFO( dueInvalidParam, "precision > 17" );
+	}
 	
-	sprintf( ( char* )&buffer, "(%g,%g,%g)", vector.x, vector.y, vector.z );
-	rt->PushString( buffer );
+	const unsigned short p = ( unsigned short )precision;
+	char format[ 21 ];
+	snprintf( format, sizeof( format ), "(%%.%huf,%%.%huf,%%.%huf)", p, p, p );
+	
+	const decDVector &vector = ( ( sDVecNatDat* )p_GetNativeData( myself ) )->vector;
+	decString str;
+	str.Format( str, vector.x, vector.y, vector.z );
+	rt->PushString( str );
 }
 
 
@@ -695,6 +776,7 @@ void deClassDVector::CreateClassMembers( dsEngine *engine ){
 	init.clsVec = pClsVec;
 	init.clsFileReader = pScrMgr->GetClassFileReader();
 	init.clsFileWriter = pScrMgr->GetClassFileWriter();
+	init.clsPoint3 = pScrMgr->GetClassPoint3();
 	
 	// add functions
 	AddFunction( new nfNew( init ) );
@@ -710,6 +792,7 @@ void deClassDVector::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfGetLength( init ) );
 	AddFunction( new nfGetLengthSquared( init ) );
 	AddFunction( new nfNormalize( init ) );
+	AddFunction( new nfAbsolute( init ) );
 	AddFunction( new nfCompMultiply( init ) );
 	AddFunction( new nfCompDivide( init ) );
 	AddFunction( new nfCompSelect( init ) );
@@ -717,6 +800,9 @@ void deClassDVector::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfSmallest( init ) );
 	AddFunction( new nfLargest( init ) );
 	AddFunction( new nfClamped( init ) );
+	AddFunction( new nfRound( init ) );
+	AddFunction( new nfRound2( init ) );
+	AddFunction( new nfMix( init ) );
 	AddFunction( new nfToVector( init ) );
 	
 	AddFunction( new nfIsEqualTo( init ) );
@@ -742,6 +828,7 @@ void deClassDVector::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfEquals( init ) );
 	AddFunction( new nfHashCode( init ) );
 	AddFunction( new nfToString( init ) );
+	AddFunction( new nfToStringPrecision( init ) );
 }
 
 const decDVector &deClassDVector::GetDVector( dsRealObject *myself ) const{

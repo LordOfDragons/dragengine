@@ -1,42 +1,50 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "deoglDeferredRendering.h"
 #include "deoglDRDepthMinMax.h"
 #include "../../capabilities/deoglCapabilities.h"
 #include "../../configuration/deoglConfiguration.h"
+#include "../../debug/deoglDebugTraceGroup.h"
+#include "../../delayedoperation/deoglDelayedOperations.h"
 #include "../../extensions/deoglExtensions.h"
-#include "../../extensions/deoglExtResult.h"
 #include "../../framebuffer/deoglFramebuffer.h"
+#include "../../framebuffer/deoglRestoreFramebuffer.h"
+#include "../../rendering/deoglRenderWorld.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTFramebuffer.h"
 #include "../../renderthread/deoglRTLogger.h"
+#include "../../renderthread/deoglRTChoices.h"
+#include "../../renderthread/deoglRTRenderers.h"
 #include "../../shaders/deoglShaderCompiled.h"
 #include "../../shaders/paramblock/deoglSPBlockUBO.h"
-#include "../../texture/deoglRenderbuffer.h"
 #include "../../texture/deoglTextureStageManager.h"
-#include "../../texture/texture2d/deoglTexture.h"
+#include "../../texture/arraytexture/deoglArrayTexture.h"
 #include "../../vao/deoglVAO.h"
 
 #include <dragengine/common/exceptions.h>
@@ -168,64 +176,15 @@ def test2( count, q ):
 // Definitions
 ////////////////
 
-enum eFBOMappingsEncodedDepth{
-	/** Depth1 with RenBuf. */
-	efbomedDepth1RB,
-	/** Depth2 with RenBuf. */
-	efbomedDepth2RB,
-	/** Depth3 with RenBuf. */
-	efbomedDepth3RB,
-	/** Diffuse. */
-	efbomedDiff,
-	/** Diffuse with RenBuf. */
-	efbomedDiffRB,
-	/** Reflectivity. */
-	efbomedRefl,
-	/** Reflectivity with RenBuf. */
-	efbomedReflRB,
-	/** Roughness. */
-	efbomedRough,
-	/** Roughness with RenBuf. */
-	efbomedRoughRB,
-	/** AO-Solidity. */
-	efbomedAOSolidity,
-	/** Ao-Solidity with RenBuf. */
-	efbomedAOSolidityRB,
-	/** Temporary1 with RenBuf. */
-	efbomedTemp1RB,
-	/** Temporary2 with RenBuf. */
-	efbomedTemp2RB,
-	/** Temporary3 with RenBuf. */
-	efbomedTemp3,
-	/** Color with RenBuf. */
-	efbomedColorRB,
-	/** Depth1, Diffuse with RenBuf. */
-	efbomedDepth1DiffRB,
-	/** Depth2, Diffuse with RenBuf. */
-	efbomedDepth2DiffRB,
-	/** Depth1, Temporary1 with RenBuf. */
-	efbomedDepth1Temp1RB,
-	/** Depth2, Temporary1 with RenBuf. */
-	efbomedDepth2Temp1RB,
-	/** Color, Depth1 with RenBuf. */
-	efbomedColorDepth1RB,
-	/** Color, Depth2 with RenBuf. */
-	efbomedColorDepth2RB,
-	/** Color, tmeporary2 with RenBuf. */
-	efbomedColorTemp2RB,
-	/** Diffuse, Normal, Specularity, Color with RenBuf. */
-	efbomedMaterialColorRB,
-	/** Diffuse, Normal, Specularity, Temporary1 with RenBuf. */
-	EFBOMED_COUNT
-};
-
 enum eFBOMappingsDepth{
 	/** No-Color with Depth1. */
 	efbomdD1,
 	/** No-Color with Depth2. */
 	efbomdD2,
-	/** \brief No-Color with Depth3. */
+	/** No-Color with Depth3. */
 	efbomdD3,
+	/** No-Color with DepthXRay. */
+	efbomdDXRay,
 	/** Diffuse. */
 	efbomdDiff,
 	/** Diffuse with Depth1. */
@@ -276,15 +235,38 @@ enum eFBOMappingsDepth{
 	efbomdColorTemp2D1,
 	/** Color, temporary1 with Depth2. */
 	efbomdColorTemp2D2,
+	/** Color without depth. */
+	efbomdColorLum,
+	/** Color with Depth1. */
+	efbomdColorLumD1,
+	/** Color with Depth2. */
+	efbomdColorLumD2,
+	/** Color, temporary1 without depth. */
+	efbomdColorLumTemp2,
+	/** Color, temporary1 with Depth1. */
+	efbomdColorLumTemp2D1,
+	/** Color, temporary1 with Depth2. */
+	efbomdColorLumTemp2D2,
 	/** Diffuse, Normal, Specularity, Color with Depth1. */
 	efbomdMaterialColorD1,
 	/** Diffuse, Normal, Specularity, Color with Depth2. */
 	efbomdMaterialColorD2,
+	/** Luminance. */
+	efbomdLuminance,
 	/** Number of FBOs used. */
 	EFBOMD_COUNT
 };
 
-#define FBO_COUNT 30
+enum eFBOCopyDepth{
+	efbocdDepth1Layer0,
+	efbocdDepth1Layer1,
+	efbocdDepth2Layer0,
+	efbocdDepth2Layer1,
+	efbocdDepth3Layer0,
+	efbocdDepth3Layer1,
+	efbocdDepthXRayLayer0,
+	efbocdDepthXRayLayer1
+};
 
 
 
@@ -295,29 +277,57 @@ enum eFBOMappingsDepth{
 ////////////////////////////
 
 deoglDeferredRendering::deoglDeferredRendering( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread ){
-	const GLfloat fsquad[ 12 ] = {
-		-1.0f,  1.0f,
-		 1.0f,  1.0f,
-		 1.0f, -1.0f,
-		-1.0f, -1.0f,
-		-1.0f,  1.0f, // for 2-triangle only
-		 1.0f, -1.0f  // for 2-triangle only
+pRenderThread( renderThread ),
+pTextureLuminance( NULL ),
+pMemUse( renderThread.GetMemoryManager().GetConsumption().deferredRendering )
+// pTextureLuminanceNormal( NULL ),
+// pTextureLuminanceDepth( NULL ),
+// pFBOLuminance( NULL ),
+// pFBOLuminanceNormal( NULL )
+{
+	const bool useInverseDepth = renderThread.GetChoices().GetUseInverseDepth();
+	
+	struct sQuadPoint{
+		GLfloat x, y;
+		GLint layer;
 	};
-	const GLfloat billboard[ 66 ] = {
-		-1.0f,  1.0f, 0.0f,   0.0f, 0.0f, 1.0f,   1.0f, 0.0f, 0.0f,   0.0f, 0.0f,
-		 1.0f,  1.0f, 0.0f,   0.0f, 0.0f, 1.0f,   1.0f, 0.0f, 0.0f,   1.0f, 0.0f,
-		 1.0f, -1.0f, 0.0f,   0.0f, 0.0f, 1.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,
-		-1.0f, -1.0f, 0.0f,   0.0f, 0.0f, 1.0f,   1.0f, 0.0f, 0.0f,   0.0f, 1.0f,
-		-1.0f,  1.0f, 0.0f,   0.0f, 0.0f, 1.0f,   1.0f, 0.0f, 0.0f,   0.0f, 0.0f, // for 2-triangle only
-		 1.0f, -1.0f, 0.0f,   0.0f, 0.0f, 1.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f  // for 2-triangle only
+	struct sBillboardPoint{
+		oglVector3 position, normal, tangent;
+		oglVector2 texcoord;
+		GLint layer;
 	};
+	
+	sQuadPoint fsquad[ 36 ], *ptrFSQuad = fsquad;
 	int i;
+	
+	for( i=0; i<6; i++ ){
+		*( ptrFSQuad++ ) = sQuadPoint{ -1.0f,  1.0f, i };
+		*( ptrFSQuad++ ) = sQuadPoint{  1.0f,  1.0f, i };
+		*( ptrFSQuad++ ) = sQuadPoint{  1.0f, -1.0f, i };
+		*( ptrFSQuad++ ) = sQuadPoint{ -1.0f, -1.0f, i };
+		*( ptrFSQuad++ ) = sQuadPoint{ -1.0f,  1.0f, i };
+		*( ptrFSQuad++ ) = sQuadPoint{  1.0f, -1.0f, i };
+	};
+	
+	const oglVector3 billboardNormal = { 0.0f, 0.0f, 1.0f };
+	const oglVector3 billboardTangent = { 1.0f, 0.0f, 0.0f };
+	
+	sBillboardPoint billboard[ 12 ], *ptrBillboard = billboard;
+	for( i=0; i<2; i++ ){
+		*( ptrBillboard++ ) = sBillboardPoint{ { -1.0f,  1.0f, 0.0f }, billboardNormal, billboardTangent, { 0.0f, 0.0f }, i };
+		*( ptrBillboard++ ) = sBillboardPoint{ {  1.0f,  1.0f, 0.0f }, billboardNormal, billboardTangent, { 1.0f, 0.0f }, i };
+		*( ptrBillboard++ ) = sBillboardPoint{ {  1.0f, -1.0f, 0.0f }, billboardNormal, billboardTangent, { 1.0f, 1.0f }, i };
+		*( ptrBillboard++ ) = sBillboardPoint{ { -1.0f, -1.0f, 0.0f }, billboardNormal, billboardTangent, { 0.0f, 1.0f }, i };
+		*( ptrBillboard++ ) = sBillboardPoint{ { -1.0f,  1.0f, 0.0f }, billboardNormal, billboardTangent, { 0.0f, 0.0f }, i };
+		*( ptrBillboard++ ) = sBillboardPoint{ {  1.0f, -1.0f, 0.0f }, billboardNormal, billboardTangent, { 1.0f, 1.0f }, i };
+	}
 	
 	pWidth = 0;
 	pHeight = 0;
+	pLayerCount = 1;
 	pRealWidth = 0;
 	pRealHeight = 0;
+	pRealLayerCount = 1;
 	pScalingU = 1.0f;
 	pScalingV = 1.0f;
 	pPixelSizeU = 1.0f;
@@ -325,39 +335,12 @@ pRenderThread( renderThread ){
 	pFSQuadOffU = 0.0f;
 	pFSQuadOffV = 0.0f;
 	
-	pUseEncodedDepth = renderThread.GetConfiguration().GetDefRenEncDepth();
+	pUseFadeOutRange = useInverseDepth;
 	
-	pUseInverseDepth = renderThread.GetConfiguration().GetUseInverseDepth();
-	if( ! renderThread.GetCapabilities().GetFormats().GetUseFBOTex2DFormatFor( deoglCapsFmtSupport::eutfDepthF_Stencil )
-	||  ! renderThread.GetCapabilities().GetFormats().GetUseFBOTex2DFormatFor( deoglCapsFmtSupport::eutfDepthF )
-	||  ! renderThread.GetCapabilities().GetFormats().GetUseFBOTexCubeFormatFor( deoglCapsFmtSupport::eutfDepthF_Stencil )
-	||  ! renderThread.GetCapabilities().GetFormats().GetUseFBOTexCubeFormatFor( deoglCapsFmtSupport::eutfDepthF )
-	||  ! pglClipControl
-	||  pUseEncodedDepth ){
-		pUseInverseDepth = false; // not supported
-	}
-	
-	pUseFadeOutRange = pUseInverseDepth;
-	
-	renderThread.GetLogger().LogInfoFormat( "DefRen: Use Inverse Depth = %s", pUseInverseDepth ? "on" : "off" );
-	
-	if( pUseInverseDepth ){
-		pDepthCompareFuncRegular = GL_GEQUAL;
-		pDepthCompareFuncReversed = GL_LEQUAL;
-		pClearDepthValueRegular = ( GLfloat )0.0;
-		pClearDepthValueReversed = ( GLfloat )1.0;
-		
-	}else{
-		pDepthCompareFuncRegular = GL_LEQUAL;
-		pDepthCompareFuncReversed = GL_GEQUAL;
-		pClearDepthValueRegular = ( GLfloat )1.0;
-		pClearDepthValueReversed = ( GLfloat )0.0;
-	}
-	
-	pRenderbuffer = NULL;
 	pTextureDepth1 = NULL;
 	pTextureDepth2 = NULL;
 	pTextureDepth3 = NULL;
+	pTextureDepthXRay = nullptr;
 	
 	pTextureDiffuse = NULL;
 	pTextureNormal = NULL;
@@ -370,7 +353,7 @@ pRenderThread( renderThread ){
 	pTextureTemporary3 = NULL;
 	pTextureColor = NULL;
 	
-	for( i=0; i<FBO_COUNT; i++ ){
+	for( i=0; i<EFBOMD_COUNT; i++ ){
 		pFBOs[ i ] = NULL;
 	}
 	pFBOMipMapDepth1 = NULL;
@@ -382,11 +365,11 @@ pRenderThread( renderThread ){
 	pModeDepth = true;
 	pModePostProcess = true;
 	
-	pDepthMinMax = NULL;
+	for( i=0; i<8; i++ ){
+		pFBOCopyDepth[ i ] = nullptr;
+	}
 	
-	pMemoryUsageGPU = 0;
-	pMemoryUsageGPUTexture = 0;
-	pMemoryUsageGPURenBuf = 0;
+	pDepthMinMax = NULL;
 	
 	pVBOFullScreenQuad = 0;
 	pVBOBillboard = 0;
@@ -408,7 +391,9 @@ pRenderThread( renderThread ){
 		OGL_CHECK( renderThread, pglBindVertexArray( pVAOFullScreenQuad->GetVAO() ) );
 		
 		OGL_CHECK( renderThread, pglEnableVertexAttribArray( 0 ) );
-		OGL_CHECK( renderThread, pglVertexAttribPointer( 0, 2, GL_FLOAT, GL_FALSE, 0, ( const GLvoid * )0 ) );
+		OGL_CHECK( renderThread, pglVertexAttribPointer( 0, 2, GL_FLOAT, GL_FALSE, 12, ( const GLvoid * )0 ) );
+		OGL_CHECK( renderThread, pglEnableVertexAttribArray( 1 ) );
+		OGL_CHECK( renderThread, pglVertexAttribIPointer( 1, 1, GL_INT, 12, ( const GLvoid * )8 ) );
 		
 		// billboard vao
 		OGL_CHECK( renderThread, pglGenBuffers( 1, &pVBOBillboard ) );
@@ -422,18 +407,22 @@ pRenderThread( renderThread ){
 		OGL_CHECK( renderThread, pglBindVertexArray( pVAOBillboard->GetVAO() ) );
 		
 		OGL_CHECK( renderThread, pglEnableVertexAttribArray( 0 ) );
-		OGL_CHECK( renderThread, pglVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, 44, ( const GLvoid * )0 ) );
+		OGL_CHECK( renderThread, pglVertexAttribPointer( 0, 2, GL_FLOAT, GL_FALSE, 48, ( const GLvoid * )0 ) );
 		OGL_CHECK( renderThread, pglEnableVertexAttribArray( 1 ) );
-		OGL_CHECK( renderThread, pglVertexAttribPointer( 1, 3, GL_FLOAT, GL_FALSE, 44, ( const GLvoid * )12 ) );
+		OGL_CHECK( renderThread, pglVertexAttribPointer( 1, 3, GL_FLOAT, GL_FALSE, 48, ( const GLvoid * )12 ) );
 		OGL_CHECK( renderThread, pglEnableVertexAttribArray( 2 ) );
-		OGL_CHECK( renderThread, pglVertexAttribPointer( 2, 3, GL_FLOAT, GL_FALSE, 44, ( const GLvoid * )12 ) );
+		OGL_CHECK( renderThread, pglVertexAttribPointer( 2, 3, GL_FLOAT, GL_FALSE, 48, ( const GLvoid * )12 ) );
 		OGL_CHECK( renderThread, pglEnableVertexAttribArray( 3 ) );
-		OGL_CHECK( renderThread, pglVertexAttribPointer( 3, 3, GL_FLOAT, GL_FALSE, 44, ( const GLvoid * )24 ) );
+		OGL_CHECK( renderThread, pglVertexAttribPointer( 3, 3, GL_FLOAT, GL_FALSE, 48, ( const GLvoid * )24 ) );
 		OGL_CHECK( renderThread, pglEnableVertexAttribArray( 4 ) );
-		OGL_CHECK( renderThread, pglVertexAttribPointer( 4, 2, GL_FLOAT, GL_FALSE, 44, ( const GLvoid * )36 ) );
+		OGL_CHECK( renderThread, pglVertexAttribPointer( 4, 2, GL_FLOAT, GL_FALSE, 48, ( const GLvoid * )36 ) );
+		OGL_CHECK( renderThread, pglEnableVertexAttribArray( 5 ) );
+		OGL_CHECK( renderThread, pglVertexAttribIPointer( 5, 1, GL_INT, 48, ( const GLvoid * )44 ) );
 		
 		OGL_CHECK( renderThread, pglBindBuffer( GL_ARRAY_BUFFER, 0 ) );
 		OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
+		
+		pVAOBillboard->EnsureRTSVAO();
 		
 		// enfore a minimum size
 		Resize( 64, 64 );
@@ -453,16 +442,15 @@ deoglDeferredRendering::~deoglDeferredRendering(){
 // Management
 ///////////////
 
-void deoglDeferredRendering::Resize( int width, int height ){
-	if( width < 1 || height < 1 ){
+void deoglDeferredRendering::Resize( int width, int height, int layerCount ){
+	if( width < 1 || height < 1 || layerCount < 1 ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	int textureWidth, textureHeight;
-	int neededWidth, neededHeight;
+	int textureWidth, textureHeight, textureLayerCount;
 	
 	// if the size is somewhere larger resize the textures
-	if( width > pRealWidth || height > pRealHeight ){
+	if( width > pRealWidth || height > pRealHeight || layerCount > pRealLayerCount ){
 		// NOTE for the case we ever want to resize down to consume memory in the future a minimum
 		//      size of 64 has ot be kept for certain render code to still function properly
 		
@@ -478,61 +466,46 @@ void deoglDeferredRendering::Resize( int width, int height ){
 		pRenderThread.GetFramebuffer().Activate( NULL );
 		
 		// determine the larger sizes for each direction
-		if( width > pWidth ){
-			neededWidth = width;
-		}else{
-			neededWidth = pWidth;
-		}
-		if( height > pHeight ){
-			neededHeight = height;
-		}else{
-			neededHeight = pHeight;
-		}
+		textureWidth = decMath::max( width, pWidth );
+		textureHeight = decMath::max( height, pHeight );
+		textureLayerCount = decMath::max( layerCount, pLayerCount );
 		
-		if( pRenderThread.GetConfiguration().GetDefRenUsePOTs() ){
-			for( textureWidth=8; textureWidth<neededWidth; textureWidth<<=1 );
-			for( textureHeight=8; textureHeight<neededHeight; textureHeight<<=1 );
-			
-		}else{
-			textureWidth = neededWidth;
-			textureHeight = neededHeight;
-		}
-		
-		pRenderThread.GetLogger().LogInfoFormat( "DefRen: Resizing buffers to %dx%d", textureWidth, textureHeight );
-		
-		// resize renderbuffer
-		pRenderbuffer->SetSize( textureWidth, textureHeight );
-		pRenderbuffer->CreateBuffer();
+		pRenderThread.GetLogger().LogInfoFormat( "DefRen: Resizing buffers to %dx%dx%d",
+			textureWidth, textureHeight, textureLayerCount );
 		
 		// resize textures
-		pTextureDepth1->SetSize( textureWidth, textureHeight );
+		pTextureDepth1->SetSize( textureWidth, textureHeight, textureLayerCount );
 		pTextureDepth1->CreateTexture();
-		pTextureDepth2->SetSize( textureWidth, textureHeight );
+		pTextureDepth2->SetSize( textureWidth, textureHeight, textureLayerCount );
 		pTextureDepth2->CreateTexture();
-		pTextureDepth3->SetSize( textureWidth, textureHeight );
+		pTextureDepth3->SetSize( textureWidth, textureHeight, textureLayerCount );
 		pTextureDepth3->CreateTexture();
+		pTextureDepthXRay->SetSize( textureWidth, textureHeight, textureLayerCount );
+		pTextureDepthXRay->CreateTexture();
 		
-		pTextureDiffuse->SetSize( textureWidth, textureHeight );
+		pTextureDiffuse->SetSize( textureWidth, textureHeight, textureLayerCount );
 		pTextureDiffuse->CreateTexture();
-		pTextureNormal->SetSize( textureWidth, textureHeight );
+		pTextureNormal->SetSize( textureWidth, textureHeight, textureLayerCount );
 		pTextureNormal->CreateTexture();
-		pTextureReflectivity->SetSize( textureWidth, textureHeight );
+		pTextureReflectivity->SetSize( textureWidth, textureHeight, textureLayerCount );
 		pTextureReflectivity->CreateTexture();
-		pTextureRoughness->SetSize( textureWidth, textureHeight );
+		pTextureRoughness->SetSize( textureWidth, textureHeight, textureLayerCount );
 		pTextureRoughness->CreateTexture();
-		pTextureAOSolidity->SetSize( textureWidth, textureHeight );
+		pTextureAOSolidity->SetSize( textureWidth, textureHeight, textureLayerCount );
 		pTextureAOSolidity->CreateTexture();
-		pTextureSubSurface->SetSize( textureWidth, textureHeight );
+		pTextureSubSurface->SetSize( textureWidth, textureHeight, textureLayerCount );
 		pTextureSubSurface->CreateTexture();
+		pTextureLuminance->SetSize( textureWidth, textureHeight, textureLayerCount );
+		pTextureLuminance->CreateTexture();
 		
-		pTextureTemporary1->SetSize( textureWidth, textureHeight );
+		pTextureTemporary1->SetSize( textureWidth, textureHeight, textureLayerCount );
 		pTextureTemporary1->CreateTexture();
-		pTextureTemporary2->SetSize( textureWidth, textureHeight );
+		pTextureTemporary2->SetSize( textureWidth, textureHeight, textureLayerCount );
 		pTextureTemporary2->CreateTexture();
-		pTextureTemporary3->SetSize( textureWidth, textureHeight );
+		pTextureTemporary3->SetSize( textureWidth, textureHeight, textureLayerCount );
 		pTextureTemporary3->CreateTexture();
 		
-		pTextureColor->SetSize( textureWidth, textureHeight );
+		pTextureColor->SetSize( textureWidth, textureHeight, textureLayerCount );
 		pTextureColor->CreateTexture();
 		
 		// recreate depth min-max texture
@@ -540,12 +513,13 @@ void deoglDeferredRendering::Resize( int width, int height ){
 			int minMaxWidth, minMaxHeight;
 			for( minMaxWidth=1; minMaxWidth<(textureWidth>>1); minMaxWidth<<=1 );
 			for( minMaxHeight=1; minMaxHeight<(textureHeight>>1); minMaxHeight<<=1 );
-			pDepthMinMax = new deoglDRDepthMinMax( pRenderThread, minMaxWidth, minMaxHeight, 11 );
+			pDepthMinMax = new deoglDRDepthMinMax( pRenderThread, minMaxWidth, minMaxHeight, textureLayerCount, 11 );
 		}
 		
 		// store the new texture size
 		pRealWidth = textureWidth;
 		pRealHeight = textureHeight;
+		pRealLayerCount = textureLayerCount;
 		
 		pUpdateMemoryUsage();
 		
@@ -556,6 +530,7 @@ void deoglDeferredRendering::Resize( int width, int height ){
 	// store the new size and update the scalings
 	pWidth = width;
 	pHeight = height;
+	pLayerCount = layerCount;
 	
 	pPixelSizeU = 1.0f / ( float )pRealWidth;
 	pPixelSizeV = 1.0f / ( float )pRealHeight;
@@ -567,23 +542,11 @@ void deoglDeferredRendering::Resize( int width, int height ){
 	pClampV = ( float )( height - 1 ) / ( float )pRealHeight;
 }
 
-void deoglDeferredRendering::ForceResize(){
-	const int width = pWidth;
-	const int height = pHeight;
-	
-	pWidth = 0;
-	pHeight = 0;
-	pRealWidth = 0;
-	pRealHeight = 0;
-	
-	Resize( width, height );
-}
-
-deoglTexture *deoglDeferredRendering::GetDepthTexture1() const{
+deoglArrayTexture *deoglDeferredRendering::GetDepthTexture1() const{
 	return pModeDepth ? pTextureDepth1 : pTextureDepth2;
 }
 
-deoglTexture *deoglDeferredRendering::GetDepthTexture2() const{
+deoglArrayTexture *deoglDeferredRendering::GetDepthTexture2() const{
 	return pModeDepth ? pTextureDepth2 : pTextureDepth1;
 }
 
@@ -601,50 +564,48 @@ void deoglDeferredRendering::CopyFirstDepthToSecond( bool copyDepth, bool copySt
 	// and GL_DRAW_FRAMEBUFFER to the same framebuffer. we have thus to only alter the GL_DRAW_FRAMEBUFFER
 	// to another framebuffer containing the second depth buffer and back to the previous framebuffer once
 	// we are done with the copy.
-	deoglFramebuffer * const oldfbo = pRenderThread.GetFramebuffer().GetActive();
-	int mask = 0, restoreBindTarget;
+	// 
+	// NOTE layer blitting is not supported. this has to be done manually
+	const deoglDebugTraceGroup debugTrace( pRenderThread, "CopyFirstDepthToSecond" );
 	
-	if( pUseEncodedDepth ){
-		// the depth and stencil is reused between the first and second framebuffer. we have to only copy
-		// the depth texture in the first attachment slot. this requires though also setting the
-		// GL_READ_FRAMEBUFFER to make sure no wrong color copies can happen (the specs are totally
-		// vague about all this).
-		
-		if( ! copyDepth ){
-			return;
-		}
-		
-		if( pModeDepth ){
-			OGL_CHECK( pRenderThread, pglBindFramebuffer( GL_READ_FRAMEBUFFER, pFBOs[ efbomedDepth1RB ]->GetFBO() ) );
-			OGL_CHECK( pRenderThread, pglBindFramebuffer( GL_DRAW_FRAMEBUFFER, pFBOs[ efbomedDepth2RB ]->GetFBO() ) );
-			
-		}else{
-			OGL_CHECK( pRenderThread, pglBindFramebuffer( GL_READ_FRAMEBUFFER, pFBOs[ efbomedDepth2RB ]->GetFBO() ) );
-			OGL_CHECK( pRenderThread, pglBindFramebuffer( GL_DRAW_FRAMEBUFFER, pFBOs[ efbomedDepth1RB ]->GetFBO() ) );
-		}
-		
-		mask = GL_COLOR_BUFFER_BIT;
-		restoreBindTarget = GL_FRAMEBUFFER;
-		
-	}else{
-		if( pModeDepth ){
-			OGL_CHECK( pRenderThread, pglBindFramebuffer( GL_DRAW_FRAMEBUFFER, pFBOs[ efbomdD2 ]->GetFBO() ) );
-			
-		}else{
-			OGL_CHECK( pRenderThread, pglBindFramebuffer( GL_DRAW_FRAMEBUFFER, pFBOs[ efbomdD1 ]->GetFBO() ) );
-		}
-		
-		if( copyDepth ){
-			mask |= GL_DEPTH_BUFFER_BIT;
-		}
-		if( copyStencil ){
-			mask |= GL_STENCIL_BUFFER_BIT;
-		}
-		restoreBindTarget = GL_DRAW_FRAMEBUFFER;
+	pRenderThread.GetRenderers().GetWorld().GetPipelineClearBuffers()->Activate();
+	
+	deoglFramebuffer * const oldfbo = pRenderThread.GetFramebuffer().GetActive();
+	const int copyFrom = pModeDepth ? efbocdDepth1Layer0 : efbocdDepth2Layer0;
+	const int copyTo = pModeDepth ? efbocdDepth2Layer0 : efbocdDepth1Layer0;
+	int i, mask = 0;
+	
+	if( copyDepth ){
+		mask |= GL_DEPTH_BUFFER_BIT;
+	}
+	if( copyStencil ){
+		mask |= GL_STENCIL_BUFFER_BIT;
 	}
 	
-	OGL_CHECK( pRenderThread, pglBlitFramebuffer( 0, 0, pWidth - 1, pHeight - 1, 0, 0, pWidth - 1, pHeight - 1, mask, GL_NEAREST ) );
-	OGL_CHECK( pRenderThread, pglBindFramebuffer( restoreBindTarget, oldfbo->GetFBO() ) );
+	for( i=0; i<pLayerCount; i++ ){
+		deoglFramebuffer &fbo = *pFBOCopyDepth[ copyTo + i ];
+		
+		OGL_CHECK( pRenderThread, pglBindFramebuffer( GL_DRAW_FRAMEBUFFER, fbo.GetFBO() ) );
+		OGL_CHECK( pRenderThread, pglBindFramebuffer( GL_READ_FRAMEBUFFER,
+			pFBOCopyDepth[ copyFrom + i ]->GetFBO() ) );
+		OGL_CHECK( pRenderThread, pglBlitFramebuffer( 0, 0, pWidth, pHeight,
+			0, 0, pWidth, pHeight, mask, GL_NEAREST ) );
+		/*
+		if( copyDepth ){
+			if( copyStencil ){
+				fbo.InvalidateDepthStencil();
+				
+			}else{
+				fbo.InvalidateDepth();
+			}
+			
+		}else{
+			fbo.InvalidateStencil();
+		}
+		*/
+	}
+	
+	OGL_CHECK( pRenderThread, pglBindFramebuffer( GL_DRAW_FRAMEBUFFER, oldfbo->GetFBO() ) );
 }
 
 void deoglDeferredRendering::CopyFirstDepthToThirdDepth( bool copyDepth, bool copyStencil ){
@@ -653,77 +614,74 @@ void deoglDeferredRendering::CopyFirstDepthToThirdDepth( bool copyDepth, bool co
 	}
 	
 	deoglFramebuffer * const oldfbo = pRenderThread.GetFramebuffer().GetActive();
-	int mask = 0, restoreBindTarget;
+	const int copyFrom = pModeDepth ? efbocdDepth1Layer0 : efbocdDepth2Layer0;
+	int i, mask = 0;
 	
-	if( pUseEncodedDepth ){
-		if( ! copyDepth ){
-			return;
-		}
-		
-		if( pModeDepth ){
-			OGL_CHECK( pRenderThread, pglBindFramebuffer(
-				GL_READ_FRAMEBUFFER, pFBOs[ efbomedDepth1RB ]->GetFBO() ) );
-			OGL_CHECK( pRenderThread, pglBindFramebuffer(
-				GL_DRAW_FRAMEBUFFER, pFBOs[ efbomedDepth3RB ]->GetFBO() ) );
-			
-		}else{
-			OGL_CHECK( pRenderThread, pglBindFramebuffer(
-				GL_READ_FRAMEBUFFER, pFBOs[ efbomedDepth2RB ]->GetFBO() ) );
-			OGL_CHECK( pRenderThread, pglBindFramebuffer(
-				GL_DRAW_FRAMEBUFFER, pFBOs[ efbomedDepth3RB ]->GetFBO() ) );
-		}
-		
-		mask = GL_COLOR_BUFFER_BIT;
-		restoreBindTarget = GL_FRAMEBUFFER;
-		
-	}else{
-		OGL_CHECK( pRenderThread, pglBindFramebuffer(
-			GL_DRAW_FRAMEBUFFER, pFBOs[ efbomdD3 ]->GetFBO() ) );
-		
-		if( copyDepth ){
-			mask |= GL_DEPTH_BUFFER_BIT;
-		}
-		if( copyStencil ){
-			mask |= GL_STENCIL_BUFFER_BIT;
-		}
-		restoreBindTarget = GL_DRAW_FRAMEBUFFER;
+	if( copyDepth ){
+		mask |= GL_DEPTH_BUFFER_BIT;
+	}
+	if( copyStencil ){
+		mask |= GL_STENCIL_BUFFER_BIT;
 	}
 	
-	OGL_CHECK( pRenderThread, pglBlitFramebuffer( 0, 0, pWidth - 1, pHeight - 1,
-		0, 0, pWidth - 1, pHeight - 1, mask, GL_NEAREST ) );
-	OGL_CHECK( pRenderThread, pglBindFramebuffer( restoreBindTarget, oldfbo->GetFBO() ) );
+	for( i=0; i<pLayerCount; i++ ){
+		deoglFramebuffer &fbo = *pFBOCopyDepth[ efbocdDepth3Layer0 + i ];
+		
+		OGL_CHECK( pRenderThread, pglBindFramebuffer( GL_DRAW_FRAMEBUFFER, fbo.GetFBO() ) );
+		OGL_CHECK( pRenderThread, pglBindFramebuffer( GL_READ_FRAMEBUFFER,
+			pFBOCopyDepth[ copyFrom + i ]->GetFBO() ) );
+		OGL_CHECK( pRenderThread, pglBlitFramebuffer( 0, 0, pWidth, pHeight,
+			0, 0, pWidth, pHeight, mask, GL_NEAREST ) );
+		/*
+		if( copyDepth ){
+			if( copyStencil ){
+				fbo.InvalidateDepthStencil();
+				
+			}else{
+				fbo.InvalidateDepth();
+			}
+			
+		}else{
+			fbo.InvalidateStencil();
+		}
+		*/
+	}
+	
+	OGL_CHECK( pRenderThread, pglBindFramebuffer( GL_DRAW_FRAMEBUFFER, oldfbo->GetFBO() ) );
 }
 
-void deoglDeferredRendering::SetUseEncodedDepth( bool useEncodedDepth ){
-	/*
-	if( useEncodedDepth != pUseEncodedDepth ){
-		pUseEncodedDepth = useEncodedDepth;
-		
-		if( useEncodedDepth ){
-			pRenderbuffer->SetDepthFormat( true );
-			
-		}else{
-			pRenderbuffer->SetStencilFormat();
-		}
-		
-		if( useEncodedDepth ){
-			pTextureDepth1->SetFBOFormat( 8, 4, true );
-			pTextureDepth2->SetFBOFormat( 8, 4, true );
-			
-		}else{
-			pTextureDepth1->SetDepthFormat( false );
-			pTextureDepth2->SetDepthFormat( false );
-		}
-		
-		if( pRealWidth > 0 && pRealHeight > 0 ){
-			pRenderbuffer->CreateBuffer();
-			pTextureDepth1->CreateTexture();
-			pTextureDepth2->CreateTexture();
-		}
+void deoglDeferredRendering::CopyFirstDepthToXRayDepth( bool copyDepth, bool copyStencil ){
+	// WARNING! this is not working because glBlitFramebuffer is NOT synchronized
+	//          with rendering which means shaders using the XRay depth texture
+	//          will NOT see the blitted content. who designed such a mess?!
+#if 0
+	if( ! copyDepth && ! copyStencil ){
+		return;
 	}
-	*/
 	
-	// using texture-depth + renbuf-stencil is not supported
+	deoglFramebuffer * const oldfbo = pRenderThread.GetFramebuffer().GetActive();
+	const int copyFrom = pModeDepth ? efbocdDepth1Layer0 : efbocdDepth2Layer0;
+	int i, mask = 0;
+	
+	if( copyDepth ){
+		mask |= GL_DEPTH_BUFFER_BIT;
+	}
+	if( copyStencil ){
+		mask |= GL_STENCIL_BUFFER_BIT;
+	}
+	
+	OGL_CHECK( pRenderThread, glDisable( GL_SCISSOR_TEST ) );
+	
+	for( i=0; i<pLayerCount; i++ ){
+		OGL_CHECK( pRenderThread, pglBindFramebuffer( GL_DRAW_FRAMEBUFFER, pFBOCopyDepth[ efbocdDepthXRayLayer0 + i ]->GetFBO() ) );
+		OGL_CHECK( pRenderThread, pglBindFramebuffer( GL_READ_FRAMEBUFFER, pFBOCopyDepth[ copyFrom + i ]->GetFBO() ) );
+		
+		OGL_CHECK( pRenderThread, pglBlitFramebuffer( 0, 0, pWidth - 1, pHeight - 1,
+			0, 0, pWidth - 1, pHeight - 1, mask, GL_NEAREST ) );
+	}
+	
+	OGL_CHECK( pRenderThread, pglBindFramebuffer( GL_DRAW_FRAMEBUFFER, oldfbo->GetFBO() ) );
+#endif
 }
 
 decDMatrix deoglDeferredRendering::CreateProjectionDMatrix( int width, int height,
@@ -751,7 +709,7 @@ float fov, float fovRatio, float znear, float zfar ) const{
 	m.a31 = 0.0;
 	m.a32 = 0.0;
 	
-	if( pUseInverseDepth ){
+	if( pRenderThread.GetChoices().GetUseInverseDepth() ){
 		// due to inverse depth changing z-clamping
 		m.a33 = 0.0;
 		m.a34 = znear;
@@ -832,7 +790,7 @@ void deoglDeferredRendering::SwapPostProcessTarget(){
 	pModePostProcess = ! pModePostProcess;
 }
 
-deoglTexture *deoglDeferredRendering::GetPostProcessTexture() const{
+deoglArrayTexture *deoglDeferredRendering::GetPostProcessTexture() const{
 	if( pModePostProcess ){
 		return pTextureColor;
 		
@@ -844,21 +802,11 @@ deoglTexture *deoglDeferredRendering::GetPostProcessTexture() const{
 
 
 void deoglDeferredRendering::ActivateFBODepth(){
-	if( pUseEncodedDepth ){
-		if( pModeDepth ){
-			pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomedDepth1RB ] );
-			
-		}else{
-			pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomedDepth2RB ] );
-		}
+	if( pModeDepth ){
+		pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomdD1 ] );
 		
 	}else{
-		if( pModeDepth ){
-			pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomdD1 ] );
-			
-		}else{
-			pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomdD2 ] );
-		}
+		pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomdD2 ] );
 	}
 }
 
@@ -871,22 +819,16 @@ void deoglDeferredRendering::ActivateFBODepthLevel( int level ){
 		ActivateFBODepth();
 		
 	}else{
-		if( pModeDepth ){
-			pRenderThread.GetFramebuffer().Activate( pFBOMipMapDepth1[ level - 1 ] );
-			
-		}else{
-			pRenderThread.GetFramebuffer().Activate( pFBOMipMapDepth2[ level - 1 ] );
-		}
+		pRenderThread.GetFramebuffer().Activate( ( pModeDepth ? pFBOMipMapDepth1 : pFBOMipMapDepth2 )[ level - 1 ] );
 	}
 }
 
 void deoglDeferredRendering::ActivateFBODepth3(){
-	if( pUseEncodedDepth ){
-		pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomedDepth3RB ] );
-		
-	}else{
-		pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomdD3 ] );
-	}
+	pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomdD3 ] );
+}
+
+void deoglDeferredRendering::ActivateFBODepthXRay(){
+	pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomdDXRay ] );
 }
 
 void deoglDeferredRendering::ActivatePostProcessFBO( bool withDepth ){
@@ -894,122 +836,52 @@ void deoglDeferredRendering::ActivatePostProcessFBO( bool withDepth ){
 		ActivateFBOTemporary2( withDepth );
 		
 	}else{
-		ActivateFBOColor( withDepth );
+		ActivateFBOColor( withDepth, false );
 	}
 }
 
 void deoglDeferredRendering::ActivateFBODiffuse( bool withDepth ){
-	if( pUseEncodedDepth ){
-		if( withDepth ){
-			pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomedDiffRB ] );
-			
-		}else{
-			pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomedDiff ] );
-		}
+	if( withDepth ){
+		pRenderThread.GetFramebuffer().Activate( pFBOs[ pModeDepth ? efbomdDiffD1 : efbomdDiffD2 ] );
 		
 	}else{
-		if( withDepth ){
-			if( pModeDepth ){
-				pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomdDiffD1 ] );
-				
-			}else{
-				pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomdDiffD2 ] );
-			}
-			
-		}else{
-			pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomdDiff ] );
-		}
+		pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomdDiff ] );
 	}
 }
 
 void deoglDeferredRendering::ActivateFBOReflectivity( bool withDepth ){
-	if( pUseEncodedDepth ){
-		if( withDepth ){
-			pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomedReflRB ] );
-			
-		}else{
-			pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomedRefl ] );
-		}
+	if( withDepth ){
+		pRenderThread.GetFramebuffer().Activate( pFBOs[ pModeDepth ? efbomdReflD1 : efbomdReflD2 ] );
 		
 	}else{
-		if( withDepth ){
-			if( pModeDepth ){
-				pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomdReflD1 ] );
-				
-			}else{
-				pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomdReflD2 ] );
-			}
-			
-		}else{
-			pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomdRefl ] );
-		}
+		pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomdRefl ] );
 	}
 }
 
 void deoglDeferredRendering::ActivateFBORoughness( bool withDepth ){
-	if( pUseEncodedDepth ){
-		if( withDepth ){
-			pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomedRoughRB ] );
-			
-		}else{
-			pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomedRough ] );
-		}
+	if( withDepth ){
+		pRenderThread.GetFramebuffer().Activate( pFBOs[ pModeDepth ? efbomdRoughD1 : efbomdRoughD2 ] );
 		
 	}else{
-		if( withDepth ){
-			if( pModeDepth ){
-				pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomdRoughD1 ] );
-				
-			}else{
-				pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomdRoughD2 ] );
-			}
-			
-		}else{
-			pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomdRough ] );
-		}
+		pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomdRough ] );
 	}
 }
 
 void deoglDeferredRendering::ActivateFBOAOSolidity( bool withDepth ){
-	if( pUseEncodedDepth ){
-		if( withDepth ){
-			pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomedAOSolidityRB ] );
-			
-		}else{
-			pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomedAOSolidity ] );
-		}
+	if( withDepth ){
+		pRenderThread.GetFramebuffer().Activate( pFBOs[ pModeDepth ? efbomdAOSolidityD1 : efbomdAOSolidityD2 ] );
 		
 	}else{
-		if( withDepth ){
-			if( pModeDepth ){
-				pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomdAOSolidityD1 ] );
-				
-			}else{
-				pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomdAOSolidityD2 ] );
-			}
-			
-		}else{
-			pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomdAOSolidity ] );
-		}
+		pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomdAOSolidity ] );
 	}
 }
 
 void deoglDeferredRendering::ActivateFBOTemporary1( bool withDepth ){
-	if( pUseEncodedDepth ){
-		pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomedTemp1RB ] );
+	if( withDepth ){
+		pRenderThread.GetFramebuffer().Activate( pFBOs[ pModeDepth ? efbomdTemp1D1 : efbomdTemp1D2 ] );
 		
 	}else{
-		if( withDepth ){
-			if( pModeDepth ){
-				pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomdTemp1D1 ] );
-				
-			}else{
-				pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomdTemp1D2 ] );
-			}
-			
-		}else{
-			pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomdTemp1 ] );
-		}
+		pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomdTemp1 ] );
 	}
 }
 
@@ -1027,21 +899,11 @@ void deoglDeferredRendering::ActivateFBOTemporary1Level( int level ){
 }
 
 void deoglDeferredRendering::ActivateFBOTemporary2( bool withDepth ){
-	if( pUseEncodedDepth ){
-		pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomedTemp2RB ] );
+	if( withDepth ){
+		pRenderThread.GetFramebuffer().Activate( pFBOs[ pModeDepth ? efbomdTemp2D1 : efbomdTemp2D2 ] );
 		
 	}else{
-		if( withDepth ){
-			if( pModeDepth ){
-				pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomdTemp2D1 ] );
-				
-			}else{
-				pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomdTemp2D2 ] );
-			}
-			
-		}else{
-			pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomdTemp2 ] );
-		}
+		pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomdTemp2 ] );
 	}
 }
 
@@ -1059,114 +921,43 @@ void deoglDeferredRendering::ActivateFBOTemporary2Level( int level ){
 }
 
 void deoglDeferredRendering::ActivateFBOTemporary3(){
-	if( pUseEncodedDepth ){
-		pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomedTemp3 ] );
-		
-	}else{
-		pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomdTemp3 ] );
-	}
+	pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomdTemp3 ] );
 }
 
-void deoglDeferredRendering::ActivateFBOColor( bool withDepth ){
-	if( pUseEncodedDepth ){
-		pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomedColorRB ] );
-		
-	}else{
-		if( withDepth ){
-			if( pModeDepth ){
-				pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomdColorD1 ] );
-				
-			}else{
-				pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomdColorD2 ] );
-			}
+void deoglDeferredRendering::ActivateFBOColor( bool withDepth, bool withLuminance ){
+	if( withDepth ){
+		if( withLuminance ){
+			pRenderThread.GetFramebuffer().Activate( pFBOs[ pModeDepth ? efbomdColorLumD1 : efbomdColorLumD2 ] );
 			
 		}else{
-			pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomdColor ] );
-		}
-	}
-}
-
-void deoglDeferredRendering::ActivateFBODepthDiffuse(){
-	if( pUseEncodedDepth ){
-		if( pModeDepth ){
-			pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomedDepth1DiffRB ] );
-			
-		}else{
-			pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomedDepth2DiffRB ] );
+			pRenderThread.GetFramebuffer().Activate( pFBOs[ pModeDepth ? efbomdColorD1 : efbomdColorD2 ] );
 		}
 		
 	}else{
-		DETHROW( deeInvalidParam );
+		pRenderThread.GetFramebuffer().Activate( pFBOs[ withLuminance ? efbomdColorLum : efbomdColor ] );
 	}
 }
 
-void deoglDeferredRendering::ActivateFBODepthTemp1(){
-	if( pUseEncodedDepth ){
-		if( pModeDepth ){
-			pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomedDepth1Temp1RB ] );
+void deoglDeferredRendering::ActivateFBOColorTemp2( bool withDepth, bool withLuminance ){
+	if( withDepth ){
+		if( withLuminance ){
+			pRenderThread.GetFramebuffer().Activate( pFBOs[ pModeDepth ? efbomdColorLumTemp2D1 : efbomdColorLumTemp2D2 ] );
 			
 		}else{
-			pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomedDepth2Temp1RB ] );
+			pRenderThread.GetFramebuffer().Activate( pFBOs[ pModeDepth ? efbomdColorTemp2D1 : efbomdColorTemp2D2 ] );
 		}
 		
 	}else{
-		DETHROW( deeInvalidParam );
-	}
-}
-
-void deoglDeferredRendering::ActivateFBOColorDepth(){
-	if( pUseEncodedDepth ){
-		if( pModeDepth ){
-			pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomedColorDepth1RB ] );
-			
-		}else{
-			pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomedColorDepth2RB ] );
-		}
-		
-	}else{
-		DETHROW( deeInvalidParam );
-	}
-}
-
-void deoglDeferredRendering::ActivateFBOColorTemp2( bool withDepth ){
-	if( pUseEncodedDepth ){
-		pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomedColorTemp2RB ] );
-		
-	}else{
-		if( withDepth ){
-			if( pModeDepth ){
-				pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomdColorTemp2D1 ] );
-				
-			}else{
-				pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomdColorTemp2D2 ] );
-			}
-			
-		}else{
-			pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomdColorTemp2 ] );
-		}
+		pRenderThread.GetFramebuffer().Activate( pFBOs[ withLuminance ? efbomdColorLumTemp2 : efbomdColorTemp2 ] );
 	}
 }
 
 void deoglDeferredRendering::ActivateFBOMaterialColor(){
-	if( pUseEncodedDepth ){
-		pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomedMaterialColorRB ] );
-		
-	}else{
-		if( pModeDepth ){
-			pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomdMaterialColorD1 ] );
-			
-		}else{
-			pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomdMaterialColorD2 ] );
-		}
-	}
+	pRenderThread.GetFramebuffer().Activate( pFBOs[ pModeDepth ? efbomdMaterialColorD1 : efbomdMaterialColorD2 ] );
 }
 
-
-
-void deoglDeferredRendering::RenderFSQuadVAO(){
-	OGL_CHECK( pRenderThread, pglBindVertexArray( pVAOFullScreenQuad->GetVAO() ) );
-	OGL_CHECK( pRenderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
-	OGL_CHECK( pRenderThread, pglBindVertexArray( 0 ) );
+void deoglDeferredRendering::ActivateFBOLuminance(){
+	pRenderThread.GetFramebuffer().Activate( pFBOs[ efbomdLuminance ] );
 }
 
 
@@ -1250,6 +1041,41 @@ void deoglDeferredRendering::SetShaderParamFSQuadUpsideDown( deoglShaderCompiled
 	shader.SetParameterFloat( parameter, hsu, -hsv, hsu, hsv );
 }
 
+void deoglDeferredRendering::SetShaderParamFSQuadUpsideDown( deoglShaderCompiled &shader, int parameter,
+int width, int height ) const{
+	// ( -1,  1 ) => ( 0, 0 )
+	// (  1,  1 ) => ( su, 0 )
+	// (  1, -1 ) => ( su, sv )
+	// ( -1, -1 ) => ( 0, sv )
+	//
+	// tc.s = x * (su/2) + (su/2)
+	// tc.t = y * (-sv/2) + (sv/2)
+	const float hsu = pPixelSizeU * ( float )width * 0.5f;
+	const float hsv = pPixelSizeV * ( float )height * 0.5f;
+	
+	shader.SetParameterFloat( parameter, hsu, -hsv, hsu, hsv );
+}
+
+void deoglDeferredRendering::SetShaderParamFSQuadUpsideDown( deoglShaderCompiled &shader, int parameter,
+float x1, float y1, float x2, float y2 ) const{
+	// ( -1,  1 ) => ( x1, y1 )
+	// (  1,  1 ) => ( x2, y1 )
+	// (  1, -1 ) => ( x2, y2 )
+	// ( -1, -1 ) => ( x1, y2 )
+	// 
+	// tc.s = (x1+x2)/2 + (x2-x1)/2 * s
+	// tc.t = (y2+y1)/2 + (y1-y2)/2 * t
+	// 
+	// tc.s = s * ((x2-x1)/2) + ((x1+x2)/2)
+	// tc.t = t * ((y1-y2)/2) + ((y2+y1)/2)
+	const float scaleS = pPixelSizeU * ( x2 - x1 ) * 0.5f;
+	const float scaleT = pPixelSizeV * ( y1 - y2 ) * 0.5f;
+	const float offsetS = pPixelSizeU * ( x1 + x2 ) * 0.5f;
+	const float offsetT = pPixelSizeV * ( y2 + y1 ) * 0.5f;
+	
+	shader.SetParameterFloat( parameter, scaleS, scaleT, offsetS, offsetT );
+}
+
 void deoglDeferredRendering::SetShaderParamFSQuad( deoglSPBlockUBO &paramBlock, int parameter ) const{
 	// ( -1,  1 ) => ( 0, sv )
 	// (  1,  1 ) => ( su, sv )
@@ -1314,15 +1140,13 @@ void deoglDeferredRendering::pCleanUp(){
 	if( pVAOBillboard ){
 		delete pVAOBillboard;
 	}
-	if( pVBOBillboard ){
-		pglDeleteBuffers( 1, &pVBOBillboard );
-	}
 	if( pVAOFullScreenQuad ){
 		delete pVAOFullScreenQuad;
 	}
-	if( pVBOFullScreenQuad ){
-		pglDeleteBuffers( 1, &pVBOFullScreenQuad );
-	}
+	
+	deoglDelayedOperations &dops = pRenderThread.GetDelayedOperations();
+	dops.DeleteOpenGLBuffer( pVBOBillboard );
+	dops.DeleteOpenGLBuffer( pVBOFullScreenQuad );
 	
 	if( pTextureColor ){
 		delete pTextureColor;
@@ -1335,6 +1159,9 @@ void deoglDeferredRendering::pCleanUp(){
 	}
 	if( pTextureTemporary1 ){
 		delete pTextureTemporary1;
+	}
+	if( pTextureLuminance ){
+		delete pTextureLuminance;
 	}
 	if( pTextureSubSurface ){
 		delete pTextureSubSurface;
@@ -1355,6 +1182,9 @@ void deoglDeferredRendering::pCleanUp(){
 		delete pTextureDiffuse;
 	}
 	
+	if( pTextureDepthXRay ){
+		delete pTextureDepthXRay;
+	}
 	if( pTextureDepth3 ){
 		delete pTextureDepth3;
 	}
@@ -1364,206 +1194,202 @@ void deoglDeferredRendering::pCleanUp(){
 	if( pTextureDepth1 ){
 		delete pTextureDepth1;
 	}
-	if( pRenderbuffer ){
-		delete pRenderbuffer;
-	}
 }
 
 void deoglDeferredRendering::pCreateTextures(){
-	// create the renderbuffer
-	pRenderbuffer = new deoglRenderbuffer( pRenderThread );
-	if( pUseEncodedDepth ){
-		pRenderbuffer->SetDepthFormat( true );
-		
-	}else{
-		//pRenderbuffer->SetStencilFormat();
-	}
+	const bool useInverseDepth = pRenderThread.GetChoices().GetUseInverseDepth();
 	
 	// create depth textures
-	pTextureDepth1 = new deoglTexture( pRenderThread );
+	pTextureDepth1 = new deoglArrayTexture( pRenderThread );
 	pTextureDepth1->SetMipMapped( true );
-	pTextureDepth2 = new deoglTexture( pRenderThread );
-	pTextureDepth2->SetMipMapped( true );
-	pTextureDepth3 = new deoglTexture( pRenderThread );
-	pTextureDepth3->SetMipMapped( true );
+	pTextureDepth1->SetDepthFormat( true, useInverseDepth );
+	pTextureDepth1->SetDebugObjectLabel( "DefRen.Depth1" );
 	
-	if( pUseEncodedDepth ){
-		pTextureDepth1->SetFBOFormat( 4, true );
-		pTextureDepth2->SetFBOFormat( 4, true );
-		pTextureDepth3->SetFBOFormat( 4, true );
-		
-	}else{
-		pTextureDepth1->SetDepthFormat( true, pUseInverseDepth );
-		pTextureDepth2->SetDepthFormat( true, pUseInverseDepth );
-		pTextureDepth3->SetDepthFormat( true, pUseInverseDepth );
-	}
+	pTextureDepth2 = new deoglArrayTexture( pRenderThread );
+	pTextureDepth2->SetMipMapped( true );
+	pTextureDepth2->SetDepthFormat( true, useInverseDepth );
+	pTextureDepth2->SetDebugObjectLabel( "DefRen.Depth2" );
+	
+	pTextureDepth3 = new deoglArrayTexture( pRenderThread );
+	pTextureDepth3->SetMipMapped( true );
+	pTextureDepth3->SetDepthFormat( true, useInverseDepth );
+	pTextureDepth3->SetDebugObjectLabel( "DefRen.Depth3" );
+	
+	pTextureDepthXRay = new deoglArrayTexture( pRenderThread );
+	pTextureDepthXRay->SetMipMapped( true );
+	pTextureDepthXRay->SetDepthFormat( true, useInverseDepth );
+	pTextureDepthXRay->SetDebugObjectLabel( "DefRen.DepthXRay" );
 	
 	// create diffuse texture
-	pTextureDiffuse = new deoglTexture( pRenderThread );
-	pTextureDiffuse->SetFBOFormat( 4, false ); //4, true );
+	pTextureDiffuse = new deoglArrayTexture( pRenderThread );
+	pTextureDiffuse->SetFBOFormat( 4, false );
+	pTextureDiffuse->SetDebugObjectLabel( "DefRen.Diffuse" );
 	
 	// create normal texture
 	// RGB8 gives strong jumping artifacts during the separate reflection pass due to errors
 	// in the normals. RGB10A2 reduces the jumping artifacts but they are still faintly
 	// visibile. With RGB16 the jumping artifacts are not visible anymore. RB11B11F has even
 	// worse jumping artifacts.
-	pTextureNormal = new deoglTexture( pRenderThread );
-	//pTextureNormal->SetFBOFormat( 3, false ); //4, true );
-	pTextureNormal->SetFBOFormat( 3, true ); //4, true );
-	//pTextureNormal->SetFormatFromCaps( deoglCapsFmtSupport::eutfRGB10A2 );
+	pTextureNormal = new deoglArrayTexture( pRenderThread );
+	pTextureNormal->SetFBOFormat( 3, true );
+	pTextureNormal->SetDebugObjectLabel( "DefRen.Normal" );
 	
 	// create reflectivity texture
-	pTextureReflectivity = new deoglTexture( pRenderThread );
+	pTextureReflectivity = new deoglArrayTexture( pRenderThread );
 	pTextureReflectivity->SetFBOFormat( 3, false ); //4, true );
+	pTextureReflectivity->SetDebugObjectLabel( "DefRen.Reflectivity" );
 	
 	// create roughness texture
-	pTextureRoughness = new deoglTexture( pRenderThread );
+	pTextureRoughness = new deoglArrayTexture( pRenderThread );
 	pTextureRoughness->SetFBOFormat( 3, false );
+	pTextureRoughness->SetDebugObjectLabel( "DefRen.Roughness" );
 	
 	// create ao-solidity texture
-	pTextureAOSolidity = new deoglTexture( pRenderThread );
+	pTextureAOSolidity = new deoglArrayTexture( pRenderThread );
 	pTextureAOSolidity->SetFBOFormat( 3, false );
+	pTextureAOSolidity->SetDebugObjectLabel( "DefRen.AOSolidity" );
 	
 	// create sub-surface texture
-	pTextureSubSurface = new deoglTexture( pRenderThread );
+	pTextureSubSurface = new deoglArrayTexture( pRenderThread );
 	pTextureSubSurface->SetFBOFormat( 3, true );
+	pTextureSubSurface->SetDebugObjectLabel( "DefRen.SubSurface" );
 	
 	// create temporary textures
-	pTextureTemporary1 = new deoglTexture( pRenderThread );
-	//pTextureTemporary1->SetMipMapped( true );
+	pTextureTemporary1 = new deoglArrayTexture( pRenderThread );
+	pTextureTemporary1->SetMipMapped( true );
 	pTextureTemporary1->SetFBOFormat( 3, true );
+	pTextureTemporary1->SetDebugObjectLabel( "DefRen.Temporary1" );
 	
-	pTextureTemporary2 = new deoglTexture( pRenderThread );
-	//pTextureTemporary2->SetMipMapped( true );
+	pTextureTemporary2 = new deoglArrayTexture( pRenderThread );
+	pTextureTemporary2->SetMipMapped( true );
 	pTextureTemporary2->SetFBOFormat( 3, true );
+	pTextureTemporary2->SetDebugObjectLabel( "DefRen.Temporary2" );
 	
-	pTextureTemporary3 = new deoglTexture( pRenderThread );
+	pTextureTemporary3 = new deoglArrayTexture( pRenderThread );
 	pTextureTemporary3->SetFBOFormat( 1, false );
+	pTextureTemporary3->SetDebugObjectLabel( "DefRen.Temporary3" );
 	
 	// create color texture
-	pTextureColor = new deoglTexture( pRenderThread );
+	pTextureColor = new deoglArrayTexture( pRenderThread );
 	pTextureColor->SetFBOFormat( 4, true );
 	//pTextureColor->SetFormatMappingByNumber( deoglCapsFmtSupport::eutfRGBA32F ); // only for special debugging
+	pTextureColor->SetDebugObjectLabel( "DefRen.Color" );
+	
+	// create luminance texture
+	pTextureLuminance = new deoglArrayTexture( pRenderThread );
+	pTextureLuminance->SetFBOFormat( 1, true );
+	pTextureLuminance->SetDebugObjectLabel( "DefRen.Luminance" );
+	
+	// luminance textures
+	/*
+	pTextureLuminance = new deoglArrayTexture( pRenderThread );
+	pTextureLuminance->SetFBOFormat( 1, true );
+	pTextureLuminance->SetSize( 128, 64 );
+	pTextureLuminance->CreateTexture();
+	
+	pTextureLuminanceNormal = new deoglArrayTexture( pRenderThread );
+	pTextureLuminanceNormal->SetFBOFormat( 3, true );
+	pTextureLuminanceNormal->SetSize( 128, 64 );
+	pTextureLuminanceNormal->CreateTexture();
+	
+	pTextureLuminanceDepth = new deoglArrayTexture( pRenderThread );
+	pTextureLuminanceDepth->SetDepthFormat( true, useInverseDepth );
+	pTextureLuminanceDepth->SetSize( 128, 64 );
+	pTextureLuminanceDepth->CreateTexture();
+	*/
 }
 
 void deoglDeferredRendering::pUpdateMemoryUsage(){
-	pMemoryUsageGPURenBuf = 0;
-	pMemoryUsageGPUTexture = 0;
+	pMemUse.Clear();
 	
-	pMemoryUsageGPURenBuf += pRenderbuffer->GetMemoryUsageGPU();
-	
-	pMemoryUsageGPUTexture += pTextureDepth1->GetMemoryUsageGPU();
-	pMemoryUsageGPUTexture += pTextureDepth2->GetMemoryUsageGPU();
-	pMemoryUsageGPUTexture += pTextureDepth3->GetMemoryUsageGPU();
-	pMemoryUsageGPUTexture += pTextureDiffuse->GetMemoryUsageGPU();
-	pMemoryUsageGPUTexture += pTextureNormal->GetMemoryUsageGPU();
-	pMemoryUsageGPUTexture += pTextureReflectivity->GetMemoryUsageGPU();
-	pMemoryUsageGPUTexture += pTextureRoughness->GetMemoryUsageGPU();
-	pMemoryUsageGPUTexture += pTextureAOSolidity->GetMemoryUsageGPU();
-	pMemoryUsageGPUTexture += pTextureSubSurface->GetMemoryUsageGPU();
-	pMemoryUsageGPUTexture += pTextureColor->GetMemoryUsageGPU();
-	pMemoryUsageGPUTexture += pTextureTemporary1->GetMemoryUsageGPU();
-	pMemoryUsageGPUTexture += pTextureTemporary2->GetMemoryUsageGPU();
-	pMemoryUsageGPUTexture += pTextureTemporary3->GetMemoryUsageGPU();
+	pMemUse.texture += pTextureDepth1->GetMemoryConsumption().Total();
+	pMemUse.texture += pTextureDepth2->GetMemoryConsumption().Total();
+	pMemUse.texture += pTextureDepth3->GetMemoryConsumption().Total();
+	pMemUse.texture += pTextureDepthXRay->GetMemoryConsumption().Total();
+	pMemUse.texture += pTextureDiffuse->GetMemoryConsumption().Total();
+	pMemUse.texture += pTextureNormal->GetMemoryConsumption().Total();
+	pMemUse.texture += pTextureReflectivity->GetMemoryConsumption().Total();
+	pMemUse.texture += pTextureRoughness->GetMemoryConsumption().Total();
+	pMemUse.texture += pTextureAOSolidity->GetMemoryConsumption().Total();
+	pMemUse.texture += pTextureSubSurface->GetMemoryConsumption().Total();
+	pMemUse.texture += pTextureColor->GetMemoryConsumption().Total();
+	pMemUse.texture += pTextureLuminance->GetMemoryConsumption().Total();
+	pMemUse.texture += pTextureTemporary1->GetMemoryConsumption().Total();
+	pMemUse.texture += pTextureTemporary2->GetMemoryConsumption().Total();
+	pMemUse.texture += pTextureTemporary3->GetMemoryConsumption().Total();
 	
 	if( deoglDRDepthMinMax::USAGE_VERSION == 0 ){
-		pMemoryUsageGPUTexture += pDepthMinMax->GetTexture()->GetMemoryUsageGPU();
+		pMemUse.texture += pDepthMinMax->GetTexture()->GetMemoryConsumption().Total();
 		
 	}else if( deoglDRDepthMinMax::USAGE_VERSION == 1 ){
-		pMemoryUsageGPUTexture += pDepthMinMax->GetTextureMin()->GetMemoryUsageGPU();
-		pMemoryUsageGPUTexture += pDepthMinMax->GetTextureMax()->GetMemoryUsageGPU();
+		pMemUse.texture += pDepthMinMax->GetTextureMin()->GetMemoryConsumption().Total();
+		pMemUse.texture += pDepthMinMax->GetTextureMax()->GetMemoryConsumption().Total();
 		
 	}else if( deoglDRDepthMinMax::USAGE_VERSION == 2 ){
-		pMemoryUsageGPUTexture += pDepthMinMax->GetTexture()->GetMemoryUsageGPU();
+		pMemUse.texture += pDepthMinMax->GetTexture()->GetMemoryConsumption().Total();
 	}
 	
-	pMemoryUsageGPU = pMemoryUsageGPUTexture + pMemoryUsageGPURenBuf;
-	
 	pRenderThread.GetLogger().LogInfoFormat( "DefRen: Memory Consumption (%d x %d)", pRealWidth, pRealHeight );
-	pRenderThread.GetLogger().LogInfoFormat( "- Render Buffer: %d", pMemoryUsageGPURenBuf );
-	pRenderThread.GetLogger().LogInfoFormat( "- Texture: %d", pMemoryUsageGPUTexture );
-	pRenderThread.GetLogger().LogInfoFormat( "- Total: %d", pMemoryUsageGPU );
+	pRenderThread.GetLogger().LogInfoFormat( "- Texture: %uMB", pMemUse.texture.GetConsumptionMB() );
+	pRenderThread.GetLogger().LogInfoFormat( "- Total: %uMB", pMemUse.TotalMB() );
 }
 
 void deoglDeferredRendering::pCreateFBOs(){
-	if( pUseEncodedDepth ){
-		pCreateFBORenBuf( efbomedDepth1RB, pTextureDepth1, NULL, NULL, NULL, NULL, NULL, NULL, true );
-		pCreateFBORenBuf( efbomedDepth2RB, pTextureDepth2, NULL, NULL, NULL, NULL, NULL, NULL, true );
-		pCreateFBORenBuf( efbomedDepth3RB, pTextureDepth3, NULL, NULL, NULL, NULL, NULL, NULL, true );
-		pCreateFBORenBuf( efbomedDiff, pTextureDiffuse, NULL, NULL, NULL, NULL, NULL, NULL, false );
-		pCreateFBORenBuf( efbomedDiffRB, pTextureDiffuse, NULL, NULL, NULL, NULL, NULL, NULL, true );
-		pCreateFBORenBuf( efbomedRefl, pTextureReflectivity, NULL, NULL, NULL, NULL, NULL, NULL, false );
-		pCreateFBORenBuf( efbomedReflRB, pTextureReflectivity, NULL, NULL, NULL, NULL, NULL, NULL, true );
-		pCreateFBORenBuf( efbomedRough, pTextureRoughness, NULL, NULL, NULL, NULL, NULL, NULL, false );
-		pCreateFBORenBuf( efbomedRoughRB, pTextureRoughness, NULL, NULL, NULL, NULL, NULL, NULL, true );
-		pCreateFBORenBuf( efbomedAOSolidity, pTextureAOSolidity, NULL, NULL, NULL, NULL, NULL, NULL, false );
-		pCreateFBORenBuf( efbomedAOSolidityRB, pTextureAOSolidity, NULL, NULL, NULL, NULL, NULL, NULL, true );
-		pCreateFBORenBuf( efbomedTemp1RB, pTextureTemporary1, NULL, NULL, NULL, NULL, NULL, NULL, true );
-		pCreateFBORenBuf( efbomedTemp2RB, pTextureTemporary2, NULL, NULL, NULL, NULL, NULL, NULL, true );
-		pCreateFBORenBuf( efbomedTemp3, pTextureTemporary3, NULL, NULL, NULL, NULL, NULL, NULL, false );
-		pCreateFBORenBuf( efbomedColorRB, pTextureColor, NULL, NULL, NULL, NULL, NULL, NULL, true );
-		pCreateFBORenBuf( efbomedDepth1DiffRB, pTextureDepth1, pTextureDiffuse, NULL, NULL, NULL, NULL, NULL, true );
-		pCreateFBORenBuf( efbomedDepth2DiffRB, pTextureDepth2, pTextureDiffuse, NULL, NULL, NULL, NULL, NULL, true );
-		pCreateFBORenBuf( efbomedDepth1Temp1RB, pTextureDepth1, pTextureTemporary1, NULL, NULL, NULL, NULL, NULL, true );
-		pCreateFBORenBuf( efbomedDepth2Temp1RB, pTextureDepth2, pTextureTemporary1, NULL, NULL, NULL, NULL, NULL, true );
-		pCreateFBORenBuf( efbomedColorDepth1RB, pTextureColor, pTextureDepth1, NULL, NULL, NULL, NULL, NULL, true );
-		pCreateFBORenBuf( efbomedColorDepth2RB, pTextureColor, pTextureDepth2, NULL, NULL, NULL, NULL, NULL, true );
-		pCreateFBORenBuf( efbomedColorTemp2RB, pTextureColor, pTextureTemporary2, NULL, NULL, NULL, NULL, NULL, true );
-		
-		if( pRenderThread.GetCapabilities().GetMaxDrawBuffers() >= 8 ){
-			pCreateFBORenBuf( efbomedMaterialColorRB, pTextureDiffuse, pTextureNormal,
-				pTextureReflectivity, pTextureRoughness, pTextureAOSolidity, pTextureSubSurface, pTextureColor, true );
-			
-		}else{
-			pCreateFBORenBuf( efbomedMaterialColorRB, pTextureDiffuse, pTextureNormal,
-				pTextureReflectivity, pTextureColor, NULL, NULL, NULL, true );
-		}
+	const deoglRestoreFramebuffer restoreFbo( pRenderThread );
+	
+	pCreateFBOTex( efbomdD1, "DefRen.Depth1", NULL, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth1 );
+	pCreateFBOTex( efbomdD2, "DefRen.Depth2", NULL, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth2 );
+	pCreateFBOTex( efbomdD3, "DefRen.Depth3", NULL, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth3 );
+	pCreateFBOTex( efbomdDXRay, "DefRen.DepthXRay", NULL, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepthXRay );
+	pCreateFBOTex( efbomdDiff, "DefRen.Diffuse", pTextureDiffuse, NULL, NULL, NULL, NULL, NULL, NULL, NULL );
+	pCreateFBOTex( efbomdDiffD1, "DefRen.DiffuseD1", pTextureDiffuse, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth1 );
+	pCreateFBOTex( efbomdDiffD2, "DefRen.DiffuseD2", pTextureDiffuse, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth2 );
+	pCreateFBOTex( efbomdRefl, "DefRen.Reflectivity", pTextureReflectivity, NULL, NULL, NULL, NULL, NULL, NULL, NULL );
+	pCreateFBOTex( efbomdReflD1, "DefRen.ReflectivityD1", pTextureReflectivity, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth1 );
+	pCreateFBOTex( efbomdReflD2, "DefRen.ReflectivityD2", pTextureReflectivity, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth2 );
+	pCreateFBOTex( efbomdRough, "DefRen.Roughness", pTextureRoughness, NULL, NULL, NULL, NULL, NULL, NULL, NULL );
+	pCreateFBOTex( efbomdRoughD1, "DefRen.RoughnessD1", pTextureRoughness, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth1 );
+	pCreateFBOTex( efbomdRoughD2, "DefRen.RoughnessD2", pTextureRoughness, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth2 );
+	pCreateFBOTex( efbomdAOSolidity, "DefRen.AOSolidity", pTextureAOSolidity, NULL, NULL, NULL, NULL, NULL, NULL, NULL );
+	pCreateFBOTex( efbomdAOSolidityD1, "DefRen.AOSolidityD1", pTextureAOSolidity, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth1 );
+	pCreateFBOTex( efbomdAOSolidityD2, "DefRen.AOSolidityD2", pTextureAOSolidity, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth2 );
+	pCreateFBOTex( efbomdTemp1, "DefRen.Temporary1", pTextureTemporary1, NULL, NULL, NULL, NULL, NULL, NULL, NULL );
+	pCreateFBOTex( efbomdTemp1D1, "DefRen.Temporary1D1", pTextureTemporary1, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth1 );
+	pCreateFBOTex( efbomdTemp1D2, "DefRen.Temporary1D2", pTextureTemporary1, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth2 );
+	pCreateFBOTex( efbomdTemp2, "DefRen.Temporary2", pTextureTemporary2, NULL, NULL, NULL, NULL, NULL, NULL, NULL );
+	pCreateFBOTex( efbomdTemp2D1, "DefRen.Temporary2D1", pTextureTemporary2, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth1 );
+	pCreateFBOTex( efbomdTemp2D2, "DefRen.Temporary2D2", pTextureTemporary2, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth2 );
+	pCreateFBOTex( efbomdTemp3, "DefRen.Temporary3", pTextureTemporary3, NULL, NULL, NULL, NULL, NULL, NULL, NULL );
+	pCreateFBOTex( efbomdColor, "DefRen.Color", pTextureColor, NULL, NULL, NULL, NULL, NULL, NULL, NULL );
+	pCreateFBOTex( efbomdColorD1, "DefRen.ColorD1", pTextureColor, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth1 );
+	pCreateFBOTex( efbomdColorD2, "DefRen.ColorD2", pTextureColor, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth2 );
+	pCreateFBOTex( efbomdColorTemp2, "DefRen.ColorTemp2", pTextureColor, pTextureTemporary2, NULL, NULL, NULL, NULL, NULL, NULL );
+	pCreateFBOTex( efbomdColorTemp2D1, "DefRen.ColorTemp2D1", pTextureColor, pTextureTemporary2, NULL, NULL, NULL, NULL, NULL, pTextureDepth1 );
+	pCreateFBOTex( efbomdColorTemp2D2, "DefRen.ColorTemp2D2", pTextureColor, pTextureTemporary2, NULL, NULL, NULL, NULL, NULL, pTextureDepth2 );
+	pCreateFBOTex( efbomdColorLum, "DefRen.ColorLum", pTextureColor, pTextureLuminance, NULL, NULL, NULL, NULL, NULL, NULL );
+	pCreateFBOTex( efbomdColorLumD1, "DefRen.ColorLumD1", pTextureColor, pTextureLuminance, NULL, NULL, NULL, NULL, NULL, pTextureDepth1 );
+	pCreateFBOTex( efbomdColorLumD2, "DefRen.ColorLumD2", pTextureColor, pTextureLuminance, NULL, NULL, NULL, NULL, NULL, pTextureDepth2 );
+	pCreateFBOTex( efbomdColorLumTemp2, "DefRen.ColorLumTemp2", pTextureColor, pTextureLuminance, pTextureTemporary2, NULL, NULL, NULL, NULL, NULL );
+	pCreateFBOTex( efbomdColorLumTemp2D1, "DefRen.ColorLumTemp2D1", pTextureColor, pTextureLuminance, pTextureTemporary2, NULL, NULL, NULL, NULL, pTextureDepth1 );
+	pCreateFBOTex( efbomdColorLumTemp2D2, "DefRen.ColorLumTemp2D2", pTextureColor, pTextureLuminance, pTextureTemporary2, NULL, NULL, NULL, NULL, pTextureDepth2 );
+	pCreateFBOTex( efbomdLuminance, "DefRen.Luminance", pTextureLuminance, NULL, NULL, NULL, NULL, NULL, NULL, NULL );
+	
+	if( pRenderThread.GetCapabilities().GetMaxDrawBuffers() >= 8 ){
+		pCreateFBOTex( efbomdMaterialColorD1, "DefRen.MaterialColorD1", pTextureDiffuse, pTextureNormal,
+			pTextureReflectivity, pTextureRoughness, pTextureAOSolidity,
+			pTextureSubSurface, pTextureColor, pTextureDepth1 );
+		pCreateFBOTex( efbomdMaterialColorD2, "DefRen.MaterialColorD2", pTextureDiffuse, pTextureNormal,
+			pTextureReflectivity, pTextureRoughness, pTextureAOSolidity,
+			pTextureSubSurface, pTextureColor, pTextureDepth2 );
 		
 	}else{
-		pCreateFBOTex( efbomdD1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth1 );
-		pCreateFBOTex( efbomdD2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth2 );
-		pCreateFBOTex( efbomdD3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth3 );
-		pCreateFBOTex( efbomdDiff, pTextureDiffuse, NULL, NULL, NULL, NULL, NULL, NULL, NULL );
-		pCreateFBOTex( efbomdDiffD1, pTextureDiffuse, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth1 );
-		pCreateFBOTex( efbomdDiffD2, pTextureDiffuse, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth2 );
-		pCreateFBOTex( efbomdRefl, pTextureReflectivity, NULL, NULL, NULL, NULL, NULL, NULL, NULL );
-		pCreateFBOTex( efbomdReflD1, pTextureReflectivity, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth1 );
-		pCreateFBOTex( efbomdReflD2, pTextureReflectivity, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth2 );
-		pCreateFBOTex( efbomdRough, pTextureRoughness, NULL, NULL, NULL, NULL, NULL, NULL, NULL );
-		pCreateFBOTex( efbomdRoughD1, pTextureRoughness, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth1 );
-		pCreateFBOTex( efbomdRoughD2, pTextureRoughness, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth2 );
-		pCreateFBOTex( efbomdAOSolidity, pTextureAOSolidity, NULL, NULL, NULL, NULL, NULL, NULL, NULL );
-		pCreateFBOTex( efbomdAOSolidityD1, pTextureAOSolidity, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth1 );
-		pCreateFBOTex( efbomdAOSolidityD2, pTextureAOSolidity, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth2 );
-		pCreateFBOTex( efbomdTemp1, pTextureTemporary1, NULL, NULL, NULL, NULL, NULL, NULL, NULL );
-		pCreateFBOTex( efbomdTemp1D1, pTextureTemporary1, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth1 );
-		pCreateFBOTex( efbomdTemp1D2, pTextureTemporary1, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth2 );
-		pCreateFBOTex( efbomdTemp2, pTextureTemporary2, NULL, NULL, NULL, NULL, NULL, NULL, NULL );
-		pCreateFBOTex( efbomdTemp2D1, pTextureTemporary2, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth1 );
-		pCreateFBOTex( efbomdTemp2D2, pTextureTemporary2, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth2 );
-		pCreateFBOTex( efbomdTemp3, pTextureTemporary3, NULL, NULL, NULL, NULL, NULL, NULL, NULL );
-		pCreateFBOTex( efbomdColor, pTextureColor, NULL, NULL, NULL, NULL, NULL, NULL, NULL );
-		pCreateFBOTex( efbomdColorD1, pTextureColor, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth1 );
-		pCreateFBOTex( efbomdColorD2, pTextureColor, NULL, NULL, NULL, NULL, NULL, NULL, pTextureDepth2 );
-		pCreateFBOTex( efbomdColorTemp2, pTextureColor, pTextureTemporary2, NULL, NULL, NULL, NULL, NULL, NULL );
-		pCreateFBOTex( efbomdColorTemp2D1, pTextureColor, pTextureTemporary2, NULL, NULL, NULL, NULL, NULL, pTextureDepth1 );
-		pCreateFBOTex( efbomdColorTemp2D2, pTextureColor, pTextureTemporary2, NULL, NULL, NULL, NULL, NULL, pTextureDepth2 );
-		
-		if( pRenderThread.GetCapabilities().GetMaxDrawBuffers() >= 8 ){
-			pCreateFBOTex( efbomdMaterialColorD1, pTextureDiffuse, pTextureNormal,
-				pTextureReflectivity, pTextureRoughness, pTextureAOSolidity,
-				pTextureSubSurface, pTextureColor, pTextureDepth1 );
-			pCreateFBOTex( efbomdMaterialColorD2, pTextureDiffuse, pTextureNormal,
-				pTextureReflectivity, pTextureRoughness, pTextureAOSolidity,
-				pTextureSubSurface, pTextureColor, pTextureDepth2 );
-			
-		}else{
-			pCreateFBOTex( efbomdMaterialColorD1, pTextureDiffuse, pTextureNormal,
-				pTextureReflectivity, pTextureColor, NULL, NULL, NULL, pTextureDepth1 );
-			pCreateFBOTex( efbomdMaterialColorD2, pTextureDiffuse, pTextureNormal,
-				pTextureReflectivity, pTextureColor, NULL, NULL, NULL, pTextureDepth2 );
-		}
+		pCreateFBOTex( efbomdMaterialColorD1, "DefRen.MaterialColorD1", pTextureDiffuse, pTextureNormal,
+			pTextureReflectivity, pTextureColor, NULL, NULL, NULL, pTextureDepth1 );
+		pCreateFBOTex( efbomdMaterialColorD2, "DefRen.MaterialColorD2", pTextureDiffuse, pTextureNormal,
+			pTextureReflectivity, pTextureColor, NULL, NULL, NULL, pTextureDepth2 );
 	}
+	
+	decString debugName;
 	
 	// fbos for the mip map levels
 	int fboMipMapCount = pTextureDepth1->GetRealMipMapLevelCount();
@@ -1575,21 +1401,23 @@ void deoglDeferredRendering::pCreateFBOs(){
 		pFBOMipMapDepth2 = new deoglFramebuffer*[ fboMipMapCount ];
 		
 		for( pFBOMipMapDepthCount=0; pFBOMipMapDepthCount<fboMipMapCount; pFBOMipMapDepthCount++ ){
-			pFBOMipMapDepth1[ pFBOMipMapCount ] = NULL;
-			pFBOMipMapDepth2[ pFBOMipMapCount ] = NULL;
+			pFBOMipMapDepth1[ pFBOMipMapDepthCount ] = NULL;
+			pFBOMipMapDepth2[ pFBOMipMapDepthCount ] = NULL;
 		}
 		
 		for( i=0; i<fboMipMapCount; i++ ){
 			try{
 				pFBOMipMapDepth1[ i ] = new deoglFramebuffer( pRenderThread, false );
 				pRenderThread.GetFramebuffer().Activate( pFBOMipMapDepth1[ i ] );
-				pFBOMipMapDepth1[ i ]->AttachDepthTextureLevel( pTextureDepth1, i + 1 );
+				pFBOMipMapDepth1[ i ]->AttachDepthArrayTextureLevel( pTextureDepth1, i + 1 );
 				const GLenum buffers[ 1 ] = { GL_NONE };
 				OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
 				OGL_CHECK( pRenderThread, glReadBuffer( GL_NONE ) );
 				pFBOMipMapDepth1[ i ]->Verify();
+				debugName.Format( "DefRen.Depth1.MipMap%d", i + 1 );
+				pFBOMipMapDepth1[ i ]->SetDebugObjectLabel( debugName );
 				
-			}catch( const deException &e ){
+			}catch( const deException & ){
 // 				deErrorTracePoint &tracePoint = *pOgl->AddErrorTracePoint( "deoglDeferredRendering::pCreateFBOs", __LINE__ );
 // 				tracePoint.AddValue( "texture", "MipMapDepth1" );
 // 				tracePoint.AddValueInt( "level", i + 1 );
@@ -1599,13 +1427,15 @@ void deoglDeferredRendering::pCreateFBOs(){
 			try{
 				pFBOMipMapDepth2[ i ] = new deoglFramebuffer( pRenderThread, false );
 				pRenderThread.GetFramebuffer().Activate( pFBOMipMapDepth2[ i ] );
-				pFBOMipMapDepth2[ i ]->AttachDepthTextureLevel( pTextureDepth2, i + 1 );
+				pFBOMipMapDepth2[ i ]->AttachDepthArrayTextureLevel( pTextureDepth2, i + 1 );
 				const GLenum buffers[ 1 ] = { GL_NONE };
 				OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
 				OGL_CHECK( pRenderThread, glReadBuffer( GL_NONE ) );
 				pFBOMipMapDepth2[ i ]->Verify();
+				debugName.Format( "DefRen.Depth2.MipMap%d", i + 1 );
+				pFBOMipMapDepth2[ i ]->SetDebugObjectLabel( debugName );
 				
-			}catch( const deException &e ){
+			}catch( const deException & ){
 // 				deErrorTracePoint &tracePoint = *pOgl->AddErrorTracePoint( "deoglDeferredRendering::pCreateFBOs", __LINE__ );
 // 				tracePoint.AddValue( "texture", "MipMapDepth2" );
 // 				tracePoint.AddValueInt( "level", i + 1 );
@@ -1615,7 +1445,7 @@ void deoglDeferredRendering::pCreateFBOs(){
 	}
 	
 	// fbos for the mip map levels
-	fboMipMapCount = 0; //pTextureTemporary1->GetRealMipMapLevelCount() - 1;
+	fboMipMapCount = pTextureTemporary1->GetRealMipMapLevelCount();
 	
 	if( fboMipMapCount > 0 ){
 		int i;
@@ -1632,13 +1462,15 @@ void deoglDeferredRendering::pCreateFBOs(){
 			try{
 				pFBOMipMapTemporary1[ i ] = new deoglFramebuffer( pRenderThread, false );
 				pRenderThread.GetFramebuffer().Activate( pFBOMipMapTemporary1[ i ] );
-				pFBOMipMapTemporary1[ i ]->AttachColorTextureLevel( 0, pTextureTemporary1, i + 1 );
+				pFBOMipMapTemporary1[ i ]->AttachColorArrayTextureLevel( 0, pTextureTemporary1, i + 1 );
 				const GLenum buffers[ 1 ] = { GL_COLOR_ATTACHMENT0 };
 				OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
 				OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
 				pFBOMipMapTemporary1[ i ]->Verify();
+				debugName.Format( "DefRen.Temporary1.MipMap%d", i + 1 );
+				pFBOMipMapTemporary1[ i ]->SetDebugObjectLabel( debugName );
 				
-			}catch( const deException &e ){
+			}catch( const deException & ){
 // 				deErrorTracePoint &tracePoint = *pOgl->AddErrorTracePoint( "deoglDeferredRendering::pCreateFBOs", __LINE__ );
 // 				tracePoint.AddValue( "texture", "MipMapTemporary1" );
 // 				tracePoint.AddValueInt( "level", i + 1 );
@@ -1648,13 +1480,15 @@ void deoglDeferredRendering::pCreateFBOs(){
 			try{
 				pFBOMipMapTemporary2[ i ] = new deoglFramebuffer( pRenderThread, false );
 				pRenderThread.GetFramebuffer().Activate( pFBOMipMapTemporary2[ i ] );
-				pFBOMipMapTemporary2[ i ]->AttachColorTextureLevel( 0, pTextureTemporary2, i + 1 );
+				pFBOMipMapTemporary2[ i ]->AttachColorArrayTextureLevel( 0, pTextureTemporary2, i + 1 );
 				const GLenum buffers[ 1 ] = { GL_COLOR_ATTACHMENT0 };
 				OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
 				OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
 				pFBOMipMapTemporary2[ i ]->Verify();
+				debugName.Format( "DefRen.Temporary2.MipMap%d", i + 1 );
+				pFBOMipMapTemporary2[ i ]->SetDebugObjectLabel( debugName );
 				
-			}catch( const deException &e ){
+			}catch( const deException & ){
 // 				deErrorTracePoint &tracePoint = *pOgl->AddErrorTracePoint( "deoglDeferredRendering::pCreateFBOs", __LINE__ );
 // 				tracePoint.AddValue( "texture", "MipMapTemporary2" );
 // 				tracePoint.AddValueInt( "level", i + 1 );
@@ -1662,81 +1496,97 @@ void deoglDeferredRendering::pCreateFBOs(){
 			}
 		}
 	}
+	
+	// FBOs for copy depth
+	deoglArrayTexture * const copyDepthTex[ 4 ] = { pTextureDepth1, pTextureDepth2, pTextureDepth3, pTextureDepthXRay };
+	int i;
+	
+	for( i=0; i<8; i++ ){
+		pFBOCopyDepth[ i ] = new deoglFramebuffer( pRenderThread, false );
+		pRenderThread.GetFramebuffer().Activate( pFBOCopyDepth[ i ] );
+		pFBOCopyDepth[ i ]->AttachDepthArrayTextureLayer( copyDepthTex[ i / 2 ], decMath::min( i % 2, pLayerCount - 1 ) );
+		const GLenum buffersNone[ 1 ] = { GL_NONE };
+		OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffersNone ) );
+		OGL_CHECK( pRenderThread, glReadBuffer( GL_NONE ) );
+		pFBOCopyDepth[ i ]->Verify();
+		debugName.Format( "DefRen.CopyDepth.Layer%d", i );
+		pFBOCopyDepth[ i ]->SetDebugObjectLabel( debugName );
+	}
+	
+	// luminance fbo
+	/*
+	const GLenum buffers[ 2 ] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
+	
+	pFBOLuminance = new deoglFramebuffer( pRenderThread, false );
+	pRenderThread.GetFramebuffer().Activate( pFBOLuminance );
+	pFBOLuminance->AttachDepthTexture( pTextureLuminanceDepth );
+	pFBOLuminance->AttachColorArrayTexture( 0, pTextureLuminance );
+	OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
+	OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
+	pFBOLuminance->Verify();
+	
+	pFBOLuminanceNormal = new deoglFramebuffer( pRenderThread, false );
+	pRenderThread.GetFramebuffer().Activate( pFBOLuminanceNormal );
+	pFBOLuminanceNormal->AttachDepthTexture( pTextureLuminanceDepth );
+	pFBOLuminanceNormal->AttachColorArrayTexture( 0, pTextureLuminance );
+	pFBOLuminanceNormal->AttachColorArrayTexture( 1, pTextureLuminanceNormal );
+	OGL_CHECK( pRenderThread, pglDrawBuffers( 2, buffers ) );
+	OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
+	pFBOLuminanceNormal->Verify();
+	*/
 }
 
-void deoglDeferredRendering::pCreateFBOTex( int index, deoglTexture *texture1, deoglTexture *texture2,
-deoglTexture *texture3, deoglTexture *texture4, deoglTexture *texture5, deoglTexture *texture6,
-deoglTexture *texture7, deoglTexture *depth ){
+void deoglDeferredRendering::pCreateFBOTex( int index, const char *debugName,
+deoglArrayTexture *texture1, deoglArrayTexture *texture2, deoglArrayTexture *texture3,
+deoglArrayTexture *texture4, deoglArrayTexture *texture5, deoglArrayTexture *texture6,
+deoglArrayTexture *texture7, deoglArrayTexture *depth ){
 	try{
 		pFBOs[ index ] = new deoglFramebuffer( pRenderThread, false );
 		
 		pRenderThread.GetFramebuffer().Activate( pFBOs[ index ] );
 		
 		if( depth ){
-			pFBOs[ index ]->AttachDepthTexture( depth );
-			pFBOs[ index ]->AttachStencilTexture( depth );
-			//pFBOs[ index ]->AttachStencilRenderbuffer( pRenderbuffer );
+			pFBOs[ index ]->AttachDepthArrayTexture( depth );
+			pFBOs[ index ]->AttachStencilArrayTexture( depth );
 		}
-		pFBOAttachColors( index, texture1, texture2, texture3, texture4, texture5, texture6, texture7 );
+		pFBOAttachColors( index, debugName, texture1, texture2, texture3, texture4, texture5, texture6, texture7 );
 		
 		pFBOs[ index ]->Verify();
 		
-	}catch( const deException &e ){
+	}catch( const deException & ){
 // 		deErrorTracePoint &tracePoint = *pOgl->AddErrorTracePoint( "deoglDeferredRendering::pCreateFBOTex", __LINE__ );
 // 		tracePoint.AddValueInt( "index", index );
 		throw;
 	}
 }
 
-void deoglDeferredRendering::pCreateFBORenBuf( int index, deoglTexture *texture1, deoglTexture *texture2,
-deoglTexture *texture3, deoglTexture *texture4, deoglTexture *texture5, deoglTexture *texture6,
-deoglTexture *texture7, bool depth ){
-	try{
-		pFBOs[ index ] = new deoglFramebuffer( pRenderThread, false );
-		
-		pRenderThread.GetFramebuffer().Activate( pFBOs[ index ] );
-		
-		if( depth ){
-			pFBOs[ index ]->AttachDepthRenderbuffer( pRenderbuffer );
-			pFBOs[ index ]->AttachStencilRenderbuffer( pRenderbuffer );
-		}
-		pFBOAttachColors( index, texture1, texture2, texture3, texture4, texture5, texture6, texture7 );
-		
-		pFBOs[ index ]->Verify();
-		
-	}catch( const deException &e ){
-// 		deErrorTracePoint &tracePoint = *pOgl->AddErrorTracePoint( "deoglDeferredRendering::pCreateFBORenBuf", __LINE__ );
-// 		tracePoint.AddValueInt( "index", index );
-		throw;
-	}
-}
-
-void deoglDeferredRendering::pFBOAttachColors( int index, deoglTexture *texture1, deoglTexture *texture2,
-deoglTexture *texture3, deoglTexture *texture4, deoglTexture *texture5, deoglTexture *texture6,
-deoglTexture *texture7 ){
+void deoglDeferredRendering::pFBOAttachColors( int index, const char *debugName,
+deoglArrayTexture *texture1, deoglArrayTexture *texture2, deoglArrayTexture *texture3,
+deoglArrayTexture *texture4, deoglArrayTexture *texture5, deoglArrayTexture *texture6,
+deoglArrayTexture *texture7 ){
 	const GLenum buffers[ 7 ] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2,
 		GL_COLOR_ATTACHMENT3, GL_COLOR_ATTACHMENT4, GL_COLOR_ATTACHMENT5, GL_COLOR_ATTACHMENT6 };
 	
 	if( texture1 ){
-		pFBOs[ index ]->AttachColorTexture( 0, texture1 );
+		pFBOs[ index ]->AttachColorArrayTexture( 0, texture1 );
 		
 		if( texture2 ){
-			pFBOs[ index ]->AttachColorTexture( 1, texture2 );
+			pFBOs[ index ]->AttachColorArrayTexture( 1, texture2 );
 			
 			if( texture3 ){
-				pFBOs[ index ]->AttachColorTexture( 2, texture3 );
+				pFBOs[ index ]->AttachColorArrayTexture( 2, texture3 );
 				
 				if( texture4 ){
-					pFBOs[ index ]->AttachColorTexture( 3, texture4 );
+					pFBOs[ index ]->AttachColorArrayTexture( 3, texture4 );
 					
 					if( texture5 ){
-						pFBOs[ index ]->AttachColorTexture( 4, texture5 );
+						pFBOs[ index ]->AttachColorArrayTexture( 4, texture5 );
 						
 						if( texture6 ){
-							pFBOs[ index ]->AttachColorTexture( 5, texture6 );
+							pFBOs[ index ]->AttachColorArrayTexture( 5, texture6 );
 							
 							if( texture7 ){
-								pFBOs[ index ]->AttachColorTexture( 6, texture7 );
+								pFBOs[ index ]->AttachColorArrayTexture( 6, texture7 );
 								OGL_CHECK( pRenderThread, pglDrawBuffers( 7, buffers ) );
 								
 							}else{
@@ -1770,10 +1620,37 @@ deoglTexture *texture7 ){
 		OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffersNone ) );
 		OGL_CHECK( pRenderThread, glReadBuffer( GL_NONE ) );
 	}
+	
+	pFBOs[ index ]->SetDebugObjectLabel( debugName );
 }
 
 void deoglDeferredRendering::pDestroyFBOs(){
 	int i;
+	
+	for( i=0; i<8; i++ ){
+		if( pFBOCopyDepth[ i ] ){
+			delete pFBOCopyDepth[ i ];
+			pFBOCopyDepth[ i ] = nullptr;
+		}
+	}
+	
+	for( i=0; i<pFBOMipMapDepthCount; i++ ){
+		if( pFBOMipMapDepth1[ i ] ){
+			delete pFBOMipMapDepth1[ i ];
+			pFBOMipMapDepth1[ i ] = NULL;
+		}
+		if( pFBOMipMapDepth2[ i ] ){
+			delete pFBOMipMapDepth2[ i ];
+			pFBOMipMapDepth2[ i ] = NULL;
+		}
+	}
+	pFBOMipMapDepthCount = 0;
+	if( pFBOMipMapDepth1 ){
+		delete [] pFBOMipMapDepth1;
+	}
+	if( pFBOMipMapDepth2 ){
+		delete [] pFBOMipMapDepth2;
+	}
 	
 	for( i=0; i<pFBOMipMapCount; i++ ){
 		if( pFBOMipMapTemporary1[ i ] ){
@@ -1784,34 +1661,13 @@ void deoglDeferredRendering::pDestroyFBOs(){
 			delete pFBOMipMapTemporary2[ i ];
 			pFBOMipMapTemporary2[ i ] = NULL;
 		}
-		
-		if( pFBOMipMapDepth1[ i ] ){
-			delete pFBOMipMapDepth1[ i ];
-			pFBOMipMapDepth1[ i ] = NULL;
-		}
-		if( pFBOMipMapDepth2[ i ] ){
-			delete pFBOMipMapDepth2[ i ];
-			pFBOMipMapDepth2[ i ] = NULL;
-		}
 	}
 	pFBOMipMapCount = 0;
-	
 	if( pFBOMipMapTemporary1 ){
 		delete [] pFBOMipMapTemporary1;
-		pFBOMipMapTemporary1 = NULL;
 	}
 	if( pFBOMipMapTemporary2 ){
 		delete [] pFBOMipMapTemporary2;
-		pFBOMipMapTemporary2 = NULL;
-	}
-	
-	if( pFBOMipMapDepth1 ){
-		delete [] pFBOMipMapDepth1;
-		pFBOMipMapDepth1 = NULL;
-	}
-	if( pFBOMipMapDepth2 ){
-		delete [] pFBOMipMapDepth2;
-		pFBOMipMapDepth2 = NULL;
 	}
 	
 	for( i=0; i<EFBOMD_COUNT; i++ ){

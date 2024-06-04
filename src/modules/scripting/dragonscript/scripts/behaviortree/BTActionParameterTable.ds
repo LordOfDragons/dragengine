@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -47,114 +50,103 @@ class BTActionParameterTable implements BTAction
 	
 	
 	
-	/** \brief Parameter table entry to update. */
-	private var ParameterTableEntry pEntry
-	
-	/** \brief Default value if entry is not null. */
-	private var float pDefaultValue
-	
-	/** \brief Update operator from eOperators. */
-	private var Operator pOperator
-	
-	/** \brief Parameter table entry to use as update value. */
-	private var ParameterTableEntry pEntryUpdateValue
-	
-	/** \brief Update value. */
-	private var float pUpdateValue
-	
-	/** \brief Use named parameter as source of update value if not null. */
-	private var String pParameterNameUpdateValue
+	var ParameterTableEntry pEntry
+	var float pDefaultValue
+	var Operator pOperator
+	var ParameterTableEntry pEntryUpdateValue
+	var float pUpdateValue
+	var String pParameterNameUpdateValue
 	
 	
 	
 	/** \brief Create action. */
-	public func new( ParameterTableEntry entry, float defaultValue, Operator operator, float updateValue ) \
-	this( entry, defaultValue, operator, null, updateValue, null )
+	func new(ParameterTableEntry entry, float defaultValue, Operator operator, float updateValue) \
+	this(entry, defaultValue, operator, null, updateValue, null)
 	end
 	
 	/** \brief Create action. */
-	public func new( ParameterTableEntry entry, float defaultValue, Operator operator, \
-	float updateValue, String parameterNameUpdateValue ) \
-	this( entry, defaultValue, operator, null, updateValue, parameterNameUpdateValue )
+	func new(ParameterTableEntry entry, float defaultValue, Operator operator, \
+	float updateValue, String parameterNameUpdateValue) \
+	this(entry, defaultValue, operator, null, updateValue, parameterNameUpdateValue)
 	end
 	
 	/** \brief Create action. */
-	public func new( ParameterTableEntry entry, float defaultValue, Operator operator, \
-	ParameterTableEntry entryUpdateValue, float updateValue, String parameterNameUpdateValue )
+	func new(ParameterTableEntry entry, float defaultValue, Operator operator, \
+	ParameterTableEntry entryUpdateValue, float updateValue, String parameterNameUpdateValue)
 		if entry == null
 			throw EInvalidParam.new()
 		end
-		this.pEntry = entry
-		this.pDefaultValue = defaultValue
-		this.pOperator = operator
-		this.pEntryUpdateValue = entryUpdateValue
-		this.pUpdateValue = updateValue
-		this.pParameterNameUpdateValue = parameterNameUpdateValue
+		pEntry = entry
+		pDefaultValue = defaultValue
+		pOperator = operator
+		pEntryUpdateValue = entryUpdateValue
+		pUpdateValue = updateValue
+		pParameterNameUpdateValue = parameterNameUpdateValue
 	end
 	
 	
 	
 	/** \brief Parameter table entry to update. */
-	public func ParameterTableEntry getEntry()
-		return this.pEntry
+	func ParameterTableEntry getEntry()
+		return pEntry
 	end
 	
 	/** \brief Set parameter table entry to update. */
-	public func void setEntry( ParameterTableEntry entry )
+	func void setEntry(ParameterTableEntry entry)
 		if entry == null
 			throw EInvalidParam.new()
 		end
-		this.pEntry = entry
+		pEntry = entry
 	end
 	
 	/** \brief Default value if entry is not null. */
-	public func float getDefaultValue()
-		return this.pDefaultValue
+	func float getDefaultValue()
+		return pDefaultValue
 	end
 	
 	/** \brief Set default value if entry is not null. */
-	public func void setDefaultValue( float defaultValue )
-		this.pDefaultValue = defaultValue
+	func void setDefaultValue(float defaultValue)
+		pDefaultValue = defaultValue
 	end
 	
 	/** \brief Update operator from eOperators. */
-	public func Operator getOperator()
-		return this.pOperator
+	func Operator getOperator()
+		return pOperator
 	end
 	
 	/** \brief Set update operator from eOperators. */
-	public func void setOperator( Operator operator )
-		this.pOperator = operator
+	func void setOperator(Operator operator)
+		pOperator = operator
 	end
 	
 	/** \brief Parameter table entry to use as update value. */
-	public func ParameterTableEntry getEntryUpdateValue()
-		return this.pEntryUpdateValue
+	func ParameterTableEntry getEntryUpdateValue()
+		return pEntryUpdateValue
 	end
 	
 	/** \brief Set parameter table entry to use as update value. */
-	public func void setEntryUpdateValue( ParameterTableEntry entry )
-		this.pEntryUpdateValue = entry
+	func void setEntryUpdateValue(ParameterTableEntry entry)
+		pEntryUpdateValue = entry
 	end
 	
 	/** \brief Default update value. */
-	public func float getUpdateValue()
-		return this.pUpdateValue
+	func float getUpdateValue()
+		return pUpdateValue
 	end
 	
 	/** \brief Set default update value. */
-	public func void setUpdateValue( float updateValue )
-		this.pUpdateValue = updateValue
+	func void setUpdateValue(float updateValue)
+		pUpdateValue = updateValue
 	end
 	
 	/** \brief Use named parameter as source of update value if not null. */
-	public func String getParameterNameUpdateValue()
-		return this.pParameterNameUpdateValue
+	func String getParameterNameUpdateValue()
+		return pParameterNameUpdateValue
 	end
 	
 	/** \brief Use named parameter as source of update value if not null. */
-	public func void setParameterNameUpdateValue( String name )
-		this.pParameterNameUpdateValue = name
+	func void setParameterNameUpdateValue(String name)
+		pParameterNameUpdateValue = name
 	end
 	
 	
@@ -164,27 +156,27 @@ class BTActionParameterTable implements BTAction
 	 * \param parameters Dictionary with parameters of type String key and String value.
 	 *                   Do not change the content of the dictionary as it is shared.
 	 */
-	public func BTResult runAction( BTContext context, Dictionary parameters )
-		var float updateValue = this.pUpdateValue
-		if this.pEntryUpdateValue != null
-			updateValue = this.pEntryUpdateValue.getValue( updateValue )
+	func BTResult runAction(BTContext context, Dictionary parameters)
+		var float updateValue = pUpdateValue
+		if pEntryUpdateValue != null
+			updateValue = pEntryUpdateValue.getValue(updateValue)
 		end
-		if this.pParameterNameUpdateValue != null
-			var String value = parameters.getAt( this.pParameterNameUpdateValue, null ) cast String
+		if pParameterNameUpdateValue != null
+			var String value = parameters.getAt(pParameterNameUpdateValue, null) cast String
 			if value != null
 				updateValue = value.toFloat()
 			end
 		end
 		
-		select this.pOperator
+		select pOperator
 		case Operator.set
-			this.pEntry.setValue( updateValue )
+			pEntry.setValue(updateValue)
 			
 		case Operator.add
-			this.pEntry.setValue( this.pEntry.getValue( this.pDefaultValue ) + updateValue )
+			pEntry.setValue(pEntry.getValue(pDefaultValue) + updateValue)
 			
 		case Operator.multiply
-			this.pEntry.setValue( this.pEntry.getValue( this.pDefaultValue ) * updateValue )
+			pEntry.setValue(pEntry.getValue(pDefaultValue) * updateValue)
 		end
 		
 		return BTResult.success

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLSKINSTATE_H_
@@ -30,19 +33,22 @@ class deoglRenderThread;
 class deoglRSkin;
 class deoglRVideoPlayer;
 class deoglSkinStateRenderable;
+class deoglSkinStateMapped;
+class deoglSkinStateBone;
 class deoglSkinStateCalculated;
+class deoglSkinStateConstructed;
 class deoglRDynamicSkin;
 class deoglRComponent;
 class deoglRBillboard;
 class deoglRDecal;
 class deoglRLight;
+class deoglRenderPlanMasked;
 
 class deComponent;
 
 
 /**
- * \brief State of skin for a component or other object using dynamic skins.
- * 
+ * State of skin for a component or other object using dynamic skins.
  * Stores also renderable link indices to alter skin states dynamically. The
  * number of renderable links matches the number of renderables in the skin
  * object. The links point to the host object renderables.
@@ -64,24 +70,31 @@ private:
 	
 	decObjectList pVideoPlayers;
 	
+	deoglSkinStateMapped *pMapped;
+	int pMappedCount;
+	
 	deoglSkinStateCalculated *pCalculatedProperties;
 	int pCalculatedPropertyCount;
 	
-	decPoint pVariationSeed;
+	deoglSkinStateConstructed *pConstructedProperties;
+	int pConstructedPropertyCount;
 	
-	int pUpdateNumber;
+	deoglSkinStateBone *pBones;
+	int pBoneCount;
+	
+	decPoint pVariationSeed;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create skin state. */
+	/** Create skin state. */
 	deoglSkinState( deoglRenderThread &renderThread );
 	deoglSkinState( deoglRenderThread &renderThread, deoglRComponent &component, int texture = -1 );
 	deoglSkinState( deoglRenderThread &renderThread, deoglRBillboard &billboard );
 	deoglSkinState( deoglRenderThread &renderThread, deoglRDecal &decal );
 	deoglSkinState( deoglRenderThread &renderThread, deoglRLight &light );
 	
-	/** \brief Clean up skin state. */
+	/** Clean up skin state. */
 	~deoglSkinState();
 	/*@}*/
 	
@@ -89,116 +102,152 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Owner component or NULL. */
+	/** Render thread. */
+	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
+	
+	/** Owner component or NULL. */
 	inline deoglRComponent *GetOwnerComponent() const{ return pOwnerComponent; }
 	
-	/** \brief Owner component texture. */
+	/** Owner component texture. */
 	inline int GetOwnerComponentTexture() const{ return pOwnerComponentTexture; }
 	
-	/** \brief Owner billboard or NULL. */
+	/** Owner billboard or NULL. */
 	inline deoglRBillboard *GetOwnerBillboard() const{ return pOwnerBillboard; }
 	
-	/** \brief Owner decal or NULL. */
+	/** Owner decal or NULL. */
 	inline deoglRDecal *GetOwnerDecal() const{ return pOwnerDecal; }
 	
-	/** \brief Owner light or NULL. */
+	/** Owner light or NULL. */
 	inline deoglRLight *GetOwnerLight() const{ return pOwnerLight; }
 	
-	/** \brief Owner skin or NULL. */
+	/** Owner skin or NULL. */
 	deoglRSkin *GetOwnerSkin() const;
 	
-	/** \brief Owner dynamic skin or NULL. */
+	/** Owner dynamic skin or NULL. */
 	deoglRDynamicSkin *GetOwnerDynamicSkin() const;
 	
 	
 	
-	/** \brief Time value. */
+	/** Time value. */
 	inline float GetTime() const{ return pTime; }
 	
-	/** \brief Set time value. */
+	/** Set time value. */
 	void SetTime( float time );
 	
-	/** \brief Advance time. */
+	/** Advance time. */
 	void AdvanceTime( float timeStep );
 	
 	
 	
-	/** \brief Update number. */
-	inline int GetUpdateNumber() const{ return pUpdateNumber; }
-	
-	/** \brief Set update number. */
-	void SetUpdateNumber( int updateNumber );
-	
-	
-	
-	/** \brief Drop objects containing delayed deletion support. */
-	void DropDelayedDeletionObjects();
-	
-	
-	
-	/** \brief Number of video players. */
+	/** Number of video players. */
 	int GetVideoPlayerCount() const;
 	
-	/** \brief Set number of video players. */
+	/** Set number of video players. */
 	void SetVideoPlayerCount( int count );
 	
-	/** \brief Video player at index which can be \em NULL if not set. */
+	/** Video player at index which can be \em NULL if not set. */
 	deoglRVideoPlayer *GetVideoPlayerAt( int index ) const;
 	
-	/** \brief Set video player at index which can be \em NULL if not set. */
+	/** Set video player at index which can be \em NULL if not set. */
 	void SetVideoPlayerAt( int index, deoglRVideoPlayer *videoPlayer );
 	
 	
 	
-	/** \brief Prepare renderables for rendering if required. */
-	void PrepareRenderables( deoglRSkin *skin, deoglRDynamicSkin *dynamicSkin );
+	/** Prepare renderables for rendering if required. */
+	void PrepareRenderables( deoglRSkin *skin, deoglRDynamicSkin *dynamicSkin,
+		const deoglRenderPlanMasked *renderPlanMask );
 	
-	/** \brief Add render plans. */
+	/** Render renderables if required. */
+	void RenderRenderables( deoglRSkin *skin, deoglRDynamicSkin *dynamicSkin,
+		const deoglRenderPlanMasked *renderPlanMask );
+	
+	/** Add render plans. */
 	void AddRenderPlans( deoglRenderPlan &plan );
 	
 	
 	
-	/** \brief Number of renderables. */
+	/** Number of renderables. */
 	inline int GetRenderableCount() const{ return pRenderableCount; }
 	
-	/** \brief Renderable at the given index. */
+	/** Renderable at the given index. */
 	deoglSkinStateRenderable *GetRenderableAt( int index ) const;
 	
-	/** \brief Add renderable. */
+	/** Add renderable. */
 	deoglSkinStateRenderable *AddRenderable();
 	
-	/** \brief Add renderables. */
+	/** Add renderables. */
 	void AddRenderables( deoglRSkin &skin, deoglRDynamicSkin &dynamicSkin );
 	
-	/** \brief Remove all renderables. */
+	/** Remove all renderables. */
 	void RemoveAllRenderables();
 	
 	
 	
-	/** \brief Number of calculated properties. */
+	/** Count of mapped. */
+	inline int GetMappedCount() const{ return pMappedCount; }
+	
+	/** Set mapped count. */
+	void SetMappedCount( int count );
+	
+	/** Mapped at index. */
+	deoglSkinStateMapped &GetMappedAt( int index ) const;
+	
+	
+	
+	/** Number of calculated properties. */
 	inline int GetCalculatedPropertyCount() const{ return pCalculatedPropertyCount; }
 	
-	/** \brief Set calculated property count. */
+	/** Set calculated property count. */
 	void SetCalculatedPropertyCount( int count );
 	
-	/** \brief Calculated property at index. */
+	/** Calculated property at index. */
 	deoglSkinStateCalculated &GetCalculatedPropertyAt( int index ) const;
 	
-	/** \brief Initialize calculated properties. */
-	void InitCalculatedProperties();
-	
-	/** \brief Map calculated property bones. */
-	void CalculatedPropertiesMapBones( const deComponent &component );
-	
-	/** \brief Update calculated property bones. */
-	void UpdateCalculatedPropertiesBones( const deComponent &component );
 	
 	
+	/** Number of constructed properties. */
+	inline int GetConstructedPropertyCount() const{ return pConstructedPropertyCount; }
 	
-	/** \brief Variation seed. */
+	/** Set constructed property count. */
+	void SetConstructedPropertyCount( int count );
+	
+	/** Constructed property at index. */
+	deoglSkinStateConstructed &GetConstructedPropertyAt( int index ) const;
+	
+	/** Prepare constructed properties for rendering. */
+	void PrepareConstructedProperties();
+	
+	
+	
+	/** Count of bones. */
+	inline int GetBoneCount() const{ return pBoneCount; }
+	
+	/** Set bones count. */
+	void SetBoneCount( int count );
+	
+	/** Bones at index. */
+	deoglSkinStateBone &GetBoneAt( int index ) const;
+	
+	
+	
+	/** Init all states. */
+	void InitAll();
+	
+	/** Update all states. */
+	void UpdateAll();
+	
+	/** Map bones. */
+	void MapBonesAll( const deComponent &component );
+	
+	/** Update bones. */
+	void UpdateBonesAll( const deComponent &component );
+	
+	
+	
+	/** Variation seed. */
 	inline const decPoint &GetVariationSeed() const{ return pVariationSeed; }
 	
-	/** \brief Set variation seed. */
+	/** Set variation seed. */
 	void SetVariationSeed( const decPoint &seed );
 	/*@}*/
 	

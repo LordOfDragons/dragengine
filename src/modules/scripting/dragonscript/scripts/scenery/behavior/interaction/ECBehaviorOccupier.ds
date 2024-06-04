@@ -1,0 +1,438 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Behavior element behavior adding support to uccipy an ECBehaviorInteractionSpot.
+ * 
+ * ECBehaviorInteractionSpot defines position and orientation actors or the player have to
+ * assume to interact properly with this element. The ECBehaviorOccupier behavior provides
+ * support to claim such interaction spots.
+ * 
+ * Usually an element has one instance of ECBehaviorOccupier but it is possible to use
+ * multiple instance for example to track different interacions. Think of a chair the
+ * actor can sit down upon. The actor can use one occupier to track sitting on the chair
+ * while using another occupier to track interacting with something while being seated.
+ * 
+ * Element class properties have the prefix "occupier{(id)}.".
+ * 
+ * This behavior uses no other behaviors.
+ * 
+ * This behavior does not require the element class to be persistable (setPersistable).
+ */
+class ECBehaviorOccupier extends DefaultECBehavior
+	/** \brief Listener for behavior instance events. */
+	interface Listener
+		/** \brief Occupier claimed interaction spot. */
+		func void spotClaimed(Instance instance, ECBehaviorInteractionSpot.Instance interactionSpot)
+		
+		/** \brief Occupier released interaction spot. */
+		func void spotReleased(Instance instance, ECBehaviorInteractionSpot.Instance interactionSpot)
+	end
+	
+	/** \brief Default implementation of behavior instance listener. */
+	class DefaultListener implements Listener
+		/** \brief Create default listener. */
+		public func new()
+		end
+		
+		/** \brief Occupier claimed interaction spot. */
+		public func void spotClaimed(Instance instance, ECBehaviorInteractionSpot.Instance interactionSpot)
+		end
+		
+		/** \brief Occupier released interaction spot. */
+		public func void spotReleased(Instance instance, ECBehaviorInteractionSpot.Instance interactionSpot)
+		end
+	end
+	
+	/** \brief Factory creating listeners. */
+	interface ListenerFactory
+		/** \brief Create listener. */
+		func Listener createListener(Instance instance)
+	end
+	
+	/** \brief Factory creating listeners using block. */
+	class BlockListenerFactory implements ListenerFactory
+		private var Block pBlock
+		
+		/** \brief Create factory using block receiving Instance as parameter returning Listener. */
+		public func new(Block blockFactory)
+			if blockFactory == null
+				throw ENullPointer.new()
+			end
+			pBlock = blockFactory
+		end
+		
+		/** \brief Create listener. */
+		public func Listener createListener(Instance instance)
+			return pBlock.run(instance) cast Listener
+		end
+	end
+	
+	
+	
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		private var ECBehaviorOccupier pECBehavior
+		private var ECBehaviorInteractionSpot.Instance pInteractionSpot
+		private var ElementResolver pElementResolver
+		private var Array pListeners
+		
+		
+		
+		/** \brief Create element. */
+		public func new(ECBehaviorOccupier ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
+			pListeners = Array.new()
+		end
+		
+		/** \brief Dispose of claim spot. */
+		public func void dispose()
+			release()
+			
+			pListeners = null
+			pElementResolver = null
+			
+			super.dispose()
+		end
+		
+		
+		
+		/** \brief Initialize behavior from stub. */
+		public func void init(StubElement stub)
+			pECBehavior.createListeners(this)
+		end
+		
+		
+		
+		/** \brief Behavior. */
+		public func ECBehaviorOccupier getECBehavior()
+			return pECBehavior
+		end
+		
+		/**
+		 * \brief Element resolver used during loading or \em null if not set.
+		 * \version 1.9
+		 */
+		public func ElementResolver getElementResolver()
+			return pElementResolver
+		end
+		
+		
+		
+		/** \brief Occupied interaction spot or \em null. */
+		public func ECBehaviorInteractionSpot.Instance getInteractionSpot()
+			return pInteractionSpot
+		end
+		
+		/**
+		 * \brief Set occupied interaction spot.
+		 * \warning For use by ECBehaviorInteractionSpot only.
+		 */
+		public func void setInteractionSpot(ECBehaviorInteractionSpot.Instance interactionSpot)
+			if interactionSpot == pInteractionSpot
+				return
+			end
+			
+			if pInteractionSpot != null
+				pListeners.forEach(block Listener each
+					each.spotReleased(this, pInteractionSpot)
+				end)
+			end
+			
+			pInteractionSpot = interactionSpot
+			
+			if interactionSpot != null
+				pListeners.forEach(block Listener each
+					each.spotClaimed(this, interactionSpot)
+				end)
+			end
+		end
+		
+		/** \brief Element is occupying an interaction spot. */
+		public func bool isOccupying()
+			return pInteractionSpot != null
+		end
+		
+		/** \brief Element is not occupying an interaction spot. */
+		public func bool isNotOccupying()
+			return pInteractionSpot == null
+		end
+		
+		/**
+		 * \brief Claim interaction spot.
+		 * \throws EInvalidParam \em spot is \em null.
+		 * \throws EInvalidParam Already occupying an interaction spot.
+		 * \throws EInvalidParam \em spot is not empty.
+		 */
+		public func void claim(ECBehaviorInteractionSpot.Instance spot)
+			spot.claim(this)
+		end
+		
+		/** \brief Release interaction spot if occupying one. */
+		public func void release()
+			if pInteractionSpot != null
+				pInteractionSpot.release()
+			end
+		end
+		
+		/**
+		 * \brief Safely claims a different interaction spot.
+		 * 
+		 * Convenience method for calling release() then claim() but checking problems before
+		 * calling release(). This ensures the occupier keeps occupying the old spot in case
+		 * something is wrong.
+		 * 
+		 * \note If the current interaction spot is the same as the new spot nothing is done.
+		 */
+		public func void claimOther(ECBehaviorInteractionSpot.Instance spot)
+			if spot == pInteractionSpot
+				return
+			end
+			
+			if spot.isNotEmpty()
+				throw EInvalidParam.new()
+			end
+			
+			release()
+			claim(spot)
+		end
+		
+		
+		/** \brief Add listener. */
+		public func void addListener(Listener listener)
+			if listener == null
+				throw EInvalidParam.new()
+			end
+			pListeners.add(listener)
+		end
+		
+		/** \brief Remove listener. */
+		public func void removeListener(Listener listener)
+			pListeners.remove(listener)
+		end
+		
+		
+		
+		/** \brief Frame update started. */
+		public func void enterFrame()
+			if pElementResolver != null
+				pElementResolver.resolve(getElement().getGameWorld())
+				pElementResolver = null
+			end
+		end
+		
+		
+		
+		/** \brief Read element from file. */
+		public func void readFromFile(PersistencyEnvironment env, FileReader reader)
+			select reader.readByte() // version
+			case 0
+				var PersistencyFlags flags = PersistencyFlags.new(1, reader)
+				
+				if flags.getAt(0)
+					pElementResolver = ElementResolver.new()
+					pElementResolver.addBehavior(reader, block ECBehaviorInteractionSpot.Instance spot
+						pInteractionSpot = spot
+					end)
+					setRequiresEnterFrame(true)
+				end
+				
+			else
+				throw EInvalidParam.new("unsupported version")
+			end
+		end
+		
+		/** \brief Write element to file. */
+		public func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+			writer.writeByte(0) // version
+			
+			var PersistencyFlags flags = PersistencyFlags.new(1)
+			flags.setAt(0, pInteractionSpot != null)
+			flags.writeToFile(writer)
+			
+			if pInteractionSpot != null
+				ElementResolver.writeToFileBehavior(writer, pInteractionSpot)
+			end
+		end
+	end
+	
+	
+	
+	private var Array pListenerFactories
+	
+	
+	
+	/** \brief Create behavior element class. */
+	public func new(BehaviorElementClass eclass) this(eclass, "occupier.")
+	end
+	
+	/** \brief Create behavior element class. */
+	public func new(BehaviorElementClass eclass, String id) \
+	this(eclass, id, id.empty() if "occupier." else "occupier(" + id + ").")
+	end
+	
+	public func new(BehaviorElementClass eclass, String id, String prefix) super(eclass, id)
+		pListenerFactories = Array.new()
+		
+		eclass.addBehavior(this)
+	end
+	
+	/** \brief Dispose of behavior. */
+	public func void dispose()
+		pListenerFactories = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Add listener factory. */
+	public func void addListenerFactory(ListenerFactory factory)
+		if factory == null
+			throw ENullPointer.new()
+		end
+		pListenerFactories.add(factory)
+	end
+	
+	/**
+	 * \brief Add listener factory using block.
+	 * 
+	 * Block receives as parameter Instance and returns Listener.
+	 */
+	public func void addListenerFactory(Block blockFactory)
+		pListenerFactories.add(BlockListenerFactory.new(blockFactory))
+	end
+	
+	/** \brief Visit listener factories with block with argument ListenerFactory. */
+	public func void forEachListenerFactory(Block ablock)
+		pListenerFactories.forEach(ablock)
+	end
+	
+	/** \brief Create listeners from factories adding them to behavior instance. */
+	public func void createListeners(Instance instance)
+		pListenerFactories.forEach(block ListenerFactory each
+			instance.addListener(each.createListener(instance))
+		end)
+	end
+	
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	public func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
+	end
+	
+	
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorComponent.
+	 */
+	static public func ECBehaviorOccupier getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorOccupier each
+			return true
+		end) cast ECBehaviorOccupier
+	end
+	
+	/**
+	 * \brief Get behavior with id in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorOccupier with specific identifier.
+	 */
+	static public func ECBehaviorOccupier getBehaviorIn(BehaviorElementClass eclass, String id)
+		return eclass.findBehavior(block ECBehaviorOccupier each
+			return each.getID().equals(id)
+		end) cast ECBehaviorOccupier
+	end
+	
+	/**
+	 * \brief Get list of all behaviors in element.
+	 * 
+	 * Returns list contains ECBehaviorOccupier behaviors in the order they have
+	 * been created in the element.
+	 */
+	static public func Array getAllBehaviorsIn(BehaviorElementClass eclass)
+		return eclass.collectBehaviors(block ECBehaviorOccupier each
+			return true
+		end)
+	end
+	
+	
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorOccupier.Instance . If more than one instance is present returns
+	 * the first instance.
+	 */
+	static public func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
+			return true
+		end) cast Instance
+	end
+	
+	/**
+	 * \brief Get instance with id in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorOccupier.Instance with specific identifier.
+	 */
+	static public func Instance getInstanceIn(BehaviorElement element, String id)
+		return element.findInstance(block Instance each
+			return each.getECBehavior().getID().equals(id)
+		end) cast Instance
+	end
+	
+	/**
+	 * \brief Get list of all instances in element.
+	 * 
+	 * Returns list contains ECBehaviorOccupier.Instance instances in the order they have
+	 * been created in the element.
+	 */
+	static public func Array getAllInstancesIn(BehaviorElement element)
+		return element.collectInstances(block Instance each
+			return true
+		end)
+	end
+	
+	
+	
+	/** \brief Create Behavior instance. */
+	public func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
+	end
+end

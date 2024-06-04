@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -34,90 +37,76 @@ pin Dragengine.Utils
  */
 class TSTriggerExpressionParser
 	/** Class used to hold the parser state. */
-	public class ParserState
-		private var String pString
-		private var int pPosition
-		private var int pLength
+	class ParserState
+		var String pString
+		var int pPosition
+		var int pLength
 		
-		public func new( String string )
-			this.pString = string
-			this.pLength = string.getLength()
-			this.pPosition = 0
+		func new(String string)
+			pString = string
+			pLength = string.getLength()
+			pPosition = 0
 		end
 		
-		public func bool hasMoreCharacters()
-			return this.pPosition < this.pLength
+		func bool hasMoreCharacters()
+			return pPosition < pLength
 		end
 		
-		public func int getPosition()
-			return this.pPosition
+		func int getPosition()
+			return pPosition
 		end
 		
-		public func byte getNextCharacter()
-			return this.pString.getAt( this.pPosition++ )
+		func byte getNextCharacter()
+			return pString.getAt(pPosition++)
 		end
 		
-		public func void adjustPosition( int amount )
-			this.pPosition += amount
+		func void adjustPosition(int amount)
+			pPosition += amount
 		end
 	end
 	
 	
 	
-	/** Symbol for negation. */
-	private var byte pSymbolNegate
-	/** Symbol for current state. */
-	private var byte pSymbolCurState
-	/** Symbol for logical and. */
-	private var byte pSymbolAnd
-	/** Symbol for logical or. */
-	private var byte pSymbolOr
-	/** Symbol for the start of child expressions. */
-	private var byte pSymbolGroupStart
-	/** Symbol for the end of child expressions. */
-	private var byte pSymbolGroupEnd
-	/** Symbol for quoting trigger names. */
-	private var byte pSymbolQuote
-	/** List of characters requiring a name to be quoted. */
-	private var String pRequiresQuoteCharacters
+	var byte pSymbolNegate
+	var byte pSymbolCurState
+	var byte pSymbolAnd
+	var byte pSymbolOr
+	var byte pSymbolGroupStart
+	var byte pSymbolGroupEnd
+	var byte pSymbolQuote
+	var String pRequiresQuoteCharacters
 	
 	
 	
 	/** Creates a new trigger expression parser. */
-	public func new()
-		this.pSymbolNegate = '!'
-		this.pSymbolCurState = '@'
-		this.pSymbolAnd = '&'
-		this.pSymbolOr = '|'
-		this.pSymbolGroupStart = '('
-		this.pSymbolGroupEnd = ')'
-		this.pSymbolQuote = '"'
+	func new()
+		pSymbolNegate = '!'
+		pSymbolCurState = '@'
+		pSymbolAnd = '&'
+		pSymbolOr = '|'
+		pSymbolGroupStart = '('
+		pSymbolGroupEnd = ')'
+		pSymbolQuote = '"'
 		
-		this.pRequiresQuoteCharacters = " \t"
-		this.pRequiresQuoteCharacters = this.pRequiresQuoteCharacters + this.pSymbolNegate
-		this.pRequiresQuoteCharacters = this.pRequiresQuoteCharacters + this.pSymbolCurState
-		this.pRequiresQuoteCharacters = this.pRequiresQuoteCharacters + this.pSymbolAnd
-		this.pRequiresQuoteCharacters = this.pRequiresQuoteCharacters + this.pSymbolOr
-		this.pRequiresQuoteCharacters = this.pRequiresQuoteCharacters + this.pSymbolGroupStart
-		this.pRequiresQuoteCharacters = this.pRequiresQuoteCharacters + this.pSymbolGroupEnd
-		this.pRequiresQuoteCharacters = this.pRequiresQuoteCharacters + this.pSymbolQuote
+		pRequiresQuoteCharacters = " \t" + pSymbolNegate + pSymbolCurState + pSymbolAnd\
+			+ pSymbolOr + pSymbolGroupStart + pSymbolGroupEnd + pSymbolQuote
 	end
 	
 	
 	
 	/** Create trigger expression from a string. */
-	public func TSTriggerExpression stringToExpression( String string )
+	func TSTriggerExpression stringToExpression(String string)
 		var TSTriggerExpression expression = TSTriggerExpression.new()
-		var ParserState state = ParserState.new( string )
+		var ParserState state = ParserState.new(string)
 		
-		expression.setRootComponent( this.parseExpressionComponent( state, false, false, false ) )
+		expression.setRootComponent(parseExpressionComponent(state, false, false, false))
 		
 		return expression
 	end
 	
 	/** Parse an expression component. */
-	public func TSTriggerExpressionComponent parseExpressionComponent( \
-	ParserState state, bool requireEnd, bool initCurState, bool initNegate )
+	func TSTriggerExpressionComponent parseExpressionComponent(\
+	ParserState state, bool requireEnd, bool initCurState, bool initNegate)
 		// modes:
 		// 0 => parse trigger/child(0) (negate,curState allowed)
 		// 1 => parse logical operator
@@ -136,19 +125,19 @@ class TSTriggerExpressionParser
 			
 			if mode == 2 and component.getTargetName() != null
 				child = TSTriggerExpressionComponent.new()
-				child.setTargetName( component.getTargetName() )
-				child.setNegate( component.getNegate() )
-				child.setCurState( component.getCurState() )
-				component.addChild( child )
-				component.setTargetName( null )
-				component.setNegate( false )
-				component.setCurState( false )
+				child.setTargetName(component.getTargetName())
+				child.setNegate(component.getNegate())
+				child.setCurState(component.getCurState())
+				component.addChild(child)
+				component.setTargetName(null)
+				component.setNegate(false)
+				component.setCurState(false)
 			end
 			
 			if character == ' ' or character == '\t'
 				continue
 				
-			elif character == this.pSymbolNegate
+			elif character == pSymbolNegate
 				select mode
 				case 0, 2
 					negate = true
@@ -157,7 +146,7 @@ class TSTriggerExpressionParser
 					throw EInvalidParam.new()
 				end
 				
-			elif character == this.pSymbolCurState
+			elif character == pSymbolCurState
 				select mode
 				case 0, 2
 					curState = true
@@ -166,24 +155,24 @@ class TSTriggerExpressionParser
 					throw EInvalidParam.new()
 				end
 				
-			elif character == this.pSymbolGroupStart
+			elif character == pSymbolGroupStart
 				if curState
 					throw EInvalidParam.new()
 				end
 				
 				select mode
 				case 0
-					child = this.parseExpressionComponent( state, true, false, false )
-					child.setNegate( negate )
-					component.addChild( child )
+					child = parseExpressionComponent(state, true, false, false)
+					child.setNegate(negate)
+					component.addChild(child)
 					negate = false
 					curState = false
 					mode = 1
 					
 				case 2
-					child = this.parseExpressionComponent( state, true, false, false )
-					child.setNegate( negate )
-					component.addChild( child )
+					child = parseExpressionComponent(state, true, false, false)
+					child.setNegate(negate)
+					component.addChild(child)
 					negate = false
 					curState = false
 					mode = 3
@@ -192,11 +181,11 @@ class TSTriggerExpressionParser
 					throw EInvalidParam.new()
 				end
 				
-			elif character == this.pSymbolGroupEnd
+			elif character == pSymbolGroupEnd
 				select mode
 				case 3
 					if not requireEnd
-						state.adjustPosition( -1 )
+						state.adjustPosition(-1)
 					end
 					mode = 4
 					
@@ -204,10 +193,10 @@ class TSTriggerExpressionParser
 					throw EInvalidParam.new()
 				end
 				
-			elif character == this.pSymbolAnd
+			elif character == pSymbolAnd
 				select mode
 				case 1
-					component.setChildrenOr( false )
+					component.setChildrenOr(false)
 					mode = 2
 					
 				case 3
@@ -220,10 +209,10 @@ class TSTriggerExpressionParser
 					throw EInvalidParam.new()
 				end
 				
-			elif character == this.pSymbolOr
+			elif character == pSymbolOr
 				select mode
 				case 1
-					component.setChildrenOr( true )
+					component.setChildrenOr(true)
 					mode = 2
 					
 				case 3
@@ -236,21 +225,21 @@ class TSTriggerExpressionParser
 					throw EInvalidParam.new()
 				end
 				
-			elif character == this.pSymbolQuote
+			elif character == pSymbolQuote
 				if mode == 0
-					component.setTargetName( StringID.new( this.parseTargetName( state, true ) ) )
-					component.setNegate( negate )
-					component.setCurState( curState )
+					component.setTargetName(StringID.new(parseTargetName(state, true)))
+					component.setNegate(negate)
+					component.setCurState(curState)
 					negate = false
 					curState = false
 					mode = 1
 					
 				elif mode == 2
 					child = TSTriggerExpressionComponent.new()
-					child.setTargetName( StringID.new( this.parseTargetName( state, true ) ) )
-					child.setNegate( negate )
-					child.setCurState( curState )
-					component.addChild( child )
+					child.setTargetName(StringID.new(parseTargetName(state, true)))
+					child.setNegate(negate)
+					child.setCurState(curState)
+					component.addChild(child)
 					negate = false
 					curState = false
 					mode = 3
@@ -259,27 +248,27 @@ class TSTriggerExpressionParser
 					throw EInvalidParam.new()
 				end
 				
-			//elif ( character >= 'a' and character <= 'z' ) \
-			//or ( character >= 'A' and character <= 'Z' ) \
+			//elif (character >= 'a' and character <= 'z') \
+			//or (character >= 'A' and character <= 'Z') \
 			//or character == '_'
 			else
-				state.adjustPosition( -1 )
+				state.adjustPosition(-1)
 				
 				select mode
 				case 0
-					component.setTargetName( StringID.new( this.parseTargetName( state, false ) ) )
-					component.setNegate( negate )
-					component.setCurState( curState )
+					component.setTargetName(StringID.new(parseTargetName(state, false)))
+					component.setNegate(negate)
+					component.setCurState(curState)
 					negate = false
 					curState = false
 					mode = 1
 					
 				case 2
 					child = TSTriggerExpressionComponent.new()
-					child.setTargetName( StringID.new( this.parseTargetName( state, false ) ) )
-					child.setNegate( negate )
-					child.setCurState( curState )
-					component.addChild( child )
+					child.setTargetName(StringID.new(parseTargetName(state, false)))
+					child.setNegate(negate)
+					child.setCurState(curState)
+					component.addChild(child)
 					negate = false
 					curState = false
 					mode = 3
@@ -302,14 +291,14 @@ class TSTriggerExpressionParser
 		end
 		
 		if component.getChildCount() == 1
-			child = component.getChildAt( 0 )
+			child = component.getChildAt(0)
 			if child.getTargetName() == null
 				component = child
 				
 			else
-				component.setTargetName( child.getTargetName() )
-				component.setNegate( child.getNegate() )
-				component.setCurState( child.getCurState() )
+				component.setTargetName(child.getTargetName())
+				component.setNegate(child.getNegate())
+				component.setCurState(child.getCurState())
 				component.removeAllChildren()
 			end
 		end
@@ -318,7 +307,7 @@ class TSTriggerExpressionParser
 	end
 	
 	/** Parse trigger name. */
-	public func String parseTargetName( ParserState state, bool quoted )
+	func String parseTargetName(ParserState state, bool quoted)
 		// modes
 		// 0 => parse first character
 		// 1 => parse other characters
@@ -337,7 +326,7 @@ class TSTriggerExpressionParser
 					name = name + state.getNextCharacter()
 					mode = 1
 					
-				elif character == this.pSymbolQuote
+				elif character == pSymbolQuote
 					if mode == 0
 						throw EInvalidParam.new()
 					end
@@ -349,9 +338,9 @@ class TSTriggerExpressionParser
 				end
 				
 			else
-				if this.pRequiresQuoteCharacters.find( character ) == -1
-				/*if ( character >= 'a' and character <= 'z' ) or ( character >= 'A' and character <= 'Z' ) \
-				or character == '_' or character == '.' or ( character >= '0' and character <= '9' )*/
+				if pRequiresQuoteCharacters.find(character) == -1
+				/*if (character >= 'a' and character <= 'z') or (character >= 'A' and character <= 'Z') \
+				or character == '_' or character == '.' or (character >= '0' and character <= '9')*/
 					name = name + character
 					mode = 1
 					
@@ -360,7 +349,7 @@ class TSTriggerExpressionParser
 						throw EInvalidParam.new()
 					end
 					
-					state.adjustPosition( -1 )
+					state.adjustPosition(-1)
 					break
 				end
 			end
@@ -370,28 +359,28 @@ class TSTriggerExpressionParser
 	end
 	
 	/** Create string from a trigger expression. */
-	public func String expressionToString( TSTriggerExpression expression )
+	func String expressionToString(TSTriggerExpression expression)
 		var TSTriggerExpressionComponent component = expression.getRootComponent()
 		
 		if component == null
 			return ""
 			
 		else
-			return this.expressionComponentToString( component, false )
+			return expressionComponentToString(component, false)
 		end
 	end
 	
 	/** Create string from a trigger expression component. */
-	public func String expressionComponentToString( TSTriggerExpressionComponent component, bool grouping )
+	func String expressionComponentToString(TSTriggerExpressionComponent component, bool grouping)
 		var StringID targetName = component.getTargetName()
 		var String string = ""
 		
 		if component.getNegate()
-			string = string + this.pSymbolNegate
+			string = string + pSymbolNegate
 			grouping = true
 		end
 		if component.getCurState()
-			string = string + this.pSymbolCurState
+			string = string + pSymbolCurState
 			grouping = true
 		end
 		
@@ -401,7 +390,7 @@ class TSTriggerExpressionParser
 			debug = debug + ",trig='" + trigger.getString() + "'"
 		end
 		debug = debug + ",children=" + component.getChildCount()
-		BaseGameApp.getApp().getConsole().addMessage( debug + "\n" )
+		BaseGameApp.getApp().getConsole().addMessage(debug + "\n")
 		*/
 		
 		if targetName == null
@@ -411,36 +400,36 @@ class TSTriggerExpressionParser
 			end
 			
 			if grouping
-				string = string + this.pSymbolGroupStart
+				string = string + pSymbolGroupStart
 			end
 			
-			var byte separator = component.getChildrenOr() if this.pSymbolOr else this.pSymbolAnd
+			var byte separator = component.getChildrenOr() if pSymbolOr else pSymbolAnd
 			var int i
 			for i = 0 to count
 				if i > 0
 					string = string + separator
 				end
-				string = string + this.expressionComponentToString( component.getChildAt( i ), true )
+				string = string + expressionComponentToString(component.getChildAt(i), true)
 			end
 			
 			if grouping
-				string = string + this.pSymbolGroupEnd
+				string = string + pSymbolGroupEnd
 			end
 			
 		else
-			string = string + this.quoteTriggerName( targetName.getString() )
+			string = string + quoteTriggerName(targetName.getString())
 		end
 		
 		return string
 	end
 	
 	/** Retrieves a properly quoted version of a trigger name. */
-	public func String quoteTriggerName( String name )
-		if name.findAny( this.pRequiresQuoteCharacters ) == -1
+	func String quoteTriggerName(String name)
+		if name.findAny(pRequiresQuoteCharacters) == -1
 			return name
 			
 		else
-			return "" + this.pSymbolQuote + name.replaceString( "\"", "\\\"" ) + this.pSymbolQuote
+			return "" + pSymbolQuote + name.replaceString("\"", "\\\"") + pSymbolQuote
 		end
 	end
 end

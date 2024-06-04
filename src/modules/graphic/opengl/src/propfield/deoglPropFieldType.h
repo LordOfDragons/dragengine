@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLPROPFIELDTYPE_H_
@@ -33,7 +36,7 @@ class dePropFieldType;
 
 
 /**
- * \brief Prop Field Type.
+ * Prop Field Type.
  * <date 2015
  */
 class deoglPropFieldType{
@@ -50,10 +53,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create prop field type. */
+	/** Create prop field type. */
 	deoglPropFieldType( deoglPropField &propField, const dePropFieldType &type );
 	
-	/** \brief Clean up prop field type. */
+	/** Clean up prop field type. */
 	~deoglPropFieldType();
 	/*@}*/
 	
@@ -61,33 +64,33 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Prop field. */
+	/** Prop field. */
 	inline deoglPropField &GetPropField() const{ return pPropField; }
 	
-	/** \brief Prop field type. */
+	/** Prop field type. */
 	inline const dePropFieldType &GetType() const{ return pType; }
 	
-	/** \brief Render prop field type. */
+	/** Render prop field type. */
 	inline deoglRPropFieldType *GetRType() const{ return pRType; }
 	
-	/** \brief Update render thread counterpart if required. */
+	/** Update render thread counterpart if required. */
 	void SyncToRender();
 	
 	
 	
-	/** \brief Type changed. */
+	/** Type changed. */
 	void TypeChanged();
 	
-	/** \brief Instances changed. */
+	/** Instances changed. */
 	void InstancesChanged();
 	
-	/** \brief Instances to Bend States assignments changed. */
+	/** Instances to Bend States assignments changed. */
 	void AssignmentsChanged();
 	
-	/** \brief Bend States changed. */
+	/** Bend States changed. */
 	void BendStatesChanged();
 	
-	/** \brief Instance count changed. */
+	/** Instance count changed. */
 	void InstanceCountChanged();
 	/*@}*/
 	

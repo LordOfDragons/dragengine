@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Language Pack Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _LPELANGPACKENTRY_H_
@@ -31,9 +34,14 @@ class lpeLangPack;
 
 
 /**
- * \brief Language pack entry.
+ * Language pack entry.
  */
 class lpeLangPackEntry : public deObject{
+public:
+	typedef deTObjectReference<lpeLangPackEntry> Ref;
+	
+	
+	
 private:
 	lpeLangPack *pLangPack;
 	
@@ -43,45 +51,67 @@ private:
 	bool pSelected;
 	bool pActive;
 	
+	
+	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Creates a new entry. */
+	/** Creates a new entry. */
 	lpeLangPackEntry();
-	/** \brief Creates a new entry as a copy of another entry. */
+	
+	/** Creates a new entry as a copy of another entry. */
 	lpeLangPackEntry( const lpeLangPackEntry &entry );
-	/** \brief Cleans up the entry. */
-	virtual ~lpeLangPackEntry();
+	
+protected:
+	/** Cleans up the entry. */
+	virtual ~lpeLangPackEntry() override;
 	/*@}*/
 	
+	
+	
+public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Retrieves the parent language pack or NULL if there is none. */
+	/** Retrieves the parent language pack or NULL if there is none. */
 	inline lpeLangPack *GetLangPack() const{ return pLangPack; }
-	/** \brief Sets the parent language pack or NULL if there is none. */
+	
+	/** Sets the parent language pack or NULL if there is none. */
 	void SetLangPack( lpeLangPack *langpack );
 	
-	/** \brief Retrieves the name. */
+	
+	
+	/** Retrieves the name. */
 	inline const decString &GetName() const{ return pName; }
-	/** \brief Sets the name. */
+	
+	/** Sets the name. */
 	void SetName( const char *name );
-	/** \brief Retrieves the textu. */
+	
+	/** Retrieves the textu. */
 	inline const decUnicodeString &GetText() const{ return pText; }
-	/** \brief Sets the text. */
+	
+	/** Sets the text. */
 	void SetText( const decUnicodeString &text );
 	
-	/** \brief Determines if the entry is the active one. */
+	
+	
+	/** Determines if the entry is the active one. */
 	inline bool GetActive() const{ return pActive; }
-	/** \brief Sets if the entry is the active one. */
+	
+	/** Sets if the entry is the active one. */
 	void SetActive( bool active );
-	/** \brief Determines if the entry is selected. */
+	
+	/** Determines if the entry is selected. */
 	inline bool GetSelected() const{ return pSelected; }
-	/** \brief Sets if the entry is selected. */
+	
+	/** Sets if the entry is selected. */
 	void SetSelected( bool selected );
 	
-	/** \brief Notifies the listeners that the entry changed. */
+	
+	
+	/** Notifies the listeners that the entry changed. */
 	void NotifyChanged();
-	/** \brief Notifies the listeners that the entry name changed. */
+	
+	/** Notifies the listeners that the entry name changed. */
 	void NotifyNameChanged();
 	/*@}*/
 };

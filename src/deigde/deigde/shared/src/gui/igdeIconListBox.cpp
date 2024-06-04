@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -34,7 +37,6 @@
 #include "model/igdeListItem.h"
 #include "model/igdeListItemReference.h"
 #include "model/igdeListItemSorter.h"
-#include "native/fox/igdeNativeFoxIconListBox.h"
 #include "resources/igdeIcon.h"
 #include "resources/igdeFont.h"
 #include "resources/igdeFontReference.h"
@@ -53,16 +55,26 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeIconListBox::igdeIconListBox( igdeEnvironment &environment, int rows, const char *description ) :
+igdeIconListBox::igdeIconListBox( igdeEnvironment &environment, const char *description ) :
 igdeWidget( environment ),
 pEnabled( true ),
 pSelectionMode( esmSingle ),
 pViewMode( evmList ),
 pSelection( -1 ),
-pRows( rows ),
-pDescription( description )
-{
-	if( rows < 1 ){
+pMinimumSize( 100, 60 ),
+pDescription( description ){
+}
+
+igdeIconListBox::igdeIconListBox( igdeEnvironment &environment,
+	const decPoint &minimumSize, const char *description ) :
+igdeWidget( environment ),
+pEnabled( true ),
+pSelectionMode( esmSingle ),
+pViewMode( evmList ),
+pSelection( -1 ),
+pMinimumSize( minimumSize ),
+pDescription( description ){
+	if( ! ( minimumSize >= decPoint() ) ){
 		DETHROW( deeInvalidParam );
 	}
 }
@@ -85,17 +97,17 @@ void igdeIconListBox::SetEnabled( bool enabled ){
 	OnEnabledChanged();
 }
 
-void igdeIconListBox::SetRows( int rows ){
-	if( rows < 1 ){
+void igdeIconListBox::SetMinimumSize( const decPoint &size ){
+	if( ! ( size >= decPoint() ) ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	if( rows == pRows ){
+	if( size == pMinimumSize ){
 		return;
 	}
 	
-	pRows = rows;
-	//OnRowsChanged();
+	pMinimumSize = size;
+	OnMinimumSizeChanged();
 }
 
 void igdeIconListBox::SetDescription( const char *description ){
@@ -118,7 +130,7 @@ void igdeIconListBox::SetViewMode( eViewMode mode ){
 
 void igdeIconListBox::Focus(){
 	if( GetNativeWidget() ){
-		( ( igdeNativeFoxIconListBox* )GetNativeWidget() )->Focus();
+		( ( igdeNativeIconListBox* )GetNativeWidget() )->Focus();
 	}
 }
 
@@ -567,7 +579,7 @@ void igdeIconListBox::EnsureItemVisible( int index ){
 		return;
 	}
 	
-	( ( igdeNativeFoxIconListBox* )GetNativeWidget() )->GetListBox()->makeItemVisible( index );
+	( ( igdeNativeIconListBox* )GetNativeWidget() )->MakeItemVisible( index );
 }
 
 void igdeIconListBox::EnsureSelectedItemVisible(){
@@ -639,21 +651,9 @@ void igdeIconListBox::CreateNativeWidget(){
 		return;
 	}
 	
-	if( ! GetParent() ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	FXComposite * const foxParent = ( FXComposite* )GetParent()->GetNativeContainer();
-	if( ! foxParent ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	igdeNativeFoxIconListBox * const native = new igdeNativeFoxIconListBox( *this, foxParent,
-		igdeUIFoxHelper::GetChildLayoutFlagsAll( this ), *GetGuiTheme() );
+	igdeNativeIconListBox * const native = igdeNativeIconListBox::CreateNativeWidget( *this );
 	SetNativeWidget( native );
-	if( foxParent->id() ){
-		native->create();
-	}
+	native->PostCreateNativeWidget();
 }
 
 void igdeIconListBox::DestroyNativeWidget(){
@@ -661,7 +661,7 @@ void igdeIconListBox::DestroyNativeWidget(){
 		return;
 	}
 	
-	delete ( igdeNativeFoxIconListBox* )GetNativeWidget();
+	( ( igdeNativeIconListBox* )GetNativeWidget() )->DestroyNativeWidget();
 	DropNativeWidget();
 }
 
@@ -669,14 +669,14 @@ void igdeIconListBox::DestroyNativeWidget(){
 
 void igdeIconListBox::OnItemAdded( int index ){
 	if( GetNativeWidget() ){
-		( ( igdeNativeFoxIconListBox* )GetNativeWidget() )->InsertItem(
+		( ( igdeNativeIconListBox* )GetNativeWidget() )->InsertItem(
 			index, *( ( igdeListItem* )pItems.GetAt( index ) ) );
 	}
 }
 
 void igdeIconListBox::OnItemRemoved( int index ){
 	if( GetNativeWidget() ){
-		( ( igdeNativeFoxIconListBox* )GetNativeWidget() )->RemoveItem( index );
+		( ( igdeNativeIconListBox* )GetNativeWidget() )->RemoveItem( index );
 	}
 }
 
@@ -685,60 +685,65 @@ void igdeIconListBox::OnAllItemsRemoved(){
 		return;
 	}
 	
-	igdeNativeFoxIconListBox &listBox = *( ( igdeNativeFoxIconListBox* )GetNativeWidget() );
-	listBox.GetListBox()->clearItems();
+	( ( igdeNativeIconListBox* )GetNativeWidget() )->RemoveAllItems();
 }
 
 void igdeIconListBox::OnItemChanged( int index ){
 	if( GetNativeWidget() ){
-		( ( igdeNativeFoxIconListBox* )GetNativeWidget() )->UpdateItem( index );
+		( ( igdeNativeIconListBox* )GetNativeWidget() )->UpdateItem( index );
 	}
 }
 
 void igdeIconListBox::OnItemMoved( int fromIndex, int toIndex ){
 	if( GetNativeWidget() ){
-		( ( igdeNativeFoxIconListBox* )GetNativeWidget() )->MoveItem( fromIndex, toIndex );
+		( ( igdeNativeIconListBox* )GetNativeWidget() )->MoveItem( fromIndex, toIndex );
 	}
 }
 
 void igdeIconListBox::OnItemsSorted(){
 	if( GetNativeWidget() ){
-		( ( igdeNativeFoxIconListBox* )GetNativeWidget() )->BuildList();
+		( ( igdeNativeIconListBox* )GetNativeWidget() )->BuildList();
 	}
 }
 
 void igdeIconListBox::OnSelectionChanged(){
 	if( GetNativeWidget() ){
-		( ( igdeNativeFoxIconListBox* )GetNativeWidget() )->UpdateSelection();
+		( ( igdeNativeIconListBox* )GetNativeWidget() )->UpdateSelection();
 	}
 }
 
 void igdeIconListBox::OnEnabledChanged(){
 	if( GetNativeWidget() ){
-		( ( igdeNativeFoxIconListBox* )GetNativeWidget() )->UpdateEnabled();
+		( ( igdeNativeIconListBox* )GetNativeWidget() )->UpdateEnabled();
 	}
 }
 
 void igdeIconListBox::OnDescriptionChanged(){
 	if( GetNativeWidget() ){
-		( ( igdeNativeFoxIconListBox* )GetNativeWidget() )->UpdateDescription();
+		( ( igdeNativeIconListBox* )GetNativeWidget() )->UpdateDescription();
 	}
 }
 
 void igdeIconListBox::OnViewModeChanged(){
 	if( GetNativeWidget() ){
-		( ( igdeNativeFoxIconListBox* )GetNativeWidget() )->UpdateStyles();
+		( ( igdeNativeIconListBox* )GetNativeWidget() )->UpdateStyles();
 	}
 }
 
 void igdeIconListBox::OnSelectionModeChanged(){
 	if( GetNativeWidget() ){
-		( ( igdeNativeFoxIconListBox* )GetNativeWidget() )->UpdateStyles();
+		( ( igdeNativeIconListBox* )GetNativeWidget() )->UpdateStyles();
 	}
 }
 
 void igdeIconListBox::OnHeaderChanged(){
 	if( GetNativeWidget() ){
-		( ( igdeNativeFoxIconListBox* )GetNativeWidget() )->UpdateHeader();
+		( ( igdeNativeIconListBox* )GetNativeWidget() )->UpdateHeader();
+	}
+}
+
+void igdeIconListBox::OnMinimumSizeChanged(){
+	if( GetNativeWidget() ){
+		( ( igdeNativeIconListBox* )GetNativeWidget() )->UpdateMinimumSize();
 	}
 }

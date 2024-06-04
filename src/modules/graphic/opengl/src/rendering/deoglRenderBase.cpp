@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <math.h>
@@ -32,9 +35,14 @@
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTShader.h"
 #include "../renderthread/deoglRTDebug.h"
+#include "../renderthread/deoglRTChoices.h"
+#include "../renderthread/deoglRTBufferObject.h"
 #include "../debug/deoglDebugInformation.h"
 #include "../devmode/deoglDeveloperMode.h"
 #include "../shaders/deoglShaderDefines.h"
+#include "../shaders/paramblock/deoglSPBlockSSBO.h"
+#include "../shaders/paramblock/deoglSPBlockUBO.h"
+#include "../vao/deoglVAO.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -47,7 +55,13 @@
 ////////////////////////////
 
 deoglRenderBase::deoglRenderBase( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread ){
+pRenderThread( renderThread )
+{
+	deoglPipelineManager &pipelineManager = renderThread.GetPipelineManager();
+	deoglPipelineConfiguration pipconf;
+	
+	pipconf.SetMasks( true, true, true, true, true );
+	pPipelineClearBuffers = pipelineManager.GetWith( pipconf );
 }
 
 deoglRenderBase::~deoglRenderBase(){
@@ -60,11 +74,45 @@ deoglRenderBase::~deoglRenderBase(){
 
 void deoglRenderBase::AddBasicDefines( deoglShaderDefines &defines ){
 	if( pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Broken() ){
-		defines.AddDefine( "UBO_IDMATACCBUG", "1" );
+		defines.SetDefines( "UBO_IDMATACCBUG" );
 	}
 	
 	if( pRenderThread.GetCapabilities().GetUBODirectLinkDeadloop().Broken() ){
-		defines.AddDefine( "BUG_UBO_DIRECT_LINK_DEAD_LOOP", "1" );
+		defines.SetDefines( "BUG_UBO_DIRECT_LINK_DEAD_LOOP" );
+	}
+}
+
+void deoglRenderBase::AddSharedSPBDefines( deoglShaderDefines &defines ){
+	const deoglRenderThread &renderThread = GetRenderThread();
+	const deoglRTBufferObject &bo = renderThread.GetBufferObject();
+	
+	defines.SetDefines( "SHARED_SPB" );
+	
+	if( renderThread.GetChoices().GetSharedSPBUseSSBO() ){
+		defines.SetDefines( "SHARED_SPB_USE_SSBO" );
+		
+		if( bo.GetLayoutOccMeshInstanceSSBO()->GetOffsetPadding() >= 16 ){
+			defines.SetDefine( "SHARED_SPB_PADDING", bo.GetLayoutOccMeshInstanceSSBO()->GetOffsetPadding() / 16 );
+		}
+		
+	}else{
+		// NOTE UBO requires array size to be constant, SSBO does not
+		if( bo.GetLayoutOccMeshInstanceUBO()->GetElementCount() > 0 ){
+			defines.SetDefine( "SHARED_SPB_ARRAY_SIZE", bo.GetLayoutOccMeshInstanceUBO()->GetElementCount() );
+		}
+		
+		if( bo.GetLayoutOccMeshInstanceUBO()->GetOffsetPadding() >= 16 ){
+			defines.SetDefine( "SHARED_SPB_PADDING", bo.GetLayoutOccMeshInstanceUBO()->GetOffsetPadding() / 16 );
+		}
+	}
+	
+	if( renderThread.GetChoices().GetUseComputeRenderTask() ){
+		defines.SetDefines( "SPB_SSBO_INSTANCE_ARRAY" );
+		
+	}else{
+		if( bo.GetInstanceArraySizeUBO() > 0 ){
+			defines.SetDefine( "SPB_INSTANCE_ARRAY_SIZE", bo.GetInstanceArraySizeUBO() );
+		}
 	}
 }
 
@@ -105,7 +153,7 @@ deoglTexSamplerConfig &deoglRenderBase::GetSamplerShadowClampLinear() const{
 }
 
 deoglTexSamplerConfig &deoglRenderBase::GetSamplerShadowClampLinearInverse() const{
-	if( pRenderThread.GetDeferredRendering().GetUseInverseDepth() ){
+	if( pRenderThread.GetChoices().GetUseInverseDepth() ){
 		return *pRenderThread.GetShader().GetTexSamplerConfig( deoglRTShader::etscShadowClampLinearInverse );
 		
 	}else{
@@ -115,13 +163,69 @@ deoglTexSamplerConfig &deoglRenderBase::GetSamplerShadowClampLinearInverse() con
 
 
 
-void deoglRenderBase::SetCullMode( bool renderBackFaces ){
-	if( renderBackFaces ){
-		OGL_CHECK( GetRenderThread(), glCullFace( GL_FRONT ) );
+void deoglRenderBase::SetViewport( const deoglRenderPlan &plan ) const{
+	SetViewport( plan.GetViewportWidth(), plan.GetViewportHeight() );
+}
+
+void deoglRenderBase::SetViewport( int width, int height ) const{
+	SetViewport( 0, 0, width, height );
+}
+
+void deoglRenderBase::SetViewport( const decPoint &point ) const{
+	SetViewport( point.x, point.y );
+}
+
+void deoglRenderBase::SetViewport( const decPoint3 &point ) const{
+	SetViewport( point.x, point.y );
+}
+
+void deoglRenderBase::SetViewport( int x, int y, int width, int height ) const{
+	OGL_CHECK( pRenderThread, glViewport( x, y, width, height ) );
+	OGL_CHECK( pRenderThread, glScissor( x, y, width, height ) );
+}
+
+void deoglRenderBase::SetViewport( const decPoint &offset, const decPoint &size ) const{
+	SetViewport( offset.x, offset.y, size.x, size.y );
+}
+
+
+
+void deoglRenderBase::RenderFullScreenQuad() const{
+	OGL_CHECK( pRenderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
+}
+
+void deoglRenderBase::RenderFullScreenQuad( const deoglRenderPlan &plan ) const{
+	if( plan.GetRenderStereo() ){
+		OGL_CHECK( pRenderThread, glDrawArrays( GL_TRIANGLES, 0, 12 ) );
 		
 	}else{
-		OGL_CHECK( GetRenderThread(), glCullFace( GL_BACK ) );
+		OGL_CHECK( pRenderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
 	}
+}
+
+void deoglRenderBase::RenderFullScreenQuadVAO() const{
+	OGL_CHECK( pRenderThread, pglBindVertexArray(
+		pRenderThread.GetDeferredRendering().GetVAOFullScreenQuad()->GetVAO() ) );
+	OGL_CHECK( pRenderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
+	OGL_CHECK( pRenderThread, pglBindVertexArray( 0 ) );
+}
+
+void deoglRenderBase::RenderFullScreenQuadVAO( const deoglRenderPlan &plan ) const{
+	RenderFullScreenQuadVAO( plan.GetRenderStereo() );
+}
+
+void deoglRenderBase::RenderFullScreenQuadVAO( bool useStereo ) const{
+	OGL_CHECK( pRenderThread, pglBindVertexArray(
+		pRenderThread.GetDeferredRendering().GetVAOFullScreenQuad()->GetVAO() ) );
+	
+	if( useStereo ){
+		OGL_CHECK( pRenderThread, glDrawArrays( GL_TRIANGLES, 0, 12 ) );
+		
+	}else{
+		OGL_CHECK( pRenderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
+	}
+	
+	OGL_CHECK( pRenderThread, pglBindVertexArray( 0 ) );
 }
 
 
@@ -198,6 +302,18 @@ deoglDebugInformation &debugInfo, bool waitGPU ){
 void deoglRenderBase::DebugTimer4SampleCount( const deoglRenderPlan &plan,
 deoglDebugInformation &debugInfo, int count, bool waitGPU ){
 	pDebugTimerSampleCount( pDebugTimer[ 3 ], plan, debugInfo, count, waitGPU );
+}
+
+void deoglRenderBase::DebugTimerIncrement( const deoglRenderPlan &plan,
+deoglDebugInformation &debugInfo, float elapsed, int count ){
+	if( ! plan.GetDebugTiming() || ! debugInfo.GetVisible() ){
+		return;
+	}
+	
+	debugInfo.IncrementElapsedTime( elapsed );
+	if( count > 0 ){
+		debugInfo.IncrementCounter( count );
+	}
 }
 
 

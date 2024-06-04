@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -37,13 +40,17 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-deoglDOctree::deoglDOctree( const decDVector &center, const decDVector &halfSize ){
+deoglDOctree::deoglDOctree( const decDVector &center, const decDVector &halfSize ) :
+pCenter( center ),
+pHalfSize( halfSize ),
+pMinExtend( center - halfSize ),
+pMaxExtend( center + halfSize ),
+pParent( NULL )
+{
 	int i;
-	
-	for( i=0; i<8; i++ ) pNodes[ i ] = NULL;
-	pCenter = center;
-	pHalfSize = halfSize;
-	pParent = NULL;
+	for( i=0; i<8; i++ ){
+		pNodes[ i ] = NULL;
+	}
 }
 
 deoglDOctree::~deoglDOctree(){
@@ -76,8 +83,8 @@ void deoglDOctree::SetNodeAt( int octant, deoglDOctree *node ){
 	}
 }
 
-deoglDOctree *deoglDOctree::GetNodeAtBox( const decDVector &boxCenter, const decDVector &boxHalfSize ){
-	int octant = FindOctantAtBox( boxCenter, boxHalfSize );
+deoglDOctree *deoglDOctree::GetNodeAtBox( const decDVector &minExtend, const decDVector &maxExtend ){
+	const int octant = FindOctantAtBox( minExtend, maxExtend );
 	
 	// if we found no matching octant return NULL
 	if( octant == eoNotFound ) return NULL;
@@ -92,8 +99,8 @@ deoglDOctree *deoglDOctree::GetNodeAtBox( const decDVector &boxCenter, const dec
 	return pNodes[ octant ];
 }
 
-deoglDOctree *deoglDOctree::FindNodeAtBox( const decDVector &boxCenter, const decDVector &boxHalfSize ) const{
-	int octant = FindOctantAtBox( boxCenter, boxHalfSize );
+deoglDOctree *deoglDOctree::FindNodeAtBox( const decDVector &minExtend, const decDVector &maxExtend ) const{
+	int octant = FindOctantAtBox( minExtend, maxExtend );
 	
 	// if we found no matching octant return NULL
 	if( octant == eoNotFound ) return NULL;
@@ -102,25 +109,30 @@ deoglDOctree *deoglDOctree::FindNodeAtBox( const decDVector &boxCenter, const de
 	return pNodes[ octant ];
 }
 
-int deoglDOctree::FindOctantAtBox( const decDVector &boxCenter, const decDVector &boxHalfSize ) const{
+int deoglDOctree::FindOctantAtBox( const decDVector &minExtend, const decDVector &maxExtend ) const{
 	int octant = 0;
 	
 	// determine the bit mask of the box compared to the center of the node.
 	// a positive axis becomes a 1 bit and a negative axis a 0 bit. if an
 	// axis does not split no octant is found.
-	if( boxCenter.x - boxHalfSize.x >= pCenter.x ){
+	if( minExtend.x >= pCenter.x ){
 		octant |= 4;
-	}else if( boxCenter.x + boxHalfSize.x >= pCenter.x ){
+		
+	}else if( maxExtend.x >= pCenter.x ){
 		return eoNotFound;
 	}
-	if( boxCenter.y - boxHalfSize.y >= pCenter.y ){
+	
+	if( minExtend.y >= pCenter.y ){
 		octant |= 2;
-	}else if( boxCenter.y + boxHalfSize.y >= pCenter.y ){
+		
+	}else if( maxExtend.y >= pCenter.y ){
 		return eoNotFound;
 	}
-	if( boxCenter.z - boxHalfSize.z >= pCenter.z ){
+	
+	if( minExtend.z >= pCenter.z ){
 		octant |= 1;
-	}else if( boxCenter.z + boxHalfSize.z >= pCenter.z ){
+		
+	}else if( maxExtend.z >= pCenter.z ){
 		return eoNotFound;
 	}
 	
@@ -128,19 +140,8 @@ int deoglDOctree::FindOctantAtBox( const decDVector &boxCenter, const decDVector
 	return octant;
 }
 
-bool deoglDOctree::ContainsBox( const decDVector &boxCenter, const decDVector &boxHalfSize ) const{
-	return ( boxCenter - boxHalfSize ) >= ( pCenter - pHalfSize )
-		&& ( boxCenter + boxHalfSize ) < ( pCenter + pHalfSize );
-}
-
-deoglDOctree *deoglDOctree::FindNodeAtPoint( const decDVector &point ) const{
-	int octant = FindOctantAtPoint( point );
-	
-	// if we found no matching octant return NULL
-	if( octant == eoNotFound ) return NULL;
-	
-	// return the node that we found
-	return pNodes[ octant ];
+bool deoglDOctree::ContainsBox( const decDVector &minExtend, const decDVector &maxExtend ) const{
+	return minExtend >= pMinExtend && maxExtend <= pMaxExtend;
 }
 
 int deoglDOctree::FindOctantAtPoint( const decDVector &point ) const{
@@ -157,34 +158,10 @@ int deoglDOctree::FindOctantAtPoint( const decDVector &point ) const{
 }
 
 bool deoglDOctree::ContainsPoint( const decDVector &point ) const{
-	return point >= ( pCenter - pHalfSize ) &&  point < ( pCenter + pHalfSize );
+	return point >= pMinExtend &&  point < pMaxExtend;
 }
 
 
-
-deoglDOctree *deoglDOctree::SearchTreeForBox( const decDVector &boxCenter, const decDVector &boxHalfSize ) const{
-	deoglDOctree *nextNode = FindNodeAtBox( boxCenter, boxHalfSize );
-	deoglDOctree *curNode = ( deoglDOctree* )this;
-	
-	while( nextNode ){
-		curNode = nextNode;
-		nextNode = curNode->FindNodeAtBox( boxCenter, boxHalfSize );
-	}
-	
-	return curNode;
-}
-
-deoglDOctree *deoglDOctree::SearchTreeForPoint( const decDVector &point ) const{
-	deoglDOctree *nextNode = FindNodeAtPoint( point );
-	deoglDOctree *curNode = ( deoglDOctree* )this;
-	
-	while( nextNode ){
-		curNode = nextNode;
-		nextNode = curNode->FindNodeAtPoint( point );
-	}
-	
-	return curNode;
-}
 
 void deoglDOctree::VisitNodes( deoglDOctreeVisitor *visitor ){
 	if( ! visitor ) DETHROW( deeInvalidParam );
@@ -220,7 +197,7 @@ void deoglDOctree::VisitNodesColliding( deoglDOctreeVisitor *visitor, const decD
 	if( ! visitor ) DETHROW( deeInvalidParam );
 	int i, result;
 	
-	result = deoglDCollisionDetection::AABoxIntersectsAABox( pCenter - pHalfSize, pCenter + pHalfSize, boxMinExtend, boxMaxExtend );
+	result = deoglDCollisionDetection::AABoxIntersectsAABox( pMinExtend, pMaxExtend, boxMinExtend, boxMaxExtend );
 	
 	if( result == deoglDCollisionDetection::eirOutside ) return;
 	

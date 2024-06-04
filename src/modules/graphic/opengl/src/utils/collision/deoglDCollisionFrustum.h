@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLDCOLLISIONFRUSTUM_H_
@@ -27,7 +30,7 @@
 
 
 /**
- * @brief Frustum collision volume.
+ * Frustum collision volume.
  *
  * Defines a collision volume in the shape of a view frustum.
  * A view frustum is a pyramid with capped top. Such frustums
@@ -43,7 +46,7 @@
  * refer to the sides of the frustum surrounding it. Near and
  * far refer to the capped pinacle and the base of the frustum.
  * @warning This class is partially implemented. See collision
- *          functions for more informations.
+ *          functions for more information.
  * @todo
  * - Implementing CylinderHitsFrustum
  * - Implementing CapsuleHitsFrustum
@@ -61,15 +64,24 @@ public:
 		/** Is fully inside frustum */
 		eitInside = 1
 	};
+	
 private:
-	decDVector pNormalLeft, pNormalRight;
-	decDVector pNormalTop, pNormalBottom;
-	decDVector pNormalNear, pNormalFar;
-	double pDistLeft, pDistRight;
-	double pDistTop, pDistBottom;
-	double pDistNear, pDistFar;
+	struct sPlane{
+		decDVector normal;
+		decDVector absNormal;
+		double distance;
+	};
+	enum ePlane{
+		epLeft,
+		epRight,
+		epTop,
+		epBottom,
+		epNear,
+		epFar
+	};
+	sPlane pPlane[ 6 ];
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creastes a new collision frustum with default parameters. */
 	deoglDCollisionFrustum();
@@ -77,13 +89,13 @@ public:
 	virtual ~deoglDCollisionFrustum();
 	/*@}*/
 	
-	/** @name First Stage Dispatch */
+	/** \name First Stage Dispatch */
 	/*@{*/
 	virtual bool VolumeHitsVolume(deoglDCollisionVolume *volume);
 	virtual double VolumeMoveHitsVolume( deoglDCollisionVolume *volume, const decDVector &displacement, decDVector *normal );
 	/*@}*/
 	
-	/** @name Second Stage Dispatch */
+	/** \name Second Stage Dispatch */
 	/*@{*/
 	virtual bool SphereHitsVolume(deoglDCollisionSphere *sphere);
 	virtual bool CylinderHitsVolume(deoglDCollisionCylinder *cylinder);
@@ -100,13 +112,13 @@ public:
 	virtual double PointMoveHitsVolume( const decDVector &point, const decDVector &displacement, decDVector *normal );
 	/*@}*/
 	
-	/** @name Enclosing Volumes */
+	/** \name Enclosing Volumes */
 	/*@{*/
 	virtual void GetEnclosingSphere( deoglDCollisionSphere *sphere );
 	virtual void GetEnclosingBox( deoglDCollisionBox *box );
 	/*@}*/
 	
-	/** @name Miscelanous Functions */
+	/** \name Miscelanous Functions */
 	/*@{*/
 	/** Determines if a point is inside the volume. */
 	virtual bool IsPointInside( const decDVector &point );
@@ -114,12 +126,12 @@ public:
 	virtual decDVector ClosestPointTo( const decDVector &point );
 	/*@}*/
 	
-	/** @name Visiting */
+	/** \name Visiting */
 	/*{*/
 	virtual void Visit( deoglDCollisionVolumeVisitor *visitor );
 	/*}*/
 	
-	/** @name Collision Routines */
+	/** \name Collision Routines */
 	/*@{*/
 	/** Determines if the given sphere hits this frustum. */
 	bool SphereHitsFrustum(deoglDCollisionSphere *sphere);
@@ -135,6 +147,18 @@ public:
 	bool CapsuleHitsFrustum(deoglDCollisionCapsule *capsule);
 	/** Determines if the given box hits this frustum. */
 	bool BoxHitsFrustum(deoglDCollisionBox *box);
+	
+	/** Box frustum hit test. */
+	bool BoxHits( const decDVector &minExtend, const decDVector &maxExtend ) const;
+	
+	/**
+	 * Box frustum intersection test.
+	 * 
+	 * \note For performance reasons the intersection test is conservating. eitIntersect
+	 *       can be reported although precisely the box is outside for example at corners
+	 */
+	eIntersectType BoxIntersect( const decDVector &minExtend, const decDVector &maxExtend ) const;
+	
 	/**
 	 * Determines if the given triangle hits this frustum.
 	 * @warning Not implemented yet and always returns false.
@@ -178,20 +202,20 @@ public:
 	double FrustumMoveHitsFrustum( deoglDCollisionFrustum *frustum, const decDVector &displacement, decDVector *normal );
 	/*@}*/
 	
-	/** @name Collision Routines */
+	/** \name Collision Routines */
 	/*@{*/
-	inline decDVector GetLeftNormal() const{ return pNormalLeft; }
-	inline decDVector GetRightNormal() const{ return pNormalRight; }
-	inline decDVector GetTopNormal() const{ return pNormalTop; }
-	inline decDVector GetBottomNormal() const{ return pNormalBottom; }
-	inline decDVector GetNearNormal() const{ return pNormalNear; }
-	inline decDVector GetFarNormal() const{ return pNormalFar; }
-	inline double GetLeftDistance() const{ return pDistLeft; }
-	inline double GetRightDistance() const{ return pDistRight; }
-	inline double GetTopDistance() const{ return pDistTop; }
-	inline double GetBottomDistance() const{ return pDistBottom; }
-	inline double GetNearDistance() const{ return pDistNear; }
-	inline double GetFarDistance() const{ return pDistFar; }
+	inline const decDVector &GetLeftNormal() const{ return pPlane[ epLeft ].normal; }
+	inline const decDVector &GetRightNormal() const{ return pPlane[ epRight ].normal; }
+	inline const decDVector &GetTopNormal() const{ return pPlane[ epTop ].normal; }
+	inline const decDVector &GetBottomNormal() const{ return pPlane[ epBottom ].normal; }
+	inline const decDVector &GetNearNormal() const{ return pPlane[ epNear ].normal; }
+	inline const decDVector &GetFarNormal() const{ return pPlane[ epFar ].normal; }
+	inline double GetLeftDistance() const{ return pPlane[ epLeft ].distance; }
+	inline double GetRightDistance() const{ return pPlane[ epRight ].distance; }
+	inline double GetTopDistance() const{ return pPlane[ epTop ].distance; }
+	inline double GetBottomDistance() const{ return pPlane[ epBottom ].distance; }
+	inline double GetNearDistance() const{ return pPlane[ epNear ].distance; }
+	inline double GetFarDistance() const{ return pPlane[ epFar ].distance; }
 	void SetLeftPlane(const decDVector &normal, double dist);
 	void SetRightPlane(const decDVector &normal, double dist);
 	void SetTopPlane(const decDVector &normal, double dist);
@@ -222,7 +246,7 @@ public:
 	void SetFrustumBox(const decDVector &r1, const decDVector &r2, const decDVector &r3, const decDVector &r4, double nearDist);
 	/*@}*/
 	
-	/** @name Intersection Tests */
+	/** \name Intersection Tests */
 	/*@{*/
 	/**
 	 * Determines if the given sphere intersects this frustum.

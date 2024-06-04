@@ -27,6 +27,7 @@ class SSChain extends SynthesizerSource
 	/*@{*/
 	/** \brief Number of sound files. */
 	public func int getSoundCount()
+		return 0
 	end
 	
 	/** \brief Add sound. */
@@ -42,7 +43,7 @@ class SSChain extends SynthesizerSource
 	/**
 	 * \brief Set minimum play speed.
 	 * \details A value of 1 plays at orignal speed. A value of 2 would play double as fast. Negative
-	 *          values play backwards. A value of -1 would play backwards at original speed.
+	 *          values play backward. A value of -1 would play backward at original speed.
 	 */
 	public func void setMinSpeed( float speed )
 	end
@@ -50,7 +51,7 @@ class SSChain extends SynthesizerSource
 	/**
 	 * \brief Set maximum play speed.
 	 * \details A value of 1 plays at orignal speed. A value of 2 would play double as fast. Negative
-	 *          values play backwards. A value of -1 would play backwards at original speed.
+	 *          values play backward. A value of -1 would play backward at original speed.
 	 */
 	public func void setMaxSpeed( float speed )
 	end

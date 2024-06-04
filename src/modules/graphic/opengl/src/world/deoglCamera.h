@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLCAMERA_H_
@@ -34,7 +37,7 @@ class deCamera;
 
 
 /**
- * \brief Camera peer.
+ * Camera peer.
  */
 class deoglCamera : public deBaseGraphicCamera{
 private:
@@ -53,6 +56,10 @@ private:
 	bool pDirtyPlanCamParams;
 	bool pDirtyPropFields;
 	bool pDirtyEffects;
+	bool pResetAdaptedIntensity;
+	bool pDirtyVR;
+	
+	bool pEnableVR;
 	
 	decPointerSet pNotifyRenderables;
 	decPointerSet pNotifyCanvas;
@@ -62,10 +69,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create new opengl camera peer. */
+	/** Create new opengl camera peer. */
 	deoglCamera( deGraphicOpenGl &ogl, const deCamera &camera );
 	
-	/** \brief Clean up camera peer. */
+	/** Clean up camera peer. */
 	virtual ~deoglCamera();
 	/*@}*/
 	
@@ -73,35 +80,35 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Render camera. */
+	/** Render camera. */
 	inline deoglRCamera *GetRCamera() const{ return pRCamera; }
 	
-	/** \brief Camera. */
+	/** Camera. */
 	inline const deCamera &GetCamera() const{ return pCamera; }
 	
-	/** \brief Parent world or \em NULL. */
+	/** Parent world or \em NULL. */
 	inline deoglWorld *GetParentWorld() const{ return pParentWorld; }
 	
-	/** \brief Set parent world. */
+	/** Set parent world. */
 	void SetParentWorld( deoglWorld *world );
 	
 	
 	
-	/** \brief Updates the camera. */
+	/** Updates the camera. */
 	void Update( float elapsed );
 	
 	
 	
-	/** \brief Update render thread counterpart if required. */
+	/** Update render thread counterpart if required. */
 	void SyncToRender();
 	
 	
 	
-	/** \brief Renderables to notify about dirty events. */
+	/** Renderables to notify about dirty events. */
 	inline decPointerSet &GetNotifyRenderables(){ return pNotifyRenderables; }
 	inline const decPointerSet &GetNotifyRenderables() const{ return pNotifyRenderables; }
 	
-	/** \brief Canvas to notify about dirty events. */
+	/** Canvas to notify about dirty events. */
 	inline decPointerSet &GetNotifyCanvas(){ return pNotifyCanvas; }
 	inline const decPointerSet &GetNotifyCanvas() const{ return pNotifyCanvas; }
 	/*@}*/
@@ -110,31 +117,48 @@ public:
 	
 	/** \name Notifications */
 	/*@{*/
-	/** \brief Position changed. */
+	/** Position changed. */
 	virtual void PositionChanged();
 	
-	/** \brief Orientation changed. */
+	/** Orientation changed. */
 	virtual void OrientationChanged();
 	
-	/** \brief Camera parameter changed. */
+	/** Camera parameter changed. */
 	virtual void ParameterChanged();
 	
-	/** \brief Adaption parameter changed. */
+	/** Adaption parameter changed. */
 	virtual void AdaptionChanged();
 	
-	/** \brief Layer mask changed. */
+	/** Layer mask changed. */
 	virtual void LayerMaskChanged();
 	
+	/** Request graphic module to reset adapted intensity to optimal value. */
+	virtual void ResetAdaptedIntensity();
 	
 	
-	/** \brief Effect has been added. */
+	
+	/** Effect has been added. */
 	virtual void EffectAdded( int index, deEffect *effect );
 	
-	/** \brief Effect has been removed. */
+	/** Effect has been removed. */
 	virtual void EffectRemoved( int index, deEffect *effect );
 	
-	/** \brief All effects have been removed. */
+	/** All effects have been removed. */
 	virtual void AllEffectsRemoved();
+	/*@}*/
+	
+	
+	
+	/** \name For use by VR Module only */
+	/*@{*/
+	/** Camera assigned to HMD. */
+	virtual void VRAssignedToHMD();
+	
+	/** Camera resigned from HMD. */
+	virtual void VRResignedFromHMD();
+	
+	/** VR Render parameters changed. */
+	virtual void VRRenderParametersChanged();
 	/*@}*/
 	
 	

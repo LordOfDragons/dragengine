@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -35,11 +38,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRenderTaskParticlesStep::deoglRenderTaskParticlesStep(){
-	pInstances = NULL;
-	pInstanceCount = 0;
-	pInstanceSize = 0;
-	
+deoglRenderTaskParticlesStep::deoglRenderTaskParticlesStep() :
+pInstances( nullptr ),
+pInstanceCount( 0 ),
+pInstanceSize( 0 )
+{
 	Reset();
 }
 
@@ -55,13 +58,13 @@ deoglRenderTaskParticlesStep::~deoglRenderTaskParticlesStep(){
 ///////////////
 
 void deoglRenderTaskParticlesStep::Reset(){
-	pShader = NULL;
-	pParamBlockTexture = NULL;
-	pParamBlockInstance = NULL;
-	pTUC = NULL;
+	pPipeline = nullptr;
+	pParamBlockTexture = nullptr;
+	pParamBlockInstance = nullptr;
+	pTUC = nullptr;
 	
-	pSkin = NULL;
-	pDynamicSkin = NULL;
+	pSkin = nullptr;
+	pDynamicSkin = nullptr;
 	pTexture = 0;
 	
 	pFirstIndex = 0;
@@ -73,33 +76,33 @@ void deoglRenderTaskParticlesStep::Reset(){
 
 
 
-void deoglRenderTaskParticlesStep::SetShader( deoglShaderProgram *shader ){
-	pShader = shader;
+void deoglRenderTaskParticlesStep::SetPipeline( const deoglPipeline *pipeline ){
+	pPipeline = pipeline;
 }
 
-void deoglRenderTaskParticlesStep::SetParameterBlockTexture( deoglSPBlockUBO *block ){
+void deoglRenderTaskParticlesStep::SetParameterBlockTexture( const deoglShaderParameterBlock *block ){
 	pParamBlockTexture = block;
 }
 
-void deoglRenderTaskParticlesStep::SetParameterBlockInstance( deoglSPBlockUBO *block ){
+void deoglRenderTaskParticlesStep::SetParameterBlockInstance( const deoglShaderParameterBlock *block ){
 	pParamBlockInstance = block;
 }
 
-void deoglRenderTaskParticlesStep::SetTUC( deoglTexUnitsConfig *tuc ){
+void deoglRenderTaskParticlesStep::SetTUC( const deoglTexUnitsConfig *tuc ){
 	pTUC = tuc;
 }
 
 
 
-void deoglRenderTaskParticlesStep::SetVAO( deoglVAO *vao ){
+void deoglRenderTaskParticlesStep::SetVAO( const deoglVAO *vao ){
 	pVAO = vao;
 }
 
-void deoglRenderTaskParticlesStep::SetSkin( deoglRSkin *skin ){
+void deoglRenderTaskParticlesStep::SetSkin( const deoglRSkin *skin ){
 	pSkin = skin;
 }
 
-void deoglRenderTaskParticlesStep::SetDynamicSkin( deoglRDynamicSkin *dynamicSkin ){
+void deoglRenderTaskParticlesStep::SetDynamicSkin( const deoglRDynamicSkin *dynamicSkin ){
 	pDynamicSkin = dynamicSkin;
 }
 

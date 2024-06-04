@@ -1,0 +1,353 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="ReleaseDebug|Win32">
+      <Configuration>ReleaseDebug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="ReleaseDebug|x64">
+      <Configuration>ReleaseDebug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\dragengine\dragengine.vcxproj">
+      <Project>{f9098b91-18fa-4754-b089-e3d613b13b71}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\shared\igde_shared.vcxproj">
+      <Project>{1dcfacb0-ab85-4adc-b18a-91322511c121}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\..\src\deigde\editors\speechAnimation\SConscript" />
+    <None Include="post_build.ps1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\configuration\saeConfiguration.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\configuration\saeConfigurationXML.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\gui\properties\saeWindowProperties.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\gui\properties\saeWPSAnim.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\gui\properties\saeWPSAnimListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\gui\properties\saeWPUndoHistory.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\gui\properties\saeWPUndoHistoryListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\gui\properties\saeWPView.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\gui\properties\saeWPViewListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\gui\saeTaskSyncGameDefinition.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\gui\saeViewSAnimation.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\gui\saeWindowMain.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\gui\saeWindowMainListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\loadsave\saeLoadSaveSAnimation.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\loadsave\saeLoadSaveSystem.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\saEditor.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\saeIGDEModule.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\sanimation\dictionary\saeWord.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\sanimation\dictionary\saeWordList.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\sanimation\phoneme\saePhoneme.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\sanimation\phoneme\saePhonemeList.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\sanimation\saeSAnimation.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\sanimation\saeSAnimationListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\dictionary\word\saeUWordAdd.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\dictionary\word\saeUWordAddList.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\dictionary\word\saeUWordRemove.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\dictionary\word\saeUWordSetName.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\dictionary\word\saeUWordSetPhonetics.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\phoneme\saeUPhonemeAdd.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\phoneme\saeUPhonemeRemove.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\phoneme\saeUPhonemeSetIPA.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\phoneme\saeUPhonemeSetVertexPositionSet.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\phoneme\saeUPhonemeSetLength.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\phoneme\saeUPhonemeSetMoveName.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\phoneme\saeUPhonemeSetSampleText.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\sanimation\saeUSAnimSetAnimPath.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\sanimation\saeUSAnimSetNeutralMoveName.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\sanimation\saeUSAnimSetNeutralVertexPositionSets.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\sanimation\saeUSAnimSetRigPath.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\configuration\saeConfiguration.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\configuration\saeConfigurationXML.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\gui\properties\saeWindowProperties.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\gui\properties\saeWPSAnim.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\gui\properties\saeWPSAnimListener.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\gui\properties\saeWPUndoHistory.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\gui\properties\saeWPUndoHistoryListener.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\gui\properties\saeWPView.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\gui\properties\saeWPViewListener.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\gui\saeTaskSyncGameDefinition.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\gui\saeViewSAnimation.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\gui\saeWindowMain.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\gui\saeWindowMainListener.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\loadsave\saeLoadSaveSAnimation.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\loadsave\saeLoadSaveSystem.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\saEditor.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\saeIGDEModule.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\sanimation\dictionary\saeWord.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\sanimation\dictionary\saeWordList.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\sanimation\phoneme\saePhoneme.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\sanimation\phoneme\saePhonemeList.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\sanimation\saeSAnimation.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\sanimation\saeSAnimationListener.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\dictionary\word\saeUWordAdd.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\dictionary\word\saeUWordAddList.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\dictionary\word\saeUWordRemove.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\dictionary\word\saeUWordSetName.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\dictionary\word\saeUWordSetPhonetics.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\phoneme\saeUPhonemeAdd.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\phoneme\saeUPhonemeRemove.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\phoneme\saeUPhonemeSetIPA.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\phoneme\saeUPhonemeSetVertexPositionSet.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\phoneme\saeUPhonemeSetLength.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\phoneme\saeUPhonemeSetMoveName.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\phoneme\saeUPhonemeSetSampleText.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\sanimation\saeUSAnimSetAnimPath.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\sanimation\saeUSAnimSetNeutralMoveName.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\sanimation\saeUSAnimSetNeutralVertexPositionSets.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\speechAnimation\src\undosys\sanimation\saeUSAnimSetRigPath.h" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{174A042F-6A18-4C38-AF9F-F7C5E17EE00F}</ProjectGuid>
+    <RootNamespace>deai</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>editor speechanimation</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebug|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(IncludePath)</IncludePath>
+    <TargetName>speechanimation</TargetName>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\igde_editor\speechanimation\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(IncludePath)</IncludePath>
+    <TargetName>speechanimation</TargetName>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\igde_editor\speechanimation\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebug|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(IncludePath)</IncludePath>
+    <TargetName>speechanimation</TargetName>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\igde_editor\speechanimation\</OutDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;EDITORSPEECHANIMATION_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;EDITORSPEECHANIMATION_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;EDITORSPEECHANIMATION_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;EDITORSPEECHANIMATION_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);MOD_ENTRY_POINT_ATTR=__declspec(dllexport)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <IgnoreSpecificDefaultLibraries>LIBCMT;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+    </Link>
+    <PostBuildEvent>
+      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\deigde\editors\speechAnimation\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;EDITORSPEECHANIMATION_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);MOD_ENTRY_POINT_ATTR=__declspec(dllexport)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <IgnoreSpecificDefaultLibraries>LIBCMT;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+    </Link>
+    <PostBuildEvent>
+      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\deigde\editors\speechAnimation\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;EDITORSPEECHANIMATION_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);MOD_ENTRY_POINT_ATTR=__declspec(dllexport)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <IgnoreSpecificDefaultLibraries>LIBCMT;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+    </Link>
+    <PostBuildEvent>
+      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\deigde\editors\speechAnimation\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

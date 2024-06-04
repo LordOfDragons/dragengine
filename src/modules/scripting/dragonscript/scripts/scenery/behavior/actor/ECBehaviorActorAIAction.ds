@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -56,6 +59,18 @@ pin Dragengine.Utils
  * ECBehaviorActorAIAction.ConvoCommand for supported syntax.
  */
 class ECBehaviorActorAIAction extends DefaultECBehavior
+	/** \brief Factory for creating action. */
+	interface ActionFactory
+		/** \brief Create action for behavior instance. */
+		func BaseActorAction createAction( Instance instance )
+	end
+	
+	/** \brief Factory for creating AI. */
+	interface AIFactory
+		/** \brief Create AI for behavior instance. */
+		func BaseActorAI createAI( Instance instance )
+	end
+	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		/** \brief Collider AI listener forwarding to Action/AI. */
@@ -202,6 +217,9 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 			if this.pPlayerControllable != null
 				this.pPlayerControllable.addListener( PlayerTakeControlListener.new( this ) )
 			end
+			
+			this.setAction( this.pECBehavior.getActionFactory().createAction( this ) )
+			this.setAI( this.pECBehavior.getAIFactory().createAI( this ) )
 		end
 		
 		
@@ -297,7 +315,9 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 		 */
 		public func void setAIAndDispose( BaseActorAI ai )
 			var BaseActorAI disposeAI = this.pAI
+			
 			this.setAI( null )
+			
 			if disposeAI != null
 				disposeAI.dispose()
 			end
@@ -315,41 +335,94 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 			end
 		end
 		
-		/** \brief Think about what to do for the next frame update. */
+		/**
+		 * \brief Think about what to do for the next frame update.
+		 * 
+		 * If actor is player controlled calls BaseActorAction.playerThink() and
+		 * BaseActorAction.think(). If actor is not player controlled calls
+		 * BaseActorAI.think() and BaseActorAction.think(). This avoids the need for
+		 * AI and Action to check if they are player controlled or not.
+		 */
 		public func void think( float elapsed )
-			if this.pAI != null
-				this.pAI.think( elapsed )
-			end
-			if this.pAction != null
-				this.pAction.think( elapsed )
+			if this.pPlayerControllable.isPlayerControlled()
+				if this.pAction != null
+					this.pAction.playerThink( elapsed )
+					this.pAction.think( elapsed )
+				end
+				
+			else
+				if this.pAI != null
+					this.pAI.think( elapsed )
+				end
+				if this.pAction != null
+					this.pAction.think( elapsed )
+				end
 			end
 		end
 		
-		/** \brief Post thinking after physics processing is finished. */
+		/**
+		 * \brief Post thinking after physics processing is finished.
+		 * 
+		 * If actor is player controlled calls BaseActorAction.playerPostThink(float)
+		 * and BaseActorAction.postThink(float). If actor is not player controlled only
+		 * BaseActorAction.postThink(float) is called.
+		 */
 		public func void postThink( float elapsed )
 			if this.pAction != null
+				if this.pPlayerControllable.isPlayerControlled()
+					this.pAction.playerPostThink( elapsed )
+				end
 				this.pAction.postThink( elapsed )
 			end
 		end
 		
 		/** \brief Add element to game world. */
 		public func void addToGameWorld()
+			if this.pAI != null
+				this.pAI.enteredGameWorld()
+			end
+			if this.pAction != null
+				this.pAction.enteredGameWorld()
+			end
 		end
 		
 		/** \brief Remove element from game world. */
 		public func void removeFromGameWorld()
+			if this.pAI != null
+				this.pAI.leftGameWorld()
+			end
+			if this.pAction != null
+				this.pAction.leftGameWorld()
+			end
 		end
 		
 		
 		
 		/** \brief Read behavior from file. */
 		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
-			this.pAI = env.readObjectOrNull( reader ) cast BaseActorAI
-			this.pAction = env.readObjectOrNull( reader ) cast BaseActorAction
+			select reader.readByte() // version
+			case 0
+				var BehaviorElement element = this.getElement()
+				
+				this.pAI = env.readObjectOrNull( reader ) cast BaseActorAI
+				if this.pAI != null
+					this.pAI.activateWhileLoading( element )
+				end
+				
+				this.pAction = env.readObjectOrNull( reader ) cast BaseActorAction
+				if this.pAction != null
+					this.pAction.activateWhileLoading( element )
+				end
+				
+			else
+				throw EInvalidParam.new( "unsupported version" )
+			end
 		end
 		
 		/** \brief Write behavior to file. */
 		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			writer.writeByte( 0 ) // version
+			
 			env.writeObjectOrNull( writer, this.pAI )
 			env.writeObjectOrNull( writer, this.pAction )
 		end
@@ -360,6 +433,8 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 	private var ECBehaviorColliderAI pColliderAI
 	private var ECBehaviorConversationActor pConversationActor
 	private var ECBehaviorPlayerControllable pPlayerControllable
+	private var ActionFactory pActionFactory
+	private var AIFactory pAIFactory
 	
 	
 	
@@ -368,6 +443,8 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 	 * 
 	 * These values are optional and can be null: \em colliderAI, \em conversationActor,
 	 * \em playerControllable.
+	 * 
+	 * The default Action and AI factory are BAAFirstPerson and BAAIBehaviorTree.
 	 */
 	public func new( BehaviorElementClass eclass, ECBehaviorColliderAI colliderAI, \
 	ECBehaviorConversationActor conversationActor, ECBehaviorPlayerControllable playerControllable ) \
@@ -380,6 +457,8 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 		this.pColliderAI = colliderAI
 		this.pConversationActor = conversationActor
 		this.pPlayerControllable = playerControllable
+		this.pActionFactory = BAAFirstPerson.Factory.new()
+		this.pAIFactory = BAAIBehaviorTree.Factory.new()
 		
 		eclass.addBehavior( this )
 	end
@@ -389,6 +468,8 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 		this.pColliderAI = null
 		this.pConversationActor = null
 		this.pPlayerControllable = null
+		this.pActionFactory = null
+		this.pAIFactory = null
 		super.dispose()
 	end
 	
@@ -428,6 +509,32 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 		this.pPlayerControllable = playerControllable
 	end
 	
+	/** \brief Action factory. */
+	public func ActionFactory getActionFactory()
+		return this.pActionFactory
+	end
+	
+	/** \brief Set action factory. */
+	public func void setActionFactory( ActionFactory factory )
+		if factory == null
+			throw ENullPointer.new()
+		end
+		this.pActionFactory = factory
+	end
+	
+	/** \brief AI factory. */
+	public func AIFactory getAIFactory()
+		return this.pAIFactory
+	end
+	
+	/** \brief Set AI factory. */
+	public func void setAIFactory( AIFactory factory )
+		if factory == null
+			throw ENullPointer.new()
+		end
+		this.pAIFactory = factory
+	end
+	
 	
 	
 	/** \brief Get instance in element from owner element class. */
@@ -444,8 +551,8 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 	 * of type ECBehaviorActorAIAction.
 	 */
 	static public func ECBehaviorActorAIAction getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehavior each
-			return each castable ECBehaviorActorAIAction
+		return eclass.findBehavior( block ECBehaviorActorAIAction each
+			return true
 		end ) cast ECBehaviorActorAIAction
 	end
 	
@@ -456,8 +563,8 @@ class ECBehaviorActorAIAction extends DefaultECBehavior
 	 * of type ECBehaviorActorAIAction.Instance .
 	 */
 	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance
+		return element.findInstance( block Instance each
+			return true
 		end ) cast Instance
 	end
 	

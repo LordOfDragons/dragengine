@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -31,34 +34,33 @@ pin Dragengine.Scenery
  * \brief Default implementation of WidgetDesigner for Button.
  */
 class DefaultButtonDesigner extends DefaultWidgetDesigner
-	/** \brief Design for pressed state. */
 	private var StateDesign pDesignPressed
 	
 	
 	
 	/** \brief Create new button designer. */
 	public func new()
-		this.pDesignPressed = StateDesign.new()
+		pDesignPressed = StateDesign.new()
 	end
 	
 	/** \brief Create copy of widget designer. */
-	public func new( DefaultButtonDesigner designer ) super( designer )
-		this.pDesignPressed = designer.pDesignPressed.copyDesign()
+	public func new(DefaultButtonDesigner designer) super(designer)
+		pDesignPressed = designer.pDesignPressed.copyDesign()
 	end
 	
 	
 	
 	/** \brief Design for pressed state. */
 	public func StateDesign getDesignPressed()
-		return this.pDesignPressed
+		return pDesignPressed
 	end
 	
 	/** \brief Set design for pressed state. */
-	protected func void setDesignPressed( StateDesign design )
+	protected func void setDesignPressed(StateDesign design)
 		if design == null
 			throw EInvalidParam.new()
 		end
-		this.pDesignPressed = design
+		pDesignPressed = design
 	end
 	
 	
@@ -72,23 +74,23 @@ class DefaultButtonDesigner extends DefaultWidgetDesigner
 	 * | name | value |
 	 * | pressed | Widget is in pressed state |
 	 */
-	public func void setParameter( String name, Object value )
-		super.setParameter( name, value )
+	public func void setParameter(String name, Object value)
+		super.setParameter(name, value)
 	end
 	
 	/** \brief Get state for parameter name selector component or null if not found. */
-	protected func StateDesign getNamedStateDesign( String stateName )
-		if stateName.equals( "pressed" )
-			return this.pDesignPressed
+	protected func StateDesign getNamedStateDesign(String stateName)
+		if stateName.equals("pressed")
+			return pDesignPressed
 			
 		else
-			return super.getNamedStateDesign( stateName )
+			return super.getNamedStateDesign(stateName)
 		end
 	end
 	
 	/** \brief Create copy of designer. */
 	public func WidgetDesigner copyDesigner()
-		return DefaultButtonDesigner.new( this )
+		return DefaultButtonDesigner.new(this)
 	end
 	
 	
@@ -100,13 +102,13 @@ class DefaultButtonDesigner extends DefaultWidgetDesigner
 	 * returned state design can be a set state design or a merge of multiple state
 	 * designs using a fallback logic.
 	 */
-	protected func StateDesign widgetStateFindDesign( Widget widget )
-		var StateDesign design = super.widgetStateFindDesign( widget )
+	protected func StateDesign widgetStateFindDesign(Widget widget)
+		var StateDesign design = super.widgetStateFindDesign(widget)
 		var Button button = widget cast Button
 		
 		if button.getEnabled() and button.getPressed()
 			design = design.copyDesign()
-			this.pDesignPressed.merge( design )
+			pDesignPressed.merge(design)
 		end
 		
 		return design

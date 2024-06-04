@@ -1,0 +1,235 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.Gui.Events
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+/**
+ * \brief Gamepad trigger tracker.
+ * \version 1.20
+ * 
+ * Helper class to track trigger being pulled and released for gamepads in InputProcessors.
+ * Upon creating an instance of GamepadTriggerTracker all gamepad triggers are located with
+ * their current value. Then forward events received by inputEvent() to GamepadTriggerTracker.
+ * Tracked pull and release events are then send to listener.
+ * 
+ * This class is designed for short use. For this reason this class does not track devices
+ * being attached or detached.
+ */
+class GamepadTriggerTracker
+	/** \brief Listener. */
+	interface Listener
+		/** \brief Trigger pulled. */
+		func void triggerPulled(InputEventSource system, int device, int axis, int trigger)
+		
+		/** \brief Trigger released. */
+		func void triggerReleased(InputEventSource system, int device, int axis, int trigger)
+	end
+	
+	/** \brief Default listener. */
+	class DefaultListener implements Listener
+		func new()
+		end
+		
+		/** \brief Trigger pulled. */
+		func void triggerPulled(InputEventSource system, int device, int axis, int trigger)
+		end
+		
+		/** \brief Trigger released. */
+		func void triggerReleased(InputEventSource system, int device, int axis, int trigger)
+		end
+	end
+	
+	/** \brief Trigger state. */
+	protected class TriggerState
+		var InputEventSource pSystem
+		var int pDevice
+		var int pAxis
+		var int pTrigger
+		var float pValue
+		
+		/** \brief Create trigger state. */
+		func new(InputEventSource system, int device, int axis, int trigger)
+			pSystem = system
+			pDevice = device
+			pAxis = axis
+			
+			select system
+			case InputEventSource.input
+				pValue = InputSystem.getDeviceAt(device).getAxisAt(axis).getValue()
+				
+			case InputEventSource.vr
+				pValue = VRSystem.getDeviceAt(device).getAxisAt(axis).getValue()
+			end
+		end
+		
+		/** \brief Trigger state matches event parameters. */
+		func bool matches(InputEventSource system, int device, int axis)
+			return pSystem == system and pDevice == device and pAxis == axis
+		end
+		
+		/** \brief Update state trigger events if required. */
+		func void update(GamepadTriggerTracker tracker, float value)
+			var bool pulled = value > 0.5
+			var bool prevPulled = pValue > 0.5
+			
+			pValue = value
+			
+			if pulled != prevPulled
+				if pulled
+					tracker.sendPullEvent(pSystem, pDevice, pAxis, pTrigger)
+					
+				else
+					tracker.sendReleaseEvent(pSystem, pDevice, pAxis, pTrigger)
+				end
+			end
+		end
+		
+		/** \brief Clear value to 0. */
+		func void clear()
+			pValue = 0
+		end
+	end
+	
+	
+	
+	var Array pTriggerStates
+	var SafeArray pListeners
+	
+	
+	
+	/** \brief Create trigger tracker. */
+	func new()
+		pTriggerStates = Array.new()
+		pListeners = SafeArray.new()
+		reloadTriggers()
+	end
+	
+	
+	
+	/** \brief Add listener. */
+	func void addListener(Listener listener)
+		if listener == null
+			throw ENullPointer.new("listener")
+		end
+		
+		pListeners.add(listener)
+	end
+	
+	/** \brief Remove listener. */
+	func void removeListener(Listener listener)
+		pListeners.remove(listener)
+	end
+	
+	/** \brief Send pull event to listeners. */
+	func void sendPullEvent(InputEventSource system, int device, int axis, int trigger)
+		pListeners.forEach(block Listener each
+			each.triggerPulled(system, device, axis, trigger)
+		end)
+	end
+	
+	/** \brief Send release event to listeners. */
+	func void sendReleaseEvent(InputEventSource system, int device, int axis, int trigger)
+		pListeners.forEach(block Listener each
+			each.triggerReleased(system, device, axis, trigger)
+		end)
+	end
+	
+	
+	
+	/**
+	 * \brief Process input event.
+	 * 
+	 * Call with input events of type InputEventType.axisMove,
+	 * InputEventType.deviceAttachedDetached or InputEventType.deviceParamsChanged.
+	 * It is safe to send all unrelated events.
+	 */
+	func void inputEvent(InputEvent event)
+		select event.getType()
+		case InputEventType.axisMove
+			inputEventAxisMove(event)
+			
+		case InputEventType.deviceAttachedDetached, InputEventType.deviceParamsChanged
+			reloadTriggers()
+		end
+	end
+	
+	/** \brief Reload triggers. */
+	func void reloadTriggers()
+		pTriggerStates.removeAll()
+		
+		var int i, count
+		
+		count = InputSystem.getDeviceCount()
+		for i = 0 to count
+			trackTrigger(InputEventSource.input, i, InputSystem.getDeviceAt(i))
+		end
+		
+		count = VRSystem.getDeviceCount()
+		for i = 0 to count
+			trackTrigger(InputEventSource.vr, i, VRSystem.getDeviceAt(i))
+		end
+	end
+	
+	
+	
+	/** \brief Input event axis move. */
+	protected func void inputEventAxisMove(InputEvent event)
+		var InputEventSource system = event.getSource()
+		var int device = event.getDevice()
+		var int axis = event.getCode()
+		
+		var TriggerState state = pTriggerStates.find(block TriggerState each
+			return each.matches(system, device, axis)
+		end) cast TriggerState
+		
+		if state != null
+			state.update(this, event.getValue())
+		end
+	end
+	
+	/** \brief Track device axes. */
+	protected func void trackTrigger(InputEventSource system, int deviceIndex, InputDevice device)
+		select device.getType()
+		case InputDeviceType.gamepad, InputDeviceType.joystick
+		else
+			return
+		end
+		
+		var int i, count, indexTrigger
+		
+		count = device.getAxisCount()
+		for i = 0 to count
+			select device.getAxisAt(i).getType()
+			case InputDeviceAxisType.trigger
+				pTriggerStates.add(TriggerState.new(system, deviceIndex, i, indexTrigger++))
+			end
+		end
+	end
+end

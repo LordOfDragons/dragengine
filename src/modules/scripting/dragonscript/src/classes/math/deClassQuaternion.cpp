@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -515,9 +518,34 @@ deClassQuaternion::nfToString::nfToString( const sInitData &init ) : dsFunction(
 }
 void deClassQuaternion::nfToString::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const decQuaternion &quaternion = ( ( sQuatNatDat* )p_GetNativeData( myself ) )->quaternion;
-	char buffer[ 80 ];
-	sprintf( ( char* )&buffer, "(%g,%g,%g,%g)", quaternion.x, quaternion.y, quaternion.z, quaternion.w );
-	rt->PushString( buffer );
+	decString str;
+	str.Format( "(%g,%g,%g,%g)", quaternion.x, quaternion.y, quaternion.z, quaternion.w );
+	rt->PushString( str );
+}
+
+// public func String toString( int precision )
+deClassQuaternion::nfToStringPrecision::nfToStringPrecision( const sInitData &init ) :
+dsFunction( init.clsQuat, "toString", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsStr ){
+	p_AddParameter( init.clsInt ); // precision
+}
+void deClassQuaternion::nfToStringPrecision::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const int precision = rt->GetValue( 0 )->GetInt();
+	if( precision < 0 ){
+		DSTHROW_INFO( dueInvalidParam, "precision < 0" );
+	}
+	if( precision > 9 ){
+		DSTHROW_INFO( dueInvalidParam, "precision > 9" );
+	}
+	
+	const unsigned short p = ( unsigned short )precision;
+	char format[ 22 ];
+	snprintf( format, sizeof( format ), "(%%.%huf,%%.%huf,%%.%huf,%%.%huf)", p, p, p, p );
+	
+	const decQuaternion &quaternion = ( ( sQuatNatDat* )p_GetNativeData( myself ) )->quaternion;
+	decString str;
+	str.Format( format, quaternion.x, quaternion.y, quaternion.z, quaternion.w );
+	rt->PushString( str );
 }
 
 
@@ -600,6 +628,7 @@ void deClassQuaternion::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfEquals( init ) );
 	AddFunction( new nfHashCode( init ) );
 	AddFunction( new nfToString( init ) );
+	AddFunction( new nfToStringPrecision( init ) );
 }
 
 const decQuaternion &deClassQuaternion::GetQuaternion( dsRealObject *myself ) const{

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -31,123 +34,112 @@ pin Dragengine.Utils
  * \brief Behavior tree condition evaluating a boolean parameter table entry.
  */
 class BTConditionParameterTableBool implements BTCondition
-	/** \brief Parameter table entry to compare. */
-	private var ParameterTableEntry pEntry
-	
-	/** \brief Default value if entry to compare is not null. */
-	private var bool pDefaultValue
-	
-	/** \brief Parameter table entry to compare against. */
-	private var ParameterTableEntry pEntryCompareValue
-	
-	/** \brief Use named parameter as source of compare value if not null. */
-	private var String pParameterNameCompareValue
-	
-	/** \brief Default compare against value. */
-	private var bool pCompareValue
-	
-	/** \brief Evaluates to true if values are equal. */
-	private var bool pEqual
+	var ParameterTableEntry pEntry
+	var bool pDefaultValue
+	var ParameterTableEntry pEntryCompareValue
+	var String pParameterNameCompareValue
+	var bool pCompareValue
+	var bool pEqual
 	
 	
 	
 	/** \brief Create condition. */
-	public func new( ParameterTableEntry entry, bool defaultValue, bool equal, bool compareValue ) \
-	this( entry, defaultValue, equal, null, compareValue, null )
+	func new(ParameterTableEntry entry, bool defaultValue, bool equal, bool compareValue) \
+	this(entry, defaultValue, equal, null, compareValue, null)
 	end
 	
 	/** \brief Create condition. */
-	public func new( ParameterTableEntry entry, bool defaultValue, bool equal, \
-	bool compareValue, String parameterNameCompareValue ) \
-	this( entry, defaultValue, equal, null, compareValue, parameterNameCompareValue )
+	func new(ParameterTableEntry entry, bool defaultValue, bool equal, \
+	bool compareValue, String parameterNameCompareValue) \
+	this(entry, defaultValue, equal, null, compareValue, parameterNameCompareValue)
 	end
 	
 	/** \brief Create condition. */
-	public func new( ParameterTableEntry entry, bool defaultValue, bool equal, \
-	ParameterTableEntry entryCompareValue, bool compareValue, String parameterNameCompareValue )
+	func new(ParameterTableEntry entry, bool defaultValue, bool equal, \
+	ParameterTableEntry entryCompareValue, bool compareValue, String parameterNameCompareValue)
 		if entry == null
 			throw EInvalidParam.new()
 		end
-		this.pEntry = entry
-		this.pDefaultValue = defaultValue
-		this.pEqual = equal
-		this.pEntryCompareValue = entryCompareValue
-		this.pCompareValue = compareValue
-		this.pParameterNameCompareValue = parameterNameCompareValue
+		pEntry = entry
+		pDefaultValue = defaultValue
+		pEqual = equal
+		pEntryCompareValue = entryCompareValue
+		pCompareValue = compareValue
+		pParameterNameCompareValue = parameterNameCompareValue
 	end
 	
 	
 	
 	/** \brief Parameter table entry to compare. */
-	public func ParameterTableEntry getEntry()
-		return this.pEntry
+	func ParameterTableEntry getEntry()
+		return pEntry
 	end
 	
 	/** \brief Set parameter table entry to compare. */
-	public func void setEntry( ParameterTableEntry entry )
+	func void setEntry(ParameterTableEntry entry)
 		if entry == null
 			throw EInvalidParam.new()
 		end
-		this.pEntry = entry
+		pEntry = entry
 	end
 	
 	/** \brief Default value if entry to compare is not null. */
-	public func bool getDefaultValue()
-		return this.pDefaultValue
+	func bool getDefaultValue()
+		return pDefaultValue
 	end
 	
 	/** \brief Set default value if entry to compare is not null. */
-	public func void setDefaultValue( bool defaultValue )
-		this.pDefaultValue = defaultValue
+	func void setDefaultValue(bool defaultValue)
+		pDefaultValue = defaultValue
 	end
 	
 	/** \brief Evaluates to true if values are equal. */
-	public func bool getEqual()
-		return this.pEqual
+	func bool getEqual()
+		return pEqual
 	end
 	
 	/** \brief Set evaluates to true if values are equal. */
-	public func void setEqual( bool equal )
-		this.pEqual = equal
+	func void setEqual(bool equal)
+		pEqual = equal
 	end
 	
 	/** \brief Parameter table entry to compare against. */
-	public func ParameterTableEntry getEntryCompareValue()
-		return this.pEntryCompareValue
+	func ParameterTableEntry getEntryCompareValue()
+		return pEntryCompareValue
 	end
 	
 	/** \brief Set parameter table entry to compare against. */
-	public func void setEntryCompareValue( ParameterTableEntry entry )
-		this.pEntryCompareValue = entry
+	func void setEntryCompareValue(ParameterTableEntry entry)
+		pEntryCompareValue = entry
 	end
 	
 	/** \brief Default compare against value. */
-	public func bool getCompareValue()
-		return this.pCompareValue
+	func bool getCompareValue()
+		return pCompareValue
 	end
 	
 	/** \brief Set default compare against value. */
-	public func void setCompareValue( bool compareValue )
-		this.pCompareValue = compareValue
+	func void setCompareValue(bool compareValue)
+		pCompareValue = compareValue
 	end
 	
 	/** \brief Use named parameter as source of compare value if not null. */
-	public func String getParameterNameCompareValue()
-		return this.pParameterNameCompareValue
+	func String getParameterNameCompareValue()
+		return pParameterNameCompareValue
 	end
 	
 	/** \brief Use named parameter as source of compare value if not null. */
-	public func void setParameterNameCompareValue( String name )
-		this.pParameterNameCompareValue = name
+	func void setParameterNameCompareValue(String name)
+		pParameterNameCompareValue = name
 	end
 	
 	
 	
 	/** \brief Create condition testing the exact opposite. */
-	public func BTConditionParameterTableBool negated()
-		return BTConditionParameterTableBool.new( this.pEntry, this.pDefaultValue, \
-			not this.pEqual, this.pEntryCompareValue, this.pCompareValue, \
-			this.pParameterNameCompareValue )
+	func BTConditionParameterTableBool negated()
+		return BTConditionParameterTableBool.new(pEntry, pDefaultValue, \
+			not pEqual, pEntryCompareValue, pCompareValue, \
+			pParameterNameCompareValue)
 	end
 	
 	
@@ -157,23 +149,23 @@ class BTConditionParameterTableBool implements BTCondition
 	 * \param parameters Dictionary with parameters of type String key and String value.
 	 *                   Do not change the content of the dictionary as it is shared.
 	 */
-	public func bool evaluateCondition( BTContext context, Dictionary parameters )
-		var bool compareValue = this.pCompareValue
-		if this.pEntryCompareValue != null
-			compareValue = this.pEntryCompareValue.getValue( compareValue )
+	func bool evaluateCondition(BTContext context, Dictionary parameters)
+		var bool compareValue = pCompareValue
+		if pEntryCompareValue != null
+			compareValue = pEntryCompareValue.getValue(compareValue)
 		end
-		if this.pParameterNameCompareValue != null
-			var String value = parameters.getAt( this.pParameterNameCompareValue, null ) cast String
+		if pParameterNameCompareValue != null
+			var String value = parameters.getAt(pParameterNameCompareValue, null) cast String
 			if value != null
-				compareValue = value.equals( "true" )
+				compareValue = value.equals("true")
 			end
 		end
 		
-		if this.pEqual
-			return this.pEntry.getValue( this.pDefaultValue ) == compareValue
+		if pEqual
+			return pEntry.getValue(pDefaultValue) == compareValue
 			
 		else
-			return this.pEntry.getValue( this.pDefaultValue ) != compareValue
+			return pEntry.getValue(pDefaultValue) != compareValue
 		end
 	end
 end

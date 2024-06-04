@@ -1,26 +1,33 @@
-/* 
- * Drag[en]gine Basic Network Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DENETWORKBASIC_H_
 #define _DENETWORKBASIC_H_
+
+#include "debnAddress.h"
+#include "configuration/debnConfiguration.h"
+#include "parameters/debnParameterList.h"
 
 #include <dragengine/common/file/decBaseFileWriterReference.h>
 #include <dragengine/common/string/decStringList.h>
@@ -29,79 +36,8 @@
 
 class debnSocket;
 class debnServer;
-class debnAddress;
 class debnConnection;
 class deNetworkMessage;
-
-
-
-/*
- Protocol definition. Will be moved to a separate file in the game engine
- once finished.
- 
- Connection Request:
-   [ 0 ] [ protocols ]
-   
-   protocols:  // list of protocols supported by client
-      [ count:uint16 ] [ protocol:uint16 ]{ 1..n }
-   
- Connection Ack:
-   [ 1 ] [ resultCode:uint8 ]
-   
-   resultCode:
-      0: Connection Accepted
-      1: Connection Rejected
-      2: Connection Rejected because no common protocols
-   
-   if connection is accepted the message also contains:
-         [ protocol:uint16 ]
-   
-      protocol:
-         The chosen protocol
- 
- Close Connection:
-   [ 2 ]
- 
- Message:
-   [ 3 ] [ data ]
- 
- Reliable message:
-   [ 4 ] [ number:uint16 ] [ data ]
- 
- Link state:
-   [ 5 ] [ number:uint16 ] [ link_id:uint16 ] [ flags ] [ message ] [ values ]
-   
-   flags:
-      0x1: create read only state
-   
-   message:
-      [ length:uint16 ] [ message_bytes:uint8 ]{ 1..n }
-      
-   values:
-      [ value_count:uint16 ] ( [ value_type:uint8 ] [ value_data:* ] ){ 1..n }
- 
- Reliable ack:
-   [ 6 ] [ number:uint16 ] [ code:uint8 ]
-   
-   code:
-      [ 0 ] received successfully
-      [ 1 ] failed
- 
- Link up:
-   [ 7 ] [ link_id:uint16 ]
- 
- Link down:
-   [ 8 ] [ link_id:uint16 ]
- 
- Link update: 
-   [ 9 ] [ link_count:uint8 ] [ link ]{ 1..link_count }
-   
-   link:
-      [ link_id:uint16 ] [ value_count:uint8 ] [ value ]{ 1..value_count }
-   
-   value:
-      [ value_index:uint16 ] [ value_data:* ]
-*/
 
 /*
 
@@ -126,6 +62,15 @@ Where predictLinear and predictAccelerated value is of the same format as value_
 
 Best way to enable this is to use a protocol version V2. Adding some feature to enable
 this in the existing protocol could be a problem. V1 needs to be backwards compatible.
+*/
+
+/*
+
+NOTE Package Size
+
+UDP (usually) reliable package size IPv4 540 (IPv6 roughly double this). Sending longer
+packages potentially fragments them.
+
 */
 
 enum eCommandCodes{
@@ -205,6 +150,9 @@ enum eProtocols{
  */
 class deNetworkBasic : public deBaseNetworkModule{
 private:
+	debnParameterList pParameters;
+	debnConfiguration pConfiguration;
+	
 	// objects to monitor
 	debnConnection *pHeadConnection;
 	debnConnection *pTailConnection;
@@ -215,7 +163,7 @@ private:
 	
 	// sending and receiving
 	deNetworkMessage *pDatagram;
-	debnAddress *pAddressReceive;
+	debnAddress pAddressReceive;
 	deNetworkMessageReference pSharedSendDatagram;
 	decBaseFileWriterReference pSharedSendDatagramWriter;
 	
@@ -223,6 +171,10 @@ private:
 	//debnMessageQueue *pMessagesReceive;
 	
 	//deNetworkMessage *pMessage;
+	
+	#ifdef OS_W32
+	bool pWSAStartupCalled;
+	#endif
 	
 public:
 	/** @name Constructors and Destructors */
@@ -250,6 +202,10 @@ public:
 	
 	/** @name Management */
 	/*@{*/
+	/** Configuration. */
+	inline debnConfiguration &GetConfiguration(){ return pConfiguration; }
+	inline const debnConfiguration &GetConfiguration() const{ return pConfiguration; }
+	
 	inline deNetworkMessage *GetSharedSendDatagram() const{ return pSharedSendDatagram; }
 	inline decBaseFileWriter &GetSharedSendDatagramWriter() const{ return pSharedSendDatagramWriter; }
 	
@@ -269,18 +225,25 @@ public:
 	/** \brief Find public addresses. */
 	void FindPublicAddresses( decStringList &list );
 	
-	/** Create a peer for the given world. */
+	/** \brief Close all connections using socket. */
+	void CloseConnections( debnSocket *bnSocket );
+	
+	
+	
+	virtual int GetParameterCount() const;
+	virtual void GetParameterInfo( int index, deModuleParameter &parameter ) const;
+	virtual int IndexOfParameterNamed( const char *name ) const;
+	virtual decString GetParameterValue( const char *name ) const;
+	virtual void SetParameterValue( const char *name, const char *value );
+	
 	virtual deBaseNetworkWorld *CreateWorld( deWorld *world );
-	/** Create a peer for the given server. */
 	virtual deBaseNetworkServer *CreateServer( deServer *server );
-	/** Create a peer for the given connection. */
 	virtual deBaseNetworkConnection *CreateConnection( deConnection *connection );
-	/** Create a peer for the given state. */
 	virtual deBaseNetworkState *CreateState( deNetworkState *state );
 	/*@}*/
 	
 private:
-	debnConnection *pFindConnection( const debnSocket *bnSocket, const debnAddress *address ) const;
+	debnConnection *pFindConnection( const debnSocket *bnSocket, const debnAddress &address ) const;
 	debnServer *pFindServer( const debnSocket *bnSocket ) const;
 	
 	void pReceiveDatagrams();

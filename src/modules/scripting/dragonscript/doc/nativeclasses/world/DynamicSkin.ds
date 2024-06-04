@@ -8,6 +8,9 @@
 
 namespace Dragengine.Scenery
 
+pin Dragengine.Gui
+
+
 /**
  * \brief Dynamic skin.
  * 
@@ -17,7 +20,7 @@ class DynamicSkin
 	/** \name Constructors */
 	/*@{*/
 	/** \brief Create dynamic skin. */
-	public func new()
+	func new()
 	end
 	/*@}*/
 	
@@ -26,33 +29,36 @@ class DynamicSkin
 	/** \name Management */
 	/*@{*/
 	/** \brief Number of renderables. */
-	public func int getRenderableCount()
+	func int getRenderableCount()
+		return 0
 	end
 	
 	/** \brief Named renderable is present. */
-	public func bool hasRenderable( String name )
+	func bool hasRenderable(String name)
+		return false
 	end
 	
 	/** \brief Index of named renderable or -1 if absent. */
-	public func int indexOfRenderable( String name )
+	func int indexOfRenderable(String name)
+		return 0
 	end
 	
 	/**
 	 * \brief Add named renderable.
 	 * \throws EInvalidParam Named renderable is present.
 	 */
-	public func void addRenderable( String name, DynamicSkinRenderableType type )
+	func void addRenderable(String name, DynamicSkinRenderableType type)
 	end
 	
 	/**
 	 * \brief Remove named renderable.
 	 * \throws EInvalidParam Named renderable is absent.
 	 */
-	public func void removeRenderable( String name )
+	func void removeRenderable(String name)
 	end
 	
 	/** \brief Remove all renderables. */
-	public func void removeAllRenderables()
+	func void removeAllRenderables()
 	end
 	
 	
@@ -61,17 +67,38 @@ class DynamicSkin
 	 * \brief Type of renderable at index.
 	 * \throws EOutOfBoundary \em renderable is less than 0 or greater than or equal to getRenderableCount().
 	 */
-	public func DynamicSkinRenderableType getTypeAt( int renderable )
+	func DynamicSkinRenderableType getTypeAt(int renderable)
+		return null
 	end
 	
 	
+	
+	/**
+	 * \brief Renderable value or \em null if not set.
+	 * \verrsion 1.20
+	 * \throws EOutOfBoundary \em renderable is less than 0 or greater than or equal to getRenderableCount().
+	 * \throws EInvalidParam Renderable is not of type DynamicSkinRenderableType.value.
+	 */
+	func float getValueAt(int renderable)
+		return 0.0
+	end
 	
 	/**
 	 * \brief Set renderable value.
 	 * \throws EOutOfBoundary \em renderable is less than 0 or greater than or equal to getRenderableCount().
 	 * \throws EInvalidParam Renderable is not of type DynamicSkinRenderableType.value.
 	 */
-	public func void setValueAt( int renderable, float value )
+	func void setValueAt(int renderable, float value)
+	end
+	
+	/**
+	 * \brief Renderable color or \em null if not set.
+	 * \version 1.20
+	 * \throws EOutOfBoundary \em renderable is less than 0 or greater than or equal to getRenderableCount().
+	 * \throws EInvalidParam Renderable is not of type DynamicSkinRenderableType.color.
+	 */
+	func Color getColorAt(int renderable)
+		return null
 	end
 	
 	/**
@@ -79,7 +106,17 @@ class DynamicSkin
 	 * \throws EOutOfBoundary \em renderable is less than 0 or greater than or equal to getRenderableCount().
 	 * \throws EInvalidParam Renderable is not of type DynamicSkinRenderableType.color.
 	 */
-	public func void setColorAt( int renderable, Color color )
+	func void setColorAt(int renderable, Color color)
+	end
+	
+	/**
+	 * \brief Renderable image or \em null if not set.
+	 * \version 1.20
+	 * \throws EOutOfBoundary \em renderable is less than 0 or greater than or equal to getRenderableCount().
+	 * \throws EInvalidParam Renderable is not of type DynamicSkinRenderableType.image.
+	 */
+	func Image getImageAt(int renderable)
+		return null
 	end
 	
 	/**
@@ -87,7 +124,7 @@ class DynamicSkin
 	 * \throws EOutOfBoundary \em renderable is less than 0 or greater than or equal to getRenderableCount().
 	 * \throws EInvalidParam Renderable is not of type DynamicSkinRenderableType.image.
 	 */
-	public func void setImageAt( int renderable, Image image )
+	func void setImageAt(int renderable, Image image)
 	end
 	
 	/**
@@ -95,7 +132,8 @@ class DynamicSkin
 	 * \throws EOutOfBoundary \em renderable is less than 0 or greater than or equal to getRenderableCount().
 	 * \throws EInvalidParam Renderable is not of type DynamicSkinRenderableType.canvas.
 	 */
-	public func CanvasView getCanvasAt( int renderable )
+	func CanvasView getCanvasAt(int renderable)
+		return null
 	end
 	
 	/**
@@ -103,7 +141,40 @@ class DynamicSkin
 	 * \throws EOutOfBoundary \em renderable is less than 0 or greater than or equal to getRenderableCount().
 	 * \throws EInvalidParam Renderable is not of type DynamicSkinRenderableType.canvas.
 	 */
-	public func void setCanvasAt( int renderable, CanvasView canvas )
+	func void setCanvasAt(int renderable, CanvasView canvas)
+	end
+	
+	/**
+	 * \brief Set renderable canvas or \em null if not set.
+	 * \version 1.7
+	 * \throws EOutOfBoundary \em renderable is less than 0 or greater than or equal to getRenderableCount().
+	 * \throws EInvalidParam Renderable is not of type DynamicSkinRenderableType.canvas.
+	 * \throws EInvalidParam \em componentCount is less than 1.
+	 * \throws EInvalidParam \em componentCount is greater than 4.
+	 */
+	func void setCanvasAt(int renderable, CanvasView canvas, int componentCount)
+	end
+	
+	/**
+	 * \brief Set renderable canvas or \em null if not set.
+	 * \version 1.7
+	 * \throws EOutOfBoundary \em renderable is less than 0 or greater than or equal to getRenderableCount().
+	 * \throws EInvalidParam Renderable is not of type DynamicSkinRenderableType.canvas.
+	 * \throws EInvalidParam \em componentCount is less than 1.
+	 * \throws EInvalidParam \em componentCount is greater than 4.
+	 * \throws EInvalidParam \em bitCount is not 8, 16 or 32.
+	 */
+	func void setCanvasAt(int renderable, CanvasView canvas, int componentCount, int bitCount)
+	end
+	
+	/**
+	 * \brief Renderable camera or \em null if not set.
+	 * \version 1.20
+	 * \throws EOutOfBoundary \em renderable is less than 0 or greater than or equal to getRenderableCount().
+	 * \throws EInvalidParam Renderable is not of type DynamicSkinRenderableType.camera.
+	 */
+	func Camera getCameraAt(int renderable)
+		return null
 	end
 	
 	/**
@@ -111,7 +182,17 @@ class DynamicSkin
 	 * \throws EOutOfBoundary \em renderable is less than 0 or greater than or equal to getRenderableCount().
 	 * \throws EInvalidParam Renderable is not of type DynamicSkinRenderableType.camera.
 	 */
-	public func void setCameraAt( int renderable, Camera camera )
+	func void setCameraAt(int renderable, Camera camera)
+	end
+	
+	/**
+	 * \brief Renderable video player or \em null if not set.
+	 * \version 1.20
+	 * \throws EOutOfBoundary \em renderable is less than 0 or greater than or equal to getRenderableCount().
+	 * \throws EInvalidParam Renderable is not of type DynamicSkinRenderableType.videoPlayer.
+	 */
+	func VideoPlayer getVideoPlayerAt(int renderable)
+		return null
 	end
 	
 	/**
@@ -119,7 +200,7 @@ class DynamicSkin
 	 * \throws EOutOfBoundary \em renderable is less than 0 or greater than or equal to getRenderableCount().
 	 * \throws EInvalidParam Renderable is not of type DynamicSkinRenderableType.videoFrame.
 	 */
-	public func void setVideoPlayerAt( int renderable, VideoPlayer videoPlayer )
+	func void setVideoPlayerAt(int renderable, VideoPlayer videoPlayer)
 	end
 	/*@}*/
 end

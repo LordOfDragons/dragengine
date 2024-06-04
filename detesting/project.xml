@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+	<profile>
+		<name>Default</name>
+		<description>Default profile for running tests manually.</description>
+		<scriptDirectory>/scripts</scriptDirectory>
+		<gameObject>DETestingApp</gameObject>
+		<pathConfig>/config</pathConfig>
+		<pathCapture>/capture</pathCapture>
+		<identifier>9dc27c9d-b073-06f2-8da1-b7cfb5628c98</identifier>
+		<aliasIdentifier>dragenginetesting</aliasIdentifier>
+		<title>Drag[en]gine Testing</title>
+		<gameDescription>Drag[en]gine Testing</gameDescription>
+		<creator/>
+		<website/>
+		<icon>/content/image/icon64.png</icon>
+		<windowSize x='800' y='400'/>
+		<delgaPath>distribute/DETesting.delga</delgaPath>
+	</profile>
+	<profile>
+		<name>TestingCI</name>
+		<description>Testing profile for CI use. Runs all tests automatically then exists.</description>
+		<scriptDirectory>/scripts</scriptDirectory>
+		<gameObject>DETestingAppCI</gameObject>
+		<pathConfig>/config</pathConfig>
+		<pathCapture>/capture</pathCapture>
+		<identifier>9dc27c9d-b073-06f2-8da1-b7cfb5628c98</identifier>
+		<aliasIdentifier>dragenginetesting</aliasIdentifier>
+		<title>Drag[en]gine Testing</title>
+		<gameDescription>Drag[en]gine Testing</gameDescription>
+		<creator/>
+		<website/>
+		<icon>/content/image/icon64.png</icon>
+		<windowSize x='800' y='400'/>
+		<delgaPath>distribute/DETestingCI.delga</delgaPath>
+	</profile>
+</project>

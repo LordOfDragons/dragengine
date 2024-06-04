@@ -1,44 +1,40 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
-// include only once
 #ifndef _DEOGLRENDERPLANMASKED_H_
 #define _DEOGLRENDERPLANMASKED_H_
 
-// includes
-#include "dragengine/common/math/decMath.h"
+#include <dragengine/common/math/decMath.h>
 
-// predefinitions
 class deoglRenderPlan;
 class deoglRComponent;
 
-
-
 /**
- * @brief Render Plan Masked.
- *
  * Stores a masked render plan. A masked render plan is used to render
  * views into an world render call using a mask to limit the touched
  * pixels. A render plan masked consists of a render plan itself as
- * well as informations on how to obtain the mask.
+ * well as information on how to obtain the mask.
  */
 class deoglRenderPlanMasked{
 private:
@@ -50,57 +46,85 @@ private:
 	bool pUseClipPlane;
 	decVector pClipNormal;
 	float pClipDistance;
+	decVector pClipNormalStereo;
+	float pClipDistanceStereo;
 	
 	int pStencilMask;
 	int pParentStencilMask;
 	
+	
+	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new masked render plan. */
+	/** Create masked render plan. */
 	deoglRenderPlanMasked();
 	
-	/** Cleans up the masked render plan. */
+	/** Clean up masked render plan. */
 	~deoglRenderPlanMasked();
 	/*@}*/
 	
-	/** @name Management */
+	
+	
+	/** \name Management */
 	/*@{*/
-	/** Retrieves the render plan. */
+	/** Render plan. */
 	inline deoglRenderPlan *GetPlan() const{ return pPlan; }
-	/** Sets the render plan. */
+	
+	/** Set render plan. */
 	void SetPlan( deoglRenderPlan *plan );
 	
-	/** Retrieves the component or NULL. */
+	/** Component or nuullptr. */
 	inline deoglRComponent *GetComponent() const{ return pComponent; }
-	/** Retrieves the component texture. */
+	
+	/** Component texture. */
 	inline int GetComponentTexture() const{ return pComponentTexture; }
-	/** Sets the component and texture or NULL if unused. */
+	
+	/** Set component and texture or nullptr if unused. */
 	void SetComponent( deoglRComponent *component, int texture );
 	
-	/** Determines if the clip plane is used. */
+	/** Clip plane is used. */
 	inline bool GetUseClipPlane() const{ return pUseClipPlane; }
-	/** Sets if the clip plane is used. */
+	
+	/** Set if clip plane is used. */
 	void SetUseClipPlane( bool useClipPlane );
-	/** Retrieves the clipping plane normal. */
+	
+	/** Clipping plane normal. */
 	inline const decVector &GetClipNormal() const{ return pClipNormal; }
-	/** Sets the clipping plane normal. */
+	
+	/** Set clipping plane normal. */
 	void SetClipNormal( const decVector &normal );
-	/** Retrieves the clipping plane distance. */
+	
+	/** Clipping plane distance. */
 	inline float GetClipDistance() const{ return pClipDistance; }
-	/** Sets the clipping plane distance. */
+	
+	/** Set clipping plane distance. */
 	void SetClipDistance( float distance );
 	
-	/** Retrieves the stencil mask. */
+	/** Stereo clipping plane normal. */
+	inline const decVector &GetClipNormalStereo() const{ return pClipNormalStereo; }
+	
+	/** Set stereo clipping plane normal. */
+	void SetClipNormalStereo( const decVector &normal );
+	
+	/** Stereo clipping plane distance. */
+	inline float GetClipDistanceStereo() const{ return pClipDistanceStereo; }
+	
+	/** Set stereo clipping plane distance. */
+	void SetClipDistanceStereo( float distance );
+	
+	/** Stencil mask. */
 	inline int GetStencilMask() const{ return pStencilMask; }
-	/** Sets the stencil mask. */
+	
+	/** Set stencil mask. */
 	void SetStencilMask( int mask );
-	/** Retrieves the parent stencil mask. */
+	
+	/** Parent stencil mask. */
 	inline int GetParentStencilMask() const{ return pParentStencilMask; }
-	/** Sets the parent stencil mask. */
+	
+	/** Set parent stencil mask. */
 	void SetParentStencilMask( int mask );
 	/*@}*/
 };
 
-// end of include only once
 #endif

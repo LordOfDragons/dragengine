@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -37,81 +40,284 @@ class ADLink
 	private var int pIndex
 	private var CurveBezier pCurve
 	private var int pRepeat
+	private var String pBone
+	private var AnimatorLinkBoneParameter pBoneParameter
+	private var float pBoneMinimum
+	private var float pBoneMaximum
+	private var String pVertexPositionSet
+	private var float pVertexPositionSetMinimum
+	private var float pVertexPositionSetMaximum
+	private var bool pWrapY
 	
 	
 	
 	/** \brief Create link definition. */
 	public func new()
-		this.pIndex = 0
-		this.pCurve = CurveBezier.newDefaultLinear()
-		this.pRepeat = 1
+		pIndex = 0
+		pCurve = CurveBezier.newDefaultLinear()
+		pRepeat = 1
+		pBone = ""
+		pBoneParameter = AnimatorLinkBoneParameter.positionZ
+		pBoneMinimum = 0
+		pBoneMaximum = 1
+		pVertexPositionSet = ""
+		pVertexPositionSetMinimum = 0
+		pVertexPositionSetMaximum = 1
+		pWrapY = false
+	end
+	
+	/**
+	 * \brief Create copy of link definition.
+	 * \version 1.13
+	 */
+	public func new(AnimatorDefinition fromDef, AnimatorDefinition toDef, ADLink link)
+		if fromDef == null
+			throw ENullPointer.new("fromDef")
+		end
+		if toDef == null
+			throw ENullPointer.new("toDef")
+		end
+		if link == null
+			throw ENullPointer.new("link")
+		end
+		
+		pIndex = 0
+		pCurve = CurveBezier.new(link.pCurve)
+		pRepeat = link.pRepeat
+		pBone = link.pBone
+		pBoneParameter = link.pBoneParameter
+		pBoneMinimum = link.pBoneMinimum
+		pBoneMaximum = link.pBoneMaximum
+		pVertexPositionSet = link.pVertexPositionSet
+		pVertexPositionSetMinimum = link.pVertexPositionSetMinimum
+		pVertexPositionSetMaximum = link.pVertexPositionSetMaximum
+		pWrapY = link.pWrapY
+		
+		if link.pController != null
+			pController = toDef.getControllerAt(fromDef.indexOfController(link.getController()))
+		end
 	end
 	
 	
 	
-	/** \brief Controller or \em null if not set. */
+	/** \brief Controller or null if not set. */
 	public func ADController getController()
-		return this.pController
+		return pController
 	end
 	
-	/** \brief Set controller or \em null if not set. */
-	public func void setController( ADController controller )
-		this.pController = controller
+	/** \brief Set controller or null if not set. */
+	public func void setController(ADController controller)
+		pController = controller
 	end
 	
 	/** \brief Curve. */
 	public func CurveBezier getCurve()
-		return this.pCurve
+		return pCurve
 	end
 	
 	/** \brief Set curve. */
-	public func void setCurve( CurveBezier curve )
-		this.pCurve = curve
+	public func void setCurve(CurveBezier curve)
+		pCurve = curve
 	end
 	
 	/** \brief Repeat count along X axis. */
 	public func int getRepeat()
-		return this.pRepeat
+		return pRepeat
 	end
 	
 	/** \brief Set repeat along X axis. */
-	public func void setRepeat( int repeat )
-		this.pRepeat = repeat
+	public func void setRepeat(int repeat)
+		pRepeat = repeat
+	end
+	
+	/**
+	 * \brief Bone to use parameter of as input or empty string to not use.
+	 * \version 1.6
+	 */
+	public func String getBone()
+		return pBone
+	end
+	
+	/**
+	 * \brief Set bone to use parameter of as input or empty string to not use.
+	 * \version 1.6
+	 */
+	public func void setBone(String bone)
+		if bone == null
+			throw ENullPointer.new("bone")
+		end
+		pBone = bone
+	end
+	
+	/**
+	 * \brief Bone parameter to use as input.
+	 * \version 1.6
+	 */
+	public func AnimatorLinkBoneParameter getBoneParameter()
+		return pBoneParameter
+	end
+	
+	/**
+	 * \brief Set bone parameter to use as input.
+	 * \version 1.6
+	 */
+	public func void setBoneParameter(AnimatorLinkBoneParameter parameter)
+		if parameter == null
+			throw ENullPointer.new("parameter")
+		end
+		pBoneParameter = parameter
+	end
+	
+	/**
+	 * \brief Minimum bone parameter value.
+	 * \version 1.6
+	 */
+	public func float getBoneMinimum()
+		return pBoneMinimum
+	end
+	
+	/**
+	 * \brief Set minimum bone parameter value.
+	 * \version 1.6
+	 */
+	public func void setBoneMinimum(float value)
+		pBoneMinimum = value
+	end
+	
+	/**
+	 * \brief Maximum bone parameter value.
+	 * \version 1.6
+	 */
+	public func float getBoneMaximum()
+		return pBoneMaximum
+	end
+	
+	/**
+	 * \brief Set maximum bone parameter value.
+	 * \version 1.6
+	 */
+	public func void setBoneMaximum(float value)
+		pBoneMaximum = value
+	end
+	
+	/**
+	 * \brief Vertex position set to use as input or empty string to not use.
+	 * \version 1.17
+	 */
+	public func String getVertexPositionSet()
+		return pVertexPositionSet
+	end
+	
+	/**
+	 * \brief Set vertex position set to use as input or empty string to not use.
+	 * \version 1.17
+	 */
+	public func void setVertexPositionSet(String vertexPositionSet)
+		if vertexPositionSet == null
+			throw ENullPointer.new("vertexPositionSet")
+		end
+		pVertexPositionSet = vertexPositionSet
+	end
+	
+	/**
+	 * \brief Minimum vertex position set value.
+	 * \version 1.17
+	 */
+	public func float getVertexPositionSetMinimum()
+		return pVertexPositionSetMinimum
+	end
+	
+	/**
+	 * \brief Set minimum vertex position set value.
+	 * \version 1.17
+	 */
+	public func void setVertexPositionSetMinimum(float value)
+		pVertexPositionSetMinimum = value
+	end
+	
+	/**
+	 * \brief Maximum vertex position set value.
+	 * \version 1.17
+	 */
+	public func float getVertexPositionSetMaximum()
+		return pVertexPositionSetMaximum
+	end
+	
+	/**
+	 * \brief Set maximum vertex position set value.
+	 * \version 1.17
+	 */
+	public func void setVertexPositionSetMaximum(float value)
+		pVertexPositionSetMaximum = value
+	end
+	
+	/**
+	 * \brief Wrap Y value instead of clamping.
+	 * \version 1.9
+	 */
+	public func bool getWrapY()
+		return pWrapY
+	end
+	
+	/**
+	 * \brief Set to wrap Y value instead of clamping.
+	 * \version 1.9
+	 */
+	public func void setWrapY(bool wrap)
+		pWrapY = wrap
 	end
 	
 	
 	
 	/** \brief Index of link in animator. */
 	public func int getIndex()
-		return this.pIndex
+		return pIndex
 	end
 	
 	
 	
 	/** \brief Add link to animator using the stored definition. */
-	public func void addToAnimator( Animator animator )
+	public func void addToAnimator(Animator animator)
 		if animator == null
-			throw EInvalidParam.new()
+			throw ENullPointer.new("animator")
 		end
 		
-		if this.pController == null
-			this.pIndex = animator.addLink( -1 )
+		if pController == null
+			pIndex = animator.addLink(-1)
 			
 		else
-			this.pIndex = animator.addLink( this.pController.getIndex() )
+			pIndex = animator.addLink(pController.getIndex())
 		end
 		
-		animator.setLinkCurve( this.pIndex, this.pCurve )
-		animator.setLinkRepeat( this.pIndex, this.pRepeat )
+		animator.setLinkCurve(pIndex, pCurve)
+		animator.setLinkRepeat(pIndex, pRepeat)
+		animator.setLinkBone(pIndex, pBone)
+		animator.setLinkBoneParameter(pIndex, pBoneParameter)
+		animator.setLinkVertexPositionSet(pIndex, pVertexPositionSet)
+		animator.setLinkVertexPositionSetValueRange(pIndex, pVertexPositionSetMinimum, pVertexPositionSetMaximum)
+		animator.setLinkWrapY(pIndex, pWrapY)
+		
+		select pBoneParameter
+		case AnimatorLinkBoneParameter.rotationX, \
+			AnimatorLinkBoneParameter.rotationY, \
+			AnimatorLinkBoneParameter.rotationZ
+				animator.setLinkBoneValueRangeRotation(pIndex, pBoneMinimum, pBoneMaximum)
+			
+		else
+			animator.setLinkBoneValueRange(pIndex, pBoneMinimum, pBoneMaximum)
+		end
 	end
 	
 	
 	
-	public func void debug( Console console, int index )
-		this.pIndex = index
+	public func void debug(Console console, int index)
+		pIndex = index
 		
-		console.addMessage( "- Link " + index + " ( controller=" \
-			+ ( this.pController == null if -1 else this.pController.getIndex() ) \
-			+ " repeat=" + this.pRepeat + ")" )
+		console.addMessage("- Link " + index + " (controller=" \
+			+ (pController == null if -1 else pController.getIndex()) \
+			+ " repeat=" + pRepeat + " bone=" + pBone + " boneParam=" + pBoneParameter \
+			+ " boneMin=" + pBoneMinimum + " boneMax" + pBoneMaximum \
+			+ " vertPosSet=" + pVertexPositionSet + " vpsMin=" + pVertexPositionSetMinimum \
+			+ " vpsMax=" + pVertexPositionSetMaximum + " wrapY=" + pWrapY + ")")
 	end
 end

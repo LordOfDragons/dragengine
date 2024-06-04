@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Animator Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEARANIMATORINSTANCE_H_
@@ -29,6 +32,7 @@
 #include <dragengine/common/collection/decThreadSafeObjectOrderedSet.h>
 
 #include "dearBoneStateList.h"
+#include "dearVPSStateList.h"
 #include "dearControllerStates.h"
 
 class dearComponent;
@@ -46,7 +50,7 @@ class dearLink;
 
 
 /**
- * \brief Animator instance peer.
+ * Animator instance peer.
  */
 class dearAnimatorInstance : public deBaseAnimatorAnimatorInstance{
 private:
@@ -63,6 +67,7 @@ private:
 	bool pUseBlending;
 	bool pSkipApply;
 	bool pUseAllBones;
+	bool pUseAllVPS;
 	
 	unsigned int pAnimatorUpdateTracker;
 	
@@ -71,6 +76,9 @@ private:
 	
 	dearBoneStateList pBoneStateList;
 	decIntList pMappingRigToState;
+	
+	dearVPSStateList pVPSStateList;
+	decIntList pMappingModelToVPSState;
 	
 	dearControllerStates pControllerStates;
 	
@@ -82,16 +90,17 @@ private:
 	
 	bool pCaptureComponentState;
 	
+	bool pUseParallelTask;
 	dearTaskApplyRules *pActiveTaskApplyRule;
 	decThreadSafeObjectOrderedSet pTaskApplyRules;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create peer. */
+	/** Create peer. */
 	dearAnimatorInstance( deDEAnimator &module, deAnimatorInstance &instance );
 	
-	/** \brief Clean up peer. */
+	/** Clean up peer. */
 	virtual ~dearAnimatorInstance();
 	/*@}*/
 	
@@ -99,107 +108,59 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Animator module. */
+	/** Animator module. */
 	inline deDEAnimator &GetModule(){ return pModule; }
-	inline const deDEAnimator &GetModule() const { return pModule; }
-	
-	/** \brief Animator instance. */
-	inline deAnimatorInstance &GetAnimatorInstance(){ return pAnimatorInstance; }
-	inline const deAnimatorInstance &GetAnimatorInstance() const{ return pAnimatorInstance; }
-	
-	/** \brief Animator or \em NULL if not set. */
-	inline dearAnimator *GetAnimator() const{ return pAnimator; }
 	
 	
 	
-	/** \brief Animation or \em NULL if not set. */
+	/** Animation or nullptr if not set. */
 	inline dearAnimation *GetAnimation() const{ return pAnimation; }
 	
-	/** \brief Component or \em NULL if not set. */
+	/** Component or nullptr if not set. */
 	inline dearComponent *GetComponent() const{ return pComponent; }
 	
-	/** \brief Bone state list. */
+	/** Bone state list. */
 	inline dearBoneStateList &GetBoneStateList(){ return pBoneStateList; }
 	inline const dearBoneStateList &GetBoneStateList() const{ return pBoneStateList; }
 	
-	/** \brief Controller states. */
-	inline dearControllerStates &GetControllerStates(){ return pControllerStates; }
+	/** VPS state list. */
+	inline dearVPSStateList &GetVPSStateList(){ return pVPSStateList; }
+	inline const dearVPSStateList &GetVPSStateList() const{ return pVPSStateList; }
+	
+	/** Controller states. */
 	inline const dearControllerStates &GetControllerStates() const{ return pControllerStates; }
 	
-	/** \brief Rig to state mapping. */
-	inline const decIntList &GetMappingRigToState() const{ return pMappingRigToState; }
-	
-	
-	
-	/** \brief Capture current component state before applying rules. */
-	inline bool GetCaptureComponentState() const{ return pCaptureComponentState; }
-	
-	/** \brief Set capture current component state to true. */
+	/** Set capture current component state to true. */
 	void SetCaptureComponentState();
 	
 	
 	
-	/**
-	 * \brief Use blending.
-	 * \details If blend mode is deAnimatorRule::ebmBlend and factor is 1 applying
-	 *          states can be optimized by doing copy instead of blending.
-	 */
-	inline bool GetUseBlending() const{ return pUseBlending; }
-	
-	
-	
-	/** \brief Number of links. */
+	/** Number of links. */
 	int GetLinkCount() const;
 	
-	/** \brief Link at index. */
+	/** Link at index. */
 	dearLink *GetLinkAt( int index ) const;
 	
-	/** \brief Add link. */
+	/** Add link. */
 	void AddLink( dearLink *link );
 	
 	
 	
-	/** \brief Update controller states. */
-	void UpdateControllerStates();
-	
 	/**
-	 * \brief Apply rules to animator instance state.
-	 * \details This call is thread-safe. It can be used parallel or synchronous.
-	 *          The resulting bone state is not applied to anything. Call the
-	 *          appropriate ApplyStateTo* calls for this.
+	 * Apply rules to animator instance state. This call is thread-safe. It can be used parallel
+	 * or synchronous. The resulting bone state is not applied to anything. Call the appropriate
+	 * ApplyStateTo* calls for this.
 	 */
 	void ApplyRules();
 	
 	/**
-	 * \brief Apply bone states to the bound engine component if existing.
-	 * \details This call is synchronous. It is used by synchronous calls or
-	 *          by the task Finished() call.
-	 */
-	void ApplyStateToComponent() const;
-	
-	/**
-	 * \brief Apply bone states to the bound animator module component if existing.
-	 * \details This call is asynchronous. It is used by task Run() call.
+	 * Apply bone states to the bound animator module component if existing. This call is
+	 * asynchronous. It is used by task Run() call.
 	 */
 	void ApplyStateToArComponent() const;
 	
-	
-	
 	/**
-	 * \brief Run task to apply rules.
-	 * \details If running in parallel is disabled this calls ApplyRules() instead.
-	 */
-	void StartTaskApplyRules();
-	
-	/**
-	 * \brief Cancel task to apply rules if existing.
-	 * \details Forces parallel tasks to finish to ensure the tasks is finished.
-	 */
-	void CancelTaskApplyRules();
-	
-	/**
-	 * \brief Stop task running apply rules in parallel.
-	 * \details Called by dearTaskApplyRules.Finished() only.
+	 * Stop task running apply rules in parallel. Called by dearTaskApplyRules.Finished() only.
 	 */
 	void StopTaskApplyRules();
 	
@@ -207,7 +168,7 @@ public:
 	
 	
 	/**
-	 * \brief Apply state of animator to the component if existing.
+	 * Apply state of animator to the component if existing.
 	 * \details Animator modules can decide to calculate this in parallel. If
 	 *          \em direct is \em true the application is always done
 	 *          synchronously and is done after the call returns. If \em direct
@@ -218,14 +179,14 @@ public:
 	virtual void Apply( bool direct );
 	
 	/**
-	 * \brief Capture current state of component into rules matching identifier.
+	 * Capture current state of component into rules matching identifier.
 	 */
 	virtual void CaptureStateInto( int identifier );
 	
 	/**
-	 * \brief Store animation frame from animation into rules matching identifier.
+	 * Store animation frame from animation into rules matching identifier.
 	 * \details If \em moveName does not exist in the animation a default state is captured.
-	 * \throws deeInvalidParam \em moveName is \em NULL.
+	 * \throws deeInvalidParam \em moveName is nullptr.
 	 */
 	virtual void StoreFrameInto( int identifier, const char *moveName, float moveTime );
 	/*@}*/
@@ -234,32 +195,34 @@ public:
 	
 	/** \name Notifications */
 	/*@{*/
-	/** \brief Animator changed. */
+	/** Animator changed. */
 	virtual void AnimatorChanged();
 	
-	/** \brief Component changed. */
+	/** Component changed. */
 	virtual void ComponentChanged();
 	
-	/** \brief Animation changed. */
+	/** Animation changed. */
 	virtual void AnimationChanged();
 	
-	/** \brief Blend factor changed. */
+	/** Blend factor changed. */
 	virtual void BlendFactorChanged();
 	
-	/** \brief Enable retargeting changed. */
+	/** Enable retargeting changed. */
 	virtual void EnableRetargetingChanged();
 	
-	/** \brief Protect dynamic bones changed. */
+	/** Protect dynamic bones changed. */
 	virtual void ProtectDynamicBonesChanged();
 	
-	/** \brief Controller changed. */
+	/** Controller changed. */
 	virtual void ControllerChanged( int index );
 	/*@}*/
+	
+	
 	
 private:
 	void pCleanUp();
 	void pCheckRequireRebuild();
-	void pUpdateBoneMappings();
+	void pUpdateMappings();
 	void pCheckAnimatorChanged();
 	void pUpdateAnimator();
 	void pUpdateFakeRootBones();
@@ -272,6 +235,34 @@ private:
 	void pUpdateRuleParams();
 	
 	dearTaskApplyRules *pNewTaskApplyRules();
+	
+	
+	
+	/** Update controller states. */
+	void pUpdateControllerStates();
+	
+	/**
+	 * Apply bone states to the bound engine component if existing. This call is synchronous.
+	 * It is used by synchronous calls or by the task Finished() call.
+	 */
+	void pApplyStateToComponent() const;
+	
+	/**
+	 * Run task to apply rules.
+	 * 
+	 * If running in parallel is disabled this calls ApplyRules() instead.
+	 */
+	void pStartTaskApplyRules();
+	
+	/**
+	 * Cancel task to apply rules if existing.
+	 * \details Forces parallel tasks to finish to ensure the tasks is finished.
+	 */
+	void pCancelTaskApplyRules();
+	
+	void pWaitTaskApplyRules();
+	
+	void pWaitAnimTaskFinished();
 };
 
 #endif

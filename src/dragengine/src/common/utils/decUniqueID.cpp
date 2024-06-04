@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Game Engine
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -59,9 +62,14 @@ pByteCount( 0 )
 	
 	// store value
 	pBytes = new unsigned char[ requiredByteCount ];
-	while( value > 0 ){
-		pBytes[ pByteCount++ ] = ( unsigned char )( value & 0xff );
-		value >>= 8;
+	if( value > 0 ){
+		while( value > 0 ){
+			pBytes[ pByteCount++ ] = ( unsigned char )( value & 0xff );
+			value >>= 8;
+		}
+		
+	}else{
+		pByteCount = 1;
 	}
 }
 
@@ -73,7 +81,7 @@ pByteCount( 0 )
 		DETHROW( deeInvalidParam );
 	}
 	
-	const int nibbleCount = strlen( string );
+	const int nibbleCount = ( int )strlen( string );
 	
 	pByteCount = ( nibbleCount / 2 ) + ( nibbleCount % 2 );
 	pBytes = new unsigned char[ pByteCount ];
@@ -283,11 +291,11 @@ void decUniqueID::DecrementBy( const decUniqueID &id ){
 		}
 		
 		if( takeOver > pBytes[ i ] ){
-			pBytes[ i ] += 256 - takeOver;
+			pBytes[ i ] += ( unsigned char )( 256 - takeOver );
 			takeOver = 1;
 			
 		}else{
-			pBytes[ i ] -= takeOver;
+			pBytes[ i ] -= ( unsigned char )takeOver;
 			takeOver = 0;
 		}
 	}
@@ -310,10 +318,10 @@ decString decUniqueID::ToHexString() const{
 		const int value = ( pBytes[ index ] >> shift ) & 0xf;
 		
 		if( value < 10 ){
-			string[ i ] = '0' + value;
+			string[ i ] = ( char )( '0' + value );
 			
 		}else{
-			string[ i ] = 'a' + ( value - 10 );
+			string[ i ] = ( char )( 'a' + ( value - 10 ) );
 		}
 		
 		if( shift == 0 ){

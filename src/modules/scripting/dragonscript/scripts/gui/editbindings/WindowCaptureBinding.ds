@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -41,72 +44,208 @@ public class WindowCaptureBinding extends WindowDialog
 	/** \brief Capture result. */
 	public class CaptureResult
 		var EditBindingsListModelEntry.InputSource pInputSource
+		var InputEventSource pSystem
 		var int pDeviceIndex
 		var int pSourceIndex
 		var bool pInverseAxis
 		
-		/** \brief Create capture result. */
-		public func new( EditBindingsListModelEntry.InputSource inputSource, \
-		int deviceIndex, int sourceIndex, bool inverseAxis )
-			this.pInputSource = inputSource
-			this.pDeviceIndex = deviceIndex
-			this.pSourceIndex = sourceIndex
-			this.pInverseAxis = inverseAxis
+		/**
+		 * \brief Create capture result.
+		 * \deprecated Use new(EditBindingsListModelEntry.InputSource,InputEventSource,int,int,bool)
+		 */
+		func new(EditBindingsListModelEntry.InputSource inputSource, int deviceIndex,\
+		int sourceIndex, bool inverseAxis) this(inputSource, InputEventSource.input,\
+		deviceIndex, sourceIndex, inverseAxis)
+		end
+		
+		/**
+		 * \brief Create capture result.
+		 * \version 1.6
+		 */
+		func new(EditBindingsListModelEntry.InputSource inputSource,\
+		InputEventSource system, int deviceIndex, int sourceIndex, bool inverseAxis)
+			pInputSource = inputSource
+			pSystem = system
+			pDeviceIndex = deviceIndex
+			pSourceIndex = sourceIndex
+			pInverseAxis = inverseAxis
 		end
 		
 		/** \brief Input source. */
-		public func EditBindingsListModelEntry.InputSource getInputSource()
-			return this.pInputSource
+		func EditBindingsListModelEntry.InputSource getInputSource()
+			return pInputSource
+		end
+		
+		/**
+		 * \brief Captured device system.
+		 * \version 1.6
+		 */
+		func InputEventSource getSystem()
+			return pSystem
 		end
 		
 		/** \brief Captured device index. */
-		public func int getDeviceIndex()
-			return this.pDeviceIndex
+		func int getDeviceIndex()
+			return pDeviceIndex
 		end
 		
 		/** \brief Captured source index. */
-		public func int getSourceIndex()
-			return this.pSourceIndex
+		func int getSourceIndex()
+			return pSourceIndex
 		end
 		
 		/** \brief Inverse axis. */
-		public func bool getInverseAxis()
-			return this.pInverseAxis
+		func bool getInverseAxis()
+			return pInverseAxis
+		end
+		
+		
+		
+		/**
+		 * \brief Device or null if not set.
+		 * \version 1.6
+		 */
+		func InputDevice getInputDevice()
+			if pDeviceIndex == -1
+				return null
+			end
+			
+			select pSystem
+			case InputEventSource.input
+				return InputSystem.getDeviceAt(pDeviceIndex)
+				
+			case InputEventSource.vr
+				return VRSystem.getDeviceAt(pDeviceIndex)
+			end
+			
+			return null
+		end
+		
+		/**
+		 * \brief Device axis or null if not set.
+		 * \version 1.6
+		 */
+		func InputDeviceAxis getInputDeviceAxis()
+			if pSourceIndex != -1
+				var InputDevice device = getInputDevice()
+				if device != null
+					return device.getAxisAt(pSourceIndex)
+				end
+			end
+			return null
+		end
+		
+		/**
+		 * \brief Device button or null if not set.
+		 * \version 1.6
+		 */
+		func InputDeviceButton getInputDeviceButton()
+			if pSourceIndex != -1
+				var InputDevice device = getInputDevice()
+				if device != null
+					return device.getButtonAt(pSourceIndex)
+				end
+			end
+			return null
+		end
+		
+		/**
+		 * \brief Device feedback or null if not set.
+		 * \version 1.6
+		 */
+		func InputDeviceFeedback getInputDeviceFeedback()
+			if pSourceIndex != -1
+				var InputDevice device = getInputDevice()
+				if device != null
+					return device.getFeedbackAt(pSourceIndex)
+				end
+			end
+			return null
 		end
 	end
 	
 	/** \brief Close dialog listener setting capture. */
 	public class CaptureAxisListener extends DefaultMouseListener
-		private var WindowDialog pDialog
-		private var int pDeviceIndex
-		private var int pAxisIndex
-		private var ToggleModel pInverseAxis
+		var WindowDialog pDialog
+		var InputEventSource pSystem
+		var int pDeviceIndex
+		var int pAxisIndex
+		var ToggleModel pInverseAxis
 		
-		/** \brief Create action listener with null result. */
-		public func new( WindowDialog dialog, int deviceIndex, int axisIndex, ToggleModel inverseAxis )
-			this.pDialog = dialog
-			this.pDeviceIndex = deviceIndex
-			this.pAxisIndex = axisIndex
-			this.pInverseAxis = inverseAxis
+		/**
+		 * \brief Create action listener with null result.
+		 * \deprecated Use new(WindowDialog,InputEventSource,int,int,ToggleModel)
+		 */
+		func new(WindowDialog dialog, int deviceIndex, int axisIndex, ToggleModel inverseAxis) \
+		this(dialog, InputEventSource.input, deviceIndex, axisIndex, inverseAxis)
+		end
+		
+		/**
+		 * \brief Create action listener with null result.
+		 * \version 1.6
+		 */
+		func new(WindowDialog dialog, InputEventSource system, int deviceIndex,\
+		int axisIndex, ToggleModel inverseAxis)
+			pDialog = dialog
+			pSystem = system
+			pDeviceIndex = deviceIndex
+			pAxisIndex = axisIndex
+			pInverseAxis = inverseAxis
 		end
 		
 		/** \brief Mouse button has been pressed. */
-		public func void onButtonPress( MouseEvent event )
+		func void onButtonPress(MouseEvent event)
 			if event.getButton() != InputEventMouseButton.left
 				return
 			end
 			
-			WindowDialog.CloseDialog.new( this.pDialog, CaptureResult.new( \
-				EditBindingsListModelEntry.InputSource.axis, this.pDeviceIndex, \
-				this.pAxisIndex, this.pInverseAxis.getToggled() ) ) \
-					.onAction( ActionEvent.new( event.getSource(), ActionEvent.idAction, 0 ) )
+			WindowDialog.CloseDialog.new(pDialog, CaptureResult.new(\
+				EditBindingsListModelEntry.InputSource.axis, pDeviceIndex,\
+				pAxisIndex, pInverseAxis.getToggled())) \
+					.onAction(ActionEvent.new(event.getSource(), ActionEvent.idAction, 0))
+		end
+		
+		
+		
+		/**
+		 * \brief Device or null if not set.
+		 * \version 1.6
+		 */
+		func InputDevice getInputDevice()
+			if pDeviceIndex == -1
+				return null
+			end
+			
+			select pSystem
+			case InputEventSource.input
+				return InputSystem.getDeviceAt(pDeviceIndex)
+				
+			case InputEventSource.vr
+				return VRSystem.getDeviceAt(pDeviceIndex)
+			end
+			
+			return null
+		end
+		
+		/**
+		 * \brief Device axis or null if not set.
+		 * \version 1.6
+		 */
+		func InputDeviceAxis getInputDeviceAxis()
+			if pAxisIndex != -1
+				var InputDevice device = getInputDevice()
+				if device != null
+					return device.getAxisAt(pAxisIndex)
+				end
+			end
+			return null
 		end
 	end
 	
 	
 	
-	/** \brief Type of input to capture from EditBindingsListModelEntry.* . */
-	private var EditBindingsListModelEntry.InputSource pInputSource
+	var EditBindingsListModelEntry.InputSource pInputSource
+	var DefaultToggleModel pModelInverseAxis
 	
 	
 	
@@ -114,35 +253,45 @@ public class WindowCaptureBinding extends WindowDialog
 	 * \brief Create dialog window.
 	 * 
 	 * \param inputSource Input source allowed to capture. Has to be
-	 *                    EditBindingsListModelEntry.InputSource.axis or EditBindingsListModelEntry.InputSource.button .
+	 *                    EditBindingsListModelEntry.InputSource.axis
+	 *                    or EditBindingsListModelEntry.InputSource.button .
 	 */
-	public func new( EditBindingsListModelEntry.InputSource inputSource )
-		this.pInputSource = inputSource
-		this.setCanFocus( true )
-		this.setDesignerSelector( "WindowDialog.CaptureBinding" )
+	func new(EditBindingsListModelEntry.InputSource inputSource)
+		pInputSource = inputSource
+		pModelInverseAxis = DefaultToggleModel.new()
+		setCanFocus(true)
+		setDesignerSelector("WindowDialog.CaptureBinding")
 	end
 	
 	/**
 	 * \brief Create window with the given geometry.
 	 * 
 	 * \param inputSource Input source allowed to capture. Has to be
-	 *                    EditBindingsListModelEntry.InputSource.axis or EditBindingsListModelEntry.InputSource.button .
+	 *                    EditBindingsListModelEntry.InputSource.axis
+	 *                    or EditBindingsListModelEntry.InputSource.button .
 	 * \param x X position.
 	 * \param y Y position.
 	 * \param width Width.
 	 * \param height Height.
 	 */
-	public func new( EditBindingsListModelEntry.InputSource inputSource, \
-	int x, int y, int width, int height ) super( x, y, width, height )
-		this.pInputSource = inputSource
-		this.setCanFocus( true )
+	func new(EditBindingsListModelEntry.InputSource inputSource,\
+	int x, int y, int width, int height) super(x, y, width, height)
+		pInputSource = inputSource
+		pModelInverseAxis = DefaultToggleModel.new()
+		setCanFocus(true)
+	end
+	
+	/** \brief Dispose of widget. */
+	public func void dispose()
+		pModelInverseAxis = null
+		super.dispose()
 	end
 	
 	
 	
 	/** \brief Type of input to capture from EditBindingsListModelEntry.* . */
-	public func EditBindingsListModelEntry.InputSource getInputSource()
-		return this.pInputSource
+	func EditBindingsListModelEntry.InputSource getInputSource()
+		return pInputSource
 	end
 	
 	
@@ -161,66 +310,59 @@ public class WindowCaptureBinding extends WindowDialog
 	 * \param message Message to show.
 	 * \param listener Listener to call closing message box.
 	 */
-	public static func WindowCaptureBinding captureInput( BindingManager bindingManager, \
-	EditBindingsListModelEntry.InputSource inputSource, Window window, String title, \
-	String message, ResultListener listener )
-		var WindowCaptureBinding dialog = WindowCaptureBinding.new( inputSource, 0, 0, 200, 200 )
+	public static func WindowCaptureBinding captureInput(BindingManager bindingManager,\
+	EditBindingsListModelEntry.InputSource inputSource, Window window, String title,\
+	String message, ResultListener listener)
+		var WindowCaptureBinding dialog = WindowCaptureBinding.new(inputSource, 0, 0, 200, 200)
 		
-		dialog.runWhileBlockingLayout( block
-			dialog.setLayout( BoxLayout.new( LayoutAxis.y, 0 ) )
-			dialog.setCanResize( false )
-			dialog.setTitle( title )
-			dialog.setResult( null ) // result for closing window without button
-			dialog.setResultListener( listener )
+		dialog.runWhileBlockingLayout(block
+			dialog.setLayout(BoxLayout.new(LayoutAxis.y, 0))
+			dialog.setCanResize(false)
+			dialog.setTitle(title)
+			dialog.setResult(null) // result for closing window without button
+			dialog.setResultListener(listener)
 			
 			// message
-			var Label label = Label.new( message )
-			label.setDesignerSelector( "Label.WindowDialog.CaptureBinding" )
-			label.setWordWrap( true )
-			dialog.addWidget( label )
+			var Label label = Label.new(message)
+			label.setDesignerSelector("Label.WindowDialog.CaptureBinding")
+			label.setWordWrap(true)
+			dialog.addWidget(label)
 			
 			// add mouse axis buttons if required. for button input axis input is possible
 			// too but mouse does not work for this
 			if inputSource == EditBindingsListModelEntry.InputSource.axis
-				var int i, count = bindingManager.getDeviceCount()
-				var DefaultToggleModel inverseAxis = DefaultToggleModel.new()
-				var int mouse = -1
+				var InputDevice device = bindingManager.findDevice(block InputDevice each
+					return each.getType() == InputDeviceType.mouse
+				end)
 				
-				for i = 0 to count
-					if bindingManager.getDeviceAt( i ).getType() == InputDeviceType.mouse
-						mouse = i
-						break
-					end
-				end
-				
-				if mouse != -1
-					dialog.addWidget( Panel.new( CentrizedBoxLayout.new( LayoutAxis.x, 5 ), \
+				if device != null
+					dialog.addWidget(Panel.new(CentrizedBoxLayout.new(LayoutAxis.x, 5),\
 					block Panel panelButton
-						panelButton.setDesignerSelector( "Panel.WindowDialogButtons.CaptureBinding" )
+						panelButton.setDesignerSelector("Panel.WindowDialogButtons.CaptureBinding")
 						
-						var InputDevice device = bindingManager.getDeviceAt( mouse )
 						var DisplayInputSource dpi
+						dpi = DisplayInputSource.new(32, null, device.getAxisAt(0))
+						dpi.setDesignerSelector("DisplayInputSource.WindowDialog.CaptureBinding")
+						panelButton.addWidget(dpi)
+						dpi.addMouseListener(CaptureAxisListener.new(dialog,\
+							device.getSource(), device.getIndex(), 0, dialog.pModelInverseAxis))
 						
-						dpi = DisplayInputSource.new( 32, null, device.getAxisAt( 0 ) )
-						dpi.setDesignerSelector( "DisplayInputSource.WindowDialog.CaptureBinding" )
-						panelButton.addWidget( dpi )
-						dpi.addMouseListener( CaptureAxisListener.new( dialog, mouse, 0, inverseAxis ) )
+						dpi = DisplayInputSource.new(32, null, device.getAxisAt(1))
+						dpi.setDesignerSelector("DisplayInputSource.WindowDialog.CaptureBinding")
+						panelButton.addWidget(dpi)
+						dpi.addMouseListener(CaptureAxisListener.new(dialog,\
+							device.getSource(), device.getIndex(), 1, dialog.pModelInverseAxis))
 						
-						dpi = DisplayInputSource.new( 32, null, device.getAxisAt( 1 ) )
-						dpi.setDesignerSelector( "DisplayInputSource.WindowDialog.CaptureBinding" )
-						panelButton.addWidget( dpi )
-						dpi.addMouseListener( CaptureAxisListener.new( dialog, mouse, 1, inverseAxis ) )
-						
-						panelButton.addWidget( CheckBox.new( inverseAxis, "Invert" ) )
-					end ), BorderLayout.Area.bottom )
+						panelButton.addWidget(CheckBox.new(dialog.pModelInverseAxis, "Invert"))
+					end), BorderLayout.Area.bottom)
 				end
 			end
-		end )
+		end)
 		
 		// show dialog
-		dialog.show( window, false, WindowModal.Placement.window )
+		dialog.show(window, false, WindowModal.Placement.window)
 		
-		dialog.setSize( Point.new( 200, 200 ).largest( dialog.getMinimumSize() ) )
+		dialog.setSize(Point.new(200, 200).largest(dialog.getMinimumSize()))
 		dialog.doLayout()
 		
 		dialog.grabFocus()
@@ -240,48 +382,48 @@ public class WindowCaptureBinding extends WindowDialog
 	 * \brief Close dialog.
 	 * \details Unblocks window and sends notification with result to listener if present.
 	 */
-	public func void close()
-		this.releaseMouse()
+	func void close()
+		releaseMouse()
 		super.close()
 	end
 	
 	
 	
 	/** \brief Key pressed event. */
-	public func void onKeyPress( KeyEvent event )
-		if this.pInputSource != EditBindingsListModelEntry.InputSource.button
-			super.onKeyPress( event )
+	func void onKeyPress(KeyEvent event)
+		if pInputSource != EditBindingsListModelEntry.InputSource.button
+			super.onKeyPress(event)
 			return
 		end
 		
 		if event.getDevice() == -1
 			// generated event
-			super.onKeyPress( event )
+			super.onKeyPress(event)
 			return
 		end
 		
-		this.setResult( CaptureResult.new( EditBindingsListModelEntry.InputSource.button, \
-			event.getDevice(), event.getButtonCode(), false ) )
-		this.close()
+		setResult(CaptureResult.new(EditBindingsListModelEntry.InputSource.button,\
+			event.getSystem(), event.getDevice(), event.getButtonCode(), false))
+		close()
 	end
 	
 	/** \brief Mouse button pressed. */
-	public func void onButtonPress( MouseEvent event )
-		if this.pInputSource != EditBindingsListModelEntry.InputSource.button
-			super.onButtonPress( event )
+	func void onButtonPress(MouseEvent event)
+		if pInputSource != EditBindingsListModelEntry.InputSource.button
+			super.onButtonPress(event)
 			return
 		end
 		
-		// we have to be clever while handling this. we have captured the mouse so the user can
+		// we have to be clever while handling  we have captured the mouse so the user can
 		// not click the close button on the window to abort binding. we have to see if the
 		// mouse pointer is currently over the close button of our decorator if present. if
 		// this is the case we have to event down to the desktop itself to handle things
 		// correctly
-		var Decoration decoration = this.getDecoration()
+		var Decoration decoration = getDecoration()
 		if decoration != null
-			var Desktop desktop = this.getDesktop()
-			if decoration.areaHitBy( desktop.getMouseLocation() ) == Decoration.Area.close
-				this.close()
+			var Desktop desktop = getDesktop()
+			if decoration.areaHitBy(desktop.getMouseLocation()) == Decoration.Area.close
+				close()
 				return
 			end
 		end
@@ -289,79 +431,99 @@ public class WindowCaptureBinding extends WindowDialog
 		// otherwise capture the input
 		if event.getDevice() == -1
 			// generated event
-			super.onButtonPress( event )
+			super.onButtonPress(event)
 			return
 		end
 		
-		this.setResult( CaptureResult.new( EditBindingsListModelEntry.InputSource.button, \
-			event.getDevice(), event.getButton(), false ) )
-		this.close()
+		setResult(CaptureResult.new(EditBindingsListModelEntry.InputSource.button,\
+			event.getSystem(), event.getDevice(), event.getButton(), false))
+		close()
 	end
 	
 	/** \brief Mouse wheel moved. */
-	public func void onMouseWheel( MouseEvent event )
-		/*if this.pInputSource != EditBindingsListModelEntry.InputSource.axis
-			super.onMouseWheel( event )
+	func void onMouseWheel(MouseEvent event)
+		/*if pInputSource != EditBindingsListModelEntry.InputSource.axis
+			super.onMouseWheel(event)
 			return
 		end*/
 		
 		if event.getDevice() == -1
 			// generated event
-			super.onMouseWheel( event )
+			super.onMouseWheel(event)
 			return
 		end
 		
 		var Point position = event.getPosition()
 		
 		if position.getX() > 0
-			this.setResult( CaptureResult.new( EditBindingsListModelEntry.InputSource.axis, \
-				event.getDevice(), event.getButton(), false ) )
-			this.close()
+			setResult(CaptureResult.new(EditBindingsListModelEntry.InputSource.axis,\
+				event.getSystem(), event.getDevice(), event.getButton(), false))
+			close()
 			
 		elif position.getX() < 0
-			this.setResult( CaptureResult.new( EditBindingsListModelEntry.InputSource.axis, \
-				event.getDevice(), event.getButton(), true ) )
-			this.close()
+			setResult(CaptureResult.new(EditBindingsListModelEntry.InputSource.axis,\
+				event.getSystem(), event.getDevice(), event.getButton(), true))
+			close()
 			
 		elif position.getY() > 0
-			this.setResult( CaptureResult.new( EditBindingsListModelEntry.InputSource.axis, \
-				event.getDevice(), event.getButton(), false ) )
-			this.close()
+			setResult(CaptureResult.new(EditBindingsListModelEntry.InputSource.axis,\
+				event.getSystem(), event.getDevice(), event.getButton(), false))
+			close()
 			
 		elif position.getY() < 0
-			this.setResult( CaptureResult.new( EditBindingsListModelEntry.InputSource.axis, \
-				event.getDevice(), event.getButton(), true ) )
-			this.close()
+			setResult(CaptureResult.new(EditBindingsListModelEntry.InputSource.axis,\
+				event.getSystem(), event.getDevice(), event.getButton(), true))
+			close()
 		end
 	end
 	
 	/** \brief Gamepad axis moved. */
-	public func void onGamepadAxisMoved( GamepadEvent event )
-		/*if this.pInputSource != EditBindingsListModelEntry.InputSource.axis
-			super.onGamepadAxisMoved( event )
+	func void onGamepadAxisMoved(GamepadEvent event)
+		/*if pInputSource != EditBindingsListModelEntry.InputSource.axis
+			super.onGamepadAxisMoved(event)
 			return
 		end*/
 		
-		if DEMath.fabs( event.getAxisValue() ) < 0.8
-			// we want a far enough push to be sure this is what the user wants
-			super.onGamepadAxisMoved( event )
-			return
+		select event.getInputAxisType()
+		case InputDeviceAxisType.stick, InputDeviceAxisType.steeringWheel
+			if DEMath.fabs(event.getAxisValue()) < 0.8
+				super.onGamepadAxisMoved(event)
+				return
+			end
+			
+			var bool inverseAxis
+			if pInputSource == EditBindingsListModelEntry.InputSource.axis
+				inverseAxis = pModelInverseAxis.getToggled()
+				
+			else
+				inverseAxis = event.getAxisValue() > 0
+			end
+			
+			setResult(CaptureResult.new(EditBindingsListModelEntry.InputSource.axis,\
+				event.getSystem(), event.getDevice(), event.getCode(), inverseAxis))
+			close()
+			
+		else
+			if event.getAxisValue() < 0.8
+				super.onGamepadAxisMoved(event)
+				return
+			end
+			
+			setResult(CaptureResult.new(EditBindingsListModelEntry.InputSource.axis,\
+				event.getSystem(), event.getDevice(), event.getCode(), false))
+			close()
 		end
-		
-		this.setResult( CaptureResult.new( EditBindingsListModelEntry.InputSource.axis, \
-			event.getDevice(), event.getCode(), event.getAxisValue() < 0.0 ) )
-		this.close()
 	end
 	
 	/** \brief Gamepad button pressed. */
-	public func void onGamepadButtonPressed( GamepadEvent event )
-		if this.pInputSource != EditBindingsListModelEntry.InputSource.button
-			super.onGamepadButtonPressed( event )
+	func void onGamepadButtonPressed(GamepadEvent event)
+		if pInputSource != EditBindingsListModelEntry.InputSource.button
+			super.onGamepadButtonPressed(event)
 			return
 		end
 		
-		this.setResult( CaptureResult.new( EditBindingsListModelEntry.InputSource.button, \
-			event.getDevice(), event.getCode(), false ) )
-		this.close()
+		setResult(CaptureResult.new(EditBindingsListModelEntry.InputSource.button,\
+			event.getSystem(), event.getDevice(), event.getCode(), false))
+		close()
 	end
 end

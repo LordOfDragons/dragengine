@@ -1,0 +1,78 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+
+namespace Dragengine.StateMachineSystem
+
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+
+/**
+ * \brief State machine condition using block.
+ * 
+ * Provides support to add tiny conditions often just calling a SMContext method without
+ * needing to implement a full class. The used block has to take one parameter of type
+ * SMContext context and Dictionary and parameters. Do not change the content of the
+ * dictionary as it is shared.
+ * 
+ * \code{.ds}
+ * new SMBlockCondition( block SMContext context, Dictionary parameters
+ *    // verify condition then return true or false
+ *    return true
+ * end )
+ * \endcode
+ */
+class SMBlockCondition implements SMCondition
+	/** \brief Block to use. */
+	private var Block pBlock
+	
+	
+	
+	/** \brief Create condition. */
+	public func new( Block ablock )
+		if ablock == null
+			throw EInvalidParam.new()
+		end
+		this.pBlock = ablock
+	end
+	
+	
+	/** \brief Block to use. */
+	public func Block getBlock()
+		return this.pBlock
+	end
+	
+	
+	
+	/**
+	 * \brief Evaluate condition.
+	 * \param parameters Dictionary with parameters of type String key and String value.
+	 *                   Do not change the content of the dictionary as it is shared.
+	 */
+	public func bool evaluateCondition( SMContext context, Dictionary parameters )
+		return this.pBlock.run( context, parameters ) cast bool
+	end
+end

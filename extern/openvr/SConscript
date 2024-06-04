@@ -1,0 +1,115 @@
+import os
+import sys
+import SCons
+
+from SConsCommon import *
+from SConsExternCommon import *
+
+Import('parent_env parent_targets parent_report')
+
+envLibrary = parent_env.Clone()
+
+# switch
+buildStaticLinking = True
+
+# parameters
+openvrVersion = '1.16.8'
+
+srcdir = 'openvr-{}'.format(openvrVersion)
+
+if envLibrary['OSWindows']:
+	staticFileName = envLibrary.subst('lib/libopenvr_api64.a')
+	libLinkName = 'openvr_api64'
+	libpath = [envLibrary.Dir('lib')]
+	
+	# openvr reacts badly to these
+	if '-Wl,--nxcompat' in envLibrary['CROSSCOMPILE_LINKFLAGS']:
+		envLibrary['CROSSCOMPILE_LINKFLAGS'].remove('-Wl,--nxcompat')
+	
+	if '-Wl,--dynamicbase' in envLibrary['CROSSCOMPILE_LINKFLAGS']:
+		envLibrary['CROSSCOMPILE_LINKFLAGS'].remove('-Wl,--dynamicbase')
+	
+elif envLibrary['OSBeOS']:
+	Return()
+else:
+	staticFileName = envLibrary.subst('lib/${LIBPREFIX}openvr_api${LIBSUFFIX}')
+	libLinkName = 'openvr_api'
+	libpath = [envLibrary.Dir('lib')]
+
+def openvrBuild(target, source, env):
+	buildDir = target[0].get_dir().up()
+	
+	script = createScriptHeader(env)
+	
+	script.append('cd "{}" || exit 1'.format(buildDir.abspath))
+	
+	cmdline = ['cmake']
+	cmdline.append('-DCMAKE_INSTALL_PREFIX="{}"'.format(buildDir.abspath))
+	
+	if env['OSWindows'] and not env['CROSSCOMPILE_CLANG']:
+		cmdline.append('-DMINGW_STDTHREADS_GENERATE_STDHEADERS=ON')
+	
+	if env['with_debug']:
+		cmdline.append('-DCMAKE_BUILD_TYPE=Debug')
+	else:
+		cmdline.append('-DCMAKE_BUILD_TYPE=Release')
+	
+	if env['platform_android'] != 'no':
+		cmdline.append('-DANDROID_PLATFORM={}'.format(env['ANDROID_APILEVEL']))
+		cmdline.append('-DCMAKE_TOOLCHAIN_FILE="{}/build/cmake/android.toolchain.cmake"'.format(env['ndkroot']))
+		
+	elif 'CROSSCOMPILE_HOST' in env:
+		cmdline.append('-DCMAKE_SYSTEM_NAME="{}"'.format(env['CROSSCOMPILE_HOST']))
+	
+	if env['OSWindows']:
+		cmdline.append('-DCMAKE_TOOLCHAIN_FILE="{}"'.format(
+			env.File('#extern/mingw/mingw-w64-x86_64.cmake').abspath))
+	
+	cmdline.append('../{}'.format(srcdir))
+	script.append('{} || exit 1'.format(' '.join(cmdline)))
+	
+	script.append('make -j {} install || exit 1'.format(env['with_threads']))
+	
+	# delete build file incorrectly put in source directory
+	script.append('rm -rf ../{}/bin'.format(srcdir))
+	
+	if not env.RunExternalCommand(script):
+		raise Exception('Failed building openvr')
+
+if buildStaticLinking:
+	targets = [staticFileName]
+else:
+	targets = [libFileName]
+
+targets.append('include/openvr/openvr_capi.h')
+targets.append('include/openvr/openvr_driver.h')
+targets.append('include/openvr/openvr.h')
+
+library = envLibrary.Command(targets, '{}/CMakeLists.txt'.format(srcdir),
+	envLibrary.Action(openvrBuild, 'Build OpenVR'))
+
+envLibrary.SideEffect('#notParallelCMake', library)
+
+depends = parent_env.Alias('lib_openvr', library)
+cpppath = [envLibrary.Dir('include')]
+
+libs = []
+runtimelibs = []
+
+if buildStaticLinking:
+	libs.append(library[0])
+else:
+	libs.append(libLinkName)
+	runtimelibs.append(library[0])
+
+cppflags = []
+cppflags.append('-DOPENVR_BUILD_STATIC')  # required or windows build fails
+
+parent_targets['lib_openvr'] = {
+	'name' : 'Internal OpenVR library',
+	'cpppath' : cpppath,
+	'cppflags' : cppflags,
+	'libpath' : libpath,
+	'libs' : libs,
+	'runtimelibs' : runtimelibs,
+	'depends' : depends }

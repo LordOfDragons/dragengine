@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Live Launcher
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -25,20 +28,15 @@
 
 #include "dellLauncher.h"
 #include "dellRunGame.h"
-#include "engine/dellEngine.h"
-#include "game/dellGameManager.h"
 
-#include <dragengine/filesystem/deVFSDiskDirectory.h>
-#include <dragengine/filesystem/deVFSContainerReference.h>
-#include <dragengine/filesystem/deVirtualFileSystem.h>
-#include <dragengine/logger/deLoggerConsoleColor.h>
-#include <dragengine/logger/deLoggerFile.h>
-#include <dragengine/common/string/decString.h>
-#include <dragengine/common/string/unicode/decUnicodeString.h>
+#include <delauncher/engine/delEngineInstanceDirect.h>
+
 #include <dragengine/common/exceptions.h>
-#include <dragengine/common/file/decBaseFileWriter.h>
-#include <dragengine/common/file/decBaseFileWriterReference.h>
+#include <dragengine/common/string/unicode/decUnicodeString.h>
 
+#ifdef OS_UNIX
+#include <dlfcn.h>
+#endif
 
 
 // Definitions
@@ -46,6 +44,37 @@
 
 #define LOGSOURCE "Launcher"
 
+
+// Class dellLauncher::Launcher
+/////////////////////////////////
+
+dellLauncher::Launcher::Launcher() :
+delLauncher( "LauncherLive", "launcher" ){
+	AddFileLogger( "launcher" );
+	SetEngineInstanceFactory( delEngineInstanceDirect::Factory::Ref::New(
+		new delEngineInstanceDirect::Factory ) );
+}
+
+dellLauncher::Launcher::~Launcher(){
+}
+
+
+// Class dellLauncher::PreloadLibrary
+///////////////////////////////////////
+
+#ifdef OS_UNIX
+
+dellLauncher::PreloadLibrary::PreloadLibrary( const decPath &basePath, const char *filename ) :
+pHandle( dlopen( ( basePath + decPath::CreatePathUnix( filename ) ).GetPathNative(), RTLD_LAZY ) ){
+}
+
+dellLauncher::PreloadLibrary::~PreloadLibrary(){
+	if( pHandle ){
+		dlclose( pHandle );
+	}
+}
+
+#endif
 
 
 // Class dellLauncher
@@ -55,13 +84,13 @@
 ////////////////////////////
 
 dellLauncher::dellLauncher() :
-pEngine( *this ),
-pGameManager( *this )
-{
-	pLogger.TakeOver( new deLoggerConsoleColor );
+pLauncher( nullptr ){
 }
 
 dellLauncher::~dellLauncher(){
+	if( pLauncher ){
+		delete pLauncher;
+	}
 }
 
 
@@ -73,21 +102,12 @@ void dellLauncher::AddArgument( const decUnicodeString &argument ){
 	pArguments.AddArgument( argument );
 }
 
-
-
-void dellLauncher::Init(){
+void dellLauncher::Run(){
 	pWorkingDir.SetWorkingDirectory();
 	pUpdateEnvironment();
+	pLauncher = new Launcher;
+	pLauncher->SetEngineInstanceFactory( delEngineInstance::Factory::Ref::New( new delEngineInstanceDirect::Factory() ) );
 	
-	pFileSystem.TakeOver( new deVirtualFileSystem );
-	pInitVFS();
-	
-	// init logger has to wait until the virtual file system is created
-	pInitLogger();
-}
-
-void dellLauncher::Run(){
-	Init();
 	dellRunGame( *this ).Run();
 }
 
@@ -95,34 +115,6 @@ void dellLauncher::Run(){
 
 // Private Functions
 //////////////////////
-
-void dellLauncher::pInitVFS(){
-	deVFSContainerReference container;
-	
-	container.TakeOver( new deVFSDiskDirectory(
-		decPath::CreatePathUnix( "/config/user" ),
-		pPathConfigUser ) );
-	( ( deVFSDiskDirectory& )( deVFSContainer& )container ).SetReadOnly( false );
-	pFileSystem->AddContainer( container );
-	
-	container.TakeOver( new deVFSDiskDirectory(
-		decPath::CreatePathUnix( "/data" ),
-		pWorkingDir + decPath::CreatePathUnix( "data" ) ) );
-	( ( deVFSDiskDirectory& )( deVFSContainer& )container ).SetReadOnly( false );
-	pFileSystem->AddContainer( container );
-	
-	container.TakeOver( new deVFSDiskDirectory(
-		decPath::CreatePathUnix( "/logs" ),
-		pWorkingDir + decPath::CreatePathUnix( "logs" ) ) );
-	( ( deVFSDiskDirectory& )( deVFSContainer& )container ).SetReadOnly( false );
-	pFileSystem->AddContainer( container );
-}
-
-void dellLauncher::pInitLogger(){
-	decBaseFileWriterReference fileWriter;
-	fileWriter.TakeOver( pFileSystem->OpenFileForWriting( decPath::CreatePathUnix( "/logs/launcher.log" ) ) );
-	pLogger.TakeOver( new deLoggerFile( fileWriter ) );
-}
 
 void dellLauncher::pUpdateEnvironment(){
 	#ifdef OS_UNIX
@@ -140,17 +132,24 @@ void dellLauncher::pUpdateEnvironment(){
 	const decPath pathEngineLib( pathEngine + decPath::CreatePathUnix( "lib/dragengine" ) );
 	const decPath pathEngineShare( pathEngine + decPath::CreatePathUnix( "share/dragengine" ) );
 	const decPath pathEngineConfig( pathEngine + decPath::CreatePathUnix( "etc/dragengine" ) );
+	const decPath pathLauncherConfig( pathBase + decPath::CreatePathUnix( "etc/delauncher" ) );
+	const decPath pathLauncherShares( pathBase + decPath::CreatePathUnix( "share/delauncher" ) );
 	
 	#elif defined OS_W32
 	const decPath pathEngineLib( pathEngine + decPath::CreatePathUnix( "data" ) );
 	const decPath pathEngineShare( pathEngine + decPath::CreatePathUnix( "share" ) );
-	const decPath pathEngineConfig( pathEngine + decPath::CreatePathUnix( "config" ) );
+	const decPath pathEngineConfig( pathEngine + decPath::CreatePathUnix( "config/system/dragengine" ) );
+	const decPath pathLauncherConfig( pathBase + decPath::CreatePathUnix( "config/system/delauncher" ) );
+	const decPath pathLauncherShares( pathBase + decPath::CreatePathUnix( "data/delauncher" ) );
 	#endif
 	
 	const decPath pathCache( pathBase + decPath::CreatePathUnix( "cache" ) );
 	const decPath pathCapture( pathBase + decPath::CreatePathUnix( "capture" ) );
 	
-	pPathConfigUser = pathBase + decPath::CreatePathUnix( "config/launcher"  );
+	const decPath pathGames( pWorkingDir ); //+ decPath::CreatePathUnix( "games" ) );
+	const decPath pathLogs( pWorkingDir + decPath::CreatePathUnix( "logs" ) );
+	
+	pPathConfigUser = pathBase + decPath::CreatePathUnix( "config/user/delauncher" );
 	
 	pEnvParamsStore.Add( decString( "DE_ENGINE_PATH=" ) + pathEngineLib.GetPathNative() );
 	pEnvParamsStore.Add( decString( "DE_SHARE_PATH=" ) + pathEngineShare.GetPathNative() );
@@ -158,12 +157,31 @@ void dellLauncher::pUpdateEnvironment(){
 	pEnvParamsStore.Add( decString( "DE_CACHE_PATH=" ) + pathCache.GetPathNative() );
 	pEnvParamsStore.Add( decString( "DE_CAPTURE_PATH=" ) + pathCapture.GetPathNative() );
 	
+	pEnvParamsStore.Add( decString( "DELAUNCHER_SYS_CONFIG=" ) + pathLauncherConfig.GetPathNative() );
+	pEnvParamsStore.Add( decString( "DELAUNCHER_USER_CONFIG=" ) + pPathConfigUser.GetPathNative() );
+	pEnvParamsStore.Add( decString( "DELAUNCHER_SHARES=" ) + pathLauncherShares.GetPathNative() );
+	pEnvParamsStore.Add( decString( "DELAUNCHER_GAMES=" ) + pathGames.GetPathNative() );
+	pEnvParamsStore.Add( decString( "DELAUNCHER_LOGS=" ) + pathLogs.GetPathNative() );
+	
+	#ifdef OS_UNIX
+	pPreloadLibraries.Add( deObject::Ref::New( new PreloadLibrary( pathBase, "lib/libDEFOX-1.7.so" ) ) );
+	#endif
+	
 	const int count = pEnvParamsStore.GetCount();
 	int i;
 	for( i=0; i<count; i++ ){
-		if( putenv( ( char* )pEnvParamsStore.GetAt( i ).GetString() ) ){
-			pLogger->LogError( LOGSOURCE, "putenv failed" );
+		const decString &envParam = pEnvParamsStore.GetAt( i );
+// 		printf( "setenv: '%s'\n", envParam.GetString() );
+#ifdef OS_W32_VS
+		const int separator = envParam.Find( '=' );
+		if( ! SetEnvironmentVariableA( envParam.GetMiddle( 0, separator ).GetString(),
+		envParam.GetMiddle( separator + 1 ).GetString() ) ){
 			DETHROW( deeInvalidParam );
 		}
+#else
+		if( putenv( ( char* )envParam.GetString() ) ){
+			DETHROW( deeInvalidParam );
+		}
+#endif
 	}
 }

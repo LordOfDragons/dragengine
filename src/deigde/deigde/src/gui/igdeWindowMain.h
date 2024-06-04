@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _IGDEWINDOWMAIN_H_
@@ -26,6 +29,7 @@
 #include "../configuration/igdeConfigurationLocal.h"
 
 #include <deigde/environment/igdeEnvironment.h>
+#include <deigde/logger/igdeLoggerHistory.h>
 #include <deigde/gui/igdeMainWindow.h>
 #include <deigde/gui/igdeSwitcherReference.h>
 #include <deigde/gui/igdeProgressBarReference.h>
@@ -46,10 +50,12 @@
 #include <dragengine/common/collection/decObjectDictionary.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
+#include <dragengine/common/string/unicode/decUnicodeStringList.h>
 #include <dragengine/logger/deLoggerReference.h>
 #include <dragengine/filesystem/deVirtualFileSystemReference.h>
 #include <dragengine/resources/rig/deRigReference.h>
-#include <dragengine/resources/skin/deSkinReference.h>
+#include <dragengine/resources/rig/deRig.h>
+#include <dragengine/resources/skin/deSkin.h>
 
 
 class igdeEditorModuleManager;
@@ -62,7 +68,6 @@ class igdeTemplateList;
 class igdeTexturePropertyList;
 class igdeSharedFontList;
 class igdeUIHelper;
-class igdeLoggerHistory;
 
 class deException;
 class decTimer;
@@ -73,7 +78,7 @@ class decUnicodeStringList;
 
 
 /**
- * \brief IGDE Main Window.
+ * IGDE Main Window.
  */
 class igdeWindowMain : public igdeMainWindow{
 private:
@@ -84,7 +89,7 @@ private:
 	igdeLoadSaveSystem *pLoadSaveSystem;
 	igdeGDPreviewManager *pGDPreviewManager;
 	igdeTexturePropertyList *pTexturePropertyList;
-	deLoggerReference pLoggerHistory;
+	igdeLoggerHistory::Ref pLoggerHistory;
 	igdeWindowLoggerReference pWindowLogger;
 	deVirtualFileSystemReference pVFS;
 	igdeTemplateList *pTemplates;
@@ -95,7 +100,6 @@ private:
 	decObjectDictionary pGuiThemes;
 	igdeSharedFontList *pSharedFontList;
 	deRigReference pSharedModelCollisionRig;
-	deSkinReference pErrorSkin;
 	igdeResourceLoader *pResourceLoader;
 	igdeUIHelper *pUIHelper;
 	igdeUIHelper *pUIHelperProperties;
@@ -115,8 +119,17 @@ private:
 	igdeIconReference pIconSettingsEngine;
 	igdeIconReference pIconSettingsTexPropList;
 	
-	static const int pStockImageCount = igdeEnvironment::esiSmallWarning + 1;
+	static const int pStockImageCount = igdeEnvironment::esiConfig + 1;
 	igdeIconReference pStockIcons[ pStockImageCount ];
+	
+	static const int pStockSkinCount = igdeEnvironment::essEditRimOutline + 1;
+	deSkin::Ref pStockSkins[ pStockSkinCount ];
+	
+	static const int pStockRigCount = igdeEnvironment::esrGizmoMove + 1;
+	deRig::Ref pStockRigs[ pStockRigCount ];
+	
+	static const int pStockModelCount = igdeEnvironment::esmGizmoMove + 1;
+	deModel::Ref pStockModels[ pStockModelCount ];
 	
 	igdeActionReference pActionGameNew;
 	igdeActionReference pActionGameOpen;
@@ -163,16 +176,18 @@ private:
 	
 	igdeTaskSyncGameDefinition *pTaskSyncGameDefinition;
 	
+	decUnicodeStringList pAfterLoadArguments;
+	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create main window. */
+	/** Create main window. */
 	igdeWindowMain( igdeEnvironmentIGDE &environment );
 	
 protected:
-	/** \brief Clean up main window. */
+	/** Clean up main window. */
 	virtual ~igdeWindowMain();
 	/*@}*/
 	
@@ -181,11 +196,11 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Configuration. */
+	/** Configuration. */
 	inline igdeConfiguration &GetConfiguration(){ return pConfiguration; }
 	inline const igdeConfiguration &GetConfiguration() const{ return pConfiguration; }
 	
-	/** \brief Local Configuration. */
+	/** Local Configuration. */
 	inline igdeConfigurationLocal &GetConfigurationLocal(){ return pConfigurationLocal; }
 	inline const igdeConfigurationLocal &GetConfigurationLocal() const{ return pConfigurationLocal; }
 	
@@ -199,76 +214,73 @@ public:
 	/** Retrieves the texture property list. */
 	inline igdeTexturePropertyList *GetTexturePropertyList() const{ return pTexturePropertyList; }
 	/** Retrieves the history logger. */
-	igdeLoggerHistory *GetLoggerHistory() const;
+	inline igdeLoggerHistory *GetLoggerHistory() const{ return pLoggerHistory; }
 	
-	/** \brief Virtual file system. */
+	/** Virtual file system. */
 	inline deVirtualFileSystem *GetVirtualFileSystem() const{ return pVFS; }
 	
-	/** \brief Project templates. */
+	/** Project templates. */
 	inline igdeTemplateList &GetTemplates() const{ return *pTemplates; }
 	
-	/** \brief Shared game definitions. */
+	/** Shared game definitions. */
 	inline igdeGameDefinitionList &GetSharedGameDefinitions() const{ return *pSharedGameDefinitions; }
 	
 	/** Retrieves the igde game definition. */
 	inline igdeGameDefinition *GetIGDEGameDefinition() const{ return pIGDEGameDefinition; }
 	
-	/** \brief Logger window or NULL if not visible. */
+	/** Logger window or NULL if not visible. */
 	inline igdeWindowLogger *GetWindowLogger() const{ return pWindowLogger; }
 	
-	/** \brief Named GuiTheme or default if not found. */
+	/** Named GuiTheme or default if not found. */
 	igdeGuiTheme *GetGuiThemeNamed( const char *name );
 	
-	/** \brief Default GuiTheme. */
+	/** Default GuiTheme. */
 	inline igdeGuiTheme *GetDefaultGuiTheme() const{ return pDefaultGuiTheme; }
 	
-	/** \brief Shared font list. */
+	/** Shared font list. */
 	inline igdeSharedFontList &GetSharedFontList() const{ return *pSharedFontList; }
 	
-	/** \brief Shared model collision rig. */
+	/** Shared model collision rig. */
 	inline deRig *GetSharedModelCollisionRig() const{ return pSharedModelCollisionRig; }
 	
-	/** \brief Resource loader. */
+	/** Resource loader. */
 	inline igdeResourceLoader &GetResourceLoader() const{ return *pResourceLoader; }
 	
-	/** \brief UI Helper. */
+	/** UI Helper. */
 	inline igdeUIHelper &GetUIHelper() const{ return *pUIHelper; }
 	
-	/** \brief UI Helper for properties panels. */
+	/** UI Helper for properties panels. */
 	inline igdeUIHelper &GetUIHelperProperties() const{ return *pUIHelperProperties; }
 	
-	/** \brief Error skin. */
-	inline deSkin *GetErrorSkin() const{ return pErrorSkin; }
-	
 	/**
-	 * \brief Show logger window.
+	 * Show logger window.
 	 * 
 	 * If not present yet it is created otherwise it is focused and raised.
 	 */
 	void ShowWindowLogger();
 	
 	/**
-	 * \brief Process command line.
+	 * Process command line.
 	 * \returns True to keep the application running or false to shut it down.
 	 */
 	bool ProcessCommandLine( const decUnicodeStringList &arguments );
 	
-	/** \brief Retrieves the active game project. */
+	/** Retrieves the active game project. */
 	inline igdeGameProject *GetGameProject() const{ return pGameProject; }
-	/** \brief Sets the active game project. */
+	/** Sets the active game project. */
 	void SetGameProject( igdeGameProject *project );
 	/**
-	 * \brief Creates a new game project.
+	 * Creates a new game project.
 	 * \returns True of the project has been created or false otherwise.
 	 */
 	bool CreateNewGameProject();
-	/** \brief Creates a placeholder game project. */
+	/** Creates a placeholder game project. */
 	void CreatePlaceholderGameProject();
-	/** \brief Load game project. */
-	void LoadGameProject( const char *filename );
-	/** \brief Save game project. */
+	/** Load game project. */
+	bool LoadGameProject( const char *filename );
+	/** Save game project. */
 	void SaveGameProject( const char *filename );
-	/** \brief Add entry to recently loaded file list and update the menus. */
+	/** Add entry to recently loaded file list and update the menus. */
 	void AddRecentGameProject( const char *filename );
 	
 	/** Create a new game definition. */
@@ -277,19 +289,22 @@ public:
 	/** Displays an exception error. */
 	void DisplayException( const deException &exception );
 	
-	/** \brief Active module shared menus changed. */
+	/** Active module shared menus changed. */
 	void ActiveModuleSharedMenusChanged();
 	
-	/** \brief Active module shared toolbars changed. */
+	/** Active module shared toolbars changed. */
 	void ActiveModuleSharedToolBarsChanged();
+	
+	/** Activate editor and bring it to the front. */
+	void ActivateEditor( igdeEditorModule *editor );
 	
 	/** Rebuilds the menu using the given game definition. */
 	void RebuildMenu();
 	
-	/** \brief Rebuild toolbars. */
+	/** Rebuild toolbars. */
 	void RebuildToolBars();
 	
-	/** \brief Switch to module window. */
+	/** Switch to module window. */
 	void SwitchToModuleWindow();
 	
 	/** Rebuilds the window menu with modules. */
@@ -297,27 +312,27 @@ public:
 	/** Update recent project menu. */
 	void UpdateRecentProjectMenu();
 	
-	/** \brief Sync game definition task is running. */
+	/** Sync game definition task is running. */
 	bool IsSyncGameDefTaskRunning() const;
 	
 	/** Retrieves the menu bar. */
 	inline igdeMenuBar *GetMenuBar() const{ return pMenuBar; }
 	
-	/** \brief Toolbar dock sites. */
+	/** Toolbar dock sites. */
 	inline igdeToolBarDock *GetDockSiteLeft() const{ return pToolBarDockLeft; }
 	inline igdeToolBarDock *GetDockSiteTop() const{ return pToolBarDockTop; }
 	inline igdeToolBarDock *GetDockSiteRight() const{ return pToolBarDockRight; }
 	inline igdeToolBarDock *GetDockSiteBottom() const{ return pToolBarDockBottom; }
 	
-	/** \brief Content switcher. */
+	/** Content switcher. */
 	inline igdeSwitcher *GetContentSwitcher() const{ return pSwiContent; }
 	
-	/** \brief Game toolbar. */
+	/** Game toolbar. */
 	inline igdeToolBar *GetToolBarGame() const{ return pTBGame; }
 	
 	
 	
-	/** \brief Icons. */
+	/** Icons. */
 	inline igdeIcon *GetIconApplication() const{ return pIconApplication; }
 	
 	inline igdeIcon *GetIconGameNew() const{ return pIconGameNew; }
@@ -332,13 +347,13 @@ public:
 	
 	
 	
-	/** \brief Reload XML Element Classes. */
+	/** Reload XML Element Classes. */
 	void ReloadXMLElementClasses();
 	
-	/** \brief Re-find and add skins. */
+	/** Re-find and add skins. */
 	void ReFindAndAddSkins();
 	
-	/** \brief Re-find and add skies. */
+	/** Re-find and add skies. */
 	void ReFindAndAddSkies();
 	
 	
@@ -351,7 +366,8 @@ public:
 	void SetProgressText( const char *text );
 	
 	/** Retrieves the minimum frame update time. */
-	inline int GetMinUpdateTime() const{ return pMinUpdateTime; }
+	inline float GetMinUpdateTime() const{ return pMinUpdateTime; }
+
 	/** Sets the minimum frame update time. */
 	void SetMinUpdateTime( float seconds );
 	
@@ -368,14 +384,14 @@ public:
 	bool QuitRequest();
 	
 	/**
-	 * \brief Processes frame update messages.
+	 * Processes frame update messages.
 	 * 
 	 * Called every now and then if the message loop has ceased processing messages.
 	 */
 	virtual void OnFrameUpdate();
 	
 	/**
-	 * \brief Project game definition changed.
+	 * Project game definition changed.
 	 * 
 	 * For use by game definition editor. All modules are notified the game definition change.
 	 * This process is potentially lengthy. User input is blocked until all modules finished
@@ -383,21 +399,21 @@ public:
 	 */
 	void OnProjectGameDefinitionChanged();
 	
-	/** \brief Arm the update timer. */
+	/** Arm the update timer. */
 	void ArmUpdateTimer();
 	
 	/**
-	 * \brief Update frame.
+	 * Update frame.
 	 * \details Called by the IGDE Script Module during a single frame update. This allows
 	 *          the use of deEngine::RunSingleFrame(). Think of it as a callback.
 	 */
 	void UpdateFrame();
 	
-	/** \brief Update synchronize project. */
+	/** Update synchronize project. */
 	void UpdateSyncProject();
 	
 	/**
-	 * \brief Request saving unsaved documents.
+	 * Request saving unsaved documents.
 	 * 
 	 * If unsaved documents are present asks the user if he wants to save them. The user
 	 * is free to decide which documents to save. He can also abort the saving.
@@ -415,18 +431,20 @@ public:
 	bool RequestSaveDocuments( const char *title, const char* message );
 	/*@}*/
 	
-	/** \name Stock Icons */
+	/** \name Stock resources */
 	/*@{*/
-	/** \brief Retrieves a stock icon. */
 	igdeIcon *GetStockIcon( igdeEnvironment::eStockIcons icon ) const;
+	const deSkin::Ref &GetStockSkin( igdeEnvironment::eStockSkins skin ) const;
+	const deRig::Ref &GetStockRig( igdeEnvironment::eStockRigs rig ) const;
+	const deModel::Ref &GetStockModel( igdeEnvironment::eStockModels model ) const;
 	/*@}*/
 	
 	
 	
-	/** \brief Request to close window due to clicking on close button. */
+	/** Request to close window due to clicking on close button. */
 	virtual bool CloseWindow();
 	
-	/** \brief Window state changed. */
+	/** Window state changed. */
 	virtual void OnWindowState();
 	
 	
@@ -438,13 +456,13 @@ public:
 	 */
 	/*@{*/
 	/**
-	 * \brief Create native widget.
+	 * Create native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
 	virtual void CreateNativeWidget();
 	
 	/**
-	 * \brief Destroy native widget.
+	 * Destroy native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
 	virtual void DestroyNativeWidget();
@@ -456,6 +474,9 @@ private:
 	void pCleanUp();
 	void pInitLogger();
 	void pLoadStockIcons();
+	void pLoadStockSkins();
+	void pLoadStockRigs();
+	void pLoadStockModels();
 	void pCreateGuiThemes();
 	void pLoadIGDEGameDefinition();
 	void pAddIGDEEngineModules();

@@ -1,28 +1,36 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLRCOMPONENTLOD_H_
 #define _DEOGLRCOMPONENTLOD_H_
 
 #include "../deoglBasics.h"
+#include "../memory/consumption/deoglMemoryConsumptionGPUUse.h"
+#include "../rendering/task/config/deoglRenderTaskConfig.h"
+#include "../shaders/paramblock/deoglSPBlockSSBO.h"
+#include "../skin/deoglSkinTexture.h"
+#include "../skin/pipeline/deoglSkinTexturePipelines.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
@@ -34,10 +42,12 @@ class deoglTexture;
 class deoglVAO;
 class deoglVBOLayout;
 class deoglSharedVBOBlock;
+class deoglGIBVHDynamic;
+
 
 
 /**
- * \brief Render component LOD.
+ * Render component LOD.
  * 
  * The VAO of the component contains the following bindings:
  * - input 0: vec3 position
@@ -50,24 +60,18 @@ public:
 	deoglRComponent &pComponent;
 	const int pLODIndex;
 	
-	deoglVBOpnt *pVBOData;
-	int pVBOPointCount;
-	int pVBOPointSize;
-	
-	GLuint pVBO;
-	int pSolidFaceCount;
-	int pFaceCount;
+	deoglSPBlockSSBO::Ref pVBO;
 	deoglVAO *pVAO;
 	deoglVBOLayout *pVBOLayout;
 	const deoglSharedVBOBlock *pVBOBlock;
 	
 	oglMatrix3x4 *pWeights;
 	
-	oglVector *pPositions;
-	oglVector *pRealNormals;
-	oglVector *pNormals;
-	oglVector *pTangents;
-	oglVector *pFaceNormals;
+	oglVector3 *pPositions;
+	oglVector3 *pRealNormals;
+	oglVector3 *pNormals;
+	oglVector3 *pTangents;
+	oglVector3 *pFaceNormals;
 	
 	bool pDirtyModelWeights;
 	bool pDirtyModelPositions;
@@ -79,24 +83,27 @@ public:
 	bool pDirtyVBO;
 	bool pDirtyVAO;
 	
-	int pMemoryConsumptionGPU;
+	deoglMemoryConsumptionGPUUse pMemUse;
 	
-	GLuint pVBOWeightMatrices;
-	GLuint pTBOWeightMatrices;
+	deoglSPBlockSSBO::Ref pSSBOWeightMatrices;
 	GLuint pVBOTransformVertices;
 	GLuint pTBOTransformVertices;
 	deoglTexture *pTexTransformNormTan;
 	deoglFramebuffer *pFBOCalcNormalTangent;
 	
+	deoglGIBVHDynamic *pGIBVHDynamic;
+	bool pDirtyGIBVHPositions;
+	
+	deoglRenderTaskConfig pRenderTaskConfigs[ 6 ];
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create render component lod. */
+	/** Create render component lod. */
 	deoglRComponentLOD( deoglRComponent &component, int lodIndex );
 	
-	/** \brief Clean up render component lod. */
+	/** Clean up render component lod. */
 	virtual ~deoglRComponentLOD();
 	/*@}*/
 	
@@ -104,119 +111,128 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Parent component. */
+	/** Parent component. */
 	inline deoglRComponent &GetComponent() const{ return pComponent; }
 	
-	/** \brief LOD index. */
+	/** LOD index. */
 	inline int GetLODIndex() const{ return pLODIndex; }
 	
+	/** Get ModelLOD or NULL. */
+	deoglModelLOD *GetModelLOD() const;
+	
+	/** Get ModelLOD or throws exception. */
+	deoglModelLOD &GetModelLODRef() const;
 	
 	
-	/** \brief Weights for debuging purpose. */
+	
+	/** Weights for debuging purpose. */
 	inline oglMatrix3x4 *GetWeights() const{ return pWeights; }
 	
 	/**
-	 * \brief Retrieves the face normals.
+	 * Retrieves the face normals.
 	 * \details Valid only after calling PrepareNormalsTangents and faces exist.
 	 */
-	inline oglVector *GetFaceNormals() const{ return pFaceNormals; }
+	inline oglVector3 *GetFaceNormals() const{ return pFaceNormals; }
 	
 	/**
-	 * \brief Retrieves the positions.
+	 * Retrieves the positions.
 	 * \details Valid only after calling PreparePositions and positions exist.
 	 */
-	inline oglVector *GetPositions() const{ return pPositions; }
+	inline oglVector3 *GetPositions() const{ return pPositions; }
 	
 	/**
-	 * \brief Retrieves the real normals.
+	 * Retrieves the real normals.
 	 * \details Valid only after calling PrepareNormalsTangents and normals exist.
 	 */
-	inline oglVector *GetRealNormals() const{ return pRealNormals; }
+	inline oglVector3 *GetRealNormals() const{ return pRealNormals; }
 	
 	/**
-	 * \brief Retrieves the normals.
+	 * Retrieves the normals.
 	 * \details Valid only after calling PrepareNormalsTangents and normals exist.
 	 */
-	inline oglVector *GetNormals() const{ return pNormals; }
+	inline oglVector3 *GetNormals() const{ return pNormals; }
 	
 	/**
-	 * \brief Retrieves the tangents.
+	 * Retrieves the tangents.
 	 * \details Valid only after calling PrepareNormalsTangents and tangents exist.
 	 */
-	inline oglVector *GetTangents() const{ return pTangents; }
+	inline oglVector3 *GetTangents() const{ return pTangents; }
 	
 	
 	
-	/** \brief Prepare dynamic weights if dirty. */
+	/** Prepare dynamic weights if dirty. */
 	void PrepareWeights();
 	
-	/** \brief Prepare dynamic positions if dirty. */
+	/** Prepare dynamic positions if dirty. */
 	void PreparePositions();
 	
-	/** \brief Prepare dynamic normals and tangents if dirty. */
+	/** Prepare dynamic normals and tangents if dirty. */
 	void PrepareNormalsTangents();
 	
 	
 	
-	/** \brief Number of points. */
-	inline int GetPointCount() const{ return pVBOPointCount; }
-	
-	/** \brief VBO data in client memory. */
-	inline deoglVBOpnt *GetVBOData() const{ return pVBOData; }
-	
-	/** \brief Point offset or 0 if not using a shared vao. */
+	/** Point offset or 0 if not using a shared vao. */
 	int GetPointOffset() const;
 	
-	/** \brief Index offset or 0 if not using a shared vao. */
+	/** Index offset or 0 if not using a shared vao. */
 	int GetIndexOffset() const;
 	
-	/** \brief VBO. */
-	inline GLuint GetVBO() const{ return pVBO; }
+	/** VBO. */
+	inline const deoglSPBlockSSBO::Ref &GetVBO() const{ return pVBO; }
 	
-	/** \brief VAO. */
+	/** VAO. */
 	inline deoglVAO *GetVAO() const{ return pVAO; }
 	
-	/** \brief Invalidate VAO. */
+	/** VAO to use. Can be dynamic VAO or static model VAO. */
+	deoglVAO *GetUseVAO() const;
+	
+	/** Invalidate VAO. */
 	void InvalidateVAO();
 	
-	/** \brief Invalidate VBO. */
+	/** Invalidate VBO. */
 	void InvalidateVBO();
 	
-	/** \brief Update the VBO if required. */
+	/** Update the VBO if required. */
 	void UpdateVBO();
 	
-	/** \brief Free VBO if existing. */
+	/** Free VBO if existing. */
 	void FreeVBO();
 	
 	
 	
-	/** \brief Update VBO on the CPU which is slow slow but accurate. */
+	/** Update VBO on the CPU which is slow slow but accurate. */
 	void UpdateVBOOnCPU();
 	
+	/** Write weight matrices to the SSBO. */
+	void WriteWeightMatricesSSBO();
 	
+	/** Build vertex position set params. */
+	void BuildVertexPositionSetParams();
 	
-	/** \brief Update VBO on the GPU using the accurate but slower method. */
-	void UpdateVBOOnGPUAccurate();
-	
-	/** \brief Write weight matrices to the TBO. */
-	void WriteWeightMatricesTBO();
-	
-	/** \brief Transform vertices on the GPU. */
-	void GPUTransformVertices();
-	
-	/** \brief Calculate normals and tangets on the GPU. */
-	void GPUCalcNormalTangents();
-	
-	/** \brief Write final VBO from the GPU calculated data to be used by rendering. */
-	void GPUWriteRenderVBO();
-	
-	
-	
-	/** \brief Update VBO on the GPU using the fast but approximate method. */
+	/** Update VBO on the GPU using the fast but approximate method. */
 	void UpdateVBOOnGPUApproximate();
 	
-	/** \brief Approximately transform vertices, normals and tangents on the GPU. */
+	/** Approximately transform vertices, normals and tangents on the GPU. */
 	void GPUApproxTransformVNT();
+	
+	
+	
+	/** GI Dynamic BVH or NULL. */
+	inline deoglGIBVHDynamic *GetGIBVHDynamic() const{ return pGIBVHDynamic; }
+	
+	/** Prepare GI Dynamic BVH if not build yet. */
+	void PrepareGIDynamicBVH();
+	
+	/** Drop GI Dynamic BVH if present. */
+	void DropGIDynamicBVH();
+	
+	
+	
+	/** Render task configuration or NULL. */
+	const deoglRenderTaskConfig *GetRenderTaskConfig( deoglSkinTexturePipelines::eTypes type ) const;
+	
+	/** Update render task configuration. */
+	void UpdateRenderTaskConfigurations();
 	/*@}*/
 	
 	
@@ -224,6 +240,7 @@ public:
 private:
 	void pCleanUp();
 	
+	void pEnsureVBO();
 	void pBuildVBO( const deoglModelLOD &modelLOD );
 	void pWriteVBOData( const deoglModelLOD &modelLOD );
 	void pUpdateVAO( deoglModelLOD &modelLOD );
@@ -233,6 +250,9 @@ private:
 	void pCalculateNormalsAndTangents( const deoglModelLOD &modelLOD );
 	
 	void pPrepareVBOLayout( const deoglModelLOD &modelLOD );
+	
+	void pUpdateRenderTaskConfig( deoglRenderTaskConfig &config, deoglSkinTexturePipelines::eTypes type,
+		int renderTaskFlags, int renderTaskFlagMask, bool shadow );
 };
 
 #endif

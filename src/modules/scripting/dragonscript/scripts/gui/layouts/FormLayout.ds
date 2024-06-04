@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -190,7 +193,6 @@ class FormLayout implements Layout
 		// determine first the minimum size needed. this is the real minimum size not a
 		// potentially artifial minimal size from container.getMinimumSize()
 		var int newSizeX = container.getContainerWidth()
-		var int newSizeY = container.getContainerHeight()
 		var Point minSize = this.getMinimumSizeFor( container, newSizeX )
 		
 		// the size of the non-stretching column
@@ -199,7 +201,7 @@ class FormLayout implements Layout
 		// now determine how much additional space we have got
 		// at our disposal to size child widgets beyond minimum
 		var int cy = container.getPadding().getTop()
-		var int i, effSize, sizeGain
+		var int i
 		var Widget child
 		
 		var Point leftChildSize
@@ -232,21 +234,20 @@ class FormLayout implements Layout
 		
 		if this.pStretchRightColumn
 			cxNonStretch = container.getPadding().getLeft()
-			cxStretch = cxNonStretch + this.pGapColumns + columnNonStretchWidth
-			columnStretchWidth = newSizeX - cxStretch
+			cxStretch = cxNonStretch + columnNonStretchWidth + this.pGapColumns
+			columnStretchWidth = cxNonStretch + newSizeX - cxStretch
 			refSizeLeft = columnNonStretchWidth
 			refSizeRight = columnStretchWidth
 			
 		else
 			cxStretch = container.getPadding().getLeft()
-			cxNonStretch = newSizeX - columnNonStretchWidth
+			cxNonStretch = cxStretch + newSizeX - columnNonStretchWidth
 			columnStretchWidth = cxNonStretch - this.pGapColumns - cxStretch
 			refSizeLeft = columnStretchWidth
 			refSizeRight = columnNonStretchWidth
 		end
 		
 		// available space
-		var int availSpaceX = DEMath.max( container.getWidth() - minSize.getX(), 0 )
 		var int availSpaceY = DEMath.max( container.getHeight() - minSize.getY(), 0 )
 		var int countStretchRow = this.getNumRowsStretch( container )
 		var int sizeGainY
@@ -288,7 +289,7 @@ class FormLayout implements Layout
 				continue
 			end
 			
-			// sotre row right widget parameters
+			// store row right widget parameters
 			rightWidget = child
 			rightSettings = this.pWidgetSettings.getAt( rightWidget, null ) cast LayoutSettings
 			rightChildSize = rightWidget.getMinimumSizeForWidth( refSizeRight )
@@ -381,8 +382,8 @@ class FormLayout implements Layout
 	/** \brief Minimum size required for child widgets. */
 	protected func Point getMinimumSizeFor( Container container, int width )
 		var int count = container.getWidgetCount()
-		var Point minSize = Point.new( 1, 1 )
 		var bool side = this.pStretchRightColumn
+		var bool usePadding = false
 		var bool nextRow = false
 		var Point childSize
 		var Widget child
@@ -399,6 +400,7 @@ class FormLayout implements Layout
 			end
 			
 			childSize = child.getMinimumSizeWithBorderForWidth( width )
+			usePadding = true
 			
 			if side
 				cxNonStretch = DEMath.max( cxNonStretch, childSize.getX() )
@@ -427,14 +429,18 @@ class FormLayout implements Layout
 			cy += DEMath.max( cyRow, childSize.getY() )
 		end
 		
-		return Point.new( cxNonStretch + this.pGapColumns + cxStretch, cy ).largest( minSize ) + container.getPadding().getSize()
+		var Point size = Point.new().largest( cxNonStretch + this.pGapColumns + cxStretch, cy )
+		if usePadding
+			size = size + container.getPadding().getSize()
+		end
+		return size
 	end
 	
 	/** \brief Minimum size required for the non-stretching column widgets. */
 	protected func int getNoStretchColumnWidth( Container container, int width )
 		var int count = container.getWidgetCount()
 		var bool side = this.pStretchRightColumn
-		var int minWidth = 1
+		var int minWidth = 0
 		var Widget child
 		var int i
 		

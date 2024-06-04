@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLTEXTURE_H_
@@ -24,8 +27,10 @@
 
 #include "../../deoglBasics.h"
 #include "../../capabilities/deoglCapsFmtSupport.h"
+#include "../../memory/consumption/deoglMemoryConsumptionTextureUse.h"
 
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/string/decString.h>
 
 class deoglRenderThread;
 class deoglPixelBuffer;
@@ -34,7 +39,7 @@ class deoglCapsTextureFormat;
 
 
 /**
- * \brief OpenGL 2D texture
+ * OpenGL 2D texture
  * 
  * Manages an OpenGL texture. The texture is resizable and can be created
  * once required. By default the texture is not created. After changing the
@@ -50,26 +55,24 @@ public:
 	
 	GLuint pTexture;
 	
-	int pWidth;
-	int pHeight;
+	decPoint pSize;
 	const deoglCapsTextureFormat *pFormat;
 	int pMipMapLevelCount;
 	int pRealMipMapLevelCount;
 	bool pMipMapped;
 	
-	int pMemoryUsageGPU;
-	bool pMemoryUsageCompressed;
-	bool pMemoryUsageColor;
+	deoglMemoryConsumptionTextureUse pMemUse;
+	decString pDebugObjectLabel;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create opengl texture. */
+	/** Create opengl texture. */
 	deoglTexture( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up opengl texture. */
+	/** Clean up opengl texture. */
 	~deoglTexture();
 	/*@}*/
 	
@@ -77,99 +80,102 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Texture handle. */
+	/** Texture handle. */
 	inline GLuint GetTexture() const{ return pTexture; }
 	
 	
 	
-	/** \brief Width in pixels. */
-	inline int GetWidth() const{ return pWidth; }
+	/** Width in pixels. */
+	inline int GetWidth() const{ return pSize.x; }
 	
-	/** \brief Height in pixels. */
-	inline int GetHeight() const{ return pHeight; }
+	/** Height in pixels. */
+	inline int GetHeight() const{ return pSize.y; }
 	
-	/** \brief Set size in pixels destroying opengl texture if present. */
+	/** Size. */
+	inline const decPoint &GetSize() const{ return pSize; }
+	
+	/** Set size in pixels destroying opengl texture if present. */
 	void SetSize( int width, int height );
 	
+	/** Set size in pixels destroying opengl texture if present. */
+	void SetSize( const decPoint &size );
 	
 	
-	/** \brief Texture format. */
+	
+	/** Texture format. */
 	inline const deoglCapsTextureFormat *GetFormat() const{ return pFormat; }
 	
-	/** \brief Set texture format. */
+	/** Set texture format. */
 	void SetFormat( const deoglCapsTextureFormat *format );
 	
-	/** \brief Set texture format by number from the list of mapping texture formats to use. */
+	/** Set texture format by number from the list of mapping texture formats to use. */
 	void SetFormatMappingByNumber( deoglCapsFmtSupport::eUseTextureFormats formatNumber );
 	
-	/** \brief Set texture format by number from the list of fbo texture formats to use. */
+	/** Set texture format by number from the list of fbo texture formats to use. */
 	void SetFormatFBOByNumber( deoglCapsFmtSupport::eUseTextureFormats formatNumber );
 	
 	
 	
-	/** \brief Mip mapping has to be used on this texture. */
+	/** Mip mapping has to be used on this texture. */
 	inline bool GetMipMapped() const{ return pMipMapped; }
 	
-	/** \brief Set if mip mapping has to be used on this texture. */
+	/** Set if mip mapping has to be used on this texture. */
 	void SetMipMapped( bool mipmapped );
 	
-	/** \brief Mip map level count or 0 to let the hardware auto-generate them. */
+	/** Mip map level count or 0 to let the hardware auto-generate them. */
 	inline int GetMipMapLevelCount() const{ return pMipMapLevelCount; }
 	
-	/** \brief Set mip map level count or 0 to let the hardware auto-generate them. */
+	/** Set mip map level count or 0 to let the hardware auto-generate them. */
 	void SetMipMapLevelCount( int count );
 	
 	/**
-	 * \brief Real mip map level count.
+	 * Real mip map level count.
 	 * \details Is either mipMapLevelCount or the real texture mip map level count.
 	 */
 	inline int GetRealMipMapLevelCount() const{ return pRealMipMapLevelCount; }
 	
 	
 	
-	/** \brief Create texture if not created yet. */
+	/** Create texture if not created yet. */
 	void CreateTexture();
 	
-	/** \brief Destroy texture if existing. */
+	/** Destroy texture if existing. */
 	void DestroyTexture();
 	
-	/** \brief Set base level texture pixels from a pixel buffer. */
+	/** Set base level texture pixels from a pixel buffer. */
 	void SetPixels( const deoglPixelBuffer &pixelBuffer );
 	
-	/** \brief Set texture level pixels from a pixel buffer. */
+	/** Set texture level pixels from a pixel buffer. */
 	void SetPixelsLevel( int level, const deoglPixelBuffer &pixelBuffer );
 	
-	/** \brief Set texture level pixels from a pixel buffer layer. */
+	/** Set texture level pixels from a pixel buffer layer. */
 	void SetPixelsLevelLayer( int level, const deoglPixelBuffer &pixelBuffer, int layer );
 	
-	/** \brief Copy pixels from first level into pixel buffer. */
+	/** Copy pixels from first level into pixel buffer. */
 	void GetPixels( deoglPixelBuffer &pixelBuffer ) const;
 	
-	/** \brief Copy pixels from level into pixel buffer. */
+	/** Copy pixels from level into pixel buffer. */
 	void GetPixelsLevel( int level, deoglPixelBuffer &pixelBuffer ) const;
 	
-	/** \brief Size of a mip map level. */
+	/** Size of a mip map level. */
 	void GetLevelSize( int level, int &width, int &height ) const;
 	
-	/** \brief Create mip maps if texture foramt is mip mapped. */
+	/** Create mip maps if texture foramt is mip mapped. */
 	void CreateMipMaps();
 	
-	/** \brief Copy from another texture to this texture. */
+	/** Copy from another texture to this texture. */
 	void CopyFrom( const deoglTexture &texture, bool withMipMaps );
 	
-	/** \brief Copy area from another texture to this texture. */
+	/** Copy area from another texture to this texture. */
 	void CopyFrom( const deoglTexture &texture, bool withMipMaps,
 		int width, int height, int srcX, int srcY, int destX, int destY );
 	
 	
 	
-	/** \brief GPU memory usage. */
-	inline int GetMemoryUsageGPU() const{ return pMemoryUsageGPU; }
+	/** Memory consumption. */
+	inline const deoglMemoryConsumptionTextureUse &GetMemoryConsumption() const{ return pMemUse; }
 	
-	/** \brief GPU memory usage is compressed image data. */
-	inline bool GetMemoryUsageCompressed() const{ return pMemoryUsageCompressed; }
-	
-	/** \brief Update memory usage. */
+	/** Update memory usage. */
 	void UpdateMemoryUsage();
 	/*@}*/
 	
@@ -177,18 +183,30 @@ public:
 	
 	/** \name Helper Functions */
 	/*@{*/
-	/** \brief Set texture format suitable for texture mapping. */
+	/** Set texture format suitable for texture mapping. */
 	void SetMapingFormat( int channels, bool useFloat, bool compressed );
 	
-	/** \brief Set texture format suitable for attaching as FBO render target. */
+	/** Set texture format suitable for attaching as FBO render target. */
 	void SetFBOFormat( int channels, bool useFloat );
 	
-	/** \brief Set texture format suitable for rendering to an integral texture using an FBO. */
+	/** Set texture format suitable for attaching as FBO render target. */
+	void SetFBOFormatFloat32( int channels );
+	
+	/** Set texture format suitable for rendering to an integral texture using an FBO. */
 	void SetFBOFormatIntegral( int channels, int bpp, bool useUnsigned );
 	
-	/** \brief Set depth texture format suitable for attaching as FBO render target. */
+	/** Set texture format suitable for attaching as FBO render target. */
+	void SetFBOFormatSNorm( int channels, int bpp );
+	
+	/** Set depth texture format suitable for attaching as FBO render target. */
 	void SetDepthFormat( bool packedStencil, bool useFloat );
+	
+	/** Set debug object label. */
+	void SetDebugObjectLabel( const char *name );
 	/*@}*/
+	
+private:
+	void pUpdateDebugObjectLabel();
 };
 
 #endif

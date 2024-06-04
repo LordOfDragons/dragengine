@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine GUI Launcher
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEGLWINDOWLOGGER_H_
@@ -24,16 +27,15 @@
 
 #include "../foxtoolkit.h"
 
-class deglLoggerHistory;
-class deglLoggerHistoryEntry;
+#include <delauncher/logger/delLoggerHistory.h>
+#include <delauncher/logger/delLoggerHistoryListener.h>
+
 class deglWindowLoggerListener;
 class deglWindowLoggerTable;
 
 
-
 /**
- * @brief Logger Window.
- * Display the logging history.
+ * Logger Window. Display the logging history.
  */
 class deglWindowLogger : public FXTopWindow{
 	FXDECLARE( deglWindowLogger )
@@ -48,47 +50,58 @@ public:
 		ID_LAST
 	};
 	
+	
+	
 private:
-	deglWindowLoggerListener *pListener;
-	deglLoggerHistory *pLogger;
+	delLoggerHistoryListener::Ref pListener;
+	delLoggerHistory::Ref pLogger;
 	FXFont *pFontNormal;
 	FXFont *pFontBold;
 	
 	deglWindowLoggerTable *pTableLogs;
 	
+	
+	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new logger window. */
+	/** Create logger window. */
 	deglWindowLogger( FXApp *app );
-	/** Cleans up the logger window. */
+	
+	/** Clean up logger window. */
 	virtual ~deglWindowLogger();
 	/*@}*/
 	
-	/** @name Management */
+	
+	
+	/** \name Management */
 	/*@{*/
 	/** Create window. */
 	virtual void create();
 	
-	/** Retrieves the logger to monitor or NULL if none. */
-	inline deglLoggerHistory *GetLogger() const{ return pLogger; }
-	/** Sets the logger to monitor or NULL if none. */
-	void SetLogger( deglLoggerHistory *logger );
+	/** Logger to monitor or nullptr if none. */
+	inline delLoggerHistory *GetLogger() const{ return pLogger; }
 	
-	/** Updates the logs table. */
+	/** Set logger to monitor or nullptr if none. */
+	void SetLogger( delLoggerHistory *logger );
+	
+	/** Update logs table. */
 	void UpdateLogs();
+	
 	/** Add log to table. */
-	void AddLogToTable( const deglLoggerHistoryEntry &entry );
+	void AddLogToTable( const delLoggerHistoryEntry &entry );
+	
 	/** Clear logs table. */
 	void ClearLogsTable();
 	/*@}*/
 	
-	/** @name Events */
+	
+	
+	/** \name Events */
 	/*@{*/
 	long onMap( FXObject *sender, FXSelector selector, void *data );
 	long onClose( FXObject *sender, FXSelector selector, void *data );
 	/*@}*/
 };
 
-// end of include only once
 #endif

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Game Engine
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEPARTICLEEMITTERINSTANCE_H_
@@ -24,12 +27,14 @@
 
 #include "deParticleEmitterReference.h"
 #include "../deResource.h"
+#include "../../common/collection/decObjectSet.h"
 #include "../../common/math/decMath.h"
 #include "../../common/utils/decCollisionFilter.h"
 #include "../../common/utils/decLayerMask.h"
 
 class deSkin;
 class deWorld;
+class deCollider;
 class deCollisionInfo;
 class deParticleEmitterInstanceType;
 class deParticleEmitterInstanceManager;
@@ -43,7 +48,13 @@ class deBaseScriptingParticleEmitterInstance;
  * \brief Particle Emitter Instance.
  * Instance of a particle emitter.
  */
-class deParticleEmitterInstance : public deResource{
+class DE_DLL_EXPORT deParticleEmitterInstance : public deResource{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deParticleEmitterInstance> Ref;
+	
+	
+	
 private:
 	deParticleEmitterReference pEmitter;
 	
@@ -69,6 +80,7 @@ private:
 	
 	decLayerMask pLayerMask;
 	decCollisionFilter pCollisionFilter;
+	decObjectSet pIgnoreColliders;
 	
 	deBaseGraphicParticleEmitterInstance *pPeerGraphic;
 	deBasePhysicsParticleEmitterInstance *pPeerPhysics;
@@ -226,6 +238,51 @@ public:
 	 * \brief Let scripting module determine response for a custom particle collision.
 	 */
 	void CollisionResponse( deCollisionInfo *cinfo );
+	/*@}*/
+	
+	
+	
+	/** \name Ignore colliders */
+	/*@{*/
+	/**
+	 * \brief Number of colliders to ignore.
+	 * \version 1.7
+	 */
+	int GetIgnoreColliderCount() const;
+	
+	/**
+	 * \brief Collider to ignore at index.
+	 * \version 1.7
+	 * \throws deeInvalidParam \em index is less than 0.
+	 * \throws deeInvalidParam \em index is greater or equal than GetIgnoreColliderCount()-1.
+	 */
+	deCollider *GetIgnoreColliderAt( int index ) const;
+	
+	/**
+	 * \brief Collider to ignore is present.
+	 * \version 1.7
+	 */
+	bool HasIgnoreCollider( deCollider *collider ) const;
+	
+	/**
+	 * \brief Add collider to ignore.
+	 * \version 1.7
+	 * \throws deeInvalidParam \em collider is present.
+	 */
+	void AddIgnoreCollider( deCollider *collider );
+	
+	/**
+	 * \brief Remove collider to ignore.
+	 * \version 1.7
+	 * \throws deeInvalidParam \em collider is absent.
+	 */
+	void RemoveIgnoreCollider( deCollider *collider );
+	
+	/**
+	 * \brief Remove all colliders to ignore.
+	 * \version 1.7
+	 */
+	void RemoveAllIgnoreColliders();
 	/*@}*/
 	
 	

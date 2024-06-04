@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -26,10 +29,12 @@
 
 #include "deClassMicrophone.h"
 #include "deClassSpeaker.h"
+#include "../deClassEngine.h"
 #include "../math/deClassVector.h"
 #include "../math/deClassDVector.h"
 #include "../math/deClassQuaternion.h"
 #include "../physics/deClassLayerMask.h"
+#include "../world/deClassWorld.h"
 #include "../../deScriptingDragonScript.h"
 #include "../../deClassPathes.h"
 
@@ -60,6 +65,7 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
 void deClassMicrophone::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	sMicNatDat *nd = ( sMicNatDat* )p_GetNativeData( myself );
 	deClassMicrophone *clsMic = ( deClassMicrophone* )GetOwnerClass();
+	const deScriptingDragonScript &ds = *clsMic->GetScriptModule();
 	deMicrophoneManager *spkMgr = clsMic->GetGameEngine()->GetMicrophoneManager();
 	
 	// clear (important)
@@ -67,7 +73,7 @@ void deClassMicrophone::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	
 	// create microphone
 	nd->microphone = spkMgr->CreateMicrophone();
-	if( ! nd->microphone ) DSTHROW( dueOutOfMemory );
+	nd->microphone->SetEnableAuralization( ds.GetClassEngine()->GetDefaultEnableAuralization() );
 }
 
 // public func destructor()
@@ -268,6 +274,55 @@ void deClassMicrophone::nfSetLayerMask::RunFunction( dsRunTime *rt, dsValue *mys
 	microphone.SetLayerMask( ds.GetClassLayerMask()->GetLayerMask( rt->GetValue( 0 )->GetRealObject() ) );
 }
 
+// public func float getSpeakerGain()
+deClassMicrophone::nfGetSpeakerGain::nfGetSpeakerGain( const sInitData &init ) :
+dsFunction( init.clsMic, "getSpeakerGain", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt ){
+}
+void deClassMicrophone::nfGetSpeakerGain::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deMicrophone &microphone = *( ( ( sMicNatDat* )p_GetNativeData( myself ) )->microphone );
+	rt->PushFloat( microphone.GetSpeakerGain() );
+}
+
+// public func void setSpeakerGain(float gain)
+deClassMicrophone::nfSetSpeakerGain::nfSetSpeakerGain(const sInitData &init) :
+dsFunction( init.clsMic, "setSpeakerGain", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsFlt ); // gain
+}
+void deClassMicrophone::nfSetSpeakerGain::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deMicrophone &microphone = *( ( ( sMicNatDat* )p_GetNativeData( myself ) )->microphone );
+	microphone.SetSpeakerGain( rt->GetValue( 0 )->GetFloat() );
+}
+
+// public func World getParentWorld()
+deClassMicrophone::nfGetParentWorld::nfGetParentWorld( const sInitData &init ) :
+dsFunction( init.clsMic, "getParentWorld", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsWorld ){
+}
+void deClassMicrophone::nfGetParentWorld::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deMicrophone &microphone = *( ( ( sMicNatDat* )p_GetNativeData( myself ) )->microphone );
+	const deScriptingDragonScript &ds = *( ( deClassMicrophone* )GetOwnerClass() )->GetScriptModule();
+	
+	ds.GetClassWorld()->PushWorld( rt, microphone.GetParentWorld() );
+}
+
+// public func bool getEnableAuralization()
+deClassMicrophone::nfGetEnableAuralization::nfGetEnableAuralization( const sInitData &init ) :
+dsFunction( init.clsMic, "getEnableAuralization", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
+}
+void deClassMicrophone::nfGetEnableAuralization::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deMicrophone &microphone = *( ( ( sMicNatDat* )p_GetNativeData( myself ) )->microphone );
+	rt->PushBool( microphone.GetEnableAuralization() );
+}
+
+// public func void setEnableAuralization(bool enable)
+deClassMicrophone::nfSetEnableAuralization::nfSetEnableAuralization(const sInitData &init) :
+dsFunction( init.clsMic, "setEnableAuralization", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsBool ); // enable
+}
+void deClassMicrophone::nfSetEnableAuralization::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deMicrophone &microphone = *( ( ( sMicNatDat* )p_GetNativeData( myself ) )->microphone );
+	microphone.SetEnableAuralization( rt->GetValue( 0 )->GetBool() );
+}
+
 
 
 // Speakers
@@ -323,7 +378,7 @@ dsFunction( init.clsMic, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, i
 void deClassMicrophone::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
 	deMicrophone *microphone = ( ( sMicNatDat* )p_GetNativeData( myself ) )->microphone;
 	
-	rt->PushInt( ( intptr_t )microphone );
+	rt->PushInt( ( int )( intptr_t )microphone );
 }
 
 // public func bool equals( Object object )
@@ -360,7 +415,7 @@ dsClass( "Microphone", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE ){
 	pGameEngine = gameEngine;
 	pScrMgr = scrMgr;
 	
-	// store informations into parser info
+	// store information into parser info
 	GetParserInfo()->SetParent( DENS_SCENERY );
 	GetParserInfo()->SetBase( "Object" );
 	
@@ -395,6 +450,7 @@ void deClassMicrophone::CreateClassMembers( dsEngine *engine ){
 	init.clsSpk = pClsSpk;
 	init.clsLayerMask = pScrMgr->GetClassLayerMask();
 	init.clsMicrophoneType = pClsMicrophoneType;
+	init.clsWorld = pScrMgr->GetClassWorld();
 	
 	// add functions
 	AddFunction( new nfNew( init ) );
@@ -416,6 +472,13 @@ void deClassMicrophone::CreateClassMembers( dsEngine *engine ){
 	
 	AddFunction( new nfGetLayerMask( init ) );
 	AddFunction( new nfSetLayerMask( init ) );
+	
+	AddFunction( new nfGetSpeakerGain( init ) );
+	AddFunction( new nfSetSpeakerGain( init ) );
+	AddFunction( new nfGetParentWorld( init ) );
+	
+	AddFunction( new nfGetEnableAuralization( init ) );
+	AddFunction( new nfSetEnableAuralization( init ) );
 	
 	AddFunction( new nfAddSpeaker( init ) );
 	AddFunction( new nfRemoveSpeaker( init ) );

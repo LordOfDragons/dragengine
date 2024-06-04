@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -41,6 +44,7 @@
 #include <dragengine/resources/rig/deRigReference.h>
 #include <dragengine/resources/rig/deRigManager.h>
 
+#include <libdscript/packages/default/dsClassArray.h>
 #include <libdscript/packages/default/dsClassEnumeration.h>
 
 
@@ -167,7 +171,7 @@ void deClassRigBuilder::nfSetCentralMassPoint::RunFunction( dsRunTime *rt, dsVal
 
 // protected func void setModelCollision( bool modelCollision )
 deClassRigBuilder::nfSetModelCollision::nfSetModelCollision( const sInitData &init ) :
-dsFunction( init.clsRigBuilder, "setRigCollision", DSFT_FUNCTION,
+dsFunction( init.clsRigBuilder, "setModelCollision", DSFT_FUNCTION,
 DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid ){
 	p_AddParameter( init.clsBoolean ); // modelCollision
 }
@@ -214,7 +218,7 @@ void deClassRigBuilder::nfAddBone::RunFunction( dsRunTime *rt, dsValue *myself )
 	const decVector &rotation = ds.GetClassVector()->GetVector( rt->GetValue( 3 )->GetRealObject() );
 	const decVector &centralMassPoint = ds.GetClassVector()->GetVector( rt->GetValue( 4 )->GetRealObject() );
 	const bool dynamic = rt->GetValue( 5 )->GetBool();
-	const float mass = rt->GetValue( 6 )->GetBool();
+	const float mass = rt->GetValue( 6 )->GetFloat();
 	const decVector &ikLimitsLower = ds.GetClassVector()->GetVector( rt->GetValue( 7 )->GetRealObject() );
 	const decVector &ikLimitsUpper = ds.GetClassVector()->GetVector( rt->GetValue( 8 )->GetRealObject() );
 	const decVector &ikResistance = ds.GetClassVector()->GetVector( rt->GetValue( 9 )->GetRealObject() );
@@ -227,11 +231,11 @@ void deClassRigBuilder::nfAddBone::RunFunction( dsRunTime *rt, dsValue *myself )
 	try{
 		bone->SetParent( parent );
 		bone->SetPosition( position );
-		bone->SetRotation( rotation );
+		bone->SetRotation( rotation * DEG2RAD );
 		bone->SetCentralMassPoint( centralMassPoint );
 		bone->SetDynamic( dynamic );
 		bone->SetMass( mass );
-		bone->SetIKLimits( ikLimitsLower, ikLimitsUpper );
+		bone->SetIKLimits( ikLimitsLower * DEG2RAD, ikLimitsUpper * DEG2RAD );
 		bone->SetIKResistance( ikResistance );
 		bone->SetIKLockedX( ikLockedX );
 		bone->SetIKLockedY( ikLockedY );
@@ -245,33 +249,49 @@ void deClassRigBuilder::nfAddBone::RunFunction( dsRunTime *rt, dsValue *myself )
 	}
 }
 
-// protected func void addBoneShapeProperty( int index, String property )
-deClassRigBuilder::nfAddBoneShapeProperty::nfAddBoneShapeProperty( const sInitData &init ) :
-dsFunction( init.clsRigBuilder, "addBoneShapeProperty", DSFT_FUNCTION,
+// protected func void setBoneShapeProperties( int index, Array properties )
+deClassRigBuilder::nfSetBoneShapeProperties::nfSetBoneShapeProperties( const sInitData &init ) :
+dsFunction( init.clsRigBuilder, "setBoneShapeProperties", DSFT_FUNCTION,
 DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid ){
 	p_AddParameter( init.clsInteger ); // index
-	p_AddParameter( init.clsString ); // property
+	p_AddParameter( init.clsArray ); // properties
 }
-void deClassRigBuilder::nfAddBoneShapeProperty::RunFunction( dsRunTime *rt, dsValue *myself ){
+void deClassRigBuilder::nfSetBoneShapeProperties::RunFunction( dsRunTime *rt, dsValue *myself ){
 	deClassRigBuilder_Builder * const builder = ( ( sMdlBldNatDat* )p_GetNativeData( myself ) )->builder;
 	if( ! builder || ! builder->GetRig() ){
 		DSTHROW( dueInvalidAction );
 	}
 	
 	deRigBone &bone = builder->GetRig()->GetBoneAt( rt->GetValue( 0 )->GetInt() );
-	decStringList properties( bone.GetShapeProperties() );
-	properties.Add( rt->GetValue( 1 )->GetString() );
+	
+	const deScriptingDragonScript &ds = ( ( deClassRigBuilder* )GetOwnerClass() )->GetDS();
+	dsClassArray &clsArray = *( ( dsClassArray* )ds.GetScriptEngine()->GetClassArray() );
+	dsRealObject * const objProperties = rt->GetValue( 1 )->GetRealObject();
+	const int count = clsArray.GetObjectCount( rt, objProperties );
+	if( count != bone.GetShapeProperties().GetCount() ){
+		DSTHROW_INFO( dueInvalidParam, "properties.getCount() != bone.shapeCount" );
+	}
+	
+	decStringList properties;
+	int i;
+	for( i=0; i<count; i++ ){
+		dsValue * const value = clsArray.GetObjectAt( rt, objProperties, i );
+		rt->RunFunction( value, "toString", 0 );
+		properties.Add( rt->GetReturnString() );
+	}
 	bone.SetShapeProperties( properties );
 }
 
-// protected func void addBoneConstraint( int bone, Vector referencePosition, Vector boneOffset,
-// float linearDamping, float angularDamping, float springDamping, bool isRope,
+// protected func void addBoneConstraint( int bone, Vector referencePosition,
+// Quaternion referenceOrientation, Vector boneOffset, float linearDamping,
+// float angularDamping, float springDamping, bool isRope,
 // float breakingThreshold, int parentBone )
 deClassRigBuilder::nfAddBoneConstraint::nfAddBoneConstraint( const sInitData &init ) :
 dsFunction( init.clsRigBuilder, "addBoneConstraint", DSFT_FUNCTION,
 DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid ){
 	p_AddParameter( init.clsInteger ); // bone
 	p_AddParameter( init.clsVector ); // referencePosition
+	p_AddParameter( init.clsQuaternion ); // referenceOrientation
 	p_AddParameter( init.clsVector ); // boneOffset
 	p_AddParameter( init.clsFloat ); // linearDamping
 	p_AddParameter( init.clsFloat ); // angularDamping
@@ -296,7 +316,7 @@ void deClassRigBuilder::nfAddBoneConstraint::RunFunction( dsRunTime *rt, dsValue
 	const float springDamping = rt->GetValue( 6 )->GetFloat();
 	const bool isRope = rt->GetValue( 7 )->GetBool();
 	const float breakingThreshold = rt->GetValue( 8 )->GetFloat();
-	const int parentBone = rt->GetValue( 9 )->GetFloat();
+	const int parentBone = rt->GetValue( 9 )->GetInt();
 	
 	deRigConstraint * const constraint = new deRigConstraint;
 	try{
@@ -342,11 +362,27 @@ void deClassRigBuilder::nfSetBoneConstraintDof::RunFunction( dsRunTime *rt, dsVa
 	
 	deRigBone &bone = builder->GetRig()->GetBoneAt( rt->GetValue( 0 )->GetInt() );
 	deRigConstraint &constraint = bone.GetConstraintAt( rt->GetValue( 1 )->GetInt() );
-	deColliderConstraintDof &dof = constraint.GetDof( ( deColliderConstraint::eDegreesOfFreedom )
+	const deColliderConstraint::eDegreesOfFreedom dofEnum = ( deColliderConstraint::eDegreesOfFreedom )
 		( ( dsClassEnumeration* )rt->GetEngine()->GetClassEnumeration() )->GetConstantOrder(
-			*rt->GetValue( 2 )->GetRealObject() ) );
-	dof.SetLowerLimit( rt->GetValue( 3 )->GetFloat() );
-	dof.SetUpperLimit( rt->GetValue( 4 )->GetFloat() );
+			*rt->GetValue( 2 )->GetRealObject() );
+	deColliderConstraintDof &dof = constraint.GetDof( dofEnum );
+	
+	switch( dofEnum ){
+	case deColliderConstraint::edofLinearX:
+	case deColliderConstraint::edofLinearY:
+	case deColliderConstraint::edofLinearZ:
+		dof.SetLowerLimit( rt->GetValue( 3 )->GetFloat() );
+		dof.SetUpperLimit( rt->GetValue( 4 )->GetFloat() );
+		break;
+		
+	case deColliderConstraint::edofAngularX:
+	case deColliderConstraint::edofAngularY:
+	case deColliderConstraint::edofAngularZ:
+		dof.SetLowerLimit( rt->GetValue( 3 )->GetFloat() * DEG2RAD );
+		dof.SetUpperLimit( rt->GetValue( 4 )->GetFloat() * DEG2RAD );
+		break;
+	}
+	
 	dof.SetStaticFriction( rt->GetValue( 5 )->GetFloat() );
 	dof.SetKinematicFriction( rt->GetValue( 6 )->GetFloat() );
 	dof.SetSpringStiffness( rt->GetValue( 7 )->GetFloat() );
@@ -369,7 +405,7 @@ void deClassRigBuilder::nfSetRootBone::RunFunction( dsRunTime *rt, dsValue *myse
 
 // protected func void setShapes( ShapeList shapes )
 deClassRigBuilder::nfSetShapes::nfSetShapes( const sInitData &init ) :
-dsFunction( init.clsRigBuilder, "setRootBone", DSFT_FUNCTION,
+dsFunction( init.clsRigBuilder, "setShapes", DSFT_FUNCTION,
 DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid ){
 	p_AddParameter( init.clsShapeList ); // shapes
 }
@@ -383,20 +419,33 @@ void deClassRigBuilder::nfSetShapes::RunFunction( dsRunTime *rt, dsValue *myself
 	builder->GetRig()->SetShapes( ds.GetClassShapeList()->GetShapeList( rt->GetValue( 0 )->GetRealObject() ) );
 }
 
-// protected func void addShapeProperty( String property )
-deClassRigBuilder::nfAddShapeProperty::nfAddShapeProperty( const sInitData &init ) :
-dsFunction( init.clsRigBuilder, "addShapeProperty", DSFT_FUNCTION,
+// protected func void setShapeProperties( Array properties )
+deClassRigBuilder::nfSetShapeProperties::nfSetShapeProperties( const sInitData &init ) :
+dsFunction( init.clsRigBuilder, "setShapeProperties", DSFT_FUNCTION,
 DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsString ); // property
+	p_AddParameter( init.clsArray ); // properties
 }
-void deClassRigBuilder::nfAddShapeProperty::RunFunction( dsRunTime *rt, dsValue *myself ){
+void deClassRigBuilder::nfSetShapeProperties::RunFunction( dsRunTime *rt, dsValue *myself ){
 	deClassRigBuilder_Builder * const builder = ( ( sMdlBldNatDat* )p_GetNativeData( myself ) )->builder;
 	if( ! builder || ! builder->GetRig() ){
 		DSTHROW( dueInvalidAction );
 	}
 	
-	decStringList properties( builder->GetRig()->GetShapeProperties() );
-	properties.Add( rt->GetValue( 0 )->GetString() );
+	const deScriptingDragonScript &ds = ( ( deClassRigBuilder* )GetOwnerClass() )->GetDS();
+	dsClassArray &clsArray = *( ( dsClassArray* )ds.GetScriptEngine()->GetClassArray() );
+	dsRealObject * const objProperties = rt->GetValue( 0 )->GetRealObject();
+	const int count = clsArray.GetObjectCount( rt, objProperties );
+	if( count != builder->GetRig()->GetShapeProperties().GetCount() ){
+		DSTHROW_INFO( dueInvalidParam, "properties.getCount() != rig.shapeCount" );
+	}
+	
+	decStringList properties;
+	int i;
+	for( i=0; i<count; i++ ){
+		dsValue * const value = clsArray.GetObjectAt( rt, objProperties, i );
+		rt->RunFunction( value, "toString", 0 );
+		properties.Add( rt->GetReturnString() );
+	}
 	builder->GetRig()->SetShapeProperties( properties );
 }
 
@@ -442,6 +491,7 @@ void deClassRigBuilder::CreateClassMembers( dsEngine *engine ){
 	init.clsQuaternion = pDS.GetClassQuaternion();
 	init.clsShapeList = pDS.GetClassShapeList();
 	init.clsColliderConstraintDof = pClsColliderConstraintDof;
+	init.clsArray = engine->GetClassArray();
 	
 	AddFunction( new nfNew( init ) );
 	AddFunction( new nfDestructor( init ) );
@@ -451,10 +501,10 @@ void deClassRigBuilder::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfSetCentralMassPoint( init ) );
 	AddFunction( new nfSetModelCollision( init ) );
 	AddFunction( new nfAddBone( init ) );
-	AddFunction( new nfAddBoneShapeProperty( init ) );
+	AddFunction( new nfSetBoneShapeProperties( init ) );
 	AddFunction( new nfAddBoneConstraint( init ) );
 	AddFunction( new nfSetBoneConstraintDof( init ) );
 	AddFunction( new nfSetRootBone( init ) );
 	AddFunction( new nfSetShapes( init ) );
-	AddFunction( new nfAddShapeProperty( init ) );
+	AddFunction( new nfSetShapeProperties( init ) );
 }

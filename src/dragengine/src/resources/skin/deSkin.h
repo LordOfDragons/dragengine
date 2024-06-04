@@ -1,31 +1,37 @@
-/* 
- * Drag[en]gine Game Engine
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DESKIN_H_
 #define _DESKIN_H_
 
 #include "../deFileResource.h"
+#include "../../common/collection/decObjectOrderedSet.h"
 
 class deSkinTexture;
 class deSkinManager;
+class deSkinMapped;
+
 class deBaseGraphicSkin;
 class deBaseAudioSkin;
 class deBasePhysicsSkin;
@@ -46,10 +52,18 @@ class deBasePhysicsSkin;
  * you reference them using their name from inside your code. Renderables
  * can be shared which is why they are stored outside the data trees.
  */
-class deSkin : public deFileResource{
+class DE_DLL_EXPORT deSkin : public deFileResource{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deSkin> Ref;
+	
+	
+	
 private:
 	deSkinTexture **pTextures;
 	int pTextureCount, pTextureSize;
+	
+	decObjectOrderedSet pMapped;
 	
 	deBaseGraphicSkin *pPeerGraphic;
 	deBaseAudioSkin *pPeerAudio;
@@ -90,6 +104,35 @@ public:
 	
 	/** \brief Index of the texture with the given name or -1 if not found. */
 	int IndexOfTextureNamed( const char *name ) const;
+	/*@}*/
+	
+	
+	
+	/** \name Mapped Values */
+	/*@{*/
+	/** \brief Count of mapped values. */
+	int GetMappedCount() const;
+	
+	/** \brief Mapped value at index. */
+	deSkinMapped *GetMappedAt( int index ) const;
+	
+	/** \brief Named mapped value or nullptr. */
+	deSkinMapped *GetMappedNamed( const char *name ) const;
+	
+	/** \brief Index of mapped value or -1 if absent. */
+	int IndexOfMapped( deSkinMapped *mapped ) const;
+	
+	/** \brief Index of named mapped value or -1 if absent. */
+	int IndexOfMappedNamed( const char *name ) const;
+	
+	/** \brief Mapped value is present. */
+	bool HasMapped( deSkinMapped *mapped ) const;
+	
+	/** \brief Named mapped value is present. */
+	bool HasMappedNamed( const char *name ) const;
+	
+	/** \brief Add mapped value. */
+	void AddMapped( deSkinMapped *mapped );
 	/*@}*/
 	
 	

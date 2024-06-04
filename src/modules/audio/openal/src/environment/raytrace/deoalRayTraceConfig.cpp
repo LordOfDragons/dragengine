@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenAL Audio Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdlib.h>
@@ -103,9 +106,7 @@ void deoalRayTraceConfig::Rotate( float rx, float ry, float rz ){
 }
 
 void deoalRayTraceConfig::SetRaysEquallySpaced( int rayCount ){
-	if( rayCount < 1 ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( rayCount > 0 )
 	
 	if( pRayDirections ){
 		delete [] pRayDirections;
@@ -115,16 +116,16 @@ void deoalRayTraceConfig::SetRaysEquallySpaced( int rayCount ){
 	pRayCount = 0;
 	pRayDirections = new decVector[ rayCount ];
 	
-	const double dLongitude = PI * ( 3.0 - sqrt( 5.0 ) );
-	const double dZ = 2.0 / ( float )rayCount;
-	double longitude = 0.0;
-	double z = 1.0 - dZ * 0.5;
+	const float dLongitude = PI * ( 3.0f - sqrtf( 5.0f ) );
+	const float dZ = 2.0f / ( float )rayCount;
+	float longitude = 0.0f;
+	float z = 1.0f - dZ * 0.5f;
 	
 	for( pRayCount=0; pRayCount<rayCount; pRayCount++ ){
-		const double radius = sqrt( 1.0 - z * z );
-		pRayDirections[ pRayCount ].x = cos( longitude ) * radius;
-		pRayDirections[ pRayCount ].y = sin( longitude ) * radius;
-		pRayDirections[ pRayCount ].z = z;
+		const float radius = sqrtf( 1.0f - z * z );
+		pRayDirections[ pRayCount ].x = cosf( longitude ) * radius;
+		pRayDirections[ pRayCount ].y = sinf( longitude ) * radius;
+		pRayDirections[ pRayCount ].z = ( float )z;
 		z -= dZ;
 		longitude += dLongitude;
 	}
@@ -137,7 +138,12 @@ void deoalRayTraceConfig::SetRaysEquallySpaced( int rayCount ){
 	pRayUnitVolume = pRayUnitSurface / 3.0f;
 	
 	// gauss factor is tan(openingAngle) * 0.466
-	pOpeningAngle = atanf( ( pRayDirections[ 2 ] - pRayDirections[ 1 ] ).Length() ) * 2.0f;
+	if( rayCount > 2 ){
+		pOpeningAngle = atanf( ( pRayDirections[ 2 ] - pRayDirections[ 1 ] ).Length() ) * 2.0f;
+
+	}else{
+		pOpeningAngle = TWO_PI;
+	}
 }
 
 void deoalRayTraceConfig::SetFromIcoSphere( const deoalIcoSphere &icoSphere ){

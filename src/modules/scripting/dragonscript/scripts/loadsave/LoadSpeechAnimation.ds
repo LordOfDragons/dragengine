@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -43,63 +46,62 @@ class LoadSpeechAnimation extends BaseXmlLoader
 		private var Console pConsole
 		private var PreloadCounter pCounter
 		
-		public func new( String pathFile, SpeechAnimation speechAnimation, Console console )
-			this.pPathFile = pathFile
-			this.pSpeechAnimation = speechAnimation
-			this.pConsole = console
+		public func new(String pathFile, SpeechAnimation speechAnimation, Console console)
+			pPathFile = pathFile
+			pSpeechAnimation = speechAnimation
+			pConsole = console
 		end
 		
 		public func String getPathFile()
-			return this.pPathFile
+			return pPathFile
 		end
 		
 		public func SpeechAnimation getSpeechAnimation()
-			return this.pSpeechAnimation
+			return pSpeechAnimation
 		end
 		
 		public func Console getConsole()
-			return this.pConsole
+			return pConsole
 		end
 		
-		public func void preloadResources( PreloadCounter counter )
-			this.pCounter = counter
+		public func void preloadResources(PreloadCounter counter)
+			pCounter = counter
 			
-			if this.pSpeechAnimation.getPathAnimation() != null
+			if pSpeechAnimation.getPathAnimation() != null
 				if counter != null
-					Animation.loadAsynchron( this.pSpeechAnimation.getPathAnimation(), this )
+					Animation.loadAsynchron(pSpeechAnimation.getPathAnimation(), this)
 					counter.increase()
 					
 				else
-					Animation.new( this.pSpeechAnimation.getPathAnimation() )
+					Animation.new(pSpeechAnimation.getPathAnimation())
 				end
 			end
 			
-			if this.pSpeechAnimation.getPathRig() != null
+			if pSpeechAnimation.getPathRig() != null
 				if counter != null
-					Rig.loadAsynchron( this.pSpeechAnimation.getPathRig(), this )
+					Rig.loadAsynchron(pSpeechAnimation.getPathRig(), this)
 					counter.increase()
 					
 				else
-					Rig.new( this.pSpeechAnimation.getPathRig() )
+					Rig.new(pSpeechAnimation.getPathRig())
 				end
 			end
 		end
 		
-		public func void finishedLoading( String path, ResourceLoaderType resourceType, Object resource )
-			if path.equals( this.pSpeechAnimation.getPathAnimation() )
-				this.pSpeechAnimation.getAnimator().setAnimation( resource cast Animation )
+		public func void finishedLoading(String path, ResourceLoaderType resourceType, Object resource)
+			if resourceType == ResourceLoaderType.animation and path.equals(pSpeechAnimation.getPathAnimation())
+				pSpeechAnimation.getAnimator().setAnimation(resource cast Animation)
 				
-			elif path.equals( this.pSpeechAnimation.getPathRig() )
-				this.pSpeechAnimation.getAnimator().setRig( resource cast Rig )
+			elif resourceType == ResourceLoaderType.rig and  path.equals(pSpeechAnimation.getPathRig())
+				pSpeechAnimation.getAnimator().setRig(resource cast Rig)
 			end
 			
-			this.pCounter.decrease()
+			pCounter.decrease()
 		end
 		
-		public func void failedLoading( String path, ResourceLoaderType resourceType )
-			this.pConsole.addMessage( "Speech Animation '" \
-				+ this.pPathFile + "': Failed to load " + path )
-			this.pCounter.decrease()
+		public func void failedLoading(String path, ResourceLoaderType resourceType)
+			pConsole.addMessage("Speech Animation '" + pPathFile + "': Failed to load " + path)
+			pCounter.decrease()
 		end
 	end
 	
@@ -108,129 +110,136 @@ class LoadSpeechAnimation extends BaseXmlLoader
 	
 	
 	/** Creates a new loader. */
-	public func new( Console console ) this( console, "LoadSpeechAnimation" )
+	public func new(Console console) this(console, "LoadSpeechAnimation")
 	end
 	
 	/** Creates a new loader. */
-	public func new( Console console, String name ) super( console, name )
-		this.pSpeechAnimations = Dictionary.new()
+	public func new(Console console, String name) super(console, name)
+		pSpeechAnimations = Dictionary.new()
 	end
 	
 	
 	
 	/** Load character speech animation from file. */
-	public func SpeechAnimation loadFromFile( String filename, PreloadCounter counter )
+	public func SpeechAnimation loadFromFile(String filename, PreloadCounter counter)
 		var LoadedSpeechAnimation loadedSpeechAnimation = \
-			this.pSpeechAnimations.getAt( filename, null ) cast LoadedSpeechAnimation
+			pSpeechAnimations.getAt(filename, null) cast LoadedSpeechAnimation
 		if loadedSpeechAnimation != null
 			return loadedSpeechAnimation.getSpeechAnimation()
 		end
 		
-		return this.loadAndParseRootTag( filename, "speechAnimation", block EasyXMLElement root
+		return loadAndParseRootTag(filename, "speechAnimation", block EasyXMLElement root
 			var SpeechAnimation speechAnimation = SpeechAnimation.new()
-			this.pReadSpeechAnimation( root, speechAnimation, File.new( filename ).getParent().getPath() )
+			pReadSpeechAnimation(root, speechAnimation, File.new(filename).getParent().getPath())
 			
 			speechAnimation.buildAnimator()
 			
-			loadedSpeechAnimation = LoadedSpeechAnimation.new( \
-				filename, speechAnimation, this.getConsole() )
-			loadedSpeechAnimation.preloadResources( counter )
-			this.pSpeechAnimations.setAt( filename, loadedSpeechAnimation )
+			loadedSpeechAnimation = LoadedSpeechAnimation.new(\
+				filename, speechAnimation, getConsole())
+			loadedSpeechAnimation.preloadResources(counter)
+			pSpeechAnimations.setAt(filename, loadedSpeechAnimation)
 			
 			return speechAnimation
-		end ) cast SpeechAnimation
+		end) cast SpeechAnimation
 	end
 	
 	
 	
 	/** Read speech animation tag. */
-	private func void pReadSpeechAnimation( EasyXMLElement root, SpeechAnimation spa, String basePath )
-		root.forEachTag( block EasyXMLElement element, String tagName
-			if tagName.equals( "display" )
+	private func void pReadSpeechAnimation(EasyXMLElement root, SpeechAnimation spa, String basePath)
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if tagName.equals("display")
 				// ignore, used only for editing
 				
-			elif tagName.equals( "animation" )
-				spa.setPathAnimation( File.absolutePath( element.getFirstCData(), basePath ).getPath() )
+			elif tagName.equals("animation")
+				spa.setPathAnimation(File.absolutePath(element.getFirstCData(), basePath).getPath())
 				
-			elif tagName.equals( "rig" )
-				spa.setPathRig( File.absolutePath( element.getFirstCData(), basePath ).getPath() )
+			elif tagName.equals("rig")
+				spa.setPathRig(File.absolutePath(element.getFirstCData(), basePath).getPath())
 				
-			elif tagName.equals( "neutralMoveName" )
-				spa.setNeutralMove( element.getFirstCData() )
+			elif tagName.equals("neutralMoveName")
+				spa.setNeutralMove(element.getFirstCData())
 				
-			elif tagName.equals( "phoneme" )
-				this.pReadPhoneme( element, spa )
+			elif tagName.equals("neutralVertexPositionSet")
+				spa.getNeutralVertexPositionSets().add(element.getFirstCData())
 				
-			elif tagName.equals( "word" )
-				this.pReadWord( element, spa )
+			elif tagName.equals("phoneme")
+				pReadPhoneme(element, spa)
+				
+			elif tagName.equals("word")
+				pReadWord(element, spa)
 			end
-		end )
+		end)
 	end
 	
 	/** Read phoneme tag. */
-	private func void pReadPhoneme( EasyXMLElement root, SpeechAnimation spa )
+	private func void pReadPhoneme(EasyXMLElement root, SpeechAnimation spa)
 		var int i, count = root.getElementCount()
 		var EasyXMLElement element
+		var String vertexPositionSet = ""
 		var String moveName = ""
 		var float length = 0.1
 		var String tagName
 		var int ipa = -1
 		
-		ipa = root.getAttributeIntNamed( "ipa" )
+		ipa = root.getAttributeIntNamed("ipa")
 		
-		if spa.getPhonemeWithIPA( ipa ) != null
-			this.printOnConsole( root, "A phoneme exists already with the IPA '" + ipa + "'." )
+		if spa.getPhonemeWithIPA(ipa) != null
+			printOnConsole(root, "A phoneme exists already with the IPA '" + ipa + "'.")
 			throw EInvalidParam.new()
 		end
 		
 		for i = 0 to count
-			element = root.getElementAt( i )
+			element = root.getElementAt(i)
 			
 			if element.getType() == EasyXMLElementType.tag
 				tagName = element.getTagName()
 				
-				if tagName.equals( "moveName" )
+				if tagName.equals("moveName")
 					moveName = element.getFirstCData()
 					
-				elif tagName.equals( "length" )
+				elif tagName.equals("vertexPositionSet")
+					vertexPositionSet = element.getFirstCData()
+					
+				elif tagName.equals("length")
 					length = element.getFirstCData().toFloat()
 				end
 			end
 		end
 		
-		spa.addPhoneme( SpeechAnimationPhoneme.new( ipa, length, moveName ) )
+		spa.addPhoneme(SpeechAnimationPhoneme.new(ipa, length, moveName, vertexPositionSet))
 	end
 	
 	/** Read word tag. */
-	private func void pReadWord( EasyXMLElement root, SpeechAnimation spa )
+	private func void pReadWord(EasyXMLElement root, SpeechAnimation spa)
 		var int i, count = root.getElementCount()
 		var UnicodeString phonetics
 		var EasyXMLElement element
 		var String tagName
 		var StringID name
 		
-		name = StringID.new( root.getAttributeNamed( "name" ) )
+		name = StringID.new(root.getAttributeNamed("name"))
 		
-		if spa.getWordNamed( name ) != null
-			this.printOnConsole( root, "A word exists already with the name '" + name + "'." )
+		if spa.getWordNamed(name) != null
+			printOnConsole(root, "A word exists already with the name '" + name + "'.")
 			throw EInvalidParam.new()
 		end
 		
 		for i = 0 to count
-			element = root.getElementAt( i )
+			element = root.getElementAt(i)
 			
 			if element.getType() == EasyXMLElementType.tag
 				tagName = element.getTagName()
 				
-				if tagName.equals( "phonetics" )
-					phonetics = UnicodeString.newFromUTF8( element.getFirstCData() )
+				if tagName.equals("phonetics")
+					phonetics = UnicodeString.newFromUTF8(element.getFirstCData())
 					
 				else
-					this.logUnknownTag( element )
+					logUnknownTag(element)
 				end
 			end
 		end
 		
-		spa.addWord( SpeechAnimationWord.new( name, phonetics ) )
+		spa.addWord(SpeechAnimationWord.new(name, phonetics))
 	end
 end

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -32,36 +35,36 @@ pin Dragengine.Scenery
  */
 class SimpleDecoration extends DefaultDecoration
 	/** \brief Create decoration. */
-	public func new()
+	func new()
 	end
 	
 	
 	
 	/** \brief Border size. */
-	public func BorderSize getBorderSize()
-		if this.getWindow() == null
-			return BorderSize.new( 3, 3, 3, 3 )
+	func BorderSize getBorderSize()
+		if getWindow() == null
+			return BorderSize.new(3, 3, 3, 3)
 			
 		else
-			return BorderSize.new( 3, 3 + this.getTitleFont().getSize(), 3, 3 )
+			return BorderSize.new(3, 3 + getTitleFont().getSize(), 3, 3)
 		end
 	end
 	
 	/** \brief Test which part of the decoration is hit if any. */
-	public func Decoration.Area areaHitBy( Point position )
-		var Window window = this.getWindow()
+	func Decoration.Area areaHitBy(Point position)
+		var Window window = getWindow()
 		if window == null
 			return Decoration.Area.nothing
 		end
 		
 		// test if we are inside the window in which case nothing is hit
-		if window.isPointInside( position - window.getPosition() )
+		if window.isPointInside(position - window.getPosition())
 			return Decoration.Area.nothing
 		end
 		
 		// determine the boundary of the window and the decoration and quickly
 		// return nothing if we are outside somewhere.
-		var BorderSize borderSize = this.getBorderSize()
+		var BorderSize borderSize = getBorderSize()
 		var int lx = position.getX() - window.getX() + borderSize.getLeft()
 		var int ly = position.getY() - window.getY() + borderSize.getTop()
 		var int lcx = window.getWidth() + borderSize.getWidth()
@@ -73,7 +76,7 @@ class SimpleDecoration extends DefaultDecoration
 		
 		// check if we are in the title bar area
 		if lx >= 3 and ly >= 3 and lx <= lcx - 3 and ly < borderSize.getTop()
-			if lx >= lcx - 3 - this.getTitleFont().getSize()
+			if lx >= lcx - 3 - getTitleFont().getSize()
 				return Decoration.Area.close
 				
 			else
@@ -113,18 +116,18 @@ class SimpleDecoration extends DefaultDecoration
 	end
 	
 	/** Update canvas. */
-	public func void updateCanvas()
-		var Window window = this.getWindow()
+	func void updateCanvas()
+		var Window window = getWindow()
 		if window == null
 			return
 		end
 		
-		var CanvasView decoCanvas = this.getCanvasView()
+		var CanvasView decoCanvas = getCanvasView()
 		decoCanvas.removeAllCanvas()
 		
-		var BorderSize borderSize = this.getBorderSize()
-		var Font titleFont = this.getTitleFont()
-		var Color titleColor = this.getTitleColor()
+		var BorderSize borderSize = getBorderSize()
+		var Font titleFont = getTitleFont()
+		var Color titleColor = getTitleColor()
 		var int width = window.getWidth() + borderSize.getWidth() - 1
 		var int height = window.getHeight() + borderSize.getHeight() - 1
 		var int divTitle = 3 + titleFont.getSize()
@@ -133,106 +136,108 @@ class SimpleDecoration extends DefaultDecoration
 		
 		// window title bar
 		var CanvasPaint canvas = CanvasPaint.new()
-		canvas.setShapeType( CanvasPaintShape.rectangle )
+		canvas.setShapeType(CanvasPaintShape.rectangle)
 		
 		if window.getActivated()
-			canvas.setFillColor( Color.new( 1.0, 1.0, 0.0 ) /*this.getTitleColor()*/ )
+			canvas.setFillColor(Color.new(1, 1, 0) /*getTitleColor()*/)
 			
 		else
-			canvas.setFillColor( Color.new( 0.8, 0.6, 0.0 ) /*this.getTitleColor()*/ )
+			canvas.setFillColor(Color.new(0.8, 0.6, 0) /*getTitleColor()*/)
 		end
 		
-		canvas.setThickness( 0.0 )
-		canvas.setPosition( Point.new( 3, 3 ) )
-		canvas.setSize( Point.new( titleWidth, divTitle - 3 ) )
-		canvas.setOrder( 0.0 )
-		decoCanvas.addCanvas( canvas )
+		canvas.setThickness(0.0)
+		canvas.setPosition(Point.new(3, 3))
+		canvas.setSize(Point.new(titleWidth, divTitle - 3))
+		canvas.setOrder(0.0)
+		decoCanvas.addCanvas(canvas)
 		
 		// window title text if present
 		if not title.empty()
-			var Point textSize = titleFont.getTextSize( title )
-			var int textPosX = DEMath.max( ( titleWidth - textSize.getX() ) / 2, 0 )
+			title = window.translate(title)
+			
+			var Point textSize = titleFont.getTextSize(title)
+			var int textPosX = DEMath.max((titleWidth - textSize.getX()) / 2, 0)
 			
 			var CanvasText canvasText = CanvasText.new()
-			canvasText.setFont( titleFont )
-			canvasText.setColor( titleColor )
-			canvasText.setText( title )
-			canvasText.setPosition( Point.new( 3 + textPosX, 3 ) )
-			canvasText.setSize( textSize )
-			canvasText.setOrder( 1.0 )
-			decoCanvas.addCanvas( canvasText )
+			canvasText.setFont(titleFont)
+			canvasText.setColor(titleColor)
+			canvasText.setText(title)
+			canvasText.setPosition(Point.new(3 + textPosX, 3))
+			canvasText.setSize(textSize)
+			canvasText.setOrder(1.0)
+			decoCanvas.addCanvas(canvasText)
 		end
 		
 		// close button if present
 		if window.getCanClose()
-			var Point textSize = titleFont.getTextSize( "X" )
-			var int textPosX = DEMath.max( titleWidth - titleFont.getSize() + ( titleFont.getSize() - textSize.getX() ) / 2, 0 )
+			var Point textSize = titleFont.getTextSize("X")
+			var int textPosX = DEMath.max(titleWidth - titleFont.getSize() + (titleFont.getSize() - textSize.getX()) / 2, 0)
 			
 			var CanvasText canvasText = CanvasText.new()
-			canvasText.setFont( titleFont )
-			canvasText.setColor( titleColor )
-			canvasText.setText( "X" )
-			canvasText.setPosition( Point.new( 3 + textPosX, 3 ) )
-			canvasText.setSize( textSize )
-			canvasText.setOrder( 1.5 )
-			decoCanvas.addCanvas( canvasText )
+			canvasText.setFont(titleFont)
+			canvasText.setColor(titleColor)
+			canvasText.setText("X")
+			canvasText.setPosition(Point.new(3 + textPosX, 3))
+			canvasText.setSize(textSize)
+			canvasText.setOrder(1.5)
+			decoCanvas.addCanvas(canvasText)
 		end
 		
-		// hilight part
+		// highlight part
 		canvas = CanvasPaint.new()
-		canvas.setShapeType( CanvasPaintShape.lines )
-		canvas.setFillColor( Color.transparent )
-		canvas.setLineColor( Color.new( 1.0, 1.0, 1.0 ) )
-		canvas.setSize( decoCanvas.getSize() )
-		canvas.setOrder( 2.0 )
+		canvas.setShapeType(CanvasPaintShape.lines)
+		canvas.setFillColor(Color.transparent)
+		canvas.setLineColor(Color.new(1.0, 1.0, 1.0))
+		canvas.setSize(decoCanvas.getSize())
+		canvas.setOrder(2.0)
 		
-		canvas.addPoint( Point.new( 0, 0 ) )
-		canvas.addPoint( Point.new( width, 0 ) )
+		canvas.addPoint(Point.new(0, 0))
+		canvas.addPoint(Point.new(width, 0))
 		
-		canvas.addPoint( Point.new( width - 2, 2 ) )
-		canvas.addPoint( Point.new( width - 2, height - 1 ) )
+		canvas.addPoint(Point.new(width - 2, 2))
+		canvas.addPoint(Point.new(width - 2, height - 1))
 		
-		canvas.addPoint( Point.new( width - 2, height - 2 ) )
-		canvas.addPoint( Point.new( 2, height - 2 ) )
+		canvas.addPoint(Point.new(width - 2, height - 2))
+		canvas.addPoint(Point.new(2, height - 2))
 		
-		canvas.addPoint( Point.new( 0, height ) )
-		canvas.addPoint( Point.new( 0, 0 ) )
+		canvas.addPoint(Point.new(0, height))
+		canvas.addPoint(Point.new(0, 0))
 		
-		decoCanvas.addCanvas( canvas )
+		decoCanvas.addCanvas(canvas)
 		
 		// normal part
 		canvas = CanvasPaint.new()
-		canvas.setShapeType( CanvasPaintShape.rectangle )
-		canvas.setFillColor( Color.transparent )
-		canvas.setLineColor( Color.new( 0.86, 0.86, 0.86 ) )
-		canvas.setPosition( Point.new( 1, 1 ) )
-		canvas.setSize( Point.new( width - 1, height - 1 ) )
-		canvas.setOrder( 3.0 )
-		decoCanvas.addCanvas( canvas )
+		canvas.setShapeType(CanvasPaintShape.rectangle)
+		canvas.setFillColor(Color.transparent)
+		canvas.setLineColor(Color.new(0.86, 0.86, 0.86))
+		canvas.setPosition(Point.new(1, 1))
+		canvas.setSize(Point.new(width - 1, height - 1))
+		canvas.setOrder(3.0)
+		decoCanvas.addCanvas(canvas)
 		
 		// darkened part
 		canvas = CanvasPaint.new()
-		canvas.setShapeType( CanvasPaintShape.lines )
-		canvas.setFillColor( Color.transparent )
-		canvas.setLineColor( Color.new( 0.6, 0.6, 0.6 ) )
-		canvas.setSize( decoCanvas.getSize() )
-		canvas.setOrder( 4.0 )
+		canvas.setShapeType(CanvasPaintShape.lines)
+		canvas.setFillColor(Color.transparent)
+		canvas.setLineColor(Color.new(0.6, 0.6, 0.6))
+		canvas.setSize(decoCanvas.getSize())
+		canvas.setOrder(4.0)
 		
-		canvas.addPoint( Point.new( 2, 2 ) )
-		canvas.addPoint( Point.new( width - 2, 2 ) )
+		canvas.addPoint(Point.new(2, 2))
+		canvas.addPoint(Point.new(width - 2, 2))
 		
-		canvas.addPoint( Point.new( width, 0 ) )
-		canvas.addPoint( Point.new( width, height + 1 ) )
+		canvas.addPoint(Point.new(width, 0))
+		canvas.addPoint(Point.new(width, height + 1))
 		
-		canvas.addPoint( Point.new( width - 1, height ) )
-		canvas.addPoint( Point.new( 0, height ) )
+		canvas.addPoint(Point.new(width - 1, height))
+		canvas.addPoint(Point.new(0, height))
 		
-		canvas.addPoint( Point.new( 2, height - 2 ) )
-		canvas.addPoint( Point.new( 2, 2 ) )
+		canvas.addPoint(Point.new(2, height - 2))
+		canvas.addPoint(Point.new(2, 2))
 		
-		canvas.addPoint( Point.new( 3, divTitle ) ) // title bar divider
-		canvas.addPoint( Point.new( width - 2, divTitle ) )
+		canvas.addPoint(Point.new(3, divTitle)) // title bar divider
+		canvas.addPoint(Point.new(width - 2, divTitle))
 		
-		decoCanvas.addCanvas( canvas )
+		decoCanvas.addCanvas(canvas)
 	end
 end

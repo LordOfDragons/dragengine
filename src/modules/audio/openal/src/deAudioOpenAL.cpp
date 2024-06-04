@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenAL Audio Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -33,7 +36,9 @@
 #include "parameters/deoalParameter.h"
 #include "parameters/deoalParameterList.h"
 #include "parameters/deoalPEnableEFX.h"
-#include "parameters/deoalPAurealizationMode.h"
+#include "parameters/deoalPAuralizationMode.h"
+#include "parameters/deoalPAuralizationQuality.h"
+#include "parameters/deoalPMaxEnvSlots.h"
 #include "microphone/deoalMicrophone.h"
 #include "model/deoalModel.h"
 #include "skin/deoalSkin.h"
@@ -76,7 +81,7 @@ extern "C" {
 #ifdef OS_UNIX
 __attribute__ ((visibility ("default")))
 #endif
-deBaseModule *OpenALCreateModule( deLoadableModule *loadableModule );
+MOD_ENTRY_POINT_ATTR deBaseModule *OpenALCreateModule( deLoadableModule *loadableModule );
 #ifdef  __cplusplus
 }
 #endif
@@ -120,7 +125,9 @@ pActiveMicrophone( NULL )
 		
 		pParameters = new deoalParameterList;
 		pParameters->AddParameter( new deoalPEnableEFX( *this ) );
-		pParameters->AddParameter( new deoalPAurealizationMode( *this ) );
+		pParameters->AddParameter( new deoalPAuralizationMode( *this ) );
+		pParameters->AddParameter( new deoalPAuralizationQuality( *this ) );
+		pParameters->AddParameter( new deoalPMaxEnvSlots( *this ) );
 		
 	}catch( const deException &e ){
 		LogException( e );
@@ -163,6 +170,13 @@ deoalWorld *deAudioOpenAL::GetActiveWorld() const{
 
 
 bool deAudioOpenAL::Init( deMicrophone *activeMic ){
+	#ifdef OAL_THREAD_CHECK
+	LogWarn( "OpenAL calls only in audio thread check enabled. Disable for production builds." );
+	#endif
+	#ifdef OAL_CHECKCOMMANDS
+	LogWarn( "OpenAL command failure check enabled. Disable for production builds." );
+	#endif
+	
 	try{
 		// on android set VM for the contrib android library
 		#ifdef OS_ANDROID
@@ -211,7 +225,8 @@ void deAudioOpenAL::CleanUp(){
 void deAudioOpenAL::ProcessAudio(){
 	// wait for audio to finish. if done asynchronously uses time history to judge if audio is
 	// finished soon enough to wait for this event or to skip synchronization and running
-	// another game frame update
+	// another game frame update. this method returns only true if the main thread is allowed
+	// to modify synchronization data. in all other situations false is returned
 	if( ! pAudioThread->MainThreadWaitFinishAudio() ){
 		return; // enough time left to run another game frame update
 	}
@@ -257,6 +272,10 @@ void deAudioOpenAL::SetActiveMicrophone( deMicrophone *microphone ){
 	if( oalMicrophone ){
 		oalMicrophone->SetActive( true );
 	}
+}
+
+int deAudioOpenAL::GetFPSRate(){
+	return pAudioThread->GetFPSRate();
 }
 
 

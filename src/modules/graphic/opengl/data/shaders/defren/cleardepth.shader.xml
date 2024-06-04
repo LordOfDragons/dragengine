@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shader>
+	<name>DefRen Clear Depth</name>
+	
+	<parameter name='pDepth'/>
+	
+	<attribute name='inPosition' target='0'/>
+	
+	<sourceCode unit='vertex'>vertex/defren/cleardepth.glsl</sourceCode>
+	<sourceCode unit='fragment'>fragment/defren/cleardepth.glsl</sourceCode>
+</shader>

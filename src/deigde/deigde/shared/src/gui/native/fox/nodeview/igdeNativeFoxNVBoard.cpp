@@ -1,23 +1,28 @@
-/* 
- * Drag[en]gine IGDE
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
+
+#ifdef IGDE_TOOLKIT_FOX
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -62,9 +67,9 @@ FXIMPLEMENT( igdeNativeFoxNVBoard, FXPacker,
 
 igdeNativeFoxNVBoard::igdeNativeFoxNVBoard(){ }
 
-igdeNativeFoxNVBoard::igdeNativeFoxNVBoard( igdeNVBoard &owner, FXComposite *parent, const igdeGuiTheme & ) :
-FXPacker( parent, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ),
-pOwner( &owner ),
+igdeNativeFoxNVBoard::igdeNativeFoxNVBoard( igdeNVBoard &powner, FXComposite *pparent, const igdeGuiTheme & ) :
+FXPacker( pparent, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ),
+pOwner( &powner ),
 pDoubleBuffer( NULL ),
 pCreateLinkSource( NULL ),
 pCreateLinkTarget( NULL ),
@@ -79,6 +84,30 @@ igdeNativeFoxNVBoard::~igdeNativeFoxNVBoard(){
 	if( pDoubleBuffer ){
 		delete pDoubleBuffer;
 	}
+}
+
+igdeNativeFoxNVBoard *igdeNativeFoxNVBoard::CreateNativeWidget( igdeNVBoard &powner ){
+	if( ! powner.GetParent() ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	FXComposite * const pparent = ( FXComposite* ) powner.GetParent()->GetNativeContainer();
+	if( ! pparent ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	return new igdeNativeFoxNVBoard( powner, pparent, *powner.GetGuiTheme() );
+}
+
+void igdeNativeFoxNVBoard::PostCreateNativeWidget(){
+	FXComposite &pparent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
+	if( pparent.id() ){
+		create();
+	}
+}
+
+void igdeNativeFoxNVBoard::DestroyNativeWidget(){
+	delete this;
 }
 
 
@@ -117,6 +146,10 @@ void igdeNativeFoxNVBoard::UpdateOffset(){
 	update();
 }
 
+decPoint igdeNativeFoxNVBoard::GetSize(){
+	return decPoint( getWidth(), getWidth() );
+}
+
 
 
 void igdeNativeFoxNVBoard::BeginCreateLink( igdeNativeFoxNVSlot *source ){
@@ -132,8 +165,8 @@ void igdeNativeFoxNVBoard::SetCreateLinkPosition( const decPoint &position ){
 	update();
 }
 
-void igdeNativeFoxNVBoard::SetCreateLinkTarget( igdeNativeFoxNVSlot *target ){
-	pCreateLinkTarget = target;
+void igdeNativeFoxNVBoard::SetCreateLinkTarget( igdeNativeFoxNVSlot *ttarget ){
+	pCreateLinkTarget = ttarget;
 	update();
 }
 
@@ -200,7 +233,7 @@ void igdeNativeFoxNVBoard::SetHoverLink( igdeNVLink *link ){
 // Events
 ///////////
 
-long igdeNativeFoxNVBoard::onPaint( FXObject*, FXSelector, void *data ){
+long igdeNativeFoxNVBoard::onPaint( FXObject*, FXSelector, void *pdata ){
 	if( pDoubleBuffer ){
 		{
 		FXDCWindow dcdb( pDoubleBuffer );
@@ -211,11 +244,11 @@ long igdeNativeFoxNVBoard::onPaint( FXObject*, FXSelector, void *data ){
 		DrawCreateLink( dcdb );
 		}
 		
-		FXDCWindow dcw( this, ( FXEvent* )data );
+		FXDCWindow dcw( this, ( FXEvent* )pdata );
 		dcw.drawImage( pDoubleBuffer, 0, 0 );
 		
 	}else{
-		FXDCWindow dcw( this, ( FXEvent* )data );
+		FXDCWindow dcw( this, ( FXEvent* )pdata );
 		dcw.setForeground( getBackColor() );
 		dcw.fillRectangle( 0, 0, getWidth(), getHeight() );
 		
@@ -239,20 +272,20 @@ long igdeNativeFoxNVBoard::onResize( FXObject*, FXSelector, void* ){
 	return 1;
 }
 
-long igdeNativeFoxNVBoard::onChildLayoutFlags( FXObject*, FXSelector, void *data ){
-	igdeUIFoxHelper::sChildLayoutFlags &clflags = *( ( igdeUIFoxHelper::sChildLayoutFlags* )data );
+long igdeNativeFoxNVBoard::onChildLayoutFlags( FXObject*, FXSelector, void *pdata ){
+	igdeUIFoxHelper::sChildLayoutFlags &clflags = *( ( igdeUIFoxHelper::sChildLayoutFlags* )pdata );
 	clflags.flags = 0;
 	clflags.canResizeHorizontal = true;
 	clflags.canResizeVertical = true;
 	return 1;
 }
 
-long igdeNativeFoxNVBoard::onLeftMousePress( FXObject*, FXSelector, void *data ){
+long igdeNativeFoxNVBoard::onLeftMousePress( FXObject*, FXSelector, void *pdata ){
 	if( pIsDragBoard ){
 		return 1;
 	}
 	
-	const FXEvent &event = *( ( FXEvent* )data );
+	const FXEvent &event = *( ( FXEvent* )pdata );
 	const bool shift = ( event.state & SHIFTMASK ) == SHIFTMASK;
 	const bool control = ( event.state & CONTROLMASK ) == CONTROLMASK;
 	
@@ -266,7 +299,7 @@ long igdeNativeFoxNVBoard::onLeftMousePress( FXObject*, FXSelector, void *data )
 	return 1;
 }
 
-long igdeNativeFoxNVBoard::onLeftMouseRelease( FXObject*, FXSelector, void *data ){
+long igdeNativeFoxNVBoard::onLeftMouseRelease( FXObject*, FXSelector, void* ){
 	if( pIsDragBoard ){
 		setDragCursor( getApp()->getDefaultCursor( DEF_ARROW_CURSOR ) );
 		pIsDragBoard = false;
@@ -275,8 +308,8 @@ long igdeNativeFoxNVBoard::onLeftMouseRelease( FXObject*, FXSelector, void *data
 	return 1;
 }
 
-long igdeNativeFoxNVBoard::onMouseMoved( FXObject*, FXSelector, void *data ){
-	const FXEvent &event = *( ( FXEvent* )data );
+long igdeNativeFoxNVBoard::onMouseMoved( FXObject*, FXSelector, void *pdata ){
+	const FXEvent &event = *( ( FXEvent* )pdata );
 	const decPoint position( event.win_x, event.win_y );
 	
 	if( pIsDragBoard ){
@@ -293,12 +326,12 @@ long igdeNativeFoxNVBoard::onMouseMoved( FXObject*, FXSelector, void *data ){
 	return 1;
 }
 
-long igdeNativeFoxNVBoard::onRightMousePress( FXObject*, FXSelector, void *data ){
+long igdeNativeFoxNVBoard::onRightMousePress( FXObject*, FXSelector, void *pdata ){
 	if( pIsDragBoard ){
 		return 1;
 	}
 	
-	const FXEvent &event = *( ( FXEvent* )data );
+	const FXEvent &event = *( ( FXEvent* )pdata );
 	const decPoint position( event.win_x, event.win_y );
 	SetHoverLink( pOwner->ClosestLinkNear( position ) );
 	pOwner->ShowContextMenu( position );
@@ -562,3 +595,5 @@ const decVector2 &bp2, const decVector2 &bp3, const decVector2 &bp4 ) const{
 			PointBezierDistance( bp, nbp6, nbp5, nbp3, bp4 ) );
 	}
 }
+
+#endif

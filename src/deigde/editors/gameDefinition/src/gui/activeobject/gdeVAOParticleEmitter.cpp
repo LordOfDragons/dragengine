@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Game Definition Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <math.h>
@@ -41,6 +44,7 @@
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/file/decBaseFileReader.h>
+#include <dragengine/common/file/decBaseFileReaderReference.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/logger/deLogger.h>
 #include <dragengine/resources/collider/deCollider.h>
@@ -62,12 +66,10 @@
 ////////////////////////////
 
 gdeVAOParticleEmitter::gdeVAOParticleEmitter( gdeViewActiveObject &view,
-gdeOCParticleEmitter *ocemitter ) :
-pView( view ),
+	const gdeObjectClass &objectClass, const decString &propertyPrefix,
+	gdeOCParticleEmitter *ocemitter ) :
+gdeVAOSubObject( view, objectClass, propertyPrefix ),
 pOCParticleEmitter( ocemitter ),
-pEmitter( NULL ),
-pInstance( NULL ),
-pDebugDrawer( NULL ),
 pDDSCenter( NULL ),
 pDDSCoordSystem( NULL )
 {
@@ -121,9 +123,10 @@ void gdeVAOParticleEmitter::AttachResources(){
 		return;
 	}
 	
-	const decVector &position = pOCParticleEmitter->GetPosition();
-	const decQuaternion orientation( decQuaternion::CreateFromEuler(
-		pOCParticleEmitter->GetRotation() * DEG2RAD ) );
+	const decVector position( PropertyVector( pOCParticleEmitter->GetPropertyName(
+		gdeOCParticleEmitter::epAttachPosition ), pOCParticleEmitter->GetPosition() ) );
+	const decQuaternion orientation( PropertyQuaternion( pOCParticleEmitter->GetPropertyName(
+		gdeOCParticleEmitter::epAttachRotation ), pOCParticleEmitter->GetRotation() ) );
 	
 	deColliderAttachment *attachment = NULL;
 	try{
@@ -145,7 +148,7 @@ void gdeVAOParticleEmitter::AttachResources(){
 		attachCollider->AddAttachment( attachment );
 		attachment = NULL;
 		
-	}catch( const deException &e ){
+	}catch( const deException & ){
 		if( attachment ){
 			delete attachment;
 		}
@@ -196,7 +199,7 @@ void gdeVAOParticleEmitter::pCleanUp(){
 	}
 	if( pDebugDrawer ){
 		pView.GetGameDefinition()->GetWorld()->RemoveDebugDrawer( pDebugDrawer );
-		pDebugDrawer->FreeReference();
+		pDebugDrawer = NULL;
 	}
 	
 	if( pOCParticleEmitter ){
@@ -210,7 +213,7 @@ void gdeVAOParticleEmitter::pCreateDebugDrawer(){
 	const deEngine &engine = *pView.GetGameDefinition()->GetEngine();
 	
 	// create debug drawer
-	pDebugDrawer = engine.GetDebugDrawerManager()->CreateDebugDrawer();
+	pDebugDrawer.TakeOver( engine.GetDebugDrawerManager()->CreateDebugDrawer() );
 	pDebugDrawer->SetXRay( true );
 	pView.GetGameDefinition()->GetWorld()->AddDebugDrawer( pDebugDrawer );
 	
@@ -227,36 +230,32 @@ void gdeVAOParticleEmitter::pCreateDebugDrawer(){
 }
 
 void gdeVAOParticleEmitter::pCreateParticleEmitter(){
-	if( pOCParticleEmitter->GetPath().IsEmpty() ){
+	decString path( PropertyString( pOCParticleEmitter->GetPropertyName(
+		gdeOCParticleEmitter::epPath ), pOCParticleEmitter->GetPath() ) );
+	if( path.IsEmpty() ){
 		return;
 	}
 	
 	// load particle emitter
 	deVirtualFileSystem * const vfs = pView.GetGameDefinition()->GetPreviewVFS();
-	const decPath path( decPath::CreatePathUnix( pOCParticleEmitter->GetPath() ) );
 	igdeEnvironment &environment = pView.GetWindowMain().GetEnvironment();
 	igdeLoadParticleEmitter loader( environment, environment.GetLogger(), "gdeVAOParticleEmitter" );
 	const deEngine &engine = *pView.GetGameDefinition()->GetEngine();
-	decBaseFileReader *reader = NULL;
+	decBaseFileReaderReference reader;
 	
 	try{
-		pEmitter = engine.GetParticleEmitterManager()->CreateParticleEmitter();
-		reader = vfs->OpenFileForReading( path );
-		loader.Load( pOCParticleEmitter->GetPath(), *pEmitter, *reader );
-		reader->FreeReference();
-		reader = NULL;
+		pEmitter.TakeOver( engine.GetParticleEmitterManager()->CreateParticleEmitter() );
+		reader.TakeOver( vfs->OpenFileForReading( decPath::CreatePathUnix( path ) ) );
+		loader.Load( path, pEmitter, reader );
 		
 	}catch( const deException &e ){
-		if( pEmitter ){
-			pEmitter->FreeReference();
-			pEmitter = NULL;
-		}
+		pEmitter = NULL;
 		environment.GetLogger()->LogException( LOGSOURCE, e );
 		return;
 	}
 	
 	// create particle emitter instance
-	pInstance = engine.GetParticleEmitterInstanceManager()->CreateInstance();
+	pInstance.TakeOver( engine.GetParticleEmitterInstanceManager()->CreateInstance() );
 	pInstance->SetEmitter( pEmitter );
 	
 	decLayerMask collisionMask;
@@ -292,11 +291,7 @@ void gdeVAOParticleEmitter::pReleaseResources(){
 	
 	if( pInstance ){
 		world.RemoveParticleEmitter( pInstance );
-		pInstance->FreeReference();
 		pInstance = NULL;
 	}
-	if( pEmitter ){
-		pEmitter->FreeReference();
-		pEmitter = NULL;
-	}
+	pEmitter = NULL;
 }

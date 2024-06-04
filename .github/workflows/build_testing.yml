@@ -1,0 +1,77 @@
+name: Build Testing
+
+on:
+  workflow_call:
+    inputs:
+      branch:
+        required: false
+        type: string
+        default: master
+      releaseVersion:
+        required: true
+        type: string
+      artifactInstallerCI:
+        required: true
+        type: string
+      artifactTesting:
+        required: true
+        type: string
+      lfscache:
+        required: false
+        default: true
+        type: boolean
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: ${{ !inputs.lfscache }}
+          submodules: recursive
+          ref: ${{ inputs.branch }}
+      
+      - name: Create LFS file hash list
+        if: ${{ inputs.lfscache }}
+        run: git lfs ls-files -l | cut -d' ' -f1 | sort > .lfs-objects-id
+
+      - name: Restore LFS Cache
+        uses: actions/cache@v4
+        id: lfs-cache
+        if: ${{ inputs.lfscache }}
+        with:
+          path: .git/lfs
+          key: lfs-cache-${{ hashFiles('.lfs-objects-id') }}
+          restore-keys: lfs-cache-
+
+      - name: Git LFS Pull
+        if: ${{ inputs.lfscache }}
+        run: |
+          git lfs pull 2>&1 | tee lfs.log
+          if grep -q "error:" "lfs.log" ; then
+            git lfs logs last
+            exit 1
+          fi
+      
+      - name: Get Linux CI Installers
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.artifactInstallerCI }}
+        
+      - name: Install IGDE-CI
+        run: |
+          chmod 755 install-dragengine-ci-${{ inputs.releaseVersion }}-linux64.sh
+          chmod 755 install-deigde-ci-${{ inputs.releaseVersion }}-linux64.sh
+          sudo ./install-dragengine-ci-${{ inputs.releaseVersion }}-linux64.sh --yes
+          sudo ./install-deigde-ci-${{ inputs.releaseVersion }}-linux64.sh --yes
+        
+      - name: Distribute
+        run: deigde detesting/detesting.degp --project.profile.distribute TestingCI
+        
+      - name: Store DELGA
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.artifactTesting }}
+          path: detesting/distribute/DETestingCI.delga
+          if-no-files-found: error

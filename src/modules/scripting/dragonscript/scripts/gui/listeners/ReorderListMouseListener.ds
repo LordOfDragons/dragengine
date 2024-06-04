@@ -1,0 +1,432 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.CameraDirectors
+pin Dragengine.Gui.CanvasCreators
+pin Dragengine.Gui.Designers
+pin Dragengine.Gui.Events
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+/**
+ * \brief Reorder list mouse listener.
+ * \version 1.11
+ * 
+ * Allows user to reorder elements in a ListBox using mouse drag and drop. This requires
+ * the user to provide an DefaultListModel and a ListBox to use for the reordering.
+ * The list model used to reorder can be different from the one used for the ListBox
+ * as long as the list box model reflects the changes.
+ */
+class ReorderListMouseListener extends DefaultMouseListener
+	/** \brief Auto scroll listener. */
+	private class AutoScroll extends FrameUpdateListener
+		private var ReorderListMouseListener pOwner
+		
+		public func new(ReorderListMouseListener owner)
+			pOwner = owner
+		end
+		
+		public func void frameUpdate(float elapsed)
+			pOwner.autoScroll(elapsed)
+		end
+	end
+	
+	
+	
+	private var DefaultListModel pModel
+	private var ListBox pListBox
+	private var int pDragIndex
+	private var int pDropIndex
+	private var Widget pDropWidget
+	private var String pDesignerSelector
+	private var AutoScroll pAutoScroll
+	private var float pAutoScrollTime
+	private var Point pDropPosition
+	
+	
+	
+	/**
+	 * \brief Create mouse listener reordering list model using list box.
+	 */
+	public func new(DefaultListModel model, ListBox listBox)
+		if model == null
+			throw ENullPointer.new("model")
+		end
+		if listBox == null
+			throw ENullPointer.new("listBox")
+		end
+		
+		pModel = model
+		pListBox = listBox
+		pDragIndex = -1
+		pDropIndex = -1
+		pDesignerSelector = "ReorderListBoxDrop"
+	end
+	
+	
+	
+	/** \brief Model to use for reordering. */
+	public func DefaultListModel getModel()
+		return pModel
+	end
+	
+	/** \brief Set model to use for reordering. */
+	public func void setModel(DefaultListModel model)
+		if model == null
+			throw ENullPointer.new("model")
+		end
+		pModel = model
+	end
+	
+	/** \brief List box to use for reordering. */
+	public func ListBox getListBox()
+		return pListBox
+	end
+	
+	/** \brief Index of element being dragged or -1 if not draging. */
+	public func int getDragIndex()
+		return pDragIndex
+	end
+	
+	/** \brief Index where element would be dropped or -1 if not draging. */
+	public func int getDropIndex()
+		return pDropIndex
+	end
+	
+	
+	
+	/**
+	 * \brief Designer selector.
+	 * 
+	 * Selects designer from gui theme. Selector composes of alphanumeric identifier.
+	 * A chain of identifiers can be specified separated by periods. If a chain is
+	 * defined the full chain is first checked to find the designer. If not found the
+	 * right most identifier is stripped and the remaining chain checked for a match.
+	 * The first match is used. This allows to add optional quallifier identifers at
+	 * the end of the chain for future use while still matching broader designers
+	 * in the mean time.
+	 * 
+	 * If null designer is used from gui theme.
+	 */
+	public func String getDesignerSelector()
+		return pDesignerSelector
+	end
+	
+	/**
+	 * \brief Set designer selector.
+	 * 
+	 * Selects designer from gui theme. Selector composes of alphanumeric identifier.
+	 * A chain of identifiers can be specified separated by periods. If a chain is
+	 * defined the full chain is first checked to find the designer. If not found the
+	 * right most identifier is stripped and the remaining chain checked for a match.
+	 * The first match is used. This allows to add optional quallifier identifers at
+	 * the end of the chain for future use while still matching broader designers
+	 * in the mean time.
+	 * 
+	 * If null designer is used from gui theme.
+	 */
+	public func void setDesignerSelector(String selector)
+		pDesignerSelector = selector
+	end
+	
+	
+	
+	/**
+	 * \brief Mouse button pressed.
+	 * 
+	 * Captures mouse and starts tracking if an item is clicked upon.
+	 */
+	public func void onButtonPress(MouseEvent event)
+		if event.getButton() != InputEventMouseButton.left or event.getModifiers() != 0\
+		or not event.getSource() castable Widget
+			return
+		end
+		
+		if pModel.getCount() < 2
+			return
+		end
+		
+		if pListBox.getType() != ListBox.Type.vertical
+			return
+		end
+		
+		var Widget widget = event.getSource() cast Widget
+		pDropPosition = widget.getRelativePosition(pListBox) + event.getPosition()
+		
+		var int index = pListBox.getElementAt(pDropPosition)
+		if index == -1 or not elementCanReorder(index)
+			return
+		end
+		
+		pDropIndex = pDragIndex = index
+		
+		pListBox.captureMouse()
+		
+		pDropWidget = createDropWidget()
+		listBoxAddDropWidgetCanvas()
+		updateDropWidget()
+		pDropWidget.setVisible(false)
+		
+		onStartDrag()
+		
+		if pAutoScroll == null
+			pAutoScrollTime = 0
+			pAutoScroll = AutoScroll.new(this)
+		end
+	end
+	
+	/** \brief Mouse moved. */
+	public func void onMouseMove(MouseEvent event)
+		if pDragIndex == -1 or pModel.getCount() == 0
+			return
+		end
+		
+		var Widget widget = event.getSource() cast Widget
+		pDropPosition = widget.getRelativePosition(pListBox) + event.getPosition()
+		
+		var int index = indexClosestDropPosition()
+		if index == -1 or index == pDropIndex or not elementCanMoveTo(index)
+			return
+		end
+		
+		pDropIndex = index
+		pDropWidget.setVisible(true)
+		updateDropWidget()
+		
+		onUpdateDrag()
+	end
+	
+	/** \brief Mouse button release. */
+	public func void onButtonRelease(MouseEvent event)
+		if pDragIndex == -1
+			return
+		end
+		
+		if pAutoScroll != null
+			pAutoScroll.giveUp()
+			pAutoScroll = null
+		end
+		
+		pListBox.releaseMouse()
+		
+		listBoxRemoveDropWidgetCanvas()
+		if pDropWidget != null
+			pDropWidget.safeDispose()
+			pDropWidget = null
+		end
+		
+		pModel.moveIndex(pDragIndex, pDropIndex)
+		onStopDrag()
+		
+		pDragIndex = -1
+		pDropIndex = -1
+	end
+	
+	
+	
+	/** \brief Index of element closest to current drop position or -1. */
+	protected func int indexClosestDropPosition()
+		var int index = pListBox.getElementAt(pDropPosition)
+		if index == -1
+			if pDropPosition.getY() < pListBox.getPadding().getTop()
+				index = 0
+				
+			else
+				index = pModel.getCount() - 1
+			end
+		end
+		
+		return DEMath.clamp(index, pListBox.getFirstElement(), pListBox.getLastElement())
+	end
+	
+	/**
+	 * \brief Create drop widget.
+	 * 
+	 * Default implementation creates instance of Widget and assigns GuiTheme of ListBox
+	 * and designer selector. Default designer selector is "ReorderListBoxDrop".
+	 */
+	protected func Widget createDropWidget()
+		var Widget widget = Widget.new()
+		widget.setGuiTheme(pListBox.getGuiTheme())
+		widget.setDesignerSelector(pDesignerSelector)
+		return widget
+	end
+	
+	/**
+	 * \brief Add drop widget canvas to list box.
+	 */
+	protected func void listBoxAddDropWidgetCanvas()
+		var CanvasView content = pListBox.getCanvasContent()
+		var float highestOrder = 0
+		if content.getCanvasCount() > 0
+			highestOrder = DEMath.max(highestOrder,\
+				content.getCanvasAt(content.getCanvasCount() - 1).getOrder())
+		end
+		pDropWidget.getCanvasWidget().setOrder(highestOrder + 1)
+		
+		pListBox.getCanvasContent().addCanvas(pDropWidget.getCanvasWidget())
+	end
+	
+	/**
+	 * \brief Remove drop widget canvas from list box.
+	 */
+	protected func void listBoxRemoveDropWidgetCanvas()
+		if pDropWidget == null
+			return
+		end
+		var CanvasView canvas = pDropWidget.getCanvasWidget()
+		if canvas.getParentView() == null
+			return
+		end
+		canvas.getParentView().removeCanvas(canvas)
+	end
+	
+	/**
+	 * \brief Update drop widget.
+	 * 
+	 * Removes drop widget canvases if present. If getDropIndex() is not -1 uses
+	 * getDropCanvasCreator()
+	 * to create canvas with position and size of the drop element.
+	 */
+	protected func void updateDropWidget()
+		if pDropIndex == -1
+			return
+		end
+		
+		var int height = pListBox.getElementHeight()
+		var int width = pListBox.getContainerWidth() //pListBox.getElementWidth()
+		var Point position = pListBox.getElementPositionAt(pDropIndex)
+		
+		pDropWidget.setPosition(position)
+		pDropWidget.setSize(Point.new(width, height))
+	end
+	
+	
+	/**
+	 * \brief Auto scroll.
+	 * \warning For use by AutoScroll class only.
+	 */
+	public func void autoScroll(float elapsed)
+		pAutoScrollTime += elapsed
+		
+		if pDropPosition == null
+			return
+		end
+		
+		var BorderSize padding = pListBox.getPadding()
+		var int y = pDropPosition.getY()
+		var int top = padding.getTop()
+		var int bottom = top + pListBox.getContainerHeight()
+		var int autoScrollDistance
+		var int direction
+		
+		if y < top
+			autoScrollDistance = top - y
+			direction = -1
+			
+		elif y > bottom
+			autoScrollDistance = y - bottom
+			direction = 1
+			
+		else
+			pAutoScrollTime = 0
+			return
+		end
+		
+		var int maxAutoScrollDistance = 20
+		autoScrollDistance = DEMath.min(autoScrollDistance, maxAutoScrollDistance)
+		
+		var float factor = (autoScrollDistance cast float ) / (maxAutoScrollDistance cast float)
+		
+		var float interval = DEMath.linearStep(factor, 0, 1, 0.5, 0.025)
+		if pAutoScrollTime < interval
+			return
+		end
+		
+		direction *= DEMath.floor(pAutoScrollTime / interval) cast int
+		pAutoScrollTime = DEMath.fmod(pAutoScrollTime, interval)
+		
+		var RangeModel rangeModel = pListBox.getVerticalRangeModel()
+		rangeModel.setValue(rangeModel.getValue() + rangeModel.getIncrement() * direction)
+		
+		var int index = indexClosestDropPosition()
+		if index != -1 and index != pDropIndex and elementCanMoveTo(index)
+			pDropIndex = index
+		end
+		
+		updateDropWidget()
+	end
+	
+	
+	
+	/**
+	 * \brief Element at index can be reordered.
+	 * 
+	 * Default implementation returns true. Subclass can overwrite to prevent certain
+	 * elements from being reordered.
+	 */
+	protected func bool elementCanReorder(int index)
+		return true
+	end
+	
+	/**
+	 * \brief Element can be moved to index.
+	 * 
+	 * Default implementation returns true. Subclass can overwrite to prevent draged
+	 * element from being dropped at certain positions.
+	 */
+	protected func bool elementCanMoveTo(int index)
+		return true
+	end
+	
+	/**
+	 * \brief Start draging.
+	 * 
+	 * Index of element to reorder can be obtained using getDragIndex().
+	 */
+	protected func void onStartDrag()
+	end
+	
+	/**
+	 * \brief Update draging.
+	 * 
+	 * Index of element to reorder can be obtained using getDragIndex(). Index of position
+	 * where the element would be dropped can be obtained using getDropIndex().
+	 */
+	protected func void onUpdateDrag()
+	end
+	
+	/**
+	 * \brief Stop draging.
+	 * 
+	 * Index of element to reorder can be obtained using getDragIndex(). Index of position
+	 * where element is dropped can be obtained using getDropIndex().
+	 */
+	protected func void onStopDrag()
+	end
+end

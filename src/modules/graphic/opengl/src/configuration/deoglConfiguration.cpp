@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -47,41 +50,36 @@ pLogLevel( ellInfo ),
 pMapFaceSplitThreshold( 5.0f ), // largest allowed face edge in meters
 pSkyBodyDensity( 1.0f ), // render 100% sky bodies
 pReducedLighting( false ),
-pDebugUseShadow( true ),
 pDebugShowCB( false ),
 pDebugWireframe( false ),
 pDebugUVSplitter( true ),
-pDebugPrintSkyUpdate( true ),
+pDebugPrintSkyUpdate( false ),
 pShowLightCB( false ),
 
-pShadowMapSize( 1024 ),
+pShadowQuality( esqHigh ),
 pShadowMapOffsetScale( 1.1f ),
 pShadowMapOffsetBias( 4.0f ),
 pShadowCubePCFSize( 1.0f ),
-pShadowCubeSize( 1024 ),
 pOcclusionReduction( 1 ),
-pUseShadowCubeEncodedDepth( false ),
 
-pDistShadowScale( 1.0f ),
-pDistShadowBias( 0.001f ), //4.0f ), // 24-bit: 1 step is 1.192093e-7
+pDistShadowScale( 0.05f ), // old: 1
+pDistShadowBias( 0.01f ), // old: 0.001
 
 pTextOffsetU( 0.0f ),
 pTextOffsetV( 0.0f ),
 pUseDepthPass( true ),
 pLightCutOffIntensity( 0.01f ),
 pUseTextureCompression( true ),
-pTranspLayerLimit( 4 ),
+pTranspLayerLimit( 8 ),
 
 pUseOneFBO( false ),
 pUseEncodeDepth( false ),
 pDisableStencil( false ),
-pStencilOnlyOnRB( false ),
 
-pDefRenEncDepth( false ),
-pDefRenUsePOTs( false ),
 pDefRenSizeLimit( 0 ),
 pUseHDRR( true ),
 pHDRRMaxIntensity( 1.5f ),
+pHDRRSceneKey( 0.18f ),
 pRenderDownScale( 1 ),
 pUseInverseDepth( true ),
 
@@ -93,7 +91,6 @@ pDecalOffsetScale( -1.5f ), //-0.1f;
 pDecalOffsetBias( -8.0f ), //-1.0f;
 
 pLODMaxPixelError( 2 ),
-pLODMaxErrorPerLevel( 0.1f ),
 
 pNormalRoughnessCorrectionStrength( 0.75f ), // 0.5f;
 
@@ -129,21 +126,27 @@ pFrameRateLimit( 0 ), // 0 means use display refresh rate
 pAsyncRenderSkipSyncTimeRatio( 0.5 ),
 
 pDebugContext( false ),
+pDebugNoMessages( false ),
 pAsyncRendering( true ),
 pEnableRetainImageOptimization( true ),
 
 pBugNo2ComponentFBOTex( false ),
 
 pDebugNoCulling ( false ),
-pOcclusionTestMode( eoctmTransformFeedback ),
-
-pQuickDebug( 0 ),
-
-pDebugSnapshot( 0 ),
 
 pDisableCubeMapLinearFiltering( false ),
 
-pMaxSPBIndexCount( 10000 )
+pMaxSPBIndexCount( 10000 ),
+
+pGIQuality( egiqHigh ),
+pGIUpdateSpeed( egiusMedium ),
+
+pVSyncMode( evsmAdaptive ),
+
+pVRRenderScale( 1.0f ),
+pVRForceFrameRate( 0 ),
+
+pRenderDocMode( false )
 {
 	#ifdef OS_ANDROID
 	// android is too weak a platform right now to support advanced features out of the
@@ -159,6 +162,7 @@ pMaxSPBIndexCount( 10000 )
 	// unimportant by the high pixel density. hardware scaler could be used but this
 	// would affect also 2D graphics. the default should only cut down on the heavy
 	// processing of 3D graphics while keeping 2D graphics crisp if possible
+	pShadowQuality = esqVeryLow;
 	pShadowMapSize = 256; //1024
 	pShadowCubeSize = 256; //1024
 	pOcclusionReduction = 2; //1
@@ -191,15 +195,35 @@ pMaxSPBIndexCount( 10000 )
 	// make sure retain image memory optimization is enabled since memory is scarce
 	pEnableRetainImageOptimization = true;
 	
-	// Testing
-	//pDebugUseShadow = false;
-	
 	// debug
 	pDebugContext = true;
+	pDebugNoMessages = false;
 	pLogLevel = ellDebug;
 	
 	// disable asynchronous rendering for debug purpose
 	//pAsyncRendering = false;
+	#endif
+	
+	// renderdoc
+	#if defined WITH_DEBUG && defined OS_UNIX
+	#ifdef OS_BEOS
+	const char * const envRenderDocDebug = getenv( "DE_OGL_RENDERDOC_DEBUG" );
+	#else
+	const char * const envRenderDocDebug = secure_getenv( "DE_OGL_RENDERDOC_DEBUG" );
+	#endif
+	if( envRenderDocDebug && strcmp( envRenderDocDebug, "1" ) == 0 ){
+		pDebugContext = true;
+		pDebugNoMessages = true;
+	}
+	#endif
+	
+	#ifdef OS_UNIX
+	#ifdef OS_BEOS
+	const char * const envRenderDocMode = getenv( "DE_OGL_RENDERDOC_MODE" );
+	#else
+	const char * const envRenderDocMode = secure_getenv( "DE_OGL_RENDERDOC_MODE" );
+	#endif
+	pRenderDocMode = envRenderDocMode && strcmp( envRenderDocMode, "1" ) == 0;
 	#endif
 }
 
@@ -240,14 +264,6 @@ void deoglConfiguration::SetUseReducedLighting( bool reduced ){
 		return;
 	}
 	pReducedLighting = reduced;
-	pDirty = true;
-}
-
-void deoglConfiguration::SetDebugUseShadow( bool shadow ){
-	if( shadow == pDebugUseShadow ){
-		return;
-	}
-	pDebugUseShadow = shadow;
 	pDirty = true;
 }
 
@@ -302,24 +318,12 @@ void deoglConfiguration::SetMapFaceSplitThreshold( float threshold ){
 
 
 
-void deoglConfiguration::SetShadowMapSize( int size ){
-	if( size == pShadowMapSize ){
+void deoglConfiguration::SetShadowQuality( eShadowQuality quality ){
+	if( quality == pShadowQuality ){
 		return;
 	}
 	
-	switch( size ){
-	case 256:
-	case 512:
-	case 1024:
-	case 2048:
-	case 4096:
-		break;
-		
-	default:
-		DETHROW( deeInvalidParam );
-	}
-	
-	pShadowMapSize = size;
+	pShadowQuality = quality;
 	pDirty = true;
 }
 
@@ -339,27 +343,6 @@ void deoglConfiguration::SetShadowMapOffsetBias( float bias ){
 	pDirty = true;
 }
 
-void deoglConfiguration::SetShadowCubeSize( int size ){
-	if( size == pShadowCubeSize ){
-		return;
-	}
-	
-	bool valid = false;
-	int i;
-	for( i=5; i<16; i++ ){
-		if( size == ( 2 << i ) ){
-			valid = true;
-			break;
-		}
-	}
-	if( ! valid ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	pShadowCubeSize = size;
-	pDirty = true;
-}
-
 void deoglConfiguration::SetShadowCubePCFSize( float pcfSize ){
 	pcfSize = decMath::max( pcfSize, 0.0f );
 	if( fabsf( pcfSize - pShadowCubePCFSize ) < FLOAT_SAFE_EPSILON ){
@@ -375,14 +358,6 @@ void deoglConfiguration::SetOcclusionReduction( int reductionFactor ){
 		return;
 	}
 	pOcclusionReduction = reductionFactor;
-	pDirty = true;
-}
-
-void deoglConfiguration::SetUseShadowCubeEncodeDepth( bool useEncodeDepth ){
-	if( useEncodeDepth == pUseShadowCubeEncodedDepth ){
-		return;
-	}
-	pUseShadowCubeEncodedDepth = useEncodeDepth;
 	pDirty = true;
 }
 
@@ -480,28 +455,7 @@ void deoglConfiguration::SetDisableStencil( bool disableStencil ){
 	pDirty = true;
 }
 
-void deoglConfiguration::SetStencilOnlyOnRB( bool stencilOnlyOnRB ){
-	if( stencilOnlyOnRB == pStencilOnlyOnRB ){
-		return;
-	}
-	pStencilOnlyOnRB = stencilOnlyOnRB;
-	pDirty = true;
-}
 
-
-
-void deoglConfiguration::SetDefRenEncDepth( bool useEncDepth ){
-	//pDefRenEncDepth = useEncDepth;
-	//pDirty = true;
-}
-
-void deoglConfiguration::SetDefRenUsePOTs( bool usePOTs ){
-	if( usePOTs == pDefRenUsePOTs ){
-		return;
-	}
-	pDefRenUsePOTs = usePOTs;
-	pDirty = true;
-}
 
 void deoglConfiguration::SetDefRenSizeLimit( int size ){
 	size = decMath::max( size, 0 );
@@ -525,6 +479,14 @@ void deoglConfiguration::SetHDRRMaximumIntensity( float maximumIntensity ){
 		return;
 	}
 	pHDRRMaxIntensity = maximumIntensity;
+	pDirty = true;
+}
+
+void deoglConfiguration::SetHDRRSceneKey( float key ){
+	if( fabsf( key - pHDRRSceneKey ) < FLOAT_SAFE_EPSILON ){
+		return;
+	}
+	pHDRRSceneKey = key;
 	pDirty = true;
 }
 
@@ -600,15 +562,6 @@ void deoglConfiguration::SetLODMaxPixelError( int maxPixelError ){
 		return;
 	}
 	pLODMaxPixelError = maxPixelError;
-	pDirty = true;
-}
-
-void deoglConfiguration::SetLODMaxErrorPerLevel( float maxErrorPerLevel ){
-	maxErrorPerLevel = decMath::max( maxErrorPerLevel, 0.001f );
-	if( fabsf( maxErrorPerLevel - pLODMaxErrorPerLevel ) < FLOAT_SAFE_EPSILON ){
-		return;
-	}
-	pLODMaxErrorPerLevel = maxErrorPerLevel;
 	pDirty = true;
 }
 
@@ -871,6 +824,14 @@ void deoglConfiguration::SetDebugContext( bool debugContext ){
 	pDirty = true;
 }
 
+void deoglConfiguration::SetDebugNoMessages( bool debugNoMessages ){
+	if( debugNoMessages == pDebugNoMessages ){
+		return;
+	}
+	pDebugNoMessages = debugNoMessages;
+	pDirty = true;
+}
+
 void deoglConfiguration::SetAsyncRendering( bool asyncRendering ){
 	if( asyncRendering == pAsyncRendering ){
 		return;
@@ -899,43 +860,11 @@ void deoglConfiguration::SetBugNo2ComponentFBOTex( bool bugNo2ComponentFBOTex ){
 
 
 
-void deoglConfiguration::SetQuickDebug( int value ){
-	if( value == pQuickDebug ){
-		return;
-	}
-	pQuickDebug = value;
-	pDirty = true;
-}
-
 void deoglConfiguration::SetDebugNoCulling( bool noCulling ){
 	if( noCulling == pDebugNoCulling ){
 		return;
 	}
 	pDebugNoCulling = noCulling;
-	pDirty = true;
-}
-
-void deoglConfiguration::SetOcclusionTestMode( eOcclusionTestModes mode ){
-	if( mode < eoctmNone ){
-		mode = eoctmNone;
-		
-	}else if( mode > eoctmTransformFeedback ){
-		mode = eoctmTransformFeedback;
-	}
-	
-	if( mode == pOcclusionTestMode ){
-		return;
-	}
-	
-	pOcclusionTestMode = mode;
-	pDirty = true;
-}
-
-void deoglConfiguration::SetDebugSnapshot( int snapshot ){
-	if( snapshot == pDebugSnapshot ){
-		return;
-	}
-	pDebugSnapshot = snapshot;
 	pDirty = true;
 }
 
@@ -956,5 +885,63 @@ void deoglConfiguration::SetMaxSPBIndexCount( int count ){
 	}
 	
 	pMaxSPBIndexCount = count;
+	pDirty = true;
+}
+
+void deoglConfiguration::SetGIQuality( eGIQuality quality ){
+	if( quality == pGIQuality ){
+		return;
+	}
+	
+	pGIQuality = quality;
+	pDirty = true;
+}
+
+void deoglConfiguration::SetGIUpdateSpeed( eGIUpdateSpeed updateSpeed ){
+	if( updateSpeed == pGIUpdateSpeed ){
+		return;
+	}
+	
+	pGIUpdateSpeed = updateSpeed;
+	pDirty = true;
+}
+
+void deoglConfiguration::SetVSyncMode( eVSyncMode mode ){
+	if( mode == pVSyncMode ){
+		return;
+	}
+	
+	pVSyncMode = mode;
+	pDirty = true;
+}
+
+void deoglConfiguration::SetVRRenderScale( float scale ){
+	scale = floorf( ( scale / 0.05f ) + 0.5f ) * 0.05f;
+	
+	if( fabsf( scale - pVRRenderScale ) < FLOAT_SAFE_EPSILON ){
+		return;
+	}
+	
+	pVRRenderScale = scale;
+	pDirty = true;
+}
+
+void deoglConfiguration::SetVRForceFrameRate( int framerate ){
+	switch( framerate ){
+	case 90:
+	case 45:
+	case 30:
+	case 15:
+		break;
+		
+	default:
+		framerate = 0;
+	}
+	
+	if( framerate == pVRForceFrameRate ){
+		return;
+	}
+	
+	pVRForceFrameRate = framerate;
 	pDirty = true;
 }

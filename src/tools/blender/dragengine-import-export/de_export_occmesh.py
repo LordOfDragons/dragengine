@@ -43,10 +43,12 @@ from .de_porting import registerClass, matmul
 class OBJECT_OT_ExportOcclusionMesh( bpy.types.Operator, ExportHelper ):
 	bl_idname = "dragengine.export_occmesh"
 	bl_label = "Occlusion Mesh (.deoccmesh)"
+	bl_label_button = "Occlusion Mesh"
+	bl_icon = 'GHOST_ENABLED'
 	__doc__ = """Export as Drag[en]gine Occlusion Mesh Resource"""
 	filename_ext = ".deoccmesh"
-	filter_glob = bpy.props.StringProperty( default="*.deoccmesh", options={ 'HIDDEN' } )
-	debug_level = bpy.props.EnumProperty( items = (
+	filter_glob: bpy.props.StringProperty( default="*.deoccmesh", options={ 'HIDDEN' } )
+	debug_level: bpy.props.EnumProperty( items = (
 		( '0', "None", "Output no debug messages." ),
 		( '1', "Basic", "Output basic amount of debug messages." ),
 		( '2', "Verbose", "Output lots of debug messages." ),
@@ -69,18 +71,16 @@ class OBJECT_OT_ExportOcclusionMesh( bpy.types.Operator, ExportHelper ):
 		configuration = Configuration( "deexport.config" )
 		if configuration.parseConfig():
 			configuration.printConfig()
-			
-			self.scaling = context.scene.dragengine_scaling
-			self.scalePosition = Matrix( ( (self.scaling,0,0,0), (0,self.scaling,0,0), (0,0,self.scaling,0), (0,0,0,1) ) )
-			self.transformScalePosition = matmul(self.scalePosition, transformPosition)
-			
-			self.ignoreBones = []
-			for f in configuration.getArrayFor( "animation.bones.ignore", [] ):
-				self.ignoreBones.append( re.compile( f[ 0 ] ) )
-			
-			configuration = None # just to save some memory since it's no more required
-			
-			self.export( context )
+		
+		self.scaling = context.scene.dragengine_scaling
+		self.scalePosition = Matrix( ( (self.scaling,0,0,0), (0,self.scaling,0,0), (0,0,self.scaling,0), (0,0,0,1) ) )
+		self.transformScalePosition = matmul(self.scalePosition, transformPosition)
+		
+		self.ignoreBones = []
+		for f in configuration.getArrayFor( "animation.bones.ignore", [] ):
+			self.ignoreBones.append( re.compile( f[ 0 ] ) )
+		
+		self.export( context )
 		
 		return { 'FINISHED' }
 	

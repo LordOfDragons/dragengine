@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine AI Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -126,6 +129,7 @@ void dedaiPathFinderNavMesh::FindPath(){
 		pClearLists();
 		
 	}catch( const deException & ){
+		//pNavigator->GetDEAI().LogException( e );
 		pClearLists();
 		throw;
 	}
@@ -261,16 +265,16 @@ void dedaiPathFinderNavMesh::pFindFacePath(){
 	deDEAIModule &module = pWorld->GetDEAI();
 	module.LogInfo( "Find Path:" );
 	if( pStartFace ){
-		const decDVector c = pStartFace->GetMesh()->GetSpace().GetMatrix() * pStartFace->GetCenter();
+		const decDVector c2 = pStartFace->GetMesh()->GetSpace().GetMatrix() * pStartFace->GetCenter();
 		module.LogInfoFormat( "   Start: nm=%p f=%i (%.3f,%.3f,%.3f)", pStartFace->GetMesh(),
-			pStartFace->GetIndex(), c.x, c.y, c.z );
+			pStartFace->GetIndex(), c2.x, c2.y, c2.z );
 	}else{
 		module.LogInfoFormat( "   Start: nm=NULL" );
 	}
 	if( pEndFace ){
-		const decDVector c = pEndFace->GetMesh()->GetSpace().GetMatrix() * pEndFace->GetCenter();
+		const decDVector c2 = pEndFace->GetMesh()->GetSpace().GetMatrix() * pEndFace->GetCenter();
 		module.LogInfoFormat( "   End: nm=%p f=%i (%.3f,%.3f,%.3f)", pEndFace->GetMesh(),
-			pEndFace->GetIndex(), c.x, c.y, c.z );
+			pEndFace->GetIndex(), c2.x, c2.y, c2.z );
 	}else{
 		module.LogInfoFormat( "   End: nm=NULL" );
 	}
@@ -290,17 +294,17 @@ void dedaiPathFinderNavMesh::pFindFacePath(){
 			pStartFace->SetEntryPoint( ( pStartFace->GetMesh()->GetSpace().GetInverseMatrix() * pStartPoint ).ToVector() );
 		}
 #ifdef DEBUG
-		{ const decDVector c = pStartFace->GetMesh()->GetSpace().GetMatrix() * pStartFace->GetCenter();
+		{ const decDVector c2 = pStartFace->GetMesh()->GetSpace().GetMatrix() * pStartFace->GetCenter();
 		module.LogInfoFormat( "   Open Add Face: nm=%p f=%i (%.3f,%.3f,%.3f)", pStartFace->GetMesh(),
-			pStartFace->GetIndex(), c.x, c.y, c.z ); }
+			pStartFace->GetIndex(), c2.x, c2.y, c2.z ); }
 #endif
 		testFace = pStartFace;
 		
 		while( testFace ){
 #ifdef DEBUG
-			{ const decDVector c = testFace->GetMesh()->GetSpace().GetMatrix() * testFace->GetCenter();
+			{ const decDVector c2 = testFace->GetMesh()->GetSpace().GetMatrix() * testFace->GetCenter();
 			module.LogInfoFormat( "   Testing Face: nm=%p f=%i (%.3f,%.3f,%.3f)", testFace->GetMesh(),
-				testFace->GetIndex(), c.x, c.y, c.z ); }
+				testFace->GetIndex(), c2.x, c2.y, c2.z ); }
 #endif
 			const dedaiSpaceMeshCorner * const corners = testFace->GetMesh()->GetCorners();
 			const dedaiSpaceMeshEdge * const edges = testFace->GetMesh()->GetEdges();
@@ -451,11 +455,11 @@ void dedaiPathFinderNavMesh::pFindFacePath(){
 							pListOpen.Add( nextFace );
 							nextFace->SetPathType( dedaiSpaceMeshFace::epftOpen );
 #ifdef DEBUG
-							{ const decDVector c = nextFace->GetMesh()->GetSpace().GetMatrix() * nextFace->GetCenter();
+							{ const decDVector c2 = nextFace->GetMesh()->GetSpace().GetMatrix() * nextFace->GetCenter();
 							module.LogInfoFormat( "   Open Add Face: %p:%i (p=%p:%i c=(%g,%g,%g) t=%i) (%.3f,%.3f,%.3f)",
 								nextFace->GetMesh(), nextFace->GetIndex(), testFace->GetMesh(), testFace->GetIndex(),
 								nextFace->GetPathCostF(), nextFace->GetPathCostG(), nextFace->GetPathCostH(),
-								nextFace->GetTypeNumber(), c.x, c.y, c.z ); }
+								nextFace->GetTypeNumber(), c2.x, c2.y, c2.z ); }
 #endif
 						// if the cost is larger than the blocking cost this face can not be crossed. in this case
 						// add it to the closed list so it is not tested anymore in the future
@@ -463,11 +467,11 @@ void dedaiPathFinderNavMesh::pFindFacePath(){
 							pListClosed.Add( nextFace );
 							nextFace->SetPathType( dedaiSpaceMeshFace::epftClosed );
 #ifdef DEBUG
-							{ const decDVector c = nextFace->GetMesh()->GetSpace().GetMatrix() * nextFace->GetCenter();
+							{ const decDVector c2 = nextFace->GetMesh()->GetSpace().GetMatrix() * nextFace->GetCenter();
 							module.LogInfoFormat( "   Blocking: Closed Add Face: %p:%i (p=%p:%i c=(%g,%g,%g) t=%i) (%.3f,%.3f,%.3f)",
 								nextFace->GetMesh(), nextFace->GetIndex(), testFace->GetMesh(), testFace->GetIndex(),
 								nextFace->GetPathCostF(), nextFace->GetPathCostG(), nextFace->GetPathCostH(),
-								nextFace->GetTypeNumber(), c.x, c.y, c.z ); }
+								nextFace->GetTypeNumber(), c2.x, c2.y, c2.z ); }
 #endif
 						}
 						
@@ -480,11 +484,11 @@ void dedaiPathFinderNavMesh::pFindFacePath(){
 								nextFace->SetEntryPoint( entryPoint );
 							}
 #ifdef DEBUG
-							{ const decDVector c = nextFace->GetMesh()->GetSpace().GetMatrix() * nextFace->GetCenter();
+							{ const decDVector c2 = nextFace->GetMesh()->GetSpace().GetMatrix() * nextFace->GetCenter();
 							module.LogInfoFormat( "   Improve Parent Path: %p:%i (p=%p:%i c=(%g,%g,%g) t=%i) (%.3f,%.3f,%.3f)",
 								nextFace->GetMesh(), nextFace->GetIndex(), testFace->GetMesh(), testFace->GetIndex(),
 								nextFace->GetPathCostF(), nextFace->GetPathCostG(), nextFace->GetPathCostH(),
-								nextFace->GetTypeNumber(), c.x, c.y, c.z ); }
+								nextFace->GetTypeNumber(), c2.x, c2.y, c2.z ); }
 #endif
 						}
 					}
@@ -493,19 +497,19 @@ void dedaiPathFinderNavMesh::pFindFacePath(){
 			
 			pListOpen.RemoveFrom( pListOpen.IndexOf( testFace ) );
 #ifdef DEBUG
-			{ const decDVector c = testFace->GetMesh()->GetSpace().GetMatrix() * testFace->GetCenter();
+			{ const decDVector c2 = testFace->GetMesh()->GetSpace().GetMatrix() * testFace->GetCenter();
 			module.LogInfoFormat( "   Open Remove Face: %p:%i (p=%p:%i c=(%g,%g,%g)) (%.3f,%.3f,%.3f)",
 				testFace->GetMesh(), testFace->GetIndex(), testFace->GetPathParent()?testFace->GetPathParent()->GetMesh():NULL,
 			  testFace->GetPathParent()?testFace->GetPathParent()->GetIndex():-1, testFace->GetPathCostF(),
-			  testFace->GetPathCostG(), testFace->GetPathCostH(), c.x, c.y, c.z ); }
+			  testFace->GetPathCostG(), testFace->GetPathCostH(), c2.x, c2.y, c2.z ); }
 #endif
 			pListClosed.Add( testFace );
 #ifdef DEBUG
-			{ const decDVector c = testFace->GetMesh()->GetSpace().GetMatrix() * testFace->GetCenter();
+			{ const decDVector c2 = testFace->GetMesh()->GetSpace().GetMatrix() * testFace->GetCenter();
 			module.LogInfoFormat( "   Closed Add Face: %p:%i (p=%p:%i c=(%g,%g,%g)) (%.3f,%.3f,%.3f)",
 				testFace->GetMesh(), testFace->GetIndex(), testFace->GetPathParent()?testFace->GetPathParent()->GetMesh():NULL,
 			  testFace->GetPathParent()?testFace->GetPathParent()->GetIndex():-1, testFace->GetPathCostF(),
-			  testFace->GetPathCostG(), testFace->GetPathCostH(), c.x, c.y, c.z ); }
+			  testFace->GetPathCostG(), testFace->GetPathCostH(), c2.x, c2.y, c2.z ); }
 #endif
 			
 			if( testFace == pEndFace ){
@@ -533,20 +537,20 @@ void dedaiPathFinderNavMesh::pFindFacePath(){
 		module.LogInfo( "      Open List:" );
 		for( c=0; c<pListOpen.GetCount(); c++ ){
 			testFace = ( dedaiSpaceMeshFace* )pListOpen.GetAt( c );
-			const decDVector c = testFace->GetMesh()->GetSpace().GetMatrix() * testFace->GetCenter();
+			const decDVector c2 = testFace->GetMesh()->GetSpace().GetMatrix() * testFace->GetCenter();
 			module.LogInfoFormat( "         Face: %p:%i p=%p:%i c=(%g,%g,%g) (%.3f,%.3f,%.3f)",
 				testFace->GetMesh(), testFace->GetIndex(), testFace->GetPathParent()?testFace->GetPathParent()->GetMesh():NULL,
 				testFace->GetPathParent()?testFace->GetPathParent()->GetIndex():-1, testFace->GetPathCostF(),
-				testFace->GetPathCostG(), testFace->GetPathCostH(), c.x, c.y, c.z );
+				testFace->GetPathCostG(), testFace->GetPathCostH(), c2.x, c2.y, c2.z );
 		}
 		module.LogInfo( "      Closed List:" );
 		for( c=0; c<pListClosed.GetCount(); c++ ){
 			testFace = ( dedaiSpaceMeshFace* )pListClosed.GetAt( c );
-			const decDVector c = testFace->GetMesh()->GetSpace().GetMatrix() * testFace->GetCenter();
+			const decDVector c2 = testFace->GetMesh()->GetSpace().GetMatrix() * testFace->GetCenter();
 			module.LogInfoFormat( "         Face: %p:%i p=%p:%i c=(%g,%g,%g) (%.3f,%.3f,%.3f)",
 				testFace->GetMesh(), testFace->GetIndex(), testFace->GetPathParent()?testFace->GetPathParent()->GetMesh():NULL,
 				testFace->GetPathParent()?testFace->GetPathParent()->GetIndex():-1, testFace->GetPathCostF(),
-				testFace->GetPathCostG(), testFace->GetPathCostH(), c.x, c.y, c.z );
+				testFace->GetPathCostG(), testFace->GetPathCostH(), c2.x, c2.y, c2.z );
 		}
 #endif
 	}
@@ -580,11 +584,11 @@ void dedaiPathFinderNavMesh::pFindFacePath(){
 	module.LogInfo( "      Path Faces:" );
 	for( f=0; f<pPathFaces.GetCount(); f++ ){
 		testFace = ( dedaiSpaceMeshFace* )pPathFaces.GetAt( f );
-		const decDVector c = testFace->GetMesh()->GetSpace().GetMatrix() * testFace->GetCenter();
+		const decDVector c2 = testFace->GetMesh()->GetSpace().GetMatrix() * testFace->GetCenter();
 		module.LogInfoFormat( "         Face: %p:%i p=(%p:%i) c=(%g,%g,%g) (%.3f,%.3f,%.3f)",
 			testFace->GetMesh(), testFace->GetIndex(), testFace->GetPathParent()?testFace->GetPathParent()->GetMesh():NULL,
 			testFace->GetPathParent()?testFace->GetPathParent()->GetIndex():-1, testFace->GetPathCostF(),
-			testFace->GetPathCostG(), testFace->GetPathCostH(), c.x, c.y, c.z );
+			testFace->GetPathCostG(), testFace->GetPathCostH(), c2.x, c2.y, c2.z );
 	}
 #endif
 }
@@ -1028,6 +1032,20 @@ void dedaiPathFinderNavMesh::pFindRealPath(){
 #ifdef DEBUG
 		module.LogInfo( "   FinishFunnel" );
 #endif
+	}
+	
+	// if we have a valid path add the goal point if not present in the path. if we have no
+	// valid path we have to keep the path empty to signal the invalidity of the path
+	if( ! pStartFace || ! pEndFace ){
+		return;
+	}
+	if( pStartFace != pEndFace ){
+		if( faceCount < 2 ){
+			return;
+		}
+		if( pEndFace != pPathFaces.GetAt( faceCount - 1 ) ){
+			return;
+		}
 	}
 	
 	if( pPathPointCount == 0 || ! pEndPoint.IsEqualTo( pPathPoints[ pPathPointCount - 1 ], threshold ) ){

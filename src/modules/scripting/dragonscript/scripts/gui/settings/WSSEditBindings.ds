@@ -1,0 +1,182 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Gui
+
+pin Dragengine.Commands
+pin Dragengine.Utils
+
+
+/**
+ * \brief WindowSettingsSheet editing input bindings.
+ */
+class WSSEditBindings extends DefaultWindowSettingsSheet
+	var BindingManager pBindingManager
+	var CommandManager pCommandManager
+	
+	
+	
+	/**
+	 * \brief Create window settings sheet.
+	 * 
+	 * Uses binding manager from BaseGameWorld.
+	 */
+	func new() this(BaseGameApp.getApp().getBindingManager(),\
+	BaseGameApp.getApp().getCommandManager())
+	end
+	
+	func new(String identifier, String title) this(BaseGameApp.getApp().getBindingManager(),\
+	BaseGameApp.getApp().getCommandManager(), identifier, title)
+	end
+	
+	/**
+	 * \brief Create window settings sheet.
+	 */
+	func new(BindingManager bindingManager, CommandManager commandManager) \
+	this(bindingManager, commandManager, "bindings", "@UI.Settings.Bindings")
+	end
+	
+	func new(BindingManager bindingManager, CommandManager commandManager,\
+	String identifier, String title) super(identifier, title)
+		if bindingManager == null
+			throw ENullPointer.new("bindingManager")
+		end
+		if commandManager == null
+			throw ENullPointer.new("commandManager")
+		end
+		
+		pBindingManager = bindingManager
+		pCommandManager = commandManager
+	end
+	
+	
+	
+	/** \brief Binding manager to use. */
+	func BindingManager getBindingManager()
+		return pBindingManager
+	end
+	
+	/** \brief Command manager to use. */
+	func CommandManager getCommandManager()
+		return pCommandManager
+	end
+	
+	
+	
+	/**
+	 * \brief Create widget.
+	 * 
+	 * Creates instance of EditBindingsPanel.
+	 */
+	func Widget createWidget()
+		var EditBindingsPanel editBindings = EditBindingsPanel.new(pBindingManager)
+		addCommands(editBindings)
+		return editBindings
+	end
+	
+	/**
+	 * Save settings.
+	 */
+	func void saveSettings(Widget widget)
+		(widget cast EditBindingsPanel).applyChanges()
+	end
+	
+	/**
+	 * Reset settings.
+	 */
+	func void resetSettings(Widget widget)
+		(widget cast EditBindingsPanel).resetChanges()
+	end
+	
+	
+	
+	/**
+	 * \brief Add commands to edit bindings panel.
+	 * 
+	 * Default implementation adds all commands defined by the DragonScript module
+	 * if present in the binding manager.
+	 */
+	protected func void addCommands(EditBindingsPanel editBindings)
+		var Array list = Array.new()
+		
+		// BAAMovement commands
+		modelAddButton(list, "moveForward")
+		modelAddButton(list, "moveBackward")
+		modelAddButton(list, "moveLeft")
+		modelAddButton(list, "moveRight")
+		
+		modelAddButton(list, "lookLeft")
+		modelAddButton(list, "lookRight")
+		modelAddButton(list, "lookUp")
+		modelAddButton(list, "lookDown")
+		
+		modelAddAxis(list, "analogMoveFB")
+		modelAddAxis(list, "analogMoveLR")
+		modelAddAxis(list, "analogLookLR")
+		modelAddAxis(list, "analogLookUD")
+		
+		modelAddButton(list, "crouch")
+		modelAddButton(list, "toggleCrouch")
+		modelAddButton(list, "run")
+		modelAddButton(list, "toggleRun")
+		
+		// BAAInteract commands
+		modelAddButton(list, "primaryAction")
+		modelAddButton(list, "secondaryAction")
+		
+		// quit game command
+		modelAddButton(list, "quit")
+		
+		// screenshot command
+		modelAddButton(list, "screenshot")
+		
+		// toggle console command
+		modelAddButton(list, "toggleConsole")
+		
+		// update model
+		editBindings.getModel().addAll(list)
+	end
+	
+	/**
+	 * \brief If command is present add EditBindingsListModelEntry for button use.
+	 */
+	protected func void modelAddButton(Array list, String name)
+		var Command command = pCommandManager.getNamed(name)
+		if command != null
+			list.add(EditBindingsListModelEntry.new(command,\
+				EditBindingsListModelEntry.InputSource.button))
+		end
+	end
+	
+	/**
+	 * \brief If command is present add EditBindingsListModelEntry for axis use.
+	 */
+	protected func void modelAddAxis(Array list, String name)
+		var Command command = pCommandManager.getNamed(name)
+		if command != null
+			list.add(EditBindingsListModelEntry.new(command,\
+				EditBindingsListModelEntry.InputSource.axis))
+		end
+	end
+end

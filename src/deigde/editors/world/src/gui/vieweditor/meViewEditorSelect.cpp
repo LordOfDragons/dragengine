@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE World Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <math.h>
@@ -28,21 +31,26 @@
 #include "../meView3D.h"
 #include "../meWindowMain.h"
 #include "../../collisions/meCLSelect.h"
+#include "../../collisions/meCLClosestElement.h"
 #include "../../configuration/meConfiguration.h"
 #include "../../world/meCamera.h"
 #include "../../world/meWorld.h"
 #include "../../world/meWorldGuiParameters.h"
+#include "../../world/object/meObject.h"
+
+#include <deigde/environment/igdeEnvironment.h>
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/shape/decShapeHull.h>
 #include <dragengine/common/utils/decLayerMask.h>
-#include <dragengine/resources/collider/deColliderManager.h>
-#include <dragengine/resources/collider/deColliderVolume.h>
-#include <dragengine/resources/world/deWorld.h>
 #include <dragengine/resources/canvas/deCanvasPaint.h>
 #include <dragengine/resources/canvas/deCanvasManager.h>
-#include <dragengine/resources/canvas/deCanvasView.h>
+#include <dragengine/resources/collider/deColliderManager.h>
+#include <dragengine/resources/collider/deColliderVolume.h>
+#include <dragengine/resources/font/deFont.h>
+#include <dragengine/resources/font/deFontManager.h>
+#include <dragengine/resources/world/deWorld.h>
 
 
 
@@ -54,7 +62,8 @@
 
 meViewEditorSelect::meViewEditorSelect( meView3D &view ) :
 meViewEditorNavigation( view ),
-pCLSelect( NULL )
+pCLSelect( nullptr ),
+pCLClosest ( nullptr )
 {
 	pColVol.TakeOver( view.GetEngine()->GetColliderManager()->CreateColliderVolume() );
 	
@@ -67,8 +76,19 @@ pCLSelect( NULL )
 	pCanvasSelect->SetVisible( false );
 	view.AddCanvas( pCanvasSelect );
 	
+	pInfoBubble.TakeOver( new meInfoBubble( view ) );
+	
+	pInfoBubbleText.TakeOver( view.GetEngine()->GetCanvasManager()->CreateCanvasText() );
+	pInfoBubbleText->SetFont( deFont::Ref::New( view.GetEngine()->GetFontManager()->
+		LoadFont( "/igde/fonts/sans_10.defont", "/" ) ) );
+	pInfoBubbleText->SetFontSize( ( float )pInfoBubbleText->GetFont()->GetLineHeight() );
+	pInfoBubbleText->SetColor( decColor( 1.0f, 1.0f, 1.0f ) );
+	pInfoBubbleText->SetOrder( 0.0f );
+	pInfoBubble->GetCanvasContent()->AddCanvas( pInfoBubbleText );
+	
 	try{
 		pCLSelect = new meCLSelect( *view.GetWorld() );
+		pCLClosest = new meCLClosestElement( *view.GetWorld() );
 		
 	}catch( const deException & ){
 		pCleanUp();
@@ -209,6 +229,7 @@ void meViewEditorSelect::OnLeftMouseButtonPress( int x, int y, bool shift, bool 
 		RayTestCollision( pCLSelect, rayPosition, rayDirection, decCollisionFilter( collisionCategory, collisionFilter ) );
 		pCLSelect->RunAction();
 		
+		pInfoBubble->Hide();
 		OnResize();
 	}
 }
@@ -220,7 +241,20 @@ void meViewEditorSelect::OnLeftMouseButtonRelease( int x, int y, bool shift, boo
 		pCLSelect->Reset();
 		
 		OnResize();
+		pUpdateInfoBubble( x, y );
 	}
+}
+
+void meViewEditorSelect::OnRightMouseButtonPress( int x, int y, bool shift, bool control ){
+	meViewEditorNavigation::OnRightMouseButtonPress( x, y, shift, control );
+	
+	pInfoBubble->Hide();
+}
+
+void meViewEditorSelect::OnRightMouseButtonRelease( int x, int y, bool shift, bool control ){
+	meViewEditorNavigation::OnRightMouseButtonRelease( x, y, shift, control );
+	
+	pUpdateInfoBubble( x, y );
 }
 
 void meViewEditorSelect::OnMouseMove( int x, int y, bool shift, bool control ){
@@ -241,6 +275,9 @@ void meViewEditorSelect::OnMouseMove( int x, int y, bool shift, bool control ){
 		}
 		
 		UpdateRectSelection();
+		
+	}else{
+		pUpdateInfoBubble( x, y );
 	}
 }
 
@@ -263,6 +300,12 @@ void meViewEditorSelect::OnMouseWheel( int steps, bool shift, bool control ){
 	}
 }
 
+void meViewEditorSelect::OnMousLeave(){
+	meViewEditorNavigation::OnMousLeave();
+	
+	pInfoBubble->Hide();
+}
+
 
 
 // Private Functions
@@ -273,7 +316,69 @@ void meViewEditorSelect::pCleanUp(){
 		GetView().RemoveCanvas( pCanvasSelect );
 	}
 	
+	if( pCLClosest ){
+		delete pCLClosest;
+	}
 	if( pCLSelect ){
 		delete pCLSelect;
+	}
+}
+
+void meViewEditorSelect::pUpdateInfoBubble( int x, int y ){
+	if( GetDragLeftMouseButton() || GetDragRightMouseButton() || ! pCLClosest ){
+		return;
+	}
+	if( GetElementMode() != meWorldGuiParameters::eemObject ){
+		return;
+	}
+	
+	decLayerMask collisionCategory;
+	collisionCategory.SetBit( meWorld::eclmEditing );
+	
+	decLayerMask collisionFilter;
+	collisionFilter.SetBit( meWorld::eclmObjects );
+	
+	UpdateMatrices();
+	
+	pCLClosest->Reset();
+	
+	pCLClosest->SetTestObjects( true );
+	
+	meWorldGuiParameters &guiparams = GetWorldGuiParameters();
+	const decDVector rayPosition = GetMatrixView().GetPosition();
+	const decPoint size( GetViewWidth(), GetViewHeight() );
+	const decVector rayDirection = GetActiveCamera().GetDirectionFor(
+		size.x, size.y, x, y ) * guiparams.GetRectSelDistance();
+	RayTestCollision( pCLClosest, rayPosition, rayDirection,
+		decCollisionFilter( collisionCategory, collisionFilter ) );
+	
+	if( pCLClosest->GetHasHit() ){
+		const meObject &object = *pCLClosest->GetHitObject();
+		decString text;
+		text.Format( "%s (%s)", object.GetClassName().GetString(), object.GetID().ToHexString().GetString() );
+		const decPoint textSize( pInfoBubbleText->GetFont()->TextSize( text ) );
+		
+		pInfoBubbleText->SetText( text );
+		pInfoBubbleText->SetSize( textSize );
+		pInfoBubble->GetCanvasContent()->SetSize( textSize );
+		
+		decPoint position = decPoint( x + 32, y );
+		meInfoBubble::ePlacement placement = meInfoBubble::epTopRight;
+		
+		if( position.x + textSize.x + 6 > size.x ){
+			position.x = x - 32;
+			placement = meInfoBubble::epTopLeft;
+		}
+		
+		if( position.y - textSize.y - 6 < 0 ){
+			position.y = y + 64;
+			placement = placement == meInfoBubble::epTopRight
+				? meInfoBubble::epBottomRight : meInfoBubble::epBottomLeft;
+		}
+		
+		pInfoBubble->ShowAt( position, placement );
+		
+	}else{
+		pInfoBubble->Hide();
 	}
 }

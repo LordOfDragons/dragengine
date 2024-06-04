@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE World Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _MECLCLOSESTELEMENT_H_
@@ -39,7 +42,7 @@ class deCollider;
 
 
 /**
- * \brief Closest element visitor.
+ *  Closest element visitor.
  *
  * Collision listener storing the closes hit element. In addition an object and decal can
  * be defined to ignore during testing. This avoids self-collision results.
@@ -71,10 +74,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create visitor. */
+	/**  Create visitor. */
 	meCLClosestElement( meWorld &world );
 	
-	/** \brief Clean up visitor. */
+	/**  Clean up visitor. */
 	virtual ~meCLClosestElement();
 	/*@}*/
 	
@@ -82,36 +85,36 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Set if height terrain are tested. */
+	/**  Set if height terrain are tested. */
 	void SetTestHeightTerrain( bool test );
 	
-	/** \brief Set if objects are tested. */
+	/**  Set if objects are tested. */
 	void SetTestObjects( bool test );
 	
-	/** \brief Set if decals are tested. */
+	/**  Set if decals are tested. */
 	void SetTestDecals( bool test );
 	
-	/** \brief Set if object snap points are tested. */
+	/**  Set if object snap points are tested. */
 	void SetTestSnapPoints( bool test );
 	
 	
 	
-	/** \brief Set decal to ignore or \em NULL. */
+	/**  Set decal to ignore or nullptr. */
 	void SetIgnoreDecal( meDecal *decal );
 	
-	/** \breif Object filter or \em NULL to not use filtering. */
+	/** \breif Object filter or nullptr to not use filtering. */
 	inline const meFilterObjects *GetFilterObjects() const{ return pFilterObjects; }
 	
-	/** \brief Set object filter or \em NULL to not use filtering. */
+	/**  Set object filter or nullptr to not use filtering. */
 	void SetFilterObjects( const meFilterObjects *filter );
 	
-	/** \brief List of objects to ignore. */
+	/**  List of objects to ignore. */
 	inline meObjectList &GetIgnoreObjects(){ return pIgnoreObjects; }
 	inline const meObjectList &GetIgnoreObjects() const{ return pIgnoreObjects; }
 	
 	
 	
-	/** \brief Reset visitor. */
+	/**  Reset visitor. */
 	void Reset();
 	
 	
@@ -119,22 +122,22 @@ public:
 	/** \breief Element has been hit. */
 	inline bool GetHasHit() const{ return pHasHit; }
 	
-	/** \brief Hit distance. */
+	/**  Hit distance. */
 	inline float GetHitDistance() const{ return pHitDistance; }
 	
-	/** \brief Hit normal. */
+	/**  Hit normal. */
 	inline const decVector &GetHitNormal() const{ return pHitNormal; }
 	
-	/** \brief Hit height terrain sector or \em NULL. */
+	/**  Hit height terrain sector or nullptr. */
 	inline meHeightTerrainSector *GetHitHTSector() const{ return pHitHTSector; }
 	
-	/** \brief Hit object or \em NULL. */
+	/**  Hit object or nullptr. */
 	inline meObject *GetHitObject() const{ return pHitObject; }
 	
-	/** \brief Hit decal or \em NULL. */
+	/**  Hit decal or nullptr. */
 	inline meDecal *GetHitDecal() const{ return pHitDecal; }
 	
-	/** \brief Hit object snap point or \em NULL. */
+	/**  Hit object snap point or nullptr. */
 	inline meObjectSnapPoint *GetHitSnapPoint() const{ return pHitSnapPoint; }
 	/*@}*/
 	
@@ -142,13 +145,13 @@ public:
 	
 	/** \name Notifications */
 	/*@{*/
-	/** \brief Collision response. */
+	/**  Collision response. */
 	virtual void CollisionResponse( deCollider *owner, deCollisionInfo *info );
 	
-	/** \brief Collider can hit another collider. */
+	/**  Collider can hit another collider. */
 	virtual bool CanHitCollider( deCollider *owner, deCollider *collider );
 	
-	/** \brief Collider changed. */
+	/**  Collider changed. */
 	virtual void ColliderChanged( deCollider *owner );
 	/*@}*/
 };

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <math.h>
@@ -25,18 +28,23 @@
 #include <string.h>
 
 #include "deoglREffectFilterKernel.h"
+#include "../../debug/deoglDebugTraceGroup.h"
+#include "../../rendering/deoglRenderWorld.h"
 #include "../../rendering/defren/deoglDeferredRendering.h"
+#include "../../rendering/plan/deoglRenderPlan.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTShader.h"
 #include "../../renderthread/deoglRTTexture.h"
 #include "../../renderthread/deoglRTLogger.h"
+#include "../../renderthread/deoglRTRenderers.h"
+#include "../../renderthread/deoglRTChoices.h"
 #include "../../shaders/deoglShaderCompiled.h"
 #include "../../shaders/deoglShaderDefines.h"
 #include "../../shaders/deoglShaderManager.h"
 #include "../../shaders/deoglShaderProgram.h"
 #include "../../shaders/deoglShaderSources.h"
+#include "../../shaders/paramblock/deoglSPBlockUBO.h"
 #include "../../texture/deoglTextureStageManager.h"
-#include "../../delayedoperation/deoglDelayedDeletion.h"
 #include "../../delayedoperation/deoglDelayedOperations.h"
 
 #include <dragengine/common/exceptions.h>
@@ -47,15 +55,15 @@
 ////////////////
 
 enum eSPEffect{
-	speQuadParams,
+	speTCTransform,
 	speOptions,
 	speKernel1,
 	speKernel2,
 	speKernel3
 };
 
-enum eSPEffectDownSample{
-	spedsQuadParams,
+enum eSPEffectDownsample{
+	spedsTCTransform,
 	spedsTCClamp
 };
 
@@ -70,57 +78,15 @@ deoglREffect( renderThread ),
 pKernel( NULL ),
 pKernelRows( 0 ),
 pKernelCols( 0 ),
-pScale( 1.0f ),
-pShader( NULL ),
-pShaderDownsample( NULL )
+pScale( 1.0f )
 {
 	LEAK_CHECK_CREATE( renderThread, EffectFilterKernel );
 }
-
-class deoglREffectFilterKernelDeletion : public deoglDelayedDeletion{
-public:
-	deoglShaderProgram *shader;
-	deoglShaderProgram *shaderDownsample;
-	
-	deoglREffectFilterKernelDeletion() :
-	shader( NULL ),
-	shaderDownsample( NULL ){
-	}
-	
-	virtual ~deoglREffectFilterKernelDeletion(){
-	}
-	
-	virtual void DeleteObjects( deoglRenderThread &renderThread ){
-		if( shaderDownsample ){
-			shaderDownsample->RemoveUsage();
-		}
-		if( shader ){
-			shader->RemoveUsage();
-		}
-	}
-};
 
 deoglREffectFilterKernel::~deoglREffectFilterKernel(){
 	LEAK_CHECK_FREE( GetRenderThread(), EffectFilterKernel );
 	if( pKernel ){
 		delete [] pKernel;
-	}
-	
-	// delayed deletion of opengl containing objects
-	deoglREffectFilterKernelDeletion *delayedDeletion = NULL;
-	
-	try{
-		delayedDeletion = new deoglREffectFilterKernelDeletion;
-		delayedDeletion->shader = pShader;
-		delayedDeletion->shaderDownsample = pShaderDownsample;
-		GetRenderThread().GetDelayedOperations().AddDeletion( delayedDeletion );
-		
-	}catch( const deException &e ){
-		if( delayedDeletion ){
-			delete delayedDeletion;
-		}
-		GetRenderThread().GetLogger().LogException( e );
-		// throw; -> otherwise terminate
 	}
 }
 
@@ -171,38 +137,104 @@ void deoglREffectFilterKernel::SetScale( float scale ){
 
 
 
-deoglShaderProgram *deoglREffectFilterKernel::GetShader(){
-	if( ! pShader ){
-		deoglShaderManager &shaderManager = GetRenderThread().GetShader().GetShaderManager();
+const deoglPipeline *deoglREffectFilterKernel::GetPipeline(){
+	if( ! pPipeline ){
+		deoglPipelineManager &pipelineManager = GetRenderThread().GetPipelineManager();
+		deoglPipelineConfiguration pipconf;
+		deoglShaderDefines defines;
 		
-		deoglShaderSources * const sources = shaderManager.GetSourcesNamed( "Effect Filter Kernel" );
-		if( ! sources ){
-			DETHROW( deeInvalidParam );
-		}
+		GetRenderThread().GetShader().SetCommonDefines( defines );
 		
-		pShader = shaderManager.GetProgramWith( sources, deoglShaderDefines() );
+		pipconf.SetDepthMask( false );
+		pipconf.SetEnableScissorTest( true );
+		
+		defines.SetDefines( "NO_POSTRANSFORM" );
+		pipconf.SetShader( GetRenderThread(), "Effect Filter Kernel", defines );
+		pPipeline = pipelineManager.GetWith( pipconf );
 	}
 	
-	return pShader;
+	return pPipeline;
 }
 
-deoglShaderProgram *deoglREffectFilterKernel::GetShaderDownsample(){
-	if( ! pShaderDownsample ){
-		deoglShaderManager &shaderManager = GetRenderThread().GetShader().GetShaderManager();
+const deoglPipeline *deoglREffectFilterKernel::GetPipelineStereo(){
+	if( ! pPipelineStereo ){
+		deoglPipelineManager &pipelineManager = GetRenderThread().GetPipelineManager();
+		deoglPipelineConfiguration pipconf;
+		deoglShaderDefines defines;
 		
-		deoglShaderSources * const sources = shaderManager.GetSourcesNamed( "Effect Filter Kernel DownSample" );
-		if( ! sources ){
-			DETHROW( deeInvalidParam );
+		GetRenderThread().GetShader().SetCommonDefines( defines );
+		
+		defines.SetDefines( "NO_POSTRANSFORM" );
+		
+		pipconf.SetDepthMask( false );
+		pipconf.SetEnableScissorTest( true );
+		
+		if( GetRenderThread().GetChoices().GetRenderFSQuadStereoVSLayer() ){
+			defines.SetDefines( "VS_RENDER_STEREO" );
+			pipconf.SetShader( GetRenderThread(), "Effect Filter Kernel", defines );
+			
+		}else{
+			defines.SetDefines( "GS_RENDER_STEREO" );
+			pipconf.SetShader( GetRenderThread(), "Effect Filter Kernel Stereo", defines );
 		}
 		
-		pShaderDownsample = shaderManager.GetProgramWith( sources, deoglShaderDefines() );
+		pPipelineStereo = pipelineManager.GetWith( pipconf );
 	}
 	
-	return pShaderDownsample;
+	return pPipelineStereo;
+}
+
+const deoglPipeline *deoglREffectFilterKernel::GetPipelineDownsample(){
+	if( ! pPipeline ){
+		deoglPipelineManager &pipelineManager = GetRenderThread().GetPipelineManager();
+		deoglPipelineConfiguration pipconf;
+		deoglShaderDefines defines;
+		
+		GetRenderThread().GetShader().SetCommonDefines( defines );
+		
+		pipconf.SetDepthMask( false );
+		pipconf.SetEnableScissorTest( true );
+		
+		defines.SetDefines( "NO_POSTRANSFORM" );
+		pipconf.SetShader( GetRenderThread(), "Effect Filter Kernel DownSample", defines );
+		pPipelineDownsample = pipelineManager.GetWith( pipconf );
+	}
+	
+	return pPipelineDownsample;
+}
+
+const deoglPipeline *deoglREffectFilterKernel::GetPipelineDownsampleStereo(){
+	if( ! pPipelineDownsampleStereo ){
+		deoglPipelineManager &pipelineManager = GetRenderThread().GetPipelineManager();
+		deoglPipelineConfiguration pipconf;
+		deoglShaderDefines defines;
+		
+		GetRenderThread().GetShader().SetCommonDefines( defines );
+		
+		defines.SetDefines( "NO_POSTRANSFORM" );
+		
+		pipconf.SetDepthMask( false );
+		pipconf.SetEnableScissorTest( true );
+		
+		if( GetRenderThread().GetChoices().GetRenderFSQuadStereoVSLayer() ){
+			defines.SetDefines( "VS_RENDER_STEREO" );
+			pipconf.SetShader( GetRenderThread(), "Effect Filter Kernel DownSample", defines );
+			
+		}else{
+			defines.SetDefines( "GS_RENDER_STEREO" );
+			pipconf.SetShader( GetRenderThread(), "Effect Filter Kernel DownSample Stereo", defines );
+		}
+		
+		pPipelineDownsampleStereo = pipelineManager.GetWith( pipconf );
+	}
+	
+	return pPipelineDownsampleStereo;
 }
 
 void deoglREffectFilterKernel::Render( deoglRenderPlan &plan ){
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "EffectFilterKernel.Render" );
+	const deoglRenderWorld &renderWorld = renderThread.GetRenderers().GetWorld();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglRTShader &rtshader = renderThread.GetShader();
@@ -211,19 +243,9 @@ void deoglREffectFilterKernel::Render( deoglRenderPlan &plan ){
 		return;
 	}
 	
-	// opengl parameters
-	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
-	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
-	
-	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
-		
-	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
-	
-	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
-	
 	// source texture in case downsampling is required
 	defren.SwapPostProcessTarget();
-	deoglTexture *sourceTexture = defren.GetPostProcessTexture();
+	deoglArrayTexture *sourceTexture = defren.GetPostProcessTexture();
 	
 	// down sample if required
 	int height = defren.GetHeight();
@@ -238,14 +260,14 @@ void deoglREffectFilterKernel::Render( deoglRenderPlan &plan ){
 	if( downsampleCount > 0 ){
 		int i;
 		
-		deoglShaderProgram * const shaderProgramDownsample = GetShaderDownsample();
-		rtshader.ActivateShader( shaderProgramDownsample );
-		deoglShaderCompiled &shaderDownsample = *shaderProgramDownsample->GetCompiled();
+		const deoglPipeline &pipeline = plan.GetRenderStereo() ? *GetPipelineDownsampleStereo() : *GetPipelineDownsample();
+		renderWorld.GetRenderPB()->Activate();
 		
-		defren.SetShaderParamFSQuad( shaderDownsample, spedsQuadParams );
+		deoglShaderCompiled &shaderDownsample = pipeline.GetGlShader();
+		defren.SetShaderParamFSQuad( shaderDownsample, spedsTCTransform );
 		
 		for( i=0; i<downsampleCount; i++ ){
-			tsmgr.EnableTexture( 0, *sourceTexture, *rtshader.GetTexSamplerConfig( deoglRTShader::etscClampNearest ) );
+			tsmgr.EnableArrayTexture( 0, *sourceTexture, *rtshader.GetTexSamplerConfig( deoglRTShader::etscClampNearest ) );
 			
 			if( ( i % 2 ) == 0 ){
 				defren.ActivateFBOReflectivity( false );
@@ -278,30 +300,31 @@ void deoglREffectFilterKernel::Render( deoglRenderPlan &plan ){
 				height = 1;
 			}
 			
-			OGL_CHECK( renderThread, glViewport( 0, 0, width, height ) );
-			
-			defren.RenderFSQuadVAO();
+			renderWorld.SetViewport( width, height );
+			renderWorld.RenderFullScreenQuadVAO( plan.GetRenderStereo()
+				&& renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() );
 		}
-		
-		OGL_CHECK( renderThread, glViewport( 0, 0, defren.GetWidth(), defren.GetHeight() ) );
 	}
 	
-	// set shader program
-	defren.ActivatePostProcessFBO( false );
-	tsmgr.EnableTexture( 0, *sourceTexture, *rtshader.GetTexSamplerConfig( deoglRTShader::etscClampLinear ) );
+	const deoglPipeline &pipeline = plan.GetRenderStereo() ? *GetPipelineStereo() : *GetPipeline();
+	pipeline.Activate();
 	
-	// set program
-	deoglShaderProgram * const shaderProgram = GetShader();
-	rtshader.ActivateShader( shaderProgram );
-	deoglShaderCompiled &shader = *shaderProgram->GetCompiled();
+	renderWorld.SetViewport( plan );
+	
+	defren.ActivatePostProcessFBO( false );
+	tsmgr.EnableArrayTexture( 0, *sourceTexture, *rtshader.GetTexSamplerConfig( deoglRTShader::etscClampLinear ) );
+	
+	deoglShaderCompiled &shader = pipeline.GetGlShader();
+	renderWorld.GetRenderPB()->Activate();
 	
 	//defren.SetShaderParamFSQuad( shader, speQuadParams );
-	defren.SetShaderParamFSQuad( shader, speQuadParams, width, height );
+	defren.SetShaderParamFSQuad( shader, speTCTransform, width, height );
 	shader.SetParameterFloat( speOptions, ( float )pKernelRows, ( float )pKernelCols,
 		defren.GetPixelSizeU() * downsampleSize/*pScale*/, defren.GetPixelSizeV() * downsampleSize/*pScale*/ );
 	shader.SetParameterFloat( speKernel1, GetKernelValueAt( 0, 0 ), GetKernelValueAt( 0, 1 ), GetKernelValueAt( 0, 2 ) );
 	shader.SetParameterFloat( speKernel2, GetKernelValueAt( 1, 0 ), GetKernelValueAt( 1, 1 ), GetKernelValueAt( 1, 2 ) );
 	shader.SetParameterFloat( speKernel3, GetKernelValueAt( 2, 0 ), GetKernelValueAt( 2, 1 ), GetKernelValueAt( 2, 2 ) );
 	
-	defren.RenderFSQuadVAO();
+	renderWorld.RenderFullScreenQuadVAO( plan.GetRenderStereo()
+		&& renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() );
 }

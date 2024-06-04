@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -47,66 +50,57 @@ class ScrollPanel extends Panel
 	
 	
 	
-	/** \brief Horizontal scrollbar. */
 	private var ScrollBar pHorzScroll
-	
-	/** \brief Vertical scrollbar. */
 	private var ScrollBar pVertScroll
-	
-	/** \brief Horizontal scrollbar policy. */
 	private var Policy pHorzScrollPolicy
-	
-	/** \brief Vertical scrollbar policy. */
 	private var Policy pVertScrollPolicy
-	
-	/** \brief Content widget. */
 	private var Widget pContent
 	
 	
 	
 	/** \brief Create scroll panel. */
-	public func new() this( Policy.needed, Policy.needed )
+	public func new() this(Policy.needed, Policy.needed)
 	end
 	
 	/** \brief Create scroll panel with scrollbar policies. */
-	public func new( Policy horizontalPolicy, Policy verticalPolicy )
-		this.runWhileBlockingLayout( block
-			this.setLayout( ScrollPanelLayout.new() )
+	public func new(Policy horizontalPolicy, Policy verticalPolicy)
+		runWhileBlockingLayout(block
+			setLayout(ScrollPanelLayout.new())
 			
 			// horizontal scrollbar
-			this.pHorzScrollPolicy = horizontalPolicy
-			this.pHorzScroll = ScrollBar.new( Orientation.horizontal )
-			this.pHorzScroll.setModel( DefaultRangeModel.new( 0, 0, 1, 0, 1 ) )
-			this.pHorzScroll.setVisible( false )
-			this.addWidget( this.pHorzScroll, ScrollPanelLayout.Area.horizontal )
+			pHorzScrollPolicy = horizontalPolicy
+			pHorzScroll = ScrollBar.new(Orientation.horizontal)
+			pHorzScroll.setModel(DefaultRangeModel.new(0, 0, 1, 0, 1))
+			pHorzScroll.setVisible(false)
+			addWidget(pHorzScroll, ScrollPanelLayout.Area.horizontal)
 			
 			// vertical scrollbar
-			this.pVertScrollPolicy = verticalPolicy
-			this.pVertScroll = ScrollBar.new( Orientation.vertical )
-			this.pVertScroll.setModel( DefaultRangeModel.new( 0, 0, 1, 0, 1 ) )
-			this.pVertScroll.setVisible( false )
-			this.addWidget( this.pVertScroll, ScrollPanelLayout.Area.vertical )
+			pVertScrollPolicy = verticalPolicy
+			pVertScroll = ScrollBar.new(Orientation.vertical)
+			pVertScroll.setModel(DefaultRangeModel.new(0, 0, 1, 0, 1))
+			pVertScroll.setVisible(false)
+			addWidget(pVertScroll, ScrollPanelLayout.Area.vertical)
 			
-			this.updateScrollBarHiding()
-		end )
+			updateScrollBarHiding()
+		end)
 	end
 	
 	/** \brief Create scroll panel with content widget. */
-	public func new( Widget content ) this( Policy.needed, Policy.needed )
-		this.setContent( content )
+	public func new(Widget content) this(Policy.needed, Policy.needed)
+		setContent(content)
 	end
 	
 	/** \brief Create scroll panel with content widget and scroll policies. */
-	public func new( Widget content, Policy horizontalPolicy, Policy verticalPolicy ) \
-	this( horizontalPolicy, verticalPolicy )
-		this.setContent( content )
+	public func new(Widget content, Policy horizontalPolicy, Policy verticalPolicy) \
+	this(horizontalPolicy, verticalPolicy)
+		setContent(content)
 	end
 	
 	/** \brief Dispose of widget. */
 	public func void dispose()
-		this.pContent = null
-		this.pVertScroll = null
-		this.pHorzScroll = null
+		pContent = null
+		pVertScroll = null
+		pHorzScroll = null
 		
 		super.dispose()
 	end
@@ -115,102 +109,101 @@ class ScrollPanel extends Panel
 	
 	/** \brief Horizontal scrollbar policy. */
 	public func Policy getHorizontalScrollPolicy()
-		return this.pHorzScrollPolicy
+		return pHorzScrollPolicy
 	end
 	
 	/** \brief Set horizontal scrollbar policy. */
-	public func void setHorizontalScrollPolicy( Policy policy )
-		if policy == this.pHorzScrollPolicy
+	public func void setHorizontalScrollPolicy(Policy policy)
+		if policy == pHorzScrollPolicy
 			return
 		end
 		
-		this.pHorzScrollPolicy = policy
-		this.updateScrollBarHiding()
+		pHorzScrollPolicy = policy
+		updateScrollBarHiding()
 	end
 	
 	/** \brief Vertical scrollbar policy. */
 	public func Policy getVerticalScrollPolicy()
-		return this.pVertScrollPolicy
+		return pVertScrollPolicy
 	end
 	
 	/** \brief Set vertical scrollbar policy. */
-	public func void setVerticalScrollPolicy( Policy policy )
-		if policy == this.pVertScrollPolicy
+	public func void setVerticalScrollPolicy(Policy policy)
+		if policy == pVertScrollPolicy
 			return
 		end
 		
-		this.pVertScrollPolicy = policy
-		this.updateScrollBarHiding()
+		pVertScrollPolicy = policy
+		updateScrollBarHiding()
 	end
 	
 	
 	
 	/** \brief Content widget or \em null if not existing. */
 	public func Widget getContent()
-		return this.pContent
+		return pContent
 	end
 	
 	/** \brief Set content widget or \em null to remove it. */
-	public func void setContent( Widget content )
-		if content == this.pContent
+	public func void setContent(Widget content)
+		if content == pContent
 			return
 		end
 		
-		if this.pContent != null
-			this.removeWidget( this.pContent )
-			this.pContent.dispose()
-			this.pContent = null
+		if pContent != null
+			pContent.safeDispose()
+			pContent = null
 		end
 		
 		if content == null
-			this.pHorzScroll.setModel( DefaultRangeModel.new( 0, 0, 1, 0, 1 ) )
-			this.pVertScroll.setModel( DefaultRangeModel.new( 0, 0, 1, 0, 1 ) )
+			pHorzScroll.setModel(DefaultRangeModel.new(0, 0, 1, 0, 1))
+			pVertScroll.setModel(DefaultRangeModel.new(0, 0, 1, 0, 1))
 			
 		else
-			this.pContent = content
-			this.addWidget( this.pContent, ScrollPanelLayout.Area.content )
+			pContent = content
+			addWidget(pContent, ScrollPanelLayout.Area.content)
 			
 			var RangeModel rmHorz = content.getHorizontalRangeModel()
 			if rmHorz == null
-				this.pHorzScroll.setModel( DefaultRangeModel.new( 0, 0, 1, 0, 1 ) )
+				pHorzScroll.setModel(DefaultRangeModel.new(0, 0, 1, 0, 1))
 				
 			else
-				this.pHorzScroll.setModel( rmHorz )
+				pHorzScroll.setModel(rmHorz)
 			end
 			
 			var RangeModel rmVert = content.getVerticalRangeModel()
 			if rmVert == null
-				this.pVertScroll.setModel( DefaultRangeModel.new( 0, 0, 1, 0, 1 ) )
+				pVertScroll.setModel(DefaultRangeModel.new(0, 0, 1, 0, 1))
 				
 			else
-				this.pVertScroll.setModel( rmVert )
+				pVertScroll.setModel(rmVert)
 			end
 		end
 		
-		this.updateScrollBarHiding()
+		updateScrollBarHiding()
 	end
 	
 	
 	
 	/** \brief Horizontal scrollbar. */
 	public func ScrollBar getHorizontalScrollBar()
-		return this.pHorzScroll
+		return pHorzScroll
 	end
 	
 	/** \brief Vertical scrollbar. */
 	public func ScrollBar getVerticalScrollBar()
-		return this.pVertScroll
+		return pVertScroll
 	end
 	
 	
 	
 	/** \brief Lay out widgets using the set layout. */
 	public func void doLayout()
-		if this.getBlockLayout()
+		if getBlockLayout()
 			return
 		end
 		
-		if this.pHorzScroll == null or this.pVertScroll == null
+		if pHorzScroll == null or pVertScroll == null
 			return
 		end
 		
@@ -218,13 +211,12 @@ class ScrollPanel extends Panel
 		// auto-hidden due to range becoming 0. in this case the layout is made with the scrollbar
 		// present but it vanishes leaving behind an empty space. if at least one scrollbar changes
 		// visibility we have to layout again to fix the problem.
-		var bool sbHorzVisible = this.pHorzScroll.getVisible()
-		var bool sbVertVisible = this.pVertScroll.getVisible()
+		var bool sbHorzVisible = pHorzScroll.getVisible()
+		var bool sbVertVisible = pVertScroll.getVisible()
 		
 		super.doLayout()
 		
-		if sbHorzVisible != this.pHorzScroll.getVisible() or \
-		sbVertVisible != this.pVertScroll.getVisible()
+		if sbHorzVisible != pHorzScroll.getVisible() or sbVertVisible != pVertScroll.getVisible()
 			super.doLayout()
 		end
 	end
@@ -232,23 +224,23 @@ class ScrollPanel extends Panel
 	
 	
 	/** \brief Mouse wheel has moved. */
-	public func void onMouseWheel( MouseEvent event )
+	public func void onMouseWheel(MouseEvent event)
 		var int y = event.getPosition().getY()
 		if y == 0
-			super.onMouseWheel( event )
+			super.onMouseWheel(event)
 			return
 		end
 		
-		var RangeModel model = this.pVertScroll.getModel()
+		var RangeModel model = pVertScroll.getModel()
 		
-		if ( event.getModifiers() & ModifiableEvent.shift ) == ModifiableEvent.shift
-			model.setValue( model.getValue() - model.getPageSize() * y )
+		if (event.getModifiers() & ModifiableEvent.shift) == ModifiableEvent.shift
+			model.setValue(model.getValue() - model.getPageSize() * y)
 			
 		else
-			model.setValue( model.getValue() - model.getIncrement() * y )
+			model.setValue(model.getValue() - model.getIncrement() * y)
 		end
 		
-		this.sendEventToListeners( event, false )
+		sendEventToListeners(event, false)
 	end
 	
 	
@@ -256,31 +248,31 @@ class ScrollPanel extends Panel
 	/** \brief Update scroll bar hiding depending on their policies. */
 	protected func void updateScrollBarHiding()
 		// horizontal scroll bar hiding
-		select this.pHorzScrollPolicy
+		select pHorzScrollPolicy
 		case Policy.needed
-			this.pHorzScroll.setHideIfEmpty( true )
+			pHorzScroll.setHideIfEmpty(true)
 			
 		case Policy.visible
-			this.pHorzScroll.setHideIfEmpty( false )
-			this.pHorzScroll.setVisible( true )
+			pHorzScroll.setHideIfEmpty(false)
+			pHorzScroll.setVisible(true)
 			
 		case Policy.hidden
-			this.pHorzScroll.setHideIfEmpty( false )
-			this.pHorzScroll.setVisible( false )
+			pHorzScroll.setHideIfEmpty(false)
+			pHorzScroll.setVisible(false)
 		end
 		
 		// vertical scroll bar hiding
-		select this.pVertScrollPolicy
+		select pVertScrollPolicy
 		case Policy.needed
-			this.pVertScroll.setHideIfEmpty( true )
+			pVertScroll.setHideIfEmpty(true)
 			
 		case Policy.visible
-			this.pVertScroll.setHideIfEmpty( false )
-			this.pVertScroll.setVisible( true )
+			pVertScroll.setHideIfEmpty(false)
+			pVertScroll.setVisible(true)
 			
 		case Policy.hidden
-			this.pVertScroll.setHideIfEmpty( false )
-			this.pVertScroll.setVisible( false )
+			pVertScroll.setHideIfEmpty(false)
+			pVertScroll.setVisible(false)
 		end
 	end
 end

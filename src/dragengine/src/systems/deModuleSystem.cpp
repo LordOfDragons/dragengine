@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Game Engine
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <ctype.h>
@@ -139,6 +142,9 @@ void deModuleSystem::DetectModules(){
 		logger.LogInfoFormat( LOGSOURCE, "Loading Synthesizer modules" );
 		pDetectModulesIn( searchPath.GetPathNative(), "synthesizer", emtSynthesizer );
 		
+		logger.LogInfoFormat( LOGSOURCE, "Loading VR modules" );
+		pDetectModulesIn( searchPath.GetPathNative(), "vr", emtVR );
+		
 		
 		
 		logger.LogInfoFormat( LOGSOURCE, "Loading Archive modules" );
@@ -173,6 +179,9 @@ void deModuleSystem::DetectModules(){
 		
 		logger.LogInfoFormat( LOGSOURCE, "Loading Occlusion Mesh modules" );
 		pDetectModulesIn( searchPath.GetPathNative(), "occlusionmesh", emtOcclusionMesh );
+		
+		logger.LogInfoFormat( LOGSOURCE, "Loading Service modules" );
+		pDetectModulesIn( searchPath.GetPathNative(), "service", emtService );
 		
 		logger.LogInfoFormat( LOGSOURCE, "Finished loading modules" );
 		
@@ -337,17 +346,30 @@ deLoadableModule *deModuleSystem::FindMatching( eModuleTypes type, const char *f
 		const int patternCount = patternList.GetCount();
 		
 		for( j=0; j<patternCount; j++ ){
-			if( ! MatchesPattern( filename, patternList.GetAt( j ) ) || ! module->GetEnabled() ){
+			if( ! module->GetEnabled() ){
+				continue;
+			}
+			if( ! MatchesPattern( filename, patternList.GetAt( j ) ) ){
 				continue;
 			}
 			
-			if( latestModule && module->GetName() != latestModule->GetName() ){
-				// in case different modules match same pattern stick with the same
-				// module for version checking
-				continue;
-			}
-			
-			if( ! latestModule || CompareVersion( module->GetVersion(), latestModule->GetVersion() ) > 0 ){
+			// no latest module found. use this module
+			if( ! latestModule ){
+				latestModule = module;
+				
+			// latest module has been found and this module is fallback. skip module
+			}else if( module->GetIsFallback() ){
+				
+			// latest module has same name as this module
+			}else if( module->GetName() == latestModule->GetName() ){
+				// use this module if it has higher version than the latest module
+				if( CompareVersion( module->GetVersion(), latestModule->GetVersion() ) > 0 ){
+					latestModule = module;
+				}
+				
+			// latest module has different name than this module. use this module if
+			// it has higher priority than the latest module or latest module is fallback
+			}else if( module->GetPriority() > latestModule->GetPriority() || latestModule->GetIsFallback() ){
 				latestModule = module;
 			}
 		}
@@ -384,8 +406,8 @@ int deModuleSystem::CompareVersion( const char *version1, const char *version2 )
 		DETHROW( deeInvalidParam );
 	}
 	
-	const int len1 = strlen( version1 );
-	const int len2 = strlen( version2 );
+	const int len1 = ( int )strlen( version1 );
+	const int len2 = ( int )strlen( version2 );
 	int last1, last2;
 	int pos1 = 0;
 	int pos2 = 0;
@@ -555,6 +577,12 @@ deModuleSystem::eModuleTypes deModuleSystem::GetTypeFromString( const char *type
 	}else if( strcmp( typeString, "Archive" ) == 0 ){
 		return emtArchive;
 		
+	}else if( strcmp( typeString, "VR" ) == 0 ){
+		return emtVR;
+		
+	}else if( strcmp( typeString, "Service" ) == 0 ){
+		return emtService;
+		
 	}else{
 		return emtUnknown;
 	}
@@ -625,6 +653,12 @@ const char *deModuleSystem::GetTypeDirectory( eModuleTypes type ){
 	case emtArchive:
 		return "archive";
 		
+	case emtVR:
+		return "vr";
+		
+	case emtService:
+		return "service";
+		
 	default:
 		DETHROW( deeInvalidParam );
 	}
@@ -642,6 +676,7 @@ bool deModuleSystem::IsSingleType( eModuleTypes type ){
 	case emtPhysics:
 	case emtScript:
 	case emtSynthesizer:
+	case emtVR:
 		return true;
 		
 	default:

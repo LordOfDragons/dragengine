@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Basic Crash Recovery Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 // includes
@@ -33,8 +36,9 @@
 
 // Events
 ///////////
-FXDEFMAP( decrbPanelStatus ) decrbPanelStatusMap[] = {
-};
+
+//FXDEFMAP( decrbPanelStatus ) decrbPanelStatusMap[] = {
+//};
 
 
 
@@ -50,7 +54,8 @@ static FXint fSortByName( const FXIconItem *item1, const FXIconItem *item2 ){
 // Class decrbPanelStatus
 ///////////////////////////
 	
-FXIMPLEMENT( decrbPanelStatus, FXVerticalFrame, decrbPanelStatusMap, ARRAYNUMBER( decrbPanelStatusMap ) )
+//FXIMPLEMENT( decrbPanelStatus, FXVerticalFrame, decrbPanelStatusMap, ARRAYNUMBER( decrbPanelStatusMap ) )
+FXIMPLEMENT( decrbPanelStatus, FXVerticalFrame, nullptr, 0 )
 
 // Constructor, destructor
 ////////////////////////////
@@ -79,12 +84,12 @@ FXVerticalFrame( container, LAYOUT_FILL_X | LAYOUT_FILL_Y | LAYOUT_TOP | LAYOUT_
 	
 	pEditStatus = new FXText( frameBox, NULL, 0, TEXT_READONLY | TEXT_WORDWRAP
 		| FRAME_SUNKEN | LAYOUT_FILL_X );
-	text = "An error has occured. The engine is has been put into recovery mode. "
+	text = "An error has occurred. The engine is has been put into recovery mode. "
 		"You can now examine the error and try to get the engine back running. "
 		"This panel shows the current status of the engine modules.";
 	pEditStatus->appendText( text.text(), text.length() );
 	pEditStatus->setVisibleRows( 3 );
-	//new FXLabel( content, "An error has occured. The engine is has been put into recovery mode. "
+	//new FXLabel( content, "An error has occurred. The engine is has been put into recovery mode. "
 	//	"You can now examine the error and try to get the engine back running. "
 	//	"This panel shows the current status of the engine modules. ",
 	//	0, JUSTIFY_CENTER_X | FRAME_SUNKEN | LAYOUT_FILL_X );
@@ -159,7 +164,7 @@ void decrbPanelStatus::UpdateStatus(){
 				textRunning = "Stopped";
 			}
 			
-			itemText.format( "%s\t%s\t%s", system->GetSystemName(), textModule, textRunning );
+			itemText.format( "%s\t%s\t%s", system->GetSystemName().GetString(), textModule, textRunning );
 			pListSystems->setItemText( i, itemText );
 		}
 	}
@@ -193,7 +198,7 @@ void decrbPanelStatus::pAddSystem( deBaseSystem *system ){
 		textRunning = "Stopped";
 	}
 	
-	itemText.format( "%s\t%s\t%s", system->GetSystemName(), textModule, textRunning );
+	itemText.format( "%s\t%s\t%s", system->GetSystemName().GetString(), textModule, textRunning );
 	pListSystems->appendItem( itemText, NULL, NULL, system, false );
 }
 

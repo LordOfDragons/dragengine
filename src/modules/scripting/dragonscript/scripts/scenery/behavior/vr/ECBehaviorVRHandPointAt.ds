@@ -1,0 +1,834 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief Behavior adding support to VR Hand behavior to know what element they are pointing at.
+ * \version 1.7
+ * 
+ * Behavior uses one collider collision test located attached controller collider facing forward.
+ * 
+ * If hand component is present and a test bone is set the collision test will be attached to
+ * the component bone.
+ * 
+ * By default the test direction is rotated by -45 degrees along the X axis. This accounts
+ * for VR hand controllers typically having their Z axis along the grip direction. This causes
+ * the point at detection to point 45 degrees upwards. For easier usage rotating the point at
+ * detection direction downwards by 45 degrees helps.
+ * 
+ * By default point-at is disabled for backward compatibility.
+ * 
+ * Requires these behaviors to be present:
+ * - ECBehaviorVRHand
+ * 
+ * To this behavior add it and set the class properties. Add listener to be notified if the
+ * pointed at element changes or query the current state.
+ * 
+ * \par Interaction with ECBehaviorVRHandPointedAt
+ * 
+ * If the pointed at element has ECBehaviorVRHandPointedAt instance it will be updated by adding
+ * and removing the owner element.
+ */
+class ECBehaviorVRHandPointAt extends DefaultECBehavior
+	/** \brief Listener for behavior instance events. */
+	interface Listener
+		/** \brief Enabled changed. */
+		func void enabledChanged(Instance instance)
+		
+		/** \brief Pointing at element changed. */
+		func void pointAtChanged(Instance instance)
+		
+		/** \brief Detection parameters changed like range, origin or rotation. */
+		func void testParametersChanged(Instance instance)
+	end
+	
+	/** \brief Default implementation of behavior instance listener. */
+	class DefaultListener implements Listener
+		/** \brief Create default listener. */
+		func new()
+		end
+		
+		/** \brief Enabled changed. */
+		func void enabledChanged(Instance instance)
+		end
+		
+		/** \brief Pointing at element changed. */
+		func void pointAtChanged(Instance instance)
+		end
+		
+		/** \brief Detection parameters changed like range, origin or rotation. */
+		func void testParametersChanged(Instance instance)
+		end
+	end
+	
+	/** \brief Factory creating listeners. */
+	interface ListenerFactory
+		/** \brief Create listener. */
+		func Listener createListener(Instance instance)
+	end
+	
+	/** \brief Factory creating listeners using block. */
+	class BlockListenerFactory implements ListenerFactory
+		var Block pBlock
+		
+		/** \brief Create factory using block receiving Instance as parameter returning Listener. */
+		func new(Block blockFactory)
+			if blockFactory == null
+				throw ENullPointer.new()
+			end
+			pBlock = blockFactory
+		end
+		
+		/** \brief Create listener. */
+		func Listener createListener(Instance instance)
+			return pBlock.run(instance) cast Listener
+		end
+	end
+	
+	
+	
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		var ECBehaviorVRHandPointAt pECBehavior
+		var ECBehaviorVRHand.Instance pVRHand
+		
+		var bool pEnabled
+		var ShapeList pShape
+		var CollisionFilter pCollisionFilter
+		
+		var ColliderCollisionTest pTest
+		var Vector pOrigin
+		var Vector pRotation
+		
+		var float pRange
+		
+		var DVector pPointAtOrigin
+		var DVector pPointAtDirection
+		var Element pPointAtElement
+		var int pPointAtBone
+		var String pPointAtBoneName
+		var float pPointAtDistance
+		var DVector pPointAtHitPoint
+		var Collider pPointAtCollider
+		
+		var Array pListeners
+		
+		
+		
+		/** \brief Create element. */
+		func new(ECBehaviorVRHandPointAt ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
+			pListeners = Array.new()
+			pEnabled = false
+			pCollisionFilter = ecbehavior.getCollisionFilter().getCollisionFilter()
+			
+			pVRHand = ecbehavior.getVRHand().instance(element)
+		end
+		
+		/** \brief Dispose of composeable instance. */
+		func void dispose()
+			pTest = null
+			pVRHand = null
+			pPointAtElement = null
+			pListeners = null
+			
+			super.dispose()
+		end
+		
+		
+		
+		/** \brief Initialize element from stub. */
+		func void init(StubElement stub)
+			var Collider collider = pVRHand.getCollider()
+			if collider == null
+				throw EInvalidParam.new()
+			end
+			
+			var CodecPropertyString codec = getElement().getClass().getCodecPropertyString()
+			
+			pRange = DEMath.max(pECBehavior.getRange().getValue(stub), 0.0)
+			pOrigin = pECBehavior.getOrigin().getVector(stub, codec)
+			pRotation = pECBehavior.getRotation().getVector(stub, codec)
+			
+			pShape = pECBehavior.getShape().getShapeList(stub)
+			if pShape != null and pShape.getCount() == 0
+				pShape = null
+			end
+			
+			// ignore collisions with collider if present. this helps to avoid actor geometry
+			// blocking point-at collision testing. collision tests use the ignore collider
+			// settings of the collider they are attached to. hence the collider to ignore
+			// has to be added to the vr hand collider
+			if pECBehavior.getIgnoreCollider() != null
+				var Collider ignore = pECBehavior.getIgnoreCollider().instance(getElement()).getCollider()
+				if ignore != null
+					collider.addIgnoreCollider(ignore)
+				end
+			end
+			
+			// create collision test and add it to element collider
+			var Vector testDirection = Matrix.newRotation(pRotation).transformNormal(Vector.new(0, 0, pRange))
+			var String testBone = pECBehavior.getTestBone().getValue(stub)
+			
+			if testBone != null and not testBone.empty()
+				pTest = ColliderCollisionTest.new(pCollisionFilter, \
+					pVRHand.getComponent().getComponent(), testBone, pOrigin, testDirection)
+				
+			else
+				pTest = ColliderCollisionTest.new(pCollisionFilter, pOrigin, testDirection)
+			end
+			
+			pTest.setEnabled(pEnabled)
+			
+			if pShape != null
+				var ColliderVolume collider2 = ColliderVolume.new()
+				collider2.setShape(pShape)
+				pTest.setCollider(collider2)
+			end
+			
+			collider.addCollisionTest(pTest)
+			
+			// create and add listeners
+			pECBehavior.createListeners(this)
+			
+			setRequiresThink(pEnabled)
+		end
+		
+		
+		
+		/** \brief Behavior. */
+		func ECBehaviorVRHandPointAt getECBehavior()
+			return pECBehavior
+		end
+		
+		/** \brief VR Hand behavior instance. */
+		func ECBehaviorVRHand.Instance getVRHand()
+			return pVRHand
+		end
+		
+		
+		
+		/** \brief Enable point-at. */
+		func bool getEnabled()
+			return pEnabled
+		end
+		
+		/** \brief Set if point-at is enabled. */
+		func void setEnabled(bool enabled)
+			if enabled == pEnabled
+				return
+			end
+			
+			pEnabled = enabled
+			
+			if pTest != null
+				pTest.setEnabled(enabled)
+			end
+			
+			if not enabled
+				clearPointAtElement()
+			end
+			
+			setRequiresThink(enabled and pTest != null)
+			
+			pListeners.forEach(block Listener each
+				each.enabledChanged(this)
+			end)
+		end
+		
+		
+		
+		/**
+		 * \brief Set test collider using shape.
+		 * 
+		 * By default no test collider is set in which case ray-testing is used. Using shapes
+		 * like a sphere is useful to enlarge the hit area for example with 3rd person views.
+		 */
+		func void setTestCollider(ShapeList shape)
+			if shape == null
+				throw ENullPointer.new("shape")
+			end
+			
+			pShape = shape
+			
+			if pTest != null
+				var ColliderVolume collider = ColliderVolume.new()
+				collider.setShape(shape)
+				pTest.setCollider(collider)
+			end
+		end
+		
+		/**
+		 * \brief Set shape of test collider to sphere.
+		 * 
+		 * By default no shape is set in which case ra-ytesting is used. Using shapes like a
+		 * sphere is useful to enlarge the hit area for example with 3rd person views.
+		 */
+		func void setSphereTestCollider(float radius)
+			var ShapeList shape = ShapeList.new()
+			shape.addSphere(Vector.new(), DEMath.max(radius, 0.0))
+			setTestCollider(shape)
+		end
+		
+		/** \brief Clear test collider reverting to ray-tracing. */
+		func void clearTestCollider()
+			pShape = null
+			
+			if pTest != null
+				pTest.setCollider(null)
+			end
+		end
+		
+		/** \brief Set test collision filter. */
+		func void setCollisionFilter(CollisionFilter filter)
+			pCollisionFilter = filter
+			
+			if pTest != null
+				pTest.setCollisionFilter(filter)
+			end
+		end
+		
+		
+		
+		/** \brief Test range. */
+		func float getRange()
+			return pRange
+		end
+		
+		/** \brief Set test range. */
+		func void setRange(float range)
+			range = DEMath.max(range, 0.0)
+			if DEMath.fabs(range - pRange) < 0.001
+				return
+			end
+			
+			pRange = range
+			updateTestParameters()
+		end
+		
+		/** \brief Test origin. */
+		func Vector getOrigin()
+			return pOrigin
+		end
+		
+		/** \brief Set test origin. */
+		func void setOrigin(Vector origin)
+			if origin.equals(pOrigin)
+				return
+			end
+			
+			pOrigin = origin
+			updateTestParameters()
+		end
+		
+		/** \brief Test direction rotation. */
+		func Vector getRotation()
+			return pRotation
+		end
+		
+		/** \brief Set test direction rotation. */
+		func void setRotation(Vector rotation)
+			if rotation.equals(pRotation)
+				return
+			end
+			
+			pRotation = rotation
+			updateTestParameters()
+		end
+		
+		
+		
+		/** \brief Point-at element or null. */
+		func Element getPointAtElement()
+			return pPointAtElement
+		end
+		
+		/** \brief Point-at element if of type BehaviorElement or null. */
+		func BehaviorElement getPointAtBehaviorElement()
+			if pPointAtElement != null and pPointAtElement castable BehaviorElement
+				return pPointAtElement cast BehaviorElement
+			end
+			return null
+		end
+		
+		/** \brief Is looking at an element. */
+		func bool hasVRHandPointAtElement()
+			return pPointAtElement != null
+		end
+		
+		/** \brief Is not looking at an element. */
+		func bool hasNotVRHandPointAtElement()
+			return pPointAtElement == null
+		end
+		
+		/** \brief Point-at bone or -1. */
+		func int getPointAtBone()
+			return pPointAtBone
+		end
+		
+		/** \brief Point-at bone name or null. */
+		func String getPointAtBoneName()
+			return pPointAtBoneName
+		end
+		
+		/** \brief Distance in meters to point-at hit point. */
+		func float getPointAtDistance()
+			return pPointAtDistance
+		end
+		
+		/** \brief Point-at hit point or \em null. */
+		func DVector getPointAtHitPoint()
+			if pPointAtHitPoint == null and pPointAtElement != null
+				pPointAtHitPoint = pPointAtOrigin + pPointAtDirection.normalize() * pPointAtDistance
+			end
+			return pPointAtHitPoint
+		end
+		
+		/** \brief Point-at collider or \em null. */
+		func Collider getPointAtCollider()
+			return pPointAtCollider
+		end
+		
+		/** \brief Test origin used for last point-at test. */
+		func DVector getPointAtOrigin()
+			return pPointAtOrigin
+		end
+		
+		/** \brief Test direction used for last point-at test. */
+		func DVector getPointAtDirection()
+			return pPointAtDirection
+		end
+		
+		
+		
+		/**
+		 * \brief Calculate test matrix.
+		 * 
+		 * Works no matter if point-at testing is enabled or not. Allows to figure out where
+		 * the test origin and orientation would be if enabled.
+		 */
+		func DMatrix calcTestMatrix()
+			var Matrix matrix = Matrix.newRT(pRotation, pOrigin)
+			
+			var String bone = pTest.getBone()
+			if not bone.empty()
+				matrix = matrix * pVRHand.getComponent().getComponent().getBoneMatrix(bone)
+			end
+			
+			return matrix.toDMatrix() * pVRHand.getCollider().getMatrix()
+		end
+		
+		
+		
+		/** \brief Add listener. */
+		func void addListener(Listener listener)
+			if listener == null
+				throw EInvalidParam.new()
+			end
+			pListeners.add(listener)
+		end
+		
+		/** \brief Remove listener. */
+		func void removeListener(Listener listener)
+			pListeners.remove(listener)
+		end
+		
+		
+		
+		/** \brief Post thinking after physics processing is finished. */
+		func void postThink(float elapsed)
+			update(elapsed)
+		end
+		
+		/** \brief Update. */
+		protected func void update(float elapsed)
+			if pTest == null or not pTest.getEnabled()
+				return
+			end
+			
+			evaluateTest()
+			updateTestParameters()
+		end
+		
+		/** \brief Evaluate last test. */
+		protected func void evaluateTest()
+			pPointAtOrigin = pTest.getTestOrigin()
+			pPointAtDirection = pTest.getTestDirection()
+			
+			var Collider collider
+			if pTest.getHasCollision()
+				collider = pTest.hitCollider(0)
+			end
+			
+			if collider == null
+				clearPointAtElement()
+				return
+			end
+			
+			var int bone = pTest.hitBone(0)
+			var String boneName = null
+			
+			if bone != -1 and collider castable ColliderRig
+				var Rig rig = (collider cast ColliderRig).getRig()
+				if rig != null
+					boneName = rig.boneGetName(bone)
+				end
+			end
+			
+			var Element element = collider.getOwner() cast Element
+			if element != null and element.isDisposed()
+				element = null
+			end
+			
+			setPointAtElement(element, bone, boneName, pTest.hitDistance(0), collider)
+		end
+		
+		/** \brief Collision test. */
+		protected func ColliderCollisionTest getTest()
+			return pTest
+		end
+		
+		/** \brief Update test parameters. */
+		protected func void updateTestParameters()
+			pTest.setOrigin(pOrigin)
+			pTest.setDirection(Matrix.newRotation(pRotation).transformNormal(Vector.new(0, 0, pRange)))
+			
+			pListeners.forEach(block Listener each
+				each.testParametersChanged(this)
+			end)
+		end
+		
+		/** \brief Clear point-at element. */
+		func void clearPointAtElement()
+			setPointAtElement(null, -1, null, 0, null)
+		end
+		
+		/** \brief Set point-at element. */
+		func void setPointAtElement(Element element, int bone, String boneName,\
+		float distance, Collider collider)
+			if pPointAtElement == element and pPointAtBone == bone\
+			and Collider.equals(pPointAtCollider, collider)
+				pPointAtHitPoint = null
+				pPointAtDistance = distance
+				return
+			end
+			
+			if pPointAtElement != null and pPointAtElement castable BehaviorElement \
+			and not pPointAtElement.isDisposed()
+				var ECBehaviorVRHandPointedAt.Instance behavior = \
+					ECBehaviorVRHandPointedAt.getInstanceIn(pPointAtElement cast BehaviorElement)
+				if behavior != null
+					behavior.removePointingHand(this)
+				end
+			end
+			
+			pPointAtElement = element
+			pPointAtBone = bone
+			pPointAtBoneName = boneName
+			pPointAtHitPoint = null
+			pPointAtDistance = distance
+			pPointAtCollider = collider
+			
+			if element != null and element castable BehaviorElement
+				var ECBehaviorVRHandPointedAt.Instance behavior = \
+					ECBehaviorVRHandPointedAt.getInstanceIn(element cast BehaviorElement)
+				if behavior != null
+					behavior.addPointingHand(this)
+				end
+			end
+			
+			pListeners.forEach(block Listener each
+				each.pointAtChanged(this)
+			end)
+		end
+		
+		
+		
+		/** \brief Read behavior from file. */
+		func void readFromFile( PersistencyEnvironment env, FileReader reader )
+			select reader.readByte() // version
+			case 0
+				pRange = reader.readFloat()
+				pOrigin = Vector.readFromFile(reader)
+				pRotation = Vector.readFromFile(reader)
+				updateTestParameters()
+				
+			else
+				throw EInvalidParam.new("unsupported version")
+			end
+			
+			setRequiresThink(pEnabled and pTest != null)
+		end
+		
+		/** \brief Write behavior to file. */
+		func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			writer.writeByte( 0 ) // version
+			
+			writer.writeFloat(pRange)
+			pOrigin.writeToFile(writer)
+			pRotation.writeToFile(writer)
+		end
+	end
+	
+	
+	
+	var ECBehaviorVRHand pVRHand
+	var ECBehaviorCollider pIgnoreCollider
+	var ECPFloat pRange
+	var ECPVector pOrigin
+	var ECPVector pRotation
+	var ECPShapeList pShape
+	var ECPString pTestBone
+	var ECComposeCollisionFilter pCollisionFilter
+	var Array pListenerFactories
+	
+	
+	
+	/** \brief Create behavior element class. */
+	func new(BehaviorElementClass eclass, ECBehaviorVRHand vrHand) this(eclass, vrHand, "")
+	end
+	
+	/** \brief Create behavior element class. */
+	func new(BehaviorElementClass eclass, ECBehaviorVRHand vrHand, String id) \
+	this(eclass, vrHand, id, id.empty() if "vrHandPointAt." else "vrHandPointAt(" + id + ").")
+	end
+	
+	/** \brief Create behavior element class. */
+	func new(BehaviorElementClass eclass, ECBehaviorVRHand vrHand, String id, \
+	String prefix) super(eclass, id)
+		pVRHand = vrHand
+		pListenerFactories = Array.new()
+		
+		pRange = ECPFloat.new(prefix + "range", 2, 0)
+		eclass.addProperty(pRange)
+		
+		pOrigin = ECPVector.new(prefix + "origin", Vector.new())
+		eclass.addProperty(pOrigin)
+		
+		pRotation = ECPVector.new(prefix + "rotation", Vector.new())
+		eclass.addProperty(pRotation)
+		
+		pShape = ECPShapeList.new(prefix + "shape", eclass.getCodecPropertyString())
+		eclass.addProperty(pShape)
+		
+		pTestBone = ECPString.new(prefix + "bone", null)
+		eclass.addProperty(pTestBone)
+		
+		var LayerMask cfCategory = LayerMask.newWith(BaseGameApp.CollisionFilterBit.dynamic)
+		
+		var LayerMask cfFilter = LayerMask.new()
+		cfFilter.setBit(BaseGameApp.CollisionFilterBit.geometry)
+		cfFilter.setBit(BaseGameApp.CollisionFilterBit.dynamic)
+		cfFilter.setBit(BaseGameApp.CollisionFilterBit.actor)
+		
+		pCollisionFilter = ECComposeCollisionFilter.new(CollisionFilter.new(cfCategory, cfFilter))
+		
+		eclass.addBehavior(this)
+	end
+	
+	/** \brief Dispose of behavior. */
+	func void dispose()
+		pIgnoreCollider = null
+		pVRHand = null
+		pListenerFactories = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief VR Hand behavior or null. */
+	func ECBehaviorVRHand getVRHand()
+		return pVRHand
+	end
+	
+	/** \brief Collider to ignore during collision testing or null. */
+	func ECBehaviorCollider getIgnoreCollider()
+		return pIgnoreCollider
+	end
+	
+	/** \brief Set collider to ignore during collision testing or null. */
+	func void setIgnoreCollider(ECBehaviorCollider collider)
+		pIgnoreCollider = collider
+	end
+	
+	/** \brief Test range. */
+	func ECPFloat getRange()
+		return pRange
+	end
+	
+	/** \brief Test origin. */
+	func ECPVector getOrigin()
+		return pOrigin
+	end
+	
+	/** \brief Test direction rotation. */
+	func ECPVector getRotation()
+		return pRotation
+	end
+	
+	/**
+	 * \brief Test shape.
+	 * \version 1.9
+	 */
+	func ECPShapeList getShape()
+		return pShape
+	end
+	
+	/** \brief Test bone. */
+	func ECPString getTestBone()
+		return pTestBone
+	end
+	
+	/** \brief Collision filter for AI collider. */
+	func ECComposeCollisionFilter getCollisionFilter()
+		return pCollisionFilter
+	end
+	
+	/** \brief Add listener factory. */
+	func void addListenerFactory(ListenerFactory factory)
+		if factory == null
+			throw ENullPointer.new()
+		end
+		pListenerFactories.add(factory)
+	end
+	
+	/**
+	 * \brief Add listener factory using block.
+	 * 
+	 * Block receives as parameter Instance and returns Listener.
+	 */
+	func void addListenerFactory(Block blockFactory)
+		pListenerFactories.add(BlockListenerFactory.new(blockFactory))
+	end
+	
+	/** \brief Visit listener factories with block with argument ListenerFactory. */
+	func void forEachListenerFactory(Block ablock)
+		pListenerFactories.forEach(ablock)
+	end
+	
+	/** \brief Create listeners from factories adding them to behavior instance. */
+	func void createListeners(Instance instance)
+		pListenerFactories.forEach(block ListenerFactory each
+			instance.addListener(each.createListener(instance))
+		end)
+	end
+	
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
+	end
+	
+	
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorVRHandPointAt.
+	 */
+	static func ECBehaviorVRHandPointAt getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorVRHandPointAt each
+			return true
+		end) cast ECBehaviorVRHandPointAt
+	end
+	
+	/**
+	 * \brief Get behavior with id in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorVRHandPointAt with specific identifier.
+	 */
+	static func ECBehaviorVRHandPointAt getBehaviorIn(BehaviorElementClass eclass, String id)
+		return eclass.findBehavior(block ECBehaviorVRHandPointAt each
+			return each.getID().equals(id)
+		end) cast ECBehaviorVRHandPointAt
+	end
+	
+	/**
+	 * \brief Get list of all behaviors in element.
+	 * 
+	 * Returns list contains ECBehaviorVRHandPointAt behaviors in the order they have
+	 * been created in the element.
+	 */
+	static func Array getAllBehaviorsIn(BehaviorElementClass eclass)
+		return eclass.collectBehaviors(block ECBehaviorVRHandPointAt each
+			return true
+		end)
+	end
+	
+	
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorVRHandPointAt.Instance .
+	 */
+	static func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
+			return true
+		end) cast Instance
+	end
+	
+	/**
+	 * \brief Get instance with id in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorRenderableCamera.Instance with specific identifier.
+	 */
+	static func Instance getInstanceIn(BehaviorElement element, String id)
+		return element.findInstance(block Instance each
+			return each.getECBehavior().getID().equals(id)
+		end) cast Instance
+	end
+	
+	/**
+	 * \brief Get list of all instances in element.
+	 * 
+	 * Returns list contains ECBehaviorRenderableCamera.Instance instances in the order they have
+	 * been created in the element.
+	 */
+	static func Array getAllInstancesIn(BehaviorElement element)
+		return element.collectInstances(block Instance each
+			return true
+		end)
+	end
+	
+	
+	
+	/** \brief Create Behavior instance. */
+	func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
+	end
+end

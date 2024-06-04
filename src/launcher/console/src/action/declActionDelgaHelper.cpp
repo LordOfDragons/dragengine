@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Console Launcher
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -26,21 +29,19 @@
 #include "declActionDelgaHelper.h"
 #include "../declLauncher.h"
 #include "../config/declConfiguration.h"
-#include "../engine/declEngine.h"
-#include "../game/declGame.h"
-#include "../game/declGameManager.h"
-#include "../game/patch/declPatch.h"
-#include "../game/patch/declPatchManager.h"
+
+#include <delauncher/engine/delEngine.h>
+#include <delauncher/game/delGame.h>
+#include <delauncher/game/delGameManager.h>
+#include <delauncher/game/patch/delPatch.h>
+#include <delauncher/game/patch/delPatchManager.h>
 
 #include <dragengine/common/exceptions.h>
-#include <dragengine/common/file/decBaseFileReaderReference.h>
-#include <dragengine/common/file/decBaseFileWriterReference.h>
 #include <dragengine/common/file/decDiskFileReader.h>
 #include <dragengine/common/file/decDiskFileWriter.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
-#include <dragengine/filesystem/deVFSContainerReference.h>
 #include <dragengine/filesystem/deVFSDiskDirectory.h>
 #include <dragengine/logger/deLogger.h>
 
@@ -75,17 +76,17 @@ declActionDelgaHelper::~declActionDelgaHelper(){
 void declActionDelgaHelper::Load(){
 	Unload();
 	
-	pLauncher.GetEngine()->Start( pLauncher.GetEngineLogger(), "" );
-	try{
-		pLauncher.GetGameManager()->LoadGameFromDisk( pFilename, pGames );
-		pLauncher.GetPatchManager().LoadPatchFromDisk( pFilename, pPatches );
-		
-	}catch( const deException &e ){
-		pLauncher.GetLogger()->LogException( LOGSOURCE, e );
-		pLauncher.GetEngine()->Stop();
-		throw;
-	}
-	pLauncher.GetEngine()->Stop();
+	const delEngineInstance::Ref instance( delEngineInstance::Ref::New(
+		pLauncher.GetEngineInstanceFactory().CreateEngineInstance(
+			pLauncher, pLauncher.GetEngine().GetLogFile() ) ) );
+	instance->StartEngine();
+	instance->LoadModules();
+	
+	pLauncher.GetEngine().PutEngineIntoVFS( instance );
+	pLauncher.GetGameManager().CreateDefaultProfile();
+	
+	pLauncher.GetGameManager().LoadGameFromDisk( instance, pFilename, pGames );
+	pLauncher.GetPatchManager().LoadPatchFromDisk( instance, pFilename, pPatches );
 }
 
 void declActionDelgaHelper::Unload(){
@@ -98,18 +99,14 @@ bool declActionDelgaHelper::HasContent() const{
 }
 
 void declActionDelgaHelper::Install(){
-	deVFSContainerReference container;
+	const deVFSDiskDirectory::Ref container( deVFSDiskDirectory::Ref::New(
+		new deVFSDiskDirectory( decPath::CreatePathNative( pLauncher.GetPathGames() ) ) ) );
 	
-	container.TakeOver( new deVFSDiskDirectory( decPath::CreatePathNative(
-		pLauncher.GetConfiguration()->GetPathGames() ) ) );
-	
-	decBaseFileReaderReference reader;
-	reader.TakeOver( new decDiskFileReader( pFilename ) );
+	const decBaseFileReader::Ref reader( decBaseFileReader::Ref::New( new decDiskFileReader( pFilename ) ) );
 	
 	decPath target( decPath::CreatePathUnix( "/" ) );
 	target.AddComponent( decPath::CreatePathNative( pFilename ).GetLastComponent() );
-	decBaseFileWriterReference writer;
-	writer.TakeOver( container->OpenFileForWriting( target ) );
+	const decBaseFileWriter::Ref writer( decBaseFileWriter::Ref::New( container->OpenFileForWriting( target ) ) );
 	
 	printf( "Installing" );
 	
@@ -147,8 +144,8 @@ void declActionDelgaHelper::Install(){
 			if( container->ExistsFile( target ) ){
 				container->DeleteFile( target );
 			}
-		}catch( const deException &e ){
-			e.PrintError();
+		}catch( const deException &e2 ){
+			e2.PrintError();
 		}
 		throw;
 	}
@@ -159,9 +156,9 @@ void declActionDelgaHelper::Install(){
 void declActionDelgaHelper::Uninstall(){
 	printf( "Uninstalling...\n" );
 	
-	deVFSContainerReference container;
-	container.TakeOver( new deVFSDiskDirectory( decPath::CreatePathUnix( "/" ),
-		decPath::CreatePathNative( pLauncher.GetConfiguration()->GetPathGames() ) ) );
+	const deVFSDiskDirectory::Ref container( deVFSDiskDirectory::Ref::New(
+		new deVFSDiskDirectory( decPath::CreatePathUnix( "/" ),
+			decPath::CreatePathNative( pLauncher.GetPathGames() ) ) ) );
 	
 	decPath target( decPath::CreatePathUnix( "/" ) );
 	target.AddComponent( decPath::CreatePathNative( pFilename ).GetLastComponent() );

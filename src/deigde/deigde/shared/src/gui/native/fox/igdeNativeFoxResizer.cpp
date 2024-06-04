@@ -1,23 +1,28 @@
-/* 
- * Drag[en]gine IGDE
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
+
+#ifdef IGDE_TOOLKIT_FOX
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -58,8 +63,8 @@ FXIMPLEMENT( igdeNativeFoxResizer, FXWindow, igdeNativeResizerMap, ARRAYNUMBER( 
 igdeNativeFoxResizer::igdeNativeFoxResizer(){
 }
 
-igdeNativeFoxResizer::igdeNativeFoxResizer( FXComposite *parent, FXObject *target, FXSelector selector ) :
-FXWindow( parent, LAYOUT_FILL_X ),
+igdeNativeFoxResizer::igdeNativeFoxResizer( FXComposite *pparent, FXObject *ttarget, FXSelector selector ) :
+FXWindow( pparent, LAYOUT_FILL_X ),
 pIsDragging( false ),
 pCursor( NULL ),
 pGripSize( 6 ),
@@ -86,7 +91,7 @@ pActiveColor( FXRGB( 0, 0, 255 ) )
 	setDefaultCursor( getApp()->getDefaultCursor( DEF_VSPLIT_CURSOR ) );
 	setDragCursor( getDefaultCursor() );
 	
-	setTarget( target );
+	setTarget( ttarget );
 	setSelector( selector );
 	enable();
 	show();
@@ -107,8 +112,8 @@ FXint igdeNativeFoxResizer::getDefaultHeight(){
 	return pGripSize;
 }
 
-int igdeNativeFoxResizer::SelCommandDraggedDistance( void *data ){
-	return ( int )( intptr_t )data;
+int igdeNativeFoxResizer::SelCommandDraggedDistance( void *pdata ){
+	return ( int )( intptr_t )pdata;
 }
 
 
@@ -116,18 +121,18 @@ int igdeNativeFoxResizer::SelCommandDraggedDistance( void *data ){
 // Events
 ///////////
 
-long igdeNativeFoxResizer::onPaint( FXObject*, FXSelector, void *data ){
+long igdeNativeFoxResizer::onPaint( FXObject*, FXSelector, void *pdata ){
 	// nicked from FXToolBarGrip::onPaint
-	FXDCWindow dc( this, ( FXEvent* )data );
-	const int height = getHeight();
-	const int width = getWidth();
-	const int gripWidth = decMath::min( pGripWidth, decMath::max( width - 2, 0 ) );
-	const int gripHeight = decMath::max( height - 2, 0 );
-	const int left = ( width - gripWidth ) / 2;
+	FXDCWindow dc( this, ( FXEvent* )pdata );
+	const int hheight = getHeight();
+	const int wwidth = getWidth();
+	const int gripWidth = decMath::min( pGripWidth, decMath::max( wwidth - 2, 0 ) );
+	const int gripHeight = decMath::max( hheight - 2, 0 );
+	const int left = ( wwidth - gripWidth ) / 2;
 	const int right = left + gripWidth;
 	
 	dc.setForeground( getBackColor() );
-	dc.fillRectangle( 0, 0, width, height );
+	dc.fillRectangle( 0, 0, wwidth, hheight );
 	
 	dc.setForeground( getApp()->getHiliteColor() );
 	dc.fillRectangle( left, 1, 1, gripHeight - 1 );
@@ -177,12 +182,12 @@ long igdeNativeFoxResizer::onLeftMouseUp( FXObject*, FXSelector, void* ){
 	return 0;
 }
 
-long igdeNativeFoxResizer::onMouseMoved( FXObject*, FXSelector, void *data ){
+long igdeNativeFoxResizer::onMouseMoved( FXObject*, FXSelector, void *pdata ){
 	if( ! pIsDragging ){
 		return 0;
 	}
 	
-	const FXEvent &event = *( ( FXEvent* )data );
+	const FXEvent &event = *( ( FXEvent* )pdata );
 	const int center = getHeight() / 2;
 	const int distance = event.win_y - center;
 	
@@ -194,3 +199,5 @@ long igdeNativeFoxResizer::onMouseMoved( FXObject*, FXSelector, void *data ){
 	update();
 	return 0;
 }
+
+#endif

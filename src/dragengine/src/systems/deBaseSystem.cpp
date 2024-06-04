@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Game Engine
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -46,29 +49,23 @@
 // Constructor, destructor
 ////////////////////////////
 
-deBaseSystem::deBaseSystem( deEngine *engine, const char *systemName, int requiredModuleType ){
-	if( ! engine || ! systemName ) DETHROW( deeInvalidParam );
-	
-	pEngine = engine;
-	pSystemName = NULL;
-	pActiveLoadableModule = NULL;
-	pRequiredModuleType = requiredModuleType;
-	pFailed = false;
-	pRunning = false;
-	
-	try{
-		pSystemName = new char[ strlen( systemName ) + 1 ];
-		if( ! pSystemName ) DETHROW( deeOutOfMemory );
-		strcpy( pSystemName, systemName );
-		
-	}catch( const deException & ){
-		if( pSystemName ) delete [] pSystemName;
-		throw;
+deBaseSystem::deBaseSystem( deEngine *engine, const char *systemName, int requiredModuleType ) :
+pSystemName( systemName ),
+pEngine( engine ),
+pActiveLoadableModule( nullptr ),
+pRequiredModuleType( requiredModuleType ),
+pRunning( false ),
+pFailed( false )
+{
+	if( ! engine ){
+		DETHROW( deeInvalidParam );
 	}
 }
 
 deBaseSystem::~deBaseSystem(){
-	if( pRunning ) Stop();
+	if( pRunning ){
+		Stop();
+	}
 	
 	ClearPermanents();
 	
@@ -76,8 +73,6 @@ deBaseSystem::~deBaseSystem(){
 		pActiveLoadableModule->FreeReference();
 		pActiveLoadableModule = NULL;
 	}
-	
-	if( pSystemName ) delete [] pSystemName;
 }
 
 
@@ -98,7 +93,7 @@ void deBaseSystem::Start(){
 		DETHROW( deeInvalidAction );
 	}
 	
-	LogInfoFormat( "Starting %s module %s", GetSystemName(), pActiveLoadableModule->GetName().GetString() );
+	LogInfoFormat( "Starting %s module %s", GetSystemName().GetString(), pActiveLoadableModule->GetName().GetString() );
 	
 	deParallelProcessing &parallelProcessing = pEngine->GetParallelProcessing();
 	const bool resumeParallelProcessing = ! parallelProcessing.GetPaused();
@@ -133,7 +128,7 @@ void deBaseSystem::Stop(){
 		return;
 	}
 	
-	LogInfoFormat( "Stoping %s module %s", GetSystemName(), pActiveLoadableModule->GetName().GetString() );
+	LogInfoFormat( "Stopping %s module %s", GetSystemName().GetString(), pActiveLoadableModule->GetName().GetString() );
 	
 	deParallelProcessing &parallelProcessing = pEngine->GetParallelProcessing();
 	const bool resumeParallelProcessing = ! parallelProcessing.GetPaused();
@@ -171,7 +166,7 @@ void deBaseSystem::CheckAndActivateFirst( deModuleSystem::eModuleTypes type ){
 	
 	// check for modules
 	if( moduleSystem->GetLoadedModuleCountFor( type ) == 0 ){
-		LogErrorFormat( "No loaded %s modules found", GetSystemName() );
+		LogErrorFormat( "No loaded %s modules found", GetSystemName().GetString() );
 		DETHROW( deeNoModuleFound );
 	}
 	
@@ -195,7 +190,8 @@ void deBaseSystem::SetActiveModule( deLoadableModule *module ){
 		DETHROW( deeInvalidAction );
 	}
 	
-	LogInfoFormat( "Activating %s module %s", GetSystemName(), module->GetName().GetString() );
+	LogInfoFormat( "Activating %s module %s %s", GetSystemName().GetString(),
+		module->GetName().GetString(), module->GetVersion().GetString() );
 	
 	// set new module
 	if( pActiveLoadableModule ){

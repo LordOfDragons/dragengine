@@ -25,6 +25,6 @@ interface ServerListener
 	 * 
 	 * If an exception is thrown or no listener is set client is disconnected.
 	 */
-	public func void clientConnected( Connection connection )
+	func void clientConnected( Connection connection )
 	/*@}*/
 end

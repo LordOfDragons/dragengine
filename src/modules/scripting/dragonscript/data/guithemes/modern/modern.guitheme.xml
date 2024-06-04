@@ -13,7 +13,13 @@
 		</mousePointer>
 	</designer>
 	
-	<designer name='Window' type='Window'>
+	<designer name='WindowUndecorated' type='Window'>
+		<canvasCreator parameter='normal.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='0.85' g='0.82' b='0.82'/>
+		</canvasCreator>
+	</designer>
+	
+	<designer name='Window' extendNamed='WindowUndecorated'>
 		<decoration parameter='decoration' type='CanvasCreator'>
 			<borderSize parameter='decorationSize' left='8' top='25' right='8' bottom='14'/>
 			<font parameter='active.title.font' size='15'>fonts/sans15.defont</font>
@@ -31,22 +37,97 @@
 			<image parameter='imageButtonMinimizeHover'>window/button/minimize_hover.png</image>
 			<image parameter='imageButtonMinimizePressed'>window/button/minimize_pressed.png</image>
 		</decoration>
-		<canvasCreator parameter='normal.canvas' type='Rectangle'>
-			<color parameter='colorFill' r='0.85' g='0.82' b='0.82'/>
-		</canvasCreator>
 	</designer>
 	
 	<designer name='WindowPopup' type='Window'>
 		<!--<decoration parameter='decoration' type='CanvasCreator'>
 			<borderSize parameter='decorationSize' all='1'/>
 			<canvasCreator parameter='active.canvas' type='Bevel'>
-				<color parameter='colorHilight' r='1' g='1' b='1'/>
+				<color parameter='colorHighlight' r='1' g='1' b='1'/>
 				<color parameter='colorShadow' r='0.6' g='0.6' b='0.6'/>
 			</canvasCreator>
 		</decoration>-->
 		<canvasCreator parameter='normal.canvas' type='Rectangle'>
 			<color parameter='colorFill' r='0.85' g='0.82' b='0.82'/>
 		</canvasCreator>
+	</designer>
+	
+	<designer name='WindowToolTip' type='Window'>
+		<canvasCreator parameter='normal.canvas' extend='framed/background.ccreator.xml'>
+			<colorMatrix parameter='colorMatrix'>
+				<scale r='0' g='0' b='0' a='0.65'/>
+			</colorMatrix>
+		</canvasCreator>
+		<border parameter='normal.border' type='CanvasCreator'>
+			<canvasCreator parameter='canvasCreator' extend='framed/normal.ccreator.xml'>
+				<colorMatrix parameter='colorMatrix'>
+					<scale r='0.75' g='0.75' b='0.75' a='0.85'/>
+				</colorMatrix>
+			</canvasCreator>
+			<borderSize parameter='size' all='2'/>
+		</border>
+		<borderSize parameter='normal.padding' all='2'/>
+	</designer>
+	
+	<designer name='Label.WindowToolTip' type='Label'>
+		<string parameter='normal.alignment'>left,top</string>
+		<color parameter='normal.textColor' r='1' g='1' b='1'/>
+		<font parameter='normal.font' size='15'>fonts/sans15.defont</font>
+	</designer>
+	
+	<designer name='WindowVirtualKeyboard' type='Window'>
+		<canvasCreator parameter='normal.canvas' extend='framed/background.ccreator.xml'>
+			<colorMatrix parameter='colorMatrix'>
+				<scale r='0' g='0' b='0' a='0.65'/>
+			</colorMatrix>
+		</canvasCreator>
+		<border parameter='normal.border' type='CanvasCreator'>
+			<canvasCreator parameter='canvasCreator' extend='framed/normal.ccreator.xml'>
+				<colorMatrix parameter='colorMatrix'>
+					<scale r='0.75' g='0.75' b='0.75' a='0.85'/>
+				</colorMatrix>
+			</canvasCreator>
+			<borderSize parameter='size' all='2'/>
+		</border>
+		<borderSize parameter='normal.padding' all='2'/>
+	</designer>
+	
+	<designer name='Label.WindowVirtualKeyboard.Key' type='Label'>
+		<canvasCreator parameter='normal.canvas' extend='framed/background.ccreator.xml'>
+			<colorMatrix parameter='colorMatrix'>
+				<scale r='0.5' g='0.5' b='0.5'/>
+			</colorMatrix>
+		</canvasCreator>
+		<canvasCreator parameter='hover.canvas' extend='framed/background.ccreator.xml'>
+			<colorMatrix parameter='colorMatrix'>
+				<scale r='0.5' g='1' b='1'/>
+			</colorMatrix>
+		</canvasCreator>
+		<point parameter='normal.minimumSize' x='24' y='24'/>
+		<color parameter='normal.textColor' r='1' g='1' b='1'/>
+		<font parameter='normal.font' size='15'>fonts/sans15.defont</font>
+	</designer>
+	
+	<designer name='Image.WindowVirtualKeyboard.Key' type='Image'>
+		<canvasCreator parameter='normal.canvas' extend='framed/background.ccreator.xml'>
+			<colorMatrix parameter='colorMatrix'>
+				<scale r='0.5' g='0.5' b='0.5'/>
+			</colorMatrix>
+		</canvasCreator>
+		<canvasCreator parameter='hover.canvas' extend='framed/background.ccreator.xml'>
+			<colorMatrix parameter='colorMatrix'>
+				<scale r='0.5' g='1' b='1'/>
+			</colorMatrix>
+		</canvasCreator>
+		<point parameter='normal.minimumSize' x='24' y='24'/>
+	</designer>
+	
+	<designer name='Label.WindowVirtualKeyboard.Key.Wide' extendNamed='Label.WindowVirtualKeyboard.Key'>
+		<point parameter='normal.minimumSize' x='42' y='24'/>
+	</designer>
+	
+	<designer name='Label.WindowVirtualKeyboard.Key.Space' extendNamed='Label.WindowVirtualKeyboard.Key'>
+		<point parameter='normal.minimumSize' x='144' y='24'/>
 	</designer>
 	
 	<designer name='WindowFullScreen' type='Window'>
@@ -63,10 +144,29 @@
 		<borderSize parameter='normal.padding' left='0' top='20' right='0' bottom='0'/>
 	</designer>
 	
+	<designer name='Panel.Titled' type='Widget'>
+		<border parameter='normal.border' type='TitledEtched'>
+			<color parameter='colorHighlight' r='1' g='1' b='1'/>
+			<color parameter='colorShadow' r='0.5' g='0.5' b='0.5'/>
+			<color parameter='textColor' r='0' g='0' b='0'/>
+			<font parameter='font' size='15'>fonts/sans15.defont</font>
+		</border>
+		<borderSize parameter='normal.padding' all='2'/>
+	</designer>
+	
 	<designer name='Label' type='Label'>
 		<color parameter='normal.textColor' r='0' g='0' b='0'/>
 		<font parameter='normal.font' size='15'>fonts/sans15.defont</font>
 		<color parameter='disabled.textColor' r='0.5' g='0.5' b='0.5'/>
+	</designer>
+	
+	<designer name='Image' type='Image'>
+		<colorMatrix parameter='normal.imageColorTransform'/>
+		<colorMatrix parameter='disabled.imageColorTransform'>
+			<saturation r='0' g='0' b='0'/>
+			<contrast r='0.5' g='0.5' b='0.5'/>
+			<brightness r='0.15' g='0.15' b='0.15' a='0'/>
+		</colorMatrix>
 	</designer>
 	
 	<designer name='Button' type='Button'>
@@ -74,6 +174,8 @@
 		<canvasCreator parameter='pressed.canvas' extend='button/pressed.ccreator.xml'/>
 		<canvasCreator parameter='disabled.canvas' extend='button/disabled.ccreator.xml'/>
 		<canvasCreator parameter='hover.canvas' extend='button/hover.ccreator.xml'/>
+		<canvasCreator parameter='focused.canvas' extend='button/focused.ccreator.xml'/>
+		<canvasCreator parameter='focusedHover.canvas' extend='button/focusedHover.ccreator.xml'/>
 		<borderSize parameter='normal.padding' all='5'/>
 		<borderSize parameter='pressed.padding' left='6' top='6' right='4' bottom='4'/>
 	</designer>
@@ -108,6 +210,22 @@
 		<image parameter='imageRightHover'>arrows/right_hover.png</image>
 	</designer>
 	
+	<designer name='Slider' type='Slider'>
+		<canvasCreator parameter='canvasBarHorizontal' extend='slider/bar-horizontal.ccreator.xml'/>
+		<canvasCreator parameter='canvasBarVertical' extend='slider/bar-vertical.ccreator.xml'/>
+		<canvasCreator parameter='canvasTickLargeHorizontal' extend='slider/tick-large-horizontal.ccreator.xml'/>
+		<canvasCreator parameter='canvasTickLargeVertical' extend='slider/tick-large-vertical.ccreator.xml'/>
+		<canvasCreator parameter='canvasTickSmallHorizontal' extend='slider/tick-small-horizontal.ccreator.xml'/>
+		<canvasCreator parameter='canvasTickSmallVertical' extend='slider/tick-small-vertical.ccreator.xml'/>
+		<integer parameter='size'>24</integer>
+		<integer parameter='knobOffset'>12</integer>
+		<integer parameter='tickSize'>2</integer>
+		
+		<image parameter='normal.imageKnob'>slider/knob/normal.png</image>
+		<image parameter='hover.imageKnob'>slider/knob/hover.png</image>
+		<image parameter='focused.imageKnob'>slider/knob/focus.png</image>
+	</designer>
+	
 	<designer name='SpinButton' type='SpinButton'>
 		<integer parameter='size'>16</integer>
 		
@@ -130,7 +248,7 @@
 			<canvasCreator parameter='canvasCreator' extend='framed/normal.ccreator.xml'/>
 			<borderSize parameter='size' all='2'/>
 		</border>
-		<borderSize parameter='normal.padding' left='2'/>
+		<borderSize parameter='normal.padding' all='2'/>
 		<color parameter='normal.textColor' r='0' g='0' b='0'/>
 		<font parameter='normal.font' size='15'>fonts/sans15.defont</font>
 		
@@ -158,7 +276,7 @@
 			<canvasCreator parameter='canvasCreator' extend='framed/normal.ccreator.xml'/>
 			<borderSize parameter='size' all='2'/>
 		</border>
-		<borderSize parameter='normal.padding' left='2'/>
+		<borderSize parameter='normal.padding' all='2'/>
 		<color parameter='normal.textColor' r='0' g='0' b='0'/>
 		<font parameter='normal.font' size='15'>fonts/sans15.defont</font>
 		
@@ -232,13 +350,23 @@
 		<canvasCreator parameter='droppedDown.canvas' extend='button/pressed.ccreator.xml'/>
 		<canvasCreator parameter='disabled.canvas' extend='button/disabled.ccreator.xml'/>
 		<canvasCreator parameter='hover.canvas' extend='button/hover.ccreator.xml'/>
-		<borderSize parameter='normal.padding' left='4'/>
+		<canvasCreator parameter='focused.canvas' extend='button/focused.ccreator.xml'/>
+		<canvasCreator parameter='focusedHover.canvas' extend='button/focusedHover.ccreator.xml'/>
+		<borderSize parameter='normal.padding' left='4' top='2'/>
 		<image parameter='imageDropDownNormal'>arrows/down_normal.png</image>
 		<image parameter='imageDropDownHover'>arrows/down_hover.png</image>
 	</designer>
 	
 	<designer name='ListBox.ComboBox' extendNamed='ListBox'>
 	</designer>
+	
+	<designer name='Label.ListRenderer.ComboBoxSelected' extendNamed='Label'>
+		<canvasCreator parameter='normal.canvas' type='Default'/>
+		<color parameter='normal.textColor' r='0' g='0' b='0'/>
+		<borderSize parameter='normal.padding' left='2' top='0' right='2' bottom='0'/>
+	</designer>
+	
+	<designer name='Label.ListRenderer.Selected.ComboBoxSelected' extendNamed='Label.ListRenderer.ComboBoxSelected'/>
 	
 	<designer name='TextField.ComboBoxEditor' type='TextField'>
 		<!--<canvasCreator parameter='normal.canvas' type='Rectangle'>
@@ -258,6 +386,10 @@
 		<image parameter='disabled.imageCheck'>checkbox/checked_disabled.png</image>
 	</designer>
 	
+	<designer name='Label.CheckBox' extendNamed='Label'>
+		<string parameter='normal.alignment'>left,middle</string>
+	</designer>
+	
 	<designer name='OptionBox' type='OptionBox'>
 		<borderSize parameter='normal.padding' all='5'/>
 		<image parameter='normal.imageBox'>optionbox/optionbox_normal.png</image>
@@ -265,6 +397,10 @@
 		<image parameter='focused.imageBox'>optionbox/optionbox_focused.png</image>
 		<image parameter='hover.imageBox'>optionbox/optionbox_hover.png</image>
 		<image parameter='disabled.imageSelect'>optionbox/selected_disabled.png</image>
+	</designer>
+	
+	<designer name='Label.OptionBox' extendNamed='Label'>
+		<string parameter='normal.alignment'>left,middle</string>
 	</designer>
 	
 	<designer name='ProgressBar' type='ProgressBar'>
@@ -284,12 +420,107 @@
 		</canvasCreator>
 	</designer>
 	
+	<!-- Menu -->
+	<designer name='MenuPopup' type='Window'>
+		<canvasCreator parameter='normal.canvas' type='Bevel'>
+			<color parameter='colorHighlight' r='1' g='1' b='1'/>
+			<color parameter='colorShadow' r='0.6' g='0.6' b='0.6'/>
+			<color parameter='colorBackground' r='0.85' g='0.82' b='0.82'/>
+		</canvasCreator>
+		<borderSize parameter='normal.padding' all='1'/>
+	</designer>
+	
+	<designer name='MenuItem' type='Widget'>
+		<canvasCreator parameter='normal.canvas' type='Default'/>
+		<color parameter='normal.textColor' r='0' g='0' b='0'/>
+		<borderSize parameter='normal.padding' left='5' top='2' right='5' bottom='2'/>
+		
+		<canvasCreator parameter='hover.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='0.2' g='0.2' b='0.5' a='0.15'/>
+		</canvasCreator>
+	</designer>
+	
+	<designer name='MenuItem.Toggle' type='MenuItemToggle'>
+		<canvasCreator parameter='normal.canvas' type='Default'/>
+		<color parameter='normal.textColor' r='0' g='0' b='0'/>
+		<borderSize parameter='normal.padding' left='5' top='2' right='5' bottom='2'/>
+		
+		<canvasCreator parameter='hover.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='0.2' g='0.2' b='0.5' a='0.15'/>
+		</canvasCreator>
+	</designer>
+	
+	<designer name='MenuItem.SubMenu' type='MenuItemSubMenu'>
+		<canvasCreator parameter='normal.canvas' type='Default'/>
+		<color parameter='normal.textColor' r='0' g='0' b='0'/>
+		<borderSize parameter='normal.padding' left='5' top='2' right='5' bottom='2'/>
+		
+		<canvasCreator parameter='hover.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='0.2' g='0.2' b='0.5' a='0.15'/>
+		</canvasCreator>
+		
+		<image parameter='normal.imageArrow'>arrows/right_normal.png</image>
+	</designer>
+	
+	<designer name='PanelIcon.MenuItem' type='Widget'>
+		<point parameter='normal.minimumSize' x='18' y='18'/>
+	</designer>
+	
+	<designer name='IconPlaceholder.MenuItem' type='Widget'>
+		<point parameter='normal.minimumSize' x='18' y='18'/>
+	</designer>
+	
+	<designer name='Label.MenuItem' extendNamed='Label'>
+		<string parameter='normal.alignment'>left,middle</string>
+	</designer>
+	
+	<designer name='MenuItem.Check' extendNamed='MenuItem.Toggle'>
+		<image parameter='normal.imageBox'>checkbox/checkbox_normal.png</image>
+		<image parameter='normal.imageMark'>checkbox/checked_normal.png</image>
+		<image parameter='disabled.imageMark'>checkbox/checked_disabled.png</image>
+	</designer>
+	
+	<designer name='MenuItem.Option' extendNamed='MenuItem.Toggle'>
+		<image parameter='normal.imageBox'>optionbox/optionbox_normal.png</image>
+		<image parameter='normal.imageMark'>optionbox/selected_normal.png</image>
+		<image parameter='disabled.imageMark'>optionbox/selected_disabled.png</image>
+	</designer>
+	
+	<designer name='MenuItem.Separator' type='Widget'>
+		<canvasCreator parameter='normal.canvas' extend='divider/normal.ccreator.xml'/>
+		<border parameter='normal.border' type='Empty'>
+			<borderSize parameter='size' left='0' top='2' right='0' bottom='0'/>
+		</border>
+		<point parameter='normal.minimumSize' x='0' y='2'/>
+	</designer>
+	
+	<designer name='MenuBarItem' type='Widget'>
+		<canvasCreator parameter='normal.canvas' type='Default'/>
+		<color parameter='normal.textColor' r='0' g='0' b='0'/>
+		<borderSize parameter='normal.padding' left='8' top='2' right='8' bottom='2'/>
+		
+		<canvasCreator parameter='hover.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='0.2' g='0.2' b='0.5' a='0.15'/>
+		</canvasCreator>
+	</designer>
+	
+	<!-- ReorderListMouseListener -->
+	<designer name='ReorderListBoxDrop' type='Widget'>
+		<canvasCreator parameter='normal.canvas' extend='framed/focused.ccreator.xml'/>
+	</designer>
+	
 	<!-- WindowGameWorld -->
 	<designer name='WindowGameWorld' type='Window'>
 		<canvasCreator parameter='normal.canvas' type='Rectangle'>
 			<color parameter='colorFill' r='0' g='0' b='0'/>
 		</canvasCreator>
 		<mousePointer parameter='normal.mousePointer' type='Default'/>
+	</designer>
+	
+	<designer name='WorldRenderer' type='Widget'>
+		<canvasCreator parameter='normal.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='0' g='0' b='0'/>
+		</canvasCreator>
 	</designer>
 	
 	<!-- WindowLoading -->
@@ -328,6 +559,8 @@
 	- 'WindowPlayerChoice' -> WindowPlayerChoice
 	- 'PlayerChoice' -> PanelPlayerChoice
 	- 'PlayerChoiceEntry' -> PanelPlayerChoiceEntry
+	- 'Label.PlayerChoiceEntry' -> PanelPlayerChoiceEntry Label
+	- 'Image.PlayerChoiceEntry' -> PanelPlayerChoiceEntry DisplayImage
 	-->
 	<designer name='PlayerChoiceEntry' type='PlayerChoiceEntry'>
 		<canvasCreator parameter='normal.canvas' type='Rectangle'>
@@ -337,8 +570,6 @@
 			<color parameter='color' r='0' g='0' b='0' a='0.5'/>
 			<integer parameter='thickness'>5</integer>
 		</border>
-		<color parameter='normal.textColor' r='0.6' g='0.6' b='0.6'/>
-		<font parameter='normal.font' size='31'>fonts/subtitle.defont</font>
 		
 		<canvasCreator parameter='hover.canvas' type='Rectangle'>
 			<color parameter='colorFill' r='0' g='0' b='0.5' a='0.5'/>
@@ -347,6 +578,11 @@
 			<color parameter='color' r='0' g='0' b='0.5' a='0.5'/>
 			<integer parameter='thickness'>5</integer>
 		</border>
+	</designer>
+	
+	<designer name='Label.PlayerChoiceEntry' extendNamed='Label'>
+		<color parameter='normal.textColor' r='0.6' g='0.6' b='0.6'/>
+		<font parameter='normal.font' size='31'>fonts/subtitle.defont</font>
 	</designer>
 	
 	<!--
@@ -390,6 +626,8 @@
 	    EditBindingsListRenderer name label with command name to configurate bindings for
 	- 'Label.EditBindingsEntry.Binding' {+'.Selected' for selected}
 	    EditBindingsListRenderer binding label
+	- 'TextArea.EditBindings.CommandInfo'
+	    TextArea in EditBindingsPanel showing command description
 	- 'WindowDialog.CaptureBinding'
 	    Dialog window for capturing binding
 	- 'Label.WindowDialog.CaptureBinding'
@@ -416,6 +654,22 @@
 		
 		<canvasCreator parameter='hover.canvas' type='Rectangle'>
 			<color parameter='colorFill' r='0.3' g='0.3' b='0.5'/>
+		</canvasCreator>
+	</designer>
+	
+	<designer name='Panel.EditBindingsEntry.Binding' type='Widget'>
+		<borderSize parameter='normal.padding' left='3' right='3'/>
+		<null parameter='normal.canvas'/>
+		<canvasCreator parameter='hover.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='0.2' g='0.2' b='0.5' a='0.2'/>
+		</canvasCreator>
+	</designer>
+	
+	<designer name='Panel.EditBindingsEntry.Binding.Selected' type='Widget'>
+		<borderSize parameter='normal.padding' left='3' right='3'/>
+		<null parameter='normal.canvas'/>
+		<canvasCreator parameter='hover.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='0.4' g='0.4' b='1'/>
 		</canvasCreator>
 	</designer>
 	
@@ -450,13 +704,43 @@
 		<color parameter='normal.textColor' r='1' g='1' b='0'/>
 	</designer>
 	
+	<designer name='Button.EditBindingsEntry.DeleteBinding' type='Button'>
+		<borderSize parameter='normal.padding' left='3'/>
+	</designer>
+	
+	<designer name='Label.Button.EditBindingsEntry.DeleteBinding' extendNamed='Label'>
+		<point parameter='normal.minimumSize' x='26' y='26'/>
+		<borderSize parameter='normal.padding' all='3'/>
+		<canvasCreator parameter='normal.canvas' type='Image'>
+			<image parameter='image'>arrows/remove_normal.webp</image>
+		</canvasCreator>
+		<canvasCreator parameter='hover.canvas' type='Image'>
+			<image parameter='image'>arrows/remove_hover.webp</image>
+		</canvasCreator>
+	</designer>
+	
+	<designer name='Button.EditBindingsEntry.AddBinding' type='Button'>
+		<borderSize parameter='normal.padding' left='3'/>
+	</designer>
+	
+	<designer name='Label.Button.EditBindingsEntry.AddBinding' extendNamed='Label'>
+		<point parameter='normal.minimumSize' x='26' y='26'/>
+		<borderSize parameter='normal.padding' all='3'/>
+		<canvasCreator parameter='normal.canvas' type='Image'>
+			<image parameter='image'>arrows/add_normal.webp</image>
+		</canvasCreator>
+		<canvasCreator parameter='hover.canvas' type='Image'>
+			<image parameter='image'>arrows/add_hover.webp</image>
+		</canvasCreator>
+	</designer>
+	
 	<!--
 	Widgets for editing system parameters. These designers can be defined:
 	- 'Panel.EditModuleParametersPanel'
 	    EditModuleParametersPanel
 	- 'Button.EditModuleParametersPanel.System'
 	    Button to switch to system panel
-	- 'Panel.EMPSystem'
+	- 'Panel.EMPSystem.Content'
 	    EMPSystem
 	- 'TextArea.EMPSystem.ParameterInfo'
 	    TextArea in EMPSystem showing parameter information
@@ -474,7 +758,87 @@
 	    Next value button in cycle value panel
 	- 'Label.EMPSystem.CycleValue.Value'
 	    Value label in cycle value panel
+	- 'Button.EMPSystem.Reset'
+		Reset button
 	-->
+	<designer name='Panel.EMPSystem.Content' type='Widget'>
+		<border parameter='normal.border' type='CanvasCreator'>
+			<canvasCreator parameter='canvasCreator' extend='framed/normal.ccreator.xml'/>
+			<borderSize parameter='size' all='2'/>
+		</border>
+	</designer>
+	
+	<designer name='Panel.EMPSystem.Parameters' type='Widget'>
+		<borderSize parameter='normal.padding' left='5' top='2' right='5' bottom='2'/>
+	</designer>
+	
+	<designer name='Panel.EMPSystem.CycleValue' type='Widget'>
+		<canvasCreator parameter='normal.canvas' extend='framed/background.ccreator.xml'/>
+		<border parameter='normal.border' type='CanvasCreator'>
+			<canvasCreator parameter='canvasCreator' extend='framed/normal.ccreator.xml'/>
+			<borderSize parameter='size' left='0' top='2' right='0' bottom='2'/>
+		</border>
+		<borderSize parameter='normal.padding' left='2' right='2'/>
+		
+		<!--
+		<canvasCreator parameter='disabled.canvas' extend='framed/background-disabled.ccreator.xml'/>
+		<border parameter='disabled.border' type='CanvasCreator'>
+			<canvasCreator parameter='canvasCreator' extend='framed/disabled.ccreator.xml'/>
+			<borderSize parameter='size' left='0' top='2' right='0' bottom='2'/>
+		</border>
+		-->
+		
+		<border parameter='hover.border' type='CanvasCreator'>
+			<canvasCreator parameter='canvasCreator' extend='framed/hover.ccreator.xml'/>
+			<borderSize parameter='size' left='0' top='2' right='0' bottom='2'/>
+		</border>
+	</designer>
+	
+	<designer name='Label.EMPSystem.CycleValue.Value' type='Label'>
+		<color parameter='normal.textColor' r='0' g='0' b='0'/>
+		<font parameter='normal.font' size='15'>fonts/sans15.defont</font>
+	</designer>
+	
+	<designer name='Button.EMPSystem.Reset' extendNamed='Button'>
+		<borderSize parameter='normal.padding' left='5' top='1' right='5' bottom='1'/>
+		<borderSize parameter='pressed.padding' left='6' top='2' right='4' bottom='0'/>
+	</designer>
+	
+	<designer name='Label.Button.EMPSystem.Reset' extendNamed='Label'>
+		<point parameter='normal.minimumSize' x='12' y='12'/>
+		<canvasCreator parameter='normal.canvas' type='Image'>
+			<image parameter='image'>arrows/reload_normal.png</image>
+		</canvasCreator>
+		<canvasCreator parameter='hover.canvas' type='Image'>
+			<image parameter='image'>arrows/reload_hover.png</image>
+		</canvasCreator>
+	</designer>
+	
+	
+	<!--
+	PanelInteractPrompt.
+	- 'InteractPrompt': The prompt panel
+	- 'InteractPromptEntry': The prompt entry panel
+	- 'Image.InteractPromptEntry': Interact image
+	- 'Video.InteractPromptEntry': Interact video
+	- 'Label.InteractPromptEntry.Verb': Verb label
+	- 'Label.InteractPromptEntry.Description': Description label
+	- 'Panel.InteractPromptEntry.Bindings': Bindings panel
+	-->
+	<designer name='InteractPrompt' type='Widget'>
+		<canvasCreator parameter='normal.canvas' extend='framed/background.ccreator.xml'>
+			<colorMatrix parameter='colorMatrix'>
+				<scale r='0' g='0' b='0' a='0.5'/>
+			</colorMatrix>
+		</canvasCreator>
+		<borderSize parameter='normal.padding' all='10'/>
+	</designer>
+	
+	<designer name='Label.InteractPromptEntry' type='Label'>
+		<font parameter='normal.font' size='31'>../modern/fonts/subtitle.defont</font>
+		<color parameter='normal.textColor' r='1' g='1' b='1'/>
+	</designer>
+	
 	
 	<!--
 	Logo window. These designer can be defined:
@@ -533,5 +897,111 @@
 	
 	<designer name='Label.PanelDebugInformation.Label' extendNamed='Label.PanelDebugInformation'>
 		<color parameter='normal.textColor' r='1' g='1' b='0'/>
+	</designer>
+	
+	<!-- Behavior ECBehaviorRenderablePanel -->
+	<designer name='RenderablePanel' type='Widget'>
+		<canvasCreator parameter='normal.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='1' g='1' b='1'/>
+		</canvasCreator>
+	</designer>
+	
+	
+	<!--
+	WindowSettings:
+	- "Window.Settings": Settings window
+	- "Panel.Settings.Sheets": Panel containing all settings panels
+	- "Panel.Settings.Buttons.Top": Top buttons panel
+	- "Panel.Settings.Buttons.Bottom": Bottom buttons panel
+	- "Panel.Settings.Buttons.Left": Left buttons panel
+	- "Panel.Settings.Buttons.Right": Right buttons panel
+	- "Panel.Settings.Buttons.Dialog": Dialog buttons panel at the bottom
+	- "Button.Settings.Sheet": Button to activate a sheet
+	- "Button.Settings.Save": Button to save and close window
+	- "Button.Settings.Reset": Button to reset current sheet
+	- "Button.Settings.Cancel": Button to discard changes and close window
+	-->
+	<designer name='Window.Settings' extendNamed='Window'>
+		<borderSize parameter='normal.padding' all='20'/>
+	</designer>
+	<designer name='Panel.Settings.Buttons.Top' type='Widget'>
+		<borderSize parameter='normal.padding' left='0' top='0' right='0' bottom='10'/>
+	</designer>
+	<designer name='Panel.Settings.Buttons.Bottom' type='Widget'>
+		<borderSize parameter='normal.padding' left='0' top='10' right='0' bottom='0'/>
+	</designer>
+	<designer name='Panel.Settings.Buttons.Left' type='Widget'>
+		<borderSize parameter='normal.padding' left='0' top='0' right='10' bottom='0'/>
+	</designer>
+	<designer name='Panel.Settings.Buttons.Right' type='Widget'>
+		<borderSize parameter='normal.padding' left='10' top='0' right='0' bottom='0'/>
+	</designer>
+	<designer name='Panel.Settings.Buttons.Dialog' type='Widget'>
+		<borderSize parameter='normal.padding' left='0' top='20' right='0' bottom='0'/>
+	</designer>
+	
+	
+	<!--
+	PanelFPSRates.
+	- "Panel.FPSRates": Entire panel
+	- "Label.Panel.FPSRates.{Module}": Label for module
+	- "Label.Panel.FPSRates.Rate.{Module}": Rate for module
+	
+	Where "{Module}" can be:
+	- "Script": Scripting module (Engine itself)
+	- "Graphic": Graphic module
+	- "Audio": Audio module
+	- "Physics": Physics module
+	- "Network": Network module
+	-->
+	<designer name='Panel.FPSRates' type='Widget'>
+		<canvasCreator parameter='normal.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='0' g='0' b='0' a='0.75'/>
+		</canvasCreator>
+		<borderSize parameter='normal.padding' left='3' top='1' right='3' bottom='1'/>
+	</designer>
+	
+	<designer name='Label.Panel.FPSRates' extendNamed='Label'>
+		<color parameter='normal.textColor' r='1' g='1' b='1'/>
+		<string parameter='normal.alignment'>left,middle</string>
+	</designer>
+	<designer name='Label.Panel.FPSRates.Rate' extendNamed='Label'>
+		<color parameter='normal.textColor' r='1' g='1' b='1'/>
+		<string parameter='normal.alignment'>center,middle</string>
+	</designer>
+	
+	<designer name='Label.Panel.FPSRates.Script' extendNamed='Label.Panel.FPSRates'>
+		<color parameter='normal.textColor' r='1' g='1' b='1'/>
+	</designer>
+	<designer name='Label.Panel.FPSRates.Rate.Script' extendNamed='Label.Panel.FPSRates.Rate'>
+		<color parameter='normal.textColor' r='1' g='1' b='1'/>
+	</designer>
+	
+	<designer name='Label.Panel.FPSRates.Graphic' extendNamed='Label.Panel.FPSRates'>
+		<color parameter='normal.textColor' r='1' g='0.5' b='0.5'/>
+	</designer>
+	<designer name='Label.Panel.FPSRates.Rate.Graphic' extendNamed='Label.Panel.FPSRates.Rate'>
+		<color parameter='normal.textColor' r='1' g='0.5' b='0.5'/>
+	</designer>
+	
+	<designer name='Label.Panel.FPSRates.Audio' extendNamed='Label.Panel.FPSRates'>
+		<color parameter='normal.textColor' r='0.5' g='1' b='0.5'/>
+	</designer>
+	<designer name='Label.Panel.FPSRates.Rate.Audio' extendNamed='Label.Panel.FPSRates.Rate'>
+		<color parameter='normal.textColor' r='0.5' g='1' b='0.5'/>
+	</designer>
+	
+	<designer name='Label.Panel.FPSRates.Physics' extendNamed='Label.Panel.FPSRates'>
+		<color parameter='normal.textColor' r='0.75' g='0.75' b='1'/>
+	</designer>
+	<designer name='Label.Panel.FPSRates.Rate.Physics' extendNamed='Label.Panel.FPSRates.Rate'>
+		<color parameter='normal.textColor' r='0.75' g='0.75' b='1'/>
+	</designer>
+	
+	<designer name='Label.Panel.FPSRates.Network' extendNamed='Label.Panel.FPSRates'>
+		<color parameter='normal.textColor' r='1' g='0.5' b='1'/>
+	</designer>
+	<designer name='Label.Panel.FPSRates.Rate.Network' extendNamed='Label.Panel.FPSRates.Rate'>
+		<color parameter='normal.textColor' r='1' g='0.5' b='1'/>
 	</designer>
 </guiTheme>

@@ -1,107 +1,165 @@
-/* 
- * Drag[en]gine Windows Input Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEWIDEVICEMANAGER_H_
 #define _DEWIDEVICEMANAGER_H_
 
 #include "dewiInclude.h"
+#include "dewiDeviceKeyboard.h"
+#include "dewiDeviceMouse.h"
 
+#include <winrt/Windows.Foundation.h>
+#include <winrt/Windows.Gaming.Input.h>
+
+#include <dragengine/deObject.h>
 #include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/threading/deMutex.h>
 
 class deWindowsInput;
 class dewiDevice;
-class dewiDeviceMouse;
-class dewiDeviceKeyboard;
+class dewiDeviceWinRTController;
 
+namespace wrf = winrt::Windows::Foundation;
+namespace wrgi = winrt::Windows::Gaming::Input;
 
 
 /**
- * \brief Windows input devices.
+ * Windows input devices.
  */
-class dewiDeviceManager{
+class dewiDeviceManager : public deObject{
+public:
+	typedef deTObjectReference<dewiDeviceManager> Ref;
+
+
+
 private:
 	deWindowsInput &pModule;
 	
 	decObjectOrderedSet pDevices;
 	
-	dewiDeviceMouse *pMouse;
-	dewiDeviceKeyboard *pKeyboard;
+	dewiDeviceMouse::Ref pMouse;
+	dewiDeviceKeyboard::Ref pKeyboard;
+	
+	deMutex pMutex;
+	std::vector<wrgi::RawGameController> pAddControllers;
+	std::vector<wrgi::RawGameController> pRemoveControllers;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create device list. */
+	/** Create device list. */
 	dewiDeviceManager( deWindowsInput &module );
 	
-	/** \brief Clean up device list. */
-	~dewiDeviceManager();
+protected:
+	/** Clean up device list. */
+	virtual ~dewiDeviceManager();
 	/*@}*/
 	
 	
 	
+public:
 	/** \name Module Management */
 	/*@{*/
-	/** \brief Update list of available devices. */
+	/** Update list of available devices. */
 	void UpdateDeviceList();
 	
 	
 	
-	/** \brief Number of devices. */
+	/** Count of devices. */
 	int GetCount() const;
 	
-	/** \brief Device at index. */
+	/** Device at index. */
 	dewiDevice *GetAt( int index ) const;
 	
-	/** \brief Device with identifier or \em NULL if absent. */
-	dewiDevice *GetWithID( const char *id );
+	/** Device with identifier or \em NULL if absent. */
+	dewiDevice *GetWithID( const char *id ) const;
 	
-	/** \brief Index of device with identifier or -1 if absent. */
-	int IndexOfWithID( const char *id );
+	/** Index of device with identifier or -1 if absent. */
+	int IndexOfWithID( const char *id ) const;
 	
-	
-	
-	/** \brief  mouse device. */
-	inline dewiDeviceMouse *GetMouse() const{ return pMouse; }
-	
-	/** \brief  keyboard device. */
-	inline dewiDeviceKeyboard *GetKeyboard() const{ return pKeyboard; }
+	/** Input device matching controller. */
+	dewiDeviceWinRTController *GetWithController( wrgi::RawGameController const &controller ) const;
 	
 	
 	
-	/** \brief Log list of input devices. */
-	void LogDevices();
+	/** Mouse device. */
+	inline const dewiDeviceMouse::Ref &GetMouse() const{ return pMouse; }
+	
+	/** Keyboard device. */
+	inline const dewiDeviceKeyboard::Ref &GetKeyboard() const{ return pKeyboard; }
+	
+
+	
+	/** Log list of input devices. */
+	void LogDevices() const;
+
+	/** Log input device. */
+	void LogDevice( const dewiDevice &device ) const;
+	
+
+
+	/** Update devices and track attach/detach events. */
+	void Update();
+
 	
 	
-	
-	/** \brief Normalize identifier. */
+	/** Normalize identifier. */
 	static decString NormalizeID( const char *id );
 	/*@}*/
 	
 	
 	
 private:
+	class sEventHandlerController : public winrt::implements<sEventHandlerController, wrf::IInspectable>{
+	private:
+		deMutex pMutex;
+		dewiDeviceManager *pManager;
+
+	public:
+		sEventHandlerController( dewiDeviceManager *manager );
+		void DropManager();
+
+	private:
+		void pOnControllerAdded( wrf::IInspectable const &sender, wrgi::RawGameController const &controller );
+		void pOnControllerRemoved( wrf::IInspectable const &sender, wrgi::RawGameController const &controller );
+	};
+
+	winrt::com_ptr<sEventHandlerController> pEventHandlerController;
+
+	friend class sEventHandlerController;
+
 	void pCleanUp();
+
 	void pCreateDevices();
+	void pCreateControllers();
+	void pProcessAddRemoveDevices();
+	void pUpdateDeviceIndices();
+
+	void pOnControllerAdded( wrgi::RawGameController const &controller );
+	void pOnControllerRemoved( wrgi::RawGameController const &controller );
 };
 
 #endif

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Rig Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -53,6 +56,8 @@
 #include <deigde/gui/composed/igdeEditPathListener.h>
 #include <deigde/gui/composed/igdeEditSliderText.h>
 #include <deigde/gui/composed/igdeEditSliderTextListener.h>
+#include <deigde/gui/composed/igdeEditDVector.h>
+#include <deigde/gui/composed/igdeEditDVectorListener.h>
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/composed/igdeEditVectorListener.h>
 #include <deigde/gui/event/igdeAction.h>
@@ -174,6 +179,23 @@ public:
 	}
 	
 	virtual void OnChanged( const decVector &vector, reRig &rig ) = 0;
+};
+
+class cBaseEditDVectorListener : public igdeEditDVectorListener{
+protected:
+	reWPView &pPanel;
+	
+public:
+	cBaseEditDVectorListener( reWPView &panel ) : pPanel( panel ){ }
+	
+	virtual void OnDVectorChanged( igdeEditDVector *editDVector ){
+		reRig * const rig = pPanel.GetRig();
+		if( rig ){
+			OnChanged( editDVector->GetDVector(), *rig );
+		}
+	}
+	
+	virtual void OnChanged( const decDVector &vector, reRig &rig ) = 0;
 };
 
 class cBaseEditPathListener : public igdeEditPathListener{
@@ -363,11 +385,11 @@ public:
 };
 
 
-class cEditCameraPosition : public cBaseEditVectorListener{
+class cEditCameraPosition : public cBaseEditDVectorListener{
 public:
-	cEditCameraPosition( reWPView &panel ) : cBaseEditVectorListener( panel ){ }
+	cEditCameraPosition( reWPView &panel ) : cBaseEditDVectorListener( panel ){ }
 	
-	virtual void OnChanged( const decVector &vector, reRig &rig ){
+	virtual void OnChanged( const decDVector &vector, reRig &rig ){
 		rig.GetCamera()->SetFreePosition( vector );
 	}
 };
@@ -610,7 +632,7 @@ pRig( NULL )
 	// camera
 	helper.GroupBox( content, groupBox, "Camera:", true );
 	
-	helper.EditVector( groupBox, "Position:", "Position of the camera.",
+	helper.EditDVector( groupBox, "Position:", "Position of the camera.",
 		pEditCamPosition, new cEditCameraPosition( *this ) );
 	helper.EditVector( groupBox, "Rotation:", "Rotation of the camera.",
 		pEditCamRotation, new cEditCameraRotation( *this ) );
@@ -745,7 +767,7 @@ void reWPView::UpdateCamera(){
 	const bool enableAttach = camera ? camera->GetAttachToBone() : false;
 	
 	if( camera ){
-		pEditCamPosition->SetVector( camera->GetFreePosition() );
+		pEditCamPosition->SetDVector( camera->GetFreePosition() );
 		pEditCamRotation->SetVector( camera->GetFreeOrientation() );
 		pEditCamFov->SetFloat( camera->GetFov() );
 		pEditCamFovRatio->SetFloat( camera->GetFovRatio() );
@@ -757,12 +779,12 @@ void reWPView::UpdateCamera(){
 		pEditCamHiInt->SetFloat( camera->GetHighestIntensity() );
 		
 		pChkCamAttach->SetChecked( camera->GetAttachToBone() );
-		pCBCamBone->SetText( camera->GetBone() ? camera->GetBone()->GetName() : "" );
+		pCBCamBone->SetText( camera->GetBone() ? camera->GetBone()->GetName() : decString() );
 		pEditCamRelPosition->SetVector( camera->GetRelativePosition() );
 		pEditCamRelRotation->SetVector( camera->GetRelativeOrientation() );
 		
 	}else{
-		pEditCamPosition->SetVector( decVector() );
+		pEditCamPosition->SetDVector( decDVector() );
 		pEditCamRotation->SetVector( decVector() );
 		pEditCamFov->ClearText();
 		pEditCamFovRatio->ClearText();

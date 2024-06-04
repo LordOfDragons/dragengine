@@ -1,0 +1,142 @@
+import os
+import sys
+import SCons
+
+from SConsCommon import *
+from SConsExternCommon import *
+
+Import('parent_env parent_targets parent_report')
+
+envLibrary = parent_env.Clone()
+
+# switch
+buildStaticLinking = True
+
+# parameters
+srcdir = 'libvpx-1.12.0'
+
+libLinkVersion = '1'
+libLinkName = 'vpx'
+
+if envLibrary['OSWindows']:
+	libFileName = 'bin/lib{}-{}.dll'.format(libLinkName, libLinkVersion)
+	staticFileName = 'lib/lib{}.a'.format(libLinkName)
+else:
+	libFileName = envLibrary.subst('lib/${{SHLIBPREFIX}}{}${{SHLIBSUFFIX}}.{}'.format(libLinkName, libLinkVersion))
+	staticFileName = envLibrary.subst('lib/${{LIBPREFIX}}{}${{LIBSUFFIX}}'.format(libLinkName))
+
+# check if system libvpx is present
+hasSystemVpx = False
+conf = envLibrary.Configure()
+if envLibrary['with_system_libvpx'] != TernaryVariableNo:
+	hasSystemVpx = conf.CheckLibWithHeader(libLinkName,
+		'vpx/vpx_decoder.h', 'c++', 'vpx_codec_dec_init_ver(0, 0, 0, 0, 0);')
+conf.Finish()
+
+if not hasSystemVpx and envLibrary['with_system_libvpx'] == TernaryVariableYes:
+	Exit('Requested to use system libvpx but no usable libvpx found.')
+
+libs = [libLinkName]
+
+parent_report['use system libvpx'] = 'yes' if hasSystemVpx else 'no'
+
+if hasSystemVpx:
+	parent_targets['lib_libvpx'] = {
+		'name' : 'Internal libvpx library',
+		'cpppath' : [],
+		'libpath' : [],
+		'libs' : libs,
+		'runtimelibs' : [],
+		'depends' : [] }
+	Return()
+
+# build libvpx
+def libvpxBuild(target, source, env):
+	buildDir = target[0].get_dir().up()
+	
+	untarArchive(buildDir.abspath, source[0].abspath)
+	
+	script = createScriptHeader(env)
+	
+	script.append('cd "{}" || exit 1'.format(buildDir.Dir(srcdir).abspath))
+	
+	if 'CROSSCOMPILE_HOST' in env and env['OSWindows']:
+		script.append('CROSS={}'.format(env['CROSSCOMPILE_HOST']))
+	
+	cmdline = ['./configure --prefix="{}"'.format(buildDir.abspath)]
+	cmdline.append('--disable-install-docs')
+	cmdline.append('--disable-install-bins')
+	cmdline.append('--disable-examples')
+	cmdline.append('--disable-tools')
+	cmdline.append('--disable-docs')
+	cmdline.append('--enable-vp8')
+	cmdline.append('--enable-vp9')
+	cmdline.append('--disable-postproc')
+	cmdline.append('--disable-vp9-postproc')
+	cmdline.append('--disable-decode-perf-tests')
+	cmdline.append('--disable-encode-perf-tests')
+	cmdline.append('--disable-unit-tests')
+	cmdline.append('--as=nasm')  # yasm, nasm, auto
+	# --cpu=CPU    tune for the specified CPU (ARM: cortex-a8, X86: sse3)
+	if buildStaticLinking:
+		cmdline.append('--disable-shared')
+		cmdline.append('--enable-static')
+		cmdline.append('--enable-pic')
+	else:
+		cmdline.append('--enable-shared')
+		cmdline.append('--disable-static')
+	
+	if env['OSWindows']:
+		cmdline.append('--disable-multithread')
+	
+	if 'CROSSCOMPILE_HOST' in env:
+		# cmdline.append('--host={}'.format(env['CROSSCOMPILE_HOST']))
+		if env['OSWindows']:
+			cmdline.append('--target=generic-gnu')
+	
+	script.append('{} || exit 1'.format(' '.join(cmdline)))
+	
+	script.append('make -j {} install || exit 1'.format(env['with_threads']))
+	
+	if not env.RunExternalCommand(script):
+		raise Exception('Failed building libvpx')
+
+if buildStaticLinking:
+	targets = [staticFileName]
+else:
+	targets = [libFileName]
+targets.extend([
+	'include/vpx/vp8.h',
+	'include/vpx/vp8cx.h',
+	'include/vpx/vp8dx.h',
+	'include/vpx/vpx_codec.h',
+	'include/vpx/vpx_decoder.h',
+	'include/vpx/vpx_encoder.h',
+	'include/vpx/vpx_ext_ratectrl.h',
+	'include/vpx/vpx_frame_buffer.h',
+	'include/vpx/vpx_image.h',
+	'include/vpx/vpx_integer.h'])
+library = envLibrary.Command(targets, '{}.tar.bz2'.format(srcdir),
+	envLibrary.Action(libvpxBuild, 'Build libvpx'))
+
+depends = parent_env.Alias('lib_libvpx', library)
+
+envLibrary.Clean(library, ['bin', 'include', 'lib', 'share', srcdir])
+
+cpppath = [envLibrary.Dir('include')]
+
+libpath = [envLibrary.Dir('lib')]
+
+if buildStaticLinking:
+	libs = library[0:1]
+	runtimelibs = []
+else:
+	runtimelibs = library[0:1]
+
+parent_targets['lib_libvpx'] = {
+	'name' : 'Internal libvpx library',
+	'cpppath' : cpppath,
+	'libpath' : libpath,
+	'libs' : libs,
+	'runtimelibs' : runtimelibs,
+	'depends' : depends }

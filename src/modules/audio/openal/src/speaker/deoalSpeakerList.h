@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenAL Audio Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOALSPEAKERLIST_H_
@@ -29,7 +32,7 @@ class deoalASpeaker;
 
 
 /**
- * \brief Speaker list.
+ * Speaker list.
  */
 class deoalSpeakerList{
 private:
@@ -40,10 +43,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create speaker list. */
+	/** Create speaker list. */
 	deoalSpeakerList();
 	
-	/** \brief Clean up speaker list. */
+	/** Clean up speaker list. */
 	~deoalSpeakerList();
 	/*@}*/
 	
@@ -51,51 +54,51 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Number of speakers. */
+	/** Number of speakers. */
 	int GetCount() const;
 	
-	/** \brief Speaker at index. */
+	/** Speaker at index. */
 	deoalASpeaker *GetAt( int index ) const;
 	
-	/** \brief Speaker is present. */
+	/** Speaker is present. */
 	bool Has( deoalASpeaker *speaker ) const;
 	
-	/** \brief Index of speaker or -1 if absent. */
+	/** Index of speaker or -1 if absent. */
 	int IndexOf( deoalASpeaker *speaker ) const;
 	
-	/** \brief Add speaker. */
+	/** Add speaker. */
 	void Add( deoalASpeaker *speaker );
 	
-	/** \brief Remove speaker. */
+	/** Remove speaker. */
 	void Remove( deoalASpeaker *speaker );
 	
-	/** \brief Remove speaker if present. */
+	/** Remove speaker if present. */
 	void RemoveIfExisting( deoalASpeaker *speaker );
 	
-	/** \brief Remove all speakers. */
+	/** Remove all speakers. */
 	void RemoveAll();
 	
 	
 	
-	/** \brief Flag all speakers. */
+	/** Flag all speakers. */
 	void FlagAll( bool flag );
 	
 	/**
-	 * \brief Set enabled state for all speakers.
+	 * Set enabled state for all speakers.
 	 * \warning Called during synchronization time from main thread.
 	 */
 	void EnableAll( bool enabled );
 	
 	/**
-	 * \brief Set enabled state of all speakers to match their flag state.
+	 * Set enabled state of all speakers to match their flag state.
 	 * \warning Called during synchronization time from main thread.
 	 */
 	void FlagToEnabledAll();
 	
-	/** \brief Update all speakers. */
+	/** Update all speakers. */
 	void UpdateAll();
 	
-	/** \brief Update effects all speakers. */
+	/** Update effects all speakers. */
 	void UpdateEffectsAll();
 	/*@}*/
 	
@@ -103,19 +106,19 @@ public:
 	
 	/** \name Operators */
 	/*@{*/
-	/** \brief Assign list. */
+	/** Assign list. */
 	deoalSpeakerList &operator=( const deoalSpeakerList &list );
 	
-	/** \brief Append list. */
+	/** Append list. */
 	deoalSpeakerList &operator+=( const deoalSpeakerList &list );
 	
-	/** \brief Combined list. */
+	/** Combined list. */
 	deoalSpeakerList operator+( const deoalSpeakerList &list ) const;
 	
-	/** \brief Lists are equal. */
+	/** Lists are equal. */
 	bool operator==( const deoalSpeakerList &list ) const;
 	
-	/** \brief Lists are not equal. */
+	/** Lists are not equal. */
 	bool operator!=( const deoalSpeakerList &list ) const;
 	/*@}*/
 };

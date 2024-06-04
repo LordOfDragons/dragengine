@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -58,6 +61,7 @@
 #include "../gui/filedialog/igdeFilePattern.h"
 
 #include <dragengine/deEngine.h>
+#include <dragengine/app/deOS.h>
 #include <dragengine/logger/deLogger.h>
 #include <dragengine/resources/collider/deCollider.h>
 #include <dragengine/resources/particle/deParticleEmitter.h>
@@ -92,7 +96,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeXMLGameDefinition::igdeXMLGameDefinition( deLogger *logger ) : igdeBaseXML( logger, LOGGING_NAME ){
+igdeXMLGameDefinition::igdeXMLGameDefinition( igdeEnvironment &environment, deLogger *logger ) :
+igdeBaseXML( logger, LOGGING_NAME ),
+pEnvironment( environment ){
 }
 
 igdeXMLGameDefinition::~igdeXMLGameDefinition(){
@@ -156,7 +162,12 @@ void igdeXMLGameDefinition::pParseGameDefinition( const decXmlElementTag &root, 
 			gamedef.SetDescription( ReadMultilineString( *tag ) );
 			
 		}else if( tagName == "basePath" ){
-			gamedef.SetBasePath( GetCDataString( *tag ) );
+			decString filename( GetCDataString( *tag ) );
+			
+			filename.ReplaceString( "%{DE_SHARE_PATH}", pEnvironment.GetEngineController()
+				->GetEngine()->GetOS()->GetPathShare().GetString() );
+			
+			gamedef.SetBasePath( filename );
 			
 		}else if( tagName == "vfsPath" ){
 			gamedef.SetVFSPath( GetCDataString( *tag ) );
@@ -177,13 +188,25 @@ void igdeXMLGameDefinition::pParseGameDefinition( const decXmlElementTag &root, 
 			gamedef.GetSkyManager()->SetDefaultPath( GetCDataString( *tag ) );
 			
 		}else if( tagName == "findPathClasses" ){
-			gamedef.GetClassManager()->GetAutoFindPath().Add( GetCDataString( *tag ) );
+			const char * const cdata = GetCDataString( *tag );
+			decStringList &autoPath = gamedef.GetClassManager()->GetAutoFindPath();
+			if( cdata && ! autoPath.Has( cdata ) ){
+				autoPath.Add( cdata );
+			}
 			
 		}else if( tagName == "findPathSkins" ){
-			gamedef.GetSkinManager()->GetAutoFindPath().Add( GetCDataString( *tag ) );
+			const char * const cdata = GetCDataString( *tag );
+			decStringList &autoPath = gamedef.GetSkinManager()->GetAutoFindPath();
+			if( cdata && ! autoPath.Has( cdata ) ){
+				autoPath.Add( cdata );
+			}
 			
 		}else if( tagName == "findPathSkies" ){
-			gamedef.GetSkyManager()->GetAutoFindPath().Add( GetCDataString( *tag ) );
+			const char * const cdata = GetCDataString( *tag );
+			decStringList &autoPath = gamedef.GetSkyManager()->GetAutoFindPath();
+			if( cdata && ! autoPath.Has( cdata ) ){
+				autoPath.Add( cdata );
+			}
 			
 		}else if( tagName == "class" ){
 			pParseClass( *tag, gamedef );
@@ -287,7 +310,7 @@ void igdeXMLGameDefinition::pParseClass( const decXmlElementTag &root, igdeGameD
 				ReadMultilineString( *tag ) );
 			
 		}else if( tagName == "textureProperty" ){
-			igdeGDProperty *property = NULL;
+			property = NULL;
 			
 			try{
 				property = new igdeGDProperty( GetAttributeString( *tag, "name" ) );
@@ -360,8 +383,51 @@ void igdeXMLGameDefinition::pParseClass( const decXmlElementTag &root, igdeGameD
 		}else if( tagName == "ghost" ){
 			gdClass->SetIsGhost( GetCDataBool( *tag ) );
 			
-		}else if( tagName == "canInstanciate" ){
-			gdClass->SetCanInstanciate( GetCDataBool( *tag ) );
+		}else if( tagName == "canInstantiate"
+		/* backwards compatibility */ || tagName == "canInstanciate" ){
+			gdClass->SetCanInstantiate( GetCDataBool( *tag ) );
+			
+		}else if( tagName == "replaceSubObjects" ){
+			const decStringList keys( decString( GetCDataString( *tag ) ).Split( ',' ) );
+			int j, filter = igdeGDClass::FilterSubObjectsAll;
+			const int keyCount = keys.GetCount();
+			
+			for( j=0; j<keyCount; j++ ){
+				const decString &key = keys.GetAt( j );
+				
+				if( key == "billboards" ){
+					filter &= ~igdeGDClass::efsoBillboards;
+					
+				}else if( key == "components" ){
+					filter &= ~igdeGDClass::efsoComponents;
+					
+				}else if( key == "lights" ){
+					filter &= ~igdeGDClass::efsoLights;
+					
+				}else if( key == "snapPoints" ){
+					filter &= ~igdeGDClass::efsoSnapPoints;
+					
+				}else if( key == "particleEmitters" ){
+					filter &= ~igdeGDClass::efsoParticleEmitters;
+					
+				}else if( key == "forceFields" ){
+					filter &= ~igdeGDClass::efsoForceFields;
+					
+				}else if( key == "envMapProbes" ){
+					filter &= ~igdeGDClass::efsoEnvMapProbes;
+					
+				}else if( key == "speakers" ){
+					filter &= ~igdeGDClass::efsoSpeakers;
+					
+				}else if( key == "navigationSpaces" ){
+					filter &= ~igdeGDClass::efsoNavigationSpaces;
+					
+				}else if( key == "navigationBlockers" ){
+					filter &= ~igdeGDClass::efsoNavigationBlockers;
+				}
+			}
+			
+			gdClass->SetInheritSubObjects( filter );
 			
 		}else if( tagName == "inherit" ){
 			pParseClassInherit( *tag, gdClass );
@@ -374,6 +440,9 @@ void igdeXMLGameDefinition::pParseClass( const decXmlElementTag &root, igdeGameD
 			
 		}else if( tagName == "partialHideTag" ){
 			gdClass->GetPartialHideTags().AddTag( GetCDataString( *tag ) );
+			
+		}else if( tagName == "texture" ){
+			pParseClassTexture( *tag, gdClass );
 			
 		}else{
 			LogWarnUnknownTag( root, *tag );
@@ -456,6 +525,9 @@ void igdeXMLGameDefinition::pParseClassComponent( const decXmlElementTag &root, 
 			}else if( tagName == "affectsAudio" ){
 				component->SetAffectsAudio( GetCDataBool( *tag ) );
 				
+			}else if( tagName == "lightShadowIgnore" ){
+				component->SetLightShadowIgnore( GetCDataBool( *tag ) );
+				
 			}else if( tagName == "position" ){
 				decVector position;
 				ReadVector( *tag, position );
@@ -507,6 +579,15 @@ void igdeXMLGameDefinition::pParseClassComponent( const decXmlElementTag &root, 
 					
 				}else if( strcmp( value, "attachRotation" ) == 0 ){
 					component->SetPropertyName( igdeGDCComponent::epAttachRotation, GetAttributeString( *tag, "property" ) );
+					
+				}else if( strcmp( value, "lightShadowIgnore" ) == 0 ){
+					component->SetPropertyName( igdeGDCComponent::epLightShadowIgnore, GetAttributeString( *tag, "property" ) );
+					
+				}else if( strcmp( value, "animation" ) == 0 ){
+					component->SetPropertyName( igdeGDCComponent::epAnimation, GetAttributeString( *tag, "property" ) );
+					
+				}else if( strcmp( value, "move" ) == 0 ){
+					component->SetPropertyName( igdeGDCComponent::epMove, GetAttributeString( *tag, "property" ) );
 					
 				}else{
 					LogWarnUnknownValue( *tag, value );
@@ -1388,6 +1469,9 @@ void igdeXMLGameDefinition::pParseClassSpeaker( const decXmlElementTag &root, ig
 			}else if( tagName == "rollOff" ){
 				gdcSpeaker->SetRollOff( GetCDataFloat( *tag ) );
 				
+			}else if( tagName == "distanceOffset" ){
+				gdcSpeaker->SetDistanceOffset( GetCDataFloat( *tag ) );
+				
 			}else if( tagName == "playSpeed" ){
 				gdcSpeaker->SetPlaySpeed( GetCDataFloat( *tag ) );
 				
@@ -1411,6 +1495,9 @@ void igdeXMLGameDefinition::pParseClassSpeaker( const decXmlElementTag &root, ig
 					
 				}else if( strcmp( value, "rollOff" ) == 0 ){
 					gdcSpeaker->SetPropertyName( igdeGDCSpeaker::epRollOff, GetAttributeString( *tag, "property" ) );
+					
+				}else if( strcmp( value, "distanceOffset" ) == 0 ){
+					gdcSpeaker->SetPropertyName( igdeGDCSpeaker::epDistanceOffset, GetAttributeString( *tag, "property" ) );
 					
 				}else if( strcmp( value, "playSpeed" ) == 0 ){
 					gdcSpeaker->SetPropertyName( igdeGDCSpeaker::epPlaySpeed, GetAttributeString( *tag, "property" ) );
@@ -1488,6 +1575,22 @@ void igdeXMLGameDefinition::pParseClassNavigationSpace( const decXmlElementTag &
 				
 			}else if( tagName == "layer" ){
 				gdcNavSpace->SetLayer( GetCDataInt( *tag ) );
+				
+			}else if( tagName == "type" ){
+				const char * const value = GetCDataString( *tag );
+				
+				if( strcmp( value, "grid" ) == 0 ){
+					gdcNavSpace->SetType( deNavigationSpace::estGrid );
+					
+				}else if( strcmp( value, "mesh" ) == 0 ){
+					gdcNavSpace->SetType( deNavigationSpace::estMesh );
+					
+				}else if( strcmp( value, "volume" ) == 0 ){
+					gdcNavSpace->SetType( deNavigationSpace::estVolume );
+					
+				}else{
+					LogWarnUnknownValue( *tag, value );
+				}
 				
 			}else if( tagName == "blockingPriority" ){
 				gdcNavSpace->SetBlockingPriority( GetCDataInt( *tag ) );
@@ -1655,6 +1758,67 @@ void igdeXMLGameDefinition::pParseClassNavigationBlocker( const decXmlElementTag
 	}
 }
 
+void igdeXMLGameDefinition::pParseClassTexture( const decXmlElementTag &root, igdeGDClass &gdclass ){
+	const int elementCount = root.GetElementCount();
+	decStringDictionary properties;
+	igdeGDCCTexture *texture = NULL;
+	int i;
+	
+	try{
+		texture = new igdeGDCCTexture;
+		
+		texture->SetName( GetAttributeString( root, "name" ) );
+		if( gdclass.GetComponentTextures().HasNamed( texture->GetName() ) ){
+			LogWarnGenericProblemValue( root, texture->GetName().GetString(), "A texture with this name exists already." );
+		}
+		
+		for( i=0; i<elementCount; i++ ){
+			const decXmlElementTag * const tag = root.GetElementIfTag( i );
+			if( ! tag ){
+				continue;
+			}
+			
+			const decString &tagName = tag->GetName();
+			if( tagName == "skin" ){
+				texture->SetPathSkin( GetCDataString( *tag ) );
+				
+			}else if( tagName == "offset" ){
+				decVector2 offset;
+				ReadVector2( *tag, offset );
+				texture->SetOffset( offset );
+				
+			}else if( tagName == "scale" ){
+				decVector2 scale( 1.0f, 1.0f );
+				ReadVector2( *tag, scale );
+				texture->SetScale( scale );
+				
+			}else if( tagName == "rotate" ){
+				texture->SetRotation( GetCDataFloat( *tag ) * DEG2RAD );
+				
+			}else if( tagName == "tint" ){
+				decColor color;
+				ReadColor( *tag, color );
+				texture->SetColorTint( color );
+				
+			}else{
+				LogWarnUnknownTag( root, *tag );
+			}
+		}
+		
+		texture->SetProperties( properties );
+		
+		gdclass.GetComponentTextures().Add( texture );
+		texture->FreeReference();
+		
+	}catch( const deException & ){
+		if( texture ){
+			texture->FreeReference();
+		}
+		
+		throw;
+	}
+}
+
 void igdeXMLGameDefinition::pParseProperty( const decXmlElementTag &root, igdeGDProperty &property ){
 	const char *type;
 	int i;
@@ -1792,6 +1956,9 @@ void igdeXMLGameDefinition::pParseProperty( const decXmlElementTag &root, igdeGD
 			}else if( strcmp( type, "sky" ) == 0 ){
 				property.SetPathPatternType( igdeGDProperty::epptSky );
 				
+			}else if( strcmp( type, "camera" ) == 0 ){
+				property.SetPathPatternType( igdeGDProperty::epptCamera );
+				
 			}else if( strcmp( type, "custom" ) == 0 ){
 				property.SetPathPatternType( igdeGDProperty::epptCustom );
 				
@@ -1808,7 +1975,7 @@ void igdeXMLGameDefinition::pParseProperty( const decXmlElementTag &root, igdeGD
 				
 		}else if( tagName == "idUsage" ){
 			property.SetIdentifierUsage( GetCDataBool( *tag ) );
-		
+			
 		}else{
 			LogWarnUnknownTag( root, *tag );
 		}

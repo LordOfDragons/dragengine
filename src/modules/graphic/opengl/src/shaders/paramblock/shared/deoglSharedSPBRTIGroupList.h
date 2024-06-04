@@ -1,39 +1,50 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLSHAREDSPBRTIGROUPLIST_H_
 #define _DEOGLSHAREDSPBRTIGROUPLIST_H_
 
+#include <dragengine/deObject.h>
 #include <dragengine/common/collection/decPointerList.h>
 
+class deoglRenderThread;
 class deoglSharedSPB;
 class deoglSharedSPBRTIGroup;
 
 
 
 /**
- * \brief OpenGL shared SPB render task instance group list.
+ * OpenGL shared SPB render task instance group list.
  */
-class deoglSharedSPBRTIGroupList{
+class deoglSharedSPBRTIGroupList : public deObject{
+public:
+	typedef deTObjectReference<deoglSharedSPBRTIGroupList> Ref;
+	
+	
+	
 private:
+	deoglRenderThread &pRenderThread;
 	decPointerList pGroups;
 	
 	
@@ -41,37 +52,53 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create shared SPB render task instance group list. */
-	deoglSharedSPBRTIGroupList();
+	/** Create shared SPB render task instance group list. */
+	deoglSharedSPBRTIGroupList( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up shared SPB list. */
-	~deoglSharedSPBRTIGroupList();
+protected:
+	/** Clean up shared SPB list. */
+	virtual ~deoglSharedSPBRTIGroupList();
 	/*@}*/
 	
 	
 	
+public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Number of groups. */
+	/** Render thread. */
+	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
+	
+	/** Count of groups. */
 	int GetCount() const;
 	
-	/** \brief Group at index. */
+	/** Group at index. */
 	deoglSharedSPBRTIGroup *GetAt( int index ) const;
 	
 	/**
-	 * \brief Group group with shared SPB.
-	 * 
-	 * If group does not exist creates it first.
-	 * 
-	 * Caller obtains reference to the group. Release reference if not used anymore.
-	 * Group is removed from this list once all references are released.
+	 * Group group with shared SPB or NULL if not found. Caller obtains reference to the group.
+	 * Release reference if not used anymore. Group is removed from this list once all
+	 * references are released.
 	 */
-	deoglSharedSPBRTIGroup *GetWith( deoglSharedSPB &sharedSPB );
+	deoglSharedSPBRTIGroup *GetWith( deoglSharedSPB &sharedSPB, int textureCount = 1 ) const;
+	
+	/**
+	 * Group group with shared SPB. If group does not exist creates it first. Caller obtains
+	 * reference to the group. Release reference if not used anymore. Group is removed from
+	 * this list once all references are released.
+	 */
+	deoglSharedSPBRTIGroup *GetOrAddWith( deoglSharedSPB &sharedSPB, int textureCount = 1 );
+	
+	/**
+	 * Add group with shared SPB. Call only after GetWith returned NULL. If group does not
+	 * exist creates it first. Caller obtains reference to the group. Release reference if
+	 * not used anymore. Group is removed from this list once all references are released.
+	 */
+	deoglSharedSPBRTIGroup *AddWith( deoglSharedSPB &sharedSPB, int textureCount = 1 );
 	
 	
 	
 	/**
-	 * \brief Remove group.
+	 * Remove group.
 	 * 
 	 * \warning For use by deoglSharedSPBRTIGroup only.
 	 */

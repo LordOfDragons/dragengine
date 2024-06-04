@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <math.h>
@@ -27,12 +30,12 @@
 #include "deoglLightBoundaryMap.h"
 #include "../framebuffer/deoglFramebuffer.h"
 #include "../framebuffer/deoglFramebufferManager.h"
+#include "../framebuffer/deoglRestoreFramebuffer.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTFramebuffer.h"
 #include "../renderthread/deoglRTTexture.h"
 #include "../renderthread/deoglRTLogger.h"
 #include "../texture/deoglTextureStageManager.h"
-#include "../texture/pixelbuffer/deoglPixelBuffer.h"
 #include "../texture/texture2d/deoglTexture.h"
 
 #include <dragengine/common/exceptions.h>
@@ -52,8 +55,8 @@ pTextureMin( NULL ),
 pTextureMax( NULL ),
 pFBOs( NULL ),
 
-pPixBufBoundaryMin( NULL ),
-pPixBufBoundaryMax( NULL ),
+pPixBufBoundaryMin( deoglPixelBuffer::Ref::New( new deoglPixelBuffer( deoglPixelBuffer::epfFloat3, 1, 1, 1 ) ) ),
+pPixBufBoundaryMax( deoglPixelBuffer::Ref::New( new deoglPixelBuffer( deoglPixelBuffer::epfFloat3, 1, 1, 1 ) ) ),
 
 pSize( size ),
 pLevelCount( 1 )
@@ -65,9 +68,6 @@ pLevelCount( 1 )
 	try{
 		pCreateTextures();
 		pCreateFBOs();
-		
-		pPixBufBoundaryMin = new deoglPixelBuffer( deoglPixelBuffer::epfFloat3, 1, 1, 1 );
-		pPixBufBoundaryMax = new deoglPixelBuffer( deoglPixelBuffer::epfFloat3, 1, 1, 1 );
 		
 	}catch( const deException & ){
 		pCleanUp();
@@ -109,8 +109,8 @@ deoglFramebuffer *deoglLightBoundaryMap::GetFBOAt( int level ){
 
 
 void deoglLightBoundaryMap::GetResult( decVector &boundaryMin, decVector &boundaryMax ){
-	pTextureMin->GetPixelsLevel( pLevelCount - 1, *pPixBufBoundaryMin );
-	pTextureMax->GetPixelsLevel( pLevelCount - 1, *pPixBufBoundaryMax );
+	pTextureMin->GetPixelsLevel( pLevelCount - 1, pPixBufBoundaryMin );
+	pTextureMax->GetPixelsLevel( pLevelCount - 1, pPixBufBoundaryMax );
 	
 	const deoglPixelBuffer::sFloat3 &resultMin = *pPixBufBoundaryMin->GetPointerFloat3();
 	const deoglPixelBuffer::sFloat3 &resultMax = *pPixBufBoundaryMax->GetPointerFloat3();
@@ -148,17 +148,10 @@ void deoglLightBoundaryMap::pCleanUp(){
 	if( pTextureMin ){
 		delete pTextureMin;
 	}
-	
-	if( pPixBufBoundaryMax ){
-		delete pPixBufBoundaryMax;
-	}
-	if( pPixBufBoundaryMin ){
-		delete pPixBufBoundaryMin;
-	}
 }
 
 void deoglLightBoundaryMap::pCreateTextures(){
-	pLevelCount = ( int )( ceilf( log2f( pSize ) ) ) + 1;
+	pLevelCount = ( int )( ceilf( log2f( ( float )pSize ) ) ) + 1;
 	
 	pTextureMin = new deoglTexture( pRenderThread );
 	pTextureMin->SetSize( pSize, pSize );
@@ -176,6 +169,7 @@ void deoglLightBoundaryMap::pCreateTextures(){
 }
 
 void deoglLightBoundaryMap::pCreateFBOs(){
+	const deoglRestoreFramebuffer restoreFbo( pRenderThread );
 	const GLenum buffers[ 2 ] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
 	int i;
 	

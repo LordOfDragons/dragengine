@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLTEXSAMPLERCONFIG_H_
@@ -29,7 +32,7 @@ class deoglRenderThread;
 
 
 /**
- * \brief OpenGL texture sampler configuration.
+ * OpenGL texture sampler configuration.
  */
 class deoglTexSamplerConfig{
 private:
@@ -49,10 +52,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create opengl texture sampler configuration. */
+	/** Create opengl texture sampler configuration. */
 	deoglTexSamplerConfig( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up opengl texture sampler configuration. */
+	/** Clean up opengl texture sampler configuration. */
 	~deoglTexSamplerConfig();
 	/*@}*/
 	
@@ -60,45 +63,45 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Sampler object handle. */
+	/** Sampler object handle. */
 	inline GLuint GetSamplerObject() const{ return pSamplerObject; }
 	
 	
 	
-	/** \brief Minimum lod level. */
+	/** Minimum lod level. */
 	inline int GetMinLodLevel() const{ return pMinLodLevel; }
 	
-	/** \brief Set minimum lod level. */
+	/** Set minimum lod level. */
 	void SetMinLodLevel( int level );
 	
-	/** \brief Maximum lod level. */
+	/** Maximum lod level. */
 	inline int GetMaxLodLevel() const{ return pMaxLodLevel; }
 	
-	/** \brief Set maximum lod level. */
+	/** Set maximum lod level. */
 	void SetMaxLodLevel( int level );
 	
-	/** \brief Filter mode. */
+	/** Filter mode. */
 	inline deoglTextureStageManager::eTextureFiltering GetFilterMode() const{ return pFilterMode; }
 	
-	/** \brief Set filter mode. */
+	/** Set filter mode. */
 	void SetFilterMode( deoglTextureStageManager::eTextureFiltering filterMode );
 	
-	/** \brief Wrapping mode. */
+	/** Wrapping mode. */
 	inline GLenum GetWrapMode() const{ return pWrapMode; }
 	
-	/** \brief Set wrapping mode. */
+	/** Set wrapping mode. */
 	void SetWrapMode( GLenum wrapMode );
 	
-	/** \brief Texture uses depth compare mode. */
+	/** Texture uses depth compare mode. */
 	inline bool GetDepthCompareMode() const{ return pDepthCompareMode; }
 	
-	/** \brief Set if texture uses depth compare mode. */
+	/** Set if texture uses depth compare mode. */
 	void SetDepthCompareMode( bool depthCompareMode );
 	
-	/** \brief Depth compare function. */
+	/** Depth compare function. */
 	inline GLenum GetDepthCompareFunc() const{ return pDepthCompareFunc; }
 	
-	/** \brief Set depth compare function. */
+	/** Set depth compare function. */
 	void SetDepthCompareFunc( GLenum func );
 	/*@}*/
 };

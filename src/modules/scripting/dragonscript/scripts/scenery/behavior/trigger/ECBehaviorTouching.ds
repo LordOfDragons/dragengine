@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -64,6 +67,48 @@ class ECBehaviorTouching extends DefaultECBehavior
 		end
 	end
 	
+	/** \brief Implementation of behavior instance listener using BooleanBehaviorListener. */
+	class BooleanListener extends DefaultListener
+		private var BooleanBehaviorListener pListener
+		
+		public func new( BooleanBehaviorListener listener )
+			this.pListener = listener
+		end
+		
+		public func void startTouching( Instance instance )
+			this.pListener.enabled()
+		end
+		
+		public func void stopTouching( Instance instance )
+			this.pListener.disabled()
+		end
+	end
+	
+	/** \brief Factory creating listeners. */
+	interface ListenerFactory
+		/** \brief Create listener. */
+		func Listener createListener( Instance instance )
+	end
+	
+	/** \brief Factory creating listeners using block. */
+	class BlockListenerFactory implements ListenerFactory
+		private var Block pBlock
+		
+		/** \brief Create factory using block receiving Instance as parameter returning Listener. */
+		public func new( Block blockFactory )
+			if blockFactory == null
+				throw ENullPointer.new()
+			end
+			this.pBlock = blockFactory
+		end
+		
+		/** \brief Create listener. */
+		public func Listener createListener( Instance instance )
+			return this.pBlock.run( instance ) cast Listener
+		end
+	end
+	
+	
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
@@ -76,11 +121,15 @@ class ECBehaviorTouching extends DefaultECBehavior
 			end
 			
 			public func void elementEntered( ECBehaviorTouchSensor.Instance instance, Element element )
-				this.pInstance.startTouching()
+				if instance.getTouchingElementCount() == 1
+					this.pInstance.startTouching()
+				end
 			end
 			
 			public func void elementLeft( ECBehaviorTouchSensor.Instance instance, Element element )
-				this.pInstance.stopTouching()
+				if instance.getTouchingElementCount() == 0
+					this.pInstance.stopTouching()
+				end
 			end
 			
 			public func bool elementCanTouch( ECBehaviorTouchSensor.Instance instance, Element element )
@@ -127,6 +176,8 @@ class ECBehaviorTouching extends DefaultECBehavior
 			
 			this.pTarget = TSNamedTriggerTarget.new( this.pECBehavior.getTarget().getValue( stub ) )
 			this.pPulse = this.pECBehavior.getPulse().getValue( stub )
+			
+			this.pECBehavior.createListeners( this )
 		end
 		
 		
@@ -155,14 +206,7 @@ class ECBehaviorTouching extends DefaultECBehavior
 		
 		/** \brief First element entered touch sensor. */
 		public func void startTouching()
-			if this.pTarget != null
-				if this.pPulse
-					this.pTarget.pulse()
-					
-				else
-					this.pTarget.fire()
-				end
-			end
+			this.fireTarget()
 			
 			this.pListeners.forEach( block Listener each
 				each.startTouching( this )
@@ -171,9 +215,7 @@ class ECBehaviorTouching extends DefaultECBehavior
 		
 		/** \brief Last element left touch sensor. */
 		public func void stopTouching()
-			if this.pTarget != null
-				this.pTarget.reset()
-			end
+			this.resetTarget()
 			
 			this.pListeners.forEach( block Listener each
 				each.stopTouching( this )
@@ -199,8 +241,18 @@ class ECBehaviorTouching extends DefaultECBehavior
 		
 		/** \brief Add element to game world. */
 		public func void addToGameWorld()
-			if this.pTarget != null
-				this.pTarget.acquireTarget( this.pECBehavior.getTriggerTable() )
+			if this.pTarget == null
+				return
+			end
+			
+			this.pTarget.acquireTarget( this.pECBehavior.getTriggerTable() )
+			
+			// ECBehaviorTouchSensor.addToGameWorld() is called before this method is called.
+			// if elements are touching right now startTouching() has been called firing pTarget.
+			// at that time though pTarget has not acquired yet the target. ensure target is
+			// properly fired if this is the case
+			if this.pTouchSensor.getTouchingElementCount() > 0
+				this.fireTarget()
 			end
 		end
 		
@@ -208,6 +260,33 @@ class ECBehaviorTouching extends DefaultECBehavior
 		public func void removeFromGameWorld()
 			if this.pTarget != null
 				this.pTarget.dropTarget()
+			end
+		end
+		
+		
+		
+		/**
+		 * \brief Fire target if not null.
+		 * \version 1.6
+		 */
+		protected func void fireTarget()
+			if this.pTarget != null
+				if this.pPulse
+					this.pTarget.pulse()
+					
+				else
+					this.pTarget.fire()
+				end
+			end
+		end
+		
+		/**
+		 * \brief Reset target if not null.
+		 * \version 1.6
+		 */
+		protected func void resetTarget()
+			if this.pTarget != null
+				this.pTarget.reset()
 			end
 		end
 	end
@@ -218,6 +297,7 @@ class ECBehaviorTouching extends DefaultECBehavior
 	private var ECPString pTarget
 	private var ECPBoolean pPulse
 	private var TSTriggerTable pTouchSensorTable
+	private var Array pListenerFactories
 	
 	
 	
@@ -251,6 +331,7 @@ class ECBehaviorTouching extends DefaultECBehavior
 	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider, \
 	TSTriggerTable triggerTable, String id, String subID, String prefix ) super( eclass, id )
 		this.pTouchSensorTable = triggerTable
+		this.pListenerFactories = Array.new()
 		
 		this.pTouchSensor = ECBehaviorTouchSensor.new( eclass, collider, subID, prefix + "touchSensor." )
 		
@@ -261,6 +342,12 @@ class ECBehaviorTouching extends DefaultECBehavior
 		eclass.addProperty( this.pPulse )
 		
 		eclass.addBehavior( this )
+	end
+	
+	/** \brief Dispose of behavior. */
+	public func void dispose()
+		this.pListenerFactories = null
+		super.dispose()
 	end
 	
 	
@@ -290,6 +377,35 @@ class ECBehaviorTouching extends DefaultECBehavior
 		this.pTouchSensorTable = triggerTable
 	end
 	
+	/** \brief Add listener factory. */
+	public func void addListenerFactory( ListenerFactory factory )
+		if factory == null
+			throw ENullPointer.new()
+		end
+		this.pListenerFactories.add( factory )
+	end
+	
+	/**
+	 * \brief Add listener factory using block.
+	 * 
+	 * Block receives as parameter Instance and returns Listener.
+	 */
+	public func void addListenerFactory( Block blockFactory )
+		this.pListenerFactories.add( BlockListenerFactory.new( blockFactory ) )
+	end
+	
+	/** \brief Visit listener factories with block with argument ListenerFactory. */
+	public func void forEachListenerFactory( Block ablock )
+		this.pListenerFactories.forEach( ablock )
+	end
+	
+	/** \brief Create listeners from factories adding them to behavior instance. */
+	public func void createListeners( Instance instance )
+		this.pListenerFactories.forEach( block ListenerFactory each
+			instance.addListener( each.createListener( instance ) )
+		end )
+	end
+	
 	
 	
 	/** \brief Get instance in element from owner element class. */
@@ -306,8 +422,8 @@ class ECBehaviorTouching extends DefaultECBehavior
 	 * of type ECBehaviorComponent.
 	 */
 	static public func ECBehaviorTouching getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehavior each
-			return each castable ECBehaviorTouching
+		return eclass.findBehavior( block ECBehaviorTouching each
+			return true
 		end ) cast ECBehaviorTouching
 	end
 	
@@ -319,8 +435,7 @@ class ECBehaviorTouching extends DefaultECBehavior
 	 */
 	static public func ECBehaviorTouching getBehaviorIn( BehaviorElementClass eclass, String id )
 		return eclass.findBehavior( block ECBehaviorTouching each
-			return each castable ECBehaviorTouching and \
-				( each cast ECBehaviorTouching ).getID().equals( id )
+			return each.getID().equals( id )
 		end ) cast ECBehaviorTouching
 	end
 	
@@ -331,13 +446,9 @@ class ECBehaviorTouching extends DefaultECBehavior
 	 * been created in the element.
 	 */
 	static public func Array getAllBehaviorsIn( BehaviorElementClass eclass )
-		var Array list = Array.new()
-		eclass.forEachBehavior( block ECBehavior each
-			if each castable ECBehaviorTouching
-				list.add( each )
-			end
+		return eclass.collectBehaviors( block ECBehaviorTouching each
+			return true
 		end )
-		return list
 	end
 	
 	
@@ -350,8 +461,8 @@ class ECBehaviorTouching extends DefaultECBehavior
 	 * the first instance.
 	 */
 	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance
+		return element.findInstance( block Instance each
+			return true
 		end ) cast Instance
 	end
 	
@@ -362,9 +473,8 @@ class ECBehaviorTouching extends DefaultECBehavior
 	 * of type ECBehaviorTouching.Instance with specific identifier.
 	 */
 	static public func Instance getInstanceIn( BehaviorElement element, String id )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance and \
-				( each cast Instance ).getECBehavior().getID().equals( id )
+		return element.findInstance( block Instance each
+			return each.getECBehavior().getID().equals( id )
 		end ) cast Instance
 	end
 	
@@ -375,13 +485,9 @@ class ECBehaviorTouching extends DefaultECBehavior
 	 * been created in the element.
 	 */
 	static public func Array getAllInstancesIn( BehaviorElement element )
-		var Array list = Array.new()
-		element.forEachInstance( block ECBehaviorInstance each
-			if each castable Instance
-				list.add( each )
-			end
+		return element.collectInstances( block Instance each
+			return true
 		end )
-		return list
 	end
 	
 	

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -30,6 +33,7 @@
 #include "deoglRDecal.h"
 #include "deoglMOVDecalCollect.h"
 #include "../component/deoglRComponent.h"
+#include "../component/deoglRComponentLOD.h"
 #include "../model/deoglRModel.h"
 #include "../model/deoglModelLOD.h"
 #include "../model/face/deoglModelFace.h"
@@ -175,337 +179,341 @@ void deoglDecalMeshBuilder::CutTriangle( const decVector &v1, const decVector &v
 }
 
 // #include <dragengine/common/utils/decTimer.h>
-void deoglDecalMeshBuilder::BuildMeshForComponent( const deoglRComponent &oglComponent ){
-	if( ! oglComponent.GetModel() ){
-		DETHROW( deeInvalidParam );
-	}
+void deoglDecalMeshBuilder::BuildMeshForComponent( const deoglRComponent &component ){
+	BuildMeshForComponent( component.GetLODAt( 0 ) );
+}
+
+void deoglDecalMeshBuilder::BuildMeshForComponent ( const deoglRComponentLOD& lod ){
+	deoglModelLOD &modelLod = lod.GetModelLODRef();
 	
-	// prepare
 	RemoveAllFaces();
 	RemoveAllPoints();
-	if( true ){
-		// octree version
-		const deoglRModel &oglModel = *oglComponent.GetModel();
-		deoglModelLOD &oglModelLOD = oglModel.GetLODAt( 0 );
-		oglModelLOD.PrepareOctree();
-		
+	
+	// octree version
+	modelLod.PrepareOctree();
+	
 // 		decTimer timer;
-		deoglTriangleSorter &triangleSorter = pRenderThread.GetTriangleSorter();
-		deoglMOVDecalCollect collect( oglModelLOD, triangleSorter );
-		collect.CollectFaces( pDecalMatrix, pSize );
+	deoglTriangleSorter &triangleSorter = pRenderThread.GetTriangleSorter();
+	deoglMOVDecalCollect collect( modelLod, triangleSorter );
+	collect.CollectFaces( pDecalMatrix, pSize );
 // 		printf( "CollectFaces: %.2f\n", timer.GetElapsedTime() * 1e3f );
+	
+	const decVector projectVector( -pDecalView * 1e3f ); // anything large enough should work
+	const int faceCount = triangleSorter.GetTriangleCount();
+	decConvexVolume splitVolume;
+	int i;
+	
+	for( i=0; i<faceCount; i++ ){
+		const decVector &v1 = triangleSorter.GetTriangleVertex1( i );
+		const decVector &v2 = triangleSorter.GetTriangleVertex2( i );
+		const decVector &v3 = triangleSorter.GetTriangleVertex3( i );
 		
-		const decVector projectVector( -pDecalView * 1e3f ); // anything large enough should work
-		const int faceCount = triangleSorter.GetTriangleCount();
-		decConvexVolume splitVolume;
-		int i;
+		// cut by the face
+		splitVolume.SetEmpty();
+		splitVolume.AddVertex( v1 );
+		splitVolume.AddVertex( v2 );
+		splitVolume.AddVertex( v3 );
+		splitVolume.AddVertex( v1 + projectVector );
+		splitVolume.AddVertex( v2 + projectVector );
+		splitVolume.AddVertex( v3 + projectVector );
 		
-		for( i=0; i<faceCount; i++ ){
-			const decVector &v1 = triangleSorter.GetTriangleVertex1( i );
-			const decVector &v2 = triangleSorter.GetTriangleVertex2( i );
-			const decVector &v3 = triangleSorter.GetTriangleVertex3( i );
+		// front and back
+		const decVector volumeFaceNormal( ( v2 - v1 ) % ( v3 - v2 ) );
+		pVolumeAddFace( &splitVolume, 0, 1, 2, volumeFaceNormal, true );
+		pVolumeAddFace( &splitVolume, 5, 4, 3, -volumeFaceNormal, false );
+		
+		// sides
+		const decVector s1normal( ( v2 - v1 ) % pDecalView );
+		if( s1normal.IsZero( 0.001f ) ){
+			break;
+		}
+		pVolumeAddFace( &splitVolume, 0, 3, 4, 1, s1normal, false );
+		
+		const decVector s2normal( ( v3 - v2 ) % pDecalView );
+		if( s2normal.IsZero( 0.001f ) ){
+			break;
+		}
+		pVolumeAddFace( &splitVolume, 1, 4, 5, 2, s2normal, false );
+		
+		const decVector s3normal( ( v1 - v3 ) % pDecalView );
+		if( s3normal.IsZero( 0.001f ) ){
+			break;
+		}
+		pVolumeAddFace( &splitVolume, 2, 5, 3, 0, s3normal, false );
+		
+		pCVolList->SplitByVolume( splitVolume );
+	}
+// 		printf( "Split: %.2f\n", timer.GetElapsedTime() * 1e3f );
+	
+	// add faces matching the volume
+	const int volumeCount = pCVolList->GetVolumeCount();
+	deoglConvexFaceClipper faceClipper;
+	int j, k, l;
+	
+	for( i=0; i<volumeCount; i++ ){
+		const decConvexVolume &volume = *pCVolList->GetVolumeAt( i );
+		const int volumeFaceCount = volume.GetFaceCount();
+		
+		for( j=0; j<volumeFaceCount; j++ ){
+			deoglDMBConvexVolumeFace &volumeFace = *( ( deoglDMBConvexVolumeFace* )volume.GetFaceAt( j ) );
 			
-			// cut by the face
-			splitVolume.SetEmpty();
-			splitVolume.AddVertex( v1 );
-			splitVolume.AddVertex( v2 );
-			splitVolume.AddVertex( v3 );
-			splitVolume.AddVertex( v1 + projectVector );
-			splitVolume.AddVertex( v2 + projectVector );
-			splitVolume.AddVertex( v3 + projectVector );
+			if( ! volumeFace.GetDecalFace() || volumeFace.GetVertexCount() < 3 ){
+				continue;
+			}
 			
-			// front and back
-			const decVector volumeFaceNormal( ( v2 - v1 ) % ( v3 - v2 ) );
-			pVolumeAddFace( &splitVolume, 0, 1, 2, volumeFaceNormal, true );
-			pVolumeAddFace( &splitVolume, 5, 4, 3, -volumeFaceNormal, false );
+			const decVector volumeFaceNormal( -volumeFace.GetNormal() ); // since it faces backwards
+			const float volumeFaceDot = volumeFaceNormal * volume.GetVertexAt( volumeFace.GetVertexAt( 0 ) );
 			
-			// sides
-			const decVector s1normal( ( v2 - v1 ) % pDecalView );
-			if( s1normal.IsZero( 0.001f ) ){
+			const int volumeVertexCount = volumeFace.GetVertexCount();
+			
+			// test all collected faces
+			for( k=0; k<faceCount; k++ ){
+				const decVector &v1 = triangleSorter.GetTriangleVertex1( k );
+				const decVector &v2 = triangleSorter.GetTriangleVertex2( k );
+				const decVector &v3 = triangleSorter.GetTriangleVertex3( k );
+				
+				// the face has to be coplanar with the volume face
+				if( fabsf( volumeFaceNormal * v1 - volumeFaceDot ) > 1e-5f
+				|| fabsf( volumeFaceNormal * v2 - volumeFaceDot ) > 1e-5f
+				|| fabsf( volumeFaceNormal * v3 - volumeFaceDot ) > 1e-5f ){
+					continue;
+				}
+				
+				// clip the face
+				faceClipper.RemoveAllVertices();
+				for( l=volumeVertexCount-1; l>=0; l-- ){
+					faceClipper.AddVertex( volume.GetVertexAt( volumeFace.GetVertexAt( l ) ) );
+				}
+				
+				faceClipper.ClipByPlane( volumeFaceNormal % ( v2 - v1 ), v1 );
+				faceClipper.ClipByPlane( volumeFaceNormal % ( v3 - v2 ), v2 );
+				faceClipper.ClipByPlane( volumeFaceNormal % ( v1 - v3 ), v3 );
+				
+				// if something is left it is a part of the decal mesh
+				const int vertexCount = faceClipper.GetVertexCount();
+				if( vertexCount < 3 ){
+					continue;
+				}
+				
+				const int firstPoint = AddPoint( faceClipper.GetVertexAt( 0 ).ToVector() );
+				int lastPoint = AddPoint( faceClipper.GetVertexAt( 1 ).ToVector() );
+				
+				for( l=2; l<vertexCount; l++ ){
+					const int nextPoint = AddPoint( faceClipper.GetVertexAt( l ).ToVector() );
+					
+					deoglDecalMeshBuilderFace &dmbFace = *AddFace();
+					dmbFace.SetPoint1( firstPoint );
+					dmbFace.SetPoint2( lastPoint );
+					dmbFace.SetPoint3( nextPoint );
+					dmbFace.SetFaceNormal( volumeFaceNormal );
+					
+					lastPoint = nextPoint;
+				}
+			}
+		}
+	}
+// 		printf( "Convert: %.2f\n", timer.GetElapsedTime() * 1e3f );
+}
+
+#if 0
+void deoglDecalMeshBuilder::BuildMeshForComponent ( const deoglRComponentLOD& lod ){
+	RemoveAllFaces();
+	RemoveAllPoints();
+	
+	// non-octree version
+	const deoglRModel &oglModel = oglComponent.GetModelRef();
+	const demodelLod &modelLod = oglModel.GetLODAt( 0 );
+	const oglModelPosition * const modelPositions = modelLod.GetPositions();
+	const oglModelVertex * const modelVertices = modelLod.GetVertices();
+	const deoglModelFace * const modelFaces = modelLod.GetFaces();
+	deoglConvexFaceClipper faceClipper;
+	decConvexVolume splitVolume;
+	int v, vf, f, x;
+	
+	// cut volume
+	const int faceCount = modelLod.GetFaceCount();
+	
+	for( f=0; f<faceCount; f++ ){
+		const deoglModelFace &face = modelFaces[ f ];
+		if( modelLod.GetTextureAt( face.GetTexture() ).GetDecal() ){
+			continue; // decal faces are not used to cut decals
+		}
+		
+		const decVector &v1 = modelPositions[ modelVertices[ face.GetVertex1() ].position ].position;
+		const decVector &v2 = modelPositions[ modelVertices[ face.GetVertex2() ].position ].position;
+		const decVector &v3 = modelPositions[ modelVertices[ face.GetVertex3() ].position ].position;
+		
+		// face has to face into the direction of the decal
+		if( face.GetFaceNormal() * pDecalView < FLOAT_SAFE_EPSILON ){
+			continue;
+		}
+		
+		// clip the face to avoid artefacts
+		faceClipper.RemoveAllVertices();
+		faceClipper.AddVertex( v1 );
+		faceClipper.AddVertex( v2 );
+		faceClipper.AddVertex( v3 );
+		faceClipper.ClipByPlane( -pDecalView, pOrigin );
+		
+		const int vertexCount = faceClipper.GetVertexCount();
+		if( vertexCount < 3 ){
+			continue;
+		}
+		
+		// cut by the face
+		splitVolume.SetEmpty();
+		for( x=0; x<vertexCount; x++ ){
+			splitVolume.AddVertex( faceClipper.GetVertexAt( x ).ToVector() );
+		}
+		for( x=0; x<vertexCount; x++ ){
+			splitVolume.AddVertex( faceClipper.GetVertexAt( x ).ToVector() + pProjVector );
+		}
+		
+		// front
+		const decVector volumeFaceNormal( ( ( v2 - v1 ) % ( v3 - v2 ) ).Normalized() );
+		
+		deoglDMBConvexVolumeFace *volumeFace = NULL;
+		try{
+			volumeFace = new deoglDMBConvexVolumeFace;
+			volumeFace->SetNormal( volumeFaceNormal );
+			
+			for( x=0; x<vertexCount; x++ ){
+				volumeFace->AddVertex( x );
+			}
+			volumeFace->SetDecalFace( true );
+			
+			splitVolume.AddFace( volumeFace );
+			
+		}catch( const deException & ){
+			if( volumeFace ){
+				delete volumeFace;
+			}
+			throw;
+		}
+		
+		// back
+		volumeFace = NULL;
+		try{
+			volumeFace = new deoglDMBConvexVolumeFace;
+			
+			volumeFace->SetNormal( -volumeFaceNormal );
+			
+			for( x=vertexCount-1; x>=0; x-- ){
+				volumeFace->AddVertex( vertexCount + x );
+			}
+			
+			splitVolume.AddFace( volumeFace );
+			
+		}catch( const deException & ){
+			if( volumeFace ){
+				delete volumeFace;
+			}
+			throw;
+		}
+		
+		// sides
+		for( x=0; x<vertexCount; x++ ){
+			const int x2 = ( x + 1 ) % vertexCount;
+			const decVector normal( ( splitVolume.GetVertexAt( x2 ) - splitVolume.GetVertexAt( x ) ) % pDecalView );
+			
+			if( normal.IsZero( 0.001f ) ){
+				// if the input face is not co-planar it is possible for a normal to end 0-length
+				// due to the edge ending up co-linear with the decal view. this is an error case
+				// in the model provided by the user and is silently skipped since no useful
+				// projection of the decal is possible in this case
+				splitVolume.SetEmpty();
 				break;
 			}
-			pVolumeAddFace( &splitVolume, 0, 3, 4, 1, s1normal, false );
 			
-			const decVector s2normal( ( v3 - v2 ) % pDecalView );
-			if( s2normal.IsZero( 0.001f ) ){
-				break;
-			}
-			pVolumeAddFace( &splitVolume, 1, 4, 5, 2, s2normal, false );
-			
-			const decVector s3normal( ( v1 - v3 ) % pDecalView );
-			if( s3normal.IsZero( 0.001f ) ){
-				break;
-			}
-			pVolumeAddFace( &splitVolume, 2, 5, 3, 0, s3normal, false );
-			
+			pVolumeAddFace( &splitVolume, vertexCount + x, vertexCount + x2, x2, x,
+				( splitVolume.GetVertexAt( x2 ) - splitVolume.GetVertexAt( x ) ) % pDecalView, false );
+		}
+		
+		if( splitVolume.GetFaceCount() > 0 ){
 			pCVolList->SplitByVolume( splitVolume );
 		}
-// 		printf( "Split: %.2f\n", timer.GetElapsedTime() * 1e3f );
+	}
+	
+	// add faces matching the volume
+	const int volumeCount = pCVolList->GetVolumeCount();
+	
+	for( v=0; v<volumeCount; v++ ){
+		const decConvexVolume &volume = *pCVolList->GetVolumeAt( v );
+		const int volumeFaceCount = volume.GetFaceCount();
 		
-		// add faces matching the volume
-		const int volumeCount = pCVolList->GetVolumeCount();
-		deoglConvexFaceClipper faceClipper;
-		int j, k, l;
-		
-		for( i=0; i<volumeCount; i++ ){
-			const decConvexVolume &volume = *pCVolList->GetVolumeAt( i );
-			const int volumeFaceCount = volume.GetFaceCount();
+		for( vf=0; vf<volumeFaceCount; vf++ ){
+			deoglDMBConvexVolumeFace &volumeFace = *( ( deoglDMBConvexVolumeFace* )volume.GetFaceAt( vf ) );
 			
-			for( j=0; j<volumeFaceCount; j++ ){
-				deoglDMBConvexVolumeFace &volumeFace = *( ( deoglDMBConvexVolumeFace* )volume.GetFaceAt( j ) );
-				
-				if( ! volumeFace.GetDecalFace() || volumeFace.GetVertexCount() < 3 ){
-					continue;
-				}
-				
-				const decVector volumeFaceNormal( -volumeFace.GetNormal() ); // since it faces backwards
-				const float volumeFaceDot = volumeFaceNormal * volume.GetVertexAt( volumeFace.GetVertexAt( 0 ) );
-				
-				const int volumeVertexCount = volumeFace.GetVertexCount();
-				
-				// test all collected faces
-				for( k=0; k<faceCount; k++ ){
-					const decVector &v1 = triangleSorter.GetTriangleVertex1( k );
-					const decVector &v2 = triangleSorter.GetTriangleVertex2( k );
-					const decVector &v3 = triangleSorter.GetTriangleVertex3( k );
-					
-					// the face has to be coplanar with the volume face
-					if( fabsf( volumeFaceNormal * v1 - volumeFaceDot ) > 1e-5f
-					|| fabsf( volumeFaceNormal * v2 - volumeFaceDot ) > 1e-5f
-					|| fabsf( volumeFaceNormal * v3 - volumeFaceDot ) > 1e-5f ){
-						continue;
-					}
-					
-					// clip the face
-					faceClipper.RemoveAllVertices();
-					for( l=volumeVertexCount-1; l>=0; l-- ){
-						faceClipper.AddVertex( volume.GetVertexAt( volumeFace.GetVertexAt( l ) ) );
-					}
-					
-					faceClipper.ClipByPlane( volumeFaceNormal % ( v2 - v1 ), v1 );
-					faceClipper.ClipByPlane( volumeFaceNormal % ( v3 - v2 ), v2 );
-					faceClipper.ClipByPlane( volumeFaceNormal % ( v1 - v3 ), v3 );
-					
-					// if something is left it is a part of the decal mesh
-					const int vertexCount = faceClipper.GetVertexCount();
-					if( vertexCount < 3 ){
-						continue;
-					}
-					
-					const int firstPoint = AddPoint( faceClipper.GetVertexAt( 0 ).ToVector() );
-					int lastPoint = AddPoint( faceClipper.GetVertexAt( 1 ).ToVector() );
-					
-					for( l=2; l<vertexCount; l++ ){
-						const int nextPoint = AddPoint( faceClipper.GetVertexAt( l ).ToVector() );
-						
-						deoglDecalMeshBuilderFace &dmbFace = *AddFace();
-						dmbFace.SetPoint1( firstPoint );
-						dmbFace.SetPoint2( lastPoint );
-						dmbFace.SetPoint3( nextPoint );
-						dmbFace.SetFaceNormal( volumeFaceNormal );
-						
-						lastPoint = nextPoint;
-					}
-				}
+			if( ! volumeFace.GetDecalFace() ){
+				continue;
 			}
-		}
-// 		printf( "Convert: %.2f\n", timer.GetElapsedTime() * 1e3f );
-		
-	}else{
-		const deoglRModel &oglModel = *oglComponent.GetModel();
-		const deoglModelLOD &oglModelLOD = oglModel.GetLODAt( 0 );
-		const oglModelPosition * const modelPositions = oglModelLOD.GetPositions();
-		const oglModelVertex * const modelVertices = oglModelLOD.GetVertices();
-		const deoglModelFace * const modelFaces = oglModelLOD.GetFaces();
-		deoglConvexFaceClipper faceClipper;
-		decConvexVolume splitVolume;
-		int v, vf, f, x;
-		
-		// cut volume
-		const int faceCount = oglModelLOD.GetFaceCount();
-		
-		for( f=0; f<faceCount; f++ ){
-			const deoglModelFace &face = modelFaces[ f ];
-			if( oglModelLOD.GetTextureAt( face.GetTexture() ).GetDecal() ){
-				continue; // decal faces are not used to cut decals
+			if( volumeFace.GetNormal() * pDecalView > 0.001f ){
+				continue;
 			}
-			
-			const decVector &v1 = modelPositions[ modelVertices[ face.GetVertex1() ].position ].position;
-			const decVector &v2 = modelPositions[ modelVertices[ face.GetVertex2() ].position ].position;
-			const decVector &v3 = modelPositions[ modelVertices[ face.GetVertex3() ].position ].position;
-			
-			// face has to face into the direction of the decal
-			if( face.GetFaceNormal() * pDecalView < FLOAT_SAFE_EPSILON ){
+			if( volumeFace.GetVertexCount() < 3 ){
 				continue;
 			}
 			
-			// clip the face to avoid artefacts
-			faceClipper.RemoveAllVertices();
-			faceClipper.AddVertex( v1 );
-			faceClipper.AddVertex( v2 );
-			faceClipper.AddVertex( v3 );
-			faceClipper.ClipByPlane( -pDecalView, pOrigin );
+			const decVector volumeFaceNormal( -volumeFace.GetNormal() ); // since it faces backwards
+			const float volumeFaceDot = volumeFaceNormal * volume.GetVertexAt( volumeFace.GetVertexAt( 0 ) );
 			
-			const int vertexCount = faceClipper.GetVertexCount();
-			if( vertexCount < 3 ){
-				continue;
-			}
+			const int volumeVertexCount = volumeFace.GetVertexCount();
 			
-			// cut by the face
-			splitVolume.SetEmpty();
-			for( x=0; x<vertexCount; x++ ){
-				splitVolume.AddVertex( faceClipper.GetVertexAt( x ).ToVector() );
-			}
-			for( x=0; x<vertexCount; x++ ){
-				splitVolume.AddVertex( faceClipper.GetVertexAt( x ).ToVector() + pProjVector );
-			}
-			
-			// front
-			const decVector volumeFaceNormal( ( ( v2 - v1 ) % ( v3 - v2 ) ).Normalized() );
-			
-			deoglDMBConvexVolumeFace *volumeFace = NULL;
-			try{
-				volumeFace = new deoglDMBConvexVolumeFace;
-				volumeFace->SetNormal( volumeFaceNormal );
-				
-				for( x=0; x<vertexCount; x++ ){
-					volumeFace->AddVertex( x );
-				}
-				volumeFace->SetDecalFace( true );
-				
-				splitVolume.AddFace( volumeFace );
-				
-			}catch( const deException & ){
-				if( volumeFace ){
-					delete volumeFace;
-				}
-				throw;
-			}
-			
-			// back
-			volumeFace = NULL;
-			try{
-				volumeFace = new deoglDMBConvexVolumeFace;
-				
-				volumeFace->SetNormal( -volumeFaceNormal );
-				
-				for( x=vertexCount-1; x>=0; x-- ){
-					volumeFace->AddVertex( vertexCount + x );
+			// now test all faces of the component
+			for( f=0; f<faceCount; f++ ){
+				const deoglModelFace &oglCFace = modelFaces[ f ];
+				if( modelLod.GetTextureAt( oglCFace.GetTexture() ).GetDecal() ){
+					continue; // decal faces are not used to cut decals
 				}
 				
-				splitVolume.AddFace( volumeFace );
+				// the face has to be coplanar with the volume face
+				const decVector &v1 = modelPositions[ modelVertices[ oglCFace.GetVertex1() ].position ].position;
 				
-			}catch( const deException & ){
-				if( volumeFace ){
-					delete volumeFace;
-				}
-				throw;
-			}
-			
-			// sides
-			for( x=0; x<vertexCount; x++ ){
-				const int x2 = ( x + 1 ) % vertexCount;
-				const decVector normal( ( splitVolume.GetVertexAt( x2 ) - splitVolume.GetVertexAt( x ) ) % pDecalView );
-				
-				if( normal.IsZero( 0.001f ) ){
-					// if the input face is not co-planar it is possible for a normal to end 0-length
-					// due to the edge ending up co-linear with the decal view. this is an error case
-					// in the model provided by the user and is silently skipped since no useful
-					// projection of the decal is possible in this case
-					splitVolume.SetEmpty();
-					break;
-				}
-				
-				pVolumeAddFace( &splitVolume, vertexCount + x, vertexCount + x2, x2, x,
-					( splitVolume.GetVertexAt( x2 ) - splitVolume.GetVertexAt( x ) ) % pDecalView, false );
-			}
-			
-			if( splitVolume.GetFaceCount() > 0 ){
-				pCVolList->SplitByVolume( splitVolume );
-			}
-		}
-		
-		// add faces matching the volume
-		const int volumeCount = pCVolList->GetVolumeCount();
-		
-		for( v=0; v<volumeCount; v++ ){
-			const decConvexVolume &volume = *pCVolList->GetVolumeAt( v );
-			const int volumeFaceCount = volume.GetFaceCount();
-			
-			for( vf=0; vf<volumeFaceCount; vf++ ){
-				deoglDMBConvexVolumeFace &volumeFace = *( ( deoglDMBConvexVolumeFace* )volume.GetFaceAt( vf ) );
-				
-				if( ! volumeFace.GetDecalFace() ){
+				if( fabs( volumeFaceNormal * oglCFace.GetFaceNormal() ) < 0.99999f ){
 					continue;
 				}
-				if( volumeFace.GetNormal() * pDecalView > 0.001f ){
-					continue;
-				}
-				if( volumeFace.GetVertexCount() < 3 ){
+				if( fabs( volumeFaceNormal * v1 - volumeFaceDot ) > FLOAT_SAFE_EPSILON ){
 					continue;
 				}
 				
-				const decVector volumeFaceNormal( -volumeFace.GetNormal() ); // since it faces backwards
-				const float volumeFaceDot = volumeFaceNormal * volume.GetVertexAt( volumeFace.GetVertexAt( 0 ) );
+				const decVector &v2 = modelPositions[ modelVertices[ oglCFace.GetVertex2() ].position ].position;
+				const decVector &v3 = modelPositions[ modelVertices[ oglCFace.GetVertex3() ].position ].position;
 				
-				const int volumeVertexCount = volumeFace.GetVertexCount();
+				// clip the face
+				faceClipper.RemoveAllVertices();
+				for( x=volumeVertexCount-1; x>=0; x-- ){
+					faceClipper.AddVertex( volume.GetVertexAt( volumeFace.GetVertexAt( x ) ) );
+				}
 				
-				// now test all faces of the component
-				for( f=0; f<faceCount; f++ ){
-					const deoglModelFace &oglCFace = modelFaces[ f ];
-					if( oglModelLOD.GetTextureAt( oglCFace.GetTexture() ).GetDecal() ){
-						continue; // decal faces are not used to cut decals
-					}
+				faceClipper.ClipByPlane( oglCFace.GetFaceNormal() % ( v2 - v1 ), v1 );
+				faceClipper.ClipByPlane( oglCFace.GetFaceNormal() % ( v3 - v2 ), v2 );
+				faceClipper.ClipByPlane( oglCFace.GetFaceNormal() % ( v1 - v3 ), v3 );
+				
+				// if something is left it is a part of the decal mesh
+				const int vertexCount = faceClipper.GetVertexCount();
+				if( vertexCount < 3 ){
+					continue;
+				}
+				
+				const int firstPoint = AddPoint( faceClipper.GetVertexAt( 0 ).ToVector() );
+				int lastPoint = AddPoint( faceClipper.GetVertexAt( 1 ).ToVector() );
+				
+				for( x=2; x<vertexCount; x++ ){
+					const int nextPoint = AddPoint( faceClipper.GetVertexAt( x ).ToVector() );
 					
-					// the face has to be coplanar with the volume face
-					const decVector &v1 = modelPositions[ modelVertices[ oglCFace.GetVertex1() ].position ].position;
+					deoglDecalMeshBuilderFace &dmbFace = *AddFace();
+					dmbFace.SetPoint1( firstPoint );
+					dmbFace.SetPoint2( lastPoint );
+					dmbFace.SetPoint3( nextPoint );
+					dmbFace.SetFaceNormal( oglCFace.GetFaceNormal() );
 					
-					if( fabs( volumeFaceNormal * oglCFace.GetFaceNormal() ) < 0.99999f ){
-						continue;
-					}
-					if( fabs( volumeFaceNormal * v1 - volumeFaceDot ) > FLOAT_SAFE_EPSILON ){
-						continue;
-					}
-					
-					const decVector &v2 = modelPositions[ modelVertices[ oglCFace.GetVertex2() ].position ].position;
-					const decVector &v3 = modelPositions[ modelVertices[ oglCFace.GetVertex3() ].position ].position;
-					
-					// clip the face
-					faceClipper.RemoveAllVertices();
-					for( x=volumeVertexCount-1; x>=0; x-- ){
-						faceClipper.AddVertex( volume.GetVertexAt( volumeFace.GetVertexAt( x ) ) );
-					}
-					
-					faceClipper.ClipByPlane( oglCFace.GetFaceNormal() % ( v2 - v1 ), v1 );
-					faceClipper.ClipByPlane( oglCFace.GetFaceNormal() % ( v3 - v2 ), v2 );
-					faceClipper.ClipByPlane( oglCFace.GetFaceNormal() % ( v1 - v3 ), v3 );
-					
-					// if something is left it is a part of the decal mesh
-					const int vertexCount = faceClipper.GetVertexCount();
-					if( vertexCount < 3 ){
-						continue;
-					}
-					
-					const int firstPoint = AddPoint( faceClipper.GetVertexAt( 0 ).ToVector() );
-					int lastPoint = AddPoint( faceClipper.GetVertexAt( 1 ).ToVector() );
-					
-					for( x=2; x<vertexCount; x++ ){
-						const int nextPoint = AddPoint( faceClipper.GetVertexAt( x ).ToVector() );
-						
-						deoglDecalMeshBuilderFace &dmbFace = *AddFace();
-						dmbFace.SetPoint1( firstPoint );
-						dmbFace.SetPoint2( lastPoint );
-						dmbFace.SetPoint3( nextPoint );
-						dmbFace.SetFaceNormal( oglCFace.GetFaceNormal() );
-						
-						lastPoint = nextPoint;
-					}
+					lastPoint = nextPoint;
 				}
 			}
 		}
 	}
 }
-
+#endif
 
 
 void deoglDecalMeshBuilder::Debug(){

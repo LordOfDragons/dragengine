@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -36,24 +39,6 @@
 #include "../../world/deoglRWorld.h"
 
 #include <dragengine/common/exceptions.h>
-
-
-
-// #define DO_TIMING 1
-
-#ifdef DO_TIMING
-#include "dragengine/common/utils/decTimer.h"
-static decTimer timerTotal;
-static decTimer timer;
-
-#define DEBUG_RESET_TIMERS					timer.Reset(); timerTotal.Reset()
-#define DEBUG_PRINT_TIMER(ogl,what)			(ogl).LogInfoFormat( "RCanvasRenderWorld Timer: %s = %iys", what, ( int )( timer.GetElapsedTime() * 1000000.0 ) )
-#define DEBUG_PRINT_TIMER_TOTAL(ogl,what)	(ogl).LogInfoFormat( "RCanvasRenderWorld Timer-Total %s = %iys", what, ( int )( timerTotal.GetElapsedTime() * 1000000.0 ) )
-#else
-#define DEBUG_RESET_TIMERS
-#define DEBUG_PRINT_TIMER(ogl,what)
-#define DEBUG_PRINT_TIMER_TOTAL(ogl,what)
-#endif
 
 
 
@@ -100,17 +85,20 @@ void deoglRCanvasRenderWorld::SetCamera( deoglRCamera *camera ){
 
 
 
-void deoglRCanvasRenderWorld::PrepareForRender(){
+void deoglRCanvasRenderWorld::PrepareForRender( const deoglRenderPlanMasked *renderPlanMask ){
 	if( ! pCamera || ! pCamera->GetParentWorld() ){
 		return;
 	}
+	
+	deoglRCanvas::PrepareForRender( renderPlanMask );
 	
 	if( pForceToneMapAdaption ){
 		pCamera->SetForceToneMapAdaption( true );
 		pForceToneMapAdaption = false;
 	}
 	
-	pCamera->GetParentWorld()->PrepareForRender();
+	// this is called during DrawCanvasRenderWorld
+	//pCamera->GetParentWorld()->PrepareForRender( pCamera->GetPlan() );
 }
 
 void deoglRCanvasRenderWorld::Render( const deoglRenderCanvasContext &context ){

@@ -1,32 +1,32 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
-// include only once
 #ifndef _DECLASSCAMERA_H_
 #define _DECLASSCAMERA_H_
 
-// includes
 #include <libdscript/libdscript.h>
 
-// predefinitions
 class deEngine;
 class deCamera;
 class deClassVector;
@@ -36,49 +36,63 @@ class deScriptingDragonScript;
 
 
 
-// camera script class
+/**
+ * Camera script class
+ */
 class deClassCamera : public dsClass{
 private:
-	deEngine *pGameEngine;
-	deScriptingDragonScript *pScrMgr;
+	deScriptingDragonScript &pDS;
 	
-	deClassEffect *pClsEff;
-	deClassVector *pClsVec;
-	deClassDVector *pClsDVec;
+	
 	
 public:
-	// constructor
-	deClassCamera( deEngine *gameEngine, deScriptingDragonScript *scrMgr );
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** \brief Create script class. */
+	deClassCamera( deScriptingDragonScript &ds );
+	
+	/** \brief Clean up script class. */
 	~deClassCamera();
+	/*@}*/
 	
-	// internal functions
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Create class members. */
 	void CreateClassMembers( dsEngine *engine );
-	deCamera *GetCamera( dsRealObject *myself ) const;
-	void PushCamera( dsRunTime *rt, deCamera *camera );
-	inline deEngine *GetGameEngine() const{ return pGameEngine; }
-	inline deScriptingDragonScript *GetScriptModule() const{ return pScrMgr; }
 	
-	inline deClassEffect *GetClassEffect() const{ return pClsEff; }
-	inline deClassVector *GetClassVector() const{ return pClsVec; }
-	inline deClassDVector *GetClassDVector() const{ return pClsDVec; }
+	/** \brief Scripting module. */
+	inline deScriptingDragonScript &GetDS() const{ return pDS; }
+	
+	/** Get camera from real object. */
+	deCamera *GetCamera( dsRealObject *myself ) const;
+	
+	/** Push camera to real object. */
+	void PushCamera( dsRunTime *rt, deCamera *camera );
+	/*@}*/
+	
+	
 	
 private:
 	struct sInitData{
-		dsClass *clsCam;
+		dsClass *clsCamera;
 		
 		dsClass *clsVoid;
-		dsClass *clsInt;
-		dsClass *clsFlt;
-		dsClass *clsBool;
-		dsClass *clsObj;
+		dsClass *clsInteger;
+		dsClass *clsFloat;
+		dsClass *clsBoolean;
+		dsClass *clsObject;
 		
-		dsClass *clsDVec;
-		dsClass *clsVec;
-		dsClass *clsQuat;
-		dsClass *clsEff;
+		dsClass *clsDVector;
+		dsClass *clsVector;
+		dsClass *clsQuaternion;
+		dsClass *clsEffect;
 		dsClass *clsPoint;
 		dsClass *clsLayerMask;
 		dsClass *clsWorld;
+		dsClass *clsDMatrix;
+		dsClass *clsCurveBezier;
 	};
 #define DEF_NATFUNC(name) \
 	class name : public dsFunction{ \
@@ -101,6 +115,9 @@ private:
 	DEF_NATFUNC( nfSetImageDistance );
 	DEF_NATFUNC( nfGetViewDistance );
 	DEF_NATFUNC( nfSetViewDistance );
+	
+	DEF_NATFUNC( nfGetEnableHDRR );
+	DEF_NATFUNC( nfSetEnableHDRR );
 	DEF_NATFUNC( nfGetExposure );
 	DEF_NATFUNC( nfSetExposure );
 	DEF_NATFUNC( nfGetLowestIntensity );
@@ -109,6 +126,23 @@ private:
 	DEF_NATFUNC( nfSetHighestIntensity );
 	DEF_NATFUNC( nfGetAdaptionTime );
 	DEF_NATFUNC( nfSetAdaptionTime );
+	DEF_NATFUNC( nfResetAdaptedIntensity );
+	
+	DEF_NATFUNC( nfGetEnableGI );
+	DEF_NATFUNC( nfSetEnableGI );
+	
+	DEF_NATFUNC( nfGetWhiteIntensity );
+	DEF_NATFUNC( nfSetWhiteIntensity );
+	DEF_NATFUNC( nfGetBloomIntensity );
+	DEF_NATFUNC( nfSetBloomIntensity );
+	DEF_NATFUNC( nfGetBloomStrength );
+	DEF_NATFUNC( nfSetBloomStrength );
+	DEF_NATFUNC( nfGetBloomSize );
+	DEF_NATFUNC( nfSetBloomSize );
+	DEF_NATFUNC( nfGetBloomBlend );
+	DEF_NATFUNC( nfSetBloomBlend );
+	DEF_NATFUNC( nfGetToneMapCurve );
+	DEF_NATFUNC( nfSetToneMapCurve );
 	
 	DEF_NATFUNC( nfProject );
 	DEF_NATFUNC( nfBackProject );
@@ -117,6 +151,8 @@ private:
 	DEF_NATFUNC( nfGetLayerMask );
 	DEF_NATFUNC( nfSetLayerMask );
 	DEF_NATFUNC( nfGetParentWorld );
+	
+	DEF_NATFUNC( nfGetMatrix );
 	
 	DEF_NATFUNC( nfGetEffectCount );
 	DEF_NATFUNC( nfGetEffectAt );
@@ -129,5 +165,4 @@ private:
 #undef DEF_NATFUNC
 };
 
-// end of include only once
 #endif

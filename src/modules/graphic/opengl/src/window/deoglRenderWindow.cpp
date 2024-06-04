@@ -1,27 +1,29 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
 #include <string.h>
-#include <unistd.h>
 
 #include "deoglRenderWindow.h"
 #include "deoglRRenderWindow.h"
@@ -73,6 +75,7 @@ pRRenderWindow( NULL )
 		pRRenderWindow->SetHostWindow( renderWindow.GetHostWindow() );
 		pRRenderWindow->SetSize( renderWindow.GetWidth(), renderWindow.GetHeight() );
 		pRRenderWindow->SetTitle( renderWindow.GetTitle() );
+		pRRenderWindow->SetFullScreen( renderWindow.GetFullScreen() );
 		
 		ogl.GetRenderThread().CreateRenderWindow( pRRenderWindow );
 		
@@ -135,36 +138,35 @@ void deoglRenderWindow::IconChanged(){
 
 
 void deoglRenderWindow::SyncToRender(){
+// 		decTimer timer;
 	if( pDirtyFullScreen ){
 		pRRenderWindow->SetFullScreen( pRenderWindow.GetFullScreen() );
 		pDirtyFullScreen = false;
+// 			pOgl.LogInfoFormat( "RWindow.Sync full screen: %d ys", (int)(timer.GetElapsedTime() * 1e6f) );
 	}
 	
 	if( pDirtySize ){
 		pRRenderWindow->SetSize( pRenderWindow.GetWidth(), pRenderWindow.GetHeight() );
 		pDirtySize = false;
+// 			pOgl.LogInfoFormat( "RWindow.Sync size: %d ys", (int)(timer.GetElapsedTime() * 1e6f) );
 	}
 	
 	if( pDirtyWindowTitle ){
 		pRRenderWindow->SetTitle( pRenderWindow.GetTitle() );
 		pDirtyWindowTitle = false;
+// 			pOgl.LogInfoFormat( "RWindow.Sync title: %d ys", (int)(timer.GetElapsedTime() * 1e6f) );
 	}
 	
 	if( pDirtyIcon ){
 		if( pRenderWindow.GetIcon() ){
 			deoglImage &image = *( ( deoglImage* )pRenderWindow.GetIcon()->GetPeerGraphic() );
-			deoglPixelBuffer *pixelBuffer = NULL;
 			
 			image.CreatePixelBuffer();
 			
 			try{
-				pixelBuffer = new deoglPixelBuffer( *image.GetPixelBuffer() );
-				pRRenderWindow->SetIcon( pixelBuffer );
+				pRRenderWindow->SetIcon( deoglPixelBuffer::Ref::New( new deoglPixelBuffer( image.GetPixelBuffer() ) ) );
 				
 			}catch( const deException & ){
-				if( pixelBuffer ){
-					delete pixelBuffer;
-				}
 				image.ReleasePixelBuffer();
 				throw;
 			}
@@ -174,6 +176,7 @@ void deoglRenderWindow::SyncToRender(){
 			pRRenderWindow->SetIcon( NULL );
 		}
 		pDirtyIcon = false;
+// 			pOgl.LogInfoFormat( "RWindow.Sync icon: %d ys", (int)(timer.GetElapsedTime() * 1e6f) );
 	}
 	
 	// if parameters changed set them to the window. this has to be done always
@@ -181,17 +184,20 @@ void deoglRenderWindow::SyncToRender(){
 		//pRRenderWindow->SetHostWindow( pRenderWindow.GetHostWindow() );
 		pRRenderWindow->SetPaint( pRenderWindow.GetPaint() );
 		pDirtyParams = false;
+// 			pOgl.LogInfoFormat( "RWindow.Sync set paint: %d ys", (int)(timer.GetElapsedTime() * 1e6f) );
 	}
 	
 	// sync canvas view only if painting is enabled. saves performance on invisible windows
 	if( pRenderWindow.GetPaint() ){
 		pCanvasView->SyncToRender();
 		pRRenderWindow->SetRCanvasView( pCanvasView->GetRCanvasView() );
+// 			pOgl.LogInfoFormat( "RWindow.Sync set rcanvasview: %d ys", (int)(timer.GetElapsedTime() * 1e6f) );
 	}
 	
 	// window size changed due to OS events
 	if( pRRenderWindow->GetNotifySizeChanged() ){
 		pRenderWindow.SetSize( pRRenderWindow->GetWidth(), pRRenderWindow->GetHeight() );
+// 			pOgl.LogInfoFormat( "RWindow.Sync notify size changed: %d ys", (int)(timer.GetElapsedTime() * 1e6f) );
 	}
 }
 

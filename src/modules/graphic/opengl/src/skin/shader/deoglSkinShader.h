@@ -1,28 +1,35 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLSKINSHADER_H_
 #define _DEOGLSKINSHADER_H_
 
 #include "deoglSkinShaderConfig.h"
+#include "../../shaders/deoglShaderProgram.h"
+#include "../../shaders/deoglShaderSources.h"
+#include "../../shaders/paramblock/deoglSPBlockUBO.h"
+#include "../../shaders/paramblock/deoglSPBlockSSBO.h"
 
 #include <dragengine/deObject.h>
 
@@ -30,10 +37,6 @@ class deoglEnvironmentMap;
 class deoglRDynamicSkin;
 class deoglRenderThread;
 class deoglShaderDefines;
-class deoglSPBlockUBO;
-class deoglSPBlockSSBO;
-class deoglShaderProgram;
-class deoglShaderSources;
 class deoglSkinState;
 class deoglSkinTexture;
 class deoglTexUnitConfig;
@@ -42,14 +45,22 @@ class deoglShaderParameterBlock;
 
 
 /**
- * @brief Skin Shader.
+ * Skin Shader.
  */
 class deoglSkinShader : public deObject{
 public:
-	static int REFLECTION_TEST_MODE;
-	static bool USE_SHARED_SPB;
+	typedef deTObjectReference<deoglSkinShader> Ref;
 	
-	/** \brief Texture targets. */
+	enum eReflectionTestMode{
+		ertmOldVersion,
+		ertmOwnPassReflection,
+		ertmSingleBlenderEnvMap
+	};
+	
+	/** ertmSingleBlenderEnvMap */
+	static eReflectionTestMode REFLECTION_TEST_MODE;
+	
+	/** Texture targets. */
 	enum eTextureTargets{
 		ettColor,
 		ettColorTintMask,
@@ -69,6 +80,9 @@ public:
 		ettEnvRoomMask,
 		ettEnvRoomEmissivity,
 		ettAbsorption,
+		ettRimEmissivity,
+		ettNonPbrAlbedo,
+		ettNonPbrMetalness,
 		ettDepth,
 		ettDepthTest,
 		ettSamples,
@@ -78,7 +92,7 @@ public:
 		ETT_COUNT
 	};
 	
-	/** \brief Render parameter uniform targets. */
+	/** Render parameter uniform targets. */
 	enum eRenderUniformTargets{
 		erutAmbient,
 		erutMatrixV,
@@ -86,22 +100,56 @@ public:
 		erutMatrixVP,
 		erutMatrixVn,
 		erutMatrixEnvMap,
+		erutMatrixSkyBody,
+		erutDepthToPosition,
+		erutDepthToPosition2,
 		erutDepthTransform,
 		erutEnvMapLodLevel,
 		erutNorRoughCorrStrength,
 		erutSkinDoesReflections,
 		erutFlipCulling,
+		erutClearDepthValue,
 		erutViewport,
+		erutViewportImage,
 		erutClipPlane,
 		erutScreenSpace,
+		erutRenderSize,
+		erutRenderSizeCompute,
+		erutMipMapParams,
 		erutDepthOffset,
 		erutParticleLightHack,
-		erutFadeRange,
 		erutBillboardZScale,
+		erutFadeRange,
+		erutCameraStereoMatrix,
+		erutCameraRange,
+		erutCameraAdaptedIntensity,
+		erutDepthSampleOffset,
+		erutFSScreenCoordToTexCoord,
+		erutFSTexCoordToScreenCoord,
+		erutFSFragCoordToTexCoord,
+		erutFSFragCoordToScreenCoord,
+		erutSSAOParams1,
+		erutSSAOParams2,
+		erutSSAOParams3,
+		erutSSSSSParams1,
+		erutSSSSSParams2,
+		erutSSRParams1,
+		erutSSRParams2,
+		erutSSRParams3,
+		erutAOSelfShadow,
+		erutLumFragCoordScale,
+		erutGIRayMatrix,
+		erutGIRayMatrixNormal,
+		erutGIHighestCascade,
+		erutToneMapSceneKey,
+		erutToneMapAdaption,
+		erutToneMapBloom,
+		erutDebugDepthTransform,
+		erutConditions1,
 		ERUT_COUNT
 	};
 	
-	/** \brief Texture parameter uniform targets. */
+	/** Texture parameter uniform targets. */
 	enum eTextureUniformTargets{
 		etutValueColorTransparency,
 		etutValueNormal,
@@ -141,16 +189,27 @@ public:
 		
 		etutTexVariationEnableScale,
 		etutTexParticleSheetCount,
+		etutTexRimAngle,
+		
+		etutTexRimEmissivityIntensity,
+		etutTexRimExponent,
 		
 		etutTexOutlineColor,
 		etutTexOutlineThickness,
-		etutTexOutlineEmissivity,
+		etutTexOutlineColorTint,
 		etutTexOutlineSolidity,
+		etutTexOutlineEmissivity,
+		etutTexOutlineEmissivityTint,
+		
+		etutTexEmissivityCameraAdapted,
+		
+		etutTexSkinClipPlane,
+		etutTexSkinClipPlaneBorder,
 		
 		ETUT_COUNT
 	};
 	
-	/** \brief Instance parameter uniform targets. */
+	/** Instance parameter uniform targets. */
 	enum eInstanceUniformTargets{
 		eiutMatrixModel,
 		eiutMatrixNormal,
@@ -168,6 +227,8 @@ public:
 		eiutSamplesParams,
 		eiutBurstFactor,
 		eiutRibbonSheetCount,
+		
+		eiutIndexSPBTexParams,
 		
 		eiutTCTransformColor,
 		eiutTCTransformNormal,
@@ -196,20 +257,28 @@ public:
 		eiutInstEnvRoomEmissivityIntensity,
 		eiutInstVariationEnableScale,
 		eiutInstReflectivityMultiplier,
+		eiutInstRimEmissivityIntensity,
+		eiutInstRimAngle,
+		eiutInstRimExponent,
 		eiutInstOutlineColor,
 		eiutInstOutlineThickness,
+		eiutInstOutlineColorTint,
 		eiutInstOutlineEmissivity,
 		eiutInstOutlineSolidity,
+		eiutInstOutlineEmissivityTint,
+		eiutInstSkinClipPlaneNormal,
+		eiutInstSkinClipPlane,
+		eiutInstSkinClipPlaneBorder,
 		
 		EIUT_COUNT
 	};
 	
-	/** \brief Special parameter uniform targets. */
+	/** Special parameter uniform targets. */
 	enum eSpecialUniformTargets{
-		esutCubeFaceVisible
+		esutLayerVisibility
 	};
 	
-	/** \brief Uniform blocks. */
+	/** Uniform blocks. */
 	enum eUniformBlocks{
 		eubRenderParameters,
 		eubTextureParameters,
@@ -219,10 +288,11 @@ public:
 		EUB_COUNT
 	};
 	
-	/** \brief SSBO blocks. */
+	/** SSBO blocks. */
 	enum eSSBOBlocks{
 		essboInstanceParameters,
-		essboInstanceIndex
+		essboInstanceIndex,
+		essboTextureParameters
 	};
 	
 private:
@@ -232,18 +302,17 @@ private:
 	
 	int pTextureTargets[ ETT_COUNT ];
 	int pUsedTextureTargetCount;
-	int pTextureUniformTargets[ ETUT_COUNT ];
-	int pUsedTextureUniformTargetCount;
 	int pInstanceUniformTargets[ EIUT_COUNT ];
 	int pUsedInstanceUniformTargetCount;
 	
 	int pTargetSPBInstanceIndexBase;
+	int pTargetDrawIDOffset;
 	
-	deoglShaderSources *pSources;
-	deoglShaderProgram *pShader;
+	deoglShaderSources::Ref pSources;
+	deoglShaderProgram::Ref pShader;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new skin shader. */
 	deoglSkinShader( deoglRenderThread &renderThread, const deoglSkinShaderConfig &config );
@@ -251,9 +320,9 @@ public:
 	virtual ~deoglSkinShader();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
-	/** \brief Render thread. */
+	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	/** Retrieves the configuration. */
@@ -268,62 +337,70 @@ public:
 	/** Sets the used texture target count. */
 	void SetUsedTextureTargetCount( int usedTextureTargetCount );
 	
-	/** Retrieves the index for a texture parameter uniform target or -1 if not used. */
-	int GetTextureUniformTarget( eTextureUniformTargets target ) const;
-	/** Sets the index for a texture parameter uniform target or -1 if not used. */
-	void SetTextureUniformTarget( eTextureUniformTargets target, int index );
 	/** Retrieves the index for an instance parameter uniform target or -1 if not used. */
 	int GetInstanceUniformTarget( eInstanceUniformTargets target ) const;
 	/** Sets the index for an instance parameter uniform target or -1 if not used. */
 	void SetInstanceUniformTarget( eInstanceUniformTargets target, int index );
 	
-	/** \brief Target of shared SPB instance index base parameter or -1 if not used. */
+	/** Target of shared SPB instance index base parameter or -1 if not used. */
 	inline int GetTargetSPBInstanceIndexBase() const{ return pTargetSPBInstanceIndexBase; }
 	
-	/** Ensures the shader is created if not existing already. */
-	void EnsureShaderExists();
-	/** Retrieves the shader generating it if not existing already. */
-	deoglShaderProgram *GetShader();
+	/** Target of draw id offset parameter or -1 if not used. */
+	inline int GetTargetDrawIDOffset() const{ return pTargetDrawIDOffset; }
 	
-	/**
-	 * \brief Create render skin shader shader parameter block.
-	 * 
-	 * If \em cubeMap is \em true the created shader parameter block has transformation
-	 * matrices changed to a 6-element array.
-	 */
-	static deoglSPBlockUBO *CreateSPBRender(
-		deoglRenderThread &renderThread, bool cubeMap );
+	/** Prepare shader. For use by deoglSkinShaderManager only. */
+	void PrepareShader();
 	
-	/** \brief Create occlusion map shader parameter block. */
-	static deoglSPBlockUBO *CreateSPBOccMap( deoglRenderThread &renderThread );
+	/** Shader. */
+	inline deoglShaderProgram *GetShader() const{ return pShader; }
 	
-	/** \brief Create special shader parameter block. */
-	static deoglSPBlockUBO *CreateSPBSpecial( deoglRenderThread &renderThread );
+	/** Create render skin shader shader parameter block. */
+	static deoglSPBlockUBO::Ref CreateSPBRender( deoglRenderThread &renderThread );
 	
-	/** \brief Create texture parameter shader parameter block. */
-	deoglSPBlockUBO *CreateSPBTexParam() const;
+	/** Create occlusion map shader parameter block. */
+	static deoglSPBlockUBO::Ref CreateSPBOccMap( deoglRenderThread &renderThread );
 	
-	/** \brief Create instance parameter shader parameter block. */
-	deoglSPBlockUBO *CreateSPBInstParam() const;
+	/** Create special shader parameter block. */
+	static deoglSPBlockUBO::Ref CreateSPBSpecial( deoglRenderThread &renderThread );
 	
-	/** \brief Create shared instance parameter shader storage buffer. */
-	static deoglSPBlockUBO *CreateLayoutSkinInstanceUBO( deoglRenderThread &renderThread );
+	/** Create texture parameter shader parameter block. */
+	static deoglSPBlockUBO::Ref CreateSPBTexParam( deoglRenderThread &renderThread );
 	
-	/** \brief Create shared instance parameter shader storage buffer. */
-	static deoglSPBlockSSBO *CreateLayoutSkinInstanceSSBO( deoglRenderThread &renderThread );
+	/** Create instance parameter shader parameter block. */
+	deoglSPBlockUBO::Ref CreateSPBInstParam() const;
 	
-	/** \brief Set dynamic texture parameters in instance parameter shader block. */
+	/** Create shared instance parameter shader storage buffer. */
+	static deoglSPBlockUBO::Ref CreateLayoutSkinInstanceUBO( deoglRenderThread &renderThread );
+	
+	/** Create shared instance parameter shader storage buffer. */
+	static deoglSPBlockSSBO::Ref CreateLayoutSkinInstanceSSBO( deoglRenderThread &renderThread );
+	
+	/** Create shared texture parameter shader storage buffer. */
+	static deoglSPBlockUBO::Ref CreateLayoutSkinTextureUBO( deoglRenderThread &renderThread );
+	
+	/** Create shared texture parameter shader storage buffer. */
+	static deoglSPBlockSSBO::Ref CreateLayoutSkinTextureSSBO( deoglRenderThread &renderThread );
+	
+	/** Set texture parameters in instance parameter shader block. */
+	void SetTexParamsInInstParamSPB( deoglShaderParameterBlock &paramBlock,
+		const deoglSkinTexture &skinTexture ) const;
+	
+	/** Set texture parameters in instance parameter shader block. */
+	void SetTexParamsInInstParamSPB( deoglShaderParameterBlock &paramBlock, int element,
+		const deoglSkinTexture &skinTexture ) const;
+	
+	/** Set dynamic texture parameters in instance parameter shader block. */
 	void SetDynTexParamsInInstParamSPB( deoglShaderParameterBlock &paramBlock,
 		const deoglSkinTexture &skinTexture, deoglSkinState *skinState,
-		deoglRDynamicSkin *dynamicSkin );
+		deoglRDynamicSkin *dynamicSkin ) const;
 	
-	/** \brief Set dynamic texture parameters in instance parameter shader block. */
+	/** Set dynamic texture parameters in instance parameter shader block. */
 	void SetDynTexParamsInInstParamSPB( deoglShaderParameterBlock &paramBlock,
 		int element, const deoglSkinTexture &skinTexture, deoglSkinState *skinState,
-		deoglRDynamicSkin *dynamicSkin );
+		deoglRDynamicSkin *dynamicSkin ) const;
 	
 	/**
-	 * \brief Set texture unit configurations.
+	 * Set texture unit configurations.
 	 * 
 	 * This only sets units for targets used in this skin shader. All unused targets are
 	 * left untouched. The configs array has to contain at least GetUsedTextureTargetCount
@@ -333,7 +410,7 @@ public:
 		deoglSkinState *skinState, deoglRDynamicSkin *dynamicSkin );
 	
 	/**
-	 * \brief Sets per-object environment map texture unit configurations.
+	 * Sets per-object environment map texture unit configurations.
 	 * 
 	 * This only sets units for targets used in this skin shader. All unused targets are
 	 * left untouched. The configs array has to contain at least GetUsedTextureTargetCount
@@ -350,7 +427,7 @@ public:
 	
 	
 	
-	/** @name Shader Generation */
+	/** \name Shader Generation */
 	/*@{*/
 	/** Generate shader. */
 	void GenerateShader();
@@ -362,9 +439,9 @@ public:
 	void GenerateGeometrySC();
 	/** Generate source code for the fragment unit. */
 	void GenerateFragmentSC();
-	/** \brief Generate source code for the tessellation control unit. */
+	/** Generate source code for the tessellation control unit. */
 	void GenerateTessellationControlSC();
-	/** \brief Generate source code for the tessellation evaluation unit. */
+	/** Generate source code for the tessellation evaluation unit. */
 	void GenerateTessellationEvaluationSC();
 	/** Update texture targets. */
 	void UpdateTextureTargets();

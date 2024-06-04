@@ -1,0 +1,144 @@
+name: Nightly
+
+on:
+  schedule:
+    - cron:  '0 3 * * *'
+  workflow_dispatch:
+
+jobs:
+  build_linux:
+    uses: ./.github/workflows/build_linux.yml
+    with:
+      releaseVersion: nightly
+      buildVersion: 9999
+      artifactArchive: archives-linux
+      artifactInstaller: installers-linux
+      artifactTools: tools-crossplatform
+  
+  # build_windows_mingw:
+  #   uses: ./.github/workflows/build_windows.yml
+  #   with:
+  #     releaseVersion: nightly
+  #     buildVersion: 9999
+  #     artifactArchive: archives-windows-mingw
+  
+  build_windows:
+    uses: ./.github/workflows/build_windows_vs.yml
+    with:
+      releaseVersion: nightly
+      buildVersion: 9999
+      artifactArchive: archives-windows
+  
+  build_windows_installer:
+    needs: [build_windows]
+    uses: ./.github/workflows/build_windows_installer.yml
+    with:
+      releaseVersion: nightly
+      artifactArchive: archives-windows
+      artifactInstaller: installers-windows
+  
+  build_linux_ci:
+    uses: ./.github/workflows/build_linux_ci.yml
+    with:
+      releaseVersion: nightly
+      buildVersion: 9999
+      artifactInstaller: installers-linux-ci
+  
+  build_live:
+    needs: [build_linux, build_windows]
+    uses: ./.github/workflows/build_live.yml
+    with:
+      releaseVersion: nightly
+      artifactLinux: archives-linux
+      artifactWindows: archives-windows
+      artifactLauncher: archive-livelauncher
+    
+  build_testing:
+    needs: [build_linux_ci]
+    uses: ./.github/workflows/build_testing.yml
+    with:
+      releaseVersion: nightly
+      artifactInstallerCI: installers-linux-ci
+      artifactTesting: archive-testing
+    
+  testing:
+    needs: [build_linux, build_testing]
+    uses: ./.github/workflows/testing.yml
+    with:
+      releaseVersion: nightly
+      artifactArchive: installers-linux
+      artifactTesting: archive-testing
+      artifactResults: testing-results
+  
+  upload:
+    needs: [build_linux, build_windows, build_windows_installer, build_linux_ci, build_live, testing]
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Get Linux Installers
+        uses: actions/download-artifact@v4
+        with:
+          name: installers-linux
+      
+      - name: Get Windows Installers
+        uses: actions/download-artifact@v4
+        with:
+          name: installers-windows
+      
+      - name: Get Crossplatform Tools
+        uses: actions/download-artifact@v4
+        with:
+          name: tools-crossplatform
+      
+      - name: Get Linux CI Installers
+        uses: actions/download-artifact@v4
+        with:
+          name: installers-linux-ci
+      
+      - name: Get Live Launcher
+        uses: actions/download-artifact@v4
+        with:
+          name: archive-livelauncher
+      
+      - name: Get current date
+        id: date
+        run: echo "date=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+      
+      - name: Update git tag
+        run: |
+          git tag -f nightly
+          git push -f origin nightly
+      
+      - name: Upload Artifacts
+        uses: ncipollo/release-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          allowUpdates: true
+          artifactErrorsFailBuild: true
+          removeArtifacts: true
+          draft: false
+          prerelease: true
+          commit: master
+          tag: 'nightly'
+          name: 'Drag[en]gine Game Engine Release - Nightly Build'
+          body: |
+            Continuous Nightly Build of the Drag[en]gine Game Engine.
+            Created: ${{ steps.date.outputs.date }}
+            Changelog: https://dragondreams.ch/?page_id=287
+            
+            Builds are potentially unstable. Use at own risk.
+          artifacts: >
+            install-dragengine-nightly-linux64.sh,
+            install-dragengine-dev-nightly-linux64.sh,
+            install-deigde-nightly-linux64.sh,
+            install-deigde-dev-nightly-linux64.sh,
+            install-dragengine-nightly-windows64.exe,
+            install-dragengine-sdk-nightly-windows64.exe,
+            install-deigde-nightly-windows64.exe,
+            install-deigde-sdk-nightly-windows64.exe,
+            blender-addon-dragengine-9999.zip,
+            dragengine-live-nightly.zip,
+            install-dragengine-ci-nightly-linux64.sh,
+            install-deigde-ci-nightly-linux64.sh

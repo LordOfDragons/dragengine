@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Game Engine
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DECBASEFILEWRITER_H_
@@ -24,8 +27,8 @@
 
 #include <stdint.h>
 
-#include "../../deObject.h"
 #include "../math/decMath.h"
+#include "../../deObject.h"
 
 
 /**
@@ -34,7 +37,13 @@
  * File writers can support seeking but are not required to.
  * If seeking is not supported an exception is thrown.
  */
-class decBaseFileWriter : public deObject{
+class DE_DLL_EXPORT decBaseFileWriter : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<decBaseFileWriter> Ref;
+	
+	
+	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -77,6 +86,9 @@ public:
 	 * \throws deeInvalidParam \em size is less than 0.
 	 */
 	virtual void Write( const void *buffer, int size ) = 0;
+	
+	/** \brief Duplicate file writer. */
+	virtual Ref Duplicate() = 0;
 	/*@}*/
 	
 	
@@ -107,6 +119,19 @@ public:
 	/** \brief Write one unsigned integer (8 bytes) to file and advances write pointer. */
 	void WriteULong( uint64_t value );
 	
+	/**
+	 * \brief Write variable length unsigned integer (1-4 bytes) and advances file pointer.
+	 * 
+	 * Variable length integers are written using 1 to 4 bytes. The highest 2 bits of the
+	 * first byte stores the total length (0=1 byte, 1=2 bytes, 2=3 bytes, 3=4 bytes).
+	 * The lower 6 bits are used as value. With each added byte the previous bits are
+	 * shifted up. The maximum storable value is thus 1073741823.
+	 * 
+	 * Variable length unsigned integers are typically used for values like versions
+	 * or revisions which start low and potentially grow large over time.
+	 */
+	void WriteVarUInt( uint32_t value );
+	
 	/** \brief Write one float (4 bytes) to file and advances write pointer. */
 	void WriteFloat( float value );
 	
@@ -116,11 +141,17 @@ public:
 	/** \brief Write string-length bytes of string to file without length field and advances write pointer. */
 	void WriteString( const char *string );
 	
-	/** \brief Write string-length bytes of string to file with a 1-byte length field in front and advances write pointer. */
+	/** \brief Write string to file with a 1-byte length field in front and advances write pointer. */
 	void WriteString8( const char *string );
 	
-	/** \brief Write string-length bytes of string to file with a 2-byte length field in front and advances write pointer. */
+	/** \brief Write string to file with a 2-byte length field in front and advances write pointer. */
 	void WriteString16( const char *string );
+	
+	/** \brief Write string to file with a 4-byte length field in front and advances write pointer. */
+	void WriteString32( const char *string );
+	
+	/** \brief Write string to file with a 1-4 byte length field in front and advances write pointer. */
+	void WriteVarString( const char *string );
 	
 	/** \brief Write a 3-float vector to the file ( order x, y, z ) and advances write pointer. */
 	void WriteVector( const decVector &vector );

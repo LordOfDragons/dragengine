@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Conversation Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include "ceConversationListener.h"
@@ -40,142 +43,126 @@ ceConversationListener::~ceConversationListener(){
 // Notifications
 //////////////////
 
-void ceConversationListener::StateChanged( ceConversation *conversation ){
+void ceConversationListener::StateChanged( ceConversation* ){
 }
 
-void ceConversationListener::UndoChanged( ceConversation *conversation ){
+void ceConversationListener::UndoChanged( ceConversation* ){
 }
 
-void ceConversationListener::ViewChanged( ceConversation *conversation ){
+void ceConversationListener::ViewChanged( ceConversation* ){
 }
 
-void ceConversationListener::ConversationChanged( ceConversation *conversation ){
+void ceConversationListener::ConversationChanged( ceConversation* ){
 }
 
-void ceConversationListener::SkyChanged( ceConversation *conversation ){
+void ceConversationListener::SkyChanged( ceConversation* ){
 }
 
-void ceConversationListener::EnvObjectChanged( ceConversation *conversation ){
+void ceConversationListener::EnvObjectChanged( ceConversation* ){
 }
 
-void ceConversationListener::CameraChanged( ceConversation *conversation ){
-}
-
-
-
-void ceConversationListener::TargetStructureChanged( ceConversation *conversation ){
-}
-
-void ceConversationListener::TargetChanged( ceConversation *conversation, ceTarget *target ){
-}
-
-void ceConversationListener::ActiveTargetChanged( ceConversation *conversation ){
+void ceConversationListener::CameraChanged( ceConversation* ){
 }
 
 
 
-void ceConversationListener::CameraShotStructureChanged( ceConversation *conversation ){
+void ceConversationListener::TargetStructureChanged( ceConversation* ){
 }
 
-void ceConversationListener::CameraShotChanged( ceConversation *conversation, ceCameraShot *cameraShot ){
+void ceConversationListener::TargetChanged( ceConversation*, ceTarget* ){
 }
 
-void ceConversationListener::ActiveCameraShotChanged( ceConversation *conversation ){
-}
-
-
-
-void ceConversationListener::PoseStructureChanged( ceConversation *conversation ){
-}
-
-void ceConversationListener::PoseChanged( ceConversation *conversation, cePose *pose ){
-}
-
-void ceConversationListener::ActivePoseChanged( ceConversation *conversation ){
+void ceConversationListener::ActiveTargetChanged( ceConversation* ){
 }
 
 
 
-void ceConversationListener::GestureStructureChanged( ceConversation *conversation ){
+void ceConversationListener::CameraShotStructureChanged( ceConversation* ){
 }
 
-void ceConversationListener::GestureChanged( ceConversation *conversation, ceGesture *gesture ){
+void ceConversationListener::CameraShotChanged( ceConversation*, ceCameraShot* ){
 }
 
-void ceConversationListener::ActiveGestureChanged( ceConversation *conversation ){
-}
-
-
-
-void ceConversationListener::FacePoseControllerNamesChanged( ceConversation *conversation ){
-}
-
-void ceConversationListener::FacePoseStructureChanged( ceConversation *conversation ){
-}
-
-void ceConversationListener::FacePoseChanged( ceConversation *conversation, ceFacePose *facePose ){
-}
-
-void ceConversationListener::ActiveFacePoseChanged( ceConversation *conversation ){
+void ceConversationListener::ActiveCameraShotChanged( ceConversation* ){
 }
 
 
 
-void ceConversationListener::LookAtStructureChanged( ceConversation *conversation ){
+void ceConversationListener::GestureStructureChanged( ceConversation* ){
 }
 
-void ceConversationListener::LookAtChanged( ceConversation *conversation, ceLookAt *lookat ){
+void ceConversationListener::GestureChanged( ceConversation*, ceGesture* ){
 }
 
-void ceConversationListener::ActiveLookAtChanged( ceConversation *conversation ){
-}
-
-
-
-void ceConversationListener::FileStructureChanged( ceConversation *conversation ){
-}
-
-void ceConversationListener::FileChanged( ceConversation *conversation, ceConversationFile *file ){
-}
-
-void ceConversationListener::ActiveFileChanged( ceConversation *conversation ){
+void ceConversationListener::ActiveGestureChanged( ceConversation* ){
 }
 
 
 
-void ceConversationListener::TopicStructureChanged( ceConversation *conversation, ceConversationFile *file ){
+void ceConversationListener::FacePoseControllerNamesChanged( ceConversation* ){
 }
 
-void ceConversationListener::TopicChanged( ceConversation *conversation, ceConversationFile *file, ceConversationTopic *topic ){
+void ceConversationListener::FacePoseStructureChanged( ceConversation* ){
 }
 
-void ceConversationListener::ActiveTopicChanged( ceConversation *conversation, ceConversationFile *file ){
+void ceConversationListener::FacePoseChanged( ceConversation*, ceFacePose* ){
 }
 
-
-
-void ceConversationListener::ActionStructureChanged( ceConversation *conversation, ceConversationFile *file,
-ceConversationTopic *topic, ceConversationAction *action ){
-}
-
-void ceConversationListener::ActionChanged( ceConversation *conversation, ceConversationFile *file,
-ceConversationTopic *topic, ceConversationAction *action ){
-}
-
-void ceConversationListener::ActiveActionChanged( ceConversation *conversation, ceConversationFile *file, ceConversationTopic *topic ){
+void ceConversationListener::ActiveFacePoseChanged( ceConversation* ){
 }
 
 
 
-void ceConversationListener::ActorStructureChanged( ceConversation *conversation ){
+void ceConversationListener::FileStructureChanged( ceConversation* ){
 }
 
-void ceConversationListener::ActorChanged( ceConversation *conversation,
-ceConversationActor *actor ){
+void ceConversationListener::FileChanged( ceConversation*, ceConversationFile* ){
 }
 
-void ceConversationListener::ActorActivePoseChanged( ceConversation *conversation,
-ceConversationActor *actor ){
+void ceConversationListener::ActiveFileChanged( ceConversation* ){
+}
+
+
+
+void ceConversationListener::TopicStructureChanged( ceConversation*, ceConversationFile* ){
+}
+
+void ceConversationListener::TopicChanged( ceConversation*, ceConversationFile*, ceConversationTopic* ){
+}
+
+void ceConversationListener::ActiveTopicChanged( ceConversation*, ceConversationFile* ){
+}
+
+
+
+void ceConversationListener::ActionStructureChanged( ceConversation*, ceConversationFile*,
+ceConversationTopic*, ceConversationAction* ){
+}
+
+void ceConversationListener::ActionChanged( ceConversation*, ceConversationFile*,
+ceConversationTopic*, ceConversationAction* ){
+}
+
+void ceConversationListener::ConditionStructureChanged( ceConversation*,
+ceConversationFile*, ceConversationTopic*, ceConversationAction* ){
+}
+
+void ceConversationListener::ConditionChanged( ceConversation*, ceConversationFile*,
+ceConversationTopic*, ceConversationAction*, ceConversationCondition* ){
+}
+
+void ceConversationListener::ActiveChanged( ceConversation*, ceConversationFile*, ceConversationTopic* ){
+}
+
+
+
+void ceConversationListener::ActorStructureChanged( ceConversation* ){
+}
+
+void ceConversationListener::ActorChanged( ceConversation*, ceConversationActor* ){
+}
+
+void ceConversationListener::ActorActivePoseChanged( ceConversation*, ceConversationActor* ){
 }
 
 void ceConversationListener::ActorPosesChanged( ceConversation *conversation,
@@ -184,57 +171,62 @@ ceConversationActor *actor ){
 }
 
 void ceConversationListener::ActorPoseGesturesChanged( ceConversation *conversation,
-ceConversationActor *actor, ceActorPose *pose ){
+ceConversationActor *actor, ceActorPose* ){
 	ActorPosesChanged( conversation, actor );
 }
 
-void ceConversationListener::ActorCommandsChanged( ceConversation *conversation, ceConversationActor *actor ){
+void ceConversationListener::ActorCommandsChanged( ceConversation*, ceConversationActor* ){
 }
 
-void ceConversationListener::ActorParametersChanged( ceConversation *conversation, ceConversationActor *actor ){
+void ceConversationListener::ActorParametersChanged( ceConversation*, ceConversationActor* ){
 }
 
-void ceConversationListener::ActiveActorChanged( ceConversation *conversation ){
-}
-
-
-
-void ceConversationListener::CoordSystemStructureChanged( ceConversation *conversation ){
-}
-
-void ceConversationListener::CoordSystemChanged( ceConversation *conversation, ceCoordSystem *coordSystem ){
-}
-
-void ceConversationListener::ActiveCoordSystemChanged( ceConversation *conversation ){
+void ceConversationListener::ActiveActorChanged( ceConversation* ){
 }
 
 
 
-void ceConversationListener::PropStructureChanged( ceConversation *conversation ){
+void ceConversationListener::CoordSystemStructureChanged( ceConversation* ){
 }
 
-void ceConversationListener::PropChanged( ceConversation *conversation, ceProp *prop ){
+void ceConversationListener::CoordSystemChanged( ceConversation*, ceCoordSystem* ){
 }
 
-void ceConversationListener::ActivePropChanged( ceConversation *conversation ){
+void ceConversationListener::ActiveCoordSystemChanged( ceConversation* ){
 }
 
 
 
-void ceConversationListener::PlaybackChanged( ceConversation *conversation ){
+void ceConversationListener::PropStructureChanged( ceConversation* ){
 }
 
-void ceConversationListener::PlaybackActionStackChanged( ceConversation *conversation ){
+void ceConversationListener::PropChanged( ceConversation*, ceProp* ){
 }
 
-void ceConversationListener::PlaybackCommandListChanged( ceConversation *conversation ){
+void ceConversationListener::ActivePropChanged( ceConversation* ){
 }
 
-void ceConversationListener::PlaybackVarListChanged( ceConversation *conversation ){
+
+
+void ceConversationListener::PlaybackChanged( ceConversation* ){
 }
 
-void ceConversationListener::PlaybackTriggerTableChanged( ceConversation *conversation ){
+void ceConversationListener::PlaybackActionStackChanged( ceConversation* ){
 }
 
-void ceConversationListener::PlaybackMissingWordsChanged( ceConversation *conversation ){
+void ceConversationListener::PlaybackCommandListChanged( ceConversation* ){
+}
+
+void ceConversationListener::PlaybackVarListChanged( ceConversation* ){
+}
+
+void ceConversationListener::PlaybackTriggerTableChanged( ceConversation* ){
+}
+
+void ceConversationListener::PlaybackMissingWordsChanged( ceConversation* ){
+}
+
+
+
+void ceConversationListener::LanguagePackChanged ( ceConversation* ) {
 }

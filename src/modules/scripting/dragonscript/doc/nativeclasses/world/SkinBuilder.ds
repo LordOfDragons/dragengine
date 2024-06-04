@@ -8,6 +8,9 @@
 
 namespace Dragengine.Scenery
 
+pin Dragengine.Gui
+
+
 /**
  * \brief Skin builder.
  * 
@@ -26,7 +29,7 @@ namespace Dragengine.Scenery
  * 
  * This is a native class.
  */
-abstract class Skin
+abstract class SkinBuilder
 	/** \name Constructors */
 	/*@{*/
 	/**
@@ -54,7 +57,7 @@ abstract class Skin
 	 * resource with content. Once finished the build method returns the ready to use
 	 * skin resource. Otherwise an exception is thrown.
 	 */
-	public func Skin build( String filename )
+	public func Skin build(String filename)
 		return null
 	end
 	
@@ -69,54 +72,89 @@ abstract class Skin
 	abstract protected func void buildSkin()
 	
 	/**
+	 * \brief Add mapped value.
+	 * \version 1.18
+	 */
+	protected func void addMapped(String name, CurveBezier curve, SkinMappedInputType inputType,\
+	Vector2 inputRange, bool inputClamped, Vector2 outputRange, String bone, String renderable,\
+	SkinMappedRenderableComponent renderableComponent)
+	end
+	
+	/**
 	 * \brief Add texture.
 	 */
-	protected func void addTexture( String name )
+	protected func void addTexture(String name)
 	end
 	
 	/**
 	 * \brief Add value texture property.
 	 */
-	protected func void addPropertyValue( int texture, String type, String texCoordSet, \
-	String renderable, float value )
+	protected func void addPropertyValue(int texture, String type, String texCoordSet,\
+	String renderable, float value)
 	end
 	
 	/**
 	 * \brief Add color texture property.
 	 */
-	protected func void addPropertyColor( int texture, String type, String texCoordSet, \
-	String renderable, Color color )
+	protected func void addPropertyColor(int texture, String type, String texCoordSet,\
+	String renderable, Color color)
 	end
 	
 	/**
 	 * \brief Add image texture property.
 	 */
-	protected func void addPropertyImage( int texture, String type, String texCoordSet, \
-	String renderable, String pathImage, Image image )
+	protected func void addPropertyImage(int texture, String type, String texCoordSet,\
+	String renderable, String pathImage, Image image)
 	end
 	
 	/**
 	 * \brief Add video texture property.
 	 */
-	protected func void addPropertyVideo( int texture, String type, String texCoordSet, \
-	String renderable, String pathVideo, Video video, bool sharedTime )
+	protected func void addPropertyVideo(int texture, String type, String texCoordSet,\
+	String renderable, String pathVideo, Video video, bool sharedTime)
 	end
 	
 	/**
 	 * \brief Add constructed texture property.
 	 */
-	protected func void addPropertyConstructed( int texture, String type, String texCoordSet, \
-	String renderable, Color color, bool tileX, bool tileY, Point3 size )
+	protected func void addPropertyConstructed(int texture, String type, String texCoordSet,\
+	String renderable, Color color, bool tileX, bool tileY, Point3 size)
 	end
 	
 	/**
 	 * \brief Add mapped texture property.
+	 * \deprecated Use addPropertyMapped(int,String,String,String,int,int,int,int) instead.
 	 */
-	protected func void addPropertyMapped( int texture, String type, String texCoordSet, String renderable, \
-	CurveBezier redCurve, SkinPropertyMappedInputType redInputType, Vector2 redInputRange, bool redInputClamped, String redBone, \
-	CurveBezier greenCurve, SkinPropertyMappedInputType greenInputType, Vector2 greenInputRange, bool greenInputClamped, String greenBone, \
-	CurveBezier blueCurve, SkinPropertyMappedInputType blueInputType, Vector2 blueInputRange, bool blueInputClamped, String blueBone, \
-	CurveBezier alphaCurve, SkinPropertyMappedInputType alphaInputType, Vector2 alphaInputRange, bool alphaInputClamped, String alphaBone )
+	protected func void addPropertyMapped(int texture, String type, String texCoordSet,\
+	String renderable, CurveBezier redCurve, SkinPropertyMappedInputType redInputType,\
+	Vector2 redInputRange, bool redInputClamped, String redBone, CurveBezier greenCurve,\
+	SkinPropertyMappedInputType greenInputType, Vector2 greenInputRange, bool greenInputClamped,\
+	String greenBone, CurveBezier blueCurve, SkinPropertyMappedInputType blueInputType,\
+	Vector2 blueInputRange, bool blueInputClamped, String blueBone, CurveBezier alphaCurve,\
+	SkinPropertyMappedInputType alphaInputType, Vector2 alphaInputRange, bool alphaInputClamped,\
+	String alphaBone)
+	end
+	
+	/**
+	 * \brief Add mapped texture property.
+	 * \version 1.18
+	 * 
+	 * Red, green, blue and alpha are indices into added mapped values (addMapped) or -1 to disable.
+	 * Throws EInvalidParam if indices are less than -1 or larger than or equal to the count
+	 * of mapped values.
+	 */
+	protected func void addPropertyMapped(int texture, String type, String texCoordSet,\
+	String renderable, int red, int green, int blue, int alpha)
+	end
+	
+	/**
+	 * \brief Set bone name of texture property.
+	 * \version 1.18
+	 * 
+	 * Used by texture properties using vertex position instead of texture coordinates.
+	 * The vertex position is evaluated relative to the bone coordinate system.
+	 */
+	protected func void setPropertyBone(int texture, int property, String bone)
 	end
 	
 	/**
@@ -124,34 +162,33 @@ abstract class Skin
 	 * 
 	 * Content node becomes open node to operate on. Call closeNode() to close it.
 	 */
-	protected func void constructedOpenContent( int texture, int property )
+	protected func void constructedOpenContent(int texture, int property)
 	end
 	
 	/**
 	 * \brief Add image node to open node.
 	 */
-	protected func void addNodeImage( Point3 position, Point3 size, float rotation, float shear, \
-	float brightness, float constrast, float gamma, Color colorize, float transparency, \
-	SkinPropertyNodeCombineMode combineMode, \
-	String path, Image image, Point repeat )
+	protected func void addNodeImage(Point3 position, Point3 size, float rotation, float shear, \
+	float brightness, float contrast, float gamma, Color colorize, float transparency, \
+	SkinPropertyNodeCombineMode combineMode, String path, Image image, Point repeat)
 	end
 	
 	/**
 	 * \brief Add text node to open node.
 	 */
-	protected func void addNodeText( Point3 position, Point3 size, float rotation, float shear, \
-	float brightness, float constrast, float gamma, Color colorize, float transparency, \
-	SkinPropertyNodeCombineMode combineMode, \
-	String path, Font font, float fontSize, String text, Color color )
+	protected func void addNodeText(Point3 position, Point3 size, float rotation, float shear, \
+	float brightness, float contrast, float gamma, Color colorize, float transparency, \
+	SkinPropertyNodeCombineMode combineMode, String path, Font font, float fontSize,\
+	String text, Color color)
 	end
 	
 	/**
 	 * \brief Add shape node to open node.
 	 */
-	protected func void addNodeShape( Point3 position, Point3 size, float rotation, float shear, \
-	float brightness, float constrast, float gamma, Color colorize, float transparency, \
-	SkinPropertyNodeCombineMode combineMode, \
-	int shapeType, Color fillColor, Color lineColor, float thickness )
+	protected func void addNodeShape(Point3 position, Point3 size, float rotation, float shear, \
+	float brightness, float contrast, float gamma, Color colorize, float transparency, \
+	SkinPropertyNodeCombineMode combineMode, int shapeType, Color fillColor,\
+	Color lineColor, float thickness)
 	end
 	
 	/**
@@ -159,9 +196,9 @@ abstract class Skin
 	 * 
 	 * Sets created group node as new open node to operate on.
 	 */
-	protected func void addNodeGroup( Point3 position, Point3 size, float rotation, float shear, \
-	float brightness, float constrast, float gamma, Color colorize, float transparency, \
-	SkinPropertyNodeCombineMode combineMode )
+	protected func void addNodeGroup(Point3 position, Point3 size, float rotation, float shear, \
+	float brightness, float contrast, float gamma, Color colorize, float transparency,\
+	SkinPropertyNodeCombineMode combineMode)
 	end
 	
 	/**

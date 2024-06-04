@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -25,9 +28,9 @@
 
 #include "igdeButton.h"
 #include "igdeContainer.h"
-#include "native/toolkit.h"
 #include "igdeCommonDialogs.h"
 #include "event/igdeAction.h"
+#include "native/toolkit.h"
 #include "resources/igdeIcon.h"
 #include "resources/igdeFont.h"
 #include "resources/igdeFontReference.h"
@@ -37,205 +40,6 @@
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/logger/deLogger.h>
-
-
-
-// Native Widget
-//////////////////
-
-namespace{
-
-class cNativeWidget : public FXButton{
-	FXDECLARE( cNativeWidget )
-	
-protected:
-	cNativeWidget();
-	
-public:
-	enum eFoxIDs{
-		ID_SELF = FXButton::ID_LAST,
-	};
-	
-private:
-	igdeButton *pOwner;
-	igdeFontReference pFont;
-	
-public:
-	cNativeWidget( igdeButton &owner, FXComposite *parent,
-		int layoutFlags, const igdeGuiTheme &guitheme );
-	virtual ~cNativeWidget();
-	
-	long onCommand( FXObject *sender, FXSelector selector, void *data );
-	long onUpdate( FXObject *sender, FXSelector selector, void *data );
-	virtual FXbool canFocus() const;
-	
-	virtual void Focus();
-	
-	static const char *ButtonText( const igdeButton &owner );
-	static FXIcon *ButtonIcon( const igdeButton &owner );
-	static int ButtonFlags( const igdeButton &owner );
-	static igdeFont *ButtonFont( const igdeButton &owner, const igdeGuiTheme &guitheme );
-	static int ButtonPadLeft( const igdeGuiTheme &guitheme );
-	static int ButtonPadRight( const igdeGuiTheme &guitheme );
-	static int ButtonPadTop( const igdeGuiTheme &guitheme );
-	static int ButtonPadBottom( const igdeGuiTheme &guitheme );
-};
-
-
-FXDEFMAP( cNativeWidget ) cNativeWidgetMap[] = {
-	FXMAPFUNC( SEL_COMMAND, cNativeWidget::ID_SELF, cNativeWidget::onCommand ),
-	FXMAPFUNC( SEL_UPDATE, cNativeWidget::ID_SELF, cNativeWidget::onUpdate )
-};
-
-
-FXIMPLEMENT( cNativeWidget, FXButton, cNativeWidgetMap, ARRAYNUMBER( cNativeWidgetMap ) )
-
-cNativeWidget::cNativeWidget(){ }
-
-cNativeWidget::cNativeWidget( igdeButton &owner, FXComposite *parent,
-int layoutFlags, const igdeGuiTheme &guitheme ) :
-FXButton( parent, ButtonText( owner ), ButtonIcon( owner ), this, ID_SELF,
-	layoutFlags | ButtonFlags( owner ), 0, 0, 0, 0,
-	ButtonPadLeft( guitheme ), ButtonPadRight( guitheme ),
-	ButtonPadTop( guitheme ), ButtonPadBottom( guitheme ) ),
-pOwner( &owner ),
-pFont( ButtonFont( owner, guitheme ) )
-{
-	setFont( (FXFont*)pFont->GetNativeFont() );
-	
-	if( ! owner.GetEnabled() ){
-		disable();
-	}
-	setTipText( owner.GetDescription().GetString() );
-	setHelpText( owner.GetDescription().GetString() );
-}
-
-cNativeWidget::~cNativeWidget(){
-}
-
-long cNativeWidget::onCommand( FXObject *sender, FXSelector selector, void *data ){
-	if( ! pOwner->GetEnabled() ){
-		return 0;
-	}
-	
-	try{
-		pOwner->OnAction();
-		
-	}catch( const deException &e ){
-		pOwner->GetLogger()->LogException( "IGDE", e );
-		igdeCommonDialogs::Exception( pOwner, e );
-		return 0;
-	}
-	
-	return 1;
-}
-
-long cNativeWidget::onUpdate( FXObject *sender, FXSelector selector, void *data ){
-	igdeAction * const action = pOwner->GetAction();
-	if( ! action ){
-		return 0;
-	}
-	
-	try{
-		action->Update();
-		
-	}catch( const deException &e ){
-		pOwner->GetLogger()->LogException( "IGDE", e );
-	}
-	
-	return 0;
-}
-
-FXbool cNativeWidget::canFocus() const{
-	if( pOwner->GetStyle() == igdeButton::ebsToolBar ){
-		return false;
-		
-	}else{
-		return FXButton::canFocus();
-	}
-}
-
-void cNativeWidget::Focus(){
-	setFocus();
-}
-
-const char *cNativeWidget::ButtonText( const igdeButton &owner ){
-	if( owner.GetStyle() == igdeButton::ebsToolBar ){
-		return "";
-		
-	}else{
-		return owner.GetText();
-	}
-}
-
-FXIcon *cNativeWidget::ButtonIcon( const igdeButton &owner ){
-	if( owner.GetIcon() ){
-		return ( FXIcon* )owner.GetIcon()->GetNativeIcon();
-		
-	}else{
-		return NULL;
-	}
-}
-
-int cNativeWidget::ButtonFlags( const igdeButton &owner ){
-	int flags = 0;
-	
-	if( owner.GetStyle() == igdeButton::ebsToolBar ){
-		flags = BUTTON_TOOLBAR | FRAME_RAISED;
-		
-	}else{
-		flags = FRAME_RAISED | JUSTIFY_NORMAL | ICON_BEFORE_TEXT;
-		//flags = BUTTON_NORMAL;
-	}
-	
-	if( owner.GetDefault() ){
-		flags |= BUTTON_DEFAULT | BUTTON_INITIAL;
-	}
-	
-	return flags;
-}
-
-igdeFont *cNativeWidget::ButtonFont( const igdeButton &owner, const igdeGuiTheme &guitheme ){
-	igdeFont::sConfiguration configuration;
-	owner.GetEnvironment().GetApplicationFont( configuration );
-	
-	if( guitheme.HasProperty( igdeGuiThemePropertyNames::buttonFontSizeAbsolute ) ){
-		configuration.size = guitheme.GetIntProperty(
-			igdeGuiThemePropertyNames::buttonFontSizeAbsolute, 0 );
-		
-	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::buttonFontSize ) ){
-		configuration.size *= guitheme.GetFloatProperty(
-			igdeGuiThemePropertyNames::buttonFontSize, 1.0f );
-		
-	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::fontSizeAbsolute ) ){
-		configuration.size = guitheme.GetIntProperty(
-			igdeGuiThemePropertyNames::fontSizeAbsolute, 0 );
-		
-	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::fontSize ) ){
-		configuration.size *= guitheme.GetFloatProperty(
-			igdeGuiThemePropertyNames::fontSize, 1.0f );
-	}
-	
-	return owner.GetEnvironment().GetSharedFont( configuration );
-}
-
-int cNativeWidget::ButtonPadLeft( const igdeGuiTheme &guitheme ){
-	return guitheme.GetIntProperty( igdeGuiThemePropertyNames::buttonPaddingLeft, DEFAULT_PAD );
-}
-
-int cNativeWidget::ButtonPadRight( const igdeGuiTheme &guitheme ){
-	return guitheme.GetIntProperty( igdeGuiThemePropertyNames::buttonPaddingRight, DEFAULT_PAD );
-}
-
-int cNativeWidget::ButtonPadTop( const igdeGuiTheme &guitheme ){
-	return guitheme.GetIntProperty( igdeGuiThemePropertyNames::buttonPaddingTop, DEFAULT_PAD );
-}
-
-int cNativeWidget::ButtonPadBottom( const igdeGuiTheme &guitheme ){
-	return guitheme.GetIntProperty( igdeGuiThemePropertyNames::buttonPaddingBottom, DEFAULT_PAD );
-}
-
-}
 
 
 
@@ -358,14 +162,15 @@ void igdeButton::SetAction( igdeAction *action ){
 
 void igdeButton::Focus(){
 	if( GetNativeWidget() ){
-		( ( cNativeWidget* )GetNativeWidget() )->Focus();
+		( ( igdeNativeButton* )GetNativeWidget() )->Focus();
 	}
 }
 
 
 void igdeButton::OnAction(){
 	if( pAction ){
-		pAction->OnAction();
+		// guard against action being deleted while in use
+		igdeActionReference( pAction )->OnAction();
 	}
 }
 
@@ -390,22 +195,9 @@ void igdeButton::CreateNativeWidget(){
 		return;
 	}
 	
-	if( ! GetParent() ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	FXComposite * const foxParent = ( FXComposite* )GetParent()->GetNativeContainer();
-	if( ! foxParent ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	int layoutFlags = igdeUIFoxHelper::GetChildLayoutFlags( this );
-	cNativeWidget * const foxWidget = new cNativeWidget(
-		*this, foxParent, layoutFlags, *GetGuiTheme() );
-	SetNativeWidget( foxWidget );
-	if( foxParent->id() ){
-		foxWidget->create();
-	}
+	igdeNativeButton * const native = igdeNativeButton::CreateNativeWidget( *this );
+	SetNativeWidget( native );
+	native->PostCreateNativeWidget();
 }
 
 void igdeButton::DestroyNativeWidget(){
@@ -413,7 +205,7 @@ void igdeButton::DestroyNativeWidget(){
 		return;
 	}
 	
-	delete ( cNativeWidget* )GetNativeWidget();
+	( ( igdeNativeButton* )GetNativeWidget() )->DestroyNativeWidget();
 	DropNativeWidget();
 }
 
@@ -424,10 +216,7 @@ void igdeButton::OnStyleChanged(){
 		return;
 	}
 	
-	FXButton &button = *( ( FXButton* )GetNativeWidget() );
-	button.setText( cNativeWidget::ButtonText( *this ) );
-	button.setIcon( cNativeWidget::ButtonIcon( *this ) );
-	button.setButtonStyle( cNativeWidget::ButtonFlags( *this ) );
+	( ( igdeNativeButton* )GetNativeWidget() )->UpdateStyle();
 }
 
 void igdeButton::OnTextChanged(){
@@ -435,7 +224,7 @@ void igdeButton::OnTextChanged(){
 		return;
 	}
 	
-	( ( FXButton* )GetNativeWidget() )->setText( cNativeWidget::ButtonText( *this ) );
+	( ( igdeNativeButton* )GetNativeWidget() )->UpdateText();
 }
 
 void igdeButton::OnDescriptionChanged(){
@@ -443,9 +232,7 @@ void igdeButton::OnDescriptionChanged(){
 		return;
 	}
 	
-	FXButton &button = *( ( FXButton* )GetNativeWidget() );
-	button.setTipText( pDescription.GetString() );
-	button.setHelpText( pDescription.GetString() );
+	( ( igdeNativeButton* )GetNativeWidget() )->UpdateDescription();
 }
 
 void igdeButton::OnIconChanged(){
@@ -453,7 +240,7 @@ void igdeButton::OnIconChanged(){
 		return;
 	}
 	
-	( ( FXButton* )GetNativeWidget() )->setIcon( cNativeWidget::ButtonIcon( *this ) );
+	( ( igdeNativeButton* )GetNativeWidget() )->UpdateIcon();
 }
 
 void igdeButton::OnEnabledChanged(){
@@ -461,12 +248,7 @@ void igdeButton::OnEnabledChanged(){
 		return;
 	}
 	
-	if( pEnabled ){
-		( ( FXButton* )GetNativeWidget() )->enable();
-		
-	}else{
-		( ( FXButton* )GetNativeWidget() )->disable();
-	}
+	( ( igdeNativeButton* )GetNativeWidget() )->UpdateEnabled();
 }
 
 void igdeButton::OnDefaultChanged(){

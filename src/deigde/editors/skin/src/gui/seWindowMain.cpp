@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Skin Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -36,8 +39,11 @@
 #include "../loadsave/seLoadSaveSystem.h"
 #include "../loadsave/seLoadSaveSkin.h"
 #include "../skin/seSkin.h"
+#include "../skin/mapped/seMapped.h"
 #include "../skin/texture/seTexture.h"
 #include "../skin/property/seProperty.h"
+#include "../undosys/mapped/seUMappedAdd.h"
+#include "../undosys/mapped/seUMappedRemove.h"
 #include "../undosys/texture/seUTextureAdd.h"
 #include "../undosys/texture/seUTextureRemove.h"
 #include "../undosys/texture/seUTextureImport.h"
@@ -247,13 +253,14 @@ void seWindowMain::LoadSkin( const char *filename ){
 	refSkin.TakeOver( pLoadSaveSystem->LoadSkin( filename, GetGameDefinition() ) );
 	seSkin * const skin = ( seSkin* )( deObject* )refSkin;
 	
-	// store informations
+	// store information
 	skin->SetFilePath( filename );
 	skin->SetChanged( false );
 	skin->SetSaved( true );
 	
 	// fore loading resources since the base path is now set
 	skin->UpdateResources();
+	pWindowProperties->OnSkinPathChanged();
 	
 	// determine the file title of the loaded skin
 	const int lsindex = pLoadSaveSystem->IndexOfLSSkinMatching( filename );
@@ -324,6 +331,7 @@ void seWindowMain::SaveSkin( const char *filename ){
 	// path are now different and potentially broken
 	if( basePathChanged ){
 		pSkin->UpdateResources();
+		pWindowProperties->OnSkinPathChanged();
 	}
 	GetRecentFiles().AddFile( filename );
 }
@@ -507,7 +515,7 @@ public:
 		
 		// query for the model
 		decString filename( pWindow.GetSkin() ? decPath::AbsolutePathUnix(
-			pWindow.GetSkin()->GetModelPath(), pWindow.GetSkin()->GetDirectoryPath() ).GetPathUnix() : "" );
+			pWindow.GetSkin()->GetModelPath(), pWindow.GetSkin()->GetDirectoryPath() ).GetPathUnix() : decString() );
 		if( ! igdeCommonDialogs::GetFileOpen( &pWindow, "New From Model", *environment.GetFileSystemGame(),
 			*environment.GetOpenFilePatternList( igdeEnvironment::efpltModel ), filename ) ){
 				return;
@@ -550,14 +558,14 @@ public:
 			refProperty.TakeOver( property = new seProperty( engine ) );
 			property->SetName( "reflectivity" );
 			property->SetValueType( seProperty::evtValue );
-			property->SetValue( 0.23 );
+			property->SetValue( 0.23f );
 			texture->AddProperty( property );
 			
 			// create roughness property with moderate roughness
 			refProperty.TakeOver( property = new seProperty( engine ) );
 			property->SetName( "roughness" );
 			property->SetValueType( seProperty::evtValue );
-			property->SetValue( 0.35 );
+			property->SetValue( 0.35f );
 			texture->AddProperty( property );
 			
 			// add texture
@@ -604,7 +612,7 @@ public:
 		decString filename( skin->GetFilePath() );
 		if( igdeCommonDialogs::GetFileSave( &pWindow, "Save Skin",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
-		*pWindow.GetEnvironment().GetOpenFilePatternList( igdeEnvironment::efpltSkin ), filename ) ){
+		*pWindow.GetEnvironment().GetSaveFilePatternList( igdeEnvironment::efpltSkin ), filename ) ){
 			pWindow.SaveSkin( filename );
 		}
 		return NULL;
@@ -672,6 +680,75 @@ public:
 	
 	virtual igdeUndo *OnAction( seSkin* ){
 		return NULL;
+	}
+};
+
+
+class cActionBaseMapped : public cActionBase{
+public:
+	cActionBaseMapped( seWindowMain &window, const char *text, igdeIcon *icon,
+		const char *description, deInputEvent::eKeyCodes mnemonic = deInputEvent::ekcUndefined ) :
+		cActionBase( window, text, icon, description, mnemonic ){}
+	
+	virtual igdeUndo *OnAction( seSkin *skin ){
+		return skin->GetActiveMapped() ? OnActionMapped( skin, skin->GetActiveMapped() ) : nullptr;
+	}
+	
+	virtual igdeUndo *OnActionMapped( seSkin *skin, seMapped *mapped ) = 0;
+	
+	virtual void Update( const seSkin &skin ){
+		if( skin.GetActiveMapped() ){
+			UpdateMapped( skin, *skin.GetActiveMapped() );
+			
+		}else{
+			SetEnabled( false );
+		}
+	}
+	
+	virtual void UpdateMapped( const seSkin &, const seMapped & ){
+		SetEnabled( true );
+	}
+};
+
+class cActionMappedAdd : public cActionBase{
+public:
+	cActionMappedAdd( seWindowMain &window ) : cActionBase( window,
+		"Add...", window.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ),
+		"Add mapped", deInputEvent::ekcA ){}
+	
+	virtual igdeUndo *OnAction( seSkin *skin ){
+		decString name( "Mapped" );
+		while( igdeCommonDialogs::GetString( &pWindow, "Add Mapped", "Name:", name ) ){
+			if( skin->GetMappedList().HasNamed( name ) ){
+				igdeCommonDialogs::Error( &pWindow, "Add Mapped", "A mapped with this name exists already." );
+				
+			}else{
+				return new seUMappedAdd( skin, seMapped::Ref::New( new seMapped( name ) ) );
+			}
+		}
+		
+		return nullptr;
+	}
+};
+
+class cActionMappedRemove : public cActionBaseMapped{
+public:
+	cActionMappedRemove( seWindowMain &window ) : cActionBaseMapped( window,
+		"Remove", window.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ),
+		"Remove mapped", deInputEvent::ekcR ){}
+	
+	virtual igdeUndo *OnActionMapped( seSkin*, seMapped *mapped ){
+		seUMappedRemove *undo = new seUMappedRemove( mapped );
+		
+		if( undo->GetDependencyCount() > 0 && igdeCommonDialogs::QuestionFormat( &pWindow,
+		igdeCommonDialogs::ebsYesNo, "Remove Mapped", "Mapped is used by %d dependencies. "
+		"Removing the mapped will also unset it from all dependencies.", undo->GetDependencyCount() )
+		== igdeCommonDialogs::ebNo ){
+			undo->FreeReference();
+			return nullptr;
+		}
+		
+		return undo;
 	}
 };
 
@@ -794,12 +871,12 @@ public:
 			pathChange.SetFrom( importSkinPath );
 			
 		}else{
-			const decPath skinPath( decPath::CreatePathUnix( skin->GetDirectoryPath() ) );
+			const decPath skinPath2( decPath::CreatePathUnix( skin->GetDirectoryPath() ) );
 			decPath comparePath;
 			
 			// add conmponents until both path are no more equal. that is the common base
-			for( i=0; i<skinPath.GetComponentCount(); i++ ){
-				pathChange.AddComponent( skinPath.GetComponentAt( i ) );
+			for( i=0; i<skinPath2.GetComponentCount(); i++ ){
+				pathChange.AddComponent( skinPath2.GetComponentAt( i ) );
 				comparePath.AddComponent( importSkinPath.GetComponentAt( i ) );
 				if( pathChange != comparePath ){
 					break;
@@ -810,7 +887,7 @@ public:
 			const int baseComponentCount = i;
 			
 			pathChange.SetEmpty();
-			for( i=baseComponentCount; i<skinPath.GetComponentCount(); i++ ){
+			for( i=baseComponentCount; i<skinPath2.GetComponentCount(); i++ ){
 				pathChange.AddComponent( ".." );
 			}
 			for( i=baseComponentCount; i<importSkinPath.GetComponentCount(); i++ ){
@@ -984,6 +1061,9 @@ void seWindowMain::pCreateActions(){
 	pActionEditCopy.TakeOver( new cActionEditCopy( *this ) );
 	pActionEditPaste.TakeOver( new cActionEditPaste( *this ) );
 	
+	pActionMappedAdd.TakeOver( new cActionMappedAdd( *this ) );
+	pActionMappedRemove.TakeOver( new cActionMappedRemove( *this ) );
+	
 	pActionTextureAdd.TakeOver( new cActionTextureAdd( *this ) );
 	pActionTextureRemove.TakeOver( new cActionTextureRemove( *this ) );
 	pActionTextureImportFromGDef.TakeOver( new cActionTextureImportFromGDef( *this ) );
@@ -1006,6 +1086,9 @@ void seWindowMain::pCreateActions(){
 	AddUpdateAction( pActionEditCut );
 	AddUpdateAction( pActionEditCopy );
 	AddUpdateAction( pActionEditPaste );
+	
+	AddUpdateAction( pActionMappedAdd );
+	AddUpdateAction( pActionMappedRemove );
 	
 	AddUpdateAction( pActionTextureAdd );
 	AddUpdateAction( pActionTextureRemove );
@@ -1042,6 +1125,10 @@ void seWindowMain::pCreateToolBarEdit(){
 	helper.ToolBarButton( pTBEdit, pActionEditPaste );
 	
 	helper.ToolBarSeparator( pTBEdit );
+	helper.ToolBarButton( pTBEdit, pActionMappedAdd );
+	helper.ToolBarButton( pTBEdit, pActionMappedRemove );
+	
+	helper.ToolBarSeparator( pTBEdit );
 	helper.ToolBarButton( pTBEdit, pActionTextureAdd );
 	helper.ToolBarButton( pTBEdit, pActionTextureRemove );
 	
@@ -1062,6 +1149,10 @@ void seWindowMain::pCreateMenu(){
 	
 	cascade.TakeOver( new igdeMenuCascade( env, "Edit", deInputEvent::ekcE ) );
 	pCreateMenuEdit( cascade );
+	AddSharedMenu( cascade );
+	
+	cascade.TakeOver( new igdeMenuCascade( env, "Mapped", deInputEvent::ekcM ) );
+	pCreateMenuMapped( cascade );
 	AddSharedMenu( cascade );
 	
 	cascade.TakeOver( new igdeMenuCascade( env, "Texture", deInputEvent::ekcT ) );
@@ -1090,6 +1181,13 @@ void seWindowMain::pCreateMenuEdit( igdeMenuCascade &menu ){
 	helper.MenuCommand( menu, pActionEditCut );
 	helper.MenuCommand( menu, pActionEditCopy );
 	helper.MenuCommand( menu, pActionEditPaste );
+}
+
+void seWindowMain::pCreateMenuMapped( igdeMenuCascade &menu ){
+	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
+	
+	helper.MenuCommand( menu, pActionMappedAdd );
+	helper.MenuCommand( menu, pActionMappedRemove );
 }
 
 void seWindowMain::pCreateMenuTexture( igdeMenuCascade &menu ){

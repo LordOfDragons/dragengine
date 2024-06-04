@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -49,95 +52,129 @@ class ScrollBar extends Container implements RangeModelListener
 		private var RepeatActionTimer pRepeatScrollTimer
 		
 		/** Create scroll button. */
-		public func new( ActionListener scrollAction )
-			this.pActionScroll = scrollAction
+		public func new(ActionListener scrollAction)
+			pActionScroll = scrollAction
 		end
 		
 		/** \brief Widget changed state. */
-		public func void onStateChanged( StateChangeEvent event )
+		public func void onStateChanged(StateChangeEvent event)
 			// state changed can be send due to pressed state change but also due to other state
 			// changes like higlighted state changed. care has to be taken to properly start and
 			// stop the timer otherwise leaking timers can be created
-			if ( event.getSource() cast Button ).getPressed()
-				if this.pRepeatScrollTimer == null
-					this.pRepeatScrollTimer = RepeatActionTimer.new( this.pActionScroll, event.getSource(), 0 )
-					this.pRepeatScrollTimer.sendEvent()
+			if (event.getSource() cast Button).getPressed()
+				if pRepeatScrollTimer == null
+					pRepeatScrollTimer = RepeatActionTimer.new(pActionScroll, event.getSource(), 0)
+					pRepeatScrollTimer.sendEvent()
 				end
 				
 			else
-				if this.pRepeatScrollTimer != null
-					this.pRepeatScrollTimer.giveUp()
-					this.pRepeatScrollTimer = null
+				if pRepeatScrollTimer != null
+					pRepeatScrollTimer.giveUp()
+					pRepeatScrollTimer = null
 				end
 			end
 		end
 		
 		/** \brief Dispose of listener. */
 		public func void dispose()
-			if this.pRepeatScrollTimer != null
-				this.pRepeatScrollTimer.giveUp()
-				this.pRepeatScrollTimer = null
+			if pRepeatScrollTimer != null
+				pRepeatScrollTimer.giveUp()
+				pRepeatScrollTimer = null
 			end
 		end
 	end
 	
-	/** Action scroll up/left action. */
-	class ActionScrollUpLeft extends DefaultActionListener
-		private var ScrollBar pScrollBar
-		public func new( ScrollBar scrollBar )
-			this.pScrollBar = scrollBar
+	/**
+	 * \brief Action scroll.
+	 * \version 1.9
+	 */
+	abstract class ActionScroll extends DefaultActionListener
+		protected var ScrollBar pScrollBar
+		protected var bool pIsWheelAction
+		
+		public func new(ScrollBar scrollBar)
+			pScrollBar = scrollBar
 		end
-		public func void onAction( ActionEvent event )
-			var RangeModel model = this.pScrollBar.getModel()
+		
+		/** \version 1.11 */
+		public func new(ScrollBar scrollBar, bool isWheelAction)
+			pScrollBar = scrollBar
+			pIsWheelAction = isWheelAction
+		end
+		
+		public func void onAction(ActionEvent event)
+			var RangeModel model = pScrollBar.getModel()
 			
-			if ( event.getModifiers() & ModifiableEvent.shift ) == ModifiableEvent.shift
-				model.setValue( model.getValue() - model.getPageSize() )
+			if increaseValue()
+				if (event.getModifiers() & ModifiableEvent.shift) == ModifiableEvent.shift
+					model.setValue(model.getValue() + model.getPageSize())
+					
+				else
+					model.setValue(model.getValue() + model.getIncrement())
+				end
 				
 			else
-				model.setValue( model.getValue() - model.getIncrement() )
+				if (event.getModifiers() & ModifiableEvent.shift) == ModifiableEvent.shift
+					model.setValue(model.getValue() - model.getPageSize())
+					
+				else
+					model.setValue(model.getValue() - model.getIncrement())
+				end
 			end
+		end
+		
+		abstract protected func bool increaseValue()
+	end
+	
+	/** \brief Action scroll up/left action. */
+	class ActionScrollUpLeft extends ActionScroll
+		public func new(ScrollBar scrollBar) super(scrollBar)
+		end
+		
+		/** \version 1.11 */
+		public func new(ScrollBar scrollBar, bool isWheelAction) super(scrollBar, isWheelAction)
+		end
+		
+		protected func bool increaseValue()
+			return pIsWheelAction if pScrollBar.getReverseWheel() else false
 		end
 	end
 	
-	/** Action scroll down/right action. */
-	class ActionScrollDownRight extends DefaultActionListener
-		private var ScrollBar pScrollBar
-		public func new( ScrollBar scrollBar )
-			this.pScrollBar = scrollBar
+	/** \brief Action scroll down/right action. */
+	class ActionScrollDownRight extends ActionScroll
+		public func new(ScrollBar scrollBar) super(scrollBar)
 		end
-		public func void onAction( ActionEvent event )
-			var RangeModel model = this.pScrollBar.getModel()
-			
-			if ( event.getModifiers() & ModifiableEvent.shift ) == ModifiableEvent.shift
-				model.setValue( model.getValue() + model.getPageSize() )
-				
-			else
-				model.setValue( model.getValue() + model.getIncrement() )
-			end
+		
+		/** \version 1.11 */
+		public func new(ScrollBar scrollBar, bool isWheelAction) super(scrollBar, isWheelAction)
+		end
+		
+		protected func bool increaseValue()
+			return pIsWheelAction if not pScrollBar.getReverseWheel() else true
 		end
 	end
 	
 	/** Action scroll page up/left action. */
 	class ActionScrollPageUpLeft extends DefaultActionListener
 		private var ScrollBar pScrollBar
-		public func new( ScrollBar scrollBar )
-			this.pScrollBar = scrollBar
+		public func new(ScrollBar scrollBar)
+			pScrollBar = scrollBar
 		end
-		public func void onAction( ActionEvent event )
-			var RangeModel model = this.pScrollBar.getModel()
-			model.setValue( model.getValue() - DEMath.max( model.getPageSize(), 1 ) )
+		public func void onAction(ActionEvent event)
+			var RangeModel model = pScrollBar.getModel()
+			model.setValue(model.getValue() - DEMath.max(model.getPageSize(), 1))
 		end
 	end
 	
 	/** Action scroll page down/right action. */
 	class ActionScrollPageDownRight extends DefaultActionListener
 		private var ScrollBar pScrollBar
-		public func new( ScrollBar scrollBar )
-			this.pScrollBar = scrollBar
+		public func new(ScrollBar scrollBar)
+			pScrollBar = scrollBar
 		end
-		public func void onAction( ActionEvent event )
-			var RangeModel model = this.pScrollBar.getModel()
-			model.setValue( model.getValue() + DEMath.max( model.getPageSize(), 1 ) )
+		public func void onAction(ActionEvent event)
+			var RangeModel model = pScrollBar.getModel()
+			model.setValue(model.getValue() + DEMath.max(model.getPageSize(), 1))
 		end
 	end
 	
@@ -146,136 +183,115 @@ class ScrollBar extends Container implements RangeModelListener
 		private var ScrollBar pScrollBar
 		private var Point pOffset
 		
-		public func new( ScrollBar scrollBar )
-			this.pScrollBar = scrollBar
+		public func new(ScrollBar scrollBar)
+			pScrollBar = scrollBar
 		end
 		
-		public func void onButtonPress( MouseEvent event )
+		public func void onButtonPress(MouseEvent event)
 			if event.getButton() == InputEventMouseButton.left
-				this.pOffset = event.getPosition()
-				( event.getSource() cast Widget ).captureMouse()
+				pOffset = event.getPosition()
+				(event.getSource() cast Widget).captureMouse()
 			end
 		end
 		
-		public func void onButtonRelease( MouseEvent event )
+		public func void onButtonRelease(MouseEvent event)
 			if event.getButton() == InputEventMouseButton.left
-				( event.getSource() cast Widget ).releaseMouse()
-				this.pOffset = null
+				(event.getSource() cast Widget).releaseMouse()
+				pOffset = null
 			end
 		end
 		
-		public func void onMouseMove( MouseEvent event )
-			if this.pOffset == null
+		public func void onMouseMove(MouseEvent event)
+			if pOffset == null
 				return
 			end
 			
-			var RectArea helperPos = this.pScrollBar.getHelperPositions()
-			var RangeModel model = this.pScrollBar.getModel()
+			var RectArea helperPos = pScrollBar.getHelperPositions()
+			var RangeModel model = pScrollBar.getModel()
 			var int range = model.getMaximum() - model.getMinimum()
 			var int offset
 			
-			if this.pScrollBar.getOrientation() == ScrollBar.Orientation.horizontal
-				offset = ( event.getSource() cast Widget ).getX() + event.getPosition().getX() - this.pOffset.getX()
+			if pScrollBar.getOrientation() == Orientation.horizontal
+				offset = (event.getSource() cast Widget).getX() + event.getPosition().getX() - pOffset.getX()
 				
 			else
-				offset = ( event.getSource() cast Widget ).getY() + event.getPosition().getY() - this.pOffset.getY()
+				offset = (event.getSource() cast Widget).getY() + event.getPosition().getY() - pOffset.getY()
 			end
 			
-			var int denom = helperPos.getY2() - helperPos.getX1() - this.pScrollBar.getKnobSize()
+			var int denom = helperPos.getY2() - helperPos.getX1() - pScrollBar.getKnobSize()
 			var int value
 			
 			if denom <= 0
 				value = 0
 				
 			else
-				value = ( ( ( range * ( offset - helperPos.getX1() ) ) cast float ) / ( denom cast float ) + 0.5 ) cast int
+				value = (((range * (offset - helperPos.getX1())) cast float) / (denom cast float) + 0.5) cast int
 			end
 			
-			model.setValue( model.getMinimum() + value )
+			model.setValue(model.getMinimum() + value)
 		end
 	end
 	
 	
 	
-	/** Orientation of the scrollbar */
 	private var Orientation pOrientation
-	
-	/** Range Model holding state of scrollbar */
 	private var RangeModel pModel
-	
-	/** \brief Hide scroll bar if range is empty. */
 	private var bool pHideIfEmpty
-	
-	/** Determines in which area the drag started */
 	private var int pDragArea
-	
-	/** Offset of drag start click to left knob */
 	private var int pOffsetDrag
-	
-	/** Store positions for quick access later */
 	private var RectArea pHelperPositions
-	
-	/** Repeat scroll timer */
 	private var RepeatActionTimer pRepeatScrollTimer
-	
-	/** Left/up button. */
 	private var Button pButtonLeftUp
-	
-	/** Right/down button. */
 	private var Button pButtonRightDown
-	
-	/** Knob widget. */
 	private var Widget pWidgetKnob
-	
-	/** \brief Frame widget. */
 	private var Panel pWidgetFrame
-	
-	/** \brief Scroll state listeners to clean up upon dispose. */
 	private var Array pDisposeScrollButtonStateListeners
+	private var bool pReverseWheel
 	
 	
 	
 	/** Create scroll bar widget. */
-	public func new( Orientation orientation )
-		this.pDisposeScrollButtonStateListeners = Array.new()
+	public func new(Orientation orientation)
+		pDisposeScrollButtonStateListeners = Array.new()
 		
-		this.pModel = DefaultRangeModel.new()
-		this.pModel.addListener(this)
-		this.pHideIfEmpty = false
-		this.pDragArea = 0
+		pModel = DefaultRangeModel.new()
+		pModel.addListener(this)
+		pHideIfEmpty = false
+		pDragArea = 0
+		pReverseWheel = false
 		
-		this.setDesignerSelector( "ScrollBar" )
+		setDesignerSelector("ScrollBar")
 		
-		this.setOrientation( orientation )
-		this.setCanFocus( false )
+		setOrientation(orientation)
+		setCanFocus(false)
 		
-		this.createContent()
-		this.enableDirectionButtons()
+		createContent()
+		enableDirectionButtons()
 		
-		this.addMouseListener( WheelActionMouseListener.new( \
-			ActionScrollUpLeft.new( this ), ActionScrollDownRight.new( this ) ) )
+		addMouseListener(WheelActionMouseListener.new(\
+			ActionScrollUpLeft.new(this, true), ActionScrollDownRight.new(this, true)))
 	end
 	
 	/** \brief Create scroll bar widget with model. */
-	public func new( Orientation orientation, RangeModel model ) this( orientation )
-		this.setModel( model )
+	public func new(Orientation orientation, RangeModel model) this(orientation)
+		setModel(model)
 	end
 	
 	/** Dispose of widget. */
 	public func void dispose()
-		if this.pDisposeScrollButtonStateListeners != null
-			this.pDisposeScrollButtonStateListeners.forEach( block ScrollButtonStateListener each
+		if pDisposeScrollButtonStateListeners != null
+			pDisposeScrollButtonStateListeners.forEach(block ScrollButtonStateListener each
 				each.dispose()
-			end )
-			this.pDisposeScrollButtonStateListeners = null
+			end)
+			pDisposeScrollButtonStateListeners = null
 		end
-		this.stopRepeatScrollTimer()
-		this.pButtonLeftUp = null
-		this.pButtonRightDown = null
-		this.pModel.removeListener( this )
-		this.pModel = null
-		this.pWidgetFrame = null
-		this.pWidgetKnob = null
+		stopRepeatScrollTimer()
+		pButtonLeftUp = null
+		pButtonRightDown = null
+		pModel.removeListener(this)
+		pModel = null
+		pWidgetFrame = null
+		pWidgetKnob = null
 		
 		super.dispose()
 	end
@@ -284,63 +300,83 @@ class ScrollBar extends Container implements RangeModelListener
 	
 	/** Orientation of the scrollbar. */
 	public func Orientation getOrientation()
-		return this.pOrientation
+		return pOrientation
 	end
 	
 	/** Set oriantation of the scrollbar. */
-	public func void setOrientation( Orientation orientation )
-		if this.pOrientation == orientation
+	public func void setOrientation(Orientation orientation)
+		if pOrientation == orientation
 			return
 		end
 		
-		this.pOrientation = orientation
+		pOrientation = orientation
 		
-		this.createContent()
-		this.enableDirectionButtons()
-		this.updateKnobWidget()
+		createContent()
+		enableDirectionButtons()
+		updateKnobWidget()
 	end
 	
 	/** Range model. */
 	public func RangeModel getModel()
-		return this.pModel
+		return pModel
 	end
 	
 	/** Set range model. */
-	public func void setModel( RangeModel rangeModel )
+	public func void setModel(RangeModel rangeModel)
 		if rangeModel == null
 			throw EInvalidParam.new()
 		end
 		
-		if rangeModel == this.pModel
+		if rangeModel == pModel
 			return
 		end
 		
-		this.pModel.removeListener( this )
-		this.pModel = rangeModel
-		this.pModel.addListener( this )
+		pModel.removeListener(this)
+		pModel = rangeModel
+		pModel.addListener(this)
 		
-		this.enableDirectionButtons()
-		this.updateKnobWidget()
+		enableDirectionButtons()
+		updateKnobWidget()
 	end
 	
 	/** \brief Hide scroll bar if range is empty. */
 	public func bool getHideIfEmpty()
-		return this.pHideIfEmpty
+		return pHideIfEmpty
 	end
 	
 	/** \brief Set if scroll bar is hidden if range is empty. */
-	public func void setHideIfEmpty( bool hideIfEmpty )
-		if hideIfEmpty == this.pHideIfEmpty
+	public func void setHideIfEmpty(bool hideIfEmpty)
+		if hideIfEmpty == pHideIfEmpty
 			return
 		end
-		this.pHideIfEmpty = hideIfEmpty
-		this.checkHiding()
+		pHideIfEmpty = hideIfEmpty
+		checkHiding()
 	end
 	
 	/** Size of the drag knob. */
 	public func int getKnobSize()
-		var RectArea helperPos = this.getHelperPositions()
+		var RectArea helperPos = getHelperPositions()
 		return helperPos.getX2() - helperPos.getY1()
+	end
+	
+	/**
+	 * \brief Reverse wheel direction.
+	 * \version 1.9
+	 * 
+	 * If false wheeling up decreases the range model. If true increases the range model.
+	 */
+	public func bool getReverseWheel()
+		return pReverseWheel
+	end
+	
+	/**
+	 * \brief Set reverse wheel direction
+	 * \version 1.9
+	 * 
+	 * If false wheeling up decreases the range model. If true increases the range model.
+	 */
+	public func void setReverseWheel(bool reverseWheel)
+		pReverseWheel = reverseWheel
 	end
 	
 	
@@ -349,17 +385,17 @@ class ScrollBar extends Container implements RangeModelListener
 	 * Send if the outer range properties like minimum value, maximum
 	 * value or page size has changed.
 	 */
-	public func void rangeChanged( RangeModel rangeModel )
-		this.checkHiding()
-		this.enableDirectionButtons()
-		this.updateKnobWidget()
+	public func void rangeChanged(RangeModel rangeModel)
+		checkHiding()
+		enableDirectionButtons()
+		updateKnobWidget()
 	end
 	
 	/** Send if the value has changed. */
-	public func void valueChanged( RangeModel rangeModel )
-		this.checkHiding()
-		this.enableDirectionButtons()
-		this.updateKnobWidget()
+	public func void valueChanged(RangeModel rangeModel)
+		checkHiding()
+		enableDirectionButtons()
+		updateKnobWidget()
 	end
 	
 	
@@ -368,73 +404,73 @@ class ScrollBar extends Container implements RangeModelListener
 	public func void onGuiThemeChanged()
 		super.onGuiThemeChanged()
 		
-		this.createContent()
-		this.enableDirectionButtons()
-		this.updateKnobWidget()
+		createContent()
+		enableDirectionButtons()
+		updateKnobWidget()
 	end
 	
 	/** \brief Designer changed. */
 	public func void onDesignerChanged()
-		this.createContent()
+		createContent()
 	end
 	
 	/** \brief Size changed. */
-	public func void onResize( WidgetEvent event )
-		super.onResize( event )
-		this.updateKnobWidget()
+	public func void onResize(WidgetEvent event)
+		super.onResize(event)
+		updateKnobWidget()
 	end
 	
 	
 	
 	/** Mouse button has been pressed. */
-	public func void onButtonPress( MouseEvent event )
-		super.onButtonPress( event )
+	public func void onButtonPress(MouseEvent event)
+		super.onButtonPress(event)
 		
-		if event.getSource() != this.pWidgetFrame
+		if event.getSource() != pWidgetFrame
 			return
 		end
 		
 		if event.getButton() == InputEventMouseButton.left
 			var Point position = event.getPosition()
-			var RectArea helperPos = this.getHelperPositions()
+			var RectArea helperPos = getHelperPositions()
 			var int testValue
 			
-			if this.pOrientation == Orientation.horizontal
+			if pOrientation == Orientation.horizontal
 				testValue = position.getX()
-				this.pOffsetDrag = position.getX() - this.getHelperPositions().getY1()
+				pOffsetDrag = position.getX() - getHelperPositions().getY1()
 				
 			else
 				testValue = position.getY()
-				this.pOffsetDrag = position.getY() - this.getHelperPositions().getY1()
+				pOffsetDrag = position.getY() - getHelperPositions().getY1()
 			end
 			
 			if testValue < helperPos.getY1()
-				this.stopRepeatScrollTimer()
-				this.pDragArea = 2
-				this.pRepeatScrollTimer = RepeatActionTimer.new( ActionScrollPageUpLeft.new( this ), \
-					event.getSource(), event.getModifiers() )
-				this.pRepeatScrollTimer.sendEvent()
+				stopRepeatScrollTimer()
+				pDragArea = 2
+				pRepeatScrollTimer = RepeatActionTimer.new(ActionScrollPageUpLeft.new(this), \
+					event.getSource(), event.getModifiers())
+				pRepeatScrollTimer.sendEvent()
 				
 			elif testValue > helperPos.getX2()
-				this.stopRepeatScrollTimer()
-				this.pDragArea = 4
-				this.pRepeatScrollTimer = RepeatActionTimer.new( ActionScrollPageDownRight.new( this ), \
-					event.getSource(), event.getModifiers() )
-				this.pRepeatScrollTimer.sendEvent()
+				stopRepeatScrollTimer()
+				pDragArea = 4
+				pRepeatScrollTimer = RepeatActionTimer.new(ActionScrollPageDownRight.new(this), \
+					event.getSource(), event.getModifiers())
+				pRepeatScrollTimer.sendEvent()
 			end
 			
-			this.captureMouse()
+			captureMouse()
 		end
 	end
 	
 	/** Mouse button has been released. */
-	public func void onButtonRelease( MouseEvent event )
-		super.onButtonRelease( event )
+	public func void onButtonRelease(MouseEvent event)
+		super.onButtonRelease(event)
 		
 		if event.getButton() == InputEventMouseButton.left
-			this.stopRepeatScrollTimer()
-			this.releaseMouse()
-			this.pDragArea = 0
+			stopRepeatScrollTimer()
+			releaseMouse()
+			pDragArea = 0
 		end
 	end
 	
@@ -458,54 +494,54 @@ class ScrollBar extends Container implements RangeModelListener
 	
 	/** Helper positions. If not present yet they are calculated. */
 	public func RectArea getHelperPositions()
-		if this.pHelperPositions != null
-			return this.pHelperPositions
+		if pHelperPositions != null
+			return pHelperPositions
 		end
 		
-		if this.pWidgetKnob == null
+		if pWidgetKnob == null
 			return RectArea.new()
 		end
 		
 		// determine positions
-		var int pageSize = DEMath.max( this.pModel.getPageSize(), 1 )
-		var int range = this.pModel.getMaximum() - this.pModel.getMinimum()
-		var int value = this.pModel.getValue() - this.pModel.getMinimum()
-		var BorderSize borderSize = this.pWidgetKnob.getBorderSize()
+		var int pageSize = DEMath.max(pModel.getPageSize(), 1)
+		var int range = pModel.getMaximum() - pModel.getMinimum()
+		var int value = pModel.getValue() - pModel.getMinimum()
+		var BorderSize borderSize = pWidgetKnob.getBorderSize()
 		var int pos1, pos2, pos3, pos4
 		
-		if this.pOrientation == Orientation.horizontal
-			pos1 = this.pWidgetFrame.getPadding().getLeft() + borderSize.getLeft()
-			pos4 = this.pWidgetFrame.getPadding().getLeft() + this.pWidgetKnob.getParent().getContainerWidth() - borderSize.getRight()
+		if pOrientation == Orientation.horizontal
+			pos1 = pWidgetFrame.getPadding().getLeft() + borderSize.getLeft()
+			pos4 = pWidgetFrame.getPadding().getLeft() + pWidgetKnob.getParent().getContainerWidth() - borderSize.getRight()
 			
 		else
-			pos1 = this.pWidgetFrame.getPadding().getTop() + borderSize.getTop()
-			pos4 = this.pWidgetFrame.getPadding().getTop() + this.pWidgetKnob.getParent().getContainerHeight() - borderSize.getBottom()
+			pos1 = pWidgetFrame.getPadding().getTop() + borderSize.getTop()
+			pos4 = pWidgetFrame.getPadding().getTop() + pWidgetKnob.getParent().getContainerHeight() - borderSize.getBottom()
 		end
 		
-		var int knobSize = DEMath.max( pageSize * ( pos4 - pos1 ) / ( range + pageSize ), 7 )
+		var int knobSize = DEMath.max(pageSize * (pos4 - pos1) / (range + pageSize), 7)
 		
 		if range > 0
-			pos2 = pos1 + value * ( pos4 - pos1 - knobSize ) / range
+			pos2 = pos1 + value * (pos4 - pos1 - knobSize) / range
 			pos3 = pos2 + knobSize
 			
 		else
 			pos2 = pos1
-			pos3 = DEMath.max( pos4, pos1 )
+			pos3 = DEMath.max(pos4, pos1)
 		end
 		
 		// save positions
-		this.pHelperPositions = RectArea.new( pos1, pos2, pos3, pos4 )
-		return this.pHelperPositions
+		pHelperPositions = RectArea.new(pos1, pos2, pos3, pos4)
+		return pHelperPositions
 	end
 	
 	/** Stop repeat scroll timer. */
 	private func void stopRepeatScrollTimer()
-		if this.pRepeatScrollTimer == null
+		if pRepeatScrollTimer == null
 			return
 		end
 		
-		this.pRepeatScrollTimer.giveUp()
-		this.pRepeatScrollTimer = null
+		pRepeatScrollTimer.giveUp()
+		pRepeatScrollTimer = null
 	end
 	
 	
@@ -514,11 +550,11 @@ class ScrollBar extends Container implements RangeModelListener
 	public func void removeAllWidgets()
 		super.removeAllWidgets()
 		
-		if this.pDisposeScrollButtonStateListeners != null
-			this.pDisposeScrollButtonStateListeners.forEach( block ScrollButtonStateListener each
+		if pDisposeScrollButtonStateListeners != null
+			pDisposeScrollButtonStateListeners.forEach(block ScrollButtonStateListener each
 				each.dispose()
-			end )
-			this.pDisposeScrollButtonStateListeners.removeAll()
+			end)
+			pDisposeScrollButtonStateListeners.removeAll()
 		end
 	end
 	
@@ -526,131 +562,131 @@ class ScrollBar extends Container implements RangeModelListener
 	
 	/** \brief Hide scroll bar if set to be hidden if range is empty. */
 	protected func void checkHiding()
-		if this.pHideIfEmpty
-			this.setVisible( this.pModel.getMaximum() > this.pModel.getMinimum() )
+		if pHideIfEmpty
+			setVisible(pModel.getMaximum() > pModel.getMinimum())
 		end
 	end
 	
 	/** Create content widgets. */
 	public func void createContent()
-		this.pHelperPositions = null
+		pHelperPositions = null
 		
-		if this.getGuiTheme() == null
-			this.pButtonLeftUp = null
-			this.pButtonRightDown = null
-			this.removeAllWidgets()
+		if getGuiTheme() == null
+			pButtonLeftUp = null
+			pButtonRightDown = null
+			removeAllWidgets()
 			return
 		end
 		
 		// wheel listener reused across widgets
-		var MouseListener wheelListener = WheelActionMouseListener.new( \
-			ActionScrollUpLeft.new( this ), ActionScrollDownRight.new( this ) )
+		var MouseListener wheelListener = WheelActionMouseListener.new(\
+			ActionScrollUpLeft.new(this, true), ActionScrollDownRight.new(this, true))
 		
 		// remove all widgets
-		this.pButtonLeftUp = null
-		this.pButtonRightDown = null
-		this.removeAllWidgets()
+		pButtonLeftUp = null
+		pButtonRightDown = null
+		removeAllWidgets()
 		
 		// set layout to border layout
-		this.setLayout( BorderLayout.new( 0 ) )
+		setLayout(BorderLayout.new(0))
 		
 		// fix scrollbar size in the appropriate direction
-		var ScrollBarDesigner designer = this.getDesigner() cast ScrollBarDesigner
-		var int scrollBarSize = designer.scrollbarSize( this )
+		var ScrollBarDesigner designer = getDesigner() cast ScrollBarDesigner
+		var int scrollBarSize = designer.scrollbarSize(this)
 		
-		if this.pOrientation == Orientation.horizontal
-			this.setMinimumSize( Point.new( 0, scrollBarSize ) )
+		if pOrientation == Orientation.horizontal
+			setMinimumSize(Point.new(0, scrollBarSize))
 			
 		else
-			this.setMinimumSize( Point.new( scrollBarSize, 0 ) )
+			setMinimumSize(Point.new(scrollBarSize, 0))
 		end
 		
 		// add center panel hosting the knob
-		this.pWidgetFrame = Panel.new()
-		this.pWidgetFrame.setBackgroundCanvasCreator( designer.canvasCreatorFrame( this ) )
-		this.pWidgetFrame.setLayout( FixedLayout.new() )
-		this.pWidgetFrame.setPadding( BorderSize.new( designer.paddingKnobFrame( this ) ) )
-		this.pWidgetFrame.setProtectPadding( true )
-		this.addWidget( this.pWidgetFrame, BorderLayout.Area.content )
+		pWidgetFrame = Panel.new()
+		pWidgetFrame.setBackgroundCanvasCreator(designer.canvasCreatorFrame(this))
+		pWidgetFrame.setLayout(FixedLayout.new())
+		pWidgetFrame.setPadding(BorderSize.new(designer.paddingKnobFrame(this)))
+		pWidgetFrame.setProtectPadding(true)
+		addWidget(pWidgetFrame, BorderLayout.Area.content)
 		
 		// create left or up arrow button
-		this.pButtonLeftUp = designer.createButtonLeftUp( this )
-		this.pButtonLeftUp.setCanFocus( false )
-		this.pButtonLeftUp.addMouseListener( wheelListener )
+		pButtonLeftUp = designer.createButtonLeftUp(this)
+		pButtonLeftUp.setCanFocus(false)
+		pButtonLeftUp.addMouseListener(wheelListener)
 		var ScrollButtonStateListener scrollListener = \
-			ScrollButtonStateListener.new( ActionScrollUpLeft.new( this ) )
-		this.pDisposeScrollButtonStateListeners.add( scrollListener )
-		this.pButtonLeftUp.addStateChangeListener( scrollListener )
+			ScrollButtonStateListener.new(ActionScrollUpLeft.new(this, false))
+		pDisposeScrollButtonStateListeners.add(scrollListener)
+		pButtonLeftUp.addStateChangeListener(scrollListener)
 		
-		if this.pOrientation == Orientation.horizontal
-			this.addWidget( this.pButtonLeftUp, BorderLayout.Area.left )
+		if pOrientation == Orientation.horizontal
+			addWidget(pButtonLeftUp, BorderLayout.Area.left)
 			
 		else
-			this.addWidget( this.pButtonLeftUp, BorderLayout.Area.top )
+			addWidget(pButtonLeftUp, BorderLayout.Area.top)
 		end
 		
 		// create right or down arrow button
-		this.pButtonRightDown = designer.createButtonRightDown( this )
-		this.pButtonRightDown.setCanFocus( false )
-		this.pButtonRightDown.addMouseListener( wheelListener )
-		scrollListener = ScrollButtonStateListener.new( ActionScrollDownRight.new( this ) )
-		this.pDisposeScrollButtonStateListeners.add( scrollListener )
-		this.pButtonRightDown.addStateChangeListener( scrollListener )
+		pButtonRightDown = designer.createButtonRightDown(this)
+		pButtonRightDown.setCanFocus(false)
+		pButtonRightDown.addMouseListener(wheelListener)
+		scrollListener = ScrollButtonStateListener.new(ActionScrollDownRight.new(this, false))
+		pDisposeScrollButtonStateListeners.add(scrollListener)
+		pButtonRightDown.addStateChangeListener(scrollListener)
 		
-		if this.pOrientation == Orientation.horizontal
-			this.addWidget( this.pButtonRightDown, BorderLayout.Area.right )
+		if pOrientation == Orientation.horizontal
+			addWidget(pButtonRightDown, BorderLayout.Area.right)
 			
 		else
-			this.addWidget( this.pButtonRightDown, BorderLayout.Area.bottom )
+			addWidget(pButtonRightDown, BorderLayout.Area.bottom)
 		end
 		
 		// create knob widget
-		this.pWidgetKnob = designer.createKnob( this )
-		this.pWidgetKnob.setCanFocus( false )
-		this.pWidgetKnob.addMouseListener( DragKnobMouseListener.new( this ) )
-		this.pWidgetKnob.addMouseListener( wheelListener )
-		this.pWidgetFrame.addWidget( this.pWidgetKnob )
+		pWidgetKnob = designer.createKnob(this)
+		pWidgetKnob.setCanFocus(false)
+		pWidgetKnob.addMouseListener(DragKnobMouseListener.new(this))
+		pWidgetKnob.addMouseListener(wheelListener)
+		pWidgetFrame.addWidget(pWidgetKnob)
 		
-		if this.pOrientation == Orientation.horizontal
-			this.pWidgetKnob.setY( this.pWidgetFrame.getPadding().getTop() + this.pWidgetKnob.getBorderSize().getTop() )
+		if pOrientation == Orientation.horizontal
+			pWidgetKnob.setY(pWidgetFrame.getPadding().getTop() + pWidgetKnob.getBorderSize().getTop())
 			
 		else
-			this.pWidgetKnob.setX( this.pWidgetFrame.getPadding().getLeft() + this.pWidgetKnob.getBorderSize().getLeft() )
+			pWidgetKnob.setX(pWidgetFrame.getPadding().getLeft() + pWidgetKnob.getBorderSize().getLeft())
 		end
 	end
 	
 	/** Update knob widget geometry. */
 	public func void updateKnobWidget()
-		this.pHelperPositions = null
+		pHelperPositions = null
 		
-		if this.pWidgetKnob == null
+		if pWidgetKnob == null
 			return
 		end
 		
-		var RectArea helperPositions = this.getHelperPositions()
+		var RectArea helperPositions = getHelperPositions()
 		var int width, height
 		
-		if this.pOrientation == Orientation.horizontal
-			this.pWidgetKnob.setX( helperPositions.getY1() )
+		if pOrientation == Orientation.horizontal
+			pWidgetKnob.setX(helperPositions.getY1())
 			width = helperPositions.getX2() - helperPositions.getY1()
-			height = this.pWidgetFrame.getContainerHeight() - this.pWidgetKnob.getBorderSize().getHeight()
+			height = pWidgetFrame.getContainerHeight() - pWidgetKnob.getBorderSize().getHeight()
 			
 		else
-			this.pWidgetKnob.setY( helperPositions.getY1() )
-			width = this.pWidgetFrame.getContainerWidth() - this.pWidgetKnob.getBorderSize().getWidth()
+			pWidgetKnob.setY(helperPositions.getY1())
+			width = pWidgetFrame.getContainerWidth() - pWidgetKnob.getBorderSize().getWidth()
 			height = helperPositions.getX2() - helperPositions.getY1()
 		end
 		
-		this.pWidgetKnob.setSize( Point.new( width, height ) )
+		pWidgetKnob.setSize(Point.new(width, height))
 	end
 	
 	/** Enable direction buttons depending on the model value. */
 	public func void enableDirectionButtons()
-		if this.pButtonLeftUp != null
-			this.pButtonLeftUp.setEnabled( this.pModel.getValue() > this.pModel.getMinimum() )
+		if pButtonLeftUp != null
+			pButtonLeftUp.setEnabled(pModel.getValue() > pModel.getMinimum())
 		end
-		if this.pButtonRightDown != null
-			this.pButtonRightDown.setEnabled( this.pModel.getValue() < this.pModel.getMaximum() )
+		if pButtonRightDown != null
+			pButtonRightDown.setEnabled(pModel.getValue() < pModel.getMaximum())
 		end
 	end
 end

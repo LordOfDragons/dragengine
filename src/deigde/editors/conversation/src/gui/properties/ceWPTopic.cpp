@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Conversation Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <math.h>
@@ -59,6 +62,7 @@
 #include "model/ceWPTTreeItem.h"
 #include "model/ceWPTTreeItemModel.h"
 #include "model/action/ceWPTTIMAction.h"
+#include "model/condition/ceWPTTIMCondition.h"
 #include "../ceWindowMain.h"
 #include "../../clipboard/ceClipboardDataTopic.h"
 #include "../../clipboard/ceClipboardDataFile.h"
@@ -321,8 +325,8 @@ class cActionGroupPaste : public igdeAction{
 	ceWPTopic &pPanel;
 	
 public:
-	cActionGroupPaste( ceWPTopic &panel ) : igdeAction( "Copy",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ), "Copy topic group" ),
+	cActionGroupPaste( ceWPTopic &panel ) : igdeAction( "Paste",
+		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPaste ), "Paste topic group" ),
 		pPanel( panel ){}
 	
 	virtual void OnAction(){
@@ -379,6 +383,33 @@ public:
 	}
 };
 
+class cActionGroupMissingWords : public igdeAction{
+	ceWPTopic &pPanel;
+	
+public:
+	cActionGroupMissingWords( ceWPTopic &panel ) : igdeAction( "Missing Words...",
+		nullptr, "Show missing words" ), pPanel( panel ){}
+	
+	virtual void OnAction(){
+		ceConversationFile * const group = pPanel.GetFile();
+		if( ! group ){
+			return;
+		}
+		
+		decStringSet missingWords;
+		const ceConversationTopicList &list = group->GetTopicList();
+		int i, count = list.GetCount();
+		for( i=0; i<count; i++ ){
+			list.GetAt( i )->FindMissingWords( missingWords );
+		}
+		pPanel.GetWindowProperties().GetWindowMain().ShowFoundMissingWordsDialog( missingWords );
+	}
+	
+	virtual void Update(){
+		SetEnabled( pPanel.GetFile() );
+	}
+};
+
 class cActionFileMenu : public igdeActionContextMenu{
 	ceWPTopic &pPanel;
 	
@@ -393,6 +424,9 @@ public:
 		helper.MenuCommand( contextMenu, new cActionGroupAdd( pPanel ), true );
 		helper.MenuCommand( contextMenu, new cActionGroupRemove( pPanel ), true );
 		helper.MenuCommand( contextMenu, new cActionGroupRename( pPanel ), true );
+		
+		helper.MenuSeparator( contextMenu );
+		helper.MenuCommand( contextMenu, new cActionGroupMissingWords( pPanel ), true );
 		
 		helper.MenuSeparator( contextMenu );
 		helper.MenuCommand( contextMenu, new cActionGroupCopy( pPanel ), true );
@@ -529,105 +563,12 @@ public:
 		}
 		
 		decStringSet missingWords;
-		FindMissingWords( *pPanel.GetConversation(), topic->GetActionList(), missingWords );
-		
-		const int count = missingWords.GetCount();
-		if( count == 0 ){
-			igdeCommonDialogs::Information( &pPanel, "Missing Words", "No missing words found in topic" );
-			return;
-		}
-		
-		decStringList list;
-		int i;
-		missingWords.SortAscending();
-		for( i=0; i<count; i++ ){
-			list.Add( missingWords.GetAt( i ) );
-		}
-		decString result( list.Join( "\n" ) );
-		igdeCommonDialogs::GetMultilineString( &pPanel, "Missing Words",
-			"Missing words found in topic", result );
+		topic->FindMissingWords( missingWords );
+		pPanel.GetWindowProperties().GetWindowMain().ShowFoundMissingWordsDialog( missingWords );
 	}
 	
 	virtual void Update(){
 		SetEnabled( pPanel.GetTopic() );
-	}
-	
-	void FindMissingWords( const ceConversation &conversation,
-	const ceConversationActionList &actions, decStringSet &missingWords ) const{
-		const ceConversationActorList &actorList = conversation.GetActorList();
-		const int count = actions.GetCount();
-		int i, j;
-		
-		for( i=0; i<count; i++ ){
-			const ceConversationAction &action = *actions.GetAt( i );
-			
-			switch( action.GetType() ){
-			case ceConversationAction::eatActorSpeak:{
-				const ceCAActorSpeak &speak = ( ceCAActorSpeak& )action;
-				if( ! speak.GetUseSpeechAnimation() ){
-					continue;
-				}
-				
-				const ceStripList &words = speak.GetWordList();
-				const decString &actorID = speak.GetActor();
-				const int wordCount = words.GetCount();
-				if( wordCount == 0 ){
-					continue;
-				}
-				
-				const ceConversationActor &conversationActor = *actorList.GetWithIDOrAliasID( actorID );
-				if( ! conversationActor.GetSpeechAnimation() ){
-					continue;
-				}
-				
-				const ceSpeechAnimation &speechAnimation = *conversationActor.GetSpeechAnimation();
-				const ceSAWordList &saWordList = speechAnimation.GetWordList();
-				
-				for( j=0; j<wordCount; j++ ){
-					const decString &word = words.GetAt( j )->GetID();
-					if( ! word.IsEmpty() && ! saWordList.HasNamed( word ) ){
-						missingWords.Add( word );
-					}
-				}
-				
-				} break;
-				
-			case ceConversationAction::eatIfElse:{
-				const ceCAIfElse &ifelse = ( ceCAIfElse& )action;
-				const ceCAIfElseCaseList &cases = ifelse.GetCases();
-				const int caseCount = cases.GetCount();
-				
-				for( j=0; j<caseCount; j++ ){
-					FindMissingWords( conversation, cases.GetAt( j )->GetActions(), missingWords );
-				}
-				
-				FindMissingWords( conversation, ifelse.GetElseActions(), missingWords );
-				
-				} break;
-				
-			case ceConversationAction::eatPlayerChoice:{
-				const ceCAPlayerChoice &playerChoice = ( ceCAPlayerChoice& )action;
-				const ceCAPlayerChoiceOptionList &options = playerChoice.GetOptions();
-				const int optionCount = options.GetCount();
-				
-				FindMissingWords( conversation, playerChoice.GetActions(), missingWords );
-				
-				for( j=0; j<optionCount; j++ ){
-					FindMissingWords( conversation, options.GetAt( j )->GetActions(), missingWords );
-				}
-				
-				} break;
-				
-			case ceConversationAction::eatWait:{
-				const ceCAWait &wait = ( ceCAWait& )action;
-				FindMissingWords( conversation, wait.GetActions(), missingWords );
-				
-				} break;
-				
-			default:
-				break;
-			}
-		}
 	}
 };
 
@@ -661,8 +602,8 @@ class cActionTopicPaste : public igdeAction{
 	ceWPTopic &pPanel;
 	
 public:
-	cActionTopicPaste( ceWPTopic &panel ) : igdeAction( "Copy",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ), "Copy topic" ),
+	cActionTopicPaste( ceWPTopic &panel ) : igdeAction( "Paste",
+		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPaste ), "Paste topic" ),
 		pPanel( panel ){}
 	
 	virtual void OnAction(){
@@ -758,7 +699,7 @@ public:
 	
 	virtual void OnSelectionChanged( igdeTreeList *treeList ){
 		ceConversationTopic * const topic = pPanel.GetTopic();
-		if( ! topic ){
+		if( ! topic || pPanel.GetActionTreeModel()->GetPreventUpdate() ){
 			return;
 		}
 		
@@ -766,19 +707,15 @@ public:
 		if( item ){
 			item->OnSelected();
 		}
-		pPanel.SelectActiveAction();
+		pPanel.SyncTopicActive();
 	}
 	
 	virtual void OnItemExpanded( igdeTreeList*, igdeTreeItem *item ){
-		if( item->GetData() ){
-			( ( ceWPTTreeItem* )item->GetData() )->OnExpanded();
-		}
+		( ( ceWPTTreeItem* )item )->OnExpanded();
 	}
 	
 	virtual void OnItemCollapsed( igdeTreeList*, igdeTreeItem *item ){
-		if( item->GetData() ){
-			( ( ceWPTTreeItem* )item->GetData() )->OnCollapsed();
-		}
+		( ( ceWPTTreeItem* )item )->OnCollapsed();
 	}
 	
 	virtual void AddContextMenuEntries( igdeTreeList *treeList, igdeMenuCascade &menu ){
@@ -968,7 +905,7 @@ void ceWPTopic::SetConversation( ceConversation *conversation ){
 		conversation->AddListener( pListener );
 		conversation->AddReference();
 		
-		pModelTreeActions = new ceWPTTreeModel( pWindowProperties.GetWindowMain(), conversation );
+		pModelTreeActions = new ceWPTTreeModel( pWindowProperties.GetWindowMain(), conversation, *pListener );
 		pModelTreeActions->SetTreeList( pTreeActions );
 		
 	}else{
@@ -989,7 +926,7 @@ void ceWPTopic::SetConversation( ceConversation *conversation ){
 	UpdateFacePoseLists();
 	UpdateCameraShotLists();
 	UpdateTargetLists();
-	UpdateLookAtLists();
+	OnConversationPathChanged();
 }
 
 
@@ -1004,6 +941,8 @@ ceWPTTreeItemModel *ceWPTopic::GetActionTreeItem(){
 }
 
 void ceWPTopic::UpdateFileList(){
+	ceConversationFile * const file = GetFile();
+	
 	pCBFile->RemoveAllItems();
 	
 	if( pConversation ){
@@ -1012,16 +951,21 @@ void ceWPTopic::UpdateFileList(){
 		int i;
 		
 		for( i=0; i<count; i++ ){
-			ceConversationFile * const file = list.GetAt( i );
-			pCBFile->AddItem( file->GetID(), NULL, file );
+			ceConversationFile * const file2 = list.GetAt( i );
+			pCBFile->AddItem( file2->GetID(), NULL, file2 );
 		}
 		
 		pCBFile->SortItems();
+		pCBFile->StoreFilterItems();
 	}
 	
 	SelectActiveFile();
 	
 	pPanelASnippet->UpdateFileList();
+	
+	if( file ){
+		pConversation->SetActiveFile( file );
+	}
 }
 
 void ceWPTopic::SelectActiveFile(){
@@ -1048,7 +992,8 @@ ceConversationTopic *ceWPTopic::GetTopic() const{
 }
 
 void ceWPTopic::UpdateTopicList(){
-	const ceConversationFile * const file = GetFile();
+	ceConversationTopic * const topic = GetTopic();
+	ceConversationFile * const file = GetFile();
 	
 	pCBTopic->RemoveAllItems();
 	
@@ -1058,16 +1003,21 @@ void ceWPTopic::UpdateTopicList(){
 		int i;
 		
 		for( i=0; i<count; i++ ){
-			ceConversationTopic * const topic = list.GetAt( i );
-			pCBTopic->AddItem( topic->GetID(), NULL, topic );
+			ceConversationTopic * const topic2 = list.GetAt( i );
+			pCBTopic->AddItem( topic2->GetID(), NULL, topic2 );
 		}
 		
 		pCBTopic->SortItems();
+		pCBTopic->StoreFilterItems();
 	}
 	
 	SelectActiveTopic();
 	
 	pPanelASnippet->UpdateTopicList();
+	
+	if( file && topic ){
+		file->SetActiveTopic( topic );
+	}
 }
 
 void ceWPTopic::SelectActiveTopic(){
@@ -1081,7 +1031,7 @@ void ceWPTopic::UpdateTopic(){
 
 
 
-ceConversationAction *ceWPTopic::GetAction() const{
+ceConversationAction *ceWPTopic::GetTreeAction() const{
 	ceConversationTopic * const topic = GetTopic();
 	if( ! topic ){
 		return NULL;
@@ -1091,7 +1041,7 @@ ceConversationAction *ceWPTopic::GetAction() const{
 	return item && item->GetModel() ? item->GetModel()->GetOwnerAction() : NULL;
 }
 
-ceConversationCondition *ceWPTopic::GetCondition() const{
+ceConversationCondition *ceWPTopic::GetTreeCondition() const{
 	ceConversationTopic * const topic = GetTopic();
 	if( ! topic ){
 		return NULL;
@@ -1101,59 +1051,54 @@ ceConversationCondition *ceWPTopic::GetCondition() const{
 	return item && item->GetModel() ? item->GetModel()->GetOwnerCondition() : NULL;
 }
 
-void ceWPTopic::SelectActiveAction(){
-	ceConversationTopic * const topic = GetTopic();
-	ceConversationAction * const action = GetAction();
-	ceConversationCondition * const condition = GetCondition();
-	
-	if( topic ){
-		topic->SetActiveAction( action );
+void ceWPTopic::SyncTopicActive(){
+	if( pModelTreeActions ){
+		ceConversationTopic * const topic = GetTopic();
+		if( topic ){
+			const ceWPTTreeModel::PreventUpdateGuard preventUpdate( *pModelTreeActions );
+			topic->SetActive( GetTreeAction(), GetTreeCondition() );
+		}
 	}
+	
+	SelectActivePanel();
+}
+
+void ceWPTopic::SelectActivePanel(){
+	const ceConversationCondition * const condition = GetTreeCondition();
+	const ceConversationAction * const action = GetTreeAction();
 	
 	if( condition ){
 		switch( condition->GetType() ){
 		case ceConversationCondition::ectLogic:
 			pSwitcher->SetCurrent( epCLogic );
-			pPanelCLogic->UpdateCondition();
 			break;
 			
 		case ceConversationCondition::ectHasActor:
 			pSwitcher->SetCurrent( epCHasActor );
-			pPanelCHasActor->UpdateCondition();
 			break;
 			
 		case ceConversationCondition::ectActorInConversation:
 			pSwitcher->SetCurrent( epCActorInConversation );
-			pPanelCActorInConversation->UpdateCondition();
 			break;
 			
 		case ceConversationCondition::ectVariable:
 			pSwitcher->SetCurrent( epCVariable );
-			pPanelCVariable->UpdateCondition();
 			break;
 			
 		case ceConversationCondition::ectActorParameter:
 			pSwitcher->SetCurrent( epCAParam );
-			pPanelCAParam->UpdateCondition();
 			break;
 			
 		case ceConversationCondition::ectActorCommand:
 			pSwitcher->SetCurrent( epCActorCommand );
-			pPanelCActorCommand->UpdateCondition();
 			break;
 			
 		case ceConversationCondition::ectGameCommand:
 			pSwitcher->SetCurrent( epCGameCommand );
-			pPanelCGameCommand->UpdateCondition();
 			break;
 			
 		case ceConversationCondition::ectTrigger:
 			pSwitcher->SetCurrent( epCTrigger );
-			pPanelCTrigger->UpdateCondition();
-			break;
-			
-		default:
-			pSwitcher->SetCurrent( epEmpty );
 			break;
 		}
 		
@@ -1161,112 +1106,90 @@ void ceWPTopic::SelectActiveAction(){
 		switch( action->GetType() ){
 		case ceConversationAction::eatCameraShot:
 			pSwitcher->SetCurrent( epACameraShot );
-			pPanelACameraShot->UpdateAction();
 			break;
 			
 		case ceConversationAction::eatMusic:
 			pSwitcher->SetCurrent( epAMusic );
-			pPanelAMusic->UpdateAction();
 			break;
 			
 		case ceConversationAction::eatActorSpeak:
 			pSwitcher->SetCurrent( epAActorSpeak );
-			pPanelAActorSpeak->UpdateAction();
 			break;
 			
 		case ceConversationAction::eatIfElse:
 			pSwitcher->SetCurrent( epAIfElse );
-			pPanelAIfElse->UpdateAction();
 			break;
 			
 		case ceConversationAction::eatPlayerChoice:
 			pSwitcher->SetCurrent( epAPlayerChoice );
-			pPanelAPlayerChoice->UpdateAction();
 			break;
 			
 		case ceConversationAction::eatStopConversation:
 			pSwitcher->SetCurrent( epAStopConversation );
-			pPanelAStopConversation->UpdateAction();
 			break;
 			
 		case ceConversationAction::eatStopTopic:
 			pSwitcher->SetCurrent( epAStopTopic );
-			pPanelAStopTopic->UpdateAction();
 			break;
 			
 		case ceConversationAction::eatSnippet:
 			pSwitcher->SetCurrent( epASnippet );
-			pPanelASnippet->UpdateAction();
 			break;
 			
 		case ceConversationAction::eatSetVariable:
 			pSwitcher->SetCurrent( epASetVariable );
-			pPanelASetVariable->UpdateAction();
 			break;
 			
 		case ceConversationAction::eatSetActorParameter:
 			pSwitcher->SetCurrent( epASetAParam );
-			pPanelASetAParam->UpdateAction();
 			break;
 			
 		case ceConversationAction::eatActorCommand:
 			pSwitcher->SetCurrent( epAActorCmd );
-			pPanelAActorCmd->UpdateAction();
 			break;
 			
 		case ceConversationAction::eatGameCommand:
 			pSwitcher->SetCurrent( epAGameCommand );
-			pPanelAGameCommand->UpdateAction();
 			break;
 			
 		case ceConversationAction::eatWait:
 			pSwitcher->SetCurrent( epAWait );
-			pPanelAWait->UpdateAction();
 			break;
 			
 		case ceConversationAction::eatTrigger:
 			pSwitcher->SetCurrent( epATrigger );
-			pPanelATrigger->UpdateAction();
 			break;
 			
 		case ceConversationAction::eatActorAdd:
 			pSwitcher->SetCurrent( epAActorAdd );
-			pPanelAActorAdd->UpdateAction();
 			break;
 			
 		case ceConversationAction::eatActorRemove:
 			pSwitcher->SetCurrent( epAActorRemove );
-			pPanelAActorRemove->UpdateAction();
 			break;
 			
 		case ceConversationAction::eatCoordSystemAdd:
 			pSwitcher->SetCurrent( epACoordSystemAdd );
-			pPanelACoordSystemAdd->UpdateAction();
 			break;
 			
 		case ceConversationAction::eatCoordSystemRemove:
 			pSwitcher->SetCurrent( epACoordSystemRemove );
-			pPanelACoordSystemRemove->UpdateAction();
 			break;
 			
 		case ceConversationAction::eatComment:
 			pSwitcher->SetCurrent( epAComment );
-			pPanelAComment->UpdateAction();
 			break;
-			
-		default:
-			pSwitcher->SetCurrent( epEmpty );
 		}
 		
 	}else{
 		pSwitcher->SetCurrent( epEmpty );
 	}
 	
-	UpdateAction();
+	UpdateActive();
 }
 
-void ceWPTopic::UpdateAction(){
-	switch( pSwitcher->GetCurrent() ){
+void ceWPTopic::UpdateActive(){
+	switch( ( ePanels )pSwitcher->GetCurrent() ){
 	case epACameraShot:
 		pPanelACameraShot->UpdateAction();
 		break;
@@ -1304,7 +1227,7 @@ void ceWPTopic::UpdateAction(){
 		break;
 		
 	case epASetAParam:
-		pPanelASetVariable->UpdateAction();
+		pPanelASetAParam->UpdateAction();
 		break;
 		
 	case epAActorCmd:
@@ -1320,7 +1243,7 @@ void ceWPTopic::UpdateAction(){
 		break;
 		
 	case epATrigger:
-		pPanelASetVariable->UpdateAction();
+		pPanelATrigger->UpdateAction();
 		break;
 		
 	case epAActorAdd:
@@ -1363,7 +1286,19 @@ void ceWPTopic::UpdateAction(){
 		pPanelCAParam->UpdateCondition();
 		break;
 		
-	default:
+	case epCActorCommand:
+		pPanelCActorCommand->UpdateCondition();
+		break;
+		
+	case epCGameCommand:
+		pPanelCGameCommand->UpdateCondition();
+		break;
+		
+	case epCTrigger:
+		pPanelCTrigger->UpdateCondition();
+		break;
+		
+	case epEmpty:
 		break;
 	}
 }
@@ -1411,12 +1346,13 @@ void ceWPTopic::UpdateTargetLists(){
 	pPanelACameraShot->UpdateTargetList();
 }
 
-void ceWPTopic::UpdateLookAtLists(){
-}
-
 void ceWPTopic::UpdateConvoCoordSysLists(){
 	pPanelACoordSystemAdd->UpdateConvoCoordSysIDLists();
 	pPanelACoordSystemRemove->UpdateConvoCoordSysIDLists();
+}
+
+void ceWPTopic::OnConversationPathChanged(){
+	pPanelAActorSpeak->OnConversationPathChanged();
 }
 
 
@@ -1436,7 +1372,7 @@ void ceWPTopic::LocateAction( ceConversationAction *action ){
 	}
 	
 	item->SetAsCurrentItem();
-	SelectActiveAction();
+	SyncTopicActive();
 }
 
 void ceWPTopic::PlayActionFromHere(){

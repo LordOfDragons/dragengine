@@ -26,7 +26,7 @@ import bpy
 import math
 
 from .de_math import ONE_PI
-from .de_porting import registerClass
+from .de_porting import registerClass, appendToMenu
 
 
 
@@ -34,17 +34,18 @@ from .de_porting import registerClass
 ###################
 
 class TypeDETProjectUVTemplate( bpy.types.PropertyGroup ):
-	name = bpy.props.StringProperty( name="Name", description="name of the template", default="" )
-	scale = bpy.props.FloatVectorProperty( name="Scaling", description="Scaling in U/V direction", precision=3, size=2, default=(1.0, 1.0) )
-	offset = bpy.props.FloatVectorProperty( name="Offset", description="Offset in U/V direction", precision=3, size=2, default=(0.0, 0.0) )
-	rotation = bpy.props.FloatProperty( name="Rotation", description="Rotation in degrees", precision=3, default=0.0 )
-	normal = bpy.props.FloatVectorProperty( name="Normal", description="Per-component multiplier for normal calculation",
+	name: bpy.props.StringProperty( name="Name", description="name of the template", default="" )
+	scale: bpy.props.FloatVectorProperty( name="Scaling", description="Scaling in U/V direction", precision=3, size=2, default=(1.0, 1.0) )
+	offset: bpy.props.FloatVectorProperty( name="Offset", description="Offset in U/V direction", precision=3, size=2, default=(0.0, 0.0) )
+	rotation: bpy.props.FloatProperty( name="Rotation", description="Rotation in degrees", precision=3, default=0.0 )
+	normal: bpy.props.FloatVectorProperty( name="Normal", description="Per-component multiplier for normal calculation",
 		min=0.0, max=1.0, soft_min=0.0, soft_max=1.0, precision=3, size=3, default=(1.0, 1.0, 1.0) )
 registerClass(TypeDETProjectUVTemplate)
 
 class OBJECT_OT_ToolProjectUV( bpy.types.Operator ):
 	bl_idname = "dragengine.projectuv"
-	bl_label = "ProjectUV"
+	bl_label = "Project UV"
+	bl_label_button = "Project"
 	bl_options = { 'REGISTER', 'UNDO' }
 	__doc__ = """Project texture coordinates"""
 	
@@ -55,16 +56,16 @@ class OBJECT_OT_ToolProjectUV( bpy.types.Operator ):
 		print( "selected", self.templateNames )
 		return None"""
 		
-	#templateNames = bpy.props.EnumProperty( items=getTemplateNameList, name = "Templates",
+	#templateNames: bpy.props.EnumProperty( items=getTemplateNameList, name = "Templates",
 	#	description="Template to modify/use", update=onTemplateNameChanged )
-	#templateNames = bpy.props.CollectionProperty( type=bpy.props.StringProperty )
-	scale = bpy.props.FloatVectorProperty( name="Scaling", description="Scaling in U/V direction",
+	#templateNames: bpy.props.CollectionProperty( type=bpy.props.StringProperty )
+	scale: bpy.props.FloatVectorProperty( name="Scaling", description="Scaling in U/V direction",
 		soft_min=0.0, soft_max=10.0, precision=3, size=2, default=(1.0, 1.0) )
-	offset = bpy.props.FloatVectorProperty( name="Offset", description="Offset in U/V direction",
+	offset: bpy.props.FloatVectorProperty( name="Offset", description="Offset in U/V direction",
 		soft_min=-1.0, soft_max=1.0, precision=3, size=2, default=(0.0, 0.0) )
-	rotation = bpy.props.FloatProperty( name="Rotation", description="Rotation in degrees",
+	rotation: bpy.props.FloatProperty( name="Rotation", description="Rotation in degrees",
 		soft_min=-180.0, soft_max=180.0, precision=3, default=0.0 )
-	normal = bpy.props.FloatVectorProperty( name="Normal", description="Per-component multiplier for normal calculation",
+	normal: bpy.props.FloatVectorProperty( name="Normal", description="Per-component multiplier for normal calculation",
 		min=0.0, max=1.0, soft_min=0.0, soft_max=1.0, precision=3, size=3, default=(1.0, 1.0, 1.0) )
 	
 	@classmethod
@@ -165,4 +166,6 @@ class OBJECT_OT_ToolProjectUV( bpy.types.Operator ):
 			bpy.ops.object.mode_set( mode='EDIT' )
 		
 		return { 'FINISHED' }
+
 registerClass(OBJECT_OT_ToolProjectUV)
+appendToMenu(bpy.types.VIEW3D_MT_edit_mesh_faces, OBJECT_OT_ToolProjectUV)

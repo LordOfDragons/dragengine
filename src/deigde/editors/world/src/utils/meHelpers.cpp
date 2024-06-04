@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE World Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <math.h>
@@ -34,8 +37,11 @@
 #include <deigde/gamedefinition/class/component/igdeGDCComponent.h>
 #include <deigde/gamedefinition/class/component/igdeGDCCTexture.h>
 #include <deigde/gamedefinition/class/light/igdeGDCLight.h>
+#include <deigde/gamedefinition/class/navblocker/igdeGDCNavigationBlocker.h>
+#include <deigde/gamedefinition/class/navspace/igdeGDCNavigationSpace.h>
 
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/string/decStringSet.h>
 
 
 
@@ -107,9 +113,101 @@ bool meHelpers::FindFirstLight( const igdeGDClass &gdclass, decString &prefix, i
 
 
 
+igdeGDCNavigationSpace *meHelpers::FindFirstNavigationSpace( const igdeGDClass *gdclass ){
+	return gdclass ? FindFirstNavigationSpace( *gdclass ) : NULL;
+}
+
+igdeGDCNavigationSpace *meHelpers::FindFirstNavigationSpace( const igdeGDClass &gdclass ){
+	igdeGDCNavigationSpace *navigationSpace = NULL;
+	decString prefix;
+	return FindFirstNavigationSpace( gdclass, prefix, navigationSpace ) ? navigationSpace : NULL;
+}
+
+bool meHelpers::FindFirstNavigationSpace( const igdeGDClass &gdclass, igdeGDCNavigationSpace* &navigationSpace ){
+	decString prefix;
+	return FindFirstNavigationSpace( gdclass, prefix, navigationSpace );
+}
+
+bool meHelpers::FindFirstNavigationSpace( const igdeGDClass &gdclass, decString &prefix, igdeGDCNavigationSpace* &navigationSpace ){
+	if( gdclass.GetNavigationSpaceList().GetCount() > 0 ){
+		navigationSpace = gdclass.GetNavigationSpaceList().GetAt( 0 );
+		prefix.Empty();
+		return true;
+	}
+	const int count = gdclass.GetInheritClassCount();
+	for( int i=0; i<count; i++ ){
+		const igdeGDClassInherit &inherit = *gdclass.GetInheritClassAt( i );
+		if( inherit.GetClass() && meHelpers::FindFirstNavigationSpace( *inherit.GetClass(), prefix, navigationSpace ) ){
+			prefix = inherit.GetPropertyPrefix() + prefix;
+			return true;
+		}
+	}
+	return false;
+}
+
+
+
+igdeGDCNavigationBlocker *meHelpers::FindFirstNavigationBlocker( const igdeGDClass *gdclass ){
+	return gdclass ? FindFirstNavigationBlocker( *gdclass ) : NULL;
+}
+
+igdeGDCNavigationBlocker *meHelpers::FindFirstNavigationBlocker( const igdeGDClass &gdclass ){
+	igdeGDCNavigationBlocker *navigationBlocker = NULL;
+	decString prefix;
+	return FindFirstNavigationBlocker( gdclass, prefix, navigationBlocker ) ? navigationBlocker : NULL;
+}
+
+bool meHelpers::FindFirstNavigationBlocker( const igdeGDClass &gdclass, igdeGDCNavigationBlocker* &navigationBlocker ){
+	decString prefix;
+	return FindFirstNavigationBlocker( gdclass, prefix, navigationBlocker );
+}
+
+bool meHelpers::FindFirstNavigationBlocker( const igdeGDClass &gdclass, decString &prefix, igdeGDCNavigationBlocker* &navigationBlocker ){
+	if( gdclass.GetNavigationBlockerList().GetCount() > 0 ){
+		navigationBlocker = gdclass.GetNavigationBlockerList().GetAt( 0 );
+		prefix.Empty();
+		return true;
+	}
+	const int count = gdclass.GetInheritClassCount();
+	for( int i=0; i<count; i++ ){
+		const igdeGDClassInherit &inherit = *gdclass.GetInheritClassAt( i );
+		if( inherit.GetClass() && meHelpers::FindFirstNavigationBlocker( *inherit.GetClass(), prefix, navigationBlocker ) ){
+			prefix = inherit.GetPropertyPrefix() + prefix;
+			return true;
+		}
+	}
+	return false;
+}
+
+
+
+void meHelpers::GetPatternTypePropertyNames( const igdeGDClass &gdclass,
+igdeGDProperty::ePathPatternTypes patternType, decStringList &names ){
+	decStringSet allPropNames;
+	gdclass.AddPropertyNames( allPropNames, true );
+	
+	const int allPropNameCount = allPropNames.GetCount();
+	int i;
+	
+	for( i=0; i<allPropNameCount; i++ ){
+		const igdeGDProperty &gdprop = *gdclass.GetPropertyNamed( allPropNames.GetAt( i ) );
+		if( gdprop.GetType() == igdeGDProperty::eptPath && gdprop.GetPathPatternType() == patternType ){
+			names.Add( allPropNames.GetAt( i ) );
+		}
+	}
+}
+
+
+
 void meHelpers::CreateTexture( deObjectReference &texture, meObject *object, const char *textureName ){
 	const igdeGDCComponent * const gdcomponent = meHelpers::FindFirstComponent( object->GetGDClass() );
-	const igdeGDCCTexture * gdctexture = gdcomponent ? gdcomponent->GetTextureList().GetNamed( textureName ) : NULL;
+	const igdeGDCCTexture *gdctexture = NULL;
+	if( gdcomponent ){
+		gdctexture = gdcomponent->GetTextureList().GetNamed( textureName );
+	}
+	if( ! gdctexture && object->GetGDClass() ){
+		gdctexture = object->GetGDClass()->GetComponentTextures().GetNamed( textureName );
+	}
 	meHelpers::CreateTexture( texture, object, textureName, gdctexture );
 }
 

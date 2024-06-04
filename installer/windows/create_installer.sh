@@ -1,5 +1,10 @@
 #!/bin/bash
 
+version="$1"
+if [ "${version}" == "" ]; then
+	version="9999"
+fi
+
 # clear build directory
 rm -rf build unpacked || exit 1
 
@@ -18,6 +23,7 @@ docker run --rm -i -v "$PWD:/work" --user $(id -u):$(id -g) \
   && echo \"xclient::14082:0:99999:7:::\" >>/etc/shadow \
   && sudo chown -R `id -u` /home/xclient \
   && cd /work \
+  && sed -e 's/%VERSION%/${version}/g' dragengine64.iss.in >dragengine64.iss \
   && wine-x11-run iscc dragengine64.iss \
   " || exit 1
 
@@ -30,6 +36,7 @@ docker run --rm -i -v "$PWD:/work" --user $(id -u):$(id -g) \
   && echo \"xclient::14082:0:99999:7:::\" >>/etc/shadow \
   && sudo chown -R `id -u` /home/xclient \
   && cd /work \
+  && sed -e 's/%VERSION%/${version}/g' dragengine64-dev.iss.in >dragengine64-dev.iss \
   && wine-x11-run iscc dragengine64-dev.iss \
   " || exit 1
 
@@ -42,6 +49,7 @@ docker run --rm -i -v "$PWD:/work" --user $(id -u):$(id -g) \
   && echo \"xclient::14082:0:99999:7:::\" >>/etc/shadow \
   && sudo chown -R `id -u` /home/xclient \
   && cd /work \
+  && sed -e 's/%VERSION%/${version}/g' deigde64.iss.in >deigde64.iss \
   && wine-x11-run iscc deigde64.iss \
   " || exit 1
 
@@ -54,6 +62,7 @@ docker run --rm -i -v "$PWD:/work" --user $(id -u):$(id -g) \
   && echo \"xclient::14082:0:99999:7:::\" >>/etc/shadow \
   && sudo chown -R `id -u` /home/xclient \
   && cd /work \
+  && sed -e 's/%VERSION%/${version}/g' deigde64-dev.iss.in >deigde64-dev.iss \
   && wine-x11-run iscc deigde64-dev.iss \
   " || exit 1
 

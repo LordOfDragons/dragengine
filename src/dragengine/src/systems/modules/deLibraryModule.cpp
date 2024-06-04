@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Game Engine
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -250,22 +253,13 @@ bool deLibraryModule::pLoadLibrary( const char *filename ){
 	//SetCurrentDirectory( oldPath.GetString() );
 	if( ! pLibHandle ){
 		int err = GetLastError();
-		LPVOID lpMsgBuf;
-		FormatMessage( 
-			FORMAT_MESSAGE_ALLOCATE_BUFFER | 
-			FORMAT_MESSAGE_FROM_SYSTEM | 
-			FORMAT_MESSAGE_IGNORE_INSERTS,
-			NULL,
-			err,
-			MAKELANGID( LANG_NEUTRAL, SUBLANG_DEFAULT ), // Default language
-			( LPTSTR ) &lpMsgBuf,
-			0,
-			NULL 
-		);
-		// Display the string.
-		logger.LogErrorFormat( LOGSOURCE, "LoadLibrary(err=%i): %s.", err, ( char* )lpMsgBuf );
-		// Free the buffer.
-		LocalFree( lpMsgBuf );
+		wchar_t messageBuffer[ 251 ];
+		FormatMessage( FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+			NULL, err, MAKELANGID( LANG_NEUTRAL, SUBLANG_DEFAULT ), // Default language
+			messageBuffer, 250, NULL );
+		
+		logger.LogErrorFormat( LOGSOURCE, "LoadLibrary(err=%i): %s.",
+			err, deOSWindows::WideToUtf8( messageBuffer ).GetString() );
 	}
 	#endif
 	
@@ -369,7 +363,7 @@ void deLibraryModule::pParseXML( const char *filename, decBaseFileReader &reader
 		
 		tag = element->CastToElementTag();
 		
-		if( strcmp( tag->GetName(), "name" ) == 0 ){
+		if( tag->GetName() == "name" ){
 			if( tag->GetFirstData() ){
 				SetName( tag->GetFirstData()->GetData() );
 				
@@ -377,7 +371,7 @@ void deLibraryModule::pParseXML( const char *filename, decBaseFileReader &reader
 				SetName( "" );
 			}
 			
-		}else if( strcmp( tag->GetName(), "description" ) == 0 ){
+		}else if( tag->GetName() == "description" ){
 			if( tag->GetFirstData() ){
 				SetDescription( tag->GetFirstData()->GetData() );
 				
@@ -385,7 +379,7 @@ void deLibraryModule::pParseXML( const char *filename, decBaseFileReader &reader
 				SetDescription( "" );
 			}
 			
-		}else if( strcmp( tag->GetName(), "author" ) == 0 ){
+		}else if( tag->GetName() == "author" ){
 			if( tag->GetFirstData() ){
 				SetAuthor( tag->GetFirstData()->GetData() );
 				
@@ -393,7 +387,7 @@ void deLibraryModule::pParseXML( const char *filename, decBaseFileReader &reader
 				SetAuthor( "" );
 			}
 			
-		}else if( strcmp( tag->GetName(), "version" ) == 0 ){
+		}else if( tag->GetName() == "version" ){
 			if( tag->GetFirstData() ){
 				SetVersion( tag->GetFirstData()->GetData() );
 				
@@ -401,7 +395,7 @@ void deLibraryModule::pParseXML( const char *filename, decBaseFileReader &reader
 				SetVersion( "" );
 			}
 			
-		}else if( strcmp( tag->GetName(), "type" ) == 0 ){
+		}else if( tag->GetName() == "type" ){
 			if( tag->GetFirstData() ){
 				SetType( deModuleSystem::GetTypeFromString( tag->GetFirstData()->GetData() ) );
 				
@@ -409,12 +403,12 @@ void deLibraryModule::pParseXML( const char *filename, decBaseFileReader &reader
 				SetType( deModuleSystem::emtUnknown );
 			}
 			
-		}else if( strcmp( tag->GetName(), "pattern" ) == 0 ){
+		}else if( tag->GetName() == "pattern" ){
 			if( tag->GetFirstData() ){
 				patternList.Add( tag->GetFirstData()->GetData() );
 			}
 			
-		}else if( strcmp( tag->GetName(), "defaultExtension" ) == 0 ){
+		}else if( tag->GetName() == "defaultExtension" ){
 			if( tag->GetFirstData() ){
 				SetDefaultExtension( tag->GetFirstData()->GetData() );
 				
@@ -422,7 +416,7 @@ void deLibraryModule::pParseXML( const char *filename, decBaseFileReader &reader
 				SetDefaultExtension( "" );
 			}
 			
-		}else if( strcmp( tag->GetName(), "library" ) == 0 ){
+		}else if( tag->GetName() == "library" ){
 			for( j=0; j<tag->GetElementCount(); j++ ){
 				element = tag->GetElementAt( j );
 				if( ! element->CanCastToElementTag() ){
@@ -480,7 +474,7 @@ void deLibraryModule::pParseXML( const char *filename, decBaseFileReader &reader
 				}
 			}
 			
-		}else if( strcmp( tag->GetName(), "data" ) == 0 ){
+		}else if( tag->GetName() == "data" ){
 			/*
 			for( j=0; j<tag->GetElementCount(); j++ ){
 				element = tag->GetElementAt( j );
@@ -492,8 +486,19 @@ void deLibraryModule::pParseXML( const char *filename, decBaseFileReader &reader
 			}
 			*/
 			
-		}else if( strcmp( tag->GetName(), "fallback" ) == 0 ){
+		}else if( tag->GetName() == "fallback" ){
 			SetIsFallback( true );
+			
+		}else if( tag->GetName() == "noSaving" ){
+			SetNoSaving( true );
+			
+		}else if( tag->GetName() == "noCompress" ){
+			SetNoCompress( true );
+			
+		}else if( tag->GetName() == "priority" ){
+			if( tag->GetFirstData() ){
+				SetPriority( tag->GetFirstData()->GetData().ToInt() );
+			}
 		}
 	}
 	

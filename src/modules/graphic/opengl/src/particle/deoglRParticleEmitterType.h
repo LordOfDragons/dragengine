@@ -1,43 +1,47 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLRPARTICLEEMITTERTYPE_H_
 #define _DEOGLRPARTICLEEMITTERTYPE_H_
 
+#include "../light/pipeline/deoglLightPipelinesParticle.h"
+#include "../shaders/paramblock/deoglSPBlockUBO.h"
+#include "../texture/pixelbuffer/deoglPixelBuffer.h"
+
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/particle/deParticleEmitterType.h>
 
-class deoglLightShader;
 class deoglLightShaderConfig;
-class deoglPixelBuffer;
 class deoglRParticleEmitter;
 class deoglRSkin;
-class deoglSPBlockUBO;
 class deoglTexture;
 
 
 
 /**
- * \brief Render particle emitter type.
+ * Render particle emitter type.
  */
 class deoglRParticleEmitterType : public deObject{
 public:
@@ -61,14 +65,6 @@ public:
 		ESC_COUNT
 	};
 	
-	/** Shader Types. */
-	enum eShaderTypes{
-		/** No shadow casting. */
-		estNoShadow,
-		/** Number of shaders. */
-		EST_COUNT
-	};
-	
 private:
 	deoglRParticleEmitter &pEmitter;
 	
@@ -77,25 +73,25 @@ private:
 	float *pParameterSamples;
 	float pParamFactorMultiply[ ESC_COUNT ];
 	float pParamFactorAdd[ ESC_COUNT ];
-	deoglPixelBuffer *pPixelBufferSamples;
+	deoglPixelBuffer::Ref pPixelBufferSamples;
 	deoglTexture *pTextureSamples;
 	
 	deoglRSkin *pSkin;
 	
 	bool pEmitLight;
 	bool pHasTransparency;
-	deoglLightShader *pShaders[ EST_COUNT ];
-	deoglSPBlockUBO *pParamBlockLight;
+	deoglLightPipelinesParticle::Ref pPipelines;
+	deoglSPBlockUBO::Ref pParamBlockLight;
 	
 	deParticleEmitterType::eSimulationTypes pSimulationType;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create render type. */
+	/** Create render type. */
 	deoglRParticleEmitterType( deoglRParticleEmitter &emitter );
 	
-	/** \brief Clean up render type. */
+	/** Clean up render type. */
 	virtual ~deoglRParticleEmitterType();
 	/*@}*/
 	
@@ -103,67 +99,67 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Particle emitter. */
+	/** Particle emitter. */
 	inline deoglRParticleEmitter &GetEmitter() const{ return pEmitter; }
 	
 	
 	
-	/** \brief Linear velocity parameter factor. */
+	/** Linear velocity parameter factor. */
 	inline float GetParamFactorLinVelo() const{ return pParamFactorLinVelo; }
 	
-	/** \brief Angular velocity parameter factor. */
+	/** Angular velocity parameter factor. */
 	inline float GetParamFactorAngVelo() const{ return pParamFactorAngVelo; }
 	
-	/** \brief Parameter multiply factor. */
+	/** Parameter multiply factor. */
 	inline const float *GetParamFactorMultiply() const{ return &pParamFactorMultiply[ 0 ]; }
 	
-	/** \brief Parameter add factor. */
+	/** Parameter add factor. */
 	inline const float *GetParamFactorAdd() const{ return &pParamFactorAdd[ 0 ]; }
 	
-	/** \brief Parameter samples. */
+	/** Parameter samples. */
 	inline const float *GetParameterSamples() const{ return pParameterSamples; }
 	
-	/** \brief Texture with the samples. */
+	/** Texture with the samples. */
 	inline deoglTexture *GetTextureSamples() const{ return pTextureSamples; }
 	
 	
 	
-	/** \brief Simulation type. */
+	/** Simulation type. */
 	inline deParticleEmitterType::eSimulationTypes GetSimulationType() const{ return pSimulationType; }
 	
-	/** \brief Set simulation type. */
+	/** Set simulation type. */
 	void SetSimulationType( deParticleEmitterType::eSimulationTypes simulationType );
 	
 	
 	
-	/** \brief Update parameter samples. */
+	/** Update parameter samples. */
 	void UpdateParameterSamples( const deParticleEmitterType &type );
 	
-	/** \brief Sample a parameter. */
+	/** Sample a parameter. */
 	void SampleParameters( eSampleCurves curveProgress, eSampleCurves curveBeam, const deParticleEmitterParameter &parameter );
 	
-	/** \brief Sampled parameter value using interpolation. */
+	/** Sampled parameter value using interpolation. */
 	float GetSampledParameter( eSampleCurves curve, float location ) const;
 	
-	/** \brief Prepare for rendering. */
+	/** Prepare for rendering. */
 	void PrepareForRender();
 	
 	
 	
-	/** \brief Skin. */
+	/** Skin. */
 	inline deoglRSkin *GetSkin() const{ return pSkin; }
 	
-	/** \brief Set skin. */
+	/** Set skin. */
 	void SetSkin( deoglRSkin *skin );
 	
-	/** \brief Particles emit light. */
+	/** Particles emit light. */
 	inline bool GetEmitLight() const{ return pEmitLight; }
 	
-	/** \brief Check if particles emit light. */
+	/** Check if particles emit light. */
 	void CheckEmitLight( const deParticleEmitterType &type );
 	
 	/**
-	 * \brief Particles have transparency.
+	 * Particles have transparency.
 	 * 
 	 * Returns true if one or more of these conditions are true:
 	 * - One or more transparency curves are not empty.
@@ -174,14 +170,14 @@ public:
 	
 	
 	
-	/** Retrieves the shader for a shader type. */
-	deoglLightShader *GetShaderFor( int shaderType );
-	/** Retrieves the shader configuration for a shader type. */
-	bool GetShaderConfigFor( int shaderType, deoglLightShaderConfig &config );
+	/** Pipelines. */
+	deoglLightPipelines &GetPipelines();
+	
 	/** Retrieves the light parameter block. */
-	deoglSPBlockUBO *GetLightParameterBlock();
-	/** Drop all light shaders and parameter blocks. */
-	void DropLightShaders();
+	deoglSPBlockUBO &GetLightParameterBlock();
+	
+	/** Drop all light pipelines and parameter blocks. */
+	void DropPipelines();
 	/*@}*/
 };
 

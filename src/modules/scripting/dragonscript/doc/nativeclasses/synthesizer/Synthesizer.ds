@@ -31,6 +31,7 @@ class Synthesizer
 	/*@{*/
 	/** \brief Number of channels. */
 	public func int getChannelCount()
+		return 0
 	end
 	
 	/** \brief Set number of channels. */
@@ -39,6 +40,7 @@ class Synthesizer
 	
 	/** \brief Sample rate. */
 	public func int getSampleRate()
+		return 0
 	end
 	
 	/** \brief Set sample rate. */
@@ -47,6 +49,7 @@ class Synthesizer
 	
 	/** \brief Bytes per sample. */
 	public func int getBytesPerSample()
+		return 0
 	end
 	
 	/** \brief Set bytes per sample. */
@@ -55,6 +58,7 @@ class Synthesizer
 	
 	/** \brief Number of samples to create. */
 	public func float getSampleCount()
+		return 0.0
 	end
 	
 	/** \brief Set number of samples to create. */
@@ -68,6 +72,7 @@ class Synthesizer
 	/*@{*/
 	/** \brief Nnumber of controllers. */
 	public func int getControllerCount()
+		return 0
 	end
 	
 	/**
@@ -89,6 +94,7 @@ class Synthesizer
 	 *                        than or equal to getControllerCount().
 	 */
 	public func SynthesizerController getControllerAt( int index )
+		return null
 	end
 	
 	/**
@@ -101,10 +107,12 @@ class Synthesizer
 	 *             \em null is returned.
 	 */
 	public func SynthesizerController getControllerNamed( String name )
+		return null
 	end
 	
 	/** \brief Index of named controller or -1 if not found. */
 	public func int indexOfControllerNamed( String name )
+		return 0
 	end
 	/*@}*/
 	
@@ -114,6 +122,7 @@ class Synthesizer
 	/*@{*/
 	/** \brief Number of links. */
 	public func int getLinkCount()
+		return 0
 	end
 	
 	/**
@@ -122,6 +131,7 @@ class Synthesizer
 	 * \returns Index of added link.
 	 */
 	public func int addLink( int controller )
+		return 0
 	end
 	
 	/** \brief Remove all links. */
@@ -157,6 +167,7 @@ class Synthesizer
 	/*@{*/
 	/** \brief Number of sources. */
 	public func int getSourceCount()
+		return 0
 	end
 	
 	/** \brief Add source. */
@@ -168,6 +179,7 @@ class Synthesizer
 	 * \throws EOutOfBoundary \em index is less than 0 or large than or equal to getSourceCount().
 	 */
 	public func SynthesizerSource getSourceAt( int index )
+		return null
 	end
 	
 	/** \brief Remove all sources. */

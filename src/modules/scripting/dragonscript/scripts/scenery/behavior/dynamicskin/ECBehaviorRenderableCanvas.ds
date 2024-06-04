@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -38,13 +41,14 @@ pin Dragengine.Utils
  * 
  * To use this behavior add an ECBehaviorDynamicSkin to the element class before adding this
  * behavior. Create ECBehaviorRenderableCanvas behavior and set the dynamic skin and canvas
- * background color. The background color is black by default. Now you can add other behaviors
- * targeting the ECBehaviorRenderableCanvas to add Canvas resources to.
+ * background color or image. The background color empty by default so make sure to set an
+ * appropriate background. Now you can add other behaviors targeting the
+ * ECBehaviorRenderableCanvas to add Canvas resources to.
  * 
- * By default the background is empty. The behaviors using this canvas have to make sure they
- * cover the entire background to avoid artifacts. You can define though a background color or
- * image. In this case a CanvasPaint or CanvasImage with order 0 is added. Both background
- * color and image can be used at the same time for example if the image has transparency.
+ * If the background is not set the behaviors using this canvas have to make sure they cover
+ * the entire background to avoid artifacts. Background CanvasPaint or CanvasImage have
+ * order 0 respective 1 if both are used. Both canvas can be used for example if the image
+ * has transparency.
  * 
  * The canvas is created with a default size of 512x512 . You can change the size using the
  * element property to fit the texture requirements.
@@ -88,76 +92,76 @@ class ECBehaviorRenderableCanvas extends DefaultECBehavior
 		
 		
 		/** \brief Create element. */
-		public func new( ECBehaviorRenderableCanvas ecbehavior, BehaviorElement element ) super( element )
-			this.pECBehavior = ecbehavior
-			this.pRenderable = -1
+		public func new(ECBehaviorRenderableCanvas ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
+			pRenderable = -1
 			
-			this.pDynamicSkin = ecbehavior.getDynamicSkin().instance( element )
+			pDynamicSkin = ecbehavior.getDynamicSkin().instance(element)
 		end
 		
 		/** \brief Dispose of behavior instance. */
 		public func void dispose()
-			this.pDynamicSkin = null
+			pDynamicSkin = null
 			super.dispose()
 		end
 		
 		
 		
 		/** \brief Initialize element from stub. */
-		public func void init( StubElement stub )
-			var String renderableName = this.pECBehavior.getRenderable().getValue( stub )
+		public func void init(StubElement stub)
+			var String renderableName = pECBehavior.getRenderable().getValue(stub)
 			if renderableName.empty()
 				return
 			end
 			
-			var ElementClass eclass = this.getElement().getClass()
+			var ElementClass eclass = getElement().getClass()
 			var CodecPropertyString codec = eclass.getCodecPropertyString()
-			var Point size = this.pECBehavior.getSize().getPoint( stub, codec )
-			var Color backgroundColor = this.pECBehavior.getBackgroundColor().getColor( stub, codec )
-			var Image backgroundImage = this.pECBehavior.getBackgroundImage().getImage( stub, eclass )
+			var Point size = pECBehavior.getSize().getPoint(stub, codec)
+			var Color backgroundColor = pECBehavior.getBackgroundColor().getColor(stub, codec)
+			var Image backgroundImage = pECBehavior.getBackgroundImage().getImage(stub, eclass)
 			
-			this.pCanvasView = CanvasView.new()
-			this.pCanvasView.setSize( size )
+			pCanvasView = CanvasView.new()
+			pCanvasView.setSize(size)
 			
 			if backgroundColor != null
 				var CanvasPaint canvasBackground = CanvasPaint.new()
-				canvasBackground.setShapeType( CanvasPaintShape.rectangle )
-				canvasBackground.setFillColor( backgroundColor )
-				canvasBackground.setThickness( 0 )
-				canvasBackground.setSize( size )
-				canvasBackground.setOrder( this.pCanvasView.getCanvasCount() )
-				this.pCanvasView.addCanvas( canvasBackground )
+				canvasBackground.setShapeType(CanvasPaintShape.rectangle)
+				canvasBackground.setFillColor(backgroundColor)
+				canvasBackground.setThickness(0)
+				canvasBackground.setSize(size)
+				canvasBackground.setOrder(pCanvasView.getCanvasCount())
+				pCanvasView.addCanvas(canvasBackground)
 			end
 			
 			if backgroundImage != null
 				var CanvasImage canvasImage = CanvasImage.new()
-				canvasImage.setImage( backgroundImage )
-				canvasImage.setSize( size )
-				canvasImage.setOrder( this.pCanvasView.getCanvasCount() )
-				this.pCanvasView.addCanvas( canvasImage )
+				canvasImage.setImage(backgroundImage)
+				canvasImage.setSize(size)
+				canvasImage.setOrder(pCanvasView.getCanvasCount())
+				pCanvasView.addCanvas(canvasImage)
 			end
 			
-			var DynamicSkin dynamicSkin = this.pDynamicSkin.getDynamicSkin()
-			this.pRenderable = dynamicSkin.getRenderableCount()
-			dynamicSkin.addRenderable( renderableName, DynamicSkinRenderableType.canvas )
-			dynamicSkin.setCanvasAt( this.pRenderable, this.pCanvasView )
+			var DynamicSkin dynamicSkin = pDynamicSkin.getDynamicSkin()
+			pRenderable = dynamicSkin.getRenderableCount()
+			dynamicSkin.addRenderable(renderableName, DynamicSkinRenderableType.canvas)
+			dynamicSkin.setCanvasAt(pRenderable, pCanvasView)
 		end
 		
 		
 		
 		/** \brief Behavior. */
 		public func ECBehaviorRenderableCanvas getECBehavior()
-			return this.pECBehavior
+			return pECBehavior
 		end
 		
 		/** \brief Dynamic skin behavior instance. */
 		public func ECBehaviorDynamicSkin.Instance getDynamicSkin()
-			return this.pDynamicSkin
+			return pDynamicSkin
 		end
 		
 		/** \brief Canvas view or \em null. */
 		public func CanvasView getCanvasView()
-			return this.pCanvasView
+			return pCanvasView
 		end
 	end
 	
@@ -172,40 +176,40 @@ class ECBehaviorRenderableCanvas extends DefaultECBehavior
 	
 	
 	/** \brief Create behavior element class. */
-	public func new( BehaviorElementClass eclass, ECBehaviorDynamicSkin dynamicSkin ) \
-	this( eclass, dynamicSkin, "" )
+	public func new(BehaviorElementClass eclass, ECBehaviorDynamicSkin dynamicSkin) \
+	this(eclass, dynamicSkin, "")
 	end
 	
-	public func new( BehaviorElementClass eclass, ECBehaviorDynamicSkin dynamicSkin, String id ) \
-	this( eclass, dynamicSkin, id, id.empty() if "renderableCanvas." else "renderableCanvas(" + id + ")." )
+	public func new(BehaviorElementClass eclass, ECBehaviorDynamicSkin dynamicSkin, String id) \
+	this(eclass, dynamicSkin, id, id.empty() if "renderableCanvas." else "renderableCanvas(" + id + ").")
 	end
 	
-	public func new( BehaviorElementClass eclass, ECBehaviorDynamicSkin dynamicSkin, \
-	String id, String prefix ) super( eclass, id )
+	public func new(BehaviorElementClass eclass, ECBehaviorDynamicSkin dynamicSkin, \
+	String id, String prefix) super(eclass, id)
 		if dynamicSkin == null
-			throw ENullPointer.new( "dynamicSkin" )
+			throw ENullPointer.new("dynamicSkin")
 		end
 		
-		this.pDynamicSkin = dynamicSkin
+		pDynamicSkin = dynamicSkin
 		
-		this.pRenderable = ECPString.new( prefix + "renderable", "" )
-		eclass.addProperty( this.pRenderable )
+		pRenderable = ECPString.new(prefix + "renderable", "")
+		eclass.addProperty(pRenderable)
 		
-		this.pSize = ECPPoint.new( prefix + "size", Point.new( 512, 512 ) )
-		eclass.addProperty( this.pSize )
+		pSize = ECPPoint.new(prefix + "size", Point.new(512, 512))
+		eclass.addProperty(pSize)
 		
-		this.pBackgroundColor = ECPColor.new( prefix + "backgroundColor", null )
-		eclass.addProperty( this.pBackgroundColor )
+		pBackgroundColor = ECPColor.new(prefix + "backgroundColor", null)
+		eclass.addProperty(pBackgroundColor)
 		
-		this.pBackgroundImage = ECPImage.new( prefix + "backgroundImage", null )
-		eclass.addProperty( this.pBackgroundImage )
+		pBackgroundImage = ECPImage.new(prefix + "backgroundImage", null)
+		eclass.addProperty(pBackgroundImage)
 		
-		eclass.addBehavior( this )
+		eclass.addBehavior(this)
 	end
 	
 	/** \brief Dispose of behavior. */
 	public func void dispose()
-		this.pDynamicSkin = null
+		pDynamicSkin = null
 		super.dispose()
 	end
 	
@@ -213,34 +217,34 @@ class ECBehaviorRenderableCanvas extends DefaultECBehavior
 	
 	/** \brief Dynamic skin behavior. */
 	public func ECBehaviorDynamicSkin getDynamicSkin()
-		return this.pDynamicSkin
+		return pDynamicSkin
 	end
 	
 	/** \brief Name of renderable to create or empty string if not used. */
 	public func ECPString getRenderable()
-		return this.pRenderable
+		return pRenderable
 	end
 	
 	/** \brief Size of canvas. */
 	public func ECPPoint getSize()
-		return this.pSize
+		return pSize
 	end
 	
 	/** \brief Background color of canvas. */
 	public func ECPColor getBackgroundColor()
-		return this.pBackgroundColor
+		return pBackgroundColor
 	end
 	
 	/** \brief Background image of canvas. */
 	public func ECPImage getBackgroundImage()
-		return this.pBackgroundImage
+		return pBackgroundImage
 	end
 	
 	
 	
 	/** \brief Get instance in element from owner element class. */
-	public func Instance instance( BehaviorElement element )
-		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	public func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
 	
 	
@@ -251,10 +255,10 @@ class ECBehaviorRenderableCanvas extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorComponent.
 	 */
-	static public func ECBehaviorRenderableCanvas getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehavior each
-			return each castable ECBehaviorRenderableCanvas
-		end ) cast ECBehaviorRenderableCanvas
+	static public func ECBehaviorRenderableCanvas getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorRenderableCanvas each
+			return true
+		end) cast ECBehaviorRenderableCanvas
 	end
 	
 	/**
@@ -263,11 +267,10 @@ class ECBehaviorRenderableCanvas extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorRenderableCanvas with specific identifier.
 	 */
-	static public func ECBehaviorRenderableCanvas getBehaviorIn( BehaviorElementClass eclass, String id )
-		return eclass.findBehavior( block ECBehaviorRenderableCanvas each
-			return each castable ECBehaviorRenderableCanvas and \
-				( each cast ECBehaviorRenderableCanvas ).getID().equals( id )
-		end ) cast ECBehaviorRenderableCanvas
+	static public func ECBehaviorRenderableCanvas getBehaviorIn(BehaviorElementClass eclass, String id)
+		return eclass.findBehavior(block ECBehaviorRenderableCanvas each
+			return each.getID().equals(id)
+		end) cast ECBehaviorRenderableCanvas
 	end
 	
 	/**
@@ -276,14 +279,10 @@ class ECBehaviorRenderableCanvas extends DefaultECBehavior
 	 * Returns list contains ECBehaviorRenderableCanvas behaviors in the order they have
 	 * been created in the element.
 	 */
-	static public func Array getAllBehaviorsIn( BehaviorElementClass eclass )
-		var Array list = Array.new()
-		eclass.forEachBehavior( block ECBehavior each
-			if each castable ECBehaviorRenderableCanvas
-				list.add( each )
-			end
-		end )
-		return list
+	static public func Array getAllBehaviorsIn(BehaviorElementClass eclass)
+		return eclass.collectBehaviors(block ECBehaviorRenderableCanvas each
+			return true
+		end)
 	end
 	
 	
@@ -295,10 +294,10 @@ class ECBehaviorRenderableCanvas extends DefaultECBehavior
 	 * of type ECBehaviorRenderableCanvas.Instance . If more than one instance is present returns
 	 * the first instance.
 	 */
-	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance
-		end ) cast Instance
+	static public func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
+			return true
+		end) cast Instance
 	end
 	
 	/**
@@ -307,11 +306,10 @@ class ECBehaviorRenderableCanvas extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
 	 * of type ECBehaviorRenderableCanvas.Instance with specific identifier.
 	 */
-	static public func Instance getInstanceIn( BehaviorElement element, String id )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance and \
-				( each cast Instance ).getECBehavior().getID().equals( id )
-		end ) cast Instance
+	static public func Instance getInstanceIn(BehaviorElement element, String id)
+		return element.findInstance(block Instance each
+			return each.getECBehavior().getID().equals(id)
+		end) cast Instance
 	end
 	
 	/**
@@ -320,20 +318,16 @@ class ECBehaviorRenderableCanvas extends DefaultECBehavior
 	 * Returns list contains ECBehaviorRenderableCanvas.Instance instances in the order they have
 	 * been created in the element.
 	 */
-	static public func Array getAllInstancesIn( BehaviorElement element )
-		var Array list = Array.new()
-		element.forEachInstance( block ECBehaviorInstance each
-			if each castable Instance
-				list.add( each )
-			end
-		end )
-		return list
+	static public func Array getAllInstancesIn(BehaviorElement element)
+		return element.collectInstances(block Instance each
+			return true
+		end)
 	end
 	
 	
 	
 	/** \brief Create Behavior instance. */
-	public func ECBehaviorInstance createInstance( BehaviorElement element )
-		return Instance.new( this, element )
+	public func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
 	end
 end

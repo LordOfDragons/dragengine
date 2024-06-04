@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Game Engine
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <math.h>
@@ -73,9 +76,14 @@ pSkin( skin ),
 pScale( 1.0f, 1.0f, 1.0f ),
 pVisible( true ),
 pHintMovement( emhStationary ),
+pEnableGI( true ),
+pHintGIImportance( 4 ),
 
 pBones( NULL ),
 pBoneCount( 0 ),
+
+pVertexPositionSetWeights( nullptr ),
+pVertexPositionSetCount( 0 ),
 
 pBonesDirty( true ),
 pMatrixDirty( false ),
@@ -195,6 +203,9 @@ void deComponent::SetModel( deModel *model ){
 	if( pPeerAudio ){
 		pPeerAudio->ModelChanged();
 	}
+	if( pPeerAnimator ){
+		pPeerAnimator->ModelChanged();
+	}
 	
 	InvalidateMesh();
 	InvalidateExtends();
@@ -310,6 +321,9 @@ void deComponent::SetModelAndSkin( deModel *model, deSkin *skin ){
 		if( pPeerAudio ){
 			pPeerAudio->ModelAndSkinChanged();
 		}
+		if( pPeerAnimator ){
+			pPeerAnimator->ModelChanged();
+		}
 		
 	}else if( modelChanged ){
 		if( pPeerGraphic ){
@@ -320,6 +334,9 @@ void deComponent::SetModelAndSkin( deModel *model, deSkin *skin ){
 		}
 		if( pPeerAudio ){
 			pPeerAudio->ModelChanged();
+		}
+		if( pPeerAnimator ){
+			pPeerAnimator->ModelChanged();
 		}
 		
 	}else if( skinChanged ){
@@ -404,6 +421,45 @@ void deComponent::SetHintMovement( eMovementHints hint ){
 	}
 }
 
+void deComponent::SetEnableGI( bool enable ){
+	if( enable == pEnableGI ){
+		return;
+	}
+	
+	pEnableGI = enable;
+	
+	if( pPeerGraphic ){
+		pPeerGraphic->ParametersChanged();
+	}
+	if( pPeerPhysics ){
+		pPeerPhysics->ParametersChanged();
+	}
+	if( pPeerAudio ){
+		pPeerAudio->ParametersChanged();
+	}
+}
+
+void deComponent::SetHintGIImportance( int importance ){
+	DEASSERT_TRUE( importance >= 0 )
+	DEASSERT_TRUE( importance <= 4 )
+	
+	if( importance == pHintGIImportance ){
+		return;
+	}
+	
+	pHintGIImportance = importance;
+	
+	if( pPeerGraphic ){
+		pPeerGraphic->ParametersChanged();
+	}
+	if( pPeerPhysics ){
+		pPeerPhysics->ParametersChanged();
+	}
+	if( pPeerAudio ){
+		pPeerAudio->ParametersChanged();
+	}
+}
+
 void deComponent::SetAnimator( deAnimator *animator ){
 	if( animator == pAnimator ){
 		return;
@@ -467,20 +523,16 @@ void deComponent::NotifyTextureChanged( int index ) const{
 
 
 deComponentBone &deComponent::GetBoneAt( int index ) const{
-	if( index < 0 || index >= pBoneCount ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( index >= 0 )
+	DEASSERT_TRUE( index < pBoneCount )
 	return pBones[ index ];
 }
 
 void deComponent::UpdateBoneAt( int bone ){
-	if( bone < 0 || bone >= pBoneCount ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( bone >= 0 )
+	DEASSERT_TRUE( bone < pBoneCount )
 	pUpdateBoneAt( bone );
 }
-
-
 
 void deComponent::InvalidateBones(){
 	pBonesDirty = true;
@@ -491,6 +543,18 @@ void deComponent::InvalidateBones(){
 
 void deComponent::ValidateBones(){
 	pBonesDirty = false;
+}
+
+float deComponent::GetVertexPositionSetWeightAt( int index ) const{
+	DEASSERT_TRUE( index >= 0 )
+	DEASSERT_TRUE( index < pVertexPositionSetCount )
+	return pVertexPositionSetWeights[ index ];
+}
+
+void deComponent::SetVertexPositionSetWeightAt( int index, float weight ){
+	DEASSERT_TRUE( index >= 0 )
+	DEASSERT_TRUE( index < pVertexPositionSetCount )
+	pVertexPositionSetWeights[ index ] = weight;
 }
 
 void deComponent::InvalidateMesh(){
@@ -831,6 +895,9 @@ void deComponent::pCleanUp(){
 	if( pTextures ){
 		delete [] pTextures;
 	}
+	if( pVertexPositionSetWeights ){
+		delete [] pVertexPositionSetWeights;
+	}
 	if( pBones ){
 		delete [] pBones;
 	}
@@ -851,7 +918,9 @@ void deComponent::pUpdateBoneAt( int bone ){
 }
 
 void deComponent::pChangeModel( deModel *model ){
-	deComponentTexture *textures = NULL;
+	float *vertexPositionSetWeights = nullptr;
+	deComponentTexture *textures = nullptr;
+	int vertexPositionSetCount = 0;
 	int textureCount = 0;
 	
 	if( model ){
@@ -861,7 +930,16 @@ void deComponent::pChangeModel( deModel *model ){
 				textures = new deComponentTexture[ textureCount ];
 			}
 			
+			vertexPositionSetCount = model->GetVertexPositionSetCount();
+			if( vertexPositionSetCount > 0 ){
+				vertexPositionSetWeights = new float[ vertexPositionSetCount ];
+				memset( vertexPositionSetWeights, 0, sizeof( float ) * vertexPositionSetCount );
+			}
+			
 		}catch( const deException & ){
+			if( vertexPositionSetWeights ){
+				delete [] vertexPositionSetWeights;
+			}
 			if( textures ){
 				delete [] textures;
 			}
@@ -874,6 +952,12 @@ void deComponent::pChangeModel( deModel *model ){
 	}
 	pTextures = textures;
 	pTextureCount = textureCount;
+	
+	if( pVertexPositionSetWeights ){
+		delete [] pVertexPositionSetWeights;
+	}
+	pVertexPositionSetWeights = vertexPositionSetWeights;
+	pVertexPositionSetCount = vertexPositionSetCount;
 	
 	pModel = model;
 }

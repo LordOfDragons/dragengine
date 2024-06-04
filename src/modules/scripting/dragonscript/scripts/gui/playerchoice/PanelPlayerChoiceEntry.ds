@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -32,45 +35,211 @@ pin Dragengine.Utils
  * \brief Simple text to be used as option in a player choice box.
  * 
  * Changes the background and text color when the mouse enters and leaves the widget.
+ * 
+ * PanelPlayerChoiceEntry is a Panel containing a Label and DisplayImage widget using a
+ * CentrizedBoxLayout. The DisplayImage is created only if an image is provided in the
+ * constructor.
  */
-class PanelPlayerChoiceEntry extends Label
-	/** \brief Action listener to use if the entry is selected. */
-	private var ActionListener pAction
+class PanelPlayerChoiceEntry extends Panel
+	var ActionListener pAction
+	var Label pLabel
+	var DisplayImage pImage
+	var bool pHasGrab
+	var bool pPressed
 	
 	
 	
 	/** \brief Create player choice option. */
-	public func new( String text, ActionListener action ) super( text )
+	func new(String text, ActionListener action) this(text, null, action)
+	end
+	
+	/** \brief Create player choice option. */
+	func new(String text, Image image, ActionListener action)
 		if action == null
 			throw EInvalidParam.new()
 		end
 		
-		this.setAlignment( Label.middleCenter )
-		this.setDesignerSelector( "PlayerChoiceEntry" )
-		this.setWordWrap( true )
-		this.setCanFocus( true )
+		runWhileBlockingLayout(block
+			setLayout(CentrizedBoxLayout.new(LayoutAxis.x, 5))
+			setCanFocus(true)
+			setStateChangeNotifyChildren(true)
+			
+			if image != null
+				pImage = DisplayImage.new(image, RepeatMode.stretch)
+				addWidget(pImage)
+			end
+			
+			pLabel = Label.new(text)
+			pLabel.setWordWrap(true)
+			addWidget(pLabel)
+			
+			setDesignerSelector("PlayerChoiceEntry")
+		end)
 		
-		this.pAction = action
+		pAction = action
 	end
 	
 	/** \brief Dispose of widget. */
-	public func void dispose()
+	func void dispose()
 		super.dispose()
-		this.pAction = null
+		pImage = null
+		pLabel = null
+		pAction = null
 	end
 	
 	
 	
 	/** \brief Select action. */
-	public func ActionListener getAction()
-		return this.pAction
+	func ActionListener getAction()
+		return pAction
+	end
+	
+	/** \brief Label widget. */
+	func Label getLabel()
+		return pLabel
+	end
+	
+	/** \brief Display image widget or null if no image has been used in the constructor. */
+	func DisplayImage getImage()
+		return pImage
 	end
 	
 	
 	
-	/** \brief Mouse button pressed. */
-	public func void onButtonPress( MouseEvent event )
-		super.onButtonPress( event )
-		this.pAction.onAction( ActionEvent.new( this, ActionEvent.idAction, 0 ) )
+	/**
+	 * \brief Button is pressed.
+	 * \version 1.20
+	 */
+	func bool getPressed()
+		return pPressed
+	end
+	
+	/**
+	 * \brief Set if button is pressed.
+	 * \version 1.20
+	 */
+	func void setPressed(bool pressed)
+		if pressed == pPressed
+			return
+		end
+		
+		pPressed = pressed
+		
+		runWhileBlockingLayout(block
+			notifyBorderParametersChanged()
+			notifyChildrenParentStateChanged()
+			onStateChanged(StateChangeEvent.new(this, StateChangeEvent.idStateChanged))
+		end)
+		doLayoutIfBlocked()
+	end
+	
+	
+	
+	/**
+	 * \brief Fire button press action.
+	 * \version 1.20
+	 */
+	func void fireAction(int modifiers)
+		pAction.onAction(ActionEvent.new(this, ActionEvent.idAction, 0))
+	end
+	
+	
+	/** \brief Key on the keyboard has been pressed. */
+	func void onKeyPress(KeyEvent event)
+		select event.getKeyCode()
+		case InputEventKey.enter
+			sendEventToListeners(event, false)
+			fireAction(0)
+			
+		case InputEventKey.space
+			setPressed(true)
+			sendEventToListeners(event, false)
+			
+		else
+			super.onKeyPress(event)
+		end
+	end
+	
+	/** Key on the keyboard has been released. */
+	func void onKeyRelease(KeyEvent event)
+		select event.getKeyCode()
+		case InputEventKey.space
+			if getPressed()
+				sendEventToListeners(event, false)
+				setPressed(false)
+				fireAction(0)
+				
+			else
+				sendEventToListeners(event, false)
+			end
+			
+		else
+			super.onKeyRelease(event)
+		end
+	end
+	
+	/** \brief Mouse button has been pressed. */
+	func void onButtonPress(MouseEvent event)
+		if event.getButton() == InputEventMouseButton.left
+			if getCanFocus()
+				grabFocus()
+			end
+			
+			captureMouse()
+			pHasGrab = true
+			setPressed(true)
+			
+			sendEventToListeners(event, false)
+			
+		else
+			super.onButtonPress(event)
+		end
+	end
+	
+	/** \brief Mouse button has been released. */
+	func void onButtonRelease(MouseEvent event)
+		if event.getButton() == InputEventMouseButton.left
+			pHasGrab = false
+			releaseMouse()
+			
+			if pPressed
+				sendEventToListeners(event, false)
+				setPressed(false)
+				fireAction(event.getModifiers())
+				
+			else
+				sendEventToListeners(event, false)
+			end
+			
+		else
+			super.onButtonRelease(event)
+		end
+	end
+	
+	/** \brief Mouse has moved. */
+	func void onMouseMove(MouseEvent event)
+		if pHasGrab
+			setPressed(isPointInside(event.getPosition()))
+			sendEventToListeners(event, false)
+			
+		else
+			super.onMouseMove(event)
+		end
+	end
+	
+	
+	
+	/**
+	 * Overrides Widget.onDesignerSelectorChanged(). Sets designer selector of label to
+	 * "Label.{selector}" and display image to "Image.{selector}".
+	 */
+	func void onDesignerSelectorChanged()
+		var String selector = getDesignerSelector()
+		
+		pLabel.setDesignerSelector("Label." + selector)
+		
+		if pImage != null
+			pImage.setDesignerSelector("Image." + selector)
+		end
 	end
 end

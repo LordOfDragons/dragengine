@@ -1,42 +1,46 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLRPARTICLEEMITTERINSTANCETYPE_H_
 #define _DEOGLRPARTICLEEMITTERINSTANCETYPE_H_
 
 #include "../skin/deoglSkinTexture.h"
+#include "../shaders/paramblock/deoglSPBlockUBO.h"
 
 #include <dragengine/deObject.h>
 
 class deoglRDynamicSkin;
 class deoglRParticleEmitterInstance;
-class deoglSPBlockUBO;
 class deoglRSkin;
 class deoglSkinShader;
 class deoglSkinTexture;
 class deoglTexUnitsConfig;
+class deoglRenderTaskSharedInstance;
 
 
 /**
- * \brief Render particle emitter instance type.
+ * Render particle emitter instance type.
  */
 class deoglRParticleEmitterInstanceType : public deObject{
 private:
@@ -54,33 +58,32 @@ private:
 	int pUseTextureNumber;
 	deoglSkinTexture *pUseSkinTexture;
 	
-	deoglSPBlockUBO *pParamBlockDepth;
-	deoglSPBlockUBO *pParamBlockGeometry;
+	deoglSPBlockUBO::Ref pParamBlock;
 	
 	deoglTexUnitsConfig *pTUCDepth;
 	deoglTexUnitsConfig *pTUCCounter;
 	deoglTexUnitsConfig *pTUCGeometry;
 	deoglTexUnitsConfig *pTUCGeometryDepthTest;
 	
-	bool pValidParamBlockDepth;
-	bool pValidParamBlockGeometry;
-	bool pDirtyParamBlockDepth;
-	bool pDirtyParamBlockGeometry;
+	bool pValidParamBlock;
+	bool pDirtyParamBlock;
 	
 	bool pDirtyTUCDepth;
 	bool pDirtyTUCCounter;
 	bool pDirtyTUCGeometry;
 	bool pDirtyTUCGeometryDepthTest;
 	
-	deoglSPBlockUBO *pParamBlockLightInstance;
+	deoglSPBlockUBO::Ref pParamBlockLightInstance;
+	deoglRenderTaskSharedInstance *pRTSInstance;
+	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create type. */
+	/** Create type. */
 	deoglRParticleEmitterInstanceType( deoglRParticleEmitterInstance &instance, int index );
 	
-	/** \brief Clean up type. */
+	/** Clean up type. */
 	virtual ~deoglRParticleEmitterInstanceType();
 	/*@}*/
 	
@@ -88,127 +91,126 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Emitter instance. */
+	/** Emitter instance. */
 	inline deoglRParticleEmitterInstance &GetEmitterInstance(){ return pEmitterInstance; }
 	
-	/** \brief Index. */
+	/** Index. */
 	inline int GetIndex() const{ return pIndex; }
 	
 	
 	
-	/** \brief First particle. */
+	/** First particle. */
 	inline int GetFirstParticle() const{ return pFirstParticle; }
 	
-	/** \brief Set first particle. */
+	/** Set first particle. */
 	void SetFirstParticle( int first );
 	
-	/** \brief Particle count. */
+	/** Particle count. */
 	inline int GetParticleCount() const{ return pParticleCount; }
 	
-	/** \brief Set particle count. */
+	/** Set particle count. */
 	void SetParticleCount( int count );
 	
-	/** \brief First index. */
+	/** First index. */
 	inline int GetFirstIndex() const{ return pFirstIndex; }
 	
-	/** \brief Set first index. */
+	/** Set first index. */
 	void SetFirstIndex( int index );
 	
-	/** \brief Index count. */
+	/** Index count. */
 	inline int GetIndexCount() const{ return pIndexCount; }
 	
-	/** \brief Set index count. */
+	/** Set index count. */
 	void SetIndexCount( int count );
 	
 	
 	
-	/** \brief Dynamic skin or \em NULL if there is none. */
+	/** Dynamic skin or NULL if there is none. */
 	inline deoglRDynamicSkin *GetDynamicSkin() const{ return pDynamicSkin; }
 	
-	/** \brief Set dynamic skin or \em NULL if there is none. */
+	/** Set dynamic skin or NULL if there is none. */
 	void SetDynamicSkin( deoglRDynamicSkin *dynamicSkin );
 	
-	/** \brief Skin to use. */
+	/** Skin to use. */
 	inline deoglRSkin *GetUseSkin() const{ return pUseSkin; }
 	
-	/** \brief Set skin to use. */
+	/** Set skin to use. */
 	void SetUseSkin( deoglRSkin *skin );
 	
-	/** \brief Skin texture number to use. */
+	/** Skin texture number to use. */
 	inline int GetUseTextureNumber() const{ return pUseTextureNumber; }
 	
-	/** \brief Skin texture to use. */
+	/** Skin texture to use. */
 	inline deoglSkinTexture *GetUseSkinTexture() const{ return pUseSkinTexture; }
 	
 	
 	
-	/** \brief Shader parameter block for a shader type. */
-	deoglSPBlockUBO *GetParamBlockFor( deoglSkinTexture::eShaderTypes shaderType );
+	/** Skin pipelines type. */
+	deoglSkinTexturePipelinesList::ePipelineTypes GetSkinPipelinesType() const;
+	
+	/** Skin shader pipelines for emitter type. */
+	const deoglSkinTexturePipelines &GetUseSkinPipelines() const;
+	
+	/** Shader parameter block or NULL if there is no valid skin texture. */
+	const deoglSPBlockUBO::Ref &GetParamBlock();
+	
+	/** Texture units configuration for the given shader type. */
+	deoglTexUnitsConfig *GetTUCForPipelineType ( deoglSkinTexturePipelines::eTypes type );
 	
 	/**
-	 * \brief Geometry shader parameter block or \em NULL if there is no valid skin texture.
-	 * \details This texture units configuration works for the shader type estParticleGeometry.
-	 */
-	deoglSPBlockUBO *GetParamBlockDepth();
-	
-	/**
-	 * \brief Geometry shader parameter block or \em NULL if there is no valid skin texture.
-	 * \details This texture units configuration works for the shader type estParticleGeometry.
-	 */
-	deoglSPBlockUBO *GetParamBlockGeometry();
-	
-	/** \brief Texture units configuration for the given shader type. */
-	deoglTexUnitsConfig *GetTUCForShaderType( deoglSkinTexture::eShaderTypes shaderType );
-	
-	/**
-	 * \brief Texture units configuration for depth type shaders or \em NULL if empty.
+	 * Texture units configuration for depth type shaders or NULL if empty.
 	 * \details This texture units configuration works for the shader type estParticleGeometry.
 	 */
 	deoglTexUnitsConfig *GetTUCDepth();
 	
 	/**
-	 * \brief Texture units configuration for counter type shaders or \em NULL if empty.
+	 * Texture units configuration for counter type shaders or NULL if empty.
 	 * \details This texture units configuration works for the shader type estParticleGeometry.
 	 */
 	deoglTexUnitsConfig *GetTUCCounter();
 	
 	/**
-	 * \brief Texture units configuration for geometry type shaders or \em NULL if empty.
+	 * Texture units configuration for geometry type shaders or NULL if empty.
 	 * \details This texture units configuration works for the shader type estParticleGeometry.
 	 */
 	deoglTexUnitsConfig *GetTUCGeometry();
 	
 	/**
-	 * \brief Texture units configuration for geometry type shaders with depth test or \em NULL if empty.
+	 * Texture units configuration for geometry type shaders with depth test or NULL if empty.
 	 * \details This texture units configuration works for the shader type estParticleGeometry.
 	 */
 	deoglTexUnitsConfig *GetTUCGeometryDepthTest();
 	
 	/**
-	 * \brief Texture units configuration for a shader type.
+	 * Texture units configuration for a shader type.
 	 * \details Bare call not to be used directly.
 	 */
-	deoglTexUnitsConfig *BareGetTUCFor( deoglSkinTexture::eShaderTypes shaderType ) const;
+	deoglTexUnitsConfig *BareGetTUCFor( deoglSkinTexturePipelines::eTypes type ) const;
 	
 	
 	
-	/** \brief Invalidate parameter blocks. */
+	/** Invalidate parameter blocks. */
 	void InvalidateParamBlocks();
 	
-	/** \brief Mark parameter blocks dirty. */
+	/** Mark parameter blocks dirty. */
 	void MarkParamBlocksDirty();
 	
-	/** \brief Mark texture units configurations dirty. */
+	/** Mark texture units configurations dirty. */
 	void MarkTUCsDirty();
 	
-	/** \brief Update instance parameter shader parameter block. */
+	/** Update instance parameter shader parameter block. */
 	void UpdateInstanceParamBlock( deoglSPBlockUBO &paramBlock, deoglSkinShader &skinShader );
 	
-	/** \brief Light instance parameter block. */
-	deoglSPBlockUBO *GetLightInstanceParameterBlock();
+	/** Light instance parameter block. */
+	const deoglSPBlockUBO::Ref &GetLightInstanceParameterBlock();
 	
-	/** \brief Drop light parameter block. */
+	/** Drop light parameter block. */
 	void DropLightBlocks();
+	
+	
+	
+	/** Render task shared instance. */
+	inline deoglRenderTaskSharedInstance *GetRTSInstance() const{ return pRTSInstance; }
 	/*@}*/
 };
 

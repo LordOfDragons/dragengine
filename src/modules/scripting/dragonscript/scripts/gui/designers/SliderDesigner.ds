@@ -1,0 +1,69 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+
+namespace Dragengine.Gui.Designers
+
+pin Dragengine.Gui.Designers
+pin Dragengine.Gui.CanvasCreators
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Interface alter appearance of Slider.
+ * \version 1.13
+ * 
+ * Specialized version of WidgetDesigner. Designs frame and knob of Slider.
+ */
+interface SliderDesigner implements WidgetDesigner
+	/** \brief Size of slider. */
+	func int sliderSize(Slider slider)
+	
+	/** \brief Offset of knob center from slider area. */
+	func int knobOffset(Slider slider)
+	
+	/** \brief Size of ticks. */
+	func int tickSize(Slider slider)
+	
+	/** \brief Canvas creator for horizontal slider bar widget. */
+	func CanvasCreator canvasCreatorBarHorizontal(Slider slider)
+	
+	/** \brief Canvas creator for vertical slider bar widget. */
+	func CanvasCreator canvasCreatorBarVertical(Slider slider)
+	
+	/** \brief Canvas creator for horizontal large slider tick widget. */
+	func CanvasCreator canvasCreatorTickLargeHorizontal(Slider slider)
+	
+	/** \brief Canvas creator for vertical large slider tick widget. */
+	func CanvasCreator canvasCreatorTickLargeVertical(Slider slider)
+	
+	/** \brief Canvas creator for horizontal small slider tick widget. */
+	func CanvasCreator canvasCreatorTickSmallHorizontal(Slider slider)
+	
+	/** \brief Canvas creator for vertical small slider tick widget. */
+	func CanvasCreator canvasCreatorTickSmallVertical(Slider slider)
+	
+	/** \brief Create knob widget. */
+	func Widget createKnob(Slider slider)
+end

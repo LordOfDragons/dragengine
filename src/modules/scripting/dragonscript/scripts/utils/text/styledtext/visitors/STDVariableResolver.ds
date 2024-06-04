@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 namespace Dragengine.Utils.StyledText
@@ -41,18 +44,18 @@ class STDVariableResolver extends DefaultSTDNodeVisitor
 	
 	
 	/** \brief Create converter. */
-	public func new( StyledTextDefinition definition )
+	public func new(StyledTextDefinition definition)
 		if definition == null
 			throw EInvalidParam.new()
 		end
-		this.pDefinition = definition
+		pDefinition = definition
 	end
 	
 	
 	
 	/** \brief Styled text definition to add the visited content to. */
 	public func StyledTextDefinition getDefinition()
-		return this.pDefinition
+		return pDefinition
 	end
 	
 	
@@ -63,37 +66,38 @@ class STDVariableResolver extends DefaultSTDNodeVisitor
 	 * The default implementation returns the variable name in curly brackets.
 	 * This can be used as error fallback.
 	 */
-	public func String resolveVariable( String variableName )
+	public func String resolveVariable(String variableName)
 		return "{" + variableName + "}"
 	end
 	
 	
 	
 	/** \brief Visit node. */
-	public func void visitNode( STDNode node )
-		this.pDefinition.addNode( node )
+	public func void visitNode(STDNode node)
+		pDefinition.addNode(node)
 	end
 	
 	/** \brief Visit text node. */
-	public func void visitText( STDNText node )
+	public func void visitText(STDNText node)
 		var int count = node.getSpanCount()
 		var STDNTextSpan span
 		var int i
 		
 		var STDNText resolvedNode = STDNText.new()
-		resolvedNode.setStyle( node.getStyle() )
+		resolvedNode.setStyle(node.getStyle())
 		
 		for i = 0 to count
-			span = node.getSpanAt( i )
-			resolvedNode.addSpan( STDNTextSpan.new( this.resolveVariables( span.getText() ), span.getStyle() ) )
+			span = node.getSpanAt(i)
+			resolvedNode.addSpan(STDNTextSpan.new(resolveVariables(\
+				span.getText()), span.getStyle(), span.getImage()))
 		end
 		
-		this.pDefinition.addNode( resolvedNode )
+		pDefinition.addNode(resolvedNode)
 	end
 	
 	/** \brief Visit image node. */
-	public func void visitImage( STDNImage node )
-		this.pDefinition.addNode( node )
+	public func void visitImage(STDNImage node)
+		pDefinition.addNode(node)
 	end
 	
 	
@@ -101,8 +105,8 @@ class STDVariableResolver extends DefaultSTDNodeVisitor
 	/**
 	 * \brief Resolve variables.
 	 */
-	protected func String resolveVariables( String text )
-		var int variableBegin = text.find( '{' )
+	protected func String resolveVariables(String text)
+		var int variableBegin = text.find('{')
 		var int len = text.getLength()
 		var String result = ""
 		var int position = 0
@@ -110,24 +114,24 @@ class STDVariableResolver extends DefaultSTDNodeVisitor
 		
 		while variableBegin != -1
 			if position < variableBegin
-				result = result + text.substring( position, variableBegin )
+				result = result + text.substring(position, variableBegin)
 			end
 			
-			if text.getAt( variableBegin + 1 ) == '{'
+			if text.getAt(variableBegin + 1) == '{'
 				variableEnd = variableBegin + 1
 				result = result + "{"
 				
 			else
-				variableEnd = text.find( '}', variableBegin + 1 )
-				result = result + this.resolveVariable( text.substring( variableBegin + 1, variableEnd ) )
+				variableEnd = text.find('}', variableBegin + 1)
+				result = result + resolveVariable(text.substring(variableBegin + 1, variableEnd))
 			end
 			
 			position = variableEnd + 1
-			variableBegin = text.find( '{', position )
+			variableBegin = text.find('{', position)
 		end
 		
 		if position < len
-			result = result + text.substring( position )
+			result = result + text.substring(position)
 		end
 		
 		return result

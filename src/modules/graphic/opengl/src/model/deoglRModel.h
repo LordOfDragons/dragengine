@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLRMODEL_H_
@@ -36,9 +39,15 @@ class deModel;
 
 
 /**
- * \brief OpenGL Model Peer.
+ * OpenGL Model Peer.
  */
 class deoglRModel : public deObject{
+public:
+	/** Type holding strong reference. */
+	typedef deTObjectReference<deoglRModel> Ref;
+	
+	
+	
 public:
 	struct sExtends{
 		decVector minimum;
@@ -59,6 +68,7 @@ private:
 	
 	decStringList pBoneNames;
 	decStringList pTextureNames;
+	decStringList pVPSNames;
 	
 	deoglModelLOD **pLODs;
 	int pLODCount;
@@ -75,10 +85,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create render model. */
+	/** Create render model. */
 	deoglRModel( deoglRenderThread &renderThread, const deModel &model );
 	
-	/** \brief Clean up render model. */
+	/** Clean up render model. */
 	virtual ~deoglRModel();
 	/*@}*/
 	
@@ -86,60 +96,63 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Render thread. */
+	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
-	/** \brief Filename. */
+	/** Filename. */
 	inline const decString &GetFilename() const{ return pFilename; }
 	
-	/** \brief Extends. */
+	/** Extends. */
 	inline const sExtends &GetExtends() const{ return pExtends; }
 	
-	/** \brief Weightless extends. */
+	/** Weightless extends. */
 	inline const sExtends &GetWeightlessExtends() const{ return pWeightlessExtends; }
 	
-	/** \brief Has weightless extends. */
+	/** Has weightless extends. */
 	inline bool GetHasWeightlessExtends() const{ return pHasWeightlessExtends; }
 	
-	/** \brief Bone extends. */
+	/** Bone extends. */
 	inline const sExtends *GetBoneExtends() const{ return pBoneExtends; }
 	
-	/** \brief Number of bones. */
+	/** Number of bones. */
 	inline int GetBoneCount() const{ return pBoneCount; }
 	
-	/** \brief List of bone names. */
+	/** List of bone names. */
 	inline const decStringList &GetBoneNames() const{ return pBoneNames; }
 	
-	/** \brief List of texture names. */
+	/** List of texture names. */
 	inline const decStringList &GetTextureNames() const{ return pTextureNames; }
 	
+	/** List of vertex position set names. */
+	inline const decStringList &GetVPSNames() const{ return pVPSNames; }
 	
 	
-	/** \brief Number of lods. */
+	
+	/** Number of lods. */
 	inline int GetLODCount() const{ return pLODCount; }
 	
-	/** \brief Lod at index. */
+	/** Lod at index. */
 	deoglModelLOD &GetLODAt( int index ) const;
 	
-	/** \brief Model has double sided textures. */
+	/** Model has double sided textures. */
 	inline bool GetDoubleSided() const{ return pDoubleSided; }
 	
-	/** \brief Prepare imposter billboard. */
+	/** Prepare imposter billboard. */
 	void PrepareImposterBillboard();
 	
-	/** \brief Imposter billboard or \em NULL if not existing. */
+	/** Imposter billboard or \em NULL if not existing. */
 	inline deoglImposterBillboard *GetImposterBillboard() const{ return pImposterBillboard; }
 	
-	/** \brief Shared shader parameter block list using UBO. */
+	/** Shared shader parameter block list using UBO. */
 	deoglSharedSPBListUBO &GetSharedSPBListUBO();
 	
-	/** \brief Prepare octrees if not existing. */
+	/** Prepare octrees if not existing. */
 	void PrepareOctrees();
 	
-	/** \brief Print debug informations. */
+	/** Print debug information. */
 	void PrintDebugInfo();
 	
-	/** \brief Debug VCOptimize. */
+	/** Debug VCOptimize. */
 	void DebugVCOptimize();
 	/*@}*/
 	
@@ -149,8 +162,9 @@ private:
 	void pCleanUp();
 	void pInitTextureNames( const deModel &engModel );
 	void pInitBoneNames( const deModel &engModel );
+	void pInitVPSNames( const deModel &engModel );
 	void pInitLODs( const deModel &engModel );
-	void pInitExtends( const deModel &engModel );
+	void pInitExtends( const deModel &engModel, const deoglModelLOD &baseLod );
 	
 	void pLoadCached( int lodCount, int boneCount );
 	void pSaveCached();

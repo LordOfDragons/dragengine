@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -36,294 +39,277 @@ pin Dragengine.Scenery
  * and image designer has to be a subclass of DefaultButtonWidgetDesigner.
  */
 class Button extends Container
-	/** Button is pressed */
-	private var bool pPressed
+	var bool pPressed
+	var Array pActionListeners
+	var bool pHasGrab
 	
-	/** action listeners */
-	private var Array pActionListeners
+	var String pText
+	var Image pImage
+	var Image pHoverImage
 	
-	/** Determines if we acquired a grab */
-	private var bool pHasGrab
-	
-	
-	
-	/** \brief Button text. */
-	private var String pText
-	
-	/** \brief Image or \em to display no image. */
-	private var Image pImage
-	
-	/** \brief Hover image or \em null to use regular image. */
-	private var Image pHoverImage
-	
-	
-	
-	/** \brief Label or \em null if not used. */
-	private var Label pWidgetText
-	
-	/** \brief Image or \em null if not used. */
-	private var DisplayImage pWidgetImage
+	var Label pWidgetText
+	var DisplayImage pWidgetImage
 	
 	
 	
 	/** \brief Create button. */
-	public func new()
-		this.pPressed = false
-		this.pHasGrab = false
+	func new()
+		pText = ""
+		pActionListeners = Array.new()
 		
-		this.pText = ""
-		
-		this.pActionListeners = Array.new()
-		
-		this.setLayout( CentrizedBoxLayout.new( LayoutAxis.y ) )
-		this.setDesignerSelector( "Button" )
-		this.setCanFocus( true )
-		
-		this.createContentWidgets()
+		runWhileBlockingLayout(block
+			setLayout(CentrizedBoxLayout.new(LayoutAxis.y))
+			setDesignerSelector("Button")
+			setCanFocus(true)
+			setStateChangeNotifyChildren(true)
+			
+			createContentWidgets()
+		end)
 	end
 	
 	/** \brief Create text button. */
-	public func new( String text ) this()
-		this.setText( text )
+	func new(String text) this()
+		setText(text)
 	end
 	
 	/** \brief Create text and image button. */
-	public func new( String text, Image image ) this()
-		this.setText( text )
-		this.setImage( image )
+	func new(String text, Image image) this()
+		setText(text)
+		setImage(image)
 	end
 	
 	/** \brief Create text button. */
-	public func new( String text, ActionListener action ) this( text )
-		this.addActionListener( action )
+	func new(String text, ActionListener action) this(text)
+		addActionListener(action)
 	end
 	
 	/** \brief Create text and image button. */
-	public func new( String text, Image image, ActionListener action ) this( text, image )
-		this.addActionListener( action )
+	func new(String text, Image image, ActionListener action) this(text, image)
+		addActionListener(action)
 	end
 	
 	/**
 	 * Disposes of the widget. This cleans all references and prepars the widget
 	 * for beeing freed. If the widget is already disposed nothing happens.
 	 */
-	public func void dispose()
+	func void dispose()
 		// it is possible the dispose is triggered due to an action listener call.
 		// if Array.removeAll() is called in this case an exception is thrown due to
 		// modifying the array while iterating over it. dropping the array is enough
-		this.pWidgetImage = null
-		this.pWidgetText = null
-		this.pActionListeners = null
+		pWidgetImage = null
+		pWidgetText = null
+		pActionListeners = null
 		super.dispose()
 	end
 	
 	
 	
 	/** \brief Text of the button. */
-	public func String getText()
-		return this.pText
+	func String getText()
+		return pText
 	end
 	
 	/** \brief Set text of the button. */
-	public func void setText( String text )
-		if text.equals( this.pText )
+	func void setText(String text)
+		if text.equals(pText)
 			return
 		end
 		
-		this.pText = text
-		this.pWidgetText.setText( text )
-		this.pWidgetText.setVisible( not text.empty() )
+		pText = text
+		pWidgetText.setText(text)
+		pWidgetText.setVisible(not text.empty())
 	end
 	
 	/** Image of the button. */
-	public func Image getImage()
-		return this.pImage
+	func Image getImage()
+		return pImage
 	end
 	
 	/** Set image of the button. */
-	public func void setImage( Image image )
-		if image == this.pImage
+	func void setImage(Image image)
+		if image == pImage
 			return
 		end
 		
-		this.pImage = image
+		pImage = image
 		
-		this.updateWidgetImage()
+		updateWidgetImage()
 	end
 	
 	/** \brief Hover image or \em null to use regular image. */
-	public func Image getHoverImage()
-		return this.pHoverImage
+	func Image getHoverImage()
+		return pHoverImage
 	end
 	
 	/** \brief Set hover image or \em null to use regular image. */
-	public func void setHoverImage( Image image )
-		if image == this.pHoverImage
+	func void setHoverImage(Image image)
+		if image == pHoverImage
 			return
 		end
 		
-		this.pHoverImage = image
+		pHoverImage = image
 		
-		this.updateWidgetImage()
+		updateWidgetImage()
 	end
 	
 	
 	
 	/** Button is pressed. */
-	public func bool getPressed()
-		return this.pPressed
+	func bool getPressed()
+		return pPressed
 	end
 	
 	/** Set if button is pressed. */
-	public func void setPressed( bool pressed )
-		if pressed == this.pPressed
+	func void setPressed(bool pressed)
+		if pressed == pPressed
 			return
 		end
 		
-		this.pPressed = pressed
+		pPressed = pressed
 		
-		this.runWhileBlockingLayout( block
-			this.notifyBorderParametersChanged()
-			this.notifyChildrenParentStateChanged()
-			this.onStateChanged( StateChangeEvent.new( this, StateChangeEvent.idStateChanged ) )
-		end )
-		this.doLayout()
+		runWhileBlockingLayout(block
+			notifyBorderParametersChanged()
+			notifyChildrenParentStateChanged()
+			onStateChanged(StateChangeEvent.new(this, StateChangeEvent.idStateChanged))
+		end)
+		doLayoutIfBlocked()
 	end
 	
 	
 	
 	/** Add action listener. */
-	public func void addActionListener( ActionListener listener )
+	func void addActionListener(ActionListener listener)
 		if listener == null
 			throw EInvalidParam.new()
 		end
-		this.pActionListeners.add( listener )
+		pActionListeners.add(listener)
 	end
 	
 	/** Remove action listener. */
-	public func void removeActionListener( ActionListener listener )
-		this.pActionListeners.remove( listener )
+	func void removeActionListener(ActionListener listener)
+		pActionListeners.remove(listener)
 	end
 	
 	
 	
 	/** Fire button press action. */
-	public func void fireAction( int modifiers )
-		if this.pActionListeners == null
+	func void fireAction(int modifiers)
+		if pActionListeners == null
 			return // disposed
 		end
 		
-		var ActionEvent event = ActionEvent.new( this, ActionEvent.idAction, modifiers )
-		this.pActionListeners.forEach( block ActionListener each
-			each.onAction( event )
-		end )
+		var ActionEvent event = ActionEvent.new(this, ActionEvent.idAction, modifiers)
+		pActionListeners.forEach(block ActionListener each
+			each.onAction(event)
+		end)
 	end
 	
 	
 	
 	/** \brief Set if widget is enabled. */
-	public func void setEnabled( bool enabled )
-		super.setEnabled( enabled )
+	func void setEnabled(bool enabled)
+		super.setEnabled(enabled)
 		
 		if not enabled
-			this.setPressed( false )
+			setPressed(false)
 		end
 		
-		this.updateWidgetImage()
+		updateWidgetImage()
 	end
 	
+	
 	/** Key on the keyboard has been pressed. */
-	public func void onKeyPress( KeyEvent event )
+	func void onKeyPress(KeyEvent event)
 		select event.getKeyCode()
 		case InputEventKey.enter
-			this.sendEventToListeners( event, false )
-			this.fireAction( 0 )
+			sendEventToListeners(event, false)
+			fireAction(0)
 			
 		case InputEventKey.space
-			this.setPressed( true )
-			this.sendEventToListeners( event, false )
+			setPressed(true)
+			sendEventToListeners(event, false)
 			
 		else
-			super.onKeyPress( event )
+			super.onKeyPress(event)
 		end
 	end
 	
 	/** Key on the keyboard has been released. */
-	public func void onKeyRelease( KeyEvent event )
+	func void onKeyRelease(KeyEvent event)
 		select event.getKeyCode()
 		case InputEventKey.space
-			if this.getPressed()
-				this.sendEventToListeners( event, false )
-				this.setPressed( false )
-				this.fireAction( 0 )
+			if getPressed()
+				sendEventToListeners(event, false)
+				setPressed(false)
+				fireAction(0)
 				
 			else
-				this.sendEventToListeners( event, false )
+				sendEventToListeners(event, false)
 			end
 			
 		else
-			super.onKeyRelease( event )
+			super.onKeyRelease(event)
 		end
 	end
 	
 	/** Mouse button has been pressed. */
-	public func void onButtonPress( MouseEvent event )
+	func void onButtonPress(MouseEvent event)
 		if event.getButton() == InputEventMouseButton.left
-			if this.getCanFocus()
-				this.grabFocus()
+			if getCanFocus()
+				grabFocus()
 			end
 			
-			this.captureMouse()
-			this.pHasGrab = true
-			this.setPressed( true )
+			captureMouse()
+			pHasGrab = true
+			setPressed(true)
 			
-			this.sendEventToListeners( event, false )
+			sendEventToListeners(event, false)
 			
 		else
-			super.onButtonPress( event )
+			super.onButtonPress(event)
 		end
 	end
 	
 	/** Mouse button has been released. */
-	public func void onButtonRelease( MouseEvent event )
+	func void onButtonRelease(MouseEvent event)
 		if event.getButton() == InputEventMouseButton.left
-			this.pHasGrab = false
-			this.releaseMouse()
+			pHasGrab = false
+			releaseMouse()
 			
-			if this.pPressed
-				this.sendEventToListeners( event, false )
-				this.setPressed( false )
-				this.fireAction( event.getModifiers() )
+			if pPressed
+				sendEventToListeners(event, false)
+				setPressed(false)
+				fireAction(event.getModifiers())
 				
 			else
-				this.sendEventToListeners( event, false )
+				sendEventToListeners(event, false)
 			end
 			
 		else
-			super.onButtonRelease( event )
+			super.onButtonRelease(event)
 		end
 	end
 	
 	/** \brief Widget received focus. */
-	public func void onFocusReceived( FocusEvent event )
-		super.onFocusReceived( event )
-		this.updateWidgetImage()
+	func void onFocusReceived(FocusEvent event)
+		super.onFocusReceived(event)
+		updateWidgetImage()
 	end
 	
 	/** \brief Widget lost focus. */
-	public func void onFocusLost( FocusEvent event )
-		super.onFocusLost( event )
-		this.updateWidgetImage()
+	func void onFocusLost(FocusEvent event)
+		super.onFocusLost(event)
+		updateWidgetImage()
 	end
 	
 	/** Mouse has moved. */
-	public func void onMouseMove( MouseEvent event )
-		if this.pHasGrab
-			this.setPressed( this.isPointInside( event.getPosition() ) )
-			this.sendEventToListeners( event, false )
+	func void onMouseMove(MouseEvent event)
+		if pHasGrab
+			setPressed(isPointInside(event.getPosition()))
+			sendEventToListeners(event, false)
 			
 		else
-			super.onMouseMove( event )
+			super.onMouseMove(event)
 		end
 	end
 	
@@ -332,13 +318,12 @@ class Button extends Container
 	 * is to send the message to all registered listeners or propagate it back
 	 * to the parent if allowed.
 	 */
-	public func void onMouseEnter( MouseEvent event )
-		this.runWhileBlockingLayout( block
-			this.notifyChildrenParentStateChanged()
-			super.onMouseEnter( event )
-			this.updateWidgetImage()
-		end )
-		this.doLayout()
+	func void onMouseEnter(MouseEvent event)
+		runWhileBlockingLayout(block
+			super.onMouseEnter(event)
+			updateWidgetImage()
+		end)
+		doLayoutIfBlocked()
 	end
 	
 	/**
@@ -346,24 +331,21 @@ class Button extends Container
 	 * is to send the message to all registered listeners or propagate it back
 	 * to the parent if allowed.
 	 */
-	public func void onMouseLeave( MouseEvent event )
-		this.runWhileBlockingLayout( block
-			this.notifyChildrenParentStateChanged()
-			super.onMouseLeave( event )
-			this.updateWidgetImage()
-		end )
-		this.doLayout()
+	func void onMouseLeave(MouseEvent event)
+		runWhileBlockingLayout(block
+			super.onMouseLeave(event)
+			updateWidgetImage()
+		end)
+		doLayoutIfBlocked()
 	end
 	
-	
-	
 	/** \brief Designer selector changed. */
-	public func void onDesignerSelectorChanged()
-		if this.pWidgetImage != null
-			this.pWidgetImage.setDesignerSelector( "Image." + this.getDesignerSelector() )
+	func void onDesignerSelectorChanged()
+		if pWidgetImage != null
+			pWidgetImage.setDesignerSelector("Image." + getDesignerSelector())
 		end
-		if this.pWidgetText != null
-			this.pWidgetText.setDesignerSelector( "Label." + this.getDesignerSelector() )
+		if pWidgetText != null
+			pWidgetText.setDesignerSelector("Label." + getDesignerSelector())
 		end
 	end
 	
@@ -371,22 +353,22 @@ class Button extends Container
 	
 	/** \brief Label or \em null if not used. */
 	protected func Label getWidgetText()
-		return this.pWidgetText
+		return pWidgetText
 	end
 	
 	/** \brief Set label or \em null if not used. */
-	protected func void setWidgetText( Label widget )
-		this.pWidgetText = widget
+	protected func void setWidgetText(Label widget)
+		pWidgetText = widget
 	end
 	
 	/** \brief Image or \em null if not used. */
 	protected func DisplayImage getWidgetImage()
-		return this.pWidgetImage
+		return pWidgetImage
 	end
 	
 	/** \brief Set image or \em null if not used. */
-	protected func void setWidgetImage( DisplayImage widget )
-		this.pWidgetImage = widget
+	protected func void setWidgetImage(DisplayImage widget)
+		pWidgetImage = widget
 	end
 	
 	
@@ -395,53 +377,49 @@ class Button extends Container
 	 * \brief Create button content widgets.
 	 * \details Call if the layout of the widgets changes. Removes the old widgets first.
 	 */
-	public func void createContentWidgets()
-		var bool enabled = this.getEnabled()
+	func void createContentWidgets()
+		removeAllWidgets()
+		pWidgetImage = null
+		pWidgetText = null
 		
-		this.removeAllWidgets()
-		this.pWidgetImage = null
-		this.pWidgetText = null
+		setLayout(CentrizedBoxLayout.new(LayoutAxis.y))
 		
-		this.setLayout( CentrizedBoxLayout.new( LayoutAxis.y ) )
+		pWidgetImage = DisplayImage.new(null, "Image." + getDesignerSelector())
+		addWidget(pWidgetImage)
+		pWidgetImage.setVisible(false)
 		
-		this.pWidgetImage = DisplayImage.new()
-		this.pWidgetImage.setDesignerSelector( "Image." + this.getDesignerSelector() )
-		this.addWidget( this.pWidgetImage )
-		this.pWidgetImage.setVisible( false )
-		
-		this.pWidgetText = Label.new( this.pText )
-		this.pWidgetText.setDesignerSelector( "Label." + this.getDesignerSelector() )
-		this.addWidget( this.pWidgetText )
-		this.pWidgetText.setVisible( not this.pText.empty() )
+		pWidgetText = Label.new(pText, "Label." + getDesignerSelector())
+		addWidget(pWidgetText)
+		pWidgetText.setVisible(not pText.empty())
 	end
 	
 	/** \brief Update image to display depending on current button state. */
-	public func void updateWidgetImage()
-		if this.pWidgetImage == null
+	func void updateWidgetImage()
+		if pWidgetImage == null
 			return
 		end
 		
-		var bool enabled = this.getEnabled()
+		var bool enabled = getEnabled()
 		
-		this.pWidgetImage.setEnabled( enabled )
+		pWidgetImage.setEnabled(enabled)
 		
 		if enabled
-			if this.isMouseInside()
-				if this.pHoverImage == null
-					this.pWidgetImage.setImage( this.pImage )
+			if isMouseInside()
+				if pHoverImage == null
+					pWidgetImage.setImage(pImage)
 					
 				else
-					this.pWidgetImage.setImage( this.pHoverImage )
+					pWidgetImage.setImage(pHoverImage)
 				end
 				
 			else
-				this.pWidgetImage.setImage( this.pImage )
+				pWidgetImage.setImage(pImage)
 			end
 			
 		else
-			this.pWidgetImage.setImage( this.pImage )
+			pWidgetImage.setImage(pImage)
 		end
 		
-		this.pWidgetImage.setVisible( this.pWidgetImage.getImage() != null )
+		pWidgetImage.setVisible(pWidgetImage.getImage() != null)
 	end
 end

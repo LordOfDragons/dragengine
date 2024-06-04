@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -123,6 +126,30 @@ class ECBehaviorLight extends DefaultECBehavior
 		end
 	end
 	
+	/** \brief Factory creating listeners. */
+	interface ListenerFactory
+		/** \brief Create listener. */
+		func Listener createListener( Instance instance )
+	end
+	
+	/** \brief Factory creating listeners using block. */
+	class BlockListenerFactory implements ListenerFactory
+		private var Block pBlock
+		
+		/** \brief Create factory using block receiving Instance as parameter returning Listener. */
+		public func new( Block blockFactory )
+			if blockFactory == null
+				throw ENullPointer.new()
+			end
+			this.pBlock = blockFactory
+		end
+		
+		/** \brief Create listener. */
+		public func Listener createListener( Instance instance )
+			return this.pBlock.run( instance ) cast Listener
+		end
+	end
+	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		/** \brief Trigger listener to activate light. */
@@ -181,6 +208,9 @@ class ECBehaviorLight extends DefaultECBehavior
 				return
 			end
 			
+			this.addShadowIgnoreComponents( stub )
+			this.pECBehavior.createListeners( this )
+			
 			if this.pECBehavior.getTriggerTable() != null
 				this.pTrigger = this.getTriggerBehavior()
 				this.pTrigger.addListener( ActivateListener.new( this ) )
@@ -207,6 +237,23 @@ class ECBehaviorLight extends DefaultECBehavior
 		 */
 		protected func Light createLight( StubElement stub )
 			return this.pECBehavior.getLight().createLight( this.getElement(), stub )
+		end
+		
+		/**
+		 * \brief Add components to ignore while casting shadows.
+		 * \version 1.4
+		 * 
+		 * Default implementation calls ECBehaviorLight.forEachIgnoreComponent() and adds
+		 * all visited components as components to ignore.
+		 */
+		protected func void addShadowIgnoreComponents( StubElement stub )
+			var BehaviorElement element = this.getElement()
+			this.pECBehavior.forEachShadowIgnoreComponent( block ECBehaviorComponent each
+				var Component component = each.instance( element ).getComponent()
+				if component != null
+					this.pLight.addShadowIgnoreComponent( component )
+				end
+			end )
 		end
 		
 		/**
@@ -336,13 +383,15 @@ class ECBehaviorLight extends DefaultECBehavior
 		
 		/** \brief State changed (visible, touchable). */
 		public func void stateChanged()
-			if this.getElement().getVisible()
-				if not this.pCustomLightHandling
-					this.pLight.setActivated( this.pActivated )
+			if pLight != null
+				if this.getElement().getVisible()
+					if not this.pCustomLightHandling
+						this.pLight.setActivated( this.pActivated )
+					end
+					
+				else
+					this.pLight.setActivated( false )
 				end
-				
-			else
-				this.pLight.setActivated( false )
 			end
 		end
 		
@@ -360,11 +409,19 @@ class ECBehaviorLight extends DefaultECBehavior
 		
 		/** \brief Read element from file. */
 		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
-			this.setActivated( env.readBool( reader ) )
+			select reader.readByte() // version
+			case 0
+				this.setActivated( env.readBool( reader ) )
+				
+			else
+				throw EInvalidParam.new( "unsupported version" )
+			end
 		end
 		
 		/** Writes the element to a file. */
 		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			writer.writeByte( 0 ) // version
+			
 			env.writeBool( writer, this.pActivated )
 		end
 	end
@@ -377,6 +434,8 @@ class ECBehaviorLight extends DefaultECBehavior
 	private var ECBehaviorTriggered pTrigger
 	private var ECBehaviorLight pSyncTrigger
 	private var TSTriggerTable pTriggerTable
+	private var Array pShadowIgnoreComponents
+	private var Array pListenerFactories
 	
 	
 	
@@ -411,6 +470,8 @@ class ECBehaviorLight extends DefaultECBehavior
 	TSTriggerTable triggerTable, String id, String subID, String prefix ) super( eclass, id )
 		this.pCollider = collider
 		this.pTriggerTable = triggerTable
+		this.pShadowIgnoreComponents = Array.new()
+		this.pListenerFactories = Array.new()
 		
 		this.pLight = ECComposeLight.new( eclass, prefix )
 		this.pAttach = ECComposeAttachResource.new( eclass, prefix )
@@ -424,6 +485,8 @@ class ECBehaviorLight extends DefaultECBehavior
 	public func void dispose()
 		this.pCollider = null
 		this.pSyncTrigger = null
+		this.pShadowIgnoreComponents = null
+		this.pListenerFactories = null
 		super.dispose()
 	end
 	
@@ -469,6 +532,54 @@ class ECBehaviorLight extends DefaultECBehavior
 		this.pTriggerTable = triggerTable
 	end
 	
+	/**
+	 * \brief Add component to ignore while casting shadows.
+	 * \version 1.4
+	 */
+	public func void addShadowIgnoreComponent( ECBehaviorComponent component )
+		if component == null
+			throw ENullPointer.new()
+		end
+		this.pShadowIgnoreComponents.add( component )
+	end
+	
+	/**
+	 * \brief Visit components to ignore while casting shadows using block with parameter ECBehaviorComponent.
+	 * \version 1.4
+	 */
+	public func void forEachShadowIgnoreComponent( Block ablock )
+		this.pShadowIgnoreComponents.forEach( ablock )
+	end
+	
+	/** \brief Add listener factory. */
+	public func void addListenerFactory( ListenerFactory factory )
+		if factory == null
+			throw ENullPointer.new()
+		end
+		this.pListenerFactories.add( factory )
+	end
+	
+	/**
+	 * \brief Add listener factory using block.
+	 * 
+	 * Block receives as parameter Instance and returns Listener.
+	 */
+	public func void addListenerFactory( Block blockFactory )
+		this.pListenerFactories.add( BlockListenerFactory.new( blockFactory ) )
+	end
+	
+	/** \brief Visit listener factories with block with argument ListenerFactory. */
+	public func void forEachListenerFactory( Block ablock )
+		this.pListenerFactories.forEach( ablock )
+	end
+	
+	/** \brief Create listeners from factories adding them to behavior instance. */
+	public func void createListeners( Instance instance )
+		this.pListenerFactories.forEach( block ListenerFactory each
+			instance.addListener( each.createListener( instance ) )
+		end )
+	end
+	
 	
 	
 	/** \brief Get instance in element from owner element class. */
@@ -485,8 +596,8 @@ class ECBehaviorLight extends DefaultECBehavior
 	 * of type ECBehaviorCollider.
 	 */
 	static public func ECBehaviorLight getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehavior each
-			return each castable ECBehaviorLight
+		return eclass.findBehavior( block ECBehaviorLight each
+			return true
 		end ) cast ECBehaviorLight
 	end
 	
@@ -498,8 +609,7 @@ class ECBehaviorLight extends DefaultECBehavior
 	 */
 	static public func ECBehaviorLight getBehaviorIn( BehaviorElementClass eclass, String id )
 		return eclass.findBehavior( block ECBehaviorLight each
-			return each castable ECBehaviorLight and \
-				( each cast ECBehaviorLight ).getID().equals( id )
+			return each.getID().equals( id )
 		end ) cast ECBehaviorLight
 	end
 	
@@ -510,13 +620,9 @@ class ECBehaviorLight extends DefaultECBehavior
 	 * been created in the element.
 	 */
 	static public func Array getAllBehaviorsIn( BehaviorElementClass eclass )
-		var Array list = Array.new()
-		eclass.forEachBehavior( block ECBehavior each
-			if each castable ECBehaviorLight
-				list.add( each )
-			end
+		return eclass.collectBehaviors( block ECBehaviorLight each
+			return true
 		end )
-		return list
 	end
 	
 	
@@ -529,8 +635,8 @@ class ECBehaviorLight extends DefaultECBehavior
 	 * the first instance.
 	 */
 	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance
+		return element.findInstance( block Instance each
+			return true
 		end ) cast Instance
 	end
 	
@@ -541,9 +647,8 @@ class ECBehaviorLight extends DefaultECBehavior
 	 * of type ECBehaviorLight.Instance with specific identifier.
 	 */
 	static public func Instance getInstanceIn( BehaviorElement element, String id )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance and \
-				( each cast Instance ).getECBehavior().getID().equals( id )
+		return element.findInstance( block Instance each
+			return each.getECBehavior().getID().equals( id )
 		end ) cast Instance
 	end
 	
@@ -554,13 +659,9 @@ class ECBehaviorLight extends DefaultECBehavior
 	 * been created in the element.
 	 */
 	static public func Array getAllInstancesIn( BehaviorElement element )
-		var Array list = Array.new()
-		element.forEachInstance( block ECBehaviorInstance each
-			if each castable Instance
-				list.add( each )
-			end
+		return element.collectInstances( block Instance each
+			return true
 		end )
-		return list
 	end
 	
 	

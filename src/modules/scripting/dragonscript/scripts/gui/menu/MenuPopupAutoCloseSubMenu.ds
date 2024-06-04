@@ -1,0 +1,110 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Gui
+
+pin Dragengine.Gui.Events
+pin Dragengine.Gui.Layouts
+pin Dragengine.Utils
+
+
+/**
+ * \brief Auto close sub menu after delay if mouse cursor is not inside.
+ * \version 1.11
+ */
+public class MenuPopupAutoCloseSubMenu extends FrameUpdateListener
+	private var MenuPopup pMenuPopup
+	private var float pTimeout
+	private var float pElapsed
+	
+	
+	
+	/** \brief Create auto close sub menu. */
+	public func new(MenuPopup menuPopup, float timeout)
+		if menuPopup == null
+			throw ENullPointer.new("menuPopup")
+		end
+		
+		pMenuPopup = menuPopup
+		pTimeout = DEMath.max(timeout, 0.0)
+	end
+	
+	
+	
+	/** \brief Frame update. */
+	public func void frameUpdate(float elapsed)
+		// missing desktop should never happen. close all sub menus
+		var Desktop desktop = pMenuPopup.getDesktop()
+		if desktop == null
+			pMenuPopup.setOpenSubMenu(null)
+			return
+		end
+		
+		// increment elapsed time
+		pElapsed += elapsed
+		
+		// find lowest sub menu
+		var MenuPopup subMenu = pMenuPopup.getLowestOpenSubMenu()
+		
+		// if mouse pointer is in lowest sub menu reset elapsed time to keep it open
+		var Point mouseLocation = desktop.getMouseLocation()
+		if subMenu != null and subMenu.isPointInside(mouseLocation - subMenu.getDesktopPosition())
+			pElapsed = 0
+			return
+		end
+		
+		// mouse pointer is not in lowest sub menu. wait until timeout elapsed
+		if pElapsed < pTimeout
+			return
+		end
+		
+		// timeout elapsed. reset elapsed time then walk up parent popup menus to find
+		// highest level sub menu to keep open
+		pElapsed = 0
+		
+		while subMenu != null
+			// get parent menu item if present
+			var MenuItemSubMenu menuItemSubMenu = subMenu.getParentMenuItem()
+			if menuItemSubMenu == null
+				break
+			end
+			
+			// if mouse pointer is inside menu item keep sub menu open but close child sub menu
+			if menuItemSubMenu.isPointInside(mouseLocation - menuItemSubMenu.getDesktopPosition())
+				subMenu.setOpenSubMenu(null)
+				return
+			end
+			
+			// if mouse pointer is inside parent menu close sub menu
+			subMenu = menuItemSubMenu.getParentMenuPopup()
+			if subMenu.isPointInside(mouseLocation - subMenu.getDesktopPosition())
+				subMenu.setOpenSubMenu(null)
+				return
+			end
+		end
+		
+		// mouse pointer is outside top level menu. close top level sub menu
+		pMenuPopup.setOpenSubMenu(null)
+	end
+end

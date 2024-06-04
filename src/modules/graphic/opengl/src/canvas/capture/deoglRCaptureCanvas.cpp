@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -25,8 +28,8 @@
 
 #include "deoglRCaptureCanvas.h"
 #include "../render/deoglRCanvasView.h"
+#include "../../debug/deoglDebugTraceGroup.h"
 #include "../../renderthread/deoglRenderThread.h"
-#include "../../texture/pixelbuffer/deoglPixelBuffer.h"
 #include "../../texture/texture2d/deoglTexture.h"
 #include "../../target/deoglRenderTarget.h"
 #include "../../window/deoglRRenderWindow.h"
@@ -44,7 +47,6 @@
 deoglRCaptureCanvas::deoglRCaptureCanvas( deoglRenderThread &renderThread ) :
 pRenderThread( renderThread ),
 pCanvasView( NULL ),
-pPixelBuffer( NULL ),
 pCapturePending( false ){
 	LEAK_CHECK_CREATE( renderThread, CaptureCanvas );
 }
@@ -52,9 +54,6 @@ pCapturePending( false ){
 deoglRCaptureCanvas::~deoglRCaptureCanvas(){
 	LEAK_CHECK_FREE( pRenderThread, CaptureCanvas );
 	SetCanvasView( NULL );
-	if( pPixelBuffer ){
-		delete pPixelBuffer;
-	}
 }
 
 
@@ -116,16 +115,15 @@ void deoglRCaptureCanvas::StartCapture( int width, int height, int componentCoun
 		}
 	}
 	
-	pPixelBuffer = new deoglPixelBuffer( pbformat, width, height, 1 );
+	pPixelBuffer.TakeOver( new deoglPixelBuffer( pbformat, width, height, 1 ) );
 	
 	pCapturePending = true;
+	pComponentCount = componentCount;
+	pBitCount = bitCount;
 }
 
 void deoglRCaptureCanvas::DropPixelBuffer(){
-	if( pPixelBuffer ){
-		delete pPixelBuffer;
-		pPixelBuffer = NULL;
-	}
+	pPixelBuffer = nullptr;
 	pCapturePending = false;
 }
 
@@ -141,18 +139,20 @@ void deoglRCaptureCanvas::CaptureRenderWindow( deoglRRenderWindow &renderWindow 
 		return;
 	}
 	
+	const deoglDebugTraceGroup debugTrace( GetRenderThread(), "CaptureCanvas.CaptureRenderWindow" );
 	const int width = pPixelBuffer->GetWidth();
 	const int height = pPixelBuffer->GetHeight();
 	
 	if( width == renderWindow.GetWidth() && height == renderWindow.GetHeight() ){
 		// extract image into memory
-		deoglPixelBuffer tempData( pPixelBuffer->GetFormat(), width, height, 1 );
+		const deoglPixelBuffer::Ref tempData( deoglPixelBuffer::Ref::New(
+			new deoglPixelBuffer( pPixelBuffer->GetFormat(), width, height, 1 ) ) );
 		
 		OGL_CHECK( pRenderThread, glReadPixels( 0, 0, width, height, pPixelBuffer->GetGLPixelFormat(),
-			pPixelBuffer->GetGLPixelType(), tempData.GetPointer() ) );
+			pPixelBuffer->GetGLPixelType(), tempData->GetPointer() ) );
 		
 		// copy data over in in the correct order (hence flipped upside down)
-		const char * const ptrTempData = ( char* )tempData.GetPointer();
+		const char * const ptrTempData = ( char* )tempData->GetPointer();
 		char * const ptrPixBuf = ( char* )pPixelBuffer->GetPointer();
 		const int stride = pPixelBuffer->GetLineStride();
 		int y;
@@ -174,10 +174,18 @@ void deoglRCaptureCanvas::CapturePending(){
 		return;
 	}
 	
+	const deoglDebugTraceGroup debugTrace( GetRenderThread(), "CaptureCanvas.CapturePending" );
 	deoglTexture *texture = NULL;
 	
 	if( pCanvasView ){
-		pCanvasView->PrepareRenderTarget();
+		pCanvasView->PrepareRenderTarget( nullptr, pComponentCount, pBitCount );
+		pCanvasView->RenderRenderTarget( nullptr );
+			// TODO capturing can be a problem. if a render world view is contained and it is
+			//      not rendered yet it will be rendered. doing so using NULL as mask causes
+			//      a full blown rendering as if the camera is used in a render window.
+			//      this can cause problems. the main problem here is GI. we need a way to
+			//      make the GI use the closest nearby camera plan GI state as render only
+			//      GI state preventing any updating.
 		
 		deoglRenderTarget * const renderTarget = pCanvasView->GetRenderTarget();
 		if( renderTarget ){

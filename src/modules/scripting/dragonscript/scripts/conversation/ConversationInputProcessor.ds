@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -34,73 +37,99 @@ pin Dragengine.Utils
  * Can skip actor speaking or entire conversation if required.
  */
 class ConversationInputProcessor extends DefaultInputProcessor
-	private var ConversationPlayback pPlayback
-	private var BindingManager pBindingManager
-	private var Array pAllowedCommands
+	private class FastForwardSpeakingTrigger extends GamepadTriggerTracker.DefaultListener
+		var WeakReference pProcessor
+		
+		func new(ConversationInputProcessor processor)
+			pProcessor = WeakReference.new(processor)
+		end
+		
+		func void triggerPulled(InputEventSource system, int device, int axis, int trigger)
+			var ConversationInputProcessor processor = pProcessor.get() cast ConversationInputProcessor
+			if processor != null
+				processor.fastForwardSpeaking()
+			end
+		end
+	end
 	
+	
+	var ConversationPlayback pPlayback
+	var BindingManager pBindingManager
+	var Array pAllowedCommands
+	var GamepadTriggerTracker pGamepadTriggerTracker
 	
 	
 	/** \brief Create conversation input processor. */
-	public func new( ConversationPlayback playback )
+	func new(ConversationPlayback playback)
 		if playback == null
 			throw EInvalidParam.new()
 		end
 		
-		this.pPlayback = playback
-		this.pAllowedCommands = Array.new()
+		pPlayback = playback
+		pAllowedCommands = Array.new()
+		pGamepadTriggerTracker = GamepadTriggerTracker.new()
+		pGamepadTriggerTracker.addListener(FastForwardSpeakingTrigger.new(this))
 	end
 	
 	
 	
 	/** \brief Conversation playback. */
-	public func ConversationPlayback getPlayback()
-		return this.pPlayback
+	func ConversationPlayback getPlayback()
+		return pPlayback
 	end
 	
 	/** \brief Binding manager or \em null to not allow bindings. */
-	public func BindingManager getBindingManager()
-		return this.pBindingManager
+	func BindingManager getBindingManager()
+		return pBindingManager
 	end
 	
 	/** \brief Set binding manager or \em null to not allow bindings. */
-	public func void setBindingManager( BindingManager manager )
-		this.pBindingManager = manager
+	func void setBindingManager(BindingManager manager)
+		pBindingManager = manager
 	end
 	
 	/** \brief Command names allowed during conversation. */
-	public func Array getAllowedCommands()
-		return this.pAllowedCommands
+	func Array getAllowedCommands()
+		return pAllowedCommands
 	end
 	
 	/** \brief Set command names allowed during conversation. */
-	public func void setAllowedCommands( Array list )
-		this.pAllowedCommands = list
+	func void setAllowedCommands(Array list)
+		pAllowedCommands = list
+	end
+	
+	/**
+	 * \brief Gamepad trigger tracker.
+	 * \version 1.20
+	 */
+	func GamepadTriggerTracker getGamepadTriggerTracker()
+		return pGamepadTriggerTracker
 	end
 	
 	
 	
 	/** \brief Process input event. */
-	public func void inputEvent( InputEvent event )
+	func void inputEvent(InputEvent event)
 		select event.getType()
 		case InputEventType.keyPress
 			if event.getKeyCode() == InputEventKey.space
-				this.fastForwardSpeaking()
+				fastForwardSpeaking()
 				
-			elif this.pBindingManager != null
-				var Binding binding = this.pBindingManager.findButtonBinding( \
-					event.getDevice(), event.getCode() )
+			elif pBindingManager != null
+				var Binding binding = pBindingManager.findButtonBinding(\
+					event.getSource(), event.getDevice(), event.getCode())
 				
-				if binding != null and this.pAllowedCommands.has( binding.getCommand().getName() )
+				if binding != null and pAllowedCommands.has(binding.getCommand().getName())
 					binding.getCommand().start()
 				end
 			end
 			
 		case InputEventType.keyRelease
-			if this.pBindingManager != null
-				var Binding binding = this.pBindingManager.findButtonBinding( \
-					event.getDevice(), event.getCode() )
+			if pBindingManager != null
+				var Binding binding = pBindingManager.findButtonBinding(\
+					event.getSource(), event.getDevice(), event.getCode())
 				
-				if binding != null and this.pAllowedCommands.has( binding.getCommand().getName() )
+				if binding != null and pAllowedCommands.has(binding.getCommand().getName())
 					binding.getCommand().stop()
 					return
 				end
@@ -108,13 +137,15 @@ class ConversationInputProcessor extends DefaultInputProcessor
 			
 		case InputEventType.mousePress
 			//if event.getCode() == InputEventMouseButton.left
-				this.fastForwardSpeaking()
+				fastForwardSpeaking()
 			//end
 		end
+		
+		pGamepadTriggerTracker.inputEvent(event)
 	end
 	
 	/** \brief Fast forward speaking. */
-	protected func void fastForwardSpeaking()
-		this.pPlayback.fastForwardSpeaking()
+	func void fastForwardSpeaking()
+		pPlayback.fastForwardSpeaking()
 	end
 end

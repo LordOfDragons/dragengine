@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -35,114 +38,6 @@
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/logger/deLogger.h>
-
-
-
-// Native Widget
-//////////////////
-
-class cNativeIgdeLabel : public FXLabel{
-	FXDECLARE( cNativeIgdeLabel )
-	
-protected:
-	cNativeIgdeLabel();
-	
-private:
-	igdeLabel *pOwner;
-	igdeFontReference pFont;
-	
-public:
-	cNativeIgdeLabel( igdeLabel &owner, FXComposite *parent, int layoutFlags,
-		const igdeGuiTheme &guitheme );
-	virtual ~cNativeIgdeLabel();
-	
-	static FXIcon *LabelIcon( const igdeLabel &owner );
-	static int LabelFlags( const igdeLabel &owner );
-	static igdeFont *LabelFont( const igdeLabel &owner, const igdeGuiTheme &guitheme );
-};
-
-
-FXDEFMAP( cNativeIgdeLabel ) cNativeIgdeLabelMap[] = { };
-
-FXIMPLEMENT( cNativeIgdeLabel, FXLabel, cNativeIgdeLabelMap, ARRAYNUMBER( cNativeIgdeLabelMap ) )
-
-cNativeIgdeLabel::cNativeIgdeLabel(){ }
-
-cNativeIgdeLabel::cNativeIgdeLabel( igdeLabel &owner, FXComposite *parent,
-int layoutFlags, const igdeGuiTheme &guitheme ) :
-FXLabel( parent, owner.GetText().GetString(), LabelIcon( owner ),
-	layoutFlags | LabelFlags( owner ), 0, 0, 0, 0, 0, 0, 0, 0 ),
-pOwner( &owner ),
-pFont( LabelFont( owner, guitheme ) )
-{
-	setFont( (FXFont*)pFont->GetNativeFont() );
-	
-	setTipText( owner.GetDescription().GetString() );
-	setHelpText( owner.GetDescription().GetString() );
-}
-
-cNativeIgdeLabel::~cNativeIgdeLabel(){
-}
-
-FXIcon *cNativeIgdeLabel::LabelIcon( const igdeLabel &owner ){
-	if( owner.GetIcon() ){
-		return ( FXIcon* )owner.GetIcon()->GetNativeIcon();
-		
-	}else{
-		return NULL;
-	}
-}
-
-int cNativeIgdeLabel::LabelFlags( const igdeLabel &owner ){
-	const int alignment = owner.GetAlignment();
-	int flags = ICON_BEFORE_TEXT;
-	
-	if( ( alignment & igdeLabel::eaLeft ) == igdeLabel::eaLeft ){
-		flags |= JUSTIFY_LEFT;
-		
-	}else if( ( alignment & igdeLabel::eaRight ) == igdeLabel::eaRight ){
-		flags |= JUSTIFY_RIGHT;
-		
-	}else{
-		flags |=  JUSTIFY_CENTER_X;
-	}
-	
-	if( ( alignment & igdeLabel::eaTop ) == igdeLabel::eaTop ){
-		flags |= JUSTIFY_TOP;
-		
-	}else if( ( alignment & igdeLabel::eaBottom ) == igdeLabel::eaBottom ){
-		flags |= JUSTIFY_BOTTOM;
-		
-	}else{
-		flags |=  JUSTIFY_CENTER_Y;
-	}
-	
-	return flags;
-}
-
-igdeFont *cNativeIgdeLabel::LabelFont( const igdeLabel &owner, const igdeGuiTheme &guitheme ){
-	igdeFont::sConfiguration configuration;
-	owner.GetEnvironment().GetApplicationFont( configuration );
-	
-	if( guitheme.HasProperty( igdeGuiThemePropertyNames::labelFontSizeAbsolute ) ){
-		configuration.size = guitheme.GetIntProperty(
-			igdeGuiThemePropertyNames::labelFontSizeAbsolute, 0 );
-		
-	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::labelFontSize ) ){
-		configuration.size *= guitheme.GetFloatProperty(
-			igdeGuiThemePropertyNames::labelFontSize, 1.0f );
-		
-	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::fontSizeAbsolute ) ){
-		configuration.size = guitheme.GetIntProperty(
-			igdeGuiThemePropertyNames::fontSizeAbsolute, 0 );
-		
-	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::fontSize ) ){
-		configuration.size *= guitheme.GetFloatProperty(
-			igdeGuiThemePropertyNames::fontSize, 1.0f );
-	}
-	
-	return owner.GetEnvironment().GetSharedFont( configuration );
-}
 
 
 
@@ -235,22 +130,9 @@ void igdeLabel::CreateNativeWidget(){
 		return;
 	}
 	
-	if( ! GetParent() ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	FXComposite * const foxParent = ( FXComposite* )GetParent()->GetNativeContainer();
-	if( ! foxParent ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	int layoutFlags = igdeUIFoxHelper::GetChildLayoutFlags( this );
-	cNativeIgdeLabel * const foxWidget = new cNativeIgdeLabel(
-		*this, foxParent, layoutFlags, *GetGuiTheme() );
-	SetNativeWidget( foxWidget );
-	if( foxParent->id() ){
-		foxWidget->create();
-	}
+	igdeNativeLabel * const native = igdeNativeLabel::CreateNativeWidget( *this );
+	SetNativeWidget( native );
+	native->PostCreateNativeWidget();
 }
 
 void igdeLabel::DestroyNativeWidget(){
@@ -258,46 +140,32 @@ void igdeLabel::DestroyNativeWidget(){
 		return;
 	}
 	
-	delete ( cNativeIgdeLabel* )GetNativeWidget();
+	( ( igdeNativeLabel* )GetNativeWidget() )->DestroyNativeWidget();
 	DropNativeWidget();
 }
 
 
 
 void igdeLabel::OnTextChanged(){
-	if( ! GetNativeWidget() ){
-		return;
+	if( GetNativeWidget() ){
+		( ( igdeNativeLabel* )GetNativeWidget() )->UpdateText();
 	}
-	
-	
-	cNativeIgdeLabel &label = *( ( cNativeIgdeLabel* )GetNativeWidget() );
-	label.setText( pText.GetString() );
 }
 
 void igdeLabel::OnAlignmentChanged(){
-	if( ! GetNativeWidget() ){
-		return;
+	if( GetNativeWidget() ){
+		( ( igdeNativeLabel* )GetNativeWidget() )->UpdateAlignment();
 	}
-	
-	cNativeIgdeLabel &label = *( ( cNativeIgdeLabel* )GetNativeWidget() );
-	label.setFrameStyle( cNativeIgdeLabel::LabelFlags( *this ) );
 }
 
 void igdeLabel::OnDescriptionChanged(){
-	if( ! GetNativeWidget() ){
-		return;
+	if( GetNativeWidget() ){
+		( ( igdeNativeLabel* )GetNativeWidget() )->UpdateDescription();
 	}
-	
-	cNativeIgdeLabel &label = *( ( cNativeIgdeLabel* )GetNativeWidget() );
-	label.setTipText( pDescription.GetString() );
-	label.setHelpText( pDescription.GetString() );
 }
 
 void igdeLabel::OnIconChanged(){
-	if( ! GetNativeWidget() ){
-		return;
+	if( GetNativeWidget() ){
+		( ( igdeNativeLabel* )GetNativeWidget() )->UpdateIcon();
 	}
-	
-	cNativeIgdeLabel &label = *( ( cNativeIgdeLabel* )GetNativeWidget() );
-	label.setIcon( cNativeIgdeLabel::LabelIcon( *this ) );
 }

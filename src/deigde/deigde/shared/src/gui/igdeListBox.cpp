@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -32,7 +35,7 @@
 #include "model/igdeListItem.h"
 #include "model/igdeListItemReference.h"
 #include "model/igdeListItemSorter.h"
-#include "native/fox/igdeNativeFoxListBox.h"
+#include "native/toolkit.h"
 #include "resources/igdeIcon.h"
 #include "resources/igdeFont.h"
 #include "resources/igdeFontReference.h"
@@ -106,7 +109,7 @@ void igdeListBox::SetDescription( const char *description ){
 
 void igdeListBox::Focus(){
 	if( GetNativeWidget() ){
-		( ( igdeNativeFoxListBox* )GetNativeWidget() )->Focus();
+		( ( igdeNativeListBox* )GetNativeWidget() )->Focus();
 	}
 }
 
@@ -368,12 +371,11 @@ void igdeListBox::SetSelectionMode( eSelectionMode mode ){
 }
 
 igdeListItem *igdeListBox::GetSelectedItem() const{
-	if( pSelection != -1 ){
-		return ( igdeListItem* )pItems.GetAt( pSelection );
-		
-	}else{
-		return NULL;
-	}
+	return pSelection != -1 ? ( igdeListItem* )pItems.GetAt( pSelection ) : nullptr;
+}
+
+void *igdeListBox::GetSelectedItemData() const{
+	return pSelection != -1 ? ( ( igdeListItem* )pItems.GetAt( pSelection ) )->GetData() : nullptr;
 }
 
 void igdeListBox::SetSelection( int selection ){
@@ -477,12 +479,9 @@ void igdeListBox::DeselectAllItems(){
 }
 
 void igdeListBox::MakeItemVisible( int index ){
-	if( ! GetNativeWidget() ){
-		return;
+	if( GetNativeWidget() ){
+		( ( igdeNativeListBox* )GetNativeWidget() )->MakeItemVisible( index );
 	}
-	
-	igdeNativeFoxListBox &native = *( ( igdeNativeFoxListBox* )GetNativeWidget() );
-	native.GetListBox()->makeItemVisible( index );
 }
 
 void igdeListBox::MakeSelectionVisible(){
@@ -574,21 +573,9 @@ void igdeListBox::CreateNativeWidget(){
 		return;
 	}
 	
-	if( ! GetParent() ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	FXComposite * const foxParent = ( FXComposite* )GetParent()->GetNativeContainer();
-	if( ! foxParent ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	igdeNativeFoxListBox * const native = new igdeNativeFoxListBox( *this, foxParent,
-		igdeUIFoxHelper::GetChildLayoutFlagsAll( this ), *GetGuiTheme() );
+	igdeNativeListBox * const native = igdeNativeListBox::CreateNativeWidget( *this );
 	SetNativeWidget( native );
-	if( foxParent->id() ){
-		native->create();
-	}
+	native->PostCreateNativeWidget();
 }
 
 void igdeListBox::DestroyNativeWidget(){
@@ -596,113 +583,74 @@ void igdeListBox::DestroyNativeWidget(){
 		return;
 	}
 	
-	delete ( igdeNativeFoxListBox* )GetNativeWidget();
+	( ( igdeNativeListBox* )GetNativeWidget() )->DestroyNativeWidget();
 	DropNativeWidget();
 }
 
 
 
 void igdeListBox::OnItemAdded( int index ){
-	if( ! GetNativeWidget() ){
-		return;
+	if( GetNativeWidget() ){
+		( ( igdeNativeListBox* )GetNativeWidget() )->InsertItem( index );
 	}
-	
-	const igdeListItem &item = *( ( igdeListItem* )pItems.GetAt( index ) );
-	igdeNativeFoxListBox &native = *( ( igdeNativeFoxListBox* )GetNativeWidget() );
-	native.GetListBox()->insertItem( index, item.GetText().GetString(),
-		item.GetIcon() ? ( FXIcon* )item.GetIcon()->GetNativeIcon() : NULL );
 }
 
 void igdeListBox::OnItemRemoved( int index ){
-	if( ! GetNativeWidget() ){
-		return;
+	if( GetNativeWidget() ){
+		( ( igdeNativeListBox* )GetNativeWidget() )->RemoveItem( index );
 	}
-	
-	igdeNativeFoxListBox &native = *( ( igdeNativeFoxListBox* )GetNativeWidget() );
-	native.GetListBox()->removeItem( index );
 }
 
 void igdeListBox::OnAllItemsRemoved(){
-	if( ! GetNativeWidget() ){
-		return;
+	if( GetNativeWidget() ){
+		( ( igdeNativeListBox* )GetNativeWidget() )->RemoveAllItems();
 	}
-	
-	igdeNativeFoxListBox &native = *( ( igdeNativeFoxListBox* )GetNativeWidget() );
-	native.GetListBox()->clearItems();
 }
 
 void igdeListBox::OnItemChanged( int index ){
-	if( ! GetNativeWidget() ){
-		return;
+	if( GetNativeWidget() ){
+		( ( igdeNativeListBox* )GetNativeWidget() )->UpdateItem( index );
 	}
-	
-	igdeNativeFoxListBox &native = *( ( igdeNativeFoxListBox* )GetNativeWidget() );
-	native.UpdateItem( index );
 }
 
 void igdeListBox::OnItemMoved( int fromIndex, int toIndex ){
-	if( ! GetNativeWidget() ){
-		return;
+	if( GetNativeWidget() ){
+		( ( igdeNativeListBox* )GetNativeWidget() )->MoveItem( fromIndex, toIndex );
 	}
-	
-	igdeNativeFoxListBox &native = *( ( igdeNativeFoxListBox* )GetNativeWidget() );
-	native.GetListBox()->moveItem( toIndex, fromIndex );
 }
 
 void igdeListBox::OnItemsSorted(){
-	if( ! GetNativeWidget() ){
-		return;
+	if( GetNativeWidget() ){
+		( ( igdeNativeListBox* )GetNativeWidget() )->BuildList();
 	}
-	
-	igdeNativeFoxListBox &native = *( ( igdeNativeFoxListBox* )GetNativeWidget() );
-	native.BuildList();
 }
 
 void igdeListBox::OnSelectionChanged(){
-	if( ! GetNativeWidget() ){
-		return;
+	if( GetNativeWidget() ){
+		( ( igdeNativeListBox* )GetNativeWidget() )->UpdateSelection();
 	}
-	
-	igdeNativeFoxListBox &native = *( ( igdeNativeFoxListBox* )GetNativeWidget() );
-	native.UpdateSelection();
 }
 
 void igdeListBox::OnSelectionModeChanged(){
 	if( GetNativeWidget() ){
-		( ( igdeNativeFoxListBox* )GetNativeWidget() )->UpdateStyles();
+		( ( igdeNativeListBox* )GetNativeWidget() )->UpdateStyles();
 	}
 }
 
 void igdeListBox::OnEnabledChanged(){
-	if( ! GetNativeWidget() ){
-		return;
-	}
-	
-	igdeNativeFoxListBox &native = *( ( igdeNativeFoxListBox* )GetNativeWidget() );
-	
-	if( pEnabled ){
-		native.GetListBox()->enable();
-		
-	}else{
-		native.GetListBox()->disable();
+	if( GetNativeWidget() ){
+		( ( igdeNativeListBox* )GetNativeWidget() )->UpdateEnabled();
 	}
 }
 
 void igdeListBox::OnRowsChanged(){
-	if( ! GetNativeWidget() ){
-		return;
+	if( GetNativeWidget() ){
+		( ( igdeNativeListBox* )GetNativeWidget() )->UpdateRowCount();
 	}
-	
-	igdeNativeFoxListBox &native = *( ( igdeNativeFoxListBox* )GetNativeWidget() );
-	native.GetListBox()->setNumVisible( pRows );
 }
 
 void igdeListBox::OnDescriptionChanged(){
-	if( ! GetNativeWidget() ){
-		return;
+	if( GetNativeWidget() ){
+		( ( igdeNativeListBox* )GetNativeWidget() )->UpdateDescription();
 	}
-	
-	igdeNativeFoxListBox &native = *( ( igdeNativeFoxListBox* )GetNativeWidget() );
-	//native.GetListBox()->setTipText( pDescription.GetString() ); // not supported
-	native.GetListBox()->setHelpText( pDescription.GetString() );
 }

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -33,29 +36,29 @@ pin Dragengine.Scenery
  */
 class CommandsBAAInteract
 	/** \brief Base class operating only on actors with BAAInteract action. */
-	public class Base extends Command
-		private var ECBehaviorPlayerControllable.Tracker pTracker
+	class Base extends Command
+		var ECBehaviorPlayerControllable.Tracker pTracker
 		
-		public func new( ECBehaviorPlayerControllable.Tracker tracker, String name, \
-		String description ) super( name, description )
+		func new(ECBehaviorPlayerControllable.Tracker tracker, String name, \
+		String description) super(name, description)
 			if tracker == null
 				throw ENullPointer.new()
 			end
-			this.pTracker = tracker
+			pTracker = tracker
 		end
 		
 		protected func ECBehaviorPlayerControllable.Tracker getTracker()
-			return this.pTracker
+			return pTracker
 		end
 		
 		protected func BAAInteract getInteract()
-			var ECBehaviorPlayerControllable.Instance actor = this.pTracker.getActor()
+			var ECBehaviorPlayerControllable.Instance actor = pTracker.getActor()
 			if actor == null
 				return null
 			end
 			
 			var ECBehaviorActorAIAction.Instance aiAction = \
-				ECBehaviorActorAIAction.getInstanceIn( actor.getElement() )
+				ECBehaviorActorAIAction.getInstanceIn(actor.getElement())
 			if aiAction != null and aiAction.getAction() castable BAAInteract
 				return aiAction.getAction() cast BAAInteract
 				
@@ -64,66 +67,70 @@ class CommandsBAAInteract
 			end
 		end
 		
-		public func void start()
-			var BAAInteract interact = this.getInteract()
+		func void start()
+			var BAAInteract interact = getInteract()
 			if interact != null
-				this.start( interact )
+				start(interact)
 			end
 		end
 		
-		public func void stop()
-			var BAAInteract interact = this.getInteract()
+		func void stop()
+			var BAAInteract interact = getInteract()
 			if interact != null
-				this.stop( interact )
+				stop(interact)
 			end
 		end
 		
 		
 		
 		/** \brief Start command on action. */
-		public func void start( BAAInteract action )
+		func void start(BAAInteract action)
 		end
 		
 		/** \brief Start command on action. */
-		public func void stop( BAAInteract action )
+		func void stop(BAAInteract action)
 		end
 	end
 	
 	
 	
 	/** \brief Primary action. */
-	public class PrimaryAction extends Base
-		public func new( ECBehaviorPlayerControllable.Tracker tracker ) this( tracker, "primaryAction" )
+	class PrimaryAction extends Base
+		func new(ECBehaviorPlayerControllable.Tracker tracker) this(tracker, "primaryAction")
 		end
 		
-		public func new( ECBehaviorPlayerControllable.Tracker tracker, String name ) \
-		super( tracker, name, "Primary action" )
+		func new(ECBehaviorPlayerControllable.Tracker tracker, String name) \
+		super(tracker, name, "Primary action")
+			setTranslateDescription("UI.Command.PrimaryAction.Description")
+			setTranslateDisplayName("UI.Command.PrimaryAction.DisplayName")
 		end
 		
-		public func void start( BAAInteract action )
+		func void start(BAAInteract action)
 			action.primaryActionStart()
 		end
 		
-		public func void stop( BAAInteract action )
+		func void stop(BAAInteract action)
 			action.primaryActionStop()
 		end
 	end
 	
 	/** \brief Secondary action. */
-	public class SecondaryAction extends Base
-		public func new( ECBehaviorPlayerControllable.Tracker tracker ) this( tracker, "secondaryAction" )
+	class SecondaryAction extends Base
+		func new(ECBehaviorPlayerControllable.Tracker tracker) this(tracker, "secondaryAction")
 		end
 		
-		public func new( ECBehaviorPlayerControllable.Tracker tracker, String name ) \
-		super( tracker, name, "Secondary action" )
+		func new(ECBehaviorPlayerControllable.Tracker tracker, String name) \
+		super(tracker, name, "Secondary action")
+			setTranslateDescription("UI.Command.SecondaryAction.Description")
+			setTranslateDisplayName("UI.Command.SecondaryAction.DisplayName")
 		end
 		
-		public func void start( BAAInteract action )
+		func void start(BAAInteract action)
 			action.secondaryActionStart()
 		end
 		
 		/** \brief Start command on action. */
-		public func void stop( BAAInteract action )
+		func void stop(BAAInteract action)
 			action.secondaryActionStop()
 		end
 	end
@@ -131,9 +138,9 @@ class CommandsBAAInteract
 	
 	
 	/** \brief Add commands to command manager. */
-	public static func void addCommands( CommandManager commands, ECBehaviorPlayerControllable.Tracker tracker )
-		commands.add( PrimaryAction.new( tracker ) )
-		commands.add( SecondaryAction.new( tracker ) )
+	static func void addCommands(CommandManager commands, ECBehaviorPlayerControllable.Tracker tracker)
+		commands.add(PrimaryAction.new(tracker))
+		commands.add(SecondaryAction.new(tracker))
 	end
 	
 	
@@ -145,14 +152,36 @@ class CommandsBAAInteract
 	 * - "primaryAction"
 	 * - "secondaryAction"
 	 */
-	public static func void addDefaultBindings( DefaultBindingHelper helper )
+	static func void addDefaultBindings(DefaultBindingHelper helper)
 		if helper.hasMouse()
-			helper.mouseBindLMR( "primaryAction", null, "secondaryAction" )
+			helper.mouseBindLMR("primaryAction", null, "secondaryAction")
 		end
 		
 		if helper.hasGamepad()
-			helper.gamepadBindButton( 0, "primaryAction" )
-			helper.gamepadBindButton( 1, "secondaryAction" )
+			if helper.gamepadBindTrigger(1, "primaryAction")
+				helper.gamepadBindTrigger(0, "secondaryAction")
+				
+			else
+				helper.gamepadBindTrigger(0, "primaryAction")
+			end
+			
+			if helper.gamepadBindButton(0, InputDeviceButtonType.action, "primaryAction")
+				helper.gamepadBindButton(1, InputDeviceButtonType.action, "secondaryAction")
+				
+			else
+				helper.gamepadBindButton(0, "primaryAction")
+				helper.gamepadBindButton(1, "secondaryAction")
+			end
+		end
+		
+		if helper.hasVRHand(true)
+			helper.vrHandBindButton(true, 0, "primaryAction")
+			helper.vrHandBindButton(true, 1, "secondaryAction")
+		end
+		
+		if helper.hasVRHand(false)
+			helper.vrHandBindButton(false, 0, "primaryAction")
+			helper.vrHandBindButton(false, 1, "secondaryAction")
 		end
 	end
 end

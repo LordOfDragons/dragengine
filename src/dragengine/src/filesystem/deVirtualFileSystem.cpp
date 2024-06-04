@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Game Engine
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -108,6 +111,9 @@ bool deVirtualFileSystem::ExistsFile( const decPath &path ) const{
 		if( container.ExistsFile( relativePath ) ){
 			return true;
 		}
+		if( container.IsPathHiddenBelow( relativePath ) ){
+			break;
+		}
 	}
 	
 	return false;
@@ -125,6 +131,9 @@ bool deVirtualFileSystem::CanReadFile( const decPath &path ) const{
 		}
 		if( container.CanReadFile( relativePath ) ){
 			return true;
+		}
+		if( container.IsPathHiddenBelow( relativePath ) ){
+			break;
 		}
 	}
 	
@@ -144,6 +153,9 @@ bool deVirtualFileSystem::CanWriteFile( const decPath &path ) const{
 		if( container.CanWriteFile( relativePath ) ){
 			return true;
 		}
+		if( container.IsPathHiddenBelow( relativePath ) ){
+			break;
+		}
 	}
 	
 	return false;
@@ -161,6 +173,9 @@ bool deVirtualFileSystem::CanDeleteFile( const decPath &path ) const{
 		}
 		if( container.CanDeleteFile( relativePath ) ){
 			return true;
+		}
+		if( container.IsPathHiddenBelow( relativePath ) ){
+			break;
 		}
 	}
 	
@@ -180,6 +195,9 @@ decBaseFileReader *deVirtualFileSystem::OpenFileForReading( const decPath &path 
 		if( container.CanReadFile( relativePath ) ){
 			return container.OpenFileForReading( relativePath );
 		}
+		if( container.IsPathHiddenBelow( relativePath ) ){
+			break;
+		}
 	}
 	
 	DETHROW_INFO( deeFileNotFound, path.GetPathUnix() );
@@ -197,6 +215,9 @@ decBaseFileWriter *deVirtualFileSystem::OpenFileForWriting( const decPath &path 
 		}
 		if( container.CanWriteFile( relativePath ) ){
 			return container.OpenFileForWriting( relativePath );
+		}
+		if( container.IsPathHiddenBelow( relativePath ) ){
+			break;
 		}
 	}
 	
@@ -216,6 +237,9 @@ void deVirtualFileSystem::DeleteFile( const decPath &path ) const{
 		if( container.CanDeleteFile( relativePath ) ){
 			container.DeleteFile( relativePath );
 		}
+		if( container.IsPathHiddenBelow( relativePath ) ){
+			break;
+		}
 	}
 }
 
@@ -232,22 +256,19 @@ void deVirtualFileSystem::TouchFile( const decPath &path ) const{
 		if( container.CanWriteFile( relativePath ) ){
 			container.TouchFile( relativePath );
 		}
+		if( container.IsPathHiddenBelow( relativePath ) ){
+			break;
+		}
 	}
 }
 
 // TODO change this implementation to not use decStringSet but a structure (string, eFileTypes).
 class deVirtualFileSystemSearch : public deContainerFileSearch{
 private:
-	decStringSet pDirectories, pFiles, pSpecials;
+	decStringSet pDirectories, pFiles, pSpecials, pHidden;
 	
 public:
 	deVirtualFileSystemSearch(){
-	}
-	
-	void Clear(){
-		pDirectories.RemoveAll();
-		pFiles.RemoveAll();
-		pSpecials.RemoveAll();
 	}
 	
 	inline const decStringSet &GetDirectories() const{
@@ -262,7 +283,15 @@ public:
 		return pSpecials;
 	}
 	
+	void AddHidden( const decString &name ){
+		pHidden.Add( name );
+	}
+	
 	virtual void Add( const char *name, deVFSContainer::eFileTypes type ){
+		if( pHidden.Has( name ) ){
+			return;
+		}
+		
 		switch( type ){
 		case deVFSContainer::eftRegularFile:
 			pFiles.Add( name );
@@ -289,12 +318,25 @@ void deVirtualFileSystem::SearchFiles( const decPath &directory, deFileSearchVis
 	const int count = pContainers.GetCount();
 	deVirtualFileSystemSearch searcher;
 	decPath relativeDirectory;
-	int i;
+	int i, j;
 	
 	for( i=count-1; i>=0; i-- ){
 		deVFSContainer &container = *( ( deVFSContainer* )pContainers.GetAt( i ) );
 		if( pMatchContainer( container, directory, relativeDirectory ) ){
 			container.SearchFiles( relativeDirectory, searcher );
+			
+			const int hiddenCount = container.GetHiddenPathCount();
+			for( j=0; j<hiddenCount; j++ ){
+				const decPath &hiddenPath = container.GetHiddenPathAt( j );
+				if( hiddenPath.IsEqualOrParentOf( relativeDirectory ) ){
+					// search path hidden. stop searching
+					i = 0;
+					break;
+					
+				}else if( relativeDirectory.IsDirectParentOf( hiddenPath ) ){
+					searcher.AddHidden( hiddenPath.GetLastComponent() );
+				}
+			}
 			
 		}else if( pMatchContainerParent( container, directory ) ){
 			// this check is required to catch the situation of visiting a directory containing
@@ -354,6 +396,9 @@ deVFSContainer::eFileTypes deVirtualFileSystem::GetFileType( const decPath& path
 		if( container.ExistsFile( relativePath ) ){
 			return container.GetFileType( relativePath );
 		}
+		if( container.IsPathHiddenBelow( relativePath ) ){
+			break;
+		}
 	}
 	
 	DETHROW_INFO( deeFileNotFound, path.GetPathUnix() );
@@ -372,6 +417,9 @@ uint64_t deVirtualFileSystem::GetFileSize( const decPath &path ) const{
 		if( container.ExistsFile( relativePath ) ){
 			return container.GetFileSize( relativePath );
 		}
+		if( container.IsPathHiddenBelow( relativePath ) ){
+			break;
+		}
 	}
 	
 	DETHROW_INFO( deeFileNotFound, path.GetPathUnix() );
@@ -389,6 +437,9 @@ TIME_SYSTEM deVirtualFileSystem::GetFileModificationTime( const decPath &path ) 
 		}
 		if( container.ExistsFile( relativePath ) ){
 			return container.GetFileModificationTime( relativePath );
+		}
+		if( container.IsPathHiddenBelow( relativePath ) ){
+			break;
 		}
 	}
 	

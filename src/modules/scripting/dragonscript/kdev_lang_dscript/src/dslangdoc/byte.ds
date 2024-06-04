@@ -20,6 +20,9 @@
  * | \b not byte | true if byte value is not 0 |
  * 
  * This is a native class. It can not be subclassed.
+ * \author DragonDreams GmbH
+ * \version 1.0
+ * \date 2024
  */
 fixed class byte
 	/** \name Constructors */
@@ -72,8 +75,18 @@ fixed class byte
 		return false
 	end
 	
+	/** \brief Byte value is less than another byte value. */
+	public func bool <( int other )
+		return false
+	end
+	
 	/** \brief Byte value is less than or equal to another byte value. */
 	public func bool <=( byte other )
+		return false
+	end
+	
+	/** \brief Byte value is less than or equal to another byte value. */
+	public func bool <=( int other )
 		return false
 	end
 	
@@ -82,8 +95,18 @@ fixed class byte
 		return false
 	end
 	
+	/** \brief Byte value is greater than another byte value. */
+	public func bool >( int other )
+		return false
+	end
+	
 	/** \brief Byte value is greater than or equal to another byte value. */
 	public func bool >=( byte other )
+		return false
+	end
+	
+	/** \brief Byte value is greater than or equal to another byte value. */
+	public func bool >=( int other )
 		return false
 	end
 	
@@ -94,8 +117,18 @@ fixed class byte
 		return 0
 	end
 	
+	/** \brief Byte plus another byte value. */
+	public func int +( int other )
+		return 0
+	end
+	
 	/** \brief Byte minus another byte value. */
 	public func int -( byte other )
+		return 0
+	end
+	
+	/** \brief Byte minus another byte value. */
+	public func int -( int other )
 		return 0
 	end
 	
@@ -104,11 +137,24 @@ fixed class byte
 		return 0
 	end
 	
+	/** \brief Byte value timer another byte value. */
+	public func int *( int other )
+		return 0
+	end
+	
 	/**
 	 * \brief Byte value divided by another byte value.
 	 * \throws EDivisionByZero \em other is 0.
 	 */
 	public func byte /( byte other )
+		return 0
+	end
+	
+	/**
+	 * \brief Byte value divided by another byte value.
+	 * \throws EDivisionByZero \em other is 0.
+	 */
+	public func int /( int other )
 		return 0
 	end
 	
@@ -172,13 +218,28 @@ fixed class byte
 		return 0
 	end
 	
+	/** \brief Bitwise and between this byte and another byte. */
+	public func int &( int other )
+		return 0
+	end
+	
 	/** \brief Bitwise  or between this byte and another byte. */
 	public func byte |( byte other )
 		return 0
 	end
 	
+	/** \brief Bitwise  or between this byte and another byte. */
+	public func int |( int other )
+		return 0
+	end
+	
 	/** \brief Bitwise xor between this byte and another byte. */
 	public func byte ^( byte other )
+		return 0
+	end
+	
+	/** \brief Bitwise xor between this byte and another byte. */
+	public func int ^( int other )
 		return 0
 	end
 	
@@ -208,4 +269,53 @@ fixed class byte
 	public func byte --()
 		return 0
 	end
+end
+
+/**
+ * \brief Immutable byte object class.
+ * 
+ * Wraps a primitive int value. Allows byte values which can be null.
+ * 
+ * This is a native class. It can not be subclassed.
+ */
+fixed class Byte
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create byte. */
+	public func new( byte value )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Byte value. */
+	public func byte value()
+		return 0
+	end
+	
+	/**
+	 * \brief Byte is equal to another byte.
+	 * \returns \em true if \em other is of type Byte and both are equal.
+	 */
+	public func bool equals( Object other )
+		return false
+	end
+	
+	/** \brief Value difference between objects. */
+	public func int compare( Object other )
+		return 0
+	end
+	
+	/** \brief Hash code for use as dictionary keys. */
+	public func int hashCode()
+		return 0
+	end
+	
+	/** \brief String representation of byte value. */
+	public func String toString()
+		return null
+	end
+	/*@}*/
 end

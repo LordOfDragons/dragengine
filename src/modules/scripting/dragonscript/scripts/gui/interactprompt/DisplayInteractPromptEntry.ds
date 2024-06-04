@@ -1,0 +1,490 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.Commands
+pin Dragengine.Gui.Borders
+pin Dragengine.Gui.Events
+pin Dragengine.Gui.Layouts
+pin Dragengine.Utils
+
+
+/**
+ * \brief Display InteractPromptEntry instance.
+ * 
+ * The panel can be styled using selector these designer selectors:
+ * - "InteractPromptEntry{.style}": The prompt entry panel
+ * - "Image.InteractPromptEntry{.style}": Interact image
+ * - "Video.InteractPromptEntry{.style}": Interact video
+ * - "Label.InteractPromptEntry{.style}.Verb": Verb label
+ * - "Label.InteractPromptEntry{.style}.Description": Description label
+ * - "Panel.InteractPromptEntry{.style}.Bindings": Bindings panel
+ */
+class DisplayInteractPromptEntry extends Panel
+	/** \brief Placement of image, verb and bindings. */
+	enum Placement
+		/** From top to bottom: image, verb then bindings. */
+		top
+		
+		/** From top to bottom: bindings, image, verb. */
+		bottom
+		
+		/** Left image, right verb above bindings. */
+		left
+		
+		/** Right image, left verb above bindings. */
+		right
+	end
+	
+	
+	
+	var BindingManager pBindingManager
+	var int pBindingIconHeight
+	var String pBaseSelectorName
+	var Placement pPlacement
+	
+	var DisplayImage pDisplayImage
+	var DisplayVideo pDisplayVideo
+	var Label pLabelVerb
+	var Label pLabelDescription
+	var Panel pPanelBindings
+	var Command pCommand
+	var Array pAlternativeCommands
+	
+	
+	
+	/** \brief Create widget. */
+	func new() this(null, 1, Placement.top)
+	end
+	
+	func new(BindingManager bindingManager, int bindingIconHeight, Placement placement) \
+	this(bindingManager, bindingIconHeight, placement, "InteractPromptEntry")
+	end
+	
+	func new(BindingManager bindingManager, int bindingIconHeight, Placement placement, \
+	String baseSelectorName)
+		if baseSelectorName == null
+			throw ENullPointer.new("baseSelectorName")
+		end
+		
+		pBindingManager = bindingManager
+		pBindingIconHeight = DEMath.max(bindingIconHeight, 1)
+		pBaseSelectorName = baseSelectorName
+		pPlacement = placement
+		pAlternativeCommands = Array.new()
+		
+		runWhileBlockingLayout(block
+			select placement
+			case Placement.top
+				setLayout(CentrizedBoxLayout.new(LayoutAxis.y, 0, 0.5, 0))
+				
+			case Placement.bottom
+				setLayout(CentrizedBoxLayout.new(LayoutAxis.y, 0, 0.5, 1))
+				
+			case Placement.left
+				setLayout(CentrizedBoxLayout.new(LayoutAxis.x, 0, 0, 0.5))
+				
+			case Placement.right
+				setLayout(CentrizedBoxLayout.new(LayoutAxis.x, 0, 1, 0.5))
+			end
+			
+			var Panel panelImage = Panel.new(StackLayout.new(), block Panel p
+				p.addWidget(Panel.new(CentrizedBoxLayout.new(LayoutAxis.y), block Panel p2
+					pDisplayImage = DisplayImage.new()
+					pDisplayImage.setVisible(false)
+					p2.addWidget(pDisplayImage)
+				end))
+				
+				p.addWidget(Panel.new(CentrizedBoxLayout.new(LayoutAxis.y), block Panel p2
+					pDisplayVideo = DisplayVideo.new()
+					pDisplayVideo.setVisible(false)
+					p2.addWidget(pDisplayVideo)
+				end))
+			end)
+			
+			pLabelVerb = Label.new("")
+			pLabelVerb.setVisible(false)
+			
+			pLabelDescription = Label.new("")
+			pLabelDescription.setVisible(false)
+			
+			select placement
+			case Placement.top
+				addWidget(panelImage)
+				addWidget(pLabelVerb)
+				addWidget(pLabelDescription)
+				pPanelBindings = Panel.new(CentrizedBoxLayout.new(LayoutAxis.y, 5, 0.5, 0))
+				addWidget(pPanelBindings)
+				
+			case Placement.bottom
+				pPanelBindings = Panel.new(CentrizedBoxLayout.new(LayoutAxis.y, 5, 0.5, 1))
+				addWidget(pPanelBindings)
+				addWidget(panelImage)
+				addWidget(pLabelVerb)
+				addWidget(pLabelDescription)
+				
+			case Placement.left
+				addWidget(panelImage)
+				addWidget(Panel.new(CentrizedBoxLayout.new(LayoutAxis.y, 0, 0, 0.5), block Panel p
+					p.addWidget(Panel.new(FlowLayout.new(LayoutAxis.y), block Panel p2
+						p2.addWidget(pLabelVerb)
+						p2.addWidget(pLabelDescription)
+						pPanelBindings = Panel.new(CentrizedBoxLayout.new(LayoutAxis.x, 5, 0, 0.5))
+						p2.addWidget(pPanelBindings)
+					end))
+				end))
+				
+			case Placement.right
+				addWidget(Panel.new(CentrizedBoxLayout.new(LayoutAxis.y, 0, 1, 0.5), block Panel p
+					p.addWidget(Panel.new(FlowLayout.new(LayoutAxis.y), block Panel p2
+						p2.addWidget(pLabelVerb)
+						p2.addWidget(pLabelDescription)
+						pPanelBindings = Panel.new(CentrizedBoxLayout.new(LayoutAxis.x, 5, 1, 0.5))
+						p2.addWidget(pPanelBindings)
+					end))
+				end))
+				addWidget(panelImage)
+			end
+			
+			setDesignerSelector(pBaseSelectorName)
+		end)
+	end
+	
+	/** \brief Dispose of widget. */
+	func void dispose()
+		pDisplayImage = null
+		pDisplayVideo = null
+		pLabelVerb = null
+		pLabelDescription = null
+		pPanelBindings = null
+		
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Binding manager or null to show no bindings. */
+	func BindingManager getBindingManager()
+		return pBindingManager
+	end
+	
+	/** \brief Binding icon height. */
+	func int getBindingIconHeight()
+		return pBindingIconHeight
+	end
+	
+	/** \brief Base selector name. */
+	func String getBaseSelectorName()
+		return pBaseSelectorName
+	end
+	
+	/** \brief Set base selector name. */
+	func void setBaseSelectorName(String name)
+		if pBaseSelectorName.equals(name)
+			return
+		end
+		
+		updateFromEntry(null)
+		
+		pBaseSelectorName = name
+		setDesignerSelector(pBaseSelectorName)
+	end
+	
+	/** \brief Placement. */
+	func Placement getPlacement()
+		return pPlacement
+	end
+	
+	
+	
+	/** \brief Display image widget. */
+	protected func DisplayImage getDisplayImage()
+		return pDisplayImage
+	end
+	
+	/** \brief Display video widget. */
+	protected func DisplayVideo getDisplayVideo()
+		return pDisplayVideo
+	end
+	
+	/** \brief Verb label. */
+	protected func Label getLabelVerb()
+		return pLabelVerb
+	end
+	
+	/** \brief Description label. */
+	protected func Label getLabelDescription()
+		return pLabelDescription
+	end
+	
+	/** \brief Bindings panel. */
+	protected func Panel getPanelBindings()
+		return pPanelBindings
+	end
+	
+	
+	
+	/**
+	 * \brief Designer selector changed.
+	 * 
+	 * Updates the designer selector of all widgets.
+	 */
+	func void onDesignerSelectorChanged()
+		runWhileBlockingLayout(block
+			var String selector = getDesignerSelector()
+			pDisplayImage.setDesignerSelector("Image." + selector)
+			pDisplayVideo.setDesignerSelector("Video." + selector)
+			pLabelVerb.setDesignerSelector("Label." + selector + ".Verb")
+			pLabelDescription.setDesignerSelector("Label." + selector + ".Description")
+			pPanelBindings.setDesignerSelector("Panel." + selector + ".Bindings")
+		end)
+		doLayoutIfBlocked()
+	end
+	
+	
+	
+	/**
+	 * \brief Update from entry.
+	 * 
+	 * Entry can be null to clear.
+	 */
+	func void updateFromEntry(InteractPromptEntry entry)
+		runWhileBlockingLayout(block
+			if entry != null
+				pDisplayImage.setImage(entry.getImage())
+				pDisplayImage.setVisible(entry.getImage() != null)
+				
+				pDisplayVideo.setVideo(entry.getVideo())
+				pDisplayVideo.setVisible(entry.getVideo() != null)
+				
+				pLabelVerb.setText(entry.getVerb().toUTF8())
+				pLabelVerb.setVisible(not pLabelVerb.getText().empty())
+				
+				pLabelDescription.setText(entry.getDescription().toUTF8())
+				pLabelDescription.setVisible(not pLabelDescription.getText().empty())
+				
+				if pBindingManager != null
+					setCommands(entry.getCommand(), entry.getAlternativeCommands())
+					
+				else
+					clearCommands()
+				end
+				
+				if entry.getStyle().empty()
+					setDesignerSelector(pBaseSelectorName)
+					
+				else
+					setDesignerSelector(pBaseSelectorName + "." + entry.getStyle())
+				end
+				
+			else
+				pDisplayImage.setImage(null)
+				pDisplayImage.setVisible(false)
+				
+				pDisplayVideo.setVideo(null)
+				pDisplayVideo.setVisible(false)
+				
+				pLabelVerb.setText("")
+				pLabelVerb.setVisible(false)
+				
+				pLabelDescription.setText("")
+				pLabelDescription.setVisible(false)
+				
+				clearCommands()
+				
+				setDesignerSelector(pBaseSelectorName)
+			end
+		end)
+		doLayoutIfBlocked()
+	end
+	
+	/** \brief Set command updating widgets if required. */
+	protected func void setCommand(Command command)
+		if pCommand == command
+			return
+		end
+		
+		pCommand = command
+		
+		updateBindingWidgets()
+	end
+	
+	/**
+	 * \brief Set alternative commands updating widgets if required.
+	 * \version 1.20
+	 * \param commands Array of Command
+	 */
+	protected func void setAlternativeCommands(Array commands)
+		if pAlternativeCommands.equals(commands)
+			return
+		end
+		
+		pAlternativeCommands.removeAll()
+		pAlternativeCommands.addAll(commands)
+		
+		updateBindingWidgets()
+	end
+	
+	/**
+	 * \brief Set command and alternative commands updating widgets if required.
+	 * \version 1.20
+	 * \param commands Array of Command
+	 */
+	protected func void setCommands(Command command, Array alternativeCommands)
+		if pCommand == command and pAlternativeCommands.equals(alternativeCommands)
+			return
+		end
+		
+		pCommand = command
+		pAlternativeCommands.removeAll()
+		pAlternativeCommands.addAll(alternativeCommands)
+		
+		updateBindingWidgets()
+	end
+	
+	/**
+	 * \brief Clear all commands updating widgets if required.
+	 * \version 1.20
+	 */
+	protected func void clearCommands()
+		if pCommand == null and pAlternativeCommands.getCount() == 0
+			return
+		end
+		
+		pCommand = null
+		pAlternativeCommands.removeAll()
+		
+		updateBindingWidgets()
+	end
+	
+	/**
+	 * \brief Update binding widgets.
+	 * 
+	 * Tries to update existing widgets first creating new ones if required. All unused
+	 * widgets beyond the required count of widgets are hidden to reduce widget creation
+	 * to a minimum.
+	 */
+	protected func void updateBindingWidgets()
+		pPanelBindings.runWhileBlockingLayout(block
+			if pCommand == null and pAlternativeCommands.getCount() == 0
+				pPanelBindings.forEachWidget(block Widget each
+					each.setVisible(false)
+					clearBindingWidget(each)
+				end)
+				return null
+			end
+			
+			var int widgetCount = pPanelBindings.getWidgetCount()
+			var ObjectReference refIndex = ObjectReference.new(0)
+			var Widget widget
+			var int index
+			
+			pBindingManager.forEachButtonBinding(block Binding each
+				if each.getCommand() == pCommand or pAlternativeCommands.has(each.getCommand())
+					var InputDeviceButton button = each.getInputDeviceButton()
+					if button != null
+						index = refIndex.get() cast int
+						refIndex.set(index + 1)
+						
+						if index < widgetCount
+							widget = pPanelBindings.getWidget(index)
+							widget.setVisible(true)
+							
+						else
+							widget = createBindingWidget()
+							pPanelBindings.addWidget(widget)
+						end
+						
+						updateBindingWidget(widget, button.getInputDevice(), button)
+					end
+				end
+			end)
+			
+			pBindingManager.forEachAxisBinding(block Binding each
+				if each.getCommand() == pCommand or pAlternativeCommands.has(each.getCommand())
+					var InputDeviceAxis axis = each.getInputDeviceAxis()
+					if axis != null
+						index = refIndex.get() cast int
+						refIndex.set(index + 1)
+						
+						if index < widgetCount
+							widget = pPanelBindings.getWidget(index)
+							widget.setVisible(true)
+							
+						else
+							widget = createBindingWidget()
+							pPanelBindings.addWidget(widget)
+						end
+						
+						updateBindingWidget(widget, axis.getInputDevice(), axis)
+					end
+				end
+			end)
+			
+			var int usedCount = refIndex.get() cast int
+			pPanelBindings.setVisible(usedCount > 0)
+			
+			for index = usedCount to widgetCount
+				widget = pPanelBindings.getWidget(index)
+				widget.setVisible(false)
+				clearBindingWidget(widget)
+			end
+		end)
+		pPanelBindings.doLayoutIfBlocked()
+	end
+	
+	/**
+	 * \brief Create widget representing binding.
+	 * 
+	 * Default implementation creates instance of DisplayInputSource.
+	 */
+	protected func Widget createBindingWidget()
+		var DisplayInputSource dpi = DisplayInputSource.new(pBindingIconHeight)
+		dpi.setDesignerSelector("DisplayInputSource." + getDesignerSelector() + ".Binding")
+		return dpi
+	end
+	
+	/**
+	 * \brief Update widget representing binding.
+	 * 
+	 * Default implementation operates on instance of DisplayInputSource.
+	 */
+	protected func void updateBindingWidget(Widget widget, InputDevice device, InputDeviceButton button)
+		(widget cast DisplayInputSource).set(null, button)
+	end
+	
+	protected func void updateBindingWidget(Widget widget, InputDevice device, InputDeviceAxis axis)
+		(widget cast DisplayInputSource).set(null, axis)
+	end
+	
+	/**
+	 * \brief Clear widget of all bindings.
+	 * \version 1.20
+	 */
+	protected func void clearBindingWidget(Widget widget)
+		(widget cast DisplayInputSource).clear()
+	end
+end

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Game Definition Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -42,6 +45,7 @@
 #include <deigde/gui/igdeSwitcher.h>
 #include <deigde/gui/igdeTextArea.h>
 #include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/igdeWindow.h>
 #include <deigde/gui/composed/igdeEditPropertyValue.h>
 #include <deigde/gui/composed/igdeEditPropertyValueListener.h>
 #include <deigde/gui/event/igdeAction.h>
@@ -125,9 +129,9 @@ public:
 		const gdePropertyList &list = *pPanel.GetPropertyList();
 		decString name( "Property" );
 		
-		while( igdeCommonDialogs::GetString( &pPanel, "Add Property", "Name:", name ) ){
+		while( igdeCommonDialogs::GetString( pPanel.GetParentWindow(), "Add Property", "Name:", name ) ){
 			if( list.HasNamed( name ) ){
-				igdeCommonDialogs::Error( &pPanel, "Add Property", "Name exists already." );
+				igdeCommonDialogs::Error( pPanel.GetParentWindow(), "Add Property", "Name exists already." );
 				continue;
 			}
 			
@@ -254,8 +258,8 @@ public:
 		decString name( clip->GetProperty()->GetName() );
 		
 		while( list.HasNamed( name ) ){
-			igdeCommonDialogs::Error( &pPanel, "Paste Property", "Name exists already." );
-			if( ! igdeCommonDialogs::GetString( &pPanel, "Paste Property", "Name:", name ) ){
+			igdeCommonDialogs::Error( pPanel.GetParentWindow(), "Paste Property", "Name exists already." );
+			if( ! igdeCommonDialogs::GetString( pPanel.GetParentWindow(), "Paste Property", "Name:", name ) ){
 				return;
 			}
 		}
@@ -389,7 +393,7 @@ public:
 		}
 		
 		if( pPanel.GetPropertyList()->HasNamed( name ) ){
-			igdeCommonDialogs::Error( &pPanel, "Rename property", "Name exists already." );
+			igdeCommonDialogs::Error( pPanel.GetParentWindow(), "Rename property", "Name exists already." );
 			textField->SetText( property->GetName() );
 			return NULL;
 		}
@@ -521,9 +525,9 @@ public:
 	virtual igdeUndo *OnActionUndo( gdeProperty *property ){
 		decString option( "Option" );
 		
-		while( igdeCommonDialogs::GetString( &pPanel, "Add Option", "Option:", option ) ){
+		while( igdeCommonDialogs::GetString( pPanel.GetParentWindow(), "Add Option", "Option:", option ) ){
 			if( property->GetOptions().Has( option ) ){
-				igdeCommonDialogs::Error( &pPanel, "Add Option", "Option exists already." );
+				igdeCommonDialogs::Error( pPanel.GetParentWindow(), "Add Option", "Option exists already." );
 				continue;
 			}
 			
@@ -615,7 +619,7 @@ public:
 		}
 		
 		decString name( "File Pattern" );
-		if( ! igdeCommonDialogs::GetString( &pPanel, "Add File Pattern", "Name:", name ) ){
+		if( ! igdeCommonDialogs::GetString( pPanel.GetParentWindow(), "Add File Pattern", "Name:", name ) ){
 			return;
 		}
 		
@@ -804,7 +808,7 @@ pClipboard( NULL )
 	
 	
 	// type specific parameters
-	helper.GroupBoxFlow( *this, group, "Parameters:" );
+	helper.GroupBoxFlow( *this, group, "Parameters:", false, true );
 	pSwiParameters.TakeOver( new igdeSwitcher( env ) );
 	group->AddChild( pSwiParameters );
 	
@@ -817,7 +821,7 @@ pClipboard( NULL )
 	form.TakeOver( new igdeContainerForm( env ) );
 	pSwiParameters->AddChild( form );
 	
-	helper.EditFloat( form, "Minimum:", "Minium value for range type property",
+	helper.EditFloat( form, "Minimum:", "Minimum value for range type property",
 		pEditMinimum, new cEditMinimum( *this ) );
 	helper.EditFloat( form, "Maximum:", "Maximum value for range type property",
 		pEditMaximum, new cEditMaximum( *this ) );
@@ -848,6 +852,7 @@ pClipboard( NULL )
 	pCBPathPatternType->AddItem( "Video resources", NULL, ( void* )( intptr_t )gdeProperty::epptVideo );
 	pCBPathPatternType->AddItem( "Font resources", NULL, ( void* )( intptr_t )gdeProperty::epptFont );
 	pCBPathPatternType->AddItem( "Sky resources", NULL, ( void* )( intptr_t )gdeProperty::epptSky );
+	pCBPathPatternType->AddItem( "Camera resources", NULL, ( void* )( intptr_t )gdeProperty::epptCamera );
 	pCBPathPatternType->AddItem( "Custom file pattern", NULL, ( void* )( intptr_t )gdeProperty::epptCustom );
 	
 	helper.FormLineStretchFirst( form, "Custom pattern:", "Custom pattern to edit.", frameLine );
@@ -919,7 +924,8 @@ gdeProperty *gdeWPPropertyList::GetProperty() const{
 
 decString gdeWPPropertyList::GetOption() const{
 	const gdeProperty * const property = GetProperty();
-	return property && pListOptions->GetSelectedItem() ? pListOptions->GetSelectedItem()->GetText() : "";
+	return property && pListOptions->GetSelectedItem()
+		? pListOptions->GetSelectedItem()->GetText() : decString();
 }
 
 int gdeWPPropertyList::GetCustomPatternIndex() const{
@@ -945,8 +951,8 @@ void gdeWPPropertyList::UpdateList(){
 		int i;
 		
 		for( i=0; i<count; i++ ){
-			gdeProperty * const property = pPropertyList->GetAt( i );
-			pCBProperties->AddItem( property->GetName(), NULL, property );
+			gdeProperty * const property2 = pPropertyList->GetAt( i );
+			pCBProperties->AddItem( property2->GetName(), NULL, property2 );
 		}
 		
 		pCBProperties->SortItems();
@@ -973,7 +979,7 @@ void gdeWPPropertyList::UpdateProperty(){
 			property->GetDefaultValue(), *property );
 		
 		const decString selectedOption( pListOptions->GetSelectedItem()
-			? pListOptions->GetSelectedItem()->GetText() : "" );
+			? pListOptions->GetSelectedItem()->GetText() : decString() );
 		const decStringList &options = property->GetOptions();
 		const int optionCount = options.GetCount();
 		int i;

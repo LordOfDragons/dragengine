@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -38,7 +41,6 @@ pin Dragengine.Utils
  * time out call \code{.ds} getSubTitleBox().setRemoveAllBeforeAdd(false) \endcode .
  */
 class WindowSubTitle extends Window implements ConversationPlaybackSubTitle
-	/** \brief Sub title box. */
 	private var SubTitleBox pSubTitleBox
 	
 	
@@ -49,26 +51,26 @@ class WindowSubTitle extends Window implements ConversationPlaybackSubTitle
 	 * Sets the window width to be a bit less than the screen width. Upon changin size the
 	 * window is moved to be located at a given distance from the bottom.
 	 */
-	public func new() super( 0, 0, GraphicSystem.getWindowWidth() - 100, 10 )
-		this.runWhileBlockingLayout( block
-			this.setTitle( "" )
-			this.setCanMove( false )
-			this.setCanResize( false )
-			this.setCanActivate( false )
-			this.setCanClose( false )
-			this.setCanMaximize( false )
-			this.setCanMinimize( false )
-			this.setDesignerSelector( "WindowSubTitle" )
+	public func new() super(0, 0, GraphicSystem.getWindowWidth() - 100, 10)
+		runWhileBlockingLayout(block
+			setTitle("")
+			setCanMove(false)
+			setCanResize(false)
+			setCanActivate(false)
+			setCanClose(false)
+			setCanMaximize(false)
+			setCanMinimize(false)
+			setDesignerSelector("WindowSubTitle")
 			
-			this.pSubTitleBox = this.createSubTitleBox()
-			this.pSubTitleBox.setRemoveAllBeforeAdd( true )
-			this.addWidget( this.pSubTitleBox )
-		end )
+			pSubTitleBox = createSubTitleBox()
+			pSubTitleBox.setRemoveAllBeforeAdd(true)
+			addWidget(pSubTitleBox)
+		end)
 	end
 	
 	/** \brief Dispose of window. */
 	public func void dispose()
-		this.pSubTitleBox = null
+		pSubTitleBox = null
 		super.dispose()
 	end
 	
@@ -76,20 +78,20 @@ class WindowSubTitle extends Window implements ConversationPlaybackSubTitle
 	
 	/** \brief Sub title box. */
 	public func SubTitleBox getSubTitleBox()
-		return this.pSubTitleBox
+		return pSubTitleBox
 	end
 	
 	
 	
 	/** \brief Add sub title text widget. */
-	public func void addSubTitleText( Widget text )
-		this.pSubTitleBox.addSubTitleText( text )
-		this.moveToTop()
+	public func void addSubTitleText(Widget text)
+		pSubTitleBox.addSubTitleText(text)
+		moveToTop()
 	end
 	
 	/** \brief Remove all texts. */
 	public func void removeAllSubTitleText()
-		this.pSubTitleBox.removeAllSubTitleText()
+		pSubTitleBox.removeAllSubTitleText()
 	end
 	
 	
@@ -99,14 +101,14 @@ class WindowSubTitle extends Window implements ConversationPlaybackSubTitle
 	 * 
 	 * Adjusts window position.
 	 */
-	public func void onResize( WidgetEvent event )
-		super.onResize( event )
-		this.adjustWindowGeometry()
+	public func void onResize(WidgetEvent event)
+		super.onResize(event)
+		adjustWindowGeometry()
 	end
 	
 	/** \brief Desktop size changed. */
 	public func void onDesktopResized()
-		this.adjustWindowGeometry()
+		adjustWindowGeometry()
 	end
 	
 	/**
@@ -115,12 +117,12 @@ class WindowSubTitle extends Window implements ConversationPlaybackSubTitle
 	 * Extends the super class behavior to call adjustWindowGeometry() after super call.
 	 */
 	public func void doLayout()
-		if this.getBlockLayout()
+		if getBlockLayout()
 			return
 		end
 		
 		super.doLayout()
-		this.adjustWindowGeometry()
+		adjustWindowGeometry()
 	end
 	
 	/**
@@ -129,13 +131,12 @@ class WindowSubTitle extends Window implements ConversationPlaybackSubTitle
 	 * Default implementation moves window to be center bottom and sets height to content.
 	 */
 	protected func void adjustWindowGeometry()
-		var int contentHeight = this.getLayout().getMinimumSize( this ).getY()
-		var Point desktopSize = this.getParent().getSize()
-		var int windowWidth = this.getWidth()
+		var int contentHeight = getLayout().getMinimumSize(this).getY()
+		var Point desktopSize = getParent().getSize()
+		var int windowWidth = getWidth()
 		
-		this.setHeight( contentHeight )
-		this.setPosition( Point.new( ( desktopSize.getX() - windowWidth ) / 2, \
-			desktopSize.getY() - contentHeight - 50 ) )
+		setHeight(contentHeight)
+		setPosition(Point.new((desktopSize.getX() - windowWidth) / 2, desktopSize.getY() - contentHeight - 50))
 	end
 	
 	/** \brief Create sub title box. */

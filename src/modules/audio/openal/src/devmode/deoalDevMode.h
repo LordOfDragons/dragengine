@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenAL Audio Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOALDEVMODE_H_
@@ -31,7 +34,7 @@ class decUnicodeString;
 
 
 /**
- * \brief OpenAL developer mode.
+ * OpenAL developer mode.
  */
 class deoalDevMode{
 private:
@@ -47,18 +50,20 @@ private:
 	bool pShowActiveMicInfo;
 	bool pCaptureMicRays;
 	bool pCaptureMicRaysXRay;
+	bool pCaptureMicRaysVolume;
 	bool pShowAudioModels;
 	int pCaptureSpeakerDirectClosest;
+	int pVisualizeAudibleSpeakers;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create developer mode. */
+	/** Create developer mode. */
 	deoalDevMode( deAudioOpenAL &audioThread );
 	
-	/** \brief Clean up developer mode. */
+	/** Clean up developer mode. */
 	~deoalDevMode();
 	/*@}*/
 	
@@ -66,51 +71,56 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Developer mode is enabled. */
+	/** Developer mode is enabled. */
 	inline bool GetEnabled() const{ return pEnabled; }
 	
-	/** \brief Log calculation of environment probe calculation. */
+	/** Log calculation of environment probe calculation. */
 	inline bool GetLogCalcEnvProbe() const{ return pLogCalcEnvProbe; }
 	
-	/** \brief Show module information. */
+	/** Show module information. */
 	inline bool GetShowModuleInfo() const{ return pShowModuleInfo; }
 	
-	/** \brief Show speaker environment overlay information. */
+	/** Show speaker environment overlay information. */
 	inline bool GetShowSpeakerEnvInfo() const{ return pShowSpeakerEnvInfo; }
 	
-	/** \brief Show only speaker environment overlay information at position. */
+	/** Show only speaker environment overlay information at position. */
 	inline bool GetShowSpeakerEnvInfoAt() const{ return pShowSpeakerEnvInfoAt; }
 	
-	/** \brief Show environment overlay information position. */
+	/** Show environment overlay information position. */
 	inline const decDVector &GetShowSpeakerEnvInfoAtPosition() const{ return pShowSpeakerEnvInfoAtPosition; }
 	
-	/** \brief Show closest speaker environment overlay information. */
+	/** Show closest speaker environment overlay information. */
 	inline int GetShowSpeakerEnvInfoClosest() const{ return pShowSpeakerEnvInfoClosest; }
 	
-	/** \brief Show active microphone information. */
+	/** Show active microphone information. */
 	inline bool GetShowActiveMicInfo() const{ return pShowActiveMicInfo; }
 	
-	/** \brief Request capturing microphone sound rays once. */
+	/** Request capturing microphone sound rays once. */
 	inline bool GetCaptureMicRays() const{ return pCaptureMicRays; }
 	
-	/** \brief Clear request capturing microphone sound rays once. */
+	/** Clear request capturing microphone sound rays once. */
 	void ClearCaptureMicRays();
 	
-	/** \brief Capturing microphone sound rays using XRay . */
+	/** Capturing microphone sound rays using XRay . */
 	inline bool GetCaptureMicRaysXRay() const{ return pCaptureMicRaysXRay; }
 	
-	/** \brief Show audio models . */
+	/** Capturing microphone sound rays using Volume. */
+	inline bool GetCaptureMicRaysVolume() const{ return pCaptureMicRaysVolume; }
+	
+	/** Show audio models . */
 	inline bool GetShowAudioModels() const{ return pShowAudioModels; }
 	
-	/** \brief Capture speaker closest direct. */
+	/** Capture speaker closest direct. */
 	inline int GetCaptureSpeakerClosestDirect() const{ return pCaptureSpeakerDirectClosest; }
 	
-	/** \brief Clear capture speaker closest direct. */
+	inline int GetVisualizeAudibleSpeakers() const{ return pVisualizeAudibleSpeakers; }
+	
+	/** Clear capture speaker closest direct. */
 	void ClearCaptureSpeakerClosestDirect();
 	
 	
 	
-	/** \brief Run command. */
+	/** Run command. */
 	bool ExecuteCommand( const decUnicodeArgumentList &command, decUnicodeString &answer );
 	/*@}*/
 	
@@ -128,6 +138,7 @@ private:
 	void pCmdShowActiveMicInfo( const decUnicodeArgumentList &command, decUnicodeString &answer );
 	void pCmdCaptureMicRays( const decUnicodeArgumentList &command, decUnicodeString &answer );
 	void pCmdShowAudioModels( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void pCmdVisualizeAudibleSpeakers( const decUnicodeArgumentList &command, decUnicodeString &answer );
 	void pCmdCaptureSpeakerDirectClosest( const decUnicodeArgumentList &command, decUnicodeString &answer );
 	
 	void pActiveWorldNotifyDevModeChanged();

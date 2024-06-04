@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Animator Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEARLINK_H_
@@ -27,50 +30,65 @@
 #include <dragengine/resources/animator/deAnimatorLink.h>
 
 class decIntList;
+class dearAnimatorInstance;
 class deAnimatorLink;
 class dearControllerStates;
 
 
 /**
- * \brief Animator link.
+ * Animator link.
  */
 class dearLink{
 private:
+	const dearAnimatorInstance &pInstance;
 	deAnimatorLink pLink;
-	decCurveBezierEvaluator pEvaluator;
+	const decCurveBezierEvaluator pEvaluator;
+	int pBoneIndex;
+	int pVPSIndex;
+	const bool pWrapY;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create link. */
-	dearLink( const deAnimatorLink &link, const decIntList &controllerMapping );
+	/** Create link. */
+	dearLink( dearAnimatorInstance &instance, const deAnimatorLink &link,
+		const decIntList &controllerMapping );
 	
-	/** \brief Clean up link. */
+	/** Clean up link. */
 	~dearLink();
 	/*@}*/
 	
+	
+	
 	/** \name Management */
 	/*@{*/
-	/** \brief Animator link. */
+	/** Animator link. */
 	inline const deAnimatorLink &GetLink() const{ return pLink; }
 	
-	/** \brief Link has valid controller. */
+	/** Link has valid controller. */
 	bool HasController() const;
 	
-	/** \brief Controller index relative to parent animator instance. */
+	/** Controller index relative to parent animator instance. */
 	int GetController() const;
 	
+	/** Link has valid bone. */
+	bool HasBone() const;
 	
-	/** \brief Value of link. */
-	float GetValue( const dearControllerStates &controllerStates, float defaultValue ) const;
+	/** Link has valid vertex position set. */
+	bool HasVPS() const;
 	
-	/** \brief Vector of link. */
-	void GetVector( const dearControllerStates &controllerStates, decVector &vector ) const;
 	
-	/** \brief Quaternion of link. */
-	void GetQuaternion( const dearControllerStates &controllerStates, decQuaternion &quaternion ) const;
+	
+	/** Value of link. */
+	float GetValue( float defaultValue ) const;
+	
+	/** Vector of link. */
+	void GetVector( decVector &vector ) const;
+	
+	/** Quaternion of link. */
+	void GetQuaternion( decQuaternion &quaternion ) const;
 	/*@}*/
 };
 

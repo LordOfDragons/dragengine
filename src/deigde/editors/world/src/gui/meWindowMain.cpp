@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE World Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -58,6 +61,9 @@
 #include "../undosys/gui/object/meUObjectDropToGround.h"
 #include "../undosys/gui/object/meUObjectSnapToGrid.h"
 #include "../undosys/gui/object/meUObjectAttachTo.h"
+#include "../undosys/gui/object/meUObjectCopyPosition.h"
+#include "../undosys/gui/object/meUObjectCopyRotation.h"
+#include "../undosys/gui/object/meUObjectCopyScale.h"
 #include "../undosys/gui/objectshape/meUObjectShapeAdd.h"
 #include "../undosys/gui/objectshape/meUObjectShapeDelete.h"
 #include "../undosys/gui/navspace/meUDeleteNavSpace.h"
@@ -288,7 +294,7 @@ void meWindowMain::SetWorld( meWorld *world ){
 void meWindowMain::CreateNewWorld(){
 	deObjectReference refWorld;
 	
-	refWorld.TakeOver( new meWorld( &GetEnvironment() ) );
+	refWorld.TakeOver( new meWorld( *this, &GetEnvironment() ) );
 	meWorld * const world = ( meWorld* )( deObject* )refWorld;
 	world->SetSaved( false );
 	world->SetChanged( false );
@@ -316,6 +322,19 @@ void meWindowMain::LoadWorld( const char *filename ){
 	
 	GetRecentFiles().AddFile( filename );
 }
+
+void meWindowMain::ConfigEnableGIChanged(){
+	if( pWorld ){
+		pWorld->EnableGIChanged();
+	}
+}
+
+void meWindowMain::ConfigEnableAuralizationChanged(){
+	if( pWorld ){
+		pWorld->EnableAuralizationChanged();
+	}
+}
+
 
 
 
@@ -397,6 +416,7 @@ void meWindowMain::RecentFilesChanged(){
 
 void meWindowMain::OnGameProjectChanged(){
 	pConfiguration->LoadConfiguration();
+	pWindowProperties->OnGameProjectChanged();
 	CreateNewWorld();
 }
 
@@ -990,6 +1010,64 @@ public:
 	
 	virtual void Update( const meWorld &world ){
 		SetEnabled( world.GetSelectionObject().GetSelected().GetCount() > 0 );
+	}
+};
+
+class cActionBaseObjectCopyToSelected : public cActionBase{
+protected:
+	bool pCopyX;
+	bool pCopyY;
+	bool pCopyZ;
+	
+public:
+	cActionBaseObjectCopyToSelected( meWindowMain &window, const char *baseText, bool copyX, bool copyY, bool copyZ ) :
+		cActionBase( window, Text( baseText, copyX, copyY, copyZ ), window.GetIconEditSnap(), baseText ),
+		pCopyX( copyX ), pCopyY( copyY ), pCopyZ( copyZ ){}
+	
+	virtual igdeUndo *OnAction( meWorld *world ){
+		return world->GetSelectionObject().GetSelected().GetCount() > 1 ? OnActionCopy( world ) :  nullptr;
+	}
+	
+	virtual igdeUndo *OnActionCopy( meWorld *world ) = 0;
+	
+	virtual void Update( const meWorld &world ){
+		SetEnabled( world.GetSelectionObject().GetSelected().GetCount() > 1 );
+	}
+	
+	static decString Text( const char *baseText, bool copyX, bool copyY, bool copyZ ){
+		decString text;
+		text.Format( "%s: %s%s%s", baseText, copyX ? "X" : "", copyY ? "Y" : "", copyZ ? "Z" : "" );
+		return text;
+	}
+};
+
+class cActionObjectCopyPosition : public cActionBaseObjectCopyToSelected{
+public:
+	cActionObjectCopyPosition( meWindowMain &window, bool copyX, bool copyY, bool copyZ ) :
+		cActionBaseObjectCopyToSelected( window, "Copy Position To Selected", copyX, copyY, copyZ ){}
+	
+	virtual igdeUndo *OnActionCopy( meWorld *world ){
+		return new meUObjectCopyPosition( world, pCopyX, pCopyY, pCopyZ );
+	}
+};
+
+class cActionObjectCopyRotation : public cActionBaseObjectCopyToSelected{
+public:
+	cActionObjectCopyRotation( meWindowMain &window, bool copyX, bool copyY, bool copyZ ) :
+		cActionBaseObjectCopyToSelected( window, "Copy Rotation To Selected", copyX, copyY, copyZ ){}
+	
+	virtual igdeUndo *OnActionCopy( meWorld *world ){
+		return new meUObjectCopyRotation( world, pCopyX, pCopyY, pCopyZ );
+	}
+};
+
+class cActionObjectCopyScale : public cActionBaseObjectCopyToSelected{
+public:
+	cActionObjectCopyScale( meWindowMain &window, bool copyX, bool copyY, bool copyZ ) :
+		cActionBaseObjectCopyToSelected( window, "Copy Scale To Selected", copyX, copyY, copyZ ){}
+	
+	virtual igdeUndo *OnActionCopy( meWorld *world ){
+		return new meUObjectCopyScale( world, pCopyX, pCopyY, pCopyZ );
 	}
 };
 
@@ -1645,6 +1723,19 @@ void meWindowMain::pCreateActions(){
 	
 	pActionObjectDropToGround.TakeOver( new cActionObjectDropToGround( *this ) );
 	pActionObjectSnapToGrid.TakeOver( new cActionObjectSnapToGrid( *this ) );
+	pActionObjectCopyPositionX.TakeOver( new cActionObjectCopyPosition( *this, true, false, false ) );
+	pActionObjectCopyPositionY.TakeOver( new cActionObjectCopyPosition( *this, false, true, false ) );
+	pActionObjectCopyPositionZ.TakeOver( new cActionObjectCopyPosition( *this, false, false, true ) );
+	pActionObjectCopyPositionXZ.TakeOver( new cActionObjectCopyPosition( *this, true, false, true ) );
+	pActionObjectCopyPositionXYZ.TakeOver( new cActionObjectCopyPosition( *this, true, true, true ) );
+	pActionObjectCopyRotationX.TakeOver( new cActionObjectCopyRotation( *this, true, false, false ) );
+	pActionObjectCopyRotationY.TakeOver( new cActionObjectCopyRotation( *this, false, true, false ) );
+	pActionObjectCopyRotationZ.TakeOver( new cActionObjectCopyRotation( *this, false, false, true ) );
+	pActionObjectCopyRotationXYZ.TakeOver( new cActionObjectCopyRotation( *this, true, true, true ) );
+	pActionObjectCopyScaleX.TakeOver( new cActionObjectCopyScale( *this, true, false, false ) );
+	pActionObjectCopyScaleY.TakeOver( new cActionObjectCopyScale( *this, false, true, false ) );
+	pActionObjectCopyScaleZ.TakeOver( new cActionObjectCopyScale( *this, false, false, true ) );
+	pActionObjectCopyScaleXYZ.TakeOver( new cActionObjectCopyScale( *this, true, true, true ) );
 	pActionObjectAttachTo.TakeOver( new cActionObjectAttachTo( *this ) );
 	pActionObjectDetach.TakeOver( new cActionObjectDetach( *this ) );
 	pActionObjectSelectAttached.TakeOver( new cActionObjectSelectAttached( *this ) );
@@ -1720,6 +1811,19 @@ void meWindowMain::pCreateActions(){
 	AddUpdateAction( pActionObjectRotate180 );
 	AddUpdateAction( pActionObjectDropToGround );
 	AddUpdateAction( pActionObjectSnapToGrid );
+	AddUpdateAction( pActionObjectCopyPositionX );
+	AddUpdateAction( pActionObjectCopyPositionY );
+	AddUpdateAction( pActionObjectCopyPositionZ );
+	AddUpdateAction( pActionObjectCopyPositionXZ );
+	AddUpdateAction( pActionObjectCopyPositionXYZ );
+	AddUpdateAction( pActionObjectCopyRotationX );
+	AddUpdateAction( pActionObjectCopyRotationY );
+	AddUpdateAction( pActionObjectCopyRotationZ );
+	AddUpdateAction( pActionObjectCopyRotationXYZ );
+	AddUpdateAction( pActionObjectCopyScaleX );
+	AddUpdateAction( pActionObjectCopyScaleY );
+	AddUpdateAction( pActionObjectCopyScaleZ );
+	AddUpdateAction( pActionObjectCopyScaleXYZ );
 	AddUpdateAction( pActionObjectAttachTo );
 	AddUpdateAction( pActionObjectDetach );
 	AddUpdateAction( pActionObjectSelectAttached );
@@ -1972,6 +2076,29 @@ void meWindowMain::pCreateMenuObject( igdeMenuCascade &menu ){
 			helper.MenuCommand( activeRotate, pActionObjectRotateR45 );
 			helper.MenuCommand( activeRotate, pActionObjectRotateR90 );
 			helper.MenuCommand( activeRotate, pActionObjectRotate180 );
+		
+		igdeMenuCascadeReference activeCopySelected;
+		activeCopySelected.TakeOver( new igdeMenuCascade( GetEnvironment(),
+			"Copy To Selected", nullptr, "Copy To Selected" ) );
+			
+			active->AddChild( activeCopySelected );
+			helper.MenuCommand( activeCopySelected, pActionObjectCopyPositionX );
+			helper.MenuCommand( activeCopySelected, pActionObjectCopyPositionY );
+			helper.MenuCommand( activeCopySelected, pActionObjectCopyPositionZ );
+			helper.MenuCommand( activeCopySelected, pActionObjectCopyPositionXZ );
+			helper.MenuCommand( activeCopySelected, pActionObjectCopyPositionXYZ );
+			
+			helper.MenuSeparator( activeCopySelected );
+			helper.MenuCommand( activeCopySelected, pActionObjectCopyRotationX );
+			helper.MenuCommand( activeCopySelected, pActionObjectCopyRotationY );
+			helper.MenuCommand( activeCopySelected, pActionObjectCopyRotationZ );
+			helper.MenuCommand( activeCopySelected, pActionObjectCopyRotationXYZ );
+			
+			helper.MenuSeparator( activeCopySelected );
+			helper.MenuCommand( activeCopySelected, pActionObjectCopyScaleX );
+			helper.MenuCommand( activeCopySelected, pActionObjectCopyScaleY );
+			helper.MenuCommand( activeCopySelected, pActionObjectCopyScaleZ );
+			helper.MenuCommand( activeCopySelected, pActionObjectCopyScaleXYZ );
 			
 		igdeMenuCascadeReference activeLight;
 		activeLight.TakeOver( new igdeMenuCascade( GetEnvironment(), "Light",
@@ -2068,6 +2195,7 @@ void meWindowMain::pUpdateLoading(){
 			}
 			
 			pWorld->ForceUpdateVegetation( false );
+			pWindowProperties->OnWorldPathChanged();
 		}
 		
 	}catch( const deException &e ){

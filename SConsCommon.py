@@ -173,6 +173,9 @@ def UpdateModuleManifest(env, target, source):
 			
 		elif action == 'preloadLibrary':
 			manifest = manifest.replace('</library>', '\t<preloadLibrary>{}</preloadLibrary>\n\t</library>'.format(update['path']))
+			
+		elif action == 'text':
+			manifest = manifest.replace(update['keyword'], update['value'])
 	
 	with open(target[0].abspath, 'w') as f:
 		f.write(manifest)
@@ -210,14 +213,18 @@ def WriteConfigFile(target, defines, env):
 	file.write('\n')
 	
 	for define in defines:
-		if defines[define]:
-			file.write('/* enable %s */\n' % define)
-			file.write('#ifndef %s\n' % define)
-			file.write('#define %s 1\n' % define)
+		if isinstance(defines[define], str):
+			file.write('/* {} */\n'.format(define))
+			file.write('#ifndef {}\n'.format(define))
+			file.write('#define {} "{}"\n'.format(define, defines[define]))
+		elif defines[define]:
+			file.write('/* enable {} */\n'.format(define))
+			file.write('#ifndef {}\n'.format(define))
+			file.write('#define {} 1\n'.format(define))
 		else:
-			file.write('/* disable %s */\n' % define)
-			file.write('#ifdef %s\n' % define)
-			file.write('#undef %s\n' % define)
+			file.write('/* disable {} */\n'.format(define))
+			file.write('#ifdef {}\n'.format(define))
+			file.write('#undef {}\n'.format(define))
 		file.write('#endif\n')
 		file.write('\n')
 	

@@ -1,200 +1,42 @@
-/* 
- * Drag[en]gine GUI Launcher
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <signal.h>
-#ifndef OS_W32
-#include <execinfo.h>
-#endif
+#include <ctype.h>
 
 #include "deglLauncher.h"
 #include "config/deglConfiguration.h"
 #include "config/deglConfigWindow.h"
-#include "engine/deglEngine.h"
-#include "engine/deglEngineInstance.h"
-#include "game/deglGameManager.h"
-#include "game/deglGame.h"
-#include "game/deglGameRunParams.h"
-#include "game/profile/deglGameProfile.h"
+#include "game/deglGameIcon.h"
 #include "gui/deglWindowMain.h"
-#include "logger/deglLoggerHistory.h"
 
-#include <dragengine/filesystem/deVFSDiskDirectory.h>
-#include <dragengine/filesystem/deVirtualFileSystem.h>
-#include <dragengine/logger/deLogger.h>
-#include <dragengine/logger/deLoggerConsoleColor.h>
-#include <dragengine/logger/deLoggerChain.h>
-#include <dragengine/logger/deLoggerFile.h>
+#include <delauncher/engine/delEngineInstanceThreaded.h>
+#include <delauncher/game/delGameRunParams.h>
+
 #include <dragengine/common/exceptions.h>
-#include <dragengine/common/file/decDiskFileWriter.h>
-#include <dragengine/common/string/unicode/decUnicodeString.h>
-
-
-
-// Definitions
-////////////////
-
-#define LOGSOURCE "Launcher"
-
-
-
-// Signal Handlers
-////////////////////
-
-#ifndef OS_W32
-static deglLauncher *pLauncherForSegV = NULL;
-
-static void signalSegV( int number, siginfo_t *infos, void *ptrContext ){
-	deLogger *logger = NULL;
-	
-	if( pLauncherForSegV ){
-		logger = pLauncherForSegV->GetLogger();
-	}
-	
-	// some infos
-	if( infos->si_code == SEGV_MAPERR ){
-		if( logger ){
-			logger->LogErrorFormat( LOGSOURCE, "Segmentation Fault! Tried to access not allocated memory at %p.", infos->si_addr );
-			
-		}else{
-			printf( "Segmentation Fault! Tried to access not allocated memory at %p.\n", infos->si_addr );
-		}
-		
-	}else if( infos->si_code == SEGV_ACCERR ){
-		if( logger ){
-			logger->LogErrorFormat( LOGSOURCE, "Segmentation Fault! Permission denied accessing memory at %p.", infos->si_addr );
-			
-		}else{
-			printf( "Segmentation Fault! Permission denied accessing memory at %p.\n", infos->si_addr );
-		}
-		
-	}else{
-		if( logger ){
-			logger->LogErrorFormat( LOGSOURCE, "Segmentation Fault! Unknown memory error at %p.", infos->si_addr );
-			
-		}else{
-			printf( "Segmentation Fault! Unknown memory error at %p.\n", infos->si_addr );
-		}
-	}
-	
-	// stack trace
-	void *btentries[ 50 ]; // should be enough as usually only the last few are important
-	size_t btentryCount;
-	
-	btentryCount = backtrace( btentries, 50 );
-	
-	if( logger ){
-		logger->LogError( LOGSOURCE, "Backtrace:" );
-		
-		char **btStrings = backtrace_symbols( btentries, btentryCount );
-		int i;
-		
-		for( i=0; i<(int)btentryCount; i++ ){
-			logger->LogError( LOGSOURCE, btStrings[ i ] );
-		}
-		
-		free( btStrings );
-		
-	}else{
-		printf( "Backtrace:" );
-		backtrace_symbols_fd( btentries, btentryCount, fileno( stdout ) );
-	}
-	
-	/*
-	if( pLauncherForSegV ){
-		if( infos->si_code == SEGV_MAPERR ){
-			coreFault->HandleSegFault( decrbCoreFault::eecMemoryNotAllocated, infos->si_addr, ptrContext );
-			
-		}else if( infos->si_code == SEGV_ACCERR ){
-			coreFault->HandleSegFault( decrbCoreFault::eecMemoryNoPermision, infos->si_addr, ptrContext );
-			
-		}else{
-			coreFault->HandleSegFault( decrbCoreFault::eecMemoryUnknown, infos->si_addr, ptrContext );
-		}
-		
-	}else{
-		printf( "No launcher object found. Can not gather crash informations!\n" );
-	}
-	*/
-	
-	if( logger ){
-		logger->LogError( LOGSOURCE, "Done, exiting." );
-		
-	}else{
-		printf( "Done, exiting.\n" );
-	}
-	
-	exit( -1 );
-}
-
-static void signalAbort( int number, siginfo_t *infos, void *ptrContext ){
-	deLogger *logger = NULL;
-	
-	if( pLauncherForSegV ){
-		logger = pLauncherForSegV->GetLogger();
-	}
-	
-	if( logger ){
-		logger->LogError( LOGSOURCE, "Unhandled Exception!" );
-		
-	}else{
-		printf( "Unhandled Exception\n" );
-	}
-	
-	// stack trace
-	void *btentries[ 50 ]; // should be enough as usually only the last few are important
-	size_t btentryCount;
-	
-	btentryCount = backtrace( btentries, 50 );
-	
-	if( logger ){
-		logger->LogError( LOGSOURCE, "Backtrace:" );
-		
-		char **btStrings = backtrace_symbols( btentries, btentryCount );
-		int i;
-		
-		for( i=0; i<(int)btentryCount; i++ ){
-			logger->LogError( LOGSOURCE, btStrings[ i ] );
-		}
-		
-		free( btStrings );
-		
-	}else{
-		printf( "Backtrace:" );
-		backtrace_symbols_fd( btentries, btentryCount, fileno( stdout ) );
-	}
-	
-	if( logger ){
-		logger->LogError( LOGSOURCE, "Done, exiting." );
-		
-	}else{
-		printf( "Done, exiting.\n" );
-	}
-	
-	exit( -1 );
-}
-#endif
-
 
 
 // Class deglLauncher
@@ -204,119 +46,49 @@ static void signalAbort( int number, siginfo_t *infos, void *ptrContext ){
 ////////////////////////////
 
 deglLauncher::deglLauncher( deglWindowMain *windowMain, int argc, char **argv ) :
+delLauncher( "LauncherGui", "delauncher-gui-engine" ),
+
+pSignalHandler( *this ),
+pConfiguration( *this ),
+
 pWindowMain( windowMain ),
 
-pFileSystem( NULL ),
-pConfiguration( NULL ),
-pEngine( NULL ),
-pGameManager( NULL ),
-pPatchManager( *this ),
 pCmdLineGame( NULL ),
-pLogger( NULL ),
-pLoggerHistory( NULL )
+pCmdLineQuitNow( false )
 {
 	if( ! windowMain ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	int i;
+	// also log to "/logs/delauncher-gui"
+	AddFileLogger( "delauncher-gui" );
 	
-	// register signals if on linux
-	pRegisterSignals();
-	
-	// set default color console logger for the case something goes wrong
-	// until the proper logger has been set up
-	pLogger = new deLoggerConsoleColor;
+	// set default engine instance executable (windows only)
+	#ifdef OS_W32
+	delEngineInstanceThreaded::SetDefaultExecutableName( "delauncher-gui-engine" );
+	#endif
 	
 	// build argument list
+	int i;
 	for( i=1; i<argc; i++ ){
-		pArgList.AddArgument( decUnicodeString::NewFromUTF8( argv[ i ] ) );
+		pArguments.AddArgument( decUnicodeString::NewFromUTF8( argv[ i ] ) );
 	}
 	pParseArguments();
 	
-	// create configuration and locate path
-	pConfiguration = new deglConfiguration( this );
-	pConfiguration->LocatePath();
-	
-	// create virtual file system
-	pFileSystem = new deVirtualFileSystem;
-	pConfiguration->InitVirtualFileSystem();
-	
-	// init the logger. this has to wait until the virtual file system is
-	// created as the log file is obtained from there
-	pInitLogger();
-	
-	// now we can log the informations we found so far
-	pConfiguration->LogImportantValues();
-	
-	// load configuration
-	pConfiguration->LoadConfiguration();
-	
-	// create engine
-	pEngine = new deglEngine( *this );
-	
-	// create game manager
-	pGameManager = new deglGameManager( this );
-	
-	// load configuration, modules, games and patches
-	{
-	deglEngineInstance instance( *this, pEngine->GetLogFile() );
-	instance.StartEngine();
-	instance.LoadModules();
-	
-	pEngine->PutEngineIntoVFS( instance );
-	
-	pLogger->LogInfoFormat( LOGSOURCE, "Engine config path = '%s'", pEngine->GetPathConfig().GetString() );
-	pLogger->LogInfoFormat( LOGSOURCE, "Engine share path = '%s'", pEngine->GetPathShare().GetString() );
-	pLogger->LogInfoFormat( LOGSOURCE, "Engine lib path = '%s'", pEngine->GetPathLib().GetString() );
-	
-	pEngine->UpdateResolutions( instance );
-	pEngine->ReloadModuleList();
-	pEngine->CheckModules( instance );
-	pEngine->LoadConfig();
-	
-	pGameManager->CreateDefaultProfile();
-	
-	pGameManager->LoadGameList( instance );
-	pPatchManager.LoadPatchList( instance );
+	// quit if requested. special use case
+	if( pCmdLineQuitNow ){
+		return;
 	}
 	
-	pGameManager->LoadGameConfigs();
-	pGameManager->Verify();
+	// load configuration
+	pConfiguration.LoadConfiguration();
+	
+	// prepare launcher
+	Prepare();
 }
 
 deglLauncher::~deglLauncher(){
-	// save configurations
-	if( pConfiguration ){
-		pConfiguration->SaveConfiguration();
-	}
-	
-	// release instances
-	if( pCmdLineGame ){
-		pCmdLineGame->FreeReference();
-	}
-	if( pGameManager ){
-		delete pGameManager;
-	}
-	
-	if( pEngine ){
-		delete pEngine;
-	}
-	if( pConfiguration ){
-		delete pConfiguration;
-	}
-	
-	// this has to be released last
-	if( pFileSystem ){
-		pFileSystem->FreeReference();
-	}
-	
-	if( pLogger ){
-		pLogger->FreeReference();
-	}
-	if( pLoggerHistory ){
-		pLoggerHistory->FreeReference();
-	}
+	pConfiguration.SaveConfiguration();
 }
 
 
@@ -337,27 +109,38 @@ bool deglLauncher::RunCommandLineGame(){
 	}
 	
 	// just in case this somehow is called multiple times, which should never happen
-	if( pCmdLineGame ){
-		pCmdLineGame->FreeReference();
-		pCmdLineGame = NULL;
-	}
+	pCmdLineGame = nullptr;
 	
-	// locate the game to run
-	deglGame *game = NULL;
+	// locate the game to run. we can not use MatchesPattern() to figure out if this
+	// is a *.delga or *.degame file since this call fails if relative path is used
+	// which begins with ../ . instead use string matching which works too
+	delGame::Ref game;
 	
-	if( pRunGame.MatchesPattern( "*.delga" ) or pRunGame.MatchesPattern( "*.degame" ) ){
+	//if( pRunGame.MatchesPattern( "*.delga" ) || pRunGame.MatchesPattern( "*.degame" ) ){
+	if( pRunGame.EndsWith( ".delga" ) || pRunGame.EndsWith( ".degame" ) ){
+		// make the path absolute if relative
+		if( ! decPath::IsNativePathAbsolute( pRunGame ) ){
+			decPath path( decPath::CreateWorkingDirectory() );
+			path.AddNativePath( pRunGame );
+			pRunGame = path.GetPathNative();
+		}
+		
 		// the game definition file is not required to be installed if defined by file. It is
 		// always used even if a game with the same identifier is already installed. running a
 		// game by explicit game file overrides the installed one. otherwise it is difficult
 		// for the user to understand why something else happens than he indented
-		deglGameList list;
+		GetLogger()->LogInfoFormat( GetLogSource(), "Run Game: '%s'", pRunGame.GetString() );
+		
+		delGameList list;
 		
 		try{
-			deglEngineInstance instance( *this, pEngine->GetLogFile() );
-			instance.StartEngine();
-			instance.LoadModules();
+			const delEngineInstance::Ref instance( delEngineInstance::Ref::New(
+				GetEngineInstanceFactory().CreateEngineInstance( *this, GetEngine().GetLogFile() ) ) );
 			
-			pGameManager->LoadGameFromDisk( instance, pRunGame, list );
+			instance->StartEngine();
+			instance->LoadModules();
+			
+			GetGameManager().LoadGameFromDisk( instance, pRunGame, list );
 			
 		}catch( const deException &e ){
 			pWindowMain->DisplayException( e );
@@ -365,17 +148,18 @@ bool deglLauncher::RunCommandLineGame(){
 		}
 		
 		if( list.GetCount() == 0 ){
-			pLogger->LogInfo( LOGSOURCE, "No valid game definition found." );
-			FXMessageBox::error( pWindowMain, MBOX_OK, "Run Game", "No game definition found" );
+			decString message;
+			message.Format( "No game definition found: %s", pRunGame.GetString() );
+			GetLogger()->LogInfo( GetLogSource(), message );
+			FXMessageBox::error( pWindowMain, MBOX_OK, "Run Game", "%s", message.GetString() );
 			return false;
 		}
 		
 		pCmdLineGame = list.GetAt( 0 ); // TODO support multiple games using a choice for for example
-		pCmdLineGame->AddReference();
 		
 		// load configuration if the game is not installed. this allows to keep the parameter
 		// changes alive done by the player inside the game
-		if( ! pGameManager->GetGameList().Has( pCmdLineGame ) ){
+		if( ! GetGameManager().GetGames().Has( pCmdLineGame ) ){
 			pCmdLineGame->LoadConfig();
 		}
 		
@@ -384,18 +168,20 @@ bool deglLauncher::RunCommandLineGame(){
 		
 	}else{
 		try{
-			game = pGameManager->GetGameList().GetWithID( decUuid( pRunGame, false ) );
+			game = GetGameManager().GetGames().GetWithID( decUuid( pRunGame, false ) );
 		}catch( const deException & ){
 			// not an UUID
 		}
 		
 		if( ! game ){
-			deglGameList matching( pGameManager->GetGameList().GetWithAlias( pRunGame ) );
+			const delGameList matching( GetGameManager().GetGames().GetWithAlias( pRunGame ) );
+			
 			if( matching.GetCount() == 1 ){
 				game = matching.GetAt( 0 );
 				
 			}else if( matching.GetCount() > 1 ){
-				pLogger->LogInfoFormat( LOGSOURCE, "More than one game matching '%s'.", pRunGame.GetString() );
+				GetLogger()->LogInfoFormat( GetLogSource(),
+					"More than one game matching '%s'.", pRunGame.GetString() );
 				FXMessageBox::error( pWindowMain, MBOX_OK, "Run Game",
 					"More than one game matching '%s'.", pRunGame.GetString() );
 				return false;
@@ -405,16 +191,24 @@ bool deglLauncher::RunCommandLineGame(){
 	
 	if( ! game ){
 		FXMessageBox::error( pWindowMain->getApp(), MBOX_OK, "Run Game",
-			"No game found with identifier '%s'", pRunGame.GetString() );
+			"Game not found: %s", pRunGame.GetString() );
 		return false;
 	}
 	
 	if( game->GetCanRun() ){
-		deglGameProfile *profile = game->GetProfileToUse();
+		delGameProfile *profile = game->GetProfileToUse();
+		
+		if( ! pRunProfileName.IsEmpty() ){
+			profile = GetGameManager().GetProfiles().GetNamed( pRunProfileName );
+			if( ! profile ){
+				FXMessageBox::error( pWindowMain->getApp(), MBOX_OK, "Run Game",
+					"No profile found named '%s'", pRunProfileName.GetString() );
+				return false;
+			}
+		}
 		
 		if( profile->GetValid() ){
-			deglGameRunParams runParams;
-			
+			delGameRunParams runParams;
 			runParams.SetGameProfile( profile );
 			
 			decString error;
@@ -423,14 +217,24 @@ bool deglLauncher::RunCommandLineGame(){
 				return false;
 			}
 			
-			if( profile->GetReplaceRunArguments() ){
-				runParams.SetRunArguments( profile->GetRunArguments() );
-				
-			}else{
-				runParams.SetRunArguments( game->GetRunArguments() + " " + profile->GetRunArguments() );
+			decString arguments( profile->GetRunArguments() );
+			
+			if( ! profile->GetReplaceRunArguments() ){
+				arguments = game->GetRunArguments() + " " + arguments;
 			}
 			
-			//runParams.SetRunArguments( runParams.GetRunArguments() + " " + pRunGameArgList );
+			const int argCount = pRunGameArgList.GetArgumentCount();
+			int i;
+			for( i=0; i<argCount; i++ ){
+				arguments.Append( " " );
+				decString argument( pRunGameArgList.GetArgumentAt( i )->ToUTF8() );
+				if( argument.Find( ' ' ) != -1 ){
+					argument = decString( "\"" ) + argument + decString( "\"" );
+				}
+				arguments.Append( argument );
+			}
+			
+			runParams.SetRunArguments( arguments );
 			
 			runParams.SetFullScreen( profile->GetFullScreen() );
 			runParams.SetWidth( profile->GetWidth() );
@@ -447,12 +251,14 @@ bool deglLauncher::RunCommandLineGame(){
 		
 	}else if( ! game->GetAllFormatsSupported() ){
 		FXMessageBox::error( pWindowMain->getApp(), MBOX_OK, "Can not run game",
-			"One or more File Formats required by the game are not working." );
+			"One or more File Formats required by the game are not working.\n\n"
+			"Try updating Drag[en]gine to the latest version");
 		return false;
 		
 	}else{
 		FXMessageBox::error( pWindowMain->getApp(), MBOX_OK, "Can not run game",
-			"Game related properties are incorrect." );
+			"Game related properties are incorrect.\n\n"
+			"Try updating Drag[en]gine to the latest version" );
 		return false;
 	}
 	
@@ -469,7 +275,7 @@ void deglLauncher::RunCommandLineGameStopCheck(){
 		return;
 	}
 	
-	if( ! pGameManager->GetGameList().Has( pCmdLineGame ) ){
+	if( ! GetGameManager().GetGames().Has( pCmdLineGame ) ){
 		pCmdLineGame->PulseChecking();
 	}
 	
@@ -483,7 +289,13 @@ void deglLauncher::RunCommandLineGameStopCheck(){
 
 
 void deglLauncher::PulseChecking(){
-	pGameManager->PulseChecking();
+	GetGameManager().PulseChecking();
+}
+
+
+
+delGameIcon *deglLauncher::CreateGameIcon( int size, const char* path ){
+	return new deglGameIcon( size, path );
 }
 
 
@@ -492,30 +304,60 @@ void deglLauncher::PulseChecking(){
 //////////////////////
 
 void deglLauncher::pParseArguments(){
-	const int argumentCount = pArgList.GetArgumentCount();
+	const int argumentCount = pArguments.GetArgumentCount();
 	int argumentIndex = 0;
+	
+	// check some special arguments first which require uncluttered output
+	if( argumentCount > 0 ){
+		const decString argument( pArguments.GetArgumentAt( argumentIndex )->ToUTF8() );
+		
+		if( argument == "--version" ){
+			printf( "%s", DE_VERSION );
+			pCmdLineQuitNow = true;
+			return;
+		}
+	}
+	
+	// log command line
+	GetLogger()->LogInfo( GetLogSource(), "Command line arguments:" );
+	for( argumentIndex=0; argumentIndex<argumentCount; argumentIndex++ ){
+		GetLogger()->LogInfoFormat( GetLogSource(), "- '%s'",
+			pArguments.GetArgumentAt( argumentIndex )->ToUTF8().GetString() );
+	}
+	
+	argumentIndex = 0;
+	
+	// windows URI scheme support
+	#ifdef OS_W32
+	if( pParseWindowsURIScheme() ){
+		return;
+	}
+	#endif
 	
 	// check for options. they all start with a dash.
 	while( argumentIndex < argumentCount ){
-		const decString argument( pArgList.GetArgumentAt( argumentIndex )->ToUTF8() );
+		const decString argument( pArguments.GetArgumentAt( argumentIndex )->ToUTF8() );
 		
 		if( argument == "--profile" ){
 			if( argumentCount - argumentIndex > 0 ){
-				pRunProfileName = pArgList.GetArgumentAt( ++argumentIndex )->ToUTF8();
+				pRunProfileName = pArguments.GetArgumentAt( ++argumentIndex )->ToUTF8();
 				
 			}else{
-				pLogger->LogError( LOGSOURCE, "Missing profile name after --profile" );
-				DETHROW( deeInvalidParam );
+				GetLogger()->LogError( GetLogSource(), "Missing profile name after --profile" );
+				DETHROW_INFO( deeInvalidParam, "Missing profile name after --profile" );
 			}
 			
 		}else if( argument == "--install" ){
+			// deprecated
+			/*
 			if( argumentCount - argumentIndex > 0 ){
-				            pCmdLineInstallDelga = pArgList.GetArgumentAt( ++argumentIndex )->ToUTF8();
+				pCmdLineInstallDelga = pArguments.GetArgumentAt( ++argumentIndex )->ToUTF8();
 				
 			}else{
-				pLogger->LogError( LOGSOURCE, "Missing filename after --install" );
-				DETHROW( deeInvalidParam );
+				GetLogger()->LogError( GetLogSource(), "Missing filename after --install" );
+				DETHROW_INFO( deeInvalidParam, "Missing filename after --install" );
 			}
+			*/
 			
 		}else if( argument.GetLength() > 0 ){
 			if( argument[ 0 ] == '-' ){
@@ -528,22 +370,26 @@ void deglLauncher::pParseArguments(){
 					if( option == 'p' ){
 						if( o == optionLen - 1 ){
 							if( argumentCount - argumentIndex > 0 ){
-								pRunProfileName = pArgList.GetArgumentAt( ++argumentIndex )->ToUTF8();
+								pRunProfileName = pArguments.GetArgumentAt( ++argumentIndex )->ToUTF8();
 								
 							}else{
-								pLogger->LogError( LOGSOURCE, "Missing profile name after -p" );
-								DETHROW( deeInvalidParam );
+								GetLogger()->LogError( GetLogSource(), "Missing profile name after -p" );
+								DETHROW_INFO( deeInvalidParam, "Missing profile name after -p" );
 							}
 							
 						}else{
-							pLogger->LogErrorFormat( LOGSOURCE,
-								"Invalid option '%s' (p not last character)", argument.GetString() );
-							DETHROW( deeInvalidParam );
+							decString message;
+							message.Format( "Invalid option '%s' (p not last character)", argument.GetString() );
+							
+							GetLogger()->LogError( GetLogSource(), message );
+							DETHROW_INFO( deeInvalidParam, message );
 						}
 						
 					}else{
-						pLogger->LogErrorFormat( LOGSOURCE, "Unknown option -%c", ( char )option );
-						DETHROW( deeInvalidParam );
+						decString message;
+						message.Format( "Unknown option -%c", ( char )option );
+						GetLogger()->LogError( GetLogSource(), message );
+						DETHROW_INFO( deeInvalidParam, message );
 					}
 				}
 				
@@ -563,129 +409,96 @@ void deglLauncher::pParseArguments(){
 	// - delga file if file name ends with .delga
 	// - game id otherwise
 	if( argumentIndex < argumentCount ){
-		pRunGame = pArgList.GetArgumentAt( argumentIndex++ )->ToUTF8();
+		pRunGame = pArguments.GetArgumentAt( argumentIndex++ )->ToUTF8();
 	}
 	
 	// the rest are arguments for the game
 	while( argumentIndex < argumentCount ){
-		pRunGameArgList.AddArgument( *pArgList.GetArgumentAt( argumentIndex ) );
+		pRunGameArgList.AddArgument( *pArguments.GetArgumentAt( argumentIndex ) );
 		argumentIndex++;
 	}
 }
 
-void deglLauncher::pInitLogger(){
-	deLoggerConsoleColor *loggerConsole = NULL;
-	decBaseFileWriter *fileWriter = NULL;
-	deLoggerChain *loggerChain = NULL;
-	deLoggerFile *loggerFile = NULL;
-	
-	bool useConsole = false; //true;
-	bool useFile = true;
-	bool useHistory = true;
-	decPath pathLogFile;
-	
-	if( ! pLoggerHistory ){
-		pLoggerHistory = new deglLoggerHistory;
-		if( ! pLoggerHistory ) DETHROW( deeOutOfMemory );
-		
-		pLoggerHistory->SetHistorySize( 250 );
+bool deglLauncher::pParseWindowsURIScheme(){
+	// check if this is a windows URI scheme
+	const int argumentCount = pArguments.GetArgumentCount();
+	if( argumentCount == 0 ){
+		return false;
 	}
 	
-	// build the logger combining the requested loggers
-	try{
-		// create the chain logger
-		loggerChain = new deLoggerChain;
-		if( ! loggerChain ) DETHROW( deeOutOfMemory );
-		
-		// add history logger if required
-		if( useHistory ){
-			loggerChain->AddLogger( pLoggerHistory );
-		}
-		
-		// add console logger if required
-		if( useConsole ){
-			loggerConsole = new deLoggerConsoleColor;
-			if( ! loggerConsole ) DETHROW( deeOutOfMemory );
-			
-			loggerChain->AddLogger( loggerConsole );
-			
-			loggerConsole->FreeReference();
-			loggerConsole = NULL;
-		}
-		
-		// add file logger if required
-		if( useFile ){
-			pathLogFile.SetFromUnix( "/logs/delauncher-gui.log" );
-			fileWriter = pFileSystem->OpenFileForWriting( pathLogFile );
-			
-			loggerFile = new deLoggerFile( fileWriter );
-			fileWriter->FreeReference();
-			fileWriter = NULL;
-			
-			loggerChain->AddLogger( loggerFile );
-			
-			loggerFile->FreeReference();
-			loggerFile = NULL;
-		}
-		
-		// set the logger
-		if( pLogger ){
-			pLogger->FreeReference();
-		}
-		pLogger = loggerChain;
-		
-	}catch( const deException & ){
-		if( fileWriter ){
-			fileWriter->FreeReference();
-		}
-		if( loggerChain ){
-			loggerChain->FreeReference();
-		}
-		if( loggerFile ){
-			loggerFile->FreeReference();
-		}
-		if( loggerConsole ){
-			loggerConsole->FreeReference();
-		}
-		throw;
+	decString urischeme( pArguments.GetArgumentAt( 0 )->ToUTF8() );
+	if( ! urischeme.BeginsWith( "delauncher:" ) ){
+		return false;
 	}
+	
+	// convert the arguments into a single string just to be on the safe side.
+	// only required if the caller did not encode the URL properly
+	int i;
+	for( i=1; i<argumentCount; i++ ){
+		urischeme.AppendCharacter( ' ' );
+		urischeme += pArguments.GetArgumentAt( i )->ToUTF8();
+	}
+	
+	// parse URI scheme
+	urischeme = urischeme.GetMiddle( 11 );
+	
+	if( urischeme.BeginsWith( "run?" ) ){
+		const decStringList parameters( urischeme.GetMiddle( 4 ).Split( '&' ) );
+		const int parameterCount = parameters.GetCount();
+		
+		for( i=0; i<parameterCount; i++ ){
+			const decString &parameter = parameters.GetAt( i );
+			
+			if( parameter.BeginsWith( "file=" ) ){
+				pRunGame = pUrlDecode( parameter.GetMiddle( 5 ) );
+				
+			}else if( parameter.BeginsWith( "profile=" ) ){
+				pRunProfileName = pUrlDecode( parameter.GetMiddle( 8 ) );
+				
+			}else if( parameter.BeginsWith( "argument=" ) ){
+				pRunGameArgList.AddArgument( decUnicodeString::NewFromUTF8( pUrlDecode( parameter.GetMiddle( 9 ) ) ) );
+			}
+		}
+		
+	}else if( urischeme.BeginsWith( "install?" ) ){
+		// deprecated
+		/*
+		const decStringList parameters( urischeme.GetMiddle( 8 ).Split( '&' ) );
+		const int parameterCount = parameters.GetCount();
+		
+		for( i=0; i<parameterCount; i++ ){
+			const decString &parameter = parameters.GetAt( i );
+			
+			if( parameter.BeginsWith( "file=" ) ){
+				pCmdLineInstallDelga = pUrlDecode( parameter.GetMiddle( 5 ) );
+			}
+		}
+		*/
+		
+	}else if( urischeme == "ready" ){
+		// special command used only for installing without launching. immediately quit
+		pCmdLineQuitNow = true;
+	}
+	
+	return true;
 }
 
-void deglLauncher::pRegisterSignals(){
-#ifndef OS_W32
-	struct sigaction action;
+decString deglLauncher::pUrlDecode( const char *url ){
+	const char *walker = url;
+	decString decoded;
 	
-	// set aside the launcher for the signal handling
-	pLauncherForSegV = this;
-	
-	// add handler for SEGV signal
-	memset( &action, 0, sizeof( action ) );
-	
-	action.sa_sigaction = signalSegV;
-	action.sa_flags = SA_SIGINFO;
-	
-	if( sigaction( SIGSEGV, &action, NULL ) ){
-		DETHROW( deeInvalidAction );
+	while( *walker ){
+		if( walker[ 0 ] == '%'
+		&&  walker[ 1 ] && isxdigit( walker[ 1 ] )
+		&&  walker[ 2 ] && isxdigit( walker[ 2 ] ) ){
+			const char hex[ 3 ] = { walker[ 1 ], walker[ 2 ], 0 };
+			decoded.AppendCharacter( ( char )strtol( hex, nullptr, 16 ) );
+			walker += 3;
+			
+		}else{
+			decoded.AppendCharacter( *( walker++ ) );
+		}
 	}
 	
-	// add handler for ABORT signal
-	memset( &action, 0, sizeof( action ) );
-	
-	action.sa_sigaction = signalAbort;
-	action.sa_flags = SA_SIGINFO;
-	
-	if( sigaction( SIGABRT, &action, NULL ) ){
-		DETHROW( deeInvalidAction );
-	}
-	
-	// ignore SIGPIPE signal
-	memset( &action, 0, sizeof( action ) );
-	
-	action.sa_handler = SIG_IGN;
-	action.sa_flags = 0;
-	
-	if( sigaction( SIGPIPE, &action, NULL ) ){
-		DETHROW( deeInvalidAction );
-	}
-#endif
+	return decoded;
 }

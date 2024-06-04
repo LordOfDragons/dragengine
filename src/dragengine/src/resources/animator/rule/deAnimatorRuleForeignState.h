@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Game Engine
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEANIMATORRULEFOREIGNSTATE_H_
@@ -38,7 +41,13 @@
  * half way between the two arm/shoulder bones in proximity of the pad bone.
  * For each scaling factor a controller link can be provided.
  */
-class deAnimatorRuleForeignState : public deAnimatorRule{
+class DE_DLL_EXPORT deAnimatorRuleForeignState : public deAnimatorRule{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deAnimatorRuleForeignState> Ref;
+	
+	
+	
 public:
 	/** \brief Coordinate frame. */
 	enum eCoordinateFrames{
@@ -53,18 +62,25 @@ public:
 	
 private:
 	decString pForeignBone;
+	decString pForeignVertexPositionSet;
 	eCoordinateFrames pSourceCoordinateFrame;
 	eCoordinateFrames pDestCoordinateFrame;
 	float pScalePosition;
 	float pScaleOrientation;
 	float pScaleSize;
+	float pScaleVertexPositionSet;
+	bool pModifyX;
+	bool pModifyY;
+	bool pModifyZ;
 	bool pEnablePosition;
 	bool pEnableOrientation;
 	bool pEnableSize;
+	bool pEnableVertexPositionSet;
 	
 	deAnimatorControllerTarget pTargetPosition;
 	deAnimatorControllerTarget pTargetOrientation;
 	deAnimatorControllerTarget pTargetSize;
+	deAnimatorControllerTarget pTargetVertexPositionSets;
 	
 	
 	
@@ -93,6 +109,12 @@ public:
 	/** \brief Set name of the foreign bone. */
 	void SetForeignBone( const char *boneName );
 	
+	/** \brief Name of the foreign vertex position set. */
+	inline const decString &GetForeignVertexPositionSet() const{ return pForeignVertexPositionSet; }
+	
+	/** \brief Set name of the foreign vertex position set. */
+	void SetForeignVertexPositionSet( const char *vertexPositionSet );
+	
 	/** \brief Position scale factor. */
 	inline float GetScalePosition() const{ return pScalePosition; }
 	
@@ -111,6 +133,12 @@ public:
 	/** \brief Set size scale factor. */
 	void SetScaleSize( float scaleSize );
 	
+	/** \brief Vertex position set scale factor. */
+	inline float GetScaleVertexPositionSet() const{ return pScaleVertexPositionSet; }
+	
+	/** \brief Set vertex position set scale factor. */
+	void SetScaleVertexPositionSet( float scale );
+	
 	/** \brief Source coordinate frame. */
 	inline eCoordinateFrames GetSourceCoordinateFrame() const{ return pSourceCoordinateFrame; }
 	
@@ -122,6 +150,42 @@ public:
 	
 	/** \brief Set destination coordinate frame. */
 	void SetDestCoordinateFrame( eCoordinateFrames coordinateFrame );
+	
+	/**
+	 * \brief Determines if X component is modified.
+	 * \version 1.6
+	 */
+	inline bool GetModifyX() const{ return pModifyX; }
+	
+	/**
+	 * \brief Set if X component is modified.
+	 * \version 1.6
+	 */
+	void SetModifyX( bool modify );
+	
+	/**
+	 * \brief Determines if Y component is modified.
+	 * \version 1.6
+	 */
+	inline bool GetModifyY() const{ return pModifyY; }
+	
+	/**
+	 * \brief Set if Y component is modified.
+	 * \version 1.6
+	 */
+	void SetModifyY( bool modify );
+	
+	/**
+	 * \brief Determines if Z component is modified.
+	 * \version 1.6
+	 */
+	inline bool GetModifyZ() const{ return pModifyZ; }
+	
+	/**
+	 * \brief Set if Z component is modified.
+	 * \version 1.6
+	 */
+	void SetModifyZ( bool modify );
 	
 	/** \brief Determines if position manipulation is enabled. */
 	inline bool GetEnablePosition() const{ return pEnablePosition; }
@@ -141,6 +205,12 @@ public:
 	/** \brief Sets if size manipulation is enabled. */
 	void SetEnableSize( bool enabled );
 	
+	/** \brief Vertex position sets are enabled. */
+	inline bool GetEnableVertexPositionSet() const{ return pEnableVertexPositionSet; }
+	
+	/** \brief Set if vertex position sets are enabled. */
+	void SetEnableVertexPositionSet( bool enabled );
+	
 	/** \brief Scale position target. */
 	inline deAnimatorControllerTarget &GetTargetPosition(){ return pTargetPosition; }
 	inline const deAnimatorControllerTarget &GetTargetPosition() const{ return pTargetPosition; }
@@ -152,6 +222,10 @@ public:
 	/** \brief Scale size target. */
 	inline deAnimatorControllerTarget &GetTargetSize(){ return pTargetSize; }
 	inline const deAnimatorControllerTarget &GetTargetSize() const{ return pTargetSize; }
+	
+	/** \brief Scale vertex position set target. */
+	inline deAnimatorControllerTarget &GetTargetVertexPositionSet(){ return pTargetVertexPositionSets; }
+	inline const deAnimatorControllerTarget &GetTargetVertexPositionSet() const{ return pTargetVertexPositionSets; }
 	/*@}*/
 	
 	

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -39,7 +42,7 @@ pin Dragengine.Utils
  */
 class PersistencyFlags
 	/** \brief Array of flags as boolean. */
-	private var Array pFlags
+	var Array pFlags
 	
 	
 	
@@ -48,11 +51,11 @@ class PersistencyFlags
 	 * \details The default value of all flags is \em false.
 	 * \throws EInvalidParam \em flagCount is less than 1.
 	 */
-	public func new( int flagCount )
+	func new(int flagCount)
 		if flagCount < 1
 			throw EInvalidParam.new()
 		end
-		this.pFlags = Array.new( flagCount, false )
+		pFlags = Array.new(flagCount, false)
 	end
 	
 	/**
@@ -60,21 +63,21 @@ class PersistencyFlags
 	 * \throws EInvalidParam \em flagCount is less than 1.
 	 * \throws EInvalidParam \em reader is \em null.
 	 */
-	public func new( int flagCount, FileReader reader )
+	func new(int flagCount, FileReader reader)
 		if flagCount < 1 or reader == null
 			throw EInvalidParam.new()
 		end
 		
-		this.pFlags = Array.new( flagCount )
+		pFlags = Array.new(flagCount)
 		
 		var int i, j, value, lastBit
 		
 		for i = 0 to flagCount step 8
-			lastBit = Math.min( 8, flagCount - i )
+			lastBit = Math.min(8, flagCount - i)
 			value = reader.readByte()
 			
 			for j = 0 to lastBit
-				this.pFlags.add( ( value & ( 1 << j ) ) != 0 )
+				pFlags.add((value & (1 << j)) != 0)
 			end
 		end
 	end
@@ -82,42 +85,47 @@ class PersistencyFlags
 	
 	
 	/** \brief Number of flags. */
-	public func int getCount()
-		return this.pFlags.getCount()
+	func int getCount()
+		return pFlags.getCount()
 	end
 	
 	/**
 	 * \brief Flag is set.
 	 * \throws EInvalidParam \em flag is less than 0 or larger or equal than getFlagCount().
 	 */
-	public func bool getAt( int flag )
-		return this.pFlags.getAt( flag ) cast bool
+	func bool getAt(int flag)
+		return pFlags.getAt(flag) cast bool
 	end
 	
 	/**
 	 * \brief Set flag.
 	 * \throws EInvalidParam \em flag is less than 0 or larger or equal than getFlagCount().
 	 */
-	public func void setAt( int flag, bool value )
-		this.pFlags.setAt( flag, value )
+	func void setAt(int flag, bool value)
+		pFlags.setAt(flag, value)
 	end
 	
 	/** \brief Write flags to file writer. */
-	public func void writeToFile( FileWriter writer )
-		var int count = this.pFlags.getCount()
+	func void writeToFile(FileWriter writer)
+		var int count = pFlags.getCount()
 		var int i, j, value, lastBit
 		
 		for i = 0 to count step 8
-			lastBit = Math.min( 8, count - i )
+			lastBit = Math.min(8, count - i)
 			value = 0
 			
 			for j = 0 to lastBit
-				if this.pFlags.getAt( i + j ) cast bool
+				if pFlags.getAt(i + j) cast bool
 					value |= 1 << j
 				end
 			end
 			
-			writer.writeByte( value )
+			writer.writeByte(value)
 		end
+	end
+	
+	/** \brief String representation of object. */
+	func String toString()
+		return pFlags.toString()
 	end
 end

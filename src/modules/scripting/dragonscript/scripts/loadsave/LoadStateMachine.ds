@@ -1,0 +1,188 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+
+namespace Dragengine.LoadSave
+
+pin Dragengine.StateMachineSystem
+pin Dragengine.Scenery
+pin Dragengine.Utils
+pin Dragengine.XML
+
+
+
+/**
+ * \brief Load state machine from destateMachine file.
+ * 
+ * Supports caching state machines to avoid loading the same state machine multiple times.
+ * Returned state machine can thus be shared so do not change it.
+ */
+class LoadStateMachine extends BaseXmlLoader
+	/** \brief Dictionary of cached state machines (Dictionary: String -> StateMachine). */
+	private var Dictionary pStateMachines
+	
+	
+	
+	/** \brief Create loader. */
+	public func new( Console console ) this( console, "LoadStateMachine" )
+	end
+	
+	/** \brief Create new loader. */
+	public func new( Console console, String name ) super( console, name )
+		this.pStateMachines = Dictionary.new()
+	end
+	
+	
+	
+	/** \brief Load state machine from file. */
+	public func StateMachine loadFromFile( String filename )
+		var StateMachine stateMachine = this.pStateMachines.getAt( filename, null ) cast StateMachine
+		if stateMachine != null
+			return stateMachine
+		end
+		
+		this.logLoadingFromFile( filename )
+		
+		try
+			var EasyXML document = EasyXML.new( filename )
+			if document.hasParseFailed()
+				this.logParsingFailed( document.getParseLog() )
+				throw EInvalidParam.new()
+			end
+			
+			var EasyXMLElement root = document.getRootElement()
+			if not root.getTagName().equals( "stateMachine" )
+				this.logUnknownTag( root )
+				throw EInvalidParam.new()
+			end
+			
+			stateMachine = this.readStateMachine( root )
+			
+			this.pStateMachines.setAt( filename, stateMachine )
+			return stateMachine
+			
+		catch Exception e
+			this.logLoadingFailed( filename )
+			throw
+		end
+	end
+	
+	
+	
+	/** \brief Read state machine tag. */
+	private func StateMachine readStateMachine( EasyXMLElement root )
+		var StateMachine stateMachine = StateMachine.new()
+		
+		root.forEachTag( block EasyXMLElement element, String tagName
+			if tagName.equals( "initialState" )
+				stateMachine.setInitialState( element.getFirstCData() )
+				
+			elif tagName.equals( "state" )
+				stateMachine.addState( this.readState( element ) )
+				
+			else
+				this.logUnknownTag( element )
+				throw EInvalidParam.new()
+			end
+		end )
+		
+		return stateMachine
+	end
+	
+	/** \brief Read state tag. */
+	private func SMState readState( EasyXMLElement root )
+		var SMState state = SMState.new( root.getAttributeNamed( "id" ) )
+		
+		root.forEachTag( block EasyXMLElement element, String tagName
+			if tagName.equals( "enterAction" )
+				state.addEnterAction( this.readStateAction( element ) )
+				
+			elif tagName.equals( "exitAction" )
+				state.addExitAction( this.readStateAction( element ) )
+				
+			elif tagName.equals( "transition" )
+				state.addTransition( this.readTransition( element ) )
+				
+			else
+				this.logUnknownTag( element )
+				throw EInvalidParam.new()
+			end
+		end )
+		
+		return state
+	end
+	
+	/** \brief Read state action tag. */
+	private func SMStateAction readStateAction( EasyXMLElement root )
+		var SMStateAction action = SMStateAction.new( root.getAttributeNamed( "name" ) )
+		
+		root.forEachTag( block EasyXMLElement element, String tagName
+			if tagName.equals( "parameter" )
+				action.getParameters().setAt( element.getAttributeNamed( "name" ), element.getFirstCData() )
+				
+			else
+				this.logUnknownTag( element )
+				throw EInvalidParam.new()
+			end
+		end )
+		
+		return action
+	end
+	
+	/** \brief Read transition. */
+	private func SMTransition readTransition( EasyXMLElement root )
+		var String stateId
+		if root.hasAttributeNamed( "state" )
+			stateId = root.getAttributeNamed( "state" )
+		end
+		var SMTransition transition = SMTransition.new( root.getAttributeNamed( "event" ), stateId )
+		
+		root.forEachTag( block EasyXMLElement element, String tagName
+			if tagName.equals( "action" )
+				transition.addAction( this.readStateAction( element ) )
+				
+			elif tagName.equals( "parameter" )
+				transition.getParameters().setAt( element.getAttributeNamed( "name" ), element.getFirstCData() )
+				
+			elif tagName.equals( "condition" )
+				transition.addCondition( element.getFirstCData() )
+				
+			elif tagName.equals( "conditionMode" )
+				var String value = element.getFirstCData()
+				var SMTransition.ConditionMode mode = SMTransition.ConditionMode.named( value )
+				if mode == null
+					this.logInvalidValue( element, value )
+					throw EInvalidParam.new()
+				end
+				transition.setConditionMode( mode )
+				
+			else
+				this.logUnknownTag( element )
+				throw EInvalidParam.new()
+			end
+		end )
+		
+		return transition
+	end
+end

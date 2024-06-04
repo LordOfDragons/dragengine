@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -328,6 +331,128 @@ void deClassAnimator::nfSetLinkRepeat::RunFunction( dsRunTime *rt, dsValue *myse
 	animator.NotifyLinkChangedAt( index );
 }
 
+// public func void setLinkBone( int link, String bone );
+deClassAnimator::nfSetLinkBone::nfSetLinkBone( const sInitData &init ) :
+dsFunction( init.clsAr, "setLinkBone", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsInt ); // link
+	p_AddParameter( init.clsStr ); // bone
+}
+void deClassAnimator::nfSetLinkBone::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deAnimator &animator = *( ( ( sArNatDat* )p_GetNativeData( myself ) )->animator );
+	
+	const int index = rt->GetValue( 0 )->GetInt();
+	deAnimatorLink &link = *animator.GetLinkAt( index );
+	
+	link.SetBone( rt->GetValue( 1 )->GetString() );
+	
+	animator.NotifyLinkChangedAt( index );
+}
+
+// public func void setLinkBoneParameter( int link, AnimatorLinkBoneParameter parameter );
+deClassAnimator::nfSetLinkBoneParameter::nfSetLinkBoneParameter( const sInitData &init ) :
+dsFunction( init.clsAr, "setLinkBoneParameter", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsInt ); // link
+	p_AddParameter( init.clsAnimatorLinkBoneParameter ); // parameter
+}
+void deClassAnimator::nfSetLinkBoneParameter::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deAnimator &animator = *( ( ( sArNatDat* )p_GetNativeData( myself ) )->animator );
+	
+	const int index = rt->GetValue( 0 )->GetInt();
+	deAnimatorLink &link = *animator.GetLinkAt( index );
+	
+	link.SetBoneParameter( ( deAnimatorLink::eBoneParameter )
+		( ( dsClassEnumeration* )rt->GetEngine()->GetClassEnumeration() )->GetConstantOrder(
+			*rt->GetValue( 1 )->GetRealObject() ) );
+	
+	animator.NotifyLinkChangedAt( index );
+}
+
+// public func void setLinkBoneValueRange( int link, float minimum, float maximum );
+deClassAnimator::nfSetLinkBoneValueRange::nfSetLinkBoneValueRange( const sInitData &init ) :
+dsFunction( init.clsAr, "setLinkBoneValueRange", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsInt ); // link
+	p_AddParameter( init.clsFlt ); // minimum
+	p_AddParameter( init.clsFlt ); // maximum
+}
+void deClassAnimator::nfSetLinkBoneValueRange::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deAnimator &animator = *( ( ( sArNatDat* )p_GetNativeData( myself ) )->animator );
+	
+	const int index = rt->GetValue( 0 )->GetInt();
+	deAnimatorLink &link = *animator.GetLinkAt( index );
+	
+	link.SetBoneValueRange( rt->GetValue( 1 )->GetFloat(), rt->GetValue( 2 )->GetFloat() );
+	
+	animator.NotifyLinkChangedAt( index );
+}
+
+// public func void setLinkBoneValueRangeRotation( int link, float minimum, float maximum );
+deClassAnimator::nfSetLinkBoneValueRangeRotation::nfSetLinkBoneValueRangeRotation( const sInitData &init ) :
+dsFunction( init.clsAr, "setLinkBoneValueRangeRotation", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsInt ); // link
+	p_AddParameter( init.clsFlt ); // minimum
+	p_AddParameter( init.clsFlt ); // maximum
+}
+void deClassAnimator::nfSetLinkBoneValueRangeRotation::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deAnimator &animator = *( ( ( sArNatDat* )p_GetNativeData( myself ) )->animator );
+	
+	const int index = rt->GetValue( 0 )->GetInt();
+	deAnimatorLink &link = *animator.GetLinkAt( index );
+	
+	link.SetBoneValueRange( rt->GetValue( 1 )->GetFloat() * DEG2RAD, rt->GetValue( 2 )->GetFloat() * DEG2RAD );
+	
+	animator.NotifyLinkChangedAt( index );
+}
+
+// public func void setLinkVertexPositionSet(int link, String name);
+deClassAnimator::nfSetLinkVertexPositionSet::nfSetLinkVertexPositionSet( const sInitData &init ) :
+dsFunction( init.clsAr, "setLinkVertexPositionSet", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsInt ); // link
+	p_AddParameter( init.clsStr ); // name
+}
+void deClassAnimator::nfSetLinkVertexPositionSet::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deAnimator &animator = *( ( ( sArNatDat* )p_GetNativeData( myself ) )->animator );
+	
+	const int index = rt->GetValue( 0 )->GetInt();
+	deAnimatorLink &link = *animator.GetLinkAt( index );
+	
+	link.SetVertexPositionSet( rt->GetValue( 1 )->GetString() );
+	
+	animator.NotifyLinkChangedAt( index );
+}
+
+// public func void setLinkVertexPositionSetValueRange( int link, float minimum, float maximum );
+deClassAnimator::nfSetLinkVertexPositionSetValueRange::nfSetLinkVertexPositionSetValueRange( const sInitData &init ) :
+dsFunction( init.clsAr, "setLinkVertexPositionSetValueRange", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsInt ); // link
+	p_AddParameter( init.clsFlt ); // minimum
+	p_AddParameter( init.clsFlt ); // maximum
+}
+void deClassAnimator::nfSetLinkVertexPositionSetValueRange::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deAnimator &animator = *( ( ( sArNatDat* )p_GetNativeData( myself ) )->animator );
+	
+	const int index = rt->GetValue( 0 )->GetInt();
+	deAnimatorLink &link = *animator.GetLinkAt( index );
+	
+	link.SetVertexPositionSetValueRange( rt->GetValue( 1 )->GetFloat(), rt->GetValue( 2 )->GetFloat() );
+	
+	animator.NotifyLinkChangedAt( index );
+}
+
+// public func void setLinkWrapY( int link, bool wrap );
+deClassAnimator::nfSetLinkWrapY::nfSetLinkWrapY( const sInitData &init ) :
+dsFunction( init.clsAr, "setLinkWrapY", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsInt ); // link
+	p_AddParameter( init.clsBool ); // wrap
+}
+void deClassAnimator::nfSetLinkWrapY::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deAnimator &animator = *( ( ( sArNatDat* )p_GetNativeData( myself ) )->animator );
+	
+	const int index = rt->GetValue( 0 )->GetInt();
+	animator.GetLinkAt( index )->SetWrapY( rt->GetValue( 1 )->GetBool() );
+	
+	animator.NotifyLinkChangedAt( index );
+}
+
 
 
 // public func int getRuleCount()
@@ -424,6 +549,31 @@ void deClassAnimator::nfRemoveAllBones::RunFunction( dsRunTime *rt, dsValue *mys
 
 
 
+// public func void addVertexPositionSet(String name)
+deClassAnimator::nfAddVertexPositionSet::nfAddVertexPositionSet( const sInitData &init ) :
+dsFunction( init.clsArR, "addVertexPositionSet", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsStr ); // bonename
+}
+void deClassAnimator::nfAddVertexPositionSet::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deAnimator &animator = *( ( ( sArNatDat* )p_GetNativeData( myself ) )->animator );
+	
+	animator.GetListVertexPositionSets().Add( rt->GetValue( 0 )->GetString() );
+	animator.NotifyVertexPositionSetsChanged();
+}
+
+// public func void removeAllVertexPositionSets()
+deClassAnimator::nfRemoveAllVertexPositionSets::nfRemoveAllVertexPositionSets( const sInitData &init ) :
+dsFunction( init.clsArR, "removeAllVertexPositionSets", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+}
+void deClassAnimator::nfRemoveAllVertexPositionSets::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deAnimator &animator = *( ( ( sArNatDat* )p_GetNativeData( myself ) )->animator );
+	
+	animator.GetListVertexPositionSets().RemoveAll();
+	animator.NotifyVertexPositionSetsChanged();
+}
+
+
+
 // public func int hashCode()
 deClassAnimator::nfHashCode::nfHashCode( const sInitData &init ) : dsFunction( init.clsAr,
 "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt ){
@@ -432,7 +582,7 @@ deClassAnimator::nfHashCode::nfHashCode( const sInitData &init ) : dsFunction( i
 void deClassAnimator::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
 	deAnimator *animator = ( ( sArNatDat* )p_GetNativeData( myself ) )->animator;
 	// hash code = memory location
-	rt->PushInt( ( intptr_t )animator );
+	rt->PushInt( ( int )( intptr_t )animator );
 }
 
 // public func bool equals( Object obj )
@@ -481,7 +631,7 @@ dsClass( "Animator", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED ){
 	// prepare
 	pDS = ds;
 	
-	// store informations into parser info
+	// store information into parser info
 	GetParserInfo()->SetParent( DENS_SCENERY );
 	GetParserInfo()->SetBase( "Object" );
 	
@@ -498,6 +648,8 @@ deClassAnimator::~deClassAnimator(){
 ///////////////
 
 void deClassAnimator::CreateClassMembers( dsEngine *engine ){
+	pClsAnimatorLinkBoneParameter = engine->GetClass( "Dragengine.Scenery.AnimatorLinkBoneParameter" );
+	
 	sInitData init;
 	
 	// store classes
@@ -513,6 +665,7 @@ void deClassAnimator::CreateClassMembers( dsEngine *engine ){
 	init.clsAni = pDS->GetClassAnimation();
 	init.clsCurveBezier = pDS->GetClassCurveBezier();
 	init.clsAnimatorCtrl = pDS->GetClassAnimatorController();
+	init.clsAnimatorLinkBoneParameter = pClsAnimatorLinkBoneParameter;
 	
 	// add functions
 	AddFunction( new nfNew( init ) );
@@ -535,6 +688,13 @@ void deClassAnimator::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfSetLinkController( init ) );
 	AddFunction( new nfSetLinkCurve( init ) );
 	AddFunction( new nfSetLinkRepeat( init ) );
+	AddFunction( new nfSetLinkBone( init ) );
+	AddFunction( new nfSetLinkBoneParameter( init ) );
+	AddFunction( new nfSetLinkBoneValueRange( init ) );
+	AddFunction( new nfSetLinkBoneValueRangeRotation( init ) );
+	AddFunction( new nfSetLinkVertexPositionSet( init ) );
+	AddFunction( new nfSetLinkVertexPositionSetValueRange( init ) );
+	AddFunction( new nfSetLinkWrapY( init ) );
 	
 	AddFunction( new nfGetRuleCount( init ) );
 	AddFunction( new nfAddRule( init ) );
@@ -544,6 +704,9 @@ void deClassAnimator::CreateClassMembers( dsEngine *engine ){
 	
 	AddFunction( new nfAddBone( init ) );
 	AddFunction( new nfRemoveAllBones( init ) );
+	
+	AddFunction( new nfAddVertexPositionSet( init ) );
+	AddFunction( new nfRemoveAllVertexPositionSets( init ) );
 	
 	AddFunction( new nfEquals( init ) );
 	AddFunction( new nfEquals2( init ) );

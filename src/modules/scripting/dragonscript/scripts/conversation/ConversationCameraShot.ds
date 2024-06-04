@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -71,379 +74,387 @@ class ConversationCameraShot
 	
 	
 	/** \brief Create conversation camera shot. */
-	public func new( StringID name )
+	public func new(StringID name)
 		if name == null
 			throw EInvalidParam.new()
 		end
 		
-		this.pName = name
-		this.pActorCount = 1
-		this.pOffsetCameraFrom = Vector.new()
-		this.pOffsetCameraTo = Vector.new()
-		this.pCameraOrbitFrom = Vector.new()
-		this.pCameraOrbitTo = Vector.new()
-		this.pCameraDistanceFrom = 0.5
-		this.pCameraDistanceTo = 0.5
-		this.pOffsetLookAtFrom = Vector.new()
-		this.pOffsetLookAtTo = Vector.new()
-		this.pPosFrom = Vector.new()
-		this.pPosTo = Vector.new()
-		this.pRotFrom = Vector.new()
-		this.pRotTo = Vector.new()
-		this.pTiltFrom = 0.0
-		this.pTiltTo = pTiltFrom
-		this.pFovFrom = 90.0
-		this.pFovTo = pFovFrom
-		this.pAlignTargets = false
-		this.pLockUpAxis = false
-		this.pRelativeToLookAt = false
-		this.pLockCameraTarget = true
-		this.pLockLookAtTarget = true
+		pName = name
+		pActorCount = 1
+		pOffsetCameraFrom = Vector.new()
+		pOffsetCameraTo = Vector.new()
+		pCameraOrbitFrom = Vector.new()
+		pCameraOrbitTo = Vector.new()
+		pCameraDistanceFrom = 0.5
+		pCameraDistanceTo = 0.5
+		pOffsetLookAtFrom = Vector.new()
+		pOffsetLookAtTo = Vector.new()
+		pPosFrom = Vector.new()
+		pPosTo = Vector.new()
+		pRotFrom = Vector.new()
+		pRotTo = Vector.new()
+		pTiltFrom = 0
+		pTiltTo = pTiltFrom
+		pFovFrom = 90
+		pFovTo = pFovFrom
+		pAlignTargets = false
+		pLockUpAxis = false
+		pRelativeToLookAt = false
+		pLockCameraTarget = true
+		pLockLookAtTarget = true
 	end
 	
 	
 	
 	/** \brief Name. */
 	public func StringID getName()
-		return this.pName
+		return pName
 	end
 	
 	
 	
 	/** \brief Number of actors required for this camera shot. */
 	public func int getActorCount()
-		return this.pActorCount
+		return pActorCount
 	end
 	
 	/** \brief Set number of actors required for this camera shot. */
-	public func void setActorCount( int count )
+	public func void setActorCount(int count)
 		if count < 0
 			throw EInvalidParam.new()
 		end
-		this.pActorCount = count
+		pActorCount = count
 	end
 	
 	
 	
 	/** \brief Start camera offset. */
 	public func Vector getOffsetCameraFrom()
-		return this.pOffsetCameraFrom
+		return pOffsetCameraFrom
 	end
 	
 	/** \brief Set start camera offset. */
-	public func void setOffsetCameraFrom( Vector position )
+	public func void setOffsetCameraFrom(Vector position)
 		if position == null
 			throw EInvalidParam.new()
 		end
-		this.pOffsetCameraFrom = position
+		pOffsetCameraFrom = position
 	end
 	
 	/** \brief End camera position. */
 	public func Vector getOffsetCameraTo()
-		return this.pOffsetCameraTo
+		return pOffsetCameraTo
 	end
 	
 	/** \brief Set end camera position. */
-	public func void setOffsetCameraTo( Vector position )
+	public func void setOffsetCameraTo(Vector position)
 		if position == null
 			throw EInvalidParam.new()
 		end
-		this.pOffsetCameraTo = position
+		pOffsetCameraTo = position
 	end
 	
 	/** \brief Start camera orbit rotation in degrees. */
 	public func Vector getCameraOrbitFrom()
-		return this.pCameraOrbitFrom
+		return pCameraOrbitFrom
 	end
 	
 	/** \brief Set start camera orbit rotation in degrees. */
-	public func void setCameraOrbitFrom( Vector rotation )
+	public func void setCameraOrbitFrom(Vector rotation)
 		if rotation == null
 			throw EInvalidParam.new()
 		end
-		this.pCameraOrbitFrom = rotation
+		pCameraOrbitFrom = rotation
 	end
 	
 	/** \brief End camera orbit rotation. */
 	public func Vector getCameraOrbitTo()
-		return this.pCameraOrbitTo
+		return pCameraOrbitTo
 	end
 	
 	/** \brief Set end camera orbit rotation. */
-	public func void setCameraOrbitTo( Vector rotation )
+	public func void setCameraOrbitTo(Vector rotation)
 		if rotation == null
 			throw EInvalidParam.new()
 		end
-		this.pCameraOrbitTo = rotation
+		pCameraOrbitTo = rotation
 	end
 	
 	/** \brief Start camera orbit distance. */
 	public func float getCameraDistanceFrom()
-		return this.pCameraDistanceFrom
+		return pCameraDistanceFrom
 	end
 	
 	/** \brief Set start camera orbit distance. */
-	public func void setCameraDistanceFrom( float distance )
-		this.pCameraDistanceFrom = distance
+	public func void setCameraDistanceFrom(float distance)
+		pCameraDistanceFrom = distance
 	end
 	
 	/** \brief End camera orbit distance. */
 	public func float getCameraDistanceTo()
-		return this.pCameraDistanceTo
+		return pCameraDistanceTo
 	end
 	
 	/** \brief Set end camera orbit distance. */
-	public func void setCameraDistanceTo( float distance )
-		this.pCameraDistanceTo = distance
+	public func void setCameraDistanceTo(float distance)
+		pCameraDistanceTo = distance
 	end
 	
 	
 	
 	/** \brief Start look-at position. */
 	public func Vector getOffsetLookAtFrom()
-		return this.pOffsetLookAtFrom
+		return pOffsetLookAtFrom
 	end
 	
 	/** \brief Set start look-at position. */
-	public func void setOffsetLookAtFrom( Vector position )
+	public func void setOffsetLookAtFrom(Vector position)
 		if position == null
 			throw EInvalidParam.new()
 		end
-		this.pOffsetLookAtFrom = position
+		pOffsetLookAtFrom = position
 	end
 	
 	/** \brief End look-at position. */
 	public func Vector getOffsetLookAtTo()
-		return this.pOffsetLookAtTo
+		return pOffsetLookAtTo
 	end
 	
 	/** \brief Set end look-at position. */
-	public func void setOffsetLookAtTo( Vector position )
+	public func void setOffsetLookAtTo(Vector position)
 		if position == null
 			throw EInvalidParam.new()
 		end
-		this.pOffsetLookAtTo = position
+		pOffsetLookAtTo = position
 	end
 	
 	
 	
 	/** \brief Start position. */
 	public func Vector getPositionFrom()
-		return this.pPosFrom
+		return pPosFrom
 	end
 	
 	/** \brief Set start position. */
-	public func void setPositionFrom( Vector position )
+	public func void setPositionFrom(Vector position)
 		if position == null
 			throw EInvalidParam.new()
 		end
-		this.pPosFrom = position
+		pPosFrom = position
 	end
 	
 	/** \brief End position. */
 	public func Vector getPositionTo()
-		return this.pPosTo
+		return pPosTo
 	end
 	
 	/** \brief Set end position. */
-	public func void setPositionTo( Vector position )
+	public func void setPositionTo(Vector position)
 		if position == null
 			throw EInvalidParam.new()
 		end
-		this.pPosTo = position
+		pPosTo = position
 	end
 	
 	/** \brief Start orbit rotation in degrees. */
 	public func Vector getRotationFrom()
-		return this.pRotFrom
+		return pRotFrom
 	end
 	
 	/** \brief Set start orbit rotation in degrees. */
-	public func void setRotationFrom( Vector rotation )
+	public func void setRotationFrom(Vector rotation)
 		if rotation == null
 			throw EInvalidParam.new()
 		end
-		this.pRotFrom = rotation
+		pRotFrom = rotation
 	end
 	
 	/** \brief End camera rotation. */
 	public func Vector getRotationTo()
-		return this.pRotTo
+		return pRotTo
 	end
 	
 	/** \brief Set end camera rotation. */
-	public func void setRotationTo( Vector rotation )
+	public func void setRotationTo(Vector rotation)
 		if rotation == null
 			throw EInvalidParam.new()
 		end
-		this.pRotTo = rotation
+		pRotTo = rotation
 	end
 	
 	/** \brief Start camera tilt in degrees. */
 	public func float getTiltFrom()
-		return this.pTiltFrom
+		return pTiltFrom
 	end
 	
 	/** \brief Set start camera tilt in degrees. */
-	public func void setTiltFrom( float tilt )
-		this.pTiltFrom = tilt
+	public func void setTiltFrom(float tilt)
+		pTiltFrom = tilt
 	end
 	
 	/** \brief End camera tilt in degrees. */
 	public func float getTiltTo()
-		return this.pTiltTo
+		return pTiltTo
 	end
 	
 	/** \brief Set end camera tilt in degrees. */
-	public func void setTiltTo( float tilt )
-		this.pTiltTo = tilt
+	public func void setTiltTo(float tilt)
+		pTiltTo = tilt
 	end
 	
 	/** \brief Start camera fov in degrees. */
 	public func float getFovFrom()
-		return this.pFovFrom
+		return pFovFrom
 	end
 	
 	/** \brief Set start camera fov in degrees. */
-	public func void setFovFrom( float fov )
-		this.pFovFrom = DEMath.clamp( fov, 10.0, 160.0 )
+	public func void setFovFrom(float fov)
+		pFovFrom = DEMath.clamp(fov, 10.0, 160.0)
 	end
 	
 	/** \brief End camera fov in degrees. */
 	public func float getFovTo()
-		return this.pFovTo
+		return pFovTo
 	end
 	
 	/** \brief Set end camera fov in degrees. */
-	public func void setFovTo( float fov )
-		this.pFovTo = DEMath.clamp( fov, 10.0, 160.0 )
+	public func void setFovTo(float fov)
+		pFovTo = DEMath.clamp(fov, 10.0, 160.0)
 	end
 	
 	
 	
 	/** \brief Targets are aligned along the conversation coordinate system. */
 	public func bool getAlignTargets()
-		return this.pAlignTargets
+		return pAlignTargets
 	end
 	
 	/** \brief Set if targets are aligned along the conversation coordinate system. */
-	public func void setAlignTargets( bool alignTargets )
-		this.pAlignTargets = alignTargets
+	public func void setAlignTargets(bool alignTargets)
+		pAlignTargets = alignTargets
 	end
 	
 	/** \brief Up axis of targets is locked during aligning. */
 	public func bool getLockUpAxis()
-		return this.pLockUpAxis
+		return pLockUpAxis
 	end
 	
 	/** \brief Set if up axis of targets is locked during aligning. */
-	public func void setLockUpAxis( bool lockUpAxis )
-		this.pLockUpAxis = lockUpAxis
+	public func void setLockUpAxis(bool lockUpAxis)
+		pLockUpAxis = lockUpAxis
 	end
 	
 	/** \brief Camera is relative to the camera target or the look-at target. */
 	public func bool getRelativeToLookAt()
-		return this.pRelativeToLookAt
+		return pRelativeToLookAt
 	end
 	
 	/** \brief Set if camera is relative to the camera target or the look-at target. */
-	public func void setRelativeToLookAt( bool relativeToLookAt )
-		this.pRelativeToLookAt = relativeToLookAt
+	public func void setRelativeToLookAt(bool relativeToLookAt)
+		pRelativeToLookAt = relativeToLookAt
 	end
 	
 	/** \brief Camera target position is locked during the camera shot. */
 	public func bool getLockCameraTarget()
-		return this.pLockCameraTarget
+		return pLockCameraTarget
 	end
 	
 	/** \brief Set if camera target position is locked during the camera shot. */
-	public func void setLockCameraTarget( bool lock )
-		this.pLockCameraTarget = lock
+	public func void setLockCameraTarget(bool lock)
+		pLockCameraTarget = lock
 	end
 	
 	/** \brief Look-at target position is locked during the camera shot. */
 	public func bool getLockLookAtTarget()
-		return this.pLockLookAtTarget
+		return pLockLookAtTarget
 	end
 	
 	/** \brief Set if look-at target position is locked during the camera shot. */
-	public func void setLockLookAtTarget( bool lock )
-		this.pLockLookAtTarget = lock
+	public func void setLockLookAtTarget(bool lock)
+		pLockLookAtTarget = lock
 	end
 	
 	
 	
 	/** \brief Curve. */
-	public func CurveBezier getParameterCurve( Parameter parameter )
-		return this.pCurves.getAt( parameter.order() ) cast CurveBezier
+	public func CurveBezier getParameterCurve(Parameter parameter)
+		return pCurves.getAt(parameter.order()) cast CurveBezier
 	end
 	
 	
 	
 	/** \brief Read from file. */
-	static public func ConversationCameraShot readFromFile( FileReader reader )
-		var StringID name = StringID.new( reader.readString8() )
-		var ConversationCameraShot shot = ConversationCameraShot.new( name )
-		
-		var PersistencyFlags flags = PersistencyFlags.new( 5, reader )
-		shot.pAlignTargets = flags.getAt( 0 )
-		shot.pLockUpAxis = flags.getAt( 1 )
-		shot.pRelativeToLookAt = flags.getAt( 2 )
-		shot.pLockCameraTarget = flags.getAt( 3 )
-		shot.pLockLookAtTarget = flags.getAt( 4 )
-		
-		shot.pActorCount = reader.readUShort()
-		shot.pOffsetCameraFrom = Vector.readFromFile( reader )
-		shot.pOffsetCameraTo = Vector.readFromFile( reader )
-		shot.pCameraOrbitFrom = Vector.readFromFile( reader )
-		shot.pCameraOrbitTo = Vector.readFromFile( reader )
-		shot.pCameraDistanceFrom = reader.readFloat()
-		shot.pCameraDistanceTo = reader.readFloat()
-		shot.pOffsetLookAtFrom = Vector.readFromFile( reader )
-		shot.pOffsetLookAtTo = Vector.readFromFile( reader )
-		shot.pPosFrom = Vector.readFromFile( reader )
-		shot.pPosTo = Vector.readFromFile( reader )
-		shot.pRotFrom = Vector.readFromFile( reader )
-		shot.pRotTo = Vector.readFromFile( reader )
-		shot.pTiltFrom = reader.readFloat()
-		shot.pTiltTo = reader.readFloat()
-		shot.pFovFrom = reader.readFloat()
-		shot.pFovTo = reader.readFloat()
-		
-		// Array pCurves
-		
-		return shot
+	static public func ConversationCameraShot readFromFile(FileReader reader)
+		select reader.readByte() // version
+		case 0
+			var StringID name = StringID.new(reader.readString8())
+			var ConversationCameraShot shot = ConversationCameraShot.new(name)
+			
+			var PersistencyFlags flags = PersistencyFlags.new(5, reader)
+			shot.pAlignTargets = flags.getAt(0)
+			shot.pLockUpAxis = flags.getAt(1)
+			shot.pRelativeToLookAt = flags.getAt(2)
+			shot.pLockCameraTarget = flags.getAt(3)
+			shot.pLockLookAtTarget = flags.getAt(4)
+			
+			shot.pActorCount = reader.readUShort()
+			shot.pOffsetCameraFrom = Vector.readFromFile(reader)
+			shot.pOffsetCameraTo = Vector.readFromFile(reader)
+			shot.pCameraOrbitFrom = Vector.readFromFile(reader)
+			shot.pCameraOrbitTo = Vector.readFromFile(reader)
+			shot.pCameraDistanceFrom = reader.readFloat()
+			shot.pCameraDistanceTo = reader.readFloat()
+			shot.pOffsetLookAtFrom = Vector.readFromFile(reader)
+			shot.pOffsetLookAtTo = Vector.readFromFile(reader)
+			shot.pPosFrom = Vector.readFromFile(reader)
+			shot.pPosTo = Vector.readFromFile(reader)
+			shot.pRotFrom = Vector.readFromFile(reader)
+			shot.pRotTo = Vector.readFromFile(reader)
+			shot.pTiltFrom = reader.readFloat()
+			shot.pTiltTo = reader.readFloat()
+			shot.pFovFrom = reader.readFloat()
+			shot.pFovTo = reader.readFloat()
+			
+			// Array pCurves
+			
+			return shot
+			
+		else
+			throw EInvalidParam.new("unsupported version")
+		end
 	end
 	
 	/** \brief Write to file. */
-	public func void writeToFile( FileWriter writer )
-		writer.writeString8( this.pName.toString() )
+	public func void writeToFile(FileWriter writer)
+		writer.writeByte(0) // version
 		
-		var PersistencyFlags flags = PersistencyFlags.new( 5 )
-		flags.setAt( 0, this.pAlignTargets )
-		flags.setAt( 1, this.pLockUpAxis )
-		flags.setAt( 2, this.pRelativeToLookAt )
-		flags.setAt( 3, this.pLockCameraTarget )
-		flags.setAt( 4, this.pLockLookAtTarget )
-		flags.writeToFile( writer )
+		writer.writeString8(pName.toString())
 		
-		writer.writeUShort( this.pActorCount )
-		this.pOffsetCameraFrom.writeToFile( writer )
-		this.pOffsetCameraTo.writeToFile( writer )
-		this.pCameraOrbitFrom.writeToFile( writer )
-		this.pCameraOrbitTo.writeToFile( writer )
-		writer.writeFloat( this.pCameraDistanceFrom )
-		writer.writeFloat( this.pCameraDistanceTo )
-		this.pOffsetLookAtFrom.writeToFile( writer )
-		this.pOffsetLookAtTo.writeToFile( writer )
-		this.pPosFrom.writeToFile( writer )
-		this.pPosTo.writeToFile( writer )
-		this.pRotFrom.writeToFile( writer )
-		this.pRotTo.writeToFile( writer )
-		writer.writeFloat( this.pTiltFrom )
-		writer.writeFloat( this.pTiltTo )
-		writer.writeFloat( this.pFovFrom )
-		writer.writeFloat( this.pFovTo )
+		var PersistencyFlags flags = PersistencyFlags.new(5)
+		flags.setAt(0, pAlignTargets)
+		flags.setAt(1, pLockUpAxis)
+		flags.setAt(2, pRelativeToLookAt)
+		flags.setAt(3, pLockCameraTarget)
+		flags.setAt(4, pLockLookAtTarget)
+		flags.writeToFile(writer)
+		
+		writer.writeUShort(pActorCount)
+		pOffsetCameraFrom.writeToFile(writer)
+		pOffsetCameraTo.writeToFile(writer)
+		pCameraOrbitFrom.writeToFile(writer)
+		pCameraOrbitTo.writeToFile(writer)
+		writer.writeFloat(pCameraDistanceFrom)
+		writer.writeFloat(pCameraDistanceTo)
+		pOffsetLookAtFrom.writeToFile(writer)
+		pOffsetLookAtTo.writeToFile(writer)
+		pPosFrom.writeToFile(writer)
+		pPosTo.writeToFile(writer)
+		pRotFrom.writeToFile(writer)
+		pRotTo.writeToFile(writer)
+		writer.writeFloat(pTiltFrom)
+		writer.writeFloat(pTiltTo)
+		writer.writeFloat(pFovFrom)
+		writer.writeFloat(pFovTo)
 		
 		// Array pCurves
 	end

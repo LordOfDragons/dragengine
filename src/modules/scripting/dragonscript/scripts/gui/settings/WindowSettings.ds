@@ -1,0 +1,567 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Gui
+
+pin Dragengine.Gui.Events
+pin Dragengine.Gui.Layouts
+pin Dragengine.Utils.Text
+
+
+/**
+ * \brief Settings window.
+ * 
+ * Provides typical settings dialog window. The window can be customized by adding settings
+ * sheets. Some common setting sheets can be added using WSSModuleParameters or WSSEditBindings.
+ * Each sheet has an accompanying toggle button which is used to show the panel. The buttons
+ * can be added to any of the border areas around the panels. In addition the typical
+ * "Save" and "Cancel" buttons can be added to any of the button areas.
+ * 
+ * These designer selectors can be used to style the window and the content inside:
+ * - "Window.{Base}": Settings window
+ * - "Panel.{Base}.Sheets": Panel containing all settings panels
+ * - "Panel.{Base}.Buttons.Top": Top buttons panel
+ * - "Panel.{Base}.Buttons.Bottom": Bottom buttons panel
+ * - "Panel.{Base}.Buttons.Left": Left buttons panel
+ * - "Panel.{Base}.Buttons.Right": Right buttons panel
+ * - "Panel.{Base}.Buttons.Dialog": Dialog buttons panel at the bottom
+ * - "Button.{Base}.Sheet": Button to activate a sheet
+ * - "Button.{Base}.Save": Button to save and close window
+ * - "Button.{Base}.Reset": Button to reset current sheet
+ * - "Button.{Base}.Cancel": Button to discard changes and close window
+ * 
+ * With "{Base}" matching the designer selector set for the window. By default
+ * "{Base}" is "Window.Settings"
+ */
+class WindowSettings extends WindowModal
+	/** \brief Action saving settings and closing dialog. */
+	protected class ActionSave implements ActionListener
+		private var WindowSettings pWindow
+		
+		public func new(WindowSettings window)
+			pWindow = window
+		end
+		
+		public func void onAction(ActionEvent event)
+			pWindow.saveAndClose()
+		end
+	end
+	
+	/** \brief Action discarding changes in the visible sheet. */
+	protected class ActionReset implements ActionListener
+		private var WindowSettings pWindow
+		
+		public func new(WindowSettings window)
+			pWindow = window
+		end
+		
+		public func void onAction(ActionEvent event)
+			var Sheet sheet = pWindow.getActiveSheet()
+			if sheet != null
+				sheet.getSheet().resetSettings(sheet.getWidget())
+			end
+		end
+	end
+	
+	/** \brief Action discarding changes and closing dialog. */
+	protected class ActionCancel implements ActionListener
+		private var WindowSettings pWindow
+		
+		public func new(WindowSettings window)
+			pWindow = window
+		end
+		
+		public func void onAction(ActionEvent event)
+			pWindow.cancelAndClose()
+		end
+	end
+	
+	/** \brief Action switching active sheet. */
+	protected class ActionSetActiveSheet implements ActionListener
+		private var WindowSettings pWindow
+		private var Sheet pSheet
+		
+		public func new(WindowSettings window, Sheet sheet)
+			if window == null
+				throw ENullPointer.new("window")
+			end
+			if sheet == null
+				throw ENullPointer.new("sheet")
+			end
+			
+			pWindow = window
+			pSheet = sheet
+		end
+		
+		public func void onAction(ActionEvent event)
+			pWindow.setActiveSheet(pSheet)
+		end
+	end
+	
+	/** \brief Sheet. */
+	public class Sheet
+		private var WindowSettingsSheet pSheet
+		private var Widget pWidget
+		private var ToggleButton pButton
+		
+		/** \brief Create sheet. */
+		public func new(WindowSettingsSheet sheet, Widget widget, ToggleButton button)
+			pSheet = sheet
+			pWidget = widget
+			pButton = button
+		end
+		
+		/** \brief Sheet interface. */
+		public func WindowSettingsSheet getSheet()
+			return pSheet
+		end
+		
+		/** \brief Sheet widget. */
+		public func Widget getWidget()
+			return pWidget
+		end
+		
+		/** \brief Toggle button. */
+		public func ToggleButton getButton()
+			return pButton
+		end
+	end
+	
+	/** \brief Panel to add sheet buttons to. */
+	public enum SheetButtonArea
+		/** \brief Add to top panel. */
+		top
+		
+		/** \brief Add to bottom panel. */
+		bottom
+		
+		/** \brief Add to left panel. */
+		left
+		
+		/** \brief Add to right panel. */
+		right
+	end
+	
+	
+	
+	private var SwitchPanel pPanelSheets
+	private var Panel pPanelButtonsTop
+	private var Panel pPanelButtonsBottom
+	private var Panel pPanelButtonsLeft
+	private var Panel pPanelButtonsRight
+	private var Panel pPanelButtonsDialog
+	private var Array pSheets
+	private var ToggleButtonGroup pButtonGroup
+	private var String pDesignerSelectorSheetButton
+	private var SheetButtonArea pSheetButtonArea
+	private var Button pButtonSave
+	private var Button pButtonCancel
+	private var Button pButtonReset
+	private var Sheet pActiveSheet
+	
+	
+	
+	/** \brief Create settings window. */
+	public func new(int width, int height) this(0, 0, width, height)
+	end
+	
+	/** \brief Create settings window. */
+	public func new(Point size) this(0, 0, size.getX(), size.getY())
+	end
+	
+	/** \brief Create settings window. */
+	public func new(int x, int y, int width, int height) super(x, y, width, height)
+		pSheets = Array.new()
+		pButtonGroup = ToggleButtonGroup.new()
+		pSheetButtonArea = SheetButtonArea.top
+		
+		runWhileBlockingLayout(block
+			createContent()
+			setDesignerSelectorAll("Settings")
+		end)
+	end
+	
+	
+	
+	/** \brief Disposes of settings window. */
+	public func void dispose()
+		pPanelSheets = null
+		pPanelButtonsTop = null
+		pPanelButtonsBottom = null
+		pPanelButtonsLeft = null
+		pPanelButtonsRight = null
+		pPanelButtonsDialog = null
+		pSheets = null
+		pButtonGroup = null
+		pButtonSave = null
+		pButtonCancel = null
+		pButtonReset = null
+		pActiveSheet = null
+		
+		super.dispose()
+	end
+	
+	
+	
+	/**
+	 * \brief Set designer selector using prefix.
+	 * 
+	 * Updates selectors like this:
+	 * - "Window.{Base}": Settings window
+	 * - "Panel.{Base}.Sheets": Panel containing all settings panels
+	 * - "Panel.{Base}.Buttons.Top": Top buttons panel
+	 * - "Panel.{Base}.Buttons.Bottom": Bottom buttons panel
+	 * - "Panel.{Base}.Buttons.Left": Left buttons panel
+	 * - "Panel.{Base}.Buttons.Right": Right buttons panel
+	 * - "Panel.{Base}.Buttons.Dialog": Dialog buttons panel at the bottom
+	 * - "Button.{Base}.Sheet": Button to activate a sheet
+	 * - "Button.{Base}.Save": Button to save and close window
+	 * - "Button.{Base}.Reset": Button to reset current sheet
+	 * - "Button.{Base}.Cancel": Button to discard changes and close window
+	 */
+	public func void setDesignerSelectorAll(String base)
+		var String basePanel = "Panel." + base
+		var String basePanelButtons = basePanel + ".Buttons"
+		var String baseButton = "Button." + base
+		pDesignerSelectorSheetButton = baseButton + ".Sheet"
+		
+		setDesignerSelector("Window." + base)
+		pPanelSheets.setDesignerSelector(basePanel + ".Sheets")
+		pPanelButtonsTop.setDesignerSelector(basePanelButtons + ".Top")
+		pPanelButtonsBottom.setDesignerSelector(basePanelButtons + ".Bottom")
+		pPanelButtonsLeft.setDesignerSelector(basePanelButtons + ".Left")
+		pPanelButtonsRight.setDesignerSelector(basePanelButtons + ".Right")
+		pPanelButtonsDialog.setDesignerSelector(basePanelButtons + ".Dialog")
+		pButtonSave.setDesignerSelector(baseButton + ".Save")
+		pButtonReset.setDesignerSelector(baseButton + ".Reset")
+		pButtonCancel.setDesignerSelector(baseButton + ".Cancel")
+		
+		pSheets.forEach(block Sheet each
+			each.getButton().setDesignerSelector(pDesignerSelectorSheetButton)
+		end)
+	end
+	
+	
+	
+	/** \brief Designer selector to use for added buttons. */
+	public func String getDesignerSelectorSheetButton()
+		return pDesignerSelectorSheetButton
+	end
+	
+	/** \brief Set designer selector to use for added buttons. */
+	public func void setDesignerSelectorSheetButton(String selector)
+		if selector == null
+			throw ENullPointer.new("selector")
+		end
+		
+		pDesignerSelectorSheetButton = selector
+	end
+	
+	/** \brief Panel to add sheet buttons to. */
+	public func SheetButtonArea getSheetButtonArea()
+		return pSheetButtonArea
+	end
+	
+	/** \brief Set panel to add sheet buttons to. */
+	public func void setSheetButtonArea(SheetButtonArea area)
+		if area == null
+			throw ENullPointer.new("area")
+		end
+		
+		pSheetButtonArea = area
+	end
+	
+	
+	
+	/** \brief Count of sheets. */
+	public func int getSheetCount()
+		return pSheets.getCount()
+	end
+	
+	/** \brief Sheet at index. */
+	public func Sheet getSheetAt(int index)
+		return pSheets.getAt(index) cast Sheet
+	end
+	
+	/** \brief Sheet with identifier or null if absent. */
+	public func Sheet getSheetWithIdentifier(String identifier)
+		return pSheets.find(block Sheet each
+			return each.getSheet().getIdentifier().equals(identifier)
+		end) cast Sheet
+	end
+	
+	/**
+	 * \brief Visit sheets with block.
+	 * 
+	 * Block receives as first argument Sheet.
+	 */
+	public func void forEachSheet(Block ablock)
+		pSheets.forEach(ablock)
+	end
+	
+	/**
+	 * \brief Add sheet.
+	 * 
+	 * Returns added sheet.
+	 */
+	public func Sheet addSheet(WindowSettingsSheet sheet)
+		if getSheetWithIdentifier(sheet.getIdentifier()) != null
+			throw EInvalidParam.new("sheet with identifier is present")
+		end
+		
+		var Widget widget
+		var ToggleButton button
+		var Sheet realSheet
+		
+		try
+			widget = sheet.createWidget()
+			if widget == null
+				throw ENullPointer.new("sheet.createWidget")
+			end
+			
+			button = createSheetButton(sheet)
+			if button == null
+				throw ENullPointer.new("createSheetButton")
+			end
+			
+			realSheet = Sheet.new(sheet, widget, button)
+			
+			button.addActionListener(ActionSetActiveSheet.new(this, realSheet))
+			
+			runWhileBlockingLayout(block
+				addSheetWidget(sheet, widget)
+				addSheetButton(sheet, button)
+				button.setButtonGroup(pButtonGroup)
+			end)
+			doLayout()
+			
+			pSheets.add(realSheet)
+			
+			if pActiveSheet == null
+				setActiveSheet(realSheet)
+			end
+			
+			return realSheet
+			
+		catch Exception e
+			if widget != null
+				widget.safeDispose()
+			end
+			if button != null
+				button.safeDispose()
+			end
+			throw
+		end
+	end
+	
+	/**
+	 * Remove all sheets.
+	 */
+	public func void removeAllSheets()
+		runWhileBlockingLayout(block
+			pSheets.forEach(block Sheet each
+				each.getWidget().safeDispose()
+				each.getButton().safeDispose()
+			end)
+			pSheets.removeAll()
+			pActiveSheet = null
+		end)
+		
+		doLayout()
+	end
+	
+	/**
+	 * \brief Active sheet.
+	 */
+	public func Sheet getActiveSheet()
+		return pActiveSheet
+	end
+	
+	/**
+	 * \brief Set acitve sheet.
+	 */
+	public func void setActiveSheet(Sheet sheet)
+		if sheet == pActiveSheet
+			return
+		end
+		
+		if not pSheets.has(sheet)
+			throw EInvalidParam.new("sheet absent")
+		end
+		
+		pPanelSheets.getModel().setValue(pPanelSheets.indexOfWidget(sheet.getWidget()))
+		sheet.getButton().setToggled(true)
+		
+		pActiveSheet = sheet
+	end
+	
+	
+	
+	/**
+	 * Save changes and close dialog.
+	 */
+	public func void saveAndClose()
+		saveSettings()
+		close()
+	end
+	
+	/**
+	 * Discard changes and close dialog.
+	 */
+	public func void cancelAndClose()
+		close()
+	end
+	
+	
+	
+	/** \brief Save settings in all sheets. */
+	public func void saveSettings()
+		pSheets.forEach(block Sheet each
+			each.getSheet().saveSettings(each.getWidget())
+		end)
+	end
+	
+	/** \brief Reset settings in all sheets. */
+	public func void resetSettings()
+		pSheets.forEach(block Sheet each
+			each.getSheet().resetSettings(each.getWidget())
+		end)
+	end
+	
+	
+	
+	/** \brief Sheet switcher. */
+	protected func SwitchPanel getPanelSheets()
+		return pPanelSheets
+	end
+	
+	/** \brief Top button panel. */
+	protected func Panel getPanelButtonsTop()
+		return pPanelButtonsTop
+	end
+	
+	/** \brief Bottom button panel. */
+	protected func Panel getPanelButtonsBottom()
+		return pPanelButtonsBottom
+	end
+	
+	/** \brief Left button panel. */
+	protected func Panel getPanelButtonsLeft()
+		return pPanelButtonsLeft
+	end
+	
+	/** \brief Right button panel. */
+	protected func Panel getPanelButtonsRight()
+		return pPanelButtonsRight
+	end
+	
+	/** \brief Dialog button panel. */
+	protected func Panel getPanelButtonsDialog()
+		return pPanelButtonsDialog
+	end
+	
+	/** \brief Sheet button toggle group. */
+	protected func ToggleButtonGroup getButtonGroup()
+		return pButtonGroup
+	end
+	
+	/**
+	 * \brief Create content.
+	 * \warning Called from constructor wrapped by runWhileBlockingLayout.
+	 */
+	protected func void createContent()
+		setLayout(BorderLayout.new())
+		setCanMinimize(false)
+		setCanClose(false)
+		setTitle("@UI.Settings.Title")
+		
+		addWidget(Panel.new(BorderLayout.new(), block Panel panel
+			pPanelSheets = SwitchPanel.new()
+			panel.addWidget(pPanelSheets, BorderLayout.Area.content)
+			
+			pPanelButtonsTop = Panel.new(FlowLayout.new(LayoutAxis.x))
+			panel.addWidget(pPanelButtonsTop, BorderLayout.Area.top)
+			
+			pPanelButtonsBottom = Panel.new(FlowLayout.new(LayoutAxis.x))
+			panel.addWidget(pPanelButtonsBottom, BorderLayout.Area.bottom)
+			
+			pPanelButtonsLeft = Panel.new(FlowLayout.new(LayoutAxis.y))
+			panel.addWidget(pPanelButtonsLeft, BorderLayout.Area.left)
+			
+			pPanelButtonsRight = Panel.new(FlowLayout.new(LayoutAxis.y))
+			panel.addWidget(pPanelButtonsRight, BorderLayout.Area.right)
+		end), BorderLayout.Area.content)
+		
+		pPanelButtonsDialog = Panel.new(CentrizedBoxLayout.new(LayoutAxis.x), block Panel panel
+			pButtonSave = Button.new("@UI.Settings.Save", ActionSave.new(this))
+			panel.addWidget(pButtonSave)
+			
+			pButtonReset = Button.new("@UI.Settings.Reset", ActionReset.new(this))
+			panel.addWidget(pButtonReset)
+			
+			pButtonCancel = Button.new("@UI.Settings.Cancel", ActionCancel.new(this))
+			panel.addWidget(pButtonCancel)
+		end)
+		addWidget(pPanelButtonsDialog, BorderLayout.Area.bottom)
+	end
+	
+	/**
+	 * \brief Create sheet toggle button.
+	 * 
+	 * Implementation has to set designer getDesignerSelectorSheetButton().
+	 */
+	protected func ToggleButton createSheetButton(WindowSettingsSheet sheet)
+		var ToggleButton button = ToggleButton.new(sheet.getTitle())
+		button.setDesignerSelector(pDesignerSelectorSheetButton)
+		return button
+	end
+	
+	/**
+	 * \brief Add sheet widget to sheet panel.
+	 */
+	protected func void addSheetWidget(WindowSettingsSheet sheet, Widget widget)
+		pPanelSheets.addWidget(widget)
+	end
+	
+	/**
+	 * \brief Add sheet button to sheet button panel.
+	 * 
+	 * Adds button to panel defined by getSheetButtonArea().
+	 */
+	protected func void addSheetButton(WindowSettingsSheet sheet, ToggleButton button)
+		select pSheetButtonArea
+		case SheetButtonArea.top
+			pPanelButtonsTop.addWidget(button)
+			
+		case SheetButtonArea.bottom
+			pPanelButtonsBottom.addWidget(button)
+			
+		case SheetButtonArea.left
+			pPanelButtonsLeft.addWidget(button)
+			
+		case SheetButtonArea.right
+			pPanelButtonsRight.addWidget(button)
+		end
+	end
+end

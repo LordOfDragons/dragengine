@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Bullet Physics Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <math.h>
@@ -64,6 +67,9 @@
 #include "BulletSoftBody/btSoftBodyRigidBodyCollisionConfiguration.h"
 #include "BulletSoftBody/btDefaultSoftBodySolver.h"
 #include "BulletSoftBody/btSoftBody.h"
+#ifndef BT_NO_PROFILE
+	#include "LinearMath/btQuickprof.h"
+#endif
 
 #include <dragengine/parallel/deParallelProcessing.h>
 #include <dragengine/resources/collider/deCollider.h>
@@ -141,11 +147,15 @@ pUpdateOctreeColliders( NULL ),
 pUpdateOctreeColliderCount( 0 ),
 pUpdateOctreeColliderSize( 0 ),
 
+// max steps = max time (0.1s) divided by frquency (1/60) = 6
 // erwin mentioned up to (10, 1/240)
-pSimMaxSubStep( 500 ),
-pSimTimeStep( 1.0f / 60.0f ),
+// pSimMaxSubStep( 6 ),
+// pSimTimeStep( 1.0f / 60.0f ),
+pSimMaxSubStep( 10 ),
+pSimTimeStep( 1.0f / 120.0f ),
 
-pDynCollisionVelocityThreshold( 0.0f )
+pDynCollisionVelocityThreshold( 0.0f ),
+pProcessingPhysics( false )
 {
 	// init
 	try{
@@ -551,107 +561,14 @@ void debpWorld::ProcessPhysics( float elapsed ){
 #endif
 	
 DEBUG_RESET_TIMERS;
-	// prepare for detection
-	pPrepareDetection( elapsed );
-DEBUG_PRINT_TIMER( "Prepare Detection" );
-	
-	// process kinematic physics. this moves collider with kinematic response type
-	// first along their velocity and then along the gravity. colliders are moved
-	// one by one. this is not the best solution yet but it works for the time
-	// being. one of the main problems is that if a collider has been moved already
-	// and then is altered by a collision later on it is not processed again. one
-	// solution would be to use a processed flag or list and re-process colliders
-	// if they get touched during collision detection.
-	if( elapsed > 1e-6f ){
-		pColInfo->Clear();
+	try{
+		pProcessPhysics( elapsed );
+		pProcessingPhysics = false;
 		
-		UpdateOctrees(); // deprecated
-		UpdateDynWorldAABBs();
-		
-		debpDebugInformation *debugInfo = NULL;
-		if( pBullet.GetDebug().GetEnabled() ){
-			debugInfo = pBullet.GetDebug().GetDIColliderDetectCustomCollision();
-			pPerfTimer.Reset();
-		}
-		
-		int i;
-		for( i=0; i<pColDetPrepareColliderProcessCount; i++ ){
-			if( ! pColDetPrepareColliders[ i ] ){
-				continue;
-			}
-			pColDetPrepareColliders[ i ]->DetectCustomCollision( elapsed );
-			
-			if( debugInfo ){
-				debugInfo->IncrementElapsedTime( pPerfTimer.GetElapsedTime() );
-				debugInfo->IncrementCounter( 1 );
-			}
-		}
+	}catch( const deException & ){
+		pProcessingPhysics = false;
+		throw;
 	}
-DEBUG_PRINT_TIMER( "Detection Loop" );
-	
-	// process dynamic physics. this does a bullet simulation step. due to collisions
-	// with kinematic colliders they can obtain new velocities. these are though
-	// ignored and are considered to be taken into account in the next update.
-	pPrepareForStep();
-DEBUG_PRINT_TIMER( "Prepare For Step" );
-	
-	// TODO
-	// this runs only one simulation step. if the elapsed time is larger than 1/60
-	// the simulation slows down as well as producing weird results. this has to be
-	// fixed somehow but how is unknown yet (too many recent changes in the code base).
-	#ifdef DO_TIMING
-		pBullet.LogInfoFormat( "World: colObj=%d nonStaRigBod=%d broadNumOPairs=%d",
-			pDynWorld->getNumCollisionObjects(), pDynWorld->GetNumNonStaticRigidBodies(),
-			pDynWorld->getBroadphase()->getOverlappingPairCache()->getNumOverlappingPairs() );
-	#endif
-	if( pBullet.GetDebug().GetEnabled() ){
-		debpDebugInformation &debugInfo = *pBullet.GetDebug().GetDIWorldStepSimulation();
-		decTimer timer;
-		// max steps = max time (0.1s) divided by frquency (1/60) = 6
-		pDynWorld->stepSimulation( elapsed, 6, 1.0f / 60.0f ); // erwin mentioned up to (10, 1/240)
-		debugInfo.IncrementElapsedTime( timer.GetElapsedTime() );
-		debugInfo.IncrementCounter( 1 );
-		
-	}else{
-		pDynWorld->stepSimulation( elapsed, 6, 1.0f / 60.0f ); // erwin mentioned up to (10, 1/240)
-	}
-	#if defined DO_TIMING && ! defined BT_NO_PROFILE
-		//CProfileManager::dumpAll();
-	#endif
-	if( pBullet.GetDebug().GetEnabled() ){
-		CProfileManager::dumpAll();
-	}
-	pDynWorld->MarkAllAABBValid();
-	pDirtyDynWorldAABB = false;
-DEBUG_PRINT_TIMER( "Step Simulation" );
-	
-	// update positions
-	pUpdateFromBody();
-DEBUG_PRINT_TIMER( "Update Positions" );
-	
-	// finish detection. this operates on colliders. this is required to be done before
-	// elements relying on colliders potentially changing their geometry information
-	pFinishDetection();
-DEBUG_PRINT_TIMER( "Finish Detection" );
-	
-	// make touch sensors notify their peers about touch changes accumulated during collision
-	// detection. this potentially modifies colliders including adding or removing them
-	pApplyTouchSensorChanges();
-DEBUG_PRINT_TIMER( "Apply Touch Sensor Changes" );
-	
-	// update collider post physics collision tests
-	pUpdatePostPhysicsCollisionTests();
-DEBUG_PRINT_TIMER( "Update Post Physics Collision Tests" );
-	
-	// simulate particles. this is done after colliders since particle emitters are potentially
-	// moved by due to colliders moving hence they have to be simulated after colliders
-	pStepParticleEmitters( elapsed );
-DEBUG_PRINT_TIMER( "Particle Emitters: Step" );
-	
-	// this is a bit hacky right now. we do a full run using the force fields.
-	// a better solution has to be implemented later on
-	pStepForceFields( elapsed );
-DEBUG_PRINT_TIMER( "Step Force Fields" );
 	
 DEBUG_PRINT_TIMER_TOTAL();
 #ifdef DO_TIMING2
@@ -1138,6 +1055,122 @@ void debpWorld::pCleanUp(){
 
 
 
+void debpWorld::pProcessPhysics( float elapsed ){
+	// prevent rigid bodies from updating transforms. updating transform is required
+	// for teleporting objects without causing the displacement to be considered a
+	// huge velocity. updating transforms though causes dynamic bodies to not be
+	// moved if in contact with moving kinematic bodies. hence calls to
+	// DetectCustomCollision until stepSimulation have to be protected
+	pProcessingPhysics = true;
+	
+	// prepare for detection
+	pPrepareDetection( elapsed );
+DEBUG_PRINT_TIMER( "Prepare Detection" );
+	
+	// process kinematic physics. this moves collider with kinematic response type
+	// first along their velocity and then along the gravity. colliders are moved
+	// one by one. this is not the best solution yet but it works for the time
+	// being. one of the main problems is that if a collider has been moved already
+	// and then is altered by a collision later on it is not processed again. one
+	// solution would be to use a processed flag or list and re-process colliders
+	// if they get touched during collision detection.
+	if( elapsed > 1e-6f ){
+		pColInfo->Clear();
+		
+		UpdateOctrees(); // deprecated
+		UpdateDynWorldAABBs();
+		
+		debpDebugInformation *debugInfo = NULL;
+		if( pBullet.GetDebug().GetEnabled() ){
+			debugInfo = pBullet.GetDebug().GetDIColliderDetectCustomCollision();
+			pPerfTimer.Reset();
+		}
+		
+		int i;
+		for( i=0; i<pColDetPrepareColliderProcessCount; i++ ){
+			if( ! pColDetPrepareColliders[ i ] ){
+				continue;
+			}
+			pColDetPrepareColliders[ i ]->DetectCustomCollision( elapsed );
+			
+			if( debugInfo ){
+				debugInfo->IncrementElapsedTime( pPerfTimer.GetElapsedTime() );
+				debugInfo->IncrementCounter( 1 );
+			}
+		}
+	}
+DEBUG_PRINT_TIMER( "Detection Loop" );
+	
+	// process dynamic physics. this does a bullet simulation step. due to collisions
+	// with kinematic colliders they can obtain new velocities. these are though
+	// ignored and are considered to be taken into account in the next update.
+	pPrepareForStep();
+DEBUG_PRINT_TIMER( "Prepare For Step" );
+	
+	// TODO
+	// this runs only one simulation step. if the elapsed time is larger than 1/60
+	// the simulation slows down as well as producing weird results. this has to be
+	// fixed somehow but how is unknown yet (too many recent changes in the code base).
+	#ifdef DO_TIMING
+		pBullet.LogInfoFormat( "World: colObj=%d nonStaRigBod=%d broadNumOPairs=%d",
+			pDynWorld->getNumCollisionObjects(), pDynWorld->GetNumNonStaticRigidBodies(),
+			pDynWorld->getBroadphase()->getOverlappingPairCache()->getNumOverlappingPairs() );
+	#endif
+	if( pBullet.GetDebug().GetEnabled() ){
+		debpDebugInformation &debugInfo = *pBullet.GetDebug().GetDIWorldStepSimulation();
+		decTimer timer;
+		pDynWorld->stepSimulation( elapsed, pSimMaxSubStep, pSimTimeStep );
+		debugInfo.IncrementElapsedTime( timer.GetElapsedTime() );
+		debugInfo.IncrementCounter( 1 );
+		
+	}else{
+		pDynWorld->stepSimulation( elapsed, pSimMaxSubStep, pSimTimeStep );
+	}
+	
+	#ifndef BT_NO_PROFILE
+		#ifdef DO_TIMING
+			//CProfileManager::dumpAll();
+		#endif
+		if( pBullet.GetDebug().GetEnabled() ){
+			CProfileManager::dumpAll();
+		}
+	#endif
+	pDynWorld->MarkAllAABBValid();
+	pDirtyDynWorldAABB = false;
+DEBUG_PRINT_TIMER( "Step Simulation" );
+	
+	// now updating rigid body transforms can be enabled again
+	pProcessingPhysics = false;
+	
+	// update positions
+	pUpdateFromBody();
+DEBUG_PRINT_TIMER( "Update Positions" );
+	
+	// finish detection. this operates on colliders. this is required to be done before
+	// elements relying on colliders potentially changing their geometry information
+	pFinishDetection();
+DEBUG_PRINT_TIMER( "Finish Detection" );
+	
+	// make touch sensors notify their peers about touch changes accumulated during collision
+	// detection. this potentially modifies colliders including adding or removing them
+	pApplyTouchSensorChanges();
+DEBUG_PRINT_TIMER( "Apply Touch Sensor Changes" );
+	
+	// update collider post physics collision tests
+	pUpdatePostPhysicsCollisionTests();
+DEBUG_PRINT_TIMER( "Update Post Physics Collision Tests" );
+	
+	// simulate particles. this is done after colliders since particle emitters are potentially
+	// moved by due to colliders moving hence they have to be simulated after colliders
+	pStepParticleEmitters( elapsed );
+DEBUG_PRINT_TIMER( "Particle Emitters: Step" );
+	
+	// this is a bit hacky right now. we do a full run using the force fields.
+	// a better solution has to be implemented later on
+	pStepForceFields( elapsed );
+DEBUG_PRINT_TIMER( "Step Force Fields" );
+}
+
 void debpWorld::pPrepareDetection( float elapsed ){
 	// WARNING colliders required to call RegisterColDetPrepare() if force fields touch them.
 	//         requires keeping track of which collider touches which force field. one solution
@@ -1188,6 +1221,7 @@ void debpWorld::pPrepareForStep(){
 	}
 }
 
+#if 0
 bool debpWorld::pStepPhysics(){
 	float defaultStepSize = 0.01f;
 	float stepSize;
@@ -1248,6 +1282,7 @@ pBullet.LogInfoFormat( "World Timer: pStepPhysics: Update = %iys", ( int )( elap
 	// no collision happened
 	return false;
 }
+#endif
 
 void debpWorld::pStepForceFields( float elapsed ){
 	if( ! pBullet.GetConfiguration()->GetSimulatePropFields() ){

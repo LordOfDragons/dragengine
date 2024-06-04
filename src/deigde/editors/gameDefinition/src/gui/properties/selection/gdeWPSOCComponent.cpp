@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Game Definition Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -37,9 +40,11 @@
 #include "../../../gamedef/skin/gdeSkin.h"
 #include "../../../undosys/objectClass/component/gdeUOCAddComponent.h"
 #include "../../../undosys/objectClass/component/gdeUOCComponentSetSkinPath.h"
-#include "../../../undosys/objectClass/component/gdeUOCComponentSetAnimPath.h"
+#include "../../../undosys/objectClass/component/gdeUOCComponentSetAnimationPath.h"
+#include "../../../undosys/objectClass/component/gdeUOCComponentSetAnimatorPath.h"
 #include "../../../undosys/objectClass/component/gdeUOCComponentSetPropertyName.h"
 #include "../../../undosys/objectClass/component/gdeUOCComponentSetColRespType.h"
+#include "../../../undosys/objectClass/component/gdeUOCComponentSetMove.h"
 #include "../../../undosys/objectClass/component/gdeUOCComponentSetOccMeshPath.h"
 #include "../../../undosys/objectClass/component/gdeUOCComponentSetAudioModelPath.h"
 #include "../../../undosys/objectClass/component/gdeUOCComponentToggleDoNotScale.h"
@@ -48,6 +53,7 @@
 #include "../../../undosys/objectClass/component/gdeUOCComponentToggleAttachTarget.h"
 #include "../../../undosys/objectClass/component/gdeUOCComponentToggleRenderEnvMap.h"
 #include "../../../undosys/objectClass/component/gdeUOCComponentToggleAffectsAudio.h"
+#include "../../../undosys/objectClass/component/gdeUOCComponentToggleLightShadowIgnore.h"
 #include "../../../undosys/objectClass/component/gdeUOCComponentToggleStatic.h"
 #include "../../../undosys/objectClass/component/gdeUOCComponentSetPlaybackController.h"
 #include "../../../undosys/objectClass/component/gdeUOCComponentSetPosition.h"
@@ -75,6 +81,7 @@
 #include <deigde/gui/igdeColorBox.h>
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/igdeIconListBox.h>
+#include <deigde/gui/igdeWindow.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/composed/igdeEditPathListener.h>
@@ -284,8 +291,46 @@ public:
 		}
 		
 		igdeUndoReference undo;
-		undo.TakeOver( new gdeUOCComponentSetAnimPath(
+		undo.TakeOver( new gdeUOCComponentSetAnimatorPath(
 			pPanel.GetObjectClass(), component, editPath->GetPath() ) );
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
+	}
+};
+
+class cEditPathAnimation : public igdeEditPathListener{
+	gdeWPSOCComponent &pPanel;
+	
+public:
+	cEditPathAnimation( gdeWPSOCComponent &panel ) : pPanel( panel ){ }
+	
+	virtual void OnEditPathChanged( igdeEditPath *editPath ){
+		gdeOCComponent * const component = pPanel.GetComponent();
+		if( ! component || component->GetAnimationPath() == editPath->GetPath() ){
+			return;
+		}
+		
+		igdeUndoReference undo;
+		undo.TakeOver( new gdeUOCComponentSetAnimationPath(
+			pPanel.GetObjectClass(), component, editPath->GetPath() ) );
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
+	}
+};
+
+class cEditMove : public igdeTextFieldListener{
+	gdeWPSOCComponent &pPanel;
+	
+public:
+	cEditMove( gdeWPSOCComponent &panel ) : pPanel( panel ){ }
+	
+	virtual void OnTextChanged ( igdeTextField *textField ) override{
+		gdeOCComponent * const component = pPanel.GetComponent();
+		if( ! component || component->GetMove() == textField->GetText() ){
+			return;
+		}
+		
+		igdeUndoReference undo;
+		undo.TakeOver( new gdeUOCComponentSetMove(
+			pPanel.GetObjectClass(), component, textField->GetText() ) );
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -384,6 +429,18 @@ public:
 	
 	virtual igdeUndo *OnActionComponent( gdeObjectClass *objectClass, gdeOCComponent *component ){
 		return new gdeUOCComponentToggleAffectsAudio( objectClass, component );
+	}
+	
+	virtual void Update(){ /* empty on purpose! */ }
+};
+
+class cActionLightShadowIgnore : public cBaseAction{
+public:
+	cActionLightShadowIgnore( gdeWPSOCComponent &panel ) : cBaseAction( panel, "Light Shadow Ignore",
+		"Component is not casting shadows from lights present in the same object" ){ }
+	
+	virtual igdeUndo *OnActionComponent( gdeObjectClass *objectClass, gdeOCComponent *component ){
+		return new gdeUOCComponentToggleLightShadowIgnore( objectClass, component );
 	}
 	
 	virtual void Update(){ /* empty on purpose! */ }
@@ -611,12 +668,12 @@ public:
 			name = "Texture";
 			
 			while( true ){
-				if( ! igdeCommonDialogs::GetString( &pPanel, "Add Texture", "Name:", name ) ){
+				if( ! igdeCommonDialogs::GetString( pPanel.GetParentWindow(), "Add Texture", "Name:", name ) ){
 					return NULL;
 				}
 				
 				if( component->GetTextures().HasNamed( name ) ){
-					igdeCommonDialogs::Error( &pPanel, "Add Texture", "A texture with this name exists already." );
+					igdeCommonDialogs::Error( pPanel.GetParentWindow(), "Add Texture", "A texture with this name exists already." );
 					
 				}else{
 					break;
@@ -699,7 +756,7 @@ public:
 		}
 		
 		if( component->GetTextures().HasNamed( textField.GetText() ) ){
-			igdeCommonDialogs::Information( &pPanel, "Rename texture", "A texture with this name exists already." );
+			igdeCommonDialogs::Information( pPanel.GetParentWindow(), "Rename texture", "A texture with this name exists already." );
 			textField.SetText( texture->GetName() );
 			return NULL;
 		}
@@ -807,7 +864,7 @@ public:
 			value = property->GetDefaultValue();
 		}
 		
-		if( ! igdeCommonDialogs::GetString( &pPanel, "Set Texture Property Value", "Value:", value ) ){
+		if( ! igdeCommonDialogs::GetString( pPanel.GetParentWindow(), "Set Texture Property Value", "Value:", value ) ){
 			return NULL;
 		}
 		
@@ -882,7 +939,7 @@ public:
 		}
 		
 		decString value( texture->GetProperties().GetAt( key ) );
-		if( ! igdeCommonDialogs::GetString( &pPanel, "Edit Texture Property Value", "Value:", value ) ){
+		if( ! igdeCommonDialogs::GetString( pPanel.GetParentWindow(), "Edit Texture Property Value", "Value:", value ) ){
 			return;
 		}
 		
@@ -949,6 +1006,9 @@ pDirtyEngModelTexNames( true )
 		igdeEnvironment::efpltRig, pEditPathRig, new cEditPathRig( *this ) );
 	helper.EditPath( groupBox, "Animator:", "Path to animator file to use",
 		igdeEnvironment::efpltAnimator, pEditPathAnimator, new cEditPathAnimator( *this ) );
+	helper.EditPath( groupBox, "Animation:", "Path to animation file to use",
+		igdeEnvironment::efpltAnimation, pEditPathAnimation, new cEditPathAnimation( *this ) );
+	helper.EditString( groupBox, "Move:", "Move to use from animation file", 15, pEditMove, new cEditMove( *this ) );
 	helper.EditPath( groupBox, "Occlusion Mesh:", "Path to occlusion mesh file to use",
 		igdeEnvironment::efpltOcclusionMesh, pEditPathOcclusionMesh, new cEditPathOcclusionMesh( *this ) );
 	helper.EditPath( groupBox, "Audio Model:", "Path to audio model file to use",
@@ -974,6 +1034,7 @@ pDirtyEngModelTexNames( true )
 	helper.CheckBox( groupBox, pChkAttachTarget, new cActionAttachTarget( *this ), true );
 	helper.CheckBox( groupBox, pChkRenderEnvMap, new cActionRenderEnvMap( *this ), true );
 	helper.CheckBox( groupBox, pChkAffectsAudio, new cActionAffectsAudio( *this ), true );
+	helper.CheckBox( groupBox, pChkLightShadowIgnore, new cActionLightShadowIgnore( *this ), true );
 	helper.CheckBox( groupBox, pChkStatic, new cActionStatic( *this ), true );
 	
 	
@@ -985,11 +1046,14 @@ pDirtyEngModelTexNames( true )
 	pCBPropertyNames->AddItem( "Skin", NULL, ( void* )( intptr_t )gdeOCComponent::epSkin );
 	pCBPropertyNames->AddItem( "Rig", NULL, ( void* )( intptr_t )gdeOCComponent::epRig );
 	pCBPropertyNames->AddItem( "Animator", NULL, ( void* )( intptr_t )gdeOCComponent::epAnimator );
+	pCBPropertyNames->AddItem( "Animation", NULL, ( void* )( intptr_t )gdeOCComponent::epAnimation );
+	pCBPropertyNames->AddItem( "Move", NULL, ( void* )( intptr_t )gdeOCComponent::epMove );
 	pCBPropertyNames->AddItem( "Playback controller", NULL, ( void* )( intptr_t )gdeOCComponent::epPlaybackController );
 	pCBPropertyNames->AddItem( "Occlusion mesh", NULL, ( void* )( intptr_t )gdeOCComponent::epOcclusionMesh );
 	pCBPropertyNames->AddItem( "Audio model", NULL, ( void* )( intptr_t )gdeOCComponent::epAudioModel );
 	pCBPropertyNames->AddItem( "Render env-map", NULL, ( void* )( intptr_t )gdeOCComponent::epRenderEnvMap );
 	pCBPropertyNames->AddItem( "Affects audio", NULL, ( void* )( intptr_t )gdeOCComponent::epAffectsAudio );
+	pCBPropertyNames->AddItem( "Light Shadow Ignore", NULL, ( void* )( intptr_t )gdeOCComponent::epLightShadowIgnore );
 	pCBPropertyNames->AddItem( "Attach position", NULL,  ( void* )( intptr_t )gdeOCComponent::epAttachPosition );
 	pCBPropertyNames->AddItem( "Attach rotation", NULL, ( void* )( intptr_t )gdeOCComponent::epAttachRotation );
 	
@@ -1036,8 +1100,8 @@ pDirtyEngModelTexNames( true )
 		igdeUIHelper::sColumnHeader( "Key", NULL, 150 ),
 		igdeUIHelper::sColumnHeader( "Value", NULL, 200 )
 	};
-	helper.IconListBox( groupBox, pTextureListProperties, 5, headersPropertyValues, 2,
-		"Property values", new cListTexturePropertyValues( *this ) );
+	helper.IconListBox( groupBox, pTextureListProperties, decPoint( 100, 120 ),
+		headersPropertyValues, 2, "Property values", new cListTexturePropertyValues( *this ) );
 	pTextureListProperties->SetDefaultSorter();
 }
 
@@ -1166,6 +1230,8 @@ void gdeWPSOCComponent::UpdateComponent(){
 		pEditPathSkin->SetPath( component->GetSkinPath() );
 		pEditPathRig->SetPath( component->GetRigPath() );
 		pEditPathAnimator->SetPath( component->GetAnimatorPath() );
+		pEditPathAnimation->SetPath( component->GetAnimationPath() );
+		pEditMove->SetText( component->GetMove() );
 		pEditPathOcclusionMesh->SetPath( component->GetOcclusionMeshPath() );
 		pEditPathAudioModel->SetPath( component->GetAudioModelPath() );
 		pEditPlaybackController->SetText( component->GetPlaybackController() );
@@ -1173,6 +1239,7 @@ void gdeWPSOCComponent::UpdateComponent(){
 		pChkStatic->SetChecked( component->GetStatic() );
 		pChkRenderEnvMap->SetChecked( component->GetRenderEnvMap() );
 		pChkAffectsAudio->SetChecked( component->GetAffectsAudio() );
+		pChkLightShadowIgnore->SetChecked( component->GetLightShadowIgnore() );
 		pChkPartialHide->SetChecked( component->GetPartialHide() );
 		pChkAttachTarget->SetChecked( component->GetAttachTarget() );
 		pCBCollisionResponseType->SetSelectionWithData(
@@ -1188,6 +1255,8 @@ void gdeWPSOCComponent::UpdateComponent(){
 		pEditPathSkin->ClearPath();
 		pEditPathRig->ClearPath();
 		pEditPathAnimator->ClearPath();
+		pEditPathAnimation->ClearPath();
+		pEditMove->ClearText();
 		pEditPathOcclusionMesh->ClearPath();
 		pEditPathAudioModel->ClearPath();
 		pEditPlaybackController->ClearText();
@@ -1195,6 +1264,7 @@ void gdeWPSOCComponent::UpdateComponent(){
 		pChkStatic->SetChecked( false );
 		pChkRenderEnvMap->SetChecked( false );
 		pChkAffectsAudio->SetChecked( false );
+		pChkLightShadowIgnore->SetChecked( false );
 		pChkPartialHide->SetChecked( false );
 		pChkAttachTarget->SetChecked( false );
 		pCBCollisionResponseType->SetSelectionWithData( ( void* )( intptr_t )deCollider::ertStatic );
@@ -1210,6 +1280,8 @@ void gdeWPSOCComponent::UpdateComponent(){
 	pEditPathSkin->SetEnabled( enabled );
 	pEditPathRig->SetEnabled( enabled );
 	pEditPathAnimator->SetEnabled( enabled );
+	pEditPathAnimation->SetEnabled( enabled );
+	pEditMove->SetEnabled( enabled );
 	pEditPathOcclusionMesh->SetEnabled( enabled );
 	pEditPathAudioModel->SetEnabled( enabled );
 	pEditPlaybackController->SetEnabled( enabled );
@@ -1217,6 +1289,7 @@ void gdeWPSOCComponent::UpdateComponent(){
 	pChkStatic->SetEnabled( enabled );
 	pChkRenderEnvMap->SetEnabled( enabled );
 	pChkAffectsAudio->SetEnabled( enabled );
+	pChkLightShadowIgnore->SetEnabled( enabled );
 	pChkPartialHide->SetEnabled( enabled );
 	pChkAttachTarget->SetEnabled( enabled );
 	pCBCollisionResponseType->SetEnabled( enabled );

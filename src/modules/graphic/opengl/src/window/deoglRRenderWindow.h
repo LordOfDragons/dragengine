@@ -1,26 +1,33 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLRRENDERWINDOW_H_
 #define _DEOGLRRENDERWINDOW_H_
+
+#include "../texture/pixelbuffer/deoglPixelBuffer.h"
+#include "../target/deoglRenderTarget.h"
+#include "../configuration/deoglConfiguration.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
@@ -51,11 +58,10 @@ class NSView;
 
 class deoglRenderThread;
 class deoglRCanvasView;
-class deoglPixelBuffer;
 
 
 /**
- * \brief Render window target.
+ * Render window target.
  */
 class deoglRRenderWindow : public deObject{
 private:
@@ -69,14 +75,13 @@ private:
 	
 	#ifdef OS_BEOS
 	class cGLView;
-	class cDirectWindow;
+	class cGLWindow;
 	
 	class cGLView : public BGLView{
 	private:
-		cDirectWindow &pWindow;
+		cGLWindow &pWindow;
 	public:
-		cGLView( cDirectWindow &widow, const BRect &frame );
-		virtual void FrameResized( float width, float height );
+		cGLView( cGLWindow &widow, const BRect &frame );
 		virtual void KeyDown( const char *bytes, int32 numBytes );
 		virtual void KeyUp( const char *bytes, int32 numBytes );
 		virtual void MouseDown( BPoint point );
@@ -84,21 +89,28 @@ private:
 		virtual void MouseUp( BPoint point );
 	};
 	
-	class cDirectWindow : public BDirectWindow{
+	class cGLWindow : public BDirectWindow{
 	private:
 		deoglRRenderWindow &pWindow;
 		cGLView *pGLView;
+		BCursor *pCursor;
+		bool pBlockQuitRequested;
 	public:
-		cDirectWindow( deoglRRenderWindow &window );
+		cGLWindow( deoglRRenderWindow &window );
+		virtual ~cGLWindow();
+		inline deoglRRenderWindow &GetWindow() const{ return pWindow; }
 		inline cGLView *GetGLView() const{ return pGLView; }
 		void SendCurMessageToEngine();
 		virtual void DirectConnected( direct_buffer_info *info );
 		virtual void WindowActivated( bool active );
 		virtual void MessageReceived( BMessage *message );
+		virtual	void FrameResized( float newWidth, float newHeight );
+		virtual	bool QuitRequested();
+		void SetBlockQuitRequested( bool blockQuitRequested );
 	};
 	
 	BWindow *pHostWindow;
-	cDirectWindow *pWindow;
+	cGLWindow *pWindow;
 	#endif
 	
 	#ifdef OS_W32
@@ -119,22 +131,27 @@ private:
 	decString pTitle;
 	bool pFullScreen;
 	bool pPaint;
-	deoglPixelBuffer *pIcon;
+	deoglPixelBuffer::Ref pIcon;
 	
 	deoglRCanvasView *pRCanvasView;
 	
 	bool pSwapBuffers;
 	bool pNotifySizeChanged;
 	
+	deoglConfiguration::eVSyncMode pVSyncMode;
+	bool pInitSwapInterval;
+	
+	deoglRenderTarget::Ref pRenderTarget;
+	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create render render target. */
+	/** Create render render target. */
 	deoglRRenderWindow( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up render render target. */
+	/** Clean up render render target. */
 	virtual ~deoglRRenderWindow();
 	/*@}*/
 	
@@ -142,10 +159,10 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Render thread. */
+	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
-	/** \brief OS specific. */
+	/** OS specific. */
 	#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 	inline Window GetHostWindow() const{ return pHostWindow; }
 	inline Window GetWindow() const{ return pWindow; }
@@ -160,7 +177,7 @@ public:
 	
 	#ifdef OS_BEOS
 	inline BWindow *GetHostWindow() const{ return pHostWindow; }
-	inline BDirectWindow *GetWindow() const{ return pWindow; }
+	inline cGLWindow *GetWindow() const{ return pWindow; }
 	void SetHostWindow( BWindow *window );
 	BGLView *GetGLView() const;
 	#endif
@@ -170,6 +187,7 @@ public:
 	inline HWND GetWindow() const{ return pWindow; }
 	inline HDC GetWindowDC() const{ return pWindowDC; }
 	void SetHostWindow( HWND window );
+	decPoint GetInnerSize() const;
 	#endif
 	
 	#ifdef OS_MACOS
@@ -179,74 +197,74 @@ public:
 	inline NSView *GetView() const{ return pView; }
 	#endif
 	
-	/** \brief Width of the window. */
+	/** Width of the window. */
 	inline int GetWidth() const{ return pWidth; }
 	
-	/** \brief Height of the window. */
+	/** Height of the window. */
 	inline int GetHeight() const{ return pHeight; }
 	
-	/** \brief Set window size. */
+	/** Set window size. */
 	void SetSize( int width, int height );
 	
-	/** \brief Window title. */
+	/** Window title. */
 	inline const decString &GetTitle() const{ return pTitle; }
 	
-	/** \brief Set window title. */
+	/** Set window title. */
 	void SetTitle( const char *title );
 	
-	/** \brief Full screen mode enabled. */
+	/** Full screen mode enabled. */
 	inline bool GetFullScreen() const{ return pFullScreen; }
 	
-	/** \brief Set if full screen mode is enabled. */
+	/** Set if full screen mode is enabled. */
 	void SetFullScreen( bool fullScreen );
 	
-	/** \brief Painting enabled. */
+	/** Painting enabled. */
 	inline bool GetPaint() const{ return pPaint; }
 	
-	/** \brief Set painting enabled. */
+	/** Set painting enabled. */
 	void SetPaint( bool paint );
 	
-	/** \brief Icon. */
-	inline deoglPixelBuffer *GetIcon() const{ return pIcon; }
+	/** Icon. */
+	inline const deoglPixelBuffer::Ref &GetIcon() const{ return pIcon; }
 	
-	/** \brief Set icon. */
+	/** Set icon. */
 	void SetIcon( deoglPixelBuffer *icon );
 	
 	
 	
-	/** \brief Render canvas view or \em NULL if not set. */
+	/** Render canvas view or \em NULL if not set. */
 	inline deoglRCanvasView *GetRCanvasView() const{ return pRCanvasView; }
 	
-	/** \brief Set render canvas view or \em NULL if not set. */
+	/** Set render canvas view or \em NULL if not set. */
 	void SetRCanvasView( deoglRCanvasView *rcanvasView );
 	
-	/** \brief Drop render canvas view if not \em NULL. */
+	/** Drop render canvas view if not \em NULL. */
 	void DropRCanvasView();
 	
 	
 	
-	/** \brief Create render window. */
+	/** Create render window. */
 	void CreateWindow();
 	
-	/** \brief Swap buffers. Called from render thread. */
+	/** Swap buffers. Called from render thread. */
 	void SwapBuffers();
 	
-	/** \brief Render window if visible. Called from render thread. */
+	/** Render window if visible. Called from render thread. */
 	void Render();
 	
-	/** \brief Capture content by capture canvas if any matching one is pending. */
+	/** Capture content by capture canvas if any matching one is pending. */
 	void Capture();
 	
-	/** \brief Center window on screen. */
+	/** Center window on screen. */
 	void CenterOnScreen();
 	
-	/** \brief Windows resized (render thread event loop). */
+	/** Windows resized (render thread event loop). */
 	void OnResize( int width, int height );
 	
 	
 	
 	/**
-	 * \brief Notify scripting module size changed due to OS event.
+	 * Notify scripting module size changed due to OS event.
 	 * \note Clears flag before returning if set.
 	 */
 	bool GetNotifySizeChanged();
@@ -280,6 +298,8 @@ public:
 	void pMacOSDelegateWindowDeactivated();
 	void pMacOSDelegateWindowResized();
 	#endif
+	
+	void pUpdateVSync();
 };
 
 #endif

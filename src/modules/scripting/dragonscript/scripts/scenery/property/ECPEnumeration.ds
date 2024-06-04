@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -40,25 +43,25 @@ class ECPEnumeration extends ElementClassProperty
 	
 	
 	/** \brief Create property. */
-	public func new( String name, Enumeration value ) super( name )
-		this.pValue = value
-		this.pMapping = Dictionary.new()
+	public func new(String name, Enumeration value) super(name)
+		pValue = value
+		pMapping = Dictionary.new()
 	end
 	
-	public func new( String name, Set enumerationValues, Enumeration value ) this( name, value )
-		this.setMapping( enumerationValues )
+	public func new(String name, Set enumerationValues, Enumeration value) this(name, value)
+		setMapping(enumerationValues)
 	end
 	
 	
 	
 	/** \brief Mapping between strings and enumerations. */
 	public func Dictionary getMapping()
-		return this.pMapping
+		return pMapping
 	end
 	
 	/** \brief Set mapping between strings and enumerations. */
-	public func void setMapping( Dictionary mapping )
-		this.pMapping = mapping
+	public func void setMapping(Dictionary mapping)
+		pMapping = mapping
 	end
 	
 	/**
@@ -66,18 +69,18 @@ class ECPEnumeration extends ElementClassProperty
 	 * 
 	 * Uses enumeration name as mapping name.
 	 */
-	public func void setMapping( Set enumerationValues )
-		this.pMapping.removeAll()
-		enumerationValues.forEach( block Enumeration each
-			this.pMapping.setAt( each.name(), each )
-		end )
+	public func void setMapping(Set enumerationValues)
+		pMapping.removeAll()
+		enumerationValues.forEach(block Enumeration each
+			pMapping.setAt(each.name(), each)
+		end)
 	end
 	
 	
 	
 	/** \brief Value. */
 	public func Enumeration getEnumeration()
-		return this.pValue
+		return pValue
 	end
 	
 	/**
@@ -85,13 +88,13 @@ class ECPEnumeration extends ElementClassProperty
 	 * 
 	 * Allowed if enumeration is part of mapping.
 	 */
-	public func void setEnumeration( Enumeration value )
-		if this.pMapping.find( block String key, Enumeration mappingValue
+	public func void setEnumeration(Enumeration value)
+		if pMapping.find(block String key, Enumeration mappingValue
 			return mappingValue == value
-		end ) == null
-			throw EInvalidParam.new( "" + value + " not found in mapping" )
+		end) == null
+			throw EInvalidParam.new("" + value + " not found in mapping")
 		end
-		this.pValue = value
+		pValue = value
 	end
 	
 	
@@ -103,13 +106,21 @@ class ECPEnumeration extends ElementClassProperty
 	 * - Castable to Enumeration. Allowed if enumeration is part of mapping.
 	 * - Castable to String. Looks up matching enumeration using mapping.
 	 */
-	public func void setValue( Object value )
+	public func void setValue(Object value)
 		if value castable Enumeration
-			this.setEnumeration( value cast Enumeration )
+			setEnumeration(value cast Enumeration)
 			
 		else
-			this.pValue = this.pMapping.getAt( value cast String ) cast Enumeration
+			pValue = pMapping.getAt(value cast String) cast Enumeration
 		end
+	end
+	
+	/**
+	 * \brief Copy value from another element class property of the same type.
+	 * \version 1.17
+	 */
+	public func void copyValue(ElementClass elementClass, ElementClassProperty property)
+		pValue = (property cast ECPEnumeration).pValue
 	end
 	
 	
@@ -121,13 +132,13 @@ class ECPEnumeration extends ElementClassProperty
 	 * is returned. If the named stub property is present it is mapped against the mapping
 	 * and the matching enumeration value returned. If no match is found an exception is thrown.
 	 */
-	public func Enumeration getEnumeration( StubWithProperties stub )
-		var String value = stub.getPropertyValueFor( this.getName(), "" )
+	public func Enumeration getEnumeration(StubWithProperties stub)
+		var String value = stub.getPropertyValueFor(getName(), "")
 		if value.empty()
-			return this.pValue
+			return pValue
 			
 		else
-			return this.pMapping.getAt( value ) cast Enumeration
+			return pMapping.getAt(value) cast Enumeration
 		end
 	end
 end

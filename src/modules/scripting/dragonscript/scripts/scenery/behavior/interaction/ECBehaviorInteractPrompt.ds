@@ -1,0 +1,570 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Scenery
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief Behavior adding support to elements to show interact prompt to player.
+ * 
+ * This is a passive behavior storing the information used by player prompt behaviors to
+ * show to the player what he can do with the element for example when looking at it.
+ * 
+ * The promp information composes of an image/video, style, verb, description and command.
+ * Not all information is shown by player prompt behaviors. Typically the image/video and
+ * verb is shown sometimes only the image/video. If multiple interactions are possible
+ * the command is usually also shown. The description can be used if the player needs
+ * some more information that can not be easily given using an image/video or a simple
+ * interact verb. The style is an optional information can be be used by the player prompt
+ * behavior to tint the image/video, verb text or even the description. This can be used
+ * to tell the player additional hints like if the interaction has potential caveats or
+ * is currently not possible to be done. The meaning of the style value depends on the
+ * prompt display widget used. A typical use of style is to be used as suffix for the
+ * widget designer selector.
+ * 
+ * The player prompt behavior determines where the image/video, verb, command and
+ * description text is shown.
+ * 
+ * This behavior has an enabled parameter. This can be used to temporarily disable the
+ * interact prompt for example to enable it when certain conditions are met or if multiple
+ * interact prompts are used for the same element. This allows to set them all up and
+ * enabling only the active one.
+ * 
+ * The command parameter is the name of the command as present in the CommandManager used
+ * by the player interact prompt display. If found the bindings used to trigger this
+ * command are shown or the command name whever the prompt display decides to use.
+ * 
+ * Prompts are typically used with collision testing for example ECBehaviorLookAt and
+ * likewise. In this situation it can be useful to assign prompts to individual areas
+ * of a collider for example using hit bone name as produced by collision tests. For this
+ * use case the bones parameter can be used. If this parameter is an not an empty list
+ * this prompt shall only be considered if the hit bone is included in the list.
+ * 
+ * This behavior can be used multiple times on an element to add different interaction
+ * prompts. Use the behavior identifier to tell them apart.
+ * 
+ * Default property prefix is "interactPrompt{(id)}."
+ * 
+ * Supports these properties:
+ * - "interactPrompt{(id)}.image": ECPImage
+ * - "interactPrompt{(id)}.video": ECPVideo
+ * - "interactPrompt{(id)}.style": ECPString
+ * - "interactPrompt{(id)}.verb": ECPUnicodeString
+ * - "interactPrompt{(id)}.description": ECPUnicodeString
+ * - "interactPrompt{(id)}.command": ECPString
+ * - "interactPrompt{(id)}.alternativeCommands": ECPStringList
+ * - "interactPrompt{(id)}.enabled": ECPBoolean
+ * - "interactPrompt{(id)}.bones": ECPStringList
+ * - "interactPrompt{(id)}.maximumDistance": ECPFloat
+ * - "interactPrompt{(id)}.settings": ECPString
+ */
+class ECBehaviorInteractPrompt extends DefaultECBehavior
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		var ECBehaviorInteractPrompt pECBehavior
+		var Image pImage
+		var Video pVideo
+		var String pStyle
+		var UnicodeString pVerb
+		var String pVerbTranslate
+		var UnicodeString pDescription
+		var String pDescriptionTranslate
+		var String pCommand
+		var Array pAlternativeCommands
+		var bool pEnabled
+		var Array pBones
+		var float pMaximumDistance
+		var String pSettings
+		
+		
+		
+		/** \brief Create behavior instance. */
+		func new(ECBehaviorInteractPrompt ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
+			pAlternativeCommands = Array.new()
+		end
+		
+		
+		
+		/** \brief Initialize element from stub. */
+		func void init(StubElement stub)
+			var ElementClass eclass = getElement().getClass()
+			var CodecPropertyString codec = eclass.getCodecPropertyString()
+			
+			pImage = pECBehavior.getImage().getImage(stub, eclass)
+			pVideo = pECBehavior.getVideo().getVideo(stub, eclass)
+			pStyle = pECBehavior.getStyle().getValue(stub)
+			pCommand = pECBehavior.getCommand().getValue(stub)
+			pAlternativeCommands = pECBehavior.getAlternativeCommands().getList(stub, codec)
+			pEnabled = pECBehavior.getEnabled().getValue(stub)
+			pBones = pECBehavior.getBones().getList(stub, codec)
+			pMaximumDistance = pECBehavior.getMaximumDistance().getValue(stub)
+			pSettings = pECBehavior.getSettings().getValue(stub)
+			pVerbTranslate = pECBehavior.getVerbTranslate().getValueOrNull(stub)
+			pVerb = pECBehavior.getVerb().getValue(stub)
+			pDescriptionTranslate = pECBehavior.getDescriptionTranslate().getValueOrNull(stub)
+			pDescription = pECBehavior.getDescription().getValue(stub)
+		end
+		
+		
+		
+		/** \brief Behavior. */
+		func ECBehaviorInteractPrompt getECBehavior()
+			return pECBehavior
+		end
+		
+		/** \brief Image. */
+		func Image getImage()
+			return pImage
+		end
+		
+		/** \brief Set image. */
+		func void setImage(Image image)
+			pImage = image
+		end
+		
+		/** \brief Video. */
+		func Video getVideo()
+			return pVideo
+		end
+		
+		/** \brief Set video. */
+		func void setVideo(Video video)
+			pVideo = video
+		end
+		
+		/** \brief Style. */
+		func String getStyle()
+			return pStyle
+		end
+		
+		/** \brief Set style. */
+		func void setStyle(String style)
+			if style == null
+				throw ENullPointer.new("style")
+			end
+			pStyle = style
+		end
+		
+		/** \brief Verb. */
+		func UnicodeString getVerb()
+			var TranslationManager tm = pECBehavior.getTranslationManager()
+			if tm != null and pVerbTranslate != null
+				return tm.translate(pVerbTranslate)
+			end
+			return pVerb
+		end
+		
+		/** \brief Set verb. */
+		func void setVerb(UnicodeString verb)
+			if verb == null
+				throw ENullPointer.new("verb")
+			end
+			pVerb = verb
+			pVerbTranslate = null
+		end
+		
+		/** \brief Description. */
+		func UnicodeString getDescription()
+			var TranslationManager tm = pECBehavior.getTranslationManager()
+			if tm != null and pDescriptionTranslate != null
+				return tm.translate(pDescriptionTranslate)
+			end
+			return pDescription
+		end
+		
+		/** \brief Set description. */
+		func void setDescription(UnicodeString description)
+			if description == null
+				throw ENullPointer.new("description")
+			end
+			pDescription = description
+			pDescriptionTranslate = null
+		end
+		
+		/** \brief Command. */
+		func String getCommand()
+			return pCommand
+		end
+		
+		/** \brief Set command. */
+		func void setCommand(String command)
+			if command == null
+				throw ENullPointer.new("command")
+			end
+			pCommand = command
+		end
+		
+		/**
+		 * \brief Alternative commands as Array of String.
+		 * \version 1.20
+		 */
+		func Array getAlternativeCommands()
+			return pAlternativeCommands
+		end
+		
+		/** \brief Prompt is enabled. */
+		func bool getEnabled()
+			return pEnabled
+		end
+		
+		/** \brief Set if prompt is enabled. */
+		func void setEnabled(bool enabled)
+			pEnabled = enabled
+		end
+		
+		/**
+		 * \brief Maximum distance to show interact prompt for when looking at it.
+		 * \version 1.18
+		 */
+		func float getMaximumDistance()
+			return pMaximumDistance
+		end
+		
+		/**
+		 * \brief Set maximum distance to show interact prompt for when looking at it.
+		 * \version 1.18
+		 */
+		func void setMaximumDistance(float distance)
+			pMaximumDistance = DEMath.max(distance, 0.0)
+		end
+		
+		/**
+		 * \brief Optional settings to modify display in custom prompt widgets.
+		 * \version 1.19
+		 * 
+		 * Can be null.
+		 */
+		func String getSettings()
+			return pSettings
+		end
+		
+		/**
+		 * \brief Set optional settings to modify display in custom prompt widgets.
+		 * \version 1.19
+		 * 
+		 * Can be null.
+		 */
+		func void setSettings(String settings)
+			pSettings = settings
+		end
+		
+		
+		
+		/** \brief Count of bones this prompt is limited to. */
+		func int getBoneCount()
+			return pBones.getCount()
+		end
+		
+		/** \brief Bone at index this prompt is limited to. */
+		func String getBoneAt(int index)
+			return pBones.getAt(index) cast String
+		end
+		
+		/** \brief Bone is included in list of bones this prompt is limited to. */
+		func bool hasBone(String bone)
+			return pBones.has(bone)
+		end
+		
+		/**
+		 * \brief Visit bones bones this prompt is limited to using block.
+		 * 
+		 * Block receives as argument "String bone".
+		 */
+		func void forEachBone(Block ablock)
+			pBones.forEach(ablock)
+		end
+		
+		/** \brief Set list of bones this prompt is limited to as Array of String. */
+		protected func void setBones(Array bones)
+			pBones = bones
+		end
+	end
+	
+	
+	
+	var ECPImage pImage
+	var ECPVideo pVideo
+	var ECPString pStyle
+	var ECPUnicodeString pVerb
+	var ECPString pVerbTranslate
+	var ECPUnicodeString pDescription
+	var ECPString pDescriptionTranslate
+	var ECPString pCommand
+	var ECPStringList pAlternativeCommands
+	var ECPBoolean pEnabled
+	var ECPStringList pBones
+	var ECPFloat pMaximumDistance
+	var ECPString pSettings
+	var TranslationManager pTranslationManager
+	
+	
+	
+	/**
+	 * \brief Create behavior element class.
+	 */
+	func new(BehaviorElementClass eclass) this(eclass, "")
+	end
+	
+	func new(BehaviorElementClass eclass, String id) this(eclass, id,\
+	id.empty() if "interactPrompt" else "interactPrompt(" + id + ")")
+	end
+	
+	func new(BehaviorElementClass eclass, String id, String subID)\
+	this(eclass, id, subID, subID + ".")
+	end
+	
+	func new(BehaviorElementClass eclass, String id, String subID, String prefix) super(eclass, id)
+		var BaseGameApp app = BaseGameApp.getApp()
+		if app != null
+			pTranslationManager = app.getTranslationManager()
+		end
+
+		eclass.addProperty(pImage = ECPImage.new(prefix + "image"))
+		eclass.addProperty(pVideo = ECPVideo.new(prefix + "video"))
+		eclass.addProperty(pStyle = ECPString.new(prefix + "style", ""))
+		eclass.addProperty(pVerb = ECPUnicodeString.new(prefix + "verb", ""))
+		eclass.addProperty(pVerbTranslate = ECPString.new(prefix + "verbTranslate", ""))
+		eclass.addProperty(pDescription = ECPUnicodeString.new(prefix + "description", ""))
+		eclass.addProperty(pDescriptionTranslate = ECPString.new(prefix + "descriptionTranslate", ""))
+		eclass.addProperty(pCommand = ECPString.new(prefix + "command", ""))
+		eclass.addProperty(pAlternativeCommands = ECPStringList.new(prefix + "alternativeCommands"))
+		eclass.addProperty(pEnabled = ECPBoolean.new(prefix + "enabled", true))
+		eclass.addProperty(pBones = ECPStringList.new(prefix + "bones"))
+		eclass.addProperty(pMaximumDistance = ECPFloat.new(prefix + "maximumDistance", 1000, 0))
+		eclass.addProperty(pSettings = ECPString.new(prefix + "settings", null))
+		
+		eclass.addBehavior(this)
+	end
+	
+	
+	
+	/** \brief Image. */
+	func ECPImage getImage()
+		return pImage
+	end
+	
+	/** \brief Video. */
+	func ECPVideo getVideo()
+		return pVideo
+	end
+	
+	/** \brief Style. */
+	func ECPString getStyle()
+		return pStyle
+	end
+	
+	/** \brief Verb. */
+	func ECPUnicodeString getVerb()
+		return pVerb
+	end
+	
+	/**
+	 * \brief Verb translated by active language.
+	 * \version 1.16
+	 */
+	func ECPString getVerbTranslate()
+		return pVerbTranslate
+	end
+	
+	/** \brief Description. */
+	func ECPUnicodeString getDescription()
+		return pDescription
+	end
+	
+	/**
+	 * \brief Description translated by active language.
+	 * \version 1.16
+	 */
+	func ECPString getDescriptionTranslate()
+		return pDescriptionTranslate
+	end
+	
+	/** \brief Command. */
+	func ECPString getCommand()
+		return pCommand
+	end
+	
+	/**
+	 * \brief Alternative commands.
+	 * \version 1.20
+	 */
+	func ECPStringList getAlternativeCommands()
+		return pAlternativeCommands
+	end
+	
+	/** \brief Prompt is enabled. */
+	func ECPBoolean getEnabled()
+		return pEnabled
+	end
+	
+	/** \brief List of bones to restrict the prompt to. */
+	func ECPStringList getBones()
+		return pBones
+	end
+	
+	/**
+	 * \brief Translation manager or null.
+	 * \version 1.16
+	 */
+	func TranslationManager getTranslationManager()
+		return pTranslationManager
+	end
+
+	/**
+	 * \brief Set translation manager or null.
+	 * \version 1.16
+	 */
+	func void setTranslationManager(TranslationManager manager)
+		pTranslationManager = manager
+	end
+	
+	/**
+	 * \brief Maximum distance to show interact prompt for when looking at it.
+	 * \version 1.18
+	 */
+	func ECPFloat getMaximumDistance()
+		return pMaximumDistance
+	end
+	
+	/**
+	 * \brief Optional settings to modify custom prompt widget display.
+	 * \version 1.19
+	 */
+	func ECPString getSettings()
+		return pSettings
+	end
+
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
+	end
+	
+	
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorInteractPrompt.
+	 */
+	static func ECBehaviorInteractPrompt getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorInteractPrompt each
+			return true
+		end) cast ECBehaviorInteractPrompt
+	end
+	
+	/**
+	 * \brief Get behavior with id in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorInteractPrompt with specific identifier.
+	 */
+	static func ECBehaviorInteractPrompt getBehaviorIn(BehaviorElementClass eclass, String id)
+		return eclass.findBehavior(block ECBehaviorInteractPrompt each
+			return each.getID().equals(id)
+		end) cast ECBehaviorInteractPrompt
+	end
+	
+	/**
+	 * \brief Get list of all behaviors in element.
+	 * 
+	 * Returns list contains ECBehaviorInteractPrompt behaviors in the order they have
+	 * been created in the element.
+	 */
+	static func Array getAllBehaviorsIn(BehaviorElementClass eclass)
+		return eclass.collectBehaviors(block ECBehaviorInteractPrompt each
+			return true
+		end)
+	end
+	
+	
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorInteractPrompt.Instance . If more than one instance is present returns
+	 * the first instance.
+	 */
+	static func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
+			return true
+		end) cast Instance
+	end
+	
+	/**
+	 * \brief Get instance with id in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorInteractPrompt.Instance with specific identifier.
+	 */
+	static func Instance getInstanceIn(BehaviorElement element, String id)
+		return element.findInstance(block Instance each
+			return each.getECBehavior().getID().equals(id)
+		end) cast Instance
+	end
+	
+	/**
+	 * \brief Get list of all instances in element.
+	 * 
+	 * Returns list contains ECBehaviorInteractPrompt.Instance instances in the order they have
+	 * been created in the element.
+	 */
+	static func Array getAllInstancesIn(BehaviorElement element)
+		return element.collectInstances(block Instance each
+			return true
+		end)
+	end
+	
+	
+	
+	/**
+	 * \brief Get list of all enabled instances in element.
+	 * 
+	 * Returns list contains ECBehaviorInteractPrompt.Instance instances in the order they have
+	 * been created in the element.
+	 */
+	static func Array getAllEnabledInstancesIn(BehaviorElement element)
+		return element.collectInstances(block Instance each
+			return each.getEnabled()
+		end)
+	end
+	
+	
+	
+	/** \brief Create Behavior instance. */
+	func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
+	end
+end

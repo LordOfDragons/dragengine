@@ -6,7 +6,8 @@
 //                                                                              //
 //////////////////////////////////////////////////////////////////////////////////
 
-namespace Dragengine.Scenery
+namespace Dragengine.Gui
+
 
 /**
  * \brief Font builder.
@@ -26,7 +27,7 @@ namespace Dragengine.Scenery
  * 
  * This is a native class.
  */
-abstract class Font
+abstract class FontBuilder
 	/** \name Constructors */
 	/*@{*/
 	/**

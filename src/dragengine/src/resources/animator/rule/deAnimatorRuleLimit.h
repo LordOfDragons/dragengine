@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Game Engine
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEANIMATORRULELIMITR_H_
@@ -32,7 +35,13 @@
  * 
  * Limits bone parameters to a range.
  */
-class deAnimatorRuleLimit : public deAnimatorRule{
+class DE_DLL_EXPORT deAnimatorRuleLimit : public deAnimatorRule{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deAnimatorRuleLimit> Ref;
+	
+	
+	
 public:
 	/** \brief Coordinate frame. */
 	enum eCoordinateFrames{
@@ -55,6 +64,8 @@ private:
 	decVector pMaxRotation;
 	decVector pMinScaling;
 	decVector pMaxScaling;
+	float pMinVertexPositionSet;
+	float pMaxVertexPositionSet;
 	
 	eCoordinateFrames pCoordinateFrame;
 	bool pEnablePositionXMin;
@@ -75,6 +86,8 @@ private:
 	bool pEnableScalingYMax;
 	bool pEnableScalingZMin;
 	bool pEnableScalingZMax;
+	bool pEnableVertexPositionSetMin;
+	bool pEnableVertexPositionSetMax;
 	
 	decString pTargetBone;
 	
@@ -134,6 +147,18 @@ public:
 	
 	/** \brief Set maximum scaling. */
 	void SetMaximumScaling( const decVector &scaling );
+	
+	/** \brief Minimum vertex position set. */
+	inline float GetMinimumVertexPositionSet() const{ return pMinVertexPositionSet; }
+	
+	/** \brief Set minimum vertex position set. */
+	void SetMinimumVertexPositionSet( float weight );
+	
+	/** \brief Maximum vertex position set. */
+	inline float GetMaximumVertexPositionSet() const{ return pMaxVertexPositionSet; }
+	
+	/** \brief Set maximum vertex position set. */
+	void SetMaximumVertexPositionSet( float weight );
 	
 	/** \brief Transformation coordinate frame. */
 	inline eCoordinateFrames GetCoordinateFrame() const{ return pCoordinateFrame; }
@@ -248,6 +273,18 @@ public:
 	
 	/** \brief Sets if z scaling is limited against the maximum. */
 	void SetEnableScalingZMax( bool enabled );
+	
+	/** \brief Vertex position set is limited against the minimum. */
+	inline bool GetEnableVertexPositionSetMin() const{ return pEnableVertexPositionSetMin; }
+	
+	/** \brief Set if vertex position set is limited against the minimum. */
+	void SetEnableVertexPositionSetMin( bool enabled );
+	
+	/** \brief Vertex position set is limited against the maximum. */
+	inline bool GetEnableVertexPositionSetMax() const{ return pEnableVertexPositionSetMax; }
+	
+	/** \brief Set if vertex position set is limited against the maximum. */
+	void SetEnableVertexPositionSetMax( bool enabled );
 	
 	/** \brief Name of the target bone. */
 	inline const decString &GetTargetBone() const{ return pTargetBone; }

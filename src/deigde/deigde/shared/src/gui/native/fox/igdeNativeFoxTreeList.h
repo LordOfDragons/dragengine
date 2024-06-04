@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _IGDENATIVEFOXTREELIST_H_
@@ -63,6 +66,15 @@ public:
 	
 	/** \brief Clean up native widget. */
 	virtual ~igdeNativeFoxTreeList();
+	
+	/** \brief Create native widget. */
+	static igdeNativeFoxTreeList* CreateNativeWidget( igdeTreeList &owner );
+	
+	/** \brief Post create native widget. */
+	virtual void PostCreateNativeWidget();
+	
+	/** \brief Destroy native widget. */
+	virtual void DestroyNativeWidget();
 	/*@}*/
 	
 	
@@ -77,17 +89,20 @@ public:
 	
 	
 	
-	void BuildTree();
-	void UpdateItem( igdeTreeItem *item );
-	void MakeItemVisible( igdeTreeItem *item );
-	void CreateAndInsertItem( igdeTreeItem *item );
-	void CreateAndAppendItem( igdeTreeItem *item );
-	void RemoveItem( igdeTreeItem *item );
-	void RemoveAllItems( igdeTreeItem *parent );
-	void ItemMoved( igdeTreeItem *item );
-	void SelectItem( igdeTreeItem *item );
-	void ItemsSortedIn( igdeTreeItem *item );
+	virtual void BuildTree();
+	virtual void UpdateItem( igdeTreeItem *item );
+	virtual void MakeItemVisible( igdeTreeItem *item );
+	virtual void CreateAndInsertItem( igdeTreeItem *item );
+	virtual void CreateAndAppendItem( igdeTreeItem *item );
+	virtual void RemoveItem( igdeTreeItem *item );
+	virtual void RemoveAllItems( igdeTreeItem *parent );
+	virtual void ItemMoved( igdeTreeItem *item );
+	virtual void SelectItem( igdeTreeItem *item );
+	virtual void ItemsSortedIn( igdeTreeItem *item );
 	virtual void Focus();
+	virtual void UpdateEnabled();
+	virtual void UpdateRows();
+	virtual void UpdateDescription();
 	
 	static int TreeListFlags( const igdeTreeList &owner );
 	static igdeFont *TreeListFont( const igdeTreeList &owner, const igdeGuiTheme &guitheme );
@@ -101,16 +116,16 @@ public:
 	
 	/** \name Events */
 	/*@{*/
-	long onExpanded( FXObject *sender, FXSelector selector, void *data );
-	long onCollapsed( FXObject *sender, FXSelector selector, void *data );
+	long onExpanded( FXObject*, FXSelector, void* );
+	long onCollapsed( FXObject*, FXSelector, void* );
 	
-	long onListCommand( FXObject *sender, FXSelector selector, void *data );
-	long onListChanged( FXObject *sender, FXSelector selector, void *data );
-	long onListRightMouseDown( FXObject *sender, FXSelector selector, void *data );
-	long onListRightMouseUp( FXObject *sender, FXSelector selector, void *data );
-	long onListDoubleClicked( FXObject *sender, FXSelector selector, void *data );
+	long onListCommand( FXObject*, FXSelector, void* );
+	long onListChanged( FXObject*, FXSelector, void* );
+	long onListRightMouseDown( FXObject*, FXSelector, void* );
+	long onListRightMouseUp( FXObject*, FXSelector, void* );
+	long onListDoubleClicked( FXObject*, FXSelector, void* );
 	
-	long onResizerDrag( FXObject *sender, FXSelector selector, void *data );
+	long onResizerDrag( FXObject*, FXSelector, void* );
 	/*@}*/
 	
 	
@@ -118,5 +133,7 @@ public:
 private:
 	void pDropItemsNativeWidget( igdeTreeItem *parent );
 };
+
+typedef igdeNativeFoxTreeList igdeNativeTreeList;
 
 #endif

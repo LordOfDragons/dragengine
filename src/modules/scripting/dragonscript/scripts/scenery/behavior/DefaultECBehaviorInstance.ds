@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -40,34 +43,34 @@ public class DefaultECBehaviorInstance implements ECBehaviorInstance
 	
 	
 	/** \brief Create default composeable instance. */
-	public func new( BehaviorElement element )
-		this.pElement = element
-		this.pRequiresThink = false
-		this.pRequiresEnterFrame = false
-		this.pInstanceIndex = element.getInstanceCount()
+	public func new(BehaviorElement element)
+		pElement = element
+		pRequiresThink = false
+		pRequiresEnterFrame = false
+		pInstanceIndex = element.getInstanceCount()
 	end
 	
 	/** \brief Dispose of behavior instance. */
 	public func void dispose()
-		this.pElement = null
+		pElement = null
 	end
 	
 	
 	
 	/** \brief Behavior element to apply behavior to. */
 	public func BehaviorElement getElement()
-		return this.pElement
+		return pElement
 	end
 	
 	/** \brief Behavior instance index. */
 	public func int getInstanceIndex()
-		return this.pInstanceIndex
+		return pInstanceIndex
 	end
 	
 	
 	
 	/** \brief Initialize element from stub. */
-	public func void init( StubElement stub )
+	public func void init(StubElement stub)
 	end
 	
 	/** \brief State changed (visble, touchable). */
@@ -88,12 +91,12 @@ public class DefaultECBehaviorInstance implements ECBehaviorInstance
 	
 	/** \brief Behavior instance requires enterFrame() to be called. */
 	public func bool requiresEnterFrame()
-		return this.pRequiresEnterFrame
+		return pRequiresEnterFrame
 	end
 	
 	/** \brief Set if behavior instance requires enterFrame() to be called. */
-	protected func void setRequiresEnterFrame( bool required )
-		this.pRequiresEnterFrame = required
+	protected func void setRequiresEnterFrame(bool required)
+		pRequiresEnterFrame = required
 	end
 	
 	/** \brief Frame update started. */
@@ -102,29 +105,29 @@ public class DefaultECBehaviorInstance implements ECBehaviorInstance
 	
 	/** \brief Behavior instance requires think() to be called. */
 	public func bool requiresThink()
-		return this.pRequiresThink
+		return pRequiresThink
 	end
 	
 	/**
 	 * \brief Set if behavior instance requires think() to be called.
 	 */
-	protected func void setRequiresThink( bool required )
-		if required == this.pRequiresThink
+	protected func void setRequiresThink(bool required)
+		if required == pRequiresThink
 			return
 		end
-		this.pRequiresThink = required
+		pRequiresThink = required
 		
-		if this.pElement != null // dispose protection
-			this.pElement.requiresThinkChanged()
+		if pElement != null // dispose protection
+			pElement.requiresThinkChanged()
 		end
 	end
 	
 	/** \brief Think about what to do for the next frame update. */
-	public func void think( float elapsed )
+	public func void think(float elapsed)
 	end
 	
 	/** \brief Post thinking after physics processing is finished. */
-	public func void postThink( float elapsed )
+	public func void postThink(float elapsed)
 	end
 	
 	/**
@@ -134,14 +137,30 @@ public class DefaultECBehaviorInstance implements ECBehaviorInstance
 	 * attaching succeedes. If multiple behaviors support attaching they have to negotiate
 	 * with each other who does the attaching for example by using BehaviorElement.getParent().
 	 */
-	public func void attachToParent( Element parent )
+	public func void attachToParent(Element parent)
 	end
 	
-	/** \brief Read behavior instance from file. */
-	public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+	/**
+	 * \brief Read behavior instance from file.
+	 * 
+	 * The default implementation reads a single byte expecting value 0 indicating version 0.
+	 * This allows subclasses to add persistency support by overwriting this method without
+	 * super calling it.
+	 */
+	public func void readFromFile(PersistencyEnvironment env, FileReader reader)
+		if reader.readByte() !=  0 // version
+			throw EInvalidParam.new("unsupported version")
+		end
 	end
 	
-	/** \brief Write behavior instance to file. */
-	public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+	/**
+	 * \brief Write behavior instance to file.
+	 * 
+	 * The default implementation writes a single byte of value 0 indicating version 0.
+	 * This allows subclasses to add persistency support by overwriting this method without
+	 * super calling it.
+	 */
+	public func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+		writer.writeByte(0) // version
 	end
 end

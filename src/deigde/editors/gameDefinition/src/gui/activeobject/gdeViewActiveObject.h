@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Game Definition Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _GDEVIEWACTIVEOBJECT_H_
@@ -264,29 +267,30 @@ private:
 	void pInitSky();
 	void pInitParticleEmitter();
 	
-	void pInitObjectClassOCs( const gdeObjectClass &objectClass );
-	void pInitOCBillboards( const gdeObjectClass &objectClass );
-	void pInitOCCameras( const gdeObjectClass &objectClass );
-	void pInitOCComponents( const gdeObjectClass &objectClass );
-	void pInitOCLights( const gdeObjectClass &objectClass );
-	void pInitOCParticleEmitters( const gdeObjectClass &objectClass );
-	void pInitOCForceFields( const gdeObjectClass &objectClass );
-	void pInitOCEnvMapProbes( const gdeObjectClass &objectClass );
-	void pInitOCNavigationSpaces( const gdeObjectClass &objectClass );
-	void pInitOCNavigationBlockers( const gdeObjectClass &objectClass );
-	void pInitOCSnapPoints( const gdeObjectClass &objectClass );
-	void pInitOCSpeakers( const gdeObjectClass &objectClass );
-	void pRebuildOCBillboards( const gdeObjectClass &objectClass );
-	void pRebuildOCCameras( const gdeObjectClass &objectClass );
-	void pRebuildOCComponents( const gdeObjectClass &objectClass );
-	void pRebuildOCLights( const gdeObjectClass &objectClass );
-	void pRebuildOCParticleEmitters( const gdeObjectClass &objectClass );
-	void pRebuildOCForceFields( const gdeObjectClass &objectClass );
-	void pRebuildOCEnvMapProbes( const gdeObjectClass &objectClass );
-	void pRebuildOCNavigationSpaces( const gdeObjectClass &objectClass );
-	void pRebuildOCNavigationBlockers( const gdeObjectClass &objectClass );
-	void pRebuildOCSnapPoints( const gdeObjectClass &objectClass );
-	void pRebuildOCSpeakers( const gdeObjectClass &objectClass );
+	void pInitObjectClassOCs( const gdeObjectClass &objectClass, const decString &propertyPrefix, int filter );
+	void pInitOCBillboards( const gdeObjectClass &objectClass, const decString &propertyPrefix );
+	void pInitOCCameras( const gdeObjectClass &objectClass, const decString &propertyPrefix );
+	void pInitOCComponents( const gdeObjectClass &objectClass, const decString &propertyPrefix );
+	void pInitOCLights( const gdeObjectClass &objectClass, const decString &propertyPrefix );
+	void pInitOCParticleEmitters( const gdeObjectClass &objectClass, const decString &propertyPrefix );
+	void pInitOCForceFields( const gdeObjectClass &objectClass, const decString &propertyPrefix );
+	void pInitOCEnvMapProbes( const gdeObjectClass &objectClass, const decString &propertyPrefix );
+	void pInitOCNavigationSpaces( const gdeObjectClass &objectClass, const decString &propertyPrefix );
+	void pInitOCNavigationBlockers( const gdeObjectClass &objectClass, const decString &propertyPrefix );
+	void pInitOCSnapPoints( const gdeObjectClass &objectClass, const decString &propertyPrefix );
+	void pInitOCSpeakers( const gdeObjectClass &objectClass, const decString &propertyPrefix );
+	void pAddComponentShadowIgnore();
+	void pRebuildOCBillboards( const gdeObjectClass &objectClass, const decString &propertyPrefix );
+	void pRebuildOCCameras( const gdeObjectClass &objectClass, const decString &propertyPrefix );
+	void pRebuildOCComponents( const gdeObjectClass &objectClass, const decString &propertyPrefix );
+	void pRebuildOCLights( const gdeObjectClass &objectClass, const decString &propertyPrefix );
+	void pRebuildOCParticleEmitters( const gdeObjectClass &objectClass, const decString &propertyPrefix );
+	void pRebuildOCForceFields( const gdeObjectClass &objectClass, const decString &propertyPrefix );
+	void pRebuildOCEnvMapProbes( const gdeObjectClass &objectClass, const decString &propertyPrefix );
+	void pRebuildOCNavigationSpaces( const gdeObjectClass &objectClass, const decString &propertyPrefix );
+	void pRebuildOCNavigationBlockers( const gdeObjectClass &objectClass, const decString &propertyPrefix );
+	void pRebuildOCSnapPoints( const gdeObjectClass &objectClass, const decString &propertyPrefix );
+	void pRebuildOCSpeakers( const gdeObjectClass &objectClass, const decString &propertyPrefix );
 	
 	void pOCReattachAllObjects();
 	

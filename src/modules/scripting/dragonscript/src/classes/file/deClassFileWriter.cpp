@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -34,8 +37,11 @@
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/file/decBaseFileWriter.h>
+#include <dragengine/common/file/decZFileWriter.h>
 #include <dragengine/common/string/decString.h>
+
 #include <libdscript/exceptions.h>
+#include <libdscript/packages/default/dsClassTimeDate.h>
 
 
 
@@ -67,6 +73,23 @@ void deClassFileWriter::nfNew::RunFunction( dsRunTime *rt, dsValue *myself ){
 	// create file writer
 	path.SetFromUnix( rt->GetValue( 0 )->GetString() );
 	nd.fileWriter = vfs.OpenFileForWriting( path );
+}
+
+// public static func FileWriter newZCompresed(String filename)
+deClassFileWriter::nfNewZCompressed::nfNewZCompressed( const sInitData &init ) :
+dsFunction( init.clsFileWriter, "newZCompressed", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsFileWriter ){
+	p_AddParameter( init.clsString ); // filename
+}
+void deClassFileWriter::nfNewZCompressed::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deClassFileWriter &clsFileWriter = *( ( deClassFileWriter* )GetOwnerClass() );
+	deVirtualFileSystem &vfs = *clsFileWriter.GetDS()->GetGameEngine()->GetVirtualFileSystem();
+	
+	const char * const filename = rt->GetValue( 0 )->GetString();
+	
+	clsFileWriter.PushFileWriter( rt, decZFileWriter::Ref::New(
+		new decZFileWriter( decBaseFileWriter::Ref::New(
+			vfs.OpenFileForWriting( decPath::CreatePathUnix( filename ) ) ) ) ) );
 }
 
 // public func destructor()
@@ -209,6 +232,17 @@ void deClassFileWriter::nfWriteUInt::RunFunction( dsRunTime *rt, dsValue *myself
 	fileWriter.WriteUInt( ( uint32_t )rt->GetValue( 0 )->GetInt() );
 }
 
+// public func void writeVarUInt( int value )
+deClassFileWriter::nfWriteVarUInt::nfWriteVarUInt( const sInitData &init ) :
+dsFunction( init.clsFileWriter, "writeVarUInt", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsInt ); // value
+}
+void deClassFileWriter::nfWriteVarUInt::RunFunction( dsRunTime *rt, dsValue *myself ){
+	decBaseFileWriter &fileWriter = *( ( ( const sFileWriterNatDat * )p_GetNativeData( myself ) )->fileWriter );
+	
+	fileWriter.WriteVarUInt( ( uint32_t )rt->GetValue( 0 )->GetInt() );
+}
+
 // public func void writeFloat( float value )
 deClassFileWriter::nfWriteFloat::nfWriteFloat( const sInitData &init ) : dsFunction( init.clsFileWriter,
 "writeFloat", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
@@ -221,42 +255,66 @@ void deClassFileWriter::nfWriteFloat::RunFunction( dsRunTime *rt, dsValue *mysel
 }
 
 // public func void writeString8( String data )
-deClassFileWriter::nfWriteString8::nfWriteString8( const sInitData &init ) : dsFunction( init.clsFileWriter,
-"writeString8", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+deClassFileWriter::nfWriteString8::nfWriteString8( const sInitData &init ) :
+dsFunction( init.clsFileWriter, "writeString8", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
 	p_AddParameter( init.clsString ); // data
 }
 void deClassFileWriter::nfWriteString8::RunFunction( dsRunTime *rt, dsValue *myself ){
 	decBaseFileWriter &fileWriter = *( ( ( const sFileWriterNatDat * )p_GetNativeData( myself ) )->fileWriter );
-	const char *data = rt->GetValue( 0 )->GetString();
-	int size = strlen( data );
-	
-	if( size > 255 ){
-		DSTHROW_INFO( dueInvalidParam, "String too long" );
-	}
-	
-	fileWriter.WriteByte( ( unsigned char )size );
-	if( size > 0 ){
-		fileWriter.Write( data, size );
+	const char * const data = rt->GetValue( 0 )->GetString();
+	try{
+		fileWriter.WriteString8( data );
+		
+	}catch( const deException &e ){
+		DSTHROW_INFO( dueInvalidParam, e.GetDescription() );
 	}
 }
 
 // public func void writeString16( String data )
-deClassFileWriter::nfWriteString16::nfWriteString16( const sInitData &init ) : dsFunction( init.clsFileWriter,
-"writeString16", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+deClassFileWriter::nfWriteString16::nfWriteString16( const sInitData &init ) :
+dsFunction( init.clsFileWriter, "writeString16", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
 	p_AddParameter( init.clsString ); // data
 }
 void deClassFileWriter::nfWriteString16::RunFunction( dsRunTime *rt, dsValue *myself ){
 	decBaseFileWriter &fileWriter = *( ( ( const sFileWriterNatDat * )p_GetNativeData( myself ) )->fileWriter );
-	const char *data = rt->GetValue( 0 )->GetString();
-	int size = strlen( data );
-	
-	if( size > 65535 ){
-		DSTHROW_INFO( dueInvalidParam, "String too long" );
+	const char * const data = rt->GetValue( 0 )->GetString();
+	try{
+		fileWriter.WriteString16( data );
+		
+	}catch( const deException &e ){
+		DSTHROW_INFO( dueInvalidParam, e.GetDescription() );
 	}
-	
-	fileWriter.WriteUShort( ( unsigned short )size );
-	if( size > 0 ){
-		fileWriter.Write( data, size );
+}
+
+// public func void writeString32( String data )
+deClassFileWriter::nfWriteString32::nfWriteString32( const sInitData &init ) :
+dsFunction( init.clsFileWriter, "writeString32", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsString ); // data
+}
+void deClassFileWriter::nfWriteString32::RunFunction( dsRunTime *rt, dsValue *myself ){
+	decBaseFileWriter &fileWriter = *( ( ( const sFileWriterNatDat * )p_GetNativeData( myself ) )->fileWriter );
+	const char * const data = rt->GetValue( 0 )->GetString();
+	try{
+		fileWriter.WriteString32( data );
+		
+	}catch( const deException &e ){
+		DSTHROW_INFO( dueInvalidParam, e.GetDescription() );
+	}
+}
+
+// public func void writeVarString( String data )
+deClassFileWriter::nfWriteVarString::nfWriteVarString( const sInitData &init ) :
+dsFunction( init.clsFileWriter, "writeVarString", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsString ); // data
+}
+void deClassFileWriter::nfWriteVarString::RunFunction( dsRunTime *rt, dsValue *myself ){
+	decBaseFileWriter &fileWriter = *( ( ( const sFileWriterNatDat * )p_GetNativeData( myself ) )->fileWriter );
+	const char * const data = rt->GetValue( 0 )->GetString();
+	try{
+		fileWriter.WriteVarString( data );
+		
+	}catch( const deException &e ){
+		DSTHROW_INFO( dueInvalidParam, e.GetDescription() );
 	}
 }
 
@@ -269,7 +327,7 @@ void deClassFileWriter::nfWriteString::RunFunction( dsRunTime *rt, dsValue *myse
 	decBaseFileWriter &fileWriter = *( ( ( const sFileWriterNatDat * )p_GetNativeData( myself ) )->fileWriter );
 	const char *data = rt->GetValue( 0 )->GetString();
 	
-	fileWriter.Write( data, strlen( data ) );
+	fileWriter.Write( data, ( int )strlen( data ) );
 }
 
 // public func void writeData( FileReader reader )
@@ -360,6 +418,32 @@ void deClassFileWriter::nfWriteData2::RunFunction( dsRunTime *rt, dsValue *mysel
 	}
 }
 
+// public func void writeTimeDate(TimeDate timeDate)
+deClassFileWriter::nfWriteTimeDate::nfWriteTimeDate( const sInitData &init ) :
+dsFunction( init.clsFileWriter, "writeTimeDate", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsTimeDate ); // timeDate
+}
+void deClassFileWriter::nfWriteTimeDate::RunFunction( dsRunTime *rt, dsValue *myself ){
+	decBaseFileWriter &fileWriter = *( ( ( const sFileWriterNatDat * )p_GetNativeData( myself ) )->fileWriter );
+	deScriptingDragonScript &ds = *( ( deClassFileWriter* )GetOwnerClass() )->GetDS();
+	dsClassTimeDate &clsTimeDate = *( ( dsClassTimeDate* )ds.GetScriptEngine()->GetClassTimeDate() );
+	
+	const dsClassTimeDate::sTimeDate timeDate( clsTimeDate.GetTimeDate( rt->GetValue( 0 )->GetRealObject() ) );
+	
+	fileWriter.WriteByte( 0 ); // version
+	
+	fileWriter.WriteUShort( timeDate.year );
+	fileWriter.WriteByte( timeDate.month );
+	fileWriter.WriteByte( timeDate.day );
+	fileWriter.WriteByte( timeDate.hour );
+	fileWriter.WriteByte( timeDate.minute );
+	fileWriter.WriteByte( timeDate.second );
+	
+	fileWriter.WriteByte( timeDate.dayOfWeek );
+	fileWriter.WriteUShort( timeDate.dayOfYear );
+}
+
 
 
 // Class deClassFileWriter
@@ -401,10 +485,12 @@ void deClassFileWriter::CreateClassMembers( dsEngine *engine ){
 	init.clsObject = engine->GetClassObject();
 	init.clsInt = engine->GetClassInt();
 	init.clsFloat = engine->GetClassFloat();
+	init.clsTimeDate = engine->GetClassTimeDate();
 	
 	init.clsFileReader = pDS->GetClassFileReader();
 	
 	AddFunction( new nfNew( init ) );
+	AddFunction( new nfNewZCompressed( init ) );
 	AddFunction( new nfDestructor( init ) );
 	
 	AddFunction( new nfGetFilename( init ) );
@@ -418,12 +504,16 @@ void deClassFileWriter::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfWriteUShort( init ) );
 	AddFunction( new nfWriteInt( init ) );
 	AddFunction( new nfWriteUInt( init ) );
+	AddFunction( new nfWriteVarUInt( init ) );
 	AddFunction( new nfWriteFloat( init ) );
 	AddFunction( new nfWriteString8( init ) );
 	AddFunction( new nfWriteString16( init ) );
+	AddFunction( new nfWriteString32( init ) );
+	AddFunction( new nfWriteVarString( init ) );
 	AddFunction( new nfWriteString( init ) );
 	AddFunction( new nfWriteData( init ) );
 	AddFunction( new nfWriteData2( init ) );
+	AddFunction( new nfWriteTimeDate( init ) );
 	
 	CalcMemberOffsets();
 }

@@ -19,7 +19,7 @@ class GameApp extends BaseGameApp
 	 * work should be placed inside initGame() or one of the hook methods called by
 	 * BaseGameApp.initGame().
 	 */
-	public func new()
+	func new()
 		// Path to the GUI Theme file to use. If not set uses BaseGameApp.defaultPathGuiTheme
 		// 
 		//pathDesktopGuiTheme = "/content/ui/main.guitheme.xml"
@@ -29,7 +29,7 @@ class GameApp extends BaseGameApp
 		// properties below with the appropriate values.
 		// 
 		//pathLanguagePacks = "/content/langpacks"
-		//defaultLanguagePackName = UnicodeString.newFromUTF8( "English" )
+		//defaultLanguagePackName = UnicodeString.newFromUTF8("English")
 	end
 	
 	/**
@@ -41,7 +41,7 @@ class GameApp extends BaseGameApp
 	 * 
 	 * See BaseGameApp.initGame() documentation for the supported hook methods.
 	 */
-	public func void initGame()
+	func void initGame()
 		// super-call has to come first
 		super.initGame()
 		
@@ -57,10 +57,10 @@ class GameApp extends BaseGameApp
 		// Showing the Drag[en]gine Game Engine logo is not required at all to use this game
 		// engine but we highly appreciate it if you do so.
 		
-		WindowLogo.showDragengineLogo( this.getDesktop(), BlockActionListener.new( \
+		WindowLogo.showDragengineLogo(getDesktop(), BlockActionListener.new(\
 			block ActionEvent event
 				launchApplication()
-			end ) )
+			end))
 	end
 	
 	/**
@@ -68,30 +68,30 @@ class GameApp extends BaseGameApp
 	 * 
 	 * Called after logo windows are finished.
 	 */
-	public func void launchApplication()
+	func void launchApplication()
 		// Show the new-project window. Hides the render window so the mouse cursor does
 		// not vanish. To continue working on your project add a main menu window or add
 		// a world using the world editor which can load below. Once done remove this
 		// code block and uncomment the one below with the appropriate changes
-		getWindowGameWorld().setVisible( false )
+		getWindowGameWorld().setVisible(false)
 		
 		var Window window = Window.new()
-		window.setLayout( BorderLayout.new( 10 ) )
-		window.addWidget( Label.new( "Congratulations!\n\n" \
+		window.setLayout(BorderLayout.new(10))
+		window.addWidget(Label.new("Congratulations!\n\n" \
 			+ "Your new game project is up and running.\n\n" \
-			+ "Add now a world to load" ), BorderLayout.Area.content )
-		window.addWidget( Button.new( "Quit Game", QuitGameActionListener.new() ), BorderLayout.Area.bottom )
-		getDesktop().addWidget( window )
+			+ "Add now a world to load"), BorderLayout.Area.content)
+		window.addWidget(Button.new("Quit Game", QuitGameActionListener.new()), BorderLayout.Area.bottom)
+		getDesktop().addWidget(window)
 		window.fitToContent()
 		window.centerWindow()
 		
 		/*
 		// BaseGameApp adds a WindowConsole which can be toggled by pressing F1 key. Adding
 		// a ShoutConsole shows the last messages without needing to show the console.
-		getWindowGameWorld().addWidget( ShoutConsole.new( getConsole() ) )
+		getWindowGameWorld().addWidget(ShoutConsole.new(getConsole()))
 		
 		// Logging can be done by adding messages to the console
-		getConsole().addMessage( "Loading world..." )
+		getConsole().addMessage("Loading world...")
 		
 		// startLoadGameWorld is a simple way to start loading a game world into the
 		// WindowGameWorld created by BaseGameApp. StartGame is a script class created
@@ -99,7 +99,7 @@ class GameApp extends BaseGameApp
 		// finishes and contains the required code to finish starting the game.
 		// 
 		// To use this create a world file and change the filename
-		startLoadGameWorld( StartGame.new( getWindowGameWorld(), "/content/world/game.deworld" ) )
+		startLoadGameWorld(StartGame.new(getWindowGameWorld(), "/content/world/game.deworld"))
 		*/
 	end
 	
@@ -112,7 +112,7 @@ class GameApp extends BaseGameApp
 		
 		// Add scripted element classes. These can be used by XML element classes below
 		var ElementClassList eclist = getElementClassList()
-		//eclist.add(MyElementClassClass.new())
+		//eclist.add(MyElementClass.new())
 		
 		// Add XML element classes by recursively scanning directory for *.deeclass files.
 		// These require scripted element classes as parent classes. Using *.deeclass
@@ -132,7 +132,7 @@ class GameApp extends BaseGameApp
 	 * called if the initGame() threw an exception before finishing. Make sure to check if
 	 * objects have been initialized before cleaning them up.
 	 */
-	public func void cleanUp()
+	func void cleanUp()
 		// your cleaning up code has to come before the super-call
 		
 		// super-call has to come last

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -64,9 +67,11 @@ pDirtyCullSphere( true ),
 pDirtyRenderEnvMap( true ),
 pDirtySkin( true ),
 pDirtyDynamicSkin( true ),
-pDirtySkinStateCalculatedProperties( true ),
-pDirtyRenderables( true ),
+pDirtyRenderableMapping( true ),
+pDirtySkinStateStates( true ),
+pSkinStatePrepareRenderables( true ),
 
+pDynamicSkinRenderablesChanged( true ),
 pDynamicSkinRequiresSync( true ),
 pRequiresUpdateEverySync( false ),
 
@@ -118,9 +123,9 @@ void deoglBillboard::SyncToRender(){
 		pRBillboard->InvalidateRenderEnvMap();
 		pDirtyRenderEnvMap = false;
 	}
-	if( pDirtyRenderables ){
-		pRBillboard->SetDirtyRendereables();
-		pDirtyRenderables = false;
+	if( pDirtyRenderableMapping ){
+		pRBillboard->UpdateRenderableMapping();
+		pDirtyRenderableMapping = false;
 	}
 	
 	// sync skin state controller
@@ -140,12 +145,19 @@ void deoglBillboard::SyncToRender(){
 	pAccumUpdate = 0.0f;
 	pCheckRequiresUpdateEverySync();
 	
-	// sync calculated skin state properties. has to come after pSkinStateController->SyncToRender()
+	// sync skin state properties. has to come after pSkinStateController->SyncToRender()
 	// and pRBillboard->UpdateSkin()
-	if( pDirtySkinStateCalculatedProperties ){
-		pRBillboard->InitSkinStateCalculatedProperties();
-		pDirtySkinStateCalculatedProperties = false;
+	if( pDirtySkinStateStates ){
+		pRBillboard->InitSkinStateStates();
+		pDirtySkinStateStates = false;
 	}
+	
+	if( pSkinStatePrepareRenderables ){
+		pRBillboard->DirtyPrepareSkinStateRenderables();
+		pSkinStatePrepareRenderables = false;
+	}
+	
+	pRBillboard->UpdateSkinStateStates(); // has to be done better. only some need this
 	
 	// octree, extends and matrices. order is important
 	if( pDirtyExtends ){
@@ -185,13 +197,43 @@ void deoglBillboard::SetParentWorld( deoglWorld *parentWorld ){
 	pDirtyRenderEnvMap = true;
 }
 
-void deoglBillboard::DynamicSkinRequiresSync(){
+
+
+// Dynamic skin listener
+//////////////////////////
+
+void deoglBillboard::DynamicSkinDestroyed(){
+	pDynamicSkin = NULL;
+}
+
+void deoglBillboard::DynamicSkinRenderablesChanged(){
+	pDynamicSkinRenderablesChanged = true;
 	pDynamicSkinRequiresSync = true;
+	pDirtyRenderableMapping = true;
+// 	pDirtyStaticTexture = true;
+	pSkinStatePrepareRenderables = true;
+// 	pNotifyTexturesChanged = true;
+// 	pDirtySolid = true;
+	
 	pRequiresSync();
 }
 
-void deoglBillboard::DropDynamicSkin(){
-	pDynamicSkin = NULL;
+void deoglBillboard::DynamicSkinRenderableChanged( deoglDSRenderable& ){
+	pDynamicSkinRenderablesChanged = true;
+	pDynamicSkinRequiresSync = true;
+// 	pDirtyStaticTexture = true;
+	pSkinStatePrepareRenderables = true;
+// 	pNotifyTexturesChanged = true;
+// 	pDirtySolid = true;
+	
+	pRequiresSync();
+}
+
+void deoglBillboard::DynamicSkinRenderableRequiresSync( deoglDSRenderable& ){
+	pDynamicSkinRequiresSync = true;
+	pSkinStatePrepareRenderables = true;
+	
+	pRequiresSync();
 }
 
 
@@ -242,20 +284,21 @@ void deoglBillboard::OffsetChanged(){
 void deoglBillboard::SkinChanged(){
 	pDirtySkin = true;
 	pDirtySkinStateController = true;
-	pDirtySkinStateCalculatedProperties = true;
-	pDirtyRenderables = true;
+	pDirtySkinStateStates = true;
+	pDirtyRenderableMapping = true;
+	pSkinStatePrepareRenderables = true;
 	
 	pRequiresSync();
 }
 
 void deoglBillboard::DynamicSkinChanged(){
 	if( pDynamicSkin ){
-		pDynamicSkin->GetNotifyBillboards().Remove( this );
+		pDynamicSkin->RemoveListener( this );
 	}
 	
 	if( pBillboard.GetDynamicSkin() ){
 		pDynamicSkin = ( deoglDynamicSkin* )pBillboard.GetDynamicSkin()->GetPeerGraphic();
-		pDynamicSkin->GetNotifyBillboards().Add( this );
+		pDynamicSkin->AddListener( this );
 		
 	}else{
 		pDynamicSkin = NULL;
@@ -263,7 +306,9 @@ void deoglBillboard::DynamicSkinChanged(){
 	
 	pDirtyDynamicSkin = true;
 	pDynamicSkinRequiresSync = true;
-	pDirtyRenderables = true;
+	pDynamicSkinRenderablesChanged = true;
+	pDirtyRenderableMapping = true;
+	pSkinStatePrepareRenderables = true;
 	
 	pRequiresSync();
 }
@@ -304,7 +349,7 @@ void deoglBillboard::pCleanUp(){
 		pRBillboard->FreeReference();
 	}
 	if( pDynamicSkin ){
-		pDynamicSkin->GetNotifyBillboards().Remove( this );
+		pDynamicSkin->RemoveListener( this );
 	}
 }
 
@@ -337,6 +382,11 @@ void deoglBillboard::pSyncDynamicSkin(){
 		pDirtyDynamicSkin = false;
 	}
 	
+	if( pDynamicSkinRenderablesChanged ){
+		pDynamicSkinRenderablesChanged = false;
+		pRBillboard->DynamicSkinRenderablesChanged();
+	}
+	
 	if( pDynamicSkinRequiresSync ){
 		pDynamicSkinRequiresSync = false;
 		if( pDynamicSkin ){
@@ -346,9 +396,11 @@ void deoglBillboard::pSyncDynamicSkin(){
 }
 
 void deoglBillboard::pCheckRequiresUpdateEverySync(){
-	pRequiresUpdateEverySync = pSkinStateController->RequiresSyncEveryFrameUpdate();
-	if( pRequiresUpdateEverySync ){
-		return;
+	if( pSkinStateController->RequiresSyncEveryFrameUpdate() ){
+		pRequiresUpdateEverySync = true;
+		if( pSkinStateController->RequiresPrepareRenderables() ){
+			pRBillboard->DirtyPrepareSkinStateRenderables();
+		}
 	}
 }
 

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -110,7 +113,7 @@ class BoxLayout implements Layout
 		var bool negate = ( this.pAxis == LayoutAxis.inverseX or this.pAxis == LayoutAxis.inverseY )
 		var int cx = container.getPadding().getLeft()
 		var int cy = container.getPadding().getTop()
-		var int w, effSize, sizeGain
+		var int w, sizeGain, availCount
 		var Point childSize
 		var Widget child
 		
@@ -119,6 +122,12 @@ class BoxLayout implements Layout
 		var int borderWidth
 		var int borderLeft
 		var int borderTop
+		
+		for w = 0 to count
+			if container.getWidget( w ).getVisible()
+				availCount++
+			end
+		end
 		
 		select this.pAxis
 		case LayoutAxis.x, LayoutAxis.inverseX
@@ -148,7 +157,7 @@ class BoxLayout implements Layout
 					borderWidth = borderSize.getWidth()
 					borderHeight = borderSize.getHeight()
 				end
-				sizeGain = availSpace / ( count - w )
+				sizeGain = availSpace / availCount--
 				child.setSize( Point.new( childSize.getX() + sizeGain, height - borderHeight ) )
 				availSpace -= sizeGain
 				
@@ -189,7 +198,7 @@ class BoxLayout implements Layout
 					borderWidth = borderSize.getWidth()
 					borderHeight = borderSize.getHeight()
 				end
-				sizeGain = availSpace / ( count - w )
+				sizeGain = availSpace / availCount--
 				child.setSize( Point.new( width - borderWidth, childSize.getY() + sizeGain ) )
 				availSpace -= sizeGain
 				
@@ -234,9 +243,10 @@ class BoxLayout implements Layout
 	 */
 	protected func Point getMinimumSizeFor( Container container, int width, int height )
 		var int count = container.getWidgetCount()
-		var Widget child
-		var Point childSize
+		var bool usePadding = false
 		var int w, cx = 0, cy = 0
+		var Point childSize
+		var Widget child
 		
 		select this.pAxis
 		case LayoutAxis.x, LayoutAxis.inverseX
@@ -252,6 +262,7 @@ class BoxLayout implements Layout
 					if childSize.getY() > cy
 						cy = childSize.getY()
 					end
+					usePadding = true
 				end
 				cx -= this.pGap // because we added one gap too much
 			end
@@ -269,11 +280,16 @@ class BoxLayout implements Layout
 					if childSize.getX() > cx
 						cx = childSize.getX()
 					end
+					usePadding = true
 				end
 				cy -= this.pGap // because we added one gap too much
 			end
 		end
 		
-		return Point.new().largest( cx, cy ) + container.getPadding().getSize()
+		var Point size = Point.new().largest( cx, cy )
+		if usePadding
+			size = size + container.getPadding().getSize()
+		end
+		return size
 	end
 end

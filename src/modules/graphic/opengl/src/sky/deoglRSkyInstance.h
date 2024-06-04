@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLRSKYINSTANCE_H_
@@ -30,13 +33,15 @@ class deoglRWorld;
 class deoglRenderThread;
 class deoglRSky;
 class deoglRSkyInstanceLayer;
+class deoglGIState;
+class deoglRComponent;
 
 class deSkyInstance;
 
 
 
 /**
- * \brief Render sky instance.
+ * Render sky instance.
  */
 class deoglRSkyInstance : public deObject{
 private:
@@ -55,6 +60,7 @@ private:
 	int pLayerCount;
 	
 	float pTotalSkyLightIntensity;
+	float pTotalSkyAmbientIntensity;
 	decColor pTotalSkyLightColor;
 	
 	float pEnvMapTimer;
@@ -67,10 +73,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create sky instance. */
+	/** Create sky instance. */
 	deoglRSkyInstance( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up render sky instance. */
+	/** Clean up render sky instance. */
 	virtual ~deoglRSkyInstance();
 	/*@}*/
 	
@@ -78,22 +84,22 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Render thread. */
+	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
-	/** \brief Parent world or \em NULL. */
+	/** Parent world or \em NULL. */
 	inline deoglRWorld *GetParentWorld() const{ return pParentWorld; }
 	
-	/** \brief Set parent world or \em NULL. */
+	/** Set parent world or \em NULL. */
 	void SetParentWorld( deoglRWorld *world );
 	
 	
 	
-	/** \brief Render sky or \em NULL. */
+	/** Render sky or \em NULL. */
 	inline deoglRSky *GetRSky() const{ return pRSky; }
 	
 	/**
-	 * \brief Set render sky or \em NULL.
+	 * Set render sky or \em NULL.
 	 * 
 	 * Called during synchronization time.
 	 */
@@ -101,28 +107,28 @@ public:
 	
 	
 	
-	/** \brief Rendering order. */
+	/** Rendering order. */
 	inline int GetOrder() const{ return pOrder; }
 	
-	/** \brief Set rendering order. */
+	/** Set rendering order. */
 	void SetOrder( int order );
 	
-	/** \brief Layer mask. */
+	/** Layer mask. */
 	inline  const decLayerMask &GetLayerMask() const{ return pLayerMask; }
 	
-	/** \brief Set layer mask. */
+	/** Set layer mask. */
 	void SetLayerMask( const decLayerMask &layerMask );
 	
 	
 	
-	/** \brief Number of controller states. */
+	/** Number of controller states. */
 	inline int GetControllerStateCount() const{ return pControllerStateCount; }
 	
-	/** \brief Controller state at index. */
+	/** Controller state at index. */
 	float GetControllerStateAt( int index ) const;
 	
 	/**
-	 * \brief Update controller states.
+	 * Update controller states.
 	 * 
 	 * Called during synchronization time.
 	 */
@@ -130,46 +136,58 @@ public:
 	
 	
 	
-	/** \brief Number of layers. */
+	/** Number of layers. */
 	inline int GetLayerCount() const{ return pLayerCount; }
 	
-	/** \brief Layer at index. */
+	/** Layer at index. */
 	deoglRSkyInstanceLayer &GetLayerAt( int index ) const;
 	
-	/** \brief Rebuild layers. */
+	/** Rebuild layers. */
 	void RebuildLayers();
 	
-	/** \brief Update layers. */
+	/** Update layers. */
 	void UpdateLayers();
 	
 	
 	
-	/** \brief Total sky light intensity. */
+	/** Total sky light intensity. */
 	inline float GetTotalSkyLightIntensity() const{ return pTotalSkyLightIntensity; }
 	
-	/** \brief Total sky light color. */
+	/** Total sky ambient only light intensity. */
+	inline float GetTotalSkyAmbientIntensity() const{ return pTotalSkyAmbientIntensity; }
+	
+	/** Total sky light color. */
 	inline const decColor &GetTotalSkyLightColor() const{ return pTotalSkyLightColor; }
 	
 	
 	
-	/** \brief Environment map timer. */
+	/** Environment map timer. */
 	inline float GetEnvironmentMapTimer() const{ return pEnvMapTimer; }
 	
-	/** \brief Set environment map timer. */
+	/** Set environment map timer. */
 	void SetEnvironmentMapTimer( float timer );
 	
 	
 	
-	/** \brief Prepare for rendering. */
+	/** Prepare for rendering. */
 	void PrepareForRender();
 	
-	/** \brief Notifiy world about changes in the sky if required. */
+	/** Notifiy world about changes in the sky if required. */
 	void NotifySkyChanged();
 	
+	/** Drop all pointers to GI State. */
+	void DropGIState( const deoglGIState *giState );
+	
+	/** Drop all pointers to GI States. */
+	void DropAllGIStates();
 	
 	
-	/** \brief Prepare for quick disposal of sky instance. */
+	
+	/** Prepare for quick disposal of sky instance. */
 	void PrepareQuickDispose();
+	
+	/** Notify skies render static component changed requiring updates. */
+	void NotifyUpdateStaticComponent( deoglRComponent *component );
 	/*@}*/
 	
 	
@@ -177,13 +195,13 @@ public:
 	/** \name Render world usage */
 	/*@{*/
 	/**
-	 * \brief Marked for removal.
+	 * Marked for removal.
 	 * \details For use by deoglRWorld only. Non-thread safe.
 	 */
 	inline bool GetWorldMarkedRemove() const{ return pWorldMarkedRemove; }
 	
 	/**
-	 * \brief Set marked for removal.
+	 * Set marked for removal.
 	 * \details For use by deoglRWorld only. Non-thread safe.
 	 */
 	void SetWorldMarkedRemove( bool marked );

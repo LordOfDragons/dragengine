@@ -1,0 +1,110 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+
+namespace Dragengine
+
+
+/**
+ * \brief InputDevice type.
+ */
+enum InputDeviceType
+	/** \brief Mouse. */
+	mouse
+	
+	/** \brief Keyboard. */
+	keyboard
+	
+	/** \brief Game pad. */
+	gamepad
+	
+	/** \brief Joystick. */
+	joystick
+	
+	/** \brief Touchpad. */
+	touchpad
+	
+	/** \brief Touchscreen. */
+	touchscreen
+	
+	/** \brief Racing wheel. */
+	racingWheel
+	
+	/** \brief Generic device. */
+	generic
+	
+	/**
+	 * \brief VR Head mounted display.
+	 * \version 1.6
+	 */
+	vrHMD
+	
+	/**
+	 * \brief VR Right Hand Controller.
+	 * \version 1.6
+	 */
+	vrRightHand
+	
+	/**
+	 * \brief VR Left Hand Controller.
+	 * \version 1.6
+	 */
+	vrLeftHand
+	
+	/**
+	 * \brief VR Treadmill.
+	 * \version 1.6
+	 */
+	vrTreadmill
+	
+	/**
+	 * \brief VR Stylus.
+	 * \version 1.6
+	 */
+	vrStylus
+	
+	/**
+	 * \brief VR Generic Controller.
+	 * \version 1.6
+	 */
+	vrController
+	
+	/**
+	 * \brief VR Tracker.
+	 * \version 1.6
+	 */
+	vrTracker
+	
+	/**
+	 * \brief VR Base Station.
+	 * \version 1.6
+	 */
+	vrBaseStation
+	
+	/**
+	 * \brief VR Eye Tracker.
+	 * \version 1.12
+	 */
+	vrEyeTracker
+end

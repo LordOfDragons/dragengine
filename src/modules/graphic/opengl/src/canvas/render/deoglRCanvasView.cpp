@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -29,8 +32,8 @@
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTRenderers.h"
 #include "../../renderthread/deoglRTLogger.h"
+#include "../../renderthread/deoglRTFramebuffer.h"
 #include "../../target/deoglRenderTarget.h"
-#include "../../delayedoperation/deoglDelayedDeletion.h"
 #include "../../delayedoperation/deoglDelayedOperations.h"
 
 #include <dragengine/common/exceptions.h>
@@ -52,42 +55,11 @@ pResizeRenderTarget( false )
 	LEAK_CHECK_CREATE( renderThread, CanvasView );
 }
 
-class deoglRCanvasViewDeletion : public deoglDelayedDeletion{
-public:
-	deoglRenderTarget *renderTarget;
-	
-	deoglRCanvasViewDeletion() :
-	renderTarget( NULL ){
-	}
-	
-	virtual ~deoglRCanvasViewDeletion(){
-	}
-	
-	virtual void DeleteObjects( deoglRenderThread& ){
-		if( renderTarget ){
-			renderTarget->FreeReference();
-		}
-	}
-};
-
 deoglRCanvasView::~deoglRCanvasView(){
 	LEAK_CHECK_FREE( GetRenderThread(), CanvasView );
 	RemoveAllChildren();
-	
-	// delayed deletion of opengl containing objects
-	deoglRCanvasViewDeletion *delayedDeletion = NULL;
-	
-	try{
-		delayedDeletion = new deoglRCanvasViewDeletion;
-		delayedDeletion->renderTarget = pRenderTarget;
-		GetRenderThread().GetDelayedOperations().AddDeletion( delayedDeletion );
-		
-	}catch( const deException &e ){
-		if( delayedDeletion ){
-			delete delayedDeletion;
-		}
-		GetRenderThread().GetLogger().LogException( e );
-		// throw; -> otherwise terminate
+	if( pRenderTarget ){
+		pRenderTarget->FreeReference();
 	}
 }
 
@@ -142,63 +114,103 @@ void deoglRCanvasView::SetResizeRenderTarget(){
 	pResizeRenderTarget = true;
 }
 
-void deoglRCanvasView::PrepareRenderTarget(){
-	PrepareForRender();
+void deoglRCanvasView::PrepareRenderTarget( const deoglRenderPlanMasked *renderPlanMask,
+int componentCount, int bitCount ){
+	PrepareForRender( renderPlanMask );
 	
-	if( pRenderTarget ){
+	if( pRenderTarget && pRenderTarget->GetComponentCount() == componentCount
+	&& pRenderTarget->GetBitCount() == bitCount ){
 		if( pResizeRenderTarget ){
-			const int width = ( int )( GetSize().x + 0.5f );
-			const int height = ( int )( GetSize().y + 0.5f );
-			pRenderTarget->SetSize( width, height );
+			pRenderTarget->SetSize( decVector2( GetSize() ).Round() );
+			pRenderTarget->PrepareTexture();
 			pResizeRenderTarget = false;
 		}
 		
 	}else{
-		const int width = ( int )( GetSize().x + 0.5f );
-		const int height = ( int )( GetSize().y + 0.5f );
-		const int componentCount = 4; // if transparency=1 componentCount of 3 would work too
-		const int bitCount = 8;
+		if( pRenderTarget ){
+			pRenderTarget->FreeReference();
+			pRenderTarget = nullptr;
+		}
 		
-		pRenderTarget = new deoglRenderTarget( GetRenderThread(), width, height, componentCount, bitCount );
+		pRenderTarget = new deoglRenderTarget( GetRenderThread(),
+			decVector2( GetSize() ).Round(), componentCount, bitCount );
+		pRenderTarget->PrepareTexture();
 		pResizeRenderTarget = false;
 	}
+}
+
+void deoglRCanvasView::RenderRenderTarget( const deoglRenderPlanMasked *renderPlanMask ){
+	PrepareForRenderRender( renderPlanMask );
 	
-	if( pRenderTarget->GetTextureDirty() ){
-		// mark texture no more dirty although not updated yet. this prevents re-entrant loops
-		// due to the canvas being used in a dynamic skin in the same world it is rendering
-		pRenderTarget->SetTextureDirty( false );
-		
-		// prepare and activate framebuffer
-		pRenderTarget->PrepareFramebuffer();
-		
-		// render content
-		const decPoint viewportSize( pRenderTarget->GetWidth(), pRenderTarget->GetHeight() );
-		
-		deoglRenderCanvasContext context( *this, pRenderTarget->GetFBO(), decPoint(), viewportSize, false );
-		// for rendering into the render target the canvas position and transform has to be negated.
-		// this way rendering with the position and transform as used for regular rendering cancels
-		// each other out resulting in an identity transformation. this way no second code path is
-		// required.
-		context.SetTransform( GetTransform().Invert().ToTexMatrix2() * context.GetTransform() );
-		
-		GetRenderThread().GetRenderers().GetCanvas().Prepare( context );
-		Render( context );
-		
-		// release framebuffer
-		pRenderTarget->ReleaseFramebuffer(); // temporary
+	if( ! pRenderTarget->GetTextureDirty() ){
+		return;
 	}
+	
+	// mark texture no more dirty although not updated yet. this prevents re-entrant loops
+	// due to the canvas being used in a dynamic skin in the same world it is rendering
+	pRenderTarget->SetTextureDirty( false );
+	
+	// prepare and activate framebuffer
+	pRenderTarget->PrepareFramebuffer();
+	GetRenderThread().GetFramebuffer().Activate( pRenderTarget->GetFBO() );
+	
+	// render content
+	deoglRenderCanvasContext context( *this, pRenderTarget->GetFBO(),
+		decPoint(), pRenderTarget->GetSize(), false, renderPlanMask );
+	// for rendering into the render target the canvas position and transform has to be negated.
+	// this way rendering with the position and transform as used for regular rendering cancels
+	// each other out resulting in an identity transformation. this way no second code path is
+	// required.
+	context.SetTransform( GetTransform().Invert().ToTexMatrix2() * context.GetTransform() );
+	context.UpdateTransformMask();
+	
+	GetRenderThread().GetRenderers().GetCanvas().Prepare( context );
+	
+	// clear the render target. this is required for situations where transparent overlays
+	// are rendered with children canvas not covering all pixels
+	const GLfloat clearColor[ 4 ] = { 0.0f, 0.0f, 0.0f,
+		pRenderTarget->GetComponentCount() == 4 ? 0.0f : 1.0f };
+	OGL_CHECK( GetRenderThread(), pglClearBufferfv( GL_COLOR, 0, clearColor ) );
+	
+	// render content
+	Render( context );
+	
+	// release framebuffer
+	pRenderTarget->ReleaseFramebuffer(); // temporary
 }
 
 
 
-void deoglRCanvasView::PrepareForRender(){
+void deoglRCanvasView::PrepareForRender( const deoglRenderPlanMasked *renderPlanMask ){
 	const int count = pChildren.GetCount();
-	int i;
+	if( count == 0 ){
+		return;
+	}
 	
+	deoglRCanvas::PrepareForRender( renderPlanMask );
+	
+	int i;
 	for( i=0; i<count; i++ ){
 		deoglRCanvas &child = *( ( deoglRCanvas* )pChildren.GetAt( i ) );
 		if( child.GetVisible() ){
-			child.PrepareForRender();
+			child.PrepareForRender( renderPlanMask );
+		}
+	}
+}
+
+void deoglRCanvasView::PrepareForRenderRender( const deoglRenderPlanMasked *renderPlanMask ){
+	const int count = pChildren.GetCount();
+	if( count == 0 ){
+		return;
+	}
+	
+	deoglRCanvas::PrepareForRenderRender( renderPlanMask );
+	
+	int i;
+	for( i=0; i<count; i++ ){
+		deoglRCanvas &child = *( ( deoglRCanvas* )pChildren.GetAt( i ) );
+		if( child.GetVisible() ){
+			child.PrepareForRenderRender( renderPlanMask );
 		}
 	}
 }

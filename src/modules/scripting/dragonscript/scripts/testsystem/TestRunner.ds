@@ -1,0 +1,420 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+
+namespace Dragengine.TestSystem
+
+pin Dragengine.Utils
+
+
+/**
+ * \brief Test Runner.
+ * \version 1.5
+ * 
+ * Runs test suited. To use the test runner add one or more TestSuite instance. Add listeners
+ * to be notified about the progress of testing. Then call start() to start running tests.
+ * The start() method returns immediately. The tests run during frame updates until all test
+ * suites finished running. Running tests can be stopped immediately by calling stop().
+ */
+class TestRunner
+	/** \brief Frame update listener. */
+	private class FrameUpdater extends FrameUpdateListener
+		/** \brief Test runner to update. */
+		private var TestRunner pTestRunner
+		
+		/** \brief Create frame update listener. */
+		public func new( TestRunner testRunner )
+			this.pTestRunner = testRunner
+		end
+		
+		/** \brief Do frame update. */
+		public func void frameUpdate( float elapsed )
+			this.pTestRunner.onFrameUpdate( elapsed )
+		end
+	end
+	
+	
+	
+	/** \brief Test suites to run as Array of TestSuite. */
+	private var Array pTestSuites
+	
+	/** \brief Listeners as Array of TestRunnerListener. */
+	private var Array pListeners
+	
+	/** \brief Frame updater. */
+	private var FrameUpdater pFrameUpdater
+	
+	/** \brief Running test suites. */
+	private var Array pRunningTestSuites
+	
+	/** \brief Index of running test suite or -1. */
+	private var int pRunningTestSuiteIndex
+	
+	/** \brief Running test suite. */
+	private var TestSuite pRunningTestSuite
+	
+	/** \brief Running test cases. */
+	private var Array pRunningTestCases
+	
+	/** \brief Index of running test case or -1. */
+	private var int pRunningTestCaseIndex
+	
+	/** \brief Running test case. */
+	private var TestCase pRunningTestCase
+	
+	
+	
+	/** \brief Create test runner. */
+	public func new()
+		this.pTestSuites = Array.new()
+		this.pListeners = Array.new()
+	end
+	
+	/** \brief Dispose of test suite. */
+	public func void dispose()
+		this.stop()
+		this.pTestSuites = null
+		this.pListeners = null
+		this.pRunningTestCases = null
+		this.pRunningTestSuites = null
+	end
+	
+	
+	
+	/** \brief Count of test suites. */
+	public func int getTestSuiteCount()
+		return this.pTestSuites.getCount()
+	end
+	
+	/** \brief Get test suite at index. */
+	public func TestSuite getTestSuiteAt( int index )
+		return this.pTestSuites.getAt( index ) cast TestSuite
+	end
+	
+	/** \brief Get test suite with identifier or null if not found. */
+	public func TestSuite getTestSuiteWithID( String id )
+		return this.pTestSuites.find( block TestSuite each
+			return each.getID().equals( id )
+		end ) cast TestSuite
+	end
+	
+	/** \brief Index of test or -1 if absent. */
+	public func int indexOfTestSuite( TestSuite testSuite )
+		return this.pTestSuites.indexOf( testSuite )
+	end
+	
+	/** \brief Add test suite. */
+	public func void addTestSuite( TestSuite testSuite )
+		if testSuite == null
+			throw ENullPointer.new( "testSuite" )
+		end
+		if this.getTestSuiteWithID( testSuite.getID() ) != null
+			throw EInvalidParam.new( "test suite exists with id: " + testSuite.getID() )
+		end
+		this.pTestSuites.add( testSuite )
+	end
+	
+	/** brief Remove test suite. */
+	public func void removeTestSuite( TestSuite testSuite )
+		this.pTestSuites.remove( testSuite )
+	end
+	
+	/** \brief Remove all test suites. */
+	public func void removeAllTestSuites()
+		this.pTestSuites.removeAll()
+	end
+	
+	/**
+	 * \brief Visit test suites block.
+	 * 
+	 * Block receives as single parameter TestSuite instance.
+	 */
+	public func void forEachTestSuite( Block ablock )
+		this.pTestSuites.forEach( ablock )
+	end
+	
+	/**
+	 * \brief Find test suite with block.
+	 * 
+	 * Block receives as single parameter TestSuite instance and returns true if the desires
+	 * test suite has been found or false to continue searching.
+	 * 
+	 * \returns Found TestSuite or null.
+	 */
+	public func TestSuite findTestSuite( Block ablock )
+		return this.pTestSuites.find( ablock ) cast TestSuite
+	end
+	
+	/**
+	 * \brief Collect failed test suites.
+	 * \returns Array of TestSuite.
+	 */
+	public func Array failedTestSuites()
+		return this.pTestSuites.collect( block TestSuite each
+			return each.failedTestCases().getCount() > 0
+		end )
+	end
+	
+	
+	
+	/**
+	 * \brief Add listener.
+	 */
+	public func void addListener( TestRunnerListener listener )
+		if listener == null
+			throw ENullPointer.new( "listener" )
+		end
+		if this.pListeners.has( listener )
+			throw EInvalidParam.new( "listener present" )
+		end
+		
+		this.pListeners.add( listener )
+	end
+	
+	/**
+	 * \brief Remove listener.
+	 */
+	public func void removeListener( TestRunnerListener listener )
+		if listener == null
+			throw ENullPointer.new( "listener" )
+		end
+		
+		this.pListeners.remove( listener )
+	end
+	
+	
+	
+	/** \brief Test runner is running. */
+	public func bool getRunning()
+		return this.pFrameUpdater != null
+	end
+	
+	/** \brief Start running tests. */
+	public func void start()
+		if this.pFrameUpdater != null
+			throw EInvalidAction.new( "already running" )
+		end
+		
+		this.pTestSuites.forEach( block TestSuite testSuite
+			testSuite.setState( TestSuite.State.pending )
+			testSuite.setException(null)
+			testSuite.forEachTestCase( block TestCase testCase
+				testCase.setState( TestCase.State.pending )
+				testCase.setException(null)
+			end )
+		end )
+		
+		this.pRunningTestSuites = Array.new( this.pTestSuites )
+		this.pRunningTestSuiteIndex = -1
+		this.pRunningTestSuite = null
+		this.pRunningTestCases = null
+		this.pRunningTestCaseIndex = -1
+		this.pRunningTestCase = null
+		
+		this.pFrameUpdater = FrameUpdater.new( this )
+		
+		this.pListeners.forEach( block TestRunnerListener each
+			each.runnerStarted( this )
+		end )
+		
+		this.initNextTestCase()
+	end
+	
+	/** \brief Stop running tests. */
+	public func void stop()
+		if this.pFrameUpdater == null
+			return
+		end
+		
+		this.pFrameUpdater.giveUp()
+		this.pFrameUpdater = null
+		
+		var Exception exception = Exception.new( "Test Runner Stopped" )
+		if this.pRunningTestCase != null
+			this.pRunningTestCase.setState( TestCase.State.failed )
+			this.pRunningTestCase.setException( exception )
+		end
+		if this.pRunningTestSuite != null
+			this.pRunningTestSuite.setState( TestSuite.State.failed )
+			this.pRunningTestSuite.setException( exception )
+		end
+		
+		this.pRunningTestSuites = null
+		this.pRunningTestSuiteIndex = -1
+		this.pRunningTestSuite = null
+		this.pRunningTestCases = null
+		this.pRunningTestCaseIndex = -1
+		this.pRunningTestCase = null
+		
+		this.pListeners.forEach( block TestRunnerListener each
+			each.runnerFinished( this )
+		end )
+	end
+	
+	
+	
+	/** \brief Init next test case. */
+	protected func void initNextTestCase()
+		while this.pRunningTestSuiteIndex < this.pRunningTestSuites.getCount()
+			if this.pRunningTestSuite != null
+				this.pRunningTestCase = null
+				this.pRunningTestCaseIndex++
+				
+				if this.pRunningTestCaseIndex < this.pRunningTestCases.getCount()
+					this.pRunningTestCase = this.pRunningTestCases.getAt( this.pRunningTestCaseIndex ) cast TestCase
+					this.pRunningTestCase.setState( TestCase.State.running )
+					
+					this.pListeners.forEach( block TestRunnerListener each
+						each.testCaseStarted( this, this.pRunningTestSuite, this.pRunningTestCase )
+					end )
+					
+					try
+						this.pRunningTestCase.init()
+						return
+						
+					catch Exception e
+						this.pRunningTestCase.setException( e )
+						this.pRunningTestCase.setState( TestCase.State.failed )
+						
+						try
+							this.pRunningTestCase.tearDown()
+							
+						catch Exception e
+						end
+						
+						this.pListeners.forEach( block TestRunnerListener each
+							each.testCaseFinished( this, this.pRunningTestSuite, this.pRunningTestCase )
+						end )
+					end
+					
+				else
+					if this.pRunningTestSuite.failedTestCases().getCount() == 0
+						this.pRunningTestSuite.setState( TestSuite.State.passed )
+						
+					else
+						this.pRunningTestSuite.setState( TestSuite.State.failed )
+					end
+					
+					this.pListeners.forEach( block TestRunnerListener each
+						each.testSuiteFinished( this, this.pRunningTestSuite )
+					end )
+					
+					this.pRunningTestSuite = null
+				end
+				
+			else
+				this.pRunningTestSuiteIndex++
+				if this.pRunningTestSuiteIndex < this.pRunningTestSuites.getCount()
+					this.pRunningTestSuite = this.pRunningTestSuites.getAt( this.pRunningTestSuiteIndex ) cast TestSuite
+					
+					this.pRunningTestCases = Array.new()
+					this.pRunningTestSuite.forEachTestCase( block TestCase each
+						if each.getEnabled()
+							this.pRunningTestCases.add( each )
+						end
+					end )
+					
+					this.pRunningTestCaseIndex = -1
+					this.pRunningTestCase = null
+					
+					this.pRunningTestSuite.setState( TestSuite.State.running )
+					
+					this.pListeners.forEach( block TestRunnerListener each
+						each.testSuiteStarted( this, this.pRunningTestSuite )
+					end )
+					
+					try
+						this.pRunningTestSuite.init()
+						
+					catch Exception e
+						this.pRunningTestSuite.setException( e )
+						this.pRunningTestSuite.setState( TestSuite.State.failed )
+						
+						try
+							this.pRunningTestSuite.tearDown()
+							
+						catch Exception e
+						end
+						
+						this.pListeners.forEach( block TestRunnerListener each
+							each.testSuiteFinished( this, this.pRunningTestSuite )
+						end )
+						
+						this.pRunningTestSuite = null
+					end
+				end
+			end
+		end
+	end
+	
+	/**
+	 * \brief Frame update.
+	 * 
+	 * For use by internal frame updater only.
+	 */
+	public func void onFrameUpdate( float elapsed )
+		if this.pRunningTestCase == null
+			this.stop()
+			return
+		end
+		
+		try
+			if this.pRunningTestCase.run( this.pRunningTestSuite )
+				return
+			end
+			
+		catch Exception e
+			this.pRunningTestCase.setException( e )
+			this.pRunningTestCase.setState( TestCase.State.failed )
+			
+			try
+				this.pRunningTestCase.tearDown()
+				
+			catch Exception e
+			end
+			
+			this.pListeners.forEach( block TestRunnerListener each
+				each.testCaseFinished( this, this.pRunningTestSuite, this.pRunningTestCase )
+			end )
+			
+			this.initNextTestCase()
+			return
+		end
+		
+		this.pRunningTestCase.setException( null )
+		this.pRunningTestCase.setState( TestCase.State.passed )
+		
+		try
+			this.pRunningTestCase.tearDown()
+			
+		catch Exception e
+		end
+		
+		this.pListeners.forEach( block TestRunnerListener each
+			each.testCaseFinished( this, this.pRunningTestSuite, this.pRunningTestCase )
+		end )
+		
+		this.initNextTestCase()
+	end
+end

@@ -1,0 +1,240 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Utils.StyledText
+
+pin Dragengine.Commands
+pin Dragengine.Gui
+pin Dragengine.Scenery
+pin Dragengine.LoadSave
+pin Dragengine.Utils.StyledText.Definition.Nodes
+
+
+/**
+ * \brief Rule for resolving a binding tag in STDTagResolver.
+ * \version 1.16
+ * 
+ * Resolves tags of the form {binding:command-name}. Looks up the matching command
+ * and outputs all bindings assinged to the command. Useful to output in conversation
+ * instructions to the player what input to press to trigger an action. The bindings
+ * are optionally output in a different font and/or color. Usually using a different
+ * color is recommended but using a different font can help to better recognize such
+ * output in a conversation.
+ */
+class STDTRRBinding extends STDTRRStyle
+	private var CommandManager pCommands
+	private var BindingManager pBindings
+	
+	
+	
+	/** \brief Create resolve tag rule. */
+	public func new(String styleName) this(BaseGameApp.getApp().getCommandManager(),\
+	BaseGameApp.getApp().getBindingManager(), styleName)
+	end
+	
+	/** \brief Create resolve tag rule. */
+	public func new(STDStyle style) this(BaseGameApp.getApp().getCommandManager(),\
+	BaseGameApp.getApp().getBindingManager(), style)
+	end
+	
+	/** \brief Create resolve tag rule. */
+	public func new(CommandManager commands, BindingManager bindings, String styleName) super(styleName)
+		if commands == null
+			throw ENullPointer.new("commands")
+		end
+		if bindings == null
+			throw ENullPointer.new("bindings")
+		end
+		
+		pCommands = commands
+		pBindings = bindings
+	end
+	
+	/** \brief Create resolve tag rule. */
+	public func new(CommandManager commands, BindingManager bindings, STDStyle style) super(style)
+		if commands == null
+			throw ENullPointer.new("commands")
+		end
+		if bindings == null
+			throw ENullPointer.new("bindings")
+		end
+		
+		pCommands = commands
+		pBindings = bindings
+	end
+	
+	
+	
+	/** \brief Supported commands. */
+	public func CommandManager getCommands()
+		return pCommands
+	end
+	
+	/** \brief Set supported commands. */
+	public func void setCommands(CommandManager commands)
+		if commands == null
+			throw ENullPointer.new("commands")
+		end
+		pCommands = commands
+	end
+	
+	/** \brief Used bindings. */
+	public func BindingManager getBindings()
+		return pBindings
+	end
+	
+	/** \brief Set used bindings. */
+	public func void setBindingManager(BindingManager bindings)
+		if bindings == null
+			throw ENullPointer.new("bindings")
+		end
+		pBindings = bindings
+	end
+	
+	
+	
+	/**
+	 * \brief Resolve tag adding STDNTextSpan to STDNText.
+	 * 
+	 * \param resolver STDTagResolver using the rule to resolve.
+	 * \param target STDNText to add resolved STDNTextSpan to.
+	 * \param source STDNTextSpan containing the tag name to resolve.
+	 * \param first First span to be added. Image of source should be set to first added span.
+	 * \param parameters Content of tag between curly brackets after ":" delimiter
+	 */
+	public func void resolveTag(STDTagResolver resolver, STDNText target,\
+	STDNTextSpan source, bool first, String parameters)
+		var StyledTextDefinition definition = resolver.getDefinition()
+		
+		// get style
+		var String styleName = getStyleName()
+		var STDStyle style = getStyle()
+		
+		if style != null
+			styleName = style.getName()
+			if not definition.hasStyleNamed(styleName)
+				definition.addStyle(style)
+			end
+			
+		elif styleName != null
+			style = definition.getStyleNamed(styleName)
+		end
+		
+		// get image
+		var Image image = first if source.getImage() else null
+		
+		// get bindings
+		var Command command = pCommands.getNamed(parameters)
+		if command == null
+			target.addSpan(STDNTextSpan.new("Unbound " + command, styleName, image))
+			return
+		end
+		
+		var int maxHeight = style.getFont().getSize()
+		maxHeight = (1.2 * maxHeight) cast int
+		
+		var Array values = Array.new()
+		var Array images = Array.new()
+		
+		pBindings.forEachButtonBinding(block Binding each
+			if each.getCommand() == command
+				var InputDeviceButton button = each.getInputDeviceButton()
+				if button != null
+					var Image icon = button.getLargestDisplayIconY(maxHeight)
+					images.add(icon)
+					
+					if icon != null
+						values.add(button.getDisplayText())
+						
+					else
+						values.add(devicePrefix(button.getInputDevice()) + button.getName())
+					end
+				end
+			end
+		end)
+		
+		pBindings.forEachAxisBinding(block Binding each
+			if each.getCommand() == command
+				var InputDeviceAxis axis = each.getInputDeviceAxis()
+				if axis != null
+					var Image icon = axis.getLargestDisplayIconY(maxHeight)
+					images.add(icon)
+					
+					if icon != null
+						values.add(axis.getDisplayText())
+						
+					else
+						values.add(devicePrefix(axis.getInputDevice()) + axis.getName())
+					end
+				end
+			end
+		end)
+		
+		// add text spans
+		target.addSpan(STDNTextSpan.new("(", styleName, image))
+		
+		values.forEach(block int index, String text
+			if index > 0
+				target.addSpan(STDNTextSpan.new(", ", styleName, null))
+			end
+			target.addSpan(STDNTextSpan.new(text, styleName, images.getAt(index) cast Image))
+		end)
+		
+		target.addSpan(STDNTextSpan.new(")", styleName, null))
+	end
+	
+	
+	
+	/** \brief Get device prefix. */
+	protected func String devicePrefix(InputDevice device)
+		// we want to keep the text short. the player knows what input device he is using.
+		// besides device names come from the driver and some device names are horribly
+		// long and cryptic. for this reason only device type is used where applicable.
+		// later on this can be improved by using a device image before the text. this
+		// avoids the need to handle device names and makes it easier to see. device type
+		// images are though not present yet. something for the todo list.
+		select device.getType()
+		case InputDeviceType.mouse
+			return "Mouse: "
+			
+		case InputDeviceType.keyboard
+			return "Key: "
+			
+		case InputDeviceType.gamepad
+			return "Pad: "
+			
+		case InputDeviceType.joystick
+			return "Stick: "
+			
+		case InputDeviceType.touchpad, InputDeviceType.touchscreen
+			return "Touch: "
+			
+		case InputDeviceType.racingWheel
+			return "Wheel: "
+			
+		else
+			return "?: "
+		end
+	end
+end

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -35,104 +38,110 @@ pin Dragengine.Utils
  */
 class CActionIfElse extends ConversationAction
 	/** \brief Factory for loading actor actions. */
-	public class Factory implements PersistencyFactory
+	class Factory implements PersistencyFactory
 		public static fixed var String NAME = "CActionIfElse"
 		
-		public func new()
+		func new()
 		end
 		
-		public func Persistable readObjectFromFile( PersistencyEnvironment env, FileReader reader )
-			return CActionIfElse.new( env, reader )
+		func Persistable readObjectFromFile(PersistencyEnvironment env, FileReader reader)
+			return CActionIfElse.new(env, reader)
 		end
 		
-		public static func void registerFactory( Persistency persistency )
-			persistency.addFactory( NAME, Factory.new() )
+		static func void registerFactory(Persistency persistency)
+			persistency.addFactory(NAME, Factory.new())
 		end
 	end
 	
 	
 	
-	private var Array pCases
-	private var Array pElseActions
+	var Array pCases
+	var Array pElseActions
 	
 	
 	
 	/** \brief Create conversation action. */
-	public func new()
-		this.pCases = Array.new()
-		this.pElseActions = Array.new()
+	func new()
+		pCases = Array.new()
+		pElseActions = Array.new()
 	end
 	
 	/** \brief Read from file. */
-	public func new( PersistencyEnvironment env, FileReader reader )
-		var int i, count = reader.readUShort()
-		this.pCases = Array.new()
-		for i = 0 to count
-			this.pCases.add( CActionIfElseCase.readFromFile( env, reader ) )
-		end
-		
-		count = reader.readUShort()
-		this.pElseActions = Array.new()
-		for i = 0 to count
-			this.pElseActions.add( env.readObject( reader ) )
+	func new(PersistencyEnvironment env, FileReader reader) super(env, reader)
+		select reader.readByte() // version
+		case 0
+			var int i, count = reader.readUShort()
+			pCases = Array.new()
+			for i = 0 to count
+				pCases.add(CActionIfElseCase.readFromFile(env, reader))
+			end
+			
+			count = reader.readUShort()
+			pElseActions = Array.new()
+			for i = 0 to count
+				pElseActions.add(env.readObject(reader))
+			end
+			
+		else
+			throw EInvalidParam.new("unsupported version")
 		end
 	end
 	
 	
 	
 	/** \brief Visits all if-cases. */
-	public func void forEachCase( Block aBlock )
-		this.pCases.forEach( aBlock )
+	func void forEachCase(Block aBlock)
+		pCases.forEach(aBlock)
 	end
 	
 	/** \brief Add if-case. */
-	public func void addCase( CActionIfElseCase ifcase )
+	func void addCase(CActionIfElseCase ifcase)
 		if ifcase == null
 			throw EInvalidParam.new()
 		end
-		this.pCases.add( ifcase )
+		pCases.add(ifcase)
 	end
 	
 	
 	
 	/** \brief Visit all else actions. */
-	public func void forEachElseAction( Block aBlock )
-		this.pElseActions.forEach( aBlock )
+	func void forEachElseAction(Block aBlock)
+		pElseActions.forEach(aBlock)
 	end
 	
 	/** \brief Add else action. */
-	public func void addElseAction( ConversationAction action )
+	func void addElseAction(ConversationAction action)
 		if action == null
 			throw EInvalidParam.new()
 		end
-		this.pElseActions.add( action )
+		pElseActions.add(action)
 	end
 	
 	/** \brief Else actions iterator. */
-	public func ConversationActionIterator getIteratorElseActions()
-		return ConversationActionIterator.new( this.pElseActions, 0 )
+	func ConversationActionIterator getIteratorElseActions()
+		return ConversationActionIterator.new(pElseActions, 0)
 	end
 	
 	
 	
 	/** \brief Execute action. */
-	public func void execute( ConversationPlayback playback )
-		var CActionIfElseCase ifcase = this.pCases.find( block CActionIfElseCase each
+	func void execute(ConversationPlayback playback)
+		var CActionIfElseCase ifcase = pCases.find(block CActionIfElseCase each
 			var ConversationCondition condition = each.getCondition()
-			return condition != null and condition.evaluate( playback )
-		end ) cast CActionIfElseCase
+			return condition != null and condition.evaluate(playback)
+		end) cast CActionIfElseCase
 		
 		if ifcase != null
 			if ifcase.getActions().getCount() > 0
-				playback.pushLayer( ConversationPlaybackLayer.new( ifcase.getIteratorActions() ) )
+				playback.pushLayer(ConversationPlaybackLayer.new(ifcase.getIteratorActions()))
 				
 			else
 				playback.advanceToNextAction()
 			end
 			
 		else
-			if this.pElseActions.getCount() > 0
-				playback.pushLayer( ConversationPlaybackLayer.new( this.getIteratorElseActions() ) )
+			if pElseActions.getCount() > 0
+				playback.pushLayer(ConversationPlaybackLayer.new(getIteratorElseActions()))
 				
 			else
 				playback.advanceToNextAction()
@@ -152,20 +161,24 @@ class CActionIfElse extends ConversationAction
 	 * instance used for loading objects. Object is read using
 	 * PersistencyFactory.readObjectFromFile() of the matching PersistencyFactory.
 	 */
-	public func String persistencyFactoryName()
+	func String persistencyFactoryName()
 		return Factory.NAME
 	end
 	
 	/** \brief Write object to file writer. */
-	public func void writeObjectToFile( PersistencyEnvironment env, FileWriter writer )
-		writer.writeUShort( this.pCases.getCount() )
-		this.pCases.forEach( block CActionIfElseCase each
-			each.writeToFile( env, writer )
-		end )
+	func void writeObjectToFile(PersistencyEnvironment env, FileWriter writer)
+		super.writeObjectToFile(env, writer)
 		
-		writer.writeUShort( this.pElseActions.getCount() )
-		this.pElseActions.forEach( block ConversationAction each
-			env.writeObject( writer, each )
-		end )
+		writer.writeByte(0) // version
+		
+		writer.writeUShort(pCases.getCount())
+		pCases.forEach(block CActionIfElseCase each
+			each.writeToFile(env, writer)
+		end)
+		
+		writer.writeUShort(pElseActions.getCount())
+		pElseActions.forEach(block ConversationAction each
+			env.writeObject(writer, each)
+		end)
 	end
 end

@@ -26,7 +26,7 @@ namespace Dragengine.Scenery
  * 
  * This is a native class.
  */
-abstract class Animation
+abstract class AnimationBuilder
 	/** \name Constructors */
 	/*@{*/
 	/**
@@ -54,7 +54,7 @@ abstract class Animation
 	 * resource with content. Once finished the build method returns the ready to use
 	 * animation resource. Otherwise an exception is thrown.
 	 */
-	public func Animation build( String filename )
+	public func Animation build(String filename)
 		return null
 	end
 	
@@ -71,25 +71,52 @@ abstract class Animation
 	/**
 	 * \brief Add bone.
 	 */
-	protected func void addBone( String name )
+	protected func void addBone(String name)
+	end
+	
+	/**
+	 * \brief Add vertex position set.
+	 * \version 1.17
+	 */
+	protected func void addVertexPositionSet(String name)
 	end
 	
 	/**
 	 * \brief Add move.
 	 */
-	protected func void addMove( String name, float playTime )
+	protected func void addMove(String name, float playTime)
+	end
+	
+	/**
+	 * \brief Add move.
+	 */
+	protected func void addMove(String name, float playTime, float fps)
 	end
 	
 	/**
 	 * \brief Set move keyframe list count.
 	 */
-	protected func void setKeyframeListCount( int move, int count )
+	protected func void setKeyframeListCount(int move, int count)
 	end
 	
 	/**
 	 * \brief Add move keyframe list keyframe.
 	 */
-	protected func void addKeyframe( int move, int keyFrameList, float time, Vector position, Vector rotation, Vector scale )
+	protected func void addKeyframe(int move, int keyFrameList, float time, Vector position, Vector rotation, Vector scale)
+	end
+	
+	/**
+	 * \brief Set move keyframe list count.
+	 * \version 1.17
+	 */
+	protected func void setVertexPositionSetKeyframeListCount(int move, int count)
+	end
+	
+	/**
+	 * \brief Add move keyframe list keyframe.
+	 * \version 1.17
+	 */
+	protected func void addVertexPositionSetKeyframe(int move, int keyFrameList, float time, float weight)
 	end
 	/*@}*/
 end

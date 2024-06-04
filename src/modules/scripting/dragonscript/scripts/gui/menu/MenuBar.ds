@@ -1,0 +1,104 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.Gui.Events
+pin Dragengine.Gui.Layouts
+pin Dragengine.Utils
+
+
+/**
+ * \brief Menu bar with MenuBarItem instances.
+ * \version 1.11
+ */
+class MenuBar extends Panel
+	private var MenuBarItem pOpenSubMenu
+	
+	
+	
+	/** \brief Create menu bar. */
+	public func new()
+		setLayout(FlowLayout.new(LayoutAxis.x))
+		setDesignerSelector("MenuBar")
+	end
+	
+	/**
+	 * \brief Create menu bar calling block to add content.
+	 * 
+	 * Block receives MenuPopup as argument. Block call is wrapped inside runWhileBlockingLayout()
+	 * for efficiency. doLayout() will be called after leaving the block.
+	 */
+	public func new(Block blockAddContent) this()
+		blockAddContent.run(this)
+	end
+	
+	/** \brief Dispose of widget. */
+	public func void dispose()
+		setOpenSubMenu(null)
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Start using menu bar. */
+	public func void startUse()
+		captureMouse()
+	end
+	
+	/** \brief Stop using menu bar. */
+	public func void stopUse()
+		setOpenSubMenu(null)
+		releaseMouse()
+	end
+	
+	
+	
+	/** \brief Open sub menu item or null. */
+	public func MenuBarItem getOpenSubMenu()
+		return pOpenSubMenu
+	end
+	
+	/**
+	 * \brief Set open sub menu or null.
+	 * 
+	 * If null hides sub menu. If not null shows submenu.
+	 */
+	public func void setOpenSubMenu(MenuBarItem subMenu)
+		if subMenu == pOpenSubMenu
+			return
+		end
+		
+		if pOpenSubMenu != null
+			pOpenSubMenu.hideSubMenu()
+		end
+		
+		pOpenSubMenu = subMenu
+		
+		if subMenu != null
+			subMenu.showSubMenu()
+		end
+	end
+end

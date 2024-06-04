@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLENVIONMENTMAP_H_
@@ -29,13 +32,14 @@
 #include <dragengine/common/string/decString.h>
 
 #include "../billboard/deoglBillboardList.h"
-#include "../component/deoglComponentList.h"
+#include "../component/deoglComponentSet.h"
 #include "../particle/deoglParticleEmitterInstanceList.h"
 #include "../rendering/plan/deoglRenderPlanList.h"
 
 class deoglRLight;
 class decConvexVolumeList;
 class deoglCubeMap;
+class deoglArrayTexture;
 class deoglLightVolume;
 class deoglRenderThread;
 class deoglRWorld;
@@ -45,9 +49,8 @@ class deoglWorldOctree;
 
 
 /**
- * @brief Environment Map.
- * Stores an environment map. Provides support for updating the environment map.
- * Individual world elements can be included or excluded.
+ * Environment Map. Provides support for updating the environment map. Individual world
+ * elements can be included or excluded.
  */
 class deoglEnvironmentMap : public deObject{
 private:
@@ -63,9 +66,11 @@ private:
 	bool pIsFloat;
 	
 	deoglCubeMap *pEnvMap;
-	deoglCubeMap *pEnvMapDepth;
+	deoglArrayTexture *pEnvMapPosition;
+	deoglArrayTexture *pEnvMapDiffuse;
+	deoglArrayTexture *pEnvMapNormal;
+	deoglArrayTexture *pEnvMapEmissive;
 	deoglTexture *pEnvMapEqui;
-	deoglTexture *pEnvMapEquiDepth;
 	int pMaxMipMapLevel;
 	
 	decLayerMask pLayerMask;
@@ -86,13 +91,15 @@ private:
 	bool pDirtyInit;
 	bool pDirtyOctreeNode;
 	bool pReady;
+	bool pMaterialReady;
 	int pNextUpdateFace;
+	int pLastGILightUpdate;
 	
 	int pPlanUsageCount;
 	bool pDestroyIfUnused;
 	
 	deoglBillboardList pBillboardList;
-	deoglComponentList pComponentList;
+	deoglComponentSet pComponentList;
 	deoglParticleEmitterInstanceList pParticleEmitterInstanceList;
 	deoglRenderPlanList pRenderPlanList;
 	
@@ -103,14 +110,11 @@ private:
 	decConvexVolumeList *pConvexVolumeList;
 	deoglLightVolume *pLightVolume;
 	bool pDirtyConvexVolumeList;
-	bool pDirtyCubeMapHardLimit;
-	bool pDirtyCubeMapSoftLimit;
-	deoglCubeMap *pCubeMapHardLimit;
-	deoglCubeMap *pCubeMapSoftLimit;
-	float pCubeMapLimitScale;
+	
+	
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new environment map. */
 	deoglEnvironmentMap( deoglRenderThread &renderThread );
@@ -118,7 +122,7 @@ public:
 	virtual ~deoglEnvironmentMap();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the parent world or NULL if there is none. */
 	deoglRWorld *GetWorld() const{ return pWorld; }
@@ -204,14 +208,34 @@ public:
 	/** Sets if the environment map is dirty. */
 	void SetDirty( bool dirty );
 	
-	/** Determines if the texture is ready for rendering. */
+	/** Texture is ready for rendering. */
 	inline bool GetReady() const{ return pReady; }
 	
-	/** Retrieves the component list. */
-	inline deoglComponentList &GetComponentList(){ return pComponentList; }
-	inline const deoglComponentList &GetComponentList() const{ return pComponentList; }
+	/** Material textures are ready. */
+	inline bool GetMaterialReady() const{ return pMaterialReady; }
 	
-	/** \brief Billboard list. */
+	/** Count of update cycles since the last time this envmap has been GI lit. */
+	inline int GetLastGILightUpdate() const{ return pLastGILightUpdate; }
+	
+	/** Count of update cycles since the last time this envmap has been GI lit is at maximum. */
+	int IsLastGILightUpdateAtMax() const;
+	
+	/** Increment count of update cycles since the last time this envmap has been GI lit. */
+	void IncLastGILightUpdate();
+	
+	/** Set count of update cycles since the last time this envmap has been GI lit to maximum. */
+	void SetMaxLastGILightUpdate();
+	
+	/** Set count of update cycles since the last time this envmap has been GI lit to 0. */
+	void ResetLastGILightUpdate();
+	
+	
+	
+	/** Retrieves the component list. */
+	inline deoglComponentSet &GetComponentList(){ return pComponentList; }
+	inline const deoglComponentSet &GetComponentList() const{ return pComponentList; }
+	
+	/** Billboard list. */
 	inline deoglBillboardList &GetBillboardList(){ return pBillboardList; }
 	inline const deoglBillboardList &GetBillboardList() const{ return pBillboardList; }
 	
@@ -248,17 +272,30 @@ public:
 	/** Prepare for rendering. */
 	void PrepareForRender();
 	/** Updates the environment map if dirty. */
-	void Update();
+	void Update( deoglRenderPlan &parentPlan );
 	/** Render an environment cube map. */
-	void RenderEnvCubeMap();
-	/** Retrieves the environment map or NULL if not existing. */
+	void RenderEnvCubeMap( deoglRenderPlan &parentPlan );
+	
+	/** Environment map or NULL. */
 	inline deoglCubeMap *GetEnvironmentMap() const{ return pEnvMap; }
-	/** Retrieves the environment depth map or NULL if not existing. */
-	inline deoglCubeMap *GetEnvironmentMapDepth() const{ return pEnvMapDepth; }
-	/** Retrieves the equi environment map or NULL if not existing. */
+	
+	/** Environment position map or NULL. */
+	inline deoglArrayTexture *GetEnvironmentMapPosition() const{ return pEnvMapPosition; }
+	
+	/** Environment diffuse map or NULL. */
+	inline deoglArrayTexture *GetEnvironmentMapDiffuse() const{ return pEnvMapDiffuse; }
+	
+	/**
+	 * Environment normal map or NULL.
+	 * \warning This is Int-Shifted format.
+	 */
+	inline deoglArrayTexture *GetEnvironmentMapNormal() const{ return pEnvMapNormal; }
+	
+	/** Environment GI map or NULL. */
+	inline deoglArrayTexture *GetEnvironmentMapEmissive() const{ return pEnvMapEmissive; }
+	
+	/** Equi environment map or NULL. */
 	inline deoglTexture *GetEquiEnvMap() const{ return pEnvMapEqui; }
-	/** Retrieves the equi environment depth map or NULL if not existing. */
-	inline deoglTexture *GetEquiEnvMapDepth() const{ return pEnvMapEquiDepth; }
 	
 	/** Retrieves the convex colume list. */
 	inline decConvexVolumeList *GetConvexVolumeList() const{ return pConvexVolumeList; }
@@ -266,24 +303,14 @@ public:
 	inline deoglLightVolume *GetLightVolume() const{ return pLightVolume; }
 	/** Update the convex volume list. */
 	void UpdateConvexVolumeList();
-	/** Prepare hard limit cube map. */
-	void PrepareCubeMapHardLimit();
-	/** Prepare soft limit cube map. */
-	void PrepareCubeMapSoftLimit();
-	/** Retrieves the hard limit cube map. */
-	inline deoglCubeMap *GetCubeMapHardLimit() const{ return pCubeMapHardLimit; }
-	/** Retrieves the soft limit cube map. */
-	inline deoglCubeMap *GetCubeMapSoftLimit() const{ return pCubeMapSoftLimit; }
-	/** Retrieves the cube map limit scale. */
-	inline float GetCubeMapLimitScale() const{ return pCubeMapLimitScale; }
 	
 	/** Sky changed. */
 	void SkyChanged();
 	
-	/** \brief Light changed. */
+	/** Light changed. */
 	void LightChanged( deoglRLight *light );
 	
-	/** \brief Prepare for quick disposal of environment map. */
+	/** Prepare for quick disposal of environment map. */
 	void PrepareQuickDispose();
 	/*@}*/
 	

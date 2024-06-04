@@ -1,25 +1,26 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
-
-
 
 namespace Dragengine.CameraDirectors
 
@@ -35,29 +36,34 @@ pin Dragengine.Scenery
  * switch player control from one actor to another without needing to update the camera
  * directory unless different actors require different parameters.
  * 
- * For convenience the actorChanged() hook method called whenever an actor switched.
+ * For convenience the actorChanged() hook method is called whenever the actor switched.
  * 
  * The pivot point is set at the center of the actor head. For best results this should
- * be straight above the actor position. The setPivotAboveGround() takes care of this.
+ * be straight above the actor position. The setPivotAboveGround() takes care of 
  * The actor locomotion is used to obtain the actor looking direction. The camera director
  * azimuth and elevation are set to match the looking direction. The distance is not
  * changed and can be set by users of the class to place the camera behind the actor for
  * example for 3rd person views.
+ * 
+ * \par Version 1.8
+ * 
+ * Updating azimuth and elevation from locomotion can be optionally disabled. This is
+ * useful for third person cameras with locked elevation or azimuth.
  */
 class PlayerControlledActorCameraDirector extends ElementCameraDirector
 	/** \brief Tracker listener. */
 	class ActorChanged extends ECBehaviorPlayerControllable.Tracker.DefaultListener
 		private var WeakReference pDirector
 		
-		public func new( PlayerControlledActorCameraDirector director )
-			this.pDirector = WeakReference.new( director )
+		public func new(PlayerControlledActorCameraDirector director)
+			pDirector = WeakReference.new(director)
 		end
 		
-		public func void activeActorChanged( ECBehaviorPlayerControllable.Tracker tracker )
+		public func void activeActorChanged(ECBehaviorPlayerControllable.Tracker tracker)
 			var PlayerControlledActorCameraDirector director = \
-				this.pDirector.get() cast PlayerControlledActorCameraDirector
+				pDirector.get() cast PlayerControlledActorCameraDirector
 			if director != null
-				director.setActor( tracker.getActor() )
+				director.setActor(tracker.getActor())
 			end
 		end
 	end
@@ -66,6 +72,8 @@ class PlayerControlledActorCameraDirector extends ElementCameraDirector
 	
 	private var ECBehaviorPlayerControllable.Tracker pTracker
 	private var ActorChanged pActorChanged
+	private var bool pLockAzimuth
+	private var bool pLockElevation
 	
 	/** \brief Collider AI or \em null if absent. */
 	protected var ECBehaviorColliderAI.Instance colliderAI
@@ -80,7 +88,7 @@ class PlayerControlledActorCameraDirector extends ElementCameraDirector
 	 * 
 	 * Pivot point is set to 1.6m above ground.
 	 */
-	public func new() this( null, null )
+	public func new() this(null, null)
 	end
 	
 	/**
@@ -88,8 +96,8 @@ class PlayerControlledActorCameraDirector extends ElementCameraDirector
 	 * 
 	 * Pivot point is set to 1.6m above ground.
 	 */
-	public func new( Camera camera, Microphone microphone ) \
-	this( camera, microphone, BaseGameApp.getApp().getPlayerControlledActor() )
+	public func new(Camera camera, Microphone microphone) \
+	this(camera, microphone, BaseGameApp.getApp().getPlayerControlledActor())
 	end
 	
 	/**
@@ -97,45 +105,45 @@ class PlayerControlledActorCameraDirector extends ElementCameraDirector
 	 * 
 	 * Pivot point is set to 1.6m above ground.
 	 */
-	public func new( Camera camera, Microphone microphone, ECBehaviorPlayerControllable.Tracker tracker ) \
-	super( null, camera, microphone )
-		this.pActorChanged = ActorChanged.new( this )
-		this.setPivotAboveGround( 1.6 )
-		this.setTracker( tracker )
+	public func new(Camera camera, Microphone microphone, ECBehaviorPlayerControllable.Tracker tracker) \
+	super(null, camera, microphone)
+		pActorChanged = ActorChanged.new(this)
+		setPivotAboveGround(1.6)
+		setTracker(tracker)
 	end
 	
 	
 	
 	/** \brief Tracker or null. */
 	public func ECBehaviorPlayerControllable.Tracker getTracker()
-		return this.pTracker
+		return pTracker
 	end
 	
 	/** \brief Set tracker or null. */
-	public func void setTracker( ECBehaviorPlayerControllable.Tracker tracker )
-		if tracker == this.pTracker
+	public func void setTracker(ECBehaviorPlayerControllable.Tracker tracker)
+		if tracker == pTracker
 			return
 		end
 		
-		if this.pTracker != null
-			this.pTracker.removeListener( this.pActorChanged )
+		if pTracker != null
+			pTracker.removeListener(pActorChanged)
 		end
 		
-		this.pTracker = tracker
+		pTracker = tracker
 		
 		if tracker != null
-			tracker.addListener( this.pActorChanged )
-			this.setActor( tracker.getActor() )
+			tracker.addListener(pActorChanged)
+			setActor(tracker.getActor())
 			
 		else
-			this.setActor( null )
+			setActor(null)
 		end
 	end
 	
 	/** \brief Actor or \em null. */
 	public func ECBehaviorPlayerControllable.Instance getActor()
-		if this.pTracker != null
-			return this.pTracker.getActor()
+		if pTracker != null
+			return pTracker.getActor()
 			
 		else
 			return null
@@ -143,34 +151,34 @@ class PlayerControlledActorCameraDirector extends ElementCameraDirector
 	end
 	
 	/** \brief Set actor or \em null. */
-	public func void setActor( ECBehaviorPlayerControllable.Instance actor )
+	public func void setActor(ECBehaviorPlayerControllable.Instance actor)
 		if actor != null
-			this.setElement( actor.getElement() )
-			this.initBehaviors( actor.getElement() )
+			setElement(actor.getElement())
+			initBehaviors(actor.getElement())
 			
 		else
-			this.setElement( null )
-			this.colliderAI = null
-			this.locomotion = null
+			setElement(null)
+			colliderAI = null
+			locomotion = null
 		end
 		
-		this.actorChanged()
+		actorChanged()
 	end
 	
 	/** \brief Init behaviors. */
-	protected func void initBehaviors( BehaviorElement element )
-		this.colliderAI = ECBehaviorColliderAI.getInstanceIn( element )
-		this.locomotion = ECBehaviorLocomotion.getInstanceIn( element )
+	protected func void initBehaviors(BehaviorElement element)
+		colliderAI = ECBehaviorColliderAI.getInstanceIn(element)
+		locomotion = ECBehaviorLocomotion.getInstanceIn(element)
 	end
 	
 	/** \brief Collider AI or \em null if absent. */
 	public func ECBehaviorColliderAI.Instance getColliderAI()
-		return this.colliderAI
+		return colliderAI
 	end
 	
 	/** \brief Locomotion or \em null if absent. */
 	public func ECBehaviorLocomotion.Instance getLocomotion()
-		return this.locomotion
+		return locomotion
 	end
 	
 	
@@ -180,8 +188,8 @@ class PlayerControlledActorCameraDirector extends ElementCameraDirector
 	 * 
 	 * Typical value for \em distance is 1.6 for a adult human actor.
 	 */
-	public func void setPivotAboveGround( float distance )
-		this.setPivot( DVector.new( 0, distance, 0 ) )
+	public func void setPivotAboveGround(float distance)
+		setPivot(DVector.new(0, distance, 0))
 	end
 	
 	
@@ -196,18 +204,26 @@ class PlayerControlledActorCameraDirector extends ElementCameraDirector
 	 * 
 	 * If no actor is present azimuth and elevation are set to 0.
 	 */
-	public func void updateCamera( float elapsed )
-		if this.locomotion != null
-			var Locomotion l = this.locomotion.getLocomotion()
-			this.setAzimuth( l.getOrientation() + l.getLookHorizontal() )
-			this.setElevation( -l.getLookVertical() )
+	public func void updateCamera(float elapsed)
+		if locomotion != null
+			var Locomotion l = locomotion.getLocomotion()
+			if not pLockAzimuth
+				setAzimuth(l.getOrientation() + l.getLookHorizontal())
+			end
+			if not pLockElevation
+				setElevation(-l.getLookVertical())
+			end
 			
 		else
-			this.setAzimuth( 0 )
-			this.setElevation( 0 )
+			if not pLockAzimuth
+				setAzimuth(0)
+			end
+			if not pLockElevation
+				setElevation(0)
+			end
 		end
 		
-		super.updateCamera( elapsed )
+		super.updateCamera(elapsed)
 	end
 	
 	/**
@@ -215,15 +231,49 @@ class PlayerControlledActorCameraDirector extends ElementCameraDirector
 	 * 
 	 * Extends the base functionality setting velocity to match actor velocity.
 	 */
-	public func void updateMicrophone( float elapsed )
-		super.updateMicrophone( elapsed )
+	public func void updateMicrophone(float elapsed)
+		super.updateMicrophone(elapsed)
 		
-		if this.colliderAI != null
-			this.getMicrophone().setVelocity( this.colliderAI.getCollider().getLinearVelocity() )
+		if colliderAI != null
+			getMicrophone().setVelocity(colliderAI.getCollider().getLinearVelocity())
 			
 		else
-			this.getMicrophone().setVelocity( Vector.new() )
+			getMicrophone().setVelocity(Vector.new())
 		end
+	end
+	
+	
+	
+	/**
+	 * \brief Do not update azimuth from locomotion changes.
+	 * \version 1.8
+	 */
+	public func bool getLockAzimuth()
+		return pLockAzimuth
+	end
+	
+	/**
+	 * \brief Set to not update azimuth from locomotion changes.
+	 * \version 1.8
+	 */
+	public func void setLockAzimuth(bool lock)
+		pLockAzimuth = lock
+	end
+	
+	/**
+	 * \brief Do not update elevation from locomotion changes.
+	 * \version 1.8
+	 */
+	public func bool getLockElevation()
+		return pLockElevation
+	end
+	
+	/**
+	 * \brief Set to not update elevation from locomotion changes.
+	 * \version 1.8
+	 */
+	public func void setLockElevation(bool lock)
+		pLockElevation = lock
 	end
 	
 	

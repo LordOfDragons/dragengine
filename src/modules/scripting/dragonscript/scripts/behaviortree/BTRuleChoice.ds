@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -39,26 +42,40 @@ pin Dragengine.Utils
  * return BTResult.failure .
  */
 class BTRuleChoice extends BTRuleList
-	/** \brief Looping. */
-	public var bool pLooping
-	
+	var bool pLooping
+	var bool pDoNotFail
 	
 	
 	/** \brief Create behavior tree rule. */
-	public func new( String id ) super( id )
-		this.pLooping = false
+	func new(String id) super(id)
 	end
 	
 	
 	
 	/** \brief Looping. */
-	public func bool getLooping()
-		return this.pLooping
+	func bool getLooping()
+		return pLooping
 	end
 	
 	/** \brief Set looping. */
-	public func void setLooping( bool looping )
-		this.pLooping = looping
+	func void setLooping(bool looping)
+		pLooping = looping
+	end
+	
+	/**
+	 * \brief Return success if all child actions fail.
+	 * \version 1.19
+	 */
+	func bool getDoNotFail()
+		return pDoNotFail
+	end
+	
+	/**
+	 * \brief Set to return success if all child actions fail.
+	 * \version 1.19
+	 */
+	func void setDoNotFail(bool doNotFail)
+		pDoNotFail = doNotFail
 	end
 	
 	
@@ -68,57 +85,57 @@ class BTRuleChoice extends BTRuleList
 	 * 
 	 * \returns Value from BTAction.eReturnValues .
 	 */
-	public func BTResult run( BTContext context )
+	func BTResult run(BTContext context)
 		var BTRule rule = context.getCurrentRule()
 		
 		if rule == this
 			// first time the rule is run
-			if this.getRuleCount() == 0 or not this.evaluateConditions( context )
-				return BTResult.failure  // context does another step
+			if getRuleCount() == 0 or not evaluateConditions(context)
+				return pDoNotFail if BTResult.success else BTResult.failure  // context does another step
 			end
 			
-			context.setCurrentRule( this.getRuleAt( 0 ) )
+			context.setCurrentRule(getRuleAt(0))
 			return BTResult.success  // context does another step
 			
 		else
 			// child rule has run. check last result
-			var int index = this.indexOfRule( rule )
+			var int index = indexOfRule(rule)
 			
 			select context.getLastResult()
 			case BTResult.running
 				return BTResult.running  // context stops stepping
 				
 			case BTResult.failure
-				if index < this.getRuleCount()
+				if index < getRuleCount() - 1
 					// more actions to run
-					if this.evaluateConditions( context )
-						context.setCurrentRule( this.getRuleAt( index + 1 ) )
+					if evaluateConditions(context)
+						context.setCurrentRule(getRuleAt(index + 1))
 						
 					else
 						// condition failed. pass up to parent
-						context.setCurrentRule( this )
+						context.setCurrentRule(this)
 					end
 					
 				else
 					// finished all actions with failure. pass up to parent
-					context.setCurrentRule( this )
+					context.setCurrentRule(this)
 				end
-				return BTResult.failure  // context does another step
+				return pDoNotFail if BTResult.success else BTResult.failure  // context does another step
 				
 			case BTResult.success
 				// choice finished. pass up to parent unless looping
-				if this.pLooping
-					if this.evaluateConditions( context )
-						context.setCurrentRule( this.getRuleAt( 0 ) )
+				if pLooping
+					if evaluateConditions(context)
+						context.setCurrentRule(getRuleAt(0))
 						
 					else
 						// condition failed. pass up to parent
-						context.setCurrentRule( this )
-						return BTResult.failure
+						context.setCurrentRule(this)
+						return pDoNotFail if BTResult.success else BTResult.failure
 					end
 					
 				else
-					context.setCurrentRule( this )
+					context.setCurrentRule(this)
 				end
 				return BTResult.success  // context does another step
 				
@@ -126,5 +143,12 @@ class BTRuleChoice extends BTRuleList
 				throw EInvalidParam.new()
 			end
 		end
+	end
+	
+	
+	
+	/** String representation of object. */
+	func String toString()
+		return "BTRuleChoice(id='{}')".format(Array.newWith(getID()))
 	end
 end

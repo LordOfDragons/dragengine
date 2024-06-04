@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -28,218 +31,320 @@ pin Dragengine.Utils
 
 
 /**
- * Definition of a bone transformator animator rule. Once defined a rule can be
- * added to an animator using the stored definition.
+ * \brief Definition of bone transformator animator rule.
+ * 
+ * Once defined a rule can be added to an animator using the stored definition.
  */
 class ADRuleBoneTransformator extends ADRule
-	/** Minimm translation. */
 	private var Vector pMinimumTranslation
-	/** Maximum translation. */
 	private var Vector pMaximumTranslation
-	/** Minimm rotation. */
 	private var Vector pMinimumRotation
-	/** Maximum rotation. */
 	private var Vector pMaximumRotation
-	/** Minimm scaling. */
 	private var Vector pMinimumScaling
-	/** Maximum scaling. */
 	private var Vector pMaximumScaling
-	/** Coordinate frame of rotation. */
 	private var ARBoneTransformatorCFrame pCoordFrame
-	/** Determines if the transformation affects the position. */
 	private var bool pEnablePosition
-	/** Determines if the transformation affects the orientation. */
 	private var bool pEnableOrientation
-	/** Determines if the transformation affects the size, */
 	private var bool pEnableSize
-	/** Name of the target bone. */
 	private var String pTargetBone
+	private var Vector pAxis
+	private var float pMinimumAngle
+	private var float pMaximumAngle
+	private var bool pUseAxis
 	
 	
 	
-	/** Creates a new animation rule definition. */
+	/** \brief Create animation rule definition. */
 	public func new()
-		this.pMinimumTranslation = Vector.new()
-		this.pMaximumTranslation = Vector.new()
-		this.pMinimumRotation = Vector.new()
-		this.pMaximumRotation = Vector.new()
-		this.pMinimumScaling = Vector.new( 1.0, 1.0, 1.0 )
-		this.pMaximumScaling = Vector.new( 1.0, 1.0, 1.0 )
-		this.pCoordFrame = ARBoneTransformatorCFrame.component
-		this.pEnablePosition = false
-		this.pEnableOrientation = true
-		this.pEnableSize = false
-		this.pTargetBone = ""
+		pMinimumTranslation = Vector.new()
+		pMaximumTranslation = Vector.new()
+		pMinimumRotation = Vector.new()
+		pMaximumRotation = Vector.new()
+		pMinimumScaling = Vector.new(1, 1, 1)
+		pMaximumScaling = Vector.new(1, 1, 1)
+		pCoordFrame = ARBoneTransformatorCFrame.component
+		pEnablePosition = false
+		pEnableOrientation = true
+		pEnableSize = false
+		pTargetBone = ""
+		pAxis = Vector.new(0, 0, 1)
+		pMinimumAngle = 0
+		pMaximumAngle = 0
+		pUseAxis = false
+	end
+	
+	/**
+	 * \brief Create copy of animation rule definition.
+	 * \version 1.13
+	 */
+	public func new(AnimatorDefinition fromDef, AnimatorDefinition toDef,\
+	ADRuleBoneTransformator rule) super(fromDef, toDef, rule)
+		pMinimumTranslation = rule.pMinimumTranslation
+		pMaximumTranslation = rule.pMaximumTranslation
+		pMinimumRotation = rule.pMinimumRotation
+		pMaximumRotation = rule.pMaximumRotation
+		pMinimumScaling = rule.pMinimumScaling
+		pMaximumScaling = rule.pMaximumScaling
+		pCoordFrame = rule.pCoordFrame
+		pEnablePosition = rule.pEnablePosition
+		pEnableOrientation = rule.pEnableOrientation
+		pEnableSize = rule.pEnableSize
+		pTargetBone = rule.pTargetBone
+		pAxis = rule.pAxis
+		pMinimumAngle = rule.pMinimumAngle
+		pMaximumAngle = rule.pMaximumAngle
+		pUseAxis = rule.pUseAxis
 	end
 	
 	
 	
-	/** Retrieves the minimum translation. */
+	/** \brief Mminimum translation. */
 	public func Vector getMinimumTranslation()
-		return this.pMinimumTranslation
+		return pMinimumTranslation
 	end
 	
-	/** Sets the minimum translation. */
-	public func void setMinimumTranslation( Vector translation )
+	/** \brief Set minimum translation. */
+	public func void setMinimumTranslation(Vector translation)
 		if translation == null
-			throw EInvalidParam.new()
+			throw ENullPointer.new("translation")
 		end
-		
-		this.pMinimumTranslation = translation
+		pMinimumTranslation = translation
 	end
 	
-	/** Retrieves the maximum translation. */
+	/** \brief Maximum translation. */
 	public func Vector getMaximumTranslation()
-		return this.pMaximumTranslation
+		return pMaximumTranslation
 	end
 	
-	/** Sets the maximum translation. */
-	public func void setMaximumTranslation( Vector translation )
+	/** \brief Set maximum translation. */
+	public func void setMaximumTranslation(Vector translation)
 		if translation == null
-			throw EInvalidParam.new()
+			throw ENullPointer.new("translation")
 		end
-		
-		this.pMaximumTranslation = translation
+		pMaximumTranslation = translation
 	end
 	
-	/** Retrieves the minimum rotation. */
+	/** \brief Minimum rotation. */
 	public func Vector getMinimumRotation()
-		return this.pMinimumRotation
+		return pMinimumRotation
 	end
 	
-	/** Sets the minimum rotation. */
-	public func void setMinimumRotation( Vector rotation )
+	/** \brief Set minimum rotation. */
+	public func void setMinimumRotation(Vector rotation)
 		if rotation == null
-			throw EInvalidParam.new()
+			throw ENullPointer.new("rotation")
 		end
-		
-		this.pMinimumRotation = rotation
+		pMinimumRotation = rotation
 	end
 	
-	/** Retrieves the maximum rotation. */
+	/** \brief Maximum rotation. */
 	public func Vector getMaximumRotation()
-		return this.pMaximumRotation
+		return pMaximumRotation
 	end
 	
-	/** Sets the maximum rotation. */
-	public func void setMaximumRotation( Vector rotation )
+	/** \brief Set maximum rotation. */
+	public func void setMaximumRotation(Vector rotation)
 		if rotation == null
-			throw EInvalidParam.new()
+			throw ENullPointer.new("rotationn")
 		end
-		
-		this.pMaximumRotation = rotation
+		pMaximumRotation = rotation
 	end
 	
-	/** Sets the minimum scaling. */
-	public func void setMinimumScaling( Vector scaling )
+	/** \brief Minimum scaling. */
+	public func Vector getMinimumScaling()
+		return pMinimumScaling
+	end
+	
+	/** \brief Set minimum scaling. */
+	public func void setMinimumScaling(Vector scaling)
 		if scaling == null
-			throw EInvalidParam.new()
+			throw ENullPointer.new("scaling")
 		end
-		
-		this.pMinimumScaling = scaling
+		pMinimumScaling = scaling
 	end
 	
-	/** Retrieves the maximum scaling. */
+	/** \brief Maximum scaling. */
 	public func Vector getMaximumScaling()
-		return this.pMaximumScaling
+		return pMaximumScaling
 	end
 	
-	/** Sets the maximum scaling. */
-	public func void setMaximumScaling( Vector scaling )
+	/** \brief Set maximum scaling. */
+	public func void setMaximumScaling(Vector scaling)
 		if scaling == null
-			throw EInvalidParam.new()
+			throw ENullPointer.new("scaling")
 		end
-		
-		this.pMaximumScaling = scaling
+		pMaximumScaling = scaling
 	end
 	
-	/** Retrieves the coordinate frame of rotation. */
+	/** \brief Coordinate frame of rotation. */
 	public func ARBoneTransformatorCFrame getCoordinateFrame()
-		return this.pCoordFrame
+		return pCoordFrame
 	end
 	
-	/** Sets if the coordinate frame of rotation. */
-	public func void setCoordinateFrame( ARBoneTransformatorCFrame coordFrame )
-		this.pCoordFrame = coordFrame
+	/** \brief Set if coordinate frame of rotation. */
+	public func void setCoordinateFrame(ARBoneTransformatorCFrame coordFrame)
+		pCoordFrame = coordFrame
 	end
 	
-	/** Determines if the transformation affects the position. */
+	/** \brief Ttransformation affects the position. */
 	public func bool getEnablePosition()
-		return this.pEnablePosition
+		return pEnablePosition
 	end
 	
-	/** Sets if the transformation affects the position. */
-	public func void setEnablePosition( bool enable )
-		this.pEnablePosition = enable
+	/** \brief Set if transformation affects the position. */
+	public func void setEnablePosition(bool enable)
+		pEnablePosition = enable
 	end
 	
-	/** Determines if the transformation affects the orientation. */
+	/** \brief Transformation affects the orientation. */
 	public func bool getEnableOrientation()
-		return this.pEnableOrientation
+		return pEnableOrientation
 	end
 	
-	/** Sets if the transformation affects the orientation. */
-	public func void setEnableOrientation( bool enable )
-		this.pEnableOrientation = enable
+	/** \brief Set if transformation affects the orientation. */
+	public func void setEnableOrientation(bool enable)
+		pEnableOrientation = enable
 	end
 	
-	/** Determines if the transformation affects the size. */
+	/** \brief Transformation affects the size. */
 	public func bool getEnableSize()
-		return this.pEnableSize
+		return pEnableSize
 	end
 	
-	/** Sets if the transformation affects the size. */
-	public func void setEnableSize( bool enable )
-		this.pEnableSize = enable
+	/** \brief Set if transformation affects the size. */
+	public func void setEnableSize(bool enable)
+		pEnableSize = enable
 	end
 	
-	/** Retrieves the target bone name. */
+	/** \brief Target bone name. */
 	public func String getTargetBone()
-		return this.pTargetBone
+		return pTargetBone
 	end
 	
-	/** Sets the target bone name. */
-	public func void setTargetBone( String name )
+	/** \brief Set target bone name. */
+	public func void setTargetBone(String name)
 		if name == null
-			throw EInvalidParam.new()
+			throw ENullPointer.new("name")
 		end
-		
-		this.pTargetBone = name
+		pTargetBone = name
+	end
+	
+	/**
+	 * \brief Rotation axis.
+	 * \version 1.6
+	 */
+	public func Vector getAxis()
+		return pAxis
+	end
+	
+	/**
+	 * \brief Set rotation axis.
+	 * \version 1.6
+	 */
+	public func void setAxis(Vector axis)
+		if axis == null
+			throw ENullPointer.new("axis")
+		end
+		pAxis = axis
+	end
+	
+	/**
+	 * \brief Minimum axis rotation angle.
+	 * \version 1.6
+	 */
+	public func float getMinimumAngle()
+		return pMinimumAngle
+	end
+	
+	/**
+	 * \brief Set minimum axis rotation angle.
+	 * \version 1.6
+	 */
+	public func void setMinimumAngle(float angle)
+		pMinimumAngle = angle
+	end
+	
+	/**
+	 * \brief Maximum axis rotation angle.
+	 * \version 1.6
+	 */
+	public func float getMaximumAngle()
+		return pMaximumAngle
+	end
+	
+	/**
+	 * \brief Set maximum axis rotation angle.
+	 * \version 1.6
+	 */
+	public func void setMaximumAngle(float angle)
+		pMaximumAngle = angle
+	end
+	
+	/**
+	 * \brief Use rotation axis instead of rotation directly.
+	 * \version 1.6
+	 */
+	public func bool getUseAxis()
+		return pUseAxis
+	end
+	
+	/**
+	 * \brief Set to use rotation axis instead of rotation directly.
+	 * \version 1.6
+	 */
+	public func void setUseAxis(bool useAxis)
+		pUseAxis = useAxis
 	end
 	
 	
 	
 	/** Build engine animator rule using the stored definition. */
-	public func AnimatorRule buildRule( Animator animator )
+	public func AnimatorRule buildRule(Animator animator)
 		var ARBoneTransformator rule = ARBoneTransformator.new()
 		
-		this.buildRuleCommon( rule )
+		buildRuleCommon(rule)
 		
-		this.forEachTarget( block ADRuleTargetLink each
-			rule.targetAddLink( each.getTarget() cast ARBoneTransformatorTarget, each.getLink().getIndex() )
-		end )
+		forEachTarget(block ADRuleTargetLink each
+			rule.targetAddLink(each.getTarget() cast ARBoneTransformatorTarget, each.getLink().getIndex())
+		end)
 		
-		rule.setMinimumTranslation( this.pMinimumTranslation )
-		rule.setMaximumTranslation( this.pMaximumTranslation )
-		rule.setMinimumRotation( this.pMinimumRotation )
-		rule.setMaximumRotation( this.pMaximumRotation )
-		rule.setMinimumScaling( this.pMinimumScaling )
-		rule.setMaximumScaling( this.pMaximumScaling )
-		rule.setCoordinateFrame( this.pCoordFrame )
-		rule.setEnablePosition( this.pEnablePosition )
-		rule.setEnableOrientation( this.pEnableOrientation )
-		rule.setEnableSize( this.pEnableSize )
-		rule.setTargetBone( this.pTargetBone )
+		rule.setMinimumTranslation(pMinimumTranslation)
+		rule.setMaximumTranslation(pMaximumTranslation)
+		rule.setMinimumRotation(pMinimumRotation)
+		rule.setMaximumRotation(pMaximumRotation)
+		rule.setMinimumScaling(pMinimumScaling)
+		rule.setMaximumScaling(pMaximumScaling)
+		rule.setCoordinateFrame(pCoordFrame)
+		rule.setEnablePosition(pEnablePosition)
+		rule.setEnableOrientation(pEnableOrientation)
+		rule.setEnableSize(pEnableSize)
+		rule.setTargetBone(pTargetBone)
+		rule.setAxis(pAxis)
+		rule.setMinimumAngle(pMinimumAngle)
+		rule.setMaximumAngle(pMaximumAngle)
+		rule.setUseAxis(pUseAxis)
 		
 		return rule
 	end
 	
 	
 	
-	public func void debug( Console console )
-		console.addMessage( this.debugCommon( "Bone Transformator" ) + \
-			" minTrans=" + this.pMinimumTranslation + " maxTrans=" + this.pMaximumTranslation + \
-			" minRot=" + this.pMinimumRotation + " maxRot=" + this.pMaximumRotation + \
-			" minScale=" + this.pMinimumScaling + " maxScale=" + this.pMaximumScaling + " )" )
+	/**
+	 * \brief Create copy of rule.
+	 * \version 1.13
+	 */
+	public func ADRule copy(AnimatorDefinition fromDef, AnimatorDefinition toDef)
+		return new(fromDef, toDef, this)
+	end
+	
+	
+	
+	public func void debug(Console console)
+		console.addMessage(debugCommon("Bone Transformator") + \
+			" minTrans=" + pMinimumTranslation + " maxTrans=" + pMaximumTranslation + \
+			" minRot=" + pMinimumRotation + " maxRot=" + pMaximumRotation + \
+			" minScale=" + pMinimumScaling + " maxScale=" + pMaximumScaling + \
+			" useAxis=" + pUseAxis + " axis=" + pAxis + \
+			" minAngle=" + pMinimumAngle + " maxAngle=" + pMaximumAngle + ")")
 	end
 end

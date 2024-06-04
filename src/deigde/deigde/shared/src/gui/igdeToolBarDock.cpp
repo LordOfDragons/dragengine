@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -24,101 +27,11 @@
 #include <string.h>
 
 #include "igdeToolBarDock.h"
-#include "native/toolkit.h"
 #include "igdeWidget.h"
+#include "native/toolkit.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/logger/deLogger.h>
-
-
-
-// Native Widget
-//////////////////
-
-class cNativeIgdeToolBarDock : public FXDockSite{
-	FXDECLARE( cNativeIgdeToolBarDock )
-	
-protected:
-	cNativeIgdeToolBarDock();
-	
-private:
-	igdeToolBarDock *pOwner;
-	
-public:
-	cNativeIgdeToolBarDock( igdeToolBarDock &owner, FXComposite *parent );
-	virtual ~cNativeIgdeToolBarDock();
-	
-	long onChildLayoutFlags( FXObject *sender, FXSelector selector, void *data );
-	
-	static int LayoutFlags( const igdeToolBarDock &owner );
-};
-
-
-FXDEFMAP( cNativeIgdeToolBarDock ) cNativeIgdeToolBarDockMap[] = {
-	FXMAPFUNC( SEL_IGDE_CHILD_LAYOUT_FLAGS, 0, cNativeIgdeToolBarDock::onChildLayoutFlags )
-};
-
-FXIMPLEMENT( cNativeIgdeToolBarDock, FXDockSite,
-	cNativeIgdeToolBarDockMap, ARRAYNUMBER( cNativeIgdeToolBarDockMap ) )
-
-cNativeIgdeToolBarDock::cNativeIgdeToolBarDock(){ }
-
-cNativeIgdeToolBarDock::cNativeIgdeToolBarDock( igdeToolBarDock &owner, FXComposite *parent ) :
-FXDockSite( parent, LayoutFlags( owner ) ),
-pOwner( &owner ){
-}
-
-cNativeIgdeToolBarDock::~cNativeIgdeToolBarDock(){
-}
-
-long cNativeIgdeToolBarDock::onChildLayoutFlags( FXObject *sender, FXSelector selector, void *data ){
-	igdeUIFoxHelper::sChildLayoutFlags &clflags = *( ( igdeUIFoxHelper::sChildLayoutFlags* )data );
-	
-	switch( pOwner->GetSide() ){
-	case igdeToolBarDock::esTop:
-		clflags.flags = LAYOUT_SIDE_TOP; // | LAYOUT_FILL_X;
-		break;
-		
-	case igdeToolBarDock::esLeft:
-		clflags.flags = LAYOUT_SIDE_LEFT; // | LAYOUT_FILL_Y;
-		break;
-		
-	case igdeToolBarDock::esRight:
-		clflags.flags = LAYOUT_SIDE_RIGHT; // | LAYOUT_FILL_Y;
-		break;
-		
-	case igdeToolBarDock::esBottom:
-		clflags.flags = LAYOUT_SIDE_BOTTOM; // | LAYOUT_FILL_X;
-		break;
-		
-	default:
-		clflags.flags = LAYOUT_SIDE_TOP; // | LAYOUT_FILL_X;
-		break;
-	}
-	
-// 	clflags.flags = LAYOUT_TOP | LAYOUT_LEFT;
-	return 1;
-}
-
-int cNativeIgdeToolBarDock::LayoutFlags( const igdeToolBarDock &owner ){
-	switch( owner.GetSide() ){
-	case igdeToolBarDock::esTop:
-		return LAYOUT_SIDE_TOP | LAYOUT_FILL_X;
-		
-	case igdeToolBarDock::esLeft:
-		return LAYOUT_SIDE_LEFT | LAYOUT_FILL_Y;
-		
-	case igdeToolBarDock::esRight:
-		return LAYOUT_SIDE_RIGHT | LAYOUT_FILL_Y;
-		
-	case igdeToolBarDock::esBottom:
-		return LAYOUT_SIDE_BOTTOM | LAYOUT_FILL_X;
-		
-	default:
-		return 0;
-	}
-}
-
 
 
 // Class igdeToolBarDock
@@ -145,22 +58,9 @@ void igdeToolBarDock::CreateNativeWidget(){
 		return;
 	}
 	
-	igdeContainer * const parent = GetParent();
-	if( ! parent ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	FXComposite * const foxParent = ( FXComposite* )parent->GetNativeContainer();
-	if( ! foxParent ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	cNativeIgdeToolBarDock * const foxWidget = new cNativeIgdeToolBarDock( *this, foxParent );
-	
-	SetNativeWidget( foxWidget );
-	if( foxParent->id() ){
-		foxWidget->create();
-	}
+	igdeNativeToolBarDock * const native = igdeNativeToolBarDock::CreateNativeWidget( *this );
+	SetNativeWidget( native );
+	native->PostCreateNativeWidget();
 	
 	CreateChildWidgetNativeWidgets();
 }
@@ -170,6 +70,6 @@ void igdeToolBarDock::DestroyNativeWidget(){
 		return;
 	}
 	
-	delete ( cNativeIgdeToolBarDock* )GetNativeWidget();
+	( ( igdeNativeToolBarDock* )GetNativeWidget() )->DestroyNativeWidget();
 	DropNativeWidget();
 }

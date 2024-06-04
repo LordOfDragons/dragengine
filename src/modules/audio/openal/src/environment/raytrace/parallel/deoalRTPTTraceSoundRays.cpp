@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenAL Audio Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -59,6 +62,7 @@ pProbeConfig( NULL ),
 pRange( 0.0f ),
 pRefDist( 1.0f ),
 pRollOff( 0.0f ),
+pDistanceOffset( 0.0f ),
 pUseAttenuation( false ),
 pFirstRay( 0 ),
 #ifndef RTPTTSR_ONE_TASK_PER_RAY
@@ -74,6 +78,8 @@ pInverseRayTracing( false ),
 pDetectOutsideLength( 100.0 ),
 pBackStepDistance( 1e-4 )
 {
+	(void)pOwner; // silence compiler warning
+	
 	pWOVRayHitsElement.SetResult( &pRTResult );
 	pRTWOVRayHitsElement.SetResult( &pRTResult );
 	SetMarkFinishedAfterRun( true );
@@ -144,11 +150,12 @@ void deoalRTPTTraceSoundRays::SetRange( float range ){
 	pRange = range;
 }
 
-void deoalRTPTTraceSoundRays::SetAttenuationParameters( float refDist, float rollOff ){
+void deoalRTPTTraceSoundRays::SetAttenuationParameters( float refDist, float rollOff, float distanceOffset ){
 	pRefDist = refDist;
 	pRollOff = rollOff;
+	pDistanceOffset = distanceOffset;
 	pUseAttenuation = fabsf( pRefDist - 1.0f ) > FLOAT_SAFE_EPSILON
-		|| fabsf( pRollOff ) > FLOAT_SAFE_EPSILON;
+		|| fabsf( pRollOff ) > FLOAT_SAFE_EPSILON || fabsf( pDistanceOffset ) > 0.001f;
 }
 
 void deoalRTPTTraceSoundRays::SetFirstRay( int firstRay ){
@@ -956,10 +963,13 @@ const sTraceAbsorptionSum &absorptionSum ){
 	// causing gain to drop exponentially. also if the attenuation would be calculated only
 	// over the distance travelled since the start of the ray the result would be too low.
 	// for example the total distance is 6 then the attenuation is 1/6. if this is now split
-	// over one bounce after 3m the attenuation would be (1/3)/3 which is 1/9 instead o 1/6.
+	// over one bounce after 3m the attenuation would be (1/3)/3 which is 1/9 instead of 1/6.
 	// thus the attenuation calculation is only used to check when the gain becomes inaudible.
 	// the final calculation step will calculate the distance attenuation
 	//const float attGain = pEnvProbe->AttenuatedGain( reflectedRay.distance ); // * ( float )dotOut;
+	
+	// NOTE if source centric tracing is done pDistanceOffset can be larger than 0 and far
+	//      away sound sources can be traced. if listener centris pDistanceOffset is always 0
 	const float attGain = Attenuate( reflectedRay.distance );
 	
 	// WARNING
@@ -1112,11 +1122,9 @@ void deoalRTPTTraceSoundRays::pUpdateExtends( const decDVector &position ){
 
 float deoalRTPTTraceSoundRays::Attenuate( float distance ) const{
 	if( pUseAttenuation ){
-		return pRefDist / ( pRefDist + pRollOff * decMath::max( distance - pRefDist, 0.0f ) );
-		
-	}else{
-		return 1.0f;
+		return pRefDist / ( pRefDist + pRollOff * decMath::max( distance + pDistanceOffset - pRefDist, 0.0f ) );
 	}
+	return 1.0f;
 }
 
 void deoalRTPTTraceSoundRays::DetectRayOutside( const sTraceRay &ray, const decDVector &position ){

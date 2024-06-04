@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Skin Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -35,6 +38,7 @@
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/igdeButton.h>
 #include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/igdeComboBoxFilter.h>
 #include <deigde/gui/igdeContainerReference.h>
 #include <deigde/gui/igdeGroupBox.h>
@@ -142,7 +146,35 @@ public:
 	virtual void OnChanged( igdeEditPath &editPath, seSkin &skin ) = 0;
 };
 
+class cBaseComboBoxListener : public igdeComboBoxListener{
+protected:
+	seWPView &pPanel;
+	
+public:
+	cBaseComboBoxListener( seWPView &panel ) : pPanel( panel ){ }
+	
+	virtual void OnTextChanged( igdeComboBox *comboBox ){
+		seSkin * const skin = pPanel.GetSkin();
+		if( skin ){
+			OnChanged( *comboBox, *skin );
+		}
+	}
+	
+	virtual void OnChanged( igdeComboBox &comboBox, seSkin &skin ) = 0;
+};
 
+
+
+class cComboPreviewMode : public cBaseComboBoxListener{
+public:
+	cComboPreviewMode( seWPView &panel ) : cBaseComboBoxListener( panel ){ }
+	
+	virtual void OnChanged( igdeComboBox &comboBox, seSkin &skin ){
+		if( comboBox.GetSelectedItem() ){
+			skin.SetPreviewMode( ( seSkin::ePreviewMode )( intptr_t )comboBox.GetSelectedItem()->GetData() );
+		}
+	}
+};
 
 class cEditModelPath : public cBaseEditPathListener{
 public:
@@ -168,6 +200,19 @@ public:
 	
 	virtual void OnChanged( igdeEditPath &editPath, seSkin &skin ){
 		skin.SetAnimationPath( editPath.GetPath() );
+	}
+};
+
+class cComboMove : public cBaseComboBoxListener{
+	bool &pPreventUpdate;
+public:
+	cComboMove( seWPView &panel, bool &preventUpdate ) :
+	cBaseComboBoxListener( panel ), pPreventUpdate( preventUpdate ){ }
+	
+	virtual void OnChanged( igdeComboBox &comboBox, seSkin &skin ){
+		if( ! pPreventUpdate ){
+			skin.SetMoveName( comboBox.GetText() );
+		}
 	}
 };
 
@@ -237,6 +282,7 @@ seWPView::seWPView( seWindowProperties &windowProperties ) :
 igdeContainerScroll( windowProperties.GetEnvironment(), false, true ),
 pWindowProperties( windowProperties ),
 pListener( NULL ),
+pPreventUpdate( false ),
 pSkin( NULL )
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
@@ -252,6 +298,10 @@ pSkin( NULL )
 	// resources
 	helper.GroupBox( content, groupBox, "Preview:" );
 	
+	helper.ComboBox( groupBox, "Mode:", "Preview mode.", pCBPreviewMode, new cComboPreviewMode( *this ) );
+	pCBPreviewMode->AddItem( "Model", NULL, ( void* )( intptr_t )seSkin::epmModel );
+	pCBPreviewMode->AddItem( "Light", NULL, ( void* )( intptr_t )seSkin::epmLight );
+	
 	helper.EditPath( groupBox, "Model:", "Path to the model resource to use.",
 		igdeEnvironment::efpltModel, pEditModelPath, new cEditModelPath( *this ) );
 	helper.EditPath( groupBox, "Rig:", "Path to the rig resource to use.",
@@ -259,7 +309,8 @@ pSkin( NULL )
 	helper.EditPath( groupBox, "Animation:", "Path to the animation resource to use.",
 		igdeEnvironment::efpltAnimation, pEditAnimPath, new cEditAnimationPath( *this ) );
 	
-	helper.ComboBoxFilter( groupBox, "Move:", "Name of the animation move to play.", pCBAnimMoves, NULL );
+	helper.ComboBoxFilter( groupBox, "Move:", true, "Name of the animation move to play.",
+		pCBAnimMoves, new cComboMove( *this, pPreventUpdate ) );
 	pCBAnimMoves->SetDefaultSorter();
 	
 	helper.CheckBox( groupBox, pChkPlayback, new cActionPlayback( *this ), true );
@@ -331,12 +382,14 @@ void seWPView::SetSkin( seSkin *skin ){
 
 void seWPView::UpdateView(){
 	if( pSkin ){
+		pCBPreviewMode->SetSelectionWithData( ( void* )( intptr_t )pSkin->GetPreviewMode() );
 		pEditModelPath->SetPath( pSkin->GetModelPath() );
 		pEditRigPath->SetPath( pSkin->GetRigPath() );
 		pEditAnimPath->SetPath( pSkin->GetAnimationPath() );
 		pCBAnimMoves->SetText( pSkin->GetMoveName() );
 		
 	}else{
+		pCBPreviewMode->SetSelectionWithData( ( void* )( intptr_t )seSkin::epmModel );
 		pEditModelPath->ClearPath();
 		pEditRigPath->ClearPath();
 		pEditAnimPath->ClearPath();
@@ -344,6 +397,7 @@ void seWPView::UpdateView(){
 	}
 	
 	const bool enabled = pSkin;
+	pCBPreviewMode->SetEnabled( enabled );
 	pEditModelPath->SetEnabled( enabled );
 	pEditRigPath->SetEnabled( enabled );
 	pEditAnimPath->SetEnabled( enabled );
@@ -357,23 +411,32 @@ void seWPView::UpdateMoveList(){
 	const deAnimator * const engAnimator = pSkin ? pSkin->GetEngineAnimator() : NULL;
 	const decString selection( pCBAnimMoves->GetText() );
 	
-	pCBAnimMoves->RemoveAllItems();
+	pPreventUpdate = true;
 	
-	if( engAnimator ){
-		const deAnimation * const animation = engAnimator->GetAnimation();
-		if( animation ){
-			const int count = animation->GetMoveCount();
-			int i;
-			for( i=0; i<count; i++ ){
-				pCBAnimMoves->AddItem( animation->GetMove( i )->GetName() );
+	try{
+		pCBAnimMoves->RemoveAllItems();
+		
+		if( engAnimator ){
+			const deAnimation * const animation = engAnimator->GetAnimation();
+			if( animation ){
+				const int count = animation->GetMoveCount();
+				int i;
+				for( i=0; i<count; i++ ){
+					pCBAnimMoves->AddItem( animation->GetMove( i )->GetName() );
+				}
 			}
+			
+			pCBAnimMoves->SortItems();
+			pCBAnimMoves->StoreFilterItems();
 		}
 		
-		pCBAnimMoves->SortItems();
-		pCBAnimMoves->StoreFilterItems();
+		pCBAnimMoves->SetText( selection );
+		pPreventUpdate = false;
+		
+	}catch( const deException & ){
+		pPreventUpdate = false;
+		throw;
 	}
-	
-	pCBAnimMoves->SetText( selection );
 }
 
 void seWPView::UpdateSky(){

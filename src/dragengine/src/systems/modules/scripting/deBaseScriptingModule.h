@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Game Engine
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEBASESCRIPTINGMODULE_H_
@@ -35,6 +38,7 @@ class deBaseScriptingServer;
 class deBaseScriptingSpeaker;
 class deBaseScriptingSoundLevelMeter;
 class deBaseScriptingTouchSensor;
+class deBaseScriptingService;
 class deCollider;
 class deComponent;
 class deConnection;
@@ -46,6 +50,7 @@ class deServer;
 class deSoundLevelMeter;
 class deSpeaker;
 class deTouchSensor;
+class deService;
 
 
 /**
@@ -55,7 +60,7 @@ class deTouchSensor;
  * scripting or programming language. The scripting module defines also
  * how much of the power of the engine is exposed to the scripter.
  */
-class deBaseScriptingModule : public deBaseModule{
+class DE_DLL_EXPORT deBaseScriptingModule : public deBaseModule{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -92,6 +97,9 @@ public:
 	 * See the individual manuals of the scripting modules to learn about
 	 * those requirements. After the Init function has exited the scripting
 	 * module is ready to operate the game.
+	 * 
+	 * The sript version to be compatible against can be queried using
+	 * deScriptingSystem::GetScriptVersion().
 	 */
 	virtual bool Init( const char *scriptDirectory, const char *gameObject ) = 0;
 	
@@ -130,6 +138,12 @@ public:
 	
 	/** \brief Create deSpeaker peer. */
 	virtual deBaseScriptingSpeaker *CreateSpeaker( deSpeaker *speaker ) = 0;
+	
+	/**
+	 * \brief Create deService peer.
+	 * \version 1.23
+	 */
+	virtual deBaseScriptingService *CreateService( deService *service );
 	
 	/**
 	 * \brief Initialize game scripts.
@@ -173,6 +187,13 @@ public:
 	 * Default implementation calls deEngine.Quit().
 	 */
 	virtual void UserRequestQuit();
+	
+	/**
+	 * \brief Called after the application received or lost focus.
+	 * \return true if the call has been successfull or false otherwise
+	 * \version 1.22
+	 */
+	virtual bool OnAppActivate();
 	/*@}*/
 };
 

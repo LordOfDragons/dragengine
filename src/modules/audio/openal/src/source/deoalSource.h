@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenAL Audio Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOALSOURCE_H_
@@ -24,10 +27,11 @@
 
 #include "../deoalBasics.h"
 
+class deoalEffectSlot;
 
 
 /**
- * \brief OpenAL source object.
+ * OpenAL source object.
  * 
  * Keeps track of an openal source object. Sources are limited resources on the hardware and
  * have to be reused as much as possible to avoid running out of openal memory. A source
@@ -42,7 +46,7 @@
  */
 class deoalSource{
 public:
-	/** \brief Play state. */
+	/** Play state. */
 	enum eState {
 		epsPlaying,
 		epsPaused,
@@ -65,18 +69,18 @@ private:
 	float pImportance;
 	
 	ALuint pFilter;
-	ALuint pSendSlot;
-	ALuint pSendEffect;
+	deoalEffectSlot *pEffectSlot;
+	ALuint pEffectSlotFilter;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create openal buffer. */
+	/** Create openal buffer. */
 	deoalSource( deoalAudioThread &audioThread );
 	
-	/** \brief Clean up openal buffer. */
+	/** Clean up openal buffer. */
 	~deoalSource();
 	/*@}*/
 	
@@ -84,94 +88,89 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief OpenAL module. */
+	/** OpenAL module. */
 	inline deoalAudioThread &GetAudioThread() const{ return pAudioThread; }
 	
-	/** \brief Source. */
+	/** Source. */
 	inline ALuint GetSource() const{ return pSource; }
 	
 	
 	
-	/** \brief Number of streaming buffers. */
+	/** Number of streaming buffers. */
 	inline int GetBufferCount() const{ return pBufferCount; }
 	
-	/** \brief Set number of streaming buffers. */
+	/** Set number of streaming buffers. */
 	void SetBufferCount( int count );
 	
-	/** \brief Buffer. */
+	/** Buffer. */
 	ALuint GetBufferAt( int position ) const;
 	
 	
 	
-	/** \brief Owner or \em NULL if not bound. */
+	/** Owner or \em NULL if not bound. */
 	inline void *GetOwner() const{ return pOwner; }
 	
-	/** \brief \brief Set owner or \em NULL if not bound. */
+	/** Set owner or \em NULL if not bound. */
 	void SetOwner( void *owner );
 	
-	/** \brief Importance. */
+	/** Importance. */
 	inline float GetImportance() const{ return pImportance; }
 	
-	/** \brief Set importance. */
+	/** Set importance. */
 	void SetImportance( float importance );
 	
 	
 	
-	/** \brief Source is bound. */
+	/** Source is bound. */
 	bool IsBound() const;
 	
-	/** \brief Source is not bound. */
+	/** Source is not bound. */
 	bool IsUnbound() const;
 	
 	
 	
-	/** \brief Play state. */
+	/** Play state. */
 	inline eState GetState() const{ return pState; }
 	
-	/** \brief Start playing back. */
+	/** Start playing back. */
 	void Play();
 	
-	/** \brief Pause playing back. */
+	/** Pause playing back. */
 	void Pause();
 	
-	/** \brief Stop playing back. */
+	/** Stop playing back. */
 	void Stop();
 	
 	
 	
-	/** \brief Filter creating it if not present. */
+	/** Filter creating it if not present. */
 	ALuint GetFilter();
 	
 	/**
-	 * \brief Assign source filter if present.
+	 * Assign source filter if present.
 	 * 
 	 * Call this whenever filter changed.
 	 */
 	void AssignFilter();
 	
-	/** \brief Remove filter from source but keep filter object alive. */
+	/** Remove filter from source but keep filter object alive. */
 	void ClearFilter();
 	
 	
 	
-	/** \brief Send slot creating it if not present. */
-	ALuint GetSendSlot( int index );
+	/** Effect slot or nullptr. */
+	deoalEffectSlot *GetEffectSlot();
 	
-	/** \brief Send effect creating it if not present. */
-	ALuint GetSendEffect( int index );
+	/** Drop effect slot. */
+	void DropEffectSlot();
 	
-	/**
-	 * \brief Assign source send effect if present.
-	 * 
-	 * Call this whenever send effect changed.
-	 */
-	void AssignSendEffect( int index );
+	/** Effect slot filter creating it if not present. */
+	ALuint GetEffectSlotFilter();
 	
-	/** \brief Remove send effect from source but keep effect object alive. */
-	void ClearSendEffect( int index );
 	
-	/** \brief Clear all send effects. */
-	void ClearAllSendEffects();
+	
+	/** Reset to be used again. */
+	void Reset();
 	/*@}*/
 	
 	

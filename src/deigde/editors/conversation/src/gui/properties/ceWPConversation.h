@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Conversation Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _CEWPCONVERSATION_H_
@@ -27,18 +30,18 @@
 #include <deigde/gui/igdeComboBoxReference.h>
 #include <deigde/gui/igdeComboBoxFilterReference.h>
 #include <deigde/gui/igdeTextFieldReference.h>
+#include <deigde/gui/igdeListBoxReference.h>
+#include <deigde/gui/composed/igdeEditPathReference.h>
 #include <deigde/gui/composed/igdeEditVectorReference.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 class ceWindowProperties;
 class ceWPConversationListener;
 class ceConversation;
-class cePose;
 class ceGesture;
 class ceFacePose;
 class ceCameraShot;
 class ceTarget;
-class ceLookAt;
 class ceControllerValue;
 
 
@@ -52,14 +55,15 @@ private:
 	ceWPConversationListener *pListener;
 	ceConversation *pConversation;
 	
-	igdeComboBoxFilterReference pCBPose;
-	igdeButtonReference pBtnPose;
-	igdeComboBoxFilterReference pCBPoseMove;
+	igdeEditPathReference pPathImportConvo;
+	igdeButtonReference pBtnImportConvoAdd;
+	igdeListBoxReference pListImportConvoPath;
 	
 	igdeComboBoxFilterReference pCBGesture;
 	igdeButtonReference pBtnGesture;
 	igdeTextFieldReference pEditGestureAnimator;
 	igdeCheckBoxReference pChkGestureHold;
+	igdeTextFieldReference pEditGestureDuration;
 	
 	igdeComboBoxFilterReference pCBFacePose;
 	igdeButtonReference pBtnFacePose;
@@ -102,10 +106,6 @@ private:
 	igdeCheckBoxReference pChkCShotLockCameraTarget;
 	igdeCheckBoxReference pChkCShotLockLookAtTarget;
 	
-	igdeComboBoxFilterReference pCBLookAt;
-	igdeButtonReference pBtnLookAt;
-	igdeComboBoxFilterReference pCBLookAtTarget;
-	
 	
 	
 public:
@@ -136,19 +136,19 @@ public:
 	/** \brief Update conversation. */
 	void UpdateConversation();
 	
+	/** \brief Conversation path changed. */
+	void OnConversationPathChanged();
 	
 	
-	/** \brief Active pose. */
-	cePose *GetPose() const;
 	
-	/** \brief Update list of poses. */
-	void UpdatePoseList();
+	/** \brief Update import conversation path list. */
+	void UpdateImportConvoPathList();
 	
-	/** \brief Select active pose. */
-	void SelectActivePose();
+	/** \brief Get text from import conversation path. */
+	const decString &GetPathImportConvo() const;
 	
-	/** \brief Update active pose. */
-	void UpdatePose();
+	/** \brief Selected import conversation path or empty path if no selection. */
+	decString GetImportConvo() const;
 	
 	
 	
@@ -219,18 +219,6 @@ public:
 	void UpdateCameraShot();
 	
 	
-	
-	/** \brief Active lookat. */
-	ceLookAt *GetLookAt() const;
-	
-	/** \brief Update the list of lookats. */
-	void UpdateLookAtList();
-	
-	/** \brief Select active lookat. */
-	void SelectActiveLookAt();
-	
-	/** \brief Update active lookat. */
-	void UpdateLookAt();
 	
 	/** \brief Update actor id lists. */
 	void UpdateActorIDLists();

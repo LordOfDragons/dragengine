@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLDEFAULTWORLDOCTREEVISITOR_H_
@@ -33,7 +36,7 @@ class deoglRParticleEmitterInstance;
 
 
 /**
- * \brief Default world octree visitor.
+ * Default world octree visitor.
  */
 class deoglDefaultWorldOctreeVisitor : public deoglWorldOctreeVisitor{
 private:
@@ -46,10 +49,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create world octree visitor. */
+	/** Create world octree visitor. */
 	deoglDefaultWorldOctreeVisitor();
 	
-	/** \brief Clean up world octree visitor. */
+	/** Clean up world octree visitor. */
 	virtual ~deoglDefaultWorldOctreeVisitor();
 	/*@}*/
 	
@@ -57,37 +60,37 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Visit billboards. */
+	/** Visit billboards. */
 	inline bool GetVisitBillboards() const{ return pVisitBillboards; }
 	
-	/** \brief Set if billboards are visited. */
+	/** Set if billboards are visited. */
 	void SetVisitBillboards( bool visitBillboards );
 	
-	/** \brief Visit particle emitters. */
+	/** Visit particle emitters. */
 	inline bool GetVisitParticleEmitters() const{ return pVisitParticleEmitters; }
 	
-	/** \brief Set if particle emitters are visited. */
+	/** Set if particle emitters are visited. */
 	void SetVisitParticleEmitters( bool visitEmitters );
 	
-	/** \brief Visit components. */
+	/** Visit components. */
 	inline bool GetVisitComponents() const{ return pVisitComponents; }
 	
-	/** \brief Set if components are visited. */
+	/** Set if components are visited. */
 	void SetVisitComponents( bool visitComponents );
 	
-	/** \brief Visit lights. */
+	/** Visit lights. */
 	inline bool GetVisitLights() const{ return pVisitLights; }
 	
-	/** \brief Set if lights are visited. */
+	/** Set if lights are visited. */
 	void SetVisitLights( bool visitLights );
 	
-	/** \brief Visit environment maps. */
+	/** Visit environment maps. */
 	inline bool GetVisitEnvMaps() const{ return pVisitEnvMaps; }
 	
-	/** \brief Set if environment maps are visited. */
+	/** Set if environment maps are visited. */
 	void SetVisitEnvMaps( bool visitEnvMaps );
 	
-	/** \brief Set if all elements are visited. */
+	/** Set if all elements are visited. */
 	void SetVisitAll( bool visitAll );
 	/*@}*/
 	
@@ -95,22 +98,22 @@ public:
 	
 	/** \name Visiting */
 	/*@{*/
-	/** \brief Visit octree node. */
+	/** Visit octree node. */
 	virtual void VisitNode( deoglDOctree *node, int intersection );
 	
-	/** \brief Visit billboard. */
+	/** Visit billboard. */
 	virtual void VisitBillboard( deoglRBillboard *billboard );
 	
-	/** \brief Visit particle emitter. */
+	/** Visit particle emitter. */
 	virtual void VisitParticleEmitter( deoglRParticleEmitterInstance *emitter );
 	
-	/** \brief Visit component. */
+	/** Visit component. */
 	virtual void VisitComponent( deoglRComponent *component );
 	
-	/** \brief Visit light. */
+	/** Visit light. */
 	virtual void VisitLight( deoglRLight *light );
 	
-	/** \brief Visit environment maps. */
+	/** Visit environment maps. */
 	virtual void VisitEnvMaps( deoglEnvironmentMap *envmap );
 	/*@}*/
 };

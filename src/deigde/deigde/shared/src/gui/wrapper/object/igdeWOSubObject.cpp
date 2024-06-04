@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -183,7 +186,7 @@ decVector igdeWOSubObject::GetVectorProperty( const decString &name, const decVe
 			codec.DecodeVector( value, vector );
 			return vector;
 			
-		}catch( const deException &e ){
+		}catch( const deException & ){
 			pWrapper.GetEnvironment().GetLogger()->LogInfoFormat( "DEIGDE",
 				"Invalid vector property '%s' value '%s'", name.GetString(), value.GetString() );
 		}
@@ -200,7 +203,7 @@ decVector2 igdeWOSubObject::GetVector2Property( const decString &name, const dec
 			codec.DecodeVector2( value, vector );
 			return vector;
 			
-		}catch( const deException &e ){
+		}catch( const deException & ){
 			pWrapper.GetEnvironment().GetLogger()->LogInfoFormat( "DEIGDE",
 				"Invalid vector2 property '%s' value '%s'", name.GetString(), value.GetString() );
 		}
@@ -217,7 +220,7 @@ decQuaternion igdeWOSubObject::GetRotationProperty( const decString &name, const
 			codec.DecodeVector( value, vector );
 			return decQuaternion::CreateFromEuler( vector * DEG2RAD );
 			
-		}catch( const deException &e ){
+		}catch( const deException & ){
 			pWrapper.GetEnvironment().GetLogger()->LogInfoFormat( "DEIGDE",
 				"Invalid vector property '%s' value '%s'", name.GetString(), value.GetString() );
 		}
@@ -234,7 +237,7 @@ decColor igdeWOSubObject::GetColor3Property( const decString &name, const decCol
 			codec.DecodeColor3( value, color );
 			return color;
 			
-		}catch( const deException &e ){
+		}catch( const deException & ){
 			pWrapper.GetEnvironment().GetLogger()->LogInfoFormat( "DEIGDE",
 				"Invalid color3 property '%s' value '%s'", name.GetString(), value.GetString() );
 		}
@@ -251,7 +254,7 @@ decColor igdeWOSubObject::GetColor4Property( const decString &name, const decCol
 			codec.DecodeColor4( value, color );
 			return color;
 			
-		}catch( const deException &e ){
+		}catch( const deException & ){
 			pWrapper.GetEnvironment().GetLogger()->LogInfoFormat( "DEIGDE",
 				"Invalid color4 property '%s' value '%s'", name.GetString(), value.GetString() );
 		}
@@ -286,31 +289,25 @@ int igdeWOSubObject::GetIntProperty( const decString &name, int defaultValue ) c
 
 
 void igdeWOSubObject::pInitTrigger( igdeTriggerExpressionReference &trigger, const decString &propertyName ){
-	if( pWrapper.GetTriggerTable() ){
-		const igdeTriggerExpressionParser parser;
-		decString value;
-		
-		if( GetPropertyValue( propertyName, value ) ){
-			if( ! value.IsEmpty() ){
-				try{
-					trigger.TakeOver( parser.StringToExpression( value ) );
-					
-				}catch( const deException &e ){
-					pWrapper.GetEnvironment().GetLogger()->LogInfoFormat( "DEIGDE",
-						"Invalid trigger expression '%s'", value.GetString() );
-				}
-			}
+	if( trigger ){
+		trigger->UnlinkTriggerTargets();
+		trigger = NULL;
+	}
+	
+	decString value;
+	if( pWrapper.GetTriggerTable() && GetPropertyValue( propertyName, value ) && ! value.IsEmpty() ){
+		try{
+			const igdeTriggerExpressionParser parser;
+			trigger.TakeOver( parser.StringToExpression( value ) );
 			
-			if( trigger ){
-				trigger->LinkTriggerTargets( *pWrapper.GetTriggerTable(), pWrapper.GetTriggerListener() );
-			}
-			
-		}else{
-			pClearTrigger( trigger );
+		}catch( const deException & ){
+			pWrapper.GetEnvironment().GetLogger()->LogInfoFormat( "DEIGDE",
+				"Invalid trigger expression '%s'", value.GetString() );
 		}
 		
-	}else{
-		pClearTrigger( trigger );
+		if( trigger ){
+			trigger->LinkTriggerTargets( *pWrapper.GetTriggerTable(), pWrapper.GetTriggerListener() );
+		}
 	}
 }
 

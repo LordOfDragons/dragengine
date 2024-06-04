@@ -1,23 +1,28 @@
-/* 
- * Drag[en]gine IGDE
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
+
+#ifdef IGDE_TOOLKIT_FOX
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -34,15 +39,16 @@
 #include <dragengine/common/string/unicode/decUnicodeString.h>
 #include <dragengine/common/string/unicode/decUnicodeStringList.h>
 
+#ifdef OS_W32
+#include <dragengine/common/string/unicode/decUnicodeArgumentList.h>
+#endif
+
 
 
 // Event map
 //////////////
 
-FXDEFMAP( igdeNativeFoxApplication ) igdeNativeFoxApplicationMap[] = { };
-
-FXIMPLEMENT( igdeNativeFoxApplication, FXApp,
-	igdeNativeFoxApplicationMap, ARRAYNUMBER( igdeNativeFoxApplicationMap ) )
+FXIMPLEMENT( igdeNativeFoxApplication, FXApp, nullptr, 0 )
 
 
 
@@ -55,9 +61,9 @@ FXIMPLEMENT( igdeNativeFoxApplication, FXApp,
 igdeNativeFoxApplication::igdeNativeFoxApplication(){
 }
 
-igdeNativeFoxApplication::igdeNativeFoxApplication( igdeApplication &owner ) :
+igdeNativeFoxApplication::igdeNativeFoxApplication( igdeApplication &powner ) :
 FXApp( "DEIGDE", "Drag[en]gine" ),
-pOwner( &owner ),
+pOwner( &powner ),
 pToolTip( NULL ),
 pDisableModalUpdating( false ),
 pFoxArgs( NULL ),
@@ -74,10 +80,39 @@ igdeNativeFoxApplication::~igdeNativeFoxApplication(){
 	}
 }
 
+igdeNativeFoxApplication *igdeNativeFoxApplication::CreateNativeApplication( igdeApplication &application ){
+	return new igdeNativeFoxApplication( application );
+}
+
+void igdeNativeFoxApplication::DestroyNativeApplication(){
+	delete this;
+}
+
 
 
 // Management
 ///////////////
+
+#ifdef OS_UNIX
+void igdeNativeFoxApplication::GetOSStartUpArguments( decUnicodeStringList &arguments, int argCount, char **args ){
+	// WARNING FOX expects the first parameter to be present. stripping it causes segfaults!
+	int i;
+	for( i=0; i<argCount; i++ ){
+		arguments.Add( decUnicodeString::NewFromUTF8( args[ i ] ) );
+	}
+}
+
+#elif defined OS_W32
+void igdeNativeFoxApplication::GetOSStartUpArguments( decUnicodeStringList &arguments,
+const decUnicodeArgumentList &windowsArguments ){
+	// WARNING FOX expects the first parameter to be present. stripping it causes segfaults!
+	const int count = windowsArguments.GetArgumentCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		arguments.Add( *windowsArguments.GetArgumentAt( i ) );
+	}
+}
+#endif
 
 	/*
 void igdeNativeFoxApplication::Initialize(){
@@ -104,13 +139,17 @@ void igdeNativeFoxApplication::Initialize( decUnicodeStringList &arguments ){
 	//         Using temporary strings causes segfaults!
 	
 	pFoxArgCount = arguments.GetCount();
-	pFoxArgs = new char*[ pFoxArgCount ];
+	pFoxArgs = new char*[ pFoxArgCount + 1 ]; // workaround: fox seems to write past the buffer
 	
 	int i;
 	for( i=0; i<pFoxArgCount; i++ ){
 		const decString argument( arguments.GetAt( i ).ToUTF8() );
 		pFoxArgs[ i ] = new char[ argument.GetLength() + 1 ];
+		#ifdef OS_W32_VS
+		strcpy_s( pFoxArgs[ i ], argument.GetLength() + 1, argument.GetString() );
+		#else
 		strcpy( pFoxArgs[ i ], argument.GetString() );
+		#endif
 	}
 	
 	arguments.RemoveFrom( 0 );
@@ -152,6 +191,10 @@ void igdeNativeFoxApplication::Run(){
 	while( runWhileEvents() ){
 		igdeMainWindow * const mainWindow = pOwner->GetMainWindow();
 		if( mainWindow ){
+			if( ! mainWindow->GetNativeWidget() ){
+				return; // sometimes FOX manages to make us miss this event
+			}
+			
 			mainWindow->OnFrameUpdate();
 		}
 	}
@@ -188,7 +231,7 @@ decColor igdeNativeFoxApplication::GetSystemColor( igdeEnvironment::eSystemColor
 	case igdeEnvironment::escWidgetForeground:
 		return igdeUIFoxHelper::ConvertColor( getForeColor() );
 		
-	case igdeEnvironment::escWidgetHilight:
+	case igdeEnvironment::escWidgetHighlight:
 		return igdeUIFoxHelper::ConvertColor( getHiliteColor() );
 		
 	case igdeEnvironment::escWidgetShadow:
@@ -238,3 +281,5 @@ void igdeNativeFoxApplication::RunModalWhileShown( igdeWindow &window ){
 		native->handle( native, FXSEL( SEL_IGDE_FRAME_UPDATE, 0 ), 0 );
 	}
 }
+
+#endif

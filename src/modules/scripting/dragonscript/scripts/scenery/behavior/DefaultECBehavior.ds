@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -37,26 +40,29 @@ pin Dragengine.Utils
  * This is typically used in behavior element constructors to store the instances for
  * directly accessed behaviors without finding them.
  */
-abstract public class DefaultECBehavior implements ECBehavior
+abstract public class DefaultECBehavior implements ECBehavior, BehaviorCompatiblePersistency
 	private var String pID
 	private var int pInstanceIndex
+	private var String pUseBehaviorID
 	
 	
 	
 	/** \brief Create default composeable behavior with empty identifier. */
-	protected func new( BehaviorElementClass eclass )
-		this.pID = ""
-		this.pInstanceIndex = -1
+	protected func new(BehaviorElementClass eclass)
+		pID = ""
+		pInstanceIndex = -1
+		useClassNameAsBehaviorID()
 	end
 	
 	/** \brief Create default composeable behavior. */
-	protected func new( BehaviorElementClass eclass, String id )
+	protected func new(BehaviorElementClass eclass, String id)
 		if id == null
 			throw EInvalidParam.new()
 		end
 		
-		this.pID = id
-		this.pInstanceIndex = -1
+		pID = id
+		pInstanceIndex = -1
+		useClassNameAsBehaviorID()
 	end
 	
 	/** \brief Dispose of behavior. */
@@ -67,19 +73,123 @@ abstract public class DefaultECBehavior implements ECBehavior
 	
 	/** \brief Identifier. */
 	public func String getID()
-		return this.pID
+		return pID
 	end
 	
 	/** \brief Instance index. */
 	public func int getInstanceIndex()
-		return this.pInstanceIndex
+		return pInstanceIndex
 	end
 	
 	/**
 	 * \brief Assign instance index.
 	 * \warning For use by BehaviorElementClass only! Do not call yourself!
 	 */
-	public func void assignInstanceIndex( int instanceIndex )
-		this.pInstanceIndex = instanceIndex
+	public func void assignInstanceIndex(int instanceIndex)
+		pInstanceIndex = instanceIndex
+	end
+	
+	
+	
+	/**
+	 * \brief Unique identifier of behavior.
+	 * \version 1.5
+	 * 
+	 * Has to return a string which is unique in the owner BehaviorElementClass. This string
+	 * will be stored while persisting BehaviorElement instances. This allows to assign
+	 * restored behavior instance data to the corrent behavior instance if present.
+	 * 
+	 * The default implementation returns "<class-name>:<identifier>" or "<class-name>" if
+	 * identifier is empty string (constructor calls useClassNameAsBehaviorID()). If two or
+	 * more behaviors share the same class name you have to make sure getBehaviorID() returns
+	 * unique names. This can be done using one of these possible ways:
+	 * <ul>
+	 * <li>Overwrite getBehaviorID()</li>
+	 * <li>Call useFullyQualifiedClassNameAsBehaviorID() in the constructor</li>
+	 * <li>Call setBehaviorID(String) in the constructor</li>
+	 * </ul>
+	 */
+	public func String getBehaviorID()
+		return pUseBehaviorID
+	end
+	
+	/**
+	 * \brief Set behavior identifier.
+	 * \version 1.5
+	 * 
+	 * \note Call this only during the constructor. Behavior identifier has to be
+	 *       static during the entire life time of the behavior.
+	 */
+	protected func void setBehaviorID(String identifier)
+		if identifier == null
+			throw ENullPointer.new("identifier is null")
+		end
+		if identifier.empty()
+			throw EInvalidParam.new("identifier is empty string")
+		end
+		
+		pUseBehaviorID = identifier
+	end
+	
+	/**
+	 * \brief Set behavior identifier to "<class-name>:<identifier>".
+	 * \version 1.5
+	 * 
+	 * If identifier is empty string omits the double-colon.
+	 * 
+	 * \note Call this only during the constructor. Behavior identifier has to be
+	 *       static during the entire life time of the behavior.
+	 */
+	protected func void useClassNameAsBehaviorID()
+		pUseBehaviorID = className().splitExact('.').getAt(-1) cast String
+		if not pID.empty()
+			pUseBehaviorID = pUseBehaviorID + ":" + pID
+		end
+	end
+	
+	/**
+	 * \brief Set behavior identifier to "<fully-qualified-class-name>:<identifier>".
+	 * \version 1.5
+	 * 
+	 * If identifier is empty string omits the double-colon.
+	 * 
+	 * \note Call this only during the constructor. Behavior identifier has to be
+	 *       static during the entire life time of the behavior.
+	 */
+	protected func void useFullyQualifiedClassNameAsBehaviorID()
+		pUseBehaviorID = className()
+		if not pID.empty()
+			pUseBehaviorID = pUseBehaviorID + ":" + pID
+		end
+	end
+	
+	
+	
+	/**
+	 * \brief Behavior supports loading instance data of another behavior.
+	 * \version 1.5
+	 * 
+	 * Returns true if thie behavior supports loading instance data of another behavior
+	 * matching behavior identifier. Called for all behaviors if BehaviorElement encountered
+	 * an instance data block with a behavior identifier not matching any behavior instances.
+	 * 
+	 * Default implementation returns false.
+	 */
+	public func bool supportsBehaviorID(String identifier)
+		return false
+	end
+	
+	/**
+	 * \brief Load instance data of another behavior.
+	 * \version 1.5
+	 * 
+	 * Called if supportsBehaviorID(String) returns true for \em identifier. BehaviorElement
+	 * requests behavior to load the supported instance data block into \em instance.
+	 * 
+	 * Default implementation throws EInvalidAction exception.
+	 */
+	public func void loadSupportedData(String identifier, PersistencyEnvironment env, \
+	FileReader reader, ECBehaviorInstance instance)
+		throw EInvalidAction.new("not supported")
 	end
 end

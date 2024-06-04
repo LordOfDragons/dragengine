@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLWORLD_H_
@@ -38,7 +41,7 @@ class deWorld;
 
 
 /**
- * \brief World peer.
+ * World peer.
  */
 class deoglWorld : public deBaseGraphicWorld{
 private:
@@ -49,6 +52,7 @@ private:
 	deoglHeightTerrain *pHeightTerrain;
 	deoglSharedVideoPlayerList *pSharedVideoPlayerList;
 	
+	bool pDirtySize;
 	bool pDirtySkies;
 	bool pDirtyBillboards;
 	bool pDirtyComponents;
@@ -61,7 +65,6 @@ private:
 	bool pDirtyLumimeters;
 	bool pDirtyParticleEmitterInstances;
 	bool pDirtyPropFields;
-	bool pDirtySky;
 	
 	bool pSyncing;
 	
@@ -73,10 +76,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create world peer. */
+	/** Create world peer. */
 	deoglWorld( deGraphicOpenGl &ogl, const deWorld &world );
 	
-	/** \brief Clean up world peer. */
+	/** Clean up world peer. */
 	virtual ~deoglWorld();
 	/*@}*/
 	
@@ -84,48 +87,51 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief OpenGl module. */
+	/** OpenGl module. */
 	inline deGraphicOpenGl &GetOgl() const{ return pOgl; }
 	
-	/** \brief Retrieves the engine world resource. */
+	/** Retrieves the engine world resource. */
 	inline const deWorld &GetWorld() const{ return pWorld; }
 	
-	/** \brief Render world. */
+	/** Render world. */
 	inline deoglRWorld *GetRWorld() const{ return pRWorld; }
 	
 	/** \deprecated Height terrain or \em NULL if not set. */
 	inline deoglHeightTerrain *GetHeightTerrain() const{ return pHeightTerrain; }
 	
-	/** \brief Update dynamic parts of world like the skins. */
+	/** Update dynamic parts of world like the skins. */
 	virtual void Update( float elapsed );
 	
-	/** \brief Shared video player list. */
+	/** Shared video player list. */
 	inline deoglSharedVideoPlayerList &GetSharedVideoPlayerList() const{ return *pSharedVideoPlayerList; }
 	
 	
 	
-	/** \brief Update render thread counterpart if required. */
+	/** Update render thread counterpart if required. */
 	void SyncToRender();
 	
 	
 	
-	/** \brief Add component as require sync if not present. */
+	/** Add component as require sync if not present. */
 	void AddSyncComponent( deoglComponent *component );
 	
-	/** \brief Remove component as require sync if present. */
+	/** Remove component as require sync if present. */
 	void RemoveSyncComponent( deoglComponent *component );
 	
-	/** \brief Add billboard as require sync if not present. */
+	/** Add billboard as require sync if not present. */
 	void AddSyncBillboard( deoglBillboard *billboard );
 	
-	/** \brief Remove billboard as require sync if present. */
+	/** Remove billboard as require sync if present. */
 	void RemoveSyncBillboard( deoglBillboard *billboard );
 	/*@}*/
 	
 	
 	
-	/** @name Notifications */
+	/** \name Notifications */
 	/*@{*/
+	/** Size changed. */
+	virtual void SizeChanged();
+	
 	/** Height Terrain has changed. */
 	virtual void HeightTerrainChanged();
 	/** Global lighting parameters have changed. */

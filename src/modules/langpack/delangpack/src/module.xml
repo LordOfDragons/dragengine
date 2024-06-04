@@ -1,12 +1,12 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<!DOCTYPE module SYSTEM "DragengineModule.dtd">
 <module>
 	<name>DELangPack</name>
 	<description>Handles language packs in the XML Drag[en]gine language pack format.</description>
 	<author>Plüss Roland (roland@rptd.ch)</author>
-	<version>1.0</version>
+	<version>VERSION</version>
 	<type>LanguagePack</type>
 	<pattern>.delangpack</pattern>
+	<priority>1</priority>
 	<library>
 		<file>FILENAME</file>
 		<size>FILESIZE</size>

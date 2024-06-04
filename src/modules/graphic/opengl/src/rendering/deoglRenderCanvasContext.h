@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLRENDERCANVASCONTEXT_H_
@@ -28,17 +31,21 @@ class deoglFramebuffer;
 class deoglRCanvas;
 class deoglRCanvasView;
 class deoglRenderTarget;
+class deoglTexture;
+class deoglRenderPlanMasked;
+class deoglSkinStateConstructedNode;
 
 
 
 /**
- * \brief Render canvas context.
+ * Render canvas context.
  */
 class deoglRenderCanvasContext{
 private:
 	deoglFramebuffer *pFBO;
 	decPoint pViewportOffset;
 	decPoint pViewportSize;
+	const deoglRenderPlanMasked *pRenderPlanMask;
 	
 	decVector2 pClipFactor;
 	decVector2 pClipMin;
@@ -49,21 +56,36 @@ private:
 	decVector2 pTCClampMax;
 	decColorMatrix pColorTransform;
 	float pTransparency;
+	deoglTexture *pMask;
+	decTexMatrix2 pTransformMask;
+	
+	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create copy of a render canvas context. */
+	/** Create copy of a render canvas context. */
 	deoglRenderCanvasContext( const deoglRenderCanvasContext &copy );
 	
-	/** \brief Create render canvas context for an initial canvas view. */
-	deoglRenderCanvasContext( const deoglRCanvasView &canvas, deoglFramebuffer *fbo,
-		const decPoint &viewportOffset, const decPoint &viewportSize, bool upsideDown );
+	/** Create render canvas context for an initial canvas view. */
+	deoglRenderCanvasContext( const deoglRCanvas &canvas, deoglFramebuffer *fbo,
+		const decPoint &viewportOffset, const decPoint &viewportSize, bool upsideDown,
+		const deoglRenderPlanMasked *renderPlanMask );
 	
-	/** \brief Create render canvas context for a child canvas. */
-	deoglRenderCanvasContext( const deoglRenderCanvasContext &parentContext, const deoglRCanvas &childCanvas );
+	/** Create render canvas context for a child canvas. */
+	deoglRenderCanvasContext( const deoglRenderCanvasContext &parentContext,
+		const deoglRCanvas &childCanvas );
 	
-	/** \brief Clean up render canvas context. */
+	/** Create render canvas context for an initial constructed node. */
+	deoglRenderCanvasContext( const deoglSkinStateConstructedNode &node, deoglFramebuffer *fbo,
+		const decPoint &viewportOffset, const decPoint &viewportSize, bool upsideDown,
+		const deoglRenderPlanMasked *renderPlanMask );
+	
+	/** Create render canvas context for a child constructed node. */
+	deoglRenderCanvasContext( const deoglRenderCanvasContext &parentContext,
+		const deoglSkinStateConstructedNode &childNode );
+	
+	/** Clean up render canvas context. */
 	~deoglRenderCanvasContext();
 	/*@}*/
 	
@@ -71,67 +93,86 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Framebuffer if offscreen rendering or \em NULL to use the primary framebuffer. */
+	/** Framebuffer if offscreen rendering or \em NULL to use the primary framebuffer. */
 	inline deoglFramebuffer *GetFBO() const{ return pFBO; }
 	
-	/** \brief Viewport offset. */
+	/** Viewport offset. */
 	inline const decPoint &GetViewportOffset() const{ return pViewportOffset; }
 	
-	/** \brief Viewport size. */
+	/** Viewport size. */
 	inline const decPoint &GetViewportSize() const{ return pViewportSize; }
 	
+	/** Render plan mask or NULL. */
+	inline const deoglRenderPlanMasked *GetRenderPlanMask() const{ return pRenderPlanMask; }
 	
 	
-	/** \brief Factor to scale clipping to proper opengl coordinates. */
+	/** Factor to scale clipping to proper opengl coordinates. */
 	inline const decVector2 &GetClipFactor() const{ return pClipFactor; }
 	
-	/** \brief Rectangular clipping minimum. Shader version of glViewport/glScissor. */
+	/** Rectangular clipping minimum. Shader version of glViewport/glScissor. */
 	inline const decVector2 &GetClipMin() const{ return pClipMin; }
 	
-	/** \brief Set rectangular clipping minimum. Shader version of glViewport/glScissor. */
+	/** Set rectangular clipping minimum. Shader version of glViewport/glScissor. */
 	void SetClipMin( const decVector2 &clipMin );
 	
-	/** \brief Rectangular clipping maximum. Shader version of glViewport/glScissor. */
+	/** Rectangular clipping maximum. Shader version of glViewport/glScissor. */
 	inline const decVector2 &GetClipMax() const{ return pClipMax; }
 	
-	/** \brief Set rectangular clipping maximum. Shader version of glViewport/glScissor. */
+	/** Set rectangular clipping maximum. Shader version of glViewport/glScissor. */
 	void SetClipMax( const decVector2 &clipMax );
 	
-	/** \brief Clip max is less than or equal to clip min for at least one coordinate. */
+	/** Clip max is less than or equal to clip min for at least one coordinate. */
 	bool IsZeroClip() const;
 	
 	
 	
-	/** \brief Transformation relative to render target. */
+	/** Transformation relative to render target. */
 	inline const decTexMatrix2 &GetTransform() const{ return pTransform; }
 	
-	/** \brief Set transformation relative to render target. */
+	/** Set transformation relative to render target. */
 	void SetTransform( const decTexMatrix2 &transform );
 	
-	/** \brief Texture coordinates clamp minimum. */
+	/** Texture coordinates clamp minimum. */
 	inline const decVector2 &GetTCClampMinimum() const{ return pTCClampMin; }
 	
-	/** \brief Set texture coordinates clamp minimum. */
+	/** Set texture coordinates clamp minimum. */
 	void SetTCClampMinimum( const decVector2 &clamp );
 	
-	/** \brief Texture coordinates clamp maximum. */
+	/** Texture coordinates clamp maximum. */
 	inline const decVector2 &GetTCClampMaximum() const{ return pTCClampMax; }
 	
-	/** \brief Set texture coordinates clamp maximum. */
+	/** Set texture coordinates clamp maximum. */
 	void SetTCClampMaximum( const decVector2 &clamp );
 	
-	/** \brief Color transformation relative to render target. */
+	/** Color transformation relative to render target. */
 	inline const decColorMatrix &GetColorTransform() const{ return pColorTransform; }
 	
-	/** \brief Set color transformation relative to render target. */
+	/** Set color transformation relative to render target. */
 	void SetColorTransform( const decColorMatrix &transform );
 	
-	/** \brief Transparency relative to render target. */
+	/** Transparency relative to render target. */
 	inline float GetTransparency() const{ return pTransparency; }
 	
-	/** \brief Set transparency relative to render target. */
+	/** Set transparency relative to render target. */
 	void SetTransparency( float transparency );
+	
+	/** Mask or NULL. */
+	inline deoglTexture *GetMask() const{ return pMask; }
+	
+	/** Set mask or NULL. */
+	void SetMask( deoglTexture *mask );
+	
+	/** Transformation relative to mask render target. */
+	inline const decTexMatrix2 &GetTransformMask() const{ return pTransformMask; }
+	
+	/** Set transformation relative to mask render target. */
+	void SetTransformMask( const decTexMatrix2 &transform );
+	
+	/** Update transformation mask from transformation. */
+	void UpdateTransformMask();
 	/*@}*/
+	
+	
 	
 private:
 	void pCalculateClipping( const decVector2 &canvasSize );

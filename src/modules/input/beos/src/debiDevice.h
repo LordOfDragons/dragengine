@@ -1,30 +1,35 @@
-/* 
- * Drag[en]gine BeOS Input Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEBIDEVICE_H_
 #define _DEBIDEVICE_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/input/deInputDevice.h>
+#include <dragengine/resources/image/deImageReference.h>
 
 class deBeOSInput;
 class debiDeviceAxis;
@@ -58,12 +63,12 @@ private:
 	deInputDevice::eDeviceTypes pType;
 	decString pID;
 	decString pName;
+	deImageReference pDisplayImage;
+	decObjectOrderedSet pDisplayIcons;
+	decString pDisplayText;
 	
-	int pButtonCount;
-	debiDeviceButton *pButtons;
-	
-	int pAxisCount;
-	debiDeviceAxis *pAxes;
+	decObjectOrderedSet pButtons;
+	decObjectOrderedSet pAxes;
 	
 	bool pDirtyAxesValues;
 	
@@ -125,16 +130,28 @@ public:
 	/** \brief Set name. */
 	void SetName( const char *name );
 	
+	/** \brief Display image. */
+	inline deImage *GetDisplayImage() const{ return pDisplayImage; }
+	
+	/** \brief Display icons (deImage*). */
+	inline const decObjectOrderedSet &GetDisplayIcons() const{ return pDisplayIcons; }
+	
+	/** \brief Set display image and icons. */
+	void SetDisplayImages( const char *name );
+	
+	/** \brief Display text. */
+	inline const decString &GetDisplayText() const{ return pDisplayText; }
+	
+	/** \brief Set display text. */
+	void SetDisplayText( const char *text );
+	
 	
 	
 	/** \brief Number of buttons. */
-	inline int GetButtonCount() const{ return pButtonCount; }
-	
-	/** \brief Set number of buttons. */
-	void SetButtonCount( int count );
+	int GetButtonCount() const;
 	
 	/** \brief Button at index. */
-	debiDeviceButton &GetButtonAt( int index ) const;
+	debiDeviceButton *GetButtonAt( int index ) const;
 	
 	/** \brief Button with identifier or \em NULL if absent. */
 	debiDeviceButton *GetButtonWithID( const char *id ) const;
@@ -145,16 +162,16 @@ public:
 	/** \brief Index of button with beos input code or -1 if absent. */
 	int IndexOfButtonWithBICode( int code ) const;
 	
+	/** \brief Add button. */
+	void AddButton( debiDeviceButton *button );
+	
 	
 	
 	/** \brief Number of axiss. */
-	inline int GetAxisCount() const{ return pAxisCount; }
-	
-	/** \brief Set number of axiss. */
-	void SetAxisCount( int count );
+	int GetAxisCount() const;
 	
 	/** \brief Axis at index. */
-	debiDeviceAxis &GetAxisAt( int index ) const;
+	debiDeviceAxis *GetAxisAt( int index ) const;
 	
 	/** \brief Axis with identifier or \em NULL if absent. */
 	debiDeviceAxis *GetAxisWithID( const char *id ) const;
@@ -164,6 +181,9 @@ public:
 	
 	/** \brief Index of axis with beos input code or -1 if absent. */
 	int IndexOfAxisWithBICode( int code ) const;
+	
+	/** \brief Add axis. */
+	void AddAxis( debiDeviceAxis *axis );
 	
 	
 	

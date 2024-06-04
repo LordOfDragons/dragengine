@@ -1,0 +1,66 @@
+name: Testing
+
+on:
+  workflow_call:
+    inputs:
+      branch:
+        required: false
+        type: string
+        default: master
+      releaseVersion:
+        required: true
+        type: string
+      artifactArchive:
+        required: true
+        type: string
+      artifactTesting:
+        required: true
+        type: string
+      artifactResults:
+        required: true
+        type: string
+
+jobs:
+  testing:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch }}
+      
+      - name: Get Archive Linux
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.artifactArchive }}
+        
+      - name: Get Testing Archive
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.artifactTesting }}
+        
+      - name: Install Game Engine
+        run: |
+          chmod 755 install-dragengine-${{ inputs.releaseVersion }}-linux64.sh
+          sudo ./install-dragengine-${{ inputs.releaseVersion }}-linux64.sh --yes
+        
+      - name: Init launcher.xml
+        run: |
+          mkdir -p ~/.config/delauncher
+          cp ${{ github.workspace }}/.github/workflows/testing_launcher.xml ~/.config/delauncher/launcher.xml
+        
+      - name: Run Tests
+        run: |
+          delauncher-console run -c -d -f DETestingCI.delga
+          if [[ $(< ~/.config/delauncher/games/9dc27c9d-b073-06f2-8da1-b7cfb5628c98/capture/CIResult) != "Success" ]]
+          then
+            exit 1
+          fi
+        
+      - name: Store Test Results
+        if: success() || failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.artifactResults }}
+          path: |
+            ~/.config/delauncher/games/9dc27c9d-b073-06f2-8da1-b7cfb5628c98/capture/CITestResults
+          if-no-files-found: error

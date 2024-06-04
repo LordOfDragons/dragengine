@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include "igdeCreateProject.h"
@@ -54,6 +57,8 @@
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/logger/deLogger.h>
+#include <dragengine/filesystem/deVFSDiskDirectory.h>
+#include <dragengine/filesystem/deVFSContainerReference.h>
 #include <dragengine/systems/deModuleSystem.h>
 #include <dragengine/systems/modules/deLoadableModule.h>
 
@@ -390,8 +395,30 @@ igdeTemplate *igdeDialogNewGameProject::GetSelectedTemplate() const{
 }
 
 bool igdeDialogNewGameProject::CheckValidInput(){
+	const char * const mbtitle = "New Game Project";
+	
 	if( pEditName->GetText().IsEmpty() ){
-		igdeCommonDialogs::Error( this, "New Game Project", "Name can not be empty" );
+		pEditName->Focus();
+		igdeCommonDialogs::Error( this, mbtitle, "Name can not be empty" );
+		return false;
+	}
+	
+	if( ! pCBTemplate->GetSelectedItem()->GetData() ){
+		if( igdeCommonDialogs::Question( this, igdeCommonDialogs::ebsYesNo, mbtitle,
+		"No template selected. Do you really want to create an empty project?" )
+		== igdeCommonDialogs::ebNo ){
+			pCBTemplate->Focus();
+			return false;
+		}
+	}
+	
+	deVFSContainerReference container;
+	container.TakeOver( new deVFSDiskDirectory(
+		decPath::CreatePathNative( pEditPathProject->GetDirectory() ) ) );
+	if( container->ExistsFile( decPath() ) ){
+		pEditPathProject->Focus();
+		igdeCommonDialogs::Error( this, mbtitle, "Project directory exists. "
+			"New project can only be created using a non-existing directory" );
 		return false;
 	}
 	
@@ -443,10 +470,7 @@ void igdeDialogNewGameProject::AutoFillPathProject(){
 		return;
 	}
 	
-	decPath path( decPath::CreatePathNative( pEditPathProject->GetDirectory() ) );
-	if( path.GetComponentCount() > 0 ){
-		path.RemoveLastComponent();
-	}
+	decPath path( decPath::CreatePathNative( pWindowMain.GetConfiguration().GetPathProjects() ) );
 	path.AddComponent( pEditName->GetText() );
 	pEditPathProject->SetDirectory( path.GetPathNative() );
 	
@@ -559,7 +583,9 @@ void igdeDialogNewGameProject::pInitScriptModules(){
 			continue;
 		}
 		
-		pCBScriptModule->AddItem( module.GetName() );
+		if( ! pCBScriptModule->HasItem( module.GetName() ) ){
+			pCBScriptModule->AddItem( module.GetName() );
+		}
 	}
 	
 	pCBScriptModule->SortItems();

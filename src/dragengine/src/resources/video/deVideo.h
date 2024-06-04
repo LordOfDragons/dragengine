@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Game Engine
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEVIDEO_H_
@@ -42,31 +45,20 @@ class deBaseGraphicVideo;
  * of the video data can be RGB or YUV. The same data structures as in the image
  * resource can be found. For the YUV format the mapping r=y, g=u and b=v is used.
  */
-class deVideo : public deFileResource{
+class DE_DLL_EXPORT deVideo : public deFileResource{
 public:
-	/** \brief Pixel format. */
-	enum ePixelFormat{
-		/** \brief Pixels are stored in the 4:4:4 format. */
-		epf444,
-		
-		/** \brief Pixels are stored in the 4:2:2 format. */
-		epf422,
-		
-		/** \brief Pixels are stored in the 4:2:0 format. */
-		epf420,
-		
-		/** \brief Pixels are stored in the 4:4:4:4 format. */
-		epf4444
-	};
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deVideo> Ref;
 	
 	
 	
 private:
 	int pWidth;
 	int pHeight;
-	ePixelFormat pPixelFormat;
+	int pComponentCount;
+	int pBitCount;
 	int pFrameCount;
-	int pFrameRate;
+	float pFrameRate;
 	float pPlayTime;
 	decColorMatrix3 pColorConversionMatrix;
 	
@@ -84,9 +76,10 @@ public:
 	/*@{*/
 	/** \brief Create video. */
 	deVideo( deVideoManager *manager, deVirtualFileSystem *vfs, const char *filename,
-		TIME_SYSTEM modificationTime, int width, int height, ePixelFormat pixelFormat,
-		int frameRate, int frameCount, const decColorMatrix3 &colorConversionMatrix,
-		int bytesPerSample, int sampleCount, int sampleRate, int channelCount );
+		TIME_SYSTEM modificationTime, int width, int height, int componentCount,
+		int bitCount, float frameRate, int frameCount,
+		const decColorMatrix3 &colorConversionMatrix, int bytesPerSample,
+		int sampleCount, int sampleRate, int channelCount );
 	
 	/**
 	 * \brief Create video for internal loading.
@@ -116,14 +109,17 @@ public:
 	/** \brief Height in pixels. */
 	inline int GetHeight() const{ return pHeight; }
 	
-	/** \brief Pixel format. */
-	inline ePixelFormat GetPixelFormat() const{ return pPixelFormat; }
+	/** \brief Component count. */
+	inline int GetComponentCount() const{ return pComponentCount; }
 	
 	/** \brief Number of frames. */
 	inline int GetFrameCount() const{ return pFrameCount; }
 	
 	/** \brief Frame rate. */
-	inline int GetFrameRate() const{ return pFrameRate; }
+	inline float GetFrameRate() const{ return pFrameRate; }
+	
+	/** \brief Bits per pixel. */
+	inline int GetBitCount() const{ return pBitCount; }
 	
 	/** \brief Play time in seconds. */
 	inline float GetPlayTime() const{ return pPlayTime; }
@@ -163,8 +159,8 @@ public:
 	 * \brief Finalize construction after asynchronous loading.
 	 * \warning For use by deResourceLoader only.
 	 */
-	void FinalizeConstruction( int width, int height, ePixelFormat pixelFormat,
-		int frameRate, int frameCount, const decColorMatrix3 &colorConversionMatrix,
+	void FinalizeConstruction( int width, int height, int componentCount, int bitCount,
+		float frameRate, int frameCount, const decColorMatrix3 &colorConversionMatrix,
 		int bytesPerSample, int sampleCount, int sampleRate, int channelCount );
 	/*@}*/
 };

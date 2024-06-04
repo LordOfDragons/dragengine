@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -33,76 +36,82 @@ pin Dragengine.Utils
  */
 class CActionSnippet extends ConversationAction
 	/** \brief Factory for loading actor actions. */
-	public class Factory implements PersistencyFactory
+	class Factory implements PersistencyFactory
 		public static fixed var String NAME = "CActionSnippet"
 		
-		public func new()
+		func new()
 		end
 		
-		public func Persistable readObjectFromFile( PersistencyEnvironment env, FileReader reader )
-			return CActionSnippet.new( env, reader )
+		func Persistable readObjectFromFile(PersistencyEnvironment env, FileReader reader)
+			return CActionSnippet.new(env, reader)
 		end
 		
-		public static func void registerFactory( Persistency persistency )
-			persistency.addFactory( NAME, Factory.new() )
+		static func void registerFactory(Persistency persistency)
+			persistency.addFactory(NAME, Factory.new())
 		end
 	end
 	
 	
 	
-	private var StringID pGroupID
-	private var StringID pTopicID
+	var StringID pGroupID
+	var StringID pTopicID
 	
 	
 	
 	/** \brief Create conversation action. */
-	public func new()
+	func new()
 	end
 	
 	/** \brief Read from file. */
-	public func new( PersistencyEnvironment env, FileReader reader )
-		this.pGroupID = env.readStringIDOrNullIfEmpty( reader )
-		this.pTopicID = env.readStringIDOrNullIfEmpty( reader )
+	func new(PersistencyEnvironment env, FileReader reader) super(env, reader)
+		select reader.readByte() // version
+		case 0
+			pGroupID = env.readStringIDOrNullIfEmpty(reader)
+			pTopicID = env.readStringIDOrNullIfEmpty(reader)
+			
+		else
+			throw EInvalidParam.new("unsupported version")
+		end
 	end
 	
 	
 	
 	/** \brief Group ID. */
-	public func StringID getGroupID()
-		return this.pGroupID
+	func StringID getGroupID()
+		return pGroupID
 	end
 	
 	/** \brief Set group ID. */
-	public func void setGroupID( StringID id )
-		this.pGroupID = id
+	func void setGroupID(StringID id)
+		pGroupID = id
 	end
 	
 	/** \brief Topic ID. */
-	public func StringID getTopicID()
-		return this.pTopicID
+	func StringID getTopicID()
+		return pTopicID
 	end
 	
 	/** \brief Set topic ID. */
-	public func void setTopicID( StringID id )
-		this.pTopicID = id
+	func void setTopicID(StringID id)
+		pTopicID = id
 	end
 	
 	
 	
 	/** \brief Execute action. */
-	public func void execute( ConversationPlayback playback )
+	func void execute(ConversationPlayback playback)
 		var Conversation conversation = playback.getConversation()
 		var ConversationTopic topic
 		
-		var ConversationTopicGroup group = conversation.getTopicGroupWithID( this.pGroupID )
+		var ConversationTopicGroup group = conversation.getTopicGroupWithID(pGroupID)
 		if group != null
-			topic = group.getTopicWithID( this.pTopicID )
+			topic = group.getTopicWithID(pTopicID)
 		end
 		
 		if topic != null
-			var ConversationPlaybackLayer layer = ConversationPlaybackLayer.new( topic.getIteratorActions() )
-			layer.setTopicTopLevel( true )
-			playback.pushLayer( layer )
+			var ConversationPlaybackLayer layer = ConversationPlaybackLayer.new(topic.getIteratorActions())
+			layer.setTopicTopLevel(true)
+			playback.pushLayer(layer)
 			
 		else
 			playback.advanceToNextAction()
@@ -121,13 +130,17 @@ class CActionSnippet extends ConversationAction
 	 * instance used for loading objects. Object is read using
 	 * PersistencyFactory.readObjectFromFile() of the matching PersistencyFactory.
 	 */
-	public func String persistencyFactoryName()
+	func String persistencyFactoryName()
 		return Factory.NAME
 	end
 	
 	/** \brief Write object to file writer. */
-	public func void writeObjectToFile( PersistencyEnvironment env, FileWriter writer )
-		env.writeStringIDOrEmptyIfNull( writer, this.pGroupID )
-		env.writeStringIDOrEmptyIfNull( writer, this.pTopicID )
+	func void writeObjectToFile(PersistencyEnvironment env, FileWriter writer)
+		super.writeObjectToFile(env, writer)
+		
+		writer.writeByte(0) // version
+		
+		env.writeStringIDOrEmptyIfNull(writer, pGroupID)
+		env.writeStringIDOrEmptyIfNull(writer, pTopicID)
 	end
 end

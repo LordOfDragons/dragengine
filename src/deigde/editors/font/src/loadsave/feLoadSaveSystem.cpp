@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Font Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <ctype.h>
@@ -60,21 +63,6 @@ feLoadSaveSystem::feLoadSaveSystem( feWindowMain *wndMain ){
 	pLSFonts = NULL;
 	pLSFontCount = 0;
 	pLSFontSize = 0;
-	
-	pFDPattern = NULL;
-	
-	pFPListFont = NULL;
-	
-	try{
-		pFPListFont = new igdeFilePatternList();
-		if( ! pFPListFont ) DETHROW( deeOutOfMemory );
-		
-		pRebuildFDPattern();
-		
-	}catch( const deException & ){
-		pCleanUp();
-		throw;
-	}
 }
 
 feLoadSaveSystem::~feLoadSaveSystem(){
@@ -119,11 +107,11 @@ bool feLoadSaveSystem::HasLSFont( feLoadSaveFont *lsFont ) const{
 }
 
 int feLoadSaveSystem::IndexOfLSFontMatching( const char *filename ){
-	if( ! filename ) DETHROW( deeInvalidParam );
+	const decString testFilename( filename );
 	int i;
 	
 	for( i=0; i<pLSFontCount; i++ ){
-		if( pPatternMatches( pLSFonts[ i ]->GetPattern(), filename ) ){
+		if( testFilename.MatchesPattern( pLSFonts[ i ]->GetPattern() ) ){
 			return i;
 		}
 	}
@@ -148,8 +136,6 @@ void feLoadSaveSystem::AddLSFont( feLoadSaveFont *lsFont ){
 	
 	pLSFonts[ pLSFontCount ] = lsFont;
 	pLSFontCount++;
-	
-	pRebuildFDPattern();
 }
 
 void feLoadSaveSystem::RemoveLSFont( feLoadSaveFont *lsFont ){
@@ -162,8 +148,6 @@ void feLoadSaveSystem::RemoveLSFont( feLoadSaveFont *lsFont ){
 	pLSFontCount--;
 	
 	delete lsFont;
-	
-	pRebuildFDPattern();
 }
 
 void feLoadSaveSystem::RemoveAllLSFonts(){
@@ -171,8 +155,6 @@ void feLoadSaveSystem::RemoveAllLSFonts(){
 		pLSFontCount--;
 		delete pLSFonts[ pLSFontCount ];
 	}
-	
-	pRebuildFDPattern();
 }
 
 void feLoadSaveSystem::UpdateLSFonts(){
@@ -280,78 +262,4 @@ void feLoadSaveSystem::SaveFont( feFont *font, const char *filename ){
 void feLoadSaveSystem::pCleanUp(){
 	RemoveAllLSFonts();
 	if( pLSFonts ) delete [] pLSFonts;
-	
-	if( pFDPattern ) delete [] pFDPattern;
-	
-	if( pFPListFont ) delete pFPListFont;
-}
-
-bool feLoadSaveSystem::pPatternMatches( const char *pattern, const char *filename ) const{
-	// TODO
-	return true;
-}
-
-void feLoadSaveSystem::pRebuildFDPattern(){
-	char *newPattern = NULL;
-	const char *lsPattern;
-	int lenFDPattern = 0;
-	const char *lsName;
-	int lenLSPattern;
-	decString pattern;
-	int lenLSName;
-	int newLen;
-	int i;
-	
-	igdeFilePattern *filePattern = NULL;
-	
-	pFPListFont->RemoveAllFilePatterns();
-	
-	try{
-		for( i=0; i<pLSFontCount; i++ ){
-			pattern.Format( "*%s", pLSFonts[ i ]->GetPattern().GetString() );
-			
-			filePattern = new igdeFilePattern( pLSFonts[ i ]->GetName(), pattern,
-				pLSFonts[ i ]->GetPattern() );
-			
-			pFPListFont->AddFilePattern( filePattern );
-			filePattern = NULL;
-		}
-		
-	}catch( const deException & ){
-		if( filePattern ) delete filePattern;
-		throw;
-	}
-	
-	
-	
-	newPattern = new char[ 1 ];
-	if( ! newPattern ) DETHROW( deeOutOfMemory );
-	newPattern[ 0 ] = '\0';
-	
-	if( pFDPattern ) delete [] pFDPattern;
-	pFDPattern = newPattern;
-	
-	for( i=0; i<pLSFontCount; i++ ){
-		lsName = pLSFonts[ i ]->GetName();
-		lenLSName = strlen( lsName );
-		lsPattern = pLSFonts[ i ]->GetPattern();
-		lenLSPattern = strlen( lsPattern ) + 1;
-		
-		newLen = lenFDPattern + lenLSName + lenLSPattern + 3;
-		if( i > 0 ) newLen++;
-		
-		newPattern = new char[ newLen + 1 ];
-		if( ! newPattern ) DETHROW( deeOutOfMemory );
-		
-		if( i > 0 ){
-			sprintf( newPattern, "\n%s (*%s)", lsName, lsPattern );
-			
-		}else{
-			sprintf( newPattern, "%s (*%s)", lsName, lsPattern );
-		}
-		
-		if( pFDPattern ) delete [] pFDPattern;
-		pFDPattern = newPattern;
-		lenFDPattern = newLen;
-	}
 }

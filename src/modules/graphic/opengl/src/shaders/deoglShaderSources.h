@@ -1,30 +1,34 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOSLSHADERSOURCES_H_
 #define _DEOSLSHADERSOURCES_H_
 
-#include <dragengine/common/string/decStringList.h>
-
 #include "deoglShaderBindingList.h"
+
+#include <dragengine/common/string/decStringList.h>
+#include <dragengine/deObject.h>
 
 class deLogger;
 class decBaseFileReader;
@@ -34,17 +38,20 @@ class decXmlElementTag;
 
 
 /**
- * @brief Shader Source Code.
  * Stores the source code of a shader program. Typically this is a vertex program source
  * code and a fragment program source code. The Name is used to reference shader sources.
  */
-class deoglShaderSources{
+class deoglShaderSources : public deObject{
+public:
+	typedef deTObjectReference<deoglShaderSources> Ref;
+	
+	
+	
 private:
 	decString pName;
 	decString pFilename;
 	
-	decString pVersion;
-	
+	decString pPathSCCompute;
 	decString pPathSCTessellationControl;
 	decString pPathSCTessellationEvaluation;
 	decString pPathSCGeometry;
@@ -62,29 +69,33 @@ private:
 	deoglShaderBindingList pShaderStorageBlockList;
 	decStringList pParameterList;
 	decStringList pFeedbackList;
+	bool pFeedbackInterleaved;
+	
+	
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Create . */
+	/** Create shader sources. */
 	deoglShaderSources();
-	/** Loads . */
+	
+	/** Load shader sources. */
 	deoglShaderSources( deLogger &logger, decBaseFileReader &reader );
-	/** Cleans up the shader source code object. */
-	~deoglShaderSources();
+	
+protected:
+	/** Clean up shader sources. */
+	virtual ~deoglShaderSources();
 	/*@}*/
 	
-	/** @name Management */
+	
+	
+public:
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the name. */
 	inline const decString &GetName() const{ return pName; }
 	/** Retrieves the filename. */
 	inline const decString &GetFilename() const{ return pFilename; }
-	
-	/** Retrieves the version. */
-	inline const decString &GetVersion() const{ return pVersion; }
-	/** Sets the version. */
-	void SetVersion( const char *version );
 	
 	/** Retrieves the texture binding list. */
 	inline deoglShaderBindingList &GetTextureList(){ return pTextureList; }
@@ -96,11 +107,11 @@ public:
 	inline deoglShaderBindingList &GetOutputList(){ return pOutputList; }
 	inline const deoglShaderBindingList &GetOutputList() const{ return pOutputList; }
 	
-	/** \brief Uniform block binding list. */
+	/** Uniform block binding list. */
 	inline deoglShaderBindingList &GetUniformBlockList(){ return pUniformBlockList; }
 	inline const deoglShaderBindingList &GetUniformBlockList() const{ return pUniformBlockList; }
 	
-	/** \brief Shader storage block binding list. */
+	/** Shader storage block binding list. */
 	inline deoglShaderBindingList &GetShaderStorageBlockList(){ return pShaderStorageBlockList; }
 	inline const deoglShaderBindingList &GetShaderStorageBlockList() const{ return pShaderStorageBlockList; }
 	
@@ -111,13 +122,27 @@ public:
 	inline decStringList &GetFeedbackList(){ return pFeedbackList; }
 	inline const decStringList &GetFeedbackList() const{ return pFeedbackList; }
 	
-	/** \brief Retrieves the path to the tessellation control unit source code file or an empty string if not used. */
+	/** Interleaved feedback mode if true, separated if false. */
+	inline bool GetFeedbackInterleaved() const{ return pFeedbackInterleaved; }
+	
+	/** Set interleaved feedback mode if true, separated if false. */
+	void SetFeedbackInterleaved( bool interleaved );
+	
+	/** Path to compute unit source code file or empty string. */
+	inline const decString &GetPathComputeSourceCode() const{ return pPathSCCompute; }
+	
+	/** Set path to compute unit source code file or empty string. */
+	void SetPathComputeSourceCode( const char *path );
+	
+	/** Retrieves the path to the tessellation control unit source code file or an empty string if not used. */
 	inline const decString &GetPathTessellationControlSourceCode() const{ return pPathSCTessellationControl; }
-	/** \brief Sets the path to the tessellation control unit source code file or an empty string if not used. */
+	
+	/** Sets the path to the tessellation control unit source code file or an empty string if not used. */
 	void SetPathTessellationControlSourceCode( const char *path );
-	/** \brief Retrieves the path to the tessellation evaluation unit source code file or an empty string if not used. */
+	
+	/** Retrieves the path to the tessellation evaluation unit source code file or an empty string if not used. */
 	inline const decString &GetPathTessellationEvaluationSourceCode() const{ return pPathSCTessellationEvaluation; }
-	/** \brief Sets the path to the tessellation evaluation unit source code file or an empty string if not used. */
+	/** Sets the path to the tessellation evaluation unit source code file or an empty string if not used. */
 	void SetPathTessellationEvaluationSourceCode( const char *path );
 	/** Retrieves the path to the geometry unit source code file or an empty string if not used. */
 	inline const decString &GetPathGeometrySourceCode() const{ return pPathSCGeometry; }

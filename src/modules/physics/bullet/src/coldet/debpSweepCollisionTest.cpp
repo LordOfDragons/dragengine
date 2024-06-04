@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Bullet Physics Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -88,13 +91,16 @@ debpSweepCollisionTest::~debpSweepCollisionTest(){
 // Management
 ///////////////
 
-void debpSweepCollisionTest::AddShape( decShape &shape ){
+void debpSweepCollisionTest::AddShape( decShape &shape, const decVector &scale ){
+	pScale = scale;
 	shape.Visit( *this );
 }
 
-void debpSweepCollisionTest::AddShapes( const decShapeList &list ){
+void debpSweepCollisionTest::AddShapes( const decShapeList &list, const decVector &scale ){
 	const int count = list.GetCount();
 	int i;
+	
+	pScale = scale;
 	
 	for( i=0; i<count; i++ ){
 		list.GetAt( i )->Visit( *this );
@@ -251,13 +257,14 @@ const btTransform &to, btCollisionWorld::ConvexResultCallback &resultCallback ){
 // Visiting
 /////////////
 
-void debpSweepCollisionTest::VisitShape( decShape &shape ){
+void debpSweepCollisionTest::VisitShape( decShape& ){
 }
 
 void debpSweepCollisionTest::VisitShapeSphere( decShapeSphere &sphere ){
 	const decVector2 &axisScaling = sphere.GetAxisScaling();
-	const decVector &position = sphere.GetPosition();
-	const float radius = sphere.GetRadius();
+	const decVector position( sphere.GetPosition().Multiply( pScale ) );
+	const float scaleRadius = ( pScale.x + pScale.y + pScale.z ) / 3.0f;
+	const float radius = sphere.GetRadius() * scaleRadius;
 	btSphereShape *sphereShape = NULL;
 	btTransform transform;
 	cShape *shape = NULL;
@@ -293,9 +300,9 @@ void debpSweepCollisionTest::VisitShapeSphere( decShapeSphere &sphere ){
 
 void debpSweepCollisionTest::VisitShapeBox( decShapeBox &box ){
 	const decQuaternion &orientation = box.GetOrientation();
-	const decVector &halfExtends = box.GetHalfExtends();
+	const decVector halfExtends( box.GetHalfExtends().Multiply( pScale ) );
 	const decVector2 &tapering = box.GetTapering();
-	const decVector &position = box.GetPosition();
+	const decVector position( box.GetPosition().Multiply( pScale ) );
 	float smallestHalfExtends;
 	btConvexHullShape *hullShape = NULL;
 	btConvexShape *shapeToAdd = NULL;
@@ -375,10 +382,11 @@ void debpSweepCollisionTest::VisitShapeBox( decShapeBox &box ){
 
 void debpSweepCollisionTest::VisitShapeCylinder( decShapeCylinder &cylinder ){
 	const decQuaternion &orientation = cylinder.GetOrientation();
-	const decVector &position = cylinder.GetPosition();
-	const float halfHeight = cylinder.GetHalfHeight();
-	const float topRadius = cylinder.GetTopRadius();
-	//float bottomRadius = cylinder.GetBottomRadius();
+	const decVector position( cylinder.GetPosition().Multiply( pScale ) );
+	const float scaleRadius = ( pScale.x + pScale.z ) / 2.0f;
+	const float halfHeight = cylinder.GetHalfHeight() * pScale.y;
+	const float topRadius = cylinder.GetTopRadius() * scaleRadius;
+	//float bottomRadius = cylinder.GetBottomRadius() * scaleRadius;
 	btCylinderShape *cylinderShape = NULL;
 	btTransform transform;
 	cShape *shape = NULL;
@@ -408,10 +416,11 @@ void debpSweepCollisionTest::VisitShapeCylinder( decShapeCylinder &cylinder ){
 
 void debpSweepCollisionTest::VisitShapeCapsule( decShapeCapsule &capsule ){
 	const decQuaternion &orientation = capsule.GetOrientation();
-	const decVector &position = capsule.GetPosition();
-	const float halfHeight = capsule.GetHalfHeight();
-	const float topRadius = capsule.GetTopRadius();
-	const float bottomRadius = capsule.GetBottomRadius();
+	const decVector position( capsule.GetPosition().Multiply( pScale ) );
+	const float scaleRadius = ( pScale.x + pScale.z ) / 2.0f;
+	const float halfHeight = capsule.GetHalfHeight() * pScale.y;
+	const float topRadius = capsule.GetTopRadius() * scaleRadius;
+	const float bottomRadius = capsule.GetBottomRadius() * scaleRadius;
 	//const decVector2 &topAxisScaling = capsule->GetTopAxisScaling();
 	//const decVector2 &bottomAxisScaling = capsule->GetBottomAxisScaling();
 	btMultiSphereShape *capsuleShape = NULL;

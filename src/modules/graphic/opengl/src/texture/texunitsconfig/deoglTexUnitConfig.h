@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLTEXUNITCONFIG_H_
@@ -38,7 +41,7 @@ class deoglRenderThread;
 
 
 /**
- * \brief Configuration of a texture unit.
+ * Configuration of a texture unit.
  * 
  * The texture unit is disabled if no texture or cube map is defined. Only
  * enabled texture units are set during rendering. Disabled texture units are
@@ -46,24 +49,27 @@ class deoglRenderThread;
  */
 class deoglTexUnitConfig{
 public:
-	/** \brief Special Textures. */
+	/** Special Textures. */
 	enum eSpecialTextures{
-		/** \brief No special texture. */
+		/** No special texture. */
 		estNone,
 		
-		/** \brief Depth map of the previous render pass. */
+		/** Depth map of the previous render pass. */
 		estPrevDepth,
 		
-		/** \brief Color of the previous render pass. */
+		/** Color of the previous render pass. */
 		estPrevColor,
 		
-		/** \brief Direct environment map active map. */
+		/** Direct environment map active map. */
 		estDirectEnvMapActive,
 		
-		/** \brief Direct environment map fading map. */
+		/** Direct environment map fading map. */
 		estDirectEnvMapFading,
 		
-		/** \brief Constant to add to opengl texture names for hashing. */
+		/** XRay depth. */
+		estXRayDepth,
+		
+		/** Constant to add to opengl texture names for hashing. */
 		EST_BASE_GLNAME
 	};
 	
@@ -82,10 +88,10 @@ public:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create texture unit configuration. */
+	/** Create texture unit configuration. */
 	deoglTexUnitConfig();
 	
-	/** \brief Clean up texture unit configuration. */
+	/** Clean up texture unit configuration. */
 	~deoglTexUnitConfig();
 	/*@}*/
 	
@@ -93,73 +99,73 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Texture or \em NULL if not used. */
+	/** Texture or \em NULL if not used. */
 	inline deoglTexture *GetTexture() const{ return pTexture; }
 	
-	/** \brief Cube map or \em NULL if not used. */
+	/** Cube map or \em NULL if not used. */
 	inline deoglCubeMap *GetCubeMap() const{ return pCubeMap; }
 	
-	/** \brief Array texture or \em NULL if not used. */
+	/** Array texture or \em NULL if not used. */
 	inline deoglArrayTexture *GetArrayTexture() const{ return pArrayTexture; }
 	
-	/** \brief Texture buffer object or 0 if not used. */
+	/** Texture buffer object or 0 if not used. */
 	inline GLuint GetTBO() const{ return pTBO; }
 	
-	/** \brief Special texture or eSpecialTextures::estNone if not used. */
+	/** Special texture or eSpecialTextures::estNone if not used. */
 	inline int GetSpecial() const{ return pSpecial; }
 	
-	/** \brief Texture sampler configuration or \em NULL if not used. */
+	/** Texture sampler configuration or \em NULL if not used. */
 	inline deoglTexSamplerConfig *GetSampler() const{ return pSampler; }
 	
-	/** \brief Apply texture unit configuration. */
-	void Apply( deoglRenderThread &renderThread, int stage );
+	/** Apply texture unit configuration. */
+	void Apply( deoglRenderThread &renderThread, int stage ) const;
 	
-	/** \brief Set texture sampler configuration or \em NULL if not used. */
+	/** Set texture sampler configuration or \em NULL if not used. */
 	void SetSampler( deoglTexSamplerConfig *sampler );
 	
-	/** \brief Unit is enabled. */
+	/** Unit is enabled. */
 	bool IsEnabled() const;
 	
-	/** \brief Unit is disabled. */
+	/** Unit is disabled. */
 	bool IsDisabled() const;
 	
-	/** \brief Disable unit. */
+	/** Disable unit. */
 	void Disable();
 	
-	/** \brief Enable texture. */
+	/** Enable texture. */
 	void EnableTexture( deoglTexture *texture, deoglTexSamplerConfig *sampler );
 	
-	/** \brief Enabled texture from skin texture channel. */
+	/** Enabled texture from skin texture channel. */
 	void EnableTextureFromChannel( deoglRenderThread &renderThread, const deoglSkinTexture &skinTexture,
 		deoglSkinChannel::eChannelTypes skinChannel, const deoglSkinState *skinState,
 		const deoglRDynamicSkin *dynamicSkin, deoglTexture *defaultTexture );
 	
-	/** \brief Enable cube map. */
+	/** Enable cube map. */
 	void EnableCubeMap( deoglCubeMap *cubemap, deoglTexSamplerConfig *sampler );
 	
-	/** \brief Enables cube map from a skin texture channel. */
+	/** Enables cube map from a skin texture channel. */
 	void EnableCubeMapFromChannel( deoglRenderThread &renderThread, const deoglSkinTexture &skinTexture,
 		deoglSkinChannel::eChannelTypes skinChannel, const deoglSkinState *skinState,
 		const deoglRDynamicSkin *dynamicSkin, deoglCubeMap *defaultCubemap );
 	
-	/** \brief Enable array texture. */
+	/** Enable array texture. */
 	void EnableArrayTexture( deoglArrayTexture *texture, deoglTexSamplerConfig *sampler );
 	
-	/** \brief Enabled array texture from skin texture channel. */
+	/** Enabled array texture from skin texture channel. */
 	void EnableArrayTextureFromChannel( deoglRenderThread &renderThread, const deoglSkinTexture &skinTexture,
 		deoglSkinChannel::eChannelTypes skinChannel, const deoglSkinState *skinState,
 		const deoglRDynamicSkin *dynamicSkin, deoglArrayTexture *defaultTexture );
 	
-	/** \brief Enable texture buffer object. */
+	/** Enable texture buffer object. */
 	void EnableTBO( GLuint tbo );
 	
-	/** \brief Enable special texture. */
+	/** Enable special texture. */
 	void EnableSpecial( int special, deoglTexSamplerConfig *sampler );
 	
-	/** \brief Object equals another one. */
+	/** Object equals another one. */
 	bool Equals( const deoglTexUnitConfig &tuc ) const;
 	
-	/** \brief Set parameters from another texture unit configuration. */
+	/** Set parameters from another texture unit configuration. */
 	void SetFrom( const deoglTexUnitConfig &tuc );
 	/*@}*/
 };

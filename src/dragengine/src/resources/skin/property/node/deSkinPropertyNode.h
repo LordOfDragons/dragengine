@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Game Engine
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DESKINPROPERTYNODE_H_
@@ -30,7 +33,7 @@ class deSkinPropertyNodeVisitor;
 /**
  * \brief Skin property node for constructed texture property.
  */
-class deSkinPropertyNode{
+class DE_DLL_EXPORT deSkinPropertyNode{
 public:
 	/**
 	 * \brief Combine modes indicating how the canvas is combined with the content below.
@@ -63,6 +66,27 @@ public:
 		ecmOverlay
 	};
 	
+	/** \brief Mapped. */
+	enum eMapped{
+		emPositionX, //<! Position X-Component
+		emPositionY, //<! Position Y-Component
+		emPositionZ, //<! Position Z-Component
+		emSizeX, //<! Size X-Component
+		emSizeY, //<! Size Y-Component
+		emSizeZ, //<! Size Z-Component
+		emRotation, //<! Rotation
+		emShear, //<! Shear
+		emBrightness, //<! Brightness
+		emContrast, //<! Constrast
+		emGamma, //<! Gamma
+		emColorizeRed, //<! Colorize red component
+		emColorizeGreen, //<! Colorize green component
+		emColorizeBlue, //<! Colorize blue component
+		emTransparency //<! Transparency
+	};
+	
+	static const int MappedCount = emTransparency + 1;
+	
 	
 	
 private:
@@ -72,13 +96,15 @@ private:
 	float pShear;
 	
 	float pBrightness;
-	float pConstrast;
+	float pContrast;
 	float pGamma;
 	decColor pColorize;
 	
 	float pTransparency;
 	deSkinPropertyNode *pMask;
 	eCombineModes pCombineMode;
+	
+	int pMapped[ MappedCount ];
 	
 	
 	
@@ -129,7 +155,7 @@ public:
 	void SetBrightness( float brightness );
 	
 	/** \brief Contrast. */
-	inline float GetContrast() const{ return pConstrast; }
+	inline float GetContrast() const{ return pContrast; }
 	
 	/** \brief Set contrast. */
 	void SetContrast( float contrast );
@@ -165,6 +191,14 @@ public:
 	
 	/** \brief Set combien mode. */
 	void SetCombineMode( eCombineModes mode );
+	
+	
+	
+	/** \brief Index of mapped value or -1 to use static value. */
+	int GetMappedFor( eMapped mapped ) const;
+	
+	/** \brief Set index of mapped value or -1 to use static value. */
+	void SetMappedFor( eMapped mapped, int index );
 	/*@}*/
 	
 	

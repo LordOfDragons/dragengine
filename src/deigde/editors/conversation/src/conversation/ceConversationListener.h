@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Conversation Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _CECONVERSATIONLISTENER_H_
@@ -32,9 +35,8 @@ class ceConversationActor;
 class ceConversationFile;
 class ceConversationTopic;
 class ceConversationAction;
+class ceConversationCondition;
 class ceCameraShot;
-class ceLookAt;
-class cePose;
 class ceGesture;
 class ceFacePose;
 class ceTarget;
@@ -42,155 +44,155 @@ class ceTarget;
 
 
 /**
- * \brief Conversation Listener.
+ * Conversation Listener.
  */
 class ceConversationListener : public deObject{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Creates a new listener. */
+	/** Creates a new listener. */
 	ceConversationListener();
-	/** \brief Cleans up the listener. */
+	/** Cleans up the listener. */
 	virtual ~ceConversationListener();
 	/*@}*/
 	
 	/** \name Notifications */
 	/*@{*/
-	/** \brief Changed or saved state changed. */
+	/** Changed or saved state changed. */
 	virtual void StateChanged( ceConversation *conversation );
-	/** \brief Undo system changed. */
+	/** Undo system changed. */
 	virtual void UndoChanged( ceConversation *conversation );
-	/** \brief View properties changed. */
+	/** View properties changed. */
 	virtual void ViewChanged( ceConversation *conversation );
-	/** \brief Conversation changed. */
+	/** Conversation changed. */
 	virtual void ConversationChanged( ceConversation *conversation );
-	/** \brief The sky changed. */
+	/** The sky changed. */
 	virtual void SkyChanged( ceConversation *conversation );
-	/** \brief The environment object changed. */
+	/** The environment object changed. */
 	virtual void EnvObjectChanged( ceConversation *conversation );
-	/** \brief Camera changed. */
+	/** Camera changed. */
 	virtual void CameraChanged( ceConversation *conversation );
 	
-	/** \brief Target count or order changed. */
+	/** Target count or order changed. */
 	virtual void TargetStructureChanged( ceConversation *conversation );
-	/** \brief Target changed. */
+	/** Target changed. */
 	virtual void TargetChanged( ceConversation *conversation, ceTarget *target );
-	/** \brief Active target changed. */
+	/** Active target changed. */
 	virtual void ActiveTargetChanged( ceConversation *conversation );
 	
-	/** \brief Camera shot count or order changed. */
+	/** Camera shot count or order changed. */
 	virtual void CameraShotStructureChanged( ceConversation *conversation );
-	/** \brief Camera shot changed. */
+	/** Camera shot changed. */
 	virtual void CameraShotChanged( ceConversation *conversation, ceCameraShot *cameraShot );
-	/** \brief Active camera shot changed. */
+	/** Active camera shot changed. */
 	virtual void ActiveCameraShotChanged( ceConversation *conversation );
 	
-	/** \brief Pose count or order changed. */
-	virtual void PoseStructureChanged( ceConversation *conversation );
-	/** \brief Pose changed. */
-	virtual void PoseChanged( ceConversation *conversation, cePose *pose );
-	/** \brief Active pose changed. */
-	virtual void ActivePoseChanged( ceConversation *conversation );
-	
-	/** \brief Gesture count or order changed. */
+	/** Gesture count or order changed. */
 	virtual void GestureStructureChanged( ceConversation *conversation );
-	/** \brief Gesture changed. */
+	/** Gesture changed. */
 	virtual void GestureChanged( ceConversation *conversation, ceGesture *gesture );
-	/** \brief Active gesture changed. */
+	/** Active gesture changed. */
 	virtual void ActiveGestureChanged( ceConversation *conversation );
 	
-	/** \brief Face pose controller names changed. */
+	/** Face pose controller names changed. */
 	virtual void FacePoseControllerNamesChanged( ceConversation *conversation );
-	/** \brief Face pose count or order changed. */
+	/** Face pose count or order changed. */
 	virtual void FacePoseStructureChanged( ceConversation *conversation );
-	/** \brief Face pose changed. */
+	/** Face pose changed. */
 	virtual void FacePoseChanged( ceConversation *conversation, ceFacePose *facePose );
-	/** \brief Active face pose changed. */
+	/** Active face pose changed. */
 	virtual void ActiveFacePoseChanged( ceConversation *conversation );
 	
-	/** \brief LookAt count or order changed. */
-	virtual void LookAtStructureChanged( ceConversation *conversation );
-	/** \brief LookAt changed. */
-	virtual void LookAtChanged( ceConversation *conversation, ceLookAt *lookat );
-	/** \brief Active lookat changed. */
-	virtual void ActiveLookAtChanged( ceConversation *conversation );
-	
-	/** \brief File count or order changed. */
+	/** File count or order changed. */
 	virtual void FileStructureChanged( ceConversation *conversation );
-	/** \brief File changed. */
+	/** File changed. */
 	virtual void FileChanged( ceConversation *conversation, ceConversationFile *file );
-	/** \brief Active file changed. */
+	/** Active file changed. */
 	virtual void ActiveFileChanged( ceConversation *conversation );
 	
-	/** \brief Topic count or order changed. */
+	/** Topic count or order changed. */
 	virtual void TopicStructureChanged( ceConversation *conversation, ceConversationFile *file );
-	/** \brief Topic changed. */
+	/** Topic changed. */
 	virtual void TopicChanged( ceConversation *conversation, ceConversationFile *file, ceConversationTopic *topic );
-	/** \brief Active topic changed. */
+	/** Active topic changed. */
 	virtual void ActiveTopicChanged( ceConversation *conversation, ceConversationFile *file );
 	
-	/** \brief Action count or order changed. */
+	/** Action count or order changed. */
 	virtual void ActionStructureChanged( ceConversation *conversation, ceConversationFile *file, ceConversationTopic *topic, ceConversationAction *action );
-	/** \brief Action changed. */
+	/** Action changed. */
 	virtual void ActionChanged( ceConversation *conversation, ceConversationFile *file, ceConversationTopic *topic, ceConversationAction *action );
-	/** \brief Active action changed. */
-	virtual void ActiveActionChanged( ceConversation *conversation, ceConversationFile *file, ceConversationTopic *topic );
+	
+	/** Condition count or order changed. */
+	virtual void ConditionStructureChanged( ceConversation *conversation,
+		ceConversationFile *file, ceConversationTopic *topic, ceConversationAction *action );
+	
+	/** Condition changed. */
+	virtual void ConditionChanged( ceConversation *conversation, ceConversationFile *file,
+		ceConversationTopic *topic, ceConversationAction *action, ceConversationCondition *condition );
+	
+	/** Active element changed. */
+	virtual void ActiveChanged( ceConversation *conversation, ceConversationFile *file, ceConversationTopic *topic );
 	
 	
 	
-	/** \brief Actor count or order changed. */
+	/** Actor count or order changed. */
 	virtual void ActorStructureChanged( ceConversation *conversation );
 	
-	/** \brief Actor changed. */
+	/** Actor changed. */
 	virtual void ActorChanged( ceConversation *conversation, ceConversationActor *actor );
 	
-	/** \brief Actor active pose changed. */
+	/** Actor active pose changed. */
 	virtual void ActorActivePoseChanged( ceConversation *conversation, ceConversationActor *actor );
 	
-	/** \brief Actor poses changed. */
+	/** Actor poses changed. */
 	virtual void ActorPosesChanged( ceConversation *conversation, ceConversationActor *actor );
 	
-	/** \brief Actor active pose gestures changed. */
+	/** Actor active pose gestures changed. */
 	virtual void ActorPoseGesturesChanged( ceConversation *conversation,
 		ceConversationActor *actor, ceActorPose *pose );
 	
-	/** \brief Actor commands changed. */
+	/** Actor commands changed. */
 	virtual void ActorCommandsChanged( ceConversation *conversation, ceConversationActor *actor );
 	
-	/** \brief Actor parameters changed. */
+	/** Actor parameters changed. */
 	virtual void ActorParametersChanged( ceConversation *conversation, ceConversationActor *actor );
 	
-	/** \brief Active actor changed. */
+	/** Active actor changed. */
 	virtual void ActiveActorChanged( ceConversation *conversation );
 	
 	
 	
-	/** \brief Coordinate system count or order changed. */
+	/** Coordinate system count or order changed. */
 	virtual void CoordSystemStructureChanged( ceConversation *conversation );
-	/** \brief Coordinate system changed. */
+	/** Coordinate system changed. */
 	virtual void CoordSystemChanged( ceConversation *conversation, ceCoordSystem *coordSystem );
-	/** \brief Active coordinate system changed. */
+	/** Active coordinate system changed. */
 	virtual void ActiveCoordSystemChanged( ceConversation *conversation );
 	
-	/** \brief Prop count or order changed. */
+	/** Prop count or order changed. */
 	virtual void PropStructureChanged( ceConversation *conversation );
-	/** \brief Prop changed. */
+	/** Prop changed. */
 	virtual void PropChanged( ceConversation *conversation, ceProp *prop );
-	/** \brief Active prop changed. */
+	/** Active prop changed. */
 	virtual void ActivePropChanged( ceConversation *conversation );
 	
-	/** \brief Playback parameters changed. */
+	/** Playback parameters changed. */
 	virtual void PlaybackChanged( ceConversation *conversation );
-	/** \brief Playback action stack changed. */
+	/** Playback action stack changed. */
 	virtual void PlaybackActionStackChanged( ceConversation *conversation );
-	/** \brief Playback info command changed. */
+	/** Playback info command changed. */
 	virtual void PlaybackCommandListChanged( ceConversation *conversation );
-	/** \brief Playback variable list changed. */
+	/** Playback variable list changed. */
 	virtual void PlaybackVarListChanged( ceConversation *conversation );
-	/** \brief Playback trigger table changed. */
+	/** Playback trigger table changed. */
 	virtual void PlaybackTriggerTableChanged( ceConversation *conversation );
-	/** \brief Playback missing words changed. */
+	/** Playback missing words changed. */
 	virtual void PlaybackMissingWordsChanged( ceConversation *conversation );
+	
+	
+	
+	/** Language pack changed. */
+	virtual void LanguagePackChanged( ceConversation *conversation );
 	/*@}*/
 };
 

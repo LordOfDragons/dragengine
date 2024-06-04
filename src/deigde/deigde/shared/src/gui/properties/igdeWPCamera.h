@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _IGDEWPCAMERA_H_
@@ -25,17 +28,22 @@
 #include <dragengine/common/math/decMath.h>
 
 #include "../igdeTextFieldReference.h"
+#include "../igdeCheckBoxReference.h"
+#include "../igdeButtonReference.h"
 #include "../composed/igdeEditVectorReference.h"
+#include "../composed/igdeEditSliderTextReference.h"
 #include "../event/igdeActionListener.h"
 #include "../event/igdeActionReference.h"
+#include "../filedialog/igdeFilePatternList.h"
 #include "../layout/igdeContainerFlow.h"
+#include "../curveedit/igdeViewCurveBezierReference.h"
 
 
 class igdeCamera;
 
 
 /**
- * \brief Window Properties Camera.
+ * Window Properties Camera.
  * 
  * Provides support for configurating a wrapper camera. This panel is supposed to be used
  * on a properties window typically inside a group box. An camera wrapper is useful for
@@ -47,13 +55,14 @@ class igdeCamera;
  * camera is not held in any way. The application is responsible to ensure the wrapper
  * camera exists as long as it is assigned to this widget.
  */
-class igdeWPCamera : public igdeContainerFlow, igdeActionListener{
+class DE_DLL_EXPORT igdeWPCamera : public igdeContainerFlow, igdeActionListener{
 private:
 	igdeCamera *pCamera;
 	
 	igdeEditVectorReference pEditPosition;
 	igdeEditVectorReference pEditRotation;
 	igdeEditVectorReference pEditViewDir;
+	igdeButtonReference pBtnCamera;
 	igdeTextFieldReference pEditOrbitDistance;
 	igdeTextFieldReference pEditFov;
 	igdeTextFieldReference pEditFovRatio;
@@ -63,24 +72,38 @@ private:
 	igdeTextFieldReference pEditLowInt;
 	igdeTextFieldReference pEditHiInt;
 	igdeTextFieldReference pEditAdaptTime;
+	igdeCheckBoxReference pChkEnableHDRR;
+	igdeCheckBoxReference pChkEnableGI;
+	igdeTextFieldReference pEditWhiteIntensity;
+	igdeTextFieldReference pEditBloomIntensity;
+	igdeTextFieldReference pEditBloomStrength;
+	igdeEditSliderTextReference pSldBloomSize;
+	igdeEditSliderTextReference pSldBloomBlend;
+	igdeViewCurveBezierReference pEditToneMapCurve;
 	
 	igdeActionReference pAction;
 	
 	
 	
 public:
+	static decString lastCameraFile;
+	static const igdeFilePatternList patternCamera;
+	
+	
+	
+public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create panel. */
+	/** Create panel. */
 	igdeWPCamera( igdeEnvironment &environment );
 	
-	/** \brief Create panel. */
+	/** Create panel. */
 	igdeWPCamera( igdeEnvironment &environment, igdeAction *action );
 	
 	
 	
 protected:
-	/** \brief Clean up panel. */
+	/** Clean up panel. */
 	virtual ~igdeWPCamera();
 	/*@}*/
 	
@@ -89,38 +112,41 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Camera or NULL if not set. */
+	/** Camera or nullptr if not set. */
 	inline igdeCamera *GetCamera() const{ return pCamera; }
 	
-	/** \brief Set camera or NULL if not set. */
+	/** Set camera or nullptr if not set. */
 	void SetCamera( igdeCamera *camera );
 	
-	/** \brief Update widget after camera changed outside. */
+	/** Update widget after camera changed outside. */
 	void UpdateCamera();
 	
-	/** \brief Update camera view direction only. */
+	/** Update camera view direction only. */
 	void UpdateViewDirection();
 	
+	/** Set tone mapping curve range from white intensity. */
+	void SetToneMapCurveRangeFromWhiteIntensity();
 	
 	
-	/** \brief Action or NULL. */
+	
+	/** Action or nullptr. */
 	inline igdeAction *GetAction() const{ return pAction; }
 	
-	/** \brief Set action or NULL. */
+	/** Set action or nullptr. */
 	void SetAction( igdeAction *action );
 	
 	/**
-	 * \brief Sky parameters changed.
+	 * Sky parameters changed.
 	 * 
 	 * Called if user changes any of the sky parameters. Default implementation calls
 	 * OnAction on set action camera if present.
 	 */
 	virtual void OnAction();
 	
-	/** \brief Action parameters changed. */
+	/** Action parameters changed. */
 	virtual void OnParameterChanged( igdeAction *action );
 	
-	/** \brief Action has been destroyed. */
+	/** Action has been destroyed. */
 	virtual void OnDestroyed( igdeAction *action );
 	/*@}*/
 	

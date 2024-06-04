@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Rig Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -111,6 +114,13 @@ reUBoneMirror::reUBoneMirror( reRig *rig ){
 					for( c=0; c<constraintCount; c++ ){
 						ubone.oldConstraints->AddConstraint( boneTarget->GetConstraintAt( c ) );
 					}
+					
+					ubone.oldIKLimitsLower = boneTarget->GetIKLimitsLower();
+					ubone.oldIKLimitsUpper = boneTarget->GetIKLimitsUpper();
+					ubone.oldIKResistance = boneTarget->GetIKResistance();
+					ubone.oldIKLocked[ 0 ] = boneTarget->GetIKLockedX();
+					ubone.oldIKLocked[ 1 ] = boneTarget->GetIKLockedY();
+					ubone.oldIKLocked[ 2 ] = boneTarget->GetIKLockedZ();
 				}
 			}
 		}
@@ -161,6 +171,13 @@ void reUBoneMirror::Undo(){
 			for( c=0; c<constraintCount; c++ ){
 				boneTarget->AddConstraint( oldConstraints.GetConstraintAt( c ) );
 			}
+			
+			boneTarget->SetIKLimitsLower( ubone.oldIKLimitsLower );
+			boneTarget->SetIKLimitsUpper( ubone.oldIKLimitsUpper );
+			boneTarget->SetIKResistance( ubone.oldIKResistance );
+			boneTarget->SetIKLockedX( ubone.oldIKLocked[ 0 ] );
+			boneTarget->SetIKLockedY( ubone.oldIKLocked[ 1 ] );
+			boneTarget->SetIKLockedZ( ubone.oldIKLocked[ 2 ] );
 		}
 	}
 }
@@ -168,13 +185,7 @@ void reUBoneMirror::Undo(){
 void reUBoneMirror::Redo(){
 	reRigConstraint *constraint = NULL;
 	reRigShape *shape = NULL;
-	reRigBone *boneMirrored;
-	decMatrix matrixMirror;
-	decMatrix matrixResult;
-	decMatrix matrixLimit;
 	int c, constraintCount;
-	reRigBone *boneTarget;
-	reRigBone *boneSource;
 	int s, shapeCount;
 	float exchange;
 	float lowerOrg;
@@ -184,194 +195,215 @@ void reUBoneMirror::Redo(){
 	int b;
 	
 	try{
+		const decMatrix matrixMirrorScale( decMatrix::CreateScale( -1.0f, 1.0f, 1.0f ) );
+		
 		for( b=0; b<pBoneCount; b++ ){
-			sBone &ubone = pBones[ b ];
-			boneSource = ubone.boneSource;
-			boneTarget = ubone.boneTarget;
-			
-			if( boneTarget ){
-				matrixMirror = boneSource->GetMatrix() * decMatrix::CreateScale( -1.0f, 1.0f, 1.0f ) * boneTarget->GetInverseMatrix();
-				
-				// mirror bone properties
-				const decVector &cmp = boneSource->GetCentralMassPoint();
-				boneTarget->SetCentralMassPoint( decVector( -cmp.x, cmp.y, cmp.z ) );
-				boneTarget->SetMass( boneSource->GetMass() );
-				boneTarget->SetDynamic( boneSource->GetDynamic() );
-				
-				// mirror shapes. this is not correct yet and has to be fixed. the main problem
-				// is that using mirroring the angles are incorrect in some situations.
-				boneTarget->RemoveAllShapes();
-				shapeCount = boneSource->GetShapeCount();
-				for( s=0; s<shapeCount; s++ ){
-					shape = boneSource->GetShapeAt( s )->Duplicate();
-					
-					matrixResult = decMatrix::CreateRT( shape->GetOrientation() * DEG2RAD, shape->GetPosition() ) * matrixMirror;
-					shape->SetPosition( matrixResult.GetPosition() );
-					shape->SetOrientation( matrixResult.GetEulerAngles() / DEG2RAD );
-					
-					boneTarget->AddShape( shape );
-					shape->FreeReference();
-					shape = NULL;
-				}
-				
-				// mirror constraints
-				boneTarget->RemoveAllConstraints();
-				constraintCount = boneSource->GetConstraintCount();
-				for( c=0; c<constraintCount; c++ ){
-					constraint = boneSource->GetConstraintAt( c )->Duplicate();
-					
-					// constraint position and orientation
-					matrixResult = decMatrix::CreateRT( constraint->GetOrientation() * DEG2RAD, constraint->GetPosition() ) * matrixMirror;
-					constraint->SetPosition( matrixResult.GetPosition() );
-					constraint->SetOrientation( matrixResult.GetEulerAngles() / DEG2RAD );
-					
-					// matrix to mirror limits
-					matrixResult *= decMatrix::CreateRT( constraint->GetOrientation() * DEG2RAD, constraint->GetPosition() ).Invert();
-					
-					// dof linear x
-					lowerOrg = constraint->GetDofLinearX().GetLowerLimit();
-					upperOrg = constraint->GetDofLinearX().GetUpperLimit();
-					
-					if( upperOrg - lowerOrg < -1e-5f ){
-						lowerNew = lowerOrg;
-						upperNew = lowerOrg;
-						
-					}else{
-						lowerNew = ( matrixResult * decVector( lowerOrg, 0.0f, 0.0f ) ).x;
-						upperNew = ( matrixResult * decVector( upperOrg, 0.0f, 0.0f ) ).x;
-						
-						if( upperNew < lowerNew ){
-							exchange = lowerNew;
-							lowerNew = upperNew;
-							upperNew = exchange;
-						}
-					}
-					
-					constraint->GetDofLinearX().SetLowerLimit( lowerNew );
-					constraint->GetDofLinearX().SetUpperLimit( upperNew );
-					
-					// dof linear y
-					lowerOrg = constraint->GetDofLinearY().GetLowerLimit();
-					upperOrg = constraint->GetDofLinearY().GetUpperLimit();
-					
-					if( upperOrg - lowerOrg < -1e-5f ){
-						lowerNew = lowerOrg;
-						upperNew = lowerOrg;
-						
-					}else{
-						lowerNew = ( matrixResult * decVector( 0.0f, lowerOrg, 0.0f ) ).x;
-						upperNew = ( matrixResult * decVector( 0.0f, upperOrg, 0.0f ) ).x;
-						
-						if( upperNew < lowerNew ){
-							exchange = lowerNew;
-							lowerNew = upperNew;
-							upperNew = exchange;
-						}
-					}
-					
-					constraint->GetDofLinearY().SetLowerLimit( lowerNew );
-					constraint->GetDofLinearY().SetUpperLimit( upperNew );
-					
-					// dof linear z
-					lowerOrg = constraint->GetDofLinearZ().GetLowerLimit();
-					upperOrg = constraint->GetDofLinearZ().GetUpperLimit();
-					
-					if( upperOrg - lowerOrg < -1e-5f ){
-						lowerNew = lowerOrg;
-						upperNew = lowerOrg;
-						
-					}else{
-						lowerNew = ( matrixResult * decVector( 0.0f, 0.0f, lowerOrg ) ).x;
-						upperNew = ( matrixResult * decVector( 0.0f, 0.0f, upperOrg ) ).x;
-						
-						if( upperNew < lowerNew ){
-							exchange = lowerNew;
-							lowerNew = upperNew;
-							upperNew = exchange;
-						}
-					}
-					
-					constraint->GetDofLinearZ().SetLowerLimit( lowerNew );
-					constraint->GetDofLinearZ().SetUpperLimit( upperNew );
-					
-					// dof angular x
-					lowerOrg = constraint->GetDofAngularX().GetLowerLimit();
-					upperOrg = constraint->GetDofAngularX().GetUpperLimit();
-					
-					if( upperOrg - lowerOrg < -1e-5f ){
-						lowerNew = lowerOrg;
-						upperNew = lowerOrg;
-						
-					}else{
-						lowerNew = ( decMatrix::CreateRotationX( lowerOrg * DEG2RAD ) * matrixResult ).GetEulerAngles().x / DEG2RAD;
-						upperNew = ( decMatrix::CreateRotationX( upperOrg * DEG2RAD ) * matrixResult ).GetEulerAngles().x / DEG2RAD;
-						
-						if( upperNew < lowerNew ){
-							exchange = lowerNew;
-							lowerNew = upperNew;
-							upperNew = exchange;
-						}
-					}
-					
-					constraint->GetDofAngularX().SetLowerLimit( lowerNew );
-					constraint->GetDofAngularX().SetUpperLimit( upperNew );
-					
-					// dof angular y
-					lowerOrg = constraint->GetDofAngularY().GetLowerLimit();
-					upperOrg = constraint->GetDofAngularY().GetUpperLimit();
-					
-					if( upperOrg - lowerOrg < -1e-5f ){
-						lowerNew = lowerOrg;
-						upperNew = lowerOrg;
-						
-					}else{
-						lowerNew = ( decMatrix::CreateRotationY( lowerOrg * DEG2RAD ) * matrixResult ).GetEulerAngles().y / DEG2RAD;
-						upperNew = ( decMatrix::CreateRotationY( upperOrg * DEG2RAD ) * matrixResult ).GetEulerAngles().y / DEG2RAD;
-						
-						if( upperNew < lowerNew ){
-							exchange = lowerNew;
-							lowerNew = upperNew;
-							upperNew = exchange;
-						}
-					}
-					
-					constraint->GetDofAngularY().SetLowerLimit( lowerNew );
-					constraint->GetDofAngularY().SetUpperLimit( upperNew );
-					
-					// dof angular z
-					lowerOrg = constraint->GetDofAngularZ().GetLowerLimit();
-					upperOrg = constraint->GetDofAngularZ().GetUpperLimit();
-					
-					if( upperOrg - lowerOrg < -1e-5f ){
-						lowerNew = lowerOrg;
-						upperNew = lowerOrg;
-						
-					}else{
-						lowerNew = ( decMatrix::CreateRotationZ( lowerOrg * DEG2RAD ) * matrixResult ).GetEulerAngles().z / DEG2RAD;
-						upperNew = ( decMatrix::CreateRotationZ( upperOrg * DEG2RAD ) * matrixResult ).GetEulerAngles().z / DEG2RAD;
-						
-						if( upperNew < lowerNew ){
-							exchange = lowerNew;
-							lowerNew = upperNew;
-							upperNew = exchange;
-						}
-					}
-					
-					constraint->GetDofAngularZ().SetLowerLimit( lowerNew );
-					constraint->GetDofAngularZ().SetUpperLimit( upperNew );
-					
-					// mirror constraint bone
-					boneMirrored = pGetBoneWithMirroredName( pRig, constraint->GetConstraintBone() );
-					if( boneMirrored ){
-						constraint->SetConstraintBone( boneMirrored );
-					}
-					
-					// add the mirrored constraint
-					boneTarget->AddConstraint( constraint );
-					constraint->FreeReference();
-					constraint = NULL;
-				}
+			const sBone &ubone = pBones[ b ];
+			if( ! ubone.boneTarget ){
+				continue;
 			}
+			
+			const reRigBone &boneSource = *ubone.boneSource;
+			reRigBone &boneTarget = *ubone.boneTarget;
+			
+			const decMatrix matrixMirror( boneSource.GetMatrix()
+				* matrixMirrorScale * boneTarget.GetInverseMatrix() );
+			
+			// mirror bone properties
+			boneTarget.SetCentralMassPoint( matrixMirror * boneSource.GetCentralMassPoint() );
+			boneTarget.SetMass( boneSource.GetMass() );
+			boneTarget.SetDynamic( boneSource.GetDynamic() );
+			
+			// mirror shapes. this is not correct yet and has to be fixed. the main problem
+			// is that using mirroring the angles are incorrect in some situations.
+			boneTarget.RemoveAllShapes();
+			shapeCount = boneSource.GetShapeCount();
+			for( s=0; s<shapeCount; s++ ){
+				shape = boneSource.GetShapeAt( s )->Duplicate();
+				
+				const decMatrix matrixResult( decMatrix::CreateRT(
+					shape->GetOrientation() * DEG2RAD, shape->GetPosition() ) * matrixMirror );
+				
+				shape->SetPosition( matrixResult.GetPosition() );
+				
+				shape->SetOrientation( decMatrix::CreateVU( matrixResult.TransformView(),
+					matrixResult.TransformUp() ).GetEulerAngles() * RAD2DEG );
+				
+				boneTarget.AddShape( shape );
+				shape->FreeReference();
+				shape = NULL;
+			}
+			
+			// mirror constraints
+			boneTarget.RemoveAllConstraints();
+			constraintCount = boneSource.GetConstraintCount();
+			for( c=0; c<constraintCount; c++ ){
+				constraint = boneSource.GetConstraintAt( c )->Duplicate();
+				
+				// constraint position and orientation
+				decMatrix matrixResult( decMatrix::CreateRT(
+					constraint->GetOrientation() * DEG2RAD, constraint->GetPosition() ) * matrixMirror );
+				
+				constraint->SetPosition( matrixResult.GetPosition() );
+				
+				constraint->SetOrientation( decMatrix::CreateVU( matrixResult.TransformView(),
+					matrixResult.TransformUp() ).GetEulerAngles() * RAD2DEG );
+				
+				// matrix to mirror limits
+				matrixResult *= decMatrix::CreateRT( constraint->GetOrientation() * DEG2RAD,
+					constraint->GetPosition() ).Invert();
+				
+				// dof linear x
+				lowerOrg = constraint->GetDofLinearX().GetLowerLimit();
+				upperOrg = constraint->GetDofLinearX().GetUpperLimit();
+				
+				if( upperOrg - lowerOrg < -1e-5f ){
+					lowerNew = lowerOrg;
+					upperNew = lowerOrg;
+					
+				}else{
+					lowerNew = ( matrixResult * decVector( lowerOrg, 0.0f, 0.0f ) ).x;
+					upperNew = ( matrixResult * decVector( upperOrg, 0.0f, 0.0f ) ).x;
+					
+					if( upperNew < lowerNew ){
+						exchange = lowerNew;
+						lowerNew = upperNew;
+						upperNew = exchange;
+					}
+				}
+				
+				constraint->GetDofLinearX().SetLowerLimit( lowerNew );
+				constraint->GetDofLinearX().SetUpperLimit( upperNew );
+				
+				// dof linear y
+				lowerOrg = constraint->GetDofLinearY().GetLowerLimit();
+				upperOrg = constraint->GetDofLinearY().GetUpperLimit();
+				
+				if( upperOrg - lowerOrg < -1e-5f ){
+					lowerNew = lowerOrg;
+					upperNew = lowerOrg;
+					
+				}else{
+					lowerNew = ( matrixResult * decVector( 0.0f, lowerOrg, 0.0f ) ).x;
+					upperNew = ( matrixResult * decVector( 0.0f, upperOrg, 0.0f ) ).x;
+					
+					if( upperNew < lowerNew ){
+						exchange = lowerNew;
+						lowerNew = upperNew;
+						upperNew = exchange;
+					}
+				}
+				
+				constraint->GetDofLinearY().SetLowerLimit( lowerNew );
+				constraint->GetDofLinearY().SetUpperLimit( upperNew );
+				
+				// dof linear z
+				lowerOrg = constraint->GetDofLinearZ().GetLowerLimit();
+				upperOrg = constraint->GetDofLinearZ().GetUpperLimit();
+				
+				if( upperOrg - lowerOrg < -1e-5f ){
+					lowerNew = lowerOrg;
+					upperNew = lowerOrg;
+					
+				}else{
+					lowerNew = ( matrixResult * decVector( 0.0f, 0.0f, lowerOrg ) ).x;
+					upperNew = ( matrixResult * decVector( 0.0f, 0.0f, upperOrg ) ).x;
+					
+					if( upperNew < lowerNew ){
+						exchange = lowerNew;
+						lowerNew = upperNew;
+						upperNew = exchange;
+					}
+				}
+				
+				constraint->GetDofLinearZ().SetLowerLimit( lowerNew );
+				constraint->GetDofLinearZ().SetUpperLimit( upperNew );
+				
+				// dof angular x
+				lowerOrg = constraint->GetDofAngularX().GetLowerLimit();
+				upperOrg = constraint->GetDofAngularX().GetUpperLimit();
+				
+				if( upperOrg - lowerOrg < -1e-5f ){
+					lowerNew = lowerOrg;
+					upperNew = lowerOrg;
+					
+				}else{
+					lowerNew = ( decMatrix::CreateRotationX( lowerOrg * DEG2RAD ) * matrixResult ).GetEulerAngles().x * RAD2DEG;
+					upperNew = ( decMatrix::CreateRotationX( upperOrg * DEG2RAD ) * matrixResult ).GetEulerAngles().x * RAD2DEG;
+					
+					if( upperNew < lowerNew ){
+						exchange = lowerNew;
+						lowerNew = upperNew;
+						upperNew = exchange;
+					}
+				}
+				
+				constraint->GetDofAngularX().SetLowerLimit( lowerNew );
+				constraint->GetDofAngularX().SetUpperLimit( upperNew );
+				
+				// dof angular y
+				lowerOrg = constraint->GetDofAngularY().GetLowerLimit();
+				upperOrg = constraint->GetDofAngularY().GetUpperLimit();
+				
+				if( upperOrg - lowerOrg < -1e-5f ){
+					lowerNew = lowerOrg;
+					upperNew = lowerOrg;
+					
+				}else{
+					lowerNew = ( decMatrix::CreateRotationY( lowerOrg * DEG2RAD ) * matrixResult ).GetEulerAngles().y * RAD2DEG;
+					upperNew = ( decMatrix::CreateRotationY( upperOrg * DEG2RAD ) * matrixResult ).GetEulerAngles().y * RAD2DEG;
+					
+					if( upperNew < lowerNew ){
+						exchange = lowerNew;
+						lowerNew = upperNew;
+						upperNew = exchange;
+					}
+				}
+				
+				constraint->GetDofAngularY().SetLowerLimit( lowerNew );
+				constraint->GetDofAngularY().SetUpperLimit( upperNew );
+				
+				// dof angular z
+				lowerOrg = constraint->GetDofAngularZ().GetLowerLimit();
+				upperOrg = constraint->GetDofAngularZ().GetUpperLimit();
+				
+				if( upperOrg - lowerOrg < -1e-5f ){
+					lowerNew = lowerOrg;
+					upperNew = lowerOrg;
+					
+				}else{
+					lowerNew = ( decMatrix::CreateRotationZ( lowerOrg * DEG2RAD ) * matrixResult ).GetEulerAngles().z * RAD2DEG;
+					upperNew = ( decMatrix::CreateRotationZ( upperOrg * DEG2RAD ) * matrixResult ).GetEulerAngles().z * RAD2DEG;
+					
+					if( upperNew < lowerNew ){
+						exchange = lowerNew;
+						lowerNew = upperNew;
+						upperNew = exchange;
+					}
+				}
+				
+				constraint->GetDofAngularZ().SetLowerLimit( lowerNew );
+				constraint->GetDofAngularZ().SetUpperLimit( upperNew );
+				
+				// mirror constraint bone
+				reRigBone * const boneMirrored = pGetBoneWithMirroredName( pRig, constraint->GetConstraintBone() );
+				if( boneMirrored ){
+					constraint->SetConstraintBone( boneMirrored );
+				}
+				
+				// add the mirrored constraint
+				boneTarget.AddConstraint( constraint );
+				constraint->FreeReference();
+				constraint = NULL;
+			}
+			
+			// mirror IK limits which is just copy
+			boneTarget.SetIKLimitsLower( boneSource.GetIKLimitsLower() );
+			boneTarget.SetIKLimitsUpper( boneSource.GetIKLimitsUpper() );
+			boneTarget.SetIKResistance( boneSource.GetIKResistance() );
+			boneTarget.SetIKLockedX( boneSource.GetIKLockedX() );
+			boneTarget.SetIKLockedY( boneSource.GetIKLockedY() );
+			boneTarget.SetIKLockedZ( boneSource.GetIKLockedZ() );
 		}
 		
 	}catch( const deException & ){
@@ -407,32 +439,40 @@ void reUBoneMirror::pCleanUp(){
 
 
 reRigBone *reUBoneMirror::pGetBoneWithMirroredName( reRig *rig, reRigBone *bone ) const{
-	const decString &nameBone = bone->GetName();
-	reRigBone *mirroredBone = NULL;
-	decString nameMirrored;
+	const decString nameBone( bone->GetName().GetLower() );
+	decString findName;
 	
-	if( nameBone.MatchesPattern( "*.[l,L]" ) ){
-		nameMirrored = nameBone;
+	if( nameBone.EndsWith( ".right" ) ){
+		findName = nameBone.GetMiddle( 0, -6 ) + ".left";
 		
-		nameMirrored.SetAt( nameBone.GetLength() - 1, 'r' );
-		mirroredBone = rig->GetBoneNamed( nameMirrored.GetString() );
+	}else if( nameBone.EndsWith( ".left" ) ){
+		findName = nameBone.GetMiddle( 0, -2 ) + ".right";
 		
-		if( ! mirroredBone ){
-			nameMirrored.SetAt( nameBone.GetLength() - 1, 'R' );
-			mirroredBone = rig->GetBoneNamed( nameMirrored.GetString() );
-		}
+	}else if( nameBone.EndsWith( ".r" ) ){
+		findName = nameBone.GetMiddle( 0, -2 ) + ".l";
 		
-	}else if( nameBone.MatchesPattern( "*.[r,R]" ) ){
-		nameMirrored = nameBone;
+	}else if( nameBone.EndsWith( ".l" ) ){
+		findName = nameBone.GetMiddle( 0, -2 ) + ".r";
 		
-		nameMirrored.SetAt( nameBone.GetLength() - 1, 'l' );
-		mirroredBone = rig->GetBoneNamed( nameMirrored.GetString() );
+	}else if( nameBone.FindString( "right" ) != -1 ){
+		findName = nameBone.GetReplacedString( "right", "left" );
 		
-		if( ! mirroredBone ){
-			nameMirrored.SetAt( nameBone.GetLength() - 1, 'L' );
-			mirroredBone = rig->GetBoneNamed( nameMirrored.GetString() );
+	}else if( nameBone.FindString( "left" ) != -1 ){
+		findName = nameBone.GetReplacedString( "left", "right" );
+		
+	}else{
+		return nullptr;
+	}
+	
+	const int count = rig->GetBoneCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		reRigBone * const mirroredBone = rig->GetBoneAt( i );
+		if( mirroredBone->GetName().GetLower() == findName ){
+			return mirroredBone;
 		}
 	}
 	
-	return mirroredBone;
+	return nullptr;
 }

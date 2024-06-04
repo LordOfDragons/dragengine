@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLOCCLUSIONQUERY_H_
@@ -30,18 +33,18 @@ class deoglShape;
 
 
 /**
- * \brief Occlusion Query.
+ * Occlusion Query.
  *
  * Allows to query how many pixels/samples an operation touched.
  */
 class deoglOcclusionQuery{
 public:
-	/** \brief Query type. */
+	/** Query type. */
 	enum eQueryTypes{
-		/** \brief Result is 1 if any samples passed otherwise 0. */
+		/** Result is 1 if any samples passed otherwise 0. */
 		eqtAny,
 		
-		/** \brief Result is the number of samples passed. */
+		/** Result is the number of samples passed. */
 		eqtCount
 	};
 	
@@ -57,10 +60,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create occlusion query. */
+	/** Create occlusion query. */
 	deoglOcclusionQuery( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up occlusion query. */
+	/** Clean up occlusion query. */
 	~deoglOcclusionQuery();
 	/*@}*/
 	
@@ -68,14 +71,14 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Render thread. */
+	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
-	/** \brief Query is active. */
+	/** Query is active. */
 	bool IsActive() const;
 	
 	/**
-	 * \brief Start query making it the active one.
+	 * Start query making it the active one.
 	 * 
 	 * If another query is active already it is first stopped before starting this query.
 	 * 
@@ -85,19 +88,19 @@ public:
 	void BeginQuery( eQueryTypes type );
 	
 	/**
-	 * \brief End query.
+	 * End query.
 	 * 
 	 * Has no effect if this query is not the active one.
 	 */
 	void EndQuery();
 	
-	/** \brief Result of the query is present. */
+	/** Result of the query is present. */
 	bool HasResult() const;
 	
-	/** \brief Result of the query blocking until the result is available. */
+	/** Result of the query blocking until the result is available. */
 	int GetResult() const;
 	
-	/** \brief Result of the query blocking until the result is available. */
+	/** Result of the query blocking until the result is available. */
 	bool GetResultAny() const;
 	/*@}*/
 };

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLSKINSTATECONTROLLER_H_
@@ -35,7 +38,7 @@ class deVideoPlayer;
 
 
 /**
- * \brief Skin state controller.
+ * Skin state controller.
  */
 class deoglSkinStateController{
 private:
@@ -45,16 +48,17 @@ private:
 	decObjectList pVideoPlayers;
 	
 	bool pHasCalculatedProperties;
+	bool pHasConstructedProperties;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create skin state controller. */
+	/** Create skin state controller. */
 	deoglSkinStateController();
 	
-	/** \brief Clean up skin state controller. */
+	/** Clean up skin state controller. */
 	~deoglSkinStateController();
 	/*@}*/
 	
@@ -62,55 +66,66 @@ public:
 	
 	/** \name Management. */
 	/*@{*/
-	/** \brief Number of shared video players. */
+	/** Number of shared video players. */
 	inline int GetVideoPlayerCount() const{ return pSharedVideoPlayerCount; }
 	
-	/** \brief Set number of video players. */
+	/** Set number of video players. */
 	void SetVideoPlayerCount( int count );
 	
-	/** \brief Video player by index or \em NULL if not existing. */
+	/** Video player by index or \em NULL if not existing. */
 	deVideoPlayer *GetVideoPlayerAt( int index ) const;
 	
-	/** \brief Shared video player by index or \em NULL if not existing. */
+	/** Shared video player by index or \em NULL if not existing. */
 	deoglSharedVideoPlayer *GetSharedVideoPlayerAt( int index ) const;
 	
-	/** \brief Set video player at index or \em NULL if not existing. */
+	/** Set video player at index or \em NULL if not existing. */
 	void SetVideoPlayerAt( int index, deVideoPlayer *videoPlayer );
 	
-	/** \brief Set shared video player at index or \em NULL if not existing. */
+	/** Set shared video player at index or \em NULL if not existing. */
 	void SetSharedVideoPlayerAt( int index, deoglSharedVideoPlayer *videoPlayer );
 	
 	
 	
-	/** \brief Has calculated properties. */
+	/** Has calculated properties. */
 	inline bool GetHasCalculatedProperties() const{ return pHasCalculatedProperties; }
 	
-	/** \brief Set if has calculated properties. */
+	/** Set if has calculated properties. */
 	void SetHasCalculatedProperties( bool hasCalculatedProperties );
 	
 	
 	
-	/** \brief Requires sync every frame update. */
+	/** Has constructed properties. */
+	inline bool GetHasConstructedProperties() const{ return pHasConstructedProperties; }
+	
+	/** Set if has constructed properties. */
+	void SetHasConstructedProperties( bool hasConstructedProperties );
+	
+	
+	
+	/** Requires sync every frame update. */
 	bool RequiresSyncEveryFrameUpdate() const;
 	
-	/** \brief Init skin state. */
+	/** Requires prepare renderables. */
+	bool RequiresPrepareRenderables() const;
+	
+	/** Init skin state. */
 	void Init( deoglSkinState &skinState, deoglRSkin *skin, deoglWorld *world );
 	
-	/** \brief Init skin state. */
+	/** Init skin state. */
 	void Init( deoglSkinState &skinState, deoglRSkin *skin, int textureIndex, deoglWorld *world );
 	
 	
 	
-	/** \brief Reset time. */
+	/** Reset time. */
 	void ResetTime();
 	
-	/** \brief Update time. */
+	/** Update time. */
 	void AdvanceTime( float timeStep );
 	
-	/** \brief Synchronize to render. */
+	/** Synchronize to render. */
 	void SyncToRender();
 	
-	/** \brief Clear. */
+	/** Clear. */
 	void Clear();
 	/*@}*/
 	

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -25,6 +28,7 @@
 
 #include "deoglRenderTarget.h"
 #include "../framebuffer/deoglFramebuffer.h"
+#include "../framebuffer/deoglRestoreFramebuffer.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTRenderers.h"
 #include "../renderthread/deoglRTFramebuffer.h"
@@ -41,14 +45,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRenderTarget::deoglRenderTarget( deoglRenderThread &renderThread, int width, int height, int componentCount, int bitCount ) :
+deoglRenderTarget::deoglRenderTarget( deoglRenderThread &renderThread,
+	const decPoint &size, int componentCount, int bitCount ) :
 pRenderThread( renderThread ),
 
-pWidth( decMath::max( width, 1 ) ),
-pHeight( decMath::max( height, 1 ) ),
-pTextureWidth( pWidth ),
-pTextureHeight( pHeight ),
-pAspectRatio( ( float )pWidth / ( float )pHeight ),
+pSize( decPoint( 1, 1 ).Largest( size ) ),
+pTextureSize( pSize ),
+pAspectRatio( ( float )pSize.x / ( float )pSize.y ),
 pBitCount( bitCount ),
 pComponentCount( componentCount ),
 pFloatTexture( bitCount != 8 ),
@@ -56,12 +59,7 @@ pFloatTexture( bitCount != 8 ),
 pDirtyTexture( true ),
 
 pTexture( NULL ),
-pFBO( NULL )
-{
-	/*if( ogl->GetConfiguration()->GetUsePOTTextures() ){
-		for( pTextureWidth=1; pTextureWidth<pWidth; pTextureWidth<<=1 );
-		for( pTextureHeight=1; pTextureHeight<pHeight; pTextureHeight<<=1 );
-	}*/
+pFBO( NULL ){
 }
 
 deoglRenderTarget::~deoglRenderTarget(){
@@ -77,12 +75,12 @@ deoglRenderTarget::~deoglRenderTarget(){
 // Management
 ///////////////
 
-void deoglRenderTarget::SetSize( int width, int height ){
-	if( width < 1 || height < 1 ){
+void deoglRenderTarget::SetSize( const decPoint &size ){
+	if( ! ( size > decPoint() ) ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	if( width == pWidth && height == pHeight ){
+	if( size == pSize ){
 		return;
 	}
 	
@@ -92,55 +90,61 @@ void deoglRenderTarget::SetSize( int width, int height ){
 		pTexture = NULL;
 	}
 	
-	pWidth = width;
-	pHeight = height;
-	pAspectRatio = ( float )pWidth / ( float )pHeight;
+	pSize = size;
+	pAspectRatio = ( float )pSize.x / ( float )pSize.y;
 	
-	pTextureWidth = pWidth;
-	pTextureHeight = pHeight;
-	/*if( ogl->GetConfiguration()->GetUsePOTTextures() ){
-		for( pTextureWidth=1; pTextureWidth<pWidth; pTextureWidth<<=1 );
-		for( pTextureHeight=1; pTextureHeight<pHeight; pTextureHeight<<=1 );
-	}*/
+	pTextureSize = pSize;
 	
 	pDirtyTexture = true;
 }
 
 
 
-void deoglRenderTarget::PrepareFramebuffer(){
-	if( ! pTexture ){
-		pTexture = new deoglTexture( pRenderThread );
-		pTexture->SetSize( pTextureWidth, pTextureHeight );
-		pTexture->SetFBOFormat( pComponentCount, pFloatTexture );
-		pTexture->SetMipMapped( false );
-		pTexture->CreateTexture(); // require or framebuffer attaching fails
+void deoglRenderTarget::PrepareTexture(){
+	if( pTexture ){
+		return;
 	}
 	
-	if( ! pFBO ){
-		pFBO = new deoglFramebuffer( pRenderThread, false );
-		
-		pRenderThread.GetFramebuffer().Activate( pFBO );
-		
-		pFBO->AttachColorTexture( 0, pTexture );
-		
-		const GLenum buffers[ 1 ] = { GL_COLOR_ATTACHMENT0 };
-		OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
-		OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
-		
-		pFBO->Verify();
+	pTexture = new deoglTexture( pRenderThread );
+	pTexture->SetSize( pTextureSize );
+	pTexture->SetFBOFormat( pComponentCount, pFloatTexture );
+	pTexture->SetMipMapped( false );
+	pTexture->CreateTexture(); // required or framebuffer attaching fails
+}
+
+void deoglRenderTarget::PrepareFramebuffer(){
+	if( pFBO ){
+		return;
 	}
+	
+	const deoglRestoreFramebuffer restoreFbo( pRenderThread );
+	
+	PrepareTexture();
+	
+	pFBO = new deoglFramebuffer( pRenderThread, false );
 	
 	pRenderThread.GetFramebuffer().Activate( pFBO );
+	
+	pFBO->AttachColorTexture( 0, pTexture );
+	
+	const GLenum buffers[ 1 ] = { GL_COLOR_ATTACHMENT0 };
+	OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
+	OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
+	
+	pFBO->Verify();
 }
 
 void deoglRenderTarget::ReleaseFramebuffer(){
-	pRenderThread.GetFramebuffer().Activate( NULL );
-	
-	if( pFBO ){
-		delete pFBO;
-		pFBO = NULL;
+	if( ! pFBO ){
+		return;
 	}
+	
+	if( pRenderThread.GetFramebuffer().GetActive() == pFBO ){
+		pRenderThread.GetFramebuffer().Activate( nullptr );
+	}
+	
+	delete pFBO;
+	pFBO = nullptr;
 }
 
 

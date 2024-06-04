@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -48,12 +51,35 @@ pin Dragengine.Preloading
  * 
  * A CameraDirector can be set to operate the camera and microphone resource. This is the
  * preferred way since it allows to easily change the directory taking control of these
- * resources without having to worry about all this. Typically you use ElementCameraDirector
+ * resources without having to worry about all  Typically you use ElementCameraDirector
  * to handle camera and microphone relative to a player actor and ConversationCameraDirector
  * to play back conversations.
  * 
  * Window can be styled using designer named "WindowGameWorld". The default style makes the
  * window borderless with no mouse pointer suitable for full screen use.
+ * 
+ * \par Version 1.12
+ * 
+ * The layout is enhanced like this to allow for more possibilities:
+ * 
+ * - WindowGameWorld (StackLayout, designer selector "WindowGameWorld")
+ *   - Panel (BorderLayout, getPanelBorder())
+ *     - Panel (StackLayout, getPanelStack())
+ *       - WorldRenderer (designer selector "WorldRenderer.WindowGameWorld")
+ * 
+ * The window stack layout allows to stack widgets over the world render panels which should
+ * cover the entire window. Typically these are UI widgets not directly interacting with the
+ * world renderer panel content.
+ * 
+ * The getPanelBorder() allows to add UI widgets at the borders of the window to create the
+ * UI layouts typically used for games where the world renderer is part of a UI interface
+ * the player interacts with (hence not first person shooter type games). Using this panel
+ * makes the world renderer and widgets stacked over it to occupy the empty space.
+ * 
+ * The getPanelStack() allows to add stack widgets over the world renderer itself. These
+ * widgets have the same size as the world renderer in contrary to being added to the window
+ * itself. This is useful for adding widgets that should only cover the world renderer like
+ * targeting reticules or damage indicators.
  */
 class WindowGameWorld extends Window
 	/**
@@ -69,34 +95,42 @@ class WindowGameWorld extends Window
 		
 		
 		/** \brief Create game world loader. */
-		public func new( WindowGameWorld window )
+		public func new(WindowGameWorld window)
 			if window == null
 				throw EInvalidParam.new()
 			end
-			this.pWindow = window
+			pWindow = window
 		end
 		
 		/** \brief Create game world loader. */
-		public func new( WindowGameWorld window, Console console, \
-		Loaders loaders, ElementClassList elementClassList ) \
-		super( console, loaders, elementClassList )
+		public func new(WindowGameWorld window, Console console, Loaders loaders,\
+		ElementClassList elementClassList) this(window, console, loaders, elementClassList, null)
+		end
+		
+		/**
+		 * \brief Create game world loader.
+		 * \version 1.8
+		 */
+		public func new(WindowGameWorld window, Console console, Loaders loaders,\
+		ElementClassList elementClassList, MutableID idGenerator) \
+		super(console, loaders, elementClassList, idGenerator)
 			if window == null
 				throw EInvalidParam.new()
 			end
-			this.pWindow = window
+			pWindow = window
 		end
 		
 		/** \brief Dispose of game world loader to break reference loops. */
 		public func void dispose()
 			super.dispose()
-			this.pWindow = null
+			pWindow = null
 		end
 		
 		
 		
 		/** \brief Window to update. */
 		public func WindowGameWorld getWindow()
-			return this.pWindow
+			return pWindow
 		end
 		
 		
@@ -109,7 +143,7 @@ class WindowGameWorld extends Window
 		 * game loader upon entering this method.
 		 */
 		public func void onLoadWorldFinished()
-			this.pWindow.setGameWorld( this.getStubWorld().getGameWorld() )
+			pWindow.setGameWorld(getStubWorld().getGameWorld())
 		end
 		
 		/**
@@ -119,7 +153,7 @@ class WindowGameWorld extends Window
 		 * of the game loader upon entering this method.
 		 */
 		public func void onLoadWorldFailed()
-			this.pWindow.setGameWorld( null )
+			pWindow.setGameWorld(null)
 		end
 	end
 	
@@ -134,69 +168,75 @@ class WindowGameWorld extends Window
 	private var bool pUpdateGameWorld
 	private var bool pUpdateCameraDirector
 	private var bool pActivateMicrophone
+	private var Panel pPanelBorder
+	private var Panel pPanelStack
 	
 	
 	
 	/** \brief Create screen sized window using BaseGameApp console. */
-	public func new() this( BaseGameApp.getApp().getConsole() )
+	public func new() this(BaseGameApp.getApp().getConsole())
 	end
 	
 	/** \brief Create screen sized window. */
-	public func new( Console console ) super( 0, 0, \
-	GraphicSystem.getWindowWidth(), GraphicSystem.getWindowHeight() )
+	public func new(Console console) super(0, 0, \
+	GraphicSystem.getWindowWidth(), GraphicSystem.getWindowHeight())
 		if console == null
 			throw EInvalidParam.new()
 		end
 		
-		this.pUpdateGameWorld = true
-		this.pUpdateCameraDirector = true
-		this.pActivateMicrophone = true
+		pUpdateGameWorld = true
+		pUpdateCameraDirector = true
+		pActivateMicrophone = true
 		
-		this.pConsole = console
+		pConsole = console
 		
-		this.pCamera = Camera.new()
-		this.pCamera.setFov( 80 )
-		this.pCamera.setLowestIntensity( 10 )
-		this.pCamera.setHighestIntensity( 20 )
+		pCamera = Camera.new()
+		pCamera.setFov(80)
+		pCamera.setLowestIntensity(1)
+		pCamera.setHighestIntensity(20)
 		
-		this.pMicrophone = Microphone.new()
-		this.pMicrophone.setLayerMask( LayerMask.newWith( BaseGameApp.WorldLayerBit.audio ) )
+		pMicrophone = Microphone.new()
+		pMicrophone.setLayerMask(LayerMask.newWith(BaseGameApp.WorldLayerBit.audio))
 		
-		this.pWorldRenderer = WorldRenderer.new()
+		pPanelBorder = Panel.new(BorderLayout.new())
+		pPanelStack = Panel.new(StackLayout.new())
+		pWorldRenderer = WorldRenderer.new()
 		
-		this.setDesignerSelector( "WindowGameWorld" )
-		this.createContent()
+		setDesignerSelector("WindowGameWorld")
+		createContent()
 		
-		this.setCanReorder( false )  // prevents window move above overlaying windows
-		this.setWindowState( Window.WindowState.maximized )
+		setCanReorder(false)  // prevents window move above overlaying windows
+		setWindowState(Window.WindowState.maximized)
 		
-		this.startFrameUpdater()
+		startFrameUpdater()
 	end
 	
 	/** \brief Dispose of Widget. */
 	public func void dispose()
-		this.setGameWorld( null )
+		setGameWorld(null)
 		
 		super.dispose()
 		
-		this.setCameraDirector( null )
+		setCameraDirector(null)
 		
-		this.pWorldRenderer = null
-		this.pMicrophone = null
-		this.pCamera = null
-		this.pConsole = null
+		pWorldRenderer = null
+		pPanelStack = null
+		pPanelBorder = null
+		pMicrophone = null
+		pCamera = null
+		pConsole = null
 	end
 	
 	
 	
 	/** \brief Console object. */
 	public func Console getConsole()
-		return this.pConsole
+		return pConsole
 	end
 	
 	/** \brief Game world. */
 	public func GameWorld getGameWorld()
-		return this.pGameWorld
+		return pGameWorld
 	end
 	
 	/**
@@ -209,8 +249,8 @@ class WindowGameWorld extends Window
 	 * 
 	 * Calls onGameWorldChanged() hoock method if the game world changed.
 	 */
-	public func void setGameWorld( GameWorld gameWorld )
-		this.setGameWorld( gameWorld, true )
+	public func void setGameWorld(GameWorld gameWorld)
+		setGameWorld(gameWorld, true)
 	end
 	
 	/**
@@ -225,70 +265,101 @@ class WindowGameWorld extends Window
 	 * 
 	 * Calls onGameWorldChanged() hoock method if the game world changed.
 	 */
-	public func void setGameWorld( GameWorld gameWorld, bool dispose )
-		if gameWorld == this.pGameWorld
+	public func void setGameWorld(GameWorld gameWorld, bool dispose)
+		if gameWorld == pGameWorld
 			return
 		end
 		
-		this.pWorldRenderer.setCamera( null )
+		pWorldRenderer.setCamera(null)
 		
-		if this.pGameWorld != null
-			if AudioSystem.getActiveMicrophone() == this.pMicrophone
-				AudioSystem.setActiveMicrophone( null )
+		if pGameWorld != null
+			if AudioSystem.getActiveMicrophone() == pMicrophone
+				AudioSystem.setActiveMicrophone(null)
 			end
-			this.pGameWorld.getWorld().removeMicrophone( this.pMicrophone )
 			
-			this.pGameWorld.getWorld().removeCamera( this.pCamera )
+			var World world = pGameWorld.getWorld()
+			if world.equals(pMicrophone.getParentWorld())
+				world.removeMicrophone(pMicrophone)
+			end
+			if world.equals(pCamera.getParentWorld())
+				world.removeCamera(pCamera)
+			end
 			
 			if dispose
 				try
-					this.pGameWorld.dispose()
+					pGameWorld.dispose()
 					
 				catch Exception e
-					this.pConsole.addError( "Exception while disposing GameWorld", e )
+					pConsole.addError("Exception while disposing GameWorld", e)
 				end
 			end
 		end
 		
-		this.pGameWorld = gameWorld
+		pGameWorld = gameWorld
 		
 		if gameWorld != null
-			gameWorld.getWorld().addCamera( this.pCamera )
-			this.pWorldRenderer.setCamera( this.pCamera )
+			gameWorld.getWorld().addCamera(pCamera)
+			pWorldRenderer.setCamera(pCamera)
 			
-			gameWorld.getWorld().addMicrophone( this.pMicrophone )
+			gameWorld.getWorld().addMicrophone(pMicrophone)
 		end
 		
-		if this.pActivateMicrophone
+		if pActivateMicrophone
 			if gameWorld != null
-				AudioSystem.setActiveMicrophone( this.pMicrophone )
+				AudioSystem.setActiveMicrophone(pMicrophone)
 				
 			else
-				AudioSystem.setActiveMicrophone( null )
+				AudioSystem.setActiveMicrophone(null)
 			end
 		end
 		
-		this.onGameWorldChanged()
+		onGameWorldChanged()
 	end
 	
 	/** \brief World renderer. */
 	public func WorldRenderer getWorldRenderer()
-		return this.pWorldRenderer
+		return pWorldRenderer
+	end
+	
+	/**
+	 * \brief Panel with BorderLayout containing world render content.
+	 * \version 1.12
+	 * 
+	 * Allows to add UI widgets at the borders of the window to create the UI layouts typically
+	 * used for games where the world renderer is part of a UI interface the player interacts
+	 * with (hence not first person shooter type games). Using this panel makes the world
+	 * renderer and widgets stacked over it to occupy the empty space.
+	 */
+	public func Panel getPanelBorder()
+		return pPanelBorder
+	end
+	
+	/**
+	 * \brief Panel with StackLayout containing world render.
+	 * \version 1.12
+	 * 
+	 * Allows to add stack widgets over the world renderer itself. These widgets have the same
+	 * size as the world renderer in contrary to being added to the window itself. This is
+	 * useful for adding widgets that should only cover the world renderer like targeting
+	 * reticules or damage indicators.
+	 */
+	public func Panel getPanelStack()
+		return pPanelStack
 	end
 	
 	/** \brief Game camera. */
 	public func Camera getCamera()
-		return this.pCamera
+		return pCamera
 	end
 	
 	/** \brief Microphone to hear sound. */
 	public func Microphone getMicrophone()
-		return this.pMicrophone
+		return pMicrophone
 	end
 	
 	/** \brief Camera directory or \em null. */
 	public func CameraDirector getCameraDirector()
-		return this.pCameraDirector
+		return pCameraDirector
 	end
 	
 	/**
@@ -297,57 +368,91 @@ class WindowGameWorld extends Window
 	 * Deactivates the old camera director if present and unsets camera and microphone.
 	 * Activates the new camera if present and sets camera and microphone.
 	 * 
-	 * Updates the camera director once.
+	 * Updates the camera director once if updating camera director is enabled
 	 */
-	public func void setCameraDirector( CameraDirector director )
-		if director == this.pCameraDirector
+	public func void setCameraDirector(CameraDirector director)
+		if director == pCameraDirector
 			return
 		end
 		
-		if this.pCameraDirector != null
-			this.pCameraDirector.deactivate()
-			this.pCameraDirector.setCamera( null )
-			this.pCameraDirector.setMicrophone( null )
+		if pCameraDirector != null
+			pCameraDirector.deactivate()
+			pCameraDirector.setCamera(null)
+			pCameraDirector.setMicrophone(null)
 		end
 		
-		this.pCameraDirector = director
+		pCameraDirector = director
 		
 		if director != null
-			director.setCamera( this.pCamera )
-			director.setMicrophone( this.pMicrophone )
+			director.setCamera(pCamera)
+			director.setMicrophone(pMicrophone)
 			director.activate()
-			director.update( 0.0 )
+			
+			if pUpdateCameraDirector
+				director.update(0)
+			end
 		end
 	end
 	
 	/** \brief Update game world on frame updates. */
 	public func bool getUpdateGameWorld()
-		return this.pUpdateGameWorld
+		return pUpdateGameWorld
 	end
 	
 	/** \brief Set update game world on frame updates. */
-	public func void setUpdateGameWorld( bool update )
-		this.pUpdateGameWorld = update
+	public func void setUpdateGameWorld(bool update)
+		pUpdateGameWorld = update
 	end
 	
 	/** \brief Update camera director on frame updates. */
 	public func bool getUpdateCameraDirector()
-		return this.pUpdateCameraDirector
+		return pUpdateCameraDirector
 	end
 	
 	/** \brief Set update camera director on frame updates. */
-	public func void setUpdateCameraDirector( bool update )
-		this.pUpdateCameraDirector = update
+	public func void setUpdateCameraDirector(bool update)
+		pUpdateCameraDirector = update
 	end
 	
 	/** \brief Activate microphone if game world is set. */
 	public func bool getActivateMicrophone()
-		return this.pActivateMicrophone
+		return pActivateMicrophone
 	end
 	
 	/** \brief Set if microphone is activated if game world is set. */
-	public func void setActivateMicrophone( bool activateMicrophone )
-		this.pActivateMicrophone = activateMicrophone
+	public func void setActivateMicrophone(bool activateMicrophone)
+		pActivateMicrophone = activateMicrophone
+	end
+	
+	
+	
+	/**
+	 * \brief Project point from 3d world.
+	 * \version 1.7
+	 */
+	public func Point project(DVector position)
+		return pWorldRenderer.project(position)
+	end
+	
+	/**
+	 * \brief Back project position into 3d world.
+	 * \version 1.7
+	 */
+	public func Vector backProject(Point position)
+		return pWorldRenderer.backProject(position)
+	end
+
+	
+	/**
+	 * \brief Back project position into 3d world.
+	 * \version 1.7
+	 * 
+	 * Event can originate from any widget inside the window. The event position is converted
+	 * to world renderer coordinate system before calling backProject on world renderer.
+	 */
+	public func Vector backProject(MouseEvent event)
+		return pWorldRenderer.backProject((event.getSource() cast Widget).getWindowPosition()\
+			+ event.getPosition() - pWorldRenderer.getWindowPosition())
 	end
 	
 	
@@ -357,17 +462,17 @@ class WindowGameWorld extends Window
 	 * 
 	 * \param elapsed Elapsed time as reported by Engine.getElapsedTime().
 	 */
-	public func void onFrameUpdate( float elapsed )
-		if this.pGameWorld == null
+	public func void onFrameUpdate(float elapsed)
+		if pGameWorld == null
 			return
 		end
 		
-		if this.pUpdateGameWorld
-			this.pGameWorld.update( elapsed )
+		if pUpdateGameWorld
+			pGameWorld.update(elapsed)
 		end
 		
-		if this.pCameraDirector != null and this.pUpdateCameraDirector
-			this.pCameraDirector.update( elapsed )
+		if pCameraDirector != null and pUpdateCameraDirector
+			pCameraDirector.update(elapsed)
 		end
 	end
 	
@@ -375,6 +480,19 @@ class WindowGameWorld extends Window
 	 * \brief Game world changed.
 	 */
 	public func void onGameWorldChanged()
+	end
+	
+	/**
+	 * \brief Designer selector changed.
+	 * 
+	 * Updates world renderer widget designer selector to "WorldRenderer.{selector}".
+	 */
+	public func void onDesignerSelectorChanged()
+		super.onDesignerSelectorChanged()
+		
+		if pWorldRenderer != null
+			pWorldRenderer.setDesignerSelector("WorldRenderer." + getDesignerSelector())
+		end
 	end
 	
 	
@@ -386,7 +504,11 @@ class WindowGameWorld extends Window
 	 * getWorldRenderer() as only widget.
 	 */
 	protected func void createContent()
-		this.setLayout( StackLayout.new() )
-		this.addWidget( this.pWorldRenderer )
+		runWhileBlockingLayout(block
+			setLayout(StackLayout.new())
+			pPanelStack.addWidget(pWorldRenderer)
+			pPanelBorder.addWidget(pPanelStack, BorderLayout.Area.content)
+			addWidget(pPanelBorder)
+		end)
 	end
 end

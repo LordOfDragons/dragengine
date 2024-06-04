@@ -1,6 +1,7 @@
 from SConsCommon import *
 
 import os
+import fnmatch
 
 Import('parent_env parent_targets parent_report')
 
@@ -26,15 +27,21 @@ def buildInstaller(env, target, source):
 	
 	os.chmod(target[0].abspath, 0o755)
 
+withCI = envInstaller['with_ci']
+
 installers = []
+installerScriptSuffix = '-ci' if withCI else ''
+
 if envInstaller['OSPosix']:
 	if envInstaller['installer_name_engine'] and parent_targets['archive']['archiveEngine']:
 		filename = '{}.sh'.format(envInstaller['installer_name_engine'])
-		installers.append(envInstaller.Command(filename,
-			['install-dragengine.sh.in'] + parent_targets['archive']['archiveEngine'],
+		sources = []
+		sources.append('install-dragengine{}.sh.in'.format(installerScriptSuffix))
+		sources.extend(parent_targets['archive']['archiveEngine'])
+		installers.append(envInstaller.Command(filename, sources,
 			envInstaller.Action(buildInstaller, 'Building Installer {}'.format(filename))))
 	
-	if envInstaller['installer_name_engine_dev'] and parent_targets['archive']['archiveEngineDev']:
+	if not withCI and envInstaller['installer_name_engine_dev'] and parent_targets['archive']['archiveEngineDev']:
 		filename = '{}.sh'.format(envInstaller['installer_name_engine_dev'])
 		installers.append(envInstaller.Command(filename,
 			['install-dragengine-dev.sh.in'] + parent_targets['archive']['archiveEngineDev'],
@@ -42,15 +49,86 @@ if envInstaller['OSPosix']:
 	
 	if envInstaller['installer_name_igde'] and parent_targets['archive']['archiveIgde']:
 		filename = '{}.sh'.format(envInstaller['installer_name_igde'])
-		installers.append(envInstaller.Command(filename,
-			['install-deigde.sh.in'] + parent_targets['archive']['archiveIgde'],
+		sources = []
+		sources.append('install-deigde{}.sh.in'.format(installerScriptSuffix))
+		sources.extend(parent_targets['archive']['archiveIgde'])
+		installers.append(envInstaller.Command(filename, sources,
 			envInstaller.Action(buildInstaller, 'Building Installer {}'.format(filename))))
 	
-	if envInstaller['installer_name_igde_dev'] and parent_targets['archive']['archiveIgdeDev']:
+	if not withCI and envInstaller['installer_name_igde_dev'] and parent_targets['archive']['archiveIgdeDev']:
 		filename = '{}.sh'.format(envInstaller['installer_name_igde_dev'])
 		installers.append(envInstaller.Command(filename,
 			['install-deigde-dev.sh.in'] + parent_targets['archive']['archiveIgdeDev'],
 			envInstaller.Action(buildInstaller, 'Building Installer {}'.format(filename))))
+	
+elif envInstaller['OSWindows']:
+	def copyArchiveFiles(copied, key, basePath):
+		for target in parent_targets.values():
+			if key in target:
+				for path, node in target[key].items():
+					if path.startswith('@ProgramFiles/'):
+						path = 'VFS/ProgramFilesX64/' + path[14:]
+					elif path.startswith('@System/'):
+						path = 'VFS/SystemX64/' + path[8:]
+					copied.append(envInstaller.InstallAs(os.path.join(basePath, path), node))
+	
+	def copyDataFiles(copied, directory, basePath):
+		dataFiles = []
+		globFiles(envInstaller, directory, '*', dataFiles)
+		dataFiles = [x for x in dataFiles if not fnmatch.fnmatch(x, '*.in')]
+		
+		cutLen = len(directory.split('/'))
+		for f in dataFiles:
+			path = f.split('/')
+			copied.append(envInstaller.InstallAs(os.path.join(basePath, *path[cutLen:]), f))
+	
+	def msixBuild(target, source, env):
+		script = []
+		script.append('makemsix pack -d "{}" -p "{}" || exit 1'.format(
+			source[0].get_dir().abspath, target[0].abspath))
+		print(script)
+		if not env.RunExternalCommand(script):
+			raise Exception('Failed building MSIX')
+	
+	versionMsix = envInstaller['version']
+	while len(versionMsix.split('.')) < 4:
+		versionMsix = '{}.0'.format(versionMsix)
+	
+	if envInstaller['installer_name_engine']:
+		copied = []
+		copyArchiveFiles(copied, 'archive-engine', 'msix/dragengine')
+		copyArchiveFiles(copied, 'archive-launcher', 'msix/dragengine')
+		copyDataFiles(copied, 'msix-data/dragengine', 'msix/dragengine')
+		
+		msixUpdated = envInstaller.Command(
+			'msix/dragengine/AppxManifest.xml',
+			'msix-data/dragengine/AppxManifest.xml.in',
+			Action(UpdateModuleManifest),
+			ManifestUpdates=[{'action': 'text', 'value': versionMsix, 'keyword': '%VERSION%'}] )
+		
+		msix = envInstaller.Command('{}.msix'.format(envInstaller['installer_name_engine']),
+			msixUpdated, envInstaller.Action(msixBuild, 'Build MSIX $TARGET'))
+		envInstaller.Depends(msix, copied)
+		installers.append(msix)
+		
+	if envInstaller['installer_name_igde']:
+		copied = []
+		# copied until microsoft provides a solution for this problem
+		copyArchiveFiles(copied, 'archive-engine', 'msix/deigde')
+		# end of microsoft hack
+		copyArchiveFiles(copied, 'archive-igde', 'msix/deigde')
+		copyDataFiles(copied, 'msix-data/deigde', 'msix/deigde')
+		
+		msixUpdated = envInstaller.Command(
+			'msix/deigde/AppxManifest.xml',
+			'msix-data/deigde/AppxManifest.xml.in',
+			Action(UpdateModuleManifest),
+			ManifestUpdates=[{'action': 'text', 'value': versionMsix, 'keyword': '%VERSION%'}] )
+		
+		msix = envInstaller.Command('{}.msix'.format(envInstaller['installer_name_igde']),
+			msixUpdated, envInstaller.Action(msixBuild, 'Build MSIX $TARGET'))
+		envInstaller.Depends(msix, copied)
+		installers.append(msix)
 
 envInstaller.Alias('installer', installers)
 

@@ -1,37 +1,40 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLVIDEODECODETHREAD_H_
 #define _DEOGLVIDEODECODETHREAD_H_
+
+#include "../texture/pixelbuffer/deoglPixelBuffer.h"
 
 #include <dragengine/resources/video/deVideoReference.h>
 #include <dragengine/resources/video/deVideoDecoderReference.h>
 #include <dragengine/threading/deThread.h>
 #include <dragengine/threading/deSemaphore.h>
 
-class deoglPixelBuffer;
-
 
 /**
- * \brief Video Decode Thread.
+ * Video Decode Thread.
  */
 class deoglVideoDecodeThread : public deThread{
 public:
@@ -40,8 +43,8 @@ public:
 	int pFrame;
 	int pNextFrame;
 	
-	deoglPixelBuffer *pPixelBufferDecode;
-	deoglPixelBuffer *pPixelBufferTexture;
+	deoglPixelBuffer::Ref pPixelBufferDecode;
+	deoglPixelBuffer::Ref pPixelBufferTexture;
 	
 	deMutex pMutex;
 	deSemaphore pSemaphoreDecode;
@@ -55,10 +58,10 @@ public:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create new thread. */
+	/** Create new thread. */
 	deoglVideoDecodeThread( deVideoDecoder *decoder, deVideo *video );
 	
-	/** \brief Clean up thread. */
+	/** Clean up thread. */
 	virtual ~deoglVideoDecodeThread();
 	/*@}*/
 	
@@ -67,7 +70,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/**
-	 * \brief Start decoding a frame.
+	 * Start decoding a frame.
 	 * 
 	 * If a decoding is in progress the new decoding parameters are
 	 * stored aside. Once the current decoding is finished the decoding continues with the
@@ -79,21 +82,20 @@ public:
 	void StartDecode( int frame );
 	
 	/**
-	 * \brief Pixel buffer to upload to the texture.
-	 * 
-	 * Waits for the decoding to finish. If no decoding is in progress \em NULL is returned.
+	 * Pixel buffer to upload to the texture. Waits for the decoding to finish.
+	 * If no decoding is in progress nullptr is returned.
 	 */
-	deoglPixelBuffer *GetTexturePixelBuffer();
+	deoglPixelBuffer::Ref GetTexturePixelBuffer();
 	
 	/**
-	 * \brief Set texture pixel buffer without deleting the old one.
-	 * \details Pixel buffer can be \em NULL in which case a new one is created the next time.
-	 *          Allows swaping pixel buffers with the render video player.
+	 * Set texture pixel buffer without deleting the old one. Pixel buffer can be nullptr
+	 * in which case a new one is created the next time. Allows swaping pixel buffers with
+	 * the render video player.
 	 */
 	void SetTexturePixelBuffer( deoglPixelBuffer *pixelBuffer );
 	
 	/**
-	 * \brief Wait for decoding to finish and clear decode parameters.
+	 * Wait for decoding to finish and clear decode parameters.
 	 * 
 	 * This removes all pointers to engine resources to avoid accessing invalid memory.
 	 */
@@ -101,16 +103,16 @@ public:
 	
 	
 	
-	/** \brief Run function of the thread */
+	/** Run function of the thread */
 	virtual void Run();
 	
-	/** \brief Ensure pixel buffers are ready for decoding. */
+	/** Ensure pixel buffers are ready for decoding. */
 	void PreparePixelBuffers();
 	
-	/** \brief Decode frame. */
+	/** Decode frame. */
 	void DecodeFrame();
 	
-	/** \brief Set pixel buffer to the error result. */
+	/** Set pixel buffer to the error result. */
 	void SetErrorPixelBuffer();
 	/*@}*/
 	

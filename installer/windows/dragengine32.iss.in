@@ -1,0 +1,101 @@
+[Setup]
+AppId={{870ACA91-F55D-415A-9EB0-5F7F7E4DE2CA}
+AppName=Drag[en]gine Game Engine
+AppVersion=%VERSION%
+AppPublisher=Dragon Dreams
+AppPublisherURL=https://dragondreams.ch
+AppSupportURL=https://dragondreams.ch
+AppUpdatesURL=https://dragondreams.ch
+DefaultDirName={commonpf}\Dragengine
+DisableDirPage=no
+DefaultGroupName=Drag[en]gine Game Engine
+DisableProgramGroupPage=no
+OutputDir=build
+OutputBaseFilename=install-dragengine-windows32
+SetupIconFile=dragengine-installer.ico
+Compression=lzma
+SolidCompression=yes
+ChangesAssociations=yes
+PrivilegesRequired=admin
+
+[Tasks]
+Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
+Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked; OnlyBelowVersion: 0,6.1
+
+[Dirs]
+Name: "{app}\Launchers\Games"; Permissions: users-modify
+
+[Files]
+Source: "unpacked\@ProgramFiles\Dragengine\Data\*"; DestDir: "{app}\Data"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "unpacked\@ProgramFiles\Dragengine\Launchers\*"; DestDir: "{app}\Launchers"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "unpacked\@ProgramFiles\Dragengine\Share\*"; DestDir: "{app}\Share"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "unpacked\@System\dragengine.dll"; DestDir: "{sys}"
+Source: "unpacked\@System\delauncher.dll"; DestDir: "{sys}"
+; NOTE: Don't use "Flags: ignoreversion" on any shared system files
+
+[Icons]
+Name: "{group}\Drag[en]gine GUI Launcher"; Filename: "{app}\Launchers\Bin\delauncher-gui.exe"
+Name: "{group}\{cm:UninstallProgram,Drag[en]gine GUI Launcher}"; Filename: "{uninstallexe}"
+Name: "{commondesktop}\Drag[en]gine GUI Launcher"; Filename: "{app}\Launchers\Bin\delauncher-gui.exe"; Tasks: desktopicon
+Name: "{commonappdata}\Microsoft\Internet Explorer\Quick Launch\Drag[en]gine GUI Launcher"; Filename: "{app}\Launchers\Bin\delauncher-gui.exe"; Tasks: quicklaunchicon
+
+[Run]
+Filename: "{app}\Launchers\Bin\delauncher-gui.exe"; Flags: nowait postinstall skipifsilent; Description: "{cm:LaunchProgram,Drag[en]gine Game Engine}"
+
+[Registry]
+Root: "HKCR"; Subkey: ".delga"; ValueType: string; ValueData: "Drag[en]gine DELGA"; Flags: uninsdeletevalue
+Root: "HKCR"; Subkey: "Drag[en]gine DELGA"; ValueType: string; ValueData: "Drag[en]gine DELGA"; Flags: uninsdeletekey
+Root: "HKCR"; Subkey: "Drag[en]gine DELGA\DefaultIcon"; ValueType: string; ValueData: "{app}\Launchers\Bin\delauncher-gui.exe,0"
+Root: "HKCR"; Subkey: "Drag[en]gine DELGA\shell\open\command"; ValueType: string; ValueData: """{app}\Launchers\Bin\delauncher-gui.exe"" ""%1"""; Flags: uninsdeletekey
+Root: "HKCR"; Subkey: "Drag[en]gine DELGA\shell\install"; ValueType: string; ValueData: "Install"; Flags: uninsdeletekey
+Root: "HKCR"; Subkey: "Drag[en]gine DELGA\shell\install\command"; ValueType: string; ValueData: """{app}\Launchers\Bin\delauncher-gui.exe"" --install ""%1"""
+Root: "HKLM"; Subkey: "SOFTWARE\Drag[en]gine"; ValueType: string; ValueName: "PathEngine"; ValueData: "{app}"
+Root: "HKLM"; Subkey: "SOFTWARE\Drag[en]gine"; ValueType: string; ValueName: "PathLauncherGames"; ValueData: "{app}\Launchers\Games"
+
+[Languages]
+Name: "english"; MessagesFile: "compiler:Default.isl"
+
+[CustomMessages]
+english.NewerVersionExists=A newer version of {#SetupSetting("AppName")} is already installed.%n%nInstaller version: {#SetupSetting("AppVersion")}%nCurrent version: 
+
+[Code]
+// check if command line argument is present
+// if CmdLineParamExists('/PARAM') then
+function CmdLineParamExists(const Value: string): Boolean;
+var
+  I: Integer;  
+begin
+  Result := False;
+  for I := 1 to ParamCount do
+    if CompareText(ParamStr(I), Value) = 0 then
+    begin
+      Result := True;
+      Exit;
+    end;
+end;
+
+// find current version before installation
+function InitializeSetup: Boolean;
+var Version: String;
+begin
+  if RegValueExists(HKEY_LOCAL_MACHINE,'Software\Microsoft\Windows\CurrentVersion\Uninstall\{#SetupSetting("AppId")}_is1', 'DisplayVersion') then
+    begin
+      RegQueryStringValue(HKEY_LOCAL_MACHINE,'Software\Microsoft\Windows\CurrentVersion\Uninstall\{#SetupSetting("AppId")}_is1', 'DisplayVersion', Version);
+      if Version > '{#SetupSetting("AppVersion")}' then
+        begin
+          if not WizardSilent then
+            begin
+              MsgBox(ExpandConstant('{cm:NewerVersionExists} '+Version), mbInformation, MB_OK);
+            end;
+          Result := False;
+        end
+      else
+        begin
+          Result := True;
+        end
+    end
+  else
+    begin
+      Result := True;
+    end
+end;

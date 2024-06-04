@@ -21,9 +21,9 @@ if not buildModule:
 	Return()
 
 # fetch values in expanded form for later use
-versionMajor = 1
-versionMinor = 0
-versionString = '{}.{}'.format( versionMajor, versionMinor )
+versionString = '1.3'
+if envModule['force_version']:
+	versionString = envModule['force_version']
 
 pathConfig = '{}/modules/synthesizer/desynthesizer/{}'.format(
 	envModule.subst( envModule[ 'path_de_config' ] ), versionString )
@@ -33,25 +33,8 @@ pathModule = '{}/modules/synthesizer/desynthesizer/{}'.format(
 envModule.Append( CPPFLAGS = parent_env[ 'MODULE_CPPFLAGS' ] )
 envModule.Append( LINKFLAGS = parent_env[ 'MODULE_LINKFLAGS' ] )
 
-# we need this also for soundtouch to fix a bug
-appendLibrary( envModule, parent_targets[ 'dragengine' ], libs )
-
-# required for sound touch. it does some not-so good things which we usually do not allow
-envSpecialSoundTouch = envModule.Clone()
-
-# soundtouch source code contains of warnings and other problems. with with_warnerrors enabled
-# this causes problems. disable the problematic warnings in this case
-#if envSpecialSoundTouch[ 'with_warnerrors' ]:
-#	envSpecialSoundTouch.Append( CPPFLAGS = '-Wno-error=unknown-pragmas' )
-#	envSpecialSoundTouch.Append( CPPFLAGS = '-Wno-error=unused-but-set-variable' )
-"""
-envSpecialSoundTouch.Append( CPPFLAGS = '-Wno-unknown-pragmas' )
-envSpecialSoundTouch.Append(CPPFLAGS = ['-Wno-unused-but-set-variable'])
-envSpecialSoundTouch.Append(CPPFLAGS = ['-Wno-maybe-uninitialized'])
-"""
-
-if envSpecialSoundTouch['with_warnerrors']:
-	envSpecialSoundTouch.Append(CPPFLAGS = ['-Wno-error'])
+appendLibrary(envModule, parent_targets['dragengine'], libs)
+appendLibrary(envModule, parent_targets['lib_soundtouch'], libs)
 
 # setup the builders
 sources = []
@@ -59,27 +42,11 @@ headers = []
 globFiles( envModule, 'src', '*.cpp', sources )
 globFiles( envModule, 'src', '*.h', headers )
 
-sourcesSoundTouch = []
-headersSoundTouch = []
-globFiles( envModule, 'soundtouch', '*.cpp', sourcesSoundTouch )
-globFiles( envModule, 'soundtouch', '*.h', headersSoundTouch )
-
 objects = [ envModule.SharedObject( s ) for s in sources ]
-
-if envModule['OSWindows']:
-	objgroup1 = []
-	for s in sourcesSoundTouch:
-		objgroup1.append( envSpecialSoundTouch.SharedObject( s ) )
-	libgroup1 = envModule.StaticLibrary( target='objgroup1', source=objgroup1 )
-	objects.append( libgroup1 )
-	
-else:
-	for s in sourcesSoundTouch:
-		objects.append( envSpecialSoundTouch.SharedObject( s ) )
 
 #appendLibrary( envModule, parent_targets[ 'dragengine' ], libs )
 
-library = envModule.SharedLibrary( target='synthdesynthesizer', source=objects, LIBS=libs )
+library = envModule.LoadableModule( target='synthdesynthesizer', source=objects, LIBS=libs )
 targetBuild = envModule.Alias( 'synth_desynthesizer_build', library )
 
 install = []
@@ -89,15 +56,28 @@ for l in library:
 		install.append( envModule.Install( pathModule, l ) )
 		archive[ os.path.join( pathModule, l.name ) ] = l
 
+if envModule['OSWindows'] and envModule['CROSSCOMPILE_CLANG'] and envModule['with_install_pdb']:
+	pathPdb = os.path.join(envModule.subst(envModule['path_pdb']), 'EngineModules')
+	install.append(envModule.Install(pathPdb, 'synthdesynthesizer.pdb'))
+	archive['{}/synthdesynthesizer.pdb'.format(pathPdb)] = envModule.File('synthdesynthesizer.pdb')
+
 manifestUpdates = [
 	{ 'action': 'filename', 'name': library[ 0 ].name, 'keyword': 'FILENAME' },
 	{ 'action': 'filesize', 'path': library[ 0 ].abspath, 'keyword': 'FILESIZE' },
-	{ 'action': 'filehash', 'path': library[ 0 ].abspath, 'keyword': 'SHA1SUM' } ]
+	{ 'action': 'filehash', 'path': library[ 0 ].abspath, 'keyword': 'SHA1SUM' },
+	{'action': 'text', 'value': versionString, 'keyword': 'VERSION'}]
+
+for l in reversed(parent_targets['lib_soundtouch']['runtimelibs']):
+	manifestUpdates.append({'action': 'preloadLibrary', 'path': l.name})
+	install.append(envModule.Install(pathModule, l))
+	archive[os.path.join(pathModule, l.name)] = l
 
 manifest = envModule.File( 'src/module.xml' )
 updateManifest = envModule.Command( manifest, manifest.srcnode(),
 	Action( UpdateModuleManifest ), ManifestUpdates=manifestUpdates )
-Depends( updateManifest, library )
+Depends(updateManifest, library)
+Depends(updateManifest, 'SConscript')
+Depends(updateManifest, parent_targets['lib_libpng']['runtimelibs'])
 
 install.append( envModule.Install( pathModule, updateManifest ) )
 archive[ os.path.join( pathModule, 'module.xml' ) ] = updateManifest[ 0 ]
@@ -118,6 +98,7 @@ parent_targets[ 'synth_desynthesizer' ] = {
 	'name' : 'Drag[en]gine Synthesizer Module',
 	'build' : targetBuild,
 	'install' : targetInstall,
+	'install-engine-runtime' : targetInstall,
 	'archive-engine' : archive,
 	'cloc' : buildCloc,
 	'clocReport' : '{}/clocreport.csv'.format( srcdir ) }

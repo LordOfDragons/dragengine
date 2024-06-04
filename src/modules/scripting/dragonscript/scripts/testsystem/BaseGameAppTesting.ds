@@ -1,0 +1,187 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.TestSystem
+
+pin Dragengine.Gui.Layouts
+pin Dragengine.Gui.Events
+pin Dragengine.LoadSave
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+
+/**
+ * \brief Basic implementation of application class for use by testing applications.
+ * \version 1.5
+ * 
+ * Creates a Desktop and WindowTesting instance. Subclass can add TestSuite to the window.
+ * Using the window the tests can be run.
+ */
+class BaseGameAppTesting extends Game
+	private var Console pConsole
+	private var Loaders pLoaders
+	private var Desktop pDesktop
+	private var WindowTesting pWindowTesting
+	private var InputProcessor pInputProcessor
+	
+	private static var BaseGameAppTesting pApp = null
+	
+	
+	
+	/** \brief Create Application. */
+	public func new()
+	end
+	
+	
+	
+	/** \brief The one and only application object */
+	public static func BaseGameAppTesting getApp()
+		return pApp
+	end
+	
+	
+	
+	/** \brief Console object. */
+	public func Console getConsole()
+		return pConsole
+	end
+	
+	/** \brief Loaders. */
+	public func Loaders getLoaders()
+		return pLoaders
+	end
+	
+	/** \brief Desktop widget. */
+	public func Desktop getDesktop()
+		return pDesktop
+	end
+	
+	/** \brief Testing window. */
+	public func WindowTesting getWindowTesting()
+		return pWindowTesting
+	end
+	
+	
+	
+	/**
+	 * \brief Add test suites to test window.
+	 */
+	protected func void addTestSuites()
+	end
+	
+	
+	
+	/** \brief Init application. */
+	public func void initGame()
+		pApp = this
+		
+		InputSystem.setCaptureInputDevices(false)
+		
+		pConsole = Console.new(50)
+		pConsole.addListener(LogConsoleMessages.new())
+		
+		pLoaders = Loaders.new(pConsole)
+		
+		pDesktop = createDesktop()
+		if pDesktop != null
+			pDesktop.setGuiTheme(pLoaders.getGuiTheme().loadFromFile("/shareddata/guithemes/testing.guitheme.xml"))
+			GraphicSystem.getPrimaryCanvas().addCanvas(pDesktop.getCanvasWidget())
+			
+			pWindowTesting = createWindowTesting()
+		end
+		
+		addTestSuites()
+		
+		if pDesktop != null
+			pInputProcessor = WidgetInputProcessor.new(pDesktop)
+			
+		else
+			pInputProcessor = DefaultInputProcessor.new()
+		end
+	end
+	
+	/** \brief Clean up application. */
+	public func void cleanUp()
+		if pWindowTesting != null
+			pWindowTesting.close()
+			pWindowTesting = null
+		end
+		
+		if pDesktop != null
+			GraphicSystem.getPrimaryCanvas().removeCanvas(pDesktop.getCanvasWidget())
+			pDesktop.dispose()
+			pDesktop = null
+		end
+		
+		pInputProcessor = null
+		
+		pApp = null
+	end
+	
+	/** \brief Process input event. */
+	public func void inputEvent(InputEvent event)
+		pInputProcessor.inputEvent(event)
+	end
+	
+	/** \brief User requested window to be closed. */
+	public func void userRequestedQuit()
+		Engine.quit()
+	end
+	
+	/** \brief Frame update. */
+	public func void onFrameUpdate()
+		TimerManager.advanceDefault(Engine.getElapsedTime())
+		FrameUpdateManager.notifyAllDefault()
+	end
+	
+	/** \brief Render window size changed. */
+	public func void onResizeRenderWindow()
+		if pDesktop != null
+			pDesktop.setSize(GraphicSystem.getWindowSize())
+		end
+	end
+	
+	/**
+	 * \brief Create desktop.
+	 * \version 1.13
+	 * 
+	 * Default implementation creates instance of Desktop. Return null
+	 * to not create a desktop for example for CI use.
+	 */
+	protected func Desktop createDesktop()
+		return Desktop.new(GraphicSystem.getWindowSize())
+	end
+	
+	/**
+	 * \brief Create testing window.
+	 * \version 1.13
+	 * 
+	 * Default implementation creates instance of WindowTesting.
+	 * Return null to use your own window or none at all for example for CI use.
+	 */
+	protected func WindowTesting createWindowTesting()
+		return WindowTesting.new(pConsole, pDesktop)
+	end
+end

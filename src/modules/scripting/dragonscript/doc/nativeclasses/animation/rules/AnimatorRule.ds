@@ -26,24 +26,31 @@ class AnimatorRule
 	/** \name Management */
 	/*@{*/
 	/** \brief Set if rule is enabled. */
-	public func void setEnabled( bool enabled )
+	public func void setEnabled(bool enabled)
 	end
 	
 	/**
 	 * \brief Set blend mode.
 	 * \throws EInvalidParam \em blendMode is not a valid value.
 	 */
-	public func void setBlendMode( AnimatorRuleBlendMode blendMode )
+	public func void setBlendMode(AnimatorRuleBlendMode blendMode)
 	end
 	
 	/** \brief Set blend factor clamped to the range from 0 to 1. */
-	public func void setBlendFactor( float blendFactor )
+	public func void setBlendFactor(float blendFactor)
+	end
+	
+	/**
+	 * \brief Invert blend factor (1 - blendFactor).
+	 * \version 1.13
+	 */
+	public func void setInvertBlendFactor(bool invertBlendFactor)
 	end
 	
 	
 	
 	/** \brief Add bone. */
-	public func void addBone( String bone )
+	public func void addBone(String bone)
 	end
 	
 	/** \brief Remove all bones. */
@@ -51,7 +58,30 @@ class AnimatorRule
 	end
 	
 	/** \brief Copy all bones from another rule. */
-	public func void copyBonesFrom( AnimatorRule rule )
+	public func void copyBonesFrom(AnimatorRule rule)
+	end
+	
+	
+	
+	/**
+	 * \brief Add vertex position set.
+	 * \version 1.17
+	 */
+	public func void addVertexPositionSet(String vertexPositionSet)
+	end
+	
+	/**
+	 * \brief Remove all vertex position sets.
+	 * \version 1.17
+	 */
+	public func void removeAllVertexPositionSets()
+	end
+	
+	/**
+	 * \brief Copy all vertex position sets from another rule.
+	 * \version 1.17
+	 */
+	public func void copyVertexPositionSetsFrom(AnimatorRule rule)
 	end
 	/*@}*/
 end

@@ -21,10 +21,11 @@ fixed class AudioSystem
 	/*@{*/
 	/** \brief Active microphone. */
 	public static func Microphone getActiveMicrophone()
+		return null
 	end
 	
 	/** \brief Set active microphone. */
-	public static func setActiveMicrophone( Microphone microphone )
+	public static func void setActiveMicrophone( Microphone microphone )
 	end
 	/*@}*/
 	
@@ -34,6 +35,7 @@ fixed class AudioSystem
 	/*@{*/
 	/** \brief Number of parameters available. */
 	public static func int getParameterCount()
+		return 0
 	end
 	
 	/**
@@ -41,10 +43,12 @@ fixed class AudioSystem
 	 * \throws EOutOfBoundary \em index less than 0 or greater than or equal to getParameterCount().
 	 */
 	public static func ModuleParameter getParameterInfo( int index )
+		return null
 	end
 	
 	/** \brief Named parameter information or \em null if not found. */
 	public static func ModuleParameter getParameterInfo( String name )
+		return null
 	end
 	
 	/**
@@ -52,6 +56,7 @@ fixed class AudioSystem
 	 * \throws EInvalidParam Parameter with name not found.
 	 */
 	public static func String getParameterValue( String name )
+		return null
 	end
 	
 	/**
@@ -63,6 +68,17 @@ fixed class AudioSystem
 	
 	/** \brief Send command. */
 	public static func String sendCommand( String command )
+		return null
+	end
+	
+	/**
+	 * \brief Frame-per-second rate averaged over the last couple of frames.
+	 * \version 1.6
+	 * 
+	 * Returns 0 if module is not using a separate thread.
+	 */
+	public static func int getFPSRate()
+		return 0
 	end
 	/*@}*/
 end

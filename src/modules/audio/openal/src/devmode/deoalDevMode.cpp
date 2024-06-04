@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenAL Audio Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdlib.h>
@@ -56,7 +59,8 @@ pShowActiveMicInfo( false ),
 pCaptureMicRays( false ),
 pCaptureMicRaysXRay( false ),
 pShowAudioModels( false ),
-pCaptureSpeakerDirectClosest( 0 ){
+pCaptureSpeakerDirectClosest( 0 ),
+pVisualizeAudibleSpeakers( 0 ){
 }
 
 deoalDevMode::~deoalDevMode(){
@@ -116,6 +120,10 @@ bool deoalDevMode::ExecuteCommand( const decUnicodeArgumentList &command, decUni
 		}else if( command.MatchesArgumentAt( 0, "dm_capture_speaker_direct_closest" ) ){
 			pCmdCaptureSpeakerDirectClosest( command, answer );
 			return true;
+			
+		}else if( command.MatchesArgumentAt( 0, "dm_visualize_audible_speakers" ) ){
+			pCmdVisualizeAudibleSpeakers( command, answer );
+			return true;
 		}
 		
 	}catch( const deException &exception ){
@@ -140,6 +148,7 @@ void deoalDevMode::ClearCaptureSpeakerClosestDirect(){
 void deoalDevMode::pCmdHelp( const decUnicodeArgumentList &, decUnicodeString &answer ){
 	answer.SetFromUTF8( "dm_help => Displays this help screen.\n" );
 	answer.AppendFromUTF8( "dm_log_calc_envprobe [0|1] => Log environment probe calculations.\n" );
+	answer.AppendFromUTF8( "dm_show_module_info [0|1] => Show module information.\n" );
 	answer.AppendFromUTF8( "dm_show_speaker_env_info [0|1] => Show speaker environment overlay information.\n" );
 	answer.AppendFromUTF8( "dm_show_speaker_env_info_at {off | x y z} => "
 		"Show only speaker environment overlay information at position.\n" );
@@ -237,7 +246,20 @@ void deoalDevMode::pCmdShowActiveMicInfo( const decUnicodeArgumentList &command,
 
 void deoalDevMode::pCmdCaptureMicRays( const decUnicodeArgumentList &command, decUnicodeString & ){
 	pCaptureMicRays = true;
-	pCaptureMicRaysXRay = command.GetArgumentCount() > 1 && command.GetArgumentAt( 1 )->ToUTF8() == "xray";
+	pCaptureMicRaysXRay = false;
+	pCaptureMicRaysVolume = false;
+	
+	const int count = command.GetArgumentCount();
+	int i;
+	for( i=1; i<count; i++ ){
+		const decString arg( command.GetArgumentAt( i )->ToUTF8() );
+		if( arg == "xray" ){
+			pCaptureMicRaysXRay = true;
+			
+		}else if( arg == "volume" ){
+			pCaptureMicRaysVolume = true;
+		}
+	}
 }
 
 void deoalDevMode::pCmdShowAudioModels( const decUnicodeArgumentList &command, decUnicodeString &answer ){
@@ -258,6 +280,21 @@ void deoalDevMode::pCmdShowAudioModels( const decUnicodeArgumentList &command, d
 void deoalDevMode::pCmdCaptureSpeakerDirectClosest( const decUnicodeArgumentList &command, decUnicodeString & ){
 	if( command.GetArgumentCount() == 2 ){
 		pCaptureSpeakerDirectClosest = command.GetArgumentAt( 1 )->ToInt();
+	}
+}
+
+void deoalDevMode::pCmdVisualizeAudibleSpeakers( const decUnicodeArgumentList &command, decUnicodeString &answer ){
+	const int oldValue = pVisualizeAudibleSpeakers;
+	if( command.GetArgumentCount() == 2 ){
+		pVisualizeAudibleSpeakers = command.GetArgumentAt( 1 )->ToInt();
+	}
+	
+	decString text;
+	text.Format( "dm_visualize_audible_speakers = %d\n", pVisualizeAudibleSpeakers );
+	answer.AppendFromUTF8( text );
+	
+	if( pVisualizeAudibleSpeakers != oldValue ){
+		pActiveWorldNotifyDevModeChanged();
 	}
 }
 

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenAL Audio Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -37,6 +40,8 @@
 #include "../buffer/deoalSharedBufferList.h"
 #include "../capabilities/deoalCapabilities.h"
 #include "../component/deoalComponent.h"
+#include "../effect/deoalEffectSlotManager.h"
+#include "../effect/deoalSharedEffectSlotManager.h"
 #include "../environment/raytrace/deoalRayTraceResult.h"
 #include "../environment/raytrace/deoalRayTraceHitElementList.h"
 #include "../environment/raytrace/deoalSoundRayInteractionList.h"
@@ -64,6 +69,7 @@
 #include <dragengine/parallel/deParallelProcessing.h>
 #include <dragengine/resources/sound/deSound.h>
 #include <dragengine/resources/sound/deMicrophone.h>
+#include <dragengine/threading/deMutexGuard.h>
 
 
 
@@ -98,45 +104,52 @@ pOal( oal ),
 
 pAsyncAudio( false ),
 
-pContext( NULL ),
+pContext( nullptr ),
 
 pLeakTracker( *this ),
 
-pDebugInfo( NULL ),
-pDebug( NULL ),
-pSpeakerList( NULL ),
-pLogger( NULL ),
-pDelayed( NULL ),
-pRayTracing( NULL ),
+pDebugInfo( nullptr ),
+pDebug( nullptr ),
+pSpeakerList( nullptr ),
+pLogger( nullptr ),
+pDelayed( nullptr ),
+pRayTracing( nullptr ),
 
-pCaches( NULL ),
-pDecodeBuffer( NULL ),
+pCaches( nullptr ),
+pDecodeBuffer( nullptr ),
 
-pExtensions( NULL ),
-pCapabilities( NULL ),
-pSourceManager( NULL ),
-pSharedBufferList( NULL ),
+pExtensions( nullptr ),
+pCapabilities( nullptr ),
+pEffectSlotManager( nullptr ),
+pSharedEffectSlotManager( nullptr ),
+pSourceManager( nullptr ),
+pSharedBufferList( nullptr ),
 
-pRTParallelEnvProbe( NULL ),
-pRTResultDirect( NULL ),
-pRTHitElementList( NULL ),
-pSRInteractionList( NULL ),
-pWOVRayHitsElement( NULL ),
-pWOVCollectElements( NULL ),
+pRTParallelEnvProbe( nullptr ),
+pRTResultDirect( nullptr ),
+pRTHitElementList( nullptr ),
+pSRInteractionList( nullptr ),
+pWOVRayHitsElement( nullptr ),
+pWOVCollectElements( nullptr ),
 
-pActiveMicrophone( NULL ),
-pDeactiveMicrophone( NULL ),
+pActiveMicrophone( nullptr ),
+pDeactiveMicrophone( nullptr ),
+pActiveWorld( nullptr ),
 
 pElapsed( 0.0f ),
+pElapsedFull( 0.0f ),
 
 // time history
 pTimeHistoryMain( 29, 2 ),
 pTimeHistoryAudio( 29, 2 ),
 pTimeHistoryAudioEstimated( 29, 2 ),
+pTimeHistoryUpdate( 29, 2 ),
 pEstimatedAudioTime( 0.0f ),
 pAccumulatedMainTime( 0.0f ),
 pFrameTimeLimit( 1.0f / 30.0f ),
-pReadyToWait( true ),
+pReadyToWait( false ),
+pWaitSkipped( false ),
+pWaitSkippedElapsed( 0.0f ),
 
 // thread control parameters
 pThreadState( etsStopped ),
@@ -240,13 +253,18 @@ void deoalAudioThread::CleanUp(){
 		pCleanUpThread();
 	}
 	
-	SetActiveMicrophone( NULL );
+	SetActiveMicrophone( nullptr );
 	
-	if( pDeactiveMicrophone && pDeactiveMicrophone->GetParentWorld() ){
-		pDeactiveMicrophone->GetParentWorld()->FreeReference();
+	if( pDeactiveMicrophone ){
 		pDeactiveMicrophone->FreeReference();
 		pDeactiveMicrophone = NULL;
 	}
+	
+	if( pActiveWorld ){
+		pActiveWorld->FreeReference();
+		pActiveWorld = NULL;
+	}
+	pProcessOnceWorld.RemoveAll();
 	
 	if( pDebugInfo ){
 		delete pDebugInfo;
@@ -259,6 +277,8 @@ bool deoalAudioThread::MainThreadWaitFinishAudio(){
 		const float gameTime = pTimerMain.GetElapsedTime();
 		pDebugInfo->StoreTimeThreadMain( gameTime );
 		
+		const deMutexGuard lock( pMutexShared ); // due to pTimeHistoryMain, pEstimatedAudioTime,
+		                                         // pReadyToWait
 		pTimeHistoryMain.Add( gameTime );
 		//pLogger->LogInfo( decString("TimeHistory Main: ") + pTimeHistoryMain.DebugPrint() );
 		
@@ -278,7 +298,8 @@ bool deoalAudioThread::MainThreadWaitFinishAudio(){
 				remainingTime / estimatedGameTime, ratioTimes );
 			*/
 			
-			if( remainingTime / estimatedGameTime >= ratioTimes ){
+			if( remainingTime / estimatedGameTime >= ratioTimes && ! pReadyToWait ){
+// 				pBarrierSyncOut.TryWait( 0 ); // sanity kick to ensure thread can never block forver
 				return false; // enough time to do another game frame update
 			}
 		}
@@ -290,6 +311,7 @@ bool deoalAudioThread::MainThreadWaitFinishAudio(){
 		// accurate than graphic rendering for example. it is better to skip a synchronization
 		// than having the main thread stutter on random waits
 		if( ! pReadyToWait ){
+// 			pBarrierSyncOut.TryWait( 0 ); // sanity kick to ensure thread can never block forver
 			return false;
 		}
 		
@@ -303,12 +325,15 @@ bool deoalAudioThread::MainThreadWaitFinishAudio(){
 	
 	pDebugInfo->StoreTimeThreadMainWaitFinish();
 	
-	return true;
+	return pThreadState == etsFinishedAudio;
 }
 
 void deoalAudioThread::WaitFinishAudio(){
+	{
+	const deMutexGuard lock( pMutexShared );
 	if( ! pReadyToWait ){
 		return; // true if audio thread is waiting on pBarrierSyncIn otherwise pBarrierSyncOut
+	}
 	}
 	
 	switch( pThreadState ){
@@ -344,6 +369,14 @@ void deoalAudioThread::Synchronize(){
 	pDebugInfo->StoreTimeThreadMainSynchronize();
 	
 	pDebugInfo->UpdateDebugInfo();
+	
+	{
+	const deMutexGuard lock( pMutexShared ); // due to pTimeHistoryUpdate
+	pFPSRate = 0;
+	if( pTimeHistoryUpdate.HasMetrics() ){
+		pFPSRate = ( int )( 1.0f / pTimeHistoryUpdate.GetAverage() );
+	}
+	}
 	
 	if( pAsyncAudio ){
 		// begin audio next frame unless thread is not active
@@ -414,8 +447,8 @@ void deoalAudioThread::Run(){
 		try{
 			pCleanUpThread();
 			
-		}catch( const deException &exception ){
-			pLogger->LogException( exception );
+		}catch( const deException &exception2 ){
+			pLogger->LogException( exception2 );
 		}
 		
 		return;
@@ -425,87 +458,145 @@ void deoalAudioThread::Run(){
 	pBarrierSyncOut.Wait();
 	DEBUG_SYNC_RT_PASS("out")
 	
+	// maximum timeout used for skipping waiting on the barrier to avoid buffer underruns.
+	// 
+	// for sound streaming 1s is buffered using 5 chunks of 200ms length. this is resiliant
+	// to a longer delay in the main thread. the same applies to video streaming.
+	// 
+	// for synthesizer streaming 100ms is buffered using 2 50ms buffers. here short buffer
+	// time is required to ensure quick reaction to changing synthesizer controllers.
+	// this processing is resiliant only to short delays.
+	// 
+	// the limiting factor is thus synthesizer processing. if we want to avoid buffer
+	// underruns in those we have to refill buffers before 100ms finishes. 75ms should be
+	// enough but to be on the safe side 50ms is used. this equals a frame rate of 20Hz.
+	// the main thread should never get this slow so 50ms is a good value to use.
+	const int maxSyncSkipDelay = 50;
+	
 	// audio loop
+	pWaitSkipped = false;
+	pWaitSkippedElapsed = 0.0f;
+	
 	pTimerElapsed.Reset();
+	
 	while( true ){
-		// wait for entering synchronize
+		// wait for entering synchronize. we use a timeout here to avoid a long delay by the
+		// main thread causing the buffers to underrun.
+		{
+		const deMutexGuard lock( pMutexShared );
 		pReadyToWait = true;
+		}
+		
+		const int barrierTimeout = decMath::max( maxSyncSkipDelay - ( int )( pElapsed * 1000.0f ), 0 );
 		
 		DEBUG_SYNC_RT_WAIT("in")
-		pBarrierSyncIn.Wait();
-		DEBUG_SYNC_RT_PASS("in")
-		
-		pReadyToWait = false;
-		
-		// main thread is messing with our state here. proceed to next barrier doing nothing
-		// except alter the estimated render time. this value is used by the main thread
-		// only outside the synchronization part so we can update it here
-		
-		pEstimatedAudioTime = decMath::max( pTimeHistoryAudio.GetAverage(),
-			pTimeHistoryAudioEstimated.GetAverage(), pFrameTimeLimit );
-		
-		// wait for leaving synchronize
-		DEBUG_SYNC_RT_WAIT("out")
-		pBarrierSyncOut.Wait();
-		DEBUG_SYNC_RT_PASS("out")
-		
-		// exit if shutting down
-		if( pThreadState == etsCleaningUp ){
-			break;
+		if( pBarrierSyncIn.TryWait( barrierTimeout ) ){
+			DEBUG_SYNC_RT_PASS("in")
 			
-		// audio if ready
-		}else if( pThreadState == etsAudio ){
-			try{
-				pRTParallelEnvProbe->ResetCounters();
-				pRTParallelEnvProbe->ResetElapsedRTTime();
-				pTimerAudio.Reset();
-				
-				pProcessAudio();
-				pThreadFailure = false;
-				DEBUG_SYNC_RT_FAILURE
-				
-				const float timeAudio = pTimerAudio.GetElapsedTime();
-				pTimeHistoryAudio.Add( timeAudio );
-				//pLogger->LogInfo( decString("TimeHistory Audio: ") + pTimeHistoryAudio.DebugPrint() );
-				/*
-				pLogger->LogInfoFormat( "AudioThread Elapsed %dms (FPS %d)",
-					( int )( elapsed * 1000.0f ), ( int )( 1.0f / decMath::max( elapsed, 0.001f ) ) );
-				*/
-				
-				// we do not use directly the time history average value. this is because we
-				// avoid time consuming processes like ray tracing as much as possible. this
-				// means some elapsed audio processing times will be low while other in
-				// between high. to counter this problem we also estimate an expected processing
-				// time by using the timing data collected by the ray tracer.
-				const float elapsedNonRTTime = decMath::max( 0.0f,
-					timeAudio - pRTParallelEnvProbe->GetElapsedRTTime() );
-				const int assumedRTTraceRaysCount = 1;
-				const int assumedRTEstimateRoomCount = 0;
-				const int assumedRTListenCount = 2;
-				const float estimatedAvgRTTime =
-					pRTParallelEnvProbe->GetTimeHistoryTraceSoundRays().GetAverage()
-						* assumedRTTraceRaysCount
-					+ pRTParallelEnvProbe->GetTimeHistoryEstimateRoom().GetAverage()
-						* assumedRTEstimateRoomCount
-					+ pRTParallelEnvProbe->GetTimeHistoryListen().GetAverage()
-						* assumedRTListenCount;
-				pTimeHistoryAudioEstimated.Add( elapsedNonRTTime + estimatedAvgRTTime );
-				
-				// apply frame limiter
-				pLimitFrameRate( timeAudio );
-				pDebugInfo->StoreTimeFrameLimiter( pTimeHistoryMain,
-					pTimeHistoryAudio, pTimeHistoryAudioEstimated );
-				pThreadFailure = false;
-				DEBUG_SYNC_RT_FAILURE
-				
-			}catch( const deException &exception ){
-				pLogger->LogException( exception );
-				pTimerAudio.Reset();
-				pThreadFailure = true;
-				DEBUG_SYNC_RT_FAILURE
+			{
+			const deMutexGuard lock( pMutexShared );
+			pReadyToWait = false;
 			}
 			
-		// everything else take another turn
+			// main thread is messing with our state here. proceed to next barrier doing nothing
+			// except alter the estimated render time. this value is used by the main thread
+			// only outside the synchronization part so we can update it here
+			{
+			const deMutexGuard lock( pMutexShared ); // due to pEstimatedAudioTime
+			pEstimatedAudioTime = decMath::max( pTimeHistoryAudio.GetAverage(),
+				pTimeHistoryAudioEstimated.GetAverage(), pFrameTimeLimit );
+			}
+			
+			// wait for leaving synchronize
+			DEBUG_SYNC_RT_WAIT("out")
+			pBarrierSyncOut.Wait();
+			DEBUG_SYNC_RT_PASS("out")
+			
+			if( pThreadState == etsCleaningUp ){
+				break;
+				
+			}else if( pThreadState == etsAudio ){
+				try{
+					pRTParallelEnvProbe->ResetCounters();
+					pRTParallelEnvProbe->ResetElapsedRTTime();
+					pTimerAudio.Reset();
+					
+					pProcessAudio();
+					pThreadFailure = false;
+					DEBUG_SYNC_RT_FAILURE
+					
+					const float timeAudio = pTimerAudio.GetElapsedTime();
+					pTimeHistoryAudio.Add( timeAudio );
+					//pLogger->LogInfo( decString("TimeHistory Audio: ") + pTimeHistoryAudio.DebugPrint() );
+					/*
+					pLogger->LogInfoFormat( "AudioThread Elapsed %dms (FPS %d)",
+						( int )( elapsed * 1000.0f ), ( int )( 1.0f / decMath::max( elapsed, 0.001f ) ) );
+					*/
+					
+					// we do not use directly the time history average value. this is because we
+					// avoid time consuming processes like ray tracing as much as possible. this
+					// means some elapsed audio processing times will be low while other in
+					// between high. to counter this problem we also estimate an expected processing
+					// time by using the timing data collected by the ray tracer.
+					const float elapsedNonRTTime = decMath::max( 0.0f,
+						timeAudio - pRTParallelEnvProbe->GetElapsedRTTime() );
+					const int assumedRTTraceRaysCount = 1;
+					const int assumedRTEstimateRoomCount = 0;
+					const int assumedRTListenCount = 2;
+					const float estimatedAvgRTTime =
+						pRTParallelEnvProbe->GetTimeHistoryTraceSoundRays().GetAverage()
+							* assumedRTTraceRaysCount
+						+ pRTParallelEnvProbe->GetTimeHistoryEstimateRoom().GetAverage()
+							* assumedRTEstimateRoomCount
+						+ pRTParallelEnvProbe->GetTimeHistoryListen().GetAverage()
+							* assumedRTListenCount;
+					pTimeHistoryAudioEstimated.Add( elapsedNonRTTime + estimatedAvgRTTime );
+					
+					// apply frame limiter
+					pLimitFrameRate( timeAudio );
+					{
+					const deMutexGuard lock( pMutexShared ); // due to pTimeHistoryMain
+					pDebugInfo->StoreTimeFrameLimiter( pTimeHistoryMain,
+						pTimeHistoryAudio, pTimeHistoryAudioEstimated );
+					}
+					pThreadFailure = false;
+					DEBUG_SYNC_RT_FAILURE
+					
+				}catch( const deException &exception ){
+					pLogger->LogException( exception );
+					pTimerAudio.Reset();
+					pThreadFailure = true;
+					DEBUG_SYNC_RT_FAILURE
+				}
+			}
+			
+		}else{
+			// waiting skipped to avoid buffer underruns. only fill up buffers avoiding
+			// all processing which takes potentially a long time.
+			// 
+			// for this reason we do also not update the timings since this is no full
+			// audio run.
+			// 
+			// also the pReadyToWait flag is not cleared so the main thread waits on
+			// the barrier in case it arrives while we fill up buffers
+			DEBUG_SYNC_RT_PASS("in")
+			
+			if( pThreadState == etsCleaningUp ){
+				break;
+				
+			}else if( pThreadState == etsAudio ){
+				try{
+					pProcessAudioFast();
+					pThreadFailure = false;
+					DEBUG_SYNC_RT_FAILURE
+					
+				}catch( const deException &exception ){
+					pLogger->LogException( exception );
+					pTimerAudio.Reset();
+					pThreadFailure = true;
+					DEBUG_SYNC_RT_FAILURE
+				}
+			}
 		}
 	}
 	
@@ -532,29 +623,36 @@ void deoalAudioThread::SetActiveMicrophone( deoalAMicrophone *microphone ){
 		pDeactiveMicrophone = NULL;
 	}
 	
-	if( microphone == pActiveMicrophone ){
-		return;
+	if( microphone != pActiveMicrophone ){
+		if( pActiveMicrophone ){
+			pDeactiveMicrophone = pActiveMicrophone;
+			pActiveMicrophone->SetActive( false );
+		}
+		
+		pActiveMicrophone = microphone;
+		
+		if( microphone ){
+			microphone->AddReference();
+			microphone->SetActive( true );
+		}
 	}
 	
-	if( pActiveMicrophone ){
-		pDeactiveMicrophone = pActiveMicrophone;
-		pActiveMicrophone->SetActive( false );
-	}
-	
-	pActiveMicrophone = microphone;
-	
-	if( microphone ){
-		microphone->AddReference();
-		microphone->SetActive( true );
+	deoalAWorld * const world = microphone ? microphone->GetParentWorld() : nullptr;
+	if( world != pActiveWorld ){
+		if( pActiveWorld ){
+			pProcessOnceWorld.AddIfAbsent( pActiveWorld );
+			pActiveWorld->FreeReference();
+		}
+		
+		pActiveWorld = world;
+		
+		if( world ){
+			world->AddReference();
+			pProcessOnceWorld.RemoveIfPresent( world );
+		}
 	}
 }
 
-deoalAWorld *deoalAudioThread::GetActiveWorld() const{
-	if( ! pActiveMicrophone ){
-		return NULL;
-	}
-	return pActiveMicrophone->GetParentWorld();
-}
 
 
 // Private Functions
@@ -569,21 +667,25 @@ void deoalAudioThread::pCleanUp(){
 
 
 void deoalAudioThread::pInitThreadPhase1(){
-	// open device. this has to be done before anything else
+	// open device. this has to be done first
 	pContext = new deoalATContext( *this );
 	pContext->OpenDevice();
 	
-	// check extensions. this has to be done after the device has been created because
-	// extensions support is device specific
+	// check device extensions. this has to be done after the device has been opened but
+	// before a context has been created since context creations required this information
 	pExtensions = new deoalExtensions( *this );
+	pExtensions->ScanDeviceExtensions();
+	
+	// create context. this depends on the present device extensions
+	pContext->CreateContext();
+	
+	// check context extensions. this has to be done after the context has been created
+	pExtensions->ScanContextExtensions();
 	pExtensions->PrintSummary();
 	if( ! pExtensions->VerifyPresence() ){
 		pLogger->LogError( "Extension problems present" );
 		DETHROW( deeInvalidParam );
 	}
-	
-	// create context. this depends on the present extensions
-	pContext->CreateContext();
 	
 	// detect capabilites. this has to be done after creating the context since
 	// creating the context sets the actual capabilities
@@ -598,6 +700,8 @@ void deoalAudioThread::pInitThreadPhase1(){
 	
 	// create working objects
 	pCaches = new deoalCaches( *this );
+	pEffectSlotManager = new deoalEffectSlotManager( *this );
+	pSharedEffectSlotManager = new deoalSharedEffectSlotManager( *this );
 	pSourceManager = new deoalSourceManager( *this );
 	pSpeakerList = new deoalSpeakerList;
 	pDecodeBuffer = new deoalDecodeBuffer( ( 44100 / 10 ) * 4 );
@@ -611,7 +715,8 @@ void deoalAudioThread::pInitThreadPhase1(){
 	pWOVCollectElements = new deoalWOVCollectElements;
 	
 	// set default parameters
-	alDistanceModel( AL_INVERSE_DISTANCE_CLAMPED );
+// 	alDistanceModel( AL_INVERSE_DISTANCE_CLAMPED );
+	alDistanceModel( AL_NONE );
 }
 
 void deoalAudioThread::pCleanUpThread(){
@@ -622,15 +727,18 @@ void deoalAudioThread::pCleanUpThread(){
 	
 	pLogger->Synchronize();
 	
-	SetActiveMicrophone( NULL );
+	SetActiveMicrophone( nullptr );
 	
 	if( pDeactiveMicrophone ){
-		if( pDeactiveMicrophone->GetParentWorld() ){
-			pDeactiveMicrophone->GetParentWorld()->FreeReference();
-		}
 		pDeactiveMicrophone->FreeReference();
 		pDeactiveMicrophone = NULL;
 	}
+	
+	if( pActiveWorld ){
+		pActiveWorld->FreeReference();
+		pActiveWorld = NULL;
+	}
+	pProcessOnceWorld.RemoveAll();
 	
 	if( pWOVCollectElements ){
 		delete pWOVCollectElements;
@@ -651,6 +759,9 @@ void deoalAudioThread::pCleanUpThread(){
 		delete pRTParallelEnvProbe;
 	}
 	
+	if( pSharedEffectSlotManager ){
+		delete pSharedEffectSlotManager;
+	}
 	if( pSpeakerList ){
 		delete pSpeakerList;
 	}
@@ -667,6 +778,9 @@ void deoalAudioThread::pCleanUpThread(){
 	
 	if( pSourceManager ){
 		delete pSourceManager;
+	}
+	if( pEffectSlotManager ){
+		delete pEffectSlotManager;
 	}
 	
 	if( pSharedBufferList ){
@@ -757,11 +871,31 @@ void deoalAudioThread::pProcessAudio(){
 	pDebugInfo->ResetTimersAudioThread();
 	pDelayed->ProcessFreeOperations( false );
 	
-	pElapsed = pTimerElapsed.GetElapsedTime();
+	pElapsedFull = pElapsed = pTimerElapsed.GetElapsedTime();
+	
+	if( pWaitSkipped ){
+		pElapsedFull += pWaitSkippedElapsed;
+		// pLogger->LogInfoFormat( "ProcessAudio: skipped %.3f [%.3f, %.3f] (%.1f)", pElapsedFull, pWaitSkippedElapsed, pElapsed, 1.0f / pElapsed );
+		pWaitSkippedElapsed = 0.0f;
+		pWaitSkipped = false;
+		
+	}else{
+		const deMutexGuard lock( pMutexShared ); // due to pTimeHistoryUpdate
+		pTimeHistoryUpdate.Add( pElapsed );
+		// pLogger->LogInfoFormat( "ProcessAudio: %.3f (%.1f)", pElapsed, 1.0f / pElapsed );
+	}
+	
+	while( pProcessOnceWorld.GetCount() > 0 ){
+		deoalAWorld * const world = ( deoalAWorld* )pProcessOnceWorld.GetAt( 0 );
+		world->PrepareProcessAudio();
+		pProcessOnceWorld.Remove( world );
+	}
 	
 	if( pDeactiveMicrophone ){
 		pDeactiveMicrophone->ProcessDeactivate();
 	}
+	
+	pEffectSlotManager->Update( pElapsedFull );
 	
 	if( pActiveMicrophone ){
 		pActiveMicrophone->ProcessAudio();
@@ -774,6 +908,25 @@ void deoalAudioThread::pProcessAudio(){
 	pDelayed->ProcessFreeOperations( false );
 	pLogger->Synchronize();
 	pDebugInfo->StoreTimeAudioThread();
+}
+
+void deoalAudioThread::pProcessAudioFast(){
+	pElapsed = pTimerElapsed.GetElapsedTime();
+	// pLogger->LogInfoFormat( "ProcessAudioFast: %.3f", pElapsed );
+	
+	if( pWaitSkipped ){
+// 		pLogger->LogWarnFormat( "Buffer underflow protection: %dms (+)", ( int )( pElapsed * 1000.0f ) );
+		
+	}else{
+// 		pLogger->LogWarnFormat( "Buffer underflow protection: %dms", ( int )( pElapsed * 1000.0f ) );
+		pWaitSkippedElapsed += pElapsed;
+		pWaitSkipped = true;
+	}
+	
+	if( pActiveMicrophone ){
+		pActiveMicrophone->ProcessAudioFast();
+	}
+	pLogger->Synchronize();
 }
 
 void deoalAudioThread::pReportLeaks(){

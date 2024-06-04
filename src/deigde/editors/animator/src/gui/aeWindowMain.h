@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Animator Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _AEWINDOWMAIN_H_
@@ -61,7 +64,7 @@ class igdeStepableTask;
 
 
 /**
- * \brief Main window.
+ * Main window.
  */
 class aeWindowMain : public igdeEditorWindow{
 private:
@@ -79,6 +82,7 @@ private:
 	igdeIconReference pIconRuleStateSnapshot;
 	igdeIconReference pIconRuleSubAnimator;
 	igdeIconReference pIconRuleTrackTo;
+	igdeIconReference pIconRuleMirror;
 	
 	igdeActionReference pActionFileNew;
 	igdeActionReference pActionFileOpen;
@@ -97,6 +101,7 @@ private:
 	igdeActionReference pActionEditDDBoneSize;
 	
 	igdeActionReference pActionControllerAdd;
+	igdeActionReference pActionControllerDuplicate;
 	igdeActionReference pActionControllerRemove;
 	igdeActionReference pActionControllerUp;
 	igdeActionReference pActionControllerDown;
@@ -118,6 +123,7 @@ private:
 	igdeActionReference pActionRuleAddSubAnimator;
 	igdeActionReference pActionRuleAddTrackTo;
 	igdeActionReference pActionRuleAddLimit;
+	igdeActionReference pActionRuleAddMirror;
 	
 	igdeActionReference pActionRuleAddIntoGroupAnim;
 	igdeActionReference pActionRuleAddIntoGroupAnimDiff;
@@ -131,6 +137,7 @@ private:
 	igdeActionReference pActionRuleAddIntoGroupSubAnimator;
 	igdeActionReference pActionRuleAddIntoGroupTrackTo;
 	igdeActionReference pActionRuleAddIntoGroupLimit;
+	igdeActionReference pActionRuleAddIntoGroupMirror;
 	
 	igdeActionReference pActionRuleInsertAnim;
 	igdeActionReference pActionRuleInsertAnimDiff;
@@ -144,6 +151,7 @@ private:
 	igdeActionReference pActionRuleInsertSubAnimator;
 	igdeActionReference pActionRuleInsertTrackTo;
 	igdeActionReference pActionRuleInsertLimit;
+	igdeActionReference pActionRuleInsertMirror;
 	
 	igdeActionReference pActionRuleRemove;
 	igdeActionReference pActionRuleUp;
@@ -166,11 +174,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create main window. */
+	/** Create main window. */
 	aeWindowMain( aeIGDEModule &module );
 	
 protected:
-	/** \brief Clean up main window. */
+	/** Clean up main window. */
 	virtual ~aeWindowMain();
 	/*@}*/
 	
@@ -179,52 +187,52 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Ask user if it is okay to quit the application. */
+	/** Ask user if it is okay to quit the application. */
 	bool QuitRequest();
 	
-	/** \brief Reset views. */
+	/** Reset views. */
 	void ResetViews();
 	
-	/** \brief Configuration. */
+	/** Configuration. */
 	inline aeConfiguration &GetConfiguration() const{ return *pConfiguration; }
 	
-	/** \brief Clipboard. */
+	/** Clipboard. */
 	inline igdeClipboard &GetClipboard(){ return pClipboard; }
 	inline const igdeClipboard &GetClipboard() const{ return pClipboard; }
 	
-	/** \brief 3D View. */
+	/** 3D View. */
 	inline aeView3D &GetView3D() const{ return *pView3D; }
 	
-	/** \brief Load save system. */
+	/** Load save system. */
 	inline aeLoadSaveSystem &GetLoadSaveSystem() const{ return *pLoadSaveSystem; }
 	
-	/** \brief Animator. */
+	/** Animator. */
 	inline aeAnimator *GetAnimator() const{ return pAnimator; }
 	
-	/** \brief Set animator. */
+	/** Set animator. */
 	void SetAnimator( aeAnimator *animator );
 	
-	/** \brief Create animator. */
+	/** Create animator. */
 	void CreateNewAnimator();
 	
-	/** \brief Save animator. */
+	/** Save animator. */
 	void SaveAnimator( const char *filename );
 	
-	/** \brief Create a new rule of a given type using the matching undo action. */
+	/** Create a new rule of a given type using the matching undo action. */
 	void CreateRule( deAnimatorRuleVisitorIdentify::eRuleTypes type, bool insert, bool intoGroup );
 	
-	/** \brief Sets the visibility of the progress bar in the status bar. */
+	/** Sets the visibility of the progress bar in the status bar. */
 	void SetProgressVisible( bool visible );
 	
-	/** \brief Sets the progress bar progress. */
+	/** Sets the progress bar progress. */
 	void SetProgress( float progress );
 	
-	/** \brief Sets the progress text. */
+	/** Sets the progress text. */
 	void SetProgressText( const char *text );
 	
 	
 	
-	/** \brief Icons. */
+	/** Icons. */
 	inline igdeIcon *GetIconRuleAnimation() const{ return pIconRuleAnimation; }
 	inline igdeIcon *GetIconRuleAnimationDifference() const{ return pIconRuleAnimationDifference; }
 	inline igdeIcon *GetIconRuleAnimationSelect() const{ return pIconRuleAnimationSelect; }
@@ -237,12 +245,14 @@ public:
 	inline igdeIcon *GetIconRuleStateSnapshot() const{ return pIconRuleStateSnapshot; }
 	inline igdeIcon *GetIconRuleSubAnimator() const{ return pIconRuleSubAnimator; }
 	inline igdeIcon *GetIconRuleTrackTo() const{ return pIconRuleTrackTo; }
+	inline igdeIcon *GetIconRuleMirror() const{ return pIconRuleMirror; }
 	igdeIcon *GetRuleIcon( deAnimatorRuleVisitorIdentify::eRuleTypes type ) const;
 	
 	
 	
-	/** \brief Actions. */
+	/** Actions. */
 	inline igdeAction *GetActionControllerAdd() const{ return pActionControllerAdd; }
+	inline igdeAction *GetActionControllerDuplicate() const{ return pActionControllerDuplicate; }
 	inline igdeAction *GetActionControllerRemove() const{ return pActionControllerRemove; }
 	inline igdeAction *GetActionControllerUp() const{ return pActionControllerUp; }
 	inline igdeAction *GetActionControllerDown() const{ return pActionControllerDown; }
@@ -264,6 +274,7 @@ public:
 	inline igdeAction *GetActionRuleAddSubAnimator() const{ return pActionRuleAddSubAnimator; }
 	inline igdeAction *GetActionRuleAddTrackTo() const{ return pActionRuleAddTrackTo; }
 	inline igdeAction *GetActionRuleAddLimit() const{ return pActionRuleAddLimit; }
+	inline igdeAction *GetActionRuleAddMirror() const{ return pActionRuleAddMirror; }
 	
 	inline igdeAction *GetActionRuleAddIntoGroupAnim() const{ return pActionRuleAddIntoGroupAnim; }
 	inline igdeAction *GetActionRuleAddIntoGroupAnimDiff() const{ return pActionRuleAddIntoGroupAnimDiff; }
@@ -277,6 +288,7 @@ public:
 	inline igdeAction *GetActionRuleAddIntoGroupSubAnimator() const{ return pActionRuleAddIntoGroupSubAnimator; }
 	inline igdeAction *GetActionRuleAddIntoGroupTrackTo() const{ return pActionRuleAddIntoGroupTrackTo; }
 	inline igdeAction *GetActionRuleAddIntoGroupLimit() const{ return pActionRuleAddIntoGroupLimit; }
+	inline igdeAction *GetActionRuleAddIntoGroupMirror() const{ return pActionRuleAddIntoGroupMirror; }
 	
 	inline igdeAction *GetActionRuleInsertAnim() const{ return pActionRuleInsertAnim; }
 	inline igdeAction *GetActionRuleInsertAnimDiff() const{ return pActionRuleInsertAnimDiff; }
@@ -290,6 +302,7 @@ public:
 	inline igdeAction *GetActionRuleInsertSubAnimator() const{ return pActionRuleInsertSubAnimator; }
 	inline igdeAction *GetActionRuleInsertTrackTo() const{ return pActionRuleInsertTrackTo; }
 	inline igdeAction *GetActionRuleInsertLimit() const{ return pActionRuleInsertLimit; }
+	inline igdeAction *GetActionRuleInsertMirror() const{ return pActionRuleInsertMirror; }
 	
 	inline igdeAction *GetActionRuleRemove() const{ return pActionRuleRemove; }
 	inline igdeAction *GetActionRuleUp() const{ return pActionRuleUp; }
@@ -297,29 +310,29 @@ public:
 	
 	
 	
-	/** \brief Game engine is about to be started. */
+	/** Game engine is about to be started. */
 	virtual void OnBeforeEngineStart();
 	
-	/** \brief Game engine has been started. */
+	/** Game engine has been started. */
 	virtual void OnAfterEngineStart();
 	
-	/** \brief Game engine is about to be stopped. */
+	/** Game engine is about to be stopped. */
 	virtual void OnBeforeEngineStop();
 	
-	/** \brief Game engine has been stopped. */
+	/** Game engine has been stopped. */
 	virtual void OnAfterEngineStop();
 	
-	/** \brief Module has been activated. */
+	/** Module has been activated. */
 	virtual void OnActivate();
 	
-	/** \brief Module has been deactivated. */
+	/** Module has been deactivated. */
 	virtual void OnDeactivate();
 	
-	/** \brief Game like frame update. */
+	/** Game like frame update. */
 	virtual void OnFrameUpdate( float elapsed );
 	
 	/**
-	 * \brief Retrieves a list of changed documents.
+	 * Retrieves a list of changed documents.
 	 * 
 	 * This list is requested by the IGDE if a game project is closed due to creating or
 	 * loading a new one or because the application is about to be closed. Editors modules
@@ -330,12 +343,12 @@ public:
 	virtual void GetChangedDocuments( decStringList &list );
 	
 	/**
-	 * \brief Requests a document to be loaded.
+	 * Requests a document to be loaded.
 	 */
 	virtual void LoadDocument( const char *filename );
 	
 	/**
-	 * \brief Requests a document to be saved.
+	 * Requests a document to be saved.
 	 * 
 	 * The document has to be saved if changed. If not changed this call can be ignored.
 	 * This call is usually made after a previous call to \ref GetUnsavedDocuments.
@@ -345,12 +358,12 @@ public:
 	virtual bool SaveDocument( const char *filename );
 	
 	/**
-	 * \brief Recent files changed.
+	 * Recent files changed.
 	 */
 	virtual void RecentFilesChanged();
 	
 	/**
-	 * \brief The game project has changed.
+	 * The game project has changed.
 	 * 
 	 * Notification send to the editor modules after a new game project has been set.
 	 * The editor module has to discard all open documents and all references held of
@@ -360,7 +373,7 @@ public:
 	virtual void OnGameProjectChanged();
 	
 	/**
-	 * \brief Project game definition changed.
+	 * Project game definition changed.
 	 * 
 	 * Called after an editor changed the game definition. The old game definition used so
 	 * far is replaced by a new game definition. The module has to update everything

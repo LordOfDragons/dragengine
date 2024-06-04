@@ -1,23 +1,28 @@
-/* 
- * Drag[en]gine IGDE
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
+
+#ifdef IGDE_TOOLKIT_FOX
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -26,6 +31,7 @@
 #include "igdeNativeFoxTreeList.h"
 #include "igdeNativeFoxTreeItem.h"
 #include "igdeNativeFoxResizer.h"
+#include "../../igdeContainer.h"
 #include "../../igdeTreeList.h"
 #include "../../igdeCommonDialogs.h"
 #include "../../model/igdeTreeItem.h"
@@ -77,36 +83,38 @@ FXIMPLEMENT( igdeNativeFoxTreeList, FXVerticalFrame,
 
 igdeNativeFoxTreeList::igdeNativeFoxTreeList(){ }
 
-igdeNativeFoxTreeList::igdeNativeFoxTreeList( igdeTreeList &owner, FXComposite *parent,
+igdeNativeFoxTreeList::igdeNativeFoxTreeList( igdeTreeList &powner, FXComposite *pparent,
 	const igdeUIFoxHelper::sChildLayoutFlags &layoutFlags, const igdeGuiTheme &guitheme ) :
-FXVerticalFrame( parent, layoutFlags.flags | FRAME_SUNKEN, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ),
-pOwner( &owner ),
-pFont( TreeListFont( owner, guitheme ) ),
-pTreeList( new FXTreeList( this, this, ID_TREELIST, LAYOUT_FILL | TreeListFlags( owner ) ) ),
+FXVerticalFrame( pparent, layoutFlags.flags | FRAME_SUNKEN, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ),
+pOwner( &powner ),
+pFont( TreeListFont( powner, guitheme ) ),
+pTreeList( new FXTreeList( this, this, ID_TREELIST, LAYOUT_FILL | TreeListFlags( powner ) ) ),
 pResizer( NULL )
 {
+	#ifndef OS_W32_VS
 	(void)TreeListPadLeft;
 	(void)TreeListPadRight;
 	(void)TreeListPadTop;
 	(void)TreeListPadBottom;
+	#endif
 	
 	if( ! pOwner->GetVisible() ){
 		hide();
 	}
 	pTreeList->setFont( (FXFont*)pFont->GetNativeFont() );
 	
-	pTreeList->setNumVisible( owner.GetRows() );
-	if( ! owner.GetEnabled() ){
+	pTreeList->setNumVisible( powner.GetRows() );
+	if( ! powner.GetEnabled() ){
 		pTreeList->disable();
 	}
 	
 	//setTipText( owner.GetDescription().GetString() ); // nto supported
-	pTreeList->setHelpText( owner.GetDescription().GetString() );
+	pTreeList->setHelpText( powner.GetDescription().GetString() );
 	
 	BuildTree();
 	
-	pTreeList->setCurrentItem( owner.GetSelection() ?
-		( igdeNativeFoxTreeItem* )owner.GetSelection()->GetNativeWidget() : NULL );
+	pTreeList->setCurrentItem( powner.GetSelection() ?
+		( igdeNativeFoxTreeItem* ) powner.GetSelection()->GetNativeWidget() : NULL );
 	
 	if( layoutFlags.canResizeVertical || ( layoutFlags.flags & LAYOUT_FILL_Y ) == 0 ){
 		pResizer = new igdeNativeFoxResizer( this, this, ID_RESIZER );
@@ -116,6 +124,31 @@ pResizer( NULL )
 igdeNativeFoxTreeList::~igdeNativeFoxTreeList(){
 	// drop native widget of all tree items
 	pDropItemsNativeWidget( NULL );
+}
+
+igdeNativeFoxTreeList *igdeNativeFoxTreeList::CreateNativeWidget( igdeTreeList &powner ){
+	if( ! powner.GetParent() ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	FXComposite * const pparent = ( FXComposite* ) powner.GetParent()->GetNativeContainer();
+	if( ! pparent ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	return new igdeNativeFoxTreeList( powner, pparent,
+		igdeUIFoxHelper::GetChildLayoutFlagsAll( &powner ), *powner.GetGuiTheme() );
+}
+
+void igdeNativeFoxTreeList::PostCreateNativeWidget(){
+	FXComposite &pparent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
+	if( pparent.id() ){
+		create();
+	}
+}
+
+void igdeNativeFoxTreeList::DestroyNativeWidget(){
+	delete this;
 }
 
 
@@ -161,10 +194,10 @@ void igdeNativeFoxTreeList::MakeItemVisible( igdeTreeItem *item ){
 	}
 	
 	/*
-	igdeNativeFoxTreeItem *parent = native->getParent();
-	while( parent ){
-		pTreeList->expandTree( parent );
-		parent = parent->getParent();
+	igdeNativeFoxTreeItem *pparent = native->getParent();
+	while( pparent ){
+		pTreeList->expandTree( pparent );
+		pparent = pparent->getParent();
 	}
 	*/
 	
@@ -271,15 +304,15 @@ void igdeNativeFoxTreeList::RemoveItem( igdeTreeItem *item ){
 	}
 }
 
-void igdeNativeFoxTreeList::RemoveAllItems( igdeTreeItem *parent ){
-	igdeTreeItem *child = parent ? parent->GetFirstChild() : pOwner->GetFirstChild();
+void igdeNativeFoxTreeList::RemoveAllItems( igdeTreeItem *pparent ){
+	igdeTreeItem *child = pparent ? pparent->GetFirstChild() : pOwner->GetFirstChild();
 	while( child ){
 		RemoveItem( child );
 		child = child->GetNext();
 	}
 	
-	if( parent ){
-		igdeNativeFoxTreeItem * const native = ( igdeNativeFoxTreeItem* )parent->GetNativeWidget();
+	if( pparent ){
+		igdeNativeFoxTreeItem * const native = ( igdeNativeFoxTreeItem* ) pparent->GetNativeWidget();
 		if( native ){
 			pTreeList->removeItems( native->getFirst(), native->getLast() );
 			SelectItem( pOwner->GetSelection() );
@@ -358,18 +391,37 @@ void igdeNativeFoxTreeList::Focus(){
 	pTreeList->setFocus();
 }
 
+void igdeNativeFoxTreeList::UpdateEnabled(){
+	if( pOwner->GetEnabled() ){
+		pTreeList->enable();
+		
+	}else{
+		pTreeList->disable();
+	}
+}
+
+void igdeNativeFoxTreeList::UpdateRows(){
+	pTreeList->setNumVisible( pOwner->GetRows() );
+}
+
+void igdeNativeFoxTreeList::UpdateDescription(){
+	const char * const description = pOwner->GetDescription();
+	//pTreeList->setTipText( description ); // not supported
+	pTreeList->setHelpText( description );
+}
+
 
 
 int igdeNativeFoxTreeList::TreeListFlags( const igdeTreeList & ){
 	return TREELIST_BROWSESELECT | TREELIST_SHOWS_LINES | TREELIST_SHOWS_BOXES | TREELIST_ROOT_BOXES;
 }
 
-igdeFont *igdeNativeFoxTreeList::TreeListFont( const igdeTreeList &owner, const igdeGuiTheme &guitheme ){
+igdeFont *igdeNativeFoxTreeList::TreeListFont( const igdeTreeList &powner, const igdeGuiTheme &guitheme ){
 	igdeFont::sConfiguration configuration;
-	owner.GetEnvironment().GetApplicationFont( configuration );
+	powner.GetEnvironment().GetApplicationFont( configuration );
 	
 	if( guitheme.HasProperty( igdeGuiThemePropertyNames::treeListFontSizeAbsolute ) ){
-		configuration.size = guitheme.GetIntProperty(
+		configuration.size = ( float )guitheme.GetIntProperty(
 			igdeGuiThemePropertyNames::treeListFontSizeAbsolute, 0 );
 		
 	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::treeListFontSize ) ){
@@ -377,7 +429,7 @@ igdeFont *igdeNativeFoxTreeList::TreeListFont( const igdeTreeList &owner, const 
 			igdeGuiThemePropertyNames::treeListFontSize, 1.0f );
 		
 	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::fontSizeAbsolute ) ){
-		configuration.size = guitheme.GetIntProperty(
+		configuration.size = ( float )guitheme.GetIntProperty(
 			igdeGuiThemePropertyNames::fontSizeAbsolute, 0 );
 		
 	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::fontSize ) ){
@@ -385,7 +437,7 @@ igdeFont *igdeNativeFoxTreeList::TreeListFont( const igdeTreeList &owner, const 
 			igdeGuiThemePropertyNames::fontSize, 1.0f );
 	}
 	
-	return owner.GetEnvironment().GetSharedFont( configuration );
+	return powner.GetEnvironment().GetSharedFont( configuration );
 }
 
 int igdeNativeFoxTreeList::TreeListPadLeft( const igdeGuiTheme &guitheme ){
@@ -409,8 +461,8 @@ int igdeNativeFoxTreeList::TreeListPadBottom( const igdeGuiTheme &guitheme ){
 // Events
 ///////////
 
-long igdeNativeFoxTreeList::onExpanded( FXObject*, FXSelector, void *data ){
-	const igdeNativeFoxTreeItem &nativeItem = *( ( igdeNativeFoxTreeItem* )data );
+long igdeNativeFoxTreeList::onExpanded( FXObject*, FXSelector, void *pdata ){
+	const igdeNativeFoxTreeItem &nativeItem = *( ( igdeNativeFoxTreeItem* )pdata );
 	
 	try{
 		nativeItem.GetOwner()->SetExpanded( true );
@@ -425,8 +477,8 @@ long igdeNativeFoxTreeList::onExpanded( FXObject*, FXSelector, void *data ){
 	return 0;
 }
 
-long igdeNativeFoxTreeList::onCollapsed( FXObject*, FXSelector, void *data ){
-	const igdeNativeFoxTreeItem &nativeItem = *( ( igdeNativeFoxTreeItem* )data );
+long igdeNativeFoxTreeList::onCollapsed( FXObject*, FXSelector, void *pdata ){
+	const igdeNativeFoxTreeItem &nativeItem = *( ( igdeNativeFoxTreeItem* )pdata );
 	
 	try{
 		nativeItem.GetOwner()->SetExpanded( false );
@@ -446,7 +498,7 @@ long igdeNativeFoxTreeList::onListCommand( FXObject*, FXSelector, void* ){
 	return 1;
 }
 
-long igdeNativeFoxTreeList::onListChanged( FXObject *sender, FXSelector selector, void *data ){
+long igdeNativeFoxTreeList::onListChanged( FXObject*, FXSelector, void* ){
 	if( ! pOwner->GetEnabled() ){
 		return 0;
 	}
@@ -466,12 +518,12 @@ long igdeNativeFoxTreeList::onListChanged( FXObject *sender, FXSelector selector
 	return 1;
 }
 
-long igdeNativeFoxTreeList::onListRightMouseDown( FXObject*, FXSelector, void *data ){
+long igdeNativeFoxTreeList::onListRightMouseDown( FXObject*, FXSelector, void *pdata ){
 	if( ! pOwner->GetEnabled() ){
 		return 1;
 	}
 	
-	const FXEvent &event = *( ( FXEvent* )data );
+	const FXEvent &event = *( ( FXEvent* )pdata );
 	
 	igdeNativeFoxTreeItem * const nativeItem = ( igdeNativeFoxTreeItem* )
 		pTreeList->getItemAt( event.win_x, event.win_y );
@@ -487,12 +539,12 @@ long igdeNativeFoxTreeList::onListRightMouseUp( FXObject*, FXSelector, void* ){
 	return 1;
 }
 
-long igdeNativeFoxTreeList::onListDoubleClicked( FXObject *sender, FXSelector selector, void *data ){
+long igdeNativeFoxTreeList::onListDoubleClicked( FXObject*, FXSelector, void *pdata ){
 	if( ! pOwner->GetEnabled() ){
 		return 0;
 	}
 	
-	igdeNativeFoxTreeItem * const item = ( igdeNativeFoxTreeItem* )data;
+	igdeNativeFoxTreeItem * const item = ( igdeNativeFoxTreeItem* )pdata;
 	
 	try{
 		pOwner->NotifyDoubleClickItem( item->GetOwner() );
@@ -506,8 +558,8 @@ long igdeNativeFoxTreeList::onListDoubleClicked( FXObject *sender, FXSelector se
 
 
 
-long igdeNativeFoxTreeList::onResizerDrag( FXObject*, FXSelector, void *data ){
-	const int distance = igdeNativeFoxResizer::SelCommandDraggedDistance( data );
+long igdeNativeFoxTreeList::onResizerDrag( FXObject*, FXSelector, void *pdata ){
+	const int distance = igdeNativeFoxResizer::SelCommandDraggedDistance( pdata );
 	const int newHeight = getHeight() + distance;
 	
 	const int LINE_SPACING = 4;  // hard coded in FXTreeList
@@ -523,11 +575,13 @@ long igdeNativeFoxTreeList::onResizerDrag( FXObject*, FXSelector, void *data ){
 // Private Functions
 //////////////////////
 
-void igdeNativeFoxTreeList::pDropItemsNativeWidget( igdeTreeItem *parent ){
-	igdeTreeItem *child = parent ? parent->GetFirstChild() : pOwner->GetFirstChild();
+void igdeNativeFoxTreeList::pDropItemsNativeWidget( igdeTreeItem *pparent ){
+	igdeTreeItem *child = pparent ? pparent->GetFirstChild() : pOwner->GetFirstChild();
 	while( child ){
 		child->SetNativeWidget( NULL );
 		pDropItemsNativeWidget( child );
 		child = child->GetNext();
 	}
 }
+
+#endif

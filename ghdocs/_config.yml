@@ -1,0 +1,32 @@
+title: Drag[en]gine Game Engine
+email: info@dragondreams.ch
+description: >-
+  Documentation for the Drag[en]gine Game Engine.
+domain: "lordofdragons.github.io"
+url: "https://lordofdragons.github.io"
+baseurl: "/dragengine"
+twitter_username: DragonDreamsGD
+github_username: LordOfDragons
+repository: LordOfDragons/dragengine-doc
+
+# Build settings
+remote_theme: just-the-docs/just-the-docs@v0.5.2
+plugins:
+  - jekyll-remote-theme # add this line to the plugins list if you already have one
+
+keep_files:
+  - artifacts
+
+callouts:
+  highlight:
+    color: yellow
+  warning:
+    title: Warning
+    color: red
+  note:
+    title: Note
+    color: purple
+  important:
+    title: Important
+    color: blue
+  

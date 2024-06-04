@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -43,6 +46,7 @@
 #include "../../skin/dynamic/renderables/render/deoglRDSRenderable.h"
 #include "../../skin/state/deoglSkinState.h"
 #include "../../skin/state/deoglSkinStateRenderable.h"
+#include "../../skin/state/deoglSkinStateConstructed.h"
 #include "../../video/deoglRVideoPlayer.h"
 
 #include <dragengine/common/exceptions.h>
@@ -72,7 +76,7 @@ deoglTexUnitConfig::~deoglTexUnitConfig(){
 // Management
 ///////////////
 
-void deoglTexUnitConfig::Apply( deoglRenderThread &renderThread, int stage ){
+void deoglTexUnitConfig::Apply( deoglRenderThread &renderThread, int stage ) const{
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	
 	if( pTexture ){
@@ -88,84 +92,96 @@ void deoglTexUnitConfig::Apply( deoglRenderThread &renderThread, int stage ){
 		tsmgr.EnableTBO( stage, pTBO, *renderThread.GetShader().GetTexSamplerConfig(
 			deoglRTShader::etscClampNearest ) );
 		
-	}else if( pSpecial == deoglTexUnitConfig::estPrevDepth ){
-		tsmgr.EnableTexture( stage, *renderThread.GetDeferredRendering().GetDepthTexture2(),
-			*pSampler );
-		
-	}else if( pSpecial == deoglTexUnitConfig::estPrevColor ){
-		tsmgr.EnableTexture( stage, *renderThread.GetDeferredRendering().GetTextureTemporary1(),
-			*pSampler );
-		
-	}else if( pSpecial == deoglTexUnitConfig::estDirectEnvMapActive ){
-		const deoglRenderReflection &renderReflection = renderThread.GetRenderers().GetReflection();
-		const bool useEqui = renderReflection.GetUseEquiEnvMap();
-		deoglEnvironmentMap * const envmap = renderReflection.GetDirectEnvMapActive();
-		
-		if( envmap ){
-			if( useEqui ){
-				tsmgr.EnableTexture( stage, *envmap->GetEquiEnvMap(), *pSampler );
-				
-			}else{
-				// DEBUGGING
-				if( ! envmap->GetEnvironmentMap() ){
-					printf( "BUG! envmap->GetEnvironmentMap() is NULL\n" );
-					printf( "  world: %p\n", envmap->GetWorld() );
-					printf( "  position: %g %g %g\n", envmap->GetPosition().x, envmap->GetPosition().y, envmap->GetPosition().z );
-					printf( "  skyonly: %d\n", envmap->GetSkyOnly() );
-					printf( "  dirty: %d\n", envmap->GetDirty() );
-					printf( "  ready: %d\n", envmap->GetReady() );
-					printf( "  plan usage count: %d\n", envmap->GetPlanUsageCount() );
-					printf( "  destroy if unused: %d\n", envmap->GetDestroyIfUnused() );
-					printf( "  component list count: %d\n", envmap->GetComponentList().GetCount() );
-					printf( "  particle emitter instance list count: %d\n", envmap->GetParticleEmitterInstanceList().GetCount() );
-					printf( "  render plan list count: %d\n", envmap->GetRenderPlanList().GetCount() );
-					printf( "  marked: %d\n", envmap->GetMarked() );
-					printf( "  slot index: %d\n", envmap->GetSlotIndex() );
-					printf( "  refcount: %d\n", envmap->GetRefCount() );
-					tsmgr.EnableCubeMap( stage, *renderThread.GetDefaultTextures().GetEnvMap(), *pSampler );
-					return;
+	}else{
+		switch( pSpecial ){
+		case deoglTexUnitConfig::estPrevDepth:
+			tsmgr.EnableArrayTexture( stage, *renderThread.GetDeferredRendering().GetDepthTexture2(), *pSampler );
+			break;
+			
+		case deoglTexUnitConfig::estPrevColor:
+			tsmgr.EnableArrayTexture( stage, *renderThread.GetDeferredRendering().GetTextureTemporary1(), *pSampler );
+			break;
+			
+		case estXRayDepth:
+			tsmgr.EnableArrayTexture( stage, *renderThread.GetDeferredRendering().GetDepthTextureXRay(), *pSampler );
+			break;
+			
+		case deoglTexUnitConfig::estDirectEnvMapActive:{
+			const deoglRenderReflection &renderReflection = renderThread.GetRenderers().GetReflection();
+			const bool useEqui = renderReflection.GetUseEquiEnvMap();
+			deoglEnvironmentMap * const envmap = renderReflection.GetDirectEnvMapActive();
+			
+			if( envmap ){
+				if( useEqui ){
+					tsmgr.EnableTexture( stage, *envmap->GetEquiEnvMap(), *pSampler );
+					
+				}else{
+					// DEBUGGING
+					if( ! envmap->GetEnvironmentMap() ){
+						printf( "BUG! envmap->GetEnvironmentMap() is NULL\n" );
+						printf( "  world: %p\n", envmap->GetWorld() );
+						printf( "  position: %g %g %g\n", envmap->GetPosition().x, envmap->GetPosition().y, envmap->GetPosition().z );
+						printf( "  skyonly: %d\n", envmap->GetSkyOnly() );
+						printf( "  dirty: %d\n", envmap->GetDirty() );
+						printf( "  ready: %d\n", envmap->GetReady() );
+						printf( "  plan usage count: %d\n", envmap->GetPlanUsageCount() );
+						printf( "  destroy if unused: %d\n", envmap->GetDestroyIfUnused() );
+						printf( "  component list count: %d\n", envmap->GetComponentList().GetCount() );
+						printf( "  particle emitter instance list count: %d\n", envmap->GetParticleEmitterInstanceList().GetCount() );
+						printf( "  render plan list count: %d\n", envmap->GetRenderPlanList().GetCount() );
+						printf( "  marked: %d\n", envmap->GetMarked() );
+						printf( "  slot index: %d\n", envmap->GetSlotIndex() );
+						printf( "  refcount: %d\n", envmap->GetRefCount() );
+						tsmgr.EnableCubeMap( stage, *renderThread.GetDefaultTextures().GetEnvMap(), *pSampler );
+						return;
+					}
+					// DEBUGGING
+					tsmgr.EnableCubeMap( stage, *envmap->GetEnvironmentMap(), *pSampler );
 				}
-				// DEBUGGING
-				tsmgr.EnableCubeMap( stage, *envmap->GetEnvironmentMap(), *pSampler );
+				
+			}else{
+				if( useEqui ){
+					tsmgr.EnableTexture( stage, *renderThread.GetDefaultTextures().GetColor(),
+						*pSampler );
+					
+				}else{
+					tsmgr.EnableCubeMap( stage, *renderThread.GetDefaultTextures().GetEnvMap(),
+						*pSampler );
+				}
+			}
+			}break;
+			
+		case deoglTexUnitConfig::estDirectEnvMapFading:{
+			const deoglRenderReflection &renderReflection = renderThread.GetRenderers().GetReflection();
+			const bool useEqui = renderReflection.GetUseEquiEnvMap();
+			deoglEnvironmentMap *envmap = renderReflection.GetDirectEnvMapFading();
+			
+			if( ! envmap ){
+				envmap = renderReflection.GetDirectEnvMapActive();
 			}
 			
-		}else{
-			if( useEqui ){
-				tsmgr.EnableTexture( stage, *renderThread.GetDefaultTextures().GetColor(),
-					*pSampler );
+			if( envmap ){
+				if( useEqui ){
+					tsmgr.EnableTexture( stage, *envmap->GetEquiEnvMap(), *pSampler );
+					
+				}else{
+					tsmgr.EnableCubeMap( stage, *envmap->GetEnvironmentMap(), *pSampler );
+				}
 				
 			}else{
-				tsmgr.EnableCubeMap( stage, *renderThread.GetDefaultTextures().GetEnvMap(),
-					*pSampler );
+				if( useEqui ){
+					tsmgr.EnableTexture( stage, *renderThread.GetDefaultTextures().GetColor(),
+						*pSampler );
+					
+				}else{
+					tsmgr.EnableCubeMap( stage, *renderThread.GetDefaultTextures().GetEnvMap(),
+						*pSampler );
+				}
 			}
-		}
-		
-	}else if( pSpecial == deoglTexUnitConfig::estDirectEnvMapFading ){
-		const deoglRenderReflection &renderReflection = renderThread.GetRenderers().GetReflection();
-		const bool useEqui = renderReflection.GetUseEquiEnvMap();
-		deoglEnvironmentMap *envmap = renderReflection.GetDirectEnvMapFading();
-		
-		if( ! envmap ){
-			envmap = renderReflection.GetDirectEnvMapActive();
-		}
-		
-		if( envmap ){
-			if( useEqui ){
-				tsmgr.EnableTexture( stage, *envmap->GetEquiEnvMap(), *pSampler );
-				
-			}else{
-				tsmgr.EnableCubeMap( stage, *envmap->GetEnvironmentMap(), *pSampler );
-			}
+			}break;
 			
-		}else{
-			if( useEqui ){
-				tsmgr.EnableTexture( stage, *renderThread.GetDefaultTextures().GetColor(),
-					*pSampler );
-				
-			}else{
-				tsmgr.EnableCubeMap( stage, *renderThread.GetDefaultTextures().GetEnvMap(),
-					*pSampler );
-			}
+		default:
+			break;
 		}
 	}
 }
@@ -210,14 +226,16 @@ void deoglTexUnitConfig::EnableTextureFromChannel( deoglRenderThread &renderThre
 const deoglSkinTexture &skinTexture, deoglSkinChannel::eChannelTypes skinChannel,
 const deoglSkinState *skinState, const deoglRDynamicSkin *dynamicSkin, deoglTexture *defaultTexture ){
 	deoglTexture *useTexture = defaultTexture;
-	deoglTexSamplerConfig *useSampler = NULL;
+	deoglTexSamplerConfig *useSampler = nullptr;
+	bool found = false;
 	
 	// determine texture to use
 	const deoglSkinChannel * const schan = skinTexture.GetChannelAt( skinChannel );
 	
 	if( schan ){
+		// try renderable
 		const int skinRenderable = schan->GetRenderable();
-		deoglTexture *renderableTexture = NULL;
+		deoglTexture *renderableTexture = nullptr;
 		
 		if( dynamicSkin && skinState ){
 			if( skinRenderable != -1 && skinRenderable < skinState->GetRenderableCount() ){
@@ -232,10 +250,13 @@ const deoglSkinState *skinState, const deoglRDynamicSkin *dynamicSkin, deoglText
 		
 		if( renderableTexture ){
 			useTexture = renderableTexture;
-			
-		}else{
+			found = true;
+		}
+		
+		// try video player
+		if( ! found ){
 			const int skinVideoPlayer = schan->GetVideoPlayer();
-			deoglRVideoPlayer *videoPlayer = NULL;
+			deoglRVideoPlayer *videoPlayer = nullptr;
 			
 			if( skinVideoPlayer != -1 && skinState && skinVideoPlayer < skinState->GetVideoPlayerCount() ){
 				videoPlayer = skinState->GetVideoPlayerAt( skinVideoPlayer );
@@ -243,27 +264,56 @@ const deoglSkinState *skinState, const deoglRDynamicSkin *dynamicSkin, deoglText
 			
 			if( videoPlayer ){
 				useTexture = videoPlayer->GetTexture();
-				
-			}else{
-				deoglTexture *texture = schan->GetTexture();
-				
-				if( schan->GetImage() ){
-					texture = schan->GetImage()->GetTexture();
-					
-				}else if( schan->GetCombinedTexture() ){
-					texture = schan->GetCombinedTexture()->GetTexture();
+				found = true;
+			}
+		}
+		
+		// try dynamic constructed
+		if( ! found ){
+			const int dynamicConstructed = schan->GetDynamicConstructed();
+			
+			if( dynamicConstructed != -1 && skinState
+			&& dynamicConstructed < skinState->GetConstructedPropertyCount() ){
+				const deoglRenderTarget::Ref &renderTarget =
+					skinState->GetConstructedPropertyAt( dynamicConstructed ).GetRenderTarget();
+				if( renderTarget ){
+					useTexture = renderTarget->GetTexture();
 				}
+				found = true;
+			}
+		}
+		
+		// otherwise use channel texture
+		if( ! found ){
+			deoglTexture *texture = schan->GetTexture();
+			
+			if( schan->GetImage() ){
+				texture = schan->GetImage()->GetTexture();
 				
-				if( texture ){
-					useTexture = texture;
-				}
+			}else if( schan->GetCombinedTexture() ){
+				texture = schan->GetCombinedTexture()->GetTexture();
+			}
+			
+			if( texture ){
+				useTexture = texture;
 			}
 		}
 	}
 	
+	// determine if texture coordinates have to be clamped
+	bool clampTexCoord = skinTexture.GetTexCoordClamp();
+	
+	if( skinChannel == deoglSkinChannel::ectColorOmnidirEquirect ){
+		// this is important here. if not clamped opengl adds thin artifact lines across the
+		// 0-degrees angle from top to bottom as well as causing poles to be distorted and
+		// flipped upside down (top pole is down). no idea what driver problem causes this
+		// but forcing clamping solves the problem
+		clampTexCoord = true;
+	}
+	
 	// determine sampler to use
 	if( useTexture && useTexture->GetMipMapped() ){
-		if( skinTexture.GetTexCoordClamp() ){
+		if( clampTexCoord ){
 			useSampler = renderThread.GetShader().GetTexSamplerConfig( deoglRTShader::etscClampLinearMipMap );
 			
 		}else{
@@ -271,7 +321,7 @@ const deoglSkinState *skinState, const deoglRDynamicSkin *dynamicSkin, deoglText
 		}
 		
 	}else{
-		if( skinTexture.GetTexCoordClamp() ){
+		if( clampTexCoord ){
 			useSampler = renderThread.GetShader().GetTexSamplerConfig( deoglRTShader::etscClampLinear );
 			
 		}else{
@@ -302,11 +352,13 @@ const deoglSkinTexture &skinTexture, deoglSkinChannel::eChannelTypes skinChannel
 const deoglSkinState *skinState, const deoglRDynamicSkin *dynamicSkin, deoglCubeMap *defaultCubemap ){
 	deoglCubeMap *useCubemap = defaultCubemap;
 	deoglTexSamplerConfig *useSampler = NULL;
+	bool found = false;
 	
 	// determine texture to use
 	const deoglSkinChannel * const schan = skinTexture.GetChannelAt( skinChannel );
 	
 	if( schan ){
+		// try renderable
 		const int skinRenderable = schan->GetRenderable();
 		deoglCubeMap *renderableCubemap = NULL;
 		
@@ -323,8 +375,11 @@ const deoglSkinState *skinState, const deoglRDynamicSkin *dynamicSkin, deoglCube
 		
 		if( renderableCubemap ){
 			useCubemap = renderableCubemap;
-			
-		}else{
+			found = true;
+		}
+		
+		// otherwise us channel texture
+		if( ! found ){
 			deoglCubeMap *cubemap = schan->GetCubeMap();
 			
 			if( schan->GetImage() ){

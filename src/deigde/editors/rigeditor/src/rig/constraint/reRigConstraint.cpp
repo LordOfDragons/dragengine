@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Rig Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdlib.h>
@@ -108,12 +111,12 @@ reRigConstraint::reRigConstraint( deEngine *engine ){
 	pDirtyPositions = true;
 	
 	try{
-		pDof[ deColliderConstraint::edofLinearX ] = new reRigConstraintDof( this, deColliderConstraint::edofLinearX );
-		pDof[ deColliderConstraint::edofLinearY ] = new reRigConstraintDof( this, deColliderConstraint::edofLinearY );
-		pDof[ deColliderConstraint::edofLinearZ ] = new reRigConstraintDof( this, deColliderConstraint::edofLinearZ );
-		pDof[ deColliderConstraint::edofAngularX ] = new reRigConstraintDof( this, deColliderConstraint::edofAngularX );
-		pDof[ deColliderConstraint::edofAngularY ] = new reRigConstraintDof( this, deColliderConstraint::edofAngularY );
-		pDof[ deColliderConstraint::edofAngularZ ] = new reRigConstraintDof( this, deColliderConstraint::edofAngularZ );
+		pDof[ deColliderConstraint::edofLinearX ] = new reRigConstraintDof( *this, deColliderConstraint::edofLinearX );
+		pDof[ deColliderConstraint::edofLinearY ] = new reRigConstraintDof( *this, deColliderConstraint::edofLinearY );
+		pDof[ deColliderConstraint::edofLinearZ ] = new reRigConstraintDof( *this, deColliderConstraint::edofLinearZ );
+		pDof[ deColliderConstraint::edofAngularX ] = new reRigConstraintDof( *this, deColliderConstraint::edofAngularX );
+		pDof[ deColliderConstraint::edofAngularY ] = new reRigConstraintDof( *this, deColliderConstraint::edofAngularY );
+		pDof[ deColliderConstraint::edofAngularZ ] = new reRigConstraintDof( *this, deColliderConstraint::edofAngularZ );
 		
 		pCollider = engine->GetColliderManager()->CreateColliderVolume();
 		pCollider->SetEnabled( true );
@@ -143,8 +146,8 @@ reRigConstraint::reRigConstraint( deEngine *engine ){
 		
 		pDDSOffset = new igdeWDebugDrawerShape;
 		pDDSOffset->SetVisible( false );
-		pDDSOffset->SetEdgeColor( decColor( 1.0f, 0.5f, 0.0f, 1.0 ) );
-		pDDSOffset->SetFillColor( decColor( 1.0f, 0.5f, 0.0f, 0.1 ) );
+		pDDSOffset->SetEdgeColor( decColor( 1.0f, 0.5f, 0.0f, 1.0f ) );
+		pDDSOffset->SetFillColor( decColor( 1.0f, 0.5f, 0.0f, 0.1f ) );
 		shapeBuilder.CreateSphere( *pDDSOffset, decVector(), 0.01f );
 		pDDSOffset->SetParentDebugDrawer( pDebugDrawer );
 		
@@ -401,10 +404,6 @@ void reRigConstraint::SetOffset( const decVector &offset ){
 
 
 reRigConstraintDof &reRigConstraint::GetDof( deColliderConstraint::eDegreesOfFreedom dof ) const{
-	if( dof < deColliderConstraint::edofLinearX || dof > deColliderConstraint::edofAngularZ ){
-		DETHROW( deeInvalidParam );
-	}
-	
 	return *pDof[ dof ];
 }
 
@@ -586,7 +585,7 @@ void reRigConstraint::Update(){
 	if( pDirtyPositions ){
 		pDirtyPositions = false;
 		
-		pPoseMatrix1 = decDMatrix::CreateRotation( pOrientation * DEG2RAD ) * decDMatrix::CreateTranslation( pPosition );
+		pPoseMatrix1.SetRT( pOrientation * DEG2RAD, pPosition );
 		pPoseMatrix2 = pPoseMatrix1;
 		
 		if( pRigBone ){
@@ -774,12 +773,12 @@ void reRigConstraint::pUpdateDDConstraint(){
 	pUpdateDDConstraintGeometry();
 	
 	if( pActive ){
-		pDDSConstraint->SetEdgeColor( decColor( 1.0f, 0.5f, 1.0f, 1.0 ) );
-		pDDSConstraint->SetFillColor( decColor( 1.0f, 0.5f, 1.0f, 0.1 ) );
+		pDDSConstraint->SetEdgeColor( decColor( 1.0f, 0.5f, 1.0f, 1.0f ) );
+		pDDSConstraint->SetFillColor( decColor( 1.0f, 0.5f, 1.0f, 0.1f ) );
 		
 	}else if( pSelected ){
-		pDDSConstraint->SetEdgeColor( decColor( 1.0f, 0.0f, 1.0f, 1.0 ) );
-		pDDSConstraint->SetFillColor( decColor( 1.0f, 0.0f, 1.0f, 0.1 ) );
+		pDDSConstraint->SetEdgeColor( decColor( 1.0f, 0.0f, 1.0f, 1.0f ) );
+		pDDSConstraint->SetFillColor( decColor( 1.0f, 0.0f, 1.0f, 0.1f ) );
 		
 	}else{
 		pDDSConstraint->SetEdgeColor( decColor( 0.5f, 0.0f, 0.5f, 1.0f ) );
@@ -797,7 +796,8 @@ void reRigConstraint::pUpdateDDConstraintGeometry(){
 			arrowEnd = pRigBone->GetPoseMatrix().ToMatrix() * pRigBone->GetCentralMassPoint();
 			
 			if( pConstraintBone ){
-				arrowStart = ( pRigBone->GetMatrix() * pConstraintBone->GetInverseMatrix() * pConstraintBone->GetPoseMatrix().ToMatrix() ) * pPosition;
+				arrowStart = ( pRigBone->GetMatrix() * pConstraintBone->GetInverseMatrix()
+					* pConstraintBone->GetPoseMatrix().ToMatrix() ) * pPosition;
 				
 			}else{
 				arrowStart = pPosition;

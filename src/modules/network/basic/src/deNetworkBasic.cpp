@@ -1,42 +1,34 @@
-/* 
- * Drag[en]gine Basic Network Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
-// includes
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/time.h>
 
-#ifdef OS_UNIX
-#	include <sys/select.h>
-#	include <sys/ioctl.h>
-#	include <net/if.h>
-#	include <netinet/in.h>
-#	include <arpa/inet.h>
-#	include <unistd.h>
-
-#endif
 #ifdef OS_W32
-#	include <dragengine/app/include_windows.h>
-#	include <iphlpapi.h>
+#include <winsock2.h>
+#include <dragengine/app/include_windows.h>
 #endif
 
 #include "debnServer.h"
@@ -45,6 +37,12 @@
 #include "debnConnection.h"
 #include "debnWorld.h"
 #include "deNetworkBasic.h"
+#include "configuration/debnLoadConfiguration.h"
+#include "parameters/debug/debnPLogLevel.h"
+#include "parameters/reliability/debnPConnectResendInterval.h"
+#include "parameters/reliability/debnPConnectTimeout.h"
+#include "parameters/reliability/debnPReliableResendInterval.h"
+#include "parameters/reliability/debnPReliableTimeout.h"
 #include "states/debnState.h"
 
 #include <dragengine/deEngine.h>
@@ -114,21 +112,33 @@ static decTimer timer;
 ////////////////////////////
 
 deNetworkBasic::deNetworkBasic( deLoadableModule &loadableModule ) :
-deBaseNetworkModule( loadableModule ){
-	pHeadConnection = NULL;
-	pTailConnection = NULL;
-	pHeadServer = NULL;
-	pTailServer = NULL;
-	pHeadSocket = NULL;
-	pTailSocket = NULL;
-	
-	pDatagram = NULL;
-	pAddressReceive = NULL;
-	
-	//pMessagesSend = NULL;
-	//pMessagesReceive = NULL;
-	
-	//pMessage = NULL;
+deBaseNetworkModule( loadableModule ),
+pHeadConnection( nullptr ),
+pTailConnection( nullptr ),
+pHeadServer( nullptr ),
+pTailServer( nullptr ),
+pHeadSocket( nullptr ),
+pTailSocket( nullptr ),
+pDatagram( nullptr )
+#ifdef OS_W32
+,pWSAStartupCalled( false )
+#endif
+{
+	try{
+		pParameters.AddParameter( new debnPLogLevel( *this ) );
+		/*
+		pParameters.AddParameter( new debnPConnectResendInterval( *this ) );
+		pParameters.AddParameter( new debnPConnectTimeout( *this ) );
+		pParameters.AddParameter( new debnPReliableResendInterval( *this ) );
+		pParameters.AddParameter( new debnPReliableTimeout( *this ) );
+		*/
+		
+		debnLoadConfiguration( *this ).LoadConfig( pConfiguration );
+		
+	}catch( const deException & ){
+		CleanUp();
+		throw;
+	}
 }
 
 deNetworkBasic::~deNetworkBasic(){
@@ -142,15 +152,24 @@ deNetworkBasic::~deNetworkBasic(){
 
 bool deNetworkBasic::Init(){
 	try{
+		// operating system specific startup calls
+		#ifdef OS_W32
+		WSADATA wsaData;
+		if( WSAStartup(MAKEWORD( 2, 2 ), &wsaData ) ){
+			DETHROW_INFO( deeInvalidAction, "WSAStartup failed" );
+		}
+		pWSAStartupCalled = true;
+		
+		if( LOBYTE( wsaData.wVersion ) != 2 || HIBYTE( wsaData.wVersion ) != 2 ){
+			DETHROW_INFO( deeInvalidAction, "WSAStartup succeeded but returned unsupported version" );
+		}
+		#endif
+		
 		// create shared datagram
 		pDatagram = new deNetworkMessage;
-		if( ! pDatagram ) DETHROW( deeOutOfMemory );
 		pDatagram->SetDataLength( 1024 );
 		
 		// create receive address
-		pAddressReceive = new debnAddress;
-		if( ! pAddressReceive ) DETHROW( deeOutOfMemory );
-		
 		pSharedSendDatagram.TakeOver( new deNetworkMessage );
 		pSharedSendDatagram->SetDataLength( 50 );
 		pSharedSendDatagramWriter.TakeOver( new deNetworkMessageWriter( pSharedSendDatagram, false ) );
@@ -165,7 +184,8 @@ bool deNetworkBasic::Init(){
 		//pMessage = new deNetworkMessage;
 		//if( ! pMessage ) DETHROW( deeOutOfMemory );
 		
-	}catch( const deException & ){
+	}catch( const deException &e ){
+		LogException( e );
 		CleanUp();
 		return false;
 	}
@@ -187,11 +207,6 @@ void deNetworkBasic::CleanUp(){
 		pMessagesReceive = NULL;
 	}*/
 	
-	if( pAddressReceive ){
-		delete pAddressReceive;
-		pAddressReceive = NULL;
-	}
-	
 	if( pDatagram ){
 		pDatagram->FreeReference();
 		pDatagram = NULL;
@@ -206,6 +221,14 @@ void deNetworkBasic::CleanUp(){
 	pHeadSocket = NULL;
 	pTailSocket = NULL;
 	*/
+	
+	// operating system specific startup calls
+	#ifdef OS_W32
+	if( pWSAStartupCalled ){
+		pWSAStartupCalled = false;
+		WSACleanup();
+	}
+	#endif
 }
 
 void deNetworkBasic::ProcessNetwork(){
@@ -374,107 +397,42 @@ void deNetworkBasic::UnregisterSocket( debnSocket *bnSocket ){
 
 
 void deNetworkBasic::FindPublicAddresses( decStringList &list ){
-	// unix version
-	#ifdef OS_UNIX
-	const int sock = socket( AF_INET, SOCK_DGRAM, 0 );
-	if( sock == -1 ){
-		DETHROW( deeInvalidParam );
-	}
+	debnSocket::FindAddresses( list, true );
+}
+
+void deNetworkBasic::CloseConnections( debnSocket *bnSocket ){
+	debnConnection *connection = pHeadConnection;
 	
-	try{
-		struct ifreq ifr;
-		int ifindex = 1;
-		memset( &ifr, 0, sizeof( ifr ) );
-		char bufferIP[ 17 ];
+	while( connection ){
+		debnConnection * const checkConnection = connection;
+		connection = connection->GetNextConnection();
 		
-		while( true ){
-			ifr.ifr_ifindex = ifindex++;
-			if( ioctl( sock, SIOCGIFNAME, &ifr ) ){
-				break;
-			}
-			
-			if( ioctl( sock, SIOCGIFADDR, &ifr ) ){
-				continue; // something failed, ignore the interface
-			}
-			const struct in_addr saddr = ( ( struct sockaddr_in & )ifr.ifr_addr ).sin_addr;
-			
-			/*
-			if( ioctl( sock, SIOCGIFNETMASK, &ifr ) ){
-				continue; // something failed, ignore the interface
-			}
-			const struct in_addr &saddrNetMask = ( ( struct sockaddr_in & )ifr.ifr_netmask ).sin_addr;
-			*/
-			
-			if( ! inet_ntop( AF_INET, &saddr, bufferIP, 16 ) ){
-				continue;
-			}
-			list.Add( bufferIP );
-			// ifr.ifr_name  => device name
+		if( checkConnection->GetSocket() == bnSocket ){
+			checkConnection->Disconnect();
 		}
-		close( sock );
-		
-	}catch( const deException & ){
-		close( sock );
-		throw;
 	}
-	#endif
-	
-	// windows version
-	#ifdef OS_W32
-	// get size and allocate buffer
-	PIP_ADAPTER_INFO pAdapterInfo = ( IP_ADAPTER_INFO* )HeapAlloc( GetProcessHeap(), 0, sizeof( IP_ADAPTER_INFO ) );
-	if( ! pAdapterInfo ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	try{
-		ULONG ulOutBufLen = sizeof( IP_ADAPTER_INFO );
-		if( GetAdaptersInfo( pAdapterInfo, &ulOutBufLen ) == ERROR_BUFFER_OVERFLOW ){
-			HeapFree( GetProcessHeap(), 0, pAdapterInfo );
-			pAdapterInfo = ( IP_ADAPTER_INFO* )HeapAlloc( GetProcessHeap(), 0, ulOutBufLen );
-			if( ! pAdapterInfo ){
-				DETHROW( deeInvalidParam );
-			}
-		}
-		
-		if( GetAdaptersInfo( pAdapterInfo, &ulOutBufLen ) != NO_ERROR ){
-			DETHROW( deeInvalidParam );
-		}
-		
-		// evaluate
-		PIP_ADAPTER_INFO pAdapter = pAdapterInfo;
-		while( true ){
-			// NOTE: IP_ADDR_STRING is a linked list and can potentially contain more than one address
-			
-			const unsigned long ulAddr = inet_addr( pAdapter->IpAddressList.IpAddress.String );
-			if( ulAddr == INADDR_NONE || ulAddr == 0 /*0.0.0.0*/ ){
-				pAdapter = pAdapter->Next;
-				continue;
-			}
-			
-			const unsigned long ulNetMask = inet_addr( pAdapter->IpAddressList.IpMask.String );
-			if(ulNetMask == INADDR_NONE || ulNetMask == 0 /*0.0.0.0*/){
-				pAdapter = pAdapter->Next;
-				continue;
-			}
-			
-			list.Add( pAdapter->IpAddressList.IpAddress.String );
-			// pAdapter->AdapterName  => device name
-			// (uint32_t)ulAddr   => address in in_addr format
-			// (uint32_t)ulNetMask   => netmask in in_addr format
-			
-			pAdapter = pAdapter->Next;
-		}
-		
-		HeapFree( GetProcessHeap(), 0, pAdapterInfo );
-		
-	}catch( const deException & ){
-		if( pAdapterInfo ){
-			HeapFree( GetProcessHeap(), 0, pAdapterInfo );
-		}
-		throw;
-	}
-	#endif
+}
+
+
+
+int deNetworkBasic::GetParameterCount() const{
+	return pParameters.GetParameterCount();
+}
+
+void deNetworkBasic::GetParameterInfo( int index, deModuleParameter &info ) const{
+	info = pParameters.GetParameterAt( index );
+}
+
+int deNetworkBasic::IndexOfParameterNamed( const char *name ) const{
+	return pParameters.IndexOfParameterNamed( name );
+}
+
+decString deNetworkBasic::GetParameterValue( const char *name ) const{
+	return pParameters.GetParameterNamed( name ).GetParameterValue();
+}
+
+void deNetworkBasic::SetParameterValue( const char *name, const char *value ){
+	pParameters.GetParameterNamed( name ).SetParameterValue( value );
 }
 
 
@@ -501,16 +459,15 @@ deBaseNetworkState *deNetworkBasic::CreateState( deNetworkState *state ){
 // Private Functions
 //////////////////////
 
-debnConnection *deNetworkBasic::pFindConnection( const debnSocket *bnSocket, const debnAddress *address ) const{
+debnConnection *deNetworkBasic::pFindConnection( const debnSocket *bnSocket, const debnAddress &address ) const{
 	debnConnection *connection = pHeadConnection;
-	
 	while( connection ){
-		if( connection->Matches( bnSocket, address ) ) return connection;
-		
+		if( connection->Matches( bnSocket, address ) ){
+			return connection;
+		}
 		connection = connection->GetNextConnection();
 	}
-	
-	return NULL;
+	return nullptr;
 }
 
 debnServer *deNetworkBasic::pFindServer( const debnSocket *bnSocket ) const{
@@ -531,25 +488,13 @@ void deNetworkBasic::pReceiveDatagrams(){
 	debnSocket *bnSocket = pHeadSocket;
 	
 	while( bnSocket ){
-		while( bnSocket->ReceiveDatagram( pDatagram, pAddressReceive ) ){
+		while( bnSocket->ReceiveDatagram( *pDatagram, pAddressReceive ) ){
 			decBaseFileReaderReference reader;
 			reader.TakeOver( new deNetworkMessageReader( pDatagram ) );
 			
+			debnConnection * const connection = pFindConnection( bnSocket, pAddressReceive );
 			const eCommandCodes command = ( eCommandCodes )reader->ReadByte();
 			
-			if( command == eccConnectionRequest ){
-				debnServer * const server = pFindServer( bnSocket );
-				if( server ){
-					server->ProcessConnectionRequest( pAddressReceive, reader );
-					
-				}else{
-					LogError( "Connection request for a non existing socket? how in gods name is this possible?!\n" );
-				}
-				continue;
-				
-			}
-			
-			debnConnection * const connection = pFindConnection( bnSocket, pAddressReceive );
 			if( connection ){
 				switch( command ){
 				case eccConnectionAck:
@@ -589,11 +534,14 @@ void deNetworkBasic::pReceiveDatagrams(){
 					break;
 					
 				default:
-					LogWarn( "Invalid command code, rejected!\n" );
+					break;
 				}
 				
-			}else{
-				LogWarn( "Invalid datagram: Sender does not match any connection!\n" );
+			}else if( command == eccConnectionRequest ){
+				debnServer * const server = pFindServer( bnSocket );
+				if( server ){
+					server->ProcessConnectionRequest( pAddressReceive, reader );
+				}
 			}
 		}
 		

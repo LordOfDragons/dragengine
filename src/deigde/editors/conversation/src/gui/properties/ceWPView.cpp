@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Conversation Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdint.h>
@@ -775,7 +778,122 @@ public:
 	
 	virtual igdeUndo *OnChanged( igdeComboBox&, ceConversation* ){
 		pPanel.UpdateActorController();
-		return NULL;
+		return nullptr;
+	}
+};
+
+class cActionActorPoseControllerAdd : public cBaseAction{
+public:
+	cActionActorPoseControllerAdd( ceWPView &panel ) : cBaseAction( panel, "Add...",
+	panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ), "Add actor pose controller" ){ }
+	
+	virtual igdeUndo *OnAction( ceConversation *conversation ){
+		ceActorPose * const pose = pPanel.GetActorPose();
+		if( ! pose ){
+			return NULL;
+		}
+		
+		decString name;
+		if( ! igdeCommonDialogs::GetString( &pPanel, "Add Controller", "Controller:", name, pose->GetControllerNames() ) ){
+			return nullptr;
+		}
+		
+		if( pose->GetControllers().HasNamed( name ) ){
+			igdeCommonDialogs::Error( &pPanel, "Add Controller", "A controller with this name exists already." );
+			return nullptr;
+		}
+		
+		const ceActorController::Ref controller( ceActorController::Ref::New( new ceActorController ) );
+		controller->SetName( name );
+		pose->GetControllers().Add( controller );
+		conversation->NotifyActorPosesChanged( pPanel.GetActor() );
+		pPanel.SelectActorPoseController( controller );
+		return nullptr;
+	}
+	
+	virtual void Update( const ceConversation & ){
+		SetEnabled( pPanel.GetActorPose() );
+	}
+};
+
+class cActionActorPoseControllerRemove : public cBaseAction{
+public:
+	cActionActorPoseControllerRemove( ceWPView &panel ) : cBaseAction( panel, "Remove",
+	panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ), "Remove actor pose controller" ){ }
+	
+	virtual igdeUndo *OnAction( ceConversation *conversation ){
+		if( pPanel.GetActorPoseController() ){
+			pPanel.GetActorPose()->GetControllers().Remove( pPanel.GetActorPoseController() );
+			conversation->NotifyActorPosesChanged( pPanel.GetActor() );
+		}
+		return nullptr;
+	}
+	
+	virtual void Update( const ceConversation & ){
+		SetEnabled( pPanel.GetActorPoseController() );
+	}
+};
+
+class cActionActorPoseControllerRemoveAll : public cBaseAction{
+public:
+	cActionActorPoseControllerRemoveAll( ceWPView &panel ) : cBaseAction( panel, "Remove All",
+	panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ), "Remove all actor pose controllers" ){ }
+	
+	virtual igdeUndo *OnAction( ceConversation *conversation ){
+		if( pPanel.GetActorPose() && pPanel.GetActorPose()->GetControllers().GetCount() > 0 ){
+			pPanel.GetActorPose()->GetControllers().RemoveAll();
+			conversation->NotifyActorPosesChanged( pPanel.GetActor() );
+		}
+		return nullptr;
+	}
+	
+	virtual void Update( const ceConversation & ){
+		SetEnabled( pPanel.GetActorPose() && pPanel.GetActorPose()->GetControllers().GetCount() > 0 );
+	}
+};
+
+class cActionActorPoseControllerRename : public cBaseAction{
+public:
+	cActionActorPoseControllerRename( ceWPView &panel ) : cBaseAction( panel, "Rename...",
+	panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ), "Rename Actor Pose Controller" ){ }
+	
+	virtual igdeUndo *OnAction( ceConversation* ){
+		if( ! pPanel.GetActorPoseController() ){
+			return nullptr;
+		}
+		
+		decString name( pPanel.GetActorPoseController()->GetName() );
+		if( ! igdeCommonDialogs::GetString( &pPanel, "Rename Controller", "Controller:", name )
+		|| name == pPanel.GetActorPoseController()->GetName() ){
+			return nullptr;
+		}
+		
+		if( pPanel.GetActorPose()->GetControllers().HasNamed( name ) ){
+			igdeCommonDialogs::Error( &pPanel, "Rename Controller", "A controller with this name exists already." );
+			
+		}else{
+			pPanel.GetActorPoseController()->SetName( name );
+			pPanel.GetActor()->NotifyPosesChanged();
+		}
+		return nullptr;
+	}
+	
+	virtual void Update( const ceConversation & ){
+		SetEnabled( pPanel.GetActorPoseController() );
+	}
+};
+
+class cActionActorPoseControllerMenu : public cBaseActionContextMenu{
+public:
+	cActionActorPoseControllerMenu( ceWPView &panel ) : cBaseActionContextMenu( panel, "ActorPoseController menu" ){ }
+	
+	virtual void AddContextMenuEntries( igdeMenuCascade &contextMenu, ceConversation* ){
+		igdeUIHelper &helper = contextMenu.GetEnvironment().GetUIHelper();
+		helper.MenuCommand( contextMenu, new cActionActorPoseControllerAdd( pPanel ), true );
+		helper.MenuCommand( contextMenu, new cActionActorPoseControllerRemove( pPanel ), true );
+		helper.MenuCommand( contextMenu, new cActionActorPoseControllerRemoveAll( pPanel ), true );
+		helper.MenuSeparator( contextMenu );
+		helper.MenuCommand( contextMenu, new cActionActorPoseControllerRename( pPanel ), true );
 	}
 };
 
@@ -787,11 +905,13 @@ public:
 	cBaseComboBoxListener( panel ), pCBController( cbController ){ }
 	
 	virtual igdeUndo *OnChanged( igdeComboBox &comboBox, ceConversation* ){
-		if( pPanel.GetActorPose() && pCBController->GetSelection() != -1 && comboBox.GetSelectedItem() ){
-			pPanel.GetActorPose()->GetControllers().GetAt( pCBController->GetSelection() )->SetUpdateType(
-				( ceActorController::eUpdateTypes )( intptr_t )comboBox.GetSelectedItem()->GetData() );
+		ceActorController * const controller = pCBController->GetSelectedItem()
+			? ( ceActorController* )pCBController->GetSelectedItem()->GetData() : nullptr;
+		
+		if( controller && comboBox.GetSelectedItem() ){
+			controller->SetUpdateType( ( ceActorController::eUpdateTypes )( intptr_t )comboBox.GetSelectedItem()->GetData() );
 		}
-		return NULL;
+		return nullptr;
 	}
 };
 
@@ -803,11 +923,13 @@ public:
 	cBaseTextFieldListener( panel ), pCBController( cbController ){ }
 	
 	virtual igdeUndo *OnChanged( igdeTextField &textField, ceConversation* ){
-		if( pPanel.GetActorPose() && pCBController->GetSelection() != -1 ){
-			pPanel.GetActorPose()->GetControllers().GetAt( pCBController->GetSelection() )
-				->SetValue( textField.GetFloat() );
+		ceActorController * const controller = pCBController->GetSelectedItem()
+			? ( ceActorController* )pCBController->GetSelectedItem()->GetData() : nullptr;
+		
+		if( controller ){
+			controller->SetValue( textField.GetFloat() );
 		}
-		return NULL;
+		return nullptr;
 	}
 };
 
@@ -819,11 +941,13 @@ public:
 	cBaseEditVectorListener( panel ), pCBController( cbController ){ }
 	
 	virtual igdeUndo *OnChanged( igdeEditVector &editVector, ceConversation* ){
-		if( pPanel.GetActorPose() && pCBController->GetSelection() != -1 ){
-			pPanel.GetActorPose()->GetControllers().GetAt( pCBController->GetSelection() )
-				->SetVector( editVector.GetVector() );
+		ceActorController * const controller = pCBController->GetSelectedItem()
+			? ( ceActorController* )pCBController->GetSelectedItem()->GetData() : nullptr;
+		
+		if( controller ){
+			controller->SetVector( editVector.GetVector() );
 		}
-		return NULL;
+		return nullptr;
 	}
 };
 
@@ -959,7 +1083,8 @@ public:
 		}
 		
 		decString command;
-		if( ! igdeCommonDialogs::GetMultilineString( &pPanel, "Add Command", "Command:", command )
+		if( ! igdeCommonDialogs::GetMultilineString( &pPanel.GetWindowProperties().GetWindowMain(),
+			"Add Command", "Command:", command )
 		|| actor->GetCommands().HasWith( command ) ){
 			return NULL;
 		}
@@ -1313,6 +1438,22 @@ public:
 	}
 };
 
+class cActionPlaybackAutoAdvanceCommands : public cBaseAction{
+public:
+	cActionPlaybackAutoAdvanceCommands( ceWPView &panel ) : cBaseAction( panel, "Auto Advance",
+	nullptr, "Auto advance certain commands (game/actor commands, trigger, add/remove actor/coordsystem)" ){ }
+	
+	virtual igdeUndo *OnAction( ceConversation *conversation ){
+		conversation->GetPlayback()->SetAutoAdvanceCommands( ! conversation->GetPlayback()->GetAutoAdvanceCommands() );
+		return NULL;
+	}
+	
+	virtual void Update( const ceConversation &conversation ){
+		SetEnabled( true );
+		SetSelected( conversation.GetPlayback()->GetAutoAdvanceCommands() );
+	}
+};
+
 class cComboPlaybackCameraHandling : public cBaseComboBoxListener{
 public:
 	cComboPlaybackCameraHandling( ceWPView &panel ) : cBaseComboBoxListener( panel ){ }
@@ -1334,7 +1475,8 @@ public:
 	
 	virtual igdeUndo *OnAction( ceConversation *conversation ){
 		decString command;
-		if( ! igdeCommonDialogs::GetMultilineString( &pPanel, "Add Command", "Command:", command )
+		if( ! igdeCommonDialogs::GetMultilineString( &pPanel.GetWindowProperties().GetWindowMain(),
+			"Add Command", "Command:", command )
 		|| conversation->GetPlayback()->GetCommands().HasWith( command ) ){
 			return NULL;
 		}
@@ -1566,8 +1708,8 @@ public:
 		ordered.SortAscending();
 		
 		decString text( ordered.Join( "\n" ) );
-		igdeCommonDialogs::GetMultilineString( &pPanel, "Copy To Clipboard",
-			"Text for you to copy to the clipboard", text );
+		igdeCommonDialogs::GetMultilineString( &pPanel.GetWindowProperties().GetWindowMain(),
+			"Copy To Clipboard", "Text for you to copy to the clipboard", text );
 		return NULL;
 	}
 };
@@ -1671,8 +1813,6 @@ pConversation( NULL )
 	helper.EditVector( form, "Rotation:", "Actor rotation", pEditActorOri, new cVectorActorRotation( *this ) );
 	helper.EditPath( form, "Model:", "Actor model to use", igdeEnvironment::efpltModel,
 		pEditActorPathModel, new cPathActorModel( *this ) );
-	helper.EditPath( form, "Model:", "Actor model to use", igdeEnvironment::efpltModel,
-		pEditActorPathModel, new cPathActorModel( *this ) );
 	helper.EditPath( form, "Skin:", "Actor skin to use", igdeEnvironment::efpltSkin,
 		pEditActorPathSkin, new cPathActorSkin( *this ) );
 	helper.EditPath( form, "Rig:", "Actor rig to use", igdeEnvironment::efpltRig,
@@ -1698,8 +1838,12 @@ pConversation( NULL )
 	
 	
 	helper.GroupBox( groupBox, groupBox2, "Animator Controllers:", true );
-	helper.ComboBox( groupBox2, "Controller:", "Controller to edit",
-		pCBActorPoseController, new cComboActorPoseController( *this ) );
+	
+	helper.FormLineStretchFirst( groupBox2, "Controller:", "Controller to edit", formLine );
+	helper.ComboBox( formLine, "Controller to edit", pCBActorPoseController, new cComboActorPoseController( *this ) );
+	actionContextMenu = new cActionActorPoseControllerMenu( *this );
+	helper.Button( formLine, pBtnActorPoseControllerMenu, actionContextMenu, true );
+	actionContextMenu->SetWidget( pBtnActorPoseControllerMenu );
 	
 	helper.ComboBox( groupBox2, "Update Type:", "How to update the controller", pCBActorPoseControllerUpdateType,
 		new cComboActorPoseControllerUpdateType( *this, pCBActorPoseController ) );
@@ -1778,8 +1922,11 @@ pConversation( NULL )
 	helper.FormLine( form, "", "", formLine );
 	helper.Button( formLine, pBtnPlaybackSelectTopic, new cActionPlaybackSelectTopic( *this ), true );
 	helper.Button( formLine, pBtnPlaybackRewind, new cActionPlaybackRewind( *this ), true );
+	
+	helper.FormLine( form, "", "", formLine );
 	helper.CheckBoxOnly( formLine, pChkPlaybackRunning, new cActionPlaybackRunning( *this ), true );
 	helper.CheckBoxOnly( formLine, pChkPlaybackPaused, new cActionPlaybackPaused( *this ), true );
+	helper.CheckBoxOnly( formLine, pChkPlaybackAutoAdvanceCommands, new cActionPlaybackAutoAdvanceCommands( *this ), true );
 	
 	helper.ComboBox( form, "Camera Handling:", "How camera is handled",
 		pCBPlaybackCameraHandling, new cComboPlaybackCameraHandling( *this ) );
@@ -1896,6 +2043,11 @@ ceConversationActor *ceWPView::GetActor() const{
 ceActorPose *ceWPView::GetActorPose() const{
 	const ceConversationActor * const actor = GetActor();
 	return actor ? actor->GetActivePose() : NULL;
+}
+
+ceActorController *ceWPView::GetActorPoseController() const{
+	return pCBActorPoseController->GetSelectedItem()
+		? ( ceActorController* )pCBActorPoseController->GetSelectedItem()->GetData() : nullptr;
 }
 
 ceActorGesture *ceWPView::GetActorGesture() const{
@@ -2114,21 +2266,21 @@ void ceWPView::UpdateActorGesture(){
 
 void ceWPView::UpdateActorControllers(){
 	const ceActorPose * const pose = GetActorPose();
-	const int selection = pCBActorPoseController->GetSelection();
+	ceActorController * const selection = pCBActorPoseController->GetSelectedItem()
+		? ( ceActorController* )pCBActorPoseController->GetSelectedItem()->GetData() : nullptr;
 	
 	if( pose ){
-		const ceActorControllerList &list = pose->GetControllers();
-		const int count = list.GetCount();
+		const int count = pose->GetControllers().GetCount();
 		decString text;
 		int i;
 		
 		pCBActorPoseController->RemoveAllItems();
 		for( i=0; i<count; i++ ){
-			text.Format( "%d: %s", i, list.GetAt( i )->GetName().GetString() );
-			pCBActorPoseController->AddItem( text );
+			ceActorController * const controller = pose->GetControllers().GetAt( i );
+			pCBActorPoseController->AddItem( controller->GetName(), nullptr, controller );
 		}
 		
-		pCBActorPoseController->SetSelection( decMath::min( decMath::max( selection, 0 ), count - 1 ) );
+		pCBActorPoseController->SetSelectionWithData( selection );
 		
 	}else{
 		pCBActorPoseController->RemoveAllItems();
@@ -2141,14 +2293,14 @@ void ceWPView::UpdateActorControllers(){
 
 void ceWPView::UpdateActorController(){
 	const ceActorPose * const pose = GetActorPose();
-	const int selection = pCBActorPoseController->GetSelection();
+	const ceActorController * const controller = pCBActorPoseController->GetSelectedItem()
+		? ( ceActorController* )pCBActorPoseController->GetSelectedItem()->GetData() : nullptr;
 	
-	if( pose && selection != -1 ){
-		const ceActorController &controller = *pose->GetControllers().GetAt( selection );
+	if( pose && controller ){
 		pCBActorPoseControllerUpdateType->SetSelectionWithData(
-			( void* )( intptr_t )controller.GetUpdateType() );
-		pEditActorPoseControllerValue->SetFloat( controller.GetValue() );
-		pEditActorPoseControllerVector->SetVector( controller.GetVector() );
+			( void* )( intptr_t )controller->GetUpdateType() );
+		pEditActorPoseControllerValue->SetFloat( controller->GetValue() );
+		pEditActorPoseControllerVector->SetVector( controller->GetVector() );
 		
 	}else{
 		pCBActorPoseControllerUpdateType->SetSelectionWithData(
@@ -2157,10 +2309,14 @@ void ceWPView::UpdateActorController(){
 		pEditActorPoseControllerVector->SetVector( decVector() );
 	}
 	
-	const bool enabled = pose && selection != -1;
+	const bool enabled = pose && controller;
 	pCBActorPoseControllerUpdateType->SetEnabled( enabled );
 	pEditActorPoseControllerValue->SetEnabled( enabled );
 	pEditActorPoseControllerVector->SetEnabled( enabled );
+}
+
+void ceWPView::SelectActorPoseController( ceActorController *controller ){
+	pCBActorPoseController->SetSelectionWithData( controller );
 }
 
 void ceWPView::UpdateActorCommands(){
@@ -2267,7 +2423,7 @@ void ceWPView::UpdatePlaybackFileList(){
 	pCBPlaybackFile->RemoveAllItems();
 	
 	if( pConversation ){
-		const ceConversationFileList &list = pConversation->GetFileList();
+		const ceConversationFileList list( pConversation->AllFiles() );
 		const int count = list.GetCount();
 		int i;
 		
@@ -2277,6 +2433,7 @@ void ceWPView::UpdatePlaybackFileList(){
 		}
 		
 		pCBPlaybackFile->SortItems();
+		pCBPlaybackFile->StoreFilterItems();
 	}
 	
 	pCBPlaybackFile->SetSelectionWithData( selectedFile );
@@ -2294,7 +2451,7 @@ void ceWPView::UpdatePlaybackTopicList(){
 	pCBPlaybackTopic->RemoveAllItems();
 	
 	if( selectedFile ){
-		const ceConversationTopicList &list = selectedFile->GetTopicList();
+		const ceConversationTopicList list( pConversation->AllTopics( selectedFile->GetID() ) );
 		const int count = list.GetCount();
 		int i;
 		
@@ -2304,6 +2461,7 @@ void ceWPView::UpdatePlaybackTopicList(){
 		}
 		
 		pCBPlaybackTopic->SortItems();
+		pCBPlaybackTopic->StoreFilterItems();
 	}
 	
 	pCBPlaybackTopic->SetSelectionWithData( selectedTopic );
@@ -2327,6 +2485,7 @@ void ceWPView::UpdatePlayback(){
 	
 	pChkPlaybackRunning->GetAction()->Update();
 	pChkPlaybackPaused->GetAction()->Update();
+	pChkPlaybackAutoAdvanceCommands->GetAction()->Update();
 }
 
 void ceWPView::UpdatePlaybackCommands(){

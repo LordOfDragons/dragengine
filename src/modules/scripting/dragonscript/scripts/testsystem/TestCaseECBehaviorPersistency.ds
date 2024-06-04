@@ -1,0 +1,362 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.TestSystem
+
+pin Dragengine.LoadSave
+pin Dragengine.Scenery
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+
+/**
+ * \brief Base class for testing BehaviorElementClass behaviors persistency.
+ * \version 1.5
+ * 
+ * This class helps to test ECBehavior subclasses persistency by providing the boiler plate
+ * code required to set up such tests. In particular this base class does the following:
+ * <ul>
+ * <li>Create a GameWorld instance</li>
+ * <li>Create a BehaviorElementClass instance</li>
+ * <li>Wait for preloading resources to finish</li>
+ * <li>Create a StubElement instance</li>
+ * <li>Create BehaviorElement instance</li>
+ * <li>Write BehaviorElement instance to MemoryFile</li>
+ * <li>Dispose of BehaviorElement instance</li>
+ * <li>Create new BehaviorElement instance by reading MemoryFile</li>
+ * <li>Safely tear down all created resources</li>
+ * </ul>
+ * 
+ * This class calls hook methods at specific points during the test to allow the subclass to
+ * set up the behaviors in the required layout as well as running the tests. The following
+ * example implementation shows how a subclass can be written.
+ * 
+ * \code{.ds}
+ * class MyTestCase extends TestCaseECBehaviorPersistency
+ *    public func new()
+ *    end
+ *    
+ *    protected var ECBehaviorComponent behavior
+ *    
+ *    // Overwrite method to add behaviors to element class. Created behaviors
+ *    // have to be store aside if required during tests later on. Overwriting
+ *    // this method is mandatory
+ *    protected func void addBehaviors()
+ *      behavior = ECBehaviorComponent.new(getElementClass(), null)
+ *    end
+ *    
+ *    // Overwrite method to set element stub properties. This simulates mapper setting
+ *    // object properties in the world editor. Overwriting this method is optional.
+ *    protected func void setStubProperties()
+ *      getStubElement().setPropertyValueFor("component.model", "/content/models/test.demodel")
+ *    end
+ *    
+ *    // Overwrite method to set up element after it has been created. Overwriting
+ *    // this method is optional. This is though typically required to modify the
+ *    // behavior instance states for persisting state
+ *    protected func void elementCreated()
+ *      getElement().setPosition(DVector.new(2, 1, 3))
+ *    end
+ *    
+ *    // Overwrite method to modify the persisted data. Overwriting this method is
+ *    // optional. This can be used to inject behavior data written in deprecated
+ *    // formats to verify these deprecated formats still can be loaded
+ *    protected func void dataPersisted()
+ *       getData().getFileWriter(true).writeInt(8)  // append an integer=8
+ *    end
+ *    
+ *    // Overwrite to run your tests on the behavior. Overwriting this method is mandatory.
+ *    // This method is called after the behavior element has been loaded from memory file
+ *    protected func bool testBehaviors(TestSuite testSuite)
+ *       var ECBehaviorComponent.Instance component = behavior.instance(getElement())
+ *       assertNotNull(component.getComponent())
+ *       
+ *       // Return true to continue testing during the next frame update or false
+ *       // if the test finished successfully.
+ *       return false
+ *    end
+ * end
+ * \endcode
+ */
+abstract class TestCaseECBehaviorPersistency extends TestCaseECBehavior
+	/** \brief Helper class to store the created element aside. */
+	protected class TestBehaviorElementClass extends BehaviorElementClass
+		public var TestCaseECBehaviorPersistency test
+		
+		/** \brief Create element class. */
+		public func new(TestCaseECBehaviorPersistency test) super("TestBehaviorElement")
+			this.test = test
+		end
+		
+		/** \brief Dispose of element class. */
+		public func void dispose()
+			test = null
+			super.dispose()
+		end
+		
+		/** \brief Store element aside. */
+		protected func Element createElement()
+			var Element element = super.createElement()
+			test.setElement(element cast BehaviorElement)
+			return element
+		end
+	end
+	
+	
+	
+	private var BehaviorElementClass elementClass
+	private var StubElement stubElement
+	private var BehaviorElement element
+	private var PreloadCounter preloadCounter
+	private var GameWorld gameWorld
+	private var MemoryFile persistedData
+	
+	
+	
+	/** \brief Create test. */
+	public func new(String id, UnicodeString name) super(id, name)
+	end
+	
+	
+	
+	/** \brief Element class to use for testing. */
+	protected func BehaviorElementClass getElementClass()
+		return elementClass
+	end
+	
+	/** \brief Stub element to use for testing. */
+	protected func StubElement getStubElement()
+		return stubElement
+	end
+	
+	/** \brief Element to use for testing. */
+	protected func BehaviorElement getElement()
+		return element
+	end
+	
+	/** \brief Preload counter used to preload element class resources. */
+	protected func PreloadCounter getPreloadCounter()
+		return preloadCounter
+	end
+	
+	/** \brief Game world to use for testing. */
+	protected func GameWorld getGameWorld()
+		return gameWorld
+	end
+	
+	/** \brief Persisted behavior element data. */
+	protected func MemoryFile getPersistedData()
+		return persistedData
+	end
+	
+	
+	
+	/** \brief Add behaviors to element class. */
+	protected abstract func void addBehaviors()
+	
+	/** \brief Set stub properties. */
+	protected func void setStubProperties()
+	end
+	
+	/** \brief Element created. */
+	protected func void elementCreated()
+	end
+	
+	/** \brief Element data has been persisted. */
+	protected func void dataPersisted()
+	end
+	
+	/** \brief Test behaviors. */
+	protected abstract func bool testBehaviors(TestSuite testSuite)
+	
+	
+	
+	/** \brief Assert element class has named property. */
+	protected func void assertHasProperty(String name)
+		assertNotNull(elementClass.getPropertyNamed(name))
+	end
+	
+	
+	
+	/**
+	 * \brief Set element.
+	 * 
+	 * For internal use only.
+	 */
+	public func void setElement(BehaviorElement element)
+		this.element = element
+	end
+	
+	/** \brief Initialize test. */
+	public func void init()
+		// create game world
+		gameWorld = GameWorld.new()
+		
+		// create element class
+		elementClass = TestBehaviorElementClass.new(this)
+		
+		// add behaviors
+		addBehaviors()
+		
+		// start preloading
+		preloadCounter = PreloadCounter.new()
+		elementClass.preloadResources(preloadCounter)
+	end
+	
+	/** \brief Run test. */
+	public func bool run(TestSuite testSuite)
+		// if preloading
+		if preloadCounter != null
+			// if still preloading wait
+			if preloadCounter.isNotZero()
+				return true
+			end
+			
+			// preloading finished
+			preloadCounter = null
+			
+			// create element stub
+			stubElement = StubElement.new(elementClass, UniqueID.new(123))
+			setStubProperties()
+			
+			// create element. assert element has been created and has been added to game world
+			stubElement.createAndAddElement(gameWorld)
+			//assertNotNull(element)
+			//assertEquals(element.getGameWorld(), gameWorld)
+			
+			elementCreated()
+			
+			// persist element to memory file
+			persistedData = MemoryFile.new("persistedData")
+			var Persistency persistency = BaseGameAppTesting.getApp().getLoaders().getPersistency()
+			var PersistencyEnvironment persistencyEnv = PersistencyEnvironment.new(persistency)
+			element.writeToFile(persistencyEnv, persistedData.getWriter(false))
+			
+			dataPersisted()
+			
+			// dispose of element
+			element.safeDispose()
+			element = null
+			
+			// explicit read tests. BehaviorElement does not fail if behaviors read less data
+			// than the data block contains. this test does an explicit load checking this
+			// condition as well as if BehaviorElement properly reads all data
+			explicitRead(persistencyEnv)
+			
+			// create element from persisted data. this is used for testing. the element used
+			// in the above explicit test is not used since double reading the data could
+			// hide potential bugs so we use a fresh object
+			stubElement.loadAndAddElement(persistencyEnv, persistedData.getReader(), gameWorld)
+		end
+		
+		// run test
+		return testBehaviors(testSuite)
+	end
+	
+	/** \brief Explicit read test ensuring behaviors read all data. */
+	protected func void explicitRead(PersistencyEnvironment env)
+		// create element reading from reader
+		var FileReader reader = persistedData.getReader()
+		stubElement.loadAndAddElement(env, reader, gameWorld)
+		
+		// assert all data has been consumed
+		assertEquals(reader.getPosition(), persistedData.getSize())
+		
+		// rewind then read again but this time with explicit tests
+		reader.setPosition(1)  // skip version byte. has to be 1
+		
+		var BehaviorElementClass eclass = element.getClass() cast BehaviorElementClass
+		
+		var Dictionary map = Dictionary.new()
+		element.forEachInstance(block int index, ECBehaviorInstance each
+			map.setAt((eclass.getBehaviorAt(index) cast BehaviorCompatiblePersistency).getBehaviorID(), each)
+		end)
+		
+		var MemoryFile behaviorData = MemoryFile.new("behaviorData")
+		var int i, dataLength, count = reader.readShort()
+		var ECBehaviorInstance instance
+		var FileReader dataReader
+		var String identifier
+		
+		for i = 0 to count
+			identifier = reader.readString8()
+			instance = map.getAt(identifier, null) cast ECBehaviorInstance
+			dataLength = reader.readInt()
+			if instance != null
+				behaviorData.getWriter(false).writeData(reader, dataLength)
+				dataReader = behaviorData.getReader()
+				instance.readFromFile(env, dataReader)
+				assertEquals(dataReader.getPosition(), behaviorData.getSize())
+				
+			elif element.findInstance(block int index, ECBehaviorInstance each
+				var BehaviorCompatiblePersistency bcp = eclass.getBehaviorAt(index) cast BehaviorCompatiblePersistency
+				if bcp.supportsBehaviorID(identifier)
+					behaviorData.getWriter(false).writeData(reader, dataLength)
+					dataReader = behaviorData.getReader()
+					bcp.loadSupportedData(identifier, env, dataReader, each)
+					assertEquals(dataReader.getPosition(), behaviorData.getSize())
+					return true
+					
+				else
+					return false
+				end
+				
+			end) == null
+				reader.movePosition(dataLength)
+			end
+		end
+		
+		// dispose of element
+		element.safeDispose()
+		element = null
+	end
+	
+	/** \brief Clean up resources. */
+	public func void tearDown()
+		// stop preloading
+		preloadCounter = null
+		
+		// dispose of element
+		if element != null
+			element.safeDispose()
+			element = null
+		end
+		
+		// drop stub
+		stubElement = null
+		
+		// dispose of element class
+		if elementClass != null
+			elementClass.dispose()
+			elementClass = null
+		end
+		
+		// dispose of game world
+		if gameWorld != null
+			gameWorld.dispose()
+			gameWorld = null
+		end
+	end
+end

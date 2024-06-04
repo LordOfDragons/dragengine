@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -36,141 +39,226 @@ pin Dragengine.LoadSave
  * To use this AI set the BTContext subclass set up with the required actions and state
  * initialized to run the behavior tree. Do this after the AI instance is created which
  * can be also due to Persistable interface loading from file reader.
+ * 
+ * To support behaviors receiving notifications about the state of the context set also
+ * the ECBehaviorBehaviorTree used to initialize the context.
  */
 class BAAIBehaviorTree extends BaseActorAI
 	/**
 	 * \brief Factory for loading actor ai.
 	 */
-	public class Factory implements PersistencyFactory
+	class Factory implements PersistencyFactory, ECBehaviorActorAIAction.AIFactory
 		public static fixed var String NAME = "BAAIBehaviorTree"
 		
-		public func new()
+		func new()
 		end
 		
-		public func Persistable readObjectFromFile( PersistencyEnvironment env, FileReader reader )
-			return BAAIBehaviorTree.new( env, reader )
+		func Persistable readObjectFromFile(PersistencyEnvironment env, FileReader reader)
+			return BAAIBehaviorTree.new(env, reader)
 		end
 		
-		public static func void registerFactory( Persistency persistency )
-			persistency.addFactory( NAME, Factory.new() )
+		static func void registerFactory(Persistency persistency)
+			persistency.addFactory(NAME, Factory.new())
+		end
+		
+		func BaseActorAI createAI(ECBehaviorActorAIAction.Instance instance)
+			return BAAIBehaviorTree.new()
 		end
 	end
 	
 	/**
 	 * \brief Behavior tree context with link to BAAIBehaviorTree.
 	 */
-	public class BTContextAI extends BTContext
+	class BTContextAI extends BTContext
 		/** \brief AI. */
-		private var BAAIBehaviorTree pAI
+		var BAAIBehaviorTree pAI
 		
 		/** \brief Create context. */
-		public func new( BAAIBehaviorTree ai, BehaviorTree behaviorTree ) super( behaviorTree )
-			this.pAI = ai
+		func new(BAAIBehaviorTree ai, BehaviorTree behaviorTree) super(behaviorTree)
+			pAI = ai
 		end
 		/** \brief Create copy of context. */
-		public func new( BTContextAI context ) super( context )
-			this.pAI = context.pAI
+		func new(BTContextAI context) super(context)
+			pAI = context.pAI
 		end
 		
 		/** \brief Create copy of context. */
-		public func new( BAAIBehaviorTree ai, BTContext context ) super( context )
-			this.pAI = ai
+		func new(BAAIBehaviorTree ai, BTContext context) super(context)
+			pAI = ai
 		end
 		
 		/** \brief Create copy of context using different behavior tree. */
-		public func new( BAAIBehaviorTree ai, BTContext context, BehaviorTree behaviorTree ) super( context, behaviorTree )
-			this.pAI = ai
+		func new(BAAIBehaviorTree ai, BTContext context, BehaviorTree behaviorTree) super(context, behaviorTree)
+			pAI = ai
 		end
 		
 		/** \brief AI. */
-		public func BAAIBehaviorTree getAI()
-			return this.pAI
+		func BAAIBehaviorTree getAI()
+			return pAI
 		end
 		
 		/** \brief Actor. */
-		public func BehaviorElement getActor()
-			return this.pAI.getActor()
+		func BehaviorElement getActor()
+			return pAI.getActor()
 		end
 	end
 	
 	/**
 	 * \brief Behavior tree action with link to BAAIBehaviorTree.
 	 */
-	public abstract class BTActionAI implements BTAction
+	abstract class BTActionAI implements BTAction
 		/** \brief AI. */
-		private var BAAIBehaviorTree pAI
+		var BAAIBehaviorTree pAI
 		
 		/** \brief Create action. */
-		public func new( BAAIBehaviorTree ai )
-			this.pAI = ai
+		func new(BAAIBehaviorTree ai)
+			pAI = ai
 		end
 		
 		/** \brief AI. */
-		public func BAAIBehaviorTree getAI()
-			return this.pAI
+		func BAAIBehaviorTree getAI()
+			return pAI
 		end
 		
 		/** \brief Actor. */
-		public func BehaviorElement getActor()
-			return this.pAI.getActor()
+		func BehaviorElement getActor()
+			return pAI.getActor()
 		end
 	end
 	
 	
 	
-	/** \brief Behavior tree context or \em null if not set. */
-	private var BTContextAI pContext
-	
-	/** \brief Behavior tree is running. */
-	private var bool pRunning
+	var BTContextAI pContext
+	var bool pRunning
+	var bool pPauseInConversation
+	var ECBehaviorBehaviorTree.Instance pBehaviorBehaviorTree
+	protected var ECBehaviorConversationActor.Instance conversationActor
 	
 	
 	
 	/** \brief Create actor ai. */
-	public func new()
-		this.pRunning = false
+	func new()
 	end
 	
 	/** \brief Create actor ai restoring from file reader. */
-	public func new( PersistencyEnvironment env, FileReader reader )
-		var PersistencyFlags flags = PersistencyFlags.new( 2, reader )
-		var bool hasContext = flags.getAt( 0 )
-		this.pRunning = flags.getAt( 1 )
-		
-		if hasContext and this.pContext != null
-			this.pContext.readFromFile( env, reader )
+	func new(PersistencyEnvironment env, FileReader reader)
+		select reader.readByte() // version
+		case 0
+			var PersistencyFlags flags = PersistencyFlags.new(3, reader)
+			var bool hasContext = flags.getAt(0)
+			pRunning = flags.getAt(1)
+			pPauseInConversation = flags.getAt(2)
+			
+			if hasContext and pContext != null
+				pContext.readFromFile(env, reader)
+			end
+			
+		else
+			throw EInvalidParam.new("unsupported version")
 		end
 	end
 	
 	/** \brief Dispose of actor ai. */
-	public func void dispose()
-		this.pContext = null
+	func void dispose()
+		pBehaviorBehaviorTree = null
+		conversationActor = null
+		pContext = null
 		super.dispose()
 	end
 	
 	
 	
 	/** \brief Behavior tree context or \em null if not set. */
-	public func BTContextAI getContext()
-		return this.pContext
+	func BTContextAI getContext()
+		return pContext
 	end
 	
-	/** \brief Set behavior tree context or \em null if not set. */
-	public func void setContext( BTContextAI context )
-		this.pContext = context
+	/**
+	 * \brief Set behavior tree context or \em null if not set.
+	 * 
+	 * If context is not null resetContext() is also called.
+	 */
+	func void setContext(BTContextAI context)
+		pContext = context
+		resetContext()
 	end
 	
 	/** \brief Behavior tree is running. */
-	public func bool getRunning()
-		return this.pRunning
+	func bool getRunning()
+		return pRunning
 	end
 	
 	/** \brief Set if behavior tree is running. */
-	public func void setRunning( bool running )
-		this.pRunning = running
+	func void setRunning(bool running)
+		pRunning = running
+	end
+	
+	/**
+	 * \brief Pause behavior tree while actor is in a conversation.
+	 * \version 1.19
+	 */
+	func bool getPauseInConversation()
+		return pPauseInConversation
+	end
+	
+	/**
+	 * \brief Set to pause behavior tree while actor is in a conversation.
+	 * \version 1.19
+	 */
+	func void setPauseInConversation(bool pauseInConversation)
+		pPauseInConversation = pauseInConversation
+	end
+	
+	/**
+	 * \brief Reset context to run it again.
+	 * \version 1.19
+	 */
+	func void resetContext()
+		if pContext == null
+			return
+		end
+		
+		pContext.reset()
+		
+		if pBehaviorBehaviorTree != null
+			pBehaviorBehaviorTree.notifyRestarted(pContext)
+		end
+	end
+	
+	/**
+	 * \brief Behavior behavior tree to send notifications to.
+	 * \version 1.19
+	 */
+	func ECBehaviorBehaviorTree.Instance getBehaviorBehaviorTree()
+		return pBehaviorBehaviorTree
+	end
+	
+	/**
+	 * \brief Set behavior behavior tree to send notifications to.
+	 * \version 1.19
+	 */
+	func void setBehaviorBehaviorTree(ECBehaviorBehaviorTree.Instance behavior)
+		pBehaviorBehaviorTree = behavior
 	end
 	
 	
+	
+	/**
+	 * \brief Init behaviors.
+	 * 
+	 * Retrieve and store required and optional behavior instances from the actor element.
+	 */
+	protected func void initBehaviors()
+		super.initBehaviors()
+		
+		if actor castable BaseActor
+			var BaseActor baseActor = actor cast BaseActor
+			conversationActor = baseActor.getConversationActor()
+			
+		else
+			conversationActor = ECBehaviorConversationActor.getInstanceIn(actor)
+		end
+	end
 	 
 	/**
 	 * \brief Thinking.
@@ -180,23 +268,40 @@ class BAAIBehaviorTree extends BaseActorAI
 	 * - Running is true
 	 * - Actor is not controlled by player
 	 * 
-	 * If running the behavior tree throws an exception or returns \em false running is set
-	 * to false and onBehaviorTreeFailed() is called.
+	 * If running the behavior tree throws an exception or returns \em false running is set to
+	 * false and onBehaviorTreeFailed() is called. To run the context again call resetContext().
 	 */
-	public func void think( float elapsed )
-		if this.pContext == null or not this.pRunning or this.isControlledByPlayer()
+	func void think(float elapsed)
+		if pContext == null or isControlledByPlayer()
+			return
+		end
+		
+		if pBehaviorBehaviorTree != null
+			pBehaviorBehaviorTree.notifyUpdate(pContext, elapsed)
+		end
+		
+		if not pRunning
+			return
+		end
+		if pPauseInConversation and conversationActor != null and conversationActor.isInConversation()
 			return
 		end
 		
 		try
-			if not this.pContext.stepBehaviorTree()
-				this.setRunning( false )
-				this.onBehaviorTreeFailed( null )
+			if not pContext.stepBehaviorTree()
+				setRunning(false)
+				if pBehaviorBehaviorTree != null
+					pBehaviorBehaviorTree.notifyFailed(pContext)
+				end
+				onBehaviorTreeFailed(null)
 			end
 			
 		catch Exception e
-			this.setRunning( false )
-			this.onBehaviorTreeFailed( e )
+			setRunning(false)
+			if pBehaviorBehaviorTree != null
+				pBehaviorBehaviorTree.notifyFailed(pContext)
+			end
+			onBehaviorTreeFailed(e)
 		end
 	end
 	
@@ -207,8 +312,8 @@ class BAAIBehaviorTree extends BaseActorAI
 	 * 
 	 * \param exception Exception if thrown or \em null otherwise.
 	 */
-	public func void onBehaviorTreeFailed( Exception e )
-		this.log( e )
+	func void onBehaviorTreeFailed(Exception e)
+		log(e)
 	end
 	
 	
@@ -223,20 +328,23 @@ class BAAIBehaviorTree extends BaseActorAI
 	 * instance used for loading objects. Object is read using
 	 * PersistencyFactory.readObjectFromFile() of the matching PersistencyFactory.
 	 */
-	public func String persistencyFactoryName()
+	func String persistencyFactoryName()
 		return Factory.NAME
 	end
 	
 	/** \brief Write object to file writer. */
-	public func void writeObjectToFile( PersistencyEnvironment env, FileWriter writer )
-		super.writeObjectToFile( env, writer )
+	func void writeObjectToFile(PersistencyEnvironment env, FileWriter writer)
+		super.writeObjectToFile(env, writer)
 		
-		var PersistencyFlags flags = PersistencyFlags.new( 2 )
-		flags.setAt( 0, this.pContext != null )
-		flags.setAt( 1, this.pRunning )
+		writer.writeByte(0) // version
 		
-		if this.pContext != null
-			this.pContext.writeToFile( env, writer )
+		var PersistencyFlags flags = PersistencyFlags.new(3)
+		flags.setAt(0, pContext != null)
+		flags.setAt(1, pRunning)
+		flags.setAt(2, pPauseInConversation)
+		
+		if pContext != null
+			pContext.writeToFile(env, writer)
 		end
 	end
 end

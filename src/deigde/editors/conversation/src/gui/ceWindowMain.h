@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Conversation Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _CEWINDOWMAIN_H_
@@ -31,7 +34,9 @@
 #include <deigde/gui/event/igdeActionRedoReference.h>
 #include <deigde/gui/resources/igdeIconReference.h>
 
+
 class decStringList;
+class decStringSet;
 class ceWindowMainListener;
 class ceViewConversation;
 class ceConfiguration;
@@ -45,10 +50,46 @@ class igdeStepableTask;
 
 
 /**
- * \brief Main Editor Window.
+ * Main Editor Window.
  */
 class ceWindowMain : public igdeEditorWindow{
 private:
+	class cRecentFilesCTS : public igdeRecentFiles{
+		ceWindowMain &pWindowMain;
+		
+	public:
+		cRecentFilesCTS( ceWindowMain &windowMain );
+		void OpenFile( const char *filename ) override;
+		void FilesChanged() override;
+	};
+	
+	class cRecentFilesCTA : public igdeRecentFiles{
+		ceWindowMain &pWindowMain;
+		
+	public:
+		cRecentFilesCTA( ceWindowMain &windowMain );
+		void OpenFile( const char *filename ) override;
+		void FilesChanged() override;
+	};
+	
+	class cRecentFilesCTGS : public igdeRecentFiles{
+		ceWindowMain &pWindowMain;
+		
+	public:
+		cRecentFilesCTGS( ceWindowMain &windowMain );
+		void OpenFile( const char *filename ) override;
+		void FilesChanged() override;
+	};
+	
+	class cRecentFilesLangPack : public igdeRecentFiles{
+		ceWindowMain &pWindowMain;
+		
+	public:
+		cRecentFilesLangPack( ceWindowMain &windowMain );
+		void OpenFile( const char *filename ) override;
+		void FilesChanged() override;
+	};
+	
 	ceWindowMainListener *pListener;
 	
 	igdeIconReference pIconActionCameraShot;
@@ -61,6 +102,7 @@ private:
 	igdeIconReference pIconActionOption;
 	igdeIconReference pIconActionSnippet;
 	igdeIconReference pIconActionStop;
+	igdeIconReference pIconActionActorCommand;
 	igdeIconReference pIconActionCommand;
 	igdeIconReference pIconActionVariable;
 	igdeIconReference pIconActionWait;
@@ -72,6 +114,7 @@ private:
 	igdeIconReference pIconActionComment;
 	
 	igdeIconReference pIconConditionLogic;
+	igdeIconReference pIconConditionActorCommand;
 	igdeIconReference pIconConditionCommand;
 	igdeIconReference pIconConditionVariable;
 	igdeIconReference pIconConditionHasActor;
@@ -102,6 +145,9 @@ private:
 	igdeActionReference pActionViewCTGSLoad;
 	igdeActionReference pActionViewCTGSSave;
 	igdeActionReference pActionViewShowRuleOfThirdsAid;
+	igdeActionReference pActionViewAttachLangPack;
+	igdeActionReference pActionViewDetachLangPack;
+	igdeActionReference pActionViewMissingWords;
 	
 	igdeToolBarReference pTBFile;
 	igdeToolBarReference pTBEdit;
@@ -116,16 +162,21 @@ private:
 	
 	ceConversation *pConversation;
 	
+	cRecentFilesCTS pRecentFilesCTS;
+	cRecentFilesCTA pRecentFilesCTA;
+	cRecentFilesCTGS pRecentFilesCTGS;
+	cRecentFilesLangPack pRecentFilesLangPack;
+	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create main window. */
+	/** Create main window. */
 	ceWindowMain( ceIGDEModule &module );
 	
 protected:
-	/** \brief Clean up main window. */
+	/** Clean up main window. */
 	virtual ~ceWindowMain();
 	/*@}*/
 	
@@ -134,40 +185,54 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Ask user if it is okay to quit the application. */
+	/** Ask user if it is okay to quit the application. */
 	bool QuitRequest();
 	
-	/** \brief Reset views. */
+	/** Reset views. */
 	void ResetViews();
 	
-	/** \brief Configuration. */
+	/** Configuration. */
 	inline ceConfiguration &GetConfiguration() const{ return *pConfiguration; }
 	
-	/** \brief Clipboard. */
+	/** Clipboard. */
 	inline igdeClipboard &GetClipboard(){ return pClipboard; }
 	inline const igdeClipboard &GetClipboard() const{ return pClipboard; }
 	
-	/** \brief Load save system. */
+	/** Load save system. */
 	inline ceLoadSaveSystem &GetLoadSaveSystem() const{ return *pLoadSaveSystem; }
 	
-	/** \brief Conversation. */
+	/** Conversation. */
 	inline ceConversation *GetConversation() const{ return pConversation; }
 	
-	/** \brief Set conversation. */
+	/** Set conversation. */
 	void SetConversation( ceConversation *conversation );
 	
-	/** \brief Create new conversation. */
+	/** Create new conversation. */
 	void CreateNewConversation();
 	
-	/** \brief Save conversation to file. */
+	/** Save conversation to file. */
 	void SaveConversation( const char *filename );
 	
-	/** \brief Properties window. */
+	/** Properties window. */
 	inline ceWindowProperties &GetWindowProperties() const{ return *pWindowProperties; }
 	
+	/** Show found missing words dialog. */
+	void ShowFoundMissingWordsDialog( decStringSet &missingWords );
+	
+	/** Recent files. */
+	inline cRecentFilesCTS &GetRecentFilesCTS(){ return pRecentFilesCTS; }
+	inline cRecentFilesCTA &GetRecentFilesCTA(){ return pRecentFilesCTA; }
+	inline cRecentFilesCTGS &GetRecentFilesCTGS(){ return pRecentFilesCTGS; }
+	inline cRecentFilesLangPack &GetRecentFilesLangPack(){ return pRecentFilesLangPack; }
+	
+	/** Open conversation test actor. */
+	void LoadCTA( const char *filename );
+	
+	/** Attach language pack. */
+	void AttachLangPack( const char *filename );
 	
 	
-	/** \brief Icons. */
+	/** Icons. */
 	inline igdeIcon *GetIconActionCameraShot() const{ return pIconActionCameraShot; }
 	inline igdeIcon *GetIconActionMusic() const{ return pIconActionMusic; }
 	inline igdeIcon *GetIconActionActorSpeak() const{ return pIconActionActorSpeak; }
@@ -178,6 +243,7 @@ public:
 	inline igdeIcon *GetIconActionOption() const{ return pIconActionOption; }
 	inline igdeIcon *GetIconActionSnippet() const{ return pIconActionSnippet; }
 	inline igdeIcon *GetIconActionStop() const{ return pIconActionStop; }
+	inline igdeIcon *GetIconActionActorCommand() const{ return pIconActionActorCommand; }
 	inline igdeIcon *GetIconActionCommand() const{ return pIconActionCommand; }
 	inline igdeIcon *GetIconActionVariable() const{ return pIconActionVariable; }
 	inline igdeIcon *GetIconActionWait() const{ return pIconActionWait; }
@@ -189,6 +255,7 @@ public:
 	inline igdeIcon *GetIconActionComment() const{ return pIconActionComment; }
 	
 	inline igdeIcon *GetIconConditionLogic() const{ return pIconConditionLogic; }
+	inline igdeIcon *GetIconConditionActorCommand() const{ return pIconConditionActorCommand; }
 	inline igdeIcon *GetIconConditionCommand() const{ return pIconConditionCommand; }
 	inline igdeIcon *GetIconConditionVariable() const{ return pIconConditionVariable; }
 	inline igdeIcon *GetIconConditionHasActor() const{ return pIconConditionHasActor; }
@@ -202,33 +269,33 @@ public:
 	
 	
 	
-	/** \brief Actions. */
+	/** Actions. */
 	
 	
 	
-	/** \brief Game engine is about to be started. */
+	/** Game engine is about to be started. */
 	virtual void OnBeforeEngineStart();
 	
-	/** \brief Game engine has been started. */
+	/** Game engine has been started. */
 	virtual void OnAfterEngineStart();
 	
-	/** \brief Game engine is about to be stopped. */
+	/** Game engine is about to be stopped. */
 	virtual void OnBeforeEngineStop();
 	
-	/** \brief Game engine has been stopped. */
+	/** Game engine has been stopped. */
 	virtual void OnAfterEngineStop();
 	
-	/** \brief Module has been activated. */
+	/** Module has been activated. */
 	virtual void OnActivate();
 	
-	/** \brief Module has been deactivated. */
+	/** Module has been deactivated. */
 	virtual void OnDeactivate();
 	
-	/** \brief Game like frame update. */
+	/** Game like frame update. */
 	virtual void OnFrameUpdate( float elapsed );
 	
 	/**
-	 * \brief Retrieves a list of changed documents.
+	 * Retrieves a list of changed documents.
 	 * 
 	 * This list is requested by the IGDE if a game project is closed due to creating or
 	 * loading a new one or because the application is about to be closed. Editors modules
@@ -239,12 +306,12 @@ public:
 	virtual void GetChangedDocuments( decStringList &list );
 	
 	/**
-	 * \brief Requests a document to be loaded.
+	 * Requests a document to be loaded.
 	 */
 	virtual void LoadDocument( const char *filename );
 	
 	/**
-	 * \brief Requests a document to be saved.
+	 * Requests a document to be saved.
 	 * 
 	 * The document has to be saved if changed. If not changed this call can be ignored.
 	 * This call is usually made after a previous call to \ref GetUnsavedDocuments.
@@ -254,12 +321,12 @@ public:
 	virtual bool SaveDocument( const char *filename );
 	
 	/**
-	 * \brief Recent files changed.
+	 * Recent files changed.
 	 */
 	virtual void RecentFilesChanged();
 	
 	/**
-	 * \brief The game project has changed.
+	 * The game project has changed.
 	 * 
 	 * Notification send to the editor modules after a new game project has been set.
 	 * The editor module has to discard all open documents and all references held of
@@ -269,7 +336,7 @@ public:
 	virtual void OnGameProjectChanged();
 	
 	/**
-	 * \brief Project game definition changed.
+	 * Project game definition changed.
 	 * 
 	 * Called after an editor changed the game definition. The old game definition used so
 	 * far is replaced by a new game definition. The module has to update everything

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -24,6 +27,7 @@
 #include <string.h>
 
 #include "deoglCollideListPropFieldType.h"
+#include "deoglCollideListPropFieldCluster.h"
 #include "../propfield/deoglPropFieldCluster.h"
 
 #include <dragengine/common/exceptions.h>
@@ -36,14 +40,20 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglCollideListPropFieldType::deoglCollideListPropFieldType(){
-	pClusters = NULL;
-	pClusterCount = 0;
-	pClusterSize = 0;
+deoglCollideListPropFieldType::deoglCollideListPropFieldType( deoglCollideListPropField &propField ) :
+pPropField( propField ),
+pType( NULL ),
+pClusterCount( 0 )
+{
+	(void)pPropField; // silence compiler warning
 }
 
 deoglCollideListPropFieldType::~deoglCollideListPropFieldType(){
-	if( pClusters ) delete [] pClusters;
+	const int count = pClusters.GetCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		delete ( deoglCollideListPropFieldCluster* )pClusters.GetAt( i );
+	}
 }
 
 
@@ -51,23 +61,69 @@ deoglCollideListPropFieldType::~deoglCollideListPropFieldType(){
 // Management
 ///////////////
 
-void deoglCollideListPropFieldType::AddCluster( deoglPropFieldCluster *cluster ){
-	if( ! cluster ) DETHROW( deeInvalidParam );
+void deoglCollideListPropFieldType::Clear(){
+	RemoveAllClusters();
+	pType = NULL;
+}
+
+void deoglCollideListPropFieldType::SetType( deoglRPropFieldType *type ){
+	pType = type;
+	RemoveAllClusters();
+}
+
+void deoglCollideListPropFieldType::StartOcclusionTest( deoglOcclusionTest &occlusionTest,
+const decVector &offset ){
+	int i;
+	for( i=0; i<pClusterCount; i++ ){
+		( ( deoglCollideListPropFieldCluster* )pClusters.GetAt( i ) )->
+			StartOcclusionTest( occlusionTest, offset );
+	}
+}
+
+
+
+deoglCollideListPropFieldCluster &deoglCollideListPropFieldType::GetClusterAt( int index ) const{
+	return *( ( deoglCollideListPropFieldCluster* )pClusters.GetAt( index ) );
+}
+
+deoglCollideListPropFieldCluster *deoglCollideListPropFieldType::AddCluster( deoglPropFieldCluster *cluster ){
+	deoglCollideListPropFieldCluster *clcluster = NULL;
 	
-	if( pClusterCount == pClusterSize ){
-		int newSize = pClusterSize * 3 / 2 + 1;
-		deoglPropFieldCluster **newArray = new deoglPropFieldCluster*[ newSize ];
-		if( pClusters ){
-			memcpy( newArray, pClusters, sizeof( deoglPropFieldCluster* ) * pClusterSize );
-			delete [] pClusters;
-		}
-		pClusters = newArray;
-		pClusterSize = newSize;
+	if( pClusterCount < pClusters.GetCount() ){
+		clcluster = ( deoglCollideListPropFieldCluster* )pClusters.GetAt( pClusterCount );
+		
+	}else{
+		clcluster = new deoglCollideListPropFieldCluster;
+		clcluster->SetCluster( cluster );
+		pClusters.Add( clcluster );
 	}
 	
-	pClusters[ pClusterCount++ ] = cluster;
+	clcluster->SetCluster( cluster );
+	pClusterCount++;
+	return clcluster;
 }
 
 void deoglCollideListPropFieldType::RemoveAllClusters(){
-	pClusterCount = 0;
+	while( pClusterCount > 0 ){
+		( ( deoglCollideListPropFieldCluster* )pClusters.GetAt( --pClusterCount ) )->Clear();
+	}
+}
+
+void deoglCollideListPropFieldType::RemoveCulledClusters(){
+	int i, last = 0;
+	for( i=0; i<pClusterCount; i++ ){
+		deoglCollideListPropFieldCluster &cluster = *( ( deoglCollideListPropFieldCluster* )pClusters.GetAt( i ) );
+		if( cluster.GetCulled() ){
+			cluster.Clear();
+			continue;
+		}
+		
+		if( i != last ){
+			void * const exchange = pClusters.GetAt( last );
+			pClusters.SetAt( last, pClusters.GetAt( i ) );
+			pClusters.SetAt( i, exchange );
+		}
+		last++;
+	}
+	pClusterCount = last;
 }

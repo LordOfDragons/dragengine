@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include "igdeWindowMain.h"
@@ -34,6 +37,7 @@
 #include "../template/igdeTemplate.h"
 #include "../template/igdeTemplateList.h"
 
+#include <deigde/deigde_configuration.h>
 #include <deigde/engine/igdeEngineController.h>
 #include <deigde/engine/textureProperties/igdeTextureProperty.h>
 #include <deigde/engine/textureProperties/igdeTexturePropertyList.h>
@@ -117,6 +121,8 @@
 #include <dragengine/logger/deLoggerChain.h>
 #include <dragengine/logger/deLoggerReference.h>
 #include <dragengine/resources/collider/deCollider.h>
+#include <dragengine/resources/model/deModel.h>
+#include <dragengine/resources/model/deModelManager.h>
 #include <dragengine/resources/rig/deRig.h>
 #include <dragengine/resources/rig/deRig.h>
 #include <dragengine/resources/rig/deRigBuilder.h>
@@ -181,7 +187,7 @@ public:
 			return;
 		}
 		
-		decString filename( pWindow.GetGameProject() ? pWindow.GetGameProject()->GetFilePath() : "" );
+		decString filename( pWindow.GetGameProject() ? pWindow.GetGameProject()->GetFilePath() : decString() );
 		if( igdeCommonDialogs::GetFileOpen( &pWindow, "Open Game Project",
 		pWindow.GetLoadSaveSystem()->GetOpenFilePatternList( igdeLoadSaveSystem::efplGameProject ), filename ) ){
 			pWindow.LoadGameProject( filename );
@@ -505,7 +511,13 @@ pTaskSyncGameDefinition( NULL )
 		pResourceLoader = new igdeResourceLoader( pEnvironmentIGDE );
 		
 		CreateEngineController(); // uses methods provided by base class
+		GetEngineController().UpdateEngine( nullptr, pConfiguration.GetPathIGDEData(),
+			pConfiguration.GetPathIGDEEditorData() );
+		
 		pCreateSharedModelCollisionRig();
+		pLoadStockSkins();
+		pLoadStockModels();
+		pLoadStockRigs();
 		
 		pAddIGDEEngineModules();
 		GetEngineController().ActivateModule( igdeEngineController::esScripting, "IGDEScript" );
@@ -633,7 +645,7 @@ pTaskSyncGameDefinition( NULL )
 		
 		CreatePlaceholderGameProject();
 		
-	}catch( const deException &e ){
+	}catch( const deException & ){
 		pCleanUp();
 		throw;
 	}
@@ -647,10 +659,6 @@ igdeWindowMain::~igdeWindowMain(){
 // Management
 ///////////////
 
-igdeLoggerHistory *igdeWindowMain::GetLoggerHistory() const{
-	return ( igdeLoggerHistory* )( deLogger* )pLoggerHistory;
-}
-
 igdeGuiTheme *igdeWindowMain::GetGuiThemeNamed( const char *name ){
 	return ( igdeGuiTheme* )pGuiThemes.GetAt( name );
 }
@@ -662,63 +670,58 @@ void igdeWindowMain::ShowWindowLogger(){
 	}
 	
 	pWindowLogger->SetVisible( true );
+	pWindowLogger->RaiseAndActivate();
 }
 
 
 
-bool igdeWindowMain::ProcessCommandLine( const decUnicodeStringList &arguments ) {
-	const int argCount = arguments.GetCount();
+bool igdeWindowMain::ProcessCommandLine( const decUnicodeStringList &arguments ){
+	decUnicodeStringList args( arguments );
 	decString loadFile;
-	int i;
 	
-	for( i=0; i<argCount; i++ ){
-		const decString argument( arguments.GetAt( argCount - 1 ).ToUTF8() );
-		const int alen = argument.GetLength();
+	while( args.GetCount() > 0 ){
+		const decString arg( args.GetAt( 0 ).ToUTF8() );
+		args.RemoveFrom( 0 );
 		
-		if( argument == "--showFPS" ){
+		if( arg == "--showFPS" ){
 			pDisplayFPSInfo = true;
 			
-		}else if( ( alen > 0 && argument.GetAt( 0 ) != '-' ) || ( alen > 1 && argument.GetAt( 1 ) != '-' ) ){
-			loadFile = argument;
+		}else if( arg.BeginsWith( "--" ) || arg.BeginsWith( "-" ) ){
+			decString message;
+			message.Format( "Unknown argument '%s'", arg.GetString() );
+			DETHROW_INFO( deeInvalidParam, message );
+			
+		}else if( loadFile.IsEmpty() ){
+			loadFile = arg;
 			break;
 		}
 	}
 	
 	if( loadFile.IsEmpty() ){
+		#ifdef IGDE_NULL_TOOLKIT
+		printf( "deigde <project-file.degp> {--help | ...}\n" );
+		DETHROW_INFO( deeInvalidParam, "Missing arguments" );
+		#endif
+		
 		igdeDialogReference dialog;
 		dialog.TakeOver( new igdeDialogStartUp( *this ) );
 		return dialog->Run( this );
 	}
 	
-	igdeGameProject *project = NULL;
-	
 	GetLogger()->LogInfoFormat( LOGSOURCE, "Loading game project %s", loadFile.GetString() );
 	
-	try{
-		project = pLoadSaveSystem->LoadGameProject( loadFile.GetString() );
-		project->MergeGameDefinitions();
-		
-	}catch( const deException &e ){
-		DisplayException( e );
-		igdeCommonDialogs::Error( this, "Loading Game Project Problem",
-			"Could not load game project. Creating an empty one instead" );
-		
-		if( project ){
-			project->FreeReference();
-			project = NULL;
-		}
+	if( ! LoadGameProject( loadFile ) ){
+		return false;
 	}
 	
-	if( project ){
-		SetGameProject( project );
-		project->FreeReference();
-		
-	}else{
-		if( ! CreateNewGameProject() ){
-			return false;
-		}
-	}
+	pAfterLoadArguments = args;
 	
+	#ifdef IGDE_NULL_TOOLKIT
+	if( pAfterLoadArguments.GetCount() == 0 ){
+		printf( "deigde <project-file.degp> {--help | ...}\n" );
+		DETHROW_INFO( deeInvalidParam, "Missing arguments" );
+	}
+	#endif
 	return true;
 }
 
@@ -735,11 +738,12 @@ void igdeWindowMain::SetGameProject( igdeGameProject *project ){
 	
 	if( project ){
 		project->AddReference();
-		
-		GetEngineController().UpdateEngine( *project, pConfiguration.GetPathIGDEData(),
-			pConfiguration.GetPathIGDEEditorData() );
-		
-		pErrorSkin.TakeOver( GetEngine()->GetSkinManager()->LoadSkin( "/igde/materials/error/material.deskin", "/" ) );
+	}
+	
+	GetEngineController().UpdateEngine( project, pConfiguration.GetPathIGDEData(),
+		pConfiguration.GetPathIGDEEditorData() );
+	
+	if( project ){
 		project->GetGameDefinition()->UpdateEngineObjects();
 	}
 	
@@ -802,13 +806,11 @@ void igdeWindowMain::CreatePlaceholderGameProject(){
 	pModuleManager->ActivateProjectManager();
 }
 
-void igdeWindowMain::LoadGameProject( const char *filename ){
-	GetLogger()->LogInfoFormat( LOGSOURCE, "Loading game project %s", filename );
-	
-	// load project
-	deObjectReference refProject;
+bool igdeWindowMain::LoadGameProject( const char *filename ){
+	GetLogger()->LogInfoFormat( LOGSOURCE, "Open game project %s", filename );
 	
 	try{
+		deObjectReference refProject;
 		refProject.TakeOver( pLoadSaveSystem->LoadGameProject( filename ) );
 		igdeGameProject * const project = ( igdeGameProject* )( deObject* )refProject;
 		
@@ -820,10 +822,24 @@ void igdeWindowMain::LoadGameProject( const char *filename ){
 		SetGameProject( project );
 		
 		AddRecentGameProject( filename );
+		return true;
 		
 	}catch( const deException &e ){
-		DisplayException( e );
-		return;
+		GetLogger()->LogException( LOGSOURCE, e );
+		igdeCommonDialogs::ErrorFormat( this, "Open Game Project",
+			"Failed loading game project: %s", e.GetDescription().GetString() );
+		
+		const int index = pConfiguration.GetRecentProjectList().IndexOf( filename );
+		if( index != -1 ){
+			if( igdeCommonDialogs::Question( this, igdeCommonDialogs::ebsYesNo, "Open Game Project",
+			"Remove game project from recent file list?" ) == igdeCommonDialogs::ebYes ){
+				pConfiguration.GetRecentProjectList().RemoveFrom( index );
+				pConfiguration.SaveConfiguration();
+				UpdateRecentProjectMenu();
+			}
+		}
+		
+		return false;
 	}
 }
 
@@ -852,6 +868,7 @@ void igdeWindowMain::AddRecentGameProject( const char *filename ){
 	}else{
 		recentProjectList.Move( recentProjectIndex, 0 );
 	}
+	pConfiguration.SaveConfiguration();
 	
 	// update menu
 	UpdateRecentProjectMenu();
@@ -878,7 +895,7 @@ igdeGameDefinition *igdeWindowMain::CreateNewGameDefinition(){
 		path.AddComponent( "newproject" );
 		gamedef->SetBasePath( path.GetPathNative() );
 		
-		igdeXMLGameDefinition( GetLogger() ).Load( reader, *gamedef );
+		igdeXMLGameDefinition( pEnvironmentIGDE, GetLogger() ).Load( reader, *gamedef );
 		
 	}catch( const deException & ){
 		if( gamedef ){
@@ -903,6 +920,19 @@ void igdeWindowMain::ActiveModuleSharedMenusChanged(){
 
 void igdeWindowMain::ActiveModuleSharedToolBarsChanged(){
 	RebuildToolBars();
+}
+
+void igdeWindowMain::ActivateEditor( igdeEditorModule *editor ){
+	DEASSERT_NOTNULL( editor )
+	
+	const int count = pModuleManager->GetModuleCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		if( pModuleManager->GetModuleAt( i )->GetModule() == editor ){
+			pModuleManager->SetActiveModule( pModuleManager->GetModuleAt( i ) );
+			break;
+		}
+	}
 }
 
 
@@ -1249,6 +1279,54 @@ void igdeWindowMain::OnFrameUpdate(){
 		engine.GetErrorTrace()->AddPoint( NULL, "igdeWindowMain::OnFrameUpdate", __LINE__ );
 		StopEngine();
 	}
+	
+	// process after start command line if present
+	if( pModuleManager->GetModuleCount() > 0 && pAfterLoadArguments.GetCount() > 0 ){
+		try{
+			const int moduleCount = pModuleManager->GetModuleCount();
+			int i;
+			
+			while( pAfterLoadArguments.GetCount() > 0 ){
+				const int argCount = pAfterLoadArguments.GetCount();
+				
+				for( i=0; i<moduleCount; i++ ){
+					igdeEditorModule * const module = pModuleManager->GetModuleAt( i )->GetModule();
+					if( module && ! module->ProcessCommandLine( pAfterLoadArguments ) ){
+						pAfterLoadArguments.RemoveAll();
+						pEnvironmentIGDE.CloseApplication();
+						return;
+					}
+				}
+				
+				if( pAfterLoadArguments.GetCount() == argCount ){
+					if( pAfterLoadArguments.GetAt( 0 ).ToUTF8() == "--help" ){
+						pAfterLoadArguments.RemoveAll();
+						pEnvironmentIGDE.CloseApplication();
+						return;
+					}
+					
+					decString message;
+					message.Format( "Unknown argument '%s'", pAfterLoadArguments.GetAt( 0 ).ToUTF8().GetString() );
+					DETHROW_INFO( deeInvalidParam, message );
+				}
+			}
+			
+		}catch( const deException &e ){
+			pAfterLoadArguments.RemoveAll();
+			#ifdef IGDE_NULL_TOOLKIT
+			throw e;
+			#else
+			DisplayException( e );
+			pEnvironmentIGDE.CloseApplication();
+			return;
+			#endif
+		}
+		
+		#ifdef IGDE_NULL_TOOLKIT
+		printf( "deigde <project-file.degp> {--help | ...}\n" );
+		DETHROW_INFO( deeInvalidParam, "Missing Arguments" );
+		#endif
+	}
 }
 
 void igdeWindowMain::OnProjectGameDefinitionChanged(){
@@ -1447,10 +1525,27 @@ bool igdeWindowMain::RequestSaveDocuments( const char *title, const char *messag
 }
 
 igdeIcon *igdeWindowMain::GetStockIcon( igdeEnvironment::eStockIcons icon ) const{
-	if( icon < 0 || icon >= pStockImageCount ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( icon >= 0 )
+	DEASSERT_TRUE( icon < pStockImageCount )
 	return pStockIcons[ icon ];
+}
+
+const deSkin::Ref &igdeWindowMain::GetStockSkin( igdeEnvironment::eStockSkins skin ) const{
+	DEASSERT_TRUE( skin >= 0 )
+	DEASSERT_TRUE( skin < pStockSkinCount )
+	return pStockSkins[ skin ];
+}
+
+const deRig::Ref &igdeWindowMain::GetStockRig( igdeEnvironment::eStockRigs rig ) const{
+	DEASSERT_TRUE( rig >= 0 )
+	DEASSERT_TRUE( rig < pStockRigCount )
+	return pStockRigs[ rig ];
+}
+
+const deModel::Ref &igdeWindowMain::GetStockModel( igdeEnvironment::eStockModels model ) const{
+	DEASSERT_TRUE( model >= 0 )
+	DEASSERT_TRUE( model < pStockModelCount )
+	return pStockModels[ model ];
 }
 
 
@@ -1624,55 +1719,27 @@ void igdeWindowMain::pCleanUp(){
 	}
 	
 	pWindowLogger = NULL;
-	pLoggerHistory = NULL;
 	pVFS = NULL;
 }
 
 void igdeWindowMain::pInitLogger(){
-	bool useConsole = false; //true;
-	bool useFile = true;
-	bool useHistory = true;
-	
-	// create history logger if not existing already
 	if( ! pLoggerHistory ){
 		pLoggerHistory.TakeOver( new igdeLoggerHistory );
-		( ( igdeLoggerHistory& )( deLogger& )pLoggerHistory ).SetHistorySize( 250 );
+		pLoggerHistory->SetHistorySize( 250 );
 	}
 	
-	// build the logger combining the requested loggers
+	const deLoggerChain::Ref loggerChain( deLoggerChain::Ref::New( new deLoggerChain ) );
 	
-	// create the chain logger
-	deLoggerReference loggerChainRef;
-	loggerChainRef.TakeOver( new deLoggerChain );
-	deLoggerChain &loggerChain = ( deLoggerChain& )( deLogger& )loggerChainRef;
+	loggerChain->AddLogger( pLoggerHistory );
 	
-	// add history logger if required
-	if( useHistory ){
-		loggerChain.AddLogger( pLoggerHistory );
-	}
+	//no console logging to support console use in scripts
+// 	loggerChain->AddLogger( deLoggerConsoleColor::Ref::New( new deLoggerConsoleColor ) );
 	
-	// add console logger if required
-	if( useConsole ){
-		deLoggerReference loggerConsole;
-		loggerConsole.TakeOver( new deLoggerConsoleColor );
-		loggerChain.AddLogger( loggerConsole );
-	}
+	loggerChain->AddLogger( deLoggerFile::Ref::New( new deLoggerFile(
+		decBaseFileWriter::Ref::New( pVFS->OpenFileForWriting(
+			decPath::CreatePathUnix( "/logs/deigde.log" ) ) ) ) ) );
 	
-	// add file logger if required
-	if( useFile ){
-		decBaseFileWriterReference fileWriter;
-		fileWriter.TakeOver( pVFS->OpenFileForWriting( decPath::CreatePathUnix( "/logs/deigde.log" ) ) );
-		
-		deLoggerReference loggerFile;
-		loggerFile.TakeOver( new deLoggerFile( fileWriter ) );
-		loggerChain.AddLogger( loggerFile );
-	}
-	
-	// set the logger
-	pEnvironmentIGDE.SetLogger( loggerChainRef );
-	
-	// engine does not exist yet we can not add the chain logger for it. actually needed?
-	// GetEngineController().GetEngine()->SetLogger( loggerChainRef );
+	pEnvironmentIGDE.SetLogger( loggerChain );
 }
 
 void igdeWindowMain::pLoadStockIcons(){
@@ -1748,6 +1815,46 @@ void igdeWindowMain::pLoadStockIcons(){
 		igdeIcon::LoadPNG( pEnvironmentIGDE, "data/icons/stock_small_strong_right.png" ) );
 	pStockIcons[ igdeEnvironment::esiSmallWarning ].TakeOver(
 		igdeIcon::LoadPNG( pEnvironmentIGDE, "data/icons/stock_small_warning.png" ) );
+	
+	pStockIcons[ igdeEnvironment::esiEdit ].TakeOver(
+		igdeIcon::LoadPNG( pEnvironmentIGDE, "data/icons/stock_edit.png" ) );
+	pStockIcons[ igdeEnvironment::esiConfig ].TakeOver(
+		igdeIcon::LoadPNG( pEnvironmentIGDE, "data/icons/stock_config.png" ) );
+}
+
+void igdeWindowMain::pLoadStockSkins(){
+	deSkinManager &manager = *GetEngine()->GetSkinManager();
+	
+	pStockSkins[ igdeEnvironment::essMissing ].TakeOver(
+		manager.LoadSkin( "/igde/materials/missing/material.deskin", "/" ) );
+	pStockSkins[ igdeEnvironment::essError ].TakeOver(
+		manager.LoadSkin( "/igde/materials/error/material.deskin", "/" ) );
+	pStockSkins[ igdeEnvironment::essTestMap ].TakeOver(
+		manager.LoadSkin( "/igde/materials/testmap/material.deskin", "/" ) );
+	pStockSkins[ igdeEnvironment::essEditOutline ].TakeOver(
+		manager.LoadSkin( "/igde/materials/editing/outlined.deskin", "/" ) );
+	pStockSkins[ igdeEnvironment::essEditRim ].TakeOver(
+		manager.LoadSkin( "/igde/materials/editing/rim.deskin", "/" ) );
+	pStockSkins[ igdeEnvironment::essEditRimOutline ].TakeOver(
+		manager.LoadSkin( "/igde/materials/editing/rimOutlined.deskin", "/" ) );
+}
+
+void igdeWindowMain::pLoadStockRigs(){
+	deRigManager &manager = *GetEngine()->GetRigManager();
+	
+	pStockRigs[ igdeEnvironment::esrModelCollision ].TakeOver(
+		manager.LoadRig( "/igde/models/modelCollision.derig", "/" ) );
+	pStockRigs[ igdeEnvironment::esrGhostCollision ].TakeOver(
+		manager.LoadRig( "/igde/models/ghostCollision.derig", "/" ) );
+	pStockRigs[ igdeEnvironment::esrGizmoMove ].TakeOver(
+		manager.LoadRig( "/igde/models/gizmo/move.derig", "/" ) );
+}
+
+void igdeWindowMain::pLoadStockModels(){
+	deModelManager &manager = *GetEngine()->GetModelManager();
+	
+	pStockModels[ igdeEnvironment::esmGizmoMove ].TakeOver(
+		manager.LoadModel( "/igde/models/gizmo/move.demodel", "/" ) );
 }
 
 void igdeWindowMain::pCreateGuiThemes(){
@@ -1769,7 +1876,7 @@ void igdeWindowMain::pCreateGuiThemes(){
 	igdeGuiThemeReference guitheme;
 	guitheme.TakeOver( new igdeGuiTheme( igdeGuiThemeNames::properties, pDefaultGuiTheme ) );
 	
-	guitheme->SetFloatProperty( igdeGuiThemePropertyNames::fontSize, 0.85f );
+	// guitheme->SetFloatProperty( igdeGuiThemePropertyNames::fontSize, 0.85f );
 	
 	guitheme->SetIntProperty( igdeGuiThemePropertyNames::groupBoxPaddingLeft, 3 );
 	guitheme->SetIntProperty( igdeGuiThemePropertyNames::groupBoxPaddingRight, 3 );
@@ -1821,7 +1928,7 @@ void igdeWindowMain::pLoadIGDEGameDefinition(){
 	pIGDEGameDefinition->SetFilename( path.GetPathNative() );
 	pIGDEGameDefinition->SetBasePath( pConfiguration.GetPathShares() );
 	
-	igdeXMLGameDefinition( GetLogger() ).Load( reader, *pIGDEGameDefinition );
+	igdeXMLGameDefinition( pEnvironmentIGDE, GetLogger() ).Load( reader, *pIGDEGameDefinition );
 	
 	GetLogger()->LogInfoFormat( "IGDE", "IGDE Game Definition find content in %s",
 		pConfiguration.GetPathIGDEData().GetString() );
@@ -1969,7 +2076,7 @@ void igdeWindowMain::pLoadSharedGameDefinitions(){
 	vfs->SearchFiles( decPath::CreatePathUnix( "/" ), collectFiles );
 	
 	const dePathList &pathList = collectFiles.GetFiles();
-	igdeXMLGameDefinition loadGameDef( &logger );
+	igdeXMLGameDefinition loadGameDef( pEnvironmentIGDE, &logger );
 	const int count = pathList.GetCount();
 	decBaseFileReaderReference reader;
 	int i;
@@ -2243,7 +2350,7 @@ void igdeWindowMain::pLoadXMLElementClasses( igdeGameProject &gameProject ){
 	container.TakeOver( new deVFSDiskDirectory( pathData ) );
 	vfs->AddContainer( container );
 	
-	const decStringSet &pathList = gameProject.GetProjectGameDefinition()->GetClassManager()->GetAutoFindPath();
+	const decStringList &pathList = gameProject.GetProjectGameDefinition()->GetClassManager()->GetAutoFindPath();
 	const int pathCount = pathList.GetCount();
 	int i;
 	for( i=0; i<pathCount; i++ ){
@@ -2287,7 +2394,7 @@ void igdeWindowMain::pFindAndAddSkins( igdeGameProject &gameProject ){
 	container.TakeOver( new deVFSDiskDirectory( pathData ) );
 	vfs->AddContainer( container );
 	
-	const decStringSet &pathList = gameProject.GetProjectGameDefinition()->GetSkinManager()->GetAutoFindPath();
+	const decStringList &pathList = gameProject.GetProjectGameDefinition()->GetSkinManager()->GetAutoFindPath();
 	const int pathCount = pathList.GetCount();
 	int i, j;
 	
@@ -2324,7 +2431,7 @@ void igdeWindowMain::pFindAndAddSkies( igdeGameProject &gameProject ){
 	container.TakeOver( new deVFSDiskDirectory( pathData ) );
 	vfs->AddContainer( container );
 	
-	const decStringSet &pathList = gameProject.GetProjectGameDefinition()->GetSkyManager()->GetAutoFindPath();
+	const decStringList &pathList = gameProject.GetProjectGameDefinition()->GetSkyManager()->GetAutoFindPath();
 	const int pathCount = pathList.GetCount();
 	int i, j;
 	

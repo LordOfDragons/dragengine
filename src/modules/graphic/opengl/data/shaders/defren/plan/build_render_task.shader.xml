@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shader>
+	<name>DefRen Plan Build Render Task</name>
+	
+	<parameter name='pPass'/>
+	
+	<uniformBlock name='RenderTaskConfig' target='0'/>
+	
+	<shaderStorageBlock name='ElementGeometry' target='0'/>
+	<shaderStorageBlock name='SkinTexturePipelines' target='1'/>
+	<shaderStorageBlock name='VisibleGeometry' target='2'/>
+	<shaderStorageBlock name='Counters' target='3'/>
+	<shaderStorageBlock name='RenderTask' target='4'/>
+	
+	<sourceCode unit='compute'>compute/defren/plan/build_render_task.glsl</sourceCode>
+</shader>

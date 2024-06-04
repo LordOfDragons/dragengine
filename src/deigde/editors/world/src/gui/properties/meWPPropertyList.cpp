@@ -1,29 +1,32 @@
-/* 
- * Drag[en]gine IGDE World Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
 #include <stdlib.h>
 
 #include "meWPPropertyList.h"
-// #include "../../clipboard/meClipboardDataObject.h"
+#include "../../clipboard/meCDProperties.h"
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gamedefinition/property/igdeGDProperty.h>
@@ -31,9 +34,10 @@
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeContainerReference.h>
 #include <deigde/gui/igdeButton.h>
-#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeComboBoxFilter.h>
 #include <deigde/gui/igdeIconListBox.h>
 #include <deigde/gui/igdeTextArea.h>
+#include <deigde/gui/igdeWindow.h>
 #include <deigde/gui/composed/igdeEditPropertyValue.h>
 #include <deigde/gui/composed/igdeEditPropertyValueListener.h>
 #include <deigde/gui/event/igdeAction.h>
@@ -111,8 +115,13 @@ public:
 		helper.MenuCommand( menu, pPanel.GetActionPropertyRename() );
 		helper.MenuSeparator( menu );
 		helper.MenuCommand( menu, pPanel.GetActionPropertyCopy() );
+		helper.MenuCommand( menu, pPanel.GetActionPropertyCopyAll() );
 		helper.MenuCommand( menu, pPanel.GetActionPropertyCut() );
+		helper.MenuCommand( menu, pPanel.GetActionPropertyCutAll() );
 		helper.MenuCommand( menu, pPanel.GetActionPropertyPaste() );
+		helper.MenuSeparator( menu );
+		helper.MenuCommand( menu, pPanel.GetActionPropertyExport() );
+		helper.MenuCommand( menu, pPanel.GetActionPropertyImport() );
 		
 		pPanel.AddContextMenuEntries( helper, menu );
 	}
@@ -255,24 +264,44 @@ public:
 	
 	virtual void OnAction(){
 		const decString property( pPanel.GetProperty() );
-		if( property.IsEmpty() || ! pPanel.GetUndoSystem() ){
+		if( property.IsEmpty() || ! pPanel.GetClipboard() ){
 			return;
 		}
 		
-		/*
-		deObjectReference clipProperty;
-		clipProperty.TakeOver( new gdeProperty( *property ) );
-		
-		igdeClipboardDataReference clipData;
-		clipData.TakeOver( new gdeClipboardDataProperty( ( gdeProperty* )( deObject* )clipProperty ) );
-		
-		pPanel.GetClipboard()->Set( clipData );
-		*/
+		decStringDictionary properties;
+		properties.SetAt( property, pPanel.GetPropertyValue() );
+		igdeClipboardDataReference clip;
+		clip.TakeOver( new meCDProperties( properties ) );
+		pPanel.GetClipboard()->Set( clip );
 	}
 	
 	virtual void Update(){
-		//SetEnabled( ! pPanel.GetProperty().IsEmpty() && pPanel.GetUndoSystem() );
-		SetEnabled( false );
+		SetEnabled( ! pPanel.GetProperty().IsEmpty() && pPanel.GetClipboard() );
+	}
+};
+
+class cActionPropertyCopyAll : public igdeAction {
+protected:
+	meWPPropertyList &pPanel;
+	
+public:
+	cActionPropertyCopyAll( meWPPropertyList &panel ) :
+	igdeAction( "Copy All", panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ),
+		"Copy all properties" ),
+	pPanel( panel ){ }
+	
+	virtual void OnAction(){
+		if( pPanel.GetProperties().GetCount() == 0 || ! pPanel.GetClipboard() ){
+			return;
+		}
+		
+		igdeClipboardDataReference clip;
+		clip.TakeOver( new meCDProperties( pPanel.GetProperties() ) );
+		pPanel.GetClipboard()->Set( clip );
+	}
+	
+	virtual void Update(){
+		SetEnabled( pPanel.GetProperties().GetCount() > 0 && pPanel.GetClipboard() );
 	}
 };
 
@@ -290,20 +319,44 @@ public:
 			return;
 		}
 		
-		/*
 		cActionPropertyCopy::OnAction();
 		
 		igdeUndoReference undo;
-		undo.TakeOver( pPanel.UndoRemove( property ) );
+		undo.TakeOver( pPanel.UndoRemoveProperty( property ) );
 		if( undo ){
 			pPanel.GetUndoSystem()->Add( undo );
 		}
-		*/
 	}
 	
 	virtual void Update(){
-		//SetEnabled( ! pPanel.GetProperty().IsEmpty() && pPanel.GetUndoSystem() && pPanel.GetClipboard() );
-		SetEnabled( false );
+		SetEnabled( ! pPanel.GetProperty().IsEmpty() && pPanel.GetUndoSystem() && pPanel.GetClipboard() );
+	}
+};
+
+class cActionPropertyCutAll : public cActionPropertyCopyAll {
+public:
+	cActionPropertyCutAll( meWPPropertyList &panel ) : cActionPropertyCopyAll( panel ){
+		SetText( "Cut All" );
+		SetIcon( panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiCut ) );
+		SetDescription( "Cut all properties" );
+	}
+	
+	virtual void OnAction(){
+		if( pPanel.GetProperties().GetCount() == 0 || ! pPanel.GetUndoSystem() || ! pPanel.GetClipboard() ){
+			return;
+		}
+		
+		cActionPropertyCopyAll::OnAction();
+		
+		igdeUndoReference undo;
+		undo.TakeOver( pPanel.UndoSetProperties( decStringDictionary() ) );
+		if( undo ){
+			pPanel.GetUndoSystem()->Add( undo );
+		}
+	}
+	
+	virtual void Update(){
+		SetEnabled( pPanel.GetProperties().GetCount() > 0 && pPanel.GetUndoSystem() && pPanel.GetClipboard() );
 	}
 };
 
@@ -317,45 +370,138 @@ public:
 	pPanel( panel ){ }
 	
 	virtual void OnAction(){
-		if( ! pPanel.GetClipboard() ){
+		if( ! pPanel.GetClipboard() || ! pPanel.GetUndoSystem() ){
 			return;
 		}
 		
-		/*
-		const gdeClipboardDataProperty * const clip = ( const gdeClipboardDataProperty * )
-			pPanel.GetClipboard()->GetWithTypeName( gdeClipboardDataProperty::TYPE_NAME );
-		if( ! clip ){
+		const meCDProperties * const clip = ( const meCDProperties * )
+			pPanel.GetClipboard()->GetWithTypeName( meCDProperties::TYPE_NAME );
+		if( ! clip || clip->GetProperties().GetCount() == 0 ){
 			return;
 		}
 		
-		const gdePropertyList &list = *pPanel.GetProperties();
-		decString name( clip->GetProperty()->GetName() );
-		
-		while( list.HasNamed( name ) ){
-			igdeCommonDialogs::Error( &pPanel, "Paste Property", "Name exists already." );
-			if( ! igdeCommonDialogs::GetString( &pPanel, "Paste Property", "Name:", name ) ){
-				return;
-			}
+		decStringDictionary properties( pPanel.GetProperties() );
+		properties += clip->GetProperties();
+		if( pPanel.GetProperties() == properties ){
+			return;
 		}
-		
-		deObjectReference refProperty;
-		refProperty.TakeOver( new gdeProperty( *clip->GetProperty() ) );
-		gdeProperty * const property = ( gdeProperty* )( deObject* )refProperty;
-		property->SetName( name );
 		
 		igdeUndoReference undo;
-		undo.TakeOver( pPanel.UndoPaste( property ) );
+		undo.TakeOver( pPanel.UndoSetProperties( properties ) );
 		if( undo ){
 			pPanel.GetUndoSystem()->Add( undo );
-			pPanel.SelectProperty( ( gdeProperty* )( deObject* )property );
 		}
-		*/
 	}
 	
 	virtual void Update(){
-		/*SetEnabled( pPanel.GetProperties() && pPanel.GetClipboard()
-			&& pPanel.GetClipboard()->HasWithTypeName( gdeClipboardDataProperty::TYPE_NAME ) );*/
-		SetEnabled( false );
+		SetEnabled( pPanel.GetClipboard() && pPanel.GetUndoSystem()
+			&& pPanel.GetClipboard()->HasWithTypeName( meCDProperties::TYPE_NAME ) );
+	}
+};
+
+class cActionPropertyExport : public igdeAction {
+protected:
+	meWPPropertyList &pPanel;
+	
+public:
+	cActionPropertyExport( meWPPropertyList &panel ) :
+	igdeAction( "Export All To Text...", panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiSaveAs ),
+		"Show dialog with all properties in text form" ),
+	pPanel( panel ){ }
+	
+	virtual void OnAction(){
+		if( pPanel.GetProperties().GetCount() == 0 ){
+			return;
+		}
+		
+		decString text;
+		const decStringDictionary &properties = pPanel.GetProperties();
+		const decStringList keys( properties.GetKeys() );
+		const int count = keys.GetCount();
+		int i;
+		for( i=0; i<count; i++ ){
+			if( i > 0 ){
+				text.AppendCharacter( '\n' );
+			}
+			const decString &key = keys.GetAt( i );
+			decString value( properties.GetAt( key ).GetReplacedString( "\n", "<br/>" ) );
+			text.AppendFormat( "%s=%s", key.GetString(), value.GetString() );
+		}
+		
+		igdeCommonDialogs::GetMultilineString( pPanel.GetParentWindow(),
+			"Export To Text", "Properties", text );
+	}
+	
+	virtual void Update(){
+		SetEnabled( pPanel.GetProperties().GetCount() > 0 );
+	}
+};
+
+class cActionPropertyImport : public igdeAction {
+	meWPPropertyList &pPanel;
+	
+public:
+	cActionPropertyImport( meWPPropertyList &panel ) :
+	igdeAction( "Import From Text...", panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiOpen ),
+		"Show dialog to enter properties to import in text form." ),
+	pPanel( panel ){ }
+	
+	virtual void OnAction(){
+		if( ! pPanel.GetUndoSystem() ){
+			return;
+		}
+		
+		decStringDictionary imported;
+		decString text;
+		
+		while( true ){
+			if( ! igdeCommonDialogs::GetMultilineString( pPanel.GetParentWindow(),
+			"Import From Text", "Properties. One property per line in the form 'key=value'.", text ) ){
+				return;
+			}
+			
+			const decStringList lines( text.Split( '\n' ) );
+			const int lineCount = lines.GetCount();
+			int i;
+			
+			imported.RemoveAll();
+			
+			for( i=0; i<lineCount; i++ ){
+				const decString &line = lines.GetAt( i );
+				const int delimiter = line.Find( '=' );
+				if( delimiter < 1 ){
+					igdeCommonDialogs::ErrorFormat( pPanel.GetParentWindow(), "Import From Text",
+						"Invalid property on line %d: '%s'", i + 1, line.GetString() );
+					break;
+				}
+				
+				imported.SetAt( line.GetLeft( delimiter ), line.GetMiddle( delimiter + 1 )
+					.GetReplacedString( "<br/>", "\n" ) );
+			}
+			if( i == lineCount ){
+				break;
+			}
+		}
+		
+		if( imported.GetCount() == 0 ){
+			return;
+		}
+		
+		decStringDictionary properties( pPanel.GetProperties() );
+		properties += imported;
+		if( pPanel.GetProperties() == properties ){
+			return;
+		}
+		
+		igdeUndoReference undo;
+		undo.TakeOver( pPanel.UndoSetProperties( properties ) );
+		if( undo ){
+			pPanel.GetUndoSystem()->Add( undo );
+		}
+	}
+	
+	virtual void Update(){
+		SetEnabled( pPanel.GetUndoSystem() );
 	}
 };
 
@@ -375,10 +521,13 @@ public:
 			return;
 		}
 		
+		const decString newValue( pPanel.GetEditPropertyValue() );
 		if( ! pUndo ){
 			pOldValue = pPanel.GetPropertyValue();
+			if( newValue == pOldValue ){
+				return;
+			}
 		}
-		const decString newValue( pPanel.GetEditPropertyValue() );
 		pUndo.TakeOver( pPanel.UndoSetProperty( property, pOldValue, newValue ) );
 		if( pUndo ){
 			pPanel.GetUndoSystem()->Add( pUndo );
@@ -392,10 +541,13 @@ public:
 			return;
 		}
 		
+		const decString newValue( pPanel.GetEditPropertyValue() );
 		if( ! pUndo ){
 			pOldValue = pPanel.GetPropertyValue();
+			if( newValue == pOldValue ){
+				return;
+			}
 		}
-		const decString newValue( pPanel.GetEditPropertyValue() );
 		pUndo.TakeOver( pPanel.UndoSetProperty( property, pOldValue, newValue ) );
 		if( pUndo ){
 			pUndo->Redo();
@@ -432,18 +584,23 @@ pEnabled( true )
 	pActionPropertyRemove.TakeOver( new cActionPropertyRemove( *this ) );
 	pActionPropertyClear.TakeOver( new cActionPropertyClear( *this ) );
 	pActionPropertyCopy.TakeOver( new cActionPropertyCopy( *this ) );
+	pActionPropertyCopyAll.TakeOver( new cActionPropertyCopyAll( *this ) );
 	pActionPropertyCut.TakeOver( new cActionPropertyCut( *this ) );
+	pActionPropertyCutAll.TakeOver( new cActionPropertyCutAll( *this ) );
 	pActionPropertyPaste.TakeOver( new cActionPropertyPaste( *this ) );
 	pActionPropertyRename.TakeOver( new cActionPropertyRename( *this ) );
+	pActionPropertyExport.TakeOver( new cActionPropertyExport( *this ) );
+	pActionPropertyImport.TakeOver( new cActionPropertyImport( *this ) );
 	
 	
 	helper.FormLineStretchFirst( *this, "Property:", "Property to add", frameLine );
-	helper.ComboBox( frameLine, true, "Property to add", pCBKeys, new cComboKey( *this ) );
+	helper.ComboBoxFilter( frameLine, true, "Property to add", pCBKeys, new cComboKey( *this ) );
 	pCBKeys->SetDefaultSorter();
 	helper.Button( frameLine, pBtnKeyAdd, pActionPropertyAdd );
 	
 	const igdeUIHelper::sColumnHeader headers[] = { { "Key", NULL, 200 }, { "Value", NULL, 200 } };
-	helper.IconListBox( *this, pListProperties, 10, headers, 2, "Properties", new cListProperties( *this ) );
+	helper.IconListBox( *this, pListProperties, decPoint( 100, 150 ), headers, 2, "Properties",
+		new cListProperties( *this ) );
 	pListProperties->SetDefaultSorter();
 	
 	helper.EditPropertyValue( *this, pEditPropertyValue, new cEditPropertyValue( *this ) );
@@ -529,7 +686,10 @@ void meWPPropertyList::UpdateKeys(){
 	}
 	
 	pCBKeys->SortItems();
+	pCBKeys->StoreFilterItems();
+	
 	pCBKeys->SetText( selection );
+	VerifyProperties();
 }
 
 void meWPPropertyList::UpdateList(){
@@ -685,6 +845,10 @@ void meWPPropertyList::SetIdentifiers( const decStringSet &identifiers ){
 
 void meWPPropertyList::SetTriggerTargetList( igdeTriggerTargetList *list ){
 	pEditPropertyValue->SetTriggerTargets( list );
+}
+
+void meWPPropertyList::OnGameDefinitionChanged(){
+	UpdateList();
 }
 
 

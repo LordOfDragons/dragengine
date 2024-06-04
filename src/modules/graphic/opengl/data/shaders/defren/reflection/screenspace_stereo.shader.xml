@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shader>
+	<name>DefRen Reflection ScreenSpace Stereo</name>
+	
+	<uniformBlock name='RenderParameters' target='0'/>
+	
+	<texture name='texDepth' target='0'/>
+	<texture name='texDepthMinMax' target='1'/>
+	<texture name='texDiffuse' target='2'/>
+	<texture name='texNormal' target='3'/>
+	<texture name='texRoughness' target='4'/>
+	<texture name='texAOSolidity' target='5'/>
+	
+	<attribute name='inPosition' target='0'/>
+	
+	<output name='outResult' target='0'/>
+	
+	<sourceCode unit='vertex'>vertex/generic/screenspace.glsl</sourceCode>
+	<sourceCode unit='geometry'>geometry/generic/stereo.glsl</sourceCode>
+	<sourceCode unit='fragment'>fragment/defren/reflection/screenspace.glsl</sourceCode>
+</shader>

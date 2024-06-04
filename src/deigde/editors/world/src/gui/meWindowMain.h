@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE World Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _MEWINDOWMAIN_H_
@@ -57,7 +60,7 @@ class deLogger;
 
 
 /**
- * \brief Main Application Window.
+ * Main Application Window.
  */
 class meWindowMain : public igdeEditorWindow{
 private:
@@ -133,6 +136,19 @@ private:
 	igdeActionReference pActionObjectRotate180;
 	igdeActionReference pActionObjectDropToGround;
 	igdeActionReference pActionObjectSnapToGrid;
+	igdeActionReference pActionObjectCopyPositionX;
+	igdeActionReference pActionObjectCopyPositionY;
+	igdeActionReference pActionObjectCopyPositionZ;
+	igdeActionReference pActionObjectCopyPositionXZ;
+	igdeActionReference pActionObjectCopyPositionXYZ;
+	igdeActionReference pActionObjectCopyRotationX;
+	igdeActionReference pActionObjectCopyRotationY;
+	igdeActionReference pActionObjectCopyRotationZ;
+	igdeActionReference pActionObjectCopyRotationXYZ;
+	igdeActionReference pActionObjectCopyScaleX;
+	igdeActionReference pActionObjectCopyScaleY;
+	igdeActionReference pActionObjectCopyScaleZ;
+	igdeActionReference pActionObjectCopyScaleXYZ;
 	igdeActionReference pActionObjectAttachTo;
 	igdeActionReference pActionObjectDetach;
 	igdeActionReference pActionObjectSelectAttached;
@@ -189,11 +205,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create main window. */
+	/** Create main window. */
 	meWindowMain( meIGDEModule &module );
 	
 protected:
-	/** \brief Clean up main window. */
+	/** Clean up main window. */
 	virtual ~meWindowMain();
 	/*@}*/
 	
@@ -202,46 +218,52 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Ask user if it is okay to quit the application. */
+	/** Ask user if it is okay to quit the application. */
 	bool QuitRequest();
 	
-	/** \brief Reset views. */
+	/** Reset views. */
 	void ResetViews();
 	
-	/** \brief Configuration. */
+	/** Configuration. */
 	inline meConfiguration &GetConfiguration() const{ return *pConfiguration; }
 	
-	/** \brief Clipboard. */
+	/** Clipboard. */
 	inline igdeClipboard &GetClipboard(){ return pClipboard; }
 	inline const igdeClipboard &GetClipboard() const { return pClipboard; }
 	
-	/** \brief Load/save system. */
+	/** Load/save system. */
 	inline meLoadSaveSystem &GetLoadSaveSystem() const{ return *pLoadSaveSystem; }
 	
-	/** \brief Save support. */
+	/** Save support. */
 	inline meSaveSupport &GetSaveSupport() const{ return *pSaveSupport; }
 	
 	
 	
-	/** \brief Properties window. */
+	/** Properties window. */
 	inline meWindowProperties *GetWindowProperties() const{ return pWindowProperties; }
 	
-	/** \brief View 3D. */
+	/** View 3D. */
 	inline meView3D *GetView3D() const{ return pView3D; }
 	
 	
 	
-	/** \brief World. */
+	/** World. */
 	inline meWorld *GetWorld() const{ return pWorld; }
 	
-	/** \brief Set world. */
+	/** Set world. */
 	void SetWorld( meWorld *world );
 	
-	/** \brief Create world. */
+	/** Create world. */
 	void CreateNewWorld();
 	
-	/** \brief Load game world. */
+	/** Load game world. */
 	void LoadWorld( const char *filename );
+	
+	/** Notify configuration enable GI changed. */
+	void ConfigEnableGIChanged();
+	
+	/** Notify configuration enable auralization changed. */
+	void ConfigEnableAuralizationChanged();
 	
 	
 	
@@ -261,7 +283,7 @@ public:
 	
 	
 	
-	/** \brief Icons. */
+	/** Icons. */
 	inline igdeIcon *GetIconEditObject() const{ return pIconEditObject; }
 	inline igdeIcon *GetIconEditDecal() const{ return pIconEditDecal; }
 	inline igdeIcon *GetIconEditNavSpace() const{ return pIconEditNavSpace; }
@@ -287,34 +309,54 @@ public:
 	
 	
 	
-	/** \brief Actions. */
+	/** Actions. */
 	inline igdeAction *GetActionObjectSubclassAsEclass() const{ return pActionObjectSubclassAsEclass; }
+	inline igdeAction *GetActionObjectRotateL45() const{ return pActionObjectRotateL45; }
+	inline igdeAction *GetActionObjectRotateL90() const{ return pActionObjectRotateL90; }
+	inline igdeAction *GetActionObjectRotateR45() const{ return pActionObjectRotateR45; }
+	inline igdeAction *GetActionObjectRotateR90() const{ return pActionObjectRotateR90; }
+	inline igdeAction *GetActionObjectRotate180() const{ return pActionObjectRotate180; }
+	inline igdeAction *GetActionObjectDropToGround() const{ return pActionObjectDropToGround; }
+	inline igdeAction *GetActionObjectSnapToGrid() const{ return pActionObjectSnapToGrid; }
+	inline igdeAction *GetActionObjectCopyPositionX() const{ return pActionObjectCopyPositionX; }
+	inline igdeAction *GetActionObjectCopyPositionY() const{ return pActionObjectCopyPositionY; }
+	inline igdeAction *GetActionObjectCopyPositionZ() const{ return pActionObjectCopyPositionZ; }
+	inline igdeAction *GetActionObjectCopyPositionXZ() const{ return pActionObjectCopyPositionXZ; }
+	inline igdeAction *GetActionObjectCopyPositionXYZ() const{ return pActionObjectCopyPositionXYZ; }
+	inline igdeAction *GetActionObjectCopyRotationX() const{ return pActionObjectCopyRotationX; }
+	inline igdeAction *GetActionObjectCopyRotationY() const{ return pActionObjectCopyRotationY; }
+	inline igdeAction *GetActionObjectCopyRotationZ() const{ return pActionObjectCopyRotationZ; }
+	inline igdeAction *GetActionObjectCopyRotationXYZ() const{ return pActionObjectCopyRotationXYZ; }
+	inline igdeAction *GetActionObjectCopyScaleX() const{ return pActionObjectCopyScaleX; }
+	inline igdeAction *GetActionObjectCopyScaleY() const{ return pActionObjectCopyScaleY; }
+	inline igdeAction *GetActionObjectCopyScaleZ() const{ return pActionObjectCopyScaleZ; }
+	inline igdeAction *GetActionObjectCopyScaleXYZ() const{ return pActionObjectCopyScaleXYZ; }
 	
 	
 	
-	/** \brief Game engine is about to be started. */
+	/** Game engine is about to be started. */
 	virtual void OnBeforeEngineStart();
 	
-	/** \brief Game engine has been started. */
+	/** Game engine has been started. */
 	virtual void OnAfterEngineStart();
 	
-	/** \brief Game engine is about to be stopped. */
+	/** Game engine is about to be stopped. */
 	virtual void OnBeforeEngineStop();
 	
-	/** \brief Game engine has been stopped. */
+	/** Game engine has been stopped. */
 	virtual void OnAfterEngineStop();
 	
-	/** \brief Module has been activated. */
+	/** Module has been activated. */
 	virtual void OnActivate();
 	
-	/** \brief Module has been deactivated. */
+	/** Module has been deactivated. */
 	virtual void OnDeactivate();
 	
-	/** \brief Game like frame update. */
+	/** Game like frame update. */
 	virtual void OnFrameUpdate( float elapsed );
 	
 	/**
-	 * \brief Retrieves a list of changed documents.
+	 * Retrieves a list of changed documents.
 	 * 
 	 * This list is requested by the IGDE if a game project is closed due to creating or
 	 * loading a new one or because the application is about to be closed. Editors modules
@@ -325,12 +367,12 @@ public:
 	virtual void GetChangedDocuments( decStringList &list );
 	
 	/**
-	 * \brief Requests a document to be loaded.
+	 * Requests a document to be loaded.
 	 */
 	virtual void LoadDocument( const char *filename );
 	
 	/**
-	 * \brief Requests a document to be saved.
+	 * Requests a document to be saved.
 	 * 
 	 * The document has to be saved if changed. If not changed this call can be ignored.
 	 * This call is usually made after a previous call to \ref GetUnsavedDocuments.
@@ -340,12 +382,12 @@ public:
 	virtual bool SaveDocument( const char *filename );
 	
 	/**
-	 * \brief Recent files changed.
+	 * Recent files changed.
 	 */
 	virtual void RecentFilesChanged();
 	
 	/**
-	 * \brief The game project has changed.
+	 * The game project has changed.
 	 * 
 	 * Notification send to the editor modules after a new game project has been set.
 	 * The editor module has to discard all open documents and all references held of
@@ -355,7 +397,7 @@ public:
 	virtual void OnGameProjectChanged();
 	
 	/**
-	 * \brief Project game definition changed.
+	 * Project game definition changed.
 	 * 
 	 * Called after an editor changed the game definition. The old game definition used so
 	 * far is replaced by a new game definition. The module has to update everything

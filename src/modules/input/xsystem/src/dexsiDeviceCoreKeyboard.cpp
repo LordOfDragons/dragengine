@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine X System Input Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <ctype.h>
@@ -144,6 +147,7 @@ dexsiDevice( module, esX11 )
 			
 			button.SetX11Code( minKeyCode + i );
 			button.SetKeyCode( KeyCodeForKeySym( keysym ) );
+			button.SetKeyLocation( KeyLocationForKeySym( keysym ) );
 			button.SetMatchPriority( MatchingPriorityForKeySym( keysym ) );
 			
 			button.SetDisplayImages( sharedButton );
@@ -184,7 +188,7 @@ dexsiDevice( module, esX11 )
 				button.SetDisplayText( button.GetName() );
 			}
 			
-			SetLookupX11KeyCode( minKeyCode + i, buttonIndex++ );
+			SetLookupX11KeyCode( button.GetX11Code(), buttonIndex++ );
 		}
 		
 		XFree( keysyms );
@@ -321,6 +325,51 @@ deInputEvent::eKeyCodes dexsiDeviceCoreKeyboard::KeyCodeForKeySym( KeySym keysym
 	return deInputEvent::ekcUndefined;
 }
 
+deInputEvent::eKeyLocation dexsiDeviceCoreKeyboard::KeyLocationForKeySym( KeySym keysym ){
+	switch( keysym ){
+	case XK_Shift_L:
+	case XK_Control_L:
+	case XK_Meta_L:
+	case XK_Alt_L:
+	case XK_Super_L:
+	case XK_Hyper_L:
+		return deInputEvent::eklLeft;
+		
+	case XK_Shift_R:
+	case XK_Control_R:
+	case XK_Meta_R:
+	case XK_Alt_R:
+	case XK_Super_R:
+	case XK_Hyper_R:
+		return deInputEvent::eklRight;
+		
+	case XK_KP_Tab:
+	case XK_KP_Enter:
+	case XK_KP_Delete:
+	case XK_KP_Home:
+	case XK_KP_Begin:
+	case XK_KP_Left:
+	case XK_KP_Up:
+	case XK_KP_Right:
+	case XK_KP_Down:
+	case XK_KP_Page_Up:
+	case XK_KP_Page_Down:
+	case XK_KP_End:
+	case XK_KP_Insert:
+		return deInputEvent::eklNumberPad;
+		
+	default:
+		if( keysym >= XK_KP_F1 && keysym <= XK_KP_F4 ){
+			return deInputEvent::eklNumberPad;
+			
+		}else if( keysym >= XK_KP_0 && keysym <= XK_KP_9 ){
+			return deInputEvent::eklNumberPad;
+		}
+	}
+	
+	return deInputEvent::eklNone;
+}
+
 int dexsiDeviceCoreKeyboard::MatchingPriorityForKeySym( KeySym keysym ){
 	// lower value is higher priority
 	
@@ -419,9 +468,3 @@ int dexsiDeviceCoreKeyboard::ButtonMatchingKeyChar( int keyChar ) const{
 	
 	return -1;
 }
-
-
-
-// Private Functions
-//////////////////////
-

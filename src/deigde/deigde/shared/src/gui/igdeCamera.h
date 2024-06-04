@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _IGDECAMERA_H_
@@ -24,6 +27,7 @@
 
 #include <dragengine/resources/camera/deCameraReference.h>
 #include <dragengine/resources/world/deWorldReference.h>
+#include <dragengine/common/curve/decCurveBezier.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/math/decMath.h>
 
@@ -41,7 +45,7 @@ class deWorld;
  * as seen by this camera. The camera is managed in a lazy way. Hence
  * the engine is not create or updated until it is acquired by the user.
  */
-class igdeCamera{
+class DE_DLL_EXPORT igdeCamera{
 private:
 	deEngine *pEngine;
 	deCameraReference pEngCamera;
@@ -55,10 +59,21 @@ private:
 	float pImageDistance;
 	float pViewDistance;
 	
+	bool pEnableHDRR;
 	float pExposure;
 	float pLowestIntensity;
 	float pHighestIntensity;
 	float pAdaptionTime;
+	
+	bool pEnableGI;
+	
+	float pWhiteIntensity;
+	float pBloomIntensity;
+	float pBloomStrength;
+	float pBloomBlend;
+	float pBloomSize;
+	
+	decCurveBezier pToneMapCurve;
 	
 	float pDistance;
 	
@@ -134,6 +149,14 @@ public:
 	/** \brief Set view distance. */
 	void SetViewDistance( float viewDistance );
 	
+	
+	
+	/** \brief Enable high definition range rendering (HDRR) if supported. */
+	inline bool GetEnableHDRR() const{ return pEnableHDRR; }
+	
+	/** \brief Set to enable high definition range rendering (HDRR) if supported. */
+	void SetEnableHDRR( bool enable );
+	
 	/** \brief Exposure. */
 	inline float GetExposure() const{ return pExposure; }
 	
@@ -164,6 +187,93 @@ public:
 	/** \brief Set distance of camera to the center point along the view direction. */
 	void SetDistance( float distance );
 	
+	
+	
+	/** \brief Enable global illumination (GI) if supported. */
+	inline bool GetEnableGI() const{ return pEnableGI; }
+	
+	/** \brief Set to enable global illumination (GI) if supported. */
+	void SetEnableGI( bool enable );
+	
+	
+	
+	/**
+	 * \brief White intensity multiplier.
+	 * \version 1.21
+	 */
+	inline float GetWhiteIntensity() const{ return pWhiteIntensity; }
+	
+	/**
+	 * \brief Set white intensity multiplier.
+	 * \version 1.21
+	 */
+	void SetWhiteIntensity( float intensity );
+	
+	/**
+	 * \brief Bloom intensity multiplier.
+	 * \version 1.21
+	 */
+	inline float GetBloomIntensity() const{ return pBloomIntensity; }
+	
+	/**
+	 * \brief Set bloom intensity multiplier.
+	 * \version 1.21
+	 */
+	void SetBloomIntensity( float intensity );
+	
+	/**
+	 * \brief Bloom strength as multiplier of intensity beyond bloom intensity.
+	 * \version 1.21
+	 */
+	inline float GetBloomStrength() const{ return pBloomStrength; }
+	
+	/**
+	 * \brief Set bloom strength as multiplier of intensity beyond bloom intensity.
+	 * \version 1.21
+	 */
+	void SetBloomStrength( float strength );
+	
+	/**
+	 * \brief Bloom blend as multiplier of intensity beyond bloom intensity.
+	 * \version 1.21
+	 */
+	inline float GetBloomBlend() const{ return pBloomBlend; }
+	
+	/**
+	 * \brief Set bloom blend as multiplier of intensity beyond bloom intensity.
+	 * \version 1.21
+	 */
+	void SetBloomBlend( float blend );
+	
+	/**
+	 * \brief Bloom size as percentage of screen width.
+	 * \version 1.21
+	 */
+	inline float GetBloomSize() const{ return pBloomSize; }
+	
+	/**
+	 * \brief Bloom size as percentage of screen width.
+	 * \version 1.21
+	 */
+	void SetBloomSize( float size );
+	
+	
+	
+	/**
+	 * \brief Custom tone mapping curve or empty curve to disable.
+	 * \version 1.21
+	 */
+	inline const decCurveBezier &GetToneMapCurve() const{ return pToneMapCurve; }
+	
+	/**
+	 * \brief Set custom tone mapping curve or empty curve to disable.
+	 * \version 1.21
+	 * \note If enabled make sure to set the matching white intensity as it defaults to 4.
+	 */
+	void SetToneMapCurve( const decCurveBezier &curve );
+	
+	
+	
 	/** \brief View matrix. */
 	inline const decDMatrix &GetViewMatrix() const{ return pViewMatrix; }
 	
@@ -173,6 +283,14 @@ public:
 	 * The width and height are the size of the screen.
 	 */
 	decVector GetDirectionFor( int width, int height, int x, int y ) const;
+	
+	/**
+	 * \brief Set default parameters.
+	 * \version 1.21
+	 */
+	void SetDefaultParameters( float lowestIntensity, float highestIntensity, float adaptionTime );
+	
+	
 	
 	/** \brief Reset camera. */
 	virtual void Reset();

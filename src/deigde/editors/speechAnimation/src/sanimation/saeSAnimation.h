@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Speech Animation Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _SAESANIMATION_H_
@@ -29,6 +32,7 @@
 
 #include <dragengine/common/collection/decObjectSet.h>
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/string/decStringSet.h>
 #include <dragengine/resources/animator/deAnimatorReference.h>
 #include <dragengine/resources/animator/deAnimatorInstanceReference.h>
 #include <dragengine/resources/component/deComponentReference.h>
@@ -41,9 +45,15 @@ class saeSAnimationListener;
 
 
 /**
- * \brief Editable Sky.
+ * Editable Sky.
  */
 class saeSAnimation : public igdeEditableEntity{
+public:
+	/** Type holding strong reference. */
+	typedef deTObjectReference<saeSAnimation> Ref;
+	
+	
+	
 public:
 	/** Display modes. */
 	enum eDisplayModes{
@@ -70,6 +80,7 @@ private:
 	decString pAnimationPath;
 	
 	decString pNeutralMoveName;
+	decStringSet pNeutralVertexPositionSets;
 	
 	saePhonemeList pPhonemeList;
 	saePhoneme *pActivePhoneme;
@@ -97,8 +108,13 @@ public:
 	/*@{*/
 	/** Retrieves the engine world. */
 	inline deWorld *GetEngineWorld() const{ return pEngWorld; }
+	
 	/** Retrieves the animator. */
 	inline deAnimator *GetEngineAnimator() const{ return pEngAnimator; }
+	
+	/** Component. */
+	inline const deComponentReference &GetEngineComponent() const{ return pEngComponent; }
+	
 	/** Retrieves the sky. */
 	inline igdeWSky *GetSky() const{ return pSky; }
 	/** Retrieves the camera. */
@@ -126,10 +142,17 @@ public:
 	/** Sets the rig path. */
 	void SetAnimationPath( const char *path );
 	
-	/** Retrieves the neutral move name. */
+	/** Neutral move name. */
 	inline const decString &GetNeutralMoveName() const{ return pNeutralMoveName; }
-	/** Sets the neutral move name. */
+	
+	/** Set neutral move name. */
 	void SetNeutralMoveName( const char *name );
+	
+	/** Neutral vertex position sets. */
+	inline const decStringSet &GetNeutralVertexPositionSets() const{ return pNeutralVertexPositionSets; }
+	
+	/** Set neutral vertex position sets. */
+	void SetNeutralVertexPositionSets( const decStringSet &sets );
 	
 	/** Retrieves the display mode. */
 	inline eDisplayModes GetDisplayMode() const{ return pDisplayMode; }
@@ -213,6 +236,8 @@ public:
 	
 	/** Notifies all that the word count or order changed. */
 	void NotifyWordStructureChanged();
+	/** Notifies all that a word changed. */
+	void NotifyWordNameChanged( saeWord *word );
 	/** Notifies all that a word changed. */
 	void NotifyWordChanged( saeWord *word );
 	/** Notifies all that the active word changed. */

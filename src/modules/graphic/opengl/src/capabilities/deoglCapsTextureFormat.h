@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLCAPSTEXTUREFORMAT_H_
@@ -31,7 +34,7 @@ class decUnicodeString;
 
 
 /**
- * \brief OpenGL capabilities texture tormat.
+ * OpenGL capabilities texture tormat.
  */
 class deoglCapsTextureFormat{
 private:
@@ -41,6 +44,7 @@ private:
 	const int pBitsPerPixel;
 	const bool pIsDepth;
 	const bool pIsDepthFloat;
+	const bool pIsStencil;
 	const bool pIsCompressed;
 	const decString pName;
 	
@@ -49,12 +53,12 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create capabilities texture format. */
+	/** Create capabilities texture format. */
 	deoglCapsTextureFormat( GLint format, GLenum pixelFormat, GLenum pixelType,
-		int bitsPerPixel, bool isDepth, bool isDepthFloat, bool isCompressed,
-		const char *name );
+		int bitsPerPixel, bool isDepth, bool isDepthFloat, bool isStencil,
+		bool isCompressed, const char *name );
 	
-	/** \brief Clean up capabilities texture format. */
+	/** Clean up capabilities texture format. */
 	~deoglCapsTextureFormat();
 	/*@}*/
 	
@@ -62,31 +66,34 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Format. */
+	/** Format. */
 	inline GLint GetFormat() const{ return pFormat; }
 	
-	/** \brief Pixel format. */
+	/** Pixel format. */
 	inline GLenum GetPixelFormat() const{ return pPixelFormat; }
 	
-	/** \brief Pixel type. */
+	/** Pixel type. */
 	inline GLenum GetPixelType() const{ return pPixelType; }
 	
-	/** \brief Bits per pixel. */
+	/** Bits per pixel. */
 	inline int GetBitsPerPixel() const{ return pBitsPerPixel; }
 	
-	/** \brief Format is a depth/stencil format. */
+	/** Format is a depth/stencil format. */
 	inline bool GetIsDepth() const{ return pIsDepth; }
 	
-	/** \brief Format is a float depth/stencil format. */
+	/** Format is a float depth/stencil format. */
 	inline bool GetIsDepthFloat() const{ return pIsDepthFloat; }
 	
-	/** \brief Format is a compressed format. */
+	/** Format is a stencil format. */
+	inline bool GetIsStencil() const{ return pIsStencil; }
+	
+	/** Format is a compressed format. */
 	inline bool GetIsCompressed() const{ return pIsCompressed; }
 	
-	/** \brief Name. */
+	/** Name. */
 	inline const decString &GetName() const{ return pName; }
 	
-	/** \brief Print format to buffer. */
+	/** Print format to buffer. */
 	void WriteToString( decUnicodeString &buffer ) const;
 	/*@}*/
 };

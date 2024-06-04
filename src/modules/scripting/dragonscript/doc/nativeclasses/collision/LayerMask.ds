@@ -28,22 +28,27 @@ class LayerMask
 	
 	/** \brief Create layer mask with 1 bit set. */
 	public static func LayerMask newWith( int bit )
+		return null
 	end
 	
 	/** \brief Create layer mask with 2 bits set. */
 	public static func LayerMask newWith( int bit1, int bit2 )
+		return null
 	end
 	
 	/** \brief Create layer mask with 3 bits set. */
 	public static func LayerMask newWith( int bit1, int bit2, int bit3 )
+		return null
 	end
 	
 	/** \brief Create layer mask with 4 bits set. */
 	public static func LayerMask newWith( int bit1, int bit2, int bit3, int bit4 )
+		return null
 	end
 	
 	/** \brief Create layer mask with all bits set. */
 	public static func LayerMask newAll()
+		return null
 	end
 	/*@}*/
 	
@@ -71,6 +76,7 @@ class LayerMask
 	
 	/** \brief All bits are cleared. */
 	public func bool isEmpty()
+		return false
 	end
 	
 	/**
@@ -78,6 +84,7 @@ class LayerMask
 	 * \throws EOutOfBoundary \em bit is less than 0 or larger than 63.
 	 */
 	public func bool isBitSet( int bit )
+		return false
 	end
 	
 	/**
@@ -85,22 +92,26 @@ class LayerMask
 	 * \throws EOutOfBoundary \em bit is less than 0 or larger than 63.
 	 */
 	public func bool isBitCleared( int bit )
+		return false
 	end
 	
 	
 	
 	/** \brief Layer masks share at least one bit. */
 	public func bool matches( LayerMask layerMask )
+		return false
 	end
 	
 	/** \brief Layer masks share no bits. */
 	public func bool matchesNot( LayerMask layerMask )
+		return false
 	end
 	
 	
 	
 	/** \brief Bit string representation. */
 	public func String toBitString()
+		return null
 	end
 	
 	/** \brief Set bits from bit string. */
@@ -109,6 +120,7 @@ class LayerMask
 	
 	/** \brief Hex string representation. */
 	public func String toHexString()
+		return null
 	end
 	
 	/** \brief Set bits from hex string. */
@@ -119,6 +131,7 @@ class LayerMask
 	
 	/** \brief Convert to string representation. */
 	public func String toString()
+		return null
 	end
 	
 	/**
@@ -128,6 +141,7 @@ class LayerMask
 	 *          set in the filter and category.
 	 */
 	public func bool equals( Object other )
+		return false
 	end
 	
 	/**
@@ -135,6 +149,7 @@ class LayerMask
 	 * \details Implements Object.hashCode().
 	 */
 	public func int hashCode()
+		return 0
 	end
 	/*@}*/
 	
@@ -144,30 +159,37 @@ class LayerMask
 	/*@{*/
 	/** \brief Inverse of layer mask with bits set where not set and vice versa. */
 	public func LayerMask ~()
+		return null
 	end
 	
 	/** \brief Layer mask with all bits shared by both layer masks. */
 	public func LayerMask &( LayerMask layerMask )
+		return null
 	end
 	
 	/** \brief Layer mask with all bits set which are set in at least one layer mask. */
 	public func LayerMask |( LayerMask layerMask )
+		return null
 	end
 	
 	/** \brief Layer mask with all bits set which are not set or cleared at the same time in both layer masks. */
 	public func LayerMask ^( LayerMask layerMask )
+		return null
 	end
 	
 	/** \brief Clear all bits which are not set in \em layerMask. */
 	public func LayerMask &=( LayerMask layerMask )
+		return null
 	end
 	
 	/** \brief Set all bits which are set in \em layerMask. */
 	public func LayerMask |=( LayerMask layerMask )
+		return null
 	end
 	
 	/** \brief Set all bits that are different in \em layerMask and clear all which are identical. */
 	public func LayerMask ^=( LayerMask layerMask )
+		return null
 	end
 	/*@}*/
 end

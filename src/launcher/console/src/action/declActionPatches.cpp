@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Console Launcher
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -27,11 +30,12 @@
 #include "declActionDelgaHelper.h"
 #include "../declLauncher.h"
 #include "../config/declConfiguration.h"
-#include "../engine/declEngine.h"
-#include "../game/declGame.h"
-#include "../game/declGameManager.h"
-#include "../game/patch/declPatch.h"
-#include "../game/patch/declPatchManager.h"
+
+#include <delauncher/engine/delEngine.h>
+#include <delauncher/game/delGame.h>
+#include <delauncher/game/delGameManager.h>
+#include <delauncher/game/patch/delPatch.h>
+#include <delauncher/game/patch/delPatchManager.h>
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decBaseFileReaderReference.h>
@@ -87,52 +91,34 @@ void declActionPatches::PrintSyntax(){
 	printf( "   Queries if patch with identifier or alias is installed\n" );
 	printf( "   Return code 0: Patch is installed\n" );
 	printf( "   Return code 1: Patch is not installed\n" );
-	printf( "\n" );
-	printf( "delauncher-console patches install <file.delga>\n" );
-	printf( "   Install patch. If patch is already installed the call fails.\n" );
-	printf( "   Return code 0: Patch installed successfully\n" );
-	printf( "   Return code 1: Installing patch failed\n" );
+	/*
 	printf( "\n" );
 	printf( "delauncher-console patches uninstall (<identifier> | <alias>)\n" );
 	printf( "   Uninstall patch. If patch is not installed or multiple patches match the call fails.\n" );
-	printf( "   Patch patches and local files (like saves or caches) are not uninstalled.\n" );
+	printf( "   Patch game is not uninstalled.\n" );
 	printf( "   Return code 0: Patch uninstalled successfully\n" );
 	printf( "   Return code 1: Uninstalling patch failed\n" );
-}
-
-
-
-void declActionPatches::InitLauncher(){
-	pLauncher.GetEngine()->LoadModuleList();
-	pLauncher.GetEngine()->LoadConfig();
-	pLauncher.GetEngine()->Start( pLauncher.GetEngineLogger(), "" );
-	try{
-		pLauncher.GetGameManager()->LoadGameList();
-		pLauncher.GetPatchManager().LoadPatchList();
-		
-	}catch( const deException & ){
-		pLauncher.GetEngine()->Stop();
-		throw;
-	}
-	pLauncher.GetEngine()->Stop();
+	*/
 }
 
 int declActionPatches::Run(){
 	const decUnicodeArgumentList &argumentList = pLauncher.GetArgumentList();
 	if( argumentList.GetArgumentCount() < 2 ){
-		InitLauncher();
+		pLauncher.Prepare();
 		return pListPatches();
 	}
 	
 	const decString action( argumentList.GetArgumentAt( 1 )->ToUTF8() );
 	
 	if( action == "installed" ){
-		InitLauncher();
+		pLauncher.Prepare();
 		return pIsInstalled();
 		
+		/*
 	}else if( action == "uninstall" ){
-		InitLauncher();
+		pLauncher.Prepare();
 		return pUninstall();
+		*/
 		
 	}else{
 		PrintSyntax();
@@ -146,15 +132,15 @@ int declActionPatches::Run(){
 //////////////////////
 
 int declActionPatches::pListPatches(){
-	const declPatchList &patches = pLauncher.GetPatchManager().GetPatches();
+	const delPatchList &patches = pLauncher.GetPatchManager().GetPatches();
 	const int count = patches.GetCount();
 	int i;
 	
-	printf( "Available Patches (name (patch alias) => identifier (patch identifier)\n" );
+	printf( "Available Patches (patch-name (game-alias) => patch-identifier (game-identifier)\n" );
 	
 	for( i=0; i<count; i++ ){
-		const declPatch &patch = *patches.GetAt( i );
-		const declGame * const game = pLauncher.GetGameManager()->GetGameList().GetWithID( patch.GetGameID() );
+		const delPatch &patch = *patches.GetAt( i );
+		const delGame * const game = pLauncher.GetGameManager().GetGames().GetWithID( patch.GetGameID() );
 		printf( "- '%s' (%s) => %s (%s)\n", patch.GetName().ToUTF8().GetString(),
 			game ? game->GetAliasIdentifier().GetString() : "?",
 			patch.GetIdentifier().ToHexString( false ).GetString(),
@@ -171,7 +157,7 @@ int declActionPatches::pIsInstalled(){
 		return -2;
 	}
 	
-	const declPatchList &patchList = pLauncher.GetPatchManager().GetPatches();
+	const delPatchList &patchList = pLauncher.GetPatchManager().GetPatches();
 	const decString identifier( argumentList.GetArgumentAt( 2 )->ToUTF8() );
 	
 	try{
@@ -196,12 +182,12 @@ int declActionPatches::pUninstall(){
 	}
 	
 	// find patch to uninstall
-	const declPatchList &patchList = pLauncher.GetPatchManager().GetPatches();
+	const delPatchList &patchList = pLauncher.GetPatchManager().GetPatches();
 	const decString identifier( argumentList.GetArgumentAt( 2 )->ToUTF8() );
-	declPatchList patches;
+	delPatchList patches;
 	
 	try{
-		declPatch * const patch = patchList.GetWithID( decUuid( identifier, false ) );
+		delPatch * const patch = patchList.GetWithID( decUuid( identifier, false ) );
 		if( patch ){
 			patches.Add( patch );
 		}
@@ -220,8 +206,8 @@ int declActionPatches::pUninstall(){
 		const int count = patches.GetCount();
 		int i;
 		for( i=0; i<count; i++ ){
-			const declPatch &patch = *patches.GetAt( i );
-			const declGame * const game = pLauncher.GetGameManager()->GetGameList().GetWithID( patch.GetGameID() );
+			const delPatch &patch = *patches.GetAt( i );
+			const delGame * const game = pLauncher.GetGameManager().GetGames().GetWithID( patch.GetGameID() );
 			printf( "- %s (for game '%s') => %s\n", patch.GetName().ToUTF8().GetString(),
 				game ? game->GetTitle().ToUTF8().GetString() : "?",
 				patch.GetIdentifier().ToHexString( false ).GetString() );
@@ -230,7 +216,7 @@ int declActionPatches::pUninstall(){
 	}
 	
 	// check if the patch is located in a delga file
-	const declPatch &patch = *patches.GetAt( 0 );
+	const delPatch &patch = *patches.GetAt( 0 );
 	if( patch.GetDelgaFile().IsEmpty() ){
 		printf( "Patch is not located in a *.delga file. Can not uninstall\n" );
 		return -1;
@@ -240,12 +226,12 @@ int declActionPatches::pUninstall(){
 	bool hasSharedGamesPatches = false;
 	int i, count = patchList.GetCount();
 	for( i=0; i<count; i++ ){
-		const declPatch &checkPatch = *patchList.GetAt( i );
+		const delPatch &checkPatch = *patchList.GetAt( i );
 		if( &checkPatch == &patch || checkPatch.GetDelgaFile() != patch.GetDelgaFile() ){
 			continue;
 		}
 		
-		const declGame * const game = pLauncher.GetGameManager()->GetGameList().GetWithID( checkPatch.GetGameID() );
+		const delGame * const game = pLauncher.GetGameManager().GetGames().GetWithID( checkPatch.GetGameID() );
 		printf( "Patch '%s'(%s) for game '%s' shares the same *.delga file.\n",
 			checkPatch.GetName().ToUTF8().GetString(),
 			checkPatch.GetIdentifier().ToHexString( false ).GetString(),
@@ -253,10 +239,10 @@ int declActionPatches::pUninstall(){
 		hasSharedGamesPatches = true;
 	}
 	
-	const declGameList &gameList = pLauncher.GetGameManager()->GetGameList();
+	const delGameList &gameList = pLauncher.GetGameManager().GetGames();
 	count = gameList.GetCount();
 	for( i=0; i<count; i++ ){
-		const declGame &checkGame = *gameList.GetAt( i );
+		const delGame &checkGame = *gameList.GetAt( i );
 		if( checkGame.GetDelgaFile() != patch.GetDelgaFile() ){
 			continue;
 		}
@@ -277,7 +263,7 @@ int declActionPatches::pUninstall(){
 	}
 	
 	// ask user if this is the right choice
-	const declGame * const game = pLauncher.GetGameManager()->GetGameList().GetWithID( patch.GetGameID() );
+	const delGame * const game = pLauncher.GetGameManager().GetGames().GetWithID( patch.GetGameID() );
 	printf( "Ready to uninstall patch '%s' for game '%s'.\n", patch.GetName().ToUTF8().GetString(),
 		game ? game->GetTitle().ToUTF8().GetString() : "?" );
 	printf( "Do you want to continue? [y/n] " );

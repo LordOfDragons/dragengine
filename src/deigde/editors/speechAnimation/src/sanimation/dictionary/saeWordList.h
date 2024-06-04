@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Speech Animation Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _SAEWORDLIST_H_
@@ -29,7 +32,7 @@ class saeWord;
 
 
 /**
- * \brief Speech animation word list.
+ * Speech animation word list.
  */
 class saeWordList{
 private:
@@ -40,13 +43,13 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create word list. */
+	/** Create word list. */
 	saeWordList();
 	
-	/** \brief Create copy of word list. */
+	/** Create copy of word list. */
 	saeWordList( const saeWordList &list );
 	
-	/** \brief Clean up word list. */
+	/** Clean up word list. */
 	~saeWordList();
 	/*@}*/
 	
@@ -54,37 +57,37 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Number of words. */
+	/** Number of words. */
 	int GetCount() const;
 	
-	/** \brief Word at index. */
+	/** Word at index. */
 	saeWord *GetAt( int index ) const;
 	
-	/** \brief Named word or NULL if absent. */
+	/** Named word or NULL if absent. */
 	saeWord *GetNamed( const char *name ) const;
 	
-	/** \brief Index of word or -1 if absent. */
+	/** Index of word or -1 if absent. */
 	int IndexOf( saeWord *word ) const;
 	
-	/** \brief Index of named word or -1 if absent. */
+	/** Index of named word or -1 if absent. */
 	int IndexOfNamed( const char *name ) const;
 	
-	/** \brief Word is present. */
+	/** Word is present. */
 	bool Has( saeWord *word ) const;
 	
-	/** \brief Named word is present. */
+	/** Named word is present. */
 	bool HasNamed( const char *name ) const;
 	
-	/** \brief Add word. */
+	/** Add word. */
 	void Add( saeWord *word );
 	
-	/** \brief Remove word. */
+	/** Remove word. */
 	void Remove( saeWord *word );
 	
-	/** \brief Remove all words. */
+	/** Remove all words. */
 	void RemoveAll();
 	
-	/** \brief Set list. */
+	/** Set list. */
 	saeWordList &operator=( const saeWordList &list );
 	/*@}*/
 };

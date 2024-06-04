@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLRSKYLAYER_H_
@@ -31,11 +34,11 @@ class deoglRSkyControllerTarget;
 
 
 /**
- * \brief Render sky Layer.
+ * Render sky Layer.
  */
 class deoglRSkyLayer{
 public:
-	/** \brief Sky layer body. */
+	/** Sky layer body. */
 	struct sBody {
 		deoglRSkin *skin;
 		decVector vertex[ 4 ];
@@ -45,39 +48,39 @@ public:
 		decQuaternion orientation;
 	};
 	
-	/** \brief Layer types. */
+	/** Layer types. */
 	enum eLayerTypes{
-		/** \brief Unknown. */
+		/** Unknown. */
 		eltUnknown,
 		
-		/** \brief Sky box. */
+		/** Sky box. */
 		eltSkyBox,
 		
-		/** \brief Sky Sphere. */
+		/** Sky Sphere. */
 		eltSkySphere
 	};
 	
-	/** \brief Images. */
+	/** Images. */
 	enum eImages{
-		/** \brief Sky box front. */
+		/** Sky box front. */
 		eiBoxFront = 0,
 		
-		/** \brief Sky box right. */
+		/** Sky box right. */
 		eiBoxRight,
 		
-		/** \brief Sky box back. */
+		/** Sky box back. */
 		eiBoxBack,
 		
-		/** \brief Sky box left. */
+		/** Sky box left. */
 		eiBoxLeft,
 		
-		/** \brief Sky box top. */
+		/** Sky box top. */
 		eiBoxTop,
 		
-		/** \brief Sky box bottom. */
+		/** Sky box bottom. */
 		eiBoxBottom,
 		
-		/** \brief Sky sphere. */
+		/** Sky sphere. */
 		eiSphere = 0,
 	};
 	
@@ -113,10 +116,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create sky layer. */
+	/** Create sky layer. */
 	deoglRSkyLayer( const deSkyLayer &layer );
 	
-	/** \brief Clean up sky. */
+	/** Clean up sky. */
 	~deoglRSkyLayer();
 	/*@}*/
 	
@@ -124,66 +127,66 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Layer type. */
+	/** Layer type. */
 	inline eLayerTypes GetLayerType() const{ return pLayerType; }
 	
-	/** \brief Textures. */
+	/** Textures. */
 	inline const int *GetTextures() const{ return &pTextures[ 0 ]; }
 	
-	/** \brief Render skin. */
+	/** Render skin. */
 	inline deoglRSkin *GetSkin() const{ return pSkin; }
 	
 	
 	
-	/** \brief Bodies. */
+	/** Bodies. */
 	inline const sBody *GetBodies() const{ return pBodies; }
 	
-	/** \brief Number of bodies. */
+	/** Number of bodies. */
 	inline int GetBodyCount() const{ return pBodyCount; }
 	
 	
 	
-	/** \brief Target. */
+	/** Target. */
 	inline const deoglRSkyControllerTarget **GetTargets() const{
 		return ( const deoglRSkyControllerTarget ** )pTargets; }
 	
 	
 	
-	/** \brief Offset. */
+	/** Offset. */
 	inline const decVector &GetOffset() const{ return pOffset; }
 	
-	/** \brief Orientation. */
+	/** Orientation. */
 	inline const decVector &GetOrientation() const{ return pOrientation; }
 	
-	/** \brief Blending color. */
+	/** Blending color. */
 	inline const decColor &GetColor() const{ return pColor; }
 	
-	/** \brief Intensity. */
+	/** Intensity. */
 	inline float GetIntensity() const{ return pIntensity; }
 	
-	/** \brief Transparency. */
+	/** Transparency. */
 	inline float GetTransparency() const{ return pTransparency; }
 	
 	
 	
-	/** \brief Orientation of the sky light. */
+	/** Orientation of the sky light. */
 	inline const decQuaternion &GetLightOrientation() const{ return pLightOrientation; }
 	
-	/** \brief Color of the sky light. */
+	/** Color of the sky light. */
 	inline const decColor &GetLightColor() const{ return pLightColor; }
 	
-	/** \brief Intensity of the direct sky light. */
+	/** Intensity of the direct sky light. */
 	inline float GetLightIntensity() const{ return pLightIntensity; }
 	
-	/** \brief Intensity of the diffuse sky light. */
+	/** Intensity of the diffuse sky light. */
 	inline float GetAmbientIntensity() const{ return pAmbientIntensity; }
 	
 	
 	
-	/** \brief Layer intensity is multiplied by total sky light intensity. */
+	/** Layer intensity is multiplied by total sky light intensity. */
 	inline bool GetMuliplyBySkyLight() const{ return pMulBySkyLight; }
 	
-	/** \brief Layer color is multiplied by total sky light color. */
+	/** Layer color is multiplied by total sky light color. */
 	inline bool GetMuliplyBySkyColor() const{ return pMulBySkyColor; }
 	/*@}*/
 	

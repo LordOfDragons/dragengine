@@ -1,0 +1,488 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+
+namespace Dragengine.Gui.Designers
+
+pin Dragengine.Gui.CanvasCreators
+pin Dragengine.Gui.Designers
+pin Dragengine.Gui.Events
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Default implementation of SliderDesigner.
+ * \version 1.13
+ */
+class DefaultSliderDesigner extends DefaultWidgetDesigner implements SliderDesigner
+	/** \brief Mouse listener for slider knob to redesign knob. */
+	class DesignKnobMouseListener extends DefaultMouseListener
+		private var Slider pSlider
+		private var Widget pKnob
+		private var DefaultSliderDesigner pDesigner
+		
+		/** \brief Create state change listener. */
+		public func new(Slider slider, Widget knob, DefaultSliderDesigner designer)
+			pSlider = slider
+			pKnob = knob
+			pDesigner = designer
+		end
+		
+		/** \brief Mouse has entered widget.. */
+		public func void onMouseEnter(MouseEvent event)
+			pDesigner.designKnob(pSlider, pKnob)
+		end
+		
+		/** \brief Mouse has left widget. */
+		public func void onMouseLeave(MouseEvent event)
+			pDesigner.designKnob(pSlider, pKnob)
+		end
+	end
+	
+	/** \brief Focus listener for slider knob to redesign knob. */
+	class DesignKnobFocusListener extends DefaultFocusListener
+		private var Slider pSlider
+		private var Widget pKnob
+		private var DefaultSliderDesigner pDesigner
+		
+		/** \brief Create state change listener. */
+		public func new(Slider slider, Widget knob, DefaultSliderDesigner designer)
+			pSlider = slider
+			pKnob = knob
+			pDesigner = designer
+		end
+		
+		/** \brief Widget received focus. */
+		public func void onFocusReceived(FocusEvent event)
+			pDesigner.designKnob(pSlider, pKnob)
+		end
+		
+		/** \brief Widget lost focus. */
+		public func void onFocusLost(FocusEvent event)
+			pDesigner.designKnob(pSlider, pKnob)
+		end
+	end
+	
+	/** \brief Design for a particular widget state. */
+	public class SliderStateDesign extends StateDesign
+		private var Image pImageKnob
+		
+		
+		/** \brief Create state. */
+		public func new()
+		end
+		
+		/** \brief Create copy of state. */
+		public func new(SliderStateDesign stateDesign) super(stateDesign)
+			pImageKnob = stateDesign.pImageKnob
+		end
+		
+		
+		/** \brief Knob image or null. */
+		public func Image getImageKnob()
+			return pImageKnob
+		end
+		
+		/** \brief Set knob image or null. */
+		public func void setImageKnob(Image image)
+			pImageKnob = image
+		end
+		
+		/**
+		 * \brief Set parameter.
+		 * 
+		 * Supported parameters:
+		 * | name | value | Setter |
+		 * | imageKnob | Image | setImageKnob |
+		 */
+		public func void setParameter(String name, Object value)
+			if name.equals("imageKnob")
+				setImageKnob(value cast Image)
+				
+			else
+				super.setParameter(name, value)
+			end
+		end
+		
+		
+		
+		/** \brief Create copy of state. */
+		public func DefaultWidgetDesigner.StateDesign copyDesign()
+			return SliderStateDesign.new(this)
+		end
+		
+		/**
+		 * \brief Merge states.
+		 * 
+		 * Updates state with parameters of this state if defined. Used to find the first
+		 * defined parameter for a series of states acting as fallback for each other.
+		 */
+		public func void merge(DefaultWidgetDesigner.StateDesign state)
+			super.merge(state)
+			
+			var SliderStateDesign sstate = state cast SliderStateDesign
+			
+			if pImageKnob != null
+				sstate.pImageKnob = pImageKnob
+			end
+		end
+		
+		/**
+		 * \brief Apply state design to widget.
+		 * 
+		 * This is typically called on a merged design to find the first defined parameters.
+		 */
+		public func void apply(Widget widget)
+			super.apply(widget)
+			
+			if pImageKnob != null
+				//(widget cast Slider).setpImageKnob(pImageKnob)
+			end
+		end
+	end
+	
+	
+	
+	private var CanvasCreator pCreatorBarHorizontal
+	private var CanvasCreator pCreatorBarVertical
+	private var CanvasCreator pCreatorTickLargeHorizontal
+	private var CanvasCreator pCreatorTickLargeVertical
+	private var CanvasCreator pCreatorTickSmallHorizontal
+	private var CanvasCreator pCreatorTickSmallVertical
+	private var int pSize
+	private var int pKnobOffset
+	private var int pTickSize
+	private var Boolean pShowTicks
+	
+	
+	
+	/** \brief Create new slider designer. */
+	public func new()
+		setDesignNormal(SliderStateDesign.new())
+		setDesignDisabled(SliderStateDesign.new())
+		setDesignFocused(SliderStateDesign.new())
+		setDesignHover(SliderStateDesign.new())
+		setDesignFocusedHover(SliderStateDesign.new())
+		
+		pSize = 24
+		pKnobOffset = 12
+		pTickSize = 2
+	end
+	
+	/** \brief Create copy of widget designer. */
+	public func new(DefaultSliderDesigner designer) super(designer)
+		pCreatorBarHorizontal = designer.pCreatorBarHorizontal
+		pCreatorBarVertical = designer.pCreatorBarVertical
+		pCreatorTickLargeHorizontal = designer.pCreatorTickLargeHorizontal
+		pCreatorTickLargeVertical = designer.pCreatorTickLargeVertical
+		pCreatorTickSmallHorizontal = designer.pCreatorTickSmallHorizontal
+		pCreatorTickSmallVertical = designer.pCreatorTickSmallVertical
+		pSize = designer.pSize
+		pKnobOffset = designer.pKnobOffset
+		pShowTicks = designer.pShowTicks
+		pTickSize = designer.pTickSize
+	end
+	
+	
+	
+	/** \brief Canvas creator for horizontal slider bar. */
+	public func CanvasCreator getCreatorBarHorizontal()
+		return pCreatorBarHorizontal
+	end
+	
+	/** \brief Set canvas creator for horizontal scrolbar bar. */
+	public func void setCreatorBarHorizontal(CanvasCreator creator)
+		pCreatorBarHorizontal = creator
+	end
+	
+	/** \brief Canvas creator for vertical slider bar. */
+	public func CanvasCreator getCreatorBarVertical()
+		return pCreatorBarVertical
+	end
+	
+	/** \brief Set canvas creator for vertical scrolbar bar. */
+	public func void setCreatorBarVertical(CanvasCreator creator)
+		pCreatorBarVertical = creator
+	end
+	
+	/** \brief Canvas creator for horizontal large tick. */
+	public func CanvasCreator getCreatorTickLargeHorizontal()
+		return pCreatorTickLargeHorizontal
+	end
+	
+	/** \brief Set canvas creator for horizontal large tick. */
+	public func void setCreatorTickLargeHorizontal(CanvasCreator creator)
+		pCreatorTickLargeHorizontal = creator
+	end
+	
+	/** \brief Canvas creator for vertical large tick. */
+	public func CanvasCreator getCreatorTickLargeVertical()
+		return pCreatorTickLargeVertical
+	end
+	
+	/** \brief Set canvas creator for vertical large tick. */
+	public func void setCreatorTickLargeVertical(CanvasCreator creator)
+		pCreatorTickLargeVertical = creator
+	end
+	
+	/** \brief Canvas creator for horizontal small tick. */
+	public func CanvasCreator getCreatorTickSmallHorizontal()
+		return pCreatorTickSmallHorizontal
+	end
+	
+	/** \brief Set canvas creator for horizontal small tick. */
+	public func void setCreatorTickSmallHorizontal(CanvasCreator creator)
+		pCreatorTickSmallHorizontal = creator
+	end
+	
+	/** \brief Canvas creator for vertical small tick. */
+	public func CanvasCreator getCreatorTickSmallVertical()
+		return pCreatorTickSmallVertical
+	end
+	
+	/** \brief Set canvas creator for vertical small tick. */
+	public func void setCreatorTickSmallVertical(CanvasCreator creator)
+		pCreatorTickSmallVertical = creator
+	end
+	
+	/** \brief Slider size. */
+	public func int getSize()
+		return pSize
+	end
+	
+	/** \brief Set slider size. */
+	public func void setSize(int size)
+		if size < 0
+			throw EInvalidParam.new("size < 0")
+		end
+		pSize = size
+	end
+	
+	/** \brief Offset of knob from slider area. */
+	public func int getKnobOffset()
+		return pKnobOffset
+	end
+	
+	/** \brief Set offset of knob from slider area. */
+	public func void setKnobOffset(int offset)
+		if offset < 0
+			throw EInvalidParam.new("offset < 0")
+		end
+		pKnobOffset = offset
+	end
+	
+	/** \brief Size of ticks. */
+	public func int getTickSize()
+		return pTickSize
+	end
+	
+	/** \brief Set size of ticks. */
+	public func void setTickSize(int size)
+		if size < 1
+			throw EInvalidParam.new("size < 1")
+		end
+		pTickSize = size
+	end
+	
+	/** \brief Show ticks. */
+	public func Boolean getShowTicks()
+		return pShowTicks
+	end
+	
+	/** \brief Set show ticks. */
+	public func void setShowTicks(Boolean showTicks)
+		pShowTicks = showTicks
+	end
+	
+	
+	
+	/** \brief Design for normal state. */
+	public func SliderStateDesign getSliderDesignNormal()
+		return getDesignNormal() cast SliderStateDesign
+	end
+	
+	/** \brief Design for disabled state. */
+	public func SliderStateDesign getSliderDesignDisabled()
+		return getDesignDisabled() cast SliderStateDesign
+	end
+	
+	/** \brief Design for focused state. */
+	public func SliderStateDesign getSliderDesignFocused()
+		return getDesignFocused() cast SliderStateDesign
+	end
+	
+	/** \brief Design for hover state. */
+	public func SliderStateDesign getSliderDesignHover()
+		return getDesignHover() cast SliderStateDesign
+	end
+	
+	/** \brief Design for focused hover state. */
+	public func SliderStateDesign getSliderDesignFocusedHover()
+		return getDesignFocusedHover() cast SliderStateDesign
+	end
+	
+	
+	
+	/**
+	 * \brief Set parameter.
+	 * 
+	 * Supported parameters:
+	 * | name | value | Setter |
+	 * | canvasBarHorizontal | CanvasCreator | setCreatorBarHorizontal |
+	 * | canvasBarVertical | CanvasCreator | setCreatorBarVertical |
+	 * | canvasTickLargeHorizontal | CanvasCreator | setCreatorTickLargeHorizontal |
+	 * | canvasTickLargeVertical | CanvasCreator | setCreatorTickLargeVertical |
+	 * | canvasTickSmallHorizontal | CanvasCreator | setCreatorTickSmallHorizontal |
+	 * | canvasTickSmallVertical | CanvasCreator | setCreatorTickSmallVertical |
+	 * | size | int | setSize |
+	 * | knobOffset | int | setKnobOffset |
+	 * | tickSize | int | setTickSize |
+	 * | showTicks | bool | setShowTicks |
+	 */
+	public func void setParameter(String name, Object value)
+		if name.equals("canvasBarHorizontal")
+			setCreatorBarHorizontal(value cast CanvasCreator)
+			
+		elif name.equals("canvasBarVertical")
+			setCreatorBarVertical(value cast CanvasCreator)
+			
+		elif name.equals("canvasTickLargeHorizontal")
+			setCreatorTickLargeHorizontal(value cast CanvasCreator)
+			
+		elif name.equals("canvasTickLargeVertical")
+			setCreatorTickLargeVertical(value cast CanvasCreator)
+			
+		elif name.equals("canvasTickSmallHorizontal")
+			setCreatorTickSmallHorizontal(value cast CanvasCreator)
+			
+		elif name.equals("canvasTickSmallVertical")
+			setCreatorTickSmallVertical(value cast CanvasCreator)
+			
+		elif name.equals("size")
+			setSize(value cast int)
+			
+		elif name.equals("knobOffset")
+			setKnobOffset(value cast int)
+			
+		elif name.equals("tickSize")
+			setTickSize(value cast int)
+			
+		elif name.equals("showTicks")
+			if value != null
+				setShowTicks(Boolean.new(value cast bool))
+				
+			else
+				setShowTicks(null)
+			end
+			
+		else
+			super.setParameter(name, value)
+		end
+	end
+	
+	/** \brief Create copy of designer. */
+	public func WidgetDesigner copyDesigner()
+		return DefaultSliderDesigner.new(this)
+	end
+	
+	
+	
+	/** \brief Size of slider. */
+	public func int sliderSize(Slider slider)
+		return pSize
+	end
+	
+	/** \brief Offset of knob from slider area. */
+	public func int knobOffset(Slider slider)
+		return pKnobOffset
+	end
+	
+	/** \brief Size of ticks. */
+	public func int tickSize(Slider slider)
+		return pTickSize
+	end
+	
+	/** \brief Canvas creator for horizontal slider bar widget. */
+	public func CanvasCreator canvasCreatorBarHorizontal(Slider slider)
+		return pCreatorBarHorizontal
+	end
+	
+	/** \brief Canvas creator for vertical slider bar widget. */
+	public func CanvasCreator canvasCreatorBarVertical(Slider slider)
+		return pCreatorBarVertical
+	end
+	
+	/** \brief Canvas creator for horizontal large slider tick widget. */
+	public func CanvasCreator canvasCreatorTickLargeHorizontal(Slider slider)
+		return pCreatorTickLargeHorizontal
+	end
+	
+	/** \brief Canvas creator for vertical large slider tick widget. */
+	public func CanvasCreator canvasCreatorTickLargeVertical(Slider slider)
+		return pCreatorTickLargeVertical
+	end
+	
+	/** \brief Canvas creator for horizontal small slider tick widget. */
+	public func CanvasCreator canvasCreatorTickSmallHorizontal(Slider slider)
+		return pCreatorTickSmallHorizontal
+	end
+	
+	/** \brief Canvas creator for vertical small slider tick widget. */
+	public func CanvasCreator canvasCreatorTickSmallVertical(Slider slider)
+		return pCreatorTickSmallVertical
+	end
+	
+	/** \brief Create knob widget. */
+	public func Widget createKnob(Slider slider)
+		var DisplayImage knob = DisplayImage.new()
+		knob.setEnabled(slider.getEnabled())
+		
+		var SliderStateDesign design = widgetStateFindDesign(knob) cast SliderStateDesign
+		knob.setImage(design.getImageKnob())
+		
+		knob.addMouseListener(DesignKnobMouseListener.new(slider, knob, this))
+		knob.addFocusListener(DesignKnobFocusListener.new(slider, knob, this))
+		
+		return knob
+	end
+	
+	/** \brief Design knob. */
+	public func void designKnob(Slider slider, Widget knob)
+		var SliderStateDesign design = widgetStateFindDesign(knob) cast SliderStateDesign
+		design.apply(knob)
+		(knob cast DisplayImage).setImage(design.getImageKnob())
+		slider.repositionKnob()
+	end
+	
+	
+	
+	/** \brief Design widget. */
+	public func void designWidget(Widget widget)
+		super.designWidget(widget)
+		
+		if pShowTicks != null
+			(widget cast Slider).setShowTicks(pShowTicks.value())
+		end
+	end
+end

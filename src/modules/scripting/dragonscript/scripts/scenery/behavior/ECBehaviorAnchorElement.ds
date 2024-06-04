@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -46,6 +49,7 @@ class ECBehaviorAnchorElement extends DefaultECBehavior
 	class Instance extends DefaultECBehaviorInstance
 		private var ECBehaviorAnchorElement pECBehavior
 		private var StringID pAnchorID
+		private var bool pAnchorAdded
 		
 		
 		
@@ -68,7 +72,7 @@ class ECBehaviorAnchorElement extends DefaultECBehavior
 			return this.pECBehavior
 		end
 		
-		/** \brief Anchor name or empty string to not anchor. */
+		/** \brief Anchor name or null to not anchor. */
 		public func StringID getAnchorID()
 			return this.pAnchorID
 		end
@@ -77,16 +81,22 @@ class ECBehaviorAnchorElement extends DefaultECBehavior
 		
 		/** \brief Add element to game world. */
 		public func void addToGameWorld()
+			// pAnchorAdded is used to avoid exceptions thrown in removeFromGameWorld
+			// in case adding the anchor here throws an exception (duplicate ID).
+			// this avoids disposing of a game world after an exception ending up in
+			// another exception causing huge leak reports that are useless     
 			if this.pAnchorID != null
 				this.getElement().getGameWorld().getAnchoredElementList() \
 					.add( this.pAnchorID, this.getElement() )
+				this.pAnchorAdded = true
 			end
 		end
 		
 		/** \brief Remove element from game world. */
 		public func void removeFromGameWorld()
-			if this.pAnchorID != null
+			if this.pAnchorAdded
 				this.getElement().getGameWorld().getAnchoredElementList().remove( this.pAnchorID )
+				this.pAnchorAdded = false
 			end
 		end
 	end
@@ -135,8 +145,8 @@ class ECBehaviorAnchorElement extends DefaultECBehavior
 	 * of type ECBehaviorCollider.
 	 */
 	static public func ECBehaviorAnchorElement getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehavior each
-			return each castable ECBehaviorAnchorElement
+		return eclass.findBehavior( block ECBehaviorAnchorElement each
+			return true
 		end ) cast ECBehaviorAnchorElement
 	end
 	
@@ -148,8 +158,8 @@ class ECBehaviorAnchorElement extends DefaultECBehavior
 	 * the first instance.
 	 */
 	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance
+		return element.findInstance( block Instance each
+			return true
 		end ) cast Instance
 	end
 	

@@ -3,7 +3,7 @@
 	<name>Rig Editor</name>
 	<description>Edits rig files.</description>
 	<author>Plüss Roland ( roland@rptd.ch )</author>
-	<version>1.0</version>
+	<version>VERSION</version>
 	<iconSmall>icons/editorIconSmall.png</iconSmall>
 	<iconLarge>icons/editorIconLarge.png</iconLarge>
 	<library>

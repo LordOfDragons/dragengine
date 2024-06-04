@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -80,9 +83,6 @@ void deoglCommandExecuter::ExecuteCommand( const decUnicodeArgumentList &command
 		}else if( command.MatchesArgumentAt( 0, "fboInfos" ) ){
 			pFBOInfos( command, answer );
 			
-		}else if( command.MatchesArgumentAt( 0, "quickDebug" ) ){
-			pQuickDebug( command, answer );
-			
 		}else if( command.MatchesArgumentAt( 0, "fixNaN" ) ){
 			pFixNaN( command, answer );
 			
@@ -102,9 +102,9 @@ void deoglCommandExecuter::ExecuteCommand( const decUnicodeArgumentList &command
 void deoglCommandExecuter::pHelp( const decUnicodeArgumentList &command, decUnicodeString &answer ){
 	answer.SetFromUTF8( "help => Displays this help screen.\n" );
 	answer.AppendFromUTF8( "extensions => Lists status of extensions.\n" );
-	answer.AppendFromUTF8( "renderWindow => Shows informations about the render window.\n" );
-	answer.AppendFromUTF8( "visual => Shows informations about the visual.\n" );
-	answer.AppendFromUTF8( "fboInfos => Shows FBO Informations." );
+	answer.AppendFromUTF8( "renderWindow => Shows information about the render window.\n" );
+	answer.AppendFromUTF8( "visual => Shows information about the visual.\n" );
+	answer.AppendFromUTF8( "fboInfos => Shows FBO Information." );
 }
 
 void deoglCommandExecuter::pExtensions( const decUnicodeArgumentList &command, decUnicodeString &answer ){
@@ -128,7 +128,7 @@ void deoglCommandExecuter::pRenderWindow( const decUnicodeArgumentList &command,
 	deoglRRenderWindow * const renderWindow = pOgl.GetActiveRRenderWindow();
 	
 	if( renderWindow ){
-		//answer.SetFromUTF8( "Active Render Window Informations.\n" );
+		//answer.SetFromUTF8( "Active Render Window Information.\n" );
 		pAnswerIntValue( answer, "Width", renderWindow->GetWidth() );
 		pAnswerIntValue( answer, "Height", renderWindow->GetHeight() );
 		pAnswerStringValue( answer, "Window Title", renderWindow->GetTitle() );
@@ -144,8 +144,8 @@ void deoglCommandExecuter::pRenderWindow( const decUnicodeArgumentList &command,
 }
 
 void deoglCommandExecuter::pVisual( const decUnicodeArgumentList &command, decUnicodeString &answer ){
-	answer.SetFromUTF8( "Visual Informations.\n" );
-	answer.AppendFromUTF8( "< No informations available >\n" );
+	answer.SetFromUTF8( "Visual Information.\n" );
+	answer.AppendFromUTF8( "< No information available >\n" );
 }
 
 void deoglCommandExecuter::pFBOInfos( const decUnicodeArgumentList &command, decUnicodeString &answer ){
@@ -157,9 +157,8 @@ void deoglCommandExecuter::pFBOInfos( const decUnicodeArgumentList &command, dec
 		deoglFramebufferManager &fboMgr = renderThread.GetFramebuffer().GetManager();
 		deoglConfiguration &config = pOgl.GetConfiguration();
 		int f, count = fboMgr.GetFBOCount();
-		const deoglFramebuffer *fbo;
 		
-		answer.SetFromUTF8( "FBO Informations ( useOneFBO=" );
+		answer.SetFromUTF8( "FBO Information ( useOneFBO=" );
 		if( config.GetUseOneFBO() ){
 			answer.AppendFromUTF8( "yes ):\n" );
 			
@@ -168,14 +167,14 @@ void deoglCommandExecuter::pFBOInfos( const decUnicodeArgumentList &command, dec
 		}
 		
 		for( f=0; f<count; f++ ){
-			fbo = fboMgr.GetFBOAt( f );
+			const deoglFramebuffer &fbo = *fboMgr.GetFBOAt( f );
 			
 			answer.AppendFromUTF8( "- " );
-			answer += fbo->GetUsageWidth();
+			answer.AppendValue( fbo.GetUsageWidth() );
 			answer.AppendFromUTF8( " x " );
-			answer += fbo->GetUsageHeight();
+			answer.AppendValue( fbo.GetUsageHeight() );
 			answer.AppendFromUTF8( ": usage=" );
-			answer += fbo->GetUsageCount();
+			answer.AppendValue( fbo.GetUsageCount() );
 			answer.AppendFromUTF8( "\n" );
 		}
 		
@@ -185,18 +184,6 @@ void deoglCommandExecuter::pFBOInfos( const decUnicodeArgumentList &command, dec
 		renderThread.Unfreeze();
 		throw;
 	}
-}
-
-void deoglCommandExecuter::pQuickDebug( const decUnicodeArgumentList &command, decUnicodeString &answer ){
-	deoglConfiguration &config = pOgl.GetConfiguration();
-	
-	if( command.GetArgumentCount() == 2 ){
-		config.SetQuickDebug( command.GetArgumentAt( 1 )->ToFloat() );
-	}
-	
-	answer.SetFromUTF8( "Quick Debug = " );
-	answer += config.GetQuickDebug();
-	answer.AppendFromUTF8( "\n" );
 }
 
 void deoglCommandExecuter::pFixNaN( const decUnicodeArgumentList &command, decUnicodeString &answer ){

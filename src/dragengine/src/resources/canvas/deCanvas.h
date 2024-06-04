@@ -1,29 +1,33 @@
-/* 
- * Drag[en]gine Game Engine
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DECANVAS_H_
 #define _DECANVAS_H_
 
-#include "../../common/math/decMath.h"
+#include "deCanvasReference.h"
 #include "../deResource.h"
+#include "../../common/math/decMath.h"
 
 class deBaseGraphicCanvas;
 class deCanvasManager;
@@ -48,7 +52,13 @@ class deCanvasView;
  * This uncouples the render ordering from the actual ordering of the canvas objects
  * in a deCanvasView. If two canvas have the same order the render order is undefined.
  */
-class deCanvas : public deResource{
+class DE_DLL_EXPORT deCanvas : public deResource{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deCanvas> Ref;
+	
+	
+	
 public:
 	/** \brief Blend modes used to blend canvas over previous content. */
 	enum eBlendModes{
@@ -79,9 +89,11 @@ private:
 	float pOrder;
 	float pTransparency;
 	eBlendModes pBlendMode;
+	deCanvasReference pMask;
 	
 	deBaseGraphicCanvas *pPeerGraphic;
 	
+	deCanvas *pParentMask;
 	deCanvasView *pParentView;
 	deCanvas *pLLViewPrev;
 	deCanvas *pLLViewNext;
@@ -161,6 +173,12 @@ public:
 	/** \brief Set blend mode used to blend canvas over previous content. */
 	void SetBlendMode( eBlendModes blendMode );
 	
+	/** \brief Mask canvas or NULL if not set. */
+	inline deCanvas *GetMask() const{ return pMask; }
+	
+	/** \brief Set mask canvas or NULL if not set. */
+	void SetMask( deCanvas *mask );
+	
 	
 	
 	/** \brief Notify peers about changes to the canvas content. */
@@ -190,6 +208,12 @@ public:
 	
 	/** \name Linked List */
 	/*@{*/
+	/** \brief Parent mask or NULL if not set. */
+	inline deCanvas *GetParentMask() const{ return pParentMask; }
+	
+	/** \brief Set parent mask or NULL if not set. */
+	void SetParentMask( deCanvas *mask );
+	
 	/** \brief Parent view or NULL if not set. */
 	inline deCanvasView *GetParentView() const{ return pParentView; }
 	

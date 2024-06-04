@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Game Engine
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEANIMATORRULEINVERSEKINEMATIC_H_
@@ -42,12 +45,19 @@
  * point located reference-offset from the tail bone ( this imaginary point would be
  * the finger tip ). There are no additional controllers in this rule.
  */
-class deAnimatorRuleInverseKinematic : public deAnimatorRule{
+class DE_DLL_EXPORT deAnimatorRuleInverseKinematic : public deAnimatorRule{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deAnimatorRuleInverseKinematic> Ref;
+	
+	
+	
 private:
 	decVector pGoalPosition;
 	decQuaternion pGoalOrientation;
 	decVector pLocalPosition;
 	decQuaternion pLocalOrientation;
+	bool pAdjustPosition;
 	bool pAdjustOrientation;
 	
 	bool pUseSolverBone;
@@ -111,11 +121,23 @@ public:
 	/** \brief Set local orientation. */
 	void SetLocalOrientation( const decQuaternion &orientation );
 	
+	/**
+	 * \brief Adjust position.
+	 * \version 1.6
+	 */
+	inline bool GetAdjustPosition() const{ return pAdjustPosition; }
+	
+	/**
+	 * \brief Set if the position is adjusted.
+	 * \version 1.6
+	 */
+	void SetAdjustPosition( bool adjust );
+	
 	/** \brief Adjust orientation. */
 	inline bool GetAdjustOrientation() const{ return pAdjustOrientation; }
 	
 	/** \brief Set if the orientation is adjusted. */
-	void SetAdjustOrientation( bool adjustOrientation );
+	void SetAdjustOrientation( bool adjust );
 	
 	
 	

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -32,117 +35,110 @@ pin Dragengine.Scenery
  * Canvas is placed at an offset to the mouse pointer position.
  */
 class DefaultMousePointer implements MousePointer
-	/** \brief Mouse position. */
-	private var Point pPosition
-	
-	/** \brief Canvas offset relative to mouse position. */
-	private var Point pOffset
-	
-	/** \brief Canvas. */
-	private var CanvasView pCanvas
-	
-	/** \brief Transformation or \em null if not used. */
-	private var TexMatrix2 pTransformation
+	var Point pPosition
+	var Point pOffset
+	var CanvasView pCanvas
+	var TexMatrix2 pTransformation
 	
 	
 	
 	/** \brief Create mouse pointer. */
-	public func new() this( Point.new(), Point.new(), 1.0 )
+	func new() this(Point.new(), Point.new(), 1)
 	end
 	
 	/** \brief Create mouse pointer. */
-	public func new( Point size ) this( size, Point.new(), 1.0 )
+	func new(Point size) this(size, Point.new(), 1)
 	end
 	
 	/** \brief Create mouse pointer. */
-	public func new( Point size, Point offset ) this( size, offset, 1.0 )
+	func new(Point size, Point offset) this(size, offset, 1)
 	end
 	
 	/** \brief Create mouse pointer. */
-	public func new( Point size, Point offset, float transparency )
+	func new(Point size, Point offset, float transparency)
 		if size == null or offset == null
 			throw EInvalidParam.new()
 		end
 		
-		this.pPosition = Point.new()
-		this.pOffset = offset
+		pPosition = Point.new()
+		pOffset = offset
 		
-		this.pCanvas = CanvasView.new()
-		this.pCanvas.setSize( size )
-		this.pCanvas.setTransparency( transparency )
+		pCanvas = CanvasView.new()
+		pCanvas.setSize(size)
+		pCanvas.setTransparency(transparency)
 	end
 	
 	
 	
 	/** \brief Mouse pointer size. */
-	public func Point getSize()
-		return this.pCanvas.getSize()
+	func Point getSize()
+		return pCanvas.getSize()
 	end
 	
 	/** \brief Set mouse pointer size. */
-	public func void setSize( Point size )
-		this.pCanvas.setSize( size )
+	func void setSize(Point size)
+		pCanvas.setSize(size)
 	end
 	
 	/** \brief Canvas offset relative to mouse pointer position. */
-	public func Point getOffset()
-		return this.pOffset
+	func Point getOffset()
+		return pOffset
 	end
 	
 	/** \brief Set canvas X offset relative to mouse pointer position. */
-	public func void setOffset( Point offset )
-		if offset.equals( this.pOffset )
+	func void setOffset(Point offset)
+		if offset.equals(pOffset)
 			return
 		end
 		
-		this.pOffset = offset
-		this.pCanvas.setPosition( this.pPosition + this.pOffset )
+		pOffset = offset
+		pCanvas.setPosition(pPosition + pOffset)
 	end
 	
 	/** \brief Transparency. */
-	public func float getTransparency()
-		return this.pCanvas.getTransparency()
+	func float getTransparency()
+		return pCanvas.getTransparency()
 	end
 	
 	/** \brief Set the transparency. */
-	public func void setTransparency( float transparency )
-		this.pCanvas.setTransparency( transparency )
+	func void setTransparency(float transparency)
+		pCanvas.setTransparency(transparency)
 	end
 	
 	/** \brief Transformation or null if not set. */
-	public func TexMatrix2 getTransformation()
-		return this.pTransformation
+	func TexMatrix2 getTransformation()
+		return pTransformation
 	end
 	
 	/** \brief Set transformation or null if not set. */
-	public func void setTransformation( TexMatrix2 transformation )
-		this.pTransformation = transformation
+	func void setTransformation(TexMatrix2 transformation)
+		pTransformation = transformation
 	end
 	
 	
 	
 	/** \brief Mouse position. */
-	public func Point getPosition()
-		return this.pPosition
+	func Point getPosition()
+		return pPosition
 	end
 	
 	/** \brief Set mouse position. */
-	public func void setPosition( Point position )
-		if position.equals( this.pPosition )
+	func void setPosition(Point position)
+		if position.equals(pPosition)
 			return
 		end
 		
-		this.pPosition = position
-		this.pCanvas.setPosition( this.pPosition + this.pOffset )
+		pPosition = position
+		pCanvas.setPosition(pPosition + pOffset)
 	end
 	
 	/** \brief Canvas to render mouse pointer with. */
-	public func Canvas getCanvas()
-		return this.pCanvas
+	func Canvas getCanvas()
+		return pCanvas
 	end
 	
 	/** \brief Canvas to render mouse pointer with. */
-	public func CanvasView getCanvasView()
-		return this.pCanvas
+	func CanvasView getCanvasView()
+		return pCanvas
 	end
 end

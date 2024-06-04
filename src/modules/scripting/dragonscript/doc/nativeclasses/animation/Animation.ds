@@ -21,23 +21,32 @@ fixed class Animation
 	/*@{*/
 	/**
 	 * \brief Load animation from file.
-	 * \details If the animation file has been already loaded it is assigned to this object.
-	 *          If the animation is not loaded yet the engine loads the animation. This call
-	 *          blocks until the animation is fully loaded and ready to be used. For
-	 *          asynchronous loading use loadAsynchron(). Multiple objects can point to the
-	 *          same loaded animation resource. Once no object instance uses an animation
-	 *          file anymore it is released from memory.
+	 * 
+	 * If the animation file has been already loaded it is assigned to this object.
+	 * If the animation is not loaded yet the engine loads the animation. This call
+	 * blocks until the animation is fully loaded and ready to be used. For
+	 * asynchronous loading use loadAsynchron(). Multiple objects can point to the
+	 * same loaded animation resource. Once no object instance uses an animation
+	 * file anymore it is released from memory.
 	 */
-	public func new( String filename )
+	public func new(String filename)
 	end
 	
 	/**
 	 * \brief Load animation from file asynchronously.
-	 * \details Registers a request in the game engine to load an animation. Once finished
-	 *          or if the file is already loaded the listener is used to deliver the loaded
-	 *          animation or \em null if the loading failed.
+	 * 
+	 * Registers a request in the game engine to load an animation. Once finished
+	 * or if the file is already loaded the listener is used to deliver the loaded
+	 * animation or \em null if the loading failed.
 	 */
-	static public func void loadAsynchron( String filename, ResourceListener listener )
+	static public func void loadAsynchron(String filename, ResourceListener listener)
+	end
+	
+	/**
+	 * \brief Save animation to file.
+	 * \version 1.6
+	 */
+	public func void save(String filename)
 	end
 	/*@}*/
 	
@@ -47,31 +56,101 @@ fixed class Animation
 	/*@{*/
 	/** \brief Normalized filename the animation has been loaded from. */
 	public func String getFilename()
+		return null
+	end
+	
+	/**
+	 * \brief Count of bones.
+	 * \version 1.8
+	 */
+	public func int getBoneCount()
+		return 0
+	end
+	
+	/**
+	 * \brief Index of named bone or -1 if not found.
+	 * \version 1.8
+	 */
+	public func int indexOfBoneNamed(String name)
+		return 0
+	end
+	
+	/**
+	 * \brief Name of bone at index.
+	 * \version 1.8
+	 * \param index Index of bone to get name of
+	 * \throws EInvalidParam index is less than 0 or larger than or equal to getBoneCount().
+	 */
+	public func String getBoneName(int index)
+		return null
+	end
+	
+	/**
+	 * \brief Count of moves.
+	 * \version 1.7
+	 */
+	public func int getMoveCount()
+		return 0
+	end
+	
+	/**
+	 * \brief Index of named move or -1 if not found.
+	 * \version 1.7
+	 */
+	public func int indexOfMoveNamed(String name)
+		return 0
+	end
+	
+	/**
+	 * \brief Name of move at index.
+	 * \version 1.7
+	 * \param index Index of move to get name of
+	 * \throws EInvalidParam index is less than 0 or larger than or equal to getMoveCount().
+	 */
+	public func String getMoveName(int index)
+		return null
 	end
 	
 	/**
 	 * \brief Playtime in seconds of named move.
-	 * \details If the move is not found 0 is returned.
+	 * 
+	 * If the move is not found 0 is returned.
 	 */
-	public func float getMovePlaytime( String name )
+	public func float getMovePlaytime(String name)
+		return 0.0
+	end
+	
+	/**
+	 * \brief Frames per second.
+	 * \version 1.6
+	 * 
+	 * Used for saving only if animation file format requires sampling.
+	 */
+	public func float getMoveFPS(String name)
+		return 0.0
 	end
 	
 	
 	
 	/**
 	 * \brief Animation is equal to another object.
-	 * \details Implements Object.equals(Object).
+	 * 
+	 * Implements Object.equals(Object).
+	 * 
 	 * \returns \em true if \em other is of type Animation and both point to the same engine
 	 *          animation resource.
 	 */
-	public func bool equals( Object other )
+	public func bool equals(Object other)
+		return false
 	end
 	
 	/**
 	 * \brief Hash code for use as dictionary keys.
-	 * \details Implements Object.hashCode().
+	 * 
+	 * Implements Object.hashCode().
 	 */
 	public func int hashCode()
+		return 0
 	end
 	/*@}*/
 end

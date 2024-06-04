@@ -22,6 +22,11 @@ pathData = envLauncher.subst(envLauncher['path_launcher_data'])
 pathGames = envLauncher.subst(envLauncher['path_launcher_games'])
 pathShare = envLauncher.subst(envLauncher['path_launcher_share'])
 
+if envLauncher['OSBeOS']:
+	pathMan1 = os.path.join(envLauncher.subst(envLauncher['docdir']), 'man', 'man1')
+elif envLauncher['OSPosix']:
+	pathMan1 = os.path.join(envLauncher.subst(envLauncher['datadir']), 'man', 'man1')
+
 # update the compile flags
 envLauncher.Append(CXXFLAGS = [
 	cmdlineDefinePath(envLauncher, 'LAUNCHER_SHARE_PATH', pathShare),
@@ -49,10 +54,16 @@ if envLauncher['OSMacOS']:
 
 objects = [envLauncher.StaticObject(s) for s in sources]
 
-appendLibrary(envLauncher, parent_targets['dragengine'], libs)
-libs.extend(parent_targets['dragengine']['binlibs'])
+appendLibrary(envLauncher, parent_targets['delauncher'], libs)
+libs.extend(parent_targets['delauncher']['binlibs'])
 
-program = envLauncher.Program(target='delauncher-console', source=objects, LIBS=libs)
+if envLauncher['OSBeOS']:
+	program = envLauncher.Program(target='delauncher-console-org', source=objects, LIBS=libs)
+	rsrc = envLauncher.RDef('src/beos_res.rdef')
+	program = envLauncher.Rsrc(target='delauncher-console', source=[program, rsrc])
+else:
+	program = envLauncher.Program(target='delauncher-console', source=objects, LIBS=libs)
+
 if envLauncher['OSMacOS']:
 	program = envLauncher.BundleMacOS(target='DELauncherConsole', source=program,
 		BUNDLE_ID='ch.rptd.dragengine.delauncher-console',
@@ -75,6 +86,16 @@ if 'lib_mingw_runtime' in parent_targets:
 	for l in parent_targets['lib_mingw_runtime']['runtimelibs']:
 		archive[os.path.join(pathBin, l.name)] = l
 
+if envLauncher['OSPosix']:
+	target = os.path.join(pathMan1, 'delauncher-console.1')
+	source = 'man/delauncher-console.1'
+	install.append(envLauncher.InstallAs(target, source))
+	archive[target] = envLauncher.File(source).srcnode()
+	
+if envLauncher['OSWindows'] and envLauncher['CROSSCOMPILE_CLANG'] and envLauncher['with_install_pdb']:
+	install.append(envLauncher.Install(pathBin, 'delauncher-console.pdb'))
+	archive['{}/delauncher-console.pdb'.format(pathBin)] = envLauncher.File('delauncher-console.pdb')
+
 targetInstall = envLauncher.Alias('launcher_console', install)
 
 # source directory required for special commands
@@ -91,6 +112,7 @@ parent_targets['launcher_console'] = {
 	'name' : 'Drag[en]gine Console Launcher',
 	'build' : targetBuild,
 	'install' : targetInstall,
+	'install-engine-runtime' : targetInstall,
 	'archive-launcher' : archive,
 	'cloc' : buildCloc,
 	'clocReport' : '{}/clocreport.csv'.format(srcdir)}

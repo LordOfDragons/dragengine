@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -32,124 +35,111 @@ pin Dragengine.Scenery
  * \brief Default implementation of WidgetDesigner for ComboBox.
  */
 class DefaultComboBoxDesigner extends DefaultWidgetDesigner
-	/** \brief Design state for dropped down combo box state. */
 	private var StateDesign pDesignDroppedDown
-	
-	/** \brief Canvas creator for normal drop down button state. */
 	private var CanvasCreator pCreatorButtonDropDownNormal
-	
-	/** \brief Canvas creator for pressed drop down button state. */
 	private var CanvasCreator pCreatorButtonDropDownDroppedDown
-	
-	/** \brief Canvas creator for disabled drop down button state. */
 	private var CanvasCreator pCreatorButtonDropDownDisabled
-	
-	/** \brief Canvas creator for hover drop down button state. */
 	private var CanvasCreator pCreatorButtonDropDownHover
-	
-	/** \brief Button drop down image normal. */
 	private var Image pButtonDropDownImageNormal
-	
-	/** \brief Button drop down image hover. */
 	private var Image pButtonDropDownImageHover
 	
 	
 	
 	/** \brief Create new combo box designer. */
 	public func new()
-		this.pDesignDroppedDown = StateDesign.new()
+		pDesignDroppedDown = StateDesign.new()
 	end
 	
 	/** \brief Create copy of widget designer. */
-	public func new( DefaultComboBoxDesigner designer ) super( designer )
-		this.pDesignDroppedDown = StateDesign.new( designer.pDesignDroppedDown )
+	public func new(DefaultComboBoxDesigner designer) super(designer)
+		pDesignDroppedDown = StateDesign.new(designer.pDesignDroppedDown)
 		
-		this.pCreatorButtonDropDownNormal = designer.pCreatorButtonDropDownNormal
-		this.pCreatorButtonDropDownDroppedDown = designer.pCreatorButtonDropDownDroppedDown
-		this.pCreatorButtonDropDownHover = designer.pCreatorButtonDropDownHover
-		this.pCreatorButtonDropDownDisabled = designer.pCreatorButtonDropDownDisabled
+		pCreatorButtonDropDownNormal = designer.pCreatorButtonDropDownNormal
+		pCreatorButtonDropDownDroppedDown = designer.pCreatorButtonDropDownDroppedDown
+		pCreatorButtonDropDownHover = designer.pCreatorButtonDropDownHover
+		pCreatorButtonDropDownDisabled = designer.pCreatorButtonDropDownDisabled
 		
-		this.pButtonDropDownImageNormal = designer.pButtonDropDownImageNormal
-		this.pButtonDropDownImageHover = designer.pButtonDropDownImageHover
+		pButtonDropDownImageNormal = designer.pButtonDropDownImageNormal
+		pButtonDropDownImageHover = designer.pButtonDropDownImageHover
 	end
 	
 	
 	
 	/** \brief Design for dropped down combo box state. */
 	public func StateDesign getDesignDroppedDown()
-		return this.pDesignDroppedDown
+		return pDesignDroppedDown
 	end
 	
 	/** \brief Set design for dropped down combo box state. */
-	protected func void setDesignDroppedDown( StateDesign design )
+	protected func void setDesignDroppedDown(StateDesign design)
 		if design == null
 			throw EInvalidParam.new()
 		end
-		this.pDesignDroppedDown = design
+		pDesignDroppedDown = design
 	end
 	
 	
 	
 	/** \brief Canvas creator for drop down button normal combo box state. */
 	public func CanvasCreator getCreatorButtonDropDownNormal()
-		return this.pCreatorButtonDropDownNormal
+		return pCreatorButtonDropDownNormal
 	end
 	
 	/** \brief Set canvas creator for drop down button normal combo box state. */
-	public func void setCreatorButtonDropDownNormal( CanvasCreator creator )
-		this.pCreatorButtonDropDownNormal = creator
+	public func void setCreatorButtonDropDownNormal(CanvasCreator creator)
+		pCreatorButtonDropDownNormal = creator
 	end
 	
 	/** \brief Canvas creator for drop down button pressed combo box state. */
 	public func CanvasCreator getCreatorButtonDropDownDroppedDown()
-		return this.pCreatorButtonDropDownDroppedDown
+		return pCreatorButtonDropDownDroppedDown
 	end
 	
 	/** \brief Set canvas creator for drop down button pressed combo box state. */
-	public func void setCreatorButtonDropDownDroppedDown( CanvasCreator creator )
-		this.pCreatorButtonDropDownDroppedDown = creator
+	public func void setCreatorButtonDropDownDroppedDown(CanvasCreator creator)
+		pCreatorButtonDropDownDroppedDown = creator
 	end
 	
 	/** \brief Canvas creator for drop down button disabled combo box state. */
 	public func CanvasCreator getCreatorButtonDropDownDisabled()
-		return this.pCreatorButtonDropDownDisabled
+		return pCreatorButtonDropDownDisabled
 	end
 	
 	/** \brief Set canvas creator for drop down button disabled combo box state. */
-	public func void setCreatorButtonDropDownDisabled( CanvasCreator creator )
-		this.pCreatorButtonDropDownDisabled = creator
+	public func void setCreatorButtonDropDownDisabled(CanvasCreator creator)
+		pCreatorButtonDropDownDisabled = creator
 	end
 	
 	/** \brief Canvas creator for drop down button hover combo box state or \em null if not used. */
 	public func CanvasCreator getCreatorButtonDropDownHover()
-		return this.pCreatorButtonDropDownHover
+		return pCreatorButtonDropDownHover
 	end
 	
 	/** \brief Set canvas creator for drop down button hover combo box state or \em null if not used. */
-	public func void setCreatorButtonDropDownHover( CanvasCreator creator )
-		this.pCreatorButtonDropDownHover = creator
+	public func void setCreatorButtonDropDownHover(CanvasCreator creator)
+		pCreatorButtonDropDownHover = creator
 	end
 	
 	
 	
 	/** \brief Button drop down image normal. */
 	public func Image getButtonDropDownImageNormal()
-		return this.pButtonDropDownImageNormal
+		return pButtonDropDownImageNormal
 	end
 	
 	/** \brief Set button drop down image normal. */
-	public func void setButtonDropDownImageNormal( Image image )
-		this.pButtonDropDownImageNormal = image
+	public func void setButtonDropDownImageNormal(Image image)
+		pButtonDropDownImageNormal = image
 	end
 	
 	/** \brief Button drop down image hover. */
 	public func Image getButtonDropDownImageHover()
-		return this.pButtonDropDownImageHover
+		return pButtonDropDownImageHover
 	end
 	
 	/** \brief Set button drop down image hover. */
-	public func void setButtonDropDownImageHover( Image image )
-		this.pButtonDropDownImageHover = image
+	public func void setButtonDropDownImageHover(Image image)
+		pButtonDropDownImageHover = image
 	end
 	
 	
@@ -191,109 +181,109 @@ class DefaultComboBoxDesigner extends DefaultWidgetDesigner
 	 * | imageDropDownNormal | Image | setButtonDropDownImageNormal |
 	 * | imageDropDownHover | Image | setButtonDropDownImageHover |
 	 */
-	public func void setParameter( String name, Object value )
-		if name.equals( "buttonDropDownNormal" )
-			this.setCreatorButtonDropDownNormal( value cast CanvasCreator )
+	public func void setParameter(String name, Object value)
+		if name.equals("buttonDropDownNormal")
+			setCreatorButtonDropDownNormal(value cast CanvasCreator)
 			
-		elif name.equals( "buttonDropDownDroppedDown" )
-			this.setCreatorButtonDropDownDroppedDown( value cast CanvasCreator )
+		elif name.equals("buttonDropDownDroppedDown")
+			setCreatorButtonDropDownDroppedDown(value cast CanvasCreator)
 			
-		elif name.equals( "buttonDropDownDisabled" )
-			this.setCreatorButtonDropDownDisabled( value cast CanvasCreator )
+		elif name.equals("buttonDropDownDisabled")
+			setCreatorButtonDropDownDisabled(value cast CanvasCreator)
 			
-		elif name.equals( "buttonDropDownHover" )
-			this.setCreatorButtonDropDownHover( value cast CanvasCreator )
+		elif name.equals("buttonDropDownHover")
+			setCreatorButtonDropDownHover(value cast CanvasCreator)
 			
-		elif name.equals( "imageDropDownNormal" )
-			this.setButtonDropDownImageNormal( value cast Image )
+		elif name.equals("imageDropDownNormal")
+			setButtonDropDownImageNormal(value cast Image)
 			
-		elif name.equals( "imageDropDownHover" )
-			this.setButtonDropDownImageHover( value cast Image )
+		elif name.equals("imageDropDownHover")
+			setButtonDropDownImageHover(value cast Image)
 			
 		else
-			super.setParameter( name, value )
+			super.setParameter(name, value)
 		end
 	end
 	
 	/** \brief Get state for parameter name selector component or null if not found. */
-	protected func StateDesign getNamedStateDesign( String stateName )
-		if stateName.equals( "droppedDown" )
-			return this.pDesignDroppedDown
+	protected func StateDesign getNamedStateDesign(String stateName)
+		if stateName.equals("droppedDown")
+			return pDesignDroppedDown
 			
 		else
-			return super.getNamedStateDesign( stateName )
+			return super.getNamedStateDesign(stateName)
 		end
 	end
 	
 	/** \brief Create copy of designer. */
 	public func WidgetDesigner copyDesigner()
-		return DefaultComboBoxDesigner.new( this )
+		return DefaultComboBoxDesigner.new(this)
 	end
 	
 	
 	
 	/** \brief Design widget. */
-	public func void designWidget( Widget widget )
-		super.designWidget( widget )
+	public func void designWidget(Widget widget)
+		super.designWidget(widget)
 		
 		var ComboBox comboBox = widget cast ComboBox
 		
 		var Panel widgetButtonDropDown = comboBox.getButtonDropDownWidget() cast Panel
 		if widgetButtonDropDown == null
 			widgetButtonDropDown = Panel.new()
-			widgetButtonDropDown.setLayout( CentrizedBoxLayout.new( LayoutAxis.y ) )
-			widgetButtonDropDown.setPadding( BorderSize.new( 5 ) )
-			widgetButtonDropDown.setProtectPadding( true )
-			widgetButtonDropDown.addWidget( DisplayImage.new() )
-			if this.pButtonDropDownImageNormal == null and this.pButtonDropDownImageHover == null
+			widgetButtonDropDown.setLayout(CentrizedBoxLayout.new(LayoutAxis.y))
+			widgetButtonDropDown.setPadding(BorderSize.new(5))
+			widgetButtonDropDown.setProtectPadding(true)
+			widgetButtonDropDown.addWidget(DisplayImage.new())
+			if pButtonDropDownImageNormal == null and pButtonDropDownImageHover == null
 				// temporary hack until default designer uses images too
-				widgetButtonDropDown.setPadding( BorderSize.new( 5, 0, 5, 0 ) )
-				widgetButtonDropDown.addWidget( Label.new( "v" ) )
+				widgetButtonDropDown.setPadding(BorderSize.new(5, 0, 5, 0))
+				widgetButtonDropDown.addWidget(Label.new("v"))
 			end
-			comboBox.setDropDownButtonWidget( widgetButtonDropDown )
+			comboBox.setDropDownButtonWidget(widgetButtonDropDown)
 		end
 		
-		var DisplayImage displayImage = widgetButtonDropDown.getWidget( 0 ) cast DisplayImage
+		var DisplayImage displayImage = widgetButtonDropDown.getWidget(0) cast DisplayImage
 		
 		if comboBox.getEnabled()
 			if comboBox.droppedDown()
-				if this.pCreatorButtonDropDownDroppedDown == null
-					widgetButtonDropDown.setBackgroundCanvasCreator( this.pCreatorButtonDropDownNormal )
+				if pCreatorButtonDropDownDroppedDown == null
+					widgetButtonDropDown.setBackgroundCanvasCreator(pCreatorButtonDropDownNormal)
 					
 				else
-					widgetButtonDropDown.setBackgroundCanvasCreator( this.pCreatorButtonDropDownDroppedDown )
+					widgetButtonDropDown.setBackgroundCanvasCreator(pCreatorButtonDropDownDroppedDown)
 				end
-				displayImage.setImage( this.pButtonDropDownImageNormal )
+				displayImage.setImage(pButtonDropDownImageNormal)
 				
 			elif comboBox.isMouseInside()
-				if this.pCreatorButtonDropDownHover == null
-					widgetButtonDropDown.setBackgroundCanvasCreator( this.pCreatorButtonDropDownNormal )
+				if pCreatorButtonDropDownHover == null
+					widgetButtonDropDown.setBackgroundCanvasCreator(pCreatorButtonDropDownNormal)
 					
 				else
-					widgetButtonDropDown.setBackgroundCanvasCreator( this.pCreatorButtonDropDownHover )
+					widgetButtonDropDown.setBackgroundCanvasCreator(pCreatorButtonDropDownHover)
 				end
 				
-				if this.pButtonDropDownImageHover == null
-					displayImage.setImage( this.pButtonDropDownImageNormal )
+				if pButtonDropDownImageHover == null
+					displayImage.setImage(pButtonDropDownImageNormal)
 					
 				else
-					displayImage.setImage( this.pButtonDropDownImageHover )
+					displayImage.setImage(pButtonDropDownImageHover)
 				end
 				
 			else
-				widgetButtonDropDown.setBackgroundCanvasCreator( this.pCreatorButtonDropDownNormal )
-				displayImage.setImage( this.pButtonDropDownImageNormal )
+				widgetButtonDropDown.setBackgroundCanvasCreator(pCreatorButtonDropDownNormal)
+				displayImage.setImage(pButtonDropDownImageNormal)
 			end
 			
 		else
-			if this.pCreatorButtonDropDownDisabled == null
-				widgetButtonDropDown.setBackgroundCanvasCreator( this.pCreatorButtonDropDownNormal )
+			if pCreatorButtonDropDownDisabled == null
+				widgetButtonDropDown.setBackgroundCanvasCreator(pCreatorButtonDropDownNormal)
 				
 			else
-				widgetButtonDropDown.setBackgroundCanvasCreator( this.pCreatorButtonDropDownDisabled )
+				widgetButtonDropDown.setBackgroundCanvasCreator(pCreatorButtonDropDownDisabled)
 			end
 			
-			displayImage.setImage( this.pButtonDropDownImageNormal )
+			displayImage.setImage(pButtonDropDownImageNormal)
 		end
 	end
 	
@@ -304,13 +294,41 @@ class DefaultComboBoxDesigner extends DefaultWidgetDesigner
 	 * returned state design can be a set state design or a merge of multiple state
 	 * designs using a fallback logic.
 	 */
-	protected func StateDesign widgetStateFindDesign( Widget widget )
-		var StateDesign design = super.widgetStateFindDesign( widget )
+	protected func StateDesign widgetStateFindDesign(Widget widget)
 		var ComboBox comboBox = widget cast ComboBox
+		
+		var bool editorFocus
+		if comboBox.getEditor() != null
+			var Widget editorWidget = comboBox.getEditor().getWidget()
+			editorFocus = editorWidget.getHasFocus()
+		end
+		
+		var StateDesign design = getDesignNormal()
+		
+		widget = getStateTrackWidget(widget)
+		
+		if widget.isFullEnabled()
+			if widget.isMouseInside()
+				design = design.copyDesign()
+				getDesignHover().merge(design)
+				
+				if widget.getHasFocus() or editorFocus
+					getDesignFocusedHover().merge(design)
+				end
+				
+			elif widget.getHasFocus() or editorFocus
+				design = design.copyDesign()
+				getDesignFocused().merge(design)
+			end
+			
+		else
+			design = design.copyDesign()
+			getDesignDisabled().merge(design)
+		end
 		
 		if comboBox.getEnabled() and comboBox.droppedDown()
 			design = design.copyDesign()
-			this.pDesignDroppedDown.merge( design )
+			pDesignDroppedDown.merge(design)
 		end
 		
 		return design

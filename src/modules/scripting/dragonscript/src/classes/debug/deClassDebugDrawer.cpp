@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -28,20 +31,26 @@
 #include "../math/deClassVector.h"
 #include "../math/deClassDVector.h"
 #include "../math/deClassQuaternion.h"
+#include "../math/deClassMatrix.h"
 #include "../utils/deClassShapeList.h"
-#include "../../deScriptingDragonScript.h"
+#include "../world/deClassModel.h"
 #include "../../deClassPathes.h"
+#include "../../deScriptingDragonScript.h"
 
 #include <dragengine/deEngine.h>
-#include <dragengine/resources/debug/deDebugDrawer.h>
-#include <dragengine/resources/debug/deDebugDrawerManager.h>
-#include <dragengine/resources/debug/deDebugDrawerShape.h>
 #include <dragengine/common/shape/decShapeBox.h>
 #include <dragengine/common/shape/decShapeCapsule.h>
 #include <dragengine/common/shape/decShapeCylinder.h>
 #include <dragengine/common/shape/decShapeList.h>
 #include <dragengine/common/shape/decShapeSphere.h>
-#include <libdscript/exceptions.h>
+#include <dragengine/resources/debug/deDebugDrawer.h>
+#include <dragengine/resources/debug/deDebugDrawerManager.h>
+#include <dragengine/resources/debug/deDebugDrawerShape.h>
+#include <dragengine/resources/debug/deDebugDrawerShapeFace.h>
+#include <dragengine/resources/model/deModel.h>
+#include <dragengine/resources/model/deModelFace.h>
+#include <dragengine/resources/model/deModelLOD.h>
+#include <dragengine/resources/model/deModelVertex.h>
 
 
 
@@ -365,6 +374,176 @@ void deClassDebugDrawer::nfShapeSetFillColor::RunFunction( dsRunTime *rt, dsValu
 	ddrawer.NotifyShapeColorChanged();
 }
 
+// public func void shapeAddFace(int shape)
+deClassDebugDrawer::nfShapeAddFace::nfShapeAddFace( const sInitData &init ) :
+dsFunction( init.clsDD, "shapeAddFace", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsInt ); // shape
+}
+void deClassDebugDrawer::nfShapeAddFace::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deDebugDrawer &ddrawer = *( ( ( sDDNatDat* )p_GetNativeData( myself ) )->ddrawer );
+	deDebugDrawerShape &ddshape = *ddrawer.GetShapeAt( rt->GetValue( 0 )->GetInt() );
+	ddshape.AddFace( new deDebugDrawerShapeFace );
+}
+
+// public func void shapeFaceAddVertex(int shape, int face, Vector vertex)
+deClassDebugDrawer::nfShapeFaceAddVertex::nfShapeFaceAddVertex( const sInitData &init ) :
+dsFunction( init.clsDD, "shapeFaceAddVertex", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsInt ); // shape
+	p_AddParameter( init.clsInt ); // face
+	p_AddParameter( init.clsVec ); // vertex
+}
+void deClassDebugDrawer::nfShapeFaceAddVertex::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deDebugDrawer &ddrawer = *( ( ( sDDNatDat* )p_GetNativeData( myself ) )->ddrawer );
+	const deScriptingDragonScript &ds = *( ( ( deClassDebugDrawer* )GetOwnerClass() )->GetDS() );
+	
+	deDebugDrawerShape &ddshape = *ddrawer.GetShapeAt( rt->GetValue( 0 )->GetInt() );
+	deDebugDrawerShapeFace &ddsface = *ddshape.GetFaceAt( rt->GetValue( 1 )->GetInt() );
+	ddsface.AddVertex( ds.GetClassVector()->GetVector( rt->GetValue( 2 )->GetRealObject() ) );
+}
+
+// public func void shapeFaceCalculateNormal(int shape, int face)
+deClassDebugDrawer::nfShapeFaceCalculateNormal::nfShapeFaceCalculateNormal( const sInitData &init ) :
+dsFunction( init.clsDD, "shapeFaceCalculateNormal", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsInt ); // shape
+	p_AddParameter( init.clsInt ); // face
+}
+void deClassDebugDrawer::nfShapeFaceCalculateNormal::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deDebugDrawer &ddrawer = *( ( ( sDDNatDat* )p_GetNativeData( myself ) )->ddrawer );
+	deDebugDrawerShape &ddshape = *ddrawer.GetShapeAt( rt->GetValue( 0 )->GetInt() );
+	ddshape.GetFaceAt( rt->GetValue( 1 )->GetInt() )->CalculateNormal();
+}
+
+// public func void shapeRemoveAllFaces(int shape)
+deClassDebugDrawer::nfShapeRemoveAllFaces::nfShapeRemoveAllFaces( const sInitData &init ) :
+dsFunction( init.clsDD, "shapeRemoveAllFaces", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsInt ); // shape
+}
+void deClassDebugDrawer::nfShapeRemoveAllFaces::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deDebugDrawer &ddrawer = *( ( ( sDDNatDat* )p_GetNativeData( myself ) )->ddrawer );
+	ddrawer.GetShapeAt( rt->GetValue( 0 )->GetInt() )->RemoveAllFaces();
+	ddrawer.NotifyShapeContentChanged();
+}
+
+// public func void shapeFinishedFaces(int shape)
+deClassDebugDrawer::nfShapeFinishedFaces::nfShapeFinishedFaces( const sInitData &init ) :
+dsFunction( init.clsDD, "shapeFinishedFaces", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsInt ); // shape
+}
+void deClassDebugDrawer::nfShapeFinishedFaces::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deDebugDrawer &ddrawer = *( ( ( sDDNatDat* )p_GetNativeData( myself ) )->ddrawer );
+	ddrawer.NotifyShapeContentChanged();
+}
+
+// public func void shapeSetFacesFromModel(int shape, Model model, Matrix matrix)
+deClassDebugDrawer::nfShapeSetFacesFromModel::nfShapeSetFacesFromModel( const sInitData &init ) :
+dsFunction( init.clsDD, "shapeSetFacesFromModel", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsInt ); // shape
+	p_AddParameter( init.clsModel ); // model
+	p_AddParameter( init.clsMatrix ); // matrix
+}
+void deClassDebugDrawer::nfShapeSetFacesFromModel::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deDebugDrawer &ddrawer = *( ( ( sDDNatDat* )p_GetNativeData( myself ) )->ddrawer );
+	const deScriptingDragonScript &ds = *( ( ( deClassDebugDrawer* )GetOwnerClass() )->GetDS() );
+	
+	deDebugDrawerShape &ddshape = *ddrawer.GetShapeAt( rt->GetValue( 0 )->GetInt() );
+	const deModel * const model = ds.GetClassModel()->GetModel( rt->GetValue( 1 )->GetRealObject() );
+	if( ! model ){
+		DSTHROW_INFO( dueNullPointer, "model" );
+	}
+	
+	const decMatrix &matrix = ds.GetClassMatrix()->GetMatrix( rt->GetValue( 2 )->GetRealObject() );
+	
+	const deModelLOD &lod = *model->GetLODAt( 0 );
+	const deModelVertex * const vertices = lod.GetVertices();
+	const deModelFace * const faces = lod.GetFaces();
+	deDebugDrawerShapeFace *ddsface = nullptr;
+	const int faceCount = lod.GetFaceCount();
+	int i;
+	
+	ddshape.RemoveAllFaces();
+	
+	try{
+		for( i=0; i<faceCount; i++ ){
+			const deModelFace &face = faces[ i ];
+			ddsface = new deDebugDrawerShapeFace;
+			ddsface->AddVertex( matrix * vertices[ face.GetVertex1() ].GetPosition() );
+			ddsface->AddVertex( matrix * vertices[ face.GetVertex2() ].GetPosition() );
+			ddsface->AddVertex( matrix * vertices[ face.GetVertex3() ].GetPosition() );
+			ddsface->CalculateNormal();
+			ddshape.AddFace( ddsface );
+			ddsface = nullptr;
+		}
+		
+	}catch( ... ){
+		if( ddsface ){
+			delete ddsface;
+		}
+		throw;
+	}
+	
+	ddrawer.NotifyShapeContentChanged();
+}
+
+// public func void shapeSetFacesFromModel(int shape, Model model, String texture, Matrix matrix)
+deClassDebugDrawer::nfShapeSetFacesFromModel2::nfShapeSetFacesFromModel2( const sInitData &init ) :
+dsFunction( init.clsDD, "shapeSetFacesFromModel", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsInt ); // shape
+	p_AddParameter( init.clsModel ); // model
+	p_AddParameter( init.clsStr ); // texture
+	p_AddParameter( init.clsMatrix ); // matrix
+}
+void deClassDebugDrawer::nfShapeSetFacesFromModel2::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deDebugDrawer &ddrawer = *( ( ( sDDNatDat* )p_GetNativeData( myself ) )->ddrawer );
+	const deScriptingDragonScript &ds = *( ( ( deClassDebugDrawer* )GetOwnerClass() )->GetDS() );
+	
+	deDebugDrawerShape &ddshape = *ddrawer.GetShapeAt( rt->GetValue( 0 )->GetInt() );
+	const deModel * const model = ds.GetClassModel()->GetModel( rt->GetValue( 1 )->GetRealObject() );
+	if( ! model ){
+		DSTHROW_INFO( dueNullPointer, "model" );
+	}
+	
+	ddshape.RemoveAllFaces();
+	
+	const int texture = model->IndexOfTextureNamed( rt->GetValue( 2 )->GetString() );
+	if( texture == -1 ){
+		return;
+	}
+	
+	const decMatrix &matrix = ds.GetClassMatrix()->GetMatrix( rt->GetValue( 3 )->GetRealObject() );
+	
+	const deModelLOD &lod = *model->GetLODAt( 0 );
+	const deModelVertex * const vertices = lod.GetVertices();
+	const deModelFace * const faces = lod.GetFaces();
+	deDebugDrawerShapeFace *ddsface = nullptr;
+	const int faceCount = lod.GetFaceCount();
+	int i;
+	
+	try{
+		for( i=0; i<faceCount; i++ ){
+			const deModelFace &face = faces[ i ];
+			if( face.GetTexture() != texture ){
+				continue;
+			}
+			
+			ddsface = new deDebugDrawerShapeFace;
+			ddsface->AddVertex( matrix * vertices[ face.GetVertex1() ].GetPosition() );
+			ddsface->AddVertex( matrix * vertices[ face.GetVertex2() ].GetPosition() );
+			ddsface->AddVertex( matrix * vertices[ face.GetVertex3() ].GetPosition() );
+			ddsface->CalculateNormal();
+			ddshape.AddFace( ddsface );
+			ddsface = nullptr;
+		}
+		
+	}catch( ... ){
+		if( ddsface ){
+			delete ddsface;
+		}
+		throw;
+	}
+	
+	ddrawer.NotifyShapeContentChanged();
+}
+
 
 
 // Class deClassDebugDrawer
@@ -411,6 +590,8 @@ void deClassDebugDrawer::CreateClassMembers( dsEngine *engine ){
 	init.clsDVec = pDS->GetClassDVector();
 	init.clsQuat = pDS->GetClassQuaternion();
 	init.clsShapeList = pDS->GetClassShapeList();
+	init.clsModel = pDS->GetClassModel();
+	init.clsMatrix = pDS->GetClassMatrix();
 	
 	// add functions
 	AddFunction( new nfNew( init ) );
@@ -440,6 +621,14 @@ void deClassDebugDrawer::CreateClassMembers( dsEngine *engine ){
 	
 	AddFunction( new nfShapeSetEdgeColor( init ) );
 	AddFunction( new nfShapeSetFillColor( init ) );
+	
+	AddFunction( new nfShapeAddFace( init ) );
+	AddFunction( new nfShapeFaceAddVertex( init ) );
+	AddFunction( new nfShapeFaceCalculateNormal( init ) );
+	AddFunction( new nfShapeRemoveAllFaces( init ) );
+	AddFunction( new nfShapeFinishedFaces( init ) );
+	AddFunction( new nfShapeSetFacesFromModel( init ) );
+	AddFunction( new nfShapeSetFacesFromModel2( init ) );
 	
 	// calculate member offsets
 	CalcMemberOffsets();

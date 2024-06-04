@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Game Definition Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -35,6 +38,7 @@
 #include "../../../gamedef/property/gdeProperty.h"
 #include "../../../undosys/objectClass/speaker/gdeUOCSpeakerSetBoneName.h"
 #include "../../../undosys/objectClass/speaker/gdeUOCSpeakerSetRollOff.h"
+#include "../../../undosys/objectClass/speaker/gdeUOCSpeakerSetDistanceOffset.h"
 #include "../../../undosys/objectClass/speaker/gdeUOCSpeakerSetPlaySpeed.h"
 #include "../../../undosys/objectClass/speaker/gdeUOCSpeakerSetPathSound.h"
 #include "../../../undosys/objectClass/speaker/gdeUOCSpeakerSetRange.h"
@@ -292,6 +296,20 @@ public:
 	}
 };
 
+class cTextDistanceOffset : public cBaseTextFieldListener{
+public:
+	cTextDistanceOffset( gdeWPSOCSpeaker &panel ) : cBaseTextFieldListener( panel ){ }
+	
+	virtual igdeUndo *OnChanged( igdeTextField &textField, gdeObjectClass *objectClass,
+	gdeOCSpeaker *speaker ){
+		const float value = textField.GetFloat();
+		if( fabsf( speaker->GetDistanceOffset() - value ) < FLOAT_SAFE_EPSILON ){
+			return NULL;
+		}
+		return new gdeUOCSpeakerSetDistanceOffset( objectClass, speaker, value );
+	}
+};
+
 class cTextPlaySpeed : public cBaseTextFieldListener{
 public:
 	cTextPlaySpeed( gdeWPSOCSpeaker &panel ) : cBaseTextFieldListener( panel ){ }
@@ -421,6 +439,8 @@ pGameDefinition( NULL )
 		pEditRange, new cTextRange( *this ) );
 	helper.EditFloat( groupBox, "Roll-Off:", "Roll off factor",
 		pEditRollOff, new cTextRollOff( *this ) );
+	helper.EditFloat( groupBox, "Distance Offset:", "Distance offset",
+		pEditDistanceOffset, new cTextDistanceOffset( *this ) );
 	helper.EditFloat( groupBox, "Play Speed:", "Play Speed",
 		pEditPlaySpeed, new cTextPlaySpeed( *this ) );
 	helper.CheckBox( groupBox, pChkLooping, new cActionLooping( *this ), true );
@@ -434,6 +454,7 @@ pGameDefinition( NULL )
 	pCBPropertyNames->AddItem( "Volume", NULL, ( void* )( intptr_t )gdeOCSpeaker::epVolume );
 	pCBPropertyNames->AddItem( "Range", NULL, ( void* )( intptr_t )gdeOCSpeaker::epRange );
 	pCBPropertyNames->AddItem( "Roll off factor", NULL, ( void* )( intptr_t )gdeOCSpeaker::epRollOff );
+	pCBPropertyNames->AddItem( "Distance offset", NULL, ( void* )( intptr_t )gdeOCSpeaker::epDistanceOffset );
 	pCBPropertyNames->AddItem( "Play speed", NULL, ( void* )( intptr_t )gdeOCSpeaker::epPlaySpeed );
 	pCBPropertyNames->AddItem( "Playing", NULL, ( void* )( intptr_t )gdeOCSpeaker::epPlaying );
 	pCBPropertyNames->AddItem( "Looping", NULL, ( void* )( intptr_t )gdeOCSpeaker::epLooping );
@@ -555,6 +576,7 @@ void gdeWPSOCSpeaker::UpdateSpeaker(){
 		pEditVolume->SetFloat( speaker->GetVolume() );
 		pEditRange->SetFloat( speaker->GetRange() );
 		pEditRollOff->SetFloat( speaker->GetRollOff() );
+		pEditDistanceOffset->SetFloat( speaker->GetDistanceOffset() );
 		pEditPlaySpeed->SetFloat( speaker->GetPlaySpeed() );
 		
 	}else{
@@ -567,6 +589,7 @@ void gdeWPSOCSpeaker::UpdateSpeaker(){
 		pEditVolume->ClearText();
 		pEditRange->ClearText();
 		pEditRollOff->ClearText();
+		pEditDistanceOffset->ClearText();
 		pEditPlaySpeed->ClearText();
 	}
 	
@@ -580,6 +603,7 @@ void gdeWPSOCSpeaker::UpdateSpeaker(){
 	pEditVolume->SetEnabled( enabled );
 	pEditRange->SetEnabled( enabled );
 	pEditRollOff->SetEnabled( enabled );
+	pEditDistanceOffset->SetEnabled( enabled );
 	pEditPlaySpeed->SetEnabled( enabled );
 	
 	UpdatePropertyName();

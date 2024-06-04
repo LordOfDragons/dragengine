@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Game Engine
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEENGINE_H_
@@ -79,6 +82,7 @@ class deResourceManager;
 class deRigManager;
 class deScriptingSystem;
 class deServerManager;
+class deServiceManager;
 class deSkinManager;
 class deSkyManager;
 class deSkyInstanceManager;
@@ -92,8 +96,9 @@ class deSynthesizerSystem;
 class deTouchSensorManager;
 class deVideoManager;
 class deVideoPlayerManager;
-class deWorldManager;
 class deVirtualFileSystem;
+class deVRSystem;
+class deWorldManager;
 
 class decTimer;
 
@@ -110,7 +115,7 @@ class decTimer;
  *
  * To launch successfully a game with this engine create
  * first one instance of this class. Then set your game
- * specific informations to the shared data directory
+ * specific information to the shared data directory
  * of the engine and your game data directory. You are
  * now ready to launch the game by calling the run
  * function. You need to specify the script directory
@@ -126,7 +131,7 @@ class decTimer;
  * crashes. Wrapping all in an try-catch clause should
  * be enough for testing to be safe.
  */
-class deEngine{
+class DE_DLL_EXPORT deEngine{
 private:
 	// application
 	deCmdLineArgs *pArgs;
@@ -152,6 +157,9 @@ private:
 	decString pPathData; // the path to the data files
 	decString pCacheAppID; // unique catch directory identifier for the application
 	deVirtualFileSystem *pVFS;
+	decString pPathCapture;
+	decString pPathOverlay;
+	decString pPathConfig;
 	
 	// frame timer
 	decTimer *pFrameTimer;
@@ -220,6 +228,7 @@ public:
 	deNetworkSystem *GetNetworkSystem() const;
 	deAISystem *GetAISystem() const;
 	deSynthesizerSystem *GetSynthesizerSystem() const;
+	deVRSystem *GetVRSystem() const;
 	
 	/** \brief Scan module directory and loads all modules in there. */
 	void LoadModules();
@@ -322,6 +331,7 @@ public:
 	deVideoManager *GetVideoManager() const;
 	deVideoPlayerManager *GetVideoPlayerManager() const;
 	deWorldManager *GetWorldManager() const;
+	deServiceManager *GetServiceManager() const;
 	
 	/** \brief Parallel processing. */
 	inline deParallelProcessing &GetParallelProcessing(){ return *pParallelProcessing; }
@@ -385,6 +395,60 @@ public:
 	
 	/** \brief Virtual file system used by the game engine. */
 	inline deVirtualFileSystem *GetVirtualFileSystem() const{ return pVFS; }
+	
+	/**
+	 * \brief Overlay directory.
+	 * \version 1.7
+	 * 
+	 * Set by the launcher to indicate to script modules the native path under
+	 * which overlay data is stored or an empty string if not available.
+	 */
+	inline const decString &GetPathOverlay() const{ return pPathOverlay; }
+	
+	/**
+	 * \brief Set overlay directory.
+	 * \version 1.7
+	 * 
+	 * Set by the launcher to indicate to script modules the native path under
+	 * which overlay data is stored or an empty string if not available.
+	 */
+	void SetPathOverlay( const char *path );
+	
+	/**
+	 * \brief Capture directory.
+	 * \version 1.7
+	 * 
+	 * Set by the launcher to indicate to script modules the native path under
+	 * which capture data is stored or an empty string if not available.
+	 */
+	inline const decString &GetPathCapture() const{ return pPathCapture; }
+	
+	/**
+	 * \brief Set capture directory.
+	 * \version 1.7
+	 * 
+	 * Set by the launcher to indicate to script modules the native path under
+	 * which capture data is stored or an empty string if not available.
+	 */
+	void SetPathCapture( const char *path );
+	
+	/**
+	 * \brief Config directory.
+	 * \version 1.7
+	 * 
+	 * Set by the launcher to indicate to script modules the native path under
+	 * which config data is stored or an empty string if not available.
+	 */
+	inline const decString &GetPathConfig() const{ return pPathConfig; }
+	
+	/**
+	 * \brief Set config directory.
+	 * \version 1.7
+	 * 
+	 * Set by the launcher to indicate to script modules the native path under
+	 * which config data is stored or an empty string if not available.
+	 */
+	void SetPathConfig( const char *path );
 	/*@}*/
 	
 	
@@ -449,21 +513,28 @@ public:
 	/*@{*/
 	/**
 	 * \brief Run game engine.
+	 * \deprecated Use Run(const char*, const char*, const char*);
+	 */
+	bool Run( const char *scriptDirectory, const char *gameObject );
+	
+	/**
+	 * \brief Run game engine.
 	 * 
 	 * Calling this function the control is handed over to the game engine. The scripts in the
 	 * specified directory ( relative to the data directory ) are parsed and executed. This
 	 * function returns control to you after a quit-request has been issued or an unrecoverable
-	 * error has occured. The return value indicates if the game engine exited under normal
+	 * error has occurred. The return value indicates if the game engine exited under normal
 	 * circumstances or due to a severe error. This function already handles exceptions so there
 	 * is no need to enclose it in a try-catch block.
 	 *
 	 * \param scriptDir Directory relative to data directory containing the script files for your game.
+	 * \param scriptVersion Script version the application has been written against.
 	 * \param gameObject Initial game object to create. Script module specific value.
 	 *                   Usually a class or function name to use to create the game object
 	 * \returns true if the game engine exited under normal circumstances or false if an
-	 *          unrecoverable error occured
+	 *          unrecoverable error occurred
 	 */
-	bool Run( const char *scriptDirectory, const char *gameObject );
+	bool Run( const char *scriptDirectory, const char *scriptVersion, const char *gameObject );
 	
 	/**
 	 * \brief Reset elapsed time counter.

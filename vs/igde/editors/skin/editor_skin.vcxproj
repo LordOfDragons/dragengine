@@ -1,0 +1,533 @@
+<!-- <?xml version="1.0" encoding="utf-8"?> -->
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="ReleaseDebug|Win32">
+      <Configuration>ReleaseDebug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="ReleaseDebug|x64">
+      <Configuration>ReleaseDebug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\dragengine\dragengine.vcxproj">
+      <Project>{f9098b91-18fa-4754-b089-e3d613b13b71}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\shared\igde_shared.vcxproj">
+      <Project>{1dcfacb0-ab85-4adc-b18a-91322511c121}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\..\src\deigde\editors\skin\SConscript" />
+    <None Include="post_build.ps1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\clipboard\seClipboardDataPropertyNode.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\clipboard\seClipboardDataMapped.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\configuration\seConfiguration.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\configuration\seConfigurationXML.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\gui\constructed\interaction\seVCIDragNode.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\gui\constructed\interaction\seVCIKeyHandling.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\gui\constructed\seViewConstructed.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\gui\constructed\seViewConstructedListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\gui\constructed\seViewConstructedView.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\gui\constructed\seViewConstructedViewListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\gui\properties\dynamicskin\seWPDynamicSkin.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\gui\properties\dynamicskin\seWPDynamicSkinListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\gui\properties\seWindowProperties.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\gui\properties\seWPNode.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\gui\properties\seWPNodeListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\gui\properties\seWPTexture.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\gui\properties\seWPTextureListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\gui\properties\seWPUndoHistory.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\gui\properties\seWPUndoHistoryListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\gui\properties\seWPView.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\gui\properties\seWPViewListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\gui\properties\seWPMapped.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\gui\properties\seWPMappedListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\gui\seDialogAddProperty.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\gui\seDialogAddTexture.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\gui\seTaskSyncGameDefinition.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\gui\seViewSkin.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\gui\seWindowMain.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\gui\seWindowMainListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\loadsave\seLoadSaveSkin.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\loadsave\seLoadSaveSystem.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\seIGDEModule.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\skineditor.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\skin\dynamicskin\seDynamicSkin.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\skin\dynamicskin\seDynamicSkinRenderable.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\skin\dynamicskin\seDynamicSkinRenderableList.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\skin\property\node\sePropertyNode.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\skin\property\node\sePropertyNodeGroup.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\skin\property\node\sePropertyNodeImage.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\skin\property\node\sePropertyNodeList.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\skin\property\node\sePropertyNodeSelection.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\skin\property\node\sePropertyNodeShape.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\skin\property\node\sePropertyNodeText.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\skin\property\seProperty.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\skin\property\sePropertyList.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\skin\mapped\seMapped.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\skin\mapped\seMappedList.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\skin\seSkin.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\skin\seSkinBuilder.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\skin\seSkinListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\skin\texture\seTexture.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\skin\texture\seTextureList.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\skin\texture\seTextureSkinBuilder.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\gui\property\node\seUPropertyNodeData.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\gui\property\node\seUPropertyNodesDrag.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\gui\property\node\seUPropertyNodesResize.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\gui\property\node\seUPropertyNodesRotate.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\gui\property\node\seUPropertyNodesShear.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\group\seUPNGroupAddNode.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\group\seUPNGroupMoveNodes.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\group\seUPNGroupNodes.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\group\seUPNGroupNodesBottom.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\group\seUPNGroupNodesDown.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\group\seUPNGroupNodesTop.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\group\seUPNGroupNodesUp.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\group\seUPNGroupPasteNodes.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\group\seUPNGroupRemoveNodes.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\group\seUPNUngroupNodes.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\image\seUPropertyNodeImageSetPath.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\image\seUPropertyNodeImageSetRepeat.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\image\seUPropertyNodeImageSizeFromImage.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\seUPropertyNodeRemoveMask.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\seUPropertyNodeSetBrightness.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\seUPropertyNodeSetColorize.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\seUPropertyNodeSetCombineMode.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\seUPropertyNodeSetContrast.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\seUPropertyNodeSetGamma.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\seUPropertyNodeSetMask.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\seUPropertyNodeSetPosition.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\seUPropertyNodeSetRotation.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\seUPropertyNodeSetShear.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\seUPropertyNodeSetSize.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\seUPropertyNodeSetTransparency.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\seUPropertyNodeSetMapped.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\shape\seUPropertyNodeShapeSetFillColor.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\shape\seUPropertyNodeShapeSetLineColor.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\shape\seUPropertyNodeShapeSetThickness.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\shape\seUPropertyNodeShapeSetType.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\text\seUPropertyNodeTextSetColor.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\text\seUPropertyNodeTextSetPath.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\text\seUPropertyNodeTextSetSize.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\text\seUPropertyNodeTextSetText.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\seUPropertyAdd.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\seUPropertyConstructedFromImage.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\seUPropertyConstructedSetBitCount.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\seUPropertyConstructedToggleTileX.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\seUPropertyConstructedToggleTileY.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\seUPropertyRemove.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\seUPropertySetColor.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\seUPropertySetConstructedColor.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\seUPropertySetConstructedSize.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\seUPropertySetCurve.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\seUPropertySetImagePath.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\seUPropertySetMappedComponent.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\seUPropertySetRenderableName.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\seUPropertySetBoneName.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\seUPropertySetValue.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\seUPropertySetValueType.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\seUPropertySetVideoPath.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\seUPropertyToggleVideoSharedTime.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUTextureAdd.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUTextureImport.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUTextureRemove.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUTextureSetName.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedAdd.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedPaste.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedDuplicate.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedRemove.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedSetBone.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedSetRenderable.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedSetRenderableComponent.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedSetCurve.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedSetInputLower.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedSetOutputLower.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedSetInputType.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedSetInputUpper.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedSetOutputUpper.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedSetName.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedToggleInputClamped.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\clipboard\seClipboardDataPropertyNode.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\clipboard\seClipboardDataMapped.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\configuration\seConfiguration.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\configuration\seConfigurationXML.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\gui\constructed\interaction\seVCIDragNode.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\gui\constructed\interaction\seVCIKeyHandling.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\gui\constructed\seViewConstructed.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\gui\constructed\seViewConstructedListener.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\gui\constructed\seViewConstructedView.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\gui\constructed\seViewConstructedViewListener.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\gui\properties\dynamicskin\seWPDynamicSkin.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\gui\properties\dynamicskin\seWPDynamicSkinListener.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\gui\properties\seWindowProperties.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\gui\properties\seWPNode.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\gui\properties\seWPNodeListener.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\gui\properties\seWPTexture.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\gui\properties\seWPTextureListener.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\gui\properties\seWPUndoHistory.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\gui\properties\seWPUndoHistoryListener.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\gui\properties\seWPView.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\gui\properties\seWPViewListener.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\gui\properties\seWPMapped.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\gui\properties\seWPMappedListener.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\gui\seDialogAddProperty.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\gui\seDialogAddTexture.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\gui\seTaskSyncGameDefinition.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\gui\seViewSkin.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\gui\seWindowMain.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\gui\seWindowMainListener.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\loadsave\seLoadSaveSkin.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\loadsave\seLoadSaveSystem.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\seIGDEModule.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\skineditor.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\skin\dynamicskin\seDynamicSkin.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\skin\dynamicskin\seDynamicSkinRenderable.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\skin\dynamicskin\seDynamicSkinRenderableList.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\skin\property\node\sePropertyNode.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\skin\property\node\sePropertyNodeGroup.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\skin\property\node\sePropertyNodeImage.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\skin\property\node\sePropertyNodeList.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\skin\property\node\sePropertyNodeSelection.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\skin\property\node\sePropertyNodeShape.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\skin\property\node\sePropertyNodeText.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\skin\property\seProperty.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\skin\property\sePropertyList.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\skin\mapped\seMapped.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\skin\mapped\seMappedList.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\skin\seSkin.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\skin\seSkinBuilder.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\skin\seSkinListener.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\skin\texture\seTexture.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\skin\texture\seTextureList.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\skin\texture\seTextureSkinBuilder.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\gui\property\node\seUPropertyNodeData.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\gui\property\node\seUPropertyNodesDrag.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\gui\property\node\seUPropertyNodesResize.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\gui\property\node\seUPropertyNodesRotate.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\gui\property\node\seUPropertyNodesShear.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\group\seUPNGroupAddNode.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\group\seUPNGroupMoveNodes.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\group\seUPNGroupNodes.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\group\seUPNGroupNodesBottom.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\group\seUPNGroupNodesDown.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\group\seUPNGroupNodesTop.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\group\seUPNGroupNodesUp.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\group\seUPNGroupPasteNodes.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\group\seUPNGroupRemoveNodes.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\group\seUPNUngroupNodes.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\image\seUPropertyNodeImageSetPath.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\image\seUPropertyNodeImageSetRepeat.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\image\seUPropertyNodeImageSizeFromImage.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\seUPropertyNodeRemoveMask.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\seUPropertyNodeSetBrightness.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\seUPropertyNodeSetColorize.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\seUPropertyNodeSetCombineMode.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\seUPropertyNodeSetContrast.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\seUPropertyNodeSetGamma.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\seUPropertyNodeSetMask.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\seUPropertyNodeSetPosition.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\seUPropertyNodeSetRotation.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\seUPropertyNodeSetShear.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\seUPropertyNodeSetSize.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\seUPropertyNodeSetTransparency.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\seUPropertyNodeSetMapped.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\shape\seUPropertyNodeShapeSetFillColor.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\shape\seUPropertyNodeShapeSetLineColor.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\shape\seUPropertyNodeShapeSetThickness.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\shape\seUPropertyNodeShapeSetType.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\text\seUPropertyNodeTextSetColor.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\text\seUPropertyNodeTextSetPath.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\text\seUPropertyNodeTextSetSize.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\node\text\seUPropertyNodeTextSetText.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\seUPropertyAdd.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\seUPropertyConstructedFromImage.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\seUPropertyConstructedSetBitCount.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\seUPropertyConstructedToggleTileX.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\seUPropertyConstructedToggleTileY.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\seUPropertyRemove.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\seUPropertySetColor.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\seUPropertySetConstructedColor.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\seUPropertySetConstructedSize.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\seUPropertySetCurve.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\seUPropertySetImagePath.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\seUPropertySetMappedComponent.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\seUPropertySetRenderableName.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\seUPropertySetBoneName.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\seUPropertySetValue.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\seUPropertySetValueType.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\seUPropertySetVideoPath.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\property\seUPropertyToggleVideoSharedTime.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUTextureAdd.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUTextureImport.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUTextureRemove.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\texture\seUTextureSetName.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedAdd.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedPaste.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedDuplicate.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedRemove.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedSetBone.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedSetRenderable.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedSetRenderableComponent.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedSetCurve.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedSetInputLower.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedSetOutputLower.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedSetInputType.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedSetInputUpper.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedSetOutputUpper.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedSetName.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\skin\src\undosys\mapped\seUMappedToggleInputClamped.h" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{FA82A88E-64D8-49D0-8671-FAE7720446D7}</ProjectGuid>
+    <RootNamespace>deai</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>editor skin</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebug|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(IncludePath)</IncludePath>
+    <TargetName>skin</TargetName>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\igde_editor\skin\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(IncludePath)</IncludePath>
+    <TargetName>skin</TargetName>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\igde_editor\skin\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebug|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(IncludePath)</IncludePath>
+    <TargetName>skin</TargetName>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\igde_editor\skin\</OutDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;EDITORSKIN_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;EDITORSKIN_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;EDITORSKIN_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;EDITORSKIN_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);MOD_ENTRY_POINT_ATTR=__declspec(dllexport)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <IgnoreSpecificDefaultLibraries>LIBCMT;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+    </Link>
+    <PostBuildEvent>
+      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\deigde\editors\skin\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;EDITORSKIN_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);MOD_ENTRY_POINT_ATTR=__declspec(dllexport)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <IgnoreSpecificDefaultLibraries>LIBCMT;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+    </Link>
+    <PostBuildEvent>
+      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\deigde\editors\skin\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;EDITORSKIN_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);MOD_ENTRY_POINT_ATTR=__declspec(dllexport)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <IgnoreSpecificDefaultLibraries>LIBCMT;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+    </Link>
+    <PostBuildEvent>
+      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\deigde\editors\skin\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

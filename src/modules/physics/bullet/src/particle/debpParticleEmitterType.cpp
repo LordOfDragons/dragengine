@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Bullet Physics Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -134,7 +137,7 @@ void debpParticleEmitterType::UpdateParameters(){
 	const deParticleEmitterType &type = pEmitter->GetTypeAt( pType );
 	
 	// create array if not existing yet. the array contain the sample values for
-	// 11 paramater curves sampled at 256 positions. this is enough since the
+	// 11 parameter curves sampled at 256 positions. this is enough since the
 	// particles do not life for long so precise sampling does not yield much
 	// more accuracy than this pre-sampling does
 	if( ! pParameterValueSamples ){
@@ -147,7 +150,7 @@ void debpParticleEmitterType::UpdateParameters(){
 		pParameterProgressSamples = new float[ ESC_COUNT_PROGRESS * 256 ]; // 13 curves: 3328 entries = 13312 bytes
 	}
 	
-	// sample the paramater curves into the array
+	// sample the parameter curves into the array
 	pSampleParameters( escParticleCount, type.GetParameter( deParticleEmitterType::epParticleCount ) );
 	pSampleParameters( escMass, type.GetParameter( deParticleEmitterType::epMass ) );
 	pSampleParameters( escRotation, type.GetParameter( deParticleEmitterType::epRotation ) );

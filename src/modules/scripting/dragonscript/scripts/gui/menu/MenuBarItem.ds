@@ -1,0 +1,250 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.Gui.Events
+pin Dragengine.Gui.Layouts
+
+
+/**
+ * \brief Menu bar item opening a sub menu.
+ * \version 1.11
+ */
+class MenuBarItem extends Container
+	var String pText
+	var Image pIcon
+	
+	var Label pWidgetText
+	var DisplayImage pWidgetIcon
+	
+	var MenuPopup pSubMenu
+	
+	
+	
+	/** \brief Create menu item. */
+	func new(String text) this(null, text)
+	end
+	
+	/** \brief Create menu item. */
+	func new(Image icon, String text)
+		pText = text
+		pIcon = icon
+		
+		runWhileBlockingLayout(block
+			setCanFocus(false)
+			
+			setLayout(BorderLayout.new(5))
+			setStateChangeNotifyChildren(true)
+			
+			setDesignerSelector("MenuBarItem")
+			
+			pWidgetText = Label.new(text, "Label.MenuBarItem")
+			addWidget(pWidgetText, BorderLayout.Area.content)
+			
+			if icon != null
+				addWidget(Panel.new(CentrizedBoxLayout.new(LayoutAxis.y), block Panel p
+					p.setDesignerSelector("PanelIcon.MenuBarItem")
+					pWidgetIcon = DisplayImage.new(icon, "Image.MenuBarItem")
+					p.addWidget(pWidgetIcon)
+				end), BorderLayout.Area.left)
+			end
+		end)
+	end
+	
+	/** \brief Create menu item command. */
+	func new(String text, MenuPopup subMenu) this(text)
+		setSubMenu(subMenu)
+	end
+	
+	/** \brief Create menu item command. */
+	func new(Image icon, String text, MenuPopup subMenu) this(icon, text)
+		setSubMenu(subMenu)
+	end
+	
+	/** \brief Dispose of menu item. */
+	func void dispose()
+		if pSubMenu != null
+			pSubMenu.safeDispose()
+			pSubMenu = null
+		end
+		
+		pWidgetIcon = null
+		pWidgetText = null
+		
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Text. */
+	func String getText()
+		return pText
+	end
+	
+	/** \brief Set text. */
+	func void setText(String text)
+		if text.equals(pText)
+			return
+		end
+		
+		pText = text
+		pWidgetText.setText(text)
+	end
+	
+	/** \brief Icon. */
+	func Image getIcon()
+		return pIcon
+	end
+	
+	/**
+	 * \brief Set icon.
+	 * 
+	 * Has no effect if no icon has been set in the constructor.
+	 */
+	func void setIcon(Image icon)
+		if icon == pIcon
+			return
+		end
+		
+		pIcon = icon
+		
+		if pWidgetIcon != null
+			pWidgetIcon.setImage(icon)
+		end
+	end
+	
+	
+	
+	/**
+	 * \brief Mouse is hovering over this widget.
+	 * 
+	 * Modified to return true if mouse pointer hovers over this widget or the menu is open.
+	 */
+	func bool isMouseInside()
+		return super.isMouseInside() or (pSubMenu != null and pSubMenu.getVisible())
+	end
+	
+	
+	
+	/** \brief Sub menu to show or null if not set. */
+	func MenuPopup getSubMenu()
+		return pSubMenu
+	end
+	
+	/** \brief Set sub menu to show or null if not set. */
+	func void setSubMenu(MenuPopup menu)
+		if menu == pSubMenu
+			return
+		end
+		
+		if pSubMenu != null
+			pSubMenu.safeDispose()
+		end
+		
+		pSubMenu = menu
+		
+		if menu != null
+			menu.setParentMenuBarItem(this)
+			menu.setCloseOnPopDown(false)
+		end
+		design()
+	end
+	
+	/** \brief Show sub menu. */
+	func void showSubMenu()
+		if pSubMenu == null or pSubMenu.getVisible()
+			return
+		end
+		
+		var Point position = getDesktopPosition()
+		var Point size = getSize()
+		
+		if pSubMenu.getParent() == null
+			getDesktop().addWindow(pSubMenu)
+		end
+		
+		var Point popupPosition = Point.new(position.getX(), position.getY() + size.getY())
+		pSubMenu.popup(popupPosition)
+		
+		var Point realPosition = pSubMenu.getPosition()
+		if realPosition.getY() >= popupPosition.getY()
+			return
+		end
+		
+		pSubMenu.setY(DEMath.max(position.getY() - pSubMenu.getHeight(), 0))
+		design()
+	end
+	
+	/** \brief Hide sub menu if visible. */
+	func void hideSubMenu()
+		if pSubMenu != null and pSubMenu.getVisible()
+			pSubMenu.popdown()
+		end
+		
+		// always called to avoid missing it in certain tricky situations
+		design()
+	end
+	
+	
+	
+	/** \brief Parent MenuBar or null. */
+	func MenuBar getParentMenuBar()
+		var Container container = getParent()
+		while container != null
+			if container castable MenuBar
+				return container cast MenuBar
+			end
+			container = container.getParent()
+		end
+		return null
+	end
+	
+	
+	
+	/** \brief Mouse button pressed. */
+	func void onButtonPress(MouseEvent event)
+		if event.getButton() != InputEventMouseButton.left
+			return
+		end
+		
+		var MenuBar bar = getParentMenuBar()
+		if bar != null
+			bar.setOpenSubMenu(this)
+		end
+	end
+	
+	
+	
+	/** \brief Designer selector changed. */
+	func void onDesignerSelectorChanged()
+		if pWidgetIcon != null
+			pWidgetIcon.setDesignerSelector("Image." + getDesignerSelector())
+		end
+		if pWidgetText != null
+			pWidgetText.setDesignerSelector("Label." + getDesignerSelector())
+		end
+	end
+end

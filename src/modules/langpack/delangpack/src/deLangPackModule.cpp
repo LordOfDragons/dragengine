@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Language Pack Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -93,7 +96,7 @@ void deLangPackModule::LoadLanguagePack( decBaseFileReader &file, deLanguagePack
 	decXmlParser( GetGameEngine()->GetLogger() ).ParseXml( &file, xmlDoc );
 	
 	xmlDoc->StripComments();
-	xmlDoc->CleanCharData();
+// 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
 	if( ! root || strcmp( root->GetName(), "languagePack" ) != 0 ){
@@ -166,29 +169,48 @@ void deLangPackModule::pParseLangPack( const decXmlElementTag &root, deLanguageP
 		const decXmlElementTag * const tag = root.GetElementIfTag( i );
 		
 		if( tag ){
-			if( strcmp( tag->GetName(), "name" ) == 0 ){
-				languagePack.SetName( decUnicodeString::NewFromUTF8(
-					tag->GetFirstData()->GetData() ) );
+			if( tag->GetName() == "identifier" ){
+				const decXmlCharacterData * const cdata = tag->GetFirstData();
+				if( cdata ){
+					languagePack.SetIdentifier( cdata->GetData() );
+				}
+				
+			}else if( strcmp( tag->GetName(), "name" ) == 0 ){
+				const decXmlCharacterData * const cdata = tag->GetFirstData();
+				if( cdata ){
+					languagePack.SetName( decUnicodeString::NewFromUTF8( cdata->GetData() ) );
+				}
 				
 			}else if( strcmp( tag->GetName(), "description" ) == 0 ){
-				languagePack.SetDescription( decUnicodeString::NewFromUTF8(
-					tag->GetFirstData()->GetData() ) );
+				const decXmlCharacterData * const cdata = tag->GetFirstData();
+				if( cdata ){
+					languagePack.SetDescription( decUnicodeString::NewFromUTF8( cdata->GetData() ) );
+				}
 				
 			}else if( strcmp( tag->GetName(), "missingText" ) == 0 ){
-				languagePack.SetMissingText( decUnicodeString::NewFromUTF8(
-					tag->GetFirstData()->GetData() ) );
+				const decXmlCharacterData * const cdata = tag->GetFirstData();
+				if( cdata ){
+					languagePack.SetMissingText( decUnicodeString::NewFromUTF8( cdata->GetData() ) );
+				}
 				
 			}else if( strcmp( tag->GetName(), "translation" ) == 0 ){
 				deLanguagePackEntry &entry = languagePack.GetEntryAt( entryIndex++ );
 				entry.SetName( pGetAttributeString( *tag, "name" ) );
-				entry.SetText( decUnicodeString::NewFromUTF8( tag->GetFirstData()->GetData() ) );
+				const decXmlCharacterData * const cdata = tag->GetFirstData();
+				if( cdata ){
+					entry.SetText( decUnicodeString::NewFromUTF8( cdata->GetData() ) );
+				}
 				
 			}else{
 				LogWarnFormat( "languagePack(%i:%i): Unknown Tag %s, ignoring",
-					tag->GetLineNumber(), tag->GetPositionNumber(),
-					tag->GetName().GetString() );
+					tag->GetLineNumber(), tag->GetPositionNumber(), tag->GetName().GetString() );
 			}
 		}
+	}
+	
+	// backwards compatibility
+	if( languagePack.GetIdentifier().IsEmpty() ){
+		languagePack.SetIdentifier( languagePack.GetName().ToUTF8() );
 	}
 }
 
@@ -197,17 +219,11 @@ void deLangPackModule::pParseLangPack( const decXmlElementTag &root, deLanguageP
 void deLangPackModule::pWriteLangPack( decXmlWriter &writer, const deLanguagePack &languagePack ){
 	writer.WriteOpeningTag( "languagePack", false, true );
 	
-	// language pack
-	const decString name = languagePack.GetName().ToUTF8();
-	writer.WriteDataTagString( "name", name.GetString() );
+	writer.WriteDataTagString( "identifier", languagePack.GetIdentifier() );
+	writer.WriteDataTagString( "name", languagePack.GetName().ToUTF8() );
+	writer.WriteDataTagString( "description", languagePack.GetDescription().ToUTF8() );
+	writer.WriteDataTagString( "missingText", languagePack.GetMissingText().ToUTF8() );
 	
-	const decString description = languagePack.GetDescription().ToUTF8();
-	writer.WriteDataTagString( "description", description.GetString() );
-	
-	const decString missingText = languagePack.GetMissingText().ToUTF8();
-	writer.WriteDataTagString( "missingText", missingText.GetString() );
-	
-	// entries
 	const int entryCount = languagePack.GetEntryCount();
 	int i;
 	

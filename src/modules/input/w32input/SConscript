@@ -21,9 +21,9 @@ if not buildModule:
 	Return()
 
 # fetch values in expanded form for later use
-versionMajor = 1
-versionMinor = 0
-versionString = '{}.{}'.format( versionMajor, versionMinor )
+versionString = '1.20'
+if envModule['force_version']:
+	versionString = envModule['force_version']
 
 pathConfig = '{}/modules/input/w32/{}'.format( envModule.subst( envModule[ 'path_de_config' ] ), versionString )
 pathModule = '{}/modules/input/w32/{}'.format( envModule.subst( envModule[ 'path_de_data' ] ), versionString )
@@ -45,9 +45,9 @@ objects = [ envModule.SharedObject( s ) for s in sources ]
 
 appendLibrary( envModule, parent_targets[ 'dragengine' ], libs )
 
-libs.append( [ 'kernel32', 'user32', 'gdi32', 'winmm', 'wsock32' ] )
+libs.append('winmm')
 
-library = envModule.SharedLibrary( target='inpw32', source=objects, LIBS=libs )
+library = envModule.LoadableModule( target='inpw32', source=objects, LIBS=libs )
 targetBuild = envModule.Alias( 'inp_w32_build', library )
 
 install = []
@@ -57,15 +57,22 @@ for l in library:
 		install.append( envModule.Install( pathModule, l ) )
 		archive[ os.path.join( pathModule, l.name ) ] = l
 
+if envModule['CROSSCOMPILE_CLANG'] and envModule['with_install_pdb']:
+	pathPdb = os.path.join(envModule.subst(envModule['path_pdb']), 'EngineModules')
+	install.append(envModule.Install(pathPdb, 'inpw32.pdb'))
+	archive['{}/inpw32.pdb'.format(pathPdb)] = envModule.File('inpw32.pdb')
+
 manifestUpdates = [
 	{ 'action': 'filename', 'name': library[ 0 ].name, 'keyword': 'FILENAME' },
 	{ 'action': 'filesize', 'path': library[ 0 ].abspath, 'keyword': 'FILESIZE' },
-	{ 'action': 'filehash', 'path': library[ 0 ].abspath, 'keyword': 'SHA1SUM' } ]
+	{ 'action': 'filehash', 'path': library[ 0 ].abspath, 'keyword': 'SHA1SUM' },
+	{'action': 'text', 'value': versionString, 'keyword': 'VERSION'}]
 
 manifest = envModule.File( 'src/module.xml' )
 updateManifest = envModule.Command( manifest, manifest.srcnode(),
 	Action( UpdateModuleManifest ), ManifestUpdates=manifestUpdates )
 Depends( updateManifest, library )
+Depends(updateManifest, 'SConscript')
 
 install.append( envModule.Install( pathModule, updateManifest ) )
 archive[ os.path.join( pathModule, 'module.xml' ) ] = updateManifest[ 0 ]
@@ -91,6 +98,7 @@ parent_targets[ 'inp_w32' ] = {
 	'name' : 'Windows Input Module',
 	'build' : targetBuild,
 	'install' : targetInstall,
+	'install-engine-runtime' : targetInstall,
 	'archive-engine' : archive,
 	'cloc' : buildCloc,
 	'clocReport' : '{}/clocreport.csv'.format( srcdir ) }

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 namespace Dragengine.Utils.StyledText
@@ -58,83 +61,83 @@ class StyledTextDocument
 	
 	/** \brief Create styled text document. */
 	public func new()
-		this.pDefinition = StyledTextDefinition.new()
-		this.pPageSize = Point.new( 400, 400 )
-		this.pPages = Array.new()
+		pDefinition = StyledTextDefinition.new()
+		pPageSize = Point.new(400, 400)
+		pPages = Array.new()
 	end
 	
 	
 	
 	/** \brief Styled text definition. */
 	public func StyledTextDefinition getDefinition()
-		return this.pDefinition
+		return pDefinition
 	end
 	
 	/** \brief Set styled text definition. */
-	public func void setDefinition( StyledTextDefinition definition )
+	public func void setDefinition(StyledTextDefinition definition)
 		if definition == null
 			throw EInvalidParam.new()
 		end
-		this.pDefinition = definition
+		pDefinition = definition
 	end
 	
 	/** \brief Page size in pixels. */
 	public func Point getPageSize()
-		return this.pPageSize
+		return pPageSize
 	end
 	
 	/** \brief Set page size in pixels. */
-	public func void setPageSize( Point size )
-		if not ( size > Point.new( 1, 1 ) )
+	public func void setPageSize(Point size)
+		if not (size > Point.new())
 			throw EInvalidParam.new()
 		end
-		this.pPageSize = size
+		pPageSize = size
 	end
 	
 	
 	
 	/** \brief Number of pages. */
 	public func int getPageCount()
-		return this.pPages.getCount()
+		return pPages.getCount()
 	end
 	
 	/** \brief Page at number. */
-	public func StyledTextRendering getPageAt( int number )
-		return this.pPages.getAt( number ) cast StyledTextRendering
+	public func StyledTextRendering getPageAt(int number)
+		return pPages.getAt(number) cast StyledTextRendering
 	end
 	
 	/** \brief Add page. */
-	public func void addPage( StyledTextRendering page )
+	public func void addPage(StyledTextRendering page)
 		if page == null
 			throw EInvalidParam.new()
 		end
-		this.pPages.add( page )
+		pPages.add(page)
 	end
 	
 	/** \brief Remove all pages. */
 	public func void removeAllPages()
-		this.pPages.removeAll()
+		pPages.removeAll()
 	end
 	
 	/** \brief Visit pages with block with StyledTextRendering as parameter. */
-	public func void forEachPage( Block ablock )
-		this.pPages.forEach( ablock )
+	public func void forEachPage(Block ablock)
+		pPages.forEach(ablock)
 	end
 	
 	
 	
 	/** \brief Rebuild pages. */
 	public func void rebuildPages()
-		var StyledTextConverter converter = StyledTextConverter.new( this.pDefinition )
+		var StyledTextConverter converter = StyledTextConverter.new(pDefinition)
 		
-		converter.setPageSize( this.pPageSize.getX(), this.pPageSize.getY() )
+		converter.setPageSize(pPageSize.getX(), pPageSize.getY())
 		
-		this.pPages.removeAll()
+		pPages.removeAll()
 		
 		converter.generatePages()
-		converter.forEachPage( block StyledTextRendering each
-			this.addPage( each )
-		end )
+		converter.forEachPage(block StyledTextRendering each
+			addPage(each)
+		end)
 	end
 	
 	/**
@@ -142,11 +145,11 @@ class StyledTextDocument
 	 * 
 	 * Canvas has to be of type Canvas.VIEW. Caller is responsible to remove all canvas if required.
 	 */
-	public func void addToCanvas( CanvasView canvas, int page, Point position )
-		this.addToCanvas( canvas, page, position, null )
+	public func void addToCanvas(CanvasView canvas, int page, Point position)
+		addToCanvas(canvas, page, position, null)
 	end
 	
-	public func void addToCanvas( CanvasView canvas, int page, Point position, StyledTextDocumentUpdater updater )
-		( this.pPages.getAt( page ) cast StyledTextRendering ).addToCanvas( canvas, position, updater )
+	public func void addToCanvas(CanvasView canvas, int page, Point position, StyledTextDocumentUpdater updater)
+		(pPages.getAt(page) cast StyledTextRendering).addToCanvas(canvas, position, updater)
 	end
 end

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -53,56 +56,56 @@ class IMMLoadWorld
 	
 	
 	/** \brief Create load world for interactive main menu. */
-	public func new( InteractiveMainMenu mainMenu )
+	public func new(InteractiveMainMenu mainMenu)
 		if mainMenu == null
 			throw EInvalidParam.new()
 		end
 		
-		this.pMainMenu = mainMenu
+		pMainMenu = mainMenu
 	end
 	
 	/** \brief Dispose of widget. */
 	public func void dispose()
-		if this.pWorld != null
-			this.pWorld.dispose()
-			this.pWorld = null
+		if pWorld != null
+			pWorld.dispose()
+			pWorld = null
 		end
-		this.pMainMenu = null
-		this.pDebugVerifyStubProperties = null
+		pMainMenu = null
+		pDebugVerifyStubProperties = null
 	end
 	
 	
 	
 	/** \brief Interactive main menu. */
 	public func InteractiveMainMenu getMainMenu()
-		return this.pMainMenu
+		return pMainMenu
 	end
 	
 	/** \brief World or \em null. */
 	public func GameWorld getWorld()
-		return this.pWorld
+		return pWorld
 	end
 	
 	/** \brief Preload manager. */
 	public func PreloadManager getPreloadManager()
-		return this.pPreloadManager
+		return pPreloadManager
 	end
 	
 	/** \brief World stub. */
 	public func StubGameWorld getStubWorld()
-		return this.pStubWorld
+		return pStubWorld
 	end
 	
 	
 	
 	/** \brief Debug verify stub properties while loading or null if not used. */
 	public func DebugVerifyStubProperties getDebugVerifyStubProperties()
-		return this.pDebugVerifyStubProperties
+		return pDebugVerifyStubProperties
 	end
 	
 	/** \brief Set debug verify stub properties while loading or null if not used. */
-	public func void setDebugVerifyStubProperties( DebugVerifyStubProperties debug )
-		this.pDebugVerifyStubProperties = debug
+	public func void setDebugVerifyStubProperties(DebugVerifyStubProperties debug)
+		pDebugVerifyStubProperties = debug
 	end
 	
 	
@@ -112,36 +115,37 @@ class IMMLoadWorld
 	 * 
 	 * \throws EInvalidParam Loading in progress.
 	 */
-	public func void loadWorld( String path )
-		if path == null or this.pStubWorld != null
+	public func void loadWorld(String path)
+		if path == null or pStubWorld != null
 			throw EInvalidParam.new()
 		end
 		
 		try
-			this.pPreloadManager = PreloadManager.new()
+			pPreloadManager = PreloadManager.new()
 			
-			this.pWorld = GameWorld.new()
-			this.pStubWorld = StubGameWorld.new( this.pWorld, this.pPreloadManager.getCounter() )
-			this.pMainMenu.getLoaders().getWorld().loadFromFile( this.pStubWorld, path, false )
+			pWorld = GameWorld.new()
+			pStubWorld = StubGameWorld.new(pWorld, pPreloadManager.getCounter())
+			pMainMenu.getLoaders().getWorld().loadFromFile(pStubWorld, path, false)
+			pStubWorld.getGameWorld().init(pStubWorld)
 			
 			// one solution is to use preloadAll to preload all element classes including
 			// xml ones if present. another solution is to preload only actually used
 			// classes. for a gmae it is often better to preload all element classes.
 			// for a simple main menu world file it is better to preload only what is used.
 			// this reduces loading time especially if multiple world files are present
-			//this.pMainMenu.getElementClasses().preloadAll( this.pPreloadManager )
-			this.pStubWorld.addElementClassesTo( this.pPreloadManager )
+			//pMainMenu.getElementClasses().preloadAll(pPreloadManager)
+			pStubWorld.addElementClassesTo(pPreloadManager)
 			
-			this.pPreloadManager.addElementClassDependencies()
-			this.pPreloadManager.preloadElementClasses()
-			this.pStubWorld.beginPreloading()
+			pPreloadManager.addElementClassDependencies()
+			pPreloadManager.preloadElementClasses()
+			pStubWorld.beginPreloading()
 			
 		catch Exception e
-			this.pPreloadManager = null
-			this.pStubWorld = null
-			if this.pWorld != null
-				this.pWorld.dispose()
-				this.pWorld = null
+			pPreloadManager = null
+			pStubWorld = null
+			if pWorld != null
+				pWorld.dispose()
+				pWorld = null
 			end
 			throw
 		end
@@ -154,36 +158,36 @@ class IMMLoadWorld
 	 * 
 	 * \returns loaded world instance or \em null if still loading.
 	 */
-	public func GameWorld update( float elapsed )
+	public func GameWorld update(float elapsed)
 		var bool preloadProblemsReported = false
 		
 		try
-			if not this.pStubWorld.updatePreloading()
+			if not pStubWorld.updatePreloading()
 				return null
 			end
 			
 			preloadProblemsReported = true
-			if this.reportPreloadProblems()
+			if reportPreloadProblems()
 				throw EInvalidParam.new()
 			end
-			this.finishLoading()
+			finishLoading()
 			
-			this.pStubWorld = null
-			this.pPreloadManager = null
+			pStubWorld = null
+			pPreloadManager = null
 			
-			var GameWorld world = this.pWorld
-			this.pWorld = null
+			var GameWorld world = pWorld
+			pWorld = null
 			return world 
 			
 		catch Exception e
 			if not preloadProblemsReported
-				this.reportPreloadProblems()
+				reportPreloadProblems()
 			end
-			this.pPreloadManager = null
-			this.pStubWorld = null
-			if this.pWorld != null
-				this.pWorld.dispose()
-				this.pWorld = null
+			pPreloadManager = null
+			pStubWorld = null
+			if pWorld != null
+				pWorld.dispose()
+				pWorld = null
 			end
 			throw
 		end
@@ -193,42 +197,42 @@ class IMMLoadWorld
 	
 	/** \brief Finish preloading. */
 	protected func void finishLoading()
-		var Console console = this.pMainMenu.getConsole()
+		var Console console = pMainMenu.getConsole()
 		var DecalBuilder decalBuilder = DecalBuilder.new()
 		
 		try
-			this.pStubWorld.verifyPreloading( console )
-			if this.pDebugVerifyStubProperties != null
-				this.pDebugVerifyStubProperties.verifyWorld( this.pStubWorld )
+			pStubWorld.verifyPreloading(console)
+			if pDebugVerifyStubProperties != null
+				pDebugVerifyStubProperties.verifyWorld(pStubWorld)
 			end
-			this.pStubWorld.createAndAddElements( console )
-			this.pStubWorld.createWorldDecals( decalBuilder, console )
+			pStubWorld.createAndAddElements(console)
+			pStubWorld.createWorldDecals(decalBuilder, console)
 			
 			// TODO add a world property to define the sky to use. right now just use nothing
-			var String value = this.pStubWorld.getPropertyValueFor( "sky", null )
+			var String value = pStubWorld.getPropertyValueFor("sky", null)
 			if value != null
-				var Sky sky = this.pMainMenu.getLoaders().getSky().loadFromFile( value )
+				var Sky sky = pMainMenu.getLoaders().getSky().loadFromFile(value)
 				
 				var SkyInstance skyInstance = SkyInstance.new()
-				skyInstance.setSky( sky )
-				this.pWorld.getWorld().addSky( skyInstance )
+				skyInstance.setSky(sky)
+				pWorld.getWorld().addSky(skyInstance)
 				
 			end
 			
 			decalBuilder.dispose()
 			
 		catch Exception e
-			this.reportPreloadProblems()
+			reportPreloadProblems()
 			decalBuilder.dispose()
 			throw
 		end
 			
-		this.pMainMenu.setMenuFadeInTime( this.pStubWorld.getPropertyFloatFor( \
-			"menuFadeInTime", this.pMainMenu.getMenuFadeInTime() ) )
+		pMainMenu.setMenuFadeInTime(pStubWorld.getPropertyFloatFor(\
+			"menuFadeInTime", pMainMenu.getMenuFadeInTime()))
 	end
 	
 	/** \brief Report preload problems. */
 	protected func bool reportPreloadProblems()
-		return this.pMainMenu.getElementClasses().logPreloadProblems( this.pMainMenu.getConsole() )
+		return pMainMenu.getElementClasses().logPreloadProblems(pMainMenu.getConsole())
 	end
 end

@@ -12,6 +12,9 @@
  * Runtime exceptions can be scripted exceptions or native class exceptions.
  * 
  * This is a native class.
+ * \author DragonDreams GmbH
+ * \version 1.0
+ * \date 2024
  */
 class Exception
 	/** \name Constructors */
@@ -45,22 +48,22 @@ class Exception
 	
 	
 	/** \brief Number of trace points. */
-	func int getTraceCount()
+	public func int getTraceCount()
 		return 0
 	end
 	
 	/** \brief Trace class at index. */
-	func String getTraceClass( int index )
+	public func String getTraceClass( int index )
 		return null
 	end
 	
 	/** \brief Trace function at index. */
-	func String getTraceFunction( int index )
+	public func String getTraceFunction( int index )
 		return null
 	end
 	
 	/** \brief Trace line number at index. */
-	func int getTraceLine( int index )
+	public func int getTraceLine( int index )
 		return 0
 	end
 	

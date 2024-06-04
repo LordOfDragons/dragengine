@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Game Engine
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DECOLLIDERCOLLISIONTEST_H_
@@ -47,7 +50,13 @@ class deCollisionInfo;
  * The parent collider is ignored during collision tests. It is therefore not required to
  * explicitly exclude it from CanHitCollider call.
  */
-class deColliderCollisionTest : public deObject{
+class DE_DLL_EXPORT deColliderCollisionTest : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deColliderCollisionTest> Ref;
+	
+	
+	
 private:
 	deTouchSensorReference pTouchSensor;
 	deColliderReference pCollider;
@@ -56,12 +65,14 @@ private:
 	deComponentReference pComponent;
 	decString pBone;
 	decVector pOrigin;
+	decQuaternion pOrientation;
 	decVector pDirection;
 	bool pLocalDirection;
 	bool pEnabled;
 	
 	decObjectList pCollisionInfo;
 	decDVector pTestOrigin;
+	decQuaternion pTestOrientation;
 	decDVector pTestDirection;
 	
 	
@@ -130,6 +141,18 @@ public:
 	/** \brief Set cast origin. */
 	void SetOrigin( const decVector &origin );
 	
+	/**
+	 * \brief Cast orientation.
+	 * \version 1.16
+	 */
+	inline const decQuaternion &GetOrientation() const{ return pOrientation; }
+	
+	/**
+	 * \brief Set cast orientation.
+	 * \version 1.16
+	 */
+	void SetOrientation( const decQuaternion &orientation );
+	
 	/** \brief Cast direction. */
 	inline const decVector &GetDirection() const{ return pDirection; }
 	
@@ -172,13 +195,25 @@ public:
 	inline const decDVector &GetTestOrigin() const{ return pTestOrigin; }
 	
 	/** \brief Set test origin used by physics module. */
-	void SetTestOrigin( const decDVector &testOrigin );
+	void SetTestOrigin( const decDVector &origin );
+	
+	/**
+	 * \brief Test orientation used by physics module.
+	 * \version 1.16
+	 */
+	inline const decQuaternion &GetTestOrientation() const{ return pTestOrientation; }
+	
+	/**
+	 * \brief Set test orientation used by physics module.
+	 * \version 1.16
+	 */
+	void SetTestOrientation( const decQuaternion &orientation );
 	
 	/** \brief Test direction used by physics module. */
 	inline const decDVector &GetTestDirection() const{ return pTestDirection; }
 	
 	/** \brief Set test direction used by physics module. */
-	void SetTestDirection( const decDVector &testDirection );
+	void SetTestDirection( const decDVector &direction );
 	/*@}*/
 	
 	

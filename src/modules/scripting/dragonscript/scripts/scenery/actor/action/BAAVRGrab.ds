@@ -1,0 +1,59 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+
+namespace Dragengine.Scenery
+
+
+/**
+ * \brief Interface for VR grab object support with base actor actions.
+ * \version 1.10
+ * 
+ * Implementing actions provide a grab and release action as well as an analog grab and
+ * squeeze action.
+ * 
+ * The grab and release are binary actions. If the VR controller supports analog grab
+ * input the grab and release actions are triggered if a controller defined threshold
+ * value is reached.
+ * 
+ * The analog grab action is a gradual value in the range from 0 (ungrabbed) to 1 (grabbed).
+ * Not all VR controllers support analog grab input. If not supported the value is always 0.
+ * 
+ * The squeeze action is a gradual value in the range from 0 (no force applied) to 1
+ * (maximum supported force applied). Not all VR controller support squeeze input.
+ * If not supported the value is always 0.
+ */
+interface BAAVRGrab
+	/** \brief Grab. */
+	func void grab()
+	
+	/** \brief Ungrab. */
+	func void ungrab()
+	
+	/** \brief Grab in the range from 0 to 1. */
+	func void grabAnalog(float value)
+	
+	/** \brief Squeeze force in the range from 0 to 1. */
+	func void squeeze(float value)
+end

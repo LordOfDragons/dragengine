@@ -1,23 +1,28 @@
-/* 
- * Drag[en]gine IGDE
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
+
+#ifdef IGDE_TOOLKIT_FOX
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -96,6 +101,8 @@ FXDEFMAP( igdeNativeFoxRenderView ) igdeNativeFoxRenderViewMap[] = {
 	FXMAPFUNC( SEL_DOUBLECLICKED, 0, igdeNativeFoxRenderView::onDoubleClicked ),
 	FXMAPFUNC( SEL_MOTION, 0, igdeNativeFoxRenderView::onMouseMove ),
 	FXMAPFUNC( SEL_MOUSEWHEEL, 0, igdeNativeFoxRenderView::onMouseWheel ),
+	FXMAPFUNC( SEL_ENTER, 0, igdeNativeFoxRenderView::onMouseEnter ),
+	FXMAPFUNC( SEL_LEAVE, 0, igdeNativeFoxRenderView::onMouseLeave ),
 	
 	// bug fix
 	FXMAPFUNC( SEL_TIMEOUT, igdeNativeFoxRenderView::ID_TIMEOUT_RETRY_MAP,
@@ -118,10 +125,10 @@ igdeNativeFoxRenderView::igdeNativeFoxRenderView(){
 	this->flags |= FLAG_ENABLED;
 }
 
-igdeNativeFoxRenderView::igdeNativeFoxRenderView( igdeViewRenderWindow &owner,
-	FXComposite *parent, int layoutFlags ) :
-FXFrame( parent, layoutFlags, 0, 0, 0, 0, 0, 0, 0, 0 ),
-pOwner( &owner ),
+igdeNativeFoxRenderView::igdeNativeFoxRenderView( igdeViewRenderWindow &powner,
+	FXComposite *pparent, int layoutFlags ) :
+FXFrame( pparent, layoutFlags, 0, 0, 0, 0, 0, 0, 0, 0 ),
+pOwner( &powner ),
 pCanAttachRenderWindow( false ),
 pRenderWindowAttached( false ),
 pCanRender( false ),
@@ -141,6 +148,34 @@ pErrorRenderWindow( false )
 igdeNativeFoxRenderView::~igdeNativeFoxRenderView(){
 	getApp()->removeTimeout( this, ID_TIMEOUT_RETRY_MAP );
 }
+
+igdeNativeFoxRenderView *igdeNativeFoxRenderView::CreateNativeWidget( igdeViewRenderWindow &powner ){
+	if( ! powner.GetParent() ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	FXComposite * const pparent = ( FXComposite* ) powner.GetParent()->GetNativeContainer();
+	if( ! pparent ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	return new igdeNativeFoxRenderView( powner, pparent, igdeUIFoxHelper::GetChildLayoutFlags( &powner ) );
+}
+
+void igdeNativeFoxRenderView::PostCreateNativeWidget(){
+	FXComposite &pparent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
+	
+	if( ! pparent.id() ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	create();
+}
+
+void igdeNativeFoxRenderView::DestroyNativeWidget(){
+	delete this;
+}
+
 
 
 // Management
@@ -172,6 +207,28 @@ bool igdeNativeFoxRenderView::IsReallyVisible() const{
 	return true;
 }
 
+bool igdeNativeFoxRenderView::IsShown() const{
+	return shown();
+}
+
+decPoint igdeNativeFoxRenderView::GetSize() const{
+	return decPoint( getWidth(), getHeight() );
+}
+
+void igdeNativeFoxRenderView::OnFrameUpdate(){
+	// window updates are rendered to the window by the graphic module. FOX does not notice
+	// this update so we have to tell it outself. for this we need to check if the window is
+	// visible on screen. this check is required since there is no way to figure out otherwise
+	// if the window is actually visible on screen or hidden (either itself or a parent
+	// somewhere up the chain). disabling rendering here is important since otherwise strange
+	// UI artifacts can happen
+	
+	// update only if painting is enabled
+	if( pOwner->GetRenderWindow()->GetPaint() ){
+		update();
+	}
+}
+
 
 
 void igdeNativeFoxRenderView::DropNativeWindow(){
@@ -198,10 +255,10 @@ void igdeNativeFoxRenderView::AttachRenderWindow(){
 	
 	pErrorRenderWindow = true; // if something goes wrong the error will be set
 	
-	const int x = getX();
-	const int y = getY();
-	const int width = decMath::max( getWidth(), 0 );
-	const int height = decMath::max( getHeight(), 0 );
+	const int xx = getX();
+	const int yy = getY();
+	const int wwidth = decMath::max( getWidth(), 0 );
+	const int hheight = decMath::max( getHeight(), 0 );
 	
 	pSyncSizes();
 	
@@ -279,15 +336,15 @@ void igdeNativeFoxRenderView::AttachRenderWindow(){
 	
 	// update window properties to match what FOX has stored for the previous window
 #ifdef OS_W32
-	SetWindowPos( hwnd, HWND_TOP, x, y, width, height, SWP_NOACTIVATE | SWP_NOCOPYBITS
+	SetWindowPos( hwnd, HWND_TOP, xx, yy, wwidth, hheight, SWP_NOACTIVATE | SWP_NOCOPYBITS
 		| SWP_NOOWNERZORDER | SWP_NOREDRAW | SWP_SHOWWINDOW );
 #else
-	if( width > 0 && height > 0 ){
-		XMoveResizeWindow( display, window, x, y, width, height );
+	if( wwidth > 0 && hheight > 0 ){
+		XMoveResizeWindow( display, window, xx, yy, wwidth, hheight );
 		XMapWindow( display, window );
 		
 	}else{
-		XMoveResizeWindow( display, window, x, y, 1, 1 );
+		XMoveResizeWindow( display, window, xx, yy, 1, 1 );
 		XUnmapWindow( display, window );
 	}
 #endif
@@ -315,12 +372,14 @@ void igdeNativeFoxRenderView::DetachRenderWindow(){
 	if( id() != ( FXID )renderWindow->GetWindow() ){
 	    pOwner->GetLogger()->LogError( LOGGING_NAME,
 			"ViewRenderWindow: Marked attached but id is not render window" );
-	    DETHROW( deeInvalidAction );
+	    //DETHROW( deeInvalidAction );
+		return;
 	}
 	if( ! renderWindow->GetWindow() ){
 	    pOwner->GetLogger()->LogError( LOGGING_NAME,
 			"ViewRenderWindow: Detaching window but window does not exist" );
-	    DETHROW( deeInvalidAction );
+	    //DETHROW( deeInvalidAction );
+		return;
 	}
 	
 	// detach window. FOX does not know about the window anymore now but it is still parented
@@ -370,43 +429,43 @@ void igdeNativeFoxRenderView::DetachRenderWindow(){
 void igdeNativeFoxRenderView::DrawEngineUnavailable( FXDCWindow &dc ){
 	const FXColor colorCross = FXRGB( 255, 0, 0 );
 	const FXColor colorBg = FXRGB( 64, 64, 64 );
-	const int height = getHeight();
-	const int width = getWidth();
+	const int hheight = getHeight();
+	const int wwidth = getWidth();
 	
 	dc.setForeground( colorBg );
-	dc.fillRectangle( 0, 0, width, height );
+	dc.fillRectangle( 0, 0, wwidth, hheight );
 	
 	dc.setForeground( colorCross );
-	dc.drawLine( 0, 0, width, height );
-	dc.drawLine( 0, height, width, 0 );
+	dc.drawLine( 0, 0, wwidth, hheight );
+	dc.drawLine( 0, hheight, wwidth, 0 );
 }
 
 void igdeNativeFoxRenderView::DrawErrorRenderWindow( FXDCWindow &dc ){
 	const FXColor colorCross = FXRGB( 255, 128, 0 );
 	const FXColor colorBg = FXRGB( 64, 64, 64 );
-	const int height = getHeight();
-	const int width = getWidth();
+	const int hheight = getHeight();
+	const int wwidth = getWidth();
 	
 	dc.setForeground( colorBg );
-	dc.fillRectangle( 0, 0, width, height );
+	dc.fillRectangle( 0, 0, wwidth, hheight );
 	
 	dc.setForeground( colorCross );
-	dc.drawLine( 0, 0, width, height );
-	dc.drawLine( 0, height, width, 0 );
+	dc.drawLine( 0, 0, wwidth, hheight );
+	dc.drawLine( 0, hheight, wwidth, 0 );
 }
 
 void igdeNativeFoxRenderView::DrawErrorRendering( FXDCWindow &dc ){
 	const FXColor colorCross = FXRGB( 255, 0, 128 );
 	const FXColor colorBg = FXRGB( 64, 64, 64 );
-	const int height = getHeight();
-	const int width = getWidth();
+	const int hheight = getHeight();
+	const int wwidth = getWidth();
 	
 	dc.setForeground( colorBg );
-	dc.fillRectangle( 0, 0, width, height );
+	dc.fillRectangle( 0, 0, wwidth, hheight );
 	
 	dc.setForeground( colorCross );
-	dc.drawLine( 0, 0, width, height );
-	dc.drawLine( 0, height, width, 0 );
+	dc.drawLine( 0, 0, wwidth, hheight );
+	dc.drawLine( 0, hheight, wwidth, 0 );
 }
 
 void igdeNativeFoxRenderView::GrabInput(){
@@ -436,9 +495,9 @@ long igdeNativeFoxRenderView::onResize( FXObject*, FXSelector, void* ){
 	
 	pSyncSizes();
 	
-	const int width = decMath::max( getWidth(), 0 );
-	const int height = decMath::max( getHeight(), 0 );
-	if( width == renderWindow->GetWidth() && height == renderWindow->GetHeight() ){
+	const int wwidth = decMath::max( getWidth(), 0 );
+	const int hheight = decMath::max( getHeight(), 0 );
+	if( wwidth == renderWindow->GetWidth() && hheight == renderWindow->GetHeight() ){
 		return 0;
 	}
 	
@@ -465,26 +524,26 @@ long igdeNativeFoxRenderView::onUnmap( FXObject*, FXSelector, void* ){
 	return 1;
 }
 
-long igdeNativeFoxRenderView::onPaint( FXObject*, FXSelector, void *data ){
+long igdeNativeFoxRenderView::onPaint( FXObject*, FXSelector, void *pdata ){
 	if( ! pOwner ){
 		return 0;
 	}
 	
 	if( ! pOwner->GetEnableRendering() || ! shown()
 	|| ! pOwner->GetEngineController().GetRunning() ){
-		FXDCWindow dc( this, ( FXEvent* )data );
+		FXDCWindow dc( this, ( FXEvent* )pdata );
 		DrawEngineUnavailable( dc );
 		return 1;
 	}
 	
 	if( pErrorRenderWindow || ! pOwner->GetRenderWindow() ){
-		FXDCWindow dc( this, ( FXEvent* )data );
+		FXDCWindow dc( this, ( FXEvent* )pdata );
 		DrawErrorRenderWindow( dc );
 		return 1;
 	}
 	
 	if( ! pCanRender ){
-		FXDCWindow dc( this, ( FXEvent* )data );
+		FXDCWindow dc( this, ( FXEvent* )pdata );
 		DrawErrorRendering( dc );
 		return 1;
 	}
@@ -495,12 +554,12 @@ long igdeNativeFoxRenderView::onPaint( FXObject*, FXSelector, void *data ){
 
 
 
-long igdeNativeFoxRenderView::onKeyPress( FXObject*, FXSelector, void *data ){
+long igdeNativeFoxRenderView::onKeyPress( FXObject*, FXSelector, void *pdata ){
 	if( ! pOwner || ! isEnabled() ){
 		return 0; // default handling
 	}
 	
-	const FXEvent &event = *( ( FXEvent* )data );
+	const FXEvent &event = *( ( FXEvent* )pdata );
 	pOwner->NotifyKeyPress( igdeUIFoxHelper::KeyCodeFromEvent( event ), event.code );
 	
 	// the focus handling in fox is annoying and produces an impossible to solve situation.
@@ -516,7 +575,7 @@ long igdeNativeFoxRenderView::onKeyPress( FXObject*, FXSelector, void *data ){
 	FXWindow *walker = this;
 	while( walker ){
 		if( walker->getAccelTable()
-		&& walker->getAccelTable()->handle( walker, FXSEL( SEL_KEYPRESS, 0 ), data ) ){
+		&& walker->getAccelTable()->handle( walker, FXSEL( SEL_KEYPRESS, 0 ), pdata ) ){
 			break;
 		}
 		walker = walker->getParent();
@@ -527,12 +586,12 @@ long igdeNativeFoxRenderView::onKeyPress( FXObject*, FXSelector, void *data ){
 	return 1; // prevent further processing
 }
 
-long igdeNativeFoxRenderView::onKeyRelease( FXObject*, FXSelector, void *data ){
+long igdeNativeFoxRenderView::onKeyRelease( FXObject*, FXSelector, void *pdata ){
 	if( ! pOwner || ! isEnabled() ){
 		return 0; // default handling
 	}
 	
-	const FXEvent &event = *( ( FXEvent* )data );
+	const FXEvent &event = *( ( FXEvent* )pdata );
 	pOwner->NotifyKeyRelease( igdeUIFoxHelper::KeyCodeFromEvent( event ), event.code );
 	
 	
@@ -542,7 +601,7 @@ long igdeNativeFoxRenderView::onKeyRelease( FXObject*, FXSelector, void *data ){
 	FXWindow *walker = this;
 	while( walker ){
 		if( walker->getAccelTable()
-		&& walker->getAccelTable()->handle( walker, FXSEL( SEL_KEYRELEASE, 0 ), data ) ){
+		&& walker->getAccelTable()->handle( walker, FXSEL( SEL_KEYRELEASE, 0 ), pdata ) ){
 			break;
 		}
 		walker = walker->getParent();
@@ -551,27 +610,27 @@ long igdeNativeFoxRenderView::onKeyRelease( FXObject*, FXSelector, void *data ){
 	return 1; // prevent further processing
 }
 
-long igdeNativeFoxRenderView::onLeftMouseDown( FXObject*, FXSelector, void *data ){
+long igdeNativeFoxRenderView::onLeftMouseDown( FXObject*, FXSelector, void *pdata ){
 	if( ! pOwner || ! isEnabled() ){
 		return 1; // prevent further processing
 	}
 	
 	setFocus();
-	const FXEvent &event = *( ( FXEvent* )data );
+	const FXEvent &event = *( ( FXEvent* )pdata );
 	pOwner->NotifyButtonPress( deInputEvent::embcLeft, decPoint( event.win_x, event.win_y ),
 		igdeUIFoxHelper::ModifiersFromEvent( event ) );
 	
 	switch( event.click_count ){
 	case 1:
-		handle( this, FXSEL( SEL_CLICKED, 0 ), data );
+		handle( this, FXSEL( SEL_CLICKED, 0 ), pdata );
 		break;
 		
 	case 2:
-		handle( this, FXSEL( SEL_DOUBLECLICKED, 0 ), data );
+		handle( this, FXSEL( SEL_DOUBLECLICKED, 0 ), pdata );
 		break;
 		
 	case 3:
-		handle( this, FXSEL( SEL_TRIPLECLICKED, 0 ), data );
+		handle( this, FXSEL( SEL_TRIPLECLICKED, 0 ), pdata );
 		break;
 		
 	default:
@@ -581,98 +640,116 @@ long igdeNativeFoxRenderView::onLeftMouseDown( FXObject*, FXSelector, void *data
 	return 1; // prevent further processing
 }
 
-long igdeNativeFoxRenderView::onLeftMouseUp( FXObject*, FXSelector, void *data ){
+long igdeNativeFoxRenderView::onLeftMouseUp( FXObject*, FXSelector, void *pdata ){
 	if( ! pOwner || ! isEnabled() ){
 		return 1; // prevent further processing
 	}
 	
-	const FXEvent &event = *( ( FXEvent* )data );
+	const FXEvent &event = *( ( FXEvent* )pdata );
 	pOwner->NotifyButtonRelease( deInputEvent::embcLeft, decPoint( event.win_x, event.win_y ),
 		igdeUIFoxHelper::ModifiersFromEvent( event ) );
 	return 1; // prevent further processing
 }
 
-long igdeNativeFoxRenderView::onRightMouseDown( FXObject*, FXSelector, void *data ){
+long igdeNativeFoxRenderView::onRightMouseDown( FXObject*, FXSelector, void *pdata ){
 	if( ! pOwner ){
 		return 1; // prevent further processing
 	}
 	
 	setFocus();
-	const FXEvent &event = *( ( FXEvent* )data );
+	const FXEvent &event = *( ( FXEvent* )pdata );
 	pOwner->NotifyButtonPress( deInputEvent::embcRight, decPoint( event.win_x, event.win_y ),
 		igdeUIFoxHelper::ModifiersFromEvent( event ) );
 	return 1; // prevent further processing
 }
 
-long igdeNativeFoxRenderView::onRightMouseUp( FXObject*, FXSelector, void *data ){
+long igdeNativeFoxRenderView::onRightMouseUp( FXObject*, FXSelector, void *pdata ){
 	if( ! pOwner || ! isEnabled() ){
 		return 1; // prevent further processing
 	}
 	
-	const FXEvent &event = *( ( FXEvent* )data );
+	const FXEvent &event = *( ( FXEvent* )pdata );
 	pOwner->NotifyButtonRelease( deInputEvent::embcRight, decPoint( event.win_x, event.win_y ),
 		igdeUIFoxHelper::ModifiersFromEvent( event ) );
 	return 1; // prevent further processing
 }
 
-long igdeNativeFoxRenderView::onMiddleMouseDown( FXObject*, FXSelector, void *data ){
+long igdeNativeFoxRenderView::onMiddleMouseDown( FXObject*, FXSelector, void *pdata ){
 	if( ! pOwner || ! isEnabled() ){
 		return 1; // prevent further processing
 	}
 	
 	setFocus();
-	const FXEvent &event = *( ( FXEvent* )data );
+	const FXEvent &event = *( ( FXEvent* )pdata );
 	pOwner->NotifyButtonPress( deInputEvent::embcMiddle, decPoint( event.win_x, event.win_y ),
 		igdeUIFoxHelper::ModifiersFromEvent( event ) );
 	return 1;
 } // prevent further processing
 
-long igdeNativeFoxRenderView::onMiddleMouseUp( FXObject*, FXSelector, void *data ){
+long igdeNativeFoxRenderView::onMiddleMouseUp( FXObject*, FXSelector, void *pdata ){
 	if( ! pOwner || ! isEnabled() ){
 		return 1; // prevent further processing
 	}
 	
-	const FXEvent &event = *( ( FXEvent* )data );
+	const FXEvent &event = *( ( FXEvent* )pdata );
 	pOwner->NotifyButtonRelease( deInputEvent::embcMiddle, decPoint( event.win_x, event.win_y ),
 		igdeUIFoxHelper::ModifiersFromEvent( event ) );
 	return 1; // prevent further processing
 }
 
-long igdeNativeFoxRenderView::onMouseMove( FXObject*, FXSelector, void *data ){
+long igdeNativeFoxRenderView::onMouseMove( FXObject*, FXSelector, void *pdata ){
 	if( ! pOwner || ! isEnabled() ){
 		return 1; // prevent further processing
 	}
 	
-	const FXEvent &event = *( ( FXEvent* )data );
+	const FXEvent &event = *( ( FXEvent* )pdata );
 	pOwner->NotifyMouseMoved( decPoint( event.win_x, event.win_y ),
 		igdeUIFoxHelper::ModifiersFromEvent( event ) );
 	return 1;
 }
 
-long igdeNativeFoxRenderView::onMouseWheel( FXObject*, FXSelector, void *data ){
+long igdeNativeFoxRenderView::onMouseWheel( FXObject*, FXSelector, void *pdata ){
 	if( ! pOwner || ! isEnabled() ){
 		return 1; // prevent further processing
 	}
 	
-	const FXEvent &event = *( ( FXEvent* )data );
+	const FXEvent &event = *( ( FXEvent* )pdata );
 	pOwner->NotifyMouseWheeled( decPoint( event.win_x, event.win_y ), decPoint( 0, event.code ),
 		igdeUIFoxHelper::ModifiersFromEvent( event ) );
 	return 1;
 }
 
-long igdeNativeFoxRenderView::onDoubleClicked( FXObject*, FXSelector, void *data ){
+long igdeNativeFoxRenderView::onDoubleClicked( FXObject*, FXSelector, void *pdata ){
 	if( ! pOwner || ! isEnabled() ){
 		return 1; // prevent further processing
 	}
 	
 	setFocus();
-	const FXEvent &event = *( ( FXEvent* )data );
+	const FXEvent &event = *( ( FXEvent* )pdata );
 	pOwner->NotifyDoubleClicked( deInputEvent::embcLeft, decPoint( event.win_x, event.win_y ),
 		igdeUIFoxHelper::ModifiersFromEvent( event ) );
 	return 1; // prevent further processing
 }
 
-long igdeNativeFoxRenderView::onTimeoutRetryMap( FXObject*, FXSelector, void *data ){
+long igdeNativeFoxRenderView::onMouseEnter( FXObject*, FXSelector, void* ){
+	if( ! pOwner || ! isEnabled() ){
+		return 1; // prevent further processing
+	}
+	
+	pOwner->NotifyMouseEnter();
+	return 1;
+}
+
+long igdeNativeFoxRenderView::onMouseLeave( FXObject *, FXSelector, void* ){
+	if( ! pOwner || ! isEnabled() ){
+		return 1; // prevent further processing
+	}
+	
+	pOwner->NotifyMouseLeave();
+	return 1;
+}
+
+long igdeNativeFoxRenderView::onTimeoutRetryMap( FXObject*, FXSelector, void* ){
 	pProcessMap();
 	return 0;
 }
@@ -712,18 +789,20 @@ void igdeNativeFoxRenderView::pSyncSizes(){
 		return;
 	}
 	
-	const int width = decMath::max( getWidth(), 0 );
-	const int height = decMath::max( getHeight(), 0 );
+	const int wwidth = decMath::max( getWidth(), 0 );
+	const int hheight = decMath::max( getHeight(), 0 );
 	
-	renderWindow->SetSize( width, height );
+	renderWindow->SetSize( wwidth, hheight );
 	
 	deCanvasRenderWorld * const canvasRenderWorld = pOwner->GetCanvasRenderWorld();
 	if( canvasRenderWorld ){
-		canvasRenderWorld->SetSize( decPoint( width, height ) );
+		canvasRenderWorld->SetSize( decPoint( wwidth, hheight ) );
 	}
 	
 	deCanvasPaint * const canvasBackground = pOwner->GetCanvasBackground();
 	if( canvasBackground ){
-		canvasBackground->SetSize( decPoint( width, height ) );
+		canvasBackground->SetSize( decPoint( wwidth, hheight ) );
 	}
 }
+
+#endif

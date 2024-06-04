@@ -6,7 +6,10 @@
 //                                                                              //
 //////////////////////////////////////////////////////////////////////////////////
 
-namespace Dragengine.Scenery
+namespace Dragengine
+
+pin Dragengine.Gui
+
 
 /**
  * \brief Input device button.
@@ -34,10 +37,12 @@ class InputDeviceButton
 	/*@{*/
 	/** \brief Owner input device. */
 	public func InputDevice getInputDevice()
+		return null
 	end
 	
 	/** \brief Button index. */
 	public func int getButtonIndex()
+		return 0
 	end
 	/*@}*/
 	
@@ -54,6 +59,7 @@ class InputDeviceButton
 	 * key bindings.
 	 */
 	public func String getID()
+		return null
 	end
 	
 	/**
@@ -63,6 +69,23 @@ class InputDeviceButton
 	 * not guaranteed to stay the same across restarting the input module or game engine.
 	 */
 	public func String getName()
+		return null
+	end
+	
+	/**
+	 * \brief Button type.
+	 * \version 1.6
+	 */
+	public func InputDeviceButtonType getType()
+		return null
+	end
+	
+	/**
+	 * \brief Identifier of component or empty string if standalone.
+	 * \version 1.6
+	 */
+	public func String getComponent()
+		return null
 	end
 	
 	/**
@@ -107,8 +130,16 @@ class InputDeviceButton
 	end
 	
 	/** \brief Text to display centered across display image or icon. */
-	public String getDisplayText()
-		return ""
+	public func String getDisplayText()
+		return null
+	end
+	
+	/**
+	 * \brief Button can send touch/untouch events.
+	 * \version 1.11.1
+	 */
+	public func bool getTouchable()
+		return false
 	end
 	
 	
@@ -123,6 +154,21 @@ class InputDeviceButton
 	 * If reattached the device properly works again.
 	 */
 	public func bool isPressed()
+		return false
+	end
+	
+	/**
+	 * \brief Get touched state.
+	 * \version 1.6
+	 * 
+	 * This obtains the current touched state from the input module. If the device has been
+	 * detached from the host platform in the mean time false is returned. In contrary to
+	 * InputSystem.getButtonTouched() no exception is thrown. This allows to keep a reference
+	 * to this instance without worrying about the device being detached from the system.
+	 * If reattached the device properly works again.
+	 */
+	public func bool isTouched()
+		return false
 	end
 	/*@}*/
 end

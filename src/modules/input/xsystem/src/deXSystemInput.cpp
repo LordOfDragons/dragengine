@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine X System Input Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <ctype.h>
@@ -29,7 +32,6 @@
 #include "dexsiDeviceAxis.h"
 #include "dexsiDeviceButton.h"
 #include "dexsiDeviceFeedback.h"
-#include "dexsiDeviceManager.h"
 #include "dexsiDeviceCoreMouse.h"
 #include "dexsiDeviceCoreKeyboard.h"
 
@@ -88,14 +90,8 @@ pLastMouseY( 0 ),
 
 pIsListening( false ),
 
-pOldAccelNom( 0 ),
-pOldAccelDenom( 0 ),
-pOldThreshold( 0 ),
-
 pSystemAutoRepeatEnabled( false ),
 pAutoRepeatEnabled( false ),
-
-pDevices( NULL ),
 
 pKeyStates( NULL ){
 }
@@ -144,9 +140,9 @@ bool deXSystemInput::Init(){
 			pKeyStates[ i ] = false;
 		}
 		
-		pDevices = new dexsiDeviceManager( *this );
+		pDevices.TakeOver( new dexsiDeviceManager( *this ) );
 		pDevices->UpdateDeviceList();
-		//pDevices->LogDevices();
+		pDevices->LogDevices();
 		
 	}catch( const deException & ){
 		CleanUp();
@@ -157,10 +153,8 @@ bool deXSystemInput::Init(){
 }
 
 void deXSystemInput::CleanUp(){
-	if( pDevices ){
-		delete pDevices;
-		pDevices = NULL;
-	}
+	pDevices = nullptr;
+	
 	if( pKeyStates ){
 		delete [] pKeyStates;
 		pKeyStates = NULL;
@@ -259,6 +253,55 @@ int deXSystemInput::ButtonMatchingKeyChar( int device, int character ){
 	return pDevices->GetX11CoreKeyboard()->ButtonMatchingKeyChar( character );
 }
 
+int deXSystemInput::ButtonMatchingKeyCode( int device, deInputEvent::eKeyCodes keyCode,
+deInputEvent::eKeyLocation location ){
+	if( device != pDevices->GetX11CoreKeyboard()->GetIndex() ){
+		return -1;
+	}
+	
+	const dexsiDeviceCoreKeyboard &rdevice = *pDevices->GetX11CoreKeyboard();
+	const int count = rdevice.GetButtonCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		const dexsiDeviceButton &button = *rdevice.GetButtonAt( i );
+		if( button.GetKeyCode() == keyCode && button.GetKeyLocation() == location ){
+			return i;
+		}
+	}
+	
+	return -1;
+}
+
+int deXSystemInput::ButtonMatchingKeyChar( int device, int character,
+deInputEvent::eKeyLocation location ){
+	if( device != pDevices->GetX11CoreKeyboard()->GetIndex() ){
+		return -1;
+	}
+	if( character < 0x20 || character > 0xff ){
+		return -1;
+	}
+	
+	Display * const display = GetOSUnix()->GetDisplay();
+	const KeyCode x11code = XKeysymToKeycode( display, ( KeySym )character );
+	if( x11code == 0 ){
+		return -1;
+	}
+	
+	const dexsiDeviceCoreKeyboard &rdevice = *pDevices->GetX11CoreKeyboard();
+	const int count = rdevice.GetButtonCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		const dexsiDeviceButton &button = *rdevice.GetButtonAt( i );
+		if( button.GetX11Code() == x11code && button.GetKeyLocation() == location ){
+			return i;
+		}
+	}
+	
+	return -1;
+}
+
 
 
 // events
@@ -266,12 +309,7 @@ int deXSystemInput::ButtonMatchingKeyChar( int device, int character ){
 
 void deXSystemInput::ProcessEvents(){
 	pQueryMousePosition( true );
-	
-	const int deviceCount = pDevices->GetCount();
-	int i;
-	for( i=0; i<deviceCount; i++ ){
-		pDevices->GetAt( i )->Update();
-	}
+	pDevices->Update();
 }
 
 void deXSystemInput::ClearEvents(){
@@ -305,30 +343,19 @@ void deXSystemInput::EventLoop( XEvent &event ){
 		}
 		pKeyStates[ keyCode ] = true;
 		
-		const int button = pDevices->GetPrimaryKeyboard()->LookupX11KeyCode( keyCode );
-		if( button == -1 ){
+		sKey key;
+		if( ! pLookUpKey( event.xkey, key ) ){
 			break;
-		}
-		
-		const int virtualKeyCode = XLookupKeysym( &event.xkey, 0 );
-		if( virtualKeyCode == NoSymbol ){
-			break;
-		}
-		
-		KeySym keySym = 0;
-		unsigned char character = 0;
-		if( ! XLookupString( &event.xkey, ( char* )&character, 1, &keySym, NULL ) ){
-			character = 0;
 		}
 		
 		timeval eventTime;
 		eventTime.tv_sec = ( time_t )( event.xkey.time / 1000 );
 		eventTime.tv_usec = ( suseconds_t )( ( event.xkey.time % 1000 ) * 1000 );
 		
-		dexsiDeviceButton &deviceButton = *pDevices->GetPrimaryKeyboard()->GetButtonAt( button );
+		dexsiDeviceButton &deviceButton = *pDevices->GetPrimaryKeyboard()->GetButtonAt( key.button );
 		deviceButton.SetPressed( true );
 		
-		pAddKeyPress( pDevices->GetPrimaryKeyboard()->GetIndex(), button, character,
+		pAddKeyPress( pDevices->GetPrimaryKeyboard()->GetIndex(), key.button, key.character,
 			deviceButton.GetKeyCode(), pModifiersFromXState( event.xkey.state ), eventTime );
 		}break;
 		
@@ -342,30 +369,19 @@ void deXSystemInput::EventLoop( XEvent &event ){
 		}
 		pKeyStates[ keyCode ] = false;
 		
-		const int button = pDevices->GetPrimaryKeyboard()->LookupX11KeyCode( keyCode );
-		if( button == -1 ){
+		sKey key;
+		if( ! pLookUpKey( event.xkey, key ) ){
 			break;
-		}
-		
-		const int virtualKeyCode = XLookupKeysym( &event.xkey, 0 );
-		if( virtualKeyCode == NoSymbol ){
-			break;
-		}
-		
-		KeySym keySym = 0;
-		unsigned char character = 0;
-		if( ! XLookupString( &event.xkey, ( char* )&character, 1, &keySym, NULL ) ){
-			character = 0;
 		}
 		
 		timeval eventTime;
 		eventTime.tv_sec = ( time_t )( event.xkey.time / 1000 );
 		eventTime.tv_usec = ( suseconds_t )( ( event.xkey.time % 1000 ) * 1000 );
 		
-		dexsiDeviceButton &deviceButton = *pDevices->GetPrimaryKeyboard()->GetButtonAt( button );
+		dexsiDeviceButton &deviceButton = *pDevices->GetPrimaryKeyboard()->GetButtonAt( key.button );
 		deviceButton.SetPressed( false );
 		
-		pAddKeyRelease( pDevices->GetPrimaryKeyboard()->GetIndex(), button, character,
+		pAddKeyRelease( pDevices->GetPrimaryKeyboard()->GetIndex(), key.button, key.character,
 			deviceButton.GetKeyCode(), pModifiersFromXState( event.xkey.state ), eventTime );
 		}break;
 		
@@ -525,6 +541,15 @@ const timeval& eventTime ){
 	event.SetX( x );
 	event.SetY( y );
 	event.SetValue( ( float )( x + y ) );
+	event.SetTime( eventTime );
+	queue.AddEvent( event );
+}
+
+void deXSystemInput::AddDeviceAttachedDetached( const timeval &eventTime ){
+	deInputEventQueue &queue = GetGameEngine()->GetInputSystem()->GetEventQueue();
+	deInputEvent event;
+	
+	event.SetType( deInputEvent::eeDevicesAttachedDetached );
 	event.SetTime( eventTime );
 	queue.AddEvent( event );
 }
@@ -732,6 +757,65 @@ int deXSystemInput::pModifiersFromXState( int xstate ) const{
 	*/
 	
 	return modifiers;
+}
+
+bool deXSystemInput::pLookUpKey( XKeyEvent &event, deXSystemInput::sKey &key ){
+	key.button = pDevices->GetPrimaryKeyboard()->LookupX11KeyCode( event.keycode );
+	if( key.button == -1 ){
+		return false;
+	}
+	
+	key.virtualKeyCode = XLookupKeysym( &event, 0 );
+	if( key.virtualKeyCode == NoSymbol ){
+		return false;
+	}
+	
+	key.keySym = 0;
+	key.character = 0;
+	
+	char utf8[ 4 ];
+	const int count = XLookupString( &event, ( char* )&utf8, 4, &key.keySym, nullptr );
+// 	LogInfoFormat("lookUpKey: %d %d %d %d %d\n", count, utf8[0], utf8[1], utf8[2], utf8[3]);
+	
+	switch( count ){
+	case 1:
+		// this is a huge hack here. on some systems XLookupString returns for characters
+		// larger than 127 a UTF-8 character composed of 2 bytes. on other systems
+		// XLookupString returns an ASCII-8 character composed of 1 byte. for the UTF-8
+		// case we would have to do "utf8[ 0 ] & 0x7f" to get a correctly encoded character.
+		// for other systems returning a single ASCII-8 this would break. if we do not
+		// apply the mask and simply use the byte as-is we can get both systems working.
+		// the conversation to unsigned char is required or it breaks.
+		// 
+		// the reason for this problem is that XLookupString uses the user locale to
+		// return the character. modern systems should use an utf8 based locale in which
+		// case the handling is easy. in the case an older system is used without utf8
+		// the returned value should be latin-1 but you can not bet on it. the correct
+		// solution would be using Xutf8LookupString but this requires using XI which
+		// causes various changes to this input module. something for a rainy day.
+// 		key.character = utf8[ 0 ] & 0x7f;
+		key.character = ( unsigned char )utf8[ 0 ];
+		break;
+		
+	case 2:
+		key.character = ( ( utf8[ 0 ] & 0x1f ) << 6 ) + ( utf8[ 1 ] & 0x3f );
+		break;
+		
+	case 3:
+		key.character = ( ( utf8[ 0 ] & 0xf ) << 12 ) + ( ( utf8[ 1 ] & 0x3f ) << 6 )
+			+ ( utf8[ 2 ] & 0x3f );
+		break;
+		
+	case 4:
+		key.character = ( ( utf8[ 0 ] & 0x7 ) << 18 ) + ( ( utf8[ 1 ] & 0x3f ) << 12 )
+			+ ( ( utf8[ 2 ] & 0x3f ) << 6 ) + ( utf8[ 3 ] & 0x3f );
+		break;
+		
+	default:
+		key.character = 0;
+	}
+	
+	return true;
 }
 
 void deXSystemInput::pUpdateAutoRepeat(){

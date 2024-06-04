@@ -27,14 +27,17 @@ class Connection
 	/*@{*/
 	/** \brief Llocal address. */
 	public func String getLocalAddress()
+		return null
 	end
 	
 	/** \brief Remote address. */
 	public func String getRemoteAddress()
+		return null
 	end
 	
 	/** \brief Connection is established. */
 	public func bool getConnected()
+		return false
 	end
 	
 	/**
@@ -46,6 +49,7 @@ class Connection
 	 * \returns true if the connection request has been send or false in case of error.
 	 */
 	public func bool connectTo( String address )
+		return false
 	end
 	
 	/** \brief Disconnect if connected. */
@@ -82,7 +86,7 @@ class Connection
 	 * Typically only the server sends out link request to clients. All these states are
 	 * read only except those states belonging to the client which he has to be able to modify.
 	 * 
-	 * \param message Contains informations for the remote system to know what state to link to.
+	 * \param message Contains information for the remote system to know what state to link to.
 	 * \param state State to link with remote system.
 	 * \param readOnly If true remote state is not allowed to change.
 	 */
@@ -93,6 +97,7 @@ class Connection
 	
 	/** \brief Connection listener or \em null if not set. */
 	public func ConnectionListener getConnectionListener()
+		return null
 	end
 	
 	/** \brief Set connection listener \em or null if not set. */

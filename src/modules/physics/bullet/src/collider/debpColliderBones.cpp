@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Bullet Physics Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -241,7 +244,7 @@ bool debpColliderBones::UpdateFromBody(){
 	bool anyBoneChanged = false;
 	int i;
 	
-	// fetch the informations from all bones and apply them to
+	// fetch the information from all bones and apply them to
 	// either the collider if the root bone or the bone otherwise.
 	for( i=0; i<pBonePhysicsCount; i++ ){
 		debpPhysicsBody &phyBody = *pBonesPhysics[ i ]->GetPhysicsBody();
@@ -305,11 +308,12 @@ bool debpColliderBones::UpdateFromBody(){
 	}
 	
 	// update bones only if anything changed
-	if( anyBoneChanged && pEngColliderComponent ){
+	if( anyBoneChanged ){
 		// retrieve the inverse matrix for all bones with no parent.
 		const decDMatrix &invMatrix = pCollider.GetInverseMatrix();
+		deRig * const rig = GetRig();
 		
-		// fetch the informations for all non-root bones and
+		// fetch the information for all non-root bones and
 		// apply them to the component bones.
 		for( i=0; i<pBoneCount; i++ ){
 			if( i != pRootBone && pBones[ i ] && pBones[ i ]->GetColBoneDynamic() ){
@@ -333,19 +337,28 @@ bool debpColliderBones::UpdateFromBody(){
 					// cmpm^-1 * pm * cm^-1 = bm * lbm * pfm
 					// cmpm^-1 * pm * cm^-1 * pfm^-1 = bm * lbm
 					// cmpm^-1 * pm * cm^-1 * pfm^-1 * lbm^-1 = bm
-					matrix = colBone.GetMatrix().QuickMultiply( invMatrix )
-						.QuickMultiply( component->GetBoneAt( parent ).GetInverseMatrix() )
-						.QuickMultiply( pBones[ i ]->GetInverseLocalMatrix() );
+					matrix = colBone.GetMatrix().QuickMultiply( invMatrix );
+					if( component ){
+						matrix = matrix.QuickMultiply( component->GetBoneAt( parent ).GetInverseMatrix() );
+						
+					}else if( rig ){
+						matrix = matrix.QuickMultiply( rig->GetBoneAt( parent ).GetInverseMatrix() );
+					}
+					matrix = matrix.QuickMultiply( pBones[ i ]->GetInverseLocalMatrix() );
 				}
 				
-				deComponentBone &compBone = component->GetBoneAt( i );
-				compBone.SetPosition( ( matrix * -pBones[ i ]->GetOffset() ).ToVector() );
-				compBone.SetRotation( matrix.ToQuaternion() );
+				if( component ){
+					deComponentBone &compBone = component->GetBoneAt( i );
+					compBone.SetPosition( ( matrix * -pBones[ i ]->GetOffset() ).ToVector() );
+					compBone.SetRotation( matrix.ToQuaternion() );
+				}
 			//}
 			}
 			
 			// make sure the bone matrix is updated
-			component->UpdateBoneAt( i );
+			if( component ){
+				component->UpdateBoneAt( i );
+			}
 			/*
 			if( i == pRootBone ){
 				decVector omp( component.GetBoneAt( pRootBone ).GetOriginalMatrix().GetPosition() );
@@ -367,24 +380,34 @@ bool debpColliderBones::UpdateFromBody(){
 			*/
 		}
 		
-		// first invalidate then validate. this is required since invalidate marks
-		// a couple of things dirty we do not know. validate just marks bones valid
-		component->InvalidateBones();
-		component->ValidateBones();
-		
-		// internally we know the bones are now valid. no need to prepare them again
-		( ( debpComponent* )component->GetPeerPhysics() )->ClearAllBoneDirty();
+		if( component ){
+			// first invalidate then validate. this is required since invalidate marks
+			// a couple of things dirty we do not know. validate just marks bones valid
+			component->InvalidateBones();
+			component->ValidateBones();
+			
+			// internally we know the bones are now valid. no need to prepare them again
+			( ( debpComponent* )component->GetPeerPhysics() )->ClearAllBoneDirty();
+		}
 	}
 	
 	// result
 	return anyBoneChanged;
 }
 
+void debpColliderBones::SetAllBonesDirty(){
+	int i;
+	for( i=0; i<pBonePhysicsCount; i++ ){
+		pBonesPhysics[ i ]->SetDirty( true );
+	}
+}
+
 void debpColliderBones::ActivateDirtyPhysicsBodies(){
 	int i;
 	for( i=0; i<pBonePhysicsCount; i++ ){
-		if( pBonesPhysics[ i ]->GetDirty() ){
+		if( pBonesPhysics[ i ]->GetDirty() || pBonesPhysics[ i ]->RequiresAutoDirty() ){
 			pBonesPhysics[ i ]->GetPhysicsBody()->Activate();
+			pBonesPhysics[ i ]->SetDirty( false );
 		}
 	}
 }
@@ -470,14 +493,52 @@ float fluctStrength, float fluctDirection ){
 	}
 }
 
-void debpColliderBones::PrepareForDetection( float elapsed ){
-	deComponent * const component = GetComponent();
-	if( ! component ){
+void debpColliderBones::UpdateFromKinematic( bool resetInterpolation ){
+	const bool dynamic = pEngColliderRig->GetResponseType() == deCollider::ertDynamic;
+	if( dynamic ){
 		return;
 	}
 	
+	const decDMatrix &colMatrix = pCollider.GetMatrix();
+	
+	deComponent * const component = GetComponent();
+	if( component ){
+		int i;
+		for( i=0; i<pBoneCount; i++ ){
+			if( pBones[ i ] ){
+				const decDMatrix boneMatrix( component->GetBoneAt( i ).GetMatrix().QuickMultiply( colMatrix ) );
+				debpPhysicsBody &phybody = *pBones[ i ]->GetPhysicsBody();
+				phybody.SetPosition( boneMatrix.GetPosition() );
+				phybody.SetOrientation( boneMatrix.ToQuaternion() );
+				if( resetInterpolation ){
+					phybody.ResetKinematicInterpolation();
+				}
+			}
+		}
+		
+	}else{
+		deRig * const rig = GetRig();
+		if( rig ){
+			int i;
+			for( i=0; i<pBoneCount; i++ ){
+				if( pBones[ i ] ){
+					const decDMatrix boneMatrix( rig->GetBoneAt( i ).GetMatrix().QuickMultiply( colMatrix ) );
+					debpPhysicsBody &phybody = *pBones[ i ]->GetPhysicsBody();
+					phybody.SetPosition( boneMatrix.GetPosition() );
+					phybody.SetOrientation( boneMatrix.ToQuaternion() );
+					if( resetInterpolation ){
+						phybody.ResetKinematicInterpolation();
+					}
+				}
+			}
+		}
+	}
+}
+
+void debpColliderBones::PrepareForDetection( float elapsed ){
+	deComponent * const component = GetComponent();
 	const bool dynamic = pEngColliderRig->GetResponseType() == deCollider::ertDynamic;
-	const deRig * const rig = component->GetRig();
+	const deRig * const rig = component ? component->GetRig() : pEngColliderRig->GetRig();
 	const float factor = elapsed > 1e-6f ? 1.0f / elapsed : 0.0f;
 	const decDMatrix &colMatrix = pCollider.GetMatrix();
 	int i;
@@ -497,15 +558,19 @@ void debpColliderBones::PrepareForDetection( float elapsed ){
 		if( rig ){
 			goalMatrix.SetTranslation( rig->GetBoneAt( boneIndex ).GetCentralMassPoint() );
 		}
-		goalMatrix = goalMatrix.QuickMultiply( component->GetBoneAt( boneIndex ).GetMatrix() )
-			.QuickMultiply( colMatrix );
+		if( component ){
+			goalMatrix = goalMatrix.QuickMultiply( component->GetBoneAt( boneIndex ).GetMatrix() );
+		}else if( rig ){
+			goalMatrix = goalMatrix.QuickMultiply( rig->GetBoneAt( boneIndex ).GetMatrix() );
+		}
+		goalMatrix = goalMatrix.QuickMultiply( colMatrix );
+		
+		const decDMatrix diffMatrix( goalMatrix.QuickMultiply(
+			decDMatrix::CreateWorld( colbone.GetPosition(), colbone.GetOrientation() ).QuickInvert() ) );
 		
 		colbone.SetPosition( goalMatrix.GetPosition() );
 		colbone.SetOrientation( goalMatrix.ToQuaternion() );
 		colbone.UpdateMatrix();
-		
-		const decDMatrix diffMatrix( goalMatrix.QuickMultiply(
-			decDMatrix::CreateWorld( colbone.GetPosition(), colbone.GetOrientation() ).QuickInvert() ) );
 		
 		colbone.SetLinearVelocity( diffMatrix.GetPosition().ToVector() * factor );
 		colbone.SetAngularVelocity( diffMatrix.GetEulerAngles().ToVector() * factor );
@@ -578,17 +643,29 @@ void debpColliderBones::UpdateShapes(){
 	// our own most probably in the prepare detect call.
 	}else{
 		deComponent * const component = GetComponent();
-		if( ! component ){
+		deRig * const rig = GetRig();
+		if( ! rig ){
 			return;
 		}
 		
-		component->PrepareMatrix();
+		if( component ){
+			component->PrepareMatrix();
+		}
 		pPreparePhyBones();
 		
-		for( i=0; i<pBonePhysicsCount; i++ ){
-			pBonesPhysics[ i ]->GetShapes().UpdateWithMatrix(
-				decDMatrix( component->GetBoneAt( pBonesPhysics[ i ]->GetIndex() ).GetMatrix() )
-				.QuickMultiply( matrix ) );
+		if( component ){
+			for( i=0; i<pBonePhysicsCount; i++ ){
+				pBonesPhysics[ i ]->GetShapes().UpdateWithMatrix(
+					decDMatrix( component->GetBoneAt( pBonesPhysics[ i ]->GetIndex() ).GetMatrix() )
+					.QuickMultiply( matrix ) );
+			}
+			
+		}else if( rig ){
+			for( i=0; i<pBonePhysicsCount; i++ ){
+				pBonesPhysics[ i ]->GetShapes().UpdateWithMatrix(
+					decDMatrix( rig->GetBoneAt( pBonesPhysics[ i ]->GetIndex() ).GetMatrix() )
+					.QuickMultiply( matrix ) );
+			}
 		}
 	}
 }
@@ -620,17 +697,30 @@ void debpColliderBones::UpdateShapes( const decDMatrix &transformation ){
 	// our own most probably in the prepate detect call.
 	}else{
 		deComponent * const component = GetComponent();
-		if( ! component ){
+		deRig * const rig = GetRig();
+		if( ! rig ){
 			return;
 		}
 		
-		component->PrepareMatrix();
+		if( component ){
+			component->PrepareMatrix();
+		}
+		
 		pPreparePhyBones();
 		
-		for( i=0; i<pBonePhysicsCount; i++ ){
-			pBonesPhysics[ i ]->GetShapes().UpdateWithMatrix(
-				decDMatrix( component->GetBoneAt( pBonesPhysics[ i ]->GetIndex() ).GetMatrix() )
-				.QuickMultiply( transformation ) );
+		if( component ){
+			for( i=0; i<pBonePhysicsCount; i++ ){
+				pBonesPhysics[ i ]->GetShapes().UpdateWithMatrix(
+					decDMatrix( component->GetBoneAt( pBonesPhysics[ i ]->GetIndex() ).GetMatrix() )
+					.QuickMultiply( transformation ) );
+			}
+			
+		}else if( rig ){
+			for( i=0; i<pBonePhysicsCount; i++ ){
+				pBonesPhysics[ i ]->GetShapes().UpdateWithMatrix(
+					decDMatrix( rig->GetBoneAt( pBonesPhysics[ i ]->GetIndex() ).GetMatrix() )
+					.QuickMultiply( transformation ) );
+			}
 		}
 	}
 }
@@ -732,13 +822,13 @@ void debpColliderBones::UpdateDebugDrawers(){
 		ddrawer->SetPosition( colbone.GetPosition() - matrix * pBonesPhysics[ i ]->GetOffset() );
 		ddrawer->SetOrientation( colbone.GetOrientation() );
 		
-		const int hilightResponseType = pCollider.GetBullet()->GetDeveloperMode().GetHilightResponseType();
+		const int highlightResponseType = pCollider.GetBullet()->GetDeveloperMode().GetHighlightResponseType();
 		deDebugDrawerShape &ddshape = *pBonesPhysics[ i ]->GetDDSShape();
 		decColor colorFill( ddshape.GetFillColor() );
 		decColor colorEdge( ddshape.GetEdgeColor() );
 		
-		if( hilightResponseType != -1 ){
-			if( pEngColliderRig->GetResponseType() == ( deCollider::eResponseType )hilightResponseType ){
+		if( highlightResponseType != -1 ){
+			if( pEngColliderRig->GetResponseType() == ( deCollider::eResponseType )highlightResponseType ){
 				colorFill = debpDebugDrawerColors::colliderBoneFill;
 				colorEdge = debpDebugDrawerColors::colliderBoneEdge;
 				
@@ -1228,6 +1318,7 @@ void debpColliderBones::pSetBoneShape( int index, deRigBone &bone, decVector &sc
 		shape->Visit( createBulletShape );
 		shape->Visit( shapeSurface );
 	}
+	createBulletShape.Finish();
 	
 	phyBody->SetShape( createBulletShape.GetBulletShape() );
 	phyBody->SetShapeSurface( shapeSurface.GetSurface() );

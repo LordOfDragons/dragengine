@@ -20,11 +20,25 @@ class EasyXML
 	/** \name Constructors */
 	/*@{*/
 	/** \brief Create empty document for building XML to write to file. */
-	public func new()
+	func new()
 	end
 	
-	/** \brief Load xml from file. */
-	public func new( String filename )
+	/**
+	 * \brief Load xml from file.
+	 * 
+	 * Same as calling \ref #new(String,bool,bool) with stripComments and cleanCharData set to true.
+	 */
+	func new(String filename)
+	end
+	
+	/**
+	 * \brief Load xml from file.
+	 * \version 1.23
+	 * \param filename Filename to load XML from.
+	 * \param stripComments Strip comments from XML.
+	 * \param cleanCharData Clean character data similar to HTML
+	 */
+	func new(String filename, bool stripComments, bool cleanCharData)
 	end
 	/*@}*/
 	
@@ -33,29 +47,33 @@ class EasyXML
 	/** \name Management */
 	/*@{*/
 	/** \brief Filename of the xml file. */
-	public func String getFilename()
+	func String getFilename()
+		return null
 	end
 	
 	/** \brief Parsing failed. */
-	public func bool hasParseFailed()
+	func bool hasParseFailed()
+		return false
 	end
 	
 	/** \brief Parse log. */
-	public func String getParseLog()
+	func String getParseLog()
+		return null
 	end
 	
 	/** \brief Root element. */
-	public func EasyXMLElement getRootElement()
+	func EasyXMLElement getRootElement()
+		return null
 	end
 	
 	
 	
 	/** \brief Set root element. */
-	public func void setRootElement( EasyXMLElement element )
+	func void setRootElement(EasyXMLElement element)
 	end
 	
 	/** \brief Write document to file. */
-	public func void writeToFile( FileWriter fileWriter, bool compact )
+	func void writeToFile(FileWriter fileWriter, bool compact)
 	end
 	/*@}*/
 end

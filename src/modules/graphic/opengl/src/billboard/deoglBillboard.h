@@ -1,26 +1,31 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLBILLBOARD_H_
 #define _DEOGLBILLBOARD_H_
+
+#include "../skin/dynamic/deoglDynamicSkinListener.h"
 
 #include <dragengine/common/collection/decPointerLinkedList.h>
 #include <dragengine/systems/modules/graphic/deBaseGraphicBillboard.h>
@@ -36,9 +41,9 @@ class deBillboard;
 
 
 /**
- * \brief Billboard peer.
+ * Billboard peer.
  */
-class deoglBillboard : public deBaseGraphicBillboard{
+class deoglBillboard : public deBaseGraphicBillboard, deoglDynamicSkinListener{
 public:
 	deGraphicOpenGl &pOgl;
 	const deBillboard &pBillboard;
@@ -60,9 +65,11 @@ public:
 	bool pDirtyRenderEnvMap;
 	bool pDirtySkin;
 	bool pDirtyDynamicSkin;
-	bool pDirtySkinStateCalculatedProperties;
-	bool pDirtyRenderables;
+	bool pDirtyRenderableMapping;
+	bool pDirtySkinStateStates;
+	bool pSkinStatePrepareRenderables;
 	
+	bool pDynamicSkinRenderablesChanged;
 	bool pDynamicSkinRequiresSync;
 	bool pRequiresUpdateEverySync;
 	
@@ -73,10 +80,10 @@ public:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create peer. */
+	/** Create peer. */
 	deoglBillboard( deGraphicOpenGl &ogl, const deBillboard &billboard );
 	
-	/** \brief Clean up peer. */
+	/** Clean up peer. */
 	virtual ~deoglBillboard();
 	/*@}*/
 	
@@ -84,80 +91,86 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Opengl object. */
+	/** Opengl object. */
 	inline deGraphicOpenGl &GetOpenGL() const{ return pOgl; }
 	
-	/** \brief Billboard. */
+	/** Billboard. */
 	inline const deBillboard &GetBillboard() const{ return pBillboard; }
 	
 	
 	
-	/** \brief Render billboard. */
+	/** Render billboard. */
 	inline deoglRBillboard *GetRBillboard() const{ return pRBillboard; }
 	
 	
 	
-	/** \brief Parent world or \em NULL if not in a world. */
+	/** Parent world or \em NULL if not in a world. */
 	inline deoglWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/**
-	 * \brief Set parent world or \em NULL if not in a world.
+	 * Set parent world or \em NULL if not in a world.
 	 * \details For use by deoglWorld only.
 	 */
 	void SetParentWorld( deoglWorld *world );
 	
 	
 	
-	/** \brief Update render thread counterpart if required. */
+	/** Update render thread counterpart if required. */
 	void SyncToRender();
 	
-	/** \brief Update. */
+	/** Update. */
 	void Update( float elapsed );
 	
 	
 	
-	/** \brief Dynamic skin needs sync. */
-	void DynamicSkinRequiresSync();
-	
-	/** \brief Drop dynamic skin because it is about to be deleted. */
-	void DropDynamicSkin();
+	void DirtyRenderableMapping();
 	
 	
 	
-	/** \brief World syncing linked list. */
+	/** World syncing linked list. */
 	inline decPointerLinkedList::cListEntry &GetLLSyncWorld(){ return pLLSyncWorld; }
 	inline const decPointerLinkedList::cListEntry &GetLLSyncWorld() const{ return pLLSyncWorld; }
 	/*@}*/
 	
 	
 	
+	/** \name Dynamic skin listener */
+	/*@{*/
+	virtual void DynamicSkinDestroyed();
+	virtual void DynamicSkinRenderablesChanged();
+	virtual void DynamicSkinRenderableChanged( deoglDSRenderable &renderable );
+	virtual void DynamicSkinRenderableRequiresSync( deoglDSRenderable &renderable );
+	/*@}*/
+	
+	
+	
 	/** \name Notifications */
 	/*@{*/
-	/** \brief Position changed. */
+	/** Position changed. */
 	virtual void PositionChanged();
 	
-	/** \brief Axis changed. */
+	/** Axis changed. */
 	virtual void AxisChanged();
 	
-	/** \brief Size changed. */
+	/** Size changed. */
 	virtual void SizeChanged();
 	
-	/** \brief Offset changed. */
+	/** Offset changed. */
 	virtual void OffsetChanged();
 	
-	/** \brief Skin changed. */
+	/** Skin changed. */
 	virtual void SkinChanged();
 	
-	/** \brief Dynamic skin changed. */
+	/** Dynamic skin changed. */
 	virtual void DynamicSkinChanged();
 	
-	/** \brief Locked or spherical changed. */
+	/** Locked or spherical changed. */
 	virtual void ParametersChanged();
 	
-	/** \brief Visibility changed. */
+	/** Visibility changed. */
 	virtual void VisibilityChanged();
 	
-	/** \brief Layer mask changed. */
+	/** Layer mask changed. */
 	virtual void LayerMaskChanged();
 	/*@}*/
 	

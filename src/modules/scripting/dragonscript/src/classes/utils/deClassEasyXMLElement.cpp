@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -1101,6 +1104,24 @@ void deClassEasyXMLElement::nfAddDataTagBool::RunFunction( dsRunTime *rt, dsValu
 	}
 }
 
+// public func EasyXMLElement addCData( String value )
+deClassEasyXMLElement::nfAddCData::nfAddCData( const sInitData &init ) :
+dsFunction( init.clsXmlElement, "addCData", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsXmlElement ){
+	p_AddParameter( init.clsString ); // value
+}
+void deClassEasyXMLElement::nfAddCData::RunFunction( dsRunTime *rt, dsValue *myself ){
+	decXmlElement &element = *( ( ( sXMLElNatDat* )p_GetNativeData( myself ) )->element );
+	deClassEasyXMLElement * const clsXmlElement = ( deClassEasyXMLElement* )GetOwnerClass();
+	
+	const char * const value = rt->GetValue( 0 )->GetString();
+	decXmlContainer &container = *element.CastToContainer();
+	
+	const decXmlCharacterData::Ref cdata( decXmlCharacterData::Ref::New( new decXmlCharacterData( value ) ) );
+	container.AddElement( cdata );
+	clsXmlElement->PushElement( rt, cdata );
+}
+
 // public func void addComment( String comment )
 deClassEasyXMLElement::nfAddComment::nfAddComment( const sInitData &init ) :
 dsFunction( init.clsXmlElement, "addComment", DSFT_FUNCTION,
@@ -1154,15 +1175,38 @@ void deClassEasyXMLElement::nfForEachTag::RunFunction( dsRunTime *rt, dsValue *m
 	
 	int i;
 	for( i=0; i<count; i++ ){
-		decXmlElement * const element = container.GetElementAt( i );
-		if( ! element->CanCastToElementTag() ){
+		decXmlElement * const element2 = container.GetElementAt( i );
+		if( ! element2->CanCastToElementTag() ){
 			continue;
 		}
 		
-		rt->PushString( element->CastToElementTag()->GetName() );
-		clsXmlElement.PushElement( rt, element );
+		rt->PushString( element2->CastToElementTag()->GetName() );
+		clsXmlElement.PushElement( rt, element2 );
 		rt->RunFunctionFast( valueBlock, funcIndexRun ); // Object run( Element element, String tagName )
 	}
+}
+
+// public func bool hasTags()
+deClassEasyXMLElement::nfHasTags::nfHasTags( const sInitData &init ) :
+dsFunction( init.clsXmlElement, "hasTags", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
+}
+void deClassEasyXMLElement::nfHasTags::RunFunction( dsRunTime *rt, dsValue *myself ){
+	decXmlElement &element = *( ( ( sXMLElNatDat* )p_GetNativeData( myself ) )->element );
+	
+	const decXmlContainer &container = *element.CastToContainer();
+	const int count = container.GetElementCount();
+	if( count > 0 ){
+		int i;
+		for( i=0; i<count; i++ ){
+			decXmlElement * const element2 = container.GetElementAt( i );
+			if( element2->CanCastToElementTag() ){
+				rt->PushBool( true );
+				return;
+			}
+		}
+	}
+	
+	rt->PushBool( false );
 }
 
 
@@ -1175,7 +1219,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger ){
 
 void deClassEasyXMLElement::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const decXmlElement * const element = ( ( sXMLElNatDat* )p_GetNativeData( myself ) )->element;
-	rt->PushInt( ( intptr_t )element );
+	rt->PushInt( ( int )( intptr_t )element );
 }
 
 // public func bool equals( Object obj )
@@ -1284,9 +1328,11 @@ void deClassEasyXMLElement::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfAddDataTagInteger( init ) );
 	AddFunction( new nfAddDataTagFloat( init ) );
 	AddFunction( new nfAddDataTagBool( init ) );
+	AddFunction( new nfAddCData( init ) );
 	AddFunction( new nfAddComment( init ) );
 	
 	AddFunction( new nfForEachTag( init ) );
+	AddFunction( new nfHasTags( init ) );
 	
 	AddFunction( new nfEquals( init ) );
 	AddFunction( new nfHashCode( init ) );

@@ -1,0 +1,290 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+
+namespace Dragengine.TestSystem
+
+pin Dragengine.Gui
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Test Case.
+ * \version 1.5
+ * 
+ * Defines a test case. Test cases have a init(), run() and tearDown() method. While running
+ * the test case init() is called first. Then run() is called during each frame update until
+ * run() returns false. Once the test finished (either successfully or not) tearDown() is
+ * called. It is guaranteed tearDown() is always called if init() has been called.
+ */
+abstract class TestCase
+	/** \brief Test State. */
+	public enum State
+		/** \brief Test case has not run yet. */
+		pending
+		
+		/** \brief Test case is running. */
+		running
+		
+		/** \brief Test case finished successfully. */
+		passed
+		
+		/** \brief Test case finished with failure. */
+		failed
+	end
+	
+	
+	
+	/** \brief Test suite. */
+	var WeakReference pTestSuite
+	
+	/** \brief Test identifier. */
+	var String pID
+	
+	/** \brief Test name. */
+	var UnicodeString pName
+	
+	/** \brief Test case is enabled. */
+	var bool pEnabled
+	
+	/** \brief Test state. */
+	var State pState
+	
+	/** \brief Exception if test case failed. */
+	var Exception pException
+	
+	
+	
+	/**
+	 * \brief Create test case.
+	 */
+	func new(String id, UnicodeString name)
+		if id == null
+			throw ENullPointer.new("id")
+		end
+		if id.empty()
+			throw EInvalidParam.new("id is empty")
+		end
+		if name == null
+			throw ENullPointer.new("name")
+		end
+		
+		this.pID = id
+		this.pName = name
+		this.pEnabled = true
+		this.pState = State.pending
+		this.pTestSuite = WeakReference.new()
+	end
+	
+	
+	
+	/** \brief Test suite. */
+	func TestSuite getTestSuite()
+		return this.pTestSuite.get() cast TestSuite
+	end
+	
+	/**
+	 * \brief Set test suite.
+	 * 
+	 * For use only by TestSuite.
+	 */
+	func void setTestSuite(TestSuite testSuite)
+		this.pTestSuite.set(testSuite)
+	end
+	
+	/** \brief Identifier. */
+	func String getID()
+		return this.pID
+	end
+	
+	/** \brief Display name. */
+	func UnicodeString getName()
+		return this.pName
+	end
+	
+	/** \brief Test case is enabled. */
+	func bool getEnabled()
+		return this.pEnabled
+	end
+	
+	/** \brief Set if test case is enabled. */
+	func void setEnabled(bool enabled)
+		this.pEnabled = enabled
+	end
+	
+	/** \brief Test state. */
+	func State getState()
+		return this.pState
+	end
+	
+	/** \brief Set test state. */
+	func void setState(State state)
+		if state == null
+			throw ENullPointer.new("state")
+		end
+		
+		this.pState = state
+	end
+	
+	/** \brief Exception if test case failed. */
+	func Exception getException()
+		return this.pException
+	end
+	
+	/** \brief Set exception if test case failed. */
+	func void setException(Exception exception)
+		this.pException = exception
+	end
+	
+	
+	
+	/** \brief Initialize test. */
+	func void init()
+	end
+	
+	/**
+	 * \brief Run test.
+	 * 
+	 * Called every frame update. Test keeps running while this method returns true.
+	 * Once this method returns false the test finishes with state set to passed.
+	 * To fail the test throw an exception.
+	 */
+	abstract func bool run(TestSuite testSuite)
+	
+	/** \brief Tear down after test finished. */
+	func void tearDown()
+	end
+	
+	
+	
+	/** \brief Fail test if \em found does not equal \em expected. */
+	func void assertEquals(Object found, Object expected)
+		if found == expected
+			return
+		end
+		if found != null and found.equals(expected)
+			return
+		end
+		throw AssertEqualsException.new(expected, found)
+	end
+	
+	/** \brief Fail test if \em found equals \em expected. */
+	func void assertDiffers(Object found, Object shouldNot)
+		if found == null and shouldNot != null
+			return
+		end
+		if found != null and not found.equals(shouldNot)
+			return
+		end
+		throw AssertDiffersException.new(found)
+	end
+	
+	/** \brief Fail test if \em found is not true. */
+	func void assertTrue(bool found)
+		this.assertEquals(found, true)
+	end
+	
+	/** \brief Fail test if \em found is not false. */
+	func void assertFalse(bool found)
+		this.assertEquals(found, false)
+	end
+	
+	/** \brief Fail test if \em found is not null. */
+	func void assertNull(Object found)
+		this.assertEquals(found, null)
+	end
+	
+	/** \brief Fail test if \em found is not null. */
+	func void assertNotNull(Object found)
+		this.assertDiffers(found, null)
+	end
+	
+	/** \brief Fail test if \em ablock does not throw an exception. */
+	func void assertThrows(Block ablock)
+		try
+			ablock.run()
+			
+		catch Exception e
+			return
+		end
+		
+		AssertThrowsException.new()
+	end
+	
+	/** \brief Fail test if vectors are not equal within range of 1mm. */
+	func void assertDVector(DVector found, DVector expected)
+		if found.isEqualTo(expected, 0.001)
+			return
+		end
+		throw AssertEqualsException.new(expected, found)
+	end
+	
+	/** \brief Fail test if vectors are not equal within range. */
+	func void assertDVector(DVector found, DVector expected, float range)
+		if found.isEqualTo(expected, range)
+			return
+		end
+		throw AssertEqualsException.new(expected, found)
+	end
+	
+	/** \brief Fail test if vectors are not equal within range of 1mm. */
+	func void assertVector(Vector found, Vector expected)
+		if found.isEqualTo(expected, 0.001)
+			return
+		end
+		throw AssertEqualsException.new(expected, found)
+	end
+	
+	/** \brief Fail test if vectors are not equal within range. */
+	func void assertVector(DVector found, DVector expected, float range)
+		if found.isEqualTo(expected, range)
+			return
+		end
+		throw AssertEqualsException.new(expected, found)
+	end
+	
+	/** \brief Fail test if quaternions are not equal within range of 1mm. */
+	func void assertQuaternion(Quaternion found, Quaternion expected)
+		if found.isEqualTo(expected, 0.001)
+			return
+		end
+		throw AssertEqualsException.new(expected, found)
+	end
+	
+	/** \brief Fail test if quaternions are not equal within range. */
+	func void assertQuaternion(Quaternion found, Quaternion expected, float range)
+		if found.isEqualTo(expected, range)
+			return
+		end
+		throw AssertEqualsException.new(expected, found)
+	end
+	
+	/** \brief Fail test if colors are not equal within range. */
+	func void assertColor(Color found, Color expected, float range)
+		if found.isEqual(expected, range)
+			return
+		end
+		throw AssertEqualsException.new(expected, found)
+	end
+end

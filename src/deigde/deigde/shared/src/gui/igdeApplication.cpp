@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -26,7 +29,6 @@
 #include "igdeApplication.h"
 #include "igdeMainWindow.h"
 #include "native/toolkit.h"
-#include "native/fox/igdeNativeFoxApplication.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decPath.h>
@@ -62,12 +64,12 @@ pNativeApplication( NULL )
 	
 	pApp = this;
 	
-	pNativeApplication = new igdeNativeFoxApplication( *this );
+	pNativeApplication = igdeNativeApplication::CreateNativeApplication( *this );
 }
 
 igdeApplication::~igdeApplication(){
 	if( pNativeApplication ){
-		delete ( igdeNativeFoxApplication* )pNativeApplication;
+		( ( igdeNativeApplication* )pNativeApplication )->DestroyNativeApplication();
 	}
 	
 	if( pApp == this ){
@@ -86,23 +88,14 @@ igdeMainWindow *igdeApplication::GetMainWindow() const{
 
 #ifdef OS_UNIX
 void igdeApplication::Run( int argCount, char **args ){
-	// WARNING FOX expects the first parameter to be present. stripping it causes segfaults!
 	decUnicodeStringList arguments;
-	int i;
-	for( i=0; i<argCount; i++ ){
-		arguments.Add( decUnicodeString::NewFromUTF8( args[ i ] ) );
-	}
+	igdeNativeApplication::GetOSStartUpArguments( arguments, argCount, args );
 	
 	pSharedRun( arguments );
 }
 
 #elif defined OS_W32
 void igdeApplication::Run(){
-// 	printf("igdeApplication %d: WidgetCount %d\n", __LINE__, igdeUIFoxHelper::DebugCountWindows(NULL));
-	
-// 	try{
-	// WARNING FOX expects the first parameter to be present. stripping it causes segfaults!
-	// 
 	// quick note on why we use GetCommandLineW() here and not the value from wWinMain.
 	// MinGW does not support wWinMain so it has to be faked by implementing WinMain which
 	// calls GetCommandLineW(). This can be unfortunatly not fed directly to wWinMain
@@ -110,22 +103,13 @@ void igdeApplication::Run(){
 	// CRT calls wWinMain without the executable name as first argument. This incompatibility
 	// makes it hard to do this properly. Instead this class simply ignores the wWinMain
 	// provided command line value and fetches GetCommandLineW. ugly but it works
-	decUnicodeArgumentList parseArguments;
-	parseArguments.ParseCommand( deOSWindows::WideToUnicode( GetCommandLineW() ) );
+	decUnicodeArgumentList windowsArguments;
+	windowsArguments.ParseCommand( deOSWindows::WideToUnicode( GetCommandLineW() ) );
 	
-	const int count = parseArguments.GetArgumentCount();
 	decUnicodeStringList arguments;
-	int i;
-	for( i=0; i<count; i++ ){
-		arguments.Add( *parseArguments.GetArgumentAt( i ) );
-	}
+	igdeNativeApplication::GetOSStartUpArguments( arguments, windowsArguments );
 	
 	pSharedRun( arguments );
-// 	}catch(...){
-// 		printf("igdeApplication %d: WidgetCount %d\n", __LINE__, igdeUIFoxHelper::DebugCountWindows(NULL));
-// 		throw;
-// 	}
-// 	printf("igdeApplication %d: WidgetCount %d\n", __LINE__, igdeUIFoxHelper::DebugCountWindows(NULL));
 }
 
 #else
@@ -136,14 +120,14 @@ decColor igdeApplication::GetSystemColor( igdeEnvironment::eSystemColors color )
 	if( ! pNativeApplication ){
 		DETHROW( deeInvalidParam );
 	}
-	return ( ( igdeNativeFoxApplication* )pNativeApplication )->GetSystemColor( color );
+	return ( ( igdeNativeApplication* )pNativeApplication )->GetSystemColor( color );
 }
 
 void igdeApplication::GetAppFontConfig( igdeFont::sConfiguration &config ){
 	if( ! pNativeApplication ){
 		DETHROW( deeInvalidParam );
 	}
-	( ( igdeNativeFoxApplication* )pNativeApplication )->GetAppFontConfig( config );
+	( ( igdeNativeApplication* )pNativeApplication )->GetAppFontConfig( config );
 }
 
 igdeApplication &igdeApplication::app(){
@@ -157,7 +141,7 @@ void igdeApplication::RunModalWhileShown( igdeWindow &window ){
 	if( ! pNativeApplication ){
 		DETHROW( deeInvalidParam );
 	}
-	( ( igdeNativeFoxApplication* )pNativeApplication )->RunModalWhileShown( window );
+	( ( igdeNativeApplication* )pNativeApplication )->RunModalWhileShown( window );
 }
 
 
@@ -183,32 +167,31 @@ void igdeApplication::CleanUp(){
 //////////////////////
 
 void igdeApplication::pSharedRun( decUnicodeStringList &arguments ){
-	( ( igdeNativeFoxApplication* )pNativeApplication )->Initialize( arguments );
-	
 	try{
+		( ( igdeNativeApplication* )pNativeApplication )->Initialize( arguments );
+		
 		if( Initialize( arguments ) ){
-			( ( igdeNativeFoxApplication* )pNativeApplication )->Run();
+			( ( igdeNativeApplication* )pNativeApplication )->Run();
 		}
 		
 	}catch( const deException &e ){
-		e.PrintError();
-		( ( igdeNativeFoxApplication* )pNativeApplication )->ShowError( e );
+		( ( igdeNativeApplication* )pNativeApplication )->ShowError( e );
 		
 		try{
 			CleanUp();
 			pMainWindow = NULL;
 			
-		}catch( const deException &e ){
-			e.PrintError();
-			( ( igdeNativeFoxApplication* )pNativeApplication )->ShowError( e );
+		}catch( const deException &e2 ){
+			e2.PrintError();
+			( ( igdeNativeApplication* )pNativeApplication )->ShowError( e2 );
 		}
 		
-		( ( igdeNativeFoxApplication* )pNativeApplication )->Quit();
+		( ( igdeNativeApplication* )pNativeApplication )->Quit();
 		throw;
 	}
 	
 	CleanUp();
 	pMainWindow = NULL;
 	
-	( ( igdeNativeFoxApplication* )pNativeApplication )->Quit();
+	( ( igdeNativeApplication* )pNativeApplication )->Quit();
 }

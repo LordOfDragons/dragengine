@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shader>
+	<name>ToneMap Parameters</name>
+	
+	<texture name='texAvgLogLum' target='0'/>
+	<texture name='texLastParams' target='1'/>
+	<texture name='texEnvMap' target='2'/>
+	
+	<parameter name='pAvgLogLumTCs'/>
+	
+	<attribute name='inPosition' target='0'/>
+	
+	<output name='outParams' target='0'/>
+	
+	<sourceCode unit='vertex'>vertex/generic/screenspace.glsl</sourceCode>
+	<sourceCode unit='fragment'>fragment/tonemap/parameters.glsl</sourceCode>
+</shader>

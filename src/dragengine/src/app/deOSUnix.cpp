@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Game Engine
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #if defined OS_UNIX && defined HAS_LIB_X11
@@ -26,9 +29,11 @@
 #include <string.h>
 #include <unistd.h>
 #include <signal.h>
+#include <locale.h>
 #include <sys/time.h>
 #include <X11/Xproto.h>
 #include <X11/extensions/Xrandr.h>
+#include <X11/Xresource.h>
 
 #include "deOSUnix.h"
 #include "../deEngine.h"
@@ -177,6 +182,7 @@ static int errorHandler( Display *dpy, XErrorEvent *e ){
 	case X_SetModifierMapping: requestCodeName = "SetModifierMapping"; break;
 	case X_GetModifierMapping: requestCodeName = "GetModifierMapping"; break;
 	case X_NoOperation: requestCodeName = "NoOperation"; break;
+	case 151: requestCodeName = "XInputExtension"; break;
 	case 153: requestCodeName = "GLX"; break;
 	default: break;
 	}
@@ -222,6 +228,11 @@ static int errorHandler( Display *dpy, XErrorEvent *e ){
 		}
 	}
 	
+	/*
+	info:
+	XInputExtension: opcodes, see https://www.x.org/releases/X11R7.7/doc/libXi/inputlib.html
+	*/
+
 	decString errorMessage;
 	errorMessage.Format( "XError %s: request_code=%s(%d) minor_code=%s(%d)",
 		errorText, requestCodeName, e->request_code, minorCodeName, e->minor_code );
@@ -257,7 +268,8 @@ pHostingRenderWindow( 0 ),
 pDisplayInformation( NULL ),
 pDisplayCount( 0 ),
 pDisplayResolutions( NULL ),
-pDisplayResolutionCount( 0 )
+pDisplayResolutionCount( 0 ),
+pScaleFactor( 100 )
 {
 	try{
 		// set error handler
@@ -277,6 +289,10 @@ pDisplayResolutionCount( 0 )
 		
 		pScreen = XDefaultScreen( pDisplay );
 		pGetDisplayInformation();
+		pScaleFactor = pGetGlobalScaling();
+		
+		// init locale
+		setlocale( LC_ALL, "" );
 		
 	}catch( const deException & ){
 		pCleanUp();
@@ -357,34 +373,40 @@ int deOSUnix::GetDisplayCount(){
 }
 
 decPoint deOSUnix::GetDisplayCurrentResolution( int display ){
-	if( display < 0 || display >= pDisplayCount ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( display >= 0 )
+	DEASSERT_TRUE( display < pDisplayCount )
+	
 	return pDisplayInformation[ display ].currentResolution;
 }
 
 int deOSUnix::GetDisplayCurrentRefreshRate( int display ){
-	if( display < 0 || display >= pDisplayCount ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( display >= 0 )
+	DEASSERT_TRUE( display < pDisplayCount )
+	
 	return pDisplayInformation[ display ].currentRefreshRate;
 }
 
 int deOSUnix::GetDisplayResolutionCount( int display ){
-	if( display < 0 || display >= pDisplayCount ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( display >= 0 )
+	DEASSERT_TRUE( display < pDisplayCount )
+	
 	return pDisplayInformation[ display ].resolutionCount;
 }
 
 decPoint deOSUnix::GetDisplayResolution( int display, int resolution ){
-	if( display < 0 || display >= pDisplayCount ){
-		DETHROW( deeInvalidParam );
-	}
-	if( resolution < 0 || resolution >= pDisplayInformation[ display ].resolutionCount ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( display >= 0 )
+	DEASSERT_TRUE( display < pDisplayCount )
+	DEASSERT_TRUE( resolution >= 0 )
+	DEASSERT_TRUE( resolution < pDisplayInformation[ display ].resolutionCount )
+	
 	return pDisplayInformation[ display ].resolutions[ resolution ];
+}
+
+int deOSUnix::GetDisplayCurrentScaleFactor( int display ){
+	DEASSERT_TRUE( display >= 0 )
+	DEASSERT_TRUE( display < pDisplayCount )
+	
+	return pScaleFactor;
 }
 
 
@@ -428,7 +450,7 @@ void deOSUnix::SetWindow( Window wnd ){
 	if( pCurWindow > 255 ){
 		XMapWindow( pDisplay, pCurWindow );
 		XFlush( pDisplay );
-		// fetch geometry informations
+		// fetch geometry information
 //		XGetWindowAttributes( pDisplay, pCurWindow, &xwa );
 //		pCurWindowWidth = xwa.width;
 //		pCurWindowHeight = xwa.height;
@@ -506,6 +528,42 @@ void deOSUnix::ProcessEventLoop( bool sendToInputModule ){
 	}
 }
 
+decString deOSUnix::GetUserLocaleLanguage(){
+	const char * const l = setlocale( LC_ALL, nullptr );
+	if( l ){
+		const decString ls( l );
+		const int deli = ls.Find( '_' );
+		if( deli != -1 ){
+			return ls.GetLeft( deli ).GetLower();
+			
+		}else{
+			return ls.GetLower();
+		}
+	}
+	return "en";
+}
+
+decString deOSUnix::GetUserLocaleTerritory(){
+	const char * const l = setlocale( LC_ALL, nullptr );
+	if( l ){
+		const decString ls( l );
+		const int deli = ls.Find( '_' );
+		if( deli != -1 ){
+			const int deli2 = ls.Find( '.', deli + 1 );
+			if( deli2 != -1 ){
+				return ls.GetMiddle( deli + 1, deli2 ).GetLower();
+				
+			}else{
+				return ls.GetMiddle( deli + 1 ).GetLower();
+			}
+			
+		}else{
+			return ls.GetLower();
+		}
+	}
+	return "";
+}
+
 
 
 // Private Functions
@@ -514,11 +572,6 @@ void deOSUnix::ProcessEventLoop( bool sendToInputModule ){
 void deOSUnix::pCleanUp(){
 	// close display
 	if( pDisplay ){
-		// ok. this is now one of the most strange bugs i've ever come accross.
-		// if opengl module is activated then using the line below will result
-		// in a segfault. if left out all works fine. the only explanation would
-		// be that ogl closes the display itself without asking. if somebody knows
-		// a hack to make this work properly he's welcome to step forward.
 		XCloseDisplay( pDisplay );
 		pDisplay = NULL;
 	}
@@ -578,7 +631,7 @@ void deOSUnix::pGetDisplayInformation(){
 		return; // should never happen
 	}
 	
-	// determine the total number of screen resolutions of all screens
+	// determine the total count of screen resolutions of all screens
 	int totalResolutionCount = 0;
 	int resolutionCount;
 	int i, j;
@@ -627,7 +680,7 @@ void deOSUnix::pGetDisplayInformation(){
 			XRRFreeScreenConfigInfo( screenInfo );
 			
 		}else{
-			di.currentRefreshRate = 30; // XRandR not supported on display. XLib has no way to get refresh rate
+			di.currentRefreshRate = 60; // XRandR not supported on display. XLib has no way to get refresh rate
 		}
 		
 		di.resolutionCount = resolutionCount;
@@ -635,6 +688,33 @@ void deOSUnix::pGetDisplayInformation(){
 	}
 	
 	pDisplayCount = screenCount;
+}
+
+int deOSUnix::pGetGlobalScaling() const{
+	const char * const resourceString = XResourceManagerString( pDisplay );
+	if( ! resourceString ){
+		return 100;
+	}
+	
+	// printf( "Entire DB: %s\n", resourceString );
+	
+	XrmInitialize(); // initialize db before calling Xrm* functions
+	
+	const XrmDatabase db = XrmGetStringDatabase( resourceString );
+	
+	XrmValue value;
+	char *type = nullptr;
+	
+	if( XrmGetResource( db, "Xft.dpi", "String", &type, &value ) != True ){
+		return 100;
+	}
+	if( ! value.addr ){
+		return 100;
+	}
+	
+	const double scale = 100.0 * atof( value.addr ) / 96.0;
+	// printf( "Scale: %g %d\n", scale, decMath::max( ( int )( scale / 25.0 + 0.5 ) * 25, 100 ) );
+	return decMath::max( ( int )( scale / 25.0 + 0.5 ) * 25, 100 );
 }
 
 #endif

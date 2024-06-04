@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -41,17 +44,12 @@ deoglPSSREnable::deoglPSSREnable( deGraphicOpenGl &ogl ) :
 deoglParameterBool( ogl )
 {
 	SetName( "ssrEnable" );
-	SetDescription( "Sets if screen space reflections are enabled."
-		" Screen space reflections add local reflections between objects using the rendered image."
-		" This works though only for information present in the rendered image."
-		" In general many reflections can not be calculated in screen space."
-		" For these global reflections are always used."
-		" Local reflections improve though the spatial perception of rendered scenes."
-		" As a downside though screen space reflections are heavy on the graphic card."
-		" Disabling screen space reflections improves rendering speed a lot on weaker cards."
-		" To fine tune the screen space reflections see the ssr* module parameters." );
+	SetDescription( "Enables Screen Space Reflections (SSR)."
+		" This adds higher quality reflections between objects but only for objects visible on screen."
+		" Enabling SSR is expensive. Disable SSR to improve performance." );
 	SetCategory( ecBasic );
 	SetDisplayName( "SSR" );
+	SetDefaultValue( "1" );
 }
 
 deoglPSSREnable::~deoglPSSREnable(){

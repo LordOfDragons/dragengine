@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -54,12 +57,17 @@ pRenderThread( renderThread ),
 
 pParentWorld( NULL ),
 
-pWorldMarkedRemove( false ){
+pTypesRequirePrepareForRender( true ),
+
+pWorldMarkedRemove( false ),
+pLLPrepareForRenderWorld( this )
+{
 	LEAK_CHECK_CREATE( renderThread, PropField );
 }
 
 deoglRPropField::~deoglRPropField(){
 	LEAK_CHECK_FREE( pRenderThread, PropField );
+	SetParentWorld( nullptr );
 }
 
 
@@ -68,7 +76,27 @@ deoglRPropField::~deoglRPropField(){
 ///////////////
 
 void deoglRPropField::SetParentWorld( deoglRWorld *world ){
+	if( world == pParentWorld ){
+		return;
+	}
+	
+	const int count = pTypes.GetCount();
+	int i;
+	
+	if( pParentWorld ){
+		for( i=0; i<count; i++ ){
+			( ( deoglRPropFieldType* )pTypes.GetAt( i ) )->RemoveFromWorldCompute();
+		}
+	}
+	
 	pParentWorld = world;
+	
+	if( world ){
+		deoglWorldCompute &worldCompute = world->GetCompute();
+		for( i=0; i<count; i++ ){
+			( ( deoglRPropFieldType* )pTypes.GetAt( i ) )->AddToWorldCompute( worldCompute );
+		}
+	}
 }
 
 
@@ -129,6 +157,12 @@ void deoglRPropField::UpdateExtends( const dePropField &propField ){
 	pMaxExtend.y = pPosition.y + ( double )maxExtend.y + 0.01;
 	pMaxExtend.z = pPosition.z + ( double )maxExtend.z + 0.01;
 	
+	if( pParentWorld ){
+		for( i=0; i<typeCount; i++ ){
+			( ( deoglRPropFieldType* )pTypes.GetAt( i ) )->UpdateWorldCompute();
+		}
+	}
+	
 	//pOgl->LogInfoFormat( "PropField.pUpdateExtends: p=(%.3f,%.3f,%.3f) e=(%.3f,%.3f,%.3f)->(%.3f,%.3f,%.3f)",
 	//	fieldPosition.x, fieldPosition.y, fieldPosition.z,
 	//	pMinExtend.x, pMinExtend.y, pMinExtend.z, pMaxExtend.x, pMaxExtend.y, pMaxExtend.z );
@@ -137,12 +171,19 @@ void deoglRPropField::UpdateExtends( const dePropField &propField ){
 
 
 void deoglRPropField::PrepareForRender(){
-	const int typeCount = pTypes.GetCount();
-	int t;
-	
-	for( t=0; t<typeCount; t++ ){
-		( ( deoglRPropFieldType* )pTypes.GetAt( t ) )->PrepareForRender();
+	if( pTypesRequirePrepareForRender ){
+		pTypesRequirePrepareForRender = false;
+		
+		const int count = pTypes.GetCount();
+		int i;
+		
+		for( i=0; i<count; i++ ){
+			( ( deoglRPropFieldType* )pTypes.GetAt( i ) )->PrepareForRender();
+		}
 	}
+}
+
+void deoglRPropField::PrepareForRenderRender(){
 }
 
 void deoglRPropField::PrepareInstances( const decDVector &cameraPosition, const decDMatrix &cameraMatrix ){
@@ -189,6 +230,12 @@ void deoglRPropField::AddType( deoglRPropFieldType *type ){
 		DETHROW( deeInvalidParam );
 	}
 	pTypes.Add( type );
+	TypeRequiresPrepareForRender();
+}
+
+void deoglRPropField::TypeRequiresPrepareForRender(){
+	pTypesRequirePrepareForRender = true;
+	pRequiresPrepareForRender();
 }
 
 
@@ -202,11 +249,17 @@ void deoglRPropField::WorldReferencePointChanged(){
 	}
 }
 
-
-
-// Render world usage
-///////////////////////
-
 void deoglRPropField::SetWorldMarkedRemove( bool marked ){
 	pWorldMarkedRemove = marked;
+}
+
+
+
+// Private Functions
+//////////////////////
+
+void deoglRPropField::pRequiresPrepareForRender(){
+	if( ! pLLPrepareForRenderWorld.GetList() && pParentWorld ){
+		pParentWorld->AddPrepareForRenderPropField( this );
+	}
 }

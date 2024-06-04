@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -116,12 +119,13 @@ void deoglDebugSaveTexture::SaveTextureLevelConversion( deoglTexture &texture, i
 	pathFile.AddUnixPath( fileTitle.GetString() );
 	
 	try{
-		deoglPixelBuffer pixbuf( deoglPixelBuffer::epfFloat4, width, height, 1 );
+		const deoglPixelBuffer::Ref pixbuf( deoglPixelBuffer::Ref::New(
+			new deoglPixelBuffer( deoglPixelBuffer::epfFloat4, width, height, 1 ) ) );
 		
 		texture.GetPixelsLevel( level, pixbuf );
 		
 		imgdata = new sRGBA8[ width * height ];
-		pConvertDataRGBA( pixbuf.GetPointerFloat4(), imgdata, width, height, false, conversion );
+		pConvertDataRGBA( pixbuf->GetPointerFloat4(), imgdata, width, height, false, conversion );
 		
 		saveImage = new deoglDelayedSaveImage( pathFile, width, height, 1, 4, 8, (char*)imgdata );
 		imgdata = NULL;
@@ -180,8 +184,9 @@ void deoglDebugSaveTexture::SaveDepthTextureLevel( deoglTexture &texture, int le
 	pathFile.AddUnixPath( fileTitle.GetString() );
 	
 	try{
-		deoglPixelBuffer pixbuf( deoglPixelBuffer::epfFloat1, width, height, 1 );
-		deoglPixelBuffer::sFloat1 * const pbdata = pixbuf.GetPointerFloat1();
+		const deoglPixelBuffer::Ref pixbuf( deoglPixelBuffer::Ref::New(
+			new deoglPixelBuffer( deoglPixelBuffer::epfFloat1, width, height, 1 ) ) );
+		deoglPixelBuffer::sFloat1 * const pbdata = pixbuf->GetPointerFloat1();
 		
 		if( true ){
 			fbo = new deoglFramebuffer( pRenderThread, false );
@@ -353,6 +358,100 @@ void deoglDebugSaveTexture::SaveStencilTexture( deoglTexture &texture, const cha
 	}
 }
 
+void deoglDebugSaveTexture::SaveStencilArrayTexture( deoglArrayTexture &texture, const char *name ){
+	if( ! name ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	deoglTextureStageManager &tsmgr = pRenderThread.GetTexture().GetStages();
+	deoglFramebuffer * const oldFBO = pRenderThread.GetFramebuffer().GetActive();
+	deoglDelayedSaveImage *saveImage = NULL;
+	int height = texture.GetHeight();
+	int width = texture.GetWidth();
+	int layers = texture.GetLayerCount();
+	deoglFramebuffer *fbo = NULL;
+	decString fileTitle;
+	decPath pathFile;
+	int y, x, l;
+	sRGB8 *imgdata = NULL;
+	unsigned char *pbdata = NULL;
+	
+	fileTitle.Format( "%s.png3d", name );
+	pathFile.SetFromUnix( pBasePath.GetString() );
+	pathFile.AddUnixPath( fileTitle.GetString() );
+	
+	try{
+		pbdata = new unsigned char[ width * height * layers ];
+		imgdata = new sRGB8[ width * height * layers ];
+		
+		OGL_CHECK( pRenderThread, glPixelStorei( GL_PACK_ALIGNMENT, 1 ) );
+		
+		if( true ){
+			fbo = new deoglFramebuffer( pRenderThread, false );
+			pRenderThread.GetFramebuffer().Activate( fbo );
+			fbo->AttachDepthArrayTextureLevel( &texture, 0 );
+			fbo->AttachStencilArrayTextureLevel( &texture, 0 );
+			const GLenum buffers[ 1 ] = { GL_NONE };
+			OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
+			OGL_CHECK( pRenderThread, glReadBuffer( GL_NONE ) );
+			fbo->Verify();
+			OGL_CHECK( pRenderThread, glReadPixels( 0, 0, width, height, GL_STENCIL_INDEX, GL_UNSIGNED_BYTE, pbdata ) );
+			
+		}else{
+			tsmgr.EnableBareArrayTexture( 0, texture );
+			OGL_CHECK( pRenderThread, glGetTexImage( GL_TEXTURE_2D, 0, GL_STENCIL_INDEX, GL_UNSIGNED_BYTE, pbdata ) );
+			tsmgr.DisableStage( 0 );
+		}
+		
+		OGL_CHECK( pRenderThread, glPixelStorei( GL_PACK_ALIGNMENT, 4 ) );
+		
+		for( l=0; l<layers; l++ ){
+			for( y=0; y<height; y++){
+				for( x=0; x<width; x++ ){
+					sRGB8 &d = imgdata[ ( width * height ) * l + ( height - 1 - y ) * width + x ];
+					const unsigned char s = pbdata[ y * width + x ];
+					
+					d.red = s; //( unsigned char )( s & 0xff );
+					d.green = s;
+					d.blue = s;
+				}
+			}
+		}
+		
+		saveImage = new deoglDelayedSaveImage( pathFile, width, height, layers, 3, 8, (char*)imgdata );
+		imgdata = NULL;
+		
+		pRenderThread.GetDelayedOperations().AddSaveImage( saveImage );
+		saveImage = NULL;
+		
+		delete [] pbdata;
+		pbdata = NULL;
+		
+		if( fbo ){
+			pRenderThread.GetFramebuffer().Activate( oldFBO );
+			delete fbo;
+		}
+		
+	}catch( const deException &e ){
+		if( fbo ){
+			pRenderThread.GetFramebuffer().Activate( oldFBO );
+			delete fbo;
+		}
+		if( saveImage ){
+			delete saveImage;
+		}
+		if( imgdata ){
+			delete [] imgdata;
+		}
+		if( pbdata ){
+			delete [] pbdata;
+		}
+		
+		pRenderThread.GetLogger().LogErrorFormat( "DebugSaveTexture.SaveStencilTexture(%s) failed!", name );
+		e.PrintError();
+	}
+}
+
 
 
 void deoglDebugSaveTexture::SaveCubeMap( deoglCubeMap &cubemap, const char *name, bool upsideDown ){
@@ -384,8 +483,9 @@ void deoglDebugSaveTexture::SaveCubeMapLevelConversion( deoglCubeMap &cubemap, i
 	pathFile.AddUnixPath( fileTitle.GetString() );
 	
 	try{
-		deoglPixelBuffer pixbuf( deoglPixelBuffer::epfFloat4, size, size, 6 );
-		deoglPixelBuffer::sFloat4 * const pbdata = pixbuf.GetPointerFloat4();
+		const deoglPixelBuffer::Ref pixbuf( deoglPixelBuffer::Ref::New(
+			new deoglPixelBuffer( deoglPixelBuffer::epfFloat4, size, size, 6 ) ) );
+		deoglPixelBuffer::sFloat4 * const pbdata = pixbuf->GetPointerFloat4();
 		const int faceStride = size * size;
 		
 		imgdata = new sRGBA8[ faceStride * 6 ];
@@ -438,8 +538,9 @@ void deoglDebugSaveTexture::SaveDepthCubeMapLevel( deoglCubeMap &cubemap, int le
 	pathFile.AddUnixPath( fileTitle.GetString() );
 	
 	try{
-		deoglPixelBuffer pixbuf( deoglPixelBuffer::epfFloat1, size, size, 6 );
-		const deoglPixelBuffer::sFloat1 * const pbdata = pixbuf.GetPointerFloat1();
+		const deoglPixelBuffer::Ref pixbuf( deoglPixelBuffer::Ref::New(
+			new deoglPixelBuffer( deoglPixelBuffer::epfFloat1, size, size, 6 ) ) );
+		const deoglPixelBuffer::sFloat1 * const pbdata = pixbuf->GetPointerFloat1();
 		const int faceStride = size * size;
 		
 		imgdata = new sRGBA8[ faceStride * 6 ];
@@ -522,8 +623,9 @@ int level, const char *name, eConvertions conversion ){
 	pathFile.AddUnixPath( fileTitle.GetString() );
 	
 	try{
-		deoglPixelBuffer pixbuf( deoglPixelBuffer::epfFloat4, width, height, layerCount );
-		const deoglPixelBuffer::sFloat4 * const pbdata = pixbuf.GetPointerFloat4();
+		const deoglPixelBuffer::Ref pixbuf( deoglPixelBuffer::Ref::New(
+			new deoglPixelBuffer( deoglPixelBuffer::epfFloat4, width, height, layerCount ) ) );
+		const deoglPixelBuffer::sFloat4 * const pbdata = pixbuf->GetPointerFloat4();
 		const int stride = width * height;
 		
 		texture.GetPixelsLevel( level, pixbuf );
@@ -554,36 +656,37 @@ int level, const char *name, eConvertions conversion ){
 }
 
 void deoglDebugSaveTexture::SaveDepthArrayTexture( deoglArrayTexture &arrayTexture, const char *name, bool linearDepth ){
+	SaveDepthArrayTextureLevel( arrayTexture, 0, name, linearDepth );
+}
+
+void deoglDebugSaveTexture::SaveDepthArrayTextureLevel( deoglArrayTexture &arrayTexture, int level, const char *name, bool linearDepth ){
 	if( ! name ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	deoglTextureStageManager &tsmgr = pRenderThread.GetTexture().GetStages();
 	deoglDelayedSaveImage *saveImage = NULL;
 	int layerCount = arrayTexture.GetLayerCount();
-	int height = arrayTexture.GetHeight();
-	deoglPixelBuffer *pixbuf = NULL;
-	int width = arrayTexture.GetWidth();
+	int width, height;
 	decString fileTitle;
 	decPath pathFile;
 	int l, x, y;
 	sRGBA8 *imgdata = NULL;
-	deoglPixelBuffer::sFloat1 *pbdata;
 	float depthval;
+	
+	arrayTexture.GetLevelSize( level, width, height );
 	
 	fileTitle.Format( "%s.png3d", name );
 	pathFile.SetFromUnix( pBasePath.GetString() );
 	pathFile.AddUnixPath( fileTitle.GetString() );
 	
 	try{
-		pixbuf = new deoglPixelBuffer( deoglPixelBuffer::epfFloat1, width, height, layerCount );
+		const deoglPixelBuffer::Ref pixbuf( deoglPixelBuffer::Ref::New(
+			new deoglPixelBuffer( deoglPixelBuffer::epfFloat1, width, height, layerCount ) ) );
+		const deoglPixelBuffer::sFloat1 * const pbdata = pixbuf->GetPointerFloat1();
 		
-		pbdata = pixbuf->GetPointerFloat1();
+		arrayTexture.GetPixelsLevel( level, pixbuf );
+		
 		imgdata = new sRGBA8[ width * height * layerCount ];
-		
-		tsmgr.EnableBareArrayTexture( 0, arrayTexture );
-		OGL_CHECK( pRenderThread, glGetTexImage( GL_TEXTURE_2D_ARRAY, 0, GL_DEPTH_COMPONENT, GL_FLOAT, pbdata ) );
-		tsmgr.DisableStage( 0 );
 		
 		for( l=0; l<layerCount; l++ ){
 			for( y=0; y<height; y++){
@@ -612,17 +715,12 @@ void deoglDebugSaveTexture::SaveDepthArrayTexture( deoglArrayTexture &arrayTextu
 		pRenderThread.GetDelayedOperations().AddSaveImage( saveImage );
 		saveImage = NULL;
 		
-		delete pixbuf;
-		
 	}catch( const deException &e ){
 		if( saveImage ){
 			delete saveImage;
 		}
 		if( imgdata ){
 			delete [] imgdata;
-		}
-		if( pixbuf ){
-			delete pixbuf;
 		}
 		
 		pRenderThread.GetLogger().LogErrorFormat( "DebugSaveTexture.SaveDepthArrayTexture(%s) failed!", name );

@@ -131,11 +131,11 @@ class OBJECT_OT_DEToolLODInfo(bpy.types.Operator):
 	bl_idname = "dragengine.lodinfo"
 	bl_label = "Drag[en]gine LOD Info"
 	bl_options = { 'INTERNAL' }
-	__doc__ = """LOD Information"""
+	__doc__ = """Calculate LOD Information between meshes"""
 	
-	calcMaxError = bpy.props.BoolProperty(name="Calc Max Error",
+	calcMaxError: bpy.props.BoolProperty(name="Calc Max Error",
 		description="Calculate maximum error", default=False)
-	calcAvgError = bpy.props.BoolProperty(name="Calc Avg Error",
+	calcAvgError: bpy.props.BoolProperty(name="Calc Avg Error",
 		description="Calculate average error", default=False)
 	
 	@classmethod
@@ -146,7 +146,12 @@ class OBJECT_OT_DEToolLODInfo(bpy.types.Operator):
 		selection = [o for o in context.selected_objects if o.type == 'MESH']
 		
 		if len(selection) == 2:
-			self.calculateLod(context, selection[1], selection[0])
+			# we can not use selection[1] and selection[0] anymore since blender now stores
+			# objects in selected_objects in the order the objects are stored in the blender
+			# file instead of order they have been selected in
+			active = context.active_object
+			other = [x for x in context.selected_objects if x != active][0]
+			self.calculateLod(context, other, active)
 		else:
 			context.scene.dragengine_lodmaxerror = 0
 			context.scene.dragengine_lodavgerror = 0

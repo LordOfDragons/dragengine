@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Game Engine
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DELOADABLEMODULE_H_
@@ -37,15 +40,15 @@ class deBaseModule;
  * \brief Loadable Module Support.
  * 
  * Loadable modules are a wrapper around an engine module. They are used
- * to hold informations about an engine module that is loadable from a
+ * to hold information about an engine module that is loadable from a
  * particular source. Loadable module objects can hold modules which have
- * loaded successfully or with an error. If an error occured the reason
+ * loaded successfully or with an error. If an error occurred the reason
  * is stored for easy resolution finding. Modules can also be locked to
  * avoid unloading them while they are in use by some lengthy process.
  * Provided are two ways to work with subclasses one being a visitor and
  * the other safe casting.
  */
-class deLoadableModule : public deObject{
+class DE_DLL_EXPORT deLoadableModule : public deObject{
 public:
 	/** \brief Error Codes. */
 	enum eErrorCodes{
@@ -74,7 +77,10 @@ private:
 	decStringList pPatternList;
 	decString pDefaultExtension;
 	
+	int pPriority;
 	bool pFallback;
+	bool pNoSaving;
+	bool pNoCompress;
 	
 	bool pEnabled;
 	
@@ -159,11 +165,43 @@ public:
 	/** \brief Set directory name for this module. */
 	void SetDirectoryName( const char *dirName );
 	
+	/**
+	 * \brief Priority of module.
+	 * 
+	 * Used to find best module. Higher priority takes precedence.
+	 */
+	inline int GetPriority() const{ return pPriority; }
+	
+	/**
+	 * \brief Set module priority.
+	 * 
+	 * Used to find best module. Higher priority takes precedence.
+	 */
+	void SetPriority( int priority );
+	
 	/** \brief Determines if this module is a fallback module. */
 	inline bool GetIsFallback() const{ return pFallback; }
 	
 	/** \brief Sets if this module is a fallback module. */
 	void SetIsFallback( bool fallback );
+	
+	/** \brief Module does not support saving. */
+	inline bool GetNoSaving() const{ return pNoSaving; }
+	
+	/** \brief Set if module does not support saving. */
+	void SetNoSaving( bool noSaving );
+	
+	/**
+	 * \brief Files are compressed.
+	 * \version 1.12
+	 */
+	inline bool GetNoCompress() const{ return pNoCompress; }
+	
+	/**
+	 * \brief Set if files are compressed.
+	 * \version 1.12
+	 */
+	void SetNoCompress( bool noCompress );
 	
 	/**
 	 * \brief Determines if the module is enabled.

@@ -29,11 +29,11 @@ class EffectDistortImage extends Effect
 	/** \name Management */
 	/*@{*/
 	/** \brief Set distort image or \em null if not set. */
-	public func void setDistortImage( Image image )
+	public func void setImage( Image image )
 	end
 	
 	/** \brief Set distort strength. */
-	public func void setDistortStrength( float u, float v )
+	public func void setStrength( float u, float v )
 	end
 	
 	
@@ -44,6 +44,7 @@ class EffectDistortImage extends Effect
 	 * \returns \em true if \em other is of type EffectDistortImage and effect are equal.
 	 */
 	public func bool equals( Object other )
+		return false
 	end
 	
 	/**
@@ -51,6 +52,7 @@ class EffectDistortImage extends Effect
 	 * \details Implements Object.hashCode().
 	 */
 	public func int hashCode()
+		return 0
 	end
 	/*@}*/
 end

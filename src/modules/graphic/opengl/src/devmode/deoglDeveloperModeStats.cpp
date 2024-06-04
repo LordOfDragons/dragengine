@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -176,7 +179,7 @@ void deoglDeveloperModeStats::Skins( const decUnicodeArgumentList &command, decU
 	while( skin ){
 		oglSkin = ( ( deoglSkin* )skin->GetPeerGraphic() )->GetRSkin();
 		
-		text.Format( "- Skin '%s' ( renderables=%i dynamic=%i solid=%i hasHoles=%i ):\n",
+		text.Format( "- Skin '%s' ( renderables=%d dynamic=%d solid=%d hasHoles=%d ):\n",
 			skin->GetFilename().GetString(),
 			oglSkin->GetHasRenderables() ? 1 : 0, oglSkin->GetHasDynamicChannels() ? 1 : 0,
 			oglSkin->GetIsSolid() ? 1 : 0, oglSkin->GetHasHoles() ? 1 : 0 );
@@ -186,7 +189,7 @@ void deoglDeveloperModeStats::Skins( const decUnicodeArgumentList &command, decU
 		for( t=0; t<textureCount; t++ ){
 			deoglSkinTexture &oglSkinTexture = oglSkin->GetTextureAt( t );
 			
-			text.Format( "   - Texture '%s' ( maskedSolidity=%i solid=%i hasHoles=%i ):\n", oglSkinTexture.GetName().GetString(),
+			text.Format( "   - Texture '%s' ( maskedSolidity=%d solid=%d hasHoles=%d ):\n", oglSkinTexture.GetName().GetString(),
 				oglSkinTexture.GetSolidityMasked() ? 1 : 0, oglSkinTexture.GetSolid() ? 1 : 0, oglSkinTexture.GetHasHoles() ? 1 : 0 );
 			answer.AppendFromUTF8( text.GetString() );
 			
@@ -194,43 +197,20 @@ void deoglDeveloperModeStats::Skins( const decUnicodeArgumentList &command, decU
 				if( oglSkinTexture.IsChannelEnabled( ( deoglSkinChannel::eChannelTypes )c ) ){
 					const deoglSkinChannel &oglSkinChannel = *oglSkinTexture.GetChannelAt( ( deoglSkinChannel::eChannelTypes )c );
 					
-					text.Format( "      - Channel '%s' ( size=%ix%ix%i uniform=%i dynamic=%i",
+					text.Format( "      - Channel '%s' ( size=%dx%dx%d uniform=%d dynamic=%d",
 						deoglSkinChannel::ChannelNameFor( ( deoglSkinChannel::eChannelTypes )c ),
 						oglSkinChannel.GetSize().x, oglSkinChannel.GetSize().y, oglSkinChannel.GetSize().z,
 						oglSkinChannel.GetUniform() ? 1 : 0, oglSkinChannel.GetDynamic() ? 1 : 0 );
 					
-					deoglTexture *oglTexture = NULL;
-					deoglCubeMap *oglCubeMap = NULL;
-					deoglArrayTexture *oglArrayTexture = NULL;
-					
 					if( oglSkinChannel.GetImage() ){
 						text.Append( " image" );
-						oglTexture = oglSkinChannel.GetImage()->GetTexture();
 						
 					}else if( oglSkinChannel.GetCombinedTexture() ){
 						text.Append( " combined" );
-						oglTexture = oglSkinChannel.GetCombinedTexture()->GetTexture();
 						
 					}else{
 						text.Append( " unique" );
-						oglTexture = oglSkinChannel.GetTexture();
-						oglCubeMap = oglSkinChannel.GetCubeMap();
-						oglArrayTexture = oglSkinChannel.GetArrayTexture();
 					}
-					
-					int sizeGpu = 0;
-					
-					if( oglTexture ){
-						sizeGpu = oglTexture->GetMemoryUsageGPU();
-						
-					}else if( oglCubeMap ){
-						sizeGpu = oglCubeMap->GetMemoryUsageGPU();
-						
-					}else if( oglArrayTexture ){
-						sizeGpu = oglArrayTexture->GetMemoryUsageGPU();
-					}
-					
-					text.AppendFormat( " sizeGpu=%i", sizeGpu );
 					
 					text.Append( " )\n" );
 					answer.AppendFromUTF8( text.GetString() );
@@ -249,10 +229,14 @@ void deoglDeveloperModeStats::CombinedTextures( const decUnicodeArgumentList &co
 	while( combinedTexture ){
 		const decColor &color = combinedTexture->GetColor();
 		
-		text.Format( "- color=(%i,%i,%i,%i) images=(%p,%p,%p,%p) usage=%i\n", ( int )( color.r * 255.0 ),
-			( int )( color.g * 255.0 ), ( int )( color.b * 255.0 ), ( int )( color.a * 255.0 ),
-			combinedTexture->GetImageAt( 0 ), combinedTexture->GetImageAt( 1 ), combinedTexture->GetImageAt( 2 ),
-			combinedTexture->GetImageAt( 3 ), combinedTexture->GetUsageCount() );
+		text.Format( "- color=(%d,%d,%d,%d) images=(%p,%p,%p,%p) usage=%d\n",
+			( int )( color.r * 255.0 ), ( int )( color.g * 255.0 ),
+			( int )( color.b * 255.0 ), ( int )( color.a * 255.0 ),
+			( deoglRImage* )combinedTexture->GetImageAt( 0 ),
+			( deoglRImage* )combinedTexture->GetImageAt( 1 ),
+			( deoglRImage* )combinedTexture->GetImageAt( 2 ),
+			( deoglRImage* )combinedTexture->GetImageAt( 3 ),
+			combinedTexture->GetUsageCount() );
 		answer.AppendFromUTF8( text.GetString() );
 		
 		combinedTexture = combinedTexture->GetLLNext();
@@ -260,15 +244,13 @@ void deoglDeveloperModeStats::CombinedTextures( const decUnicodeArgumentList &co
 }
 
 void deoglDeveloperModeStats::ShaderSources( const decUnicodeArgumentList &command, decUnicodeString &answer ){
-	deoglShaderManager &shaderManager = pRenderThread.GetShader().GetShaderManager();
-	int ss, shaderSourcesCount;
-	int sst, shaderSourcesTextureCount;
-	int ssp, shaderSourcesParameterCount;
+	const decObjectList smsources( pRenderThread.GetShader().GetShaderManager().GetSourcesAsList() );
+	int ss, sst, ssp;
 	decString text;
 	
-	shaderSourcesCount = shaderManager.GetSourcesCount();
+	const int shaderSourcesCount = smsources.GetCount();
 	for( ss=0; ss<shaderSourcesCount; ss++ ){
-		const deoglShaderSources &sources = *shaderManager.GetSourcesAt( ss );
+		const deoglShaderSources &sources = *( deoglShaderSources* )smsources.GetAt( ss );
 		const deoglShaderBindingList &textureList = sources.GetTextureList();
 		const decStringList &parameterList = sources.GetParameterList();
 		
@@ -290,15 +272,16 @@ void deoglDeveloperModeStats::ShaderSources( const decUnicodeArgumentList &comma
 			answer.AppendFromUTF8( text.GetString() );
 		}
 		
-		shaderSourcesTextureCount = textureList.GetCount();
+		const int shaderSourcesTextureCount = textureList.GetCount();
 		text.Set( "   - Textures:" );
 		for( sst=0; sst<shaderSourcesTextureCount; sst++ ){
-			text.AppendFormat( "%s %s(%i)", sst == 0 ? "" : ",", textureList.GetNameAt( sst ), textureList.GetTargetAt( sst ) );
+			text.AppendFormat( "%s %s(%d)", sst == 0 ? "" : ",",
+				textureList.GetNameAt( sst ).GetString(), textureList.GetTargetAt( sst ) );
 		}
 		text.Append( "\n" );
 		answer.AppendFromUTF8( text.GetString() );
 		
-		shaderSourcesParameterCount = parameterList.GetCount();
+		const int shaderSourcesParameterCount = parameterList.GetCount();
 		text.Set( "   - Parameters:" );
 		for( ssp=0; ssp<shaderSourcesParameterCount; ssp++ ){
 			text.AppendFormat( "%s %s", ssp == 0 ? "" : ",", parameterList.GetAt( ssp ).GetString() );
@@ -311,17 +294,16 @@ void deoglDeveloperModeStats::ShaderSources( const decUnicodeArgumentList &comma
 void deoglDeveloperModeStats::ShaderPrograms( const decUnicodeArgumentList &command, decUnicodeString &answer ){
 	deoglShaderManager &shaderManager = pRenderThread.GetShader().GetShaderManager();
 	const char *defineName, *defineValue;
-	deoglShaderProgram *program;
 	int p, programCount;
 	int d, defineCount;
 	decString text;
 	
 	programCount = shaderManager.GetProgramCount();
 	for( p=0; p<programCount; p++ ){
-		program = shaderManager.GetProgramAt( p );
-		const deoglShaderDefines &defines = program->GetDefines();
+		const deoglShaderProgram &program = *shaderManager.GetProgramAt( p );
+		const deoglShaderDefines &defines = program.GetDefines();
 		
-		text.Format( "- Shader '%s' Defines(", program->GetSources()->GetName().GetString() );
+		text.Format( "- Shader '%s' Defines(", program.GetSources()->GetName().GetString() );
 		
 		defineCount = defines.GetDefineCount();
 		for( d=0; d<defineCount; d++ ){
@@ -341,20 +323,20 @@ void deoglDeveloperModeStats::ShaderPrograms( const decUnicodeArgumentList &comm
 }
 
 void deoglDeveloperModeStats::SkinShaders( const decUnicodeArgumentList &command, decUnicodeString &answer ){
-	const deoglSkinShaderManager &manager = pRenderThread.GetShader().GetSkinShaderManager();
+	deoglSkinShaderManager &manager = pRenderThread.GetShader().GetSkinShaderManager();
 	const int shaderCount = manager.GetShaderCount();
 	decString text, configString;
 	int i;
 	
-	text.Format( "%i skin shaders\n", shaderCount );
+	text.Format( "%d skin shaders\n", shaderCount );
 	answer.AppendFromUTF8( text.GetString() );
 	
 	for( i=0; i<shaderCount; i++ ){
-		const deoglSkinShader &shader = *manager.GetShaderAt( i );
+		const deoglSkinShader &shader = manager.GetShaderAt( i );
 		
 		shader.GetConfig().DebugGetConfigString( configString );
 		
-		text.Format( "- usage=%i config=", shader.GetRefCount() - 1 );
+		text.Format( "- usage=%d config=", shader.GetRefCount() - 1 );
 		answer.AppendFromUTF8( text.GetString() );
 		answer.AppendFromUTF8( configString.GetString() );
 		answer.AppendFromUTF8( "\n" );
@@ -372,7 +354,7 @@ void deoglDeveloperModeStats::RenderablesTexturesColor( const decUnicodeArgument
 	for( t=0; t<textureCount; t++ ){
 		texture = manager.GetTextureAt( t );
 		
-		text.Format( "- %i x %i: components=%i float=%s used=%s\n", texture->GetWidth(),
+		text.Format( "- %d x %d: components=%d float=%s used=%s\n", texture->GetWidth(),
 			texture->GetHeight(), texture->GetComponentCount(),
 			texture->GetIsFloat() ? "y" : "n", texture->GetInUse() ? "y" : "n" );
 		answer.AppendFromUTF8( text.GetString() );
@@ -383,7 +365,7 @@ void deoglDeveloperModeStats::RenderablesTexturesColor( const decUnicodeArgument
 		memoryConsumption += texMem;
 	}
 	
-	text.Format( "%i Textures consuming %.1fMB GPU RAM\n", textureCount, ( float )memoryConsumption * 1e-6f );
+	text.Format( "%d Textures consuming %.1fMB GPU RAM\n", textureCount, ( float )memoryConsumption * 1e-6f );
 	answer.AppendFromUTF8( text.GetString() );
 }
 
@@ -398,7 +380,7 @@ void deoglDeveloperModeStats::RenderablesTexturesDepth( const decUnicodeArgument
 	for( t=0; t<textureCount; t++ ){
 		texture = manager.GetTextureAt( t );
 		
-		text.Format( "- %i x %i: withStencil=%s used=%s\n", texture->GetWidth(),
+		text.Format( "- %d x %d: withStencil=%s used=%s\n", texture->GetWidth(),
 			texture->GetHeight(), texture->GetWithStencil() ? "y" : "n", texture->GetInUse() ? "y" : "n" );
 		answer.AppendFromUTF8( text.GetString() );
 		
@@ -413,7 +395,7 @@ void deoglDeveloperModeStats::RenderablesTexturesDepth( const decUnicodeArgument
 		memoryConsumption += texMem;
 	}
 	
-	text.Format( "%i Textures consuming %.1fMB GPU RAM\n", textureCount, ( float )memoryConsumption * 1e-6f );
+	text.Format( "%d Textures consuming %.1fMB GPU RAM\n", textureCount, ( float )memoryConsumption * 1e-6f );
 	answer.AppendFromUTF8( text.GetString() );
 }
 
@@ -428,7 +410,7 @@ void deoglDeveloperModeStats::RenderablesCubeColor( const decUnicodeArgumentList
 	for( t=0; t<cubemapCount; t++ ){
 		cubemap = manager.GetCubeMapAt( t );
 		
-		text.Format( "- %i x %i: components=%i float=%s used=%s\n", cubemap->GetSize(),
+		text.Format( "- %d x %d: components=%d float=%s used=%s\n", cubemap->GetSize(),
 			cubemap->GetSize(), cubemap->GetComponentCount(),
 			cubemap->GetIsFloat() ? "y" : "n", cubemap->GetInUse() ? "y" : "n" );
 		answer.AppendFromUTF8( text.GetString() );
@@ -439,7 +421,7 @@ void deoglDeveloperModeStats::RenderablesCubeColor( const decUnicodeArgumentList
 		memoryConsumption += texMem * 6;
 	}
 	
-	text.Format( "%i CubeMaps consuming %.1fMB GPU RAM\n", cubemapCount, ( float )memoryConsumption * 1e-6f );
+	text.Format( "%d CubeMaps consuming %.1fMB GPU RAM\n", cubemapCount, ( float )memoryConsumption * 1e-6f );
 	answer.AppendFromUTF8( text.GetString() );
 }
 
@@ -454,7 +436,7 @@ void deoglDeveloperModeStats::RenderablesCubeDepth( const decUnicodeArgumentList
 	for( t=0; t<cubemapCount; t++ ){
 		cubemap = manager.GetCubeMapAt( t );
 		
-		text.Format( "- %i x %i: used=%s\n", cubemap->GetSize(), cubemap->GetSize(), cubemap->GetInUse() ? "y" : "n" );
+		text.Format( "- %d x %d: used=%s\n", cubemap->GetSize(), cubemap->GetSize(), cubemap->GetInUse() ? "y" : "n" );
 		answer.AppendFromUTF8( text.GetString() );
 		
 		texMem = cubemap->GetSize() * cubemap->GetSize() * 3; // maybe 4? not sure
@@ -462,7 +444,7 @@ void deoglDeveloperModeStats::RenderablesCubeDepth( const decUnicodeArgumentList
 		memoryConsumption += texMem * 6;
 	}
 	
-	text.Format( "%i CubeMaps consuming %.1fMB GPU RAM\n", cubemapCount, ( float )memoryConsumption * 1e-6f );
+	text.Format( "%d CubeMaps consuming %.1fMB GPU RAM\n", cubemapCount, ( float )memoryConsumption * 1e-6f );
 	answer.AppendFromUTF8( text.GetString() );
 }
 
@@ -481,7 +463,8 @@ void deoglDeveloperModeStats::SharedVBOs( const decUnicodeArgumentList &command,
 		const int vboCount = list.GetCount();
 		
 		// list
-		text.Format( "- list %i (maxSize=(%i|%i) drawType=", i, list.GetMaxSize(), list.GetMaxPointCount() );
+		text.Format( "- list %d (maxSize=(%d|%d) maxIndexSize=(%d|%d) drawType=", i,
+			list.GetMaxSize(), list.GetMaxPointCount(), list.GetMaxIndexSize(), list.GetMaxIndexCount() );
 		
 		drawType = list.GetDrawType();
 		
@@ -499,7 +482,7 @@ void deoglDeveloperModeStats::SharedVBOs( const decUnicodeArgumentList &command,
 		answer.AppendFromUTF8( text.GetString() );
 		
 		// layout
-		text.Format( "  - layout (stride=%i index=", layout.GetStride() );
+		text.Format( "  - layout (stride=%d index=", layout.GetStride() );
 		
 		if( layout.GetIndexType() == deoglVBOLayout::eitUnsignedInt ){
 			text.Append( "int" );
@@ -520,7 +503,7 @@ void deoglDeveloperModeStats::SharedVBOs( const decUnicodeArgumentList &command,
 		for( j=0; j<attributeCount; j++ ){
 			const deoglVBOAttribute &attribute = layout.GetAttributeAt( j );
 			
-			text.Format( "    - attribute %i (offset=%i componentCount=%i dataType=", j, attribute.GetOffset(), attribute.GetComponentCount() );
+			text.Format( "    - attribute %d (offset=%d componentCount=%d dataType=", j, attribute.GetOffset(), attribute.GetComponentCount() );
 				
 			if( attribute.GetDataType() == deoglVBOAttribute::edtFloat ){
 				text.Append( "float" );
@@ -571,7 +554,7 @@ void deoglDeveloperModeStats::SharedVBOs( const decUnicodeArgumentList &command,
 			const deoglSharedVBO &vbo = *list.GetAt( j );
 			const int blockCount = vbo.GetBlockCount();
 			
-			text.Format( "  - vbo %i (vbo=%u vao=%u ibo=%u usedSize=(%i|%i) indexSize=%i)\n", j,
+			text.Format( "  - vbo %d (vbo=%u vao=%u ibo=%u usedSize=(%d|%d) indexSize=%d)\n", j,
 				vbo.GetVBO(), vbo.GetVAO()->GetVAO(), vbo.GetIBO(), vbo.GetUsedSize(),
 				vbo.GetUsedSize() * stride, vbo.GetIndexUsedSize() );
 			answer.AppendFromUTF8( text.GetString() );
@@ -580,7 +563,7 @@ void deoglDeveloperModeStats::SharedVBOs( const decUnicodeArgumentList &command,
 			for( k=0; k<blockCount; k++ ){
 				const deoglSharedVBOBlock &block = *vbo.GetBlockAt( k );
 				
-				text.Format( "    - block %i (offset=(%i|%i) size=(%i|%i) indices=(%i,%i) empty=%i)\n", k, block.GetOffset(),
+				text.Format( "    - block %d (offset=(%d|%d) size=(%d|%d) indices=(%d,%d) empty=%d)\n", k, block.GetOffset(),
 					block.GetOffset() * stride, block.GetSize(), block.GetSize() * stride, block.GetIndexOffset(),
 					block.GetIndexCount(), block.GetEmpty() ? 1 : 0 );
 				answer.AppendFromUTF8( text.GetString() );
@@ -597,7 +580,7 @@ void deoglDeveloperModeStats::TextureUnitsConfigurations( const decUnicodeArgume
 	bool csv = false;
 	decString text;
 	
-	text.Format( "%i Texture Units Configurations\n", tuclist.GetCount() );
+	text.Format( "%d Texture Units Configurations\n", tuclist.GetCount() );
 	answer.AppendFromUTF8( text.GetString() );
 	
 	for( i=2; i<command.GetArgumentCount(); i++ ){
@@ -618,43 +601,44 @@ void deoglDeveloperModeStats::TextureUnitsConfigurations( const decUnicodeArgume
 		unitCount = tuc->GetUnitCount();
 		
 		if( verbose ){
-			text.Format( "- Configuration %i: usage=%i units=%i hash=%u\n", i, tuc->GetUsageCount(), unitCount, tuc->GetHashCode() );
+			text.Format( "- Configuration %d: usage=%d units=%d spb=%p hash=%u\n", i,
+				tuc->GetUsageCount(), unitCount, tuc->GetParameterBlock(), tuc->GetUnitsHashCode() );
 			answer.AppendFromUTF8( text.GetString() );
 			
 			for( j=0; j<unitCount; j++ ){
 				const deoglTexUnitConfig &unit = tuc->GetUnitAt( j );
 				
 				if( unit.GetTexture() ){
-					text.Format( "  - Unit %i Texture: gl=%u filtering=%i wrapping=%u depthCompare=%s\n", j,
+					text.Format( "  - Unit %d Texture: gl=%u filtering=%d wrapping=%u depthCompare=%s\n", j,
 						unit.GetTexture()->GetTexture(),
 						unit.GetSampler() ? unit.GetSampler()->GetFilterMode() : 0,
 						unit.GetSampler() ? unit.GetSampler()->GetWrapMode() : 0,
 						unit.GetSampler() ? ( unit.GetSampler()->GetDepthCompareMode() ? "y" : "n" ) : "?" );
 					
 				}else if( unit.GetCubeMap() ){
-					text.Format( "  - Unit %i CubeMap: gl=%u filtering=%i depthCompare=%s\n", j,
+					text.Format( "  - Unit %d CubeMap: gl=%u filtering=%d depthCompare=%s\n", j,
 						unit.GetCubeMap()->GetTexture(),
 						unit.GetSampler() ? unit.GetSampler()->GetFilterMode() : 0,
 						unit.GetSampler() ? ( unit.GetSampler()->GetDepthCompareMode() ? "y" : "n" ) : "?" );
 					
 				}else if( unit.GetTBO() ){
-					text.Format( "  - Unit %i TBO: gl=%u\n", j, unit.GetTBO() );
+					text.Format( "  - Unit %d TBO: gl=%u\n", j, unit.GetTBO() );
 					
 				}else if( unit.GetSpecial() != deoglTexUnitConfig::estNone ){
-					text.Format( "  - Unit %i Special: type=%i filtering=%i wrapping=%u depthCompare=%s\n", j,
+					text.Format( "  - Unit %d Special: type=%d filtering=%d wrapping=%u depthCompare=%s\n", j,
 						unit.GetSpecial(),
 						unit.GetSampler() ? unit.GetSampler()->GetFilterMode() : 0,
 						unit.GetSampler() ? unit.GetSampler()->GetWrapMode() : 0,
 						unit.GetSampler() ? ( unit.GetSampler()->GetDepthCompareMode() ? "y" : "n" ) : "?" );
 					
 				}else{
-					text.Format( "  - Unit %i Empty\n", j );
+					text.Format( "  - Unit %d Empty\n", j );
 				}
 				answer.AppendFromUTF8( text.GetString() );
 			}
 			
 		}else if( csv ){
-			text.Format( "%i %i %i", i, tuc->GetUsageCount(), unitCount );
+			text.Format( "%d %d %d", i, tuc->GetUsageCount(), unitCount );
 			
 			for( j=0; j<unitCount; j++ ){
 				if( j == 8 ){
@@ -664,16 +648,16 @@ void deoglDeveloperModeStats::TextureUnitsConfigurations( const decUnicodeArgume
 				const deoglTexUnitConfig &unit = tuc->GetUnitAt( j );
 				
 				if( unit.GetTexture() ){
-					text.AppendFormat( " T%i", unit.GetTexture()->GetTexture() );
+					text.AppendFormat( " T%d", unit.GetTexture()->GetTexture() );
 					
 				}else if( unit.GetCubeMap() ){
-					text.AppendFormat( " C%i", unit.GetCubeMap()->GetTexture() );
+					text.AppendFormat( " C%d", unit.GetCubeMap()->GetTexture() );
 					
 				}else if( unit.GetTBO() ){
-					text.AppendFormat( " B%i", unit.GetTBO() );
+					text.AppendFormat( " B%d", unit.GetTBO() );
 					
 				}else if( unit.GetSpecial() != deoglTexUnitConfig::estNone ){
-					text.AppendFormat( " S%i", unit.GetSpecial() );
+					text.AppendFormat( " S%d", unit.GetSpecial() );
 					
 				}else{
 					text.AppendFormat( " -" );
@@ -684,11 +668,11 @@ void deoglDeveloperModeStats::TextureUnitsConfigurations( const decUnicodeArgume
 				text.AppendFormat( " -" );
 			}
 			
-			text.AppendFormat( " %u\n", tuc->GetHashCode() );
+			text.AppendFormat( " %u\n", tuc->GetUnitsHashCode() );
 			answer.AppendFromUTF8( text.GetString() );
 			
 		}else{
-			text.Format( "- Configuration %i: usage=%i units=(", i, tuc->GetUsageCount() );
+			text.Format( "- Configuration %d: usage=%d units=(", i, tuc->GetUsageCount() );
 			
 			for( j=0; j<unitCount; j++ ){
 				const deoglTexUnitConfig &unit = tuc->GetUnitAt( j );
@@ -698,23 +682,23 @@ void deoglDeveloperModeStats::TextureUnitsConfigurations( const decUnicodeArgume
 				}
 				
 				if( unit.GetTexture() ){
-					text.AppendFormat( "T%i", unit.GetTexture()->GetTexture() );
+					text.AppendFormat( "T%d", unit.GetTexture()->GetTexture() );
 					
 				}else if( unit.GetCubeMap() ){
-					text.AppendFormat( "C%i", unit.GetCubeMap()->GetTexture() );
+					text.AppendFormat( "C%d", unit.GetCubeMap()->GetTexture() );
 					
 				}else if( unit.GetTBO() ){
-					text.AppendFormat( "B%i", unit.GetTBO() );
+					text.AppendFormat( "B%d", unit.GetTBO() );
 					
 				}else if( unit.GetSpecial() != deoglTexUnitConfig::estNone ){
-					text.AppendFormat( "S%i", unit.GetSpecial() );
+					text.AppendFormat( "S%d", unit.GetSpecial() );
 					
 				}else{
 					text.AppendCharacter( '-' );
 				}
 			}
 			
-			text.AppendFormat( ") hash=%u\n", tuc->GetHashCode() );
+			text.AppendFormat( ") hash=%u\n", tuc->GetUnitsHashCode() );
 			answer.AppendFromUTF8( text.GetString() );
 		}
 		

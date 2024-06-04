@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Project Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include "projWindowMain.h"
@@ -34,6 +37,7 @@
 #include "../undosys/profile/projUProfileAdd.h"
 #include "../undosys/profile/projUProfileRemove.h"
 
+#include <deigde/deigde_configuration.h>
 #include <deigde/gameproject/igdeGameProject.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeButton.h>
@@ -52,6 +56,7 @@
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeActionRedo.h>
 #include <deigde/gui/event/igdeActionUndo.h>
+#include <deigde/gui/event/igdeActionExternOpen.h>
 #include <deigde/gui/layout/igdeContainerBox.h>
 #include <deigde/gui/resources/igdeIcon.h>
 #include <deigde/environment/igdeEnvironment.h>
@@ -64,6 +69,7 @@
 #include <dragengine/common/file/decBaseFileReaderReference.h>
 #include <dragengine/common/file/decDiskFileWriter.h>
 #include <dragengine/common/file/decBaseFileWriterReference.h>
+#include <dragengine/common/string/unicode/decUnicodeStringList.h>
 #include <dragengine/filesystem/deVFSContainerReference.h>
 #include <dragengine/filesystem/deVFSDiskDirectory.h>
 #include <dragengine/logger/deLogger.h>
@@ -120,6 +126,9 @@ pPanelUndoHistory( NULL )
 	
 	pPanelUndoHistory = new projPanelUndoHistory( env );
 	pTabPanels->AddChild( pPanelUndoHistory, "Undo History" );
+	
+	// load game project
+	LoadProject();
 }
 
 projWindowMain::~projWindowMain(){
@@ -187,6 +196,8 @@ void projWindowMain::SetProject( projProject *project ){
 	pPanelProfiles->SetProject( project );
 	pPanelTestRun->SetProject( project );
 	pPanelUndoHistory->SetProject( project );
+	
+	UpdateShowActionPath();
 }
 
 void projWindowMain::LoadProject(){
@@ -317,6 +328,71 @@ bool projWindowMain::SaveDocument( const char *filename ){
 
 void projWindowMain::OnGameProjectChanged(){
 	LoadProject();
+}
+
+void projWindowMain::UpdateShowActionPath(){
+	const igdeGameProject &gameProject = *GetEnvironment().GetGameProject();
+	
+	decPath path;
+	path.SetFromNative( gameProject.GetDirectoryPath() );
+	path.AddUnixPath( gameProject.GetPathData() );
+	pActionShowContent->SetPath( path.GetPathNative() );
+	
+	path.SetFromNative( gameProject.GetDirectoryPath() );
+	path.AddUnixPath( "cache/testrun/config" );
+	pActionShowConfig->SetPath( path.GetPathNative() );
+	
+	path.SetFromNative( gameProject.GetDirectoryPath() );
+	path.AddUnixPath( "cache/testrun/overlay" );
+	pActionShowOverlay->SetPath( path.GetPathNative() );
+	
+	path.SetFromNative( gameProject.GetDirectoryPath() );
+	path.AddUnixPath( "cache/testrun/capture" );
+	pActionShowCapture->SetPath( path.GetPathNative() );
+	
+	path.SetFromNative( gameProject.GetDirectoryPath() );
+	path.AddComponent( "testRun.log" );
+	pActionShowLogs->SetPath( path.GetPathNative() );
+	
+	const projProfile * const profile = pProject ? pProject->GetActiveProfile() : NULL;
+	if( profile ){
+		path.SetFromNative( gameProject.GetDirectoryPath() );
+		path.AddUnixPath( profile->GetDelgaPath() );
+		path.RemoveLastComponent();
+		pActionShowDelga->SetPath( path.GetPathNative() );
+		pActionShowDelga->SetEnabled( true );
+		
+	}else{
+		pActionShowDelga->SetPath( "" );
+		pActionShowDelga->SetEnabled( false );
+	}
+}
+
+bool projWindowMain::ProcessCommandLine( decUnicodeStringList &arguments ){
+	while( arguments.GetCount() > 0 ){
+		const decString arg( arguments.GetAt( 0 ).ToUTF8() );
+		
+		if( arg == "--project.profile.distribute" ){
+			arguments.RemoveFrom( 0 );
+			return pCmdLineProfileDistribute( arguments );
+			
+		}else if( arg == "--project.profile.distribute.file" ){
+			arguments.RemoveFrom( 0 );
+			return pCmdLineProfileDistributeFile( arguments );
+			
+		}else if( arg == "--project.profile.list" ){
+			arguments.RemoveFrom( 0 );
+			return pCmdLineProfileList( arguments );
+			
+		}else if( arg == "--help" ){
+			pCmdLineHelp();
+			break;
+			
+		}else{
+			break;
+		}
+	}
+	return true;
 }
 
 
@@ -624,9 +700,8 @@ public:
 
 class cActionProfileDistribute : public cActionBase{
 public:
-	cActionProfileDistribute( projWindowMain &window ) : cActionBase( window,
-		"Distribute...", window.GetEnvironment().GetStockIcon( igdeEnvironment::esiSaveAs ),
-		"Distribute selected profile", deInputEvent::ekcD ){}
+	cActionProfileDistribute( projWindowMain &window ) : cActionBase( window, "Build DELGA...",
+		window.GetIconDelga(), "Build DELGA file using selected profile", deInputEvent::ekcD ){}
 	
 	virtual void OnAction(){
 		projProject * const project = pWindow.GetProject();
@@ -645,7 +720,7 @@ public:
 		}
 		
 		igdeDialogReference dialog;
-		dialog.TakeOver( new projDialogDistribute( pWindow ) );
+		dialog.TakeOver( new projDialogDistribute( pWindow, project->GetActiveProfile() ) );
 		dialog->Run( &pWindow );
 	}
 	
@@ -658,8 +733,7 @@ public:
 class cActionProfileTestRun : public cActionBase{
 public:
 	cActionProfileTestRun( projWindowMain &window ) : cActionBase( window,
-		"Test-Run...", window.GetEnvironment().GetStockIcon( igdeEnvironment::esiQuit ),
-		"Test-Run selected profile", deInputEvent::ekcR ){}
+		"Test-Run...", window.GetIconStart(), "Test-Run selected profile", deInputEvent::ekcR ){}
 	
 	virtual void OnAction(){
 		projProject * const project = pWindow.GetProject();
@@ -689,12 +763,18 @@ public:
 //////////////////////
 
 void projWindowMain::pLoadIcons(){
+	pIconStart.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/start.png" ) );
+	pIconStop.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/stop.png" ) );
+	pIconKill.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/kill.png" ) );
+	pIconDelga.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/delga.png" ) );
 }
 
 void projWindowMain::pCreateActions(){
+	igdeEnvironment &env = GetEnvironment();
+	
 	pActionDistSave.TakeOver( new cActionDistSave( *this ) );
-	pActionEditUndo.TakeOver( new igdeActionUndo( GetEnvironment() ) );
-	pActionEditRedo.TakeOver( new igdeActionRedo( GetEnvironment() ) );
+	pActionEditUndo.TakeOver( new igdeActionUndo( env ) );
+	pActionEditRedo.TakeOver( new igdeActionRedo( env ) );
 	pActionEditCut.TakeOver( new cActionEditCut( *this ) );
 	pActionEditCopy.TakeOver( new cActionEditCopy( *this ) );
 	pActionEditPaste.TakeOver( new cActionEditPaste( *this ) );
@@ -703,6 +783,30 @@ void projWindowMain::pCreateActions(){
 	pActionProfileDuplicate.TakeOver( new cActionProfileDuplicate( *this ) );
 	pActionProfileDistribute.TakeOver( new cActionProfileDistribute( *this ) );
 	pActionProfileTestRun.TakeOver( new cActionProfileTestRun( *this ) );
+	
+	pActionShowDelga.TakeOver( new igdeActionExternOpen( env,
+		"Browse DELGA", env.GetStockIcon( igdeEnvironment::esiOpen ),
+		"Open DELGA Directory in File Manager" ) );
+	
+	pActionShowContent.TakeOver( new igdeActionExternOpen( env,
+		"Browse Content", env.GetStockIcon( igdeEnvironment::esiOpen ),
+		"Open Content directory in File Manager" ) );
+	
+	pActionShowConfig.TakeOver( new igdeActionExternOpen( env,
+		"Browse Run Config", env.GetStockIcon( igdeEnvironment::esiOpen ),
+		"Open Run-Time Configuration Directory in File Manager" ) );
+	
+	pActionShowOverlay.TakeOver( new igdeActionExternOpen( env,
+		"Browse Run Overlay", env.GetStockIcon( igdeEnvironment::esiOpen ),
+		"Open Run-Time Overlay Directory in File Manager" ) );
+	
+	pActionShowCapture.TakeOver( new igdeActionExternOpen( env,
+		"Browse Run Capture", env.GetStockIcon( igdeEnvironment::esiOpen ),
+		"Open Run-Time Capture Directory in File Manager" ) );
+	
+	pActionShowLogs.TakeOver( new igdeActionExternOpen( env,
+		"Open Run Logs", env.GetStockIcon( igdeEnvironment::esiOpen ),
+		"Open Run-Time Log File in External Application" ) );
 }
 
 void projWindowMain::pCreateToolBarDistribute(){
@@ -752,6 +856,9 @@ void projWindowMain::pCreateMenuDistribute( igdeMenuCascade &menu ){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
 	helper.MenuCommand( menu, pActionDistSave );
+	
+	helper.MenuSeparator( menu );
+	helper.MenuCommand( menu, pActionShowContent );
 }
 
 void projWindowMain::pCreateMenuEdit( igdeMenuCascade &menu ){
@@ -774,5 +881,141 @@ void projWindowMain::pCreateMenuProfile( igdeMenuCascade &menu ){
 	
 	helper.MenuSeparator( menu );
 	helper.MenuCommand( menu, pActionProfileDistribute );
+	helper.MenuCommand( menu, pActionShowDelga );
+	
+	helper.MenuSeparator( menu );
 	helper.MenuCommand( menu, pActionProfileTestRun );
+	helper.MenuCommand( menu, pActionShowLogs );
+	helper.MenuCommand( menu, pActionShowConfig );
+	helper.MenuCommand( menu, pActionShowOverlay );
+	helper.MenuCommand( menu, pActionShowCapture );
+}
+
+bool projWindowMain::pCmdLineProfileDistribute( decUnicodeStringList &arguments ){
+	// --project.profile.distribute <profile>
+	
+	DEASSERT_NOTNULL( pProject );
+	
+	projProfile *profile = nullptr;
+	
+	while( arguments.GetCount() > 0 ){
+		const decString arg( arguments.GetAt( 0 ).ToUTF8() );
+		arguments.RemoveFrom( 0 );
+		
+		if( arg.BeginsWith( "--" ) || arg.BeginsWith( "-" ) ){
+			decString message;
+			message.Format( "Unknown argument '%s'", arg.GetString() );
+			DETHROW_INFO( deeInvalidParam, message );
+			
+		}else if( ! profile ){
+			profile = pProject->GetProfiles().GetNamed( arg );
+			if( ! profile ){
+				decString message;
+				message.Format( "Unknown profile '%s'", arg.GetString() );
+				DETHROW_INFO( deeInvalidParam, message );
+			}
+			
+		}else{
+			decString message;
+			message.Format( "Unknown argument '%s'", arg.GetString() );
+			DETHROW_INFO( deeInvalidParam, message );
+		}
+	}
+	
+	if( ! profile ){
+		DETHROW_INFO( deeInvalidParam, "Missing argument: profile" );
+	}
+	
+	GetEnvironment().ActivateEditor( &GetEditorModule() );
+	
+	const projDialogDistribute::Ref dialog( projDialogDistribute::Ref::New(
+		new projDialogDistribute( *this, profile ) ) );
+	dialog->SetCloseDialogOnFinished( true );
+	dialog->SetPrintToConsole( true );
+	dialog->Run( this );
+	
+	if( ! dialog->GetSuccess() ){
+		DETHROW_INFO( deeInvalidAction, "Distribute failed" );
+	}
+	
+	return false;
+}
+
+bool projWindowMain::pCmdLineProfileDistributeFile( decUnicodeStringList &arguments ){
+	// --project.profile.distribute.file <profile>
+	
+	DEASSERT_NOTNULL( pProject );
+	
+	projProfile *profile = nullptr;
+	
+	while( arguments.GetCount() > 0 ){
+		const decString arg( arguments.GetAt( 0 ).ToUTF8() );
+		arguments.RemoveFrom( 0 );
+		
+		if( arg.BeginsWith( "--" ) || arg.BeginsWith( "-" ) ){
+			decString message;
+			message.Format( "Unknown argument '%s'", arg.GetString() );
+			DETHROW_INFO( deeInvalidParam, message );
+			
+		}else if( ! profile ){
+			profile = pProject->GetProfiles().GetNamed( arg );
+			if( ! profile ){
+				decString message;
+				message.Format( "Unknown profile '%s'", arg.GetString() );
+				DETHROW_INFO( deeInvalidParam, message );
+			}
+			
+		}else{
+			decString message;
+			message.Format( "Unknown argument '%s'", arg.GetString() );
+			DETHROW_INFO( deeInvalidParam, message );
+		}
+	}
+	
+	if( ! profile ){
+		DETHROW_INFO( deeInvalidParam, "Missing argument: profile" );
+	}
+	
+	GetEnvironment().ActivateEditor( &GetEditorModule() );
+	
+	decPath path;
+	path.SetFromNative( pProject->GetDirectoryPath() );
+	path.AddUnixPath( profile->GetDelgaPath() );
+	printf( "%s\n", path.GetPathNative().GetString() );
+	
+	return false;
+}
+
+bool projWindowMain::pCmdLineProfileList( decUnicodeStringList &arguments ){
+	// --project.profile.list
+	
+	DEASSERT_NOTNULL( pProject );
+	
+	if( arguments.GetCount() > 0 ){
+		decString message;
+		message.Format( "Unknown argument '%s'", arguments.GetAt( 0 ).ToUTF8().GetString() );
+		DETHROW_INFO( deeInvalidParam, message );
+	}
+	
+	const int count = pProject->GetProfiles().GetCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		printf( "%s\n", pProject->GetProfiles().GetAt( i )->GetName().GetString() );
+	}
+	
+	return false;
+}
+
+void projWindowMain::pCmdLineHelp(){
+	printf( "\n" );
+	printf( "deigde <path-project.degp> --project.profile.distribute <profile>\n" );
+	printf( "   Build distribution file (*.delga) for profile in game project.\n" );
+	
+	printf( "\n" );
+	printf( "deigde <path-project.degp> --project.profile.distribute.file <profile>\n" );
+	printf( "   Absolute path to distribution file (*.delga).\n" );
+	
+	printf( "\n" );
+	printf( "deigde <path-project.degp> --project.profile.list\n" );
+	printf( "   List all profiles in game project. Prints each profile name on a new line.\n" );
 }

@@ -1,0 +1,156 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+
+namespace Dragengine.Utils
+
+
+
+/**
+ * \brief Rule for resolving variables in text.
+ * 
+ * Supports tags of the form {action:variable name[,default value]}. "action" is the action
+ * named used while adding the rule. A typical value to use for action is "var" or "variable".
+ * The "variable name" parameter is the name of the variable to look up in the variable table.
+ * If the variable is present the value stored in the variable table is returned as resolved
+ * text. If the variable is absent the parameter "default value" is returned as resolved
+ * text. If the parameter "default value" is absent an empty string is returned as text.
+ * The "," separator between variable name and default value can be changed to any other
+ * character. This is useful if you need "," for your variable names.
+ * 
+ * The variable name can use any character except the default value separator (default ",")
+ * and "{" or "}" which are used as tag boundaries. This class is not going to check the
+ * names of variables added to the list to follow this rules. If you do not follow this rule
+ * the variables will be ignored.
+ * 
+ * The typical way of using this rule is to store it aside in the scripts using the
+ * TagResolver. Before processing text set the variables you want to be used to this rule.
+ */
+class TRRVariable implements TagResolverRule
+	var Dictionary pVariables
+	var byte pSeparatorDefaultValue
+	
+	
+	
+	/** \brief Create resolve variable rule with empty variable table. */
+	func new()
+		pVariables = Dictionary.new()
+		pSeparatorDefaultValue = ','
+	end
+	
+	/** \brief Create copy of resolve variable rule. */
+	func new(TRRVariable rule)
+		pVariables = Dictionary.new(rule.pVariables)
+		pSeparatorDefaultValue = rule.pSeparatorDefaultValue
+	end
+	
+	
+	
+	/** \brief Separate character between variable name and default value. */
+	func byte getSeparatorDefaultValue()
+		return pSeparatorDefaultValue
+	end
+	
+	/** \brief Set separate character between variable name and default value. */
+	func void setSeparatorDefaultValue(byte separator)
+		pSeparatorDefaultValue = separator
+	end
+	
+	
+	
+	/** \brief Count of variables. */
+	func int getCount()
+		return pVariables.getCount()
+	end
+	
+	/** \brief Variable is present. */
+	func bool has(String variable)
+		return pVariables.has(variable)
+	end
+	
+	/** \brief Value of variable or default value if absent. */
+	func String getAt(String variable, String defaultValue)
+		return pVariables.getAt(variable, defaultValue) cast String
+	end
+	
+	/** \brief Set value of variable. */
+	func void setAt(String variable, String value)
+		if value == null
+			throw ENullPointer.new("value")
+		end
+		pVariables.setAt(variable, value)
+	end
+	
+	/** \brief Remove value if present. */
+	func void remove(String variable)
+		pVariables.removeIfExisting(variable)
+	end
+	
+	/** \brief Remove all variables. */
+	func void removeAll()
+		pVariables.removeAll()
+	end
+	
+	/**
+	 * \brief Visit variables with block.
+	 * 
+	 * Block receives as first argument String name and as second argument String value.
+	 */
+	func void forEach(Block ablock)
+		pVariables.forEach(ablock)
+	end
+	
+	/**
+	 * \brief List of all variables names.
+	 * \version 1.19
+	 * 
+	 * Returns Array with String for each key.
+	 */
+	func Array getKeys()
+		return pVariables.getKeys()
+	end
+	
+	
+	
+	/**
+	 * \brief Resolve tag returning text to output instead of the tag.
+	 * \param parameters Parameters inside tag.
+	 * \param context Object in the context of which the resolving is done. Context is not used.
+	 */
+	func String resolveTag(String parameters, Object context)
+		var int index = parameters.find(pSeparatorDefaultValue)
+		var String variableName, defaultValue
+		
+		if index != -1
+			variableName = parameters.substring(0, index)
+			defaultValue = parameters.substring(index + 1)
+			
+		else
+			variableName = parameters
+			defaultValue = ""
+		end
+		
+		return getAt(variableName, defaultValue)
+	end
+end

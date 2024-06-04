@@ -8,6 +8,9 @@
 
 namespace Dragengine.Scenery
 
+pin Dragengine.Gui
+
+
 /**
  * \brief Speaker.
  *
@@ -38,7 +41,7 @@ class Speaker
 	/** \name Constructors */
 	/*@{*/
 	/** \brief Create speaker. */
-	public func new()
+	func new()
 	end
 	/*@}*/
 	
@@ -47,103 +50,115 @@ class Speaker
 	/** \name Management */
 	/*@{*/
 	/** \brief Type. */
-	public func SpeakerType getType()
+	func SpeakerType getType()
+		return null
 	end
 	
 	/** \brief Set type. */
-	public func void setType( SpeakerType type )
+	func void setType(SpeakerType type)
 	end
 	
 	/** \brief Sound or \em null if not set. */
-	public func Sound getSound()
+	func Sound getSound()
+		return null
 	end
 	
 	/** \brief Set sound or \em null to not set. */
-	public func void setSound( Sound sound )
+	func void setSound(Sound sound)
 	end
 	
 	/** \brief Synthesizer or \em null if not set. */
-	public func SynthesizerInstance getSynthesizer()
+	func SynthesizerInstance getSynthesizer()
+		return null
 	end
 	
 	/** \brief Set synthesizer or \em null to not set. */
-	public func void setSynthesizer( SynthesizerInstance synthesizer )
+	func void setSynthesizer(SynthesizerInstance synthesizer)
 	end
 	
 	/** \brief Video player or \em null if not set. */
-	public func VideoPlayer getVideoPlayer()
+	func VideoPlayer getVideoPlayer()
+		return null
 	end
 	
 	/** \brief Set video player or \em null to not set. */
-	public func void setVideoPlayer( VideoPlayer videoPlayer )
+	func void setVideoPlayer(VideoPlayer videoPlayer)
 	end
 	
 	/** \brief Position. */
-	public func DVector getPosition()
+	func DVector getPosition()
+		return null
 	end
 	
 	/** \brief Set position. */
-	public func void setPosition( DVector position )
+	func void setPosition(DVector position)
 	end
 	
 	/** \brief Orientation. */
-	public func Quaternion getOrientation()
+	func Quaternion getOrientation()
+		return null
 	end
 	
 	/** \brief Set orientation. */
-	public func void setOrientation( Quaternion orientation )
+	func void setOrientation(Quaternion orientation)
 	end
 	
 	/** \brief Velocity in m/s. */
-	public func Vector getVelocity()
+	func Vector getVelocity()
+		return null
 	end
 	
 	/** \brief Set velocity in m/s. */
-	public func void setVelocity( Vector velocity )
+	func void setVelocity(Vector velocity)
 	end
 	
 	
 	
 	/** \brief Speaker is muted. */
-	public func bool getMuted()
+	func bool getMuted()
+		return false
 	end
 	
 	/** \brief Set if speaker is muted. */
-	public func void setMuted( bool muted )
+	func void setMuted(bool muted)
 	end
 	
 	/** \brief Sound is looping. */
-	public func bool getLooping()
+	func bool getLooping()
+		return false
 	end
 	
 	/** \brief Set if sound is looping. */
-	public func void setLooping( bool looping )
+	func void setLooping(bool looping)
 	end
 	
 	/** \brief Play speed. */
-	public func float getPlaySpeed()
+	func float getPlaySpeed()
+		return 0.0
 	end
 	
 	/** \brief Set play speed. */
-	public func void setPlaySpeed( float playSpeed )
+	func void setPlaySpeed(float playSpeed)
 	end
 	
 	/** \brief Volume. */
-	public func float getVolume()
+	func float getVolume()
+		return 0.0
 	end
 	
 	/** \brief Set volume. */
-	public func void setVolume( float volume )
+	func void setVolume(float volume)
 	end
 	
 	
 	
 	/** \brief Range in meters beyond which the sound is inaudible. */
-	public func float getRange()
+	func float getRange()
+		return 0.0
 	end
 	
 	/** \brief Set range in meters beyond which the sound is inaudible. */
-	public func void setRange( float range )
+	func void setRange(float range)
 	end
 	
 	/**
@@ -152,7 +167,8 @@ class Speaker
 	 * 1 is physically realistic. Larger than 1 applies stronger attenuation. Smaller values
 	 * apply weaker attenuation.
 	 */
-	public func float getRollOff()
+	func float getRollOff()
+		return 0.0
 	end
 	
 	/**
@@ -161,25 +177,59 @@ class Speaker
 	 * 1 is physically realistic. Larger than 1 applies stronger attenuation. Smaller values
 	 * apply weaker attenuation.
 	 */
-	public func void setRollOff( float rollOff )
+	func void setRollOff(float rollOff)
+	end
+	
+	/**
+	 * \brief Distance offset for attenuation calculation.
+	 * \version 1.12
+	 * 
+	 * For use by distance sounds. Offsets the true distance to the sound source for attenuation
+	 * calculation to make the sound appear coming from far away. Requires increasing the volume
+	 * to compensate for the distance increased attenuation.
+	 */
+	func float getDistanceOffset()
+		return 0.0
+	end
+	
+	/**
+	 * \brief Set distance offset for attenuation calculation.
+	 * \version 1.12
+	 * 
+	 * For use by distance sounds. Offsets the true distance to the sound source for attenuation
+	 * calculation to make the sound appear coming from far away. Requires increasing the volume
+	 * to compensate for the distance increased attenuation.
+	 */
+	func void setDistanceOffset(float distanceOffset)
+	end
+	
+	/** \brief Sound generation shape. */
+	func ShapeList getShape()
+		return null
+	end
+	
+	/** \brief Set sound generation shape. */
+	func void setShape(ShapeList shape)
 	end
 	
 	/** \brief Layer mask for visibility masking. */
-	public func LayerMask getLayerMask()
+	func LayerMask getLayerMask()
+		return null
 	end
 	
 	/** \brief Set layer mask for visibility masking. */
-	public func void setLayerMask( LayerMask layerMask )
+	func void setLayerMask(LayerMask layerMask)
 	end
 	
 	
 	
 	/** \brief Object owning the speaker for use with SoundLevelMeter or \em null if not used. */
-	public func Object getOwner()
+	func Object getOwner()
+		return null
 	end
 	
 	/** \brief Set object owning the speaker for use with SoundLevelMeter or \em null if not used. */
-	public func void setOwner( Object owner )
+	func void setOwner(Object owner)
 	end
 	/*@}*/
 	
@@ -188,41 +238,65 @@ class Speaker
 	/** \name Playback */
 	/*@{*/
 	/** \brief Start play position in samples. */
-	public func int getPlayFrom()
+	func int getPlayFrom()
+		return 0
 	end
 	
 	/** \brief End play position in samples. */
-	public func int getPlayTo()
+	func int getPlayTo()
+		return 0
 	end
 	
 	/** \brief Set play position in samples. */
-	public func void setPlayPosition( int playFrom, int playTo )
+	func void setPlayPosition(int playFrom, int playTo)
 	end
 	
 	
 	
 	/** \brief Speaker is playing. */
-	public func bool getPlaying()
+	func bool getPlaying()
+		return false
 	end
 	
 	/** \brief Speaker is paused. */
-	public func bool getPaused()
+	func bool getPaused()
+		return false
 	end
 	
 	/** \brief Speaker is stopped. */
-	public func bool getStopped()
+	func bool getStopped()
+		return false
 	end
 	
 	/** \brief Start playing. */
-	public func void play()
+	func void play()
 	end
 	
 	/** \brief Stop playing. */
-	public func void stop()
+	func void stop()
 	end
 	
 	/** \brief Pause playing. */
-	public func void pause()
+	func void pause()
+	end
+	
+	
+	
+	/**
+	 * \brief Speaker is equal to another object.
+	 * \details Implements Object.equals(Object).
+	 * \returns \em true if \em other is of type Speaker and both point to the same engine speaker.
+	 */
+	func bool equals(Object other)
+		return false
+	end
+	
+	/**
+	 * \brief Hash code for use as dictionary keys.
+	 * \details Implements Object.hashCode().
+	 */
+	func int hashCode()
+		return 0
 	end
 	/*@}*/
 end

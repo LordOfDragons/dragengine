@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -37,6 +40,7 @@
 #include "../../shaders/deoglShaderSources.h"
 #include "../../shaders/paramblock/deoglSPBlockUBO.h"
 #include "../../shaders/paramblock/deoglSPBParameter.h"
+#include "../../shaders/paramblock/deoglSPBMapBuffer.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -151,9 +155,7 @@ void deoglCapCheckUBOIndirectMatrixAccess::Check( GLuint fbo ){
 	const deoglCapsTextureFormat &texformat = *pCapabilities.GetFormats()
 		.GetUseFBOTex2DFormatFor( deoglCapsFmtSupport::eutfRGBA8 );
 	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
-	deoglSPBlockUBO *spb = NULL;
-	deoglShaderProgram *shader = NULL;
-	deoglShaderSources *sources;
+	const deoglShaderSources *sources;
 	deoglShaderDefines defines;
 	decMatrix matrix1, matrix2;
 	GLubyte result[ 3 ];
@@ -165,10 +167,10 @@ void deoglCapCheckUBOIndirectMatrixAccess::Check( GLuint fbo ){
 		if( ! sources ){
 			DETHROW( deeInvalidParam );
 		}
-		shader = shaderManager.GetProgramWith( sources, defines );
+		const deoglShaderProgram * const shader = shaderManager.GetProgramWith( sources, defines );
 		
 		// generate shader parameter block
-		spb = new deoglSPBlockUBO( renderThread );
+		const deoglSPBlockUBO::Ref spb( deoglSPBlockUBO::Ref::New( new deoglSPBlockUBO( renderThread ) ) );
 		spb->SetParameterCount( 2 );
 		spb->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 1 ); // mat4x3
 		spb->GetParameterAt( 1 ).SetAll( deoglSPBParameter::evtFloat, 3, 3, 1 ); // mat3
@@ -185,22 +187,15 @@ void deoglCapCheckUBOIndirectMatrixAccess::Check( GLuint fbo ){
 		matrix2.a31 = 0.0f; matrix2.a32 = 0.0f; matrix2.a33 = 0.0f; matrix2.a34 = 0.0f;
 		matrix2.a41 = 0.0f; matrix2.a42 = 0.0f; matrix2.a43 = 0.0f; matrix2.a44 = 0.0f;
 		
-		spb->MapBuffer();
-		try{
+		{
+			const deoglSPBMapBuffer mapped( spb );
 			spb->SetParameterDataMat4x3( 0, matrix1 );
 			spb->SetParameterDataMat3x3( 1, matrix2 );
-			
-		}catch( const deException & ){
-			spb->UnmapBuffer();
-			throw;
 		}
-		spb->UnmapBuffer();
 		
 		// generate test texture
 		OGL_CHECK( renderThread, glGenTextures( 1, &texture ) );
-		if( ! texture ){
-			DETHROW( deeOutOfMemory );
-		}
+		DEASSERT_NOTNULL( texture )
 		
 		OGL_CHECK( renderThread, glBindTexture( GL_TEXTURE_2D, texture ) );
 		OGL_CHECK( renderThread, glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST ) );
@@ -265,22 +260,10 @@ void deoglCapCheckUBOIndirectMatrixAccess::Check( GLuint fbo ){
 		OGL_CHECK( renderThread, glDeleteTextures( 1, &texture ) );
 		texture = 0;
 		
-		spb->FreeReference();
-		spb = NULL;
-		
-		shader->RemoveUsage();
-		
 	}catch( const deException & ){
-		if( shader ){
-			shader->RemoveUsage();
-		}
 		if( texture ){
 			glDeleteTextures( 1, &texture );
 		}
-		if( spb ){
-			spb->FreeReference();
-		}
-		
 		throw;
 	}
 	

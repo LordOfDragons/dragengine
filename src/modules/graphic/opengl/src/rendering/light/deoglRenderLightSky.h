@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLRENDERLIGHTSKY_H_
@@ -25,63 +28,60 @@
 #include "deoglRenderLightBase.h"
 
 class deoglCollideList;
+class deoglComputeRenderTask;
 class deoglLightShader;
-class deoglRenderableArrayTexture;
+class deoglRenderableDepthArrayTexture;
 class deoglRenderPlan;
 class deoglRLight;
 class deoglRSkyLayer;
 class deoglSPBlockUBO;
-class deoglShaderProgram;
 class deoglShadowMapper;
 class deoglRSkyInstanceLayer;
 class deoglRenderPlanSkyLight;
-
+class deoglSkyLayerGICascade;
 
 
 /**
- * \brief Render sky lights.
+ * Render sky lights.
  */
 class deoglRenderLightSky : public deoglRenderLightBase{
 private:
 	deoglCollideList *pColList2;
-	deoglShaderProgram *pShaderAO;
+	const deoglPipeline *pPipelineAO;
+	const deoglPipeline *pPipelineClearDepth;
+	const deoglPipeline *pPipelineOccMesh;
 	
-	deoglRenderableArrayTexture *pSolidShadowMap;
+	deoglRenderableDepthArrayTexture *pSolidShadowMap;
 	
 	
 	
-	deoglDebugInformation *pDebugInfoSolid;
-	deoglDebugInformation *pDebugInfoTransparent;
+	deoglDebugInformation::Ref pDebugInfoSolid;
+	deoglDebugInformation::Ref pDebugInfoTransparent;
 	
-	deoglDebugInformation *pDebugInfoSolidDetail;
-	deoglDebugInformation *pDebugInfoSolidShadow;
-	deoglDebugInformation *pDebugInfoSolidShadowElements;
-	deoglDebugInformation *pDebugInfoSolidShadowOcclusion;
-	deoglDebugInformation *pDebugInfoSolidShadowOcclusionStart;
-	deoglDebugInformation *pDebugInfoSolidShadowOcclusionVBO;
-	deoglDebugInformation *pDebugInfoSolidShadowOcclusionTest;
-	deoglDebugInformation *pDebugInfoSolidShadowVBOs;
-	deoglDebugInformation *pDebugInfoSolidShadowClear;
-	deoglDebugInformation *pDebugInfoSolidShadowSplit;
-	deoglDebugInformation *pDebugInfoSolidShadowSplitContent;
-	deoglDebugInformation *pDebugInfoSolidShadowSplitLODLevels;
-	deoglDebugInformation *pDebugInfoSolidShadowSplitClear;
-	deoglDebugInformation *pDebugInfoSolidShadowSplitTask;
-	deoglDebugInformation *pDebugInfoSolidShadowSplitRender;
-	deoglDebugInformation *pDebugInfoSolidLight;
+	deoglDebugInformation::Ref pDebugInfoSolidDetail;
+	deoglDebugInformation::Ref pDebugInfoSolidShadow;
+	deoglDebugInformation::Ref pDebugInfoSolidShadowOcclusion;
+	deoglDebugInformation::Ref pDebugInfoSolidShadowSplit;
+	deoglDebugInformation::Ref pDebugInfoSolidShadowSplitContent;
+	deoglDebugInformation::Ref pDebugInfoSolidShadowSplitLODLevels;
+	deoglDebugInformation::Ref pDebugInfoSolidShadowSplitClear;
+	deoglDebugInformation::Ref pDebugInfoSolidShadowSplitTask;
+	deoglDebugInformation::Ref pDebugInfoSolidShadowSplitRender;
+	deoglDebugInformation::Ref pDebugInfoSolidShadowGI;
+	deoglDebugInformation::Ref pDebugInfoSolidLight;
 	
-	deoglDebugInformation *pDebugInfoTransparentDetail;
-	deoglDebugInformation *pDebugInfoTransparentLight;
+	deoglDebugInformation::Ref pDebugInfoTransparentDetail;
+	deoglDebugInformation::Ref pDebugInfoTransparentLight;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create renderer. */
+	/** Create renderer. */
 	deoglRenderLightSky( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up renderer. */
+	/** Clean up renderer. */
 	virtual ~deoglRenderLightSky();
 	/*@}*/
 	
@@ -89,50 +89,62 @@ public:
 	
 	/** \name Rendering */
 	/*@{*/
-	/** \brief Render lights. */
-	void RenderLights( deoglRenderPlan &plan, bool solid );
+	/** Occlusion mesh shader. */
+	inline const deoglPipeline *GetPipelineOccMesh() const{ return pPipelineOccMesh; }
 	
-	/** \brief Render sky light ambient occlusion. */
+	/** Render lights. */
+	void RenderLights( deoglRenderPlan &plan, bool solid, const deoglRenderPlanMasked *mask, bool xray );
+	
+	/** Render sky light ambient occlusion. */
 	void RenderAO( deoglRenderPlan &plan );
 	
-	/** \brief Render sky light. */
-	void RenderLight( deoglRenderPlan &plan, bool solid, deoglRenderPlanSkyLight &planSkyLight );
+	/** Render sky light. */
+	void RenderLight( deoglRenderPlanSkyLight &plan, bool solid, const deoglRenderPlanMasked *mask, bool xray );
 	
-	/** \brief Render shadows maps. */
-	void RenderShadows( deoglRenderPlan &plan, deoglRenderPlanSkyLight &planSkyLight );
+	/** Render shadows maps. */
+	void RenderShadows( deoglRenderPlanSkyLight &plan, bool solid, const deoglRenderPlanMasked *mask );
 	
-	/** \brief Render shadow map. */
-	void RenderShadowMap( deoglRenderPlan &plan, deoglRenderPlanSkyLight &planSkyLight,
-		deoglShadowMapper &shadowMapper );
+	/** Render shadow map. */
+	void RenderShadowMap( deoglRenderPlanSkyLight &plan, deoglShadowMapper &shadowMapper );
 	
-	/** \brief Update light shader parameter block. */
-	void UpdateLightParamBlock( deoglLightShader &lightShader, deoglSPBlockUBO &paramBlock,
-		deoglRenderPlan &plan, deoglRenderPlanSkyLight &planSkyLight );
+	/** Render GI shadows. */
+	void RenderGIShadows( deoglRenderPlanSkyLight &plan, deoglShadowMapper &shadowMapper );
 	
-	/** \brief Updates instance shader parameter block. */
-	void UpdateInstanceParamBlock( deoglLightShader &lightShader, deoglSPBlockUBO &paramBlock,
-		deoglRenderPlan &plan, deoglRenderPlanSkyLight &planSkyLight, int shadowMapSize, int passCount );
+	/** Render GI shadow map. */
+	void RenderGIShadowMap( deoglShadowMapper &shadowMapper, deoglRenderTask &renderTask,
+		int shadowMapSize, bool clearBackFaceFragments );
+	
+	void RenderGIShadowMap( deoglShadowMapper &shadowMapper, deoglComputeRenderTask &renderTask,
+		int shadowMapSize, bool clearBackFaceFragments );
+	
+	/** Update light shader parameter block. */
+	void UpdateLightParamBlock( const deoglLightShader &lightShader, deoglSPBlockUBO &paramBlock,
+		deoglRenderPlanSkyLight &plan );
+	
+	/** Updates instance shader parameter block. */
+	void UpdateInstanceParamBlock( const deoglLightShader &lightShader, deoglSPBlockUBO &paramBlock,
+		deoglRenderPlanSkyLight &plan, int shadowMapSize, int passCount );
 	
 	
 	
-	/** \brief Debug information solid lighting. */
+	/** Debug information solid lighting. */
 	inline deoglDebugInformation *GetDebugInfoSolid() const{ return pDebugInfoSolid; }
 	
-	/** \brief Debug information transparent lighting. */
+	/** Debug information transparent lighting. */
 	inline deoglDebugInformation *GetDebugInfoTransparent() const{ return pDebugInfoTransparent; }
 	
 	
 	
-	/** \brief Reset debug information. */
+	/** Reset debug information. */
 	void ResetDebugInfo();
 	
-	/** \brief Add top level debug information in the right order. */
+	/** Add top level debug information in the right order. */
 	virtual void AddTopLevelDebugInfoSolid();
 	
-	/** \brief Add top level debug information in the right order. */
+	/** Add top level debug information in the right order. */
 	virtual void AddTopLevelDebugInfoTransparent();
 	
-	/** \brief Developer mode debug information changed. */
+	/** Developer mode debug information changed. */
 	virtual void DevModeDebugInfoChanged();
 	/*@}*/
 	

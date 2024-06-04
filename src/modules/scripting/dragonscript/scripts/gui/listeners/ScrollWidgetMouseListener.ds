@@ -1,88 +1,222 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
 namespace Dragengine.Gui
 
 pin Dragengine.Gui.Events
+pin Dragengine.Utils
 
 
 /**
  * \brief Mouse listener scrolling widget using mouse dragging.
+ *
+ * \par Deceleration (1.16)
+ * 
+ * Supports continue scrolling with last drag velocity decelerating over time. This can be
+ * used to simplify larger scale scrolling by using fling type movement.
+ *
+ * By default continue scrolling is disabled. To enabled continuous scrolling set the
+ * deceleration to a value larger than 0. Velocity is reduced by deceleration times elapsed
+ * time. Hence a value of 100 reduces velocity by 100 pixels/second every second. A good
+ * starting value for deceleration is 200.
  */
 class ScrollWidgetMouseListener extends DefaultMouseListener
+	/**
+	 * \brief Frame updater to continue scrolling over time.
+	 * \version 1.16
+	 */
+	protected class ScrollUpdater extends FrameUpdateListener
+		private var WeakReference pListener
+
+		/** \brief Create frame updater. */
+		public func new(ScrollWidgetMouseListener listener)
+			pListener = WeakReference.new(listener)
+		end
+
+		/**
+		 * \brief Do frame update.
+		 * 
+		 * \param elapsed Elapsed time since the last frame update. Equals Engine.getElapsedTime().
+		 */
+		public func void frameUpdate(float elapsed)
+			var ScrollWidgetMouseListener listener = pListener.get() cast ScrollWidgetMouseListener
+			if listener != null
+				listener.updateScroll(elapsed)
+
+			else
+				giveUp()
+			end
+		end
+	end
+
+
+
 	private var Container pWidget
 	private var Point pAnchorPosition
 	private var int pAnchorVertical
 	private var int pAnchorHorizontal
+
+	private var Point pLastPosition
+	private var Point pLastDisplacement
+	private var float pVelocityVertical
+	private var float pVelocityHorizontal
+	private var float pDeceleration
+	private var ScrollUpdater pScrollUpdater
 	
 	
 	
 	/** \brief Create mouse listener. */
-	public func new( Container widget )
+	public func new(Container widget)
 		if widget == null
-			throw EInvalidParam.new()
+			throw ENullPointer.new("widget")
 		end
 		
-		this.pWidget = widget
-		this.pAnchorPosition = null
-		this.pAnchorVertical = 0
-		this.pAnchorHorizontal = 0
+		pWidget = widget
+		pAnchorPosition = null
+		pAnchorVertical = 0
+		pAnchorHorizontal = 0
 	end
 	
 	
 	
 	/** \brief Widget to scroll. */
 	public func Container getWidget()
-		return this.pWidget
+		return pWidget
 	end
 	
 	/** \brief Anchor mouse position or \em null if not scrolling. */
 	public func Point getAnchorPosition()
-		return this.pAnchorPosition
+		return pAnchorPosition
 	end
 	
 	/** \brief Set anchor mouse position or \em null if not scrolling. */
-	public func void setAnchorPosition( Point position )
-		this.pAnchorPosition = position
+	public func void setAnchorPosition(Point position)
+		pAnchorPosition = position
 	end
 	
 	/** \brief Anchor vertical model value for anchor position. */
 	public func int getAnchorVertical()
-		return this.pAnchorVertical
+		return pAnchorVertical
 	end
 	
 	/** \brief Set anchor vertical model value for anchor position. */
-	public func void setAnchorVertical( int value )
-		this.pAnchorVertical = value
+	public func void setAnchorVertical(int value)
+		pAnchorVertical = value
 	end
 	
 	/** \brief Anchor horizontal model value for anchor position. */
 	public func int getAnchorHorizontal()
-		return this.pAnchorHorizontal
+		return pAnchorHorizontal
 	end
 	
 	/** \brief Set anchor horizontal model value for anchor position. */
-	public func void setAnchorHorizontal( int value )
-		this.pAnchorHorizontal = value
+	public func void setAnchorHorizontal(int value)
+		pAnchorHorizontal = value
+	end
+
+
+	/**
+	 * \brief Last position in pixels.
+	 * \version 1.16
+	 */
+	public func Point getLastPosition()
+		return pLastPosition
+	end
+
+	/**
+	 * \brief Set last position in pixels.
+	 * \version 1.16
+	 */
+	public func void setLastPosition(Point position)
+		pLastPosition = position
+	end
+
+	/**
+	 * \brief Last displacement in pixels.
+	 * \version 1.16
+	 */
+	public func Point getLastDisplacement()
+		return pLastDisplacement
+	end
+
+	/**
+	 * \brief Set last displacement in pixels.
+	 * \version 1.16
+	 */
+	public func void setLastDisplacement(Point displacement)
+		pLastDisplacement = displacement
+	end
+
+	/**
+	 * \brief Vertical velocity in pixels per second.
+	 * \version 1.16
+	 */
+	public func float getVelocityVertical()
+		return pVelocityVertical
+	end
+
+	/**
+	 * \brief Set vertical velocity in pixels per second.
+	 * \version 1.16
+	 */
+	public func void setVelocityVertical(float velocity)
+		pVelocityVertical = DEMath.max(velocity, 0.0)
+	end
+
+	/**
+	 * \brief Horizontal velocity in pixels per second.
+	 * \version 1.16
+	 */
+	public func float getVelocityHorizontal()
+		return pVelocityHorizontal
+	end
+
+	/**
+	 * \brief Set horizontal velocity in pixels per second.
+	 * \version 1.16
+	 */
+	public func void setVelocityHorizontal(float velocity)
+		pVelocityHorizontal = DEMath.max(velocity, 0.0)
+	end
+
+	/**
+	 * \brief Velocity deceleration in pixels/second per second.
+	 * \version 1.16
+	 */
+	public func float getDeceleration()
+		return pDeceleration
+	end
+
+	/**
+	 * \brief Set velocity deceleration in pixels/second per second.
+	 * \version 1.16
+	 * 
+	 * A good starting value is 200. For weaker deceleration 100 is a good value.
+	 */
+	public func void setDeceleration(float deceleration)
+		pDeceleration = DEMath.max(deceleration, 0.0)
 	end
 	
 	
@@ -91,52 +225,151 @@ class ScrollWidgetMouseListener extends DefaultMouseListener
 	 * \brief Mouse button has been pressed.
 	 * \details Starts scrolling by moving the mouse.
 	 */
-	public func void onButtonPress( MouseEvent event )
+	public func void onButtonPress(MouseEvent event)
 		if event.getButton() == InputEventMouseButton.left
 			var Widget eventWidget = event.getSource() cast Widget
-			this.pAnchorPosition = event.getPosition() + eventWidget.getRelativePosition( this.pWidget )
+			pAnchorPosition = event.getPosition() + eventWidget.getRelativePosition(pWidget)
+
+			pLastPosition = pAnchorPosition
+			pLastDisplacement = Point.new()
+			pVelocityHorizontal = 0
+			pVelocityVertical = 0
 			
-			var RangeModel model = this.pWidget.getVerticalRangeModel()
+			var RangeModel model = pWidget.getVerticalRangeModel()
 			if model != null
-				this.pAnchorVertical = model.getValue()
+				pAnchorVertical = model.getValue()
 			end
 			
-			model = this.pWidget.getHorizontalRangeModel()
+			model = pWidget.getHorizontalRangeModel()
 			if model != null
-				this.pAnchorHorizontal = model.getValue()
+				pAnchorHorizontal = model.getValue()
 			end
 			
 			eventWidget.captureMouse()
+			startScrollUpdater()
 		end
 	end
 	
 	/** \brief Mouse button has been released. */
-	public func void onButtonRelease( MouseEvent event )
+	public func void onButtonRelease(MouseEvent event)
 		if event.getButton() == InputEventMouseButton.left
-			if this.pAnchorPosition != null
-				( event.getSource() cast Widget ).releaseMouse()
-				this.pAnchorPosition = null
+			if pAnchorPosition != null
+				(event.getSource() cast Widget).releaseMouse()
+				pAnchorPosition = null
+				
+				var RangeModel model = pWidget.getVerticalRangeModel()
+				if model != null
+					pAnchorVertical = model.getValue()
+				end
+				
+				model = pWidget.getHorizontalRangeModel()
+				if model != null
+					pAnchorHorizontal = model.getValue()
+				end
 			end
 		end
 	end
 	
 	/** \brief Mouse has moved. */
-	public func void onMouseMove( MouseEvent event )
-		if this.pAnchorPosition == null
+	public func void onMouseMove(MouseEvent event)
+		if pAnchorPosition == null
 			return
 		end
 		
-		var Point difference = event.getPosition() + ( event.getSource() cast Widget ) \
-			.getRelativePosition( this.pWidget ) - this.pAnchorPosition
+		var Point nextPosition = event.getPosition()\
+			+ (event.getSource() cast Widget).getRelativePosition(pWidget)
+		pLastDisplacement = nextPosition - pLastPosition
+		pLastPosition = nextPosition
 		
-		var RangeModel model = this.pWidget.getHorizontalRangeModel()
+		var Point difference = nextPosition - pAnchorPosition
+		
+		var RangeModel model = pWidget.getHorizontalRangeModel()
 		if model != null
-			model.setValue( this.pAnchorHorizontal - difference.getX() )
+			model.setValue(pAnchorHorizontal - difference.getX())
 		end
 		
-		model = this.pWidget.getVerticalRangeModel()
+		model = pWidget.getVerticalRangeModel()
 		if model != null
-			model.setValue( this.pAnchorVertical - difference.getY() )
+			model.setValue(pAnchorVertical - difference.getY())
+		end
+	end
+
+	/**
+	 * \brief Continue scrolling.
+	 * \version 1.16
+	 *
+	 * Reduces velocity from 0 to pContinueScrollTime using quadratic regression
+	 * of the elapsed time then scrolls accordingly. Once pContinueScrollTime
+	 * elapsed continue scrolling is disabled.
+	 */
+	public func void updateScroll(float elapsed)
+		elapsed = DEMath.max(elapsed, 0.0)
+		
+		if pAnchorPosition != null
+			if elapsed > 0
+				pVelocityHorizontal = (pLastDisplacement.getX() cast float) / elapsed
+				pVelocityVertical = (pLastDisplacement.getY() cast float) / elapsed
+				
+			else
+				pVelocityHorizontal = 0
+				pVelocityVertical = 0
+			end
+			
+			pLastDisplacement = Point.new()
+			return
+		end
+		
+		if pVelocityHorizontal > 0
+			pVelocityHorizontal = DEMath.max(pVelocityHorizontal - pDeceleration * elapsed, 0.0)
+			
+		elif pVelocityHorizontal < 0
+			pVelocityHorizontal = DEMath.min(pVelocityHorizontal + pDeceleration * elapsed, 0.0)
+		end
+		
+		if pVelocityVertical > 0
+			pVelocityVertical = DEMath.max(pVelocityVertical - pDeceleration * elapsed, 0.0)
+			
+		else
+			pVelocityVertical = DEMath.min(pVelocityVertical + pDeceleration * elapsed, 0.0)
+		end
+		
+		if pVelocityHorizontal == 0 and pVelocityVertical == 0
+			stopScrollUpdater()
+			return
+		end
+		
+		pAnchorVertical -= (pVelocityVertical * elapsed) cast int
+		pAnchorHorizontal -= (pVelocityHorizontal * elapsed) cast int
+		
+		var RangeModel model = pWidget.getHorizontalRangeModel()
+		if model != null
+			model.setValue(pAnchorHorizontal)
+		end
+		
+		model = pWidget.getVerticalRangeModel()
+		if model != null
+			model.setValue(pAnchorVertical)
+		end
+	end
+
+	/**
+	 * \brief Start scroll updater.
+	 * \version 1.16
+	 */
+	protected func void startScrollUpdater()
+		if pScrollUpdater == null
+			pScrollUpdater = ScrollUpdater.new(this)
+		end
+	end
+
+	/**
+	 * \brief Stop scroll updater.
+	 * \version 1.16
+	 */
+	protected func void stopScrollUpdater()
+		if pScrollUpdater != null
+			pScrollUpdater.giveUp()
+			pScrollUpdater = null
 		end
 	end
 end

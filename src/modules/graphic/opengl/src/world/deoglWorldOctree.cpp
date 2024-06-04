@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -25,6 +28,7 @@
 
 #include "deoglWorldOctree.h"
 #include "deoglWorldOctreeVisitor.h"
+#include "deoglWorldCSOctree.h"
 
 #include "../billboard/deoglRBillboard.h"
 #include "../component/deoglRComponent.h"
@@ -46,8 +50,13 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-deoglWorldOctree::deoglWorldOctree( const decDVector &center, const decDVector &halfSize ) :
-deoglDOctree( center, halfSize ){
+deoglWorldOctree::deoglWorldOctree( const decDVector &center, const decDVector &halfSize, int insertDepth ) :
+deoglDOctree( center, halfSize ),
+pInsertDepth( insertDepth ),
+pCSChildCount( 0 ),
+pCSLocalElementCount( 0 ),
+pCSNodeCount( 0 ),
+pCSElementCount( 0 ){
 }
 
 deoglWorldOctree::~deoglWorldOctree(){
@@ -68,7 +77,7 @@ deoglWorldOctree::~deoglWorldOctree(){
 ///////////////
 
 deoglDOctree *deoglWorldOctree::CreateOctree( int octant ) const{
-	decDVector halfSize = GetHalfSize() * 0.5;
+	const decDVector halfSize( GetHalfSize() * 0.5 );
 	const decDVector &center = GetCenter();
 	decDVector nc;
 	
@@ -95,7 +104,7 @@ deoglDOctree *deoglWorldOctree::CreateOctree( int octant ) const{
 	}
 	
 	// create child node
-	return new deoglWorldOctree( nc, halfSize );
+	return new deoglWorldOctree( nc, halfSize, pInsertDepth - 1 );
 }
 
 void deoglWorldOctree::ClearNodeContent(){
@@ -179,44 +188,40 @@ void deoglWorldOctree::ClearParticleEmitters(){
 	}
 }
 
-void deoglWorldOctree::InsertBillboardIntoTree( deoglRBillboard *billboard, int maxDepth ){
-	if( ! billboard || maxDepth < 0 ){
+void deoglWorldOctree::InsertBillboardIntoTree( deoglRBillboard *billboard ){
+	if( ! billboard ){
 		DETHROW( deeInvalidParam );
 	}
 	
 	const decDVector &maxExtend = billboard->GetMaximumExtend();
 	const decDVector &minExtend = billboard->GetMinimumExtend();
-	const decDVector boxCenter( ( minExtend + maxExtend ) * 0.5 );
-	const decDVector boxHalfExtends( ( maxExtend - minExtend ) * 0.5 );
 	deoglWorldOctree *currentNode = billboard->GetOctreeNode();
 	
 	if( currentNode ){
-		if( ! currentNode->ContainsBox( boxCenter, boxHalfExtends ) ){
+		if( ! currentNode->ContainsBox( minExtend, maxExtend ) ){
 			currentNode->RemoveBillboard( billboard );
 			currentNode = NULL;
 		}
 	}
 	
 	if( ! currentNode ){
-		currentNode = pGetNodeFor( boxCenter, boxHalfExtends, maxDepth );
+		currentNode = pGetNodeFor( minExtend, maxExtend, pInsertDepth );
 		currentNode->AddBillboard( billboard );
 	}
 }
 
-void deoglWorldOctree::InsertComponentIntoTree( deoglRComponent *component, int maxDepth ){
-	if( ! component || maxDepth < 0 ) DETHROW( deeInvalidParam );
+void deoglWorldOctree::InsertComponentIntoTree( deoglRComponent *component ){
+	if( ! component ) DETHROW( deeInvalidParam );
 	
 	const decDVector &maxExtend = component->GetMaximumExtend();
 	const decDVector &minExtend = component->GetMinimumExtend();
-	decDVector boxCenter = ( minExtend + maxExtend ) * 0.5;
-	decDVector boxHalfExtends = ( maxExtend - minExtend ) * 0.5;
 	
 	deoglWorldOctree *currentNode = component->GetOctreeNode();
 	
 	// if the component is already in the octree relocate it if required
 	if( currentNode ){
 		// if the component is not in the same node as before relocate it
-		if( ! currentNode->ContainsBox( boxCenter, boxHalfExtends ) ){
+		if( ! currentNode->ContainsBox( minExtend, maxExtend ) ){
 			// remove from the current node
 			currentNode->RemoveComponent( component );
 			currentNode = NULL;
@@ -225,49 +230,49 @@ void deoglWorldOctree::InsertComponentIntoTree( deoglRComponent *component, int 
 	
 	// add component if not in the tree
 	if( ! currentNode ){
-		currentNode = pGetNodeFor( boxCenter, boxHalfExtends, maxDepth );
+		currentNode = pGetNodeFor( minExtend, maxExtend, pInsertDepth );
 		currentNode->AddComponent( component );
 	}
 }
 
-void deoglWorldOctree::InsertEnvMapIntoTree( deoglEnvironmentMap *envmap, int maxDepth ){
-	if( ! envmap || maxDepth < 0 ){
+void deoglWorldOctree::InsertEnvMapIntoTree( deoglEnvironmentMap *envmap ){
+	if( ! envmap ){
 		DETHROW( deeInvalidParam );
 	}
 	
 	const decDVector &boxCenter = envmap->GetPosition();
 	const decDVector boxHalfExtends = decDVector( 0.01f, 0.01f, 0.01f );
+	const decDVector minExtend( boxCenter - boxHalfExtends );
+	const decDVector maxExtend( boxCenter + boxHalfExtends );
 	deoglWorldOctree *currentNode = envmap->GetOctreeNode();
 	
 	if( currentNode ){
-		if( ! currentNode->ContainsBox( boxCenter, boxHalfExtends ) ){
+		if( ! currentNode->ContainsBox( minExtend, maxExtend ) ){
 			currentNode->RemoveEnvMap( envmap );
 			currentNode = NULL;
 		}
 	}
 	
 	if( ! currentNode ){
-		currentNode = pGetNodeFor( boxCenter, boxHalfExtends, maxDepth );
+		currentNode = pGetNodeFor( minExtend, maxExtend, pInsertDepth );
 		currentNode->AddEnvMap( envmap );
 	}
 }
 
-void deoglWorldOctree::InsertLightIntoTree( deoglRLight *light, int maxDepth ){
-	if( ! light || maxDepth < 0 ){
+void deoglWorldOctree::InsertLightIntoTree( deoglRLight *light ){
+	if( ! light ){
 		DETHROW( deeInvalidParam );
 	}
 	
 	const decDVector &maxExtend = light->GetMaximumExtend();
 	const decDVector &minExtend = light->GetMinimumExtend();
-	decDVector boxCenter = ( minExtend + maxExtend ) * 0.5;
-	decDVector boxHalfExtends = ( maxExtend - minExtend ) * 0.5;
 	
 	deoglWorldOctree *currentNode = light->GetOctreeNode();
 	
 	// if the light is already in the octree relocate it if required
 	if( currentNode ){
 		// if the light is not in the same node as before relocate it
-		if( ! currentNode->ContainsBox( boxCenter, boxHalfExtends ) ){
+		if( ! currentNode->ContainsBox( minExtend, maxExtend ) ){
 			// remove from the current node
 			currentNode->RemoveLight( light );
 			currentNode = NULL;
@@ -276,41 +281,39 @@ void deoglWorldOctree::InsertLightIntoTree( deoglRLight *light, int maxDepth ){
 	
 	// add light if not in the tree
 	if( ! currentNode ){
-		currentNode = pGetNodeFor( boxCenter, boxHalfExtends, maxDepth );
+		currentNode = pGetNodeFor( minExtend, maxExtend, pInsertDepth );
 		currentNode->AddLight( light );
 	}
 }
 
-void deoglWorldOctree::InsertParticleEmitterIntoTree( deoglRParticleEmitterInstance *instance, int maxDepth ){
-	if( ! instance || maxDepth < 0 ){
+void deoglWorldOctree::InsertParticleEmitterIntoTree( deoglRParticleEmitterInstance *instance ){
+	if( ! instance ){
 		DETHROW( deeInvalidParam );
 	}
 	
 	const decDVector &maxExtend = instance->GetMaxExtend();
 	const decDVector &minExtend = instance->GetMinExtend();
-	const decDVector boxCenter( ( minExtend + maxExtend ) * 0.5 );
-	const decDVector boxHalfExtends( ( maxExtend - minExtend ) * 0.5 );
 	deoglWorldOctree *currentNode = instance->GetOctreeNode();
 	
 	if( currentNode ){
-		if( ! currentNode->ContainsBox( boxCenter, boxHalfExtends ) ){
+		if( ! currentNode->ContainsBox( minExtend, maxExtend ) ){
 			currentNode->RemoveParticleEmitter( instance );
 			currentNode = NULL;
 		}
 	}
 	
 	if( ! currentNode ){
-		currentNode = pGetNodeFor( boxCenter, boxHalfExtends, maxDepth );
+		currentNode = pGetNodeFor( minExtend, maxExtend, pInsertDepth );
 		currentNode->AddParticleEmitter( instance );
 	}
 }
 
-deoglWorldOctree *deoglWorldOctree::InsertLumimeterIntoTree( deoglRLumimeter *lumimeter, int maxDepth ){
+deoglWorldOctree *deoglWorldOctree::InsertLumimeterIntoTree( deoglRLumimeter *lumimeter ){
 	if( ! lumimeter ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	deoglWorldOctree *node = pGetNodeFor( lumimeter->GetPosition(), maxDepth );
+	deoglWorldOctree *node = pGetNodeFor( lumimeter->GetPosition(), pInsertDepth );
 	node->AddLumimeter( lumimeter );
 	
 	return node;
@@ -336,6 +339,113 @@ void deoglWorldOctree::VisitNodesCollidingVolume( deoglWorldOctreeVisitor *visit
 		deoglDOctree * const node = GetNodeAt( i );
 		if( node ){
 			( ( deoglWorldOctree* )node )->VisitNodesCollidingVolume( visitor, volume );
+		}
+	}
+}
+
+
+
+void deoglWorldOctree::UpdateCSCounts(){
+	int i;
+	
+	pCSChildCount = 0;
+	pCSLocalElementCount = pComponents.GetCount() + pBillboards.GetCount()
+		+ pParticleEmitters.GetCount() + pLights.GetCount();
+	
+	pCSNodeCount = 0;
+	pCSElementCount = pCSLocalElementCount;
+	
+	for( i=0; i<8; i++ ){
+		deoglWorldOctree * const node = ( deoglWorldOctree * )GetNodeAt( i );
+		if( ! node ){
+			continue;
+		}
+		
+		node->UpdateCSCounts();
+		if( node->pCSElementCount == 0 ){
+			continue;
+		}
+		
+		pCSChildCount++;
+		pCSNodeCount += node->pCSNodeCount;
+		pCSElementCount += node->pCSElementCount;
+	}
+	
+	if( pCSElementCount > 0 ){
+		pCSElementCount = decMath::min( pCSElementCount, 0xfffffff );
+		pCSNodeCount++;
+	}
+}
+
+void deoglWorldOctree::WriteCSData( deoglWorldCSOctree &csoctree, int nodeIndex ){
+	if( pCSElementCount == 0 ){
+		return;
+	}
+	
+	const decDVector &refpos = csoctree.GetReferencePosition();
+	int i, nextChildNode = csoctree.GetNextNode();
+	
+	deoglWorldCSOctree::sCSNode &node = csoctree.GetNodeAt( nodeIndex );
+	node.SetExtends( GetMinimumExtend() - refpos, GetMaximumExtend() - refpos );
+	node.firstNode = nextChildNode;
+	node.childNodeCount = ( uint32_t )pCSChildCount;
+	node.firstElement = ( uint32_t )csoctree.GetNextElement();
+	node.elementCount = ( uint32_t )pCSLocalElementCount;
+	
+	csoctree.AdvanceNextData( pCSChildCount );
+	
+	for( i=0; i<pComponents.GetCount(); i++ ){
+		deoglRComponent &component = *( deoglRComponent* )pComponents.GetAt( i );
+		uint32_t flags = deoglWorldCSOctree::ecsefComponent;
+		if( ! component.GetRenderStatic() ){
+			flags |= deoglWorldCSOctree::ecsefComponentDynamic;
+		}
+		
+		component.SetCSOctreeIndex( ( uint32_t )csoctree.NextElement( deoglWorldCSOctree::ecsetComponent, &component ) );
+		deoglWorldCSOctree::sCSElement &element = csoctree.GetElementAt( component.GetCSOctreeIndex() );
+		element.SetExtends( component.GetMinimumExtend() - refpos, component.GetMaximumExtend() - refpos );
+		element.elementindex = component.GetCSOctreeIndex();
+		element.flags = flags;
+		element.SetLayerMask( component.GetLayerMask() );
+	}
+	
+	for( i=0; i<pBillboards.GetCount(); i++ ){
+		deoglRBillboard &billboard = *( deoglRBillboard* )pBillboards.GetAt( i );
+		
+		billboard.SetCSOctreeIndex( ( uint32_t )csoctree.NextElement( deoglWorldCSOctree::ecsetBillboard, &billboard ) );
+		deoglWorldCSOctree::sCSElement &element = csoctree.GetElementAt( billboard.GetCSOctreeIndex() );
+		element.SetExtends( billboard.GetMinimumExtend() - refpos, billboard.GetMaximumExtend() - refpos );
+		element.elementindex = billboard.GetCSOctreeIndex();
+		element.flags = ( uint32_t )deoglWorldCSOctree::ecsefBillboard;
+		element.SetLayerMask( billboard.GetLayerMask() );
+	}
+	
+	for( i=0; i<pParticleEmitters.GetCount(); i++ ){
+		deoglRParticleEmitterInstance &emitter = *( deoglRParticleEmitterInstance* )pParticleEmitters.GetAt( i );
+		
+		emitter.SetCSOctreeIndex( ( uint32_t )csoctree.NextElement( deoglWorldCSOctree::ecsetParticleEmitter, &emitter ) );
+		deoglWorldCSOctree::sCSElement &element = csoctree.GetElementAt( emitter.GetCSOctreeIndex() );
+		element.SetExtends( emitter.GetMinExtend() - refpos, emitter.GetMaxExtend() - refpos );
+		element.elementindex = emitter.GetCSOctreeIndex();
+		element.flags = ( uint32_t )deoglWorldCSOctree::ecsefParticleEmitter;
+		element.SetLayerMask( emitter.GetLayerMask() );
+	}
+	
+	for( i=0; i<pLights.GetCount(); i++ ){
+		deoglRLight &light = *( deoglRLight* )pLights.GetAt( i );
+		
+		light.SetCSOctreeIndex( ( uint32_t )csoctree.NextElement( deoglWorldCSOctree::ecsetLight, &light ) );
+		deoglWorldCSOctree::sCSElement &element = csoctree.GetElementAt( light.GetCSOctreeIndex() );
+		element.SetExtends( light.GetMinimumExtend() - refpos, light.GetMaximumExtend() - refpos );
+		element.elementindex = light.GetCSOctreeIndex();
+		element.flags = ( uint32_t )deoglWorldCSOctree::ecsefLight;
+		element.SetLayerMask( light.GetLayerMask() );
+	}
+	
+	for( i=0; i<8; i++ ){
+		deoglWorldOctree * const childNode = ( deoglWorldOctree * )GetNodeAt( i );
+		if( childNode && childNode->pCSElementCount > 0 ){
+			childNode->WriteCSData( csoctree, nextChildNode++ );
 		}
 	}
 }
@@ -601,14 +711,16 @@ void deoglWorldOctree::RemoveAllParticleEmitters(){
 // Private Functions
 //////////////////////
 
-deoglWorldOctree *deoglWorldOctree::pGetNodeFor( const decDVector &center, const decDVector &halfSize, int maxDepth ){
+deoglWorldOctree *deoglWorldOctree::pGetNodeFor( const decDVector &minExtend,
+const decDVector &maxExtend, int maxDepth ){
 	deoglDOctree *curNode = this;
-	deoglDOctree *nextNode;
 	int d;
 	
 	for( d=0; d<maxDepth; d++ ){
-		nextNode = curNode->GetNodeAtBox( center, halfSize );
-		if( ! nextNode ) break;
+		deoglDOctree * const nextNode = curNode->GetNodeAtBox( minExtend, maxExtend );
+		if( ! nextNode ){
+			break;
+		}
 		curNode = nextNode;
 	}
 	

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Conversation Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _CEWPTTREEMODEL_H_
@@ -33,95 +36,113 @@ class ceWPTTreeModelListener;
 class ceWPTTreeItem;
 class ceWPTTreeItemModel;
 class ceWindowMain;
+class ceConversationListener;
 
 class igdeTreeList;
 class igdeMenuCascade;
 
 
 /**
- * \brief Tree model.
+ * Tree model.
  * 
  * Tree model is responsible to update the visual state and content of assigned tree list.
  */
 class ceWPTTreeModel{
+public:
+	class PreventUpdateGuard{
+		ceWPTTreeModel &pModel;
+		bool pPrevPreventUpdate;
+		
+	public:
+		PreventUpdateGuard( ceWPTTreeModel &model );
+		~PreventUpdateGuard();
+	};
+	
+	friend PreventUpdateGuard;
+	
+	
+	
 private:
 	ceWindowMain &pWindowMain;
 	ceConversation *pConversation;
 	ceWPTTreeModelListener *pListener;
+	ceConversationListener &pForwardListener;
 	
 	decObjectOrderedSet pChildren;
 	
 	igdeTreeList *pTreeList; // weak reference
+	bool pPreventUpdate;
 	
 	
 	
 public:
-	/** \brief Constructors and Destructors */
+	/** Constructors and Destructors */
 	/*@{*/
-	/** \brief Create new tree model. */
-	ceWPTTreeModel( ceWindowMain &windowMain, ceConversation *conversation );
+	/** Create new tree model. */
+	ceWPTTreeModel( ceWindowMain &windowMain, ceConversation *conversation,
+		ceConversationListener &forwardListener );
 	
-	/** \brief Clean up tree model. */
+	/** Clean up tree model. */
 	~ceWPTTreeModel();
 	/*@}*/
 	
 	
 	
 public:
-	/** \brief Management */
+	/** Management */
 	/*@{*/
-	/** \brief Window main. */
+	/** Window main. */
 	inline ceWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
-	/** \brief Game definition. */
+	/** Game definition. */
 	inline ceConversation *GetConversation() const{ return pConversation; }
 	
 	
 	
-	/** \brief Number of children. */
+	/** Number of children. */
 	int GetChildCount() const;
 	
-	/** \brief Child at index. */
+	/** Child at index. */
 	ceWPTTreeItemModel *GetChildAt( int index ) const;
 	
-	/** \brief Add child. */
+	/** Add child. */
 	void AddChild( ceWPTTreeItemModel *child );
 	
-	/** \brief Insert child at position. */
+	/** Insert child at position. */
 	void InsertChild( ceWPTTreeItemModel *child, int position );
 	
-	/** \brief Remove child. */
+	/** Remove child. */
 	void RemoveChild( ceWPTTreeItemModel *child );
 	
-	/** \brief Remove all children. */
+	/** Remove all children. */
 	void RemoveAllChildren();
 	
 	/**
-	 * \brief Move child before or after another child.
+	 * Move child before or after another child.
 	 */
 	void MoveChild( ceWPTTreeItemModel *child, int to );
 	
 	/**
-	 * \brief Move child before or after another child.
+	 * Move child before or after another child.
 	 */
 	void MoveChild( int from, int to );
 	
 	
 	
-	/** \brief Child with action or \em NULL. */
+	/** Child with action or \em NULL. */
 	ceWPTTIMAction *GetChildWith( ceConversationAction *action ) const;
 	
 	
 	
-	/** \brief Update actions. */
+	/** Update actions. */
 	void UpdateActions();
 	
 	
-	/** \brief Assigned tree list or \em NULL. */
+	/** Assigned tree list or \em NULL. */
 	inline igdeTreeList *GetTreeList() const{ return pTreeList; }
 	
 	/**
-	 * \brief Assign tree list or \em NULL.
+	 * Assign tree list or \em NULL.
 	 * 
 	 * If tree list is not \em NULL fully updates tree with stored data.
 	 */
@@ -129,23 +150,29 @@ public:
 	
 	
 	
-	/** \brief User requests context menu for selected item. */
+	/** User requests context menu for selected item. */
 	void OnContextMenu( igdeMenuCascade &contextMenu );
 	
-	/** \brief User requests context menu for selected child action. */
+	/** User requests context menu for selected child action. */
 	void ContextMenuAction( igdeMenuCascade &contextMenu, ceConversationAction *action );
 	
-	/** \brief User requests context menu for topic specifi actions. */
+	/** User requests context menu for topic specifi actions. */
 	void ContextMenuTopic( igdeMenuCascade &contextMenu );
 	
-	/** \brief Deep find action. */
+	/** Deep find action. */
 	ceWPTTIMAction *DeepFindAction( ceConversationAction *action ) const;
 	
-	/** \brief Deep find condition. */
+	/** Deep find condition. */
 	ceWPTTIMCondition *DeepFindCondition( ceConversationCondition *condition ) const;
 	
-	/** \brief Select active action in tree list. */
-	void SelectActiveAction();
+	/** Select topic active element. */
+	void SelectTopicActive();
+	
+	/** Prevent update. */
+	inline bool GetPreventUpdate() const{ return pPreventUpdate; }
+	
+	/** Forward listener. */
+	inline ceConversationListener &GetForwardListener(){ return pForwardListener; }
 	/*@}*/
 	
 	

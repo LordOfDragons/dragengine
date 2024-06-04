@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Conversation Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include "ceDialogPasteSnippet.h"
@@ -40,6 +43,7 @@
 #include <deigde/gui/igdeComboBoxFilter.h>
 #include <deigde/gui/igdeContainerReference.h>
 #include <deigde/gui/igdeTextArea.h>
+#include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
 
 #include <dragengine/common/exceptions.h>
@@ -82,6 +86,15 @@ pConversation( conversation )
 		"Target to use for the camera shot for the second actor", pCBTarget2, NULL );
 	pCBTarget2->SetDefaultSorter();
 	
+	helper.EditFloat( content, "Wait Camera Shot:",
+		"Delay in seconds for added camera shot actions", pEditDelayCameraShot, NULL );
+	
+	helper.EditFloat( content, "Wait Actor Speak:",
+		"Delay in seconds for added actor speak actions", pEditDelayActorSpeak, NULL );
+	
+	helper.EditFloat( content, "Scale Actor Speak:",
+		"Scale duration of spoken words added to actor speak actions", pEditScaleActorSpeak, NULL );
+	
 	helper.EditString( content, "Snippet:", "Conversation snippet to generate actions from",
 		pEditSnippet, 80, 20, NULL );
 	
@@ -101,6 +114,9 @@ pConversation( conversation )
 	pCBCameraShot2->SetText( params.cameraShot2 );
 	pCBTarget1->SetText( params.target1 );
 	pCBTarget2->SetText( params.target2 );
+	pEditDelayCameraShot->SetFloat( params.delayCameraShot );
+	pEditDelayActorSpeak->SetFloat( params.delayActorSpeak );
+	pEditScaleActorSpeak->SetFloat( params.scaleActorSpeak );
 }
 
 ceDialogPasteSnippet::~ceDialogPasteSnippet(){
@@ -112,9 +128,9 @@ ceDialogPasteSnippet::~ceDialogPasteSnippet(){
 ///////////////
 
 void ceDialogPasteSnippet::UpdateCameraShotLists(){
+	const ceCameraShotList list( pConversation->AllCameraShots() );
 	const decString selection1( pCBCameraShot1->GetText() );
 	const decString selection2( pCBCameraShot2->GetText() );
-	const ceCameraShotList &list = pConversation->GetCameraShotList();
 	const int count = list.GetCount();
 	int i;
 	
@@ -138,9 +154,9 @@ void ceDialogPasteSnippet::UpdateCameraShotLists(){
 }
 
 void ceDialogPasteSnippet::UpdateTargetLists(){
+	const ceTargetList list( pConversation->AllTargets() );
 	const decString &selection1( pCBTarget1->GetText() );
 	const decString &selection2( pCBTarget2->GetText() );
-	const ceTargetList &list = pConversation->GetTargetList();
 	const int count = list.GetCount();
 	int i;
 	
@@ -170,6 +186,11 @@ void ceDialogPasteSnippet::GenerateActions(){
 	const decString &cameraShot2 = pCBCameraShot2->GetText();
 	const decString &target1 = pCBTarget1->GetText();
 	const decString &target2 = pCBTarget2->GetText();
+	const bool hasCameraShot1 = ! cameraShot1.IsEmpty();
+	const bool hasCameraShot2 = ! cameraShot2.IsEmpty();
+	const float delayCameraShots = pEditDelayCameraShot->GetFloat();
+	const float delayActorSpeak = pEditDelayActorSpeak->GetFloat();
+	const float scaleActorSpeak = pEditScaleActorSpeak->GetFloat();
 	decString actor, lastActor, text;
 	deObjectReference action;
 	bool firstActor = true;
@@ -230,15 +251,16 @@ void ceDialogPasteSnippet::GenerateActions(){
 		
 		// if the actor changed add a camera shot
 		if( actor != lastActor ){
-			action.TakeOver( new ceCACameraShot );
-			ceCACameraShot * const actionCameraShot = ( ceCACameraShot* )( deObject* )action;
-			actionCameraShot->SetName( firstActor ? cameraShot1 : cameraShot2 );
-			actionCameraShot->SetCameraTarget( firstActor ? target2 : target1 );
-			actionCameraShot->SetDuration( 10.0f );
-			actionCameraShot->SetLookAtTarget( firstActor ? target1 : target2 );
-			actionCameraShot->SetDelay( 0.5f ); //0.25f );
-			pActions.Add( actionCameraShot );
-			
+			if( firstActor ? hasCameraShot1 : hasCameraShot2 ){
+				action.TakeOver( new ceCACameraShot );
+				ceCACameraShot * const actionCameraShot = ( ceCACameraShot* )( deObject* )action;
+				actionCameraShot->SetName( firstActor ? cameraShot1 : cameraShot2 );
+				actionCameraShot->SetCameraTarget( firstActor ? target2 : target1 );
+				actionCameraShot->SetDuration( 10.0f );
+				actionCameraShot->SetLookAtTarget( firstActor ? target1 : target2 );
+				actionCameraShot->SetDelay( delayCameraShots );
+				pActions.Add( actionCameraShot );
+			}
 			firstActor = ! firstActor;
 		}
 		
@@ -248,8 +270,8 @@ void ceDialogPasteSnippet::GenerateActions(){
 		actionActorSpeak->SetActor( actor );
 		actionActorSpeak->SetTextBoxText( decUnicodeString::NewFromUTF8( text ) );
 		actionActorSpeak->SetUseSpeechAnimation( true );
-		actionActorSpeak->SetDelay( 0.5f ); //0.25f );
-		WordsFromText( actionActorSpeak->GetWordList(), actionActorSpeak->GetTextBoxText() );
+		actionActorSpeak->SetDelay( delayActorSpeak );
+		WordsFromText( actionActorSpeak->GetWordList(), actionActorSpeak->GetTextBoxText(), scaleActorSpeak );
 		pActions.Add( actionActorSpeak );
 		
 		// keep track of which actor spoke the last time
@@ -257,9 +279,10 @@ void ceDialogPasteSnippet::GenerateActions(){
 	}
 }
 
-void ceDialogPasteSnippet::WordsFromText( ceStripList &wordList, const decUnicodeString &text ){
+void ceDialogPasteSnippet::WordsFromText( ceStripList &wordList, const decUnicodeString &text, float scale ){
 	const decUnicodeString padding = decUnicodeString::NewFromUTF8( " \t\n\r,.;:\"?!" );
 	const float letterDuration = 0.075f;
+// 	const float phrasePause = 0.5f;
 	const int length = text.GetLength();
 	deObjectReference entry;
 	decUnicodeString word;
@@ -272,7 +295,8 @@ void ceDialogPasteSnippet::WordsFromText( ceStripList &wordList, const decUnicod
 		
 		if( padding.Find( character, 0 ) != -1 ){
 			if( word.GetLength() > 0 ){
-				entry.TakeOver( new ceStrip( word.GetLower().ToUTF8(), letterDuration * ( float )word.GetLength(), 0.0f ) );
+				entry.TakeOver( new ceStrip( word.GetLower().ToUTF8(),
+					letterDuration * ( float )word.GetLength() * scale, 0.0f ) );
 				wordList.Add( ( ceStrip* )( deObject* )entry );
 				word.SetFromUTF8( "" );
 			}
@@ -293,6 +317,9 @@ bool ceDialogPasteSnippet::Accept(){
 	params.cameraShot2 = pCBCameraShot2->GetText();
 	params.target1 = pCBTarget1->GetText();
 	params.target2 = pCBTarget2->GetText();
+	params.delayCameraShot = pEditDelayCameraShot->GetFloat();
+	params.delayActorSpeak = pEditDelayActorSpeak->GetFloat();
+	params.scaleActorSpeak = pEditScaleActorSpeak->GetFloat();
 	
 	// generate actions
 	GenerateActions();

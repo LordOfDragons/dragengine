@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Bullet Physics Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -93,7 +96,7 @@ pPointTestBulletColObj( NULL )
 	pColInfo = new deCollisionInfo;
 	
 	decShapeSphere hackSphere( 0.001f );
-	pRayHackShape.AddShape( hackSphere );
+	pRayHackShape.AddShape( hackSphere, decVector( 1.0f, 1.0f, 1.0f ) );
 	
 	pPointTestShape = new btSphereShape( ( btScalar )0.001 );
 	pPointTestShape->setMargin( BT_ZERO );
@@ -156,7 +159,7 @@ debpWorld &world, const decCollisionFilter &collisionFilter, deBaseScriptingColl
 		// bullet has a broken ray-box test implementation using Gjk which has a tendency
 		// to miss collisions half of the time. as a quick fix a sweep test is done with
 		// a tiny sphere which yields a comparable result but is not prone to the problem
-		const btQuaternion btQuaterion( ( btScalar )0.0, ( btScalar )0.0, ( btScalar )0.0, ( btScalar )1.0 );
+		const btQuaternion btQuaterion( BT_ZERO, BT_ZERO, BT_ZERO, BT_ONE );
 		const btTransform btTransformFrom( btQuaterion, btRayFrom );
 		const btTransform btTransformTo( btQuaterion, btRayTo );
 		
@@ -1137,7 +1140,7 @@ const debpComponent &component, int face, debpCollisionResult &result ){
 		if( displacement * triNormal > 1e-6 ) return false;
 		
 		// test shape for a collision
-		distance = shape.GetCollisionVolume()->VolumeMoveHitsVolume( &collisionTriangle, displacement, &hitNormal );
+		distance = ( float )shape.GetCollisionVolume()->VolumeMoveHitsVolume( &collisionTriangle, displacement, &hitNormal );
 		
 		// distances nearly 1 are considered no collision
 		if( distance >= 0.99999f ) return false;
@@ -1274,7 +1277,7 @@ const debpComponent &component, int face, debpCollisionResult &result ){
 			bpcolvol.UpdateShapes();
 			
 			for( s=0; s<shapeCount; s++ ){
-				distance = shapes.GetShapeAt( s )->GetCollisionVolume()->VolumeMoveHitsVolume( &collisionTriangle, displacement, &hitNormal );
+				distance = ( float )shapes.GetShapeAt( s )->GetCollisionVolume()->VolumeMoveHitsVolume( &collisionTriangle, displacement, &hitNormal );
 				
 				// distances nearly 1 are considered no collision
 				if( distance >= 0.99999f ) continue;

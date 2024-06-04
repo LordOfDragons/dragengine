@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Game Definition Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <math.h>
@@ -56,11 +59,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeVAONavSpace::gdeVAONavSpace( gdeViewActiveObject &view, gdeOCNavigationSpace *ocnavspace ) :
-pView( view ),
+gdeVAONavSpace::gdeVAONavSpace( gdeViewActiveObject &view, const gdeObjectClass &objectClass,
+	const decString &propertyPrefix, gdeOCNavigationSpace *ocnavspace ) :
+gdeVAOSubObject( view, objectClass, propertyPrefix ),
 pOCNavSpace( ocnavspace ),
-pDDSpace( NULL ),
-pDDBlocker( NULL ),
 pDDSSpace( NULL ),
 pDDSBlocker( NULL )
 {
@@ -127,11 +129,11 @@ void gdeVAONavSpace::pCleanUp(){
 	}
 	if( pDDSpace ){
 		pView.GetGameDefinition()->GetWorld()->RemoveDebugDrawer( pDDSpace );
-		pDDSpace->FreeReference();
+		pDDSpace = NULL;
 	}
 	if( pDDBlocker ){
 		pView.GetGameDefinition()->GetWorld()->RemoveDebugDrawer( pDDBlocker );
-		pDDBlocker->FreeReference();
+		pDDBlocker = NULL;
 	}
 	
 	if( pOCNavSpace ){
@@ -145,11 +147,11 @@ void gdeVAONavSpace::pCreateDebugDrawer(){
 	const deEngine &engine = *pView.GetGameDefinition()->GetEngine();
 	
 	// debug drawer
-	pDDSpace = engine.GetDebugDrawerManager()->CreateDebugDrawer();
+	pDDSpace.TakeOver( engine.GetDebugDrawerManager()->CreateDebugDrawer() );
 	pDDSpace->SetXRay( true );
 	pView.GetGameDefinition()->GetWorld()->AddDebugDrawer( pDDSpace );
 	
-	pDDBlocker = engine.GetDebugDrawerManager()->CreateDebugDrawer();
+	pDDBlocker.TakeOver( engine.GetDebugDrawerManager()->CreateDebugDrawer() );
 	pDDBlocker->SetXRay( false );
 	pView.GetGameDefinition()->GetWorld()->AddDebugDrawer( pDDBlocker );
 	
@@ -165,13 +167,13 @@ void gdeVAONavSpace::pCreateDebugDrawer(){
 void gdeVAONavSpace::pBuildDDSSpace(){
 	pDDSSpace->RemoveAllFaces();
 	
-	if( pOCNavSpace->GetPath().IsEmpty() ){
+	const decString path( PropertyString( pOCNavSpace->GetPropertyName( gdeOCNavigationSpace::epPath ), pOCNavSpace->GetPath() ) );
+	if( path.IsEmpty() ){
 		return;
 	}
 	
 	// load navigation space
 	deVirtualFileSystem * const vfs = pView.GetGameDefinition()->GetPreviewVFS();
-	const decPath path( decPath::CreatePathUnix( pOCNavSpace->GetPath() ) );
 	igdeEnvironment &environment = pView.GetWindowMain().GetEnvironment();
 	const deEngine &engine = *pView.GetGameDefinition()->GetEngine();
 	igdeLoadSaveNavSpace loader( &environment, "gdeVAONavSpace" );
@@ -180,7 +182,7 @@ void gdeVAONavSpace::pBuildDDSSpace(){
 	
 	try{
 		navspace = engine.GetNavigationSpaceManager()->CreateNavigationSpace();
-		reader = vfs->OpenFileForReading( path );
+		reader = vfs->OpenFileForReading( decPath::CreatePathUnix( path ) );
 		loader.Load( *navspace, *reader );
 		reader->FreeReference();
 		reader = NULL;
@@ -196,12 +198,13 @@ void gdeVAONavSpace::pBuildDDSSpace(){
 	
 	// create debug drawer shape
 	try{
-		pDDSSpace->SetPosition( pOCNavSpace->GetPosition() );
-		pDDSSpace->SetOrientation( decQuaternion::CreateFromEuler(
-			pOCNavSpace->GetRotation() * DEG2RAD ) );
+		pDDSSpace->SetPosition( PropertyVector( pOCNavSpace->GetPropertyName(
+			gdeOCNavigationSpace::epAttachPosition ), pOCNavSpace->GetPosition() ) );
+		pDDSSpace->SetOrientation( PropertyQuaternion( pOCNavSpace->GetPropertyName(
+			gdeOCNavigationSpace::epAttachRotation ), pOCNavSpace->GetRotation() ) );
 		pDDSSpace->AddNavSpaceFaces( *navspace );
 		
-	}catch( const deException &e ){
+	}catch( const deException & ){
 		if( navspace ){
 			navspace->FreeReference();
 			navspace = NULL;
@@ -216,14 +219,17 @@ void gdeVAONavSpace::pBuildDDSSpace(){
 void gdeVAONavSpace::pBuildDDSBlocker(){
 	pDDSBlocker->RemoveAllShapes();
 	
-	const decShapeList &blockerShape = pOCNavSpace->GetBlockerShapeList();
+	decShapeList blockerShape;
+	PropertyShapeList( pOCNavSpace->GetPropertyName( gdeOCNavigationSpace::epBlockerShape ),
+		blockerShape, pOCNavSpace->GetBlockerShapeList() );
 	if( blockerShape.GetCount() == 0 ){
 		return;
 	}
 	
-	pDDSBlocker->SetPosition( pOCNavSpace->GetPosition() );
-	pDDSBlocker->SetOrientation( decQuaternion::CreateFromEuler(
-		pOCNavSpace->GetRotation() * DEG2RAD ) );
+	pDDSBlocker->SetPosition( PropertyVector( pOCNavSpace->GetPropertyName(
+		gdeOCNavigationSpace::epAttachPosition ), pOCNavSpace->GetPosition() ) );
+	pDDSBlocker->SetOrientation( PropertyQuaternion( pOCNavSpace->GetPropertyName(
+		gdeOCNavigationSpace::epAttachRotation ), pOCNavSpace->GetRotation() ) );
 	pDDSBlocker->AddShapes( blockerShape );
 }
 

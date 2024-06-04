@@ -1,28 +1,30 @@
-/* 
- * Drag[en]gine Windows Input Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <ctype.h>
 #include <stdio.h>
 #include <string.h>
-#include <unistd.h>
 #include <errno.h>
 
 #include "dewiDeviceKeyboard.h"
@@ -33,7 +35,7 @@
 #include "deWindowsInput.h"
 
 #include <dragengine/deEngine.h>
-#include <dragengine/app/deOSUnix.h>
+#include <dragengine/app/deOSWindows.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
 #include <dragengine/input/deInputDevice.h>
@@ -347,6 +349,7 @@ dewiDevice( module, esWindows )
 		}
 		
 		button.SetKeyCode( KeyCodeForWICode( iterentry->virtkey ) );
+		button.SetKeyLocation( KeyLocationForWICode( iterentry->virtkey ) );
 		button.SetMatchPriority( MatchingPriorityForWICode( iterentry->virtkey ) );
 		
 		buttonIndex++;
@@ -450,6 +453,29 @@ deInputEvent::eKeyCodes dewiDeviceKeyboard::KeyCodeForWICode( int code ){
 	return deInputEvent::ekcUndefined;
 }
 
+deInputEvent::eKeyLocation dewiDeviceKeyboard::KeyLocationForWICode( int code ){
+	switch( code ){
+	case VK_LSHIFT:
+	case VK_LCONTROL:
+	case VK_LMENU:
+	case VK_LWIN:
+		return deInputEvent::eklLeft;
+		
+	case VK_RSHIFT:
+	case VK_RCONTROL:
+	case VK_RMENU:
+	case VK_RWIN:
+		return deInputEvent::eklRight;
+		
+	default:
+		if( code >= VK_NUMPAD0 && code <= VK_NUMPAD9 ){
+			return deInputEvent::eklNumberPad;
+		}
+	}
+	
+	return deInputEvent::eklNone;
+}
+
 int dewiDeviceKeyboard::MatchingPriorityForWICode( int code ){
 	// lower value is higher priority
 	
@@ -458,11 +484,11 @@ int dewiDeviceKeyboard::MatchingPriorityForWICode( int code ){
 	case VK_TAB:
 	case VK_RETURN:
 	case VK_SHIFT:
-	case VK_LSHIFT:
+	case VK_RSHIFT:
 	case VK_CONTROL:
-	case VK_LCONTROL:
+	case VK_RCONTROL:
 	case VK_MENU:
-	case VK_LMENU:
+	case VK_RMENU:
 	case VK_PAUSE:
 	case VK_ESCAPE:
 	case VK_SPACE:
@@ -475,15 +501,15 @@ int dewiDeviceKeyboard::MatchingPriorityForWICode( int code ){
 	case VK_DOWN:
 	case VK_INSERT:
 	case VK_DELETE:
-	case VK_LWIN:
+	case VK_RWIN:
 	case VK_APPS:
 		return 0;
 		
+	case VK_LSHIFT:
+	case VK_LCONTROL:
+	case VK_LMENU:
+	case VK_LWIN:
 	case VK_CLEAR:
-	case VK_RSHIFT:
-	case VK_RCONTROL:
-	case VK_RMENU:
-	case VK_RWIN:
 		return 1;
 		
 	default:

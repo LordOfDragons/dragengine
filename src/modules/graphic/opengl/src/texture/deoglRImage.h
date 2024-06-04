@@ -1,31 +1,36 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLRIMAGE_H_
 #define _DEOGLRIMAGE_H_
 
+#include "pixelbuffer/deoglPixelBuffer.h"
+#include "../memory/consumption/deoglMemoryConsumptionSkinUse.h"
+
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
 
-class deoglPixelBuffer;
 class deoglRenderThread;
 class deoglTexture;
 class deoglCubeMap;
@@ -35,9 +40,14 @@ class deImage;
 
 
 /**
- * \brief Render image.
+ * Render image.
  */
 class deoglRImage : public deObject{
+public:
+	typedef deTObjectReference<deoglRImage> Ref;
+	
+	
+	
 private:
 	deoglRenderThread &pRenderThread;
 	
@@ -48,7 +58,7 @@ private:
 	const int pComponentCount;
 	const int pBitCount;
 	
-	deoglPixelBuffer *pPixelBuffer;
+	deoglPixelBuffer::Ref pPixelBuffer;
 	deoglTexture *pTexture;
 	deoglCubeMap *pCubeMap;
 	deoglArrayTexture *pArrayTexture;
@@ -57,65 +67,69 @@ private:
 	float pScaleU;
 	float pScaleV;
 	
+	deoglMemoryConsumptionSkinUse pSkinMemUse;
+	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create render image. */
+	/** Create render image. */
 	deoglRImage( deoglRenderThread &renderThread, const deImage &image );
 	
-	/** \brief Clean up render image. */
+protected:
+	/** Clean up render image. */
 	virtual ~deoglRImage();
 	/*@}*/
 	
 	
 	
+public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Filename of engine image resource or empty string if manually created. */
+	/** Filename of engine image resource or empty string if manually created. */
 	inline const decString &GetFilename() const{ return pFilename; }
 	
-	/** \brief Width of image. */
+	/** Width of image. */
 	inline int GetWidth() const{ return pWidth; }
 	
-	/** \brief Height of image. */
+	/** Height of image. */
 	inline int GetHeight() const{ return pHeight; }
 	
-	/** \brief Depth of image. */
+	/** Depth of image. */
 	inline int GetDepth() const{ return pDepth; }
 	
-	/** \brief Component count of image. */
+	/** Component count of image. */
 	inline int GetComponentCount() const{ return pComponentCount; }
 	
-	/** \brief Bit count image. */
+	/** Bit count image. */
 	inline int GetBitCount() const{ return pBitCount; }
 	
 	
 	
 	/**
-	 * \brief Set pixel or \em NULL if not set.
+	 * Set pixel or nullptr if not set.
 	 * \warning Called during synchronization from main thread only.
 	 */
 	void SetPixelBuffer( deoglPixelBuffer *pixelBuffer );
 	
 	
 	
-	/** \brief Texture or \em NULL. */
+	/** Texture or nullptr. */
 	inline deoglTexture *GetTexture() const{ return pTexture; }
 	
-	/** \brief Cubemap or \em NULL. */
+	/** Cubemap or nullptr. */
 	inline deoglCubeMap *GetCubeMap() const{ return pCubeMap; }
 	
-	/** \brief Array texture or \em NULL if not created yet. */
+	/** Array texture or nullptr if not created yet. */
 	inline deoglArrayTexture *GetArrayTexture() const{ return pArrayTexture; }
 	
 	/**
-	 * \brief Set texture or \em NULL.
+	 * Set texture or nullptr.
 	 * 
 	 * For use by skin channel building. Once the texture has been set it should not be
 	 * replaced by a new texture object or texture unit configurations of existing
-	 * skin channels will break. If texture is not NULL the texture parameters have to
+	 * skin channels will break. If texture is not nullptr the texture parameters have to
 	 * be changed instead.
 	 * 
 	 * \warning Has to be called from render thread only.
@@ -123,11 +137,11 @@ public:
 	void SetTexture( deoglTexture *texture );
 	
 	/**
-	 * \brief Set cubemap or \em NULL.
+	 * Set cubemap or nullptr.
 	 * 
 	 * For use by skin channel building. Once the texture has been set it should not be
 	 * replaced by a new texture object or texture unit configurations of existing
-	 * skin channels will break. If texture is not NULL the texture parameters have to
+	 * skin channels will break. If texture is not nullptr the texture parameters have to
 	 * be changed instead.
 	 * 
 	 * \warning Has to be called from render thread only.
@@ -135,41 +149,43 @@ public:
 	void SetCubeMap( deoglCubeMap *cubemap );
 	
 	/**
-	 * \brief Array texture or \em NULL if not created yet.
+	 * Array texture or nullptr if not created yet.
 	 * 
 	 * For use by skin channel building. Once the texture has been set it should not be
 	 * replaced by a new texture object or texture unit configurations of existing
-	 * skin channels will break. If texture is not NULL the texture parameters have to
+	 * skin channels will break. If texture is not nullptr the texture parameters have to
 	 * be changed instead.
 	 * 
 	 * \warning Has to be called from render thread only.
 	 */
 	void SetArrayTexture( deoglArrayTexture *arrayTexture );
 	
-	/** \brief Texture is used by skin. */
+	/** Texture is used by skin. */
 	inline bool GetSkinUse() const{ return pSkinUse; }
 	
-	/** \brief Scaling factor in U direction. */
+	/** Scaling factor in U direction. */
 	inline float GetScaleFactorU() const{ return pScaleU; }
 	
-	/** \brief Scaling factor in V direction. */
+	/** Scaling factor in V direction. */
 	inline float GetScaleFactorV() const{ return pScaleV; }
 	
 	
 	
 	/**
-	 * \brief Prepare texture for rendering.
+	 * Prepare texture for rendering.
 	 * 
 	 * Creates the texture if not present and updates the content if a pixel buffer is present.
 	 */
 	void PrepareForRender();
 	/*@}*/
 	
+	
+	
 private:
 	void pCleanUp();
 	void pReleaseTextures();
 	void pDirectReleaseTextures();
-	void pUpdateSkinMemoryUsage( bool add );
+	void pUpdateSkinMemoryUsage();
 };
 
 #endif

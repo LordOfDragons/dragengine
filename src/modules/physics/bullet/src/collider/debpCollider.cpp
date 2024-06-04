@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Bullet Physics Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -87,6 +90,7 @@ pCollider( collider )
 	pIsPrepared = false;
 	
 	pMarked = false;
+	pTouchSensorMarked = false;
 	
 	pColDetPrepareIndex = -1;
 	pAutoColDetPrepare = false;
@@ -169,6 +173,14 @@ const decDMatrix &debpCollider::GetInverseMatrix(){
 	return pInvMatrix;
 }
 
+const decDMatrix &debpCollider::GetMatrixNormal(){
+	if( pDirtyMatrix ){
+		UpdateMatrix();
+		pDirtyMatrix = false;
+	}
+	return pMatrixNormal;
+}
+
 void debpCollider::SetIndex( int index ){
 	pIndex = index;
 }
@@ -188,7 +200,11 @@ void debpCollider::SetParentWorld( debpWorld *parentWorld ){
 			pParentWorld->GetWorld().RemoveDebugDrawer( pDebugDrawer );
 		}
 		
-		// tell all touch sensors we are leaving
+		// tell all touch sensors we are leaving. we can not delay this like we do if the
+		// collider moves because removing a collider from the world often happens right
+		// before disposing of game elements. not telling leaving immediately to the game
+		// scripts can cause difficult bugs
+		/*
 		const int tttCount = pTrackingTouchSensors.GetCount();
 		int i;
 		for( i=0; i<tttCount; i++ ){
@@ -198,6 +214,8 @@ void debpCollider::SetParentWorld( debpWorld *parentWorld ){
 				touchSensor.GetLeavingColliders().AddIfAbsent( this );
 			}
 		}
+		*/
+		pRemoveFromAllTrackingTouchSensors();
 	}
 	
 	pParentWorld = parentWorld;
@@ -290,7 +308,9 @@ void debpCollider::UpdateExtends(){
 }
 
 void debpCollider::UpdateMatrix(){
-	pMatrix.SetWorld( pCollider.GetPosition(), pCollider.GetOrientation() );
+	pMatrixNormal.SetFromQuaternion( pCollider.GetOrientation() );
+	pMatrix = decDMatrix::CreateScale( pCollider.GetScale() ).QuickMultiply( pMatrixNormal )
+		.QuickMultiply( decDMatrix::CreateTranslation( pCollider.GetPosition() ) );
 	pInvMatrix = pMatrix.QuickInvert();
 }
 
@@ -592,6 +612,7 @@ void debpCollider::UpdateDebugDrawer(){
 			pDebugDrawer->SetXRay( true );
 			pDebugDrawer->SetPosition( pCollider.GetPosition() );
 			pDebugDrawer->SetOrientation( pCollider.GetOrientation() );
+			pDebugDrawer->SetScale( pCollider.GetScale() );
 			
 			if( pParentWorld ){
 				pParentWorld->GetWorld().AddDebugDrawer( pDebugDrawer );
@@ -609,14 +630,24 @@ void debpCollider::UpdateDebugDrawer(){
 		decColor colorFill( pDDSShape->GetFillColor() );
 		decColor colorEdge( pDDSShape->GetEdgeColor() );
 		
-		if( devmode.GetHilightResponseType() != -1 ){
-			if( pCollider.GetResponseType() == ( deCollider::eResponseType )devmode.GetHilightResponseType() ){
+		if( devmode.GetHighlightResponseType() != -1 ){
+			if( pCollider.GetResponseType() == ( deCollider::eResponseType )devmode.GetHighlightResponseType() ){
 				colorFill = debpDebugDrawerColors::colliderFill;
 				colorEdge = debpDebugDrawerColors::colliderEdge;
 				
 			}else{
 				colorFill = debpDebugDrawerColors::colliderLowFill;
 				colorEdge = debpDebugDrawerColors::colliderLowEdge;
+			}
+			
+		}else if( devmode.GetHighlightDeactivation() ){
+			if( GetRigidBodyDeactivated() ){
+				colorFill = debpDebugDrawerColors::colliderLowFill;
+				colorEdge = debpDebugDrawerColors::colliderLowEdge;
+				
+			}else{
+				colorFill = debpDebugDrawerColors::colliderFill;
+				colorEdge = debpDebugDrawerColors::colliderEdge;
 			}
 			
 		}else{
@@ -648,6 +679,10 @@ void debpCollider::UpdateDebugDrawer(){
 void debpCollider::UpdateDDSShape(){
 }
 
+bool debpCollider::GetRigidBodyDeactivated() const{
+	return true;
+}
+
 
 
 // Notifications
@@ -665,10 +700,17 @@ void debpCollider::OrientationChanged(){
 	}
 }
 
+void debpCollider::ScaleChanged(){
+	if( pDebugDrawer ){
+		pDebugDrawer->SetScale( pCollider.GetScale() );
+	}
+}
+
 void debpCollider::GeometryChanged(){
 	if( pDebugDrawer ){
 		pDebugDrawer->SetPosition( pCollider.GetPosition() );
 		pDebugDrawer->SetOrientation( pCollider.GetOrientation() );
+		pDebugDrawer->SetScale( pCollider.GetScale() );
 	}
 }
 
@@ -834,6 +876,8 @@ void debpCollider::AllCollisionTestsRemoved(){
 //////////////////////
 
 void debpCollider::pCleanUp(){
+	pRemoveFromAllTrackingTouchSensors();
+	
 	AllCollisionTestsRemoved();
 	
 	if( pConstraints ){
@@ -846,8 +890,6 @@ void debpCollider::pCleanUp(){
 		delete [] pAttachments;
 	}
 	
-	pRemoveFromAllTrackingTouchSensors();
-	
 	if( pDebugDrawer ){
 		pDebugDrawer->FreeReference();
 	}
@@ -858,9 +900,7 @@ void debpCollider::pRemoveFromAllTrackingTouchSensors(){
 	int i;
 	
 	for( i=0; i< count; i++ ){
-		debpTouchSensor &touchSensor = *( ( debpTouchSensor* )pTrackingTouchSensors.GetAt( i ) );
-		touchSensor.GetLeavingColliders().RemoveIfPresent( this );
-		touchSensor.GetTouchingColliders().RemoveIfPresent( this );
+		( ( debpTouchSensor* )pTrackingTouchSensors.GetAt( i ) )->RemoveColliderImmediately( this );
 	}
 	
 	pTrackingTouchSensors.RemoveAll();

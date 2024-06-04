@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -737,7 +740,12 @@ deClassLocomotion::nfGetMovingSpeed::nfGetMovingSpeed( const sInitData &init ) :
 void deClassLocomotion::nfGetMovingSpeed::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const dedsLocomotion &locomotion = *( ( ( const sLocoNatDat * )p_GetNativeData( myself ) )->locomotion );
 	
-	rt->PushFloat( locomotion.GetMovingSpeed() );
+	if( fabsf( locomotion.GetMovingDirection() ) > 90.0f ){
+		rt->PushFloat( -locomotion.GetMovingSpeed() );
+		
+	}else{
+		rt->PushFloat( locomotion.GetMovingSpeed() );
+	}
 }
 
 // public func float getAbsMovingSpeed()
@@ -748,7 +756,7 @@ deClassLocomotion::nfGetAbsMovingSpeed::nfGetAbsMovingSpeed( const sInitData &in
 void deClassLocomotion::nfGetAbsMovingSpeed::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const dedsLocomotion &locomotion = *( ( ( const sLocoNatDat * )p_GetNativeData( myself ) )->locomotion );
 	
-	rt->PushFloat( fabsf( locomotion.GetMovingSpeed() ) );
+	rt->PushFloat( locomotion.GetMovingSpeed() );
 }
 
 // public func void setMovingSpeed( float speed )
@@ -1937,12 +1945,23 @@ void deClassLocomotion::nfUpdateAICollider::RunFunction( dsRunTime *rt, dsValue 
 	locomotion.UpdateAICollider();
 }
 
+// public func void adjustOrientation(float angle)
+deClassLocomotion::nfAdjustOrientation::nfAdjustOrientation( const sInitData &init ) :
+dsFunction( init.clsLoco, "adjustOrientation", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsFloat ); // angle
+}
+
+void deClassLocomotion::nfAdjustOrientation::RunFunction( dsRunTime *rt, dsValue *myself ){
+	dedsLocomotion &locomotion = *( ( ( const sLocoNatDat * )p_GetNativeData( myself ) )->locomotion );
+	locomotion.AdjustOrientation( rt->GetValue( 0 )->GetFloat() );
+}
+
 
 
 // File Handling
 //////////////////
 
-// static public func Vector readFromFile( FileReader reader )
+// public func void readFromFile( FileReader reader )
 deClassLocomotion::nfReadFromFile::nfReadFromFile( const sInitData &init ) : dsFunction( init.clsLoco,
 "readFromFile", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
 	p_AddParameter( init.clsFileReader ); // reader
@@ -1986,7 +2005,7 @@ dsFunction( init.clsLoco, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, 
 void deClassLocomotion::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const dedsLocomotion * const locomotion = ( ( const sLocoNatDat * )p_GetNativeData( myself ) )->locomotion;
 	
-	rt->PushInt( ( intptr_t )locomotion );
+	rt->PushInt( ( int )( intptr_t )locomotion );
 }
 
 // public func bool equals( Object object )
@@ -2237,6 +2256,7 @@ void deClassLocomotion::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfUpdateTilt( init ) );
 	AddFunction( new nfUpdateAnimatorInstance( init ) );
 	AddFunction( new nfUpdateAICollider( init ) );
+	AddFunction( new nfAdjustOrientation( init ) );
 	
 	AddFunction( new nfReadFromFile( init ) );
 	AddFunction( new nfWriteToFile( init ) );

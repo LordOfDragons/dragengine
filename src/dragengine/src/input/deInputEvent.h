@@ -1,28 +1,38 @@
-/* 
- * Drag[en]gine Game Engine
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEINPUTEVENT_H_
 #define _DEINPUTEVENT_H_
 
+#include "../dragengine_export.h"
+#include "../dragengine_configuration.h"
+
+#ifdef OS_W32_VS
+#include "../app/include_windows.h"
+#else
 #include <sys/time.h>
+#endif
 
 
 /**
@@ -32,7 +42,7 @@
  * game engine event queue. The <em>script module</em> then reads those events
  * and processes them.
  */
-class deInputEvent{
+class DE_DLL_EXPORT deInputEvent{
 public:
 	/** \brief Event Codes. */
 	enum eEvents{
@@ -63,14 +73,34 @@ public:
 		/** \brief Device button released. */
 		eeButtonRelease,
 		
-		/** \brief Input device has been attached to host system. */
+		/** \deprecated Use eeDevicesAttachedDetached. */
 		eeDeviceAttached,
 		
-		/** \brief Input device has been detatched from host system. */
+		/** \deprecated Use eeDevicesAttachedDetached. */
 		eeDeviceDetached,
 		
 		/** \brief Input device parameters changed. */
-		eeDeviceParamsChanged
+		eeDeviceParamsChanged,
+		
+		/**
+		 * \brief Device button touched.
+		 * \version 1.6
+		 */
+		eeButtonTouch,
+		
+		/**
+		 * \brief Device button untouched.
+		 * \version 1.6
+		 */
+		eeButtonUntouch,
+		
+		/**
+		 * \brief Devices have been attached or detached.
+		 * \version 1.10
+		 * 
+		 * Modules have to query the entire list of devices to detect changes.
+		 */
+		eeDevicesAttachedDetached
 	};
 	
 	/** \brief State modifiers. */
@@ -212,6 +242,40 @@ public:
 		embcMiddle
 	};
 	
+	/**
+	 * \brief Source of the input event.
+	 * \version 1.6
+	 */
+	enum eSources{
+		esInput, //<! Originates from Input System
+		esVR //<! Originates from VR System
+	};
+	
+	/**
+	 * \brief Location of key on keyboard.
+	 * \version 1.7
+	 * 
+	 * Used to distinguish between multiple keys producing the same key code.
+	 */
+	enum eKeyLocation{
+		/**
+		 * \brief No location information.
+		 * 
+		 * Used for all keys existing only once on the keyboard and primary keys located
+		 * in the large key block on keyboards.
+		 */
+		eklNone,
+		
+		/** \brief Left side key, for example left shift key. */
+		eklLeft,
+		
+		/** \brief Right side key, for example right shift key. */
+		eklRight,
+		
+		/** \brief Key is located in the number pad. */
+		eklNumberPad
+	};
+	
 	
 	
 private:
@@ -225,6 +289,8 @@ private:
 	int pY;
 	float pValue;
 	timeval pTime;
+	eSources pSource;
+	eKeyLocation pKeyLocation;
 	
 	
 	
@@ -329,11 +395,39 @@ public:
 	/** \brief Set value if axis event. */
 	void SetValue( float value );
 	
-	/** \brief Time the event occured. */
+	/** \brief Time the event occurred. */
 	inline const timeval &GetTime() const{ return pTime; }
 	
-	/** \brief Set time the event occured. */
+	/** \brief Set time the event occurred. */
 	void SetTime( const timeval &eventTime );
+	
+	/**
+	 * \brief Source of the input event.
+	 * \version 1.6
+	 */
+	inline eSources GetSource() const{ return pSource; }
+	
+	/**
+	 * \brief Set source of the input event.
+	 * \version 1.6
+	 */
+	void SetSource( eSources source );
+	
+	/**
+	 * \brief Location of key on keyboard.
+	 * \version 1.7
+	 * 
+	 * Used to distinguish between multiple keys producing the same key code.
+	 */
+	inline eKeyLocation GetKeyLocation() const{ return pKeyLocation; }
+	
+	/**
+	 * \brief Set location of key on keyboard.
+	 * \version 1.7
+	 * 
+	 * Used to distinguish between multiple keys producing the same key code.
+	 */
+	void SetKeyLocation( eKeyLocation location );
 	
 	/** \brief Copies properties of another event to this event. */
 	void SetFrom( const deInputEvent &event );

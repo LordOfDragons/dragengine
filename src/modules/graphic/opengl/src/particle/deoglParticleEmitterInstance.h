@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLPARTICLEEMITTERINSTANCE_H_
@@ -36,7 +39,7 @@ class deParticleEmitterInstance;
 
 
 /**
- * \brief Particle emitter instance peer.
+ * Particle emitter instance peer.
  */
 class deoglParticleEmitterInstance : public deBaseGraphicParticleEmitterInstance{
 private:
@@ -59,10 +62,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create peer. */
+	/** Create peer. */
 	deoglParticleEmitterInstance( deGraphicOpenGl &ogl, const deParticleEmitterInstance &instance );
 	
-	/** \brief Clean up peer. */
+	/** Clean up peer. */
 	virtual ~deoglParticleEmitterInstance();
 	/*@}*/
 	
@@ -70,29 +73,29 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Opengl object. */
+	/** Opengl object. */
 	inline deGraphicOpenGl &GetOgl() const{ return pOgl; }
 	
-	/** \brief Particle emitter instance. */
+	/** Particle emitter instance. */
 	inline const deParticleEmitterInstance &GetInstance() const{ return pInstance; }
 	
 	
 	
-	/** \brief Render particle emitter instance. */
+	/** Render particle emitter instance. */
 	inline deoglRParticleEmitterInstance *GetRInstance() const{ return pRInstance; }
 	
-	/** \brief Update render thread counterpart if required. */
+	/** Update render thread counterpart if required. */
 	void SyncToRender();
 	
 	
 	
-	/** \brief Emitter or \em NULL if not set. */
+	/** Emitter or \em NULL if not set. */
 	inline deoglParticleEmitter *GetEmitter() const{ return pEmitter; }
 	
-	/** \brief Number of types. */
+	/** Number of types. */
 	inline int GetTypeCount() const{ return pTypeCount; }
 	
-	/** \brief Type at index. */
+	/** Type at index. */
 	deoglParticleEmitterInstanceType &GetTypeAt( int index );
 	/*@}*/
 	
@@ -100,46 +103,46 @@ public:
 	
 	/** \name Notifications */
 	/*@{*/
-	/** \brief Emitter changed. */
+	/** Emitter changed. */
 	virtual void EmitterChanged();
 	
-	/** \brief Position changed. */
+	/** Position changed. */
 	virtual void PositionChanged();
 	
-	/** \brief Orientation changed. */
+	/** Orientation changed. */
 	virtual void OrientationChanged();
 	
-	/** \brief Reference position changed. */
+	/** Reference position changed. */
 	virtual void ReferencePositionChanged();
 	
-	/** \brief Enable casting changed. */
+	/** Enable casting changed. */
 	virtual void EnableCastingChanged();
 	
-	/** \brief Collision filter changed. */
+	/** Collision filter changed. */
 	virtual void CollisionFilterChanged();
 	
-	/** \brief Warm up time changed. */
+	/** Warm up time changed. */
 	virtual void WarmUpTimeChanged();
 	
-	/** \brief Burst time changed. */
+	/** Burst time changed. */
 	virtual void BurstTimeChanged();
 	
-	/** \brief Layer mask changed. */
+	/** Layer mask changed. */
 	virtual void LayerMaskChanged();
 	
-	/** \brief Controller changed. */
+	/** Controller changed. */
 	virtual void ControllerChanged( int controller );
 	
-	/** \brief Type changed. */
+	/** Type changed. */
 	virtual void TypeChanged( int type );
 	
-	/** \brief Type particles changed. */
+	/** Type particles changed. */
 	virtual void TypeParticlesChanged( int type );
 	
-	/** \brief Reset burst particles. */
+	/** Reset burst particles. */
 	virtual void ResetBurst();
 	
-	/** \brief Kill all particles. */
+	/** Kill all particles. */
 	virtual void KillAllParticles();
 	/*@}*/
 	

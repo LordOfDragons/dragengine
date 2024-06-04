@@ -1,0 +1,140 @@
+{
+	"default_bindings": [
+		{
+			"controller_type": "vive_controller",
+			"binding_url": "vive_controller.json"
+		},
+		{
+			"controller_type": "knuckles",
+			"binding_url": "knuckles.json"
+		},
+		{
+			"controller_type": "generic",
+			"binding_url": "generic.json"
+		}
+	],
+	"actions": [
+		{
+			"name": "/actions/dragengine/in/trigger_press",
+			"type": "boolean"
+		},
+		{
+			"name": "/actions/dragengine/in/trigger_touch",
+			"type": "boolean"
+		},
+		{
+			"name": "/actions/dragengine/in/trigger_analog",
+			"type": "vector1"
+		},
+		{
+			"name": "/actions/dragengine/out/trigger_haptic",
+			"type": "vibration"
+		},
+		{
+			"name": "/actions/dragengine/in/button_primary_press",
+			"type": "boolean"
+		},
+		{
+			"name": "/actions/dragengine/in/button_primary_touch",
+			"type": "boolean"
+		},
+		{
+			"name": "/actions/dragengine/in/button_secondary_press",
+			"type": "boolean"
+		},
+		{
+			"name": "/actions/dragengine/in/button_secondary_touch",
+			"type": "boolean"
+		},
+		{
+			"name": "/actions/dragengine/in/joystick_press",
+			"type": "boolean"
+		},
+		{
+			"name": "/actions/dragengine/in/joystick_touch",
+			"type": "boolean"
+		},
+		{
+			"name": "/actions/dragengine/in/joystick_analog",
+			"type": "vector2"
+		},
+		{
+			"name": "/actions/dragengine/in/trackpad_press",
+			"type": "boolean"
+		},
+		{
+			"name": "/actions/dragengine/in/trackpad_touch",
+			"type": "boolean"
+		},
+		{
+			"name": "/actions/dragengine/in/trackpad_analog",
+			"type": "vector2"
+		},
+		{
+			"name": "/actions/dragengine/in/grip_press",
+			"type": "boolean"
+		},
+		{
+			"name": "/actions/dragengine/in/grip_touch",
+			"type": "boolean"
+		},
+		{
+			"name": "/actions/dragengine/in/grip_grab",
+			"type": "vector1"
+		},
+		{
+			"name": "/actions/dragengine/in/grip_squeeze",
+			"type": "vector1"
+		},
+		{
+			"name": "/actions/dragengine/in/grip_pinch",
+			"type": "vector1"
+		},
+		{
+			"name": "/actions/dragengine/out/grip_haptic",
+			"type": "vibration"
+		},
+		{
+			"name": "/actions/dragengine/in/pose",
+			"type": "pose"
+		},
+		{
+			"name": "/actions/dragengine/in/skeleton_hand_right",
+			"type": "skeleton",
+			"skeleton": "/skeleton/hand/right"
+		},
+		{
+			"name": "/actions/dragengine/in/skeleton_hand_left",
+			"type": "skeleton",
+			"skeleton": "/skeleton/hand/left"
+		}
+	],
+	"localization": [
+		{
+			"language_tag": "en_US",
+			"/actions/dragengine/in/trigger_press": "Press Trigger",
+			"/actions/dragengine/in/trigger_touch": "Touch Trigger",
+			"/actions/dragengine/in/trigger_analog": "Pull Trigger",
+			"/actions/dragengine/out/trigger_haptic": "Trigger Haptic",
+			"/actions/dragengine/in/button_primary_press": "Press Primary Button",
+			"/actions/dragengine/in/button_primary_touch": "Touch Button Primary",
+			"/actions/dragengine/in/button_secondary_press": "Press Secondary Button",
+			"/actions/dragengine/in/button_secondary_touch": "Touch Button Secondary",
+			"/actions/dragengine/in/joystick_press": "Press Joystick",
+			"/actions/dragengine/in/joystick_touch": "Touch Joystick",
+			"/actions/dragengine/in/joystick_analog": "Joystick Analog",
+			"/actions/dragengine/in/trackpad_press": "Press TrackPad",
+			"/actions/dragengine/in/trackpad_touch": "Touch TrackPad",
+			"/actions/dragengine/in/trackpad_analog": "TrackPad Analog",
+			"/actions/dragengine/in/grip_press": "Squeeze Grip",
+			"/actions/dragengine/in/grip_touch": "Touch Grip",
+			"/actions/dragengine/in/grip_grab": "Grip Grab",
+			"/actions/dragengine/in/grip_squeeze": "Grip Squeeze",
+			"/actions/dragengine/in/grip_pinch": "Grip Pinch",
+			"/actions/dragengine/out/grip_haptic": "Haptic Grip",
+			"/actions/dragengine/in/pose": "Pose",
+			"/actions/dragengine/in/skeleton_hand_right": "Skeleton Hand Right",
+			"/actions/dragengine/in/skeleton_hand_left": "Skeleton Hand Left"
+		}
+	]
+}

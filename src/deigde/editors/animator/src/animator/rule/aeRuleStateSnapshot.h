@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Animator Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _AERULESTATESNAPSHOT_H_
@@ -27,9 +30,12 @@
 
 
 /**
- * \brief Animator rule state snapshot.
+ * Animator rule state snapshot.
  */
 class aeRuleStateSnapshot : public aeRule{
+public:
+	typedef deTObjectReference<aeRuleStateSnapshot> Ref;
+	
 private:
 	bool pUseLastState;
 	int pID;
@@ -37,57 +43,68 @@ private:
 	bool pEnablePosition;
 	bool pEnableOrientation;
 	bool pEnableSize;
+	bool pEnableVertexPositionSet;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create a new state snapshot rule. */
+	/** Create a new state snapshot rule. */
 	aeRuleStateSnapshot();
-	/** \brief Create a copy of a state snapshot rule. */
+	/** Create a copy of a state snapshot rule. */
 	aeRuleStateSnapshot( const aeRuleStateSnapshot &copy );
-	/** \brief Clean up the animator rule. */
+	/** Clean up the animator rule. */
 	virtual ~aeRuleStateSnapshot();
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Determine if the last state of the component is used or only the stored state. */
+	/** Determine if the last state of the component is used or only the stored state. */
 	inline bool GetUseLastState() const{ return pUseLastState; }
-	/** \brief Set if the last state of the component is used or only the stored state. */
+	/** Set if the last state of the component is used or only the stored state. */
 	void SetUseLastState( bool useLastState );
 	
-	/** \brief Identifier to snapshot state using animator instance. */
+	/** Identifier to snapshot state using animator instance. */
 	inline int GetID() const{ return pID; }
 	
-	/** \brief Set identifier to snapshot state using animator instance. */
+	/** Set identifier to snapshot state using animator instance. */
 	void SetID( int id );
 	
-	/** \brief Determine if position manipulation is enabled. */
+	/** Determine if position manipulation is enabled. */
 	inline bool GetEnablePosition() const{ return pEnablePosition; }
-	/** \brief Set if position manipulation is enabled. */
+	/** Set if position manipulation is enabled. */
 	void SetEnablePosition( bool enabled );
-	/** \brief Determine if orientation manipulation is enabled. */
+	
+	/** Determine if orientation manipulation is enabled. */
 	inline bool GetEnableOrientation() const{ return pEnableOrientation; }
-	/** \brief Set if orientation manipulation is enabled. */
+	
+	/** Set if orientation manipulation is enabled. */
 	void SetEnableOrientation( bool enabled );
-	/** \brief Determine if size manipulation is enabled. */
+	
+	/** Determine if size manipulation is enabled. */
 	inline bool GetEnableSize() const{ return pEnableSize; }
-	/** \brief Set if size manipulation is enabled. */
+	
+	/** Set if size manipulation is enabled. */
 	void SetEnableSize( bool enabled );
 	
-	/** \brief Create an engine animator rule. */
+	/** Vertex position set manipulation is enabled. */
+	inline bool GetEnableVertexPositionSet() const{ return pEnableVertexPositionSet; }
+	
+	/** Set if vertex position set manipulation is enabled. */
+	void SetEnableVertexPositionSet( bool enabled );
+	
+	/** Create an engine animator rule. */
 	virtual deAnimatorRule *CreateEngineRule();
 	
-	/** \brief Create a copy of this rule. */
+	/** Create a copy of this rule. */
 	virtual aeRule *CreateCopy() const;
 	
-	/** \brief List all links of all rule targets. */
+	/** List all links of all rule targets. */
 	virtual void ListLinks( aeLinkList& list );
 	/*@}*/
 	
 	/** \name Operators */
 	/*@{*/
-	/** \brief Copy another state snapshot rule to this state snapshot rule. */
+	/** Copy another state snapshot rule to this state snapshot rule. */
 	virtual aeRuleStateSnapshot &operator=( const aeRuleStateSnapshot &copy );
 	/*@}*/
 };

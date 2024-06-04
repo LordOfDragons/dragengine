@@ -1,0 +1,5 @@
+{
+    "dragonscriptLanguage.scriptDirectories": [
+        "%{DATA_PATH}/scripts"
+    ]
+}

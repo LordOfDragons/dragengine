@@ -1,31 +1,33 @@
-/* 
- * Drag[en]gine OpenAL Audio Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOALDEBUGINFO_H_
 #define _DEOALDEBUGINFO_H_
 
-#include "../utils/deoalTimeHistory.h"
-
 #include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/utils/decTimeHistory.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/utils/decTimer.h>
 #include <dragengine/resources/debug/deDebugDrawerReference.h>
@@ -44,11 +46,11 @@ private:
 	deoalAudioThread &pAudioThread;
 	
 	deDebugBlockInfo *pDIModule;
-	deoalTimeHistory pDebugTimeMainThread;
-	deoalTimeHistory pDebugTimeMainThreadWaitFinish;
-	deoalTimeHistory pDebugTimeMainThreadSynchronize;
-	deoalTimeHistory pDebugTimeAudioThread;
-	deoalTimeHistory pDebugTimeAudioThreadAudio;
+	decTimeHistory pDebugTimeMainThread;
+	decTimeHistory pDebugTimeMainThreadWaitFinish;
+	decTimeHistory pDebugTimeMainThreadSynchronize;
+	decTimeHistory pDebugTimeAudioThread;
+	decTimeHistory pDebugTimeAudioThreadAudio;
 	float pDebugTimeFrameLimiterMain;
 	float pDebugTimeFrameLimiterAudio;
 	float pDebugTimeFrameLimiterAudioEstimated;
@@ -69,6 +71,9 @@ private:
 	deDebugBlockInfo *pDISpeakerAtPosition;
 	decPointerList pDIClosestSpeakers;
 	decObjectList pDDClosestSpeakersDirect;
+	
+	int pModeVisAudSpeakers;
+	decObjectList pDDVisAudSpeakers;
 	
 	
 	
@@ -93,8 +98,8 @@ public:
 	void ResetTimersAudioThread();
 	void StoreTimeAudioThreadAudio();
 	void StoreTimeAudioThread();
-	void StoreTimeFrameLimiter( const deoalTimeHistory &main, const deoalTimeHistory &audio,
-		const deoalTimeHistory &audioEstimated );
+	void StoreTimeFrameLimiter( const decTimeHistory &main, const decTimeHistory &audio,
+		const decTimeHistory &audioEstimated );
 	
 	
 	
@@ -119,6 +124,9 @@ public:
 	
 	void PrepareDDClosestSpeakersDirect( int count );
 	void CaptureDDClosestSpeakersDirect();
+	
+	void VisAudSpeakers( int mode );
+	void UpdateVisAudSpeakers();
 	
 	void UpdateDebugInfo();
 	/*@}*/

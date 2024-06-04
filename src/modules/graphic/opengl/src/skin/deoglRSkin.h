@@ -1,26 +1,30 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLRSKIN_H_
 #define _DEOGLRSKIN_H_
+#include "../memory/consumption/deoglMemoryConsumptionSkinUse.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decObjectList.h>
@@ -32,15 +36,17 @@ class deoglRenderThread;
 class deoglSkinTexture;
 class deoglSkinRenderable;
 class deoglVSRetainImageData;
+class deoglSkinBone;
+class deoglSkinMapped;
 class deoglSkinCalculatedProperty;
+class deoglSkinConstructedProperty;
 
-class deSemaphore;
 class deSkin;
 
 
 
 /**
- * \brief Render skin.
+ * Render skin.
  */
 class deoglRSkin : public deObject{
 public:
@@ -59,6 +65,7 @@ private:
 	
 	bool pIsSolid;
 	bool pHasHoles;
+	bool pHasXRay;
 	bool pShadeless;
 	bool pHasMirrors;
 	bool pHasDynamicChannels;
@@ -72,24 +79,25 @@ private:
 	
 	decObjectList pRenderables;
 	int pVideoPlayerCount;
+	decObjectList pMapped;
 	decObjectList pCalculatedProperties;
-	
-	int pMemoryUsageGPU;
-	int pMemoryUsageGPUCompressed;
-	int pMemoryUsageGPUUncompressed;
-	int pMemoryUsageCount;
+	decObjectList pConstructedProperties;
+	decObjectList pBones;
 	
 	deoglVSRetainImageData *pVSRetainImageData;
+	bool pTexturePipelinesReady;
+	
+	deoglMemoryConsumptionSkinUse pMemUse;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create render skin. */
+	/** Create render skin. */
 	deoglRSkin( deoglRenderThread &renderThread, const deSkin &Skin );
 	
-	/** \brief Clean up render skin. */
+	/** Clean up render skin. */
 	virtual ~deoglRSkin();
 	/*@}*/
 	
@@ -97,106 +105,137 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Render thread. */
+	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
-	/** \brief Filename of skin file. */
+	/** Filename of skin file. */
 	inline const decString &GetFilename() const{ return pFilename; }
 	
 	
 	
 	/**
-	 * \brief Finalize after asynchronous resource loading.
+	 * Finalize after asynchronous resource loading.
 	 * \details Also released retained image data.
 	 */
 	void FinalizeAsyncResLoading();
 	
+	/** Prepare texture pipelines if not prepared yet. */
+	void PrepareTexturePipelines();
 	
 	
-	/** \brief Skin is solid. */
+	
+	/** Skin is solid. */
 	inline bool GetIsSolid() const{ return pIsSolid; }
 	
-	/** \brief Skin has holes. */
+	/** Skin has holes. */
 	inline bool GetHasHoles() const{ return pHasHoles; }
 	
-	/** \brief Skin has mirrors. */
+	/** Skin has XRay. */
+	inline bool GetHasXRay() const{ return pHasXRay; }
+	
+	/** Skin has mirrors. */
 	inline bool GetHasMirrors() const{ return pHasMirrors; }
 	
-	/** \brief Skin has textures with dynamic channels. */
+	/** Skin has textures with dynamic channels. */
 	inline bool GetHasDynamicChannels() const{ return pHasDynamicChannels; }
 	
-	/** \brief Skin has renderables. */
+	/** Skin has renderables. */
 	inline bool GetHasRenderables() const{ return pHasRenderables; }
 	
-	/** \brief Skin is shadeless. */
+	/** Skin is shadeless. */
 	inline bool GetShadeless() const{ return pShadeless; }
 	
-	/** \brief Reflected type. */
+	/** Reflected type. */
 	inline ePropertyStates GetReflected() const{ return pReflected; }
 	
-	/** \brief Shadow casting type. */
+	/** Shadow casting type. */
 	inline ePropertyStates GetShadowNone() const{ return pShadowNone; }
 	
-	/** \brief Shadow importance level. */
+	/** Shadow importance level. */
 	inline int GetShadowImportance() const{ return pShadowImportance; }
 	
-	/** \brief Skin casts solid shadows. */
+	/** Skin casts solid shadows. */
 	inline bool GetCastSolidShadow() const{ return pCastSolidShadow; }
 	
-	/** \brief Skin casts transparent shadows. */
+	/** Skin casts transparent shadows. */
 	inline bool GetCastTransparentShadow() const{ return pCastTranspShadow; }
 	
 	
 	
-	/** \brief Number of textures. */
+	/** Number of textures. */
 	inline int GetTextureCount() const{ return pTextureCount; }
 	
-	/** \brief Texture at index. */
+	/** Texture at index. */
 	deoglSkinTexture &GetTextureAt( int index ) const;
 	
 	
 	
-	/** \brief Update memory usage. */
-	void UpdateMemoryUsage();
-	
-	
-	
-	/** \brief Number of renderables. */
+	/** Number of renderables. */
 	int GetRenderableCount() const;
 	
-	/** \brief Renderable at index. */
+	/** Renderable at index. */
 	deoglSkinRenderable &GetRenderableAt( int index );
 	
-	/** \brief Add renderable if absent. */
+	/** Add renderable if absent. */
 	int AddRenderable( const char *name );
 	
-	/** \brief Index of named renderable or -1 if not found. */
+	/** Index of named renderable or -1 if not found. */
 	int IndexOfRenderableNamed( const char *name ) const;
 	
 	
 	
-	/** \brief Number of video players. */
+	/** Number of video players. */
 	inline int GetVideoPlayerCount() const{ return pVideoPlayerCount; }
 	
 	/**
-	 * \brief Add video player.
+	 * Add video player.
 	 * \returns Index of video player.
 	 */
 	int AddVideoPlayer();
 	
 	
 	
-	/** \brief Number of calculated properties. */
+	/** Count of mapped. */
+	int GetMappedCount() const;
+	
+	/** Mapped. */
+	deoglSkinMapped *GetMappedAt( int index ) const;
+	
+	
+	
+	/** Number of calculated properties. */
 	int GetCalculatedPropertyCount() const;
 	
-	/** \brief Calculated property. */
+	/** Calculated property. */
 	deoglSkinCalculatedProperty *GetCalculatedPropertyAt( int index ) const;
 	
 	/**
-	 * \brief Add calculated property.
+	 * Add calculated property.
 	 * \returns Index of calculated property.
 	 */
 	int AddCalculatedProperty( deoglSkinCalculatedProperty *calculated );
+	
+	
+	
+	/** Number of constructed properties. */
+	int GetConstructedPropertyCount() const;
+	
+	/** Constructed property. */
+	deoglSkinConstructedProperty *GetConstructedPropertyAt( int index ) const;
+	
+	/** Add constructed property and returns index of property. */
+	int AddConstructedProperty( deoglSkinConstructedProperty *constructed );
+	
+	
+	
+	/** Count of bones. */
+	int GetBoneCount() const;
+	
+	/** Bones. */
+	deoglSkinBone *GetBoneAt( int index ) const;
+	
+	/** Add bone and returns index. */
+	int AddBone( const char *name );
 	/*@}*/
 	
 	

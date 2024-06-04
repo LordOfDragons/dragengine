@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 // includes
@@ -177,7 +180,7 @@ void deClassImage::nfSaveToFile::RunFunction(dsRunTime *RT, dsValue *This){
 	
 	// save image
 	const char *filename = RT->GetValue(0)->GetString();
-	ds.LogInfoFormat( "Image: saving %s", filename );
+	//ds.LogInfoFormat( "Image: saving %s", filename );
 	try{
 		imgMgr->SaveImage(nd->image, filename);
 		
@@ -197,7 +200,7 @@ dsFunction(init.clsImg, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, in
 void deClassImage::nfHashCode::RunFunction(dsRunTime *RT, dsValue *This){
 	sImgNatDat *nd = (sImgNatDat*)p_GetNativeData(This);
 	// hash code = memory location
-	RT->PushInt( ( intptr_t )nd->image );
+	RT->PushInt( ( int )( intptr_t )nd->image );
 }
 
 // public func bool equals(Object obj)
@@ -217,6 +220,21 @@ void deClassImage::nfEquals::RunFunction(dsRunTime *RT, dsValue *This){
 		sImgNatDat *other = (sImgNatDat*)p_GetNativeData(obj);
 		RT->PushBool( nd->image == other->image );
 	}
+}
+
+// static public func bool equals( Image image1, Image image2 )
+deClassImage::nfEquals2::nfEquals2( const sInitData &init ) :
+dsFunction( init.clsImg, "equals", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsBool ){
+	p_AddParameter( init.clsImg ); // image1
+	p_AddParameter( init.clsImg ); // image2
+}
+void deClassImage::nfEquals2::RunFunction( dsRunTime *rt, dsValue* ){
+	const deClassImage &clsImage = *( ( deClassImage* )GetOwnerClass() );
+	const deImage * const image1 = clsImage.GetImage( rt->GetValue( 0 )->GetRealObject() );
+	const deImage * const image2 = clsImage.GetImage( rt->GetValue( 1 )->GetRealObject() );
+	
+	rt->PushBool( image1 == image2 );
 }
 
 
@@ -264,6 +282,7 @@ void deClassImage::CreateClassMembers(dsEngine *engine){
 	AddFunction(new nfGetSize(init));
 	AddFunction(new nfSaveToFile(init));
 	AddFunction(new nfEquals(init));
+	AddFunction(new nfEquals2(init));
 	AddFunction(new nfHashCode(init));
 	// calculate member offsets
 	CalcMemberOffsets();

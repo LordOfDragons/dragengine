@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLRENDERGEOMETRY_H_
@@ -28,13 +31,13 @@
 
 class deoglCollideList;
 class deoglComponentLOD;
-class deoglDepthTriangleList;
 class deoglFramebuffer;
+class deoglPersistentRenderTask;
 class deoglRComponent;
 class deoglRenderPlan;
 class deoglRenderTask;
+class deoglComputeRenderTask;
 class deoglRLight;
-class deoglShaderProgram;
 class deoglSkinState;
 class deoglSkinTexture;
 class deoglTexture;
@@ -44,23 +47,34 @@ class deoglVAO;
 
 
 /**
- * @brief OpenGL Geometry Renderer.
+ * OpenGL Geometry Renderer.
  * Renderer for 3D geometry.
  */
 class deoglRenderGeometry : public deoglRenderBase{
+public:
+	struct sVertexPositionSetParams{
+		int firstPoint;
+		int pointCount;
+		float weight;
+	};
+	
+	
+	
 private:
 	decColor pAmbient;
 	
-	deoglShaderProgram *pShaderParticle;
+	const deoglPipeline *pPipelineCopyVNT;
+	const deoglPipeline *pPipelineVPSTransformVNT;
+	const deoglPipeline *pPipelineApproxTransformVNT;
+	const deoglPipeline *pPipelineApproxTransformVNTInplace;
 	
-	deoglShaderProgram *pShaderTransformPositions;
-	deoglShaderProgram *pShaderCalcNormalsTangents;
-	deoglShaderProgram *pShaderWriteSkinnedVBO;
+	sVertexPositionSetParams *pVertexPositionSetParams;
+	int pVertexPositionSetParamSize;
 	
-	deoglShaderProgram *pShaderApproxTransformVNT;
+	
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new renderer. */
 	deoglRenderGeometry( deoglRenderThread &renderThread );
@@ -68,7 +82,7 @@ public:
 	~deoglRenderGeometry();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the ambient. */
 	inline const decColor &GetAmbient() const{ return pAmbient; }
@@ -76,29 +90,23 @@ public:
 	void SetAmbient( const decColor &color );
 	/*@}*/
 	
-	/** @name Rendering */
+	/** \name Rendering */
 	/*@{*/
 	/** Render a render task. */
 	void RenderTask( const deoglRenderTask &renderTask );
+	void RenderTask( const deoglComputeRenderTask &renderTask );
+	void RenderTask( const deoglPersistentRenderTask &renderTask );
 	
-	/** \brief Transform model posititions using component weight matrices using transform feedback. */
-	void TransformPositions( const deoglVAO &vao, GLuint tboWeightMatrices,
-		GLuint vboTransformed, int firstPoint, int pointCount );
+	void CopyVNT( GLuint vao, GLuint vbo, const deoglSPBlockSSBO &transformed,
+		int firstPoint, int pointCount );
 	
-	/** \brief Calculate normals and tangents for a component. */
-	void CalcNormalsTangents( const deoglVAO &vao, GLuint tboPositions, deoglFramebuffer *fbo,
-		int outputWidth, int outputHeight, int positionCount, int normalCount,
-		int tangentCount, int firstPoint, int pointCount );
+	sVertexPositionSetParams *GetVertexPositionSetParams( int count );
 	
-	/** \brief Write skinned vbo using transform feedback. */
-	void WriteSkinnedVBO( const deoglVAO &vao, GLuint tboPositions, deoglTexture &texNorTan,
-		GLuint vboSkinned, int positionCount, int normalCount, int firstPoint, int pointCount );
-	/**
-	 * \brief Approximately transform model posititions, normals and tangents
-	 *        using component weight matrices using transform feedback.
-	 */
-	void ApproxTransformVNT( const deoglVAO &vao, GLuint tboWeightMatrices,
-		GLuint vboTransformed, int firstPoint, int pointCount );
+	void VPSTransformVNT( GLuint vaoModelData, GLuint vboVertexPositionSetData,
+		const sVertexPositionSetParams *params, int paramCount, const deoglSPBlockSSBO &transformed );
+	
+	void ApproxTransformVNT( GLuint vao, GLuint vbo, const deoglSPBlockSSBO *weightMatrices,
+		const deoglSPBlockSSBO &transformed, int firstPoint, int pointCount, bool inplace );
 	/*@}*/
 	
 private:

@@ -1,0 +1,210 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.Gui.Events
+pin Dragengine.Gui.Layouts
+
+
+/**
+ * \brief Toggle menu item.
+ * \version 1.11
+ * 
+ * Shows label, an optional icon and a toggle box. The toggle box contains an optional mark
+ * image which reflects the state of a ToggleModel. If clicked toggles the toggle model if
+ * not sticky.
+ */
+class MenuItemToggle extends MenuItemCommand
+	private var ToggleModel pToggleModel
+	private var bool pStickyToggled
+	private var Widget pWidgetBox
+	private var Widget pWidgetMark
+	private var Panel pPanelBox
+	private var Panel pPanelMark
+	
+	
+	
+	/** \brief Create menu item command. */
+	public func new(String text) this(DefaultToggleModel.new(), text)
+		setDesignerSelector("MenuItem.Toggle")
+	end
+	
+	/** \brief Create menu item command. */
+	public func new(Image icon, String text) this(DefaultToggleModel.new(), icon, text)
+		setDesignerSelector("MenuItem.Toggle")
+	end
+	
+	/** \brief Create menu item command. */
+	public func new(ToggleModel model, String text) this(model, null, text)
+		setDesignerSelector("MenuItem.Toggle")
+	end
+	
+	/** \brief Create menu item command. */
+	public func new(ToggleModel model, Image icon, String text) super(icon, text)
+		if model == null
+			throw EInvalidParam.new()
+		end
+		
+		pToggleModel = model
+		
+		runWhileBlockingLayout(block
+			setDesignerSelector("MenuItem.Toggle")
+			
+			if icon == null
+				addLeftIcon(createIconPlaceholderWidget())
+			end
+			
+			addLeftIcon(Panel.new(StackLayout.new(), block Panel p
+				pPanelBox = Panel.new(CentrizedBoxLayout.new(LayoutAxis.y))
+				p.addWidget(pPanelBox)
+				
+				pPanelMark = Panel.new(CentrizedBoxLayout.new(LayoutAxis.y))
+				p.addWidget(pPanelMark)
+			end))
+		end)
+		doLayout()
+	end
+	
+	/** \brief Dispose of menu item. */
+	public func void dispose()
+		pWidgetBox = null
+		pWidgetMark = null
+		pPanelBox = null
+		pPanelMark = null
+		pToggleModel = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Menu item stays toggled. */
+	public func bool getStickyToggled()
+		return pStickyToggled
+	end
+	
+	/** \brief Set if menu item stays toggled. */
+	public func void setStickyToggled(bool stickyToggled)
+		pStickyToggled = stickyToggled
+	end
+	
+	/** \brief Toggle model. */
+	public func ToggleModel getToggleModel()
+		return pToggleModel
+	end
+	
+	/** \brief Button is toggled. */
+	public func bool getToggled()
+		return pToggleModel.getToggled()
+	end
+	
+	/** \brief Set if button is toggled. */
+	public func void setToggled(bool toggled)
+		pToggleModel.setToggled(toggled)
+	end
+	
+	
+	
+	/** \brief Fire action. */
+	public func void fireAction(int modifiers)
+		if pStickyToggled
+			if not pToggleModel.getToggled()
+				pToggleModel.setToggled(true)
+			end
+			
+		else
+			pToggleModel.setToggled(not pToggleModel.getToggled())
+		end
+		
+		super.fireAction(modifiers)
+	end
+	
+	
+	
+	/**
+	 * \brief Box widget or \em null if not set.
+	 * \note For use by designers.
+	 */
+	public func Widget getBoxWidget()
+		return pWidgetBox
+	end
+	
+	/**
+	 * \brief Set box widget or \em null if not set.
+	 * \note For use by designers.
+	 */
+	public func void setBoxWidget(Widget widget)
+		if widget == pWidgetBox
+			return
+		end
+		
+		if pWidgetBox != null
+			pWidgetBox.safeDispose()
+		end
+		
+		pWidgetBox = widget
+		
+		if widget != null
+			pPanelBox.addWidget(widget)
+		end
+	end
+	
+	/**
+	 * \brief Mark mark widget or \em null if not set.
+	 * \note For use by designers.
+	 */
+	public func Widget getMarkWidget()
+		return pWidgetMark
+	end
+	
+	/**
+	 * \brief Set mark widget.
+	 * \note For use by designers.
+	 */
+	public func void setMarkWidget(Widget widget)
+		if widget == pWidgetMark
+			return
+		end
+		
+		if pWidgetMark != null
+			pWidgetMark.safeDispose()
+		end
+		
+		pWidgetMark = widget
+		
+		if widget != null
+			pPanelMark.addWidget(widget)
+		end
+	end
+	
+	
+	
+	/** \brief Designer changed. */
+	public func void onDesignerChanged()
+		super.onDesignerChanged()
+		setBoxWidget(null)
+		setMarkWidget(null)
+	end
+end

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <math.h>
@@ -30,6 +33,7 @@
 #include "task/deoglRenderTaskParticles.h"
 #include "task/deoglRenderTaskParticlesStep.h"
 #include "../collidelist/deoglCollideList.h"
+#include "../debug/deoglDebugTraceGroup.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTShader.h"
 #include "../shaders/deoglShaderCompiled.h"
@@ -100,32 +104,27 @@ deoglRenderParticles::~deoglRenderParticles(){
 
 void deoglRenderParticles::RenderTaskParticles( const deoglRenderTaskParticles &renderTask ){
 	deoglRenderThread &renderThread = GetRenderThread();
-	deoglSPBlockUBO * const renderParamBlock = renderTask.GetRenderParamBlock();
-	int s, stepCount = renderTask.GetStepCount();
-	deoglVAO *vao, *curVAO = NULL;
-	int instanceCount;
+	const deoglSPBlockUBO * const renderParamBlock = renderTask.GetRenderParamBlock();
+	const bool renderVSStereo = renderTask.GetRenderVSStereo();
+	const int stepCount = renderTask.GetStepCount();
+	const deoglVAO *curVAO = NULL;
+	int i;
 	
 	if( stepCount == 0 ){
 		return;
 	}
 	
-	// conventional particles work with culling enabled. beams and ribbons though are tricky
-	// to calculate so they easily end up backfacing. for these culling has to be disabled
-	// to get them working. since conventional particles work with culling disabled too
-	// culling is disabled for all particles to avoid any problems
-	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
-// 	OGL_CHECK( renderThread, glEnable( GL_CULL_FACE ) );
+	const deoglDebugTraceGroup debugTrace( renderThread, "Particles.RenderTaskParticles" );
 	
-	for( s=0; s<stepCount; s++ ){
-		const deoglRenderTaskParticlesStep &renderTaskStep = *renderTask.GetStepAt( s );
+	for( i=0; i<stepCount; i++ ){
+		const deoglRenderTaskParticlesStep &renderTaskStep = *renderTask.GetStepAt( i );
 		
-		instanceCount = renderTaskStep.GetInstanceCount();
+		const int instanceCount = renderTaskStep.GetInstanceCount();
 		if( instanceCount == 0 ){
 			continue;
 		}
 		
-		// activate shader
-		renderThread.GetShader().ActivateShader( renderTaskStep.GetShader() );
+		renderTaskStep.GetPipeline()->Activate();
 		
 		if( renderParamBlock ){
 			renderParamBlock->Activate();
@@ -135,10 +134,17 @@ void deoglRenderParticles::RenderTaskParticles( const deoglRenderTaskParticles &
 		if( renderTaskStep.GetParameterBlockTexture() ){
 			renderTaskStep.GetParameterBlockTexture()->Activate();
 		}
-		renderTaskStep.GetTUC()->Apply();
+		
+		const deoglTexUnitsConfig * const tuc = renderTaskStep.GetTUC();
+		if( tuc ){
+			tuc->Apply();
+			if( tuc->GetParameterBlock() ){
+				tuc->GetParameterBlock()->Activate();
+			}
+		}
 		
 		// activate vao
-		vao = renderTaskStep.GetVAO();
+		const deoglVAO * const vao = renderTaskStep.GetVAO();
 		if( vao != curVAO ){
 			pglBindVertexArray( vao->GetVAO() );
 			curVAO = vao;
@@ -156,9 +162,18 @@ void deoglRenderParticles::RenderTaskParticles( const deoglRenderTaskParticles &
 		//GetOgl().LogInfoFormat( "RenderTaskParticles: s=%i sha=%p tuc=%p vao=%i ic=%i",
 		//	s, renderTaskStep.GetShader(), renderTaskStep.GetTUC(), vao->GetVAO(),
 		//	renderTaskStep.GetIndexCount() );
-		OGL_CHECK( renderThread, glDrawElements( renderTaskStep.GetPrimitiveType(),
-			renderTaskStep.GetIndexCount(), indexGLType,
-			( GLvoid* )( intptr_t )( indexSize * renderTaskStep.GetFirstIndex() ) ) );
+		if( renderVSStereo ){
+			const GLsizei count[ 2 ] = { renderTaskStep.GetIndexCount(), renderTaskStep.GetIndexCount() };
+			const void * const indices[ 2 ] = {
+				( void* )( intptr_t )( indexSize * renderTaskStep.GetFirstIndex() ),
+				( void* )( intptr_t )( indexSize * renderTaskStep.GetFirstIndex() ) };
+			OGL_CHECK( renderThread, pglMultiDrawElements( renderTaskStep.GetPrimitiveType(), count, indexGLType, indices, 2 ) );
+			
+		}else{
+			OGL_CHECK( renderThread, glDrawElements( renderTaskStep.GetPrimitiveType(),
+				renderTaskStep.GetIndexCount(), indexGLType,
+				( GLvoid* )( intptr_t )( indexSize * renderTaskStep.GetFirstIndex() ) ) );
+		}
 	}
 	
 	pglBindVertexArray( 0 );

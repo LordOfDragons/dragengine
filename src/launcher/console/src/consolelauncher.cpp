@@ -1,28 +1,30 @@
-/* 
- * Drag[en]gine Console Launcher
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
 
 #ifdef OS_W32
 #include <dragengine/app/include_windows.h>
@@ -51,7 +53,6 @@
 
 #ifdef OS_BEOS
 
-#include "engine/declEngine.h"
 #include <dragengine/app/deOSBeOS.h>
 
 class deBApp : public BApplication{
@@ -61,24 +62,21 @@ private:
 	
 public:
 	deBApp() :
-	BApplication( "application/x-vnd.dragengine-launcher-console" ),
+	BApplication( "application/x-vnd.dragengine-launcher-console.app" ),
 	pThread( -1 ){
 	}
 	
 	virtual void ArgvReceived( int32 argc, char** argv ){
 		int i;
 		for( i=1; i<argc; i++ ){
-			printf( "[DELAUNCH] ArgvReceived: %d = '%s'\n", i, argv[ i ] );
 			pLauncher.AddArgument( decUnicodeString::NewFromUTF8( argv[ i ] ) );
 		}
 	}
 	
 	virtual void AboutRequested(){
-		printf( "[DELAUNCH] AboutRequested()\n" );
 	}
 	
 	virtual bool QuitRequested(){
-		printf( "[DELAUNCH] QuitRequested()\n" );
 		return true;
 	}
 	
@@ -92,12 +90,8 @@ public:
 	}
 	
 	virtual void MessageReceived( BMessage *message ){
-		const char whatStr[4] = {(char)((message->what>>24)&0xff), (char)((message->what>>16)&0xff),
-			(char)((message->what>>8)&0xff), (char)(message->what&0xff)};
-		printf( "BApp.MessageReceived: received %.4s\n", (char*)whatStr );
-		
-		if( pLauncher.GetEngine() && pLauncher.GetEngine()->GetEngine() ){
-			pLauncher.GetEngine()->GetEngine()->GetOS()->CastToOSBeOS()->MessageReceived( message );
+		if( pLauncher.runningGame && pLauncher.runningGame->GetEngineInstance() ){
+			pLauncher.runningGame->GetEngineInstance()->BeosMessageReceived( message );
 		}
 	}
 	
@@ -131,15 +125,7 @@ public:
 };
 
 int main( int argcount, char **args ){
-	/*
-	new deBApp();
-	be_app->Run();
-	delete be_app;
-	return 0;
-	*/
-	deBApp app;
-	app.Run();
-	printf( "Quit finished\n" );
+	deBApp().Run();
 	return 0;
 }
 
@@ -174,6 +160,8 @@ int main( int argcount, char **args ){
 
 #ifdef OS_W32
 static int WINAPI RealWinMain(){
+	(void)SetProcessDpiAwarenessContext( DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2 );
+
 	try{
 		decUnicodeArgumentList argsList;
 		argsList.ParseCommand( deOSWindows::WideToUnicode( GetCommandLineW() ) );

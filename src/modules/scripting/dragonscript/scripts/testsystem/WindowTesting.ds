@@ -1,0 +1,680 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.TestSystem
+
+pin Dragengine.Gui.Layouts
+pin Dragengine.Gui.Events
+pin Dragengine.LoadSave
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+/**
+ * \brief Window for running tests.
+ * \version 1.5
+ * 
+ * Provides default UI for running tests. To use this window create instance of window
+ * and add test suites.
+ */
+class WindowTesting extends Window
+	/** \brief Test suite renderer .*/
+	protected class LERTestSuite extends DefaultListElementRenderer
+		private var Dictionary stateNames
+		private var Dictionary dsStateSuffices
+		
+		public func new()
+			stateNames = Dictionary.new()
+			stateNames.setAt(TestSuite.State.pending, "Pending")
+			stateNames.setAt(TestSuite.State.running, "Running")
+			stateNames.setAt(TestSuite.State.passed, "Passed")
+			stateNames.setAt(TestSuite.State.failed, "Failed")
+			
+			dsStateSuffices = Dictionary.new()
+			dsStateSuffices.setAt(TestSuite.State.pending, ".Pending")
+			dsStateSuffices.setAt(TestSuite.State.running, ".Running")
+			dsStateSuffices.setAt(TestSuite.State.passed, ".Passed")
+			dsStateSuffices.setAt(TestSuite.State.failed, ".Failed")
+			
+			setDesignerSelector("ListRenderer.TestSuite")
+		end
+		
+		public func Widget createRenderer(ListBox listBox)
+			return Panel.new(FlowLayout.new(LayoutAxis.x, 5, FlowLayout.Stretch.first), block Panel p
+				p.addWidget(Label.new(""))
+				p.addWidget(Label.new(""))
+			end)
+		end
+		
+		public func void updateRenderer(ListBox listBox, Widget renderer, Object element, bool selected, bool focused)
+			var Panel panel = renderer cast Panel
+			var Label labelName = panel.getWidget(0) cast Label
+			var Label labelState = panel.getWidget(1) cast Label
+			var String ds = getDesignerSelector()
+			var String dsStateSuffix = ""
+			var String dsSuffix = ""
+			
+			if selected
+				dsSuffix = ".Selected"
+			end
+			
+			panel.runWhileBlockingLayout(block
+				if element != null
+					var TestSuite suite = element cast TestSuite
+					labelName.setText(suite.getName().toUTF8())
+					labelState.setText(stateNames.getAt(suite.getState()) cast String)
+					dsStateSuffix = dsStateSuffices.getAt(suite.getState()) cast String
+					
+				else
+					labelName.setText(String.new('X', 30))
+					labelState.setText("Pending")
+				end
+				
+				panel.setDesignerSelector("Panel." + ds + dsSuffix)
+				labelName.setDesignerSelector("Label." + ds + ".Name" + dsSuffix)
+				labelState.setDesignerSelector("Label." + ds + ".State" + dsStateSuffix + dsSuffix)
+			end)
+			panel.doLayout()
+		end
+	end
+	
+	/** \brief Test suite model listener. */
+	protected class SelectTestSuite extends DefaultListModelListener
+		private var WindowTesting window
+		
+		public func new(WindowTesting window)
+			this.window = window
+		end
+		
+		public func void selectionChanged(ListModel listModel)
+			window.updateModelTestCases()
+		end
+	end
+	
+	/** \brief Test case renderer .*/
+	protected class LERTestCase extends DefaultListElementRenderer
+		private var Dictionary stateNames
+		private var Dictionary dsStateSuffices
+		
+		public func new()
+			stateNames = Dictionary.new()
+			stateNames.setAt(TestCase.State.pending, "Pending")
+			stateNames.setAt(TestCase.State.running, "Running")
+			stateNames.setAt(TestCase.State.passed, "Passed")
+			stateNames.setAt(TestCase.State.failed, "Failed")
+			
+			dsStateSuffices = Dictionary.new()
+			dsStateSuffices.setAt(TestCase.State.pending, ".Pending")
+			dsStateSuffices.setAt(TestCase.State.running, ".Running")
+			dsStateSuffices.setAt(TestCase.State.passed, ".Passed")
+			dsStateSuffices.setAt(TestCase.State.failed, ".Failed")
+			
+			setDesignerSelector("ListRenderer.TestCase")
+		end
+		
+		public func Widget createRenderer(ListBox listBox)
+			return Panel.new(FlowLayout.new(LayoutAxis.x, 5, FlowLayout.Stretch.first), block Panel p
+				p.addWidget(Label.new(""))
+				p.addWidget(Label.new(""))
+			end)
+		end
+		
+		public func void updateRenderer(ListBox listBox, Widget renderer, Object element, bool selected, bool focused)
+			var Panel panel = renderer cast Panel
+			var Label labelName = panel.getWidget(0) cast Label
+			var Label labelState = panel.getWidget(1) cast Label
+			var String ds = getDesignerSelector()
+			var String dsStateSuffix = ""
+			var String dsSuffix = ""
+			
+			if selected
+				dsSuffix = ".Selected"
+			end
+			
+			panel.runWhileBlockingLayout(block
+				if element != null
+					var TestCase tc = element cast TestCase
+					labelName.setText(tc.getName().toUTF8())
+					labelState.setText(stateNames.getAt(tc.getState()) cast String)
+					dsStateSuffix = dsStateSuffices.getAt(tc.getState()) cast String
+					
+				else
+					labelName.setText(String.new('X', 30))
+					labelState.setText("Pending")
+				end
+				
+				panel.setDesignerSelector("Panel." + ds + dsSuffix)
+				labelName.setDesignerSelector("Label." + ds + ".Name" + dsSuffix)
+				labelState.setDesignerSelector("Label." + ds + ".State" + dsStateSuffix + dsSuffix)
+			end)
+			panel.doLayout()
+		end
+	end
+	
+	/** \brief Test runner listener updating window representation. */
+	protected class UpdateUIListener extends DefaultTestRunnerListener
+		private var WindowTesting window
+		
+		public func new(WindowTesting window)
+			this.window = window
+		end
+		
+		public func void runnerStarted(TestRunner testRunner)
+			window.onTestSuitesChanged()
+			window.onTestCasesChanged()
+			window.updateButtonStates()
+		end
+		
+		public func void runnerFinished(TestRunner testRunner)
+			window.onTestSuitesChanged()
+			window.onTestCasesChanged()
+			window.updateButtonStates()
+		end
+		
+		public func void testSuiteStarted(TestRunner testRunner, TestSuite testSuite)
+			window.onTestSuiteChanged(testSuite)
+			window.selectTestSuite(testSuite)
+		end
+		
+		public func void testSuiteFinished(TestRunner testRunner, TestSuite testSuite)
+			window.onTestSuiteChanged(testSuite)
+		end
+		
+		public func void testCaseStarted(TestRunner testRunner, TestSuite testSuite, TestCase testCase)
+			window.onTestCaseChanged(testCase)
+			window.selectTestCase(testCase)
+		end
+		
+		public func void testCaseFinished(TestRunner testRunner, TestSuite testSuite, TestCase testCase)
+			window.onTestCaseChanged(testCase)
+		end
+	end
+	
+	/**
+	 * \brief Test runner listener logging to console.
+	 * 
+	 * \par Changes 1.12
+	 * 
+	 * Only start of test and failures are logged. Full logs are written to file.
+	 */
+	protected class LogConsoleListener extends DefaultTestRunnerListener
+		private var WindowTesting window
+		public func new(WindowTesting window)
+			this.window = window
+		end
+		
+		public func void runnerStarted(TestRunner testRunner)
+			window.addLogs("Start running tests")
+		end
+		
+		public func void runnerFinished(TestRunner testRunner)
+			var int countTests = testRunner.getTestSuiteCount()
+			var int countFailed = testRunner.failedTestSuites().getCount()
+			window.addLogs("Finished running tests: {} suites PASSED, {} suites FAILED".format(\
+				Array.newWith(countTests - countFailed, countFailed)))
+		end
+		
+		public func void testSuiteFinished(TestRunner testRunner, TestSuite testSuite)
+			var int countFailed = testSuite.failedTestCases().getCount()
+			if countFailed == 0
+				return
+			end
+			
+			var int countTests = testSuite.getTestCaseCount()
+			window.addLogs("Finished testing test suite: {} ({}): {} cases PASSED, {} cases FAILED".format(\
+				Array.newWith(testSuite.getName(), testSuite.getID(), countTests - countFailed, countFailed)))
+		end
+		
+		public func void testCaseFinished(TestRunner testRunner, TestSuite testSuite, TestCase testCase)
+			if testCase.getState() == TestCase.State.passed
+				return
+			end
+			
+			window.addLogs("Finished testing test case: {} ({}): FAILED".format(\
+				Array.newWith(testCase.getName(), testCase.getID())))
+			
+			if testCase.getException() != null
+				var String text = " => " + testCase.getException().getReason()
+				var int i, count = testCase.getException().getTraceCount()
+				
+				for i = 0 to count
+					text = text + "\n{}) {}.{}(): {}".format(Array.newWith(i + 1, \
+						testCase.getException().getTraceClass(i), \
+						testCase.getException().getTraceFunction(i), \
+						testCase.getException().getTraceLine(i)))
+				end
+				
+				window.addLogs(text)
+			end
+		end
+	end
+		
+	/**
+	 * \brief Test runner listener logging to file.
+	 * \version 1.12
+	 * 
+	 * Calls WindowTesting.getLogFilePath() to obtain path to write log file to.
+	 * If getLogFilePath() returns empty string no log file is written for test run.
+	 */
+	protected class LogFileListener extends LogFileTestListener
+		private var WindowTesting window
+		
+		public func new(WindowTesting window)
+			this.window = window
+		end
+		
+		public func String getLogFilePath()
+			var String path = window.getLogFilePath()
+			if not path.empty()
+				window.addLogs("Test Results File: " + path)
+			end
+			return path
+		end
+	end
+	
+	/** \brief Start running tests action. */
+	protected class StartTestingAll implements ActionListener
+		private var WindowTesting window
+		
+		public func new(WindowTesting window)
+			this.window = window
+		end
+		
+		public func void onAction(ActionEvent event)
+			window.startTesting()
+		end
+	end
+	
+	/** \brief Start running tests action. */
+	protected class StartTestingSelected implements ActionListener
+		private var WindowTesting window
+		
+		public func new(WindowTesting window)
+			this.window = window
+		end
+		
+		public func void onAction(ActionEvent event)
+			var TestSuite suite = window.getSelectedTestSuite()
+			if suite != null
+				window.startTesting(Array.newWith(suite))
+			end
+		end
+	end
+	
+	/** \brief Stop running tests action. */
+	protected class StopTesting implements ActionListener
+		private var WindowTesting window
+		
+		public func new(WindowTesting window)
+			this.window = window
+		end
+		
+		public func void onAction(ActionEvent event)
+			window.stopTesting()
+		end
+	end
+	
+	/**
+	 * \brief Show test result directory action.
+	 * \version 1.12
+	 */
+	protected class ShowTestResultDirectory implements ActionListener
+		private var WindowTesting window
+		
+		public func new(WindowTesting window)
+			this.window = window
+		end
+		
+		public func void onAction(ActionEvent event)
+			var String path = window.getLogFilePath()
+			if path != null
+				FileSystem.browseOverlay(File.new(path).getParent().getPath())
+			end
+		end
+	end
+	
+	
+	
+	private var Console pConsole
+	private var TestRunner pTestRunner
+	private var BaseGameApp pTestGameApp
+	private var DefaultListModel pModelTestSuites
+	private var DefaultListModel pModelTestCases
+	private var DefaultTextModel pModelLogs
+	private var ScrollPanel pScrollPanelLogs
+	private var Button pButtonRunAll
+	private var Button pButtonRunSelected
+	private var Button pButtonStop
+	
+	
+	
+	/** \brief Create window. */
+	public func new(Console console, Desktop desktop)
+		if console == null
+			throw ENullPointer.new("console")
+		end
+		if desktop == null
+			throw ENullPointer.new("desktop")
+		end
+		
+		pConsole = console
+		
+		pTestGameApp = createTestGameApp()
+		pTestGameApp.initGame()
+		
+		createContent()
+		desktop.addWindow(this)
+		
+		pTestRunner = TestRunner.new()
+		pTestRunner.addListener(LogFileListener.new(this))
+		pTestRunner.addListener(LogConsoleListener.new(this))
+		pTestRunner.addListener(UpdateUIListener.new(this))
+		
+		addTestSuites()
+		updateButtonStates()
+	end
+	
+	/** \brief Dispose of window. */
+	public func void dispose()
+		if pTestRunner != null
+			pTestRunner.dispose()
+			pTestRunner = null
+		end
+		if pTestGameApp != null
+			pTestGameApp.cleanUp()
+			pTestGameApp = null
+		end
+		
+		super.dispose()
+		
+		pModelTestSuites = null
+		pModelTestCases = null
+		pModelLogs = null
+		pScrollPanelLogs = null
+		pButtonRunAll = null
+		pButtonRunSelected = null
+		pButtonStop = null
+		pConsole = null
+	end
+	
+	
+	
+	/** \brief Game application for use by test suited. */
+	public func BaseGameApp getTestGameApp()
+		return pTestGameApp
+	end
+	
+	/** \brief Console. */
+	public func Console getConsole()
+		return pConsole
+	end
+	
+	/** \brief Add test suite. */
+	public func void addTestSuite(TestSuite suite)
+		if suite == null
+			throw ENullPointer.new("suite")
+		end
+		if not this.pModelTestSuites.has(suite)
+			this.pModelTestSuites.add(suite)
+		end
+	end
+	
+	/** \brief Remove test suite. */
+	public func void removeTestSuite(TestSuite suite)
+		if this.pModelTestSuites.has(suite)
+			this.pModelTestSuites.remove(suite)
+		end
+	end
+	
+	/** \brief Remove all test suites. */
+	public func void removeAllTestSuites()
+		this.pModelTestSuites.removeAll()
+	end
+	
+	
+	
+	/** \brief Start testing. */
+	public func void startTesting()
+		var Array suites = Array.new()
+		pModelTestSuites.forEach(block TestSuite each
+			suites.add(each)
+		end)
+		startTesting(suites)
+	end
+	
+	/** \brief Start testing Array of TestSuite. */
+	public func void startTesting(Array suites)
+		if suites == null
+			throw ENullPointer.new("suites")
+		end
+		
+		if pTestRunner.getRunning()
+			return
+		end
+		
+		pModelLogs.setText("")
+		
+		pTestRunner.removeAllTestSuites()
+		suites.forEach(block TestSuite each
+			pTestRunner.addTestSuite(each)
+		end)
+		
+		pTestRunner.start()
+	end
+	
+	/** \brief Stop testing. */
+	public func void stopTesting()
+		if pTestRunner.getRunning()
+			pTestRunner.stop()
+		end
+	end
+	
+	
+	
+	/**
+	 * \brief Create test game application instance.
+	 * \version 1.19
+	 * 
+	 * Default implementation creates instance of TestGameApp.
+	 */
+	protected func BaseGameApp createTestGameApp()
+		return TestGameApp.new()
+	end
+	
+	/**
+	 * \brief Create window content.
+	 */
+	protected func void createContent()
+		runWhileBlockingLayout(block
+			setDesignerSelector("Window.WindowTesting")
+			setVisible(true)
+			setWindowState(Window.WindowState.maximized)
+			
+			setLayout(BorderLayout.new(5))
+			
+			// content panel with test suite and test case list box and log panel
+			addWidget(Panel.new(GridLayout.new(2, 1, 5), block Panel p
+				p.addWidget(Panel.new(GridLayout.new(1, 2, 5), block Panel p2
+					p2.addWidget(Panel.new(FlowLayout.new(LayoutAxis.y, 0, FlowLayout.Stretch.last), block Panel p3
+						p3.addWidget(Label.new("Test Suites:"))
+						
+						pModelTestSuites = DefaultListModel.new()
+						pModelTestSuites.addListener(SelectTestSuite.new(this))
+						p3.addWidget(ListBox.new(pModelTestSuites, LERTestSuite.new()))
+					end))
+					
+					p2.addWidget(Panel.new(FlowLayout.new(LayoutAxis.y, 0, FlowLayout.Stretch.last), block Panel p3
+						p3.addWidget(Label.new("Test Cases:"))
+						
+						pModelTestCases = DefaultListModel.new()
+						p3.addWidget(ListBox.new(pModelTestCases, LERTestCase.new()))
+					end))
+				end))
+				
+				p.addWidget(Panel.new(FlowLayout.new(LayoutAxis.y, 0, FlowLayout.Stretch.last), block Panel p2
+					p2.addWidget(Label.new("Test Runner Logs:"))
+					
+					pModelLogs = DefaultTextModel.new()
+					var TextArea textArea = TextArea.new(pModelLogs, 10, true)
+					textArea.setDesignerSelector("TextArea.Logs")
+					p2.addWidget(pScrollPanelLogs = ScrollPanel.new(textArea))
+				end))
+			end), BorderLayout.Area.content)
+			
+			// button panel at the bottom
+			addWidget(Panel.new(GridLayout.new(0, 1, 5), block Panel p
+				p.addWidget(pButtonRunAll = Button.new("Run All", StartTestingAll.new(this)))
+				pButtonRunAll.setToolTip("Run all test suites")
+				
+				p.addWidget(pButtonRunSelected = Button.new("Run Selected", StartTestingSelected.new(this)))
+				pButtonRunSelected.setToolTip("Run only selected test suite")
+				
+				p.addWidget(pButtonStop = Button.new("Stop", StopTesting.new(this)))
+				pButtonStop.setToolTip("Stop running tests")
+				
+				var Button button = Button.new("Results", ShowTestResultDirectory.new(this))
+				button.setToolTip("Open file system browser in directory containing test results")
+				p.addWidget(button)
+				
+				p.addWidget(Button.new("Quit", QuitGameActionListener.new()))
+			end), BorderLayout.Area.bottom)
+		end)
+		doLayout()
+	end
+	
+	/** \brief Update button states. */
+	public func void updateButtonStates()
+		pButtonRunAll.setEnabled(not pTestRunner.getRunning())
+		pButtonRunSelected.setEnabled(not pTestRunner.getRunning())
+		pButtonStop.setEnabled(pTestRunner.getRunning())
+	end
+	
+	/** \brief Add test suites. */
+	protected func void addTestSuites()
+	end
+	
+	/** \brief Selected test suite or null. */
+	public func TestSuite getSelectedTestSuite()
+		if pModelTestSuites.getSelected() == -1
+			return null
+		end
+		return pModelTestSuites.getAt(pModelTestSuites.getSelected()) cast TestSuite
+	end
+	
+	/** \brief Select test suite. */
+	public func void selectTestSuite(TestSuite testSuite)
+		var int index = pModelTestSuites.indexOf(testSuite)
+		if index != -1
+			pModelTestSuites.setSelected(index)
+		end
+	end
+	
+	/** \brief All test suites changed. */
+	public func void onTestSuitesChanged()
+		if pModelTestSuites.getCount() > 0
+			pModelTestSuites.notifyContentChanged(0, pModelTestSuites.getCount() - 1)
+		end
+	end
+	
+	/** \brief Test suite changed. */
+	public func void onTestSuiteChanged(TestSuite testSuite)
+		var int index = pModelTestSuites.indexOf(testSuite)
+		if index != -1
+			pModelTestSuites.notifyContentChanged(index, index)
+		end
+	end
+	
+	/** \brief Update test cases model. */
+	public func void updateModelTestCases()
+		var Array elements = Array.new()
+		var TestSuite suite = getSelectedTestSuite()
+		if suite != null
+			suite.forEachTestCase(block TestCase each
+				elements.add(each)
+			end)
+		end
+		pModelTestCases.setContent(elements)
+	end
+	
+	/** \brief Selected test case or null. */
+	public func TestCase getSelectedTestCase()
+		if pModelTestCases.getSelected() == -1
+			return null
+		end
+		return pModelTestCases.getAt(pModelTestCases.getSelected()) cast TestCase
+	end
+	
+	/** \brief Select test case. */
+	public func void selectTestCase(TestCase testCase)
+		var int index = pModelTestCases.indexOf(testCase)
+		if index != -1
+			pModelTestCases.setSelected(index)
+		end
+	end
+	
+	/** \brief All test cases changed. */
+	public func void onTestCasesChanged()
+		if pModelTestCases.getCount() > 0
+			pModelTestCases.notifyContentChanged(0, pModelTestCases.getCount() - 1)
+		end
+	end
+	
+	/** \brief Test case changed. */
+	public func void onTestCaseChanged(TestCase testCase)
+		var int index = pModelTestCases.indexOf(testCase)
+		if index != -1
+			pModelTestCases.notifyContentChanged(index, index)
+		end
+	end
+	
+	/** \brief Add text to logs. */
+	public func void addLogs(String text)
+		pConsole.addMessage(text)
+		
+		var RangeModel model = pScrollPanelLogs.getVerticalScrollBar().getModel()
+		var bool atBottom = model.getValue() >= model.getMaximum()
+		
+		var String content = pModelLogs.getText()
+		if content.getLength() > 0
+			content = content + "\n"
+		end
+		content = content + text
+		pModelLogs.setText(content)
+		
+		if atBottom
+			pScrollPanelLogs.getHorizontalScrollBar().getModel().setValue(0)
+			model.setValue(model.getMaximum())
+		end
+	end
+	
+	/**
+	 * \brief Filename for test run to write log file to or empty string to not write log file.
+	 * \version 1.12
+	 * 
+	 * Default implementation returs path "/testresults/{timestamp}".
+	 */
+	 public func String getLogFilePath()
+		return "/testresults/" + TimeDate.new().format("%Y-%m-%dT%H:%M:%S.log")
+	 end
+end

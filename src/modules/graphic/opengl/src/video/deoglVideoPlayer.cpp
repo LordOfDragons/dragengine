@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -137,8 +140,7 @@ void deoglVideoPlayer::UpdateNextFrame(){
 		return;
 	}
 	
-	SetCurrentFrame( ( int )( pVideoPlayer.GetPlayPosition()
-		* ( float )pVideo->GetVideo().GetFrameRate() + 0.5f ) );
+	SetCurrentFrame( ( int )( pVideoPlayer.GetPlayPosition() * pVideo->GetVideo().GetFrameRate() ) );
 }
 
 
@@ -155,17 +157,7 @@ void deoglVideoPlayer::SyncToRender(){
 		deVideo * const video = pVideoPlayer.GetVideo();
 		
 		if( video ){
-			switch( video->GetPixelFormat() ){
-			case deVideo::epf444:
-			case deVideo::epf422:
-			case deVideo::epf420:
-				pRVideoPlayer->SetVideoSize( video->GetWidth(), video->GetHeight(), 3 );
-				break;
-				
-			case deVideo::epf4444:
-				pRVideoPlayer->SetVideoSize( video->GetWidth(), video->GetHeight(), 4 );
-				break;
-			}
+			pRVideoPlayer->SetVideoSize( video->GetWidth(), video->GetHeight(), video->GetComponentCount() );
 			
 		}else{
 			pRVideoPlayer->SetVideoSize( 1, 1, 3 ); // dummy texture. maybe use a default opengl one?
@@ -186,7 +178,7 @@ void deoglVideoPlayer::SyncToRender(){
 			
 			//printf( "CachedFrameTexture %i %p\n", pCurFrame, pRVideoPlayer->GetCachedFrameTexture() );
 			if( ! pRVideoPlayer->GetCachedFrameTexture() && pVideo->CanCacheFrame( pCurFrame ) ){
-				deoglPixelBuffer * const pixelBuffer = pDecodeThread->GetTexturePixelBuffer();
+				const deoglPixelBuffer::Ref pixelBuffer( pDecodeThread->GetTexturePixelBuffer() );
 				if( pixelBuffer ){
 					pDecodeThread->SetTexturePixelBuffer( pVideo->CacheFrame( pCurFrame, pixelBuffer ) );
 					pRVideoPlayer->SetUpdateCachedFrameTexture( pCurFrame );
@@ -196,7 +188,7 @@ void deoglVideoPlayer::SyncToRender(){
 		
 		if( ! pRVideoPlayer->HasCachedFrameTexture() ){
 			//vTimer.Reset();
-			deoglPixelBuffer * const pixelBuffer = pDecodeThread->GetTexturePixelBuffer();
+			const deoglPixelBuffer::Ref pixelBuffer( pDecodeThread->GetTexturePixelBuffer() );
 			//printf( "deoglVideoPlayer.UpdateTexture: Get decoded frame in %iys\n", ( int )( vTimer.GetElapsedTime() * 1e6f ) );
 			
 			// swap pixel buffers. the video player takes ownership of the pixel buffer until the next
@@ -319,7 +311,7 @@ void deoglVideoPlayer::pPredictNextFrame(){
 		return;
 	}
 	
-	const float frameRate = ( float )pVideoPlayer.GetVideo()->GetFrameRate();
+	const float frameRate = pVideoPlayer.GetVideo()->GetFrameRate();
 	
 	if( pVideoPlayer.GetLooping() ){
 		const int playFrom = ( int )( pVideoPlayer.GetPlayFrom() * frameRate + 0.5f );

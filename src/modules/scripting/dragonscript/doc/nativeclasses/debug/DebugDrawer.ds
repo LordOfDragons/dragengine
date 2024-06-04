@@ -30,44 +30,49 @@ class DebugDrawer
 	/*@{*/
 	/** \brief Pposition. */
 	public func DVector getPosition()
+		return null
 	end
 	
 	/** \brief Set position. */
-	public func void setPosition( DVector position )
+	public func void setPosition(DVector position)
 	end
 	
 	/** \brief Orientation. */
 	public func Quaternion getOrientation()
+		return null
 	end
 	
 	/** \brief Set orientation. */
-	public func void setOrientation( Quaternion orientation )
+	public func void setOrientation(Quaternion orientation)
 	end
 	
 	/** \brief Scaling. */
 	public func Vector getScale()
+		return null
 	end
 	
 	/** \brief Set scaling. */
-	public func void setScale( Vector scale )
+	public func void setScale(Vector scale)
 	end
 	
 	
 	
 	/** \brief Debug drawer is visible. */
 	public func bool getVisible()
+		return false
 	end
 	
 	/** \brief Set if debug drawer is visible. */
-	public func void setVisible( bool visible )
+	public func void setVisible(bool visible)
 	end
 	
 	/** \brief Debug drawer is rendered in x-ray mode. */
 	public func bool getXRay()
+		return false
 	end
 	
 	/** \brief Set if debug drawer is rendered in x-ray mode. */
-	public func void setXRay( bool xray )
+	public func void setXRay(bool xray)
 	end
 	/*@}*/
 	
@@ -77,10 +82,11 @@ class DebugDrawer
 	/*@{*/
 	/** \brief Number of shapes. */
 	public func int getShapeCount()
+		return 0
 	end
 	
 	/** \brief Set number of shapes. */
-	public func void setShapeCount( int count )
+	public func void setShapeCount(int count)
 	end
 	
 	
@@ -89,21 +95,21 @@ class DebugDrawer
 	 * \brief Set shae position.
 	 * \throws EOutOfBoundary \em shape is less than 0 or larger than or equal to getShapeCount().
 	 */
-	public func void shapeSetPosition( int shape, Vector position )
+	public func void shapeSetPosition(int shape, Vector position)
 	end
 	
 	/**
 	 * \brief Set shape orientation.
 	 * \throws EOutOfBoundary \em shape is less than 0 or larger than or equal to getShapeCount().
 	 */
-	public func void shapeSetOrientation( int shape, Quaternion orientation )
+	public func void shapeSetOrientation(int shape, Quaternion orientation)
 	end
 	
 	/**
 	 * \brief Set shape scaling.
 	 * \throws EOutOfBoundary \em shape is less than 0 or larger than or equal to getShapeCount().
 	 */
-	public func void shapeSetScale( int shape, Vector scale )
+	public func void shapeSetScale(int shape, Vector scale)
 	end
 	
 	
@@ -112,14 +118,14 @@ class DebugDrawer
 	 * \brief Set shape shape list.
 	 * \throws EOutOfBoundary \em shape is less than 0 or larger than or equal to getShapeCount().
 	 */
-	public func void shapeSetShapes( int shape, ShapeList shapes )
+	public func void shapeSetShapes(int shape, ShapeList shapes)
 	end
 	
 	/**
 	 * \brief Remove all shapes from shape.
 	 * \throws EOutOfBoundary \em shape is less than 0 or larger than or equal to getShapeCount().
 	 */
-	public func void shapeRemoveAllShapes( int shape )
+	public func void shapeRemoveAllShapes(int shape)
 	end
 	
 	
@@ -128,14 +134,77 @@ class DebugDrawer
 	 * \brief Set shape edge color.
 	 * \throws EOutOfBoundary \em shape is less than 0 or larger than or equal to getShapeCount().
 	 */
-	public func void shapeSetEdgeColor( int shape, Color color )
+	public func void shapeSetEdgeColor(int shape, Color color)
 	end
 	
 	/**
 	 * \brief Set shape fill color.
 	 * \throws EOutOfBoundary \em shape is less than 0 or larger than or equal to getShapeCount().
 	 */
-	public func void shapeSetFillColor( int shape, Color color )
+	public func void shapeSetFillColor(int shape, Color color)
+	end
+	
+	/**
+	 * \brief Add empty face to shape.
+	 * \version 1.7
+	 * 
+	 * Call shapeFinishedFaces once finished changing faces.
+	 */
+	public func void shapeAddFace(int shape)
+	end
+	
+	/**
+	 * \brief Add vertex to face in shape.
+	 * \version 1.7
+	 * 
+	 * Call shapeFinishedFaces once finished changing faces.
+	 */
+	public func void shapeFaceAddVertex(int shape, int face, Vector vertex)
+	end
+	
+	/**
+	 * \brief Calculate shape face normal.
+	 * \version 1.7
+	 * 
+	 * Call shapeFinishedFaces once finished changing faces.
+	 */
+	public func void shapeFaceCalculateNormal(int shape, int face)
+	end
+	
+	/**
+	 * \brief Remove all faces from shape.
+	 * \version 1.7
+	 * 
+	 * Automatically calls shapeFinishedFaces.
+	 */
+	public func void shapeRemoveAllFaces(int shape)
+	end
+	
+	/**
+	 * \brief Finished adding faces.
+	 * \version 1.7
+	 * 
+	 * Notifies modules shape faces changed.
+	 */
+	public func void shapeFinishedFaces(int shape)
+	end
+	
+	/**
+	 * \brief Set shape faces from model.
+	 * \version 1.7
+	 * 
+	 * Vertices are transformed by matrix. Automatically calls shapeFinishedFaces.
+	 */
+	public func void shapeSetFacesFromModel(int shape, Model model, Matrix matrix)
+	end
+	
+	/**
+	 * \brief Set shape faces from model for faces matching texture.
+	 * \version 1.7
+	 * 
+	 * Vertices are transformed by matrix. Automatically calls shapeFinishedFaces.
+	 */
+	public func void shapeSetFacesFromModel(int shape, Model model, String texture, Matrix matrix)
 	end
 	/*@}*/
 end

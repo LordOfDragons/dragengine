@@ -1,28 +1,32 @@
-/* 
- * Drag[en]gine Game Engine
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 #include "deCamera.h"
 #include "deCameraManager.h"
 #include "../effect/deEffect.h"
@@ -40,29 +44,40 @@
 // Constructor, destructor
 ////////////////////////////
 
-deCamera::deCamera( deCameraManager *manager ) : deResource( manager ){
-	pFov = DEG2RAD * 90.0f;
-	pFovRatio = 1.0f;
-	pImageDistance = 0.01f;
-	pViewDistance = 200.0f;
-	pExposure = 1.0f;
-	pLowestIntensity = 1.0f;
-	pHighestIntensity = 1.0f;
-	pAdaptionTime = 0.1f;
-	
-	pEffects = NULL;
-	
+deCamera::deCamera( deCameraManager *manager ) :
+deResource( manager ),
+
+pFov( DEG2RAD * 90.0f ),
+pFovRatio( 1.0f ),
+pImageDistance( 0.01f ),
+pViewDistance( 200.0f ),
+
+pEnableHDRR( true ),
+pExposure( 1.0f ),
+pLowestIntensity( 1.0f ),
+pHighestIntensity( 1.0f ),
+pAdaptionTime( 0.1f ),
+
+pEnableGI( false ),
+
+pWhiteIntensity( 2.0f ),
+pBloomIntensity( 1.0f ),
+pBloomStrength( 0.25f ),
+pBloomBlend( 1.0f ),
+pBloomSize( 0.25f ),
+
+pEffects( nullptr ),
+
+pPeerGraphic( nullptr ),
+
+pParentWorld( nullptr ),
+pLLWorldPrev( nullptr ),
+pLLWorldNext( nullptr )
+{
 	pLayerMask.SetBit( 0 );
-	
-	pPeerGraphic = NULL;
-	
-	pParentWorld = NULL;
-	pLLWorldNext = NULL;
-	pLLWorldPrev = NULL;
 	
 	try{
 		pEffects = new deEffectChain;
-		if( ! pEffects ) DETHROW( deeOutOfMemory );
 		
 	}catch( const deException & ){
 		pCleanUp();
@@ -80,102 +95,266 @@ deCamera::~deCamera(){
 ///////////////
 
 void deCamera::SetPosition( const decDVector &position ){
-	if( ! position.IsEqualTo( pPosition ) ){
-		pPosition = position;
-		if( pPeerGraphic ) pPeerGraphic->PositionChanged();
+	if( position.IsEqualTo( pPosition ) ){
+		return;
+	}
+	
+	pPosition = position;
+	
+	if( pPeerGraphic ){
+		pPeerGraphic->PositionChanged();
 	}
 }
 
 void deCamera::SetOrientation( const decQuaternion &orientation ){
-	if( ! orientation.IsEqualTo( pOrientation ) ){
-		pOrientation = orientation;
-		if( pPeerGraphic ) pPeerGraphic->OrientationChanged();
+	if( orientation.IsEqualTo( pOrientation ) ){
+		return;
+	}
+	
+	pOrientation = orientation;
+	
+	if( pPeerGraphic ){
+		pPeerGraphic->OrientationChanged();
 	}
 }
 
 void deCamera::SetFov( float fov ){
-	if( fov < 0.0f ){
-		fov = 0.0f;
-		
-	}else if( fov >= PI ){
-		fov = PI;
+	fov = decMath::clamp( fov, 0.0f, PI );
+	
+	if( fabs( fov - pFov ) <= FLOAT_SAFE_EPSILON ){
+		return;
 	}
 	
-	if( fabs( fov - pFov ) > 1e-4 ){
-		pFov = fov;
-		if( pPeerGraphic ) pPeerGraphic->ParameterChanged();
+	pFov = fov;
+	
+	if( pPeerGraphic ){
+		pPeerGraphic->ParameterChanged();
 	}
 }
 
 void deCamera::SetFovRatio( float ratio ){
-	if( ratio < 0.0f ) ratio = 1.0f;
+	ratio = decMath::max( ratio, 0.01f );
 	
-	if( fabs( ratio - pFovRatio ) > 1e-4 ){
-		pFovRatio = ratio;
-		if( pPeerGraphic ) pPeerGraphic->ParameterChanged();
+	if( fabs( ratio - pFovRatio ) <= FLOAT_SAFE_EPSILON ){
+		return;
+	}
+	
+	pFovRatio = ratio;
+	
+	if( pPeerGraphic ){
+		pPeerGraphic->ParameterChanged();
 	}
 }
 
 void deCamera::SetImageDistance( float distance ){
-	if( distance < 1e-4f ) distance = 1e-4f;
+	distance = decMath::max( distance, 1e-4f );
 	
-	if( fabs( distance - pImageDistance ) > 1e-4 ){
-		pImageDistance = distance;
-		if( pPeerGraphic ) pPeerGraphic->ParameterChanged();
+	if( fabs( distance - pImageDistance ) <= FLOAT_SAFE_EPSILON ){
+		return;
+	}
+	
+	pImageDistance = distance;
+	
+	if( pPeerGraphic ){
+		pPeerGraphic->ParameterChanged();
 	}
 }
 
 void deCamera::SetViewDistance( float distance ){
-	if( distance < 1e-3f ) distance = 1e-3f;
+	distance = decMath::max( distance, 1e-3f );
 	
-	if( fabs( distance - pViewDistance ) > 1e-4 ){
-		pViewDistance = distance;
-		if( pPeerGraphic ) pPeerGraphic->ParameterChanged();
+	if( fabs( distance - pViewDistance ) <= FLOAT_SAFE_EPSILON ){
+		return;
+	}
+	
+	pViewDistance = distance;
+	
+	if( pPeerGraphic ){
+		pPeerGraphic->ParameterChanged();
+	}
+}
+
+
+
+void deCamera::SetEnableHDRR( bool enable ){
+	if( enable == pEnableHDRR ){
+		return;
+	}
+	
+	pEnableHDRR = enable;
+	
+	if( pPeerGraphic ){
+		pPeerGraphic->ParameterChanged();
 	}
 }
 
 void deCamera::SetExposure( float exposure ){
-	if( exposure < 0.0f ) exposure = 0.0f;
+	exposure = decMath::max( exposure, 0.0f );
 	
-	if( fabs( exposure - pExposure ) > 1e-4 ){
-		pExposure = exposure;
-		if( pPeerGraphic ) pPeerGraphic->AdaptionChanged();
+	if( fabs( exposure - pExposure ) <= FLOAT_SAFE_EPSILON ){
+		return;
+	}
+	
+	pExposure = exposure;
+	
+	if( pPeerGraphic ){
+		pPeerGraphic->AdaptionChanged();
 	}
 }
 
 void deCamera::SetLowestIntensity( float lowestIntensity ){
-	if( lowestIntensity < 0.0f ) lowestIntensity = 0.0f;
+	lowestIntensity = decMath::max( lowestIntensity, 0.0f );
 	
-	if( fabs( lowestIntensity - pLowestIntensity ) > 1e-4 ){
-		pLowestIntensity = lowestIntensity;
-		
-		if( pPeerGraphic ) pPeerGraphic->AdaptionChanged();
+	if( fabs( lowestIntensity - pLowestIntensity ) <= FLOAT_SAFE_EPSILON ){
+		return;
+	}
+	
+	pLowestIntensity = lowestIntensity;
+	
+	if( pPeerGraphic ){
+		pPeerGraphic->AdaptionChanged();
 	}
 }
 
 void deCamera::SetHighestIntensity( float highestIntensity ){
-	if( highestIntensity < 0.0f ) highestIntensity = 0.0f;
+	highestIntensity = decMath::max( highestIntensity, 0.0f );
 	
-	if( fabs( highestIntensity - pHighestIntensity ) > 1e-4 ){
-		pHighestIntensity = highestIntensity;
-		
-		if( pPeerGraphic ) pPeerGraphic->AdaptionChanged();
+	if( fabs( highestIntensity - pHighestIntensity ) <= FLOAT_SAFE_EPSILON ){
+		return;
+	}
+	
+	pHighestIntensity = highestIntensity;
+	
+	if( pPeerGraphic ){
+		pPeerGraphic->AdaptionChanged();
 	}
 }
 
 void deCamera::SetAdaptionTime( float adaptionTime ){
-	if( adaptionTime < 0.0f ) adaptionTime = 0.0f;
+	adaptionTime = decMath::max( adaptionTime, 0.0f );
 	
-	if( fabs( adaptionTime - pAdaptionTime ) > 1e-4 ){
-		pAdaptionTime = adaptionTime;
-		
-		if( pPeerGraphic ) pPeerGraphic->AdaptionChanged();
+	if( fabs( adaptionTime - pAdaptionTime ) <= FLOAT_SAFE_EPSILON ){
+		return;
+	}
+	
+	pAdaptionTime = adaptionTime;
+	
+	if( pPeerGraphic ){
+		pPeerGraphic->AdaptionChanged();
 	}
 }
+
+
+
+void deCamera::SetEnableGI( bool enable ){
+	if( enable == pEnableGI ){
+		return;
+	}
+	
+	pEnableGI = enable;
+	
+	if( pPeerGraphic ){
+		pPeerGraphic->ParameterChanged();
+	}
+}
+
+
+
+void deCamera::SetWhiteIntensity( float intensity ){
+	intensity = decMath::max( intensity, 0.01f );
+	
+	if( fabs( intensity - pWhiteIntensity ) <= FLOAT_SAFE_EPSILON ){
+		return;
+	}
+	
+	pWhiteIntensity = intensity;
+	
+	if( pPeerGraphic ){
+		pPeerGraphic->AdaptionChanged();
+	}
+}
+
+void deCamera::SetBloomIntensity( float intensity ){
+	intensity = decMath::max( intensity, 0.0f );
+	
+	if( fabs( intensity - pBloomIntensity ) <= FLOAT_SAFE_EPSILON ){
+		return;
+	}
+	
+	pBloomIntensity = intensity;
+	
+	if( pPeerGraphic ){
+		pPeerGraphic->AdaptionChanged();
+	}
+}
+
+void deCamera::SetBloomStrength( float strength ){
+	strength = decMath::max( strength, 0.0f );
+	
+	if( fabs( strength - pBloomStrength ) <= FLOAT_SAFE_EPSILON ){
+		return;
+	}
+	
+	pBloomStrength = strength;
+	
+	if( pPeerGraphic ){
+		pPeerGraphic->AdaptionChanged();
+	}
+}
+
+void deCamera::SetBloomBlend( float blend ){
+	blend = decMath::clamp( blend, 0.0f, 1.0f );
+	
+	if( fabs( blend - pBloomBlend ) <= FLOAT_SAFE_EPSILON ){
+		return;
+	}
+	
+	pBloomBlend = blend;
+	
+	if( pPeerGraphic ){
+		pPeerGraphic->AdaptionChanged();
+	}
+}
+
+void deCamera::SetBloomSize( float size ){
+	size = decMath::clamp( size, 0.0f, 1.0f );
+	
+	if( fabs( size - pBloomSize ) <= FLOAT_SAFE_EPSILON ){
+		return;
+	}
+	
+	pBloomSize = size;
+	
+	if( pPeerGraphic ){
+		pPeerGraphic->AdaptionChanged();
+	}
+}
+
+
+
+void deCamera::SetToneMapCurve( const decCurveBezier &curve ){
+	if( curve == pToneMapCurve ){
+		return;
+	}
+	
+	pToneMapCurve = curve;
+	
+	if( pPeerGraphic ){
+		pPeerGraphic->AdaptionChanged();
+	}
+}
+
+
 
 void deCamera::NotifyLayerMaskChanged(){
 	if( pPeerGraphic ){
 		pPeerGraphic->LayerMaskChanged();
+	}
+}
+
+void deCamera::ResetAdaptedIntensity(){
+	if( pPeerGraphic ){
+		pPeerGraphic->ResetAdaptedIntensity();
 	}
 }
 
@@ -195,18 +374,24 @@ deEffect *deCamera::GetEffectAt( int index ) const{
 void deCamera::AddEffect( deEffect *effect ){
 	pEffects->AddEffect( effect );
 	
-	if( pPeerGraphic ) pPeerGraphic->EffectAdded( pEffects->GetEffectCount() - 1, effect );
+	if( pPeerGraphic ){
+		pPeerGraphic->EffectAdded( pEffects->GetEffectCount() - 1, effect );
+	}
 }
 
 void deCamera::RemoveEffect( deEffect *effect ){
-	int index = pEffects->IndexOfEffect( effect );
-	if( index == -1 ) DETHROW( deeInvalidParam );
+	const int index = pEffects->IndexOfEffect( effect );
+	if( index == -1 ){
+		DETHROW( deeInvalidParam );
+	}
 	
 	effect->AddReference();
 	try{
 		pEffects->RemoveEffect( effect );
 		
-		if( pPeerGraphic ) pPeerGraphic->EffectRemoved( index, effect );
+		if( pPeerGraphic ){
+			pPeerGraphic->EffectRemoved( index, effect );
+		}
 		
 	}catch( const deException & ){
 		effect->FreeReference();
@@ -218,7 +403,9 @@ void deCamera::RemoveEffect( deEffect *effect ){
 void deCamera::RemoveAllEffects(){
 	pEffects->RemoveAllEffects();
 	
-	if( pPeerGraphic ) pPeerGraphic->AllEffectsRemoved();
+	if( pPeerGraphic ){
+		pPeerGraphic->AllEffectsRemoved();
+	}
 }
 
 
@@ -263,8 +450,10 @@ void deCamera::SetLLWorldNext( deCamera *camera ){
 void deCamera::pCleanUp(){
 	if( pPeerGraphic ){
 		delete pPeerGraphic;
-		pPeerGraphic = NULL;
+		pPeerGraphic = nullptr;
 	}
 	
-	if( pEffects ) delete pEffects;
+	if( pEffects ){
+		delete pEffects;
+	}
 }

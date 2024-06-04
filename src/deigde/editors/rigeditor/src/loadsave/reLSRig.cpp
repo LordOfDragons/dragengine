@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Rig Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -57,16 +60,26 @@
 // Constructor, destructor
 ////////////////////////////
 
-reLSRig::reLSRig( deBaseRigModule *module ){
+reLSRig::reLSRig( deBaseRigModule *module ) :
+pModule( module )
+{
 	if( ! module ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	pModule = module;
-	
 	const deLoadableModule &loadableModule = module->GetLoadableModule();
+	const decStringList &patternList = loadableModule.GetPatternList();
+	const int patternCount = patternList.GetCount();
+	int i;
+	
 	pName = loadableModule.GetName();
-	pPattern = loadableModule.GetPatternList().GetAt( 0 );
+	for( i=0; i<patternCount; i++ ){
+		if( i > 0 ){
+			pPattern.AppendCharacter( ',' );
+		}
+		pPattern.AppendCharacter( '*' );
+		pPattern.Append( patternList.GetAt( i ) );
+	}
 }
 
 reLSRig::~reLSRig(){
@@ -119,7 +132,7 @@ void reLSRig::LoadRig( reRig *rig, decBaseFileReader *file ){
 		
 		pModule->LoadRig( *file, *engRig );
 		
-		// now it's time to copy the informations over
+		// now it's time to copy the information over
 		boneCount = engRig->GetBoneCount();
 		for( b=0; b<boneCount; b++ ){
 			deRigBone &engRigBone = engRig->GetBoneAt( b );
@@ -130,10 +143,16 @@ void reLSRig::LoadRig( reRig *rig, decBaseFileReader *file ){
 			// copy over the values
 			rigBone->SetName( engRigBone.GetName() );
 			rigBone->SetPosition( engRigBone.GetPosition() );
-			rigBone->SetOrientation( engRigBone.GetRotation() / DEG2RAD );
+			rigBone->SetOrientation( engRigBone.GetRotation() * RAD2DEG );
 			rigBone->SetCentralMassPoint( engRigBone.GetCentralMassPoint() );
 			rigBone->SetDynamic( engRigBone.GetDynamic() );
 			rigBone->SetMass( engRigBone.GetMass() );
+			rigBone->SetIKLimitsLower( engRigBone.GetIKLimitsLower() * RAD2DEG );
+			rigBone->SetIKLimitsUpper( engRigBone.GetIKLimitsUpper() * RAD2DEG );
+			rigBone->SetIKResistance( engRigBone.GetIKResistance() );
+			rigBone->SetIKLockedX( engRigBone.GetIKLockedX() );
+			rigBone->SetIKLockedY( engRigBone.GetIKLockedY() );
+			rigBone->SetIKLockedZ( engRigBone.GetIKLockedZ() );
 			
 			// create shapes
 			shapeCount = engRigBone.GetShapes().GetCount();
@@ -164,7 +183,7 @@ void reLSRig::LoadRig( reRig *rig, decBaseFileReader *file ){
 				constraint = new reRigConstraint( engine );
 				
 				constraint->SetPosition( engConstraint.GetReferencePosition() );
-				constraint->SetOrientation( decMatrix::CreateFromQuaternion( engConstraint.GetReferenceOrientation() ).GetEulerAngles() / DEG2RAD );
+				constraint->SetOrientation( decMatrix::CreateFromQuaternion( engConstraint.GetReferenceOrientation() ).GetEulerAngles() * RAD2DEG );
 				constraint->SetOffset( engConstraint.GetBoneOffset() );
 				
 				constraint->GetDofLinearX().SetFromEngineDof( engConstraint.GetDofLinearX() );
@@ -226,7 +245,7 @@ void reLSRig::LoadRig( reRig *rig, decBaseFileReader *file ){
 		// time to release the rig resource
 		engRig->FreeReference();
 		
-	}catch( const deException &e ){
+	}catch( const deException & ){
 		//e.PrintError();
 		if( constraint ) constraint->FreeReference();
 		if( rigBone ) rigBone->FreeReference();

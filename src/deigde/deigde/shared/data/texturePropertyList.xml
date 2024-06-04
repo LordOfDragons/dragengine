@@ -43,9 +43,9 @@
 		<type>color</type>
 		<components>3</components>
 		<default>
-			<red>1.0</red>
-			<green>1.0</green>
-			<blue>1.0</blue>
+			<red>1</red>
+			<green>1</green>
+			<blue>1</blue>
 		</default>
 		<affects>
 			<module>graphic</module>
@@ -62,7 +62,7 @@
 		<type>image</type>
 		<components>1</components>
 		<default>
-			<value>1.0</value>
+			<value>1</value>
 		</default>
 		<affects>
 			<module>graphic</module>
@@ -417,6 +417,59 @@
 		</affects>
 	</property>
 	
+	<property name='solidity.filterPriority'>
+		<description>
+			Defines the filter priority. Graphic modules use Mip-Mapping to calculate down
+			scaled versions of the image set using the "solidity" texture property. This
+			improves performance and visual quality. By down scaling the image information
+			is lost. There exist different ways to calculate the down sampled images.
+			The most common solutions are averaging, minimum and maximum.<br/>
+			<br/>
+			Averaging is the default Mip-Mapping technique used and calculates down scaled
+			image pixels by averaging over pixels from the the next higher level. For most
+			images this technique yields good results.<br/>
+			<br/>
+			The minimum and maximum technique use instead the smallest respective largest
+			value of pixels from the next higher level. In contrary to averaging this favors
+			either holes (minimum) or solid geometry (maximum).<br/>
+			<br/>
+			In some situations using averaging causes problems. These are two examples.<br/>
+			<br/>
+			With foliage averaging the solidity can cause the foliage to grow thinner over
+			distance. This causes bushes and trees at distance to loose their density. By
+			using maximum filtering solidity is favored and foliage grows denser over
+			distance. This can be visually better looking than thinning out.<br/>
+			<br/>
+			With shutter blinds the lower part of the image is holed all the way to the
+			border. By using texture transformation the blinds can be pulled up leaving
+			most of the image open. Averaging can now cause the hole pixels on the bottom
+			of the image to smear with the solid pixels causing the hole to vanish over
+			distance. This can cause textures where the player can see through to suddenly
+			become totally solid. By using minimum filtering holes are favored and the
+			texture is ensured to keep the hole part at the bottom intact.<br/>
+			<br/>
+			This parameter is a hint to the Graphic Module if holes or solid geometry
+			should be favored. A value of 0 favors holes. A value of 1 favors solid geometry.
+			A value of 0.5 averages between the two. The actual implementation in the
+			Graphic Module can be different but this texture property helps to shift the
+			calculation into the right direction to get good results.<br/>
+			<br/>
+			Mip-Mapping is one situation where Graphic Modules can use this texture
+			property to deliver better results. Another situation could be alpha dithering
+			or percentage alpha filtering to improve the visual quality.<br/>
+			<br/>
+			The default value is 0.5.
+		</description>
+		<type>value</type>
+		<components>1</components>
+		<default>
+			<value>0.5</value>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
 	<property name='refraction.distort'>
 		<description>
 			Defines the distortion applied to rendered content behind transparent material.
@@ -589,7 +642,7 @@
 			creating gamma corrected images setting the usage of a custom gamma correction is
 			required. In this case the gamma required to convert the image data to real values
 			has to be specified. Gamma correction is applied to the roughness property values
-			before remapping is done. The default value is 1.0.
+			before remapping is done. The default value is 1.
 		</description>
 		<type>value</type>
 		<components>1</components>
@@ -740,9 +793,9 @@
 		<type>color</type>
 		<components>3</components>
 		<default>
-			<red>1.0</red>
-			<green>1.0</green>
-			<blue>1.0</blue>
+			<red>1</red>
+			<green>1</green>
+			<blue>1</blue>
 		</default>
 		<affects>
 			<module>graphic</module>
@@ -754,6 +807,65 @@
 			Defines the intensity of light emission. This value has the same value range as the
 			intensity parameter of light sources. For a common 100W light bulb this value would
 			be around 1. This value has to be a single value.
+		</description>
+		<type>value</type>
+		<components>1</components>
+		<default>
+			<value>0</value>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='emissivity.camera.adapted'>
+		<description>
+			Defines if all emissivity based properties are absolute intensities or intensities
+			relative to the camera maximum adapted intensity.<br/>
+			<br/>
+			The camera adapted intensity is updated by the Graphic Module to to choose an
+			appropriate exposure for the visible camera content. The camera adapted intensity
+			is adjusted over time to match up with the required intensity. This ensures the
+			rendered content is not under nor over exposed when the lighting conditions change.<br/>
+			<br/>
+			By using this texture property you can ensure the intensity of all emissivity
+			properties is not too low in strong light conditions nor too high (white-out
+			or even blooming) in low light conditions.<br/>
+			<br/>
+			A typical use case for this texture property are monitors. With absolute
+			intensities the emissivity is inadequate in extreme light conditions. With this
+			property enabled the emissivity is kept at a stable, final tone mapped intensity.<br/>
+			<br/>
+			Another typical use case is for particles and beams. This allows using
+			particle and beam effects in different lighting conditions without becoming
+			too faint nor white-out with excessive bloom.<br/>
+			<br/>
+			The property is a boolean type property.<br/>
+			<br/>
+			A value of 0 equals to all emissivity intensities to be absolute intensities
+			in the range from 0 to infinity.<br/>
+			<br/>
+			A value of 1 equals to all emissivity intensities to be relative to the camera
+			adapted intensity. The values of all emissivity properties are in the range from
+			0 to infinity and are multiplied by the camera adapted maximum intensity.
+			Values in the range from 0 to 1 are recommended (0% to 100% intensity). Values
+			higher than 1 can be used to ensure emissive objects receive white-out and
+			bloom effects.<br/>
+			<br/>
+			When using relative emissivity intensities keep in mind that graphic modules
+			have to do tone mapping one way or the other. Tone mapping in general requires
+			increasing contrast to avoid colors being washed out. This in turn means high
+			intensity values near the maximum intensity for a given scene key tend to
+			wash out towards white (or even blooming). It is thus not recommended to use
+			emissivity intensities above 0.75 if you want to avoid colors to wash out
+			towards white color. In bright light this effect is less pronounced than in
+			low light conditions. By staying under this threshold you should get good
+			results. Of course if you want to ensure emissive materials to white out and
+			bloom starting at an emissivity of 2.0 and above is a good way to ensure this.
+			<br/>
+			Other values are mapped to 0 or 1 whichever is closer.<br/>
+			<br/>
+			Usually this property is an single value, either 0 or 1. The default is 0.
 		</description>
 		<type>value</type>
 		<components>1</components>
@@ -886,9 +998,9 @@
 		<type>color</type>
 		<components>3</components>
 		<default>
-			<red>1.0</red>
-			<green>1.0</green>
-			<blue>1.0</blue>
+			<red>1</red>
+			<green>1</green>
+			<blue>1</blue>
 		</default>
 		<affects>
 			<module>graphic</module>
@@ -1083,11 +1195,59 @@
 			This is a single value with default 0. Rotates texture coordinates counter
 			clock wise around the center of the texture. If multiple transformations are
 			used applies first "texcoord.zoom" then "texcoord.rotate" then "texcoord.offset".
+			Value represents rotation mapped from 0 to 360 degrees to the range from 0 to 1.
+			Values larger than 1 or less than 0 are supported. In this case the value is
+			normalized into the range from 0 to 1.
 		</description>
 		<type>value</type>
 		<components>1</components>
 		<default>
 			<value>0</value>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='omnidir.rotate'>
+		<description>
+			Defines rotation of omni-direction textures relative to model texture coordinates.
+			This is a 3-component value with default (0,0,0). Rotates the omni-direction texture
+			counter clock wise. Red (first) component is rotation around X axis, green (second)
+			component is rotation around Y axis and blue (third) component is rotation around
+			Z axis. Values represent rotation mapped from 0 to 360 degrees to the range from 0 to 1.
+			Values larger than 1 or less than 0 are supported. In this case the value is
+			normalized into the range from 0 to 1.
+		</description>
+		<type>value</type>
+		<components>3</components>
+		<default>
+			<red>0</red>
+			<green>0</green>
+			<blue>0</blue>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='omnidir.rotate.spot'>
+		<description>
+			Defines rotation of omni-direction textures relative to model texture coordinates
+			for spot or projected type light sources only.
+			This is a 3-component value with default (0,0,0). Rotates the omni-direction texture
+			counter clock wise. Red (first) component is rotation around X axis, green (second)
+			component is rotation around Y axis and blue (third) component is rotation around
+			Z axis. Values represent rotation mapped from 0 to 360 degrees to the range from 0 to 1.
+			Values larger than 1 or less than 0 are supported. In this case the value is
+			normalized into the range from 0 to 1.
+		</description>
+		<type>value</type>
+		<components>3</components>
+		<default>
+			<red>0</red>
+			<green>0</green>
+			<blue>0</blue>
 		</default>
 		<affects>
 			<module>graphic</module>
@@ -1174,7 +1334,7 @@
 	<property name='outline.color'>
 		<description>
 			Defines the outline color. If outline.thickness is larger than 0 an outline is
-			rendered around the component. This is typically used to hilight objects or to
+			rendered around the component. This is typically used to highlight objects or to
 			use cartoon style effects. Outline color is rendered as fully rough material
 			with no reflectivity. This allows outline to be affected by lighting like other
 			skins which makes outlines fit better.
@@ -1191,6 +1351,24 @@
 		</affects>
 	</property>
 	
+	<property name='outline.color.tint'>
+		<description>
+			Defines a color used to tint the outline.color property. This defines an 3-component
+			color that is multiplied component wise with the color property. Typically used to
+			create tinted versions of a texture without creating multiple skins.
+		</description>
+		<type>color</type>
+		<components>3</components>
+		<default>
+			<red>1</red>
+			<green>1</green>
+			<blue>1</blue>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
 	<property name='outline.thickness'>
 		<description>
 			Defines the outline thickness in meters or percentage of camera field-of-view
@@ -1200,7 +1378,7 @@
 			the same visual size no matter what distance it is looked at. For example in the
 			screen mode a value of 0.01 for example equals to a thickness of 1% the screen width.
 			If thickness is larger than 0 an outline is rendered around the component. This is
-			typically used to hilight objects or to use cartoon style effects.
+			typically used to highlight objects or to use cartoon style effects.
 		</description>
 		<type>value</type>
 		<components>1</components>
@@ -1234,7 +1412,7 @@
 	<property name='outline.solidity'>
 		<description>
 			Defines the outline solidity. If outline.thickness is larger than 0 an outline is
-			rendered around the component. This is typically used to hilight objects or to
+			rendered around the component. This is typically used to highlight objects or to
 			use cartoon style effects. The solidity can be used to create transparent outlines.
 		</description>
 		<type>value</type>
@@ -1250,7 +1428,7 @@
 	<property name='outline.emissivity'>
 		<description>
 			Defines the outline emissivity color. If outline.thickness is larger than 0 an
-			outline is rendered around the component. This is typically used to hilight
+			outline is rendered around the component. This is typically used to highlight
 			objects or to use cartoon style effects. While outline.color is affected by
 			lighting emissivity is not. This allows to make glowing outlines. If you use
 			this texture property you have to also use outline.emissivity.intensity
@@ -1268,13 +1446,261 @@
 		</affects>
 	</property>
 	
+	<property name='outline.emissivity.tint'>
+		<description>
+			Defines a color used to tint the outline.emissivity property. This defines an
+			3-component color that is multiplied component wise with the outline.emissivity
+			property. Typically used to create tinted versions of a texture without creating
+			multiple skins.
+		</description>
+		<type>color</type>
+		<components>3</components>
+		<default>
+			<red>1</red>
+			<green>1</green>
+			<blue>1</blue>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
 	<property name='outline.emissivity.intensity'>
 		<description>
 			Defines the outline emissivity intensity. If outline.thickness is larger than 0 an
-			outline is rendered around the component. This is typically used to hilight objects
+			outline is rendered around the component. This is typically used to highlight objects
 			or to use cartoon style effects. This value has the same value range as the
 			intensity parameter of light sources. For a common 100W light bulb this value would
 			be around 1. This value has to be a single value.
+		</description>
+		<type>value</type>
+		<components>1</components>
+		<default>
+			<value>0</value>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='rim.emissivity'>
+		<description>
+			Defines the component wise rim light emission of a surface. Rim light intensity
+			is multiplied by the angle difference between the camera view plane and the
+			surface normal. This allows to create ghost like effects where objects glow
+			along their rim while not glowing seen face on.<br/>
+			<br/>
+			A value of 0 equals to no light being emitted whereas 1 equals to full bright
+			light being emitted. In the lighting model used by this game engine there exists
+			no maximum strength of light since the light intensity is only limited towards
+			the bottom. For this reason the additional property "rim.emissivity.intensity"
+			indicates the maximum intensity for all color components. The real intensity
+			equals to the emissivity value multiplied by the "rim.emissivity.intensity"
+			value.<br/>
+			<br/>
+			Usually this property is an 24-bit color image. The default is black.
+		</description>
+		<type>image</type>
+		<components>3</components>
+		<default>
+			<red>0</red>
+			<green>0</green>
+			<blue>0</blue>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='rim.emissivity.tint'>
+		<description>
+			Defines a color used to tint the rim emissivity property. This defines
+			a 3-component color that is multiplied component wise with the
+			rim.emissivity property. Typically used to create tinted versions of a
+			texture without creating multiple skins.
+		</description>
+		<type>color</type>
+		<components>3</components>
+		<default>
+			<red>1</red>
+			<green>1</green>
+			<blue>1</blue>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='rim.emissivity.intensity'>
+		<description>
+			Defines the intensity of rim light emission. This value has the same value
+			range as the intensity parameter of light sources. For a common 100W light
+			bulb this value would be around 1. This value has to be a single value.
+		</description>
+		<type>value</type>
+		<components>1</components>
+		<default>
+			<value>0</value>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='rim.angle'>
+		<description>
+			Defines the maximum angle difference between the camera view plane and the
+			surface normal for rim light emissivity to become 0. Surface normals
+			located in the camera view plane (parallel to this plane) have maximum
+			intensity. The intensity is faded until reaching rim.angle deviation from
+			the camera view plane. The rim.exponent defines the shape of the fading curve.<br/>
+			<br/>
+			The angle value is defined as mapping between no deviation (0 degrees) at
+			value 0 to full deviation (90 degrees) at value 1. The default value is 0
+			which disables the effect.
+		</description>
+		<type>value</type>
+		<components>1</components>
+		<default>
+			<value>0</value>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='rim.exponent'>
+		<description>
+			Defines the shape of the fading curve for rim light. The value is used
+			as exponent for the curve. Hence a value of 1 produces a linear blend
+			along the angle (constant intensity change per degree change).
+			A value of 2 produces a squared shape with intensity changing stronger
+			near rim.angle and less near 0 angle. A value of 0.5 produces a similar
+			squared shape but flipped with intensity changing stronger near 0 angle
+			and less near rim.angle . The default value is 1.
+		</description>
+		<type>value</type>
+		<components>1</components>
+		<default>
+			<value>1</value>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='nonpbr.albedo'>
+		<description>
+			Defines the Non-PBR albedo color. This texture property is part of Non-PBR
+			metalness workflow and is used together with the "nonpbr.metalness" texture
+			property. These values are Non-PBR since they do not represent real world
+			material properties and store "color" and "reflectivity" texture property
+			in a merged format distributed across "nonpbr.albedo" and "nonpbr.metalness".
+			These texture properties exist to allow using textures authored by tool
+			supporting only the Non-PBR metalness workflow including other game engines.
+			Typically this property is specified using a 24-bit image.
+		</description>
+		<type>image</type>
+		<components>3</components>
+		<default>
+			<red>0</red>
+			<green>0</green>
+			<blue>0</blue>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='nonpbr.metalness'>
+		<description>
+			Defines the Non-PBR metalness color. This texture property is part of Non-PBR
+			metalness workflow and is used together with the "nonpbr.albedo" texture
+			property. These values are Non-PBR since they do not represent real world
+			material properties and store "color" and "reflectivity" texture property
+			in a merged format distributed across "nonpbr.albedo" and "nonpbr.metalness".
+			These texture properties exist to allow using textures authored by tool
+			supporting only the Non-PBR metalness workflow including other game engines.
+			Typically this property is specified using a 8-bit image. A value of 0
+			indicates a fully dieletric material where "nonpbr.albedo" maps to "color"
+			and "reflectivity" is set to 0.23 (4%). A value of 1 indicates a fully
+			electric material where "color" is set to (0,0,0) and "nonpbr.albedo"
+			maps to "reflectivity". Values inbetween blend between these two states.
+			Due to this mapping various materials can not be properly represented.
+		</description>
+		<type>image</type>
+		<components>1</components>
+		<default>
+			<value>0</value>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='xray'>
+		<description>
+			Defines if the object is visible through other objects.<br/>
+			<br/>
+			The property is a boolean type property.<br/>
+			<br/>
+			A value of 0 indicates this object is covered by other objects located closer to the camera.<br/>
+			<br/>
+			A value of 1 indicates this object is rendered in front of all other objects.
+			All objects with XRay enabled keep their depth order while rendered in front
+			of all objects with XRay disabled.<br/>
+			<br/>
+			Other values are mapped to 0 or 1 whichever is closer.<br/>
+			<br/>
+			Usually this property is an single value, either 0 or 1. The default is 0.
+		</description>
+		<type>value</type>
+		<components>1</components>
+		<default>
+			<value>0</value>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='clip.plane'>
+		<description>
+			Defines blend factor for clipping model geometry based on the distance to a clip plane.
+			The clip plane is defined by the coordinate system of a named bone. The position of
+			the bone is the origin of the clip plane. The positive Z axis of the bone is the plane
+			normal. Vertices in front of the clip plane (along the positive bone Z axis) are
+			rendered while vertices on the back side are hidden. Using the "clip.plane.border"
+			texture property allows to create a smooth transition between the two sides. Cliping
+			is multiplied with the "solidity" texture property. This property is specified using
+			a single value in the range from 0 to 1. A value of 0 disables clipping. A value of
+			1 enables clipping. Values in between gradually blend between clipped and unclipped.
+		</description>
+		<type>value</type>
+		<components>1</components>
+		<default>
+			<value>0</value>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
+	<property name='clip.plane.border'>
+		<description>
+			Defines size in meters of the blend zone between clipped and unclipped geometry.
+			The clip plane is defined by the coordinate system of a named bone. The position of
+			the bone is the origin of the clip plane. The positive Z axis of the bone is the plane
+			normal. Vertices in front of the clip plane (along the positive bone Z axis) are
+			rendered while vertices on the back side are hidden. This property is specified using
+			a single value. A value of 0 creates a hard break between clipped and unclipped
+			geometry. Values larger or smaller than 0 create a soft transition between clipped
+			and unclipped geometry. With values larger than 0 geometry is fully clipped at the
+			clip plane origin and fully unclipped "value" meters in front of the clip plane.
+			With values smaller than 0 geometry is fully unclipped at the clip plane origin and
+			fully clipped "-value" meters behind the clip plane. Hence using positive values
+			the border zone expands into the positive side of the clip plane while negative
+			values expand into the negative side of the clip plane.
 		</description>
 		<type>value</type>
 		<components>1</components>

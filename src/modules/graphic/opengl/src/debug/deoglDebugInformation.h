@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLDEBUGINFORMATION_H_
@@ -31,20 +34,23 @@
 
 
 /**
- * \brief Debug information for performance profiling.
+ * Debug information for performance profiling.
  * 
  * Stores an elapsed time in seconds and a counter value. A name is used to display
  * the information on screen. The font and background color can be set to help identify
- * the information on screen quickly. Debug informations can be disabled in which case
- * the font is half-way faded to the background and the values set to dashes. Informations
- * can be groups containing child informations. If child informations exist and an elapsed
- * time is present the child informations calculate a ratio of their elapsed time compared
+ * the information on screen quickly. Debug information can be disabled in which case
+ * the font is half-way faded to the background and the values set to dashes. Information
+ * can be groups containing child information. If child information exist and an elapsed
+ * time is present the child information calculate a ratio of their elapsed time compared
  * to this elapsed time to find better bottle necks.
  * 
  * Debug information be be set invisible in which case they are not drawn. Avoids the
  * need to add and remove debug information all time.
  */
 class deoglDebugInformation : public deObject{
+public:
+	typedef deTObjectReference<deoglDebugInformation> Ref;
+	
 private:
 	decString pName;
 	decColor pColorText;
@@ -69,10 +75,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create debug information. */
+	/** Create debug information. */
 	deoglDebugInformation( const char *name, const decColor &colorText, const decColor &colorBackground );
 	
-	/** \brief Clean up debug information. */
+	/** Clean up debug information. */
 	virtual ~deoglDebugInformation();
 	/*@}*/
 	
@@ -80,101 +86,107 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Name. */
+	/** Name. */
 	inline const decString &GetName() const{ return pName; }
 	
-	/** \brief Set name. */
+	/** Set name. */
 	void SetName( const char *name );
 	
-	/** \brief Text color. */
+	/** Text color. */
 	inline const decColor &GetColorText() const{ return pColorText; }
 	
-	/** \brief Set text color. */
+	/** Set text color. */
 	void SetColorText( const decColor &color );
 	
-	/** \brief Background color. */
+	/** Background color. */
 	inline const decColor &GetColorBackground() const{ return pColorBackground; }
 	
-	/** \brief Set background color. */
+	/** Set background color. */
 	void SetColorBackground( const decColor &color );
 	
-	/** \brief Clear elapsed time and counter. */
+	/** Clear elapsed time and counter. */
 	void Clear();
 	
-	/** \brief Visible. */
+	/** Visible. */
 	inline bool GetVisible() const{ return pVisible; }
 	
-	/** \brief Set if visible. */
+	/** Set if visible. */
 	void SetVisible( bool visible );
 	
-	/** \brief Children. */
+	/** Children. */
 	inline deoglDebugInformationList &GetChildren(){ return pChildren; }
 	inline const deoglDebugInformationList &GetChildren() const{ return pChildren; }
 	
 	
 	
-	/** \brief Elapsed time. */
+	/** Elapsed time. */
 	inline float GetElapsedTime() const{ return pElapsedTime; }
 	
-	/** \brief Set elapsed time. */
+	/** Accumulated elapsed time. */
+	inline float GetElapsedTimeAccum() const{ return pElapsedTimeAccum; }
+	
+	/** Set elapsed time. */
 	void SetElapsedTime( float time );
 	
-	/** \brief Increment elapsed time. */
+	/** Increment elapsed time. */
 	void IncrementElapsedTime( float time );
 	
-	/** \brief Clear elapsed time. */
+	/** Clear elapsed time. */
 	void ClearElapsedTime();
 	
-	/** \brief Has elapsed time. */
+	/** Has elapsed time. */
 	inline bool HasElapsedTime() const{ return pHasElapsedTime; }
 	
-	/** \brief Sliding elapsed time factor. */
+	/** Sliding elapsed time factor. */
 	inline float GetSlidingElapsedTimeFactor() const{ return pSlidingElapsedTimeFactor; }
 	
-	/** \brief Set sliding elapsed time factor. */
+	/** Set sliding elapsed time factor. */
 	void SetSlidingElapsedTimeFactor( float factor );
 	
 	
 	
-	/** \brief Counter. */
+	/** Counter. */
 	inline int GetCounter() const{ return pCounter; }
 	
-	/** \brief Set counter. */
+	/** Set counter. */
 	void SetCounter( int counter );
 	
-	/** \brief Increment counter by one. */
+	/** Increment counter by one. */
 	void IncrementCounter();
 	
-	/** \brief Increment counter. */
+	/** Increment counter. */
 	void IncrementCounter( int count );
 	
-	/** \brief Clear counter. */
+	/** Clear counter. */
 	void ClearCounter();
 	
-	/** \brief Has counter. */
+	/** Has counter. */
 	inline bool HasCounter() const{ return pHasCounter; }
+	
+	/** Copy results from another debug information. */
+	void CopyResults( const deoglDebugInformation &info );
 	/*@}*/
 	
 	
 	
 	/** \name Rendering for use by deoglRenderDevMode only. */
 	/*@{*/
-	/** \brief Render text. */
+	/** Render text. */
 	inline const decString &GetRenderText() const{ return pRenderText; }
 	
-	/** \brief Set render text. */
+	/** Set render text. */
 	void SetRenderText( const char *text );
 	
-	/** \brief Render size. */
+	/** Render size. */
 	inline const decPoint &GetRenderSize() const{ return pRenderSize; }
 	
-	/** \brief Set render size. */
+	/** Set render size. */
 	void SetRenderSize( const decPoint &size );
 	
-	/** \brief Render position. */
+	/** Render position. */
 	inline const decPoint &GetRenderPosition() const{ return pRenderPosition; }
 	
-	/** \brief Set render position. */
+	/** Set render position. */
 	void SetRenderPosition( const decPoint &position );
 	/*@}*/
 };

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLRENDERSKY_H_
@@ -28,8 +31,8 @@
 
 
 class deoglRSkyInstance;
-class deoglShaderProgram;
 class deoglRenderPlan;
+class deoglRenderPlanMasked;
 class deoglEnvironmentMap;
 class deoglRWorld;
 class decLayerMask;
@@ -37,13 +40,21 @@ class decLayerMask;
 
 
 /**
- * \brief OpenGL sky renderer.
+ * OpenGL sky renderer.
  */
 class deoglRenderSky : public deoglRenderBase{
 private:
-	deoglShaderProgram *pShaderSkySphere;
-	deoglShaderProgram *pShaderSkyBox;
-	deoglShaderProgram *pShaderBody;
+	deoglSPBSingleUse::Ref pRenderSkyIntoEnvMapPBSingleUse;
+	deoglSPBlockUBO::Ref pRenderSkyIntoEnvMapPB;
+	
+	const deoglPipeline *pPipelineSkySphere;
+	const deoglPipeline *pPipelineSkySphereStereo;
+	
+	const deoglPipeline *pPipelineSkyBox;
+	const deoglPipeline *pPipelineSkyBoxStereo;
+	
+	const deoglPipeline *pPipelineBody;
+	const deoglPipeline *pPipelineBodyStereo;
 	
 	decPointerList pSkyInstances;
 	
@@ -52,10 +63,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create renderer. */
+	/** Create renderer. */
 	deoglRenderSky( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up renderer. */
+	/** Clean up renderer. */
 	~deoglRenderSky();
 	/*@}*/
 	
@@ -64,45 +75,43 @@ public:
 	/** \name Rendering */
 	/*@{*/
 	/**
-	 * \brief Render sky.
+	 * Render sky.
 	 * 
 	 * Uses FBO Depth+Color. Clears color buffer. Depth used for rendering only background.
 	 * - RenderSkyBox
 	 * - RenderSkySphere
 	 * Invalidates no attachments.
 	 */
-	void RenderSky( deoglRenderPlan &plan );
+	void RenderSky( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
 	
-	/** \brief Render sky. */
+	/** Render sky. */
 	//void RenderSkyOld( deoglRenderPlan &plan );
 	
-	/** \brief Render sky box layer. */
+	/** Render sky box layer. */
 	bool RenderSkyBox( deoglRenderPlan &plan, deoglRSkyInstance &instance,
-		int layerIndex, bool first );
+		int layerIndex, bool first, bool renderIntoEnvMap );
 	
-	/** \brief Render sky sphere layer. */
+	/** Render sky sphere layer. */
 	bool RenderSkySphere( deoglRenderPlan &plan, deoglRSkyInstance &instance,
-		int layerIndex, bool first );
+		int layerIndex, bool first, bool renderIntoEnvMap );
 	
-	/** \brief Render sky bodies layer. */
+	/** Render sky bodies layer. */
 	void RenderSkyLayerBodies( deoglRenderPlan &plan, deoglRSkyInstance &instance,
-		int layerIndex );
+		int layerIndex, bool renderIntoEnvMap );
 	
-	/** \brief Render sky into an environment map. */
+	/** Render sky into an environment map. */
 	void RenderSkyIntoEnvMap( deoglRWorld &world, const decLayerMask &layerMask,
 		deoglEnvironmentMap &envmap );
 	
-	/** \brief Render empty sky into an environment map. */
+	/** Render empty sky into an environment map. */
 	void RenderEmptySkyIntoEnvMap( deoglRWorld &world, deoglEnvironmentMap &envmap );
 	
-	/** \brief Get sky background color in linear space. */
+	/** Get sky background color in linear space. */
 	decColor LinearBgColor( const deoglRSkyInstance &instance, bool first ) const;
+	
+	/** Prepare render sky into env map parameter block. */
+	void PreparepRenderSkyIntoEnvMapParamBlock( const deoglRenderPlan &plan );
 	/*@}*/
-	
-	
-	
-private:
-	void pCleanUp();
 };
 
 #endif

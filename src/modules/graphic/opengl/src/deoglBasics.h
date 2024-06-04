@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLBASICS_H_
@@ -33,37 +36,45 @@ class deoglRenderThread;
 
 #ifdef OGL_THREAD_CHECK
 	void dbgInitThreadCheck();
-	#define OGL_INIT_THREAD_CHECK		dbgInitThreadCheck()
+	#define OGL_INIT_THREAD_CHECK dbgInitThreadCheck()
+	
+	void dbgInitLoaderThreadCheck();
+	#define OGL_INIT_LOADER_THREAD_CHECK dbgInitLoaderThreadCheck();
+	
+	void dbgExitLoaderThreadCheck();
+	#define OGL_EXIT_LOADER_THREAD_CHECK dbgExitLoaderThreadCheck();
+	
 	void dbgInitMainThreadCheck();
-	#define OGL_INIT_MAIN_THREAD_CHECK	dbgInitMainThreadCheck()
+	#define OGL_INIT_MAIN_THREAD_CHECK dbgInitMainThreadCheck()
 	
 	void dbgOnMainThreadCheck();
-	#define OGL_ON_MAIN_THREAD			dbgOnMainThreadCheck();
+	#define OGL_ON_MAIN_THREAD dbgOnMainThreadCheck();
+	
+	void dbgOnRenderThreadCheck();
+	#define OGL_ON_RENDER_THREAD dbgOnRenderThreadCheck();
+	
+	void dbgOnMainOrRenderThreadCheck();
+	#define OGL_ON_MAIN_OR_RENDER_THREAD dbgOnMainOrRenderThreadCheck();
 	
 #else
 	#define OGL_INIT_THREAD_CHECK
+	#define OGL_INIT_LOADER_THREAD_CHECK
+	#define OGL_EXIT_LOADER_THREAD_CHECK
 	#define OGL_INIT_MAIN_THREAD_CHECK
 	#define OGL_ON_MAIN_THREAD
+	#define OGL_ON_RENDER_THREAD
+	#define OGL_ON_MAIN_OR_RENDER_THREAD
 #endif
 
 
 
-#ifdef WITH_DEBUG
-#define OGL_CHECKCOMMANDS 1
-#endif
+void oglClearError();
 
-#ifdef OGL_CHECKCOMMANDS
-	void dbgCheckOglError( deoglRenderThread &renderThread, const char *file, int line );
-	#define OGL_CHECK( renderThread, cmd )		glGetError(); cmd; dbgCheckOglError( renderThread, __FILE__, __LINE__ )
-	#define OGLX_CHECK( renderThread, cmd )		if( ( cmd ) == False ) (renderThread).GetLogger().LogErrorFormat( "failed at %s:%i\n", __FILE__, __LINE__ )
-	#define OGL_IF_CHECK(renderThread)			renderThread
-	
-#else
-	#define OGL_CHECK(renderThread,cmd)			cmd
-	#define OGLX_CHECK(renderThread,cmd)		cmd
-	#define OGL_IF_CHECK(renderThread)
-#endif
+void dbgCheckOglError( deoglRenderThread &renderThread, const char *file, int line );
 
+#define OGL_CHECK(renderThread,cmd) oglClearError(); cmd; dbgCheckOglError(renderThread, __FILE__, __LINE__)
+#define OGLX_CHECK(renderThread,cmd) if((cmd) == False) (renderThread).GetLogger().LogErrorFormat("failed at %s:%i\n", __FILE__, __LINE__)
+#define OGL_IF_CHECK(cmd) cmd
 
 
 struct oglRGBA{
@@ -78,10 +89,6 @@ struct oglRGB{
 
 struct oglVector2{
 	GLfloat x, y;
-};
-
-struct oglVector{
-	GLfloat x, y, z;
 };
 
 struct oglVector3{
@@ -224,6 +231,34 @@ struct deoglVBOHeightTerrain2{
 	GLfloat normal;
 };
 
+
+
+/** Render task filters. */
+enum eRenderTaskFilters{
+	ertfRender = 0x1,
+	ertfSolid = 0x2,
+	ertfShadowNone = 0x4,
+	ertfReflected = 0x8,
+	ertfRendered = 0x10,
+	ertfOutline = 0x20,
+	ertfOutlineSolid = 0x40,
+	ertfHoles = 0x80,
+	ertfDecal = 0x100,
+	ertfDoubleSided = 0x200,
+	ertfXRay = 0x400,
+	ertfOcclusion = 0x800,
+	ertfShadow = 0x1000,
+	ertfCompactShadow = 0x2000
+};
+
+
+
+/** Printf problems. */
+#ifdef OS_W32
+#define OGLPFLLU "I64u"
+#else
+#define OGLPFLLU "llu"
+#endif
 
 
 #endif

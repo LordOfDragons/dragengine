@@ -1,0 +1,231 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.CameraDirectors
+pin Dragengine.Gui.Events
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+/**
+ * \brief Zoom camera director.
+ * \version 1.7
+ * 
+ * Set mouse button and modifiers required to trigger the listener. Once triggered moving
+ * up and down is translated to decreasing and increasing the camera distance.
+ * 
+ * The minimum distance is clamped to 0 while the maximum distance is free. Optionally
+ * the minimum distance can be adjusted and the maximum distance can be clamped.
+ * 
+ * The camera director is not required to have an element assigned.
+ */
+class ZoomCameraMouseListener extends DefaultMouseListener
+	private var int pButton
+	private var int pModifiers
+	private var Widget pCaptureWidget
+	private var ElementCameraDirector pDirector
+	private var float pMinimumDistance
+	private var float pMaximumDistance
+	private var bool pClampMaximumDistance
+	private var float pSpeed
+	private var Point pPosition
+	private var float pAnchorDistance
+	
+	
+	
+	/**
+	 * \brief Create mouse listener tracking right mouse button with no modifiers.
+	 * \param director Camera director to update.
+	 */
+	public func new(ElementCameraDirector director) \
+	this(director, InputEventMouseButton.right, InputEventModifier.shift | InputEventModifier.control)
+	end
+	
+	/**
+	 * \brief Create mouse listener.
+	 * \param director Camera director to update.
+	 * \param trackButton Value from InputEventMouseButton or custom.
+	 * \param modifiers Modifiers from InputEventModifier or custom.
+	 */
+	public func new(ElementCameraDirector director, int trackButton, int modifiers)
+		if director == null
+			throw ENullPointer.new("director")
+		end
+		
+		pButton = trackButton
+		pModifiers = modifiers
+		pDirector = director
+		pMinimumDistance = 0
+		pMaximumDistance = 10
+		pClampMaximumDistance = false
+		pSpeed = 1.0 / 200.0 // 1meter per 200 pixels
+	end
+	
+	
+	
+	/** \brief Mouse button to track. */
+	public func int getButton()
+		return pButton
+	end
+	
+	/** \brief Modifiers to track. */
+	public func int getModifiers()
+		return pModifiers
+	end
+	
+	/** \brief Camera director to update. */
+	public func ElementCameraDirector getDirector()
+		return pDirector
+	end
+	
+	/** \brief Maximum distance in meters. */
+	public func float getMinimumDistance()
+		return pMinimumDistance
+	end
+	
+	/** \brief Set maximum distance in meters. */
+	public func void setMinimumDistance(float distance)
+		pMinimumDistance = distance
+	end
+	
+	/** \brief Maximum distance in meters if clamping is enabled. */
+	public func float getMaximumDistance()
+		return pMaximumDistance
+	end
+	
+	/** \brief Set maximum distance in meters if clamping is enabled. */
+	public func void setMaximumDistance(float distance)
+		pMaximumDistance = distance
+	end
+	
+	/** \brief Clamp maximum distance. */
+	public func bool getClampMaximumDistance()
+		return pClampMaximumDistance
+	end
+	
+	/** \brief Set to clamp maximum distance. */
+	public func void setClampMaximumDistance(bool clamp)
+		pClampMaximumDistance = clamp
+	end
+	
+	/**
+	 * \brief Speed in meters per pixel.
+	 * 
+	 * Negative speed zooms in the opposite direction.
+	 */
+	public func float getSpeed()
+		return pSpeed
+	end
+	
+	/**
+	 * \brief Set speed in meters per pixel.
+	 * 
+	 * Negative speed zooms in the opposite direction.
+	 */
+	public func void setSpeed(float speed)
+		pSpeed = speed
+	end
+	
+	
+	
+	/**
+	 * \brief Mouse button pressed.
+	 * 
+	 * Captures mouse and starts tracking if button and modifiers match.
+	 */
+	public func void onButtonPress(MouseEvent event)
+		if event.getButton() != pButton or event.getModifiers() != pModifiers
+			return
+		end
+		if not event.getSource() castable Widget
+			return
+		end
+		
+		pPosition = event.getPosition()
+		pAnchorDistance = pDirector.getDistance()
+		
+		pCaptureWidget = event.getSource() cast Widget
+		pCaptureWidget.captureMouse()
+		
+		onStartZoom()
+	end
+	
+	/**
+	 * \brief Mouse moved.
+	 * 
+	 * Zoom camera if tracking.
+	 */
+	public func void onMouseMove(MouseEvent event)
+		if pPosition == null
+			return
+		end
+		
+		var float movement = event.getPosition().getY() - pPosition.getY()
+		
+		var float distance = pAnchorDistance + pSpeed * movement
+		if pClampMaximumDistance
+			distance = DEMath.min(distance, pMaximumDistance)
+		end
+		distance = DEMath.max(distance, pMinimumDistance)
+		
+		pDirector.setDistance(distance)
+		
+		onZoom()
+	end
+	
+	/**
+	 * \brief Mouse button release.
+	 * 
+	 * If tracking stop tracking and release mouse capture.
+	 */
+	public func void onButtonRelease(MouseEvent event)
+		if pPosition == null
+			return
+		end
+		
+		pCaptureWidget.releaseMouse()
+		pCaptureWidget = null
+		
+		onStopZoom()
+		
+		pPosition = null
+	end
+	
+	
+	
+	/** \brief Start zooming camera director. */
+	protected func void onStartZoom()
+	end
+	
+	/** \brief Camera director has been zoomd. */
+	protected func void onZoom()
+	end
+	
+	/** \brief Stop zooming camera director. */
+	protected func void onStopZoom()
+	end
+end

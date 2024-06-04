@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLFRAMEBUFFER_H_
@@ -26,10 +29,8 @@
 
 class deoglArrayTexture;
 class deoglCubeMap;
-class deoglRenderbuffer;
 class deoglRenderThread;
 class deoglTexture;
-class deoglTexture1D;
 
 class deErrorTracePoint;
 
@@ -38,14 +39,13 @@ class deErrorTracePoint;
 
 
 /**
- * @brief Framebuffer Object.
+ * Framebuffer Object.
  */
 class deoglFramebuffer{
 private:
 	enum eAttachementTypes{
 		eatNone,
 		eatTexture,
-		eatTexture1D,
 		eatCubeMap,
 		eatCubeMapPosX,
 		eatCubeMapNegX,
@@ -54,8 +54,7 @@ private:
 		eatCubeMapPosZ,
 		eatCubeMapNegZ,
 		eatArrayTexture,
-		eatArrayTextureLayer,
-		eatRenderbuffer
+		eatArrayTextureLayer
 	};
 	
 	struct sAttachement{
@@ -119,7 +118,7 @@ private:
 	int pUsageCount;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create a new framebuffer object either as primary or offscreen. */
 	deoglFramebuffer( deoglRenderThread &renderThread, bool primary );
@@ -127,12 +126,12 @@ public:
 	~deoglFramebuffer();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Determines if the framebuffer is a primary framebuffer. */
 	inline bool GetIsPrimary() const{ return pPrimary; }
 	/** Activates the framebuffer if not active yet. */
-	void SetAsCurrent();
+	void SetAsCurrent() const;
 	/** Verifies the framebuffer for completeness. */
 	void Verify();
 	
@@ -160,10 +159,6 @@ public:
 	void AttachColorTexture( int index, deoglTexture *texture );
 	/** Attach a color texture level. */
 	void AttachColorTextureLevel( int index, deoglTexture *texture, int level );
-	/** \brief Attach a color 1d texture. */
-	void AttachColorTexture1D( int index, deoglTexture1D *texture );
-	/** \brief Attach a color 1d texture level. */
-	void AttachColorTexture1DLevel( int index, deoglTexture1D *texture, int level );
 	/** Attach a color cube map. */
 	void AttachColorCubeMap( int index, deoglCubeMap *texture );
 	/** Attach a color cube map level. */
@@ -180,12 +175,16 @@ public:
 	void AttachColorArrayTextureLayer( int index, deoglArrayTexture *texture, int layer );
 	/** Attach a color array texture layer level. */
 	void AttachColorArrayTextureLayerLevel( int index, deoglArrayTexture *texture, int layer, int level );
+	
+	/** Attach color texture. */
+	void AttachColorTextureLevel( int index, GLuint texture, int level );
+	
 	/** Detach a color image if attached. */
 	void DetachColorImage( int index );
 	/** Detaches all color images in this and all higher attachment points if they are attached. */
 	void DetachColorImages( int startIndex );
 	
-	/** \brief Invalidate color attachment. */
+	/** Invalidate color attachment. */
 	void InvalidateColor( int index );
 	
 	
@@ -198,10 +197,6 @@ public:
 	void AttachDepthTexture( deoglTexture *texture );
 	/** Attach a depth texture level. */
 	void AttachDepthTextureLevel( deoglTexture *texture, int level );
-	/** \brief Attach a depth 1d texture. */
-	void AttachDepthTexture1D( deoglTexture1D *texture );
-	/** \brief Attach a depth 1d texture level. */
-	void AttachDepthTexture1DLevel( deoglTexture1D *texture, int level );
 	/** Attach a depth cube map. */
 	void AttachDepthCubeMap( deoglCubeMap *texture );
 	/** Attach a depth cube map level. */
@@ -218,12 +213,10 @@ public:
 	void AttachDepthArrayTextureLayer( deoglArrayTexture *texture, int layer );
 	/** Attach a depth array texture layer level. */
 	void AttachDepthArrayTextureLayerLevel( deoglArrayTexture *texture, int layer, int level );
-	/** Attach a depth render buffer. */
-	void AttachDepthRenderbuffer( deoglRenderbuffer *renderbuffer );
 	/** Detach depth image if attached. */
 	void DetachDepthImage();
 	
-	/** \brief Invalidate depth attachment. */
+	/** Invalidate depth attachment. */
 	void InvalidateDepth();
 	
 	
@@ -236,10 +229,6 @@ public:
 	void AttachStencilTexture( deoglTexture *texture );
 	/** Attach a stencil texture level. */
 	void AttachStencilTextureLevel( deoglTexture *texture, int level );
-	/** \brief Attach a stencil 1d texture. */
-	void AttachStencilTexture1D( deoglTexture1D *texture );
-	/** \brief Attach a stencil 1d texture level. */
-	void AttachStencilTexture1DLevel( deoglTexture1D *texture, int level );
 	/** Attach a stencil texture. */
 	void AttachStencilArrayTexture( deoglArrayTexture *texture );
 	/** Attach a stencil texture level. */
@@ -248,15 +237,13 @@ public:
 	void AttachStencilArrayTextureLayer( deoglArrayTexture *texture, int layer );
 	/** Attach a stencil array texture layer level. */
 	void AttachStencilArrayTextureLayerLevel( deoglArrayTexture *texture, int layer, int level );
-	/** Attach a stencil renderbuffer. */
-	void AttachStencilRenderbuffer( deoglRenderbuffer *renderBuffer );
 	/** Detach stencil image if attached. */
 	void DetachStencilImage();
 	
-	/** \brief Invalidate stencil attachment. */
+	/** Invalidate stencil attachment. */
 	void InvalidateStencil();
 	
-	/** \brief Invalidate depth and stencil attachments. */
+	/** Invalidate depth and stencil attachments. */
 	void InvalidateDepthStencil();
 	
 	
@@ -264,19 +251,22 @@ public:
 	/** Detach all images if they are attached. */
 	void DetachAllImages();
 	
-	/** \brief Invalidate all images that are attached. */
+	/** Invalidate all images that are attached. */
 	void InvalidateAllImages();
 	
 	
 	
-	/** \brief Set up read/write buffers matching framebuffer. */
+	/** Set up read/write buffers matching framebuffer. */
 	void UpdateReadWriteBuffers();
 	
 	/** Adds a configuration trace point with the configuration of this framebuffer object. */
 	void AddConfigToTrace( deErrorTracePoint &tracePoint );
 	
-	/** \brief Debug print framebuffer configuration. */
+	/** Debug print framebuffer configuration. */
 	void DebugPrint( const char *prefix );
+	
+	/** Set debug object label. */
+	void SetDebugObjectLabel( const char *name );
 	/*@}*/
 	
 private:

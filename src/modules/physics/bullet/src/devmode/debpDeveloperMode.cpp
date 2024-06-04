@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Bullet Physics Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -55,7 +58,8 @@ debpDeveloperMode::debpDeveloperMode( dePhysicsBullet &bullet ) :
 pBullet( bullet ),
 pEnabled( false ),
 pTakeSnapshot( false ),
-pHilightResponseType( -1 )
+pHighlightResponseType( -1 ),
+pHighlightDeactivation( false )
 {
 	(void)pBullet; // for future use
 }
@@ -90,8 +94,12 @@ bool debpDeveloperMode::ExecuteCommand( const decUnicodeArgumentList &command, d
 		pCmdShowCategory( command, answer );
 		return true;
 		
-	}else if( command.MatchesArgumentAt( 0, "dm_hilight_response_type" ) ){
-		pCmdHilightResponseType( command, answer );
+	}else if( command.MatchesArgumentAt( 0, "dm_highlight_response_type" ) ){
+		pCmdHighlightResponseType( command, answer );
+		return true;
+		
+	}else if( command.MatchesArgumentAt( 0, "dm_highlight_deactivation" ) ){
+		pCmdHighlightDeactivation( command, answer );
 		return true;
 		
 	}else if( command.MatchesArgumentAt( 0, "dm_debug" ) ){
@@ -140,7 +148,8 @@ void debpDeveloperMode::pCmdHelp( const decUnicodeArgumentList &command, decUnic
 	answer.SetFromUTF8( "dm_help => Displays this help screen.\n" );
 	answer.AppendFromUTF8( "dm_take_snapshot => Snapshot next world into a COLLADA file.\n" );
 	answer.AppendFromUTF8( "dm_show_category => Show collision objects with collision category (comma-separated list of bit-numbers or 'off').\n" );
-	answer.AppendFromUTF8( "dm_hilight_response_type => Hilight response type if dm_show_category is used.\n" );
+	answer.AppendFromUTF8( "dm_highlight_response_type => Highlight response type if dm_show_category is used.\n" );
+	answer.AppendFromUTF8( "dm_highlight_deactivation {1 | 0} => Hilight deactivation state if dm_show_category is used.\n" );
 	answer.AppendFromUTF8( "dm_debug {enable | disable} => Enable performance debugging.\n" );
 }
 
@@ -192,46 +201,53 @@ void debpDeveloperMode::pCmdShowCategory( const decUnicodeArgumentList &command,
 	answer.AppendFromUTF8( text );
 }
 
-void debpDeveloperMode::pCmdHilightResponseType( const decUnicodeArgumentList &command,
+void debpDeveloperMode::pCmdHighlightResponseType( const decUnicodeArgumentList &command,
 decUnicodeString &answer ){
 	if( command.GetArgumentCount() == 2 ){
 		const decString newValue( command.GetArgumentAt( 1 )->ToUTF8() );
 		
 		if( newValue == "static" || newValue == "s" ){
-			pHilightResponseType = deCollider::ertStatic;
+			pHighlightResponseType = deCollider::ertStatic;
 			
 		}else if( newValue == "kinematic" || newValue == "k" ){
-			pHilightResponseType = deCollider::ertKinematic;
+			pHighlightResponseType = deCollider::ertKinematic;
 			
 		}else if( newValue == "dynamic" || newValue == "d" ){
-			pHilightResponseType = deCollider::ertDynamic;
+			pHighlightResponseType = deCollider::ertDynamic;
 			
 		}else if( newValue == "off" ){
-			pHilightResponseType = -1;
+			pHighlightResponseType = -1;
 			
 		}else{
-			answer.AppendFromUTF8( "dm_hilight_response_type {off | (s)tatic | (k)inematic | (d)ynamic}" );
+			answer.AppendFromUTF8( "dm_highlight_response_type {off | (s)tatic | (k)inematic | (d)ynamic}" );
 			return;
 		}
 	}
 	
-	switch( pHilightResponseType ){
+	switch( pHighlightResponseType ){
 	case deCollider::ertStatic:
-		answer.AppendFromUTF8( "dm_hilight_response_type = static" );
+		answer.AppendFromUTF8( "dm_highlight_response_type = static" );
 		break;
 		
 	case deCollider::ertKinematic:
-		answer.AppendFromUTF8( "dm_hilight_response_type = kinematic" );
+		answer.AppendFromUTF8( "dm_highlight_response_type = kinematic" );
 		break;
 		
 	case deCollider::ertDynamic:
-		answer.AppendFromUTF8( "dm_hilight_response_type = dynamic" );
+		answer.AppendFromUTF8( "dm_highlight_response_type = dynamic" );
 		break;
 		
 	default:
-		answer.AppendFromUTF8( "dm_hilight_response_type = off" );
+		answer.AppendFromUTF8( "dm_highlight_response_type = off" );
 		break;
 	}
+}
+
+void debpDeveloperMode::pCmdHighlightDeactivation( const decUnicodeArgumentList &command, decUnicodeString &answer ){
+	if( command.GetArgumentCount() == 2 ){
+		pHighlightDeactivation = command.GetArgumentAt( 1 )->ToInt() != 0;
+	}
+	answer.AppendFormat( "dm_highlight_deactivation = %d", pHighlightDeactivation ? 1 : 0 );
 }
 
 void debpDeveloperMode::pCmdDebugEnable( const decUnicodeArgumentList &command, decUnicodeString &answer ){

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Game Engine
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdlib.h>
@@ -114,6 +117,17 @@ uint64_t decBaseFileReader::ReadULong(){
 		| ( ( uint64_t )value[ 7 ] << 56 );
 }
 
+uint32_t decBaseFileReader::ReadVarUInt(){
+	const uint8_t byte1 = ReadByte();
+	const int length = byte1 >> 6;
+	uint32_t value = byte1 & 0x3f;
+	int i;
+	for( i=0; i<length; i++ ){
+		value = ( value << 8 ) | ReadByte();
+	}
+	return value;
+}
+
 float decBaseFileReader::ReadFloat(){
 	const uint32_t value = ReadUInt();
 	float realValue;
@@ -148,6 +162,30 @@ decString decBaseFileReader::ReadString16(){
 
 void decBaseFileReader::ReadString16Into( decString &string ){
 	const int len = ReadUShort();
+	string.Set( ' ', len );
+	Read( ( char* )string.GetString(), len );
+}
+
+decString decBaseFileReader::ReadString32(){
+	decString string;
+	ReadString32Into( string );
+	return string;
+}
+
+void decBaseFileReader::ReadString32Into( decString &string ){
+	const int len = ReadUInt();
+	string.Set( ' ', len );
+	Read( ( char* )string.GetString(), len );
+}
+
+decString decBaseFileReader::ReadVarString(){
+	decString string;
+	ReadVarStringInto( string );
+	return string;
+}
+
+void decBaseFileReader::ReadVarStringInto( decString &string ){
+	const int len = ReadVarUInt();
 	string.Set( ' ', len );
 	Read( ( char* )string.GetString(), len );
 }
@@ -283,6 +321,13 @@ void decBaseFileReader::SkipULong(){
 	MovePosition( 8 );
 }
 
+void decBaseFileReader::SkipVarUInt(){
+	const int length = ReadByte() >> 6;
+	if( length > 0 ){
+		MovePosition( length );
+	}
+}
+
 void decBaseFileReader::SkipFloat(){
 	MovePosition( 4 );
 }
@@ -298,6 +343,23 @@ void decBaseFileReader::SkipString8(){
 
 void decBaseFileReader::SkipString16(){
 	const int len = ReadUShort();
+	MovePosition( len );
+}
+
+void decBaseFileReader::SkipString32(){
+	const unsigned int len = ReadUInt();
+	
+	if( len < 2147483648 ){
+		MovePosition( ( int )len );
+		
+	}else{
+		MovePosition( ( int )( len & 0x7fffffff ) );
+		MovePosition( ( int )( len > 31 ) );
+	}
+}
+
+void decBaseFileReader::SkipVarString(){
+	const int len = ( int )ReadVarUInt();
 	MovePosition( len );
 }
 

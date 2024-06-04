@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -24,12 +27,16 @@
 #include <string.h>
 
 #include "deoglHTSCluster.h"
+#include "deoglHTSTexture.h"
+#include "deoglHTViewSectorCluster.h"
 #include "deoglRHeightTerrain.h"
 #include "deoglRHTSector.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTLogger.h"
+#include "../../shaders/paramblock/deoglSPBlockUBO.h"
 #include "../../vao/deoglVAO.h"
 #include "../../vbo/deoglVBOLayout.h"
+#include "../../world/deoglRWorld.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/resources/image/deImage.h>
@@ -44,13 +51,95 @@
 
 
 
+// Class deoglHTSCluster::WorldComputeElement
+///////////////////////////////////////////////
+
+deoglHTSCluster::WorldComputeElement::WorldComputeElement( deoglHTSCluster &cluster ) :
+deoglWorldComputeElement( eetHeightTerrainSectorCluster, &cluster ),
+pCluster( cluster ){
+}
+
+void deoglHTSCluster::WorldComputeElement::UpdateData( sDataElement &data ) const{
+	const decDVector center( decDVector( pCluster.GetCenter() ) - GetReferencePosition() );
+	const decDVector halfSize( pCluster.GetHalfExtends() );
+	
+	data.SetExtends( center - halfSize, center + halfSize );
+	data.SetEmptyLayerMask();
+	data.flags = ( uint32_t )( deoglWorldCompute::eefHeightTerrainSectorCluster
+		| deoglWorldCompute::eefStatic | deoglWorldCompute::eefGIStatic );
+	data.geometryCount = 0; //( uint32_t )pCluster.GetHTSector()->GetTextureCount() * 2;
+	data.highestLod = 0;
+}
+
+void deoglHTSCluster::WorldComputeElement::UpdateDataGeometries( sDataElementGeometry *data ) const{
+#if 0
+	const deoglRHTSector &sector = *pCluster.GetHTSector();
+	const deoglHTSCluster &htcluster = sector.GetClusters()[ pCluster.GetIndex() ];
+	const bool valid = sector.GetValid() && sector.GetValidTextures();
+	const int count = pCluster.GetHTSector()->GetTextureCount();
+	const deoglVAO * const vao = htcluster.GetVAO();
+	const deoglHTViewSectorCluster &htvscluster = *clhtscluster.GetCluster();
+	int i, j;
+	
+	for( i=0; i<count; i++ ){
+		const deoglHTSTexture &texture = sector.GetTextureAt( i );
+		const deoglSkinTexture * const skinTexture = texture.GetUseSkinTexture();
+		if( ! valid || ! skinTexture ){
+			continue;
+		}
+		
+		sInfoTUC info;
+		info.geometry = texture.GetTUCGeometry();
+		info.depth = texture.GetTUCDepth();
+		info.counter = texture.GetTUCDepth();
+		info.shadow = texture.GetTUCShadow();
+		info.shadowCube = texture.GetTUCShadow();
+		info.envMap = texture.GetTUCEnvMap();
+		info.luminance = texture.GetTUCLuminance();
+		// info.giMaterial = texture.GetTUCGIMaterial(); // missing
+		
+		const int filters = skinTexture->GetRenderTaskFilters() & ~RenderFilterOutline;
+		
+		SetDataGeometry( *data, 0, filters, deoglSkinTexturePipelinesList::eptHeightMap1, 0,
+			skinTexture, vao, htvscluster.GetRTSInstanceAt( i, 0 ), -1 );
+		SetDataGeometryTUCs( *data, info );
+		data++;
+		
+		SetDataGeometry( *data, 0, filters, deoglSkinTexturePipelinesList::eptHeightMap2, 0,
+			skinTexture, vao, htvscluster.GetRTSInstanceAt( i, 0 ), -1 );
+		SetDataGeometryTUCs( *data, info );
+		data++;
+		
+		if( htvscluster.GetLodLevel() > 0 ){
+			for( j=1; j<5; j++ ){
+				SetDataGeometry( *data, 0, filters, deoglSkinTexturePipelinesList::eptHeightMap1,
+					0, skinTexture, vao, htvscluster.GetRTSInstanceAt( i, j ), -1 );
+				SetDataGeometryTUCs( *data, info );
+				data++;
+				
+				SetDataGeometry( *data, 0, filters, deoglSkinTexturePipelinesList::eptHeightMap2,
+					0, skinTexture, vao, htvscluster.GetRTSInstanceAt( i, 0 ), -1 );
+				SetDataGeometryTUCs( *data, info );
+				data++;
+			}
+		}
+	}
+#endif
+}
+
+
+
 // Class deoglHTSCluster
 //////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-deoglHTSCluster::deoglHTSCluster(){
+deoglHTSCluster::deoglHTSCluster() :
+pIndex( -1 ),
+
+pWorldComputeElement( deoglWorldComputeElement::Ref::New( new WorldComputeElement( *this ) ) )
+{
 	pHTSector = NULL;
 	
 	pPointCountX = 0;
@@ -83,9 +172,15 @@ deoglHTSCluster::~deoglHTSCluster(){
 		delete pVAO;
 	}
 	
-	if( pDataPoints2 ) delete [] pDataPoints2;
-	if( pDataPoints1 ) delete [] pDataPoints1;
-	if( pFacePoints ) delete [] pFacePoints;
+	if( pDataPoints2 ){
+		delete [] pDataPoints2;
+	}
+	if( pDataPoints1 ){
+		delete [] pDataPoints1;
+	}
+	if( pFacePoints ){
+		delete [] pFacePoints;
+	}
 }
 
 
@@ -95,6 +190,14 @@ deoglHTSCluster::~deoglHTSCluster(){
 
 void deoglHTSCluster::SetHTSector( deoglRHTSector *htsector ){
 	pHTSector = htsector;
+}
+
+void deoglHTSCluster::SetCoordinates( const decPoint &coordinates ){
+	pCoordinates = coordinates;
+}
+
+void deoglHTSCluster::SetIndex( int index ){
+	pIndex = index;
 }
 
 void deoglHTSCluster::SetSize( int firstPointX, int firstPointZ, int pointCountX, int pointCountZ ){
@@ -169,13 +272,21 @@ deoglHTSClusterLOD &deoglHTSCluster::GetLODAt( int level ){
 	if( level < 0 || level > HTSC_MAX_LOD ){
 		DETHROW( deeInvalidParam );
 	}
-	
+	return pLOD[ level ];
+}
+
+const deoglHTSClusterLOD & deoglHTSCluster::GetLODAt( int level ) const{
+	if( level < 0 || level > HTSC_MAX_LOD ){
+		DETHROW( deeInvalidParam );
+	}
 	return pLOD[ level ];
 }
 
 void deoglHTSCluster::UpdateHeightExtends( float minHeight, float maxHeight ){
 	pCenter.y = ( minHeight + maxHeight ) * 0.5f;
 	pHalfExtends.y = ( maxHeight - minHeight ) * 0.5f;
+	
+	pWorldComputeElement->ComputeUpdateElement();
 }
 
 
@@ -354,6 +465,8 @@ void deoglHTSCluster::UpdateVAO(){
 			
 			OGL_CHECK( renderThread, pglBindBuffer( GL_ARRAY_BUFFER, 0 ) );
 			OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
+			
+			pVAO->EnsureRTSVAO();
 		}
 		
 	}else{
@@ -362,6 +475,24 @@ void deoglHTSCluster::UpdateVAO(){
 			pVAO = NULL;
 		}
 	}
+}
+
+
+
+void deoglHTSCluster::AddToWorldCompute( deoglWorldCompute &worldCompute ){
+	worldCompute.AddElement( pWorldComputeElement );
+}
+
+void deoglHTSCluster::UpdateWorldCompute(){
+	pWorldComputeElement->ComputeUpdateElement();
+}
+
+void deoglHTSCluster::UpdateWorldComputeTextures(){
+	pWorldComputeElement->ComputeUpdateElementGeometries();
+}
+
+void deoglHTSCluster::RemoveFromWorldCompute(){
+	pWorldComputeElement->RemoveFromCompute();
 }
 
 
@@ -470,7 +601,7 @@ void deoglHTSCluster::pCreateCheapLOD( int lodLevel ){
 	pLOD[ lodLevel ].basePointCount = pFacePointCount - pLOD[ lodLevel ].firstBasePoint;
 	
 	// create left border for the same lod level of neighbor
-	pLOD[ lodLevel ].firstBorderPoint[ ehtscbLeft ] = pFacePointCount;
+	pLOD[ lodLevel ].firstBorderPoint[ deoglHTViewSectorCluster::ebtLeft ] = pFacePointCount;
 	
 	for( z=0; z<newPointCountZ-1; z++ ){
 		p1 = imageDim * ( z * reduction );
@@ -492,10 +623,10 @@ void deoglHTSCluster::pCreateCheapLOD( int lodLevel ){
 		}
 	}
 	
-	pLOD[ lodLevel ].borderPointCount[ ehtscbLeft ] = pFacePointCount - pLOD[ lodLevel ].firstBorderPoint[ ehtscbLeft ];
+	pLOD[ lodLevel ].borderPointCount[ deoglHTViewSectorCluster::ebtLeft ] = pFacePointCount - pLOD[ lodLevel ].firstBorderPoint[ deoglHTViewSectorCluster::ebtLeft ];
 	
 	// create top border for the same lod level of neighbor
-	pLOD[ lodLevel ].firstBorderPoint[ ehtscbTop ] = pFacePointCount;
+	pLOD[ lodLevel ].firstBorderPoint[ deoglHTViewSectorCluster::ebtTop ] = pFacePointCount;
 	
 	offset = 0;
 	for( x=0; x<newPointCountX-1; x++ ){
@@ -518,10 +649,10 @@ void deoglHTSCluster::pCreateCheapLOD( int lodLevel ){
 		}
 	}
 	
-	pLOD[ lodLevel ].borderPointCount[ ehtscbTop ] = pFacePointCount - pLOD[ lodLevel ].firstBorderPoint[ ehtscbTop ];
+	pLOD[ lodLevel ].borderPointCount[ deoglHTViewSectorCluster::ebtTop ] = pFacePointCount - pLOD[ lodLevel ].firstBorderPoint[ deoglHTViewSectorCluster::ebtTop ];
 	
 	// create right border for the same lod level of neighbor
-	pLOD[ lodLevel ].firstBorderPoint[ ehtscbRight ] = pFacePointCount;
+	pLOD[ lodLevel ].firstBorderPoint[ deoglHTViewSectorCluster::ebtRight ] = pFacePointCount;
 	
 	for( z=0; z<newPointCountZ-1; z++ ){
 		offset = imageDim * ( z * reduction );
@@ -547,10 +678,11 @@ void deoglHTSCluster::pCreateCheapLOD( int lodLevel ){
 		}
 	}
 	
-	pLOD[ lodLevel ].borderPointCount[ ehtscbRight ] = pFacePointCount - pLOD[ lodLevel ].firstBorderPoint[ ehtscbRight ];
+	pLOD[ lodLevel ].borderPointCount[ deoglHTViewSectorCluster::ebtRight ] =
+		pFacePointCount - pLOD[ lodLevel ].firstBorderPoint[ deoglHTViewSectorCluster::ebtRight ];
 	
 	// create bottom border for the same lod level of neighbor
-	pLOD[ lodLevel ].firstBorderPoint[ ehtscbBottom ] = pFacePointCount;
+	pLOD[ lodLevel ].firstBorderPoint[ deoglHTViewSectorCluster::ebtBottom ] = pFacePointCount;
 	
 	offset = imageDim * ( ( newPointCountZ - 2 ) * reduction );
 	offset2 = imageDim * lastPointZ;
@@ -578,10 +710,10 @@ void deoglHTSCluster::pCreateCheapLOD( int lodLevel ){
 		}
 	}
 	
-	pLOD[ lodLevel ].borderPointCount[ ehtscbBottom ] = pFacePointCount - pLOD[ lodLevel ].firstBorderPoint[ ehtscbBottom ];
+	pLOD[ lodLevel ].borderPointCount[ deoglHTViewSectorCluster::ebtBottom ] = pFacePointCount - pLOD[ lodLevel ].firstBorderPoint[ deoglHTViewSectorCluster::ebtBottom ];
 	
 	// create left border for the lower lod level of neighbor
-	pLOD[ lodLevel ].firstBorderPoint[ ehtscbFixLeft ] = pFacePointCount;
+	pLOD[ lodLevel ].firstBorderPoint[ deoglHTViewSectorCluster::ebtFixLeft ] = pFacePointCount;
 	
 	for( z=0; z<newPointCountZ-1; z++ ){
 		p1 = imageDim * ( z * reduction );
@@ -611,10 +743,10 @@ void deoglHTSCluster::pCreateCheapLOD( int lodLevel ){
 		}
 	}
 	
-	pLOD[ lodLevel ].borderPointCount[ ehtscbFixLeft ] = pFacePointCount - pLOD[ lodLevel ].firstBorderPoint[ ehtscbFixLeft ];
+	pLOD[ lodLevel ].borderPointCount[ deoglHTViewSectorCluster::ebtFixLeft ] = pFacePointCount - pLOD[ lodLevel ].firstBorderPoint[ deoglHTViewSectorCluster::ebtFixLeft ];
 	
 	// create top border for the lower lod level of neighbor
-	pLOD[ lodLevel ].firstBorderPoint[ ehtscbFixTop ] = pFacePointCount;
+	pLOD[ lodLevel ].firstBorderPoint[ deoglHTViewSectorCluster::ebtFixTop ] = pFacePointCount;
 	
 	offset = 0;
 	for( x=0; x<newPointCountX-1; x++ ){
@@ -645,10 +777,10 @@ void deoglHTSCluster::pCreateCheapLOD( int lodLevel ){
 		}
 	}
 	
-	pLOD[ lodLevel ].borderPointCount[ ehtscbFixTop ] = pFacePointCount - pLOD[ lodLevel ].firstBorderPoint[ ehtscbFixTop ];
+	pLOD[ lodLevel ].borderPointCount[ deoglHTViewSectorCluster::ebtFixTop ] = pFacePointCount - pLOD[ lodLevel ].firstBorderPoint[ deoglHTViewSectorCluster::ebtFixTop ];
 	
 	// create right border for the lower lod level of neighbor
-	pLOD[ lodLevel ].firstBorderPoint[ ehtscbFixRight ] = pFacePointCount;
+	pLOD[ lodLevel ].firstBorderPoint[ deoglHTViewSectorCluster::ebtFixRight ] = pFacePointCount;
 	
 	for( z=0; z<newPointCountZ-1; z++ ){
 		offset = imageDim * ( z * reduction );
@@ -683,10 +815,10 @@ void deoglHTSCluster::pCreateCheapLOD( int lodLevel ){
 		}
 	}
 	
-	pLOD[ lodLevel ].borderPointCount[ ehtscbFixRight ] = pFacePointCount - pLOD[ lodLevel ].firstBorderPoint[ ehtscbFixRight ];
+	pLOD[ lodLevel ].borderPointCount[ deoglHTViewSectorCluster::ebtFixRight ] = pFacePointCount - pLOD[ lodLevel ].firstBorderPoint[ deoglHTViewSectorCluster::ebtFixRight ];
 	
 	// create bottom border for the lower lod level of neighbor
-	pLOD[ lodLevel ].firstBorderPoint[ ehtscbFixBottom ] = pFacePointCount;
+	pLOD[ lodLevel ].firstBorderPoint[ deoglHTViewSectorCluster::ebtFixBottom ] = pFacePointCount;
 	
 	offset = imageDim * ( ( newPointCountZ - 2 ) * reduction );
 	offset2 = imageDim * lastPointZ;
@@ -723,5 +855,5 @@ void deoglHTSCluster::pCreateCheapLOD( int lodLevel ){
 		}
 	}
 	
-	pLOD[ lodLevel ].borderPointCount[ ehtscbFixBottom ] = pFacePointCount - pLOD[ lodLevel ].firstBorderPoint[ ehtscbFixBottom ];
+	pLOD[ lodLevel ].borderPointCount[ deoglHTViewSectorCluster::ebtFixBottom ] = pFacePointCount - pLOD[ lodLevel ].firstBorderPoint[ deoglHTViewSectorCluster::ebtFixBottom ];
 }

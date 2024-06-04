@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shader>
+	<name>2D Textured</name>
+	
+	<texture name='texColor' target='0'/>
+	
+	<parameter name='pColor'/> <!-- 0 -->
+	<parameter name='pPosTransform'/> <!-- 1 -->
+	<parameter name='pTCTransform'/> <!-- 2 -->
+	
+	<attribute name='inPosition' target='0'/>
+	
+	<output name='outColor' target='0'/>
+	
+	<sourceCode unit='vertex'>vertex/2d/textured.glsl</sourceCode>
+	<sourceCode unit='fragment'>fragment/2d/textured.glsl</sourceCode>
+	
+</shader>

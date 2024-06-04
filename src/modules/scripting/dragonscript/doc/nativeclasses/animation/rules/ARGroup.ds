@@ -26,38 +26,45 @@ class ARGroup extends AnimatorRule
 	/** \name Management */
 	/*@{*/
 	/** \brief Enable position modification. */
-	public func void setEnablePosition( bool enabled )
+	public func void setEnablePosition(bool enabled)
 	end
 	
 	/** \brief Enable orientation modification. */
-	public func void setEnableOrientation( bool enabled )
+	public func void setEnableOrientation(bool enabled)
 	end
 	
 	/** \brief Enable size modification. */
-	public func void setEnableSize( bool enabled )
+	public func void setEnableSize(bool enabled)
+	end
+	
+	/**
+	 * \brief Enable vertex position set modification.
+	 * \version 1.17
+	 */
+	public func void setEnableVertexPositionSet(bool enabled)
 	end
 	
 	
 	
 	/** \brief Set if current animation state is used instead of empty state. */
-	public func void setUseCurrentState( bool useCurrentState )
+	public func void setUseCurrentState(bool useCurrentState)
 	end
 	
 	/**
 	 * \brief Set application type.
 	 * \throws EInvalidParam \em applicationType is not a valid value.
 	 */
-	public func void setApplicationType( ARGroupApplication applicationType )
+	public func void setApplicationType(ARGroupApplication applicationType)
 	end
 	
 	
 	
 	/** \brief Add rule. */
-	public func void addRule( AnimatorRule rule )
+	public func void addRule(AnimatorRule rule)
 	end
 	
 	/** \brief Remove rule. */
-	public func void removeRule( AnimatorRule rule )
+	public func void removeRule(AnimatorRule rule)
 	end
 	
 	/** \brief Remove all rules. */
@@ -70,14 +77,14 @@ class ARGroup extends AnimatorRule
 	 * \brief Add link to target.
 	 * \throws EInvalidParam \em target is not a valid value.
 	 */
-	public func void targetAddLink( ARGroupTarget target, int link )
+	public func void targetAddLink(ARGroupTarget target, int link)
 	end
 	
 	/**
 	 * \brief Remove all links from target.
 	 * \throws EInvalidParam \em target is not a valid value.
 	 */
-	public func void targetRemoveAllLinks( ARGroupTarget target )
+	public func void targetRemoveAllLinks(ARGroupTarget target)
 	end
 	/*@}*/
 end

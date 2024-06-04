@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLDEVELOPERMODE_H_
@@ -33,7 +36,7 @@ class deoglFramebuffer;
 
 
 /**
- * \brief OpenGL developer mode..
+ * OpenGL developer mode..
  */
 class deoglDeveloperMode{
 public:
@@ -48,6 +51,7 @@ public:
 	static const int edimLightPoint = 0x100;
 	static const int edimLightSpot = 0x200;
 	static const int edimFrameLimiter = 0x400;
+	static const int edimGI = 0x800;
 	
 	
 	
@@ -70,10 +74,11 @@ private:
 	int pShowLightVisualInfo;
 	
 	bool pShowTranspLevelCount;
-	bool pHilightTransparentObjects;
+	bool pHighlightTransparentObjects;
 	
 	bool pDebugRenderPlan;
 	bool pShowMemoryInfo;
+	bool pLogMemoryConsumption;
 	
 	int pShowOccMapLevel;
 	
@@ -87,7 +92,14 @@ private:
 	
 	bool pShowDebugInfo;
 	bool pDebugInfoSync;
+	bool pDebugInfoLog;
 	int pDebugInfoDetails;
+	
+	bool pGIShowProbes;
+	bool pGIShowProbeOffsets;
+	bool pGIShowProbeUpdate;
+	int pGIShowCascade;
+	bool pGIShowProbeRays;
 	
 	deoglTexture *pTextureDebugImage;
 	deoglFramebuffer *pFBODebugImage;
@@ -117,7 +129,7 @@ public:
 	/** Determines if the component lod levels are shown. */
 	inline bool GetShowComponentLODLevels() const{ return pShowComponentLODLevels; }
 	
-	/** Determines if height terrain informations are shown. */
+	/** Determines if height terrain information are shown. */
 	inline bool GetShowHeightTerrain() const{ return pShowHeightTerrain; }
 	/** Determines if prop field boundaries are shown as boxes. */
 	inline bool GetShowPropFieldBox() const{ return pShowPropFieldBox; }
@@ -138,17 +150,20 @@ public:
 	/** Determines if the number of transparency levels are shown. */
 	inline bool GetShowTranspLevelCount() const{ return pShowTranspLevelCount; }
 	/** Determines if transparent objects are highlighted. */
-	inline bool GetHilightTransparentObjects() const{ return pHilightTransparentObjects; }
+	inline bool GetHighlightTransparentObjects() const{ return pHighlightTransparentObjects; }
 	
 	/** Determines if the render plan debug mode is enabled. */
 	inline bool GetDebugRenderPlan() const{ return pDebugRenderPlan; }
 	/** Determines if the memory information are displayed. */
 	inline bool GetShowMemoryInfo() const{ return pShowMemoryInfo; }
 	
+	/** Log memory consumption. */
+	inline bool GetLogMemoryConsumption() const{ return pLogMemoryConsumption; }
+	
 	/** Retrieves the occlusion map level to show or -1 to disable. */
 	inline int GetShowOccMapLevel() const{ return pShowOccMapLevel; }
 	
-	/** \brief Environment maps are shown. */
+	/** Environment maps are shown. */
 	inline bool GetShowEnvMaps() const{ return pShowEnvMaps; }
 	
 	/** Determines if environment map hulls are shown. */
@@ -162,14 +177,25 @@ public:
 	
 	
 	
-	/** \brief Show debug information which also enables debug timing measurements. */
+	/** Show debug information which also enables debug timing measurements. */
 	inline bool GetShowDebugInfo() const{ return pShowDebugInfo; }
 	
-	/** \brief Call glFinish before each debug timing measurement for true GPU time measuring. */
+	/** Call glFinish before each debug timing measurement for true GPU time measuring. */
 	inline bool GetDebugInfoSync() const{ return pDebugInfoSync; }
 	
-	/** \brief Debug information details to show. */
+	/** Log debug timing measurement result per frame. */
+	inline bool GetDebugInfoLog() const{ return pDebugInfoLog; }
+	
+	/** Debug information details to show. */
 	inline int GetDebugInfoDetails() const{ return pDebugInfoDetails; }
+	
+	
+	
+	inline bool GetGIShowProbes() const{ return pGIShowProbes; }
+	inline bool GetGIShowProbeOffsets() const{ return pGIShowProbeOffsets; }
+	inline bool GetGIShowProbeUpdate() const{ return pGIShowProbeUpdate; }
+	inline int GetGIShowCascade() const{ return pGIShowCascade; }
+	inline bool GetGIShowProbeRays() const{ return pGIShowProbeRays; }
 	
 	
 	
@@ -211,8 +237,6 @@ private:
 	void pCmdCapabilities( const decUnicodeArgumentList &command, decUnicodeString &answer );
 	void pCmdMemoryInfo( const decUnicodeArgumentList &command, decUnicodeString &answer );
 	
-	void pCmdDebugSnapshot( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	
 	void pCmdShowLightFullBox( const decUnicodeArgumentList &command, decUnicodeString &answer );
 	void pCmdShowLightBox( const decUnicodeArgumentList &command, decUnicodeString &answer );
 	void pCmdShowLightVolume( const decUnicodeArgumentList &command, decUnicodeString &answer );
@@ -220,12 +244,13 @@ private:
 	void pCmdShowLightVisualInfo( const decUnicodeArgumentList &command, decUnicodeString &answer );
 	
 	void pCmdShowTranspLayerCount( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	void pCmdHilightTransparentObjects( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void pCmdHighlightTransparentObjects( const decUnicodeArgumentList &command, decUnicodeString &answer );
 	
 	void pCmdTests( const decUnicodeArgumentList &command, decUnicodeString &answer );
 	
 	void pCmdDebugRenderPlan( const decUnicodeArgumentList &command, decUnicodeString &answer );
 	void pCmdShowMemoryInfo( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void pCmdLogMemoryConsumption( const decUnicodeArgumentList &command, decUnicodeString &answer );
 	
 	void pCmdShowOccMapLevel( const decUnicodeArgumentList &command, decUnicodeString &answer );
 	
@@ -235,13 +260,23 @@ private:
 	
 	void pCmdShowSSAO( const decUnicodeArgumentList &command, decUnicodeString &answer );
 	
-	void pCmdTestGenerateShader( const decUnicodeArgumentList &command, decUnicodeString &answer );
-	
 	void pCmdDebugEnableLightDepthStencil( const decUnicodeArgumentList &command, decUnicodeString &answer );
 	
 	void pCmdShowDebugInfo( const decUnicodeArgumentList &command, decUnicodeString &answer );
 	void pCmdDebugInfoSync( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void pCmdDebugInfoLog( const decUnicodeArgumentList &command, decUnicodeString &answer );
 	void pCmdDebugInfoDetails( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	
+	void pCmdGIShowProbes( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void pCmdGIShowProbeOffsets( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void pCmdGIShowProbeUpdate( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void pCmdGIShowCascade( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	void pCmdGIShowProbeRays( const decUnicodeArgumentList &command, decUnicodeString &answer );
+	
+	bool pBaseCmdBool( const decUnicodeArgumentList &command, decUnicodeString &answer,
+		bool &variable, const char *commandName );
+	bool pBaseCmdInt( const decUnicodeArgumentList &command, decUnicodeString &answer,
+		int &variable, const char *commandName );
 };
 
 #endif

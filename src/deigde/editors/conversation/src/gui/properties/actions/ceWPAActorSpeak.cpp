@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Conversation Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <math.h>
@@ -26,6 +29,7 @@
 #include <string.h>
 
 #include "ceWPAActorSpeak.h"
+#include "../ceWindowProperties.h"
 #include "../ceWPTopic.h"
 #include "../../ceWindowMain.h"
 #include "../../../conversation/ceConversation.h"
@@ -34,14 +38,17 @@
 #include "../../../conversation/file/ceConversationFile.h"
 #include "../../../conversation/topic/ceConversationTopic.h"
 #include "../../../configuration/ceConfiguration.h"
+#include "../../../langpack/ceLangPackEntry.h"
 #include "../../../undosys/action/actorSpeak/ceUCAASpeakSetActor.h"
 #include "../../../undosys/action/actorSpeak/ceUCAASpeakSetActor.h"
 #include "../../../undosys/action/actorSpeak/ceUCAASpeakSetTextBoxText.h"
+#include "../../../undosys/action/actorSpeak/ceUCAASpeakSetTextBoxTextTranslate.h"
 #include "../../../undosys/action/actorSpeak/ceUCAASpeakSetMovement.h"
 #include "../../../undosys/action/actorSpeak/ceUCAASpeakSetPathSound.h"
 #include "../../../undosys/action/actorSpeak/ceUCAASpeakSetTextBoxTextStyle.h"
 #include "../../../undosys/action/actorSpeak/ceUCAASpeakToggleUseSpeechAnimation.h"
 #include "../../../undosys/action/actorSpeak/ceUCAASpeakSetMinSpeechTime.h"
+#include "../../../undosys/action/actorSpeak/ceUCAASpeakMoveTbt2Translation.h"
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeUIHelper.h>
@@ -50,12 +57,14 @@
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/igdeWindow.h>
 #include <deigde/gui/igdeContainerReference.h>
 #include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/composed/igdeEditPathListener.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
 #include <deigde/gui/event/igdeTextFieldListener.h>
+#include <deigde/gui/menu/igdeMenuCascade.h>
 #include <deigde/undo/igdeUndoReference.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
@@ -124,7 +133,9 @@ public:
 		}
 		
 		decString text( action->GetTextBoxText().ToUTF8() );
-		if( ! igdeCommonDialogs::GetMultilineString( &pPanel, "Edit Text Box Text", "Text:", text )
+		if( ! igdeCommonDialogs::GetMultilineString(
+			&pPanel.GetParentPanel().GetWindowProperties().GetWindowMain(),
+			"Edit Text Box Text", "Text:", text )
 		|| text == action->GetTextBoxText().ToUTF8() ){
 			return;
 		}
@@ -132,6 +143,174 @@ public:
 		igdeUndoReference undo;
 		undo.TakeOver( new ceUCAASpeakSetTextBoxText( topic, action, decUnicodeString::NewFromUTF8( text ) ) );
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+	}
+};
+
+class cTextTextBoxTextTranslate : public igdeTextFieldListener {
+	ceWPAActorSpeak &pPanel;
+	
+public:
+	cTextTextBoxTextTranslate( ceWPAActorSpeak &panel ) : pPanel( panel ){ }
+	
+	virtual void OnTextChanged( igdeTextField *textField ){
+		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
+		ceCAActorSpeak * const action = pPanel.GetAction();
+		if( ! topic || ! action || textField->GetText() == action->GetTextBoxTextTranslate() ){
+			return;
+		}
+		
+		igdeUndoReference undo;
+		undo.TakeOver( new ceUCAASpeakSetTextBoxTextTranslate( topic, action, textField->GetText() ) );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+	}
+};
+
+class cActionTbt2TranslationEntry : public igdeAction{
+	ceWPAActorSpeak &pPanel;
+	
+public:
+	cActionTbt2TranslationEntry( ceWPAActorSpeak &panel ) : igdeAction( "Text to translation entry...",
+		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiStrongRight ),
+		"Move text box text to language pack translation entry" ), pPanel( panel ){}
+	
+	virtual void OnAction(){
+		ceConversation * const conversation = pPanel.GetParentPanel().GetConversation();
+		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
+		ceCAActorSpeak * const action = pPanel.GetAction();
+		if( ! topic || ! conversation || ! action ){
+			return;
+		}
+		
+		ceLangPack * const langpack = conversation->GetLanguagePack();
+		if( ! langpack ){
+			return;
+		}
+		
+		decStringList existingNames;
+		langpack->GetEntryNames( existingNames );
+		
+		decString name( conversation->GetLangPackEntryName() );
+		if( ! igdeCommonDialogs::GetString( pPanel.GetParentWindow(), "Move to translation entry",
+		"Name:", name, existingNames ) ){
+			return;
+		}
+		
+		conversation->SetLangPackEntryName( name );
+		
+		igdeUndoReference undo;
+		
+		ceLangPackEntry::Ref entry( langpack->GetEntryNamed( name ) );
+		if( entry ){
+			if( igdeCommonDialogs::QuestionFormat( pPanel.GetParentWindow(), igdeCommonDialogs::ebsYesNo,
+			"Move to translation entry", "Translation entry '%s' exists. Replace entry?",
+			name.GetString() ) == igdeCommonDialogs::ebNo ){
+				return;
+			}
+			
+			undo.TakeOver( new ceUCAASpeakMoveTbt2Translation( topic, action, entry, false, action->GetTextBoxText() ) );
+			
+		}else{
+			entry.TakeOver( new ceLangPackEntry );
+			entry->SetName( name );
+			entry->SetText( action->GetTextBoxText() );
+			undo.TakeOver( new ceUCAASpeakMoveTbt2Translation( topic, action, entry, true, action->GetTextBoxText() ) );
+		}
+		
+		conversation->GetUndoSystem()->Add( undo );
+	}
+	
+	virtual void Update(){
+		const ceConversation *conversation = pPanel.GetParentPanel().GetConversation();
+		SetEnabled( conversation && conversation->GetLanguagePack() );
+	}
+};
+
+class cActionTbtFromTranslationEntry : public igdeAction{
+	ceWPAActorSpeak &pPanel;
+	
+public:
+	cActionTbtFromTranslationEntry( ceWPAActorSpeak &panel ) : igdeAction( "Text from translation entry...",
+		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiStrongLeft ),
+		"Set text box text from language pack translation entry" ), pPanel( panel ){}
+	
+	virtual void OnAction(){
+		ceConversation * const conversation = pPanel.GetParentPanel().GetConversation();
+		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
+		ceCAActorSpeak * const action = pPanel.GetAction();
+		if( ! topic || ! conversation || ! action ){
+			return;
+		}
+		
+		ceLangPack * const langpack = conversation->GetLanguagePack();
+		if( ! langpack ){
+			return;
+		}
+		
+		ceLangPackEntry::Ref entry( langpack->GetEntryNamed( action->GetTextBoxTextTranslate() ) );
+		if( ! entry || action->GetTextBoxText() == entry->GetText() ){
+			return;
+		}
+		
+		igdeUndoReference undo;
+		undo.TakeOver( new ceUCAASpeakSetTextBoxText( topic, action, entry->GetText() ) );
+		conversation->GetUndoSystem()->Add( undo );
+	}
+	
+	virtual void Update(){
+		const ceConversation *conversation = pPanel.GetParentPanel().GetConversation();
+		SetEnabled( conversation && conversation->GetLanguagePack() );
+	}
+};
+
+class cActionShowTranslationEntry : public igdeAction{
+	ceWPAActorSpeak &pPanel;
+	
+public:
+	cActionShowTranslationEntry( ceWPAActorSpeak &panel ) : igdeAction( "Show translation entry...",
+		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiStrongLeft ),
+		"Show language pack translation entry" ), pPanel( panel ){}
+	
+	virtual void OnAction(){
+		ceConversation * const conversation = pPanel.GetParentPanel().GetConversation();
+		ceConversationTopic * const topic = pPanel.GetParentPanel().GetTopic();
+		ceCAActorSpeak * const action = pPanel.GetAction();
+		if( ! topic || ! conversation || ! action ){
+			return;
+		}
+		
+		ceLangPack * const langpack = conversation->GetLanguagePack();
+		if( ! langpack ){
+			return;
+		}
+		
+		ceLangPackEntry::Ref entry( langpack->GetEntryNamed( action->GetTextBoxTextTranslate() ) );
+		if( entry ){
+			igdeCommonDialogs::Information( pPanel.GetParentWindow(),
+				"Translation Entry", entry->GetText().ToUTF8().GetString() );
+		}
+	}
+	
+	virtual void Update(){
+		const ceConversation *conversation = pPanel.GetParentPanel().GetConversation();
+		SetEnabled( conversation && conversation->GetLanguagePack() );
+	}
+};
+
+class cActionTextBoxTextTranslateMenu : public igdeActionContextMenu{
+	ceWPAActorSpeak &pPanel;
+	
+public:
+	cActionTextBoxTextTranslateMenu( ceWPAActorSpeak &panel ) : igdeActionContextMenu( "",
+		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiSmallDown ),
+		"Show Text Box Text Translate Menu" ), pPanel( panel ){}
+	
+	virtual void AddContextMenuEntries( igdeMenuCascade &contextMenu ){
+		igdeUIHelper &helper = contextMenu.GetEnvironment().GetUIHelper();
+		
+		helper.MenuCommand( contextMenu, new cActionTbt2TranslationEntry( pPanel ), true );
+		helper.MenuCommand( contextMenu, new cActionTbtFromTranslationEntry( pPanel ), true );
+		helper.MenuSeparator( contextMenu );
+		helper.MenuCommand( contextMenu, new cActionShowTranslationEntry( pPanel ), true );
 	}
 };
 
@@ -257,6 +436,16 @@ ceWPAActorSpeak::ceWPAActorSpeak( ceWPTopic &parentPanel ) : ceWPAction( parentP
 		pEditTextBoxText, new cTextTextBoxText( *this ) );
 	helper.Button( formLine, pBtnTextBoxText, new cActionEditTextBoxText( *this ), true );
 	
+	helper.FormLineStretchFirst( *this, "Translated:", "Translated text to display in the text box", formLine );
+	helper.EditString( formLine, "Translation 'name' from active language pack to use as text box text."
+		" Replaces static text if not empty.", pEditTextBoxTextTranslate, new cTextTextBoxTextTranslate( *this ) );
+	cActionTextBoxTextTranslateMenu * const actionTbtt = new cActionTextBoxTextTranslateMenu( *this );
+	helper.Button( formLine, pBtnTextBoxTextTranslate, actionTbtt, true );
+	actionTbtt->SetWidget( pBtnTextBoxTextTranslate );
+	
+	helper.EditString( *this, "", "Language pack translation entry", pEditShowTranslation, nullptr );
+	pEditShowTranslation->SetEditable( false );
+	
 	helper.EditString( *this, "Text Style:", "Name of style to use for the text box text",
 		pEditTextBoxTextStyle, new cTextTextBoxStyle( *this ) );
 	helper.EditString( *this, "Movement:", "Name of the actor movement to use or empty to not change",
@@ -277,13 +466,24 @@ ceWPAActorSpeak::~ceWPAActorSpeak(){
 ///////////////
 
 ceCAActorSpeak *ceWPAActorSpeak::GetAction() const{
-	ceConversationAction * const action = GetParentPanel().GetAction();
+	ceConversationAction * const action = GetParentPanel().GetTreeAction();
 	
 	if( action && action->GetType() == ceConversationAction::eatActorSpeak ){
 		return ( ceCAActorSpeak* )action;
 		
 	}else{
 		return NULL;
+	}
+}
+
+void ceWPAActorSpeak::OnConversationPathChanged(){
+	ceConversation * const conversation = GetParentPanel().GetConversation();
+	
+	if( conversation ){
+		pEditPathSound->SetBasePath( conversation->GetDirectoryPath() );
+		
+	}else{
+		pEditPathSound->SetBasePath( "" );
 	}
 }
 
@@ -295,21 +495,44 @@ void ceWPAActorSpeak::UpdateAction(){
 	if( action ){
 		pCBActorID->SetText( action->GetActor() );
 		pEditTextBoxText->SetText( action->GetTextBoxText().ToUTF8() );
+		pEditTextBoxTextTranslate->SetText( action->GetTextBoxTextTranslate() );
 		pEditTextBoxTextStyle->SetText( action->GetTextBoxTextStyle() );
 		pEditMovement->SetText( action->GetMovement() );
 		pEditPathSound->SetPath( action->GetPathSound() );
 		pEditMinSpeechTime->SetFloat( action->GetMinSpeechTime() );
 		pChkUseSpeechAnimation->SetChecked( action->GetUseSpeechAnimation() );
 		
+		ceConversation * const conversation = GetParentPanel().GetConversation();
+		ceLangPackEntry::Ref entry;
+		
+		if( conversation && action ){
+			const ceLangPack * const langpack = conversation->GetLanguagePack();
+			if( langpack ){
+				entry = langpack->GetEntryNamed( action->GetTextBoxTextTranslate() );
+			}
+		}
+		
+		if( entry ){
+			pEditShowTranslation->SetText( entry->GetText().ToUTF8().GetString() );
+			
+		}else{
+			pEditShowTranslation->ClearText();
+		}
+		
+		
 	}else{
 		pCBActorID->ClearText();
 		pEditTextBoxText->ClearText();
+		pEditShowTranslation->ClearText();
+		pEditTextBoxTextTranslate->ClearText();
 		pEditTextBoxTextStyle->ClearText();
 		pEditMovement->ClearText();
 		pEditPathSound->ClearPath();
 		pEditMinSpeechTime->ClearText();
 		pChkUseSpeechAnimation->SetChecked( false );
 	}
+	
+	pBtnTextBoxTextTranslate->GetAction()->Update();
 }
 
 

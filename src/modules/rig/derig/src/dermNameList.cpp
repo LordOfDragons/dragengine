@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Rig Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -34,18 +37,13 @@
 ////////////////////////////
 
 dermNameList::dermNameList(){
-	pNames = NULL;
+	pNames = nullptr;
 	pNameCount = 0;
 	pNameSize = 0;
 }
 
 dermNameList::~dermNameList(){
 	if( pNames ){
-		while( pNameCount > 0 ){
-			pNameCount--;
-			delete [] pNames[ pNameCount ].name;
-		}
-		
 		delete [] pNames;
 	}
 }
@@ -55,10 +53,10 @@ dermNameList::~dermNameList(){
 // Management
 ///////////////
 
-const char *dermNameList::GetNameAt( int index ) const{
+const decString &dermNameList::GetNameAt( int index ) const{
 	if( index < 0 || index >= pNameCount ) DETHROW( deeInvalidParam );
 	
-	return ( const char * )pNames[ index ].name;
+	return pNames[ index ].name;
 }
 
 int dermNameList::GetNameNumberAt( int index ) const{
@@ -74,11 +72,11 @@ void dermNameList::SetNameNumberAt( int index, int number ){
 }
 
 int dermNameList::IndexOfName( const char *name ) const{
-	if( ! name ) DETHROW( deeInvalidParam );
+	DEASSERT_NOTNULL( name )
 	int n;
 	
 	for( n=0; n<pNameCount; n++ ){
-		if( strcmp( name, pNames[ n ].name ) == 0 ){
+		if( pNames[ n ].name == name ){
 			return n;
 		}
 	}
@@ -87,11 +85,11 @@ int dermNameList::IndexOfName( const char *name ) const{
 }
 
 bool dermNameList::HasName( const char *name ) const{
-	if( ! name ) DETHROW( deeInvalidParam );
+	DEASSERT_NOTNULL( name )
 	int n;
 	
 	for( n=0; n<pNameCount; n++ ){
-		if( strcmp( name, pNames[ n ].name ) == 0 ){
+		if( pNames[ n ].name == name ){
 			return true;
 		}
 	}
@@ -106,20 +104,19 @@ int dermNameList::AddName( const char *name ){
 	}
 	
 	if( pNameCount == pNameSize ){
-		int newSize = pNameSize * 3 / 2 + 1;
-		sName *newArray = new sName[ newSize ];
-		if( ! newArray ) DETHROW( deeOutOfMemory );
+		int i, newSize = pNameSize * 3 / 2 + 1;
+		sName * const newArray = new sName[ newSize ];
 		if( pNames ){
-			memcpy( newArray, pNames, sizeof( sName ) * pNameSize );
+			for( i=0; i<pNameSize; i++ ){
+				newArray[ i ] = pNames[ i ];
+			}
 			delete [] pNames;
 		}
 		pNames = newArray;
 		pNameSize = newSize;
 	}
 	
-	pNames[ pNameCount ].name = new char[ strlen( name ) + 1 ];
-	if( ! pNames[ pNameCount ].name ) DETHROW( deeOutOfMemory );
-	strcpy( pNames[ pNameCount ].name, name );
+	pNames[ pNameCount ].name = name;
 	pNames[ pNameCount ].number = -1;
 	pNameCount++;
 	

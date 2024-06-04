@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -29,7 +32,7 @@
 #include "native/toolkit.h"
 #include "event/igdeAction.h"
 #include "event/igdeTextAreaListener.h"
-#include "native/fox/igdeNativeFoxTextArea.h"
+#include "native/toolkit.h"
 #include "resources/igdeFont.h"
 #include "resources/igdeTextStyle.h"
 #include "resources/igdeTextSegment.h"
@@ -303,8 +306,7 @@ int igdeTextArea::GetCursorPosition() const{
 		return 0;
 	}
 	
-	igdeNativeFoxTextArea &native = *( ( igdeNativeFoxTextArea* )GetNativeWidget() );
-	return native.GetTextArea().getCursorPos();
+	return ( ( igdeNativeTextArea* )GetNativeWidget() )->GetCursorPosition();
 }
 
 void igdeTextArea::SetCursorPosition( int position ){
@@ -316,8 +318,7 @@ void igdeTextArea::SetCursorPosition( int position ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	igdeNativeFoxTextArea &native = *( ( igdeNativeFoxTextArea* )GetNativeWidget() );
-	native.GetTextArea().setCursorPos( position );
+	( ( igdeNativeTextArea* )GetNativeWidget() )->SetCursorPosition( position );
 }
 
 decPoint igdeTextArea::GetCursorCoordinate() const{
@@ -325,8 +326,8 @@ decPoint igdeTextArea::GetCursorCoordinate() const{
 		return decPoint();
 	}
 	
-	igdeNativeFoxTextArea &native = *( ( igdeNativeFoxTextArea* )GetNativeWidget() );
-	return decPoint( native.GetTextArea().getCursorColumn(), native.GetTextArea().getCursorRow() );
+	const igdeNativeTextArea &native = *( ( igdeNativeTextArea* )GetNativeWidget() );
+	return decPoint( native.GetCursorColumn(), native.GetCursorRow() );
 }
 
 void igdeTextArea::SetCursorCoordinate( const decPoint &coordinate ){
@@ -334,9 +335,9 @@ void igdeTextArea::SetCursorCoordinate( const decPoint &coordinate ){
 		return;
 	}
 	
-	igdeNativeFoxTextArea &native = *( ( igdeNativeFoxTextArea* )GetNativeWidget() );
-	native.GetTextArea().setCursorRow( coordinate.y );
-	native.GetTextArea().setCursorColor( coordinate.x );
+	igdeNativeTextArea &native = *( ( igdeNativeTextArea* )GetNativeWidget() );
+	native.SetCursorRow( coordinate.y );
+	native.SetCursorColumn( coordinate.x );
 }
 
 
@@ -346,18 +347,7 @@ int igdeTextArea::GetTopLine() const{
 		return 0;
 	}
 	
-	igdeNativeFoxTextArea &native = *( ( igdeNativeFoxTextArea* )GetNativeWidget() );
-	FXText &widget = native.GetTextArea();
-	
-	int offset = widget.getTopLine();
-	int line = 0;
-	
-	while( offset > 0 ){
-		line++;
-		offset = widget.prevLine( offset );
-	}
-	
-	return line;
+	return ( ( igdeNativeTextArea* )GetNativeWidget() )->GetTopLine();
 }
 
 void igdeTextArea::SetTopLine( int line ){
@@ -365,8 +355,7 @@ void igdeTextArea::SetTopLine( int line ){
 		return;
 	}
 	
-	igdeNativeFoxTextArea &native = *( ( igdeNativeFoxTextArea* )GetNativeWidget() );
-	native.GetTextArea().setTopLine( native.GetTextArea().nextLine( 0, line ) );
+	( ( igdeNativeTextArea* )GetNativeWidget() )->SetTopLine( line );
 }
 
 int igdeTextArea::GetBottomLine() const{
@@ -374,18 +363,7 @@ int igdeTextArea::GetBottomLine() const{
 		return 0;
 	}
 	
-	igdeNativeFoxTextArea &native = *( ( igdeNativeFoxTextArea* )GetNativeWidget() );
-	FXText &widget = native.GetTextArea();
-	
-	int offset = widget.getBottomLine();
-	int line = 0;
-	
-	while( offset > 0 ){
-		line++;
-		offset = widget.prevLine( offset );
-	}
-	
-	return line;
+	return ( ( igdeNativeTextArea* )GetNativeWidget() )->GetBottomLine();
 }
 
 void igdeTextArea::SetBottomLine( int line ){
@@ -393,8 +371,7 @@ void igdeTextArea::SetBottomLine( int line ){
 		return;
 	}
 	
-	igdeNativeFoxTextArea &native = *( ( igdeNativeFoxTextArea* )GetNativeWidget() );
-	native.GetTextArea().setBottomLine( native.GetTextArea().nextLine( 0, line ) );
+	( ( igdeNativeTextArea* )GetNativeWidget() )->SetBottomLine( line );
 }
 
 int igdeTextArea::GetLineCount() const{
@@ -402,13 +379,12 @@ int igdeTextArea::GetLineCount() const{
 		return 0;
 	}
 	
-	igdeNativeFoxTextArea &native = *( ( igdeNativeFoxTextArea* )GetNativeWidget() );
-	return native.GetTextArea().countLines( 0, pText.GetLength() ) + 1;
+	return ( ( igdeNativeTextArea* )GetNativeWidget() )->GetLineCount();
 }
 
 void igdeTextArea::Focus(){
 	if( GetNativeWidget() ){
-		( ( igdeNativeFoxTextArea* )GetNativeWidget() )->Focus();
+		( ( igdeNativeTextArea* )GetNativeWidget() )->Focus();
 	}
 }
 
@@ -497,21 +473,9 @@ void igdeTextArea::CreateNativeWidget(){
 		return;
 	}
 	
-	if( ! GetParent() ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	FXComposite * const foxParent = ( FXComposite* )GetParent()->GetNativeContainer();
-	if( ! foxParent ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	igdeNativeFoxTextArea * const foxWidget = new igdeNativeFoxTextArea(
-		*this, foxParent, igdeUIFoxHelper::GetChildLayoutFlagsAll( this ), *GetGuiTheme() );
-	SetNativeWidget( foxWidget );
-	if( foxParent->id() ){
-		foxWidget->create();
-	}
+	igdeNativeTextArea * const native = igdeNativeTextArea::CreateNativeWidget( *this );
+	SetNativeWidget( native );
+	native->PostCreateNativeWidget();
 }
 
 void igdeTextArea::DestroyNativeWidget(){
@@ -519,55 +483,49 @@ void igdeTextArea::DestroyNativeWidget(){
 		return;
 	}
 	
-	delete ( igdeNativeFoxTextArea* )GetNativeWidget();
+	( ( igdeNativeTextArea* )GetNativeWidget() )->DestroyNativeWidget();
 	DropNativeWidget();
 }
 
 void igdeTextArea::OnTextChanged(){
 	if( GetNativeWidget() ){
-		( ( igdeNativeFoxTextArea* )GetNativeWidget() )->UpdateText();
+		( ( igdeNativeTextArea* )GetNativeWidget() )->UpdateText();
 	}
 }
 
 void igdeTextArea::OnColumnsChanged(){
-	if( ! GetNativeWidget() ){
-		return;
+	if( GetNativeWidget() ){
+		( ( igdeNativeTextArea* )GetNativeWidget() )->UpdateColumns();
 	}
-	
-	igdeNativeFoxTextArea &textField = *( ( igdeNativeFoxTextArea* )GetNativeWidget() );
-	textField.GetTextArea().setVisibleColumns( pColumns );
 }
 
 void igdeTextArea::OnRowsChanged(){
-	if( ! GetNativeWidget() ){
-		return;
+	if( GetNativeWidget() ){
+		( ( igdeNativeTextArea* )GetNativeWidget() )->UpdateRows();
 	}
-	
-	igdeNativeFoxTextArea &textField = *( ( igdeNativeFoxTextArea* )GetNativeWidget() );
-	textField.GetTextArea().setVisibleRows( pRows );
 }
 
 void igdeTextArea::OnEnabledChanged(){
 	if( GetNativeWidget() ){
-		( ( igdeNativeFoxTextArea* )GetNativeWidget() )->UpdateEnabled();
+		( ( igdeNativeTextArea* )GetNativeWidget() )->UpdateEnabled();
 	}
 }
 
 void igdeTextArea::OnEditableChanged(){
 	if( GetNativeWidget() ){
-		( ( igdeNativeFoxTextArea* )GetNativeWidget() )->UpdateEditable();
+		( ( igdeNativeTextArea* )GetNativeWidget() )->UpdateEditable();
 	}
 }
 
 void igdeTextArea::OnDescriptionChanged(){
 	if( GetNativeWidget() ){
-		( ( igdeNativeFoxTextArea* )GetNativeWidget() )->UpdateDescription();
+		( ( igdeNativeTextArea* )GetNativeWidget() )->UpdateDescription();
 	}
 }
 
 void igdeTextArea::OnStylesChanged(){
 	if( GetNativeWidget() ){
-		( ( igdeNativeFoxTextArea* )GetNativeWidget() )->UpdateStyles();
+		( ( igdeNativeTextArea* )GetNativeWidget() )->UpdateStyles();
 	}
 }
 

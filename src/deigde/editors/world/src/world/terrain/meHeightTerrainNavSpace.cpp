@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE World Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <math.h>
@@ -646,94 +649,81 @@ void meHeightTerrainNavSpace::LoadNavSpaceFromFile(){
 	if( ! pHTSector || ! pHTSector->GetHeightTerrain() ){
 		return; // this is a problem. we can not load the file without an environment
 	}
-	if( pPathNavSpace.IsEmpty() ){
-		return;
-	}
-	
-	decPath path;
-	path.SetFromUnix( pPathNavSpace );
 	
 	meWorld &world = pHTSector->GetHeightTerrain()->GetWorld();
 	world.GetUndoSystem()->RemoveAll(); // sorry, no better way yet to keep this consistent... without using a complex undo action
 	
-	igdeLoadSaveHTNavSpace loadNavSpace( *world.GetEnvironment(), LOGSOURCE );
-	deHeightTerrainNavSpace *engNavSpace = NULL;
-	meHeightTerrainNavSpaceFace *newFace = NULL;
-	meHeightTerrainNavSpaceType *newType = NULL;
-	decBaseFileReader *fileReader = NULL;
-	int i, j;
-	
-	try{
-		pBulkUpdate = true;
+	if( ! pPathNavSpace.IsEmpty() ){
+		const decString baseDir( pHTSector->GetHeightTerrain()->GetBaseDirectory() );
+		const decPath path( decPath::AbsolutePathUnix( pPathNavSpace, baseDir ) );
 		
-		fileReader = pEngine.GetVirtualFileSystem()->OpenFileForReading( path );
-		engNavSpace = new deHeightTerrainNavSpace;
-		loadNavSpace.Load( *engNavSpace, *fileReader );
-		fileReader->FreeReference();
-		fileReader = NULL;
-		
-		int typeCount = pTypes.GetCount();
-		for( i=0; i<typeCount; i++ ){
-			( ( meHeightTerrainNavSpaceType* )pTypes.GetAt( i ) )->RemoveAllFaces();
-		}
-		
-		const int navFaceCount = engNavSpace->GetFaceCount();
-		const deNavigationSpaceFace * const navFaces = engNavSpace->GetFaces();
-		const unsigned int *navCorners = engNavSpace->GetCorners();
-		
-		for( i=0; i<navFaceCount; i++ ){
-			const int cornerCount = navFaces[ i ].GetCornerCount();
-			const int navType = ( int )navFaces[ i ].GetType();
+		if( pEngine.GetVirtualFileSystem()->ExistsFile( path ) ){
+			igdeLoadSaveHTNavSpace loadNavSpace( *world.GetEnvironment(), LOGSOURCE );
+			deHeightTerrainNavSpace *engNavSpace = NULL;
+			int i, j;
 			
-			meHeightTerrainNavSpaceType *type = NULL;
-			for( j=0; j<typeCount; j++ ){
-				meHeightTerrainNavSpaceType * const checkType = ( meHeightTerrainNavSpaceType* )pTypes.GetAt( j );
-				if( checkType->GetType() == navType ){
-					type = checkType;
-					break;
-				}
-			}
-			
-			if( ! type ){
-				decString name( "Type " );
-				name.AppendValue( navType );
+			try{
+				pBulkUpdate = true;
 				
-				newType = new meHeightTerrainNavSpaceType;
-				newType->SetName( name );
-				newType->SetType( navType );
-				AddType( newType );
-				type = newType;
-				newType = NULL;
-				typeCount = pTypes.GetCount();
+				engNavSpace = new deHeightTerrainNavSpace;
+				loadNavSpace.Load( *engNavSpace, decBaseFileReader::Ref::New(
+					pEngine.GetVirtualFileSystem()->OpenFileForReading( path ) ) );
+				
+				int typeCount = pTypes.GetCount();
+				for( i=0; i<typeCount; i++ ){
+					( ( meHeightTerrainNavSpaceType* )pTypes.GetAt( i ) )->RemoveAllFaces();
+				}
+				
+				const int navFaceCount = engNavSpace->GetFaceCount();
+				const deNavigationSpaceFace * const navFaces = engNavSpace->GetFaces();
+				const unsigned int *navCorners = engNavSpace->GetCorners();
+				
+				for( i=0; i<navFaceCount; i++ ){
+					const int cornerCount = navFaces[ i ].GetCornerCount();
+					const int navType = ( int )navFaces[ i ].GetType();
+					
+					meHeightTerrainNavSpaceType *type = NULL;
+					for( j=0; j<typeCount; j++ ){
+						meHeightTerrainNavSpaceType * const checkType = ( meHeightTerrainNavSpaceType* )pTypes.GetAt( j );
+						if( checkType->GetType() == navType ){
+							type = checkType;
+							break;
+						}
+					}
+					
+					if( ! type ){
+						decString name( "Type " );
+						name.AppendValue( navType );
+						
+						const meHeightTerrainNavSpaceType::Ref newType(
+							meHeightTerrainNavSpaceType::Ref::New( new meHeightTerrainNavSpaceType ) );
+						newType->SetName( name );
+						newType->SetType( navType );
+						AddType( newType );
+						type = newType;
+						typeCount = pTypes.GetCount();
+					}
+					
+					const meHeightTerrainNavSpaceFace::Ref newFace(
+						meHeightTerrainNavSpaceFace::Ref::New( new meHeightTerrainNavSpaceFace ) );
+					decIntList &newFacePoints = newFace->GetNavPoints();
+					for( j=0; j<cornerCount; j++ ){
+						newFacePoints.Add( ( int )*navCorners++ );
+					}
+					type->AddFace( newFace );
+				}
+				
+				pBulkUpdate = false;
+				
+			}catch( const deException &e ){
+				pBulkUpdate = false;
+				world.GetLogger()->LogException( LOGSOURCE, e );
 			}
-			
-			newFace = new meHeightTerrainNavSpaceFace;
-			decIntList &newFacePoints = newFace->GetNavPoints();
-			for( j=0; j<cornerCount; j++ ){
-				newFacePoints.Add( ( int )*navCorners++ );
-			}
-			type->AddFace( newFace );
-			newFace = NULL;
 		}
-		
-		pBulkUpdate = false;
-		
-	}catch( const deException &e ){
-		if( newFace ){
-			delete newFace;
-		}
-		if( newType ){
-			delete newType;
-		}
-		if( fileReader ){
-			fileReader->FreeReference();
-		}
-		pBulkUpdate = false;
-		world.GetLogger()->LogException( LOGSOURCE, e );
-		return;
 	}
 	
 	const int typeCount = pTypes.GetCount();
+	int i;
 	for( i=0; i<typeCount; i++ ){
 		( ( meHeightTerrainNavSpaceType* )pTypes.GetAt( i ) )->UpdateDDFaces();
 	}

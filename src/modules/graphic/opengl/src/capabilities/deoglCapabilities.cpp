@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -25,6 +28,7 @@
 
 #include "deoglCapabilities.h"
 #include "deoglCapsTextureFormat.h"
+#include "../delayedoperation/deoglDelayedOperations.h"
 #include "../framebuffer/deoglFramebuffer.h"
 #include "../extensions/deoglExtensions.h"
 #include "../renderthread/deoglRenderThread.h"
@@ -48,24 +52,27 @@ deoglCapabilities::deoglCapabilities( deoglRenderThread &renderThread ) :
 pRenderThread( renderThread ),
 pFormats( *this ),
 
+pMaxTextureSize( 1024 ),
+pMax3DTextureSize( 1024 ),
 pMaxDrawBuffers( 4 ),
 pUBOMaxSize( 0 ),
+pTBOMaxSize( 0 ),
 pSSBOMaxSize( 0 ),
 pSSBOMaxBlocksVertex( 0 ),
 pSSBOMaxBlocksFragment( 0 ),
 pSSBOMaxBlocksGeometry( 0 ),
+pSSBOMaxBlocksCompute( 0 ),
 pUBOOffsetAlignment( 4 ),
 pGeometryShaderMaxVertices( 0 ),
 pGeometryShaderMaxComponents( 0 ),
+pNumProgramBinaryFormats( 0 ),
 
 pATLUnbind( *this ),
 pUBOIndirectMatrixAccess( *this ),
-pRasterizerDiscard( *this ),
-pClearEntireCubeMap( *this ),
 pClearEntireArrayTexture( *this ),
-pGeometryShaderLayer( *this ),
 pUBODirectLinkDeadloop( *this ),
-pFramebufferTextureSingle( *this )
+pFramebufferTextureSingle( *this ),
+pStd430( *this )
 {
 	const GLfloat fsquad[ 12 ] = {
 		0.0f, 1.0f,
@@ -102,12 +109,11 @@ pFramebufferTextureSingle( *this )
 }
 
 deoglCapabilities::~deoglCapabilities(){
+	deoglDelayedOperations &dops = pRenderThread.GetDelayedOperations();
 	if( pFSQuadVAO ){
 		pglDeleteVertexArrays( 1, &pFSQuadVAO );
 	}
-	if( pFSQuadVBO ){
-		pglDeleteBuffers( 1, &pFSQuadVBO );
-	}
+	dops.DeleteOpenGLBuffer( pFSQuadVBO );
 }
 
 
@@ -142,6 +148,12 @@ void deoglCapabilities::DetectCapabilities(){
 		pFormats.DetectFormats( fbo );
 		
 		// test important hardware limits
+		OGL_CHECK( pRenderThread, glGetIntegerv( GL_MAX_TEXTURE_SIZE, &resultsInt[ 0 ] ) );
+		pMaxTextureSize = ( int )resultsInt[ 0 ];
+		
+		OGL_CHECK( pRenderThread, glGetIntegerv( GL_MAX_3D_TEXTURE_SIZE, &resultsInt[ 0 ] ) );
+		pMax3DTextureSize = ( int )resultsInt[ 0 ];
+		
 		OGL_CHECK( pRenderThread, glGetIntegerv( GL_MAX_DRAW_BUFFERS, &resultsInt[ 0 ] ) );
 		pMaxDrawBuffers = ( int )resultsInt[ 0 ];
 		
@@ -154,11 +166,14 @@ void deoglCapabilities::DetectCapabilities(){
 		OGL_CHECK( pRenderThread, glGetIntegerv( GL_MAX_UNIFORM_BLOCK_SIZE, &resultsInt[ 0 ] ) );
 		pUBOMaxSize = ( int )resultsInt[ 0 ];
 		
+		OGL_CHECK( pRenderThread, glGetIntegerv( GL_MAX_TEXTURE_BUFFER_SIZE, &resultsInt[ 0 ] ) );
+		pTBOMaxSize = ( int )resultsInt[ 0 ];
+		
 		if( ext.GetHasExtension( deoglExtensions::ext_ARB_shader_storage_buffer_object ) ){
 			if( pglGetInteger64v ){
 				OGL_CHECK( pRenderThread, pglGetInteger64v( GL_MAX_SHADER_STORAGE_BLOCK_SIZE, &resultsInt64[ 0 ] ) );
-				if( resultsInt64[ 0 ] > 0xfffffffc ){
-					resultsInt64[ 0 ] = 0xfffffffc;
+				if( resultsInt64[ 0 ] > 0x7fffffff ){
+					resultsInt64[ 0 ] = 0x7fffffff; // max 2GB is enough and does not overflow int32
 				}
 				pSSBOMaxSize = ( int )resultsInt64[ 0 ];
 				
@@ -175,6 +190,11 @@ void deoglCapabilities::DetectCapabilities(){
 			
 			OGL_CHECK( pRenderThread, glGetIntegerv( GL_MAX_GEOMETRY_SHADER_STORAGE_BLOCKS, &resultsInt[ 0 ] ) );
 			pSSBOMaxBlocksGeometry = ( int )resultsInt[ 0 ];
+			
+			if( ext.GetHasExtension( deoglExtensions::ext_ARB_compute_shader ) ){
+				OGL_CHECK( pRenderThread, glGetIntegerv( GL_MAX_COMPUTE_SHADER_STORAGE_BLOCKS, &resultsInt[ 0 ] ) );
+				pSSBOMaxBlocksCompute = ( int )resultsInt[ 0 ];
+			}
 		}
 		
 		OGL_CHECK( pRenderThread, glGetIntegerv( GL_MAX_GEOMETRY_OUTPUT_VERTICES, &resultsInt[ 0 ] ) );
@@ -182,19 +202,29 @@ void deoglCapabilities::DetectCapabilities(){
 		
 		OGL_CHECK( pRenderThread, glGetIntegerv( GL_MAX_GEOMETRY_TOTAL_OUTPUT_COMPONENTS, &resultsInt[ 0 ] ) );
 		pGeometryShaderMaxComponents = ( int )resultsInt[ 0 ];
+			
+		if( ext.GetHasExtension( deoglExtensions::ext_ARB_get_program_binary ) ){
+			OGL_CHECK( pRenderThread, glGetIntegerv( GL_NUM_PROGRAM_BINARY_FORMATS, &resultsInt[ 0 ] ) );
+			pNumProgramBinaryFormats = ( int )resultsInt[ 0 ];
+		}
 		
 		// report capabilities
 		if( true ){
 			logger.LogInfo( "Capabilities:" );
+			logger.LogInfoFormat( "- Maximum texture size = %d", pMaxTextureSize );
+			logger.LogInfoFormat( "- Maximum 3D texture size = %d", pMax3DTextureSize );
 			logger.LogInfoFormat( "- Maximum draw buffers = %d", pMaxDrawBuffers );
 			logger.LogInfoFormat( "- UBO Maximum Bindings = %d", maxUBOBindings );
 			logger.LogInfoFormat( "- UBO Maximum Block Size = %d", pUBOMaxSize );
 			logger.LogInfoFormat( "- UBO Buffer Offset Alignment = %d", pUBOOffsetAlignment );
+			logger.LogInfoFormat( "- TBO Maximum Size = %d", pTBOMaxSize );
 			logger.LogInfoFormat( "- SSBO Maximum Size = %d", pSSBOMaxSize );
+			logger.LogInfoFormat( "- Count program binary formats = %d", pNumProgramBinaryFormats );
 			logger.LogInfo( "- SSBO Maximum Blocks Shader:" );
 			logger.LogInfoFormat( "  - Vertex = %d", pSSBOMaxBlocksVertex );
 			logger.LogInfoFormat( "  - Geometry = %d", pSSBOMaxBlocksGeometry );
 			logger.LogInfoFormat( "  - Fragment = %d", pSSBOMaxBlocksFragment );
+			logger.LogInfoFormat( "  - Compute = %d", pSSBOMaxBlocksCompute );
 			logger.LogInfo( "- Geometry Shader:" );
 			logger.LogInfoFormat( "  - Max Vertices = %d", pGeometryShaderMaxVertices );
 			logger.LogInfoFormat( "  - Max Components = %d", pGeometryShaderMaxComponents );
@@ -207,9 +237,10 @@ void deoglCapabilities::DetectCapabilities(){
 		}
 		
 		// disable extensions with troubles
-		if( pSSBOMaxBlocksVertex == 0 || pSSBOMaxBlocksGeometry == 0 || pSSBOMaxBlocksFragment == 0 ){
-			logger.LogWarn( "Capabilities: SSBO not supported on all "
-				"required shader stages. Disable SSBO Support." );
+		if( ext.GetHasExtension( deoglExtensions::ext_ARB_shader_storage_buffer_object )
+		&& ext.GetHasExtension( deoglExtensions::ext_ARB_compute_shader )
+		&& pSSBOMaxBlocksCompute < 4 ){
+			logger.LogWarn( "Capabilities: SSBO does not support at least 4 compute SSBO blocks. Disable SSBO Support." );
 			ext.DisableExtension( deoglExtensions::ext_ARB_shader_storage_buffer_object );
 		}
 		
@@ -217,11 +248,10 @@ void deoglCapabilities::DetectCapabilities(){
 		pFramebufferTextureSingle.Check( fbo );
 		
 		pUBOIndirectMatrixAccess.Check( fbo );
-		pRasterizerDiscard.Check( fbo );
-		pClearEntireCubeMap.Check( fbo );
 		pClearEntireArrayTexture.Check( fbo );
-		pGeometryShaderLayer.Check( fbo );
 		pUBODirectLinkDeadloop.Check( fbo );
+		
+		pStd430.Check();
 		
 		#ifdef OS_ANDROID
 		framebuffer = new deoglFramebuffer( pRenderThread, false );
@@ -286,6 +316,15 @@ void deoglCapabilities::DetectCapabilities(){
 		
 		throw;
 	}
+}
+
+bool deoglCapabilities::Verify() const{
+	if( pStd430.Broken() ){
+		pRenderThread.GetLogger().LogError( "Std430 Layout Not Supported" );
+		return false;
+	}
+	
+	return true;
 }
 
 
@@ -372,9 +411,8 @@ void deoglCapabilities::pAndroidTest( deoglFramebuffer *framebuffer ){
 	deoglShaderManager &shaderManager = pRenderThread.GetShader().GetShaderManager();
 	deoglPixelBuffer pixelBuffer( deoglPixelBuffer::epfFloat4, 1, 1, 1 );
 	deoglPixelBuffer::sFloat4 * const pixels = pixelBuffer.GetPointerFloat4();
-	deoglShaderProgram *shader = NULL;
 	deoglTexture *texture = NULL;
-	deoglShaderSources *sources;
+	const deoglShaderSources *sources;
 	deoglShaderDefines defines;
 	
 	try{
@@ -383,7 +421,7 @@ void deoglCapabilities::pAndroidTest( deoglFramebuffer *framebuffer ){
 		if( ! sources ){
 			DETHROW( deeInvalidParam );
 		}
-		shader = shaderManager.GetProgramWith( sources, defines );
+		const deoglShaderProgram * const shader = shaderManager.GetProgramWith( sources, defines );
 		
 		// create test texture
 		texture = new deoglTexture( pRenderThread );
@@ -410,6 +448,7 @@ void deoglCapabilities::pAndroidTest( deoglFramebuffer *framebuffer ){
 		
 		// prepare framebuffer with texture
 		pRenderThread.GetFramebuffer().Activate( framebuffer );
+		framebuffer->DetachAllImages();
 		framebuffer->AttachColorTexture( 0, texture );
 		framebuffer->UpdateReadWriteBuffers();
 		framebuffer->Verify();
@@ -421,9 +460,6 @@ void deoglCapabilities::pAndroidTest( deoglFramebuffer *framebuffer ){
 		OGL_CHECK( pRenderThread, glDrawArrays( GL_TRIANGLE_FAN, 0, 4 ) );
 		OGL_CHECK( pRenderThread, pglBindVertexArray( 0 ) );
 		
-		shader->RemoveUsage();
-		shader = NULL;
-		
 		// retrieve the results and clean up
 		framebuffer->DetachAllImages();
 		texture->GetPixels( pixelBuffer );
@@ -432,9 +468,6 @@ void deoglCapabilities::pAndroidTest( deoglFramebuffer *framebuffer ){
 		texture = NULL;
 		
 	}catch( const deException &e ){
-		if( shader ){
-			shader->RemoveUsage();
-		}
 		if( texture ){
 			delete texture;
 		}

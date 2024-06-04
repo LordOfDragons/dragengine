@@ -21,6 +21,7 @@ fixed class SynthesizerSystem
 	/*@{*/
 	/** \brief Number of parameters available. */
 	public static func int getParameterCount()
+		return 0
 	end
 	
 	/**
@@ -28,10 +29,12 @@ fixed class SynthesizerSystem
 	 * \throws EOutOfBoundary \em index less than 0 or greater than or equal to getParameterCount().
 	 */
 	public static func ModuleParameter getParameterInfo( int index )
+		return null
 	end
 	
 	/** \brief Named parameter information or \em null if not found. */
 	public static func ModuleParameter getParameterInfo( String name )
+		return null
 	end
 	
 	/**
@@ -39,6 +42,7 @@ fixed class SynthesizerSystem
 	 * \throws EInvalidParam Parameter with name not found.
 	 */
 	public static func String getParameterValue( String name )
+		return null
 	end
 	
 	/**
@@ -50,6 +54,7 @@ fixed class SynthesizerSystem
 	
 	/** \brief Send command. */
 	public static func String sendCommand( String command )
+		return null
 	end
 	/*@}*/
 end

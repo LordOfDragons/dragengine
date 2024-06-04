@@ -1,0 +1,271 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine
+
+pin Dragengine.Scenery
+
+
+
+/**
+ * \brief VR system.
+ * \version 1.6
+ *
+ * This is a native class. This is a pure static class. The class can not be instantiated
+ */
+fixed class VRSystem
+	/** \name Management */
+	/*@{*/
+	/**
+	 * \brief VR Runtime is usable.
+	 * 
+	 * Returns true if a call to startRuntime() is likely to succeed or not.
+	 */
+	public static func bool runtimeUsable()
+		return false
+	end
+	
+	/**
+	 * \brief Set feature request level for eye gaze tracking.
+	 * \version 1.17
+	 * 
+	 * Tracking eye gaze features is consider a high privacy operation by most VR environments.
+	 * Enabling this feature usually requires the user to explicitely agree. Furthermore eye
+	 * gaze tracking is not required for the majority of games and applications. For these
+	 * reasons eye gaze tracking is disabled by default. To enable set the feature request
+	 * level to optional or required.
+	 * 
+	 * The set feature request level takes effect only the next time StartRuntime() is
+	 * called. It has no effect while the VR runtime is running.
+	 * 
+	 * If the VR module does not support eye gaze tracking and sFeatureSupport::efslRequired
+	 * is specified an exception is thrown.
+	 */
+	public func void requestFeatureEyeGazeTracking(VRFeatureSupportLevel level)
+	end
+	
+	/**
+	 * \brief Set feature request level for facial tracking.
+	 * \version 1.17
+	 * 
+	 * Facial tracking includes eye tracking and mouth tracking. Tracking facial features
+	 * is consider a high privacy operation by most VR environments. Enabling this feature
+	 * usually requires the user to explicitely agree. Furthermore facial tracking typically
+	 * is an expensive operation and can degrade performance. Last but not least facial
+	 * tracking is not required for the majority of games and applications. For this reason
+	 * facial tracking is disabled by default. To enable set the feature request level to
+	 * optional or required.
+	 * 
+	 * The set feature request level takes effect only the next time StartRuntime() is
+	 * called. It has no effect while the VR runtime is running.
+	 * 
+	 * If the VR module does not support facial tracking and sFeatureSupport::efslRequired
+	 * is specified an exception is thrown.
+	 */
+	public func void requestFeatureFacialTracking(VRFeatureSupportLevel level)
+	end
+	
+	/**
+	 * \brief Start VR.
+	 * 
+	 * VR systems typically are required to be activated before they can be used.
+	 * Starting VR connects the engine to the VR system present on the host system
+	 * and activates VR support on various modules. VR mode can be started and
+	 * stopped at any time.
+	 */
+	public static func void startRuntime()
+	end
+	
+	/**
+	 * \brief Stop VR.
+	 * 
+	 * VR systems typically are required to be activated before they can be used.
+	 * Starting VR connects the engine to the VR system present on the host system
+	 * and activates VR support on various modules. VR mode can be started and
+	 * stopped at any time.
+	 */
+	public static func void stopRuntime()
+	end
+	
+	/**
+	 * \brief VR is running.
+	 * \version 1.8
+	 * 
+	 * VR systems typically are required to be activated before they can be used.
+	 * Starting VR connects the engine to the VR system present on the host system
+	 * and activates VR support on various modules. VR mode can be started and
+	 * stopped at any time.
+	 */
+	public static func bool isRuntimeRunning()
+		return false
+	end
+	
+	/** \brief Camera to render on head mounted display or null. */
+	public static func Camera getCamera()
+		return null
+	end
+	
+	/**
+	 * \brief Set camera to render on head mounted display.
+	 * 
+	 * If set to null fades back to safe scene as defined by VR Runtime.
+	 */
+	public static func void setCamera( Camera camera )
+	end
+	
+	/**
+	 * \brief VR Runtime supports presenting user environment inside the rendered world.
+	 * \version 1.12
+	 */
+	public static func bool supportsPassthrough()
+		return false
+	end
+	
+	/**
+	 * \brief Presenting user environment inside the rendered world is enabled.
+	 * \version 1.12
+	 * 
+	 * Returns false if SupportsPassthrough() returns false.
+	 */
+	public static func bool getEnablePassthrough()
+		return false
+	end
+	
+	/**
+	 * \brief Enable presenting user environment inside the rendered world.
+	 * \version 1.12
+	 * 
+	 * Has no effect if SupportsPassthrough() returns false.
+	 */
+	public static func void setEnablePassthrough(bool enable)
+	end
+	
+	/**
+	 * \brief Transparency of user environment presented inside the rendered world.
+	 * \version 1.12
+	 * 
+	 * Has no effect if SupportsPassthrough() returns false. A value of 0 hides the
+	 * environment. A value of 1 shows the environment. Values in between blend over.
+	 */
+	public static func float getPassthroughTransparency()
+		return 0.0
+	end
+	
+	/**
+	 * \brief Set transparency of user environment presented inside the rendered world.
+	 * \version 1.12
+	 * 
+	 * Has no effect if SupportsPassthrough() returns false. A value of 0 hides the
+	 * environment. A value of 1 shows the environment. Values in between blend over.
+	 */
+	public static func void setPassthroughTransparency(float transparency)
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Input devices */
+	/*@{*/
+	/** \brief Number of input devices. */
+	public static func int getDeviceCount()
+		return 0
+	end
+	
+	/** \brief Information for input device at index. */
+	public static func InputDevice getDeviceAt( int index )
+		return null
+	end
+	
+	/** \brief Index of device with identifier or -1 if absent. */
+	public static func int indexOfDeviceWithID( String id )
+		return 0
+	end
+	
+	/** \brief Index of button with identifier on device at index or -1 if absent. */
+	public static func int indexOfButtonWithID( int device, String id )
+		return 0
+	end
+	
+	/** \brief Index of axis with identifier on device at index or -1 if absent. */
+	public static func int indexOfAxisWithID( int device, String id )
+		return 0
+	end
+	
+	/** \brief Index of feedback with identifier on device at index or -1 if absent. */
+	public static func int indexOfFeedbackWithID( int device, String id )
+		return 0
+	end
+	
+	/** \brief Button at index on device at index is pressed down. */
+	public static func bool getButtonPressed( int device, int button )
+		return false
+	end
+	
+	/** \brief Button at index on device at index is touched. */
+	public static func bool getButtonTouched( int device, int button )
+		return false
+	end
+	
+	/** \brief Value of axis at index on device at index. */
+	public static func float getAxisValue( int device, int axis )
+		return 0
+	end
+	
+	/** \brief Value of feedback at index on device at index. */
+	public static func float getFeedbackValue( int device, int feedback )
+		return 0
+	end
+	
+	/** \brief Set value of feedback at index on device at index. */
+	public static func void setFeedbackValue( int device, int feedback, float value )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Parameters */
+	/*@{*/
+	/** \brief Number of parameters available. */
+	public static func int getParameterCount()
+		return 0
+	end
+	
+	/**
+	 * \brief Parameter information.
+	 * \throws EOutOfBoundary \em index less than 0 or greater than or equal to getParameterCount().
+	 */
+	public static func ModuleParameter getParameterInfo( int index )
+		return null
+	end
+	
+	/** \brief Named parameter information or \em null if not found. */
+	public static func ModuleParameter getParameterInfo( String name )
+		return null
+	end
+	
+	/**
+	 * \brief Parameter value.
+	 * \throws EInvalidParam Parameter with name not found.
+	 */
+	public static func String getParameterValue( String name )
+		return null
+	end
+	
+	/**
+	 * \brief Set named parameter value.
+	 * \throws EInvalidParam Parameter with name not found.
+	 */
+	public static func void setParameterValue( String name, String value )
+	end
+	
+	/** \brief Send command. */
+	public static func String sendCommand( String command )
+		return null
+	end
+	/*@}*/
+end

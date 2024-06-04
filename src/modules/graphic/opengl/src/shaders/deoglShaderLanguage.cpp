@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -31,13 +34,20 @@
 #include "deoglShaderProgram.h"
 #include "deoglShaderUnitSourceCode.h"
 #include "deoglShaderManager.h"
+#include "deoglShaderSourceLocation.h"
+#include "../deoglCaches.h"
+#include "../deGraphicOpenGl.h"
+#include "../capabilities/deoglCapabilities.h"
 #include "../extensions/deoglExtensions.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTLogger.h"
-#include "../renderthread/deoglRTShader.h"
+#include "../renderthread/deoglRTChoices.h"
 
 #include <dragengine/common/exceptions.h>
-
+#include <dragengine/common/file/decBaseFileReader.h>
+#include <dragengine/common/file/decBaseFileWriter.h>
+#include <dragengine/filesystem/deCacheHelper.h>
+#include <dragengine/threading/deMutexGuard.h>
 
 
 #ifdef ANDROID
@@ -114,8 +124,8 @@ public:
 static cSpecialPrintShader vSpecialPrintShader;
 #endif
 
-static const char * const vPsfFragment = "v130/fragment/defren/light/light.glsl";
-static const char * const vPsfVertex = "v130/vertex/defren/light/light.glsl";
+static const char * const vPsfFragment = "fragment/defren/light/light.glsl";
+static const char * const vPsfVertex = "vertex/defren/light/light.glsl";
 static const char * const vPsfDefines[] = {
 	"HIGH_PRECISION",
 	"HIGHP",
@@ -201,6 +211,32 @@ static bool psfMatchesLink( const deoglShaderProgram &program ){
 #endif  // PRINT_SHADERS
 
 
+#define SHADER_CACHE_REVISION 1
+
+
+// Class cHasConditionGuard
+/////////////////////////////
+
+class cHasConditionGuard{
+private:
+	bool &pGuard;
+	deMutex &pMutex;
+	
+public:
+	cHasConditionGuard( bool &has, bool &guardHas, deMutex &mutex ) :
+	pGuard( guardHas ), pMutex( mutex ){
+		const deMutexGuard guard( mutex );
+		has = true;
+		guardHas = true;
+	}
+	
+	~cHasConditionGuard(){
+		const deMutexGuard guard( pMutex );
+		pGuard = false;
+	}
+};
+
+
 // Class deoglShaderLanguage
 //////////////////////////////
 
@@ -209,6 +245,10 @@ static bool psfMatchesLink( const deoglShaderProgram &program ){
 
 deoglShaderLanguage::deoglShaderLanguage( deoglRenderThread &renderThread ) :
 pRenderThread( renderThread ),
+pHasLoadingShader( false ),
+pGuardHasLoadingShader( false ),
+pHasCompilingShader( false ),
+pGuardHasCompilingShader( false ),
 pPreprocessor( renderThread )
 {
 	pErrorLog = NULL;
@@ -223,45 +263,91 @@ pPreprocessor( renderThread )
 			switch( ext.GetGLVersion() ){
 			case deoglExtensions::evgl3p2:
 				pGLSLVersion = "150";
+				pGLSLVersionNumber = 150;
 				break;
 				
 			case deoglExtensions::evgl3p1:
 				pGLSLVersion = "140";
+				pGLSLVersionNumber = 140;
 				break;
 				
 			case deoglExtensions::evgl3p0:
 				pGLSLVersion = "130";
+				pGLSLVersionNumber = 130;
 				break;
 				
 			case deoglExtensions::evgl2p1:
 				pGLSLVersion = "120";
+				pGLSLVersionNumber = 120;
 				break;
 				
 			default:
 				pGLSLVersion = "110";
+				pGLSLVersionNumber = 110;
 			}
 			
 		}else{
 			pGLSLVersion.Format( "%d%0d0 core", ext.GetGLVersionMajor(), ext.GetGLVersionMinor() );
+			pGLSLVersionNumber = 100 * ext.GetGLVersionMajor() + 10 * ext.GetGLVersionMinor();
 		}
 		
 	}else{
 		pGLSLVersion.Format( "%d%0d0 es", ext.GetGLVersionMajor(), ext.GetGLVersionMinor() );
+		pGLSLVersionNumber = 100 * ext.GetGLVersionMajor() + 10 * ext.GetGLVersionMinor();
 	}
 	
 	// some extensions provide functionality which is not present in the supported GLSL
 	// version. add the required extension declarations
 	if( ext.GetGLESVersion() == deoglExtensions::evglesUnsupported ){
+		// opengl extensions have a "in core" and "core since" version. some drivers seem to
+		// fail if "core since" version is used. using thus "in core" to be on the safe side.
+		// 
+		// and again nVidia kills the fun. if "in core" is used extensions which are present
+		// cause shader compilation to fail. looks like nVidia needs "core since" while stuff
+		// like Intel needs "in core". what a huge mess
+		const bool useCoreSince = true;
+		
+		#define GLSL_EXT_CHECK(v,cs,ci) ( (v) < ( useCoreSince ? deoglExtensions:: cs : deoglExtensions:: ci ) )
+		
+		// core since: 3.1 , in core: 4.6
 		if( ext.GetHasExtension( deoglExtensions::ext_ARB_uniform_buffer_object )
-		&& ( ext.GetGLVersion() < deoglExtensions::evgl3p1
-			|| ext.GetGLESVersion() < deoglExtensions::evgles3p0 ) ){
-				pGLSLExtensions.Add( "GL_ARB_uniform_buffer_object" );
+		&& GLSL_EXT_CHECK( ext.GetGLVersion(), evgl3p1, evgl4p6 ) ){
+			// ext.GetGLESVersion() < deoglExtensions::evgles3p0
+			pGLSLExtensions.Add( "GL_ARB_uniform_buffer_object" );
 		}
 		
+		// core since: 3.1 , in core: 4.6
+		if( ext.GetHasExtension( deoglExtensions::ext_ARB_texture_buffer_object )
+		&& GLSL_EXT_CHECK( ext.GetGLVersion(), evgl3p1, evgl4p6 ) ){
+			pGLSLExtensions.Add( "GL_ARB_texture_buffer_object" );
+		}
+		
+		// core since: 4.3 , in core: 4.6
 		if( ext.GetHasExtension( deoglExtensions::ext_ARB_shader_storage_buffer_object )
-		&& ( ext.GetGLVersion() < deoglExtensions::evgl4p3
-			|| ext.GetGLESVersion() < deoglExtensions::evgles3p2 ) ){
-				pGLSLExtensions.Add( "GL_ARB_shader_storage_buffer_object" );
+		&& GLSL_EXT_CHECK( ext.GetGLVersion(), evgl4p3, evgl4p6 ) ){
+			// ext.GetGLESVersion() < deoglExtensions::evgles3p2
+			pGLSLExtensions.Add( "GL_ARB_shader_storage_buffer_object" );
+		}
+		
+		// required for intel drivers. keyword "readonly" is added in
+		// GL_ARB_shader_image_load_store extension. if extension is not
+		// included intel drivers can fail to compile shader
+		// core since: 4.2 , in core: 4.6
+		if( ext.GetHasExtension( deoglExtensions::ext_ARB_shader_image_load_store )
+		&& GLSL_EXT_CHECK( ext.GetGLVersion(), evgl4p2, evgl4p6 ) ){
+			// ext.GetGLESVersion() < deoglExtensions::evgles3p2
+			pGLSLExtensions.Add( "GL_ARB_shader_image_load_store" );
+		}
+		
+		if( ext.GetHasExtension( deoglExtensions::ext_ARB_shading_language_420pack )
+		&& GLSL_EXT_CHECK( ext.GetGLVersion(), evgl4p2, evgl4p6 ) ){
+			// ext.GetGLESVersion() < deoglExtensions::evgles3p2
+			pGLSLExtensions.Add( "GL_ARB_shading_language_420pack" );
+		}
+		
+		if( ext.GetHasExtension( deoglExtensions::ext_ARB_shader_atomic_counters )
+		&& GLSL_EXT_CHECK( ext.GetGLVersion(), evgl4p2, evgl4p6 ) ){
+			pGLSLExtensions.Add( "GL_ARB_shader_atomic_counters" );
 		}
 	}
 }
@@ -276,33 +362,79 @@ deoglShaderLanguage::~deoglShaderLanguage(){
 ///////////////
 
 deoglShaderCompiled *deoglShaderLanguage::CompileShader( deoglShaderProgram &program ){
+// 	pRenderThread.GetLogger().LogInfoFormat("CompileShader: cacheId='%s' cacheId.len=%d",
+// 		program.GetCacheId().GetString(), program.GetCacheId().GetLength());
+	
+	deoglShaderCompiled *compiled = pCacheLoadShader( program );
+	
+	if( ! compiled ){
+		compiled = pCompileShader( program );
+		
+		if( compiled ){
+			pCacheSaveShader( program, *compiled );
+		}
+	}
+	
+	return compiled;
+}
+
+bool deoglShaderLanguage::GetHasLoadingShader(){
+	const deMutexGuard guard( pMutexChecks );
+	const bool result = pHasLoadingShader;
+	if( ! pGuardHasLoadingShader ){
+		pHasLoadingShader = false;
+	}
+	return result;
+}
+
+bool deoglShaderLanguage::GetHasCompilingShader(){
+	const deMutexGuard guard( pMutexChecks );
+	const bool result = pHasCompilingShader;
+	if( ! pGuardHasCompilingShader ){
+		pHasCompilingShader = false;
+	}
+	return result;
+}
+
+
+
+// Private Functions
+//////////////////////
+
+deoglShaderCompiled *deoglShaderLanguage::pCompileShader( deoglShaderProgram &program ){
+	const cHasConditionGuard guardHas( pHasCompilingShader, pGuardHasCompilingShader, pMutexChecks );
+	const deMutexGuard guard( pMutexCompile );
+	
+	const deoglExtensions &ext = pRenderThread.GetExtensions();
 	const deoglShaderSources &sources = *program.GetSources();
-	deoglShaderUnitSourceCode * const scTessellationControl = program.GetTessellationControlSourceCode();
-	deoglShaderUnitSourceCode * const scTessellationEvaluation = program.GetTessellationEvaluationSourceCode();
-	deoglShaderUnitSourceCode * const scGeometry = program.GetGeometrySourceCode();
-	deoglShaderUnitSourceCode * const scVertex = program.GetVertexSourceCode();
-	deoglShaderUnitSourceCode * const scFragment = program.GetFragmentSourceCode();
+	const deoglShaderUnitSourceCode * const scCompute = program.GetComputeSourceCode();
+	const deoglShaderUnitSourceCode * const scTessellationControl = program.GetTessellationControlSourceCode();
+	const deoglShaderUnitSourceCode * const scTessellationEvaluation = program.GetTessellationEvaluationSourceCode();
+	const deoglShaderUnitSourceCode * const scGeometry = program.GetGeometrySourceCode();
+	const deoglShaderUnitSourceCode * const scVertex = program.GetVertexSourceCode();
+	const deoglShaderUnitSourceCode * const scFragment = program.GetFragmentSourceCode();
 	const decString &inlscGeometry = sources.GetInlineGeometrySourceCode();
 	const decString &inlscVertex = sources.GetInlineVertexSourceCode();
 	const decString &inlscFragment = sources.GetInlineFragmentSourceCode();
-	const deoglShaderBindingList &shaderStorageBlockList = sources.GetShaderStorageBlockList();
-	const deoglShaderBindingList &uniformBlockList = sources.GetUniformBlockList();
-	const deoglShaderBindingList &textureList = sources.GetTextureList();
 	const deoglShaderBindingList &inputList = sources.GetAttributeList();
 	const deoglShaderBindingList &outputList = sources.GetOutputList();
-	const decStringList &parameterList = sources.GetParameterList();
 	const decStringList &feedbackList = sources.GetFeedbackList();
+	const bool feedbackInterleaved = sources.GetFeedbackInterleaved();
 	GLuint handleShader = 0;
+	GLuint handleC = 0;
 	GLuint handleTCP = 0;
 	GLuint handleTEP = 0;
 	GLuint handleGP = 0;
 	GLuint handleVP = 0;
 	GLuint handleFP = 0;
 	deoglShaderCompiled *compiled = NULL;
-	int i, count, location;
+	int i, count;
 	
 	#ifdef PRINT_COMPILING
 	decString debugText( "compiling " );
+	if( scCompute ){
+		debugText.AppendFormat( " comp(%s)", scCompute->GetFilePath() );
+	}
 	if( scTessellationControl ){
 		debugText.AppendFormat( " tc(%s)", scTessellationControl->GetFilePath() );
 	}
@@ -337,6 +469,41 @@ deoglShaderCompiled *deoglShaderLanguage::CompileShader( deoglShaderProgram &pro
 		// retrieve the shader handle
 		handleShader = compiled->GetHandleShader();
 		
+		// compile compute program if existing
+		if( scCompute ){
+			compiled->CreateComputeProgram();
+			handleC = compiled->GetHandleC();
+			if( ! handleC ){
+				DETHROW( deeInvalidAction );
+			}
+			
+			pPreparePreprocessor( program.GetDefines() );
+			
+			if( ext.GetHasExtension( deoglExtensions::ext_ARB_compute_shader )
+			&& ext.GetGLVersion() < deoglExtensions::evgl4p3 ){
+				pPreprocessor.SourcesAppend( "#extension GL_ARB_compute_shader : require\n", false );
+			}
+			
+			pAppendPreprocessSourcesBuffer( scCompute->GetFilePath(), scCompute->GetSourceCode() );
+			
+			if( ! pCompileObject( handleC ) ){
+				pRenderThread.GetLogger().LogError( "Shader compilation failed:" );
+				pRenderThread.GetLogger().LogErrorFormat( "  shader file = %s", sources.GetFilename().GetString() );
+				
+				pRenderThread.GetLogger().LogErrorFormat(
+					"  compute unit source code file = %s", scCompute->GetFilePath().GetString() );
+				
+				if( pErrorLog ){
+					pRenderThread.GetLogger().LogErrorFormat( "  error log: %s", pErrorLog );
+				}
+				//pOutputShaderToFile( "failed_compute" );
+				//pPreprocessor.LogSourceLocationMap();
+				pLogFailedShaderSources();
+				DETHROW( deeInvalidParam );
+			}
+			OGL_CHECK( pRenderThread, pglAttachShader( handleShader, handleC ) );
+		}
+		
 		// compile the tessellation control program if existing
 		if( scTessellationControl ){
 			compiled->CreateTessellationControlProgram();
@@ -348,22 +515,27 @@ deoglShaderCompiled *deoglShaderLanguage::CompileShader( deoglShaderProgram &pro
 			pPreparePreprocessor( program.GetDefines() );
 			
 			if( scTessellationControl ){
-				pAppendPreprocessSourcesBuffer( scTessellationControl->GetFilePath(), scTessellationControl->GetSourceCode() );
+				pAppendPreprocessSourcesBuffer( scTessellationControl->GetFilePath(),
+					scTessellationControl->GetSourceCode() );
 			}
 			
 			if( ! pCompileObject( handleTCP ) ){
 				pRenderThread.GetLogger().LogError( "Shader compilation failed:" );
-				pRenderThread.GetLogger().LogErrorFormat( "  shader file = %s", sources.GetFilename().GetString() );
+				pRenderThread.GetLogger().LogErrorFormat(
+					"  shader file = %s", sources.GetFilename().GetString() );
 				
 				if( scTessellationControl ){
-					pRenderThread.GetLogger().LogErrorFormat( "  tessellation control unit source code file = %s", scTessellationControl->GetFilePath() );
+					pRenderThread.GetLogger().LogErrorFormat(
+						"  tessellation control unit source code file = %s",
+						scTessellationControl->GetFilePath().GetString() );
 				}
 				
 				if( pErrorLog ){
 					pRenderThread.GetLogger().LogErrorFormat( "  error log: %s", pErrorLog );
 				}
-				pOutputShaderToFile( "error" );
-				pPreprocessor.LogSourceLocationMap();
+				//pOutputShaderToFile( "failed_tessellation_control" );
+				//pPreprocessor.LogSourceLocationMap();
+				pLogFailedShaderSources();
 				DETHROW( deeInvalidParam );
 			}
 			OGL_CHECK( pRenderThread, pglAttachShader( handleShader, handleTCP ) );
@@ -380,22 +552,27 @@ deoglShaderCompiled *deoglShaderLanguage::CompileShader( deoglShaderProgram &pro
 			pPreparePreprocessor( program.GetDefines() );
 			
 			if( scTessellationEvaluation ){
-				pAppendPreprocessSourcesBuffer( scTessellationEvaluation->GetFilePath(), scTessellationEvaluation->GetSourceCode() );
+				pAppendPreprocessSourcesBuffer( scTessellationEvaluation->GetFilePath(),
+					scTessellationEvaluation->GetSourceCode() );
 			}
 			
 			if( ! pCompileObject( handleTEP ) ){
 				pRenderThread.GetLogger().LogError( "Shader compilation failed:" );
-				pRenderThread.GetLogger().LogErrorFormat( "  shader file = %s", sources.GetFilename().GetString() );
+				pRenderThread.GetLogger().LogErrorFormat(
+					"  shader file = %s", sources.GetFilename().GetString() );
 				
 				if( scTessellationEvaluation ){
-					pRenderThread.GetLogger().LogErrorFormat( "  tessellation evaluation unit source code file = %s", scTessellationEvaluation->GetFilePath() );
+					pRenderThread.GetLogger().LogErrorFormat(
+						"  tessellation evaluation unit source code file = %s",
+						scTessellationEvaluation->GetFilePath().GetString() );
 				}
 				
 				if( pErrorLog ){
 					pRenderThread.GetLogger().LogErrorFormat( "  error log: %s", pErrorLog );
 				}
-				pOutputShaderToFile( "error" );
-				pPreprocessor.LogSourceLocationMap();
+				//pOutputShaderToFile( "failed_tessellation_evaluation" );
+				//pPreprocessor.LogSourceLocationMap();
+				pLogFailedShaderSources();
 				DETHROW( deeInvalidParam );
 			}
 			OGL_CHECK( pRenderThread, pglAttachShader( handleShader, handleTEP ) );
@@ -428,7 +605,8 @@ deoglShaderCompiled *deoglShaderLanguage::CompileShader( deoglShaderProgram &pro
 				pRenderThread.GetLogger().LogErrorFormat( "  shader file = %s", sources.GetFilename().GetString() );
 				
 				if( scGeometry ){
-					pRenderThread.GetLogger().LogErrorFormat( "  geometry unit source code file = %s", scGeometry->GetFilePath() );
+					pRenderThread.GetLogger().LogErrorFormat( "  geometry unit source code file = %s",
+						scGeometry->GetFilePath().GetString() );
 					
 				}else{
 					pRenderThread.GetLogger().LogErrorFormat( "  inline geometry unit source code." );
@@ -437,8 +615,9 @@ deoglShaderCompiled *deoglShaderLanguage::CompileShader( deoglShaderProgram &pro
 				if( pErrorLog ){
 					pRenderThread.GetLogger().LogErrorFormat( "  error log: %s", pErrorLog );
 				}
-				pOutputShaderToFile( "error" );
-				pPreprocessor.LogSourceLocationMap();
+				//pOutputShaderToFile( "failed_geometry" );
+				//pPreprocessor.LogSourceLocationMap();
+				pLogFailedShaderSources();
 				DETHROW( deeInvalidParam );
 			}
 			#ifdef PRINT_ALL_SHADERS
@@ -473,10 +652,12 @@ deoglShaderCompiled *deoglShaderLanguage::CompileShader( deoglShaderProgram &pro
 			#endif
 			if( ! pCompileObject( handleVP ) ){
 				pRenderThread.GetLogger().LogError( "Shader compilation failed:" );
-				pRenderThread.GetLogger().LogErrorFormat( "  shader file = %s", sources.GetFilename().GetString() );
+				pRenderThread.GetLogger().LogErrorFormat(
+					"  shader file = %s", sources.GetFilename().GetString() );
 				
 				if( scVertex ){
-					pRenderThread.GetLogger().LogErrorFormat( "  vertex unit source code file = %s", scVertex->GetFilePath() );
+					pRenderThread.GetLogger().LogErrorFormat( "  vertex unit source code file = %s",
+						scVertex->GetFilePath().GetString() );
 					
 				}else{
 					pRenderThread.GetLogger().LogErrorFormat( "  inline vertex unit source code." );
@@ -485,8 +666,9 @@ deoglShaderCompiled *deoglShaderLanguage::CompileShader( deoglShaderProgram &pro
 				if( pErrorLog ){
 					pRenderThread.GetLogger().LogErrorFormat( "  error log: %s", pErrorLog );
 				}
-				pPreprocessor.LogSourceLocationMap();
-				pOutputShaderToFile( "error" );
+				//pOutputShaderToFile( "failed_vertex" );
+				//pPreprocessor.LogSourceLocationMap();
+				pLogFailedShaderSources();
 				DETHROW( deeInvalidParam );
 			}
 			#ifdef PRINT_SHADERS
@@ -538,10 +720,12 @@ deoglShaderCompiled *deoglShaderLanguage::CompileShader( deoglShaderProgram &pro
 			#endif
 			if( ! pCompileObject( handleFP ) ){
 				pRenderThread.GetLogger().LogError( "Shader compilation failed:" );
-				pRenderThread.GetLogger().LogErrorFormat( "  shader file = %s", sources.GetFilename().GetString() );
+				pRenderThread.GetLogger().LogErrorFormat(
+					"  shader file = %s", sources.GetFilename().GetString() );
 				
 				if( scFragment ){
-					pRenderThread.GetLogger().LogErrorFormat( "  fragment unit source code file = %s", scFragment->GetFilePath() );
+					pRenderThread.GetLogger().LogErrorFormat( "  fragment unit source code file = %s",
+						scFragment->GetFilePath().GetString() );
 					
 				}else{
 					pRenderThread.GetLogger().LogError( "  inline fragment unit source code." );
@@ -550,8 +734,9 @@ deoglShaderCompiled *deoglShaderLanguage::CompileShader( deoglShaderProgram &pro
 				if( pErrorLog ){
 					pRenderThread.GetLogger().LogErrorFormat( "  error log: %s", pErrorLog );
 				}
-				pPreprocessor.LogSourceLocationMap();
-				pOutputShaderToFile( "error" );
+				//pOutputShaderToFile( "failed_fragment" );
+				//pPreprocessor.LogSourceLocationMap();
+				pLogFailedShaderSources();
 				DETHROW( deeInvalidParam );
 			}
 			#ifdef PRINT_SHADERS
@@ -593,7 +778,8 @@ deoglShaderCompiled *deoglShaderLanguage::CompileShader( deoglShaderProgram &pro
 					varnames[ i ] = feedbackList.GetAt( i ).GetString();
 				}
 				
-				OGL_CHECK( pRenderThread, pglTransformFeedbackVaryings( handleShader, count, varnames, GL_INTERLEAVED_ATTRIBS ) );
+				OGL_CHECK( pRenderThread, pglTransformFeedbackVaryings( handleShader, count, varnames,
+					feedbackInterleaved ? GL_INTERLEAVED_ATTRIBS : GL_SEPARATE_ATTRIBS ) );
 				
 				delete [] varnames;
 			}
@@ -619,36 +805,35 @@ deoglShaderCompiled *deoglShaderLanguage::CompileShader( deoglShaderProgram &pro
 		}
 		#endif
 		if( ! pLinkShader( handleShader ) ){
-			pRenderThread.GetLogger().LogErrorFormat( "Shader linking failed (%s):", sources.GetFilename().GetString() );
+			pRenderThread.GetLogger().LogErrorFormat(
+				"Shader linking failed (%s):", sources.GetFilename().GetString() );
 			
+			if( scCompute ){
+				pRenderThread.GetLogger().LogErrorFormat( "  compute unit source code file = %s",
+					scCompute->GetFilePath().GetString() );
+			}
 			if( scTessellationControl ){
-				pRenderThread.GetLogger().LogErrorFormat( "  tessellation control unit source code file = %s", scTessellationControl->GetFilePath() );
+				pRenderThread.GetLogger().LogErrorFormat(
+					"  tessellation control unit source code file = %s",
+					scTessellationControl->GetFilePath().GetString() );
 			}
 			if( scTessellationEvaluation ){
-				pRenderThread.GetLogger().LogErrorFormat( "  tessellation evaluation unit source code file = %s", scTessellationEvaluation->GetFilePath() );
+				pRenderThread.GetLogger().LogErrorFormat(
+					"  tessellation evaluation unit source code file = %s",
+					scTessellationEvaluation->GetFilePath().GetString() );
 			}
-			
 			if( scGeometry ){
-				pRenderThread.GetLogger().LogErrorFormat( "  geometry unit source code file = %s", scGeometry->GetFilePath() );
-				
-			}else{
-				pRenderThread.GetLogger().LogErrorFormat( "  inline geometry unit source code." );
+				pRenderThread.GetLogger().LogErrorFormat( "  geometry unit source code file = %s",
+					scGeometry->GetFilePath().GetString() );
 			}
-			
 			if( scVertex ){
-				pRenderThread.GetLogger().LogErrorFormat( "  vertex unit source code file = %s", scVertex->GetFilePath() );
-				
-			}else{
-				pRenderThread.GetLogger().LogErrorFormat( "  inline vertex unit source code." );
+				pRenderThread.GetLogger().LogErrorFormat( "  vertex unit source code file = %s",
+					scVertex->GetFilePath().GetString() );
 			}
-			
 			if( scFragment ){
-				pRenderThread.GetLogger().LogErrorFormat( "  fragment unit source code file = %s", scFragment->GetFilePath() );
-				
-			}else{
-				pRenderThread.GetLogger().LogError( "  inline fragment unit source code." );
+				pRenderThread.GetLogger().LogErrorFormat( "  fragment unit source code file = %s",
+					scFragment->GetFilePath().GetString() );
 			}
-			
 			if( pErrorLog ){
 				pRenderThread.GetLogger().LogErrorFormat( "  error log: %s", pErrorLog );
 			}
@@ -661,74 +846,7 @@ deoglShaderCompiled *deoglShaderLanguage::CompileShader( deoglShaderProgram &pro
 		}
 		#endif
 		
-		// for the rest we have to activate this shader. to avoid upseting the shader tracker the current shader
-		// has to be deactivated first. this ensures the next time a shader is activated it is bound as active
-		// although the compiled shader is set.
-		pRenderThread.GetShader().ActivateShader( NULL );
-		compiled->Activate();
-		
-		// bind textures
-		count = textureList.GetCount();
-		for( i=0; i<count; i++ ){
-			location = pglGetUniformLocation( handleShader, textureList.GetNameAt( i ) );
-			if( location != -1 ){
-				OGL_CHECK( pRenderThread, pglUniform1i( location, textureList.GetTargetAt( i ) ) );
-			}
-		}
-		
-		// resolve parameters
-		count = parameterList.GetCount();
-		compiled->SetParameterCount( count );
-		for( i=0; i<count; i++ ){
-			compiled->SetParameterAt( i, pglGetUniformLocation( handleShader, parameterList.GetAt( i ).GetString() ) );
-		}
-		
-		// bind uniform blocks
-		if( pglGetUniformBlockIndex && pglUniformBlockBinding ){
-			count = uniformBlockList.GetCount();
-			for( i=0; i<count; i++ ){
-				location = pglGetUniformBlockIndex( handleShader, uniformBlockList.GetNameAt( i ) );
-				if( location != -1 ){
-					OGL_CHECK( pRenderThread, pglUniformBlockBinding(
-						handleShader, location, uniformBlockList.GetTargetAt( i ) ) );
-				}
-			}
-		}
-		
-		// bind shader storage blocks
-		if( pglGetUniformBlockIndex && pglShaderStorageBlockBinding ){
-			count = shaderStorageBlockList.GetCount();
-			for( i=0; i<count; i++ ){
-				location = pglGetUniformBlockIndex( handleShader, shaderStorageBlockList.GetNameAt( i ) );
-				if( location != -1 ){
-					OGL_CHECK( pRenderThread, pglShaderStorageBlockBinding(
-						handleShader, location, shaderStorageBlockList.GetTargetAt( i ) ) );
-				}
-			}
-		}
-		
-		// bind feedback variables. this is done after the linking if only the NV transform feedback extension exists
-		if( ! pglTransformFeedbackVaryings && pglTransformFeedbackVaryingsNV ){
-			count = feedbackList.GetCount();
-			
-			if( count > 0 ){
-				int * const locations = new int[ count ];
-				
-				for( i=0; i<count; i++ ){
-					locations[ i ] = pglGetVaryingLocationNV( handleShader, feedbackList.GetAt( i ).GetString() );
-					if( locations[ i ] == -1 ){
-						DETHROW( deeInvalidParam );
-					}
-				}
-				
-				OGL_CHECK( pRenderThread, pglTransformFeedbackVaryingsNV( handleShader, count, locations, GL_INTERLEAVED_ATTRIBS ) );
-				
-				delete [] locations;
-			}
-		}
-		
-		// deactivate the shader is not required since we set the active one to NULL already.
-		//OGL_CHECK( pRenderThread, pglUseProgramObject( 0 ) );
+		pAfterLinkShader( program, *compiled );
 		
 	}catch( const deException &e ){
 		e.PrintError();
@@ -742,10 +860,256 @@ deoglShaderCompiled *deoglShaderLanguage::CompileShader( deoglShaderProgram &pro
 	return compiled;
 }
 
+void deoglShaderLanguage::pAfterLinkShader( const deoglShaderProgram& program,
+deoglShaderCompiled& compiled ){
+	const deoglShaderSources &sources = *program.GetSources();
+	const GLuint handleShader = compiled.GetHandleShader();
+	int i, count, location;
+	
+	// for the rest we have to activate this shader. to avoid upseting the shader tracker
+	// the current shader is remembered then restored. if this call is done from inside
+	// the render thread then this will properly restore the shader avoiding upseting the
+	// shader tracker. if this is not the render thread then this has no negative effect
+	// 
+	// we can not touch the shader tracker here since we do not know if this call has
+	// been done from inside the render thread or not
+	GLuint restoreShader;
+	OGL_CHECK( pRenderThread, glGetIntegerv( GL_CURRENT_PROGRAM, ( GLint* )&restoreShader ) );
+	
+	try{
+		// pRenderThread.GetShader().ActivateShader( nullptr ); // nope, see above comment
+		// compiled.Activate();
+		OGL_CHECK( pRenderThread, pglUseProgram( compiled.GetHandleShader() ) );
+		
+		// bind textures
+		const deoglShaderBindingList &textureList = sources.GetTextureList();
+		count = textureList.GetCount();
+		for( i=0; i<count; i++ ){
+			location = pglGetUniformLocation( handleShader, textureList.GetNameAt( i ) );
+			if( location != -1 ){
+				OGL_CHECK( pRenderThread, pglUniform1i( location, textureList.GetTargetAt( i ) ) );
+			}
+		}
+		
+		// resolve parameters
+		const decStringList &parameterList = sources.GetParameterList();
+		count = parameterList.GetCount();
+		compiled.SetParameterCount( count );
+		for( i=0; i<count; i++ ){
+			compiled.SetParameterAt( i, pglGetUniformLocation( handleShader, parameterList.GetAt( i ).GetString() ) );
+		}
+		
+		// bind uniform blocks
+		if( pglGetUniformBlockIndex && pglUniformBlockBinding ){
+			const deoglShaderBindingList &uniformBlockList = sources.GetUniformBlockList();
+			count = uniformBlockList.GetCount();
+			for( i=0; i<count; i++ ){
+				location = pglGetUniformBlockIndex( handleShader, uniformBlockList.GetNameAt( i ) );
+				if( location != -1 ){
+					OGL_CHECK( pRenderThread, pglUniformBlockBinding(
+						handleShader, location, uniformBlockList.GetTargetAt( i ) ) );
+				}
+			}
+		}
+		
+		// bind shader storage blocks. we do not throw an exception here if the required
+		// functions are missing since SSBO usage is often wrapped in if-defs
+		const deoglShaderBindingList &shaderStorageBlockList = sources.GetShaderStorageBlockList();
+		count = shaderStorageBlockList.GetCount();
+		if( count > 0 && pglGetProgramResourceIndex && pglShaderStorageBlockBinding ){
+			/*if( ! pglGetProgramResourceIndex ){
+				DETHROW_INFO( deeInvalidParam, "missing glGetProgramResourceIndex" );
+			}
+			if( ! pglShaderStorageBlockBinding ){
+				DETHROW_INFO( deeInvalidParam, "missing glShaderStorageBlockBinding" );
+			}*/
+			for( i=0; i<count; i++ ){
+				location = pglGetProgramResourceIndex( handleShader, GL_SHADER_STORAGE_BLOCK,
+					shaderStorageBlockList.GetNameAt( i ) );
+				if( location != -1 ){ // GL_INVALID_INDEX
+					OGL_CHECK( pRenderThread, pglShaderStorageBlockBinding(
+						handleShader, location, shaderStorageBlockList.GetTargetAt( i ) ) );
+				}
+			}
+		}
+		
+		// bind feedback variables. this is done after the linking if only the NV transform feedback extension exists
+		if( ! pglTransformFeedbackVaryings && pglTransformFeedbackVaryingsNV ){
+			const bool feedbackInterleaved = sources.GetFeedbackInterleaved();
+			const decStringList &feedbackList = sources.GetFeedbackList();
+			count = feedbackList.GetCount();
+			
+			if( count > 0 ){
+				int * const locations = new int[ count ];
+				
+				for( i=0; i<count; i++ ){
+					locations[ i ] = pglGetVaryingLocationNV( handleShader, feedbackList.GetAt( i ).GetString() );
+					if( locations[ i ] == -1 ){
+						DETHROW( deeInvalidParam );
+					}
+				}
+				
+				OGL_CHECK( pRenderThread, pglTransformFeedbackVaryingsNV( handleShader, count, locations,
+					feedbackInterleaved ? GL_INTERLEAVED_ATTRIBS : GL_SEPARATE_ATTRIBS ) );
+				
+				delete [] locations;
+			}
+		}
+		
+		OGL_CHECK( pRenderThread, pglUseProgram( restoreShader ) );
+		
+	}catch( const deException & ){
+		OGL_CHECK( pRenderThread, pglUseProgram( restoreShader ) );
+		throw;
+	}
+}
 
+deoglShaderCompiled *deoglShaderLanguage::pCacheLoadShader( deoglShaderProgram &program ){
+	// NOTE we can not put this decision into deoglRTChoices since shaders are compiled already
+	//      during capabilities detection which is before deoglRTChoices is constructed
+	if( ! pRenderThread.GetExtensions().GetHasExtension( deoglExtensions::ext_ARB_get_program_binary )
+	|| pRenderThread.GetCapabilities().GetNumProgramBinaryFormats() == 0
+	|| program.GetCacheId().IsEmpty() ){
+		return nullptr;
+	}
+	
+	const cHasConditionGuard guardHas( pHasLoadingShader, pGuardHasLoadingShader, pMutexChecks );
+	
+	deoglCaches &caches = pRenderThread.GetOgl().GetCaches();
+	deCacheHelper &cacheShaders = caches.GetShaders();
+	
+	caches.Lock();
+	
+	deoglShaderCompiled *compiled = nullptr;
+	
+	try{
+		decBaseFileReader::Ref reader( decBaseFileReader::Ref::New(
+			cacheShaders.Read( program.GetCacheId() ) ) );
+		
+		// read parameters
+		if( ! reader ){
+			caches.Unlock();
+			pRenderThread.GetLogger().LogInfoFormat(
+				"ShaderLanguage.CacheLoadShader: Cached shader not found for '%.50s...'",
+				program.GetCacheId().GetString() );
+			return nullptr;
+		}
+		
+		if( reader->ReadByte() != SHADER_CACHE_REVISION ){
+			// cache file outdated
+			reader = nullptr;
+			cacheShaders.Delete( program.GetCacheId() );
+			caches.Unlock();
+			pRenderThread.GetLogger().LogInfoFormat(
+				"ShaderLanguage.CacheLoadShader: Cache version changed for '%.50s...'. Cache discarded",
+				program.GetCacheId().GetString() );
+			return nullptr;
+		}
+		
+		const GLenum format = ( GLenum )reader->ReadUInt();
+		const GLint length = ( GLint )reader->ReadUInt();
+		
+		// read binary data
+		decString data;
+		data.Set( ' ', length );
+		reader->Read( ( void* )data.GetString(), length );
+		
+		// create program using binary data
+		compiled = new deoglShaderCompiled( pRenderThread );
+		
+		{
+		// this has to be mutex protected since this uses opengl call like pCompileShader()
+		const deMutexGuard guard( pMutexCompile );
+		
+		OGL_CHECK( pRenderThread, pglProgramBinary( compiled->GetHandleShader(),
+			format, data.GetString(), length ) );
+		
+		// loading the binary does everything up to the linking step. this also uses
+		// opengl calls and thus has to be mutex protected
+		pAfterLinkShader( program, *compiled );
+		}
+		
+		// done
+		reader = nullptr;
+		caches.Unlock();
+		
+// 		pRenderThread.GetLogger().LogInfoFormat(
+// 			"ShaderLanguage.CacheLoadShader: Cached shader loaded for '%.50s...'",
+// 			program.GetCacheId().GetString() );
+		
+	}catch( const deException &e ){
+		cacheShaders.Delete( program.GetCacheId() );
+		caches.Unlock();
+		
+		pRenderThread.GetLogger().LogInfoFormat(
+			"ShaderLanguage.CacheLoadShader: Failed loading cached shader '%.50s...'. Cache discarded",
+			program.GetCacheId().GetString() );
+		//pRenderThread.GetLogger().LogException( e ); // do not spam logs. slows things down
+		
+		if( compiled ){
+			delete compiled;
+			compiled = nullptr;
+		}
+	}
+	
+	return compiled;
+}
 
-// Private Functions
-//////////////////////
+void deoglShaderLanguage::pCacheSaveShader( const deoglShaderProgram &program,
+const deoglShaderCompiled &compiled ){
+	// NOTE we can not put this decision into deoglRTChoices since shaders are compiled already
+	//      during capabilities detection which is before deoglRTChoices is constructed
+	if( ! pRenderThread.GetExtensions().GetHasExtension( deoglExtensions::ext_ARB_get_program_binary )
+	|| pRenderThread.GetCapabilities().GetNumProgramBinaryFormats() == 0
+	|| program.GetCacheId().IsEmpty() ){
+		return;
+	}
+	
+	const GLuint handler = compiled.GetHandleShader();
+	deoglCaches &caches = pRenderThread.GetOgl().GetCaches();
+	deCacheHelper &cacheShaders = caches.GetShaders();
+	
+	caches.Lock();
+	
+	try{
+		// get length of binary data
+		GLint length = 0;
+		OGL_CHECK( pRenderThread, pglGetProgramiv( handler, GL_PROGRAM_BINARY_LENGTH, &length ) );
+		DEASSERT_TRUE( length > 0 )
+		
+		// get binary data
+		decString data;
+		data.Set( ' ', length );
+		
+		GLenum format = 0;
+		OGL_CHECK( pRenderThread, pglGetProgramBinary( handler,
+			length, nullptr, &format, ( void* )data.GetString() ) );
+		
+		// write to cache
+		{
+		const decBaseFileWriter::Ref writer( decBaseFileWriter::Ref::New(
+			cacheShaders.Write( program.GetCacheId() ) ) );
+		
+		writer->WriteByte( SHADER_CACHE_REVISION );
+		writer->WriteUInt( format );
+		writer->WriteUInt( length );
+		writer->Write( data.GetString(), length );
+		}
+		
+		caches.Unlock();
+		
+		pRenderThread.GetLogger().LogInfoFormat(
+			"ShaderLanguage.CacheSaveShader: Cached shader '%.50s...', length %d bytes",
+			program.GetCacheId().GetString(), length );
+		
+	}catch( const deException &e ){
+		caches.Unlock();
+		pRenderThread.GetLogger().LogErrorFormat(
+			"ShaderLanguage.CacheSaveShader: Failed caching shader '%.50s...'",
+			program.GetCacheId().GetString() );
+		pRenderThread.GetLogger().LogException( e );
+	}
+}
 
 void deoglShaderLanguage::pPreparePreprocessor( const deoglShaderDefines &defines ){
 	pPreprocessor.Clear();
@@ -764,6 +1128,11 @@ void deoglShaderLanguage::pPreparePreprocessor( const deoglShaderDefines &define
 		pPreprocessor.SourcesAppend( line, false );
 	}
 	
+	// add version selection defines
+	if( pGLSLVersionNumber >= 450 ){
+		pPreprocessor.SetSymbol( "GLSL_450", "1" );
+	}
+	
 	// add symbols
 	pPreprocessor.SetSymbolsFromDefines( defines );
 	
@@ -780,454 +1149,10 @@ void deoglShaderLanguage::pPreparePreprocessor( const deoglShaderDefines &define
 
 
 #ifdef ANDROID
-static void specialHack( deoglRenderThread &renderThread, deoglShaderPreprocessor &preprocessor ){
-return;
-	
-	// SPECIAL HACK
-	const char * const hack1 =
-"#version 300 es\n\
-#define HIGH_PRECISION 1\n\
-#define UBO 1\n\
-#define UBO_IDMATACCBUG 1\n\
-#define MATERIAL_NORMAL_INTBASIC 1\n\
-#define TEXTURE_NORMAL 1\n\
-#define TEXTURE_REFLECTIVITY 1\n\
-#define TEXTURE_ENVMAP 1\n\
-#define TEXTURE_ENVMAP_EQUI 1\n\
-#define OUTPUT_LIMITBUFFERS 1\n\
-#define OUTPUT_MATERIAL_PROPERTIES 1\n\
-#define TP_NORMAL_STRENGTH 1\n\
-#define TP_ROUGHNESS_REMAP 1\n\
-#define ANDROID 1\n\
-precision highp float;\n\
-precision highp int;\n\
-#define MATRIX_ORDER column_major\n\
-#define UBOLAYOUT layout (std140, column_major)\n\
-UBOLAYOUT uniform RenderParameters{\n\
-	vec4 pAmbient;\n\
-	mat4x3 pMatrixV;\n\
-	mat4 pMatrixP;\n\
-	mat4 pMatrixVP;\n\
-	mat3 pMatrixVn;\n\
-	mat3 pMatrixEnvMap;\n\
-	vec2 pDepthTransform; \n\
-	float pEnvMapLodLevel;\n\
-	float pNorRoughCorrStrength;\n\
-	bool pSkinDoesReflections;\n\
-	bool pFlipCulling;\n\
-	vec4 pViewport; \n\
-	vec4 pClipPlane; \n\
-	vec4 pScreenSpace; \n\
-	vec4 pDepthOffset; \n\
-	vec3 pParticleLightHack; \n\
-	vec3 pFadeRange; \n\
-};\n\
-UBOLAYOUT uniform InstanceParameters{\n\
-		mat4x3 pMatrixModel;\n\
-		mat3 pMatrixNormal;\n\
-		mat3x2 pMatrixTexCoord;\n\
-		bool pDoubleSided;\n\
-		float pEnvMapFade;\n\
-		vec4 pBillboardPosTransform; \n\
-	};\n\
-	in vec3 inPosition;\n\
-	in vec3 inNormal;\n\
-		in vec4 inTangent;\n\
-	in vec2 inTexCoord;\n\
-	out vec2 vTCColor;\n\
-		out vec2 vTCNormal;\n\
-		out vec2 vTCReflectivity;\n\
-	out vec3 vNormal;\n\
-		out vec3 vTangent;\n\
-		out vec3 vBitangent;\n\
-		out vec3 vReflectDir;\n\
-void transformPosition( out vec3 position ){\n\
-		position = inPosition;\n\
-		position = pMatrixModel * vec4( position, 1.0 );\n\
-			gl_Position = pMatrixVP * vec4( position, 1.0 );\n\
-}\n\
-void transformNormal(){\n\
-			vNormal = normalize( inNormal );\n\
-				vTangent = normalize( vec3( inTangent ) );\n\
-				vBitangent = cross( vNormal, vTangent );\n\
-				vTangent = cross( vBitangent, vNormal ) * vec3( inTangent.w );\n\
-			mat3 matrixNormal = pMatrixNormal * pMatrixVn;\n\
-		vNormal = normalize( vNormal * matrixNormal );\n\
-			vTangent = vTangent * matrixNormal;\n\
-			vBitangent = vBitangent * matrixNormal;\n\
-			if( dot( vTangent, vTangent ) > 0.00001 ){\n\
-				vTangent = normalize( vTangent );\n\
-			}\n\
-			if( dot( vBitangent, vBitangent ) > 0.00001 ){\n\
-				vBitangent = normalize( vBitangent );\n\
-			}\n\
-}\n\
-void main( void ){\n\
-	vec3 position;\n\
-	transformPosition( position );\n\
-		vec2 tc = pMatrixTexCoord * vec3( inTexCoord, 1.0 );\n\
-	vTCColor = tc; \n\
-		vTCNormal = tc; \n\
-		vTCReflectivity = tc; \n\
-	transformNormal();\n\
-				vReflectDir = pMatrixV * vec4( position, 1.0 );\n\
-}\n\
-";
-	
-	const char * const hack2 =
-"#version 300 es\n\
-#define HIGH_PRECISION 1\n\
-#define UBO 1\n\
-#define UBO_IDMATACCBUG 1\n\
-#define MATERIAL_NORMAL_INTBASIC 1\n\
-#define TEXTURE_NORMAL 1\n\
-#define TEXTURE_REFLECTIVITY 1\n\
-#define TEXTURE_ENVMAP 1\n\
-#define TEXTURE_ENVMAP_EQUI 1\n\
-#define OUTPUT_LIMITBUFFERS 1\n\
-#define OUTPUT_MATERIAL_PROPERTIES 1\n\
-#define TP_NORMAL_STRENGTH 1\n\
-#define TP_ROUGHNESS_REMAP 1\n\
-#define ANDROID 1\n\
-precision highp float;\n\
-precision highp int;\n\
-#define MATRIX_ORDER column_major\n\
-#define UBOLAYOUT layout (std140, column_major)\n\
-UBOLAYOUT uniform RenderParameters{\n\
-	vec4 pAmbient;\n\
-	mat4x3 pMatrixV;\n\
-	mat4 pMatrixP;\n\
-	mat4 pMatrixVP;\n\
-	mat3 pMatrixVn;\n\
-	mat3 pMatrixEnvMap;\n\
-	vec2 pDepthTransform; \n\
-	float pEnvMapLodLevel;\n\
-	float pNorRoughCorrStrength;\n\
-	bool pSkinDoesReflections;\n\
-	bool pFlipCulling;\n\
-	vec4 pViewport; \n\
-	vec4 pClipPlane; \n\
-	vec4 pScreenSpace; \n\
-	vec4 pDepthOffset; \n\
-	vec3 pParticleLightHack; \n\
-	vec3 pFadeRange; \n\
-};\n\
-UBOLAYOUT uniform TextureParameters{\n\
-	vec4 pValueColorTransparency; \n\
-	vec4 pValueNormal; \n\
-	vec4 pValueReflectivityRoughness; \n\
-	vec2 pValueRefractionDistort; \n\
-	float pValueSolidity; \n\
-	float pValueAO; \n\
-	vec3 pTexColorTint; \n\
-	float pTexColorGamma; \n\
-	float pTexColorSolidityMultiplier; \n\
-	float pTexAOSolidityMultiplier; \n\
-	float pTexSolidityMultiplier; \n\
-	float pTexAbsorptionRange; \n\
-	vec2 pTexHeightRemap; \n\
-	float pTexNormalStrength; \n\
-	float pTexNormalSolidityMultiplier; \n\
-	vec2 pTexRoughnessRemap; \n\
-	float pTexRoughnessGamma; \n\
-	float pTexRoughnessSolidityMultiplier; \n\
-	vec2 pTexEnvRoomSize; \n\
-	float pTexRefractionDistortStrength; \n\
-	float pTexReflectivitySolidityMultiplier; \n\
-	vec3 pTexEnvRoomEmissivityIntensity; \n\
-	float pTexTransparencyMultiplier; \n\
-	vec3 pTexEmissivityIntensity; \n\
-	float pTexThickness; \n\
-	vec2 pTexVariationEnableScale; \n\
-};\n\
-UBOLAYOUT uniform InstanceParameters{\n\
-		mat4x3 pMatrixModel;\n\
-		mat3 pMatrixNormal;\n\
-		mat3x2 pMatrixTexCoord;\n\
-		bool pDoubleSided;\n\
-		float pEnvMapFade;\n\
-		vec4 pBillboardPosTransform; \n\
-	};\n\
-#define pColorTint pTexColorTint\n\
-#define pColorGamma pTexColorGamma\n\
-#define pColorSolidityMultiplier pTexColorSolidityMultiplier\n\
-#define pAOSolidityMultiplier pTexAOSolidityMultiplier\n\
-#define pTransparencyMultiplier pTexTransparencyMultiplier\n\
-#define pSolidityMultiplier pTexSolidityMultiplier\n\
-#define pHeightRemap pTexHeightRemap\n\
-#define pNormalStrength pTexNormalStrength\n\
-#define pNormalSolidityMultiplier pTexNormalSolidityMultiplier\n\
-#define pRoughnessRemap pTexRoughnessRemap\n\
-#define pRoughnessGamma pTexRoughnessGamma\n\
-#define pRoughnessSolidityMultiplier pTexRoughnessSolidityMultiplier\n\
-#define pReflectivitySolidityMultiplier pTexReflectivitySolidityMultiplier\n\
-#define pRefractionDistortStrength pTexRefractionDistortStrength\n\
-#define pEmissivityIntensity pTexEmissivityIntensity\n\
-#define pEnvRoomSize pTexEnvRoomSize\n\
-#define pEnvRoomEmissivityIntensity pTexEnvRoomEmissivityIntensity\n\
-#define pVariationEnableScale pTexVariationEnableScale\n\
-#define SAMPLER_2D sampler2D\n\
-	#define TEXTURE(s,tc) texture(s, tc)\n\
-uniform SAMPLER_2D texColor;\n\
-	uniform SAMPLER_2D texNormal;\n\
-	uniform SAMPLER_2D texReflectivity;\n\
-		uniform sampler2D texEnvMap;\n\
-in vec2 vTCColor;\n\
-in vec2 vTCNormal;\n\
-in vec2 vTCReflectivity;\n\
-in vec3 vNormal;\n\
-	in vec3 vTangent;\n\
-	in vec3 vBitangent;\n\
-	in vec3 vReflectDir;\n\
-		layout(location=0) out vec4 outDiffuse; \n\
-		layout(location=1) out vec4 outNormal; \n\
-		layout(location=2) out vec4 outReflectivity; \n\
-layout(location=3) out vec4 outColor; \n\
-	const vec4 cemefac = vec4( 0.5, 1.0, -0.1591549, -0.3183099 ); \n\
-const vec4 colorTransparent = vec4( 0.0, 0.0, 0.0, 1.0 );\n\
-#define reliefMapping(tc,normal)\n\
-void main( void ){\n\
-	vec4 outRoughness;\n\
-	vec4 outAOSolidity;\n\
-	vec4 outSubSurface;\n\
-		vec3 realNormal = mix( -vNormal, vNormal, vec3( pFlipCulling ^^ gl_FrontFacing ) ); \n\
-			vec2 tcReliefMapped = vTCColor;\n\
-		reliefMapping( tcReliefMapped, realNormal );\n\
-#define tcColor tcReliefMapped\n\
-#define tcNormal tcReliefMapped\n\
-#define tcReflectivity tcReliefMapped\n\
-	vec4 color = TEXTURE( texColor, tcColor );\n\
-	color.a *= pTransparencyMultiplier; \n\
-		float solidity = 1.0;\n\
-		vec4 normal = TEXTURE( texNormal, tcNormal );\n\
-		normal.xyz = normal.rgb * vec3( 1.9921569 ) + vec3( -0.9921722 );\n\
-		float ao = 1.0;\n\
-		vec4 reflectivity = TEXTURE( texReflectivity, tcReflectivity );\n\
-		float roughness = reflectivity.w;\n\
-		color.rgb = pow( color.rgb, vec3( pColorGamma ) );\n\
-			color.rgb *= pColorTint;\n\
-	color.a *= solidity;\n\
-		outDiffuse = color;\n\
-		outColor = color * pAmbient;\n\
-	ao = pow( ao, pColorGamma ); \n\
-		normal.xyz = vTangent * vec3( normal.x ) + vBitangent * vec3( normal.y ) + realNormal * vec3( normal.z );\n\
-		normal.xyz = ( normal.xyz - realNormal ) * vec3( pNormalStrength ) + realNormal;\n\
-		normal.w *= abs( pNormalStrength );\n\
-	if( dot( normal.xyz, normal.xyz ) < 1e-6 ){\n\
-		normal = vec4( 0.0, 0.0, 1.0, 0.0 );\n\
-	}\n\
-	normal.xyz = normalize( normal.xyz );\n\
-			outNormal = vec4( normal.xyz * vec3( 0.5 ) + vec3( 0.5 ), color.a );\n\
-		reflectivity.rgb = pow( reflectivity.rgb, vec3( pColorGamma ) );\n\
-		roughness = pow( clamp( roughness, 0.0, 1.0 ), pRoughnessGamma );\n\
-			roughness = clamp( roughness * pRoughnessRemap.x + pRoughnessRemap.y, 0.0, 1.0 );\n\
-		roughness = min( roughness + normal.w * pNorRoughCorrStrength, 1.0 ); \n\
-		vec3 fragmentDirection = normalize( vReflectDir );\n\
-		float reflectDot = min( abs( dot( -fragmentDirection, normal.xyz ) ), 1.0 );\n\
-		vec3 envMapDir = pMatrixEnvMap * vec3( reflect( fragmentDirection, normal.xyz ) );\n\
-		vec3 fresnelReduction = mix( reflectivity.rgb, vec3( 1.0 ), pow( 1.0 - roughness, 5.0 ) );\n\
-		fresnelReduction *= vec3( clamp( ( acos( 1.0 - ao ) + roughness * 1.5707963 - acos( reflectDot ) + 0.01 ) / max( roughness * 3.14159265, 0.01 ), 0.0, 1.0 ) );\n\
-		vec3 fresnelFactor = vec3( clamp( pow( 1.0 - reflectDot, 5.0 ), 0.0, 1.0 ) );\n\
-		vec3 envMapReflectivity = mix( reflectivity.rgb, vec3( 1.0 ), vec3( fresnelFactor ) ) * fresnelReduction * vec3( solidity );\n\
-		if( pSkinDoesReflections ){\n\
-			float envMapLodLevel = log2( 1.0 + pEnvMapLodLevel * roughness );\n\
-				envMapDir = normalize( envMapDir );\n\
-				vec2 tcEnvMap = cemefac.xy + cemefac.zw * vec2( atan( envMapDir.x, envMapDir.z ), acos( envMapDir.y ) );\n\
-			vec3 reflectedColor = textureLod( texEnvMap, tcEnvMap, envMapLodLevel ).rgb;\n\
-			outColor.rgb += reflectedColor * envMapReflectivity;\n\
-		}\n\
-		outReflectivity = vec4( reflectivity.rgb, color.a );\n\
-		outRoughness = vec4( roughness, 1.0, 1.0, color.a );\n\
-		outAOSolidity = vec4( ao, 1.0, solidity, color.a );\n\
-		outSubSurface = vec4( vec3( pTexAbsorptionRange ), color.a );\n\
-		}\n\
-";
-	
-	if( strcmp( preprocessor.GetSources(), hack1 ) == 0 ){
-		renderThread.GetLogger().LogInfo( "Sources match hack1" );
-		
-	}else if( strcmp( preprocessor.GetSources(), hack2 ) == 0 ){
-		renderThread.GetLogger().LogInfo( "Sources match hack2" );
-		
-		const char * const replaceHack =
-"#version 300 es\n\
-#define HIGH_PRECISION 1\n\
-#define UBO 1\n\
-#define UBO_IDMATACCBUG 1\n\
-#define MATERIAL_NORMAL_INTBASIC 1\n\
-#define TEXTURE_NORMAL 1\n\
-#define TEXTURE_REFLECTIVITY 1\n\
-#define TEXTURE_ENVMAP 1\n\
-#define TEXTURE_ENVMAP_EQUI 1\n\
-#define OUTPUT_LIMITBUFFERS 1\n\
-#define OUTPUT_MATERIAL_PROPERTIES 1\n\
-#define TP_NORMAL_STRENGTH 1\n\
-#define TP_ROUGHNESS_REMAP 1\n\
-#define ANDROID 1\n\
-precision highp float;\n\
-precision highp int;\n\
-#define MATRIX_ORDER column_major\n\
-#define UBOLAYOUT layout (std140, column_major)\n\
-UBOLAYOUT uniform RenderParameters{\n\
-	vec4 pAmbient;\n\
-	mat4x3 pMatrixV;\n\
-	mat4 pMatrixP;\n\
-	mat4 pMatrixVP;\n\
-	mat3 pMatrixVn;\n\
-	mat3 pMatrixEnvMap;\n\
-	vec2 pDepthTransform; \n\
-	float pEnvMapLodLevel;\n\
-	float pNorRoughCorrStrength;\n\
-	bool pSkinDoesReflections;\n\
-	bool pFlipCulling;\n\
-	vec4 pViewport; \n\
-	vec4 pClipPlane; \n\
-	vec4 pScreenSpace; \n\
-	vec4 pDepthOffset; \n\
-	vec3 pParticleLightHack; \n\
-	vec3 pFadeRange; \n\
-};\n\
-UBOLAYOUT uniform TextureParameters{\n\
-	vec4 pValueColorTransparency; \n\
-	vec4 pValueNormal; \n\
-	vec4 pValueReflectivityRoughness; \n\
-	vec2 pValueRefractionDistort; \n\
-	float pValueSolidity; \n\
-	float pValueAO; \n\
-	vec3 pTexColorTint; \n\
-	float pTexColorGamma; \n\
-	float pTexColorSolidityMultiplier; \n\
-	float pTexAOSolidityMultiplier; \n\
-	float pTexSolidityMultiplier; \n\
-	float pTexAbsorptionRange; \n\
-	vec2 pTexHeightRemap; \n\
-	float pTexNormalStrength; \n\
-	float pTexNormalSolidityMultiplier; \n\
-	vec2 pTexRoughnessRemap; \n\
-	float pTexRoughnessGamma; \n\
-	float pTexRoughnessSolidityMultiplier; \n\
-	vec2 pTexEnvRoomSize; \n\
-	float pTexRefractionDistortStrength; \n\
-	float pTexReflectivitySolidityMultiplier; \n\
-	vec3 pTexEnvRoomEmissivityIntensity; \n\
-	float pTexTransparencyMultiplier; \n\
-	vec3 pTexEmissivityIntensity; \n\
-	float pTexThickness; \n\
-	vec2 pTexVariationEnableScale; \n\
-};\n\
-UBOLAYOUT uniform InstanceParameters{\n\
-		mat4x3 pMatrixModel;\n\
-		mat3 pMatrixNormal;\n\
-		mat3x2 pMatrixTexCoord;\n\
-		bool pDoubleSided;\n\
-		float pEnvMapFade;\n\
-		vec4 pBillboardPosTransform; \n\
-	};\n\
-#define pColorTint pTexColorTint\n\
-#define pColorGamma pTexColorGamma\n\
-#define pColorSolidityMultiplier pTexColorSolidityMultiplier\n\
-#define pAOSolidityMultiplier pTexAOSolidityMultiplier\n\
-#define pTransparencyMultiplier pTexTransparencyMultiplier\n\
-#define pSolidityMultiplier pTexSolidityMultiplier\n\
-#define pHeightRemap pTexHeightRemap\n\
-#define pNormalStrength pTexNormalStrength\n\
-#define pNormalSolidityMultiplier pTexNormalSolidityMultiplier\n\
-#define pRoughnessRemap pTexRoughnessRemap\n\
-#define pRoughnessGamma pTexRoughnessGamma\n\
-#define pRoughnessSolidityMultiplier pTexRoughnessSolidityMultiplier\n\
-#define pReflectivitySolidityMultiplier pTexReflectivitySolidityMultiplier\n\
-#define pRefractionDistortStrength pTexRefractionDistortStrength\n\
-#define pEmissivityIntensity pTexEmissivityIntensity\n\
-#define pEnvRoomSize pTexEnvRoomSize\n\
-#define pEnvRoomEmissivityIntensity pTexEnvRoomEmissivityIntensity\n\
-#define pVariationEnableScale pTexVariationEnableScale\n\
-#define SAMPLER_2D sampler2D\n\
-	#define TEXTURE(s,tc) texture(s, tc)\n\
-uniform SAMPLER_2D texColor;\n\
-	uniform SAMPLER_2D texNormal;\n\
-	uniform SAMPLER_2D texReflectivity;\n\
-		uniform sampler2D texEnvMap;\n\
-in vec2 vTCColor;\n\
-in vec2 vTCNormal;\n\
-in vec2 vTCReflectivity;\n\
-in vec3 vNormal;\n\
-	in vec3 vTangent;\n\
-	in vec3 vBitangent;\n\
-	in vec3 vReflectDir;\n\
-		layout(location=0) out vec4 outDiffuse; \n\
-		layout(location=1) out vec4 outNormal; \n\
-		layout(location=2) out vec4 outReflectivity; \n\
-layout(location=3) out vec4 outColor; \n\
-	const vec4 cemefac = vec4( 0.5, 1.0, -0.1591549, -0.3183099 ); \n\
-const vec4 colorTransparent = vec4( 0.0, 0.0, 0.0, 1.0 );\n\
-#define reliefMapping(tc,normal)\n\
-void main( void ){\n\
-// 	vec4 outRoughness;\n\
-// 	vec4 outAOSolidity;\n\
-// 	vec4 outSubSurface;\n\
-		vec3 realNormal = mix( -vNormal, vNormal, vec3( pFlipCulling ^^ gl_FrontFacing ) ); \n\
-			vec2 tcReliefMapped = vTCColor;\n\
-		reliefMapping( tcReliefMapped, realNormal );\n\
-#define tcColor tcReliefMapped\n\
-#define tcNormal tcReliefMapped\n\
-#define tcReflectivity tcReliefMapped\n\
-	vec4 color = TEXTURE( texColor, tcColor );\n\
-	color.a *= pTransparencyMultiplier; \n\
-		float solidity = 1.0;\n\
-		vec4 normal = TEXTURE( texNormal, tcNormal );\n\
-		normal.xyz = normal.rgb * vec3( 1.9921569 ) + vec3( -0.9921722 );\n\
-		float ao = 1.0;\n\
-		vec4 reflectivity = TEXTURE( texReflectivity, tcReflectivity );\n\
-		float roughness = reflectivity.w;\n\
-		color.rgb = pow( color.rgb, vec3( pColorGamma ) );\n\
-			color.rgb *= pColorTint;\n\
-	color.a *= solidity;\n\
-		outDiffuse = color;\n\
-		outColor = color * pAmbient;\n\
-	ao = pow( ao, pColorGamma /*float(pColorGamma)*/ ); \n\
-/*		normal.xyz = vTangent * vec3( normal.x ) + vBitangent * vec3( normal.y ) + realNormal * vec3( normal.z );\n\
-		normal.xyz = ( normal.xyz - realNormal ) * vec3( pNormalStrength ) + realNormal;\n\
-		normal.w *= abs( pNormalStrength );\n\
-	if( dot( normal.xyz, normal.xyz ) < 1e-6 ){\n\
-		normal = vec4( 0.0, 0.0, 1.0, 0.0 );\n\
-	}\n\
-	normal.xyz = normalize( normal.xyz );\n\
-			outNormal = vec4( normal.xyz * vec3( 0.5 ) + vec3( 0.5 ), color.a );\n\
-		reflectivity.rgb = pow( reflectivity.rgb, vec3( pColorGamma ) );\n\
-		roughness = pow( clamp( roughness, 0.0, 1.0 ), pRoughnessGamma );\n\
-			roughness = clamp( roughness * pRoughnessRemap.x + pRoughnessRemap.y, 0.0, 1.0 );\n\
-		roughness = min( roughness + normal.w * pNorRoughCorrStrength, 1.0 ); \n\
-		vec3 fragmentDirection = normalize( vReflectDir );\n\
-		float reflectDot = min( abs( dot( -fragmentDirection, normal.xyz ) ), 1.0 );\n\
-		vec3 envMapDir = pMatrixEnvMap * vec3( reflect( fragmentDirection, normal.xyz ) );\n\
-		vec3 fresnelReduction = mix( reflectivity.rgb, vec3( 1.0 ), pow( 1.0 - roughness, 5.0 ) );\n\
-		fresnelReduction *= vec3( clamp( ( acos( 1.0 - ao ) + roughness * 1.5707963 - acos( reflectDot ) + 0.01 ) / max( roughness * 3.14159265, 0.01 ), 0.0, 1.0 ) );\n\
-		vec3 fresnelFactor = vec3( clamp( pow( 1.0 - reflectDot, 5.0 ), 0.0, 1.0 ) );\n\
-		vec3 envMapReflectivity = mix( reflectivity.rgb, vec3( 1.0 ), vec3( fresnelFactor ) ) * fresnelReduction * vec3( solidity );\n\
-		if( pSkinDoesReflections ){\n\
-			float envMapLodLevel = log2( 1.0 + pEnvMapLodLevel * roughness );\n\
-				envMapDir = normalize( envMapDir );\n\
-				vec2 tcEnvMap = cemefac.xy + cemefac.zw * vec2( atan( envMapDir.x, envMapDir.z ), acos( envMapDir.y ) );\n\
-			vec3 reflectedColor = textureLod( texEnvMap, tcEnvMap, envMapLodLevel ).rgb;\n\
-			outColor.rgb += reflectedColor * envMapReflectivity;\n\
-		}\n\
-*/		outReflectivity = vec4( reflectivity.rgb, color.a );\n\
-// 		outRoughness = vec4( roughness, 1.0, 1.0, color.a );\n\
-// 		outAOSolidity = vec4( ao, 1.0, solidity, color.a );\n\
-// 		outSubSurface = vec4( vec3( pTexAbsorptionRange ), color.a );\n\
-		}\n\
-";
-		
-		preprocessor.Clear();
-		preprocessor.SourcesAppend( replaceHack, false );
-	}
-}
-
 void deoglShaderLanguage::pAppendPreprocessSourcesBuffer(
 const char *inputFile, const char *data, const deoglShaderBindingList *outputList ){
 	if( ! outputList ){
 		pPreprocessor.SourcesAppendProcessed( data, inputFile );
-		specialHack( pRenderThread, pPreprocessor );
 		return;
 	}
 	
@@ -1305,7 +1230,6 @@ const char *inputFile, const char *data, const deoglShaderBindingList *outputLis
 	tempSources += tempTemp;
 	
 	pPreprocessor.SourcesAppendProcessed( tempSources.GetString(), inputFile );
-	specialHack( pRenderThread, pPreprocessor );
 }
 
 #else
@@ -1398,9 +1322,15 @@ void deoglShaderLanguage::pOutputShaderToFile( const char *file ){
 	
 #else
 	char buffer[ 256 ];
-	sprintf( &buffer[ 0 ], "%s_%.3i.shader", file, pShaderFileNumber++ );
-	FILE *handle = fopen( buffer, "w" );
-	if( handle ){
+	snprintf( &buffer[ 0 ], sizeof( buffer ), "%s_%.3i.shader", file, pShaderFileNumber++ );
+	FILE *handle = nullptr;
+	#ifdef OS_W32
+		if( fopen_s( &handle, buffer, "w" ) )
+	#else
+		handle = fopen( buffer, "w" );
+		if( handle )
+	#endif
+	{
 		// this looks now like useless code but unfortunately it's required. older gcc versions complain about the
 		// return value not being used failing compilation. newer gcc versions on the other hand don't complain about
 		// the unused result but about the dummy variable not being used causing compilation to fail too. only solution
@@ -1415,6 +1345,32 @@ void deoglShaderLanguage::pOutputShaderToFile( const char *file ){
 		}
 	}
 #endif
+}
+
+void deoglShaderLanguage::pLogFailedShaderSources(){
+	pRenderThread.GetLogger().LogError( ">>> Sources >>>" );
+	
+	const decStringList lines( decString( pPreprocessor.GetSources() ).Split( "\n" ) );
+	int i, count = lines.GetCount();
+	decString lastMapping;
+	
+	for( i=0; i<count; i++ ){
+		const deoglShaderSourceLocation * const location = pPreprocessor.ResolveSourceLocation( i + 1 );
+		int mapLine = -1;
+		
+		if( location ){
+			mapLine = location->GetInputLine();
+			
+			if( location->GetInputFile() != lastMapping ){
+				pRenderThread.GetLogger().LogErrorFormat( "@@@ %s", location->GetInputFile().GetString() );
+				lastMapping = location->GetInputFile();
+			}
+		}
+		
+		pRenderThread.GetLogger().LogErrorFormat( "%d[%d]: %s", i + 1, mapLine, lines.GetAt( i ).GetString() );
+	}
+	
+	pRenderThread.GetLogger().LogError( "<<< End Sources <<<" );
 }
 
 void deoglShaderLanguage::pPrintErrorLog(){

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLCOLLISIONFRUSTUM_H_
@@ -27,7 +30,7 @@
 
 
 /**
- * @brief Frustum collision volume.
+ * Frustum collision volume.
  *
  * Defines a collision volume in the shape of a view frustum.
  * A view frustum is a pyramid with capped top. Such frustums
@@ -43,7 +46,7 @@
  * refer to the sides of the frustum surrounding it. Near and
  * far refer to the capped pinacle and the base of the frustum.
  * @warning This class is partially implemented. See collision
- *          functions for more informations.
+ *          functions for more information.
  * @todo
  * - Implementing CylinderHitsFrustum
  * - Implementing CapsuleHitsFrustum
@@ -69,7 +72,7 @@ private:
 	float pDistTop, pDistBottom;
 	float pDistNear, pDistFar;
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creastes a new collision frustum with default parameters. */
 	deoglCollisionFrustum();
@@ -77,13 +80,13 @@ public:
 	virtual ~deoglCollisionFrustum();
 	/*@}*/
 	
-	/** @name First Stage Dispatch */
+	/** \name First Stage Dispatch */
 	/*@{*/
 	virtual bool VolumeHitsVolume(deoglCollisionVolume *volume);
 	virtual float VolumeMoveHitsVolume( deoglCollisionVolume *volume, const decVector &displacement, decVector *normal );
 	/*@}*/
 	
-	/** @name Second Stage Dispatch */
+	/** \name Second Stage Dispatch */
 	/*@{*/
 	virtual bool SphereHitsVolume(deoglCollisionSphere *sphere);
 	virtual bool CylinderHitsVolume(deoglCollisionCylinder *cylinder);
@@ -100,13 +103,13 @@ public:
 	virtual float PointMoveHitsVolume( const decVector &point, const decVector &displacement, decVector *normal );
 	/*@}*/
 	
-	/** @name Enclosing Volumes */
+	/** \name Enclosing Volumes */
 	/*@{*/
 	virtual void GetEnclosingSphere( deoglCollisionSphere *sphere );
 	virtual void GetEnclosingBox( deoglCollisionBox *box );
 	/*@}*/
 	
-	/** @name Miscelanous Functions */
+	/** \name Miscelanous Functions */
 	/*@{*/
 	/** Determines if a point is inside the volume. */
 	virtual bool IsPointInside( const decVector &point );
@@ -114,12 +117,12 @@ public:
 	virtual decVector ClosestPointTo( const decVector &point );
 	/*@}*/
 	
-	/** @name Visiting */
+	/** \name Visiting */
 	/*{*/
 	virtual void Visit( deoglCollisionVolumeVisitor *visitor );
 	/*}*/
 	
-	/** @name Collision Routines */
+	/** \name Collision Routines */
 	/*@{*/
 	/** Determines if the given sphere hits this frustum. */
 	bool SphereHitsFrustum(deoglCollisionSphere *sphere);
@@ -178,14 +181,14 @@ public:
 	float FrustumMoveHitsFrustum( deoglCollisionFrustum *frustum, const decVector &displacement, decVector *normal );
 	/*@}*/
 	
-	/** @name Collision Routines */
+	/** \name Collision Routines */
 	/*@{*/
-	inline decVector GetLeftNormal() const{ return pNormalLeft; }
-	inline decVector GetRightNormal() const{ return pNormalRight; }
-	inline decVector GetTopNormal() const{ return pNormalTop; }
-	inline decVector GetBottomNormal() const{ return pNormalBottom; }
-	inline decVector GetNearNormal() const{ return pNormalNear; }
-	inline decVector GetFarNormal() const{ return pNormalFar; }
+	inline const decVector &GetLeftNormal() const{ return pNormalLeft; }
+	inline const decVector &GetRightNormal() const{ return pNormalRight; }
+	inline const decVector &GetTopNormal() const{ return pNormalTop; }
+	inline const decVector &GetBottomNormal() const{ return pNormalBottom; }
+	inline const decVector &GetNearNormal() const{ return pNormalNear; }
+	inline const decVector &GetFarNormal() const{ return pNormalFar; }
 	inline float GetLeftDistance() const{ return pDistLeft; }
 	inline float GetRightDistance() const{ return pDistRight; }
 	inline float GetTopDistance() const{ return pDistTop; }
@@ -199,7 +202,7 @@ public:
 	void SetNearPlane(const decVector &normal, float dist);
 	void SetFarPlane(const decVector &normal, float dist);
 	/** Sets the frustm from the given projection matrix. */
-	void SetFrustum(const decDMatrix &mat);
+	void SetFrustum(const decMatrix &mat);
 	/**
 	 * Sets the frustum from the given parameters.
 	 * @param origin Pinacle of the uncapped frustum.
@@ -222,7 +225,7 @@ public:
 	void SetFrustumBox(const decVector &r1, const decVector &r2, const decVector &r3, const decVector &r4, float nearDist);
 	/*@}*/
 	
-	/** @name Intersection Tests */
+	/** \name Intersection Tests */
 	/*@{*/
 	/**
 	 * Determines if the given sphere intersects this frustum.

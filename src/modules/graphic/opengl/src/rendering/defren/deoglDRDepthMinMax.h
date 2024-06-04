@@ -1,35 +1,38 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLRWDEPTHMINMAX_H_
 #define _DEOGLRWDEPTHMINMAX_H_
 
 class deoglRenderThread;
-class deoglTexture;
+class deoglArrayTexture;
 class deoglFramebuffer;
 
 
 
 /**
- * @brief Deferred Rendering Depth Min-Max.
+ * Deferred Rendering Depth Min-Max.
  * Stores a mip-mapped view of the minimum and maximum depth values inside a depth texture.
  * The maximum number of mipmap levels is limited. For each lod level an own framebuffer
  * is used.
@@ -41,50 +44,59 @@ public:
 private:
 	deoglRenderThread &pRenderThread;
 	
-	deoglTexture *pTexture;
+	deoglArrayTexture *pTexture;
 	deoglFramebuffer **pFBOs;
 	
-	deoglTexture *pTextureMin;
+	deoglArrayTexture *pTextureMin;
 	deoglFramebuffer **pFBOMin;
-	deoglTexture *pTextureMax;
+	deoglArrayTexture *pTextureMax;
 	deoglFramebuffer **pFBOMax;
 	
 	int pWidth;
 	int pHeight;
+	int pLayerCount;
 	int pLevelCount;
 	int pMaxLevelCount;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new depth min-max. */
-	deoglDRDepthMinMax( deoglRenderThread &renderThread, int width, int height, int maxLevelCount );
-	/** Cleans up the depth min-max. */
+	/** Create depth min-max. */
+	deoglDRDepthMinMax( deoglRenderThread &renderThread,
+		int width, int height, int layerCount, int maxLevelCount );
+	
+	/** Clean up depth min-max. */
 	~deoglDRDepthMinMax();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
-	/** Retrieves the width of the base level. */
+	/** Width of base level. */
 	inline int GetWidth() const{ return pWidth; }
-	/** Retrieves the height of the base level. */
+	
+	/** Height of base level. */
 	inline int GetHeight() const{ return pHeight; }
-	/** Retrieves the level count. */
+	
+	/** Layer count. */
+	inline int GetLayerCount() const{ return pLayerCount; }
+	
+	/** Level count. */
 	inline int GetLevelCount() const{ return pLevelCount; }
-	/** Retrieves the maximum level count. */
+	
+	/** Maximum level count. */
 	inline int GetMaxLevelCount() const{ return pMaxLevelCount; }
 	
 	/** Retrieves the texture. */
-	inline deoglTexture *GetTexture() const{ return pTexture; }
+	inline deoglArrayTexture *GetTexture() const{ return pTexture; }
 	/** Retrieves the fbo for a level. */
 	deoglFramebuffer *GetFBOAt( int level );
 	
 	/** Retrieves the min texture. */
-	inline deoglTexture *GetTextureMin() const{ return pTextureMin; }
+	inline deoglArrayTexture *GetTextureMin() const{ return pTextureMin; }
 	/** Retrieves the fbo for a level of the min texture. */
 	deoglFramebuffer *GetFBOMinAt( int level );
 	/** Retrieves the max texture. */
-	inline deoglTexture *GetTextureMax() const{ return pTextureMax; }
+	inline deoglArrayTexture *GetTextureMax() const{ return pTextureMax; }
 	/** Retrieves the fbo for a level of the max texture. */
 	deoglFramebuffer *GetFBOMaxAt( int level );
 	/*@}*/

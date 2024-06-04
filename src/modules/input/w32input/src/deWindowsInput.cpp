@@ -1,28 +1,30 @@
-/* 
- * Drag[en]gine Windows Input Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <ctype.h>
 #include <stdio.h>
 #include <string.h>
-#include <unistd.h>
 
 #include "deWindowsInput.h"
 #include "dewiDevice.h"
@@ -88,6 +90,9 @@ deBaseInputModule( loadableModule ),
 
 pOSWindows( NULL ),
 
+pScreenWidth( 0 ),
+pScreenHeight( 0 ),
+
 pWindowWidth( 0 ),
 pWindowHeight( 0 ),
 
@@ -106,7 +111,7 @@ pKeyStates( NULL ),
 pSystemAutoRepeatEnabled( false ),
 pAutoRepeatEnabled( false ),
 
-pDevices( NULL )
+pKeyModifiers( 0 )
 {
 	try{
 		pKeyStates = new BYTE[ 256 ];
@@ -144,7 +149,8 @@ bool deWindowsInput::Init(){
 	}
 	
 	memset( pKeyStates, '\0', sizeof( BYTE ) * 256 );
-	
+	pKeyModifiers = 0;
+
 	pIsListening = true;
 	
 	// determine if keyboard auto-repeat is enabled
@@ -153,18 +159,15 @@ bool deWindowsInput::Init(){
 	
 	AppActivationChanged();
 	
-	pDevices = new dewiDeviceManager( *this );
+	pDevices.TakeOver( new dewiDeviceManager( *this ) );
 	pDevices->UpdateDeviceList();
-	//pDevices->LogDevices();
+	pDevices->LogDevices();
 	
 	return true;
 }
 
 void deWindowsInput::CleanUp(){
-	if( pDevices ){
-		delete pDevices;
-		pDevices = NULL;
-	}
+	pDevices = nullptr;
 	
 	pSetAutoRepeatEnabled( pSystemAutoRepeatEnabled );
 	pOSWindows = NULL;
@@ -180,10 +183,9 @@ int deWindowsInput::GetDeviceCount(){
 }
 
 deInputDevice *deWindowsInput::GetDeviceAt( int index ){
-	deInputDevice *device = NULL;
+	deInputDevice * const device = new deInputDevice;
 	
 	try{
-		device = new deInputDevice;
 		pDevices->GetAt( index )->GetInfo( *device );
 		
 	}catch( const deException & ){
@@ -259,6 +261,45 @@ int deWindowsInput::ButtonMatchingKeyChar( int device, int character ){
 	return pDevices->GetKeyboard()->ButtonMatchingKeyChar( character );
 }
 
+int deWindowsInput::ButtonMatchingKeyCode( int device, deInputEvent::eKeyCodes keyCode,
+deInputEvent::eKeyLocation location ){
+	if( device != pDevices->GetKeyboard()->GetIndex() ){
+		return -1;
+	}
+	
+	const dewiDeviceKeyboard &rdevice = *pDevices->GetKeyboard();
+	const int count = rdevice.GetButtonCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		const dewiDeviceButton &button = *rdevice.GetButtonAt( i );
+		if( button.GetKeyCode() == keyCode && button.GetKeyLocation() == location ){
+			return i;
+		}
+	}
+	
+	return 1;
+}
+
+int deWindowsInput::ButtonMatchingKeyChar( int device, int character, deInputEvent::eKeyLocation location ){
+	if( device != pDevices->GetKeyboard()->GetIndex() ){
+		return -1;
+	}
+	
+	const dewiDeviceKeyboard &rdevice = *pDevices->GetKeyboard();
+	const int count = rdevice.GetButtonCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		const dewiDeviceButton &button = *rdevice.GetButtonAt( i );
+		if( button.GetWIChar() == character && button.GetKeyLocation() == location ){
+			return i;
+		}
+	}
+	
+	return 1;
+}
+
 
 
 // Events
@@ -266,12 +307,7 @@ int deWindowsInput::ButtonMatchingKeyChar( int device, int character ){
 
 void deWindowsInput::ProcessEvents(){
 	pQueryMousePosition( true );
-	
-	const int deviceCount = pDevices->GetCount();
-	int i;
-	for( i=0; i<deviceCount; i++ ){
-		pDevices->GetAt( i )->Update();
-	}
+	pDevices->Update();
 }
 
 void deWindowsInput::ClearEvents(){
@@ -290,49 +326,77 @@ void deWindowsInput::EventLoop( const MSG &message ){
 		break;
 		
 	case WM_ACTIVATEAPP:
-		pIsListening = ( message.wParam == TRUE );
+		pIsListening = message.wParam == TRUE;
 		AppActivationChanged();
 		break;
+		
+// 	case WM_ACTIVATE:
+// 		pIsListening = LOWORD( message.wParam ) == TRUE;
+// 		AppActivationChanged();
+// 		break;
 		
 	case WM_KEYDOWN:{
 		if( W32_KEY_PRESSED( message.lParam ) ){
 			break;
 		}
 		
-		const int button = pDevices->GetKeyboard()->IndexOfButtonWithWICode( message.wParam );
+		const WPARAM wParam = pMapLeftRightKeys( message.wParam, message.lParam );
+		const int button = pDevices->GetKeyboard()->IndexOfButtonWithWICode( ( int )wParam );
 		if( button == -1 ){
 			break;
 		}
 		
 		const int scanCode = W32_GET_SCANCODE( message.lParam );
-		const int modifiers = 0; // how to get them?
-		GetKeyboardState( &keyStates[ 0 ] );
-		result = ToAsciiEx( message.wParam, scanCode, &keyStates[ 0 ],
+		if( ! GetKeyboardState( &keyStates[ 0 ] ) ){
+			break;
+		}
+
+		result = ToAsciiEx( ( UINT )wParam, scanCode, &keyStates[ 0 ],
 			&keyChar, 0, GetKeyboardLayout( 0 ) );
 		int wichar = 0;
 		if( result != 0 ){
 			wichar = LOBYTE( keyChar );
 		}
 		
-		//LogInfoFormat("KEY_DOWN %i, '%c', %i", result, LOBYTE( keyChar ), message.wParam );
+		//LogInfoFormat("KEY_DOWN %i, '%c', %i", result, LOBYTE( keyChar ), wParam );
 		
 		dewiDeviceButton &deviceButton = *pDevices->GetKeyboard()->GetButtonAt( button );
 		deviceButton.SetPressed( true );
 		
+		switch( deviceButton.GetKeyCode() ){
+		case deInputEvent::ekcShift:
+			pKeyModifiers |= deInputEvent::esmShift;
+			break;
+
+		case deInputEvent::ekcControl:
+			pKeyModifiers |= deInputEvent::esmControl;
+			break;
+
+		case deInputEvent::ekcAlt:
+			pKeyModifiers |= deInputEvent::esmAlt;
+			break;
+
+		default:
+			break;
+		}
+
 		pAddKeyPress( pDevices->GetKeyboard()->GetIndex(), button, wichar,
-			deviceButton.GetKeyCode(), modifiers, message.time );
+			deviceButton.GetKeyCode(), pKeyModifiers, message.time );
 		}break;
 		
 	case WM_KEYUP:{
-		const int button = pDevices->GetKeyboard()->IndexOfButtonWithWICode( message.wParam );
+		const WPARAM wParam = pMapLeftRightKeys( message.wParam, message.lParam );
+		const int button = pDevices->GetKeyboard()->IndexOfButtonWithWICode( ( int )wParam );
 		if( button == -1 ){
 			break;
 		}
 		
 		const int scanCode = W32_GET_SCANCODE( message.lParam );
-		const int modifiers = 0; // how to get them?
-		GetKeyboardState( &keyStates[ 0 ] );
-		result = ToAsciiEx( message.wParam, scanCode, &keyStates[ 0 ],
+		if( ! GetKeyboardState( &keyStates[ 0 ] ) ){
+			break;
+		}
+
+		result = ToAsciiEx( ( UINT )wParam, scanCode, &keyStates[ 0 ],
 			&keyChar, 0, GetKeyboardLayout( 0 ) );
 		int wichar = 0;
 		if( result != 0 ){
@@ -342,33 +406,50 @@ void deWindowsInput::EventLoop( const MSG &message ){
 		dewiDeviceButton &deviceButton = *pDevices->GetKeyboard()->GetButtonAt( button );
 		deviceButton.SetPressed( false );
 		
+		switch( deviceButton.GetKeyCode() ){
+		case deInputEvent::ekcShift:
+			pKeyModifiers &= ~deInputEvent::esmShift;
+			break;
+
+		case deInputEvent::ekcControl:
+			pKeyModifiers &= ~deInputEvent::esmControl;
+			break;
+
+		case deInputEvent::ekcAlt:
+			pKeyModifiers &= ~deInputEvent::esmAlt;
+			break;
+
+		default:
+			break;
+		}
+
 		pAddKeyRelease( pDevices->GetKeyboard()->GetIndex(), button, wichar,
-			deviceButton.GetKeyCode(), modifiers, message.time );
+			deviceButton.GetKeyCode(), pKeyModifiers, message.time );
 		}break;
 		
 	case WM_LBUTTONDOWN:
-		pLastMouseModifiers = pModifiersFromEventState( message.wParam );
+		pLastMouseModifiers = pModifiersFromEventState( ( DWORD )message.wParam );
 		pDevices->GetMouse()->GetButtonAt( 0 )->SetPressed( true );
 		pAddMousePress( pDevices->GetMouse()->GetIndex(), 0,
 			pLastMouseModifiers, message.time );
 		break;
 		
 	case WM_MBUTTONDOWN:
-		pLastMouseModifiers = pModifiersFromEventState( message.wParam );
+		pLastMouseModifiers = pModifiersFromEventState( ( DWORD )message.wParam );
 		pDevices->GetMouse()->GetButtonAt( 2 )->SetPressed( true );
 		pAddMousePress( pDevices->GetMouse()->GetIndex(), 2,
 			pLastMouseModifiers, message.time );
 		break;
 		
 	case WM_RBUTTONDOWN:
-		pLastMouseModifiers = pModifiersFromEventState( message.wParam );
+		pLastMouseModifiers = pModifiersFromEventState( ( DWORD )message.wParam );
 		pDevices->GetMouse()->GetButtonAt( 1 )->SetPressed( true );
 		pAddMousePress( pDevices->GetMouse()->GetIndex(), 1,
 			pLastMouseModifiers, message.time );
 		break;
 		
 	case WM_XBUTTONDOWN:
-		pLastMouseModifiers = pModifiersFromEventState( message.wParam );
+		pLastMouseModifiers = pModifiersFromEventState( ( DWORD )message.wParam );
 		if( GET_XBUTTON_WPARAM( message.wParam ) == XBUTTON1 ){
 			pDevices->GetMouse()->GetButtonAt( 3 )->SetPressed( true );
 			pAddMousePress( pDevices->GetMouse()->GetIndex(), 3,
@@ -382,28 +463,28 @@ void deWindowsInput::EventLoop( const MSG &message ){
 		break;
 		
 	case WM_LBUTTONUP:
-		pLastMouseModifiers = pModifiersFromEventState( message.wParam );
+		pLastMouseModifiers = pModifiersFromEventState( ( DWORD )message.wParam );
 		pDevices->GetMouse()->GetButtonAt( 0 )->SetPressed( false );
 		pAddMouseRelease( pDevices->GetMouse()->GetIndex(), 0,
 			pLastMouseModifiers, message.time );
 		break;
 		
 	case WM_MBUTTONUP:
-		pLastMouseModifiers = pModifiersFromEventState( message.wParam );
+		pLastMouseModifiers = pModifiersFromEventState( ( DWORD )message.wParam );
 		pDevices->GetMouse()->GetButtonAt( 2 )->SetPressed( false );
 		pAddMouseRelease( pDevices->GetMouse()->GetIndex(), 2,
 			pLastMouseModifiers, message.time );
 		break;
 		
 	case WM_RBUTTONUP:
-		pLastMouseModifiers = pModifiersFromEventState( message.wParam );
+		pLastMouseModifiers = pModifiersFromEventState( ( DWORD )message.wParam );
 		pDevices->GetMouse()->GetButtonAt( 1 )->SetPressed( false );
 		pAddMouseRelease( pDevices->GetMouse()->GetIndex(), 1,
 			pLastMouseModifiers, message.time );
 		break;
 		
 	case WM_XBUTTONUP:
-		pLastMouseModifiers = pModifiersFromEventState( message.wParam );
+		pLastMouseModifiers = pModifiersFromEventState( ( DWORD )message.wParam );
 		if( GET_XBUTTON_WPARAM( message.wParam ) == XBUTTON1 ){
 			pDevices->GetMouse()->GetButtonAt( 3 )->SetPressed( false );
 			pAddMouseRelease( pDevices->GetMouse()->GetIndex(), 3,
@@ -503,14 +584,23 @@ int state, DWORD eventTime ){
 	queue.AddEvent( event );
 }
 
+void deWindowsInput::AddDevicesAttachedDetached( DWORD eventTime ){
+	deInputEventQueue &queue = GetGameEngine()->GetInputSystem()->GetEventQueue();
+	deInputEvent event;
+	
+	event.SetType( deInputEvent::eeDevicesAttachedDetached );
+	event.SetTime( pConvertEventTime( eventTime ) );
+	queue.AddEvent( event );
+}
+
+
 
 
 // Private Functions
 //////////////////////
 
 void deWindowsInput::pCenterPointer(){
-	const deRenderWindow * const renderWindow =
-		GetGameEngine()->GetGraphicSystem()->GetRenderWindow();
+	const deRenderWindow * const renderWindow = GetGameEngine()->GetGraphicSystem()->GetRenderWindow();
 	if( ! renderWindow ){
 		return;
 	}
@@ -705,4 +795,27 @@ void deWindowsInput::pSetAutoRepeatEnabled( bool enabled ){
 	}
 	
 	pAutoRepeatEnabled = enabled;
+}
+
+WPARAM deWindowsInput::pMapLeftRightKeys( WPARAM virtKey, LPARAM lParam ) const{
+	// this is one of the reasons I hate windows. everything sucks from one end to the other.
+	// workaround from https://stackoverflow.com/questions/15966642/how-do-you-tell-lshift-apart-from-rshift-in-wm-keydown-events
+	
+	const UINT scancode = ( lParam & 0x00ff0000 ) >> 16;
+	const int extended  = ( lParam & 0x01000000 ) != 0;
+	
+	switch( virtKey ){
+	case VK_SHIFT:
+		return MapVirtualKey( scancode, MAPVK_VSC_TO_VK_EX );
+		
+	case VK_CONTROL:
+		return extended ? VK_RCONTROL : VK_LCONTROL;
+		
+	case VK_MENU:
+		return extended ? VK_RMENU : VK_LMENU;
+		
+	default:
+		// not a key we map from generic to left/right specialized just return it
+		return virtKey;
+	}
 }

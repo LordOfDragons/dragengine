@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -61,7 +64,8 @@ child( NULL ),
 root( this ),
 mask( NULL ),
 clipTo( 0, 0, 1 ),
-transparency( 1.0f ){
+transparency( 1.0f ),
+gamma( 1.0f ){
 }
 
 deoglSCBuildConstructed::sContext::sContext( const deSkinPropertyNode &node, sContext *pparent ) :
@@ -96,6 +100,7 @@ mask( NULL )
 		* decColorMatrix::CreateBrightness( node.GetBrightness() )
 		* decColorMatrix::CreateScaling( node.GetColorize() );
 	transparency = node.GetTransparency();
+	gamma = node.GetGamma();
 	
 	if( pparent ){
 		const decVector2 p1( transformScreen.GetPosition() );
@@ -113,6 +118,7 @@ mask( NULL )
 		
 		transformColor *= pparent->transformColor;
 		transparency *= pparent->transparency;
+		gamma *= pparent->gamma;
 		
 		pparent->child = this;
 		
@@ -133,6 +139,10 @@ mask( NULL )
 	// TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
 }
 
+decColor deoglSCBuildConstructed::sContext::applyGamma( const decColor &color ) const{
+	return decColor( powf( color.r, gamma ), powf( color.g, gamma ), powf( color.b, gamma ) );
+}
+
 deoglSCBuildConstructed::sTarget::sTarget() :
 targetRed( 100 ),
 targetGreen( 100 ),
@@ -147,15 +157,7 @@ pixBufHeight( 0 ),
 pixBufDepth( 0 ),
 
 tileX( false ),
-tileY( false ),
-
-maskBuffer( NULL ){
-}
-
-deoglSCBuildConstructed::sTarget::~sTarget(){
-	if( maskBuffer ){
-		delete maskBuffer;
-	}
+tileY( false ){
 }
 
 
@@ -502,7 +504,11 @@ void deoglSCBuildConstructed::VisitText( deSkinPropertyNodeText &node ){
 	context.clamp.y = ( int )( fontSize - 0.5f ); // (fontsize - 1) + 0.5
 	
 	if( ! font->GetIsColorFont() ){
-		context.transformColor *= decColorMatrix::CreateScaling( node.GetColor() );
+		decColor fontColor( node.GetColor() );
+		fontColor.r = powf( fontColor.r, node.GetGamma() );
+		fontColor.g = powf( fontColor.g, node.GetGamma() );
+		fontColor.b = powf( fontColor.b, node.GetGamma() );
+		context.transformColor *= decColorMatrix::CreateScaling( fontColor );
 	}
 	
 	while( utf8Decoder.GetPosition() < len ){
@@ -560,7 +566,7 @@ bool deoglSCBuildConstructed::pInitPixelBuffer( sTarget &target ){
 		return false;
 	}
 	
-	const deoglPixelBuffer &pixelBuffer = *pixelBufferMipMap->GetPixelBuffer( 0 );
+	deoglPixelBuffer &pixelBuffer = pixelBufferMipMap->GetPixelBuffer( 0 );
 	
 	switch( pixelBuffer.GetFormat() ){
 	case deoglPixelBuffer::epfByte1:
@@ -629,7 +635,7 @@ void deoglSCBuildConstructed::pDrawMaskIfPresent( const deSkinPropertyNode &node
 	}
 	
 	const decPoint3 absSize( node.GetSize().Absolute() );
-	target.maskBuffer = new deoglPixelBuffer( deoglPixelBuffer::epfFloat1, absSize.x, absSize.y, 1 );
+	target.maskBuffer.TakeOver( new deoglPixelBuffer( deoglPixelBuffer::epfFloat1, absSize.x, absSize.y, 1 ) );
 	target.pixBufWidth = absSize.x;
 	target.pixBufHeight = absSize.y;
 	target.pixBufDepth = 1;
@@ -1086,12 +1092,15 @@ void deoglSCBuildConstructed::pWritePixel( const sContext &context,
 int offset, const decColor &color ){
 	if( context.transparency < 0.001f || color.a < 0.001f ){
 		return;
-		
-	}else if( context.transparency > 0.999f && color.a > 0.999f ){
-		pWritePixelSet( offset, context.transformColor * color );
+	}
+	
+	const decColor c( context.applyGamma( context.transformColor * color ) );
+	
+	if( context.transparency > 0.999f && color.a > 0.999f ){
+		pWritePixelSet( offset, c );
 		
 	}else{
-		pWritePixelBlend( offset, context.transformColor * color, color.a * context.transparency );
+		pWritePixelBlend( offset, c, color.a * context.transparency );
 	}
 }
 

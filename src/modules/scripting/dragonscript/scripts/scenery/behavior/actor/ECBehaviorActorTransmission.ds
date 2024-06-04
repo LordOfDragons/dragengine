@@ -1,0 +1,774 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.ConversationSystem
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief Behavior adding sub title transmission support to actors.
+ * \version 1.7
+ * 
+ * Adds support for sub title transmission to actor.
+ * 
+ * For using sub title text output instead of conversation scripts to display short
+ * bursts of text. For use in first person view to do self conversation or receiving
+ * transmissions for which conversation scripts can be cumbersome to use. For this
+ * situation this behavior provides a simpler solution.
+ * 
+ * The behavior acts similar to CActionActorSpeak.executeSubTitle() in that it supports
+ * creating and adding a series of sub titles for an actor as if a conversation is used.
+ * Since no conversation is used the actor is free to be controlled by the player.
+ * 
+ * This behavior uses ECBehaviorConversationActor. Calls createSubTitleText() to create
+ * sub title as if a conversation creates it. This way the same look and feel is used.
+ * Adds a listener to cause the actor to wait in conversations if such sub titles are
+ * running. This feature is by default disabled and can be enabled to avoid conversation
+ * script sub titles showing at the same time as sub titles driven by this behavior.
+ * 
+ * Requires these behaviors to be present:
+ * - ECBehaviorConversationActor
+ * 
+ * This behavior can be added only once to an element class. While technically possible
+ * it there is no reason to use multiple transmissions since the sub titles can be styled
+ * 
+ * Element class property prefix is "transmission".
+ * 
+ * \par Version 1.19
+ * 
+ * If part has empty string the subtitle is hidden. This allows empty parts to be used
+ * to created pauses between parts.
+ */
+class ECBehaviorActorTransmission extends DefaultECBehavior
+	/** \brief Immutable transmission part. */
+	class Part
+		var UnicodeString pText
+		var StringID pStyle
+		var float pTimeout
+		
+		/**
+		 * \brief Create transmission part.
+		 * 
+		 * \param text Text to speak.
+		 * \param style Identifier of style to adjust font, color or sub title in general or null.
+		 * \param timeout Time in seconds to display transmission part.
+		 */
+		func new(UnicodeString text, StringID style, float timeout)
+			if text == null
+				throw ENullPointer.new("text")
+			end
+			
+			pText = text
+			pStyle = style
+			pTimeout = DEMath.max(timeout, 0.0)
+		end
+		
+		/** \brief Text to speak. */
+		func UnicodeString getText()
+			return pText
+		end
+		
+		/** \brief Identifier of style to adjust font, color or sub title in general or null. */
+		func StringID getStyle()
+			return pStyle
+		end
+		
+		/** \brief Time in seconds to display transmission part. */
+		func float getTimeout()
+			return pTimeout
+		end
+	end
+	
+	/** \brief Listener for behavior instance events. */
+	interface Listener
+		/** \brief Transmission started. */
+		func void transmissionStart(Instance instance)
+		
+		/** \brief Display part. */
+		func void partDisplayed(Instance instance, Part part)
+		
+		/** \brief Transmission finished. */
+		func void transmissionFinished(Instance instance)
+	end
+	
+	/** \brief Default implementation of behavior instance listener. */
+	class DefaultListener implements Listener
+		/** \brief Create default listener. */
+		func new()
+		end
+		
+		/** \brief Transmission started. */
+		func void transmissionStart(Instance instance)
+		end
+		
+		/** \brief Display part. */
+		func void partDisplayed(Instance instance, Part part)
+		end
+		
+		/** \brief Transmission finished. */
+		func void transmissionFinished(Instance instance)
+		end
+	end
+	
+	/** \brief Factory creating listeners. */
+	interface ListenerFactory
+		/** \brief Create listener. */
+		func Listener createListener(Instance instance)
+	end
+	
+	/** \brief Factory creating listeners using block. */
+	class BlockListenerFactory implements ListenerFactory
+		var Block pBlock
+		
+		/** \brief Create factory using block receiving Instance as parameter returning Listener. */
+		func new(Block blockFactory)
+			if blockFactory == null
+				throw ENullPointer.new()
+			end
+			pBlock = blockFactory
+		end
+		
+		/** \brief Create listener. */
+		func Listener createListener(Instance instance)
+			return pBlock.run(instance) cast Listener
+		end
+	end
+	
+	
+	
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		/** \brief Wait in conversation if running. */
+		class WaitInConversation extends ECBehaviorConversationActor.DefaultListener
+			var Instance pInstance
+			
+			func new(Instance instance)
+				if instance == null
+					throw ENullPointer.new("instance")
+				end
+				pInstance = instance
+			end
+			
+			func void enterConversation(ECBehaviorConversationActor.Instance instance)
+				if pInstance.getClearEnterConversation()
+					pInstance.clear()
+				end
+			end
+			
+			func bool wait(ECBehaviorConversationActor.Instance instance)
+				return pInstance.getWaitInConversation() and pInstance.isRunning()
+			end
+		end
+		
+		
+		
+		var ECBehaviorActorTransmission pECBehavior
+		
+		var ECBehaviorConversationActor.Instance pConversationActor
+		
+		var Array pParts
+		var bool pWaitInConversation
+		var bool pClearEnterConversation
+		var StringID pStyle
+		var float pTimeout
+		
+		var SubTitleBoxText pSubTitleText
+		var float pRemainingDisplayTime
+		
+		var Array pListeners
+		
+		
+		
+		/** \brief Create behavior instance. */
+		func new(ECBehaviorActorTransmission ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
+			
+			pParts = Array.new()
+			pListeners = Array.new()
+			
+			pConversationActor = ecbehavior.getConversationActor().instance(element)
+		end
+		
+		/** \brief Dispose of behavior instance. */
+		func void dispose()
+			pConversationActor = null
+			pListeners = null
+			
+			super.dispose()
+		end
+		
+		
+		
+		/** \brief Initialize behavior from stub. */
+		func void init(StubElement stub)
+			pWaitInConversation = pECBehavior.getWaitInConversation().getValue(stub)
+			pClearEnterConversation = pECBehavior.getClearEnterConversation().getValue(stub)
+			pStyle = pECBehavior.getStyle().getValue(stub)
+			pTimeout = pECBehavior.getTimeout().getValue(stub)
+			
+			pECBehavior.createListeners(this)
+			pConversationActor.addListener(WaitInConversation.new(this))
+		end
+		
+		
+		
+		/** \brief Behavior. */
+		func ECBehaviorActorTransmission getECBehavior()
+			return pECBehavior
+		end
+		
+		/** \brief Conversation actor behavior. */
+		func ECBehaviorConversationActor.Instance getConversationActor()
+			return pConversationActor
+		end
+		
+		
+		
+		/** \brief Wait in conversation is enabled. */
+		func bool getWaitInConversation()
+			return pWaitInConversation
+		end
+		
+		/** \brief Set to wait in conversation is enabled. */
+		func void setWaitInConversation(bool waitInConversation)
+			pWaitInConversation = waitInConversation
+		end
+		
+		/**
+		 * \brief Clear transmission upon entering conversation.
+		 * \version 1.16
+		 */
+		func bool getClearEnterConversation()
+			return pClearEnterConversation
+		end
+		
+		/**
+		 * \brief Set to clear transmission upon entering conversation.
+		 * \version 1.16
+		 */
+		func void setClearEnterConversation(bool clearEnterConversation)
+			pClearEnterConversation = clearEnterConversation
+		end
+		
+		/** \brief Style to use. */
+		func StringID getStyle()
+			return pStyle
+		end
+		
+		/** \brief Set style to use. */
+		func void setStyle(StringID style)
+			pStyle = style
+		end
+		
+		/** \brief Timeout in seconds to display each part. */
+		func float getTimeout()
+			return pTimeout
+		end
+		
+		/** \brief Set timeout in seconds to display each part. */
+		func void setTimeout(float timeout)
+			pTimeout = DEMath.max(timeout, 0.0)
+		end
+		
+		
+		
+		/** \brief Transmission is running. */
+		func bool isRunning()
+			return pParts.getCount() > 0 or pRemainingDisplayTime > 0
+		end
+		
+		/**
+		 * \brief Count of parts.
+		 * \version 1.19
+		 */
+		func int getPartCount()
+			return pParts.getCount()
+		end
+		
+		/**
+		 * \brief Part at index.
+		 * \version 1.19
+		 */
+		func Part getPartAt(int index)
+			return pParts.getAt(index) cast Part
+		end
+		
+		/**
+		 * \brief Add transmission part.
+		 * 
+		 * If no parts are present calls transmissionStart() on listeners and shows the
+		 * transmission in the sub title box.
+		 * 
+		 * \param text Text to speak.
+		 */
+		func void addPart(UnicodeString text)
+			addPart(text, pStyle, pTimeout)
+		end
+		
+		/**
+		 * \brief Add transmission part.
+		 * 
+		 * If no parts are present calls transmissionStart() on listeners and shows the
+		 * transmission in the sub title box.
+		 * 
+		 * \param text Text to speak.
+		 * \param timeout Time in seconds to display transmission part.
+		 */
+		func void addPart(UnicodeString text, float timeout)
+			addPart(text, pStyle, timeout)
+		end
+		
+		/**
+		 * \brief Add transmission part.
+		 * 
+		 * If no parts are present calls transmissionStart() on listeners and shows the
+		 * transmission in the sub title box.
+		 * 
+		 * \param text Text to speak.
+		 * \param style Identifier of style to adjust font, color or sub title in general or null.
+		 */
+		func void addPart(UnicodeString text, StringID style)
+			addPart(text, style, pTimeout)
+		end
+		
+		/**
+		 * \brief Add transmission part.
+		 * 
+		 * If no parts are present calls transmissionStart() on listeners and shows the
+		 * transmission in the sub title box.
+		 * 
+		 * \param text Text to speak.
+		 * \param style Identifier of style to adjust font, color or sub title in general or null.
+		 * \param timeout Time in seconds to display transmission part.
+		 */
+		func void addPart(UnicodeString text, StringID style, float timeout)
+			if pParts.getCount() == 255
+				throw EInvalidParam.new("too many parts")
+			end
+			
+			var Part part = Part.new(text, style, timeout)
+			pParts.add(part)
+			
+			if pParts.getCount() > 1 or pRemainingDisplayTime > 0
+				return
+			end
+			
+			setRequiresThink(true)
+			
+			onStarted()
+			
+			pListeners.forEach(block Listener each
+				each.transmissionStart(this)
+			end)
+			
+			displayPart(part)
+		end
+		
+		/**
+		 * \brief Add transmission part with empty text.
+		 * \version 1.19
+		 * 
+		 * Hides the sub title box. Can be used to create pauses between parts.
+		 * 
+		 * If no parts are present calls transmissionStart() on listeners.
+		 */
+		func void addPause(float timeout)
+			addPart(UnicodeString.new(), pStyle, timeout)
+		end
+		
+		/** \brief Clear all parts and hide subtitle. */
+		func void clear()
+			if not isRunning()
+				return
+			end
+			
+			pRemainingDisplayTime = 0
+			pParts.removeAll()
+			setSubTitleText(null)
+			setRequiresThink(false)
+			
+			onFinished()
+			
+			pListeners.forEach(block Listener each
+				each.transmissionFinished(this)
+			end)
+		end
+		
+		
+		
+		/** \brief Sub title. */
+		func ConversationPlaybackSubTitle getSubTitle()
+			return pECBehavior.getSubTitle()
+		end
+		
+		/** \brief Sub title text or null if not set. */
+		func SubTitleBoxText getSubTitleText()
+			return pSubTitleText
+		end
+		
+		/** \brief Set sub title text or null to clear it. */
+		protected func void setSubTitleText(SubTitleBoxText text)
+			if pSubTitleText == text
+				return
+			end
+			
+			if pSubTitleText != null
+				pSubTitleText.hideSubtitleNow()
+			end
+			
+			pSubTitleText = text
+		end
+		
+		
+		
+		/** \brief Display part. */
+		protected func void displayPart(Part part)
+			if part == null
+				throw ENullPointer.new("part")
+			end
+			
+			pParts.remove(part)
+			displaySubTitleText(part)
+			pRemainingDisplayTime = part.getTimeout()
+			onPartDisplayed(part)
+			
+			pListeners.forEach(block Listener each
+				each.partDisplayed(this, part)
+			end)
+		end
+		
+		/**
+		 * \brief Display sub title text for part.
+		 * \version 1.19
+		 * 
+		 * Default implementation uses ECBehaviorConversationActor.createSubTitleText() to
+		 * create sub title text. The created sub title text is added to getSubTitle() then
+		 * assigned to this instance using setSubTitleText(). If text is empty SubTitleBoxText()
+		 * is called with null argument.
+		 */
+		protected func void displaySubTitleText(Part part)
+			var UnicodeString text = part.getText()
+			
+			if text.getLength() > 0
+				var SubTitleBoxText stbt = pConversationActor.createSubTitleText(text, part.getStyle())
+				getSubTitle().addSubTitleText(stbt.subtitleWidget())
+				setSubTitleText(stbt)
+				
+			else
+				setSubTitleText(null)
+			end
+		end
+		
+		/** \brief Transmission started. */
+		protected func void onStarted()
+		end
+		
+		/** \brief Part displayed. */
+		protected func void onPartDisplayed(Part part)
+		end
+		
+		/** \brief Transmission finished. */
+		protected func void onFinished()
+		end
+		
+		
+		
+		/** \brief Add listener. */
+		func void addListener(Listener listener)
+			if listener == null
+				throw EInvalidParam.new()
+			end
+			pListeners.add(listener)
+		end
+		
+		/** \brief Remove listener. */
+		func void removeListener(Listener listener)
+			pListeners.remove(listener)
+		end
+		
+		
+		
+		/**
+		 * \brief Frame update.
+		 */
+		func void think(float elapsed)
+			pRemainingDisplayTime -= elapsed
+			if pRemainingDisplayTime > 0
+				return
+			end
+			
+			if pParts.getCount() > 0
+				displayPart(pParts.getAt(0) cast Part)
+				return
+			end
+			
+			setSubTitleText(null)
+			setRequiresThink(false)
+			
+			onFinished()
+			
+			pListeners.forEach(block Listener each
+				each.transmissionFinished(this)
+			end)
+		end
+		
+		/** \brief Read behavior from file. */
+		func void readFromFile(PersistencyEnvironment env, FileReader reader)
+			select reader.readByte() // version
+			case 0
+				var PersistencyFlags flags = PersistencyFlags.new(2, reader)
+				pWaitInConversation = flags.getAt(0)
+				pClearEnterConversation = flags.getAt(1)
+				
+				pRemainingDisplayTime = reader.readFloat()
+				
+				var int i, partCount = reader.readByte()
+				var UnicodeString text
+				var StringID style
+				var float timeout
+				
+				for i = 0 to partCount
+					text = UnicodeString.newFromUTF8(reader.readString16())
+					style = env.readStringIDOrNullIfEmpty(reader)
+					timeout = reader.readFloat()
+					
+					pParts.add(Part.new(text, style, timeout))
+				end
+				
+				pSubTitleText = env.readObjectOrNull(reader) cast SubTitleBoxText
+				if pSubTitleText != null
+					getSubTitle().addSubTitleText(pSubTitleText.subtitleWidget())
+				end
+				
+				setRequiresThink(isRunning())
+				
+			else
+				throw EInvalidParam.new("unsupported version")
+			end
+		end
+		
+		/** \brief Write behavior to file. */
+		func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+			writer.writeByte(0) // version
+			
+			var PersistencyFlags flags = PersistencyFlags.new(2)
+			flags.setAt(0, pWaitInConversation)
+			flags.setAt(1, pClearEnterConversation)
+			flags.writeToFile(writer)
+			
+			writer.writeFloat(pRemainingDisplayTime)
+			
+			writer.writeByte(pParts.getCount())
+			pParts.forEach(block Part each
+				writer.writeString16(each.getText().toUTF8())
+				env.writeStringIDOrEmptyIfNull(writer, each.getStyle())
+				writer.writeFloat(each.getTimeout())
+			end)
+			
+			if pSubTitleText castable Persistable
+				env.writeObjectOrNull(writer, pSubTitleText cast Persistable)
+				
+			else
+				env.writeObjectOrNull(writer, null)
+			end
+		end
+	end
+	
+	
+	
+	var ECBehaviorConversationActor pConversationActor
+	var ECPBoolean pWaitInConversation
+	var ECPBoolean pClearEnterConversation
+	var ECPStringID pStyle
+	var ECPFloat pTimeout
+	var Array pListenerFactories
+	var ConversationPlaybackSubTitle pSubTitle
+	
+	
+	
+	/** \brief Create behavior element class. */
+	func new(BehaviorElementClass eclass, ECBehaviorConversationActor conversationActor) \
+	this(eclass, conversationActor, BaseGameApp.getApp().getWindowSubTitle())
+	end
+	
+	/** \brief Create behavior element class. */
+	func new(BehaviorElementClass eclass, ECBehaviorConversationActor conversationActor, \
+	ConversationPlaybackSubTitle subTitle) \
+	this(eclass, conversationActor, subTitle, "transmission.")
+	end
+	
+	/** \brief Create behavior element class. */
+	func new(BehaviorElementClass eclass, ECBehaviorConversationActor conversationActor, \
+	ConversationPlaybackSubTitle subTitle, String prefix) super(eclass)
+		if conversationActor == null
+			throw ENullPointer.new("conversationActor")
+		end
+		if subTitle == null
+			throw ENullPointer.new("subTitle")
+		end
+		
+		pConversationActor = conversationActor
+		pSubTitle = subTitle
+		pListenerFactories = Array.new()
+		
+		pWaitInConversation = ECPBoolean.new(prefix + "waitInConversation", false)
+		eclass.addProperty(pWaitInConversation)
+		
+		pStyle = ECPStringID.new(prefix + "style")
+		eclass.addProperty(pStyle)
+		
+		pTimeout = ECPFloat.new(prefix + "timeout", 5.0)
+		eclass.addProperty(pTimeout)
+		
+		pClearEnterConversation = ECPBoolean.new(prefix + "clearEnterConversation", false)
+		eclass.addProperty(pClearEnterConversation)
+		
+		eclass.addBehavior(this)
+	end
+	
+	/** \brief Dispose of behavior. */
+	func void dispose()
+		pConversationActor = null
+		pListenerFactories = null
+		pSubTitle = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Conversation actor behavior to animate. */
+	func ECBehaviorConversationActor getConversationActor()
+		return pConversationActor
+	end
+	
+	/** \brief Enable wait in conversation. */
+	func ECPBoolean getWaitInConversation()
+		return pWaitInConversation
+	end
+	
+	/**
+	 * \brief Clear transmission upon entering conversation.
+	 * \version 1.16
+	 */
+	func ECPBoolean getClearEnterConversation()
+		return pClearEnterConversation
+	end
+	
+	/** \brief Style. */
+	func ECPStringID getStyle()
+		return pStyle
+	end
+	
+	/** \brief Timeout. */
+	func ECPFloat getTimeout()
+		return pTimeout
+	end
+	
+	/** \brief Sub title. */
+	func ConversationPlaybackSubTitle getSubTitle()
+		return pSubTitle
+	end
+	
+	/** \brief Set sub title. */
+	func void setSubTitle(ConversationPlaybackSubTitle subTitle)
+		if subTitle == null
+			throw ENullPointer.new("subTitle")
+		end
+		pSubTitle = subTitle
+	end
+	
+	/** \brief Add listener factory. */
+	func void addListenerFactory(ListenerFactory factory)
+		if factory == null
+			throw ENullPointer.new()
+		end
+		pListenerFactories.add(factory)
+	end
+	
+	/**
+	 * \brief Add listener factory using block.
+	 * 
+	 * Block receives as parameter Instance and returns Listener.
+	 */
+	func void addListenerFactory(Block blockFactory)
+		pListenerFactories.add(BlockListenerFactory.new(blockFactory))
+	end
+	
+	/** \brief Visit listener factories with block with argument ListenerFactory. */
+	func void forEachListenerFactory(Block ablock)
+		pListenerFactories.forEach(ablock)
+	end
+	
+	/** \brief Create listeners from factories adding them to behavior instance. */
+	func void createListeners(Instance instance)
+		pListenerFactories.forEach(block ListenerFactory each
+			instance.addListener(each.createListener(instance))
+		end)
+	end
+	
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
+	end
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorConversationActor.
+	 */
+	static func ECBehaviorActorTransmission getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorActorTransmission each
+			return true
+		end) cast ECBehaviorActorTransmission
+	end
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorActorTransmission.Instance . If more than one instance is present returns
+	 * the first instance.
+	 */
+	static func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
+			return true
+		end) cast Instance
+	end
+	
+	
+	
+	/** \brief Create Behavior instance. */
+	func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
+	end
+end

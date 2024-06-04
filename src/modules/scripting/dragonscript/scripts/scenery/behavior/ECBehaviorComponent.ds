@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -104,24 +107,26 @@ class ECBehaviorComponent extends DefaultECBehavior
 		
 		
 		/** \brief Create element. */
-		public func new( ECBehaviorComponent ecbehavior, BehaviorElement element ) super( element )
-			this.pECBehavior = ecbehavior
+		public func new(ECBehaviorComponent ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
 		end
 		
 		
 		
 		/** \brief Initialize element from stub. */
-		public func void init( StubElement stub )
-			this.pComponent = this.createComponent( stub )
-			if this.pComponent == null
+		public func void init(StubElement stub)
+			pComponent = createComponent(stub)
+			if pComponent == null
 				return
 			end
 			
-			if this.pECBehavior.getCollider() != null
-				var ECBehaviorCollider.Instance collider = \
-					this.pECBehavior.getCollider().instance( this.getElement() )
+			var BehaviorElement element = getElement()
+			pComponent.setVisible(element.getVisible())
+			
+			if pECBehavior.getCollider() != null
+				var ECBehaviorCollider.Instance collider = pECBehavior.getCollider().instance(element)
 				if collider.getCollider() != null
-					this.attachComponent( stub, collider )
+					attachComponent(stub, collider)
 				end
 			end
 		end
@@ -134,22 +139,22 @@ class ECBehaviorComponent extends DefaultECBehavior
 		 * is thrown. Overwrite to modify component creation process using parameters stored
 		 * in the sub if required.
 		 */
-		protected func Component createComponent( StubElement stub )
-			var Component component = this.pECBehavior.getComponent().createComponent( this.getElement(), stub )
+		protected func Component createComponent(StubElement stub)
+			var Component component = pECBehavior.getComponent().createComponent(getElement(), stub)
 			if component == null
 				return null
 			end
 			
-			this.replaceComponentTextures( component, stub )
-			component.setLayerMask( this.createLayerMask( stub ) )
+			replaceComponentTextures(component, stub)
+			component.setLayerMask(createLayerMask(stub))
 			
 			return component
 		end
 		
 		/** \brief Replace textures using element class and a stub. */
-		protected func void replaceComponentTextures( Component component, StubElement stub )
+		protected func void replaceComponentTextures(Component component, StubElement stub)
 			if component != null
-				this.pECBehavior.getComponent().replaceTextures( component, stub )
+				pECBehavior.getComponent().replaceTextures(component, stub)
 			end
 		end
 		
@@ -158,8 +163,8 @@ class ECBehaviorComponent extends DefaultECBehavior
 		 * 
 		 * Default implementation calls ECComposeComponent.createLayerMask.
 		 */
-		protected func LayerMask createLayerMask( StubElement stub )
-			return this.pECBehavior.getComponent().createLayerMask( stub )
+		protected func LayerMask createLayerMask(StubElement stub)
+			return pECBehavior.getComponent().createLayerMask(stub)
 		end
 		
 		/**
@@ -169,25 +174,25 @@ class ECBehaviorComponent extends DefaultECBehavior
 		 * implementation attaches the component statically to the collider. For this to
 		 * work the component has to be in the right position relative to the collider.
 		 */
-		protected func void attachComponent( StubElement stub, ECBehaviorCollider.Instance collider )
-			collider.getCollider().attachStatic( this.pComponent )
+		protected func void attachComponent(StubElement stub, ECBehaviorCollider.Instance collider)
+			collider.getCollider().attachStatic(pComponent)
 		end
 		
 		
 		
 		/** \brief Behavior. */
 		public func ECBehaviorComponent getECBehavior()
-			return this.pECBehavior
+			return pECBehavior
 		end
 		
 		/** \brief Texture replacements. */
 		public func TextureReplacementList getTextureReplacements()
-			return this.pECBehavior.getComponent().getTextureReplacements().getList()
+			return pECBehavior.getComponent().getTextureReplacements().getList()
 		end
 		
 		/** \brief Component. */
 		public func Component getComponent()
-			return this.pComponent
+			return pComponent
 		end
 		
 		
@@ -198,22 +203,22 @@ class ECBehaviorComponent extends DefaultECBehavior
 		 * If component texture is set and skîn is assigned returns component texture skin.
 		 * Otherwise returns component skin.
 		 */
-		public func Skin getUsedSkin( String texture )
-			if this.pComponent == null
+		public func Skin getUsedSkin(String texture)
+			if pComponent == null
 				return null
 			end
 			
-			var int index = this.pComponent.indexOfTextureNamed( texture )
+			var int index = pComponent.indexOfTextureNamed(texture)
 			if index == -1
 				return null
 			end
 			
-			var Skin skin = this.pComponent.getTextureSkinAt( index )
+			var Skin skin = pComponent.getTextureSkinAt(index)
 			if skin != null
 				return skin
 			end
 			
-			return this.pComponent.getSkin()
+			return pComponent.getSkin()
 		end
 		
 		/**
@@ -222,23 +227,23 @@ class ECBehaviorComponent extends DefaultECBehavior
 		 * If component texture is set and skîn is assigned returns component texture skin.
 		 * Otherwise returns component skin.
 		 */
-		public func Skin getUsedSkin( String texture, ObjectReference textureNumber )
-			if this.pComponent == null
+		public func Skin getUsedSkin(String texture, ObjectReference textureNumber)
+			if pComponent == null
 				return null
 			end
 			
-			var int index = this.pComponent.indexOfTextureNamed( texture )
+			var int index = pComponent.indexOfTextureNamed(texture)
 			if index == -1
 				return null
 			end
 			
-			var Skin skin = this.pComponent.getTextureSkinAt( index )
+			var Skin skin = pComponent.getTextureSkinAt(index)
 			if skin == null
-				skin = this.pComponent.getSkin()
+				skin = pComponent.getSkin()
 			end
 			
 			if skin != null and textureNumber != null
-				textureNumber.set( this.pComponent.getTextureTextureAt( index ) )
+				textureNumber.set(pComponent.getTextureTextureAt(index))
 			end
 			return skin
 		end
@@ -247,22 +252,22 @@ class ECBehaviorComponent extends DefaultECBehavior
 		
 		/** \brief State changed (visble, touchable). */
 		public func void stateChanged()
-			if this.pComponent != null
-				this.pComponent.setVisible( this.getElement().getVisible() )
+			if pComponent != null
+				pComponent.setVisible(getElement().getVisible())
 			end
 		end
 		
 		/** \brief Add element to game world. */
 		public func void addToGameWorld()
-			if this.pComponent != null
-				this.getElement().getGameWorld().getWorld().addComponent( this.pComponent )
+			if pComponent != null
+				getElement().getGameWorld().getWorld().addComponent(pComponent)
 			end
 		end
 		
 		/** \brief Remove element from game world. */
 		public func void removeFromGameWorld()
-			if this.pComponent != null
-				this.getElement().getGameWorld().getWorld().removeComponent( this.pComponent )
+			if pComponent != null
+				getElement().getGameWorld().getWorld().removeComponent(pComponent)
 			end
 		end
 	end
@@ -279,32 +284,32 @@ class ECBehaviorComponent extends DefaultECBehavior
 	 * 
 	 * These values are optional and can be null: \em collider.
 	 */
-	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider ) \
-	this( eclass, collider, "" )
+	public func new(BehaviorElementClass eclass, ECBehaviorCollider collider) \
+	this(eclass, collider, "")
 	end
 	
-	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider, String id ) \
-	this( eclass, collider, id, id.empty() if "component." else "component(" + id + ")." )
+	public func new(BehaviorElementClass eclass, ECBehaviorCollider collider, String id) \
+	this(eclass, collider, id, id.empty() if "component." else "component(" + id + ").")
 	end
 	
-	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider, \
-	String id, String prefix ) super( eclass, id )
-		this.pCollider = collider
+	public func new(BehaviorElementClass eclass, ECBehaviorCollider collider, \
+	String id, String prefix) super(eclass, id)
+		pCollider = collider
 		
-		this.pComponent = ECComposeComponent.new( eclass, \
-			this.createTextureReplacements( prefix + "textureReplacements" ), prefix )
+		pComponent = ECComposeComponent.new(eclass, \
+			createTextureReplacements(prefix + "textureReplacements"), prefix)
 		
-		eclass.addBehavior( this )
+		eclass.addBehavior(this)
 	end
 	
 	/** \brief Create texture replacements property. */
-	protected func ECPTextureReplacementList createTextureReplacements( String propertyName )
-		return ECPTextureReplacementList.new( propertyName )
+	protected func ECPTextureReplacementList createTextureReplacements(String propertyName)
+		return ECPTextureReplacementList.new(propertyName)
 	end
 	
 	/** \brief Dispose of behavior. */
 	public func void dispose()
-		this.pCollider = null
+		pCollider = null
 		super.dispose()
 	end
 	
@@ -312,12 +317,12 @@ class ECBehaviorComponent extends DefaultECBehavior
 	
 	/** \brief Composeable component for element class. */
 	public func ECComposeComponent getComponent()
-		return this.pComponent
+		return pComponent
 	end
 	
 	/** \brief Collider behavior. */
 	public func ECBehaviorCollider getCollider()
-		return this.pCollider
+		return pCollider
 	end
 	
 	
@@ -327,15 +332,15 @@ class ECBehaviorComponent extends DefaultECBehavior
 	 * 
 	 * If \em model, \em skin or \em rig are null the respective path is not set.
 	 */
-	public  func void setCommonPath( String model, String skin, String rig )
+	public  func void setCommonPath(String model, String skin, String rig)
 		if model != null
-			this.pComponent.getModel().setPath( model )
+			pComponent.getModel().setPath(model)
 		end
 		if skin != null
-			this.pComponent.getSkin().setPath( skin )
+			pComponent.getSkin().setPath(skin)
 		end
 		if rig != null
-			this.pComponent.getRig().setPath( rig )
+			pComponent.getRig().setPath(rig)
 		end
 	end
 	
@@ -352,15 +357,15 @@ class ECBehaviorComponent extends DefaultECBehavior
 	 * 
 	 * If \em model, \em skin or \em rig are null the respective path is not set.
 	 */
-	public  func void setCommonPath( String directory, String model, String skin, String rig )
+	public  func void setCommonPath(String directory, String model, String skin, String rig)
 		if model != null
-			this.pComponent.getModel().setPath( File.absolutePath( model, directory ).getPath() )
+			pComponent.getModel().setPath(File.absolutePath(model, directory).getPath())
 		end
 		if skin != null
-			this.pComponent.getSkin().setPath( File.absolutePath( skin, directory ).getPath() )
+			pComponent.getSkin().setPath(File.absolutePath(skin, directory).getPath())
 		end
 		if rig != null
-			this.pComponent.getRig().setPath( File.absolutePath( rig, directory ).getPath() )
+			pComponent.getRig().setPath(File.absolutePath(rig, directory).getPath())
 		end
 	end
 	
@@ -370,14 +375,14 @@ class ECBehaviorComponent extends DefaultECBehavior
 	 * If \em model, \em skin, \em rig, \em occlusionMesh or \em audioModel are null the
 	 * respective path is not set.
 	 */
-	public  func void setAllPath( String model, String skin, String rig, \
-	String occlusionMesh, String audioModel )
-		this.setCommonPath( model, skin, rig )
+	public  func void setAllPath(String model, String skin, String rig, \
+	String occlusionMesh, String audioModel)
+		setCommonPath(model, skin, rig)
 		if occlusionMesh != null
-			this.pComponent.getOcclusionMesh().setPath( occlusionMesh )
+			pComponent.getOcclusionMesh().setPath(occlusionMesh)
 		end
 		if audioModel != null
-			this.pComponent.getAudioModel().setPath( audioModel )
+			pComponent.getAudioModel().setPath(audioModel)
 		end
 	end
 	
@@ -398,14 +403,14 @@ class ECBehaviorComponent extends DefaultECBehavior
 	 * If \em model, \em skin, \em rig, \em occlusionMesh or \em audioModel are null the
 	 * respective path is not set.
 	 */
-	public  func void setCommonPath( String directory, String model, String skin, \
-	String rig, String occlusionMesh, String audioModel )
-		this.setCommonPath( directory, model, skin, rig )
+	public  func void setAllPath(String directory, String model, String skin, \
+	String rig, String occlusionMesh, String audioModel)
+		setCommonPath(directory, model, skin, rig)
 		if occlusionMesh != null
-			this.pComponent.getOcclusionMesh().setPath( File.absolutePath( occlusionMesh, directory ).getPath() )
+			pComponent.getOcclusionMesh().setPath(File.absolutePath(occlusionMesh, directory).getPath())
 		end
 		if audioModel != null
-			this.pComponent.getAudioModel().setPath( File.absolutePath( audioModel, directory ).getPath() )
+			pComponent.getAudioModel().setPath(File.absolutePath(audioModel, directory).getPath())
 		end
 	end
 	
@@ -420,39 +425,39 @@ class ECBehaviorComponent extends DefaultECBehavior
 	 * componentBehavior.getComponent().getTextureReplacements().getList().add(replacement)
 	 * \endcode
 	 */
-	public func void addTextureReplacement( String name, String pathSkin )
-		var TextureReplacement replacement = TextureReplacement.new( name )
-		replacement.setPath( pathSkin )
-		this.pComponent.getTextureReplacements().getList().add( replacement )
+	public func void addTextureReplacement(String name, String pathSkin)
+		var TextureReplacement replacement = TextureReplacement.new(name)
+		replacement.setPath(pathSkin)
+		pComponent.getTextureReplacements().getList().add(replacement)
 	end
 	
-	public func void addTextureReplacement( String name, String pathSkin, Vector2 tcScale )
-		var TextureReplacement replacement = TextureReplacement.new( name )
-		replacement.setPath( pathSkin )
-		replacement.setTransform( TexMatrix2.newScaling( tcScale ) )
-		this.pComponent.getTextureReplacements().getList().add( replacement )
+	public func void addTextureReplacement(String name, String pathSkin, Vector2 tcScale)
+		var TextureReplacement replacement = TextureReplacement.new(name)
+		replacement.setPath(pathSkin)
+		replacement.setTransform(TexMatrix2.newScaling(tcScale))
+		pComponent.getTextureReplacements().getList().add(replacement)
 	end
 	
-	public func void addTextureReplacement( String name, String pathSkin, Color tint )
-		var TextureReplacement replacement = TextureReplacement.new( name )
-		replacement.setPath( pathSkin )
-		replacement.setColorTint( tint )
-		this.pComponent.getTextureReplacements().getList().add( replacement )
+	public func void addTextureReplacement(String name, String pathSkin, Color tint)
+		var TextureReplacement replacement = TextureReplacement.new(name)
+		replacement.setPath(pathSkin)
+		replacement.setColorTint(tint)
+		pComponent.getTextureReplacements().getList().add(replacement)
 	end
 	
-	public func void addTextureReplacement( String name, String pathSkin, Vector2 tcScale, Color tint )
-		var TextureReplacement replacement = TextureReplacement.new( name )
-		replacement.setPath( pathSkin )
-		replacement.setTransform( TexMatrix2.newScaling( tcScale ) )
-		replacement.setColorTint( tint )
-		this.pComponent.getTextureReplacements().getList().add( replacement )
+	public func void addTextureReplacement(String name, String pathSkin, Vector2 tcScale, Color tint)
+		var TextureReplacement replacement = TextureReplacement.new(name)
+		replacement.setPath(pathSkin)
+		replacement.setTransform(TexMatrix2.newScaling(tcScale))
+		replacement.setColorTint(tint)
+		pComponent.getTextureReplacements().getList().add(replacement)
 	end
 	
 	
 	
 	/** \brief Get instance in element from owner element class. */
-	public func Instance instance( BehaviorElement element )
-		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	public func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
 	
 	
@@ -463,10 +468,10 @@ class ECBehaviorComponent extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorCollider.
 	 */
-	static public func ECBehaviorComponent getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehavior each
-			return each castable ECBehaviorComponent
-		end ) cast ECBehaviorComponent
+	static public func ECBehaviorComponent getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorComponent each
+			return true
+		end) cast ECBehaviorComponent
 	end
 	
 	/**
@@ -475,11 +480,10 @@ class ECBehaviorComponent extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorComponent with specific identifier.
 	 */
-	static public func ECBehaviorComponent getBehaviorIn( BehaviorElementClass eclass, String id )
-		return eclass.findBehavior( block ECBehaviorComponent each
-			return each castable ECBehaviorComponent and \
-				( each cast ECBehaviorComponent ).getID().equals( id )
-		end ) cast ECBehaviorComponent
+	static public func ECBehaviorComponent getBehaviorIn(BehaviorElementClass eclass, String id)
+		return eclass.findBehavior(block ECBehaviorComponent each
+			return each.getID().equals(id)
+		end) cast ECBehaviorComponent
 	end
 	
 	/**
@@ -488,14 +492,10 @@ class ECBehaviorComponent extends DefaultECBehavior
 	 * Returns list contains ECBehaviorComponent behaviors in the order they have
 	 * been created in the element.
 	 */
-	static public func Array getAllBehaviorsIn( BehaviorElementClass eclass )
-		var Array list = Array.new()
-		eclass.forEachBehavior( block ECBehavior each
-			if each castable ECBehaviorComponent
-				list.add( each )
-			end
-		end )
-		return list
+	static public func Array getAllBehaviorsIn(BehaviorElementClass eclass)
+		return eclass.collectBehaviors(block ECBehaviorComponent each
+			return true
+		end)
 	end
 	
 	
@@ -507,10 +507,10 @@ class ECBehaviorComponent extends DefaultECBehavior
 	 * of type ECBehaviorComponent.Instance . If more than one instance is present returns
 	 * the first instance.
 	 */
-	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance
-		end ) cast Instance
+	static public func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
+			return true
+		end) cast Instance
 	end
 	
 	/**
@@ -519,11 +519,10 @@ class ECBehaviorComponent extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
 	 * of type ECBehaviorComponent.Instance with specific identifier.
 	 */
-	static public func Instance getInstanceIn( BehaviorElement element, String id )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance and \
-				( each cast Instance ).getECBehavior().getID().equals( id )
-		end ) cast Instance
+	static public func Instance getInstanceIn(BehaviorElement element, String id)
+		return element.findInstance(block Instance each
+			return each.getECBehavior().getID().equals(id)
+		end) cast Instance
 	end
 	
 	/**
@@ -532,20 +531,16 @@ class ECBehaviorComponent extends DefaultECBehavior
 	 * Returns list contains ECBehaviorComponent.Instance instances in the order they have
 	 * been created in the element.
 	 */
-	static public func Array getAllInstancesIn( BehaviorElement element )
-		var Array list = Array.new()
-		element.forEachInstance( block ECBehaviorInstance each
-			if each castable Instance
-				list.add( each )
-			end
-		end )
-		return list
+	static public func Array getAllInstancesIn(BehaviorElement element)
+		return element.collectInstances(block Instance each
+			return true
+		end)
 	end
 	
 	
 	
 	/** \brief Create Behavior instance. */
-	public func ECBehaviorInstance createInstance( BehaviorElement element )
-		return Instance.new( this, element )
+	public func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
 	end
 end

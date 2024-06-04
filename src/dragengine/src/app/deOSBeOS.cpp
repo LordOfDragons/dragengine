@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Game Engine
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifdef OS_BEOS
@@ -26,6 +29,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <signal.h>
+#include <locale.h>
 #include <sys/time.h>
 
 #include <Application.h>
@@ -59,6 +63,9 @@ pHostingRenderWindow( NULL )
 	const BRect screenSize( BScreen().Frame() );
 	pScreenWidth = screenSize.IntegerWidth();
 	pScreenHeight = screenSize.IntegerHeight();
+	
+	// init locale
+	setlocale( LC_ALL, "" );
 }
 
 deOSBeOS::~deOSBeOS(){
@@ -128,31 +135,34 @@ int deOSBeOS::GetDisplayCount(){
 }
 
 decPoint deOSBeOS::GetDisplayCurrentResolution( int display ){
-	if( display != 0 ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( display == 0 )
+	
 	return decPoint( pScreenWidth, pScreenHeight );
 }
 
 int deOSBeOS::GetDisplayCurrentRefreshRate( int display ){
-	if( display != 0 ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( display == 0 )
+	
 	return 30;
 }
 
 int deOSBeOS::GetDisplayResolutionCount( int display ){
-	if( display != 0 ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( display == 0 )
+	
 	return 1;
 }
 
 decPoint deOSBeOS::GetDisplayResolution( int display, int resolution ){
-	if( display != 0 || resolution != 0 ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( display == 0 )
+	DEASSERT_TRUE( resolution == 0 )
+	
 	return decPoint( pScreenWidth, pScreenHeight );
+}
+
+int deOSBeOS::GetDisplayCurrentScaleFactor( int display ){
+	DEASSERT_TRUE( display == 0 )
+	
+	return 100;
 }
 
 
@@ -220,14 +230,6 @@ void deOSBeOS::ProcessEventLoop( bool sendToInputModule ){
 		// process message
 		try{
 			switch( message->what ){
-			case B_WINDOW_RESIZED:
-				//const int windowWidth = message->GetInt32( "width", pWindowWidth );
-				//const int windowHeight = message->FindInt32( "height", pWindowHeight );
-				
-				// notify graphic module about the change
-				// notify the script module about the change
-				break;
-				
 			case B_APP_ACTIVATED:
 				SetAppActive( message->GetBool( "active", true ) );
 				break;
@@ -260,6 +262,42 @@ void deOSBeOS::MessageReceived( BMessage *message ){
 	pMessageQueue.Lock();
 	pMessageQueue.AddMessage( new BMessage( *message ) );
 	pMessageQueue.Unlock();
+}
+
+decString deOSBeOS::GetUserLocaleLanguage(){
+	const char * const l = setlocale( LC_ALL, nullptr );
+	if( l ){
+		const decString ls( l );
+		const int deli = ls.Find( '_' );
+		if( deli != -1 ){
+			return ls.GetLeft( deli ).GetLower();
+			
+		}else{
+			return ls.GetLower();
+		}
+	}
+	return "en";
+}
+
+decString deOSBeOS::GetUserLocaleTerritory(){
+	const char * const l = setlocale( LC_ALL, nullptr );
+	if( l ){
+		const decString ls( l );
+		const int deli = ls.Find( '_' );
+		if( deli != -1 ){
+			const int deli2 = ls.Find( '.', deli + 1 );
+			if( deli2 != -1 ){
+				return ls.GetMiddle( deli + 1, deli2 ).GetLower();
+				
+			}else{
+				return ls.GetMiddle( deli + 1 ).GetLower();
+			}
+			
+		}else{
+			return ls.GetLower();
+		}
+	}
+	return "";
 }
 
 

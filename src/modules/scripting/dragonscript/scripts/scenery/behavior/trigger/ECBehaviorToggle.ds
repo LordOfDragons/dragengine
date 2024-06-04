@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -56,6 +59,31 @@ class ECBehaviorToggle extends DefaultECBehavior
 		public func void toggled( Instance instance )
 		end
 	end
+	
+	/** \brief Factory creating listeners. */
+	interface ListenerFactory
+		/** \brief Create listener. */
+		func Listener createListener( Instance instance )
+	end
+	
+	/** \brief Factory creating listeners using block. */
+	class BlockListenerFactory implements ListenerFactory
+		private var Block pBlock
+		
+		/** \brief Create factory using block receiving Instance as parameter returning Listener. */
+		public func new( Block blockFactory )
+			if blockFactory == null
+				throw ENullPointer.new()
+			end
+			this.pBlock = blockFactory
+		end
+		
+		/** \brief Create listener. */
+		public func Listener createListener( Instance instance )
+			return this.pBlock.run( instance ) cast Listener
+		end
+	end
+	
 	
 	
 	/** \brief Behavior instance. */
@@ -114,6 +142,8 @@ class ECBehaviorToggle extends DefaultECBehavior
 			this.pStartActivated = this.pECBehavior.getStartActivated().getValue( stub )
 			
 			this.pTarget = TSNamedTriggerTarget.new( this.pECBehavior.getTarget().getValue( stub ) )
+			
+			this.pECBehavior.createListeners( this )
 		end
 		
 		
@@ -200,6 +230,7 @@ class ECBehaviorToggle extends DefaultECBehavior
 		
 		/** \brief Read element from file. */
 		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+			super.readFromFile( env, reader ) // do not remove unless persisting states!
 			this.pApplyStartActivated = false
 		end
 	end
@@ -210,6 +241,7 @@ class ECBehaviorToggle extends DefaultECBehavior
 	private var ECPString pTarget
 	private var ECPBoolean pStartActivated
 	private var TSTriggerTable pTriggerTable
+	private var Array pListenerFactories
 	
 	
 	
@@ -237,6 +269,7 @@ class ECBehaviorToggle extends DefaultECBehavior
 	public func new( BehaviorElementClass eclass, TSTriggerTable triggerTable, \
 	String id, String subID, String prefix ) super( eclass, id )
 		this.pTriggerTable = triggerTable
+		this.pListenerFactories = Array.new()
 		
 		this.pTriggered = ECBehaviorTriggered.new( eclass, triggerTable, subID, prefix + "trigger" )
 		
@@ -247,6 +280,12 @@ class ECBehaviorToggle extends DefaultECBehavior
 		eclass.addProperty( this.pStartActivated )
 		
 		eclass.addBehavior( this )
+	end
+	
+	/** \brief Dispose of behavior. */
+	public func void dispose()
+		this.pListenerFactories = null
+		super.dispose()
 	end
 	
 	
@@ -276,6 +315,35 @@ class ECBehaviorToggle extends DefaultECBehavior
 		this.pTriggerTable = triggerTable
 	end
 	
+	/** \brief Add listener factory. */
+	public func void addListenerFactory( ListenerFactory factory )
+		if factory == null
+			throw ENullPointer.new()
+		end
+		this.pListenerFactories.add( factory )
+	end
+	
+	/**
+	 * \brief Add listener factory using block.
+	 * 
+	 * Block receives as parameter Instance and returns Listener.
+	 */
+	public func void addListenerFactory( Block blockFactory )
+		this.pListenerFactories.add( BlockListenerFactory.new( blockFactory ) )
+	end
+	
+	/** \brief Visit listener factories with block with argument ListenerFactory. */
+	public func void forEachListenerFactory( Block ablock )
+		this.pListenerFactories.forEach( ablock )
+	end
+	
+	/** \brief Create listeners from factories adding them to behavior instance. */
+	public func void createListeners( Instance instance )
+		this.pListenerFactories.forEach( block ListenerFactory each
+			instance.addListener( each.createListener( instance ) )
+		end )
+	end
+	
 	
 	
 	/** \brief Get instance in element from owner element class. */
@@ -292,8 +360,8 @@ class ECBehaviorToggle extends DefaultECBehavior
 	 * of type ECBehaviorComponent.
 	 */
 	static public func ECBehaviorToggle getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehavior each
-			return each castable ECBehaviorToggle
+		return eclass.findBehavior( block ECBehaviorToggle each
+			return true
 		end ) cast ECBehaviorToggle
 	end
 	
@@ -305,8 +373,7 @@ class ECBehaviorToggle extends DefaultECBehavior
 	 */
 	static public func ECBehaviorToggle getBehaviorIn( BehaviorElementClass eclass, String id )
 		return eclass.findBehavior( block ECBehaviorToggle each
-			return each castable ECBehaviorToggle and \
-				( each cast ECBehaviorToggle ).getID().equals( id )
+			return each.getID().equals( id )
 		end ) cast ECBehaviorToggle
 	end
 	
@@ -317,13 +384,9 @@ class ECBehaviorToggle extends DefaultECBehavior
 	 * been created in the element.
 	 */
 	static public func Array getAllBehaviorsIn( BehaviorElementClass eclass )
-		var Array list = Array.new()
-		eclass.forEachBehavior( block ECBehavior each
-			if each castable ECBehaviorToggle
-				list.add( each )
-			end
+		return eclass.collectBehaviors( block ECBehaviorToggle each
+			return true
 		end )
-		return list
 	end
 	
 	
@@ -336,8 +399,8 @@ class ECBehaviorToggle extends DefaultECBehavior
 	 * the first instance.
 	 */
 	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance
+		return element.findInstance( block Instance each
+			return true
 		end ) cast Instance
 	end
 	
@@ -348,9 +411,8 @@ class ECBehaviorToggle extends DefaultECBehavior
 	 * of type ECBehaviorToggle.Instance with specific identifier.
 	 */
 	static public func Instance getInstanceIn( BehaviorElement element, String id )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance and \
-				( each cast Instance ).getECBehavior().getID().equals( id )
+		return element.findInstance( block Instance each
+			return each.getECBehavior().getID().equals( id )
 		end ) cast Instance
 	end
 	
@@ -361,13 +423,9 @@ class ECBehaviorToggle extends DefaultECBehavior
 	 * been created in the element.
 	 */
 	static public func Array getAllInstancesIn( BehaviorElement element )
-		var Array list = Array.new()
-		element.forEachInstance( block ECBehaviorInstance each
-			if each castable Instance
-				list.add( each )
-			end
+		return element.collectInstances( block Instance each
+			return true
 		end )
-		return list
 	end
 	
 	

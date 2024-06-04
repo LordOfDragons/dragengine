@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -25,12 +28,12 @@
 
 #include "deoglRTContext.h"
 #include "deoglRenderThread.h"
+#include "deoglLoaderThread.h"
 #include "deoglRTLogger.h"
 #include "../deGraphicOpenGl.h"
 #include "../configuration/deoglConfiguration.h"
 #include "../canvas/deoglCanvasView.h"
 #include "../extensions/deoglExtensions.h"
-#include "../extensions/deoglExtResult.h"
 #include "../window/deoglRenderWindow.h"
 #include "../window/deoglRRenderWindow.h"
 
@@ -38,10 +41,13 @@
 #include <dragengine/common/exceptions.h>
 #include <dragengine/resources/canvas/deCanvasView.h>
 #include <dragengine/resources/rendering/deRenderWindow.h>
+#include <dragengine/systems/deInputSystem.h>
 #include <dragengine/systems/deScriptingSystem.h>
+#include <dragengine/systems/modules/input/deBaseInputModule.h>
 
 #if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 #include <dragengine/app/deOSUnix.h>
+#include "../extensions/deoglXExtResult.h"
 #endif
 
 #ifdef ANDROID
@@ -55,12 +61,13 @@
 #endif
 
 #ifdef OS_MACOS
+#include "../extensions/macosfix.h"
 #include <dragengine/app/deOSMacOS.h>
 #endif
 
 #ifdef OS_W32
 #include <dragengine/app/deOSWindows.h>
-#include <GL/wglext.h>
+#include "../extensions/wglext.h"
 #endif
 
 
@@ -88,6 +95,14 @@ static LRESULT CALLBACK oglW32WndFunc( HWND hwnd, UINT message, WPARAM wParam, L
 }
 #endif
 
+struct sOpenGlVersion{
+	int major;
+	int minor;
+};
+static const int vOpenGLVersionCount = 9;
+static const sOpenGlVersion vOpenGLVersions[ vOpenGLVersionCount ] = {
+	{ 4, 6 }, { 4, 5 }, { 4, 4 }, { 4, 3 }, { 4, 2 }, { 4, 1 }, { 4, 0 }, { 3, 3 }, { 3, 2 } };
+
 
 
 // Class deoglRTContext
@@ -105,7 +120,8 @@ pOSUnix( renderThread.GetOgl().GetOS()->CastToOSUnix() ),
 pDisplay( NULL ),
 pScreen( 0 ),
 
-pContext( NULL ),
+pContext( nullptr ),
+pLoaderContext( nullptr ),
 
 pColMap( 0 ),
 pVisInfo( NULL ),
@@ -117,6 +133,7 @@ pOSAndroid( renderThread.GetOgl().GetOS()->CastToOSAndroid() ),
 pDisplay( EGL_NO_DISPLAY ),
 pSurface( EGL_NO_SURFACE ),
 pContext( EGL_NO_CONTEXT ),
+pLoaderContext( EGL_NO_CONTEXT ),
 
 pScreenWidth( 0 ),
 pScreenHeight( 0 ),
@@ -131,13 +148,15 @@ pOSBeOS( renderThread.GetOgl().GetOS()->CastToOSBeOS() ),
 #ifdef OS_MACOS
 pOSMacOS( renderThread.GetOgl().GetOS()->CastToOSMacOS() ),
 pPixelFormat( NULL ),
-pContext( NULL ),
+pContext( nullptr ),
+pLoaderContext( nullptr ),
 #endif
 
 #ifdef OS_W32
 pWindowClassname( "DEOpenGLWindow" ),
 pOSWindows( renderThread.GetOgl().GetOS()->CastToOSWindows() ),
 pContext( NULL ),
+pLoaderContext( NULL ),
 #endif
 
 pActiveRRenderWindow( NULL ),
@@ -389,7 +408,17 @@ void deoglRTContext::ActivateRRenderWindow( deoglRRenderWindow *rrenderWindow, b
 		}
 		#endif
 		
+		#ifndef OS_BEOS
+		if( pLoaderContext ){
+			// this check is required for windows to work correctly because on windows the window
+			// is activated before the loader context is created which would cause problems
+			pRenderThread.GetLoaderThread().EnableContext( true );
+		}
+		#endif
+		
 	}else{
+		pRenderThread.GetLoaderThread().EnableContext( false );
+		
 		#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 // 		printf( "glXMakeCurrent(clear) previous(%lu,%p)\n", glXGetCurrentDrawable(), glXGetCurrentContext() );
 		OGLX_CHECK( pRenderThread, glXMakeCurrent( pDisplay, None, NULL ) );
@@ -499,6 +528,10 @@ LRESULT deoglRTContext::ProcessWindowMessage( HWND hwnd, UINT message, WPARAM wP
 				break;
 			}
 		}
+		if( LOWORD( lParam ) != HTCLIENT ){
+			return DefWindowProc( hwnd, message, wParam, lParam );
+		}
+
 		SetCursor( NULL );
 		}return TRUE;
 		
@@ -509,6 +542,20 @@ LRESULT deoglRTContext::ProcessWindowMessage( HWND hwnd, UINT message, WPARAM wP
 	case WM_ACTIVATEAPP:
 		// changing this value in the main thread is acceptable
 		pAppActivated = wParam == TRUE;
+		
+		// this situation is now annoying. the deOSWindow does not receive WM_ACTIVATEAPP
+		// only we do. this in turn means the windows input module will not receive this
+		// message either but it is required to get it. so we forward the message to
+		// the input module
+		{
+		MSG msg;
+		memset( &msg, 0, sizeof( msg ) );
+		msg.hwnd = hwnd;
+		msg.message = message;
+		msg.wParam = wParam;
+		msg.lParam = lParam;
+		pRenderThread.GetOgl().GetGameEngine()->GetInputSystem()->GetActiveModule()->EventLoop( msg );
+		}
 		return 0;
 		
 	case WM_ERASEBKGND:
@@ -518,14 +565,23 @@ LRESULT deoglRTContext::ProcessWindowMessage( HWND hwnd, UINT message, WPARAM wP
 	case WM_SIZE:{
 		const deoglRenderWindowList &windows = pRenderThread.GetOgl().GetRenderWindowList();
 		const int count = windows.GetCount();
-		const int height = HIWORD( lParam );
-		const int width = LOWORD( lParam );
+		//const int height = HIWORD( lParam ); // outer width
+		//const int width = LOWORD( lParam ); // outer height
 		int i;
 		
 		for( i=0; i<count; i++ ){
 			deoglRenderWindow &window = *windows.GetAt( i );
 			if( window.GetRRenderWindow()->GetWindow() == hwnd ){
-				window.GetRenderWindow().SetSize( width, height );
+				// for fullscreen windows the size is incorrect while the window style is changed.
+				// to avoid problems ignore size change if the window is full screen
+				if( window.GetRRenderWindow()->GetFullScreen() ){
+					break;
+				}
+
+				// the size provided in the message are the outer size of the window not the inner size.
+				// for non-fullscreen windows we have to calculate the correct inner size
+				const decPoint innerSize( window.GetRRenderWindow()->GetInnerSize() );
+				window.GetRenderWindow().SetSize( innerSize.x, innerSize.y );
 				break;
 			}
 		}
@@ -802,38 +858,73 @@ void deoglRTContext::pCreateGLContext(){
 	if( pglXCreateContextAttribs ){
 		logger.LogInfo( "Creating OpenGL Context using new method" );
 		
+		int contextFlags = 0;
+		
+		// according to OpenGL wiki this has no effect on 3.2+ context but MacOS requies
+		// this to be set otherwise context creation fails
+		#ifdef OS_MACOS
+		contextFlags |= GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB
+		#endif
+		
+		if( pRenderThread.GetConfiguration().GetDebugContext() ){
+			logger.LogInfo( "Enable debug context" );
+			contextFlags |= GLX_CONTEXT_DEBUG_BIT_ARB;
+		}
+		
+		// this one here is really the biggest mess of all times. AMD does it right in that
+		// requesting a 3.3 context (as minimum) gives you up to 4.6 context if supported.
+		// this is how it is correctly done. and then we have nVidia which (again) fails to
+		// to it correctly. it gives you exactly a 3.3 context instead of the highest supported
+		// context. this causes problems since nVidia (again) fails compiling shaders if the
+		// shader version is not set high enough. this is again wrong in many ways since using
+		// the #extension directive in the shader overrules the #version directive but nVidia
+		// doesn't give a damn about OpenGL specs. Intel is in the same boat but nobody expects
+		// any sane 3D drivers from them anyway. so how to solve this mess? we do it ugly by
+		// simply trying all possible OpenGL context versions from the highest down to the
+		// lowest until we find the first one that works. and yes, this is really, really,
+		// REALLY ugly. thanks nVidia for nothing
 		int contextAttribs[] = {
 			GLX_CONTEXT_MAJOR_VERSION_ARB, 3,
 			GLX_CONTEXT_MINOR_VERSION_ARB, 3,
 			GLX_RENDER_TYPE, GLX_RGBA_TYPE,
 			GLX_CONTEXT_PROFILE_MASK_ARB, GLX_CONTEXT_CORE_PROFILE_BIT_ARB,
-			None, None, //GLX_CONTEXT_FLAGS_ARB, GLX_CONTEXT_DEBUG_BIT_ARB,
-			None, None, //GLX_CONTEXT_FLAGS_ARB, GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB,
+			GLX_CONTEXT_FLAGS_ARB, contextFlags,
+			None, None,
 			None };
-		int contextAttribCount = 8;
+// 		int contextAttribCount = 10;
 		
-		if( pRenderThread.GetConfiguration().GetDebugContext() ){
-			logger.LogInfo( "Creating debug context" );
-			contextAttribs[ contextAttribCount++ ] = GLX_CONTEXT_FLAGS_ARB;
-			contextAttribs[ contextAttribCount++ ] = GLX_CONTEXT_DEBUG_BIT_ARB;
+		int i;
+		for( i=0; i<vOpenGLVersionCount; i++ ){
+			contextAttribs[ 1 ] = vOpenGLVersions[ i ].major;
+			contextAttribs[ 3 ] = vOpenGLVersions[ i ].minor;
+			
+			pContext = pglXCreateContextAttribs( pDisplay, pBestFBConfig, NULL, True, contextAttribs );
+			if( pContext ){
+				logger.LogInfoFormat( "- Trying %d.%d Core... Success",
+					vOpenGLVersions[ i ].major, vOpenGLVersions[ i ].minor );
+				pLoaderContext = pglXCreateContextAttribs( pDisplay, pBestFBConfig, pContext, True, contextAttribs );
+				break;
+			}
+			
+			logger.LogInfoFormat( "- Trying %d.%d Core... Failed",
+				vOpenGLVersions[ i ].major, vOpenGLVersions[ i ].minor );
 		}
 		
-		pContext = pglXCreateContextAttribs( pDisplay, pBestFBConfig, NULL, True, contextAttribs );
-		
 		if( ! pContext ){
-			logger.LogInfo( "Creating OpenGL Context with new method failed. "
+			logger.LogWarn( "No supported OpenGL Context could be created with new method. "
 				"Creating OpenGL Context using old method" );
 			pContext = glXCreateNewContext( pDisplay, pBestFBConfig, GLX_RGBA_TYPE, NULL, True );
+			pLoaderContext = glXCreateNewContext( pDisplay, pBestFBConfig, GLX_RGBA_TYPE, pContext, True );
 		}
 		
 	}else{
 		logger.LogInfo( "Creating OpenGL Context using old method" );
 		pContext = glXCreateNewContext( pDisplay, pBestFBConfig, GLX_RGBA_TYPE, NULL, True );
+		pLoaderContext = glXCreateNewContext( pDisplay, pBestFBConfig, GLX_RGBA_TYPE, pContext, True );
 	}
 	
-	if( ! pContext ){
-		DETHROW( deeInvalidAction );
-	}
+	DEASSERT_NOTNULL( pContext )
+	DEASSERT_NOTNULL( pLoaderContext )
 	
 	if( ! glXIsDirect( pDisplay, pContext ) ){
 		logger.LogError( "No matching direct rendering context found!" );
@@ -842,10 +933,18 @@ void deoglRTContext::pCreateGLContext(){
 }
 
 void deoglRTContext::pFreeContext(){
-	if( pDisplay && pContext ){
+	if( ! pDisplay ){
+		return;
+	}
+	
+	if( pLoaderContext ){
+		glXDestroyContext( pDisplay, pLoaderContext );
+		pLoaderContext = nullptr;
+	}
+	if( pContext ){
 		pRenderThread.GetLogger().LogInfo( "Free Context" );
 		glXDestroyContext( pDisplay, pContext );
-		pContext = 0;
+		pContext = nullptr;
 	}
 }
 
@@ -918,9 +1017,9 @@ void deoglRTContext::pInitDisplay(){
 			EGL_NONE
 		};
 		pContext = eglCreateContext( pDisplay, pConfig, NULL, eglAttribList );
-		if( pContext == EGL_NO_CONTEXT ){
-			DETHROW( deeInvalidParam );
-		}
+		DEASSERT_FALSE( pContext == EGL_NO_CONTEXT )
+		pLoaderContext = eglCreateContext( pDisplay, pConfig, pContext, eglAttribList );
+		DEASSERT_FALSE( pLoaderContext == EGL_NO_CONTEXT )
 	}
 	
 	// make surface current. we have to make it current each render loop
@@ -941,6 +1040,10 @@ void deoglRTContext::pCloseDisplay(){
 	
 	TerminateAppWindow();
 	
+	if( pLoaderContext != EGL_NO_CONTEXT ){
+		eglDestroyContext( pDisplay, pLoaderContext );
+		pLoaderContext = EGL_NO_CONTEXT;
+	}
 	if( pContext != EGL_NO_CONTEXT ){
 		eglDestroyContext( pDisplay, pContext );
 		pContext = EGL_NO_CONTEXT;
@@ -1004,7 +1107,7 @@ void deoglRTContext::pCreateGLContext(){
 	logger.LogInfo( "Creating OpenGL Context using old method" );
 	pContext = wglCreateContext( pActiveRRenderWindow->GetWindowDC() );
 	if( ! pContext ){
-		logger.LogErrorFormat( "wglCreateContext failed with code %i", ( int )GetLastError() );
+		logger.LogErrorFormat( "wglCreateContext failed with code %d", ( int )GetLastError() );
 		DETHROW( deeOutOfMemory );
 	}
 	
@@ -1027,25 +1130,56 @@ void deoglRTContext::pCreateGLContext(){
 		wglDeleteContext( pContext );
 		pContext = NULL;
 		
-		int contextAttribs[] = {
-			WGL_CONTEXT_MAJOR_VERSION_ARB, 3, //4,
-			WGL_CONTEXT_MINOR_VERSION_ARB, 3, //4,
-			0, 0, //WGL_CONTEXT_FLAGS_ARB, WGL_CONTEXT_DEBUG_BIT_ARB,
-			0, 0, //WGL_CONTEXT_FLAGS_ARB, WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB,
-			0 };
-		int contextAttribCount = 4;
+		int contextFlags = 0;
 		
 		if( pRenderThread.GetConfiguration().GetDebugContext() ){
-			logger.LogInfo( "Creating debug context" );
-			contextAttribs[ contextAttribCount++ ] = WGL_CONTEXT_FLAGS_ARB;
-			contextAttribs[ contextAttribCount++ ] = WGL_CONTEXT_DEBUG_BIT_ARB;
+			logger.LogInfo( "Enable debug context" );
+			contextFlags |= WGL_CONTEXT_DEBUG_BIT_ARB;
 		}
 		
-		pContext = pwglCreateContextAttribs( pActiveRRenderWindow->GetWindowDC(), NULL, contextAttribs );
+		// this one here is really the biggest mess of all times. AMD does it right in that
+		// requesting a 3.3 context (as minimum) gives you up to 4.6 context if supported.
+		// this is how it is correctly done. and then we have nVidia which (again) fails to
+		// do it correctly. it gives you exactly a 3.3 context instead of the highest supported
+		// context. this causes problems since nVidia (again) fails compiling shaders if the
+		// shader version is not set high enough. this is again wrong in many ways since using
+		// the #extension directive in the shader overrules the #version directive but nVidia
+		// doesn't give a damn about OpenGL specs. Intel is in the same boat but nobody expects
+		// any sane 3D drivers from them anyway. so how to solve this mess? we do it ugly by
+		// simply trying all possible OpenGL context versions from the highest down to the
+		// lowest until we find the first one that works. and yes, this is really, really,
+		// REALLY ugly. thanks nVidia for nothing
+		int contextAttribs[] = {
+			WGL_CONTEXT_MAJOR_VERSION_ARB, 3,
+			WGL_CONTEXT_MINOR_VERSION_ARB, 3,
+			WGL_CONTEXT_PROFILE_MASK_ARB, WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
+			WGL_CONTEXT_FLAGS_ARB, contextFlags,
+			0, 0,
+			0 };
+		
+		int i;
+		for( i=0; i<vOpenGLVersionCount; i++ ){
+			contextAttribs[ 1 ] = vOpenGLVersions[ i ].major;
+			contextAttribs[ 3 ] = vOpenGLVersions[ i ].minor;
+			
+			pContext = pwglCreateContextAttribs( pActiveRRenderWindow->GetWindowDC(), NULL, contextAttribs );
+			if( pContext ){
+				logger.LogInfoFormat( "- Trying %d.%d Core... Success",
+					vOpenGLVersions[ i ].major, vOpenGLVersions[ i ].minor );
+				pLoaderContext = pwglCreateContextAttribs( pActiveRRenderWindow->GetWindowDC(), pContext, contextAttribs );
+				break;
+			}
+			
+			logger.LogInfoFormat( "- Trying %d.%d Core... Failed",
+				vOpenGLVersions[ i ].major, vOpenGLVersions[ i ].minor );
+		}
 		
 		if( ! pContext ){
-			logger.LogInfo( "Creating OpenGL Context with new method failed. Creating OpenGL Context using old method" );
+			logger.LogWarn( "No supported OpenGL Context could be created with new method. "
+				"Creating OpenGL Context using old method" );
 			pContext = wglCreateContext( pActiveRRenderWindow->GetWindowDC() );
+			pLoaderContext = wglCreateContext( pActiveRRenderWindow->GetWindowDC() );
+			DEASSERT_TRUE( wglShareLists( pLoaderContext, pContext ) )
 		}
 		
 	}else{
@@ -1056,12 +1190,19 @@ void deoglRTContext::pCreateGLContext(){
 		logger.LogErrorFormat( "wglCreateContext with code %i", ( int )GetLastError() );
 		DETHROW( deeOutOfMemory );
 	}
+	DEASSERT_NOTNULL( pLoaderContext )
 	
 	// show the new render window
 	//pOSWindows->SetWindow( pActiveRRenderWindow->GetWindow() ); // problem, hangs if called from render-thread
 	
 	// attach to context
 	wglMakeCurrent( pActiveRRenderWindow->GetWindowDC(), pContext );
+
+	// for windows we have to delay starting the make sure the loader thread is enabled after the loader
+	// context is ready. before this point AcivateRRenderWindow() is called and then the loader context
+	// is nullptr which causes problems. ActivateRRenderWindow() thus avoids enabling the loader if
+	// no loader context exists. we thus have to do it here to make sure enabling works
+	pRenderThread.GetLoaderThread().EnableContext( true );
 }
 
 void deoglRTContext::pUnregisterWindowClass(){
@@ -1075,6 +1216,10 @@ void deoglRTContext::pFreeContext(){
 	// destroy render window
 	//pDestroyRenderWindow();
 	
+	if( pLoaderContext ){
+		wglDeleteContext( pLoaderContext );
+		pLoaderContext = NULL;
+	}
 	if( pContext ){
 		pRenderThread.GetLogger().LogInfo( "Free Context" );
 		wglDeleteContext( pContext );

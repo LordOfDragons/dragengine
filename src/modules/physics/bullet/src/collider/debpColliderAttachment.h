@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Bullet Physics Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEBPCOLLIDERATTACHMENT_H_
@@ -28,7 +31,7 @@ class deColliderAttachment;
 
 
 /**
- * \brief Collider attachment working object.
+ * Collider attachment working object.
  */
 class debpColliderAttachment{
 private:
@@ -36,81 +39,102 @@ private:
 	int pTrackBone;
 	int *pBoneMappings;
 	int pBoneMappingCount;
+	int *pVpsMappings;
+	int pVpsMappingCount;
 	bool pDirtyMappings;
 	
 	decDMatrix pLocalMatrix;
 	bool pDirtyLocalMatrix;
 	bool pHasLocalMatrix;
 	
+	decDMatrix pAccumRelMoveMatrix;
+	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create a collider attachment. */
+	/** Create a collider attachment. */
 	debpColliderAttachment( deColliderAttachment *attachment );
 	
-	/** \brief Clean up the collider attachment. */
+	/** Clean up the collider attachment. */
 	~debpColliderAttachment();
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Retrieve the collider attachment. */
+	/** Retrieve the collider attachment. */
 	inline deColliderAttachment *GetAttachment() const{ return pAttachment; }
 	
-	/** \brief Track bone index. */
+	/** Track bone index. */
 	inline int GetTrackBone() const{ return pTrackBone; }
 	
-	/** \brief Set the track bone index. */
+	/** Set the track bone index. */
 	void SetTrackBone( int boneIndex );
 	
-	/** \brief Set the number of bone mappings. */
+	/** Set the number of bone mappings. */
 	void SetBoneMappingCount( int count );
 	
-	/** \brief Bone mapping by index. */
+	/** Bone mapping by index. */
 	int GetBoneMappingAt( int index ) const;
 	
-	/** \brief Set bone mapping by index. */
+	/** Set bone mapping by index. */
 	void SetBoneMappingAt( int index, int boneIndex );
 	
-	/** \brief Determine if mapping is dirty. */
+	/** Set the number of vertex position set mappings. */
+	void SetVpsMappingCount( int count );
+	
+	/** Vertex position set mapping by index. */
+	int GetVpsMappingAt( int index ) const;
+	
+	/** Set vertex position set mapping by index. */
+	void SetVpsMappingAt( int index, int boneIndex );
+	
+	/** Determine if mapping is dirty. */
 	inline bool GetDirtyMappings() const{ return pDirtyMappings; }
 	
-	/** \brief Set if mapping is dirty. */
+	/** Set if mapping is dirty. */
 	void SetDirtyMappings( bool dirtyMappings );
 	
+	/** Relative movement accumulation. */
+	inline const decDMatrix &GetAccumRelMoveMatrix() const{ return pAccumRelMoveMatrix; }
+	
+	/** Set relative movement accumulation. */
+	void SetAccumRelMoveMatrix( const decDMatrix &matrix );
 	
 	
-	/** \brief Attachment changed. */
+	
+	/** Attachment changed. */
 	void AttachmentChanged();
 	
 	
 	
 	/**
-	 * \brief Reposition attached resource using a matrix modified by the local matrix.
+	 * Reposition attached resource using a matrix modified by the local matrix.
 	 * \details If the resource is a collider and the geometry change a ColliderChanged
 	 *          notification will be send if changeNotify is true.
 	 */
-	void Reposition( const decDMatrix &matrix, bool changeNotify );
+	void Reposition( const decDMatrix &matrix, const decVector &velocity, bool changeNotify );
 	
 	/**
-	 * \brief Reposition attached resource using a matrix modified by the local matrix.
+	 * Reposition attached resource using a matrix modified by the local matrix.
 	 * \details If the resource is a collider and the geometry change a ColliderChanged
 	 *          notification will be send if changeNotify is true.
 	 */
-	void Reposition( const decDVector &position, const decQuaternion &orientation, bool changeNotify );
+	void Reposition( const decDVector &position, const decQuaternion &orientation,
+		const decDVector &scaling, const decVector &velocity, bool changeNotify );
 	
 	/**
-	 * \brief Transform attached resource using a relative matrix.
+	 * Transform attached resource using a relative matrix.
 	 * \details If the resource is a collider and the geometry change a ColliderChanged
 	 *          notification will be send if changeNotify is true.
 	 */
-	void Transform( const decDMatrix &matrix, bool changeNotify );
+	void Transform( const decDMatrix &matrix, const decVector &velocity, bool changeNotify );
 	/*@}*/
 	
 private:
 	void pCleanUp();
 	void pPrepareLocalMatrix();
-	void pRepositionResource( const decDVector &position, const decQuaternion &orientation, bool changeNotify );
+	void pRepositionResource( const decDVector &position, const decQuaternion &orientation,
+		const decDVector &scaling, const decVector &velocity, bool changeNotify );
 };
 
 #endif

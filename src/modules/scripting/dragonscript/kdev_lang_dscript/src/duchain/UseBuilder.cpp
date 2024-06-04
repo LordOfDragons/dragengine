@@ -231,12 +231,12 @@ void UseBuilder::visitClassFunctionDeclareBegin( ClassFunctionDeclareBeginAst *n
 			
 			const ClassDeclaration * const classDecl = Helpers::classDeclFor( context );
 			if( classDecl ){
-				reportSemanticError( lock, useRange, i18n( "Ambigious constructor call: found %1.%2",
+				reportSemanticError( lock, useRange, i18n( "Ambiguous constructor call: found %1.%2",
 					classDecl->identifier().toString(), sig ), diagnostics );
 				
 			}else{
 				reportSemanticError( lock, useRange,
-					i18n( "Ambigious constructor call: found %1", sig ), diagnostics );
+					i18n( "Ambiguous constructor call: found %1", sig ), diagnostics );
 			}
 		}
 	}
@@ -878,11 +878,11 @@ const QVector<KDevelop::AbstractType::Ptr> &signature ){
 			
 			const ClassDeclaration * const classDecl = Helpers::classDeclFor( context );
 			if( classDecl ){
-				reportSemanticError( lock, useRange, i18n( "Ambigious function call: found %1.%2",
+				reportSemanticError( lock, useRange, i18n( "Ambiguous function call: found %1.%2",
 					classDecl->identifier().toString(), sig ), diagnostics );
 				
 			}else{
-				reportSemanticError( lock, useRange, i18n( "Ambigious function call: found %1",
+				reportSemanticError( lock, useRange, i18n( "Ambiguous function call: found %1",
 					sig ), diagnostics );
 			}
 		}

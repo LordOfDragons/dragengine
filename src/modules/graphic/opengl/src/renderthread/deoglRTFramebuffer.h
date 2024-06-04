@@ -1,28 +1,33 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLRRTFRAMEBUFFER_H_
 #define _DEOGLRRTFRAMEBUFFER_H_
 
 #include "../deoglBasics.h"
+#include "../framebuffer/deoglFramebuffer.h"
+#include "../framebuffer/deoglFramebufferManager.h"
 
 class deoglFramebuffer;
 class deoglFramebufferManager;
@@ -31,22 +36,28 @@ class deoglRenderThread;
 
 
 /**
- * \brief Render thread framebuffer related objects.
+ * Render thread framebuffer related objects.
  */
 class deoglRTFramebuffer{
 private:
-	deoglFramebufferManager *pManager;
+	deoglFramebufferManager pManager;
 	
-	deoglFramebuffer *pPrimary;
 	deoglFramebuffer *pActive;
+	
+	deoglFramebuffer pPrimary;
+	
+	deoglFramebuffer pEnvMap;
+	deoglFramebuffer pEnvMapMaterial;
+	
+	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create render thread framebuffer related object. */
+	/** Create render thread framebuffer related object. */
 	deoglRTFramebuffer( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up render thread framebuffer related object. */
+	/** Clean up render thread framebuffer related object. */
 	virtual ~deoglRTFramebuffer();
 	/*@}*/
 	
@@ -54,17 +65,27 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Framebuffer manager. */
-	inline deoglFramebufferManager &GetManager() const{ return *pManager; }
+	/** Framebuffer manager. */
+	inline deoglFramebufferManager &GetManager(){ return pManager; }
+	inline const deoglFramebufferManager &GetManager() const{ return pManager; }
 	
-	/** \brief Primary framebuffer. */
-	inline deoglFramebuffer *GetPrimary() const{ return pPrimary; }
+	/** Primary framebuffer. */
+	inline deoglFramebuffer &GetPrimary(){ return pPrimary; }
+	inline const deoglFramebuffer &GetPrimary() const{ return pPrimary; }
 	
-	/** \brief Active framebuffer. */
+	/** Active framebuffer. */
 	inline deoglFramebuffer *GetActive() const{ return pActive; }
 	
-	/** \brief Activate framebuffer or \em NULL to activate the primary framebuffer. */
+	/** Activate framebuffer or \em NULL to activate the primary framebuffer. */
 	void Activate( deoglFramebuffer *framebuffer );
+	
+	/** Environment map framebuffer. */
+	inline deoglFramebuffer &GetEnvMap(){ return pEnvMap; }
+	inline const deoglFramebuffer &GetEnvMap() const{ return pEnvMap; }
+	
+	/** Environment material map framebuffer. */
+	inline deoglFramebuffer &GetEnvMapMaterial(){ return pEnvMapMaterial; }
+	inline const deoglFramebuffer &GetEnvMapMaterial() const{ return pEnvMapMaterial; }
 	/*@}*/
 	
 private:

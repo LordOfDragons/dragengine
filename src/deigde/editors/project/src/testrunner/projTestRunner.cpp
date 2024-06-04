@@ -1,36 +1,41 @@
-/* 
- * Drag[en]gine IGDE Project Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
+
+#include <dragengine/dragengine_configuration.h>
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
 #include <signal.h>
 #include <stdint.h>
-#include <sys/time.h>
 #include <sys/types.h>
 #ifdef OS_W32
 #include <dragengine/app/include_windows.h>
 #include <dragengine/app/deOSWindows.h>
 #else
+#include <unistd.h>
+#include <sys/time.h>
 #include <sys/wait.h>
 #include <sys/select.h>
 #endif
@@ -45,6 +50,9 @@
 
 #include "../../testrun/projTestRunConstants.h"
 
+#include <deigde/gameproject/igdeGameProject.h>
+#include <deigde/module/igdeEditorModule.h>
+
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decPath.h>
@@ -57,14 +65,13 @@
 #include <dragengine/systems/deCrashRecoverySystem.h>
 #include <dragengine/systems/deGraphicSystem.h>
 #include <dragengine/systems/deInputSystem.h>
+#include <dragengine/systems/deVRSystem.h>
 #include <dragengine/systems/deModuleSystem.h>
 #include <dragengine/systems/deNetworkSystem.h>
 #include <dragengine/systems/dePhysicsSystem.h>
 #include <dragengine/systems/deScriptingSystem.h>
 #include <dragengine/systems/deSynthesizerSystem.h>
 #include <dragengine/systems/modules/deLoadableModule.h>
-
-#include <deigde/gameproject/igdeGameProject.h>
 
 
 
@@ -200,6 +207,9 @@ bool projTestRunner::IsRunning(){
 			return true; // still running
 			
 		}else{
+			pWindowMain.GetLogger()->LogInfoFormat( LOGSOURCE,
+				"Test-Runner stopped running with exit code %d", ( int )exitCode );
+
 			pProcessHandle = INVALID_HANDLE_VALUE;
 			return false; // process stopped
 		}
@@ -244,6 +254,9 @@ void projTestRunner::Start( projProfile *profile, projTRProfile *launcherProfile
 	pProfile = profile;
 	pLauncherProfile = launcherProfile;
 	
+	pWindowMain.GetLogger()->LogInfoFormat( LOGSOURCE,
+		"Launching Test-Runner using profile '%s'...", profile->GetName().GetString() );
+	
 	#ifdef OS_W32
 	if( pProcessHandle == INVALID_HANDLE_VALUE ){
 		HANDLE pipesInRead = INVALID_HANDLE_VALUE;
@@ -251,7 +264,14 @@ void projTestRunner::Start( projProfile *profile, projTRProfile *launcherProfile
 		HANDLE pipesOutRead = INVALID_HANDLE_VALUE;
 		HANDLE pipesOutWrite = INVALID_HANDLE_VALUE;
 		SECURITY_ATTRIBUTES secattr;
-		TCHAR cmdline[] = TEXT( "DEIGDEProjectTestRun" );
+		
+		decPath pathTestRunner( decPath::CreatePathNative( pWindowMain.GetEditorModule().GetEditorPathLib() ) );
+		pathTestRunner.AddComponent( "testrunner.exe" );
+		const decString strPathTestRunner( pathTestRunner.GetPathNative() );
+		
+		wchar_t widePath[ MAX_PATH ];
+		deOSWindows::Utf8ToWide( strPathTestRunner, widePath, MAX_PATH );
+		
 		PROCESS_INFORMATION procInfo;
 		STARTUPINFO startInfo;
 		DWORD bytesWritten = 0;
@@ -295,7 +315,7 @@ void projTestRunner::Start( projProfile *profile, projTRProfile *launcherProfile
 			startInfo.hStdInput = pipesInRead;
 			startInfo.dwFlags |= STARTF_USESTDHANDLES;
 			
-			if( ! CreateProcess( NULL, cmdline, NULL, NULL, TRUE, 0, NULL, NULL, &startInfo, &procInfo ) ){
+			if( ! CreateProcess( NULL, widePath, NULL, NULL, TRUE, 0, NULL, NULL, &startInfo, &procInfo ) ){
 				DETHROW( deeInvalidAction );
 			}
 			
@@ -395,7 +415,10 @@ void projTestRunner::Start( projProfile *profile, projTRProfile *launcherProfile
 			}
 			*/
 			
-			execlp( "deigde_project_testrun", "deigde_project_testrun", arg1, arg2, NULL );
+			decPath pathTestRunner( decPath::CreatePathNative( pWindowMain.GetEditorModule().GetEditorPathLib() ) );
+			pathTestRunner.AddComponent( "testrunner" );
+			const decString strPathTestRunner( pathTestRunner.GetPathNative() );
+			execlp( strPathTestRunner.GetString(), "testrunner", arg1, arg2, NULL );
 			// we should never get here or something went wrong
 			exit( 0 );
 		}
@@ -408,12 +431,16 @@ void projTestRunner::Start( projProfile *profile, projTRProfile *launcherProfile
 	}
 	#endif
 	
+	pWindowMain.GetLogger()->LogInfo( LOGSOURCE, "Test-Runner launched" );
+
 	// init log file for reading. has to be done before sending the launc parameters since
 	// the log file path is determined in pInitLogFile
 	pInitLogFile();
+	pWindowMain.GetLogger()->LogInfo( LOGSOURCE, "Log-file prepared" );
 	
 	// send launch parameters
 	pSendLaunchParameters();
+	pWindowMain.GetLogger()->LogInfo( LOGSOURCE, "Run parameters send to Test-Runner" );
 }
 
 void projTestRunner::Stop(){
@@ -421,6 +448,8 @@ void projTestRunner::Stop(){
 		return;
 	}
 	
+	pWindowMain.GetLogger()->LogInfo( LOGSOURCE, "Stopping Test-Runner..." );
+
 	#ifdef OS_W32
 	if( pProcessHandle != INVALID_HANDLE_VALUE ){
 		WaitForSingleObject( pProcessHandle, 5000 );
@@ -467,6 +496,8 @@ void projTestRunner::Stop(){
 	
 	pProfile = NULL;
 	pLauncherProfile = NULL;
+
+	pWindowMain.GetLogger()->LogInfo( LOGSOURCE, "Test-Runner stopped" );
 }
 
 void projTestRunner::Kill(){
@@ -474,6 +505,8 @@ void projTestRunner::Kill(){
 		return;
 	}
 	
+	pWindowMain.GetLogger()->LogInfo( LOGSOURCE, "Killing Test-Runner..." );
+
 	#ifdef OS_W32
 	if( pProcessHandle != INVALID_HANDLE_VALUE ){
 		TerminateProcess( pProcessHandle, 0 );
@@ -522,6 +555,8 @@ void projTestRunner::Kill(){
 	
 	pProfile = NULL;
 	pLauncherProfile = NULL;
+
+	pWindowMain.GetLogger()->LogInfo( LOGSOURCE, "Test-Runner killed" );
 }
 
 
@@ -538,8 +573,8 @@ void projTestRunner::WriteUShortToPipe( int value ){
 	if( value < 0 || value > 0xffff ){
 		DETHROW( deeInvalidParam );
 	}
-	const uint16_t ushort = ( uint16_t )value;
-	WriteToPipe( &ushort, sizeof( uint16_t ) );
+	const uint16_t vushort = ( uint16_t )value;
+	WriteToPipe( &vushort, sizeof( uint16_t ) );
 }
 
 void projTestRunner::WriteFloatToPipe( float value ){
@@ -547,7 +582,7 @@ void projTestRunner::WriteFloatToPipe( float value ){
 }
 
 void projTestRunner::WriteString16ToPipe( const char *string ){
-	const int length = strlen( string );
+	const int length = ( int )strlen( string );
 	WriteUShortToPipe( length );
 	WriteToPipe( string, length );
 }
@@ -583,9 +618,9 @@ int projTestRunner::ReadUCharFromPipe(){
 }
 
 int projTestRunner::ReadUShortFromPipe(){
-	uint16_t ushort;
-	ReadFromPipe( &ushort, sizeof( uint16_t ) );
-	return ushort;
+	uint16_t vushort;
+	ReadFromPipe( &vushort, sizeof( uint16_t ) );
+	return vushort;
 }
 
 float projTestRunner::ReadFloatFromPipe(){
@@ -708,7 +743,7 @@ void projTestRunner::pInitLogFile(){
 	pPathLogFile = path.GetPathNative();
 	
 	// create log file or truncate it to 0 length if present
-	( new decDiskFileWriter( pPathLogFile, false ) )->FreeReference();
+	decDiskFileWriter::Ref::New( new decDiskFileWriter( pPathLogFile, false ) );
 	
 	// open file for reading
 	pLogFileReader.TakeOver( new decDiskFileReader( pPathLogFile ) );
@@ -741,7 +776,7 @@ void projTestRunner::pSendLaunchParameters(){
 		fullScreen = false;
 	}
 	
-	decString runArguments; //( pProfile->GetRunArguments() );
+	decString runArguments;
 	projTRPParameterList parameters;
 	
 	if( pLauncherProfile ){
@@ -763,6 +798,13 @@ void projTestRunner::pSendLaunchParameters(){
 		
 	}else{
 		// TODO get this from engine controller somehow
+	}
+	
+	if( ! pProfile->GetRunArguments().IsEmpty() ){
+		if( ! runArguments.IsEmpty() ){
+			runArguments += " ";
+		}
+		runArguments += pProfile->GetRunArguments();
 	}
 	
 	// send parameters over the pipe
@@ -787,6 +829,7 @@ void projTestRunner::pSendLaunchParameters(){
 	WriteString16ToPipe( path.GetPathNative() );
 	
 	WriteString16ToPipe( pProfile->GetScriptDirectory() );
+	WriteString16ToPipe( project.GetScriptModuleVersion() );
 	WriteString16ToPipe( pProfile->GetGameObject() );
 	WriteString16ToPipe( pProfile->GetPathConfig() );
 	WriteString16ToPipe( pProfile->GetPathCapture() );
@@ -835,6 +878,7 @@ void projTestRunner::pSendLaunchParameters(){
 		WriteString16ToPipe( pLauncherProfile->GetModuleAudio() );
 		WriteString16ToPipe( pLauncherProfile->GetModuleSynthesizer() );
 		WriteString16ToPipe( pLauncherProfile->GetModuleNetwork() );
+		WriteString16ToPipe( pLauncherProfile->GetModuleVR() );
 		
 	}else{
 		WriteString16ToPipe( "" ); // default graphic
@@ -846,11 +890,13 @@ void projTestRunner::pSendLaunchParameters(){
 		WriteString16ToPipe( "" ); // default audio
 		WriteString16ToPipe( "" ); // default synthesizer
 		WriteString16ToPipe( "" ); // default network
+		WriteString16ToPipe( "" ); // default vr
 		
 		/*
 		const deEngine &engine = *pWindowMain.GetEngine();
 		WriteString16ToPipe( engine.GetGraphicSystem()->GetActiveLoadableModule()->GetName() );
 		WriteString16ToPipe( engine.GetInputSystem()->GetActiveLoadableModule()->GetName() );
+		WriteString16ToPipe( engine.GetVRSystem()->GetActiveLoadableModule()->GetName() );
 		WriteString16ToPipe( engine.GetPhysicsSystem()->GetActiveLoadableModule()->GetName() );
 		WriteString16ToPipe( engine.GetAnimatorSystem()->GetActiveLoadableModule()->GetName() );
 		WriteString16ToPipe( engine.GetAISystem()->GetActiveLoadableModule()->GetName() );

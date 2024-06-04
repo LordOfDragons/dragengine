@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine BeOS Input Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <ctype.h>
@@ -106,7 +109,6 @@ pOldThreshold( 0 ),
 pKeyStates( NULL ),
 pSystemAutoRepeatEnabled( false ),
 pAutoRepeatEnabled( false ),
-pCurMouseButtonPressed( -1 ),
 
 pDevices( NULL ){
 }
@@ -124,8 +126,6 @@ bool deBeOSInput::Init(){
 	pMouseButtons = 0;
 	pWindowWidth = 0;
 	pWindowHeight = 0;
-	
-	pCurMouseButtonPressed = -1;
 	
 	if( pOSBeOS->GetWindow() ){
 		const BRect bounds( pOSBeOS->GetWindow()->Bounds() );
@@ -152,7 +152,7 @@ bool deBeOSInput::Init(){
 		
 		pDevices = new debiDeviceManager( *this );
 		pDevices->UpdateDeviceList();
-		pDevices->LogDevices();
+		//pDevices->LogDevices();
 		
 	}catch( const deException &e ){
 		LogException( e );
@@ -224,11 +224,11 @@ int deBeOSInput::IndexOfFeedbackWithID( int device, const char *id ){
 }
 
 bool deBeOSInput::GetButtonPressed( int device, int button ){
-	return pDevices->GetAt( device )->GetButtonAt( button ).GetPressed();
+	return pDevices->GetAt( device )->GetButtonAt( button )->GetPressed();
 }
 
 float deBeOSInput::GetAxisValue( int device, int axis ){
-	return pDevices->GetAt( device )->GetAxisAt( axis ).GetValue();
+	return pDevices->GetAt( device )->GetAxisAt( axis )->GetValue();
 }
 
 float deBeOSInput::GetFeedbackValue( int device, int feedback ){
@@ -251,8 +251,7 @@ int deBeOSInput::ButtonMatchingKeyCode( int device, deInputEvent::eKeyCodes keyC
 	int i;
 	
 	for( i=0; i<count; i++ ){
-		const debiDeviceButton &button = rdevice.GetButtonAt( i );
-		
+		const debiDeviceButton &button = *rdevice.GetButtonAt( i );
 		if( button.GetKeyCode() == keyCode && button.GetMatchPriority() < bestPriority ){
 			bestButton = i;
 			bestPriority = button.GetMatchPriority();
@@ -330,9 +329,9 @@ void deBeOSInput::EventLoop( const BMessage &message ){
 			keyChar, modifiers );*/
 		
 		const timeval eventTime = pEventTimeFromBeTime( message.GetInt64( "when", 0 ) );
-        debiDeviceButton &deviceButton = pDevices->GetKeyboard()->GetButtonAt( button );
-        deviceButton.SetPressed( true );
-
+		debiDeviceButton &deviceButton = *pDevices->GetKeyboard()->GetButtonAt( button );
+		deviceButton.SetPressed( true );
+		
 		pAddKeyPress( pDevices->GetKeyboard()->GetIndex(), button, keyChar,
 			deviceButton.GetKeyCode(), modifiers, eventTime );
 		} break;
@@ -360,9 +359,9 @@ void deBeOSInput::EventLoop( const BMessage &message ){
 		//LogInfoFormat( "B_KEY_UP: code=%d char=%d modifiers=%d", virtualKeyCode, keyChar, modifiers );
 		
 		const timeval eventTime = pEventTimeFromBeTime( message.GetInt64( "when", 0 ) );
-        debiDeviceButton &deviceButton = pDevices->GetKeyboard()->GetButtonAt( button );
-        deviceButton.SetPressed( false );
-        
+		debiDeviceButton &deviceButton = *pDevices->GetKeyboard()->GetButtonAt( button );
+		deviceButton.SetPressed( false );
+		
 		pAddKeyRelease( pDevices->GetKeyboard()->GetIndex(), button, keyChar,
 			deviceButton.GetKeyCode(), modifiers, eventTime );
 		} break;
@@ -388,9 +387,9 @@ void deBeOSInput::EventLoop( const BMessage &message ){
 		//LogInfoFormat( "B_UNMAPPED_KEY_DOWN: code=%d modifiers=%d", virtualKeyCode, modifiers );
 		
 		const timeval eventTime = pEventTimeFromBeTime( message.GetInt64( "when", 0 ) );
-        debiDeviceButton &deviceButton = pDevices->GetKeyboard()->GetButtonAt( button );
-        deviceButton.SetPressed( true );
-        
+		debiDeviceButton &deviceButton = *pDevices->GetKeyboard()->GetButtonAt( button );
+		deviceButton.SetPressed( true );
+		
 		pAddKeyPress( pDevices->GetKeyboard()->GetIndex(), button, 0,
 			deviceButton.GetKeyCode(), modifiers, eventTime );
 		} break;
@@ -416,9 +415,9 @@ void deBeOSInput::EventLoop( const BMessage &message ){
 		//LogInfoFormat( "B_UNMAPPED_KEY_UP: code=%d modifiers=%d", virtualKeyCode, modifiers );
 		
 		const timeval eventTime = pEventTimeFromBeTime( message.GetInt64( "when", 0 ) );
-        debiDeviceButton &deviceButton = pDevices->GetKeyboard()->GetButtonAt( button );
-        deviceButton.SetPressed( false );
-        
+		debiDeviceButton &deviceButton = *pDevices->GetKeyboard()->GetButtonAt( button );
+		deviceButton.SetPressed( false );
+		
 		pAddKeyRelease( pDevices->GetKeyboard()->GetIndex(), button, 0,
 			deviceButton.GetKeyCode(), modifiers, eventTime );
 		} break;
@@ -435,37 +434,68 @@ void deBeOSInput::EventLoop( const BMessage &message ){
 		const timeval eventTime = pEventTimeFromBeTime( message.GetInt64( "when", 0 ) );
 		const BPoint devicePosition( message.GetPoint( "where", BPoint() ) );
 		const decPoint position( ( int )( devicePosition.x + 0.5f ), ( int )( devicePosition.y + 0.5f ) );
-		const int buttonCode = message.GetInt32( "buttons", B_PRIMARY_MOUSE_BUTTON );
+		const int buttons = message.GetInt32( "buttons", B_PRIMARY_MOUSE_BUTTON );
+		const int modifiers = pModifiersFromKeyState();
 		
-		pCurMouseButtonPressed = pDevices->GetMouse()->IndexOfButtonWithBICode( buttonCode );
-		if( pCurMouseButtonPressed == -1 ){
-			break;
+		//LogInfoFormat( "B_MOUSE_DOWN: button=%x modifiers=%d pos=(%d,%d)",
+		//	buttons, modifiers, position.x, position.y );
+		
+		const uint32 masks[ 3 ] = { B_PRIMARY_MOUSE_BUTTON, B_SECONDARY_MOUSE_BUTTON, B_TERTIARY_MOUSE_BUTTON };
+		int i;
+		for( i=0; i<3; i++ ){
+			if( ! ( buttons & masks[ i ] ) ){
+				continue;
+			}
+			
+			const int buttonIndex = pDevices->GetMouse()->IndexOfButtonWithBICode( masks[ i ] );
+			if( buttonIndex == -1 ){
+				continue;
+			}
+			
+			pDevices->GetMouse()->GetButtonAt( buttonIndex )->SetPressed( true );
+			pAddMousePress( pDevices->GetMouse()->GetIndex(), buttonIndex, modifiers, eventTime );
 		}
-		
-		//LogInfoFormat( "B_MOUSE_DOWN: code=%d button=%d modifiers=%d pos=(%d,%d)",
-		//	buttonCode, pCurMouseButtonPressed, message.GetInt32( "modifiers", 0 ),
-		//	position.x, position.y );
-		pDevices->GetMouse()->GetButtonAt( pCurMouseButtonPressed ).SetPressed( true );
-		pAddMousePress( pDevices->GetMouse()->GetIndex(), pCurMouseButtonPressed,
-			pModifiersFromKeyState(), eventTime );
 		} break;
 		
 	case B_MOUSE_UP:{
-		if( pCurMouseButtonPressed == -1 ){
+		// BeOS is missing buttons information in B_MOUSE_UP. we have to hack around this.
+		// we can use BView::GetMouse but we have no idea how the graphic module creates
+		// the render windows. fortunately it is not important which BView we are using
+		// as long as it is connected to the app_server. for this reason we take the first
+		// BView inside the current application window if present
+		if( ! pOSBeOS->GetWindow() || pOSBeOS->GetWindow()->CountChildren() == 0 ){
 			break;
 		}
 		
-		//const int modifiers = message.GetInt32( "modifiers", 0 );
+		BPoint ignoreLocation;
+		uint32 buttons = 0;
+		BView &view = *pOSBeOS->GetWindow()->ChildAt( 0 );
+		view.LockLooper();
+		view.GetMouse( &ignoreLocation, &buttons, false );
+		view.UnlockLooper();
+		
 		const timeval eventTime = pEventTimeFromBeTime( message.GetInt64( "when", 0 ) );
 		const BPoint devicePosition( message.GetPoint( "where", BPoint() ) );
 		const decPoint position( ( int )( devicePosition.x + 0.5f ), ( int )( devicePosition.y + 0.5f ) );
+		const int modifiers = pModifiersFromKeyState();
 		
-		//LogInfoFormat( "B_MOUSE_UP: button=%d pos=(%d,%d)", pCurMouseButtonPressed, position.x, position.y );
-        pDevices->GetMouse()->GetButtonAt( pCurMouseButtonPressed ).SetPressed( false );
-		pAddMouseRelease( pDevices->GetMouse()->GetIndex(), pCurMouseButtonPressed,
-			pModifiersFromKeyState(), eventTime );
+		//LogInfoFormat( "B_MOUSE_UP: buttons=%x pos=(%d,%d)", buttons, position.x, position.y );
 		
-		pCurMouseButtonPressed = -1;
+		const uint32 masks[ 3 ] = { B_PRIMARY_MOUSE_BUTTON, B_SECONDARY_MOUSE_BUTTON, B_TERTIARY_MOUSE_BUTTON };
+		int i;
+		for( i=0; i<3; i++ ){
+			if( buttons & masks[ i ] ){
+				continue;
+			}
+			
+			const int buttonIndex = pDevices->GetMouse()->IndexOfButtonWithBICode( masks[ i ] );
+			if( buttonIndex == -1 ){
+				continue;
+			}
+			
+			pDevices->GetMouse()->GetButtonAt( buttonIndex )->SetPressed( false );
+			pAddMouseRelease( pDevices->GetMouse()->GetIndex(), buttonIndex, modifiers, eventTime );
+		}
 		} break;
 		
 	case B_MOUSE_WHEEL_CHANGED:{
@@ -474,15 +504,15 @@ void deBeOSInput::EventLoop( const BMessage &message ){
 		const timeval eventTime = pEventTimeFromBeTime( message.GetInt64( "when", 0 ) );
 		
 		//LogInfoFormat( "B_MOUSE_WHEEL_CHANGED: x=%f y=%f", x, y );
-        if( y != 0 ){
-            pAddMouseWheel( pDevices->GetMouse()->GetIndex(), 2,
-                pModifiersFromKeyState(), 0, -y, eventTime );
-        }
-        
-        if( x != 0 ){
-            pAddMouseWheel( pDevices->GetMouse()->GetIndex(), 3,
-                pModifiersFromKeyState(), x, 0, eventTime );
-        }
+		if( y != 0 ){
+			pAddMouseWheel( pDevices->GetMouse()->GetIndex(), 2,
+				pModifiersFromKeyState(), 0, -y, eventTime );
+		}
+		
+		if( x != 0 ){
+			pAddMouseWheel( pDevices->GetMouse()->GetIndex(), 3,
+				pModifiersFromKeyState(), x, 0, eventTime );
+		}
 		} break;
 		
 	case B_MOUSE_MOVED: /*{
@@ -660,7 +690,7 @@ void deBeOSInput::pQueryMousePosition( bool sendEvents ){
 		timeval eventTime;
 		gettimeofday( &eventTime, NULL );
 		pAddMouseMove( pDevices->GetMouse()->GetIndex(), pModifiersFromKeyState(),
-			diffX, diffY, eventTime );
+			pLastMouseX, pLastMouseY, eventTime );
 	}
 }
 

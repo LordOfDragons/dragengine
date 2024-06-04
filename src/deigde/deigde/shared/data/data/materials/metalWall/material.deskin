@@ -3,7 +3,7 @@
 	<texture name='material'>
 		<image property='color'>color.jpg</image>
 		<image property='emissivity'>emissivity.jpg</image>
-		<value property='emissivity.intensity'>5</value>
+		<value property='emissivity.intensity'>0.8</value>
 		<image property='height'>height.png</image>
 		<value property='height.scale'>0.1</value>
 		<image property='normal'>normal.jpg</image>

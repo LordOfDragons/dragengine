@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Game Engine
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DECOMPONENT_H_
@@ -56,7 +59,13 @@ class decShape;
  * in the game world. Model textures are mapped to skin textures. Rig bones define the
  * available component bones. Model bones are mapped to Rig bones.
  */
-class deComponent : public deResource{
+class DE_DLL_EXPORT deComponent : public deResource{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deComponent> Ref;
+	
+	
+	
 public:
 	/** \brief Movement hints. */
 	enum eMovementHints{
@@ -86,6 +95,8 @@ private:
 	decDMatrix pInverseMatrix;
 	bool pVisible;
 	eMovementHints pHintMovement;
+	bool pEnableGI;
+	int pHintGIImportance;
 	
 	deAnimatorReference pAnimator;
 	
@@ -93,6 +104,9 @@ private:
 	
 	deComponentBone *pBones;
 	int pBoneCount;
+	
+	float *pVertexPositionSetWeights;
+	int pVertexPositionSetCount;
 	
 	bool pBonesDirty;
 	bool pMatrixDirty;
@@ -221,6 +235,30 @@ public:
 	/** \brief Set movement hint. */
 	void SetHintMovement( eMovementHints hint );
 	
+	/** \brief Enable GI in graphic module if supported. */
+	bool GetEnableGI() const{ return pEnableGI; }
+	
+	/** \brief Set if enabled for GI in graphic module if supported. */
+	void SetEnableGI( bool enable );
+	
+	/**
+	 * \brief GI important hint.
+	 * 
+	 * Value is in the range from 0 (very unimportant) to 4 (very important). This hint
+	 * can be used by the graphic module to improve performance by excluding components
+	 * with a GI important below a user chosen threashold. The default important is 4.
+	 */
+	inline int GetHintGIImportance() const{ return pHintGIImportance; }
+	
+	/**
+	 * \brief Set GI important hint.
+	 * 
+	 * Value is in the range from 0 (very unimportant) to 4 (very important). This hint
+	 * can be used by the graphic module to improve performance by excluding components
+	 * with a GI important below a user chosen threshold.
+	 */
+	void SetHintGIImportance( int importance );
+	
 	/** \brief Component matrix. */
 	const decDMatrix &GetMatrix();
 	
@@ -253,6 +291,15 @@ public:
 	 * during the next update step.
 	 */
 	void ValidateBones();
+	
+	/** \brief Vertex position set count. */
+	inline int GetVertexPositionSetCount() const{ return pVertexPositionSetCount; }
+	
+	/** \brief Vertex position set weight. */
+	float GetVertexPositionSetWeightAt( int index ) const;
+	
+	/** \brief Set vertex position set weight. */
+	void SetVertexPositionSetWeightAt( int index, float weight );
 	
 	/** \brief Mark mesh dirty. */
 	void InvalidateMesh();

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -42,71 +45,79 @@ class ConversationGesturePlayback
 		private var ConversationStrip pStrip
 		
 		/** \brief Create gesture. */
-		public func new( StringID animatorID, bool hold, ConversationStrip strip )
-			this.pAnimatorID = animatorID
-			this.pHold = hold
-			this.pStrip = strip
+		public func new(StringID animatorID, bool hold, ConversationStrip strip)
+			pAnimatorID = animatorID
+			pHold = hold
+			pStrip = strip
 		end
 		
 		/** \brief Animator ID. */
 		public func StringID getAnimatorID()
-			return this.pAnimatorID
+			return pAnimatorID
 		end
 		
 		/** \brief Animator. */
 		public func Animator getAnimator()
-			return this.pAnimator
+			return pAnimator
 		end
 		
 		/** \brief Animator. */
-		public func void setAnimator( Animator animator, String animatorPath )
-			this.pAnimator = animator
-			this.pAnimatorPath = animatorPath
+		public func void setAnimator(Animator animator, String animatorPath)
+			pAnimator = animator
+			pAnimatorPath = animatorPath
 		end
 		
 		/** \brief Path to animator. */
 		public func String getAnimatorPath()
-			return this.pAnimatorPath
+			return pAnimatorPath
 		end
 		
 		/** \brief Hold gesture. */
 		public func bool getHold()
-			return this.pHold
+			return pHold
 		end
 		
 		/** \brief Set if gesture is held. */
-		public func void setHold( bool hold )
-			this.pHold = hold
+		public func void setHold(bool hold)
+			pHold = hold
 		end
 		
 		/** \brief Strip. */
 		public func ConversationStrip getStrip()
-			return this.pStrip
+			return pStrip
 		end
 		
 		/** \brief Read from file. */
-		static public func Gesture readFromFile( PersistencyEnvironment env, FileReader reader )
-			var StringID animatorId = env.readStringIDOrNullIfEmpty( reader )
-			var String animatorPath = env.readString16OrNullIfEmpty( reader )
-			var bool hold = env.readBool( reader )
-			var ConversationStrip strip = ConversationStrip.readFromFile( reader )
-			
-			var Gesture gesture = Gesture.new( animatorId, hold, strip )
-			
-			if animatorPath != null
-				var LoadAnimator loadAnimator = env.getVariable( PersistencyEnvironment.varLoadAnimator ) cast LoadAnimator
-				gesture.setAnimator( loadAnimator.loadFromFile( animatorPath ), animatorPath )
+		static public func Gesture readFromFile(PersistencyEnvironment env, FileReader reader)
+			select reader.readByte() // version
+			case 0
+				var StringID animatorId = env.readStringIDOrNullIfEmpty(reader)
+				var String animatorPath = env.readString16OrNullIfEmpty(reader)
+				var bool hold = env.readBool(reader)
+				var ConversationStrip strip = ConversationStrip.readFromFile(reader)
+				
+				var Gesture gesture = Gesture.new(animatorId, hold, strip)
+				
+				if animatorPath != null
+					var LoadAnimator loadAnimator = env.getVariable(PersistencyEnvironment.varLoadAnimator) cast LoadAnimator
+					gesture.setAnimator(loadAnimator.loadFromFile(animatorPath), animatorPath)
+				end
+				
+				return gesture
+				
+			else
+				throw EInvalidParam.new("unsupported version")
 			end
-			
-			return gesture
 		end
 		
 		/** \brief Write to file. */
-		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
-			env.writeStringIDOrEmptyIfNull( writer, this.pAnimatorID )
-			env.writeString16OrEmptyIfNull( writer, this.pAnimatorPath )
-			env.writeBool( writer, this.pHold )
-			this.pStrip.writeToFile( writer )
+		public func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+			writer.writeByte(0) // version
+			
+			env.writeStringIDOrEmptyIfNull(writer, pAnimatorID)
+			env.writeString16OrEmptyIfNull(writer, pAnimatorPath)
+			env.writeBool(writer, pHold)
+			pStrip.writeToFile(writer)
 		end
 	end
 	
@@ -122,132 +133,169 @@ class ConversationGesturePlayback
 	private var String pNameControllerProgress
 	private var String pNameControllerPlayback
 	private var String pNameControllerVariation
+	private var String pNameControllerFadeIn
+	private var String pNameControllerFadeOut
 	private var AnimatorController pControllerProgress
 	private var AnimatorController pControllerPlayback
 	private var AnimatorController pControllerVariation
+	private var AnimatorController pControllerFadeIn
+	private var AnimatorController pControllerFadeOut
 	
 	
 	
 	/** \brief Create gesture playback. */
 	public func new()
-		this.pAnimatorInstance = AnimatorInstance.new()
-		this.pGestures = Array.new()
-		this.pPosition = 0
-		this.pElapsed = 0
-		this.pRunning = false
-		this.pInitNextGesture = false
-		this.pRequiresApply = false
-		this.pNameControllerProgress = "gesture.progress"
-		this.pNameControllerPlayback = "gesture.playback"
-		this.pNameControllerVariation = "gesture.variation"
+		pAnimatorInstance = AnimatorInstance.new()
+		pGestures = Array.new()
+		pPosition = 0
+		pElapsed = 0
+		pRunning = false
+		pInitNextGesture = false
+		pRequiresApply = false
+		pNameControllerProgress = "gesture.progress"
+		pNameControllerPlayback = "gesture.playback"
+		pNameControllerVariation = "gesture.variation"
+		pNameControllerFadeIn = "gesture.fade.in"
+		pNameControllerFadeOut = "gesture.fade.out"
 	end
 	
 	
 	
 	/** \brief Animator instance. */
 	public func AnimatorInstance getAnimatorInstance()
-		return this.pAnimatorInstance
+		return pAnimatorInstance
 	end
 	
 	/** \brief Elapsed time. */
 	public func float getElapsed()
-		return this.pElapsed
+		return pElapsed
 	end
 	
 	/** \brief Playback position. */
 	public func int getPosition()
-		return this.pPosition
+		return pPosition
 	end
 	
 	/** \brief Playback is running. */
 	public func bool getRunning()
-		return this.pRunning
+		return pRunning
+	end
+	
+	/**
+	 * \brief Last gesture is playing back.
+	 * \version 1.13
+	 * 
+	 * Returns true if getRunning() is true and getPosition() is getGestureCount() - 1.
+	 */
+	public func bool isLastGestureRunning()
+		return pRunning and pPosition == pGestures.getCount() - 1
+	end
+	
+	/**
+	 * \brief Remaining playback time of current gesture.
+	 * \version 1.13
+	 * 
+	 * If playback is no running 0 is returned. Returned playback includes pause if not elapsed.
+	 * If playing back gesture is held not elapsed pause time is returned (duration 0).
+	 */
+	public func float getRemainingGestureTime()
+		if not pRunning or pPosition != pGestures.getCount() - 1
+			return 0
+		end
+		
+		var Gesture gesture = pGestures.getAt(pPosition) cast Gesture
+		var ConversationStrip strip = gesture.getStrip()
+		var float length = strip.getPause()
+		if not gesture.getHold()
+			length += strip.getDuration()
+		end
+		return DEMath.max(length - pElapsed, 0.0)
 	end
 	
 	
 	
 	/** \brief Number of gestures. */
 	public func int getGestureCount()
-		return this.pGestures.getCount()
+		return pGestures.getCount()
 	end
 	
 	/** \brief Gesture by position. */
-	public func Gesture getGestureAt( int position )
-		return this.pGestures.getAt( position ) cast Gesture
+	public func Gesture getGestureAt(int position)
+		return pGestures.getAt(position) cast Gesture
 	end
 	
 	/** \brief Remove all gestures. */
 	public func void removeAllGestures()
-		var bool hasBeenRunning = this.pRunning
+		var bool hasBeenRunning = pRunning
 		
-		this.pGestures.removeAll()
-		this.pPosition = 0
-		this.pElapsed = 0
-		this.pRunning = false
-		this.pInitNextGesture = false
-		this.pRequiresApply = false
+		pGestures.removeAll()
+		pPosition = 0
+		pElapsed = 0
+		pRunning = false
+		pInitNextGesture = false
+		pRequiresApply = false
 		
 		if hasBeenRunning
-			this.onFinished()
+			onFinished()
 		end
 	end
 	
 	/** \brief Add gesture. */
-	public func void addGesture( StringID animatorID, bool hold, ConversationStrip strip )
-		this.pGestures.add( Gesture.new( animatorID, hold, strip ) )
+	public func void addGesture(StringID animatorID, bool hold, ConversationStrip strip)
+		pGestures.add(Gesture.new(animatorID, hold, strip))
 		
 		// if the playback running, is located at the last gesture before adding the new one
 		// and last gesture is held then we need to check if the gesture elapsed and advance
 		// the playback otherwise we get into problems
-		if not this.pRunning
-			this.pPosition = 0
-			this.pElapsed = 0
-			this.pRunning = true
-			this.pInitNextGesture = true
+		if not pRunning
+			pPosition = 0
+			pElapsed = 0
+			pRunning = true
+			pInitNextGesture = true
 			return
 		end
 		
-		if this.pPosition < this.pGestures.getCount() - 2
+		if pPosition < pGestures.getCount() - 2
 			return
 		end
 		
-		var Gesture pbgesture = this.pGestures.getAt( this.pPosition ) cast Gesture
+		var Gesture pbgesture = pGestures.getAt(pPosition) cast Gesture
 		if not pbgesture.getHold()
 			return
 		end
 		
 		var ConversationStrip pbgstrip = pbgesture.getStrip()
-		this.pElapsed = DEMath.min( this.pElapsed, pbgstrip.getPause() + pbgstrip.getDuration() )
+		pElapsed = DEMath.min(pElapsed, pbgstrip.getPause() + pbgstrip.getDuration())
 	end
 	
 	/** \brief Add gesture at playback position replacing gestures after pause time. */
-	public func void addGestureFromNow( StringID animatorID, bool hold, ConversationStrip strip )
+	public func void addGestureFromNow(StringID animatorID, bool hold, ConversationStrip strip)
 		// if not running this is the same as removing all gestures then add a new one
 		var float pause = strip.getPause()
 		
-		if not this.pRunning //or pause <= 0.001
-			this.removeAllGestures()
-			this.addGesture( animatorID, hold, strip )
+		if not pRunning //or pause <= 0.001
+			removeAllGestures()
+			addGesture(animatorID, hold, strip)
 			return
 		end
 		
 		// remove all done gestures
-		while this.pPosition > 0
-			this.pGestures.removeFrom( 0 )
-			this.pPosition--
+		while pPosition > 0
+			pGestures.removeFrom(0)
+			pPosition--
 		end
 		
 		// find the last gesture fully finished before pause time
-		var int count = this.pGestures.getCount()
+		var int count = pGestures.getCount()
 		var ConversationStrip pbgstrip
 		var float length, time = 0
 		var int i
 		
 		for i = 0 to count
-			pbgstrip = ( this.pGestures.getAt( i ) cast Gesture ).getStrip()
+			pbgstrip = (pGestures.getAt(i) cast Gesture).getStrip()
 			length = pbgstrip.getPause() + pbgstrip.getDuration()
 			if i == 0
-				length = DEMath.max( length - this.pElapsed, 0.0 )
+				length = DEMath.max(length - pElapsed, 0.0)
 			end
 			if time + length > pause
 				break
@@ -256,61 +304,109 @@ class ConversationGesturePlayback
 		end
 		
 		if i == 0
-			this.removeAllGestures()
-			this.addGesture( animatorID, hold, strip )
+			removeAllGestures()
+			addGesture(animatorID, hold, strip)
 			return
 		end
 		
-		this.pGestures.resize( i )
-		this.addGesture( animatorID, hold, ConversationStrip.new( \
-			strip.getID(), pause - time, strip.getDuration() ) )
+		pGestures.resize(i)
+		addGesture(animatorID, hold, ConversationStrip.new(\
+			strip.getID(), pause - time, strip.getDuration()))
 	end
 	
 	
 	
 	/** \brief Progress controller name. */
 	public func String getNameControllerProgress()
-		return this.pNameControllerProgress
+		return pNameControllerProgress
 	end
 	
 	/** \brief Set progress controller name. */
-	public func void setNameControllerProgress( String name )
-		this.pNameControllerProgress = name
+	public func void setNameControllerProgress(String name)
+		pNameControllerProgress = name
 	end
 	
 	/** \brief Playback controller name. */
 	public func String getNameControllerPlayback()
-		return this.pNameControllerPlayback
+		return pNameControllerPlayback
 	end
 	
 	/** \brief Set playback controller name. */
-	public func void setNameControllerPlayback( String name )
-		this.pNameControllerPlayback = name
+	public func void setNameControllerPlayback(String name)
+		pNameControllerPlayback = name
 	end
 	
 	/** \brief Variation controller name. */
 	public func String getNameControllerVariation()
-		return this.pNameControllerVariation
+		return pNameControllerVariation
 	end
 	
 	/** \brief Set variation controller name. */
-	public func void setNameControllerVariation( String name )
-		this.pNameControllerVariation = name
+	public func void setNameControllerVariation(String name)
+		pNameControllerVariation = name
+	end
+	
+	/**
+	 * \brief Fade in controller name.
+	 * \version 1.13
+	 */
+	public func String getNameControllerFadeIn()
+		return pNameControllerFadeIn
+	end
+	
+	/**
+	 * \brief Set fade in controller name.
+	 * \version 1.13
+	 */
+	public func void setNameControllerFadeIn(String name)
+		pNameControllerFadeIn = name
+	end
+	
+	/**
+	 * \brief Fade out controller name.
+	 * \version 1.13
+	 */
+	public func String getNameControllerFadeOut()
+		return pNameControllerFadeOut
+	end
+	
+	/**
+	 * \brief Set fade out controller name.
+	 * \version 1.13
+	 */
+	public func void setNameControllerFadeOut(String name)
+		pNameControllerFadeOut = name
 	end
 	
 	/** \brief Progress animator controllers. */
 	public func AnimatorController getControllerProgress()
-		return this.pControllerProgress
+		return pControllerProgress
 	end
 	
 	/** \brief Playback animator controllers. */
 	public func AnimatorController getControllerPlayback()
-		return this.pControllerPlayback
+		return pControllerPlayback
 	end
 	
 	/** \brief Variation animator controllers. */
 	public func AnimatorController getControllerVariation()
-		return this.pControllerVariation
+		return pControllerVariation
+	end
+	
+	/**
+	 * \brief Fade in animator controllers.
+	 * \version 1.13
+	 */
+	public func AnimatorController getControllerFadeIn()
+		return pControllerFadeIn
+	end
+	
+	/**
+	 * \brief Fade out animator controllers.
+	 * \version 1.13
+	 */
+	public func AnimatorController getControllerFadeOut()
+		return pControllerFadeOut
 	end
 	
 	
@@ -321,32 +417,33 @@ class ConversationGesturePlayback
 	 * This updates the playback and updates animator instances if required. This does not
 	 * apply the animation yet to allow proper use of state capturing.
 	 */
-	public func void update( ConversationActor actor, AnimatorInstance poseAnimatorInstance, float elapsed )
-		if not this.pRunning or this.pGestures.getCount() == 0
+	public func void update(ConversationActor actor, AnimatorInstance poseAnimatorInstance, float elapsed)
+		pRequiresApply = false
+		if not pRunning or pGestures.getCount() == 0
 			return
 		end
 		
-		var Animator animator = this.pAnimatorInstance.getAnimator()
-		var int gestureCount = this.pGestures.getCount()
+		var Animator animator = pAnimatorInstance.getAnimator()
+		var int gestureCount = pGestures.getCount()
 		var bool resetAnimation = false
 		var float startTime = 0
 		var float endTime = 0
 		
-		this.pElapsed += elapsed
+		pElapsed += elapsed
 		
-		while this.pPosition < gestureCount
-			var Gesture pbgesture = this.pGestures.getAt( this.pPosition ) cast Gesture
+		while pPosition < gestureCount
+			var Gesture pbgesture = pGestures.getAt(pPosition) cast Gesture
 			var ConversationStrip strip = pbgesture.getStrip()
 			var float duration = strip.getDuration()
 			var float pause = strip.getPause()
 			var float length = pause + duration
 			
-			if this.pElapsed < length or ( pbgesture.getHold() and this.pPosition == gestureCount - 1 )
+			if pElapsed < length or (pbgesture.getHold() and pPosition == gestureCount - 1)
 				startTime = pause
 				endTime = length
-				if this.pElapsed >= startTime
-					if this.pInitNextGesture
-						this.initNextGesture( actor )
+				if pElapsed >= startTime
+					if pInitNextGesture
+						initNextGesture(actor)
 						resetAnimation = true
 					end
 					animator = pbgesture.getAnimator()
@@ -355,31 +452,22 @@ class ConversationGesturePlayback
 				break
 				
 			else
-				this.pElapsed -= length
-				this.pPosition++
-				this.pInitNextGesture = true
+				pElapsed -= length
+				pPosition++
+				pInitNextGesture = true
 			end
 		end
 		
-		if this.pPosition >= gestureCount
-			this.removeAllGestures()
-			this.onFinished()
+		if pPosition >= gestureCount
+			removeAllGestures()
+			onFinished()
 			return
 		end
 		
-		if not Animator.equals( animator, this.pAnimatorInstance.getAnimator() )
-			this.pAnimatorInstance.setAnimator( animator )
+		if not Animator.equals(animator, pAnimatorInstance.getAnimator())
+			pAnimatorInstance.setAnimator(animator)
 			resetAnimation = true
-			
-			this.pControllerProgress = null
-			this.pControllerPlayback = null
-			this.pControllerVariation = null
-			
-			if animator != null
-				this.pControllerProgress = this.pAnimatorInstance.getControllerNamed( this.pNameControllerProgress )
-				this.pControllerPlayback = this.pAnimatorInstance.getControllerNamed( this.pNameControllerPlayback )
-				this.pControllerVariation = this.pAnimatorInstance.getControllerNamed( this.pNameControllerVariation )
-			end
+			findControllers(actor)
 		end
 		
 		// update animator if present
@@ -389,37 +477,19 @@ class ConversationGesturePlayback
 		
 		// copy actor controller states to the gesture controllers with matching name if present
 		if poseAnimatorInstance != null
-			this.pAnimatorInstance.copyNamedControllerStates( poseAnimatorInstance )
+			pAnimatorInstance.copyNamedControllerStates(poseAnimatorInstance)
 		end
 		
-		// update gesture playback. sets progress, playback and variation controller if present.
-		// also captures state with number 0 if used by animator
+		// update gesture playback. sets progress, playback, variation and fade in/out controller
+		// if present. also captures state with number 0 if used by animator
 		if resetAnimation
-			if this.pControllerProgress != null
-				this.pControllerProgress.setRange( startTime, endTime )
-			end
-			if this.pControllerVariation != null
-				this.pControllerVariation.setValue( DEMath.random() )
-			end
-			this.pAnimatorInstance.captureState( 0 )
-			
-			if this.pControllerProgress != null
-				this.pControllerProgress.setValue( this.pElapsed )
-			end
-			if this.pControllerPlayback != null
-				this.pControllerPlayback.setValue( this.pElapsed - startTime )
-			end
+			initControllers(actor, startTime, endTime)
 			
 		else
-			if this.pControllerProgress != null
-				this.pControllerProgress.increment( elapsed )
-			end
-			if this.pControllerPlayback != null
-				this.pControllerPlayback.increment( elapsed )
-			end
+			updateControllers(actor, elapsed, endTime)
 		end
 		
-		this.pRequiresApply = true
+		pRequiresApply = true
 	end
 	
 	/**
@@ -428,67 +498,140 @@ class ConversationGesturePlayback
 	 * Called after update() to apply animation. Can do nothing if no change has been done.
 	 */
 	public func void applyAnimation()
-		if not this.pRequiresApply
-			return
+		if pRequiresApply
+			pAnimatorInstance.apply()
 		end
-		
-		this.pRequiresApply = false
-		this.pAnimatorInstance.apply()
 	end
 	
 	/** \brief Init next gesture to play. */
-	public func void initNextGesture( ConversationActor actor )
-		this.pInitNextGesture = false
+	protected func void initNextGesture(ConversationActor actor)
+		pInitNextGesture = false
 		
-		if this.pPosition >= this.pGestures.getCount()
+		if pPosition >= pGestures.getCount()
 			return
 		end
 		
-		var Gesture pbgesture = this.pGestures.getAt( this.pPosition ) cast Gesture
+		var Gesture pbgesture = pGestures.getAt(pPosition) cast Gesture
 		var StringID animatorID = pbgesture.getAnimatorID()
 		if animatorID == null
 			return
 		end
 		
-		var ConversationPlaybackGesturePose pose = actor.getGesturePose( animatorID )
+		var ConversationPlaybackGesturePose pose = actor.getGesturePose(animatorID)
 		if pose == null
 			return
 		end
 		
-		pbgesture.setAnimator( pose.getAnimator(), pose.getPathAnimator() )
+		pbgesture.setAnimator(pose.getAnimator(), pose.getPathAnimator())
+	end
+	
+	/**
+	 * \brief Find animator controllers after animator changed.
+	 * \version 1.13
+	 */
+	protected func void findControllers(ConversationActor actor)
+		pControllerProgress = null
+		pControllerPlayback = null
+		pControllerVariation = null
+		pControllerFadeIn = null
+		pControllerFadeOut = null
+		
+		if pAnimatorInstance.getAnimator() == null
+			return
+		end
+		
+		pControllerProgress = pAnimatorInstance.getControllerNamed(pNameControllerProgress)
+		pControllerPlayback = pAnimatorInstance.getControllerNamed(pNameControllerPlayback)
+		pControllerVariation = pAnimatorInstance.getControllerNamed(pNameControllerVariation)
+		pControllerFadeIn = pAnimatorInstance.getControllerNamed(pNameControllerFadeIn)
+		pControllerFadeOut = pAnimatorInstance.getControllerNamed(pNameControllerFadeOut)
+	end
+	
+	/**
+	 * \brief Initialize controllers after activating a new gesture.
+	 * \version 1.13
+	 */
+	protected func void initControllers(ConversationActor actor, float startTime, float endTime)
+		if pControllerProgress != null
+			pControllerProgress.setRange(startTime, endTime)
+		end
+		if pControllerVariation != null
+			pControllerVariation.setValue(DEMath.random())
+		end
+		pAnimatorInstance.captureState(0)
+		
+		if pControllerProgress != null
+			pControllerProgress.setValue(pElapsed)
+		end
+		if pControllerPlayback != null
+			pControllerPlayback.setValue(pElapsed - startTime)
+		end
+		if pControllerFadeIn != null
+			pControllerFadeIn.setValue(pElapsed)
+		end
+		if pControllerFadeOut != null
+			pControllerFadeOut.setValue(pElapsed - (endTime - pControllerFadeOut.getUpper()))
+		end
+	end
+	
+	/**
+	 * \brief Update controllers.
+	 * \version 1.13
+	 */
+	protected func void updateControllers(ConversationActor actor, float elapsed, float endTime)
+		if pControllerProgress != null
+			pControllerProgress.increment(elapsed)
+		end
+		if pControllerPlayback != null
+			pControllerPlayback.increment(elapsed)
+		end
+		if pControllerFadeIn != null
+			pControllerFadeIn.increment(elapsed)
+		end
+		if pControllerFadeOut != null
+			pControllerFadeOut.setValue(pElapsed - (endTime - pControllerFadeOut.getUpper()))
+		end
 	end
 	
 	
 	
-	/** Finished playing back the gestures. Hook for subclasses. */
+	/** \brief Finished playing back the gestures. Hook for subclasses. */
 	public func void onFinished()
 	end
 	
 	
 	
 	/** \brief Read from file. */
-	public func void readFromFile( PersistencyEnvironment env, FileReader reader )
-		this.pRunning = env.readBool( reader )
-		
-		var int i, count = reader.readShort()
-		for i = 0 to count
-			this.pGestures.add( Gesture.readFromFile( env, reader ) )
+	public func void readFromFile(PersistencyEnvironment env, FileReader reader)
+		select reader.readByte() // version
+		case 0
+			pRunning = env.readBool(reader)
+			
+			var int i, count = reader.readShort()
+			for i = 0 to count
+				pGestures.add(Gesture.readFromFile(env, reader))
+			end
+			
+			pPosition = reader.readShort()
+			pElapsed = reader.readFloat()
+			
+		else
+			throw EInvalidParam.new("unsupported version")
 		end
-		
-		this.pPosition = reader.readShort()
-		this.pElapsed = reader.readFloat()
 	end
 	
 	/** \brief Write to file. */
-	public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
-		env.writeBool( writer, this.pRunning )
+	public func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+		writer.writeByte(0) // version
 		
-		writer.writeUShort( this.pGestures.getCount() )
-		this.pGestures.forEach( block Gesture each
-			each.writeToFile( env, writer )
-		end )
+		env.writeBool(writer, pRunning)
 		
-		writer.writeUShort( this.pPosition )
-		writer.writeFloat( this.pElapsed )
+		writer.writeUShort(pGestures.getCount())
+		pGestures.forEach(block Gesture each
+			each.writeToFile(env, writer)
+		end)
+		
+		writer.writeUShort(pPosition)
+		writer.writeFloat(pElapsed)
 	end
 end

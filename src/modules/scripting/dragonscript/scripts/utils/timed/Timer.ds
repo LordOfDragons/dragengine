@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -34,17 +37,10 @@ namespace Dragengine.Utils
  * static timer manager.
  */
 abstract class Timer
-	/** \brief Timer manager this timer is registered at. */
-	private var TimerManager pTimerManager
-	
-	/** \brief Amount of seconds to wait until triggering. */
-	private var float pTriggerTime
-	
-	/** \brief Amount of seconds already elapsed. */
-	private var float pElapsedTime
-	
-	/** \brief Timer is triggered periodically. */
-	private var bool pIsPeriodic
+	var TimerManager pTimerManager
+	var float pTriggerTime
+	var float pElapsedTime
+	var bool pIsPeriodic
 	
 	
 	
@@ -54,8 +50,7 @@ abstract class Timer
 	 * \param triggerTime Seconds to wait before triggering
 	 * \param periodic Reschedule trigger once finished.
 	 */
-	public func new( float triggerTime, bool periodic ) \
-	this( TimerManager.getDefault(), triggerTime, periodic )
+	func new(float triggerTime, bool periodic) this(TimerManager.getDefault(), triggerTime, periodic)
 	end
 	
 	/**
@@ -65,17 +60,17 @@ abstract class Timer
 	 * \param triggerTime Seconds to wait before triggering
 	 * \param periodic True if this timer is periodic
 	 */
-	public func new( TimerManager manager, float triggerTime, bool periodic )
+	func new(TimerManager manager, float triggerTime, bool periodic)
 		if manager == null
-			throw EInvalidParam.new()
+			throw ENullPointer.new("manager")
 		end
 		
-		this.pTimerManager = manager
-		this.pTriggerTime = DEMath.max( triggerTime, 0.0 )
-		this.pElapsedTime = 0.0
-		this.pIsPeriodic = periodic
+		pTimerManager = manager
+		pTriggerTime = DEMath.max(triggerTime, 0.0)
+		pElapsedTime = 0
+		pIsPeriodic = periodic
 		
-		this.pTimerManager.addTimer( this )
+		pTimerManager.addTimer(this)
 	end
 	
 	
@@ -85,55 +80,65 @@ abstract class Timer
 	 * 
 	 * Call to give up pending timer. Dropping the reference alone does not give up the timer.
 	 */
-	public func void giveUp()
-		if this.pTimerManager == null
+	func void giveUp()
+		if pTimerManager == null
 			return
 		end
 		
-		this.pTimerManager.removeTimer( this )
-		this.pTimerManager = null
+		pTimerManager.removeTimer(this)
+		pTimerManager = null
 	end
 	
 	
 	
 	/** \brief Timer manager the timer is registered at. */
-	public func TimerManager getTimerManager()
-		return this.pTimerManager
+	func TimerManager getTimerManager()
+		return pTimerManager
 	end
 	
 	/** \brief Seconds until timer elapsed. */
-	public func float getTriggerTime()
-		return this.pTriggerTime
+	func float getTriggerTime()
+		return pTriggerTime
 	end
 	
 	/** \brief Set seconds until timer elapses. */
-	public func void setTriggerTime( float triggerTime )
-		this.pTriggerTime = DEMath.max( triggerTime, 0.0 )
+	func void setTriggerTime(float triggerTime)
+		pTriggerTime = DEMath.max(triggerTime, 0.0)
 	end
 	
 	/** \brief Timer is periodic. */
-	public func bool getIsPeriodic()
-		return this.pIsPeriodic
+	func bool getIsPeriodic()
+		return pIsPeriodic
 	end
 	
 	/** \brief Set if timer is periodic. */
-	public func void setIsPeriodic( bool periodic )
-		this.pIsPeriodic = periodic
+	func void setIsPeriodic(bool periodic)
+		pIsPeriodic = periodic
 	end
 	
 	/** \brief Elapsed seconds. */
-	public func float getElapsedTime()
-		return this.pElapsedTime
+	func float getElapsedTime()
+		return pElapsedTime
 	end
 	
 	/** \brief Set elapsed seconds. */
-	public func void setElapsedTime( float elapsedTime )
-		this.pElapsedTime = elapsedTime
+	func void setElapsedTime(float elapsedTime)
+		pElapsedTime = elapsedTime
 	end
 	
 	/** \brief Remaining seconds until timer elapses. */
-	public func float getRemainingTime()
-		return DEMath.max( this.pTriggerTime - this.pElapsedTime, 0.0 )
+	func float getRemainingTime()
+		return DEMath.max(pTriggerTime - pElapsedTime, 0.0)
+	end
+	
+	/**
+	 * \brief Timer elapsed.
+	 * \version 1.21
+	 * 
+	 * Returns true if timer manager is null.
+	 */
+	func bool hasElapsed()
+		return pTimerManager == null
 	end
 	
 	
@@ -148,29 +153,29 @@ abstract class Timer
 	 * If you need this kind of precise timing use FrameUpdateListener and track elapsed
 	 * time directly.
 	 */
-	public func void advance( float elapsed )
-		if elapsed <= 0.0
+	func void advance(float elapsed)
+		if elapsed <= 0 or pTimerManager == null
 			return
 		end
 		
-		this.pElapsedTime += elapsed
-		if this.pElapsedTime < this.pTriggerTime
+		pElapsedTime += elapsed
+		if pElapsedTime < pTriggerTime
 			return
 		end
 		
-		if this.pIsPeriodic
-			//this.pElapsedTime = DEMath.normalize( this.pElapsedTime, this.pTriggerTime )
-			this.pElapsedTime = 0.0
+		if pIsPeriodic
+			//pElapsedTime = DEMath.normalize(pElapsedTime, pTriggerTime)
+			pElapsedTime = 0
+			fire()
 			
 		else
-			this.giveUp()
+			fire()
+			giveUp()
 		end
-		
-		this.fire()
 	end
 	
 	
 	
 	/** \brief Timer time elapsed. */
-	abstract public func void fire()
+	abstract func void fire()
 end

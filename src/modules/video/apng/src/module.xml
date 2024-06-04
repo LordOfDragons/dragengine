@@ -1,12 +1,13 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<!DOCTYPE module SYSTEM "DragengineModule.dtd">
 <module>
 	<name>APNG</name>
 	<description>Handles videos in the Animated PNG format.</description>
 	<author>Plüss Roland (roland@rptd.ch)</author>
-	<version>1.0</version>
+	<version>VERSION</version>
 	<type>Video</type>
 	<pattern>.apng</pattern>
+	<noCompress/>
+	<priority>1</priority>
 	<library>
 		<file>FILENAME</file>
 		<size>FILESIZE</size>

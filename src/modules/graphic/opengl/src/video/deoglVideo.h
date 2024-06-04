@@ -1,33 +1,37 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLVIDEO_H_
 #define _DEOGLVIDEO_H_
+
+#include "../texture/pixelbuffer/deoglPixelBuffer.h"
 
 #include <dragengine/systems/modules/graphic/deBaseGraphicVideo.h>
 #include <dragengine/common/math/decMath.h>
 
 class deGraphicOpenGl;
 class deoglRVideo;
-class deoglPixelBuffer;
 class deoglTexture;
 
 class deVideo;
@@ -35,7 +39,7 @@ class deVideo;
 
 
 /**
- * \brief Video peer.
+ * Video peer.
  */
 class deoglVideo : public deBaseGraphicVideo{
 public:
@@ -52,10 +56,10 @@ public:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create peer. */
+	/** Create peer. */
 	deoglVideo( deGraphicOpenGl &ogl, deVideo &video );
 	
-	/** \brief Clean up peer. */
+	/** Clean up peer. */
 	virtual ~deoglVideo();
 	/*@}*/
 	
@@ -63,24 +67,24 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Module. */
+	/** Module. */
 	inline deGraphicOpenGl &GetOpenGL() const{ return pOgl; }
 	
-	/** \brief Video resource. */
+	/** Video resource. */
 	inline deVideo &GetVideo() const{ return pVideo; }
 	
-	/** \brief Render video or \em NULL if not existing. */
+	/** Render video or \em NULL if not existing. */
 	inline deoglRVideo *GetRVideo() const{ return pRVideo; }
 	
 	
 	
 	/**
-	 * \brief Video player has to use and update the cached frames.
+	 * Video player has to use and update the cached frames.
 	 */
 	inline bool CacheFrames() const{ return pCacheFrames; }
 	
 	/**
-	 * \brief All video frames are cached and ready to be used.
+	 * All video frames are cached and ready to be used.
 	 * \retval true Video player does not have to do caching work. Any frames can
 	 *              be directly used for rendering without further work.
 	 * \retval false Video player has to check if the desired frame is already
@@ -89,22 +93,19 @@ public:
 	 */
 	bool AllFramesAreCached() const;
 	
-	/** \brief Frame is cached and ready. */
+	/** Frame is cached and ready. */
 	bool IsFrameReady( int frame ) const;
 	
-	/** \brief Can cache frame. */
+	/** Can cache frame. */
 	bool CanCacheFrame( int frame ) const;
 	
 	/**
-	 * \brief Cache frame.
-	 * \details Does not free the old pixel buffer. If a pixel buffer is still set
-	 *          during destruction the pixel buffer is freed. This allows to swap
-	 *          pixel buffer with the decode thread.
-	 * \returns Previously set pixel buffer or \em NULL.
+	 * Cache frame.
+	 * \returns Previously set pixel buffer or nullptr.
 	 */
-	deoglPixelBuffer *CacheFrame( int frame, deoglPixelBuffer *pixelBuffer );
+	deoglPixelBuffer::Ref CacheFrame( int frame, deoglPixelBuffer *pixelBuffer );
 	
-	/** \brief Cache frame texture or \em NULL if not ready. */
+	/** Cache frame texture or \em NULL if not ready. */
 	deoglTexture *GetCachedFrameTexture( int frame ) const;
 	/*@}*/
 	

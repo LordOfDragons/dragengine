@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -37,167 +40,106 @@ pin Dragengine.Utils
 class Widget
 	/** \brief Repeat key event timer. */
 	class RepeatKeyEventTimer extends Timer
-		/** \brief Widget to send event to. */
-		private var Widget pWidget
-		
-		/** \brief Key event to repeat. */
-		private var KeyEvent pEvent
+		var Widget pWidget
+		var KeyEvent pEvent
 		
 		/** \brief Create time. */
-		public func new( Widget widget, KeyEvent event ) super( 0.5, true )
-			this.pWidget = widget
-			this.pEvent = event
+		func new(Widget widget, KeyEvent event) super(0.5, true)
+			pWidget = widget
+			pEvent = event
 		end
 		
 		/** \brief Timer elapsed. */
-		public func void fire()
-			this.setTriggerTime( 0.05 )
-			this.pWidget.sendEvent( this.pEvent )
+		func void fire()
+			setTriggerTime(0.05)
+			pWidget.sendEvent(pEvent)
 		end
 		
 		/** \brief Event to repeat. */
-		public func KeyEvent getEvent()
-			return this.pEvent
+		func KeyEvent getEvent()
+			return pEvent
 		end
 	end
 	
 	/** \brief Frame update listener. */
 	private class FrameUpdater extends FrameUpdateListener
 		/** \brief Widget to update. */
-		private var Widget pWidget
+		var Widget pWidget
 		
 		/** \brief Create frame update listener. */
-		public func new( Widget widget )
-			this.pWidget = widget
+		func new(Widget widget)
+			pWidget = widget
 		end
 		
 		/** \brief Do frame update. */
-		public func void frameUpdate( float elapsed )
-			this.pWidget.onFrameUpdate( elapsed )
+		func void frameUpdate(float elapsed)
+			pWidget.onFrameUpdate(elapsed)
 		end
 	end
 	
 	
 	
-	/** Parent widget */
-	private var Container pParent
-	/** Border or null if not set. */
-	private var Border pBorder
+	var Container pParent
+	var Border pBorder
+	var Point pPosition
+	var Point pSize
+	var Point pMinSize
+	var bool pVisible
+	var bool pEnabled
+	var bool pHasFocus
+	var bool pCanFocus
+	var Color pTextColor
+	var float pTransparency
+	var Font pFont
+	var String pTitle
 	
-	/** \brief Position. */
-	private var Point pPosition
+	var TexMatrix2 pTransformation
 	
-	/** \brief Size. */
-	private var Point pSize
+	var Array pKeyListeners
+	var Array pMouseListeners
+	var Array pDragListeners
+	var Array pFocusListeners
+	var Array pWidgetListeners
+	var Array pStateChangeListeners
+	var Array pGamepadListeners
 	
-	/** Minimal size */
-	private var Point pMinSize
-	/** Determines if widget is visible */
-	private var bool pVisible
-	/** Determines if widget is enabled and accepts input */
-	private var bool pEnabled
-	/** Determines if widget has the focus */
-	private var bool pHasFocus
-	/** Determines if widget can get the focus */
-	private var bool pCanFocus
+	var MousePointerFactory pMousePointer
 	
-	/** \brief Text color. */
-	private var Color pTextColor
+	var GuiTheme pTheme
+	var String pThemeSelector
 	
-	/** Transparency of widget */
-	private var float pTransparency
+	var RepeatKeyEventTimer pRepeatEventTimer
+	var FrameUpdater pFrameUpdater
 	
-	/** \brief Font. */
-	private var Font pFont
+	var CanvasView pCanvasWidget
+	var CanvasView pCanvasBackground
+	var CanvasView pCanvasContent
+	var CanvasCreator pBackgroundCanvasCreator
 	
-	/** \brief Transformation or \em null if not used. */
-	private var TexMatrix2 pTransformation
+	var WidgetDesigner pDesigner
+	var bool pIsDesignerSet
+	var String pDesignerSelector
 	
-	/** \brief Key listeners. */
-	private var Array pKeyListeners
+	var BorderSize pPadding
 	
-	/** \brief Mouse listeners. */
-	private var Array pMouseListeners
+	var bool pProtectBackgroundCanvasCreator
+	var bool pProtectBorder
+	var bool pProtectPadding
+	var bool pProtectFont
+	var bool pProtectTextColor
+	var bool pProtectMinimumSize
+	var bool pProtectMousePointer
 	
-	/** \brief Drag listeners. */
-	private var Array pDragListeners
+	var Object pToolTip
 	
-	/** \brief Focus listeners. */
-	private var Array pFocusListeners
+	var Clipboard pClipboard
 	
-	/** \brief Widget listeners. */
-	private var Array pWidgetListeners
-	
-	/** \brief State change listeners. */
-	private var Array pStateChangeListeners
-	
-	/** \brief Gamepad listeners. */
-	private var Array pGamepadListeners
-	
-	/** The Mouse Pointer factory to use or null */
-	private var MousePointerFactory pMousePointer
-	
-	/** \brief Gui theme object */
-	private var GuiTheme pTheme
-	
-	/** \brief Gui theme selector or \em null if not used. */
-	private var String pThemeSelector
-	
-	/** \brief Repeat event timer */
-	private var RepeatKeyEventTimer pRepeatEventTimer
-	
-	/** \brief Frame updater. */
-	private var FrameUpdater pFrameUpdater
-	
-	/** Canvas view for the entire widget. */
-	private var CanvasView pCanvasWidget
-	
-	/** Canvas view for the widget background. */
-	private var CanvasView pCanvasBackground
-	
-	/** Canvas view for the widget content. */
-	private var CanvasView pCanvasContent
-	
-	/** \brief Background canvas creator. */
-	private var CanvasCreator pBackgroundCanvasCreator
-	
-	/** \brief Designer. */
-	private var WidgetDesigner pDesigner
-	
-	/** \brief Custom designer is set. */
-	private var bool pIsDesignerSet
-	
-	/** \brief Designer selector. */
-	private var String pDesignerSelector
-	
-	/** \brief Padding. */
-	private var BorderSize pPadding
-	
-	/** \brief Protect custom set background canvas creator. */
-	private var bool pProtectBackgroundCanvasCreator
-	
-	/** \brief Protect custom set border. */
-	private var bool pProtectBorder
-	
-	/** \brief Protect custom set padding. */
-	private var bool pProtectPadding
-	
-	/** \brief Protect custom set font. */
-	private var bool pProtectFont
-	
-	/** \brief Protect custom set text color. */
-	private var bool pProtectTextColor
-	
-	/** \brief Protect custom set minimumsize. */
-	private var bool pProtectMinimumSize
-	
-	/** \brief Protect custom set mouse pointer. */
-	private var bool pProtectMousePointer
+	var TranslationManager pTranslationManager
 	
 	
 	
 	/** \brief Create widget. */
-	public func new() this( 0, 0, 0, 0 )
+	func new() this(0, 0, 0, 0)
 	end
 	
 	/**
@@ -205,8 +147,8 @@ class Widget
 	 * 
 	 * Width and height are clamped to 0 at minimum. Negative sizes can not be used.
 	 */
-	public func new( int x, int y, int width, int height ) \
-	this( Point.new( x, y ), Point.new( width, height ) )
+	func new(int x, int y, int width, int height) \
+	this(Point.new(x, y), Point.new(width, height))
 	end
 	
 	/**
@@ -214,92 +156,122 @@ class Widget
 	 * 
 	 * Width and height are clamped to 0 at minimum. Negative sizes can not be used.
 	 */
-	public func new( Point position, Point size )
-		this.pPosition = position
-		this.pSize = Point.new().largest( size )
+	func new(Point position, Point size)
+		pPosition = position
+		pSize = Point.new().largest(size)
 		
-		this.pVisible = true
-		this.pEnabled = true
-		this.pHasFocus = false
-		this.pCanFocus = false
+		pVisible = true
+		pEnabled = true
+		pHasFocus = false
+		pCanFocus = false
+		pTitle = ""
 		
-		this.pTransparency = 1.0
-		this.pIsDesignerSet = false
-		this.pPadding = BorderSize.new()
+		pTransparency = 1.0
+		pIsDesignerSet = false
+		pPadding = BorderSize.new()
 		
-		this.pProtectBackgroundCanvasCreator = false
-		this.pProtectBorder = false
-		this.pProtectPadding = false
-		this.pProtectFont = false
-		this.pProtectTextColor = false
-		this.pProtectMinimumSize = false
-		this.pProtectMousePointer = false
+		pProtectBackgroundCanvasCreator = false
+		pProtectBorder = false
+		pProtectPadding = false
+		pProtectFont = false
+		pProtectTextColor = false
+		pProtectMinimumSize = false
+		pProtectMousePointer = false
 		
-		this.pKeyListeners = Array.new()
-		this.pMouseListeners = Array.new()
-		this.pDragListeners = Array.new()
-		this.pFocusListeners = Array.new()
-		this.pWidgetListeners = Array.new()
-		this.pStateChangeListeners = Array.new()
-		this.pGamepadListeners = Array.new()
+		pKeyListeners = Array.new()
+		pMouseListeners = Array.new()
+		pDragListeners = Array.new()
+		pFocusListeners = Array.new()
+		pWidgetListeners = Array.new()
+		pStateChangeListeners = Array.new()
+		pGamepadListeners = Array.new()
 		
-		this.createCanvas()
-		this.updateCanvasGeometry()
-		this.updateCanvasBackground()
+		createCanvas()
+		updateCanvasGeometry()
+		updateCanvasBackground()
 	end
 	
 	
 	
-	/** Disposes of the widget cleaning references. */
-	public func void dispose()
+	/**
+	 * Disposes of the widget cleaning references.
+	 * 
+	 * \warning
+	 * This does not remove the widget from the parent container if present. Calling this
+	 * method while a widget is still inside a parent container will cause exceptions.
+	 * Use \ref #safeDispose() to safely dispose of a widget.
+	 */
+	func void dispose()
+		if pWidgetListeners == null
+			return // already disposed
+		end
+		
 		// can be expensive if every widget calls it although there is no really use case
 		// in sight. if this really becomes necessary somewhere down the line add an option
 		// to enable this notification only where required. until then disabled
-		//this.sendEvent( WidgetEvent.new( this, WidgetEvent.idWidgetDispose ) )
+		if pWidgetListeners.getCount() > 0
+			onDispose(WidgetEvent.new(this, WidgetEvent.idWidgetDispose))
+		end
 		
-		this.stopRepeatEventTimer()
-		this.stopFrameUpdater()
+		stopRepeatEventTimer()
+		stopFrameUpdater()
 		
-		this.pBackgroundCanvasCreator = null
-		this.pEnabled = false
-		this.pVisible = false
-		this.pParent = null
-		this.pKeyListeners = null
-		this.pMouseListeners = null
-		this.pDragListeners = null
-		this.pFocusListeners = null
-		this.pWidgetListeners = null
-		this.pStateChangeListeners = null
-		this.pGamepadListeners = null
-		this.pCanvasContent = null
-		this.pCanvasBackground = null
-		this.pCanvasWidget = null
-		this.pBorder = null
-		this.pDesigner = null
+		pBackgroundCanvasCreator = null
+		pEnabled = false
+		pVisible = false
+		pParent = null
+		pKeyListeners = null
+		pMouseListeners = null
+		pDragListeners = null
+		pFocusListeners = null
+		pWidgetListeners = null
+		pStateChangeListeners = null
+		pGamepadListeners = null
+		pCanvasContent = null
+		pCanvasBackground = null
+		pCanvasWidget = null
+		pBorder = null
+		pDesigner = null
+	end
+	
+	/**
+	 * \brief Safely dispose of widget.
+	 * 
+	 * If widget has parent removes the widget from the parent before calling \ref #dispose().
+	 * 
+	 * \note
+	 * 
+	 * It is recommended to use \ref #safeDispose() instead of \ref #dispose() to be on the safe side.
+	 */
+	func void safeDispose()
+		if pParent != null
+			pParent.removeWidget(this)
+		end
+		dispose()
 	end
 	
 	
 	
 	/** Retrieves the parent of widget or null if there is none. */
-	public func Container getParent()
-		return this.pParent
+	func Container getParent()
+		return pParent
 	end
 	
 	/** Determines if this widget is parent directly or indirectly to a given container. */
-	public func bool hasParent( Container container )
-		if container == null or this.pParent == null
+	func bool hasParent(Container container)
+		if container == null or pParent == null
 			return false
 			
-		elif this.pParent == container
+		elif pParent == container
 			return true
 			
 		else
-			return this.pParent.hasParent( container )
+			return pParent.hasParent(container)
 		end
 	end
 	
 	/** Layout parent if existing. Call if a change potentially alters the size requirements. */
-	public func void layoutParent()
+	func void layoutParent()
 		// this is an optimization which causes a problem with one particular situation.
 		// if setVisible(false) is called while the widget is visible the final layoutParent()
 		// call is skipped if this optimization below is in place. we need though this to
@@ -307,162 +279,162 @@ class Widget
 		// performance impact should be acceptable if all widgets try to avoid calling
 		// layoutParent() if they are not visible
 		/*
-		if not this.pVisible
+		if not pVisible
 			return
 		end
 		*/
-		if this.pParent == null
+		if pParent == null
 			return
 		end
 		
-		this.pParent.doLayout()
+		pParent.doLayout()
 	end
 	
 	/** Retrieves the border or null if not set. */
-	public func Border getBorder()
-		return this.pBorder
+	func Border getBorder()
+		return pBorder
 	end
 	
 	/** Sets the border or null if not set. */
-	public func void setBorder( Border border )
-		if border == this.pBorder
+	func void setBorder(Border border)
+		if border == pBorder
 			return
 		end
 		
-		if this.pBorder != null
-			this.getCanvasWidget().removeCanvas( this.pBorder.getCanvas() )
-			this.pBorder.setWidget( null )
+		if pBorder != null
+			getCanvasWidget().removeCanvas(pBorder.getCanvas())
+			pBorder.setWidget(null)
 		end
 		
-		this.pBorder = border
+		pBorder = border
 		
 		if border != null
-			border.setWidget( this )
-			border.resizeCanvas( this.pSize )
-			border.getCanvas().setOrder( 2.0 )
-			this.getCanvasWidget().addCanvas( border.getCanvas() )
+			border.setWidget(this)
+			border.resizeCanvas(pSize)
+			border.getCanvas().setOrder(2.0)
+			getCanvasWidget().addCanvas(border.getCanvas())
 		end
 		
-		this.updateCanvasGeometry()
-		this.layoutParent()
+		updateCanvasGeometry()
+		layoutParent()
 	end
 	
 	/** Get border size. If no border is set an empty border size is returned.*/
-	public func BorderSize getBorderSize()
-		if this.pBorder == null
+	func BorderSize getBorderSize()
+		if pBorder == null
 			return BorderSize.new()
 		end
-		return this.pBorder.getBorderSize()
+		return pBorder.getBorderSize()
 	end
 	
 	/** Notify border about changes to the widget parameters potentially affecing the border. */
-	public func void notifyBorderParametersChanged()
-		if this.pBorder != null
-			this.pBorder.onWidgetParametersChanged()
+	func void notifyBorderParametersChanged()
+		if pBorder != null
+			pBorder.onWidgetParametersChanged()
 		end
 	end
 	
 	
 	
 	/** \brief Position of the widget. */
-	public func Point getPosition()
-		return this.pPosition
+	func Point getPosition()
+		return pPosition
 	end
 	
 	/** \brief X position of widget. */
-	public func int getX()
-		return this.pPosition.getX()
+	func int getX()
+		return pPosition.getX()
 	end
 	
 	/** \brief Y position of widget. */
-	public func int getY()
-		return this.pPosition.getY()
+	func int getY()
+		return pPosition.getY()
 	end
 	
 	/** \brief Set position of widget. */
-	public func void setPosition( Point position )
-		if position.isEqualTo( this.pPosition )
+	func void setPosition(Point position)
+		if position.isEqualTo(pPosition)
 			return
 		end
 		
-		this.pPosition = position
+		pPosition = position
 		
-		this.onReposition( WidgetEvent.new( this, WidgetEvent.idWidgetReposition ) )
-		this.updateCanvasGeometry()
+		onReposition(WidgetEvent.new(this, WidgetEvent.idWidgetReposition))
+		updateCanvasGeometry()
 	end
 	
 	/** \brief Set X position of widget. */
-	public func void setX( int x )
-		this.setPosition( Point.new( x, this.pPosition.getY() ) )
+	func void setX(int x)
+		setPosition(Point.new(x, pPosition.getY()))
 	end
 	
 	/** \brief Set Y Position of widget. */
-	public func void setY( int y )
-		this.setPosition( Point.new( this.pPosition.getX(), y ) )
+	func void setY(int y)
+		setPosition(Point.new(pPosition.getX(), y))
 	end
 	
 	
 	
 	/** \brief Size of the widget. */
-	public func Point getSize()
-		return this.pSize
+	func Point getSize()
+		return pSize
 	end
 	
 	/** \brief Width of widget. */
-	public func int getWidth()
-		return this.pSize.getX()
+	func int getWidth()
+		return pSize.getX()
 	end
 	
 	/** \brief Height of widget. */
-	public func int getHeight()
-		return this.pSize.getY()
+	func int getHeight()
+		return pSize.getY()
 	end
 	
 	/** \brief Set size of widget. */
-	public func void setSize( Point size )
-		size = Point.new().largest( size )
-		if size.isEqualTo( this.pSize )
+	func void setSize(Point size)
+		size = Point.new().largest(size)
+		if size.isEqualTo(pSize)
 			return
 		end
 		
-		this.pSize = size
+		pSize = size
 		
-		this.updateCanvasGeometry()
-		this.onResize( WidgetEvent.new( this, WidgetEvent.idWidgetResized ) )
-		this.updateCanvasBackground()
+		updateCanvasGeometry()
+		onResize(WidgetEvent.new(this, WidgetEvent.idWidgetResized))
+		updateCanvasBackground()
 	end
 	
 	/** \brief Set width of widget. */
-	public func void setWidth( int width )
-		this.setSize( Point.new( width, this.pSize.getY() ) )
+	func void setWidth(int width)
+		setSize(Point.new(width, pSize.getY()))
 	end
 	
 	/** \brief Set height of widget. */
-	public func void setHeight( int height )
-		this.setSize( Point.new( this.pSize.getX(), height ) )
+	func void setHeight(int height)
+		setSize(Point.new(pSize.getX(), height))
 	end
 	
 	/** \brief Rectangulare boundary of the widget. */
-	public func RectArea getBoundary()
-		return RectArea.new( this.pPosition, this.pSize )
+	func RectArea getBoundary()
+		return RectArea.new(pPosition, pSize)
 	end
 	
 	/** \brief Rectangulare boundary of the widget including border. */
-	public func RectArea getBoundaryWithBorder()
-		if this.pBorder == null
-			return this.getBoundary()
+	func RectArea getBoundaryWithBorder()
+		if pBorder == null
+			return getBoundary()
 		end
 		
-		var BorderSize size = this.pBorder.getBorderSize()
-		return RectArea.new( this.pPosition - Point.new( size.getLeft(), size.getTop() ), this.pSize + size.getSize() )
+		var BorderSize size = pBorder.getBorderSize()
+		return RectArea.new(pPosition - Point.new(size.getLeft(), size.getTop()), pSize + size.getSize())
 	end
 	
 	
 	
 	/** Retrieve the minimal size of widget. */
-	public func Point getMinimumSize()
-		if this.pMinSize != null
-			return this.pMinSize
+	func Point getMinimumSize()
+		if pMinSize != null
+			return pMinSize
 			
 		else
 			return Point.new()
@@ -470,21 +442,21 @@ class Widget
 	end
 	
 	/** Retrieve the minimal size of widget including the border size if one is set. */
-	public func Point getMinimumSizeWithBorder()
-		if this.pBorder == null
-			return this.getMinimumSize()
+	func Point getMinimumSizeWithBorder()
+		if pBorder == null
+			return getMinimumSize()
 		end
-		return this.getMinimumSize() + this.pBorder.getBorderSize().getSize()
+		return getMinimumSize() + pBorder.getBorderSize().getSize()
 	end
 	
 	/** Retrieve the set minimal size of widget or null. */
-	public func Point getSetMinimumSize()
-		return this.pMinSize
+	func Point getSetMinimumSize()
+		return pMinSize
 	end
 	
 	/** Determines if the minimal size is set explicitly. */
-	public func bool isMinimumSizeSet()
-		return this.pMinSize != null
+	func bool isMinimumSizeSet()
+		return pMinSize != null
 	end
 	
 	
@@ -493,16 +465,16 @@ class Widget
 	 * \brief Minimum size of widget using reference widget width and variable height.
 	 * \details Default implementation uses getMinimumSize().
 	 */
-	public func Point getMinimumSizeForWidth( int width )
-		return this.getMinimumSize()
+	func Point getMinimumSizeForWidth(int width)
+		return getMinimumSize()
 	end
 	
 	/**
 	 * \brief Minimum size of widget using reference widget height and variable width.
 	 * \details Default implementation uses getMinimumSize().
 	 */
-	public func Point getMinimumSizeForHeight( int height )
-		return this.getMinimumSize()
+	func Point getMinimumSizeForHeight(int height)
+		return getMinimumSize()
 	end
 	
 	/**
@@ -513,14 +485,14 @@ class Widget
 	 * with the border width (if present) subtracted from width. The border size is then
 	 * added to the result.
 	 */
-	public func Point getMinimumSizeWithBorderForWidth( int width )
-		if this.pBorder == null
-			return this.getMinimumSizeForWidth( width )
+	func Point getMinimumSizeWithBorderForWidth(int width)
+		if pBorder == null
+			return getMinimumSizeForWidth(width)
 			
 		else
-			var BorderSize borderSize = this.pBorder.getBorderSize()
-			return this.getMinimumSizeForWidth( \
-				DEMath.max( width - borderSize.getWidth(), 0 ) ) \
+			var BorderSize borderSize = pBorder.getBorderSize()
+			return getMinimumSizeForWidth(\
+				DEMath.max(width - borderSize.getWidth(), 0)) \
 					+ borderSize.getSize()
 		end
 	end
@@ -533,14 +505,14 @@ class Widget
 	 * with the border height (if present) subtracted from height. The border size is then
 	 * added to the result.
 	 */
-	public func Point getMinimumSizeWithBorderForHeight( int height )
-		if this.pBorder == null
-			return this.getMinimumSizeForHeight( height )
+	func Point getMinimumSizeWithBorderForHeight(int height)
+		if pBorder == null
+			return getMinimumSizeForHeight(height)
 			
 		else
-			var BorderSize borderSize = this.pBorder.getBorderSize()
-			return this.getMinimumSizeForHeight( \
-				DEMath.max( height - borderSize.getHeight(), 0 ) ) \
+			var BorderSize borderSize = pBorder.getBorderSize()
+			return getMinimumSizeForHeight(\
+				DEMath.max(height - borderSize.getHeight(), 0)) \
 					+ borderSize.getSize()
 		end
 	end
@@ -548,80 +520,80 @@ class Widget
 	
 	
 	/** \brief Padding. */
-	public func BorderSize getPadding()
-		return this.pPadding
+	func BorderSize getPadding()
+		return pPadding
 	end
 	
 	/** \brief Set padding. */
-	public func void setPadding( BorderSize padding )
-		if padding.equals( this.pPadding )
+	func void setPadding(BorderSize padding)
+		if padding.equals(pPadding)
 			return
 		end
 		
-		this.pPadding = padding
-		this.onPaddingChanged()
+		pPadding = padding
+		onPaddingChanged()
 	end
 	
 	
 	
 	/** Retrieve if widget is visible. */
-	public func bool getVisible()
-		return this.pVisible
+	func bool getVisible()
+		return pVisible
 	end
 	
 	/** Retrieve if widget is enabled. */
-	public func bool getEnabled()
-		return this.pEnabled
+	func bool getEnabled()
+		return pEnabled
 	end
 	
 	/** \brief Widget and all parent widgets are enabled. */
-	public func bool isFullEnabled()
-		if this.pParent == null
-			return this.pEnabled
+	func bool isFullEnabled()
+		if pParent == null
+			return pEnabled
 			
 		else
-			return this.pEnabled and this.pParent.isFullEnabled()
+			return pEnabled and pParent.isFullEnabled()
 		end
 	end
 	
 	/** Retrieve if widget has the focus. */
-	public func bool getHasFocus()
-		return this.pHasFocus
+	func bool getHasFocus()
+		return pHasFocus
 	end
 	
 	/** Retrieve if widget can get the focus. */
-	public func bool getCanFocus()
-		return this.pCanFocus
+	func bool getCanFocus()
+		return pCanFocus
 	end
 	
 	/** \brief Text color. */
-	public func Color getTextColor()
-		return this.pTextColor
+	func Color getTextColor()
+		return pTextColor
 	end
 	
 	/** Retrieve transparency of widget. */
-	public func float getTransparency()
-		return this.pTransparency
+	func float getTransparency()
+		return pTransparency
 	end
 	
 	/**
 	 * Retrieve total transparency of widget. This is the transparency of this
 	 * widget multiplied by the total transparency of the parent.
 	 */
-	public func float getTotalTransparency()
-		if this.pParent == null
-			return this.pTransparency
+	func float getTotalTransparency()
+		if pParent == null
+			return pTransparency
 		end
-		return this.pTransparency * this.pParent.getTotalTransparency()
+		return pTransparency * pParent.getTotalTransparency()
 	end
 	
 	/** Retrieve font of widget. */
-	public func Font getFont()
-		if this.pFont != null
-			return this.pFont
+	func Font getFont()
+		if pFont != null
+			return pFont
 		end
 		
-		var GuiTheme guiTheme = this.getGuiTheme()
+		var GuiTheme guiTheme = getGuiTheme()
 		if guiTheme != null
 			return guiTheme.getWidgetFont()
 		end
@@ -630,93 +602,120 @@ class Widget
 	end
 	
 	/** Transformation or null if not set. */
-	public func TexMatrix2 getTransformation()
-		return this.pTransformation
+	func TexMatrix2 getTransformation()
+		return pTransformation
 	end
 	
 	/** Set transformation or null if not set. */
-	public func void setTransformation( TexMatrix2 transformation )
-		this.pTransformation = transformation
+	func void setTransformation(TexMatrix2 transformation)
+		pTransformation = transformation
 	end
 	
 	/** Transformation is set. */
-	public func bool isTransformationSet()
-		return this.pTransformation != null
+	func bool isTransformationSet()
+		return pTransformation != null
 	end
 	
 	/** \brief Color transformation. */
-	public func ColorMatrix getColorTransformation()
-		return this.pCanvasWidget.getColorTransform()
+	func ColorMatrix getColorTransformation()
+		return pCanvasWidget.getColorTransform()
 	end
 	
 	/** \brief Set color transformation. */
-	public func void setColorTransformation( ColorMatrix transformation )
-		this.pCanvasWidget.setColorTransform( transformation )
+	func void setColorTransformation(ColorMatrix transformation)
+		pCanvasWidget.setColorTransform(transformation)
+	end
+	
+	
+	
+	/**
+	 * \brief Widget title.
+	 * \version 1.13
+	 * 
+	 * For use by borders and decorators to provide a title to a widget.
+	 */
+	func String getTitle()
+		return pTitle
+	end
+	
+	/**
+	 * \brief Set widget title.
+	 * \version 1.13
+	 * 
+	 * For use by borders and decorators to provide a title to a widget.
+	 */
+	func void setTitle(String title)
+		if title.equals(pTitle)
+			return
+		end
+		
+		pTitle = title
+		notifyBorderParametersChanged()
 	end
 	
 	
 	
 	/** \brief Background canvas creator or \em null to use background color. */
-	public func CanvasCreator getBackgroundCanvasCreator()
-		return this.pBackgroundCanvasCreator
+	func CanvasCreator getBackgroundCanvasCreator()
+		return pBackgroundCanvasCreator
 	end
 	
 	/** \brief Set background canvas creator or \em null to use background color. */
-	public func void setBackgroundCanvasCreator( CanvasCreator creator )
-		if creator == this.pBackgroundCanvasCreator
+	func void setBackgroundCanvasCreator(CanvasCreator creator)
+		if creator == pBackgroundCanvasCreator
 			return
 		end
 		
-		this.pBackgroundCanvasCreator = creator
-		this.updateCanvasBackground()
+		pBackgroundCanvasCreator = creator
+		updateCanvasBackground()
 	end
 	
 	
 	
 	/** \brief Designer. */
-	public func WidgetDesigner getDesigner()
-		return this.pDesigner
+	func WidgetDesigner getDesigner()
+		return pDesigner
 	end
 	
 	/** \brief Set designer. */
-	public func void setDesigner( WidgetDesigner designer )
-		if designer != null and designer == this.pDesigner
+	func void setDesigner(WidgetDesigner designer)
+		if designer != null and designer == pDesigner
 			return
 		end
 		
 		if designer == null
-			designer = this.getDesignerFromTheme()
-			this.pIsDesignerSet = false
+			designer = getDesignerFromTheme()
+			pIsDesignerSet = false
 			
 		else
-			this.pIsDesignerSet = true
+			pIsDesignerSet = true
 		end
 		
-		this.pDesigner = designer
+		pDesigner = designer
 		
-		this.onDesignerChanged()
+		onDesignerChanged()
 		
-		this.design()
-		this.layoutParent()
+		design()
+		layoutParent()
 	end
 	
 	/** \brief Get designer from gui theme. */
 	protected func WidgetDesigner getDesignerFromTheme()
-		if this.pDesignerSelector == null
+		if pDesignerSelector == null
 			return null
 		end
 		
-		var GuiTheme guitheme = this.getGuiTheme()
+		var GuiTheme guitheme = getGuiTheme()
 		if guitheme == null
 			return null
 		end
 		
-		return guitheme.getWidgetDesigner( this.pDesignerSelector )
+		return guitheme.getWidgetDesigner(pDesignerSelector)
 	end
 	
 	/** \brief Custom designer is set. */
-	public func bool isDesignerSet()
-		return this.pIsDesignerSet
+	func bool isDesignerSet()
+		return pIsDesignerSet
 	end
 	
 	/**
@@ -733,8 +732,8 @@ class Widget
 	 * If null no designer is used from gui theme. Otherwise use class name (for example
 	 * Widget) with optional qualifiers appended if necessary.
 	 */
-	public func String getDesignerSelector()
-		return this.pDesignerSelector
+	func String getDesignerSelector()
+		return pDesignerSelector
 	end
 	
 	/**
@@ -751,99 +750,131 @@ class Widget
 	 * If null no designer is used from gui theme. Otherwise use class name (for example
 	 * Widget) with optional qualifiers appended if necessary.
 	 */
-	public func void setDesignerSelector( String selector )
-		if this.pDesignerSelector == null
+	func void setDesignerSelector(String selector)
+		if pDesignerSelector == null
 			if selector == null
 				return
 			end
 			
 		else
-			if this.pDesignerSelector.equals( selector )
+			if pDesignerSelector.equals(selector)
 				return
 			end
 		end
 		
-		this.pDesignerSelector = selector
+		pDesignerSelector = selector
 		
-		if not this.pIsDesignerSet
-			this.setDesigner( null ) // set designer from gui theme
+		if not pIsDesignerSet
+			setDesigner(null) // set designer from gui theme
 		end
 		
-		this.onDesignerSelectorChanged()
+		onDesignerSelectorChanged()
 	end
 	
 	
 	
 	/** \brief Protect custom set background canvas creator. */
-	public func bool getProtectBackgroundCanvasCreator()
-		return this.pProtectBackgroundCanvasCreator
+	func bool getProtectBackgroundCanvasCreator()
+		return pProtectBackgroundCanvasCreator
 	end
 	
 	/** \brief Set protect custom set background canvas creator. */
-	public func void setProtectBackgroundCanvasCreator( bool protect )
-		this.pProtectBackgroundCanvasCreator = protect
+	func void setProtectBackgroundCanvasCreator(bool protect)
+		pProtectBackgroundCanvasCreator = protect
 	end
 	
 	/** \brief Protect custom set border. */
-	public func bool getProtectBorder()
-		return this.pProtectBorder
+	func bool getProtectBorder()
+		return pProtectBorder
 	end
 	
 	/** \brief Set protect custom set border. */
-	public func void setProtectBorder( bool protect )
-		this.pProtectBorder = protect
+	func void setProtectBorder(bool protect)
+		pProtectBorder = protect
 	end
 	
 	/** \brief Protect custom set padding. */
-	public func bool getProtectPadding()
-		return this.pProtectPadding
+	func bool getProtectPadding()
+		return pProtectPadding
 	end
 	
 	/** \brief Set protect custom set padding. */
-	public func void setProtectPadding( bool protect )
-		this.pProtectPadding = protect
+	func void setProtectPadding(bool protect)
+		pProtectPadding = protect
 	end
 	
 	/** \brief Protect custom set font. */
-	public func bool getProtectFont()
-		return this.pProtectFont
+	func bool getProtectFont()
+		return pProtectFont
 	end
 	
 	/** \brief Set protect custom set font. */
-	public func void setProtectFont( bool protect )
-		this.pProtectFont = protect
+	func void setProtectFont(bool protect)
+		pProtectFont = protect
 	end
 	
 	/** \brief Protect custom set text color. */
-	public func bool getProtectTextColor()
-		return this.pProtectTextColor
+	func bool getProtectTextColor()
+		return pProtectTextColor
 	end
 	
 	/** \brief Set protect custom set text color. */
-	public func void setProtectTextColor( bool protect )
-		this.pProtectTextColor = protect
+	func void setProtectTextColor(bool protect)
+		pProtectTextColor = protect
 	end
 	
 	/** \brief Protect custom set minimumsize. */
-	public func bool getProtectMinimumSize()
-		return this.pProtectMinimumSize
+	func bool getProtectMinimumSize()
+		return pProtectMinimumSize
 	end
 	
 	/** \brief Set protect custom set minimumsize. */
-	public func void setProtectMinimumSize( bool protect )
-		this.pProtectMinimumSize = protect
+	func void setProtectMinimumSize(bool protect)
+		pProtectMinimumSize = protect
 	end
 	
 	/** \brief Protect custom set mouse pointer. */
-	public func bool getProtectMousePointer()
-		return this.pProtectMousePointer
+	func bool getProtectMousePointer()
+		return pProtectMousePointer
 	end
 	
 	/** \brief Set protect custom set mouse pointer. */
-	public func void setProtectMousePointer( bool protect )
-		this.pProtectMousePointer = protect
+	func void setProtectMousePointer(bool protect)
+		pProtectMousePointer = protect
 	end
 	
+	
+	
+	/**
+	 * \brief Tooltip or null.
+	 * \version 1.7
+	 * 
+	 * Object is typically of type String or StyledTextDocument. Other object types are
+	 * possible if the tool tip providing object supports it.
+	 */
+	func Object getToolTip()
+		return pToolTip
+	end
+	
+	/**
+	 * \brief Set tooltip or null.
+	 * \version 1.7
+	 * 
+	 * Object is typically of type String or StyledTextDocument. Other object types are
+	 * possible if the tool tip providing object supports it.
+	 */
+	func void setToolTip(Object toolTip)
+		if toolTip == pToolTip
+			return
+		end
+		
+		pToolTip = toolTip
+		
+		var Desktop desktop = getDesktop()
+		if desktop != null and getHoverWidget() == this and desktop.getToolTipManager() != null
+			desktop.getToolTipManager().update()
+		end
+	end
 	
 	
 	/**
@@ -851,8 +882,8 @@ class Widget
 	 * 
 	 * If widget has no mouse pointer the parent mouse pointer is used.
 	 */
-	public func MousePointerFactory getMousePointer()
-		return this.pMousePointer
+	func MousePointerFactory getMousePointer()
+		return pMousePointer
 	end
 	
 	/**
@@ -860,19 +891,19 @@ class Widget
 	 * 
 	 * If widget has no mouse pointer the parent mouse pointer is used.
 	 */
-	public func void setMousePointer( MousePointerFactory mousePointer )
-		if mousePointer == this.pMousePointer
+	func void setMousePointer(MousePointerFactory mousePointer)
+		if mousePointer == pMousePointer
 			return
 		end
 		
-		this.pMousePointer = mousePointer
+		pMousePointer = mousePointer
 		
-		var Desktop desktop = this.getDesktop()
-		if desktop != null and desktop.getHoverWidget() == this
-			desktop.setActiveMousePointer( this.getFirstMousePointer() )
+		var Desktop desktop = getDesktop()
+		if desktop != null and getHoverWidget() == this
+			desktop.setActiveMousePointer(getFirstMousePointer())
 		end
 		
-		this.notifyBorderParametersChanged()
+		notifyBorderParametersChanged()
 	end
 	
 	/**
@@ -881,12 +912,12 @@ class Widget
 	 * If the Widget has a mouse pointer this one is returned otherwise the one of the
 	 * parent. Can be null if no widget up to top most one has an assigned mouse pointer.
 	 */
-	public func MousePointerFactory getFirstMousePointer()
-		if this.pMousePointer != null
-			return this.pMousePointer
+	func MousePointerFactory getFirstMousePointer()
+		if pMousePointer != null
+			return pMousePointer
 			
-		elif this.pParent != null
-			return this.pParent.getFirstMousePointer()
+		elif pParent != null
+			return pParent.getFirstMousePointer()
 			
 		else
 			return null
@@ -896,180 +927,180 @@ class Widget
 	
 	
 	/** \brief Widget position in window coordinates. */
-	public func Point getWindowPosition()
-		if this.pParent == null
-			return this.pPosition
+	func Point getWindowPosition()
+		if pParent == null
+			return pPosition
 			
 		else
-			return this.pParent.getWindowPosition() + this.pPosition
+			return pParent.getWindowPosition() + pPosition
 		end
 	end
 	
 	/** \brief Widget position in desktop coordinates. */
-	public func Point getDesktopPosition()
-		if this.pParent == null
-			return this.pPosition
+	func Point getDesktopPosition()
+		if pParent == null
+			return pPosition
 			
 		else
-			return this.pParent.getDesktopPosition() + this.pPosition
+			return pParent.getDesktopPosition() + pPosition
 		end
 	end
 	
 	/** \brief Widget position in screen coordinates. */
-	public func Point getScreenPosition()
-		if this.pParent == null
-			return this.pPosition
+	func Point getScreenPosition()
+		if pParent == null
+			return pPosition
 			
 		else
-			return this.pParent.getScreenPosition() + this.pPosition
+			return pParent.getScreenPosition() + pPosition
 		end
 	end
 	
 	/** \brief Widget position in parent widget coordinates. */
-	public func Point getRelativePosition( Container parent )
-		if parent == this
+	func Point getRelativePosition(Container parent)
+		if this == parent
 			return Point.new()
 			
-		elif this.pParent == null or this.pParent == parent
-			return this.pPosition
+		elif pParent == null or pParent == parent
+			return pPosition
 			
 		else
-			return this.pParent.getRelativePosition( parent ) + this.pPosition
+			return pParent.getRelativePosition(parent) + pPosition
 		end
 	end
 	
 	/** Retrieves the rect area on the screen of the widget. */
-	public func RectArea getScreenRectArea()
-		return RectArea.new( this.getScreenPosition(), this.pSize )
+	func RectArea getScreenRectArea()
+		return RectArea.new(getScreenPosition(), pSize)
 	end
 	
 	
 	
 	/** Sets if widget is visible. */
-	public func void setVisible( bool visible )
-		if this.pVisible == visible
+	func void setVisible(bool visible)
+		if pVisible == visible
 			return
 		end
 		
-		this.pVisible = visible
+		pVisible = visible
 		
 		if not visible
-			this.stopRepeatEventTimer()
+			stopRepeatEventTimer()
 		end
 		
-		this.pCanvasWidget.setVisible( visible )
+		pCanvasWidget.setVisible(visible)
 		
 		if visible
-			this.onShown( WidgetEvent.new( this, WidgetEvent.idWidgetShown ) )
+			onShown(WidgetEvent.new(this, WidgetEvent.idWidgetShown))
 			
 		else
-			this.onHidden( WidgetEvent.new( this, WidgetEvent.idWidgetHidden ) )
+			onHidden(WidgetEvent.new(this, WidgetEvent.idWidgetHidden))
 		end
 		
-		this.layoutParent()
+		layoutParent()
 	end
 	
 	/** Sets if widget is enabled. */
-	public func void setEnabled( bool enabled )
-		if this.pEnabled == enabled
+	func void setEnabled(bool enabled)
+		if pEnabled == enabled
 			return
 		end
 		
-		this.pEnabled = enabled
+		pEnabled = enabled
 		
 		//if not enabled
-		//	this.releaseMouse()
+		//	releaseMouse()
 		//end
 		
-		if this.pHasFocus and not enabled
-			this.setHasFocus( false )
+		if pHasFocus and not enabled
+			setHasFocus(false)
 		end
 		
-		this.notifyBorderParametersChanged()
-		this.onStateChanged( StateChangeEvent.new( this, StateChangeEvent.idStateChanged ) )
+		notifyBorderParametersChanged()
+		onStateChanged(StateChangeEvent.new(this, StateChangeEvent.idStateChanged))
 	end
 	
 	/** Sets if widget has the focus. */
-	public func void setHasFocus( bool hasFocus )
-		if this.pHasFocus == hasFocus
+	func void setHasFocus(bool hasFocus)
+		if pHasFocus == hasFocus
 			return
 		end
 		
-		this.pHasFocus = hasFocus
+		pHasFocus = hasFocus
 		
 		if not hasFocus
-			this.stopRepeatEventTimer()
+			stopRepeatEventTimer()
 		end
 		
-		this.notifyBorderParametersChanged()
+		notifyBorderParametersChanged()
 		
 		if hasFocus
-			this.onFocusReceived( FocusEvent.new( this, FocusEvent.idFocusReceived ) )
+			onFocusReceived(FocusEvent.new(this, FocusEvent.idFocusReceived))
 			
 		else
-			this.onFocusLost( FocusEvent.new( this, FocusEvent.idFocusLost ) )
+			onFocusLost(FocusEvent.new(this, FocusEvent.idFocusLost))
 		end
 	end
 	
 	/** Sets if widget can get the focus. */
-	public func void setCanFocus( bool canFocus )
-		if this.pCanFocus == canFocus
+	func void setCanFocus(bool canFocus)
+		if pCanFocus == canFocus
 			return
 		end
 		
-		this.pCanFocus = canFocus
+		pCanFocus = canFocus
 		
-		if not this.pCanFocus and this.pHasFocus
-			this.setHasFocus( false )
+		if not pCanFocus and pHasFocus
+			setHasFocus(false)
 		end
 		
-		this.notifyBorderParametersChanged()
-		this.onStateChanged( StateChangeEvent.new( this, StateChangeEvent.idStateChanged ) )
+		notifyBorderParametersChanged()
+		onStateChanged(StateChangeEvent.new(this, StateChangeEvent.idStateChanged))
 	end
 	
 	/** Sets the minimum size of widget or null if there is no limit. */
-	public func void setMinimumSize( Point size )
+	func void setMinimumSize(Point size)
 		if size != null
-			size = Point.new().largest( size )
+			size = Point.new().largest(size)
 		end
 		
-		if size == this.pMinSize or ( size != null and size.equals( this.pMinSize ) )
+		if size == pMinSize or (size != null and size.equals(pMinSize))
 			return
 		end
 		
-		this.pMinSize = size
-		this.layoutParent()
+		pMinSize = size
+		layoutParent()
 	end
 	
 	/** \brief Set text color. */
-	public func void setTextColor( Color color )
-		if color == this.pTextColor or ( color != null and color.equals( this.pTextColor ) )
+	func void setTextColor(Color color)
+		if color == pTextColor or (color != null and color.equals(pTextColor))
 			return
 		end
 		
-		this.pTextColor = color
-		this.onSetTextColor()
+		pTextColor = color
+		onSetTextColor()
 	end
 	
 	/** Sets transparency of widget. */
-	public func void setTransparency( float transparency )
-		transparency = DEMath.clamp( transparency, 0.0, 1.0 )
-		if DEMath.fabs( transparency - this.pTransparency ) < 0.001
+	func void setTransparency(float transparency)
+		transparency = DEMath.clamp(transparency, 0.0, 1.0)
+		if DEMath.fabs(transparency - pTransparency) < 0.001
 			return
 		end
 		
-		this.pTransparency = transparency
-		this.pCanvasWidget.setTransparency( transparency )
+		pTransparency = transparency
+		pCanvasWidget.setTransparency(transparency)
 	end
 	
 	/** Sets new font of widget or null to use the gui theme one. */
-	public func void setFont( Font font )
-		if this.pFont == font
+	func void setFont(Font font)
+		if pFont == font
 			return
 		end
 		
-		this.pFont = font
-		this.onSetFont()
+		pFont = font
+		onSetFont()
 	end
 	
 	
@@ -1079,22 +1110,22 @@ class Widget
 	 * only be used by widgets which can contain other widgets to set their
 	 * parent widget.
 	 */
-	public func void setParent( Container parent )
-		if parent == this.pParent
+	func void setParent(Container parent)
+		if parent == pParent
 			return
 		end
 		
 		if parent == null
 			// avoid triggering costly updates if not connected to visible gui anymore
-			this.pParent = parent
+			pParent = parent
 			return
 		end
 		
-		var GuiTheme oldGuiTheme = this.getGuiTheme()
-		this.pParent = parent
+		var GuiTheme oldGuiTheme = getGuiTheme()
+		pParent = parent
 		
-		if this.getGuiTheme() != oldGuiTheme
-			this.onGuiThemeChanged()
+		if getGuiTheme() != oldGuiTheme
+			onGuiThemeChanged()
 		end
 	end
 	
@@ -1104,7 +1135,7 @@ class Widget
 	 * \brief Vertical range model for viewports to synchronize the vertical scrollbar.
 	 * \details If this widget has no reasonable vertical range model it should return \em null.
 	 */
-	public func RangeModel getVerticalRangeModel()
+	func RangeModel getVerticalRangeModel()
 		return null
 	end
 	
@@ -1112,25 +1143,40 @@ class Widget
 	 * \brief Horizontal range model for viewports to synchronize the horizontal scrollbar.
 	 * \details If this widget has no reasonable horizontal range model it should return \em null.
 	 */
-	public func RangeModel getHorizontalRangeModel()
+	func RangeModel getHorizontalRangeModel()
 		return null
 	end
 	
 	
 	
 	/** Canvas view for the entire widget. */
-	public func CanvasView getCanvasWidget()
-		return this.pCanvasWidget
+	func CanvasView getCanvasWidget()
+		return pCanvasWidget
 	end
 	
 	/** Canvas view for the widget background. */
-	public func CanvasView getCanvasBackground()
-		return this.pCanvasBackground
+	func CanvasView getCanvasBackground()
+		return pCanvasBackground
 	end
 	
 	/** Canvas view for the widget content. */
-	public func CanvasView getCanvasContent()
-		return this.pCanvasContent
+	func CanvasView getCanvasContent()
+		return pCanvasContent
+	end
+	
+	
+	
+	/**
+	 * \brief Widget the mouse hovers above or null.
+	 * \version 1.11
+	 * 
+	 * Asks parent for hover widget otherwise returns null.
+	 */
+	func Widget getHoverWidget()
+		if pParent != null
+			return pParent.getHoverWidget()
+		end
+		return null
 	end
 	
 	
@@ -1139,103 +1185,102 @@ class Widget
 	 * \brief Mouse is hovering over this widget.
 	 * \details Tests if the hover widget of the parent desktop is this widget.
 	 */
-	public func bool isMouseInside()
-		var Desktop desktop = this.getDesktop()
-		return desktop != null and desktop.getHoverWidget() == this
+	func bool isMouseInside()
+		return getHoverWidget() == this
 	end
 	
 	
 	
 	/** Add key listener. */
-	public func void addKeyListener( KeyListener listener )
+	func void addKeyListener(KeyListener listener)
 		if listener == null
 			throw EInvalidParam.new()
 		end
-		this.pKeyListeners.add( listener )
+		pKeyListeners.add(listener)
 	end
 	
 	/** Remove key listener. */
-	public func void removeKeyListener( KeyListener listener )
-		this.pKeyListeners.remove( listener )
+	func void removeKeyListener(KeyListener listener)
+		pKeyListeners.remove(listener)
 	end
 	
 	/** Add mouse listener. */
-	public func void addMouseListener( MouseListener listener )
+	func void addMouseListener(MouseListener listener)
 		if listener == null
 			throw EInvalidParam.new()
 		end
-		this.pMouseListeners.add( listener )
+		pMouseListeners.add(listener)
 	end
 	
 	/** Remove mouse listener. */
-	public func void removeMouseListener( MouseListener listener )
-		this.pMouseListeners.remove( listener )
+	func void removeMouseListener(MouseListener listener)
+		pMouseListeners.remove(listener)
 	end
 	
 	/** Add drag listener. */
-	public func void addDragListener( DragListener listener )
+	func void addDragListener(DragListener listener)
 		if listener == null
 			throw EInvalidParam.new()
 		end
 		
-		this.pDragListeners.add( listener )
+		pDragListeners.add(listener)
 	end
 	
 	/** Remove a drag listener. */
-	public func void removeDragListener( DragListener listener )
-		this.pDragListeners.remove( listener )
+	func void removeDragListener(DragListener listener)
+		pDragListeners.remove(listener)
 	end
 	
 	/** \brief Add focus listener. */
-	public func void addFocusListener( FocusListener listener )
+	func void addFocusListener(FocusListener listener)
 		if listener == null
 			throw EInvalidParam.new()
 		end
-		this.pFocusListeners.add( listener )
+		pFocusListeners.add(listener)
 	end
 	
 	/** \brief Remove focus listener. */
-	public func void removeFocusListener( FocusListener listener )
-		this.pFocusListeners.remove( listener )
+	func void removeFocusListener(FocusListener listener)
+		pFocusListeners.remove(listener)
 	end
 	
 	/** \brief Add widget listener. */
-	public func void addWidgetListener( WidgetListener listener )
+	func void addWidgetListener(WidgetListener listener)
 		if listener == null
 			throw EInvalidParam.new()
 		end
-		this.pWidgetListeners.add( listener )
+		pWidgetListeners.add(listener)
 	end
 	
 	/** \brief Remove widget listener. */
-	public func void removeWidgetListener( WidgetListener listener )
-		this.pWidgetListeners.remove( listener )
+	func void removeWidgetListener(WidgetListener listener)
+		pWidgetListeners.remove(listener)
 	end
 	
 	/** \brief Add state change listener. */
-	public func void addStateChangeListener( StateChangeListener listener )
+	func void addStateChangeListener(StateChangeListener listener)
 		if listener == null
 			throw EInvalidParam.new()
 		end
-		this.pStateChangeListeners.add( listener )
+		pStateChangeListeners.add(listener)
 	end
 	
 	/** \brief Remove state change listener. */
-	public func void removeStateChangeListener( StateChangeListener listener )
-		this.pStateChangeListeners.remove( listener )
+	func void removeStateChangeListener(StateChangeListener listener)
+		pStateChangeListeners.remove(listener)
 	end
 	
 	/** \brief Add gamepad listener. */
-	public func void addGamepadListener( GamepadListener listener )
+	func void addGamepadListener(GamepadListener listener)
 		if listener == null
 			throw EInvalidParam.new()
 		end
-		this.pGamepadListeners.add( listener )
+		pGamepadListeners.add(listener)
 	end
 	
 	/** \brief Remove gamepad listener. */
-	public func void removeGamepadListener( GamepadListener listener )
-		this.pGamepadListeners.remove( listener )
+	func void removeGamepadListener(GamepadListener listener)
+		pGamepadListeners.remove(listener)
 	end
 	
 	
@@ -1244,90 +1289,92 @@ class Widget
 	 * Sends an event to the widget. The Widget will check for focus grab
 	 * and other situations and sends the event to all registered listeners.
 	 */
-	public func void sendEvent( Event event )
+	func void sendEvent(Event event)
 		select event.getIdentifier()
 		case KeyEvent.idKeyPressed
-			this.startRepeatKey( event cast KeyEvent )
-			this.onKeyPress( event cast KeyEvent )
+			if pHasFocus and event.getSource() == this
+				startRepeatKey(event cast KeyEvent)
+			end
+			onKeyPress(event cast KeyEvent)
 			
 		case KeyEvent.idKeyReleased
-			this.stopRepeatEventTimer()
-			this.onKeyRelease( event cast KeyEvent )
+			stopRepeatEventTimer()
+			onKeyRelease(event cast KeyEvent)
 			
 			
 			
 		case MouseEvent.idMousePressed
-			this.onButtonPress( event cast MouseEvent )
+			onButtonPress(event cast MouseEvent)
 			
 		case MouseEvent.idMouseReleased
-			this.onButtonRelease( event cast MouseEvent )
+			onButtonRelease(event cast MouseEvent)
 			
 		case MouseEvent.idMouseMoved
-			this.onMouseMove( event cast MouseEvent )
+			onMouseMove(event cast MouseEvent)
 			
 		case MouseEvent.idMouseWheeled
-			this.onMouseWheel( event cast MouseEvent )
+			onMouseWheel(event cast MouseEvent)
 			
 		case MouseEvent.idMouseEnter
-			this.onMouseEnter( event cast MouseEvent )
+			onMouseEnter(event cast MouseEvent)
 			
 		case MouseEvent.idMouseLeave
-			this.onMouseLeave( event cast MouseEvent )
+			onMouseLeave(event cast MouseEvent)
 			
 			
 			
 		case DragEvent.idDragEnter
-			this.onDragEnter( event cast DragEvent )
+			onDragEnter(event cast DragEvent)
 			
 		case DragEvent.idDragLeave
-			this.onDragLeave( event cast DragEvent )
+			onDragLeave(event cast DragEvent)
 			
 		case DragEvent.idDragOver
-			this.onDragOver( event cast DragEvent )
+			onDragOver(event cast DragEvent)
 			
 		case DragEvent.idDragDrop
-			this.onDragDrop( event cast DragEvent )
+			onDragDrop(event cast DragEvent)
 			
 			
 			
 		case FocusEvent.idFocusReceived
-			this.onFocusReceived( event cast FocusEvent )
+			onFocusReceived(event cast FocusEvent)
 			
 		case FocusEvent.idFocusLost
-			this.onFocusLost( event cast FocusEvent )
+			onFocusLost(event cast FocusEvent)
 			
 			
 			
 		case WidgetEvent.idWidgetShown
-			this.onShown( event cast WidgetEvent )
+			onShown(event cast WidgetEvent)
 			
 		case WidgetEvent.idWidgetHidden
-			this.onHidden( event cast WidgetEvent )
+			onHidden(event cast WidgetEvent)
 			
 		case WidgetEvent.idWidgetReposition
-			this.onReposition( event cast WidgetEvent )
+			onReposition(event cast WidgetEvent)
 			
 		case WidgetEvent.idWidgetResized
-			this.onResize( event cast WidgetEvent )
+			onResize(event cast WidgetEvent)
 			
 		case WidgetEvent.idWidgetDispose
-			this.onDispose( event cast WidgetEvent )
+			onDispose(event cast WidgetEvent)
 			
 			
 			
 		case StateChangeEvent.idStateChanged
-			this.onStateChanged( event cast StateChangeEvent )
+			onStateChanged(event cast StateChangeEvent)
 			
 			
 			
 		case GamepadEvent.idGamepadAxisMoved
-			this.onGamepadAxisMoved( event cast GamepadEvent )
+			onGamepadAxisMoved(event cast GamepadEvent)
 			
 		case GamepadEvent.idGamepadButtonPressed
-			this.onGamepadButtonPressed( event cast GamepadEvent )
+			onGamepadButtonPressed(event cast GamepadEvent)
 			
 		case GamepadEvent.idGamepadButtonReleased
-			this.onGamepadButtonReleased( event cast GamepadEvent )
+			onGamepadButtonReleased(event cast GamepadEvent)
 		end
 	end
 	
@@ -1336,169 +1383,169 @@ class Widget
 	 * \details If there are no listeners the event is send to the parent if
 	 *          \em sendToParent is \em true.
 	 */
-	public func void sendEventToListeners( Event event, bool sendToParent )
+	func void sendEventToListeners(Event event, bool sendToParent)
 		var int ident = event.getIdentifier()
 		
-		if KeyEvent.isKeyEvent( ident )
-			if this.pKeyListeners != null and this.pKeyListeners.getCount() > 0
+		if KeyEvent.isKeyEvent(ident)
+			if pKeyListeners != null and pKeyListeners.getCount() > 0
 				select ident
 				case KeyEvent.idKeyPressed
-					this.pKeyListeners.forEach( block KeyListener each
-						each.onKeyPress( event cast KeyEvent )
-					end )
+					pKeyListeners.forEach(block KeyListener each
+						each.onKeyPress(event cast KeyEvent)
+					end)
 					
 				case KeyEvent.idKeyReleased
-					this.pKeyListeners.forEach( block KeyListener each
-						each.onKeyRelease( event cast KeyEvent )
-					end )
+					pKeyListeners.forEach(block KeyListener each
+						each.onKeyRelease(event cast KeyEvent)
+					end)
 				end
 				
-			elif sendToParent and this.pParent != null
-				this.pParent.sendEvent( event )
+			elif sendToParent and pParent != null
+				pParent.sendEvent(event)
 			end
 			
-		elif MouseEvent.isMouseEvent( ident )
-			if this.pMouseListeners != null and this.pMouseListeners.getCount() > 0
+		elif MouseEvent.isMouseEvent(ident)
+			if pMouseListeners != null and pMouseListeners.getCount() > 0
 				select ident
 				case MouseEvent.idMousePressed
-					this.pMouseListeners.forEach( block MouseListener each
-						each.onButtonPress( event cast MouseEvent )
-					end )
+					pMouseListeners.forEach(block MouseListener each
+						each.onButtonPress(event cast MouseEvent)
+					end)
 					
 				case MouseEvent.idMouseReleased
-					this.pMouseListeners.forEach( block MouseListener each
-						each.onButtonRelease( event cast MouseEvent )
-					end )
+					pMouseListeners.forEach(block MouseListener each
+						each.onButtonRelease(event cast MouseEvent)
+					end)
 					
 				case MouseEvent.idMouseMoved
-					this.pMouseListeners.forEach( block MouseListener each
-						each.onMouseMove( event cast MouseEvent )
-					end )
+					pMouseListeners.forEach(block MouseListener each
+						each.onMouseMove(event cast MouseEvent)
+					end)
 					
 				case MouseEvent.idMouseWheeled
-					this.pMouseListeners.forEach( block MouseListener each
-						each.onMouseWheel( event cast MouseEvent )
-					end )
+					pMouseListeners.forEach(block MouseListener each
+						each.onMouseWheel(event cast MouseEvent)
+					end)
 					
 				case MouseEvent.idMouseEnter
-					this.pMouseListeners.forEach( block MouseListener each
-						each.onMouseEnter( event cast MouseEvent )
-					end )
+					pMouseListeners.forEach(block MouseListener each
+						each.onMouseEnter(event cast MouseEvent)
+					end)
 					
 				case MouseEvent.idMouseLeave
-					this.pMouseListeners.forEach( block MouseListener each
-						each.onMouseLeave( event cast MouseEvent )
-					end )
+					pMouseListeners.forEach(block MouseListener each
+						each.onMouseLeave(event cast MouseEvent)
+					end)
 				end
 				
-			elif sendToParent and this.pParent != null
-				this.pParent.sendEvent( event )
+			elif sendToParent and pParent != null
+				pParent.sendEvent(event)
 			end
 			
-		elif DragEvent.isDragEvent( ident )
-			if this.pDragListeners != null and this.pDragListeners.getCount() > 0
+		elif DragEvent.isDragEvent(ident)
+			if pDragListeners != null and pDragListeners.getCount() > 0
 				select ident
 				case DragEvent.idDragEnter
-					this.pDragListeners.forEach( block DragListener each
-						each.onDragEnter( event cast DragEvent )
-					end )
+					pDragListeners.forEach(block DragListener each
+						each.onDragEnter(event cast DragEvent)
+					end)
 					
 				case DragEvent.idDragLeave
-					this.pDragListeners.forEach( block DragListener each
-						each.onDragLeave( event cast DragEvent )
-					end )
+					pDragListeners.forEach(block DragListener each
+						each.onDragLeave(event cast DragEvent)
+					end)
 					
 				case DragEvent.idDragOver
-					this.pDragListeners.forEach( block DragListener each
-						each.onDragOver( event cast DragEvent )
-					end )
+					pDragListeners.forEach(block DragListener each
+						each.onDragOver(event cast DragEvent)
+					end)
 					
 				case DragEvent.idDragDrop
-					this.pDragListeners.forEach( block DragListener each
-						each.onDragDrop( event cast DragEvent )
-					end )
+					pDragListeners.forEach(block DragListener each
+						each.onDragDrop(event cast DragEvent)
+					end)
 				end
 				
-			elif sendToParent and this.pParent != null
-				this.pParent.sendEvent( event )
+			elif sendToParent and pParent != null
+				pParent.sendEvent(event)
 			end
 			
-		elif FocusEvent.isFocusEvent( ident )
-			if this.pFocusListeners != null and this.pFocusListeners.getCount() > 0
+		elif FocusEvent.isFocusEvent(ident)
+			if pFocusListeners != null and pFocusListeners.getCount() > 0
 				select ident
 				case FocusEvent.idFocusReceived
-					this.pFocusListeners.forEach( block FocusListener each
-						each.onFocusReceived( event cast FocusEvent )
-					end )
+					pFocusListeners.forEach(block FocusListener each
+						each.onFocusReceived(event cast FocusEvent)
+					end)
 					
 				case FocusEvent.idFocusLost
-					this.pFocusListeners.forEach( block FocusListener each
-						each.onFocusLost( event cast FocusEvent )
-					end )
+					pFocusListeners.forEach(block FocusListener each
+						each.onFocusLost(event cast FocusEvent)
+					end)
 				end
 			end
 			
-		elif WidgetEvent.isWidgetEvent( ident )
-			if this.pWidgetListeners != null and this.pWidgetListeners.getCount() > 0
+		elif WidgetEvent.isWidgetEvent(ident)
+			if pWidgetListeners != null and pWidgetListeners.getCount() > 0
 				select ident
 				case WidgetEvent.idWidgetShown
-					this.pWidgetListeners.forEach( block WidgetListener each
-						each.onWidgetShown( event cast WidgetEvent )
-					end )
+					pWidgetListeners.forEach(block WidgetListener each
+						each.onWidgetShown(event cast WidgetEvent)
+					end)
 					
 				case WidgetEvent.idWidgetHidden
-					this.pWidgetListeners.forEach( block WidgetListener each
-						each.onWidgetHidden( event cast WidgetEvent )
-					end )
+					pWidgetListeners.forEach(block WidgetListener each
+						each.onWidgetHidden(event cast WidgetEvent)
+					end)
 					
 				case WidgetEvent.idWidgetReposition
-					this.pWidgetListeners.forEach( block WidgetListener each
-						each.onWidgetReposition( event cast WidgetEvent )
-					end )
+					pWidgetListeners.forEach(block WidgetListener each
+						each.onWidgetReposition(event cast WidgetEvent)
+					end)
 					
 				case WidgetEvent.idWidgetResized
-					this.pWidgetListeners.forEach( block WidgetListener each
-						each.onWidgetResize( event cast WidgetEvent )
-					end )
+					pWidgetListeners.forEach(block WidgetListener each
+						each.onWidgetResize(event cast WidgetEvent)
+					end)
 					
 				case WidgetEvent.idWidgetDispose
-					this.pWidgetListeners.forEach( block WidgetListener each
-						each.onWidgetDispose( event cast WidgetEvent )
-					end )
+					pWidgetListeners.forEach(block WidgetListener each
+						each.onWidgetDispose(event cast WidgetEvent)
+					end)
 				end
 			end
 			
-		elif StateChangeEvent.isStateChangeEvent( ident )
-			if this.pStateChangeListeners != null and this.pStateChangeListeners.getCount() > 0
+		elif StateChangeEvent.isStateChangeEvent(ident)
+			if pStateChangeListeners != null and pStateChangeListeners.getCount() > 0
 				select ident
 				case StateChangeEvent.idStateChanged
-					this.pStateChangeListeners.forEach( block StateChangeListener each
-						each.onStateChanged( event cast StateChangeEvent )
-					end )
+					pStateChangeListeners.forEach(block StateChangeListener each
+						each.onStateChanged(event cast StateChangeEvent)
+					end)
 				end
 			end
 			
-		elif GamepadEvent.isGamepadEvent( ident )
-			if this.pGamepadListeners != null and this.pGamepadListeners.getCount() > 0
+		elif GamepadEvent.isGamepadEvent(ident)
+			if pGamepadListeners != null and pGamepadListeners.getCount() > 0
 				select ident
 				case GamepadEvent.idGamepadAxisMoved
-					this.pGamepadListeners.forEach( block GamepadListener each
-						each.onGamepadAxisMoved( event cast GamepadEvent )
-					end )
+					pGamepadListeners.forEach(block GamepadListener each
+						each.onGamepadAxisMoved(event cast GamepadEvent)
+					end)
 					
 				case GamepadEvent.idGamepadButtonPressed
-					this.pGamepadListeners.forEach( block GamepadListener each
-						each.onGamepadButtonPressed( event cast GamepadEvent )
-					end )
+					pGamepadListeners.forEach(block GamepadListener each
+						each.onGamepadButtonPressed(event cast GamepadEvent)
+					end)
 					
 				case GamepadEvent.idGamepadButtonReleased
-					this.pGamepadListeners.forEach( block GamepadListener each
-						each.onGamepadButtonReleased( event cast GamepadEvent )
-					end )
+					pGamepadListeners.forEach(block GamepadListener each
+						each.onGamepadButtonReleased(event cast GamepadEvent)
+					end)
 				end
 				
-			elif sendToParent and this.pParent != null
-				this.pParent.sendEvent( event )
+			elif sendToParent and pParent != null
+				pParent.sendEvent(event)
 			end
 		end
 	end
@@ -1519,19 +1566,19 @@ class Widget
 	 * - Parent gui theme if not null
 	 * - null gui theme
 	 */
-	public func GuiTheme getGuiTheme()
-		if this.pTheme != null
-			return this.pTheme
+	func GuiTheme getGuiTheme()
+		if pTheme != null
+			return pTheme
 		end
 		
-		if this.pParent == null
+		if pParent == null
 			return null
 		end
 		
-		var GuiTheme theme = this.pParent.getGuiTheme()
+		var GuiTheme theme = pParent.getGuiTheme()
 		
-		if theme != null and this.pThemeSelector != null
-			var GuiTheme selected = theme.getNamedGuiTheme( this.pThemeSelector )
+		if theme != null and pThemeSelector != null
+			var GuiTheme selected = theme.getNamedGuiTheme(pThemeSelector)
 			if selected != null
 				theme = selected
 			end
@@ -1541,42 +1588,127 @@ class Widget
 	end
 	
 	/** Sets the gui theme for this widget. */
-	public func void setGuiTheme( GuiTheme theme )
-		if this.pTheme == theme
+	func void setGuiTheme(GuiTheme theme)
+		if pTheme == theme
 			return
 		end
 		
-		this.pTheme = theme
+		pTheme = theme
 		
-		this.onGuiThemeChanged()
+		onGuiThemeChanged()
 	end
 	
 	/** Determines if this widget has the theme set explicitly. */
-	public func bool isGuiThemeSet()
-		return this.pTheme != null
+	func bool isGuiThemeSet()
+		return pTheme != null
 	end
 	
 	/** \brief Gui theme selector or \em null if not used. */
-	public func String getThemeSelector()
-		return this.pThemeSelector
+	func String getThemeSelector()
+		return pThemeSelector
 	end
 	
 	/** \brief Set gui theme selector or \em null if not used. */
-	public func void setThemeSelector( String selector )
-		if this.pThemeSelector == null
+	func void setThemeSelector(String selector)
+		if pThemeSelector == null
 			if selector == null
 				return
 			end
 			
 		else
-			if this.pThemeSelector.equals( selector )
+			if pThemeSelector.equals(selector)
 				return
 			end
 		end
 		
-		this.pThemeSelector = selector
+		pThemeSelector = selector
 		
-		this.onGuiThemeChanged()
+		onGuiThemeChanged()
+	end
+	
+	
+	
+	/**
+	 * \brief Translation manager to use for this widget.
+	 * \version 1.20
+	 * 
+	 * Can be null to disable translations. Initialized with BaseGameApp TranslationManager.
+	 * 
+	 * If an explicit translation manager is assigned it is used. Otherwise the translation
+	 * manager of the parent widget is requested. If the parent can not provide a translation
+	 * manager TranslationManager.get() is used.
+	 */
+	func TranslationManager getTranslationManager()
+		if pTranslationManager != null
+			return pTranslationManager
+		end
+		
+		var TranslationManager tm
+		if pParent != null
+			tm = pParent.getTranslationManager()
+		end
+		
+		if tm == null
+			tm = TranslationManager.get()
+		end
+		
+		return tm
+	end
+	
+	/**
+	 * \brief Set translation manager to use.
+	 * \version 1.20
+	 */
+	func void setTranslationManager(TranslationManager translationManager)
+		if pTranslationManager == translationManager
+			return
+		end
+		
+		pTranslationManager = translationManager
+		
+		onTranslationChanged()
+	end
+	
+	/**
+	 * \brief Widget has language translation set explicitly.
+	 * \version 1.20
+	 */
+	func bool isTranslationManagerSet()
+		return pTranslationManager != null
+	end
+	
+	/**
+	 * \brief Translate text if it is a translateable.
+	 * \version 1.20
+	 * 
+	 * Translates text of the form "@Translation.Entry.Name". If the translation entry can not
+	 * be found the text itself is returned. Translation is first attempted using
+	 * getTranslationManager(). If this yields no result EngineTranslations.get() is used.
+	 */
+	func String translate(String text)
+		if text.startsWith("@")
+			var UnicodeString t = translateEntry(text.substring(1))
+			if t != null
+				text = t.toUTF8()
+			end
+		end
+		return text
+	end
+	
+	/**
+	 * \brief Get translation for translation entry name if found.
+	 * \version 1.20
+	 * 
+	 * If the translation entry can not be found null is returned. Translation is first
+	 * attempted using getTranslationManager(). If this yields no result
+	 * EngineTranslations.get() is used.
+	 */
+	func UnicodeString translateEntry(String name)
+		var UnicodeString t = getTranslationManager().translate(name, null)
+		if t == null
+			t = EngineTranslations.get().translate(name, null)
+		end
+		return t
 	end
 	
 	
@@ -1586,9 +1718,11 @@ class Widget
 	 * is to send the message to all registered listeners or propagate it back
 	 * to the parent if allowed.
 	 */
-	public func void onButtonPress( MouseEvent event )
-		this.grabFocus()
-		this.sendEventToListeners( event, true )
+	func void onButtonPress(MouseEvent event)
+		if event.getSource() == this
+			grabFocus()
+		end
+		sendEventToListeners(event, true)
 	end
 	
 	/**
@@ -1596,8 +1730,8 @@ class Widget
 	 * is to send the message to all registered listeners or propagate it back
 	 * to the parent if allowed.
 	 */
-	public func void onButtonRelease( MouseEvent event )
-		this.sendEventToListeners( event, true )
+	func void onButtonRelease(MouseEvent event)
+		sendEventToListeners(event, true)
 	end
 	
 	/**
@@ -1605,8 +1739,8 @@ class Widget
 	 * is to send the message to all registered listeners or propagate it back
 	 * to the parent if allowed.
 	 */
-	public func void onMouseMove( MouseEvent event )
-		this.sendEventToListeners( event, true )
+	func void onMouseMove(MouseEvent event)
+		sendEventToListeners(event, true)
 	end
 	
 	/**
@@ -1614,8 +1748,8 @@ class Widget
 	 * 
 	 * Default behaviour sends event to listeners or propagates event to parent if allowed.
 	 */
-	public func void onMouseWheel( MouseEvent event )
-		this.sendEventToListeners( event, true )
+	func void onMouseWheel(MouseEvent event)
+		sendEventToListeners(event, true)
 	end
 	
 	/**
@@ -1623,9 +1757,9 @@ class Widget
 	 * is to send the message to all registered listeners or propagate it back
 	 * to the parent if allowed.
 	 */
-	public func void onMouseEnter( MouseEvent event )
-		this.design()
-		this.sendEventToListeners( event, true )
+	func void onMouseEnter(MouseEvent event)
+		design()
+		sendEventToListeners(event, true)
 	end
 	
 	/**
@@ -1633,9 +1767,9 @@ class Widget
 	 * is to send the message to all registered listeners or propagate it back
 	 * to the parent if allowed.
 	 */
-	public func void onMouseLeave( MouseEvent event )
-		this.design()
-		this.sendEventToListeners( event, true )
+	func void onMouseLeave(MouseEvent event)
+		design()
+		sendEventToListeners(event, true)
 	end
 	
 	
@@ -1645,20 +1779,20 @@ class Widget
 	 * is to send the message to all registered listeners or propagate it back
 	 * to the parent if allowed.
 	 */
-	public func void onKeyPress( KeyEvent event )
+	func void onKeyPress(KeyEvent event)
 		select event.getKeyCode()
 		case InputEventKey.tab
-			if not this.pHasFocus
+			if not pHasFocus
 				break
 			end
 			
 			var Widget widget
 			
-			if ( event.getModifiers() & ModifiableEvent.shift ) == ModifiableEvent.shift
-				widget = this.prevFocusWidget()
+			if (event.getModifiers() & ModifiableEvent.shift) == ModifiableEvent.shift
+				widget = prevFocusWidget()
 			
 			else
-				widget = this.nextFocusWidget()
+				widget = nextFocusWidget()
 			end
 			
 			if widget != null
@@ -1666,7 +1800,7 @@ class Widget
 			end
 		end
 		
-		this.sendEventToListeners( event, true )
+		sendEventToListeners(event, true)
 	end
 	
 	/**
@@ -1674,8 +1808,8 @@ class Widget
 	 * is to send the message to all registered listeners or propagate it back
 	 * to the parent if allowed.
 	 */
-	public func void onKeyRelease( KeyEvent event )
-		this.sendEventToListeners( event, true )
+	func void onKeyRelease(KeyEvent event)
+		sendEventToListeners(event, true)
 	end
 	
 	
@@ -1685,8 +1819,8 @@ class Widget
 	 * is to send the message to all registered listeners or propagate it back
 	 * to the parent if allowed.
 	 */
-	public func void onDragEnter( DragEvent event )
-		this.sendEventToListeners( event, true )
+	func void onDragEnter(DragEvent event)
+		sendEventToListeners(event, true)
 	end
 	
 	/**
@@ -1694,8 +1828,8 @@ class Widget
 	 * is to send the message to all registered listeners or propagate it back
 	 * to the parent if allowed.
 	 */
-	public func void onDragLeave( DragEvent event )
-		this.sendEventToListeners( event, true )
+	func void onDragLeave(DragEvent event)
+		sendEventToListeners(event, true)
 	end
 	
 	/**
@@ -1703,8 +1837,8 @@ class Widget
 	 * is to send the message to all registered listeners or propagate it back
 	 * to the parent if allowed.
 	 */
-	public func void onDragOver( DragEvent event )
-		this.sendEventToListeners( event, true )
+	func void onDragOver(DragEvent event)
+		sendEventToListeners(event, true)
 	end
 	
 	/**
@@ -1712,8 +1846,8 @@ class Widget
 	 * is to send the message to all registered listeners or propagate it back
 	 * to the parent if allowed.
 	 */
-	public func void onDragDrop( DragEvent event )
-		this.sendEventToListeners( event, true )
+	func void onDragDrop(DragEvent event)
+		sendEventToListeners(event, true)
 	end
 	
 	
@@ -1724,19 +1858,24 @@ class Widget
 	 * Default behaviour sends event to all gamepad listeners or propagates event
 	 * to parent if allowed.
 	 */
-	public func void onGamepadAxisMoved( GamepadEvent event )
-		this.grabFocus()
-		this.sendEventToListeners( event, true )
+	func void onGamepadAxisMoved(GamepadEvent event)
+		if event.getSource() == this
+			grabFocus()
+		end
+		sendEventToListeners(event, true)
 	end
 	
 	/**
 	 * \brief Gamepad button has been pressed.
 	 * 
 	 * Default behaviour sends event to all gamepad listeners or propagates event
-	 * to parent if allowed. grabFocus() is not called automatically.
+	 * to parent if allowed.
 	 */
-	public func void onGamepadButtonPressed( GamepadEvent event )
-		this.sendEventToListeners( event, true )
+	func void onGamepadButtonPressed(GamepadEvent event)
+		if event.getSource() == this
+			grabFocus()
+		end
+		sendEventToListeners(event, true)
 	end
 	
 	/**
@@ -1745,9 +1884,8 @@ class Widget
 	 * Default behaviour sends event to all gamepad listeners or propagates event
 	 * to parent if allowed.
 	 */
-	public func void onGamepadButtonReleased( GamepadEvent event )
-		this.grabFocus()
-		this.sendEventToListeners( event, true )
+	func void onGamepadButtonReleased(GamepadEvent event)
+		sendEventToListeners(event, true)
 	end
 	
 	
@@ -1757,13 +1895,13 @@ class Widget
 	 * the x and y coordinates are bigger or equal 0 and are less tha width or
 	 * height of the widget.
 	 */
-	public func bool isPointInside( Point position )
-		return position.isAtLeast( 0 ) and position < this.pSize
+	func bool isPointInside(Point position)
+		return position.isAtLeast(0) and position < pSize
 	end
 	
 	/** \brief Widget at coordinates or \em null if not found. */
-	public func Widget getWidgetAt( Point position )
-		if this.isPointInside( position )
+	func Widget getWidgetAt(Point position)
+		if isPointInside(position)
 			return this
 		end
 		return null
@@ -1772,29 +1910,29 @@ class Widget
 	
 	
 	/** Makes the widget grab the focus if possible. */
-	public func void grabFocus()
-		if this.pHasFocus
+	func void grabFocus()
+		if pHasFocus
 			return
 		end
 		
-		if this.pCanFocus
-			this.requestGrabFocus( this )
+		if pCanFocus
+			requestGrabFocus(this)
 			
-		elif this.pParent != null
-			this.pParent.grabFocus()
+		elif pParent != null
+			pParent.grabFocus()
 		end
 	end
 	
 	/** Request to focus the specified widget. */
-	public func void requestGrabFocus( Widget widget )
-		if this.pEnabled and this.pVisible and this.pParent != null
-			this.pParent.requestGrabFocus( widget )
+	func void requestGrabFocus(Widget widget)
+		if pEnabled and pVisible and pParent != null
+			pParent.requestGrabFocus(widget)
 		end
 	end
 	
 	/** Find first widget that can grab the focus or null if none exists. */
-	public func Widget findFocusableWidget()
-		if this.pEnabled and this.pVisible and this.pCanFocus
+	func Widget findFocusableWidget()
+		if pEnabled and pVisible and pCanFocus
 			return this
 		end
 		
@@ -1802,8 +1940,8 @@ class Widget
 	end
 	
 	/** Find last widget that can grab the focus or null if none exists. */
-	public func Widget findLastFocusableWidget()
-		if this.pEnabled and this.pVisible and this.pCanFocus
+	func Widget findLastFocusableWidget()
+		if pEnabled and pVisible and pCanFocus
 			return this
 		end
 		
@@ -1813,50 +1951,50 @@ class Widget
 	/**
 	 * \brief Find next widget in the focus cycle that can grab the focus.
 	 */
-	public func Widget nextFocusWidget()
-		if this.pParent == null
+	func Widget nextFocusWidget()
+		if pParent == null
 			return null
 		end
-		return this.pParent.nextFocusWidgetAfter( this )
+		return pParent.nextFocusWidgetAfter(this)
 	end
 	
 	/**
 	 * \brief Find previous widget in the focus cycle that can grab the focus.
 	 */
-	public func Widget prevFocusWidget()
-		if this.pParent == null
+	func Widget prevFocusWidget()
+		if pParent == null
 			return null
 		end
-		return this.pParent.prevFocusWidgetAfter( this )
+		return pParent.prevFocusWidgetAfter(this)
 	end
 	
 	/**
 	 * Determines if a widget can grab the full focus. Full focus means that all
 	 * parents above the widget are visible and enabled
 	 */
-	public func bool canGrabFullFocus()
-		if this.pEnabled and this.pVisible and this.pCanFocus and this.pParent != null
-			return this.pParent.allowsChildGrabFocus()
+	func bool canGrabFullFocus()
+		if pEnabled and pVisible and pCanFocus and pParent != null
+			return pParent.allowsChildGrabFocus()
 		end
 		return false
 	end
 	
 	/** Captures the mouse if not already captured by another widget. */
-	public func void captureMouse()
-		if this.pParent == null
+	func void captureMouse()
+		if pParent == null
 			return
 		end
 		
-		this.pParent.requestCaptureMouse( this )
+		pParent.requestCaptureMouse(this)
 	end
 	
 	/** Release mouse capture. */
-	public func void releaseMouse()
-		if this.pParent == null
+	func void releaseMouse()
+		if pParent == null
 			return
 		end
 		
-		this.pParent.requestReleaseMouse( this )
+		pParent.requestReleaseMouse(this)
 	end
 	
 	
@@ -1866,9 +2004,9 @@ class Widget
 	 * window. The default implementation forwards the request to the
 	 * parent with the Window or a subclass thereof intercepting.
 	 */
-	public func Window getWindow()
-		if this.pParent != null
-			return this.pParent.getWindow()
+	func Window getWindow()
+		if pParent != null
+			return pParent.getWindow()
 		end
 		return null
 	end
@@ -1878,9 +2016,9 @@ class Widget
 	 * desktop. The default implementation forwards the request to the
 	 * parent with the Desktop or a subclass thereof intercepting.
 	 */
-	public func Desktop getDesktop()
-		if this.pParent != null
-			return this.pParent.getDesktop()
+	func Desktop getDesktop()
+		if pParent != null
+			return pParent.getDesktop()
 		end
 		return null
 	end
@@ -1897,8 +2035,8 @@ class Widget
 	 * The default implementation is to send the event to yourself.
 	 * Overwrite this behaviour to implement Desktop Widgets.
 	 */
-	public func void processEvent( Event event )
-		this.sendEvent( event )
+	func void processEvent(Event event)
+		sendEvent(event)
 	end
 	
 	
@@ -1907,25 +2045,25 @@ class Widget
 	 * \brief Widget has been shown.
 	 * \details Sends event to listeners.
 	 */
-	public func void onShown( WidgetEvent event )
-		this.sendEventToListeners( event, false )
+	func void onShown(WidgetEvent event)
+		sendEventToListeners(event, false)
 	end
 	
 	/**
 	 * \brief Widget has been hidden.
 	 * \details Sends event to listeners.
 	 */
-	public func void onHidden( WidgetEvent event )
-		this.sendEventToListeners( event, false )
+	func void onHidden(WidgetEvent event)
+		sendEventToListeners(event, false)
 	end
 	
 	/**
 	 * \brief State changed.
 	 * \details Sends event to listeners.
 	 */
-	public func void onStateChanged( StateChangeEvent event )
-		this.design()
-		this.sendEventToListeners( event, false )
+	func void onStateChanged(StateChangeEvent event)
+		design()
+		sendEventToListeners(event, false)
 	end
 	
 	/**
@@ -1935,62 +2073,75 @@ class Widget
 	 * 
 	 * The default implementation triggers a design() call.
 	 */
-	public func void onParentStateChanged()
-		this.design()
+	func void onParentStateChanged()
+		design()
+	end
+	
+	/**
+	 * \brief Parent state changed.
+	 * \version 1.7
+	 * 
+	 * Calls onParentStateChanged(bool) on all child widgets. Supports forcing update on the
+	 * entire children chain.
+	 */
+	func void onParentStateChanged(bool force)
+		design()
 	end
 	
 	/**
 	 * \brief Widget received focus.
 	 * \details Sends event to listeners.
 	 */
-	public func void onFocusReceived( FocusEvent event )
-		this.design()
-		this.sendEventToListeners( event, false )
+	func void onFocusReceived(FocusEvent event)
+		design()
+		sendEventToListeners(event, false)
 	end
 	
 	/**
 	 * \brief Widget lost focus.
 	 * \details Sends event to listeners.
 	 */
-	public func void onFocusLost( FocusEvent event )
-		this.design()
-		this.sendEventToListeners( event, false )
+	func void onFocusLost(FocusEvent event)
+		design()
+		sendEventToListeners(event, false)
 	end
 	
 	/** \brief Text color changed. */
-	public func void onSetTextColor()
+	func void onSetTextColor()
 	end
 	
 	/** Notification that the widget font changed. */
-	public func void onSetFont()
+	func void onSetFont()
 	end
 	
 	/**
 	 * \brief Position changed.
 	 * \details Sends event to listeners.
 	 */
-	public func void onReposition( WidgetEvent event )
-		this.sendEventToListeners( event, false )
+	func void onReposition(WidgetEvent event)
+		sendEventToListeners(event, false)
 	end
 	
 	/**
 	 * \brief Size changed.
 	 * \details Sends event to listeners.
 	 */
-	public func void onResize( WidgetEvent event )
-		this.sendEventToListeners( event, false )
+	func void onResize(WidgetEvent event)
+		sendEventToListeners(event, false)
 	end
 	
 	/**
 	 * \brief Window is disposing.
-	 * \details Sends event to listeners.
+	 * 
+	 * Sends event to listeners of this widget only. Method is only
+	 * called if widget listeners are present.
 	 */
-	public func void onDispose( WidgetEvent event )
-		this.sendEventToListeners( event, false )
+	func void onDispose(WidgetEvent event)
+		sendEventToListeners(event, false)
 	end
 	
 	/** \brief Designer selector changed. */
-	public func void onDesignerSelectorChanged()
+	func void onDesignerSelectorChanged()
 	end
 	
 	/**
@@ -1998,55 +2149,65 @@ class Widget
 	 * Attention! You have to super-call this method since it is used a bit
 	 *            differently than the other callback methods.
 	 */
-	public func void onGuiThemeChanged()
-		if not this.pIsDesignerSet
-			this.setDesigner( null ) // set designer from gui theme
+	func void onGuiThemeChanged()
+		if not pIsDesignerSet
+			setDesigner(null) // set designer from gui theme
 		end
 		
-		if this.pBorder != null
-			this.pBorder.onGuiThemeChanged()
+		if pBorder != null
+			pBorder.onGuiThemeChanged()
 		end
 		
-		this.updateCanvasBackground()
+		updateCanvasBackground()
 	end
 	
 	/** \brief Padding changed. */
-	public func void onPaddingChanged()
+	func void onPaddingChanged()
 	end
 	
 	/** \brief Designer changed. */
-	public func void onDesignerChanged()
+	func void onDesignerChanged()
+	end
+	
+	/**
+	 * \brief Translation manager or active language pack changed.
+	 * \version 1.20
+	 */
+	func void onTranslationChanged()
+		if pBorder != null
+			pBorder.onWidgetParametersChanged()
+		end
 	end
 	
 	
 	
 	/** \brief Design widget using WidgetDesigner. */
-	public func void design()
-		if this.pDesigner != null
-			this.pDesigner.designWidget( this )
+	func void design()
+		if pDesigner != null
+			pDesigner.designWidget(this)
 		end
 	end
 	
 	
 	
 	/** Stops the repeat key event timer. */
-	public func void stopRepeatEventTimer()
-		if this.pRepeatEventTimer == null
+	func void stopRepeatEventTimer()
+		if pRepeatEventTimer == null
 			return
 		end
 		
-		this.pRepeatEventTimer.giveUp()
-		this.pRepeatEventTimer = null
+		pRepeatEventTimer.giveUp()
+		pRepeatEventTimer = null
 	end
 	
 	/** Starts a repeat key event timer. */
-	private func void startRepeatKey( KeyEvent event )
-		if this.pRepeatEventTimer == null
-			this.pRepeatEventTimer = RepeatKeyEventTimer.new( this, event )
+	private func void startRepeatKey(KeyEvent event)
+		if pRepeatEventTimer == null
+			pRepeatEventTimer = RepeatKeyEventTimer.new(this, event)
 			
-		elif not this.pRepeatEventTimer.getEvent().equalKeyEvents( event )
-			this.pRepeatEventTimer.giveUp()
-			this.pRepeatEventTimer = RepeatKeyEventTimer.new( this, event )
+		elif not pRepeatEventTimer.getEvent().equalKeyEvents(event)
+			pRepeatEventTimer.giveUp()
+			pRepeatEventTimer = RepeatKeyEventTimer.new(this, event)
 		end
 	end
 	
@@ -2057,19 +2218,19 @@ class Widget
 	 * 
 	 * Once running the widget receives onFrameUpdate() calls every frame update.
 	 */
-	public func void startFrameUpdater()
-		if this.pFrameUpdater == null
-			this.pFrameUpdater = FrameUpdater.new( this )
+	func void startFrameUpdater()
+		if pFrameUpdater == null
+			pFrameUpdater = FrameUpdater.new(this)
 		end
 	end
 	
 	/**
 	 * \brief Stop frame updater if running.
 	 */
-	public func void stopFrameUpdater()
-		if this.pFrameUpdater != null
-			this.pFrameUpdater.giveUp()
-			this.pFrameUpdater = null
+	func void stopFrameUpdater()
+		if pFrameUpdater != null
+			pFrameUpdater.giveUp()
+			pFrameUpdater = null
 		end
 	end
 	
@@ -2080,7 +2241,64 @@ class Widget
 	 * 
 	 * \param elapsed Elapsed time since the last frame update. Equals Engine.getElapsedTime().
 	 */
-	public func void onFrameUpdate( float elapsed )
+	func void onFrameUpdate(float elapsed)
+	end
+	
+	
+	
+	
+	/**
+	 * \brief Popup virtual keyboard if Desktop has one assigned.
+	 * \version 1.7
+	 */
+	func void popupVirtualKeyboard()
+		var Desktop desktop = getDesktop()
+		if desktop != null
+			var WindowVirtualKeyboard vk = desktop.getWindowVirtualKeyboard()
+			if vk != null and vk.getInputWidget() != this
+				vk.popup(this)
+			end
+		end
+	end
+	
+	/**
+	 * \brief Popdown virtual keyboard if Desktop has one assigned.
+	 * \version 1.7
+	 */
+	func void popdownVirtualKeyboard()
+		var Desktop desktop = getDesktop()
+		if desktop != null
+			var WindowVirtualKeyboard vk = desktop.getWindowVirtualKeyboard()
+			if vk != null and vk.getInputWidget() == this
+				vk.popdown()
+			end
+		end
+	end
+	
+	
+	
+	/**
+	 * \brief Clipboard or null to use parent clipboard.
+	 * \version 1.11
+	 */
+	func Clipboard getClipboard()
+		if pClipboard != null
+			return pClipboard
+			
+		elif pParent != null
+			return pParent.getClipboard()
+			
+		else
+			return null
+		end
+	end
+	
+	/**
+	 * \brief Set clipboard or null to use parent clipboard.
+	 * \version 1.11
+	 */
+	func void setClipboard(Clipboard clipboard)
+		pClipboard = clipboard
 	end
 	
 	
@@ -2097,17 +2315,17 @@ class Widget
 	 * existing and is required to have order larger 1 (typically 2).
 	 */
 	private func void createCanvas()
-		this.pCanvasWidget = CanvasView.new()
-		this.pCanvasWidget.setVisible( this.pVisible )
-		this.pCanvasWidget.setTransparency( this.pTransparency )
+		pCanvasWidget = CanvasView.new()
+		pCanvasWidget.setVisible(pVisible)
+		pCanvasWidget.setTransparency(pTransparency)
 		
-		this.pCanvasBackground = CanvasView.new()
-		this.pCanvasBackground.setOrder( 0.0 )
-		this.pCanvasWidget.addCanvas( this.pCanvasBackground )
+		pCanvasBackground = CanvasView.new()
+		pCanvasBackground.setOrder(0.0)
+		pCanvasWidget.addCanvas(pCanvasBackground)
 		
-		this.pCanvasContent = CanvasView.new()
-		this.pCanvasContent.setOrder( 1.0 )
-		this.pCanvasWidget.addCanvas( this.pCanvasContent )
+		pCanvasContent = CanvasView.new()
+		pCanvasContent.setOrder(1.0)
+		pCanvasWidget.addCanvas(pCanvasContent)
 	end
 	
 	/**
@@ -2122,27 +2340,27 @@ class Widget
 	 *          been processed.
 	 */
 	protected func void updateCanvasGeometry()
-		var Point position = this.pPosition
-		var Point size = this.pSize
+		var Point position = pPosition
+		var Point size = pSize
 		var BorderSize borderSize = BorderSize.new()
 		
-		if this.pBorder != null
-			borderSize = this.pBorder.getBorderSize()
+		if pBorder != null
+			borderSize = pBorder.getBorderSize()
 		end
 		
-		var Point offset = Point.new( borderSize.getLeft(), borderSize.getTop() )
+		var Point offset = Point.new(borderSize.getLeft(), borderSize.getTop())
 		
-		this.pCanvasWidget.setPosition( position - offset )
-		this.pCanvasWidget.setSize( size + borderSize.getSize() )
+		pCanvasWidget.setPosition(position - offset)
+		pCanvasWidget.setSize(size + borderSize.getSize())
 		
-		this.pCanvasBackground.setPosition( offset )
-		this.pCanvasBackground.setSize( size )
+		pCanvasBackground.setPosition(offset)
+		pCanvasBackground.setSize(size)
 		
-		this.pCanvasContent.setPosition( offset )
-		this.pCanvasContent.setSize( size )
+		pCanvasContent.setPosition(offset)
+		pCanvasContent.setSize(size)
 		
-		if this.pBorder != null
-			this.pBorder.resizeCanvas( this.pSize )
+		if pBorder != null
+			pBorder.resizeCanvas(pSize)
 		end
 	end
 	
@@ -2153,12 +2371,12 @@ class Widget
 	 * Widget calls this method if background canvas creator or gui theme changed.
 	 */
 	protected func void updateCanvasBackground()
-		this.pCanvasBackground.removeAllCanvas()
+		pCanvasBackground.removeAllCanvas()
 		
-		if this.pBackgroundCanvasCreator != null
-			var Canvas canvas = this.pBackgroundCanvasCreator.createCanvas( this.pSize )
+		if pBackgroundCanvasCreator != null
+			var Canvas canvas = pBackgroundCanvasCreator.createCanvas(pSize)
 			if canvas != null
-				this.pCanvasBackground.addCanvas( canvas )
+				pCanvasBackground.addCanvas(canvas)
 			end
 		end
 	end

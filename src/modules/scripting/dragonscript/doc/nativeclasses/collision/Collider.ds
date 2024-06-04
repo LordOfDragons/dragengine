@@ -58,22 +58,25 @@ class Collider
 	/*@{*/
 	/** \brief Position. */
 	public func DVector getPosition()
+		return null
 	end
 	
 	/** \brief Set position. */
-	public func void setPosition( DVector position )
+	public func void setPosition(DVector position)
 	end
 	
 	/** \brief Oorientation. */
 	public func Quaternion getOrientation()
+		return null
 	end
 	
 	/** \brief Set orientation. */
-	public func void setOrientation( Quaternion orientation )
+	public func void setOrientation(Quaternion orientation)
 	end
 	
 	/** \brief Scale. */
 	public func Vector getScale()
+		return null
 	end
 	
 	/**
@@ -85,7 +88,7 @@ class Collider
 	 * do not have to set the scaling on the deColliderComponent. For
 	 * deColliderVolume and deColliderRig using scaling is required.
 	 */
-	public func void setScale( Vector scale )
+	public func void setScale(Vector scale)
 	end
 	
 	/**
@@ -97,7 +100,7 @@ class Collider
 	 * attachments are potentially repositioned twice. This call ensures attachments are
 	 * only repositioned once improving performance.
 	 */
-	public func void setGeometry( DVectir position, Quaternion orientation )
+	public func void setGeometry(DVector position, Quaternion orientation)
 	end
 	
 	/**
@@ -109,139 +112,157 @@ class Collider
 	 * attachments are potentially repositioned twice. This call ensures attachments are
 	 * only repositioned once improving performance.
 	 */
-	public func void setGeometry( DVectir position, Quaternion orientation, Vector scale )
+	public func void setGeometry(DVector position, Quaternion orientation, Vector scale)
 	end
 	
 	/** \brief View direction. */
 	public func Vector getView()
+		return null
 	end
 	
 	/** \brief Up direction. */
 	public func Vector getUp()
+		return null
 	end
 	
 	/** \brief Right direction. */
 	public func Vector getRight()
+		return null
 	end
 	
 	/** \brief Get matrix. */
 	public func DMatrix getMatrix()
+		return null
 	end
 	
 	/** \brief Get inverse matrix. */
 	public func DMatrix getInverseMatrix()
+		return null
 	end
 	
 	
 	
 	/** \brief Linear velocity in m/s. */
 	public func Vector getLinearVelocity()
+		return null
 	end
 	
 	/** \brief Set linear velocity in m/s. */
-	public func void setLinearVelocity( Vector linVelo )
+	public func void setLinearVelocity(Vector linVelo)
 	end
 	
 	/** \brief Angular velocity in degrees/s. */
 	public func Vector getAngularVelocity()
+		return null
 	end
 	
 	/** \brief Set angular velocity degrees/s. */
-	public func void setAngularVelocity( Vector angVelo )
+	public func void setAngularVelocity(Vector angVelo)
 	end
 	
 	/** \brief Mass in kg. */
 	public func float getMass()
+		return 0.0
 	end
 	
 	/** \brief Set mass in kg. */
-	public func void setMass( float mass )
+	public func void setMass(float mass)
 	end
 	
 	/** \brief Constant acceleration in N/s^2. */
 	public func Vector getGravity()
+		return null
 	end
 	
 	/** \brief Set constant acceleration in N/s^2. */
-	public func void setGravity( Vector force )
+	public func void setGravity(Vector force)
 	end
 	
 	/** \brief Collider is enabled. */
 	public func bool getEnabled()
+		return false
 	end
 	
 	/** \brief Set if collider is enabled. */
-	public func void setEnabled( bool enabled )
+	public func void setEnabled(bool enabled)
 	end
 	
 	/** \brief Response type. */
 	public func CollisionResponse getResponseType()
+		return null
 	end
 	
 	/** \brief Set response type. */
-	public func void setResponseType( CollisionResponse responseType )
+	public func void setResponseType(CollisionResponse responseType)
 	end
 	
 	/** \brief Collider defined gravity is used instead of World gravity. */
 	public func bool getUseLocalGravity()
+		return false
 	end
 	
 	/** \brief Set if collider defined gravity is used instead of World gravity. */
-	public func void setUseLocalGravity( bool useLocalGravity )
+	public func void setUseLocalGravity(bool useLocalGravity)
 	end
 	
 	
 	
 	/** \brief Object owning the collider for interaction or \em null if not used. */
 	public func Object getOwner()
+		return null
 	end
 	
 	/** \brief Set object owning the collider for interaction or \em null if not used. */
-	public func void setOwner( Object owner )
+	public func void setOwner(Object owner)
 	end
 	
 	
 	
 	/** \brief Factor for direct type force fields. */
 	public func float getForceFieldDirect()
+		return 0.0
 	end
 	
 	/** \brief Set factor for direct type force fields. */
-	public func void setForceFieldDirect( float factor )
+	public func void setForceFieldDirect(float factor)
 	end
 	
 	/** \brief Factor for surface type force fields. */
 	public func float getForceFieldSurface()
+		return 0.0
 	end
 	
 	/** \brief Set factor for surface type force fields. */
-	public func void setForceFieldSurface( float factor )
+	public func void setForceFieldSurface(float factor)
 	end
 	
 	/** \brief Factor for mass type force fields. */
 	public func float getForceFieldMass()
+		return 0.0
 	end
 	
 	/** \brief Set factor for mass type force fields. */
-	public func void setForceFieldMass( float factor )
+	public func void setForceFieldMass(float factor)
 	end
 	
 	/** \brief Factor for speed type force fields. */
 	public func float getForceFieldSpeed()
+		return 0.0
 	end
 	
 	/** \brief Set factor for speed type force fields. */
-	public func void setForceFieldSpeed( float factor )
+	public func void setForceFieldSpeed(float factor)
 	end
 	
 	
 	
 	/** \brief Collision filter. */
 	public func CollisionFilter getCollisionFilter()
+		return null
 	end
 	
 	/** \brief Set collision filter. */
-	public func void setCollisionFilter( CollisionFilter collisionFilter )
+	public func void setCollisionFilter(CollisionFilter collisionFilter)
 	end
 	
 	
@@ -251,7 +272,8 @@ class Collider
 	 * \details Implements Object.equals(Object).
 	 * \returns \em true if \em other is of type Collider and both point to the same engine collider.
 	 */
-	public func bool equals( Object other )
+	public func bool equals(Object other)
+		return false
 	end
 	
 	/**
@@ -262,7 +284,8 @@ class Collider
 	 *          \em null itself. If \em collider1 or \em collider2 is \em null \em false is returned.
 	 *          If both are \em null \em true is returned.
 	 */
-	public static func bool equals( Collider collider1, Collider collider2 )
+	public static func bool equals(Collider collider1, Collider collider2)
+		return false
 	end
 	
 	/**
@@ -270,6 +293,7 @@ class Collider
 	 * \details Implements Object.hashCode().
 	 */
 	public func int hashCode()
+		return 0
 	end
 	/*@}*/
 	
@@ -279,29 +303,31 @@ class Collider
 	/*@{*/
 	/** \brief Number of attachments. */
 	public func int getAttachmentCount()
+		return 0
 	end
 	
 	/**
 	 * \brief Resource of attachment at index.
 	 * \throws EOutOfBoundary \em index is less than 0 or larger than or equal to getAttachmentCount().
 	 */
-	public func Object getAttachedResource( int index )
+	public func Object getAttachedResource(int index)
+		return null
 	end
 	
 	/** \brief Attach resource using static mode relative to current position. */
-	public func void attachStatic( Object resource )
+	public func void attachStatic(Object resource)
 	end
 	
 	/** \brief Attach resource using static mode with specific position. */
-	public func void attachStatic( Object resource, Vector position, Quaternion orientation )
+	public func void attachStatic(Object resource, Vector position, Quaternion orientation)
 	end
 	
 	/** \brief Attach collider keeping relative position and orientation. */
-	public func void attachRelativeMovement( Object resource )
+	public func void attachRelativeMovement(Object resource)
 	end
 	
 	/** \brief Detach resource. */
-	public func void detach( Object resource )
+	public func void detach(Object resource)
 	end
 	
 	/** \brief Detach all resources. */
@@ -310,10 +336,11 @@ class Collider
 	
 	/**
 	 * \brief Force update of all attachments.
-	 * \details You have to call this if want to reset colliders and components to a
-	 *          predefined state like after warping or resetting objects. This requires
-	 *          an attachment update outside the regular physics simulation run by the
-	 *          physics module to prevent exploding behavior.
+	 * 
+	 * You have to call this if want to reset colliders and components to a
+	 * predefined state like after warping or resetting objects. This requires
+	 * an attachment update outside the regular physics simulation run by the
+	 * physics module to prevent exploding behavior.
 	 */
 	public func void attachmentsForceUpdate()
 	end
@@ -325,24 +352,62 @@ class Collider
 	/*@{*/
 	/** \brief Number of constraints. */
 	public func int getConstraintCount()
+		return 0
 	end
 	
-	/** \brief Add constraint from a collider constraint. */
-	public func void addConstraint( ColliderConstraint constraint )
+	/**
+	 * \brief Add constraint from a collider constraint.
+	 * \throws EInvalidParam Constraint with same bone, target collider and target bone is present.
+	 */
+	public func void addConstraint(ColliderConstraint constraint)
+	end
+	
+	/**
+	 * \brief Constraint with same bone, target collider and target bone is present.
+	 * \version 1.13
+	 */
+	public func bool hasConstraint(ColliderConstraint constraint)
+		return false
+	end
+	
+	/**
+	 * \brief Index of constraint with same bone, target collider and target bone or -1 if absent.
+	 * \version 1.13
+	 */
+	public func int indexOfConstraint(ColliderConstraint constraint)
+		return 0
+	end
+	
+	/**
+	 * \brief Constraint at index.
+	 * \version 1.13
+	 * \throws EOutOfBoundary \em index is less than 0 or larger than or equal to getConstraintCount().
+	 */
+	public func ColliderConstraint getConstraintAt(int index)
+		return null
 	end
 	
 	/**
 	 * \brief Set constraint from a collider constraint.
 	 * \throws EOutOfBoundary \em index is less than 0 or larger than or equal to getConstraintCount().
+	 * \throws EInvalidParam New constraint has different bone, target collider or target bone.
 	 */
-	public func void setConstaintAt( int index, ColliderConstraint constraint )
+	public func void setConstraintAt(int index, ColliderConstraint constraint)
+	end
+	
+	/**
+	 * \brief Remove constraint with same bone, target collider and target bone.
+	 * \version 1.13
+	 * \throws EInvalidParam Matching \em constraint is absent.
+	 */
+	public func void removeConstraint(ColliderConstraint constraint)
 	end
 	
 	/**
 	 * \brief Remove constraint from index.
 	 * \throws EOutOfBoundary \em index is less than 0 or larger than or equal to getConstraintCount().
 	 */
-	public func void removeConstraintFrom( int index )
+	public func void removeConstraintFrom(int index)
 	end
 	
 	/** \brief Remove all constraints. */
@@ -356,28 +421,31 @@ class Collider
 	/*@{*/
 	/** \brief Number of colliders to ignore. */
 	public func int getIgnoreColliderCount()
+		return 0
 	end
 	
 	/**
 	 * \brief Ignore collider at index.
 	 * \throws deeInvalidParam \em index is less than 0 or equal than or equal to getIgnoreColliderCount().
 	 */
-	public func Collider getIgnoreColliderAt( int index )
+	public func Collider getIgnoreColliderAt(int index)
+		return null
 	end
 	
 	/** \brief Ignore collider is present. */
-	public func bool hasIgnoreCollider( Collider collider )
+	public func bool hasIgnoreCollider(Collider collider)
+		return false
 	end
 	
 	/** \brief Add collider to ignore. */
-	public func void addIgnoreCollider( Collider collider )
+	public func void addIgnoreCollider(Collider collider)
 	end
 	
 	/**
 	 * \brief Remove collider to ignore.
 	 * \throws deeInvalidParam \em collider is absent.
 	 */
-	public func void removeIgnoreCollider( Collider collider )
+	public func void removeIgnoreCollider(Collider collider)
 	end
 	
 	/** \brief Remove all colliders to ignore. */
@@ -392,24 +460,26 @@ class Collider
 	/*@{*/
 	/** \brief Number of post physics collision tests. */
 	public func int getCollisionTestCount()
+		return 0
 	end
 	
 	/**
 	 * \brief Post physics collision test at index.
 	 * \throws deeInvalidParam \em index is less than 0 or equal than or equal to getCollisionTestCount().
 	 */
-	public func ColliderCollisionTest getCollisionTestAt( int index )
+	public func ColliderCollisionTest getCollisionTestAt(int index)
+		return null
 	end
 	
 	/** \brief Add post physics collision test. */
-	public func void addCollisionTest( ColliderCollisionTest collisionTest )
+	public func void addCollisionTest(ColliderCollisionTest collisionTest)
 	end
 	
 	/**
 	 * \brief Remove post physics collision test.
 	 * \throws deeInvalidParam \em collisionTest is absent.
 	 */
-	public func void removeCollisionTest( ColliderCollisionTest collisionTest )
+	public func void removeCollisionTest(ColliderCollisionTest collisionTest)
 	end
 	
 	/** \brief Remove all post physics collision tests. */
@@ -421,27 +491,27 @@ class Collider
 	/** \name Force and Impuls */
 	/*@{*/
 	/** \brief Apply impulse at central mass point. */
-	public func void applyImpuls( Vector impuls )
+	public func void applyImpuls(Vector impuls)
 	end
 	
 	/** \brief Apply impulse at position. */
-	public func void applyImpulsAt( Vector impuls, Vector position )
+	public func void applyImpulsAt(Vector impuls, Vector position)
 	end
 	
 	/** \brief Apply torque at central mass point. */
-	public func void applyTorque( Vector torque )
+	public func void applyTorque(Vector torque)
 	end
 	
 	/** \brief Apply torque and impulse at center mass point. */
-	public func void applyTorqueImpuls( Vector torqueImpuls )
+	public func void applyTorqueImpuls(Vector torqueImpuls)
 	end
 	
 	/** \brief Apply force at central mass point. */
-	public func void applyForce( Vector force )
+	public func void applyForce(Vector force)
 	end
 	
 	/** \brief Apply force at position. */
-	public func void applyForceAt( Vector force, Vector position )
+	public func void applyForceAt(Vector force, Vector position)
 	end
 	/*@}*/
 	
@@ -451,26 +521,29 @@ class Collider
 	/*@{*/
 	/** \brief Collider listener or \em null if not set. */
 	public func ColliderListener getColliderListener()
+		return null
 	end
 	
 	/** \brief Set collider listener or \em null to clear. */
-	public func void setColliderListener( ColliderListener listener )
+	public func void setColliderListener(ColliderListener listener)
 	end
 	
 	/** \brief Custom can hit callback is enabled. */
 	public func bool colliderListenerGetCustomCanHit()
+		return false
 	end
 	
 	/** \brief Set if custom can hit callback is enabled. */
-	public func void colliderListenerSetCustomCanHit( bool customCanHit )
+	public func void colliderListenerSetCustomCanHit(bool customCanHit)
 	end
 	
 	/** \brief Breaking listener or \em null if not set. */
 	public func ColliderBreakingListener getBreakingListener()
+		return null
 	end
 	
 	/** \brief Set breaking listener or \em null if not set. */
-	public func void setBreakingListener( ColliderBreakingListener listener )
+	public func void setBreakingListener(ColliderBreakingListener listener)
 	end
 	/*@}*/
 	
@@ -479,46 +552,47 @@ class Collider
 	/** \name Collision detection */
 	/*@{*/
 	/** \brief Point is inside collider. */
-	public func bool pointInside( DVector point )
+	public func bool pointInside(DVector point)
+		return false
 	end
 	
 	/** \brief Ray cast intersection test. */
-	public func void rayHits( DVector rayOrigin, Vector rayDirection, ColliderListener listener )
+	public func void rayHits(DVector rayOrigin, Vector rayDirection, ColliderListener listener)
 	end
 	
 	/**
 	 * \brief Closest ray cast intersection test.
 	 * \details Only closest intersection is reported to listener. rayHits() reports all intersections.
 	 */
-	public func void rayHitsClosest( DVector rayOrigin, Vector rayDirection, ColliderListener listener )
+	public func void rayHitsClosest(DVector rayOrigin, Vector rayDirection, ColliderListener listener)
 	end
 	
 	/** \brief Test collider for intersection. */
-	public func void colliderHits( Collider collider, ColliderListener listener )
+	public func void colliderHits(Collider collider, ColliderListener listener)
 	end
 	
 	/** \brief Tests moving collider for collision. */
-	public func void colliderMoveHits( Collider collider, Vector displacement, ColliderListener listener )
+	public func void colliderMoveHits(Collider collider, Vector displacement, ColliderListener listener)
 	end
 	
 	/** \brief Tests moving collider for collision. */
-	public func void colliderMoveHitsCLosest( Collider collider, Vector displacement, ColliderListener listener )
+	public func void colliderMoveHitsCLosest(Collider collider, Vector displacement, ColliderListener listener)
 	end
 	
 	/** \brief Test rotating collider for collision. */
-	public func void colliderRotateHits( Collider collider, ColliderListener listener )
+	public func void colliderRotateHits(Collider collider, ColliderListener listener)
 	end
 	
 	/** \brief Test rotating collider for collision. */
-	public func void colliderRotateHitsClosest( Collider collider, ColliderListener listener )
+	public func void colliderRotateHitsClosest(Collider collider, ColliderListener listener)
 	end
 	
 	/** \brief Test moving and rotating collider for collision. */
-	public func void colliderMoveRotateHits( Collider collider, Vector displacement, ColliderListener listener )
+	public func void colliderMoveRotateHits(Collider collider, Vector displacement, ColliderListener listener)
 	end
 	
 	/** \brief Test moving and rotating collider for collision. */
-	public func void colliderMoveRotateHitsClosest( Collider collider, Vector displacement, ColliderListener listener )
+	public func void colliderMoveRotateHitsClosest(Collider collider, Vector displacement, ColliderListener listener)
 	end
 	/*@}*/
 end

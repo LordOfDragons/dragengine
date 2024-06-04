@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -96,6 +99,15 @@ void deClassLanguagePack::nfDestructor::RunFunction( dsRunTime *rt, dsValue *mys
 // management
 ///////////////
 
+// public func String getIdentifier()
+deClassLanguagePack::nfGetIdentifier::nfGetIdentifier( const sInitData &init ) :
+dsFunction( init.clsLP, "getIdentifier", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsStr ){
+}
+void deClassLanguagePack::nfGetIdentifier::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deLanguagePack &langPack = *( ( ( sLPNatDat* )p_GetNativeData( myself ) )->langPack );
+	rt->PushString( langPack.GetIdentifier() );
+}
+
 // public func UnicodeString getName()
 deClassLanguagePack::nfGetName::nfGetName( const sInitData &init ) :
 dsFunction( init.clsLP, "getName", DSFT_FUNCTION,
@@ -160,10 +172,32 @@ void deClassLanguagePack::nfTranslate2::RunFunction( dsRunTime *rt, dsValue *mys
 	deClassUnicodeString &clsUS = *ds.GetClassUnicodeString();
 	
 	const char * const name = rt->GetValue( 0 )->GetString();
-	const decUnicodeString &defaultValue = clsUS.GetUnicodeString(
-		rt->GetValue( 1 )->GetRealObject() );
+	const decUnicodeString *text = nullptr;
 	
-	clsUS.PushUnicodeString( rt, langPack.Translate( name, defaultValue ) );
+	if( langPack.Translate( name, &text ) ){
+		clsUS.PushUnicodeString( rt, *text );
+		
+	}else{
+		dsRealObject * const objDefaultValue = rt->GetValue( 1 )->GetRealObject();
+		if( objDefaultValue ){
+			clsUS.PushUnicodeString( rt, clsUS.GetUnicodeString( objDefaultValue ) );
+			
+		}else{
+			rt->PushObject( nullptr, &clsUS );
+		}
+	}
+}
+
+// public func UnicodeString getMissingText()
+deClassLanguagePack::nfGetMissingText::nfGetMissingText( const sInitData &init ) :
+dsFunction( init.clsLP, "getMissingText", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsUS ){
+}
+
+void deClassLanguagePack::nfGetMissingText::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deLanguagePack &langPack = *( ( ( sLPNatDat* )p_GetNativeData( myself ) )->langPack );
+	deScriptingDragonScript &ds = ( ( deClassLanguagePack* )GetOwnerClass() )->GetDS();
+	
+	ds.GetClassUnicodeString()->PushUnicodeString( rt, langPack.GetMissingText() );
 }
 
 
@@ -178,7 +212,7 @@ void deClassLanguagePack::nfHashCode::RunFunction( dsRunTime *rt, dsValue *mysel
 	const deLanguagePack * const langPack = ( ( sLPNatDat* )p_GetNativeData( myself ) )->langPack;
 	
 	// hash code = memory location
-	rt->PushInt( ( intptr_t )langPack );
+	rt->PushInt( ( int )( intptr_t )langPack );
 }
 
 // public func bool equals( Object obj )
@@ -242,12 +276,14 @@ void deClassLanguagePack::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfNew( init ) );
 	AddFunction( new nfDestructor( init ) );
 	
+	AddFunction( new nfGetIdentifier( init ) );
 	AddFunction( new nfGetName( init ) );
 	AddFunction( new nfGetDescription( init ) );
 	AddFunction( new nfGetFilename( init ) );
 	
 	AddFunction( new nfTranslate( init ) );
 	AddFunction( new nfTranslate2( init ) );
+	AddFunction( new nfGetMissingText( init ) );
 	
 	AddFunction( new nfEquals( init ) );
 	AddFunction( new nfHashCode( init ) );

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLVSRETAINIMAGEDATA_H_
@@ -33,7 +36,7 @@ class deImage;
 
 
 /**
- * \brief Visitor retaining or releasing image data.
+ * Visitor retaining or releasing image data.
  */
 class deoglVSRetainImageData : public deSkinPropertyVisitor, deSkinPropertyNodeVisitor {
 public:
@@ -45,7 +48,7 @@ public:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create visitor. */
+	/** Create visitor. */
 	deoglVSRetainImageData();
 	/*@}*/
 	
@@ -54,16 +57,16 @@ public:
 	/** \name Management */
 	/*@{*/
 	/**
-	 * \brief Retain images in property.
+	 * Retain images in property.
 	 * \param[in] forceLock Force locking even if not necessary. Required to deal with
 	 *                      combined images until they are removed
 	 */
 	void RetainPropertyImages( deSkinProperty &property, bool forceLock );
 	
-	/** \brief Release all retained images. */
+	/** Release all retained images. */
 	void ReleaseImages();
 	
-	/** \brief Process image. */
+	/** Process image. */
 	void ProcessImage( deImage &image, bool forceLock );
 	/*@}*/
 	
@@ -71,22 +74,22 @@ public:
 	
 	/** \name Visiting Property */
 	/*@{*/
-	/** \brief Visit property. */
+	/** Visit property. */
 	virtual void VisitProperty( deSkinProperty &property );
 	
-	/** \brief Visit single value property. */
+	/** Visit single value property. */
 	virtual void VisitValue( deSkinPropertyValue &property );
 	
-	/** \brief Visit uniform color property. */
+	/** Visit uniform color property. */
 	virtual void VisitColor( deSkinPropertyColor &property );
 	
-	/** \brief Visit image property. */
+	/** Visit image property. */
 	virtual void VisitImage( deSkinPropertyImage &property );
 	
-	/** \brief Visit video property. */
+	/** Visit video property. */
 	virtual void VisitVideo( deSkinPropertyVideo &property );
 	
-	/** \brief Visit complex property. */
+	/** Visit complex property. */
 	virtual void VisitConstructed( deSkinPropertyConstructed &property );
 	/*@}*/
 	
@@ -94,19 +97,19 @@ public:
 	
 	/** \name Visiting Node */
 	/*@{*/
-	/** \brief Visit node. */
+	/** Visit node. */
 	virtual void VisitNode( deSkinPropertyNode &node );
 	
-	/** \brief Visit group node. */
+	/** Visit group node. */
 	virtual void VisitGroup( deSkinPropertyNodeGroup &node );
 	
-	/** \brief Visit image node. */
+	/** Visit image node. */
 	virtual void VisitImage( deSkinPropertyNodeImage &node );
 	
-	/** \brief Visit shape node. */
+	/** Visit shape node. */
 	virtual void VisitShape( deSkinPropertyNodeShape &node );
 	
-	/** \brief Visit text node. */
+	/** Visit text node. */
 	virtual void VisitText( deSkinPropertyNodeText &node );
 	/*@}*/
 };

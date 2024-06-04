@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Animator Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEARCREATERULEVISITOR_H_
@@ -25,6 +28,7 @@
 #include <dragengine/resources/animator/rule/deAnimatorRuleVisitor.h>
 
 class decIntList;
+class dearAnimator;
 class dearAnimatorInstance;
 class dearRule;
 class deAnimator;
@@ -32,12 +36,12 @@ class deAnimator;
 
 
 /**
- * \brief Visitor creating peer animator rule from an engine animator rule.
+ * Visitor creating peer animator rule from an engine animator rule.
  */
 class dearCreateRuleVisitor : public deAnimatorRuleVisitor{
 private:
 	dearAnimatorInstance &pInstance;
-	const deAnimator &pAnimator;
+	const dearAnimator &pAnimator;
 	const decIntList &pControllerMapping;
 	const int pFirstLink;
 	
@@ -46,11 +50,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create new visitor. */
-	dearCreateRuleVisitor( dearAnimatorInstance &instance, const deAnimator &animator,
+	/** Create new visitor. */
+	dearCreateRuleVisitor( dearAnimatorInstance &instance, const dearAnimator &animator,
 		const decIntList &controllerMapping, int firstLink );
 	
-	/** \brief Clean up object. */
+	/** Clean up object. */
 	virtual ~dearCreateRuleVisitor();
 	/*@}*/
 	
@@ -58,16 +62,16 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Reset visitor. */
+	/** Reset visitor. */
 	void Reset();
 	
-	/** \brief Created rule. */
+	/** Created rule. */
 	inline dearRule *GetCreatedRule() const{ return pCreatedRule; }
 	
-	/** \brief Rule has been created. */
+	/** Rule has been created. */
 	bool HasCreatedRule() const;
 	
-	/** \brief Create rule. */
+	/** Create rule. */
 	dearRule *CreateRuleFrom( deAnimatorRule &engRule );
 	/*@}*/
 	
@@ -75,47 +79,50 @@ public:
 	
 	/** \name Visiting */
 	/*@{*/
-	/** \brief Visit animator rule. */
+	/** Visit animator rule. */
 	virtual void VisitRule( deAnimatorRule &rule );
 	
-	/** \brief Visit animation rule. */
+	/** Visit animation rule. */
 	virtual void VisitAnimation( deAnimatorRuleAnimation &rule );
 	
-	/** \brief Visit animation difference rule. */
+	/** Visit animation difference rule. */
 	virtual void VisitAnimationDifference( deAnimatorRuleAnimationDifference &rule );
 	
-	/** \brief Visit animation select rule. */
+	/** Visit animation select rule. */
 	virtual void VisitAnimationSelect( deAnimatorRuleAnimationSelect &rule );
 	
-	/** \brief Visit bone rotator animator rule. */
+	/** Visit bone rotator animator rule. */
 	virtual void VisitBoneTransformator( deAnimatorRuleBoneTransformator &rule );
 	
-	/** \brief Visit inverse kinematic animator rule. */
+	/** Visit inverse kinematic animator rule. */
 	virtual void VisitInverseKinematic( deAnimatorRuleInverseKinematic &rule );
 	
-	/** \brief Visit state manipulator rule. */
+	/** Visit state manipulator rule. */
 	virtual void VisitStateManipulator( deAnimatorRuleStateManipulator &rule );
 	
-	/** \brief Visit state snapshot rule. */
+	/** Visit state snapshot rule. */
 	virtual void VisitStateSnapshot( deAnimatorRuleStateSnapshot &rule );
 	
-	/** \brief Visit foreign state rule. */
+	/** Visit foreign state rule. */
 	virtual void VisitForeignState( deAnimatorRuleForeignState &rule );
 	
-	/** \brief Visit group rule. */
+	/** Visit group rule. */
 	virtual void VisitGroup( deAnimatorRuleGroup &rule );
 	
-	/** \brief Visit sub animator rule. */
+	/** Visit sub animator rule. */
 	virtual void VisitSubAnimator( deAnimatorRuleSubAnimator &rule );
 	
-	/** \brief Visit retarget rule. */
-	virtual void VisitRetarget( deAnimatorRuleRetarget &rule );
-	
-	/** \brief Visit track to rule. */
+	/** Visit track to rule. */
 	virtual void VisitTrackTo( deAnimatorRuleTrackTo &rule );
 	
-	/** \brief Visit limit rule. */
+	/** Visit limit rule. */
 	virtual void VisitLimit( deAnimatorRuleLimit &rule );
+	
+	/**
+	 * Visit mirror rule.
+	 * \version 1.9
+	 */
+	virtual void VisitMirror( deAnimatorRuleMirror &rule );
 	/*@}*/
 };
 

@@ -1,27 +1,31 @@
-/* 
- * Drag[en]gine Game Engine
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEBARRIER_H_
 #define _DEBARRIER_H_
 
+#include "../dragengine_export.h"
 #include "../dragengine_configuration.h"
 
 #if defined OS_UNIX || defined OS_BEOS
@@ -53,7 +57,7 @@
  * barriers can be open at each time. This ensures all threads run through a code
  * path exactly once before all are allowed to enter the section again. 
  */
-class deBarrier{
+class DE_DLL_EXPORT deBarrier{
 private:
 	int pThreshold;
 	int pCounter;
@@ -65,8 +69,8 @@ private:
 	#endif
 	
 	#ifdef OS_W32
-	HANDLE pEvent;
-	CRITICAL_SECTION pCSWaitCounter;
+	CONDITION_VARIABLE pConditionVariable;
+	CRITICAL_SECTION pCriticalSection;
 	#endif
 	
 	
@@ -90,6 +94,17 @@ public:
 	/*@{*/
 	/** \brief Increment counter and block thread on barrier until threshold is hit. */
 	void Wait();
+	
+	/**
+	 * \brief Increment counter and block thread on barrier until threshold is hit.
+	 * \version 1.16
+	 * 
+	 * If timeout elapses before barrier is opened the counter is decremented returns false.
+	 * If barrier opens before timeout elapses true is returned.
+	 * 
+	 * \param[in] timeout Timeout in milli-seconds.
+	 */
+	bool TryWait( int timeout );
 	
 	/** \brief Forcefully open barrier if counter is not 0. */
 	void Open();

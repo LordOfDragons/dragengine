@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Animator Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <math.h>
@@ -37,6 +40,7 @@
 #include "aeRuleStateSnapshot.h"
 #include "aeRuleSubAnimator.h"
 #include "aeRuleTrackTo.h"
+#include "aeRuleMirror.h"
 #include "../aeAnimator.h"
 #include "../link/aeLinkList.h"
 
@@ -69,10 +73,8 @@ pName( "Rule" ),
 pType( type ),
 pBlendMode( deAnimatorRule::ebmBlend ),
 pBlendFactor( 1.0f ),
+pInvertBlendFactor( false ),
 pEnabled( true ){
-	if( type < deAnimatorRuleVisitorIdentify::ertAnimation || type > deAnimatorRuleVisitorIdentify::ertLimit ){
-		DETHROW( deeInvalidParam );
-	}
 }
 
 aeRule::aeRule( const aeRule &copy ) :
@@ -82,8 +84,10 @@ pEngRule( NULL ),
 pName( copy.pName ),
 pType( copy.pType ),
 pListBones( copy.pListBones ),
+pListVertexPositionSets( copy.pListVertexPositionSets ),
 pBlendMode( copy.pBlendMode ),
 pBlendFactor( copy.pBlendFactor ),
+pInvertBlendFactor( copy.pInvertBlendFactor ),
 pEnabled( copy.pEnabled ),
 pTargetBlendFactor( copy.pTargetBlendFactor ){
 }
@@ -133,7 +137,9 @@ void aeRule::InitEngineRule( deAnimatorRule *engRule ) const{
 	engRule->SetEnabled( pEnabled );
 	engRule->SetBlendMode( pBlendMode );
 	engRule->SetBlendFactor( pBlendFactor );
+	engRule->SetInvertBlendFactor( pInvertBlendFactor );
 	engRule->GetListBones() = pListBones;
+	engRule->GetListVertexPositionSets() = pListVertexPositionSets;
 	
 	pTargetBlendFactor.UpdateEngineTarget( animator, engRule->GetTargetBlendFactor() );
 }
@@ -195,6 +201,20 @@ void aeRule::SetBlendFactor( float factor ){
 		
 		NotifyRuleChanged();
 	}
+}
+
+void aeRule::SetInvertBlendFactor( bool invert ){
+	if( invert == pInvertBlendFactor ){
+		return;
+	}
+	
+	pInvertBlendFactor = invert;
+	
+	if( pEngRule ){
+		pEngRule->SetInvertBlendFactor( invert );
+	}
+	
+	NotifyRuleChanged();
 }
 
 
@@ -314,14 +334,73 @@ void aeRule::RemoveAllBones(){
 
 
 
+// Vertex position set management
+///////////////////////////////////
+
+void aeRule::SetListVertexPositionSets( const decStringSet &sets ){
+	if( pListVertexPositionSets == sets ){
+		return;
+	}
+	
+	pListVertexPositionSets = sets;
+	
+	if( pEngRule ){
+		pEngRule->GetListVertexPositionSets() = sets;
+	}
+	
+	NotifyRuleChanged();
+}
+
+void aeRule::AddVertexPositionSet( const char *vertexPositionSet ){
+	DEASSERT_NOTNULL( vertexPositionSet )
+	
+	if( ! pListVertexPositionSets.Has( vertexPositionSet ) ){
+		pListVertexPositionSets.Add( vertexPositionSet );
+		
+		if( pEngRule ){
+			pEngRule->GetListVertexPositionSets().Add( vertexPositionSet );
+		}
+		
+		NotifyRuleChanged();
+	}
+}
+
+void aeRule::RemoveVertexPositionSet( const char *vertexPositionSet ){
+	if( pListVertexPositionSets.Has( vertexPositionSet ) ){
+		pListVertexPositionSets.Remove( vertexPositionSet );
+		
+		if( pEngRule ){
+			pEngRule->GetListVertexPositionSets().Remove( vertexPositionSet );
+		}
+		
+		NotifyRuleChanged();
+	}
+}
+
+void aeRule::RemoveAllVertexPositionSets(){
+	if( pListVertexPositionSets.GetCount() > 0 ){
+		pListVertexPositionSets.RemoveAll();
+		
+		if( pEngRule ){
+			pEngRule->GetListVertexPositionSets().RemoveAll();
+		}
+		
+		NotifyRuleChanged();
+	}
+}
+
+
+
 // Operators
 //////////////
 
 aeRule &aeRule::operator=( const aeRule &copy ){
 	SetName( copy.pName );
 	pListBones = copy.pListBones;
+	pListVertexPositionSets = copy.pListVertexPositionSets;
 	SetBlendMode( copy.pBlendMode );
 	SetBlendFactor( copy.pBlendFactor );
+	SetInvertBlendFactor( copy.pInvertBlendFactor );
 	SetEnabled( copy.pEnabled );
 	pTargetBlendFactor = copy.pTargetBlendFactor;
 	NotifyRuleChanged();
@@ -359,9 +438,6 @@ aeRule *aeRule::CreateRuleFromType( deAnimatorRuleVisitorIdentify::eRuleTypes ty
 	case deAnimatorRuleVisitorIdentify::ertLimit:
 		return new aeRuleLimit;
 		
-//	case deAnimatorRuleVisitorIdentify::ertRetarget:
-//		return new aeRuleRetarget;
-		
 	case deAnimatorRuleVisitorIdentify::ertStateManipulator:
 		return new aeRuleStateManipulator;
 		
@@ -373,6 +449,9 @@ aeRule *aeRule::CreateRuleFromType( deAnimatorRuleVisitorIdentify::eRuleTypes ty
 		
 	case deAnimatorRuleVisitorIdentify::ertTrackTo:
 		return new aeRuleTrackTo;
+		
+	case deAnimatorRuleVisitorIdentify::ertMirror:
+		return aeRuleMirror::CreateDefault();
 		
 	default:
 		DETHROW( deeInvalidParam );

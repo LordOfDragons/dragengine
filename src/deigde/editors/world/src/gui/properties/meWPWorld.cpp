@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE World Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include "meWPWorld.h"
@@ -30,6 +33,8 @@
 #include "../../world/meCamera.h"
 #include "../../world/idgroup/meIDGroup.h"
 #include "../../world/idgroup/meIDGroupList.h"
+#include "../../undosys/properties/world/meUWorldSetSize.h"
+#include "../../undosys/properties/world/meUWorldSetGravity.h"
 #include "../../undosys/properties/world/property/meUWorldAddProperty.h"
 #include "../../undosys/properties/world/property/meUWorldRemoveProperty.h"
 #include "../../undosys/properties/world/property/meUWorldSetProperty.h"
@@ -46,8 +51,14 @@
 #include <deigde/gui/igdeContainerReference.h>
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/composed/igdeEditDVector.h>
+#include <deigde/gui/composed/igdeEditDVectorListener.h>
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/composed/igdeEditVectorListener.h>
+#include <deigde/gui/composed/igdeEditPath.h>
+#include <deigde/gui/composed/igdeEditPathListener.h>
+#include <deigde/gui/composed/igdeEditSliderText.h>
+#include <deigde/gui/composed/igdeEditSliderTextListener.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeActionContextMenu.h>
@@ -168,6 +179,29 @@ public:
 	virtual igdeUndo *OnChanged( const decVector &vector, meWorld *world ) = 0;
 };
 
+class cBaseEditDVectorListener : public igdeEditDVectorListener{
+protected:
+	meWPWorld &pPanel;
+	
+public:
+	cBaseEditDVectorListener( meWPWorld &panel ) : pPanel( panel ){ }
+	
+	virtual void OnDVectorChanged( igdeEditDVector *editDVector ){
+		meWorld * const world = pPanel.GetWorld();
+		if( ! world ){
+			return;
+		}
+		
+		igdeUndoReference undo;
+		undo.TakeOver( OnChanged( editDVector->GetDVector(), world ) );
+		if( undo ){
+			world->GetUndoSystem()->Add( undo );
+		}
+	}
+	
+	virtual igdeUndo *OnChanged( const decDVector &vector, meWorld *world ) = 0;
+};
+
 
 class cEditWorldProperties : public meWPPropertyList {
 	meWPWorld &pPanel;
@@ -228,11 +262,30 @@ public:
 };
 
 
-class cEditPFTStartPosition : public cBaseEditVectorListener{
+class cEditSize : public cBaseEditDVectorListener{
 public:
-	cEditPFTStartPosition( meWPWorld &panel ) : cBaseEditVectorListener( panel ){}
+	cEditSize( meWPWorld &panel ) : cBaseEditDVectorListener( panel ){}
+	
+	virtual igdeUndo * OnChanged( const decDVector &vector, meWorld *world ){
+		return ! world->GetSize().IsEqualTo( vector ) ? new meUWorldSetSize( world, vector ) : NULL;
+	}
+};
+
+
+class cEditGravity : public cBaseEditVectorListener{
+public:
+	cEditGravity( meWPWorld &panel ) : cBaseEditVectorListener( panel ){}
 	
 	virtual igdeUndo * OnChanged( const decVector &vector, meWorld *world ){
+		return ! world->GetGravity().IsEqualTo( vector ) ? new meUWorldSetGravity( world, vector ) : NULL;
+	}
+};
+
+class cEditPFTStartPosition : public cBaseEditDVectorListener{
+public:
+	cEditPFTStartPosition( meWPWorld &panel ) : cBaseEditDVectorListener( panel ){}
+	
+	virtual igdeUndo * OnChanged( const decDVector &vector, meWorld *world ){
 		world->GetPathFindTest()->SetStartPosition( vector );
 		return NULL;
 	}
@@ -249,11 +302,11 @@ public:
 	}
 };
 
-class cEditPFTGoalPosition : public cBaseEditVectorListener{
+class cEditPFTGoalPosition : public cBaseEditDVectorListener{
 public:
-	cEditPFTGoalPosition( meWPWorld &panel ) : cBaseEditVectorListener( panel ){}
+	cEditPFTGoalPosition( meWPWorld &panel ) : cBaseEditDVectorListener( panel ){}
 	
-	virtual igdeUndo * OnChanged( const decVector &vector, meWorld *world ){
+	virtual igdeUndo * OnChanged( const decDVector &vector, meWorld *world ){
 		world->GetPathFindTest()->SetGoalPosition( vector );
 		return NULL;
 	}
@@ -484,6 +537,73 @@ public:
 	}
 };
 
+
+class cEditMusicPath : public igdeEditPathListener{
+	meWPWorld &pPanel;
+public:
+	cEditMusicPath( meWPWorld &panel ) : pPanel( panel ){}
+	
+	virtual void OnEditPathChanged( igdeEditPath *editPath ) override{
+		if( pPanel.GetWorld() ){
+			pPanel.GetWorld()->GetMusic().SetPath( editPath->GetPath() );
+		}
+	}
+};
+
+class cEditMusicVolume : public igdeEditSliderTextListener{
+	meWPWorld &pPanel;
+public:
+	cEditMusicVolume( meWPWorld &panel ) : pPanel( panel ){}
+	
+	virtual void OnSliderTextValueChanging( igdeEditSliderText *sliderText ) override{
+		if( pPanel.GetWorld() ){
+			pPanel.GetWorld()->GetMusic().SetVolume( sliderText->GetValue() );
+		}
+	}
+};
+
+class cActionMusicPlay : public cBaseAction{
+public:
+	cActionMusicPlay( meWPWorld &panel ) : cBaseAction( panel, "Play", nullptr, "Play" ){}
+	
+	virtual igdeUndo *OnAction( meWorld *world ) override{
+		world->GetMusic().Play();
+		return nullptr;
+	}
+	
+	virtual void Update() override{
+		SetEnabled( pPanel.GetWorld() );
+	}
+};
+
+class cActionMusicPause : public cBaseAction{
+public:
+	cActionMusicPause( meWPWorld &panel ) : cBaseAction( panel, "Pause", nullptr, "Pause" ){}
+	
+	virtual igdeUndo *OnAction( meWorld *world ) override{
+		world->GetMusic().Pause();
+		return nullptr;
+	}
+	
+	virtual void Update() override{
+		SetEnabled( pPanel.GetWorld() );
+	}
+};
+
+class cActionMusicStop : public cBaseAction{
+public:
+	cActionMusicStop( meWPWorld &panel ) : cBaseAction( panel, "Stop", nullptr, "Stop" ){}
+	
+	virtual igdeUndo *OnAction( meWorld *world ) override{
+		world->GetMusic().Stop();
+		return nullptr;
+	}
+	
+	virtual void Update() override{
+		SetEnabled( pPanel.GetWorld() );
+	}
+};
+
 }
 
 
@@ -512,10 +632,22 @@ pWorld( NULL )
 	pActionPFTTypeAdd.TakeOver( new cActionPFTTypeAdd( *this ) );
 	pActionPFTTypeRemove.TakeOver( new cActionPFTTypeRemove( *this ) );
 	pActionPFTTypeClear.TakeOver( new cActionPFTTypeClear( *this ) );
+	pActionMusicPlay.TakeOver( new cActionMusicPlay( *this ) );
+	pActionMusicPause.TakeOver( new cActionMusicPause( *this ) );
+	pActionMusicStop.TakeOver( new cActionMusicStop( *this ) );
 	
 	
 	content.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY ) );
 	AddChild( content );
+	
+	
+	// parameters
+	helper.GroupBox( content, groupBox, "World Parameters:" );
+	
+	helper.EditDVector( groupBox, "Size", "Size of world in meters where modules can expect content",
+		8, 0, pEditSize, new cEditSize( *this ) );
+	
+	helper.EditVector( groupBox, "Gravity", "World gravity", pEditGravity, new cEditGravity( *this ) );
 	
 	
 	// properties
@@ -529,12 +661,12 @@ pWorld( NULL )
 	helper.GroupBox( content, groupBox, "Path Find Test:", true );
 	
 	helper.FormLineStretchFirst( groupBox, "Start Position:", "Start position of the test path", formLine );
-	helper.EditVector( formLine, "Start position of the test path",
+	helper.EditDVector( formLine, "Start position of the test path",
 		pEditPFTStartPosition, new cEditPFTStartPosition( *this ) );
 	helper.Button( formLine, pBtnPFTStartPosFromCamera, new cActionPFTStartPosFromCamera( *this ), true );
 	
 	helper.FormLineStretchFirst( groupBox, "Goal Position:", "Goal position of the test path", formLine );
-	helper.EditVector( formLine, "Goal position of the test path",
+	helper.EditDVector( formLine, "Goal position of the test path",
 		pEditPFTGoalPosition, new cEditPFTGoalPosition( *this ) );
 	helper.Button( formLine, pBtnPFTGoalPosFromCamera, new cActionPFTGoalPosFromCamera( *this ), true );
 	
@@ -567,6 +699,21 @@ pWorld( NULL )
 		pEditPFTTypeFixCost, new cEditPFTTypeFixCost( *this ) );
 	helper.EditFloat( groupBox, "Cost Per Meter:", "Cost per meter travelled inside type.",
 		pEditPFTTypeCPM, new cEditPFTTypeCostPerMeter( *this ) );
+	
+	
+	// music testing
+	helper.GroupBox( content, groupBox, "Music Testing:", true );
+	
+	helper.EditPath( groupBox, "Path:", "Path to sound file to play.",
+		igdeEnvironment::efpltSound, pEditMusicPath, new cEditMusicPath( *this ) );
+	
+	helper.EditSliderText( groupBox, "Volume:", "Volume to play music.",
+		0.0f, 1.0f, 4, 2, 0.1f, pEditMusicVolume, new cEditMusicVolume( *this ) );
+	
+	helper.FormLine( groupBox, "", "", formLine );
+	helper.Button( formLine, pBtnMusicPlay, new cActionMusicPlay( *this ), true );
+	helper.Button( formLine, pBtnMusicPause, new cActionMusicPause( *this ), true );
+	helper.Button( formLine, pBtnMusicStop, new cActionMusicStop( *this ), true );
 }
 
 meWPWorld::~meWPWorld(){
@@ -616,24 +763,42 @@ void meWPWorld::SetWorld( meWorld *world ){
 
 
 void meWPWorld::UpdateWorld(){
+	UpdateWorldParameters();
+	UpdatePathFindTestTypeList();
 	UpdatePathFindTest();
+	UpdateMusic();
 	UpdatePropertyKeys();
 	UpdateProperties();
+}
+
+void meWPWorld::UpdateWorldParameters(){
+	if( pWorld ){
+		pEditSize->SetDVector( pWorld->GetSize() );
+		pEditGravity->SetVector( pWorld->GetGravity() );
+		
+	}else{
+		pEditSize->SetDVector( decDVector( 1000.0, 1000.0, 1000.0 ) );
+		pEditGravity->SetVector( decDVector( 0.0f, -9.81f, 0.0f ) );
+	}
+	
+	const bool enabled = pWorld;
+	pEditSize->SetEnabled( enabled );
+	pEditGravity->SetEnabled( enabled );
 }
 
 void meWPWorld::UpdatePathFindTest(){
 	if( pWorld ){
 		const mePathFindTest &pft = *pWorld->GetPathFindTest();
-		pEditPFTStartPosition->SetVector( pft.GetStartPosition() );
-		pEditPFTGoalPosition->SetVector( pft.GetGoalPosition() );
+		pEditPFTStartPosition->SetDVector( pft.GetStartPosition() );
+		pEditPFTGoalPosition->SetDVector( pft.GetGoalPosition() );
 		pEditPFTLayer->SetInteger( pft.GetLayer() );
 		pCBPFTSpaceType->SetSelectionWithData( ( void* )( intptr_t )pft.GetSpaceType() );
-		pEditPFTBlockingCost->SetInteger( pft.GetBlockingCost() );
+		pEditPFTBlockingCost->SetInteger( ( int )( pft.GetBlockingCost() + 0.1f ) );
 		pChkPFTShowPath->SetChecked( pft.GetShowPath() );
 		
 	}else{
-		pEditPFTStartPosition->SetVector( decVector() );
-		pEditPFTGoalPosition->SetVector( decVector() );
+		pEditPFTStartPosition->SetDVector( decDVector() );
+		pEditPFTGoalPosition->SetDVector( decDVector() );
 		pEditPFTLayer->ClearText();
 		pCBPFTSpaceType->SetSelectionWithData( ( void* )( intptr_t )deNavigationSpace::estMesh );
 		pEditPFTBlockingCost->ClearText();
@@ -706,6 +871,24 @@ void meWPWorld::UpdatePathFindTestType(){
 	pEditPFTTypeCPM->SetEnabled( enabled );
 }
 
+
+void meWPWorld::UpdateMusic(){
+	if( pWorld ){
+		pEditMusicPath->SetPath( pWorld->GetMusic().GetPath() );
+		pEditMusicVolume->SetValue( pWorld->GetMusic().GetVolume() );
+		
+	}else{
+		pEditMusicPath->ClearPath();
+		pEditMusicVolume->SetValue( 1.0f );
+	}
+	
+	const bool enabled = pWorld;
+	pEditMusicPath->SetEnabled( enabled );
+	pEditMusicVolume->SetEnabled( enabled );
+	pActionMusicPlay->Update();
+	pActionMusicPause->Update();
+	pActionMusicStop->Update();
+}
 
 
 const decString &meWPWorld::GetActiveProperty() const{

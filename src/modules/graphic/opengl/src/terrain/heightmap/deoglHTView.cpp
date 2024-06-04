@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -35,6 +38,19 @@
 
 
 
+// Class deoglHTView::void deoglHTView
+////////////////////////////////////////
+
+deoglHTView::HTListener::HTListener( deoglHTView &htview ) : pHTView( htview ){
+}
+
+void deoglHTView::HTListener::SectorsChanged( deoglRHeightTerrain &heightTerrain ){
+	pHTView.SectorsChanged( heightTerrain );
+}
+
+
+
+
 // Class deoglHTView
 //////////////////////
 
@@ -42,32 +58,24 @@
 ////////////////////////////
 
 deoglHTView::deoglHTView( deoglRHeightTerrain *heightTerrain ) :
-pHeightTerrain( NULL ),
-pSectors( NULL ),
+pHeightTerrain( heightTerrain ),
+pHTListener( deoglHeightTerrainListener::Ref::New( new HTListener( *this )  ) ),
+pSectors( nullptr ),
 pSectorCount( 0 ),
 pSectorSize( 0 ),
-pHTUpdateTrackerValue( 0 )
+pDirtySectors( true )
 {
-	if( ! heightTerrain ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	pHeightTerrain = heightTerrain;
-	heightTerrain->AddReference();
-	
-	pHTUpdateTrackerValue = heightTerrain->GetUpdateTracker();
-	
-	try{
-		RebuildSectors();
-		
-	}catch( const deException & ){
-		pCleanUp();
-		throw;
-	}
+	DEASSERT_NOTNULL( heightTerrain )
+	heightTerrain->AddListener( pHTListener );
 }
 
 deoglHTView::~deoglHTView(){
-	pCleanUp();
+	RemoveAllSectors();
+	if( pSectors ){
+		delete [] pSectors;
+	}
+	
+	pHeightTerrain->RemoveListener( pHTListener );
 }
 
 
@@ -75,19 +83,20 @@ deoglHTView::~deoglHTView(){
 // Management
 ///////////////
 
-deoglHTViewSector *deoglHTView::GetSectorAt( int index ){
-	if( index < 0 || index >= pSectorCount ) DETHROW( deeInvalidParam );
+deoglHTViewSector *deoglHTView::GetSectorAt( int index ) const{
+	if( index < 0 || index >= pSectorCount ){
+		DETHROW( deeInvalidParam );
+	}
 	
 	return pSectors[ index ];
 }
 
 void deoglHTView::AddSector( deoglHTViewSector *sector ){
-	if( ! sector ) DETHROW( deeInvalidParam );
+	DEASSERT_NOTNULL( sector )
 	
 	if( pSectorCount == pSectorSize ){
-		int newSize = pSectorSize * 3 / 2 + 1;
-		deoglHTViewSector **newArray = new deoglHTViewSector*[ newSize ];
-		if( ! newArray ) DETHROW( deeOutOfMemory );
+		const int newSize = pSectorSize * 3 / 2 + 1;
+		deoglHTViewSector ** const newArray = new deoglHTViewSector*[ newSize ];
 		if( pSectors ){
 			memcpy( newArray, pSectors, sizeof( deoglHTViewSector* ) * pSectorSize );
 			delete [] pSectors;
@@ -108,59 +117,37 @@ void deoglHTView::RemoveAllSectors(){
 
 
 
-
-void deoglHTView::RebuildSectors(){
-	int s, sectorCount = pHeightTerrain->GetSectorCount();
-	deoglHTViewSector *sector = NULL;
-	
-	try{
-		RemoveAllSectors();
-		
-		for( s=0; s<sectorCount; s++ ){
-			sector = new deoglHTViewSector( *this, pHeightTerrain->GetSectorAt( s ) );
-			AddSector( sector );
-			sector = NULL;
-		}
-		
-	}catch( const deException & ){
-		if( sector ) delete sector;
-		throw;
-	}
-}
-
 void deoglHTView::ResetClusters(){
-	int s;
-	
-	for( s=0; s<pSectorCount; s++ ){
-		pSectors[ s ]->ResetClusters();
+	int i;
+	for( i=0; i<pSectorCount; i++ ){
+		pSectors[ i ]->ResetClusters();
 	}
 }
-/*
-void deoglHTView::DetermineVisibilityUsing( deoglDCollisionVolume *collisionVolume ){
-	int s;
-	
-	for( s=0; s<pSectorCount; s++ ){
-		pSectors[ s ]->DetermineVisibilityUsing( collisionVolume );
-	}
-}
-*/
+
 void deoglHTView::UpdateLODLevels( const decVector &camera ){
-	int s;
-	
-	for( s=0; s<pSectorCount; s++ ){
-		pSectors[ s ]->UpdateLODLevels( camera );
+	int i;
+	for( i=0; i<pSectorCount; i++ ){
+		pSectors[ i ]->UpdateLODLevels( camera );
 	}
 }
 
 
+
+void deoglHTView::Prepare(){
+	if( pDirtySectors ){
+		pDirtySectors = false;
+		pRebuildSectors();
+	}
+}
 
 void deoglHTView::PrepareForRendering(){
-	if( pHeightTerrain->GetUpdateTracker() == pHTUpdateTrackerValue ){
-		return;
+}
+
+void deoglHTView::UpdateAllRTSInstances(){
+	int i;
+	for( i=0; i<pSectorCount; i++ ){
+		pSectors[ i ]->UpdateAllRTSInstances();
 	}
-	
-	RebuildSectors();
-	pHTUpdateTrackerValue = pHeightTerrain->GetUpdateTracker();
 }
 
 
@@ -168,13 +155,30 @@ void deoglHTView::PrepareForRendering(){
 // Private functions
 //////////////////////
 
-void deoglHTView::pCleanUp(){
-	RemoveAllSectors();
-	if( pSectors ){
-		delete [] pSectors;
-	}
+void deoglHTView::pRebuildSectors(){
+	const int count = pHeightTerrain->GetSectorCount();
+	deoglHTViewSector *sector = NULL;
+	int i;
 	
-	if( pHeightTerrain ){
-		pHeightTerrain->FreeReference();
+	try{
+		RemoveAllSectors();
+		
+		for( i=0; i<count; i++ ){
+			sector = new deoglHTViewSector( *this, pHeightTerrain->GetSectorAt( i ) );
+			AddSector( sector );
+			sector = NULL;
+		}
+		
+	}catch( const deException & ){
+		if( sector ){
+			delete sector;
+		}
+		throw;
 	}
+}
+
+
+
+void deoglHTView::SectorsChanged ( deoglRHeightTerrain &heightTerrain ){
+	pDirtySectors = true;
 }

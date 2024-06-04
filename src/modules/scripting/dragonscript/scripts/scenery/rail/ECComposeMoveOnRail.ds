@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -66,18 +69,18 @@ class ECComposeMoveOnRail
 		/** \brief Create mover. */
 		public func new( Collider collider )
 			if collider == null
-				throw EInvalidParam.new()
+				throw ENullPointer.new()
 			end
 			this.pCollider = collider
 			this.pStartAtFirstCorner = true
-			this.pVelocity = 1.0
-			this.pAcceleration = 1.0
-			this.pDeceleration = 1.0
-			this.pCurrentVelocity = 0.0
-			this.pBreakDistance = 0.0
+			this.pVelocity = 1
+			this.pAcceleration = 1
+			this.pDeceleration = 1
+			this.pCurrentVelocity = 0
+			this.pBreakDistance = 0
 			this.pCurrentCorner = -1
 			this.pTargetCorner = -1
-			this.pRemainingDistance = 0.0
+			this.pRemainingDistance = 0
 		end
 	
 		
@@ -131,14 +134,12 @@ class ECComposeMoveOnRail
 		public func void attachRail( RailList rails )
 			this.setRail( rails.getWithID( this.pRailID ) )
 			if this.pRail == null
-				throw EInvalidParam.new()
-				//throw EInvalidParam.new( "Rail with ID '" + this.pRailID + "' not found" )
+				throw EInvalidParam.new( "rail '" + this.pRailID + "' not found" )
 			end
 			
 			var int cornerCount = this.pRail.getCornerCount()
 			if cornerCount == 0
-				throw EInvalidParam.new()
-				//throw EInvalidParam.new( "Rail with ID '" + this.pRailID + "' has no corners" )
+				throw EInvalidParam.new( "rail '" + this.pRailID + "' has no corners" )
 			end
 			
 			this.pCurrentCorner = this.pStartAtFirstCorner if 0 else cornerCount - 1
@@ -279,10 +280,16 @@ class ECComposeMoveOnRail
 		 * - remaining distance
 		 */
 		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
-			this.setCurrentVelocity( reader.readFloat() )
-			this.pCurrentCorner = reader.readShort()
-			this.pTargetCorner = reader.readShort()
-			this.pRemainingDistance = reader.readFloat()
+			select reader.readByte() // version
+			case 0
+				this.setCurrentVelocity( reader.readFloat() )
+				this.pCurrentCorner = reader.readShort()
+				this.pTargetCorner = reader.readShort()
+				this.pRemainingDistance = reader.readFloat()
+				
+			else
+				throw EInvalidParam.new( "unsupported version" )
+			end
 		end
 		
 		/**
@@ -295,6 +302,8 @@ class ECComposeMoveOnRail
 		 * - remaining distance
 		 */
 		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			writer.writeByte( 0 ) // version
+			
 			writer.writeFloat( this.pCurrentVelocity )
 			writer.writeShort( this.pCurrentCorner )
 			writer.writeShort( this.pTargetCorner )

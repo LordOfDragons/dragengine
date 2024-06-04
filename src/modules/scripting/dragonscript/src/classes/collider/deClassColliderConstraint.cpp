@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -247,7 +250,7 @@ void deClassColliderConstraint::nfSetOrientation2::RunFunction( dsRunTime *rt, d
 // public func float getLowerLimitFor( ColliderConstraintDof dof )
 deClassColliderConstraint::nfGetLowerLimitFor::nfGetLowerLimitFor( const sInitData &init ) : dsFunction( init.clsCCon,
 "getLowerLimitFor", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt ){
-	p_AddParameter( init.clsInt ); // dof
+	p_AddParameter( init.clsColliderConstraintDof ); // dof
 }
 void deClassColliderConstraint::nfGetLowerLimitFor::RunFunction( dsRunTime *rt, dsValue *myself ){
 	if( ! rt->GetValue( 0 )->GetRealObject() ){
@@ -263,7 +266,7 @@ void deClassColliderConstraint::nfGetLowerLimitFor::RunFunction( dsRunTime *rt, 
 	case deColliderConstraint::edofAngularX:
 	case deColliderConstraint::edofAngularY:
 	case deColliderConstraint::edofAngularZ:
-		rt->PushFloat( constraint->GetDof( dof ).GetLowerLimit() / DEG2RAD );
+		rt->PushFloat( constraint->GetDof( dof ).GetLowerLimit() * RAD2DEG );
 		break;
 		
 	case deColliderConstraint::edofLinearX:
@@ -280,7 +283,7 @@ void deClassColliderConstraint::nfGetLowerLimitFor::RunFunction( dsRunTime *rt, 
 // public func float getUpperLimitFor( ColliderConstraintDof dof )
 deClassColliderConstraint::nfGetUpperLimitFor::nfGetUpperLimitFor( const sInitData &init ) : dsFunction( init.clsCCon,
 "getUpperLimitFor", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt ){
-	p_AddParameter( init.clsInt ); // dof
+	p_AddParameter( init.clsColliderConstraintDof ); // dof
 }
 void deClassColliderConstraint::nfGetUpperLimitFor::RunFunction( dsRunTime *rt, dsValue *myself ){
 	if( ! rt->GetValue( 0 )->GetRealObject() ){
@@ -296,7 +299,7 @@ void deClassColliderConstraint::nfGetUpperLimitFor::RunFunction( dsRunTime *rt, 
 	case deColliderConstraint::edofAngularX:
 	case deColliderConstraint::edofAngularY:
 	case deColliderConstraint::edofAngularZ:
-		rt->PushFloat( constraint->GetDof( dof ).GetUpperLimit() / DEG2RAD );
+		rt->PushFloat( constraint->GetDof( dof ).GetUpperLimit() * RAD2DEG );
 		break;
 		
 	case deColliderConstraint::edofLinearX:
@@ -313,7 +316,7 @@ void deClassColliderConstraint::nfGetUpperLimitFor::RunFunction( dsRunTime *rt, 
 // public func void setLimitsFor( ColliderConstraintDof dof, float lowerLimit, float upperLimit )
 deClassColliderConstraint::nfSetLimitsFor::nfSetLimitsFor( const sInitData &init ) : dsFunction( init.clsCCon,
 "setLimitsFor", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsInt ); // dof
+	p_AddParameter( init.clsColliderConstraintDof ); // dof
 	p_AddParameter( init.clsFlt ); // lowerLimit
 	p_AddParameter( init.clsFlt ); // upperLimit
 }
@@ -352,7 +355,7 @@ void deClassColliderConstraint::nfSetLimitsFor::RunFunction( dsRunTime *rt, dsVa
 // public func void setLockedFor( ColliderConstraintDof dof )
 deClassColliderConstraint::nfSetLockedFor::nfSetLockedFor( const sInitData &init ) : dsFunction( init.clsCCon,
 "setLockedFor", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsInt ); // dof
+	p_AddParameter( init.clsColliderConstraintDof ); // dof
 }
 void deClassColliderConstraint::nfSetLockedFor::RunFunction( dsRunTime *rt, dsValue *myself ){
 	deColliderConstraint *constraint = ( ( sCConNatDat* )p_GetNativeData( myself ) )->constraint;
@@ -365,7 +368,7 @@ void deClassColliderConstraint::nfSetLockedFor::RunFunction( dsRunTime *rt, dsVa
 // public func void setFreeFor( ColliderConstraintDof dof )
 deClassColliderConstraint::nfSetFreeFor::nfSetFreeFor( const sInitData &init ) : dsFunction( init.clsCCon,
 "setFreeFor", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsInt ); // dof
+	p_AddParameter( init.clsColliderConstraintDof ); // dof
 }
 void deClassColliderConstraint::nfSetFreeFor::RunFunction( dsRunTime *rt, dsValue *myself ){
 	deColliderConstraint *constraint = ( ( sCConNatDat* )p_GetNativeData( myself ) )->constraint;
@@ -440,9 +443,9 @@ void deClassColliderConstraint::nfGetAngularLowerLimits::RunFunction( dsRunTime 
 	deClassColliderConstraint *clsCCon = ( deClassColliderConstraint* )GetOwnerClass();
 	
 	clsCCon->GetClassVector()->PushVector( rt, decVector(
-		constraint->GetDofAngularX().GetLowerLimit() / DEG2RAD,
-		constraint->GetDofAngularY().GetLowerLimit() / DEG2RAD,
-		constraint->GetDofAngularZ().GetLowerLimit() / DEG2RAD ) );
+		constraint->GetDofAngularX().GetLowerLimit() * RAD2DEG,
+		constraint->GetDofAngularY().GetLowerLimit() * RAD2DEG,
+		constraint->GetDofAngularZ().GetLowerLimit() * RAD2DEG ) );
 }
 
 // public func Vector getAngularUpperLimits()
@@ -454,9 +457,9 @@ void deClassColliderConstraint::nfGetAngularUpperLimits::RunFunction( dsRunTime 
 	deClassColliderConstraint *clsCCon = ( deClassColliderConstraint* )GetOwnerClass();
 	
 	clsCCon->GetClassVector()->PushVector( rt, decVector(
-		constraint->GetDofAngularX().GetUpperLimit() / DEG2RAD,
-		constraint->GetDofAngularY().GetUpperLimit() / DEG2RAD,
-		constraint->GetDofAngularZ().GetUpperLimit() / DEG2RAD ) );
+		constraint->GetDofAngularX().GetUpperLimit() * RAD2DEG,
+		constraint->GetDofAngularY().GetUpperLimit() * RAD2DEG,
+		constraint->GetDofAngularZ().GetUpperLimit() * RAD2DEG ) );
 }
 
 // public func void setAngularLimits( Vector lowerLimits, Vector upperLimits )
@@ -483,6 +486,119 @@ void deClassColliderConstraint::nfSetAngularLimits::RunFunction( dsRunTime *rt, 
 	constraint->GetDofAngularX().SetUpperLimit( upperLimits.x * DEG2RAD );
 	constraint->GetDofAngularY().SetUpperLimit( upperLimits.y * DEG2RAD );
 	constraint->GetDofAngularZ().SetUpperLimit( upperLimits.z * DEG2RAD );
+}
+
+
+
+// public func float getStaticFrictionFor(ColliderConstraintDof dof)
+deClassColliderConstraint::nfGetStaticFrictionFor::nfGetStaticFrictionFor( const sInitData &init ) :
+dsFunction( init.clsCCon, "getStaticFrictionFor", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt ){
+	p_AddParameter( init.clsColliderConstraintDof ); // dof
+}
+void deClassColliderConstraint::nfGetStaticFrictionFor::RunFunction( dsRunTime *rt, dsValue *myself ){
+	if( ! rt->GetValue( 0 )->GetRealObject() ){
+		DSTHROW( dueNullPointer );
+	}
+	
+	deColliderConstraint *constraint = ( ( sCConNatDat* )p_GetNativeData( myself ) )->constraint;
+	const deColliderConstraint::eDegreesOfFreedom dof = ( deColliderConstraint::eDegreesOfFreedom )
+		( ( dsClassEnumeration* )rt->GetEngine()->GetClassEnumeration() )->GetConstantOrder(
+			*rt->GetValue( 0 )->GetRealObject() );
+	
+	rt->PushFloat( constraint->GetDof( dof ).GetStaticFriction() );
+}
+
+// public func void setStaticFrictionFor(ColliderConstraintDof dof, float friction)
+deClassColliderConstraint::nfSetStaticFrictionFor::nfSetStaticFrictionFor( const sInitData &init ) :
+dsFunction( init.clsCCon, "setStaticFrictionFor", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsColliderConstraintDof ); // dof
+	p_AddParameter( init.clsFlt ); // friction
+}
+void deClassColliderConstraint::nfSetStaticFrictionFor::RunFunction( dsRunTime *rt, dsValue *myself ){
+	if( ! rt->GetValue( 0 )->GetRealObject() ){
+		DSTHROW( dueNullPointer );
+	}
+	
+	deColliderConstraint *constraint = ( ( sCConNatDat* )p_GetNativeData( myself ) )->constraint;
+	const deColliderConstraint::eDegreesOfFreedom dof = ( deColliderConstraint::eDegreesOfFreedom )
+		( ( dsClassEnumeration* )rt->GetEngine()->GetClassEnumeration() )->GetConstantOrder(
+			*rt->GetValue( 0 )->GetRealObject() );
+	
+	constraint->GetDof( dof ).SetStaticFriction( rt->GetValue( 1 )->GetFloat() );
+}
+
+// public func float getKinematicFrictionFor(ColliderConstraintDof dof)
+deClassColliderConstraint::nfGetKinematicFrictionFor::nfGetKinematicFrictionFor( const sInitData &init ) :
+dsFunction( init.clsCCon, "getKinematicFrictionFor", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt ){
+	p_AddParameter( init.clsColliderConstraintDof ); // dof
+}
+void deClassColliderConstraint::nfGetKinematicFrictionFor::RunFunction( dsRunTime *rt, dsValue *myself ){
+	if( ! rt->GetValue( 0 )->GetRealObject() ){
+		DSTHROW( dueNullPointer );
+	}
+	
+	deColliderConstraint *constraint = ( ( sCConNatDat* )p_GetNativeData( myself ) )->constraint;
+	const deColliderConstraint::eDegreesOfFreedom dof = ( deColliderConstraint::eDegreesOfFreedom )
+		( ( dsClassEnumeration* )rt->GetEngine()->GetClassEnumeration() )->GetConstantOrder(
+			*rt->GetValue( 0 )->GetRealObject() );
+	
+	rt->PushFloat( constraint->GetDof( dof ).GetKinematicFriction() );
+}
+
+// public func void setKinematicFrictionFor(ColliderConstraintDof dof, float friction)
+deClassColliderConstraint::nfSetKinematicFrictionFor::nfSetKinematicFrictionFor( const sInitData &init ) :
+dsFunction( init.clsCCon, "setKinematicFrictionFor", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsColliderConstraintDof ); // dof
+	p_AddParameter( init.clsFlt ); // friction
+}
+void deClassColliderConstraint::nfSetKinematicFrictionFor::RunFunction( dsRunTime *rt, dsValue *myself ){
+	if( ! rt->GetValue( 0 )->GetRealObject() ){
+		DSTHROW( dueNullPointer );
+	}
+	
+	deColliderConstraint *constraint = ( ( sCConNatDat* )p_GetNativeData( myself ) )->constraint;
+	const deColliderConstraint::eDegreesOfFreedom dof = ( deColliderConstraint::eDegreesOfFreedom )
+		( ( dsClassEnumeration* )rt->GetEngine()->GetClassEnumeration() )->GetConstantOrder(
+			*rt->GetValue( 0 )->GetRealObject() );
+	
+	constraint->GetDof( dof ).SetKinematicFriction( rt->GetValue( 1 )->GetFloat() );
+}
+
+// public func float getSpringStiffnessFor(ColliderConstraintDof dof)
+deClassColliderConstraint::nfGetSpringStiffnessFor::nfGetSpringStiffnessFor( const sInitData &init ) :
+dsFunction( init.clsCCon, "getSpringStiffnessFor", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt ){
+	p_AddParameter( init.clsColliderConstraintDof ); // dof
+}
+void deClassColliderConstraint::nfGetSpringStiffnessFor::RunFunction( dsRunTime *rt, dsValue *myself ){
+	if( ! rt->GetValue( 0 )->GetRealObject() ){
+		DSTHROW( dueNullPointer );
+	}
+	
+	deColliderConstraint *constraint = ( ( sCConNatDat* )p_GetNativeData( myself ) )->constraint;
+	const deColliderConstraint::eDegreesOfFreedom dof = ( deColliderConstraint::eDegreesOfFreedom )
+		( ( dsClassEnumeration* )rt->GetEngine()->GetClassEnumeration() )->GetConstantOrder(
+			*rt->GetValue( 0 )->GetRealObject() );
+	
+	rt->PushFloat( constraint->GetDof( dof ).GetSpringStiffness() );
+}
+
+// public func void setSpringStiffnessFor(ColliderConstraintDof dof, float stiffness)
+deClassColliderConstraint::nfSetSpringStiffnessFor::nfSetSpringStiffnessFor( const sInitData &init ) :
+dsFunction( init.clsCCon, "setSpringStiffnessFor", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsColliderConstraintDof ); // dof
+	p_AddParameter( init.clsFlt ); // stiffness
+}
+void deClassColliderConstraint::nfSetSpringStiffnessFor::RunFunction( dsRunTime *rt, dsValue *myself ){
+	if( ! rt->GetValue( 0 )->GetRealObject() ){
+		DSTHROW( dueNullPointer );
+	}
+	
+	deColliderConstraint *constraint = ( ( sCConNatDat* )p_GetNativeData( myself ) )->constraint;
+	const deColliderConstraint::eDegreesOfFreedom dof = ( deColliderConstraint::eDegreesOfFreedom )
+		( ( dsClassEnumeration* )rt->GetEngine()->GetClassEnumeration() )->GetConstantOrder(
+			*rt->GetValue( 0 )->GetRealObject() );
+	
+	constraint->GetDof( dof ).SetSpringStiffness( rt->GetValue( 1 )->GetFloat() );
 }
 
 
@@ -575,7 +691,7 @@ void deClassColliderConstraint::nfSetToBallJoint::RunFunction( dsRunTime *rt, ds
 // public func void setToHingeJoint( ColliderConstraintDof dof, float lowerLimit, float upperLimit )
 deClassColliderConstraint::nfSetToHingeJoint::nfSetToHingeJoint( const sInitData &init ) : dsFunction( init.clsCCon,
 "setToHingeJoint", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsInt ); // dof
+	p_AddParameter( init.clsColliderConstraintDof ); // dof
 	p_AddParameter( init.clsFlt ); // lowerLimit
 	p_AddParameter( init.clsFlt ); // upperLimit
 }
@@ -597,7 +713,7 @@ void deClassColliderConstraint::nfSetToHingeJoint::RunFunction( dsRunTime *rt, d
 // public func void setToPistonJoint( ColliderConstraintDof dof, float lowerLimit, float upperLimit )
 deClassColliderConstraint::nfSetToPistonJoint::nfSetToPistonJoint( const sInitData &init ) : dsFunction( init.clsCCon,
 "setToPistonJoint", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsInt ); // dof
+	p_AddParameter( init.clsColliderConstraintDof ); // dof
 	p_AddParameter( init.clsFlt ); // lowerLimit
 	p_AddParameter( init.clsFlt ); // upperLimit
 }
@@ -700,7 +816,7 @@ void deClassColliderConstraint::nfHashCode::RunFunction( dsRunTime *rt, dsValue 
 	deColliderConstraint *constraint = ( ( sCConNatDat* )p_GetNativeData( myself ) )->constraint;
 	
 	// hash code = memory location
-	rt->PushInt( ( intptr_t )constraint );
+	rt->PushInt( ( int )( intptr_t )constraint );
 }
 
 // public func bool equals( Object obj )
@@ -738,7 +854,7 @@ dsClass( "ColliderConstraint", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXE
 	pGameEngine = gameEngine;
 	pScrDS = scrDS;
 	
-	// store informations into parser info
+	// store information into parser info
 	GetParserInfo()->SetParent( DENS_SCENERY );
 	GetParserInfo()->SetBase( "Object" );
 	
@@ -802,6 +918,13 @@ void deClassColliderConstraint::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfGetAngularLowerLimits( init ) );
 	AddFunction( new nfGetAngularUpperLimits( init ) );
 	AddFunction( new nfSetAngularLimits( init ) );
+	
+	AddFunction( new nfGetStaticFrictionFor( init ) );
+	AddFunction( new nfSetStaticFrictionFor( init ) );
+	AddFunction( new nfGetKinematicFrictionFor( init ) );
+	AddFunction( new nfSetKinematicFrictionFor( init ) );
+	AddFunction( new nfGetSpringStiffnessFor( init ) );
+	AddFunction( new nfSetSpringStiffnessFor( init ) );
 	
 	AddFunction( new nfGetLinearDamping( init ) );
 	AddFunction( new nfSetLinearDamping( init ) );

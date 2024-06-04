@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Speech Animation Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -199,12 +202,21 @@ void saeWindowMain::CreateNewSAnimation(){
 }
 
 void saeWindowMain::SaveSAnimation( const char *filename ){
-	GetEditorModule().LogInfoFormat( "Saving Speech Animation %s", filename );
-	pLoadSaveSystem->SaveSAnimation( pSAnimation, filename );
+	if( ! pSAnimation ){
+		return;
+	}
 	
+	const decString basePath( pSAnimation->GetDirectoryPath() );
+	
+	pLoadSaveSystem->SaveSAnimation( pSAnimation, filename );
 	pSAnimation->SetFilePath( filename );
 	pSAnimation->SetChanged( false );
 	pSAnimation->SetSaved( true );
+	
+	if( pSAnimation->GetDirectoryPath() != basePath ){
+		pWindowProperties->OnSAnimationPathChanged();
+	}
+	
 	GetRecentFiles().AddFile( filename );
 }
 
@@ -255,16 +267,10 @@ void saeWindowMain::GetChangedDocuments( decStringList &list ){
 }
 
 void saeWindowMain::LoadDocument( const char *filename ){
-	deObjectReference refSAnimation;
-	refSAnimation.TakeOver( pLoadSaveSystem->LoadSAnimation( filename ) );
-	saeSAnimation * const sanimation = ( saeSAnimation* )( deObject* )refSAnimation;
-	
-	sanimation->SetFilePath( filename );
-	sanimation->SetChanged( false );
-	sanimation->SetSaved( true );
-	
-	SetSAnimation( sanimation );
+	SetSAnimation( saeSAnimation::Ref::New( pLoadSaveSystem->LoadSAnimation( filename ) ) );
 	GetRecentFiles().AddFile( filename );
+	
+	pWindowProperties->OnSAnimationPathChanged();
 }
 
 bool saeWindowMain::SaveDocument( const char *filename ){
@@ -345,10 +351,13 @@ public:
 		deInputEvent::ekcN, deInputEvent::ekcN ){}
 	
 	virtual void OnAction(){
-		if( igdeCommonDialogs::Question( &pWindow, igdeCommonDialogs::ebsYesNo, "New Rig",
-		"Creating new Speech Animation discards the current one. Is that ok?" ) == igdeCommonDialogs::ebYes ){
-			pWindow.CreateNewSAnimation();
+		if( pWindow.GetSAnimation() && pWindow.GetSAnimation()->GetChanged()
+		&& igdeCommonDialogs::Question( &pWindow, igdeCommonDialogs::ebsYesNo, "New Speech Animation",
+		"Speech animated changed. Creating new Speech Animation discards the current one. Is that ok?" )
+		!= igdeCommonDialogs::ebYes ){
+			return;
 		}
+		pWindow.CreateNewSAnimation();
 	}
 };
 
@@ -360,6 +369,13 @@ public:
 		deInputEvent::ekcO, deInputEvent::ekcO ){}
 	
 	virtual void OnAction(){
+		if( pWindow.GetSAnimation() && pWindow.GetSAnimation()->GetChanged()
+		&& igdeCommonDialogs::Question( &pWindow, igdeCommonDialogs::ebsYesNo, "Open Speech Animation",
+		"Speech animated changed. Open Speech Animation discards the current one. Is that ok?" )
+		!= igdeCommonDialogs::ebYes ){
+			return;
+		}
+		
 		decString filename( pWindow.GetSAnimation()->GetFilePath() );
 		if( ! igdeCommonDialogs::GetFileOpen( &pWindow, "Open Speech Animation",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
@@ -367,17 +383,7 @@ public:
 			return;
 		}
 		
-		pWindow.GetEditorModule().LogInfoFormat( "Loading Speech Animation %s", filename.GetString() );
-		
-		deObjectReference refSAnimation;
-		refSAnimation.TakeOver( pWindow.GetLoadSaveSystem().LoadSAnimation( filename ) );
-		saeSAnimation * const sanimation = ( saeSAnimation* )refSAnimation.operator->();
-		
-		sanimation->SetFilePath( filename );
-		sanimation->SetChanged( false );
-		sanimation->SetSaved( true );
-		
-		pWindow.SetSAnimation( sanimation );
+		pWindow.SetSAnimation( saeSAnimation::Ref::New( pWindow.GetLoadSaveSystem().LoadSAnimation( filename ) ) );
 		pWindow.GetRecentFiles().AddFile( filename );
 	}
 };

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Skin Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -41,7 +44,9 @@
 #include "../../undosys/property/seUPropertySetConstructedColor.h"
 #include "../../undosys/property/seUPropertyConstructedToggleTileX.h"
 #include "../../undosys/property/seUPropertyConstructedToggleTileY.h"
+#include "../../undosys/property/seUPropertyConstructedSetBitCount.h"
 #include "../../undosys/property/seUPropertySetRenderableName.h"
+#include "../../undosys/property/seUPropertySetBoneName.h"
 #include "../../undosys/property/seUPropertySetConstructedSize.h"
 
 #include <deigde/environment/igdeEnvironment.h>
@@ -144,7 +149,7 @@ public:
 		const char *description ) : cBaseAction( panel, text, icon, description ){ }
 	
 	virtual igdeUndo *OnAction( seSkin *skin, seTexture *texture ){
-		return pPanel.GetProperty() ? OnActionProperty( skin, texture, pPanel.GetProperty() ) : NULL;
+		return pPanel.GetProperty() ? OnActionProperty( skin, texture, pPanel.GetProperty() ) : nullptr;
 	}
 	
 	virtual igdeUndo *OnActionProperty( seSkin *skin, seTexture *texture, seProperty *property ) = 0;
@@ -255,7 +260,7 @@ public:
 		seSkin * const skin = pPanel.GetSkin();
 		if( skin ){
 			skin->SetActiveTexture( listBox->GetSelectedItem()
-				? ( seTexture* )listBox->GetSelectedItem()->GetData() : NULL );
+				? ( seTexture* )listBox->GetSelectedItem()->GetData() : nullptr );
 		}
 	}
 	
@@ -346,7 +351,7 @@ public:
 		seTexture * const texture = pPanel.GetTexture();
 		if( texture ){
 			texture->SetActiveProperty( listBox->GetSelectedItem()
-				? ( seProperty* )listBox->GetSelectedItem()->GetData() : NULL );
+				? ( seProperty* )listBox->GetSelectedItem()->GetData() : nullptr );
 		}
 	}
 	
@@ -389,7 +394,17 @@ public:
 	
 	virtual igdeUndo *OnChanged( igdeTextField &textField, seSkin*, seTexture*, seProperty *property ){
 		return property->GetRenderableName() != textField.GetText()
-			? new seUPropertySetRenderableName( property, textField.GetText() ) : NULL;
+			? new seUPropertySetRenderableName( property, textField.GetText() ) : nullptr;
+	}
+};
+
+class cTextPropertyBone : public cBaseTextFieldListener{
+public:
+	cTextPropertyBone( seWPTexture &panel ) : cBaseTextFieldListener( panel ){ }
+	
+	virtual igdeUndo *OnChanged( igdeTextField &textField, seSkin*, seTexture*, seProperty *property ) override{
+		return property->GetBoneName() != textField.GetText()
+			? new seUPropertySetBoneName( property, textField.GetText() ) : nullptr;
 	}
 };
 
@@ -401,7 +416,7 @@ public:
 	virtual igdeUndo *OnChanged( igdeTextField &textField, seSkin*, seTexture*, seProperty *property ){
 		const float value = textField.GetFloat();
 		return fabsf( property->GetValue() - value ) > FLOAT_SAFE_EPSILON
-			? new seUPropertySetValue( property, value ) : NULL;
+			? new seUPropertySetValue( property, value ) : nullptr;
 	}
 };
 
@@ -412,7 +427,7 @@ public:
 	
 	virtual igdeUndo *OnChanged( igdeColorBox &colorBox, seSkin*, seTexture*, seProperty *property ){
 		return ! property->GetColor().IsEqualTo( colorBox.GetColor() )
-			? new seUPropertySetColor( property, colorBox.GetColor() ) : NULL;
+			? new seUPropertySetColor( property, colorBox.GetColor() ) : nullptr;
 	}
 };
 
@@ -423,7 +438,7 @@ public:
 	
 	virtual igdeUndo *OnChanged( igdeEditPath &editPath, seSkin*, seTexture*, seProperty *property ){
 		return property->GetImagePath() != editPath.GetPath()
-			? new seUPropertySetImagePath( property, editPath.GetPath() ) : NULL;
+			? new seUPropertySetImagePath( property, editPath.GetPath() ) : nullptr;
 	}
 };
 
@@ -434,14 +449,14 @@ public:
 	
 	virtual igdeUndo *OnChanged( igdeEditPath &editPath, seSkin*, seTexture*, seProperty *property ){
 		return property->GetVideoPath() != editPath.GetPath()
-			? new seUPropertySetVideoPath( property, editPath.GetPath() ) : NULL;
+			? new seUPropertySetVideoPath( property, editPath.GetPath() ) : nullptr;
 	}
 };
 
 class cActionPropertyVideoUseShared : public cBaseActionProperty{
 public:
 	cActionPropertyVideoUseShared( seWPTexture &panel ) : cBaseActionProperty( panel,
-		"Use shared time", NULL, "Playback time is shared across instances" ){ }
+		"Use shared time", nullptr, "Playback time is shared across instances" ){ }
 	
 	virtual igdeUndo *OnActionProperty( seSkin*, seTexture* , seProperty *property ){
 		return new seUPropertyToggleVideoSharedTime( property );
@@ -464,12 +479,18 @@ public:
 	}
 };
 
-class cComboPropertyMappedInputType : public igdeComboBoxListener{
+class cComboPropertyMappedTarget : public igdeComboBoxListener{
 	seWPTexture &pPanel;
+	bool &pPreventUpdate;
 public:
-	cComboPropertyMappedInputType( seWPTexture &panel ) : pPanel( panel ){ }
+	cComboPropertyMappedTarget( seWPTexture &panel, bool &preventUpdate) :
+	pPanel( panel ), pPreventUpdate( preventUpdate ){ }
 	
 	virtual void OnTextChanged( igdeComboBox *comboBox ){
+		if( pPreventUpdate ){
+			return;
+		}
+		
 		seSkin * const skin = pPanel.GetSkin();
 		seTexture * const texture = pPanel.GetTexture();
 		seProperty * const property = pPanel.GetProperty();
@@ -478,142 +499,15 @@ public:
 		}
 		
 		const int index = pPanel.GetPropertyMappedComponentIndex();
-		deSkinPropertyMapped::cComponent component( property->GetMappedComponent( index ) );
-		const deSkinPropertyMapped::eInputTypes type = ( deSkinPropertyMapped::eInputTypes )
-			( intptr_t )comboBox->GetSelectedItem()->GetData();
-		if( type == component.GetInputType() ){
+		seMapped * const curMapped = property->GetMappedComponent( index );
+		seMapped * const newMapped = ( seMapped* )comboBox->GetSelectedItem()->GetData();
+		if( newMapped == curMapped ){
 			return;
 		}
 		
-		component.SetInputType( type );
 		igdeUndoReference undo;
-		undo.TakeOver( new seUPropertySetMappedComponent( property, index, component ) );
+		undo.TakeOver( new seUPropertySetMappedComponent( property, index, newMapped ) );
 		skin->GetUndoSystem()->Add( undo );
-	}
-};
-
-class cEditMappedComponentCurve : public igdeViewCurveBezierListener{
-	seWPTexture &pPanel;
-	igdeUndoReference pUndo;
-	
-public:
-	cEditMappedComponentCurve( seWPTexture &panel ) : pPanel( panel ){ }
-	
-	virtual void OnCurveChanged( igdeViewCurveBezier *viewCurveBezier ){
-		seSkin * const skin = pPanel.GetSkin();
-		seTexture * const texture = pPanel.GetTexture();
-		seProperty * const property = pPanel.GetProperty();
-		if( ! skin || ! texture || ! property ){
-			return;
-		}
-		
-		const int index = pPanel.GetPropertyMappedComponentIndex();
-		deSkinPropertyMapped::cComponent component( property->GetMappedComponent( index ) );
-		
-		if( pUndo ){
-			component.GetCurve() = viewCurveBezier->GetCurve();
-			( ( seUPropertySetMappedComponent& )( igdeUndo& )pUndo ).SetNewValue( component );
-			
-		}else{
-			if( component.GetCurve() == viewCurveBezier->GetCurve() ){
-				return;
-			}
-			component.GetCurve() = viewCurveBezier->GetCurve();
-			pUndo.TakeOver( new seUPropertySetMappedComponent( property, index, component ) );
-		}
-		
-		skin->GetUndoSystem()->Add( pUndo );
-		pUndo = NULL;
-	}
-	
-	virtual void OnCurveChanging( igdeViewCurveBezier *viewCurveBezier ){
-		seSkin * const skin = pPanel.GetSkin();
-		seTexture * const texture = pPanel.GetTexture();
-		seProperty * const property = pPanel.GetProperty();
-		if( ! skin || ! texture || ! property ){
-			return;
-		}
-		
-		const int index = pPanel.GetPropertyMappedComponentIndex();
-		deSkinPropertyMapped::cComponent component( property->GetMappedComponent( index ) );
-		
-		if( pUndo ){
-			component.GetCurve() = viewCurveBezier->GetCurve();
-			( ( seUPropertySetMappedComponent& )( igdeUndo& )pUndo ).SetNewValue( component );
-			pUndo->Redo();
-			
-		}else{
-			if( component.GetCurve() == viewCurveBezier->GetCurve() ){
-				return;
-			}
-			component.GetCurve() = viewCurveBezier->GetCurve();
-			pUndo.TakeOver( new seUPropertySetMappedComponent( property, index, component ) );
-		}
-	}
-};
-
-class cTextPropertyMappedInputLower : public cBaseTextFieldListener{
-public:
-	cTextPropertyMappedInputLower( seWPTexture &panel ) : cBaseTextFieldListener( panel ){ }
-	
-	virtual igdeUndo *OnChanged( igdeTextField &textField, seSkin*, seTexture*, seProperty *property ){
-		const int index = pPanel.GetPropertyMappedComponentIndex();
-		deSkinPropertyMapped::cComponent component( property->GetMappedComponent( index ) );
-		const float value = textField.GetFloat();
-		if( fabsf( value - component.GetInputLower() ) < FLOAT_SAFE_EPSILON ){
-			return NULL;
-		}
-		component.SetInputLower( value );
-		return new seUPropertySetMappedComponent( property, index, component );
-	}
-};
-
-class cTextPropertyMappedInputUpper : public cBaseTextFieldListener{
-public:
-	cTextPropertyMappedInputUpper( seWPTexture &panel ) : cBaseTextFieldListener( panel ){ }
-	
-	virtual igdeUndo *OnChanged( igdeTextField &textField, seSkin*, seTexture*, seProperty *property ){
-		const int index = pPanel.GetPropertyMappedComponentIndex();
-		deSkinPropertyMapped::cComponent component( property->GetMappedComponent( index ) );
-		const float value = textField.GetFloat();
-		if( fabsf( value - component.GetInputUpper() ) < FLOAT_SAFE_EPSILON ){
-			return NULL;
-		}
-		component.SetInputUpper( value );
-		return new seUPropertySetMappedComponent( property, index, component );
-	}
-};
-
-class cActionPropertyMappedInputClamped : public cBaseActionProperty{
-public:
-	cActionPropertyMappedInputClamped( seWPTexture &panel ) : cBaseActionProperty( panel,
-		"Input Clamped:", NULL, "Input value is clamperd to input range instead od wrapping around" ){ }
-	
-	virtual igdeUndo *OnActionProperty( seSkin*, seTexture*, seProperty *property ){
-		const int index = pPanel.GetPropertyMappedComponentIndex();
-		deSkinPropertyMapped::cComponent component( property->GetMappedComponent( index ) );
-		component.SetInputClamped( ! component.GetInputClamped() );
-		return new seUPropertySetMappedComponent( property, index, component );
-	}
-	
-	virtual void UpdateProperty( const seSkin &skin, const seTexture &texture, const seProperty &property ){
-		cBaseActionProperty::UpdateProperty( skin, texture, property );
-		SetSelected( property.GetMappedComponent( pPanel.GetPropertyMappedComponentIndex() ).GetInputClamped() );
-	}
-};
-
-class cTextPropertyMappedBone : public cBaseTextFieldListener{
-public:
-	cTextPropertyMappedBone( seWPTexture &panel ) : cBaseTextFieldListener( panel ){ }
-	
-	virtual igdeUndo *OnChanged( igdeTextField &textField, seSkin*, seTexture*, seProperty *property ){
-		const int index = pPanel.GetPropertyMappedComponentIndex();
-		deSkinPropertyMapped::cComponent component( property->GetMappedComponent( index ) );
-		if( textField.GetText() == component.GetBone() ){
-			return NULL;
-		}
-		component.SetBone( textField.GetText() );
-		return new seUPropertySetMappedComponent( property, index, component );
 	}
 };
 
@@ -624,7 +518,7 @@ public:
 	
 	virtual igdeUndo *OnChanged( igdeColorBox &colorBox, seSkin*, seTexture*, seProperty *property ){
 		return ! property->GetNodeColor().IsEqualTo( colorBox.GetColor() )
-			? new seUPropertySetConstructedColor( property, colorBox.GetColor() ) : NULL;
+			? new seUPropertySetConstructedColor( property, colorBox.GetColor() ) : nullptr;
 	}
 };
 
@@ -648,7 +542,7 @@ public:
 class cActionConstructedChkTileX : public cBaseActionProperty{
 public:
 	cActionConstructedChkTileX( seWPTexture &panel ) : cBaseActionProperty( panel,
-		"X-Axis", NULL, "Tile nodes along X axis" ){ }
+		"X-Axis", nullptr, "Tile nodes along X axis" ){ }
 	
 	virtual igdeUndo *OnActionProperty( seSkin*, seTexture* , seProperty *property ){
 		return new seUPropertyConstructedToggleTileX( property );
@@ -663,7 +557,7 @@ public:
 class cActionConstructedChkTileY : public cBaseActionProperty{
 public:
 	cActionConstructedChkTileY( seWPTexture &panel ) : cBaseActionProperty( panel,
-		"Y-Axis", NULL, "Tile nodes along Y axis" ){ }
+		"Y-Axis", nullptr, "Tile nodes along Y axis" ){ }
 	
 	virtual igdeUndo *OnActionProperty( seSkin*, seTexture* , seProperty *property ){
 		return new seUPropertyConstructedToggleTileY( property );
@@ -672,6 +566,29 @@ public:
 	virtual void UpdateProperty( const seSkin &, const seTexture &, const seProperty &property ){
 		SetEnabled( true );
 		SetSelected( property.GetNodeTileY() );
+	}
+};
+
+class cComboConstructedBitCount : public igdeComboBoxListener{
+	seWPTexture &pPanel;
+public:
+	cComboConstructedBitCount( seWPTexture &panel ) : pPanel( panel ){ }
+	
+	virtual void OnTextChanged( igdeComboBox *comboBox ){
+		seSkin * const skin = pPanel.GetSkin();
+		seProperty * const property = pPanel.GetProperty();
+		if( ! skin || ! pPanel.GetTexture() || ! property || ! comboBox->GetSelectedItem() ){
+			return;
+		}
+		
+		const int bitCount = ( int )( intptr_t )comboBox->GetSelectedItem()->GetData();
+		if( bitCount == property->GetNodeBitCount() ){
+			return;
+		}
+		
+		igdeUndoReference undo;
+		undo.TakeOver( new seUPropertyConstructedSetBitCount( property, bitCount ) );
+		skin->GetUndoSystem()->Add( undo );
 	}
 };
 
@@ -688,8 +605,10 @@ public:
 seWPTexture::seWPTexture( seWindowProperties &windowProperties ) :
 igdeContainerScroll( windowProperties.GetEnvironment(), false, true ),
 pWindowProperties( windowProperties ),
-pListener( NULL ),
-pSkin( NULL )
+pListener( nullptr ),
+pSkin( nullptr ),
+pRequiresUpdate( false ),
+pPreventUpdateMappedTarget( false )
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeContainerReference content, panel, groupBox, form, formLine;
@@ -703,7 +622,7 @@ pSkin( NULL )
 	
 	// texture
 	helper.GroupBoxFlow( content, groupBox, "Texture:" );
-	helper.ListBox( groupBox, 4, "Textures", pListTexture, new cListTextures( *this ) );
+	helper.ListBox( groupBox, 8, "Textures", pListTexture, new cListTextures( *this ) );
 	pListTexture->SetDefaultSorter();
 	
 	form.TakeOver( new igdeContainerForm( env ) );
@@ -729,20 +648,24 @@ pSkin( NULL )
 	form.TakeOver( new igdeContainerForm( env ) );
 	groupBox->AddChild( form );
 	
-	helper.EditString( form, "Name:", "Name of property", pEditPropName, NULL );
+	helper.EditString( form, "Name:", "Name of property", pEditPropName, nullptr );
 	pEditPropName->SetEditable( false );
 	
-	helper.EditString( form, "Renderable:", "Name of the renderable to use or an empty string to use none",
+	helper.EditString( form, "Renderable:", "Name of renderable to use or empty string to use none",
 		pEditPropRenderable, new cTextPropertyRenderable( *this ) );
+	
+	helper.EditString( form, "Bone:", "Name of bone to use or empty string. "
+		"Used by properties using vertex position instead of texture coordinates.",
+		pEditPropBone, new cTextPropertyBone( *this ) );
 	
 	helper.ComboBox( form, "Value Type:", "Type of value to use for the property",
 		pCBPropertyType, new cComboPropertyValueType( *this ) );
-	pCBPropertyType->AddItem( "Value", NULL, ( void* )( intptr_t )seProperty::evtValue );
-	pCBPropertyType->AddItem( "Color", NULL, ( void* )( intptr_t )seProperty::evtColor );
-	pCBPropertyType->AddItem( "Image", NULL, ( void* )( intptr_t )seProperty::evtImage );
-	pCBPropertyType->AddItem( "Video", NULL, ( void* )( intptr_t )seProperty::evtVideo );
-	pCBPropertyType->AddItem( "Constructed", NULL, ( void* )( intptr_t )seProperty::evtConstructed );
-	pCBPropertyType->AddItem( "Mapped", NULL, ( void* )( intptr_t )seProperty::evtMapped );
+	pCBPropertyType->AddItem( "Value", nullptr, ( void* )( intptr_t )seProperty::evtValue );
+	pCBPropertyType->AddItem( "Color", nullptr, ( void* )( intptr_t )seProperty::evtColor );
+	pCBPropertyType->AddItem( "Image", nullptr, ( void* )( intptr_t )seProperty::evtImage );
+	pCBPropertyType->AddItem( "Video", nullptr, ( void* )( intptr_t )seProperty::evtVideo );
+	pCBPropertyType->AddItem( "Constructed", nullptr, ( void* )( intptr_t )seProperty::evtConstructed );
+	pCBPropertyType->AddItem( "Mapped", nullptr, ( void* )( intptr_t )seProperty::evtMapped );
 	
 	
 	// property panel switcher
@@ -775,7 +698,7 @@ pSkin( NULL )
 	helper.EditPath( groupBox, "Path:", "Path to the image to use", igdeEnvironment::efpltImage,
 		pEditPvtImagePath, new cPathPropertyImage( *this ) );
 	
-	helper.EditString( groupBox, "", "Image information", pLabPvtImageInfo, NULL );
+	helper.EditString( groupBox, "", "Image information", pLabPvtImageInfo, nullptr );
 	pLabPvtImageInfo->SetEditable( false );
 	
 	
@@ -786,7 +709,7 @@ pSkin( NULL )
 	helper.EditPath( groupBox, "Path:", "Path to the video to use", igdeEnvironment::efpltVideo,
 		pEditPvtVideoPath, new cPathPropertyVideo( *this ) );
 	
-	helper.EditString( groupBox, "", "Video information", pLabPvtVideoInfo, NULL );
+	helper.EditString( groupBox, "", "Video information", pLabPvtVideoInfo, nullptr );
 	pLabPvtVideoInfo->SetEditable( false );
 	
 	helper.CheckBox( groupBox, pChkPvtVideoSharedTime, new cActionPropertyVideoUseShared( *this ), true );
@@ -805,6 +728,12 @@ pSkin( NULL )
 	helper.CheckBox( formLine, pConstructedChkTileX, new cActionConstructedChkTileX( *this ), true );
 	helper.CheckBox( formLine, pConstructedChkTileY, new cActionConstructedChkTileY( *this ), true );
 	
+	helper.ComboBox( groupBox, "Bit Count:", "Bit count of constructed image",
+		pConstructedCBBitCount, new cComboConstructedBitCount( *this ) );
+	pConstructedCBBitCount->AddItem( "8-Bit", nullptr, ( void* )( intptr_t )8 );
+	pConstructedCBBitCount->AddItem( "16-Bit", nullptr, ( void* )( intptr_t )16 );
+	pConstructedCBBitCount->AddItem( "32-Bit", nullptr, ( void* )( intptr_t )32 );
+	
 	
 	// mapped
 	panel.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY ) );
@@ -817,48 +746,15 @@ pSkin( NULL )
 	helper.EditSpinInteger( form, "Component:", "Component to edit (0=red, 1=green, 2=blue, 3=alpha)",
 		0, 3, pSpinPvtMappedComponent, new cSpinPropertyMappedComponent( *this ) );
 	
-	helper.ComboBox( form, "Input Type:", "Type of input to use for curve",
-		pCBPvtMappedInputType, new cComboPropertyMappedInputType( *this ) );
-	pCBPvtMappedInputType->AddItem( "Time", NULL,
-		( void* )( intptr_t )deSkinPropertyMapped::eitTime );
-	pCBPvtMappedInputType->AddItem( "BonePositionX", NULL,
-		( void* )( intptr_t )deSkinPropertyMapped::eitBonePositionX );
-	pCBPvtMappedInputType->AddItem( "BonePositionY", NULL,
-		( void* )( intptr_t )deSkinPropertyMapped::eitBonePositionY );
-	pCBPvtMappedInputType->AddItem( "BonePositionZ", NULL,
-		( void* )( intptr_t )deSkinPropertyMapped::eitBonePositionZ );
-	pCBPvtMappedInputType->AddItem( "BoneRotationX", NULL,
-		( void* )( intptr_t )deSkinPropertyMapped::eitBoneRotationX );
-	pCBPvtMappedInputType->AddItem( "BoneRotationY", NULL,
-		( void* )( intptr_t )deSkinPropertyMapped::eitBoneRotationY );
-	pCBPvtMappedInputType->AddItem( "BoneRotationZ", NULL,
-		( void* )( intptr_t )deSkinPropertyMapped::eitBoneRotationZ );
-	pCBPvtMappedInputType->AddItem( "BoneScaleX", NULL,
-		( void* )( intptr_t )deSkinPropertyMapped::eitBoneScaleX );
-	pCBPvtMappedInputType->AddItem( "BoneScaleY", NULL,
-		( void* )( intptr_t )deSkinPropertyMapped::eitBoneScaleY );
-	pCBPvtMappedInputType->AddItem( "BoneScaleZ", NULL,
-		( void* )( intptr_t )deSkinPropertyMapped::eitBoneScaleZ );
+	helper.ComboBox( form, "Target:", "Target mapped to use for this component",
+		pCBPvtMappedTarget, new cComboPropertyMappedTarget( *this, pPreventUpdateMappedTarget ) );
 	
-	helper.EditFloat( form, "Input Lower:", "Lower input range",
-		pEditPvtMappedInputLower, new cTextPropertyMappedInputLower( *this ) );
-	helper.EditFloat( form, "Input Upper:", "Upper input range",
-		pEditPvtMappedInputUpper, new cTextPropertyMappedInputUpper( *this ) );
-	helper.CheckBox( form, pChkPvtMappedInputClamped, new cActionPropertyMappedInputClamped( *this ), true );
-	
-	helper.EditString( form, "Bone:", "Name of the bone to use if bone related input type is used",
-		pEditPvtMappedBone, new cTextPropertyMappedBone( *this ) );
-	
-	helper.ViewCurveBezier( groupBox, pEditPvtMappedCurve, new cEditMappedComponentCurve( *this ) );
-	pEditPvtMappedCurve->SetDefaultSize( decPoint( 200, 250 ) );
-	pEditPvtMappedCurve->ClearCurve();
-	pEditPvtMappedCurve->SetClamp( true );
-	pEditPvtMappedCurve->SetClampMin( decVector2( 0.0f, 0.0f ) );
-	pEditPvtMappedCurve->SetClampMax( decVector2( 1.0f, 1.0f ) );
+	pCBPvtMappedTarget->SetDefaultSorter();
+	UpdatePropertyMappedTargetList();
 }
 
 seWPTexture::~seWPTexture(){
-	SetSkin( NULL );
+	SetSkin( nullptr );
 	
 	if( pListener ){
 		pListener->FreeReference();
@@ -887,16 +783,29 @@ void seWPTexture::SetSkin( seSkin *skin ){
 		skin->AddReference();
 	}
 	
+	UpdatePropertyMappedTargetList();
 	UpdateTextureList();
+	OnSkinPathChanged();
+}
+
+void seWPTexture::OnSkinPathChanged(){
+	if( pSkin ){
+		pEditPvtImagePath->SetBasePath( pSkin->GetDirectoryPath() );
+		pEditPvtVideoPath->SetBasePath( pSkin->GetDirectoryPath() );
+		
+	}else{
+		pEditPvtImagePath->SetBasePath( "" );
+		pEditPvtVideoPath->SetBasePath( "" );
+	}
 }
 
 seTexture *seWPTexture::GetTexture() const{
-	return pSkin ? pSkin->GetActiveTexture() : NULL;
+	return pSkin ? pSkin->GetActiveTexture() : nullptr;
 }
 
 seProperty *seWPTexture::GetProperty() const{
 	seTexture * const texture = GetTexture();
-	return texture ? texture->GetActiveProperty() : NULL;
+	return texture ? texture->GetActiveProperty() : nullptr;
 }
 
 
@@ -913,7 +822,7 @@ void seWPTexture::UpdateTextureList(){
 		
 		for( i=0; i<count; i++ ){
 			seTexture * const texture = list.GetAt( i );
-			pListTexture->AddItem( texture->GetName(), NULL, texture );
+			pListTexture->AddItem( texture->GetName(), nullptr, texture );
 		}
 		
 		pListTexture->SortItems();
@@ -1039,6 +948,7 @@ void seWPTexture::UpdateProperty(){
 	if( property ){
 		pEditPropName->SetText( property->GetName() );
 		pEditPropRenderable->SetText( property->GetRenderableName() );
+		pEditPropBone->SetText( property->GetBoneName() );
 		pCBPropertyType->SetSelectionWithData( ( void* )( intptr_t )property->GetValueType() );
 		
 		pEditPvtValue->SetFloat( property->GetValue() );
@@ -1079,20 +989,27 @@ void seWPTexture::UpdateProperty(){
 			const char *type = "?";
 			decString text;
 			
-			switch( video.GetPixelFormat() ){
-			case deVideo::epf420:
-			case deVideo::epf422:
-			case deVideo::epf444:
+			switch( video.GetComponentCount() ){
+			case 1:
+				type = "Grayscale";
+				break;
+				
+			case 2:
+				type = "GrayscaleAlpha";
+				break;
+				
+			case 3:
 				type = "RGB";
 				break;
 				
-			case deVideo::epf4444:
+			case 4:
 				type = "RGBA";
 				break;
 			}
 			
-			text.Format( "%dx%d %s, FPS %d, Frames %d, Playtime %.1fs", video.GetWidth(), video.GetHeight(),
-				type, video.GetFrameRate(), video.GetFrameCount(), video.GetPlayTime() );
+			text.Format( "%dx%d %s, FPS %.1f, Frames %d, Playtime %.1fs", video.GetWidth(),
+				video.GetHeight(), type, video.GetFrameRate(), video.GetFrameCount(),
+				video.GetPlayTime() );
 			pLabPvtVideoInfo->SetText( text );
 			
 		}else{
@@ -1101,10 +1018,12 @@ void seWPTexture::UpdateProperty(){
 		
 		pConstructedClrColor->SetColor( property->GetNodeColor() );
 		pConstructedEditSize->SetPoint3( property->GetNodeGroup()->GetSize() );
+		pConstructedCBBitCount->SetSelectionWithData( ( void* )( intptr_t )property->GetNodeBitCount() );
 		
 	}else{
 		pEditPropName->ClearText();
 		pEditPropRenderable->ClearText();
+		pEditPropBone->ClearText();
 		pCBPropertyType->SetSelectionWithData( ( void* )( intptr_t )seProperty::evtValue );
 		
 		pEditPvtValue->ClearText();
@@ -1119,12 +1038,14 @@ void seWPTexture::UpdateProperty(){
 		
 		pConstructedClrColor->SetColor( decColor( 1.0f, 1.0f, 1.0f ) );
 		pConstructedEditSize->SetPoint3( decPoint3() );
+		pConstructedCBBitCount->SetSelectionWithData( ( void* )( intptr_t )8 );
 	}
 	
 	const bool enabled = property;
 	pSpinPvtMappedComponent->SetEnabled( enabled );
 	pEditPropName->SetEnabled( enabled );
 	pEditPropRenderable->SetEnabled( enabled );
+	pEditPropBone->SetEnabled( enabled );
 	
 	pEditPvtValue->SetEnabled( enabled );
 	
@@ -1139,6 +1060,7 @@ void seWPTexture::UpdateProperty(){
 	pConstructedEditSize->SetEnabled( enabled );
 	pConstructedChkTileX->GetAction()->Update();
 	pConstructedChkTileY->GetAction()->Update();
+	pConstructedCBBitCount->SetEnabled( enabled );
 	
 	UpdatePropertyMappedComponent();
 }
@@ -1151,28 +1073,41 @@ void seWPTexture::UpdatePropertyMappedComponent(){
 	const seProperty * const property = GetProperty();
 	const int index = GetPropertyMappedComponentIndex();
 	
+	pPreventUpdateMappedTarget = true;
+	
 	if( property ){
-		const deSkinPropertyMapped::cComponent &component = property->GetMappedComponent( index );
-		pEditPvtMappedCurve->SetCurve( component.GetCurve() );
-		pCBPvtMappedInputType->SetSelectionWithData( ( void* )( intptr_t )component.GetInputType() );
-		pEditPvtMappedInputLower->SetFloat( component.GetInputLower() );
-		pEditPvtMappedInputUpper->SetFloat( component.GetInputUpper() );
-		pEditPvtMappedBone->SetText( component.GetBone() );
+		pCBPvtMappedTarget->SetSelectionWithData( property->GetMappedComponent( index ) );
 		
 	}else{
-		pEditPvtMappedCurve->ClearCurve();
-		pCBPvtMappedInputType->SetSelectionWithData( ( void* )( intptr_t )deSkinPropertyMapped::eitTime );
-		pEditPvtMappedInputLower->ClearText();
-		pEditPvtMappedInputUpper->ClearText();
-		pEditPvtMappedBone->ClearText();
+		pCBPvtMappedTarget->SetSelectionWithData( nullptr );
 	}
 	
-	pChkPvtMappedInputClamped->GetAction()->Update();
+	pPreventUpdateMappedTarget = false;
 	
 	const bool enabled = property;
-	pEditPvtMappedCurve->SetEnabled( enabled );
-	pCBPvtMappedInputType->SetEnabled( enabled );
-	pEditPvtMappedInputLower->SetEnabled( enabled );
-	pEditPvtMappedInputUpper->SetEnabled( enabled );
-	pEditPvtMappedBone->SetEnabled( enabled );
+	pCBPvtMappedTarget->SetEnabled( enabled );
+}
+
+void seWPTexture::UpdatePropertyMappedTargetList(){
+	seMapped * const selection = pCBPvtMappedTarget->GetSelectedItem() ?
+		( seMapped* )pCBPvtMappedTarget->GetSelectedItem()->GetData() : nullptr;
+	
+	pPreventUpdateMappedTarget = true;
+	pCBPvtMappedTarget->RemoveAllItems();
+	
+	if( pSkin ){
+		const seMappedList &list = pSkin->GetMappedList();
+		const int count = list.GetCount();
+		int i;
+		
+		for( i=0; i<count; i++ ){
+			seMapped * const mapped = list.GetAt( i );
+			pCBPvtMappedTarget->AddItem( mapped->GetName(), nullptr, mapped );
+		}
+		pCBPvtMappedTarget->SortItems();
+	}
+	
+	pCBPvtMappedTarget->InsertItem( 0, "< None >", nullptr, nullptr );
+	pCBPvtMappedTarget->SetSelectionWithData( selection );
+	pPreventUpdateMappedTarget = false;
 }

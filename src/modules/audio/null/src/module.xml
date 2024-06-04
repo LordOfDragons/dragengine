@@ -1,12 +1,12 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<!DOCTYPE module SYSTEM "DragengineModule.dtd">
 <module>
 	<name>NullAudio</name>
 	<description>Outputs no audio.</description>
 	<author>Plüss Roland (roland@rptd.ch)</author>
-	<version>1.0</version>
+	<version>VERSION</version>
 	<type>Audio</type>
 	<fallback/>
+	<priority>0</priority>
 	<library>
 		<file>FILENAME</file>
 		<size>FILESIZE</size>

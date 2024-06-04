@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shader>
+	<name>DefRen GI Probe Dynamic States</name>
+	
+	<texture name='texTracePosition' target='0'/>
+	<texture name='texTraceNormal' target='1'/>
+	
+	<uniformBlock name='GIParameters' target='1'/>
+	<uniformBlock name='GIProbeIndices' target='2'/>
+	<uniformBlock name='GIProbePositions' target='3'/>
+	<uniformBlock name='GIRayDirections' target='4'/>
+	
+	<shaderStorageBlock name='ProbeDynamicStates' target='0'/>
+	
+	<sourceCode unit='compute'>compute/defren/gi/probeDynamicStates.glsl</sourceCode>
+</shader>

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -50,7 +53,12 @@ pCanvasView( NULL ),
 pDirty( true )
 {
 	try{
-		pRRenderableCanvas = new deoglRDSRenderableCanvas( *dynamicSkin.GetRDynamicSkin() );
+		pRRenderableCanvas = new deoglRDSRenderableCanvas( *dynamicSkin.GetRDynamicSkin(), renderable );
+		
+		if( renderable.GetCanvas() ){
+			pCanvasView = ( deoglCanvasView* )renderable.GetCanvas()->GetPeerGraphic();
+			pCanvasView->AddListener( this );
+		}
 		
 	}catch( const deException & ){
 		pCleanUp();
@@ -72,19 +80,28 @@ deoglRDSRenderable *deoglDSRenderableCanvas::GetRRenderable() const{
 }
 
 void deoglDSRenderableCanvas::RenderableChanged(){
-	if( pCanvasView ){
-		pCanvasView->GetNotifyRenderables().Remove( this );
-	}
+	deoglCanvasView * const canvasView = pRenderableCanvas.GetCanvas()
+		? ( deoglCanvasView* )pRenderableCanvas.GetCanvas()->GetPeerGraphic() : NULL;
 	
-	if( pRenderableCanvas.GetCanvas() ){
-		pCanvasView = ( deoglCanvasView* )pRenderableCanvas.GetCanvas()->GetPeerGraphic();
-		pCanvasView->GetNotifyRenderables().Add( this );
+	if( canvasView != pCanvasView ){
+		if( pCanvasView ){
+			pCanvasView->RemoveListener( this );
+		}
 		
-	}else{
-		pCanvasView = NULL;
+		pCanvasView = canvasView;
+		
+		if( canvasView ){
+			canvasView->AddListener( this );
+		}
+		
+		pDirty = true;
+		
+		pDynamicSkin.NotifyRenderableChanged( *this );
 	}
 	
-	pDirty = true;
+	if( pRenderableCanvas.GetName() != pRRenderableCanvas->GetName() ){
+		pDynamicSkin.NotifyRenderablesChanged();
+	}
 }
 
 void deoglDSRenderableCanvas::SyncToRender(){
@@ -94,6 +111,8 @@ void deoglDSRenderableCanvas::SyncToRender(){
 	
 	if( pDirty ){
 		pRRenderableCanvas->SetName( pRenderableCanvas.GetName() );
+		pRRenderableCanvas->SetComponentCount( pRenderableCanvas.GetComponentCount() );
+		pRRenderableCanvas->SetBitCount( pRenderableCanvas.GetBitCount() );
 		
 		if( pCanvasView ){
 			pRRenderableCanvas->SetCanvas( pCanvasView->GetRCanvasView() );
@@ -106,12 +125,12 @@ void deoglDSRenderableCanvas::SyncToRender(){
 	}
 }
 
-void deoglDSRenderableCanvas::CanvasViewRequiresSync(){
-	pDynamicSkin.RenderableRequiresSync();
+void deoglDSRenderableCanvas::CanvasViewDestroyed(){
+	pCanvasView = NULL;
 }
 
-void deoglDSRenderableCanvas::DropCanvasView(){
-	pCanvasView = NULL;
+void deoglDSRenderableCanvas::CanvasViewRequiresSync(){
+	pDynamicSkin.NotifyRenderableRequiresSync( *this );
 }
 
 
@@ -125,6 +144,6 @@ void deoglDSRenderableCanvas::pCleanUp(){
 	}
 	
 	if( pCanvasView ){
-		pCanvasView->GetNotifyRenderables().Remove( this );
+		pCanvasView->RemoveListener( this );
 	}
 }

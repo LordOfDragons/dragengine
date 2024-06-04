@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -26,6 +29,7 @@ pin Dragengine.Gui
 pin Dragengine.Scenery
 pin Dragengine.Utils
 pin Dragengine.LoadSave
+pin Dragengine.SpeechAnimations
 
 
 /**
@@ -34,163 +38,292 @@ pin Dragengine.LoadSave
 class ConversationFacePosePlayback
 	/** \brief Face pose controller. */
 	class FacePoseController
-		/** \brief Controller. */
-		private var int pController
+		var int pController
+		var String pControllerName
+		var float pInfluence
 		
-		/** \brief Influence. */
-		private var float pInfluence
-		
-		/** \brief Create face pose controller. */
-		public func new( int controller, float influence )
-			this.pController = controller
-			this.pInfluence = influence
+		/**
+		 * \brief Create face pose controller.
+		 * \deprecated Use new(String,float)
+		 */
+		func new(int controller, float influence)
+			pController = controller
+			pInfluence = influence
 		end
 		
-		/** \brief Controller. */
-		public func int getController()
-			return this.pController
+		/**
+		 * \brief Create face pose controller.
+		 * \version 1.16
+		 */
+		func new(String controller, float influence)
+			pController = -1
+			pControllerName = controller
+			pInfluence = influence
+		end
+		
+		/**
+		 * \brief Controller.
+		 * \deprecated Use getControllerName().
+		 */
+		func int getController()
+			return pController
+		end
+		
+		/**
+		 * \brief Controller name.
+		 * \version 1.16
+		 */
+		func String getControllerName()
+			return pControllerName
 		end
 		
 		/** \brief Influence. */
-		public func float getInfluence()
-			return this.pInfluence
+		func float getInfluence()
+			return pInfluence
 		end
 		
 		/** \brief Read from file. */
-		static public func FacePoseController readFromFile( FileReader reader )
-			var int controller = reader.readUShort() - 1
-			var float influence = reader.readFloat()
-			return FacePoseController.new( controller, influence )
+		static func FacePoseController readFromFile(FileReader reader)
+			select reader.readByte() // version
+			case 0 // deprecated
+				var int controller = reader.readUShort() - 1
+				var float influence = reader.readFloat()
+				return FacePoseController.new(controller, influence)
+				
+			case 1
+				var String controller = reader.readString8()
+				var float influence = reader.readFloat()
+				return FacePoseController.new(controller, influence)
+				
+			else
+				throw EInvalidParam.new("unsupported version")
+			end
 		end
 		
 		/** \brief Write to file. */
-		public func void writeToFile( FileWriter writer )
-			writer.writeUShort( this.pController + 1 )
-			writer.writeFloat( this.pInfluence )
+		func void writeToFile(FileWriter writer)
+			if pControllerName != null
+				writer.writeByte(1) // version
+				writer.writeString8(pControllerName)
+				
+			else // deprecated
+				writer.writeByte(0) // version
+				writer.writeUShort(pController + 1)
+			end
+			
+			writer.writeFloat(pInfluence)
 		end
 	end
 	
 	/** \brief Face pose. */
 	class FacePose
-		/** \brief Array of FacePoseController. */
-		private var Array pControllers
-		
-		/** \brief Strip. */
-		private var ConversationStrip pStrip
+		var Array pControllers
+		var ConversationStrip pStrip
 		
 		/** \brief Create face pose. */
-		public func new( Array controllers, ConversationStrip strip )
-			this.pControllers = controllers
-			this.pStrip = strip
+		func new(Array controllers, ConversationStrip strip)
+			pControllers = controllers
+			pStrip = strip
 		end
 		
 		/** \brief Array of FacePoseController. */
-		public func Array getControllers()
-			return this.pControllers
+		func Array getControllers()
+			return pControllers
 		end
 		
 		/** \brief Strip. */
-		public func ConversationStrip getStrip()
-			return this.pStrip
+		func ConversationStrip getStrip()
+			return pStrip
 		end
 		
 		/** \brief Read from file. */
-		static public func FacePose readFromFile( FileReader reader )
-			var Array controllers = readControllersFromFile( reader )
-			var ConversationStrip strip = ConversationStrip.readFromFile( reader )
-			return FacePose.new( controllers, strip )
+		static func FacePose readFromFile(FileReader reader)
+			select reader.readByte() // version
+			case 0
+				var Array controllers = readControllersFromFile(reader)
+				var ConversationStrip strip = ConversationStrip.readFromFile(reader)
+				return FacePose.new(controllers, strip)
+				
+			else
+				throw EInvalidParam.new("unsupported version")
+			end
 		end
 		
 		/** \brief Read controllers from file. */
-		static public func Array readControllersFromFile( FileReader reader )
+		static func Array readControllersFromFile(FileReader reader)
 			var Array controllers = Array.new()
 			var int i, count = reader.readUShort()
 			for i = 0 to count
-				controllers.add( FacePoseController.readFromFile( reader ) )
+				controllers.add(FacePoseController.readFromFile(reader))
 			end
 			return controllers
 		end
 		
 		/** \brief Write to file. */
-		public func void writeToFile( FileWriter writer )
-			writeControllersToFile( writer, this.pControllers )
-			this.pStrip.writeToFile( writer )
+		func void writeToFile(FileWriter writer)
+			writer.writeByte(0) // version
+			
+			writeControllersToFile(writer, pControllers)
+			pStrip.writeToFile(writer)
 		end
 		
 		/** \brief Write controllers to file. */
-		static public func void writeControllersToFile( FileWriter writer, Array controllers )
-			writer.writeUShort( controllers.getCount() )
-			controllers.forEach( block FacePoseController each
-				each.writeToFile( writer )
-			end )
+		static func void writeControllersToFile(FileWriter writer, Array controllers)
+			writer.writeUShort(controllers.getCount())
+			controllers.forEach(block FacePoseController each
+				each.writeToFile(writer)
+			end)
 		end
 	end
 	
 	
 	
-	private var Animator pAnimator
-	private var AnimatorInstance pAnimatorInstance
-	private var Array pPoses
-	private var int pPosition
-	private var float pElapsed
-	private var Array pLastPose
-	private var Array pCurPose
-	private var bool pRunning
-	private var bool pRequiresApply
+	var Animator pAnimator
+	var AnimatorInstance pAnimatorInstance
+	var AnimatorController pControllerSpeaking
+	var Array pPoses
+	var int pPosition
+	var float pElapsed
+	var Array pLastPose
+	var Array pCurPose
+	var bool pRunning
+	var bool pRequiresApply
+	var String pControllerNameSpeaking
+	var SpeechAnimationPlayback pSpeechAnimationPlayback
 	
-	private var float pBlinkIntervalMin
-	private var float pBlinkIntervalMax
-	private var float pBlinkNext
-	private var float pBlinkElapsed
+	var float pBlinkIntervalMin
+	var float pBlinkIntervalMax
+	var float pBlinkNext
+	var float pBlinkElapsed
 	
 	
 	
 	/** \brief Create face pose playback. */
-	public func new()
-		this.pAnimatorInstance = AnimatorInstance.new()
-		this.pPoses = Array.new()
-		this.pPosition = 0
-		this.pElapsed = 0.0
-		this.pRunning = false
-		this.pRequiresApply = false
+	func new()
+		pAnimatorInstance = AnimatorInstance.new()
+		pPoses = Array.new()
+		pPosition = 0
+		pElapsed = 0
+		pRunning = false
+		pRequiresApply = false
+		pControllerNameSpeaking = "speaking"
 		
-		this.pBlinkIntervalMin = 2.0
-		this.pBlinkIntervalMax = 6.0
-		this.pBlinkNext = 2.0 + 4.0 * DEMath.random()
-		this.pBlinkElapsed = 0.0
+		pBlinkIntervalMin = 2
+		pBlinkIntervalMax = 6
+		pBlinkNext = DEMath.random() * 4 + 2
+		pBlinkElapsed = 0
 	end
 	
 	
 	
 	/** \brief Animator. */
-	public func Animator getAnimator()
-		return this.pAnimator
+	func Animator getAnimator()
+		return pAnimator
 	end
 	
 	/** \brief Set animator. */
-	public func void setAnimator( Animator animator )
-		this.pAnimatorInstance.setAnimator( animator )
-		this.pAnimator = animator
+	func void setAnimator(Animator animator)
+		pAnimatorInstance.setAnimator(animator)
+		pAnimator = animator
+		pControllerSpeaking = pAnimatorInstance.getControllerNamed(pControllerNameSpeaking)
 	end
 	
 	/** \brief Animator instance. */
-	public func AnimatorInstance getAnimatorInstance()
-		return this.pAnimatorInstance
+	func AnimatorInstance getAnimatorInstance()
+		return pAnimatorInstance
 	end
 	
 	/** \brief Elapsed time. */
-	public func float getElapsed()
-		return this.pElapsed
+	func float getElapsed()
+		return pElapsed
+	end
+	
+	/**
+	 * \brief Minimum random eye blinking interval in seconds.
+	 * \version 1.21
+	 */
+	func float getMinimumBlinkInterval()
+		return pBlinkIntervalMin
+	end
+	
+	/**
+	 * \brief Set minimum random eye blinking interval in seconds.
+	 * \version 1.21
+	 */
+	func void setMinimumBlinkInterval(float interval)
+		pBlinkIntervalMin = DEMath.max(interval, 0.001)
+	end
+	
+	/**
+	 * \brief Maximum random eye blinking interval in seconds.
+	 * \version 1.21
+	 */
+	func float getMaximumBlinkInterval()
+		return pBlinkIntervalMax
+	end
+	
+	/**
+	 * \brief Set maximum random eye blinking interval in seconds.
+	 * \version 1.21
+	 */
+	func void setMaximumBlinkInterval(float interval)
+		pBlinkIntervalMax = DEMath.max(interval, 0.001)
+	end
+	
+	/**
+	 * \brief Name of controller to set if actor is speaking.
+	 * \version 1.21
+	 * 
+	 * Value of controller is set to 0 if no speech animation playback viseme is playing back
+	 * otherwise the value is set to 1.
+	 * 
+	 * Default controller name is "speaking".
+	 */
+	func String getControllerNameSpeaking()
+		return pControllerNameSpeaking
+	end
+	
+	/**
+	 * \brief Set name of controller to set if actor is speaking.
+	 * \version 1.21
+	 * 
+	 * Value of controller is set to 0 if no speech animation playback viseme is playing back
+	 * otherwise the value is set to 1.
+	 * 
+	 * Default controller name is "speaking".
+	 */
+	func void setControllerNameSpeaking(String name)
+		if name == null
+			throw ENullPointer.new()
+		end
+		pControllerNameSpeaking = name
+		pControllerSpeaking = pAnimatorInstance.getControllerNamed(name)
+	end
+	
+	/**
+	 * \brief Speech animation to use to update speaking controller or null.
+	 * \version 1.21
+	 */
+	func SpeechAnimationPlayback getSpeechAnimationPlayback()
+		return pSpeechAnimationPlayback
+	end
+	
+	/**
+	 * \brief Set speech animation to use to update speaking controller or null.
+	 * \version 1.21
+	 */
+	func void setSpeechAnimationPlayback(SpeechAnimationPlayback playback)
+		pSpeechAnimationPlayback = playback
 	end
 	
 	
 	
 	/** \brief Remove all face poses. */
-	public func void removeAllPoses()
-		this.pPoses.removeAll()
-		this.pPosition = 0
-		this.pElapsed = 0.0
-		this.pRunning = false
+	func void removeAllPoses()
+		pPoses.removeAll()
+		pPosition = 0
+		pElapsed = 0
+		pRunning = false
 	end
 	
 	/**
@@ -198,11 +331,11 @@ class ConversationFacePosePlayback
 	 * \param controllers Array of FacePoseController.
 	 * \param strip Strip to play.
 	 */
-	public func void addPose( Array controllers, ConversationStrip strip )
-		this.pPoses.add( FacePose.new( controllers, strip ) )
-		this.pPosition = 0
-		this.pElapsed = 0.0
-		this.pRunning = true
+	func void addPose(Array controllers, ConversationStrip strip)
+		pPoses.add(FacePose.new(controllers, strip))
+		pPosition = 0
+		pElapsed = 0
+		pRunning = true
 	end
 	
 	
@@ -213,48 +346,50 @@ class ConversationFacePosePlayback
 	 * This updates the playback and updates animator instances if required. This does not
 	 * apply the animation yet to allow proper use of state capturing.
 	 */
- 	public func void update( float elapsed )
-		var float blendFactor1 = 0.0
-		var float blendFactor2 = 1.0
+ 	func void update(float elapsed)
+		var float blendFactor1 = 0
+		var float blendFactor2 = 1
 		
-		if this.pRunning and this.pPoses.getCount() > 0
-			var int poseCount = this.pPoses.getCount()
+		pRequiresApply = false
+		
+		if pRunning and pPoses.getCount() > 0
+			var int poseCount = pPoses.getCount()
 			
-			this.pElapsed += elapsed
+			pElapsed += elapsed
 			
-			while this.pPosition < poseCount
-				var FacePose pbpose = this.pPoses.getAt( this.pPosition ) cast FacePose
+			while pPosition < poseCount
+				var FacePose pbpose = pPoses.getAt(pPosition) cast FacePose
 				var ConversationStrip strip = pbpose.getStrip()
 				var Array pcontrollers = pbpose.getControllers()
 				var float duration = strip.getDuration()
 				var float pause = strip.getPause()
 				var float length = pause + duration
 				
-				if this.pElapsed < length
-					if pcontrollers != this.pCurPose
-						this.pLastPose = this.pCurPose
-						this.pCurPose = pcontrollers
+				if pElapsed < length
+					if pcontrollers != pCurPose
+						pLastPose = pCurPose
+						pCurPose = pcontrollers
 					end
 					
-					blendFactor2 = DEMath.smoothStep( this.pElapsed, pause, length )
+					blendFactor2 = DEMath.smoothStep(pElapsed, pause, length)
 					blendFactor1 = 1.0 - blendFactor2
 					break
 					
 				else
-					this.pLastPose = this.pCurPose
-					this.pCurPose = pcontrollers
+					pLastPose = pCurPose
+					pCurPose = pcontrollers
 					
-					this.pElapsed -= length
-					this.pPosition++
+					pElapsed -= length
+					pPosition++
 				end
 			end
 			
-			if this.pPosition >= poseCount
-				this.pRunning = false
+			if pPosition >= poseCount
+				pRunning = false
 			end
 		end
 		
-		if this.pAnimator == null
+		if pAnimator == null
 			return
 		end
 		
@@ -264,45 +399,66 @@ class ConversationFacePosePlayback
 		// (if existing) multiplied by the second blend factor are added. this way a proper
 		// blending can be achieved no matter which combination of face poses (as well as
 		// the lack thereof) is in effect
-		var int controllerCount = this.pAnimatorInstance.getControllerCount()
-		var int i, controller
+		var int controllerCount = pAnimatorInstance.getControllerCount()
+		var int i
 		
 		for i = 0 to controllerCount
-			this.pAnimatorInstance.getControllerAt( i ).setValue( 0.0 )
+			pAnimatorInstance.getControllerAt(i).setValue(0)
 		end
 		
-		if this.pLastPose != null
-			this.pLastPose.forEach( block FacePoseController each
-				controller = each.getController()
-				if controller >= 0 and controller < controllerCount
-					this.pAnimatorInstance.getControllerAt( controller ).setValue( each.getInfluence() * blendFactor1 )
+		if pLastPose != null
+			pLastPose.forEach(block FacePoseController each
+				if each.getControllerName() != null
+					var AnimatorController controller = pAnimatorInstance.getControllerNamed(each.getControllerName())
+					if controller != null
+						controller.setValue(each.getInfluence() * blendFactor1)
+					end
+					
+				else // deprecated
+					var int controller = each.getController()
+					if controller >= 0 and controller < controllerCount
+						pAnimatorInstance.getControllerAt(controller).setValue(each.getInfluence() * blendFactor1)
+					end
 				end
-			end )
+			end)
 		end
 		
-		if this.pCurPose != null
-			this.pCurPose.forEach( block FacePoseController each
-				controller = each.getController()
-				if controller >= 0 and controller < controllerCount
-					this.pAnimatorInstance.getControllerAt( controller ).increment( each.getInfluence() * blendFactor2 )
+		if pCurPose != null
+			pCurPose.forEach(block FacePoseController each
+				if each.getControllerName() != null
+					var AnimatorController controller = pAnimatorInstance.getControllerNamed(each.getControllerName())
+					if controller != null
+						controller.increment(each.getInfluence() * blendFactor2)
+					end
+					
+				else // deprecated
+					var int controller = each.getController()
+					if controller >= 0 and controller < controllerCount
+						pAnimatorInstance.getControllerAt(controller).increment(each.getInfluence() * blendFactor2)
+					end
 				end
-			end )
+			end)
 		end
 		
 		// blinking
-		this.pBlinkNext -= elapsed
-		this.pBlinkElapsed += elapsed
+		pBlinkNext -= elapsed
+		pBlinkElapsed += elapsed
 		
-		if this.pBlinkNext <= 0.0
-			this.pBlinkNext = DEMath.random( this.pBlinkIntervalMin, this.pBlinkIntervalMax )
-			this.pBlinkElapsed = 0.0
+		if pBlinkNext <= 0
+			pBlinkNext = DEMath.random(pBlinkIntervalMin, pBlinkIntervalMax)
+			pBlinkElapsed = 0
 		end
 		
 		if controllerCount > 0
-			this.pAnimatorInstance.getControllerAt( controllerCount - 1 ).setValue( this.pBlinkElapsed )
+			pAnimatorInstance.getControllerAt(controllerCount - 1).setValue(pBlinkElapsed)
 		end
 		
-		this.pRequiresApply = true
+		// speaking
+		if pControllerSpeaking != null and pSpeechAnimationPlayback != null
+			pControllerSpeaking.setValue(pSpeechAnimationPlayback.getSpeakBlend())
+		end
+		
+		pRequiresApply = true
 	end
 	
 	/**
@@ -310,13 +466,10 @@ class ConversationFacePosePlayback
 	 * 
 	 * Called after update() to apply animation. Can do nothing if no change has been done.
 	 */
-	public func void applyAnimation()
-		if not this.pRequiresApply
-			return
+	func void applyAnimation()
+		if pRequiresApply
+			pAnimatorInstance.apply()
 		end
-		
-		this.pRequiresApply = false
-		this.pAnimatorInstance.apply()
 	end
 	
 	
@@ -326,30 +479,36 @@ class ConversationFacePosePlayback
 	 * 
 	 * Animator and AnimatorInstance are not stored. They have to be set by the ConversationActor.
 	 */
-	public func void readFromFile( PersistencyEnvironment env, FileReader reader )
-		var PersistencyFlags flags = PersistencyFlags.new( 3, reader )
-		this.pRunning = flags.getAt( 0 )
-		
-		var int i, count = reader.readUShort()
-		this.pPoses.removeAll()
-		for i = 0 to count
-			this.pPoses.add( FacePose.readFromFile( reader ) )
+	func void readFromFile(PersistencyEnvironment env, FileReader reader)
+		select reader.readByte() // version
+		case 0
+			var PersistencyFlags flags = PersistencyFlags.new(3, reader)
+			pRunning = flags.getAt(0)
+			
+			var int i, count = reader.readUShort()
+			pPoses.removeAll()
+			for i = 0 to count
+				pPoses.add(FacePose.readFromFile(reader))
+			end
+			
+			pPosition = reader.readUShort()
+			pElapsed = reader.readFloat()
+			
+			if flags.getAt(1)
+				pLastPose = FacePose.readControllersFromFile(reader)
+			end
+			if flags.getAt(2)
+				pCurPose = FacePose.readControllersFromFile(reader)
+			end
+			
+			pBlinkIntervalMin = reader.readFloat()
+			pBlinkIntervalMax = reader.readFloat()
+			pBlinkNext = reader.readFloat()
+			pBlinkElapsed = reader.readFloat()
+			
+		else
+			throw EInvalidParam.new("unsupported version")
 		end
-		
-		this.pPosition = reader.readUShort()
-		this.pElapsed = reader.readFloat()
-		
-		if flags.getAt( 1 )
-			this.pLastPose = FacePose.readControllersFromFile( reader )
-		end
-		if flags.getAt( 2 )
-			this.pCurPose = FacePose.readControllersFromFile( reader )
-		end
-		
-		this.pBlinkIntervalMin = reader.readFloat()
-		this.pBlinkIntervalMax = reader.readFloat()
-		this.pBlinkNext = reader.readFloat()
-		this.pBlinkElapsed = reader.readFloat()
 	end
 	
 	/**
@@ -357,31 +516,33 @@ class ConversationFacePosePlayback
 	 * 
 	 * Animator and AnimatorInstance are not stored. They have to be set by the ConversationActor.
 	 */
-	public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
-		var PersistencyFlags flags = PersistencyFlags.new( 3 )
-		flags.setAt( 0, this.pRunning )
-		flags.setAt( 1, this.pLastPose != null )
-		flags.setAt( 2, this.pCurPose != null )
-		flags.writeToFile( writer )
+	func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+		writer.writeByte(0) // version
 		
-		writer.writeUShort( this.pPoses.getCount() )
-		this.pPoses.forEach( block FacePose each
-			each.writeToFile( writer )
-		end )
+		var PersistencyFlags flags = PersistencyFlags.new(3)
+		flags.setAt(0, pRunning)
+		flags.setAt(1, pLastPose != null)
+		flags.setAt(2, pCurPose != null)
+		flags.writeToFile(writer)
 		
-		writer.writeUShort( this.pPosition )
-		writer.writeFloat( this.pElapsed )
+		writer.writeUShort(pPoses.getCount())
+		pPoses.forEach(block FacePose each
+			each.writeToFile(writer)
+		end)
 		
-		if this.pLastPose != null
-			FacePose.writeControllersToFile( writer, this.pLastPose )
+		writer.writeUShort(pPosition)
+		writer.writeFloat(pElapsed)
+		
+		if pLastPose != null
+			FacePose.writeControllersToFile(writer, pLastPose)
 		end
-		if this.pCurPose != null
-			FacePose.writeControllersToFile( writer, this.pCurPose )
+		if pCurPose != null
+			FacePose.writeControllersToFile(writer, pCurPose)
 		end
 		
-		writer.writeFloat( this.pBlinkIntervalMin )
-		writer.writeFloat( this.pBlinkIntervalMax )
-		writer.writeFloat( this.pBlinkNext )
-		writer.writeFloat( this.pBlinkElapsed )
+		writer.writeFloat(pBlinkIntervalMin)
+		writer.writeFloat(pBlinkIntervalMax)
+		writer.writeFloat(pBlinkNext)
+		writer.writeFloat(pBlinkElapsed)
 	end
 end

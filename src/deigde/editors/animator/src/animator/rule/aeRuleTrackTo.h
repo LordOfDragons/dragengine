@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Animator Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _AERULETRACKTO_H_
@@ -28,9 +31,12 @@
 
 
 /**
- * \brief Animator rule track to.
+ * Animator rule track to.
  */
 class aeRuleTrackTo : public aeRule{
+public:
+	typedef deTObjectReference<aeRuleTrackTo> Ref;
+	
 private:
 	decString pTrackBone;
 	deAnimatorRuleTrackTo::eTrackAxis pTrackAxis;
@@ -44,63 +50,66 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create a new track to rule. */
+	/** Create a new track to rule. */
 	aeRuleTrackTo();
-	/** \brief Create a copy of a track to rule. */
+	/** Create a copy of a track to rule. */
 	aeRuleTrackTo( const aeRuleTrackTo &copy );
-	/** \brief Clean up the animator rule. */
+	/** Clean up the animator rule. */
 	virtual ~aeRuleTrackTo();
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Retrieve the name of the track bone or empty string to use none. */
+	/** Retrieve the name of the track bone or empty string to use none. */
 	inline const decString &GetTrackBone() const{ return pTrackBone; }
-	/** \brief Set the name of the track bone or empty string to use none. */
+	/** Set the name of the track bone or empty string to use none. */
 	void SetTrackBone( const char *boneName );
-	/** \brief Retrieve the track axis. */
+	/** Retrieve the track axis. */
 	inline deAnimatorRuleTrackTo::eTrackAxis GetTrackAxis() const{ return pTrackAxis; }
-	/** \brief Set the track axis. */
+	/** Set the track axis. */
 	void SetTrackAxis( deAnimatorRuleTrackTo::eTrackAxis axis );
-	/** \brief Retrieve the up axis. */
+	/** Retrieve the up axis. */
 	inline deAnimatorRuleTrackTo::eTrackAxis GetUpAxis() const{ return pUpAxis; }
-	/** \brief Set the up axis. */
+	/** Set the up axis. */
 	void SetUpAxis( deAnimatorRuleTrackTo::eTrackAxis axis );
-	/** \brief Retrieve the up target. */
+	/** Retrieve the up target. */
 	inline deAnimatorRuleTrackTo::eUpTarget GetUpTarget() const{ return pUpTarget; }
-	/** \brief Set the up target. */
+	/** Set the up target. */
 	void SetUpTarget( deAnimatorRuleTrackTo::eUpTarget target );
-	/** \brief Retrieve the locked axis. */
+	/** Retrieve the locked axis. */
 	inline deAnimatorRuleTrackTo::eLockedAxis GetLockedAxis() const{ return pLockedAxis; }
-	/** \brief Set the locked axis. */
+	/** Set the locked axis. */
 	void SetLockedAxis( deAnimatorRuleTrackTo::eLockedAxis axis );
 	
-	/** \brief Retrieve the position target. */
+	/** Retrieve the position target. */
 	inline aeControllerTarget &GetTargetPosition(){ return pTargetPosition; }
-	/** \brief Retrieve the up target. */
-	inline aeControllerTarget &GetTargetUp(){ return pTargetUp; }
+	inline const aeControllerTarget &GetTargetPosition() const{ return pTargetPosition; }
 	
-	/** \brief Create an engine animator rule. */
+	/** Retrieve the up target. */
+	inline aeControllerTarget &GetTargetUp(){ return pTargetUp; }
+	inline const aeControllerTarget &GetTargetUp() const{ return pTargetUp; }
+	
+	/** Create an engine animator rule. */
 	virtual deAnimatorRule *CreateEngineRule();
-	/** \brief Update targets. */
+	/** Update targets. */
 	virtual void UpdateTargets();
-	/** \brief Retrieve the number of targets using a given link. */
+	/** Retrieve the number of targets using a given link. */
 	virtual int CountLinkUsage( aeLink *link ) const;
-	/** \brief Remove a link from all targets using it. */
+	/** Remove a link from all targets using it. */
 	virtual void RemoveLinkFromTargets( aeLink *link );
-	/** \brief Remove all links from all targets. */
+	/** Remove all links from all targets. */
 	virtual void RemoveLinksFromAllTargets();
 	
-	/** \brief Create a copy of this rule. */
+	/** Create a copy of this rule. */
 	virtual aeRule *CreateCopy() const;
 	
-	/** \brief List all links of all rule targets. */
+	/** List all links of all rule targets. */
 	virtual void ListLinks( aeLinkList& list );
 	/*@}*/
 	
 	/** \name Operators */
 	/*@{*/
-	/** \brief Copy another track to rule to this track to rule. */
+	/** Copy another track to rule to this track to rule. */
 	virtual aeRuleTrackTo &operator=( const aeRuleTrackTo &copy );
 	/*@}*/
 };

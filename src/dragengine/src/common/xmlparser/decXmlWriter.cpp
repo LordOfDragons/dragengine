@@ -1,33 +1,35 @@
-/* 
- * Drag[en]gine Game Engine
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
 #include <stdlib.h>
-
 #include "decXmlWriter.h"
-
 #include "../file/decBaseFileWriter.h"
 #include "../string/unicode/decUnicodeString.h"
 #include "../string/decString.h"
 #include "../exceptions.h"
+#include "../../dragengine_configuration.h"
 
 
 
@@ -189,16 +191,20 @@ void decXmlWriter::WriteAttributeString( const char *name, const char *string ){
 	}
 	
 	const char *walker = string;
-	char buffer[ 10 ];
 	
 	pFile->WriteByte( ' ' );
 	pFile->WriteString( name );
 	pFile->WriteString( "='" );
 	
 	while( *walker ){
-		if( *walker == '<' || *walker == '&' || *walker == '\'' ){
-			sprintf( buffer, "&#%i;", *walker );
-			pFile->WriteString( buffer );
+		if( *walker == '<' ){
+			pFile->WriteString( "&lt;" );
+			
+		} else if( *walker == '&' ){
+			pFile->WriteString( "&amp;" );
+			
+		} else if( *walker == '\'' ){
+			pFile->WriteString( "&apos;" );
 			
 		}else{
 			pFile->WriteByte( *walker );
@@ -246,7 +252,11 @@ void decXmlWriter::WriteAttributeInt( const char *name, int value ){
 	}
 	
 	char buffer[ 20 ];
-	sprintf( buffer, "%i", value );
+	#ifdef OS_W32_VS
+		sprintf_s( buffer, 20, "%i", value );
+	#else
+		sprintf( buffer, "%i", value );
+	#endif
 	
 	pFile->WriteByte( ' ' );
 	pFile->WriteString( name );
@@ -266,7 +276,11 @@ void decXmlWriter::WriteAttributeFloat( const char *name, float value ){
 	}
 	
 	char buffer[ 20 ];
-	sprintf( buffer, "%g", value );
+	#ifdef OS_W32_VS
+		sprintf_s( buffer, 20, "%g", value );
+	#else
+		sprintf( buffer, "%g", value );
+	#endif
 	
 	pFile->WriteByte( ' ' );
 	pFile->WriteString( name );
@@ -286,7 +300,11 @@ void decXmlWriter::WriteAttributeDouble( const char *name, double value ){
 	}
 	
 	char buffer[ 20 ];
-	sprintf( buffer, "%g", value );
+	#ifdef OS_W32_VS
+		sprintf_s( buffer, 20, "%g", value );
+	#else
+		sprintf( buffer, "%g", value );
+	#endif
 	
 	pFile->WriteByte( ' ' );
 	pFile->WriteString( name );
@@ -326,7 +344,6 @@ void decXmlWriter::WriteTextString( const char *text ){
 	}
 	
 	const unsigned char *walker = ( const unsigned char * )text;
-	char buffer[ 10 ];
 	
 	while( *walker ){
 		/*
@@ -334,9 +351,14 @@ void decXmlWriter::WriteTextString( const char *text ){
 		||  ( *walker >= 0x20 && ! ( IN( *walker, 0x7f, 0x84 ) || IN( *walker, 0x86, 0x9f ) ) ) ){
 		*/
 		
-		if( *walker == '<' || *walker == '&' || *walker == '>' ){
-			sprintf( buffer, "&#%i;", *walker );
-			pFile->WriteString( buffer );
+		if( *walker == '<' ){
+			pFile->WriteString( "&lt;" );
+			
+		} else if( *walker == '>' ){
+			pFile->WriteString( "&gt;" );
+			
+		} else if( *walker == '&' ){
+			pFile->WriteString( "&amp;" );
 			
 		}else{
 			pFile->WriteByte( *walker );
@@ -365,21 +387,33 @@ void decXmlWriter::WriteTextBool( bool value ){
 
 void decXmlWriter::WriteTextInt( int value ){
 	char buffer[ 20 ];
-	sprintf( buffer, "%i", value );
+	#ifdef OS_W32_VS
+		sprintf_s( buffer, 20, "%i", value );
+	#else
+		sprintf( buffer, "%i", value );
+	#endif
 	
 	pFile->WriteString( buffer );
 }
 
 void decXmlWriter::WriteTextFloat( float value ){
 	char buffer[ 20 ];
-	sprintf( buffer, "%g", value );
+	#ifdef OS_W32_VS
+		sprintf_s( buffer, 20, "%g", value );
+	#else
+		sprintf( buffer, "%g", value );
+	#endif
 	
 	pFile->WriteString( buffer );
 }
 
 void decXmlWriter::WriteTextDouble( double value ){
 	char buffer[ 20 ];
-	sprintf( buffer, "%g", value );
+	#ifdef OS_W32_VS
+		sprintf_s( buffer, 20, "%g", value );
+	#else
+		sprintf( buffer, "%g", value );
+	#endif
 	
 	pFile->WriteString( buffer );
 }
@@ -535,8 +569,14 @@ decString decXmlWriter::EscapeText( const char *text ){
 		||  ( *walker >= 0x20 && ! ( IN( *walker, 0x7f, 0x84 ) || IN( *walker, 0x86, 0x9f ) ) ) ){
 		*/
 		
-		if( *walker == '<' || *walker == '&' || *walker == '>' ){
-			escaped.AppendFormat( "&#%i;", *walker );
+		if( *walker == '<' ){
+			escaped.Append( "&lt;" );
+			
+		} else if( *walker == '>' ){
+			escaped.Append( "&gt;" );
+			
+		} else if( *walker == '&' ){
+			escaped.Append( "&amp;" );
 			
 		}else{
 			escaped.AppendCharacter( *walker );

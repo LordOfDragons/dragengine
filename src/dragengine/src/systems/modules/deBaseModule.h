@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Game Engine
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEBASEMODULE_H_
@@ -49,7 +52,7 @@ class decUnicodeArgumentList;
  * Parameters are required to be error safe. If a certain value is not
  * accepted it has to be converted to the nearest feasible one.
  */
-class deBaseModule{
+class DE_DLL_EXPORT deBaseModule{
 private:
 	deLoadableModule &pLoadableModule; // loadable module hosting us
 	deVirtualFileSystem *pVFS;
@@ -76,7 +79,7 @@ public:
 	/**
 	 * \brief Get information about parameter.
 	 * \param[in] index Index of the parameter
-	 * \param[in] parameter Object to fill with informations about the parameter
+	 * \param[in] parameter Object to fill with information about the parameter
 	 */
 	virtual void GetParameterInfo( int index, deModuleParameter &parameter ) const;
 	
@@ -187,6 +190,16 @@ public:
 	 * grows old files are automatically removed without asking first to keep the size limit.
 	 */
 	inline deVirtualFileSystem &GetVFS() const { return *pVFS; }
+	
+	/**
+	 * \brief Native path to read only shares directory.
+	 * \version 1.6
+	 * 
+	 * Always use "/shared" directory inside GetVFS(). This path is provided only for
+	 * certain libraries requiring absolute native path. If the shared directory is not
+	 * physically present on a hard disk this call returns empty string.
+	 */
+	decString GetNativePathShare() const;
 	/*@}*/
 	
 	
@@ -243,23 +256,23 @@ public:
 	/**
 	 * \brief Add trace point and sets the error if the trace is empty.
 	 * \param[in] error Short description of the error preferably of a single line.
-	 * \param[in] sourceFunc Name of the source file where the error occured.
-	 * \param[in] sourceLine The line number where the error occured.
-	 * \return Created trace point or NULL if an error occured.
+	 * \param[in] sourceFunc Name of the source file where the error occurred.
+	 * \param[in] sourceLine The line number where the error occurred.
+	 * \return Created trace point or NULL if an error occurred.
 	 */
 	deErrorTracePoint *SetErrorTrace( const char *error, const char *sourceFunc, int sourceLine );
 	
 	/**
 	 * \brief Add trace point and sets the error if the trace is empty.
 	 * \param[in] exception Exception to use as source for the error information.
-	 * \return Created trace point or NULL if an error occured.
+	 * \return Created trace point or NULL if an error occurred.
 	 */
 	deErrorTracePoint *SetErrorTrace( const deException &exception );
 	
 	/**
 	 * \brief Add trace point to the engine error trace with an empty error.
-	 * \param[in] sourceFunc Name of the source file where the error occured.
-	 * \param[in] sourceLine The line number where the error occured.
+	 * \param[in] sourceFunc Name of the source file where the error occurred.
+	 * \param[in] sourceLine The line number where the error occurred.
 	 */
 	deErrorTracePoint *AddErrorTracePoint( const char *sourceFunc, int sourceLine );
 	/*@}*/

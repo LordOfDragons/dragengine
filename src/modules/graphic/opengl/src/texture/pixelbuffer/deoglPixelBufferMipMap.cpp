@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <math.h>
@@ -49,17 +52,17 @@ int width, int height, int depth, int maxLevel ){
 	pPixelBuffers = NULL;
 	pPixelBufferCount = 0;
 	
-	count = ( int )( floorf( log2f( ( height > width ) ? height : width ) ) );
+	count = ( int )( floorf( log2f( ( float )( ( height > width ) ? height : width ) ) ) );
 	if( count > maxLevel ){
 		count = maxLevel;
 	}
 	count++; // pixel buffer count is max mip map level + 1
 	
 	try{
-		pPixelBuffers = new deoglPixelBuffer*[ count ];
+		pPixelBuffers = new deoglPixelBuffer::Ref[ count ];
 		
 		for( pPixelBufferCount=0; pPixelBufferCount<count; pPixelBufferCount++ ){
-			pPixelBuffers[ pPixelBufferCount ] = new deoglPixelBuffer( format, levelWidth, levelHeight, depth );
+			pPixelBuffers[ pPixelBufferCount ].TakeOver( new deoglPixelBuffer( format, levelWidth, levelHeight, depth ) );
 			
 			levelWidth >>= 1;
 			if( levelWidth < 1 ){
@@ -87,12 +90,23 @@ deoglPixelBufferMipMap::~deoglPixelBufferMipMap(){
 // Management
 ///////////////
 
-deoglPixelBuffer *deoglPixelBufferMipMap::GetPixelBuffer( int level ) const{
+const deoglPixelBuffer::Ref &deoglPixelBufferMipMap::GetPixelBuffer( int level ) const{
 	if( level < 0 || level >= pPixelBufferCount ){
 		DETHROW( deeInvalidParam );
 	}
 	
 	return pPixelBuffers[ level ];
+}
+
+void deoglPixelBufferMipMap::ReducePixelBufferCount( int reduceByCount ){
+	if( reduceByCount < 0 ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	const int targetCount = decMath::max( pPixelBufferCount - reduceByCount, 0 );
+	while( pPixelBufferCount > targetCount ){
+		pPixelBuffers[ --pPixelBufferCount ] = nullptr;
+	}
 }
 
 
@@ -106,7 +120,7 @@ void deoglPixelBufferMipMap::CreateMipMaps( bool maskRed, bool maskGreen, bool m
 		return;
 	}
 	
-	const deoglPixelBuffer &basePixelBuffer = *pPixelBuffers[ 0 ];
+	const deoglPixelBuffer &basePixelBuffer = pPixelBuffers[ 0 ];
 	int componentCount;
 	int sourceOffset1;
 	int sourceOffset2;
@@ -130,8 +144,8 @@ void deoglPixelBufferMipMap::CreateMipMaps( bool maskRed, bool maskGreen, bool m
 	}
 	
 	for( i=1; i<pPixelBufferCount; i++ ){
-		const deoglPixelBuffer &sourcePixelBuffer = *pPixelBuffers[ i - 1 ];
-		deoglPixelBuffer &destinationPixelBuffer = *pPixelBuffers[ i ];
+		const deoglPixelBuffer &sourcePixelBuffer = pPixelBuffers[ i - 1 ];
+		deoglPixelBuffer &destinationPixelBuffer = pPixelBuffers[ i ];
 		const int destinationStride = destinationPixelBuffer.GetWidth() * componentCount;
 		const int sourceStride = 2 * sourcePixelBuffer.GetWidth() * componentCount;
 		const int sourceScale = 2 * componentCount;
@@ -234,7 +248,7 @@ void deoglPixelBufferMipMap::CreateMipMapsMax( bool maskRed, bool maskGreen, boo
 		return;
 	}
 	
-	const deoglPixelBuffer &basePixelBuffer = *pPixelBuffers[ 0 ];
+	const deoglPixelBuffer &basePixelBuffer = pPixelBuffers[ 0 ];
 	int componentCount;
 	int sourceOffset1;
 	int sourceOffset2;
@@ -258,8 +272,8 @@ void deoglPixelBufferMipMap::CreateMipMapsMax( bool maskRed, bool maskGreen, boo
 	}
 	
 	for( i=1; i<pPixelBufferCount; i++ ){
-		const deoglPixelBuffer &sourcePixelBuffer = *pPixelBuffers[ i - 1 ];
-		deoglPixelBuffer &destinationPixelBuffer = *pPixelBuffers[ i ];
+		const deoglPixelBuffer &sourcePixelBuffer = pPixelBuffers[ i - 1 ];
+		deoglPixelBuffer &destinationPixelBuffer = pPixelBuffers[ i ];
 		const int destinationStride = destinationPixelBuffer.GetWidth() * componentCount;
 		const int sourceStride = 2 * sourcePixelBuffer.GetWidth() * componentCount;
 		const int sourceScale = 2 * componentCount;
@@ -425,12 +439,212 @@ void deoglPixelBufferMipMap::CreateMipMapsMax( bool maskRed, bool maskGreen, boo
 	}
 }
 
+void deoglPixelBufferMipMap::CreateMipMapsMin(){
+	CreateMipMapsMin( true, true, true, true );
+}
+
+void deoglPixelBufferMipMap::CreateMipMapsMin( bool maskRed, bool maskGreen, bool maskBlue, bool maskAlpha ){
+	if( pPixelBufferCount < 2 ){
+		return;
+	}
+	
+	const deoglPixelBuffer &basePixelBuffer = pPixelBuffers[ 0 ];
+	int componentCount;
+	int sourceOffset1;
+	int sourceOffset2;
+	int sourceOffset3;
+	bool floatData;
+	int i, x, y, z;
+	
+	pGetTypeParams( basePixelBuffer.GetFormat(), componentCount, floatData );
+	
+	if( componentCount < 1 ){
+		maskRed = false;
+	}
+	if( componentCount < 2 ){
+		maskGreen = false;
+	}
+	if( componentCount < 3 ){
+		maskBlue = false;
+	}
+	if( componentCount < 4 ){
+		maskAlpha = false;
+	}
+	
+	for( i=1; i<pPixelBufferCount; i++ ){
+		const deoglPixelBuffer &sourcePixelBuffer = pPixelBuffers[ i - 1 ];
+		deoglPixelBuffer &destinationPixelBuffer = pPixelBuffers[ i ];
+		const int destinationStride = destinationPixelBuffer.GetWidth() * componentCount;
+		const int sourceStride = 2 * sourcePixelBuffer.GetWidth() * componentCount;
+		const int sourceScale = 2 * componentCount;
+		const int depth = destinationPixelBuffer.GetDepth();
+		const int height = destinationPixelBuffer.GetHeight();
+		const int width = destinationPixelBuffer.GetWidth();
+		
+		// calculate source offsets. this is a trick used to deal with the problematic situation for the
+		// second highest mip map level which can be 2x1 or 1x2 instead of 2x2. in this situation wrong
+		// pixels can be read leading to crashes in the worst case. if the width of the source pixel
+		// buffer is 1 in any direction the respective offset is reduced to 0 preventing the problem.
+		// in all other cases the offsets are set to the required values for down sampling
+		sourceOffset1 = 0;
+		sourceOffset2 = 0;
+		sourceOffset3 = 0;
+		
+		if( sourcePixelBuffer.GetWidth() > 1 ){
+			sourceOffset1 += componentCount;
+			sourceOffset3 += componentCount;
+		}
+		if( sourcePixelBuffer.GetHeight() > 1 ){
+			sourceOffset2 += sourcePixelBuffer.GetWidth() * componentCount;
+			sourceOffset3 += sourcePixelBuffer.GetWidth() * componentCount;
+		}
+		
+		// process mip map level
+		if( floatData ){
+			GLfloat *destinationPointer = ( GLfloat* )destinationPixelBuffer.GetPointer();
+			const GLfloat *sourcePointer = ( const GLfloat * )sourcePixelBuffer.GetPointer();
+			
+			for( z=0; z<depth; z++ ){
+				for( y=0; y<height; y++ ){
+					for( x=0; x<width; x++ ){
+						const GLfloat * const sp1 = sourcePointer + ( x * sourceScale );
+						const GLfloat * const sp2 = sp1 + sourceOffset1;
+						const GLfloat * const sp3 = sp1 + sourceOffset2;
+						const GLfloat * const sp4 = sp1 + sourceOffset3;
+						GLfloat * const dp = destinationPointer + x * componentCount;
+						
+						if( maskRed ){
+							dp[0] = sp1[0];
+							if( sp2[0] < dp[0] ){
+								dp[0] = sp2[0];
+							}
+							if( sp3[0] < dp[0] ){
+								dp[0] = sp3[0];
+							}
+							if( sp4[0] < dp[0] ){
+								dp[0] = sp4[0];
+							}
+						}
+						if( maskGreen ){
+							dp[1] = sp1[1];
+							if( sp2[1] < dp[1] ){
+								dp[1] = sp2[1];
+							}
+							if( sp3[1] < dp[1] ){
+								dp[1] = sp3[1];
+							}
+							if( sp4[1] < dp[1] ){
+								dp[1] = sp4[1];
+							}
+						}
+						if( maskBlue ){
+							dp[2] = sp1[2];
+							if( sp2[2] < dp[2] ){
+								dp[2] = sp2[2];
+							}
+							if( sp3[2] < dp[2] ){
+								dp[2] = sp3[2];
+							}
+							if( sp4[2] < dp[2] ){
+								dp[2] = sp4[2];
+							}
+						}
+						if( maskAlpha ){
+							dp[3] = sp1[3];
+							if( sp2[3] < dp[3] ){
+								dp[3] = sp2[3];
+							}
+							if( sp3[3] < dp[3] ){
+								dp[3] = sp3[3];
+							}
+							if( sp4[3] < dp[3] ){
+								dp[3] = sp4[3];
+							}
+						}
+					}
+					
+					sourcePointer += sourceStride;
+					destinationPointer += destinationStride;
+				}
+			}
+			
+		}else{
+			GLubyte *destinationPointer = ( GLubyte* )destinationPixelBuffer.GetPointer();
+			const GLubyte *sourcePointer = ( const GLubyte * )sourcePixelBuffer.GetPointer();
+			
+			for( z=0; z<depth; z++ ){
+				for( y=0; y<height; y++ ){
+					for( x=0; x<width; x++ ){
+						const GLubyte * const sp1 = sourcePointer + ( x * sourceScale );
+						const GLubyte * const sp2 = sp1 + sourceOffset1;
+						const GLubyte * const sp3 = sp1 + sourceOffset2;
+						const GLubyte * const sp4 = sp1 + sourceOffset3;
+						GLubyte * const dp = destinationPointer + x * componentCount;
+						
+						if( maskRed ){
+							dp[0] = sp1[0];
+							if( sp2[0] < dp[0] ){
+								dp[0] = sp2[0];
+							}
+							if( sp3[0] < dp[0] ){
+								dp[0] = sp3[0];
+							}
+							if( sp4[0] < dp[0] ){
+								dp[0] = sp4[0];
+							}
+						}
+						if( maskGreen ){
+							dp[1] = sp1[1];
+							if( sp2[1] < dp[1] ){
+								dp[1] = sp2[1];
+							}
+							if( sp3[1] < dp[1] ){
+								dp[1] = sp3[1];
+							}
+							if( sp4[1] < dp[1] ){
+								dp[1] = sp4[1];
+							}
+						}
+						if( maskBlue ){
+							dp[2] = sp1[2];
+							if( sp2[2] < dp[2] ){
+								dp[2] = sp2[2];
+							}
+							if( sp3[2] < dp[2] ){
+								dp[2] = sp3[2];
+							}
+							if( sp4[2] < dp[2] ){
+								dp[2] = sp4[2];
+							}
+						}
+						if( maskAlpha ){
+							dp[3] = sp1[3];
+							if( sp2[3] < dp[3] ){
+								dp[3] = sp2[3];
+							}
+							if( sp3[3] < dp[3] ){
+								dp[3] = sp3[3];
+							}
+							if( sp4[3] < dp[3] ){
+								dp[3] = sp4[3];
+							}
+						}
+					}
+					
+					sourcePointer += sourceStride;
+					destinationPointer += destinationStride;
+				}
+			}
+		}
+	}
+}
+
 void deoglPixelBufferMipMap::CreateNormalMipMaps(){
 	if( pPixelBufferCount < 2 ){
 		return;
 	}
 	
-	const deoglPixelBuffer &basePixelBuffer = *pPixelBuffers[ 0 ];
+	const deoglPixelBuffer &basePixelBuffer = pPixelBuffers[ 0 ];
 	int componentCount;
 	bool floatData;
 	int i, x, y, z;
@@ -460,8 +674,8 @@ void deoglPixelBufferMipMap::CreateNormalMipMaps(){
 	//float dot;
 	
 	for( i=1; i<pPixelBufferCount; i++ ){
-		const deoglPixelBuffer &sourcePixelBuffer = *pPixelBuffers[ i - 1 ];
-		deoglPixelBuffer &destinationPixelBuffer = *pPixelBuffers[ i ];
+		const deoglPixelBuffer &sourcePixelBuffer = pPixelBuffers[ i - 1 ];
+		deoglPixelBuffer &destinationPixelBuffer = pPixelBuffers[ i ];
 		const int destinationStride = destinationPixelBuffer.GetWidth() * componentCount;
 		const int sourceStride = 2 * sourcePixelBuffer.GetWidth() * componentCount;
 		const int sourceScale = 2 * componentCount;
@@ -602,6 +816,7 @@ void deoglPixelBufferMipMap::CreateNormalMipMaps(){
 						}
 						*/
 						dotMin = ( normal1 * normalAverage + normal2 * normalAverage + normal3 * normalAverage + normal4 * normalAverage ) * 0.25f;
+						dotMin = decMath::clamp( dotMin, -1.0f, 1.0f ); // just to be on the safe side
 						
 						dotMin = acosf( dotMin ) * varianceFactorFloat;
 						
@@ -724,6 +939,7 @@ void deoglPixelBufferMipMap::CreateNormalMipMaps(){
 						}
 						*/
 						dotMin = ( normal1 * normalAverage + normal2 * normalAverage + normal3 * normalAverage + normal4 * normalAverage ) * 0.25f;
+						dotMin = decMath::clamp( dotMin, -1.0f, 1.0f ); // just to be on the safe side
 						
 						dotMinInt = ( int )( acosf( dotMin ) * varianceFactorByte );
 						
@@ -752,7 +968,7 @@ void deoglPixelBufferMipMap::CreateRoughnessMipMaps( deoglPixelBufferMipMap &nor
 	}
 	
 	const deoglPixelBuffer &baseNormalPixelBuffer = *normalPixeBufferMipMap.GetPixelBuffer( 0 );
-	const deoglPixelBuffer &basePixelBuffer = *pPixelBuffers[ 0 ];
+	const deoglPixelBuffer &basePixelBuffer = pPixelBuffers[ 0 ];
 	int normalComponentCount;
 	int componentCount;
 	bool normalFloatData;
@@ -780,9 +996,9 @@ void deoglPixelBufferMipMap::CreateRoughnessMipMaps( deoglPixelBufferMipMap &nor
 	const int baseNormalHeight = baseNormalPixelBuffer.GetHeight();
 	const int baseNormalWidth = baseNormalPixelBuffer.GetWidth();
 	const int baseNormalMipMapSize = ( baseNormalWidth > baseNormalHeight ) ? baseNormalWidth : baseNormalHeight;
-	const int baseNormalLevel =  pPixelBufferCount - 1 - ( int )floorf( log2( ( float )baseNormalMipMapSize ) + 0.5f );
+	const int baseNormalLevel =  pPixelBufferCount - 1 - ( int )floorf( log2f( ( float )baseNormalMipMapSize ) + 0.5f );
 	const int normalMaxLevel = normalPixeBufferMipMap.GetPixelBufferCount() - 1;
-	const int byteFactor = 1.0f / 255.0f;
+	const float byteFactor = 1.0f / 255.0f;
 	const GLfloat *normalPointerOrgFloat = NULL;
 	const GLubyte *normalPointerOrgByte = NULL;
 	const GLfloat *normalPointerFloat = NULL;
@@ -814,8 +1030,8 @@ void deoglPixelBufferMipMap::CreateRoughnessMipMaps( deoglPixelBufferMipMap &nor
 	// process the roughness mip map levels
 	for( i=1; i<pPixelBufferCount; i++ ){
 		//const deoglPixelBuffer &sourceNormalPixelBuffer = *normalPixeBufferMipMap.GetPixelBuffer( i - 1 );
-		const deoglPixelBuffer &sourcePixelBuffer = *pPixelBuffers[ i - 1 ];
-		deoglPixelBuffer &destinationPixelBuffer = *pPixelBuffers[ i ];
+		const deoglPixelBuffer &sourcePixelBuffer = pPixelBuffers[ i - 1 ];
+		deoglPixelBuffer &destinationPixelBuffer = pPixelBuffers[ i ];
 		const int destinationStride = destinationPixelBuffer.GetWidth() * componentCount;
 		const int sourceStride = 2 * sourcePixelBuffer.GetWidth() * componentCount;
 		const int sourceScale = 2 * componentCount;
@@ -1029,6 +1245,7 @@ void deoglPixelBufferMipMap::CreateRoughnessMipMaps( deoglPixelBufferMipMap &nor
 						// function mapping the spread angle in the range of 0 to half-pi to the range from 0
 						// to 1. thus the deviation of the normals is an angle which in turn can be directly
 						// converted to an increase in roughness
+						dotMin = decMath::clamp( dotMin, -1.0f, 1.0f ); // just to be on the safe side
 						dotMin = acosf( dotMin ) / HALF_PI;
 						
 						// apply the correction value to the roughness. since the correction is always positive
@@ -1080,9 +1297,6 @@ void deoglPixelBufferMipMap::CreateRoughnessMipMaps( deoglPixelBufferMipMap &nor
 
 void deoglPixelBufferMipMap::pCleanUp(){
 	if( pPixelBuffers ){
-		while( pPixelBufferCount > 0 ){
-			delete pPixelBuffers[ --pPixelBufferCount ];
-		}
 		delete [] pPixelBuffers;
 	}
 }

@@ -1,43 +1,50 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEGRAPHICOPENGL_H_
 #define _DEGRAPHICOPENGL_H_
 
-#include "window/deoglRenderWindowList.h"
 #include "canvas/capture/deoglCaptureCanvasList.h"
 #include "configuration/deoglConfiguration.h"
 #include "commands/deoglCommandExecuter.h"
-#include "parameters/deoglParameterList.h"
 #include "debug/deoglDebugOverlay.h"
+#include "parameters/deoglParameterList.h"
+#include "shaders/deoglShaderCompilingInfo.h"
+#include "window/deoglRenderWindowList.h"
 
+#include <dragengine/resources/canvas/deCanvasView.h>
 #include <dragengine/systems/modules/graphic/deBaseGraphicModule.h>
 
 class deoglCaches;
 class deoglRenderThread;
+class deoglCamera;
+class deoglResources;
 
 
 
 /**
- * \brief OpenGl Graphic Module.
+ * OpenGl Graphic Module.
  */
 class deGraphicOpenGl : public deBaseGraphicModule{
 private:
@@ -51,16 +58,23 @@ private:
 	deoglRenderThread *pRenderThread;
 	deoglCaches *pCaches;
 	deoglDebugOverlay pDebugOverlay;
+	deoglResources *pResources;
+	
+	deCanvasView::Ref pOverlay;
+	deoglShaderCompilingInfo::Ref pShaderCompilingInfo;
+	
+	deoglCamera *pVRCamera;
+	decDMatrix pVRDebugPanelMatrix;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create graphic module. */
+	/** Create graphic module. */
 	deGraphicOpenGl( deLoadableModule &loadableModule );
 	
-	/** \brief Clean up graphic module. */
+	/** Clean up graphic module. */
 	virtual ~deGraphicOpenGl();
 	/*@}*/
 	
@@ -80,21 +94,21 @@ public:
 	 */
 	virtual void CleanUp();
 	
-	/** \brief Input system overlay canvas view changed. */
+	/** Input system overlay canvas view changed. */
 	virtual void InputOverlayCanvasChanged();
 	
 	#ifdef ANDROID
-	/** \brief Application window has been created. */
+	/** Application window has been created. */
 	virtual void InitAppWindow();
 	
-	/** \brief Application window has been closed. */
+	/** Application window has been closed. */
 	virtual void TerminateAppWindow();
 	#endif
 	
 	
 	
 	/**
-	 * \brief Render windows.
+	 * Render windows.
 	 * 
 	 * Tells the graphic module changes for this frame update are finished
 	 * and the existing render windows can be rendered if required. Depending
@@ -110,6 +124,17 @@ public:
 	 * best performance. For this reason run RenderWindows in regular intervals.
 	 */
 	virtual void RenderWindows();
+	
+	/**
+	 * Frame-per-second rate averaged over the last couple of frames.
+	 * \version 1.6
+	 * 
+	 * Returns 0 if module is not using a separate thread.
+	 */
+	virtual int GetFPSRate();
+	
+	/** Set position and orientation of VR debug panel if graphic module shows one. */
+	virtual void SetVRDebugPanelPosition( const decDVector &position, const decQuaternion &orientation );
 	/*@}*/
 	
 	
@@ -117,10 +142,10 @@ public:
 	/** Create a peer for the given billboard. */
 	virtual deBaseGraphicBillboard *CreateBillboard( deBillboard *billboard );
 	
-	/** \brief Create a peer for the given canvas. */
+	/** Create a peer for the given canvas. */
 	virtual deBaseGraphicCanvas *CreateCanvas( deCanvas *canvas );
 	
-	/** \brief Create peer for capture canvas. */
+	/** Create peer for capture canvas. */
 	virtual deBaseGraphicCaptureCanvas *CreateCaptureCanvas( deCaptureCanvas *captureCanvas );
 	
 	/** Create a peer for the given camera. */
@@ -180,10 +205,10 @@ public:
 	/** Create a peer for the given skin. */
 	virtual deBaseGraphicSkin *CreateSkin( deSkin *skin );
 	
-	/** \brief Create peer sky. */
+	/** Create peer sky. */
 	virtual deBaseGraphicSky *CreateSky( deSky *sky );
 	
-	/** \brief Create peer sky instance. */
+	/** Create peer sky instance. */
 	virtual deBaseGraphicSkyInstance *CreateSkyInstance( deSkyInstance *instance );
 	
 	/** Create a peer for the given smoke emitter. */
@@ -197,29 +222,32 @@ public:
 	
 	/** Create a peer for the given world. */
 	virtual deBaseGraphicWorld *CreateWorld( deWorld *world );
+	
+	/** Get graphic api connection parameters. */
+	virtual void GetGraphicApiConnection( sGraphicApiConnection &connection );
 	/*@}*/
 	
 	
 	
 	/** \name Parameters */
 	/*@{*/
-	/** \brief Number of parameters. */
+	/** Number of parameters. */
 	virtual int GetParameterCount() const;
 	
 	/**
-	 * \brief Get information about parameter.
+	 * Get information about parameter.
 	 * \param[in] index Index of the parameter
-	 * \param[in] parameter Object to fill with informations about the parameter
+	 * \param[in] parameter Object to fill with information about the parameter
 	 */
 	virtual void GetParameterInfo( int index, deModuleParameter &parameter ) const;
 	
-	/** \brief Index of named parameter or -1 if not found. */
+	/** Index of named parameter or -1 if not found. */
 	virtual int IndexOfParameterNamed( const char *name ) const;
 	
-	/** \brief Value of named parameter. */
+	/** Value of named parameter. */
 	virtual decString GetParameterValue( const char *name ) const;
 	
-	/** \brief Set value of named parameter. */
+	/** Set value of named parameter. */
 	virtual void SetParameterValue( const char *name, const char *value );
 	/*@}*/
 	
@@ -228,7 +256,7 @@ public:
 	/** \name Parallel Processing */
 	/*@{*/
 	/**
-	 * \brief Parallel processing is pausing and threads are still running.
+	 * Parallel processing is pausing and threads are still running.
 	 * 
 	 * If module has special processing which potentially blocks threads from finishing
 	 * running it is given the chances to finish these processings now. This method is
@@ -257,27 +285,45 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Render thread. */
+	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return *pRenderThread; }
 	
-	/** \brief Render thread is not NULL. */
+	/** Render thread is not NULL. */
 	bool HasRenderThread() const;
 	
-	/** \brief Capture canvas list. */
+	/** Capture canvas list. */
 	inline deoglCaptureCanvasList &GetCaptureCanvasList(){ return pCaptureCanvasList; }
 	
-	/** \brief Caches. */
+	/** Caches. */
 	inline deoglCaches &GetCaches() const{ return *pCaches; }
 	
-	/** \brief Debug overlay manager. */
+	/** Debug overlay manager. */
 	inline deoglDebugOverlay &GetDebugOverlay(){ return pDebugOverlay; }
 	
-	/** \brief Configuration. */
+	/** Resources. */
+	inline deoglResources &GetResources() const{ return *pResources; }
+	
+	/** Overlay canvas view. */
+	inline const deCanvasView::Ref &GetOverlay() const{ return pOverlay; }
+	
+	/** Shader compiling information. */
+	inline const deoglShaderCompilingInfo::Ref &GetShaderCompilingInfo() const{ return pShaderCompilingInfo; }
+	
+	/** Configuration. */
 	inline deoglConfiguration &GetConfiguration(){ return pConfiguration; }
 	
-	/** \brief List of render windows. */
+	/** List of render windows. */
 	inline deoglRenderWindowList &GetRenderWindowList(){ return pRenderWindowList; }
 	inline const deoglRenderWindowList &GetRenderWindowList() const{ return pRenderWindowList; }
+	
+	/** VR camera or null. */
+	inline deoglCamera *GetVRCamera() const{ return pVRCamera; }
+	
+	/** Set VR camera or null. */
+	void SetVRCamera( deoglCamera *camera );
+	
+	/** VR debug panel matrix. */
+	inline const decDMatrix &GetVRDebugPanelMatrix() const{ return pVRDebugPanelMatrix; }
 	/*@}*/
 	
 private:

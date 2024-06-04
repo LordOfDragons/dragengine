@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -40,17 +43,11 @@ pin Dragengine.Utils
  * Using the applyChanges() method the changes are applied to the original binding manager.
  */
 class EditBindingsPanel extends Panel
-	/** \brief Binding manager. */
-	private var BindingManager pBindingManager
-	
-	/** \brief Working copy of binding manager. */
-	private var BindingManager pEditBindingManager
-	
-	/** \brief Edit bindings list model. */
-	private var EditBindingsListModel pModel
-	
-	/** \brief Edit bindings list box. */
-	private var EditBindingsListBox pListBox
+	var BindingManager pBindingManager
+	var BindingManager pEditBindingManager
+	var EditBindingsListModel pModel
+	var EditBindingsListBox pListBox
+	var DefaultTextModel pModelInfo
 	
 	
 	
@@ -62,71 +59,91 @@ class EditBindingsPanel extends Panel
 	 * 
 	 * \param bindingManager Bining manager to edit.
 	 */
-	public func new( BindingManager bindingManager )
+	func new(BindingManager bindingManager)
 		if bindingManager == null
 			throw EInvalidParam.new()
 		end
 		
-		this.pBindingManager = bindingManager
+		pBindingManager = bindingManager
 		
-		this.pEditBindingManager = BindingManager.new()
-		this.pModel = EditBindingsListModel.new( this.pEditBindingManager )
+		pEditBindingManager = BindingManager.new()
+		pModel = EditBindingsListModel.new(pEditBindingManager)
 		
-		this.createContent()
-		this.resetChanges()
+		pModelInfo = DefaultTextModel.new()
+		
+		runWhileBlockingLayout(block
+			createContent()
+			resetChanges()
+		end)
 	end
 	
+	/** \brief Dispose of widget. */
+	func void dispose()
+		pModel = null
+		pListBox = null
+		pModelInfo = null
+		
+		super.dispose()
+	end
 	
 	
 	/** \brief Working copy of binding manager. */
-	public func BindingManager getEditBindingManager()
-		return this.pEditBindingManager
+	func BindingManager getEditBindingManager()
+		return pEditBindingManager
 	end
 	
 	/** \brief Edit bindings list model. */
-	public func EditBindingsListModel getModel()
-		return this.pModel
+	func EditBindingsListModel getModel()
+		return pModel
 	end
 	
 	/** \brief Edit bindings list box. */
-	public func EditBindingsListBox getListBox()
-		return this.pListBox
+	func EditBindingsListBox getListBox()
+		return pListBox
+	end
+	
+	/**
+	 * \brief Text model to display command descriptions.
+	 * \version1.16
+	 */
+	func DefaultTextModel getModelInfo()
+		return pModelInfo
 	end
 	
 	
 	
 	/** \brief Reset working binding manager to original binding manager. */
-	public func void resetChanges()
-		this.pEditBindingManager.removeAllAxisBindings()
-		this.pBindingManager.forEachAxisBinding( block Binding each
-			this.pEditBindingManager.addAxisBinding( Binding.new( each ) )
-		end )
+	func void resetChanges()
+		pEditBindingManager.removeAllAxisBindings()
+		pBindingManager.forEachAxisBinding(block Binding each
+			pEditBindingManager.addAxisBinding(Binding.new(each))
+		end)
 		
-		this.pEditBindingManager.removeAllButtonBindings()
-		this.pBindingManager.forEachButtonBinding( block Binding each
-			this.pEditBindingManager.addButtonBinding( Binding.new( each ) )
-		end )
+		pEditBindingManager.removeAllButtonBindings()
+		pBindingManager.forEachButtonBinding(block Binding each
+			pEditBindingManager.addButtonBinding(Binding.new(each))
+		end)
 		
-		this.pEditBindingManager.updateAllBindingIndices()
+		pEditBindingManager.updateAllBindingIndices()
 		
-		this.pModel.notifyContentChanged( 0, this.pModel.getCount() - 1 )
+		pModel.notifyContentChanged(0, pModel.getCount() - 1)
 	end
 	
 	/** \brief Copy working binding manager to original binding manager. */
-	public func void applyChanges()
-		this.pModel.forEachEntry( block EditBindingsListModelEntry entry
-			this.pBindingManager.removeBindingsWithCommand( entry.getCommand() )
+	func void applyChanges()
+		pModel.forEachEntry(block EditBindingsListModelEntry entry
+			pBindingManager.removeBindingsWithCommand(entry.getCommand())
 			
-			entry.forEachAxisBinding( block Binding binding
-				this.pBindingManager.addAxisBinding( Binding.new( binding ) )
-			end )
+			entry.forEachAxisBinding(block Binding binding
+				pBindingManager.addAxisBinding(Binding.new(binding))
+			end)
 			
-			entry.forEachButtonBinding( block Binding binding
-				this.pBindingManager.addButtonBinding( Binding.new( binding ) )
-			end )
-		end )
+			entry.forEachButtonBinding(block Binding binding
+				pBindingManager.addButtonBinding(Binding.new(binding))
+			end)
+		end)
 		
-		this.pBindingManager.updateAllBindingIndices()
+		pBindingManager.updateAllBindingIndices()
 	end
 	
 	
@@ -135,9 +152,21 @@ class EditBindingsPanel extends Panel
 	 * \brief Create content with a single EditBindingsListBox.
 	 */
 	protected func void createContent()
-		this.setLayout( BorderLayout.new( 3 ) )
-		this.pListBox = EditBindingsListBox.new( this.pModel )
-		this.addWidget( ScrollPanel.new( this.pListBox ), BorderLayout.Area.content )
-		this.addWidget( Label.new( "Press 'Return' to add and 'Delete' to clear bindings" ), BorderLayout.Area.bottom )
+		setLayout(BorderLayout.new(3))
+		
+		pListBox = EditBindingsListBox.new(pModel)
+		addWidget(ScrollPanel.new(pListBox), BorderLayout.Area.content)
+		
+		pModel.addListener(EditBindingShowDescriptionListener.new(pListBox, pModelInfo))
+		
+		addWidget(Panel.new(FlowLayout.new(LayoutAxis.y, 2), block Panel p
+			var TextArea textArea = TextArea.new(pModelInfo)
+			textArea.setReadOnly(true)
+			textArea.setRowCount(3)
+			textArea.setDesignerSelector("TextArea.EditBindings.CommandInfo")
+			p.addWidget(ScrollPanel.new(textArea, ScrollPanel.Policy.hidden, ScrollPanel.Policy.visible))
+			
+			p.addWidget(Label.new("@UI.Settings.Bindings.Usage"))
+		end), BorderLayout.Area.bottom)
 	end
 end

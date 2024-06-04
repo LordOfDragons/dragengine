@@ -8,6 +8,7 @@
 
 namespace Dragengine
 
+pin Dragengine.Gui
 pin Dragengine.Scenery
 
 
@@ -21,14 +22,17 @@ fixed class GraphicSystem
 	/*@{*/
 	/** \brief Width in pixel of render window. */
 	public static func int getWindowWidth()
+		return 0
 	end
 	
 	/** \brief Height in pixel of the render window. */
 	public static func int getWindowHeight()
+		return 0
 	end
 	
 	/** \brief Size in pixels of render window. */
 	public static func Point getWindowSize()
+		return null
 	end
 	
 	/** \brief Set render window geometry. */
@@ -41,6 +45,7 @@ fixed class GraphicSystem
 	
 	/** \brief Primary canvas view. */
 	public static func CanvasView getPrimaryCanvas()
+		return null
 	end
 	/*@}*/
 	
@@ -50,6 +55,7 @@ fixed class GraphicSystem
 	/*@{*/
 	/** \brief Number of parameters available. */
 	public static func int getParameterCount()
+		return 0
 	end
 	
 	/**
@@ -57,10 +63,12 @@ fixed class GraphicSystem
 	 * \throws EOutOfBoundary \em index less than 0 or greater than or equal to getParameterCount().
 	 */
 	public static func ModuleParameter getParameterInfo( int index )
+		return null
 	end
 	
 	/** \brief Named parameter information or \em null if not found. */
 	public static func ModuleParameter getParameterInfo( String name )
+		return null
 	end
 	
 	/**
@@ -68,6 +76,7 @@ fixed class GraphicSystem
 	 * \throws EInvalidParam Parameter with name not found.
 	 */
 	public static func String getParameterValue( String name )
+		return null
 	end
 	
 	/**
@@ -79,6 +88,32 @@ fixed class GraphicSystem
 	
 	/** \brief Send command. */
 	public static func String sendCommand( String command )
+		return null
+	end
+	
+	/**
+	 * \brief Frame-per-second rate averaged over the last couple of frames.
+	 * \version 1.6
+	 * 
+	 * Returns 0 if module is not using a separate thread.
+	 */
+	public static func int getFPSRate()
+		return 0
+	end
+	
+	/**
+	 * \brief Set position and orientation of VR debug panel if graphic module shows one.
+	 * \version 1.17
+	 * 
+	 * The debug panel is usually shown if the user looks at the back of his right hand
+	 * like looking at a wrist watch. The position is the center of the debug panel with
+	 * the size determined by the graphic module. The matrix defined by the orientation
+	 * lines up with the panel like this:
+	 * - matrix right vector along panel right direction
+	 * - matrix up vector along panel down direction
+	 * - matrix forward vector pointing towards the user
+	 */
+	public static func void setVRDebugPanelPosition( DVector position, Quaternion orientation )
 	end
 	/*@}*/
 end

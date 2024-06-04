@@ -1,29 +1,32 @@
-/* 
- * Drag[en]gine Skin Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DESKINMODULE_H_
 #define _DESKINMODULE_H_
 
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/resources/skin/property/deSkinPropertyMapped.h>
+#include <dragengine/resources/skin/deSkinMapped.h>
 #include <dragengine/systems/modules/skin/deBaseSkinModule.h>
 
 class decXmlElementTag;
@@ -35,6 +38,7 @@ class deSkinPropertyConstructed;
 class decPath;
 class decCurveBezier;
 class decCurveBezierPoint;
+class deSkinPropertyMapped;
 class deSkinPropertyNode;
 class deSkinPropertyNodeGroup;
 class deSkinPropertyNodeImage;
@@ -74,26 +78,29 @@ private:
 	bool pGetAttributeBool( const decXmlElementTag &tag, const char *name );
 	
 	void pParseSkin( const decXmlElementTag &root, deSkin &skin );
-	deSkinTexture *pParseTexture( const decXmlElementTag &root, decPath &basePath, deSkin &skin );
-	void pParsePropertyMapped( const decXmlElementTag &root, deSkinPropertyMapped &property );
-	void pParsePropertyMappedComponent( const decXmlElementTag &root, deSkinPropertyMapped::cComponent &component );
-	void pParsePropertyMappedCurve( const decXmlElementTag &root, decCurveBezier &curve );
-	void pParsePropertyMappedCurvePoint( const decXmlElementTag &root, decCurveBezier &curve );
-	void pParsePropertyConstructed( const decXmlElementTag &root, deSkinPropertyConstructed &property );
 	
-	deSkinPropertyNode *pParsePropertyNode( const decXmlElementTag &tag );
-	bool pParsePropertyNodeCommon( const decXmlElementTag &tag, deSkinPropertyNode &node );
-	void pParsePropertyNodeGroup( const decXmlElementTag &root, deSkinPropertyNodeGroup &group );
-	void pParsePropertyNodeImage( const decXmlElementTag &root, deSkinPropertyNodeImage &group );
-	void pParsePropertyNodeShape( const decXmlElementTag &root, deSkinPropertyNodeShape &group );
-	void pParsePropertyNodeText( const decXmlElementTag &root, deSkinPropertyNodeText &group );
+	deSkinMapped::Ref pParseMapped( const decXmlElementTag &root, const char *forceName = nullptr );
+	void pParseMappedCurve( const decXmlElementTag &root, decCurveBezier &curve );
+	void pParseMappedCurvePoint( const decXmlElementTag &root, decCurveBezier &curve );
+	
+	deSkinTexture *pParseTexture( const decXmlElementTag &root, decPath &basePath, deSkin &skin );
+	void pParsePropertyMapped( const decXmlElementTag &root, deSkin &skin, deSkinPropertyMapped &property );
+	void pParsePropertyConstructed( const decXmlElementTag &root, const deSkin &skin, deSkinPropertyConstructed &property );
+	
+	deSkinPropertyNode *pParsePropertyNode( const decXmlElementTag &tag, const deSkin &skin );
+	bool pParsePropertyNodeCommon( const decXmlElementTag &tag, const deSkin &skin, deSkinPropertyNode &node );
+	void pParsePropertyNodeGroup( const decXmlElementTag &root, const deSkin &skin, deSkinPropertyNodeGroup &group );
+	void pParsePropertyNodeImage( const decXmlElementTag &root, const deSkin &skin, deSkinPropertyNodeImage &group );
+	void pParsePropertyNodeShape( const decXmlElementTag &root, const deSkin &skin, deSkinPropertyNodeShape &group );
+	void pParsePropertyNodeText( const decXmlElementTag &root, const deSkin &skin, deSkinPropertyNodeText &group );
 	
 	decColor pParseColor( const decXmlElementTag &root );
 	void pReadVector2( const decXmlElementTag &tag, decVector2 &vector );
 	
 	void pWriteSkin( decXmlWriter &writer, const deSkin &skin );
+	void pWriteMapped( decXmlWriter &writer, const deSkinMapped &mapped );
 	void pWriteTexture( decXmlWriter &writer, const deSkin &skin, const deSkinTexture &texture );
-	void pWriteProperty( decXmlWriter& writer, deSkinProperty &property );
+	void pWriteProperty( decXmlWriter& writer, const deSkin &skin, deSkinProperty &property );
 };
 
 #endif

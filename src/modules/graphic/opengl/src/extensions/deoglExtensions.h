@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLEXTENSIONS_H_
@@ -29,7 +32,7 @@ class deoglRenderThread;
 
 
 /**
- * @brief OpenGL Extensions.
+ * OpenGL Extensions.
  * Manages everything related to opengl extensions. Determines which
  * extensions exist on the system as well as fetching functions.
  */
@@ -39,13 +42,15 @@ public:
 	enum eVendors{
 		/** ATI / AMD. */
 		evATI,
+
 		/** nVidia. */
 		evNVidia,
+
 		/** Something else. */
-		evUnknown,
-		/** Count of entries. */
-		EV_COUNT
+		evUnknown
 	};
+
+	static const int VendorCount = evUnknown + 1;
 	
 	/** OpenGL Versions. */
 	enum eVersions{
@@ -229,6 +234,9 @@ public:
 		/**
 		 * Version 4.3 .
 		 * <li>ARB_shader_storage_buffer_object</li>
+		 * <li>ARB_program_interface_query</li>
+		 * <li>ARB_draw_indirect</li>
+		 * <li>ARB_multi_draw_indirect</li>
 		 */
 		evgl4p3,
 		
@@ -247,6 +255,8 @@ public:
 		 * Version 4.6 .
 		 * <ul>
 		 * <li>GL_ARB_shader_image_load_store</li>
+		 * <li>ARB_indirect_parameters</li>
+		 * <li>ARB_shader_draw_parameters</li>
 		 * </ul>
 		 */
 		evgl4p6,
@@ -258,21 +268,21 @@ public:
 		EVGL_COUNT
 	};
 	
-	/** \brief OpenGL ES versions. */
+	/** OpenGL ES versions. */
 	enum eESVersions {
-		/** \brief OpenGL ES 2.x or earlier */
+		/** OpenGL ES 2.x or earlier */
 		evglesUnsupported,
 		
-		/** \brief OpenGL ES 3.0 */
+		/** OpenGL ES 3.0 */
 		evgles3p0,
 		
-		/** \brief OpenGL ES 3.1 */
+		/** OpenGL ES 3.1 */
 		evgles3p1,
 		
-		/** \brief OpenGL ES 3.2 */
+		/** OpenGL ES 3.2 */
 		evgles3p2,
 		
-		/** \brief Unknown. */
+		/** Unknown. */
 		evglesUnknown
 	};
 	
@@ -314,7 +324,24 @@ public:
 		ext_ARB_viewport_array,
 		ext_ARB_clip_control,
 		ext_ARB_shader_storage_buffer_object,
+		ext_ARB_program_interface_query,
 		ext_ARB_shader_image_load_store,
+		ext_ARB_compute_shader,
+		ext_ARB_draw_indirect,
+		ext_ARB_multi_draw_indirect,
+		ext_ARB_indirect_parameters,
+		ext_ARB_bindless_texture,
+		ext_ARB_fragment_layer_viewport,
+		ext_ARB_shader_draw_parameters,
+		ext_ARB_shader_viewport_layer_array,
+		ext_ARB_depth_clamp,
+		ext_ARB_shading_language_420pack,
+		ext_ARB_shader_atomic_counters,
+		ext_ARB_shader_atomic_counter_ops,
+		ext_ARB_gpu_shader_fp64,
+		ext_ARB_direct_state_access,
+		ext_ARB_clear_buffer_object,
+		ext_ARB_buffer_storage,
 		
 		ext_EXT_bindable_uniform,
 		ext_EXT_blend_equation_separate,
@@ -336,6 +363,7 @@ public:
 		ext_AMD_debug_output,
 		ext_AMD_performance_monitor,
 		ext_AMD_seamless_cubemap_per_texture,
+		ext_AMD_vertex_shader_layer,
 		
 		ext_ATI_meminfo,
 		ext_ATI_separate_stencil,
@@ -349,10 +377,16 @@ public:
 		
 		ext_KHR_debug,
 		
+		ext_GLX_EXT_swap_control,
+		ext_GLX_EXT_swap_control_tear,
+		
+		ext_WGL_EXT_swap_control,
+		ext_WGL_EXT_swap_control_tear,
+		
 		/** Dummy entry containing the number of extensions. */
 		EXT_COUNT
 	};
-
+	
 private:
 	deoglRenderThread &pRenderThread;
 	
@@ -362,7 +396,7 @@ private:
 	decString pStrGLVersion;
 	decStringList pStrListExtensions;
 	
-	int pVendor;
+	eVendors pVendor;
 	int pGLVersionMajor;
 	int pGLVersionMinor;
 	eVersions pGLVersion;
@@ -378,11 +412,13 @@ private:
 	bool pHasCopyImage;
 	bool pSupportsGeometryShader;
 	bool pSupportsGSInstancing;
+	bool pSupportsComputeShader;
+	bool pSupportsVSLayer;
 	
 	
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new object. */
 	deoglExtensions( deoglRenderThread &renderThread );
@@ -390,7 +426,7 @@ public:
 	~deoglExtensions();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/**
 	 * Initializes the extensions. Determines existing extensions and
@@ -399,29 +435,32 @@ public:
 	void Initialize();
 	/** Prints a summary of the findings. */
 	void PrintSummary();
+	
 	/** Returns true if all required extensions are present. */
-	bool VerifyPresence();
+	bool VerifyPresence() const;
 	
 	/** Retrieves the vendor string. */
 	inline const decString &GetStringVendor() const{ return pStrVendor; }
+
 	/** Retrieves the opengl version string. */
 	inline const decString &GetStringGLVersion() const{ return pStrGLVersion; }
+
 	/** Retrieves the list of extension strings supported by the hardware. */
 	inline const decStringList &GetStringListExtensions() const{ return pStrListExtensions; }
 	
 	/** Retrieves the vendor. */
-	inline int GetVendor() const{ return pVendor; }
+	inline eVendors GetVendor() const{ return pVendor; }
 	
-	/** \brief OpenGL major version. */
+	/** OpenGL major version. */
 	inline int GetGLVersionMajor() const{ return pGLVersionMajor; }
 	
-	/** \brief OpenGL minor version. */
+	/** OpenGL minor version. */
 	inline int GetGLVersionMinor() const{ return pGLVersionMinor; }
 	
-	/** \brief OpenGL version. */
+	/** OpenGL version. */
 	inline eVersions GetGLVersion() const{ return pGLVersion; }
 	
-	/** \brief OpenGL ES version. */
+	/** OpenGL ES version. */
 	inline eESVersions GetGLESVersion() const{ return pGLESVersion; }
 	
 	/** Determines if extensions exist. */
@@ -429,7 +468,7 @@ public:
 	/** Retrieves the name of an extension. */
 	const char *GetExtensionName( eExtensions extension ) const;
 	
-	/** \brief Disable extension. */
+	/** Disable extension. */
 	void DisableExtension( eExtensions extension );
 	
 	/** Determines if seamless cube maps are supported. */
@@ -439,11 +478,17 @@ public:
 	/** Determines if copy image is supported. */
 	inline bool GetHasCopyImage() const{ return pHasCopyImage; }
 	
-	/** \brief Geometry shader is supported. */
-	inline bool SupportsGeometryShader() const{ return pSupportsGeometryShader; }
+	/** Geometry shader is supported. Required so always true. */
+	// inline bool SupportsGeometryShader() const{ return pSupportsGeometryShader; }
 	
-	/** \brief Geometry shader instancing is supported. */
+	/** Geometry shader instancing is supported. */
 	inline bool SupportsGSInstancing() const{ return pSupportsGSInstancing; }
+	
+	/** Compute shader is supported. Required so always true. */
+	// inline bool SupportsComputeShader() const{ return pSupportsComputeShader; }
+	
+	/** Layer ID output is supported in vertex shaders. */
+	inline bool SupportsVSLayer() const{ return pSupportsVSLayer; }
 	/*@}*/
 	
 private:
@@ -455,6 +500,7 @@ private:
 	void pFetchRequiredFunctions();
 	void pFetchOptionalFunctions();
 	void pFixBuggedFunctions();
+	void pOptionalDisableExtensions();
 	
 	void pGetRequiredFunction( void **funcPointer, const char *funcName );
 	void pGetRequiredFunction( void **funcPointer, const char *funcNameBase, const char *funcNameExtension );
@@ -470,6 +516,9 @@ private:
 		const char *funcNameExtension1, const char *funcNameExtension2, int extensionIndex );
 	void pGetOptionalFunctionExt( void **funcPointer, const char *funcName, int extensionIndex );
 	void pGetOptionalFunctionArbExt( void **funcPointer, const char *funcName, int extensionIndex );
+	
+	bool pVerifyExtensionPresent( eExtensions extension ) const;
+	bool pVerifyExtensionPresent( eExtensions extension1, eExtensions extension2 ) const;
 };
 
 #endif

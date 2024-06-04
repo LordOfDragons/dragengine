@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Game Definition Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -52,6 +55,7 @@
 
 #include <deigde/engine/igdeEngineController.h>
 #include <deigde/codec/igdeCodecPropertyString.h>
+#include <deigde/gamedefinition/class/igdeGDClass.h>
 
 #include <dragengine/deEngine.h>
 #include <dragengine/deObjectReference.h>
@@ -135,9 +139,9 @@ decBaseFileWriter &writer ){
 
 void gdeLoadSaveGameDefinition::pReadGameDefinition( const decXmlElementTag &root, gdeGameDefinition &gameDefinition ){
 	const int elementCount = root.GetElementCount();
-	decStringSet autoFindPathObjectClasses;
-	decStringSet autoFindPathSkins;
-	decStringSet autoFindPathSkies;
+	decStringList autoFindPathObjectClasses;
+	decStringList autoFindPathSkins;
+	decStringList autoFindPathSkies;
 	decStringList baseGameDefIDs;
 	int i;
 	
@@ -198,13 +202,22 @@ void gdeLoadSaveGameDefinition::pReadGameDefinition( const decXmlElementTag &roo
 			pReadProperty( *tag, gameDefinition.GetDecalProperties() );
 			
 		}else if( tagName == "findPathClasses" ){
-			autoFindPathObjectClasses.Add( GetCDataString( *tag ) );
+			const char * const cdata = GetCDataString( *tag );
+			if( cdata && ! autoFindPathObjectClasses.Has( cdata ) ){
+				autoFindPathObjectClasses.Add( cdata );
+			}
 			
 		}else if( tagName == "findPathSkins" ){
-			autoFindPathSkins.Add( GetCDataString( *tag ) );
+			const char * const cdata = GetCDataString( *tag );
+			if( cdata && ! autoFindPathSkins.Has( cdata ) ){
+				autoFindPathSkins.Add( cdata );
+			}
 			
 		}else if( tagName == "findPathSkies" ){
-			autoFindPathSkies.Add( GetCDataString( *tag ) );
+			const char * const cdata = GetCDataString( *tag );
+			if( cdata && ! autoFindPathSkies.Has( cdata ) ){
+				autoFindPathSkies.Add( cdata );
+			}
 			
 		}else{
 			LogWarnUnknownTag( root, *tag );
@@ -367,6 +380,9 @@ void gdeLoadSaveGameDefinition::pReadProperty( const decXmlElementTag &root, gde
 			}else if( type == "sky" ){
 				property.SetPathPatternType( gdeProperty::epptSky );
 				
+			}else if( type == "camera" ){
+				property.SetPathPatternType( gdeProperty::epptCamera );
+				
 			}else if( type == "custom" ){
 				property.SetPathPatternType( gdeProperty::epptCustom );
 				
@@ -471,14 +487,60 @@ void gdeLoadSaveGameDefinition::pReadObjectClass( const decXmlElementTag &root, 
 		}else if( tagName == "navigationBlocker" ){
 			pReadObjectClassNavigationBlocker( *tag, objectClass );
 			
+		}else if( tagName == "texture" ){
+			pReadObjectClassTexture( *tag, objectClass );
+			
 		}else if( tagName == "category" ){
 			objectClass.SetCategory( GetCDataString( *tag ) );
 			
 		}else if( tagName == "ghost" ){
 			objectClass.SetIsGhost( GetCDataBool( *tag ) );
 			
-		}else if( tagName == "canInstanciate" ){
-			objectClass.SetCanInstanciate( GetCDataBool( *tag ) );
+		}else if( tagName == "canInstantiate"
+		/* backwards compatibility */ || tagName == "canInstanciate" ){
+			objectClass.SetCanInstantiate( GetCDataBool( *tag ) );
+			
+		}else if( tagName == "replaceSubObjects" ){
+			const decStringList keys( decString( GetCDataString( *tag ) ).Split( ',' ) );
+			int j, inherit = igdeGDClass::FilterSubObjectsAll;
+			const int keyCount = keys.GetCount();
+			
+			for( j=0; j<keyCount; j++ ){
+				const decString &key = keys.GetAt( j );
+				
+				if( key == "billboards" ){
+					inherit &= ~igdeGDClass::efsoBillboards;
+					
+				}else if( key == "components" ){
+					inherit &= ~igdeGDClass::efsoComponents;
+					
+				}else if( key == "lights" ){
+					inherit &= ~igdeGDClass::efsoLights;
+					
+				}else if( key == "snapPoints" ){
+					inherit &= ~igdeGDClass::efsoSnapPoints;
+					
+				}else if( key == "particleEmitters" ){
+					inherit &= ~igdeGDClass::efsoParticleEmitters;
+					
+				}else if( key == "forceFields" ){
+					inherit &= ~igdeGDClass::efsoForceFields;
+					
+				}else if( key == "envMapProbes" ){
+					inherit &= ~igdeGDClass::efsoEnvMapProbes;
+					
+				}else if( key == "speakers" ){
+					inherit &= ~igdeGDClass::efsoSpeakers;
+					
+				}else if( key == "navigationSpaces" ){
+					inherit &= ~igdeGDClass::efsoNavigationSpaces;
+					
+				}else if( key == "navigationBlockers" ){
+					inherit &= ~igdeGDClass::efsoNavigationBlockers;
+				}
+			}
+			
+			objectClass.SetInheritSubObjects( inherit );
 			
 		}else if( tagName == "inherit" ){
 			pReadObjectClassInherit( *tag, objectClass );
@@ -659,6 +721,12 @@ void gdeLoadSaveGameDefinition::pReadObjectClassComponent( const decXmlElementTa
 		}else if( tagName == "animator" ){
 			component.SetAnimatorPath( GetCDataString( *tag ) );
 			
+		}else if( tagName == "animation" ){
+			component.SetAnimationPath( GetCDataString( *tag ) );
+			
+		}else if( tagName == "move" ){
+			component.SetMove( GetCDataString( *tag ) );
+			
 		}else if( tagName == "occlusionMesh" ){
 			component.SetOcclusionMeshPath( GetCDataString( *tag ) );
 			
@@ -701,6 +769,9 @@ void gdeLoadSaveGameDefinition::pReadObjectClassComponent( const decXmlElementTa
 			
 		}else if( tagName == "affectsAudio" ){
 			component.SetAffectsAudio( GetCDataBool( *tag ) );
+			
+		}else if( tagName == "lightShadowIgnore" ){
+			component.SetLightShadowIgnore( GetCDataBool( *tag ) );
 			
 		}else if( tagName == "position" ){
 			decVector position;
@@ -749,11 +820,20 @@ void gdeLoadSaveGameDefinition::pReadObjectClassComponent( const decXmlElementTa
 			}else if( value == "affectsAudio" ){
 				component.SetPropertyName( gdeOCComponent::epAffectsAudio, property );
 				
+			}else if( value == "lightShadowIgnore" ){
+				component.SetPropertyName( gdeOCComponent::epLightShadowIgnore, property );
+				
 			}else if( value == "attachPosition" ){
 				component.SetPropertyName( gdeOCComponent::epAttachPosition, property );
 				
 			}else if( value == "attachRotation" ){
 				component.SetPropertyName( gdeOCComponent::epAttachRotation, property );
+				
+			}else if( value == "animation" ){
+				component.SetPropertyName( gdeOCComponent::epAnimation, property );
+				
+			}else if( value == "move" ){
+				component.SetPropertyName( gdeOCComponent::epMove, property );
 				
 			}else{
 				LogWarnUnknownValue( *tag, value );
@@ -1453,6 +1533,9 @@ void gdeLoadSaveGameDefinition::pReadObjectClassSpeaker( const decXmlElementTag 
 		}else if( tagName == "rollOff" ){
 			speaker.SetRollOff( GetCDataFloat( *tag ) );
 			
+		}else if( tagName == "distanceOffset" ){
+			speaker.SetDistanceOffset( GetCDataFloat( *tag ) );
+			
 		}else if( tagName == "playSpeed" ){
 			speaker.SetPlaySpeed( GetCDataFloat( *tag ) );
 			
@@ -1477,6 +1560,9 @@ void gdeLoadSaveGameDefinition::pReadObjectClassSpeaker( const decXmlElementTag 
 				
 			}else if( value == "rollOff" ){
 				speaker.SetPropertyName( gdeOCSpeaker::epRollOff, property );
+				
+			}else if( value == "distanceOffset" ){
+				speaker.SetPropertyName( gdeOCSpeaker::epDistanceOffset, property );
 				
 			}else if( value == "playSpeed" ){
 				speaker.SetPropertyName( gdeOCSpeaker::epPlaySpeed, property );
@@ -1548,6 +1634,22 @@ void gdeLoadSaveGameDefinition::pReadObjectClassNavigationSpace( const decXmlEle
 			
 		}else if( tagName == "layer" ){
 			navspace.SetLayer( GetCDataInt( *tag ) );
+			
+		}else if( tagName == "type" ){
+			const decString value( GetCDataString( *tag ) );
+			
+			if( value == "grid" ){
+				navspace.SetType( deNavigationSpace::estGrid );
+				
+			}else if( value == "mesh" ){
+				navspace.SetType( deNavigationSpace::estMesh );
+				
+			}else if( value == "volume" ){
+				navspace.SetType( deNavigationSpace::estVolume );
+				
+			}else{
+				LogWarnUnknownValue( *tag, value );
+			}
 			
 		}else if( tagName == "blockingPriority" ){
 			navspace.SetBlockingPriority( GetCDataInt( *tag ) );
@@ -1693,6 +1795,56 @@ void gdeLoadSaveGameDefinition::pReadObjectClassNavigationBlocker( const decXmlE
 	}
 	
 	objectClass.GetNavigationBlockers().Add( &navblocker );
+}
+
+void gdeLoadSaveGameDefinition::pReadObjectClassTexture( const decXmlElementTag &root, gdeObjectClass &objectClass ){
+	const char * const name = GetAttributeString( root, "name" );
+	if( objectClass.GetTextures().HasNamed( name ) ){
+		LogErrorGenericProblemValue( root, name, "A texture with this name exists already." );
+	}
+	
+	const int elementCount = root.GetElementCount();
+	deObjectReference objRef;
+	int i;
+	
+	objRef.TakeOver( new gdeOCComponentTexture( name ) );
+	gdeOCComponentTexture &texture = ( gdeOCComponentTexture& )( deObject& )objRef;
+	
+	for( i=0; i<elementCount; i++ ){
+		const decXmlElementTag * const tag = root.GetElementIfTag( i );
+		if( ! tag ){
+			continue;
+		}
+		
+		const decString tagName( tag->GetName() );
+		
+		if( tagName == "skin" ){
+			texture.SetPathSkin( GetCDataString( *tag ) );
+			
+		}else if( tagName == "offset" ){
+			decVector2 offset;
+			ReadVector2( *tag, offset );
+			texture.SetOffset( offset );
+			
+		}else if( tagName == "scale" ){
+			decVector2 scale( 1.0f, 1.0f );
+			ReadVector2( *tag, scale );
+			texture.SetScale( scale );
+			
+		}else if( tagName == "rotate" ){
+			texture.SetRotation( GetCDataFloat( *tag ) * DEG2RAD );
+			
+		}else if( tagName == "tint" ){
+			decColor color( 1.0f, 1.0f, 1.0f );
+			ReadColor( *tag, color );
+			texture.SetColorTint( color );
+			
+		}else{
+			LogWarnUnknownTag( root, *tag );
+		}
+	}
+	
+	objectClass.GetTextures().Add( &texture );
 }
 
 void gdeLoadSaveGameDefinition::pReadCustomFilePatternList(
@@ -2089,19 +2241,19 @@ const gdeGameDefinition &gameDefinition ){
 	pWriteProperties( writer, gameDefinition.GetDecalProperties(), "decalProperty" );
 	
 	// auto find path
-	const decStringSet &autoFindPathObjectClasses = gameDefinition.GetAutoFindPathObjectClasses();
+	const decStringList &autoFindPathObjectClasses = gameDefinition.GetAutoFindPathObjectClasses();
 	int autoFindPathCount = autoFindPathObjectClasses.GetCount();
 	for( i=0; i<autoFindPathCount; i++ ){
 		writer.WriteDataTagString( "findPathClasses", autoFindPathObjectClasses.GetAt( i ) );
 	}
 	
-	const decStringSet &autoFindPathSkins = gameDefinition.GetAutoFindPathSkins();
+	const decStringList &autoFindPathSkins = gameDefinition.GetAutoFindPathSkins();
 	autoFindPathCount = autoFindPathSkins.GetCount();
 	for( i=0; i<autoFindPathCount; i++ ){
 		writer.WriteDataTagString( "findPathSkins", autoFindPathSkins.GetAt( i ) );
 	}
 	
-	const decStringSet &autoFindPathSkies = gameDefinition.GetAutoFindPathSkies();
+	const decStringList &autoFindPathSkies = gameDefinition.GetAutoFindPathSkies();
 	autoFindPathCount = autoFindPathSkies.GetCount();
 	for( i=0; i<autoFindPathCount; i++ ){
 		writer.WriteDataTagString( "findPathSkies", autoFindPathSkies.GetAt( i ) );
@@ -2159,11 +2311,11 @@ const gdeGameDefinition&, const gdeObjectClass &objectClass ){
 	
 	switch( objectClass.GetScaleMode() ){
 	case gdeObjectClass::esmFixed:
-		break; // default, would be "fixed"
+		writer.WriteDataTagString( "scaleMode", "fixed" );
+		break;
 		
 	case gdeObjectClass::esmUniform:
-		writer.WriteDataTagString( "scaleMode", "uniform" );
-		break;
+		break; // default, would be "uniform"
 		
 	case gdeObjectClass::esmFree:
 		writer.WriteDataTagString( "scaleMode", "free" );
@@ -2173,8 +2325,46 @@ const gdeGameDefinition&, const gdeObjectClass &objectClass ){
 	if( objectClass.GetIsGhost() ){
 		writer.WriteDataTagBool( "ghost", objectClass.GetIsGhost() );
 	}
-	if( ! objectClass.GetCanInstanciate() ){
-		writer.WriteDataTagBool( "canInstanciate", objectClass.GetCanInstanciate() );
+	if( ! objectClass.GetCanInstantiate() ){
+		writer.WriteDataTagBool( "canInstantiate", objectClass.GetCanInstantiate() );
+	}
+	if( objectClass.GetInheritSubObjects() != igdeGDClass::FilterSubObjectsAll ){
+		decString keys;
+		
+		if( ( objectClass.GetInheritSubObjects() & igdeGDClass::efsoBillboards ) == 0 ){
+			keys.Append( "billboards," );
+		}
+		if( ( objectClass.GetInheritSubObjects() & igdeGDClass::efsoComponents ) == 0 ){
+			keys.Append( "components," );
+		}
+		if( ( objectClass.GetInheritSubObjects() & igdeGDClass::efsoLights ) == 0 ){
+			keys.Append( "lights," );
+		}
+		if( ( objectClass.GetInheritSubObjects() & igdeGDClass::efsoSnapPoints ) == 0 ){
+			keys.Append( "snapPoints," );
+		}
+		if( ( objectClass.GetInheritSubObjects() & igdeGDClass::efsoParticleEmitters ) == 0 ){
+			keys.Append( "particleEmitters," );
+		}
+		if( ( objectClass.GetInheritSubObjects() & igdeGDClass::efsoForceFields ) == 0 ){
+			keys.Append( "forceFields," );
+		}
+		if( ( objectClass.GetInheritSubObjects() & igdeGDClass::efsoEnvMapProbes ) == 0 ){
+			keys.Append( "envMapProbes," );
+		}
+		if( ( objectClass.GetInheritSubObjects() & igdeGDClass::efsoSpeakers ) == 0 ){
+			keys.Append( "speakers," );
+		}
+		if( ( objectClass.GetInheritSubObjects() & igdeGDClass::efsoNavigationSpaces ) == 0 ){
+			keys.Append( "navigationSpaces," );
+		}
+		if( ( objectClass.GetInheritSubObjects() & igdeGDClass::efsoNavigationBlockers ) == 0 ){
+			keys.Append( "navigationBlockers," );
+		}
+		if( ! keys.IsEmpty() ){
+			keys.SetAt( -1, 0 );
+		}
+		writer.WriteDataTagString( "replaceSubObjects", keys );
 	}
 	
 	if( ! objectClass.GetDefaultInheritPropertyPrefix().IsEmpty() ){
@@ -2266,6 +2456,13 @@ const gdeGameDefinition&, const gdeObjectClass &objectClass ){
 		pWriteObjectClassNavBlocker( writer, *navBlockers.GetAt( i ) );
 	}
 	
+	// textures
+	const gdeOCComponentTextureList &textures = objectClass.GetTextures();
+	const int textureCount = textures.GetCount();
+	for( i=0; i<textureCount; i++ ){
+		pWriteObjectClassTexture( writer, *textures.GetAt( i ) );
+	}
+	
 	pWriteProperties( writer, objectClass.GetProperties(), "property" );
 	pWriteProperties( writer, objectClass.GetPropertyValues(), "propertyValue" );
 	pWriteProperties( writer, objectClass.GetTextureProperties(), "textureProperty" );
@@ -2305,6 +2502,12 @@ decXmlWriter &writer, const gdeOCComponent &component ){
 	if( ! component.GetAnimatorPath().IsEmpty() ){
 		writer.WriteDataTagString( "animator", component.GetAnimatorPath() );
 	}
+	if( ! component.GetAnimationPath().IsEmpty() ){
+		writer.WriteDataTagString( "animation", component.GetAnimationPath() );
+	}
+	if( ! component.GetMove().IsEmpty() ){
+		writer.WriteDataTagString( "move", component.GetMove() );
+	}
 	if( ! component.GetOcclusionMeshPath().IsEmpty() ){
 		writer.WriteDataTagString( "occlusionMesh", component.GetOcclusionMeshPath() );
 	}
@@ -2324,7 +2527,7 @@ decXmlWriter &writer, const gdeOCComponent &component ){
 		writer.WriteDataTagBool( "partialHide", component.GetPartialHide() );
 	}
 	if( ! component.GetAttachTarget() ){
-		writer.WriteDataTagBool( "GetAttachTarget", component.GetAttachTarget() );
+		writer.WriteDataTagBool( "attachTarget", component.GetAttachTarget() );
 	}
 	
 	switch( component.GetColliderResponseType() ){
@@ -2345,6 +2548,9 @@ decXmlWriter &writer, const gdeOCComponent &component ){
 	}
 	if( ! component.GetAffectsAudio() ){
 		writer.WriteDataTagBool( "affectsAudio", component.GetAffectsAudio() );
+	}
+	if( component.GetLightShadowIgnore() ){
+		writer.WriteDataTagBool( "lightShadowIgnore", component.GetLightShadowIgnore() );
 	}
 	
 	const decVector &position = component.GetPosition();
@@ -2396,10 +2602,16 @@ decXmlWriter &writer, const gdeOCComponent &component ){
 		"link", "renderEnvMap" );
 	pWriteLink( writer, component.GetPropertyName( gdeOCComponent::epAffectsAudio ),
 		"link", "affectsAudio" );
+	pWriteLink( writer, component.GetPropertyName( gdeOCComponent::epLightShadowIgnore ),
+		"link", "lightShadowIgnore" );
 	pWriteLink( writer, component.GetPropertyName( gdeOCComponent::epAttachPosition ),
 		"link", "attachPosition" );
 	pWriteLink( writer, component.GetPropertyName( gdeOCComponent::epAttachRotation ),
 		"link", "attachRotation" );
+	pWriteLink( writer, component.GetPropertyName( gdeOCComponent::epAnimation ),
+		"link", "animation" );
+	pWriteLink( writer, component.GetPropertyName( gdeOCComponent::epMove ),
+		"link", "move" );
 	
 	writer.WriteClosingTag( "component" );
 }
@@ -3025,6 +3237,9 @@ decXmlWriter &writer, const gdeOCSpeaker &speaker ){
 	if( fabsf( speaker.GetRollOff() - 0.1f ) > FLOAT_SAFE_EPSILON ){
 		writer.WriteDataTagFloat( "rollOff", speaker.GetRollOff() );
 	}
+	if( fabsf( speaker.GetDistanceOffset() - 0.1f ) > FLOAT_SAFE_EPSILON ){
+		writer.WriteDataTagFloat( "distanceOffset", speaker.GetDistanceOffset() );
+	}
 	if( fabsf( speaker.GetPlaySpeed() - 1.0f ) > FLOAT_SAFE_EPSILON ){
 		writer.WriteDataTagFloat( "playSpeed", speaker.GetPlaySpeed() );
 	}
@@ -3041,6 +3256,8 @@ decXmlWriter &writer, const gdeOCSpeaker &speaker ){
 		"link", "range" );
 	pWriteLink( writer, speaker.GetPropertyName( gdeOCSpeaker::epRollOff ),
 		"link", "rollOff" );
+	pWriteLink( writer, speaker.GetPropertyName( gdeOCSpeaker::epDistanceOffset ),
+		"link", "distanceOffset" );
 	pWriteLink( writer, speaker.GetPropertyName( gdeOCSpeaker::epPlaySpeed ),
 		"link", "playSpeed" );
 	pWriteLink( writer, speaker.GetPropertyName( gdeOCSpeaker::epAttachPosition ),
@@ -3090,6 +3307,19 @@ decXmlWriter &writer, const gdeOCNavigationSpace &navspace ){
 	
 	if( navspace.GetLayer() != 0 ){
 		writer.WriteDataTagInt( "layer", navspace.GetLayer() );
+	}
+	
+	switch( navspace.GetType() ){
+	case deNavigationSpace::estGrid:
+		writer.WriteDataTagString( "type", "grid" );
+		break;
+		
+	case deNavigationSpace::estMesh:
+		break; // default: "mesh"
+		
+	case deNavigationSpace::estVolume:
+		writer.WriteDataTagString( "type", "volume" );
+		break;
 	}
 	
 	if( navspace.GetBlockingPriority() != 0 ){
@@ -3184,6 +3414,30 @@ decXmlWriter &writer, const gdeOCNavigationBlocker &navblocker ){
 	pWriteLink( writer, navblocker.GetPropertyName( gdeOCNavigationBlocker::epAttachRotation ),"link", "attachRotation" );
 	
 	writer.WriteClosingTag( "navigationBlocker" );
+}
+
+void gdeLoadSaveGameDefinition::pWriteObjectClassTexture( decXmlWriter &writer, const gdeOCComponentTexture &texture ){
+	writer.WriteOpeningTagStart( "texture" );
+	writer.WriteAttributeString( "name", texture.GetName() );
+	writer.WriteOpeningTagEnd();
+	
+	if( ! texture.GetPathSkin().IsEmpty() ){
+		writer.WriteDataTagString( "skin", texture.GetPathSkin() );
+	}
+	if( ! texture.GetOffset().IsEqualTo( decVector2() ) ){
+		WriteVector2( writer, "offset", texture.GetOffset() );
+	}
+	if( ! decVector2( 1.0f, 1.0f ).IsEqualTo( texture.GetScale() ) ){
+		WriteVector2( writer, "scale", texture.GetScale() );
+	}
+	if( fabsf( texture.GetRotation() ) > FLOAT_SAFE_EPSILON ){
+		writer.WriteDataTagFloat( "rotate", texture.GetRotation() / DEG2RAD );
+	}
+	if( ! decColor( 1.0f, 1.0f, 1.0f ).IsEqualTo( texture.GetColorTint() ) ){
+		WriteColor( writer, "tint", texture.GetColorTint() );
+	}
+	
+	writer.WriteClosingTag( "texture" );
 }
 
 void gdeLoadSaveGameDefinition::pWriteSkin( decXmlWriter &writer,
@@ -3465,6 +3719,10 @@ const gdeProperty &property, const char *tagName ){
 			
 		case gdeProperty::epptSky:
 			writer.WriteDataTagString( "pathPatternType", "sky" );
+			break;
+			
+		case gdeProperty::epptCamera:
+			writer.WriteDataTagString( "pathPatternType", "camera" );
 			break;
 			
 		case gdeProperty::epptCustom:{

@@ -1,52 +1,55 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLREFFECTOVERLAYIMAGE_H_
 #define _DEOGLREFFECTOVERLAYIMAGE_H_
 
 #include "deoglREffect.h"
+#include "../../pipeline/deoglPipeline.h"
+#include "../../texture/deoglRImage.h"
 
 #include <dragengine/common/math/decMath.h>
 
-class deoglRImage;
-class deoglShaderProgram;
-
 
 /**
- * \brief Render effect overlay image.
+ * Render effect overlay image.
  */
 class deoglREffectOverlayImage : public deoglREffect{
 private:
 	float pTransparency;
-	deoglRImage *pImage;
+	deoglRImage::Ref pImage;
 	
-	deoglShaderProgram *pShader;
+	const deoglPipeline *pPipeline;
+	const deoglPipeline *pPipelineStereo;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create render effect. */
+	/** Create render effect. */
 	deoglREffectOverlayImage( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up render effect. */
+	/** Clean up render effect. */
 	virtual ~deoglREffectOverlayImage();
 	/*@}*/
 	
@@ -54,27 +57,28 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Transparency. */
+	/** Transparency. */
 	inline float GetTransparency() const{ return pTransparency; }
 	
-	/** \brief Set transparency. */
+	/** Set transparency. */
 	void SetTransparency( float transparency );
 	
-	/** \brief Image or \em NULL to render nothing. */
-	inline deoglRImage *GetImage() const{ return pImage; }
+	/** Image or nullptr to render nothing. */
+	inline const deoglRImage::Ref &GetImage() const{ return pImage; }
 	
-	/** \brief Set image or \em NULL to render nothing. */
+	/** Set image or nullptr to render nothing. */
 	void SetImage( deoglRImage *image );
 	
 	
 	
-	/** \brief Get shader creating it if required. */
-	deoglShaderProgram *GetShader();
+	/** Get pipeline creating it if required. */
+	const deoglPipeline *GetPipeline();
+	const deoglPipeline *GetPipelineStereo();
 	
-	/** \brief Prepare for render. */
+	/** Prepare for render. */
 	virtual void PrepareForRender();
 	
-	/** \brief Render effect. */
+	/** Render effect. */
 	virtual void Render( deoglRenderPlan &plan );
 };
 

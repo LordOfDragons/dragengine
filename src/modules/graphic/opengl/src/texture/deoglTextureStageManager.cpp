@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -29,7 +32,6 @@
 #include "texsamplerconfig/deoglTexSamplerConfig.h"
 #include "texture2d/deoglTexture.h"
 #include "texture2d/deoglRenderableColorTexture.h"
-#include "texture1d/deoglTexture1D.h"
 #include "../configuration/deoglConfiguration.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTLogger.h"
@@ -43,6 +45,17 @@
 #include "../target/deoglRenderTarget.h"
 
 #include <dragengine/common/exceptions.h>
+
+
+
+static GLenum vCubeMapFaceTarget[ 6 ] = {
+	GL_TEXTURE_CUBE_MAP_POSITIVE_X,
+	GL_TEXTURE_CUBE_MAP_NEGATIVE_X,
+	GL_TEXTURE_CUBE_MAP_POSITIVE_Y,
+	GL_TEXTURE_CUBE_MAP_NEGATIVE_Y,
+	GL_TEXTURE_CUBE_MAP_POSITIVE_Z,
+	GL_TEXTURE_CUBE_MAP_NEGATIVE_Z
+};
 
 
 
@@ -105,10 +118,6 @@ void deoglTextureStageManager::EnableBareTexture( int stage, const deoglTexture 
 	BindTexture( stage, texture.GetTexture(), GL_TEXTURE_2D );
 }
 
-void deoglTextureStageManager::EnableBareTexture1D( int stage, const deoglTexture1D &texture ){
-	BindTexture( stage, texture.GetTexture(), GL_TEXTURE_2D );
-}
-
 void deoglTextureStageManager::EnableBareCubeMap( int stage, const deoglCubeMap &cubemap ){
 	BindTexture( stage, cubemap.GetTexture(), GL_TEXTURE_CUBE_MAP );
 }
@@ -117,19 +126,23 @@ void deoglTextureStageManager::EnableBareTBO( int stage, GLuint tbo ){
 	BindTexture( stage, tbo, GL_TEXTURE_BUFFER );
 }
 
-void deoglTextureStageManager::EnableTexture( int stage, deoglTexture& texture, deoglTexSamplerConfig &samplerConfig ){
+void deoglTextureStageManager::EnableTexture( int stage, const deoglTexture& texture,
+deoglTexSamplerConfig &samplerConfig ){
 	BindTexture( stage, texture.GetTexture(), GL_TEXTURE_2D, samplerConfig.GetSamplerObject() );
 }
 
-void deoglTextureStageManager::EnableTexture1D( int stage, deoglTexture1D &texture, deoglTexSamplerConfig &samplerConfig ){
-	BindTexture( stage, texture.GetTexture(), GL_TEXTURE_1D, samplerConfig.GetSamplerObject() );
-}
-
-void deoglTextureStageManager::EnableCubeMap( int stage, deoglCubeMap &cubemap, deoglTexSamplerConfig &samplerConfig ){
+void deoglTextureStageManager::EnableCubeMap( int stage, const deoglCubeMap &cubemap,
+deoglTexSamplerConfig &samplerConfig ){
 	BindTexture( stage, cubemap.GetTexture(), GL_TEXTURE_CUBE_MAP, samplerConfig.GetSamplerObject() );
 }
 
-void deoglTextureStageManager::EnableArrayTexture( int stage, deoglArrayTexture &texture, deoglTexSamplerConfig &samplerConfig ){
+void deoglTextureStageManager::EnableCubeMapFace( int stage, const deoglCubeMap &cubemap,
+deoglCubeMap::eFaces face, deoglTexSamplerConfig &samplerConfig ){
+	BindTexture( stage, cubemap.GetTexture(), vCubeMapFaceTarget[ face ], samplerConfig.GetSamplerObject() );
+}
+
+void deoglTextureStageManager::EnableArrayTexture( int stage, const deoglArrayTexture &texture,
+deoglTexSamplerConfig &samplerConfig ){
 	BindTexture( stage, texture.GetTexture(), GL_TEXTURE_2D_ARRAY, samplerConfig.GetSamplerObject() );
 }
 
@@ -137,7 +150,7 @@ void deoglTextureStageManager::EnableTBO( int stage, GLuint tbo, deoglTexSampler
 	BindTexture( stage, tbo, GL_TEXTURE_BUFFER, samplerConfig.GetSamplerObject() );
 }
 
-void deoglTextureStageManager::EnableSkin( int stage, deoglRSkin &skin, int texture,
+void deoglTextureStageManager::EnableSkin( int stage, const deoglRSkin &skin, int texture,
 deoglSkinChannel::eChannelTypes channel, deoglTexture *defaultTexture, deoglTexSamplerConfig &samplerConfig ){
 	if( stage < 0 || stage >= OGL_MAX_TEXTURE_STAGES || ! defaultTexture ){
 		DETHROW( deeInvalidParam );
@@ -243,9 +256,8 @@ void deoglTextureStageManager::DisableAllStages(){
 
 
 void deoglTextureStageManager::BindTexture( int stage, GLuint texture, GLenum type ){
-	if( stage < 0 || stage >= OGL_MAX_TEXTURE_STAGES ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( stage >= 0 )
+	DEASSERT_TRUE( stage < OGL_MAX_TEXTURE_STAGES )
 	
 	OGL_CHECK( pRenderThread, pglActiveTexture( GL_TEXTURE0 + stage ) );
 	
@@ -270,7 +282,7 @@ void deoglTextureStageManager::BindTexture( int stage, GLuint texture, GLenum ty
 		}
 		
 		#ifdef OS_ANDROID
-		glGetError();
+		oglClearError();
 		glBindTexture( type, texture );
 		if(glGetError() == GL_INVALID_ENUM){
 			pRenderThread.GetLogger().LogInfoFormat(

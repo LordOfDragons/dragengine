@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE World Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -29,8 +32,11 @@
 #include "../meWindowMain.h"
 #include "../../undosys/properties/decal/meUDecalSkin.h"
 #include "../../undosys/properties/object/meUSetObjectClass.h"
+#include "../../undosys/properties/object/property/meUObjectAddProperty.h"
+#include "../../undosys/properties/object/property/meUObjectSetProperty.h"
 #include "../../undosys/properties/object/texture/meUObjectTextureSetSkin.h"
 #include "../../undosys/properties/object/texture/meUObjectAddTexture.h"
+#include "../../utils/meHelpers.h"
 #include "../../world/meWorld.h"
 #include "../../world/meWorldGuiParameters.h"
 #include "../../world/decal/meDecal.h"
@@ -47,6 +53,7 @@
 #include <deigde/gamedefinition/igdeGameDefinition.h>
 #include <deigde/gamedefinition/class/igdeGDClass.h>
 #include <deigde/gamedefinition/class/igdeGDClassManager.h>
+#include <deigde/gamedefinition/property/igdeGDProperty.h>
 #include <deigde/gamedefinition/skin/igdeGDSkin.h>
 #include <deigde/gamedefinition/skin/igdeGDSkinManager.h>
 #include <deigde/gamedefinition/sky/igdeGDSky.h>
@@ -163,8 +170,9 @@ class cActionSetSkinObjTex : public igdeAction{
 	const decString pName;
 	
 public:
-	cActionSetSkinObjTex( meWPBrowser &panel, const decString &name ) : igdeAction( name, NULL,
-		"Set active object texture" ), pPanel( panel ), pName( name ){ }
+	cActionSetSkinObjTex( meWPBrowser &panel, const decString &name ) : igdeAction(
+		decString( "Active Object Set Texture: " ) + name, NULL,
+		decString( "Set texture '" ) + name + "' of active object" ), pPanel( panel ), pName( name ){ }
 	
 	virtual void OnAction(){
 		igdeGDSkin * const gdskin = pPanel.GetSelectedSkin();
@@ -187,7 +195,6 @@ public:
 			}
 			
 			undo.TakeOver( new meUObjectTextureSetSkin( texture, newskin ) );
-			pPanel.GetWorld()->GetUndoSystem()->Add( undo );
 			
 		}else{
 			deObjectReference refTexture;
@@ -196,8 +203,46 @@ public:
 			texture->SetSkinPath( newskin );
 			
 			undo.TakeOver( new meUObjectAddTexture( object, texture ) );
-			pPanel.GetWorld()->GetUndoSystem()->Add( undo );
 		}
+		pPanel.GetWorld()->GetUndoSystem()->Add( undo );
+	}
+};
+
+class cActionSetSkinObjProp : public igdeAction{
+	meWPBrowser &pPanel;
+	const decString pName;
+	
+public:
+	cActionSetSkinObjProp( meWPBrowser &panel, const decString &name ) : igdeAction(
+		decString( "Active Object Set Property: " ) + name, NULL,
+		decString( "Set property '" ) + name + "' of active object" ), pPanel( panel ), pName( name ){ }
+	
+	virtual void OnAction(){
+		igdeGDSkin * const gdskin = pPanel.GetSelectedSkin();
+		if( ! gdskin ){
+			return;
+		}
+		
+		meObject * const object = pPanel.GetWorld()->GetSelectionObject().GetActive();
+		if( ! object ){
+			return;
+		}
+		
+		const decString &newValue = gdskin->GetPath();
+		igdeUndoReference undo;
+		
+		if( object->GetProperties().Has( pName ) ){
+			const decString &oldValue = object->GetProperties().GetAt( pName );
+			if( newValue == oldValue ){
+				return;
+			}
+			
+			undo.TakeOver( new meUObjectSetProperty( object, pName, oldValue, newValue ) );
+			
+		}else{
+			undo.TakeOver( new meUObjectAddProperty( object, pName, newValue ) );
+		}
+		pPanel.GetWorld()->GetUndoSystem()->Add( undo );
 	}
 };
 
@@ -259,23 +304,40 @@ public:
 			switch( pPanel.GetWorld()->GetGuiParameters().GetElementMode() ){
 			case meWorldGuiParameters::eemObject:{
 				const meObject * const object = pPanel.GetWorld()->GetSelectionObject().GetActive();
+				if( ! object ){
+					break;
+				}
 				
-				if( object ){
-					igdeMenuCascadeReference subMenu;
-					subMenu.TakeOver( new igdeMenuCascade( pPanel.GetEnvironment(), "Set Object Texture" ) );
-					
-					decStringList names;
-					object->GetModelTextureNameList( names );
-					names.SortAscending();
-					
-					const int textureCount = names.GetCount();
+				// object textures
+				decStringList names;
+				object->GetModelTextureNameList( names );
+				names.SortAscending();
+				
+				const int textureCount = names.GetCount();
+				if( textureCount > 0 ){
+					helper.MenuSeparator( menu );
 					int i;
 					for( i=0; i<textureCount; i++ ){
-						helper.MenuCommand( subMenu, new cActionSetSkinObjTex( pPanel, names.GetAt( i ) ), true );
+						helper.MenuCommand( menu, new cActionSetSkinObjTex( pPanel, names.GetAt( i ) ), true );
 					}
-					
-					menu.AddChild( subMenu );
 				}
+				
+				// skin based properties
+				if( object->GetGDClass() ){
+					names.RemoveAll();
+					meHelpers::GetPatternTypePropertyNames( *object->GetGDClass(), igdeGDProperty::epptSkin, names );
+					names.SortAscending();
+					
+					const int nameCount = names.GetCount();
+					if( nameCount > 0 ){
+						helper.MenuSeparator( menu );
+						int i;
+						for( i=0; i<nameCount; i++ ){
+							helper.MenuCommand( menu, new cActionSetSkinObjProp( pPanel, names.GetAt( i ) ), true );
+						}
+					}
+				}
+				
 				}break;
 				
 			case meWorldGuiParameters::eemDecal:
@@ -318,7 +380,7 @@ class cActionSetClass : public igdeAction{
 	
 public:
 	cActionSetClass( meWPBrowser &panel ) : igdeAction( "Set Class", NULL,
-		"Set class to selected objects" ), pPanel( panel ){ }
+		"Set class of selected objects" ), pPanel( panel ){ }
 	
 	virtual void OnAction(){
 		const igdeGDClass * const gdclass = pPanel.GetSelectedObjectClass();
@@ -358,8 +420,8 @@ class cActionSetSkin : public igdeAction{
 	meWPBrowser &pPanel;
 	
 public:
-	cActionSetSkin( meWPBrowser &panel ) : igdeAction( "Set Skin", NULL,
-		"Set skin to selected objects active textures" ), pPanel( panel ){ }
+	cActionSetSkin( meWPBrowser &panel ) : igdeAction( "Objects Set Active Texture Skin", NULL,
+		"Set skin of active texture of selected objects" ), pPanel( panel ){ }
 	
 	virtual void OnAction(){
 		const igdeGDSkin * const gdskin = pPanel.GetSelectedSkin();
@@ -399,8 +461,8 @@ class cActionSetDecal : public igdeAction{
 	meWPBrowser &pPanel;
 	
 public:
-	cActionSetDecal( meWPBrowser &panel ) : igdeAction( "Set Skin", NULL,
-		"Set skin to selected decals" ), pPanel( panel ){ }
+	cActionSetDecal( meWPBrowser &panel ) : igdeAction( "Decals Set Skin", NULL,
+		"Set skin of selected decals" ), pPanel( panel ){ }
 	
 	virtual void OnAction(){
 		const igdeGDSkin * const gdskin = pPanel.GetSelectedSkin();
@@ -611,12 +673,15 @@ pViewMode( evmPreview )
 	const igdeUIHelper::sColumnHeader headers[] = {
 		igdeUIHelper::sColumnHeader( "Name", NULL, 200 )
 	};
-	helper.IconListBox( groupBox, pListItems, 10, headers, 1, "Items", new cListItems( *this ) );
+	helper.IconListBox( groupBox, pListItems, decPoint( 100, 150 ), headers, 1, "Items",
+		new cListItems( *this ) );
 	pListItems->SetDefaultSorter();
 	pListItems->SetViewMode( igdeIconListBox::evmIconVertical );
 	
 	helper.EditString( groupBox, "Item information", pEditInfos, 50, 5, NULL );
 	pEditInfos->SetEditable( false );
+	
+	OnGameDefinitionChanged();
 }
 
 meWPBrowser::~meWPBrowser(){
@@ -649,37 +714,42 @@ void meWPBrowser::SetWorld( meWorld *world ){
 		world->AddReference();
 	}
 	
-	UpdateCategoryList();
-	UpdateItemList();
+	CurrentItemChanged();
 }
 
 
 
 void meWPBrowser::UpdateCategoryList(){
-	const igdeGameDefinition * const gameDefinition = pWorld ? pWorld->GetGameDefinition() : NULL;
-	igdeGDCategory * const selection = GetSelectedCategory();
+	const igdeGameDefinition * const gameDefinition = GetGameDefinition();
+	const decString selection( GetSelectedCategory() ? GetSelectedCategory()->GetFullPathString() : decString() );
 	
 	pTreeCategories->RemoveAllItems();
 	
-	if( gameDefinition ){
-		switch( GetPreviewItemType() ){
-		case epitObjectClass:
-			UpdateCategoryListWith( gameDefinition->GetClassManager()->GetCategories() );
-			break;
-			
-		case epitSkin:
-			UpdateCategoryListWith( gameDefinition->GetSkinManager()->GetCategories() );
-			break;
-			
-		case epitSky:
-			UpdateCategoryListWith( gameDefinition->GetSkyManager()->GetCategories() );
-			break;
-		}
-		
-		pTreeCategories->SortAllItems();
+	if( ! gameDefinition ){
+		return;
 	}
 	
-	SelectCategory( selection );
+	igdeGDCategory *categories = NULL;
+	
+	switch( GetPreviewItemType() ){
+	case epitObjectClass:
+		categories = gameDefinition->GetClassManager()->GetCategories();
+		break;
+		
+	case epitSkin:
+		categories = gameDefinition->GetSkinManager()->GetCategories();
+		break;
+		
+	case epitSky:
+		categories = gameDefinition->GetSkyManager()->GetCategories();
+		break;
+	}
+	
+	UpdateCategoryListWith( categories );
+	pTreeCategories->SortAllItems();
+	if( ! selection.IsEmpty() ){
+		SelectCategory( categories->GetCategoryWithPath( decPath::CreatePathNative( selection ) ) );
+	}
 }
 
 void meWPBrowser::UpdateCategoryListWith( igdeGDCategory *category ){
@@ -721,7 +791,7 @@ void meWPBrowser::AddCategoryToList( igdeGDCategory *category, igdeTreeItem *par
 }
 
 void meWPBrowser::UpdateItemList(){
-	const igdeGameDefinition * const gameDefinition = pWorld ? pWorld->GetGameDefinition() : NULL;
+	const igdeGameDefinition * const gameDefinition = GetGameDefinition();
 	void * const selection = pListItems->GetSelectedItem() ? pListItems->GetSelectedItem()->GetData() : NULL;
 	
 	pListItems->RemoveAllItems();
@@ -819,7 +889,7 @@ void meWPBrowser::RebuildPISelectedItem(){
 }
 
 void meWPBrowser::CurrentItemChanged(){
-	const igdeGameDefinition * const gameDefinition = pWorld ? pWorld->GetGameDefinition() : NULL;
+	const igdeGameDefinition * const gameDefinition = GetGameDefinition();
 	if( ! gameDefinition ){
 		pEditInfos->ClearText();
 		return;
@@ -828,31 +898,33 @@ void meWPBrowser::CurrentItemChanged(){
 	const igdeListItem * const selection = pListItems->GetSelectedItem();
 	decString text;
 	
-	switch( GetPreviewItemType() ){
-	case epitObjectClass:
-		if( selection ){
-			const igdeGDClass * const gdclass = ( igdeGDClass* )selection->GetData();
-			pWorld->GetGuiParameters().SetBrowseClass( gdclass->GetName() );
-			text.Format( "%s:\n%s", gdclass->GetName().GetString(), gdclass->GetDescription().GetString() );
+	if( pWorld ){
+		switch( GetPreviewItemType() ){
+		case epitObjectClass:
+			if( selection ){
+				const igdeGDClass * const gdclass = ( igdeGDClass* )selection->GetData();
+				pWorld->GetGuiParameters().SetBrowseClass( gdclass->GetName() );
+				text.Format( "%s:\n%s", gdclass->GetName().GetString(), gdclass->GetDescription().GetString() );
+				
+			}else{
+				pWorld->GetGuiParameters().SetBrowseClass( "" );
+			}
+			break;
 			
-		}else{
-			pWorld->GetGuiParameters().SetBrowseClass( "" );
-		}
-		break;
-		
-	case epitSkin:
-		if( selection ){
-			const igdeGDSkin * const gdskin = ( igdeGDSkin* )selection->GetData();
-			pWorld->GetGuiParameters().SetBrowseSkin( gdskin->GetPath() );
-			text.Format( "%s:\n%s", gdskin->GetName().GetString(), gdskin->GetDescription().GetString() );
+		case epitSkin:
+			if( selection ){
+				const igdeGDSkin * const gdskin = ( igdeGDSkin* )selection->GetData();
+				pWorld->GetGuiParameters().SetBrowseSkin( gdskin->GetPath() );
+				text.Format( "%s:\n%s", gdskin->GetName().GetString(), gdskin->GetDescription().GetString() );
+				
+			}else{
+				pWorld->GetGuiParameters().SetBrowseSkin( "" );
+			}
+			break;
 			
-		}else{
-			pWorld->GetGuiParameters().SetBrowseSkin( "" );
+		case epitSky:
+			break;
 		}
-		break;
-		
-	case epitSky:
-		break;
 	}
 	
 	pEditInfos->SetText( text );
@@ -950,13 +1022,52 @@ void meWPBrowser::SetViewMode( eViewModes viewMode ){
 
 
 
+void meWPBrowser::OnGameProjectChanged(){
+	OnGameDefinitionChanged();
+}
+
 void meWPBrowser::OnGameDefinitionChanged(){
-	void * const selection = pListItems->GetSelectedItem() ? pListItems->GetSelectedItem()->GetData() : NULL;
+	decString selection;
+	
+	switch( GetPreviewItemType() ){
+	case epitObjectClass:
+		if( GetSelectedObjectClass() ){
+			selection = GetSelectedObjectClass()->GetName();
+		}
+		break;
+		
+	case epitSkin:
+		if( GetSelectedSkin() ){
+			selection = GetSelectedSkin()->GetPath();
+		}
+		break;
+		
+	case epitSky:
+		if( GetSelectedSky() ){
+			selection = GetSelectedSky()->GetPath();
+		}
+		break;
+	}
 	
 	UpdateCategoryList();
 	UpdateItemList();
 	
-	pListItems->SetSelectionWithData( selection );
+	if( ! selection.IsEmpty() && GetGameDefinition() ){
+		switch( GetPreviewItemType() ){
+		case epitObjectClass:
+			pListItems->SetSelectionWithData( GetGameDefinition()->GetClassManager()->GetNamed( selection ) );
+			break;
+			
+		case epitSkin:
+			pListItems->SetSelectionWithData( GetGameDefinition()->GetSkinManager()->GetSkinWithPath( selection ) );
+			break;
+			
+		case epitSky:
+			pListItems->SetSelectionWithData( GetGameDefinition()->GetSkyManager()->GetSkyList().GetWithPath( selection ) );
+			break;
+		}
+	}
+	
 	if( ! pListItems->GetSelectedItem() && pListItems->GetItemCount() > 0 ){
 		pListItems->SetSelection( 0 );
 	}
@@ -970,7 +1081,7 @@ void meWPBrowser::SelectObjectClass( igdeGDClass *gdclass ){
 	}
 	
 	// find object class category
-	const igdeGameDefinition * const gameDefinition = pWorld ? pWorld->GetGameDefinition() : NULL;
+	const igdeGameDefinition * const gameDefinition = GetGameDefinition();
 	if( ! gameDefinition ){
 		return;
 	}
@@ -984,6 +1095,50 @@ void meWPBrowser::SelectObjectClass( igdeGDClass *gdclass ){
 	
 	// select object class
 	pListItems->SetSelectionWithData( gdclass );
+}
+
+void meWPBrowser::SelectSkin( igdeGDSkin *gdskin ){
+	if( ! gdskin ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	// find skin category
+	const igdeGameDefinition * const gameDefinition = GetGameDefinition();
+	if( ! gameDefinition ){
+		return;
+	}
+	
+	igdeGDCategory * const category = gameDefinition->GetSkinManager()->GetCategories()
+		->GetCategoryWithPath( decPath::CreatePathUnix( gdskin->GetCategory() ) );
+	
+	// select category
+	SetPreviewItemType( epitSkin );
+	SelectCategory( category );
+	
+	// select object class
+	pListItems->SetSelectionWithData( gdskin );
+}
+
+void meWPBrowser::SelectSky( igdeGDSky *gdsky ){
+	if( ! gdsky ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	// find sky category
+	const igdeGameDefinition * const gameDefinition = GetGameDefinition();
+	if( ! gameDefinition ){
+		return;
+	}
+	
+	igdeGDCategory * const category = gameDefinition->GetSkyManager()->GetCategories()
+		->GetCategoryWithPath( decPath::CreatePathUnix( gdsky->GetCategory() ) );
+	
+	// select category
+	SetPreviewItemType( epitSky );
+	SelectCategory( category );
+	
+	// select object class
+	pListItems->SetSelectionWithData( gdsky );
 }
 
 

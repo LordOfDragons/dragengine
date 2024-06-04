@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLDEBUGDRAWER_H_
@@ -32,7 +35,7 @@ class deDebugDrawer;
 
 
 /**
- * \brief Debug Drawer Peer.
+ * Debug Drawer Peer.
  */
 class deoglDebugDrawer : public deBaseGraphicDebugDrawer{
 private:
@@ -47,10 +50,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create peer. */
+	/** Create peer. */
 	deoglDebugDrawer( deGraphicOpenGl &ogl, const deDebugDrawer &debugDrawer );
 	
-	/** \brief Clean up peer. */
+	/** Clean up peer. */
 	virtual ~deoglDebugDrawer();
 	/*@}*/
 	
@@ -58,18 +61,18 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Opengl module. */
+	/** Opengl module. */
 	inline deGraphicOpenGl &GetOgl() const{ return pOgl; }
 	
-	/** \brief Debug drawer resource. */
+	/** Debug drawer resource. */
 	inline const deDebugDrawer &GetDebugDrawer() const{ return pDebugDrawer; }
 	
 	
 	
-	/** \brief Render debug drawer. */
+	/** Render debug drawer. */
 	inline deoglRDebugDrawer *GetRDebugDrawer() const{ return pRDebugDrawer; }
 	
-	/** \brief Update render thread counterpart if required. */
+	/** Update render thread counterpart if required. */
 	void SyncToRender();
 	/*@}*/
 	
@@ -77,35 +80,35 @@ public:
 	
 	/** \name Notifications */
 	/*@{*/
-	/** \brief Position changed. */
+	/** Position changed. */
 	virtual void PositionChanged();
 	
-	/** \brief Orientation changed. */
+	/** Orientation changed. */
 	virtual void OrientationChanged();
 	
-	/** \brief Scaling changed. */
+	/** Scaling changed. */
 	virtual void ScalingChanged();
 	
 	
 	
-	/** \brief Visibile changed. */
+	/** Visibile changed. */
 	virtual void VisibleChanged();
 	
-	/** \brief X-Ray changed. */
+	/** X-Ray changed. */
 	virtual void XRayChanged();
 	
 	
 	
-	/** \brief Shape edge or fill colors changed. */
+	/** Shape edge or fill colors changed. */
 	virtual void ShapeColorChanged();
 	
-	/** \brief Shape position, orientation or scaling changed. */
+	/** Shape position, orientation or scaling changed. */
 	virtual void ShapeGeometryChanged();
 	
-	/** \brief Shape shapes or faces changed. */
+	/** Shape shapes or faces changed. */
 	virtual void ShapeContentChanged();
 	
-	/** \brief Shapes have been added or removed. */
+	/** Shapes have been added or removed. */
 	virtual void ShapeLayoutChanged();
 	/*@}*/
 	

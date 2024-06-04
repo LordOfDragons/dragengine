@@ -11,7 +11,7 @@ if not parent_env['OSBeOS']:
 
 envPackage = parent_env.Clone()
 
-reWindowsDrive = re.compile( '^([A-Z]:[/\\\\])|([A-Z][A-Z0-9]*//)', re.I )
+reWindowsDrive = re.compile('^([A-Z]:[/\\\\])|([A-Z][A-Z0-9]*//)', re.I)
 def normalizePath(path):
 	path = os.path.normpath(path)
 	path = os.path.splitdrive(path)[1] # return (drive, tail)
@@ -38,10 +38,13 @@ def createHaikuHpkg(env, target, source):
 		shutil.rmtree(dirCollect)
 	os.makedirs(dirCollect)
 	
-	# copy all files to package into the collect directory
-	for path, node in env['PackageFiles'].iteritems():
-		if path[0:1] == '/':
-			path = path[1:]
+	# copy all files to package into the collect directory. it looks like HPKG
+	# stores files relative to /boot/system so we have to strip these from the
+	# path before storing.
+	for path, node in env['PackageFiles'].items():
+		if path[0:13] != '/boot/system/':
+			raise Exception('Invalid base path in package')
+		path = path[13:]
 		fileDir = os.path.join(dirCollect, os.path.dirname(path))
 		if not os.path.exists(fileDir):
 			os.makedirs(fileDir)
@@ -53,6 +56,11 @@ def createHaikuHpkg(env, target, source):
 	
 	# delete collect dir since it is not required anymore and will be deleted the next time anyway
 	shutil.rmtree(dirCollect)
+
+# fetch values in expanded form for later use
+versionString = envPackage['version']
+if envPackage['force_version']:
+	versionString = envPackage['force_version']
 
 # collect files to archive
 filesEngine = {}
@@ -75,28 +83,28 @@ for target in parent_targets.values():
 # create builders
 package = []
 
-filename = 'dragengine-1.0-1-x86.hpkg'
+filename = 'dragengine-{}-1-x86_64.hpkg'.format(versionString)
 package.append(envPackage.Command(filename, filesEngine.values(),
 	envPackage.Action(createHaikuHpkg, 'Packaging {}'.format(filename)),
 	CollectDir=envPackage.Dir('hpkg_dragengine'),
 	PackageInfo=envPackage.File('haiku_packageinfo/dragengine').srcnode(),
 	PackageFiles=filesEngine))
 
-filename = 'dragengine_devel-1.0-1-x86.hpkg'
+filename = 'dragengine_devel-{}-1-x86_64.hpkg'.format(versionString)
 package.append(envPackage.Command(filename, filesEngineDevelop.values(),
 	envPackage.Action(createHaikuHpkg, 'Packaging {}'.format(filename)),
 	CollectDir=envPackage.Dir('hpkg_dragengine_develop'),
 	PackageInfo=envPackage.File('haiku_packageinfo/dragengine-develop').srcnode(),
 	PackageFiles=filesEngineDevelop))
 
-filename = 'deigde-1.0-1-x86.hpkg'
+filename = 'deigde-{}-1-x86_64.hpkg'.format(versionString)
 package.append(envPackage.Command(filename, filesIGDE.values(),
 	envPackage.Action(createHaikuHpkg, 'Packaging {}'.format(filename)),
 	CollectDir=envPackage.Dir('hpkg_deigde'),
 	PackageInfo=envPackage.File('haiku_packageinfo/igde').srcnode(),
 	PackageFiles=filesIGDE))
 
-filename = 'deigde_develop-1.0-1-x86.hpkg'
+filename = 'deigde_develop-{}-1-x86_64.hpkg'.format(versionString)
 package.append(envPackage.Command(filename, filesIGDEDevelop.values(),
 	envPackage.Action(createHaikuHpkg, 'Packaging {}'.format(filename)),
 	CollectDir=envPackage.Dir('hpkg_deigde_develop'),

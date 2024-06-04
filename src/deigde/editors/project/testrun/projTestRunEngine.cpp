@@ -1,22 +1,25 @@
-/* 
- * DEIGDE Project
+/*
+ * MIT License
  *
- * Copyright (C) 2018, Plüss Roland ( roland@rptd.ch )
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is projributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdlib.h>
@@ -50,6 +53,7 @@
 #include <dragengine/systems/deCrashRecoverySystem.h>
 #include <dragengine/systems/deGraphicSystem.h>
 #include <dragengine/systems/deInputSystem.h>
+#include <dragengine/systems/deVRSystem.h>
 #include <dragengine/systems/deModuleSystem.h>
 #include <dragengine/systems/deNetworkSystem.h>
 #include <dragengine/systems/dePhysicsSystem.h>
@@ -145,14 +149,10 @@ void projTestRunEngine::Start(){
 	pPathShare = pEngine->GetOS()->GetPathShare();
 	pPathLib = pEngine->GetOS()->GetPathEngine();
 	
-	logger->LogInfoFormat( LOGSOURCE, "Cache application ID = '%s'",
-		runParameters.identifier.GetString() );
-	logger->LogInfoFormat( LOGSOURCE, "Engine config path = '%s'",
-		pPathConfig.GetString() );
-	logger->LogInfoFormat( LOGSOURCE, "Engine share path = '%s'",
-		pPathShare.GetString() );
-	logger->LogInfoFormat( LOGSOURCE, "Engine lib path = '%s'",
-		pPathLib.GetString() );
+	logger->LogInfoFormat( LOGSOURCE, "Cache application ID = '%s'", runParameters.identifier.GetString() );
+	logger->LogInfoFormat( LOGSOURCE, "Engine config path = '%s'", pPathConfig.GetString() );
+	logger->LogInfoFormat( LOGSOURCE, "Engine share path = '%s'", pPathShare.GetString() );
+	logger->LogInfoFormat( LOGSOURCE, "Engine lib path = '%s'", pPathLib.GetString() );
 }
 
 void projTestRunEngine::PutIntoVFS(){
@@ -220,6 +220,7 @@ void projTestRunEngine::ActivateModules(){
 	ActivateModule( deModuleSystem::emtAudio, runParameters.moduleAudio );
 	ActivateModule( deModuleSystem::emtSynthesizer, runParameters.moduleSynthesizer );
 	ActivateModule( deModuleSystem::emtNetwork, runParameters.moduleNetwork );
+	ActivateModule( deModuleSystem::emtVR, runParameters.moduleVR );
 	
 	ActivateModule( deModuleSystem::emtScript,
 		runParameters.moduleScript, runParameters.moduleScriptVersion );
@@ -244,24 +245,41 @@ const char *name, const char *version ){
 		// find best module
 		for( i=0; i<count; i++ ){
 			deLoadableModule * const module2 = moduleSystem.GetModuleAt( i );
-			if( ! module2->IsLoaded() || ! module2->GetEnabled() || module2->GetType() != type ){
+			
+			if( ! module2->IsLoaded() || ! module2->GetEnabled() ){
+				continue;
+			}
+			if( module2->GetType() != type ){
+				continue;
+			}
+			if( module2->GetErrorCode() != deLoadableModule::eecSuccess ){
 				continue;
 			}
 			
-			if( module2->GetIsFallback() ){
-				if( ! module ){
+			// no best module found. use this module
+			if( ! module ){
+				module = module2;
+				
+			// best module has been found and this module is fallback. skip module
+			}else if( module2->GetIsFallback() ){
+				
+			// best module has same name as this module
+			}else if( module2->GetName() == module->GetName() ){
+				// use this module if it has higher version than the best module
+				if( deModuleSystem::CompareVersion( module2->GetVersion(), module->GetVersion() ) > 0 ){
 					module = module2;
 				}
 				
-			}else{
-				if( ! module || module->GetIsFallback() ){
-					module = module2;
-				}
+			// best module has different name than this module. use this module if
+			// it has higher priority than the best module or best module is fallback
+			}else if( module2->GetPriority() > module->GetPriority() || module->GetIsFallback() ){
+				module = module2;
 			}
 		}
 	}
 	
 	if( ! module ){
+		pProcess.GetLogger()->LogErrorFormat( LOGSOURCE, "Module '%s' with version '%s' not found", name, version );
 		DETHROW( deeInvalidAction );
 	}
 	
@@ -311,6 +329,10 @@ const char *name, const char *version ){
 		
 	case deModuleSystem::emtScript:
 		pEngine->GetScriptingSystem()->SetActiveModule( module );
+		break;
+		
+	case deModuleSystem::emtVR:
+		pEngine->GetVRSystem()->SetActiveModule( module );
 		break;
 		
 	default:
@@ -370,6 +392,7 @@ void projTestRunEngine::InitVFS(){
 	container.TakeOver( new deVFSDiskDirectory( decPath::CreatePathUnix( "/" ),
 		decPath::CreatePathNative( runParameters.pathOverlay ) ) );
 	pEngine->GetVirtualFileSystem()->AddContainer( container );
+	pEngine->SetPathOverlay( runParameters.pathOverlay );
 	
 	// add the user game configuration directory (writeable)
 	pProcess.GetLogger()->LogInfoFormat( LOGSOURCE, "VFS: '%s' => '%s'",
@@ -379,6 +402,7 @@ void projTestRunEngine::InitVFS(){
 		decPath::CreatePathUnix( runParameters.vfsPathConfig ),
 		decPath::CreatePathNative( runParameters.pathConfig ) ) );
 	pEngine->GetVirtualFileSystem()->AddContainer( container );
+	pEngine->SetPathConfig( runParameters.pathConfig );
 	
 	// add the user game capture directory (writeable)
 	pProcess.GetLogger()->LogInfoFormat( LOGSOURCE, "VFS: '%s' => '%s'",
@@ -388,6 +412,7 @@ void projTestRunEngine::InitVFS(){
 		decPath::CreatePathUnix( runParameters.vfsPathCapture ),
 		decPath::CreatePathNative( runParameters.pathCapture ) ) );
 	pEngine->GetVirtualFileSystem()->AddContainer( container );
+	pEngine->SetPathCapture( runParameters.pathCapture );
 }
 
 void projTestRunEngine::CreateMainWindow(){
@@ -396,11 +421,13 @@ void projTestRunEngine::CreateMainWindow(){
 	int width = runParameters.windowSizeX;
 	int height = runParameters.windowSizeY;
 	
+	/*
 	if( runParameters.fullScreen ){
 		const decPoint resolution( pEngine->GetOS()->GetDisplayCurrentResolution( 0 ) );
 		width = resolution.x;
 		height = resolution.y;
 	}
+	*/
 	
 	pProcess.GetLogger()->LogInfoFormat( LOGSOURCE, "Creating window %i x %i", width, height );
 	pEngine->GetGraphicSystem()->CreateAndSetRenderWindow( width, height,
@@ -411,7 +438,7 @@ void projTestRunEngine::Run(){
 	const projTestRunProcess::sRunParameters &runParameters = pProcess.GetRunParameters();
 	
 	pProcess.GetLogger()->LogInfo( LOGSOURCE, "Handing control over to game" );
-	pEngine->Run( runParameters.scriptDirectory, runParameters.gameObject );
+	pEngine->Run( runParameters.scriptDirectory, runParameters.scriptVersion, runParameters.gameObject );
 	pProcess.GetLogger()->LogInfo( LOGSOURCE, "Game exited" );
 }
 

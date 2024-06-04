@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -59,40 +62,40 @@ class ConversationHeadLookAtPlayback extends ConversationLookAtPlayback
 	
 	/** \brief Create playback. */
 	public func new()
-		this.pCaptureState = true
-		this.pRotatorMatrix = DMatrix.new()
+		pCaptureState = true
+		pRotatorMatrix = DMatrix.new()
 	end
 	
 	
 	
 	/** \brief Locomotion to update. */
 	public func Locomotion getLocomotion()
-		return this.pLocomotion
+		return pLocomotion
 	end
 	
 	/** \brief Set locomotion to update. */
-	public func void setLocomotion( Locomotion locomotion )
-		this.pLocomotion = locomotion
+	public func void setLocomotion(Locomotion locomotion)
+		pLocomotion = locomotion
 	end
 	
 	/** \brief Name of rotator bone or \em null if not used. */
 	public func String getBoneRotator()
-		return this.pBoneRotator
+		return pBoneRotator
 	end
 	
 	/** \brief Set name of rotator bone or \em null if not used. */
-	public func void setBoneRotator( String boneName )
-		this.pBoneRotator = boneName
+	public func void setBoneRotator(String boneName)
+		pBoneRotator = boneName
 	end
 	
 	/** \brief Rotator matrix. */
 	public func DMatrix getRotatorMatrix()
-		return this.pRotatorMatrix
+		return pRotatorMatrix
 	end
 	
 	/** \brief Set rotator matrix. */
-	public func void setRotatorMatrix( DMatrix matrix )
-		this.pRotatorMatrix = matrix
+	public func void setRotatorMatrix(DMatrix matrix)
+		pRotatorMatrix = matrix
 	end
 	
 	
@@ -100,29 +103,29 @@ class ConversationHeadLookAtPlayback extends ConversationLookAtPlayback
 	/** \brief Clear current look-at state allowing the actor to take over control. */
 	public func void clearLookAtState()
 		super.clearLookAtState()
-		this.pCaptureState = true
+		pCaptureState = true
 	end
 	
 	
 	
 	/** \brief Calculate the inverse matrix. */
-	public func DMatrix getInverseMatrix( ConversationActor actor )
-		if this.pBoneRotator != null
-			return actor.getInverseMatrix( this.pBoneRotator ) * this.pRotatorMatrix
+	public func DMatrix getInverseMatrix(ConversationActor actor)
+		if pBoneRotator != null
+			return actor.getInverseMatrix(pBoneRotator) * pRotatorMatrix
 			
 		else
-			return actor.getInverseMatrix() * this.pRotatorMatrix
+			return actor.getInverseMatrix() * pRotatorMatrix
 		end
 	end
 	
 	/** \brief Update actor look-at. */
-	public func void updateActorLookAt( ConversationActor actor, float blendFactor )
-		if this.pLocomotion == null
+	public func void updateActorLookAt(ConversationActor actor, float blendFactor)
+		if pLocomotion == null
 			return
 		end
 		
-		var DVector lastPosition = this.getLastLookAtPosition()
-		var DVector curPosition = this.getCurrentLookAtPosition()
+		var DVector lastPosition = getLastLookAtPosition()
+		var DVector curPosition = getCurrentLookAtPosition()
 		if lastPosition == null and curPosition == null
 			return
 		end
@@ -135,73 +138,80 @@ class ConversationHeadLookAtPlayback extends ConversationLookAtPlayback
 		// determine the head left-right and up-down angles. for this the angles are calculated
 		// for the last and current look-at and then weighted
 		if lastPosition == null
-			if this.pCaptureState
-				this.pCapturedHorizontal = this.pLocomotion.getOrientation() \
-					+ this.pLocomotion.getLookHorizontal()
-				this.pCapturedVertical = this.pLocomotion.getLookVertical()
-				this.pCaptureState = false
+			if pCaptureState
+				pCapturedHorizontal = pLocomotion.getOrientation() + pLocomotion.getLookHorizontal()
+				pCapturedVertical = pLocomotion.getLookVertical()
+				pCaptureState = false
 			end
 			
-			value = DEMath.normalize( this.pCapturedHorizontal \
-				- this.pLocomotion.getOrientation(), -180.0, 180.0 )
+			value = DEMath.normalize(pCapturedHorizontal \
+				- pLocomotion.getOrientation(), -180.0, 180.0)
 			
 			headHorizontal = value * blendFactor2
-			headVertical = this.pCapturedVertical * blendFactor2
+			headVertical = pCapturedVertical * blendFactor2
 			
 		else
-			value = -DEMath.atan2( lastPosition.getX(), lastPosition.getZ() )
-			if not this.pLocomotion.getCanTurn()
-				value = DEMath.clamp( value, this.pLocomotion.getLimitLookLeft(), \
-					this.pLocomotion.getLimitLookRight() )
+			value = -DEMath.atan2(lastPosition.getX(), lastPosition.getZ())
+			if not pLocomotion.getCanTurn()
+				value = DEMath.clamp(value, pLocomotion.getLimitLookLeft(), \
+					pLocomotion.getLimitLookRight())
 			end
 			headHorizontal = value * blendFactor2
 			
-			headVertical = DEMath.atan2( lastPosition.getY(), \
-				Vector2.new( lastPosition.getX(), lastPosition.getZ() ).getLength() ) * blendFactor2
+			headVertical = DEMath.atan2(lastPosition.getY(), \
+				Vector2.new(lastPosition.getX(), lastPosition.getZ()).getLength()) * blendFactor2
 		end
 		
 		if curPosition == null
-			headHorizontal += this.pLocomotion.getLookHorizontalGoal() * blendFactor
-			headVertical += this.pLocomotion.getLookVerticalGoal() * blendFactor
+			headHorizontal += pLocomotion.getLookHorizontalGoal() * blendFactor
+			headVertical += pLocomotion.getLookVerticalGoal() * blendFactor
 			
 		else
-			value = -DEMath.atan2( curPosition.getX(), curPosition.getZ() )
-			if not this.pLocomotion.getCanTurn()
-				value = DEMath.clamp( value, this.pLocomotion.getLimitLookLeft(), \
-					this.pLocomotion.getLimitLookRight() )
+			value = -DEMath.atan2(curPosition.getX(), curPosition.getZ())
+			if not pLocomotion.getCanTurn()
+				value = DEMath.clamp(value, pLocomotion.getLimitLookLeft(), \
+					pLocomotion.getLimitLookRight())
 			end
 			headHorizontal += value * blendFactor
 			
-			headVertical += DEMath.atan2( curPosition.getY(), \
-				Vector2.new( curPosition.getX(), curPosition.getZ() ).getLength() ) * blendFactor
+			headVertical += DEMath.atan2(curPosition.getY(), \
+				Vector2.new(curPosition.getX(), curPosition.getZ()).getLength()) * blendFactor
 		end
 		
 		// apply the head rotation
-		this.pLocomotion.setLookHorizontalGoal( headHorizontal )
-		this.pLocomotion.setLookHorizontal( headHorizontal )
-		this.pLocomotion.setLookVerticalGoal( headVertical )
-		this.pLocomotion.setLookVertical( headVertical )
+		pLocomotion.setLookHorizontalGoal(headHorizontal)
+		pLocomotion.setLookHorizontal(headHorizontal)
+		pLocomotion.setLookVerticalGoal(headVertical)
+		pLocomotion.setLookVertical(headVertical)
 	end
 	
 	
 	
 	/** \brief Read from file. */
-	public func void readFromFile( PersistencyEnvironment env, FileReader reader )
-		super.readFromFile( env, reader )
+	public func void readFromFile(PersistencyEnvironment env, FileReader reader)
+		super.readFromFile(env, reader)
 		
-		this.pCapturedHorizontal = reader.readFloat()
-		this.pCapturedVertical = reader.readFloat()
-		this.pCaptureState = env.readBool( reader )
-		this.pRotatorMatrix = DMatrix.readFromFile( reader )
+		select reader.readByte() // version
+		case 0
+			pCapturedHorizontal = reader.readFloat()
+			pCapturedVertical = reader.readFloat()
+			pCaptureState = env.readBool(reader)
+			pRotatorMatrix = DMatrix.readFromFile(reader)
+			
+		else
+			throw EInvalidParam.new("unsupported version")
+		end
 	end
 	
 	/** \brief Write element to file. */
-	public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
-		super.writeToFile( env, writer )
+	public func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+		super.writeToFile(env, writer)
 		
-		writer.writeFloat( this.pCapturedHorizontal )
-		writer.writeFloat( this.pCapturedVertical )
-		env.writeBool( writer, this.pCaptureState )
-		this.pRotatorMatrix.writeToFile( writer )
+		writer.writeByte(0) // version
+		
+		writer.writeFloat(pCapturedHorizontal)
+		writer.writeFloat(pCapturedVertical)
+		env.writeBool(writer, pCaptureState)
+		pRotatorMatrix.writeToFile(writer)
 	end
 end

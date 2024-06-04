@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine GUI Launcher
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdlib.h>
@@ -26,10 +29,11 @@
 #include "deglWindowLoggerListener.h"
 #include "deglWindowLoggerTable.h"
 #include "deglWindowLoggerTableItem.h"
-#include "../../logger/deglLoggerHistory.h"
-#include "../../logger/deglLoggerHistoryEntry.h"
+
+#include <delauncher/logger/delLoggerHistoryEntry.h>
 
 #include <dragengine/common/exceptions.h>
+#include <dragengine/threading/deMutexGuard.h>
 
 
 
@@ -57,25 +61,19 @@ FXIMPLEMENT( deglWindowLogger, FXTopWindow, deglWindowLoggerMap, ARRAYNUMBER( de
 
 deglWindowLogger::deglWindowLogger(){ }
 
-deglWindowLogger::deglWindowLogger( FXApp *app ) :
-FXTopWindow( app, "Logging History", NULL, NULL, DECOR_ALL, 0, 0, 600, 450, 0, 0, 0, 0, 0, 0 ){
-	FXVerticalFrame *content;
-	
-	pListener = NULL;
-	pLogger = NULL;
-	pFontNormal = NULL;
-	pFontBold = NULL;
-	
-	// create listener
-	pListener = new deglWindowLoggerListener( this );
-	if( ! pListener ) DETHROW( deeOutOfMemory );
-	
+deglWindowLogger::deglWindowLogger( FXApp *papp ) :
+FXTopWindow( papp, "Logging History", nullptr, nullptr, DECOR_ALL, 0, 0, 600, 450, 0, 0, 0, 0, 0, 0 ),
+pListener( delLoggerHistoryListener::Ref::New( new deglWindowLoggerListener( *this ) ) ),
+pFontNormal( nullptr ),
+pFontBold( nullptr ),
+pTableLogs( nullptr )
+{
 	// create window
-	content = new FXVerticalFrame( this, LAYOUT_FILL_X | LAYOUT_FILL_Y | LAYOUT_TOP | LAYOUT_LEFT, 0, 0, 0, 0, 0, 0, 0, 0 );
+	FXVerticalFrame * const content = new FXVerticalFrame( this,
+		LAYOUT_FILL_X | LAYOUT_FILL_Y | LAYOUT_TOP | LAYOUT_LEFT, 0, 0, 0, 0, 0, 0, 0, 0 );
 	
-	pTableLogs = new deglWindowLoggerTable( content, NULL, 0, TABLE_COL_SIZABLE | TABLE_NO_COLSELECT | TABLE_NO_ROWSELECT
-		| LAYOUT_FILL_X | LAYOUT_FILL_Y );
-	if( ! pTableLogs ) DETHROW( deeOutOfMemory );
+	pTableLogs = new deglWindowLoggerTable( content, nullptr, 0,
+		TABLE_COL_SIZABLE | TABLE_NO_COLSELECT | TABLE_NO_ROWSELECT | LAYOUT_FILL_X | LAYOUT_FILL_Y );
 	pTableLogs->setEditable( false );
 	pTableLogs->setTableSize( 0, 2 );
 	
@@ -93,8 +91,7 @@ FXTopWindow( app, "Logging History", NULL, NULL, DECOR_ALL, 0, 0, 600, 450, 0, 0
 }
 
 deglWindowLogger::~deglWindowLogger(){
-	SetLogger( NULL );
-	if( pListener ) pListener->FreeReference();
+	SetLogger( nullptr );
 }
 
 
@@ -114,33 +111,31 @@ void deglWindowLogger::create(){
 //	fontDesc.size = ( int )( ( float )fontDesc.size * 0.1f );
 //#endif
 	pFontNormal = new FXFont( getApp(), fontDesc );
-	if( ! pFontNormal ) DETHROW( deeOutOfMemory );
 	pFontNormal->create();
 	
 	fontDesc.weight = FXFont::Bold;
 	pFontBold = new FXFont( getApp(), fontDesc );
-	if( ! pFontBold ) DETHROW( deeOutOfMemory );
 	pFontBold->create();
 }
 
 
 
-void deglWindowLogger::SetLogger( deglLoggerHistory *logger ){
-	if( logger != pLogger ){
-		if( pLogger ){
-			pLogger->RemoveListener( pListener );
-			pLogger->FreeReference();
-		}
-		
-		pLogger = logger;
-		
-		if( logger ){
-			logger->AddReference();
-			logger->AddListener( pListener );
-		}
-		
-		UpdateLogs();
+void deglWindowLogger::SetLogger( delLoggerHistory *logger ){
+	if( pLogger == logger ){
+		return;
 	}
+	
+	if( pLogger ){
+		pLogger->RemoveListener( pListener );
+	}
+	
+	pLogger = logger;
+	
+	if( logger ){
+		logger->AddListener( pListener );
+	}
+	
+	UpdateLogs();
 }
 
 
@@ -148,39 +143,39 @@ void deglWindowLogger::SetLogger( deglLoggerHistory *logger ){
 void deglWindowLogger::UpdateLogs(){
 	ClearLogsTable();
 	
-	if( pLogger ){
-		pLogger->GetMutex().Lock();
-		
-		const int count = pLogger->GetEntryCount();
-		int i;
-		
-		try{
-			for( i=0; i<count; i++ ){
-				AddLogToTable( pLogger->GetEntryAt( i ) );
-			}
-			
-		}catch( const deException & ){
-			pLogger->GetMutex().Unlock();
-			throw;
-		}
-		
-		pLogger->GetMutex().Unlock();
+	if( ! pLogger ){
+		return;
+	}
+	
+	const deMutexGuard lock( pLogger->GetMutex() );
+	const int count = pLogger->GetEntryCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		AddLogToTable( pLogger->GetEntryAt( i ) );
 	}
 }
 
-void deglWindowLogger::AddLogToTable( const deglLoggerHistoryEntry &entry ){
+void deglWindowLogger::AddLogToTable( const delLoggerHistoryEntry &entry ){
 	int index = pTableLogs->getNumRows();
 	FXFont *font = pFontNormal;
 	FXColor color = 0;
 	
-	if( entry.GetType() == deglLoggerHistoryEntry::emtWarn ){
+	switch( entry.GetType() ){
+	case delLoggerHistoryEntry::emtWarn:
 		//color = FXRGB( 255, 192, 0 );
 		color = FXRGB( 128, 0, 255 );
 		font = pFontBold;
+		break;
 		
-	}else if( entry.GetType() == deglLoggerHistoryEntry::emtError ){
+	case delLoggerHistoryEntry::emtError:
 		color = FXRGB( 255, 0, 0 );
 		font = pFontBold;
+		break;
+		
+	case delLoggerHistoryEntry::emtInfo:
+		font = pFontNormal;
+		color = 0;
+		break;
 	}
 	
 	pTableLogs->insertRows( index );
@@ -223,7 +218,7 @@ void deglWindowLogger::ClearLogsTable(){
 // Events
 ///////////
 
-long deglWindowLogger::onMap( FXObject *sender, FXSelector selector, void *data ){
+long deglWindowLogger::onMap( FXObject*, FXSelector, void* ){
 	int index = pTableLogs->getNumRows() - 1;
 	
 	raise();
@@ -234,7 +229,7 @@ long deglWindowLogger::onMap( FXObject *sender, FXSelector selector, void *data 
 	return 1;
 }
 
-long deglWindowLogger::onClose( FXObject *sender, FXSelector selector, void *data ){
+long deglWindowLogger::onClose( FXObject*, FXSelector, void* ){
 	hide();
 	return 1;
 }

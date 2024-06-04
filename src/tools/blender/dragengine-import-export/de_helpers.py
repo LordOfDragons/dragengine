@@ -23,6 +23,7 @@
 #
 
 import bpy
+import time
 
 
 
@@ -51,6 +52,8 @@ class ProgressDisplay:
 		if self.operator:
 			self.operator.report({'INFO'}, infotext)
 		#print(infotext)
+		
+		#bpy.ops.wm.redraw_timer(type='DRAW_WIN_SWAP', iterations=1) # not working
 	
 	## Advance progress by 1 and update progress
 	def advance(self, text=''):
@@ -59,3 +62,119 @@ class ProgressDisplay:
 	## Hide progress bar
 	def hide(self):
 		bpy.context.window_manager.progress_end()
+
+
+# FCurve builder
+class FCurveBuilder:
+	## Create builder
+	def __init__(self, action, rna, rnaIndex, actionGroup):
+		self.fcurve = action.fcurves.new(rna, index=rnaIndex, action_group=actionGroup)
+		self.keyframes = []
+		
+	## Add keyframe
+	def add(self, frame, value):
+		self.keyframes.append((frame, value))
+	
+	## Build curve
+	def build(self):
+		if not self.keyframes:
+			return
+		
+		kfpoints = self.fcurve.keyframe_points
+		kfpoints.add(len(self.keyframes))
+		
+		for i in range(len(self.keyframes)):
+			kf = self.keyframes[i]
+			kfp = kfpoints[i]
+			kfp.co = kf
+			kfp.handle_left = kf
+			kfp.handle_right = kf
+			kfp.handle_left_type = 'AUTO_CLAMPED'
+			kfp.handle_right_type = 'AUTO_CLAMPED'
+			kfp.interpolation = 'BEZIER'
+		
+		self.fcurve.update()
+
+class ActionFCurvesBuilder:
+	## Create builder
+	def __init__(self, action, actionGroup):
+		self.rnaBase = "pose.bones[\"{}\"].".format(actionGroup)
+		
+		rna = self.rnaBase + "location"
+		self.fcurveLocationX = FCurveBuilder(action, rna, 0, actionGroup)
+		self.fcurveLocationY = FCurveBuilder(action, rna, 1, actionGroup)
+		self.fcurveLocationZ = FCurveBuilder(action, rna, 2, actionGroup)
+		
+		rna = self.rnaBase + "rotation_quaternion"
+		self.fcurveRotationX = FCurveBuilder(action, rna, 1, actionGroup)
+		self.fcurveRotationY = FCurveBuilder(action, rna, 2, actionGroup)
+		self.fcurveRotationZ = FCurveBuilder(action, rna, 3, actionGroup)
+		self.fcurveRotationW = FCurveBuilder(action, rna, 0, actionGroup)
+		
+		rna = self.rnaBase + "scale"
+		self.fcurveScaleX = FCurveBuilder(action, rna, 0, actionGroup)
+		self.fcurveScaleY = FCurveBuilder(action, rna, 1, actionGroup)
+		self.fcurveScaleZ = FCurveBuilder(action, rna, 2, actionGroup)
+		
+		self.lastRotation = None
+	
+	## Add position
+	def addPosition(self, frame, position):
+		self.fcurveLocationX.add(frame, position[0])
+		self.fcurveLocationY.add(frame, position[1])
+		self.fcurveLocationZ.add(frame, position[2])
+	
+	## Add rotation
+	def addRotation(self, frame, rotation):
+		if self.lastRotation and self.lastRotation.dot(rotation) < 0:
+			rotation = rotation.copy()
+			rotation.negate()
+		self.lastRotation = rotation
+		
+		self.fcurveRotationX.add(frame, rotation[1])
+		self.fcurveRotationY.add(frame, rotation[2])
+		self.fcurveRotationZ.add(frame, rotation[3])
+		self.fcurveRotationW.add(frame, rotation[0])
+	
+	## Add scale
+	def addScale(self, frame, scale):
+		self.fcurveScaleX.add(frame, scale[0])
+		self.fcurveScaleY.add(frame, scale[1])
+		self.fcurveScaleZ.add(frame, scale[2])
+	
+	## Add all
+	def addAll(self, frame, position, rotation, scale):
+		self.addPosition(frame, position)
+		self.addRotation(frame, rotation)
+		self.addScale(frame, scale)
+	
+	## Build curves
+	def build(self):
+		self.fcurveLocationX.build()
+		self.fcurveLocationY.build()
+		self.fcurveLocationZ.build()
+		
+		self.fcurveRotationX.build()
+		self.fcurveRotationY.build()
+		self.fcurveRotationZ.build()
+		self.fcurveRotationW.build()
+		
+		self.fcurveScaleX.build()
+		self.fcurveScaleY.build()
+		self.fcurveScaleZ.build()
+
+
+class Timer:
+	def __init__(self):
+		self.timer = time.time()
+		
+	def elapsed(self, peek=False):
+		timer = time.time()
+		diff = timer - self.timer
+		if not peek:
+			self.timer = timer
+		return diff
+		
+	def log(self, text, peek=False):
+		e = self.elapsed(peek)
+		print('[{:4d}.{:01d}] {}'.format(int(e), int(e * 10) % 10, text))

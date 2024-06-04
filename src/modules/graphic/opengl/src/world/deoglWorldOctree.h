@@ -1,26 +1,31 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLWORLDOCTREE_H_
 #define _DEOGLWORLDOCTREE_H_
+
+#include <stdint.h>
 
 #include "../billboard/deoglBillboardList.h"
 #include "../envmap/deoglEnvironmentMapList.h"
@@ -34,14 +39,17 @@ class deoglRComponent;
 class deoglRLight;
 class deoglRLumimeter;
 class deoglWorldOctreeVisitor;
+class deoglWorldCSOctree;
 
 
 
 /**
- * \brief World octree.
+ * World octree.
  */
 class deoglWorldOctree : public deoglDOctree{
 private:
+	int pInsertDepth;
+	
 	deoglBillboardList pBillboards;
 	deoglEnvironmentMapList pEnvMaps;
 	deoglParticleEmitterInstanceList pParticleEmitters;
@@ -50,13 +58,19 @@ private:
 	decPointerList pLights;
 	decPointerList pLumimeters;
 	
+	int pCSChildCount;
+	int pCSLocalElementCount;
+	int pCSNodeCount;
+	int pCSElementCount;
+	
+	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create world octree. */
-	deoglWorldOctree( const decDVector &center, const decDVector &halfSize );
+	/** Create world octree. */
+	deoglWorldOctree( const decDVector &center, const decDVector &halfSize, int insertDepth );
 	
-	/** \brief Clean up world octree. */
+	/** Clean up world octree. */
 	virtual ~deoglWorldOctree();
 	/*@}*/
 	
@@ -64,79 +78,93 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Create octree for octant. */
+	/** Create octree for octant. */
 	virtual deoglDOctree *CreateOctree( int octant ) const;
 	
 	
 	
-	/** \brief Clear content of this node. */
+	/** Clear content of this node. */
 	virtual void ClearNodeContent();
 	
-	/** \brief Clear all billboards from the tree. */
+	/** Clear all billboards from the tree. */
 	void ClearBillboards();
 	
-	/** \brief Clear all components from the tree. */
+	/** Clear all components from the tree. */
 	void ClearComponents();
 	
-	/** \brief Clear all environment maps from the tree. */
+	/** Clear all environment maps from the tree. */
 	void ClearEnvMaps();
 	
-	/** \brief Clear all lights from the tree. */
+	/** Clear all lights from the tree. */
 	void ClearLights();
 	
-	/** \brief Clear all lumimeters from the tree. */
+	/** Clear all lumimeters from the tree. */
 	void ClearLumimeters();
 	
-	/** \brief Clear all particle emitters from the tree. */
+	/** Clear all particle emitters from the tree. */
 	void ClearParticleEmitters();
 	
 	
 	
-	/** \brief Add billboard into the octree. */
-	void InsertBillboardIntoTree( deoglRBillboard *billboard, int maxDepth );
+	/** Add billboard into the octree. */
+	void InsertBillboardIntoTree( deoglRBillboard *billboard );
 	
-	/** \brief Add component into the octree. */
-	void InsertComponentIntoTree( deoglRComponent *component, int maxDepth );
+	/** Add component into the octree. */
+	void InsertComponentIntoTree( deoglRComponent *component );
 	
-	/** \brief Add environment map into the octree. */
-	void InsertEnvMapIntoTree( deoglEnvironmentMap *envmap, int maxDepth );
+	/** Add environment map into the octree. */
+	void InsertEnvMapIntoTree( deoglEnvironmentMap *envmap );
 	
-	/** \brief Add light into the octree. */
-	void InsertLightIntoTree( deoglRLight *light, int maxDepth );
+	/** Add light into the octree. */
+	void InsertLightIntoTree( deoglRLight *light );
 	
-	/** \brief Add particle emitter into the octree. */
-	void InsertParticleEmitterIntoTree( deoglRParticleEmitterInstance *instance, int maxDepth );
+	/** Add particle emitter into the octree. */
+	void InsertParticleEmitterIntoTree( deoglRParticleEmitterInstance *instance );
 	
 	/**
-	 * \brief Add lumimeter into the octree. Returns the node where the lumimeter has been placed into.
+	 * Add lumimeter into the octree. Returns the node where the lumimeter has been placed into.
 	 * \todo Change to match other insert calls which set node instead of returning it.
 	 */
-	deoglWorldOctree *InsertLumimeterIntoTree( deoglRLumimeter *lumimeter, int maxDepth );
+	deoglWorldOctree *InsertLumimeterIntoTree( deoglRLumimeter *lumimeter );
 	
 	/** TEMPORARY HACK!. */
 	void VisitNodesCollidingVolume( deoglWorldOctreeVisitor *visitor, deoglDCollisionVolume *volume );
+	
+	
+	
+	/** Compute shader node count. Valid after UpdateCSCounts() has been called. */
+	inline int GetCSNodeCount() const{ return pCSNodeCount; }
+	
+	/** Compute shader element count. Valid after UpdateCSCounts() has been called. */
+	inline int GetCSElementCount() const{ return pCSElementCount; }
+	
+	/** Update compute shader node and element counts. */
+	void UpdateCSCounts();
+	
+	/** Write compute shader data. */
+	void WriteCSData( deoglWorldCSOctree &csoctree, int nodeIndex );
 	/*@}*/
 	
 	
 	
 	/** \name Components */
 	/*@{*/
-	/** \brief Number of components. */
+	/** Number of components. */
 	int GetComponentCount() const;
 	
-	/** \brief Component at index. */
+	/** Component at index. */
 	deoglRComponent *GetComponentAt( int index ) const;
 	
-	/** \brief Index of the given component or -1 if absent. */
+	/** Index of the given component or -1 if absent. */
 	int IndexOfComponent( deoglRComponent *component ) const;
 	
-	/** \brief Add component. */
+	/** Add component. */
 	void AddComponent( deoglRComponent *component );
 	
-	/** \brief Remove component. */
+	/** Remove component. */
 	void RemoveComponent( deoglRComponent *component );
 	
-	/** \brief Remove all components. */
+	/** Remove all components. */
 	void RemoveAllComponents();
 	/*@}*/
 	
@@ -144,22 +172,22 @@ public:
 	
 	/** \name Lights */
 	/*@{*/
-	/** \brief Number of lights. */
+	/** Number of lights. */
 	int GetLightCount() const;
 	
-	/** \brief Light at the given index. */
+	/** Light at the given index. */
 	deoglRLight *GetLightAt( int index ) const;
 	
-	/** \brief Index of light or -1 if absent. */
+	/** Index of light or -1 if absent. */
 	int IndexOfLight( deoglRLight *light ) const;
 	
-	/** \brief Add light. */
+	/** Add light. */
 	void AddLight( deoglRLight *light );
 	
-	/** \brief Remove light. */
+	/** Remove light. */
 	void RemoveLight( deoglRLight *light );
 	
-	/** \brief Remove all lights. */
+	/** Remove all lights. */
 	void RemoveAllLights();
 	/*@}*/
 	
@@ -167,22 +195,22 @@ public:
 	
 	/** \name Lumimeters */
 	/*@{*/
-	/** \brief Number of lumimeters. */
+	/** Number of lumimeters. */
 	int GetLumimeterCount() const;
 	
-	/** \brief Lumimeter at index. */
+	/** Lumimeter at index. */
 	deoglRLumimeter *GetLumimeterAt( int index ) const;
 	
-	/** \brief Index of lumimeter or -1 if absent. */
+	/** Index of lumimeter or -1 if absent. */
 	int IndexOfLumimeter( deoglRLumimeter *lumimeter ) const;
 	
-	/** \brief Add lumimeter. */
+	/** Add lumimeter. */
 	void AddLumimeter( deoglRLumimeter *lumimeter );
 	
-	/** \brief Remove lumimeter. */
+	/** Remove lumimeter. */
 	void RemoveLumimeter( deoglRLumimeter *lumimeter );
 	
-	/** \brief Remove all lumimeters. */
+	/** Remove all lumimeters. */
 	void RemoveAllLumimeters();
 	/*@}*/
 	
@@ -190,16 +218,16 @@ public:
 	
 	/** \name Billboards */
 	/*@{*/
-	/** \brief List of billboards. */
+	/** List of billboards. */
 	inline const deoglBillboardList &GetBillboardList() const{ return pBillboards; }
 	
-	/** \brief Add billboard. */
+	/** Add billboard. */
 	void AddBillboard( deoglRBillboard *billboard );
 	
-	/** \brief Remove billboard. */
+	/** Remove billboard. */
 	void RemoveBillboard( deoglRBillboard *billboard );
 	
-	/** \brief Remove all billboards. */
+	/** Remove all billboards. */
 	void RemoveAllBillboards();
 	/*@}*/
 	
@@ -207,16 +235,16 @@ public:
 	
 	/** \name EnvMaps */
 	/*@{*/
-	/** \brief List of environment maps. */
+	/** List of environment maps. */
 	inline const deoglEnvironmentMapList &GetEnvMapList() const{ return pEnvMaps; }
 	
-	/** \brief Add envmap. */
+	/** Add envmap. */
 	void AddEnvMap( deoglEnvironmentMap *envmap );
 	
-	/** \brief Remove envmap. */
+	/** Remove envmap. */
 	void RemoveEnvMap( deoglEnvironmentMap *envmap );
 	
-	/** \brief Remove all envmaps. */
+	/** Remove all envmaps. */
 	void RemoveAllEnvMaps();
 	/*@}*/
 	
@@ -224,23 +252,23 @@ public:
 	
 	/** \name ParticleEmitters */
 	/*@{*/
-	/** \brief List of particle emitters. */
+	/** List of particle emitters. */
 	inline const deoglParticleEmitterInstanceList &GetParticleEmittersList() const{ return pParticleEmitters; }
 	
-	/** \brief Add emitter. */
+	/** Add emitter. */
 	void AddParticleEmitter( deoglRParticleEmitterInstance *emitter );
 	
-	/** \brief Remove emitter. */
+	/** Remove emitter. */
 	void RemoveParticleEmitter( deoglRParticleEmitterInstance *emitter );
 	
-	/** \brief Remove all emitters. */
+	/** Remove all emitters. */
 	void RemoveAllParticleEmitters();
 	/*@}*/
 	
 	
 	
 private:
-	deoglWorldOctree *pGetNodeFor( const decDVector &center, const decDVector &halfSize, int maxDepth );
+	deoglWorldOctree *pGetNodeFor( const decDVector &minExtend, const decDVector &maxExtend, int maxDepth );
 	deoglWorldOctree *pGetNodeFor( const decDVector &position, int maxDepth );
 };
 

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <string.h>
@@ -121,6 +124,20 @@ void deoglShaderPreprocessor::LogSourceLocationMap(){
 	}
 }
 
+const deoglShaderSourceLocation *deoglShaderPreprocessor::ResolveSourceLocation( int line ) const{
+	const int count = pSourceLocations.GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		const deoglShaderSourceLocation * const location = ( deoglShaderSourceLocation* )pSourceLocations.GetAt( i );
+		if( location->GetOutputLine() == line ){
+			return location;
+		}
+	}
+	
+	return NULL;
+}
+
 
 
 // Sources
@@ -130,7 +147,7 @@ void deoglShaderPreprocessor::SourcesAppend( const char *text, bool mapLines ){
 	if( ! text ){
 		DETHROW( deeInvalidParam );
 	}
-	SourcesAppend( text, strlen( text ), mapLines );
+	SourcesAppend( text, ( int )strlen( text ), mapLines );
 }
 
 void deoglShaderPreprocessor::SourcesAppend( const char *text, int length, bool mapLines ){
@@ -148,7 +165,7 @@ void deoglShaderPreprocessor::SourcesAppend( const char *text, int length, bool 
 	
 	if( pSourcesLen + length > pSourcesSize ){
 		const int newSize = pSourcesLen + length + 1024;  // increment by steps of 1k
-		char * const newSources = ( char* )realloc( pSources, newSize );
+		char * const newSources = ( char* )realloc( pSources, newSize + 1 );
 		if( ! newSources ){
 			DETHROW( deeOutOfMemory );
 		}
@@ -237,7 +254,7 @@ const char *inputFile, bool resetState ){
 	if( *pInputNext ){
 		// not at end of string. this should never happen
 		pRenderThread.GetLogger().LogErrorFormat(
-			"Shader Preprocessor: Not at end of string (Invalide character '%c' at %s:%d",
+			"Shader Preprocessor: Not at end of string (Invalid character '%c' at %s:%d",
 			*pInputNext, pInputFile != NULL ? pInputFile : "?", pInputLine );
 		DETHROW( deeInvalidParam );
 	}
@@ -276,7 +293,7 @@ void deoglShaderPreprocessor::SetSymbol( deoglShaderPreprocessorSymbol *symbol )
 void deoglShaderPreprocessor::SetSymbol( const char *name, const char *value ){
 	deoglShaderPreprocessorSymbol *symbol = NULL;
 	
-	pResolveString( value, strlen( value ) );
+	pResolveString( value, ( int )strlen( value ) );
 	
 	try{
 		symbol = new deoglShaderPreprocessorSymbol( name, pResolveBuffer );
@@ -788,7 +805,7 @@ void deoglShaderPreprocessor::pProcessDirectiveElse() {
 }
 
 bool deoglShaderPreprocessor::pProcessDirectiveCondition( const char *directive, bool groupOpen ){
-	// defined {'('} symbol {')'}
+	// {'!'} defined {'('} symbol {')'}
 	// condition1 && condition2
 	// condition1 || condition2
 	// (condition)
@@ -1011,14 +1028,14 @@ bool deoglShaderPreprocessor::pProcessDirectiveCondition( const char *directive,
 			continue;
 		}
 		
+		if( updateNegate ){
+			updateResultValue = ! updateResultValue;
+		}
+		
 		if( firstResult ){
 			result = updateResultValue;
 			firstResult = false;
 			continue;
-		}
-		
-		if( updateNegate ){
-			updateResultValue = ! updateResultValue;
 		}
 		
 		switch( updateOp ){
@@ -1456,7 +1473,11 @@ bool deoglShaderPreprocessor::pParseDirectiveAnything( sToken &token ){
 decString deoglShaderPreprocessor::pDirectiveTokenString( const sToken &token ) const{
 	decString string;
 	string.Set( ' ', token.length );
-	strncpy( (char*)string.GetString(), token.begin, token.length );
+	#ifdef OS_W32_VS
+		strncpy_s( (char*)string.GetString(), token.length + 1, token.begin, token.length );
+	#else
+		strncpy( (char*)string.GetString(), token.begin, token.length );
+	#endif
 	return string;
 }
 
@@ -1465,7 +1486,7 @@ void deoglShaderPreprocessor::pErrorInvalidToken( const sToken &token, const cha
 	#ifdef OS_BEOS
 	// compiler bug protection
 	if( ! token.begin ){
-		pRenderThread.GetLogger().LogErrorFormat("Shader Preprocessor: #%s: Invalide token <COMPILER-BUG> at %s:%d",
+		pRenderThread.GetLogger().LogErrorFormat("Shader Preprocessor: #%s: Invalid token <COMPILER-BUG> at %s:%d",
 			directive, pInputFile != NULL ? pInputFile : "?", token.line );
 		DETHROW( deeInvalidParam );
 	}
@@ -1473,7 +1494,7 @@ void deoglShaderPreprocessor::pErrorInvalidToken( const sToken &token, const cha
 	*/
 	
 	pRenderThread.GetLogger().LogErrorFormat(
-		"Shader Preprocessor: #%s: Invalide token '%s' at %s:%d", directive,
+		"Shader Preprocessor: #%s: Invalid token '%s' at %s:%d", directive,
 		pDirectiveTokenString( token ).GetString(),
 		pInputFile != NULL ? pInputFile : "?", token.line );
 	
@@ -1536,6 +1557,8 @@ void deoglShaderPreprocessor::pResolveString( const char *text, int length ){
 		}
 	};
 	
+	pResolveBuffer[ pResolveBufferLen ] = '\0';
+	
 	if( last != codeBegin ){
 		pResolveBufferAppend( codeBegin, ( int )( last - codeBegin ) );
 	}
@@ -1548,7 +1571,7 @@ void deoglShaderPreprocessor::pResolveBufferAppend( const char *text, int length
 	
 	if( pResolveBufferLen + length > pResolveBufferSize ){
 		const int newSize = pResolveBufferLen + length + 1024;  // increment by steps of 1k
-		char * const newResolveBuffer = ( char* )realloc( pResolveBuffer, newSize );
+		char * const newResolveBuffer = ( char* )realloc( pResolveBuffer, newSize + 1 );
 		if( ! newResolveBuffer ){
 			DETHROW( deeOutOfMemory );
 		}
@@ -1556,7 +1579,12 @@ void deoglShaderPreprocessor::pResolveBufferAppend( const char *text, int length
 		pResolveBufferSize = newSize;
 	}
 	
-	strncpy( pResolveBuffer + pResolveBufferLen, text, length );
+	#ifdef OS_W32_VS
+		strncpy_s( pResolveBuffer + pResolveBufferLen, length + 1, text, length );
+	#else
+		strncpy( pResolveBuffer + pResolveBufferLen, text, length );
+	#endif
+	
 	pResolveBufferLen += length;
 	pResolveBuffer[ pResolveBufferLen ] = '\0';
 }
@@ -1564,7 +1592,7 @@ void deoglShaderPreprocessor::pResolveBufferAppend( const char *text, int length
 void deoglShaderPreprocessor::pSetResolveSymbolName( const char *name, int length ){
 	if( pResolveSymbolNameLen + length > pResolveSymbolNameSize ){
 		const int newSize = pResolveSymbolNameLen + length + 50;
-		char * const newName = ( char* )realloc( pResolveSymbolName, newSize );
+		char * const newName = ( char* )realloc( pResolveSymbolName, newSize + 1 );
 		if( ! newName ){
 			DETHROW( deeOutOfMemory );
 		}
@@ -1572,7 +1600,11 @@ void deoglShaderPreprocessor::pSetResolveSymbolName( const char *name, int lengt
 		pResolveSymbolNameSize = newSize;
 	}
 	
-	strncpy( pResolveSymbolName, name, length );
+	#ifdef OS_W32_VS
+		strncpy_s( pResolveSymbolName, length + 1, name, length );
+	#else
+		strncpy( pResolveSymbolName, name, length );
+	#endif
 	pResolveSymbolName[ length ] = '\0';
 }
 

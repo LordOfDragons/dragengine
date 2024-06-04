@@ -1,0 +1,98 @@
+import os
+import sys
+import SCons
+import zipfile
+
+from SConsCommon import *
+from SConsExternCommon import *
+
+Import('parent_env parent_targets parent_report')
+
+if parent_env['platform_android'] != 'no':
+	Return()
+
+envLibrary = parent_env.Clone()
+
+if envLibrary['OSWindows']:
+	libFileName = 'bin/steam_api64.lib'
+	binFileName = 'bin/steam_api64.dll'
+else:
+	libFileName = 'bin/libsteam_api.so'
+	binFileName = libFileName
+
+def unpackArchiveFile(target, source, env):
+	buildDir = target[0].get_dir().up()
+	#untarArchive(buildDir.abspath, source[0].abspath)
+	with zipfile.ZipFile(source[0].abspath, 'r') as f:
+		f.extractall(buildDir.abspath)
+
+targets = []
+targets.append(libFileName)
+targets.append(binFileName)
+
+targets.extend([
+	'include/matchmakingtypes.h',
+	'include/steamtypes.h',
+	'include/steamclientpublic.h',
+	'include/isteamgamecoordinator.h',
+	'include/steam_api_common.h',
+	'include/isteamuser.h',
+	'include/steamps3params.h',
+	'include/isteamnetworkingsockets.h',
+	'include/isteamparentalsettings.h',
+	'include/isteamvideo.h',
+	'include/isteamremotestorage.h',
+	'include/steamhttpenums.h',
+	'include/isteamhttp.h',
+	'include/isteamnetworkingmessages.h',
+	'include/isteamnetworking.h',
+	'include/isteamps3overlayrenderer.h',
+	'include/isteamremoteplay.h',
+	'include/isteamugc.h',
+	'include/steamuniverse.h',
+	'include/isteamutils.h',
+	'include/isteaminput.h',
+	'include/steamencryptedappticket.h',
+	'include/isteamnetworkingutils.h',
+	'include/isteamhtmlsurface.h',
+	'include/steam_api_flat.h',
+	'include/isteamuserstats.h',
+	'include/steamnetworkingfakeip.h',
+	'include/isteammatchmaking.h',
+	'include/isteamgameserver.h',
+	'include/isteamclient.h',
+	'include/isteammusic.h',
+	'include/steam_api_internal.h',
+	'include/isteamscreenshots.h',
+	'include/steam_api.h',
+	'include/isteamapps.h',
+	'include/isteamgameserverstats.h',
+	'include/isteamappticket.h',
+	'include/isteamcontroller.h',
+	'include/isteammusicremote.h',
+	'include/steam_gameserver.h',
+	'include/isteamfriends.h',
+	'include/isteamdualsense.h',
+	'include/steamnetworkingtypes.h',
+	'include/steam_api.json',
+	'include/isteaminventory.h'])
+
+sdk = envLibrary.Command(targets, 'steamsdk.zip', envLibrary.Action(unpackArchiveFile, 'Unpack SDK'))
+
+envLibrary.Clean(sdk, ['bin', 'include'])
+
+cpppath = [envLibrary.Dir('include')]
+libpath = [envLibrary.Dir('bin')]
+
+libs = [sdk[0]]
+runtimelibs = [sdk[1]]
+
+envLibrary.Alias('lib_steamsdk', sdk)
+
+parent_targets['lib_steamsdk'] = {
+	'name' : 'Steam SDK',
+	'cpppath' : cpppath,
+	'libpath' : libpath,
+	'libs' : libs,
+	'runtimelibs' : runtimelibs,
+	'depends' : []}

@@ -1,28 +1,37 @@
-/* 
- * Drag[en]gine GUI Launcher
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
+
+#include <dragengine/dragengine_configuration.h>
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <signal.h>
+
+#ifdef OS_W32
+#include <dragengine/app/deOSWindows.h>
+#endif
 
 #include "guilaunch.h"
 #include "gui/deglWindowMain.h"
@@ -30,10 +39,6 @@
 #include <dragengine/common/string/unicode/decUnicodeString.h>
 #include <dragengine/common/string/unicode/decUnicodeArgumentList.h>
 #include <dragengine/common/exceptions.h>
-
-#ifdef OS_W32
-#include <dragengine/app/deOSWindows.h>
-#endif
 
 
 
@@ -51,6 +56,9 @@ int main( int argc, char **argv ){
 #ifdef OS_W32
 	char **foxArgs = NULL;
 	int foxArgCount = 0;
+	
+	// silence certification tool
+	(void)SetProcessDpiAwarenessContext( DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2 );
 #endif
 	
 	int returnValue = 0;
@@ -74,12 +82,18 @@ int main( int argc, char **argv ){
 		parseArguments.ParseCommand( deOSWindows::WideToUnicode( GetCommandLineW() ) );
 		
 		foxArgCount = parseArguments.GetArgumentCount();
-		foxArgs = new char*[ foxArgCount ];
+		foxArgs = new char*[ foxArgCount + 1 ]; // workaround: fox seems to write past the buffer
+		
 		int i;
 		for( i=0; i<foxArgCount; i++ ){
 			const decString argument( parseArguments.GetArgumentAt( i )->ToUTF8() );
-			foxArgs[ i ] = new char[ argument.GetLength() + 1 ];
-			strcpy( foxArgs[ i ], argument.GetString() );
+			const int size = argument.GetLength();
+			foxArgs[ i ] = new char[ size + 1 ];
+			#ifdef OS_W32_VS
+				strcpy_s( foxArgs[ i ], size + 1, argument.GetString() );
+			#else
+				strcpy( foxArgs[ i ], argument.GetString() );
+			#endif
 		}
 		
 		argc = foxArgCount;
@@ -113,3 +127,22 @@ int main( int argc, char **argv ){
 	
 	return returnValue;
 }
+
+
+// visual studio does not support main as entry point
+#ifdef OS_W32_VS
+int WINAPI wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow ){
+	int nArgs;
+	LPWSTR * const szArglist = CommandLineToArgvW( GetCommandLineW(), &nArgs );
+	if( ! szArglist ){
+		wprintf( L"CommandLineToArgvW failed\n" );
+		return 0;
+	}
+	
+	const int result = main( nArgs, ( char** )szArglist );
+
+	LocalFree( szArglist );
+
+	return result;
+}
+#endif

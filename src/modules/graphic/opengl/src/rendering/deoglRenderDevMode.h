@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLRENDERDEVMODE_H_
@@ -25,20 +28,21 @@
 #include "deoglRenderBase.h"
 
 class deoglDebugInformationList;
-class deoglShaderProgram;
 class deoglDebugInformation;
-
+class decString;
 
 
 /**
- * @brief OpenGL Developer Mode Renderer.
- * Renders developer mode informations.
+ * Render developer mode information.
  */
 class deoglRenderDevMode : public deoglRenderBase{
 private:
-	deoglShaderProgram *pShaderSolidColor2D;
-	deoglShaderProgram *pShaderSolidColor3D;
-	deoglShaderProgram *pShaderShape;
+	const deoglPipeline *pPipelineSolidColor2D;
+	const deoglPipeline *pPipelineSolidColor3D;
+	const deoglPipeline *pPipelineShape;
+	const deoglPipeline *pPipelineShapeLine;
+	const deoglPipeline *pPipelineVRDebugPanel;
+	const deoglPipeline *pPipelineVRDebugPanelStereo;
 	
 	decVector2 pScalePosition;
 	decVector2 pOffsetPosition;
@@ -46,8 +50,10 @@ private:
 	GLuint pVBOShapes;
 	GLuint pVAOShapes;
 	
+	
+	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new renderer. */
 	deoglRenderDevMode( deoglRenderThread &renderThread );
@@ -55,9 +61,9 @@ public:
 	~deoglRenderDevMode();
 	/*@}*/
 	
-	/** @name Rendering */
+	/** \name Rendering */
 	/*@{*/
-	/** Renders the developer mode informations. */
+	/** Renders the developer mode information. */
 	void RenderDevMode( deoglRenderPlan &plan );
 	
 	/** Renders the visiblity of components in the view. */
@@ -66,8 +72,8 @@ public:
 	void RenderVisLight( deoglRenderPlan &plan );
 	/** Renders the component lod levels. */
 	void RenderComponentLodLevels( deoglRenderPlan &plan );
-	/** Hilight transparent objects. */
-	void RenderHilightTransparentObjects( deoglRenderPlan& plan );
+	/** Highlight transparent objects. */
+	void RenderHighlightTransparentObjects( deoglRenderPlan& plan );
 	
 	/** Renders the height terrain boxes. */
 	void RenderHeightTerrainBoxes( deoglRenderPlan &plan );
@@ -77,10 +83,10 @@ public:
 	/** Renders light infos. */
 	void RenderLightInfos( deoglRenderPlan &plan );
 	
-	/** \brief Render environment map information. */
+	/** Render environment map information. */
 	void RenderEnvMapInfo( deoglRenderPlan &plan );
 	
-	/** Display overlay informations stacked from top to bottom. */
+	/** Display overlay information stacked from top to bottom. */
 	void RenderOverlayInfos( deoglRenderPlan &plan );
 	/** Display occlusion map level. */
 	void RenderOccMapLevel( deoglRenderPlan &plan );
@@ -88,28 +94,40 @@ public:
 	void RenderHeightTerrainLODLevels( deoglRenderPlan &plan, const decPoint &position, decPoint &size );
 	/** Display the number of transparency levels as a dot bar. */
 	void RenderTraspLevelCount( deoglRenderPlan &plan, const decPoint &position, decPoint &size );
+	
 	/** Display render plan debug information. */
-	void RenderRenderPlanDebugInfo( deoglRenderPlan &plan, const decPoint &position, decPoint &size );
+	void RenderRenderPlanDebugInfo( deoglRenderPlan &plan, const decPoint &viewport,
+		const decPoint &position, decPoint &size );
+	
 	/** Display memory information. */
-	void RenderMemoryInfo( deoglRenderPlan &plan, const decPoint &position, decPoint &size );
+	void RenderMemoryInfo( deoglRenderPlan &plan, const decPoint &viewport,
+		const decPoint &position, decPoint &size );
 	
 	
 	
-	/** \brief Show visible debug information. */
-	void RenderDebugInformation( deoglRenderPlan &plan, const decPoint &position, decPoint &size );
+	/** Show visible debug information. */
+	void RenderDebugInformation( const decPoint &viewport, const decPoint &position,
+		decPoint &size, bool forceSolid );
 	
-	/** \brief Layout visible debug information for rendering. */
-	void LayoutDebugInformation( deoglRenderPlan &plan, const decPoint &position, decPoint &size,
+	/** Log visible debug information. */
+	void LogDebugInformation();
+	void LogDebugInformation( const deoglDebugInformationList &list, const decString &prefix );
+	
+	/** Layout visible debug information for rendering. */
+	void LayoutDebugInformation( const decPoint &viewport, const decPoint &position, decPoint &size,
 		const deoglDebugInformationList &list, int minWidth, int maxWidth, bool alignSidewards );
 	
-	/** \brief Layout visible debug information for rendering. */
-	void LayoutDebugInformation( deoglRenderPlan &plan, int maxNameWidth,
+	void ChildMaxNameLen( const deoglDebugInformationList &list, int &maxNameWidth,
+		bool &siblingsHaveElapsedTime, bool &siblingsHaveCounter ) const;
+	
+	/** Layout visible debug information for rendering. */
+	void LayoutDebugInformation( const decPoint &viewport, int maxNameWidth,
 		deoglDebugInformation &debugInformation, int minWidth, int maxWidth,
 		bool siblingsHaveElapsedTime, bool siblingsHaveCounter );
 	
-	/** \brief Show visible debug information. */
-	void RenderDebugInformation( deoglRenderPlan &plan, const decPoint &parentPosition,
-		const deoglDebugInformation &debugInformation );
+	/** Show visible debug information. */
+	void RenderDebugInformation( const decPoint &viewport, const decPoint &parentPosition,
+		const deoglDebugInformation &debugInformation, bool forceSolid );
 	/*@}*/
 	
 private:

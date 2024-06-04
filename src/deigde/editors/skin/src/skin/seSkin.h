@@ -1,41 +1,45 @@
-/* 
- * Drag[en]gine IGDE Skin Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _SESKIN_H_
 #define _SESKIN_H_
 
+#include "property/sePropertyList.h"
+#include "texture/seTextureList.h"
+#include "mapped/seMappedList.h"
+
 #include <deigde/editableentity/igdeEditableEntity.h>
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/collection/decObjectSet.h>
-
-#include "property/sePropertyList.h"
-#include "texture/seTextureList.h"
+#include <dragengine/resources/light/deLightReference.h>
 
 class seDynamicSkin;
 class seDynamicSkinRenderable;
 class seProperty;
 class sePropertyNode;
 class seSkinListener;
-class seTexture;
 
 class igdeWSky;
 class igdeWObject;
@@ -58,6 +62,16 @@ class deWorld;
  * @brief Editable Skin.
  */
 class seSkin : public igdeEditableEntity{
+public:
+	typedef deTObjectReference<seSkin> Ref;
+	
+	enum ePreviewMode{
+		epmModel,
+		epmLight
+	};
+	
+	
+	
 private:
 	deWorld *pEngWorld;
 	
@@ -70,6 +84,9 @@ private:
 	deAnimatorInstance *pEngAnimatorInstance;
 	deAnimatorRuleAnimation *pEngAnimatorAnim;
 	deParticleEmitter *pEngParticleEmitter;
+	deLightReference pEngLight;
+	
+	ePreviewMode pPreviewMode;
 	
 	decString pModelPath;
 	decString pRigPath;
@@ -79,6 +96,9 @@ private:
 	bool pPlayback;
 	
 	igdeCamera *pCamera;
+	
+	seMappedList pMappedList;
+	seMapped *pActiveMapped;
 	
 	seTextureList pTextureList;
 	seTexture *pActiveTexture;
@@ -92,8 +112,10 @@ private:
 	
 	decObjectSet pListeners;
 	
+	
+	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new skin. */
 	seSkin( igdeEnvironment *environment );
@@ -101,7 +123,7 @@ public:
 	virtual ~seSkin();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the engine world. */
 	inline deWorld *GetEngineWorld() const{ return pEngWorld; }
@@ -121,6 +143,16 @@ public:
 	inline deSkin *GetEngineSkin() const{ return pEngSkin; }
 	/** Retrieves the particle emitter. */
 	inline deParticleEmitter *GetEngineParticleEmitter() const{ return pEngParticleEmitter; }
+	
+	/** \brief Engine light or NULL. */
+	inline deLight *GetEngineLight() const{ return pEngLight; }
+	
+	/** \brief Preview mode. */
+	inline ePreviewMode GetPreviewMode() const{ return pPreviewMode; }
+	
+	/** \brief Set preview mode. */
+	void SetPreviewMode( ePreviewMode mode );
+	
 	/** Retrieves the model path. */
 	inline const decString &GetModelPath() const{ return pModelPath; }
 	/** Sets the model path. */
@@ -181,7 +213,35 @@ public:
 	void UpdateResources();
 	/*@}*/
 	
-	/** @name Textures */
+	
+	
+	/** \name Mapped */
+	/*@{*/
+	/** Mapped list. */
+	inline const seMappedList &GetMappedList() const{ return pMappedList; }
+	
+	/** Add mapped. */
+	void AddMapped( seMapped *mapped );
+	
+	/** Remove mapped. */
+	void RemoveMapped( seMapped *mapped );
+	
+	/** Remove all mappeds. */
+	void RemoveAllMapped();
+	
+	/** Active mapped or nullptr. */
+	inline seMapped *GetActiveMapped() const{ return pActiveMapped; }
+	
+	/** Active mapped is present. */
+	bool HasActiveMapped() const;
+	
+	/** Set active mapped or nullptr. */
+	void SetActiveMapped( seMapped *mapped );
+	/*@}*/
+	
+	
+	
+	/** \name Textures */
 	/*@{*/
 	/** Retrieves the texture list read-only. */
 	inline const seTextureList &GetTextureList() const{ return pTextureList; }
@@ -199,41 +259,60 @@ public:
 	void SetActiveTexture( seTexture *texture );
 	/*@}*/
 	
-	/** @name Notifiers */
+	
+	
+	/** \name Notifiers */
 	/*@{*/
 	/** Adds a listener. */
 	void AddListener( seSkinListener *listener );
 	/** Removes a listener. */
 	void RemoveListener( seSkinListener *listener );
 	
-	/** Notifies all listeners that the changed or saved state changed. */
+	/** Notify all listeners that the changed or saved state changed. */
 	virtual void NotifyStateChanged();
-	/** Notifies all listeners that the undo system changed. */
+	/** Notify all listeners that the undo system changed. */
 	virtual void NotifyUndoChanged();
 	
-	/** Notifies all that a skin parameter changed. */
+	/** Notify all that a skin parameter changed. */
 	void NotifySkinChanged();
-	/** Notifies all that the sky changed. */
+	/** Notify all that the sky changed. */
 	void NotifySkyChanged();
-	/** Notifies all that the environment object changed. */
+	/** Notify all that the environment object changed. */
 	void NotifyEnvObjectChanged();
-	/** Notifies all that the view changed. */
+	/** Notify all that the view changed. */
 	void NotifyViewChanged();
-	/** Notifies all that the camera changed. */
+	/** Notify all that the camera changed. */
 	void NotifyCameraChanged();
 	
-	/** Notifies all that textures have been added or removed. */
+	
+	
+	/** Notify all mapped have been added or removed. */
+	void NotifyMappedStructureChanged();
+	
+	/** Notify all mapped changed. */
+	void NotifyMappedChanged( seMapped *mapped );
+	
+	/** Notify all mapped name changed. */
+	void NotifyMappedNameChanged( seMapped *mapped );
+	
+	/** Active mapped changed. */
+	void NotifyActiveMappedChanged();
+	
+	
+	
+	/** Notify all that textures have been added or removed. */
 	void NotifyTextureStructureChanged();
-	/** Notifies all that a texture changed. */
+	/** Notify all that a texture changed. */
 	void NotifyTextureChanged( seTexture *texture );
-	/** Notifies all that a texture name changed. */
+	/** Notify all that a texture name changed. */
 	void NotifyTextureNameChanged( seTexture *texture );
 	/** Active texture changed. */
 	void NotifyActiveTextureChanged();
 	
-	/** Notifies all that properties have been added or removed. */
+	
+	/** Notify all that properties have been added or removed. */
 	void NotifyPropertyStructureChanged( seTexture *texture );
-	/** Notifies all that a property changed. */
+	/** Notify all that a property changed. */
 	void NotifyPropertyChanged( seTexture *texture, seProperty *property );
 	/** Active property changed. */
 	void NotifyActivePropertyChanged( seTexture *texture );
@@ -272,9 +351,11 @@ public:
 private:
 	void pCleanUp();
 	
+	void pCreateLight();
 	void pCreateParticleEmitter();
 	
 	void pUpdateComponent();
+	void pUpdateLight();
 	void pUpdateAnimator();
 	void pUpdateAnimatorMove();
 	

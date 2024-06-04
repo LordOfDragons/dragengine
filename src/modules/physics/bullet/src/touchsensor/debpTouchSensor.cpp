@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Bullet Physics Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -47,6 +50,7 @@
 #include "../terrain/heightmap/debpHTSector.h"
 #include "../visitors/debpShapeGroupExtends.h"
 #include "../visitors/debpCreateBulletShape.h"
+#include "../visitors/debpShapeToLog.h"
 #include "../world/debpWorld.h"
 #include "../world/debpDelayedOperation.h"
 
@@ -119,12 +123,12 @@
 debpTouchSensor::debpTouchSensor( dePhysicsBullet &bullet, deTouchSensor &touchSensor ) :
 pBullet( bullet ),
 pTouchSensor( touchSensor ),
-pParentWorld( NULL ),
+pParentWorld( nullptr ),
 pDirtyMatrix( true ),
 pDirtyExtends( true ),
-pGhostObject( NULL ),
-pDebugDrawer( NULL ),
-pDDSShape( NULL )
+pGhostObject( nullptr ),
+pDebugDrawer( nullptr ),
+pDDSShape( nullptr )
 {
 	try{
 		pGhostObject = new debpGhostObject;
@@ -248,14 +252,22 @@ void debpTouchSensor::ApplyChanges(){
 	
 	// NOTE it is possible the user removes touch sensors during tracking changes. to avoid problems
 	//      touch sensors are keeping a fake reference while applying changes to not vanish underneath
-	deTouchSensorReference guard( &pTouchSensor );
+	const deTouchSensorReference guard( &pTouchSensor );
 	
 	// this function is only called if tracking enter-leave is enabled
 	if( pGhostObject->GetGhostObject() ){
 		// check all collision pairs in the ghost collider for touching the sensor
+		// 
+		// NOTE bullet ghost object uses only AABB for collecting overlapping object pairs.
+		//      this gives wrong result since touch sensors are support to provide exact
+		//      collision check not approximate ones. so we have to do this manually here
 		const btGhostObject &ghostObject = *pGhostObject->GetGhostObject();
 		const int count = ghostObject.getNumOverlappingObjects();
-		int i;
+		
+		int i, touchingCount = pTouchingColliders.GetCount();
+		for( i=0; i<touchingCount; i++ ){
+			( ( debpCollider* )pTouchingColliders.GetAt( i ) )->SetTouchSensorMarked( false );
+		}
 		
 		for( i=0; i<count; i++ ){
 			const btCollisionObject * const btColObj = ghostObject.getOverlappingObject( i );
@@ -268,6 +280,8 @@ void debpTouchSensor::ApplyChanges(){
 // 				if( collider->GetCollider().GetResponseType() == deCollider::ertDynamic ){
 // 					collider->UpdateShapes();
 // 				}
+				
+				collider->SetTouchSensorMarked( true );
 				
 				if( TestCollider( collider ) ){
 					if( ! pTouchingColliders.Has( collider ) ){
@@ -299,6 +313,17 @@ void debpTouchSensor::ApplyChanges(){
 			//}else if( colObj.IsOwnerHTSector() ){
 			//	// TODO
 			}
+		}
+		
+		// add all non-marked colliders to leaving list
+		for( i=pTouchingColliders.GetCount()-1; i>=0; i-- ){
+			debpCollider * const collider = ( debpCollider* )pTouchingColliders.GetAt( i );
+			if( collider->GetTouchSensorMarked() ){
+				continue;
+			}
+			
+			pTouchingColliders.Remove( collider );
+			pLeavingColliders.Add( collider );
 		}
 		
 		// send a notification for all leaving colliders. if we have been removed from the
@@ -392,25 +417,6 @@ bool debpTouchSensor::TestCollider( debpCollider *collider ){
 	}
 	
 	if( preciseTesting ){
-		/*
-		// TODO we've got a huge problem here. the collision detection provided by the game engine
-		//      (which is going to be deprecated) does not contain Capsule-Box or Capsule-Sphere
-		//      collision tests and thus never finds a collision. this is a problem for actors
-		//      using a capsule. we need to delegate the collision test to bullet
-		const int count = pShape.GetShapeCount();
-		debpCollisionDetection &coldet = pBullet.GetCollisionDetection();
-		debpCollisionResult result;
-		int i;
-		
-		for( i=0; i<count; i++ ){
-			debpShape * const shape = *pShape.GetShapeAt( i );
-			shape->UpdateWithMatrix( transformation );
-			if( coldet.ShapeHitsCollider( shape, collider, result ) ){
-				return true;
-			}
-		}
-		*/
-		
 		debpCollisionWorld &cw = *pGhostObject->GetDynamicsWorld();
 		btGhostObject * const go = pGhostObject->GetGhostObject();
 		
@@ -425,6 +431,29 @@ bool debpTouchSensor::TestCollider( debpCollider *collider ){
 			const debpColliderComponent &component = *collider->CastToComponent();
 			
 			if( component.GetSimplePhysicsBody() ){
+					/*
+					if(component.GetCollider().GetPosition().IsEqualTo(decDVector(2.161,0.0,3.549), 0.1)){
+						const bool r = component.GetSimplePhysicsBody()->GetRigidBody()
+							&& cw.safeContactPairTest( go, component.GetSimplePhysicsBody()->GetRigidBody() );
+						pBullet.LogInfoFormat("BulletBug.TouchSensor.TestCollider: %d", r);
+						
+						if(r){
+							const debpShapeList &sl = component.GetRigShapes();
+							const int count = sl.GetShapeCount();
+							debpShapeToLog visitor;
+							int i;
+							for( i=0; i<count; i++ ){
+								if(sl.GetShapeAt(i)->GetShape()){
+									visitor.Reset();
+									sl.GetShapeAt( i )->GetShape()->Visit( visitor );
+									pBullet.LogWarnFormat( "  %d: %s", i, visitor.GetLog().GetString() );
+								}
+							}
+						}
+						
+						return r;
+					}
+					*/
 				return component.GetSimplePhysicsBody()->GetRigidBody()
 					&& cw.safeContactPairTest( go, component.GetSimplePhysicsBody()->GetRigidBody() );
 				
@@ -466,12 +495,13 @@ bool debpTouchSensor::TestCollider( debpCollider *collider ){
 		}
 		
 	}else{
+		const decDVector scale( transformation.GetScale() );
 		const int count = pShape.GetShapeCount();
 		int i;
 		
 		for( i=0; i<count; i++ ){
 			debpShape &shape = *pShape.GetShapeAt( i );
-			shape.UpdateWithMatrix( transformation );
+			shape.UpdateWithMatrix( transformation, scale );
 			if( shape.GetCollisionVolume()->BoxHitsVolume( &approxColliderBox ) ){
 				return true;
 			}
@@ -479,6 +509,27 @@ bool debpTouchSensor::TestCollider( debpCollider *collider ){
 	}
 	
 	return false;
+}
+
+void debpTouchSensor::RemoveColliderImmediately( debpCollider *collider ){
+	if( ! pTouchSensor.GetTrackEnterLeave() ){
+		return;
+	}
+	
+	const deTouchSensorReference guard( &pTouchSensor );
+	
+	int index = pLeavingColliders.IndexOf( collider );
+	if( index != -1 ){
+		pLeavingColliders.RemoveFrom( index );
+		pTouchSensor.NotifyColliderLeft( &collider->GetCollider() );
+		return;
+	}
+	
+	index = pTouchingColliders.IndexOf( collider );
+	if( index != -1 ){
+		pTouchingColliders.RemoveFrom( index );
+		pTouchSensor.NotifyColliderLeft( &collider->GetCollider() );
+	}
 }
 
 
@@ -534,6 +585,10 @@ void debpTouchSensor::IgnoreCollidersChanged(){
 
 void debpTouchSensor::EnabledChanged(){
 	pGhostObject->SetEnabled( pTouchSensor.GetEnabled() );
+	
+	if( ! pTouchSensor.GetEnabled() ){
+		pClearTracking();
+	}
 }
 
 void debpTouchSensor::TrackEnterLeaveChanged(){
@@ -579,6 +634,7 @@ void debpTouchSensor::ShapeChanged(){
 	for( i=0; i<count; i++ ){
 		shapeList.GetAt( i )->Visit( createBulletShape );
 	}
+	createBulletShape.Finish();
 	pGhostObject->SetShape( createBulletShape.GetBulletShape() );
 	
 	pCalculateBasicExtends();

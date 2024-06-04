@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Bullet Physics Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -43,6 +46,7 @@
 #include "../terrain/heightmap/debpHeightTerrain.h"
 #include "../visitors/debpCreateBulletShape.h"
 #include "../visitors/debpClosestConvexResultCallback.h"
+#include "../visitors/debpShapeToLog.h"
 #include "../world/debpCollisionWorld.h"
 #include "../world/debpWorld.h"
 #include "../debpBulletShape.h"
@@ -377,7 +381,6 @@ void debpColliderVolume::DetectCustomCollision( float elapsed ){
 		return;
 	}
 	
-	dePhysicsBullet &bullet = *GetBullet();
 	debpWorld &world = *GetParentWorld();
 	deCollisionInfo *colinfo = world.GetCollisionInfo();
 	debpCollisionWorld &dynamicsWorld = *world.GetDynamicsWorld();
@@ -388,7 +391,7 @@ void debpColliderVolume::DetectCustomCollision( float elapsed ){
 	
 	int cspmax = 20;
 	int cheapStuckPrevention = 0;
-	float csphist[ cspmax + 1 ];
+	BP_DEBUG_IF( float csphist[ cspmax + 1 ] )
 	float localElapsed = elapsed;
 	
 	//pUpdateBPShape();
@@ -555,19 +558,18 @@ void debpColliderVolume::DetectCustomCollision( float elapsed ){
 		
 		localElapsed -= localElapsed * colliderMoveHits.GetHitDistance();
 		
-		csphist[ cheapStuckPrevention ] = colliderMoveHits.GetHitDistance();
+		BP_DEBUG_IF( csphist[ cheapStuckPrevention ] = colliderMoveHits.GetHitDistance() )
 		cheapStuckPrevention++;
 		
 		if( cheapStuckPrevention == cspmax ){
+			#ifdef WITH_DEBUG
+			dePhysicsBullet &bullet = *GetBullet();
 			const decDVector &position = pColliderVolume.GetPosition();
 			const decVector rotation( decMatrix::CreateFromQuaternion(
 				pColliderVolume.GetOrientation() ).GetEulerAngles() / DEG2RAD );
 			const decVector &lvelo = pColliderVolume.GetLinearVelocity();
 			const decVector avelo( pColliderVolume.GetAngularVelocity() / DEG2RAD );
 			int i;
-			
-			pColliderVolume.SetLinearVelocity( decVector() );
-			pColliderVolume.SetAngularVelocity( decVector() );
 			
 			bullet.LogWarnFormat( "STUCK! collider=%p responseType=%i",
 				&pColliderVolume, pColliderVolume.GetResponseType() );
@@ -583,6 +585,71 @@ void debpColliderVolume::DetectCustomCollision( float elapsed ){
 			}
 			text.Append( "]" );
 			bullet.LogWarn( text );
+			
+			bullet.LogWarnFormat( "   hit normal=(%f,%f,%f)", hitNormal.x, hitNormal.y, hitNormal.z );
+			
+			if( colinfo->GetCollider() ){
+				const deCollider &hc = *colinfo->GetCollider();
+				const decDVector &p2 = hc.GetPosition();
+				const decVector o2( hc.GetOrientation().GetEulerAngles() * RAD2DEG );
+				const decVector &lv2 = hc.GetLinearVelocity();
+				const decVector av2( hc.GetAngularVelocity() / DEG2RAD );
+				const debpCollider * const bpcol = ( debpCollider* )hc.GetPeerPhysics();
+				
+				if( bpcol ){
+					if( bpcol->IsVolume() ){
+						bullet.LogWarnFormat( "   hit colliderVolume=%p shape=%d",
+							&hc, colinfo->GetShape() );
+						
+					}else if( bpcol->IsRigged() ){
+						bullet.LogWarnFormat( "   hit colliderRigged=%p bone=%d face=%d",
+							&hc, colinfo->GetBone(), colinfo->GetFace() );
+						
+					}else if( bpcol->IsComponent() ){
+						bullet.LogWarnFormat(
+							"   hit colliderComponent=%p bone=%d face=%d shape=%d",
+							&hc, colinfo->GetBone(), colinfo->GetFace(), colinfo->GetShape() );
+						
+					}else{
+						bullet.LogWarnFormat( "   hit collider=%p", &hc );
+					}
+					
+				}else{
+					bullet.LogWarnFormat( "   hit collider=%p", &hc );
+				}
+				
+				bullet.LogWarnFormat( "      position=(%f,%f,%f) orientation=(%f,%f,%f)",
+					p2.x, p2.y, p2.z, o2.x, o2.y, o2.z );
+				bullet.LogWarnFormat( "      linearVelocity=(%f,%f,%f) angularVelocity=(%f,%f,%f)",
+					lv2.x, lv2.y, lv2.z, av2.x, av2.y, av2.z );
+				
+				if( bpcol ){
+					if( bpcol->IsVolume() ){
+						const debpColliderVolume &bpcv = *bpcol->CastToVolume();
+						const decShapeList &sl = bpcv.GetColliderVolume().GetShapes();
+						const int count = sl.GetCount();
+						debpShapeToLog visitor;
+						
+						bullet.LogWarn( "      shapes:" );
+						
+						for( i=0; i<count; i++ ){
+							visitor.Reset();
+							sl.GetAt( i )->Visit( visitor );
+							bullet.LogWarnFormat( "         %d: %s", i, visitor.GetLog().GetString() );
+						}
+					}
+				}
+				
+			}else if( colinfo->GetHTSector() ){
+				bullet.LogWarnFormat( "   hit htsector=%p", colinfo->GetHTSector() );
+				
+			}else{
+				bullet.LogWarn( "   hit ??" );
+			}
+			#endif
+			
+			pColliderVolume.SetLinearVelocity( decVector() );
+			pColliderVolume.SetAngularVelocity( decVector() );
 			break;
 		}
 	}
@@ -614,6 +681,10 @@ void debpColliderVolume::UpdateCollisionObjectAABBs(){
 // 	if( pGhostKinematicMovement ){
 // 		pGhostKinematicMovement->UpdateAABB();
 // 	}
+}
+
+bool debpColliderVolume::GetRigidBodyDeactivated() const{
+	return ! pPhyBody || ! pPhyBody->GetRigidBody() || ! pPhyBody->GetRigidBody()->isActive();
 }
 
 
@@ -778,34 +849,6 @@ void debpColliderVolume::OrientationChanged(){
 	}
 }
 
-void debpColliderVolume::GeometryChanged(){
-	const decDVector &position = pColliderVolume.GetPosition();
-	const decQuaternion &orientation = pColliderVolume.GetOrientation();
-	if( pPosition.IsEqualTo( position ) && pOrientation.IsEqualTo( orientation ) ){
-		return;
-	}
-	
-	debpCollider::GeometryChanged();
-	
-	pPosition = position;
-	pOrientation = orientation;
-	
-	pDirtyShapes = true;
-	MarkMatrixDirty();
-	MarkDirtyOctree();
-	
-	if( ! pPreventUpdate ){
-		RequiresUpdate();
-		
-		pPhyBody->SetPosition( position );
-		pPhyBody->SetOrientation( orientation );
-	}
-	
-	if( pColliderVolume.GetAttachmentCount() > 0 ){
-		pUpdateAttachments( true );
-	}
-}
-
 void debpColliderVolume::ScaleChanged(){
 	const decVector &scale = pColliderVolume.GetScale();
 	
@@ -816,11 +859,52 @@ void debpColliderVolume::ScaleChanged(){
 	pScale = scale;
 	
 	pDirtyShapes = true;
+	pDirtySweepTest = true;
+	pDirtyStaticTest = true;
+	DirtyBPShape();
+	
 	MarkMatrixDirty();
 	MarkDirtyOctree();
 	
 	if( ! pPreventUpdate ){
 		RequiresUpdate();
+	}
+	
+	if( pColliderVolume.GetAttachmentCount() > 0 ){
+		pUpdateAttachments( true );
+	}
+}
+
+void debpColliderVolume::GeometryChanged(){
+	const decDVector &position = pColliderVolume.GetPosition();
+	const decQuaternion &orientation = pColliderVolume.GetOrientation();
+	const decVector &scale = pColliderVolume.GetScale();
+	const bool sameScale = pScale.IsEqualTo( scale );
+	if( pPosition.IsEqualTo( position ) && pOrientation.IsEqualTo( orientation ) && sameScale ){
+		return;
+	}
+	
+	debpCollider::GeometryChanged();
+	
+	pPosition = position;
+	pOrientation = orientation;
+	pScale = scale;
+	
+	pDirtyShapes = true;
+	MarkMatrixDirty();
+	MarkDirtyOctree();
+	
+	if( ! sameScale ){
+		pDirtySweepTest = true;
+		pDirtyStaticTest = true;
+		DirtyBPShape();
+	}
+	
+	if( ! pPreventUpdate ){
+		RequiresUpdate();
+		
+		pPhyBody->SetPosition( position );
+		pPhyBody->SetOrientation( orientation );
 	}
 	
 	if( pColliderVolume.GetAttachmentCount() > 0 ){
@@ -1315,13 +1399,14 @@ void debpColliderVolume::pUpdateSweepCollisionTest(){
 	
 	if( pDirtySweepTest ){
 		const decShapeList &shapes = pColliderVolume.GetShapes();
+		const decVector &scale = pColliderVolume.GetScale();
 		const int count = shapes.GetCount();
 		int i;
 		
 		pSweepCollisionTest->RemoveAllShapes();
 		
 		for( i=0; i<count; i++ ){
-			pSweepCollisionTest->AddShape( *shapes.GetAt( i ) );
+			pSweepCollisionTest->AddShape( *shapes.GetAt( i ), scale );
 		}
 		
 		pDirtySweepTest = false;
@@ -1346,10 +1431,7 @@ void debpColliderVolume::pUpdateStaticCollisionTest(){
 	
 	try{
 		if( pColliderVolume.GetShapes().GetCount() > 0 ){
-			pStaticCollisionTestShape = pCreateBPShape();
-			if( pStaticCollisionTestShape ){
-				pStaticCollisionTestShape->AddReference();
-			}
+			pStaticCollisionTestShape = pCreateBPShape(); // take over reference
 		}
 		
 		if( pStaticCollisionTestShape->GetShape() ){
@@ -1429,7 +1511,7 @@ void debpColliderVolume::pUpdateBPShape(){
 	debpBulletShape *shape = NULL;
 	try{
 		if( pColliderVolume.GetShapes().GetCount() > 0 ){
-			shape = pCreateBPShape();
+			shape = pCreateBPShape(); // take over reference
 		}
 		pPhyBody->SetShape( shape );
 		if( shape ){
@@ -1459,12 +1541,13 @@ debpBulletShape *debpColliderVolume::pCreateBPShape(){
 	
 	createBulletShape.SetScale( pColliderVolume.GetScale() );
 	
-//	GetBullet()->LogInfo( "volule create shape" );
+//	GetBullet()->LogInfo( "volume create shape" );
 	
 	for( i=0; i<count; i++ ){
 		createBulletShape.SetShapeIndex( i );
 		shapes.GetAt( i )->Visit( createBulletShape );
 	}
+	createBulletShape.Finish();
 	
 	//pPhyBody->SetCcdParameters( visCreateBody.GetCcdThreshold(), visCreateBody.GetCcdRadius() );
 	
@@ -1493,7 +1576,7 @@ void debpColliderVolume::pUpdateAttachments( bool force ){
 			// TODO similar to component collider
 			
 		}else{
-			bpAttachment.Reposition( posMatrix, ! pPreventAttNotify );
+			bpAttachment.Reposition( posMatrix, pLinVelo, ! pPreventAttNotify );
 		}
 	}
 	

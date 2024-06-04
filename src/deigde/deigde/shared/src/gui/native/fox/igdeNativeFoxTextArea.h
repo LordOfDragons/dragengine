@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _IGDENATIVEFOXTEXTAREA_H_
@@ -64,6 +67,15 @@ public:
 	
 	/** \brief Clean up text widget. */
 	virtual ~igdeNativeFoxTextArea();
+	
+	/** \brief Create native widget. */
+	static igdeNativeFoxTextArea* CreateNativeWidget( igdeTextArea &owner );
+	
+	/** \brief Post create native widget. */
+	virtual void PostCreateNativeWidget();
+	
+	/** \brief Destroy native widget. */
+	virtual void DestroyNativeWidget();
 	/*@}*/
 	
 	
@@ -83,6 +95,19 @@ public:
 	virtual void UpdateDescription();
 	virtual void UpdateEditable();
 	virtual void Focus();
+	virtual int GetCursorPosition() const;
+	virtual void SetCursorPosition( int position );
+	virtual int GetCursorColumn() const;
+	virtual int GetCursorRow() const;
+	virtual void SetCursorColumn( int column );
+	virtual void SetCursorRow( int row );
+	virtual int GetTopLine() const;
+	virtual void SetTopLine( int line );
+	virtual int GetBottomLine() const;
+	virtual void SetBottomLine( int line );
+	virtual int GetLineCount() const;
+	virtual void UpdateColumns();
+	virtual void UpdateRows();
 	
 	static int TextAreaFlagsBorder( const igdeTextArea &owner );
 	static int TextAreaFlags( const igdeTextArea &owner );
@@ -97,12 +122,12 @@ public:
 	
 	/** \name Events */
 	/*@{*/
-	long onMouseLeftPress( FXObject *sender, FXSelector selector, void *data );
-	long onMouseLeftRelease( FXObject *sender, FXSelector selector, void *data );
-	long onCommand( FXObject *sender, FXSelector selector, void *data );
-	long onChanged( FXObject *sender, FXSelector selector, void *data );
+	long onMouseLeftPress( FXObject*, FXSelector, void* );
+	long onMouseLeftRelease( FXObject*, FXSelector, void* );
+	long onCommand( FXObject*, FXSelector, void* );
+	long onChanged( FXObject*, FXSelector, void* );
 	
-	long onResizerDrag( FXObject *sender, FXSelector selector, void *data );
+	long onResizerDrag( FXObject*, FXSelector, void* );
 	/*@}*/
 	
 	
@@ -110,5 +135,7 @@ public:
 private:
 	void pBuildStylesArray();
 };
+
+typedef igdeNativeFoxTextArea igdeNativeTextArea;
 
 #endif

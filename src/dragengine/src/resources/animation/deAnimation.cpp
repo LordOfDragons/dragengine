@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Game Engine
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -44,15 +47,14 @@
 
 deAnimation::deAnimation( deAnimationManager *manager, deVirtualFileSystem *vfs,
 	const char *filename, TIME_SYSTEM modificationTime ) :
-deFileResource( manager, vfs, filename, modificationTime ){
-	pBones = NULL;
-	pBoneCount = 0;
-	pBoneSize = 0;
-	pMoves = NULL;
-	pMoveCount = 0;
-	pMoveSize = 0;
-	
-	pPeerAnimator = NULL;
+deFileResource( manager, vfs, filename, modificationTime ),
+pBones( nullptr ),
+pBoneCount( 0 ),
+pBoneSize( 0 ),
+pMoves( nullptr ),
+pMoveCount( 0 ),
+pMoveSize( 0 ),
+pPeerAnimator( nullptr ){
 }
 
 deAnimation::~deAnimation(){
@@ -65,28 +67,22 @@ deAnimation::~deAnimation(){
 ///////////////
 
 bool deAnimation::MatchesModel( deModel *model ) const{
-	if( ! model ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( model )
 	
 	int i;
-	// check if the bone count is equal
-	if( pBoneCount != model->GetBoneCount() ){
-		return false;
-	}
-	
-	// checks if the animation is matching the model. all
-	// bones in the animation have to match a model bone and
-	// the count of bones has to be equal. this way all bones
-	// are animated and none is missing. this is handy to
-	// check for animation troubles.
 	for( i=0; i<pBoneCount; i++ ){
 		if( ! model->HasBoneNamed( pBones[ i ]->GetName() ) ){
 			return false;
 		}
 	}
 	
-	// all bones matched and the bone count is equal.
+	const int vpsCount = pVertexPositionSets.GetCount();
+	for( i=0; i<vpsCount; i++ ){
+		if( ! model->HasVertexPositionSetNamed( pVertexPositionSets.GetAt( i ) ) ){
+			return false;
+		}
+	}
+	
 	return true;
 }
 

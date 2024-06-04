@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -45,19 +48,21 @@
 #include "../../deScriptingDragonScript.h"
 #include "../../deClassPathes.h"
 
+#include <dragengine/deEngine.h>
 #include <dragengine/resources/component/deComponent.h>
 #include <dragengine/resources/component/deComponentBone.h>
 #include <dragengine/resources/component/deComponentManager.h>
 #include <dragengine/resources/component/deComponentTexture.h>
 #include <dragengine/resources/decal/deDecal.h>
 #include <dragengine/resources/model/deModel.h>
+#include <dragengine/resources/model/deModelTexture.h>
+#include <dragengine/resources/model/deModelVertexPositionSet.h>
 #include <dragengine/resources/rig/deRig.h>
 #include <dragengine/resources/rig/deRigBone.h>
 #include <dragengine/resources/skin/deSkin.h>
 #include <dragengine/resources/skin/dynamic/deDynamicSkin.h>
 #include <dragengine/resources/image/deImage.h>
 #include <dragengine/resources/occlusionmesh/deOcclusionMesh.h>
-#include <dragengine/deEngine.h>
 
 #include <libdscript/exceptions.h>
 #include <libdscript/packages/default/dsClassBlock.h>
@@ -444,7 +449,6 @@ void deClassComponent::nfSetDynamicSkin::RunFunction( dsRunTime *rt, dsValue *my
 
 
 
-
 // public func int getBoneCount()
 deClassComponent::nfGetBoneCount::nfGetBoneCount( const sInitData &init ) : dsFunction( init.clsCom,
 "getBoneCount", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt ){
@@ -777,6 +781,100 @@ void deClassComponent::nfSetBoneRotation::RunFunction( dsRunTime *rt, dsValue *m
 
 
 
+// public func int getVertexPositionSetCount()
+deClassComponent::nfGetVertexPositionSetCount::nfGetVertexPositionSetCount( const sInitData &init ) :
+dsFunction( init.clsCom, "getVertexPositionSetCount", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt ){
+}
+void deClassComponent::nfGetVertexPositionSetCount::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deComponent &component = *( ( ( sCompNatDat* )p_GetNativeData( myself ) )->component );
+	rt->PushInt( component.GetVertexPositionSetCount() );
+}
+
+// public func int indexOfVertexPositionSetNamed(String name)
+deClassComponent::nfIndexOfVertexPositionSetNamed::nfIndexOfVertexPositionSetNamed( const sInitData &init ) :
+dsFunction( init.clsCom, "indexOfVertexPositionSetNamed", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt ){
+	p_AddParameter( init.clsStr ); // name
+}
+void deClassComponent::nfIndexOfVertexPositionSetNamed::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deComponent &component = *( ( ( sCompNatDat* )p_GetNativeData( myself ) )->component );
+	const char * const name = rt->GetValue( 0 )->GetString();
+	const deModel * const model = component.GetModel();
+	
+	rt->PushInt( model ? model->IndexOfVertexPositionSetNamed( name ) : -1 );
+}
+
+// public func String vertexPositionSetGetNameAt(int index)
+deClassComponent::nfVertexPositionSetGetNameAt::nfVertexPositionSetGetNameAt( const sInitData &init ) : dsFunction( init.clsCom,
+"vertexPositionSetGetNameAt", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsStr ){
+	p_AddParameter( init.clsInt ); // bone
+}
+void deClassComponent::nfVertexPositionSetGetNameAt::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deComponent &component = *( ( ( sCompNatDat* )p_GetNativeData( myself ) )->component );
+	const int index = rt->GetValue( 0 )->GetInt();
+	const deModel * const model = component.GetModel();
+	
+	if( ! model ){
+		DSTHROW( dueNullPointer );
+	}
+	
+	rt->PushString( model->GetVertexPositionSetAt( index )->GetName() );
+}
+
+// public func float vertexPositionSetGetWeightAt(int index)
+deClassComponent::nfVertexPositionSetGetWeightAt::nfVertexPositionSetGetWeightAt( const sInitData &init ) :
+dsFunction( init.clsCom, "vertexPositionSetGetWeightAt", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt ){
+	p_AddParameter( init.clsInt ); // index
+}
+void deClassComponent::nfVertexPositionSetGetWeightAt::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deComponent &component = *( ( ( sCompNatDat* )p_GetNativeData( myself ) )->component );
+	rt->PushFloat( component.GetVertexPositionSetWeightAt( rt->GetValue( 0 )->GetInt() ) );
+}
+
+// public func float vertexPositionSetGetWeightNamed(String name)
+deClassComponent::nfVertexPositionSetGetWeightNamed::nfVertexPositionSetGetWeightNamed( const sInitData &init ) :
+dsFunction( init.clsCom, "vertexPositionSetGetWeightNamed", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt ){
+	p_AddParameter( init.clsStr ); // name
+}
+void deClassComponent::nfVertexPositionSetGetWeightNamed::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deComponent &component = *( ( ( sCompNatDat* )p_GetNativeData( myself ) )->component );
+	if( ! component.GetModel() ){
+		DSTHROW( dueNullPointer );
+	}
+	rt->PushFloat( component.GetVertexPositionSetWeightAt(
+		component.GetModel()->IndexOfVertexPositionSetNamed( rt->GetValue( 0 )->GetString() ) ) );
+}
+
+// public func void vertexPositionSetSetWeightAt(int index, float weight)
+deClassComponent::nfVertexPositionSetSetWeightAt::nfVertexPositionSetSetWeightAt( const sInitData &init ) :
+dsFunction( init.clsCom, "vertexPositionSetSetWeightAt", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsInt ); // index
+	p_AddParameter( init.clsFlt ); // weight
+}
+void deClassComponent::nfVertexPositionSetSetWeightAt::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deComponent &component = *( ( ( sCompNatDat* )p_GetNativeData( myself ) )->component );
+	component.SetVertexPositionSetWeightAt( rt->GetValue( 0 )->GetInt(), rt->GetValue( 1 )->GetFloat() );
+	component.InvalidateMesh();
+}
+
+// public func void vertexPositionSetSetWeightNamed(String name, float weight)
+deClassComponent::nfVertexPositionSetSetWeightNamed::nfVertexPositionSetSetWeightNamed( const sInitData &init ) :
+dsFunction( init.clsCom, "vertexPositionSetSetWeightNamed", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsStr ); // name
+	p_AddParameter( init.clsFlt ); // weight
+}
+void deClassComponent::nfVertexPositionSetSetWeightNamed::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deComponent &component = *( ( ( sCompNatDat* )p_GetNativeData( myself ) )->component );
+	if( ! component.GetModel() ){
+		DSTHROW( dueNullPointer );
+	}
+	component.SetVertexPositionSetWeightAt(
+		component.GetModel()->IndexOfVertexPositionSetNamed( rt->GetValue( 0 )->GetString() ),
+		rt->GetValue( 1 )->GetFloat() );
+	component.InvalidateMesh();
+}
+
+
+
 // public func void updateBones()
 deClassComponent::nfUpdateBones::nfUpdateBones( const sInitData &init ) : dsFunction( init.clsCom,
 "updateBones", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
@@ -817,7 +915,7 @@ void deClassComponent::nfIndexOfTextureNamed::RunFunction( dsRunTime *rt, dsValu
 	const deComponent &component = *( ( ( sCompNatDat* )p_GetNativeData( myself ) )->component );
 	const char *name = rt->GetValue( 0 )->GetString();
 	
-	rt->PushInt( component.GetModel()->IndexOfTextureNamed( name ) );
+	rt->PushInt( component.GetModel() ? component.GetModel()->IndexOfTextureNamed( name ) : -1 );
 }
 
 // public func int indexOfTextureClosestTo( Vector position, float radius )
@@ -842,6 +940,23 @@ deClassComponent::nfGetTextureCount::nfGetTextureCount( const sInitData &init ) 
 void deClassComponent::nfGetTextureCount::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const deComponent &component = *( ( ( sCompNatDat* )p_GetNativeData( myself ) )->component );
 	rt->PushInt( component.GetTextureCount() );
+}
+
+// public func String getTextureNameAt(int index)
+deClassComponent::nfGetTextureNameAt::nfGetTextureNameAt( const sInitData &init ) :
+dsFunction( init.clsCom, "getTextureNameAt", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsStr ){
+	p_AddParameter( init.clsInt ); // index
+}
+void deClassComponent::nfGetTextureNameAt::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deComponent &component = *( ( ( sCompNatDat* )p_GetNativeData( myself ) )->component );
+	const int index = rt->GetValue( 0 )->GetInt();
+	
+	const deModel * const model = component.GetModel();
+	if( ! model ){
+		DSTHROW_INFO( dueNullPointer, "model" );
+	}
+	
+	rt->PushString( model->GetTextureAt( index )->GetName() );
 }
 
 // public func Skin getTextureSkinAt( int index )
@@ -918,8 +1033,7 @@ void deClassComponent::nfSetTextureTransformAt::RunFunction( dsRunTime *rt, dsVa
 	const int index = rt->GetValue( 0 )->GetInt();
 	const decTexMatrix2 &transform = ds.GetClassTexMatrix2()->GetTexMatrix( rt->GetValue( 1 )->GetRealObject() );
 	
-	deComponentTexture &ctex = component.GetTextureAt( index );
-	ctex.SetTransform( transform );
+	component.GetTextureAt( index ).SetTransform( transform );
 	
 	component.NotifyTextureChanged( index );
 }
@@ -1047,7 +1161,7 @@ dsFunction( init.clsCom, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, i
 void deClassComponent::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
 	deComponent *component = ( ( sCompNatDat* )p_GetNativeData( myself ) )->component;
 	// hash code = memory location
-	rt->PushInt( ( intptr_t )component );
+	rt->PushInt( ( int )( intptr_t )component );
 }
 
 // public func bool equals( Object obj )
@@ -1100,6 +1214,48 @@ void deClassComponent::nfSetHintMovement::RunFunction( dsRunTime *rt, dsValue *m
 			*rt->GetValue( 0 )->GetRealObject() ) );
 }
 
+// public func bool getEnableGI()
+deClassComponent::nfGetEnableGI::nfGetEnableGI( const sInitData &init ) :
+dsFunction( init.clsCom, "getEnableGI", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
+}
+void deClassComponent::nfGetEnableGI::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deComponent &component = *( ( ( sCompNatDat* )p_GetNativeData( myself ) )->component );
+	rt->PushBool( component.GetEnableGI() );
+}
+
+// public func void setEnableGI( bool enable )
+deClassComponent::nfSetEnableGI::nfSetEnableGI( const sInitData &init ) :
+dsFunction( init.clsCom, "setEnableGI", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsBool ); // enable
+}
+void deClassComponent::nfSetEnableGI::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deComponent &component = *( ( ( sCompNatDat* )p_GetNativeData( myself ) )->component );
+	component.SetEnableGI( rt->GetValue( 0 )->GetBool() );
+}
+
+// public func int getHintGIImportance()
+deClassComponent::nfGetHintGIImportance::nfGetHintGIImportance( const sInitData &init ) :
+dsFunction( init.clsCom, "getHintGIImportance", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsInt ){
+}
+void deClassComponent::nfGetHintGIImportance::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deComponent &component = *( ( ( sCompNatDat* )p_GetNativeData( myself ) )->component );
+	rt->PushInt( component.GetHintGIImportance() );
+}
+
+// public func void setHintGIImportance( int importance )
+deClassComponent::nfSetHintGIImportance::nfSetHintGIImportance( const sInitData &init ) :
+dsFunction( init.clsCom, "setHintGIImportance", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsInt ); // importance
+}
+void deClassComponent::nfSetHintGIImportance::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deComponent &component = *( ( ( sCompNatDat* )p_GetNativeData( myself ) )->component );
+	component.SetHintGIImportance( rt->GetValue( 0 )->GetInt() );
+}
+
 
 
 // Class deClassComponent
@@ -1114,7 +1270,7 @@ dsClass( "Component", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED ){
 	// prepare
 	pGameEngine = GameEngine;
 	pScrMgr = ScrMgr;
-	// store informations into parser info
+	// store information into parser info
 	GetParserInfo()->SetParent( DENS_SCENERY );
 	GetParserInfo()->SetBase( "Object" );
 	// do the rest
@@ -1204,6 +1360,14 @@ void deClassComponent::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfSetBonePosition( init ) );
 	AddFunction( new nfSetBoneRotation( init ) );
 	
+	AddFunction( new nfGetVertexPositionSetCount( init ) );
+	AddFunction( new nfIndexOfVertexPositionSetNamed( init ) );
+	AddFunction( new nfVertexPositionSetGetNameAt( init ) );
+	AddFunction( new nfVertexPositionSetGetWeightAt( init ) );
+	AddFunction( new nfVertexPositionSetGetWeightNamed( init ) );
+	AddFunction( new nfVertexPositionSetSetWeightAt( init ) );
+	AddFunction( new nfVertexPositionSetSetWeightNamed( init ) );
+	
 	AddFunction( new nfGetOcclusionMesh( init ) );
 	AddFunction( new nfSetOcclusionMesh( init ) );
 	
@@ -1231,6 +1395,7 @@ void deClassComponent::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfIndexOfTextureNamed( init ) );
 	AddFunction( new nfIndexOfTextureClosedTo( init ) );
 	AddFunction( new nfGetTextureCount( init ) );
+	AddFunction( new nfGetTextureNameAt( init ) );
 	AddFunction( new nfGetTextureSkinAt( init ) );
 	AddFunction( new nfGetTextureTextureAt( init ) );
 	AddFunction( new nfSetTextureSkinAt( init ) );
@@ -1247,6 +1412,10 @@ void deClassComponent::CreateClassMembers( dsEngine *engine ){
 	
 	AddFunction( new nfGetHintMovement( init ) );
 	AddFunction( new nfSetHintMovement( init ) );
+	AddFunction( new nfGetEnableGI( init ) );
+	AddFunction( new nfSetEnableGI( init ) );
+	AddFunction( new nfGetHintGIImportance( init ) );
+	AddFunction( new nfSetHintGIImportance( init ) );
 	
 	AddFunction( new nfEquals( init ) );
 	AddFunction( new nfHashCode( init ) );

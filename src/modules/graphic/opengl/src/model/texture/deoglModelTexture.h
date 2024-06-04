@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLMODELTEXTURE_H_
@@ -26,10 +29,11 @@
 
 #include "../../shaders/paramblock/shared/deoglSharedSPBRTIGroupList.h"
 
+class deoglRenderThread;
 
 
 /**
- * \brief Model texture.
+ * Model texture.
  */
 class deoglModelTexture{
 private:
@@ -38,17 +42,17 @@ private:
 	bool pDoubleSided;
 	bool pDecal;
 	int pDecalOffset;
-	deoglSharedSPBRTIGroupList pRTIGroups;
+	deoglSharedSPBRTIGroupList::Ref pRTIGroups;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create texture. */
-	deoglModelTexture();
+	/** Create texture. */
+	deoglModelTexture( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up texture. */
+	/** Clean up texture. */
 	~deoglModelTexture();
 	/*@}*/
 	
@@ -56,37 +60,37 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief First face index. */
+	/** First face index. */
 	inline int GetFirstFace() const{ return pFirstFace; }
 	
-	/** \brief Set first face index. */
+	/** Set first face index. */
 	void SetFirstFace( int faceIndex );
 	
-	/** \brief Face count. */
+	/** Face count. */
 	inline int GetFaceCount() const{ return pFaceCount; }
 	
-	/** \brief Set face count. */
+	/** Set face count. */
 	void SetFaceCount( int faceCount );
 	
-	/** \brief Texture is double sided. */
+	/** Texture is double sided. */
 	inline bool GetDoubleSided() const{ return pDoubleSided; }
 	
-	/** \brief Set texture is double sided. */
+	/** Set texture is double sided. */
 	void SetDoubleSided( bool doubleSided );
 	
-	/** \brief Texture is rendered as decal. */
+	/** Texture is rendered as decal. */
 	inline bool GetDecal() const{ return pDecal; }
 	
-	/** \brief Set if texture is rendered as decal. */
+	/** Set if texture is rendered as decal. */
 	void SetDecal( bool decal );
 	
-	/** \brief Decal offset. */
+	/** Decal offset. */
 	inline int GetDecalOffset() const{ return pDecalOffset; }
 	
-	/** \brief Set decal offset. */
+	/** Set decal offset. */
 	void SetDecalOffset( int offset );
 	
-	/** \brief Render task instance groups. */
+	/** Render task instance groups. */
 	inline deoglSharedSPBRTIGroupList &GetRTIGroups(){ return pRTIGroups; }
 	/*@}*/
 };

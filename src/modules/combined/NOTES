@@ -1,0 +1,6 @@
+The combines directory is used for groups of modules matching the same target.
+For example certain 3D model file formats tend to contain model, rig and animation
+resources in one file. This requires a Model Module, Rig Module and Animation Module
+since the same file extension can be loaded in different ways. To improve the
+readability in this case such modules are placed under the "combined" directory
+instead of one copy into each module directory they provide.

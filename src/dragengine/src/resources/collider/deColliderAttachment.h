@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Game Engine
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DECOLLIDERATTACHEMENT_H_
@@ -56,7 +59,7 @@
  * can be specified. If such a bone is defined it is used to attach the collider
  * instead of the collider origin itself. For all other resource types this is not used.
  */
-class deColliderAttachment{
+class DE_DLL_EXPORT deColliderAttachment{
 public:
 	/** \brief Attachment types. */
 	enum eAttachType{
@@ -111,7 +114,7 @@ public:
 	};
 	
 	/** \brief Weighted bone used for eatBone. */
-	struct sWeight{
+	struct DE_DLL_EXPORT sWeight{
 		/** \brief Name of the bone to match with the target bone. */
 		decString bone;
 		/** \brief Bone weight in the range from 0 to 1. */
@@ -127,6 +130,8 @@ private:
 	deResourceReference pResource;
 	decVector pPosition;
 	decQuaternion pOrientation;
+	decVector pScaling;
+	bool pNoScaling;
 	decString pTrackBone;
 	sWeight *pWeights;
 	int pWeightCount;
@@ -180,6 +185,18 @@ public:
 	
 	/** \brief Set orientation of the attached resource relative to the attachment point. */
 	void SetOrientation( const decQuaternion &orientation );
+	
+	/** \brief Scaling of the attached resource relative to the attachment point. */
+	inline const decVector &GetScaling() const{ return pScaling; }
+	
+	/** \brief Set scaling of the attached resource relative to the attachment point. */
+	void SetScaling( const decVector &scaling );
+	
+	/** \brief Ignore scaling. */
+	inline bool GetNoScaling() const{ return pNoScaling; }
+	
+	/** \brief Set if scaling is ignored. */
+	void SetNoScaling( bool noScaling );
 	
 	
 	

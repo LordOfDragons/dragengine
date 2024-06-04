@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenAL Audio Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -70,14 +73,6 @@ pEfxVersionMinor( 0 )
 	}
 	
 	pScanVersion();
-	pScanExtensions();
-	pDisableExtensions();
-	
-	pFetchRequiredFunctions();
-	pFetchOptionalFunctions();
-	
-	pHasEFX = pHasExtension[ ext_ALC_EXT_EFX ];
-	pHasHRTF = pHasExtension[ ext_ALC_SOFT_HRTF ];
 }
 
 deoalExtensions::~deoalExtensions(){
@@ -87,6 +82,51 @@ deoalExtensions::~deoalExtensions(){
 
 // Management
 ///////////////
+
+void deoalExtensions::ScanDeviceExtensions() {
+	ALCdevice * const device = pAudioThread.GetContext().GetDevice();
+	
+	const char * const strExtensions = ( const char * )alcGetString( device, ALC_EXTENSIONS );
+	if( strExtensions ){
+		pStrListExtensions = decString( strExtensions ).Split( ' ' );
+	}
+	
+	int i;
+	for( i=0; i<EXT_COUNT; i++ ){
+		pHasExtension[ i ] = pStrListExtensions.Has( vExtensionNames[ i ] );
+	}
+	
+	pDisableExtensions();
+	
+	pHasEFX = pHasExtension[ ext_ALC_EXT_EFX ];
+	pHasHRTF = pHasExtension[ ext_ALC_SOFT_HRTF ];
+}
+
+void deoalExtensions::ScanContextExtensions(){
+	const char * const strExtensions = ( const char * )alGetString( AL_EXTENSIONS );
+	if( strExtensions ){
+		pStrListExtensions += decString( strExtensions ).Split( ' ' );
+	}
+	
+	pStrListExtensions.SortAscending();
+	
+	deoalATLogger &logger = pAudioThread.GetLogger();
+	logger.LogInfo( "Extensions:" );
+	const int count = pStrListExtensions.GetCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		logger.LogInfoFormat( "- %s", pStrListExtensions.GetAt( i ).GetString() );
+	}
+	
+	for( i=0; i<EXT_COUNT; i++ ){
+		pHasExtension[ i ] = pStrListExtensions.Has( vExtensionNames[ i ] );
+	}
+	
+	pDisableExtensions();
+	
+	pFetchRequiredFunctions();
+	pFetchOptionalFunctions();
+}
 
 void deoalExtensions::PrintSummary(){
 	deoalATLogger &logger = pAudioThread.GetLogger();
@@ -141,38 +181,6 @@ void deoalExtensions::pScanVersion(){
 	alcGetIntegerv( device, ALC_MINOR_VERSION, 1, ( ALint* )&pVersionMinor );
 }
 
-void deoalExtensions::pScanExtensions(){
-	ALCdevice * const device = pAudioThread.GetContext().GetDevice();
-	const char *strExtensions = ( const char * )alcGetString( device, ALC_EXTENSIONS );
-	if( ! strExtensions ){
-		strExtensions = "";
-	}
-	
-	/*
-	logger.LogInfoFormat( "pScanExtensions: '%s'", strExtensions);
-	- ALC_ENUMERATE_ALL_EXT
-	- ALC_ENUMERATION_EXT
-	- ALC_EXT_CAPTURE
-	- ALC_EXT_DEDICATED
-	- ALC_EXT_disconnect
-	- ALC_EXT_EFX
-	- ALC_EXT_thread_local_context
-	- ALC_SOFTX_device_clock
-	- ALC_SOFT_HRTF
-	- ALC_SOFT_loopback
-	- ALC_SOFT_output_limiter
-	- ALC_SOFT_pause_device
-	*/
-	
-	pStrListExtensions = decString( strExtensions ).Split( ' ' );
-	pStrListExtensions.SortAscending();
-	
-	int i;
-	for( i=0; i<EXT_COUNT; i++ ){
-		pHasExtension[ i ] = pStrListExtensions.Has( vExtensionNames[ i ] );
-	}
-}
-
 void deoalExtensions::pDisableExtensions(){
 	const decStringSet &list = pAudioThread.GetConfiguration().GetDisableExtensions();
 	deoalATLogger &logger = pAudioThread.GetLogger();
@@ -222,12 +230,20 @@ void deoalExtensions::pFetchOptionalFunctions(){
 		pGetOptionalFunction( (void**)&palAuxiliaryEffectSlotiv, "alAuxiliaryEffectSlotiv", ext_ALC_EXT_EFX );
 		pGetOptionalFunction( (void**)&palAuxiliaryEffectSlotf, "alAuxiliaryEffectSlotf", ext_ALC_EXT_EFX );
 		pGetOptionalFunction( (void**)&palAuxiliaryEffectSlotfv, "alAuxiliaryEffectSlotfv", ext_ALC_EXT_EFX );
+		
+		if( ! pHasExtension[ ext_ALC_EXT_EFX ] ){
+			DETHROW( deeInvalidAction );
+		}
 	}
 	
 	// ALC_SOFT_HRTF
 	if( pHasExtension[ ext_ALC_SOFT_HRTF ] ){
 		pGetOptionalFunction( (void**)&palcGetStringi, "alcGetStringiSOFT", ext_ALC_SOFT_HRTF );
 		pGetOptionalFunction( (void**)&palcResetDevice, "alcResetDeviceSOFT", ext_ALC_SOFT_HRTF );
+		
+		if( ! pHasExtension[ ext_ALC_SOFT_HRTF ] ){
+			DETHROW( deeInvalidAction );
+		}
 	}
 }
 

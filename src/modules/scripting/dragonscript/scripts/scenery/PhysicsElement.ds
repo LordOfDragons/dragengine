@@ -1,0 +1,88 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+
+namespace Dragengine.Scenery
+
+
+/**
+ * \brief Physics element.
+ * 
+ * Physics behavior element composing of these behaviors:
+ * - ECBehaviorComponent
+ * - ECBehaviorCollider
+ * - ECBehaviorAttachToParent
+ * 
+ * This class is a quick way to add physics elements to a game world. Such elements use
+ * CollisionResponse.dynamic and are affected by physical simulation. You can create new
+ * element classes by subclassing and adding additional behaviors. It is usually though
+ * better to create a new BehaviorElementClass subclass instead adding the desired
+ * behaviors. This also allows to use subclassed behaviors for specific needs.
+ * 
+ * The default collision filter makes the physics element being affected by
+ * BaseGameApp.CollisionFilterBit.actor but not BaseGameApp.CollisionFilterBit.actorAI .
+ * This is on purpose. If BaseGameApp.CollisionFilterBit.actorAI is used then the actor
+ * will stop moving when it touches the physics element. This prevents the actor from
+ * pushing the physics element. Instead by using BaseGameApp.CollisionFilterBit.actor
+ * the actor AI collider is moving through the physics element as if it is not present.
+ * The regular collider present in the actor can then be used to assign a shape which
+ * affects the physics element.
+ */
+class PhysicsElement extends BehaviorElement
+	private var ECBehaviorComponent.Instance pComponent
+	private var ECBehaviorCollider.Instance pCollider
+	private var ECBehaviorAttachToParent.Instance pAttachToParent
+	
+	
+	
+	/** \brief Create element. */
+	public func new( PhysicsElementClass eclass ) super( eclass )
+		this.pComponent = eclass.getComponent().instance( this )
+		this.pCollider = eclass.getCollider().instance( this )
+		this.pAttachToParent = eclass.getAttachToParent().instance( this )
+	end
+	
+	
+	/** \brief Component behavio instance. */
+	public func ECBehaviorComponent.Instance getComponent()
+		return this.pComponent
+	end
+	
+	/** \brief Collider behavior instance. */
+	public func ECBehaviorCollider.Instance getCollider()
+		return this.pCollider
+	end
+	
+	/** \brief Attach to parent behavior instance. */
+	public func ECBehaviorAttachToParent.Instance getAttachToParent()
+		return this.pAttachToParent
+	end
+	
+	
+	
+	/** \brief Visit element. */
+	public func void visit( ElementVisitor visitor )
+		visitor.visitPhysicsElement( this )
+	end
+end

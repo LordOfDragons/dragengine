@@ -1,0 +1,139 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Gui
+
+
+/**
+ * \brief Clipboard clip storing data in multiple formats.
+ * \version 1.11
+ * 
+ * Data is added in the order of the most specific object class to the most generic.
+ * Adding String as last entry for non-String objects is not required since the clip
+ * consumer has to call toString() on the last data entry if he wants to consume any
+ * type of object as string.
+ * 
+ * Immutable class.
+ */
+class ClipboardClip
+	private var Array pData
+	
+	
+	
+	/**
+	 * \brief Create clipboard clip with data.
+	 * \throws ENullPointer data or entry in data is null.
+	 * \throws EInvalidParam data is empty.
+	 */
+	public func new(Array data)
+		if data.getCount() == 0
+			throw EInvalidParam.new("data is empty")
+		end
+		
+		data.forEach(block int index, Object each
+			if each == null
+				throw ENullPointer.new("data is null at " + index)
+			end
+		end)
+		
+		pData = Array.new(data)
+	end
+	
+	/** \brief Create clipboard clip with data. */
+	public static func ClipboardClip newWith(Object data)
+		if data == null
+			throw ENullPointer.new("data")
+		end
+		return ClipboardClip.new(Array.newWith(data))
+	end
+	
+	
+	
+	/** \brief Count of data. */
+	public func int getCount()
+		return pData.getCount()
+	end
+	
+	/** \brief Data at index. */
+	public func Object getAt(int index)
+		return pData.getAt(index)
+	end
+	
+	/** \brief Last data. */
+	public func Object last()
+		return pData.getAt(-1)
+	end
+	
+	/** \brief Visit data with block receiving object as argument. */
+	public func void forEach(Block ablock)
+		pData.forEach(ablock)
+	end
+	
+	/**
+	 * \brief Visit data with block receiving object as argument.
+	 * 
+	 * Block is only called for objects castable to block argument.
+	 */
+	public func void forEachCastable(Block ablock)
+		pData.forEachCastable(ablock)
+	end
+	
+	/**
+	 * \brief Find data with block receiving object as argument returning true if found.
+	 * 
+	 * Returns first object for which block returns true or null.
+	 */
+	public func Object find(Block ablock)
+		return pData.find(ablock)
+	end
+	
+	/**
+	 * \brief Find data with block receiving object as argument returning true if found.
+	 * 
+	 * Returns first object for which block returns true or null. Block is called only
+	 * for objects castable to block argument.
+	 */
+	public func Object findCastable(Block ablock)
+		return pData.findCastable(ablock)
+	end
+	
+	/**
+	 * \brief Collect data with block receiving object as argument returning true to include.
+	 * 
+	 * Returns Array containing all objects for which block returns true.
+	 */
+	public func Array collect(Block ablock)
+		return pData.collect(ablock)
+	end
+	
+	/**
+	 * \brief Collect data with block receiving object as argument returning true to include.
+	 * 
+	 * Returns Array containing all objects for which block returns true. Block is called
+	 * only for objects castable to block argument.
+	 */
+	public func Array collectCastable(Block ablock)
+		return pData.collectCastable(ablock)
+	end
+end

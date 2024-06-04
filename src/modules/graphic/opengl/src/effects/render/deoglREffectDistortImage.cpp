@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <math.h>
@@ -25,20 +28,25 @@
 #include <string.h>
 
 #include "deoglREffectDistortImage.h"
+#include "../../debug/deoglDebugTraceGroup.h"
+#include "../../rendering/deoglRenderWorld.h"
 #include "../../rendering/defren/deoglDeferredRendering.h"
+#include "../../rendering/plan/deoglRenderPlan.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTShader.h"
 #include "../../renderthread/deoglRTTexture.h"
 #include "../../renderthread/deoglRTLogger.h"
+#include "../../renderthread/deoglRTRenderers.h"
+#include "../../renderthread/deoglRTChoices.h"
 #include "../../shaders/deoglShaderCompiled.h"
 #include "../../shaders/deoglShaderDefines.h"
 #include "../../shaders/deoglShaderManager.h"
 #include "../../shaders/deoglShaderProgram.h"
 #include "../../shaders/deoglShaderSources.h"
+#include "../../shaders/paramblock/deoglSPBlockUBO.h"
 #include "../../texture/deoglRImage.h"
 #include "../../texture/deoglTextureStageManager.h"
 #include "../../texture/texture2d/deoglTexture.h"
-#include "../../delayedoperation/deoglDelayedDeletion.h"
 #include "../../delayedoperation/deoglDelayedOperations.h"
 
 #include <dragengine/common/exceptions.h>
@@ -49,8 +57,6 @@
 ////////////////
 
 enum eSPEffect{
-	spePosTransform,
-	speTCTransform,
 	speDistortTransform
 };
 
@@ -61,51 +67,13 @@ enum eSPEffect{
 ////////////////////////////
 
 deoglREffectDistortImage::deoglREffectDistortImage( deoglRenderThread &renderThread ) :
-deoglREffect( renderThread ),
-pImage( NULL ),
-pShader( NULL ){
+deoglREffect( renderThread )
+{
 	LEAK_CHECK_CREATE( renderThread, EffectDistortImage );
 }
 
-class deoglREffectDistortionImageDeletion : public deoglDelayedDeletion{
-public:
-	deoglShaderProgram *shader;
-	
-	deoglREffectDistortionImageDeletion() :
-	shader( NULL ){
-	}
-	
-	virtual ~deoglREffectDistortionImageDeletion(){
-	}
-	
-	virtual void DeleteObjects( deoglRenderThread &renderThread ){
-		if( shader ){
-			shader->RemoveUsage();
-		}
-	}
-};
-
 deoglREffectDistortImage::~deoglREffectDistortImage(){
 	LEAK_CHECK_FREE( GetRenderThread(), EffectDistortImage );
-	if( pImage ){
-		pImage->FreeReference();
-	}
-	
-	// delayed deletion of opengl containing objects
-	deoglREffectDistortionImageDeletion *delayedDeletion = NULL;
-	
-	try{
-		delayedDeletion = new deoglREffectDistortionImageDeletion;
-		delayedDeletion->shader = pShader;
-		GetRenderThread().GetDelayedOperations().AddDeletion( delayedDeletion );
-		
-	}catch( const deException &e ){
-		if( delayedDeletion ){
-			delete delayedDeletion;
-		}
-		GetRenderThread().GetLogger().LogException( e );
-		// throw; -> otherwise terminate
-	}
 }
 
 
@@ -118,36 +86,56 @@ void deoglREffectDistortImage::SetStrength( const decVector2 &strength ){
 }
 
 void deoglREffectDistortImage::SetImage( deoglRImage *image ){
-	if( image == pImage ){
-		return;
-	}
-	
-	if( pImage ){
-		pImage->FreeReference();
-	}
-	
 	pImage = image;
-	
-	if( image ){
-		image->AddReference();
-	}
 }
 
 
 
-deoglShaderProgram *deoglREffectDistortImage::GetShader(){
-	if( ! pShader ){
-		deoglShaderManager &shaderManager = GetRenderThread().GetShader().GetShaderManager();
+const deoglPipeline *deoglREffectDistortImage::GetPipeline(){
+	if( ! pPipeline ){
+		deoglPipelineManager &pipelineManager = GetRenderThread().GetPipelineManager();
+		deoglPipelineConfiguration pipconf;
+		deoglShaderDefines defines;
 		
-		deoglShaderSources * const sources = shaderManager.GetSourcesNamed( "Effect Distort Image" );
-		if( ! sources ){
-			DETHROW( deeInvalidParam );
-		}
+		GetRenderThread().GetShader().SetCommonDefines( defines );
 		
-		pShader = shaderManager.GetProgramWith( sources, deoglShaderDefines() );
+		pipconf.SetDepthMask( false );
+		pipconf.SetEnableScissorTest( true );
+		
+		defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
+		pipconf.SetShader( GetRenderThread(), "Effect Distort Image", defines );
+		pPipeline = pipelineManager.GetWith( pipconf );
 	}
 	
-	return pShader;
+	return pPipeline;
+}
+
+const deoglPipeline *deoglREffectDistortImage::GetPipelineStereo(){
+	if( ! pPipelineStereo ){
+		deoglPipelineManager &pipelineManager = GetRenderThread().GetPipelineManager();
+		deoglPipelineConfiguration pipconf;
+		deoglShaderDefines defines;
+		
+		GetRenderThread().GetShader().SetCommonDefines( defines );
+		
+		defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
+		
+		pipconf.SetDepthMask( false );
+		pipconf.SetEnableScissorTest( true );
+		
+		if( GetRenderThread().GetChoices().GetRenderFSQuadStereoVSLayer() ){
+			defines.SetDefines( "VS_RENDER_STEREO" );
+			pipconf.SetShader( GetRenderThread(), "Effect Distort Image", defines );
+			
+		}else{
+			defines.SetDefines( "GS_RENDER_STEREO" );
+			pipconf.SetShader( GetRenderThread(), "Effect Distort Image Stereo", defines );
+		}
+		
+		pPipelineStereo = pipelineManager.GetWith( pipconf );
+	}
+	
+	return pPipelineStereo;
 }
 
 void deoglREffectDistortImage::PrepareForRender(){
@@ -167,6 +155,8 @@ void deoglREffectDistortImage::Render( deoglRenderPlan &plan ){
 	}
 	
 	deoglRenderThread &renderThread = GetRenderThread();
+	const deoglDebugTraceGroup debugTrace( renderThread, "EffectDistortImage.Render" );
+	const deoglRenderWorld &renderWorld = renderThread.GetRenderers().GetWorld();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglRTShader &rtshader = renderThread.GetShader();
@@ -174,26 +164,18 @@ void deoglREffectDistortImage::Render( deoglRenderPlan &plan ){
 	//int width = defren.GetWidth();
 	//int height = defren.GetHeight();
 	//int realHeight = defren.GetRealHeight();
-	float scaleU = pImage->GetScaleFactorU();
-	float scaleV = pImage->GetScaleFactorV();
 	float su = pStrength.x * defren.GetScalingU(); //( float )width;
 	float sv = pStrength.y * defren.GetScalingV(); //( float )height;
 	
-	// swap render texture
+	const deoglPipeline &pipeline = plan.GetRenderStereo() ? *GetPipelineStereo() : *GetPipeline();
+	pipeline.Activate();
+	
+	renderWorld.SetViewport( plan );
+	
 	defren.SwapPostProcessTarget();
 	defren.ActivatePostProcessFBO( false );
-	tsmgr.EnableTexture( 0, *defren.GetPostProcessTexture(), *rtshader.GetTexSamplerConfig( deoglRTShader::etscClampLinear ) );
+	tsmgr.EnableArrayTexture( 0, *defren.GetPostProcessTexture(), *rtshader.GetTexSamplerConfig( deoglRTShader::etscClampLinear ) );
 	tsmgr.EnableTexture( 1, *texture, *rtshader.GetTexSamplerConfig( deoglRTShader::etscClampLinear ) );
-	
-	// set states
-	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
-	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
-	
-	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
-		
-	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
-	
-	OGL_CHECK( renderThread, glDisable( GL_BLEND ) );
 	
 	// set shader program
 	// transform image
@@ -202,16 +184,14 @@ void deoglREffectDistortImage::Render( deoglRenderPlan &plan ){
 	// transform distort
 	// [0,1] * stru*su*2 - stru*su = [-strz*su,stru*su]
 	// [0,1] * -strv*sv*2 + strv*sv = [strv*sv,-strv*sv]
-	deoglShaderProgram * const shaderProgram = GetShader();
-	rtshader.ActivateShader( shaderProgram );
-	deoglShaderCompiled &shader = *shaderProgram->GetCompiled();
+	renderThread.GetRenderers().GetWorld().GetRenderPB()->Activate();
 	
-	shader.SetParameterFloat( spePosTransform, 1.0f, 1.0f, 0.0f, 0.0f );
-	shader.SetParameterFloat( speTCTransform, scaleU * 0.5f, scaleV * 0.5f, scaleU * 0.5f, scaleV * 0.5f );
+	deoglShaderCompiled &shader = pipeline.GetGlShader();
 	shader.SetParameterFloat( speDistortTransform, 2.0f * su, -2.0f * sv, -su, sv );
 	
 	// TODO correctly we need an explicite clamp in the shader here since the texture
 	// can be larger than the area we tap into.
 	
-	defren.RenderFSQuadVAO();
+	renderWorld.RenderFullScreenQuadVAO( plan.GetRenderStereo()
+		&& renderThread.GetChoices().GetRenderFSQuadStereoVSLayer() );
 }

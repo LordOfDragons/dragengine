@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLTIMERQUERYSET_H_
@@ -29,7 +32,7 @@ class deoglRenderThread;
 
 
 /**
- * \brief Light weight wrapper around a set of timer queries.
+ * Light weight wrapper around a set of timer queries.
  * 
  * Works similar to deoglTimerQuery but stores a set of timer queries for easier
  * access. This implementation does not care which query is active nor if they
@@ -44,10 +47,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create timer query set. */
+	/** Create timer query set. */
 	deoglTimerQuerySet( deoglRenderThread &renderThrad );
 	
-	/** \brief Clean up timer query set. */
+	/** Clean up timer query set. */
 	~deoglTimerQuerySet();
 	/*@}*/
 	
@@ -55,25 +58,25 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Render thread. */
+	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
-	/** \brief Number of queries in the set. */
+	/** Number of queries in the set. */
 	inline int GetQueryCount() const{ return pQueryCount; }
 	
-	/** \brief Set number of queries in the set. */
+	/** Set number of queries in the set. */
 	void SetQueryCount( int count );
 	
-	/** \brief Begin query at index. */
+	/** Begin query at index. */
 	void BeginQuery( int index );
 	
-	/** \brief End active query. */
+	/** End active query. */
 	void EndQuery();
 	
-	/** \brief Result of the query at index is present. */
+	/** Result of the query at index is present. */
 	bool HasResult( int index ) const;
 	
-	/** \brief Result of query at index as nano-seconds. */
+	/** Result of query at index as nano-seconds. */
 	unsigned int GetResult( int index ) const;
 	/*@}*/
 };

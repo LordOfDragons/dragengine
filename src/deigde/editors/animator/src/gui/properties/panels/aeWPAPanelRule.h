@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Animator Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _AEWPAPANELRULE_H_
@@ -43,7 +46,7 @@ class aeControllerTarget;
 
 
 /**
- * \brief Base rule option panel.
+ * Base rule option panel.
  */
 class aeWPAPanelRule : public igdeContainerFlow{
 private:
@@ -54,12 +57,18 @@ private:
 	igdeTextFieldReference pEditName;
 	igdeComboBoxReference pCBBlendMode;
 	igdeTextFieldReference pEditBlendFactor;
+	igdeCheckBoxReference pChkInvertBlendFactor;
 	igdeCheckBoxReference pChkEnabled;
 	
 	igdeListBoxReference pListBones;
 	igdeComboBoxFilterReference pCBBones;
 	igdeButtonReference pBtnBoneAdd;
 	igdeButtonReference pBtnBoneDel;
+	
+	igdeListBoxReference pListVertexPositionSets;
+	igdeComboBoxFilterReference pCBVertexPositionSets;
+	igdeButtonReference pBtnVertexPositionSetAdd;
+	igdeButtonReference pBtnVertexPositionSetDel;
 	
 	igdeComboBoxReference pCBTarget;
 	igdeListBoxReference pListLinks;
@@ -71,11 +80,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create panel. */
+	/** Create panel. */
 	aeWPAPanelRule( aeWPRule &wpRule, deAnimatorRuleVisitorIdentify::eRuleTypes requiredType );
 	
 protected:
-	/** \brief Clean up panel. */
+	/** Clean up panel. */
 	virtual ~aeWPAPanelRule();
 	/*@}*/
 	
@@ -84,76 +93,100 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Parent window. */
+	/** Parent window. */
 	inline aeWPRule &GetWPRule() const{ return pWPRule; }
 	
-	/** \brief Required rule type. */
+	/** Required rule type. */
 	inline deAnimatorRuleVisitorIdentify::eRuleTypes GetRequiredType() const{ return pRequiredType; }
 	
-	/** \brief Main window. */
+	/** Main window. */
 	aeWindowMain &GetWindowMain() const;
 	
 	
 	
-	/** \brief Animator. */
+	/** Animator. */
 	aeAnimator *GetAnimator() const;
 	
-	/** \brief Selected rule or \em NULL. */
+	/** Selected rule or \em NULL. */
 	aeRule *GetRule() const;
 	
-	/** \brief Target or \em NULL. */
+	/** Target or \em NULL. */
 	inline aeControllerTarget *GetTarget() const{ return pTarget; }
 	
-	/** \brief Set target or \em NULL. */
+	/** Set target or \em NULL. */
 	void SetTarget( aeControllerTarget *target );
 	
 	
 	
-	/** \brief Panel has been activated. */
+	/** Panel has been activated. */
 	virtual void OnActivated();
 	
-	/** \brief Animator changed. */
+	/** Animator changed. */
 	virtual void OnAnimatorChanged();
 	
-	/** \brief Update controller list. */
+	/** Animator path changed. */
+	virtual void OnAnimatorPathChanged();
+	
+	/** Update controller list. */
 	virtual void UpdateControllerList();
 	
-	/** \brief Update link list. */
+	/** Update link list. */
 	virtual void UpdateLinkList();
 	
-	/** \brief Update rig bone list. */
+	/** Update rig bone list. */
 	virtual void UpdateRigBoneList();
 	
-	/** \brief Update animation move list. */
+	/** Update model vertex position set list. */
+	virtual void UpdateModelVertexPositionSetList();
+	
+	/** Update animation move list. */
 	virtual void UpdateAnimMoveList();
 	
-	/** \brief Update rule. */
+	/** Update rule. */
 	virtual void UpdateRule();
 	
-	/** \brief Update target list. */
+	/** Update target list. */
 	virtual void UpdateTargetList();
 	
-	/** \brief Update target. */
+	/** Update target. */
 	void UpdateTarget();
 	
-	/** \brief Bone combo box text. */
+	/** Bone combo box text. */
 	const decString &GetCBBoneText() const;
 	
-	/** \brief Set bone combo box text. */
+	/** Set bone combo box text. */
 	void SetCBBoneText( const char *text );
 	
-	/** \brief Link combo box selection. */
+	/** Selected bone list or NULL. */
+	const char *GetListBoneSelection() const;
+	
+	/** Vertex position set combo box text. */
+	const decString &GetCBVertexPositionSetText() const;
+	
+	/** Set vertex position set combo box text. */
+	void SetCBVertexPositionSetText( const char *text );
+	
+	/** Selected vertex position set list or NULL. */
+	const char *GetListVertexPositionSetSelection() const;
+	
+	/** Link combo box selection. */
 	aeLink *GetCBLinkSelection() const;
 	
-	/** \brief Set link combo box selection. */
+	/** Set link combo box selection. */
 	void SetCBLinkSelection( aeLink *selection );
 	
+	/** Link list selection. */
+	aeLink *GetListLinkSelection() const;
+	
+	/** Set link list selection. */
+	void SetListLinkSelection( aeLink *selection );
 	
 	
-	/** \brief Remove all targets. */
+	
+	/** Remove all targets. */
 	void RemoveAllTargets();
 	
-	/** \brief Add target. */
+	/** Add target. */
 	void AddTarget( const char *name, aeControllerTarget *target );
 	/*@}*/
 };

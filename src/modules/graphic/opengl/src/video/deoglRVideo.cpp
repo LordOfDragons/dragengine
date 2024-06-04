@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -27,9 +30,7 @@
 #include "../deoglBasics.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTLogger.h"
-#include "../texture/pixelbuffer/deoglPixelBuffer.h"
 #include "../texture/texture2d/deoglTexture.h"
-#include "../delayedoperation/deoglDelayedDeletion.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
 
 #include <dragengine/common/exceptions.h>
@@ -43,80 +44,38 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglRVideo::deoglRVideo( deoglRenderThread &renderThread, int width, int height, int frameCount ) :
+deoglRVideo::deoglRVideo( deoglRenderThread &renderThread, int width, int height,
+	int componentCount, int frameCount ) :
 pRenderThread( renderThread ),
 
 pWidth( width ),
 pHeight( height ),
+pComponentCount( componentCount ),
 
-pFrames( NULL ),
+pFrames( nullptr ),
 pFrameCount( 0 ),
 pFrameCountToCache( -1 ),
 
-pPixelBuffer( NULL ),
 pUpdateFrame( -1 )
 {
 	if( frameCount > 0 ){
 		pFrames = new deoglTexture*[ frameCount ];
 		for( pFrameCount=0; pFrameCount<frameCount; pFrameCount++ ){
-			pFrames[ pFrameCount ] = NULL;
+			pFrames[ pFrameCount ] = nullptr;
 		}
 		pFrameCountToCache = pFrameCount;
 	}
 }
 
-class deoglRVideoDeletion : public deoglDelayedDeletion{
-public:
-	deoglTexture **textures;
-	int textureCount;
-	
-	deoglRVideoDeletion() :
-	textures( NULL ),
-	textureCount( 0 ){
-	}
-	
-	virtual ~deoglRVideoDeletion(){
-		if( textures ){
-			delete [] textures;
-		}
-	}
-	
-	virtual void DeleteObjects( deoglRenderThread &renderThread ){
+deoglRVideo::~deoglRVideo(){
+	if( pFrames ){
 		int i;
-		for( i=0; i<textureCount; i++ ){
-			if( textures[ i ] ){
-				delete textures[ i ];
+		for( i=0; i<pFrameCount; i++ ){
+			if( pFrames[ i ] ){
+				delete pFrames[ i ];
 			}
 		}
-	}
-};
-
-deoglRVideo::~deoglRVideo(){
-	if( pPixelBuffer ){
-		delete pPixelBuffer;
-	}
-	
-	// delayed deletion of opengl containing objects
-	if( ! pFrames ){
-		return;
-	}
-	
-	deoglRVideoDeletion *delayedDeletion = NULL;
-	
-	try{
-		delayedDeletion = new deoglRVideoDeletion;
-		if( pFrameCount > 0 ){
-			delayedDeletion->textures = pFrames;
-			delayedDeletion->textureCount = pFrameCount;
-		}
-		pRenderThread.GetDelayedOperations().AddDeletion( delayedDeletion );
-		
-	}catch( const deException &e ){
-		if( delayedDeletion ){
-			delete delayedDeletion;
-		}
-		pRenderThread.GetLogger().LogException( e );
-		//throw; -> otherwise terminate
+		delete [] pFrames;
 	}
 }
 
@@ -137,15 +96,12 @@ deoglTexture *deoglRVideo::GetTexture( int frame ) const{
 	return pFrames[ frame ];
 }
 
-deoglPixelBuffer *deoglRVideo::SetPixelBuffer( int frame, deoglPixelBuffer *pixelBuffer ){
-	if( frame < 0 || frame >= pFrameCount ){
-		DETHROW( deeInvalidParam );
-	}
-	if( pUpdateFrame != -1 ){
-		DETHROW( deeInvalidParam );
-	}
+deoglPixelBuffer::Ref deoglRVideo::SetPixelBuffer( int frame, deoglPixelBuffer *pixelBuffer ){
+	DEASSERT_TRUE( frame >= 0 )
+	DEASSERT_TRUE( frame < pFrameCount )
+	DEASSERT_TRUE( pUpdateFrame == -1 )
 	
-	deoglPixelBuffer * const prevPixelBuffer = pPixelBuffer;
+	const deoglPixelBuffer::Ref prevPixelBuffer( pPixelBuffer );
 	
 	pPixelBuffer = pixelBuffer;
 	pUpdateFrame = frame;
@@ -161,13 +117,13 @@ void deoglRVideo::UpdateTexture(){
 	if( ! pFrames[ pUpdateFrame ] ){
 		pFrames[ pUpdateFrame ] = new deoglTexture( pRenderThread );
 		pFrames[ pUpdateFrame ]->SetSize( pWidth, pHeight );
-		pFrames[ pUpdateFrame ]->SetMapingFormat( 3, false, false );
+		pFrames[ pUpdateFrame ]->SetMapingFormat( pComponentCount, false, false );
 		pFrames[ pUpdateFrame ]->SetMipMapped( false ); // true would be nicer but doing it every frame is a waste
 		pFrames[ pUpdateFrame ]->CreateTexture();
 	}
 	
 	if( pPixelBuffer ){
-		pFrames[ pUpdateFrame ]->SetPixels( *pPixelBuffer );
+		pFrames[ pUpdateFrame ]->SetPixels( pPixelBuffer );
 	}
 	
 	//pRenderThread.GetLogger().LogInfoFormat( "Video: update texture frame=%i remaining=%i", pUpdateFrame, pFrameCountToCache );

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLRENDERABLEDEPTHTEXTURE_H_
@@ -28,7 +31,7 @@ class deoglTexture;
 
 
 /**
- * \brief Renderable depth texture.
+ * Renderable depth texture.
  * 
  * Stores a renderable texture of any kind. Renderable textures can not be
  * used by more than one entity at the same time. They can also not change
@@ -52,11 +55,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create renderable texture. */
+	/** Create renderable texture. */
 	deoglRenderableDepthTexture( deoglRenderThread &renderThread,
 		int width, int height, bool withStencil, bool useFloat );
 	
-	/** \brief Clean up renderable texture. */
+	/** Clean up renderable texture. */
 	~deoglRenderableDepthTexture();
 	/*@}*/
 	
@@ -64,40 +67,40 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Width. */
+	/** Width. */
 	inline int GetWidth() const{ return pWidth; }
 	
-	/** \brief Height. */
+	/** Height. */
 	inline int GetHeight() const{ return pHeight; }
 	
-	/** \brief With stencil buffer. */
+	/** With stencil buffer. */
 	inline bool GetWithStencil() const{ return pWithStencil; }
 	
-	/** \brief Use float depth. */
+	/** Use float depth. */
 	inline bool GetUseFloat() const{ return pUseFloat; }
 	
 	
 	
-	/** \brief Format matche. */
+	/** Format matche. */
 	bool Matches( int width, int height, bool withStencil, bool useFloat ) const;
 	
-	/** \brief Texture is in use. */
+	/** Texture is in use. */
 	inline bool GetInUse() const{ return pInUse; }
 	
-	/** \brief Set if texture is in use. */
+	/** Set if texture is in use. */
 	void SetInUse( bool inUse );
 	
 	
 	
-	/** \brief Texture. */
+	/** Texture. */
 	inline deoglTexture *GetTexture() const{ return pTexture; }
 	
 	
 	
-	/** \brief GPU memory usage. */
+	/** GPU memory usage. */
 	inline int GetMemoryUsageGPU() const{ return pMemoryUsageGPU; }
 	
-	/** \brief Update GPU memory consumption. */
+	/** Update GPU memory consumption. */
 	void UpdateMemoryUsage();
 	/*@}*/
 	

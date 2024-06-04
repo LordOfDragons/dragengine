@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -39,60 +42,42 @@ pin Dragengine.Scenery
  * The context can be written to and restored from file readers. This class saves only the
  * current rule identifier. Subclass has to save its own states by overwriting readFromFile()
  * and writeToFile().
+ * 
+ * Since version 1.19 the behavior tree can be changed after creating the context. If you
+ * change the behavior tree during runtime you have to make sure it is also set before
+ * readFromFile() is called otherwise an exception can be thrown.
  */
 class BTContext
-	/** \brief Behavior tree. */
-	private var BehaviorTree pBehaviorTree
+	var BehaviorTree pBehaviorTree
+	var Dictionary pConditions
+	var Dictionary pActions
+	var BTRule pCurrentRule
+	var bool pActionFirstRun
+	var BTResult pLastResult
+	var Array pRunAwayList
 	
-	/** \brief Conditions as Dictionary of BTCondition. */
-	private var Dictionary pConditions
-	
-	/** \brief Actions as Dictionary of BTAction. */
-	private var Dictionary pActions
-	
-	/** \brief Current rule. */
-	private var BTRule pCurrentRule
-	
-	/** \brief Action runs for the first time. */
-	private var bool pActionFirstRun
-	
-	/** \brief Last result. */
-	private var BTResult pLastResult
-	
-	/** \brief Run away list as Array of BTRule. */
-	private var Array pRunAwayList
-	
-	
-	
-	/** \brief Console or \em null if not wishing to log anything. */
-	private var Console pConsole
-	
-	/** \brief Logging name to tell apart logs. */
-	private var String pLoggingName
-	
-	/** \brief Log behavior tree steps. */
-	private var bool pLogSteps
-	
-	/** \brief Log behavior tree rule changes. */
-	private var bool pLogRuleChanges
+	var Console pConsole
+	var String pLoggingName
+	var bool pLogSteps
+	var bool pLogRuleChanges
 	
 	
 	
 	/** \brief Create behavior tree context. */
-	public func new( BehaviorTree behaviorTree )
+	func new(BehaviorTree behaviorTree)
 		if behaviorTree == null
 			throw EInvalidParam.new()
 		end
 		
-		this.pBehaviorTree = behaviorTree
-		this.pConditions = Dictionary.new()
-		this.pActions = Dictionary.new()
-		this.pCurrentRule = behaviorTree.getRootRule()
-		this.pActionFirstRun = true
-		this.pRunAwayList = Array.new( 50, null )
-		this.pLoggingName = "BehaviorTree"
-		this.pLogSteps = false
-		this.pLogRuleChanges = false
+		pBehaviorTree = behaviorTree
+		pConditions = Dictionary.new()
+		pActions = Dictionary.new()
+		pCurrentRule = behaviorTree.getRootRule()
+		pActionFirstRun = true
+		pRunAwayList = Array.new(100, null)
+		pLoggingName = "BehaviorTree"
+		pLogSteps = false
+		pLogRuleChanges = false
 	end
 	
 	/**
@@ -101,7 +86,7 @@ class BTContext
 	 * Actions are copied as shallow copy. If you need a deep set all actions anew. The state
 	 * of the context is the same as without creating a copy.
 	 */
-	public func new( BTContext context ) this( context, context.pBehaviorTree )
+	func new(BTContext context) this(context, context.pBehaviorTree)
 	end
 	
 	/**
@@ -114,132 +99,149 @@ class BTContext
 	 * Whenever a new context is required the base context is copied. This avoids the need
 	 * to assign actions and conditions since they are copied from the base context.
 	 */
-	public func new( BTContext context, BehaviorTree behaviorTree )
+	func new(BTContext context, BehaviorTree behaviorTree)
 		if behaviorTree == null
-			throw EInvalidParam.new()
+			throw ENullPointer.new("behaviorTree")
 		end
 		
-		this.pBehaviorTree = behaviorTree
-		this.pConditions = Dictionary.new( context.pConditions )
-		this.pActions = Dictionary.new( context.pActions )
-		this.pCurrentRule = context.pBehaviorTree.getRootRule()
-		this.pActionFirstRun = context.pActionFirstRun
-		this.pRunAwayList = Array.new( context.pRunAwayList.getCount(), null )
+		pBehaviorTree = behaviorTree
+		pConditions = Dictionary.new(context.pConditions)
+		pActions = Dictionary.new(context.pActions)
+		pCurrentRule = context.pBehaviorTree.getRootRule()
+		pActionFirstRun = context.pActionFirstRun
+		pRunAwayList = Array.new(context.pRunAwayList.getCount(), null)
 		
-		this.pConsole = context.pConsole
-		this.pLoggingName = context.pLoggingName
-		this.pLogSteps = context.pLogSteps
-		this.pLogRuleChanges = context.pLogRuleChanges
+		pConsole = context.pConsole
+		pLoggingName = context.pLoggingName
+		pLogSteps = context.pLogSteps
+		pLogRuleChanges = context.pLogRuleChanges
 	end
 	
 	
 	
 	/** \brief Behavior tree. */
-	public func BehaviorTree getBehaviorTree()
-		return this.pBehaviorTree
+	func BehaviorTree getBehaviorTree()
+		return pBehaviorTree
+	end
+	
+	/**
+	 * \brief Set behavior tree and reset state.
+	 * \version 1.19
+	 * 
+	 * Sets the behavior tree then calls reset(). If you change the behavior tree during
+	 * runtime you have to make sure it is also set before readFromFile() is called
+	 * otherwise an exception can be thrown.
+	 */
+	func void setBehaviorTree(BehaviorTree behaviorTree)
+		if behaviorTree == null
+			throw ENullPointer.new("behaviorTree")
+		end
+		
+		pBehaviorTree = behaviorTree
+		reset()
 	end
 	
 	
 	
 	/** \brief Number of conditions. */
-	public func int getConditionCount()
-		return this.pConditions.getCount()
+	func int getConditionCount()
+		return pConditions.getCount()
 	end
 	
 	/** \brief Condition for name or null if absent. */
-	public func BTCondition getCondition( String name )
-		return this.pConditions.getAt( name, null ) cast BTCondition
+	func BTCondition getCondition(String name)
+		return pConditions.getAt(name, null) cast BTCondition
 	end
 	
 	/** \brief Condition is present. */
-	public func bool hasCondition( String name )
-		return this.pConditions.has( name )
+	func bool hasCondition(String name)
+		return pConditions.has(name)
 	end
 	
 	/** \brief Visit conditions using block with parameters String (name and BTCondition (condition). */
-	public func void forEachCondition( Block ablock )
-		this.pConditions.forEach( ablock )
+	func void forEachCondition(Block ablock)
+		pConditions.forEach(ablock)
 	end
 	
 	/** \brief Set condition for name. */
-	public func void setCondition( String name, BTCondition condition )
+	func void setCondition(String name, BTCondition condition)
 		if name == null or condition == null
 			throw EInvalidParam.new()
 		end
-		this.pConditions.setAt( name, condition )
+		pConditions.setAt(name, condition)
 	end
 	
 	/** \brief Set condition for name using block. */
-	public func void setCondition( String name, Block condition )
+	func void setCondition(String name, Block condition)
 		if name == null
 			throw EInvalidParam.new()
 		end
-		this.pConditions.setAt( name, BTBlockCondition.new( condition ) )
+		pConditions.setAt(name, BTBlockCondition.new(condition))
 	end
 	
 	/** \brief Remove condition. */
-	public func void removeCondition( String name )
-		this.pConditions.remove( name )
+	func void removeCondition(String name)
+		pConditions.remove(name)
 	end
 	
 	/** \brief Remove all conditions. */
-	public func void removeAllConditions()
-		this.pConditions.removeAll()
+	func void removeAllConditions()
+		pConditions.removeAll()
 	end
 	
 	
 	
 	/** \brief Number of actions. */
-	public func int getActionCount()
-		return this.pActions.getCount()
+	func int getActionCount()
+		return pActions.getCount()
 	end
 	
 	/** \brief Action for name or null if absent. */
-	public func BTAction getAction( String name )
-		return this.pActions.getAt( name, null ) cast BTAction
+	func BTAction getAction(String name)
+		return pActions.getAt(name, null) cast BTAction
 	end
 	
 	/** \brief Action is present. */
-	public func bool hasAction( String name )
-		return this.pActions.has( name )
+	func bool hasAction(String name)
+		return pActions.has(name)
 	end
 	
 	/** \brief Visit actions using block with parameters String (name and BTAction (action). */
-	public func void forEachAction( Block ablock )
-		this.pActions.forEach( ablock )
+	func void forEachAction(Block ablock)
+		pActions.forEach(ablock)
 	end
 	
 	/** \brief Set action for name. */
-	public func void setAction( String name, BTAction action )
+	func void setAction(String name, BTAction action)
 		if name == null or action == null
 			throw EInvalidParam.new()
 		end
-		this.pActions.setAt( name, action )
+		pActions.setAt(name, action)
 	end
 	
 	/** \brief Set action for name using block. */
-	public func void setAction( String name, Block action )
+	func void setAction(String name, Block action)
 		if name == null
 			throw EInvalidParam.new()
 		end
-		this.pActions.setAt( name, BTBlockAction.new( action ) )
+		pActions.setAt(name, BTBlockAction.new(action))
 	end
 	
 	/** \brief Remove action. */
-	public func void removeAction( String name )
-		this.pActions.remove( name )
+	func void removeAction(String name)
+		pActions.remove(name)
 	end
 	
 	/** \brief Remove all actions. */
-	public func void removeAllActions()
-		this.pActions.removeAll()
+	func void removeAllActions()
+		pActions.removeAll()
 	end
 	
 	
 	
 	/** \brief Current rule. */
-	public func BTRule getCurrentRule()
-		return this.pCurrentRule
+	func BTRule getCurrentRule()
+		return pCurrentRule
 	end
 	
 	/**
@@ -247,22 +249,18 @@ class BTContext
 	 * 
 	 * Sets action first run to true and calls onCurrentRuleChanged().
 	 */
-	public func void setCurrentRule( BTRule rule )
+	func void setCurrentRule(BTRule rule)
 		if rule == null
 			throw EInvalidParam.new()
 		end
-		this.pCurrentRule = rule
-		this.pActionFirstRun = true
+		pCurrentRule = rule
+		pActionFirstRun = true
 		
-		if this.pLogRuleChanges and this.pConsole != null
-			if rule.getID() != null
-				this.pConsole.addMessage( this.pLoggingName + ": Rule changed to '" + rule.getID() + "'" )
-			else
-				this.pConsole.addMessage( this.pLoggingName + ": Rule changed ro ''" )
-			end
+		if pLogRuleChanges and pConsole != null
+			pConsole.addMessage(pLoggingName + ": Rule changed to " + rule)
 		end
 		
-		this.onCurrentRuleChanged()
+		onCurrentRuleChanged()
 	end
 	
 	/**
@@ -272,8 +270,8 @@ class BTContext
 	 * 
 	 * \throws EInvalidParam Rule with identifier not found.
 	 */
-	public func void setCurrentRuleByID( String id )
-		this.setCurrentRule( this.pBehaviorTree.getRuleWithID( id ) )
+	func void setCurrentRuleByID(String id)
+		setCurrentRule(pBehaviorTree.getRuleWithID(id))
 	end
 	
 	/**
@@ -284,8 +282,8 @@ class BTContext
 	 * first time after the current rule changed. This allows actions to do some setting
 	 * up tasks the first time they run and check back on this state as long as they run.
 	 */
-	public func bool getActionFirstRun()
-		return this.pActionFirstRun
+	func bool getActionFirstRun()
+		return pActionFirstRun
 	end
 	
 	/**
@@ -293,71 +291,71 @@ class BTContext
 	 * 
 	 * To be called only by BTRuleAction.run().
 	 */
-	public func void setActionFirstRun( bool firstRun )
-		this.pActionFirstRun = firstRun
+	func void setActionFirstRun(bool firstRun)
+		pActionFirstRun = firstRun
 	end
 	
 	/** \brief Last result. */
-	public func BTResult getLastResult()
-		return this.pLastResult
+	func BTResult getLastResult()
+		return pLastResult
 	end
 	
 	/** \brief Run away limit. */
-	public func int getRunAwayLimit()
-		return this.pRunAwayList.getCount()
+	func int getRunAwayLimit()
+		return pRunAwayList.getCount()
 	end
 	
 	/** \brief Set run away limit. */
-	public func void setRunAwayLimit( int limit )
+	func void setRunAwayLimit(int limit)
 		if limit < 1
 			throw EInvalidParam.new()
 		end
-		this.pRunAwayList = Array.new( limit, null )
+		pRunAwayList = Array.new(limit, null)
 	end
 	
 	
 	
 	/** \brief Console or \em null if not wishing to log anything. */
-	public func Console getConsole()
-		return this.pConsole
+	func Console getConsole()
+		return pConsole
 	end
 	
 	/** \brief Set console or \em null if not wishing to log anything. */
-	public func void setConsole( Console console )
-		this.pConsole = console
+	func void setConsole(Console console)
+		pConsole = console
 	end
 	
 	/** \brief Logging name to tell apart logs. */
-	public func String getLoggingName()
-		return this.pLoggingName
+	func String getLoggingName()
+		return pLoggingName
 	end
 	
 	/** \brief Set logging name to tell apart logs. */
-	public func void setLoggingName( String name )
+	func void setLoggingName(String name)
 		if name == null
 			throw EInvalidParam.new()
 		end
-		this.pLoggingName = name
+		pLoggingName = name
 	end
 	
 	/** \brief Log behavior tree steps. */
-	public func bool getLogSteps()
-		return this.pLogSteps
+	func bool getLogSteps()
+		return pLogSteps
 	end
 	
 	/** \brief Set log behavior tree steps. */
-	public func void setLogSteps( bool logSteps )
-		this.pLogSteps = logSteps
+	func void setLogSteps(bool logSteps)
+		pLogSteps = logSteps
 	end
 	
 	/** \brief Log behavior tree rule changes. */
-	public func bool getLogRuleChanges()
-		return this.pLogRuleChanges
+	func bool getLogRuleChanges()
+		return pLogRuleChanges
 	end
 	
 	/** \brief Set log behavior tree rule changes. */
-	public func void setLogRuleChanges( bool logRuleChanges )
-		this.pLogRuleChanges = logRuleChanges
+	func void setLogRuleChanges(bool logRuleChanges)
+		pLogRuleChanges = logRuleChanges
 	end
 	
 	
@@ -371,51 +369,46 @@ class BTContext
 	 * \returns \em true if tree continues running or \em false if root rule
 	 *          returned BTResult.failure .
 	 */
-	public func bool stepBehaviorTree()
-		var int runAwayLimit = this.pRunAwayList.getCount()
+	func bool stepBehaviorTree()
+		var int runAwayLimit = pRunAwayList.getCount()
 		var int stepCount = 0
 		var BTRule rule
 		
-		if this.pLogSteps and this.pConsole != null
-			this.pConsole.addMessage( this.pLoggingName + ": Step Behavior Tree" )
+		if pLogSteps and pConsole != null
+			pConsole.addMessage(pLoggingName + ": Step Behavior Tree")
 		end
 		
-		while this.pCurrentRule != null
+		while pCurrentRule != null
 			// run rule
-			rule = this.pCurrentRule
-			this.pRunAwayList.setAt( stepCount++, rule )
-			this.pLastResult = rule.run( this )
+			rule = pCurrentRule
+			pRunAwayList.setAt(stepCount++, rule)
+			pLastResult = rule.run(this)
 			
-			if this.pLogSteps and this.pConsole != null
-				if rule.getID() != null
-					this.pConsole.addMessage( this.pLoggingName + ": " + stepCount + ") Run '" \
-						+ rule.getID() + "' = " + this.pLastResult )
-				else
-					this.pConsole.addMessage( this.pLoggingName + ": " + stepCount \
-						+ ") Run '' = " + this.pLastResult )
-				end
+			if pLogSteps and pConsole != null
+				pConsole.addMessage(pLoggingName + ": " + stepCount\
+					+ ") Run " + rule + " = " + pLastResult)
 			end
 			
-			if this.pLastResult == BTResult.running
+			if pLastResult == BTResult.running
 				return true
 			end
 			
 			if stepCount == runAwayLimit
-				var BTRunAwayException exception = BTRunAwayException.new( this.pRunAwayList )
-				if this.pConsole != null
-					this.pConsole.addMessage( this.pLoggingName + ": " \
-						+ exception.getReason() + "\n" + exception.getRunAwayBacktrace() )
+				var BTRunAwayException exception = BTRunAwayException.new(pRunAwayList)
+				if pConsole != null
+					pConsole.addMessage(pLoggingName + ": " \
+						+ exception.getReason() + "\n" + exception.getRunAwayBacktrace())
 				end
 				throw exception
 			end
 			
 			// return to parent rule if required
-			while this.pCurrentRule == rule
+			while pCurrentRule == rule
 				rule = rule.getParent()
 				if rule == null
-					if this.pLastResult == BTResult.failure
-						if this.pLogSteps and this.pConsole != null
-							this.pConsole.addMessage( this.pLoggingName + ": Behavior Tree Failed" )
+					if pLastResult == BTResult.failure
+						if pLogSteps and pConsole != null
+							pConsole.addMessage(pLoggingName + ": Behavior Tree Failed")
 						end
 						return false
 						
@@ -425,36 +418,31 @@ class BTContext
 					end
 				end
 				
-				this.pRunAwayList.setAt( stepCount++, rule )
-				this.pLastResult = rule.run( this )
+				pRunAwayList.setAt(stepCount++, rule)
+				pLastResult = rule.run(this)
 				
-				if this.pLogSteps and this.pConsole != null
-					if rule.getID() != null
-						this.pConsole.addMessage( this.pLoggingName + ": " + stepCount + ") Parent '" \
-							+ rule.getID() + "' = " + this.pLastResult )
-					else
-						this.pConsole.addMessage( this.pLoggingName + ": " + stepCount \
-							+ ") Parent '' = " + this.pLastResult )
-					end
+				if pLogSteps and pConsole != null
+					pConsole.addMessage(pLoggingName + ": " + stepCount\
+						+ ") Parent " + rule + "' = " + pLastResult)
 				end
 				
-				if this.pLastResult == BTResult.running
+				if pLastResult == BTResult.running
 					return true
 				end
 				
 				if stepCount == runAwayLimit
-					var BTRunAwayException exception = BTRunAwayException.new( this.pRunAwayList )
-					if this.pConsole != null
-						this.pConsole.addMessage( this.pLoggingName + ": " \
-							+ exception.getReason() + "\n" + exception.getRunAwayBacktrace() )
+					var BTRunAwayException exception = BTRunAwayException.new(pRunAwayList)
+					if pConsole != null
+						pConsole.addMessage(pLoggingName + ": "\
+							+ exception.getReason() + "\n" + exception.getRunAwayBacktrace())
 					end
 					throw exception
 				end
 			end
 		end
 		
-		if this.pLogSteps and this.pConsole != null
-			this.pConsole.addMessage( this.pLoggingName + ": Behavior Tree Failed" )
+		if pLogSteps and pConsole != null
+			pConsole.addMessage(pLoggingName + ": Behavior Tree Failed")
 		end
 		return false
 	end
@@ -464,10 +452,9 @@ class BTContext
 	 * 
 	 * Sets the behavior tree root rule as current rule.
 	 */
-	public func void reset()
-		this.pCurrentRule = this.pBehaviorTree.getRootRule()
-		this.pLastResult = BTResult.running
-		this.pActionFirstRun = true
+	func void reset()
+		setCurrentRule(pBehaviorTree.getRootRule())
+		pLastResult = BTResult.running
 	end
 	
 	
@@ -484,23 +471,32 @@ class BTContext
 	
 	
 	/** \brief Read state from file. */
-	public func void readFromFile( PersistencyEnvironment env, FileReader reader )
-		var PersistencyFlags flags = PersistencyFlags.new( 2, reader )
-		this.pActionFirstRun = flags.getAt( 1 )
-		
-		if flags.getAt( 0 )
-			this.pCurrentRule = this.pBehaviorTree.getRuleWithID( reader.readString8() )
+	func void readFromFile(PersistencyEnvironment env, FileReader reader)
+		select reader.readByte() // version
+		case 0
+			var PersistencyFlags flags = PersistencyFlags.new(2, reader)
+			pActionFirstRun = flags.getAt(1)
+			
+			if flags.getAt(0)
+				pCurrentRule = pBehaviorTree.getRuleWithID(reader.readString8())
+			end
+			
+		else
+			throw EInvalidParam.new("unsupported version")
 		end
 	end
 	
 	/** \brief Write state to file. */
-	public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
-		var PersistencyFlags flags = PersistencyFlags.new( 2 )
-		flags.setAt( 0, this.pCurrentRule != null )
-		flags.setAt( 1, this.pActionFirstRun )
+	func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+		writer.writeByte(0) // version
 		
-		if this.pCurrentRule != null
-			writer.writeString8( this.pCurrentRule.getID() )
+		var PersistencyFlags flags = PersistencyFlags.new(2)
+		flags.setAt(0, pCurrentRule != null)
+		flags.setAt(1, pActionFirstRun)
+		flags.writeToFile(writer)
+		
+		if pCurrentRule != null
+			writer.writeString8(pCurrentRule.getID())
 		end
 	end
 end

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -29,24 +32,26 @@ pin Dragengine.Utils
 /**
  * \brief Base actor action.
  * 
- * This class defines the events used by CommandBaseActor* classes to use.
- * 
  * Action supports the Persistable interface an can be read from and writen to file writers.
  */
 class BaseActorAction implements Persistable
 	/** \brief Factory for loading actor actions. */
-	public class Factory implements PersistencyFactory
+	public class Factory implements PersistencyFactory, ECBehaviorActorAIAction.ActionFactory
 		public static fixed var String NAME = "BaseActorAction"
 		
 		public func new()
 		end
 		
-		public func Persistable readObjectFromFile( PersistencyEnvironment env, FileReader reader )
+		public func Persistable readObjectFromFile(PersistencyEnvironment env, FileReader reader)
 			return BaseActorAction.new()
 		end
 		
-		public static func void registerFactory( Persistency persistency )
-			persistency.addFactory( NAME, Factory.new() )
+		public static func void registerFactory(Persistency persistency)
+			persistency.addFactory(NAME, Factory.new())
+		end
+		
+		public func BaseActorAction createAction(ECBehaviorActorAIAction.Instance instance)
+			return BaseActorAction.new()
 		end
 	end
 	
@@ -77,49 +82,66 @@ class BaseActorAction implements Persistable
 	end
 	
 	/** \brief Create actor action from persisted state. */
-	public func new( PersistencyEnvironment env, FileReader reader )
+	public func new(PersistencyEnvironment env, FileReader reader)
 	end
 	
 	/** \brief Dispose of actor action. */
 	public func void dispose()
-		this.actor = null
+		actor = null
 	end
 	
 	
 	
 	/** \brief Actor the action is assigned to or \em null. */
 	public func BehaviorElement getActor()
-		return this.actor
+		return actor
 	end
 	
 	/** \brief Locomotion behavior. */
 	public func ECBehaviorLocomotion.Instance getLocomotion()
-		return this.locomotion
+		return locomotion
 	end
 	
 	/** \brief Conversation actor behavior if present. */
 	public func ECBehaviorConversationActor.Instance getConversationActor()
-		return this.conversationActor
+		return conversationActor
 	end
 	
 	/** \brief Actor animated behavior if present. */
 	public func ECBehaviorActorAnimated.Instance getActorAnimated()
-		return this.actorAnimated
+		return actorAnimated
 	end
 	
 	/** \brief Behavior player controllable or \em null. */
 	public func ECBehaviorPlayerControllable.Instance getPlayerControllable()
-		return this.playerControllable
+		return playerControllable
 	end
 	
 	/** \brief Behavior actor ai-action or \em null. */
 	public func ECBehaviorActorAIAction.Instance getAIAction()
-		return this.aiAction
+		return aiAction
 	end
 	
 	/** \brief Actor is controlled by player. */
 	public func bool isControlledByPlayer() 
-		return this.playerControllable != null and this.playerControllable.isPlayerControlled()
+		return playerControllable != null and playerControllable.isPlayerControlled()
+	end
+	
+	/**
+	 * \brief Action is active actor action.
+	 * \version 1.4
+	 */
+	public func bool isActive()
+		// if not activated once initBehaviors() has not been called yet and aiAction is null
+		return aiAction != null and aiAction.getAction() == this
+	end
+	
+	/**
+	 * \brief Action is not active actor action.
+	 * \version 1.4
+	 */
+	public func bool isNotActive()
+		return aiAction == null or aiAction.getAction() != this
 	end
 	
 	
@@ -133,15 +155,26 @@ class BaseActorAction implements Persistable
 	 * - initBehaviors()
 	 * - initAnimator()
 	 */
-	public func void activate( BehaviorElement actor )
+	public func void activate(BehaviorElement actor)
 		this.actor = actor
-		
-		this.initBehaviors()
-		
-		this.initAnimator()
-		if this.actorAnimated != null
-			this.actorAnimated.applyAnimations() // avoid problems if activated past postThink
+		initBehaviors()
+		initAnimator()
+		if actorAnimated != null
+			actorAnimated.applyAnimations() // avoid problems if activated past postThink
 		end
+	end
+	
+	/**
+	 * \brief Action has been set as active action in an actor while loading.
+	 * 
+	 * Similar to activate(BehaviorElement) but only stores the actor and calls initBehaviors().
+	 * This is required since while loading behaviors load their state and actions load their
+	 * states. If activate(BehaviorElement) is called these states would be reset to initial
+	 * values.
+	 */
+	public func void activateWhileLoading(BehaviorElement actor)
+		this.actor = actor
+		initBehaviors()
 	end
 	
 	/**
@@ -150,6 +183,14 @@ class BaseActorAction implements Persistable
 	 * The stored actor is not cleared to allow aiFinished() and aiFailed() calls to function.
 	 */
 	public func void deactivate()
+	end
+	
+	/** \brief Actor entered game world. */
+	public func void enteredGameWorld()
+	end
+	
+	/** \brief Actor left game world. */
+	public func void leftGameWorld()
 	end
 	
 	/** \brief Actor has been added to game world and enterFrame() is called once. */
@@ -168,30 +209,43 @@ class BaseActorAction implements Persistable
 	 * \brief Thinking.
 	 * 
 	 * Default implementation does these actions in this order:
-	 * - playerThink() if player is controlling this actor
 	 * - ECBehaviorConversationActor.updateLocomotion()
 	 * - updateLocomotion()
 	 * - updateAICollider()
 	 * - updateAnimator()
 	 * - applyAnimations()
+	 * 
+	 * playerThink() is called by ECBehaviorActorAIAction if player controls this actor.
 	 */
-	public func void think( float elapsed )
-		if this.isControlledByPlayer()
-			this.playerThink( elapsed )
+	public func void think(float elapsed)
+		if conversationActor != null
+			conversationActor.updateLocomotion(elapsed)
 		end
 		
-		if this.conversationActor != null
-			this.conversationActor.updateLocomotion( elapsed )
-		end
-		
-		this.updateLocomotion( elapsed )
-		this.updateAICollider( elapsed )
-		this.updateAnimator( elapsed )
-		this.applyAnimations()
+		updateLocomotion(elapsed)
+		updateAICollider(elapsed)
+		updateAnimator(elapsed)
+		applyAnimations()
+	end
+	
+	/**
+	 * \brief Thinking for player controlled actor only.
+	 * 
+	 * Default implementation does nothing.
+	 */
+	public func void playerThink(float elapsed)
 	end
 	
 	/** \brief Post physics. */
-	public func void postThink( float elapsed )
+	public func void postThink(float elapsed)
+	end
+	
+	/**
+	 * \brief Post physics for player controlled actor only.
+	 * 
+	 * Default implementation does nothing.
+	 */
+	public func void playerPostThink(float elapsed)
 	end
 	
 	
@@ -202,7 +256,7 @@ class BaseActorAction implements Persistable
 	 * Calls aiFailed().
 	 */
 	public func void cancel()
-		this.aiFailed()
+		aiFailed()
 	end
 	
 	
@@ -215,12 +269,12 @@ class BaseActorAction implements Persistable
 	 * - Actor AI is not null
 	 */
 	public func void aiFailed()
-		if this.isControlledByPlayer()
+		if isControlledByPlayer()
 			return
 		end
 		
-		if this.aiAction != null and this.aiAction.getAI() != null
-			this.aiAction.getAI().actionFailed()
+		if aiAction != null and aiAction.getAI() != null
+			aiAction.getAI().actionFailed()
 		end
 	end
 	
@@ -232,12 +286,12 @@ class BaseActorAction implements Persistable
 	 * - Actor AI is not null
 	 */
 	public func void aiFinished()
-		if this.isControlledByPlayer()
+		if isControlledByPlayer()
 			return
 		end
 		
-		if this.aiAction != null and this.aiAction.getAI() != null
-			this.aiAction.getAI().actionFinished()
+		if aiAction != null and aiAction.getAI() != null
+			aiAction.getAI().actionFinished()
 		end
 	end
 	
@@ -249,20 +303,20 @@ class BaseActorAction implements Persistable
 	 * Retrieve and store required and optional behavior instances from the actor element.
 	 */
 	protected func void initBehaviors()
-		if this.actor castable BaseActor
-			var BaseActor baseActor = this.actor cast BaseActor
-			this.locomotion = baseActor.getLocomotion()
-			this.conversationActor = baseActor.getConversationActor()
-			this.actorAnimated = baseActor.getActorAnimated()
-			this.playerControllable = baseActor.getPlayerControllable()
-			this.aiAction = baseActor.getAIAction()
+		if actor castable BaseActor
+			var BaseActor baseActor = actor cast BaseActor
+			locomotion = baseActor.getLocomotion()
+			conversationActor = baseActor.getConversationActor()
+			actorAnimated = baseActor.getActorAnimated()
+			playerControllable = baseActor.getPlayerControllable()
+			aiAction = baseActor.getAIAction()
 			
 		else
-			this.locomotion = ECBehaviorLocomotion.getInstanceIn( this.actor )
-			this.conversationActor = ECBehaviorConversationActor.getInstanceIn( this.actor )
-			this.actorAnimated = ECBehaviorActorAnimated.getInstanceIn( this.actor )
-			this.playerControllable = ECBehaviorPlayerControllable.getInstanceIn( this.actor )
-			this.aiAction = ECBehaviorActorAIAction.getInstanceIn( this.actor )
+			locomotion = ECBehaviorLocomotion.getInstanceIn(actor)
+			conversationActor = ECBehaviorConversationActor.getInstanceIn(actor)
+			actorAnimated = ECBehaviorActorAnimated.getInstanceIn(actor)
+			playerControllable = ECBehaviorPlayerControllable.getInstanceIn(actor)
+			aiAction = ECBehaviorActorAIAction.getInstanceIn(actor)
 		end
 	end
 	
@@ -277,14 +331,14 @@ class BaseActorAction implements Persistable
 	 * 
 	 * Call setActiveAnimatorID() with the identifier of the desired animator as set up in
 	 * the "actorAnimated.animators" element class property. If you set up controller mappings
-	 * using this.actorAnimated.setDefaultControllerMappings() or manually you can stop here
+	 * using actorAnimated.setDefaultControllerMappings() or manually you can stop here
 	 * since controller mappings are automatically updated. By default BaseActorClass does
 	 * calls setDefaultControllerMappings().
 	 * 
 	 * A typical implementation can look like this:
 	 * 
 	 * \code{.ds}
-	 * this.actorAnimated.setActiveAnimatorID("default")
+	 * actorAnimated.setActiveAnimatorID("default")
 	 * \endcode
 	 * 
 	 * \par Manually handling AnimatorInstance and Animator
@@ -319,19 +373,11 @@ class BaseActorAction implements Persistable
 	end
 	
 	/**
-	 * \brief Thinking for player controlled actor only.
-	 * 
-	 * Default implementation does nothing.
-	 */
-	public func void playerThink( float elapsed )
-	end
-	
-	/**
 	 * \brief Update locomotion.
 	 * 
 	 * Default implementation does nothing.
 	 */
-	protected func void updateLocomotion( float elapsed )
+	protected func void updateLocomotion(float elapsed)
 	end
 	
 	/**
@@ -339,7 +385,7 @@ class BaseActorAction implements Persistable
 	 * 
 	 * Default implementation does nothing.
 	 */
-	protected func void updateAICollider( float elapsed )
+	protected func void updateAICollider(float elapsed)
 	end
 	
 	/**
@@ -349,10 +395,10 @@ class BaseActorAction implements Persistable
 	 * - ECBehaviorLocomotion.updateAnimator()
 	 * - ECBehaviorActorAnimated.notifyControllersChanged()
 	 */
-	protected func void updateAnimator( float elapsed )
-		this.locomotion.updateAnimator( elapsed )
-		if this.actorAnimated != null
-			this.actorAnimated.notifyControllersChanged( elapsed )
+	protected func void updateAnimator(float elapsed)
+		locomotion.updateAnimator(elapsed)
+		if actorAnimated != null
+			actorAnimated.notifyControllersChanged(elapsed)
 		end
 	end
 	
@@ -363,8 +409,8 @@ class BaseActorAction implements Persistable
 	 * - ECBehaviorActorAnimated.applyAnimations()
 	 */
 	protected func void applyAnimations()
-		if this.actorAnimated != null
-			this.actorAnimated.applyAnimations()
+		if actorAnimated != null
+			actorAnimated.applyAnimations()
 		end
 	end
 	
@@ -385,54 +431,54 @@ class BaseActorAction implements Persistable
 	
 	
 	/** \brief Collision detected. */
-	public func void collisionResponse( Collider owner, CollisionInfo info )
+	public func void collisionResponse(Collider owner, CollisionInfo info)
 	end
 	
 	/** \brief Two colliders can hit each other. */
-	public func bool canHitCollider( Collider owner, Collider collider )
+	public func bool canHitCollider(Collider owner, Collider collider)
 		return false
 	end
 	
 	/** \brief Collider changed. */
-	public func void colliderChanged( Collider owner )
+	public func void colliderChanged(Collider owner)
 	end
 	
 	
 	
 	/** \brief Log text to BaseGameApp console prefixed with actor information. */
-	public func void log( String text )
-		this.log( BaseGameApp.getApp().getConsole(), text )
+	public func void log(String text)
+		log(BaseGameApp.getApp().getConsole(), text)
 	end
 	
 	/** \brief Log text to console prefixed with actor information. */
-	public func void log( Console console, String text )
-		console.addMessage( this.loggingPrefix() + ": " + text )
+	public func void log(Console console, String text)
+		console.addMessage(loggingPrefix() + ": " + text)
 	end
 	
 	/** \brief Log text about element to BaseGameApp console prefixed with actor information. */
-	public func void log( Element element, String text )
-		this.log( BaseGameApp.getApp().getConsole(), element, text )
+	public func void log(Element element, String text)
+		log(BaseGameApp.getApp().getConsole(), element, text)
 	end
 	
 	/** \brief Log text about element to console prefixed with actor information. */
-	public func void log( Console console, Element element, String text )
+	public func void log(Console console, Element element, String text)
 		if element == null
-			console.addMessage( this.loggingPrefix() + " <null>: " + text )
+			console.addMessage(loggingPrefix() + " <null>: " + text)
 			
 		else
-			console.addMessage( this.loggingPrefix() + " " + element.getClass().getClassname() \
-				+ " " + element.getPosition() + ": " + text )
+			console.addMessage(loggingPrefix() + " " + element.getClass().getClassname() \
+				+ " " + element.getPosition() + ": " + text)
 		end
 	end
 	
 	/** \brief Log exception to BaseGameApp console prefixed with actor information. */
-	public func void log( Exception exception )
-		this.log( BaseGameApp.getApp().getConsole(), exception )
+	public func void log(Exception exception)
+		log(BaseGameApp.getApp().getConsole(), exception)
 	end
 	
 	/** \brief Log exception to console prefixed with actor information. */
-	public func void log( Console console, Exception exception )
-		console.addError( this.loggingPrefix(), exception )
+	public func void log(Console console, Exception exception)
+		console.addError(loggingPrefix(), exception)
 	end
 	
 	/**
@@ -441,8 +487,8 @@ class BaseActorAction implements Persistable
 	 * Returns string in the form "<actor-class>/<action-class>".
 	 */
 	public func String loggingPrefix()
-		return this.actor.getClass().getClassname().split( '.' ).getAt( -1 ).toString() \
-			+ "/" + this.className().split( '.' ).getAt( -1 )
+		return actor.getClass().getClassname().splitExact('.').getAt(-1).toString() \
+			+ "/" + className().splitExact('.').getAt(-1)
 	end
 	
 	
@@ -462,6 +508,6 @@ class BaseActorAction implements Persistable
 	end
 	
 	/** \brief Write object to file writer. */
-	public func void writeObjectToFile( PersistencyEnvironment env, FileWriter writer )
+	public func void writeObjectToFile(PersistencyEnvironment env, FileWriter writer)
 	end
 end

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLRCANVASCANVASVIEW_H_
@@ -28,7 +31,7 @@ class deoglRCanvasView;
 
 
 /**
- * \brief Render canvas render target.
+ * Render canvas render target.
  */
 class deoglRCanvasCanvasView : public deoglRCanvas{
 private:
@@ -40,10 +43,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create peer. */
+	/** Create peer. */
 	deoglRCanvasCanvasView( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up peer. */
+	/** Clean up peer. */
 	virtual ~deoglRCanvasCanvasView();
 	/*@}*/
 	
@@ -51,36 +54,39 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Canvas view or \em NULL if not set. */
+	/** Canvas view or \em NULL if not set. */
 	inline deoglRCanvasView *GetCanvasView() const{ return pCanvasView; }
 	
-	/** \brief Set canvas view or \em NULL if not set. */
+	/** Set canvas view or \em NULL if not set. */
 	void SetCanvasView( deoglRCanvasView *canvasView );
 	
-	/** \brief Texture coordinate transformation matrix. */
+	/** Texture coordinate transformation matrix. */
 	inline const decTexMatrix2 &GetTCTransform() const{ return pTCTransform; }
 	
-	/** \brief Set texture coordinate transformation matrix. */
+	/** Set texture coordinate transformation matrix. */
 	void SetTCTransform( const decTexMatrix2 &transform );
 	
-	/** \brief Texture coordinates clamp minimum. */
+	/** Texture coordinates clamp minimum. */
 	inline const decVector2 &GetTCClampMinimum() const{ return pTCClampMin; }
 	
-	/** \brief Set texture coordinates clamp minimum. */
+	/** Set texture coordinates clamp minimum. */
 	void SetTCClampMinimum( const decVector2 &clamp );
 	
-	/** \brief Texture coordinates clamp maximum. */
+	/** Texture coordinates clamp maximum. */
 	inline const decVector2 &GetTCClampMaximum() const{ return pTCClampMax; }
 	
-	/** \brief Set texture coordinates clamp maximum. */
+	/** Set texture coordinates clamp maximum. */
 	void SetTCClampMaximum( const decVector2 &clamp );
 	
 	
 	
-	/** \brief Prepare for rendering. */
-	virtual void PrepareForRender();
+	/** Prepare for rendering. */
+	virtual void PrepareForRender( const deoglRenderPlanMasked *renderPlanMask );
 	
-	/** \brief Render. */
+	/** Prepare for rendering render. */
+	virtual void PrepareForRenderRender( const deoglRenderPlanMasked *renderPlanMask );
+	
+	/** Render. */
 	virtual void Render( const deoglRenderCanvasContext &context );
 	/*@}*/
 };

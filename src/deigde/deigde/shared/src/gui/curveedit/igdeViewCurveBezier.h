@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _IGDEVIEWCURVEBEZIER_H_
@@ -37,23 +40,23 @@ class igdeViewCurveBezierListener;
 /**
  * \brief View and edit decCurveBezier.
  */
-class igdeViewCurveBezier : public igdeWidget{
+class DE_DLL_EXPORT igdeViewCurveBezier : public igdeWidget{
 public:
-	class cActionResetView : public igdeAction{
+	class DE_DLL_EXPORT cActionResetView : public igdeAction{
 		igdeViewCurveBezier &pView;
 	public:
 		cActionResetView( igdeViewCurveBezier &view );
 		virtual void OnAction();
 	};
 	
-	class cActionFitToCurve : public igdeAction{
+	class DE_DLL_EXPORT cActionFitToCurve : public igdeAction{
 		igdeViewCurveBezier &pView;
 	public:
 		cActionFitToCurve( igdeViewCurveBezier &view );
 		virtual void OnAction();
 	};
 	
-	class cActionEditSelectedPoint : public igdeAction{
+	class DE_DLL_EXPORT cActionEditSelectedPoint : public igdeAction{
 		igdeViewCurveBezier &pView;
 	public:
 		cActionEditSelectedPoint( igdeViewCurveBezier &view );
@@ -61,7 +64,7 @@ public:
 		virtual void Update();
 	};
 	
-	class cActionSetInterpolationMode : public igdeAction{
+	class DE_DLL_EXPORT cActionSetInterpolationMode : public igdeAction{
 		igdeViewCurveBezier &pView;
 		decCurveBezier::eInterpolationModes pMode;
 	public:
@@ -72,45 +75,73 @@ public:
 		virtual void Update();
 	};
 	
-	class cActionCopyCurve : public igdeAction{
+	class DE_DLL_EXPORT cActionCopyCurve : public igdeAction{
 		igdeViewCurveBezier &pView;
 	public:
 		cActionCopyCurve( igdeViewCurveBezier &view );
 		virtual void OnAction();
 	};
 	
-	class cActionPasteCurve : public igdeAction{
+	class DE_DLL_EXPORT cActionPasteCurve : public igdeAction{
 		igdeViewCurveBezier &pView;
 	public:
 		cActionPasteCurve( igdeViewCurveBezier &view );
 		virtual void OnAction();
 	};
 	
-	class cActionClearCurve : public igdeAction{
+	class DE_DLL_EXPORT cActionClearCurve : public igdeAction{
 		igdeViewCurveBezier &pView;
 	public:
 		cActionClearCurve( igdeViewCurveBezier &view );
 		virtual void OnAction();
 	};
 	
-	class cActionSetDefaultLinear : public igdeAction{
+	class DE_DLL_EXPORT cActionSetDefaultConstant : public igdeAction{
+		igdeViewCurveBezier &pView;
+	public:
+		cActionSetDefaultConstant( igdeViewCurveBezier &view );
+		virtual void OnAction();
+	};
+	
+	class DE_DLL_EXPORT cActionSetDefaultLinear : public igdeAction{
 		igdeViewCurveBezier &pView;
 	public:
 		cActionSetDefaultLinear( igdeViewCurveBezier &view );
 		virtual void OnAction();
 	};
 	
-	class cActionSetDefaultBezier : public igdeAction{
+	class DE_DLL_EXPORT cActionSetDefaultBezier : public igdeAction{
 		igdeViewCurveBezier &pView;
 	public:
 		cActionSetDefaultBezier( igdeViewCurveBezier &view );
 		virtual void OnAction();
 	};
 	
-	class cActionEditClamp : public igdeAction{
+	class DE_DLL_EXPORT cActionInvertCurveX : public igdeAction{
+		igdeViewCurveBezier &pView;
+	public:
+		cActionInvertCurveX( igdeViewCurveBezier &view );
+		virtual void OnAction();
+	};
+	
+	class DE_DLL_EXPORT cActionInvertCurveY : public igdeAction{
+		igdeViewCurveBezier &pView;
+	public:
+		cActionInvertCurveY( igdeViewCurveBezier &view );
+		virtual void OnAction();
+	};
+	
+	class DE_DLL_EXPORT cActionEditClamp : public igdeAction{
 		igdeViewCurveBezier &pView;
 	public:
 		cActionEditClamp( igdeViewCurveBezier &view );
+		virtual void OnAction();
+	};
+	
+	class DE_DLL_EXPORT cActionAutoHandles : public igdeAction{
+		igdeViewCurveBezier &pView;
+	public:
+		cActionAutoHandles( igdeViewCurveBezier &view );
 		virtual void OnAction();
 	};
 	
@@ -175,6 +206,19 @@ public:
 	/** \brief Clear curve. */
 	void ClearCurve();
 	
+	/** \brief Invert curve along X axis. */
+	void InvertCurveX();
+	
+	/** \brief Invert curve along Y axis. */
+	void InvertCurveY();
+	
+	/**
+	 * \brief Set curve to default constant curve.
+	 * \details Fits curve into clamp minimum/maximum range.
+	 * \version 1.9
+	 */
+	void SetDefaultConstant();
+	
 	/**
 	 * \brief Set curve to default linear curve.
 	 * \details Fits curve into clamp minimum/maximum range.
@@ -186,6 +230,12 @@ public:
 	 * \details Fits curve into clamp minimum/maximum range.
 	 */
 	void SetDefaultBezier();
+	
+	/**
+	 * \brief Set handles to default position for interpolation mode.
+	 * \version 1.15
+	 */
+	void SetAutoHandles();
 	
 	
 	

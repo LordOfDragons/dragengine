@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -221,6 +224,36 @@ void deClassARLimit::nfSetEnableScaleMax::RunFunction( dsRunTime *rt, dsValue *m
 	}
 }
 
+// public func void setEnableVertexPositionSetMin(bool enabled)
+deClassARLimit::nfSetEnableVertexPositionSetMin::nfSetEnableVertexPositionSetMin( const sInitData &init ) :
+dsFunction( init.clsARLimit, "setEnableVertexPositionSetMin", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsBool ); // enabled
+}
+void deClassARLimit::nfSetEnableVertexPositionSetMin::RunFunction( dsRunTime *rt, dsValue *myself ){
+	sARLimitNatDat &nd = *( ( sARLimitNatDat* )p_GetNativeData( myself ) );
+	
+	nd.rule->SetEnableVertexPositionSetMin( rt->GetValue( 0 )->GetBool() );
+	
+	if( nd.animator ){
+		nd.animator->NotifyRulesChanged();
+	}
+}
+
+// public func void setEnableVertexPositionSetMax(bool enabled)
+deClassARLimit::nfSetEnableVertexPositionSetMax::nfSetEnableVertexPositionSetMax( const sInitData &init ) :
+dsFunction( init.clsARLimit, "setEnableVertexPositionSetMax", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsBool ); // enabled
+}
+void deClassARLimit::nfSetEnableVertexPositionSetMax::RunFunction( dsRunTime *rt, dsValue *myself ){
+	sARLimitNatDat &nd = *( ( sARLimitNatDat* )p_GetNativeData( myself ) );
+	
+	nd.rule->SetEnableVertexPositionSetMax( rt->GetValue( 0 )->GetBool() );
+	
+	if( nd.animator ){
+		nd.animator->NotifyRulesChanged();
+	}
+}
+
 
 
 // public func void setMinimumPosition( Vector translation )
@@ -337,6 +370,36 @@ void deClassARLimit::nfSetMaximumScaling::RunFunction( dsRunTime *rt, dsValue *m
 	}
 }
 
+// public func void setMinimumVertexPositionSet(float scale)
+deClassARLimit::nfSetMinimumVertexPositionSet::nfSetMinimumVertexPositionSet( const sInitData &init ) :
+dsFunction( init.clsARLimit, "setMinimumVertexPositionSet", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsFlt ); // scale
+}
+void deClassARLimit::nfSetMinimumVertexPositionSet::RunFunction( dsRunTime *rt, dsValue *myself ){
+	sARLimitNatDat &nd = *( ( sARLimitNatDat* )p_GetNativeData( myself ) );
+	
+	nd.rule->SetMinimumVertexPositionSet( rt->GetValue( 0 )->GetFloat() );
+	
+	if( nd.animator ){
+		nd.animator->NotifyRulesChanged();
+	}
+}
+
+// public func void setMaximumVertexPositionSet(float scale)
+deClassARLimit::nfSetMaximumVertexPositionSet::nfSetMaximumVertexPositionSet( const sInitData &init ) :
+dsFunction( init.clsARLimit, "setMaximumVertexPositionSet", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsFlt ); // scale
+}
+void deClassARLimit::nfSetMaximumVertexPositionSet::RunFunction( dsRunTime *rt, dsValue *myself ){
+	sARLimitNatDat &nd = *( ( sARLimitNatDat* )p_GetNativeData( myself ) );
+	
+	nd.rule->SetMaximumVertexPositionSet( rt->GetValue( 0 )->GetFloat() );
+	
+	if( nd.animator ){
+		nd.animator->NotifyRulesChanged();
+	}
+}
+
 // public func void setCoordinateFrame( ARLimitCFrame coordinateFrame )
 deClassARLimit::nfSetCoordinateFrame::nfSetCoordinateFrame( const sInitData &init ) : dsFunction( init.clsARLimit,
 "setCoordinateFrame", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
@@ -372,7 +435,6 @@ void deClassARLimit::nfSetTargetBone::RunFunction( dsRunTime *rt, dsValue *mysel
 		nd.animator->NotifyRulesChanged();
 	}
 }
-
 
 
 
@@ -491,6 +553,8 @@ void deClassARLimit::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfSetEnableRotMax( init ) );
 	AddFunction( new nfSetEnableScaleMin( init ) );
 	AddFunction( new nfSetEnableScaleMax( init ) );
+	AddFunction( new nfSetEnableVertexPositionSetMin( init ) );
+	AddFunction( new nfSetEnableVertexPositionSetMax( init ) );
 	
 	AddFunction( new nfSetMinimumPosition( init ) );
 	AddFunction( new nfSetMaximumPosition( init ) );
@@ -498,6 +562,8 @@ void deClassARLimit::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfSetMaximumRotation( init ) );
 	AddFunction( new nfSetMinimumScaling( init ) );
 	AddFunction( new nfSetMaximumScaling( init ) );
+	AddFunction( new nfSetMinimumVertexPositionSet( init ) );
+	AddFunction( new nfSetMaximumVertexPositionSet( init ) );
 	AddFunction( new nfSetCoordinateFrame( init ) );
 	AddFunction( new nfSetTargetBone( init ) );
 	

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE World Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdlib.h>
@@ -39,6 +42,8 @@
 #include "terrain/meHeightTerrainSector.h"
 #include "weather/meWeather.h"
 #include "objectshape/meObjectShape.h"
+#include "../configuration/meConfiguration.h"
+#include "../gui/meWindowMain.h"
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gamedefinition/igdeGameDefinition.h>
@@ -90,8 +95,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-meWorld::meWorld( igdeEnvironment *environment ) :
+meWorld::meWorld( meWindowMain &windowMain, igdeEnvironment *environment ) :
 igdeEditableEntity( environment ),
+pWindowMain( windowMain ),
 pNextObjectID( 1 ) // 0 is reserved for invalid or undefined IDs
 {
 	deEngine * const engine = GetEngine();
@@ -103,6 +109,8 @@ pNextObjectID( 1 ) // 0 is reserved for invalid or undefined IDs
 	pSky = NULL;
 	pEngMicrophone = NULL;
 	
+	pSize.Set( 1000.0, 1000.0, 1000.0 );
+	pGravity.Set( 0.0f, -9.81f, 0.0f );
 	pHeightTerrain = NULL;
 	pWeather = NULL;
 	
@@ -124,14 +132,14 @@ pNextObjectID( 1 ) // 0 is reserved for invalid or undefined IDs
 	pNotifierSize = 0;
 	
 	try{
-		SetFilePath( "world.xml" );
+		SetFilePath( "new.deworld" );
 		
 		pGuiParams = new meWorldGuiParameters( *this );
 		
 		// create world
 		pDEWorld = engine->GetWorldManager()->CreateWorld();
-		//pDEWorld->SetSectorSize( DEPRECATDSize );
-		pDEWorld->SetGravity( decVector( 0.0f, -9.81f, 0.0f ) );
+		pDEWorld->SetSize( pSize );
+		pDEWorld->SetGravity( pGravity );
 		pDEWorld->SetDisableLights( pFullBright );
 		pUpdateAmbientLight();
 		
@@ -160,10 +168,12 @@ pNextObjectID( 1 ) // 0 is reserved for invalid or undefined IDs
 		// create cameras
 		pFreeRoamCamera = new meCamera( engine );
 		pFreeRoamCamera->SetName( "Free Roaming Camera" );
+		pFreeRoamCamera->SetEnableGI( windowMain.GetConfiguration().GetEnableGI() );
 		pFreeRoamCamera->SetWorld( this );
 		
 		pPlayerCamera = new meCamera( engine );
 		pPlayerCamera->SetName( "Player Camera" );
+		pPlayerCamera->SetEnableGI( windowMain.GetConfiguration().GetEnableGI() );
 		pPlayerCamera->SetWorld( this );
 		
 		pActiveCamera = pFreeRoamCamera;
@@ -179,11 +189,14 @@ pNextObjectID( 1 ) // 0 is reserved for invalid or undefined IDs
 		decLayerMask layerMaskMicrophone;
 		layerMaskMicrophone.SetBit( elmAudio );
 		pEngMicrophone->SetLayerMask( layerMaskMicrophone );
+		pEngMicrophone->SetEnableAuralization( windowMain.GetConfiguration().GetEnableAuralization() );
 		pDEWorld->AddMicrophone( pEngMicrophone );
 		
 		// create path find test
 		pPathFindTest = new mePathFindTest( engine );
 		pPathFindTest->SetWorld( this );
+		
+		pMusic.TakeOver( new meMusic( *this ) );
 		
 		// make sure all is set properly
 		SetChanged( false );
@@ -256,8 +269,8 @@ void meWorld::InitDelegates(){
 // Collision Detection
 ////////////////////////
 
-void meWorld::CollisionTestBox( const decDVector &position, const decQuaternion &orientation, const decVector &halfExtends,
-deBaseScriptingCollider *listener, const decCollisionFilter &filter ){
+void meWorld::CollisionTestBox( const decDVector &position, const decQuaternion &orientation,
+const decVector &halfExtends, deBaseScriptingCollider *listener, const decCollisionFilter &filter ){
 	decShapeBox *box = NULL;
 	decShapeList shapeList;
 	
@@ -281,6 +294,12 @@ deBaseScriptingCollider *listener, const decCollisionFilter &filter ){
 	pEngColCollider->SetShapes( shapeList );
 	
 	pDEWorld->ColliderHits( pEngColCollider, listener );
+}
+
+void meWorld::CollisionTestBox( const decDVector &position,const decVector &minExtend, const decVector &maxExtend,
+const decQuaternion &orientation, deBaseScriptingCollider *listener, const decCollisionFilter &filter ){
+	CollisionTestBox( decDMatrix::CreateWorld( position, orientation ) * ( ( minExtend + maxExtend ) * 0.5f ),
+		orientation, ( maxExtend - minExtend ) * 0.5f, listener, filter );
 }
 
 
@@ -331,6 +350,31 @@ void meWorld::ElementModeChanged(){
 void meWorld::ElementVisibilityChanged(){
 	NotifyEditingChanged();
 	pShowStateChanged();
+}
+
+void meWorld::EnableGIChanged(){
+	const bool enable = pWindowMain.GetConfiguration().GetEnableGI();
+	
+	pFreeRoamCamera->SetEnableGI( enable );
+	pPlayerCamera->SetEnableGI( enable );
+	
+	const int count = pObjects.GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		meObject &object = *pObjects.GetAt( i );
+		if( object.GetCamera() ){
+			object.GetCamera()->SetEnableGI( enable );
+		}
+	}
+}
+
+void meWorld::EnableAuralizationChanged(){
+	const bool enable = pWindowMain.GetConfiguration().GetEnableAuralization();
+	
+	if( pEngMicrophone ){
+		pEngMicrophone->SetEnableAuralization( enable );
+	}
 }
 
 void meWorld::ClearScalingOfNonScaledElements(){
@@ -500,12 +544,29 @@ void meWorld::RemoveAllNavSpaces(){
 // World Parameters
 /////////////////////
 
-const decVector &meWorld::GetGravity() const{
-	return pDEWorld->GetGravity();
+void meWorld::SetSize( const decDVector &size ){
+	if( ! ( size > decDVector( 1.0, 1.0, 1.0 ) ) ){
+		DETHROW( deeInvalidParam );
+	}
+	if( size.IsEqualTo( pSize ) ){
+		return;
+	}
+	
+	pSize = size;
+	pDEWorld->SetSize( size );
+	
+	NotifyWorldParametersChanged();
 }
 
 void meWorld::SetGravity( const decVector &gravity ){
+	if( gravity.IsEqualTo( pGravity ) ){
+		return;
+	}
+	
+	pGravity = gravity;
 	pDEWorld->SetGravity( gravity );
+	
+	NotifyWorldParametersChanged();
 }
 
 void meWorld::SetFullBright( bool fullBright ){
@@ -731,11 +792,16 @@ void meWorld::UpdateSensors(){
 }
 
 void meWorld::GameDefChanged(){
-	const int objectCount = pObjects.GetCount();
 	int i;
 	
+	const int objectCount = pObjects.GetCount();
 	for( i=0; i<objectCount; i++ ){
 		pObjects.GetAt( i )->OnGameDefinitionChanged();
+	}
+	
+	const int decalCount = pDecals.GetCount();
+	for( i=0; i<decalCount; i++ ){
+		pDecals.GetAt( i )->OnGameDefinitionChanged();
 	}
 }
 
@@ -822,12 +888,23 @@ void meWorld::RemoveAllNotifiers(){
 
 
 
+void meWorld::NotifyWorldParametersChanged(){
+	int i;
+	for( i=0; i<pNotifierCount; i++ ){
+		pNotifiers[ i ]->WorldParametersChanged( this );
+	}
+	
+	SetChanged( true );
+}
+
 void meWorld::NotifySkyChanged(){
 	int n;
 	
 	for( n=0; n<pNotifierCount; n++ ){
 		pNotifiers[ n ]->SkyChanged( this );
 	}
+	
+	SetChanged( true ); // this is correct. sky information is saved as world-editor specific data
 }
 
 void meWorld::NotifyModeChanged(){
@@ -867,6 +944,13 @@ void meWorld::NotifyPathFindTestChanged(){
 	
 	for( n=0; n<pNotifierCount; n++ ){
 		pNotifiers[ n ]->PathFindTestChanged( this );
+	}
+}
+
+void meWorld::NotifyMusicChanged(){
+	int i;
+	for( i=0; i<pNotifierCount; i++ ){
+		pNotifiers[ i ]->MusicChanged( this );
 	}
 }
 
@@ -1628,12 +1712,13 @@ void meWorld::pCleanUp(){
 		delete pWeather;
 	}
 	
+	pMusic = nullptr;
 	if( pPathFindTest ){
-		pPathFindTest->SetWorld( NULL );
+		pPathFindTest->SetWorld( nullptr );
 		pPathFindTest->FreeReference();
 	}
 	if( pLumimeter ){
-		pLumimeter->SetWorld( NULL );
+		pLumimeter->SetWorld( nullptr );
 		pLumimeter->FreeReference();
 	}
 	

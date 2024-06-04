@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLCUBEMAP_H_
@@ -24,8 +27,10 @@
 
 #include "../../deoglBasics.h"
 #include "../../capabilities/deoglCapsFmtSupport.h"
+#include "../../memory/consumption/deoglMemoryConsumptionTextureUse.h"
 
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/string/decString.h>
 
 class deoglPixelBuffer;
 class deoglRenderThread;
@@ -34,7 +39,7 @@ class deoglCapsTextureFormat;
 
 
 /**
- * @brief Cube Map.
+ * Cube Map.
  */
 class deoglCubeMap{
 public:
@@ -59,12 +64,13 @@ public:
 	int pMipMapLevelCount;
 	int pRealMipMapLevelCount;
 	
-	int pMemoryUsageGPU;
-	bool pMemoryUsageCompressed;
-	bool pMemoryUsageColor;
+	deoglMemoryConsumptionTextureUse pMemUse;
+	decString pDebugObjectLabel;
+	
+	
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new cube map. */
 	deoglCubeMap( deoglRenderThread &renderThread );
@@ -72,7 +78,7 @@ public:
 	~deoglCubeMap();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the texture handle. */
 	inline GLuint GetTexture() const{ return pTexture; }
@@ -108,10 +114,10 @@ public:
 	/** Sets texture level pixels from a pixel buffer without touching other mip map levels. */
 	void SetPixelsLevel( int level, const deoglPixelBuffer &pixels );
 	
-	/** \brief Copy pixels from first level into pixel buffer. */
+	/** Copy pixels from first level into pixel buffer. */
 	void GetPixels( deoglPixelBuffer &pixelBuffer ) const;
 	
-	/** \brief Copy pixels from level into pixel buffer. */
+	/** Copy pixels from level into pixel buffer. */
 	void GetPixelsLevel( int level, deoglPixelBuffer &pixelBuffer ) const;
 	
 	/** Retrieves the size of a mip map level. */
@@ -125,15 +131,14 @@ public:
 	/** Copy area from cubemap texture to this texture. */
 	void CopyFrom( const deoglCubeMap &cubemap, bool withMipMaps, int size, int srcX, int srcY, int destX, int destY );
 	
-	/** Retrieves the GPU memory usage. */
-	inline int GetMemoryUsageGPU() const{ return pMemoryUsageGPU; }
-	/** Determines if the GPU memory usage is compressed image data. */
-	inline bool GetMemoryUsageCompressed() const{ return pMemoryUsageCompressed; }
+	/** Memory consumption. */
+	inline const deoglMemoryConsumptionTextureUse &GetMemoryConsumption() const{ return pMemUse; }
+	
 	/** Update memory usage. */
 	void UpdateMemoryUsage();
 	/*@}*/
 	
-	/** @name Helper Functions */
+	/** \name Helper Functions */
 	/*@{*/
 	/** Sets the texture format suitable for texture mapping according to the provided texture description. */
 	void SetMapingFormat( int channels, bool useFloat, bool compressed );
@@ -141,21 +146,18 @@ public:
 	void SetFBOFormat( int channels, bool useFloat );
 	
 	/** Sets the suitable depth texture format. */
-	void SetDepthFormat();
-	
-	/** Sets the suitable depth texture format for rendering using an FBO. */
-	void SetFBODepthFormat();
-	
-	/** Sets the suitable depth16 texture format for rendering using an FBO. */
-	void SetFBODepth16Format();
-	
-	/** \brief Set floating point depth texture format suitable for rendering using an FBO. */
-	void SetDepthFormatFloat();
+	void SetDepthFormat( bool useFloat );
 	
 	/** Creates a camera matrix for a cube map face. */
 	static void CreateMatrixForFace( decMatrix &matrix, const decVector &position, int face );
 	static void CreateMatrixForFace( decDMatrix &matrix, const decDVector &position, int face );
+	
+	/** Set debug object label. */
+	void SetDebugObjectLabel( const char *name );
 	/*@}*/
+	
+private:
+	void pUpdateDebugObjectLabel();
 };
 
 #endif

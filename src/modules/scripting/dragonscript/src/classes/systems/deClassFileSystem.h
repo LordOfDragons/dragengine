@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DECLASSFILESYSTEM_H_
@@ -26,7 +29,7 @@
 
 class deEngine;
 class deScriptingDragonScript;
-
+class decPath;
 
 
 /**
@@ -36,6 +39,8 @@ class deClassFileSystem : public dsClass{
 private:
 	deScriptingDragonScript *pDS;
 	dsClass *pClsFileType;
+	dsClass *pClsFileExtension;
+	dsClass *pClsResourceLoaderType;
 	
 	dsValue *pTypeFile;
 	dsValue *pTypeDirectory;
@@ -59,18 +64,32 @@ public:
 	void CreateClassMembers( dsEngine *engine );
 	
 	inline dsClass *GetClassFileType() const{ return pClsFileType; }
+	inline dsClass *GetClassFileExtension() const{ return pClsFileExtension; }
+	inline dsClass *GetClassResourceLoaderType() const{ return pClsResourceLoaderType; }
 	
 	void PrepareTypes();
 	
 	inline dsValue *GetTypeFile() const{ return pTypeFile; }
 	inline dsValue *GetTypeDirectory() const{ return pTypeDirectory; }
 	inline dsValue *GetTypeSpecial() const{ return pTypeSpecial; }
+	
+	void BrowseNativeDirectory( const decPath &path ) const;
+	void OpenUrl( const char *url ) const;
 	/*@}*/
 	
 private:
 	struct sInitData{
-		dsClass *clsFileSys, *clsVoid, *clsByte, *clsBool, *clsInt, *clsStr, *clsBlock;
+		dsClass *clsFileSys;
+		dsClass *clsVoid;
+		dsClass *clsByte;
+		dsClass *clsBool;
+		dsClass *clsInt;
+		dsClass *clsStr;
+		dsClass *clsBlock;
 		dsClass *clsFileType;
+		dsClass *clsFileExtension;
+		dsClass *clsResourceLoaderType;
+		dsClass *clsArray;
 	};
 #define DEF_NATFUNC(name) \
 	class name : public dsFunction{ \
@@ -91,6 +110,11 @@ private:
 	DEF_NATFUNC( nfSearchFiles );
 	DEF_NATFUNC( nfGetFileType );
 	DEF_NATFUNC( nfPathMatchesPattern );
+	DEF_NATFUNC( nfBrowseOverlay );
+	DEF_NATFUNC( nfBrowseCapture );
+	DEF_NATFUNC( nfBrowseConfig );
+	DEF_NATFUNC( nfGetFileExtensions );
+	DEF_NATFUNC( nfOpenUrl );
 #undef DEF_NATFUNC
 };
 

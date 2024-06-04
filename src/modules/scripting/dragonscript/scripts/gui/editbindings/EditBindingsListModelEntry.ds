@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -44,17 +47,10 @@ class EditBindingsListModelEntry
 	
 	
 	
-	/** \brief Command. */
-	private var Command pCommand
-	
-	/** \brief Input source. */
-	private var InputSource pInputSource
-	
-	/** \brief Bound axis bindings matching input source as array of Binding. */
-	private var Array pAxisBindings
-	
-	/** \brief Bound button bindings matching input source as array of Binding. */
-	private var Array pButtonBindings
+	var Command pCommand
+	var InputSource pInputSource
+	var Array pAxisBindings
+	var Array pButtonBindings
 	
 	
 	
@@ -68,44 +64,52 @@ class EditBindingsListModelEntry
 	 * \param command Command to show.
 	 * \param inputSource Input source required for this command.
 	 */
-	public func new( Command command, InputSource inputSource )
+	func new(Command command, InputSource inputSource)
 		if command == null
 			throw EInvalidParam.new()
 		end
 		
-		this.pCommand = command
-		this.pInputSource = inputSource
-		this.pAxisBindings = Array.new()
-		this.pButtonBindings = Array.new()
+		pCommand = command
+		pInputSource = inputSource
+		pAxisBindings = Array.new()
+		pButtonBindings = Array.new()
 	end
 	
 	
 	
 	/** \brief Command. */
-	public func Command getCommand()
-		return this.pCommand
+	func Command getCommand()
+		return pCommand
 	end
 	
 	/** \brief Input source. */
-	public func InputSource getInputSource()
-		return this.pInputSource
+	func InputSource getInputSource()
+		return pInputSource
 	end
 	
 	
 	
 	/** \brief Number of axis bindings. */
-	public func int getAxisBindingCount()
-		return this.pAxisBindings.getCount()
+	func int getAxisBindingCount()
+		return pAxisBindings.getCount()
 	end
 	
 	/** \brief Axis binding at index. */
-	public func Binding getAxisBindingAt( int index )
-		return this.pAxisBindings.getAt( index ) cast Binding
+	func Binding getAxisBindingAt(int index)
+		return pAxisBindings.getAt(index) cast Binding
+	end
+	
+	/**
+	 * \brief Axis binding is present.
+	 * \version 1.20
+	 */
+	func bool hasAxisBinding(Binding binding)
+		return pAxisBindings.has(binding)
 	end
 	
 	/** \brief Visit axis bindings with block with parameter Binding. */
-	public func void forEachAxisBinding( Block ablock )
-		this.pAxisBindings.forEach( ablock )
+	func void forEachAxisBinding(Block ablock)
+		pAxisBindings.forEach(ablock)
 	end
 	
 	/**
@@ -113,11 +117,11 @@ class EditBindingsListModelEntry
 	 * 
 	 * Call model.notifyContentChanged(int, int) to notifiy listeners about the change.
 	 */
-	public func void addAxisBinding( Binding binding )
+	func void addAxisBinding(Binding binding)
 		if binding == null
 			throw EInvalidParam.new()
 		end
-		this.pAxisBindings.add( binding )
+		pAxisBindings.add(binding)
 	end
 	
 	/**
@@ -125,25 +129,43 @@ class EditBindingsListModelEntry
 	 * 
 	 * Call model.notifyContentChanged(int, int) to notifiy listeners about the change.
 	 */
-	public func void removeAllAxisBindings()
-		this.pAxisBindings.removeAll()
+	func void removeAllAxisBindings()
+		pAxisBindings.removeAll()
+	end
+	
+	/**
+	 * \brief Remove axis binding.
+	 * \version 1.20
+	 * 
+	 * Call model.notifyContentChanged(int, int) to notifiy listeners about the change.
+	 */
+	func void removeAxisBinding(Binding binding)
+		pAxisBindings.remove(binding)
 	end
 	
 	
 	
 	/** \brief Number of button bindings. */
-	public func int getButtonBindingCount()
-		return this.pButtonBindings.getCount()
+	func int getButtonBindingCount()
+		return pButtonBindings.getCount()
 	end
 	
 	/** \brief Button binding at index. */
-	public func Binding getButtonBindingAt( int index )
-		return this.pButtonBindings.getAt( index ) cast Binding
+	func Binding getButtonBindingAt(int index)
+		return pButtonBindings.getAt(index) cast Binding
+	end
+	
+	/**
+	 * \brief Button binding is present.
+	 * \version 1.20
+	 */
+	func bool hasButtonBinding(Binding binding)
+		return pButtonBindings.has(binding)
 	end
 	
 	/** \brief Visit button bindings with block with parameter Binding. */
-	public func void forEachButtonBinding( Block ablock )
-		this.pButtonBindings.forEach( ablock )
+	func void forEachButtonBinding(Block ablock)
+		pButtonBindings.forEach(ablock)
 	end
 	
 	/**
@@ -151,11 +173,11 @@ class EditBindingsListModelEntry
 	 * 
 	 * Call model.notifyContentChanged(int, int) to notifiy listeners about the change.
 	 */
-	public func void addButtonBinding( Binding binding )
+	func void addButtonBinding(Binding binding)
 		if binding == null
 			throw EInvalidParam.new()
 		end
-		this.pButtonBindings.add( binding )
+		pButtonBindings.add(binding)
 	end
 	
 	/**
@@ -163,8 +185,18 @@ class EditBindingsListModelEntry
 	 * 
 	 * Call model.notifyContentChanged(int, int) to notifiy listeners about the change.
 	 */
-	public func void removeAllButtonBindings()
-		this.pButtonBindings.removeAll()
+	func void removeAllButtonBindings()
+		pButtonBindings.removeAll()
+	end
+	
+	/**
+	 * \brief Remove button binding.
+	 * \version 1.20
+	 * 
+	 * Call model.notifyContentChanged(int, int) to notifiy listeners about the change.
+	 */
+	func void removeButtonBinding(Binding binding)
+		pButtonBindings.remove(binding)
 	end
 	
 	
@@ -175,20 +207,20 @@ class EditBindingsListModelEntry
 	 * Call after bindings affecting command changed in the bindings manager. Call
 	 * model.notifyContentChanged(int, int) to notifiy listeners about the change.
 	 */
-	public func void updateBindings( EditBindingsListModel model )
-		this.pAxisBindings.removeAll()
-		this.pButtonBindings.removeAll()
+	func void updateBindings(EditBindingsListModel model)
+		pAxisBindings.removeAll()
+		pButtonBindings.removeAll()
 		
-		model.getBindingManager().forEachAxisBinding( block Binding each
-			if each.getCommand() == this.pCommand
-				this.pAxisBindings.add( each )
+		model.getBindingManager().forEachAxisBinding(block Binding each
+			if each.getCommand() == pCommand
+				pAxisBindings.add(each)
 			end
-		end )
+		end)
 		
-		model.getBindingManager().forEachButtonBinding( block Binding each
-			if each.getCommand() == this.pCommand
-				this.pButtonBindings.add( each )
+		model.getBindingManager().forEachButtonBinding(block Binding each
+			if each.getCommand() == pCommand
+				pButtonBindings.add(each)
 			end
-		end )
+		end)
 	end
 end

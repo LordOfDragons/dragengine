@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -31,8 +34,6 @@
 #include "../extensions/deoglExtensions.h"
 #include "../skin/shader/deoglSkinShader.h"
 #include "../shaders/paramblock/deoglSPBlockMemory.h"
-#include "../shaders/paramblock/deoglSPBlockUBO.h"
-#include "../shaders/paramblock/deoglSPBlockSSBO.h"
 #include "../shaders/paramblock/shared/deoglSharedSPBListUBO.h"
 #include "../shaders/paramblock/shared/deoglSharedSPBListSSBO.h"
 #include "../shapes/deoglShapeManager.h"
@@ -59,19 +60,11 @@ pRenderThread( renderThread ),
 pShapeManager( NULL ),
 pSharedVBOListList( NULL ),
 
-pLayoutSkinInstanceUBO( NULL ),
 pInstanceArraySizeUBO( 0 ),
-
-pLayoutSkinInstanceSSBO( NULL ),
 pInstanceArraySizeSSBO( 0 ),
 
-pLayoutOccMeshInstanceUBO( NULL ),
-pOccMeshInstanceArraySizeUBO( 0 ),
-
-pLayoutOccMeshInstanceSSBO( NULL ),
-pOccMeshInstanceArraySizeSSBO( 0 ),
-
 pBillboardSPBListUBO( NULL ),
+pBillboardRTIGroups( deoglSharedSPBRTIGroupList::Ref::New( new deoglSharedSPBRTIGroupList( renderThread ) ) ),
 
 pTemporaryVBOData( NULL ),
 pTemporaryVBODataSize( 0 )
@@ -90,18 +83,19 @@ deoglRTBufferObject::~deoglRTBufferObject(){
 ///////////////
 
 void deoglRTBufferObject::Init(){
-	pSharedVBOListList = new deoglSharedVBOListList( pRenderThread, 4194304 ); // 8388608
+	pSharedVBOListList = new deoglSharedVBOListList( pRenderThread, 4194304, 4194304 ); // 8388608
 	pCreateSharedVBOLists();
 	
 	pCreateShapes();
 	
 	pCreateLayoutSkinInstance();
+	pCreateLayoutTextureInstance();
 	pCreateLayoutOccMeshInstance();
 	pCreateLayoutInstanceIndex();
 	
 	pCreateSharedSPBLists(); // depends on pCreateLayout*()
 	
-	pBillboardSPBListUBO = new deoglSharedSPBListUBO( pRenderThread, GetLayoutSkinInstanceUBO() );
+	pBillboardSPBListUBO = new deoglSharedSPBListUBO( pRenderThread, pLayoutSkinInstanceUBO );
 }
 
 
@@ -151,23 +145,9 @@ void deoglRTBufferObject::pCleanUp(){
 		delete pBillboardSPBListUBO;
 	}
 	
-	if( pLayoutOccMeshInstanceUBO ){
-		pLayoutOccMeshInstanceUBO->FreeReference();
-	}
-	if( pLayoutOccMeshInstanceSSBO ){
-		pLayoutOccMeshInstanceSSBO->FreeReference();
-	}
-	
-	if( pLayoutSkinInstanceUBO ){
-		pLayoutSkinInstanceUBO->FreeReference();
-	}
-	if( pLayoutSkinInstanceSSBO ){
-		pLayoutSkinInstanceSSBO->FreeReference();
-	}
-	
 	// pSharedVBOListByType are not deleted since they are shared from pSharedVBOListList
 	
-	for( i=esspblSkinInstanceUBO; i<=esspblOccMeshInstanceSSBO; i++ ){
+	for( i=esspblSkinInstanceUBO; i<=esspblSkinTextureSSBO; i++ ){
 		if( pSharedSPBList[ i ] ){
 			delete pSharedSPBList[ i ];
 		}
@@ -188,32 +168,47 @@ void deoglRTBufferObject::pCleanUpReports(){
 	if( pSharedSPBList[ esspblSkinInstanceUBO ] ){
 		const deoglSharedSPBList &list = *pSharedSPBList[ esspblSkinInstanceUBO ];
 		logger.LogInfoFormat( "pSharedSPBList(SkinInstanceUBO): count=%d size=%.2fMB",
-			list.GetCount(), 1e-6f * list.GetLayout().GetBufferSize() * list.GetCount() );
+			list.GetCount(), 1e-6f * list.GetLayout()->GetBufferSize() * list.GetCount() );
 	}
 	if( pSharedSPBList[ esspblSkinInstanceSSBO ] ){
 		const deoglSharedSPBList &list = *pSharedSPBList[ esspblSkinInstanceSSBO ];
 		logger.LogInfoFormat( "pSharedSPBList(SkinInstanceSSBO): count=%d size=%.2fMB",
-			list.GetCount(), 1e-6f * list.GetLayout().GetBufferSize() * list.GetCount() );
+			list.GetCount(), 1e-6f * list.GetLayout()->GetBufferSize() * list.GetCount() );
 	}
 	
 	if( pSharedSPBList[ esspblOccMeshInstanceUBO ] ){
 		const deoglSharedSPBList &list = *pSharedSPBList[ esspblOccMeshInstanceUBO ];
 		logger.LogInfoFormat( "pSharedSPBList(OccMeshInstanceUBO): count=%d size=%.2fMB",
-			list.GetCount(), 1e-6f * list.GetLayout().GetBufferSize() * list.GetCount() );
+			list.GetCount(), 1e-6f * list.GetLayout()->GetBufferSize() * list.GetCount() );
 	}
 	if( pSharedSPBList[ esspblOccMeshInstanceSSBO ] ){
 		const deoglSharedSPBList &list = *pSharedSPBList[ esspblOccMeshInstanceSSBO ];
 		logger.LogInfoFormat( "pSharedSPBList(OccMeshInstanceSSBO): count=%d size=%.2fMB",
-			list.GetCount(), 1e-6f * list.GetLayout().GetBufferSize() * list.GetCount() );
+			list.GetCount(), 1e-6f * list.GetLayout()->GetBufferSize() * list.GetCount() );
+	}
+	
+	if( pSharedSPBList[ esspblSkinTextureUBO ] ){
+		const deoglSharedSPBList &list = *pSharedSPBList[ esspblSkinTextureUBO ];
+		logger.LogInfoFormat( "pSharedSPBList(SkinTextureUBO): count=%d size=%.2fMB",
+			list.GetCount(), 1e-6f * list.GetLayout()->GetBufferSize() * list.GetCount() );
+	}
+	if( pSharedSPBList[ esspblSkinTextureSSBO ] ){
+		const deoglSharedSPBList &list = *pSharedSPBList[ esspblSkinTextureSSBO ];
+		logger.LogInfoFormat( "pSharedSPBList(SkinTextureSSBO): count=%d size=%.2fMB",
+			list.GetCount(), 1e-6f * list.GetLayout()->GetBufferSize() * list.GetCount() );
 	}
 }
 
 
 
 void deoglRTBufferObject::pCreateLayoutSkinInstance(){
-	const int uboMaxSize = pRenderThread.GetCapabilities().GetUBOMaxSize();
-	const int maxUBOIndexCount = pRenderThread.GetConfiguration().GetMaxSPBIndexCount();
-	const int maxSSBOIndexCount = pRenderThread.GetConfiguration().GetMaxSPBIndexCount();
+	const deoglRTChoices &choices = pRenderThread.GetChoices();
+	const deoglCapabilities &caps = pRenderThread.GetCapabilities();
+	const deoglConfiguration &config = pRenderThread.GetConfiguration();
+	
+	const int uboMaxSize = caps.GetUBOMaxSize();
+	const int maxUBOIndexCount = config.GetMaxSPBIndexCount();
+	const int maxSSBOIndexCount = config.GetMaxSPBIndexCount();
 	
 	pLayoutSkinInstanceUBO = deoglSkinShader::CreateLayoutSkinInstanceUBO( pRenderThread );
 	pLayoutSkinInstanceUBO->SetElementCount( decMath::min( maxUBOIndexCount,
@@ -227,9 +222,8 @@ void deoglRTBufferObject::pCreateLayoutSkinInstance(){
 		pLayoutSkinInstanceUBO->GetElementCount() );
 	
 	// shared spb layout using SSBO if supported
-	if( pRenderThread.GetExtensions().GetHasExtension(
-	deoglExtensions::ext_ARB_shader_storage_buffer_object ) ){
-		const int ssboMaxSize = pRenderThread.GetCapabilities().GetSSBOMaxSize();
+	if( choices.GetUseSSBORender() ){
+		const int ssboMaxSize = caps.GetSSBOMaxSize();
 		
 		pLayoutSkinInstanceSSBO = deoglSkinShader::CreateLayoutSkinInstanceSSBO( pRenderThread );
 		pLayoutSkinInstanceSSBO->SetElementCount( decMath::min( maxSSBOIndexCount,
@@ -244,19 +238,23 @@ void deoglRTBufferObject::pCreateLayoutSkinInstance(){
 }
 
 void deoglRTBufferObject::pCreateLayoutOccMeshInstance(){
-	// ubo layout
-	const bool rowMajor = pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working();
-	const int uboMaxSize = pRenderThread.GetCapabilities().GetUBOMaxSize();
-	const int maxUBOIndexCount = pRenderThread.GetConfiguration().GetMaxSPBIndexCount();
-	const int maxSSBOIndexCount = pRenderThread.GetConfiguration().GetMaxSPBIndexCount();
+	const deoglRTChoices &choices = pRenderThread.GetChoices();
+	const deoglCapabilities &caps = pRenderThread.GetCapabilities();
+	const deoglConfiguration &config = pRenderThread.GetConfiguration();
 	
-	pLayoutOccMeshInstanceUBO = new deoglSPBlockUBO( pRenderThread );
+	// ubo layout
+	const bool rowMajor = caps.GetUBOIndirectMatrixAccess().Working();
+	const int uboMaxSize = caps.GetUBOMaxSize();
+	const int maxUBOIndexCount = config.GetMaxSPBIndexCount();
+	const int maxSSBOIndexCount = config.GetMaxSPBIndexCount();
+	
+	pLayoutOccMeshInstanceUBO.TakeOver( new deoglSPBlockUBO( pRenderThread ) );
 	pLayoutOccMeshInstanceUBO->SetRowMajor( rowMajor );
+	pLayoutOccMeshInstanceUBO->SetCompact( false );
 	pLayoutOccMeshInstanceUBO->SetParameterCount( 1 );
 	pLayoutOccMeshInstanceUBO->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 1 ); // mat4x3 pMatrixModel
 	
 	pLayoutOccMeshInstanceUBO->MapToStd140();
-	pLayoutOccMeshInstanceUBO->CalculateOffsetPadding();
 	pLayoutOccMeshInstanceUBO->SetElementCount( decMath::min( maxUBOIndexCount,
 		uboMaxSize / pLayoutOccMeshInstanceUBO->GetElementStride() ) );
 	pLayoutOccMeshInstanceUBO->SetBindingPoint( deoglSkinShader::eubInstanceParameters );
@@ -267,17 +265,16 @@ void deoglRTBufferObject::pCreateLayoutOccMeshInstance(){
 		pLayoutOccMeshInstanceUBO->GetElementCount() );
 	
 	// ssbo layout
-	if( pRenderThread.GetExtensions().GetHasExtension(
-	deoglExtensions::ext_ARB_shader_storage_buffer_object ) ){
-		const int ssboMaxSize = pRenderThread.GetCapabilities().GetSSBOMaxSize();
+	if( choices.GetUseSSBORender() ){
+		const int ssboMaxSize = caps.GetSSBOMaxSize();
 		
-		pLayoutOccMeshInstanceSSBO = new deoglSPBlockSSBO( pRenderThread );
+		pLayoutOccMeshInstanceSSBO.TakeOver( new deoglSPBlockSSBO( pRenderThread, deoglSPBlockSSBO::etStream ) );
 		pLayoutOccMeshInstanceSSBO->SetRowMajor( rowMajor );
+		pLayoutOccMeshInstanceSSBO->SetCompact( false );
 		pLayoutOccMeshInstanceSSBO->SetParameterCount( 1 );
 		pLayoutOccMeshInstanceSSBO->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 1 ); // mat4x3 pMatrixModel
 		
 		pLayoutOccMeshInstanceSSBO->MapToStd140();
-		pLayoutOccMeshInstanceSSBO->CalculateOffsetPadding();
 		pLayoutOccMeshInstanceSSBO->SetBindingPoint( deoglSkinShader::essboInstanceParameters );
 		
 		pLayoutOccMeshInstanceSSBO->SetElementCount( decMath::min( maxSSBOIndexCount,
@@ -290,9 +287,48 @@ void deoglRTBufferObject::pCreateLayoutOccMeshInstance(){
 	}
 }
 
+void deoglRTBufferObject::pCreateLayoutTextureInstance(){
+	const deoglRTChoices &choices = pRenderThread.GetChoices();
+	const deoglCapabilities &caps = pRenderThread.GetCapabilities();
+	const deoglConfiguration &config = pRenderThread.GetConfiguration();
+	
+	const int uboMaxSize = caps.GetUBOMaxSize();
+	const int maxUBOIndexCount = config.GetMaxSPBIndexCount();
+	const int maxSSBOIndexCount = config.GetMaxSPBIndexCount();
+	
+	pLayoutSkinTextureUBO = deoglSkinShader::CreateLayoutSkinTextureUBO( pRenderThread );
+	pLayoutSkinTextureUBO->SetElementCount( decMath::min( maxUBOIndexCount,
+		uboMaxSize / pLayoutSkinTextureUBO->GetElementStride() ) );
+	pLayoutSkinTextureUBO->SetBindingPoint( deoglSkinShader::eubTextureParameters );
+// 	pLayoutSkinTextureUBO->DebugPrintConfig( "pLayoutSkinInstanceUBO" );
+	
+	pRenderThread.GetLogger().LogInfoFormat(
+		"pLayoutSkinTextureUBO: uboMaxSize=%d elementStride=%d maxCount=%d",
+		uboMaxSize, pLayoutSkinTextureUBO->GetElementStride(),
+		pLayoutSkinTextureUBO->GetElementCount() );
+	
+	// shared spb layout using SSBO if supported
+	if( choices.GetUseSSBORender() ){
+		const int ssboMaxSize = caps.GetSSBOMaxSize();
+		
+		pLayoutSkinTextureSSBO = deoglSkinShader::CreateLayoutSkinTextureSSBO( pRenderThread );
+		pLayoutSkinTextureSSBO->SetElementCount( decMath::min( maxSSBOIndexCount,
+			ssboMaxSize / pLayoutSkinTextureSSBO->GetElementStride() ) );
+		pLayoutSkinTextureSSBO->SetBindingPoint( deoglSkinShader::essboTextureParameters );
+		
+		pRenderThread.GetLogger().LogInfoFormat(
+			"pLayoutSkinTextureSSBO: uboMaxSize=%d elementStride=%d maxCount=%d",
+			ssboMaxSize, pLayoutSkinTextureSSBO->GetElementStride(),
+			pLayoutSkinTextureSSBO->GetElementCount() );
+	}
+}
+
 void deoglRTBufferObject::pCreateLayoutInstanceIndex(){
-	const int maxUBOIndexCount = pRenderThread.GetConfiguration().GetMaxSPBIndexCount();
-	const int maxSSBOIndexCount = pRenderThread.GetConfiguration().GetMaxSPBIndexCount();
+	const deoglRTChoices &choices = pRenderThread.GetChoices();
+	const deoglConfiguration &config = pRenderThread.GetConfiguration();
+	
+	const int maxUBOIndexCount = config.GetMaxSPBIndexCount();
+	const int maxSSBOIndexCount = config.GetMaxSPBIndexCount();
 	
 	// spb instance constant using int32 indices and ivec4 packing.
 	pInstanceArraySizeUBO = decMath::min( maxUBOIndexCount,
@@ -300,8 +336,7 @@ void deoglRTBufferObject::pCreateLayoutInstanceIndex(){
 	pRenderThread.GetLogger().LogInfoFormat( "pInstanceArraySizeUBO %d", pInstanceArraySizeUBO );
 	
 	// spb instance constant using int32 indices and ivec4 packing.
-	if( pRenderThread.GetExtensions().GetHasExtension(
-	deoglExtensions::ext_ARB_shader_storage_buffer_object ) ){
+	if( choices.GetUseSSBORender() ){
 		pInstanceArraySizeSSBO = decMath::min( maxSSBOIndexCount,
 			pRenderThread.GetCapabilities().GetSSBOMaxSize() / 16 );
 		pRenderThread.GetLogger().LogInfoFormat( "pInstanceArraySizeSSBO %d", pInstanceArraySizeSSBO );
@@ -309,19 +344,26 @@ void deoglRTBufferObject::pCreateLayoutInstanceIndex(){
 }
 
 void deoglRTBufferObject::pCreateSharedSPBLists(){
+	const deoglRTChoices &choices = pRenderThread.GetChoices();
+	
 	pSharedSPBList[ esspblSkinInstanceUBO ] = new deoglSharedSPBListUBO(
 		pRenderThread, pLayoutSkinInstanceUBO );
 	
 	pSharedSPBList[ esspblOccMeshInstanceUBO ] = new deoglSharedSPBListUBO(
 		pRenderThread, pLayoutOccMeshInstanceUBO );
 	
-	if( pRenderThread.GetExtensions().GetHasExtension(
-	deoglExtensions::ext_ARB_shader_storage_buffer_object ) ){
+	pSharedSPBList[ esspblSkinTextureUBO ] = new deoglSharedSPBListUBO(
+		pRenderThread, pLayoutSkinTextureUBO );
+	
+	if( choices.GetUseSSBORender() ){
 		pSharedSPBList[ esspblSkinInstanceSSBO ] = new deoglSharedSPBListSSBO(
 			pRenderThread, pLayoutSkinInstanceSSBO );
 		
 		pSharedSPBList[ esspblOccMeshInstanceSSBO ] = new deoglSharedSPBListSSBO(
 			pRenderThread, pLayoutOccMeshInstanceSSBO );
+		
+		pSharedSPBList[ esspblSkinTextureSSBO ] = new deoglSharedSPBListSSBO(
+			pRenderThread, pLayoutSkinTextureSSBO );
 	}
 }
 
@@ -329,20 +371,18 @@ void deoglRTBufferObject::pCreateSharedSPBLists(){
 
 void deoglRTBufferObject::pCreateSharedVBOLists(){
 	// static model: esvbolStaticModel
-	// normal and tanget are stored in a reduced format of size 6 bytes. ATI can't handle this
-	// situation as the alignment is no more 4 bytes. for these two values a padding of 2 bytes
-	// is added
+	// supports compute shader use. this requires aligning to vec4 as basic units.
 	// 
 	// name        | offset | type   | components
 	// ------------+--------+--------+-----------
 	// position    |      0 | float  | x, y, z
-	// real-normal |     12 | byte   | x, y, z
-	// normal      |     16 | short  | x, y, z
-	// tangent     |     24 | short  | x, y, z, w
-	// tex-coord   |     32 | float  | u, v
+	// real-normal |     16 | float  | x, y, z
+	// normal      |     32 | float  | x, y, z
+	// tangent     |     48 | float  | x, y, z, w
+	// tex-coord   |     64 | float  | u, v
 	deoglVBOLayout layoutStaticModel;
 	layoutStaticModel.SetAttributeCount( 5 );
-	layoutStaticModel.SetStride( 40 ); // 32 is said to be best alignment
+	layoutStaticModel.SetStride( 80 );
 	layoutStaticModel.SetIndexType( deoglVBOLayout::eitUnsignedInt );
 	
 	layoutStaticModel.GetAttributeAt( 0 ).SetComponentCount( 3 );
@@ -350,104 +390,97 @@ void deoglRTBufferObject::pCreateSharedVBOLists(){
 	layoutStaticModel.GetAttributeAt( 0 ).SetOffset( 0 );
 	
 	layoutStaticModel.GetAttributeAt( 1 ).SetComponentCount( 3 );
-	layoutStaticModel.GetAttributeAt( 1 ).SetDataType( deoglVBOAttribute::edtByte );
-	layoutStaticModel.GetAttributeAt( 1 ).SetOffset( 12 );
+	layoutStaticModel.GetAttributeAt( 1 ).SetDataType( deoglVBOAttribute::edtFloat );
+	layoutStaticModel.GetAttributeAt( 1 ).SetOffset( 16 );
 	
 	layoutStaticModel.GetAttributeAt( 2 ).SetComponentCount( 3 );
-	layoutStaticModel.GetAttributeAt( 2 ).SetDataType( deoglVBOAttribute::edtShort );
-	layoutStaticModel.GetAttributeAt( 2 ).SetOffset( 16 );
+	layoutStaticModel.GetAttributeAt( 2 ).SetDataType( deoglVBOAttribute::edtFloat );
+	layoutStaticModel.GetAttributeAt( 2 ).SetOffset( 32 );
 	
 	layoutStaticModel.GetAttributeAt( 3 ).SetComponentCount( 4 );
-	layoutStaticModel.GetAttributeAt( 3 ).SetDataType( deoglVBOAttribute::edtShort );
-	layoutStaticModel.GetAttributeAt( 3 ).SetOffset( 24 );
+	layoutStaticModel.GetAttributeAt( 3 ).SetDataType( deoglVBOAttribute::edtFloat );
+	layoutStaticModel.GetAttributeAt( 3 ).SetOffset( 48 );
 	
 	layoutStaticModel.GetAttributeAt( 4 ).SetComponentCount( 2 );
 	layoutStaticModel.GetAttributeAt( 4 ).SetDataType( deoglVBOAttribute::edtFloat );
-	layoutStaticModel.GetAttributeAt( 4 ).SetOffset( 32 );
+	layoutStaticModel.GetAttributeAt( 4 ).SetOffset( 64 );
 	
 	pSharedVBOListByType[ esvbolStaticModel ] =
 		pSharedVBOListList->GetWith( layoutStaticModel, GL_STATIC_DRAW );
 	
 	// static model: esvbolStaticModelWeight
-	// normal and tanget are stored in a reduced format of size 6 bytes. ATI can't handle this
-	// situation as the alignment is no more 4 bytes. for these two values a padding of 2 bytes
-	// is added
+	// supports compute shader use. this requires aligning to vec4 as basic units.
 	// 
 	// name        | offset | type   | components
 	// ------------+--------+--------+-----------
 	// position    |      0 | float  | x, y, z
-	// real-normal |     12 | byte   | x, y, z
-	// normal      |     16 | short  | x, y, z
-	// tangent     |     24 | short  | x, y, z, w
-	// tex-coord   |     32 | float  | u, v
-	// weight      |     40 | iint   | weight
+	// real-normal |     16 | float  | x, y, z
+	// normal      |     32 | float  | x, y, z
+	// tangent     |     48 | float  | x, y, z, w
+	// tex-coord   |     64 | float  | u, v
+	// weight      |     72 | iint   | weight
 	deoglVBOLayout layoutStaticModelWeight( layoutStaticModel );
 	layoutStaticModelWeight.SetAttributeCount( 6 );
-	layoutStaticModelWeight.SetStride( 44 );
 	
 	layoutStaticModelWeight.GetAttributeAt( 5 ).SetComponentCount( 1 );
 	layoutStaticModelWeight.GetAttributeAt( 5 ).SetDataType( deoglVBOAttribute::edtIInt );
-	layoutStaticModelWeight.GetAttributeAt( 5 ).SetOffset( 40 );
+	layoutStaticModelWeight.GetAttributeAt( 5 ).SetOffset( 72 );
 	
 	pSharedVBOListByType[ esvbolStaticModelWeight ] =
 		pSharedVBOListList->GetWith( layoutStaticModelWeight, GL_STATIC_DRAW );
 	
 	// static model: esvbolStaticModelTCS1
-	// normal and tanget are stored in a reduced format of size 6 bytes. ATI can't handle this
-	// situation as the alignment is no more 4 bytes. for these two values a padding of 2 bytes
-	// is added
+	// supports compute shader use. this requires aligning to vec4 as basic units.
 	// 
 	// name        | offset | type   | components
 	// ------------+--------+--------+-----------
 	// position    |      0 | float  | x, y, z
-	// real-normal |     12 | byte   | x, y, z
-	// normal      |     16 | short  | x, y, z
-	// tangent     |     24 | short  | x, y, z, w
-	// tex-coord   |     32 | float  | u, v
-	// tangent2    |     40 | short  | x, y, z, w
-	// tex-coord2  |     48 | float  | u, v
+	// real-normal |     16 | float  | x, y, z
+	// normal      |     32 | float  | x, y, z
+	// tangent     |     48 | float  | x, y, z, w
+	// tex-coord   |     64 | float  | u, v
+	// tangent2    |     80 | short  | x, y, z, w
+	// tex-coord2  |     96 | float  | u, v
 	deoglVBOLayout layoutStaticModelTCS1( layoutStaticModel );
 	layoutStaticModelTCS1.SetAttributeCount( 7 );
-	layoutStaticModelTCS1.SetStride( 56 );
+	layoutStaticModelTCS1.SetStride( 112 );
 	
 	layoutStaticModelTCS1.GetAttributeAt( 5 ).SetComponentCount( 4 );
-	layoutStaticModelTCS1.GetAttributeAt( 5 ).SetDataType( deoglVBOAttribute::edtShort );
-	layoutStaticModelTCS1.GetAttributeAt( 5 ).SetOffset( 40 );
+	layoutStaticModelTCS1.GetAttributeAt( 5 ).SetDataType( deoglVBOAttribute::edtFloat );
+	layoutStaticModelTCS1.GetAttributeAt( 5 ).SetOffset( 80 );
 	
 	layoutStaticModelTCS1.GetAttributeAt( 6 ).SetComponentCount( 2 );
 	layoutStaticModelTCS1.GetAttributeAt( 6 ).SetDataType( deoglVBOAttribute::edtFloat );
-	layoutStaticModelTCS1.GetAttributeAt( 6 ).SetOffset( 48 );
+	layoutStaticModelTCS1.GetAttributeAt( 6 ).SetOffset( 96 );
 	
 	pSharedVBOListByType[ esvbolStaticModelTCS1 ] =
 		pSharedVBOListList->GetWith( layoutStaticModelTCS1, GL_STATIC_DRAW );
 	
 	// static model: esvbolStaticModelTCS2
-	// normal and tanget are stored in a reduced format of size 6 bytes. ATI can't handle this
-	// situation as the alignment is no more 4 bytes. for these two values a padding of 2 bytes
-	// is added
+	// supports compute shader use. this requires aligning to vec4 as basic units.
 	// 
 	// name        | offset | type   | components
 	// ------------+--------+--------+-----------
 	// position    |      0 | float  | x, y, z
-	// real-normal |     12 | byte   | x, y, z
-	// normal      |     16 | short  | x, y, z
-	// tangent     |     24 | short  | x, y, z, w
-	// tex-coord   |     32 | float  | u, v
-	// tangent2    |     40 | short  | x, y, z, w
-	// tex-coord2  |     48 | float  | u, v
-	// tangent3    |     56 | short  | x, y, z, w
-	// tex-coord3  |     64 | float  | u, v
+	// real-normal |     16 | float  | x, y, z
+	// normal      |     32 | float  | x, y, z
+	// tangent     |     48 | float  | x, y, z, w
+	// tex-coord   |     64 | float  | u, v
+	// tangent2    |     80 | short  | x, y, z, w
+	// tex-coord2  |     96 | float  | u, v
+	// tangent3    |    112 | short  | x, y, z, w
+	// tex-coord3  |    128 | float  | u, v
 	deoglVBOLayout layoutStaticModelTCS2( layoutStaticModelTCS1 );
 	layoutStaticModelTCS2.SetAttributeCount( 9 );
-	layoutStaticModelTCS2.SetStride( 72 );
+	layoutStaticModelTCS2.SetStride( 144 );
 	
 	layoutStaticModelTCS2.GetAttributeAt( 7 ).SetComponentCount( 4 );
-	layoutStaticModelTCS2.GetAttributeAt( 7 ).SetDataType( deoglVBOAttribute::edtShort );
-	layoutStaticModelTCS2.GetAttributeAt( 7 ).SetOffset( 56 );
+	layoutStaticModelTCS2.GetAttributeAt( 7 ).SetDataType( deoglVBOAttribute::edtFloat );
+	layoutStaticModelTCS2.GetAttributeAt( 7 ).SetOffset( 112 );
 	
 	layoutStaticModelTCS2.GetAttributeAt( 8 ).SetComponentCount( 2 );
 	layoutStaticModelTCS2.GetAttributeAt( 8 ).SetDataType( deoglVBOAttribute::edtFloat );
-	layoutStaticModelTCS2.GetAttributeAt( 8 ).SetOffset( 64 );
+	layoutStaticModelTCS2.GetAttributeAt( 8 ).SetOffset( 128 );
 	
 	pSharedVBOListByType[ esvbolStaticModelTCS2 ] =
 		pSharedVBOListList->GetWith( layoutStaticModelTCS2, GL_STATIC_DRAW );
@@ -483,24 +516,24 @@ void deoglRTBufferObject::pCreateSharedVBOLists(){
 	// 
 	// name        | offset | type    | components
 	// ------------+--------+---------+---------------
-	// position    |      0 | float   | x, y, z
-	// real-normal |     12 | byte    | x, y, z
-	// normal      |     16 | short   | x, y, z
-	// tangent     |     24 | short   | x, y, z, w
-	// tex-coord   |     32 | float   | u, v
-	// bones       |     40 | iushort | b1, b2, b3, b4
-	// weights     |     48 | ubyte   | w1, w2, w3, w4
+	// position    |      0 | float  | x, y, z
+	// real-normal |     16 | float  | x, y, z
+	// normal      |     32 | float  | x, y, z
+	// tangent     |     48 | float  | x, y, z, w
+	// tex-coord   |     64 | float  | u, v
+	// bones       |     80 | iint   | b1, b2, b3, b4
+	// weights     |     96 | float  | w1, w2, w3, w4
 	deoglVBOLayout layoutSimpleModel( layoutStaticModel );
 	layoutSimpleModel.SetAttributeCount( 7 );
-	layoutSimpleModel.SetStride( 52 );
+	layoutSimpleModel.SetStride( 112 );
 	
 	layoutSimpleModel.GetAttributeAt( 5 ).SetComponentCount( 4 );
-	layoutSimpleModel.GetAttributeAt( 5 ).SetDataType( deoglVBOAttribute::edtIUShort );
-	layoutSimpleModel.GetAttributeAt( 5 ).SetOffset( 40 );
+	layoutSimpleModel.GetAttributeAt( 5 ).SetDataType( deoglVBOAttribute::edtIInt );
+	layoutSimpleModel.GetAttributeAt( 5 ).SetOffset( 80 );
 	
 	layoutSimpleModel.GetAttributeAt( 6 ).SetComponentCount( 4 );
-	layoutSimpleModel.GetAttributeAt( 6 ).SetDataType( deoglVBOAttribute::edtUByte );
-	layoutSimpleModel.GetAttributeAt( 6 ).SetOffset( 48 );
+	layoutSimpleModel.GetAttributeAt( 6 ).SetDataType( deoglVBOAttribute::edtFloat );
+	layoutSimpleModel.GetAttributeAt( 6 ).SetOffset( 96 );
 	
 	pSharedVBOListByType[ esvbolSimpleModel ] =
 		pSharedVBOListList->GetWith( layoutSimpleModel, GL_STATIC_DRAW );
@@ -597,6 +630,28 @@ void deoglRTBufferObject::pCreateSharedVBOLists(){
 	pSharedVBOListByType[ esvbolModelWriteSkinnedVBO ] =
 		pSharedVBOListList->GetWith( layoutModelWriteSkinnedVBO, GL_STATIC_DRAW );
 	
+	// model vertex position set vbo. contains position and index for each point.
+	// 
+	// name          | offset | type   | components
+	// --------------+--------+--------+---------------
+	// position      |      0 | float  | position
+	// index         |     12 | uint   | index
+	deoglVBOLayout layoutModelVertexPositionSetVBO;
+	layoutModelVertexPositionSetVBO.SetAttributeCount( 2 );
+	layoutModelVertexPositionSetVBO.SetStride( 16 );
+	layoutModelVertexPositionSetVBO.SetIndexType( deoglVBOLayout::eitNone );
+	
+	layoutModelVertexPositionSetVBO.GetAttributeAt( 0 ).SetComponentCount( 3 );
+	layoutModelVertexPositionSetVBO.GetAttributeAt( 0 ).SetDataType( deoglVBOAttribute::edtFloat );
+	layoutModelVertexPositionSetVBO.GetAttributeAt( 0 ).SetOffset( 0 );
+	
+	layoutModelVertexPositionSetVBO.GetAttributeAt( 1 ).SetComponentCount( 1 );
+	layoutModelVertexPositionSetVBO.GetAttributeAt( 1 ).SetDataType( deoglVBOAttribute::edtUInt );
+	layoutModelVertexPositionSetVBO.GetAttributeAt( 1 ).SetOffset( 12 );
+	
+	pSharedVBOListByType[ esvbolModelVertexPositionSets ] =
+		pSharedVBOListList->GetWith( layoutModelVertexPositionSetVBO, GL_STATIC_DRAW );
+	
 	// static occlusion mesh: esvbolStaticOcclusionMesh
 	// 
 	// name       | offset | type   | components
@@ -623,7 +678,7 @@ void deoglRTBufferObject::pCreateSharedVBOLists(){
 	// selector   |     12 | float  | selector
 	deoglVBOLayout layoutMathShapes;
 	layoutMathShapes.SetAttributeCount( 2 );
-	layoutMathShapes.SetStride( 16 ); // best performance with multiple of 32/64? (16 would yield 2 vertices in one cache run)
+	layoutMathShapes.SetStride( 16 );
 	layoutMathShapes.SetIndexType( deoglVBOLayout::eitNone ); // use indices later on
 	
 	layoutMathShapes.GetAttributeAt( 0 ).SetComponentCount( 3 );

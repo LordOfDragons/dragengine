@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -46,127 +49,135 @@ class ECPElementClassMap extends ElementClassProperty
 	
 	
 	/** \brief Create property. */
-	public func new( String name, ElementClassList eclassList ) super( name )
+	public func new(String name, ElementClassList eclassList) super(name)
 		if eclassList == null
 			throw EInvalidParam.new()
 		end
-		this.pElementClassList = eclassList
-		this.pNames = Dictionary.new()
-		this.pElementClasses = Dictionary.new()
+		pElementClassList = eclassList
+		pNames = Dictionary.new()
+		pElementClasses = Dictionary.new()
 	end
 	
 	/** \brief Dispose of element class property to break reference loops. */
 	public func void dispose()
-		this.pElementClassList = null
-		this.pElementClasses = null
+		pElementClassList = null
+		pElementClasses = null
 	end
 	
 	
 	
 	/** \brief Element class manager to look up element class in. */
 	public func ElementClassList getElementClassList()
-		return this.pElementClassList
+		return pElementClassList
 	end
 	
 	
 	
 	/** \brief Remove all element class names. */
 	public func void removeAllNames()
-		this.pNames.removeAll()
+		pNames.removeAll()
 	end
 	
 	/** \brief Set element class name. */
-	public func void setNameAt( String id, String elementClassName )
-		this.pNames.setAt( id, elementClassName )
+	public func void setNameAt(String id, String elementClassName)
+		pNames.setAt(id, elementClassName)
 	end
 	
 	
 	
 	/** \brief Number of element classes. */
 	public func int getCount()
-		return this.pElementClasses.getCount()
+		return pElementClasses.getCount()
 	end
 	
 	/** \brief Element class with identifier or \em null if absent. */
-	public func ElementClass getAt( String id )
-		return this.pElementClasses.getAt( id ) cast ElementClass
+	public func ElementClass getAt(String id)
+		return pElementClasses.getAt(id) cast ElementClass
 	end
 	
 	/** \brief Visit element class with block with String id and ElementClass value. */
-	public func void forEach( Block ablock )
-		this.pElementClasses.forEach( ablock )
+	public func void forEach(Block ablock)
+		pElementClasses.forEach(ablock)
 	end
 	
 	/** \brief Remove all element classes. */
 	public func void removeAll()
-		this.pElementClasses.removeAll()
+		pElementClasses.removeAll()
 	end
 	
 	/** \brief Set element class. */
-	public func void setAt( String id, ElementClass elementClass )
-		this.pElementClasses.setAt( id, elementClass )
+	public func void setAt(String id, ElementClass elementClass)
+		pElementClasses.setAt(id, elementClass)
 	end
 	
 	/** \brief Property has been preloaded. */
 	public func bool getHasPreloaded()
-		return this.pHasPreloaded
+		return pHasPreloaded
 	end
 	
 	
 	
 	/** \brief Set value of property from XML decoded value. */
-	public func void setValue( Object value )
-		this.pNames.removeAll()
-		( value cast Dictionary ).forEach( block String id, String elementClassName
-			this.pNames.setAt( id, elementClassName )
-		end )
+	public func void setValue(Object value)
+		pNames.removeAll()
+		(value cast Dictionary).forEach(block String id, String elementClassName
+			pNames.setAt(id, elementClassName)
+		end)
+	end
+	
+	/**
+	 * \brief Copy value from another element class property of the same type.
+	 * \version 1.17
+	 */
+	public func void copyValue(ElementClass elementClass, ElementClassProperty property)
+		pNames = Dictionary.new((property cast ECPElementClassMap).pNames)
 	end
 	
 	
 	
 	/** \brief Preload resources if supported. */
-	public func void preloadResources( ElementClass elementClass, PreloadCounter counter )
-		if this.pHasPreloaded
+	public func void preloadResources(ElementClass elementClass, PreloadCounter counter)
+		if pHasPreloaded
 			return
 		end
 		
-		this.pHasPreloaded = true
-		this.pNotFoundElementClasses = null
-		this.pElementClasses.removeAll()
+		pHasPreloaded = true
+		pNotFoundElementClasses = null
+		pElementClasses.removeAll()
 		
-		this.pNames.forEach( block String id, String elementClassName
+		pNames.forEach(block String id, String elementClassName
 			if elementClassName.empty()
 				return null
 			end
 			
-			var ElementClass elementClass = this.pElementClassList.getNamed( elementClassName )
+			var ElementClass eachEClass = pElementClassList.getNamed(elementClassName)
 			
-			if elementClass == null
-				if this.pNotFoundElementClasses == null
-					this.pNotFoundElementClasses = Array.new()
+			if eachEClass == null
+				if pNotFoundElementClasses == null
+					pNotFoundElementClasses = Array.new()
 				end
-				this.pNotFoundElementClasses.add( elementClassName )
+				pNotFoundElementClasses.add(elementClassName)
 				return null
 			end
 			
-			this.pElementClasses.setAt( id, elementClass )
-			elementClass.preloadResources( counter )
-		end )
+			pElementClasses.setAt(id, eachEClass)
+			eachEClass.preloadResources(counter)
+		end)
 	end
 	
 	/**
 	 * \brief Log preloading problems.
 	 * \returns True if problems are present.
 	 */
-	public func bool logPreloadProblems( ElementClass elementClass, Console console )
-		if this.pNotFoundElementClasses == null
+	public func bool logPreloadProblems(ElementClass elementClass, Console console)
+		if pNotFoundElementClasses == null
 			return false
 		end
 		
-		this.pNotFoundElementClasses.forEach( block String each
-			console.addMessage( "Property " + elementClass.getClassname() + "." \
-				+ this.getName() + ": Unknown element class " + each )
-		end )
+		pNotFoundElementClasses.forEach(block String each
+			console.addMessage("Property " + elementClass.getClassname() + "." \
+				+ getName() + ": Unknown element class " + each)
+		end)
 		return true
 	end
 	
@@ -183,23 +194,23 @@ class ECPElementClassMap extends ElementClassProperty
 	 * 
 	 * \returns Dictionary mapping String id to ElementClass.
 	 */
-	public func Dictionary getElementClasses( StubWithProperties stub, CodecPropertyString codec )
-		var String value = stub.getPropertyValueFor( this.getName(), "" )
+	public func Dictionary getElementClasses(StubWithProperties stub, CodecPropertyString codec)
+		var String value = stub.getPropertyValueFor(getName(), "")
 		if value.empty()
-			return Dictionary.new( this.pElementClasses )
+			return Dictionary.new(pElementClasses)
 		end
 		
 		var Dictionary map = Dictionary.new()
-		codec.decodeStringList( value ).forEach( block String each
-			var Array parts = each.split( ':' )
-			var String id = parts.getAt( 0 ) cast String
-			var String elementClassName = parts.getAt( 1 ) cast String
-			var ElementClass eclass = this.pElementClassList.getNamed( elementClassName )
+		codec.decodeStringList(value).forEach(block String each
+			var Array parts = each.splitExact(':')
+			var String id = parts.getAt(0) cast String
+			var String elementClassName = parts.getAt(1) cast String
+			var ElementClass eclass = pElementClassList.getNamed(elementClassName)
 			if eclass == null
 				throw EInvalidParam.new()
 			end
-			map.setAt( id, eclass )
-		end )
+			map.setAt(id, eclass)
+		end)
 		return map
 	end
 end

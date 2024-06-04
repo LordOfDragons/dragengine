@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLSHADOWCASTER_H_
@@ -25,6 +28,7 @@
 #include "deoglSCSolid.h"
 #include "deoglSCTransparent.h"
 #include "deoglSCAmbient.h"
+#include "../renderthread/deoglRTFrameCounterTracker.h"
 
 #include <dragengine/common/math/decMath.h>
 
@@ -36,56 +40,64 @@ class deoglRenderableDepthTexture;
 
 
 /**
- * \brief Shadow caster.
+ * Shadow caster.
  */
 class deoglShadowCaster{
 public:
-	/** \brief Shadow types. */
+	/** Shadow types. */
 	enum eShadowTypes{
-		/** \brief No shadows. */
+		/** No shadows. */
 		estNoShadows,
 		
-		/** \brief Static shadow map only. */
+		/** Static shadow map only. */
 		estStaticOnly,
 		
-		/** \brief Dynamic shadow map only. */
+		/** Dynamic shadow map only. */
 		estDynamicOnly,
 		
-		/** \brief Static and dynamic shadow map. */
+		/** Static and dynamic shadow map. */
 		estStaticAndDynamic
+	};
+	
+	/** Shadow layers. */
+	struct sShadowLayer{
+		float layerBorder;
+		decVector scale;
+		decMatrix matrix;
 	};
 	
 	
 	
 private:
+	deoglRTFrameCounterTracker pFrameCounterTracker;
 	deoglSCSolid pSolid;
 	deoglSCTransparent pTransparent;
 	deoglSCAmbient pAmbient;
 	
-	decVector pShadowOrigin;
 	eShadowTypes pShadowType;
 	
 	float pStaticNear;
 	float pStaticFar;
 	float pStaticScale;
 	float pStaticOffset;
-	float pStaticCutOff;
 	
 	float pDynamicNear;
 	float pDynamicFar;
 	float pDynamicScale;
 	float pDynamicOffset;
-	float pDynamicCutOff;
+	
+	sShadowLayer *pShadowLayers;
+	int pShadowLayerCount;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create shadow caster. */
+	/** Create shadow caster. */
 	deoglShadowCaster( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up shadow caster. */
+	/** Clean up shadow caster. */
 	~deoglShadowCaster();
 	/*@}*/
 	
@@ -94,89 +106,86 @@ public:
 	/** \name Management */
 	/*@{*/
 	/**
-	 * \brief Update shadow caster.
+	 * Update shadow caster.
 	 * \details Checks if cube maps are not been used for the last couple of frames removing them.
 	 * \note Has to be done better to avoid cluttering GPU RAM.
 	 */
 	void Update();
 	
-	/** \brief Solid shadow caster. */
+	/** Shadow caster requires update. True if timers are running to drop textures. */
+	bool RequiresUpdate() const;
+	
+	/** Solid shadow caster. */
 	inline deoglSCSolid &GetSolid(){ return pSolid; }
 	inline const deoglSCSolid &GetSolid() const{ return pSolid; }
 	
-	/** \brief Transparent shadow caster. */
+	/** Transparent shadow caster. */
 	inline deoglSCTransparent &GetTransparent(){ return pTransparent; }
 	inline const deoglSCTransparent &GetTransparent() const{ return pTransparent; }
 	
-	/** \brief Ambient shadow caster. */
+	/** Ambient shadow caster. */
 	inline deoglSCAmbient &GetAmbient(){ return pAmbient; }
 	inline const deoglSCAmbient &GetAmbient() const{ return pAmbient; }
 	
-	/** \brief Clear shadow caster. */
+	/** Clear shadow caster. */
 	void Clear();
 	
-	/** \brief Drop dynamic maps. */
-	void DropDynamic();
+	/** Drop temporary maps. */
+	void DropTemporary();
 	
 	
 	
-	/** \brief Shadow origin for 180-point lights. */
-	inline const decVector &GetShadowOrigin() const{ return pShadowOrigin; }
-	
-	/** \brief Set shadow orign for 180point lights. */
-	void SetShadowOrigin( const decVector &origin );
-	
-	/** \brief Shadow type. */
+	/** Shadow type. */
 	inline eShadowTypes GetShadowType() const{ return pShadowType; }
 	
-	/** \brief Set shadow type. */
+	/** Set shadow type. */
 	void SetShadowType( eShadowTypes shadowType );
 	
 	
 	
-	/** \brief Near distance for static shadows. */
+	/** Near distance for static shadows. */
 	inline float GetStaticNear() const{ return pStaticNear; }
 	
-	/** \brief Far distance for static shadows. */
+	/** Far distance for static shadows. */
 	inline float GetStaticFar() const{ return pStaticFar; }
 	
-	/** \brief Scale factor for static shadows. */
+	/** Scale factor for static shadows. */
 	inline float GetStaticScale() const{ return pStaticScale; }
 	
-	/** \brief Offset for static shadows. */
+	/** Offset for static shadows. */
 	inline float GetStaticOffset() const{ return pStaticOffset; }
 	
-	/** \brief Set static shadows parameters. */
+	/** Set static shadows parameters. */
 	void SetStaticParams( float near, float far );
 	
-	/** \brief Set cut-off for static shadows of 180-point lights. */
-	inline float GetStaticCutOff() const{ return pStaticCutOff; }
-	
-	/** \brief Set cut-off for static shadows of 180-point lights. */
-	void SetStaticCutOff( float cutoff );
 	
 	
-	
-	/** \brief Near distance for dynamic shadows. */
+	/** Near distance for dynamic shadows. */
 	inline float GetDynamicNear() const{ return pDynamicNear; }
 	
-	/** \brief Far distance for dynamic shadows. */
+	/** Far distance for dynamic shadows. */
 	inline float GetDynamicFar() const{ return pDynamicFar; }
 	
-	/** \brief Scale factor for dynamic shadows. */
+	/** Scale factor for dynamic shadows. */
 	inline float GetDynamicScale() const{ return pDynamicScale; }
 	
-	/** \brief Offset for dynamic shadows. */
+	/** Offset for dynamic shadows. */
 	inline float GetDynamicOffset() const{ return pDynamicOffset; }
 	
-	/** \brief Set dynamic shadows parameters. */
+	/** Set dynamic shadows parameters. */
 	void SetDynamicParams( float near, float far );
 	
-	/** \brief Set cut-off for dynamic shadows of 180-point lights. */
-	inline float GetDynamicCutOff() const{ return pDynamicCutOff; }
 	
-	/** \brief Set cut-off for dynamic shadows of 180-point lights. */
-	void SetDynamicCutOff( float cutoff );
+	
+	/** Shadow layer count. */
+	inline int GetShadowLayerCount() const{ return pShadowLayerCount; }
+	
+	/** Set shadow layer count. Clears shadow layer parameters if count changed. */
+	void SetShadowLayerCount( int count );
+	
+	/** Shadow layer at index. */
+	sShadowLayer &GetShadowLayerAt( int index );
+	const sShadowLayer &GetShadowLayerAt( int index ) const;
 	/*@}*/
 };
 

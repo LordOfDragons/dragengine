@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLDEBUGSAVETEXTURE_H_
@@ -35,7 +38,7 @@ class deoglArrayTexture;
 
 
 /**
- * @brief Debug Save Texture.
+ * Debug Save Texture.
  * Helper class saving textures of various kinds to files for debugging purpose.
  * All images are stored in the format /&lt;base-path&gt;/&lt;name&gt;_&lt;timestamp&gt;.xxx
  * where xxx is a file extension depending on the texture to be saved. Time-stamp is
@@ -57,7 +60,7 @@ public:
 		/** Conversion suitable for depth buffer values. */
 		ecDepthBuffer,
 		
-		/** \brief Conversion suitable for inverse depth buffer values. */
+		/** Conversion suitable for inverse depth buffer values. */
 		ecDepthBufferInverse,
 		
 		/** Conversion of normals into encoded normals. */
@@ -70,18 +73,18 @@ public:
 		EC_COUNT
 	};
 	
-	/** \brief Depth types. */
+	/** Depth types. */
 	enum eDepthTypes{
-		/** \brief Linear. */
+		/** Linear. */
 		edtLinear,
 		
-		/** \brief Depth. */
+		/** Depth. */
 		edtDepth,
 		
-		/** \brief Linear inverse. */
+		/** Linear inverse. */
 		edtLinearInverse,
 		
-		/** \brief Depth inverse. */
+		/** Depth inverse. */
 		edtDepthInverse
 	};
 	
@@ -90,7 +93,7 @@ private:
 	decString pBasePath;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new debug save texture object. */
 	deoglDebugSaveTexture( deoglRenderThread &renderThread );
@@ -98,7 +101,7 @@ public:
 	~deoglDebugSaveTexture();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the base path where images are stored under. */
 	inline const decString &GetBasePath() const{ return pBasePath; }
@@ -119,6 +122,8 @@ public:
 	void SaveDepthTextureLevel( deoglTexture &texture, int level, const char *name, eDepthTypes type );
 	/** Saves a stencil texture to file. */
 	void SaveStencilTexture( deoglTexture &texture, const char *name );
+	/** Saves a stencil texture to file. */
+	void SaveStencilArrayTexture( deoglArrayTexture &texture, const char *name );
 	
 	/** Saves a cube map to file. */
 	void SaveCubeMap( deoglCubeMap &cubemap, const char *name, bool upsideDown );
@@ -143,14 +148,16 @@ public:
 	void SaveArrayTextureLevelConversion( deoglArrayTexture &texture, int level, const char *name, eConvertions conversion );
 	/** Saves an array texture to file. */
 	void SaveDepthArrayTexture( deoglArrayTexture &texture, const char *name, bool linearDepth );
+	/** Saves an array texture to file. */
+	void SaveDepthArrayTextureLevel( deoglArrayTexture &texture, int level, const char *name, bool linearDepth );
 	
 	/** Retrieves the pixel buffer type opengl pixel format and type. */
 	deoglPixelBuffer::ePixelFormats GetPixelBufferType( GLenum &pixelFormat, GLenum &pixelType ) const;
 	/** Retrieves the stride for a pixel buffer format. */
 	int GetStride( int width, int pixelBufferType ) const;
-	/** \brief Component count for pixel buffer type. */
+	/** Component count for pixel buffer type. */
 	int GetComponentCount( int pixelBufferType );
-	/** \brief Bit count for pixel buffer type. */
+	/** Bit count for pixel buffer type. */
 	int GetBitCount( int pixelBufferType );
 	/*@}*/
 	

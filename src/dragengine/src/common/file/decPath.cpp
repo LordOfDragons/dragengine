@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Game Engine
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <ctype.h>
@@ -24,6 +27,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "../../dragengine_configuration.h"
 
 #ifdef OS_W32
 	#include <direct.h>
@@ -180,7 +185,7 @@ void decPath::SetWorkingDirectory(){
 		DETHROW( deeInvalidAction );
 	}
 	
-	const int count = wcslen( buffer );
+	const int count = ( int )wcslen( buffer );
 	decUnicodeString unicode;
 	int i;
 	unicode.Set( 0, count );
@@ -334,6 +339,99 @@ decPath decPath::RelativePath( const decPath &baseDirectory, bool onlyBelow ) co
 		newPath.pComponents.Add( pComponents.GetAt( i ) );
 	}
 	return newPath;
+}
+
+bool decPath::IsParentOf( const decPath &path ) const{
+	if( ! IsAbsolute() || ! path.IsAbsolute() || pPrefix != path.pPrefix ){
+		return false;
+	}
+	
+	const int pathDirCount = path.pComponents.GetCount();
+	const int count = pComponents.GetCount();
+	if( pathDirCount <= count ){
+		return false;
+	}
+	
+	int i;
+	for( i=0; i<count; i++ ){
+		if( path.pComponents.GetAt( i ) != pComponents.GetAt( i ) ){
+			return false;
+		}
+	}
+	
+	return true;
+}
+
+bool decPath::IsEqualOrParentOf( const decPath &path ) const{
+	if( ! IsAbsolute() || ! path.IsAbsolute() || pPrefix != path.pPrefix ){
+		return false;
+	}
+	
+	const int pathDirCount = path.pComponents.GetCount();
+	const int count = pComponents.GetCount();
+	if( pathDirCount < count ){
+		return false;
+	}
+	
+	int i;
+	for( i=0; i<count; i++ ){
+		if( path.pComponents.GetAt( i ) != pComponents.GetAt( i ) ){
+			return false;
+		}
+	}
+	
+	return true;
+}
+
+bool decPath::IsDirectParentOf( const decPath &path ) const{
+	if( ! IsAbsolute() || ! path.IsAbsolute() || pPrefix != path.pPrefix ){
+		return false;
+	}
+	
+	const int pathDirCount = path.pComponents.GetCount();
+	const int count = pComponents.GetCount();
+	if( pathDirCount != count + 1 ){
+		return false;
+	}
+	
+	int i;
+	for( i=0; i<count; i++ ){
+		if( path.pComponents.GetAt( i ) != pComponents.GetAt( i ) ){
+			return false;
+		}
+	}
+	
+	return true;
+}
+
+bool decPath::IsEqualOrDirectParentOf( const decPath &path ) const{
+	if( ! IsAbsolute() || ! path.IsAbsolute() || pPrefix != path.pPrefix ){
+		return false;
+	}
+	
+	const int pathDirCount = path.pComponents.GetCount();
+	const int count = pComponents.GetCount();
+	if( pathDirCount < count || pathDirCount > count + 1 ){
+		return false;
+	}
+	
+	int i;
+	for( i=0; i<count; i++ ){
+		if( path.pComponents.GetAt( i ) != pComponents.GetAt( i ) ){
+			return false;
+		}
+	}
+	
+	return true;
+}
+
+decPath decPath::GetParent() const{
+	DEASSERT_TRUE( pComponents.GetCount() > 0 )
+	
+	decPath path;
+	path.pPrefix = pPrefix;
+	path.pComponents = pComponents.Splice( 0, -1 );
+	return path;
 }
 
 

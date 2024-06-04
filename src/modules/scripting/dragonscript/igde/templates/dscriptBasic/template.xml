@@ -13,6 +13,25 @@
 	<baseGameDefinition>DragonScript Basic</baseGameDefinition>
 	
 	
+	<!--
+	valid file rename tokens:
+	- {projectPathDirectory}
+	- {projectName}
+	- {gameId}
+	- {gameAliasId}
+	
+	valid text replace value:
+	- projectPath: Absolute project directory path
+	- projectPathDirectory: Last component of project directory path
+	- dataPath: Absolute project data directory path
+	- dataDirectory: Project data directory relative to project root
+	- projectName: Project name
+	- projectDescription: Project description
+	- gameId: Game identifier derived from project name
+	- gameAliasId: Game alias identifier derived from project name
+	-->
+	
+	
 	<!-- Rules used to set up the new project -->
 	<file>
 		<path>content/models/Notes</path>
@@ -30,21 +49,34 @@
 		<path>scripts/StartGame.ds</path>
 	</file>
 	<file>
+		<path>scripts/testing/GameAppTesting.ds</path>
+	</file>
+	<file>
+		<path>scripts/testing/ExampleTestSuite.ds</path>
+	</file>
+	<file>
 		<path>develop/Notes</path>
 	</file>
-	
-	<!-- KDevelop project file for editing scripts. -->
 	<file>
-		<path>project.kdev4</path>
+		<path>configuration.ptree.xml</path>
+	</file>
+	
+	<!-- Visual Studio Code project file for editing scripts. -->
+	<file>
+		<path>project.code-workspace</path>
+		<directory>project</directory>
+	</file>
+	
+	<file>
+		<path>dot_vscode/settings.json</path>
+		<pathRename>.vscode/settings.json</pathRename>
 		<directory>project</directory>
 		<replace>
-			<token>%{GAME_ALIAS_ID}</token>
-			<value>gameAliasId</value>
+			<token>%{DATA_PATH}</token>
+			<value>dataDirectory</value>
 			<format>text</format>
 		</replace>
 	</file>
-	
-	<!--  Include path could be set with .kdev_include_paths file -->
 	
 	<!-- This file provides a default configuration for the Project Editor -->
 	<file>

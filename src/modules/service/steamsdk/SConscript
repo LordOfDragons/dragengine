@@ -1,0 +1,95 @@
+from SConsCommon import *
+
+Import('parent_env parent_targets parent_report')
+
+envModule = parent_env.Clone()
+
+buildModule = envModule['build_service_steamsdk'] != TernaryVariableNo
+parent_report['build SteamSDK Service Module'] = 'yes' if buildModule else 'no'
+
+if not buildModule:
+	Return()
+
+libs = []
+appendLibrary(envModule, parent_targets['dragengine'], libs)
+appendLibrary(envModule, parent_targets['lib_steamsdk'], libs)
+
+# fetch values in expanded form for later use
+versionString = '1.23'
+if envModule['force_version']:
+	versionString = envModule['force_version']
+
+pathConfig = '{}/modules/service/steamsdk/{}'.format(envModule.subst(envModule['path_de_config']), versionString)
+pathModule = '{}/modules/service/steamsdk/{}'.format(envModule.subst(envModule['path_de_data']), versionString)
+
+envModule.Append(CPPFLAGS = parent_env['MODULE_CPPFLAGS'])
+envModule.Append(LINKFLAGS = parent_env['MODULE_LINKFLAGS'])
+
+# determine the source files
+sources = []
+headers = []
+globFiles(envModule, 'src', '*.cpp', sources)
+globFiles(envModule, 'src', '*.h', headers)
+
+# setup the builders
+objects = [envModule.SharedObject(s) for s in sources]
+
+library = envModule.LoadableModule(target='srvsteamsdk', source=objects, LIBS=libs)
+targetBuild = envModule.Alias('srv_steamsdk_build', library)
+
+install = []
+archive = {}
+for l in library:
+	if l.name.endswith(envModule['SHLIBSUFFIX']):
+		install.append(envModule.Install(pathModule, l))
+		archive[os.path.join(pathModule, l.name)] = l
+
+if envModule['OSWindows'] and envModule['CROSSCOMPILE_CLANG'] and envModule['with_install_pdb']:
+	pathPdb = os.path.join(envModule.subst(envModule['path_pdb']), 'EngineModules')
+	install.append(envModule.Install(pathPdb, 'srvsteamsdk.pdb'))
+	archive['{}/srvsteamsdk.pdb'.format(pathPdb)] = envModule.File('srvsteamsdk.pdb')
+
+manifestUpdates = [
+	{'action': 'filename', 'name': library[0].name, 'keyword': 'FILENAME'},
+	{'action': 'filesize', 'path': library[0].abspath, 'keyword': 'FILESIZE'},
+	{'action': 'filehash', 'path': library[0].abspath, 'keyword': 'SHA1SUM'},
+	{'action': 'text', 'value': versionString, 'keyword': 'VERSION'}]
+
+rtlibs = []
+rtlibs.extend(parent_targets['lib_steamsdk']['runtimelibs'])
+
+for l in reversed(rtlibs):
+	manifestUpdates.append({'action': 'preloadLibrary', 'path': l.name})
+	install.append(envModule.Install(pathModule, l))
+	archive[os.path.join(pathModule, l.name)] = l
+
+manifest = envModule.File('src/module.xml')
+updateManifest = envModule.Command(manifest, manifest.srcnode(),
+	Action(UpdateModuleManifest), ManifestUpdates=manifestUpdates)
+Depends(updateManifest, library)
+Depends(updateManifest, 'SConscript')
+Depends(updateManifest, rtlibs)
+
+install.append(envModule.Install(pathModule, updateManifest))
+archive[os.path.join(pathModule, 'module.xml')] = updateManifest[0]
+
+targetInstall = envModule.Alias('srv_steamsdk', install)
+
+# source directory required for special commands
+srcdir = Dir('.').srcnode().abspath
+
+# cloc
+buildClocBare = BuildCLOC(envModule, ['{}/src'.format(srcdir)], '{}/clocreport.csv'.format(srcdir), ['doc'])
+Depends(buildClocBare, sources)
+Depends(buildClocBare, headers)
+buildCloc = envModule.Alias('srv_steamsdk_cloc', buildClocBare)
+
+# add the targets to the targets list
+parent_targets['srv_steamsdk'] = {
+	'name' : 'SteamSDK Server Module',
+	'build' : targetBuild,
+	'install' : targetInstall,
+	'install-engine-runtime' : targetInstall,
+	'archive-engine' : archive,
+	'cloc' : buildCloc,
+	'clocReport' : '{}/clocreport.csv'.format(srcdir)}

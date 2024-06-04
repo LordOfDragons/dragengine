@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLMOVCLOSESTFACE_H_
@@ -30,7 +33,7 @@ class deoglModelLOD;
 
 
 /**
- * \brief Model octree visitor retrieving the closest face to a point.
+ * Model octree visitor retrieving the closest face to a point.
  * 
  * Visits the octree with a box enclosing a maximum search radius. The result
  * is the index of the face or -1 if no face could be found with a distance
@@ -54,34 +57,34 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Creates a new model octree visitor. */
+	/** Creates a new model octree visitor. */
 	deoglMOVClosestFace( const deoglModelLOD &modelLOD );
-	/** \brief Cleans up the model octree visitor. */
+	/** Cleans up the model octree visitor. */
 	virtual ~deoglMOVClosestFace();
 	/*@}*/
 	
 	/** \name Visiting */
 	/*@{*/
-	/** \brief Retrieves the test point. */
+	/** Retrieves the test point. */
 	inline const decVector &GetTestPoint() const{ return pTestPoint; }
-	/** \brief Retrieves the maximum search distance. */
+	/** Retrieves the maximum search distance. */
 	inline float GetMaxRadius() const{ return pMaxRadius; }
-	/** \brief Sets the test point and maximum search radius. */
+	/** Sets the test point and maximum search radius. */
 	void SetTestPoint( const decVector &testPoint, float maxRadius );
 	
 	/**
-	 * \brief Resets the visitor.
+	 * Resets the visitor.
 	 * \details Sets the found face index to -1.
 	 */
 	void Reset();
 	
-	/** \brief Retrieves the face index or -1 if not found. */
+	/** Retrieves the face index or -1 if not found. */
 	inline int GetFaceIndex() const{ return pFaceIndex; }
 	
-	/** \brief Convenience method to visit stored model lod returning the found face or -1 if not found. */
+	/** Convenience method to visit stored model lod returning the found face or -1 if not found. */
 	int FindClosestFace( const decVector &testPoint, float maxRadius );
 	
-	/** \brief Visits an octree node. */
+	/** Visits an octree node. */
 	virtual void VisitNode( deoglOctree *node, int intersection );
 	/*@}*/
 };

@@ -1,58 +1,99 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
-// include only once
 #ifndef _DECLASSENGINE_H_
 #define _DECLASSENGINE_H_
 
-// includes
 #include <libdscript/libdscript.h>
 #include <dragengine/common/utils/decTimer.h>
 
-// predefinitions
-class deEngine;
 class deScriptingDragonScript;
 
-// engine script class
+
+/**
+ * Game engine.
+ */
 class deClassEngine : public dsClass{
 private:
-	deEngine *p_gameEngine;
-	deScriptingDragonScript *p_scrMgr;
+	deScriptingDragonScript &pDS;
 	decTimer pDebugTimer;
+	bool pDefaultEnableGI;
+	bool pDefaultEnableAuralization;
+	
+	
 	
 public:
-	// constructor
-	deClassEngine(deEngine *GameEngine, deScriptingDragonScript *ScrMgr);
-	~deClassEngine();
-	// management
-	void CreateClassMembers(dsEngine *engine);
-	inline deEngine *GetGameEngine() const{ return p_gameEngine; }
-	inline deScriptingDragonScript *GetScriptModule() const{ return p_scrMgr; }
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** Create script class. */
+	deClassEngine( deScriptingDragonScript &ds );
+	
+	/** Clean up script class. */
+	virtual ~deClassEngine();
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** Script module. */
+	inline deScriptingDragonScript &GetDS() const{ return pDS; }
+	
+	/** Create class members. */
+	void CreateClassMembers( dsEngine *engine );
+	
+	/** Debug timer. */
 	inline decTimer &GetDebugTimer(){ return pDebugTimer; }
-
+	
+	/** Default enable GI. */
+	inline bool GetDefaultEnableGI() const{ return pDefaultEnableGI; }
+	
+	/** Set default enable GI. */
+	void SetDefaultEnableGI( bool enable );
+	
+	/** Default enable auralization. */
+	inline bool GetDefaultEnableAuralization() const{ return pDefaultEnableAuralization; }
+	
+	/** Set default enable auralization. */
+	void SetDefaultEnableAuralization( bool enable );
+	/*@}*/
+	
+	
+	
 private:
 	struct sInitData{
-		dsClass *clsEng, *clsVoid, *clsInt, *clsFlt, *clsStr;
-		dsClass *clsWin, *clsGame, *clsBool;
-		dsClass *clsDict;
+		dsClass *clsEngine;
+		
+		dsClass *clsVoid;
+		dsClass *clsInteger;
+		dsClass *clsFloat;
+		dsClass *clsString;
+		dsClass *clsBoolean;
+		dsClass *clsSet;
+		dsClass *clsDictionary;
+		
+		dsClass *clsWindow;
+		dsClass *clsGame;
 	};
 #define DEF_NATFUNC(name) \
 	class name : public dsFunction{ \
@@ -70,8 +111,33 @@ private:
 	DEF_NATFUNC( nfLoadingResourceCount );
 	DEF_NATFUNC( nfLog );
 	DEF_NATFUNC( nfGetScriptModuleStats );
+	DEF_NATFUNC( nfGetAppActive );
+	DEF_NATFUNC( nfUpdateResourceLoading );
+	
+	DEF_NATFUNC( nfGetCompatibleVersion );
+	DEF_NATFUNC( nfGetCompatibleVersionMajor );
+	DEF_NATFUNC( nfGetCompatibleVersionMinor );
+	DEF_NATFUNC( nfGetCompatibleVersionPatch );
+	DEF_NATFUNC( nfIsCompatibleVersionOlder );
+	DEF_NATFUNC( nfIsCompatibleVersionNewer );
+	
+	DEF_NATFUNC( nfGetModuleVersion );
+	DEF_NATFUNC( nfGetModuleVersionMajor );
+	DEF_NATFUNC( nfGetModuleVersionMinor );
+	DEF_NATFUNC( nfGetModuleVersionPatch );
+	DEF_NATFUNC( nfIsModuleVersionOlder );
+	DEF_NATFUNC( nfIsModuleVersionNewer );
+	
+	DEF_NATFUNC( nfGetDefaultEnableGI );
+	DEF_NATFUNC( nfSetDefaultEnableGI );
+	DEF_NATFUNC( nfGetDefaultEnableAuralization );
+	DEF_NATFUNC( nfSetDefaultEnableAuralization );
+	
+	DEF_NATFUNC( nfGetUserLocaleLanguage );
+	DEF_NATFUNC( nfGetUserLocaleTerritory );
+	
+	DEF_NATFUNC( nfGetSupportedServices );
 #undef DEF_NATFUNC
 };
 
-// end of include only once
 #endif

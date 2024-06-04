@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLSKINTEXTURE_H_
@@ -24,14 +27,17 @@
 
 #include "deoglSkinTextureProperty.h"
 #include "channel/deoglSkinChannel.h"
+#include "pipeline/deoglSkinTexturePipelinesList.h"
+#include "shader/deoglSkinShader.h"
 
 #include <dragengine/common/math/decMath.h>
 
 class deoglRenderThread;
 class deoglRSkin;
 class deoglSPBlockUBO;
-class deoglSkinShader;
 class deoglSkinShaderConfig;
+class deoglSharedSPBElement;
+class deoglShaderParameterBlock;
 
 class deSkinTexture;
 class deSkinProperty;
@@ -39,7 +45,7 @@ class deSkinProperty;
 
 
 /**
- * \brief Skin texture.
+ * Skin texture.
  */
 class deoglSkinTexture{
 public:
@@ -82,6 +88,8 @@ public:
 		empTexCoordOffset,
 		empTexCoordScale,
 		empTexCoordRotate,
+		empOmniDirRotate,
+		empOmniDirRotateSpot,
 		empThickness,
 		empTransparency,
 		empTransparencyMultiplier,
@@ -90,111 +98,29 @@ public:
 		empVariationU,
 		empVariationV,
 		empOutlineColor,
+		empOutlineColorTint,
 		empOutlineThickness,
 		empOutlineSolidity,
 		empOutlineEmissivity,
+		empOutlineEmissivityTint,
 		empOutlineEmissivityIntensity,
+		empRimEmissivity,
+		empRimEmissivityTint,
+		empRimEmissivityIntensity,
+		empRimAngle,
+		empRimExponent,
+		empNonPbrAlbedo,
+		empNonPbrMetalness,
+		empSkinClipPlane,
+		empSkinClipPlaneBorder,
 		EMP_COUNT
 	};
 	
-	/** Shader Types. */
-	enum eShaderTypes{
-		estComponentGeometry,
-		estComponentDepth,
-		estComponentDepthClipPlane,
-		estComponentDepthReversed,
-		estComponentDepthClipPlaneReversed,
-		estComponentCounter,
-		estComponentCounterClipPlane,
-		estComponentShadowProjection,
-		estComponentShadowOrthogonal,
-		estComponentShadowDistance,
-		estComponentShadowDistanceCube,
-		estComponentEnvMap,
-		
-		estBillboardGeometry,
-		estBillboardDepth,
-		estBillboardDepthClipPlane,
-		estBillboardDepthReversed,
-		estBillboardDepthClipPlaneReversed,
-		estBillboardCounter,
-		estBillboardCounterClipPlane,
-		estBillboardEnvMap,
-		
-		estDecalGeometry,
-		estDecalEnvMap,
-		
-		estPropFieldGeometry,
-		estPropFieldImposterGeometry,
-		estPropFieldDepth,
-		estPropFieldImposterDepth,
-		estPropFieldDepthClipPlane,
-		estPropFieldImposterDepthClipPlane,
-		estPropFieldDepthReversed,
-		estPropFieldImposterDepthReversed,
-		estPropFieldDepthClipPlaneReversed,
-		estPropFieldImposterDepthClipPlaneReversed,
-		estPropFieldCounter,
-		estPropFieldCounterClipPlane,
-		estPropFieldShadowProjection,
-		estPropFieldShadowOrthogonal,
-		estPropFieldShadowDistance,
-		estPropFieldEnvMap,
-		
-		estHeightMapGeometry,
-		estHeightMapDepth,
-		estHeightMapDepthClipPlane,
-		estHeightMapDepthReversed,
-		estHeightMapDepthClipPlaneReversed,
-		estHeightMapTranspCount,
-		estHeightMapTranspCountClipPlane,
-		estHeightMapShadowProjection,
-		estHeightMapShadowOrthogonal,
-		estHeightMapShadowDistance,
-		estHeightMapEnvMap,
-		
-		estParticleGeometry,
-		estParticleGeometryDepthTest,
-		estParticleDepth,
-		estParticleDepthClipPlane,
-		estParticleDepthReversed,
-		estParticleDepthClipPlaneReversed,
-		estParticleShadowProjection,
-		estParticleShadowOrthogonal,
-		estParticleShadowDistance,
-		estParticleCounter,
-		estParticleCounterClipPlane,
-		estParticleRibbonGeometry,
-		estParticleRibbonGeometryDepthTest,
-		estParticleRibbonDepth,
-		estParticleRibbonDepthClipPlane,
-		estParticleRibbonDepthReversed,
-		estParticleRibbonDepthClipPlaneReversed,
-		estParticleRibbonCounter,
-		estParticleRibbonCounterClipPlane,
-		estParticleBeamGeometry,
-		estParticleBeamGeometryDepthTest,
-		estParticleBeamDepth,
-		estParticleBeamDepthClipPlane,
-		estParticleBeamDepthReversed,
-		estParticleBeamDepthClipPlaneReversed,
-		estParticleBeamCounter,
-		estParticleBeamCounterClipPlane,
-		
-		estOutlineGeometry,
-		estOutlineDepth,
-		estOutlineDepthClipPlane,
-		estOutlineDepthReversed,
-		estOutlineDepthClipPlaneReversed,
-		estOutlineCounter,
-		estOutlineCounterClipPlane,
-	};
-	
-	static const int ShaderTypeCount = estOutlineCounterClipPlane + 1;
-	
 private:
 	deoglRenderThread &pRenderThread;
+	int pRTSIndex;
 	
+	const deoglRSkin &pSkin;
 	decString pName;
 	
 	bool pHasSolidity;
@@ -203,16 +129,19 @@ private:
 	bool pHasEmissivity;
 	
 	bool pSolidityMasked;
+	float pSolidityFilterPriority;
 	bool pSolid;
 	bool pHasHoles;
 	bool pReflects;
 	bool pDynamicChannels;
 	bool pCalculatedProperties;
+	bool pConstructedProperties;
+	bool pBoneProperties;
 	bool pRenderableChannels;
 	bool pRenderableMaterialProperties;
 	deoglSkinChannel *pChannels[ deoglSkinChannel::CHANNEL_COUNT ];
-	deoglSkinShader *pShaders[ ShaderTypeCount ];
-	deoglSPBlockUBO *pParamBlocks[ ShaderTypeCount ];
+	deoglSkinTexturePipelinesList pPipelines;
+	deoglSharedSPBElement *pSharedSPBElement;
 	
 	decColor pAbsorption;
 	float pAbsorptionHalfIntensityDistance;
@@ -252,6 +181,7 @@ private:
 	decColor pEmissivity;
 	decColor pEmissivityTint;
 	float pEmissivityIntensity;
+	bool pEmissivityCameraAdapted;
 	decVector2 pEnvironmentRoomSize;
 	decVector pEnvironmentRoomOffset;
 	decColor pEnvironmentRoomEmissivityTint;
@@ -266,6 +196,8 @@ private:
 	decVector2 pTexCoordOffset;
 	decVector2 pTexCoordScale;
 	float pTexCoordRotate;
+	decVector pOmniDirRotate;
+	decVector pOmniDirRotateSpot;
 	
 	bool pVariationU;
 	bool pVariationV;
@@ -273,24 +205,43 @@ private:
 	int pParticleSheetCount;
 	
 	decColor pOutlineColor;
+	decColor pOutlineColorTint;
 	float pOutlineThickness;
 	bool pOutlineThicknessScreen;
 	float pOutlineSolidity;
 	decColor pOutlineEmissivity;
+	decColor pOutlineEmissivityTint;
 	float pOutlineEmissivityIntensity;
 	bool pHasOutline;
 	bool pIsOutlineSolid;
 	bool pIsOutlineEmissive;
+	int pRenderTaskFilters;
+	
+	decColor pRimEmissivity;
+	decColor pRimEmissivityTint;
+	float pRimEmissivityIntensity;
+	float pRimAngle;
+	float pRimExponent;
+	
+	decColor pNonPbrAlbedo;
+	float pNonPbrMetalness;
+	
+	bool pXRay;
+	
+	float pSkinClipPlane;
+	float pSkinClipPlaneBorder;
 	
 	bool pQuickTransp;
 	
 	deoglSkinTextureProperty pMaterialProperties[ EMP_COUNT ];
 	
+	
+	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/**
-	 * \brief Create skin texture.
+	 * Create skin texture.
 	 * 
 	 * Prepares channels and load caches. To build the actual channel texture use BuildChannels().
 	 */
@@ -300,56 +251,72 @@ public:
 	~deoglSkinTexture();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
-	/** \brief Render thread. */
+	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
+	
+	/** Render task shared index. */
+	inline int GetRTSIndex() const{ return pRTSIndex; }
+	
+	/** Assign render task shared index. Called by deoglDelayedOperations only. */
+	void AssignRTSIndex();
 	
 	
 	
 	/**
-	 * \brief Build channel textures.
+	 * Build channel textures.
 	 * 
 	 * Ignores channels loaded from caches and channels using already loaded shared images.
 	 */
 	void BuildChannels( deoglRSkin &skin, const deSkinTexture &texture );
 	
-	/** \brief Finalize after asynchronous resource loading. */
+	/** Finalize after asynchronous resource loading. */
 	void FinalizeAsyncResLoading();
 	
 	
 	
-	/** \brief Texture name. */
+	/** Owner skin. */
+	inline const deoglRSkin &GetSkin() const{ return pSkin; }
+	
+	/** Texture name. */
 	inline const decString &GetName() const{ return pName; }
 	
-	/** \brief Texture contains solidity. */
+	/** Texture contains solidity. */
 	inline bool GetHasSolidity() const{ return pHasSolidity; }
 	
-	/** \brief Set if texture contains solidity. */
+	/** Set if texture contains solidity. */
 	void SetHasSolidity( bool hasSolidity );
 	
-	/** \brief Texture contains zero solidity. */
+	/** Texture contains zero solidity. */
 	inline bool GetHasZeroSolidity() const{ return pHasZeroSolidity; }
 	
-	/** \brief Set if texture contains zero solidity. */
+	/** Set if texture contains zero solidity. */
 	void SetHasZeroSolidity( bool hasZeroSolidity );
 	
-	/** \brief Texture contains transparency. */
+	/** Texture contains transparency. */
 	inline bool GetHasTransparency() const{ return pHasTransparency; }
 	
-	/** \brief Set if texture contains transparency. */
+	/** Set if texture contains transparency. */
 	void SetHasTransparency( bool hasTransparency );
 	
-	/** \brief Texture contains emissivity. */
+	/** Texture contains emissivity. */
 	inline bool GetHasEmissivity() const{ return pHasEmissivity; }
 	
-	/** \brief Set if texture contains emissivity. */
+	/** Set if texture contains emissivity. */
 	void SetHasEmissivity( bool hasEmissivity );
 	
 	/** Determines if the texture uses masked solidity. */
 	inline bool GetSolidityMasked() const{ return pSolidityMasked; }
 	/** Sets if the texture uses full alpha. */
 	void SetSolidityMasked( bool solidityMasked );
+	
+	/** Solidity filter priority. */
+	inline bool GetSolidityFilterPriority() const{ return pSolidityFilterPriority; }
+	
+	/** Set solidity filter priority. */
+	void SetSolidityFilterPriority( float solidityFilterPriority );
+	
 	/** Determines if the texture is solid. */
 	inline bool GetSolid() const{ return pSolid; }
 	/** Sets if the texture is solid. */
@@ -368,44 +335,53 @@ public:
 	/** Sets if quick transparency can be used for this texture. */
 	void SetQuickTransparency( bool quickTransp );
 	
-	/** \brief Texture has dynamic channels. */
+	/** Texture has dynamic channels. */
 	inline bool GetDynamicChannels() const{ return pDynamicChannels; }
 	
-	/** \brief Set if texture has dynamic channels. */
+	/** Set if texture has dynamic channels. */
 	void SetDynamicChannels( bool dynamicChannels );
 	
-	/** \brief Texture has calculated properties. */
+	/** Texture has calculated properties. */
 	inline bool GetCalculatedProperties() const{ return pCalculatedProperties; }
-	
-	/** \brief Set if texture has calculated properties. */
 	void SetCalculatedProperties( bool calculatedProperties );
 	
-	/** \brief Texture has renderable channels. */
+	/** Texture has constructed properties. */
+	inline bool GetConstructedProperties() const{ return pConstructedProperties; }
+	void SetConstructedProperties( bool constructedProperties );
+	
+	/** Texture has bone properties. */
+	inline bool GetBoneProperties() const{ return pBoneProperties; }
+	void SetBoneProperties( bool boneProperties );
+	
+	/** Texture has renderable channels. */
 	inline bool GetRenderableChannels() const{ return pRenderableChannels; }
 	
-	/** \brief Set if texture has renderable channels. */
+	/** Set if texture has renderable channels. */
 	void SetRenderableChannels( bool renderableChannels );
 	
-	/** \brief Texture has renderable material properties. */
+	/** Texture has renderable material properties. */
 	inline bool GetRenderableMaterialProperties() const{ return pRenderableMaterialProperties; }
 	
-	/** \brief Set if texture has renderable material properties. */
+	/** Set if texture has renderable material properties. */
 	void SetRenderableMaterialProperties( bool renderableMaterialProperties );
 	
-	/** Retrieves the shader for a shader type. */
-	deoglSkinShader *GetShaderFor( eShaderTypes shaderType );
-	/** Retrieves the shader configuration for a shader type. */
-	bool GetShaderConfigFor( eShaderTypes shaderType, deoglSkinShaderConfig &config );
-	/** Retrieves the parameter block for a shader type for static texture properties shared across components. */
-	deoglSPBlockUBO *GetParameterBlockFor( eShaderTypes shaderType );
+	/** Pipelines list. */
+	inline deoglSkinTexturePipelinesList &GetPipelines(){ return pPipelines; }
+	inline const deoglSkinTexturePipelinesList &GetPipelines() const{ return pPipelines; }
+	
+	/** Shared shader parameter block element. */
+	inline deoglSharedSPBElement *GetSharedSPBElement() const{ return pSharedSPBElement; }
+	
+	/** Prepare parameter block. */
+	void PrepareParamBlock();
 	/*@}*/
 	
-	/** @name Material Properties */
+	/** \name Material Properties */
 	/*@{*/
-	/** \brief Color. */
+	/** Color. */
 	inline const decColor &GetColor() const{ return pColor; }
 	
-	/** \brief Set color. */
+	/** Set color. */
 	void SetColor( const decColor &color );
 	
 	/** Retrieves the color gamma correction. */
@@ -413,16 +389,16 @@ public:
 	/** Sets the color gamma correction. */
 	void SetColorGamma( float gamma );
 	
-	/** \brief Color tint. */
+	/** Color tint. */
 	inline const decColor &GetColorTint() const{ return pColorTint; }
 	
-	/** \brief Set color tint. */
+	/** Set color tint. */
 	void SetColorTint( const decColor &tint );
 	
-	/** \brief Color tint mask. */
+	/** Color tint mask. */
 	inline float GetColorTintMask() const{ return pColorTintMask; }
 	
-	/** \brief Set color tint mask. */
+	/** Set color tint mask. */
 	void SetColorTintMask( float mask );
 	
 	/** Retrieves the color solidity multiplier. */
@@ -430,16 +406,16 @@ public:
 	/** Sets the color solidity multiplier. */
 	void SetColorSolidityMultiplier( float multiplier );
 	
-	/** \brief Omni-directional color cube map. */
+	/** Omni-directional color cube map. */
 	inline const decColor &GetColorOmnidirCube() const{ return pColorOmnidirCube; }
 	
-	/** \brief Set omni-directional color cube map. */
+	/** Set omni-directional color cube map. */
 	void SetColorOmnidirCube( const decColor &color );
 	
-	/** \brief Omni-directional color equirectangular map. */
+	/** Omni-directional color equirectangular map. */
 	inline const decColor &GetColorOmnidirEquirect() const{ return pColorOmnidirEquirect; }
 	
-	/** \brief Set omni-directional color equirectangular map. */
+	/** Set omni-directional color equirectangular map. */
 	void SetColorOmnidirEquirect( const decColor &color );
 	
 	/** Retrieves the transparency. */
@@ -469,13 +445,13 @@ public:
 	/** Sets the ambient occlusion solidity multiplier. */
 	void SetAmbientOcclusionSolidityMultiplier( float multiplier );
 	
-	/** \brief Retrieves the height scale. */
+	/** Retrieves the height scale. */
 	inline float GetHeightScale() const{ return pHeightScale; }
-	/** \brief Sets the height scale. */
+	/** Sets the height scale. */
 	void SetHeightScale( float scale );
-	/** \brief Retrieves the height offset. */
+	/** Retrieves the height offset. */
 	inline float GetHeightOffset() const{ return pHeightOffset; }
-	/** \brief Sets the height offset. */
+	/** Sets the height offset. */
 	void SetHeightOffset( float offset );
 	
 	/** Retrieves the normal. */
@@ -534,10 +510,10 @@ public:
 	/** Sets if this texture is a perfect mirror. */
 	void SetMirror( bool mirror );
 	
-	/** \brief Texture is render. */
+	/** Texture is render. */
 	inline bool GetRendered() const{ return pRendered; }
 	
-	/** \brief Set if texture is rendered. */
+	/** Set if texture is rendered. */
 	void SetRendered( bool rendered );
 	
 	/** Determines if the texture is reflected by other geometry. */
@@ -547,48 +523,54 @@ public:
 	
 	
 	
-	/** \brief Emissivity. */
+	/** Emissivity. */
 	inline const decColor &GetEmissivity() const{ return pEmissivity; }
 	
-	/** \brief Set emissivity. */
+	/** Set emissivity. */
 	void SetEmissivity( const decColor &emissivity );
 	
-	/** \brief Emissivity tint. */
+	/** Emissivity tint. */
 	inline const decColor &GetEmissivityTint() const{ return pEmissivityTint; }
 	
-	/** \brief Set emissivity tint. */
+	/** Set emissivity tint. */
 	void SetEmissivityTint( const decColor &tint );
 	
-	/** \brief Emissivity intensity. */
+	/** Emissivity intensity. */
 	inline float GetEmissivityIntensity() const{ return pEmissivityIntensity; }
 	
-	/** \brief Set emissivity intensity. */
+	/** Set emissivity intensity. */
 	void SetEmissivityIntensity( float intensity );
 	
+	/** Emissivity camera adapted. */
+	inline bool GetEmissivityCameraAdapted() const{ return pEmissivityCameraAdapted; }
+	
+	/** Set emissivity camera adapted. */
+	void SetEmissivityCameraAdapted( bool cameraAdapted );
 	
 	
-	/** \brief Environment room size. */
+	
+	/** Environment room size. */
 	inline const decVector2 &GetEnvironmentRoomSize() const{ return pEnvironmentRoomSize; }
 	
-	/** \brief Set environment room size. */
+	/** Set environment room size. */
 	void SetEnvironmentRoomSize( const decVector2 &size );
 	
-	/** \brief Environment room offset. */
+	/** Environment room offset. */
 	inline const decVector &GetEnvironmentRoomOffset() const{ return pEnvironmentRoomOffset; }
 	
-	/** \brief Set environment room offset. */
+	/** Set environment room offset. */
 	void SetEnvironmentRoomOffset( const decVector &offset );
 	
-	/** \brief Environment room emissivity tint. */
+	/** Environment room emissivity tint. */
 	inline const decColor &GetEnvironmentRoomEmissivityTint() const{ return pEnvironmentRoomEmissivityTint; }
 	
-	/** \brief Set environment room emissivity tint. */
+	/** Set environment room emissivity tint. */
 	void SetEnvironmentRoomEmissivityTint( const decColor &tint );
 	
-	/** \brief Environment room emissivity intensity. */
+	/** Environment room emissivity intensity. */
 	inline float GetEnvironmentRoomEmissivityIntensity() const{ return pEnvironmentRoomEmissivityIntensity; }
 	
-	/** \brief Set environment room emissivity intensity. */
+	/** Set environment room emissivity intensity. */
 	void SetEnvironmentRoomEmissivityIntensity( float intensity );
 	
 	
@@ -609,6 +591,42 @@ public:
 	inline float GetAbsorptionHalfIntensityDistance() const{ return pAbsorptionHalfIntensityDistance; }
 	/** Sets the absorption half intensity distance. */
 	void SetAbsorptionHalfIntensityDistance( float distance );
+	
+	/** Rim emissivity. */
+	inline const decColor &GetRimEmissivity() const{ return pRimEmissivity; }
+	
+	/** Set rim emissivity. */
+	void SetRimEmissivity( const decColor &emissivity );
+	
+	/** Rim emissivity tint. */
+	inline const decColor &GetRimEmissivityTint() const{ return pRimEmissivityTint; }
+	
+	/** Set rim emissivity tint. */
+	void SetRimEmissivityTint( const decColor &emissivity );
+	
+	/** Rim emissivity intensity. */
+	inline float GetRimEmissivityIntensity() const{ return pRimEmissivityIntensity; }
+	
+	/** Set rim emissivity intensity. */
+	void SetRimEmissivityIntensity( float intensity );
+	
+	/** Rim angle. */
+	inline float GetRimAngle() const{ return pRimAngle; }
+	
+	/** Set rim angle. */
+	void SetRimAngle( float angle );
+	
+	/** Rim exponent. */
+	inline float GetRimExponent() const{ return pRimExponent; }
+	void SetRimExponent( float exponent );
+	
+	/** Clip plane. */
+	inline float GetSkinClipPlane() const{ return pSkinClipPlane; }
+	void SetSkinClipPlane( float clipPlane );
+	
+	/** Clip plane border. */
+	inline float GetSkinClipPlaneBorder() const{ return pSkinClipPlaneBorder; }
+	void SetSkinClipPlaneBorder( float border );
 	
 	/** Determines if the texture is shadeless. */
 	inline bool GetShadeless() const{ return pShadeless; }
@@ -638,110 +656,146 @@ public:
 	/** Sets if the texture coordinates are clamped. */
 	void SetTexCoordClamp( bool clamp );
 	
-	/** \brief Texture coordinates offset. */
+	/** Texture coordinates offset. */
 	inline const decVector2 &GetTexCoordOffset() const{ return pTexCoordOffset; }
 	
-	/** \brief Set texture coordinates offset. */
+	/** Set texture coordinates offset. */
 	void SetTexCoordOffset( const decVector2 &offset );
 	
-	/** \brief Texture coordinates scale. */
+	/** Texture coordinates scale. */
 	inline const decVector2 &GetTexCoordScale() const{ return pTexCoordScale; }
 	
-	/** \brief Set texture coordinates scale. */
+	/** Set texture coordinates scale. */
 	void SetTexCoordScale( const decVector2 &scale );
 	
-	/** \brief Texture coordinates rotate. */
+	/** Texture coordinates rotate. */
 	inline float GetTexCoordRotate() const{ return pTexCoordRotate; }
 	
-	/** \brief Set texture coordinates rotate. */
+	/** Set texture coordinates rotate. */
 	void SetTexCoordRotate( float rotate );
 	
+	/** Omni directional texture rotate. */
+	inline const decVector &GetOmniDirRotate() const{ return pOmniDirRotate; }
+	
+	/** Set omni directional texture rotate. */
+	void SetOmniDirRotate( const decVector &rotate );
+	
+	/** Omni directional texture rotate for spot lights only. */
+	inline const decVector &GetOmniDirRotateSpot() const{ return pOmniDirRotateSpot; }
+	
+	/** Set omni directional texture rotate for spot lights only. */
+	void SetOmniDirRotateSpot( const decVector &rotate );
 	
 	
-	/** \brief Texture has variation in U direction. */
+	
+	/** Texture has variation in U direction. */
 	inline bool GetVariationU() const{ return pVariationU; }
 	
-	/** \brief Set if texture has variation in U direction. */
+	/** Set if texture has variation in U direction. */
 	void SetVariationU( bool enable );
 	
-	/** \brief Texture has variation in V direction. */
+	/** Texture has variation in V direction. */
 	inline bool GetVariationV() const{ return pVariationV; }
 	
-	/** \brief Set if texture has variation in V direction. */
+	/** Set if texture has variation in V direction. */
 	void SetVariationV( bool enable );
 	
 	
 	
-	/** \brief Particle sheets count. */
+	/** Particle sheets count. */
 	inline int GetParticleSheetCount() const{ return pParticleSheetCount; }
 	
-	/** \brief Set particle sheets count. */
+	/** Set particle sheets count. */
 	void SetParticleSheetCount( int count );
 	
 	
 	
-	/** \brief Outline color. */
+	/** Outline color. */
 	inline const decColor &GetOutlineColor() const{ return pOutlineColor; }
 	
-	/** \brief Set outline color. */
+	/** Set outline color. */
 	void SetOutlineColor( const decColor &color );
 	
-	/** \brief Outline thickness. */
+	/** Outline color tint. */
+	inline const decColor &GetOutlineColorTint() const{ return pOutlineColorTint; }
+	
+	/** Set outline color tint. */
+	void SetOutlineColorTint( const decColor &color );
+	
+	/** Outline thickness. */
 	inline float GetOutlineThickness() const{ return pOutlineThickness; }
 	
-	/** \brief Set outline thickness. */
+	/** Set outline thickness. */
 	void SetOutlineThickness( float thickness );
 	
-	/** \brief Outline thickness is relative to screen width. */
+	/** Outline thickness is relative to screen width. */
 	inline bool GetOutlineThicknessScreen() const{ return pOutlineThicknessScreen; }
 	
-	/** \brief Set if outline thickness is relative to screen width. */
+	/** Set if outline thickness is relative to screen width. */
 	void SetOutlineThicknessScreen( bool enable );
 	
-	/** \brief Outline solidity. */
+	/** Outline solidity. */
 	inline float GetOutlineSolidity() const{ return pOutlineSolidity; }
 	
-	/** \brief Set outline solidity. */
+	/** Set outline solidity. */
 	void SetOutlineSolidity( float solidity );
 	
-	/** \brief Outline emissivity. */
+	/** Outline emissivity. */
 	inline const decColor &GetOutlineEmissivity() const{ return pOutlineEmissivity; }
 	
-	/** \brief Set outline emissivity. */
+	/** Set outline emissivity. */
 	void SetOutlineEmissivity( const decColor &emissivity );
 	
-	/** \brief Outline emissivity intensity. */
+	/** Outline emissivity tint. */
+	inline const decColor &GetOutlineEmissivityTint() const{ return pOutlineEmissivityTint; }
+	
+	/** Set outline emissivity tint. */
+	void SetOutlineEmissivityTint( const decColor &emissivity );
+	
+	/** Outline emissivity intensity. */
 	inline float GetOutlineEmissivityIntensity() const{ return pOutlineEmissivityIntensity; }
 	
-	/** \brief Set outline emissivity intensity. */
+	/** Set outline emissivity intensity. */
 	void SetOutlineEmissivityIntensity( float intensity );
 	
-	/** \brief Has outline. */
+	
+	
+	inline const decColor &GetNonPbrAlbeod() const{ return pNonPbrAlbedo; }
+	void SetNonPbrAlbedo( const decColor &albedo );
+	
+	inline float GetNonPbrMetalness() const{ return pNonPbrMetalness; }
+	void SetNonPbrMetalness( float metalness );
+	
+	inline bool GetXRay() const{ return pXRay; }
+	void SetXRay( bool xray );
+	
+	
+	
+	/** Has outline. */
 	inline bool GetHasOutline() const{ return pHasOutline; }
 	
-	/** \brief Outline is solid. */
+	/** Outline is solid. */
 	inline bool GetIsOutlineSolid() const{ return pIsOutlineSolid; }
 	
-	/** \brief Outline is emissive. */
+	/** Outline is emissive. */
 	inline bool GetIsOutlineEmissive() const{ return pIsOutlineEmissive; }
 	
+	/** Render task filters. */
+	inline int GetRenderTaskFilters() const{ return pRenderTaskFilters; }
 	
 	
 	/** Retrieves a material property. */
 	deoglSkinTextureProperty &GetMaterialPropertyAt( int property );
 	const deoglSkinTextureProperty &GetMaterialPropertyAt( int property ) const;
 	
-	/** \brief Channel for type or \em NULL if not used. */
+	/** Channel for type or \em NULL if not used. */
 	deoglSkinChannel *GetChannelAt( deoglSkinChannel::eChannelTypes type ) const;
 	
-	/** \brief Channel for type is not \em NULL. */
+	/** Channel for type is not \em NULL. */
 	bool IsChannelEnabled( deoglSkinChannel::eChannelTypes type ) const;
-	
-	
-	
-	/** \brief Drop objects containing delayed deletion support. */
-	void DropDelayedDeletionObjects();
 	/*@}*/
+	
+	
 	
 private:
 	void pCleanUp();
@@ -752,6 +806,8 @@ private:
 	void pCompressTextures( deoglRSkin &skin, const deSkinTexture &texture );
 	void pWriteCached( deoglRSkin &skin );
 	void pProcessProperty( deoglRSkin &skin, deSkinProperty &property );
+	void pUpdateParamBlock( deoglShaderParameterBlock &paramBlock, int index );
+	void pUpdateRenderTaskFilters();
 };
 
 #endif

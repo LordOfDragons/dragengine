@@ -8,6 +8,9 @@
 
 namespace Dragengine.Gui
 
+pin Dragengine.Scenery
+
+
 /**
  * \brief Immutable 3-component integer point.
  * 
@@ -35,56 +38,69 @@ fixed class Point3
 	/*@{*/
 	/** \brief X component. */
 	public func int getX()
+		return 0
 	end
 	
 	/** \brief Y component. */
 	public func int getY()
+		return 0
 	end
 	
 	/** \brief Z component. */
 	public func int getZ()
+		return 0
 	end
 	
 	/** \brief Length. */
 	public func float getLength()
+		return 0.0
 	end
 	
 	/** \brief Point3 with smallest components of this point and another point. */
 	public func Point3 smallest( Point3 p )
+		return null
 	end
 	
 	/** \brief Point3 with smallest components of this point and another point. */
 	public func Point3 smallest( int x, int y, int z )
+		return null
 	end
 	
 	/** \brief Point3 with largest components of this point and another point. */
 	public func Point3 largest( Point3 point )
+		return null
 	end
 	
 	/** \brief Point3 with largest components of this point and another point. */
 	public func Point3 largest( int x, int y, int z )
+		return null
 	end
 	
 	
 	
 	/** \brief Point3s are equal. */
 	public func bool isEqualTo( Point3 point )
+		return false
 	end
 	
 	/** \brief Both components are larger than or equal to a value. */
 	public func bool isAtLeast( int value )
+		return false
 	end
 	
 	/** \brief Both components are smaller than or equal to a value. */
 	public func bool isAtMost( int value )
+		return false
 	end
 	
 	/** \brief Point is equal to zero point. */
 	public func bool isZero()
+		return false
 	end
 	
 	/** \brief Multiply with point component wise. */
 	public func Point3 compMultiply( Point3 point )
+		return null
 	end
 	
 	/**
@@ -92,12 +108,30 @@ fixed class Point3
 	 * \throws EDivisionByZero A component of point is 0.
 	 */
 	public func Point3 compDivide( Point3 point )
+		return null
+	end
+	
+	/**
+	 * \brief Convert to single precision vector with possible loss of precision.
+	 * \version 1.8
+	 */
+	public func Vector toVector()
+		return null
+	end
+	
+	/**
+	 * \brief Convert to double precision vector with possible loss of precision.
+	 * \version 1.8
+	 */
+	public func DVector toDVector()
+		return null
 	end
 	
 	
 	
 	/** \brief Read point from a file reader. */
 	static public func Point3 readFromFile( FileReader reader )
+		return null
 	end
 	
 	/** \brief Write point to a file writer. */
@@ -112,6 +146,7 @@ fixed class Point3
 	 * \returns \em true if \em other is of type Point3 and components are equal.
 	*/
 	public func bool equals( Object other )
+		return false
 	end
 	
 	/**
@@ -119,6 +154,7 @@ fixed class Point3
 	 * \details Implements Object.hashCode().
 	 */
 	public func int hashCode()
+		return 0
 	end
 	
 	/**
@@ -126,6 +162,7 @@ fixed class Point3
 	 * \details Implements Object.toString()
 	 */
 	public func String toString()
+		return null
 	end
 	/*@}*/
 	
@@ -135,18 +172,22 @@ fixed class Point3
 	/*@{*/
 	/** \brief Point3 with each component negated. */
 	public func Point3 -()
+		return null
 	end
 	
 	/** \brief Sum of two points. */
 	public func Point3 +( Point3 point )
+		return null
 	end
 	
 	/** \brief Difference between two points. */
 	public func Point3 -( Point3 point )
+		return null
 	end
 	
 	/** \brief Point3 with each component scaled by a value. */
 	public func Point3 *( int scalar )
+		return null
 	end
 	
 	/**
@@ -154,26 +195,32 @@ fixed class Point3
 	 * \throws EDivisionByZero \em scalar is \em 0.
 	 */
 	public func Point3 /( int scalar )
+		return null
 	end
 	
 	/** \brief Dot product of two points. */
 	public func int *( Point3 point )
+		return 0
 	end
 	
 	/** \brief Check if each component of this point is smaller than another point. */
 	public func bool <( Point3 point )
+		return false
 	end
 	
 	/** \brief Check if each component of this point is smaller than or equal to another point. */
 	public func bool <=( Point3 point )
+		return false
 	end
 	
 	/** \brief Check if each component of this point is larger than another point. */
 	public func bool >( Point3 point )
+		return false
 	end
 	
 	/** \brief Check if each component of this point is larger than or equal to another point. */
 	public func bool >=( Point3 point )
+		return false
 	end
 	/*@}*/
 end

@@ -1,0 +1,4 @@
+VROPENXR {
+  global: OpenXRCreateModule;
+  local: *;
+};

@@ -1,23 +1,28 @@
-/* 
- * Drag[en]gine IGDE
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
+
+#ifdef IGDE_TOOLKIT_FOX
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -55,10 +60,10 @@ igdeNativeFoxContainerForm::igdeNativeFoxContainerForm(){
 }
 
 igdeNativeFoxContainerForm::igdeNativeFoxContainerForm(
-	igdeContainerForm &owner, FXComposite *parent, int layoutFlags ) :
-FXMatrix( parent, 2, MATRIX_BY_COLUMNS | layoutFlags, 0, 0, 0, 0, 0, 0, 0, 0,
-	owner.GetColumnSpacing(), owner.GetRowSpacing() ),
-pOwner( &owner )
+	igdeContainerForm &powner, FXComposite *pparent, int layoutFlags ) :
+FXMatrix( pparent, 2, MATRIX_BY_COLUMNS | layoutFlags, 0, 0, 0, 0, 0, 0, 0, 0,
+	powner.GetColumnSpacing(), powner.GetRowSpacing() ),
+pOwner( &powner )
 {
 	if( ! pOwner->GetVisible() ){
 		hide();
@@ -68,11 +73,49 @@ pOwner( &owner )
 igdeNativeFoxContainerForm::~igdeNativeFoxContainerForm(){
 }
 
+igdeNativeFoxContainerForm *igdeNativeFoxContainerForm::CreateNativeWidget( igdeContainerForm &powner ){
+	if( ! powner.GetParent() ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	FXComposite * const pparent = ( FXComposite* ) powner.GetParent()->GetNativeContainer();
+	if( ! pparent ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	return new igdeNativeFoxContainerForm( powner, pparent, igdeUIFoxHelper::GetChildLayoutFlags( &powner ) );
+}
+
+void igdeNativeFoxContainerForm::PostCreateNativeWidget(){
+	FXComposite &pparent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
+	if( pparent.id() ){
+		create();
+	}
+}
+
+void igdeNativeFoxContainerForm::DestroyNativeWidget(){
+	delete this;
+}
+
 
 
 // Management
 ///////////////
 
+void igdeNativeFoxContainerForm::ChildRemoved(){
+	if( pOwner->GetStretching() != igdeContainerForm::esLast ){
+		return;
+	}
+	
+	const int count = pOwner->GetChildCount();
+	const int index = count - ( count % 2 );
+	igdeUIFoxHelper::UpdateLayoutFlags( pOwner->GetChildAt( index ) );
+	if( index + 1 < count ){
+		igdeUIFoxHelper::UpdateLayoutFlags( pOwner->GetChildAt( index + 1 ) );
+	}
+	
+	recalc();
+}
 
 
 
@@ -84,8 +127,8 @@ long igdeNativeFoxContainerForm::onResize( FXObject*, FXSelector, void* ){
 	return 1;
 }
 
-long igdeNativeFoxContainerForm::onChildLayoutFlags( FXObject*, FXSelector, void *data ){
-	igdeUIFoxHelper::sChildLayoutFlags &clflags = *( ( igdeUIFoxHelper::sChildLayoutFlags* )data );
+long igdeNativeFoxContainerForm::onChildLayoutFlags( FXObject*, FXSelector, void *pdata ){
+	igdeUIFoxHelper::sChildLayoutFlags &clflags = *( ( igdeUIFoxHelper::sChildLayoutFlags* )pdata );
 	clflags.flags = LAYOUT_FILL_X | LAYOUT_FILL_Y;
 	
 	const int index = pOwner->IndexOfChild( clflags.widget );
@@ -127,3 +170,5 @@ long igdeNativeFoxContainerForm::onChildLayoutFlags( FXObject*, FXSelector, void
 	
 	return 1;
 }
+
+#endif

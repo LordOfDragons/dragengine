@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Game Engine
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEMODULEPARAMETER_H_
@@ -29,7 +32,7 @@
 /**
  * \brief Module parameter.
  *
- * Contains informations about a module parameter. This informations is designed
+ * Contains information about a module parameter. This information is designed
  * to help scripters to generate GUI widgets for the parameters matching the type
  * of the parameter to make it easier for the user to set the correct values.
  * The parameter can be of one of the four types boolean, numeric, ranged and
@@ -40,7 +43,7 @@
  * user. The selection parameter provides a list of values. The index into this
  * list is the value returned.
  */
-class deModuleParameter{
+class DE_DLL_EXPORT deModuleParameter{
 public:
 	/** \brief Parameter types. */
 	enum eParameterTypes{
@@ -90,7 +93,7 @@ public:
 	};
 	
 	/** \brief Selection entry. */
-	struct SelectionEntry{
+	struct DE_DLL_EXPORT SelectionEntry{
 		decString value;
 		decString displayName;
 		decString description;
@@ -109,6 +112,7 @@ private:
 	int pSelectionEntryCount;
 	eCategory pCategory;
 	decString pDisplayName;
+	decString pDefaultValue;
 	
 	
 	
@@ -194,6 +198,18 @@ public:
 	
 	/** \brief Set display name for use in configuration dialogs. */
 	void SetDisplayName( const char *displayName );
+	
+	/**
+	 * \brief Default value.
+	 * \version 1.7
+	 */
+	inline const decString &GetDefaultValue() const{ return pDefaultValue; }
+	
+	/**
+	 * \brief Set default value.
+	 * \version 1.7
+	 */
+	void SetDefaultValue( const decString &defaultValue );
 	
 	/** \brief Reset to default values. */
 	void Reset();

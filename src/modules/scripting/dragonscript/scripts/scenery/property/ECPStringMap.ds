@@ -1,28 +1,32 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
 namespace Dragengine.Scenery
 
 pin Dragengine.Gui
+pin Dragengine.Preloading
 pin Dragengine.Utils
 
 
@@ -31,31 +35,30 @@ pin Dragengine.Utils
  * \brief Mapping strings class property for use with XML loading.
  */
 class ECPStringMap extends ElementClassProperty
-	/** \brief Dictionary of String mapping to String. */
 	private var Dictionary pMap
 	
 	
 	
 	/** \brief Create property. */
-	public func new( String name ) super( name )
-		this.pMap = Dictionary.new()
+	public func new(String name) super(name)
+		pMap = Dictionary.new()
 	end
 	
 	
 	
 	/** \brief Number of mappings. */
 	public func int getMappingCount()
-		return this.pMap.getCount()
+		return pMap.getCount()
 	end
 	
 	/** \brief Map string or \em null if mapping does not exist. */
-	public func String map( String key )
-		return this.pMap.getAt( key, null ) cast String
+	public func String map(String key)
+		return pMap.getAt(key, null) cast String
 	end
 	
 	/** \brief Mapping is present. */
-	public func bool hasMapping( String key )
-		return this.pMap.has( key )
+	public func bool hasMapping(String key)
+		return pMap.has(key)
 	end
 	
 	/**
@@ -63,30 +66,61 @@ class ECPStringMap extends ElementClassProperty
 	 * 
 	 * First block parameter is String key. Second block parameter is String value.
 	 */
-	public func void forEachMapping( Block ablock )
-		this.pMap.forEach( ablock )
+	public func void forEachMapping(Block ablock)
+		pMap.forEach(ablock)
 	end
 	
 	/** \brief Remove all mappings. */
 	public func void removeAllMappings()
-		this.pMap.removeAll()
+		pMap.removeAll()
 	end
 	
 	/** \brief Add mapping replacing existing one if present. */
-	public func void addMapping( String key, String value )
+	public func void addMapping(String key, String value)
 		if key == null or value == null
 			throw EInvalidParam.new()
 		end
-		this.pMap.setAt( key, value )
+		pMap.setAt(key, value)
 	end
 	
 	
 	
 	/** \brief Set value of property from XML decoded value. */
-	public func void setValue( Object value )
-		this.pMap.removeAll()
-		( value cast Dictionary ).forEach( block String key, String value
-			this.pMap.setAt( key, value )
-		end )
+	public func void setValue(Object value)
+		pMap.removeAll()
+		(value cast Dictionary).forEach(block String key, String value
+			pMap.setAt(key, value)
+		end)
+	end
+	
+	/**
+	 * \brief Copy value from another element class property of the same type.
+	 * \version 1.17
+	 */
+	public func void copyValue(ElementClass elementClass, ElementClassProperty property)
+		pMap = Dictionary.new((property cast ECPStringMap).pMap)
+	end
+	
+	
+	
+	/**
+	 * \brief String map modified by stub property if present.
+	 * \version 1.19
+	 * 
+	 * If named stub property is not present or empty string the stored dictionary is returned.
+	 * If the named stub property is present it is decoded using codec. Since the returned
+	 * dictionary can be the stored dictionary do not modify the returned dictionary. If you
+	 * need to modify it create first a copy using "Dictionary.new(getMap(stub, codec))".
+	 * 
+	 * - "key1:value1 key2:value2 ... keyN:valueN"
+	 */
+	public func Dictionary getMap(StubWithProperties stub, CodecPropertyString codec)
+		var String value = stub.getPropertyValueFor(getName(), "")
+		if value.empty()
+			return pMap
+			
+		else
+			return codec.decodeStringDictionary(value)
+		end
 	end
 end

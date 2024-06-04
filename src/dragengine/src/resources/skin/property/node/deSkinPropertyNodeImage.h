@@ -1,40 +1,42 @@
-/* 
- * Drag[en]gine Game Engine
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DESKINPROPERTYNODEIMAGE_H_
 #define _DESKINPROPERTYNODEIMAGE_H_
 
 #include "deSkinPropertyNode.h"
+#include "../../../image/deImage.h"
 #include "../../../../common/string/decString.h"
-
-class deImage;
 
 
 /**
  * \brief Skin property image node for constructed texture property.
  */
-class deSkinPropertyNodeImage : public deSkinPropertyNode{
+class DE_DLL_EXPORT deSkinPropertyNodeImage : public deSkinPropertyNode{
 private:
 	decString pPath;
-	deImage *pImage;
+	deImage::Ref pImage;
 	decPoint pRepeat;
 	
 	
@@ -59,10 +61,10 @@ public:
 	/** \brief Set image path or empty path if not set. */
 	void SetPath( const char *path );
 	
-	/** \brief Image or NULL if not set. */
-	inline deImage *GetImage() const{ return pImage; }
+	/** \brief Image or nullptr if not set. */
+	inline const deImage::Ref &GetImage() const{ return pImage; }
 	
-	/** \brief Set image or NULL if not set. */
+	/** \brief Set image or nullptr if not set. */
 	void SetImage( deImage *image );
 	
 	/** \brief Repeat count. */

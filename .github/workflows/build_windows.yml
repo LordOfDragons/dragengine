@@ -1,0 +1,95 @@
+name: Build Windows
+
+on:
+  workflow_call:
+    inputs:
+      branch:
+        required: false
+        type: string
+        default: master
+      releaseVersion:
+        required: true
+        type: string
+      buildVersion:
+        required: true
+        type: string
+      artifactArchive:
+        required: true
+        type: string
+      debugBuild:
+        type: boolean
+        required: false
+        default: false
+      lfscache:
+        required: false
+        default: true
+        type: boolean
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: ${{ !inputs.lfscache }}
+          submodules: 'recursive'
+          ref: ${{ inputs.branch }}
+      
+      - name: Create LFS file hash list
+        if: ${{ inputs.lfscache }}
+        run: git lfs ls-files -l | cut -d' ' -f1 | sort > .lfs-objects-id
+
+      - name: Restore LFS Cache
+        uses: actions/cache@v4
+        id: lfs-cache
+        if: ${{ inputs.lfscache }}
+        with:
+          path: .git/lfs
+          key: lfs-cache-${{ hashFiles('.lfs-objects-id') }}
+          restore-keys: lfs-cache-
+
+      - name: Git LFS Pull
+        if: ${{ inputs.lfscache }}
+        run: |
+          git lfs pull 2>&1 | tee lfs.log
+          if grep -q "error:" "lfs.log" ; then
+            git lfs logs last
+            exit 1
+          fi
+      
+      - name: Install required packages
+        run: |
+          sudo apt -y update
+          sudo apt -y install build-essential scons cmake autoconf libtool nasm \
+            patchelf libx11-dev libxrandr-dev libgl-dev libxi-dev libpulse-dev \
+            libasound2-dev portaudio19-dev libxft-dev extra-cmake-modules \
+            flex bison gettext mingw-w64
+      
+      - name: Init custom.py
+        run: |
+          cp ${{ github.workspace }}/.github/workflows/custom_windows.py custom.py
+          sed -i -e 's/{ReleaseVersion}/${{ inputs.releaseVersion }}/g' custom.py
+          sed -i -e 's/{BuildVersion}/${{ inputs.buildVersion }}/g' custom.py
+          sed -i -e 's/{DebugBuild}/${{ inputs.debugBuild && 'yes' || 'no' }}/g' custom.py
+      
+      - name: Build
+        # certain CMake based projects are problem children that like to get stuck
+        # in CMake on Ubuntu. build them first to avoid it loking up things
+        run: |
+          scons tools=mingw64 -j 1 lib_openxr
+          scons tools=mingw64 -j 1 lib_openvr
+          scons tools=mingw64 -j 1 lib_libjpeg
+          scons tools=mingw64 -j 14 archive
+          
+      - name: Store Archives
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.artifactArchive }}
+          path: |
+            archive/build/dragengine-${{ inputs.releaseVersion }}-windows64.zip
+            archive/build/dragengine-sdk-${{ inputs.releaseVersion }}-windows64.zip
+            archive/build/deigde-${{ inputs.releaseVersion }}-windows64.zip
+            archive/build/deigde-sdk-${{ inputs.releaseVersion }}-windows64.zip
+            archive/build/despecial-${{ inputs.releaseVersion }}-windows64.zip
+          if-no-files-found: error

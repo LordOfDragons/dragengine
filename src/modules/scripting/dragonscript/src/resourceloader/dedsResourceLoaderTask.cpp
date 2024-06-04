@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -67,26 +70,24 @@
 ////////////////////////////
 
 dedsResourceLoaderTask::dedsResourceLoaderTask( deScriptingDragonScript *ds,
-const char *filename, deResourceLoader::eResourceType resourceType ){
-	if( ! ds || ! filename ){
+const char *filename, deResourceLoader::eResourceType resourceType ) :
+pDS( ds ),
+pFilename( filename ),
+pResourceType( resourceType ),
+pListeners( NULL ),
+pListenerCount( 0 ),
+pListenerSize( 0 )
+{
+	if( ! ds ){
 		DETHROW( deeInvalidParam );
 	}
-	
-	pDS = ds;
-	pFilename = NULL;
-	pResourceType = resourceType;
-	
-	pListeners = NULL;
-	pListenerCount = 0;
-	pListenerSize = 0;
-	
-	pFilename = new char[ strlen( filename ) + 1 ];
-	strcpy( pFilename, filename );
 }
 
 dedsResourceLoaderTask::~dedsResourceLoaderTask(){
 	pClearListeners();
-	if( pListeners ) delete [] pListeners;
+	if( pListeners ){
+		delete [] pListeners;
+	}
 }
 
 
@@ -96,11 +97,7 @@ dedsResourceLoaderTask::~dedsResourceLoaderTask(){
 
 bool dedsResourceLoaderTask::Matches( const char *filename,
 deResourceLoader::eResourceType resourceType ) const{
-	if( ! filename ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	return strcmp( filename, pFilename ) == 0 && resourceType == pResourceType;
+	return resourceType == pResourceType && pFilename == filename;
 }
 
 void dedsResourceLoaderTask::AddListener( dsRealObject *listener ){
@@ -199,7 +196,7 @@ void dedsResourceLoaderTask::NotifyLoadingFinished( deFileResource *resource ){
 		default:
 			DETHROW( deeInvalidParam ); // TODO do something more smart here
 		}
-		rt->PushInt( pResourceType );
+		rt->PushValue( pDS->GetClassResourceLoaderType()->GetVariable( pResourceType )->GetStaticValue() );
 		rt->PushString( pFilename );
 		rt->RunFunctionFast( pListeners[ i ], funcIndex );
 	}
@@ -214,7 +211,7 @@ void dedsResourceLoaderTask::NotifyLoadingFailed(){
 	
 	for( i=0; i<pListenerCount; i++ ){
 		// failedLoading( filename, resourceType )
-		rt->PushInt( pResourceType );
+		rt->PushValue( pDS->GetClassResourceLoaderType()->GetVariable( pResourceType )->GetStaticValue() );
 		rt->PushString( pFilename );
 		rt->RunFunctionFast( pListeners[ i ], funcIndex );
 	}

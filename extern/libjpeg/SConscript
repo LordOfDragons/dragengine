@@ -5,7 +5,7 @@ import SCons
 from SConsCommon import *
 from SConsExternCommon import *
 
-Import( 'parent_env parent_targets parent_report' )
+Import('parent_env parent_targets parent_report')
 
 envLibrary = parent_env.Clone()
 
@@ -13,138 +13,137 @@ envLibrary = parent_env.Clone()
 buildStaticLinking = True
 
 # parameters
-srcdir = 'libjpeg-turbo-1.5.1'
-if envLibrary['OSWindows']:
-	srcdir = 'libjpeg-turbo-2.0.3'
+srcdir = 'libjpeg-turbo-2.0.3'
 
 libLinkVersion = '62'
 libLinkName = 'jpeg'
 
-if envLibrary[ 'OSWindows' ]:
-	libFileName = 'bin/lib{}-{}.dll'.format( libLinkName, libLinkVersion )
-	staticFileName = 'lib/lib{}.a'.format( libLinkName )
+if envLibrary['OSWindows']:
+	libFileName = 'bin/lib{}-{}.dll'.format(libLinkName, libLinkVersion)
+	staticFileName = 'lib/lib{}.a'.format(libLinkName)
+	
+	# libjpeg reacts badly to these
+	if '-Wl,--nxcompat' in envLibrary['CROSSCOMPILE_LINKFLAGS']:
+		envLibrary['CROSSCOMPILE_LINKFLAGS'].remove('-Wl,--nxcompat')
+	
+	if '-Wl,--dynamicbase' in envLibrary['CROSSCOMPILE_LINKFLAGS']:
+		envLibrary['CROSSCOMPILE_LINKFLAGS'].remove('-Wl,--dynamicbase')
+	
 else:
-	libFileName = envLibrary.subst( 'lib/${{SHLIBPREFIX}}{}${{SHLIBSUFFIX}}.{}'.format( libLinkName, libLinkVersion ) )
-	staticFileName = envLibrary.subst( 'lib/${{LIBPREFIX}}{}${{LIBSUFFIX}}'.format( libLinkName ) )
+	libFileName = envLibrary.subst('lib/${{SHLIBPREFIX}}{}${{SHLIBSUFFIX}}.{}'.format(libLinkName, libLinkVersion))
+	staticFileName = envLibrary.subst('lib/${{LIBPREFIX}}{}${{LIBSUFFIX}}'.format(libLinkName))
 
-# check if system libjpeg is present
+# check if system libjpeg is present.
+# NOTE some OS have compilers causing errors on the check below because "true" is used.
+#      the error looks like "cannot convert bool to boolean". to prevent this "TRUE" is
+#      used instead
 hasSystemJPEG = False
 conf = envLibrary.Configure()
-if envLibrary[ 'with_system_libjpeg' ] != TernaryVariableNo:
-	hasSystemJPEG = conf.CheckLibWithHeader( libLinkName,
+if envLibrary['with_system_libjpeg'] != TernaryVariableNo:
+	hasSystemJPEG = conf.CheckLibWithHeader(libLinkName,
 		['stdio.h', 'stdlib.h', 'jpeglib.h'], 'c++',
-		'jpeg_read_header(NULL, true);' )
+		'jpeg_read_header(NULL, TRUE);')
 conf.Finish()
 
-if not hasSystemJPEG and envLibrary[ 'with_system_libjpeg' ] == TernaryVariableYes:
-	Exit( 'Requested to use system libjpeg but no usable libjpeg found.' )
+if not hasSystemJPEG and envLibrary['with_system_libjpeg'] == TernaryVariableYes:
+	Exit('Requested to use system libjpeg but no usable libjpeg found.')
 
-libs = [ libLinkName ]
+libs = [libLinkName]
 
-parent_report[ 'use system libjpeg' ] = 'yes' if hasSystemJPEG else 'no'
+parent_report['use system libjpeg'] = 'yes' if hasSystemJPEG else 'no'
 
 if hasSystemJPEG:
-	parent_targets[ 'lib_libjpeg' ] = {
+	parent_targets['lib_libjpeg'] = {
 		'name' : 'Internal JPEG library',
 		'cpppath' : [],
 		'libpath' : [],
 		'libs' : libs,
 		'runtimelibs' : [],
-		'depends' : [] }
+		'depends' : []}
 	Return()
 
 # build jpeg
-def jpegBuild( target, source, env ):
-	buildDir = target[ 0 ].get_dir().up()
+def jpegBuild(target, source, env):
+	buildDir = target[0].get_dir().up()
+	untarArchive(buildDir.abspath, source[0].abspath)
 	
-	untarArchive( buildDir.abspath, source[ 0 ].abspath )
+	cmakeBuildDir = buildDir.Dir('build').abspath
+	if not os.path.isdir(cmakeBuildDir):
+		os.mkdir(cmakeBuildDir)
 	
 	cppflags = []
-	if env[ 'platform_android' ] != 'no' and int(env[ 'apilevel' ]) < 21:
-		cppflags.extend( [ '-DSIZE_MAX=4294967295U' ] )  # defined in stdint.h but android somehow messes this up
+	if env['platform_android'] != 'no' and int(env['apilevel']) < 21:
+		cppflags.extend(['-DSIZE_MAX=4294967295U'])  # defined in stdint.h but android somehow messes this up
 	
-	script = createScriptHeader( env, cppflags=cppflags )
+	script = createScriptHeader(env, cppflags=cppflags)
 	
-	script.append( 'cd "{}" || exit 1'.format( buildDir.Dir( srcdir ).abspath ) )
+	script.append('cd "{}" || exit 1'.format(cmakeBuildDir))
 	
-	if envLibrary['OSWindows']:
-		cmdline = []
-		cmdline.append('cmake')
-		cmdline.extend('-G"Unix Makefiles"')
-		cmdline.append('-DENABLE_SHARED=Off')
-		cmdline.append('-DENABLE_STATIC=On')
+	cmdline = []
+	cmdline.append('cmake')
+	cmdline.append('-G"Unix Makefiles"')
+	cmdline.append('-DENABLE_SHARED=Off')
+	cmdline.append('-DENABLE_STATIC=On')
+	cmdline.append('-DWITH_TURBOJPEG=Off')
+	
+	if env['OSWindows']:
+		# libjpeg fails if system name is not this value
 		cmdline.append('-DCMAKE_SYSTEM_NAME=Windows')
-		cmdline.append('-DCMAKE_SYSTEM_PROCESSOR=AMD64')
-		#cmdline.append('-DWITH_SIMD=0')
-		cmdline.append('-DCMAKE_BUILD_TYPE=Release')
-		cmdline.append('-DCMAKE_INSTALL_PREFIX="{}"'.format(buildDir.abspath))
-		cmdline.append('.')
-		script.append('{} || exit 1'.format(' '.join(cmdline)))
-		
-		script.append( 'make install || exit 1' )
-		
-	else:
-		if env[ 'OSBeOS' ]:
-			script.append( 'libtoolize --force --copy --install' )
-			script.append( 'aclocal --force' )
-			script.append( 'autoconf --force' )
-			script.append( 'automake --add-missing --force' )
-		
-		cmdline = [ './configure --prefix="{}"'.format( buildDir.abspath ) ]
-		cmdline.append( '--enable-silent-rules' )
-		cmdline.append( '--without-turbojpeg' )
-		cmdline.append( '--without-java' )
-		
-		if buildStaticLinking:
-			cmdline.append( '--enable-shared=no' )
-			cmdline.append( '--enable-static=yes' )
-			cmdline.append( '--with-pic=yes' )
-		else:
-			cmdline.append( '--enable-shared=yes' )
-			cmdline.append( '--enable-static=no' )
-		
-		if env[ 'OSBeOS' ]:
-			cmdline.append( ' --without-simd' ) # otherwise fails to compile on 64-bit
-		
-		if 'CROSSCOMPILE_HOST' in env:
-			cmdline.append('--host={}'.format(env['CROSSCOMPILE_HOST']))
-		
-		script.append( '{} || exit 1'.format( ' '.join( cmdline ) ) )
-		
-		script.append( 'cd simd || exit 1' )
-		script.append( 'make jsimdcfg.inc libsimd.la || exit 1' )
-		script.append( 'cd ..' )
-		
-		script.append( 'make install-libLTLIBRARIES'
-			+ ' install-includeHEADERS'
-			+ ' install-nodist_includeHEADERS || exit 1' )
+	elif 'CROSSCOMPILE_HOST' in env:
+		cmdline.append('-DCMAKE_SYSTEM_NAME="{}"'.format(env['CROSSCOMPILE_HOST']))
 	
-	if not env.RunIsolatedSystem(script):
+	cmdline.append('-DCMAKE_SYSTEM_PROCESSOR=AMD64')
+	
+	#cmdline.append('-DWITH_SIMD=0')
+	if env['OSBeOS']:
+		pass
+		#cmdline.append('-DWITH_SIMD=0') # otherwise fails to compile on 64-bit
+	
+	if env['with_debug']:
+		cmdline.append('-DCMAKE_BUILD_TYPE=Debug')
+		cmdline.append('-DCMAKE_POSITION_INDEPENDENT_CODE=True')
+	else:
+		cmdline.append('-DCMAKE_BUILD_TYPE=Release')
+	
+	cmdline.append('-DCMAKE_INSTALL_PREFIX="{}"'.format(buildDir.abspath))
+	
+	# this is required otherwise depending on the platform the install
+	# directory is sometimes 'lib' and sometimes 'lib64' causing problems
+	cmdline.append('-DCMAKE_INSTALL_LIBDIR="{}"'.format(buildDir.Dir('lib').abspath))
+	
+	cmdline.append('"{}"'.format(buildDir.Dir(srcdir).abspath))
+	script.append('{} || exit 1'.format(' '.join(cmdline)))
+	
+	script.append('make -j {} install || exit 1'.format(env['with_threads']))
+	
+	if not env.RunExternalCommand(script):
 		raise Exception('Failed building libjpeg')
 
 if buildStaticLinking:
-	targets = [ staticFileName ]
+	targets = [staticFileName]
 else:
-	targets = [ libFileName ]
-targets.extend( [ 'include/jconfig.h', 'include/jerror.h', 'include/jmorecfg.h', 'include/jpeglib.h' ] )
+	targets = [libFileName]
+targets.extend(['include/jconfig.h', 'include/jerror.h', 'include/jmorecfg.h', 'include/jpeglib.h'])
 
-library = envLibrary.Command( targets, '{}.tar.bz2'.format( srcdir ),
-	envLibrary.Action(jpegBuild, 'Build JPEG library' ) )
+library = envLibrary.Command(targets, '{}.tar.bz2'.format(srcdir),
+	envLibrary.Action(jpegBuild, 'Build JPEG library'))
 
-depends = parent_env.Alias( 'lib_libjpeg', library )
+envLibrary.SideEffect('#notParallelCMake', library)
 
-envLibrary.Clean( library, [ 'bin', 'include', 'lib', srcdir ] )
+depends = parent_env.Alias('lib_libjpeg', library)
+
+envLibrary.Clean(library, ['bin', 'include', 'lib', 'build', srcdir])
 
 if buildStaticLinking:
-	libs = [ library[ 0 ] ]
+	libs = [library[0]]
 	runtimelibs = []
 else:
-	runtimelibs = [ library[ 0 ] ]
+	runtimelibs = [library[0]]
 
-parent_targets[ 'lib_libjpeg' ] = {
+parent_targets['lib_libjpeg'] = {
 	'name' : 'Internal JPEG library',
-	'cpppath' : [ envLibrary.Dir( 'include' ) ],
-	'libpath' : [ envLibrary.Dir( 'lib' ) ],
+	'cpppath' : [envLibrary.Dir('include')],
+	'libpath' : [envLibrary.Dir('lib')],
 	'libs' : libs,
 	'runtimelibs' : runtimelibs,
-	'depends' : depends }
+	'depends' : depends}

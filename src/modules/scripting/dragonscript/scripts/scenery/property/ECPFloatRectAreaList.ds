@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -31,60 +34,69 @@ pin Dragengine.Utils
  * \brief List of float rect area values class property for use with XML loading.
  */
 class ECPFloatRectAreaList extends ElementClassProperty
-	/** \brief List of float rect areas (Array of FloatRectArea). */
 	private var Array pFloatRectAreas
 	
 	
 	
 	/** \brief Create property. */
-	public func new( String name ) super( name )
-		this.pFloatRectAreas = Array.new()
+	public func new(String name) super(name)
+		pFloatRectAreas = Array.new()
 	end
 	
 	
 	
 	/** \brief Number of float rect areas. */
 	public func int getCount()
-		return this.pFloatRectAreas.getCount()
+		return pFloatRectAreas.getCount()
 	end
 	
 	/** \brief FloatRectArea at index. */
-	public func FloatRectArea getAt( int index )
-		return this.pFloatRectAreas.getAt( index ) cast FloatRectArea
+	public func FloatRectArea getAt(int index)
+		return pFloatRectAreas.getAt(index) cast FloatRectArea
 	end
 	
 	/** \brief Get random float react area or \em null if no float react areas are present. */
 	public func FloatRectArea getRandom()
-		if this.pFloatRectAreas.getCount() == 0
+		if pFloatRectAreas.getCount() == 0
 			return null
 			
 		else
-			return this.pFloatRectAreas.random() cast FloatRectArea
+			return pFloatRectAreas.random() cast FloatRectArea
 		end
 	end
 	
 	/** \brief For each float react area with block with FloatRectArea as parameter. */
-	public func void forEach( Block ablock )
-		this.pFloatRectAreas.forEach( ablock )
+	public func void forEach(Block ablock)
+		pFloatRectAreas.forEach(ablock)
 	end
 	
 	/** \brief Remove all float react areas. */
 	public func void removeAll()
-		this.pFloatRectAreas.removeAll()
+		pFloatRectAreas.removeAll()
 	end
 	
 	/** \brief Add float react area. */
-	public func void add( FloatRectArea area )
-		this.pFloatRectAreas.add( area )
+	public func void add(FloatRectArea area)
+		pFloatRectAreas.add(area)
 	end
 	
 	
 	
 	/** \brief Set value of property from XML decoded value. */
-	public func void setValue( Object value )
-		this.pFloatRectAreas.removeAll()
-		( value cast Array ).forEach( block FloatRectArea each
-			this.pFloatRectAreas.add( each )
-		end )
+	public func void setValue(Object value)
+		pFloatRectAreas.removeAll()
+		(value cast Array).forEach(block FloatRectArea each
+			pFloatRectAreas.add(each)
+		end)
+	end
+	
+	/**
+	 * \brief Copy value from another element class property of the same type.
+	 * \version 1.17
+	 */
+	public func void copyValue(ElementClass elementClass, ElementClassProperty property)
+		pFloatRectAreas = (property cast ECPFloatRectAreaList).pFloatRectAreas.map(block FloatRectArea each
+			return FloatRectArea.new(each)
+		end)
 	end
 end

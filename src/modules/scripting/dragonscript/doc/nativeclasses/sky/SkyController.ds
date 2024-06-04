@@ -66,12 +66,12 @@ class SkyController
 	
 	/** \brief Lower limit. */
 	public func float getLower()
-		return 0
+		return 0.0
 	end
 	
 	/** \brief Upper limit. */
 	public func float getUpper()
-		return 0
+		return 0.0
 	end
 	
 	/** \brief Set value range. */
@@ -80,7 +80,7 @@ class SkyController
 	
 	/** \brief Value. */
 	public func float getValue()
-		return 0
+		return 0.0
 	end
 	
 	/** \brief Set value. */

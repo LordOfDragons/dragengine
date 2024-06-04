@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLSKINRENDERED_H_
@@ -36,7 +39,7 @@ class deoglRDecal;
 
 
 /**
- * \brief Skin rendered.
+ * Skin rendered.
  * 
  * Helper class for handling rendered skin textures.
  */
@@ -57,12 +60,12 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create skin rendered. */
+	/** Create skin rendered. */
 	deoglSkinRendered( deoglRenderThread &renderThread, deoglRComponent &component );
 	deoglSkinRendered( deoglRenderThread &renderThread, deoglRBillboard &billboard );
 	deoglSkinRendered( deoglRenderThread &renderThread, deoglRDecal &decal );
 	
-	/** \brief Clean up skin rendered. */
+	/** Clean up skin rendered. */
 	~deoglSkinRendered();
 	/*@}*/
 	
@@ -70,51 +73,51 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Render thread. */
+	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	
 	
-	/** \brief Owner component or NULL. */
+	/** Owner component or NULL. */
 	inline deoglRComponent *GetOwnerComponent() const{ return pOwnerComponent; }
 	
-	/** \brief Owner billboard or NULL. */
+	/** Owner billboard or NULL. */
 	inline deoglRBillboard *GetOwnerBillboard() const{ return pOwnerBillboard; }
 	
-	/** \brief Owner decal or NULL. */
+	/** Owner decal or NULL. */
 	inline deoglRDecal *GetOwnerDecal() const{ return pOwnerDecal; }
 	
-	/** \brief Owner skin or NULL. */
+	/** Owner skin or NULL. */
 	deoglRSkin *GetOwnerSkin() const;
 	
 	
 	
-	/** \brief Number of textures. */
+	/** Number of textures. */
 	int GetTexturedCount() const;
 	
-	/** \brief Texture at index. */
+	/** Texture at index. */
 	deoglSkinRenderedTexture *GetTextureAt( int index ) const;
 	
-	/** \brief Add texture. */
+	/** Add texture. */
 	deoglSkinRenderedTexture *AddTexture( deoglRSkin &skin, int texture, int modelTexture );
 	
-	/** \brief Remove all textures. */
+	/** Remove all textures. */
 	void RemoveAllTextures();
 	
 	
 	
-	/** \brief Mark dirty. */
+	/** Mark dirty. */
 	void SetDirty();
 	
-	/** \brief Prepare if dirty. */
+	/** Prepare if dirty. */
 	void Prepare();
 	
-	/** \brief Add render plans. */
+	/** Add render plans. */
 	void AddRenderPlans( deoglRenderPlan &plan );
 	
 	
 	
-	/** \brief Drop objects containing delayed deletion support. */
+	/** Drop objects containing delayed deletion support. */
 	void DropDelayedDeletionObjects();
 	/*@}*/
 	

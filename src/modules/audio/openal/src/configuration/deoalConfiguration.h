@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenAL Audio Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOALCONFIGURATION_H_
@@ -27,36 +30,45 @@
 
 
 /**
- * \brief OpenAL Configuration.
+ * OpenAL Configuration.
  */
 class deoalConfiguration{
 public:
-	/** \brief Aurealization mode. */
-	enum eAurealizationModes{
+	/** Auralization mode. */
+	enum eAuralizationModes{
 		/**
-		 * \brief Aurealization disabled.
+		 * Auralization disabled.
 		 * 
 		 * Direct sound without any material based effects. This mode is enforced if APU has
 		 * no EFX support or EFX support has been disabled.
 		 */
-		eaDisabled,
+		eamDisabled,
 		
 		/**
-		 * \brief Direct sound aurealization only.
+		 * Direct sound auralization only.
 		 * 
 		 * Direct sound effect based on materials are used. This includes muffling of sound
 		 * over different frquency bands. Uses single collision test along sound direction
 		 * from source to listener to calculate the result.
 		 */
-		eaDirectSound,
+		eamDirectSound,
 		
 		/**
-		 * \brief Full aurealization.
+		 * Full auralization.
 		 * 
-		 * Enables all aurealization effects. Uses ray-tracing to calculate various parameters.
+		 * Enables all auralization effects. Uses ray-tracing to calculate various parameters.
 		 * This is expensive depending on the hardware used.
 		 */
-		eaFull
+		eamFull
+	};
+	
+	/** Auralization quality. */
+	enum eAuralizationQuality{
+		eaqVeryLow,
+		eaqLow,
+		eaqMedium,
+		eaqHigh,
+		eaqVeryHigh
 	};
 	
 	
@@ -68,7 +80,8 @@ private:
 	bool pEnableEFX;
 	int pStreamBufSizeThreshold;
 	decStringSet pDisableExtensions;
-	eAurealizationModes pAurealizationMode;
+	eAuralizationModes pAuralizationMode;
+	eAuralizationQuality pAuralizationQuality;
 	
 	int pSoundTraceRayCount;
 	int pSoundTraceMaxBounceCount;
@@ -82,18 +95,23 @@ private:
 	int pFrameRateLimit;
 	float pAsyncAudioSkipSyncTimeRatio;
 	
+	bool pUseSharedEffectSlots;
+	float pShareEnvironmentThreshold;
+	float pSwitchSharedEnvironmentThreshold;
+	int pMaxSharedEffectSlots;
+	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Creates configuration. */
+	/** Creates configuration. */
 	deoalConfiguration();
 	
-	/** \brief Creates copy of configuration. */
+	/** Creates copy of configuration. */
 	deoalConfiguration( const deoalConfiguration &config );
 	
-	/** \brief Clean up openal configuration. */
+	/** Clean up openal configuration. */
 	~deoalConfiguration();
 	/*@}*/
 	
@@ -101,108 +119,138 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Configuration changed. */
+	/** Configuration changed. */
 	inline bool GetDirty() const{ return pDirty; }
 	
-	/** \brief Set configuration changed. */
+	/** Set configuration changed. */
 	void SetDirty( bool dirty );
 	
 	
 	
-	/** \brief Device name or an empty string to use the default one. */
+	/** Device name or an empty string to use the default one. */
 	inline const decString &GetDeviceName() const{ return pDeviceName; }
 	
-	/** \brief Set device name or an empty string to use the default one. */
+	/** Set device name or an empty string to use the default one. */
 	void SetDeviceName( const char *deviceName );
 	
-	/** \brief Effects are enabled. */
+	/** Effects are enabled. */
 	inline bool GetEnableEFX() const{ return pEnableEFX; }
 	
-	/** \brief Set if effects are enabled. */
+	/** Set if effects are enabled. */
 	void SetEnableEFX( bool enable );
 	
-	/** \brief Buffer size threshold to stream sound samples. */
+	/** Buffer size threshold to stream sound samples. */
 	inline int GetStreamBufSizeThreshold() const{ return pStreamBufSizeThreshold; }
 	
-	/** \brief Set buffer size threshold to stream sound samples. */
+	/** Set buffer size threshold to stream sound samples. */
 	void SetStreamBufSizeThreshold( int threshold );
 	
-	/** \brief Disable extensions. */
+	/** Disable extensions. */
 	inline decStringSet &GetDisableExtensions(){ return pDisableExtensions; }
 	inline const decStringSet &GetDisableExtensions() const{ return pDisableExtensions; }
 	
-	/** \brief Aurealization mode */
-	inline eAurealizationModes GetAurealizationMode() const{ return pAurealizationMode; }
+	/** Auralization mode */
+	inline eAuralizationModes GetAuralizationMode() const{ return pAuralizationMode; }
 	
-	/** \brief Set aurealization mode. */
-	void SetAurealizationMode( eAurealizationModes mode );
+	/** Set Auralization mode. */
+	void SetAuralizationMode( eAuralizationModes mode );
+	
+	/** Auralization quality */
+	inline eAuralizationQuality GetAuralizationQuality() const{ return pAuralizationQuality; }
+	
+	/** Set Auralization quality. */
+	void SetAuralizationQuality( eAuralizationQuality quality );
 	
 	
 	
-	/** \brief Number of sound tracing rays. */
+	/** Number of sound tracing rays. */
 	inline int GetSoundTraceRayCount() const{ return pSoundTraceRayCount; }
 	
-	/** \brief Set number of sound tracing rays. */
+	/** Set number of sound tracing rays. */
 	void SetSoundTraceRayCount( int count );
 	
-	/** \brief Maximum number of bounces to use for sound tracing. */
+	/** Maximum number of bounces to use for sound tracing. */
 	inline int GetSoundTraceMaxBounceCount() const{ return pSoundTraceMaxBounceCount; }
 	
-	/** \brief Set maximum number of bounces to use for sound tracing. */
+	/** Set maximum number of bounces to use for sound tracing. */
 	void SetSoundTraceMaxBounceCount( int count );
 	
-	/** \brief Maximum number of transmission to use for sound tracing. */
+	/** Maximum number of transmission to use for sound tracing. */
 	inline int GetSoundTraceMaxTransmitCount() const{ return pSoundTraceMaxTransmitCount; }
 	
-	/** \brief Set maximum number of transmission to use for sound tracing. */
+	/** Set maximum number of transmission to use for sound tracing. */
 	void SetSoundTraceMaxTransmitCount( int count );
 	
-	/** \brief Number of estimate room rays. */
+	/** Number of estimate room rays. */
 	inline int GetEstimateRoomRayCount() const{ return pEstimateRoomRayCount; }
 	
-	/** \brief Set number of estimate room rays. */
+	/** Set number of estimate room rays. */
 	void SetEstimateRoomRayCount( int count );
 	
 	
 	
-	/** \brief EAX reverb filter reflection gain factor. */
+	/** EAX reverb filter reflection gain factor. */
 	inline float GetEAXReverbReflectionGainFactor() const{ return pEAXReverbReflectionGainFactor; }
 	
-	/** \brief Set EAX reverb filter reflection gain factor. */
+	/** Set EAX reverb filter reflection gain factor. */
 	void SetEAXReverbReflectionGainFactor( float factor );
 	
-	/** \brief EAX reverb filter late reverb gain factor. */
+	/** EAX reverb filter late reverb gain factor. */
 	inline float GetEAXReverbLateReverbGainFactor() const{ return pEAXReverbLateReverbGainFactor; }
 	
-	/** \brief Set EAX reverb filter late reverb gain factor. */
+	/** Set EAX reverb filter late reverb gain factor. */
 	void SetEAXReverbLateReverbGainFactor( float factor );
 	
 	
 	
-	/** \brief Frame rate limit for audio thread. */
+	/** Frame rate limit for audio thread. */
 	inline int GetFrameRateLimit() const{ return pFrameRateLimit; }
 	
-	/** \brief Set frame rate limit for audio thread. */
+	/** Set frame rate limit for audio thread. */
 	void SetFrameRateLimit( int frameRateLimit );
 	
-	/** \brief Ratio between game time and audio time required to skip synchronization. */
+	/** Ratio between game time and audio time required to skip synchronization. */
 	inline float GetAsyncAudioSkipSyncTimeRatio() const{ return pAsyncAudioSkipSyncTimeRatio; }
 	
-	/** \brief Set ratio between game time and audio time required to skip synchronization. */
+	/** Set ratio between game time and audio time required to skip synchronization. */
 	void SetAsyncAudioSkipSyncTimeRatio( float ratio );
 	
-	/** \brief Asynchronous audio. */
+	/** Asynchronous audio. */
 	inline bool GetAsyncAudio() const{ return pAsyncAudio; }
 	
-	/** \brief Set asynchronous audio. */
+	/** Set asynchronous audio. */
 	void SetAsyncAudio( bool asyncAudio );
+	
+	/** Use shared effect slots. */
+	inline bool GetUseSharedEffectSlots() const{ return pUseSharedEffectSlots; }
+	
+	/** Set use shared effect slots. */
+	void SetUseSharedEffectSlots( bool useUseSharedEffectSlots );
+	
+	/** Share environment threshold. */
+	inline float GetShareEnvironmentThreshold() const{ return pShareEnvironmentThreshold; }
+	
+	/** Set share environment threshold. */
+	void SetShareEnvironmentThreshold( float threshold );
+	
+	/** Switch shared environment threshold. */
+	inline float GetSwitchSharedEnvironmentThreshold() const{ return pSwitchSharedEnvironmentThreshold; }
+	
+	/** Set switch shared environment threshold. */
+	void SetSwitchSharedEnvironmentThreshold( float threshold );
+	
+	/** Maximum shared effect slot count. */
+	inline int GetMaxSharedEffectSlots() const{ return pMaxSharedEffectSlots; }
+	
+	/** Set maximum shared effect slot count. */
+	void SetMaxSharedEffectSlots( int count );
 	/*@}*/
 	
 	
 	
 	/** \name Operator */
 	/*@{*/
-	/** \brief Copy configuration. */
+	/** Copy configuration. */
 	deoalConfiguration &operator=( const deoalConfiguration &config );
 	/*@}*/
 	
@@ -210,6 +258,7 @@ public:
 	
 private:
 	void pCleanUp();
+	void pApplyAuralizationProfile();
 };
 
 #endif

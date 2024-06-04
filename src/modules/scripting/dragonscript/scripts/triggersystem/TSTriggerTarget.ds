@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -33,155 +36,163 @@ pin Dragengine.LoadSave
  * to all the targets they use in the trigger expression.
  */
 class TSTriggerTarget
-	private var StringID pName
-	private var bool pFired
-	private var bool pHasFired
-	private var Array pListeners
+	var StringID pName
+	var bool pFired
+	var bool pHasFired
+	var Array pListeners
 	
 	
 	
 	/** \brief Create trigger target. */
-	public func new( StringID name )
+	func new(StringID name)
 		if name == null
 			throw EInvalidParam.new()
 		end
 		
-		this.pName = name
-		this.pFired = false
-		this.pHasFired = false
-		this.pListeners = Array.new()
+		pName = name
+		pFired = false
+		pHasFired = false
+		pListeners = Array.new()
 	end
 	
 	/** \brief Dispose of trigger target. */
-	public func void dispose()
-		this.pListeners = null
+	func void dispose()
+		pListeners = null
 	end
 	
 	
 	
 	/** \brief Name. */
-	public func StringID getName()
-		return this.pName
+	func StringID getName()
+		return pName
 	end
 	
 	/** \brief Target is currently fired. */
-	public func bool getFired()
-		return this.pFired
+	func bool getFired()
+		return pFired
 	end
 	
 	/** \brief Set if target is currently fired. */
-	public func void setFired( bool fired )
-		this.pFired = fired
+	func void setFired(bool fired)
+		pFired = fired
 	end
 	
 	/** \brief Target has ever fired. */
-	public func bool getHasFired()
-		return this.pHasFired
+	func bool getHasFired()
+		return pHasFired
 	end
 	
 	/** \brief Set if target has ever fired. */
-	public func void setHasFired( bool hasFired )
-		this.pHasFired = hasFired
+	func void setHasFired(bool hasFired)
+		pHasFired = hasFired
 	end
 	
 	
 	
 	/** \brief Fire trigger. */
-	public func void fire()
-		if this.pFired
+	func void fire()
+		if pFired
 			return
 		end
 		
-		this.pFired = true
-		this.pHasFired = true
-		this.notifyListeners()
+		pFired = true
+		pHasFired = true
+		notifyListeners()
 	end
 	
 	/** \brief Reset trigger. */
-	public func void reset()
-		if not this.pFired
+	func void reset()
+		if not pFired
 			return
 		end
 		
-		this.pFired = false
-		this.notifyListeners()
+		pFired = false
+		notifyListeners()
 	end
 	
 	/** \brief Fully reset trigger. */
-	public func void fullReset()
-		if not this.pFired and not this.pHasFired
+	func void fullReset()
+		if not pFired and not pHasFired
 			return
 		end
 		
-		this.pFired = false
-		this.pHasFired = false
-		this.notifyListeners()
+		pFired = false
+		pHasFired = false
+		notifyListeners()
 	end
 	
 	
 	
 	/** \brief Number of listeners. */
-	public func int getListenerCount()
-		return this.pListeners.getCount()
+	func int getListenerCount()
+		return pListeners.getCount()
 	end
 	
 	/** \brief Add listener. */
-	public func void addListener( TSTriggerListener listener )
-		if listener == null or this.pListeners.has( listener )
+	func void addListener(TSTriggerListener listener)
+		if listener == null or pListeners.has(listener)
 			throw EInvalidParam.new()
 		end
-		this.pListeners.add( listener )
+		pListeners.add(listener)
 	end
 	
 	/** \brief Add listener if absent. */
-	public func void addListenerIfAbsent( TSTriggerListener listener )
+	func void addListenerIfAbsent(TSTriggerListener listener)
 		if listener == null
 			throw EInvalidParam.new()
 		end
-		if not this.pListeners.has( listener )
-			this.pListeners.add( listener )
+		if not pListeners.has(listener)
+			pListeners.add(listener)
 		end
 	end
 	
 	/** \brief Remove listener. */
-	public func void removeListener( TSTriggerListener listener )
-		this.pListeners.remove( listener )
+	func void removeListener(TSTriggerListener listener)
+		pListeners.remove(listener)
 	end
 	
 	/** \brief Remove listener if present. */
-	public func void removeListenerIfPresent( TSTriggerListener listener )
-		if this.pListeners.has( listener )
-			this.pListeners.remove( listener )
+	func void removeListenerIfPresent(TSTriggerListener listener)
+		if pListeners.has(listener)
+			pListeners.remove(listener)
 		end
 	end
 	
 	/** \brief Notify all listeners. */
-	public func void notifyListeners()
-		this.pListeners.forEach( block TSTriggerListener each
-			each.triggerTargetChanged( this )
-		end )
+	func void notifyListeners()
+		pListeners.forEach(block TSTriggerListener each
+			each.triggerTargetChanged(this)
+		end)
 	end
 	
 	
 	
 	/** \brief Read trigger target from file. */
-	static public func TSTriggerTarget readFromFile( FileReader reader )
-		var TSTriggerTarget target = TSTriggerTarget.new( StringID.new( reader.readString8() ) )
-		
-		var PersistencyFlags flags = PersistencyFlags.new( 2, reader )
-		target.pFired = flags.getAt( 0 )
-		target.pHasFired = flags.getAt( 1 )
-		
-		return target
+	static func TSTriggerTarget readFromFile(FileReader reader)
+		select reader.readByte() // version
+		case 0
+			var TSTriggerTarget target = TSTriggerTarget.new(StringID.new(reader.readString8()))
+			
+			var PersistencyFlags flags = PersistencyFlags.new(2, reader)
+			target.pFired = flags.getAt(0)
+			target.pHasFired = flags.getAt(1)
+			
+			return target
+			
+		else
+			throw EInvalidParam.new("unsupported version")
+		end
 	end
 	
 	/** \brief Write trigger target to file. */
-	public func void writeToFile( FileWriter writer )
-		writer.writeString8( this.pName.toString() )
+	func void writeToFile(FileWriter writer)
+		writer.writeByte(0) // version
 		
-		var PersistencyFlags flags = PersistencyFlags.new( 2 )
-		flags.setAt( 0, this.pFired )
-		flags.setAt( 1, this.pHasFired )
-		flags.writeToFile( writer )
+		writer.writeString8(pName.toString())
+		
+		var PersistencyFlags flags = PersistencyFlags.new(2)
+		flags.setAt(0, pFired)
+		flags.setAt(1, pHasFired)
+		flags.writeToFile(writer)
 	end
 end

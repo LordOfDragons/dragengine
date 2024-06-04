@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -44,7 +47,7 @@ pin Dragengine.Utils
  * panel can be styled using "Panel.PlayerChoiceEntries"
  */
 class PanelPlayerChoice extends Panel implements ConversationPlaybackPlayerChoice
-	private var Panel pPanelEntries
+	var Panel pPanelEntries
 	
 	
 	
@@ -53,44 +56,41 @@ class PanelPlayerChoice extends Panel implements ConversationPlaybackPlayerChoic
 	 * 
 	 * Panel is initially hidden.
 	 */
-	public func new()
-		this.setLayout( CentrizedBoxLayout.new( LayoutAxis.y, 0 ) )
-		this.setDesignerSelector( "Panel.PlayerChoice" )
-		this.setVisible( false )
+	func new()
+		setLayout(CentrizedBoxLayout.new(LayoutAxis.y, 0))
+		setDesignerSelector("Panel.PlayerChoice")
+		setVisible(false)
 		
-		this.pPanelEntries = Panel.new()
-		this.pPanelEntries.setLayout( FlowLayout.new( LayoutAxis.y, 2 ) )
-		this.pPanelEntries.setDesignerSelector( "Panel.PlayerChoiceEntries" )
-		this.addWidget( this.pPanelEntries )
+		pPanelEntries = Panel.new()
+		pPanelEntries.setLayout(FlowLayout.new(LayoutAxis.y, 2))
+		pPanelEntries.setDesignerSelector("Panel.PlayerChoiceEntries")
+		addWidget(pPanelEntries)
 	end
 	
 	/** \brief Dispose of widget. */
-	public func void dispose()
-		this.pPanelEntries = null
+	func void dispose()
+		pPanelEntries = null
 		super.dispose()
 	end
 	
 	
 	
 	/** \brief Remove all choices. */
-	public func void removeAllChoices()
-		this.pPanelEntries.removeAllWidgets()
+	func void removeAllChoices()
+		pPanelEntries.removeAllWidgets()
 	end
 	
 	/** \brief Add choice. */
-	public func void addChoice( String text, ActionListener action )
-		this.addChoice( text, null, action )
+	func void addChoice(String text, ActionListener action)
+		addChoice(text, null, action)
 	end
 	
 	/** \brief Add choice. */
-	public func void addChoice( String text, Image image, ActionListener action )
+	func void addChoice(String text, Image image, ActionListener action)
 		if action == null
 			throw EInvalidParam.new()
 		end
-		
-		var PanelPlayerChoiceEntry entry = PanelPlayerChoiceEntry.new( text, action )
-		entry.setMaximalWidth( this.getParent().getContainerWidth() )
-		this.pPanelEntries.addWidget( entry )
+		pPanelEntries.addWidget(createOptionWidget(text, image, action))
 	end
 	
 	
@@ -102,11 +102,11 @@ class PanelPlayerChoice extends Panel implements ConversationPlaybackPlayerChoic
 	 * choosing animation. The default implementation shows the panel. If there
 	 * are no options an exception is thrown.
 	 */
-	public func void startChoosing()
-		if this.getWidgetCount() == 0
+	func void startChoosing()
+		if getWidgetCount() == 0
 			throw EInvalidParam.new()
 		end
-		this.setVisible( true )
+		setVisible(true)
 	end
 	
 	/**
@@ -115,7 +115,21 @@ class PanelPlayerChoice extends Panel implements ConversationPlaybackPlayerChoic
 	 * This hides the choices. Overwrite to if you want to do an end choosing
 	 * animation. The default implementation hides the panel.
 	 */
-	public func void endChoosing()
-		this.setVisible( false )
+	func void endChoosing()
+		setVisible(false)
+	end
+	
+	
+	
+	/**
+	 * \brief Create option widget.
+	 * \version 1.5
+	 * 
+	 * Default implementation creates instance of PanelPlayerChoiceEntry.
+	 */
+	protected func Widget createOptionWidget(String text, Image image, ActionListener action)
+		var PanelPlayerChoiceEntry entry = PanelPlayerChoiceEntry.new(text, image, action)
+		entry.getLabel().setMaximalWidth(getParent().getContainerWidth())
+		return entry
 	end
 end

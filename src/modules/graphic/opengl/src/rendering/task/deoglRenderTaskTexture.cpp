@@ -1,31 +1,35 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
+#include "deoglRenderTask.h"
 #include "deoglRenderTaskTexture.h"
 #include "deoglRenderTaskVAO.h"
-#include "../../vao/deoglVAO.h"
+#include "shared/deoglRenderTaskSharedVAO.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -38,17 +42,9 @@
 ////////////////////////////
 
 deoglRenderTaskTexture::deoglRenderTaskTexture() :
-pTUC( NULL ),
 pTexture( NULL ),
-pParamBlock( NULL ),
 
-pRootVAO( NULL ),
-pTailVAO( NULL ),
 pVAOCount( 0 ),
-
-pNextTexture( NULL ),
-
-pLLNext( NULL ),
 
 pHasVAO( NULL ),
 pHasVAOCount( 0 ),
@@ -59,6 +55,13 @@ deoglRenderTaskTexture::~deoglRenderTaskTexture(){
 	if( pHasVAO ){
 		delete [] pHasVAO;
 	}
+	
+	const int vaoCount = pVAOs.GetCount();
+	int i;
+	for( i=0; i<vaoCount; i++ ){
+		delete ( deoglRenderTaskVAO* )pVAOs.GetAt( i );
+	}
+	pVAOs.RemoveAll();
 }
 
 
@@ -67,142 +70,93 @@ deoglRenderTaskTexture::~deoglRenderTaskTexture(){
 ///////////////
 
 void deoglRenderTaskTexture::Reset(){
-	pTUC = NULL;
 	pTexture = NULL;
-	pParamBlock = NULL;
 	pHasVAOCount = 0;
-	
-	pRootVAO = NULL;
-	pTailVAO = NULL;
 	pVAOCount = 0;
-	
-	pNextTexture = NULL;
 }
 
 
 
 int deoglRenderTaskTexture::GetTotalPointCount() const{
-	deoglRenderTaskVAO *vao = pRootVAO;
-	int pointCount = 0;
-	
-	while( vao ){
-		pointCount += vao->GetTotalPointCount();
-		vao = vao->GetNextVAO();
+	int i, pointCount = 0;
+	for( i=0; i<pVAOCount; i++ ){
+		pointCount += ( ( deoglRenderTaskVAO* )pVAOs.GetAt( i ) )->GetTotalPointCount();
 	}
-	
 	return pointCount;
 }
 
 int deoglRenderTaskTexture::GetTotalInstanceCount() const{
-	deoglRenderTaskVAO *vao = pRootVAO;
-	int instanceCount = 0;
-	
-	while( vao ){
-		instanceCount += vao->GetInstanceCount();
-		vao = vao->GetNextVAO();
+	int i, instanceCount = 0;
+	for( i=0; i<pVAOCount; i++ ){
+		instanceCount += ( ( deoglRenderTaskVAO* )pVAOs.GetAt( i ) )->GetInstanceCount();
 	}
-	
 	return instanceCount;
 }
 
 int deoglRenderTaskTexture::GetTotalSubInstanceCount() const{
-	deoglRenderTaskVAO *vao = pRootVAO;
-	int subInstanceCount = 0;
-	
-	while( vao ){
-		subInstanceCount += vao->GetTotalSubInstanceCount();
-		vao = vao->GetNextVAO();
+	int i, subInstanceCount = 0;
+	for( i=0; i<pVAOCount; i++ ){
+		subInstanceCount += ( ( deoglRenderTaskVAO* )pVAOs.GetAt( i ) )->GetTotalSubInstanceCount();
 	}
-	
 	return subInstanceCount;
 }
 
 
 
-void deoglRenderTaskTexture::SetTUC( deoglTexUnitsConfig *tuc ){
-	pTUC = tuc;
-}
-
-void deoglRenderTaskTexture::SetTexture( deoglSkinTexture *texture ){
+void deoglRenderTaskTexture::SetTexture( const deoglRenderTaskSharedTexture *texture ){
 	pTexture = texture;
 }
 
-void deoglRenderTaskTexture::SetParameterBlock( deoglSPBlockUBO *block ){
-	pParamBlock = block;
+
+
+deoglRenderTaskVAO *deoglRenderTaskTexture::GetVAOAt( int index ) const{
+	return ( deoglRenderTaskVAO* )pVAOs.GetAt( index );
 }
 
-
-
-deoglRenderTaskVAO *deoglRenderTaskTexture::GetVAOWith( deoglVAO *vao ){
-	deoglRenderTaskVAO *renderTaskVAO = pRootVAO;
-	
-	while( renderTaskVAO && renderTaskVAO->GetVAO() != vao ){
-		renderTaskVAO = renderTaskVAO->GetNextVAO();
-	}
-	
-	return renderTaskVAO;
-}
-
-void deoglRenderTaskTexture::AddVAO( deoglRenderTaskVAO *vao ){
+deoglRenderTaskVAO *deoglRenderTaskTexture::AddVAO( const deoglRenderTaskSharedVAO *vao ){
 	if( ! vao ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	if( pTailVAO ){
-		pTailVAO->SetNextVAO( vao );
-	}
-	vao->SetNextVAO( NULL );
+	const int index = vao->GetIndex();
 	
-	pTailVAO = vao;
-	
-	if( ! pRootVAO ){
-		pRootVAO = vao;
-	}
-	
-	pVAOCount++;
-	
-	// mark as added
-	const int vaoIndex = vao->GetVAO()->GetRenderTaskVAOIndex();
-	
-	if( vaoIndex >= pHasVAOCount ){
-		if( vaoIndex >= pHasVAOSize ){
-			deoglRenderTaskVAO ** const newArray = new deoglRenderTaskVAO*[ vaoIndex + 1 ];
+	if( index >= pHasVAOCount ){
+		if( index >= pHasVAOSize ){
+			deoglRenderTaskVAO ** const newArray = new deoglRenderTaskVAO*[ index + 1 ];
 			
-			if( pHasVAOCount > 0 ){
-				memcpy( newArray, pHasVAO, sizeof( deoglRenderTaskVAO* ) * pHasVAOCount );
+			if( pHasVAO ){
+				if( pHasVAOCount > 0 ){
+					memcpy( newArray, pHasVAO, sizeof( deoglRenderTaskVAO* ) * pHasVAOCount );
+				}
 				delete [] pHasVAO;
 			}
 			
 			pHasVAO = newArray;
-			pHasVAOSize = vaoIndex + 1;
+			pHasVAOSize = index + 1;
 		}
 		
-		while( pHasVAOCount < vaoIndex ){
-			pHasVAO[ pHasVAOCount++ ] = NULL;
+		if( pHasVAOCount <= index ){
+			memset( pHasVAO + pHasVAOCount, 0, sizeof( deoglRenderTaskVAO* ) * ( index - pHasVAOCount + 1 ) );
+			pHasVAOCount = index + 1;
 		}
-		pHasVAOCount++;
 	}
 	
-	pHasVAO[ vaoIndex ] = vao;
-}
-
-
-
-deoglRenderTaskVAO *deoglRenderTaskTexture::GetVAOForIndex( int vaoIndex ){
-	return vaoIndex < pHasVAOCount ? pHasVAO[ vaoIndex ] : NULL;
-}
-
-
-
-void deoglRenderTaskTexture::SetNextTexture( deoglRenderTaskTexture *texture ){
-	pNextTexture = texture;
-}
-
-
-
-// Linked List
-////////////////
-
-void deoglRenderTaskTexture::SetLLNext( deoglRenderTaskTexture *texture ){
-	pLLNext = texture;
+	deoglRenderTaskVAO *rtvao = pHasVAO[ index ];
+	if( rtvao ){
+		return rtvao;
+	}
+	
+	if( pVAOCount == pVAOs.GetCount() ){
+		rtvao = new deoglRenderTaskVAO;
+		pVAOs.Add( rtvao );
+		
+	}else{
+		rtvao = ( deoglRenderTaskVAO* )pVAOs.GetAt( pVAOCount );
+		rtvao->Reset();
+	}
+	pVAOCount++;
+	
+	rtvao->SetVAO( vao );
+	pHasVAO[ index ] = rtvao;
+	return rtvao;
 }

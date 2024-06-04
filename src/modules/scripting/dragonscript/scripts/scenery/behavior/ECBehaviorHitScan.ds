@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -54,7 +57,7 @@ pin Dragengine.Utils
  *    public var ECBehaviorCollider collider
  *    public var ECBehaviorHitScan hitScan
  *    
- *    public func new()
+ *    func new()
  *       collider = ECBehaviorCollider.new(this, null)
  *       hitScan = ECBehaviorHitScan.new(this, collider)
  *       hitScan.getCollisionFilter().setCollisionFilter(...)
@@ -63,22 +66,22 @@ pin Dragengine.Utils
  * 
  * // Player actor action triggering the weapon
  * class MyPlayerAction extends BAAFirstPerson
- *    public func new()
+ *    func new()
  *    end
  *    
  *    public var bool doesFireWeapon
  *    
- *    public func void think(float elapsed)
+ *    func void think(float elapsed)
  *       super.think(elapsed)
  *       
  *       if doesPlayerFireWeapon()
  *          var BehaviorElement weapon = getPlayerWeapon()
- *          ECBehaviorHitScan.getInstanceIn(weapon).start( ... )
+ *          ECBehaviorHitScan.getInstanceIn(weapon).start(...)
  *          doesFireWeapon = true
  *       end
  *    end
  *    
- *    public func void postThink(float elapsed)
+ *    func void postThink(float elapsed)
  *       super.postThink(elapsed)
  *       
  *       if doesFireWeapon
@@ -104,160 +107,216 @@ pin Dragengine.Utils
 class ECBehaviorHitScan extends DefaultECBehavior
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
-		private var ECBehaviorHitScan pECBehavior
-		private var ECBehaviorCollider.Instance pCollider
-		private var ECBehaviorComponent.Instance pComponent
+		var ECBehaviorHitScan pECBehavior
+		var ECBehaviorCollider.Instance pCollider
+		var ECBehaviorComponent.Instance pComponent
 		
-		private var CollisionFilter pCollisionFilter
-		private var float pRange
-		private var Vector pOrigin
-		private var Vector pDirection
-		private var String pBone
-		private var Array pTests
+		var CollisionFilter pCollisionFilter
+		var float pRange
+		var float pOffset
+		var Vector pOrigin
+		var Vector pDirection
+		var Quaternion pOrientation
+		var Matrix pViewMatrix
+		var String pBone
+		var Array pTests
+		var float pOffsetByRange
 		
 		
 		
 		/** \brief Create element. */
-		public func new( ECBehaviorHitScan ecbehavior, BehaviorElement element ) super( element )
-			this.pECBehavior = ecbehavior
-			this.pTests = Array.new()
+		func new(ECBehaviorHitScan ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
+			pTests = Array.new()
 			
-			this.pCollider = ecbehavior.getCollider().instance( element )
+			pCollider = ecbehavior.getCollider().instance(element)
 		end
 		
 		/** \brief Dispose of composeable instance. */
-		public func void dispose()
-			this.pTests = null
-			this.pCollider = null
-			this.pComponent = null
+		func void dispose()
+			pTests = null
+			pCollider = null
+			pComponent = null
 			super.dispose()
 		end
 		
 		
 		
 		/** \brief Initialize element from stub. */
-		public func void init( StubElement stub )
-			var BehaviorElement element = this.getElement()
+		func void init(StubElement stub)
+			var BehaviorElement element = getElement()
 			
-			if this.pECBehavior.getComponent() != null
-				this.pComponent = this.pECBehavior.getComponent().instance( element )
+			if pECBehavior.getComponent() != null
+				pComponent = pECBehavior.getComponent().instance(element)
 			end
 			
 			var CodecPropertyString codec = element.getClass().getCodecPropertyString()
-			this.pCollisionFilter = this.pECBehavior.getCollisionFilter().getCollisionFilter()
-			this.pRange = DEMath.max( this.pECBehavior.getRange().getValue( stub ), 0.0 )
-			this.pOrigin = this.pECBehavior.getOrigin().getVector( stub, codec )
-			this.pDirection = this.pECBehavior.getDirection().getVector( stub, codec ).normalize()
-			this.pBone = this.pECBehavior.getBone().getValue( stub )
+			pCollisionFilter = pECBehavior.getCollisionFilter().getCollisionFilter()
+			pRange = DEMath.max(pECBehavior.getRange().getValue(stub), 0.0)
+			pOffset = DEMath.max(pECBehavior.getOffset().getValue(stub), 0.0)
+			pOrigin = pECBehavior.getOrigin().getVector(stub, codec)
+			pDirection = pECBehavior.getDirection().getVector(stub, codec).normalize()
+			pOrientation = Quaternion.newFromEuler(pECBehavior.getOrientation().getVector(stub, codec))
+			pBone = pECBehavior.getBone().getValue(stub)
+			
+			pViewMatrix = Matrix.newFromQuaternion(pOrientation)
+			pOffsetByRange = pOffset / pRange
 		end
 		
 		
 		
 		/** \brief Behavior. */
-		public func ECBehaviorHitScan getECBehavior()
-			return this.pECBehavior
+		func ECBehaviorHitScan getECBehavior()
+			return pECBehavior
 		end
 		
 		/** \brief Collider behavior. */
-		public func ECBehaviorCollider.Instance getCollider()
-			return this.pCollider
+		func ECBehaviorCollider.Instance getCollider()
+			return pCollider
 		end
 		
 		/** \brief Collider behavior or null if not used. */
-		public func ECBehaviorComponent.Instance getComponent()
-			return this.pComponent
+		func ECBehaviorComponent.Instance getComponent()
+			return pComponent
 		end
 		
 		
 		
 		/** \brief Test range. */
-		public func float getRange()
-			return this.pRange
+		func float getRange()
+			return pRange
 		end
 		
 		/** \brief Set test range. */
-		public func void setRange( float range )
-			range = DEMath.max( range, 0.0 )
-			if DEMath.fabs( range - this.pRange ) < 0.001
+		func void setRange(float range)
+			range = DEMath.max(range, 0.0)
+			if DEMath.fabs(range - pRange) < 0.001
 				return
 			end
 			
-			this.pRange = range
+			pRange = range
+			pOffsetByRange = pOffset / pRange
 			
-			var Vector testDirection = this.pDirection * range
-			this.pTests.forEach( block ColliderCollisionTest each
-				each.setDirection( testDirection )
-			end )
+			resetTestDirections()
+		end
+		
+		/**
+		 * \brief Test origin offset.
+		 * \version 1.22
+		 */
+		func float getOffset()
+			return pOffset
+		end
+		
+		/** \brief Set test origin offset. */
+		func void setOffset(float offset)
+			offset = DEMath.max(offset, 0.0)
+			if DEMath.fabs(offset - pOffset) < 0.001
+				return
+			end
+			
+			pOffset = offset
+			pOffsetByRange = pOffset / pRange
+			
+			resetTestOrigins()
 		end
 		
 		/** \brief Test origin. */
-		public func Vector getOrigin()
-			return this.pOrigin
+		func Vector getOrigin()
+			return pOrigin
 		end
 		
 		/** \brief Set test origin. */
-		public func void setOrigin( Vector origin )
-			if origin.equals( this.pOrigin )
+		func void setOrigin(Vector origin)
+			if origin.equals(pOrigin)
 				return
 			end
 			
-			this.pOrigin = origin
+			pOrigin = origin
 			
-			this.pTests.forEach( block ColliderCollisionTest each
-				each.setOrigin( origin )
-			end )
+			resetTestOrigins()
 		end
 		
 		/** \brief Normalized test direction. */
-		public func Vector getDirection()
-			return this.pDirection
+		func Vector getDirection()
+			return pDirection
 		end
 		
 		/** \brief Set normalized test direction. */
-		public func void setDirection( Vector direction )
+		func void setDirection(Vector direction)
 			direction = direction.normalize()
-			if direction.equals( this.pDirection )
+			if direction.equals(pDirection)
 				return
 			end
 			
-			this.pDirection = direction
+			pDirection = direction
 			
-			var Vector testDirection = direction * this.pRange
-			this.pTests.forEach( block ColliderCollisionTest each
-				each.setDirection( testDirection )
-			end )
+			resetTestDirections()
+			resetTestOrigins()
 		end
 		
-		/** \brief Test bone or null. */
-		public func String getBone()
-			return this.pBone
+		/** \brief Test orientation. */
+		func Quaternion getOrientation()
+			return pOrientation
 		end
 		
-		/** \brief Set test bone or null. */
-		public func void setBone( String bone )
-			if bone.equals( this.pBone )
+		/** \brief Set test orientation. */
+		func void setOrientation(Quaternion orientation)
+			if orientation.equals(pOrientation)
 				return
 			end
 			
-			this.pBone = bone
+			pOrientation = orientation
+			pViewMatrix = Matrix.newFromQuaternion(orientation)
 			
-			this.pTests.forEach( block ColliderCollisionTest each
-				each.setBone( bone )
-			end )
+			resetTestDirections()
+		end
+		
+		/**
+		 * \brief View matrix.
+		 * \brief 1.22
+		 * 
+		 * Same as \ref Matrix#newFromQuaternion(Quaternion) called with \ref #getOrientation()
+		 * as parameter.
+		 * 
+		 * This matrix is useful if you want to manually set the test direction of individual
+		 * tests after starting hit scanning. The Z-Axis of the matrix points into the direction
+		 * of the zero vector similar to \ref #resetTestDirections().
+		 */
+		func Matrix getViewMatrix()
+			return pViewMatrix
+		end
+		
+		/** \brief Test bone. */
+		func String getBone()
+			return pBone
+		end
+		
+		/** \brief Set test bone. */
+		func void setBone(String bone)
+			if bone.equals(pBone)
+				return
+			end
+			
+			pBone = bone
+			
+			pTests.forEach(block ColliderCollisionTest each
+				each.setBone(bone)
+			end)
 		end
 		
 		/** \brief Collision filter. */
-		public func CollisionFilter getCollisionFilter()
-			return this.pCollisionFilter
+		func CollisionFilter getCollisionFilter()
+			return pCollisionFilter
 		end
 		
 		/** \brief Set collision filter. */
-		public func void setCollisionFilter( CollisionFilter collisionFilter )
-			this.pCollisionFilter = collisionFilter
+		func void setCollisionFilter(CollisionFilter collisionFilter)
+			pCollisionFilter = collisionFilter
 			
-			this.pTests.forEach( block ColliderCollisionTest each
-				each.setCollisionFilter( collisionFilter )
-			end )
+			pTests.forEach(block ColliderCollisionTest each
+				each.setCollisionFilter(collisionFilter)
+			end)
 		end
 		
 		
@@ -268,8 +327,8 @@ class ECBehaviorHitScan extends DefaultECBehavior
 		 * After call returns one collision tests is attached to the collider and ready to
 		 * run using the last configuration used.
 		 */
-		public func void start()
-			this.start( 1 )
+		func void start()
+			start(1)
 		end
 		
 		/**
@@ -278,43 +337,44 @@ class ECBehaviorHitScan extends DefaultECBehavior
 		 * After call returns the given number of collision tests are attached to the collider
 		 * and ready to run using the last configuration used.
 		 */
-		public func void start( int count )
+		func void start(int count)
 			if count < 1
-				throw EInvalidParam.new( "count < 1" )
+				throw EInvalidParam.new("count < 1")
 			end
 			
 			var ColliderCollisionTest test
 			
-			if this.pTests.getCount() < count
-				var Vector testDirection = this.pDirection * this.pRange
-				var Collider collider = this.pCollider.getCollider()
+			if pTests.getCount() < count
+				var Vector testDirection = pViewMatrix.transformNormal(pDirection * pRange)
+				var Vector testOrigin = pOrigin + testDirection * pOffsetByRange
+				var Collider collider = pCollider.getCollider()
 				var Component component
-				if this.pComponent != null
-					component = this.pComponent.getComponent()
+				if pComponent != null
+					component = pComponent.getComponent()
 				end
 				
-				while this.pTests.getCount() < count
-					test = ColliderCollisionTest.new( this.pCollisionFilter, component, \
-						this.pBone, this.pOrigin, testDirection )
-					collider.addCollisionTest( test )
-					this.pTests.add( test )
+				while pTests.getCount() < count
+					test = ColliderCollisionTest.new(pCollisionFilter, component,\
+						pBone, testOrigin, testDirection)
+					collider.addCollisionTest(test)
+					pTests.add(test)
 				end
 				
-			elif this.pTests.getCount() > count
-				var Collider collider = this.pCollider.getCollider()
+			elif pTests.getCount() > count
+				var Collider collider = pCollider.getCollider()
 				
-				while this.pTests.getCount() > count
-					test = this.pTests.getAt( this.pTests.getCount() - 1 ) cast ColliderCollisionTest
-					collider.removeCollisionTest( test )
-					this.pTests.remove( test )
+				while pTests.getCount() > count
+					test = pTests.getAt(pTests.getCount() - 1) cast ColliderCollisionTest
+					collider.removeCollisionTest(test)
+					pTests.remove(test)
 				end
 			end
 			
-			this.pTests.forEach( block ColliderCollisionTest each
-				each.setEnabled( true )
-			end )
+			pTests.forEach(block ColliderCollisionTest each
+				each.setEnabled(true)
+			end)
 			
-			this.setRequiresThink( true )
+			setRequiresThink(true)
 		end
 		
 		/**
@@ -325,22 +385,29 @@ class ECBehaviorHitScan extends DefaultECBehavior
 		 * 
 		 * \param angle Opening angle in degrees (angle across diameter).
 		 */
-		public func void startCircular( int count, float angle )
-			this.start( count )
+		func void startCircular(int count, float angle)
+			start(count)
 			if angle < 0.001
 				return
 			end
 			
 			angle *= 0.5
-			var float radius = DEMath.sin( angle ) * this.pRange
-			var float distance = DEMath.cos( angle ) * this.pRange
+			var float radius = DEMath.sin(angle) * pRange
+			var float distance = DEMath.cos(angle) * pRange
 			var float factor = 360.0 / count
+			var ColliderCollisionTest cct
+			var Vector direction
 			var int i
 			
 			for i = 0 to count
 				angle = factor * i
-				( this.pTests.getAt( i ) cast ColliderCollisionTest ).setDirection( Vector.new( \
-					DEMath.sin( angle ) * radius, DEMath.cos( angle ) * radius, distance ) )
+				direction = pViewMatrix.transformNormal(Vector.new(\
+					DEMath.sin(angle) * radius,\
+					DEMath.cos(angle) * radius,\
+					distance))
+				cct = pTests.getAt(i) cast ColliderCollisionTest
+				cct.setDirection(direction)
+				cct.setOrigin(pOrigin + direction * pOffsetByRange)
 			end
 		end
 		
@@ -354,23 +421,28 @@ class ECBehaviorHitScan extends DefaultECBehavior
 		 * 
 		 * \param angle Opening angle in degrees (angle across diameter).
 		 */
-		public func void startCone( int count, float angle )
-			this.start( count )
+		func void startCone(int count, float angle)
+			start(count)
 			if angle < 0.001
 				return
 			end
 			
 			var float radius, rotation, distance, testAngle
+			var Vector direction
 			angle *= 0.5
 			
-			this.pTests.forEach( block ColliderCollisionTest each
-				testAngle = DEMath.random( 0.0, angle )
-				radius = DEMath.sin( testAngle ) * this.pRange
-				distance = DEMath.cos( testAngle ) * this.pRange
-				rotation = DEMath.random( 0.0, 360.0 )
-				each.setDirection( Vector.new( DEMath.sin( rotation ) * radius, \
-					DEMath.cos( rotation ) * radius, distance ) )
-			end )
+			pTests.forEach(block ColliderCollisionTest each
+				testAngle = DEMath.random(0.0, angle)
+				radius = DEMath.sin(testAngle) * pRange
+				distance = DEMath.cos(testAngle) * pRange
+				rotation = DEMath.random(0.0, 360.0)
+				direction = pViewMatrix.transformNormal(Vector.new(\
+					DEMath.sin(rotation) * radius,\
+					DEMath.cos(rotation) * radius,\
+					distance))
+				each.setDirection(direction)
+				each.setOrigin(pOrigin + direction * pOffsetByRange)
+			end)
 		end
 		
 		/**
@@ -385,8 +457,8 @@ class ECBehaviorHitScan extends DefaultECBehavior
 		 * \param angleX Horizontal opening angle in degrees (angle across width).
 		 * \param angleY Vertical opening angle in degrees (angle across height).
 		 */
-		public func void startRectangular( int count, float angleX, float angleY )
-			this.start( count )
+		func void startRectangular(int count, float angleX, float angleY)
+			start(count)
 			if angleX < 0.001 or angleY < 0.001
 				return
 			end
@@ -395,17 +467,22 @@ class ECBehaviorHitScan extends DefaultECBehavior
 			var float fromX = -toX
 			var float toY = angleY * 0.5
 			var float fromY = -toY
-			var float rotationX, positionY, testAngle, radius
+			var float positionY, testAngle, radius
+			var Vector direction
 			
-			this.pTests.forEach( block ColliderCollisionTest each
-				testAngle = DEMath.random( fromY, toY )
-				positionY = DEMath.sin( testAngle ) * this.pRange
-				radius = DEMath.cos( testAngle ) * this.pRange
+			pTests.forEach(block ColliderCollisionTest each
+				testAngle = DEMath.random(fromY, toY)
+				positionY = DEMath.sin(testAngle) * pRange
+				radius = DEMath.cos(testAngle) * pRange
 				
-				testAngle = DEMath.random( fromX, toX )
-				each.setDirection( Vector.new( DEMath.sin( testAngle ) * radius, \
-					positionY, DEMath.cos( testAngle ) * radius ) )
-			end )
+				testAngle = DEMath.random(fromX, toX)
+				direction = pViewMatrix.transformNormal(Vector.new(\
+					DEMath.sin(testAngle) * radius, \
+					positionY, \
+					DEMath.cos(testAngle) * radius))
+				each.setDirection(direction)
+				each.setOrigin(pOrigin + direction * pOffsetByRange)
+			end)
 		end
 		
 		/**
@@ -422,65 +499,107 @@ class ECBehaviorHitScan extends DefaultECBehavior
 		 * \param angleX Horizontal opening angle in degrees (angle across width).
 		 * \param angleY Vertical opening angle in degrees (angle across height).
 		 */
-		public func void startRectangularUniform( int countX, int countY, float angleX, float angleY )
+		func void startRectangularUniform(int countX, int countY, float angleX, float angleY)
 			if countX < 1
-				throw EInvalidParam.new( "countX < 1" )
+				throw EInvalidParam.new("countX < 1")
 			end
 			if countY < 1
-				throw EInvalidParam.new( "countY < 1" )
+				throw EInvalidParam.new("countY < 1")
 			end
-			this.start( countX * countY )
+			start(countX * countY)
 			if angleX < 0.001 or angleY < 0.001
 				return
 			end
 			
+			var ColliderCollisionTest cct
 			var int x, y, index = 0
-			var float rotationX, positionY, testAngle, radius
+			var float testAngleX, testAngleY
 			var float firstX = angleX * -0.5
-			var float factorX = angleX / DEMath.max( countX - 1, 1 )
+			var float factorX = angleX / DEMath.max(countX - 1, 1)
 			var float firstY = angleY * -0.5
-			var float factorY = angleY / DEMath.max( countY - 1, 1 )
+			var float factorY = angleY / DEMath.max(countY - 1, 1)
+			var Vector direction
 			
 			for y = 0 to countY
-				testAngle = firstY + factorY * y
-				positionY = DEMath.sin( testAngle ) * this.pRange
-				radius = DEMath.cos( testAngle ) * this.pRange
+				testAngleY = firstY + factorY * y
 				
 				for x = 0 to countX
-					testAngle = firstX + factorX * x
-					( this.pTests.getAt( index++ ) cast ColliderCollisionTest ).setDirection( Vector.new( \
-						DEMath.sin( testAngle ) * radius, positionY, DEMath.cos( testAngle ) * radius ) )
+					testAngleX = firstX + factorX * x
+					direction = pViewMatrix.transformNormal(\
+						Matrix.newRotation(testAngleY, testAngleX, 0).getViewVector())
+					cct = pTests.getAt(index++) cast ColliderCollisionTest
+					cct.setDirection(direction * pRange)
+					cct.setOrigin(pOrigin + direction * pOffset)
 				end
 			end
 		end
 		
 		/** \brief Stop hit scans. */
-		public func void stop()
-			this.setRequiresThink( false )
+		func void stop()
+			setRequiresThink(false)
 			
-			this.pTests.forEach( block ColliderCollisionTest each
-				each.setEnabled( false )
-			end )
+			pTests.forEach(block ColliderCollisionTest each
+				each.setEnabled(false)
+			end)
 		end
 		
 		/** \brief Stop hit scans clearing results as if nothing is hit. */
-		public func void clear()
-			this.pTests.forEach( block ColliderCollisionTest each
+		func void clear()
+			pTests.forEach(block ColliderCollisionTest each
 				each.reset()
-				each.setEnabled( false )
-			end )
+				each.setEnabled(false)
+			end)
+		end
+		
+		/** \brief Set direction of all tests to viewMatrix * direction * range. */
+		func void resetTestDirections()
+			var Vector direction = pViewMatrix.transformNormal(pDirection * pRange)
+			pTests.forEach(block ColliderCollisionTest each
+				each.setDirection(direction)
+			end)
+		end
+		
+		/**
+		 * \brief Set origin of all tests to getOrigin().
+		 * \version 1.22
+		 */
+		func void resetTestOrigins()
+			pTests.forEach(block ColliderCollisionTest each
+				each.setOrigin(pOrigin)
+			end)
+		end
+		
+		/**
+		 * \brief Set direction of test to aim at target.
+		 * \version 1.22
+		 * 
+		 * \param target Target position to test.
+		 */
+		func void aimAtTarget(int test, DVector target)
+			var ColliderCollisionTest cct = pTests.getAt(test) cast ColliderCollisionTest
+			var Vector direction = (pCollider.getCollider().getInverseMatrix() * target).toVector()
+			cct.setDirection(direction)
+			cct.setOrigin(pOrigin + direction.normalize() * pOffset)
+		end
+		
+		/**
+		 * \brief Hit scan is running.
+		 * \version 1.22
+		 */
+		func bool isRunning()
+			return pTests.getCount() > 0 and (pTests.getAt(0) cast ColliderCollisionTest).getEnabled()
 		end
 		
 		
 		
 		/** \brief Count of collision tests. */
-		public func int getTestCount()
-			return this.pTests.getCount()
+		func int getTestCount()
+			return pTests.getCount()
 		end
 		
 		/** \brief Collision test at index. */
-		public func ColliderCollisionTest getTestAt( int index )
-			return this.pTests.getAt( index ) cast ColliderCollisionTest
+		func ColliderCollisionTest getTestAt(int index)
+			return pTests.getAt(index) cast ColliderCollisionTest
 		end
 		
 		/**
@@ -488,8 +607,8 @@ class ECBehaviorHitScan extends DefaultECBehavior
 		 * 
 		 * Block receives ColliderCollisionTest as argument.
 		 */
-		public func void forEachTest( Block ablock )
-			this.pTests.forEach( ablock )
+		func void forEachTest(Block ablock)
+			pTests.forEach(ablock)
 		end
 		
 		/**
@@ -497,12 +616,12 @@ class ECBehaviorHitScan extends DefaultECBehavior
 		 * 
 		 * Block receives ColliderCollisionTest as argument.
 		 */
-		public func void forEachHit( Block ablock )
-			this.pTests.forEach( block ColliderCollisionTest each
+		func void forEachHit(Block ablock)
+			pTests.forEach(block ColliderCollisionTest each
 				if each.getHasCollision()
-					ablock.run( each )
+					ablock.run(each)
 				end
-			end )
+			end)
 		end
 		
 		
@@ -512,20 +631,22 @@ class ECBehaviorHitScan extends DefaultECBehavior
 		 * 
 		 * Stops tests. Results can be examined by other behaviors.
 		 */
-		public func void postThink( float elapsed )
-			this.stop()
+		func void postThink(float elapsed)
+			stop()
 		end
 	end
 	
 	
 	
-	private var ECBehaviorCollider pCollider
-	private var ECBehaviorComponent pComponent
-	private var ECComposeCollisionFilter pCollisionFilter
-	private var ECPFloat pRange
-	private var ECPVector pOrigin
-	private var ECPVector pDirection
-	private var ECPString pBone
+	var ECBehaviorCollider pCollider
+	var ECBehaviorComponent pComponent
+	var ECComposeCollisionFilter pCollisionFilter
+	var ECPFloat pRange
+	var ECPFloat pOffset
+	var ECPVector pOrigin
+	var ECPVector pDirection
+	var ECPVector pOrientation
+	var ECPString pBone
 	
 	
 	
@@ -534,98 +655,118 @@ class ECBehaviorHitScan extends DefaultECBehavior
 	 * 
 	 * These values are optional and can be null: \em component.
 	 */
-	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider, \
-	ECBehaviorComponent component ) this( eclass, collider, component, "" )
+	func new(BehaviorElementClass eclass, ECBehaviorCollider collider, \
+	ECBehaviorComponent component) this(eclass, collider, component, "")
 	end
 	
-	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider, \
-	ECBehaviorComponent component, String id ) this( eclass, collider, component, \
-	id, id.empty() if "hitScan." else "hitScan(" + id + ")." )
+	func new(BehaviorElementClass eclass, ECBehaviorCollider collider, \
+	ECBehaviorComponent component, String id) this(eclass, collider, component, \
+	id, id.empty() if "hitScan." else "hitScan(" + id + ").")
 	end
 	
-	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider, \
-	ECBehaviorComponent component, String id, String prefix ) super( eclass, id )
+	func new(BehaviorElementClass eclass, ECBehaviorCollider collider, \
+	ECBehaviorComponent component, String id, String prefix) super(eclass, id)
 		if collider == null
-			throw ENullPointer.new( "collider" )
+			throw ENullPointer.new("collider")
 		end
 		
-		this.pCollider = collider
-		this.pComponent = component
+		pCollider = collider
+		pComponent = component
 		
-		var LayerMask cfCategory = LayerMask.newWith( BaseGameApp.CollisionFilterBit.geometry )
+		var LayerMask cfCategory = LayerMask.newWith(BaseGameApp.CollisionFilterBit.dynamic)
 		
 		var LayerMask cfFilter = LayerMask.new()
-		cfFilter.setBit( BaseGameApp.CollisionFilterBit.geometry )
-		cfFilter.setBit( BaseGameApp.CollisionFilterBit.actor )
+		cfFilter.setBit(BaseGameApp.CollisionFilterBit.geometry)
+		cfFilter.setBit(BaseGameApp.CollisionFilterBit.dynamic)
+		cfFilter.setBit(BaseGameApp.CollisionFilterBit.actor)
 		
-		this.pCollisionFilter = ECComposeCollisionFilter.new( CollisionFilter.new( cfCategory, cfFilter ) )
+		pCollisionFilter = ECComposeCollisionFilter.new(CollisionFilter.new(cfCategory, cfFilter))
 		
-		eclass.addBehavior( this )
+		eclass.addBehavior(this)
 		
-		this.pRange = ECPFloat.new( prefix + "range", 20, 0 )
-		eclass.addProperty( this.pRange )
+		pRange = ECPFloat.new(prefix + "range", 20, 0)
+		eclass.addProperty(pRange)
 		
-		this.pOrigin = ECPVector.new( prefix + "origin", Vector.new() )
-		eclass.addProperty( this.pOrigin )
+		pOffset = ECPFloat.new(prefix + "offset", 0, 0)
+		eclass.addProperty(pOffset)
 		
-		this.pDirection = ECPVector.new( prefix + "direction", Vector.new( 0, 0, 1 ) )
-		eclass.addProperty( this.pDirection )
+		pOrigin = ECPVector.new(prefix + "origin", Vector.new())
+		eclass.addProperty(pOrigin)
 		
-		this.pBone = ECPString.new( prefix + "bone", null )
-		eclass.addProperty( this.pBone )
+		pDirection = ECPVector.new(prefix + "direction", Vector.new(0, 0, 1))
+		eclass.addProperty(pDirection)
+		
+		pOrientation = ECPVector.new(prefix + "orientation", Vector.new())
+		eclass.addProperty(pOrientation)
+		
+		pBone = ECPString.new(prefix + "bone", "")
+		eclass.addProperty(pBone)
 	end
 	
 	/** \brief Dispose of behavior. */
-	public func void dispose()
-		this.pCollider = null
-		this.pComponent = null
+	func void dispose()
+		pCollider = null
+		pComponent = null
 		super.dispose()
 	end
 	
 	
 	
 	/** \brief Collider behavior or null. */
-	public func ECBehaviorCollider getCollider()
-		return this.pCollider
+	func ECBehaviorCollider getCollider()
+		return pCollider
 	end
 	
 	/** \brief Component behavior or null. */
-	public func ECBehaviorComponent getComponent()
-		return this.pComponent
+	func ECBehaviorComponent getComponent()
+		return pComponent
 	end
 	
 	
 	
 	/** \brief Collision filter for AI collider. */
-	public func ECComposeCollisionFilter getCollisionFilter()
-		return this.pCollisionFilter
+	func ECComposeCollisionFilter getCollisionFilter()
+		return pCollisionFilter
 	end
 	
 	/** \brief Test range. */
-	public func ECPFloat getRange()
-		return this.pRange
+	func ECPFloat getRange()
+		return pRange
+	end
+	
+	/**
+	 * \brief Test origin offset.
+	 * \version 1.22
+	 */
+	func ECPFloat getOffset()
+		return pOffset
 	end
 	
 	/** \brief Test origin. */
-	public func ECPVector getOrigin()
-		return this.pOrigin
+	func ECPVector getOrigin()
+		return pOrigin
 	end
 	
 	/** \brief Normalized test direction. */
-	public func ECPVector getDirection()
-		return this.pDirection
+	func ECPVector getDirection()
+		return pDirection
+	end
+	
+	/** \brief Test orientation. */
+	func ECPVector getOrientation()
+		return pOrientation
 	end
 	
 	/** \brief Test bone. */
-	public func ECPString getBone()
-		return this.pBone
+	func ECPString getBone()
+		return pBone
 	end
 	
 	
 	
 	/** \brief Get instance in element from owner element class. */
-	public func Instance instance( BehaviorElement element )
-		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
 	
 	
@@ -636,10 +777,10 @@ class ECBehaviorHitScan extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorCollider.
 	 */
-	static public func ECBehaviorHitScan getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehavior each
-			return each castable ECBehaviorHitScan
-		end ) cast ECBehaviorHitScan
+	static func ECBehaviorHitScan getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorHitScan each
+			return true
+		end) cast ECBehaviorHitScan
 	end
 	
 	/**
@@ -648,11 +789,10 @@ class ECBehaviorHitScan extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorHitScan with specific identifier.
 	 */
-	static public func ECBehaviorHitScan getBehaviorIn( BehaviorElementClass eclass, String id )
-		return eclass.findBehavior( block ECBehaviorHitScan each
-			return each castable ECBehaviorHitScan and \
-				( each cast ECBehaviorHitScan ).getID().equals( id )
-		end ) cast ECBehaviorHitScan
+	static func ECBehaviorHitScan getBehaviorIn(BehaviorElementClass eclass, String id)
+		return eclass.findBehavior(block ECBehaviorHitScan each
+			return each.getID().equals(id)
+		end) cast ECBehaviorHitScan
 	end
 	
 	/**
@@ -661,14 +801,10 @@ class ECBehaviorHitScan extends DefaultECBehavior
 	 * Returns list contains ECBehaviorHitScan behaviors in the order they have
 	 * been created in the element.
 	 */
-	static public func Array getAllBehaviorsIn( BehaviorElementClass eclass )
-		var Array list = Array.new()
-		eclass.forEachBehavior( block ECBehavior each
-			if each castable ECBehaviorHitScan
-				list.add( each )
-			end
-		end )
-		return list
+	static func Array getAllBehaviorsIn(BehaviorElementClass eclass)
+		return eclass.collectBehaviors(block ECBehaviorHitScan each
+			return true
+		end)
 	end
 	
 	
@@ -680,10 +816,10 @@ class ECBehaviorHitScan extends DefaultECBehavior
 	 * of type ECBehaviorHitScan.Instance . If more than one instance is present returns
 	 * the first instance.
 	 */
-	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance
-		end ) cast Instance
+	static func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
+			return true
+		end) cast Instance
 	end
 	
 	/**
@@ -692,11 +828,10 @@ class ECBehaviorHitScan extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
 	 * of type ECBehaviorHitScan.Instance with specific identifier.
 	 */
-	static public func Instance getInstanceIn( BehaviorElement element, String id )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance and \
-				( each cast Instance ).getECBehavior().getID().equals( id )
-		end ) cast Instance
+	static func Instance getInstanceIn(BehaviorElement element, String id)
+		return element.findInstance(block Instance each
+			return each.getECBehavior().getID().equals(id)
+		end) cast Instance
 	end
 	
 	/**
@@ -705,20 +840,16 @@ class ECBehaviorHitScan extends DefaultECBehavior
 	 * Returns list contains ECBehaviorHitScan.Instance instances in the order they have
 	 * been created in the element.
 	 */
-	static public func Array getAllInstancesIn( BehaviorElement element )
-		var Array list = Array.new()
-		element.forEachInstance( block ECBehaviorInstance each
-			if each castable Instance
-				list.add( each )
-			end
-		end )
-		return list
+	static func Array getAllInstancesIn(BehaviorElement element)
+		return element.collectInstances(block Instance each
+			return true
+		end)
 	end
 	
 	
 	
 	/** \brief Create Behavior instance. */
-	public func ECBehaviorInstance createInstance( BehaviorElement element )
-		return Instance.new( this, element )
+	func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
 	end
 end

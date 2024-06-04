@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -81,6 +84,7 @@ pHeightTerrain( NULL ),
 
 pSharedVideoPlayerList( NULL ),
 
+pDirtySize( false ),
 pDirtySkies( true ),
 pDirtyBillboards( true ),
 pDirtyComponents( true ),
@@ -93,12 +97,11 @@ pDirtyLights( true ),
 pDirtyLumimeters( true ),
 pDirtyParticleEmitterInstances( true ),
 pDirtyPropFields( true ),
-pDirtySky( true ),
 
 pSyncing( false )
 {
 	try{
-		pRWorld = new deoglRWorld( ogl.GetRenderThread(), world.GetSize() * 0.5 );
+		pRWorld = new deoglRWorld( ogl.GetRenderThread(), world.GetSize() );
 		
 		pSharedVideoPlayerList = new deoglSharedVideoPlayerList( ogl );
 		
@@ -266,6 +269,16 @@ void deoglWorld::SyncToRender(){
 	
 	DEBUG_RESET_TIMERS;
 	try{
+		if( pDirtySize ){
+			pDirtySize = false;
+			pRWorld->SetSize( pWorld.GetSize() );
+		}
+		
+		// should be done better. these situations only require a prepare for render:
+		// - Update called (hence always in regular games)
+		// - Content requires an update (TODO)
+		pRWorld->RequiresPrepareForRender();
+		
 		if( pDirtyLighting ){
 			pRWorld->SetDisableLights( pWorld.GetDisableLights() );
 			pRWorld->SetAmbientLight( pWorld.GetAmbientLight() );
@@ -350,6 +363,10 @@ void deoglWorld::RemoveSyncBillboard( deoglBillboard *billboard ){
 // Notifications
 //////////////////
 
+void deoglWorld::SizeChanged(){
+	pDirtySize = true;
+}
+
 void deoglWorld::HeightTerrainChanged(){
 	if( pWorld.GetHeightTerrain() ){
 		pHeightTerrain = ( deoglHeightTerrain* )pWorld.GetHeightTerrain()->GetPeerGraphic();
@@ -397,7 +414,7 @@ void deoglWorld::ComponentRemoved( deComponent *component ){
 	deoglComponent * const oglComponent = ( deoglComponent* )component->GetPeerGraphic();
 	RemoveSyncComponent( oglComponent );
 	oglComponent->GetRComponent()->SetWorldMarkedRemove( true );
-	oglComponent->SetParentWorld( NULL );
+	oglComponent->SetParentWorld( nullptr );
 	pDirtyComponents = true;
 }
 
@@ -407,7 +424,7 @@ void deoglWorld::AllComponentsRemoved(){
 		deoglComponent * const oglComponent = ( deoglComponent* )component->GetPeerGraphic();
 		RemoveSyncComponent( oglComponent );
 		oglComponent->GetRComponent()->SetWorldMarkedRemove( true );
-		oglComponent->SetParentWorld( NULL );
+		oglComponent->SetParentWorld( nullptr );
 		component = component->GetLLWorldNext();
 	}
 	
@@ -744,6 +761,8 @@ extern int hackCSOctCount;
 extern float hackCSOctTime;
 extern int hackCSBoneMapCount;
 extern float hackCSBoneMapTime;
+extern int hackCSSpecialCount;
+extern float hackCSSpecialTime;
 #endif
 
 void deoglWorld::pSyncComponents(){
@@ -764,6 +783,8 @@ void deoglWorld::pSyncComponents(){
 	hackCSOctTime = 0;
 	hackCSBoneMapCount = 0;
 	hackCSBoneMapTime = 0;
+	hackCSSpecialCount = 0;
+	hackCSSpecialTime = 0;
 	#endif
 	
 	if( pDirtyComponents ){
@@ -771,9 +792,13 @@ void deoglWorld::pSyncComponents(){
 		
 		deComponent *component = pWorld.GetRootComponent();
 		while( component ){
-			deoglRComponent * const oglRComponent = ( ( deoglComponent* )component->GetPeerGraphic() )->GetRComponent();
+			deoglComponent * const oglComponent = ( deoglComponent* )component->GetPeerGraphic();
+			deoglRComponent * const oglRComponent = oglComponent->GetRComponent();
 			if( oglRComponent->GetParentWorld() != pRWorld ){
 				pRWorld->AddComponent( oglRComponent );
+				oglComponent->SyncToRender(); // required for GIState to process event correctly
+				oglRComponent->HasEnteredWorld(); // prevents superfluous events to be send
+				pRWorld->GIStatesNotifyComponentEnteredWorld( oglRComponent );
 			}
 			component = component->GetLLWorldNext();
 		}
@@ -818,6 +843,7 @@ void deoglWorld::pSyncComponents(){
 	pOgl.LogInfoFormat( "CSExt     %.1fys (%i, %.1fys)", hackCSExtTime*1e6f, hackCSExtCount, hackCSExtCount==0 ? 0 : hackCSExtTime/(float)hackCSExtCount*1e6f );
 	pOgl.LogInfoFormat( "CSOct     %.1fys (%i, %.1fys)", hackCSOctTime*1e6f, hackCSOctCount, hackCSOctCount==0 ? 0 : hackCSOctTime/(float)hackCSOctCount*1e6f );
 	pOgl.LogInfoFormat( "CSBoneMap %.1fys (%i, %.1fys)", hackCSBoneMapTime*1e6f, hackCSBoneMapCount, hackCSBoneMapCount==0 ? 0 : hackCSBoneMapTime/(float)hackCSBoneMapCount*1e6f );
+	pOgl.LogInfoFormat( "CSSpecial %.1fys (%i, %.1fys)", hackCSSpecialTime*1e6f, hackCSSpecialCount, hackCSSpecialCount==0 ? 0 : hackCSSpecialTime/(float)hackCSSpecialCount*1e6f );
 	#endif
 }
 

@@ -26,25 +26,32 @@ class ARAnimation extends AnimatorRule
 	/** \name Management */
 	/*@{*/
 	/** \brief Enable position modification. */
-	public func void setEnablePosition( bool enabled )
+	public func void setEnablePosition(bool enabled)
 	end
 	
 	/** \brief Enable orientation modification. */
-	public func void setEnableOrientation( bool enabled )
+	public func void setEnableOrientation(bool enabled)
 	end
 	
 	/** \brief Enable size modification. */
-	public func void setEnableSize( bool enabled )
+	public func void setEnableSize(bool enabled)
+	end
+	
+	/**
+	 * \brief Enable vertex position set modification.
+	 * \version 1.17
+	 */
+	public func void setEnableVertexPositionSet(bool enabled)
 	end
 	
 	
 	
-	/** \brief Set move name. */
-	public func void setMoveName( String move )
+	/** \brief Set move name relative to the move playtime. */
+	public func void setMoveName(String move)
 	end
 	
-	/** \brief Set move time in seconds. */
-	public func void setMoveTime( float time )
+	/** \brief Set time relative to move playtime. */
+	public func void setMoveTime(float time)
 	end
 	
 	
@@ -53,14 +60,14 @@ class ARAnimation extends AnimatorRule
 	 * \brief Add link to target.
 	 * \throws EInvalidParam \em target is not a valid value.
 	 */
-	public func void targetAddLink( ARAnimationTarget target, int link )
+	public func void targetAddLink(ARAnimationTarget target, int link)
 	end
 	
 	/**
 	 * \brief Remove all links from target.
 	 * \throws EInvalidParam \em target is not a valid value.
 	 */
-	public func void targetRemoveAllLinks( ARAnimationTarget target )
+	public func void targetRemoveAllLinks(ARAnimationTarget target)
 	end
 	/*@}*/
 end

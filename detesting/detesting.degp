@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<gameProject>
+	<name>Drag[en]gine Testing</name>
+	<description>Drag[en]gine Testing</description>
+	<dataDirectory>data</dataDirectory>
+	<cacheDirectory>cache</cacheDirectory>
+	<baseGameDefinition>DragonScript Basic</baseGameDefinition>
+	<projectGameDefinition>detesting.degd</projectGameDefinition>
+	<scriptModule version='1.8'>DragonScript</scriptModule>
+</gameProject>

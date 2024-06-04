@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -60,6 +63,10 @@ pin Dragengine.Utils
  * The calculation of looking delta by analog input is this:
  * 
  * \code delta = analogInput * analogFactor * speed \endcode
+ * 
+ * This calculation applies only to non-sticky input as this originates from mouse input
+ * devices only. Sticky inputs originating from game pads and similar used the elapsed
+ * time instead of analogFactor and thus are similar to digital input.
  * 
  * Using negative factor switches direction. Using negative factor and speed keeps the
  * direction unchanged.
@@ -106,6 +113,11 @@ class ECBehaviorPlayerInputLook extends DefaultECBehavior
 		
 		/** \brief Initialize element from stub. */
 		public func void init( StubElement stub )
+			this.pSpeedLookHorizontal = this.pECBehavior.getSpeedLookHorizontal().getValue( stub )
+			this.pSpeedLookVertical = this.pECBehavior.getSpeedLookVertical().getValue( stub )
+			this.pAnalogFactorLookHorizontal = this.pECBehavior.getAnalogFactorLookHorizontal().getValue( stub )
+			this.pAnalogFactorLookVertical = this.pECBehavior.getAnalogFactorLookVertical().getValue( stub )
+			
 			if this.pECBehavior.getLocomotion() != null
 				this.pLocomotion = this.pECBehavior.getLocomotion().instance( this.getElement() )
 			end
@@ -286,8 +298,8 @@ class ECBehaviorPlayerInputLook extends DefaultECBehavior
 				value -= this.pSpeedLookHorizontal * elapsed
 			end
 			
-			value += this.pAnalogLookHorizontalSticky * this.pAnalogFactorLookHorizontal * this.pSpeedLookHorizontal
-			value += this.pAnalogLookHorizontal * this.pAnalogFactorLookHorizontal * this.pSpeedLookHorizontal
+			value += this.pAnalogLookHorizontalSticky * this.pSpeedLookHorizontal * elapsed
+			value += this.pAnalogLookHorizontal * this.pSpeedLookHorizontal * this.pAnalogFactorLookHorizontal
 			this.pAnalogLookHorizontal = 0
 			
 			return value
@@ -304,8 +316,8 @@ class ECBehaviorPlayerInputLook extends DefaultECBehavior
 				value -= this.pSpeedLookVertical * elapsed
 			end
 			
-			value += this.pAnalogLookVerticalSticky * this.pAnalogFactorLookVertical * this.pSpeedLookVertical
-			value += this.pAnalogLookVertical * this.pAnalogFactorLookVertical * this.pSpeedLookVertical
+			value += this.pAnalogLookVerticalSticky * this.pSpeedLookVertical * elapsed
+			value += this.pAnalogLookVertical * this.pSpeedLookVertical * this.pAnalogFactorLookVertical
 			this.pAnalogLookVertical = 0
 			
 			return value
@@ -345,27 +357,24 @@ class ECBehaviorPlayerInputLook extends DefaultECBehavior
 		
 		
 		
-		/**
-		 * \brief Add element to game world.
-		 * 
-		 * Clears player input to ensure actor is not unintentially moving.
-		 */
-		public func void addToGameWorld()
-			this.reset()
-		end
-		
-		
-		
 		/** \brief Read element from file. */
 		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
-			this.pSpeedLookHorizontal = reader.readFloat()
-			this.pSpeedLookVertical = reader.readFloat()
-			this.pAnalogFactorLookHorizontal = reader.readFloat()
-			this.pAnalogFactorLookVertical = reader.readFloat()
+			select reader.readByte() // version
+			case 0
+				this.pSpeedLookHorizontal = reader.readFloat()
+				this.pSpeedLookVertical = reader.readFloat()
+				this.pAnalogFactorLookHorizontal = reader.readFloat()
+				this.pAnalogFactorLookVertical = reader.readFloat()
+				
+			else
+				throw EInvalidParam.new( "unsupported version" )
+			end
 		end
 		
 		/** \brief Write element to file. */
 		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			writer.writeByte( 0 ) // version
+			
 			writer.writeFloat( this.pSpeedLookHorizontal )
 			writer.writeFloat( this.pSpeedLookVertical )
 			writer.writeFloat( this.pAnalogFactorLookHorizontal )
@@ -376,6 +385,10 @@ class ECBehaviorPlayerInputLook extends DefaultECBehavior
 	
 	
 	private var ECBehaviorLocomotion pLocomotion
+	private var ECPFloat pSpeedLookHorizontal
+	private var ECPFloat pSpeedLookVertical
+	private var ECPFloat pAnalogFactorLookHorizontal
+	private var ECPFloat pAnalogFactorLookVertical
 	
 	
 	
@@ -392,6 +405,18 @@ class ECBehaviorPlayerInputLook extends DefaultECBehavior
 		
 		this.pLocomotion = locomotion
 		
+		this.pSpeedLookHorizontal = ECPFloat.new( prefix + "speedLookHorizontal", 45, 0 )
+		eclass.addProperty( this.pSpeedLookHorizontal )
+		
+		this.pSpeedLookVertical = ECPFloat.new( prefix + "speedLookVertical", 45, 0 )
+		eclass.addProperty( this.pSpeedLookVertical )
+		
+		this.pAnalogFactorLookHorizontal = ECPFloat.new( prefix + "analogFactorLookHorizontal", 0.01 )
+		eclass.addProperty( this.pAnalogFactorLookHorizontal )
+		
+		this.pAnalogFactorLookVertical = ECPFloat.new( prefix + "analogFactorLookVertical", 0.01 )
+		eclass.addProperty( this.pAnalogFactorLookVertical )
+		
 		eclass.addBehavior( this )
 	end
 	
@@ -406,6 +431,26 @@ class ECBehaviorPlayerInputLook extends DefaultECBehavior
 	/** \brief Locomotion behavior or null. */
 	public func ECBehaviorLocomotion getLocomotion()
 		return this.pLocomotion
+	end
+	
+	/** \brief Look left right speed in degrees per second. */
+	public func ECPFloat getSpeedLookHorizontal()
+		return this.pSpeedLookHorizontal
+	end
+	
+	/** \brief Look up down speed in degrees per second. */
+	public func ECPFloat getSpeedLookVertical()
+		return this.pSpeedLookVertical
+	end
+	
+	/** \brief Analog Look left right factor relative to left right input speed. */
+	public func ECPFloat getAnalogFactorLookHorizontal()
+		return this.pAnalogFactorLookHorizontal
+	end
+	
+	/** \brief Analog Look up down factor relative to up down input speed. */
+	public func ECPFloat getAnalogFactorLookVertical()
+		return this.pAnalogFactorLookVertical
 	end
 	
 	
@@ -424,8 +469,8 @@ class ECBehaviorPlayerInputLook extends DefaultECBehavior
 	 * of type ECBehaviorPlayerInputLook.
 	 */
 	static public func ECBehaviorPlayerInputLook getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehavior each
-			return each castable ECBehaviorPlayerInputLook
+		return eclass.findBehavior( block ECBehaviorPlayerInputLook each
+			return true
 		end ) cast ECBehaviorPlayerInputLook
 	end
 	
@@ -436,8 +481,8 @@ class ECBehaviorPlayerInputLook extends DefaultECBehavior
 	 * of type ECBehaviorPlayerInputLook.Instance .
 	 */
 	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance
+		return element.findInstance( block Instance each
+			return true
 		end ) cast Instance
 	end
 	

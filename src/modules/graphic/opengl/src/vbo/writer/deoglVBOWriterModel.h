@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLVBOMODELWRITER_H_
@@ -32,17 +35,12 @@ class deoglSharedVBOBlock;
 
 
 /**
- * \brief Model VBO Writer.
- * 
- * Helper class writing data to esvbolStaticModel formatted VBO blocks. Keeps track of
- * the data pointer adding one entry after the other. Call Reset with a vbo block data
- * pointer to start the writing. Each call of WritePoint appends the data and advances
- * the pointer for the next point.
+ * Model VBO Writer.
  */
 class deoglVBOWriterModel{
 public:
 	deoglRenderThread &pRenderThread;
-	char *pDataPoints;
+	GLfloat *pDataPoints;
 	GLuint *pDataIndices;
 	
 	
@@ -50,10 +48,10 @@ public:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create vbo writer. */
+	/** Create vbo writer. */
 	deoglVBOWriterModel( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up vbo writer. */
+	/** Clean up vbo writer. */
 	~deoglVBOWriterModel();
 	/*@}*/
 	
@@ -61,20 +59,21 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Set data pointers to start writing points and indices to. */
+	/** Set data pointers to start writing points and indices to. */
 	void Reset( deoglSharedVBOBlock *vboBlock );
 	
-	/** \brief Write point and advances the pointer for the next write. */
+	/** Write point and advances the pointer for the next write. */
 	void WritePoint( const decVector &position, const decVector &normal, const decVector &tangent,
 		bool negateTangent, const decVector2 &texCoord, const decVector &realNormal );
 	
-	/** \brief Write texture coordinate set point and advance the pointer for the next write. */
+	/** Write point and advances the pointer for the next write. */
+	void WritePoint( const decVector &position, const decVector &normal, const decVector &tangent,
+		bool negateTangent, const decVector2 &texCoord, const decVector &realNormal, int weights );
+	
+	/** Write texture coordinate set point and advance the pointer for the next write. */
 	void WriteTexCoordSetPoint( const decVector &tangent, bool negateTangent, const decVector2 &texCoord );
 	
-	/** \brief Write weight index. */
-	void WriteWeight( int weight );
-	
-	/** \brief Write 3 indices and advances the pointer for the next write. */
+	/** Write 3 indices and advances the pointer for the next write. */
 	void WriteIndices( int index1, int index2, int index3 );
 	/*@}*/
 };

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Bullet Physics Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEBPCOLLIDERBONE_H_
@@ -41,9 +44,9 @@ class deRigBone;
 
 
 /**
- * \brief Bullet Collider Bone.
+ * Bullet Collider Bone.
  * 
- * Stores informations about a bone in a collider. Besides the physics object a couple of
+ * Stores information about a bone in a collider. Besides the physics object a couple of
  * matrices are stored which are required for proper tracking component bones with the collider
  * bones.The following matrices are stored:
  * 
@@ -93,10 +96,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create a collider bone. */
+	/** Create a collider bone. */
 	debpColliderBone( debpCollider *collider, int index );
 	
-	/** \brief Clean up collider bone. */
+	/** Clean up collider bone. */
 	~debpColliderBone();
 	/*@}*/
 	
@@ -104,10 +107,10 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Physics body. */
+	/** Physics body. */
 	inline debpPhysicsBody *GetPhysicsBody() const{ return pPhyBody; }
 	
-	/** \brief Matrices. */
+	/** Matrices. */
 	inline const decDMatrix &GetBoneMatrix() const{ return pBoneMatrix; }
 	inline const decDMatrix &GetInverseBoneMatrix() const{ return pInvBoneMatrix; }
 	inline const decDMatrix &GetColliderMatrix() const{ return pColMatrix; }
@@ -117,87 +120,90 @@ public:
 	inline const decDMatrix &GetRealMatrix() const{ return pRealMatrix; }
 	inline const decDMatrix &GetInverseRealMatrix() const{ return pInvRealMatrix; }
 	
-	/** \brief Index of bone. */
+	/** Index of bone. */
 	inline int GetIndex() const{ return pIndex; }
 	
-	/** \brief Matching collider bone is set dynamic. */
+	/** Matching collider bone is set dynamic. */
 	inline bool GetColBoneDynamic() const{ return pColBoneDynamic; }
 	
-	/** \brief Set bone matrices. */
+	/** Set bone matrices. */
 	void SetBoneMatrices( const decDMatrix &matrix );
 	
-	/** \brief Set collider matrices. */
+	/** Set collider matrices. */
 	void SetColliderMatrices( const decDMatrix &matrix );
 	
-	/** \brief Set local matrix. */
+	/** Set local matrix. */
 	void SetLocalMatrix( const decDMatrix &matrix );
 	
-	/** \brief Set real matrix. */
+	/** Set real matrix. */
 	void SetRealMatrix( const decDMatrix &matrix );
 	
-	/** \brief Dirty. */
+	/** Dirty. */
 	inline bool GetDirty() const{ return pDirty; }
 	void SetDirty( bool dirty );
 	
-	/** \brief Set matching collider bone is set dynamic. */
+	/** Set matching collider bone is set dynamic. */
 	void SetColBoneDynamic( bool dynamic );
 	
-	/** \brief Parent bone index with -1 meaning not parent. */
+	/** Parent bone index with -1 meaning not parent. */
 	inline int GetParent() const{ return pParent; }
 	
-	/** \brief Central mass point offset. */
+	/** Central mass point offset. */
 	inline const decDVector &GetOffset() const{ return pOffset; }
 	
-	/** \brief Shapes. */
+	/** Shapes. */
 	inline debpShapeList &GetShapes(){ return pShapes; }
 	inline const debpShapeList &GetShapes() const{ return pShapes; }
 	
-	/** \brief Set parameters from rig bone. */
+	/** Set parameters from rig bone. */
 	void SetFromRigBone( const deRigBone &bone );
 	
 	
 	
-	/** \brief Number of constraints. */
+	/** Number of constraints. */
 	int GetConstraintCount() const;
 	
-	/** \brief Constraint at index. */
+	/** Constraint at index. */
 	debpColliderConstraint *GetConstraintAt( int index ) const;
 	
-	/** \brief Index of constraint or -1 if absent. */
+	/** Index of constraint or -1 if absent. */
 	int IndexOfConstraint( debpColliderConstraint *constraint ) const;
 	
-	/** \brief Constraint is present. */
+	/** Constraint is present. */
 	bool HasConstraint( debpColliderConstraint *constraint ) const;
 	
-	/** \brief Add constraint. */
+	/** Add constraint. */
 	void AddConstraint( debpColliderConstraint *constraint );
 	
-	/** \brief Remove constraint. */
+	/** Remove constraint. */
 	void RemoveConstraint( debpColliderConstraint *constraint );
 	
-	/** \brief Remove all constraints. */
+	/** Remove all constraints. */
 	void RemoveAllConstraints();
 	
 	
 	
-	/** \brief Retrieves the static collision test updating it if dirty. */
+	/** Retrieves the static collision test updating it if dirty. */
 	btGhostObject *GetStaticCollisionTest();
+	
+	/** Requires bone auto-dirty. */
+	bool RequiresAutoDirty() const;
 	/*@}*/
 	
 	
 	
 	/** \name Debugging */
 	/*@{*/
-	/** \brief Debug drawer or \em NULL if not activated .*/
+	/** Debug drawer or \em NULL if not activated .*/
 	inline deDebugDrawer *GetDebugDrawer() const{ return pDebugDrawer; }
 	
-	/** \brief Set debug drawer or \em NULL if not activated. */
+	/** Set debug drawer or \em NULL if not activated. */
 	void SetDebugDrawer( deDebugDrawer *debugDrawer );
 	
-	/** \brief Debug drawer shape or \em NULL if not ativated. */
+	/** Debug drawer shape or \em NULL if not ativated. */
 	inline deDebugDrawerShape *GetDDSShape() const{ return pDDSShape; }
 	
-	/** \brief Set debug drawer shape or \em NULL if not activated. */
+	/** Set debug drawer shape or \em NULL if not activated. */
 	void SetDDSShape( deDebugDrawerShape *shape );
 	/*@}*/
 	

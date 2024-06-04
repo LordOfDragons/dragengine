@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Conversation Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <math.h>
@@ -34,7 +37,7 @@
 #include "../../../conversation/actor/speechAnimation/ceSAWord.h"
 #include "../../../conversation/actor/speechAnimation/ceSpeechAnimation.h"
 #include "../../../conversation/file/ceConversationFile.h"
-#include "../../../conversation/lookat/ceLookAt.h"
+#include "../../../conversation/target/ceTarget.h"
 #include "../../../conversation/strip/ceStrip.h"
 #include "../../../conversation/topic/ceConversationTopic.h"
 #include "../../../undosys/action/actorSpeak/strip/ceUCAASpeakStripSetDuration.h"
@@ -72,6 +75,17 @@
 
 namespace {
 
+class cListenerResetDuration : public ceDialogEditStrip::Listener{
+	ceWDSLane &pLane;
+	
+public:
+	cListenerResetDuration( ceWDSLane &lane ) : pLane( lane ){}
+	
+	virtual float DefaultDuration ( const decString &id ){
+		return pLane.DefaultDuration( id );
+	}
+};
+
 class cActionStripAdd : public igdeAction{
 	ceWDSLane &pLane;
 	const int pIndex;
@@ -96,10 +110,11 @@ public:
 		decStringList idList;
 		pLane.FillIDList( idList );
 		dialog.SetIDList( idList );
+		dialog.SetListener( ceDialogEditStrip::Listener::Ref::New( new cListenerResetDuration( pLane ) ) );
+		dialog.ResetDuration();
+		dialog.SetAutoResetDuration( true );
 		
-		dialog.SetDuration( 0.5f );
-		
-		if( ! dialog.Run( &pLane.GetWindow() ) ){
+		if( ! dialog.Run( &pLane.GetWindow().GetWindowMain() ) ){
 			return;
 		}
 		
@@ -677,25 +692,25 @@ void ceWDSLane::CreateCanvas(){
 	pCanvas.TakeOver( canvasManager.CreateCanvasView() );
 	
 	pCanvasPanelSheet.TakeOver( canvasManager.CreateCanvasView() );
-	pCanvasPanelSheet->SetOrder( pCanvas->GetCanvasCount() );
+	pCanvasPanelSheet->SetOrder( ( float )pCanvas->GetCanvasCount() );
 	pCanvas->AddCanvas( pCanvasPanelSheet );
 	
 	pCanvasBar.TakeOver( canvasManager.CreateCanvasPaint() );
 	pCanvasBar->SetFillColor( colorBarFill );
 	pCanvasBar->SetLineColor( colorBarLine );
 	pCanvasBar->SetThickness( 1 );
-	pCanvasBar->SetOrder( pCanvasPanelSheet->GetCanvasCount() );
+	pCanvasBar->SetOrder( ( float )pCanvasPanelSheet->GetCanvasCount() );
 	pCanvasPanelSheet->AddCanvas( pCanvasBar );
 	
 	pCanvasBarSelection.TakeOver( canvasManager.CreateCanvasPaint() );
 	pCanvasBarSelection->SetFillColor( colorBarSelectionFill );
 	pCanvasBarSelection->SetThickness( 0 );
 	pCanvasBarSelection->SetVisible( false );
-	pCanvasBarSelection->SetOrder( pCanvasPanelSheet->GetCanvasCount() );
+	pCanvasBarSelection->SetOrder( ( float )pCanvasPanelSheet->GetCanvasCount() );
 	pCanvasPanelSheet->AddCanvas( pCanvasBarSelection );
 	
 	pCanvasHandles.TakeOver( canvasManager.CreateCanvasView() );
-	pCanvasHandles->SetOrder( pCanvasPanelSheet->GetCanvasCount() );
+	pCanvasHandles->SetOrder( ( float )pCanvasPanelSheet->GetCanvasCount() );
 	pCanvasPanelSheet->AddCanvas( pCanvasHandles );
 }
 
@@ -831,7 +846,7 @@ void ceWDSLane::RebuildCanvas(){
 			
 			strip.stripId.TakeOver( canvasManager.CreateCanvasText() );
 			strip.stripId->SetFont( font );
-			strip.stripId->SetFontSize( font->GetLineHeight() );
+			strip.stripId->SetFontSize( ( float )font->GetLineHeight() );
 			strip.stripId->SetColor( colorText );
 			
 			pStrips.Add( refStrip );
@@ -839,16 +854,16 @@ void ceWDSLane::RebuildCanvas(){
 		
 		cStrip &strip = *( ( cStrip* )pStrips.GetAt( i ) );
 		
-		strip.handlePause->SetOrder( pCanvasHandles->GetCanvasCount() );
+		strip.handlePause->SetOrder( ( float )pCanvasHandles->GetCanvasCount() );
 		pCanvasHandles->AddCanvas( strip.handlePause );
 		
-		strip.handleDuration->SetOrder( pCanvasHandles->GetCanvasCount() );
+		strip.handleDuration->SetOrder( ( float )pCanvasHandles->GetCanvasCount() );
 		pCanvasHandles->AddCanvas( strip.handleDuration );
 		
-		strip.stripIdBg->SetOrder( pCanvasHandles->GetCanvasCount() );
+		strip.stripIdBg->SetOrder( ( float )pCanvasHandles->GetCanvasCount() );
 		pCanvasHandles->AddCanvas( strip.stripIdBg );
 		
-		strip.stripId->SetOrder( pCanvasHandles->GetCanvasCount() );
+		strip.stripId->SetOrder( ( float )pCanvasHandles->GetCanvasCount() );
 		pCanvasHandles->AddCanvas( strip.stripId );
 	}
 }
@@ -869,10 +884,12 @@ void ceWDSLane::EditStrip( ceStrip *strip ){
 	decStringList idList;
 	FillIDList( idList );
 	dialog.SetIDList( idList );
+	dialog.SetListener( ceDialogEditStrip::Listener::Ref::New( new cListenerResetDuration( *this ) ) );
+	dialog.SetAutoResetDuration( false );
 	
 	dialog.SetFromStrip( *strip );
 	
-	if( ! dialog.Run( &pWindow ) ){
+	if( ! dialog.Run( &pWindow.GetWindowMain() ) ){
 		return;
 	}
 	
@@ -885,6 +902,10 @@ void ceWDSLane::EditStrip( ceStrip *strip ){
 	igdeUndoReference undo;
 	undo.TakeOver( UndoStripReplace( strip, ( ceStrip* )( deObject* )newStrip ) );
 	pWindow.GetConversation()->GetUndoSystem()->Add( undo );
+}
+
+float ceWDSLane::DefaultDuration( const decString & ) {
+	return 0.5f;
 }
 
 
@@ -915,7 +936,7 @@ void ceWDSLane::FillIDListLookAt( decStringList &list ){
 		return;
 	}
 	
-	const ceLookAtList &lookAtList = pWindow.GetConversation()->GetLookAtList();
+	const ceTargetList lookAtList( pWindow.GetConversation()->AllTargets() );
 	const int lookAtCount = lookAtList.GetCount();
 	int i;
 	for( i=0; i<lookAtCount; i++ ){

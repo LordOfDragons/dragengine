@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine GUI Launcher
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEGLDIALOGPROFILELISTPARAMETER_H_
@@ -29,17 +32,23 @@
 #include <dragengine/common/string/decString.h>
 #include <dragengine/systems/modules/deModuleParameter.h>
 
-class deglEMParameter;
-class deglGameProfile;
+class delEMParameter;
+class delGameProfile;
 
 
 /**
- * \brief Profiles panel module parameter.
+ * Profiles panel module parameter.
  */
 class deglDialogProfileListParameter : public deObject{
+public:
+	/** Type holding strong reference. */
+	typedef deTObjectReference<deglDialogProfileListParameter> Ref;
+	
+	
+	
 private:
-	deglEMParameter &pParameter;
-	deglGameProfile &pProfile;
+	delEMParameter &pParameter;
+	delGameProfile &pProfile;
 	decString pModuleName;
 	
 	decString pDescription;
@@ -59,13 +68,13 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create parameter. */
-	deglDialogProfileListParameter( deglEMParameter &parameter, deglGameProfile &profile,
+	/** Create parameter. */
+	deglDialogProfileListParameter( delEMParameter &parameter, delGameProfile &profile,
 		const char *moduleName, FXMatrix *container, FXObject *target, 
 		int labelSelector, int valueSelector );
 	
 protected:
-	/** \brief Clean up parameter. */
+	/** Clean up parameter. */
 	virtual ~deglDialogProfileListParameter();
 	/*@}*/
 	
@@ -74,40 +83,40 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Description. */
+	/** Description. */
 	inline const decString &GetDescription() const{ return pDescription; }
 	
-	/** \brief Sender matches label. */
+	/** Sender matches label. */
 	bool SenderMatchesLabel( FXObject *sender ) const;
 	
-	/** \brief Sender matches edit widget. */
+	/** Sender matches edit widget. */
 	bool SenderMatchesEdit( FXObject *sender ) const;
 	
 	/**
-	 * \brief Process command message if sender is edit widget of this parameter.
+	 * Process command message if sender is edit widget of this parameter.
 	 * \returns true if processed or false if not destined for this parameter.
 	 */
 	bool ProcessSelCommand( FXObject *sender );
 	
 	/**
-	 * \brief Process changed message if sender is edit widget of this parameter.
+	 * Process changed message if sender is edit widget of this parameter.
 	 * \returns true if processed or false if not destined for this parameter.
 	 */
 	bool ProcessSelChanged( FXObject *sender );
 	
-	/** \brief Set parameter value. */
+	/** Set parameter value. */
 	void SetParameterValue( const char *value );
 	
-	/** \brief Set parameter value. */
+	/** Set parameter value. */
 	void SetParameterValue( FXdouble value );
 	
-	/** \brief Update edit widget value from parameter value. */
+	/** Update edit widget value from parameter value. */
 	void Update();
 	
-	/** \brief Reset value to default. */
+	/** Reset value to default. */
 	void Reset();
 	
-	/** \brief Update visibility. */
+	/** Update visibility. */
 	void UpdateVisibility( deModuleParameter::eCategory category );
 	/*@}*/
 };

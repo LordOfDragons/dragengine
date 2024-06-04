@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Project Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <math.h>
@@ -44,6 +47,7 @@
 #include <deigde/gui/igdeTextArea.h>
 #include <deigde/gui/igdeContainerReference.h>
 #include <deigde/gui/event/igdeAction.h>
+#include <deigde/gui/event/igdeActionExternOpen.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
@@ -63,8 +67,8 @@ namespace {
 class cActionStart : public igdeAction{
 	projPanelTestRun &pPanel;
 public:
-	cActionStart( projPanelTestRun &panel ) :
-	igdeAction( "Start", "Test-Run project using selected Launcher Profile" ),
+	cActionStart( projPanelTestRun &panel ) : igdeAction( "Start",
+		panel.GetWindowMain().GetIconStart(), "Test-Run project using selected Launcher Profile" ),
 	pPanel( panel ){ }
 	
 	virtual void OnAction(){
@@ -79,8 +83,8 @@ public:
 class cActionQuit : public igdeAction{
 	projPanelTestRun &pPanel;
 public:
-	cActionQuit( projPanelTestRun &panel ) :
-	igdeAction( "Quit", "Stop Test-Run project" ),
+	cActionQuit( projPanelTestRun &panel ) : igdeAction( "Stop",
+		panel.GetWindowMain().GetIconStop(), "Stop Test-Run project" ),
 	pPanel( panel ){ }
 	
 	virtual void OnAction(){
@@ -95,8 +99,8 @@ public:
 class cActionKill : public igdeAction{
 	projPanelTestRun &pPanel;
 public:
-	cActionKill( projPanelTestRun &panel ) :
-	igdeAction( "Kill", "Kill Test-Run project" ),
+	cActionKill( projPanelTestRun &panel ) : igdeAction( "Kill",
+		panel.GetWindowMain().GetIconKill(), "Kill Test-Run project" ),
 	pPanel( panel ){ }
 	
 	virtual void OnAction(){
@@ -219,6 +223,12 @@ pMaxLines( 500 )
 	helper.Button( sidePanel, pBtnStart, pActionStart );
 	helper.Button( sidePanel, pBtnQuit, pActionQuit );
 	helper.Button( sidePanel, pBtnKill, pActionKill );
+	
+	helper.GroupBoxStaticFlow( sidePanel, groupBox, "Logs / Debug:" );
+	helper.Button( groupBox, windowMain.GetActionShowLogs() );
+	helper.Button( groupBox, windowMain.GetActionShowConfig() );
+	helper.Button( groupBox, windowMain.GetActionShowOverlay() );
+	helper.Button( groupBox, windowMain.GetActionShowCapture() );
 	
 	
 	// logs widget
@@ -570,7 +580,7 @@ void projPanelTestRun::pUpdateLaunchProfiles(){
 
 void projPanelTestRun::pRemoveOldLines(){
 	const char * const logs = pEditLogs->GetText();
-	const int length = strlen( logs );
+	const int length = ( int )strlen( logs );
 	int count = pMaxLines;
 	int i;
 	

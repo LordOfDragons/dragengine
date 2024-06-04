@@ -8,6 +8,8 @@
 
 namespace Dragengine.Scenery
 
+pin Dragengine.Gui
+
 /**
  * \brief Immutable 2-component vector.
  * 
@@ -39,18 +41,22 @@ fixed class Vector2
 	/*@{*/
 	/** \brief X-Component. */
 	public func float getX()
+		return 0.0
 	end
 	
 	/** \brief Y-Component. */
 	public func float getY()
+		return 0.0
 	end
 	
 	/** \brief Component by index (0=X, 1=Y). */
 	public func float getComponentAt( int component )
+		return 0.0
 	end
 	
 	/** \brief Length. */
 	public func float getLength()
+		return 0.0
 	end
 	
 	/**
@@ -58,38 +64,72 @@ fixed class Vector2
 	 * \throws EDivisionByZero Length is \em 0.
 	 */
 	public func Vector2 normalize()
+		return null
+	end
+	
+	/** \brief Vector with absolute of all components. */
+	public func Vector2 absolute()
+		return null
 	end
 	
 	/** \brief Vector with all components set to the smallest value of two vectors. */
 	public func Vector2 smallest( Vector2 v )
+		return null
 	end
 	
 	/** \brief Vector with all components set to the largest value of two vectors. */
 	public func Vector2 largest( Vector2 v )
+		return null
 	end
 	
 	/** \brief Vector with all components clamped to a range of two vectors. */
 	public func Vector2 clamped( Vector2 min, Vector2 max )
+		return null
 	end
 	
 	/** \brief Convert to point rounding to the nearest integer value. */
 	public func Point round()
+		return null
 	end
+	
+	/**
+	 * \brief Components rounded to the nearest unit.
+	 * \version 1.8
+	 */
+	public func Vector2 round(float unit)
+		return null
+	end
+	
+	/**
+	 * \brief Mix vector with another component wise.
+	 * \version 1.10
+	 * 
+	 * Factor 0 uses this vector, factor 1 the other vector.
+	 */
+	public func Vector2 mix(Vector2 other, float factor)
+		return null
+	end
+	
+	
 	
 	/** \brief Two vectors are equal. */
 	public func bool isEqualTo( Vector2 v, float delta )
+		return false
 	end
 	
 	/** \brief All coordinates are at least of a minimal value. */
 	public func bool isAtLeast( float value )
+		return false
 	end
 	
 	/** \brief All coordinates are at most of a maximal value. */
 	public func bool isAtMost( float value )
+		return false
 	end
 	
 	/** \brief Vector is equal to zero vector. */
 	public func bool isZero()
+		return false
 	end
 	
 	
@@ -100,6 +140,7 @@ fixed class Vector2
 	 * \returns \em true if \em other is of type Vector2 and components are equal.
 	*/
 	public func bool equals( Object other )
+		return false
 	end
 	
 	/**
@@ -107,6 +148,7 @@ fixed class Vector2
 	 * \details Implements Object.hashCode().
 	 */
 	public func int hashCode()
+		return 0
 	end
 	
 	/**
@@ -114,6 +156,19 @@ fixed class Vector2
 	 * \details Implements Object.toString()
 	 */
 	public func String toString()
+		return null
+	end
+	
+	/**
+	 * \brief String representation of vector with precision.
+	 * 
+	 * Same as toString() except the count of digits of each component is precision.
+	 * 
+	 * \param precision Precision in digits in the range from 0 to 9 inclusive.
+	 * \throws EInvalidParam precision is less than 0 or larger than 9.
+	 */
+	public func String toString( int precision )
+		return null
 	end
 	/*@}*/
 	
@@ -123,6 +178,7 @@ fixed class Vector2
 	/*@{*/
 	/** \brief Read vector from a file reader. */
 	static public func Vector2 readFromFile( FileReader reader )
+		return null
 	end
 	
 	/** \brief Write vector to a file writer. */
@@ -136,18 +192,22 @@ fixed class Vector2
 	/*@{*/
 	/** \brief Negated vector. */
 	public func Vector2 -()
+		return null
 	end
 	
 	/** \brief Sum of two vectors. */
 	public func Vector2 +( Vector2 v )
+		return null
 	end
 	
 	/** \brief Difference between two vectors. */
 	public func Vector2 -( Vector2 v )
+		return null
 	end
 	
 	/** \brief Vector multiplied by scalar. */
 	public func Vector2 *( float scalar )
+		return null
 	end
 	
 	/**
@@ -155,26 +215,32 @@ fixed class Vector2
 	 * \throws EDivisionByZero \em scalar is \em 0.
 	 */
 	public func Vector2 /( float scalar )
+		return null
 	end
 	
 	/** \brief Dot-Product between two vectors. */
 	public func float *( Vector2 v )
+		return 0.0
 	end
 	
 	/** \brief Vector is less than another vector in all components. */
 	public func bool <( Vector2 v )
+		return false
 	end
 	
 	/** \brief Vector is less than or equal to another vector in all components. */
 	public func bool <=( Vector2 v )
+		return false
 	end
 	
 	/** \brief Vector is greater than another vector in all components. */
 	public func bool >( Vector2 v )
+		return false
 	end
 	
 	/** \brief Vector is greater than or equal to another vector in all components. */
 	public func bool >=( Vector2 v )
+		return false
 	end
 	/*@}*/
 end

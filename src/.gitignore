@@ -1,0 +1,4 @@
+Doxyfile
+!Doxyfile*.in
+doxyfile_*
+!doxyfile*.in

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Bullet Physics Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -34,6 +37,8 @@
 #include "../debpMotionState.h"
 #include "../dePhysicsBullet.h"
 #include "../debpConfiguration.h"
+#include "../world/debpWorld.h"
+#include "../world/debpCollisionWorld.h"
 
 #include "BulletDynamics/Dynamics/btRigidBody.h"
 #include "BulletDynamics/Dynamics/btDynamicsWorld.h"
@@ -61,10 +66,10 @@ pBullet( bullet ),
 pConstraint( constraint ),
 pRigBoneConstraintIndex( -1 ),
 
-pDynWorld( NULL ),
-pBpConstraint( NULL ),
-pPhyBody1( NULL ),
-pPhyBody2( NULL ),
+pDynWorld( nullptr ),
+pBpConstraint( nullptr ),
+pPhyBody1( nullptr ),
+pPhyBody2( nullptr ),
 
 pConstraintType( ectHinge ),
 pEnabled( true ),
@@ -86,14 +91,16 @@ void debpColliderConstraint::SetRigBoneConstraintIndex( int index ){
 	pRigBoneConstraintIndex = index;
 }
 
-void debpColliderConstraint::SetDynamicsWorld( btDynamicsWorld *dynWorld ){
-	if( pDynWorld != dynWorld ){
-		pFreeConstraint();
-		
-		pDynWorld = dynWorld;
-		
-		pCreateConstraint();
+void debpColliderConstraint::SetDynamicsWorld( debpCollisionWorld *dynWorld ){
+	if( pDynWorld == dynWorld ){
+		return;
 	}
+	
+	pFreeConstraint();
+	
+	pDynWorld = dynWorld;
+	
+	pCreateConstraint();
 }
 
 void debpColliderConstraint::SetFirstBody( debpPhysicsBody *body ){
@@ -169,6 +176,10 @@ bool debpColliderConstraint::CheckHasBroken(){
 		return true;
 	}
 	return false;
+}
+
+bool debpColliderConstraint::RequiresAutoDirty() const{
+	return pEnabled && ! pHasBroken && pBpConstraint && pPhyBody2 && pPhyBody2->GetIsActive();
 }
 
 
@@ -463,7 +474,7 @@ void debpColliderConstraint::pDetectConstraintType(){
 }
 
 void debpColliderConstraint::pCreateConstraint(){
-// 	pBullet.LogInfoFormat( "pCreateConstraint c=%p bc=%p e=%i dw=%p pb1=%p pb2=%p", pConstraint, pBpConstraint, pEnabled?1:0, pDynWorld, pPhyBody1, pPhyBody2 );
+// 	pBullet.LogInfoFormat( "pCreateConstraint c=%p bc=%p e=%i dw=%p pb1=%p pb2=%p", pConstraint, pBpConstraint, pEnabled?1:0, pWorld, pPhyBody1, pPhyBody2 );
 	if( ! pBpConstraint && pEnabled && pDynWorld
 	&& pPhyBody1 && pPhyBody1->GetRigidBody()
 	&& ! ( pPhyBody2 && ! pPhyBody2->GetRigidBody() ) ){
@@ -1045,20 +1056,23 @@ void debpColliderConstraint::pCreateGenericConstraint(){
 	//   proportional to CFM times the restoring force that is needed to enforce the constraint. Note that setting CFM to a
 	//   negative value can have undesirable bad effects, such as instability. Don't do it.
 	
-	// the daming and softness is useless. bullet doesn't use them unless motors are set to produce force
+	// the damping and softness is useless. bullet doesn't use them unless motors are set to produce force.
+	// even if the motors are enabled the damping force is clamped against the max motor force
+	// which reduces it to 0 all time (because higher max force would cause unwanted effects)
+	const bool body1Dynamic = pPhyBody1 && pPhyBody1->GetResponseType() == debpPhysicsBody::ertDynamic;
+	const bool body2Dynamic = pPhyBody2 && pPhyBody2->GetResponseType() == debpPhysicsBody::ertDynamic;
 	bool requiresJointFeedback = false;
 	
 	float cfm = 0.0f; // default 0.0
 	float erp = 0.2f; //0.2f; // default 0.2
-	float linearDamping = 1.0f; // default 1.0
+	float linearDamping = pLinearDamping(); // default 1.0
 	float linearSoftness = 0.7f; // default 0.7
 	float linearRestitution = 0.5f; // default 0.5
-	float angularDamping = 1.0f; //1.0f; // default 1.0
+	float angularDamping = pAngularDamping(); //1.0f; // default 1.0
 	float angularSoftness = 0.5f; // default 0.5
 	float angularRestitution = 0.0f; // default 0.0
 	
-	if( ! pPhyBody1 || ! pPhyBody2 || pPhyBody1->GetResponseType() != debpPhysicsBody::ertDynamic
-	|| pPhyBody2->GetResponseType() != debpPhysicsBody::ertDynamic ){
+	if( ! body1Dynamic && ! body2Dynamic ){
 		erp = 0.8f;
 		linearDamping = 1.0f;
 		linearSoftness = 1.0f;
@@ -1088,6 +1102,9 @@ void debpColliderConstraint::pCreateGenericConstraint(){
 		motorAngular.m_limitSoftness = angularSoftness; // Relaxation factor: default 0.5
 		motorAngular.m_bounce = angularRestitution; // restitution factor: default 0.0
 	}
+	
+	// damping
+	generic6Dof->SetDamping( linearDamping );
 	
 	// constraint breaking
 	if( pConstraint.GetBreakingThreshold() > 0.001f ){
@@ -1165,7 +1182,7 @@ void debpColliderConstraint::pCreateGenericSpringConstraint(){
 	decVector position1( pConstraint.GetPosition1() - pOffset1 );
 	decVector position2( pConstraint.GetPosition2() - pOffset2 );
 	debpBPConstraint6DofSpring *generic6Dof = NULL;
-	float springDamping;
+	float springDamping = pSpringDamping();
 	
 	const decVector linearLowerLimits = decVector( dofLinearX.GetLowerLimit(), dofLinearY.GetLowerLimit(), dofLinearZ.GetLowerLimit() );
 	const decVector linearUpperLimits = decVector( dofLinearX.GetUpperLimit(), dofLinearY.GetUpperLimit(), dofLinearZ.GetUpperLimit() );
@@ -1210,14 +1227,6 @@ void debpColliderConstraint::pCreateGenericSpringConstraint(){
 	position2 = axisMatrix * position2;
 	orientation1 = axisMatrix.ToQuaternion() * orientation1;
 	orientation2 = axisMatrix.ToQuaternion() * orientation2;
-	
-	// determine the damping coefficient. bullet calculates (1/timestep)*damping
-	// to be the damping value where timestep is 1/60 (60Hz) by default. Hence
-	// this is 60*damping. in the engine though the damping is supposed to
-	// indicate the perecentage of force feedback of the spring. this though
-	// requires dividing the damping by the fps value ( 60Hz in default bullet )
-	// to obtain a corresponding bullet value.
-	springDamping = pConstraint.GetSpringDamping() / 60.0f;
 	
 	// create a constraint for two bodies if phy body 2 is not NULL
 	if( pPhyBody2 ){
@@ -1269,18 +1278,19 @@ void debpColliderConstraint::pCreateGenericSpringConstraint(){
 	// the default settings of the 6dof constraint are rather relaxed producing
 	// rubber constraints which can be violated way too much. currently they
 	// are set to be very rigid to avoid the rubber-band effect.
+	const bool body1Dynamic = pPhyBody1 && pPhyBody1->GetResponseType() == debpPhysicsBody::ertDynamic;
+	const bool body2Dynamic = pPhyBody2 && pPhyBody2->GetResponseType() == debpPhysicsBody::ertDynamic;
 	
 	float cfm = 0.0f; // default 0.0
 	float erp = 0.2f; // default 0.2
-	float linearDamping = 1.0f; // default 1.0
+	float linearDamping = pLinearDamping(); // default 1.0
 	float linearSoftness = 1.0f; // default 0.7
 	float linearRestitution = 1.0f; // default 0.5
-	float angularDamping = 1.0f; // default 1.0
+	float angularDamping = pAngularDamping(); // default 1.0
 	float angularSoftness = 1.0f; // default 0.5
 	float angularRestitution = 0.0f; // default 0.0
 	
-	if( ! pPhyBody1 || ! pPhyBody2 || pPhyBody1->GetResponseType() != debpPhysicsBody::ertDynamic
-	|| pPhyBody2->GetResponseType() != debpPhysicsBody::ertDynamic ){
+	if( ! body1Dynamic && ! body2Dynamic ){
 		erp = 0.8f;
 		linearDamping = 1.0f;
 		linearSoftness = 1.0f;
@@ -1354,4 +1364,21 @@ void debpColliderConstraint::pCreateGenericSpringConstraint(){
 	}
 	
 	//generic6Dof->setEquilibriumPoint(); // not sure if this is going to work as expected
+}
+
+btScalar debpColliderConstraint::pLinearDamping() const {
+	// linear damping coefficient
+	return pConstraint.GetLinearDamping();
+}
+
+btScalar debpColliderConstraint::pAngularDamping() const {
+	// angular damping coefficient
+	return pConstraint.GetAngularDamping();
+}
+
+btScalar debpColliderConstraint::pSpringDamping() const {
+	// spring damping coefficient. bullet calculates (1/timestep)*damping as damping value to
+	// use where timestep is 1/60 (60Hz) by default. Hence bullet uses 60*damping. this requires
+	// dividing damping by fps
+	return pConstraint.GetSpringDamping() * pDynWorld->GetWorld().GetSimulationTimeStep();
 }

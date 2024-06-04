@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Bullet Physics Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -32,6 +35,7 @@
 #include "collider/debpColliderComponent.h"
 #include "world/debpCollisionWorld.h"
 #include "world/debpDelayedOperation.h"
+#include "world/debpWorld.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -101,6 +105,7 @@ void debpPhysicsBody::SetShape( debpBulletShape *shape ){
 		if( pRigidBody ){
 			pRigidBody->setCollisionShape( shape->GetShape() );
 			pRigidBody->updateInertiaTensor();
+			SetDirtyAABB( true );
 		}
 		
 	}else{
@@ -181,10 +186,15 @@ void debpPhysicsBody::SetPosition( const decDVector &position ){
 	
 	if( ! pPreventUpdate ){
 		pMotionState->SetPosition( position );
-		pUpdateTransform();
 		
-		if( pRigidBody && pResponseType == ertKinematic ){
-			pRigidBody->activate( true );
+		if( pRigidBody ){
+			if( ! pDynWorld->GetWorld().GetProcessingPhysics() ){
+				pUpdateTransform();
+			}
+			
+			if( pResponseType == ertKinematic ){
+				pRigidBody->activate( true );
+			}
 		}
 	}
 	
@@ -202,10 +212,15 @@ void debpPhysicsBody::SetOrientation( const decQuaternion &orientation ){
 	
 	if( ! pPreventUpdate ){
 		pMotionState->SetOrientation( orientation );
-		pUpdateTransform();
 		
-		if( pRigidBody && pResponseType == ertKinematic ){
-			pRigidBody->activate( true );
+		if( pRigidBody ){
+			if( ! pDynWorld->GetWorld().GetProcessingPhysics() ){
+				pUpdateTransform();
+			}
+			
+			if( pResponseType == ertKinematic ){
+				pRigidBody->activate( true );
+			}
 		}
 	}
 	
@@ -319,7 +334,7 @@ void debpPhysicsBody::SetResponseType( eResponseTypes responseType ){
 }
 
 void debpPhysicsBody::ResetKinematicInterpolation(){
-	if( ! pRigidBody || pResponseType == ertDynamic ){
+	if( ! pRigidBody /*|| pResponseType == ertDynamic*/ ){
 		return;
 	}
 	
@@ -575,13 +590,9 @@ void debpPhysicsBody::pCleanUp(){
 }
 
 void debpPhysicsBody::pCreateRigidBody(){
-	if( pRigidBody || ! pEnabled || ! pDynWorld || ! pShape ){
+	if( pRigidBody || ! pEnabled || ! pDynWorld || ! pShape || ! pShape->GetShape() ){
 		return;
 	}
-	
-	btVector3 localInertia( 0.0f, 0.0f, 0.0f );
-	float mass = 0.0f;
-	int c;
 	
 	SetDirtyAABB( true );
 	
@@ -590,38 +601,83 @@ void debpPhysicsBody::pCreateRigidBody(){
 	pMotionState->SetOrientation( pOrientation );
 	
 	// create rigid body
+	btCollisionShape * const shape = pShape->GetShape();
+	btVector3 localInertia( 0.0f, 0.0f, 0.0f );
+	float mass = 0.0f;
+	
 	if( pResponseType == ertDynamic ){
 		mass = pMass;
-		pShape->GetShape()->calculateLocalInertia( mass, localInertia );
+		shape->calculateLocalInertia( mass, localInertia );
 	}
 	
-	pRigidBody = new btRigidBody( mass, pMotionState, pShape->GetShape(), localInertia );
+	btRigidBody::btRigidBodyConstructionInfo cinfo( mass, pMotionState, shape, localInertia );
+	
+	cinfo.m_linearDamping = 0.05f; /*0.001f, 0.3f*/ // default 0
+// 	cinfo.m_linearDamping = 0.0f;
+	
+	cinfo.m_angularDamping = 0.1f; /*0.01f, 0.3f*/ // default 0
+// 	cinfo.m_angularDamping = 0.0f;
+	
+	cinfo.m_friction = 0.5f; // default 0.5
+	
+// 	cinfo.m_rollingFriction = 0.1f; // this solves the rolling issue but totally breaks physics
+	                                // unless anisotropic rolling friction below is also used
+	cinfo.m_rollingFriction = 0.001f;
+	//cinfo.m_rollingFriction = 0.0f; // default 0, objects roll away and accelerate
+	
+// 	cinfo.m_spinningFriction = 0.1f; // default 0
+	cinfo.m_spinningFriction = 0.001f; // default 0
+	
+	cinfo.m_restitution = 0.0f; // default 0
+	
+	// sleeping thresholds. body goes to sleep if both linear and angular velocity magnitudes
+	// are less than threshold for the entire sleep time (2s).
+	
+	// default is 0.8 m/s . this is quite high and causes objects to stop moving quickly.
+	// the value used here is 5cm/s . most probably this value should be adjusted by the
+	// size or the mass of the object. larger objects should most probably have larger
+	// threshold while smaller objects should have lower. needs more testing. in general
+	// damping and friction should make the velocity drop below the threshold to get
+	// stable results not using high thresholds.
+	cinfo.m_linearSleepingThreshold = 0.05f;
+	
+	// default is 1 rad/s which is roughly 57 deg/s . this is even more huge than the linear
+	// velocity threshold above. using 2 deg/s instead. again size or mass could be used
+	// later on to modify this value.
+	cinfo.m_angularSleepingThreshold = DEG2RAD * 2.0f;
+	
+	pRigidBody = new btRigidBody( cinfo );
+	
+	pRigidBody->setAnisotropicFriction( shape->getAnisotropicRollingFrictionDirection(),
+		btCollisionObject::CF_ANISOTROPIC_ROLLING_FRICTION );
 	
 	// set parameters
-	pRigidBody->setDamping( 0.01f /*0.001f, 0.3f*/, 0.1f /*0.01f, 0.3f*/ );
-	pRigidBody->setFriction( 0.5f ); // 0.5f
-	pRigidBody->setRollingFriction( 0.1f ); // 0.0f
-	pRigidBody->setRestitution( 0.0f );
 	pRigidBody->setGravity( btVector3( pGravity.x, pGravity.y, pGravity.z ) );
 	pRigidBody->setFlags( pRigidBody->getFlags() | BT_DISABLE_WORLD_GRAVITY );
 	
 	if( pResponseType == ertStatic ){
 		pRigidBody->setCollisionFlags( btCollisionObject::CF_STATIC_OBJECT
 			| btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK );
-		pRigidBody->forceActivationState( 0 ); // make sure the rigid body is in deactivated state
+// 		pRigidBody->forceActivationState( 0 ); // make sure the rigid body is in deactivated state
+// 		pRigidBody->setDeactivationTime( 0.1f );
+		pRigidBody->forceActivationState( ISLAND_SLEEPING ); // bullet demo
+		pRigidBody->setDeactivationTime( 0.0f );
 		
 	}else if( pResponseType == ertKinematic ){
 		pRigidBody->setCollisionFlags( btCollisionObject::CF_KINEMATIC_OBJECT
 			| btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK );
-		//pRigidBody->setActivationState( DISABLE_DEACTIVATION );
-		pRigidBody->forceActivationState( 0 ); // make sure the rigid body is in deactivated state
+// 		pRigidBody->forceActivationState( 0 ); // make sure the rigid body is in deactivated state
+// 		pRigidBody->setDeactivationTime( 0.1f );
+// 		pRigidBody->forceActivationState( DISABLE_DEACTIVATION ); // bullet demo but set by addRigidBody
+		pRigidBody->setDeactivationTime( 0.0f );
 		
 	}else{
 		pRigidBody->setCollisionFlags( btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK );
-		pRigidBody->forceActivationState( ACTIVE_TAG );
+// 		pRigidBody->forceActivationState( ACTIVE_TAG ); // set by addRigidBody
+		pRigidBody->setDeactivationTime( 0.0f );
 	}
+	// NOTE actually forceActivationState helps nothing since addRigidBody() resets it
 	
-	pRigidBody->setDeactivationTime( 0.1f );
 	//pRigidBody->setCcdSquareMotionThreshold( pCcdThreshold );
 	//pRigidBody->setCcdSweptSphereRadius( pCcdRadius );
 	pRigidBody->setUserPointer( ( debpCollisionObject* )this );
@@ -644,8 +700,9 @@ void debpPhysicsBody::pCreateRigidBody(){
 	}
 	
 	// notify all constraints that the rigid body has been created
-	for( c=0; c<pConstraintCount; c++ ){
-		pConstraints[ c ]->RigidBodyCreated( this );
+	int i;
+	for( i=0; i<pConstraintCount; i++ ){
+		pConstraints[ i ]->RigidBodyCreated( this );
 	}
 }
 
@@ -679,6 +736,7 @@ void debpPhysicsBody::pUpdateTransform(){
 	}
 	
 	pRigidBody->setCenterOfMassTransform( btTransform(
-		btQuaternion( pOrientation.x, pOrientation.y, pOrientation.z, pOrientation.w ),
-		btVector3( pPosition.x, pPosition.y, pPosition.z ) ) );
+		btQuaternion( ( btScalar )pOrientation.x, ( btScalar )pOrientation.y,
+			( btScalar )pOrientation.z, ( btScalar )pOrientation.w ),
+		btVector3( ( btScalar )pPosition.x, ( btScalar )pPosition.y, ( btScalar )pPosition.z ) ) );
 }

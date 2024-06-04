@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -31,8 +34,11 @@
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/file/decBaseFileReader.h>
+#include <dragengine/common/file/decZFileReader.h>
 #include <dragengine/common/string/decString.h>
+
 #include <libdscript/exceptions.h>
+#include <libdscript/packages/default/dsClassTimeDate.h>
 
 
 
@@ -70,6 +76,23 @@ void deClassFileReader::nfNew::RunFunction( dsRunTime *rt, dsValue *myself ){
 	if( ! nd.fileReader ){
 		DSTHROW( dueOutOfMemory );
 	}
+}
+
+// public static func FileReader newZCompressed(String filename)
+deClassFileReader::nfNewZCompressed::nfNewZCompressed( const sInitData &init ) :
+dsFunction( init.clsFRead, "newZCompressed", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsFRead ){
+	p_AddParameter( init.clsStr ); // filename
+}
+void deClassFileReader::nfNewZCompressed::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deClassFileReader &clsFRead = *( ( deClassFileReader* )GetOwnerClass() );
+	deVirtualFileSystem &vfs = *clsFRead.GetDS()->GetGameEngine()->GetVirtualFileSystem();
+	
+	const char * const filename = rt->GetValue( 0 )->GetString();
+	
+	clsFRead.PushFileReader( rt, decZFileReader::Ref::New(
+		new decZFileReader( decBaseFileReader::Ref::New(
+			vfs.OpenFileForReading( decPath::CreatePathUnix( filename ) ) ) ) ) );
 }
 
 // public func destructor()
@@ -248,6 +271,16 @@ void deClassFileReader::nfReadUInt::RunFunction( dsRunTime *rt, dsValue *myself 
 	rt->PushInt( ( int )fileReader.ReadUInt() );
 }
 
+// public func int readVarUInt()
+deClassFileReader::nfReadVarUInt::nfReadVarUInt( const sInitData &init ) :
+dsFunction( init.clsFRead, "readVarUInt", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt ){
+}
+void deClassFileReader::nfReadVarUInt::RunFunction( dsRunTime *rt, dsValue *myself ){
+	decBaseFileReader &fileReader = *( ( ( const sFReadNatDat * )p_GetNativeData( myself ) )->fileReader );
+	
+	rt->PushInt( ( int )fileReader.ReadVarUInt() );
+}
+
 // public func float readFloat()
 deClassFileReader::nfReadFloat::nfReadFloat( const sInitData &init ) : dsFunction( init.clsFRead,
 "readFloat", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt ){
@@ -264,16 +297,9 @@ deClassFileReader::nfReadString8::nfReadString8( const sInitData &init ) : dsFun
 }
 void deClassFileReader::nfReadString8::RunFunction( dsRunTime *rt, dsValue *myself ){
 	decBaseFileReader &fileReader = *( ( ( const sFReadNatDat * )p_GetNativeData( myself ) )->fileReader );
-	unsigned char size;
-	decString string;
 	
-	size = fileReader.ReadByte();
-	if( size > 0 ){
-		string.Set( ' ', size );
-		fileReader.Read( ( char* )string.GetString(), size );
-	}
-	
-	rt->PushString( string.GetString() );
+	const decString string( fileReader.ReadString8() );
+	rt->PushString( string );
 }
 
 // public func String readString16()
@@ -282,16 +308,31 @@ deClassFileReader::nfReadString16::nfReadString16( const sInitData &init ) : dsF
 }
 void deClassFileReader::nfReadString16::RunFunction( dsRunTime *rt, dsValue *myself ){
 	decBaseFileReader &fileReader = *( ( ( const sFReadNatDat * )p_GetNativeData( myself ) )->fileReader );
-	unsigned short size;
-	decString string;
 	
-	size = fileReader.ReadUShort();
-	if( size > 0 ){
-		string.Set( ' ', size );
-		fileReader.Read( ( char* )string.GetString(), size );
-	}
+	const decString string( fileReader.ReadString16() );
+	rt->PushString( string );
+}
+
+// public func String readString32()
+deClassFileReader::nfReadString32::nfReadString32( const sInitData &init ) :
+dsFunction( init.clsFRead, "readString32", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsStr ){
+}
+void deClassFileReader::nfReadString32::RunFunction( dsRunTime *rt, dsValue *myself ){
+	decBaseFileReader &fileReader = *( ( ( const sFReadNatDat * )p_GetNativeData( myself ) )->fileReader );
 	
-	rt->PushString( string.GetString() );
+	const decString string( fileReader.ReadString32() );
+	rt->PushString( string );
+}
+
+// public func String readVarString()
+deClassFileReader::nfReadVarString::nfReadVarString( const sInitData &init ) :
+dsFunction( init.clsFRead, "readVarString", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsStr ){
+}
+void deClassFileReader::nfReadVarString::RunFunction( dsRunTime *rt, dsValue *myself ){
+	decBaseFileReader &fileReader = *( ( ( const sFReadNatDat * )p_GetNativeData( myself ) )->fileReader );
+	
+	const decString string( fileReader.ReadVarString() );
+	rt->PushString( string );
 }
 
 // public func String readString( int size )
@@ -301,32 +342,80 @@ deClassFileReader::nfReadString::nfReadString( const sInitData &init ) : dsFunct
 }
 void deClassFileReader::nfReadString::RunFunction( dsRunTime *rt, dsValue *myself ){
 	decBaseFileReader &fileReader = *( ( ( const sFReadNatDat * )p_GetNativeData( myself ) )->fileReader );
+	
 	const int size = rt->GetValue( 0 )->GetInt();
 	decString string;
-	
 	string.Set( ' ', size );
 	fileReader.Read( ( char* )string.GetString(), size );
 	rt->PushString( string.GetString() );
 }
 
 // public func void skipString8()
-deClassFileReader::nfSkipString8::nfSkipString8( const sInitData &init ) : dsFunction( init.clsFRead,
-"skipString8", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+deClassFileReader::nfSkipString8::nfSkipString8( const sInitData &init ) :
+dsFunction( init.clsFRead, "skipString8", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
 }
-void deClassFileReader::nfSkipString8::RunFunction( dsRunTime *rt, dsValue *myself ){
+void deClassFileReader::nfSkipString8::RunFunction( dsRunTime*, dsValue *myself ){
 	decBaseFileReader &fileReader = *( ( ( const sFReadNatDat * )p_GetNativeData( myself ) )->fileReader );
 	
 	fileReader.SkipString8();
 }
 
 // public func void skipString16()
-deClassFileReader::nfSkipString16::nfSkipString16( const sInitData &init ) : dsFunction( init.clsFRead,
-"skipString16", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+deClassFileReader::nfSkipString16::nfSkipString16( const sInitData &init ) :
+dsFunction( init.clsFRead, "skipString16", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
 }
-void deClassFileReader::nfSkipString16::RunFunction( dsRunTime *rt, dsValue *myself ){
+void deClassFileReader::nfSkipString16::RunFunction( dsRunTime*, dsValue *myself ){
 	decBaseFileReader &fileReader = *( ( ( const sFReadNatDat * )p_GetNativeData( myself ) )->fileReader );
 	
 	fileReader.SkipString16();
+}
+
+// public func void skipString32()
+deClassFileReader::nfSkipString32::nfSkipString32( const sInitData &init ) :
+dsFunction( init.clsFRead, "skipString32", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+}
+void deClassFileReader::nfSkipString32::RunFunction( dsRunTime*, dsValue *myself ){
+	decBaseFileReader &fileReader = *( ( ( const sFReadNatDat * )p_GetNativeData( myself ) )->fileReader );
+	
+	fileReader.SkipString32();
+}
+
+// public func void skipVarString()
+deClassFileReader::nfSkipVarString::nfSkipVarString( const sInitData &init ) :
+dsFunction( init.clsFRead, "skipVarString", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+}
+void deClassFileReader::nfSkipVarString::RunFunction( dsRunTime*, dsValue *myself ){
+	decBaseFileReader &fileReader = *( ( ( const sFReadNatDat * )p_GetNativeData( myself ) )->fileReader );
+	
+	fileReader.SkipVarString();
+}
+
+// public func TimeDate readTimeDate()
+deClassFileReader::nfReadTimeDate::nfReadTimeDate( const sInitData &init ) :
+dsFunction( init.clsFRead, "readTimeDate", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsTimeDate ){
+}
+void deClassFileReader::nfReadTimeDate::RunFunction( dsRunTime *rt, dsValue *myself ){
+	decBaseFileReader &fileReader = *( ( ( const sFReadNatDat * )p_GetNativeData( myself ) )->fileReader );
+	deScriptingDragonScript &ds = *( ( deClassFileReader* )GetOwnerClass() )->GetDS();
+	dsClassTimeDate::sTimeDate timeDate;
+	
+	switch( fileReader.ReadByte() ){ // version
+	case 0:
+		timeDate.year = fileReader.ReadUShort();
+		timeDate.month = fileReader.ReadByte();
+		timeDate.day = fileReader.ReadByte();
+		timeDate.hour = fileReader.ReadByte();
+		timeDate.minute = fileReader.ReadByte();
+		timeDate.second = fileReader.ReadByte();
+		timeDate.dayOfWeek = fileReader.ReadByte();
+		timeDate.dayOfYear = fileReader.ReadUShort();
+		break;
+		
+	default:
+		DETHROW_INFO( deeInvalidFormat, "unsupported version" );
+	}
+	
+	( ( dsClassTimeDate* )ds.GetScriptEngine()->GetClassTimeDate() )->PushTimeDate( rt, timeDate );
 }
 
 
@@ -367,8 +456,10 @@ void deClassFileReader::CreateClassMembers( dsEngine *engine ){
 	init.clsObj = engine->GetClassObject();
 	init.clsInt = engine->GetClassInt();
 	init.clsFlt = engine->GetClassFloat();
+	init.clsTimeDate = engine->GetClassTimeDate();
 	
 	AddFunction( new nfNew( init ) );
+	AddFunction( new nfNewZCompressed( init ) );
 	AddFunction( new nfDestructor( init ) );
 	
 	AddFunction( new nfGetFilename( init ) );
@@ -388,12 +479,18 @@ void deClassFileReader::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfReadUShort( init ) );
 	AddFunction( new nfReadInt( init ) );
 	AddFunction( new nfReadUInt( init ) );
+	AddFunction( new nfReadVarUInt( init ) );
 	AddFunction( new nfReadFloat( init ) );
 	AddFunction( new nfReadString8( init ) );
 	AddFunction( new nfReadString16( init ) );
+	AddFunction( new nfReadString32( init ) );
+	AddFunction( new nfReadVarString( init ) );
 	AddFunction( new nfReadString( init ) );
 	AddFunction( new nfSkipString8( init ) );
 	AddFunction( new nfSkipString16( init ) );
+	AddFunction( new nfSkipString32( init ) );
+	AddFunction( new nfSkipVarString( init ) );
+	AddFunction( new nfReadTimeDate( init ) );
 	
 	CalcMemberOffsets();
 }

@@ -1,0 +1,111 @@
+/* 
+ * Drag[en]gine Testing
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+namespace DETesting
+
+pin Dragengine.TestSystem
+pin Dragengine.Gui
+
+
+/**
+ * Drag[en]gine Testing for CI use. Modifies DETestingApp to automatically start
+ * running all tests then closes the application if finished.
+ */
+class DETestingAppCI extends DETestingApp
+	/** Test handler. */
+	class TestHandler extends LogFileTestListener
+		public func new()
+		end
+		
+		public func String getLogFilePath()
+			return "/capture/CITestResults"
+		end
+		
+		public func void runnerFinished(TestRunner testRunner)
+			super.runnerFinished(testRunner)
+			
+			FileWriter.new("/capture/CIResult").writeString(\
+				testRunner.failedTestSuites().getCount() == 0 if "Success\n" else "Failure\n")
+			Engine.quit()
+		end
+		
+		public func void logToFile(String message)
+			super.logToFile(message)
+			Engine.log(message)
+		end
+	end
+	
+	
+	private var TestGameApp pTestGameApp
+	private var TestRunner pTestRunner
+	
+	
+	/** Create Application. */
+	public func new()
+	end
+	
+	
+	/** Init application. */
+	public func void initGame()
+		super.initGame()
+		
+		// we need to fake a BaseGameApp for certain tests
+		pTestGameApp = TestGameApp.new()
+		pTestGameApp.initGame()
+		
+		// run all tests
+		pTestRunner = TestRunner.new()
+		createTestSuites().forEach(block TestSuite each
+			pTestRunner.addTestSuite(each)
+		end)
+		
+		pTestRunner.addListener(TestHandler.new())
+		
+		pTestRunner.start()
+	end
+	
+	/** Clean up. */
+	public func void cleanUp()
+		if pTestRunner != null
+			pTestRunner.dispose()
+			pTestRunner = null
+		end
+		if pTestGameApp != null
+			pTestGameApp.cleanUp()
+			pTestGameApp = null
+		end
+		
+		super.cleanUp()
+	end
+	/** Create desktop. Returns null to create none. */
+	protected func Desktop createDesktop()
+		return null
+	end
+	
+	/** Create testing window. Returns null to create none. */
+	protected func WindowTesting createWindowTesting()
+		return null
+	end
+	
+	/** Add test suites to test window. Does nothing since there is no window. */
+	protected func void addTestSuites()
+	end
+end

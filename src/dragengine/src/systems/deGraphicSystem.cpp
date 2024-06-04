@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Game Engine
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -235,7 +238,9 @@ void deGraphicSystem::TerminateAppWindow(){
 //////////////////////
 
 void deGraphicSystem::RenderWindows(){
-	pActiveModule->RenderWindows();
+	if( GetIsRunning() ){
+		pActiveModule->RenderWindows();
+	}
 }
 
 void deGraphicSystem::CreateGlobalResources(){
@@ -247,274 +252,197 @@ void deGraphicSystem::CreateGlobalResources(){
 
 
 void deGraphicSystem::LoadBillboard( deBillboard *billboard ){
-	if( GetIsRunning() ){
-		if( billboard->GetPeerGraphic() ) DETHROW( deeInvalidParam );
+	DEASSERT_NOTNULL( billboard )
+	if( GetIsRunning() && ! billboard->GetPeerGraphic() ){
 		billboard->SetPeerGraphic( pActiveModule->CreateBillboard( billboard ) );
-		if( ! billboard->GetPeerGraphic() ) DETHROW( deeOutOfMemory );
 	}
 }
 
 void deGraphicSystem::LoadCanvas( deCanvas *canvas ){
-	if( ! GetIsRunning() ){
-		return;
+	DEASSERT_NOTNULL( canvas )
+	if( GetIsRunning() && ! canvas->GetPeerGraphic() ){
+		canvas->SetPeerGraphic( pActiveModule->CreateCanvas( canvas ) );
 	}
-	
-	if( canvas->GetPeerGraphic() ){
-		DETHROW( deeInvalidParam );
-	}
-	canvas->SetPeerGraphic( pActiveModule->CreateCanvas( canvas ) );
 }
 
 void deGraphicSystem::LoadCamera( deCamera *camera ){
-	if( ! GetIsRunning() ) return;
-	if( camera->GetPeerGraphic() ) DETHROW( deeInvalidParam );
-	camera->SetPeerGraphic( pActiveModule->CreateCamera( camera ) );
-	if( ! camera->GetPeerGraphic() ) DETHROW( deeOutOfMemory );
+	DEASSERT_NOTNULL( camera )
+	if( GetIsRunning() && ! camera->GetPeerGraphic() ){
+		camera->SetPeerGraphic( pActiveModule->CreateCamera( camera ) );
+	}
 }
 
 void deGraphicSystem::LoadCaptureCanvas( deCaptureCanvas *captureCanvas ){
-	if( ! GetIsRunning() ){
-		return;
+	DEASSERT_NOTNULL( captureCanvas )
+	if( GetIsRunning() && ! captureCanvas->GetPeerGraphic() ){
+		captureCanvas->SetPeerGraphic( pActiveModule->CreateCaptureCanvas( captureCanvas ) );
 	}
-	
-	if( captureCanvas->GetPeerGraphic() ){
-		DETHROW( deeInvalidParam );
-	}
-	captureCanvas->SetPeerGraphic( pActiveModule->CreateCaptureCanvas( captureCanvas ) );
 }
 
-void deGraphicSystem::LoadComponent(deComponent *comp){
-	if( ! GetIsRunning() ) return;
-	if(comp->GetPeerGraphic()) DETHROW(deeInvalidParam);
-	comp->SetPeerGraphic(pActiveModule->CreateComponent(comp));
-	if(!comp->GetPeerGraphic()) DETHROW(deeOutOfMemory);
+void deGraphicSystem::LoadComponent( deComponent *component ){
+	DEASSERT_NOTNULL( component )
+	if( GetIsRunning() && ! component->GetPeerGraphic() ){
+		component->SetPeerGraphic( pActiveModule->CreateComponent( component ) );
+	}
 }
 
-void deGraphicSystem::LoadDebugDrawer( deDebugDrawer *effect ){
-	if( ! GetIsRunning() ) return;
-	if( effect->GetPeerGraphic() ) DETHROW( deeInvalidParam );
-	effect->SetPeerGraphic( pActiveModule->CreateDebugDrawer( effect ) );
-	if( ! effect->GetPeerGraphic() ) DETHROW( deeOutOfMemory );
+void deGraphicSystem::LoadDebugDrawer( deDebugDrawer *debugDrawer ){
+	DEASSERT_NOTNULL( debugDrawer )
+	if( GetIsRunning() && ! debugDrawer->GetPeerGraphic() ){
+		debugDrawer->SetPeerGraphic( pActiveModule->CreateDebugDrawer( debugDrawer ) );
+	}
 }
 
 void deGraphicSystem::LoadDecal( deDecal *decal ){
-	if( GetIsRunning() ){
-		if( decal->GetPeerGraphic() ){
-			DETHROW( deeInvalidParam );
-		}
-		
+	DEASSERT_NOTNULL( decal )
+	if( GetIsRunning() && ! decal->GetPeerGraphic() ){
 		decal->SetPeerGraphic( pActiveModule->CreateDecal( decal ) );
-		if( ! decal->GetPeerGraphic() ){
-			DETHROW( deeOutOfMemory );
-		}
 	}
 }
 
 void deGraphicSystem::LoadDynamicSkin( deDynamicSkin *dynamicSkin ){
-	if( ! GetIsRunning() ){
-		return;
+	DEASSERT_NOTNULL( dynamicSkin )
+	if( GetIsRunning() && ! dynamicSkin->GetPeerGraphic() ){
+		dynamicSkin->SetPeerGraphic( pActiveModule->CreateDynamicSkin( dynamicSkin ) );
 	}
-	
-	if( dynamicSkin->GetPeerGraphic() ){
-		DETHROW( deeInvalidParam );
-	}
-	dynamicSkin->SetPeerGraphic( pActiveModule->CreateDynamicSkin( dynamicSkin ) );
 }
 
 void deGraphicSystem::LoadEffect( deEffect *effect ){
-	if( ! GetIsRunning() ) return;
-	if( effect->GetPeerGraphic() ) DETHROW( deeInvalidParam );
-	effect->SetPeerGraphic( pActiveModule->CreateEffect( effect ) );
-	if( ! effect->GetPeerGraphic() ) DETHROW( deeOutOfMemory );
+	DEASSERT_NOTNULL( effect )
+	if( GetIsRunning() && ! effect->GetPeerGraphic() ){
+		effect->SetPeerGraphic( pActiveModule->CreateEffect( effect ) );
+	}
 }
 
 void deGraphicSystem::LoadEnvMapProbe( deEnvMapProbe *envMapProbe ){
-	if( GetIsRunning() ){
-		if( envMapProbe->GetPeerGraphic() ){
-			DETHROW( deeInvalidParam );
-		}
-		
+	DEASSERT_NOTNULL( envMapProbe )
+	if( GetIsRunning() && ! envMapProbe->GetPeerGraphic() ){
 		envMapProbe->SetPeerGraphic( pActiveModule->CreateEnvMapProbe( envMapProbe ) );
-		if( ! envMapProbe->GetPeerGraphic() ){
-			DETHROW( deeOutOfMemory );
-		}
 	}
 }
 
-void deGraphicSystem::LoadFont(deFont *font){
-	if( ! GetIsRunning() ){
-		return;
-	}
-	
-	if( font->GetPeerGraphic() ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	font->SetPeerGraphic( pActiveModule->CreateFont( font ) );
-	
-	if( ! font->GetPeerGraphic() ){
-		DETHROW( deeOutOfMemory );
+void deGraphicSystem::LoadFont( deFont *font ){
+	DEASSERT_NOTNULL( font )
+	if( GetIsRunning() && ! font->GetPeerGraphic() ){
+		font->SetPeerGraphic( pActiveModule->CreateFont( font ) );
 	}
 }
 
 void deGraphicSystem::LoadHeightTerrain( deHeightTerrain *heightTerrain ){
-	if( GetIsRunning() ){
-		if( heightTerrain->GetPeerGraphic() ) DETHROW( deeInvalidParam );
-		
+	DEASSERT_NOTNULL( heightTerrain )
+	if( GetIsRunning() && ! heightTerrain->GetPeerGraphic() ){
 		heightTerrain->SetPeerGraphic( pActiveModule->CreateHeightTerrain( heightTerrain ) );
-		if( ! heightTerrain->GetPeerGraphic() ) DETHROW( deeOutOfMemory );
 	}
 }
 
 void deGraphicSystem::LoadImage( deImage *image ){
-	if( ! image ){
-		DETHROW( deeInvalidParam );
-	}
-	
+	DEASSERT_NOTNULL( image )
 	if( GetIsRunning() && ! image->GetPeerGraphic() ){
 		image->SetPeerGraphic( pActiveModule->CreateImage( image ) );
 	}
 }
 
-void deGraphicSystem::LoadLight(deLight *light){
-	if( ! GetIsRunning() ) return;
-	if(light->GetPeerGraphic()) DETHROW(deeInvalidParam);
-	light->SetPeerGraphic(pActiveModule->CreateLight(light));
-	if(!light->GetPeerGraphic()) DETHROW(deeOutOfMemory);
+void deGraphicSystem::LoadLight( deLight *light ){
+	DEASSERT_NOTNULL( light )
+	if( GetIsRunning() && ! light->GetPeerGraphic() ){
+		light->SetPeerGraphic( pActiveModule->CreateLight( light ) );
+	}
 }
 
 void deGraphicSystem::LoadLumimeter( deLumimeter *lumimeter ){
-	if( ! GetIsRunning() ) return;
-	if( lumimeter->GetPeerGraphic() ) DETHROW( deeInvalidParam );
-	lumimeter->SetPeerGraphic( pActiveModule->CreateLumimeter( lumimeter ) );
-	if( ! lumimeter->GetPeerGraphic() ) DETHROW( deeOutOfMemory );
+	DEASSERT_NOTNULL( lumimeter )
+	if( GetIsRunning() && ! lumimeter->GetPeerGraphic() ){
+		lumimeter->SetPeerGraphic( pActiveModule->CreateLumimeter( lumimeter ) );
+	}
 }
 
 void deGraphicSystem::LoadModel( deModel *model ){
-	if( ! model ){
-		DETHROW( deeInvalidParam );
-	}
-	
+	DEASSERT_NOTNULL( model )
 	if( GetIsRunning() && ! model->GetPeerGraphic() ){
 		model->SetPeerGraphic( pActiveModule->CreateModel( model ) );
 	}
 }
 
-void deGraphicSystem::LoadOcclusionMesh( deOcclusionMesh *occmesh ){
-	if( ! occmesh ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	if( GetIsRunning() && ! occmesh->GetPeerGraphic() ){
-		occmesh->SetPeerGraphic( pActiveModule->CreateOcclusionMesh( occmesh ) );
+void deGraphicSystem::LoadOcclusionMesh( deOcclusionMesh *occlusionMesh ){
+	DEASSERT_NOTNULL( occlusionMesh )
+	if( GetIsRunning() && ! occlusionMesh->GetPeerGraphic() ){
+		occlusionMesh->SetPeerGraphic( pActiveModule->CreateOcclusionMesh( occlusionMesh ) );
 	}
 }
 
 void deGraphicSystem::LoadParticleEmitter( deParticleEmitter *emitter ){
-	if( GetIsRunning() ){
-		if( emitter->GetPeerGraphic() ) DETHROW( deeInvalidParam );
-		
+	DEASSERT_NOTNULL( emitter )
+	if( GetIsRunning() && ! emitter->GetPeerGraphic() ){
 		emitter->SetPeerGraphic( pActiveModule->CreateParticleEmitter( emitter ) );
-		if( ! emitter->GetPeerGraphic() ) DETHROW( deeOutOfMemory );
 	}
 }
 
 void deGraphicSystem::LoadParticleEmitterInstance( deParticleEmitterInstance *instance ){
-	if( GetIsRunning() ){
-		if( instance->GetPeerGraphic() ){
-			DETHROW( deeInvalidParam );
-		}
-		
+	DEASSERT_NOTNULL( instance )
+	if( GetIsRunning() && ! instance->GetPeerGraphic() ){
 		instance->SetPeerGraphic( pActiveModule->CreateParticleEmitterInstance( instance ) );
-		if( ! instance->GetPeerGraphic() ){
-			DETHROW( deeOutOfMemory );
-		}
 	}
 }
 
 void deGraphicSystem::LoadPropField( dePropField *propField ){
-	if( GetIsRunning() ){
-		if( propField->GetPeerGraphic() ) DETHROW( deeInvalidParam );
-		
+	DEASSERT_NOTNULL( propField )
+	if( GetIsRunning() && ! propField->GetPeerGraphic() ){
 		propField->SetPeerGraphic( pActiveModule->CreatePropField( propField ) );
-		if( ! propField->GetPeerGraphic() ) DETHROW( deeOutOfMemory );
 	}
 }
 
 void deGraphicSystem::LoadRenderWindow( deRenderWindow *renderWindow ){
-	if( ! GetIsRunning() ) return;
-	if( renderWindow->GetPeerGraphic() ) DETHROW( deeInvalidParam );
-	renderWindow->SetPeerGraphic( pActiveModule->CreateRenderWindow( renderWindow ) );
-	if( ! renderWindow->GetPeerGraphic() ) DETHROW( deeOutOfMemory );
+	DEASSERT_NOTNULL( renderWindow )
+	if( GetIsRunning() && ! renderWindow->GetPeerGraphic() ){
+		renderWindow->SetPeerGraphic( pActiveModule->CreateRenderWindow( renderWindow ) );
+	}
 }
 
 void deGraphicSystem::LoadSkin( deSkin *skin ){
-	if( ! skin ){
-		DETHROW( deeInvalidParam );
-	}
-	
+	DEASSERT_NOTNULL( skin )
 	if( GetIsRunning() && ! skin->GetPeerGraphic() ){
 		skin->SetPeerGraphic( pActiveModule->CreateSkin( skin ) );
 	}
 }
 
 void deGraphicSystem::LoadSky( deSky *sky ){
-	if( ! GetIsRunning() ){
-		return;
+	DEASSERT_NOTNULL( sky )
+	if( GetIsRunning() && ! sky->GetPeerGraphic() ){
+		sky->SetPeerGraphic( pActiveModule->CreateSky( sky ) );
 	}
-	
-	if( sky->GetPeerGraphic() ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	sky->SetPeerGraphic( pActiveModule->CreateSky( sky ) );
 }
 
 void deGraphicSystem::LoadSkyInstance( deSkyInstance *instance ){
-	if( ! GetIsRunning() ){
-		return;
+	DEASSERT_NOTNULL( instance )
+	if( GetIsRunning() && ! instance->GetPeerGraphic() ){
+		instance->SetPeerGraphic( pActiveModule->CreateSkyInstance( instance ) );
 	}
-	
-	if( instance->GetPeerGraphic() ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	instance->SetPeerGraphic( pActiveModule->CreateSkyInstance( instance ) );
 }
 
 void deGraphicSystem::LoadSmokeEmitter( deSmokeEmitter *smokeEmitter ){
-	if( GetIsRunning() ){
-		if( smokeEmitter->GetPeerGraphic() ) DETHROW( deeInvalidParam );
-		
+	DEASSERT_NOTNULL( smokeEmitter )
+	if( GetIsRunning() && ! smokeEmitter->GetPeerGraphic() ){
 		smokeEmitter->SetPeerGraphic( pActiveModule->CreateSmokeEmitter( smokeEmitter ) );
-		if( ! smokeEmitter->GetPeerGraphic() ) DETHROW( deeOutOfMemory );
 	}
 }
 
 void deGraphicSystem::LoadVideo( deVideo *video ){
-	if( GetIsRunning() ){
-		if( video->GetPeerGraphic() ) DETHROW( deeInvalidParam );
-		
+	DEASSERT_NOTNULL( video )
+	if( GetIsRunning() && ! video->GetPeerGraphic() ){
 		video->SetPeerGraphic( pActiveModule->CreateVideo( video ) );
 	}
 }
 
 void deGraphicSystem::LoadVideoPlayer( deVideoPlayer *videoPlayer ){
-	if( GetIsRunning() ){
-		if( videoPlayer->GetPeerGraphic() ) DETHROW( deeInvalidParam );
-		
+	DEASSERT_NOTNULL( videoPlayer )
+	if( GetIsRunning() && ! videoPlayer->GetPeerGraphic() ){
 		videoPlayer->SetPeerGraphic( pActiveModule->CreateVideoPlayer( videoPlayer ) );
 	}
 }
 
 void deGraphicSystem::LoadWorld( deWorld *world ){
-	if( GetIsRunning() ){
-		if( world->GetPeerGraphic() ){
-			DETHROW( deeInvalidParam );
-		}
+	DEASSERT_NOTNULL( world )
+	if( GetIsRunning() && ! world->GetPeerGraphic() ){
 		world->SetPeerGraphic( pActiveModule->CreateWorld( world ) );
-		if( ! world->GetPeerGraphic() ){
-			DETHROW( deeOutOfMemory );
-		}
 	}
 }

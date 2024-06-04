@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _IGDEWOBJECT_H_
@@ -32,8 +35,9 @@
 #include <dragengine/common/string/decStringList.h>
 #include <dragengine/common/utils/decCollisionFilter.h>
 #include <dragengine/resources/camera/deCameraReference.h>
-#include <dragengine/resources/collider/deColliderReference.h>
-#include <dragengine/resources/skin/deSkinReference.h>
+#include <dragengine/resources/collider/deColliderComponent.h>
+#include <dragengine/resources/collider/deColliderVolume.h>
+#include <dragengine/resources/skin/deSkin.h>
 #include <dragengine/resources/skin/dynamic/deDynamicSkinReference.h>
 #include <dragengine/resources/world/deWorldReference.h>
 
@@ -53,13 +57,18 @@ class deBaseScriptingCollider;
 /**
  * \brief Object Wrapper.
  * 
- * Provides a simple way to display a object defined by a game definition object class in a world.
- * The object can be fine tuned using string properties.
+ * Provides a simple way to display a object defined by a game definition object class
+ * in a world. The object can be fine tuned using string properties.
+ * 
+ * These are the default layer masks set for a newly constructed igdeWObject:
+ * - Render Layer Mask: 1 (Bit 0 set)
+ * - Render Environment Map Mask: 2 (Bit 1 set)
+ * - Audio: 4 (Bit 2 set)
  */
-class igdeWObject{
+class DE_DLL_EXPORT igdeWObject{
 public:
 	/** \brief Asynchronous loading finished. */
-	class cAsyncLoadFinished{
+	class DE_DLL_EXPORT cAsyncLoadFinished{
 	public:
 		/** \brief Create listener. */
 		cAsyncLoadFinished();
@@ -80,10 +89,11 @@ private:
 	deCameraReference pCamera;
 	igdeGDClassReference pGDClass;
 	
-	deColliderReference pColliderComponent;
-	deColliderReference pColliderFallback;
+	deColliderComponent::Ref pColliderComponent;
+	deColliderVolume::Ref pColliderFallback;
+	decObjectSet pCollidersInteraction;
 	
-	deColliderReference pParentCollider;
+	deCollider::Ref pParentCollider;
 	decString pAttachToBone;
 	
 	decObjectOrderedSet pSubObjects;
@@ -103,6 +113,7 @@ private:
 	decCollisionFilter pCollisionFilterParticles;
 	decCollisionFilter pCollisionFilterForceField;
 	decCollisionFilter pCollisionFilterFallback;
+	decCollisionFilter pCollisionFilterInteract;
 	bool pDynamicCollider;
 	
 	bool pVisible;
@@ -119,7 +130,7 @@ private:
 	bool pDirtyExtends;
 	bool pDirtyFallbackColliderShape;
 	
-	deSkinReference pOutlineSkin;
+	deSkin::Ref pOutlineSkin;
 	deDynamicSkinReference pOutlineDynamicSkin;
 	decColor pOutlineColor;
 	
@@ -255,6 +266,12 @@ public:
 	/** \brief Set collision filter fallback. */
 	void SetCollisionFilterFallback( const decCollisionFilter &collisionFilter );
 	
+	/** \brief Collision filter for interaction. */
+	inline const decCollisionFilter &GetCollisionFilterInteract() const{ return pCollisionFilterInteract; }
+	
+	/** \brief Set collision filter for interaction. */
+	void SetCollisionFilterInteract( const decCollisionFilter &collisionFilter );
+	
 	
 	
 	/** \brief Determines if the collider is allowed to be dynamic or always kinematic. */
@@ -304,14 +321,10 @@ public:
 	deComponent *GetComponent() const;
 	
 	/** \brief Collider component. */
-	inline deColliderComponent *GetColliderComponent() const{
-		return ( deColliderComponent* )( deCollider* )pColliderComponent;
-	}
+	inline const deColliderComponent::Ref &GetColliderComponent() const{ return pColliderComponent; }
 	
 	/** \brief Fallback collider volume. */
-	inline deColliderVolume *GetColliderFallback() const{
-		return ( deColliderVolume* )( deCollider* )pColliderFallback;
-	}
+	inline const deColliderVolume::Ref &GetColliderFallback() const{ return pColliderFallback; }
 	
 	/** \brief Set collider user pointer for all colliders used. */
 	void SetColliderUserPointer( void *userPointer );
@@ -407,6 +420,8 @@ public:
 	void SubObjectExtendsDirty();
 	void SetInteractCollider( deColliderComponent *collider );
 	inline deDynamicSkin *GetOutlineDynamicSkin() const{ return pOutlineDynamicSkin; }
+	void AddInteractionCollider( deCollider *collider );
+	void RemoveInteractionCollider( deCollider *collider );
 	/*@}*/
 	
 	
@@ -417,7 +432,7 @@ private:
 	void pUpdateVisiblity();
 	
 	void pCreateSubObjects();
-	void pCreateSubObjects( const decString &prefix, const igdeGDClass &gdclass );
+	void pCreateSubObjects( const decString &prefix, const igdeGDClass &gdclas, int filter );
 	void pDestroySubObjects();
 	void pSubObjectsReattachToColliders();
 	void pSubObjectsInitTriggers();

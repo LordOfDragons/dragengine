@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -32,17 +35,18 @@
 #include "../math/deClassDVector.h"
 #include "../math/deClassQuaternion.h"
 #include "../network/deClassNetworkStateListener.h"
+#include "../file/deClassMemoryFile.h"
 #include "../../peers/dedsNetworkState.h"
 #include "../../deScriptingDragonScript.h"
 #include "../../deClassPathes.h"
 
 #include <dragengine/deEngine.h>
+#include <dragengine/common/file/decMemoryFile.h>
 #include <dragengine/resources/deResource.h>
 #include <dragengine/resources/deResourceManager.h>
 #include <dragengine/resources/network/deNetworkState.h>
 #include <dragengine/resources/network/deNetworkStateManager.h>
 #include <dragengine/resources/network/value/deNetworkValue.h>
-#include <dragengine/resources/network/value/deNetworkValueReference.h>
 #include <dragengine/resources/network/value/deNetworkValueInteger.h>
 #include <dragengine/resources/network/value/deNetworkValueFloat.h>
 #include <dragengine/resources/network/value/deNetworkValueData.h>
@@ -142,54 +146,74 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
 	p_AddParameter( init.clsNetworkStateValueFormat ); // format
 }
 void deClassNetworkState::nfAddValue::RunFunction( dsRunTime *rt, dsValue *myself ){
-	if( ! rt->GetValue( 0 )->GetRealObject() || ! rt->GetValue( 1 )->GetRealObject() ){
-		DSTHROW( dueNullPointer );
+	if( ! rt->GetValue( 0 )->GetRealObject() ){
+		DSTHROW_INFO( dueNullPointer, "type" );
 	}
 	
 	deNetworkState &state = *( ( ( sNSNatDat* )p_GetNativeData( myself ) )->state );
 	const deNetworkValueVisitorIdentify::eNetworkValues type = ( deNetworkValueVisitorIdentify::eNetworkValues )
 		( ( dsClassEnumeration* )rt->GetEngine()->GetClassEnumeration() )->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
-	const deNetworkValue::eValueFormats format = ( deNetworkValue::eValueFormats )
-		( ( dsClassEnumeration* )rt->GetEngine()->GetClassEnumeration() )->GetConstantOrder(
-			*rt->GetValue( 1 )->GetRealObject() );
-	deNetworkValueReference property;
+	
+	deNetworkValue::Ref property;
 	
 	switch( type ){
 	case deNetworkValueVisitorIdentify::envtInteger:
-		property.TakeOver( new deNetworkValueInteger( format, 0 ) );
-		break;
-		
 	case deNetworkValueVisitorIdentify::envtFloat:
-		property.TakeOver( new deNetworkValueFloat( format, 0.0 ) );
-		break;
+	case deNetworkValueVisitorIdentify::envtPoint2:
+	case deNetworkValueVisitorIdentify::envtPoint3:
+	case deNetworkValueVisitorIdentify::envtVector2:
+	case deNetworkValueVisitorIdentify::envtVector3:
+	case deNetworkValueVisitorIdentify::envtQuaternion:{
+		if( ! rt->GetValue( 1 )->GetRealObject() ){
+			DSTHROW_INFO( dueNullPointer, "type" );
+		}
+		
+		const deNetworkValue::eValueFormats format = ( deNetworkValue::eValueFormats )
+			( ( dsClassEnumeration* )rt->GetEngine()->GetClassEnumeration() )->GetConstantOrder(
+				*rt->GetValue( 1 )->GetRealObject() );
+		
+		switch( type ){
+		case deNetworkValueVisitorIdentify::envtInteger:
+			property.TakeOver( new deNetworkValueInteger( format, 0 ) );
+			break;
+			
+		case deNetworkValueVisitorIdentify::envtFloat:
+			property.TakeOver( new deNetworkValueFloat( format, 0.0 ) );
+			break;
+			
+		case deNetworkValueVisitorIdentify::envtPoint2:
+			property.TakeOver( new deNetworkValuePoint2( format, decPoint() ) );
+			break;
+			
+		case deNetworkValueVisitorIdentify::envtPoint3:
+			property.TakeOver( new deNetworkValuePoint3( format, decPoint3() ) );
+			break;
+			
+		case deNetworkValueVisitorIdentify::envtVector2:
+			property.TakeOver( new deNetworkValueVector2( format, decVector2() ) );
+			break;
+			
+		case deNetworkValueVisitorIdentify::envtVector3:
+			property.TakeOver( new deNetworkValueVector3( format, decDVector() ) );
+			break;
+			
+		case deNetworkValueVisitorIdentify::envtQuaternion:
+			property.TakeOver( new deNetworkValueQuaternion( format, decQuaternion() ) );
+			break;
+			
+		default:
+			DSTHROW( dueInvalidParam ); // can never happen
+		}
+		}break;
 		
 	case deNetworkValueVisitorIdentify::envtString:
 		property.TakeOver( new deNetworkValueString );
 		break;
 		
-	case deNetworkValueVisitorIdentify::envtPoint2:
-		property.TakeOver( new deNetworkValuePoint2( format, decPoint() ) );
-		break;
-		
-	case deNetworkValueVisitorIdentify::envtPoint3:
-		property.TakeOver( new deNetworkValuePoint3( format, decPoint3() ) );
-		break;
-		
-	case deNetworkValueVisitorIdentify::envtVector2:
-		property.TakeOver( new deNetworkValueVector2( format, decVector2() ) );
-		break;
-		
-	case deNetworkValueVisitorIdentify::envtVector3:
-		property.TakeOver( new deNetworkValueVector3( format, decDVector() ) );
-		break;
-		
-	case deNetworkValueVisitorIdentify::envtQuaternion:
-		property.TakeOver( new deNetworkValueQuaternion( format, decQuaternion() ) );
-		break;
-		
 	case deNetworkValueVisitorIdentify::envtData:
-		DSTHROW_INFO( dueInvalidParam, "TODO: Implementation" );
+		property.TakeOver( new deNetworkValueData( 0 ) );
+		break;
 		
 	default:
 		DSTHROW( dueInvalidParam );
@@ -263,7 +287,7 @@ void deClassNetworkState::nfGetValueIntAt::RunFunction( dsRunTime *rt, dsValue *
 		DSTHROW( dueInvalidParam );
 	}
 	
-	rt->PushInt( identify.CastToInteger()->GetInt() );
+	rt->PushInt( ( int )identify.CastToInteger()->GetInt() );
 }
 
 // public func float getValueFloatAt( int index )
@@ -282,7 +306,7 @@ void deClassNetworkState::nfGetValueFloatAt::RunFunction( dsRunTime *rt, dsValue
 		DSTHROW( dueInvalidParam );
 	}
 	
-	rt->PushFloat( identify.CastToFloat()->GetFloat() );
+	rt->PushFloat( ( float )identify.CastToFloat()->GetFloat() );
 }
 
 // public func String getValueStringAt( int index )
@@ -639,16 +663,16 @@ void deClassNetworkState::nfGetValuePrecisionAt::RunFunction( dsRunTime *rt, dsV
 	state.GetValueAt( index )->Visit( identify );
 	
 	if( identify.IsFloat() ){
-		rt->PushFloat( identify.CastToFloat()->GetPrecision() );
+		rt->PushFloat( ( float )identify.CastToFloat()->GetPrecision() );
 		
 	}else if( identify.IsQuaternion() ){
-		rt->PushFloat( identify.CastToQuaternion()->GetPrecision() );
+		rt->PushFloat( ( float )identify.CastToQuaternion()->GetPrecision() );
 		
 	}else if( identify.IsVector2() ){
-		rt->PushFloat( identify.CastToVector2()->GetPrecision() );
+		rt->PushFloat( ( float )identify.CastToVector2()->GetPrecision() );
 		
 	}else if( identify.IsVector3() ){
-		rt->PushFloat( identify.CastToVector3()->GetPrecision() );
+		rt->PushFloat( ( float )identify.CastToVector3()->GetPrecision() );
 		
 	}else{
 		DSTHROW( dueInvalidParam );
@@ -689,6 +713,72 @@ void deClassNetworkState::nfSetValuePrecisionAt::RunFunction( dsRunTime *rt, dsV
 	state.NotifyPrecisionChanged( index );
 }
 
+// public func void getValueDataAt(int index, MemoryFile data)
+deClassNetworkState::nfGetValueDataAt::nfGetValueDataAt( const sInitData &init ) :
+dsFunction( init.clsNS, "getValueDataAt", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsInt ); // index
+	p_AddParameter( init.clsMemoryFile ); // data
+}
+void deClassNetworkState::nfGetValueDataAt::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deScriptingDragonScript &ds = ( ( deClassNetworkState* )GetOwnerClass() )->GetDS();
+	const deNetworkState &state = *( ( ( sNSNatDat* )p_GetNativeData( myself ) )->state );
+	const int index = rt->GetValue( 0 )->GetInt();
+	deNetworkValueVisitorIdentify identify;
+	
+	decMemoryFile * const file = ds.GetClassMemoryFile()->GetMemoryFile( rt->GetValue( 1 )->GetRealObject() );
+	if( ! file ){
+		DSTHROW_INFO( dueNullPointer, "data" );
+	}
+	
+	state.GetValueAt( index )->Visit( identify );
+	
+	if( identify.IsData() ){
+		const deNetworkValueData &data = *identify.CastToData();
+		if( data.GetLength() != file->GetLength() ){
+			file->Resize( data.GetLength() );
+		}
+		if( data.GetLength() > 0 ){
+			memcpy( file->GetPointer(), data.GetData(), data.GetLength() );
+		}
+		
+	}else{
+		DSTHROW( dueInvalidParam );
+	}
+}
+
+// public func void setValueDataAt(int index, MemoryFile data)
+deClassNetworkState::nfSetValueDataAt::nfSetValueDataAt( const sInitData &init ) :
+dsFunction( init.clsNS, "setValueDataAt", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsInt ); // index
+	p_AddParameter( init.clsMemoryFile ); // data
+}
+void deClassNetworkState::nfSetValueDataAt::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deScriptingDragonScript &ds = ( ( deClassNetworkState* )GetOwnerClass() )->GetDS();
+	deNetworkState &state = *( ( ( sNSNatDat* )p_GetNativeData( myself ) )->state );
+	const int index = rt->GetValue( 0 )->GetInt();
+	deNetworkValueVisitorIdentify identify;
+	
+	const decMemoryFile * const file = ds.GetClassMemoryFile()->GetMemoryFile( rt->GetValue( 1 )->GetRealObject() );
+	if( ! file ){
+		DSTHROW_INFO( dueNullPointer, "data" );
+	}
+	
+	state.GetValueAt( index )->Visit( identify );
+	
+	if( identify.IsData() ){
+		deNetworkValueData &data = *identify.CastToData();
+		if( file->GetLength() != data.GetLength() ){
+			data.SetLength( file->GetLength() );
+		}
+		memcpy( data.GetData(), file->GetPointer(), data.GetLength() );
+		
+	}else{
+		DSTHROW( dueInvalidParam );
+	}
+	
+	state.NotifyPrecisionChanged( index );
+}
+
 
 
 // Notifications
@@ -701,10 +791,15 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsNSL ){
 }
 void deClassNetworkState::nfGetStateListener::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const deNetworkState &state = *( ( ( sNSNatDat* )p_GetNativeData( myself ) )->state );
-	dedsNetworkState &scrState = *( ( dedsNetworkState* )state.GetPeerScripting() );
+	dedsNetworkState * const scrState = ( dedsNetworkState* )state.GetPeerScripting();
 	const deScriptingDragonScript &ds = ( ( deClassNetworkState* )GetOwnerClass() )->GetDS();
 	
-	rt->PushObject( scrState.GetCallback(), ds.GetClassNetworkStateListener() );
+	if( scrState ){
+		rt->PushObject( scrState->GetCallback(), ds.GetClassNetworkStateListener() );
+		
+	}else{
+		rt->PushObject( NULL, ds.GetClassNetworkStateListener() );
+	}
 }
 
 // public func void setStateListener( NetworkStateListener listener )
@@ -715,9 +810,10 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
 }
 void deClassNetworkState::nfSetStateListener::RunFunction( dsRunTime *rt, dsValue *myself ){
 	deNetworkState &state = *( ( ( sNSNatDat* )p_GetNativeData( myself ) )->state );
-	dedsNetworkState &scrState = *( ( dedsNetworkState* )state.GetPeerScripting() );
-	
-	scrState.SetCallback( rt->GetValue( 0 )->GetRealObject() );
+	dedsNetworkState * const scrState = ( dedsNetworkState* )state.GetPeerScripting();
+	if( scrState ){
+		scrState->SetCallback( rt->GetValue( 0 )->GetRealObject() );
+	}
 }
 
 
@@ -733,7 +829,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInt ){
 
 void deClassNetworkState::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const deNetworkState * const state = ( ( sNSNatDat* )p_GetNativeData( myself ) )->state;
-	rt->PushInt( ( intptr_t )state );
+	rt->PushInt( ( int )( intptr_t )state );
 }
 
 // public func bool equals( Object object )
@@ -803,6 +899,7 @@ void deClassNetworkState::CreateClassMembers( dsEngine *engine ){
 	init.clsNSL = pDS.GetClassNetworkStateListener();
 	init.clsNetworkStateValueType = pClsNetworkStateValueType;
 	init.clsNetworkStateValueFormat = pClsNetworkStateValueFormat;
+	init.clsMemoryFile = pDS.GetClassMemoryFile();
 	
 	// add functions
 	AddFunction( new nfNew( init ) );
@@ -833,6 +930,8 @@ void deClassNetworkState::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfSetValueQuaternionAt( init ) );
 	AddFunction( new nfGetValuePrecisionAt( init ) );
 	AddFunction( new nfSetValuePrecisionAt( init ) );
+	AddFunction( new nfGetValueDataAt( init ) );
+	AddFunction( new nfSetValueDataAt( init ) );
 	
 	AddFunction( new nfGetStateListener( init ) );
 	AddFunction( new nfSetStateListener( init ) );

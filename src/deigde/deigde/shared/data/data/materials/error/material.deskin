@@ -1,77 +1,59 @@
-<?xml version='1.0' encoding='ISO-8859-1'?>
+<?xml version='1.0' encoding='UTF-8'?>
 <skin>
+	<mapped name='color green'>
+		<curve>
+			<interpolation>constant</interpolation>
+			<point>
+				<coordinates x='0' y='0'/>
+				<handle1 x='0' y='0'/>
+				<handle2 x='0' y='0'/>
+			</point>
+		</curve>
+	</mapped>
+	<mapped name='color blue'>
+		<curve>
+			<interpolation>constant</interpolation>
+			<point>
+				<coordinates x='0' y='0'/>
+				<handle1 x='0' y='0'/>
+				<handle2 x='0' y='0'/>
+			</point>
+		</curve>
+	</mapped>
+	<mapped name='color red'>
+		<curve>
+			<interpolation>constant</interpolation>
+			<point>
+				<coordinates x='0' y='1'/>
+				<handle1 x='0' y='0'/>
+				<handle2 x='0' y='0'/>
+			</point>
+			<point>
+				<coordinates x='0.5' y='0'/>
+				<handle1 x='0' y='0'/>
+				<handle2 x='0' y='0'/>
+			</point>
+		</curve>
+	</mapped>
 	<texture name='material'>
 		<image property='color'>color.png</image>
 		<mapped property='color.tint'>
-			<red>
-				<curve>
-					<interpolation>constant</interpolation>
-					<point>
-						<coordinates x='0' y='1'/>
-					</point>
-					<point>
-						<coordinates x='0.5' y='0'/>
-					</point>
-				</curve>
-				<inputUpper>1</inputUpper>
-			</red>
-			<green>
-				<curve>
-					<interpolation>constant</interpolation>
-					<point>
-						<coordinates x='0' y='0'/>
-					</point>
-				</curve>
-				<inputUpper>1</inputUpper>
-			</green>
-			<blue>
-				<curve>
-					<interpolation>constant</interpolation>
-					<point>
-						<coordinates x='0' y='0'/>
-					</point>
-				</curve>
-				<inputUpper>1</inputUpper>
-			</blue>
+			<mappedRed>color red</mappedRed>
+			<mappedGreen>color green</mappedGreen>
+			<mappedBlue>color blue</mappedBlue>
 		</mapped>
 		<image property='color.tint.mask'>tintMask.png</image>
 		<value property='reflectivity'>0</value>
-		<value property='reflected'>'0</value>
+		<value property='reflected'>0</value>
 		<value property='roughness'>1</value>
 		<image property='emissivity'>emissivity.png</image>
 		<mapped property='emissivity.tint'>
-			<red>
-				<curve>
-					<interpolation>constant</interpolation>
-					<point>
-						<coordinates x='0' y='1'/>
-					</point>
-					<point>
-						<coordinates x='0.5' y='0'/>
-					</point>
-				</curve>
-				<inputUpper>1</inputUpper>
-			</red>
-			<green>
-				<curve>
-					<interpolation>constant</interpolation>
-					<point>
-						<coordinates x='0' y='0'/>
-					</point>
-				</curve>
-				<inputUpper>1</inputUpper>
-			</green>
-			<blue>
-				<curve>
-					<interpolation>constant</interpolation>
-					<point>
-						<coordinates x='0' y='0'/>
-					</point>
-				</curve>
-				<inputUpper>1</inputUpper>
-			</blue>
+			<mappedRed>color red</mappedRed>
+			<mappedGreen>color green</mappedGreen>
+			<mappedBlue>color blue</mappedBlue>
 		</mapped>
-		<value property='emissivity.intensity'>10</value>
+		<value property='emissivity.intensity'>0.2</value>
+		<value property='emissivity.camera.adapted'>1</value>
 		<value property='hint.nocompression'>1</value>
 	</texture>
 </skin>

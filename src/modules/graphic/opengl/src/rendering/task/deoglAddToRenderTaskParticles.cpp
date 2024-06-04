@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -27,6 +30,9 @@
 #include "deoglRenderTaskParticles.h"
 #include "deoglRenderTaskParticlesStep.h"
 #include "../defren/deoglDeferredRendering.h"
+#include "../task/shared/deoglRenderTaskSharedInstance.h"
+#include "../task/shared/deoglRenderTaskSharedTexture.h"
+#include "../task/shared/deoglRenderTaskSharedVAO.h"
 #include "../../configuration/deoglConfiguration.h"
 #include "../../envmap/deoglEnvironmentMap.h"
 #include "../../particle/deoglRParticleEmitter.h"
@@ -41,6 +47,7 @@
 #include "../../shaders/deoglShaderProgram.h"
 #include "../../shaders/deoglShaderSources.h"
 #include "../../shaders/paramblock/deoglSPBlockUBO.h"
+#include "../../shaders/paramblock/shared/deoglSharedSPB.h"
 #include "../../shaders/paramblock/shared/deoglSharedSPBElement.h"
 #include "../../shaders/paramblock/shared/deoglSharedSPBRTIGroup.h"
 #include "../../skin/deoglSkinTexture.h"
@@ -71,11 +78,8 @@ deoglAddToRenderTaskParticles::deoglAddToRenderTaskParticles(
 deoglRenderThread &renderThread, deoglRenderTaskParticles *renderTask ) :
 pRenderThread( renderThread ),
 pRenderTask( renderTask ),
-pSkinShaderType( deoglSkinTexture::estParticleGeometry ),
-pSkinShaderTypeRibbon( deoglSkinTexture::estParticleRibbonGeometry ),
-pSkinShaderTypeBeam( deoglSkinTexture::estParticleBeamGeometry ),
-pEnforceShader( NULL ),
-pEnforceParamBlock( NULL ){
+pSkinPipelineType( deoglSkinTexturePipelines::etGeometry ),
+pSkinPipelineModifier( 0 ){
 }
 
 deoglAddToRenderTaskParticles::~deoglAddToRenderTaskParticles(){
@@ -86,41 +90,12 @@ deoglAddToRenderTaskParticles::~deoglAddToRenderTaskParticles(){
 // Management
 ///////////////
 
-void deoglAddToRenderTaskParticles::SetSkinShaderType( deoglSkinTexture::eShaderTypes shaderType ){
-	if( shaderType < deoglSkinTexture::estParticleGeometry
-	|| shaderType > deoglSkinTexture::estParticleShadowDistance ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	pSkinShaderType = shaderType;
+void deoglAddToRenderTaskParticles::SetSkinPipelineType( deoglSkinTexturePipelines::eTypes type ){
+	pSkinPipelineType = type;
 }
 
-void deoglAddToRenderTaskParticles::SetSkinShaderTypeRibbon( deoglSkinTexture::eShaderTypes shaderType ){
-	if( shaderType < deoglSkinTexture::estParticleRibbonGeometry
-	|| shaderType > deoglSkinTexture::estParticleRibbonGeometryDepthTest ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	pSkinShaderTypeRibbon = shaderType;
-}
-
-void deoglAddToRenderTaskParticles::SetSkinShaderTypeBeam( deoglSkinTexture::eShaderTypes shaderType ){
-	if( shaderType < deoglSkinTexture::estParticleBeamGeometry
-	|| shaderType > deoglSkinTexture::estParticleBeamGeometryDepthTest ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	pSkinShaderTypeBeam = shaderType;
-}
-
-
-
-void deoglAddToRenderTaskParticles::SetEnforceShader( deoglShaderProgram *shader ){
-	pEnforceShader = shader;
-}
-
-void deoglAddToRenderTaskParticles::SetEnforceParamBlock( deoglSPBlockUBO *block ){
-	pEnforceParamBlock = block;
+void deoglAddToRenderTaskParticles::SetSkinPipelineModifier( int modifier ){
+	pSkinPipelineModifier = modifier;
 }
 
 
@@ -142,19 +117,15 @@ void deoglAddToRenderTaskParticles::AddParticles( const deoglParticleEmitterInst
 
 void deoglAddToRenderTaskParticles::AddParticle( deoglRParticleEmitterInstance &emitterInstance,
 const deoglRParticleEmitterInstance::sParticle *particle ){
-	deoglRDynamicSkin *dynamicSkin = NULL;
-	deoglSkinTexture *skinTexture = NULL;
-	deoglRSkin *skin = NULL;
-	
 	// fetch parameters
 	deoglRParticleEmitterInstanceType &itype = emitterInstance.GetTypeAt( particle->type );
 	const deoglRParticleEmitterType &etype = emitterInstance.GetEmitter()->GetTypeAt( particle->type );
 	const bool simulationRibbon = ( etype.GetSimulationType() == deParticleEmitterType::estRibbon );
 	const bool simulationBeam = ( etype.GetSimulationType() == deParticleEmitterType::estBeam );
 	
-	skin = itype.GetUseSkin();
-	dynamicSkin = itype.GetDynamicSkin();
-	skinTexture = itype.GetUseSkinTexture();
+	const deoglRSkin * const skin = itype.GetUseSkin();
+	const deoglRDynamicSkin * const dynamicSkin = itype.GetDynamicSkin();
+	const deoglSkinTexture * const skinTexture = itype.GetUseSkinTexture();
 	
 	// if there is no texture we can skip the geometry attached to it
 	if( ! skinTexture ){
@@ -167,54 +138,34 @@ const deoglRParticleEmitterInstance::sParticle *particle ){
 		return;
 	}
 	
-	// determine the skin shader type to use
-	deoglSkinTexture::eShaderTypes skinShaderType = pSkinShaderType;
-	
-	if( simulationRibbon ){
-		skinShaderType = pSkinShaderTypeRibbon;
-		
-	}else if( simulationBeam ){
-		skinShaderType = pSkinShaderTypeBeam;
-	}
-	
 	// retrieve the shader and texture units configuration to use
-	deoglShaderProgram *shader = pEnforceShader;
+	const deoglSkinTexturePipeline &pipeline = itype.GetUseSkinPipelines().
+		GetWithRef( pSkinPipelineType, pSkinPipelineModifier );
 	
-	if( ! shader ){
-		deoglSkinShader * const skinShader = skinTexture->GetShaderFor( skinShaderType );
-		if( skinShader ){
-			shader = skinShader->GetShader();
-		}
-	}
-	
-	if( ! shader ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	deoglTexUnitsConfig *tuc = itype.GetTUCForShaderType( skinShaderType );
+	const deoglTexUnitsConfig *tuc = itype.GetTUCForPipelineType ( pSkinPipelineType );
 	if( ! tuc ){
 		tuc = pRenderThread.GetShader().GetTexUnitsConfigList().GetEmptyNoUsage();
 	}
 	
 	// determine if the last step has the same texture
-	deoglVAO * const vao = emitterInstance.GetVAO();
-	deoglRenderTaskParticlesStep *rtps = NULL;
+	const deoglVAO * const vao = emitterInstance.GetVAO();
+	deoglRenderTaskParticlesStep *rtps = nullptr;
 	
 	if( pRenderTask->GetStepCount() > 0 ){
 		rtps = pRenderTask->GetStepAt( pRenderTask->GetStepCount() - 1 );
 		
 		if( rtps->GetVAO() != vao
-		|| rtps->GetShader() != shader
+		|| rtps->GetPipeline() != pipeline.GetPipeline()
 		|| rtps->GetSkin() != skin
 		|| rtps->GetDynamicSkin() != dynamicSkin ){
-			rtps = NULL;
+			rtps = nullptr;
 		}
 	}
 	
 	// if there exists no matching step create a new one
 	if( ! rtps ){
 		rtps = pRenderTask->AddStep();
-		rtps->SetShader( shader );
+		rtps->SetPipeline( pipeline.GetPipeline() );
 		rtps->SetTUC( tuc );
 		rtps->SetVAO( vao );
 		rtps->SetSkin( skin );
@@ -229,8 +180,8 @@ const deoglRParticleEmitterInstance::sParticle *particle ){
 			rtps->SetPrimitiveType( GL_POINTS );
 		}
 		
-		rtps->SetParameterBlockTexture( skinTexture->GetParameterBlockFor( skinShaderType ) );
-		rtps->SetParameterBlockInstance( itype.GetParamBlockFor( skinShaderType ) );
+		rtps->SetParameterBlockTexture( skinTexture->GetSharedSPBElement()->GetSPB().GetParameterBlock() );
+		rtps->SetParameterBlockInstance( itype.GetParamBlock() );
 	}
 	
 	// add an instance

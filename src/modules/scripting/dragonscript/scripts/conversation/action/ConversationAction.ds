@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -31,72 +34,80 @@ pin Dragengine.Scenery
  */
 abstract class ConversationAction implements Persistable
 	/** \brief Wait for actor. */
-	private var bool pWaitForActor
+	var bool pWaitForActor
 	
 	/** \brief ID of actor to wait for or null to wait for all actors. */
-	private var String pWaitForActorID
+	var String pWaitForActorID
 	
 	/** \brief Delay before processing the action. */
-	private var float pDelay
+	var float pDelay
 	
 	
 	
 	/** \brief Create conversation action. */
-	public func new()
-		this.pWaitForActor = true
-		this.pDelay = 0
+	func new()
+		pWaitForActor = true
+		pDelay = 0
 	end
 	
 	/** \brief Read from file. */
-	public func new( PersistencyEnvironment env, FileReader reader )
-		this.pWaitForActor = env.readBool( reader )
-		this.pWaitForActorID = env.readString8OrNullIfEmpty( reader )
-		this.pDelay = reader.readFloat()
+	func new(PersistencyEnvironment env, FileReader reader)
+		select reader.readByte() // version
+		case 0
+			pWaitForActor = env.readBool(reader)
+			pWaitForActorID = env.readString8OrNullIfEmpty(reader)
+			pDelay = reader.readFloat()
+			
+		else
+			throw EInvalidParam.new("unsupported version")
+		end
 	end
 	
 	
 	
 	/** \brief Wait for actor. */
-	public func bool getWaitForActor()
-		return this.pWaitForActor
+	func bool getWaitForActor()
+		return pWaitForActor
 	end
 	
 	/** \brief Set wait for actor. */
-	public func void setWaitForActor( bool wait )
-		this.pWaitForActor = wait
+	func void setWaitForActor(bool wait)
+		pWaitForActor = wait
 	end
 	
 	/** \brief ID of actor to wait for or null to wait for all actors. */
-	public func String getWaitForActorID()
-		return this.pWaitForActorID
+	func String getWaitForActorID()
+		return pWaitForActorID
 	end
 	
 	/** \brief Set ID of actor to wait for or null to wait for all actors. */
-	public func void setWaitForActorID( String id )
-		this.pWaitForActorID = id
+	func void setWaitForActorID(String id)
+		pWaitForActorID = id
 	end
 	
 	/** \brief Delay in seconds before processing this action. */
-	public func float getDelay()
-		return this.pDelay
+	func float getDelay()
+		return pDelay
 	end
 	
 	/** \brief Set delay in seconds before processing this action. */
-	public func void setDelay( float delay )
-		this.pDelay = delay
+	func void setDelay(float delay)
+		pDelay = delay
 	end
 	
 	
 	
 	/** \brief Execute the action. */
-	abstract public func void execute( ConversationPlayback playback )
+	abstract func void execute(ConversationPlayback playback)
 	
 	
 	
 	/** \brief Write object to file writer. */
-	public func void writeObjectToFile( PersistencyEnvironment env, FileWriter writer )
-		env.writeBool( writer, this.pWaitForActor )
-		env.writeString8OrEmptyIfNull( writer, this.pWaitForActorID )
-		writer.writeFloat( this.pDelay )
+	func void writeObjectToFile(PersistencyEnvironment env, FileWriter writer)
+		writer.writeByte(0) // version
+		
+		env.writeBool(writer, pWaitForActor)
+		env.writeString8OrEmptyIfNull(writer, pWaitForActorID)
+		writer.writeFloat(pDelay)
 	end
 end

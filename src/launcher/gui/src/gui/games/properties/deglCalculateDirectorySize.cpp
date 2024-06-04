@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine GUI Launcher
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -29,7 +32,6 @@
 #include <dragengine/common/exceptions.h>
 #include <dragengine/filesystem/dePathList.h>
 #include <dragengine/filesystem/deVFSDiskDirectory.h>
-#include <dragengine/filesystem/deVFSContainerReference.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/filesystem/deFileSearchVisitor.h>
 #include <dragengine/threading/deMutexGuard.h>
@@ -43,25 +45,18 @@
 ////////////////////////////
 
 deglCalculateDirectorySize::deglCalculateDirectorySize( const char *directory ) :
+pDirectory( directory ),
+pVFS( deVirtualFileSystem::Ref::New( new deVirtualFileSystem ) ),
 pSize( 0 ),
 pAbort( false ),
 pFailed( false )
 {
-	if( ! directory ){
-		DETHROW( deeNullPointer );
-	}
-	
 	if( ! directory[ 0 ] ){
 		return;
 	}
 	
-	pVFS.TakeOver( new deVirtualFileSystem );
-	
-	deVFSContainerReference container;
-	container.TakeOver( new deVFSDiskDirectory( decPath::CreatePathNative( directory ) ) );
-	( ( deVFSDiskDirectory& )( deVFSContainer& )container ).SetReadOnly( true );
-	
-	pVFS->AddContainer( container );
+	pVFS->AddContainer( deVFSDiskDirectory::Ref::New( new deVFSDiskDirectory(
+		decPath::CreatePathUnix( "/" ), decPath::CreatePathNative( directory ), true ) ) );
 }
 
 deglCalculateDirectorySize::~deglCalculateDirectorySize(){
@@ -72,14 +67,24 @@ deglCalculateDirectorySize::~deglCalculateDirectorySize(){
 // Management
 ///////////////
 
+decString deglCalculateDirectorySize::GetDirectory(){
+	const deMutexGuard guard( pMutex );
+	return pDirectory;
+}
+
 uint64_t deglCalculateDirectorySize::GetSize(){
-	deMutexGuard guard( pMutex );
+	const deMutexGuard guard( pMutex );
 	return pSize;
 }
 
 bool deglCalculateDirectorySize::GetFailed(){
-	deMutexGuard guard( pMutex );
+	const deMutexGuard guard( pMutex );
 	return pFailed;
+}
+
+decStringList deglCalculateDirectorySize::GetException(){
+	const deMutexGuard guard( pMutex );
+	return pException;
 }
 
 void deglCalculateDirectorySize::Abort(){
@@ -90,13 +95,13 @@ void deglCalculateDirectorySize::Abort(){
 
 void deglCalculateDirectorySize::Run(){
 	if( pAbort ){
-		deMutexGuard guard( pMutex );
+		const deMutexGuard guard( pMutex );
 		pFailed = true;
 		return;
 	}
 	
 	const decPath path( decPath::CreatePathUnix( "/" ) );
-	if( ! pVFS || ! pVFS->ExistsFile( path ) ){
+	if( ! pVFS->ExistsFile( path ) ){
 		return;
 	}
 	
@@ -104,14 +109,15 @@ void deglCalculateDirectorySize::Run(){
 		pScanDirectory( path );
 		
 	}catch( const deException &e ){
-		deMutexGuard guard( pMutex );
+		const deMutexGuard guard( pMutex );
 		pSize = 0;
 		pFailed = true;
+		pException = e.FormatOutput();
 	}
 }
 
 void deglCalculateDirectorySize::IncrementSize( int size ){
-	deMutexGuard guard( pMutex );
+	const deMutexGuard guard( pMutex );
 	pSize += size;
 }
 
@@ -121,7 +127,7 @@ void deglCalculateDirectorySize::IncrementSize( int size ){
 //////////////////////
 
 void deglCalculateDirectorySize::pSetSize( int size ){
-	deMutexGuard guard( pMutex );
+	const deMutexGuard guard( pMutex );
 	pSize = size;
 }
 
@@ -136,7 +142,7 @@ public:
 	}
 	
 	virtual bool VisitFile( const deVirtualFileSystem &vfs, const decPath &path ){
-		pOwner.IncrementSize( vfs.GetFileSize( path ) );
+		pOwner.IncrementSize( ( int )vfs.GetFileSize( path ) );
 		return ! pAbort;
 	}
 	

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Rig Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -36,7 +39,11 @@
 #include "../../undosys/properties/bone/reUSetBoneOrientation.h"
 #include "../../undosys/properties/bone/reUSetBoneCentralMassPoint.h"
 #include "../../undosys/properties/bone/reUSetBoneMass.h"
+#include "../../undosys/properties/bone/reUSetBoneIKLimitsLower.h"
+#include "../../undosys/properties/bone/reUSetBoneIKLimitsUpper.h"
+#include "../../undosys/properties/bone/reUSetBoneIKResistance.h"
 #include "../../undosys/properties/bone/reUToggleBoneDynamic.h"
+#include "../../undosys/properties/bone/reUToggleBoneIKLocked.h"
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeUIHelper.h>
@@ -272,6 +279,53 @@ public:
 	}
 };
 
+class cEditIKLimitsLower : public cBaseEditVectorListener{
+public:
+	cEditIKLimitsLower( reWPBone &panel ) : cBaseEditVectorListener( panel ){ }
+	
+	virtual igdeUndo *OnChanged( const decVector &vector, reRig*, reRigBone *bone ){
+		if( vector.IsEqualTo( bone->GetIKLimitsLower() ) ){
+			return NULL;
+		}
+		return new reUSetBoneIKLimitsLower( bone, vector );
+	}
+};
+
+class cEditIKLimitsUpper : public cBaseEditVectorListener{
+public:
+	cEditIKLimitsUpper( reWPBone &panel ) : cBaseEditVectorListener( panel ){ }
+	
+	virtual igdeUndo *OnChanged( const decVector &vector, reRig*, reRigBone *bone ){
+		if( vector.IsEqualTo( bone->GetIKLimitsUpper() ) ){
+			return NULL;
+		}
+		return new reUSetBoneIKLimitsUpper( bone, vector );
+	}
+};
+
+class cEditIKResistance : public cBaseEditVectorListener{
+public:
+	cEditIKResistance( reWPBone &panel ) : cBaseEditVectorListener( panel ){ }
+	
+	virtual igdeUndo *OnChanged( const decVector &vector, reRig*, reRigBone *bone ){
+		if( vector.IsEqualTo( bone->GetIKResistance() ) ){
+			return NULL;
+		}
+		return new reUSetBoneIKResistance( bone, vector );
+	}
+};
+
+class cCheckIKLocked : public cBaseAction{
+	const int pAxis;
+public:
+	cCheckIKLocked( reWPBone &panel, int axis, const char *text ) : cBaseAction( panel, text,
+		"Determines if the IK Axis is locked." ), pAxis( axis ){ }
+	
+	virtual igdeUndo *OnAction( reRig *rig, reRigBone *bone ){
+		return new reUToggleBoneIKLocked( bone, pAxis );
+	}
+};
+
 }
 
 
@@ -331,6 +385,23 @@ pListener( NULL )
 		pEditMass, new cTextMass( *this ) );
 	
 	helper.CheckBox( groupBox, pChkDynamic, new cCheckDynamic( *this ), true );
+	
+	// inverse kinematic limits
+	helper.GroupBox( content, groupBox, "Inverse Kinematic Limits:" );
+	
+	helper.EditVector( groupBox, "Lower:", "Lower IK Limits per axis in degrees.",
+		pEditIKLimitsLower, new cEditIKLimitsLower( *this ) );
+	
+	helper.EditVector( groupBox, "Upper:", "Upper IK Limits per axis in degrees.",
+		pEditIKLimitsUpper, new cEditIKLimitsUpper( *this ) );
+	
+	helper.EditVector( groupBox, "Resistance:", "Resistance per axis in degrees in the range from 0 to 1.",
+		pEditIKResistance, new cEditIKResistance( *this ) );
+	
+	helper.FormLine( groupBox, "Locked:", "IK axis is locked", frameLine );
+	helper.CheckBox( frameLine, pChkIKLockedX, new cCheckIKLocked( *this, 0, "X" ), true );
+	helper.CheckBox( frameLine, pChkIKLockedY, new cCheckIKLocked( *this, 1, "Y" ), true );
+	helper.CheckBox( frameLine, pChkIKLockedZ, new cCheckIKLocked( *this, 2, "Z" ), true );
 }
 
 reWPBone::~reWPBone(){
@@ -421,8 +492,14 @@ void reWPBone::UpdateBone(){
 		pEditPosition->SetVector( pBone->GetPosition() );
 		pEditRotation->SetVector( pBone->GetOrientation() );
 		pEditCentralMassPoint->SetVector( pBone->GetCentralMassPoint() );
+		pEditIKLimitsLower->SetVector( pBone->GetIKLimitsLower() );
+		pEditIKLimitsUpper->SetVector( pBone->GetIKLimitsUpper() );
+		pEditIKResistance->SetVector( pBone->GetIKResistance() );
 		pEditMass->SetFloat( pBone->GetMass() );
 		pChkDynamic->SetChecked( pBone->GetDynamic() );
+		pChkIKLockedX->SetChecked( pBone->GetIKLockedX() );
+		pChkIKLockedY->SetChecked( pBone->GetIKLockedY() );
+		pChkIKLockedZ->SetChecked( pBone->GetIKLockedZ() );
 		
 	}else{
 		pEditName->ClearText();
@@ -430,8 +507,14 @@ void reWPBone::UpdateBone(){
 		pEditPosition->SetVector( decVector() );
 		pEditRotation->SetVector( decVector() );
 		pEditCentralMassPoint->SetVector( decVector() );
+		pEditIKLimitsLower->SetVector( decVector() );
+		pEditIKLimitsUpper->SetVector( decVector() );
+		pEditIKResistance->SetVector( decVector() );
 		pEditMass->ClearText();
 		pChkDynamic->SetChecked( false );
+		pChkIKLockedX->SetChecked( false );
+		pChkIKLockedY->SetChecked( false );
+		pChkIKLockedZ->SetChecked( false );
 	}
 	
 	const bool enabled = pBone != NULL;
@@ -440,6 +523,12 @@ void reWPBone::UpdateBone(){
 	pEditPosition->SetEnabled( enabled );
 	pEditRotation->SetEnabled( enabled );
 	pEditCentralMassPoint->SetEnabled( enabled );
+	pEditIKLimitsLower->SetEnabled( enabled );
+	pEditIKLimitsUpper->SetEnabled( enabled );
+	pEditIKResistance->SetEnabled( enabled );
 	pEditMass->SetEnabled( enabled );
 	pChkDynamic->SetEnabled( enabled );
+	pChkIKLockedX->SetEnabled( enabled );
+	pChkIKLockedY->SetEnabled( enabled );
+	pChkIKLockedZ->SetEnabled( enabled );
 }

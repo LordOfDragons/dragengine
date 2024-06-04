@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Bullet Physics Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEBPBPCONSTRAINT6DOF_H_
@@ -31,7 +34,7 @@ class debpColliderConstraint;
 
 
 /**
- * \brief Bullet physics 6-Dof constraint adapter.
+ * Bullet physics 6-Dof constraint adapter.
  */
 class debpBPConstraint6Dof : public btGeneric6DofConstraint, debpBPConstraintBase{
 private:
@@ -48,20 +51,22 @@ private:
 	bool pHasJointFrictionLinear[ 3 ];
 	bool pHasJointFrictionAngular[ 3 ];
 	
+	btScalar pDamping;
+	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create constraint. */
+	/** Create constraint. */
 	debpBPConstraint6Dof( debpColliderConstraint &constraint, btRigidBody &rbA,
 		btRigidBody &rbB, const btTransform &frameInA, const btTransform &frameInB );
 	
-	/** \brief Create constraint. */
+	/** Create constraint. */
 	debpBPConstraint6Dof( debpColliderConstraint &constraint, btRigidBody &rbA,
 		const btTransform &frameInA, const btTransform &frameInB );
 	
-	/** \brief Clean up constraint. */
+	/** Clean up constraint. */
 	virtual ~debpBPConstraint6Dof();
 	/*@}*/
 	
@@ -69,20 +74,26 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Set motor indices. */
+	/** Set motor indices. */
 	void SetMotorIndices( int x, int y, int z );
 	
-	/** \brief Save limits for special use. */
+	/** Save limits for special use. */
 	void SaveLimits();
 	
-	/** \brief Set if linear joint friction is present. */
+	/** Set if linear joint friction is present. */
 	void SetHasJointFrictionLinear( int index, bool enabled );
 	
-	/** \brief Set if angular joint friction is present. */
+	/** Set if angular joint friction is present. */
 	void SetHasJointFrictionAngular( int index, bool enabled );
 	
+	/** Damping. */
+	inline btScalar GetDamping() const{ return pDamping; }
+	
+	/** Set damping. */
+	void SetDamping( btScalar damping );
+	
 	/**
-	 * \brief Prepare constraint for next simulation step.
+	 * Prepare constraint for next simulation step.
 	 * \details From debpBPConstraintBase.
 	 */
 	virtual void PrepareForStep();
@@ -90,7 +101,7 @@ public:
 	
 	
 	/**
-	 * \brief Determine number of rows required for constraint friction.
+	 * Determine number of rows required for constraint friction.
 	 * 
 	 * This call is used by subclasses of constraint solvers to add constraint friction. This composes
 	 * of static and kinematic joint friction.
@@ -98,7 +109,7 @@ public:
 	virtual int GetConstraintFrictionCount();
 	
 	/**
-	 * \brief Get constraint friction forces.
+	 * Get constraint friction forces.
 	 * 
 	 * This call is used by subclasses of constraint solvers to add constraint friction. This composes
 	 * of static and kinematic joint friction.
@@ -108,13 +119,13 @@ public:
 	
 	
 	/**
-	 * \brief Bullet internal method used by the constraint solver.
+	 * Bullet internal method used by the constraint solver.
 	 * \details Modified to support Drag[en]gine features.
 	 */
 	virtual void getInfo1( btConstraintInfo1 *info );
 	
 	/**
-	 * \brief Bullet internal method used by the constraint solver.
+	 * Bullet internal method used by the constraint solver.
 	 * \details Modified to support Drag[en]gine features.
 	 */
 	virtual void getInfo2( btConstraintInfo2 *info );

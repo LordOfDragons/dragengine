@@ -51,7 +51,7 @@ if hasSystemFOX:
 		'name' : 'Internal FOX-Toolkit library',
 		'cpppath' : [],
 		'libpath' : [],
-		'cppflags' : [],
+		'cppflags' : ['-DOLD_STRING_COMPARE_NS'],
 		'version' : libFOXVersion,
 		'libs' : libs,
 		'runtimelibs' : [],
@@ -80,7 +80,15 @@ def foxBuild(target, source, env):
 	
 	deps = []
 	deps.append(parent_targets['lib_libpng'])
-	script = createScriptHeader(env, deps=deps)
+	
+	cppflags = []
+	nosan = False
+	
+	if env['OSWindows'] and env['CROSSCOMPILE_CLANG']:
+		cppflags.append('-Wno-narrowing')
+		nosan = True
+	
+	script = createScriptHeader(env, deps=deps, cppflags=cppflags, nosan=nosan)
 	
 	script.append('cd "{}" || exit 1'.format(buildDir.Dir(srcdir).abspath))
 	
@@ -88,6 +96,9 @@ def foxBuild(target, source, env):
 		script.append('patch -p1 <{} || exit 1'.format(p.srcnode().abspath))
 	
 	script.append('autoreconf -fi || exit 1')
+	
+	for p in env['POST_PATCHES']:
+		script.append('patch -p1 <{} || exit 1'.format(p.srcnode().abspath))
 	
 	cmdline = ['./configure --prefix="{}"'.format(buildDir.abspath)]
 	
@@ -105,6 +116,7 @@ def foxBuild(target, source, env):
 	cmdline.append('--disable-bz2lib')
 	cmdline.append('--with-opengl')
 	cmdline.append('--enable-threadsafe')
+	cmdline.append('--enable-silent-rules')
 	
 	if env['OSWindows']:
 		cmdline.append('--without-x')
@@ -132,22 +144,26 @@ def foxBuild(target, source, env):
 	script.append('{} || exit 1'.format(' '.join(cmdline)))
 	
 	script.append('cd lib || exit 1')
-	script.append('make install || exit 1')
+	script.append('make -j {} install || exit 1'.format(env['with_threads']))
 	
 	script.append('cd ../include')
-	script.append('make install || exit 1')
+	script.append('make -j {} install || exit 1'.format(env['with_threads']))
 	
 	if patchSoname:
 		script.append('cd ../.. || exit 1')
 		script.append('cp "{}" "{}" || exit 1'.format(libFileNameOrg, libFileName))
 		script.append('patchelf --set-soname "{}" "{}" || exit 1'.format(patchSoname, libFileName))
 	
-	if not env.RunIsolatedSystem(script):
+	if not env.RunExternalCommand(script):
 		raise Exception('Failed building fox')
 
 patches = [] # create with 'diff -rupN original_sources patches_sources'
 globFiles(envLibrary, 'patches/{}'.format(foxSrcVersion), '*.patch', patches, recursive=False)
 envLibrary.Append(PATCHES = [envLibrary.File(x) for x in sorted(patches)])
+
+postPatches = [] # create with 'diff -rupN original_sources patches_sources'
+globFiles(envLibrary, 'postPatches/{}'.format(foxSrcVersion), '*.patch', postPatches, recursive=False)
+envLibrary.Append(POST_PATCHES = [envLibrary.File(x) for x in sorted(postPatches)])
 
 if buildStaticLinking:
 	targets = [staticFileName]
@@ -159,8 +175,11 @@ with open(envLibrary.File('header_file_list/{}'.format(foxSrcVersion)).srcnode()
 library = envLibrary.Command(targets, '{}.tar.bz2'.format(srcdir),
 	envLibrary.Action(foxBuild, 'Build fox'))
 envLibrary.Depends(library, envLibrary['PATCHES'])
+envLibrary.Depends(library, envLibrary['POST_PATCHES'])
 if envLibrary['OSWindows']:
 	envLibrary.Depends(library, parent_targets['lib_libpng']['depends'])
+
+#envLibrary.SideEffect('#notParallelCMake', library)
 
 depends = parent_env.Alias('lib_fox', library)
 
@@ -200,7 +219,9 @@ parent_targets['lib_fox'] = {
 	'name' : 'Internal FOX Toolkit library',
 	'cpppath' : cpppath,
 	'libpath' : libpath,
-	'cppflags' : ['-DHAVE_FOX_{}_FX_H'.format(libFOXVersion.replace('.', '_'))],
+	'cppflags' : [
+		'-DHAVE_FOX_{}_FX_H'.format(libFOXVersion.replace('.', '_')),
+		'-DOLD_STRING_COMPARE_NS'],
 	'version' : libFOXVersion,
 	'libs' : libs,
 	'runtimelibs' : runtimelibs,

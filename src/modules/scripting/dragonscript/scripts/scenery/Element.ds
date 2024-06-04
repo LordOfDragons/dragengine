@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -31,43 +34,18 @@ pin Dragengine.LoadSave
  * \brief Game world element.
  */
 class Element 
-	/** \brief Element class. */
 	private var ElementClass pClass
-	
-	/** \brief Position. */
 	private var DVector pPosition
-	
-	/** \brief Orientation. */
 	private var Quaternion pOrientation
-	
-	/** \brief Scaling. */
 	private var Vector pScaling
-	
-	/** \brief Is scaled. */
 	private var bool pIsScaled
-	
-	/** \brief Parent or \em null if not attached. */
 	private var Element pParent
-	
-	/** \brief Game world or \em null if not added to one. */
 	private var GameWorld pGameWorld
-	
-	/** \brief Element is visible */
 	private var bool pVisible
-	
-	/** \brief Element is touchable. */
 	private var bool pTouchable
-	
-	/** \brief Unique id used for saving or networking. */
 	private var UniqueID pID
-	
-	/** \brief Element matrix or \em null if not calculated yet. */
 	private var DMatrix pMatrix
-	
-	/** \brief Inverse element matrix or \em null if not calculated yet. */
 	private var DMatrix pMatrixInverse
-	
-	/** \brief Element stub used to create the element or \em null if unknown. */
 	private var StubElement pStub
 	
 	
@@ -116,8 +94,8 @@ class Element
 	/**
 	 * \brief Initialize element from stub.
 	 * 
-	 * The stub is stored in the element for saving. Do not change the stub after
-	 * using it for the init() call.
+	 * Stub is stored in element for saving. Stub can be changed in certain situations.
+	 * In general though the stub should be kept unchanged.
 	 */
 	public func void init( StubElement stub )
 		if stub == null
@@ -235,6 +213,7 @@ class Element
 		this.pPosition = position
 		this.pOrientation = orientation
 		this.pScaling = scaling
+		pIsScaled = not Vector.new(1, 1, 1).equals(scaling)
 		this.pMatrix = null
 		this.pMatrixInverse = null
 		
@@ -464,23 +443,25 @@ class Element
 	/**
 	 * \brief Read element from file reader.
 	 * 
-	 * Default implementation does nothing.
+	 * The default implementation reads a single byte expecting value 0 indicating version 0.
+	 * This allows subclasses to add persistency support by overwriting this method without
+	 * super calling it.
 	 */
 	public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+		if reader.readByte() !=  0 // version
+			throw EInvalidParam.new( "unsupported version" )
+		end
 	end
 	
 	/**
 	 * \brief Write element to file writer.
 	 * 
-	 * Default implementation does nothing.
-	 * 
-	 * \note
-	 * Updating save file format can be done by adding to the StubElement a property
-	 * with the save file version used, for example "@saveVersion" or similar. Since
-	 * the stub element is read and stored during init while loading this information
-	 * is present when readFromFile() is called.
+	 * The default implementation writes a single byte of value 0 indicating version 0.
+	 * This allows subclasses to add persistency support by overwriting this method without
+	 * super calling it.
 	 */
 	public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+		writer.writeByte( 0 ) // version
 	end
 	
 	/**

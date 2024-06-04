@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -41,77 +44,81 @@ class WorldRenderer extends Widget
 	
 	/** \brief Create world renderer. */
 	public func new()
-		this.pCanvasRenderWorld = CanvasRenderWorld.new()
-		this.getCanvasContent().addCanvas( this.pCanvasRenderWorld )
+		pCanvasRenderWorld = CanvasRenderWorld.new()
+		getCanvasContent().addCanvas(pCanvasRenderWorld)
+		setDesignerSelector("WorldRenderer")
 	end
 	
 	/** \brief Create world renderer. */
-	public func new( int x, int y, int width, int height ) super( x, y, width, height ) 
-		this.pRenderMinimumSize = Point.new( width, height )
+	public func new(int x, int y, int width, int height) super(x, y, width, height) 
+		pRenderMinimumSize = Point.new(width, height)
 		
-		this.pCanvasRenderWorld = CanvasRenderWorld.new()
-		this.getCanvasContent().addCanvas( this.pCanvasRenderWorld )
+		pCanvasRenderWorld = CanvasRenderWorld.new()
+		getCanvasContent().addCanvas(pCanvasRenderWorld)
 		
-		this.updateCanvasRenderWorld()
+		updateCanvasRenderWorld()
+		setDesignerSelector("WorldRenderer")
 	end
 	
 	
 	
 	/** \brief Camera. */
 	public func Camera getCamera()
-		return this.pCanvasRenderWorld.getCamera()
+		return pCanvasRenderWorld.getCamera()
 	end
 	
 	/** \brief Set camera. */
-	public func void setCamera( Camera camera )
-		this.pCanvasRenderWorld.setCamera( camera )
+	public func void setCamera(Camera camera)
+		pCanvasRenderWorld.setCamera(camera)
 	end
 	
 	/** \brief Minimum renderer size or null if not set. */
 	public func Point getRenderMinimumSize()
-		return this.pRenderMinimumSize
+		return pRenderMinimumSize
 	end
 	
 	/** \brief Set minimum renderer size or null if not set. */
-	public func void setRenderMinimumSize( Point size )
+	public func void setRenderMinimumSize(Point size)
 		if size == null
-			if this.pRenderMinimumSize == null
+			if pRenderMinimumSize == null
 				return
 			end
-			this.pRenderMinimumSize = size
+			pRenderMinimumSize = size
 			
 		else
-			if size.equals( this.pRenderMinimumSize )
+			if size.equals(pRenderMinimumSize)
 				return
 			end
-			this.pRenderMinimumSize = Point.new().largest( size )
+			pRenderMinimumSize = Point.new().largest(size)
 		end
 		
-		this.layoutParent()
+		layoutParent()
 	end
 	
 	
 	
 	/** \brief Project point from 3d world. */
-	public func Point project( DVector position )
-		return this.pCanvasRenderWorld.project( position )
+	public func Point project(DVector position)
+		var BorderSize padding = getPadding()
+		return Point.new(padding.getLeft(), padding.getTop()) + pCanvasRenderWorld.project(position)
 	end
 	
 	/** \brief Back project position into 3d world. */
-	public func Vector backProject( Point position )
-		return this.pCanvasRenderWorld.backProject( position )
+	public func Vector backProject(Point position)
+		var BorderSize padding = getPadding()
+		return pCanvasRenderWorld.backProject(position - Point.new(padding.getLeft(), padding.getTop()))
 	end
 	
 	
 	
 	/** \brief Minimal size of widget. */
 	public func Point getMinimumSize()
-		if this.isMinimumSizeSet()
+		if isMinimumSizeSet()
 			return super.getMinimumSize()
 		end
 		
-		if this.pRenderMinimumSize != null
-			return this.getPadding().getSize() + this.pRenderMinimumSize
+		if pRenderMinimumSize != null
+			return getPadding().getSize() + pRenderMinimumSize
 			
 		else
 			return super.getMinimumSize()
@@ -121,28 +128,28 @@ class WorldRenderer extends Widget
 	
 	
 	/** \brief State changed. */
-	public func void onStateChanged( StateChangeEvent event )
-		super.onStateChanged( event )
-		this.updateCanvasRenderWorld()
+	public func void onStateChanged(StateChangeEvent event)
+		super.onStateChanged(event)
+		updateCanvasRenderWorld()
 	end
 	
 	/** \brief Padding changed. */
 	public func void onPaddingChanged()
-		this.updateCanvasRenderWorld()
+		updateCanvasRenderWorld()
 	end
 	
 	/** \brief Size changed. */
-	public func void onResize( WidgetEvent event )
-		super.onResize( event )
-		this.updateCanvasRenderWorld()
+	public func void onResize(WidgetEvent event)
+		super.onResize(event)
+		updateCanvasRenderWorld()
 	end
 	
 	
 	
 	/** \brief Update canvas render world. */
 	protected func void updateCanvasRenderWorld()
-		var BorderSize padding = this.getPadding()
-		this.pCanvasRenderWorld.setPosition( Point.new( padding.getLeft(), padding.getTop() ) )
-		this.pCanvasRenderWorld.setSize( Point.new().largest( this.getSize() - padding.getSize() ) )
+		var BorderSize padding = getPadding()
+		pCanvasRenderWorld.setPosition(Point.new(padding.getLeft(), padding.getTop()))
+		pCanvasRenderWorld.setSize(Point.new().largest(getSize() - padding.getSize()))
 	end
 end

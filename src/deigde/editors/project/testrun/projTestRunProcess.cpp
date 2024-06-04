@@ -1,35 +1,40 @@
-/* 
- * DEIGDE Project
+/*
+ * MIT License
  *
- * Copyright (C) 2018, Plüss Roland ( roland@rptd.ch )
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is projributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
+
+#include <dragengine/dragengine_configuration.h>
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
 #include <signal.h>
 #include <stdint.h>
-#include <sys/time.h>
 #include <sys/types.h>
 #ifdef OS_W32
 #include <dragengine/app/include_windows.h>
 #else
+#include <unistd.h>
+#include <sys/time.h>
 #include <sys/wait.h>
 #include <sys/select.h>
 #endif
@@ -123,8 +128,8 @@ void projTestRunProcess::WriteUShortToPipe( int value ){
 	if( value < 0 || value > 0xffff ){
 		DETHROW( deeInvalidParam );
 	}
-	const uint16_t ushort = ( uint16_t )value;
-	WriteToPipe( &ushort, sizeof( uint16_t ) );
+	const uint16_t vushort = ( uint16_t )value;
+	WriteToPipe( &vushort, sizeof( uint16_t ) );
 }
 
 void projTestRunProcess::WriteFloatToPipe( float value ){
@@ -132,7 +137,7 @@ void projTestRunProcess::WriteFloatToPipe( float value ){
 }
 
 void projTestRunProcess::WriteString16ToPipe( const char *string ){
-	const int length = strlen( string );
+	const int length = ( int )strlen( string );
 	WriteUShortToPipe( length );
 	WriteToPipe( string, length );
 }
@@ -166,12 +171,12 @@ int projTestRunProcess::ReadUCharFromPipe(){
 }
 
 int projTestRunProcess::ReadUShortFromPipe(){
-	uint16_t ushort;
-	ReadFromPipe( &ushort, sizeof( uint16_t ) );
-	return ushort;
+	uint16_t vushort;
+	ReadFromPipe( &vushort, sizeof( uint16_t ) );
+	return vushort;
 }
 
-int projTestRunProcess::ReadFloatFromPipe(){
+float projTestRunProcess::ReadFloatFromPipe(){
 	float value;
 	ReadFromPipe( &value, sizeof( float ) );
 	return value;
@@ -216,7 +221,6 @@ void projTestRunProcess::ReadFromPipe( void *data, int length ){
 void projTestRunProcess::Run(){
 	try{
 		pReadRunParameters();
-		pCreateLogger();
 		
 		pLogConfiguration();
 		pLauncher.LocatePath();
@@ -233,9 +237,15 @@ void projTestRunProcess::Run(){
 			pLogger->LogException( LOGSOURCE, e );
 			
 		}else{
+#ifdef OS_W32
+			MessageBoxA( NULL, e.FormatOutput().Join( "\n" ).GetString(),
+				"Test-Runner Error", MB_OK | MB_ICONERROR );
+#else
 			e.PrintError();
+#endif
 		}
 		pStopEngine();
+		throw;
 	}
 	
 	if( pLogger ){
@@ -258,12 +268,16 @@ void projTestRunProcess::pReadRunParameters(){
 	int i, count;
 	
 	pRunParameters.pathLogFile = ReadString16FromPipe();
+	pCreateLogger();
+	pLogger->LogInfo( LOGSOURCE, "TestRunner launched. Reading run parameters..." );
+
 	pRunParameters.pathDataDirectory = ReadString16FromPipe();
 	pRunParameters.pathOverlay = ReadString16FromPipe();
 	pRunParameters.pathConfig = ReadString16FromPipe();
 	pRunParameters.pathCapture = ReadString16FromPipe();
 	
 	pRunParameters.scriptDirectory = ReadString16FromPipe();
+	pRunParameters.scriptVersion = ReadString16FromPipe();
 	pRunParameters.gameObject = ReadString16FromPipe();
 	pRunParameters.vfsPathConfig = ReadString16FromPipe();
 	pRunParameters.vfsPathCapture = ReadString16FromPipe();
@@ -308,8 +322,11 @@ void projTestRunProcess::pReadRunParameters(){
 	pRunParameters.moduleAudio = ReadString16FromPipe();
 	pRunParameters.moduleSynthesizer = ReadString16FromPipe();
 	pRunParameters.moduleNetwork = ReadString16FromPipe();
+	pRunParameters.moduleVR = ReadString16FromPipe();
 	
 // 	WriteUCharToPipe( projTestRunConstants::ercSuccess );
+
+	pLogger->LogInfo( LOGSOURCE, "Run parameters read" );
 }
 
 void projTestRunProcess::pLogConfiguration(){
@@ -330,6 +347,8 @@ void projTestRunProcess::pLogConfiguration(){
 	
 	pLogger->LogInfoFormat( LOGSOURCE, "- Script Directory: %s",
 		pRunParameters.scriptDirectory.GetString() );
+	pLogger->LogInfoFormat( LOGSOURCE, "- Script Version: %s",
+		pRunParameters.scriptVersion.GetString() );
 	pLogger->LogInfoFormat( LOGSOURCE, "- Game Object: %s",
 		pRunParameters.gameObject.GetString() );
 	pLogger->LogInfoFormat( LOGSOURCE, "- VFS Path Config: %s",
@@ -391,6 +410,8 @@ void projTestRunProcess::pLogConfiguration(){
 		pRunParameters.moduleSynthesizer.GetString() );
 	pLogger->LogInfoFormat( LOGSOURCE, "- Module Network: %s",
 		pRunParameters.moduleNetwork.GetString() );
+	pLogger->LogInfoFormat( LOGSOURCE, "- Module VR: %s",
+		pRunParameters.moduleVR.GetString() );
 }
 
 void projTestRunProcess::pCreateLogger(){

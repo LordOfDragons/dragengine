@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Animator Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdlib.h>
@@ -141,11 +144,12 @@ pWindowMain( windowMain )
 	try{
 		SetFilePath( "new.deanimator" );
 		
-		pCreateWorld();
+		pCreateWorld(); // creates animator
 		pCreateCamera();
 		pCreateCollider();
 		
 		pEngAnimatorInstance = engine->GetAnimatorInstanceManager()->CreateAnimatorInstance();
+		pEngAnimatorInstance->SetAnimator( pEngAnimator );
 		
 		pLocomotion = new aeAnimatorLocomotion( this );
 		pWakeboard = new aeWakeboard( this );
@@ -309,12 +313,16 @@ void aeAnimator::UpdateWorld( float elapsed ){
 	// reset the animation states if required
 	if( pEngComponent && pResetState ){
 		const int boneCount = pEngComponent->GetBoneCount();
-		
 		for( i=0; i<boneCount; i++ ){
 			deComponentBone &bone = pEngComponent->GetBoneAt( i );
 			bone.SetPosition( decVector() );
 			bone.SetRotation( decQuaternion() );
 			bone.SetScale( decVector( 1.0f, 1.0f, 1.0f ) );
+		}
+		
+		const int vertexPositionSetCount = pEngComponent->GetVertexPositionSetCount();
+		for( i=0; i<vertexPositionSetCount; i++ ){
+			pEngComponent->SetVertexPositionSetWeightAt( i, 0.0f );
 		}
 		
 		pEngComponent->InvalidateBones();
@@ -784,6 +792,67 @@ void aeAnimator::RemoveAllBones(){
 		if( pEngAnimator ){
 			pEngAnimator->GetListBones().RemoveAll();
 			pEngAnimator->NotifyBonesChanged();
+		}
+		
+		NotifyAnimatorChanged();
+	}
+}
+
+
+
+// Vertex position set management
+///////////////////////////////////
+
+void aeAnimator::SetListVertexPositionSets( const decStringSet &sets ){
+	if( sets == pListVertexPositionSets ){
+		return;
+	}
+	
+	pListVertexPositionSets = sets;
+	
+	if( pEngAnimator ){
+		pEngAnimator->GetListVertexPositionSets() = sets;
+		pEngAnimator->NotifyVertexPositionSetsChanged();
+	}
+	
+	NotifyAnimatorChanged();
+}
+
+void aeAnimator::AddVertexPositionSet( const char *vertexPositionSet ){
+	DEASSERT_NOTNULL( vertexPositionSet )
+	
+	if( ! pListVertexPositionSets.Has( vertexPositionSet ) ){
+		pListVertexPositionSets.Add( vertexPositionSet );
+		
+		if( pEngAnimator ){
+			pEngAnimator->GetListVertexPositionSets().Add( vertexPositionSet );
+			pEngAnimator->NotifyVertexPositionSetsChanged();
+		}
+		
+		NotifyAnimatorChanged();
+	}
+}
+
+void aeAnimator::RemoveVertexPositionSet( const char *vertexPositionSet ){
+	if( pListVertexPositionSets.Has( vertexPositionSet ) ){
+		pListVertexPositionSets.Remove( vertexPositionSet );
+		
+		if( pEngAnimator ){
+			pEngAnimator->GetListVertexPositionSets().Remove( vertexPositionSet );
+			pEngAnimator->NotifyVertexPositionSetsChanged();
+		}
+		
+		NotifyAnimatorChanged();
+	}
+}
+
+void aeAnimator::RemoveAllVertexPositionSets(){
+	if( pListVertexPositionSets.GetCount() > 0 ){
+		pListVertexPositionSets.RemoveAll();
+		
+		if( pEngAnimator ){
+			pEngAnimator->GetListVertexPositionSets().RemoveAll();
+			pEngAnimator->NotifyVertexPositionSetsChanged();
 		}
 		
 		NotifyAnimatorChanged();
@@ -1427,18 +1496,15 @@ void aeAnimator::pUpdateComponent(){
 	// try to load the model, skin and rig if possible
 	try{
 		if( ! pDisplayModelPath.IsEmpty() ){
-			displayModel = engine->GetModelManager()->LoadModel(
-				pDisplayModelPath.GetString(), GetDirectoryPath() );
+			displayModel = engine->GetModelManager()->LoadModel( pDisplayModelPath, GetDirectoryPath() );
 		}
 		
 		if( ! pDisplaySkinPath.IsEmpty() ){
-			displaySkin = engine->GetSkinManager()->LoadSkin(
-				pDisplaySkinPath.GetString(), GetDirectoryPath() );
+			displaySkin = engine->GetSkinManager()->LoadSkin( pDisplaySkinPath, GetDirectoryPath() );
 		}
 		
 		if( ! pDisplayRigPath.IsEmpty() ){
-			displayRig = engine->GetRigManager()->LoadRig(
-				pDisplayRigPath.GetString(), GetDirectoryPath() );
+			displayRig = engine->GetRigManager()->LoadRig( pDisplayRigPath, GetDirectoryPath() );
 		}
 		
 		if( pRigPath.IsEmpty() ){
@@ -1540,37 +1606,24 @@ void aeAnimator::pUpdateComponent(){
 }
 
 void aeAnimator::pUpdateAnimator(){
-	deAnimation *animation = NULL;
+	deAnimation::Ref animation;
 	
-	// try to load the animation if possible
 	try{
 		if( ! pAnimationPath.IsEmpty() ){
-			animation = GetEngine()->GetAnimationManager()->LoadAnimation(
-				pAnimationPath.GetString(), GetDirectoryPath() );
+			animation.TakeOver( GetEngine()->GetAnimationManager()->
+				LoadAnimation( pAnimationPath, GetDirectoryPath() ) );
 		}
 		
 	}catch( const deException &e ){
 		GetLogger()->LogException( LOGSOURCE, e );
 	}
 	
-	// protect the loaded parts
-	try{
-		// set animation
-		pEngAnimator->SetAnimation( animation );
-		
-		// free the reference we hold
-		if( animation ) animation->FreeReference();
-		
-		// update sub animators
-		pSubAnimator->SetComponentAndAnimation( pEngComponent, animation );
-		pTestingSubAnimator->SetComponentAndAnimation( pEngComponent, animation );
-		
-	}catch( const deException & ){
-		if( animation ) animation->FreeReference();
-		throw;
-	}
+	pEngAnimator->SetAnimation( animation );
 	
-	// notify rules
+	pSubAnimator->SetComponentAndAnimation( pEngComponent, animation );
+// 	pTestingSubAnimator->SetComponentAndAnimation( pEngComponent, animation );
+	pTestingSubAnimator->SetComponent( pEngComponent );
+	
 	pAnimCompChanged();
 }
 
@@ -1644,7 +1697,7 @@ void aeAnimator::pUpdateDDSBones(){
 	if( pEngComponent ){
 		boneCount = pEngComponent->GetBoneCount();
 		pEngComponent->PrepareBones();
-		matrix = decDMatrix( pEngComponent->GetMatrix() );
+		matrix = decDMatrix( pEngComponent->GetMatrix() ).Normalized();
 	}
 	
 	if( boneCount != pDDSBoneCount ){
@@ -1668,11 +1721,10 @@ void aeAnimator::pUpdateDDSBones(){
 	
 	for( i=0; i<pDDSBoneCount; i++ ){
 		if( i < boneCount && pEngComponent ){
-			const decMatrix &boneMatrix = pEngComponent->GetBoneAt( i ).GetMatrix();
-			
+			const decMatrix boneMatrix = pEngComponent->GetBoneAt( i ).GetMatrix().Normalized();
 			pDDSBones[ i ].SetPosition( boneMatrix.GetPosition() );
 			pDDSBones[ i ].SetOrientation( boneMatrix.ToQuaternion() );
-			pDDSBones[ i ].SetScale( boneMatrix.GetScale() * pDDSBoneSize );
+			pDDSBones[ i ].SetScale( decVector( pDDSBoneSize, pDDSBoneSize, pDDSBoneSize ) );
 			pDDSBones[ i ].SetVisible( true );
 			
 		}else{

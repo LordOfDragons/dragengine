@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -67,11 +70,11 @@ pin Dragengine.Utils
  * as player choice interface by a conversation playback if required.
  */
 class WindowPlayerChoice extends Window implements ConversationPlaybackPlayerChoice
-	private var PanelPlayerChoice pPanelPlayerChoice
-	private var bool pReplaceInputProcessor
-	private var InputProcessor pStoredInputProcessor
-	private var RectArea pStoredMouseArea
-	private var int pMaxEntryWidth
+	var PanelPlayerChoice pPanelPlayerChoice
+	var bool pReplaceInputProcessor
+	var InputProcessor pStoredInputProcessor
+	var RectArea pStoredMouseArea
+	var int pMaxEntryWidth
 	
 	
 	
@@ -80,75 +83,75 @@ class WindowPlayerChoice extends Window implements ConversationPlaybackPlayerCho
 	 * 
 	 * Window is initially hidden.
 	 */
-	public func new( Desktop desktop ) super( Point.new(), desktop.getSize() )
-		this.pReplaceInputProcessor = true
-		this.pMaxEntryWidth = desktop.getSize().getX()
+	func new(Desktop desktop) super(Point.new(), desktop.getSize())
+		pReplaceInputProcessor = true
+		pMaxEntryWidth = desktop.getSize().getX()
 		
-		this.runWhileBlockingLayout( block
-			this.setTitle( "" )
-			this.setDesignerSelector( "WindowPlayerChoice" )
-			this.setCanMove( false )
-			this.setCanResize( false )
-			this.setCanReorder( false )
-			this.setCanClose( false )
-			this.setCanMaximize( false )
-			this.setCanMinimize( false )
-			this.setVisible( false )
+		runWhileBlockingLayout(block
+			setTitle("")
+			setDesignerSelector("WindowPlayerChoice")
+			setCanMove(false)
+			setCanResize(false)
+			setCanReorder(false)
+			setCanClose(false)
+			setCanMaximize(false)
+			setCanMinimize(false)
+			setVisible(false)
 			
-			this.pPanelPlayerChoice = this.createPanelPlayerChoice()
-			this.addWidget( this.pPanelPlayerChoice )
-		end )
+			pPanelPlayerChoice = createPanelPlayerChoice()
+			addWidget(pPanelPlayerChoice)
+		end)
 	end
 	
 	/** \brief Dispose of window. */
-	public func void dispose()
-		this.pPanelPlayerChoice = null
+	func void dispose()
+		pPanelPlayerChoice = null
 		super.dispose()
 	end
 	
 	
 	
 	/** \brief Replace input processor while player choice is in progress. */
-	public func bool getReplaceInputProcessor()
-		return this.pReplaceInputProcessor
+	func bool getReplaceInputProcessor()
+		return pReplaceInputProcessor
 	end
 	
 	/** \brief Set to replace input processor while player choice is in progress. */
-	public func void setReplaceInputProcessor( bool restoreInputProcessor )
-		this.pReplaceInputProcessor = restoreInputProcessor
+	func void setReplaceInputProcessor(bool restoreInputProcessor)
+		pReplaceInputProcessor = restoreInputProcessor
 	end
 	
 	/** \brief Maximum entry width. */
-	public func int getMaxEntryWidth()
-		return this.pMaxEntryWidth
+	func int getMaxEntryWidth()
+		return pMaxEntryWidth
 	end
 	
 	/** \brief Set maximum entry width. */
-	public func void setMaxEntryWidth( int width )
-		width = DEMath.max( width, 50 )
-		if width == this.pMaxEntryWidth
+	func void setMaxEntryWidth(int width)
+		width = DEMath.max(width, 50)
+		if width == pMaxEntryWidth
 			return
 		end
 		
-		this.pMaxEntryWidth = width
-		this.setWidth( width )
+		pMaxEntryWidth = width
+		setWidth(width)
 	end
 	
 	
 	
 	/** \brief Remove all choices. */
-	public func void removeAllChoices()
-		this.pPanelPlayerChoice.removeAllChoices()
+	func void removeAllChoices()
+		pPanelPlayerChoice.removeAllChoices()
 	end
 	
 	/** \brief Add choice. */
-	public func void addChoice( String text, ActionListener action )
-		this.pPanelPlayerChoice.addChoice( text, action )
+	func void addChoice(String text, ActionListener action)
+		pPanelPlayerChoice.addChoice(text, action)
 	end
 	
 	/** \brief Add choice. */
-	public func void addChoice( String text, Image image, ActionListener action )
-		this.pPanelPlayerChoice.addChoice( text, image, action )
+	func void addChoice(String text, Image image, ActionListener action)
+		pPanelPlayerChoice.addChoice(text, image, action)
 	end
 	
 	/**
@@ -158,20 +161,20 @@ class WindowPlayerChoice extends Window implements ConversationPlaybackPlayerCho
 	 * animation. The default implementation shows the window centered on screen,
 	 * shows it and moves it to the top. If there are no options an exception is thrown.
 	 */
-	public func void startChoosing()
-		this.pPanelPlayerChoice.startChoosing()
+	func void startChoosing()
+		pPanelPlayerChoice.startChoosing()
 		
-		this.fitToContent()
-		this.centerWindow()
-		this.setVisible( true )
-		this.moveToTop()
+		fitToContent()
+		centerWindow()
+		setVisible(true)
+		moveToTop()
 		
-		if this.pReplaceInputProcessor
-			this.replaceInputProcessor()
-			this.replaceMouseArea()
+		if pReplaceInputProcessor
+			replaceInputProcessor()
+			replaceMouseArea()
 		end
 		
-		this.hoverOverFirstOption()
+		hoverOverFirstOption()
 	end
 	
 	/**
@@ -180,44 +183,44 @@ class WindowPlayerChoice extends Window implements ConversationPlaybackPlayerCho
 	 * This hides the choices. Overwrite to if you want to do an end choosing animation.
 	 * The default implementation hides the window.
 	 */
-	public func void endChoosing()
-		if this.pReplaceInputProcessor
-			this.restoreInputProcessor()
-			this.restoreMouseArea()
+	func void endChoosing()
+		if pReplaceInputProcessor
+			restoreInputProcessor()
+			restoreMouseArea()
 		end
 		
-		this.setVisible( false )
+		setVisible(false)
 		
 		// reset the window size to the desired initial size. this is required since
 		// PanelPlayerChoice by default uses the parent container width to figure out how wide
 		// options can be to do the proper layout. if we stay at the current size the calculation
 		// will produce smaller and smaller layouts until nothing works anymore
-		this.setWidth( this.pMaxEntryWidth )
+		setWidth(pMaxEntryWidth)
 		
 		// end choosing
-		this.pPanelPlayerChoice.endChoosing()
+		pPanelPlayerChoice.endChoosing()
 	end
 	
 	
 	
 	/** \brief Stored input processor or \em null. */
 	protected func InputProcessor getStoredInputProcessor()
-		return this.pStoredInputProcessor
+		return pStoredInputProcessor
 	end
 	
 	/** \brief Set stored input processor or \em null. */
-	protected func void setStoredInputProcessor( InputProcessor inputProcessor )
-		this.pStoredInputProcessor = inputProcessor
+	protected func void setStoredInputProcessor(InputProcessor inputProcessor)
+		pStoredInputProcessor = inputProcessor
 	end
 	
 	/** \brief Stored mouse area or \em null. */
 	protected func RectArea getStoredMouseArea()
-		return this.pStoredMouseArea
+		return pStoredMouseArea
 	end
 	
 	/** \brief Set stored mouse area or \em null. */
-	public func void setStoredMouseArea( RectArea mouseArea )
-		this.pStoredMouseArea = mouseArea
+	func void setStoredMouseArea(RectArea mouseArea)
+		pStoredMouseArea = mouseArea
 	end
 	
 	
@@ -231,7 +234,7 @@ class WindowPlayerChoice extends Window implements ConversationPlaybackPlayerCho
 	 * \brief Store BaseGameApp input processor and replace it with WidgetInputProcessor for desktop.
 	 */
 	protected func void replaceInputProcessor()
-		this.pStoredInputProcessor = BaseGameApp.getApp().getInputProcessor()
+		pStoredInputProcessor = BaseGameApp.getApp().getInputProcessor()
 		BaseGameApp.getApp().setInputProcessorDesktop()
 	end
 	
@@ -241,21 +244,21 @@ class WindowPlayerChoice extends Window implements ConversationPlaybackPlayerCho
 	 * Replaces input processor in BaseGameApp with the previously stored input processor.
 	 */
 	protected func void restoreInputProcessor()
-		if this.pStoredInputProcessor == null
+		if pStoredInputProcessor == null
 			return
 		end
 		
-		BaseGameApp.getApp().setInputProcessor( this.pStoredInputProcessor )
-		this.pStoredInputProcessor = null
+		BaseGameApp.getApp().setInputProcessor(pStoredInputProcessor)
+		pStoredInputProcessor = null
 	end
 	
 	/**
 	 * \brief Store mouse area of parent desktop and replace it with window boundary.
 	 */
 	protected func void replaceMouseArea()
-		var Desktop desktop = this.getDesktop()
-		this.pStoredMouseArea = desktop.getMouseArea()
-		desktop.setMouseArea( this.getBoundary() )
+		var Desktop desktop = getDesktop()
+		pStoredMouseArea = desktop.getMouseArea()
+		desktop.setMouseArea(getBoundary())
 	end
 	
 	/**
@@ -264,19 +267,19 @@ class WindowPlayerChoice extends Window implements ConversationPlaybackPlayerCho
 	 * Replaces mouse area in parent desktop with stored mouse area.
 	 */
 	protected func void restoreMouseArea()
-		if this.pStoredMouseArea == null
+		if pStoredMouseArea == null
 			return
 		end
 		
-		this.getDesktop().setMouseArea( this.pStoredMouseArea )
-		this.pStoredMouseArea = null
+		getDesktop().setMouseArea(pStoredMouseArea)
+		pStoredMouseArea = null
 	end
 	
 	/** \brief Move mouse cursor to hover over first option. */
 	protected func void hoverOverFirstOption()
-		var Desktop desktop = this.getDesktop()
-		var Widget widget = this.findFocusableWidget()
+		var Desktop desktop = getDesktop()
+		var Widget widget = findFocusableWidget()
 		widget.grabFocus()
-		desktop.warpCenterMouseIn( widget )
+		desktop.warpCenterMouseIn(widget)
 	end
 end

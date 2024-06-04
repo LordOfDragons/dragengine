@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -34,62 +37,81 @@ namespace Dragengine.Gui
  */
 class RangeTextModel extends DefaultTextModel implements RangeModelListener
 	/** \brief Range model. */
-	private var RangeModel pRangeModel
+	private var WeakReference pRangeModel
 	
 	
 	
 	/** \brief Create text model linked to range model. */
-	public func new( RangeModel rangeModel )
-		this.setRangeModel( rangeModel )
+	public func new(RangeModel rangeModel)
+		pRangeModel = WeakReference.new()
+		setRangeModel(rangeModel)
 	end
 	
 	
 	
-	/** \brief Range model. */
-	public func RangeModel getRangeMoel()
-		return this.pRangeModel
+	/** \brief Range model or null. */
+	public func RangeModel getRangeModel()
+		return pRangeModel.get() cast RangeModel
 	end
 	
-	/** \brief Set range model. */
-	public func void setRangeModel( RangeModel rangeModel )
-		if rangeModel == this.pRangeModel
+	/** \brief Set range model or null. */
+	public func void setRangeModel(RangeModel rangeModel)
+		var RangeModel oldRangeModel = pRangeModel.get() cast RangeModel
+		if rangeModel == oldRangeModel
 			return
 		end
 		
-		if this.pRangeModel != null
-			this.pRangeModel.removeListener( this )
+		if oldRangeModel != null
+			oldRangeModel.removeListener(this)
 		end
 		
-		this.pRangeModel = rangeModel
+		pRangeModel.set(rangeModel)
 		
 		if rangeModel != null
-			rangeModel.addListener( this )
-			super.setText( this.pRangeModel.getValue().toString() )
+			rangeModel.addListener(this)
+			super.setText(rangeModel.getValue().toString())
 		end
 	end
 	
 	
 	
 	/** \brief Set text. */
-	public func void setText( String text )
+	public func void setText(String text)
 		// set the range model value. this potentially changes the value. if the value
 		// changes our listener will be called which in turn calls super.setText().
 		// this will update the text and notify listener. for this reason why we do
 		// not call super.setText() here after altering the range model since this
 		// would be duplicated
-		if this.pRangeModel != null
-			this.pRangeModel.setValue( text.toInt() )
+		var RangeModel rangeModel = pRangeModel.get() cast RangeModel
+		if rangeModel == null
+			super.setText(text)
+			return
 		end
+		
+		// if the value is invalid do not change the range model. this allows the user
+		// to delete text or using a validator
+		if rangeModel == null or text.empty()
+			super.setText(text)
+			return
+		end
+		
+		var int value = text.toInt()
+		if value < rangeModel.getMinimum() or value > rangeModel.getMaximum()
+			super.setText(text)
+			return
+		end
+		
+		rangeModel.setValue(value)
 	end
 	
 	
 	
 	/** \brief Minimum, maximum or page size changed. */
-	public func void rangeChanged( RangeModel rangeModel )
+	public func void rangeChanged(RangeModel rangeModel)
 	end
 	
 	/** \brief Value changed. */
-	public func void valueChanged( RangeModel rangeModel )
-		super.setText( this.pRangeModel.getValue().toString() )
+	public func void valueChanged(RangeModel rangeModel)
+		super.setText(rangeModel.getValue().toString())
 	end
 end

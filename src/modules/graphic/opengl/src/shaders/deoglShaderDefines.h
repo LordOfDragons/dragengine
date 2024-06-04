@@ -1,87 +1,126 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLSHADERDEFINES_H_
 #define _DEOGLSHADERDEFINES_H_
 
+#include <dragengine/common/string/decString.h>
 
 
 /**
- * @brief Shader Program Defines.
- * Stores defines to be used for compiling a given program.
+ * Defines compiling shader programs.
  */
 class deoglShaderDefines{
 private:
 	struct sDefine{
-		char *name;
-		char *value;
+		decString name;
+		decString value;
 	};
+	
 	
 private:
 	sDefine *pDefines;
 	int pDefineCount;
+	int pDefineSize;
+	
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new defines object. */
+	/** Create defines. */
 	deoglShaderDefines();
-	/** Creates a new defines object as a copy of another defines object. */
+	
+	/** Create copy of defines. */
 	deoglShaderDefines( const deoglShaderDefines &defines );
-	/** Cleans up the defines object. */
+	
+	/** Clean up defines. */
 	~deoglShaderDefines();
 	/*@}*/
 	
-	/** @name Management */
-	/*@{*/
-	/** Retrieves the number of defines. */
-	inline int GetDefineCount() const{ return pDefineCount; }
-	/** Retrieves the define name at the given index. */
-	const char *GetDefineNameAt( int index ) const;
-	/** Retrieves the define value at the given index. */
-	const char *GetDefineValueAt( int index ) const;
-	/** Determines if a define with the given name exists. */
-	bool HasDefineNamed( const char *name ) const;
-	/**
-	 * Retrieves the value for the define with the given name. If such a define
-	 * can not be found the default value is returned.
-	 */
-	const char *GetDefineValueFor( const char *name, const char *defaultValue ) const;
 	
-	/** Adds a new define. */
-	void AddDefine( const char *name, const char *value );
-	/** Removes all defines. */
+	
+	/** \name Management */
+	/*@{*/
+	/** Count of defines. */
+	inline int GetDefineCount() const{ return pDefineCount; }
+	
+	/** Name of define at index. */
+	const decString &GetDefineNameAt( int index ) const;
+	
+	/** Value of define at index. */
+	const decString &GetDefineValueAt( int index ) const;
+	
+	/** Named define is present. */
+	bool HasDefineNamed( const char *name ) const;
+	
+	/** Value of named define or default value if absent. */
+	const decString &GetDefineValueFor( const char *name, const decString &defaultValue ) const;
+	
+	/** Set define. */
+	void SetDefine( const char *name, const char *value );
+	void SetDefine( const char *name, int value );
+	void SetDefine( const char *name, bool value );
+	
+	/** Set multiple defines set to '1'. */
+	void SetDefines( const char *name1 );
+	void SetDefines( const char *name1, const char *name2 );
+	void SetDefines( const char *name1, const char *name2, const char *name3 );
+	void SetDefines( const char *name1, const char *name2, const char *name3, const char *name4 );
+	
+	/** Remove define. */
+	void RemoveDefine( const char *name );
+	
+	/** Remove defines. */
+	void RemoveDefines( const char *name1 );
+	void RemoveDefines( const char *name1, const char *name2 );
+	void RemoveDefines( const char *name1, const char *name2, const char *name3 );
+	void RemoveDefines( const char *name1, const char *name2, const char *name3, const char *name4 );
+	
+	/** Remove all defines. */
 	void RemoveAllDefines();
 	
-	/** Determines if this defines object equals another defines object. */
+	/** Defines are equal. */
 	bool Equals( const deoglShaderDefines &defines ) const;
+	
+	/** Calculate cache id. */
+	decString CalcCacheId() const;
 	/*@}*/
 	
-	/** @name Operators */
+	
+	
+	/** \name Operators */
 	/*@{*/
-	/** Determines a defines object is equal to this defines object. */
+	/** Defines are equal. */
 	bool operator==( const deoglShaderDefines &defines ) const;
-	/** Sets this defines object to the content of another defines object. */
+	
+	/** Replace defines. */
 	deoglShaderDefines &operator=( const deoglShaderDefines &defines );
+	
+	/** Combine defines. */
+	deoglShaderDefines operator+( const deoglShaderDefines &defines ) const;
 	/*@}*/
+	
 	
 private:
 	void pCleanUp();

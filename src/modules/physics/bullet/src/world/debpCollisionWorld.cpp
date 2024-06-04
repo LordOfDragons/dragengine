@@ -1,28 +1,32 @@
-/* 
- * Drag[en]gine Bullet Physics Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
 #include <stdlib.h>
 
 #include "debpCollisionWorld.h"
+#include "debpConstraintSolver.h"
 #include "debpDelayedOperation.h"
 #include "../dePhysicsBullet.h"
 #include "../debpCollisionObject.h"
@@ -282,9 +286,9 @@ static void cbPostTick( btDynamicsWorld *world, btScalar timeStep ){
 #include "BulletSoftBody/btSoftBodyRigidBodyCollisionConfiguration.h"
 
 debpCollisionWorld::debpCollisionWorld( debpWorld &world, btDispatcher *dispatcher,
-btBroadphaseInterface *pairCache, btMultiBodyConstraintSolver *constraintSolver,
+btBroadphaseInterface *pairCache, debpConstraintSolver *constraintSolver,
 btCollisionConfiguration *collisionConfiguration, btSoftBodySolver *softBodySolver ) :
-btSoftMultiBodyDynamicsWorld( dispatcher, pairCache, constraintSolver, collisionConfiguration, softBodySolver ),
+btSoftRigidDynamicsWorld( dispatcher, pairCache, constraintSolver, collisionConfiguration, softBodySolver ),
 pWorld( world ),
 pDelayedOperation( NULL )
 {
@@ -292,11 +296,14 @@ pDelayedOperation( NULL )
 	
 	pDelayedOperation = new debpDelayedOperation( *this );
 	
+	solverInfo.m_timeStep = world.GetSimulationTimeStep();
+	
 	// more iterations will allow the solver to converge to the actual solution better.
 	// default 10
 	// notes: 20 improves. 100 makes the head case work well. 1000 even more close.
 	// tail case gets worse but once converged it works well even with less.
-	solverInfo.m_numIterations = 20; // 25 seems a nice value
+	// notes: bullet demos use 50, 100 or even 150
+	solverInfo.m_numIterations = 100; //20; // 25 seems a nice value
 	
 	// global non-contact constraint damping. determines percentage of relative velocity to use.
 	// hence 1 is no damping and everything below damps the velocity.
@@ -574,15 +581,8 @@ void debpCollisionWorld::CheckDynamicCollisions( btScalar timeStep ){
 			colinfo->SetOwnerBone( colObj0.GetOwnerBone() );
 			colinfo->SetOwnerShape( shape0 );
 			
-			collider.AddReference(); // safe-guard to avoid collider being removed while in use
-			try{
-				collider.GetPeerScripting()->CollisionResponse( &collider, colinfo ); // can potentially remove collider
-				
-			}catch( const deException & ){
-				collider.FreeReference(); // give up safe-guard
-				throw;
-			}
-			collider.FreeReference(); // give up safe-guard
+			const deCollider::Ref guard( &collider ); // script can potentially remove collider
+			collider.GetPeerScripting()->CollisionResponse( &collider, colinfo );
 		}
 		
 		// call collision response on second collider if dynamic and not removed by the first collider
@@ -605,15 +605,8 @@ void debpCollisionWorld::CheckDynamicCollisions( btScalar timeStep ){
 			colinfo->SetOwnerBone( colObj1Safe.GetOwnerBone() );
 			colinfo->SetOwnerShape( shape1 );
 			
-			collider.AddReference(); // safe-guard to avoid collider being removed while in use
-			try{
-				collider.GetPeerScripting()->CollisionResponse( &collider, colinfo ); // can potentially remove collider
-				
-			}catch( const deException & ){
-				collider.FreeReference(); // give up safe-guard
-				throw;
-			}
-			collider.FreeReference(); // give up safe-guard
+			const deCollider::Ref guard( &collider ); // script can potentially remove collider
+			collider.GetPeerScripting()->CollisionResponse( &collider, colinfo );
 		}
 		
 		if( debugInfo ){
@@ -690,6 +683,8 @@ btCollisionObject *colObjB, ContactResultCallback& resultCallback ){
 
 struct sContactResultBoolean : btManifoldResult{
 	bool hasContact;
+	// btVector3 hackPointInWorld;
+	// btScalar hackDepth;
 	
 	sContactResultBoolean( const btCollisionObjectWrapper *obj0Wrap,
 		const btCollisionObjectWrapper *obj1Wrap ) :
@@ -700,6 +695,8 @@ struct sContactResultBoolean : btManifoldResult{
 	virtual void addContactPoint( const btVector3 &normalOnBInWorld,
 	const btVector3 &pointInWorld, btScalar depth ){
 		hasContact = true;
+			// hackPointInWorld = pointInWorld;
+			// hackDepth = depth;
 	}
 };
 
@@ -802,9 +799,6 @@ btCollisionObject *colObjA, btCollisionObject *colObjB ){
 		
 		btCollisionAlgorithm * const algorithm = getDispatcher()->findAlgorithm(
 			&obA, &obB, 0, BT_CLOSEST_POINT_ALGORITHMS );
-			// BT_CONTACT_POINT_ALGORITHMS
-			// sometimes bullet sucks like nothing else. box-box collision is instable as hell
-			// and no sign why.
 		
 		if( ! algorithm ){
 			return false;
@@ -817,8 +811,9 @@ btCollisionObject *colObjA, btCollisionObject *colObjB ){
 		getDispatcher()->freeCollisionAlgorithm( algorithm );
 		
 		pDelayedOperation->Unlock();
-// 			if(doDebug) printf( "Done\n" );
 		
+			// if(result.hasContact) pWorld.GetBullet().LogInfoFormat("BulletBug.safeContactPairTest: (%g,%g,%g) %g",
+			// 	result.hackPointInWorld.x(), result.hackPointInWorld.y(), result.hackPointInWorld.z(), result.hackDepth);
 		return result.hasContact;
 		
 	}catch( const deException & ){
@@ -980,7 +975,7 @@ void debpCollisionWorld::contactTest( btCollisionObject *colObj, btCollisionWorl
 
 
 void debpCollisionWorld::solveConstraints( btContactSolverInfo &solverInfo ){
-	btSoftMultiBodyDynamicsWorld::solveConstraints( solverInfo );
+	btSoftRigidDynamicsWorld::solveConstraints( solverInfo );
 }
 
 
@@ -1001,7 +996,7 @@ void debpCollisionWorld::internalSingleStepSimulation( btScalar timeStep ){
 	pDelayedOperation->Lock();
 	
 	try{
-		btSoftMultiBodyDynamicsWorld::internalSingleStepSimulation( timeStep );
+		btSoftRigidDynamicsWorld::internalSingleStepSimulation( timeStep );
 		
 		// NOTE For btSoftMultiBodyDynamicsWorld::internalSingleStepSimulation the pre and post tick
 		//      callback are called right at the start and end of the function. For btSoftRigidDynamicsWorld

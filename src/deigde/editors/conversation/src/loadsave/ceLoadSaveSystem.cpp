@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Conversation Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <ctype.h>
@@ -28,6 +31,7 @@
 #include "ceLoadSaveCTS.h"
 #include "ceLoadSaveCTA.h"
 #include "ceLoadSaveCTGS.h"
+#include "ceLoadSaveLangPack.h"
 #include "../conversation/ceConversation.h"
 #include "../gui/ceWindowMain.h"
 
@@ -49,6 +53,7 @@
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/systems/deModuleSystem.h>
 #include <dragengine/systems/modules/deLoadableModule.h>
+#include <dragengine/systems/modules/langpack/deBaseLanguagePackModule.h>
 
 
 
@@ -74,6 +79,7 @@ pLSCTA( NULL ),
 	pLSCTA = new ceLoadSaveCTA( *this, logger, loggingName );
 	pLSCTGS = new ceLoadSaveCTGS( *this, logger, loggingName );
 	
+	UpdateLSLangPacks();
 	pBuildFilePattern();
 }
 
@@ -102,7 +108,7 @@ ceConversation *ceLoadSaveSystem::LoadConversation( const char *filename ){
 	reader.TakeOver( pWindowMain.GetEnvironment().GetFileSystemGame()
 		->OpenFileForReading( decPath::CreatePathUnix( filename ) ) );
 	
-	ceConversation *conversation = NULL;
+	ceConversation *conversation = nullptr;
 	
 	try{
 		conversation = new ceConversation( &pWindowMain.GetEnvironment() );
@@ -175,30 +181,133 @@ void ceLoadSaveSystem::SaveCTGS( const char *filename, const ceConversation &con
 
 
 
+int ceLoadSaveSystem::GetLSLangPackCount() const{
+	return pLSLangPacks.GetCount();
+}
+
+ceLoadSaveLangPack *ceLoadSaveSystem::GetLSLangPackAt( int index ) const{
+	return ( ceLoadSaveLangPack* )pLSLangPacks.GetAt( index );
+}
+
+int ceLoadSaveSystem::IndexOfLSLangPack( ceLoadSaveLangPack *lsLangPack ) const{
+	return pLSLangPacks.IndexOf( lsLangPack );
+}
+
+bool ceLoadSaveSystem::HasLSLangPack( ceLoadSaveLangPack *lsLangPack ) const{
+	return pLSLangPacks.Has( lsLangPack );
+}
+
+int ceLoadSaveSystem::IndexOfLSLangPackMatching( const char *filename ){
+	const decString testFilename( filename );
+	const int count = pLSLangPacks.GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		if( testFilename.MatchesPattern( ( ( ceLoadSaveLangPack* )pLSLangPacks.GetAt( i ) )->GetPattern() ) ){
+			return i;
+		}
+	}
+	
+	return -1;
+}
+
+void ceLoadSaveSystem::AddLSLangPack( ceLoadSaveLangPack *lsLangPack ){
+	DEASSERT_FALSE( pLSLangPacks.Has( lsLangPack ) )
+	pLSLangPacks.Add( lsLangPack );
+}
+
+void ceLoadSaveSystem::RemoveLSLangPack( ceLoadSaveLangPack *lsLangPack ){
+	pLSLangPacks.Remove( lsLangPack );
+}
+
+void ceLoadSaveSystem::RemoveAllLSLangPacks(){
+	pLSLangPacks.RemoveAll();
+}
+
+void ceLoadSaveSystem::UpdateLSLangPacks(){
+	const deEngine &engine = *pWindowMain.GetEngineController().GetEngine();
+	const deModuleSystem &modsys = *engine.GetModuleSystem();
+	const int count = modsys.GetModuleCount();
+	int i;
+	
+	pLSLangPacks.RemoveAll();
+	
+	for( i=0; i<count; i++ ){
+		const deLoadableModule &lmodule = *modsys.GetModuleAt( i );
+		
+		if( lmodule.GetType() == deModuleSystem::emtLanguagePack && lmodule.IsLoaded() ){
+			pLSLangPacks.Add( ceLoadSaveLangPack::Ref::New( new ceLoadSaveLangPack(
+				*( ( deBaseLanguagePackModule* )lmodule.GetModule() ) ) ) );
+		}
+	}
+}
+
+ceLangPack::Ref ceLoadSaveSystem::LoadLangPack( const char *filename ){
+	const int lsIndex = IndexOfLSLangPackMatching( filename );
+	DEASSERT_TRUE( lsIndex != -1 )
+	
+	const ceLangPack::Ref langpack( ceLangPack::Ref::New( new ceLangPack( filename ) ) );
+	GetLSLangPackAt( lsIndex )->LoadLangPack( langpack, decBaseFileReader::Ref::New(
+		pWindowMain.GetEnvironment().GetFileSystemGame()->OpenFileForReading(
+			decPath::CreatePathUnix( filename ) ) ) );
+	return langpack;
+}
+
+void ceLoadSaveSystem::SaveLangPack( ceLangPack &langpack ){
+	const int lsIndex = IndexOfLSLangPackMatching( langpack.GetPath() );
+	DEASSERT_TRUE( lsIndex != -1 )
+	
+	GetLSLangPackAt( lsIndex )->SaveLangPack( langpack, decBaseFileWriter::Ref::New(
+		pWindowMain.GetEnvironment().GetFileSystemGame()->OpenFileForWriting(
+			decPath::CreatePathUnix( langpack.GetPath() ) ) ) );
+	
+	langpack.SetChanged( false );
+}
+
+
+
 // Private Functions
 //////////////////////
 
 void ceLoadSaveSystem::pBuildFilePattern(){
-	igdeFilePattern *filePattern = NULL;
+	igdeFilePattern *filePattern = nullptr;
 	decString pattern;
+	int i;
 	
 	try{
 		pattern.Format( "*%s", pLSConversation->GetPattern().GetString() );
 		filePattern = new igdeFilePattern( pLSConversation->GetName(),
 			pattern, pLSConversation->GetPattern() );
 		pFPConversation.AddFilePattern( filePattern );
+		filePattern = nullptr;
 		
 		pattern.Format( "*%s", pLSCTS->GetPattern().GetString() );
 		filePattern = new igdeFilePattern( pLSCTS->GetName(), pattern, pLSCTS->GetPattern() );
 		pFPCTS.AddFilePattern( filePattern );
+		filePattern = nullptr;
 		
 		pattern.Format( "*%s", pLSCTA->GetPattern().GetString() );
 		filePattern = new igdeFilePattern( pLSCTA->GetName(), pattern, pLSCTA->GetPattern() );
 		pFPCTA.AddFilePattern( filePattern );
+		filePattern = nullptr;
 		
 		pattern.Format( "*%s", pLSCTGS->GetPattern().GetString() );
 		filePattern = new igdeFilePattern( pLSCTGS->GetName(), pattern, pLSCTGS->GetPattern() );
 		pFPCTGS.AddFilePattern( filePattern );
+		filePattern = nullptr;
+		
+		// language pack
+		const int lslpCount = pLSLangPacks.GetCount();
+		
+		pFPListLangPack.RemoveAllFilePatterns();
+		
+		for( i=0; i<lslpCount; i++ ){
+			const ceLoadSaveLangPack &lslp = *GetLSLangPackAt( i );
+			pattern.Format( "*%s", lslp.GetPattern().GetString() );
+			filePattern = new igdeFilePattern( lslp.GetName(), pattern, lslp.GetPattern() );
+			pFPListLangPack.AddFilePattern( filePattern );
+			filePattern = nullptr;
+		}
 		
 	}catch( const deException & ){
 		if( filePattern ){

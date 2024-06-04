@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Rig Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <ctype.h>
@@ -62,20 +65,6 @@ pWindowMain( windowMain )
 	pLSRigs = NULL;
 	pLSRigCount = 0;
 	pLSRigSize = 0;
-	
-	pFDPattern = NULL;
-	
-	pFilePatternList = NULL;
-	
-	try{
-		pFilePatternList = new igdeFilePatternList();
-		
-		pRebuildFDPattern();
-		
-	}catch( const deException & ){
-		pCleanUp();
-		throw;
-	}
 }
 
 reLoadSaveSystem::~reLoadSaveSystem(){
@@ -120,11 +109,11 @@ bool reLoadSaveSystem::HasLSRig( reLSRig *lsRig ) const{
 }
 
 int reLoadSaveSystem::IndexOfLSRigMatching( const char *filename ){
-	if( ! filename ) DETHROW( deeInvalidParam );
+	const decString testFilename( filename );
 	int i;
 	
 	for( i=0; i<pLSRigCount; i++ ){
-		if( pPatternMatches( pLSRigs[ i ]->GetPattern(), filename ) ){
+		if( testFilename.MatchesPattern( pLSRigs[ i ]->GetPattern() ) ){
 			return i;
 		}
 	}
@@ -149,8 +138,6 @@ void reLoadSaveSystem::AddLSRig( reLSRig *lsRig ){
 	
 	pLSRigs[ pLSRigCount ] = lsRig;
 	pLSRigCount++;
-	
-	pRebuildFDPattern();
 }
 
 void reLoadSaveSystem::RemoveLSRig( reLSRig *lsRig ){
@@ -163,8 +150,6 @@ void reLoadSaveSystem::RemoveLSRig( reLSRig *lsRig ){
 	pLSRigCount--;
 	
 	delete lsRig;
-	
-	pRebuildFDPattern();
 }
 
 void reLoadSaveSystem::RemoveAllLSRigs(){
@@ -172,8 +157,6 @@ void reLoadSaveSystem::RemoveAllLSRigs(){
 		pLSRigCount--;
 		delete pLSRigs[ pLSRigCount ];
 	}
-	
-	pRebuildFDPattern();
 }
 
 void reLoadSaveSystem::UpdateLSRigs(){
@@ -230,30 +213,6 @@ reRig *reLoadSaveSystem::LoadRig( const char *filename ){
 	rig->SetChanged( false );
 	rig->SetSaved( true );
 	
-	/*
-	// HACK: now comes a bit of a hack ( again ). to avoid having to specify the model, skin and
-	// animation all time we guess at the files. most of the time this is going to be
-	// correct. currently this is a fixed guess. the modules should be consulted to see if
-	// a file can be found matching them
-	char omfgHack[ 512 ];
-//	int basePathLen = strlen( gameDefinition->GetBasePath() );
-	int patternLen = strlen( pLSRigs[ lsIndex ]->GetPattern() );
-	int fnameLen = strlen( filename );
-	
-		if( fnameLen > patternLen ){
-			strcpy( &omfgHack[ 0 ], filename );
-			strcpy( &omfgHack[ fnameLen - patternLen ], ".demodel" );
-			rig->SetModelPath( omfgHack );
-			
-			strcpy( &omfgHack[ fnameLen - patternLen ], ".deskin" );
-			rig->SetSkinPath( omfgHack );
-			
-			strcpy( &omfgHack[ fnameLen - patternLen ], ".deanim" );
-			rig->SetAnimationPath( omfgHack );
-		}
-	//}
-	*/
-	
 	refRig->AddReference(); // required to hand over reference to caller
 	return rig;
 }
@@ -279,78 +238,4 @@ void reLoadSaveSystem::SaveRig( reRig *rig, const char *filename ){
 void reLoadSaveSystem::pCleanUp(){
 	RemoveAllLSRigs();
 	if( pLSRigs ) delete [] pLSRigs;
-	
-	if( pFDPattern ) delete [] pFDPattern;
-	
-	if( pFilePatternList ) delete pFilePatternList;
-}
-
-bool reLoadSaveSystem::pPatternMatches( const char *pattern, const char *filename ) const{
-	// TODO
-	return true;
-}
-
-void reLoadSaveSystem::pRebuildFDPattern(){
-	char *newPattern = NULL;
-	const char *lsPattern;
-	int lenFDPattern = 0;
-	const char *lsName;
-	int lenLSPattern;
-	decString pattern;
-	int lenLSName;
-	int newLen;
-	int i;
-	
-	igdeFilePattern *filePattern = NULL;
-	
-	pFilePatternList->RemoveAllFilePatterns();
-	
-	try{
-		for( i=0; i<pLSRigCount; i++ ){
-			pattern.Format( "*%s", pLSRigs[ i ]->GetPattern().GetString() );
-			
-			filePattern = new igdeFilePattern( pLSRigs[ i ]->GetName(), pattern, pLSRigs[ i ]->GetPattern() );
-			if( ! filePattern ) DETHROW( deeOutOfMemory );
-			
-			pFilePatternList->AddFilePattern( filePattern );
-			filePattern = NULL;
-		}
-		
-	}catch( const deException & ){
-		if( filePattern ) delete filePattern;
-		throw;
-	}
-	
-	
-	
-	newPattern = new char[ 1 ];
-	if( ! newPattern ) DETHROW( deeOutOfMemory );
-	newPattern[ 0 ] = '\0';
-	
-	if( pFDPattern ) delete [] pFDPattern;
-	pFDPattern = newPattern;
-	
-	for( i=0; i<pLSRigCount; i++ ){
-		lsName = pLSRigs[ i ]->GetName();
-		lenLSName = strlen( lsName );
-		lsPattern = pLSRigs[ i ]->GetPattern();
-		lenLSPattern = strlen( lsPattern ) + 1;
-		
-		newLen = lenFDPattern + lenLSName + lenLSPattern + 3;
-		if( i > 0 ) newLen++;
-		
-		newPattern = new char[ newLen + 1 ];
-		if( ! newPattern ) DETHROW( deeOutOfMemory );
-		
-		if( i > 0 ){
-			sprintf( newPattern, "\n%s (*%s)", lsName, lsPattern );
-			
-		}else{
-			sprintf( newPattern, "%s (*%s)", lsName, lsPattern );
-		}
-		
-		if( pFDPattern ) delete [] pFDPattern;
-		pFDPattern = newPattern;
-		lenFDPattern = newLen;
-	}
 }

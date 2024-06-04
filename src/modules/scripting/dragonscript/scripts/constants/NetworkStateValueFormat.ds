@@ -1,0 +1,65 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+
+namespace Dragengine.Networking
+
+
+/**
+ * \brief NetworkState value format.
+ */
+enum NetworkStateValueFormat
+	/** \brief Signed 8-bit integer. */
+	signedInteger8
+	
+	/** \brief Unsigned 8-bit integer. */
+	unsignedInteger8
+	
+	/** \brief Signed 16-bit integer. */
+	signedInteger16
+	
+	/** \brief Unsigned 16-bit integer. */
+	unsignedInteger16
+	
+	/** \brief Signed 32-bit integer. */
+	signedIntege32
+	
+	/** \brief Unsigned 32-bit integer. */
+	unsignedInteger32
+	
+	/** \brief Signed 64-bit integer. */
+	signedInteger64
+	
+	/** \brief Unsigned 64-bit integer. */
+	unsignedInteger64
+	
+	/** \brief 16-bit floating point. */
+	floating16
+	
+	/** \brief 32-bit floating point. */
+	floating32
+	
+	/** \brief 64-bit floating point. */
+	floating64
+end

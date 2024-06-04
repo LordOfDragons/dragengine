@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -161,14 +164,14 @@ void deClassVideo::nfGetFrameCount::RunFunction( dsRunTime *rt, dsValue *myself 
 	rt->PushInt( video.GetFrameCount() );
 }
 
-// public func int getFrameRate()
+// public func float getFrameRate()
 deClassVideo::nfGetFrameRate::nfGetFrameRate(const sInitData &init) : dsFunction( init.clsVid,
-"getFrameRate", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt ){
+"getFrameRate", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt ){
 }
 void deClassVideo::nfGetFrameRate::RunFunction( dsRunTime *rt, dsValue *myself ){
 	deVideo &video = *( ( ( sVidNatDat* )p_GetNativeData( myself ) )->video );
 	
-	rt->PushInt( video.GetFrameRate() );
+	rt->PushFloat( video.GetFrameRate() );
 }
 
 // public func float getPlayTime()
@@ -194,7 +197,7 @@ dsFunction( init.clsVid, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, i
 void deClassVideo::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
 	deVideo *video = ( ( sVidNatDat* )p_GetNativeData( myself ) )->video;
 	
-	rt->PushInt( ( intptr_t )video );
+	rt->PushInt( ( int )( intptr_t )video );
 }
 
 // public func bool equals( Object object )
@@ -215,6 +218,20 @@ void deClassVideo::nfEquals::RunFunction( dsRunTime *rt, dsValue *myself ){
 		
 		rt->PushBool( video == otherVideo );
 	}
+}
+
+// static public func bool equals( Video video1, Video video2 )
+deClassVideo::nfEquals2::nfEquals2( const sInitData &init ) :
+dsFunction( init.clsVid, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsBool ){
+	p_AddParameter( init.clsVid ); // video1
+	p_AddParameter( init.clsVid ); // video2
+}
+void deClassVideo::nfEquals2::RunFunction( dsRunTime *rt, dsValue* ){
+	const deClassVideo &clsVideo = *( ( deClassVideo* )GetOwnerClass() );
+	const deVideo * const video1 = clsVideo.GetVideo( rt->GetValue( 0 )->GetRealObject() );
+	const deVideo * const video2 = clsVideo.GetVideo( rt->GetValue( 1 )->GetRealObject() );
+	
+	rt->PushBool( video1 == video2 );
 }
 
 
@@ -278,6 +295,7 @@ void deClassVideo::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfGetPlayTime( init ) );
 	
 	AddFunction( new nfEquals( init ) );
+	AddFunction( new nfEquals2( init ) );
 	AddFunction( new nfHashCode( init ) );
 }
 

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLRRTRENDRERS_H_
@@ -25,6 +28,8 @@
 #include "../deoglBasics.h"
 
 class deoglRenderCanvas;
+class deoglRenderConstructed;
+class deoglRenderCompute;
 class deoglRenderDebug;
 class deoglRenderDebugDrawer;
 class deoglRenderDepthPass;
@@ -38,17 +43,20 @@ class deoglRenderReflection;
 class deoglRenderSky;
 class deoglRenderThread;
 class deoglRenderToneMap;
-class deoglRenderTranspCounting;
 class deoglRenderTransparentPasses;
+class deoglRenderTranspCounting;
+class deoglRenderVR;
 class deoglRenderWorld;
 
 
 /**
- * \brief Render thread renderers.
+ * Render thread renderers.
  */
 class deoglRTRenderers{
 private:
 	deoglRenderCanvas *pCanvas;
+	deoglRenderConstructed *pConstructed;
+	deoglRenderCompute *pCompute;
 	deoglRenderDebugDrawer *pDebugDrawer;
 	deoglRenderDebug *pDebug;
 	deoglRenderDepthPass *pDepthPass;
@@ -63,6 +71,7 @@ private:
 	deoglRenderToneMap *pToneMap;
 	deoglRenderTranspCounting *pTransparencyCounter;
 	deoglRenderTransparentPasses *pTransparentPasses;
+	deoglRenderVR *pVR;
 	deoglRenderWorld *pWorld;
 	
 	
@@ -70,10 +79,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create render thread renderers. */
+	/** Create render thread renderers. */
 	deoglRTRenderers( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up render thread renderers. */
+	/** Clean up render thread renderers. */
 	~deoglRTRenderers();
 	/*@}*/
 	
@@ -81,57 +90,66 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Canvas renderer. */
+	/** Canvas renderer. */
 	inline deoglRenderCanvas &GetCanvas() const{ return *pCanvas; }
 	
-	/** \brief Debug renderer. */
+	/** Constructed renderer. */
+	inline deoglRenderConstructed &GetConstructed() const{ return *pConstructed; }
+	
+	/** Compute renderer. */
+	inline deoglRenderCompute &GetCompute() const{ return *pCompute; }
+	
+	/** Debug renderer. */
 	inline deoglRenderDebug &GetDebug() const{ return *pDebug; }
 	
-	/** \brief Debug drawer renderer. */
+	/** Debug drawer renderer. */
 	inline deoglRenderDebugDrawer &GetDebugDrawer() const{ return *pDebugDrawer; }
 	
-	/** \brief Render depth pass. */
+	/** Render depth pass. */
 	inline deoglRenderDepthPass &GetDepthPass(){ return *pDepthPass; }
 	
-	/** \brief Developer mode renderer. */
+	/** Developer mode renderer. */
 	inline deoglRenderDevMode &GetDevMode() const{ return *pDevMode; }
 	
-	/** \brief Geometry renderer. */
+	/** Geometry renderer. */
 	inline deoglRenderGeometry &GetGeometry() const{ return *pGeometry; }
 	
-	/** \brief Geometry pass renderer. */
+	/** Geometry pass renderer. */
 	inline deoglRenderGeometryPass &GetGeometryPass() const{ return *pGeometryPass; }
 	
-	/** \brief Occlusion renderer. */
+	/** Occlusion renderer. */
 	inline deoglRenderOcclusion &GetOcclusion() const{ return *pOcclusion; }
 	
-	/** \brief Light renderer. */
+	/** Light renderer. */
 	inline deoglRenderLight &GetLight() const{ return *pLight; }
 	
-	/** \brief Particles renderer. */
+	/** Particles renderer. */
 	inline deoglRenderParticles &GetParticles() const{ return *pParticles; }
 	
-	/** \brief Reflection renderer. */
+	/** Reflection renderer. */
 	inline deoglRenderReflection &GetReflection() const{ return *pReflection; }
 	
-	/** \brief Sky renderer. */
+	/** Sky renderer. */
 	inline deoglRenderSky &GetSky() const{ return *pSky; }
 	
-	/** \brief Tone mapping renderer. */
+	/** Tone mapping renderer. */
 	inline deoglRenderToneMap &GetToneMap() const{ return *pToneMap; }
 	
-	/** \brief Transparent passes renderer. */
+	/** Transparent passes renderer. */
 	inline deoglRenderTransparentPasses &GetTransparentPasses(){ return *pTransparentPasses; }
 	
-	/** \brief Transparency counter. */
+	/** Transparency counter. */
 	inline deoglRenderTranspCounting &GetTransparencyCounter(){ return *pTransparencyCounter; }
 	
-	/** \brief World renderer. */
+	/** VR renderer. */
+	inline deoglRenderVR &GetVR() const{ return *pVR; }
+	
+	/** World renderer. */
 	inline deoglRenderWorld &GetWorld() const{ return *pWorld; }
 	
 	
 	
-	/** \brief Developer mode debug information changed. */
+	/** Developer mode debug information changed. */
 	void DevModeDebugInfoChanged();
 	/*@}*/
 	

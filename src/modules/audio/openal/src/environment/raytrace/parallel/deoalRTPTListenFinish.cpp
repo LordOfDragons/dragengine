@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenAL Audio Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -517,6 +520,8 @@ void deoalRTPTListenFinish::pRun(){
 	
 	// roomPressure = 10 * log10(1 / (4 * pi * distanceSquare) + roomFactor)
 	// this is direct and reverberant combined
+	// NOTE this is not including source distance offset since it is used for delay calculation
+	//      which has to be relative to the playing source which is playing at the real position
 	const float directDistance = ( float )( ( pListenProbe ? pListenProbe->GetPosition() : pPosition )
 		- pSourceProbe->GetPosition() ).Length();
 // 	const float invFourPiDistSquared = 1.0f / ( 4.0 * PI * directDistance * directDistance );
@@ -602,12 +607,12 @@ void deoalRTPTListenFinish::pRun(){
 	// 
 	// this is actually the same as going directly from receiver to openal gain like this:
 	//   openal-gain = sqrt(receiver-intensity)
-	finalFRGainLow = sqrt( finalFRGainLow );
-	finalFRGainMedium = sqrt( finalFRGainMedium );
-	finalFRGainHigh = sqrt( finalFRGainHigh );
-	finalLRGainLow = sqrt( finalLRGainLow );
-	finalLRGainMedium = sqrt( finalLRGainMedium );
-	finalLRGainHigh = sqrt( finalLRGainHigh );
+	finalFRGainLow = sqrtf( finalFRGainLow );
+	finalFRGainMedium = sqrtf( finalFRGainMedium );
+	finalFRGainHigh = sqrtf( finalFRGainHigh );
+	finalLRGainLow = sqrtf( finalLRGainLow );
+	finalLRGainMedium = sqrtf( finalLRGainMedium );
+	finalLRGainHigh = sqrtf( finalLRGainHigh );
 	
 	// gains are clamped by a threshold in the sound trace task. this is by default around
 	// -60db or 0.001 . openal though goes down to -100db by definition. we need to scale
@@ -697,13 +702,13 @@ void deoalRTPTListenFinish::pRun(){
 		echoDelay = meanFreePath * INV_SOUND_SPEED;
 		const float rtfactor = 13.8f * -echoDelay;
 		if( absorptionLow > FLOAT_SAFE_EPSILON ){
-			reverberationTimeLow = rtfactor / log( decMath::max( 1.0f - absorptionLow, 1e-5f ) );
+			reverberationTimeLow = rtfactor / logf( decMath::max( 1.0f - absorptionLow, 1e-5f ) );
 		}
 		if( absorptionMedium > FLOAT_SAFE_EPSILON ){
-			reverberationTimeMedium = rtfactor / log( decMath::max( 1.0f - absorptionMedium, 1e-5f ) );
+			reverberationTimeMedium = rtfactor / logf( decMath::max( 1.0f - absorptionMedium, 1e-5f ) );
 		}
 		if( absorptionHigh > FLOAT_SAFE_EPSILON ){
-			reverberationTimeHigh = rtfactor / log( decMath::max( 1.0f - absorptionHigh, 1e-5f ) );
+			reverberationTimeHigh = rtfactor / logf( decMath::max( 1.0f - absorptionHigh, 1e-5f ) );
 		}
 		
 	}else{

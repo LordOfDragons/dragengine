@@ -1,0 +1,389 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.Gui.Layouts
+
+
+
+/**
+ * \brief 10-Area HUD Panel.
+ * 
+ * Panel contains 10 areas typically used to create HUDs. 9 areas are located around the
+ * center area with appropriate layouts assigned like this:
+ * 
+ * <table>
+ * <tr><td>Top Left</td><td>Top Center</td><td>Top Right</td></tr>
+ * <tr><td>Left Top</td><td rowspan="3">Center</td><td>Right Top</td></tr>
+ * <tr><td>Left Center</td><td>Right Center</td></tr>
+ * <tr><td>Left Bottom</td><td>Right Bottom</td></tr>
+ * <tr><td>Bottom Left</td><td>Bottom Center</td><td>Bottom Right</td></tr>
+ * </table>
+ * 
+ * The panel itself uses BorderLayout. The top and bottom rows use BorderLayout. The left
+ * and right columns use BorderLayout. Each area inside the rows and columns uses FlowLayout.
+ * The center area uses StackLayout. You can change these layouts if you want to.
+ * 
+ * The panel and all areas can be individually styled using these selectors:
+ * 
+ * "Panel.PanelHud": The HUD panel itself
+ * "Panel.PanelHud.Top": The entire top row
+ * "Panel.PanelHud.TopLeft": The top left area
+ * "Panel.PanelHud.TopCenter": The top center area
+ * "Panel.PanelHud.TopRight": The top right area
+ * "Panel.PanelHud.Bottom": The entire bottom row
+ * "Panel.PanelHud.BottomLeft": The bottom left area
+ * "Panel.PanelHud.BottomCenter": The bottom center area
+ * "Panel.PanelHud.BottomRight": The bottom right area
+ * "Panel.PanelHud.Left": The entire left column between top and bottom row
+ * "Panel.PanelHud.LeftTop": The top area in the left column between top and bottom row
+ * "Panel.PanelHud.LeftCenter": The center area in the left column between top and bottom row
+ * "Panel.PanelHud.LeftBottom": The bottom area in the left column between top and bottom row
+ * "Panel.PanelHud.Right": The entire right column between top and bottom row
+ * "Panel.PanelHud.RightTop": The top area in the right column between top and bottom row
+ * "Panel.PanelHud.RightCenter": The center area in the right column between top and bottom row
+ * "Panel.PanelHud.RightBottom": The bottom area in the right column between top and bottom row
+ * 
+ * By using setDesignerSelector() not only the HUD panel designer selector itself is changed
+ * but all area designer selectors are changed too. In the list above "Panel.PanelHud" is
+ * replaced with the designer selector used in the most recent call to setDesignerSelector().
+ * 
+ * \version 1.12
+ * 
+ * Support added to set PanelHUD to prevent mouse from hovering over itself or any content inside.
+ */
+class PanelHud extends Panel
+	private var Panel pTop
+	private var Panel pTopLeft
+	private var Panel pTopCenter
+	private var Panel pTopRight
+	
+	private var Panel pBottom
+	private var Panel pBottomLeft
+	private var Panel pBottomCenter
+	private var Panel pBottomRight
+	
+	private var Panel pLeft
+	private var Panel pLeftTop
+	private var Panel pLeftCenter
+	private var Panel pLeftBottom
+	
+	private var Panel pRight
+	private var Panel pRightTop
+	private var Panel pRightCenter
+	private var Panel pRightBottom
+	
+	private var Panel pCenter
+	
+	private var bool pPreventHover
+	
+	
+	
+	/** \brief Create hud panel. */
+	public func new()
+		runWhileBlockingLayout(block
+			createContent()
+		end)
+	end
+	
+	/**
+	 * \brief Create hud panel calling block to add content.
+	 * \version 1.7
+	 * 
+	 * Block receives panel as argument. Block call is wrapped inside runWhileBlockingLayout()
+	 * for efficiency. doLayout() will be called after leaving the block.
+	 */
+	public func new(Block blockAddContent)
+		try
+			runWhileBlockingLayout(block
+				createContent()
+				blockAddContent.run(this)
+			end)
+			doLayoutIfBlocked()
+			
+		catch Exception e
+			dispose()
+			throw
+		end
+	end
+	
+	/** \brief Dispose of widget. */
+	public func void dispose()
+		super.dispose()
+		
+		pTop = null
+		pTopLeft = null
+		pTopCenter = null
+		pTopRight = null
+		
+		pBottom = null
+		pBottomLeft = null
+		pBottomCenter = null
+		pBottomRight = null
+		
+		pLeft = null
+		pLeftTop = null
+		pLeftCenter = null
+		pLeftBottom = null
+		
+		pRight = null
+		pRightTop = null
+		pRightCenter = null
+		pRightBottom = null
+		
+		pCenter = null
+	end
+	
+	
+	
+	/** \brief Top row. */
+	public func Panel getTop()
+		return pTop
+	end
+	
+	/** \brief Top row left area. */
+	public func Panel getTopLeft()
+		return pTopLeft
+	end
+	
+	/** \brief Top row center area. */
+	public func Panel getTopCenter()
+		return pTopCenter
+	end
+	
+	/** \brief Top row right area. */
+	public func Panel getTopRight()
+		return pTopRight
+	end
+	
+	
+	
+	/** \brief Bottom row. */
+	public func Panel getBottom()
+		return pBottom
+	end
+	
+	/** \brief Bottom row left area. */
+	public func Panel getBottomLeft()
+		return pBottomLeft
+	end
+	
+	/** \brief Bottom row center area. */
+	public func Panel getBottomCenter()
+		return pBottomCenter
+	end
+	
+	/** \brief Bottom row right area. */
+	public func Panel getBottomRight()
+		return pBottomRight
+	end
+	
+	
+	
+	/** \brief Left column. */
+	public func Panel getLeft()
+		return pLeft
+	end
+	
+	/** \brief Left column top area. */
+	public func Panel getLeftTop()
+		return pLeftTop
+	end
+	
+	/** \brief Left column center area. */
+	public func Panel getLeftCenter()
+		return pLeftCenter
+	end
+	
+	/** \brief Left column bottom area. */
+	public func Panel getLeftBottom()
+		return pLeftBottom
+	end
+	
+	
+	
+	/** \brief Right column. */
+	public func Panel getRight()
+		return pRight
+	end
+	
+	/** \brief Right column top area. */
+	public func Panel getRightTop()
+		return pRightTop
+	end
+	
+	/** \brief Right column center area. */
+	public func Panel getRightCenter()
+		return pRightCenter
+	end
+	
+	/** \brief Right column bottom area. */
+	public func Panel getRightBottom()
+		return pRightBottom
+	end
+	
+	
+	
+	/** \brief Center area. */
+	public func Panel getCenter()
+		return pCenter
+	end
+	
+	
+	
+	/**
+	 * \brief Prevent hovering.
+	 * \version 1.12
+	 */
+	public func bool getPreventHover()
+		return pPreventHover
+	end
+	
+	/**
+	 * \brief Set prevent hovering.
+	 * \version 1.12
+	 */
+	public func void setPreventHover(bool preventHover)
+		pPreventHover = preventHover
+	end
+	
+	
+	
+	/**
+	 * \brief Designer selector changed.
+	 * 
+	 * Default implementation changes all area designer selectors as outlined in the class
+	 * description. You can change this behavior by overwriting onDesignerSelectorChanged().
+	 */
+	public func void onDesignerSelectorChanged()
+		runWhileBlockingLayout(block
+			var String selector = getDesignerSelector()
+			pTop.setDesignerSelector(selector + ".Top")
+			pTopLeft.setDesignerSelector(selector + ".TopLeft")
+			pTopCenter.setDesignerSelector(selector + ".TopCenter")
+			pTopRight.setDesignerSelector(selector + ".TopRight")
+			pBottom.setDesignerSelector(selector + ".Bottom")
+			pBottomLeft.setDesignerSelector(selector + ".BottomLeft")
+			pBottomCenter.setDesignerSelector(selector + ".BottomCenter")
+			pBottomRight.setDesignerSelector(selector + ".BottomRight")
+			pRight.setDesignerSelector(selector + ".Right")
+			pRightTop.setDesignerSelector(selector + ".RightTop")
+			pRightCenter.setDesignerSelector(selector + ".RightCenter")
+			pRightBottom.setDesignerSelector(selector + ".RightBottom")
+			pLeft.setDesignerSelector(selector + ".Left")
+			pLeftTop.setDesignerSelector(selector + ".LeftTop")
+			pLeftCenter.setDesignerSelector(selector + ".LeftCenter")
+			pLeftBottom.setDesignerSelector(selector + ".LeftBottom")
+			pCenter.setDesignerSelector(selector + ".Center")
+		end)
+		doLayoutIfBlocked()
+	end
+	
+	
+	
+	/** \brief Create content. */
+	private func void createContent()
+		setLayout(BorderLayout.new())
+		
+		pTop = Panel.new(BorderLayout.new(), block Panel top
+			pTopLeft = Panel.new(FlowLayout.new(LayoutAxis.x))
+			top.addWidget(pTopLeft, BorderLayout.Area.left)
+			
+			pTopCenter = Panel.new(FlowLayout.new(LayoutAxis.x))
+			top.addWidget(pTopCenter, BorderLayout.Area.content)
+			
+			pTopRight = Panel.new(FlowLayout.new(LayoutAxis.x))
+			top.addWidget(pTopRight, BorderLayout.Area.right)
+		end)
+		addWidget(pTop, BorderLayout.Area.top)
+		
+		pBottom = Panel.new(BorderLayout.new(), block Panel bottom
+			pBottomLeft = Panel.new(FlowLayout.new(LayoutAxis.x))
+			bottom.addWidget(pBottomLeft, BorderLayout.Area.left)
+			
+			pBottomCenter = Panel.new(FlowLayout.new(LayoutAxis.x))
+			bottom.addWidget(pBottomCenter, BorderLayout.Area.content)
+			
+			pBottomRight = Panel.new(FlowLayout.new(LayoutAxis.x))
+			bottom.addWidget(pBottomRight, BorderLayout.Area.right)
+		end)
+		addWidget(pBottom, BorderLayout.Area.bottom)
+		
+		pLeft = Panel.new(BorderLayout.new(), block Panel left
+			pLeftTop = Panel.new(FlowLayout.new(LayoutAxis.y))
+			left.addWidget(pLeftTop, BorderLayout.Area.top)
+			
+			pLeftCenter = Panel.new(FlowLayout.new(LayoutAxis.y))
+			left.addWidget(pLeftCenter, BorderLayout.Area.content)
+			
+			pLeftBottom = Panel.new(FlowLayout.new(LayoutAxis.y))
+			left.addWidget(pLeftBottom, BorderLayout.Area.bottom)
+		end)
+		addWidget(pLeft, BorderLayout.Area.left)
+		
+		pRight = Panel.new(BorderLayout.new(), block Panel right
+			pRightTop = Panel.new(FlowLayout.new(LayoutAxis.y))
+			right.addWidget(pRightTop, BorderLayout.Area.top)
+			
+			pRightCenter = Panel.new(FlowLayout.new(LayoutAxis.y))
+			right.addWidget(pRightCenter, BorderLayout.Area.content)
+			
+			pRightBottom = Panel.new(FlowLayout.new(LayoutAxis.y))
+			right.addWidget(pRightBottom, BorderLayout.Area.bottom)
+		end)
+		addWidget(pRight, BorderLayout.Area.right)
+		
+		pCenter = Panel.new(StackLayout.new())
+		addWidget(pCenter, BorderLayout.Area.content)
+		
+		setDesignerSelector("Panel.PanelHud")
+	end
+	
+	
+	
+	/**
+	 * \brief Widget at coordinates or \em null if not found.
+	 * \version 1.12
+	 * 
+	 * If getPreventHover() is true prevents this widget from hovering. Keep this
+	 * in mind if you try to call this method. It might not work. If you need original
+	 * getWidgetAt behavior from super class use realGetWidgetAt().
+	 */
+	public func Widget getWidgetAt(Point position)
+		if pPreventHover
+			return null
+		end
+		return super.getWidgetAt(position)
+	end
+	
+	/**
+	 * \brief Super class getWidgetAt without overwritten behavior.
+	 * \version 1.12
+	 */
+	public func Widget realGetWidgetAt(Point position)
+		return super.getWidgetAt(position)
+	end
+end

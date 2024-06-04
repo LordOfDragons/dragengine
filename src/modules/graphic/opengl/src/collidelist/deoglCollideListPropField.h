@@ -1,76 +1,94 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
-// include only once
 #ifndef _DEOGLCOLLIDELISTPROPFIELD_H_
 #define _DEOGLCOLLIDELISTPROPFIELD_H_
 
-// includes
+#include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/common/math/decMath.h>
 
-// predefinitions
 class deoglRPropField;
+class deoglRPropFieldType;
 class deoglCollideListPropFieldType;
-
+class deoglOcclusionTest;
 
 
 /**
- * @brief Collide List Prop Field.
- *
- * A prop field in a collide list.
+ * Collide List Prop Field.
  */
 class deoglCollideListPropField{
 private:
 	deoglRPropField *pPropField;
 	
-	deoglCollideListPropFieldType **pTypes;
+	decPointerList pTypes;
 	int pTypeCount;
-	int pTypeSize;
+	
+	
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new collide list prop field. */
+	/** Create collide list prop field. */
 	deoglCollideListPropField();
-	/** Cleans up the collide list prop field. */
+	
+	/** Clean up collide list prop field. */
 	~deoglCollideListPropField();
 	/*@}*/
 	
-	/** @name Management */
+	
+	
+	/** \name Management */
 	/*@{*/
-	/** Clears the collide list prop field. */
+	/** Clear collide list prop field. */
 	void Clear();
-	/** Determines if the prop field is empty. */
+	
+	/** Start occlusion test. */
+	void StartOcclusionTest( deoglOcclusionTest &occlusionTest, const decDVector &referencePosition );
+	
+	
+	
+	/** Prop field is empty. */
 	bool GetIsEmpty() const;
 	
-	/** Retrieves the prop field. */
+	/** Prop field. */
 	inline deoglRPropField *GetPropField() const{ return pPropField; }
-	/** Sets the prop field. */
+	
+	/** Set prop field. */
 	void SetPropField( deoglRPropField *propField );
 	
-	/** Retrieves the number of types. */
+	/** Count of types. */
 	inline int GetTypeCount() const{ return pTypeCount; }
-	/** Retrieves the type at the given position. */
+	
+	/** Type at the index. */
 	deoglCollideListPropFieldType *GetTypeAt( int index ) const;
+	
+	/** Add type. */
+	deoglCollideListPropFieldType *AddType( deoglRPropFieldType *type );
+	
+	/** Remove all types. */
+	void RemoveAllTypes();
 	/*@}*/
 };
 
-// end of include only once
 #endif

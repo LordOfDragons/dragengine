@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLVBOATTRIBUTE_H_
@@ -27,49 +30,49 @@ class deoglRenderThread;
 
 
 /**
- * \brief OpenGL VBO Attribute.
+ * OpenGL VBO Attribute.
  */
 class deoglVBOAttribute{
 public:
-	/** \brief Data types. */
+	/** Data types. */
 	enum eDataTypes{
-		/** \brief Float input floating point. */
+		/** Float input floating point. */
 		edtFloat,
 		
-		/** \brief Float input normalized signed char. */
+		/** Float input normalized signed char. */
 		edtByte,
 		
-		/** \brief Float input normalized unsigned char. */
+		/** Float input normalized unsigned char. */
 		edtUByte,
 		
-		/** \brief Float input normalized signed short. */
+		/** Float input normalized signed short. */
 		edtShort,
 		
-		/** \brief Float input normalized unsigned short. */
+		/** Float input normalized unsigned short. */
 		edtUShort,
 		
-		/** \brief Float input normalized signed int. */
+		/** Float input normalized signed int. */
 		edtInt,
 		
-		/** \brief Float input normalized unsigned int. */
+		/** Float input normalized unsigned int. */
 		edtUInt,
 		
-		/** \brief Integer input signed char without normalization. */
+		/** Integer input signed char without normalization. */
 		edtIByte,
 		
-		/** \brief Integer input unsigned char without normalization. */
+		/** Integer input unsigned char without normalization. */
 		edtIUByte,
 		
-		/** \brief Integer input signed short without normalization. */
+		/** Integer input signed short without normalization. */
 		edtIShort,
 		
-		/** \brief Integer input unsigned short without normalization. */
+		/** Integer input unsigned short without normalization. */
 		edtIUShort,
 		
-		/** \brief Integer input signed int without normalization. */
+		/** Integer input signed int without normalization. */
 		edtIInt,
 		
-		/** \brief Integer input unsigned int without normalization. */
+		/** Integer input unsigned int without normalization. */
 		edtIUInt
 	};
 	
@@ -85,10 +88,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create vbo attribute. */
+	/** Create vbo attribute. */
 	deoglVBOAttribute();
 	
-	/** \brief Clean up vbo attribute. */
+	/** Clean up vbo attribute. */
 	~deoglVBOAttribute();
 	/*@}*/
 	
@@ -96,33 +99,33 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Count of components. */
+	/** Count of components. */
 	inline int GetComponentCount() const{ return pComponentCount; }
 	
-	/** \brief Set count of components. */
+	/** Set count of components. */
 	void SetComponentCount( int componentCount );
 	
-	/** \brief Data type. */
+	/** Data type. */
 	inline eDataTypes GetDataType() const{ return pDataType; }
 	
-	/** \brief Set data type. */
+	/** Set data type. */
 	void SetDataType( eDataTypes dataType );
 	
-	/** \brief Offset. */
+	/** Offset. */
 	inline int GetOffset() const{ return pOffset; }
 	
-	/** \brief Set offset. */
+	/** Set offset. */
 	void SetOffset( int offset );
 	
 	/**
-	 * \brief Set VAO attribute from the stored properties.
+	 * Set VAO attribute from the stored properties.
 	 * 
 	 * The VBO is supposed to be already selected. The attribute is enabled prior to be set.
 	 */
 	void SetVAOAttributeAt( deoglRenderThread &renderThread, int attribute, int stride ) const;
 	
 	/**
-	 * \brief Set VAO attribute from the stored properties.
+	 * Set VAO attribute from the stored properties.
 	 * 
 	 * The VBO is supposed to be already selected. The attribute is enabled prior to be set.
 	 */
@@ -133,13 +136,13 @@ public:
 	
 	/** \name Operators */
 	/*@{*/
-	/** \brief Set attribute. */
+	/** Set attribute. */
 	deoglVBOAttribute &operator=( const deoglVBOAttribute &attribute );
 	
-	/** \brief Attribute matches another one. */
+	/** Attribute matches another one. */
 	bool operator==( const deoglVBOAttribute &attribute ) const;
 	
-	/** \brief Attribute does not match another one. */
+	/** Attribute does not match another one. */
 	bool operator!=( const deoglVBOAttribute &attribute ) const;
 	/*@}*/
 };

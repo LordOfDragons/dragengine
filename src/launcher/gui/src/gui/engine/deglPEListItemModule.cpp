@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine GUI Launcher
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -25,7 +28,6 @@
 
 #include "deglPEListItemModule.h"
 #include "deglPanelEngine.h"
-#include "../../engine/modules/deglEngineModule.h"
 
 #include <dragengine/systems/deModuleSystem.h>
 #include <dragengine/common/exceptions.h>
@@ -35,122 +37,144 @@
 // Class deglPEListItemModule
 ///////////////////////////////
 
-FXIMPLEMENT( deglPEListItemModule, FXIconItem, NULL, 0 )
+FXIMPLEMENT( deglPEListItemModule, FXIconItem, nullptr, 0 )
 
 // Constructor, destructor
 ////////////////////////////
 
 deglPEListItemModule::deglPEListItemModule(){ }
 
-deglPEListItemModule::deglPEListItemModule( deglPanelEngine *panelEngine, deglEngineModule *module ) :
-FXIconItem( "", NULL, NULL, NULL ){
+deglPEListItemModule::deglPEListItemModule( deglPanelEngine *panelEngine, delEngineModule *module ) :
+FXIconItem( "", nullptr, nullptr, nullptr ),
+pPanelEngine( panelEngine ),
+pModule( module )
+{
 	if( ! panelEngine || ! module ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	const int status = module->GetStatus();
-	const int type = module->GetType();
+	const delEngineModule::eModuleStatus status = module->GetStatus();
+	const deModuleSystem::eModuleTypes type = module->GetType();
 	FXString text;
-	
-	pPanelEngine = panelEngine;
-	pModule = module;
-	module->AddReference();
 	
 	const decString &moduleName = module->GetName();
 	const decString &moduleVersion = module->GetVersion();
 	
-	if( status == deglEngineModule::emsReady ){
+	switch( status ){
+	case delEngineModule::emsReady:
 		pStatusString = "Ready";
+		break;
 		
-	}else if( status == deglEngineModule::emsNotTested ){
+	case delEngineModule::emsNotTested:
 		pStatusString = "Not Tested";
+		break;
 		
-	}else if( status == deglEngineModule::emsBroken ){
+	case delEngineModule::emsBroken:
 		pStatusString = "Broken";
-		
-	}else{
-		pStatusString = "?";
+		break;
 	}
 	
-	if( type == deModuleSystem::emtGraphic ){
+	switch( type ){
+	case deModuleSystem::emtGraphic:
 		pTypeString = "Graphic";
+		break;
 		
-	}else if( type == deModuleSystem::emtAudio ){
+	case deModuleSystem::emtAudio:
 		pTypeString = "Audio";
+		break;
 		
-	}else if( type == deModuleSystem::emtInput ){
+	case deModuleSystem::emtInput:
 		pTypeString = "Input";
+		break;
 		
-	}else if( type == deModuleSystem::emtNetwork ){
+	case deModuleSystem::emtNetwork:
 		pTypeString = "Network";
+		break;
 		
-	}else if( type == deModuleSystem::emtPhysics ){
+	case deModuleSystem::emtPhysics:
 		pTypeString = "Physics";
+		break;
 		
-	}else if( type == deModuleSystem::emtImage ){
+	case deModuleSystem::emtImage:
 		pTypeString = "Image";
+		break;
 		
-	}else if( type == deModuleSystem::emtVideo ){
+	case deModuleSystem::emtVideo:
 		pTypeString = "Video";
+		break;
 		
-	}else if( type == deModuleSystem::emtScript ){
+	case deModuleSystem::emtScript:
 		pTypeString = "Script";
+		break;
 		
-	}else if( type == deModuleSystem::emtModel ){
+	case deModuleSystem::emtModel:
 		pTypeString = "Model";
+		break;
 		
-	}else if( type == deModuleSystem::emtRig ){
+	case deModuleSystem::emtRig:
 		pTypeString = "Rig";
+		break;
 		
-	}else if( type == deModuleSystem::emtSkin ){
+	case deModuleSystem::emtSkin:
 		pTypeString = "Skin";
+		break;
 		
-	}else if( type == deModuleSystem::emtAnimation ){
+	case deModuleSystem::emtAnimation:
 		pTypeString = "Animation";
+		break;
 		
-	}else if( type == deModuleSystem::emtFont ){
+	case deModuleSystem::emtFont:
 		pTypeString = "Font";
+		break;
 		
-	}else if( type == deModuleSystem::emtCrashRecovery ){
+	case deModuleSystem::emtCrashRecovery:
 		pTypeString = "Crash Recovery";
+		break;
 		
-	}else if( type == deModuleSystem::emtLanguagePack ){
+	case deModuleSystem::emtLanguagePack:
 		pTypeString = "Language Pack";
+		break;
 		
-	}else if( type == deModuleSystem::emtAnimator ){
+	case deModuleSystem::emtAnimator:
 		pTypeString = "Animator";
+		break;
 		
-	}else if( type == deModuleSystem::emtSound ){
+	case deModuleSystem::emtSound:
 		pTypeString = "Sound";
+		break;
 		
-	}else if( type == deModuleSystem::emtAI ){
+	case deModuleSystem::emtAI:
 		pTypeString = "AI";
+		break;
 		
-	}else if( type == deModuleSystem::emtOcclusionMesh ){
+	case deModuleSystem::emtOcclusionMesh:
 		pTypeString = "Occlusion Mesh";
+		break;
 		
-	}else if( type == deModuleSystem::emtSynthesizer ){
+	case deModuleSystem::emtSynthesizer:
 		pTypeString = "Synthesizer";
+		break;
 		
-	}else if( type == deModuleSystem::emtArchive ){
+	case deModuleSystem::emtArchive:
 		pTypeString = "Archive";
+		break;
 		
-	}else{
-		pTypeString = "?";
+	case deModuleSystem::emtService:
+		pTypeString = "Service";
+		break;
+		
+	case deModuleSystem::emtVR:
+		pTypeString = "VR";
+		break;
+		
+	case deModuleSystem::emtUnknown:
+		pTypeString = "Unknown";
 	}
 	
-	text.format( "%s\t%s\t%s\t%s", moduleName.GetString(), pTypeString.GetString(), moduleVersion.GetString(), pStatusString.GetString() );
+	text.format( "%s\t%s\t%s\t%s", moduleName.GetString(), pTypeString.GetString(),
+		moduleVersion.GetString(), pStatusString.GetString() );
 	setText( text );
 }
 
 deglPEListItemModule::~deglPEListItemModule(){
-	if( pModule ){
-		pModule->FreeReference();
-	}
 }
-
-
-
-// Management
-///////////////
-

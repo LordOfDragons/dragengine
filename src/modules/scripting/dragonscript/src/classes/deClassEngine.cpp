@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 // includes
@@ -31,11 +34,13 @@
 #include "../resourceloader/dedsResourceLoader.h"
 #include "../deClassPathes.h"
 
-#include "dragengine/deEngine.h"
-#include "dragengine/systems/deScriptingSystem.h"
-#include "dragengine/errortracing/deErrorTrace.h"
-#include "dragengine/errortracing/deErrorTracePoint.h"
-#include "dragengine/errortracing/deErrorTraceValue.h"
+#include <dragengine/deEngine.h>
+#include <dragengine/app/deOS.h>
+#include <dragengine/errortracing/deErrorTrace.h>
+#include <dragengine/errortracing/deErrorTracePoint.h>
+#include <dragengine/errortracing/deErrorTraceValue.h>
+#include <dragengine/resources/service/deServiceManager.h>
+#include <dragengine/systems/deScriptingSystem.h>
 
 #include <libdscript/exceptions.h>
 #include <libdscript/dsMemoryManager.h>
@@ -45,93 +50,97 @@
 /////////////////////
 
 // static public func float getElapsedTime()
-deClassEngine::nfGetElapsedTime::nfGetElapsedTime(const sInitData &init) : dsFunction(
-init.clsEng, "getElapsedTime", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC,
-init.clsFlt){
+deClassEngine::nfGetElapsedTime::nfGetElapsedTime( const sInitData &init ) :
+dsFunction( init.clsEngine, "getElapsedTime", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsFloat ){
 }
-void deClassEngine::nfGetElapsedTime::RunFunction(dsRunTime *RT, dsValue *This){
-	deEngine *gameEngine = ((deClassEngine*)GetOwnerClass())->GetGameEngine();
-	RT->PushFloat(gameEngine->GetElapsedTime());
+void deClassEngine::nfGetElapsedTime::RunFunction( dsRunTime *rt, dsValue* ){
+	const deEngine &gameEngine = *( ( deClassEngine* )GetOwnerClass() )->GetDS().GetGameEngine();
+	rt->PushFloat(gameEngine.GetElapsedTime());
 }
 
 // static public func void resetTimers()
-deClassEngine::nfResetTimers::nfResetTimers( const sInitData &init ) : dsFunction( init.clsEng,
-"resetTimers", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid ){
+deClassEngine::nfResetTimers::nfResetTimers( const sInitData &init ) :
+dsFunction( init.clsEngine, "resetTimers", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid ){
 }
-void deClassEngine::nfResetTimers::RunFunction(dsRunTime *RT, dsValue *This){
-	deEngine *gameEngine = ( ( deClassEngine* )GetOwnerClass() )->GetGameEngine();
-	gameEngine->ResetTimers();
+void deClassEngine::nfResetTimers::RunFunction( dsRunTime*, dsValue* ){
+	deEngine &gameEngine = *( ( deClassEngine* )GetOwnerClass() )->GetDS().GetGameEngine();
+	gameEngine.ResetTimers();
 }
 
 // static public func Game getGame()
-deClassEngine::nfGetGame::nfGetGame(const sInitData &init) : dsFunction(
-init.clsEng, "getGame", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsGame){
+deClassEngine::nfGetGame::nfGetGame( const sInitData &init ) :
+dsFunction( init.clsEngine, "getGame", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsGame ){
 }
-void deClassEngine::nfGetGame::RunFunction(dsRunTime *RT, dsValue *This){
-	deScriptingDragonScript *scrMgr = ((deClassEngine*)GetOwnerClass())->GetScriptModule();
-	RT->PushValue(scrMgr->GetGameObject());
+void deClassEngine::nfGetGame::RunFunction( dsRunTime *rt, dsValue* ){
+	deScriptingDragonScript &ds = ((deClassEngine*)GetOwnerClass())->GetDS();
+	rt->PushValue( ds.GetGameObject() );
 }
 
 // static public func int getFPSRate()
-deClassEngine::nfGetFPSRate::nfGetFPSRate(const sInitData &init) : dsFunction(
-init.clsEng, "getFPSRate", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC,
-init.clsInt){
+deClassEngine::nfGetFPSRate::nfGetFPSRate( const sInitData &init ) :
+dsFunction( init.clsEngine, "getFPSRate", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsInteger ){
 }
-void deClassEngine::nfGetFPSRate::RunFunction(dsRunTime *RT, dsValue *This){
-	deEngine *gameEngine = ((deClassEngine*)GetOwnerClass())->GetGameEngine();
-	RT->PushInt(gameEngine->GetFPSRate());
+void deClassEngine::nfGetFPSRate::RunFunction( dsRunTime *rt, dsValue* ){
+	const deEngine &gameEngine = *( ( deClassEngine* )GetOwnerClass() )->GetDS().GetGameEngine();
+	rt->PushInt( gameEngine.GetFPSRate() );
 }
 
 // static public func void quit()
-deClassEngine::nfQuit::nfQuit(const sInitData &init) : dsFunction(
-init.clsEng, "quit", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid){
+deClassEngine::nfQuit::nfQuit( const sInitData &init ) :
+dsFunction( init.clsEngine, "quit", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid ){
 }
-void deClassEngine::nfQuit::RunFunction(dsRunTime *RT, dsValue *This){
-	((deClassEngine*)GetOwnerClass())->GetGameEngine()->Quit();
+void deClassEngine::nfQuit::RunFunction( dsRunTime*, dsValue* ){
+	( ( deClassEngine* )GetOwnerClass() )->GetDS().GetGameEngine()->Quit();
 }
 
 
 
 // static public func void log( String message )
 deClassEngine::nfLog::nfLog( const sInitData &init ) :
-dsFunction( init.clsEng, "log", DSFT_FUNCTION,
+dsFunction( init.clsEngine, "log", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid ){
-	p_AddParameter( init.clsStr );
+	p_AddParameter( init.clsString );
 }
 void deClassEngine::nfLog::RunFunction( dsRunTime *rt, dsValue* ){
-	( ( deClassEngine* )GetOwnerClass() )->GetScriptModule()->LogInfo( rt->GetValue( 0 )->GetString() );
+	( ( deClassEngine* )GetOwnerClass() )->GetDS().LogInfo( rt->GetValue( 0 )->GetString() );
 }
 
 
 
 // static public func bool getEditMode()
-deClassEngine::nfGetEditMode::nfGetEditMode( const sInitData &init ) : dsFunction( init.clsEng,
-"getEditMode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsBool ){
+deClassEngine::nfGetEditMode::nfGetEditMode( const sInitData &init ) :
+dsFunction( init.clsEngine, "getEditMode", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsBoolean ){
 }
-void deClassEngine::nfGetEditMode::RunFunction( dsRunTime *rt, dsValue *myself ){
-	deEngine *gameEngine = ( ( deClassEngine* )GetOwnerClass() )->GetGameEngine();
-	rt->PushBool( gameEngine->GetScriptingSystem()->GetEditMode() );
+void deClassEngine::nfGetEditMode::RunFunction( dsRunTime *rt, dsValue* ){
+	const deEngine &gameEngine = *( ( deClassEngine* )GetOwnerClass() )->GetDS().GetGameEngine();
+	rt->PushBool( gameEngine.GetScriptingSystem()->GetEditMode() );
 }
 
 
 
 // public static func int loadingResourceCount()
-deClassEngine::nfLoadingResourceCount::nfLoadingResourceCount( const sInitData &init ) : dsFunction( init.clsEng,
-"loadingResourceCount", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsInt ){
+deClassEngine::nfLoadingResourceCount::nfLoadingResourceCount( const sInitData &init ) : dsFunction( init.clsEngine,
+"loadingResourceCount", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsInteger ){
 }
-void deClassEngine::nfLoadingResourceCount::RunFunction( dsRunTime *rt, dsValue *myself ){
-	rt->PushInt( ( ( deClassEngine* )GetOwnerClass() )->GetScriptModule()->GetResourceLoader()->GetTaskCount() );
+void deClassEngine::nfLoadingResourceCount::RunFunction( dsRunTime *rt, dsValue* ){
+	rt->PushInt( ( ( deClassEngine* )GetOwnerClass() )->GetDS().GetResourceLoader()->GetTaskCount() );
 }
 
 
 
 // public static func Dictionary getScriptModuleStats()
 deClassEngine::nfGetScriptModuleStats::nfGetScriptModuleStats( const sInitData &init ) :
-dsFunction( init.clsEng, "getScriptModuleStats", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsDict ){
+dsFunction( init.clsEngine, "getScriptModuleStats", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsDictionary ){
 }
-void deClassEngine::nfGetScriptModuleStats::RunFunction( dsRunTime *rt, dsValue *myself ){
-	const deScriptingDragonScript &ds = *( ( ( deClassEngine* )GetOwnerClass() )->GetScriptModule() );
+void deClassEngine::nfGetScriptModuleStats::RunFunction( dsRunTime *rt, dsValue* ){
+	const deScriptingDragonScript &ds = ( ( deClassEngine* )GetOwnerClass() )->GetDS();
 	const dsEngine &sengine = *ds.GetScriptEngine();
 	
 	dsValue * const valueStats = rt->CreateValue( sengine.GetClassDictionary() );
@@ -191,38 +200,310 @@ void deClassEngine::nfGetScriptModuleStats::RunFunction( dsRunTime *rt, dsValue 
 
 
 
-// class deClassEngine
-////////////////////////
-// constructor
-deClassEngine::deClassEngine(deEngine *GameEngine, deScriptingDragonScript *ScrMgr) :
-dsClass("Engine", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE){
-	if(!GameEngine || !ScrMgr) DSTHROW(dueInvalidParam);
-	// prepare
-	p_gameEngine = GameEngine;
-	p_scrMgr = ScrMgr;
-	// set parser info
-	GetParserInfo()->SetParent(DENS_DRAGENGINE);
-	GetParserInfo()->SetBase("Object");
-	// do the rest
-	p_SetNativeDataSize(0);
+// public static func bool getAppActive()
+deClassEngine::nfGetAppActive::nfGetAppActive( const sInitData &init ) :
+dsFunction( init.clsEngine, "getAppActive", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsBoolean ){
 }
+void deClassEngine::nfGetAppActive::RunFunction( dsRunTime *rt, dsValue* ){
+	rt->PushBool( ( ( deClassEngine* )GetOwnerClass() )->GetDS().GetGameEngine()->GetOS()->GetAppActive() );
+}
+
+
+
+// public static func void updateResourceLoading()
+deClassEngine::nfUpdateResourceLoading::nfUpdateResourceLoading( const sInitData &init ) :
+dsFunction( init.clsEngine, "updateResourceLoading", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid ){
+}
+void deClassEngine::nfUpdateResourceLoading::RunFunction( dsRunTime*, dsValue* ){
+	( ( deClassEngine* )GetOwnerClass() )->GetDS().GetResourceLoader()->OnFrameUpdate();
+}
+
+
+
+// public static func String getCompatibleVersion()
+deClassEngine::nfGetCompatibleVersion::nfGetCompatibleVersion( const sInitData &init ) :
+dsFunction( init.clsEngine, "getCompatibleVersion", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsString ){
+}
+void deClassEngine::nfGetCompatibleVersion::RunFunction( dsRunTime *rt, dsValue* ){
+	const deScriptingDragonScript &ds = ( ( deClassEngine* )GetOwnerClass() )->GetDS();
+	rt->PushString( ds.GetCompatibleVersion().version );
+}
+
+// public static func int getCompatibleVersionMajor()
+deClassEngine::nfGetCompatibleVersionMajor::nfGetCompatibleVersionMajor( const sInitData &init ) :
+dsFunction( init.clsEngine, "getCompatibleVersionMajor", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsInteger ){
+}
+void deClassEngine::nfGetCompatibleVersionMajor::RunFunction( dsRunTime *rt, dsValue* ){
+	const deScriptingDragonScript &ds = ( ( deClassEngine* )GetOwnerClass() )->GetDS();
+	rt->PushInt( ds.GetCompatibleVersion().major );
+}
+
+// public static func int getCompatibleVersionMinor()
+deClassEngine::nfGetCompatibleVersionMinor::nfGetCompatibleVersionMinor( const sInitData &init ) :
+dsFunction( init.clsEngine, "getCompatibleVersionMinor", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsInteger ){
+}
+void deClassEngine::nfGetCompatibleVersionMinor::RunFunction( dsRunTime *rt, dsValue* ){
+	const deScriptingDragonScript &ds = ( ( deClassEngine* )GetOwnerClass() )->GetDS();
+	rt->PushInt( ds.GetCompatibleVersion().minor );
+}
+
+// public static func int getCompatibleVersionPatch()
+deClassEngine::nfGetCompatibleVersionPatch::nfGetCompatibleVersionPatch( const sInitData &init ) :
+dsFunction( init.clsEngine, "getCompatibleVersionPatch", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsInteger ){
+}
+void deClassEngine::nfGetCompatibleVersionPatch::RunFunction( dsRunTime *rt, dsValue* ){
+	const deScriptingDragonScript &ds = ( ( deClassEngine* )GetOwnerClass() )->GetDS();
+	rt->PushInt( ds.GetCompatibleVersion().patch );
+}
+
+// public static func bool isCompatibleVersionOlder(int major, int minor)
+deClassEngine::nfIsCompatibleVersionOlder::nfIsCompatibleVersionOlder( const sInitData &init ) :
+dsFunction( init.clsEngine, "isCompatibleVersionOlder", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsBoolean ){
+	p_AddParameter( init.clsInteger );
+	p_AddParameter( init.clsInteger );
+}
+void deClassEngine::nfIsCompatibleVersionOlder::RunFunction( dsRunTime *rt, dsValue* ){
+	const deScriptingDragonScript &ds = ( ( deClassEngine* )GetOwnerClass() )->GetDS();
+	const deScriptingDragonScript::sModuleVersion &version = ds.GetCompatibleVersion();
+	const int major = rt->GetValue( 0 )->GetInt();
+	const int minor = rt->GetValue( 1 )->GetInt();
+	rt->PushBool( version.major < major || ( version.major == major && version.minor < minor ) );
+}
+
+// public static func bool isCompatibleVersionNewer(int major, int minor)
+deClassEngine::nfIsCompatibleVersionNewer::nfIsCompatibleVersionNewer( const sInitData &init ) :
+dsFunction( init.clsEngine, "isCompatibleVersionNewer", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsBoolean ){
+	p_AddParameter( init.clsInteger );
+	p_AddParameter( init.clsInteger );
+}
+void deClassEngine::nfIsCompatibleVersionNewer::RunFunction( dsRunTime *rt, dsValue* ){
+	const deScriptingDragonScript &ds = ( ( deClassEngine* )GetOwnerClass() )->GetDS();
+	const deScriptingDragonScript::sModuleVersion &version = ds.GetCompatibleVersion();
+	const int major = rt->GetValue( 0 )->GetInt();
+	const int minor = rt->GetValue( 1 )->GetInt();
+	rt->PushBool( version.major > major || ( version.major == major && version.minor > minor ) );
+}
+
+
+
+// public static func String getModuleVersion()
+deClassEngine::nfGetModuleVersion::nfGetModuleVersion( const sInitData &init ) :
+dsFunction( init.clsEngine, "getModuleVersion", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsString ){
+}
+void deClassEngine::nfGetModuleVersion::RunFunction( dsRunTime *rt, dsValue* ){
+	const deScriptingDragonScript &ds = ( ( deClassEngine* )GetOwnerClass() )->GetDS();
+	rt->PushString( ds.GetModuleVersion().version );
+}
+
+// public static func int getModuleVersionMajor()
+deClassEngine::nfGetModuleVersionMajor::nfGetModuleVersionMajor( const sInitData &init ) :
+dsFunction( init.clsEngine, "getModuleVersionMajor", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsInteger ){
+}
+void deClassEngine::nfGetModuleVersionMajor::RunFunction( dsRunTime *rt, dsValue* ){
+	const deScriptingDragonScript &ds = ( ( deClassEngine* )GetOwnerClass() )->GetDS();
+	rt->PushInt( ds.GetModuleVersion().major );
+}
+
+// public static func int getModuleVersionMinor()
+deClassEngine::nfGetModuleVersionMinor::nfGetModuleVersionMinor( const sInitData &init ) :
+dsFunction( init.clsEngine, "getModuleVersionMinor", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsInteger ){
+}
+void deClassEngine::nfGetModuleVersionMinor::RunFunction( dsRunTime *rt, dsValue* ){
+	const deScriptingDragonScript &ds = ( ( deClassEngine* )GetOwnerClass() )->GetDS();
+	rt->PushInt( ds.GetModuleVersion().minor );
+}
+
+// public static func int getModuleVersionPatch()
+deClassEngine::nfGetModuleVersionPatch::nfGetModuleVersionPatch( const sInitData &init ) :
+dsFunction( init.clsEngine, "getModuleVersionPatch", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsInteger ){
+}
+void deClassEngine::nfGetModuleVersionPatch::RunFunction( dsRunTime *rt, dsValue* ){
+	const deScriptingDragonScript &ds = ( ( deClassEngine* )GetOwnerClass() )->GetDS();
+	rt->PushInt( ds.GetModuleVersion().patch );
+}
+
+// public static func bool isModuleVersionOlder(int major, int minor)
+deClassEngine::nfIsModuleVersionOlder::nfIsModuleVersionOlder( const sInitData &init ) :
+dsFunction( init.clsEngine, "isModuleVersionOlder", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsBoolean ){
+	p_AddParameter( init.clsInteger );
+	p_AddParameter( init.clsInteger );
+}
+void deClassEngine::nfIsModuleVersionOlder::RunFunction( dsRunTime *rt, dsValue* ){
+	const deScriptingDragonScript &ds = ( ( deClassEngine* )GetOwnerClass() )->GetDS();
+	const deScriptingDragonScript::sModuleVersion &version = ds.GetModuleVersion();
+	const int major = rt->GetValue( 0 )->GetInt();
+	const int minor = rt->GetValue( 1 )->GetInt();
+	rt->PushBool( version.major < major || ( version.major == major && version.minor < minor ) );
+}
+
+// public static func bool isModuleVersionNewer(int major, int minor)
+deClassEngine::nfIsModuleVersionNewer::nfIsModuleVersionNewer( const sInitData &init ) :
+dsFunction( init.clsEngine, "isModuleVersionNewer", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsBoolean ){
+	p_AddParameter( init.clsInteger );
+	p_AddParameter( init.clsInteger );
+}
+void deClassEngine::nfIsModuleVersionNewer::RunFunction( dsRunTime *rt, dsValue* ){
+	const deScriptingDragonScript &ds = ( ( deClassEngine* )GetOwnerClass() )->GetDS();
+	const deScriptingDragonScript::sModuleVersion &version = ds.GetModuleVersion();
+	const int major = rt->GetValue( 0 )->GetInt();
+	const int minor = rt->GetValue( 1 )->GetInt();
+	rt->PushBool( version.major > major || ( version.major == major && version.minor > minor ) );
+}
+
+
+
+
+// static public func bool getDefaultEnableGI()
+deClassEngine::nfGetDefaultEnableGI::nfGetDefaultEnableGI( const sInitData &init ) :
+dsFunction( init.clsEngine, "getDefaultEnableGI", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsBoolean ){
+}
+void deClassEngine::nfGetDefaultEnableGI::RunFunction( dsRunTime *rt, dsValue* ){
+	rt->PushBool( ( ( ( deClassEngine* )GetOwnerClass() )->GetDefaultEnableGI() ) );
+}
+
+// static public func void setDefaultEnableGI( bool enable )
+deClassEngine::nfSetDefaultEnableGI::nfSetDefaultEnableGI( const sInitData &init ) :
+dsFunction( init.clsEngine, "setDefaultEnableGI", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid ){
+	p_AddParameter( init.clsBoolean ); // enable
+}
+void deClassEngine::nfSetDefaultEnableGI::RunFunction( dsRunTime *rt, dsValue* ){
+	( ( deClassEngine* )GetOwnerClass() )->SetDefaultEnableGI( rt->GetValue( 0 )->GetBool() );
+}
+
+// static public func bool getDefaultEnableAuralization()
+deClassEngine::nfGetDefaultEnableAuralization::nfGetDefaultEnableAuralization( const sInitData &init ) :
+dsFunction( init.clsEngine, "getDefaultEnableAuralization", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsBoolean ){
+}
+void deClassEngine::nfGetDefaultEnableAuralization::RunFunction( dsRunTime *rt, dsValue* ){
+	rt->PushBool( ( ( ( deClassEngine* )GetOwnerClass() )->GetDefaultEnableAuralization() ) );
+}
+
+// static public func void setDefaultEnableAuralization(bool enable)
+deClassEngine::nfSetDefaultEnableAuralization::nfSetDefaultEnableAuralization( const sInitData &init ) :
+dsFunction( init.clsEngine, "setDefaultEnableAuralization", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid ){
+	p_AddParameter( init.clsBoolean ); // enable
+}
+void deClassEngine::nfSetDefaultEnableAuralization::RunFunction( dsRunTime *rt, dsValue* ){
+	( ( deClassEngine* )GetOwnerClass() )->SetDefaultEnableAuralization( rt->GetValue( 0 )->GetBool() );
+}
+
+
+
+// static public func String getUserLocaleLanguage()
+deClassEngine::nfGetUserLocaleLanguage::nfGetUserLocaleLanguage( const sInitData &init ) :
+dsFunction( init.clsEngine, "getUserLocaleLanguage", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsString ){
+}
+void deClassEngine::nfGetUserLocaleLanguage::RunFunction( dsRunTime *rt, dsValue* ){
+	const deScriptingDragonScript &ds = ( ( deClassEngine* )GetOwnerClass() )->GetDS();
+	rt->PushString( ds.GetGameEngine()->GetOS()->GetUserLocaleLanguage() );
+}
+
+// static public func String getUserLocaleTerritory()
+deClassEngine::nfGetUserLocaleTerritory::nfGetUserLocaleTerritory( const sInitData &init ) :
+dsFunction( init.clsEngine, "getUserLocaleTerritory", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsString ){
+}
+void deClassEngine::nfGetUserLocaleTerritory::RunFunction( dsRunTime *rt, dsValue* ){
+	const deScriptingDragonScript &ds = ( ( deClassEngine* )GetOwnerClass() )->GetDS();
+	rt->PushString( ds.GetGameEngine()->GetOS()->GetUserLocaleTerritory() );
+}
+
+
+
+// static public func Set getSupportedServices()
+deClassEngine::nfGetSupportedServices::nfGetSupportedServices( const sInitData &init ) :
+dsFunction( init.clsEngine, "getSupportedServices", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsSet ){
+}
+void deClassEngine::nfGetSupportedServices::RunFunction( dsRunTime *rt, dsValue* ){
+	const deScriptingDragonScript &ds = ( ( deClassEngine* )GetOwnerClass() )->GetDS();
+	const decStringSet names( ds.GetGameEngine()->GetServiceManager()->GetAllSupportedSerices() );
+	const dsEngine &sengine = *ds.GetScriptEngine();
+	const int count = names.GetCount();
+	int i;
+	
+	dsValue * const valueNames = rt->CreateValue( sengine.GetClassSet() );
+	
+	try{
+		rt->CreateObject( valueNames, sengine.GetClassSet(), 0 );
+		
+		for( i=0; i<count; i++ ){
+			rt->PushString( names.GetAt( i ) );
+			rt->RunFunction( valueNames, "add", 1 );
+		}
+		
+		rt->PushValue( valueNames );
+		rt->FreeValue( valueNames );
+		
+	}catch( ... ){
+		if( valueNames ){
+			rt->FreeValue( valueNames );
+		}
+		throw;
+	}
+}
+
+
+
+// Class deClassEngine
+////////////////////////
+
+// Constructor, Destructor
+////////////////////////////
+
+deClassEngine::deClassEngine( deScriptingDragonScript &ds ) :
+dsClass("Engine", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE),
+pDS( ds ),
+pDefaultEnableGI( false ),
+pDefaultEnableAuralization( true )
+{
+	GetParserInfo()->SetParent( DENS_DRAGENGINE );
+	GetParserInfo()->SetBase( "Object" );
+	
+	p_SetNativeDataSize( 0 );
+}
+
 deClassEngine::~deClassEngine(){
 }
 
-// management
+
+
+// Management
+///////////////
+
 void deClassEngine::CreateClassMembers(dsEngine *engine){
 	sInitData init;
 	
 	// store classes
-	init.clsEng = this;
+	init.clsEngine = this;
 	init.clsVoid = engine->GetClassVoid();
-	init.clsInt = engine->GetClassInt();
-	init.clsFlt = engine->GetClassFloat();
-	init.clsBool = engine->GetClassBool();
-	init.clsStr = engine->GetClassString();
-	init.clsDict = engine->GetClassDictionary();
-	init.clsWin = engine->GetClass(DECN_WINDOW);
-	init.clsGame = p_scrMgr->GetClassGame();
+	init.clsInteger = engine->GetClassInt();
+	init.clsFloat = engine->GetClassFloat();
+	init.clsBoolean = engine->GetClassBool();
+	init.clsString = engine->GetClassString();
+	init.clsSet = engine->GetClassSet();
+	init.clsDictionary = engine->GetClassDictionary();
+	init.clsWindow = engine->GetClass( DECN_WINDOW );
+	init.clsGame = pDS.GetClassGame();
 	
 	// add functions
 	AddFunction( new nfGetElapsedTime( init ) );
@@ -234,7 +515,41 @@ void deClassEngine::CreateClassMembers(dsEngine *engine){
 	AddFunction( new nfLoadingResourceCount( init ) );
 	AddFunction( new nfLog( init ) );
 	AddFunction( new nfGetScriptModuleStats( init ) );
+	AddFunction( new nfGetAppActive( init ) );
+	AddFunction( new nfUpdateResourceLoading( init ) );
+	
+	AddFunction( new nfGetCompatibleVersion( init ) );
+	AddFunction( new nfGetCompatibleVersionMajor( init ) );
+	AddFunction( new nfGetCompatibleVersionMinor( init ) );
+	AddFunction( new nfGetCompatibleVersionPatch( init ) );
+	AddFunction( new nfIsCompatibleVersionOlder( init ) );
+	AddFunction( new nfIsCompatibleVersionNewer( init ) );
+	
+	AddFunction( new nfGetModuleVersion( init ) );
+	AddFunction( new nfGetModuleVersionMajor( init ) );
+	AddFunction( new nfGetModuleVersionMinor( init ) );
+	AddFunction( new nfGetModuleVersionPatch( init ) );
+	AddFunction( new nfIsModuleVersionOlder( init ) );
+	AddFunction( new nfIsModuleVersionNewer( init ) );
+	
+	AddFunction( new nfGetDefaultEnableGI( init ) );
+	AddFunction( new nfSetDefaultEnableGI( init ) );
+	AddFunction( new nfGetDefaultEnableAuralization( init ) );
+	AddFunction( new nfSetDefaultEnableAuralization( init ) );
+	
+	AddFunction( new nfGetUserLocaleLanguage( init ) );
+	AddFunction( new nfGetUserLocaleTerritory( init ) );
+	
+	AddFunction( new nfGetSupportedServices( init ) );
 
 	// calculate member offsets
 	CalcMemberOffsets();
+}
+
+void deClassEngine::SetDefaultEnableGI( bool enable ){
+	pDefaultEnableGI = enable;
+}
+
+void deClassEngine::SetDefaultEnableAuralization( bool enable ){
+	pDefaultEnableAuralization = enable;
 }

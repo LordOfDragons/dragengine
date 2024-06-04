@@ -18,7 +18,15 @@ class FileReader
 	/** \name Constructors */
 	/*@{*/
 	/** \brief Create file reader reading from virtual file system file. */
-	public func new( String filename )
+	func new(String filename)
+	end
+	
+	/**
+	 * \brief Create Z-Decompressing file reader reading from virtual file system file.
+	 * \version 1.8
+	 */
+	static func FileReader newZCompressed(String filename)
+		return null
 	end
 	/*@}*/
 	
@@ -27,90 +35,156 @@ class FileReader
 	/** \name Management */
 	/*@{*/
 	/** \brief File name. */
-	public func String getFilename()
+	func String getFilename()
+		return null
 	end
 	
 	/** \brief File size in bytes. */
-	public func int getLength()
+	func int getLength()
+		return 0
 	end
 	
 	/** \brief Current reading position in bytes from the beginning of the file. */
-	public func int getPosition()
+	func int getPosition()
+		return 0
 	end
 	
 	/** \brief Set reading file position in bytes relative to beginning of file. */
-	public func void setPosition( int position )
+	func void setPosition(int position)
 	end
 	
 	/** \brief Move reading file position by offset in bytes. */
-	public func void movePosition( int offset )
+	func void movePosition(int offset)
 	end
 	
 	/** \brief Set reading file position in bytes relative to end of file. */
-	public func void setPositionEnd( int position )
+	func void setPositionEnd(int position)
 	end
 	
 	
 	
 	/** \brief Stream version used by readFromFile of native classes. */
-	public func int getStreamVersion()
+	func int getStreamVersion()
+		return 0
 	end
 	
 	/** \brief Set stream version used by readFromFile of native classes. */
-	public func void setStreamVersion( int version )
+	func void setStreamVersion(int version)
 	end
 	
 	
 	/** \brief File reading pointer is at the end of file. */
-	public func bool eof()
+	func bool eof()
+		return false
 	end
 	
-	/** \brief Read one byte ( 1 byte ) and advance the file reading position. */
-	public func int readChar()
+	/** \brief Read one byte (1 byte) and advance the file reading position. */
+	func int readChar()
+		return 0
 	end
 	
-	/** \brief Read one unsigned byte ( 1 byte ) and advance the file reading position. */
-	public func int readByte()
+	/** \brief Read one unsigned byte (1 byte) and advance the file reading position. */
+	func int readByte()
+		return 0
 	end
 	
-	/** \brief Read one short ( 2 bytes ) and advance the file reading position. */
-	public func int readShort()
+	/** \brief Read one short (2 bytes) and advance the file reading position. */
+	func int readShort()
+		return 0
 	end
 	
-	/** \brief Read one unsigned short ( 2 bytes ) and advance the file reading position. */
-	public func int readUShort()
+	/** \brief Read one unsigned short (2 bytes) and advance the file reading position. */
+	func int readUShort()
+		return 0
 	end
 	
-	/** \brief Read one int ( 4 bytes ) and advance the file reading position. */
-	public func int readInt()
+	/** \brief Read one int (4 bytes) and advance the file reading position. */
+	func int readInt()
+		return 0
 	end
 	
-	/** \brief Read one unsigned int ( 4 bytes ) and advance the file reading position. */
-	public func int readUInt()
+	/** \brief Read one unsigned int (4 bytes) and advance the file reading position. */
+	func int readUInt()
+		return 0
 	end
 	
-	/** \brief Read one float ( 4 bytes ) and advance the file reading position. */
-	public func float readFloat()
+	/**
+	 * \brief Read variable length unsigned integer (1-4 bytes) and advances file pointer.
+	 * \version 1.22
+	 * 
+	 * Variable length integers are written using 1 to 4 bytes. The highest 2 bits of the
+	 * first byte stores the total length (0=1 byte, 1=2 bytes, 2=3 bytes, 3=4 bytes).
+	 * The lower 6 bits are used as value. With each added byte the previous bits are
+	 * shifted up. The maximum storable value is thus 1073741823.
+	 * 
+	 * Variable length unsigned integers are typically used for values like versions
+	 * or revisions which start low and potentially grow large over time.
+	 */
+	func int readVarUInt()
+		return 0
+	end
+	
+	/** \brief Read one float (4 bytes) and advance the file reading position. */
+	func float readFloat()
+		return 0.0
 	end
 	
 	/** \brief Read string prefixed by a 1-byte length field and advance the file reading position. */
-	public func String readString8()
+	func String readString8()
+		return null
 	end
 	
-	/** \brief Read string prefixed by a 2-byte2 length field and advance the file reading position. */
-	public func String readString16()
+	/** \brief Read string prefixed by a 2-byte length field and advance the file reading position. */
+	func String readString16()
+		return null
+	end
+	
+	/**
+	 * \brief Read string prefixed by a 4-byte length field and advance the file reading position.
+	 * \version 1.22
+	 */
+	func String readString32()
+		return null
+	end
+	
+	/**
+	 * \brief Read string prefixed by a 1-4 byte length field and advance the file reading position.
+	 * \version 1.22
+	 */
+	func String readVarString()
+		return null
 	end
 	
 	/** \brief Read string without length field and advance the file reading position. */
-	public func String readString( int size )
+	func String readString(int size)
+		return null
 	end
 	
 	/** \brief Skips string prefixed by a 1-byte length field and advance the file reading position. */
-	public func void skipString8()
+	func void skipString8()
 	end
 	
-	/** \brief Skips string prefixed by a 2-byte2 length field and advance the file reading position. */
-	public func void skipString16()
+	/** \brief Skips string prefixed by a 2-byte length field and advance the file reading position. */
+	func void skipString16()
+	end
+	
+	/**
+	 * \brief Skips string prefixed by a 4-byte length field and advance the file reading position.
+	 * \version 1.22
+	 */
+	func void skipString32()
+	end
+	
+	/**
+	 * \brief Skips string prefixed by a 1-4 byte length field and advance the file reading position.
+	 * \version 1.22
+	 */
+	func void skipVarString()
+	end
+	
+	/** \brief Read TimeDate instance. */
+	func TimeDate readTimeDate()
+		return null
 	end
 	/*@}*/
 end

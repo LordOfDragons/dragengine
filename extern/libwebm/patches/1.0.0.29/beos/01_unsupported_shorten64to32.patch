@@ -1,0 +1,12 @@
+diff -rupN libwebm-libwebm-1.0.0.29/CMakeLists.txt libwebm-libwebm-1.0.0.29-patched/CMakeLists.txt
+--- libwebm-libwebm-1.0.0.29/CMakeLists.txt	2022-10-21 21:32:14.000000000 +0200
++++ libwebm-libwebm-1.0.0.29-patched/CMakeLists.txt	2023-06-04 17:48:37.603792488 +0200
+@@ -51,7 +51,7 @@ else ()
+   add_cxx_flag_if_supported("-Wextra")
+   add_cxx_flag_if_supported("-Wnarrowing")
+   add_cxx_flag_if_supported("-Wno-deprecated")
+-  add_cxx_flag_if_supported("-Wshorten-64-to-32")
++  # add_cxx_flag_if_supported("-Wshorten-64-to-32")
+   if (ENABLE_WERROR)
+     add_cxx_flag_if_supported("-Werror")
+   endif ()

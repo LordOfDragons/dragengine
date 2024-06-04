@@ -26,33 +26,40 @@ class ARAnimationDifference extends AnimatorRule
 	/** \name Management */
 	/*@{*/
 	/** \brief Enable position modification. */
-	public func void setEnablePosition( bool enabled )
+	public func void setEnablePosition(bool enabled)
 	end
 	
 	/** \brief Enable orientation modification. */
-	public func void setEnableOrientation( bool enabled )
+	public func void setEnableOrientation(bool enabled)
 	end
 	
 	/** \brief Enable size modification. */
-	public func void setEnableSize( bool enabled )
+	public func void setEnableSize(bool enabled)
+	end
+	
+	/**
+	 * \brief Enable vertex position set modification.
+	 * \version 1.17
+	 */
+	public func void setEnableVertexPositionSet(bool enabled)
 	end
 	
 	
 	
 	/** \brief Set leading move name. */
-	public func void setLeadingMoveName( String move )
+	public func void setLeadingMoveName(String move)
 	end
 	
-	/** \brief Set leading move time in seconds. */
-	public func void setLeadingMoveTime( float time )
+	/** \brief Set time relative to leading move playtime. */
+	public func void setLeadingMoveTime(float time)
 	end
 	
 	/** \brief Set reference move name. */
-	public func void setReferenceMoveName( String move )
+	public func void setReferenceMoveName(String move)
 	end
 	
-	/** \brief Set reference move time in seconds. */
-	public func void setReferenceMoveTime( float time )
+	/** \brief Set time relative to reference move playtime. */
+	public func void setReferenceMoveTime(float time)
 	end
 	
 	
@@ -61,14 +68,14 @@ class ARAnimationDifference extends AnimatorRule
 	 * \brief Add link to target.
 	 * \throws EInvalidParam \em target is not a valid value.
 	 */
-	public func void targetAddLink( ARAnimationDifferenceTarget target, int link )
+	public func void targetAddLink(ARAnimationDifferenceTarget target, int link)
 	end
 	
 	/**
 	 * \brief Remove all links from target.
 	 * \throws EInvalidParam \em target is not a valid value.
 	 */
-	public func void targetRemoveAllLinks( ARAnimationDifferenceTarget target )
+	public func void targetRemoveAllLinks(ARAnimationDifferenceTarget target)
 	end
 	/*@}*/
 end

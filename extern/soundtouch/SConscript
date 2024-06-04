@@ -1,0 +1,138 @@
+import os
+import sys
+import SCons
+
+from SConsCommon import *
+from SConsExternCommon import *
+
+Import('parent_env parent_targets parent_report')
+
+if parent_env['platform_android'] != 'no':
+	Return()
+
+envLibrary = parent_env.Clone()
+
+# switch
+buildStaticLinking = True
+
+# parameters
+libVersion = '2.1.1'
+srcdir = 'soundtouch-{}'.format(libVersion)
+libLinkName = 'SoundTouch'
+
+if envLibrary['OSWindows']:
+	libFileName = 'bin/lib{}.dll'.format(libLinkName)
+	staticFileName = 'lib/lib{}.a'.format(libLinkName)
+else:
+	libFileName = envLibrary.subst('lib/${{SHLIBPREFIX}}{}${{SHLIBSUFFIX}}'.format(libLinkName))
+	staticFileName = envLibrary.subst('lib/${{LIBPREFIX}}{}${{LIBSUFFIX}}'.format(libLinkName))
+
+# check if system soundtouch is present
+hasSystemSoundTouch = False
+conf = envLibrary.Configure()
+if envLibrary['with_system_soundtouch'] != TernaryVariableNo:
+	hasSystemSoundTouch = conf.CheckLibWithHeader(libLinkName,
+		'soundtouch/SoundTouch.h', 'c++', 'soundtouch::SoundTouch::getVersionString();')
+conf.Finish()
+
+if not hasSystemSoundTouch and envLibrary['with_system_soundtouch'] == TernaryVariableYes:
+	Exit('Requested to use system SoundTouch but no usable SoundTouch found.')
+
+libs = [libLinkName]
+
+parent_report['use system soundtouch'] = 'yes' if hasSystemSoundTouch else 'no'
+
+if hasSystemSoundTouch:
+	parent_targets['lib_soundtouch'] = {
+		'name' : 'Internal SoundTouch library',
+		'cpppath' : [],
+		'libpath' : [],
+		'pkgconfig' : [],
+		'libs' : libs,
+		'runtimelibs' : [],
+		'depends' : [] }
+	Return()
+
+# build animated soundtouch
+def soundtouchBuild(target, source, env):
+	buildDir = target[0].get_dir().up()
+	
+	untarArchive(buildDir.abspath, source[0].abspath)
+	
+	script = createScriptHeader(env)
+	
+	script.append('cd "{}" || exit 1'.format(buildDir.Dir(srcdir).abspath))
+	
+	if not buildStaticLinking:
+		for p in env['PATCHES']:
+			script.append('patch -p1 <{} || exit 1'.format(p.srcnode().abspath))
+	
+	script.append('autoreconf -fi || exit 1')
+	
+	cmdline = ['./configure --prefix="{}"'.format(buildDir.abspath)]
+	cmdline.append('--enable-silent-rules')
+	if buildStaticLinking:
+		cmdline.append('--enable-shared=no')
+		cmdline.append('--enable-static=yes')
+		cmdline.append('--with-pic=yes')
+	else:
+		cmdline.append('--enable-shared=yes')
+		cmdline.append('--enable-static=no')
+	
+	if 'CROSSCOMPILE_HOST' in env:
+		cmdline.append('--host={}'.format(env['CROSSCOMPILE_HOST']))
+	
+	script.append('{} || exit 1'.format(' '.join(cmdline)))
+	
+	script.append('make -j {} install || exit 1'.format(env['with_threads']))
+	
+	if not env.RunExternalCommand(script):
+		raise Exception('Failed building soundtouch')
+
+if not buildStaticLinking:
+	patches = [] # create with 'diff -rupN original_sources patches_sources'
+	globFiles(envLibrary, 'patches', '*.patch', patches, recursive=False)
+	envLibrary.Append(PATCHES = [envLibrary.File(x) for x in sorted(patches)])
+
+if buildStaticLinking:
+	targets = [staticFileName]
+else:
+	targets = [libFileName]
+targets.extend(['include/soundtouch/{}'.format(x) for x in [
+	'BPMDetect.h',
+	'FIFOSampleBuffer.h',
+	'FIFOSamplePipe.h',
+	'STTypes.h',
+	'SoundTouch.h',
+	'soundtouch_config.h']])
+
+library = envLibrary.Command(targets, '{}.tar.bz2'.format(srcdir),
+	envLibrary.Action(soundtouchBuild, 'Build SoundTouch'))
+
+if not buildStaticLinking:
+	envLibrary.Depends(library, envLibrary['PATCHES'])
+
+#envLibrary.SideEffect('#notParallelCMake', library)
+
+depends = parent_env.Alias('lib_soundtouch', library)
+
+envLibrary.Clean(library, ['bin', 'include', 'lib', 'share', srcdir])
+
+cpppath = [envLibrary.Dir('include')]
+libpath = [envLibrary.Dir('lib')]
+pkgconfig = [envLibrary.Dir('lib/pkgconfig')]
+
+if buildStaticLinking:
+	libs = [library[0]]
+	runtimelibs = []
+else:
+	runtimelibs = [library[0]]
+
+parent_targets['lib_soundtouch'] = {
+	'name' : 'Internal soundtouch library',
+	'cpppath' : cpppath,
+	'libpath' : libpath,
+	'pkgconfig' : pkgconfig,
+	'libs' : libs,
+	'runtimelibs' : runtimelibs,
+	'depends' : depends}

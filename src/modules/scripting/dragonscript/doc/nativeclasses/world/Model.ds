@@ -46,14 +46,17 @@ fixed class Model
 	/*@{*/
 	/** \brief Normalized filename the model has been loaded from. */
 	public func String getFilename()
+		return null
 	end
 	
 	/** \brief Number of LODs. */
 	public func int getLodCount()
+		return 0
 	end
 	
 	/** \brief Number of textures. */
 	public func int getTextureCount()
+		return 0
 	end
 	
 	/**
@@ -61,6 +64,7 @@ fixed class Model
 	 * \throws EOutOfBoundary \em texture is less than 0 or greater than or equal to getTextureCount().
 	 */
 	public func String getTextureNameAt( int texture )
+		return null
 	end
 	
 	/**
@@ -68,6 +72,7 @@ fixed class Model
 	 * \throws EOutOfBoundary \em lod is less than 0 or greater than or equal to getLodCount().
 	 */
 	public func int getFaceCount( int lod )
+		return 0
 	end
 	
 	/**
@@ -75,6 +80,23 @@ fixed class Model
 	 * \throws EOutOfBoundary \em lod is less than 0 or greater than or equal to getLodCount().
 	 */
 	public func int getVertexCount( int lod )
+		return 0
+	end
+	
+	/**
+	 * \brief Calculate minimum extend of LOD 0.
+	 * \version 1.7
+	 */
+	public func Vector getMinimumExtend()
+		return null
+	end
+	
+	/**
+	 * \brief Calculate maximum extend of LOD 0.
+	 * \version 1.7
+	 */
+	public func Vector getMaximumExtend()
+		return null
 	end
 	
 	
@@ -86,6 +108,7 @@ fixed class Model
 	 *          model resource.
 	 */
 	public func bool equals( Object other )
+		return false
 	end
 	
 	/**
@@ -93,6 +116,7 @@ fixed class Model
 	 * \details Implements Object.hashCode().
 	 */
 	public func int hashCode()
+		return 0
 	end
 	/*@}*/
 end

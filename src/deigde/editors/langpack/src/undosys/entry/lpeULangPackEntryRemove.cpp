@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Language Pack Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -37,26 +40,31 @@
 // Constructor, destructor
 ////////////////////////////
 
-lpeULangPackEntryRemove::lpeULangPackEntryRemove(
-	lpeLangPack *langpack, const lpeLangPackEntryList &list ) :
-pLangPack( NULL ),
+lpeULangPackEntryRemove::lpeULangPackEntryRemove( lpeLangPack *langpack,
+	const lpeLangPackEntryList &list, lpeLangPack *refLangpack ) :
+pLangPack( langpack ),
 pList( list )
 {
-	if( ! langpack || list.GetCount() == 0 ){
-		DETHROW( deeInvalidParam );
+	const int count = list.GetCount();
+	DEASSERT_NOTNULL( langpack )
+	DEASSERT_TRUE( count > 0 )
+	
+	if( refLangpack ){
+		const lpeLangPackEntryList &refEntries = refLangpack->GetEntryList();
+		int i;
+		
+		for( i=0; i<count; i++ ){
+			lpeLangPackEntry * const refEntry = refEntries.GetNamed( list.GetAt( i )->GetName() );
+			if( refEntry ){
+				pListRef.Add( refEntry );
+			}
+		}
 	}
 	
-	SetShortInfo( list.GetCount() == 1 ? "Remove entry" : "Remove entries" );
-	
-	pLangPack = langpack;
-	langpack->AddReference();
+	SetShortInfo( count == 1 ? "Remove entry" : "Remove entries" );
 }
 
 lpeULangPackEntryRemove::~lpeULangPackEntryRemove(){
-	if( pLangPack ){
-		pLangPack->FreeReference();
-	}
-	pList.RemoveAll();
 }
 
 
@@ -65,35 +73,42 @@ lpeULangPackEntryRemove::~lpeULangPackEntryRemove(){
 ///////////////
 
 void lpeULangPackEntryRemove::Undo(){
-	lpeLangPackEntrySelection &selection = pLangPack->GetEntrySelection();
+	lpeLangPackEntrySelection &lpes = pLangPack->GetEntrySelection();
 	const int count = pList.GetCount();
 	int i;
 	
-	selection.Reset();
+	lpes.Reset();
 	
 	for( i=0; i<count; i++ ){
 		lpeLangPackEntry * const entry = pList.GetAt( i );
-		
 		pLangPack->AddEntry( entry );
-		selection.Add( entry );
+		lpes.Add( entry );
 	}
 	
-	selection.ActivateNext();
+	lpes.ActivateNext();
 	
 	pLangPack->NotifyEntrySelectionChanged();
 	pLangPack->NotifyActiveEntryChanged();
 }
 
 void lpeULangPackEntryRemove::Redo(){
-	lpeLangPackEntrySelection &selection = pLangPack->GetEntrySelection();
+	lpeLangPackEntrySelection &lpes = pLangPack->GetEntrySelection();
 	const int count = pList.GetCount();
 	int i;
 	
 	for( i=0; i<count; i++ ){
 		lpeLangPackEntry * const entry = pList.GetAt( i );
 		
-		selection.Remove( entry );
+		lpes.Remove( entry );
 		pLangPack->RemoveEntry( entry );
+	}
+	
+	const int refCount = pListRef.GetCount();
+	if( refCount > 0 ){
+		for( i=0; i<refCount; i++ ){
+			lpes.Add( pListRef.GetAt( i ) );
+		}
+		lpes.SetActive( pListRef.GetAt( 0 ) );
 	}
 	
 	pLangPack->NotifyEntrySelectionChanged();

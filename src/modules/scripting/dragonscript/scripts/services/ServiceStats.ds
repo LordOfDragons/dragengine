@@ -1,0 +1,80 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Services
+
+
+/**
+ * Interface for services supporting stats and achievements.
+ */
+interface ServiceStats
+	/**
+	 * \brief Add stats and achievements listener.
+	 * \param listener Listener to add
+	 */
+	func void addStatListener(ServiceStatsListener listener)
+	
+	/**
+	 * \brief Remove stats and achievements listener.
+	 * \param listener Listener to remove.
+	 */
+	func void removeStatsListener(ServiceStatsListener listener)
+	
+	
+	
+	/**
+	 * \brief Get stats and achievements.
+	 * 
+	 * Requests from the steam server the set of stats and achievements with the matching
+	 * api names. Once retrieved calls
+	 * \ref ServiceStatsListener#statsReceived(Object,Dictionary,Dictionary) or
+	 * \ref ServiceStatsListener#statsReceivedFailed(Object,String).
+	 */
+	func void getStatsAndAchievements(Set stats, Set achievements)
+	
+	/**
+	 * \brief Set stats and achievements.
+	 * 
+	 * Stores stats and achievements to steam server. Once stored calls
+	 * \ref ServiceStatsListener#statsStored(Object,Set,Set) or
+	 * \ref ServiceStatsListener#statsStoredFailed(Object,String).
+	 * 
+	 * \param stats Dictionary of stats to store. Key is api name as String. Values is
+	 * either an int or float value depending on the stat type.
+	 * 
+	 * \param achievements Dictionary of achievements to store. Key is api name as String.
+	 * Value is true or false to set or clear the achievement.
+	 */
+	func void setStatsAndAchievements(Dictionary stats, Dictionary achievements)
+	
+	/**
+	 * \brief Reset all stats on steam server.
+	 * 
+	 * This is mainly for development purpose to test stats and achievements.
+	 * For this reason this call does not send events to listeners.
+	 * 
+	 * \param resetAchievements Reset also achievements not just stats.
+	 */
+	func void resetAllStats(bool resetAchievements)
+end

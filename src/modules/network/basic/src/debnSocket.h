@@ -1,45 +1,62 @@
-/* 
- * Drag[en]gine Basic Network Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEBNSOCKET_H_
 #define _DEBNSOCKET_H_
 
-#include "dragengine/deObject.h"
+#include <dragengine/dragengine_configuration.h>
 
-class debnAddress;
+#include <stdint.h>
+
+#include "debnAddress.h"
+
+#ifdef OS_W32
+#	include <iphlpapi.h>
+#endif
+
+#include <dragengine/deObject.h>
+
 class deNetworkBasic;
 class deNetworkMessage;
 
 
 
 /**
- * \brief Socket class.
+ * Socket class.
  */
 class debnSocket : public deObject{
 private:
-	deNetworkBasic *pNetBasic;
-	debnAddress *pAddress;
+	deNetworkBasic &pNetBasic;
+	debnAddress pAddress;
 	
-	int pSocket;
-	
+
+	#ifdef OS_W32
+		SOCKET pSocket;
+	#else
+		int pSocket;
+	#endif
+
 	debnSocket *pPreviousSocket;
 	debnSocket *pNextSocket;
 	bool pIsRegistered;
@@ -49,10 +66,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create socket. */
-	debnSocket( deNetworkBasic *netBasic );
+	/** Create socket. */
+	debnSocket( deNetworkBasic &netBasic );
 	
-	/** \brief Clean up socket object. */
+	/** Clean up socket object. */
 	virtual ~debnSocket();
 	/*@}*/
 	
@@ -60,44 +77,51 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Address. */
-	inline debnAddress *GetAddress() const{ return pAddress; }
+	/** Address. */
+	inline debnAddress &GetAddress(){ return pAddress; }
+	inline const debnAddress &GetAddress() const{ return pAddress; }
 	
-	/** \brief Bind socket to stored address. */
+	/** Bind socket to stored address. */
 	void Bind();
 	
 	/**
-	 * \brief Receive datagram from socket.
+	 * Receive datagram from socket.
 	 * \returns true if a message has been receives or false otherwise.
 	 */
-	bool ReceiveDatagram( deNetworkMessage *stream, debnAddress *address );
+	bool ReceiveDatagram( deNetworkMessage &stream, debnAddress &address );
 	
 	/**
-	 * \brief Send datagram.
+	 * Send datagram.
 	 */
-	void SendDatagram( const deNetworkMessage *stream, const debnAddress *address );
+	void SendDatagram( const deNetworkMessage &stream, const debnAddress &address );
+	
+	/** Throw socket error. */
+	static void ThrowSocketError( const char *message );
+	
+	/** Find public addresses. */
+	static void FindAddresses( decStringList &list, bool onlyPublic );
 	/*@}*/
 	
 	
 	
 	/** \name Linked List */
 	/*@{*/
-	/** \brief Previous socket. */
+	/** Previous socket. */
 	inline debnSocket *GetPreviousSocket() const{ return pPreviousSocket; }
 	
-	/** \brief Set previous socket. */
+	/** Set previous socket. */
 	void SetPreviousSocket( debnSocket *bnSocket );
 	
-	/** \brief Next socket. */
+	/** Next socket. */
 	inline debnSocket *GetNextSocket() const{ return pNextSocket; }
 	
 	/** \breif Set next socket. */
 	void SetNextSocket( debnSocket *bnSocket );
 	
-	/** \brief Connection is registered. */
+	/** Connection is registered. */
 	inline bool GetIsRegistered() const{ return pIsRegistered; }
 	
-	/** \brief Set if connection is registered. */
+	/** Set if connection is registered. */
 	void SetIsRegistered( bool isRegistered );
 	/*@}*/
 	
@@ -105,6 +129,7 @@ public:
 	
 private:
 	void pCleanUp();
+	static uint32_t pScopeIdFor( const sockaddr_in6 &address );
 };
 
 #endif

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -31,12 +34,14 @@
 #include "../../deClassPathes.h"
 #include "../../resourceloader/dedsResourceLoader.h"
 
+#include <dragengine/deEngine.h>
+#include <dragengine/resources/loader/deResourceLoader.h>
 #include <dragengine/resources/model/deModel.h>
 #include <dragengine/resources/model/deModelManager.h>
 #include <dragengine/resources/model/deModelTexture.h>
 #include <dragengine/resources/model/deModelLOD.h>
-#include <dragengine/deEngine.h>
-#include <dragengine/resources/loader/deResourceLoader.h>
+#include <dragengine/resources/model/deModelVertex.h>
+
 #include <libdscript/exceptions.h>
 
 
@@ -176,6 +181,58 @@ void deClassModel::nfGetVertexCount::RunFunction( dsRunTime *rt, dsValue *myself
 	rt->PushInt( model.GetLODAt( lod )->GetVertexCount() );
 }
 
+// public func Vector getMinimumExtend()
+deClassModel::nfGetMinimumExtend::nfGetMinimumExtend( const sInitData &init ) :
+dsFunction( init.clsMdl, "getMinimumExtend", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec ){
+}
+void deClassModel::nfGetMinimumExtend::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deModel &model = *( ( sMdlNatDat* )p_GetNativeData( myself ) )->model;
+	deScriptingDragonScript &ds = *( ( deClassModel* )GetOwnerClass() )->GetDS();
+	const deModelLOD &lod = *model.GetLODAt( 0 );
+	
+	const int count = lod.GetVertexCount();
+	decVector extend;
+	
+	if( count > 0 ){
+		const deModelVertex * const vertices = lod.GetVertices();
+		int i;
+		
+		extend = vertices[ 0 ].GetPosition();
+		
+		for( i=1; i<count; i++ ){
+			extend.SetSmallest( vertices[ i ].GetPosition() );
+		}
+	}
+	
+	ds.GetClassVector()->PushVector( rt, extend );
+}
+
+// public func Vector getMaximumExtend()
+deClassModel::nfGetMaximumExtend::nfGetMaximumExtend( const sInitData &init ) :
+dsFunction( init.clsMdl, "getMaximumExtend", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec ){
+}
+void deClassModel::nfGetMaximumExtend::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deModel &model = *( ( sMdlNatDat* )p_GetNativeData( myself ) )->model;
+	deScriptingDragonScript &ds = *( ( deClassModel* )GetOwnerClass() )->GetDS();
+	const deModelLOD &lod = *model.GetLODAt( 0 );
+	
+	const int count = lod.GetVertexCount();
+	decVector extend;
+	
+	if( count > 0 ){
+		const deModelVertex * const vertices = lod.GetVertices();
+		int i;
+		
+		extend = vertices[ 0 ].GetPosition();
+		
+		for( i=1; i<count; i++ ){
+			extend.SetLargest( vertices[ i ].GetPosition() );
+		}
+	}
+	
+	ds.GetClassVector()->PushVector( rt, extend );
+}
+
 
 
 // public func int hashCode()
@@ -187,7 +244,7 @@ void deClassModel::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
 	sMdlNatDat &nd = *( ( sMdlNatDat* )p_GetNativeData( myself ) );
 	
 	// hash code = memory location
-	rt->PushInt( ( intptr_t )nd.model );
+	rt->PushInt( ( int )( intptr_t )nd.model );
 }
 
 // public func bool equals( Object obj )
@@ -266,6 +323,8 @@ void deClassModel::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfGetTextureNameAt( init ) );
 	AddFunction( new nfGetFaceCount( init ) );
 	AddFunction( new nfGetVertexCount( init ) );
+	AddFunction( new nfGetMinimumExtend( init ) );
+	AddFunction( new nfGetMaximumExtend( init ) );
 	
 	AddFunction( new nfEquals( init ) );
 	AddFunction( new nfHashCode( init ) );

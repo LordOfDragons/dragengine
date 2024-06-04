@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Game Engine
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdlib.h>
@@ -25,6 +28,7 @@
 #include "deInputDeviceAxis.h"
 #include "deInputDeviceButton.h"
 #include "deInputDeviceFeedback.h"
+#include "deInputDeviceComponent.h"
 #include "../common/exceptions.h"
 #include "../resources/model/deModel.h"
 #include "../resources/skin/deSkin.h"
@@ -42,7 +46,12 @@ pButtonCount( 0 ),
 pAxes( NULL ),
 pAxisCount( 0 ),
 pFeedbacks( NULL ),
-pFeedbackCount( 0 ){
+pFeedbackCount( 0 ),
+pComponents( nullptr ),
+pComponentCount( 0 ),
+pBoneConfiguration( ebcNone ),
+pSupportsFaceEyeExpressions( false ),
+pSupportsFaceMouthExpressions( false ){
 }
 
 deInputDevice::~deInputDevice(){
@@ -95,6 +104,50 @@ void deInputDevice::AddDisplayIcon( deImage *image ){
 
 void deInputDevice::SetDisplayText( const char * text){
 	pDisplayText = text;
+}
+
+void deInputDevice::SetBoneConfiguration( eBoneConfigurations configuration ){
+	pBoneConfiguration = configuration;
+}
+
+const decVector &deInputDevice::GetFingerTipOffset( int index ) const{
+	if( index < 0 ){
+		DETHROW_INFO( deeInvalidParam, "index < 0" );
+	}
+	if( index > 4 ){
+		DETHROW_INFO( deeInvalidParam, "index > 4" );
+	}
+	return pFingerTipOffset[ index ];
+}
+
+void deInputDevice::SetFingerTipOffset( int index, const decVector &offset ){
+	if( index < 0 ){
+		DETHROW_INFO( deeInvalidParam, "index < 0" );
+	}
+	if( index > 4 ){
+		DETHROW_INFO( deeInvalidParam, "index > 4" );
+	}
+	pFingerTipOffset[ index ] = offset;
+}
+
+void deInputDevice::SetHandRig( deRig *rig ){
+	pHandRig = rig;
+}
+
+void deInputDevice::SetSupportsFaceEyeExpressions( bool supportsFaceEyeExpressions ){
+	pSupportsFaceEyeExpressions = supportsFaceEyeExpressions;
+}
+
+void deInputDevice::SetSupportsFaceMouthExpressions( bool supportsFaceMouthExpressions ){
+	pSupportsFaceMouthExpressions = supportsFaceMouthExpressions;
+}
+
+void deInputDevice::SetVRModel( deModel *model ){
+	pVRModel = model;
+}
+
+void deInputDevice::SetVRSkin( deSkin *skin ){
+	pVRSkin = skin;
 }
 
 
@@ -226,10 +279,55 @@ int deInputDevice::IndexOfFeedbackWithID( const char *id ) const{
 
 
 
+// Components
+//////////////
+
+void deInputDevice::SetComponentCount( int count ){
+	if( pComponents ){
+		delete [] pComponents;
+		pComponents = NULL;
+		pComponentCount = 0;
+	}
+	
+	if( count == 0 ){
+		return;
+	}
+	
+	pComponents = new deInputDeviceComponent[ count ];
+	pComponentCount = count;
+}
+
+deInputDeviceComponent &deInputDevice::GetComponentAt( int index ) const{
+	if( index < 0 || index >= pComponentCount ){
+		DETHROW( deeOutOfBoundary );
+	}
+	return pComponents[ index ];
+}
+
+int deInputDevice::IndexOfComponentWithID( const char *id ) const{
+	if( ! id ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	int i;
+	for( i=0; i<pComponentCount; i++ ){
+		if( pComponents[ i ].GetID() == id ){
+			return i;
+		}
+	}
+	
+	return -1;
+}
+
+
+
 // Privat functions
 /////////////////////
 
 void deInputDevice::pCleanUp(){
+	if( pComponents ){
+		delete [] pComponents;
+	}
 	if( pFeedbacks ){
 		delete [] pFeedbacks;
 	}

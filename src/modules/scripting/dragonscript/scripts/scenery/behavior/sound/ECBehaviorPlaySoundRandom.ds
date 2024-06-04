@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -45,24 +48,24 @@ class ECBehaviorPlaySoundRandom extends ECBehaviorPlaySound
 		
 		
 		/** \brief Create element. */
-		public func new( ECBehaviorPlaySoundRandom ecbehavior, BehaviorElement element ) \
-		super( ecbehavior, element )
-			this.pECBehaviorRandom = ecbehavior
+		public func new(ECBehaviorPlaySoundRandom ecbehavior, BehaviorElement element) \
+		super(ecbehavior, element)
+			pECBehaviorRandom = ecbehavior
 		end
 		
 		
 		/** \brief Random sound or \em null if the list is empty. */
 		public func Sound randomSound()
-			return this.pECBehaviorRandom.getSounds().getRandom()
+			return pECBehaviorRandom.getSounds().getRandom()
 		end
 		
 		/** \brief Create speaker modified to use random sound. */
 		protected func Speaker createSpeaker()
 			var Speaker speaker = super.createSpeaker()
 			
-			var Sound sound = this.randomSound()
+			var Sound sound = randomSound()
 			if sound != null
-				speaker.setSound( sound )
+				speaker.setSound(sound)
 			end
 			
 			return speaker
@@ -76,52 +79,57 @@ class ECBehaviorPlaySoundRandom extends ECBehaviorPlaySound
 	
 	
 	/** \brief Create behavior element class. */
-	public func new( BehaviorElementClass eclass, ECBehaviorComponent component, \
-	ECBehaviorCollider collider ) this( eclass, component, collider, null cast TSTriggerTable, "" )
+	public func new(BehaviorElementClass eclass, ECBehaviorComponent component, \
+	ECBehaviorCollider collider) this(eclass, component, collider, null cast TSTriggerTable, "")
 	end
 	
 	/** \brief Create behavior element class. */
-	public func new( BehaviorElementClass eclass, ECBehaviorComponent component, \
-	ECBehaviorCollider collider, String id ) this( eclass, component, collider, null cast TSTriggerTable, id )
+	public func new(BehaviorElementClass eclass, ECBehaviorComponent component, \
+	ECBehaviorCollider collider, String id) this(eclass, component, collider, null cast TSTriggerTable, id)
 	end
 	
 	/** \brief Create behavior element class. */
-	public func new( BehaviorElementClass eclass, ECBehaviorComponent component, \
-	ECBehaviorCollider collider, String id, String prefix ) \
-	this( eclass, component, collider, null cast TSTriggerTable, id, prefix )
+	public func new(BehaviorElementClass eclass, ECBehaviorComponent component, \
+	ECBehaviorCollider collider, String id, String prefix) \
+	this(eclass, component, collider, null cast TSTriggerTable, id, prefix)
 	end
 	
 	/** \brief Create behavior element class. */
-	public func new( BehaviorElementClass eclass, ECBehaviorComponent component, \
-	ECBehaviorCollider collider, TSTriggerTable triggerTable ) \
-	this( eclass, component, collider, triggerTable, "" )
+	public func new(BehaviorElementClass eclass, ECBehaviorComponent component, \
+	ECBehaviorCollider collider, TSTriggerTable triggerTable) \
+	this(eclass, component, collider, triggerTable, "")
 	end
 	
 	/** \brief Create behavior element class. */
-	public func new( BehaviorElementClass eclass, ECBehaviorComponent component, \
-	ECBehaviorCollider collider, TSTriggerTable triggerTable, String id ) \
-	this( eclass, component, collider, triggerTable, id, \
-	id.empty() if "playSound." else "playSound(" + id + ")." )
+	public func new(BehaviorElementClass eclass, ECBehaviorComponent component, \
+	ECBehaviorCollider collider, TSTriggerTable triggerTable, String id) \
+	this(eclass, component, collider, triggerTable, id,\
+	id.empty() if "playSound" else "playSound(" + id + ")")
 	end
 	
-	public func new( BehaviorElementClass eclass, ECBehaviorComponent component, \
-	ECBehaviorCollider collider, TSTriggerTable triggerTable, String id, String prefix ) \
-	super( eclass, component, collider, triggerTable, id, prefix )
-		this.pSounds = ECPSoundList.new( prefix + "sounds" )
-		eclass.addProperty( this.pSounds )
+	public func new(BehaviorElementClass eclass, ECBehaviorComponent component, \
+	ECBehaviorCollider collider, TSTriggerTable triggerTable, String id, String subId) \
+	this(eclass, component, collider, triggerTable, id, subId, subId + ".")
+	end
+	
+	public func new(BehaviorElementClass eclass, ECBehaviorComponent component, \
+	ECBehaviorCollider collider, TSTriggerTable triggerTable, String id, String subId, String prefix) \
+	super(eclass, component, collider, triggerTable, id, subId, prefix)
+		pSounds = ECPSoundList.new(prefix + "sounds")
+		eclass.addProperty(pSounds)
 	end
 	
 	
 	
 	/** \brief Speaker sounds. */
 	public func ECPSoundList getSounds()
-		return this.pSounds
+		return pSounds
 	end
 	
 	
 	
 	/** \brief Create Behavior instance. */
-	public func ECBehaviorInstance createInstance( BehaviorElement element )
-		return Instance.new( this, element )
+	public func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
 	end
 end

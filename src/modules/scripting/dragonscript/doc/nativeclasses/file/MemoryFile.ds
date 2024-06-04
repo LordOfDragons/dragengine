@@ -24,14 +24,14 @@ class MemoryFile
 	 * \brief Create memory file.
 	 * \param filename Filename shown if FileReader.getFilename() or FileWriter.getFilename() is called.
 	 */
-	public func new( String filename )
+	public func new(String filename)
 	end
 	
 	/**
 	 * \brief Create copy of memory file.
 	 * \param memoryFile Memory file to create copy of.
 	 */
-	public func new( MemoryFile memoryFile )
+	public func new(MemoryFile memoryFile)
 	end
 	/*@}*/
 	
@@ -41,17 +41,19 @@ class MemoryFile
 	/*@{*/
 	/** \brief File name. */
 	public func String getFilename()
+		return null
 	end
 	
 	/** \brief Data size in bytes. */
 	public func int getSize()
+		return 0
 	end
 	
 	/**
 	 * \brief Set data size in bytes.
 	 * \details If size changes the data is undefined.
 	 */
-	public func void setSize( int size )
+	public func void setSize(int size)
 	end
 	
 	
@@ -65,6 +67,7 @@ class MemoryFile
 	 * the end of file.
 	 */
 	public func FileReader getReader()
+		return null
 	end
 	
 	/**
@@ -81,7 +84,28 @@ class MemoryFile
 	 * \param append If \em true start writing at end of data. If \em false resizes
 	 *               data to 0 bytes and starts writing.
 	 */
-	public func FileWriter getWriter( bool append )
+	public func FileWriter getWriter(bool append)
+		return null
+	end
+	
+	/**
+	 * \brief Get new FileReader starting reading at the start of the data.
+	 * \version 1.8
+	 * 
+	 * Same as getReader() but decompressed data using Z-Compression.
+	 */
+	public func FileReader getReaderZCompressed()
+		return null
+	end
+	
+	/**
+	 * \brief Get new FileWriter.
+	 * \version 1.8
+	 * 
+	 * Same as getWriter(false) but compressed data using Z-Compression.
+	 */
+	public func FileWriter getWriterZCompressed()
+		return null
 	end
 	/*@}*/
 end

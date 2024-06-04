@@ -1,0 +1,162 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+
+namespace Dragengine.BehaviorTreeSystem
+
+pin Dragengine.Scenery
+pin Dragengine.TriggerSystem
+pin Dragengine.Utils
+
+
+
+/**
+ * \brief Behavior tree action manipulating trigger target.
+ * 
+ * This action always returns BTResult.success.
+ */
+class BTActionTrigger implements BTAction
+	/** \brief Actions. */
+	public enum Action
+		/** \brief Fire the trigger. */
+		fire
+		
+		/** \brief Reset the trigger. */
+		reset
+		
+		/** \brief Fire and immediately reset the trigger. */
+		pulse
+		
+		/** \brief Fully resets the trigger. */
+		fullReset
+	end
+	
+	
+	
+	var TSTriggerTable pTriggerTable
+	var StringID pName
+	var TSTriggerTarget pTriggerTarget
+	var Action pAction
+	
+	
+	
+	/** \brief Create action using BaseGameApp trigger table. */
+	func new(StringID name, Action action) \
+	this(BaseGameApp.getApp().getTriggerTable(), name, action)
+	end
+	
+	/** \brief Create action. */
+	func new(TSTriggerTable triggerTable, StringID name, Action action)
+		if triggerTable == null
+			throw ENullPointer.new("triggerTable")
+		end
+		if name == null
+			throw ENullPointer.new("name")
+		end
+		if action == null
+			throw ENullPointer.new("action")
+		end
+		
+		pTriggerTable = triggerTable
+		pName = name
+		pAction = action
+	end
+	
+	/** \brief Create copy of action. */
+	func new(BTActionTrigger action)
+		pTriggerTable = action.pTriggerTable
+		pName = action.pName
+		pAction = action.pAction
+	end
+	
+	
+	
+	/** \brief Trigger table. */
+	func TSTriggerTable getTriggerTable()
+		return pTriggerTable
+	end
+	
+	/** \brief Set trigger table. */
+	protected func void setTriggerTable(TSTriggerTable triggerTable)
+		pTriggerTable = triggerTable
+		pTriggerTarget = null
+	end
+	
+	/** \brief Name of the trigger to set. */
+	func StringID getName()
+		return pName
+	end
+	
+	/** \brief Set name of the trigger to set. */
+	func void setName(StringID name)
+		pName = name
+		pTriggerTarget = null
+	end
+	
+	/** \brief Cached trigger target. */
+	func TSTriggerTarget getTriggerTarget()
+		if pTriggerTarget == null
+			pTriggerTarget = pTriggerTable.getOrAddNamed(pName)
+		end
+		return pTriggerTarget
+	end
+	
+	/** \brief Action. */
+	func Action getAction()
+		return pAction
+	end
+	
+	/** \brief Set action. */
+	func void setAction(Action action)
+		pAction = action
+	end
+	
+	
+	
+	/**
+	 * \brief Run action.
+	 * \param parameters Dictionary with parameters of type String key and String value.
+	 *                   Do not change the content of the dictionary as it is shared.
+	 */
+	func BTResult runAction(BTContext context, Dictionary parameters)
+		var TSTriggerTarget target = getTriggerTarget()
+		
+		select pAction
+		case Action.fire
+			target.fire()
+			
+		case Action.reset
+			target.reset()
+			
+		case Action.pulse
+			target.fire()
+			target.reset()
+			
+		case Action.fullReset
+			target.fullReset()
+		end
+		
+		return BTResult.success
+	end
+end

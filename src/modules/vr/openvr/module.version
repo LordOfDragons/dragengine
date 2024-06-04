@@ -1,0 +1,4 @@
+VROPENVR {
+  global: OpenVRCreateModule;
+  local: *;
+};

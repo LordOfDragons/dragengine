@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE World Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _MEWORLD_H_
@@ -31,6 +34,7 @@
 #include <dragengine/common/string/decStringDictionary.h>
 #include <dragengine/common/utils/decUniqueID.h>
 
+#include "meMusic.h"
 #include "object/meObjectList.h"
 #include "object/meObjectSelection.h"
 #include "objectshape/meObjectShapeSelection.h"
@@ -73,6 +77,7 @@ class meDecal;
 class meWeather;
 
 class meWorldGuiParameters;
+class meWindowMain;
 
 class igdeEnvironment;
 class igdeWSky;
@@ -93,67 +98,76 @@ class deLogger;
 
 /**
  * @brief World Wrapper.
- * Stores informations about a loaded world as well as wrapping the
+ * Stores information about a loaded world as well as wrapping the
  * engine side resources required for rendering. This class also
  * provides helper functions to deal with positions across sector
  * boundaries.
  */
 class meWorld : public igdeEditableEntity{
 public:
-	/** \brief Layer masks for colliders. */
+	/** Reference. */
+	typedef deTObjectReference<meWorld> Ref;
+	
+	
+	
+public:
+	/** Layer masks for colliders. */
 	enum eColliderLayerMasks{
-		/** \brief Editing. */
+		/** Editing. */
 		eclmEditing,
 		
-		/** \brief Prop fields. */
+		/** Prop fields. */
 		eclmPropFields,
 		
-		/** \brief Height terrains. */
+		/** Height terrains. */
 		eclmHeightTerrains,
 		
-		/** \brief Objects. */
+		/** Objects. */
 		eclmObjects,
 		
-		/** \brief Decals. */
+		/** Decals. */
 		eclmDecals,
 		
-		/** \brief Wind. */
-		      eclmForceField,
+		/** Wind. */
+		eclmForceField,
 		
-		/** \brief AI. */
+		/** AI. */
 		eclmAI,
 		
-		/** \brief Object Shape. */
+		/** Object Shape. */
 		eclmObjectShape,
 		
-		/** \brief Snap point. */
+		/** Snap point. */
 		eclmSnapPoint,
 		
-		/** \brief Particles. */
+		/** Particles. */
 		eclmParticles
 	};
 	
-	/** \brief Layer masks. */
+	/** Layer masks. */
 	enum eLayerMasks {
-		/** \brief Camera view. */
+		/** Camera view. */
 		elmCamera,
 		
-		/** \brief Environment map probes. */
+		/** Environment map probes. */
 		elmEnvMapProbes,
 		
-		/** \brief Audio. */
+		/** Audio. */
 		elmAudio
 	};
 	
 private:
+	meWindowMain &pWindowMain;
+	
 	deWorld *pDEWorld;
 	deColliderVolume *pEngColCollider;
 	igdeWSky *pSky;
 	deMicrophone *pEngMicrophone;
 	
 	deForceField *pEngForceField;
-	float pFFDir;
 	
+	decDVector pSize;
+	decVector pGravity;
 	meHeightTerrain *pHeightTerrain;
 	
 	meObjectList pObjects;
@@ -179,6 +193,7 @@ private:
 	
 	meLumimeter *pLumimeter;
 	mePathFindTest *pPathFindTest;
+	meMusic::Ref pMusic;
 	
 	bool pDepChanged;
 	
@@ -198,10 +213,10 @@ private:
 	int pNotifierSize;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new world object linked to the given engine. */
-	meWorld( igdeEnvironment *environment );
+	meWorld( meWindowMain &windowMain, igdeEnvironment *environment );
 	
 protected:
 	/** Cleans up the world object. */
@@ -211,13 +226,16 @@ protected:
 	
 	
 public:
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
+	/** Main window. */
+	inline meWindowMain &GetWindowMain() const{ return pWindowMain; }
+	
 	/** Retrieves the engine side world resource. */
 	inline deWorld *GetEngineWorld() const{ return pDEWorld; }
 	/** Retrieves the sky wrapper. */
 	inline igdeWSky *GetSky() const{ return pSky; }
-	/** \brief Retrieves the microphone. */
+	/** Retrieves the microphone. */
 	inline deMicrophone *GetMicrophone() const{ return pEngMicrophone; }
 	
 	/** Retrieves the height terrain. */
@@ -233,19 +251,19 @@ public:
 	inline igdeTriggerExpressionParser &GetTriggerExpressionParser(){ return pTriggerExpressionParser; }
 	inline const igdeTriggerExpressionParser &GetTriggerExpressionParser() const{ return pTriggerExpressionParser; }
 	
-	/** \brief Identifier group list. */
+	/** Identifier group list. */
 	inline meIDGroupList &GetIDGroupList(){ return pIDGroupList; }
 	inline const meIDGroupList &GetIDGroupList() const{ return pIDGroupList; }
 	
 	
 	
-	/** \brief Next object ID. */
+	/** Next object ID. */
 	inline const decUniqueID &GetNextObjectID() const { return pNextObjectID; }
 	
-	/** \brief Set next object ID. */
+	/** Set next object ID. */
 	void SetNextObjectID( const decUniqueID &id );
 	
-	/** \brief Next object ID and increment. */
+	/** Next object ID and increment. */
 	decUniqueID NextObjectID();
 	
 	
@@ -259,21 +277,24 @@ public:
 	void InitDelegates();
 	/*@}*/
 	
-	/** @name Collision Detection */
+	/** \name Collision Detection */
 	/*@{*/
 	/** Tests for collisions of a box. */
 	void CollisionTestBox( const decDVector &position, const decQuaternion &orientation, const decVector &halfExtends,
 		deBaseScriptingCollider *listener, const decCollisionFilter &filter );
+	
+	void CollisionTestBox( const decDVector &position, const decVector &minExtend, const decVector &maxExtend,
+		const decQuaternion &orientation, deBaseScriptingCollider *listener, const decCollisionFilter &filter );
 	/*@}*/
 	
-	/** @name Editing */
+	/** \name Editing */
 	/*@{*/
 	/** Determines if a world dependency has changed. */
 	inline bool GetDepChanged() const{ return pDepChanged; }
 	/** Sets if a world dependency has changed. */
 	void SetDepChanged( bool changed );
 	
-	/** \brief World changed or world dependency changed. */
+	/** World changed or world dependency changed. */
 	inline bool GetAnyChanged() const{ return GetChanged() || pDepChanged; }
 	
 	/** Checks the changed state of all sectors adjusting the world changed state. */
@@ -286,13 +307,19 @@ public:
 	/** Clears vegetation. */
 	void ClearVegetation();
 	
-	/** \brief Element mode changed. */
+	/** Element mode changed. */
 	void ElementModeChanged();
 	
-	/** \brief Element visibility changed. */
+	/** Element visibility changed. */
 	void ElementVisibilityChanged();
 	
-	/** \brief Clear scaling of non-scaled elements. */
+	/** Enable GI changed. */
+	void EnableGIChanged();
+	
+	/** Enable auralization changed. */
+	void EnableAuralizationChanged();
+	
+	/** Clear scaling of non-scaled elements. */
 	void ClearScalingOfNonScaledElements();
 	
 	/** Retrieves the editing object shape list. */
@@ -304,25 +331,25 @@ public:
 	
 	/** \name Objects */
 	/*@{*/
-	/** \brief List of objects. */
+	/** List of objects. */
 	inline const meObjectList &GetObjects() const{ return pObjects; }
 	
-	/** \brief Add object. */
+	/** Add object. */
 	void AddObject( meObject *object );
 	
-	/** \brief Remove object. */
+	/** Remove object. */
 	void RemoveObject( meObject *object );
 	
-	/** \brief Remove all objects. */
+	/** Remove all objects. */
 	void RemoveAllObjects();
 	
-	/** \brief Reassin object identifiers. */
+	/** Reassin object identifiers. */
 	void ReassignObjectIDs();
 	
-	/** \brief Object by ID or \em NULL if absent. */
+	/** Object by ID or \em NULL if absent. */
 	meObject *GetObjectWithID( const decUniqueID &id ) const;
 	
-	/** \brief Object by ID in hex format or \em NULL if absent. */
+	/** Object by ID in hex format or \em NULL if absent. */
 	meObject *GetObjectWithID( const char *hexID ) const;
 	/*@}*/
 	
@@ -330,16 +357,16 @@ public:
 	
 	/** \name Decals */
 	/*@{*/
-	/** \brief List of decals. */
+	/** List of decals. */
 	inline const meDecalList &GetDecals() const{ return pDecals; }
 	
-	/** \brief Add decal. */
+	/** Add decal. */
 	void AddDecal( meDecal *decal );
 	
-	/** \brief Remove decal. */
+	/** Remove decal. */
 	void RemoveDecal( meDecal *decal );
 	
-	/** \brief Remove all decals. */
+	/** Remove all decals. */
 	void RemoveAllDecals();
 	/*@}*/
 	
@@ -347,27 +374,36 @@ public:
 	
 	/** \name Navigation Spaces */
 	/*@{*/
-	/** \brief List of navigation spaces. */
+	/** List of navigation spaces. */
 	inline const meNavigationSpaceList &GetNavSpaces() const{ return pNavSpaces; }
 	
-	/** \brief Add navigation space. */
+	/** Add navigation space. */
 	void AddNavSpace( meNavigationSpace *navspace );
 	
-	/** \brief Remove navigation space. */
+	/** Remove navigation space. */
 	void RemoveNavSpace( meNavigationSpace *navspace );
 	
-	/** \brief Remove all navigation spaces. */
+	/** Remove all navigation spaces. */
 	void RemoveAllNavSpaces();
 	/*@}*/
 	
 	
 	
-	/** @name World Parameters */
+	/** \name World Parameters */
 	/*@{*/
-	/** Retrieves the world gravity vector. */
-	const decVector &GetGravity() const;
-	/** Sets the world gravity vector. */
+	
+	/** Size of world in meters. */
+	inline const decDVector &GetSize() const{ return pSize; }
+	
+	/** Set size of world in meters. */
+	void SetSize( const decDVector &size );
+	
+	/** World gravity. */
+	inline const decVector &GetGravity() const{ return pGravity; }
+	
+	/** Set world gravity. */
 	void SetGravity( const decVector &gravity );
+	
 	/** Determines if the world is rendered in full bright mode. */
 	inline bool GetFullBright() const{ return pFullBright; }
 	/** Sets if the world is rendered in full bright mode. */
@@ -378,31 +414,31 @@ public:
 	
 	/** \name Properties */
 	/*@{*/
-	/** \brief Properties. */
+	/** Properties. */
 	inline const decStringDictionary &GetProperties() const{ return pProperties; }
 	
-	/** \brief Set property. */
+	/** Set property. */
 	void SetProperty( const char *key, const char *value );
 	
-	/** \brief Set properties. */
+	/** Set properties. */
 	void SetProperties( const decStringDictionary &properties );
 	
-	/** \brief Remove property if present. */
+	/** Remove property if present. */
 	void RemoveProperty( const char *key );
 	
-	/** \brief Removes all properties. */
+	/** Removes all properties. */
 	void RemoveAllProperties();
 	
-	/** \brief Active property. */
+	/** Active property. */
 	inline const decString &GetActiveProperty() const{ return pActiveProperty; }
 	
-	/** \brief Set active property. */
+	/** Set active property. */
 	void SetActiveProperty( const char *property );
 	/*@}*/
 	
 	
 	
-	/** @name Selection */
+	/** \name Selection */
 	/*@{*/
 	/** Retrieves the object selection. */
 	inline meObjectSelection &GetSelectionObject(){ return pSelectionObject; }
@@ -418,7 +454,7 @@ public:
 	inline const meNavigationSpaceSelection &GetSelectionNavigationSpace() const{ return pSelectionNavigationSpace; }
 	/*@}*/
 	
-	/** @name Camera */
+	/** \name Camera */
 	/*@{*/
 	/** Retrieves the free roaming camera. */
 	inline meCamera *GetFreeRoamingCamera() const{ return pFreeRoamCamera; }
@@ -430,7 +466,7 @@ public:
 	void SetActiveCamera( meCamera *camera );
 	/*@}*/
 	
-	/** @name Sensors */
+	/** \name Sensors */
 	/*@{*/
 	/** Retrieves the lumimeter sensor. */
 	inline meLumimeter *GetLumimeter() const{ return pLumimeter; }
@@ -438,25 +474,28 @@ public:
 	void UpdateSensors();
 	/*@}*/
 	
-	/** @name Testing */
+	/** \name Testing */
 	/*@{*/
 	/** Retrieves the path find test. */
 	inline mePathFindTest *GetPathFindTest() const{ return pPathFindTest; }
-	/** \brief Retrieves the last path used for loading/saving navigation test files. */
+	/** Retrieves the last path used for loading/saving navigation test files. */
 	inline const decString &GetPathNavTest() const{ return pPathNavTest; }
-	/** \brief Sets the last path used for loading/saving navigation test files. */
+	/** Sets the last path used for loading/saving navigation test files. */
 	void SetPathNavTest( const char *path );
+	
+	/** Music testing. */
+	inline meMusic &GetMusic() const{ return pMusic; }
 	/*@}*/
 	
-	/** \brief Activate microphone. */
+	/** Activate microphone. */
 	void ActivateMicrophone();
 	
 	void UpdateDEWorld( float elapsed );
 	
-	/** \brief Game definition. */
+	/** Game definition. */
 	void GameDefChanged();
 	
-	/** @name Notifiers */
+	/** \name Notifiers */
 	/*@{*/
 	/** Retrieves the number of notifiers. */
 	inline int GetNotifierCount() const{ return pNotifierCount; }
@@ -473,6 +512,9 @@ public:
 	/** Removes all notifiers. */
 	void RemoveAllNotifiers();
 	
+	/** Notify world parameters changed. */
+	void NotifyWorldParametersChanged();
+	
 	/** Notifies all that the sky changed. */
 	void NotifySkyChanged();
 	/** Notifies all that the element or work mode changed. */
@@ -485,6 +527,10 @@ public:
 	void NotifyLumimeterChanged();
 	/** Notifies all that the path find test changed. */
 	void NotifyPathFindTestChanged();
+	
+	/** Notify listeners music changed. */
+	void NotifyMusicChanged();
+	
 	/** Notifies all that the lighting changed. */
 	void NotifyLightingChanged();
 	/** Notifies all that the editing parameters changed. */
@@ -500,10 +546,10 @@ public:
 	/** Notifies all that the class (partial) hide tags changed. */
 	void NotifyClassHideTagsChanged();
 	
-	/** \brief Notify all world changed properties. */
+	/** Notify all world changed properties. */
 	void NotifyPropertiesChanged();
 	
-	/** \brief Notify all world active property changed. */
+	/** Notify all world active property changed. */
 	void NotifyActivePropertyChanged();
 	
 	/** Notifies all that a height terrain sector state ( changed, saved, filename ) changed. */
@@ -525,28 +571,28 @@ public:
 	/** Notifies all that a height terrain sector texture mask changed. */
 	void NotifyHTSTextureMaskChanged( meHeightTerrainSector *sector, meHeightTerrainTexture *texture );
 	
-	/** \brief Notify listener height terrain navigation space count changed. */
+	/** Notify listener height terrain navigation space count changed. */
 	void NotifyHTNavSpaceCountChanged();
 	
-	/** \brief Notify listeners height terrain active navigation space changed. */
+	/** Notify listeners height terrain active navigation space changed. */
 	void NotifyHTActiveNavSpaceChanged();
 	
-	/** \brief Notify listeners height terrain navigation space changed. */
+	/** Notify listeners height terrain navigation space changed. */
 	void NotifyHTNavSpaceChanged( meHeightTerrainNavSpace *navspace );
 	
-	/** \brief Height terrain navigation space type count changed. */
+	/** Height terrain navigation space type count changed. */
 	void NotifyHTNavSpaceTypeCountChanged( meHeightTerrainNavSpace *navspace );
 	
-	/** \brief Height terrain navigation space active type changed. */
+	/** Height terrain navigation space active type changed. */
 	void NotifyHTNavSpaceActiveTypeChanged( meHeightTerrainNavSpace *navspace );
 	
-	/** \brief Notify listeners height terrain navigation space type changed. */
+	/** Notify listeners height terrain navigation space type changed. */
 	void NotifyHTNavSpaceTypeChanged( meHeightTerrainNavSpace *navspace, meHeightTerrainNavSpaceType *type );
 	
-	/** \brief Notify listeners height terrain navigation space faces changed. */
+	/** Notify listeners height terrain navigation space faces changed. */
 	void NotifyHTNavSpaceFacesChanged( meHeightTerrainNavSpace *navspace );
 	
-	/** \brief Height terrain selected navigation space points changed. */
+	/** Height terrain selected navigation space points changed. */
 	void NotifyHTNavSpaceSelectedPointsChanged();
 	
 	/** Notifies all that a height terrain sector prop field count changed. */

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -28,6 +31,7 @@
 #include "../graphics/deClassComponent.h"
 #include "../math/deClassVector.h"
 #include "../math/deClassDVector.h"
+#include "../math/deClassQuaternion.h"
 #include "../physics/deClassTouchSensor.h"
 #include "../physics/deClassCollisionFilter.h"
 #include "../physics/deClassCollisionInfo.h"
@@ -461,6 +465,40 @@ void deClassColliderCollisionTest::nfSetOrigin::RunFunction( dsRunTime *rt, dsVa
 	}
 }
 
+// public func Quaternion getOrientation()
+deClassColliderCollisionTest::nfGetOrientation::nfGetOrientation( const sInitData &init ) :
+dsFunction( init.clsCCT, "getOrientation", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsQuaternion ){
+}
+void deClassColliderCollisionTest::nfGetOrientation::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deColliderCollisionTest &collisionTest = *( ( ( sCCTNatDat* )p_GetNativeData( myself ) )->collisionTest );
+	const deScriptingDragonScript &ds = ( ( ( deClassColliderCollisionTest* )GetOwnerClass() )->GetDS() );
+	
+	ds.GetClassQuaternion()->PushQuaternion( rt, collisionTest.GetOrientation() );
+}
+
+// public func void setOrientation(Quaternion orientation)
+deClassColliderCollisionTest::nfSetOrientation::nfSetOrientation( const sInitData &init ) :
+dsFunction( init.clsCCT, "setOrientation", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsQuaternion ); // orientation
+}
+void deClassColliderCollisionTest::nfSetOrientation::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const sCCTNatDat &nd = *( ( sCCTNatDat* )p_GetNativeData( myself ) );
+	const deScriptingDragonScript &ds = ( ( ( deClassColliderCollisionTest* )GetOwnerClass() )->GetDS() );
+	
+	const decQuaternion &orientation = ds.GetClassQuaternion()->GetQuaternion( rt->GetValue( 0 )->GetRealObject() );
+	
+	if( orientation.IsEqualTo( nd.collisionTest->GetOrientation() ) ){
+		return;
+	}
+	
+	nd.collisionTest->SetOrientation( orientation );
+	
+	if( nd.parentCollider ){
+		nd.parentCollider->NotifyCollisionTestChanged(
+			nd.parentCollider->IndexOfCollisionTest( nd.collisionTest ) );
+	}
+}
+
 // public func Vector getDirection()
 deClassColliderCollisionTest::nfGetDirection::nfGetDirection( const sInitData &init ) : dsFunction( init.clsCCT,
 "getDirection", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec ){
@@ -570,6 +608,17 @@ void deClassColliderCollisionTest::nfGetTestOrigin::RunFunction( dsRunTime *rt, 
 	const deScriptingDragonScript &ds = ( ( ( deClassColliderCollisionTest* )GetOwnerClass() )->GetDS() );
 	
 	ds.GetClassDVector()->PushDVector( rt, collisionTest.GetTestOrigin() );
+}
+
+// public func Quaternion getTestOrientation()
+deClassColliderCollisionTest::nfGetTestOrientation::nfGetTestOrientation( const sInitData &init ) :
+dsFunction( init.clsCCT, "getTestOrientation", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsQuaternion ){
+}
+void deClassColliderCollisionTest::nfGetTestOrientation::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deColliderCollisionTest &collisionTest = *( ( ( sCCTNatDat* )p_GetNativeData( myself ) )->collisionTest );
+	const deScriptingDragonScript &ds = ( ( ( deClassColliderCollisionTest* )GetOwnerClass() )->GetDS() );
+	
+	ds.GetClassQuaternion()->PushQuaternion( rt, collisionTest.GetTestOrientation() );
 }
 
 // public func DVector getTestDirection()
@@ -788,6 +837,7 @@ void deClassColliderCollisionTest::CreateClassMembers( dsEngine *engine ){
 	init.clsCol = pDS.GetClassCollider();
 	init.clsCI = pDS.GetClassCollisionInfo();
 	init.clsComp = pDS.GetClassComponent();
+	init.clsQuaternion = pDS.GetClassQuaternion();
 	
 	// add functions
 	AddFunction( new nfNew( init ) );
@@ -812,6 +862,8 @@ void deClassColliderCollisionTest::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfSetBone( init ) );
 	AddFunction( new nfGetOrigin( init ) );
 	AddFunction( new nfSetOrigin( init ) );
+	AddFunction( new nfGetOrientation( init ) );
+	AddFunction( new nfSetOrientation( init ) );
 	AddFunction( new nfGetDirection( init ) );
 	AddFunction( new nfSetDirection( init ) );
 	AddFunction( new nfGetLocalDirection( init ) );
@@ -820,6 +872,7 @@ void deClassColliderCollisionTest::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfSetEnabled( init ) );
 	
 	AddFunction( new nfGetTestOrigin( init ) );
+	AddFunction( new nfGetTestOrientation( init ) );
 	AddFunction( new nfGetTestDirection( init ) );
 	
 	AddFunction( new nfGetHasCollision( init ) );

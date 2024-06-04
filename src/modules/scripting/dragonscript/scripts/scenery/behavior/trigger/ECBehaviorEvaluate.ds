@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -43,69 +46,111 @@ class ECBehaviorEvaluate extends DefaultECBehavior
 	/** \brief Listener for behavior instance events. */
 	interface Listener
 		/** \brief Trigger expression changed to true. */
-		func void evaluatesTrue( Instance instance )
+		func void evaluatesTrue(Instance instance)
 		
 		/** \brief Trigger expression changed to false. */
-		func void evaluatesFalse( Instance instance )
+		func void evaluatesFalse(Instance instance)
 	end
 	
 	/** \brief Default implementation of behavior instance listener. */
 	class DefaultListener implements Listener
 		/** \brief Create default listener. */
-		public func new()
+		func new()
 		end
 		
 		/** \brief Trigger expression changed to true. */
-		public func void evaluatesTrue( Instance instance )
+		func void evaluatesTrue(Instance instance)
 		end
 		
 		/** \brief Trigger expression changed to false. */
-		public func void evaluatesFalse( Instance instance )
+		func void evaluatesFalse(Instance instance)
 		end
 	end
+	
+	/** \brief Implementation of behavior instance listener using BooleanBehaviorListener. */
+	class BooleanListener extends DefaultListener
+		var BooleanBehaviorListener pListener
+		
+		func new(BooleanBehaviorListener listener)
+			pListener = listener
+		end
+		
+		func void evaluatesTrue(Instance instance)
+			pListener.enabled()
+		end
+		
+		func void evaluatesFalse(Instance instance)
+			pListener.disabled()
+		end
+	end
+	
+	/** \brief Factory creating listeners. */
+	interface ListenerFactory
+		/** \brief Create listener. */
+		func Listener createListener(Instance instance)
+	end
+	
+	/** \brief Factory creating listeners using block. */
+	class BlockListenerFactory implements ListenerFactory
+		var Block pBlock
+		
+		/** \brief Create factory using block receiving Instance as parameter returning Listener. */
+		func new(Block blockFactory)
+			if blockFactory == null
+				throw ENullPointer.new()
+			end
+			pBlock = blockFactory
+		end
+		
+		/** \brief Create listener. */
+		func Listener createListener(Instance instance)
+			return pBlock.run(instance) cast Listener
+		end
+	end
+	
 	
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		/** \brief Trigger listener. */
 		public class EvaluateListener extends ECBehaviorTriggered.DefaultListener
-			private var Instance pInstance
+			var Instance pInstance
 			
-			public func new( Instance instance )
-				this.pInstance = instance
+			func new(Instance instance)
+				pInstance = instance
 			end
 			
-			public func void triggerExpressionTrue( ECBehaviorTriggered.Instance instance )
-				this.pInstance.evaluate()
+			func void triggerExpressionTrue(ECBehaviorTriggered.Instance instance)
+				pInstance.evaluate()
 			end
 			
-			public func void triggerExpressionFalse( ECBehaviorTriggered.Instance instance )
-				this.pInstance.evaluate()
+			func void triggerExpressionFalse(ECBehaviorTriggered.Instance instance)
+				pInstance.evaluate()
 			end
 		end
 		
 		
 		
-		private var ECBehaviorEvaluate pECBehavior
-		private var ECBehaviorTriggered.Instance pTrigger
-		private var TSNamedTriggerTarget pTarget
-		private var bool pPulse
-		private var Array pListeners
+		var ECBehaviorEvaluate pECBehavior
+		var ECBehaviorTriggered.Instance pTrigger
+		var TSNamedTriggerTarget pTarget
+		var bool pPulse
+		var Array pListeners
 		
 		
 		
 		/** \brief Create element. */
-		public func new( ECBehaviorEvaluate ecbehavior, BehaviorElement element ) super( element )
-			this.pECBehavior = ecbehavior
-			this.pPulse = false
-			this.pListeners = Array.new()
+		func new(ECBehaviorEvaluate ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
+			pPulse = false
+			pListeners = Array.new()
 		end
 		
 		/** \brief Dispose of composeable instance. */
-		public func void dispose()
-			this.pTarget = null
-			this.pTrigger = null
-			this.pListeners = null
+		func void dispose()
+			pTarget = null
+			pTrigger = null
+			pListeners = null
 			
 			super.dispose()
 		end
@@ -113,178 +158,229 @@ class ECBehaviorEvaluate extends DefaultECBehavior
 		
 		
 		/** \brief Initialize element from stub. */
-		public func void init( StubElement stub )
-			if this.pECBehavior.getTriggerTable() == null
+		func void init(StubElement stub)
+			if pECBehavior.getTriggerTable() == null
 				return
 			end
 			
-			this.pTrigger = this.pECBehavior.getTriggered().instance( this.getElement() )
-			this.pTrigger.addListener( EvaluateListener.new( this ) )
+			pTrigger = pECBehavior.getTriggered().instance(getElement())
+			pTrigger.addListener(EvaluateListener.new(this))
 			
-			this.pTarget = TSNamedTriggerTarget.new( this.pECBehavior.getTarget().getValue( stub ) )
-			this.pPulse = this.pECBehavior.getPulse().getValue( stub )
+			pTarget = TSNamedTriggerTarget.new(pECBehavior.getTarget().getValue(stub))
+			pPulse = pECBehavior.getPulse().getValue(stub)
+			
+			pECBehavior.createListeners(this)
 		end
 		
 		
 		
 		/** \brief Behavior. */
-		public func ECBehaviorEvaluate getECBehavior()
-			return this.pECBehavior
+		func ECBehaviorEvaluate getECBehavior()
+			return pECBehavior
 		end
 		
 		/** \brief Trigger or \em null. */
-		public func ECBehaviorTriggered.Instance getTrigger()
-			return this.pTrigger
+		func ECBehaviorTriggered.Instance getTrigger()
+			return pTrigger
 		end
 		
 		/** \brief Trigger target or \em null. */
-		public func TSNamedTriggerTarget getTarget()
-			return this.pTarget
+		func TSNamedTriggerTarget getTarget()
+			return pTarget
 		end
 		
 		/** \brief Pulse trigger target instead of fire. */
-		public func bool getPulse()
-			return this.pPulse
+		func bool getPulse()
+			return pPulse
 		end
 		
 		
 		
 		/** \brief Evaluate trigger expression. */
-		public func void evaluate()
-			if this.pTrigger.getState()
-				if this.pTarget != null
-					if this.pPulse
-						this.pTarget.pulse()
+		func void evaluate()
+			if pTrigger.getState()
+				if pTarget != null
+					if pPulse
+						pTarget.pulse()
 						
 					else
-						this.pTarget.fire()
+						pTarget.fire()
 					end
 				end
 				
-				this.pListeners.forEach( block Listener each
-					each.evaluatesTrue( this )
-				end )
+				pListeners.forEach(block Listener each
+					each.evaluatesTrue(this)
+				end)
 				
 			else
-				if this.pTarget != null
-					this.pTarget.reset()
+				if pTarget != null
+					pTarget.reset()
 				end
 				
-				this.pListeners.forEach( block Listener each
-					each.evaluatesFalse( this )
-				end )
+				pListeners.forEach(block Listener each
+					each.evaluatesFalse(this)
+				end)
 			end
 		end
 		
 		
 		
 		/** \brief Add listener. */
-		public func void addListener( Listener listener )
+		func void addListener(Listener listener)
 			if listener == null
 				throw EInvalidParam.new()
 			end
-			this.pListeners.add( listener )
+			pListeners.add(listener)
 		end
 		
 		/** \brief Remove listener. */
-		public func void removeListener( Listener listener )
-			this.pListeners.remove( listener )
+		func void removeListener(Listener listener)
+			pListeners.remove(listener)
 		end
 		
 		
 		
 		/** \brief Add element to game world. */
-		public func void addToGameWorld()
-			if this.pTarget != null
-				this.pTarget.acquireTarget( this.pECBehavior.getTriggerTable() )
+		func void addToGameWorld()
+			if pTarget == null
+				return
+			end
+			
+			pTarget.acquireTarget(pECBehavior.getTriggerTable())
+			
+			// this is required because ECBehaviorTriggered runs right before us
+			if pTrigger.getState()
+				if pPulse
+					pTarget.pulse()
+					
+				else
+					pTarget.fire()
+				end
 			end
 		end
 		
 		/** \brief Remove element from game world. */
-		public func void removeFromGameWorld()
-			if this.pTarget != null
-				this.pTarget.dropTarget()
+		func void removeFromGameWorld()
+			if pTarget != null
+				pTarget.dropTarget()
 			end
 		end
 	end
 	
 	
 	
-	private var ECBehaviorTriggered pTriggered
-	private var ECPString pTarget
-	private var ECPBoolean pPulse
-	private var TSTriggerTable pTriggerTable
+	var ECBehaviorTriggered pTriggered
+	var ECPString pTarget
+	var ECPBoolean pPulse
+	var TSTriggerTable pTriggerTable
+	var Array pListenerFactories
 	
 	
 	
 	/** \brief Create behavior element class. */
-	public func new( BehaviorElementClass eclass ) \
-	this( eclass, BaseGameApp.getApp().getTriggerTable(), "" )
+	func new(BehaviorElementClass eclass) \
+	this(eclass, BaseGameApp.getApp().getTriggerTable(), "")
 	end
 	
-	public func new( BehaviorElementClass eclass, String id ) \
-	this( eclass, BaseGameApp.getApp().getTriggerTable(), id )
+	func new(BehaviorElementClass eclass, String id) \
+	this(eclass, BaseGameApp.getApp().getTriggerTable(), id)
 	end
 	
-	public func new( BehaviorElementClass eclass, TSTriggerTable triggerTable ) \
-	this( eclass, triggerTable, "" )
+	func new(BehaviorElementClass eclass, TSTriggerTable triggerTable) \
+	this(eclass, triggerTable, "")
 	end
 	
-	public func new( BehaviorElementClass eclass, TSTriggerTable triggerTable, String id ) \
-	this( eclass, triggerTable, id, id.empty() if "evaluate" else "evaluate(" + id + ")" )
+	func new(BehaviorElementClass eclass, TSTriggerTable triggerTable, String id) \
+	this(eclass, triggerTable, id, id.empty() if "evaluate" else "evaluate(" + id + ")")
 	end
 	
-	public func new( BehaviorElementClass eclass, TSTriggerTable triggerTable, String id, String subID ) \
-	this( eclass, triggerTable, id, subID, subID + "." )
+	func new(BehaviorElementClass eclass, TSTriggerTable triggerTable, String id, String subID) \
+	this(eclass, triggerTable, id, subID, subID + ".")
 	end
 	
-	public func new( BehaviorElementClass eclass, TSTriggerTable triggerTable, \
-	String id, String subID, String prefix ) super( eclass, id )
-		this.pTriggerTable = triggerTable
+	func new(BehaviorElementClass eclass, TSTriggerTable triggerTable, \
+	String id, String subID, String prefix) super(eclass, id)
+		pTriggerTable = triggerTable
 		
-		this.pTriggered = ECBehaviorTriggered.new( eclass, triggerTable, subID, prefix + "trigger" )
+		pTriggered = ECBehaviorTriggered.new(eclass, triggerTable, subID, prefix + "trigger")
+		pListenerFactories = Array.new()
 		
-		this.pTarget = ECPString.new( prefix + "target", null )
-		eclass.addProperty( this.pTarget )
+		pTarget = ECPString.new(prefix + "target", null)
+		eclass.addProperty(pTarget)
 		
-		this.pPulse = ECPBoolean.new( prefix + "pulse", false )
-		eclass.addProperty( this.pPulse )
+		pPulse = ECPBoolean.new(prefix + "pulse", false)
+		eclass.addProperty(pPulse)
 		
-		eclass.addBehavior( this )
+		eclass.addBehavior(this)
+	end
+	
+	/** \brief Dispose of behavior. */
+	func void dispose()
+		pListenerFactories = null
+		super.dispose()
 	end
 	
 	
 	
 	/** \brief Trigger to evaluate. */
-	public func ECBehaviorTriggered getTriggered()
-		return this.pTriggered
+	func ECBehaviorTriggered getTriggered()
+		return pTriggered
 	end
 	
 	/** \brief Trigger target to operate. */
-	public func ECPString getTarget()
-		return this.pTarget
+	func ECPString getTarget()
+		return pTarget
 	end
 	
 	/** \brief Pulse trigger target instead of fire it. */
-	public func ECPBoolean getPulse()
-		return this.pPulse
+	func ECPBoolean getPulse()
+		return pPulse
 	end
 	
 	/** \brief Trigger table or \em null if not used. */
-	public func TSTriggerTable getTriggerTable()
-		return this.pTriggerTable
+	func TSTriggerTable getTriggerTable()
+		return pTriggerTable
 	end
 	
 	/** \brief Set trigger table or \em null if not used. */
-	protected func void setTriggerTable( TSTriggerTable triggerTable )
-		this.pTriggerTable = triggerTable
+	protected func void setTriggerTable(TSTriggerTable triggerTable)
+		pTriggerTable = triggerTable
+	end
+	
+	/** \brief Add listener factory. */
+	func void addListenerFactory(ListenerFactory factory)
+		if factory == null
+			throw ENullPointer.new()
+		end
+		pListenerFactories.add(factory)
+	end
+	
+	/**
+	 * \brief Add listener factory using block.
+	 * 
+	 * Block receives as parameter Instance and returns Listener.
+	 */
+	func void addListenerFactory(Block blockFactory)
+		pListenerFactories.add(BlockListenerFactory.new(blockFactory))
+	end
+	
+	/** \brief Visit listener factories with block with argument ListenerFactory. */
+	func void forEachListenerFactory(Block ablock)
+		pListenerFactories.forEach(ablock)
+	end
+	
+	/** \brief Create listeners from factories adding them to behavior instance. */
+	func void createListeners(Instance instance)
+		pListenerFactories.forEach(block ListenerFactory each
+			instance.addListener(each.createListener(instance))
+		end)
 	end
 	
 	
 	
 	/** \brief Get instance in element from owner element class. */
-	public func Instance instance( BehaviorElement element )
-		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
 	
 	
@@ -295,10 +391,10 @@ class ECBehaviorEvaluate extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorComponent.
 	 */
-	static public func ECBehaviorEvaluate getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehavior each
-			return each castable ECBehaviorEvaluate
-		end ) cast ECBehaviorEvaluate
+	static func ECBehaviorEvaluate getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorEvaluate each
+			return true
+		end) cast ECBehaviorEvaluate
 	end
 	
 	/**
@@ -307,11 +403,10 @@ class ECBehaviorEvaluate extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorEvaluate with specific identifier.
 	 */
-	static public func ECBehaviorEvaluate getBehaviorIn( BehaviorElementClass eclass, String id )
-		return eclass.findBehavior( block ECBehaviorEvaluate each
-			return each castable ECBehaviorEvaluate and \
-				( each cast ECBehaviorEvaluate ).getID().equals( id )
-		end ) cast ECBehaviorEvaluate
+	static func ECBehaviorEvaluate getBehaviorIn(BehaviorElementClass eclass, String id)
+		return eclass.findBehavior(block ECBehaviorEvaluate each
+			return each.getID().equals(id)
+		end) cast ECBehaviorEvaluate
 	end
 	
 	/**
@@ -320,14 +415,10 @@ class ECBehaviorEvaluate extends DefaultECBehavior
 	 * Returns list contains ECBehaviorEvaluate behaviors in the order they have
 	 * been created in the element.
 	 */
-	static public func Array getAllBehaviorsIn( BehaviorElementClass eclass )
-		var Array list = Array.new()
-		eclass.forEachBehavior( block ECBehavior each
-			if each castable ECBehaviorEvaluate
-				list.add( each )
-			end
-		end )
-		return list
+	static func Array getAllBehaviorsIn(BehaviorElementClass eclass)
+		return eclass.collectBehaviors(block ECBehaviorEvaluate each
+			return true
+		end)
 	end
 	
 	
@@ -339,10 +430,10 @@ class ECBehaviorEvaluate extends DefaultECBehavior
 	 * of type ECBehaviorEvaluate.Instance . If more than one instance is present returns
 	 * the first instance.
 	 */
-	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance
-		end ) cast Instance
+	static func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
+			return true
+		end) cast Instance
 	end
 	
 	/**
@@ -351,11 +442,10 @@ class ECBehaviorEvaluate extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
 	 * of type ECBehaviorEvaluate.Instance with specific identifier.
 	 */
-	static public func Instance getInstanceIn( BehaviorElement element, String id )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance and \
-				( each cast Instance ).getECBehavior().getID().equals( id )
-		end ) cast Instance
+	static func Instance getInstanceIn(BehaviorElement element, String id)
+		return element.findInstance(block Instance each
+			return each.getECBehavior().getID().equals(id)
+		end) cast Instance
 	end
 	
 	/**
@@ -364,20 +454,16 @@ class ECBehaviorEvaluate extends DefaultECBehavior
 	 * Returns list contains ECBehaviorEvaluate.Instance instances in the order they have
 	 * been created in the element.
 	 */
-	static public func Array getAllInstancesIn( BehaviorElement element )
-		var Array list = Array.new()
-		element.forEachInstance( block ECBehaviorInstance each
-			if each castable Instance
-				list.add( each )
-			end
-		end )
-		return list
+	static func Array getAllInstancesIn(BehaviorElement element)
+		return element.collectInstances(block Instance each
+			return true
+		end)
 	end
 	
 	
 	
 	/** \brief Create Behavior instance. */
-	public func ECBehaviorInstance createInstance( BehaviorElement element )
-		return Instance.new( this, element )
+	func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
 	end
 end

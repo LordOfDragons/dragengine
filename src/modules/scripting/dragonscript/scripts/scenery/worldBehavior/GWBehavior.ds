@@ -1,0 +1,116 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief GameWorld Behavior instance interface providing the actual game world behavior.
+ * \version 1.17
+ */
+public interface GWBehavior
+	/** \brief Game world the behavior belongs to. */
+	func GameWorld getGameWorld()
+	
+	/** \brief Dispose of behavior. */
+	func void dispose()
+	
+	/** \brief Initialize game world from stub. */
+	func void init(StubGameWorld stub)
+	
+	/** \brief Behavior instance requires update(), think() and postThink() to be called. */
+	func bool requiresThink()
+	
+	/**
+	 * \brief Frame update.
+	 * 
+	 * This method is only called if requiresThink() returns true.
+	 * Update is called on behaviors before enter frame and world updating is called.
+	 */
+	func void update(float elapsed)
+	
+	/**
+	 * \brief Think about what to do for the next frame update.
+	 * 
+	 * This method is only called if requiresThink() returns true.
+	 * Think is called first on all behaviors then on all elements.
+	 */
+	func void think(float elapsed)
+	
+	/**
+	 * \brief Post thinking after physics processing is finished.
+	 * 
+	 * This method is only called if requiresThink() returns true.
+	 * Post think is called first on all elements then on all behaviors.
+	 */
+	func void postThink(float elapsed)
+	
+	/** \brief Behavior requires readFromFile() and writeToFile() to be called. */
+	func bool requiresPersistency()
+	
+	/**
+	 * \brief Read from file.
+	 *
+	 * This method is only called if requiresPersistency() returns true.
+	 */
+	func void readFromFile(PersistencyEnvironment env, FileReader reader)
+	
+	/**
+	 * \brief Write to file.
+	 *
+	 * This method is only called if requiresPersistency() returns true.
+	 */
+	func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+	
+	/**
+	 * \brief Unique identifier of behavior.
+	 * 
+	 * Has to return a string which is unique in the owner GameWorld. This string will be
+	 * stored while persisting GameWorld instances. This allows to assign restored behavior
+	 * data to the correct behavior if present.
+	 */
+	func String getBehaviorID()
+	
+	/**
+	 * \brief Behavior supports loading data of another behavior.
+	 * 
+	 * Returns true if this behavior supports loading data of another behavior matching behavior
+	 * identifier. Called for all behaviors if GameWorld encounters a data block with a behavior
+	 * identifier not matching any behaviors.
+	 */
+	func bool supportsBehaviorID(String identifier)
+	
+	/**
+	 * \brief Load data of another behavior.
+	 * 
+	 * Called if supportsBehaviorID(String) returns true for identifier. GameWorld requests
+	 * behavior to load the supported data block.
+	 */
+	func void loadSupportedData(String identifier, PersistencyEnvironment env, FileReader reader)
+end

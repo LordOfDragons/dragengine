@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLRENDERTASK_H_
@@ -29,23 +32,24 @@
 #include "../../shaders/paramblock/deoglShaderParameterBlockList.h"
 
 class deoglQuickSorter;
+class deoglRenderTaskPipeline;
 class deoglRenderTaskInstance;
-class deoglRenderTaskInstanceGroup;
-class deoglRenderTaskShader;
 class deoglRenderTaskTexture;
 class deoglRenderTaskVAO;
+class deoglRenderTaskSharedInstance;
+class deoglRenderTaskSharedTexture;
+class deoglRenderTaskSharedVAO;
+class deoglRenderTaskConfigTexture;
 class deoglRenderThread;
 class deoglRTLogger;
-class deoglShaderProgram;
 class deoglSPBlockSSBO;
 class deoglSPBlockUBO;
-class deoglSPBlockUBO;
 class deoglTexUnitsConfig;
-class deoglVAO;
+class deoglPipeline;
 
 
 /**
- * \brief Render Task.
+ * Render Task.
  *
  * Stores a list of render steps to be carried out. Each step contains the combination of shader,
  * texture and vao required. The render task is usually not used directly for rendering. Instead
@@ -54,45 +58,54 @@ class deoglVAO;
  */
 class deoglRenderTask{
 private:
+	struct sConfigTexture{
+		const deoglPipeline *pipeline;
+		const deoglRenderTaskSharedTexture *texture;
+		const deoglRenderTaskSharedVAO *vao;
+		const deoglRenderTaskSharedInstance *instance;
+		deoglRenderTaskPipeline *rtpipeline;
+		deoglRenderTaskTexture *rttexture;
+		deoglRenderTaskVAO *rtvao;
+		deoglRenderTaskInstance *rtinstance;
+// 		int pipelineIndex;
+// 		int textureIndex;
+// 		int vaoIndex;
+// 		int instanceIndex;
+		int groupIndex;
+		int specialFlags;
+	};
+	
+	deoglRenderThread &pRenderThread;
+	
 	deoglSPBlockUBO *pRenderParamBlock;
 	GLuint pTBOInstances;
 	deoglShaderParameterBlockList pSPBInstances;
 	int pSPBInstanceMaxEntries;
+	int pSPBInstanceIndexCount;
 	bool pUseSPBInstanceFlags;
-	unsigned int pTrackingNumber;
-	decPointerList pListShaders;
-	int pShaderCount;
+	bool pRenderVSStereo;
+	GLuint pVBODrawIndirect;
+	int pVBODrawIndirectSize;
 	
-	deoglRenderTaskTexture *pRootTexturePool;
-	deoglRenderTaskTexture *pTailTexturePool;
-	deoglRenderTaskTexture *pNextTexturePool;
-	int pTexturePoolCount;
+	decPointerList pPipelines;
+	int pPipelineCount;
+	deoglRenderTaskPipeline **pHasPipeline;
+	int pHasPipelineCount;
+	int pHasPipelineSize;
 	
-	deoglRenderTaskVAO *pRootVAOPool;
-	deoglRenderTaskVAO *pTailVAOPool;
-	deoglRenderTaskVAO *pNextVAOPool;
-	int pVAOPoolCount;
-	
-	deoglRenderTaskInstance *pRootInstancePool;
-	deoglRenderTaskInstance *pTailInstancePool;
-	deoglRenderTaskInstance *pNextInstancePool;
-	int pInstancePoolCount;
-	
-	static unsigned int pUpdateTracking;
-	
-	decPointerList pListTUCs;
-	decPointerList pListVAOs;
-	decPointerList pListInstanceGroup;
+	sConfigTexture *pConfigTextures;
+	int pConfigTextureCount;
+	int pConfigTextureSize;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create render task. */
-	deoglRenderTask();
+	/** Create render task. */
+	deoglRenderTask( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up render task. */
+	/** Clean up render task. */
 	~deoglRenderTask();
 	/*@}*/
 	
@@ -100,118 +113,108 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Clear render task. */
+	/** Render thread. */
+	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
+	
+	/** Clear render task. */
 	void Clear();
 	
-	/** \brief Prepare task to be used for rendering. */
-	void PrepareForRender( deoglRenderThread &renderThread );
+	/** Prepare task to be used for rendering. */
+	void PrepareForRender();
 	
-	/** \brief Sort instances by distance. */
+	/** Sort instances by distance. */
 	void SortInstancesByDistance( deoglQuickSorter &sorter,
 		const decDVector &position, const decDVector &direction );
 	
-	/** \brief Render parameter shader parameter block or \em NULL. */
+	/** Render parameter shader parameter block or NULL. */
 	inline deoglSPBlockUBO *GetRenderParamBlock() const{ return pRenderParamBlock; }
 	
-	/** \brief Set render parameter shader parameter block or \em NULL to use none. */
+	/** Set render parameter shader parameter block or NULL to use none. */
 	void SetRenderParamBlock( deoglSPBlockUBO *paramBlock );
 	
-	/** \brief Instances texture buffer object or \em NULL. */
+	/** Instances texture buffer object or NULL. */
 	inline GLuint GetTBOInstances() const{ return pTBOInstances; }
 	
-	/** \brief Set instances texture buffer object or \em NULL to use none. */
+	/** Set instances texture buffer object or NULL to use none. */
 	void SetTBOInstances( GLuint tbo );
 	
-	/** \brief Use SPB instance flags. */
+	/** Use SPB instance flags. */
 	inline bool GetUseSPBInstanceFlags() const{ return pUseSPBInstanceFlags; }
 	
-	/** \brief Set use instance flags. */
+	/** Set use instance flags. */
 	void SetUseSPBInstanceFlags( bool useFlags );
 	
+	/** Use vertex shader stereo rendering. */
+	inline bool GetRenderVSStereo() const{ return pRenderVSStereo; }
 	
+	/** Set use vertex shader stereo rendering. */
+	void SetRenderVSStereo( bool renderVSStereo );
 	
-	/** \brief Tracking number. */
-	inline unsigned int GetTrackingNumber() const{ return pTrackingNumber; }
-	
-	/** \brief Advance update tracking returning new value. */
-	static unsigned int UpdateTracking();
-	
-	
-	
-	/** \brief Number of shaders. */
-	inline int GetShaderCount() const{ return pShaderCount; }
-	
-	/** \brief Shader at index. */
-	deoglRenderTaskShader *GetShaderAt( int index ) const;
-	
-	/** \brief Add shader. */
-	deoglRenderTaskShader *AddShader( deoglShaderProgram *shader );
-	
-	/** \brief Remove all shaders. */
-	void RemoveAllShaders();
+	/**
+	 * VBO draw indirect. Content is an array of oglDrawIndirectCommand. This is a union
+	 * struct of oglDrawElementsIndirectCommand and oglDrawArraysIndirectCommand allowing
+	 * to  use one VBO for both. Use sizeof(oglDrawIndirectCommand) as stride.
+	 */
+	inline GLuint GetVBODrawIndirect() const{ return pVBODrawIndirect; }
 	
 	
 	
-	/** \brief Render task texture from pool. */
-	deoglRenderTaskTexture *TextureFromPool();
+	/** Number of pipelines. */
+	inline int GetPipelineCount() const{ return pPipelineCount; }
 	
-	/** \brief Render task vao from pool. */
-	deoglRenderTaskVAO *VAOFromPool();
+	/** Pipeline at index. */
+	deoglRenderTaskPipeline *GetPipelineAt( int index ) const;
 	
-	/** \brief Render task instance from pool. */
-	deoglRenderTaskInstance *InstanceFromPool();
+	/** Add pipeline. */
+	deoglRenderTaskPipeline *AddPipeline( const deoglPipeline *pipeline );
+	deoglRenderTaskPipeline *AddPipelineDirect( const deoglPipeline *pipeline );
 	
 	
 	
-	/** \brief Number of points in all steps. */
+	/** Add configuration texture. */
+	void AddConfigTexture( const deoglRenderTaskConfigTexture &texture, int specialFlags );
+	
+	/** Remove all configuration textures. */
+	void RemoveAllConfigTextures();
+	
+	/** Apply configuration textures. */
+	void ApplyConfigTextures();
+	
+	
+	
+	/** Number of points in all steps. */
 	int GetTotalPointCount() const;
 	
-	/** \brief Add texture units configuration. */
-	void AddTUC( deoglTexUnitsConfig *tuc );
+	/** Total amount of textures. */
+	int GetTotalTextureCount() const;
 	
-	/** \brfief Add vao. */
-	void AddVAO( deoglVAO *vao );
+	/** Total amount of vaos. */
+	int GetTotalVAOCount() const;
 	
-	/** \brfief Add instance group. */
-	void AddInstanceGroup( deoglRenderTaskInstanceGroup *group );
+	/** Total amount of instances. */
+	int GetTotalInstanceCount() const;
+	
+	/** Total amount of subinstances. */
+	int GetTotalSubInstanceCount() const;
 	/*@}*/
 	
 	
 	
 	/** \name Debug */
 	/*@{*/
-	/** \brief Debug print. */
+	/** Debug print. */
 	void DebugPrint( deoglRTLogger &rtlogger );
-	
-	/** \brief Size of render task texture pool. */
-	inline int GetSizeTexturePool() const{ return pTexturePoolCount; }
-	
-	/** \brief Count number of used entries from render task texture pool. */
-	int CountUsedTexturePool() const;
-	
-	/** \brief Size of render task vao pool. */
-	inline int GetSizeVAOPool() const{ return pVAOPoolCount; }
-	
-	/** \brief Count number of used entries from render task vao pool. */
-	int CountUsedVAOPool() const;
-	
-	/** \brief Size of render task instance pool. */
-	inline int GetSizeInstancePool() const{ return pInstancePoolCount; }
-	
-	/** \brief Count number of used entries from render task instance pool. */
-	int CountUsedInstancePool() const;
-	
-	/** \brief Debug output pool statistics. */
-	void DebugPrintPoolStats( deoglRTLogger &rtlogger );
+	void DebugSimple( deoglRTLogger &logger );
 	/*@}*/
 	
 	
 	
 private:
-	void pCalcSPBInstancesMaxEntries( deoglRenderThread &renderThread );
-	void pAssignSPBInstances( deoglRenderThread &renderThread );
+	void pCalcSPBInstancesMaxEntries();
+	void pAssignSPBInstances();
 	void pUpdateSPBInstances();
-	void pCreateSPBInstanceParamBlock( deoglRenderThread &renderThread );
+	void pCreateSPBInstanceParamBlock();
+	void pUpdateVBODrawIndirect();
 };
 
 #endif

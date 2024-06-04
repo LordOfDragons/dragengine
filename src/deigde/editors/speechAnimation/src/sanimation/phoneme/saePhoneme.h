@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Speech Animation Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _SAEPHONEME_H_
@@ -30,7 +33,7 @@ class saeSAnimation;
 
 
 /**
- * \brief Speech Animation Phoneme.
+ * Speech Animation Phoneme.
  */
 class saePhoneme : public deObject{
 private:
@@ -40,52 +43,77 @@ private:
 	int pIPA;
 	decString pSampleText;
 	decString pMoveName;
+	decString pVertexPositionSet;
 	float pLength;
 	bool pActive;
+	
+	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create phoneme. */
+	/** Create phoneme. */
 	saePhoneme();
 	
-	/** \brief Create phoneme. */
+	/** Create phoneme. */
 	saePhoneme( int ipa );
 	
-	/** Cleans up the phoneme. */
+protected:
+	/** Clean up phoneme. */
 	virtual ~saePhoneme();
 	/*@}*/
 	
+	
+	
+public:
 	/** \name Management */
 	/*@{*/
-	/** Retrieves the parent speech animation. */
+	/** Parent speech animation. */
 	inline saeSAnimation *GetSAnimation() const{ return pSAnimation; }
-	/** Sets the parent speech animation. */
+	
+	/** Set parent speech animation. */
 	void SetSAnimation( saeSAnimation *sanimation );
-	/** Retrieves the engine controller or -1 if not used. */
+	
+	/** Engine controller or -1 if not used. */
 	inline int GetEngineController() const{ return pEngController; }
-	/** Sets the engine controller or -1 if not used. */
+	
+	/** Set engine controller or -1 if not used. */
 	void SetEngineController( int controller );
 	
-	/** Retrieves the IPA symbol. */
+	/** IPA symbol. */
 	inline int GetIPA() const{ return pIPA; }
-	/** Sets the IPA symbol. */
+	
+	/** Set IPA symbol. */
 	void SetIPA( int ipa );
-	/** Retrieves the length of the phoneme. */
+	
+	/** Length of phoneme. */
 	inline float GetLength() const{ return pLength; }
-	/** Sets the length of the phoneme. */
+	
+	/** Set length of phoneme. */
 	void SetLength( float length );
-	/** Retrieves the sample tzetext. */
+	
+	/** Sample text. */
 	inline const decString &GetSampleText() const{ return pSampleText; }
-	/** Sets the sample text. */
+	
+	/** Set sample text. */
 	void SetSampleText( const char *sampleText );
-	/** Retrieves the move name. */
+	
+	/** Move name. */
 	inline const decString &GetMoveName() const{ return pMoveName; }
-	/** Sets the move name. */
+	
+	/** Set move name. */
 	void SetMoveName( const char *name );
-	/** Determines if this is the active phoneme. */
+	
+	/** Vertex position set. */
+	inline const decString &GetVertexPositionSet() const{ return pVertexPositionSet; }
+	
+	/** Set vertex position set. */
+	void SetVertexPositionSet( const char *name );
+	
+	/** Active phoneme. */
 	inline bool GetActive() const{ return pActive; }
-	/** Sets if this is the active phoneme. */
+	
+	/** Set if active phoneme. */
 	void SetActive( bool active );
 	/*@}*/
 };

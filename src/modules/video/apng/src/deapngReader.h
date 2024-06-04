@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Animated PNG Video Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEAPNGREADER_H_
@@ -25,7 +28,6 @@
 #include <png.h>
 
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/resources/video/deVideo.h>
 
 class decString;
 class decBaseFileReader;
@@ -34,7 +36,7 @@ class deVideoApng;
 
 
 /**
- * \brief Animated PNG reader.
+ * Animated PNG reader.
  */
 class deapngReader{
 private:
@@ -47,20 +49,27 @@ private:
 	
 	int pWidth;
 	int pHeight;
-	deVideo::ePixelFormat pPixelFormat;
+	int pComponentCount;
 	int pFrameCount;
-	int pFrameRate;
+	float pFrameRate;
 	int pFirstFrame;
-	int pPixelSize;
 	int pRowLength;
 	int pImageSize;
 	
 	int pCurFrame;
 	
+	png_uint_32 pLastFrameX;
+	png_uint_32 pLastFrameY;
+	png_uint_32 pLastFrameWidth;
+	png_uint_32 pLastFrameHeight;
+	unsigned char pLastFrameDop;
+	
 	png_bytep pAccumData;
 	png_bytep *pAccumRows;
 	png_bytep pFrameData;
 	png_bytep *pFrameRows;
+	png_bytep pLastFrameData;
+	png_bytep *pLastFrameRows;
 	
 	bool pErrorState;
 	
@@ -69,10 +78,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create reader. */
+	/** Create reader. */
 	deapngReader( deVideoApng &module, decBaseFileReader *reader );
 	
-	/** \brief Clean up reader. */
+	/** Clean up reader. */
 	~deapngReader();
 	/*@}*/
 	
@@ -80,47 +89,47 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Animated PNG module. */
+	/** Animated PNG module. */
 	inline deVideoApng &GetModule() const{ return pModule; }
 	
-	/** \brief File reader. */
+	/** File reader. */
 	inline decBaseFileReader *GetReader() const{ return pReader; }
 	
-	/** \brief Width in pixels. */
+	/** Width in pixels. */
 	inline int GetWidth() const{ return pWidth; }
 	
-	/** \brief Height in pixels. */
+	/** Height in pixels. */
 	inline int GetHeight() const{ return pHeight; }
 	
-	/** \brief Pixel format. */
-	inline deVideo::ePixelFormat GetPixelFormat() const{ return pPixelFormat; }
+	/** Component count. */
+	inline int GetComponentCount() const{ return pComponentCount; }
 	
-	/** \brief Frame count. */
+	/** Frame count. */
 	inline int GetFrameCount() const{ return pFrameCount; }
 	
-	/** \brief Frame rate. */
-	inline int GetFrameRate() const{ return pFrameRate; }
+	/** Frame rate. */
+	inline float GetFrameRate() const{ return pFrameRate; }
 	
-	/** \brief First frame (depends on first frame hidden). */
+	/** First frame (depends on first frame hidden). */
 	inline int GetFirstFrame() const{ return pFirstFrame; }
 	
 	
 	
-	/** \brief Current frame. */
+	/** Current frame. */
 	inline int GetCurrentFrame() const{ return pCurFrame; }
 	
 	
 	
-	/** \brief Rewinds to the beginning. */
+	/** Rewinds to the beginning. */
 	void Rewind();
 	
-	/** \brief Seek to frame. */
+	/** Seek to frame. */
 	void SeekFrame( int frame );
 	
-	/** \brief Read frame image into accum image and advance to next frame. */
+	/** Read frame image into accum image and advance to next frame. */
 	void ReadImage();
 	
-	/** \brief Copy accum image. */
+	/** Copy accum image. */
 	void CopyAccumImage( void *buffer, int size ) const;
 	/*@}*/
 	

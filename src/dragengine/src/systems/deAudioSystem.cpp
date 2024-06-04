@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Game Engine
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 // includes
@@ -145,108 +148,199 @@ void deAudioSystem::SetActiveMicrophone( deMicrophone *microphone ){
 //////////////////////
 
 void deAudioSystem::ProcessAudio(){
-	if( ! GetIsRunning() ) return;
+	if( ! GetIsRunning() ){
+		return;
+	}
 	
 	pActiveModule->ProcessAudio();
 }
 
 void deAudioSystem::LoadWorld( deWorld *world ){
-	if( GetIsRunning() ){
-		if( world->GetPeerAudio() ){
-			DETHROW( deeInvalidParam );
-		}
-		world->SetPeerAudio( pActiveModule->CreateWorld( world ) );
-		if( ! world->GetPeerAudio() ){
-			DETHROW( deeOutOfMemory );
-		}
+	if( ! world ){
+		DETHROW( deeNullPointer );
 	}
+	
+	if( ! GetIsRunning() ){
+		return;
+	}
+	
+	if( world->GetPeerAudio() ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	world->SetPeerAudio( pActiveModule->CreateWorld( world ) );
 }
 
 void deAudioSystem::LoadSound( deSound *sound ){
-	if( ! GetIsRunning() ) return;
+	if( ! sound ){
+		DETHROW( deeNullPointer );
+	}
 	
-	if( sound->GetPeerAudio() ) DETHROW( deeInvalidParam );
+	if( ! GetIsRunning() ){
+		return;
+	}
+	
+	if( sound->GetPeerAudio() ){
+		DETHROW( deeInvalidParam );
+	}
+	
 	sound->SetPeerAudio( pActiveModule->CreateSound( sound ) );
-	if( ! sound->GetPeerAudio() ) DETHROW( deeOutOfMemory );
 }
 
 void deAudioSystem::LoadSpeaker( deSpeaker *speaker ){
-	if( ! GetIsRunning() ) return;
+	if( ! speaker ){
+		DETHROW( deeNullPointer );
+	}
 	
-	if( speaker->GetPeerAudio() ) DETHROW( deeInvalidParam );
+	if( ! GetIsRunning() ){
+		return;
+	}
+	
+	if( speaker->GetPeerAudio() ){
+		DETHROW( deeInvalidParam );
+	}
+	
 	speaker->SetPeerAudio( pActiveModule->CreateSpeaker( speaker ) );
-	if( ! speaker->GetPeerAudio() ) DETHROW( deeOutOfMemory );
 }
 
 void deAudioSystem::LoadMicrophone( deMicrophone *microphone ){
-	if( ! GetIsRunning() ) return;
+	if( ! microphone ){
+		DETHROW( deeNullPointer );
+	}
 	
-	if( microphone->GetPeerAudio() ) DETHROW( deeInvalidParam );
+	if( ! GetIsRunning() ){
+		return;
+	}
+	
+	if( microphone->GetPeerAudio() ){
+		DETHROW( deeInvalidParam );
+	}
+	
 	microphone->SetPeerAudio( pActiveModule->CreateMicrophone( microphone ) );
-	if( ! microphone->GetPeerAudio() ) DETHROW( deeOutOfMemory );
 }
 
 void deAudioSystem::LoadComponent( deComponent *component ){
-	if( ! GetIsRunning() ) return;
+	if( ! component ){
+		DETHROW( deeNullPointer );
+	}
 	
-	if( component->GetPeerAudio() ) DETHROW( deeInvalidParam );
+	if( ! GetIsRunning() ){
+		return;
+	}
+	
+	if( component->GetPeerAudio() ){
+		DETHROW( deeInvalidParam );
+	}
+	
 	component->SetPeerAudio( pActiveModule->CreateComponent( component ) );
-	if( ! component->GetPeerAudio() ) DETHROW( deeOutOfMemory );
 }
 
 void deAudioSystem::LoadSkin( deSkin *skin ){
 	if( ! skin ){
+		DETHROW( deeNullPointer );
+	}
+	
+	if( ! GetIsRunning() ){
+		return;
+	}
+	
+	if( skin->GetPeerAudio() ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	if( GetIsRunning() && ! skin->GetPeerAudio() ){
-		skin->SetPeerAudio( pActiveModule->CreateSkin( skin ) );
-	}
+	skin->SetPeerAudio( pActiveModule->CreateSkin( skin ) );
 }
 
 void deAudioSystem::LoadModel( deModel *model ){
-	if( ! GetIsRunning() ) return;
+	if( ! model ){
+		DETHROW( deeNullPointer );
+	}
 	
-	if( model->GetPeerAudio() ) DETHROW( deeInvalidParam );
+	if( ! GetIsRunning() ){
+		return;
+	}
+	
+	if( model->GetPeerAudio() ){
+		DETHROW( deeInvalidParam );
+	}
+	
 	model->SetPeerAudio ( pActiveModule->CreateModel( model ) );
-	if( ! model->GetPeerAudio() ) DETHROW( deeOutOfMemory );
 }
 
 void deAudioSystem::LoadDecal( deDecal *decal ){
-	if( GetIsRunning() ){
-		if( decal->GetPeerAudio() ){
-			DETHROW( deeInvalidParam );
-		}
-		
-		decal->SetPeerAudio( pActiveModule->CreateDecal( decal ) );
-		if( ! decal->GetPeerAudio() ){
-			DETHROW( deeOutOfMemory );
-		}
+	if( ! decal ){
+		DETHROW( deeNullPointer );
 	}
+	
+	if( ! GetIsRunning() ){
+		return;
+	}
+	
+	if( decal->GetPeerAudio() ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	decal->SetPeerAudio( pActiveModule->CreateDecal( decal ) );
 }
 
 void deAudioSystem::LoadSoundLevelMeter( deSoundLevelMeter *meter ){
-	if( GetIsRunning() && ! meter->GetPeerAudio() ){
-		meter->SetPeerAudio( pActiveModule->CreateSoundLevelMeter( meter ) );
+	if( ! meter ){
+		DETHROW( deeNullPointer );
 	}
+	
+	if( ! GetIsRunning() ){
+		return;
+	}
+	
+	if( meter->GetPeerAudio() ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	meter->SetPeerAudio( pActiveModule->CreateSoundLevelMeter( meter ) );
 }
 
 void deAudioSystem::LoadVideoPlayer( deVideoPlayer *videoPlayer ){
-	if( GetIsRunning() && ! videoPlayer->GetPeerAudio() ){
-		videoPlayer->SetPeerAudio( pActiveModule->CreateVideoPlayer( videoPlayer ) );
+	if( ! videoPlayer ){
+		DETHROW( deeNullPointer );
 	}
+	
+	if( ! GetIsRunning() ){
+		return;
+	}
+	
+	if( videoPlayer->GetPeerAudio() ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	videoPlayer->SetPeerAudio( pActiveModule->CreateVideoPlayer( videoPlayer ) );
 }
 
 void deAudioSystem::LoadSynthesizerInstance( deSynthesizerInstance *instance ){
-	if( GetIsRunning() && ! instance->GetPeerAudio() ){
-		instance->SetPeerAudio( pActiveModule->CreateSynthesizerInstance( instance ) );
+	if( ! instance ){
+		DETHROW( deeNullPointer );
 	}
+	
+	if( ! GetIsRunning() ){
+		return;
+	}
+	
+	if( instance->GetPeerAudio() ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	instance->SetPeerAudio( pActiveModule->CreateSynthesizerInstance( instance ) );
 }
 
 void deAudioSystem::LoadHeightTerrain( deHeightTerrain &heightTerrain ){
-	if( GetIsRunning() && ! heightTerrain.GetPeerAudio() ){
-		heightTerrain.SetPeerAudio( pActiveModule->CreateHeightTerrain( heightTerrain ) );
+	if( ! GetIsRunning() ){
+		return;
 	}
+	
+	if( heightTerrain.GetPeerAudio() ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	heightTerrain.SetPeerAudio( pActiveModule->CreateHeightTerrain( heightTerrain ) );
 }
 
 
@@ -255,5 +349,7 @@ void deAudioSystem::LoadHeightTerrain( deHeightTerrain &heightTerrain ){
 //////////////////////
 
 void deAudioSystem::pCleanUp(){
-	if( pActiveMic ) pActiveMic->FreeReference();
+	if( pActiveMic ){
+		pActiveMic->FreeReference();
+	}
 }

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLRENDERDEBUG_H_
@@ -28,39 +31,49 @@ class deoglArrayTexture;
 class deoglDebugFont;
 class deoglRComponent;
 class deoglRenderPlan;
-class deoglShaderProgram;
 class deoglTexture;
 class deoglDebugFont;
+class deoglDynamicTBOFloat32;
+class deoglDynamicTBOFloat8;
 
 
 
 /**
- * \brief Debug rendering helper.
+ * Debug rendering helper.
  */
 class deoglRenderDebug : public deoglRenderBase{
 private:
-	deoglShaderProgram *pShaderXRay;
-	deoglShaderProgram *pShaderSolid;
+	struct sVBODataGlyph{
+		decVector2 position;
+		decVector2 texCoord;
+		decColor color;
+	};
 	
-	deoglShaderProgram *pShaderSphere;
+	const deoglPipeline *pPipelineXRay;
 	
-	deoglShaderProgram *pShaderOutTex;
-	deoglShaderProgram *pShaderOutTexLayer;
-	deoglShaderProgram *pShaderOutArrTex;
+	const deoglPipeline *pPipelineOutTexLayer;
+	const deoglPipeline *pPipelineOutArrTex;
 	
-	deoglShaderProgram *pShaderRectangle;
+	const deoglPipeline *pPipelineRenderText;
+	const deoglPipeline *pPipelineRectangle;
 	
 	deoglDebugFont *pDebugFont;
+	
+	deoglDynamicTBOFloat32 *pTBORenderText1;
+	deoglDynamicTBOFloat8 *pTBORenderText2;
+	
+	deoglDynamicTBOFloat32 *pTBORenderRectangle1;
+	deoglDynamicTBOFloat8 *pTBORenderRectangle2;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create renderer. */
+	/** Create renderer. */
 	deoglRenderDebug( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up renderer. */
+	/** Clean up renderer. */
 	virtual ~deoglRenderDebug();
 	/*@}*/
 	
@@ -68,35 +81,52 @@ public:
 	
 	/** \name Rendering */
 	/*@{*/
-	/** \brief Debug font. */
+	/** Debug font. */
 	inline deoglDebugFont &GetDebugFont() const{ return *pDebugFont; }
 	
 	
 	
-	/** \brief Display texture. */
+	/** Display texture. */
 	void DisplayTexture( deoglRenderPlan &plan, deoglTexture *texture, bool gammaCorrect );
 	
-	/** \brief Display texture level. */
+	/** Display texture level. */
 	void DisplayTextureLevel( deoglRenderPlan &plan, deoglTexture *texture, int level, bool gammaCorrect );
 	
-	/** \brief Display array texture layer. */
+	/** Display array texture layer. */
 	void DisplayArrayTextureLayer( deoglRenderPlan &plan, deoglArrayTexture *texture, int layer, bool gammaCorrect );
 	
+	/** Display array texture layer. */
+	void DisplayArrayTextureLayerLevel( deoglRenderPlan &plan, deoglArrayTexture *texture, int layer, int level, bool gammaCorrect );
 	
 	
-	/** \brief Render component static informations as colored boxes. */
+	
+	/** Render component static information as colored boxes. */
 	void RenderComponentsStatic( sRenderParameters &params );
 	
-	/** \brief Render component using a colored box using the component extends. */
+	/** Render component using a colored box using the component extends. */
 	void RenderComponentBox( sRenderParameters &params, deoglRComponent &component, const decColor &color );
 	
 	
 	
-	/** \brief Render text using the debug font. */
-	void RenderText( deoglRenderPlan &plan, const char *text, int x, int y, const decColor &color );
+	/** Begin render text. */
+	void BeginRenderText();
 	
-	/** \brief Render filled rectangle. */
-	void RenderRectangle( deoglRenderPlan &plan, int x1, int y1, int x2, int y2, const decColor &color );
+	/** Add rendered text to TBO. */
+	void AddRenderText( const decPoint &viewport, const char *text, int x, int y, const decColor &color );
+	
+	/** Finish render text. */
+	void EndRenderText();
+	
+	
+	
+	/** Begin render filled rectangle. */
+	void BeginRenderRectangle();
+	
+	/** Add rendered filled rectangle to TBO. */
+	void AddRenderRectangle( const decPoint &viewport, int x1, int y1, int x2, int y2, const decColor &color );
+	
+	/** Finish render filled rectangle. */
+	void EndRenderRectangle();
 	/*@}*/
 	
 	

@@ -1,23 +1,28 @@
-/* 
- * Drag[en]gine IGDE
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
+
+#ifdef IGDE_TOOLKIT_FOX
 
 #include "igdeNativeFoxVFSListItem.h"
 
@@ -112,7 +117,7 @@ void igdeNativeFoxVFSListItem::UpdateText( const char* pattern ){
 			}else{
 				const decDateTime datetime( pFileModificationTime );
 				format.format( "%02i:%02i %02i.%02i.%04i", datetime.GetHour(), datetime.GetMinute(),
-					datetime.GetDay(), datetime.GetMonth(), datetime.GetYear() );
+					datetime.GetDay() + 1, datetime.GetMonth() + 1, datetime.GetYear() );
 				text.append( format );
 			}
 			
@@ -136,6 +141,12 @@ void igdeNativeFoxVFSListItem::UpdateText( const char* pattern ){
 // Sorting
 ////////////
 
+#ifdef OLD_STRING_COMPARE_NS
+	#define FOX_STRING_COMPARE compare
+#else
+	#define FOX_STRING_COMPARE FXString::compare
+#endif
+
 FXint igdeNativeFoxVFSListItem::fSortNameAsc( const FXIconItem *item1, const FXIconItem *item2 ){
 	const igdeNativeFoxVFSListItem &file1 = *( ( igdeNativeFoxVFSListItem* )item1 );
 	const igdeNativeFoxVFSListItem &file2 = *( ( igdeNativeFoxVFSListItem* )item2 );
@@ -143,7 +154,7 @@ FXint igdeNativeFoxVFSListItem::fSortNameAsc( const FXIconItem *item1, const FXI
 	const bool isDir2 = file2.IsDirectory();
 	
 	if( isDir1 == isDir2 ){
-		return compare( file1.GetFileName(), file2.GetFileName() );
+		return FOX_STRING_COMPARE( file1.GetFileName(), file2.GetFileName() );
 		
 	}else{
 		if( isDir1 && ! isDir2 ){
@@ -162,7 +173,7 @@ FXint igdeNativeFoxVFSListItem::fSortNameDesc( const FXIconItem *item1, const FX
 	const bool isDir2 = file2.IsDirectory();
 	
 	if( isDir1 == isDir2 ){
-		return compare( file2.GetFileName(), file1.GetFileName() );
+		return FOX_STRING_COMPARE( file2.GetFileName(), file1.GetFileName() );
 		
 	}else{
 		if( isDir1 && ! isDir2 ){
@@ -183,7 +194,7 @@ FXint igdeNativeFoxVFSListItem::fSortSizeAsc( const FXIconItem *item1, const FXI
 	if( isDir1 == isDir2 ){
 		FXint result = ( FXint )( file1.GetFileSize() - file2.GetFileSize() );
 		if( result == 0 ){ // same size, sort by name instead
-			result = compare( file1.GetFileName(), file2.GetFileName() );
+			result = FOX_STRING_COMPARE( file1.GetFileName(), file2.GetFileName() );
 		}
 		return result;
 		
@@ -206,7 +217,7 @@ FXint igdeNativeFoxVFSListItem::fSortSizeDesc( const FXIconItem *item1, const FX
 	if( isDir1 == isDir2 ){
 		FXint result = ( FXint )( file2.GetFileSize() - file1.GetFileSize() );
 		if( result == 0 ){ // same size, sort by name instead
-			result = compare( file2.GetFileName(), file1.GetFileName() );
+			result = FOX_STRING_COMPARE( file2.GetFileName(), file1.GetFileName() );
 		}
 		return result;
 		
@@ -229,7 +240,7 @@ FXint igdeNativeFoxVFSListItem::fSortModTimeAsc( const FXIconItem *item1, const 
 	if( isDir1 == isDir2 ){
 		FXint result = ( FXint )( file2.GetFileModificationTime() - file1.GetFileModificationTime() );
 		if( result == 0 ){ // same size, sort by name instead
-			result = compare( file1.GetFileName(), file2.GetFileName() );
+			result = FOX_STRING_COMPARE( file1.GetFileName(), file2.GetFileName() );
 		}
 		return result;
 		
@@ -252,7 +263,7 @@ FXint igdeNativeFoxVFSListItem::fSortModTimeDesc( const FXIconItem *item1, const
 	if( isDir1 == isDir2 ){
 		FXint result = ( FXint )( file1.GetFileModificationTime() - file2.GetFileModificationTime() );
 		if( result == 0 ){ // same size, sort by name instead
-			result = compare( file2.GetFileName(), file1.GetFileName() );
+			result = FOX_STRING_COMPARE( file2.GetFileName(), file1.GetFileName() );
 		}
 		return result;
 		
@@ -265,3 +276,5 @@ FXint igdeNativeFoxVFSListItem::fSortModTimeDesc( const FXIconItem *item1, const
 		}
 	}
 }
+
+#endif

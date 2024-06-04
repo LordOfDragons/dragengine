@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Project Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdlib.h>
@@ -51,16 +54,17 @@
 // Constructor, destructor
 ////////////////////////////
 
-projDialogDistribute::projDialogDistribute( projWindowMain &windowMain ) :
+projDialogDistribute::projDialogDistribute( projWindowMain &windowMain, projProfile *profile ) :
 igdeDialog( windowMain.GetEnvironment(), "Distribute" ),
 
 pWindowMain( windowMain ),
-pProfile( windowMain.GetProject()->GetActiveProfile() ),
-pTaskDistribute( NULL )
+pProfile( profile ),
+pTaskDistribute( NULL ),
+pCloseDialogOnFinished( false ),
+pPrintToConsole( false ),
+pSuccess( true )
 {
-	if( ! pProfile ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( pProfile )
 	
 	igdeEnvironment &env = windowMain.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelper();
@@ -71,7 +75,7 @@ pTaskDistribute( NULL )
 	
 	
 	igdeContainerReference content;
-	content.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY, igdeContainerFlow::esNone, 5 ) );
+	content.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY, igdeContainerFlow::esLast, 5 ) );
 	
 	// build information
 	igdeContainerReference groupBox;
@@ -89,24 +93,28 @@ pTaskDistribute( NULL )
 	helper.EditString( groupBox, "Directories:", "Number of processed directories.", pEditDelgaDirCount, NULL );
 	pEditDelgaDirCount->SetEditable( false );
 	
-	// logs
-	helper.GroupBoxStaticFlow( content, groupBox, "Logs:", true );
+	// logs and info line
+	igdeContainerReference containerLogs;
+	containerLogs.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY, igdeContainerFlow::esFirst, 5 ) );
+	
+	helper.GroupBoxStaticFlow( containerLogs, groupBox, "Logs:", true );
 	
 	helper.EditString( groupBox, "Building logs.", pEditLogs, 80, 12, NULL );
 	pEditLogs->SetEditable( false );
 	
 	// info line
 	groupBox.TakeOver( new igdeContainerBox( env, igdeContainerBox::eaX, 5 ) );
-	content->AddChild( groupBox );
+	containerLogs->AddChild( groupBox );
 	
 	helper.Button( groupBox, pActionShowInFSManager );
+	
+	content->AddChild( containerLogs );
 	
 	// button line
 	igdeContainerReference buttonBar;
 	CreateButtonBar( buttonBar, "Close" );
 	
 	AddContent( content, buttonBar );
-	
 	
 	pStartBuilding();
 }
@@ -123,14 +131,21 @@ projDialogDistribute::~projDialogDistribute(){
 ///////////////
 
 void projDialogDistribute::LogMessage( const char *message ){
-	if( ! message ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( message )
 	
+	// add to text widget
 	const bool atBottom = pEditLogs->GetBottomLine() == pEditLogs->GetLineCount() - 1;
-	pEditLogs->AppendText( message );
+	pEditLogs->AppendText( decString( message ) + "\n" );
 	if( atBottom ){
 		pEditLogs->SetBottomLine( pEditLogs->GetLineCount() - 1 );
+	}
+	
+	// log to log file
+	pWindowMain.GetLogger()->LogInfo( LOGSOURCE, message );
+	
+	// print on console
+	if( pPrintToConsole ){
+		printf( "%s\n", message );
 	}
 }
 
@@ -146,6 +161,10 @@ void projDialogDistribute::OnFrameUpdate(){
 			path.AddUnixPath( pProfile->GetDelgaPath() );
 			path.RemoveLastComponent();
 			pActionShowInFSManager->SetPath( path.GetPathNative() );
+			
+			if( pCloseDialogOnFinished ){
+				Cancel();
+			}
 			return;
 		}
 		
@@ -162,13 +181,15 @@ void projDialogDistribute::OnFrameUpdate(){
 		
 		const decString &taskMessage = pTaskDistribute->GetMessage();
 		if( taskMessage != pLastTaskMessage ){
-			LogMessage( taskMessage + "\n" );
+			LogMessage( taskMessage );
 		}
 		
 	}catch( const deException &e ){
+		pSuccess = false;
+		
 		const decString &taskMessage = pTaskDistribute->GetMessage();
 		if( taskMessage != pLastTaskMessage ){
-			LogMessage( taskMessage + "\n" );
+			LogMessage( taskMessage );
 		}
 		
 		LogMessage( igdeCommonDialogs::FormatException( e ) );
@@ -176,6 +197,14 @@ void projDialogDistribute::OnFrameUpdate(){
 		
 		pWindowMain.GetLogger()->LogException( LOGSOURCE, e );
 	}
+}
+
+void projDialogDistribute::SetCloseDialogOnFinished( bool closeDialogOnFinished ){
+	pCloseDialogOnFinished = closeDialogOnFinished;
+}
+
+void projDialogDistribute::SetPrintToConsole( bool printToConsole ){
+	pPrintToConsole = printToConsole;
 }
 
 

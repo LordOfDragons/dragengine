@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine GUI Launcher
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -31,19 +34,10 @@
 #include "../engine/deglDialogModuleProps.h"
 #include "../../deglLauncher.h"
 #include "../../config/deglConfiguration.h"
-#include "../../engine/deglEngine.h"
-#include "../../engine/modules/deglEngineModule.h"
-#include "../../engine/modules/deglEngineModuleList.h"
-#include "../../engine/modules/parameter/deglEMParameter.h"
-#include "../../game/deglGame.h"
-#include "../../game/deglGameManager.h"
-#include "../../game/fileformat/deglFileFormat.h"
-#include "../../game/profile/deglGameProfile.h"
-#include "../../game/profile/deglGPModule.h"
-#include "../../game/profile/deglGPMParameter.h"
-#include "../../game/profile/deglGPDisableModuleVersion.h"
 
-#include <dragengine/deObjectReference.h>
+#include <delauncher/engine/modules/parameter/delEMParameter.h>
+#include <delauncher/game/profile/delGPDisableModuleVersion.h>
+
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
 #include <dragengine/common/string/decString.h>
@@ -66,31 +60,54 @@ FXDEFMAP( deglDialogProfileList ) deglDialogProfileListMap[]={
 	
 	FXMAPFUNC( SEL_COMMAND, deglDialogProfileList::ID_CB_MOD_GRA, deglDialogProfileList::onCBModGraChanged ),
 	FXMAPFUNC( SEL_CHANGED, deglDialogProfileList::ID_CB_MOD_GRA, deglDialogProfileList::onCBModGraChanged ),
+	FXMAPFUNC( SEL_COMMAND, deglDialogProfileList::ID_CB_MOD_GRA_VERSION, deglDialogProfileList::onCBModGraVersionChanged ),
+	FXMAPFUNC( SEL_CHANGED, deglDialogProfileList::ID_CB_MOD_GRA_VERSION, deglDialogProfileList::onCBModGraVersionChanged ),
 	FXMAPFUNC( SEL_COMMAND, deglDialogProfileList::ID_BTN_GRAMODINFO, deglDialogProfileList::onBtnGraModInfo ),
 	FXMAPFUNC( SEL_COMMAND, deglDialogProfileList::ID_CB_MOD_INP, deglDialogProfileList::onCBModInpChanged ),
 	FXMAPFUNC( SEL_CHANGED, deglDialogProfileList::ID_CB_MOD_INP, deglDialogProfileList::onCBModInpChanged ),
+	FXMAPFUNC( SEL_COMMAND, deglDialogProfileList::ID_CB_MOD_INP_VERSION, deglDialogProfileList::onCBModInpVersionChanged ),
+	FXMAPFUNC( SEL_CHANGED, deglDialogProfileList::ID_CB_MOD_INP_VERSION, deglDialogProfileList::onCBModInpVersionChanged ),
 	FXMAPFUNC( SEL_COMMAND, deglDialogProfileList::ID_BTN_INPMODINFO, deglDialogProfileList::onBtnInpModInfo ),
 	FXMAPFUNC( SEL_COMMAND, deglDialogProfileList::ID_CB_MOD_PHY, deglDialogProfileList::onCBModPhyChanged ),
 	FXMAPFUNC( SEL_CHANGED, deglDialogProfileList::ID_CB_MOD_PHY, deglDialogProfileList::onCBModPhyChanged ),
+	FXMAPFUNC( SEL_COMMAND, deglDialogProfileList::ID_CB_MOD_PHY_VERSION, deglDialogProfileList::onCBModPhyVersionChanged ),
+	FXMAPFUNC( SEL_CHANGED, deglDialogProfileList::ID_CB_MOD_PHY_VERSION, deglDialogProfileList::onCBModPhyVersionChanged ),
 	FXMAPFUNC( SEL_COMMAND, deglDialogProfileList::ID_BTN_PHYMODINFO, deglDialogProfileList::onBtnPhyModInfo ),
 	FXMAPFUNC( SEL_COMMAND, deglDialogProfileList::ID_CB_MOD_AMR, deglDialogProfileList::onCBModAmrChanged ),
 	FXMAPFUNC( SEL_CHANGED, deglDialogProfileList::ID_CB_MOD_AMR, deglDialogProfileList::onCBModAmrChanged ),
+	FXMAPFUNC( SEL_COMMAND, deglDialogProfileList::ID_CB_MOD_AMR_VERSION, deglDialogProfileList::onCBModAmrVersionChanged ),
+	FXMAPFUNC( SEL_CHANGED, deglDialogProfileList::ID_CB_MOD_AMR_VERSION, deglDialogProfileList::onCBModAmrVersionChanged ),
 	FXMAPFUNC( SEL_COMMAND, deglDialogProfileList::ID_BTN_AMRMODINFO, deglDialogProfileList::onBtnAmrModInfo ),
 	FXMAPFUNC( SEL_COMMAND, deglDialogProfileList::ID_CB_MOD_AI, deglDialogProfileList::onCBModAIChanged ),
 	FXMAPFUNC( SEL_CHANGED, deglDialogProfileList::ID_CB_MOD_AI, deglDialogProfileList::onCBModAIChanged ),
+	FXMAPFUNC( SEL_COMMAND, deglDialogProfileList::ID_CB_MOD_AI_VERSION, deglDialogProfileList::onCBModAIVersionChanged ),
+	FXMAPFUNC( SEL_CHANGED, deglDialogProfileList::ID_CB_MOD_AI_VERSION, deglDialogProfileList::onCBModAIVersionChanged ),
 	FXMAPFUNC( SEL_COMMAND, deglDialogProfileList::ID_BTN_AIMODINFO, deglDialogProfileList::onBtnAIModInfo ),
 	FXMAPFUNC( SEL_COMMAND, deglDialogProfileList::ID_CB_MOD_CR, deglDialogProfileList::onCBModCRChanged ),
 	FXMAPFUNC( SEL_CHANGED, deglDialogProfileList::ID_CB_MOD_CR, deglDialogProfileList::onCBModCRChanged ),
+	FXMAPFUNC( SEL_COMMAND, deglDialogProfileList::ID_CB_MOD_CR_VERSION, deglDialogProfileList::onCBModCRVersionChanged ),
+	FXMAPFUNC( SEL_CHANGED, deglDialogProfileList::ID_CB_MOD_CR_VERSION, deglDialogProfileList::onCBModCRVersionChanged ),
 	FXMAPFUNC( SEL_COMMAND, deglDialogProfileList::ID_BTN_CRMODINFO, deglDialogProfileList::onBtnCRModInfo ),
 	FXMAPFUNC( SEL_COMMAND, deglDialogProfileList::ID_CB_MOD_AUD, deglDialogProfileList::onCBModAudChanged ),
 	FXMAPFUNC( SEL_CHANGED, deglDialogProfileList::ID_CB_MOD_AUD, deglDialogProfileList::onCBModAudChanged ),
+	FXMAPFUNC( SEL_COMMAND, deglDialogProfileList::ID_CB_MOD_AUD_VERSION, deglDialogProfileList::onCBModAudVersionChanged ),
+	FXMAPFUNC( SEL_CHANGED, deglDialogProfileList::ID_CB_MOD_AUD_VERSION, deglDialogProfileList::onCBModAudVersionChanged ),
 	FXMAPFUNC( SEL_COMMAND, deglDialogProfileList::ID_BTN_AUDMODINFO, deglDialogProfileList::onBtnAudModInfo ),
 	FXMAPFUNC( SEL_COMMAND, deglDialogProfileList::ID_CB_MOD_NET, deglDialogProfileList::onCBModNetChanged ),
 	FXMAPFUNC( SEL_CHANGED, deglDialogProfileList::ID_CB_MOD_NET, deglDialogProfileList::onCBModNetChanged ),
+	FXMAPFUNC( SEL_COMMAND, deglDialogProfileList::ID_CB_MOD_NET_VERSION, deglDialogProfileList::onCBModNetVersionChanged ),
+	FXMAPFUNC( SEL_CHANGED, deglDialogProfileList::ID_CB_MOD_NET_VERSION, deglDialogProfileList::onCBModNetVersionChanged ),
 	FXMAPFUNC( SEL_COMMAND, deglDialogProfileList::ID_BTN_NETMODINFO, deglDialogProfileList::onBtnNetModInfo ),
 	FXMAPFUNC( SEL_COMMAND, deglDialogProfileList::ID_CB_MOD_SYN, deglDialogProfileList::onCBModSynChanged ),
 	FXMAPFUNC( SEL_CHANGED, deglDialogProfileList::ID_CB_MOD_SYN, deglDialogProfileList::onCBModSynChanged ),
+	FXMAPFUNC( SEL_COMMAND, deglDialogProfileList::ID_CB_MOD_SYN_VERSION, deglDialogProfileList::onCBModSynVersionChanged ),
+	FXMAPFUNC( SEL_CHANGED, deglDialogProfileList::ID_CB_MOD_SYN_VERSION, deglDialogProfileList::onCBModSynVersionChanged ),
 	FXMAPFUNC( SEL_COMMAND, deglDialogProfileList::ID_BTN_SYNMODINFO, deglDialogProfileList::onBtnSynModInfo ),
+	FXMAPFUNC( SEL_COMMAND, deglDialogProfileList::ID_CB_MOD_VR, deglDialogProfileList::onCBModVRChanged ),
+	FXMAPFUNC( SEL_CHANGED, deglDialogProfileList::ID_CB_MOD_VR, deglDialogProfileList::onCBModVRChanged ),
+	FXMAPFUNC( SEL_COMMAND, deglDialogProfileList::ID_CB_MOD_VR_VERSION, deglDialogProfileList::onCBModVRVersionChanged ),
+	FXMAPFUNC( SEL_CHANGED, deglDialogProfileList::ID_CB_MOD_VR_VERSION, deglDialogProfileList::onCBModVRVersionChanged ),
+	FXMAPFUNC( SEL_COMMAND, deglDialogProfileList::ID_BTN_VRMODINFO, deglDialogProfileList::onBtnVRModInfo ),
 	
 	FXMAPFUNC( SEL_COMMAND, deglDialogProfileList::ID_LIST_MP_MODULES, deglDialogProfileList::onListMPModulesChanged ),
 	FXMAPFUNC( SEL_COMMAND, deglDialogProfileList::ID_MPPARAM_VALUE, deglDialogProfileList::onMPParameterValueCommand ),
@@ -126,14 +143,16 @@ FXDEFMAP( deglDialogProfileList ) deglDialogProfileListMap[]={
 
 deglDialogProfileList::cEditProfile::cEditProfile( deglDialogProfileList &dialog, const char *name ) :
 pDialog( dialog ),
-pEdit( new deglGameProfile( name ) ){
+pEdit( dialog.GetWindowMain()->GetLauncher()->CreateGameProfile() )
+{
+	pEdit->SetName( name );
 }
 
 deglDialogProfileList::cEditProfile::cEditProfile( deglDialogProfileList &dialog,
-	deglGameProfile *profile, deglGame *gameCustom ) :
+	delGameProfile *profile, delGame *gameCustom ) :
 pDialog( dialog ),
 pOriginal( profile ),
-pEdit( new deglGameProfile( *profile ) ),
+pEdit( dialog.GetWindowMain()->GetLauncher()->CreateGameProfile( profile ) ),
 pGameCustom( gameCustom ){
 }
 
@@ -164,15 +183,23 @@ FXIMPLEMENT( deglDialogProfileList, FXDialogBox, deglDialogProfileListMap, ARRAY
 
 bool deglDialogProfileList::pAllowExpertMode = false;
 
+#define VERSION_LATEST "< Latest >"
+
+static FXint fSortListItemByVersion( const FXListItem *item1, const FXListItem *item2 ){
+	const char * const v1 = item1->getText() == VERSION_LATEST ? "99999.9" : item1->getText().text();
+	const char * const v2 = item2->getText() == VERSION_LATEST ? "99999.9" : item2->getText().text();
+	return deModuleSystem::CompareVersion( v2, v1 );
+}
+
 
 // Constructor, destructor
 ////////////////////////////
 
 deglDialogProfileList::deglDialogProfileList(){ }
 
-deglDialogProfileList::deglDialogProfileList( deglWindowMain *windowMain, FXWindow *owner,
-	deglGameProfile *selectProfile ) :
-FXDialogBox( owner, "Profiles", DECOR_TITLE | DECOR_BORDER | DECOR_RESIZE | DECOR_CLOSE,
+deglDialogProfileList::deglDialogProfileList( deglWindowMain *windowMain, FXWindow *powner,
+	delGameProfile *selectProfile ) :
+FXDialogBox( powner, "Profiles", DECOR_TITLE | DECOR_BORDER | DECOR_RESIZE | DECOR_CLOSE,
 0, 0, 1100, 600, 10, 10, 10, 5 ){
 	const deglGuiBuilder &guiBuilder = *windowMain->GetGuiBuilder();
 	FXHorizontalFrame *frameSuper, *frameTabHorz, *frameLine, *frameLine2;
@@ -184,7 +211,7 @@ FXDialogBox( owner, "Profiles", DECOR_TITLE | DECOR_BORDER | DECOR_RESIZE | DECO
 	const char *toolTip;
 	
 	pWindowMain = windowMain;
-	pPUMPParameter = NULL;
+	pPUMPParameter = nullptr;
 	pMPParameterCategory = deModuleParameter::ecBasic;
 	
 	pSysAI.type = deModuleSystem::emtAI;
@@ -196,6 +223,7 @@ FXDialogBox( owner, "Profiles", DECOR_TITLE | DECOR_BORDER | DECOR_RESIZE | DECO
 	pSysNetwork.type = deModuleSystem::emtNetwork;
 	pSysPhysics.type = deModuleSystem::emtPhysics;
 	pSysSynthesizer.type = deModuleSystem::emtSynthesizer;
+	pSysVR.type = deModuleSystem::emtVR;
 	
 	
 	content =  new FXVerticalFrame( this, LAYOUT_FILL_Y | LAYOUT_FILL_X, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10 );
@@ -210,46 +238,57 @@ FXDialogBox( owner, "Profiles", DECOR_TITLE | DECOR_BORDER | DECOR_RESIZE | DECO
 	pListProfiles->setSortFunc( deglGuiBuilder::SortListItemByName );
 	
 	block = guiBuilder.CreateMatrixPacker( frameTab, 2 );
-	pBtnProfAdd = guiBuilder.CreateButton( block, "Add", NULL, this, ID_BTN_PROF_ADD, "Add a profile" );
+	pBtnProfAdd = guiBuilder.CreateButton( block, "Add", nullptr, this, ID_BTN_PROF_ADD, "Add a profile" );
 	pBtnProfAdd->setLayoutHints( pBtnProfAdd->getLayoutHints() | LAYOUT_FILL_COLUMN | LAYOUT_FILL_X );
-	pBtnProfDel = guiBuilder.CreateButton( block, "Remove", NULL, this, ID_BTN_PROF_DEL, "Remove profile" );
+	pBtnProfDel = guiBuilder.CreateButton( block, "Remove", nullptr, this, ID_BTN_PROF_DEL, "Remove profile" );
 	pBtnProfDel->setLayoutHints( pBtnProfDel->getLayoutHints() | LAYOUT_FILL_COLUMN | LAYOUT_FILL_X );
-	pBtnProfRename = guiBuilder.CreateButton( block, "Rename", NULL, this, ID_BTN_PROF_RENAME, "Rename profile" );
+	pBtnProfRename = guiBuilder.CreateButton( block, "Rename", nullptr, this, ID_BTN_PROF_RENAME, "Rename profile" );
 	pBtnProfRename->setLayoutHints( pBtnProfRename->getLayoutHints() | LAYOUT_FILL_COLUMN | LAYOUT_FILL_X );
-	pBtnProfDup = guiBuilder.CreateButton( block, "Duplicate", NULL, this, ID_BTN_PROF_DUP, "Duplicate a profile" );
+	pBtnProfDup = guiBuilder.CreateButton( block, "Duplicate", nullptr, this, ID_BTN_PROF_DUP, "Duplicate a profile" );
 	pBtnProfDup->setLayoutHints( pBtnProfDup->getLayoutHints() | LAYOUT_FILL_COLUMN | LAYOUT_FILL_X );
 	
 	
 	// Systems
 	pTabPanels = new FXTabBook( frameSuper, windowMain->GetIconValidSmall(), 0, TABBOOK_NORMAL | LAYOUT_FILL_X | LAYOUT_FILL_Y );
-	pTabSystems = new FXTabItem( pTabPanels, "Systems", NULL, TAB_TOP_NORMAL, 0, 0, 0, 0, 10, 10, 2, 2 );
+	pTabSystems = new FXTabItem( pTabPanels, "Systems", nullptr, TAB_TOP_NORMAL, 0, 0, 0, 0, 10, 10, 2, 2 );
 	frameTab = new FXVerticalFrame( pTabPanels, FRAME_RAISED | LAYOUT_FILL_Y | LAYOUT_FILL_X, 0, 0, 0, 0, 10, 10, 10, 10, 0, 3 );
 	scrollWindow = new FXScrollWindow( frameTab, LAYOUT_FILL_X | LAYOUT_FILL_Y | SCROLLERS_NORMAL | HSCROLLING_OFF | SCROLLERS_TRACK );
 	scrollContent = new FXVerticalFrame( scrollWindow, LAYOUT_FILL_Y | LAYOUT_FILL_X, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3 );
 	
 	block = guiBuilder.CreateMatrixPacker( scrollContent, 2 );
 	
-	pCreateSystem( pSysGraphic, "Graphic Module:", "Select the Graphic Module to use", ID_CB_MOD_GRA, ID_BTN_GRAMODINFO, block );
-	pCreateSystem( pSysInput, "Input Module:", "Select the Input Module to use", ID_CB_MOD_INP, ID_BTN_INPMODINFO, block );
-	pCreateSystem( pSysPhysics, "Physics Module:", "Select the Physics Module to use", ID_CB_MOD_PHY, ID_BTN_PHYMODINFO, block );
-	pCreateSystem( pSysAnimator, "Animator Module:", "Select the Animator Module to use", ID_CB_MOD_AMR, ID_BTN_AMRMODINFO, block );
-	pCreateSystem( pSysAI, "AI Module:", "Select the AI Module to use", ID_CB_MOD_AI, ID_BTN_AIMODINFO, block );
-	pCreateSystem( pSysCrashRecovery, "Crash Recovery Module:", "Select the Crash Recovery Module to use", ID_CB_MOD_CR, ID_BTN_CRMODINFO, block );
-	pCreateSystem( pSysAudio, "Audio Module:", "Select the Audio Module to use", ID_CB_MOD_AUD, ID_BTN_AUDMODINFO, block );
-	pCreateSystem( pSysNetwork, "Network Module:", "Select the Network Module to use", ID_CB_MOD_NET, ID_BTN_NETMODINFO, block );
-	pCreateSystem( pSysSynthesizer, "Synthesizer Module:", "Select Synthesizer Module to use", ID_CB_MOD_SYN, ID_BTN_SYNMODINFO, block );
+	pCreateSystem( pSysGraphic, "Graphic Module:", "Select the Graphic Module to use",
+		ID_CB_MOD_GRA, ID_CB_MOD_GRA_VERSION, ID_BTN_GRAMODINFO, block );
+	pCreateSystem( pSysInput, "Input Module:", "Select the Input Module to use",
+		ID_CB_MOD_INP, ID_CB_MOD_INP_VERSION, ID_BTN_INPMODINFO, block );
+	pCreateSystem( pSysPhysics, "Physics Module:", "Select the Physics Module to use",
+		ID_CB_MOD_PHY, ID_CB_MOD_PHY_VERSION, ID_BTN_PHYMODINFO, block );
+	pCreateSystem( pSysAnimator, "Animator Module:", "Select the Animator Module to use",
+		ID_CB_MOD_AMR, ID_CB_MOD_AMR_VERSION, ID_BTN_AMRMODINFO, block );
+	pCreateSystem( pSysAI, "AI Module:", "Select the AI Module to use",
+		ID_CB_MOD_AI, ID_CB_MOD_AI_VERSION, ID_BTN_AIMODINFO, block );
+	pCreateSystem( pSysCrashRecovery, "Crash Recovery Module:", "Select the Crash Recovery Module to use",
+		ID_CB_MOD_CR, ID_CB_MOD_CR_VERSION, ID_BTN_CRMODINFO, block );
+	pCreateSystem( pSysAudio, "Audio Module:", "Select the Audio Module to use",
+		ID_CB_MOD_AUD, ID_CB_MOD_AUD_VERSION, ID_BTN_AUDMODINFO, block );
+	pCreateSystem( pSysNetwork, "Network Module:", "Select the Network Module to use",
+		ID_CB_MOD_NET, ID_CB_MOD_NET_VERSION, ID_BTN_NETMODINFO, block );
+	pCreateSystem( pSysSynthesizer, "Synthesizer Module:", "Select Synthesizer Module to use",
+		ID_CB_MOD_SYN, ID_CB_MOD_SYN_VERSION, ID_BTN_SYNMODINFO, block );
+	pCreateSystem( pSysVR, "VR Module:", "Select the VR Module to use",
+		ID_CB_MOD_VR, ID_CB_MOD_VR_VERSION, ID_BTN_VRMODINFO, block );
 	
 	
 	// Module Parameters
-	new FXTabItem( pTabPanels, "Module Parameters", NULL, TAB_TOP_NORMAL, 0, 0, 0, 0, 10, 10, 2, 2 );
+	new FXTabItem( pTabPanels, "Module Parameters", nullptr, TAB_TOP_NORMAL, 0, 0, 0, 0, 10, 10, 2, 2 );
 	
 	frameTabHorz = new FXHorizontalFrame( pTabPanels, FRAME_RAISED | LAYOUT_FILL_Y | LAYOUT_FILL_X, 0, 0, 0, 0, 10, 10, 10, 10, 3, 0 );
 	
 	frameDeco = new FXPacker( frameTabHorz, LAYOUT_FIX_WIDTH | LAYOUT_FILL_Y | FRAME_SUNKEN, 0, 0, 290, 0, 0, 0, 0, 0, 0, 0 );
 	pListMPModules = new FXIconList( frameDeco, this, ID_LIST_MP_MODULES, ICONLIST_BROWSESELECT | ICONLIST_DETAILED | LAYOUT_FILL_X | LAYOUT_FILL_Y );
 	//pListMPModules->setSortFunc( deglGuiBuilder::SortListItemByName );
-	pListMPModules->appendHeader( "Module", NULL, 150 );
-	pListMPModules->appendHeader( "Type", NULL, 120 );
+	pListMPModules->appendHeader( "Module", nullptr, 150 );
+	pListMPModules->appendHeader( "Type", nullptr, 120 );
 	
 	FXVerticalFrame *vframe = new FXVerticalFrame( frameTabHorz, LAYOUT_FILL_X | LAYOUT_FILL_Y, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3 );
 	frameDeco = new FXPacker( vframe, LAYOUT_FILL_X | LAYOUT_FILL_Y | FRAME_SUNKEN, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 );
@@ -259,7 +298,7 @@ FXDialogBox( owner, "Profiles", DECOR_TITLE | DECOR_BORDER | DECOR_RESIZE | DECO
 	pFrameMPParameters = new FXMatrix( sframe, 2, LAYOUT_FILL_X | MATRIX_BY_COLUMNS );
 	
 	frameDeco = new FXPacker( vframe, LAYOUT_FILL_X | FRAME_SUNKEN, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 );
-	pTextMPParameterInfo = new FXText( frameDeco, NULL, 0, LAYOUT_FILL_X | LAYOUT_FILL_Y | TEXT_READONLY | TEXT_WORDWRAP );
+	pTextMPParameterInfo = new FXText( frameDeco, nullptr, 0, LAYOUT_FILL_X | LAYOUT_FILL_Y | TEXT_READONLY | TEXT_WORDWRAP );
 	pTextMPParameterInfo->setVisibleRows( 6 );
 	
 	FXMatrix *optLine = new FXMatrix( vframe, 3, MATRIX_BY_COLUMNS | LAYOUT_FILL_X, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0 );
@@ -269,7 +308,7 @@ FXDialogBox( owner, "Profiles", DECOR_TITLE | DECOR_BORDER | DECOR_RESIZE | DECO
 	
 	
 	// Run Parameters
-	new FXTabItem( pTabPanels, "Run Parameters", NULL, TAB_TOP_NORMAL, 0, 0, 0, 0, 10, 10, 2, 2 );
+	new FXTabItem( pTabPanels, "Run Parameters", nullptr, TAB_TOP_NORMAL, 0, 0, 0, 0, 10, 10, 2, 2 );
 	
 	frameTab = new FXVerticalFrame( pTabPanels, FRAME_RAISED | LAYOUT_FILL_Y | LAYOUT_FILL_X, 0, 0, 0, 0, 10, 10, 10, 10, 0, 3 );
 	
@@ -309,11 +348,11 @@ FXDialogBox( owner, "Profiles", DECOR_TITLE | DECOR_BORDER | DECOR_RESIZE | DECO
 	//pCBDisableModuleVersionVersion->setSortFunc( );
 	
 	frameLine2 = guiBuilder.CreateHFrame( frameVertical );
-	pBtnDisableModuleVersionRemove = guiBuilder.CreateButton( frameLine2, "<< Remove", NULL, this, ID_BTN_DISABLE_MODULE_VERSION_REMOVE,
+	pBtnDisableModuleVersionRemove = guiBuilder.CreateButton( frameLine2, "<< Remove", nullptr, this, ID_BTN_DISABLE_MODULE_VERSION_REMOVE,
 		"Remove module version from the list of module versions to disable" );
 	pBtnDisableModuleVersionRemove->setFrameStyle( pBtnDisableModuleVersionRemove->getFrameStyle() | LAYOUT_FILL_X );
 	
-	pBtnDisableModuleVersionAdd = guiBuilder.CreateButton( frameLine2, "Add >>", NULL, this, ID_BTN_DISABLE_MODULE_VERSION_ADD,
+	pBtnDisableModuleVersionAdd = guiBuilder.CreateButton( frameLine2, "Add >>", nullptr, this, ID_BTN_DISABLE_MODULE_VERSION_ADD,
 		"Add module version to the list of module versions to disable" );
 	pBtnDisableModuleVersionAdd->setFrameStyle( pBtnDisableModuleVersionAdd->getFrameStyle() | LAYOUT_FILL_X );
 	
@@ -329,30 +368,31 @@ FXDialogBox( owner, "Profiles", DECOR_TITLE | DECOR_BORDER | DECOR_RESIZE | DECO
 	new FXSeparator( frameGroup );
 	
 	frameLine = new FXHorizontalFrame( frameGroup, LAYOUT_CENTER_X, 0, 0, 0, 0, 0, 0, 0, 0, 20, 0 );
-	new FXButton( frameLine, "Accept", NULL, this, ID_ACCEPT, LAYOUT_CENTER_X | FRAME_RAISED | JUSTIFY_NORMAL | ICON_BEFORE_TEXT, 0, 0, 0, 0, 30, 30 );
-	new FXButton( frameLine, "Cancel", NULL, this, ID_CANCEL, LAYOUT_CENTER_X | FRAME_RAISED | JUSTIFY_NORMAL | ICON_BEFORE_TEXT, 0, 0, 0, 0, 30, 30 );
+	new FXButton( frameLine, "Accept", nullptr, this, ID_ACCEPT,
+		LAYOUT_CENTER_X | FRAME_RAISED | JUSTIFY_NORMAL | ICON_BEFORE_TEXT, 0, 0, 0, 0, 30, 30 );
+	new FXButton( frameLine, "Cancel", nullptr, this, ID_CANCEL,
+		LAYOUT_CENTER_X | FRAME_RAISED | JUSTIFY_NORMAL | ICON_BEFORE_TEXT, 0, 0, 0, 0, 30, 30 );
 	
 	
 	// create editing copy of profiles
-	const deglGameManager &gameManager = *pWindowMain->GetLauncher()->GetGameManager();
-	deObjectReference refObject;
+	const delGameManager &gameManager = pWindowMain->GetLauncher()->GetGameManager();
 	int i;
 	
-	for( i=0; i<gameManager.GetProfileList().GetProfileCount(); i++ ){
-		refObject.TakeOver( new cEditProfile( *this, gameManager.GetProfileList().GetProfileAt( i ), NULL ) );
-		pProfiles.Add( refObject );
+	for( i=0; i<gameManager.GetProfiles().GetCount(); i++ ){
+		pProfiles.Add( cEditProfile::Ref::New( new cEditProfile(
+			*this, gameManager.GetProfiles().GetAt( i ), nullptr ) ) );
 	}
 	
-	for( i=0; i<gameManager.GetGameList().GetCount(); i++ ){
-		deglGame * const game = gameManager.GetGameList().GetAt( i );
+	for( i=0; i<gameManager.GetGames().GetCount(); i++ ){
+		delGame * const game = gameManager.GetGames().GetAt( i );
 		if( game->GetCustomProfile() ){
-			refObject.TakeOver( new cEditProfile( *this, game->GetCustomProfile(), game ) );
-			pProfiles.Add( refObject );
+			pProfiles.Add( cEditProfile::Ref::New( new cEditProfile(
+				*this, game->GetCustomProfile(), game ) ) );
 		}
 	}
 	
 	UpdateProfileList();
-	   pSetSelectedProfile( selectProfile );
+	pSetSelectedProfile( selectProfile );
 }
 
 deglDialogProfileList::~deglDialogProfileList(){
@@ -364,7 +404,7 @@ deglDialogProfileList::~deglDialogProfileList(){
 ///////////////
 
 void deglDialogProfileList::UpdateFullScreenResolutions(){
-	const deglEngine &engine = *pWindowMain->GetLauncher()->GetEngine();
+	const delEngine &engine = pWindowMain->GetLauncher()->GetEngine();
 	const int count = engine.GetResolutionCount();
 	FXString text;
 	int i;
@@ -381,8 +421,8 @@ void deglDialogProfileList::UpdateFullScreenResolutions(){
 }
 
 void deglDialogProfileList::UpdateSystemModuleLists(){
-	const deglEngineModuleList &moduleList = pWindowMain->GetLauncher()->GetEngine()->GetModuleList();
-	int i, count = moduleList.GetModuleCount();
+	const delEngineModuleList &moduleList = pWindowMain->GetLauncher()->GetEngine().GetModules();
+	int i, count = moduleList.GetCount();
 	
 	pSysGraphic.combobox->clearItems();
 	pSysInput.combobox->clearItems();
@@ -393,44 +433,69 @@ void deglDialogProfileList::UpdateSystemModuleLists(){
 	pSysAudio.combobox->clearItems();
 	pSysNetwork.combobox->clearItems();
 	pSysSynthesizer.combobox->clearItems();
+	pSysVR.combobox->clearItems();
 	
 	for( i=0; i<count; i++ ){
-		deglEngineModule * const module = moduleList.GetModuleAt( i );
+		delEngineModule * const module = moduleList.GetAt( i );
 		switch( ( deModuleSystem::eModuleTypes )module->GetType() ){
 		case deModuleSystem::emtGraphic:
-			pSysGraphic.combobox->appendItem( module->GetName().GetString() );
+			if( pSysGraphic.combobox->findItem( module->GetName().GetString() ) == -1 ){
+				pSysGraphic.combobox->appendItem( module->GetName().GetString() );
+			}
 			break;
 			
 		case deModuleSystem::emtInput:
-			pSysInput.combobox->appendItem( module->GetName().GetString() );
+			if( pSysInput.combobox->findItem( module->GetName().GetString() ) == -1 ){
+				pSysInput.combobox->appendItem( module->GetName().GetString() );
+			}
 			break;
 			
 		case deModuleSystem::emtPhysics:
-			pSysPhysics.combobox->appendItem( module->GetName().GetString() );
+			if( pSysPhysics.combobox->findItem( module->GetName().GetString() ) == -1 ){
+				pSysPhysics.combobox->appendItem( module->GetName().GetString() );
+			}
 			break;
 			
 		case deModuleSystem::emtAnimator:
-			pSysAnimator.combobox->appendItem( module->GetName().GetString() );
+			if( pSysAnimator.combobox->findItem( module->GetName().GetString() ) == -1 ){
+				pSysAnimator.combobox->appendItem( module->GetName().GetString() );
+			}
 			break;
 			
 		case deModuleSystem::emtAI:
-			pSysAI.combobox->appendItem( module->GetName().GetString() );
+			if( pSysAI.combobox->findItem( module->GetName().GetString() ) == -1 ){
+				pSysAI.combobox->appendItem( module->GetName().GetString() );
+			}
 			break;
 			
 		case deModuleSystem::emtCrashRecovery:
-			pSysCrashRecovery.combobox->appendItem( module->GetName().GetString() );
+			if( pSysCrashRecovery.combobox->findItem( module->GetName().GetString() ) == -1 ){
+				pSysCrashRecovery.combobox->appendItem( module->GetName().GetString() );
+			}
 			break;
 			
 		case deModuleSystem::emtAudio:
-			pSysAudio.combobox->appendItem( module->GetName().GetString() );
+			if( pSysAudio.combobox->findItem( module->GetName().GetString() ) == -1 ){
+				pSysAudio.combobox->appendItem( module->GetName().GetString() );
+			}
 			break;
 			
 		case deModuleSystem::emtSynthesizer:
-			pSysSynthesizer.combobox->appendItem( module->GetName().GetString() );
+			if( pSysSynthesizer.combobox->findItem( module->GetName().GetString() ) == -1 ){
+				pSysSynthesizer.combobox->appendItem( module->GetName().GetString() );
+			}
 			break;
 			
 		case deModuleSystem::emtNetwork:
-			pSysNetwork.combobox->appendItem( module->GetName().GetString() );
+			if( pSysNetwork.combobox->findItem( module->GetName().GetString() ) == -1 ){
+				pSysNetwork.combobox->appendItem( module->GetName().GetString() );
+			}
+			break;
+			
+		case deModuleSystem::emtVR:
+			if( pSysVR.combobox->findItem( module->GetName().GetString() ) == -1 ){
+				pSysVR.combobox->appendItem( module->GetName().GetString() );
+			}
 			break;
 			
 		default:
@@ -447,6 +512,7 @@ void deglDialogProfileList::UpdateSystemModuleLists(){
 	pSysAudio.combobox->sortItems();
 	pSysSynthesizer.combobox->sortItems();
 	pSysNetwork.combobox->sortItems();
+	pSysVR.combobox->sortItems();
 	
 	UpdateProfile();
 }
@@ -477,18 +543,19 @@ void deglDialogProfileList::UpdateProfile(){
 	pSystemsValid = true;
 	
 	if( pGetSelectedProfile() ){
-		deglGameProfile &profile = *pGetSelectedProfile()->GetEdit();
+		delGameProfile &profile = *pGetSelectedProfile()->GetEdit();
 		FXString text;
 		
-		UpdateSystem( pSysGraphic, profile.GetModuleGraphic() );
-		UpdateSystem( pSysInput, profile.GetModuleInput() );
-		UpdateSystem( pSysPhysics, profile.GetModulePhysics() );
-		UpdateSystem( pSysAnimator, profile.GetModuleAnimator() );
-		UpdateSystem( pSysAI, profile.GetModuleAI() );
-		UpdateSystem( pSysCrashRecovery, profile.GetModuleCrashRecovery() );
-		UpdateSystem( pSysAudio, profile.GetModuleAudio() );
-		UpdateSystem( pSysSynthesizer, profile.GetModuleSynthesizer() );
-		UpdateSystem( pSysNetwork, profile.GetModuleNetwork() );
+		UpdateSystem( pSysGraphic, profile.GetModuleGraphic(), profile.GetModuleGraphicVersion() );
+		UpdateSystem( pSysInput, profile.GetModuleInput(), profile.GetModuleInputVersion() );
+		UpdateSystem( pSysPhysics, profile.GetModulePhysics(), profile.GetModulePhysicsVersion() );
+		UpdateSystem( pSysAnimator, profile.GetModuleAnimator(), profile.GetModuleAnimatorVersion() );
+		UpdateSystem( pSysAI, profile.GetModuleAI(), profile.GetModuleAIVersion() );
+		UpdateSystem( pSysCrashRecovery, profile.GetModuleCrashRecovery(), profile.GetModuleCrashRecoveryVersion() );
+		UpdateSystem( pSysAudio, profile.GetModuleAudio(), profile.GetModuleAudioVersion() );
+		UpdateSystem( pSysSynthesizer, profile.GetModuleSynthesizer(), profile.GetModuleSynthesizerVersion() );
+		UpdateSystem( pSysNetwork, profile.GetModuleNetwork(), profile.GetModuleNetworkVersion() );
+		UpdateSystem( pSysVR, profile.GetModuleVR(), profile.GetModuleVRVersion() );
 		
 		pEditRunArgs->setText( profile.GetRunArguments().GetString() );
 		pEditRunArgs->enable();
@@ -504,7 +571,7 @@ void deglDialogProfileList::UpdateProfile(){
 		
 		if( profile.GetFullScreen() ){
 			// not found is index -1 which becomes 0 which is correct
-			pCBFullScreenResolutions->setCurrentItem( pWindowMain->GetLauncher()->GetEngine()->
+			pCBFullScreenResolutions->setCurrentItem( pWindowMain->GetLauncher()->GetEngine().
 				IndexOfClosestResolutionTo( profile.GetWidth(), profile.GetHeight() ) + 1 );
 			
 		}else{
@@ -531,6 +598,7 @@ void deglDialogProfileList::UpdateProfile(){
 		DisableSystem( pSysAudio );
 		DisableSystem( pSysSynthesizer );
 		DisableSystem( pSysNetwork );
+		DisableSystem( pSysVR );
 		
 		pEditRunArgs->setText( "" );
 		pEditRunArgs->disable();
@@ -558,13 +626,13 @@ void deglDialogProfileList::UpdateProfile(){
 	UpdateCBDisabledModuleVersionsVersion();
 }
 
-void deglDialogProfileList::UpdateSystem( sSystem &system, const char *moduleName ){
-	const deglEngineModuleList &moduleList = pWindowMain->GetLauncher()->GetEngine()->GetModuleList();
-	deglEngineModule *module;
+void deglDialogProfileList::UpdateSystem( sSystem &system, const char *moduleName, const char *moduleVersion ){
+	const delEngineModuleList &moduleList = pWindowMain->GetLauncher()->GetEngine().GetModules();
+	delEngineModule *module;
 	bool working = true;
 	
 	system.combobox->setText( moduleName );
-	module = moduleList.GetModuleNamed( moduleName );
+	module = moduleList.GetNamed( moduleName );
 	
 	if( ! module ){
 		system.problem->setText( "No module exists with the given name." );
@@ -574,7 +642,7 @@ void deglDialogProfileList::UpdateSystem( sSystem &system, const char *moduleNam
 		system.problem->setText( "Module is not of the correct type." );
 		working = false;
 		
-	}else if( module->GetStatus() != deglEngineModule::emsReady ){
+	}else if( module->GetStatus() != delEngineModule::emsReady ){
 		system.problem->setText( "Module has problems and can not be used." );
 		working = false;
 	}
@@ -592,6 +660,8 @@ void deglDialogProfileList::UpdateSystem( sSystem &system, const char *moduleNam
 	system.combobox->enable();
 	
 	pSystemsValid &= working;
+	
+	UpdateModuleVersions( system, moduleName, moduleVersion );
 }
 
 void deglDialogProfileList::DisableSystem( sSystem &system ){
@@ -600,6 +670,27 @@ void deglDialogProfileList::DisableSystem( sSystem &system ){
 	system.problem->hide();
 	system.icon->setIcon( pWindowMain->GetIconValidSmall() );
 	system.combobox->disable();
+}
+
+void deglDialogProfileList::UpdateModuleVersions( sSystem &system, const char *moduleName, const char *moduleVersion ){
+	const delEngineModuleList &moduleList = pWindowMain->GetLauncher()->GetEngine().GetModules();
+	const int count = moduleList.GetCount();
+	int i;
+	
+	system.comboboxVersion->clearItems();
+	system.comboboxVersion->appendItem( VERSION_LATEST );
+	for( i=0; i<count; i++ ){
+		delEngineModule * const module = moduleList.GetAt( i );
+		if( module->GetName() == moduleName ){
+			system.comboboxVersion->appendItem( module->GetVersion().GetString() );
+		}
+	}
+	system.comboboxVersion->sortItems();
+	
+	system.comboboxVersion->setCurrentItem( system.comboboxVersion->findItem( moduleVersion ) );
+	if( system.comboboxVersion->getCurrentItem() == -1 ){
+		system.comboboxVersion->setCurrentItem( 0 );
+	}
 }
 
 
@@ -616,17 +707,22 @@ bool deglDialogProfileList::GetSelectedMPModuleName( FXString &name ){
 }
 
 void deglDialogProfileList::UpdateMPModuleList(){
-	deglEngine &engine = *pWindowMain->GetLauncher()->GetEngine();
-	const deglEngineModuleList &moduleList = engine.GetModuleList();
-	int m, moduleCount = moduleList.GetModuleCount();
-	deglEngineModule *module;
+	delEngine &engine = pWindowMain->GetLauncher()->GetEngine();
+	const delEngineModuleList &moduleList = engine.GetModules();
+	int m, moduleCount = moduleList.GetCount();
 	FXString text;
+	
+	decStringSet moduleNames;
+	for( m=0; m<moduleCount; m++ ){
+		moduleNames.Add( moduleList.GetAt( m )->GetName() );
+	}
+	moduleNames.SortAscending();
 	
 	pListMPModules->clearItems();
 	
-	for( m=0; m<moduleCount; m++ ){
-		module = moduleList.GetModuleAt( m );
-		
+	const int moduleNameCount = moduleNames.GetCount();
+	for( m=0; m<moduleNameCount; m++ ){
+		const delEngineModule * const module = moduleList.GetNamed( moduleNames.GetAt( m ) );
 		text.format( "%s\t%s", module->GetName().GetString(), engine.GetModuleTypeText( module->GetType() ) );
 		pListMPModules->appendItem( text );
 	}
@@ -641,29 +737,27 @@ void deglDialogProfileList::UpdateMPParameterList(){
 	}
 	
 	// add parameters defined by the engine module
-	const deglEngineModule * const engineModule = pWindowMain->GetLauncher()->
-		GetEngine()->GetModuleList().GetModuleNamed( moduleName.text() );
+	const delEngineModule * const engineModule = pWindowMain->GetLauncher()->
+		GetEngine().GetModules().GetNamed( moduleName.text() );
 	if( ! engineModule ){
 		return;
 	}
 	
-	const deglEMParameterList &list = engineModule->GetParameterList();
-	const int count = list.GetParameterCount();
-	deObjectReference dplparam;
+	const delEMParameterList &list = engineModule->GetParameters();
+	const int count = list.GetCount();
 	decStringList names;
 	int i;
 	
 	for( i=0; i<count; i++ ){
-		names.Add( list.GetParameterAt( i )->GetInfo().GetName() );
+		names.Add( list.GetAt( i )->GetInfo().GetName() );
 	}
 	names.SortAscending();
 	
-	deglGameProfile &profile = *pGetSelectedProfile()->GetEdit();
+	delGameProfile &profile = *pGetSelectedProfile()->GetEdit();
 	for( i=0; i<count; i++ ){
-		dplparam.TakeOver( new deglDialogProfileListParameter(
-			*list.GetParameterNamed( names.GetAt( i ) ), profile, moduleName.text(),
-			pFrameMPParameters, this, ID_MPPARAM_LABEL, ID_MPPARAM_VALUE ) );
-		pMPParameters.Add( dplparam );
+		pMPParameters.Add( deglDialogProfileListParameter::Ref::New( new deglDialogProfileListParameter(
+			*list.GetNamed( names.GetAt( i ) ), profile, moduleName.text(),
+			pFrameMPParameters, this, ID_MPPARAM_LABEL, ID_MPPARAM_VALUE ) ) );
 	}
 	
 	pUpdateMPParamVisiblity();
@@ -675,7 +769,7 @@ void deglDialogProfileList::UpdateListDisabledModuleVersions(){
 	pListDisableModuleVersions->clearItems();
 	
 	if( pGetSelectedProfile() ){
-		const deglGPDisableModuleVersionList &list = pGetSelectedProfile()->GetEdit()->GetDisableModuleVersionList();
+		const delGPDisableModuleVersionList &list = pGetSelectedProfile()->GetEdit()->GetDisableModuleVersions();
 		const int count = list.GetCount();
 		FXString selection;
 		FXString text;
@@ -686,9 +780,9 @@ void deglDialogProfileList::UpdateListDisabledModuleVersions(){
 		}
 		
 		for( i=0; i<count; i++ ){
-			deglGPDisableModuleVersion * const version = list.GetAt( i );
+			delGPDisableModuleVersion * const version = list.GetAt( i );
 			text.format( "%s (%s)", version->GetName().GetString(), version->GetVersion().GetString() );
-			pListDisableModuleVersions->appendItem( text, NULL, version );
+			pListDisableModuleVersions->appendItem( text, nullptr, version );
 		}
 		
 		pListDisableModuleVersions->setCurrentItem( pListDisableModuleVersions->findItem( selection ) );
@@ -696,8 +790,8 @@ void deglDialogProfileList::UpdateListDisabledModuleVersions(){
 }
 
 void deglDialogProfileList::UpdateCBDisabledModuleVersionsModule(){
-	const deglEngineModuleList &moduleList = pWindowMain->GetLauncher()->GetEngine()->GetModuleList();
-	const int moduleCount = moduleList.GetModuleCount();
+	const delEngineModuleList &moduleList = pWindowMain->GetLauncher()->GetEngine().GetModules();
+	const int moduleCount = moduleList.GetCount();
 	decStringSet moduleNames;
 	FXString selection;
 	int i;
@@ -705,7 +799,7 @@ void deglDialogProfileList::UpdateCBDisabledModuleVersionsModule(){
 	pCBDisableModuleVersionModule->clearItems();
 	
 	for( i=0; i<moduleCount; i++ ){
-		const deglEngineModule &module = *moduleList.GetModuleAt( i );
+		const delEngineModule &module = *moduleList.GetAt( i );
 		moduleNames.Add( module.GetName() );
 	}
 	moduleNames.SortAscending();
@@ -723,9 +817,9 @@ void deglDialogProfileList::UpdateCBDisabledModuleVersionsModule(){
 }
 
 void deglDialogProfileList::UpdateCBDisabledModuleVersionsVersion(){
-	const deglEngineModuleList &moduleList = pWindowMain->GetLauncher()->GetEngine()->GetModuleList();
+	const delEngineModuleList &moduleList = pWindowMain->GetLauncher()->GetEngine().GetModules();
 	const FXString selectedModule = pCBDisableModuleVersionModule->getText();
-	const int moduleCount = moduleList.GetModuleCount();
+	const int moduleCount = moduleList.GetCount();
 	decStringSet versions;
 	FXString selection;
 	int i;
@@ -733,7 +827,7 @@ void deglDialogProfileList::UpdateCBDisabledModuleVersionsVersion(){
 	pCBDisableModuleVersionVersion->clearItems();
 	
 	for( i=0; i<moduleCount; i++ ){
-		const deglEngineModule &module = *moduleList.GetModuleAt( i );
+		const delEngineModule &module = *moduleList.GetAt( i );
 		if( module.GetName() == selectedModule.text() ){
 			versions.Add( module.GetVersion() );
 		}
@@ -756,26 +850,32 @@ FXuint deglDialogProfileList::execute( FXuint placement ){
 		return 0;
 	}
 	
-	deglGameManager &gameManager = *pWindowMain->GetLauncher()->GetGameManager();
+	delGameManager &gameManager = pWindowMain->GetLauncher()->GetGameManager();
 	const int profileCount = pProfiles.GetCount();
 	int i;
 	
-	gameManager.GetProfileList().RemoveAllProfiles();
+	gameManager.GetProfiles().RemoveAll();
 	
 	for( i=0; i<profileCount; i++ ){
 		const cEditProfile &editProfile = *( ( cEditProfile* )pProfiles.GetAt( i ) );
 		
 		if( editProfile.GetGameCustom() ){
-			editProfile.GetGameCustom()->GetCustomProfile()->CopyFrom( *editProfile.GetEdit() );
+			*editProfile.GetGameCustom()->GetCustomProfile() = *editProfile.GetEdit();
 			
 		}else if( editProfile.GetOriginal() ){
-			editProfile.GetOriginal()->CopyFrom( *editProfile.GetEdit() );
+			*editProfile.GetOriginal() = *editProfile.GetEdit();
 			editProfile.GetOriginal()->SetName( editProfile.GetEdit()->GetName() );
-			gameManager.GetProfileList().AddProfile( editProfile.GetOriginal() );
+			gameManager.GetProfiles().Add( editProfile.GetOriginal() );
 			
 		}else{
-			gameManager.GetProfileList().AddProfile( editProfile.GetEdit() );
+			gameManager.GetProfiles().Add( editProfile.GetEdit() );
 		}
+	}
+	
+	const int gameCount = pDropCustomGameProfiles.GetCount();
+	for( i=0; i<gameCount; i++ ){
+		pDropCustomGameProfiles.GetAt( i )->SetCustomProfile( nullptr );
+		pDropCustomGameProfiles.GetAt( i )->SaveConfig();
 	}
 	
 	return 1;
@@ -805,14 +905,12 @@ long deglDialogProfileList::onBtnProfAdd( FXObject*, FXSelector, void* ){
 			
 		}else{
 			try{
-				deObjectReference profile;
-				profile.TakeOver( new cEditProfile( *this, name.text() ) );
-				( ( cEditProfile& )( deObject& )profile ).GetEdit()->CopyFrom(
-					*pWindowMain->GetLauncher()->GetGameManager()->GetDefaultProfile() );
+				cEditProfile::Ref profile( cEditProfile::Ref::New( new cEditProfile( *this, name.text() ) ) );
+				*profile->GetEdit() = *pWindowMain->GetLauncher()->GetGameManager().GetDefaultProfile();
 				pProfiles.Add( profile );
 				
 				UpdateProfileList();
-				pSetSelectedProfile( ( cEditProfile* )( deObject* )profile );
+				pSetSelectedProfile( profile );
 				UpdateProfile();
 				
 			}catch( const deException &e ){
@@ -839,13 +937,12 @@ long deglDialogProfileList::onBtnProfDup( FXObject*, FXSelector, void* ){
 			
 		}else{
 			try{
-				deObjectReference profile;
-				profile.TakeOver( new cEditProfile( *this, name.text() ) );
-				( ( cEditProfile& )( deObject& )profile ).GetEdit()->CopyFrom( *pGetSelectedProfile()->GetEdit() );
+				cEditProfile::Ref profile( cEditProfile::Ref::New( new cEditProfile( *this, name.text() ) ) );
+				*profile->GetEdit() = *pGetSelectedProfile()->GetEdit();
 				pProfiles.Add( profile );
 				
 				UpdateProfileList();
-				pSetSelectedProfile( ( cEditProfile* )( deObject* )profile );
+				pSetSelectedProfile( profile );
 				UpdateProfile();
 				
 			}catch( const deException &e ){
@@ -858,12 +955,15 @@ long deglDialogProfileList::onBtnProfDup( FXObject*, FXSelector, void* ){
 }
 
 long deglDialogProfileList::onBtnProfDel( FXObject*, FXSelector, void* ){
-	if( ! pGetSelectedProfile() || pGetSelectedProfile()->GetGameCustom() ){
+	if( ! pGetSelectedProfile() ){
 		return 1;
 	}
 	
 	if( FXMessageBox::question( this, MBOX_YES_NO, "Delete Profile", "Do you really want to delete the profile '%s'?",
-	pGetSelectedProfile()->GetEdit()->GetName().GetString() ) == MBOX_CLICKED_YES ){
+	pGetSelectedProfile()->GetText().text() ) == MBOX_CLICKED_YES ){
+		if( pGetSelectedProfile()->GetGameCustom() ){
+			pDropCustomGameProfiles.Add( pGetSelectedProfile()->GetGameCustom() );
+		}
 		pProfiles.Remove( pGetSelectedProfile() );
 		UpdateProfileList();
 	}
@@ -871,8 +971,7 @@ long deglDialogProfileList::onBtnProfDel( FXObject*, FXSelector, void* ){
 }
 
 long deglDialogProfileList::updateBtnProfDel( FXObject *sender, FXSelector, void* ){
-	return sender->tryHandle( sender, FXSEL( SEL_COMMAND, pGetSelectedProfile()
-		&& ! pGetSelectedProfile()->GetGameCustom() ? ID_ENABLE : ID_DISABLE ), NULL );
+	return sender->tryHandle( sender, FXSEL( SEL_COMMAND, pGetSelectedProfile() ? ID_ENABLE : ID_DISABLE ), nullptr );
 }
 
 long deglDialogProfileList::onBtnProfRename( FXObject*, FXSelector, void* ){
@@ -880,7 +979,7 @@ long deglDialogProfileList::onBtnProfRename( FXObject*, FXSelector, void* ){
 		return 1;
 	}
 	
-	deglGameProfile &profile = *pGetSelectedProfile()->GetEdit();
+	delGameProfile &profile = *pGetSelectedProfile()->GetEdit();
 	FXString name( profile.GetName().GetString() );
 	
 	while( FXInputDialog::getString( name, this, "Rename Profile", "Name:" ) ){
@@ -904,7 +1003,7 @@ long deglDialogProfileList::onBtnProfRename( FXObject*, FXSelector, void* ){
 
 long deglDialogProfileList::updateBtnProfRename( FXObject *sender, FXSelector, void* ){
 	return sender->tryHandle( sender, FXSEL( SEL_COMMAND, pGetSelectedProfile()
-		&& ! pGetSelectedProfile()->GetGameCustom() ? ID_ENABLE : ID_DISABLE ), NULL );
+		&& ! pGetSelectedProfile()->GetGameCustom() ? ID_ENABLE : ID_DISABLE ), nullptr );
 }
 
 
@@ -914,23 +1013,48 @@ long deglDialogProfileList::onCBModGraChanged( FXObject*, FXSelector, void* ){
 		return 1;
 	}
 	
-	deglGameProfile &profile = *pGetSelectedProfile()->GetEdit();
-	profile.SetModuleGraphic( pSysGraphic.combobox->getText().text() );
+	delGameProfile &profile = *pGetSelectedProfile()->GetEdit();
+	if( profile.GetModuleGraphic() != pSysGraphic.combobox->getText().text() ){
+		profile.SetModuleGraphic( pSysGraphic.combobox->getText().text() );
+		profile.SetModuleGraphicVersion( "" );
+	}
 	profile.Verify( *pWindowMain->GetLauncher() );
-	UpdateSystem( pSysGraphic, profile.GetModuleGraphic() );
+	UpdateSystem( pSysGraphic, profile.GetModuleGraphic(), profile.GetModuleGraphicVersion() );
+	UpdateProfileList();
+	return 1;
+}
+
+long deglDialogProfileList::onCBModGraVersionChanged( FXObject*, FXSelector, void* ){
+	if( ! pGetSelectedProfile() ){
+		return 1;
+	}
+	
+	delGameProfile &profile = *pGetSelectedProfile()->GetEdit();
+	profile.SetModuleGraphicVersion( pSysGraphic.comboboxVersion->getCurrentItem() > 0
+		? pSysGraphic.comboboxVersion->getText().text() : "" );
+	profile.Verify( *pWindowMain->GetLauncher() );
+	UpdateModuleVersions( pSysGraphic, profile.GetModuleGraphic(), profile.GetModuleGraphicVersion() );
 	UpdateProfileList();
 	return 1;
 }
 
 long deglDialogProfileList::onBtnGraModInfo( FXObject*, FXSelector, void* ){
-	const deglEngineModuleList &moduleList = pWindowMain->GetLauncher()->GetEngine()->GetModuleList();
-	deglEngineModule * const module = pGetSelectedProfile() ? moduleList.GetModuleNamed(
-		pGetSelectedProfile()->GetEdit()->GetModuleGraphic() ) : NULL;
+	const delEngineModuleList &moduleList = pWindowMain->GetLauncher()->GetEngine().GetModules();
+	delEngineModule *module = nullptr;
+	if( pGetSelectedProfile() ){
+		if( pGetSelectedProfile()->GetEdit()->GetModuleGraphicVersion().IsEmpty() ){
+			module = moduleList.GetNamed( pGetSelectedProfile()->GetEdit()->GetModuleGraphic() );
+		}else{
+			module = moduleList.GetNamed( pGetSelectedProfile()->GetEdit()->GetModuleGraphic(),
+				pGetSelectedProfile()->GetEdit()->GetModuleGraphicVersion() );
+		}
+	}
 	
 	if( module ){
 		deglDialogModuleProps( pWindowMain, module, this ).execute( PLACEMENT_OWNER );
 		pGetSelectedProfile()->GetEdit()->Verify( *pWindowMain->GetLauncher() );
-		UpdateSystem( pSysGraphic, pGetSelectedProfile()->GetEdit()->GetModuleGraphic() );
+		UpdateSystem( pSysGraphic, pGetSelectedProfile()->GetEdit()->GetModuleGraphic(),
+			pGetSelectedProfile()->GetEdit()->GetModuleGraphicVersion() );
 		UpdateProfileList();
 	}
 	return 1;
@@ -941,23 +1065,48 @@ long deglDialogProfileList::onCBModInpChanged( FXObject*, FXSelector, void* ){
 		return 1;
 	}
 	
-	deglGameProfile &profile = *pGetSelectedProfile()->GetEdit();
-	profile.SetModuleInput( pSysInput.combobox->getText().text() );
+	delGameProfile &profile = *pGetSelectedProfile()->GetEdit();
+	if( profile.GetModuleInput() != pSysInput.combobox->getText().text() ){
+		profile.SetModuleInput( pSysInput.combobox->getText().text() );
+		profile.SetModuleInputVersion( "" );
+	}
 	profile.Verify( *pWindowMain->GetLauncher() );
-	UpdateSystem( pSysInput, profile.GetModuleInput() );
+	UpdateSystem( pSysInput, profile.GetModuleInput(), profile.GetModuleInputVersion() );
+	UpdateProfileList();
+	return 1;
+}
+
+long deglDialogProfileList::onCBModInpVersionChanged( FXObject*, FXSelector, void* ){
+	if( ! pGetSelectedProfile() ){
+		return 1;
+	}
+	
+	delGameProfile &profile = *pGetSelectedProfile()->GetEdit();
+	profile.SetModuleInputVersion( pSysInput.comboboxVersion->getCurrentItem() > 0
+		? pSysInput.comboboxVersion->getText().text() : "" );
+	profile.Verify( *pWindowMain->GetLauncher() );
+	UpdateModuleVersions( pSysInput, profile.GetModuleInput(), profile.GetModuleInputVersion() );
 	UpdateProfileList();
 	return 1;
 }
 
 long deglDialogProfileList::onBtnInpModInfo( FXObject*, FXSelector, void* ){
-	const deglEngineModuleList &moduleList = pWindowMain->GetLauncher()->GetEngine()->GetModuleList();
-	deglEngineModule * const module = pGetSelectedProfile() ? moduleList.GetModuleNamed(
-		pGetSelectedProfile()->GetEdit()->GetModuleInput() ) : NULL;
+	const delEngineModuleList &moduleList = pWindowMain->GetLauncher()->GetEngine().GetModules();
+	delEngineModule *module = nullptr;
+	if( pGetSelectedProfile() ){
+		if( pGetSelectedProfile()->GetEdit()->GetModuleInputVersion().IsEmpty() ){
+			module = moduleList.GetNamed( pGetSelectedProfile()->GetEdit()->GetModuleInput() );
+		}else{
+			module = moduleList.GetNamed( pGetSelectedProfile()->GetEdit()->GetModuleInput(),
+				pGetSelectedProfile()->GetEdit()->GetModuleInputVersion() );
+		}
+	}
 	
 	if( module ){
 		deglDialogModuleProps( pWindowMain, module, this ).execute( PLACEMENT_OWNER );
 		pGetSelectedProfile()->GetEdit()->Verify( *pWindowMain->GetLauncher() );
-		UpdateSystem( pSysInput, pGetSelectedProfile()->GetEdit()->GetModuleGraphic() );
+		UpdateSystem( pSysInput, pGetSelectedProfile()->GetEdit()->GetModuleGraphic(),
+			pGetSelectedProfile()->GetEdit()->GetModuleGraphicVersion() );
 		UpdateProfileList();
 	}
 	return 1;
@@ -968,22 +1117,48 @@ long deglDialogProfileList::onCBModPhyChanged( FXObject*, FXSelector, void* ){
 		return 1;
 	}
 	
-	pGetSelectedProfile()->GetEdit()->SetModulePhysics( pSysPhysics.combobox->getText().text() );
-	pGetSelectedProfile()->GetEdit()->Verify( *pWindowMain->GetLauncher() );
-	UpdateSystem( pSysPhysics, pGetSelectedProfile()->GetEdit()->GetModulePhysics() );
+	delGameProfile &profile = *pGetSelectedProfile()->GetEdit();
+	if( profile.GetModulePhysics() != pSysPhysics.combobox->getText().text() ){
+		profile.SetModulePhysics( pSysPhysics.combobox->getText().text() );
+		profile.SetModulePhysicsVersion( "" );
+	}
+	profile.Verify( *pWindowMain->GetLauncher() );
+	UpdateSystem( pSysPhysics, profile.GetModulePhysics(), profile.GetModulePhysicsVersion() );
+	UpdateProfileList();
+	return 1;
+}
+
+long deglDialogProfileList::onCBModPhyVersionChanged( FXObject*, FXSelector, void* ){
+	if( ! pGetSelectedProfile() ){
+		return 1;
+	}
+	
+	delGameProfile &profile = *pGetSelectedProfile()->GetEdit();
+	profile.SetModulePhysicsVersion( pSysPhysics.comboboxVersion->getCurrentItem() > 0
+		? pSysPhysics.comboboxVersion->getText().text() : "" );
+	profile.Verify( *pWindowMain->GetLauncher() );
+	UpdateModuleVersions( pSysPhysics, profile.GetModulePhysics(), profile.GetModulePhysicsVersion() );
 	UpdateProfileList();
 	return 1;
 }
 
 long deglDialogProfileList::onBtnPhyModInfo( FXObject*, FXSelector, void* ){
-	const deglEngineModuleList &moduleList = pWindowMain->GetLauncher()->GetEngine()->GetModuleList();
-	deglEngineModule * const module = pGetSelectedProfile() ? moduleList.GetModuleNamed(
-		pGetSelectedProfile()->GetEdit()->GetModulePhysics() ) : NULL;
+	const delEngineModuleList &moduleList = pWindowMain->GetLauncher()->GetEngine().GetModules();
+	delEngineModule *module = nullptr;
+	if( pGetSelectedProfile() ){
+		if( pGetSelectedProfile()->GetEdit()->GetModulePhysicsVersion().IsEmpty() ){
+			module = moduleList.GetNamed( pGetSelectedProfile()->GetEdit()->GetModulePhysics() );
+		}else{
+			module = moduleList.GetNamed( pGetSelectedProfile()->GetEdit()->GetModulePhysics(),
+				pGetSelectedProfile()->GetEdit()->GetModulePhysicsVersion() );
+		}
+	}
 	
 	if( module ){
 		deglDialogModuleProps( pWindowMain, module, this ).execute( PLACEMENT_OWNER );
 		pGetSelectedProfile()->GetEdit()->Verify( *pWindowMain->GetLauncher() );
-		UpdateSystem( pSysPhysics, pGetSelectedProfile()->GetEdit()->GetModulePhysics() );
+		UpdateSystem( pSysPhysics, pGetSelectedProfile()->GetEdit()->GetModulePhysics(),
+			pGetSelectedProfile()->GetEdit()->GetModulePhysicsVersion() );
 		UpdateProfileList();
 	}
 	return 1;
@@ -994,22 +1169,48 @@ long deglDialogProfileList::onCBModAmrChanged( FXObject*, FXSelector, void* ){
 		return 1;
 	}
 	
-	pGetSelectedProfile()->GetEdit()->SetModuleAnimator( pSysAnimator.combobox->getText().text() );
-	pGetSelectedProfile()->GetEdit()->Verify( *pWindowMain->GetLauncher() );
-	UpdateSystem( pSysAnimator, pGetSelectedProfile()->GetEdit()->GetModuleAnimator() );
+	delGameProfile &profile = *pGetSelectedProfile()->GetEdit();
+	if( profile.GetModuleAnimator() != pSysAnimator.combobox->getText().text() ){
+		profile.SetModuleAnimator( pSysAnimator.combobox->getText().text() );
+		profile.SetModuleAnimatorVersion( "" );
+	}
+	profile.Verify( *pWindowMain->GetLauncher() );
+	UpdateSystem( pSysAnimator, profile.GetModuleAnimator(), profile.GetModuleAnimatorVersion() );
+	UpdateProfileList();
+	return 1;
+}
+
+long deglDialogProfileList::onCBModAmrVersionChanged( FXObject*, FXSelector, void* ){
+	if( ! pGetSelectedProfile() ){
+		return 1;
+	}
+	
+	delGameProfile &profile = *pGetSelectedProfile()->GetEdit();
+	profile.SetModuleAnimatorVersion( pSysAnimator.comboboxVersion->getCurrentItem() > 0
+		? pSysAnimator.comboboxVersion->getText().text() : "" );
+	profile.Verify( *pWindowMain->GetLauncher() );
+	UpdateModuleVersions( pSysAnimator, profile.GetModuleAnimator(), profile.GetModuleAnimatorVersion() );
 	UpdateProfileList();
 	return 1;
 }
 
 long deglDialogProfileList::onBtnAmrModInfo( FXObject*, FXSelector, void* ){
-	const deglEngineModuleList &moduleList = pWindowMain->GetLauncher()->GetEngine()->GetModuleList();
-	deglEngineModule * const module = pGetSelectedProfile() ? moduleList.GetModuleNamed(
-		pGetSelectedProfile()->GetEdit()->GetModuleAnimator() ) : NULL;
+	const delEngineModuleList &moduleList = pWindowMain->GetLauncher()->GetEngine().GetModules();
+	delEngineModule *module = nullptr;
+	if( pGetSelectedProfile() ){
+		if( pGetSelectedProfile()->GetEdit()->GetModuleAnimatorVersion().IsEmpty() ){
+			module = moduleList.GetNamed( pGetSelectedProfile()->GetEdit()->GetModuleAnimator() );
+		}else{
+			module = moduleList.GetNamed( pGetSelectedProfile()->GetEdit()->GetModuleAnimator(),
+				pGetSelectedProfile()->GetEdit()->GetModuleAnimatorVersion() );
+		}
+	}
 	
 	if( module ){
 		deglDialogModuleProps( pWindowMain, module, this ).execute( PLACEMENT_OWNER );
 		pGetSelectedProfile()->GetEdit()->Verify( *pWindowMain->GetLauncher() );
-		UpdateSystem( pSysAnimator, pGetSelectedProfile()->GetEdit()->GetModuleAnimator() );
+		UpdateSystem( pSysAnimator, pGetSelectedProfile()->GetEdit()->GetModuleAnimator(),
+			pGetSelectedProfile()->GetEdit()->GetModuleAnimatorVersion() );
 		UpdateProfileList();
 	}
 	return 1;
@@ -1020,22 +1221,48 @@ long deglDialogProfileList::onCBModAIChanged( FXObject*, FXSelector, void* ){
 		return 1;
 	}
 	
-	pGetSelectedProfile()->GetEdit()->SetModuleAI( pSysAI.combobox->getText().text() );
-	pGetSelectedProfile()->GetEdit()->Verify( *pWindowMain->GetLauncher() );
-	UpdateSystem( pSysAI, pGetSelectedProfile()->GetEdit()->GetModuleAI() );
+	delGameProfile &profile = *pGetSelectedProfile()->GetEdit();
+	if( profile.GetModuleAI() != pSysAI.combobox->getText().text() ){
+		profile.SetModuleAI( pSysAI.combobox->getText().text() );
+		profile.SetModuleAIVersion( "" );
+	}
+	profile.Verify( *pWindowMain->GetLauncher() );
+	UpdateSystem( pSysAI, profile.GetModuleAI(), profile.GetModuleAIVersion() );
+	UpdateProfileList();
+	return 1;
+}
+
+long deglDialogProfileList::onCBModAIVersionChanged( FXObject*, FXSelector, void* ){
+	if( ! pGetSelectedProfile() ){
+		return 1;
+	}
+	
+	delGameProfile &profile = *pGetSelectedProfile()->GetEdit();
+	profile.SetModuleAIVersion( pSysAI.comboboxVersion->getCurrentItem() > 0
+		? pSysAI.comboboxVersion->getText().text() : "" );
+	profile.Verify( *pWindowMain->GetLauncher() );
+	UpdateModuleVersions( pSysAI, profile.GetModuleAI(), profile.GetModuleAIVersion() );
 	UpdateProfileList();
 	return 1;
 }
 
 long deglDialogProfileList::onBtnAIModInfo( FXObject*, FXSelector, void* ){
-	const deglEngineModuleList &moduleList = pWindowMain->GetLauncher()->GetEngine()->GetModuleList();
-	deglEngineModule * const module = pGetSelectedProfile() ? moduleList.GetModuleNamed(
-		pGetSelectedProfile()->GetEdit()->GetModuleAI() ) : NULL;
+	const delEngineModuleList &moduleList = pWindowMain->GetLauncher()->GetEngine().GetModules();
+	delEngineModule *module = nullptr;
+	if( pGetSelectedProfile() ){
+		if( pGetSelectedProfile()->GetEdit()->GetModuleAIVersion().IsEmpty() ){
+			module = moduleList.GetNamed( pGetSelectedProfile()->GetEdit()->GetModuleAI() );
+		}else{
+			module = moduleList.GetNamed( pGetSelectedProfile()->GetEdit()->GetModuleAI(),
+				pGetSelectedProfile()->GetEdit()->GetModuleAIVersion() );
+		}
+	}
 	
 	if( module ){
 		deglDialogModuleProps( pWindowMain, module, this ).execute( PLACEMENT_OWNER );
 		pGetSelectedProfile()->GetEdit()->Verify( *pWindowMain->GetLauncher() );
-		UpdateSystem( pSysAI, pGetSelectedProfile()->GetEdit()->GetModuleAI() );
+		UpdateSystem( pSysAI, pGetSelectedProfile()->GetEdit()->GetModuleAI(),
+			pGetSelectedProfile()->GetEdit()->GetModuleAIVersion() );
 		UpdateProfileList();
 	}
 	return 1;
@@ -1046,22 +1273,48 @@ long deglDialogProfileList::onCBModCRChanged( FXObject*, FXSelector, void* ){
 		return 1;
 	}
 	
-	pGetSelectedProfile()->GetEdit()->SetModuleCrashRecovery( pSysCrashRecovery.combobox->getText().text() );
-	pGetSelectedProfile()->GetEdit()->Verify( *pWindowMain->GetLauncher() );
-	UpdateSystem( pSysCrashRecovery, pGetSelectedProfile()->GetEdit()->GetModuleCrashRecovery() );
+	delGameProfile &profile = *pGetSelectedProfile()->GetEdit();
+	if( profile.GetModuleCrashRecovery() != pSysCrashRecovery.combobox->getText().text() ){
+		profile.SetModuleCrashRecovery( pSysCrashRecovery.combobox->getText().text() );
+		profile.SetModuleCrashRecoveryVersion( "" );
+	}
+	profile.Verify( *pWindowMain->GetLauncher() );
+	UpdateSystem( pSysCrashRecovery, profile.GetModuleCrashRecovery(), profile.GetModuleCrashRecoveryVersion() );
+	UpdateProfileList();
+	return 1;
+}
+
+long deglDialogProfileList::onCBModCRVersionChanged( FXObject*, FXSelector, void* ){
+	if( ! pGetSelectedProfile() ){
+		return 1;
+	}
+	
+	delGameProfile &profile = *pGetSelectedProfile()->GetEdit();
+	profile.SetModuleCrashRecoveryVersion( pSysCrashRecovery.comboboxVersion->getCurrentItem() > 0
+		? pSysCrashRecovery.comboboxVersion->getText().text() : "" );
+	profile.Verify( *pWindowMain->GetLauncher() );
+	UpdateSystem( pSysCrashRecovery, profile.GetModuleCrashRecovery(), profile.GetModuleCrashRecoveryVersion() );
 	UpdateProfileList();
 	return 1;
 }
 
 long deglDialogProfileList::onBtnCRModInfo( FXObject*, FXSelector, void* ){
-	const deglEngineModuleList &moduleList = pWindowMain->GetLauncher()->GetEngine()->GetModuleList();
-	deglEngineModule * const module = pGetSelectedProfile() ? moduleList.GetModuleNamed(
-		pGetSelectedProfile()->GetEdit()->GetModuleCrashRecovery() ) : NULL;
+	const delEngineModuleList &moduleList = pWindowMain->GetLauncher()->GetEngine().GetModules();
+	delEngineModule *module = nullptr;
+	if( pGetSelectedProfile() ){
+		if( pGetSelectedProfile()->GetEdit()->GetModuleCrashRecoveryVersion().IsEmpty() ){
+			module = moduleList.GetNamed( pGetSelectedProfile()->GetEdit()->GetModuleCrashRecovery() );
+		}else{
+			module = moduleList.GetNamed( pGetSelectedProfile()->GetEdit()->GetModuleCrashRecovery(),
+				pGetSelectedProfile()->GetEdit()->GetModuleCrashRecoveryVersion() );
+		}
+	}
 	
 	if( module ){
 		deglDialogModuleProps( pWindowMain, module, this ).execute( PLACEMENT_OWNER );
 		pGetSelectedProfile()->GetEdit()->Verify( *pWindowMain->GetLauncher() );
-		UpdateSystem( pSysCrashRecovery, pGetSelectedProfile()->GetEdit()->GetModuleCrashRecovery() );
+		UpdateSystem( pSysCrashRecovery, pGetSelectedProfile()->GetEdit()->GetModuleCrashRecovery(),
+			pGetSelectedProfile()->GetEdit()->GetModuleCrashRecoveryVersion() );
 		UpdateProfileList();
 	}
 	return 1;
@@ -1072,22 +1325,48 @@ long deglDialogProfileList::onCBModAudChanged( FXObject*, FXSelector, void* ){
 		return 1;
 	}
 	
-	pGetSelectedProfile()->GetEdit()->SetModuleAudio( pSysAudio.combobox->getText().text() );
-	pGetSelectedProfile()->GetEdit()->Verify( *pWindowMain->GetLauncher() );
-	UpdateSystem( pSysAudio, pGetSelectedProfile()->GetEdit()->GetModuleAudio() );
+	delGameProfile &profile = *pGetSelectedProfile()->GetEdit();
+	if( profile.GetModuleAudio() != pSysAudio.combobox->getText().text() ){
+		profile.SetModuleAudio( pSysAudio.combobox->getText().text() );
+		profile.SetModuleAudioVersion( "" );
+	}
+	profile.Verify( *pWindowMain->GetLauncher() );
+	UpdateSystem( pSysAudio, profile.GetModuleAudio(), profile.GetModuleAudio() );
+	UpdateProfileList();
+	return 1;
+}
+
+long deglDialogProfileList::onCBModAudVersionChanged( FXObject*, FXSelector, void* ){
+	if( ! pGetSelectedProfile() ){
+		return 1;
+	}
+	
+	delGameProfile &profile = *pGetSelectedProfile()->GetEdit();
+	profile.SetModuleAudioVersion( pSysAudio.comboboxVersion->getCurrentItem() > 0
+		? pSysAudio.comboboxVersion->getText().text() : "" );
+	profile.Verify( *pWindowMain->GetLauncher() );
+	UpdateModuleVersions( pSysAudio, profile.GetModuleAudio(), profile.GetModuleAudio() );
 	UpdateProfileList();
 	return 1;
 }
 
 long deglDialogProfileList::onBtnAudModInfo( FXObject*, FXSelector, void* ){
-	const deglEngineModuleList &moduleList = pWindowMain->GetLauncher()->GetEngine()->GetModuleList();
-	deglEngineModule * const module = pGetSelectedProfile() ? moduleList.GetModuleNamed(
-		pGetSelectedProfile()->GetEdit()->GetModuleAudio() ) : NULL;
+	const delEngineModuleList &moduleList = pWindowMain->GetLauncher()->GetEngine().GetModules();
+	delEngineModule *module = nullptr;
+	if( pGetSelectedProfile() ){
+		if( pGetSelectedProfile()->GetEdit()->GetModuleAudioVersion().IsEmpty() ){
+			module = moduleList.GetNamed( pGetSelectedProfile()->GetEdit()->GetModuleAudio() );
+		}else{
+			module = moduleList.GetNamed( pGetSelectedProfile()->GetEdit()->GetModuleAudio(),
+				pGetSelectedProfile()->GetEdit()->GetModuleAudioVersion() );
+		}
+	}
 	
 	if( module ){
 		deglDialogModuleProps( pWindowMain, module, this ).execute( PLACEMENT_OWNER );
 		pGetSelectedProfile()->GetEdit()->Verify( *pWindowMain->GetLauncher() );
-		UpdateSystem( pSysAudio, pGetSelectedProfile()->GetEdit()->GetModuleAudio() );
+		UpdateSystem( pSysAudio, pGetSelectedProfile()->GetEdit()->GetModuleAudio(),
+			pGetSelectedProfile()->GetEdit()->GetModuleAudioVersion() );
 		UpdateProfileList();
 	}
 	return 1;
@@ -1098,22 +1377,48 @@ long deglDialogProfileList::onCBModNetChanged( FXObject*, FXSelector, void* ){
 		return 1;
 	}
 	
-	pGetSelectedProfile()->GetEdit()->SetModuleNetwork( pSysNetwork.combobox->getText().text() );
-	pGetSelectedProfile()->GetEdit()->Verify( *pWindowMain->GetLauncher() );
-	UpdateSystem( pSysNetwork, pGetSelectedProfile()->GetEdit()->GetModuleNetwork() );
+	delGameProfile &profile = *pGetSelectedProfile()->GetEdit();
+	if( profile.GetModuleNetwork() != pSysNetwork.combobox->getText().text() ){
+		profile.SetModuleNetwork( pSysNetwork.combobox->getText().text() );
+		profile.SetModuleNetworkVersion( "" );
+	}
+	profile.Verify( *pWindowMain->GetLauncher() );
+	UpdateSystem( pSysNetwork, profile.GetModuleNetwork(), profile.GetModuleNetworkVersion() );
+	UpdateProfileList();
+	return 1;
+}
+
+long deglDialogProfileList::onCBModNetVersionChanged( FXObject*, FXSelector, void* ){
+	if( ! pGetSelectedProfile() ){
+		return 1;
+	}
+	
+	delGameProfile &profile = *pGetSelectedProfile()->GetEdit();
+	profile.SetModuleNetworkVersion( pSysNetwork.comboboxVersion->getCurrentItem() > 0
+		? pSysNetwork.comboboxVersion->getText().text() : "" );
+	profile.Verify( *pWindowMain->GetLauncher() );
+	UpdateModuleVersions( pSysNetwork, profile.GetModuleNetwork(), profile.GetModuleNetworkVersion() );
 	UpdateProfileList();
 	return 1;
 }
 
 long deglDialogProfileList::onBtnNetModInfo( FXObject*, FXSelector, void* ){
-	const deglEngineModuleList &moduleList = pWindowMain->GetLauncher()->GetEngine()->GetModuleList();
-	deglEngineModule * const module = pGetSelectedProfile() ? moduleList.GetModuleNamed(
-		pGetSelectedProfile()->GetEdit()->GetModuleNetwork() ) : NULL;
+	const delEngineModuleList &moduleList = pWindowMain->GetLauncher()->GetEngine().GetModules();
+	delEngineModule *module = nullptr;
+	if( pGetSelectedProfile() ){
+		if( pGetSelectedProfile()->GetEdit()->GetModuleNetworkVersion().IsEmpty() ){
+			module = moduleList.GetNamed( pGetSelectedProfile()->GetEdit()->GetModuleNetwork() );
+		}else{
+			module = moduleList.GetNamed( pGetSelectedProfile()->GetEdit()->GetModuleNetwork(),
+				pGetSelectedProfile()->GetEdit()->GetModuleNetworkVersion() );
+		}
+	}
 	
 	if( module ){
 		deglDialogModuleProps( pWindowMain, module, this ).execute( PLACEMENT_OWNER );
 		pGetSelectedProfile()->GetEdit()->Verify( *pWindowMain->GetLauncher() );
-		UpdateSystem( pSysNetwork, pGetSelectedProfile()->GetEdit()->GetModuleNetwork() );
+		UpdateSystem( pSysNetwork, pGetSelectedProfile()->GetEdit()->GetModuleNetwork(),
+			pGetSelectedProfile()->GetEdit()->GetModuleNetworkVersion() );
 		UpdateProfileList();
 	}
 	return 1;
@@ -1124,22 +1429,100 @@ long deglDialogProfileList::onCBModSynChanged( FXObject*, FXSelector, void* ){
 		return 1;
 	}
 	
-	pGetSelectedProfile()->GetEdit()->SetModuleSynthesizer( pSysSynthesizer.combobox->getText().text() );
-	pGetSelectedProfile()->GetEdit()->Verify( *pWindowMain->GetLauncher() );
-	UpdateSystem( pSysSynthesizer, pGetSelectedProfile()->GetEdit()->GetModuleSynthesizer() );
+	delGameProfile &profile = *pGetSelectedProfile()->GetEdit();
+	if( profile.GetModuleSynthesizer() != pSysSynthesizer.combobox->getText().text() ){
+		profile.SetModuleSynthesizer( pSysSynthesizer.combobox->getText().text() );
+		profile.SetModuleSynthesizerVersion( "" );
+	}
+	profile.Verify( *pWindowMain->GetLauncher() );
+	UpdateSystem( pSysSynthesizer, profile.GetModuleSynthesizer(), profile.GetModuleSynthesizerVersion() );
+	UpdateProfileList();
+	return 1;
+}
+
+long deglDialogProfileList::onCBModSynVersionChanged( FXObject*, FXSelector, void* ){
+	if( ! pGetSelectedProfile() ){
+		return 1;
+	}
+	
+	delGameProfile &profile = *pGetSelectedProfile()->GetEdit();
+	profile.SetModuleSynthesizerVersion( pSysSynthesizer.comboboxVersion->getCurrentItem() > 0
+		? pSysSynthesizer.comboboxVersion->getText().text() : "" );
+	profile.Verify( *pWindowMain->GetLauncher() );
+	UpdateModuleVersions( pSysSynthesizer, profile.GetModuleSynthesizer(), profile.GetModuleSynthesizerVersion() );
 	UpdateProfileList();
 	return 1;
 }
 
 long deglDialogProfileList::onBtnSynModInfo( FXObject*, FXSelector, void* ){
-	const deglEngineModuleList &moduleList = pWindowMain->GetLauncher()->GetEngine()->GetModuleList();
-	deglEngineModule * const module = pGetSelectedProfile() ? moduleList.GetModuleNamed(
-		pGetSelectedProfile()->GetEdit()->GetModuleSynthesizer() ) : NULL;
+	const delEngineModuleList &moduleList = pWindowMain->GetLauncher()->GetEngine().GetModules();
+	delEngineModule *module = nullptr;
+	if( pGetSelectedProfile() ){
+		if( pGetSelectedProfile()->GetEdit()->GetModuleSynthesizerVersion().IsEmpty() ){
+			module = moduleList.GetNamed( pGetSelectedProfile()->GetEdit()->GetModuleSynthesizer() );
+		}else{
+			module = moduleList.GetNamed( pGetSelectedProfile()->GetEdit()->GetModuleSynthesizer(),
+				pGetSelectedProfile()->GetEdit()->GetModuleSynthesizerVersion() );
+		}
+	}
 	
 	if( module ){
 		deglDialogModuleProps( pWindowMain, module, this ).execute( PLACEMENT_OWNER );
 		pGetSelectedProfile()->GetEdit()->Verify( *pWindowMain->GetLauncher() );
-		UpdateSystem( pSysSynthesizer, pGetSelectedProfile()->GetEdit()->GetModuleSynthesizer() );
+		UpdateSystem( pSysSynthesizer, pGetSelectedProfile()->GetEdit()->GetModuleSynthesizer(),
+			pGetSelectedProfile()->GetEdit()->GetModuleSynthesizerVersion() );
+		UpdateProfileList();
+	}
+	return 1;
+}
+
+long deglDialogProfileList::onCBModVRChanged( FXObject*, FXSelector, void* ){
+	if( ! pGetSelectedProfile() ){
+		return 1;
+	}
+	
+	delGameProfile &profile = *pGetSelectedProfile()->GetEdit();
+	if( profile.GetModuleVR() != pSysVR.combobox->getText().text() ){
+		profile.SetModuleVR( pSysVR.combobox->getText().text() );
+		profile.SetModuleVRVersion( "" );
+	}
+	profile.Verify( *pWindowMain->GetLauncher() );
+	UpdateSystem( pSysVR, profile.GetModuleVR(), profile.GetModuleVRVersion() );
+	UpdateProfileList();
+	return 1;
+}
+
+long deglDialogProfileList::onCBModVRVersionChanged( FXObject*, FXSelector, void* ){
+	if( ! pGetSelectedProfile() ){
+		return 1;
+	}
+	
+	delGameProfile &profile = *pGetSelectedProfile()->GetEdit();
+	profile.SetModuleVRVersion( pSysVR.comboboxVersion->getCurrentItem() > 0
+		? pSysVR.comboboxVersion->getText().text() : "" );
+	profile.Verify( *pWindowMain->GetLauncher() );
+	UpdateModuleVersions( pSysVR, profile.GetModuleVR(), profile.GetModuleVRVersion() );
+	UpdateProfileList();
+	return 1;
+}
+
+long deglDialogProfileList::onBtnVRModInfo( FXObject*, FXSelector, void* ){
+	const delEngineModuleList &moduleList = pWindowMain->GetLauncher()->GetEngine().GetModules();
+	delEngineModule *module = nullptr;
+	if( pGetSelectedProfile() ){
+		if( pGetSelectedProfile()->GetEdit()->GetModuleVRVersion().IsEmpty() ){
+			module = moduleList.GetNamed( pGetSelectedProfile()->GetEdit()->GetModuleVR() );
+		}else{
+			module = moduleList.GetNamed( pGetSelectedProfile()->GetEdit()->GetModuleVR(),
+				pGetSelectedProfile()->GetEdit()->GetModuleVRVersion() );
+		}
+	}
+	
+	if( module ){
+		deglDialogModuleProps( pWindowMain, module, this ).execute( PLACEMENT_OWNER );
+		pGetSelectedProfile()->GetEdit()->Verify( *pWindowMain->GetLauncher() );
+		UpdateSystem( pSysVR, pGetSelectedProfile()->GetEdit()->GetModuleGraphic(),
+			pGetSelectedProfile()->GetEdit()->GetModuleGraphicVersion() );
 		UpdateProfileList();
 	}
 	return 1;
@@ -1212,7 +1595,7 @@ long deglDialogProfileList::onMPParameterLabelLMRelease( FXObject*, FXSelector, 
 	return 1;
 }
 
-long deglDialogProfileList::onMPParameterLabelRMPress( FXObject *sender, FXSelector, void* data){
+long deglDialogProfileList::onMPParameterLabelRMPress( FXObject *sender, FXSelector, void* pdata){
 	const int count = pMPParameters.GetCount();
 	int i;
 	
@@ -1222,8 +1605,8 @@ long deglDialogProfileList::onMPParameterLabelRMPress( FXObject *sender, FXSelec
 			continue;
 		}
 		
-		const FXEvent &event = *( ( const FXEvent * )data );
-		FXMenuPane *popup = NULL;
+		const FXEvent &event = *( ( const FXEvent * )pdata );
+		FXMenuPane *popup = nullptr;
 		int x = event.root_x;
 		int y = event.root_y;
 		
@@ -1231,11 +1614,11 @@ long deglDialogProfileList::onMPParameterLabelRMPress( FXObject *sender, FXSelec
 		
 		try{
 			popup = new FXMenuPane( this );
-			new FXMenuCommand( popup, "Reset Value", NULL, this, ID_PU_PARAM_RESET );
+			new FXMenuCommand( popup, "Reset Value", nullptr, this, ID_PU_PARAM_RESET );
 			
 			popup->create();
 			
-			popup->popup( NULL, x + 1, y + 1 ); // popup-bug. do not show straight under the cursor
+			popup->popup( nullptr, x + 1, y + 1 ); // popup-bug. do not show straight under the cursor
 			pWindowMain->getApp()->runModalWhileShown( popup );
 			
 			delete popup;
@@ -1244,7 +1627,7 @@ long deglDialogProfileList::onMPParameterLabelRMPress( FXObject *sender, FXSelec
 			if( popup ){
 				delete popup;
 			}
-			pPUMPParameter = NULL;
+			pPUMPParameter = nullptr;
 			pWindowMain->DisplayException( e );
 		}
 	}
@@ -1319,12 +1702,12 @@ long deglDialogProfileList::onChkReplaceRunArgsChanged( FXObject*, FXSelector, v
 
 long deglDialogProfileList::onEditWidthChanged( FXObject*, FXSelector, void* ){
 	if( pGetSelectedProfile() ){
-		int width = pEditWidth->getText().toInt();
-		if( width < 1 ){
+		int wwidth = pEditWidth->getText().toInt();
+		if( wwidth < 1 ){
 			pEditWidth->setText( "1" );
-			width = 1;
+			wwidth = 1;
 		}
-		pGetSelectedProfile()->GetEdit()->SetWidth( width );
+		pGetSelectedProfile()->GetEdit()->SetWidth( wwidth );
 	}
 	return 1;
 }
@@ -1339,7 +1722,7 @@ long deglDialogProfileList::onCBFullScreenResolutionsChanged( FXObject*, FXSelec
 		pGetSelectedProfile()->GetEdit()->SetFullScreen( false );
 		
 	}else{
-		const decPoint &resolution = pWindowMain->GetLauncher()->GetEngine()->GetResolutionAt( selection - 1 );
+		const decPoint &resolution = pWindowMain->GetLauncher()->GetEngine().GetResolutionAt( selection - 1 );
 		pGetSelectedProfile()->GetEdit()->SetWidth( resolution.x );
 		pGetSelectedProfile()->GetEdit()->SetHeight( resolution.y );
 		pGetSelectedProfile()->GetEdit()->SetFullScreen( true );
@@ -1351,12 +1734,12 @@ long deglDialogProfileList::onCBFullScreenResolutionsChanged( FXObject*, FXSelec
 
 long deglDialogProfileList::onEditHeightChanged( FXObject*, FXSelector, void* ){
 	if( pGetSelectedProfile() ){
-		int height = pEditHeight->getText().toInt();
-		if( height < 1 ){
+		int hheight = pEditHeight->getText().toInt();
+		if( hheight < 1 ){
 			pEditHeight->setText( "1" );
-			height = 1;
+			hheight = 1;
 		}
-		pGetSelectedProfile()->GetEdit()->SetHeight( height );
+		pGetSelectedProfile()->GetEdit()->SetHeight( hheight );
 	}
 	return 1;
 }
@@ -1381,12 +1764,11 @@ long deglDialogProfileList::onBtnDisableModuleVersionAdd( FXObject*, FXSelector,
 		return 1;
 	}
 	
-	deglGPDisableModuleVersionList &list = pGetSelectedProfile()->GetEdit()->GetDisableModuleVersionList();
+	delGPDisableModuleVersionList &list = pGetSelectedProfile()->GetEdit()->GetDisableModuleVersions();
 	if( ! list.HasWith( selectedModule.text(), selectedVersion.text() ) ){
-		deObjectReference version;
 		try{
-			version.TakeOver( new deglGPDisableModuleVersion( selectedModule.text(), selectedVersion.text() ) );
-			list.Add( ( deglGPDisableModuleVersion* )( deObject* )version );
+			list.Add( delGPDisableModuleVersion::Ref::New( new delGPDisableModuleVersion(
+				selectedModule.text(), selectedVersion.text() ) ) );
 		}catch( const deException &e ){
 			GetWindowMain()->DisplayException( e );
 			return 1;
@@ -1406,9 +1788,9 @@ long deglDialogProfileList::onBtnDisableModuleVersionRemove( FXObject*, FXSelect
 		return 1;
 	}
 	
-	deglGPDisableModuleVersion * const version =
-		( deglGPDisableModuleVersion* )pListDisableModuleVersions->getItemData( selection );
-	pGetSelectedProfile()->GetEdit()->GetDisableModuleVersionList().Remove( version );
+	delGPDisableModuleVersion * const version =
+		( delGPDisableModuleVersion* )pListDisableModuleVersions->getItemData( selection );
+	pGetSelectedProfile()->GetEdit()->GetDisableModuleVersions().Remove( version );
 	
 	UpdateListDisabledModuleVersions();
 	return 1;
@@ -1423,7 +1805,7 @@ long deglDialogProfileList::onPUParamReset( FXObject*, FXSelector, void* ){
 		}catch( const deException &e ){
 			pWindowMain->DisplayException( e );
 		}
-		pPUMPParameter = NULL;
+		pPUMPParameter = nullptr;
 		return 1;
 	}
 	return 1;
@@ -1434,9 +1816,10 @@ long deglDialogProfileList::onPUParamReset( FXObject*, FXSelector, void* ){
 // Private Functions
 //////////////////////
 
-void deglDialogProfileList::pCreateSystem( sSystem &system, const char *textLabel, const char *toolText, int comboBoxSelector,
+void deglDialogProfileList::pCreateSystem( sSystem &system, const char *textLabel,
+const char *toolText, int comboBoxSelector, int comboBoxVersionSelector,
 int buttonSelector, FXComposite *container ){
-	deglConfiguration &configuration = *pWindowMain->GetLauncher()->GetConfiguration();
+	deglConfiguration &configuration = pWindowMain->GetLauncher()->GetConfiguration();
 	const deglGuiBuilder &guiBuilder = *pWindowMain->GetGuiBuilder();
 	
 	guiBuilder.CreateLabel( container, textLabel, toolText );
@@ -1449,10 +1832,12 @@ int buttonSelector, FXComposite *container ){
 	system.icon = new FXLabel( frameLine, "", pWindowMain->GetIconValidSmall(), LABEL_NORMAL, 0, 0, 0, 0, 0, 0, 0, 0 );
 	system.combobox = guiBuilder.CreateComboBox( frameLine, this, comboBoxSelector, toolText, true, 20, 5, false );
 	system.combobox->setSortFunc( deglGuiBuilder::SortListItemByName );
-	system.modinfo = guiBuilder.CreateButton( frameLine, "", pWindowMain->GetIconButtonInfo(), this, buttonSelector, "Show module informations" );
+	system.comboboxVersion = guiBuilder.CreateComboBox( frameLine, this, comboBoxVersionSelector, toolText, false, 10, 5, true );
+	system.comboboxVersion->setSortFunc( fSortListItemByVersion );
+	system.modinfo = guiBuilder.CreateButton( frameLine, "", pWindowMain->GetIconButtonInfo(), this, buttonSelector, "Show module information" );
 	system.modinfo->setLayoutHints( system.modinfo->getLayoutHints() | LAYOUT_FILL_Y );
 	
-	system.problem = new FXLabel( frameRight, "This label contains a short problem description.", NULL, LABEL_NORMAL | LAYOUT_FILL_X );
+	system.problem = new FXLabel( frameRight, "This label contains a short problem description.", nullptr, LABEL_NORMAL | LAYOUT_FILL_X );
 	system.problem->setJustify( JUSTIFY_LEFT | JUSTIFY_TOP );
 	system.problem->setBackColor( configuration.GetBackColorProblem() );
 	system.problem->setTextColor( configuration.GetTextColorProblem() );
@@ -1469,12 +1854,12 @@ void deglDialogProfileList::pUpdateMPParamVisiblity(){
 
 deglDialogProfileList::cEditProfile *deglDialogProfileList::pGetSelectedProfile() const{
 	if( pListProfiles->getCurrentItem() == -1 ){
-		return NULL;
+		return nullptr;
 	}
 	return ( cEditProfile* )pListProfiles->getItemData( pListProfiles->getCurrentItem() );
 }
 
-void deglDialogProfileList::pSetSelectedProfile( deglGameProfile *profile ){
+void deglDialogProfileList::pSetSelectedProfile( delGameProfile *profile ){
 	const int count = pListProfiles->getNumItems();
 	int selection = -1;
 	int i;
@@ -1507,5 +1892,5 @@ deglDialogProfileList::cEditProfile *deglDialogProfileList::pGetProfileNamed( co
 			return profile;
 		}
 	}
-	return NULL;
+	return nullptr;
 }

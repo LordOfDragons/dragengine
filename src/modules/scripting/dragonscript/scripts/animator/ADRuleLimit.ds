@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -28,437 +31,541 @@ pin Dragengine.Utils
 
 
 /**
- * Definition of a limit animator rule. Once defined a rule can be
- * added to an animator using the stored definition.
+ * \brief Definition of  limit animator rule.
+ * 
+ * Once defined a rule can be added to an animator using the stored definition.
  */
 class ADRuleLimit extends ADRule
-	/** Minimm position. */
 	private var Vector pMinimumPosition
-	/** Maximum position. */
 	private var Vector pMaximumPosition
-	/** Minimm rotation. */
 	private var Vector pMinimumRotation
-	/** Maximum rotation. */
 	private var Vector pMaximumRotation
-	/** Minimm scaling. */
 	private var Vector pMinimumScaling
-	/** Maximum scaling. */
 	private var Vector pMaximumScaling
-	/** Coordinate frame of rotation. */
+	private var float pMinimumVertexPositionSet
+	private var float pMaximumVertexPositionSet
 	private var ARLimitCFrame pCoordFrame
-	/** Name of the target bone. */
 	private var String pTargetBone
 	
-	/** Determines if the x position is limited to the minimum. */
 	private var bool pEnablePosXMin
-	/** Determines if the x position is limited to the maximum. */
 	private var bool pEnablePosXMax
-	/** Determines if the y position is limited to the minimum. */
 	private var bool pEnablePosYMin
-	/** Determines if the y position is limited to the maximum. */
 	private var bool pEnablePosYMax
-	/** Determines if the z position is limited to the minimum. */
 	private var bool pEnablePosZMin
-	/** Determines if the z position is limited to the maximum. */
 	private var bool pEnablePosZMax
 	
-	/** Determines if the x rotation is limited to the minimum. */
 	private var bool pEnableRotXMin
-	/** Determines if the x rotation is limited to the maximum. */
 	private var bool pEnableRotXMax
-	/** Determines if the y rotation is limited to the minimum. */
 	private var bool pEnableRotYMin
-	/** Determines if the y rotation is limited to the maximum. */
 	private var bool pEnableRotYMax
-	/** Determines if the z rotation is limited to the minimum. */
 	private var bool pEnableRotZMin
-	/** Determines if the z rotation is limited to the maximum. */
 	private var bool pEnableRotZMax
 	
-	/** Determines if the x scaling is limited to the minimum, */
 	private var bool pEnableScaleXMin
-	/** Determines if the x scaling is limited to the maximum, */
 	private var bool pEnableScaleXMax
-	/** Determines if the y scaling is limited to the minimum, */
 	private var bool pEnableScaleYMin
-	/** Determines if the y scaling is limited to the maximum, */
 	private var bool pEnableScaleYMax
-	/** Determines if the z scaling is limited to the minimum, */
 	private var bool pEnableScaleZMin
-	/** Determines if the z scaling is limited to the maximum, */
 	private var bool pEnableScaleZMax
 	
+	private var bool pEnableVertexPositionSetMin
+	private var bool pEnableVertexPositionSetMax
 	
 	
-	/** Creates a new animation rule definition. */
+	
+	/** \brief Create animation rule definition. */
 	public func new()
-		this.pMinimumPosition = Vector.new()
-		this.pMaximumPosition = Vector.new()
-		this.pMinimumRotation = Vector.new()
-		this.pMaximumRotation = Vector.new()
-		this.pMinimumScaling = Vector.new( 1.0, 1.0, 1.0 )
-		this.pMaximumScaling = Vector.new( 1.0, 1.0, 1.0 )
-		this.pCoordFrame = ARLimitCFrame.component
-		this.pTargetBone = ""
+		pMinimumPosition = Vector.new()
+		pMaximumPosition = Vector.new()
+		pMinimumRotation = Vector.new()
+		pMaximumRotation = Vector.new()
+		pMinimumScaling = Vector.new(1, 1, 1)
+		pMaximumScaling = Vector.new(1, 1, 1)
+		pMinimumVertexPositionSet = 1
+		pMaximumVertexPositionSet = 1
+		pCoordFrame = ARLimitCFrame.component
+		pTargetBone = ""
 		
-		this.pEnablePosXMin = false
-		this.pEnablePosXMax = false
-		this.pEnablePosYMin = false
-		this.pEnablePosYMax = false
-		this.pEnablePosZMin = false
-		this.pEnablePosZMax = false
+		pEnablePosXMin = false
+		pEnablePosXMax = false
+		pEnablePosYMin = false
+		pEnablePosYMax = false
+		pEnablePosZMin = false
+		pEnablePosZMax = false
 		
-		this.pEnableRotXMin = false
-		this.pEnableRotXMax = false
-		this.pEnableRotYMin = false
-		this.pEnableRotYMax = false
-		this.pEnableRotZMin = false
-		this.pEnableRotZMax = false
+		pEnableRotXMin = false
+		pEnableRotXMax = false
+		pEnableRotYMin = false
+		pEnableRotYMax = false
+		pEnableRotZMin = false
+		pEnableRotZMax = false
 		
-		this.pEnableScaleXMin = false
-		this.pEnableScaleXMax = false
-		this.pEnableScaleYMin = false
-		this.pEnableScaleYMax = false
-		this.pEnableScaleZMin = false
-		this.pEnableScaleZMax = false
+		pEnableScaleXMin = false
+		pEnableScaleXMax = false
+		pEnableScaleYMin = false
+		pEnableScaleYMax = false
+		pEnableScaleZMin = false
+		pEnableScaleZMax = false
+		
+		pEnableVertexPositionSetMin = true
+		pEnableVertexPositionSetMax = true
+	end
+	
+	/** \brief Create animation rule definition. */
+	public func new(AnimatorDefinition fromDef, AnimatorDefinition toDef,\
+	ADRuleLimit rule) super(fromDef, toDef, rule)
+		pMinimumPosition = rule.pMinimumPosition
+		pMaximumPosition = rule.pMaximumPosition
+		pMinimumRotation = rule.pMinimumRotation
+		pMaximumRotation = rule.pMaximumRotation
+		pMinimumScaling = rule.pMinimumScaling
+		pMaximumScaling = rule.pMaximumScaling
+		pMinimumVertexPositionSet = rule.pMinimumVertexPositionSet
+		pMaximumVertexPositionSet = rule.pMaximumVertexPositionSet
+		pCoordFrame = rule.pCoordFrame
+		pTargetBone = rule.pTargetBone
+		
+		pEnablePosXMin = rule.pEnablePosXMin
+		pEnablePosXMax = rule.pEnablePosXMax
+		pEnablePosYMin = rule.pEnablePosYMin
+		pEnablePosYMax = rule.pEnablePosYMax
+		pEnablePosZMin = rule.pEnablePosZMin
+		pEnablePosZMax = rule.pEnablePosZMax
+		
+		pEnableRotXMin = rule.pEnableRotXMin
+		pEnableRotXMax = rule.pEnableRotXMax
+		pEnableRotYMin = rule.pEnableRotYMin
+		pEnableRotYMax = rule.pEnableRotYMax
+		pEnableRotZMin = rule.pEnableRotZMin
+		pEnableRotZMax = rule.pEnableRotZMax
+		
+		pEnableScaleXMin = rule.pEnableScaleXMin
+		pEnableScaleXMax = rule.pEnableScaleXMax
+		pEnableScaleYMin = rule.pEnableScaleYMin
+		pEnableScaleYMax = rule.pEnableScaleYMax
+		pEnableScaleZMin = rule.pEnableScaleZMin
+		pEnableScaleZMax = rule.pEnableScaleZMax
+		
+		pEnableVertexPositionSetMin = rule.pEnableVertexPositionSetMin
+		pEnableVertexPositionSetMax = rule.pEnableVertexPositionSetMax
 	end
 	
 	
 	
-	/** Retrieves the minimum position. */
+	/** \brief Minimum position. */
 	public func Vector getMinimumPosition()
-		return this.pMinimumPosition
+		return pMinimumPosition
 	end
 	
-	/** Sets the minimum position. */
-	public func void setMinimumPosition( Vector position )
+	/** \brief Set minimum position. */
+	public func void setMinimumPosition(Vector position)
 		if position == null
-			throw EInvalidParam.new()
+			throw ENullPointer.new("position")
 		end
-		
-		this.pMinimumPosition = position
+		pMinimumPosition = position
 	end
 	
-	/** Retrieves the maximum position. */
+	/** \brief Maximum position. */
 	public func Vector getMaximumPosition()
-		return this.pMaximumPosition
+		return pMaximumPosition
 	end
 	
-	/** Sets the maximum position. */
-	public func void setMaximumPosition( Vector position )
+	/** \brief Set maximum position. */
+	public func void setMaximumPosition(Vector position)
 		if position == null
-			throw EInvalidParam.new()
+			throw ENullPointer.new("position")
 		end
-		
-		this.pMaximumPosition = position
+		pMaximumPosition = position
 	end
 	
-	/** Retrieves the minimum rotation. */
+	/** \brief Minimum rotation. */
 	public func Vector getMinimumRotation()
-		return this.pMinimumRotation
+		return pMinimumRotation
 	end
 	
-	/** Sets the minimum rotation. */
-	public func void setMinimumRotation( Vector rotation )
+	/** \brief Set minimum rotation. */
+	public func void setMinimumRotation(Vector rotation)
 		if rotation == null
-			throw EInvalidParam.new()
+			throw ENullPointer.new("rotation")
 		end
-		
-		this.pMinimumRotation = rotation
+		pMinimumRotation = rotation
 	end
 	
-	/** Retrieves the maximum rotation. */
+	/** \brief Maximum rotation. */
 	public func Vector getMaximumRotation()
-		return this.pMaximumRotation
+		return pMaximumRotation
 	end
 	
-	/** Sets the maximum rotation. */
-	public func void setMaximumRotation( Vector rotation )
+	/** \brief Set maximum rotation. */
+	public func void setMaximumRotation(Vector rotation)
 		if rotation == null
-			throw EInvalidParam.new()
+			throw ENullPointer.new("rotation")
 		end
-		
-		this.pMaximumRotation = rotation
+		pMaximumRotation = rotation
 	end
 	
-	/** Sets the minimum scaling. */
-	public func void setMinimumScaling( Vector scaling )
+	/** \brief Minimum scaling. */
+	public func Vector getMinimumScaling()
+		return pMinimumScaling
+	end
+	
+	/** \brief Set minimum scaling. */
+	public func void setMinimumScaling(Vector scaling)
 		if scaling == null
-			throw EInvalidParam.new()
+			throw ENullPointer.new("scaling")
 		end
-		
-		this.pMinimumScaling = scaling
+		pMinimumScaling = scaling
 	end
 	
-	/** Retrieves the maximum scaling. */
+	/** \brief Maximum scaling. */
 	public func Vector getMaximumScaling()
-		return this.pMaximumScaling
+		return pMaximumScaling
 	end
 	
-	/** Sets the maximum scaling. */
-	public func void setMaximumScaling( Vector scaling )
+	/** \brief Set maximum scaling. */
+	public func void setMaximumScaling(Vector scaling)
 		if scaling == null
-			throw EInvalidParam.new()
+			throw ENullPointer.new("scaling")
 		end
-		
-		this.pMaximumScaling = scaling
+		pMaximumScaling = scaling
 	end
 	
-	/** Retrieves the coordinate frame of rotation. */
+	/**
+	 * \brief Minimum vertex position set weight.
+	 * \version 1.17
+	 */
+	public func float getMinimumVertexPositionSet()
+		return pMinimumVertexPositionSet
+	end
+	
+	/**
+	 * \brief Set minimum vertex position set.
+	 * \version 1.17
+	 */
+	public func void setMinimumVertexPositionSet(float weight)
+		pMinimumVertexPositionSet = weight
+	end
+	
+	/**
+	 * \brief Maximum vertex position set.
+	 * \version 1.17
+	 */
+	public func float getMaximumVertexPositionSet()
+		return pMaximumVertexPositionSet
+	end
+	
+	/**
+	 * \brief Set maximum scaling.
+	 * \version 1.17
+	 */
+	public func void setMaximumVertexPositionSet(float weight)
+		pMaximumVertexPositionSet = weight
+	end
+	
+	/** \brief Coordinate frame of rotation. */
 	public func ARLimitCFrame getCoordinateFrame()
-		return this.pCoordFrame
+		return pCoordFrame
 	end
 	
-	/** Sets if the coordinate frame of rotation. */
-	public func void setCoordinateFrame( ARLimitCFrame coordFrame )
-		this.pCoordFrame = coordFrame
+	/** \brief Set if coordinate frame of rotation. */
+	public func void setCoordinateFrame(ARLimitCFrame coordFrame)
+		pCoordFrame = coordFrame
 	end
 	
-	/** Retrieves the target bone name. */
+	/** \brief Target bone name. */
 	public func String getTargetBone()
-		return this.pTargetBone
+		return pTargetBone
 	end
 	
-	/** Sets the target bone name. */
-	public func void setTargetBone( String name )
+	/** \brief Set target bone name. */
+	public func void setTargetBone(String name)
 		if name == null
-			throw EInvalidParam.new()
+			throw ENullPointer.new("name")
 		end
-		
-		this.pTargetBone = name
+		pTargetBone = name
 	end
 	
 	
 	
-	/** Determines if the x position is limited to the minimum. */
+	/** \brief X position is limited to the minimum. */
 	public func bool getEnablePosXMin()
-		return this.pEnablePosXMin
+		return pEnablePosXMin
 	end
 	
-	/** Sets if the x position is limited to the minimum. */
-	public func void setEnablePosXMin( bool enable )
-		this.pEnablePosXMin = enable
+	/** \brief Set if x position is limited to the minimum. */
+	public func void setEnablePosXMin(bool enable)
+		pEnablePosXMin = enable
 	end
 	
-	/** Determines if the x position is limited to the maximum. */
+	/** \brief X position is limited to the maximum. */
 	public func bool getEnablePosXMax()
-		return this.pEnablePosXMax
+		return pEnablePosXMax
 	end
 	
-	/** Sets if the x position is limited to the maximum. */
-	public func void setEnablePosXMax( bool enable )
-		this.pEnablePosXMax = enable
+	/** \brief Set if x position is limited to the maximum. */
+	public func void setEnablePosXMax(bool enable)
+		pEnablePosXMax = enable
 	end
 	
-	/** Determines if the y position is limited to the minimum. */
+	/** \brief Y position is limited to the minimum. */
 	public func bool getEnablePosYMin()
-		return this.pEnablePosYMin
+		return pEnablePosYMin
 	end
 	
-	/** Sets if the y position is limited to the minimum. */
-	public func void setEnablePosYMin( bool enable )
-		this.pEnablePosYMin = enable
+	/** \brief Set if y position is limited to the minimum. */
+	public func void setEnablePosYMin(bool enable)
+		pEnablePosYMin = enable
 	end
 	
-	/** Determines if the y position is limited to the mayimum. */
+	/** \brief Y position is limited to the mayimum. */
 	public func bool getEnablePosYMax()
-		return this.pEnablePosYMax
+		return pEnablePosYMax
 	end
 	
-	/** Sets if the y position is limited to the mayimum. */
-	public func void setEnablePosYMax( bool enable )
-		this.pEnablePosYMax = enable
+	/** \brief Set if y position is limited to the mayimum. */
+	public func void setEnablePosYMax(bool enable)
+		pEnablePosYMax = enable
 	end
 	
-	/** Determines if the z position is limited to the minimum. */
+	/** \brief Z position is limited to the minimum. */
 	public func bool getEnablePosZMin()
-		return this.pEnablePosZMin
+		return pEnablePosZMin
 	end
 	
-	/** Sets if the z position is limited to the minimum. */
-	public func void setEnablePosZMin( bool enable )
-		this.pEnablePosZMin = enable
+	/** \brief Set if z position is limited to the minimum. */
+	public func void setEnablePosZMin(bool enable)
+		pEnablePosZMin = enable
 	end
 	
-	/** Determines if the z position is limited to the mazimum. */
+	/** \brief Z position is limited to the mazimum. */
 	public func bool getEnablePosZMax()
-		return this.pEnablePosZMax
+		return pEnablePosZMax
 	end
 	
-	/** Sets if the z position is limited to the mazimum. */
-	public func void setEnablePosZMax( bool enable )
-		this.pEnablePosZMax = enable
+	/** \brief Set if z position is limited to the mazimum. */
+	public func void setEnablePosZMax(bool enable)
+		pEnablePosZMax = enable
 	end
 	
 	
 	
-	/** Determines if the x rotation is limited to the minimum. */
+	/** \brief X rotation is limited to the minimum. */
 	public func bool getEnableRotXMin()
-		return this.pEnableRotXMin
+		return pEnableRotXMin
 	end
 	
-	/** Sets if the x rotation is limited to the minimum. */
-	public func void setEnableRotXMin( bool enable )
-		this.pEnableRotXMin = enable
+	/** \brief Set if x rotation is limited to the minimum. */
+	public func void setEnableRotXMin(bool enable)
+		pEnableRotXMin = enable
 	end
 	
-	/** Determines if the x rotation is limited to the maximum. */
+	/** \brief X rotation is limited to the maximum. */
 	public func bool getEnableRotXMax()
-		return this.pEnableRotXMax
+		return pEnableRotXMax
 	end
 	
-	/** Sets if the x rotation is limited to the maximum. */
-	public func void setEnableRotXMax( bool enable )
-		this.pEnableRotXMax = enable
+	/** \brief Set if x rotation is limited to the maximum. */
+	public func void setEnableRotXMax(bool enable)
+		pEnableRotXMax = enable
 	end
 	
-	/** Determines if the y rotation is limited to the minimum. */
+	/** \brief Y rotation is limited to the minimum. */
 	public func bool getEnableRotYMin()
-		return this.pEnableRotYMin
+		return pEnableRotYMin
 	end
 	
-	/** Sets if the y rotation is limited to the minimum. */
-	public func void setEnableRotYMin( bool enable )
-		this.pEnableRotYMin = enable
+	/** \brief Set if y rotation is limited to the minimum. */
+	public func void setEnableRotYMin(bool enable)
+		pEnableRotYMin = enable
 	end
 	
-	/** Determines if the y rotation is limited to the mayimum. */
+	/** \brief Y rotation is limited to the mayimum. */
 	public func bool getEnableRotYMax()
-		return this.pEnableRotYMax
+		return pEnableRotYMax
 	end
 	
-	/** Sets if the y rotation is limited to the mayimum. */
-	public func void setEnableRotYMax( bool enable )
-		this.pEnableRotYMax = enable
+	/** \brief Set if y rotation is limited to the mayimum. */
+	public func void setEnableRotYMax(bool enable)
+		pEnableRotYMax = enable
 	end
 	
-	/** Determines if the z rotation is limited to the minimum. */
+	/** \brief Z rotation is limited to the minimum. */
 	public func bool getEnableRotZMin()
-		return this.pEnableRotZMin
+		return pEnableRotZMin
 	end
 	
-	/** Sets if the z rotation is limited to the minimum. */
-	public func void setEnableRotZMin( bool enable )
-		this.pEnableRotZMin = enable
+	/** \brief Set if z rotation is limited to the minimum. */
+	public func void setEnableRotZMin(bool enable)
+		pEnableRotZMin = enable
 	end
 	
-	/** Determines if the z rotation is limited to the mazimum. */
+	/** \brief Z rotation is limited to the mazimum. */
 	public func bool getEnableRotZMax()
-		return this.pEnableRotZMax
+		return pEnableRotZMax
 	end
 	
-	/** Sets if the z rotation is limited to the mazimum. */
-	public func void setEnableRotZMax( bool enable )
-		this.pEnableRotZMax = enable
+	/** \brief Set if z rotation is limited to the mazimum. */
+	public func void setEnableRotZMax(bool enable)
+		pEnableRotZMax = enable
 	end
 	
 	
 	
-	/** Determines if the x scaling is limited to the minimum. */
+	/** \brief X scaling is limited to the minimum. */
 	public func bool getEnableScaleXMin()
-		return this.pEnableScaleXMin
+		return pEnableScaleXMin
 	end
 	
-	/** Sets if the x scaling is limited to the minimum. */
-	public func void setEnableScaleXMin( bool enable )
-		this.pEnableScaleXMin = enable
+	/** \brief Set if x scaling is limited to the minimum. */
+	public func void setEnableScaleXMin(bool enable)
+		pEnableScaleXMin = enable
 	end
 	
-	/** Determines if the x scaling is limited to the maximum. */
+	/** \brief X scaling is limited to the maximum. */
 	public func bool getEnableScaleXMax()
-		return this.pEnableScaleXMax
+		return pEnableScaleXMax
 	end
 	
-	/** Sets if the x scaling is limited to the maximum. */
-	public func void setEnableScaleXMax( bool enable )
-		this.pEnableScaleXMax = enable
+	/** \brief Set if x scaling is limited to the maximum. */
+	public func void setEnableScaleXMax(bool enable)
+		pEnableScaleXMax = enable
 	end
 	
-	/** Determines if the y scaling is limited to the minimum. */
+	/** \brief Y scaling is limited to the minimum. */
 	public func bool getEnableScaleYMin()
-		return this.pEnableScaleYMin
+		return pEnableScaleYMin
 	end
 	
-	/** Sets if the y scaling is limited to the minimum. */
-	public func void setEnableScaleYMin( bool enable )
-		this.pEnableScaleYMin = enable
+	/** \brief Set if y scaling is limited to the minimum. */
+	public func void setEnableScaleYMin(bool enable)
+		pEnableScaleYMin = enable
 	end
 	
-	/** Determines if the y scaling is limited to the mayimum. */
+	/** \brief Y scaling is limited to the mayimum. */
 	public func bool getEnableScaleYMax()
-		return this.pEnableScaleYMax
+		return pEnableScaleYMax
 	end
 	
-	/** Sets if the y scaling is limited to the mayimum. */
-	public func void setEnableScaleYMax( bool enable )
-		this.pEnableScaleYMax = enable
+	/** \brief Set if y scaling is limited to the mayimum. */
+	public func void setEnableScaleYMax(bool enable)
+		pEnableScaleYMax = enable
 	end
 	
-	/** Determines if the z scaling is limited to the minimum. */
+	/** \brief Z scaling is limited to the minimum. */
 	public func bool getEnableScaleZMin()
-		return this.pEnableScaleZMin
+		return pEnableScaleZMin
 	end
 	
-	/** Sets if the z scaling is limited to the minimum. */
-	public func void setEnableScaleZMin( bool enable )
-		this.pEnableScaleZMin = enable
+	/** \brief Set if z scaling is limited to the minimum. */
+	public func void setEnableScaleZMin(bool enable)
+		pEnableScaleZMin = enable
 	end
 	
-	/** Determines if the z scaling is limited to the mazimum. */
+	/** \brief Z scaling is limited to the mazimum. */
 	public func bool getEnableScaleZMax()
-		return this.pEnableScaleZMax
+		return pEnableScaleZMax
 	end
 	
-	/** Sets if the z scaling is limited to the mazimum. */
-	public func void setEnableScaleZMax( bool enable )
-		this.pEnableScaleZMax = enable
+	/** \brief Set if z scaling is limited to the mazimum. */
+	public func void setEnableScaleZMax(bool enable)
+		pEnableScaleZMax = enable
 	end
 	
 	
 	
-	/** Build engine animator rule using the stored definition. */
-	public func AnimatorRule buildRule( Animator animator )
+	/**
+	 * \brief Minimum vertex position set manipulation is enabled.
+	 * \version 1.17
+	 */
+	public func bool getEnableVertexPositionSetMin()
+		return pEnableVertexPositionSetMin
+	end
+	
+	/**
+	 * \brief Set if minimum vertex position set manipulation is enabled.
+	 * \version 1.17
+	 */
+	public func void setEnableVertexPositionSetMin(bool enable)
+		pEnableVertexPositionSetMin = enable
+	end
+	
+	/**
+	 * \brief Maximum vertex position set manipulation is enabled.
+	 * \version 1.17
+	 */
+	public func bool getEnableVertexPositionSetMax()
+		return pEnableVertexPositionSetMax
+	end
+	
+	/**
+	 * \brief Set if maximum vertex position set manipulation is enabled.
+	 * \version 1.17
+	 */
+	public func void setEnableVertexPositionSetMax(bool enable)
+		pEnableVertexPositionSetMax = enable
+	end
+	
+	
+	
+	/** \brief Build engine animator rule using the stored definition. */
+	public func AnimatorRule buildRule(Animator animator)
 		var ARLimit rule = ARLimit.new()
 		
-		this.buildRuleCommon( rule )
+		buildRuleCommon(rule)
 		
-		this.forEachTarget( block ADRuleTargetLink each
-			rule.targetAddLink( each.getTarget() cast ARLimitTarget, each.getLink().getIndex() )
-		end )
+		forEachTarget(block ADRuleTargetLink each
+			rule.targetAddLink(each.getTarget() cast ARLimitTarget, each.getLink().getIndex())
+		end)
 		
-		rule.setMinimumPosition( this.pMinimumPosition )
-		rule.setMaximumPosition( this.pMaximumPosition )
-		rule.setMinimumRotation( this.pMinimumRotation )
-		rule.setMaximumRotation( this.pMaximumRotation )
-		rule.setMinimumScaling( this.pMinimumScaling )
-		rule.setMaximumScaling( this.pMaximumScaling )
-		rule.setCoordinateFrame( this.pCoordFrame )
-		rule.setTargetBone( this.pTargetBone )
-		rule.setEnablePosMin( this.pEnablePosXMin, this.pEnablePosYMin, this.pEnablePosZMin )
-		rule.setEnablePosMax( this.pEnablePosXMax, this.pEnablePosYMax, this.pEnablePosZMax )
-		rule.setEnableRotMin( this.pEnableRotXMin, this.pEnableRotYMin, this.pEnableRotZMin )
-		rule.setEnableRotMax( this.pEnableRotXMax, this.pEnableRotYMax, this.pEnableRotZMax )
-		rule.setEnableScaleMin( this.pEnableScaleXMin, this.pEnableScaleYMin, this.pEnableScaleZMin )
-		rule.setEnableScaleMax( this.pEnableScaleXMax, this.pEnableScaleYMax, this.pEnableScaleZMax )
+		rule.setMinimumPosition(pMinimumPosition)
+		rule.setMaximumPosition(pMaximumPosition)
+		rule.setMinimumRotation(pMinimumRotation)
+		rule.setMaximumRotation(pMaximumRotation)
+		rule.setMinimumScaling(pMinimumScaling)
+		rule.setMaximumScaling(pMaximumScaling)
+		rule.setMinimumVertexPositionSet(pMinimumVertexPositionSet)
+		rule.setMaximumVertexPositionSet(pMaximumVertexPositionSet)
+		rule.setCoordinateFrame(pCoordFrame)
+		rule.setTargetBone(pTargetBone)
+		rule.setEnablePosMin(pEnablePosXMin, pEnablePosYMin, pEnablePosZMin)
+		rule.setEnablePosMax(pEnablePosXMax, pEnablePosYMax, pEnablePosZMax)
+		rule.setEnableRotMin(pEnableRotXMin, pEnableRotYMin, pEnableRotZMin)
+		rule.setEnableRotMax(pEnableRotXMax, pEnableRotYMax, pEnableRotZMax)
+		rule.setEnableScaleMin(pEnableScaleXMin, pEnableScaleYMin, pEnableScaleZMin)
+		rule.setEnableScaleMax(pEnableScaleXMax, pEnableScaleYMax, pEnableScaleZMax)
+		rule.setEnableVertexPositionSetMin(pEnableVertexPositionSetMin)
+		rule.setEnableVertexPositionSetMax(pEnableVertexPositionSetMax)
 		
 		return rule
 	end
 	
 	
 	
-	public func void debug( Console console )
-		console.addMessage( this.debugCommon( "Limit" ) + \
-			" minPos=" + this.pMinimumPosition + " maxPos=" + this.pMaximumPosition + \
-			" minRot=" + this.pMinimumRotation + " maxRot=" + this.pMaximumRotation + \
-			" minScale=" + this.pMinimumScaling + " maxScale=" + this.pMaximumScaling + \
-			" enMinXPos=" + this.pEnablePosXMin + " enMaxXPos=" + this.pEnablePosXMax + \
-			" enMinYPos=" + this.pEnablePosYMin + " enMaxYPos=" + this.pEnablePosYMax + \
-			" enMinZPos=" + this.pEnablePosZMin + " enMaxZPos=" + this.pEnablePosZMax + \
-			" enMinXRot=" + this.pEnableRotXMin + " enMaxXRot=" + this.pEnableRotXMax + \
-			" enMinYRot=" + this.pEnableRotYMin + " enMaxYRot=" + this.pEnableRotYMax + \
-			" enMinZRot=" + this.pEnableRotZMin + " enMaxZRot=" + this.pEnableRotZMax + \
-			" enMinXScale=" + this.pEnableScaleXMin + " enMaxXScale=" + this.pEnableScaleXMax + \
-			" enMinYScale=" + this.pEnableScaleYMin + " enMaxYScale=" + this.pEnableScaleYMax + \
-			" enMinZScale=" + this.pEnableScaleZMin + " enMaxZScale=" + this.pEnableScaleZMax + " )" )
+	/**
+	 * \brief Create copy of rule.
+	 * \version 1.13
+	 */
+	public func ADRule copy(AnimatorDefinition fromDef, AnimatorDefinition toDef)
+		return new(fromDef, toDef, this)
+	end
+	
+	
+	
+	public func void debug(Console console)
+		console.addMessage(debugCommon("Limit") + \
+			" minPos=" + pMinimumPosition + " maxPos=" + pMaximumPosition + \
+			" minRot=" + pMinimumRotation + " maxRot=" + pMaximumRotation + \
+			" minScale=" + pMinimumScaling + " maxScale=" + pMaximumScaling + \
+			" minVPS=" + pMinimumVertexPositionSet + " maxVPS=" + pMaximumVertexPositionSet + \
+			" enMinXPos=" + pEnablePosXMin + " enMaxXPos=" + pEnablePosXMax + \
+			" enMinYPos=" + pEnablePosYMin + " enMaxYPos=" + pEnablePosYMax + \
+			" enMinZPos=" + pEnablePosZMin + " enMaxZPos=" + pEnablePosZMax + \
+			" enMinXRot=" + pEnableRotXMin + " enMaxXRot=" + pEnableRotXMax + \
+			" enMinYRot=" + pEnableRotYMin + " enMaxYRot=" + pEnableRotYMax + \
+			" enMinZRot=" + pEnableRotZMin + " enMaxZRot=" + pEnableRotZMax + \
+			" enMinXScale=" + pEnableScaleXMin + " enMaxXScale=" + pEnableScaleXMax + \
+			" enMinYScale=" + pEnableScaleYMin + " enMaxYScale=" + pEnableScaleYMax + \
+			" enMinZScale=" + pEnableScaleZMin + " enMaxZScale=" + pEnableScaleZMax + \
+			" evpsMin=" + pEnableVertexPositionSetMin  + " evpsMax=" + pEnableVertexPositionSetMax + ")")
 	end
 end

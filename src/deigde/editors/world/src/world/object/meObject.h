@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE World Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _MEOBJECT_H_
@@ -33,6 +36,8 @@
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringList.h>
 #include <dragengine/common/string/decStringDictionary.h>
+#include <dragengine/resources/skin/deSkin.h>
+#include <dragengine/resources/skin/dynamic/deDynamicSkin.h>
 
 #include <deigde/gamedefinition/class/igdeGDClass.h>
 #include <deigde/gui/wrapper/igdeWObject.h>
@@ -53,6 +58,7 @@ class igdeGameDefinition;
 class deCollider;
 class deColliderVolume;
 class deComponent;
+class deComponentTexture;
 class decShape;
 class decStringList;
 class deDebugDrawer;
@@ -60,18 +66,33 @@ class deDecalList;
 class deEngine;
 
 
-
 /**
  * \brief World object.
  */
 class meObject : public deObject{
+public:
+	/** Reference. */
+	typedef deTObjectReference<meObject> Ref;
+	
+	
+	
 private:
-	class cWOAsyncFinished : public igdeWObject::cAsyncLoadFinished {
+	class cWOAsyncFinished : public igdeWObject::cAsyncLoadFinished{
 		meObject &pObject;
 		
 	public:
 		cWOAsyncFinished( meObject &object );
 		virtual void LoadFinished( igdeWObject &wrapper, bool succeeded );
+	};
+	
+	class cWOTexture : public deObject{
+	public:
+		deSkin::Ref skin;
+		int texture;
+		deDynamicSkin::Ref dynamicSkin;
+		decTexMatrix2 texCoordTransform;
+		
+		cWOTexture( const deComponentTexture &componentTexture );
 	};
 	
 	igdeEnvironment *pEnvironment;
@@ -87,6 +108,7 @@ private:
 	igdeWCoordSysArrows *pDDSCoordSysArrows;
 	
 	igdeWObject *pWObject;
+	decObjectList pWOTextures;
 	deComponent *pEngComponentBroken;
 	deColliderVolume *pColDetCollider;
 	meCamera *pCamera;
@@ -156,7 +178,7 @@ public:
 	/** \brief Dispose of the component. */
 	void Dispose();
 	
-	/** \brief Retrieves the camera or NULL if not existing. */
+	/** \brief Retrieves the camera or nullptr if not existing. */
 	inline meCamera *GetCamera() const{ return pCamera; }
 	
 	inline meWorld *GetWorld() const{ return pWorld; }
@@ -245,6 +267,9 @@ public:
 	inline decVector GetScaling() const{ return pScaling; }
 	/** \brief Sets the scaling. */
 	void SetScaling( const decVector &scaling );
+	
+	/** Set scaling and size for undo actions. */
+	void SetSizeAndScaling( const decVector &size, const decVector &scaling );
 	
 	/** \brief ID. */
 	inline const decUniqueID &GetID() const{ return pID; }
@@ -448,6 +473,8 @@ private:
 	
 	void pNotifyDecalsAboutChange();
 	bool pAnyGDClassHasAnyPartialVisOf( const igdeGDClass &gdclass, const igdeTagManager &tags ) const;
+	
+	void pUpdateIDGroupList( const igdeGDClass &gdclass, const decString &prefix );
 };
 
 #endif

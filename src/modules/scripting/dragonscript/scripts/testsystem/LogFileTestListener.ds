@@ -1,0 +1,157 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.TestSystem
+
+pin Dragengine.LoadSave
+pin Dragengine.Utils
+
+
+/**
+ * \brief Test runner listener logging to file.
+ * \version 1.13
+ * 
+ * Calls getLogFilePath() to obtain path to write log file to. If getLogFilePath() returns
+ * empty string no log file is written for test run.
+ */
+class LogFileTestListener extends DefaultTestRunnerListener
+	private var FileWriter pWriter
+	
+	
+	/**
+	 * \brief Create listener.
+	 */
+	public func new()
+	end
+	
+	
+	/**
+	 * \brief Filename for test run to write log file to or empty string to not write log file.
+	 * 
+	 * Default implementation returs path "/testresults/{timestamp}".
+	 */
+	public func String getLogFilePath()
+		return "/testresults/" + TimeDate.new().format("%Y-%m-%dT%H:%M:%S.log")
+	end
+	
+	
+	/**
+	 * \brief Test runner started.
+	 */
+	public func void runnerStarted(TestRunner testRunner)
+		pWriter = null
+		
+		var String path = getLogFilePath()
+		if not path.empty()
+			pWriter = FileWriter.new(path)
+		end
+		
+		logToFile("===================")
+		logToFile("Start running tests")
+		logToFile("===================")
+	end
+	
+	/**
+	 * \brief Test runner finished.
+	 */
+	public func void runnerFinished(TestRunner testRunner)
+		var int countTests = testRunner.getTestSuiteCount()
+		var int countFailed = testRunner.failedTestSuites().getCount()
+		logToFile("")
+		logToFile("======================================================================")
+		logToFile("Finished running tests: {} suites PASSED, {} suites FAILED".format(\
+			Array.newWith(countTests - countFailed, countFailed)))
+		logToFile("======================================================================")
+		
+		pWriter = null
+	end
+	
+	/**
+	 * \brief Test suite started.
+	 */
+	public func void testSuiteStarted(TestRunner testRunner, TestSuite testSuite)
+		logToFile("")
+		logToFile("----------------------------------------------------------------------")
+		logToFile("Start testing test suite: {} ({})".format(\
+			Array.newWith(testSuite.getName(), testSuite.getID())))
+		logToFile("----------------------------------------------------------------------")
+	end
+	
+	/**
+	 * \brief Test runner finished.
+	 */
+	public func void testSuiteFinished(TestRunner testRunner, TestSuite testSuite)
+		var int countTests = testSuite.getTestCaseCount()
+		var int countFailed = testSuite.failedTestCases().getCount()
+		logToFile("----------------------------------------------------------------------")
+		logToFile("Finished testing test suite: {} ({}): {} cases PASSED, {} cases FAILED".format(\
+			Array.newWith(testSuite.getName(), testSuite.getID(), countTests - countFailed, countFailed)))
+		logToFile("----------------------------------------------------------------------")
+	end
+	
+	/**
+	 * \brief Test case started.
+	 */
+	public func void testCaseStarted(TestRunner testRunner, TestSuite testSuite, TestCase testCase)
+		logToFile("Start testing test case: {} ({})".format(\
+			Array.newWith(testCase.getName(), testCase.getID())))
+	end
+	
+	/**
+	 * \brief Test case finished.
+	 */
+	public func void testCaseFinished(TestRunner testRunner, TestSuite testSuite, TestCase testCase)
+		if testCase.getState() == TestCase.State.passed
+			logToFile("Finished testing test case: {} ({}): PASSED".format(\
+				Array.newWith(testCase.getName(), testCase.getID())))
+			
+		else
+			logToFile("Finished testing test case: {} ({}): FAILED".format(\
+				Array.newWith(testCase.getName(), testCase.getID())))
+			if testCase.getException() != null
+				var String text = " => " + testCase.getException().getReason()
+				var int i, count = testCase.getException().getTraceCount()
+				
+				for i = 0 to count
+					text = text + "\n{}) {}.{}(): {}".format(Array.newWith(i + 1, \
+						testCase.getException().getTraceClass(i), \
+						testCase.getException().getTraceFunction(i), \
+						testCase.getException().getTraceLine(i)))
+				end
+				
+				logToFile(text)
+			end
+		end
+	end
+	
+	/**
+	 * \brief Log to file.
+	 */
+	public func void logToFile(String message)
+		if pWriter != null
+			pWriter.writeString(message)
+			pWriter.writeByte('\n')
+		end
+	end
+end

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Animator Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _AERULEANIMATIONSELECT_H_
@@ -29,15 +32,19 @@
 
 
 /**
- * \brief Animator rule animation select.
+ * Animator rule animation select.
  */
 class aeRuleAnimationSelect : public aeRule{
+public:
+	typedef deTObjectReference<aeRuleAnimationSelect> Ref;
+	
 private:
 	decStringList pMoves;
 	
 	bool pEnablePosition;
 	bool pEnableOrientation;
 	bool pEnableSize;
+	bool pEnableVertexPositionSet;
 	
 	aeControllerTarget pTargetMoveTime;
 	aeControllerTarget pTargetSelect;
@@ -47,13 +54,13 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create animator select rule. */
+	/** Create animator select rule. */
 	aeRuleAnimationSelect();
 	
-	/** \brief Create copy of animator select rule. */
+	/** Create copy of animator select rule. */
 	aeRuleAnimationSelect( const aeRuleAnimationSelect &copy );
 	
-	/** \brief Clean up animator select rule. */
+	/** Clean up animator select rule. */
 	virtual ~aeRuleAnimationSelect();
 	/*@}*/
 	
@@ -61,65 +68,73 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Moves. */
+	/** Moves. */
 	inline const decStringList &GetMoves() const{ return pMoves; }
 	
-	/** \brief Set moves. */
+	/** Set moves. */
 	void SetMoves( const decStringList &moves );
 	
 	
 	
-	/** \brief Position manipulation is enabled. */
+	/** Position manipulation is enabled. */
 	inline bool GetEnablePosition() const{ return pEnablePosition; }
 	
-	/** \brief Set if position manipulation is enabled. */
+	/** Set if position manipulation is enabled. */
 	void SetEnablePosition( bool enabled );
 	
-	/** \brief Orientation manipulation is enabled. */
+	/** Orientation manipulation is enabled. */
 	inline bool GetEnableOrientation() const{ return pEnableOrientation; }
 	
-	/** \brief Set if orientation manipulation is enabled. */
+	/** Set if orientation manipulation is enabled. */
 	void SetEnableOrientation( bool enabled );
 	
-	/** \brief Size manipulation is enabled. */
+	/** Size manipulation is enabled. */
 	inline bool GetEnableSize() const{ return pEnableSize; }
 	
-	/** \brief Set if size manipulation is enabled. */
+	/** Set if size manipulation is enabled. */
 	void SetEnableSize( bool enabled );
 	
+	/** Vertex position set manipulation is enabled. */
+	inline bool GetEnableVertexPositionSet() const{ return pEnableVertexPositionSet; }
+	
+	/** Set if vertex position set manipulation is enabled. */
+	void SetEnableVertexPositionSet( bool enabled );
 	
 	
-	/** \brief Move time target. */
+	
+	/** Move time target. */
 	inline aeControllerTarget &GetTargetMoveTime(){ return pTargetMoveTime; }
+	inline const aeControllerTarget &GetTargetMoveTime() const{ return pTargetMoveTime; }
 	
-	/** \brief Select target. */
+	/** Select target. */
 	inline aeControllerTarget &GetTargetSelect(){ return pTargetSelect; }
+	inline const aeControllerTarget &GetTargetSelect() const{ return pTargetSelect; }
 	
 	
 	
-	/** \brief Create engine animator rule. */
+	/** Create engine animator rule. */
 	virtual deAnimatorRule *CreateEngineRule();
 	
 	
 	
-	/** \brief Update targets. */
+	/** Update targets. */
 	virtual void UpdateTargets();
 	
-	/** \brief Number of targets using a given link. */
+	/** Number of targets using a given link. */
 	virtual int CountLinkUsage( aeLink *link ) const;
 	
-	/** \brief Remove link from all targets using it. */
+	/** Remove link from all targets using it. */
 	virtual void RemoveLinkFromTargets( aeLink *link );
 	
-	/** \brief Remove all links from all targets. */
+	/** Remove all links from all targets. */
 	virtual void RemoveLinksFromAllTargets();
 	
 	
 	
-	/** \brief Create copy of rule. */
+	/** Create copy of rule. */
 	virtual aeRule *CreateCopy() const;
 	
-	/** \brief List all links of all rule targets. */
+	/** List all links of all rule targets. */
 	virtual void ListLinks( aeLinkList& list );
 	/*@}*/
 	
@@ -127,7 +142,7 @@ public:
 	
 	/** \name Operators */
 	/*@{*/
-	/** \brief Copy another animator difference rule to this animator difference rule. */
+	/** Copy another animator difference rule to this animator difference rule. */
 	virtual aeRuleAnimationSelect &operator=( const aeRuleAnimationSelect &copy );
 	/*@}*/
 };

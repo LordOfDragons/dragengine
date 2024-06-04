@@ -16,6 +16,13 @@ namespace Dragengine.Scenery
  * This class is the most simple solution for dealing with physics simulation and collision
  * detection. Just set the component of your scenery element and it works.
  * 
+ * \par Bones
+ * 
+ * The position and orientation of collider bones is located at the center mass point not the
+ * rig bone origin in world space. If you use collider bone position or matrix you have to
+ * subtract the Rig.boneGetCentralMassPoint(int) for the respective bone to obtain the world
+ * position of the rig bone as used by animations.
+ * 
  * This is a native class.
  */
 class ColliderComponent extends ColliderRig
@@ -32,38 +39,46 @@ class ColliderComponent extends ColliderRig
 	/*@{*/
 	/** \brief Component or \em null if not set. */
 	public func Component getComponent()
+		return null
 	end
 	
 	/** \brief Set component or \em null if not set. */
-	public func void setComponent( Component component )
+	public func void setComponent(Component component)
 	end
 	
 	
 	
 	/**
 	 * \brief Collider is equal to another object.
-	 * \details Implements Object.equals(Object).
+	 * 
+	 * Implements Object.equals(Object).
+	 * 
 	 * \returns \em true if \em other is of type Collider and both point to the same engine collider.
 	 */
-	public func bool equals( Object other )
+	public func bool equals(Object other)
+		return false
 	end
 	
 	/**
 	 * \brief Two colliders are equal.
-	 * \details This is an extended version of equals() accepting also \em null for \em collider1
-	 *          and \em collider2. equals() would thrown an exception if \em null is compared to
-	 *          anything. This call though allows to compare \em null against colliders or even
-	 *          \em null itself. If \em collider1 or \em collider2 is \em null \em false is returned.
-	 *          If both are \em null \em true is returned.
+	 * 
+	 * This is an extended version of equals() accepting also \em null for \em collider1
+	 * and \em collider2. equals() would thrown an exception if \em null is compared to
+	 * anything. This call though allows to compare \em null against colliders or even
+	 * \em null itself. If \em collider1 or \em collider2 is \em null \em false is returned.
+	 * If both are \em null \em true is returned.
 	 */
-	public static func bool equals( Collider collider1, Collider collider2 )
+	public static func bool equals(Collider collider1, Collider collider2)
+		return false
 	end
 	
 	/**
 	 * \brief Hash code for use as dictionary keys.
-	 * \details Implements Object.hashCode().
+	 * 
+	 * Implements Object.hashCode().
 	 */
 	public func int hashCode()
+		return 0
 	end
 	/*@}*/
 	
@@ -73,49 +88,54 @@ class ColliderComponent extends ColliderRig
 	/*@{*/
 	/**
 	 * \brief Copy states from set component to collider.
-	 * \details If no component is set this method does nothing. Call this method if you want to
-	 *          enable physics simulation from the current component state when CollisionResponse.kinematic
-	 *          response mode is used. In this mode bones are not synchronized as this would be
-	 *          a waste of performance. If you switch to CollisionResponse.dynamic the bone states would
-	 *          be initialized to zero. This call initializes the bones states from the current
-	 *          component bone states. The linear and angular velocities are taken from the
-	 *          collider linear and angular velocities.
+	 * 
+	 * If no component is set this method does nothing. Call this method if you want to
+	 * enable physics simulation from the current component state when CollisionResponse.kinematic
+	 * response mode is used. In this mode bones are not synchronized as this would be
+	 * a waste of performance. If you switch to CollisionResponse.dynamic the bone states would
+	 * be initialized to zero. This call initializes the bones states from the current
+	 * component bone states. The linear and angular velocities are taken from the
+	 * collider linear and angular velocities.
 	 */
 	public func void copyStatesFromComponent()
 	end
 	
 	/**
 	 * \brief Copy state from set component bone to collider.
-	 * \details If no component is set this method does nothing. Call this method if you want to
-	 *          enable physics simulation from the current component state when CollisionResponse.kinematic
-	 *          response mode is used. In this mode bones are not synchronized as this would be
-	 *          a waste of performance. If you switch to CollisionResponse.dynamic the bone states would
-	 *          be initialized to zero. This call initializes the bones states from the current
-	 *          component bone states. The linear and angular velocities are taken from the
-	 *          collider linear and angular velocities.
+	 * 
+	 * If no component is set this method does nothing. Call this method if you want to
+	 * enable physics simulation from the current component state when CollisionResponse.kinematic
+	 * response mode is used. In this mode bones are not synchronized as this would be
+	 * a waste of performance. If you switch to CollisionResponse.dynamic the bone states would
+	 * be initialized to zero. This call initializes the bones states from the current
+	 * component bone states. The linear and angular velocities are taken from the
+	 * collider linear and angular velocities.
+	 * 
 	 * \throws EOutOfBoundary \em bone is less than 0 or larger than or equal to rig bone count.
 	 */
-	public func void copyStateFromComponent( int bone )
+	public func void copyStateFromComponent(int bone)
 	end
 	
 	/**
 	 * \brief Copy states from collider to set component.
-	 * \details If no component is set this method does nothing. Call this method if you want to
-	 *          disable physics simulation transfering the current collider state for example
-	 *          to create an animation snapshot to transition. This call initializes the bones
-	 *          states from the current collider states.
+	 * 
+	 * If no component is set this method does nothing. Call this method if you want to
+	 * disable physics simulation transfering the current collider state for example
+	 * to create an animation snapshot to transition. This call initializes the bones
+	 * states from the current collider states.
 	 */
 	public func void copyStatesToComponent()
 	end
 	
 	/**
 	 * \brief Copy states from collider bone to set component bone.
-	 * \details If no component is set this method does nothing. Call this method if you want to
-	 *          disable physics simulation transfering the current collider state for example
-	 *          to create an animation snapshot to transition. This call initializes the bones
-	 *          states from the current collider states.
+	 * 
+	 * If no component is set this method does nothing. Call this method if you want to
+	 * disable physics simulation transfering the current collider state for example
+	 * to create an animation snapshot to transition. This call initializes the bones
+	 * states from the current collider states.
 	 */
-	public func void copyStateToComponent( int bone )
+	public func void copyStateToComponent(int bone)
 	end
 	/*@}*/
 end

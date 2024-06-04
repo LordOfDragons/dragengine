@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -24,17 +27,20 @@
 #include <string.h>
 
 #include "deoglROcclusionMesh.h"
-#include "../../delayedoperation/deoglDelayedDeletion.h"
 #include "../../delayedoperation/deoglDelayedOperations.h"
+#include "../../gi/deoglRayTraceField.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTBufferObject.h"
 #include "../../renderthread/deoglRTLogger.h"
 #include "../../shaders/paramblock/shared/deoglSharedSPBListUBO.h"
+#include "../../vao/deoglVAO.h"
 #include "../../vbo/deoglSharedVBOBlock.h"
 #include "../../vbo/deoglSharedVBOList.h"
 #include "../../vbo/deoglSharedVBOListList.h"
 #include "../../vbo/deoglSharedVBO.h"
 #include "../../vbo/deoglVBOAttribute.h"
+#include "../../utils/bvh/deoglBVH.h"
+#include "../../utils/bvh/deoglBVHNode.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/resources/occlusionmesh/deOcclusionMesh.h>
@@ -53,7 +59,11 @@ deoglROcclusionMesh::deoglROcclusionMesh( deoglRenderThread &renderThread,
 const deOcclusionMesh &occlusionmesh ) :
 pRenderThread( renderThread ),
 pFilename( occlusionmesh.GetFilename() ),
-pSharedSPBListUBO( NULL )
+pSharedSPBListUBO( NULL ),
+pRTIGroupsSingle( deoglSharedSPBRTIGroupList::Ref::New( new deoglSharedSPBRTIGroupList( renderThread ) ) ),
+pRTIGroupsDouble( deoglSharedSPBRTIGroupList::Ref::New( new deoglSharedSPBRTIGroupList( renderThread ) ) ),
+pBVH( NULL ),
+pRayTraceField( NULL )
 {
 	pVBOBlock = NULL;
 	
@@ -89,23 +99,24 @@ deoglROcclusionMesh::~deoglROcclusionMesh(){
 // Management
 ///////////////
 
-deoglSharedVBOBlock *deoglROcclusionMesh::GetVBOBlock(){
-	if( ! pVBOBlock ){
-		deoglSharedVBOList &svbolist = pRenderThread.GetBufferObject().
-			GetSharedVBOListForType( deoglRTBufferObject::esvbolStaticOcclusionMesh );
-		
-		if( pVertexCount > svbolist.GetMaxPointCount() ){
-			pRenderThread.GetLogger().LogInfoFormat( "OcclusionMesh(%s): Too many points (%i) "
-				"to fit into shared VBOs. Using over-sized VBO (performance not optimal).",
-				pFilename.GetString(), pVertexCount );
-		}
-		
-		pVBOBlock = svbolist.AddData( pVertexCount, pCornerCount );
-		
-		pWriteVBOData();
+void deoglROcclusionMesh::PrepareVBOBlock(){
+	if( pVBOBlock || pVertexCount == 0 ){
+		return;
 	}
 	
-	return pVBOBlock;
+	deoglSharedVBOList &svbolist = pRenderThread.GetBufferObject().
+		GetSharedVBOListForType( deoglRTBufferObject::esvbolStaticOcclusionMesh );
+	
+	if( pVertexCount > svbolist.GetMaxPointCount() ){
+		pRenderThread.GetLogger().LogInfoFormat( "OcclusionMesh(%s): Too many points (%i) "
+			"to fit into shared VBOs. Using over-sized VBO (performance not optimal).",
+			pFilename.GetString(), pVertexCount );
+	}
+	
+	pVBOBlock = svbolist.AddData( pVertexCount, pCornerCount );
+	pVBOBlock->GetVBO()->GetVAO()->EnsureRTSVAO();
+	
+	pWriteVBOData();
 }
 
 deoglSharedSPBListUBO &deoglROcclusionMesh::GetSharedSPBListUBO(){
@@ -118,34 +129,116 @@ deoglSharedSPBListUBO &deoglROcclusionMesh::GetSharedSPBListUBO(){
 
 
 
+void deoglROcclusionMesh::PrepareBVH(){
+	if( pBVH ){
+		return;
+	}
+	
+	deoglBVH::sBuildPrimitive *primitives = NULL;
+	const int faceCount = pSingleSidedFaceCount + pDoubleSidedFaceCount;
+	
+	if( faceCount > 0 ){
+		primitives = new deoglBVH::sBuildPrimitive[ faceCount ];
+		unsigned short *corners = pCorners;
+		int i;
+		
+		for( i=0; i<faceCount; i++ ){
+			deoglBVH::sBuildPrimitive &primitive = primitives[ i ];
+			const sVertex &v1 = pVertices[ *(corners++) ];
+			const sVertex &v2 = pVertices[ *(corners++) ];
+			const sVertex &v3 = pVertices[ *(corners++) ];
+			
+			primitive.minExtend = v1.position.Smallest( v2.position ).Smallest( v3.position );
+			primitive.maxExtend = v1.position.Largest( v2.position ).Largest( v3.position );
+			primitive.center = ( primitive.minExtend + primitive.maxExtend ) * 0.5f;
+		}
+	}
+	
+	try{
+		// occlusion meshes usually have lower face counts than models. testing different
+		// max depth values resulted in 6-8 showing best performance, above 8 somewhat
+		// worse performance and below 6 more worse performance. using 6 max depth now
+		// since this seems to be the best overall choice
+		pBVH = new deoglBVH;
+		pBVH->Build( primitives, faceCount, 6 );
+		
+	}catch( const deException & ){
+		if( pBVH ){
+			delete pBVH;
+			pBVH = NULL;
+		}
+		if( primitives ){
+			delete [] primitives;
+		}
+		throw;
+	}
+	
+	if( primitives ){
+		delete [] primitives;
+	}
+	
+#if 0
+	struct PrintBVH{
+		deoglRTLogger &logger;
+		const sVertex *vertices;
+		const unsigned short *corners;
+		PrintBVH(deoglRTLogger &logger, const sVertex *vertices, const unsigned short *corners) :
+		logger(logger), vertices(vertices), corners(corners){
+		}
+		void Print(const decString &prefix, const deoglBVH &bvh, const deoglBVHNode &node) const{
+			logger.LogInfoFormat("%sNode: (%g,%g,%g)-(%g,%g,%g)", prefix.GetString(),
+				node.GetMinExtend().x, node.GetMinExtend().y, node.GetMinExtend().z,
+				node.GetMaxExtend().x, node.GetMaxExtend().y, node.GetMaxExtend().z);
+			if(node.GetPrimitiveCount() == 0){
+				Print(prefix + "L ", bvh, bvh.GetNodeAt(node.GetFirstIndex()));
+				Print(prefix + "R ", bvh, bvh.GetNodeAt(node.GetFirstIndex()+1));
+			}else{
+				for(int i=0; i<node.GetPrimitiveCount(); i++){
+					const int index = bvh.GetPrimitiveAt(node.GetFirstIndex()+i);
+					const decVector v1 = vertices[corners[index*3]].position;
+					const decVector v2 = vertices[corners[index*3+1]].position;
+					const decVector v3 = vertices[corners[index*3+2]].position;
+					logger.LogInfoFormat("%sP%03d (%g,%g,%g) (%g,%g,%g) (%g,%g,%g)", prefix.GetString(),
+						i, v1.x, v1.y, v1.z, v2.x, v2.y, v2.z, v3.x, v3.y, v3.z);
+				}
+			}
+		}
+	};
+	deoglRTLogger &logger = pRenderThread.GetLogger();
+	logger.LogInfoFormat("OccMesh BVH: %s", pFilename.GetString());
+	if(pBVH->GetRootNode()){
+		PrintBVH(logger, pVertices, pCorners).Print("", *pBVH, *pBVH->GetRootNode());
+	}
+#endif
+}
+
+
+
+void deoglROcclusionMesh::PrepareRayTraceField(){
+// 	if( pRayTraceField || ( pSingleSidedFaceCount == 0 && pDoubleSidedFaceCount == 0 ) ){
+// 		return;
+// 	}
+// 	
+// 	PrepareBVH();
+// 	if( ! pBVH->GetRootNode() ){
+// 		return;
+// 	}
+// 	const deoglBVHNode &rootNode = *pBVH->GetRootNode();
+// 	
+// 	pRayTraceField = new deoglRayTraceField( pRenderThread );
+// 	pRayTraceField->Init( rootNode.GetMinExtend(), rootNode.GetMaxExtend() );
+// 	pRayTraceField->RenderField( *this );
+}
+
+
+
 // Private Functions
 //////////////////////
 
-class deoglROcclusionMeshDeletion : public deoglDelayedDeletion{
-public:
-	deoglSharedVBOBlock *vboBlock;
-	deoglSharedSPBListUBO *sharedSPBListUBO;
-	
-	deoglROcclusionMeshDeletion() :
-	vboBlock( NULL ),
-	sharedSPBListUBO( NULL ){
-	}
-	
-	virtual ~deoglROcclusionMeshDeletion(){
-	}
-	
-	virtual void DeleteObjects( deoglRenderThread &renderThread ){
-		if( sharedSPBListUBO ){
-			delete sharedSPBListUBO;
-		}
-		if( vboBlock ){
-			vboBlock->GetVBO()->RemoveBlock( vboBlock );
-			vboBlock->FreeReference();
-		}
-	}
-};
-
 void deoglROcclusionMesh::pCleanUp(){
+	if( pBVH ){
+		delete pBVH;
+	}
 	if( pCorners ){
 		delete [] pCorners;
 	}
@@ -158,22 +251,12 @@ void deoglROcclusionMesh::pCleanUp(){
 	if( pWeightsEntries ){
 		delete [] pWeightsEntries;
 	}
-	
-	// delayed deletion of opengl containing objects
-	deoglROcclusionMeshDeletion *delayedDeletion = NULL;
-	
-	try{
-		delayedDeletion = new deoglROcclusionMeshDeletion;
-		delayedDeletion->vboBlock = pVBOBlock;
-		delayedDeletion->sharedSPBListUBO = pSharedSPBListUBO;
-		pRenderThread.GetDelayedOperations().AddDeletion( delayedDeletion );
-		
-	}catch( const deException &e ){
-		if( delayedDeletion ){
-			delete delayedDeletion;
-		}
-		pRenderThread.GetLogger().LogException( e );
-		throw;
+	if( pSharedSPBListUBO ){
+		delete pSharedSPBListUBO;
+	}
+	if( pVBOBlock ){
+		pVBOBlock->DelayedRemove();
+		pVBOBlock->FreeReference();
 	}
 }
 

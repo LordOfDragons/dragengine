@@ -1,31 +1,34 @@
-/* 
- * Drag[en]gine IGDE
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
-#include <unistd.h>
 
 #ifdef OS_UNIX
 #	include <pwd.h>
+#	include <unistd.h>
 #endif
 
 #ifdef OS_W32
@@ -279,15 +282,19 @@ void igdeConfiguration::SetMaxRecentProjectEntries( int entries ){
 
 
 void igdeConfiguration::LocatePath(){
-	const char *value;
 	decPath pathHome;
 	decPath path;
+
+#ifdef OS_W32
+	TCHAR value[ 256 ];
+#else
+	const char *value;
+#endif
 	
 #ifdef OS_W32
 	decString pathIgde = deOSWindows::GetRegistryValue( "SOFTWARE\\Drag[en]gine", "PathIgde", IGDE_PATH );
-	value = getenv( "DEIGDE_PATH" );
-	if( value ){
-		pathIgde = value;
+	if( GetEnvironmentVariable( L"DEIGDE_PATH", &value[ 0 ], sizeof( value ) ) ){
+		pathIgde = deOSWindows::WideToUtf8( value );
 	}
 	pathIgde = deOSWindows::ParseNativePath( pathIgde );
 #endif
@@ -301,10 +308,17 @@ void igdeConfiguration::LocatePath(){
 	pPathConfigSystem = pathIgde + "\\Config";
 #endif
 	
+#ifdef OS_W32
+	if( GetEnvironmentVariable( L"DEIGDE_SYS_CONFIG", &value[ 0 ], sizeof( value ) ) ){
+		pPathConfigSystem = deOSWindows::WideToUtf8( value );
+	}
+#else
 	value = getenv( "DEIGDE_SYS_CONFIG" );
 	if( value ){
 		pPathConfigSystem = value;
 	}
+#endif
+
 #ifdef OS_W32
 	pPathConfigSystem = deOSWindows::ParseNativePath( pPathConfigSystem );
 #endif
@@ -356,18 +370,32 @@ void igdeConfiguration::LocatePath(){
 	
 #endif
 	
+#ifdef OS_W32
+	if( GetEnvironmentVariable( L"DEIGDE_USER_CONFIG", &value[ 0 ], sizeof( value ) ) ){
+		pPathConfigUser = deOSWindows::WideToUtf8( value );
+	}
+#else
 	value = getenv( "DEIGDE_USER_CONFIG" );
 	if( value ){
 		pPathConfigUser = value;
 	}
+#endif
+
 #ifdef OS_W32
 	pPathConfigUser = deOSWindows::ParseNativePath( pPathConfigUser );
 #endif
 	
+#ifdef OS_W32
+	if( GetEnvironmentVariable( L"DEIGDE_PROJECTS", &value[ 0 ], sizeof( value ) ) ){
+		pPathProjects = deOSWindows::WideToUtf8( value );
+	}
+#else
 	value = getenv( "DEIGDE_PROJECTS" );
 	if( value ){
 		pPathProjects = value;
 	}
+#endif
+
 #ifdef OS_W32
 	pPathProjects = deOSWindows::ParseNativePath( pPathProjects );
 #endif
@@ -376,15 +404,20 @@ void igdeConfiguration::LocatePath(){
 	// using an environment parameter.
 	pPathShares = IGDE_SHARE_PATH;
 #ifdef OS_W32
-	//pPathShares = deOSWindows::GetRegistryValue( "SOFTWARE\\Drag[en]gine",
-	//	"PathIgdeShares", pPathShares );
 	pPathShares = pathIgde + "\\Share";
 #endif
 	
+#ifdef OS_W32
+	if( GetEnvironmentVariable( L"DEIGDE_SHARES", &value[ 0 ], sizeof( value ) ) ){
+		pPathShares = deOSWindows::WideToUtf8( value );
+	}
+#else
 	value = getenv( "DEIGDE_SHARES" );
 	if( value ){
 		pPathShares = value;
 	}
+#endif
+
 #ifdef OS_W32
 	pPathShares = deOSWindows::ParseNativePath( pPathShares );
 #endif
@@ -413,15 +446,20 @@ void igdeConfiguration::LocatePath(){
 	// using an environment parameter.
 	pPathLib = IGDE_LIB_PATH;
 #ifdef OS_W32
-	//pPathLib = deOSWindows::GetRegistryValue( "SOFTWARE\\Drag[en]gine",
-	//	"PathIgdeLib", pPathLib );
 	pPathLib = pathIgde + "\\Data";
 #endif
 	
+#ifdef OS_W32
+	if( GetEnvironmentVariable( L"DEIGDE_LIB", &value[ 0 ], sizeof( value ) ) ){
+		pPathLib = deOSWindows::WideToUtf8( value );
+	}
+#else
 	value = getenv( "DEIGDE_LIB" );
 	if( value ){
 		pPathLib = value;
 	}
+#endif
+
 #ifdef OS_W32
 	pPathLib = deOSWindows::ParseNativePath( pPathLib );
 #endif
@@ -435,83 +473,66 @@ void igdeConfiguration::LocatePath(){
 	pPathLogs = "@LocalAppData\\DEIGDE\\Logs";
 #endif
 	
+#ifdef OS_W32
+	if( GetEnvironmentVariable( L"DEIGDE_LOGS", &value[ 0 ], sizeof( value ) ) ){
+		pPathLogs = deOSWindows::WideToUtf8( value );
+	}
+#else
 	value = getenv( "DEIGDE_LOGS" );
 	if( value ){
 		pPathLogs = value;
 	}
-	#ifdef OS_W32
+#endif
+
+#ifdef OS_W32
 	pPathLogs = deOSWindows::ParseNativePath( pPathLogs );
-	#endif
+#endif
 }
 
 void igdeConfiguration::InitVirtualFileSystem(){
 	deVirtualFileSystem &vfs = *pWindowMain.GetVirtualFileSystem();
-	deVFSDiskDirectory *diskDir = NULL;
 	decPath pathRootDir, pathDiskDir;
 	
 	// add the found path to the virtual file system. this makes it easier
 	// to find the files later on without having to deal with file system
 	// specific quirks.
-	try{
-		// add the configuration containers. the containers are added in
-		// separate locations as we want to read the config files one
-		// by one and mapping both containers to the same path would
-		// shadow the system config files.
-		if( ! pPathConfigSystem.IsEmpty() ){
-			pathRootDir.SetFromUnix( "/config/system" );
-			pathDiskDir.SetFromNative( pPathConfigSystem.GetString() );
-			diskDir = new deVFSDiskDirectory( pathRootDir, pathDiskDir );
-			if( ! diskDir ) DETHROW( deeOutOfMemory );
-			diskDir->SetReadOnly( true );
-			vfs.AddContainer( diskDir );
-			diskDir->FreeReference();
-			diskDir = NULL;
-		}
-		
-		if( ! pPathConfigUser.IsEmpty() ){
-			pathRootDir.SetFromUnix( "/config/user" );
-			pathDiskDir.SetFromNative( pPathConfigUser.GetString() );
-			diskDir = new deVFSDiskDirectory( pathRootDir, pathDiskDir );
-			if( ! diskDir ) DETHROW( deeOutOfMemory );
-			diskDir->SetReadOnly( false );
-			vfs.AddContainer( diskDir );
-			diskDir->FreeReference();
-			diskDir = NULL;
-		}
-		
-		// add the data directory. currently there exists only one which
-		// is the system shares directory. a user one could be layered
-		// on top of it though if required later on. the shares container
-		// is set to read-write as the launcher has to potentiall install
-		// new games or uninstall them.
-		if( ! pPathShares.IsEmpty() ){
-			pathRootDir.SetFromUnix( "/data" );
-			pathDiskDir.SetFromNative( pPathShares.GetString() );
-			diskDir = new deVFSDiskDirectory( pathRootDir, pathDiskDir );
-			if( ! diskDir ) DETHROW( deeOutOfMemory );
-			diskDir->SetReadOnly( false );
-			vfs.AddContainer( diskDir );
-			diskDir->FreeReference();
-			diskDir = NULL;
-		}
-		
-		// add the logs directory. this is read-write
-		if( ! pPathLogs.IsEmpty() ){
-			pathRootDir.SetFromUnix( "/logs" );
-			pathDiskDir.SetFromNative( pPathLogs.GetString() );
-			diskDir = new deVFSDiskDirectory( pathRootDir, pathDiskDir );
-			if( ! diskDir ) DETHROW( deeOutOfMemory );
-			diskDir->SetReadOnly( false );
-			vfs.AddContainer( diskDir );
-			diskDir->FreeReference();
-			diskDir = NULL;
-		}
-		
-	}catch( const deException & ){
-		if( diskDir ){
-			diskDir->FreeReference();
-		}
-		throw;
+	
+	// add the configuration containers. the containers are added in
+	// separate locations as we want to read the config files one
+	// by one and mapping both containers to the same path would
+	// shadow the system config files.
+	if( ! pPathConfigSystem.IsEmpty() ){
+		pathRootDir.SetFromUnix( "/config/system" );
+		pathDiskDir.SetFromNative( pPathConfigSystem );
+		vfs.AddContainer( deVFSDiskDirectory::Ref::New(
+			new deVFSDiskDirectory( pathRootDir, pathDiskDir, true ) ) );
+	}
+	
+	if( ! pPathConfigUser.IsEmpty() ){
+		pathRootDir.SetFromUnix( "/config/user" );
+		pathDiskDir.SetFromNative( pPathConfigUser );
+		vfs.AddContainer( deVFSDiskDirectory::Ref::New(
+			new deVFSDiskDirectory( pathRootDir, pathDiskDir, false ) ) );
+	}
+	
+	// add the data directory. currently there exists only one which
+	// is the system shares directory. a user one could be layered
+	// on top of it though if required later on. the shares container
+	// is set to read-write as the launcher has to potentiall install
+	// new games or uninstall them.
+	if( ! pPathShares.IsEmpty() ){
+		pathRootDir.SetFromUnix( "/data" );
+		pathDiskDir.SetFromNative( pPathShares );
+		vfs.AddContainer( deVFSDiskDirectory::Ref::New(
+			new deVFSDiskDirectory( pathRootDir, pathDiskDir, false ) ) );
+	}
+	
+	// add the logs directory. this is read-write
+	if( ! pPathLogs.IsEmpty() ){
+		pathRootDir.SetFromUnix( "/logs" );
+		pathDiskDir.SetFromNative( pPathLogs );
+		vfs.AddContainer( deVFSDiskDirectory::Ref::New(
+			new deVFSDiskDirectory( pathRootDir, pathDiskDir, false ) ) );
 	}
 }
 

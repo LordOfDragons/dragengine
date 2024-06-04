@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Bullet Physics Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -167,7 +170,7 @@ struct BroadphaseSweepTester : public btDbvt::ICollide{
 		const int childIndex = leaf->dataAsInt;
 		
 		const btTransform &colObjWorldTransform = m_colObjWrap->getWorldTransform();
-		const btTransform childTransform = colObjWorldTransform * m_compoundShape.getChildTransform( childIndex );
+		const btTransform childTransform( colObjWorldTransform * m_compoundShape.getChildTransform( childIndex ) );
 		const btCollisionObjectWrapper childWrap( m_colObjWrap, m_compoundShape.getChildShape( childIndex ),
 			m_colObjWrap->getCollisionObject(), childTransform, -1, childIndex );
 		
@@ -192,7 +195,26 @@ btCollisionWorld::ConvexResultCallback &resultCallback, btScalar allowedPenetrat
 	// more than 1 child shape. with 1 shape the compound aabb is the same as the child aabb
 	const btDbvt * const tree = compoundShape.getDynamicAabbTree();
 	if( tree && count > 1 ){
-		// calculate the cast shape aabb relative to the tree
+		// see btCollisionWorld.cpp:951
+		#if 0
+		const btTransform &colObjWorldTransform = colObjWrap->getWorldTransform();
+		
+		btVector3 fromLocalAabbMin, fromLocalAabbMax;
+		btVector3 toLocalAabbMin, toLocalAabbMax;
+		
+		castShape->getAabb( colObjWorldTransform.inverse() * castFromTrans, fromLocalAabbMin, fromLocalAabbMax);
+		castShape->getAabb(colObjWorldTransform.inverse() * castToTrans, toLocalAabbMin, toLocalAabbMax);
+		
+		fromLocalAabbMin.setMin(toLocalAabbMin);
+		fromLocalAabbMax.setMax(toLocalAabbMax);
+		
+		BroadphaseSweepTester callback( castShape, colObjWrap, compoundShape, castFromTrans,
+			castToTrans, *this, resultCallback, allowedPenetration );
+		
+		const ATTRIBUTE_ALIGNED16( btDbvtVolume ) bounds( btDbvtVolume::FromMM( fromLocalAabbMin, fromLocalAabbMax ) );
+		tree->collideTV( tree->m_root, bounds, callback );
+		
+		#else
 		const btTransform compoundInverseTrans( colObjWrap->getWorldTransform().inverse() );
 		const btTransform localCastFromTrans( compoundInverseTrans * castFromTrans );
 		const btTransform localCastToTrans( compoundInverseTrans * castToTrans );
@@ -222,6 +244,7 @@ btCollisionWorld::ConvexResultCallback &resultCallback, btScalar allowedPenetrat
 		
 		tree->rayTestInternal( tree->m_root, localCastFromTrans.getOrigin(), localCastToTrans.getOrigin(),
 			rayDirectionInverse, signs, lambdaMax, castShapeAabbMin, castShapeAabbMax, pRayTestStacks, convexCaster );
+		#endif
 		
 	// otherwise iterate over all children and test them
 	}else{
@@ -229,7 +252,7 @@ btCollisionWorld::ConvexResultCallback &resultCallback, btScalar allowedPenetrat
 		int i;
 		
 		for( i=0; i<count; i++ ){
-			const btTransform childTransform = colObjWorldTransform * compoundShape.getChildTransform( i );
+			const btTransform childTransform( colObjWorldTransform * compoundShape.getChildTransform( i ) );
 			const btCollisionObjectWrapper childWrap( colObjWrap, compoundShape.getChildShape( i ),
 				colObjWrap->getCollisionObject(), childTransform, -1, i );
 			LocalInfoAdder cbAdder( i, &resultCallback );
@@ -493,8 +516,8 @@ btBoxShape &boxShape, const btTransform &shapeTransform ) const{
 	
 	boxVolume.SetCenter( decDVector( ( double )position.x(), ( double )position.y(), ( double )position.z() ) );
 	boxVolume.SetHalfSize( decDVector( ( double )halfExtends.x(), ( double )halfExtends.y(), ( double )halfExtends.z() ) );
-	boxVolume.SetOrientation( decQuaternion( ( double )orientation.x(), ( double )orientation.y(),
-		( double )orientation.z(), ( double )orientation.w() ) );
+	boxVolume.SetOrientation( decQuaternion( ( float )orientation.x(), ( float )orientation.y(),
+		( float )orientation.z(), ( float )orientation.w() ) );
 #endif
 }
 

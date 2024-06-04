@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -25,6 +28,7 @@
 
 #include "deoglRHeightTerrain.h"
 #include "deoglRHTSector.h"
+#include "deoglHeightTerrainListener.h"
 
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../world/deoglRWorld.h"
@@ -45,12 +49,16 @@ pRenderThread( renderThread ),
 pParentWorld( NULL ),
 pSectorResolution( heightTerrain.GetSectorResolution() ),
 pSectorSize( heightTerrain.GetSectorSize() ),
-pUpdateTracker( 0 ){
+pSectorsRequirePrepareForRender( true ),
+pListenerIndex( 0 )
+{
 	LEAK_CHECK_CREATE( renderThread, HeightTerrain );
 }
 
 deoglRHeightTerrain::~deoglRHeightTerrain(){
 	LEAK_CHECK_FREE( pRenderThread, HeightTerrain );
+	NotifyHeightTerrainDestroyed();
+	pListeners.RemoveAll();
 	SetParentWorld( NULL );
 }
 
@@ -60,7 +68,39 @@ deoglRHeightTerrain::~deoglRHeightTerrain(){
 ///////////////
 
 void deoglRHeightTerrain::SetParentWorld( deoglRWorld *world ){
+	if( world == pParentWorld ){
+		return;
+	}
+	
+	const int count = pSectors.GetCount();
+	int i;
+	
+	if( pParentWorld ){
+		for( i=0; i<count; i++ ){
+			( ( deoglRHTSector* )pSectors.GetAt( i ) )->RemoveFromWorldCompute();
+		}
+	}
+	
 	pParentWorld = world;
+	
+	if( world ){
+		deoglWorldCompute &worldCompute = world->GetCompute();
+		for( i=0; i<count; i++ ){
+			( ( deoglRHTSector* )pSectors.GetAt( i ) )->AddToWorldCompute( worldCompute );
+		}
+	}
+}
+
+void deoglRHeightTerrain::PrepareForRender(){
+	if( pSectorsRequirePrepareForRender ){
+		pSectorsRequirePrepareForRender = false;
+		
+		const int count = pSectors.GetCount();
+		int i;
+		for( i=0; i<count; i++ ){
+			( ( deoglRHTSector* )pSectors.GetAt( i ) )->PrepareForRender();
+		}
+	}
 }
 
 
@@ -74,22 +114,71 @@ deoglRHTSector &deoglRHeightTerrain::GetSectorAt( int index ) const{
 }
 
 void deoglRHeightTerrain::AddSector( deoglRHTSector *htsector ){
+	htsector->SetIndex( pSectors.GetCount() );
 	pSectors.Add( htsector );
-	pUpdateTracker++;
+	if( pParentWorld ){
+		htsector->AddToWorldCompute( pParentWorld->GetCompute() );
+	}
+	
+	SectorRequirePrepareForRender();
+	NotifySectorsChanged();
 }
 
 void deoglRHeightTerrain::RemoveAllSectors(){
+	if( pParentWorld ){
+		const int count = pSectors.GetCount();
+		int i;
+		for( i=0; i<count; i++ ){
+			( ( deoglRHTSector* )pSectors.GetAt( i ) )->RemoveFromWorldCompute();
+		}
+	}
+	
 	pSectors.RemoveAll();
-	pUpdateTracker++;
+	SectorRequirePrepareForRender();
+	NotifySectorsChanged();
+}
+
+void deoglRHeightTerrain::SectorRequirePrepareForRender(){
+	pSectorsRequirePrepareForRender = true;
 }
 
 
 
-void deoglRHeightTerrain::UpdateVBOs(){
-	const int count = pSectors.GetCount();
-	int i;
+// Listeners
+//////////////
+
+void deoglRHeightTerrain::AddListener( deoglHeightTerrainListener *listener ){
+	if( ! listener ){
+		DETHROW( deeInvalidParam );
+	}
+	pListeners.Add( listener );
+}
+
+void deoglRHeightTerrain::RemoveListener( deoglHeightTerrainListener *listener ){
+	const int index = pListeners.IndexOf( listener );
+	if( index == -1 ){
+		return;
+	}
 	
-	for( i=0; i<count; i++ ){
-		( ( deoglRHTSector*)pSectors.GetAt( i ) )->UpdateVBO();
+	pListeners.Remove( listener );
+	
+	if( pListenerIndex >= index ){
+		pListenerIndex--;
+	}
+}
+
+void deoglRHeightTerrain::NotifyHeightTerrainDestroyed(){
+	pListenerIndex = 0;
+	while( pListenerIndex < pListeners.GetCount() ){
+		( ( deoglHeightTerrainListener* )pListeners.GetAt( pListenerIndex ) )->HeightTerrainDestroyed( *this );
+		pListenerIndex++;
+	}
+}
+
+void deoglRHeightTerrain::NotifySectorsChanged(){
+	pListenerIndex = 0;
+	while( pListenerIndex < pListeners.GetCount() ){
+		( ( deoglHeightTerrainListener* )pListeners.GetAt( pListenerIndex ) )->SectorsChanged( *this );
+		pListenerIndex++;
 	}
 }

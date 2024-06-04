@@ -1,0 +1,525 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="ReleaseDebug|Win32">
+      <Configuration>ReleaseDebug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="ReleaseDebug|x64">
+      <Configuration>ReleaseDebug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\dragengine\dragengine.vcxproj">
+      <Project>{f9098b91-18fa-4754-b089-e3d613b13b71}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\shared\igde_shared.vcxproj">
+      <Project>{1dcfacb0-ab85-4adc-b18a-91322511c121}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\..\src\deigde\editors\rigeditor\SConscript" />
+    <None Include="post_build.ps1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\clipboard\reBaseClip.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\clipboard\reClipboard.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\collisions\reCLApplyPush.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\collisions\reCLClosestElement.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\collisions\reCLHitList.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\collisions\reCLHitListEntry.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\collisions\reCLIdentify.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\collisions\reCLRigSimulation.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\collisions\reCLSelect.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\configuration\reConfiguration.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\configuration\reConfigurationXML.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\gui\properties\panels\reWPPanelShape.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\gui\properties\panels\reWPPanelShapeBox.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\gui\properties\panels\reWPPanelShapeCapsule.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\gui\properties\panels\reWPPanelShapeCylinder.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\gui\properties\panels\reWPPanelShapeHull.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\gui\properties\panels\reWPPanelShapeSphere.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\gui\properties\reWindowProperties.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\gui\properties\reWPBone.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\gui\properties\reWPBoneListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\gui\properties\reWPConstraint.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\gui\properties\reWPConstraintListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\gui\properties\reWPPush.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\gui\properties\reWPPushListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\gui\properties\reWPRig.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\gui\properties\reWPRigListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\gui\properties\reWPShape.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\gui\properties\reWPShapeListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\gui\properties\reWPUndoHistory.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\gui\properties\reWPUndoHistoryListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\gui\properties\reWPView.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\gui\properties\reWPViewListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\gui\reDialogImportBone.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\gui\reTaskSyncGameDefinition.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\gui\reView3D.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\gui\reWindowMain.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\gui\reWindowMainListener.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\loadsave\reCreateRigShape.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\loadsave\reLoadSaveSystem.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\loadsave\reLSRig.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\reIGDEModule.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\rigeditor.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\rig\bone\reRigBone.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\rig\bone\reSelectionBones.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\rig\constraint\reRigConstraint.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\rig\constraint\reRigConstraintDof.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\rig\constraint\reRigConstraintList.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\rig\constraint\reSelectionConstraints.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\rig\constraint\reTemporaryConstraint.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\rig\push\reRigPush.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\rig\push\reRigPushList.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\rig\push\reSelectionPushes.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\rig\reCamera.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\rig\reRig.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\rig\reRigBuilder.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\rig\reRigNotifier.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\rig\reRigTexture.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\rig\shape\reRigShape.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\rig\shape\reRigShapeBox.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\rig\shape\reRigShapeCapsule.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\rig\shape\reRigShapeCylinder.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\rig\shape\reRigShapeHull.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\rig\shape\reRigShapeList.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\rig\shape\reRigShapeSphere.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\rig\shape\reSelectionShapes.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\bone\reUBoneCopyParams.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\bone\reUBoneImportFromFile.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\bone\reUBoneMassFromVolume.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\bone\reUBoneMirror.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\bone\reUBoneScaleMass.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\constraint\reUAddConstraint.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\constraint\reURemoveConstraint.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\push\reUAddPush.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\push\reURemovePush.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\reBaseUndoMove.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\reBaseUndoRotate.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\reBaseUndoScale.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\shape\reUAddShape.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\shape\reUMoveShape.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\shape\reUndoDataShape.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\shape\reURemoveShape.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\shape\reURotateShape.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\bone\reUSetBoneCentralMassPoint.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\bone\reUSetBoneIKLimitsLower.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\bone\reUSetBoneIKLimitsUpper.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\bone\reUSetBoneIKResistance.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\bone\reUSetBoneMass.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\bone\reUSetBoneName.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\bone\reUSetBoneOrientation.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\bone\reUSetBoneParent.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\bone\reUSetBonePosition.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\bone\reUToggleBoneDynamic.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\bone\reUToggleBoneIKLocked.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\constraint\reUConstraintDofSetKinematicFriction.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\constraint\reUConstraintDofSetLowerLimit.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\constraint\reUConstraintDofSetSpringStiffness.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\constraint\reUConstraintDofSetStaticFriction.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\constraint\reUConstraintDofSetUpperLimit.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\constraint\reUConstraintSetBoneTarget.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\constraint\reUConstraintSetBreakingThreshold.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\constraint\reUConstraintSetDampingAngular.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\constraint\reUConstraintSetDampingLinear.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\constraint\reUConstraintSetDampingSpring.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\constraint\reUConstraintSetOffset.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\constraint\reUConstraintSetOrientation.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\constraint\reUConstraintSetPosition.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\constraint\reUConstraintToggleIsRope.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\rig\reURigSetCentralMassPoint.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\rig\reURigSetRootBone.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\rig\reURigToggleDynamic.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\rig\reURigToggleModelCollision.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\hull\reUShapeHullAddPoint.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\hull\reUShapeHullRemovePoint.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\hull\reUShapeHullSetPoint.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeBoxHalfExtends.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeCapsuleBottomRadius.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeCapsuleHalfHeight.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeCapsuleTopRadius.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeCylinderBottomRadius.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeCylinderHalfHeight.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeCylinderTopRadius.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeOrientation.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapePosition.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeSphereRadius.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUShapeSetProperty.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\clipboard\reBaseClip.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\clipboard\reClipboard.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\collisions\reCLApplyPush.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\collisions\reCLClosestElement.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\collisions\reCLHitList.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\collisions\reCLHitListEntry.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\collisions\reCLIdentify.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\collisions\reCLRigSimulation.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\collisions\reCLSelect.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\configuration\reConfiguration.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\configuration\reConfigurationXML.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\gui\properties\panels\reWPPanelShape.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\gui\properties\panels\reWPPanelShapeBox.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\gui\properties\panels\reWPPanelShapeCapsule.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\gui\properties\panels\reWPPanelShapeCylinder.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\gui\properties\panels\reWPPanelShapeHull.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\gui\properties\panels\reWPPanelShapeSphere.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\gui\properties\reWindowProperties.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\gui\properties\reWPBone.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\gui\properties\reWPBoneListener.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\gui\properties\reWPConstraint.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\gui\properties\reWPConstraintListener.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\gui\properties\reWPPush.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\gui\properties\reWPPushListener.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\gui\properties\reWPRig.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\gui\properties\reWPRigListener.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\gui\properties\reWPShape.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\gui\properties\reWPShapeListener.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\gui\properties\reWPUndoHistory.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\gui\properties\reWPUndoHistoryListener.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\gui\properties\reWPView.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\gui\properties\reWPViewListener.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\gui\reDialogImportBone.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\gui\reTaskSyncGameDefinition.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\gui\reView3D.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\gui\reWindowMain.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\gui\reWindowMainListener.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\loadsave\reCreateRigShape.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\loadsave\reLoadSaveSystem.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\loadsave\reLSRig.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\reIGDEModule.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\rigeditor.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\rig\bone\reRigBone.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\rig\bone\reSelectionBones.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\rig\constraint\reRigConstraint.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\rig\constraint\reRigConstraintDof.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\rig\constraint\reRigConstraintList.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\rig\constraint\reSelectionConstraints.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\rig\constraint\reTemporaryConstraint.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\rig\push\reRigPush.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\rig\push\reRigPushList.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\rig\push\reSelectionPushes.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\rig\reCamera.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\rig\reRig.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\rig\reRigBuilder.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\rig\reRigNotifier.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\rig\reRigTexture.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\rig\shape\reRigShape.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\rig\shape\reRigShapeBox.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\rig\shape\reRigShapeCapsule.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\rig\shape\reRigShapeCylinder.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\rig\shape\reRigShapeHull.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\rig\shape\reRigShapeList.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\rig\shape\reRigShapeSphere.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\rig\shape\reSelectionShapes.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\bone\reUBoneCopyParams.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\bone\reUBoneImportFromFile.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\bone\reUBoneMassFromVolume.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\bone\reUBoneMirror.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\bone\reUBoneScaleMass.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\constraint\reUAddConstraint.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\constraint\reURemoveConstraint.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\push\reUAddPush.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\push\reURemovePush.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\reBaseUndoMove.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\reBaseUndoRotate.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\reBaseUndoScale.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\shape\reUAddShape.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\shape\reUMoveShape.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\shape\reUndoDataShape.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\shape\reURemoveShape.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\gui\shape\reURotateShape.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\bone\reUSetBoneCentralMassPoint.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\bone\reUSetBoneIKLimitsLower.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\bone\reUSetBoneIKLimitsUpper.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\bone\reUSetBoneIKResistance.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\bone\reUSetBoneMass.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\bone\reUSetBoneName.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\bone\reUSetBoneOrientation.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\bone\reUSetBoneParent.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\bone\reUSetBonePosition.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\bone\reUToggleBoneDynamic.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\bone\reUToggleBoneIKLocked.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\constraint\reUConstraintDofSetKinematicFriction.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\constraint\reUConstraintDofSetLowerLimit.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\constraint\reUConstraintDofSetSpringStiffness.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\constraint\reUConstraintDofSetStaticFriction.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\constraint\reUConstraintDofSetUpperLimit.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\constraint\reUConstraintSetBoneTarget.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\constraint\reUConstraintSetBreakingThreshold.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\constraint\reUConstraintSetDampingAngular.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\constraint\reUConstraintSetDampingLinear.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\constraint\reUConstraintSetDampingSpring.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\constraint\reUConstraintSetOffset.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\constraint\reUConstraintSetOrientation.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\constraint\reUConstraintSetPosition.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\constraint\reUConstraintToggleIsRope.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\rig\reURigSetCentralMassPoint.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\rig\reURigSetRootBone.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\rig\reURigToggleDynamic.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\rig\reURigToggleModelCollision.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\hull\reUShapeHullAddPoint.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\hull\reUShapeHullRemovePoint.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\hull\reUShapeHullSetPoint.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeBoxHalfExtends.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeCapsuleBottomRadius.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeCapsuleHalfHeight.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeCapsuleTopRadius.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeCylinderBottomRadius.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeCylinderHalfHeight.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeCylinderTopRadius.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeOrientation.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapePosition.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUSetShapeSphereRadius.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\rigeditor\src\undosys\properties\shape\reUShapeSetProperty.h" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{12B0C306-18D4-4450-B6B7-3FFCBE2F60A9}</ProjectGuid>
+    <RootNamespace>deai</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>editor rig</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebug|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(IncludePath)</IncludePath>
+    <TargetName>rig</TargetName>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\igde_editor\rig\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(IncludePath)</IncludePath>
+    <TargetName>rig</TargetName>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\igde_editor\rig\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebug|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(IncludePath)</IncludePath>
+    <TargetName>rig</TargetName>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\igde_editor\rig\</OutDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;EDITORRIG_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;EDITORRIG_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;EDITORRIG_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;EDITORRIG_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);MOD_ENTRY_POINT_ATTR=__declspec(dllexport)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <IgnoreSpecificDefaultLibraries>LIBCMT;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+    </Link>
+    <PostBuildEvent>
+      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\deigde\editors\rigeditor\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;EDITORRIG_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);MOD_ENTRY_POINT_ATTR=__declspec(dllexport)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <IgnoreSpecificDefaultLibraries>LIBCMT;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+    </Link>
+    <PostBuildEvent>
+      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\deigde\editors\rigeditor\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;EDITORRIG_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);MOD_ENTRY_POINT_ATTR=__declspec(dllexport)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <IgnoreSpecificDefaultLibraries>LIBCMT;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+    </Link>
+    <PostBuildEvent>
+      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\deigde\editors\rigeditor\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

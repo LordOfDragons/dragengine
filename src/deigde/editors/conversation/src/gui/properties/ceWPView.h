@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Conversation Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _CEWPVIEW_H_
@@ -44,6 +47,7 @@ class ceWindowProperties;
 class ceConversationActor;
 class ceActorPose;
 class ceActorGesture;
+class ceActorController;
 class ceConversationFile;
 class ceConversationTopic;
 
@@ -54,7 +58,7 @@ class ceConversation;
 
 
 /**
- * \brief View property window.
+ * View property window.
  */
 class ceWPView : public igdeContainerScroll{
 private:
@@ -95,6 +99,7 @@ private:
 	igdeButtonReference pBtnActorPoseMenu;
 	igdeEditPathReference pEditActorPosePathAnimator;
 	igdeComboBoxReference pCBActorPoseController;
+	igdeButtonReference pBtnActorPoseControllerMenu;
 	igdeComboBoxReference pCBActorPoseControllerUpdateType;
 	igdeTextFieldReference pEditActorPoseControllerValue;
 	igdeEditVectorReference pEditActorPoseControllerVector;
@@ -119,6 +124,7 @@ private:
 	igdeButtonReference pBtnPlaybackRewind;
 	igdeCheckBoxReference pChkPlaybackRunning;
 	igdeCheckBoxReference pChkPlaybackPaused;
+	igdeCheckBoxReference pChkPlaybackAutoAdvanceCommands;
 	igdeComboBoxReference pCBPlaybackCameraHandling;
 	igdeListBoxReference pListPlaybackCommands;
 	igdeListBoxReference pListPlaybackVars;
@@ -133,11 +139,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create panel. */
+	/** Create panel. */
 	ceWPView( ceWindowProperties &windowProperties );
 	
 protected:
-	/** \brief Clean up panel. */
+	/** Clean up panel. */
 	virtual ~ceWPView();
 	/*@}*/
 	
@@ -146,106 +152,115 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Conversation. */
+	/** Properties window. */
+	inline ceWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
+	
+	/** Conversation. */
 	inline ceConversation *GetConversation() const{ return pConversation; }
 	
-	/** \brief Set conversation. */
+	/** Set conversation. */
 	void SetConversation( ceConversation *conversation );
 	
-	/** \brief Update view. */
+	/** Update view. */
 	void UpdateView();
 	
-	/** \brief Update sky. */
+	/** Update sky. */
 	void UpdateSky();
 	
-	/** \brief Update environment object. */
+	/** Update environment object. */
 	void UpdateEnvObject();
 	
-	/** \brief Update camera. */
+	/** Update camera. */
 	void UpdateCamera();
 	
-	/** \brief Active prop. */
+	/** Active prop. */
 	ceProp *GetProp() const;
 	
-	/** \brief Update prop list. */
+	/** Update prop list. */
 	void UpdatePropList();
 	
-	/** \brief Update prop. */
+	/** Update prop. */
 	void UpdateProp();
 	
-	/** \brief Active actor. */
+	/** Active actor. */
 	ceConversationActor *GetActor() const;
 	
-	/** \brief Active actor pose. */
+	/** Active actor pose. */
 	ceActorPose *GetActorPose() const;
 	
-	/** \brief Active actor gesture. */
+	/** Active actor pose. */
+	ceActorController *GetActorPoseController() const;
+	
+	/** Active actor gesture. */
 	ceActorGesture *GetActorGesture() const;
 	
-	/** \brief Update actors. */
+	/** Update actors. */
 	void UpdateActors();
 	
-	/** \brief Update actor poses. */
+	/** Update actor poses. */
 	void UpdateActorPoses();
 	
-	/** \brief Select active actor pose. */
+	/** Select active actor pose. */
 	void SelectActiveActorPose();
 	
-	/** \brief Update actor pose. */
+	/** Update actor pose. */
 	void UpdateActorPose();
 	
-	/** \brief Update actor gestures. */
+	/** Update actor gestures. */
 	void UpdateActorGestures();
 	
-	/** \brief Select actor pose gesture. */
+	/** Select actor pose gesture. */
 	void SelectActorPoseGesture( ceActorGesture *gesture );
 	
-	/** \brief Update actor gesture. */
+	/** Update actor gesture. */
 	void UpdateActorGesture();
 	
-	/** \brief Update actor controllers. */
+	/** Update actor controllers. */
 	void UpdateActorControllers();
 	
-	/** \brief Update actor controller. */
+	/** Update actor controller. */
 	void UpdateActorController();
 	
-	/** \brief Update actor commands list. */
+	/** Select active actor pose. */
+	void SelectActorPoseController( ceActorController *controller );
+	
+	/** Update actor commands list. */
 	void UpdateActorCommands();
 	
-	/** \brief Update actor parameter list. */
+	/** Update actor parameter list. */
 	void UpdateActorParameters();
 	
-	/** \brief Active coordinate system. */
+	/** Active coordinate system. */
 	ceCoordSystem *GetCoordSys() const;
 	
-	/** \brief Update coordinate systems. */
+	/** Update coordinate systems. */
 	void UpdateCoordSystems();
 	
-	/** \brief Update playback file list. */
+	/** Update playback file list. */
 	void UpdatePlaybackFileList();
 	
-	/** \brief Selected playback file. */
+	/** Selected playback file. */
 	ceConversationFile *GetSelectedPlaybackFile() const;
 	
-	/** \brief Update playback topic list. */
+	/** Update playback topic list. */
 	void UpdatePlaybackTopicList();
 	
-	/** \brief Selected playback topic. */
+	/** Selected playback topic. */
 	ceConversationTopic *GetSelectedPlaybackTopic() const;
 	
-	/** \brief Update playback parameters. */
+	/** Update playback parameters. */
 	void UpdatePlayback();
 	
-	/** \brief Update playback commands list. */
+	/** Update playback commands list. */
 	void UpdatePlaybackCommands();
 	
-	/** \brief Update playback variables list. */
+	/** Update playback variables list. */
 	void UpdatePlaybackVariables();
 	
-	/** \brief Update playback trigger table. */
+	/** Update playback trigger table. */
 	void UpdatePlaybackTriggerTable();
 	
-	/** \brief Update playback missing words. */
+	/** Update playback missing words. */
 	void UpdatePlaybackMissingWords();
 	/*@}*/
 };

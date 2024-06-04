@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Conversation Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _CEWPTOPICLISTENER_H_
@@ -29,7 +32,7 @@ class ceWPTopic;
 
 
 /**
- * \brief Topic panel listener.
+ * Topic panel listener.
  */
 class ceWPTopicListener : public ceConversationListener{
 private:
@@ -40,10 +43,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create listener. */
+	/** Create listener. */
 	ceWPTopicListener( ceWPTopic &panel );
 	
-	/** \brief Clean up listener. */
+	/** Clean up listener. */
 	virtual ~ceWPTopicListener();
 	/*@}*/
 	
@@ -51,92 +54,100 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Target count or order changed. */
+	/** Conversation changed. */
+	virtual void ConversationChanged( ceConversation *conversation );
+	
+	/** Target count or order changed. */
 	virtual void TargetStructureChanged( ceConversation *conversation );
 	
-	/** \brief Target changed. */
+	/** Target changed. */
 	virtual void TargetChanged( ceConversation *conversation, ceTarget *target );
 	
 	
 	
-	/** \brief Camera shot count or order changed. */
+	/** Camera shot count or order changed. */
 	virtual void CameraShotStructureChanged( ceConversation *conversation );
 	
-	/** \brief Camera shot changed. */
+	/** Camera shot changed. */
 	virtual void CameraShotChanged( ceConversation *conversation, ceCameraShot *cameraShot );
 	
 	
 	
-	/** \brief Gesture count or order changed. */
+	/** Gesture count or order changed. */
 	virtual void GestureStructureChanged( ceConversation *conversation );
 	
-	/** \brief Gesture changed. */
+	/** Gesture changed. */
 	virtual void GestureChanged( ceConversation *conversation, ceGesture *gesture );
 	
 	
 	
-	/** \brief Face pose count or order changed. */
+	/** Face pose count or order changed. */
 	virtual void FacePoseStructureChanged( ceConversation *conversation );
 	
-	/** \brief Face pose changed. */
+	/** Face pose changed. */
 	virtual void FacePoseChanged( ceConversation *conversation, ceFacePose *facePose );
 	
 	
 	
-	/** \brief Look-at count or order changed. */
-	virtual void LookAtStructureChanged( ceConversation *conversation );
-	
-	/** \brief Look-at changed. */
-	virtual void LookAtChanged( ceConversation *conversation, ceLookAt *lookat );
-	
-	
-	
-	/** \brief File count or order changed. */
+	/** File count or order changed. */
 	virtual void FileStructureChanged( ceConversation *conversation );
 	
-	/** \brief File changed. */
+	/** File changed. */
 	virtual void FileChanged( ceConversation *conversation, ceConversationFile *file );
 	
-	/** \brief Active file changed. */
+	/** Active file changed. */
 	virtual void ActiveFileChanged( ceConversation *conversation );
 	
 	
 	
-	/** \brief Topic count or order changed. */
+	/** Topic count or order changed. */
 	virtual void TopicStructureChanged( ceConversation *conversation, ceConversationFile *file );
 	
-	/** \brief Topic changed. */
+	/** Topic changed. */
 	virtual void TopicChanged( ceConversation *conversation, ceConversationFile *file,
 		ceConversationTopic *topic );
 	
-	/** \brief Active topic changed. */
+	/** Active topic changed. */
 	virtual void ActiveTopicChanged( ceConversation *conversation, ceConversationFile *file );
 	
 	
 	
-	/** \brief Action count or order changed. */
+	/** Action count or order changed. */
 	virtual void ActionStructureChanged( ceConversation *conversation, ceConversationFile *file,
 		ceConversationTopic *topic, ceConversationAction *action );
 	
-	/** \brief Action changed. */
+	/** Action changed. */
 	virtual void ActionChanged( ceConversation *conversation, ceConversationFile *file,
 		ceConversationTopic *topic, ceConversationAction *action );
 	
+	/** Condition count or order changed. */
+	virtual void ConditionStructureChanged( ceConversation *conversation,
+		ceConversationFile *file, ceConversationTopic *topic, ceConversationAction *action );
+	
+	/** Condition changed. */
+	virtual void ConditionChanged( ceConversation *conversation, ceConversationFile *file,
+		ceConversationTopic *topic, ceConversationAction *action, ceConversationCondition *condition );
 	
 	
-	/** \brief Actor count or order changed. */
+	
+	/** Actor count or order changed. */
 	virtual void ActorStructureChanged( ceConversation *conversation );
 	
-	/** \brief Actor changed. */
+	/** Actor changed. */
 	virtual void ActorChanged( ceConversation *conversation, ceConversationActor *actor );
 	
 	
 	
-	/** \brief Coordinate system count or order changed. */
+	/** Coordinate system count or order changed. */
 	virtual void CoordSystemStructureChanged( ceConversation *conversation );
 	
-	/** \brief Coordinate system changed. */
+	/** Coordinate system changed. */
 	virtual void CoordSystemChanged( ceConversation *conversation, ceCoordSystem *coordSystem );
+	
+	
+	
+	/** Language pack changed. */
+	virtual void LanguagePackChanged( ceConversation *conversation );
 	/*@}*/
 };
 

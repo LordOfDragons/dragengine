@@ -7,9 +7,9 @@ Import( 'parent_env parent_targets parent_report' )
 envModule = parent_env.Clone()
 
 # fetch values in expanded form for later use
-versionMajor = 1
-versionMinor = 0
-versionString = '{}.{}'.format( versionMajor, versionMinor )
+versionString = '1.0'
+if envModule['force_version']:
+	versionString = envModule['force_version']
 
 pathConfig = '{}/modules/graphic/null/{}'.format( envModule.subst( envModule[ 'path_de_config' ] ), versionString )
 pathModule = '{}/modules/graphic/null/{}'.format( envModule.subst( envModule[ 'path_de_data' ] ), versionString )
@@ -28,7 +28,7 @@ objects = [ envModule.SharedObject( s ) for s in sources ]
 libs = []
 appendLibrary( envModule, parent_targets[ 'dragengine' ], libs )
 
-library = envModule.SharedLibrary( target='granull', source=objects, LIBS=libs )
+library = envModule.LoadableModule( target='granull', source=objects, LIBS=libs )
 targetBuild = envModule.Alias( 'gra_null_build', library )
 
 install = []
@@ -38,15 +38,22 @@ for l in library:
 		install.append( envModule.Install( pathModule, l ) )
 		archive[ os.path.join( pathModule, l.name ) ] = l
 
+if envModule['OSWindows'] and envModule['CROSSCOMPILE_CLANG'] and envModule['with_install_pdb']:
+	pathPdb = os.path.join(envModule.subst(envModule['path_pdb']), 'EngineModules')
+	install.append(envModule.Install(pathPdb, 'granull.pdb'))
+	archive['{}/granull.pdb'.format(pathPdb)] = envModule.File('granull.pdb')
+
 manifestUpdates = [
 	{ 'action': 'filename', 'name': library[ 0 ].name, 'keyword': 'FILENAME' },
 	{ 'action': 'filesize', 'path': library[ 0 ].abspath, 'keyword': 'FILESIZE' },
-	{ 'action': 'filehash', 'path': library[ 0 ].abspath, 'keyword': 'SHA1SUM' } ]
+	{ 'action': 'filehash', 'path': library[ 0 ].abspath, 'keyword': 'SHA1SUM' },
+	{'action': 'text', 'value': versionString, 'keyword': 'VERSION'}]
 
 manifest = envModule.File( 'src/module.xml' )
 updateManifest = envModule.Command( manifest, manifest.srcnode(),
 	Action( UpdateModuleManifest ), ManifestUpdates=manifestUpdates )
 Depends( updateManifest, library )
+Depends(updateManifest, 'SConscript')
 
 install.append( envModule.Install( pathModule, updateManifest ) )
 archive[ os.path.join( pathModule, 'module.xml' ) ] = updateManifest[ 0 ]
@@ -67,6 +74,7 @@ parent_targets[ 'gra_null' ] = {
 	'name' : 'Null Graphic Module',
 	'build' : targetBuild,
 	'install' : targetInstall,
+	'install-engine-runtime' : targetInstall,
 	'archive-engine' : archive,
 	'cloc' : buildCloc,
 	'clocReport' : '{}/clocreport.csv'.format( srcdir ) }

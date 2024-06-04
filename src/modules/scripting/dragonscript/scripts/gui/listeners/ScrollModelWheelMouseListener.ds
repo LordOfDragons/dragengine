@@ -1,0 +1,110 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.Gui.Events
+
+
+/**
+ * \brief Mouse listener scrolling model using mouse wheel movement.
+ * \version 1.9
+ * 
+ * Typical use for this listener is on a TextField linked to a SpinButton to allow the user
+ * to scroll the range model by wheelingon the text field
+ */
+class ScrollModelWheelMouseListener extends DefaultMouseListener
+	/** \brief Model. */
+	private var RangeModel pModel
+	
+	/** \brief Invert mouse wheel. */
+	private var bool pInvert
+	
+	
+	
+	/** \brief Create mouse listener. */
+	public func new(RangeModel model)
+		if model == null
+			throw ENullPointer.new("model")
+		end
+		pModel = model
+	end
+	
+	/**
+	 * \brief Create mouse listener.
+	 * \version 1.16
+	 */
+	public func new(RangeModel model, bool invert) this(model)
+		pInvert = invert
+	end
+	
+	
+	
+	/** \brief Model to scroll. */
+	public func RangeModel getModel()
+		return pModel
+	end
+	
+	/** \brief Set model to scroll. */
+	public func void setModel(RangeModel model)
+		if model == null
+			throw ENullPointer.new("model")
+		end
+		pModel = model
+	end
+	
+	/**
+	 * \brief Invert mouse wheel.
+	 * \brief 1.16
+	 */
+	public func bool getInvert()
+		return pInvert
+	end
+	
+	/**
+	 * \brief Set invert mouse wheel.
+	 * \brief 1.16
+	 */
+	public func void setInvert(bool invert)
+		pInvert = invert
+	end
+	
+	
+	
+	/** \brief Mouse wheel moved. */
+	public func void onMouseWheel(MouseEvent event)
+		var int y = event.getPosition().getY()
+		if pInvert
+			y = -y
+		end
+		
+		if (event.getModifiers() & ModifiableEvent.shift) == ModifiableEvent.shift
+			pModel.setValue(pModel.getValue() + pModel.getPageSize() * y)
+			
+		else
+			pModel.setValue(pModel.getValue() + pModel.getIncrement() * y)
+		end
+	end
+end

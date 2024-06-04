@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -32,25 +35,25 @@ pin Dragengine.Utils
  */
 class CConditionLogic extends ConversationCondition
 	/** \brief Factory for loading actor actions. */
-	public class Factory implements PersistencyFactory
+	class Factory implements PersistencyFactory
 		public static fixed var String NAME = "CConditionLogic"
 		
-		public func new()
+		func new()
 		end
 		
-		public func Persistable readObjectFromFile( PersistencyEnvironment env, FileReader reader )
-			return CConditionLogic.new( env, reader )
+		func Persistable readObjectFromFile(PersistencyEnvironment env, FileReader reader)
+			return CConditionLogic.new(env, reader)
 		end
 		
-		public static func void registerFactory( Persistency persistency )
-			persistency.addFactory( NAME, Factory.new() )
+		static func void registerFactory(Persistency persistency)
+			persistency.addFactory(NAME, Factory.new())
 		end
 	end
 	
 	
 	
 	/** \brief Logic operators. */
-	public enum Operator
+	enum Operator
 		/** \brief None of the conditions are true. */
 		none
 		
@@ -63,72 +66,78 @@ class CConditionLogic extends ConversationCondition
 	
 	
 	
-	private var Operator pOperator
-	private var Array pConditions
+	var Operator pOperator
+	var Array pConditions
 	
 	
 	
 	/** \brief Create conversation condition. */
-	public func new()
-		this.pOperator = Operator.all
-		this.pConditions = Array.new()
+	func new()
+		pOperator = Operator.all
+		pConditions = Array.new()
 	end
 	
 	/** \brief Read from file. */
-	public func new( PersistencyEnvironment env, FileReader reader )
-		this.pOperator = Operator.withOrder( reader.readByte() )
-		
-		var int i, count = reader.readUShort()
-		this.pConditions = Array.new()
-		for i = 0 to count
-			this.pConditions.add( env.readObject( reader ) )
+	func new(PersistencyEnvironment env, FileReader reader)
+		select reader.readByte() // version
+		case 0
+			pOperator = Operator.withOrder(reader.readByte())
+			
+			var int i, count = reader.readUShort()
+			pConditions = Array.new()
+			for i = 0 to count
+				pConditions.add(env.readObject(reader))
+			end
+			
+		else
+			throw EInvalidParam.new("unsupported version")
 		end
 	end
 	
 	
 	
 	/** \brief Operator. */
-	public func Operator getOperator()
-		return this.pOperator
+	func Operator getOperator()
+		return pOperator
 	end
 	
 	/** \brief Set operator. */
-	public func void setOperator( Operator operator )
-		this.pOperator = operator
+	func void setOperator(Operator operator)
+		pOperator = operator
 	end
 	
 	/** \brief Visit conditions. */
-	public func void forEachCondition( Block aBlock )
-		this.pConditions.forEach( aBlock )
+	func void forEachCondition(Block aBlock)
+		pConditions.forEach(aBlock)
 	end
 	
 	/** \brief Add condition. */
-	public func void addCondition( ConversationCondition condition )
+	func void addCondition(ConversationCondition condition)
 		if condition == null
 			throw EInvalidParam.new()
 		end
-		this.pConditions.add( condition )
+		pConditions.add(condition)
 	end
 	
 	
 	
 	/** \brief Condition is true. */
-	public func bool evaluate( ConversationPlayback playback )
-		select this.pOperator
+	func bool evaluate(ConversationPlayback playback)
+		select pOperator
 		case Operator.none
-			return this.pConditions.find( block ConversationCondition each
-				return each.evaluate( playback )
-			end ) == null
+			return pConditions.find(block ConversationCondition each
+				return each.evaluate(playback)
+			end) == null
 			
 		case Operator.any
-			return this.pConditions.find( block ConversationCondition each
-				return each.evaluate( playback )
-			end ) != null
+			return pConditions.find(block ConversationCondition each
+				return each.evaluate(playback)
+			end) != null
 			
 		case Operator.all
-			return this.pConditions.find( block ConversationCondition each
-				return not each.evaluate( playback )
-			end ) == null and this.pConditions.getCount() > 0
+			return pConditions.find(block ConversationCondition each
+				return not each.evaluate(playback)
+			end) == null and pConditions.getCount() > 0
 			
 		else
 			throw EInvalidParam.new()
@@ -147,17 +156,19 @@ class CConditionLogic extends ConversationCondition
 	 * instance used for loading objects. Object is read using
 	 * PersistencyFactory.readObjectFromFile() of the matching PersistencyFactory.
 	 */
-	public func String persistencyFactoryName()
+	func String persistencyFactoryName()
 		return Factory.NAME
 	end
 	
 	/** \brief Write object to file writer. */
-	public func void writeObjectToFile( PersistencyEnvironment env, FileWriter writer )
-		writer.writeByte( this.pOperator.order() )
+	func void writeObjectToFile(PersistencyEnvironment env, FileWriter writer)
+		writer.writeByte(0) // version
 		
-		writer.writeUShort( this.pConditions.getCount() )
-		this.pConditions.forEach( block ConversationCondition each
-			env.writeObject( writer, each )
-		end )
+		writer.writeByte(pOperator.order())
+		
+		writer.writeUShort(pConditions.getCount())
+		pConditions.forEach(block ConversationCondition each
+			env.writeObject(writer, each)
+		end)
 	end
 end

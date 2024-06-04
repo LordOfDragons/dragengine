@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -26,11 +29,9 @@
 #include "deoglDelayedOperations.h"
 #include "deoglDelayedFileWrite.h"
 #include "deoglDelayedSaveImage.h"
-#include "deoglDelayedDeletion.h"
 #include "../deGraphicOpenGl.h"
 #include "../capabilities/deoglCapsTextureFormat.h"
 #include "../debug/deoglDebugSaveTexture.h"
-#include "../extensions/deoglExtResult.h"
 #include "../framebuffer/deoglFramebuffer.h"
 #include "../framebuffer/deoglFramebufferManager.h"
 #include "../model/deoglModelLOD.h"
@@ -46,6 +47,7 @@
 #include "../shaders/deoglShaderManager.h"
 #include "../shaders/deoglShaderProgram.h"
 #include "../shaders/deoglShaderSources.h"
+#include "../shaders/deoglShaderLoadingTimeout.h"
 #include "../skin/channel/deoglSkinChannel.h"
 #include "../skin/combinedTexture/deoglCombinedTexture.h"
 #include "../skin/combinedTexture/deoglCombinedTextureList.h"
@@ -90,43 +92,24 @@ enum eSPGenConeMap{
 
 deoglDelayedOperations::deoglDelayedOperations( deoglRenderThread &renderThread ) :
 pRenderThread( renderThread ),
-
 pHasAsyncResInitOperations( false ),
 pHasInitOperations( false ),
-
-pHasFreeOperations( false ),
-pRootDeletion( NULL ),
-pTailDeletion( NULL ),
-pDeletionCount( 0 ),
-pHasSynchronizeOperations( false ),
-
-pShaderGenConeMap( NULL ),
-pShaderGenConeMapLayer( NULL )
+pOGLObjects( nullptr ),
+pOGLObjectCount( 0 ),
+pOGLObjectSize( 0 ),
+pHasSynchronizeOperations( false )
 {
-	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
-	deoglShaderSources *sources;
-	deoglShaderDefines defines;
-	
-	try{
-		sources = shaderManager.GetSourcesNamed( "DefRen Generate ConeMap" );
-		if( ! sources ){
-			DETHROW( deeInvalidParam );
-		}
-		pShaderGenConeMap = shaderManager.GetProgramWith( sources, defines );
-		defines.RemoveAllDefines();
-		
-		defines.AddDefine( "WITH_LAYER", "1" );
-		pShaderGenConeMapLayer = shaderManager.GetProgramWith( sources, defines );
-		defines.RemoveAllDefines();
-		
-	}catch( const deException & ){
-		pCleanUp();
-		throw;
-	}
+	// do not create any kind of resources here which access this object to clean up.
+	// this is going to segfault since the object instance has not been assigned yet
+	// in the caller to the globally used variable
 }
 
 deoglDelayedOperations::~deoglDelayedOperations(){
 	pCleanUp();
+	
+	if( pOGLObjects ){
+		delete [] pOGLObjects;
+	}
 }
 
 
@@ -164,12 +147,9 @@ void deoglDelayedOperations::ProcessAsyncResInitOperations(){
 
 
 void deoglDelayedOperations::AddAsyncResInitSkin( deoglRSkin *skin ){
-	if( ! skin ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( skin )
 	
 	const deMutexGuard guard( pMutexAsyncResInit );
-	
 	pAsyncResInitSkinList.AddIfAbsent( skin );
 	pHasAsyncResInitOperations = true;
 }
@@ -183,12 +163,9 @@ void deoglDelayedOperations::RemoveAsyncResInitSkin( deoglRSkin *skin ){
 
 
 void deoglDelayedOperations::AddAsyncResInitFont( deoglRFont *font ){
-	if( ! font ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( font )
 	
 	const deMutexGuard guard( pMutexAsyncResInit );
-	
 	pAsyncResInitFontList.AddIfAbsent( font );
 	pHasAsyncResInitOperations = true;
 }
@@ -221,11 +198,10 @@ void deoglDelayedOperations::ProcessInitOperations(){
 	pInitImageList.RemoveAll();
 	
 	// initialize skins
-	count = pInitSkinList.GetCount();
-	for( i=0; i<count; i++ ){
-		pProcessSkin( *( ( deoglRSkin* )pInitSkinList.GetAt( i ) ) );
+	while( pInitSkinList.GetCount() > 0 ){
+		pProcessSkin( *( ( deoglRSkin* )pInitSkinList.GetAt( 0 ) ) );
+		pInitSkinList.RemoveFrom( 0 );
 	}
-	pInitSkinList.RemoveAll();
 	
 	// initialize models
 	count = pInitModelList.GetCount();
@@ -241,31 +217,24 @@ void deoglDelayedOperations::ProcessInitOperations(){
 
 
 void deoglDelayedOperations::AddInitImage( deoglRImage *image ){
-	if( ! image ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( image )
 	
 	const deMutexGuard guard( pMutexInit );
-	
 	pInitImageList.AddIfAbsent( image );
 	pHasInitOperations = true;
 }
 
 void deoglDelayedOperations::RemoveInitImage( deoglRImage *image ){
 	const deMutexGuard guard( pMutexInit );
-	
 	pInitImageList.RemoveIfPresent( image );
 }
 
 
 
 void deoglDelayedOperations::AddInitSkin( deoglRSkin *skin ){
-	if( ! skin ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( skin )
 	
 	const deMutexGuard guard( pMutexInit );
-	
 	pInitSkinList.AddIfAbsent( skin );
 	pHasInitOperations = true;
 }
@@ -279,12 +248,9 @@ void deoglDelayedOperations::RemoveInitSkin( deoglRSkin *skin ){
 
 
 void deoglDelayedOperations::AddInitModel( deoglRModel *model ){
-	if( ! model ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( model )
 	
 	const deMutexGuard guard( pMutexInit );
-	
 	pInitModelList.AddIfAbsent( model );
 	pHasInitOperations = true;
 }
@@ -300,111 +266,100 @@ void deoglDelayedOperations::RemoveInitModel( deoglRModel *model ){
 // Delayed render thread OpengGL deletion
 ///////////////////////////////////////////
 
-void deoglDelayedOperations::ProcessFreeOperations( bool deleteAll ){
-	// break reference loop: camera -> world -> component -> dynamic skin -> canvas or camera -> camera
-	// this has to be done before free operations are processed since breaking these links can produce
-	// free operations and adding free operations is not allowed while they are processed
-	// 
-	// NOTE amount of time required to clean up a camera depends on the world the camera is
-	//      located in. with complex worlds this can be 35ms inaverage
-	/*
-	pMutexFree.Lock();
- 	pRenderThread.GetLogger().LogInfoFormat( "deoglDelayedOperations.ProcessFreeOperations:"
- 		" camera=%d deletion=%d", pCleanUpCameraList.GetCount(), pDeletionCount );
-	pMutexFree.Unlock();
-	*/
-// 	decTimer timer;
-	
-	int count = pCleanUpCameraList.GetCount();
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		( ( deoglRCamera* )pCleanUpCameraList.GetAt( i ) )->SetParentWorld( NULL );
-	}
-	pCleanUpCameraList.RemoveAll();
-// 	const float accumCamera = timer.GetElapsedTime();
-	
-	// process free operations. empirical values indicate 1000 deletion tasks consume on
-	// average 1ms. to avoid hickups during deletion time the maximum time spend on deletion
-	// is capped to 1ms on average thus 1000 deletions per call. distributing deletions across
-	// multiple frame renders is not a problem since this kind of large deletion tasks happen
-	// only in specific situations. caller can force deleting all tasks
-	// 
-	// NOTE deletion task complexity varies a lot. to create a better distribution across
-	//      frames and to cut spikes a complexity value could be added to the deletion task.
-	//      this would be returned by the sub-class of the deletion task and would indicate
-	//      how expensive the deletion task is. then instead of the task count limit a
-	//      complexity limit coudl be used. whenever a task is done its complexity is added
-	//      to the complexity limit. this would allow to process tons of cheap deletion tasks
-	//      while not spiking if complex ones end up in the mix.
-	const deMutexGuard guard( pMutexFree );
-	
-	if( ! pHasFreeOperations ){
-		return;
-	}
-	
-	int countThreshold = 1000;
-	
-	while( pRootDeletion && ( deleteAll || countThreshold-- > 0 ) ){
-		deoglDelayedDeletion * const deletion = pRootDeletion;
-		pRootDeletion = pRootDeletion->GetLLNext();
-		if( pRootDeletion ){
-			pRootDeletion->SetLLPrev( NULL );
-		}
-		pDeletionCount--;
+void deoglDelayedOperations::ProcessFreeOperations( bool /*deleteAll*/ ){
+	{
+		const deMutexGuard guard( pMutexCameras );
+		// break reference loop: camera -> world -> component -> dynamic skin -> canvas or camera -> camera
+		// this has to be done before free operations are processed since breaking these links can produce
+		// free operations and adding free operations is not allowed while they are processed
+		// 
+		// NOTE amount of time required to clean up a camera depends on the world the camera is
+		//      located in. with complex worlds this can be 35ms inaverage
+		/*
+		pMutexFree.Lock();
+		pRenderThread.GetLogger().LogInfoFormat( "deoglDelayedOperations.ProcessFreeOperations:"
+			" camera=%d deletion=%d", pCleanUpCameraList.GetCount(), pDeletionCount );
+		pMutexFree.Unlock();
+		*/
+	// 	decTimer timer;
 		
-		deletion->DeleteObjects( pRenderThread );
-		delete deletion;
+		int count = pCleanUpCameraList.GetCount();
+		int i;
+		
+		for( i=0; i<count; i++ ){
+			( ( deoglRCamera* )pCleanUpCameraList.GetAt( i ) )->SetParentWorld( NULL );
+		}
+		pCleanUpCameraList.RemoveAll();
+	// 	const float accumCamera = timer.GetElapsedTime();
 	}
 	
-	if( pDeletionCount == 0 ){
-		pTailDeletion = NULL;
+	while( true ){
+		decObjectList list;
+		{
+		const deMutexGuard guard( pMutexReleaseObjects );
+		const int count = pReleaseObjects.GetCount();
+		if( count == 0 ){
+			break;
+		}
+		
+		int i;
+		for( i=0; i<count; i++ ){
+			list.Add( pReleaseObjects.GetAt( i ) );
+		}
+		pReleaseObjects.RemoveAll();
+		}
 	}
 	
-	pHasFreeOperations = pDeletionCount > 0;
+	// delete opengl objects
+	{
+		const deMutexGuard guard( pMutexOGLObjects );
+		pDeleteOpenGLObjects();
+	}
 	
 // 	pRenderThread.GetLogger().LogInfoFormat( "deoglDelayedOperations.ProcessFreeOperations cam=%d del=%d",
 // 		(int)(accumCamera * 1e6f), (int)(timer.GetElapsedTime() * 1e6f) );
 }
 
-
-
-void deoglDelayedOperations::AddDeletion( deoglDelayedDeletion *deletion ){
-	if( ! deletion ){
-		DETHROW( deeInvalidParam );
+void deoglDelayedOperations::DeleteOpenGLObject( eOpenGLObjectType type, GLuint name ){
+	if( ! name ){
+		return;
 	}
 	
+	const deMutexGuard lock( pMutexOGLObjects );
 	
-	if( ! pMutexFree.TryLock() ){
-		pRenderThread.GetLogger().LogInfo( "deoglDelayedDeletion.AddDeletion:"
-			" Called while MutexFree is locked. This is a debug check only."
-			" If graphic module dead-locks this could be the reason." );
-		
-		const decStringList output( deeInvalidAction( __FILE__, __LINE__ ).FormatOutput() );
-		const int count = output.GetCount();
-		int i;
-		for( i=0; i<count; i++ ){
-			pRenderThread.GetLogger().LogInfo( output.GetAt( i ) );
+	if( pOGLObjectCount == pOGLObjectSize ){
+		const int newSize = pOGLObjectSize * 3 / 2 + 1;
+		sOpenGLObject * const newArray = new sOpenGLObject[ newSize ];
+		if( pOGLObjects ){
+			memcpy( newArray, pOGLObjects, sizeof( sOpenGLObject ) * pOGLObjectSize );
+			delete [] pOGLObjects;
 		}
-		
-		pMutexFree.Lock();
+		pOGLObjects = newArray;
+		pOGLObjectSize = newSize;
 	}
 	
-	if( pTailDeletion ){
-		pTailDeletion->SetLLNext( deletion );
-		deletion->SetLLPrev( pTailDeletion );
-		pTailDeletion = deletion;
-		
-	}else{
-		pRootDeletion = deletion;
-		pTailDeletion = deletion;
+	pOGLObjects[ pOGLObjectCount++ ].Set( type, name );
+}
+
+void deoglDelayedOperations::DeleteOpenGLObject( deoglDelayedOperations::eOpenGLObjectType type, GLsync sync ){
+	if( ! sync ){
+		return;
 	}
 	
-	pDeletionCount++;
+	const deMutexGuard lock( pMutexOGLObjects );
 	
-	pHasFreeOperations = true;
+	if( pOGLObjectCount == pOGLObjectSize ){
+		const int newSize = pOGLObjectSize * 3 / 2 + 1;
+		sOpenGLObject * const newArray = new sOpenGLObject[ newSize ];
+		if( pOGLObjects ){
+			memcpy( newArray, pOGLObjects, sizeof( sOpenGLObject ) * pOGLObjectSize );
+			delete [] pOGLObjects;
+		}
+		pOGLObjects = newArray;
+		pOGLObjectSize = newSize;
+	}
 	
-	pMutexFree.Unlock();
+	pOGLObjects[ pOGLObjectCount++ ].Set( type, sync );
 }
 
 
@@ -446,35 +401,39 @@ void deoglDelayedOperations::ProcessSynchronizeOperations(){
 
 
 void deoglDelayedOperations::AddFileWrite( deoglDelayedFileWrite *fileWrite ){
-	if( ! fileWrite ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( fileWrite )
 	
 	const deMutexGuard guard( pMutexSynchronize );
-	
 	pFileWriteList.Add( fileWrite );
 	pHasSynchronizeOperations = true;
 }
 
 void deoglDelayedOperations::AddSaveImage( deoglDelayedSaveImage *saveImage ){
-	if( ! saveImage ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( saveImage )
 	
 	const deMutexGuard guard( pMutexSynchronize );
-	
 	pSaveImageList.Add( saveImage );
 	pHasSynchronizeOperations = true;
 }
 
 void deoglDelayedOperations::AddCleanUpCamera( deoglRCamera *camera ){
-	if( ! camera ){
-		DETHROW( deeInvalidParam );
+	if( camera ){
+		const deMutexGuard guard( pMutexCameras );
+		pCleanUpCameraList.AddIfAbsent( camera );
 	}
-	
-	const deMutexGuard guard( pMutexFree );
-	
-	pCleanUpCameraList.AddIfAbsent( camera );
+}
+
+void deoglDelayedOperations::AddReleaseObject( deObject *object ){
+	if( object ){
+		const deMutexGuard guard( pMutexReleaseObjects );
+		pReleaseObjects.Add( object );
+	}
+}
+
+
+
+void deoglDelayedOperations::Clear(){
+	pCleanUp();
 }
 
 
@@ -483,6 +442,12 @@ void deoglDelayedOperations::AddCleanUpCamera( deoglRCamera *camera ){
 //////////////////////
 
 void deoglDelayedOperations::pCleanUp(){
+	ProcessFreeOperations( true );
+	
+	// drop shaders to avoid cleanup finding them as leaking
+	pShaderGenConeMap = nullptr;
+	pShaderGenConeMapLayer = nullptr;
+	
 	// free lists. this can produce deletion objects which we can report as problems
 	pInitImageList.RemoveAll();
 	pInitSkinList.RemoveAll();
@@ -493,28 +458,10 @@ void deoglDelayedOperations::pCleanUp(){
 	pCleanUpCameraList.RemoveAll();
 	
 	// free deletion objects
-	if( pDeletionCount > 0 ){
-		pRenderThread.GetOgl().LogWarnFormat( "%i unprocessed delayed deletions dropped", pDeletionCount );
-	}
-	while( pRootDeletion ){
-		pTailDeletion = pRootDeletion;
-		pRootDeletion = pRootDeletion->GetLLNext();
-		delete pTailDeletion;
-	}
-	pTailDeletion = NULL;
+	pDeleteOpenGLObjects();
 	
 	// process outstanding synchronization actions
 	ProcessSynchronizeOperations();
-	
-	// clean up the rest
-	if( pShaderGenConeMapLayer ){
-		pShaderGenConeMapLayer->RemoveUsage();
-		pShaderGenConeMapLayer = NULL;
-	}
-	if( pShaderGenConeMap ){
-		pShaderGenConeMap->RemoveUsage();
-		pShaderGenConeMap = NULL;
-	}
 }
 
 
@@ -536,12 +483,12 @@ void deoglDelayedOperations::pProcessSkin( deoglRSkin &skin ){
 				continue;
 			}
 			
-			deoglPixelBufferMipMap * const pixelBufferMipMap = skinChannel->GetPixelBufferMipMap();
+			const deoglPixelBufferMipMap * const pixelBufferMipMap = skinChannel->GetPixelBufferMipMap();
 			if( ! pixelBufferMipMap ){
 				continue;
 			}
 			
-			deoglPixelBuffer &basePixelBuffer = *pixelBufferMipMap->GetPixelBuffer( 0 );
+			const deoglPixelBuffer &basePixelBuffer = pixelBufferMipMap->GetPixelBuffer( 0 );
 			const int pixelBufferCount = pixelBufferMipMap->GetPixelBufferCount();
 			deoglArrayTexture * const arrayTexture = skinChannel->GetArrayTexture();
 			deoglCubeMap * const cubemap = skinChannel->GetCubeMap();
@@ -719,11 +666,24 @@ void deoglDelayedOperations::pProcessSkin( deoglRSkin &skin ){
 			}
 			*/
 			
-			skinChannel->SetPixelBufferMipMap( NULL );
+			skinChannel->SetPixelBufferMipMap( nullptr );
 		}
 	}
 	
-	skin.UpdateMemoryUsage();
+	for( t=0; t<textureCount; t++ ){
+		deoglSkinTexture &skinTexture = skin.GetTextureAt( t );
+		
+		// assign render task shared index. has to be done here since during constructor
+		// time this would cause concurrent access to the global pool
+		skinTexture.AssignRTSIndex();
+		
+		skinTexture.PrepareParamBlock();
+	}
+	
+	// this can take some time if pipelines are not prepared yet due to compiling shaders.
+	// asynchonous skins prepare pipelines using the loader thread if enabled. if disabled
+	// or if synchronous this call here prepares the pipelines
+	skin.PrepareTexturePipelines();
 }
 
 void deoglDelayedOperations::pProcessModel( deoglRModel &model ){
@@ -759,8 +719,9 @@ void deoglDelayedOperations::pGenerateConeMap( deoglRSkin &skin, const deoglSkin
 		return; // should not happen
 	}
 	
-	deoglPixelBuffer pbConeMap( deoglPixelBuffer::epfByte1, size.x, size.y, size.z );
-	pbConeMap.SetToIntColor( 255, 255, 255, 255 );
+	const deoglPixelBuffer::Ref pbConeMap( deoglPixelBuffer::Ref::New(
+		new deoglPixelBuffer( deoglPixelBuffer::epfByte1, size.x, size.y, size.z ) ) );
+	pbConeMap->SetToIntColor( 255, 255, 255, 255 );
 	
 	stepCount = 128;
 	
@@ -816,14 +777,32 @@ void deoglDelayedOperations::pGenerateConeMap( deoglRSkin &skin, const deoglSkin
 		OGL_CHECK( pRenderThread, glViewport( 0, 0, size.x, size.y ) );
 		
 		// set up shader
+		const deoglShaderProgram *program = nullptr;
+
 		if( channelTexture ){
-			pRenderThread.GetShader().ActivateShader( pShaderGenConeMap );
-			shader = pShaderGenConeMap->GetCompiled();
+			if( ! pShaderGenConeMap ){
+				deoglShaderManager &shaderManager = pRenderThread.GetShader().GetShaderManager();
+				const deoglShaderSources * const sources = shaderManager.GetSourcesNamed( "DefRen Generate ConeMap" );
+				DEASSERT_NOTNULL( sources )
+				deoglShaderDefines defines;
+				pShaderGenConeMap = shaderManager.GetProgramWith( sources, defines );
+			}
+			program = pShaderGenConeMap;
 			
 		}else{
-			pRenderThread.GetShader().ActivateShader( pShaderGenConeMapLayer );
-			shader = pShaderGenConeMapLayer->GetCompiled();
+			if( ! pShaderGenConeMapLayer ){
+				deoglShaderManager &shaderManager = pRenderThread.GetShader().GetShaderManager();
+				const deoglShaderSources * const sources = shaderManager.GetSourcesNamed( "DefRen Generate ConeMap" );
+				DEASSERT_NOTNULL( sources )
+				deoglShaderDefines defines;
+				defines.SetDefines( "WITH_LAYER" );
+				pShaderGenConeMapLayer = shaderManager.GetProgramWith( sources, defines );
+			}
+			program = pShaderGenConeMapLayer;
 		}
+
+		pRenderThread.GetShader().ActivateShader( program );
+		shader = program->GetCompiled();
 		
 		shader->SetParameterInt( spgcmWidth, size.x );
 		shader->SetParameterFloat( spgcmSrcTCTransform, 0.5f, 0.5f, 0.5f, 0.5f );
@@ -835,7 +814,7 @@ void deoglDelayedOperations::pGenerateConeMap( deoglRSkin &skin, const deoglSkin
 			//1.0f / ( float )width, 1.0f / ( float )height,
 			//0.5f / ( float )width, 0.5f / ( float )height );
 		shader->SetParameterInt( spgcmStepCount, stepCount );
-		shader->SetParameterFloat( spgcmStepFactor, 1.0 / ( float )stepCount );
+		shader->SetParameterFloat( spgcmStepFactor, 1.0f / ( float )stepCount );
 		
 		if( channelTexture ){
 			tsmgr.EnableTexture( 0, *channelTexture, *pRenderThread.GetShader().GetTexSamplerConfig( deoglRTShader::etscClampLinear ) );
@@ -854,6 +833,7 @@ void deoglDelayedOperations::pGenerateConeMap( deoglRSkin &skin, const deoglSkin
 				//      like a waste of processing time. On the other hand this would avoid switching the
 				//      FBO target all time. check this problem out if it is really used and shows to be
 				//      a problem. Using layer-rebinding is the simpler solution
+				fbo->DetachAllImages();
 				fbo->AttachColorArrayTextureLayer( 0, coneMapArr, i );
 				shader->SetParameterFloat( spgcmLayer, ( float )i );
 				OGL_CHECK( pRenderThread, pglDrawArraysInstanced( GL_TRIANGLE_FAN, 0, 4, size.x * size.y ) );
@@ -901,4 +881,56 @@ void deoglDelayedOperations::pGenerateConeMap( deoglRSkin &skin, const deoglSkin
 	
 	pRenderThread.GetLogger().LogInfoFormat( "deoglDelayedOperations.pGenerateConeMap: Generated cone map in %ims",
 		( int )( timer.GetElapsedTime() * 1000.0f ) );
+}
+
+void deoglDelayedOperations::pDeleteOpenGLObjects(){
+	int i;
+	for( i=0; i<pOGLObjectCount; i++ ){
+		const sOpenGLObject &entry = pOGLObjects[ i ];
+		
+		switch( entry.type ){
+		case eoglotBuffer:
+			pglDeleteBuffers( 1, &entry.name );
+			break;
+			
+		case eoglotBuffererPersistUnmap:
+			pglUnmapNamedBuffer( entry.name );
+			pglDeleteBuffers( 1, &entry.name );
+			break;
+			
+		case eoglotTexture:
+			glDeleteTextures( 1, &entry.name );
+			break;
+			
+		case eoglotVertexArray:
+			pglDeleteVertexArrays( 1, &entry.name );
+			break;
+			
+		case eoglotFramebuffer:
+			pglDeleteFramebuffers( 1, &entry.name );
+			break;
+			
+		case eoglotQuery:
+			pglDeleteQueries( 1, &entry.name );
+			break;
+			
+		case eoglotSampler:
+			pglDeleteSamplers( 1, &entry.name );
+			break;
+			
+		case eoglotProgram:
+			pglDeleteProgram( entry.name );
+			break;
+			
+		case eoglotShader:
+			pglDeleteShader( entry.name );
+			break;
+			
+		case eoglotSync:
+			pglDeleteSync( entry.sync );
+			break;
+		}
+	}
+	
+	pOGLObjectCount = 0;
 }

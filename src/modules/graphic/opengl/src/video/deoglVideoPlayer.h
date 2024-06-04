@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLVIDEOPLAYER_H_
@@ -36,7 +39,7 @@ class deGraphicOpenGl;
 
 
 /**
- * \brief Video player peer.
+ * Video player peer.
  */
 class deoglVideoPlayer : public deBaseGraphicVideoPlayer{
 public:
@@ -64,10 +67,10 @@ public:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create new peer. */
+	/** Create new peer. */
 	deoglVideoPlayer( deGraphicOpenGl &ogl, deVideoPlayer &videoPlayer );
 	
-	/** \brief Clean up peer. */
+	/** Clean up peer. */
 	virtual ~deoglVideoPlayer();
 	/*@}*/
 	
@@ -75,37 +78,37 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief OpenGL module. */
+	/** OpenGL module. */
 	inline deGraphicOpenGl &GetOpenGL(){ return pOgl; }
 	inline const deGraphicOpenGl &GetOpenGL() const{ return pOgl; }
 	
-	/** \brief Video player. */
+	/** Video player. */
 	inline const deVideoPlayer &GetVideoPlayer() const{ return pVideoPlayer; }
 	
-	/** \brief Current frame. */
+	/** Current frame. */
 	inline int GetCurrentFrame() const{ return pCurFrame; }
 	
-	/** \brief Render video player or \em NULL if not existing. */
+	/** Render video player or \em NULL if not existing. */
 	inline deoglRVideoPlayer *GetRVideoPlayer() const{ return pRVideoPlayer; }
 	
-	/** \brief Set current frame. */
+	/** Set current frame. */
 	void SetCurrentFrame( int frame );
 	
-	/** \brief Update next frame. */
+	/** Update next frame. */
 	void UpdateNextFrame();
 	
 	
 	
-	/** \brief Update render thread counterpart if required. */
+	/** Update render thread counterpart if required. */
 	void SyncToRender();
 	
 	
 	
-	/** \brief Renderables to notify about dirty events. */
+	/** Renderables to notify about dirty events. */
 	inline decPointerSet &GetNotifyRenderables(){ return pNotifyRenderables; }
 	inline const decPointerSet &GetNotifyRenderables() const{ return pNotifyRenderables; }
 	
-	/** \brief Canvas to notify about dirty events. */
+	/** Canvas to notify about dirty events. */
 	inline decPointerSet &GetNotifyCanvas(){ return pNotifyCanvas; }
 	inline const decPointerSet &GetNotifyCanvas() const{ return pNotifyCanvas; }
 	/*@}*/
@@ -114,25 +117,25 @@ public:
 	
 	/** \name Notifications */
 	/*@{*/
-	/** \brief Sound source changed. */
+	/** Sound source changed. */
 	virtual void SourceChanged();
 	
-	/** \brief Looping changed. */
+	/** Looping changed. */
 	virtual void LoopingChanged();
 	
-	/** \brief Play range changed. */
+	/** Play range changed. */
 	virtual void PlayRangeChanged();
 	
-	/** \brief Play speed changed. */
+	/** Play speed changed. */
 	virtual void PlaySpeedChanged();
 	
 	/**
-	 * \brief Play position changed.
+	 * Play position changed.
 	 * \param[in] seeking Changed due to seeking or by deVideoPlayer::Update().
 	 */
 	virtual void PlayPositionChanged( bool seeking );
 	
-	/** \brief Play state changed. */
+	/** Play state changed. */
 	virtual void PlayStateChanged();
 	/*@}*/
 	

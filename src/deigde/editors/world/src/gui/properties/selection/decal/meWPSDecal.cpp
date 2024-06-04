@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE World Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -68,6 +71,8 @@
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/composed/igdeEditPathListener.h>
+#include <deigde/gui/composed/igdeEditDVector.h>
+#include <deigde/gui/composed/igdeEditDVectorListener.h>
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/composed/igdeEditVectorListener.h>
 #include <deigde/gui/composed/igdeEditVector2.h>
@@ -160,6 +165,29 @@ public:
 	virtual igdeUndo *OnChanged( const decVector &vector, meDecal *decal ) = 0;
 };
 
+class cBaseEditDVectorListener : public igdeEditDVectorListener{
+protected:
+	meWPSDecal &pPanel;
+	
+public:
+	cBaseEditDVectorListener( meWPSDecal &panel ) : pPanel( panel ){ }
+	
+	virtual void OnDVectorChanged( igdeEditDVector *editDVector ){
+		meDecal * const decal = pPanel.GetActiveDecal();
+		if( ! decal ){
+			return;
+		}
+		
+		igdeUndoReference undo;
+		undo.TakeOver( OnChanged( editDVector->GetDVector(), decal ) );
+		if( undo ){
+			decal->GetWorld()->GetUndoSystem()->Add( undo );
+		}
+	}
+	
+	virtual igdeUndo *OnChanged( const decDVector &vector, meDecal *decal ) = 0;
+};
+
 class cBaseEditVector2Listener : public igdeEditVector2Listener{
 protected:
 	meWPSDecal &pPanel;
@@ -206,11 +234,11 @@ public:
 	}
 };
 
-class cEditPosition : public cBaseEditVectorListener{
+class cEditPosition : public cBaseEditDVectorListener{
 public:
-	cEditPosition( meWPSDecal &panel ) : cBaseEditVectorListener( panel ){}
+	cEditPosition( meWPSDecal &panel ) : cBaseEditDVectorListener( panel ){}
 	
-	virtual igdeUndo *OnChanged( const decVector &vector, meDecal *decal ){
+	virtual igdeUndo *OnChanged( const decDVector &vector, meDecal *decal ){
 		return ! decal->GetPosition().IsEqualTo( vector ) ? new meUDecalPosition( decal, vector ) : NULL;
 	}
 };
@@ -477,7 +505,7 @@ pWorld( NULL )
 	helper.EditString( groupBox, "ID:", "Unique decal ID", pEditID, NULL );
 	pEditID->SetEditable( false );
 	
-	helper.EditVector( groupBox, "Position:", "Position of decal.", pEditPosition, new cEditPosition( *this ) );
+	helper.EditDVector( groupBox, "Position:", "Position of decal.", pEditPosition, new cEditPosition( *this ) );
 	helper.EditVector( groupBox, "Rotation:", "Rotation of decal.", pEditRotation, new cEditRotation( *this ) );
 	helper.EditVector( groupBox, "Size:", "Size of decal.", pEditSize, new cEditSize( *this ) );
 	helper.EditInteger( groupBox, "Order:", "Drawing order of decal.", pEditOrder, new cEditOrder( *this ) );
@@ -626,12 +654,12 @@ void meWPSDecal::UpdateGeometry(){
 	if( decal ){
 		//pEditID->SetText( decal->GetID() ); // not created
 		
-		pEditPosition->SetVector( decal->GetPosition() );
+		pEditPosition->SetDVector( decal->GetPosition() );
 		pEditSize->SetVector( decal->GetSize() );
 		pEditRotation->SetVector( decal->GetRotation() );
 		
 	}else{
-		pEditPosition->SetVector( decVector() );
+		pEditPosition->SetDVector( decDVector() );
 		pEditSize->SetVector( decVector() );
 		pEditRotation->SetVector( decVector() );
 	}

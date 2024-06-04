@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -25,10 +28,10 @@
 
 #include "deoglRSkin.h"
 #include "deoglSkinCalculatedProperty.h"
+#include "deoglSkinConstructedProperty.h"
 #include "deoglSkinTexture.h"
 #include "deoglSkinPropertyMap.h"
 #include "deoglSkinRenderable.h"
-#include "shader/deoglSkinShader.h"
 #include "shader/deoglSkinShaderManager.h"
 #include "state/deoglSkinState.h"
 #include "state/deoglSkinStateRenderable.h"
@@ -40,6 +43,7 @@
 #include "../devmode/deoglDeveloperMode.h"
 #include "../rendering/deoglRenderReflection.h"
 #include "../rendering/defren/deoglDeferredRendering.h"
+#include "../rendering/task/shared/deoglRenderTaskSharedPool.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTChoices.h"
 #include "../renderthread/deoglRTDebug.h"
@@ -51,6 +55,10 @@
 #include "../shaders/paramblock/deoglSPBlockSSBO.h"
 #include "../shaders/paramblock/deoglShaderParameterBlock.h"
 #include "../shaders/paramblock/shared/deoglSharedSPBList.h"
+#include "../shaders/paramblock/shared/deoglSharedSPBElement.h"
+#include "../shaders/paramblock/shared/deoglSharedSPBRTIGroup.h"
+#include "../shaders/paramblock/shared/deoglSharedSPBElementMapBuffer.h"
+#include "../skin/channel/deoglSCConstructedDynamic.h"
 #include "../texture/arraytexture/deoglArrayTexture.h"
 #include "../texture/compression/deoglTextureCompression.h"
 #include "../texture/cubemap/deoglCubeMap.h"
@@ -76,7 +84,9 @@
 #include <dragengine/resources/skin/property/deSkinPropertyValue.h>
 #include <dragengine/resources/skin/property/deSkinPropertyVideo.h>
 #include <dragengine/resources/skin/property/deSkinPropertyMapped.h>
+#include <dragengine/resources/skin/property/deSkinPropertyConstructed.h>
 #include <dragengine/resources/skin/property/deSkinPropertyVisitorIdentify.h>
+#include <dragengine/resources/skin/property/node/deSkinPropertyNodeGroup.h>
 
 
 
@@ -86,238 +96,6 @@
 #define ENABLE_CACHE_LOGGING		false
 
 #define CACHE_FILE_VERSION			1
-
-enum eShaderConfigurationTypes{
-	esctGeometry,
-	esctDepth,
-	esctCounter,
-	esctShadow,
-	esctEnvMap,
-	esctOutlineGeometry,
-	esctOutlineDepth,
-	esctOutlineCounter
-};
-
-//#define SSC( enumentry ) deoglSkinShaderConfig::enumentry
-#define SCIE(type, clipPlane, billboard, shaderMode, geometryMode, depthMode, particleMode, depthTestMode) \
-	{ esct##type, clipPlane, billboard, \
-		deoglSkinShaderConfig::esm##shaderMode, \
-		deoglSkinShaderConfig::egm##geometryMode, \
-		deoglSkinShaderConfig::edm##depthMode, \
-		deoglSkinShaderConfig::epm##particleMode, \
-		deoglSkinShaderConfig::edtm##depthTestMode }
-
-struct sShaderConfigInfo{
-	eShaderConfigurationTypes type;
-	bool clipPlane;
-	bool billboard;
-	deoglSkinShaderConfig::eShaderModes shaderMode;
-	deoglSkinShaderConfig::eGeometryModes geometryMode;
-	deoglSkinShaderConfig::eDepthModes depthMode;
-	deoglSkinShaderConfig::eParticleModes particleMode;
-	deoglSkinShaderConfig::eDepthTestModes depthTestMode;
-};
-
-static sShaderConfigInfo vShaderConfigInfo[ deoglSkinTexture::ShaderTypeCount ] = {
-	// Component
-	//   Depth Node edmDepth
-	//     depth test mode is used only for !pSolid. For pSolid edtmNone is used
-	
-	// estComponentGeometry
-	SCIE(Geometry, false, false, Geometry, Component, Projection, Particle, None),
-	// estComponentDepth
-	SCIE(Depth, false, false, Depth, Component, Projection, Particle, Larger),
-	// estComponentDepthClipPlane
-	SCIE(Depth, true, false, Depth, Component, Projection, Particle, Larger),
-	// estComponentDepthReversed
-	SCIE(Depth, false, false, Depth, Component, Projection, Particle, Smaller),
-	// estComponentDepthClipPlaneReversed
-	SCIE(Depth, true, false, Depth, Component, Projection, Particle, Smaller),
-	// estComponentCounter
-	SCIE(Counter, false, false, Depth, Component, Projection, Particle, None),
-	// estComponentCounterClipPlane
-	SCIE(Counter, true, false, Depth, Component, Projection, Particle, None),
-	// estComponentShadowProjection
-	SCIE(Shadow, false, false, Depth, Component, Projection, Particle, None),
-	// estComponentShadowOrthogonal
-	SCIE(Shadow, false, false, Depth, Component, Orthogonal, Particle, None),
-	// estComponentShadowDistance
-	SCIE(Shadow, false, false, Depth, Component, Distance, Particle, None),
-	// estComponentShadowDistanceCube
-	SCIE(Shadow, false, false, Depth, Component, Distance, Particle, None),
-	// estComponentEnvMap
-	SCIE(EnvMap, false, false, EnvMap, Component, Projection, Particle, None),
-	
-	
-	// Billboard
-	// estBillboardGeometry
-	SCIE(Geometry, false, true, Geometry, Billboard, Projection, Particle, None),
-	// estBillboardDepth
-	SCIE(Depth, false, true, Depth, Billboard, Projection, Particle, Larger),
-	// estBillboardDepthClipPlane
-	SCIE(Depth, true, true, Depth, Billboard, Projection, Particle, Larger),
-	// estBillboardDepthReversed
-	SCIE(Depth, false, true, Depth, Billboard, Projection, Particle, Smaller),
-	// estBillboardDepthClipPlaneReversed
-	SCIE(Depth, true, true, Depth, Billboard, Projection, Particle, Smaller),
-	// estBillboardCounter
-	SCIE(Counter, false, true, Depth, Billboard, Projection, Particle, None),
-	// estBillboardCounterClipPlane
-	SCIE(Counter, true, true, Depth, Billboard, Projection, Particle, None),
-	// estBillboardEnvMap
-	SCIE(EnvMap, false, true, EnvMap, Billboard, Projection, Particle, None),
-	
-	
-	// Decal
-	
-	// estDecalGeometry
-	SCIE(Geometry, false, false, Geometry, Decal, Projection, Particle, None),
-	// estDecalEnvMap
-	SCIE(EnvMap, false, false, EnvMap, Decal, Projection, Particle, None),
-	
-	
-	
-	// Prop Field
-	//   Depth Node edmDepth
-	//     depth test mode is used only for !pSolid. For pSolid edtmNone is used
-	
-	// estPropFieldGeometry
-	SCIE(Geometry, false, false, Geometry, PropField, Projection, Particle, None),
-	// estPropFieldImposterGeometry
-	SCIE(Geometry, false, true, Geometry, PropField, Projection, Particle, None),
-	// estPropFieldDepth
-	SCIE(Depth, false, false, Depth, PropField, Projection, Particle, Larger),
-	// estPropFieldImposterDepth
-	SCIE(Depth, false, true, Depth, PropField, Projection, Particle, Larger),
-	// estPropFieldDepthClipPlane
-	SCIE(Depth, true, false, Depth, PropField, Projection, Particle, Larger),
-	// estPropFieldImposterDepthClipPlane
-	SCIE(Depth, true, true, Depth, PropField, Projection, Particle, Larger),
-	// estPropFieldDepthReversed
-	SCIE(Depth, false, false, Depth, PropField, Projection, Particle, Smaller),
-	// estPropFieldImposterDepthReversed
-	SCIE(Depth, false, true, Depth, PropField, Projection, Particle, Smaller),
-	// estPropFieldDepthClipPlaneReversed
-	SCIE(Depth, true, false, Depth, PropField, Projection, Particle, Smaller),
-	// estPropFieldImposterDepthClipPlaneReversed
-	SCIE(Depth, true, true, Depth, PropField, Projection, Particle, Smaller),
-	// estPropFieldCounter
-	SCIE(Counter, false, false, Depth, PropField, Projection, Particle, None),
-	// estPropFieldCounterClipPlane
-	SCIE(Counter, true, false, Depth, PropField, Projection, Particle, None),
-	// estPropFieldShadowProjection
-	SCIE(Shadow, false, false, Depth, PropField, Projection, Particle, None),
-	// estPropFieldShadowOrthogonal
-	SCIE(Shadow, false, false, Depth, PropField, Orthogonal, Particle, None),
-	// estPropFieldShadowDistance
-	SCIE(Shadow, false, false, Depth, PropField, Distance, Particle, None),
-	// estPropFieldEnvMap
-	SCIE(EnvMap, false, false, EnvMap, PropField, Projection, Particle, None),
-	
-	
-	// Height Terrain
-	//   Depth Node edmDepth
-	//     depth test mode is used only for !pSolid. For pSolid edtmNone is used
-	
-	// estHeightMapGeometry
-	SCIE(Geometry, false, false, Geometry, HeightMap, Projection, Particle, None),
-	// estHeightMapDepth
-	SCIE(Depth, false, false, Depth, HeightMap, Projection, Particle, Larger),
-	// estHeightMapDepthClipPlane
-	SCIE(Depth, true, false, Depth, HeightMap, Projection, Particle, Larger),
-	// estHeightMapDepthReversed
-	SCIE(Depth, false, false, Depth, HeightMap, Projection, Particle, Smaller),
-	// estHeightMapDepthClipPlaneReversed
-	SCIE(Depth, true, false, Depth, HeightMap, Projection, Particle, Smaller),
-	// estHeightMapCounter
-	SCIE(Counter, false, false, Depth, HeightMap, Projection, Particle, None),
-	// estHeightMapCounterClipPlane
-	SCIE(Counter, true, false, Depth, HeightMap, Projection, Particle, None),
-	// estHeightMapShadowProjection
-	SCIE(Shadow, false, false, Depth, HeightMap, Projection, Particle, None),
-	// estHeightMapShadowOrthogonal
-	SCIE(Shadow, false, false, Depth, HeightMap, Orthogonal, Particle, None),
-	// estHeightMapShadowDistance
-	SCIE(Shadow, false, false, Depth, HeightMap, Distance, Particle, None),
-	// estHeightMapEnvMap
-	SCIE(EnvMap, false, false, EnvMap, HeightMap, Projection, Particle, None),
-	
-	
-	// Particle Emitter
-	
-	// estParticleGeometry
-	SCIE(Geometry, false, false, Geometry, Particle, Projection, Particle, None),
-	// estParticleGeometryDepthtest
-	SCIE(Geometry, false, false, Geometry, Particle, Projection, Particle, Larger),
-	// estParticleDepth
-	SCIE(Depth, false, false, Depth, Particle, Projection, Particle, Larger),
-	// estParticleDepthClipPlane
-	SCIE(Depth, true, false, Depth, Particle, Projection, Particle, Larger),
-	// estParticleDepthReversed
-	SCIE(Depth, false, false, Depth, Particle, Projection, Particle, Smaller),
-	// estParticleDepthClipPlaneReversed
-	SCIE(Depth, true, false, Depth, Particle, Projection, Particle, Smaller),
-	// estParticleShadowProjection
-	SCIE(Shadow, false, false, Depth, Particle, Projection, Particle, None),
-	// estParticleShadowOrthogonal
-	SCIE(Shadow, false, false, Depth, Particle, Orthogonal, Particle, None),
-	// estParticleShadowDistance
-	SCIE(Shadow, false, false, Depth, Particle, Distance, Particle, None),
-	// estParticleCounter
-	SCIE(Counter, false, false, Depth, Particle, Projection, Particle, None),
-	// estParticleCounterClipPlane
-	SCIE(Counter, true, false, Depth, Particle, Projection, Particle, None),
-	// estParticleRibbonGeometry
-	SCIE(Geometry, false, false, Geometry, Particle, Projection, Ribbon, None),
-	// estParticleRibbonGeometryDepthtest
-	SCIE(Geometry, false, false, Geometry, Particle, Projection, Ribbon, Larger),
-	// estParticleRibbonDepth
-	SCIE(Depth, false, false, Depth, Particle, Projection, Ribbon, Larger),
-	// estParticleRibbonDepthClipPlane
-	SCIE(Depth, true, false, Depth, Particle, Projection, Ribbon, Larger),
-	// estParticleRibbonDepthReversed
-	SCIE(Depth, false, false, Depth, Particle, Projection, Ribbon, Smaller),
-	// estParticleRibbonDepthClipPlaneReversed
-	SCIE(Depth, true, false, Depth, Particle, Projection, Ribbon, Smaller),
-	// estParticleRibbonCounter
-	SCIE(Counter, false, false, Depth, Particle, Projection, Ribbon, None),
-	// estParticleRibbonCounterClipPlane
-	SCIE(Counter, true, false, Depth, Particle, Projection, Ribbon, None),
-	// estParticleBeamGeometry
-	SCIE(Geometry, false, false, Geometry, Particle, Projection, Beam, None),
-	// estParticleBeamGeometryDepthtest
-	SCIE(Geometry, false, false, Geometry, Particle, Projection, Beam, Larger),
-	// estParticleBeamDepth
-	SCIE(Depth, false, false, Depth, Particle, Projection, Beam, Larger),
-	// estParticleBeamDepthClipPlane
-	SCIE(Depth, true, false, Depth, Particle, Projection, Beam, Larger),
-	// estParticleBeamDepthReversed
-	SCIE(Depth, false, false, Depth, Particle, Projection, Beam, Smaller),
-	// estParticleBeamDepthClipPlaneReversed
-	SCIE(Depth, true, false, Depth, Particle, Projection, Beam, Smaller),
-	// estParticleBeamCounter
-	SCIE(Counter, false, false, Depth, Particle, Projection, Beam, None),
-	// estParticleBeamCounterClipPlane
-	SCIE(Counter, true, false, Depth, Particle, Projection, Beam, None),
-	
-	
-	
-	// Outline
-	// estOutlineGeometry
-	SCIE(OutlineGeometry, false, false, Geometry, Component, Projection, Particle, None),
-	// estOutlineDepth
-	SCIE(OutlineDepth, false, false, Depth, Component, Projection, Particle, Larger),
-	// estOutlineDepthClipPlane
-	SCIE(OutlineDepth, true, false, Depth, Component, Projection, Particle, Larger),
-	// estOutlineDepthReversed
-	SCIE(OutlineDepth, false, false, Depth, Component, Projection, Particle, Smaller),
-	// estOutlineDepthClipPlaneReversed
-	SCIE(OutlineDepth, true, false, Depth, Component, Projection, Particle, Smaller),
-	// estOutlineCounter
-	SCIE(OutlineCounter, false, false, Depth, Component, Projection, Particle, None),
-	// estOutlineCounterClipPlane
-	SCIE(OutlineCounter, true, false, Depth, Component, Projection, Particle, None),
-};
 
 
 
@@ -336,7 +114,11 @@ static sShaderConfigInfo vShaderConfigInfo[ deoglSkinTexture::ShaderTypeCount ] 
 
 deoglSkinTexture::deoglSkinTexture( deoglRenderThread &renderThread, deoglRSkin &skin, const deSkinTexture &texture ) :
 pRenderThread( renderThread ),
-pName( texture.GetName() )
+pRTSIndex( -1 ),
+pSkin( skin ),
+pName( texture.GetName() ),
+pPipelines( *this ),
+pSharedSPBElement( nullptr )
 {
 	// NOTE this is called during asynchronous resource loading. careful accessing other objects
 	
@@ -352,16 +134,13 @@ pName( texture.GetName() )
 	pQuickTransp = false;
 	pDynamicChannels = false;
 	pCalculatedProperties = false;
+	pConstructedProperties = false;
+	pBoneProperties = false;
 	pRenderableChannels = false;
 	pRenderableMaterialProperties = false;
 	
 	for( i=0; i<deoglSkinChannel::CHANNEL_COUNT; i++ ){
 		pChannels[ i ] = NULL;
-	}
-	
-	for( i=0; i<ShaderTypeCount; i++ ){
-		pShaders[ i ] = NULL;
-		pParamBlocks[ i ] = NULL;
 	}
 	
 	pAbsorption.Set( 0.0f, 0.0f, 0.0f );
@@ -379,6 +158,7 @@ pName( texture.GetName() )
 	pEmissivityTint.Set( 1.0f, 1.0f, 1.0f );
 	pEmissivityIntensity = 0.0f;
 	pEmissivity.SetZero();
+	pEmissivityCameraAdapted = false;
 	pEnvironmentRoomEmissivityTint.Set( 1.0f, 1.0f, 1.0f );
 	pEnvironmentRoomEmissivityIntensity = 0.0f;
 	pEnvironmentRoomSize.Set( 1.0f, 1.0f );
@@ -403,6 +183,7 @@ pName( texture.GetName() )
 	pSolidity = 1.0f;
 	pSolidityMultiplier = 1.0f;
 	pSolidityMasked = false;
+	pSolidityFilterPriority = 0.5f;
 	
 	pReflected = true;
 	pShadeless = false;
@@ -414,6 +195,7 @@ pName( texture.GetName() )
 	pTexCoordOffset.Set( 0.0f, 0.0f );
 	pTexCoordScale.Set( 1.0f, 1.0f );
 	pTexCoordRotate = 0.0f;
+	pRenderTaskFilters = 0;
 	
 	pVariationU = false;
 	pVariationV = false;
@@ -421,14 +203,30 @@ pName( texture.GetName() )
 	pParticleSheetCount = 1;
 	
 	pOutlineColor.Set( 0.0f, 0.0f, 0.0f );
+	pOutlineColorTint.Set( 1.0f, 1.0f, 1.0f );
 	pOutlineThickness = 0.0f;
 	pOutlineThicknessScreen = false;
 	pOutlineSolidity = 1.0f;
 	pOutlineEmissivity.Set( 0.0f, 0.0f, 0.0f );
+	pOutlineEmissivityTint.Set( 1.0f, 1.0f, 1.0f );
 	pOutlineEmissivityIntensity = 0.0f;
 	pHasOutline = false;
 	pIsOutlineSolid = true;
 	pIsOutlineEmissive = false;
+	
+	pRimEmissivity.Set( 0.0f, 0.0f, 0.0f );
+	pRimEmissivityTint.Set( 1.0f, 1.0f, 1.0f );
+	pRimEmissivityIntensity = 0.0f;
+	pRimAngle = 0.0f;
+	pRimExponent = 1.0f;
+	
+	pNonPbrAlbedo.Set( 0.0f, 0.0f, 0.0f );
+	pNonPbrMetalness = 0.0f;
+	
+	pSkinClipPlane = 0.0f;
+	pSkinClipPlaneBorder = 0.0f;
+	
+	pXRay = false;
 	
 	pMirror = false;
 	pRendered = false;
@@ -474,6 +272,8 @@ pName( texture.GetName() )
 			pHasHoles = false;
 		}
 	}
+	
+	pUpdateRenderTaskFilters();
 }
 
 deoglSkinTexture::~deoglSkinTexture(){
@@ -484,6 +284,15 @@ deoglSkinTexture::~deoglSkinTexture(){
 
 // Management
 ///////////////
+
+void deoglSkinTexture::AssignRTSIndex(){
+	if( pRTSIndex != -1 ){
+		return;
+	}
+	
+	pRTSIndex = pRenderThread.GetRenderTaskSharedPool().AssignSkinTexture( this );
+	pRenderThread.GetShader().InvalidateSSBOSkinTextures();
+}
 
 void deoglSkinTexture::BuildChannels( deoglRSkin &skin, const deSkinTexture &texture ){
 	// NOTE this is called during asynchronous resource loading. careful accessing other objects
@@ -599,6 +408,10 @@ void deoglSkinTexture::SetSolidityMasked( bool solidityMasked ){
 	pSolidityMasked = solidityMasked;
 }
 
+void deoglSkinTexture::SetSolidityFilterPriority( float solidityFilterPriority ){
+	pSolidityFilterPriority = decMath::clamp( solidityFilterPriority, 0.0f, 1.0f );
+}
+
 void deoglSkinTexture::SetSolid( bool solid ){
 	pSolid = solid;
 }
@@ -619,6 +432,14 @@ void deoglSkinTexture::SetCalculatedProperties( bool calculatedProperties ){
 	pCalculatedProperties = calculatedProperties;
 }
 
+void deoglSkinTexture::SetConstructedProperties( bool constructedProperties ){
+	pConstructedProperties = constructedProperties;
+}
+
+void deoglSkinTexture::SetBoneProperties( bool boneProperties ){
+	pBoneProperties = boneProperties;
+}
+
 void deoglSkinTexture::SetRenderableChannels( bool renderableChannels ){
 	pRenderableChannels = renderableChannels;
 }
@@ -637,587 +458,21 @@ bool deoglSkinTexture::IsChannelEnabled( deoglSkinChannel::eChannelTypes type ) 
 	return pChannels[ type ] != NULL;
 }
 
-deoglSkinShader *deoglSkinTexture::GetShaderFor( eShaderTypes shaderType ){
-	if( ! pShaders[ shaderType ] ){
-		deoglSkinShaderConfig config;
-		if( GetShaderConfigFor( shaderType, config ) ){
-			pShaders[ shaderType ] = pRenderThread.GetShader().GetSkinShaderManager().GetShaderWith( config );
-			pShaders[ shaderType ]->EnsureShaderExists();
-		}
+void deoglSkinTexture::PrepareParamBlock(){
+	if( pSharedSPBElement ){
+		return;
 	}
 	
-	return pShaders[ shaderType ];
-}
-
-bool deoglSkinTexture::GetShaderConfigFor( eShaderTypes shaderType, deoglSkinShaderConfig &config ){
-	const deoglDeferredRendering &defren = pRenderThread.GetDeferredRendering();
-	const sShaderConfigInfo &shaderConfigInfo = vShaderConfigInfo[ shaderType ];
-	const bool useEquiEnvMap = pRenderThread.GetRenderers().GetReflection().GetUseEquiEnvMap();
-	const deoglConfiguration &oglconfig = pRenderThread.GetConfiguration();
-	bool hasChanTex[ deoglSkinChannel::CHANNEL_COUNT ];
-	const bool isDecal = ( shaderConfigInfo.geometryMode == deoglSkinShaderConfig::egmDecal );
-	const bool isParticle = ( shaderConfigInfo.geometryMode == deoglSkinShaderConfig::egmParticle );
-	//const bool isPropField = ( shaderConfigInfo.geometryMode == deoglSkinShaderConfig::egmPropField );
-	const bool realTranspParticle = GetRenderThread().GetChoices().GetRealTransparentParticles();
-	
-	int i;
-	
-	for( i=0; i<deoglSkinChannel::CHANNEL_COUNT; i++ ){
-		hasChanTex[ i ] = ( pChannels[ i ] &&
-			( pChannels[ i ]->GetImage()
-			|| pChannels[ i ]->GetTexture()
-			|| pChannels[ i ]->GetCubeMap()
-			|| pChannels[ i ]->GetArrayTexture()
-			|| pChannels[ i ]->GetRenderable() != -1 ) );
+	if( pRenderThread.GetChoices().GetSharedSPBUseSSBO() ){
+		pSharedSPBElement = pRenderThread.GetBufferObject()
+			.GetSharedSPBList( deoglRTBufferObject::esspblSkinTextureSSBO ).AddElement();
+		
+	}else{
+		pSharedSPBElement = pRenderThread.GetBufferObject()
+			.GetSharedSPBList( deoglRTBufferObject::esspblSkinTextureUBO ).AddElement();
 	}
 	
-	config.Reset();
-	
-	switch( shaderConfigInfo.geometryMode ){
-	case deoglSkinShaderConfig::egmComponent:
-	case deoglSkinShaderConfig::egmBillboard:
-	case deoglSkinShaderConfig::egmDecal:
-		config.SetSharedSPB( deoglSkinShader::USE_SHARED_SPB );
-		break;
-		
-	case deoglSkinShaderConfig::egmHeightMap:
-	case deoglSkinShaderConfig::egmParticle:
-	case deoglSkinShaderConfig::egmPropField:
-	default:
-		break;
-	}
-	
-	if( config.GetSharedSPB() ){
-		const deoglRTBufferObject &bo = pRenderThread.GetBufferObject();
-		config.SetSharedSPBUsingSSBO( pRenderThread.GetChoices().GetSharedSPBUseSSBO() );
-		
-		if( config.GetSharedSPBUsingSSBO() ){
-			// NOTE UBO requires array size to be constant, SSBO does not
-			//config.SetSharedSPBArraySize( bo.GetLayoutSkinInstanceSSBO()->GetElementCount() );
-			config.SetSharedSPBPadding( bo.GetLayoutSkinInstanceSSBO()->GetOffsetPadding() );
-			
-		}else{
-			config.SetSharedSPBArraySize( bo.GetLayoutSkinInstanceUBO()->GetElementCount() );
-			config.SetSharedSPBPadding( bo.GetLayoutSkinInstanceUBO()->GetOffsetPadding() );
-		}
-		
-		config.SetSPBInstanceArraySize( bo.GetInstanceArraySizeUBO() );
-	}
-	
-	config.SetShaderMode( shaderConfigInfo.shaderMode );
-	config.SetGeometryMode( shaderConfigInfo.geometryMode );
-	config.SetDepthMode( shaderConfigInfo.depthMode );
-	config.SetParticleMode( shaderConfigInfo.particleMode );
-	
-	config.SetDecodeInDepth( defren.GetUseEncodedDepth() );
-	config.SetInverseDepth( defren.GetUseInverseDepth() );
-	config.SetMaskedSolidity( pSolidityMasked || pHasZeroSolidity );
-	config.SetVariations( pVariationU || pVariationV );
-	
-	config.SetUseNormalRoughnessCorrection( pMaterialProperties[ empNormal ].GetRenderable() == -1 );
-		// if normal has renderable we can no more control the alpha-channel of the normal which
-		// is used for roughness correction. by disabling it things are not optimal but especially
-		// not wrong. could be made better by tracking at run-time if the renderable is actually
-		// used or not
-	
-	switch( shaderConfigInfo.type ){
-	case esctGeometry:
-		config.SetFadeOutRange( defren.GetUseFadeOutRange() );
-		config.SetMaterialNormalMode( deoglSkinShaderConfig::emnmIntBasic );
-		config.SetDepthTestMode( shaderConfigInfo.depthTestMode );
-		config.SetAmbientLightProbe( isParticle && ! realTranspParticle );
-		config.SetBillboard( shaderConfigInfo.billboard );
-		//config.SetSkinReflections( hasChanTex[ deoglSkinChannel::ectEnvironmentMap ] || ! pSolid || isParticle );
-		config.SetSkinReflections( hasChanTex[ deoglSkinChannel::ectEnvironmentMap ]
-			|| ( isParticle && ! realTranspParticle ) );
-		
-		config.SetTextureColor( hasChanTex[ deoglSkinChannel::ectColor ] );
-		config.SetTextureColorTintMask( hasChanTex[ deoglSkinChannel::ectColorTintMask ] );
-		config.SetTextureTransparency( hasChanTex[ deoglSkinChannel::ectTransparency ] );
-		config.SetTextureSolidity( hasChanTex[ deoglSkinChannel::ectSolidity ] );
-		config.SetTextureNormal( hasChanTex[ deoglSkinChannel::ectNormal ] );
-		config.SetTextureHeight( hasChanTex[ deoglSkinChannel::ectHeight ] );
-		config.SetTextureReflectivity( hasChanTex[ deoglSkinChannel::ectReflectivity ] );
-		config.SetTextureRoughness( hasChanTex[ deoglSkinChannel::ectRoughness ] );
-		config.SetTextureEmissivity( hasChanTex[ deoglSkinChannel::ectEmissivity ] );
-		config.SetTextureAO( hasChanTex[ deoglSkinChannel::ectAO ] );
-		
-		if( deoglSkinShader::REFLECTION_TEST_MODE == 0 ){
-			config.SetTextureEnvMap( pReflects || ( isParticle && ! realTranspParticle ) );
-			
-		}else if( deoglSkinShader::REFLECTION_TEST_MODE == 1 ){
-			// !pSolid only until transparency works properly with the separate environment map pass
-			config.SetTextureEnvMap( hasChanTex[ deoglSkinChannel::ectEnvironmentMap ]
-				|| ! pSolid || ( isParticle && ! realTranspParticle ) );
-			
-		}else{
-			//config.SetTextureEnvMap( isParticle && ! realTranspParticle );
-			config.SetTextureEnvMap( true );
-		}
-		
-		config.SetTextureEnvMapEqui( ! hasChanTex[ deoglSkinChannel::ectEnvironmentMap ] && useEquiEnvMap );
-		config.SetTextureRenderColor( ! pSolid && ! isDecal && ! ( isParticle && ! realTranspParticle ) );
-				//&& ! pHasHoles  // problems with transparent
-		//config.SetTextureRenderColor( ! pSolid && ! isDecal ); // problems with emssivity-only
-		config.SetTextureRefractionDistort( config.GetTextureRenderColor()
-			&& hasChanTex[ deoglSkinChannel::ectRefractDistort ] );
-		config.SetTextureEnvRoom( hasChanTex[ deoglSkinChannel::ectEnvironmentRoom ] );
-		config.SetTextureEnvRoomMask( hasChanTex[ deoglSkinChannel::ectEnvironmentRoomMask ] );
-		config.SetTextureEnvRoomEmissivity( hasChanTex[ deoglSkinChannel::ectEnvironmentRoomEmissivity ] );
-		config.SetTextureAbsorption( hasChanTex[ deoglSkinChannel::ectAbsorption ] );
-		
-		if( ! isParticle ){
-			config.SetDynamicColorTint(
-				pMaterialProperties[ empColorTint ].IsDynamic() );
-			config.SetDynamicColorGamma(
-				pMaterialProperties[ empColorGamma ].IsDynamic() );
-			config.SetDynamicColorSolidityMultiplier(
-				pMaterialProperties[ empColorSolidityMultiplier ].IsDynamic() );
-			config.SetDynamicAmbientOcclusionSolidityMultiplier(
-				pMaterialProperties[ empAmbientOcclusionSolidityMultiplier ].IsDynamic() );
-			config.SetDynamicTransparencyMultiplier(
-				pMaterialProperties[ empTransparencyMultiplier ].IsDynamic() );
-			config.SetDynamicSolidityMultiplier(
-				pMaterialProperties[ empSolidityMultiplier ].IsDynamic() );
-			config.SetDynamicHeightRemap(
-				pMaterialProperties[ empHeightScale ].IsDynamic()
-				|| pMaterialProperties[ empHeightOffset ].IsDynamic() );
-			config.SetDynamicNormalStrength(
-				pMaterialProperties[ empNormalStrength ].IsDynamic() );
-			config.SetDynamicNormalSolidityMultiplier(
-				pMaterialProperties[ empNormalSolidityMultiplier ].IsDynamic() );
-			config.SetDynamicRoughnessRemap(
-				pMaterialProperties[ empRoughnessRemapLower ].IsDynamic()
-				|| pMaterialProperties[ empRoughnessRemapUpper ].IsDynamic() );
-			config.SetDynamicRoughnessGamma(
-				pMaterialProperties[ empRoughnessGamma ].IsDynamic() );
-			config.SetDynamicRoughnessSolidityMultiplier(
-				pMaterialProperties[ empRoughnessSolidityMultiplier ].IsDynamic() );
-			config.SetDynamicRefractionDistortStrength(
-				pMaterialProperties[ empRefractDistortStrength ].IsDynamic() );
-			config.SetDynamicReflectivitySolidityMultiplier(
-				pMaterialProperties[ empReflectivitySolidityMultiplier ].IsDynamic() );
-			config.SetDynamicReflectivityMultiplier(
-				pMaterialProperties[ empReflectivityMultiplier ].IsDynamic() );
-			config.SetDynamicEmissivityTint(
-				pMaterialProperties[ empEmissivityTint ].IsDynamic() );
-			config.SetDynamicEmissivityIntensity(
-				pMaterialProperties[ empEmissivityIntensity ].IsDynamic() );
-			config.SetDynamicEnvRoomSize(
-				pMaterialProperties[ empEnvironmentRoomSize ].IsDynamic() );
-			config.SetDynamicEnvRoomOffset(
-				pMaterialProperties[ empEnvironmentRoomOffset ].IsDynamic() );
-			config.SetDynamicEnvRoomEmissivityTint(
-				pMaterialProperties[ empEnvironmentRoomEmissivityTint ].IsDynamic() );
-			config.SetDynamicEnvRoomEmissivityIntensity(
-				pMaterialProperties[ empEnvironmentRoomEmissivityIntensity ].IsDynamic() );
-			config.SetDynamicThickness(
-				pMaterialProperties[ empThickness ].IsDynamic() );
-			config.SetDynamicAbsorption(
-				pMaterialProperties[ empAbsorptionRange ].IsDynamic()
-				|| pMaterialProperties[ empAbsorptionHalfIntensityDistance ].IsDynamic() );
-			config.SetDynamicVariation(
-				pMaterialProperties[ empVariationU ].IsDynamic()
-				|| pMaterialProperties[ empVariationV ].IsDynamic() );
-			
-			// required to be compatible with outline shaders if used to build parameter block
-			config.SetDynamicOutlineColor(
-				pMaterialProperties[ empOutlineColor ].IsDynamic() );
-			config.SetDynamicOutlineThickness(
-				pMaterialProperties[ empOutlineThickness ].IsDynamic() );
-			config.SetDynamicOutlineSolidity(
-				pMaterialProperties[ empOutlineSolidity ].IsDynamic() );
-			config.SetDynamicOutlineEmissivity(
-				pMaterialProperties[ empOutlineEmissivity ].IsDynamic()
-				|| pMaterialProperties[ empOutlineEmissivityIntensity ].IsDynamic() );
-		}
-		
-		if( config.GetTextureHeight() ){ // temporary
-			//config.SetTessellationMode( deoglSkinShaderConfig::etmLinear );
-		}
-		break;
-		
-	case esctDepth:
-		config.SetFadeOutRange( defren.GetUseFadeOutRange() );
-		config.SetEncodeOutDepth( defren.GetUseEncodedDepth() );
-		config.SetClipPlane( shaderConfigInfo.clipPlane );
-		
-		if( pSolid ){
-			config.SetDepthTestMode( deoglSkinShaderConfig::edtmNone );
-			
-		}else{
-			config.SetDepthTestMode( shaderConfigInfo.depthTestMode );
-		}
-		config.SetBillboard( shaderConfigInfo.billboard );
-		
-		//config.SetTextureColorTransparency( pSolid && pHasHoles && hasChanTex[ deoglSkinChannel::ectColor ] );
-		config.SetTextureSolidity( pSolid && pHasHoles && hasChanTex[ deoglSkinChannel::ectSolidity ] );
-		
-		config.SetTextureHeight( hasChanTex[ deoglSkinChannel::ectHeight ] );
-		config.SetDynamicHeightRemap(
-			pMaterialProperties[ empHeightScale ].IsDynamic()
-			|| pMaterialProperties[ empHeightOffset ].IsDynamic() );
-		
-		if( config.GetTextureHeight() ){ // temporary
-			//config.SetTessellationMode( deoglSkinShaderConfig::etmLinear );
-		}
-		
-		if( pHasEmissivity ){
-			// emissivity textures are required to avoid discarding non-solid fragments
-			config.SetTextureSolidity( hasChanTex[ deoglSkinChannel::ectSolidity ] );
-			
-			config.SetTextureEmissivity( hasChanTex[ deoglSkinChannel::ectEmissivity ] );
-			config.SetTextureEnvRoomEmissivity( hasChanTex[ deoglSkinChannel::ectEnvironmentRoomEmissivity ] );
-			if( ! isParticle ){
-				config.SetDynamicEmissivityIntensity(
-					pMaterialProperties[ empEmissivityIntensity ].IsDynamic() );
-				config.SetDynamicEnvRoomEmissivityIntensity(
-					pMaterialProperties[ empEnvironmentRoomEmissivityIntensity ].IsDynamic() );
-			}
-		}
-		
-		// required to be compatible with outline shaders if used to build parameter block
-		config.SetDynamicOutlineThickness(
-			pMaterialProperties[ empOutlineThickness ].IsDynamic() );
-		config.SetDynamicOutlineSolidity(
-			pMaterialProperties[ empOutlineSolidity ].IsDynamic() );
-		config.SetDynamicOutlineEmissivity(
-			pMaterialProperties[ empOutlineEmissivity ].IsDynamic()
-			|| pMaterialProperties[ empOutlineEmissivityIntensity ].IsDynamic() );
-		break;
-		
-	case esctCounter:
-		config.SetFadeOutRange( defren.GetUseFadeOutRange() );
-		config.SetClipPlane( shaderConfigInfo.clipPlane );
-		config.SetOutputConstant( true );
-		
-		//config.SetTextureColorTransparency( pHasHoles && hasChanTex[ deoglSkinChannel::ectColor ] );
-		
-		if( pHasEmissivity ){
-			// emissivity textures are required to avoid discarding non-solid fragments
-			config.SetTextureSolidity( hasChanTex[ deoglSkinChannel::ectSolidity ] );
-			
-			config.SetTextureEmissivity( hasChanTex[ deoglSkinChannel::ectEmissivity ] );
-			config.SetTextureEnvRoomEmissivity( hasChanTex[ deoglSkinChannel::ectEnvironmentRoomEmissivity ] );
-			if( ! isParticle ){
-				config.SetDynamicEmissivityIntensity(
-					pMaterialProperties[ empEmissivityIntensity ].IsDynamic() );
-				config.SetDynamicEnvRoomEmissivityIntensity(
-					pMaterialProperties[ empEnvironmentRoomEmissivityIntensity ].IsDynamic() );
-			}
-		}
-		
-		break;
-		
-	case esctShadow:
-		if( shaderConfigInfo.depthMode == deoglSkinShaderConfig::edmDistance ){
-			config.SetEncodeOutDepth( oglconfig.GetUseShadowCubeEncodeDepth() );
-			
-		}else{
-			config.SetEncodeOutDepth( false );
-		}
-		config.SetNoZClip( shaderConfigInfo.depthMode == deoglSkinShaderConfig::edmOrthogonal );
-		config.SetOutputColor( ! pSolid );
-		
-		if( shaderConfigInfo.depthMode != deoglSkinShaderConfig::edmProjection ){
-			config.SetInverseDepth( false );
-		}
-		
-		config.SetTextureColor( ( ( pSolid && pHasHoles ) || ! pSolid )
-			&& hasChanTex[ deoglSkinChannel::ectColor ] );
-		
-		config.SetTextureSolidity( pSolid && pHasHoles && hasChanTex[ deoglSkinChannel::ectSolidity ] );
-		
-		config.SetTextureHeight( hasChanTex[ deoglSkinChannel::ectHeight ] );
-		config.SetDynamicHeightRemap(
-			pMaterialProperties[ empHeightScale ].IsDynamic()
-			|| pMaterialProperties[ empHeightOffset ].IsDynamic() );
-		
-		switch( shaderType ){
-		case estComponentShadowDistanceCube:
-			config.SetGSRenderCube( true );
-			break;
-			
-		default:
-			break;
-		}
-		
-		if( config.GetTextureHeight() ){ // temporary
-			//config.SetTessellationMode( deoglSkinShaderConfig::etmLinear );
-		}
-		break;
-		
-	case esctEnvMap:
-		return false;
-		
-	case esctOutlineGeometry:
-		config.SetOutline( true );
-		config.SetOutlineThicknessScreen( pOutlineThicknessScreen );
-		config.SetFadeOutRange( defren.GetUseFadeOutRange() );
-		config.SetMaterialNormalMode( deoglSkinShaderConfig::emnmIntBasic );
-		config.SetDepthTestMode( shaderConfigInfo.depthTestMode );
-		
-		config.SetTextureNormal( hasChanTex[ deoglSkinChannel::ectNormal ] );
-		config.SetTextureHeight( hasChanTex[ deoglSkinChannel::ectHeight ] );
-		config.SetTextureRenderColor( ! pIsOutlineSolid );
-		
-		config.SetDynamicHeightRemap(
-			pMaterialProperties[ empHeightScale ].IsDynamic()
-			|| pMaterialProperties[ empHeightOffset ].IsDynamic() );
-		config.SetDynamicNormalStrength(
-			pMaterialProperties[ empNormalStrength ].IsDynamic() );
-		config.SetDynamicVariation(
-			pMaterialProperties[ empVariationU ].IsDynamic()
-			|| pMaterialProperties[ empVariationV ].IsDynamic() );
-		
-		config.SetDynamicOutlineColor(
-			pMaterialProperties[ empOutlineColor ].IsDynamic() );
-		config.SetDynamicOutlineThickness(
-			pMaterialProperties[ empOutlineThickness ].IsDynamic() );
-		config.SetDynamicOutlineSolidity(
-			pMaterialProperties[ empOutlineSolidity ].IsDynamic() );
-		config.SetDynamicOutlineEmissivity(
-			pMaterialProperties[ empOutlineEmissivity ].IsDynamic()
-			|| pMaterialProperties[ empOutlineEmissivityIntensity ].IsDynamic() );
-		break;
-		
-	case esctOutlineDepth:
-		config.SetOutline( true );
-		config.SetOutlineThicknessScreen( pOutlineThicknessScreen );
-		config.SetFadeOutRange( defren.GetUseFadeOutRange() );
-		config.SetEncodeOutDepth( defren.GetUseEncodedDepth() );
-		config.SetClipPlane( shaderConfigInfo.clipPlane );
-		
-		if( pIsOutlineSolid ){
-			config.SetDepthTestMode( deoglSkinShaderConfig::edtmNone );
-			
-		}else{
-			config.SetDepthTestMode( shaderConfigInfo.depthTestMode );
-		}
-		
-		config.SetTextureHeight( hasChanTex[ deoglSkinChannel::ectHeight ] );
-		config.SetDynamicHeightRemap(
-			pMaterialProperties[ empHeightScale ].IsDynamic()
-			|| pMaterialProperties[ empHeightOffset ].IsDynamic() );
-		
-		config.SetDynamicOutlineThickness(
-			pMaterialProperties[ empOutlineThickness ].IsDynamic() );
-		
-		// emissivity is required to avoid discarding non-solid fragments
-		config.SetDynamicOutlineEmissivity(
-			pMaterialProperties[ empOutlineEmissivity ].IsDynamic()
-			|| pMaterialProperties[ empOutlineEmissivityIntensity ].IsDynamic() );
-		break;
-		
-	case esctOutlineCounter:
-		config.SetOutline( true );
-		config.SetOutlineThicknessScreen( pOutlineThicknessScreen );
-		config.SetFadeOutRange( defren.GetUseFadeOutRange() );
-		config.SetClipPlane( shaderConfigInfo.clipPlane );
-		config.SetOutputConstant( true );
-		
-		config.SetDynamicOutlineThickness(
-			pMaterialProperties[ empOutlineThickness ].IsDynamic() );
-		
-		// emissivity is required to avoid discarding non-solid fragments
-		config.SetDynamicOutlineEmissivity(
-			pMaterialProperties[ empOutlineEmissivity ].IsDynamic()
-			|| pMaterialProperties[ empOutlineEmissivityIntensity ].IsDynamic() );
-		break;
-		
-	default:
-		return false;
-	}
-	
-	decString debugString;
-	config.DebugGetConfigString( debugString );
-// 	GetRenderThread().GetLogger().LogInfoFormat( "GetShaderConfigFor(%d): %s", shaderType, debugString.GetString() );
-	return true;
-}
-
-deoglSPBlockUBO *deoglSkinTexture::GetParameterBlockFor( eShaderTypes shaderType ){
-	if( pParamBlocks[ shaderType ] ){
-		return pParamBlocks[ shaderType ];
-	}
-	
-	deoglSkinShader * const shader = GetShaderFor( shaderType );
-	if( ! shader ){
-		return NULL;
-	}
-	
-	pParamBlocks[ shaderType ] = shader->CreateSPBTexParam();
-	if( ! pParamBlocks[ shaderType ] ){
-		return NULL;
-	}
-	
-	// etutValueColorTransparency,
-	// etutValueNormalHeight,
-	// etutValueReflectivityRoughness,
-	// etutValueRefractionDistort,
-	// etutValueAO,
-	pParamBlocks[ shaderType ]->MapBuffer();
-	try{
-		int target;
-		
-		target = shader->GetTextureUniformTarget( deoglSkinShader::etutTexColorTint );
-		if( target != -1 ){
-			pParamBlocks[ shaderType ]->SetParameterDataVec3( target,
-				powf( pColorTint.r, 2.2f ), powf( pColorTint.g, 2.2f ), powf( pColorTint.b, 2.2f ) );
-		}
-		
-		target = shader->GetTextureUniformTarget( deoglSkinShader::etutTexColorGamma );
-		if( target != -1 ){
-			pParamBlocks[ shaderType ]->SetParameterDataFloat( target, pColorGamma );
-		}
-		
-		target = shader->GetTextureUniformTarget( deoglSkinShader::etutTexColorSolidMultiplier );
-		if( target != -1 ){
-			pParamBlocks[ shaderType ]->SetParameterDataFloat( target, pColorSolidityMultiplier );
-		}
-		
-		target = shader->GetTextureUniformTarget( deoglSkinShader::etutTexAOSolidityMultiplier );
-		if( target != -1 ){
-			pParamBlocks[ shaderType ]->SetParameterDataFloat( target, pAmbientOcclusionSolidityMultiplier );
-		}
-		
-		target = shader->GetTextureUniformTarget( deoglSkinShader::etutTexTransparencyMultiplier );
-		if( target != -1 ){
-			pParamBlocks[ shaderType ]->SetParameterDataFloat( target, pTransparencyMultiplier );
-		}
-		
-		target = shader->GetTextureUniformTarget( deoglSkinShader::etutTexSolidityMultiplier );
-		if( target != -1 ){
-			pParamBlocks[ shaderType ]->SetParameterDataFloat( target, pSolidityMultiplier );
-		}
-		
-		target = shader->GetTextureUniformTarget( deoglSkinShader::etutTexHeightRemap );
-		if( target != -1 ){
-			// (texHeight - 0.5 + offset) * scale = texHeight*scale + (offset-0.5)*scale
-			pParamBlocks[ shaderType ]->SetParameterDataVec2( target, pHeightScale, ( pHeightOffset - 0.5f ) * pHeightScale );
-		}
-		
-		target = shader->GetTextureUniformTarget( deoglSkinShader::etutTexNormalStrength );
-		if( target != -1 ){
-			pParamBlocks[ shaderType ]->SetParameterDataFloat( target, pNormalStrength );
-		}
-		
-		target = shader->GetTextureUniformTarget( deoglSkinShader::etutTexNormalSolidityMultiplier );
-		if( target != -1 ){
-			pParamBlocks[ shaderType ]->SetParameterDataFloat( target, pNormalSolidityMultiplier );
-		}
-		
-		target = shader->GetTextureUniformTarget( deoglSkinShader::etutTexRoughnessRemap );
-		if( target != -1 ){
-			pParamBlocks[ shaderType ]->SetParameterDataVec2( target, pRoughnessRemapUpper - pRoughnessRemapLower, pRoughnessRemapLower );
-		}
-		
-		target = shader->GetTextureUniformTarget( deoglSkinShader::etutTexRoughnessGamma );
-		if( target != -1 ){
-			pParamBlocks[ shaderType ]->SetParameterDataFloat( target, pRoughnessGamma );
-		}
-		
-		target = shader->GetTextureUniformTarget( deoglSkinShader::etutTexRoughnessSolidityMultiplier );
-		if( target != -1 ){
-			pParamBlocks[ shaderType ]->SetParameterDataFloat( target, pRoughnessSolidityMultiplier );
-		}
-		
-		target = shader->GetTextureUniformTarget( deoglSkinShader::etutTexReflectivitySolidityMultiplier );
-		if( target != -1 ){
-			pParamBlocks[ shaderType ]->SetParameterDataFloat( target, pReflectivitySolidityMultiplier );
-		}
-		
-		target = shader->GetTextureUniformTarget( deoglSkinShader::etutTexRefractionDistortStrength );
-		if( target != -1 ){
-			pParamBlocks[ shaderType ]->SetParameterDataFloat( target, pRefractDistortStrength );
-		}
-		
-		target = shader->GetTextureUniformTarget( deoglSkinShader::etutTexEmissivityIntensity );
-		if( target != -1 ){
-			pParamBlocks[ shaderType ]->SetParameterDataVec3( target,
-				powf( pEmissivityTint.r, 2.2f ) * pEmissivityIntensity,
-				powf( pEmissivityTint.g, 2.2f ) * pEmissivityIntensity,
-				powf( pEmissivityTint.b, 2.2f ) * pEmissivityIntensity );
-		}
-		
-		target = shader->GetTextureUniformTarget( deoglSkinShader::etutTexEnvRoomSize );
-		if( target != -1 ){
-			pParamBlocks[ shaderType ]->SetParameterDataVec2( target,
-				1.0f / pEnvironmentRoomSize.x, -1.0f / pEnvironmentRoomSize.y );
-		}
-		
-		target = shader->GetTextureUniformTarget( deoglSkinShader::etutTexEnvRoomOffset );
-		if( target != -1 ){
-			pParamBlocks[ shaderType ]->SetParameterDataVec3( target, pEnvironmentRoomOffset );
-		}
-		
-		target = shader->GetTextureUniformTarget( deoglSkinShader::etutTexEnvRoomEmissivityIntensity );
-		if( target != -1 ){
-			pParamBlocks[ shaderType ]->SetParameterDataVec3( target,
-				powf( pEnvironmentRoomEmissivityTint.r, 2.2f ) * pEnvironmentRoomEmissivityIntensity,
-				powf( pEnvironmentRoomEmissivityTint.g, 2.2f ) * pEnvironmentRoomEmissivityIntensity,
-				powf( pEnvironmentRoomEmissivityTint.b, 2.2f ) * pEnvironmentRoomEmissivityIntensity );
-		}
-		
-		target = shader->GetTextureUniformTarget( deoglSkinShader::etutTexThickness );
-		if( target != -1 ){
-			pParamBlocks[ shaderType ]->SetParameterDataFloat( target, pThickness );
-		}
-		
-		target = shader->GetTextureUniformTarget( deoglSkinShader::etutTexAbsorptionRange );
-		if( target != -1 ){
-			pParamBlocks[ shaderType ]->SetParameterDataFloat( target, pAbsorptionRange );
-		}
-		
-		target = shader->GetTextureUniformTarget( deoglSkinShader::etutTexVariationEnableScale );
-		if( target != -1 ){
-			pParamBlocks[ shaderType ]->SetParameterDataVec2( target,
-				pVariationU ? 1.0f : 0.0f, pVariationV ? 1.0f : 0.0f );
-		}
-		
-		target = shader->GetTextureUniformTarget( deoglSkinShader::etutTexReflectivityMultiplier );
-		if( target != -1 ){
-			pParamBlocks[ shaderType ]->SetParameterDataFloat( target, pReflectivityMultiplier );
-		}
-		
-		target = shader->GetTextureUniformTarget( deoglSkinShader::etutTexParticleSheetCount );
-		if( target != -1 ){
-			// see shader source geometry/defren/skin/particle_ribbon.glsl for the
-			// calculation of the maximum number of supported sheets (8)
-			pParamBlocks[ shaderType ]->SetParameterDataInt( target,
-				decMath::clamp( pParticleSheetCount, 1, 8 ) );
-		}
-		
-		target = shader->GetTextureUniformTarget( deoglSkinShader::etutTexOutlineColor );
-		if( target != -1 ){
-			pParamBlocks[ shaderType ]->SetParameterDataVec3( target, powf( pOutlineColor.r, 2.2f ),
-				powf( pOutlineColor.g, 2.2f ), powf( pOutlineColor.b, 2.2f ) );
-		}
-		
-		target = shader->GetTextureUniformTarget( deoglSkinShader::etutTexOutlineThickness );
-		if( target != -1 ){
-			pParamBlocks[ shaderType ]->SetParameterDataFloat( target, pOutlineThickness );
-		}
-		
-		target = shader->GetTextureUniformTarget( deoglSkinShader::etutTexOutlineSolidity );
-		if( target != -1 ){
-			pParamBlocks[ shaderType ]->SetParameterDataFloat( target, pOutlineSolidity );
-		}
-		
-		target = shader->GetTextureUniformTarget( deoglSkinShader::etutTexOutlineEmissivity );
-		if( target != -1 ){
-			pParamBlocks[ shaderType ]->SetParameterDataVec3( target,
-				powf( pOutlineEmissivity.r, 2.2f ) * pOutlineEmissivityIntensity,
-				powf( pOutlineEmissivity.g, 2.2f ) * pOutlineEmissivityIntensity,
-				powf( pOutlineEmissivity.b, 2.2f ) * pOutlineEmissivityIntensity );
-		}
-		
-	}catch( const deException & ){
-		pParamBlocks[ shaderType ]->UnmapBuffer();
-		throw;
-	}
-	pParamBlocks[ shaderType ]->UnmapBuffer();
-	
-	return pParamBlocks[ shaderType ];
+	pUpdateParamBlock( deoglSharedSPBElementMapBuffer( *pSharedSPBElement ), pSharedSPBElement->GetIndex() );
 }
 
 
@@ -1365,6 +620,10 @@ void deoglSkinTexture::SetEmissivityIntensity( float intensity ){
 	pEmissivityIntensity = intensity;
 }
 
+void deoglSkinTexture::SetEmissivityCameraAdapted( bool cameraAdapted ){
+	pEmissivityCameraAdapted = cameraAdapted;
+}
+
 void deoglSkinTexture::SetThickness( float thickness ){
 	pThickness = thickness;
 }
@@ -1379,6 +638,34 @@ void deoglSkinTexture::SetAbsorptionRange( float range ){
 
 void deoglSkinTexture::SetAbsorptionHalfIntensityDistance( float distance ){
 	pAbsorptionHalfIntensityDistance = distance;
+}
+
+void deoglSkinTexture::SetRimEmissivity( const decColor &emissivity ){
+	pRimEmissivity = emissivity;
+}
+
+void deoglSkinTexture::SetRimEmissivityTint( const decColor &tint ){
+	pRimEmissivityTint = tint;
+}
+
+void deoglSkinTexture::SetRimEmissivityIntensity( float intensity ){
+	pRimEmissivityIntensity = decMath::max( intensity, 0.0f );
+}
+
+void deoglSkinTexture::SetRimAngle( float angle ){
+	pRimAngle = decMath::clamp( angle, 0.0f, 1.0f );
+}
+
+void deoglSkinTexture::SetRimExponent( float exponent ){
+	pRimExponent = decMath::max( exponent, 0.0f );
+}
+
+void deoglSkinTexture::SetSkinClipPlane( float clipPlane ){
+	pSkinClipPlane = decMath::clamp( clipPlane, 0.0f, 1.0f );
+}
+
+void deoglSkinTexture::SetSkinClipPlaneBorder( float border ){
+	pSkinClipPlaneBorder = border;
 }
 
 
@@ -1429,6 +716,14 @@ void deoglSkinTexture::SetTexCoordRotate( float rotate ){
 	pTexCoordRotate = rotate;
 }
 
+void deoglSkinTexture::SetOmniDirRotate( const decVector &rotate ){
+	pOmniDirRotate = rotate;
+}
+
+void deoglSkinTexture::SetOmniDirRotateSpot( const decVector &rotate ){
+	pOmniDirRotateSpot = rotate;
+}
+
 
 
 void deoglSkinTexture::SetVariationU( bool enable ){
@@ -1452,6 +747,10 @@ void deoglSkinTexture::SetOutlineColor( const decColor &color ){
 	pOutlineColor = color;
 }
 
+void deoglSkinTexture::SetOutlineColorTint( const decColor &color ){
+	pOutlineColorTint = color;
+}
+
 void deoglSkinTexture::SetOutlineSolidity( float solidity ){
 	pOutlineSolidity = decMath::clamp( solidity, 0.0f, 1.0f );
 }
@@ -1460,12 +759,32 @@ void deoglSkinTexture::SetOutlineThickness( float thickness ){
 	pOutlineThickness = decMath::max( thickness, 0.0f );
 }
 
+void deoglSkinTexture::SetOutlineThicknessScreen( bool enable ){
+	pOutlineThicknessScreen = enable;
+}
+
 void deoglSkinTexture::SetOutlineEmissivity( const decColor &emissivity ){
 	pOutlineEmissivity = emissivity;
 }
 
+void deoglSkinTexture::SetOutlineEmissivityTint( const decColor &emissivity ){
+	pOutlineEmissivityTint = emissivity;
+}
+
 void deoglSkinTexture::SetOutlineEmissivityIntensity( float intensity ){
 	pOutlineEmissivityIntensity = decMath::max( intensity, 0.0f );
+}
+
+void deoglSkinTexture::SetNonPbrAlbedo( const decColor &albedo ){
+	pNonPbrAlbedo = albedo;
+}
+
+void deoglSkinTexture::SetNonPbrMetalness( float metalness ){
+	pNonPbrMetalness = metalness;
+}
+
+void deoglSkinTexture::SetXRay( bool xray ){
+	pXRay = xray;
 }
 
 
@@ -1502,37 +821,21 @@ const deoglSkinTextureProperty &deoglSkinTexture::GetMaterialPropertyAt( int pro
 
 
 
-// Delayed deletion
-/////////////////////
-
-void deoglSkinTexture::DropDelayedDeletionObjects(){
-	int i;
-	for( i=0; i<deoglSkinChannel::CHANNEL_COUNT; i++ ){
-		if( pChannels[ i ] ){
-			pChannels[ i ]->DropDelayedDeletionObjects();
-		}
-	}
-}
-
-
-
 // Private Functions
 //////////////////////
 
 void deoglSkinTexture::pCleanUp(){
-	int i;
-	
-	for( i=0; i<ShaderTypeCount; i++ ){
-		if( pParamBlocks[ i ] ){
-			pParamBlocks[ i ]->FreeReference();
-			pParamBlocks[ i ] = NULL;
-		}
-		if( pShaders[ i ] ){
-			pShaders[ i ]->FreeReference();
-			pShaders[ i ] = NULL;
-		}
+	if( pRTSIndex != -1 ){
+		pRenderThread.GetRenderTaskSharedPool().ReturnSkinTexture( pRTSIndex );
+		pRTSIndex = -1;
+		pRenderThread.GetShader().InvalidateSSBOSkinTextures();
 	}
 	
+	if( pSharedSPBElement ){
+		pSharedSPBElement->FreeReference();
+	}
+	
+	int i;
 	for( i=0; i<deoglSkinChannel::CHANNEL_COUNT; i++ ){
 		if( pChannels[ i ] ){
 			delete pChannels[ i ];
@@ -1618,7 +921,6 @@ void deoglSkinTexture::pLoadCached( deoglRSkin &skin ){
 	// try to load caches using the calculated cache ids
 	deoglCaches &caches = pRenderThread.GetOgl().GetCaches();
 	deCacheHelper &cacheTextures = caches.GetSkinTextures();
-	deoglPixelBufferMipMap *pixelBufferMipMap = NULL;
 	decBaseFileReader *reader = NULL;
 	char *verifyData = NULL;
 	int i;
@@ -1733,15 +1035,42 @@ void deoglSkinTexture::pLoadCached( deoglRSkin &skin ){
 			}
 			
 			const int maxMipMapLevel = decMath::max( pixBufCount - 1, 0 );
-			pixelBufferMipMap = new deoglPixelBufferMipMap( pbformat, width, height, depth, maxMipMapLevel );
+			
+			int expectedMaxMipMaxLevel = maxMipMapLevel;
+			if( i == deoglSkinChannel::ectSolidity ){
+				expectedMaxMipMaxLevel = decMath::clamp(
+					( int )( floorf( log2f( ( float )( ( height > width ) ? height : width ) ) ) ) - 3, 0, 100 );
+			}
+			
+			if( maxMipMapLevel < expectedMaxMipMaxLevel ){
+				reader->FreeReference();
+				reader = NULL;
+				cacheTextures.Delete( pChannels[ i ]->GetCacheID() );
+				
+				if( enableCacheLogging ){
+					pRenderThread.GetOgl().LogInfoFormat( "Skin Cache: Cached Mip-Map Count lower."
+						" (skin='%s' texture='%s' channel='%s' id='%s')",
+						skin.GetFilename().GetString(), pName.GetString(),
+						deoglSkinChannel::ChannelNameFor( ( deoglSkinChannel::eChannelTypes )i ),
+						pChannels[ i ]->GetCacheID().GetString() );
+				}
+				
+				continue;
+			}
+			
+			const deoglPixelBufferMipMap::Ref pixelBufferMipMap( deoglPixelBufferMipMap::Ref::New(
+				new deoglPixelBufferMipMap( pbformat, width, height, depth, maxMipMapLevel ) ) );
 			
 			for( j=0; j<pixBufCount; j++ ){
-				deoglPixelBuffer &pixelBuffer = *pixelBufferMipMap->GetPixelBuffer( j );
+				deoglPixelBuffer &pixelBuffer = pixelBufferMipMap->GetPixelBuffer( j );
 				reader->Read( pixelBuffer.GetPointer(), pixelBuffer.GetImageSize() );
 			}
 			
+			if( maxMipMapLevel > expectedMaxMipMaxLevel ){
+				pixelBufferMipMap->ReducePixelBufferCount( maxMipMapLevel - expectedMaxMipMaxLevel );
+			}
+			
 			pChannels[ i ]->SetPixelBufferMipMap( pixelBufferMipMap );
-			pixelBufferMipMap = NULL;
 			
 			// done
 			reader->FreeReference();
@@ -1798,15 +1127,12 @@ void deoglSkinTexture::pCreateMipMaps(){
 			continue;
 		}
 		
-		// notes:
-		// - solidity: better would be maximum filtered instead of box filtered mip maps
 		switch( ( deoglSkinChannel::eChannelTypes )i ){
 		case deoglSkinChannel::ectColor:
 		case deoglSkinChannel::ectTransparency:
 		case deoglSkinChannel::ectColorOmnidirCube:
 		case deoglSkinChannel::ectColorOmnidirEquirect:
 		case deoglSkinChannel::ectColorTintMask:
-		case deoglSkinChannel::ectSolidity:  // better max?
 		case deoglSkinChannel::ectHeight:
 		case deoglSkinChannel::ectEmissivity:
 		case deoglSkinChannel::ectRefractDistort:
@@ -1817,7 +1143,60 @@ void deoglSkinTexture::pCreateMipMaps(){
 		case deoglSkinChannel::ectEnvironmentRoomMask:
 		case deoglSkinChannel::ectEnvironmentRoomEmissivity:
 		case deoglSkinChannel::ectAbsorption:
+		case deoglSkinChannel::ectRimEmissivity:
+		case deoglSkinChannel::ectNonPbrAlbedo:
+		case deoglSkinChannel::ectNonPbrMetalness:
 			pbMipMap->CreateMipMaps();
+			break;
+			
+		case deoglSkinChannel::ectSolidity:
+			// solidity is a tricky problem, especially with masked solidity. shaders use 35%
+			// solidity as threshold to discard fragments. by using box filtering 0 values are
+			// pulled towards 1 values and quickly end up above the 35% threshold. especially
+			// with solidity textures placing holes near borders (for example to create blinds)
+			// this causes the holes to vanish and can break shadow casting and GI handling
+			// which rely on high LOD levels. there are now three possible solutions:
+			// 
+			// 1) use maximum filter. this favors solid geometry over holes.
+			// 2) use minimum filter. this favors holes over solid geometry.
+			// 3) use textureQueryLod in shader to figure out mip-map level used and pull
+			//    the threshold from 35% closer to for example 95%.
+			// 
+			// the third solution has the problem of the function existing only since opengl 4.0
+			// and what threshold to pull towards and in what speed.
+			// 
+			// the other two solutions are more practical and work also for opengl 3.3 GPUs.
+			// the main problem here is what to favor. in general filling up holes over distance
+			// is more visible since color texture is shown inside holes where it is not supposed
+			// to show. this produces visible artifacts and requires carefully made textures
+			// to hide these problems. by favoring holes geometry vanishes quicker which is
+			// also noticable but does not add artifacts. favoring holes also helps with solidity
+			// textures using holes at the border (like blinders). also vanishing solidity
+			// geometry quicker improves performance. for vegetation it is a problem since
+			// leaves vanish quicker.
+			// 
+			// one solution could be to limit the maximum mip-map level while creating mip-maps.
+			// this avoids the extreme situations and should allow both types of geometry to
+			// work better.
+			// 
+			// in tests both favor holes and favor geometry did not look that good.
+			// so right now regular mip-mapping is used without limiting the mip-map level
+			#if 0
+			pbMipMap->ReducePixelBufferCount( 3 ); // minimum 8x8
+			if( pbMipMap->GetPixelBufferCount() == 0 ){
+				pChannels[ i ]->SetPixelBufferMipMap( NULL );
+				break;
+			}
+			#endif
+			if( pSolidityFilterPriority < 0.35f ){
+				pbMipMap->CreateMipMapsMin();
+				
+			}else if( pSolidityFilterPriority > 0.65f ){
+				pbMipMap->CreateMipMapsMax();
+				
+			}else{
+				pbMipMap->CreateMipMaps();
+			}
 			break;
 			
 		case deoglSkinChannel::ectNormal:
@@ -1901,40 +1280,31 @@ void deoglSkinTexture::pCompressTextures( deoglRSkin &skin, const deSkinTexture 
 			// compress. should we end up here something went wrong.
 			pRenderThread.GetLogger().LogErrorFormat( "CompressTextures of not supported format:"
 				" skin='%s' texture='%s' channel=%i pbformat=%x", skin.GetFilename().GetString(),
-				texture.GetName(), i, pChannels[ i ]->GetTexture()->GetFormat()->GetFormat() );
+				texture.GetName().GetString(), i, pChannels[ i ]->GetTexture()->GetFormat()->GetFormat() );
 			
 			DETHROW( deeInvalidParam );
 		}
 		
-		deoglPixelBuffer &basePixelBuffer = *pbMipMapSource->GetPixelBuffer( 0 );
-		deoglPixelBufferMipMap *pbMipMapCompressed = NULL;
+		const deoglPixelBuffer &basePixelBuffer = pbMipMapSource->GetPixelBuffer( 0 );
+		const deoglPixelBufferMipMap::Ref pbMipMapCompressed( deoglPixelBufferMipMap::Ref::New(
+			new deoglPixelBufferMipMap( pbformat,
+				basePixelBuffer.GetWidth(), basePixelBuffer.GetHeight(),
+				basePixelBuffer.GetDepth(), pbMipMapSource->GetPixelBufferCount() - 1 ) ) );
 		
-		try{
-			pbMipMapCompressed = new deoglPixelBufferMipMap( pbformat,
-				basePixelBuffer.GetWidth(), basePixelBuffer.GetHeight(),
-				basePixelBuffer.GetDepth(), pbMipMapSource->GetPixelBufferCount() - 1 );
-			
-			textureCompression.SetDecompressedDataMipMap( pbMipMapSource );
-			textureCompression.SetCompressedDataMipMap( pbMipMapCompressed );
-			//decTimer timer;
-			textureCompression.CompressMipMap();
-			/*float elapsed = timer.GetElapsedTime();
-			pRenderThread.GetOgl().LogInfoFormat( "CompressTextures: skin='%s' texture='%s' channel=%i"
-				" pbformat=%x width=%i height=%i mipmaps=%i elapsed=%iys",
-				skin.GetSkin()->GetFilename(), texture.GetName(), i,
-				compressedPixelBufferMipMap->GetPixelBuffer( 0 )->GetFormat(),
-				basePixelBuffer.GetWidth(), basePixelBuffer.GetHeight(),
-				compressedPixelBufferMipMap->GetPixelBufferCount(),
-				( int )( elapsed * 1e6f ) );*/
-			
-			pChannels[ i ]->SetPixelBufferMipMap( pbMipMapCompressed );
-			
-		}catch( const deException & ){
-			if( pbMipMapCompressed ){
-				delete pbMipMapCompressed;
-			}
-			throw;
-		}
+		textureCompression.SetDecompressedDataMipMap( pbMipMapSource );
+		textureCompression.SetCompressedDataMipMap( pbMipMapCompressed );
+		//decTimer timer;
+		textureCompression.CompressMipMap();
+		/*float elapsed = timer.GetElapsedTime();
+		pRenderThread.GetOgl().LogInfoFormat( "CompressTextures: skin='%s' texture='%s' channel=%i"
+			" pbformat=%x width=%i height=%i mipmaps=%i elapsed=%iys",
+			skin.GetSkin()->GetFilename(), texture.GetName(), i,
+			compressedPixelBufferMipMap->GetPixelBuffer( 0 )->GetFormat(),
+			basePixelBuffer.GetWidth(), basePixelBuffer.GetHeight(),
+			compressedPixelBufferMipMap->GetPixelBufferCount(),
+			( int )( elapsed * 1e6f ) );*/
+		
+		pChannels[ i ]->SetPixelBufferMipMap( pbMipMapCompressed );
 	}
 }
 
@@ -1999,7 +1369,7 @@ void deoglSkinTexture::pWriteCached( deoglRSkin &skin ){
 				const int pixBufCount = pixelBufferMipMap->GetPixelBufferCount();
 				int j;
 				
-				const deoglPixelBuffer &pixelBufferBase = *pixelBufferMipMap->GetPixelBuffer( 0 );
+				const deoglPixelBuffer &pixelBufferBase = pixelBufferMipMap->GetPixelBuffer( 0 );
 				writer->WriteByte( ( unsigned char )pixBufCount );
 				writer->WriteShort( ( short )pixelBufferBase.GetWidth() );
 				writer->WriteShort( ( short )pixelBufferBase.GetHeight() );
@@ -2007,7 +1377,7 @@ void deoglSkinTexture::pWriteCached( deoglRSkin &skin ){
 				writer->WriteByte( ( unsigned char )pixelBufferBase.GetFormat() );
 				
 				for( j=0; j<pixBufCount; j++ ){
-					const deoglPixelBuffer &pixelBuffer = *pixelBufferMipMap->GetPixelBuffer( j );
+					const deoglPixelBuffer &pixelBuffer = pixelBufferMipMap->GetPixelBuffer( j );
 					writer->Write( pixelBuffer.GetPointer(), pixelBuffer.GetImageSize() );
 				}
 				
@@ -2061,7 +1431,6 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 	const deoglSkinPropertyMap::ePropertyTypes propertyType =
 		deoglSkinPropertyMap::GetTypeFor( property.GetType().GetString() );
 	deSkinPropertyVisitorIdentify identify;
-	decColor color;
 	float value;
 	
 	property.Visit( identify );
@@ -2167,6 +1536,10 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			pSolidityMasked = value > 0.5f;
 			break;
 			
+		case deoglSkinPropertyMap::eptSolidityFilterPriority:
+			pSolidityFilterPriority = decMath::clamp( value, 0.0f, 1.0f );
+			break;
+			
 		case deoglSkinPropertyMap::eptRefractionDistortStrength:
 			pRefractDistortStrength = value;
 			break;
@@ -2193,8 +1566,7 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			break;
 			
 		case deoglSkinPropertyMap::eptEmissivity:
-			color.Set( value, value, value );
-			pEmissivity = color;
+			pEmissivity.Set( value, value, value );
 			break;
 			
 		case deoglSkinPropertyMap::eptEmissivityTint:
@@ -2203,6 +1575,10 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			
 		case deoglSkinPropertyMap::eptEmissivityIntensity:
 			pEmissivityIntensity = value;
+			break;
+			
+		case deoglSkinPropertyMap::eptEmissivityCameraAdapted:
+			pEmissivityCameraAdapted = value > 0.5f;
 			break;
 			
 		case deoglSkinPropertyMap::eptEnvironmentRoomSize:
@@ -2265,6 +1641,14 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			pTexCoordRotate = value;
 			break;
 			
+		case deoglSkinPropertyMap::eptOmniDirRotate:
+			pOmniDirRotate.Set( value, value, value );
+			break;
+			
+		case deoglSkinPropertyMap::eptOmniDirRotateSpot:
+			pOmniDirRotateSpot.Set( value, value, value );
+			break;
+			
 		case deoglSkinPropertyMap::eptShadowNone:
 			pShadowNone = value > 0.5f;
 			break;
@@ -2285,8 +1669,32 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			pParticleSheetCount = decMath::max( ( int )( value + 0.5f ), 1 );
 			break;
 			
+		case deoglSkinPropertyMap::eptRimEmissivity:
+			pEmissivity.Set( value, value, value );
+			break;
+			
+		case deoglSkinPropertyMap::eptRimEmissivityTint:
+			pRimEmissivityTint.Set( value, value, value );
+			break;
+			
+		case deoglSkinPropertyMap::eptRimEmissivityIntensity:
+			pRimEmissivityIntensity = value;
+			break;
+			
+		case deoglSkinPropertyMap::eptRimAngle:
+			pRimAngle = decMath::clamp( value, 0.0f, 1.0f );
+			break;
+			
+		case deoglSkinPropertyMap::eptRimExponent:
+			pRimExponent = decMath::max( value, 0.0f );
+			break;
+			
 		case deoglSkinPropertyMap::eptOutlineColor:
 			pOutlineColor.Set( value, value, value );
+			break;
+			
+		case deoglSkinPropertyMap::eptOutlineColorTint:
+			pOutlineColorTint.Set( value, value, value );
 			break;
 			
 		case deoglSkinPropertyMap::eptOutlineThickness:
@@ -2307,9 +1715,35 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			pOutlineEmissivity.Set( value, value, value );
 			break;
 			
+		case deoglSkinPropertyMap::eptOutlineEmissivityTint:
+			pOutlineEmissivityTint.Set( value, value, value );
+			break;
+			
 		case deoglSkinPropertyMap::eptOutlineEmissivityIntensity:
 			pOutlineEmissivityIntensity = decMath::max( value, 0.0f );
 			pIsOutlineEmissive = pOutlineEmissivityIntensity != 0.0f || ! property.GetRenderable().IsEmpty();
+			break;
+			
+		case deoglSkinPropertyMap::eptNonPbrAlbedo:
+			pNonPbrAlbedo.Set( value, value, value );
+			break;
+			
+		case deoglSkinPropertyMap::eptNonPbrMetalness:
+			pNonPbrMetalness = value;
+			break;
+			
+		case deoglSkinPropertyMap::eptXRay:
+			pXRay = value > 0.5f;
+			break;
+			
+		case deoglSkinPropertyMap::eptClipPlane:
+			pSkinClipPlane = decMath::clamp( value, 0.0f, 1.0f );
+			pHasSolidity = true;
+			pBoneProperties = true;
+			break;
+			
+		case deoglSkinPropertyMap::eptClipPlaneBorder:
+			pSkinClipPlaneBorder = value;
 			break;
 			
 		default:
@@ -2317,7 +1751,7 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 		}
 		
 	}else if( identify.IsColor() ){
-		color = identify.CastToColor().GetColor();
+		const decColor &color = identify.CastToColor().GetColor();
 		
 		switch( propertyType ){
 		case deoglSkinPropertyMap::eptAbsorption:
@@ -2377,12 +1811,40 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			pTexCoordScale.Set( color.r, color.g );
 			break;
 			
+		case deoglSkinPropertyMap::eptOmniDirRotate:
+			pOmniDirRotate.Set( color.r, color.g, color.b );
+			break;
+			
+		case deoglSkinPropertyMap::eptOmniDirRotateSpot:
+			pOmniDirRotateSpot.Set( color.r, color.g, color.b );
+			break;
+			
+		case deoglSkinPropertyMap::eptRimEmissivity:
+			pRimEmissivity = color;
+			break;
+			
+		case deoglSkinPropertyMap::eptRimEmissivityTint:
+			pRimEmissivityTint = color;
+			break;
+			
 		case deoglSkinPropertyMap::eptOutlineColor:
 			pOutlineColor = color;
 			break;
 			
+		case deoglSkinPropertyMap::eptOutlineColorTint:
+			pOutlineColorTint = color;
+			break;
+			
 		case deoglSkinPropertyMap::eptOutlineEmissivity:
 			pOutlineEmissivity = color;
+			break;
+			
+		case deoglSkinPropertyMap::eptOutlineEmissivityTint:
+			pOutlineEmissivityTint = color;
+			break;
+			
+		case deoglSkinPropertyMap::eptNonPbrAlbedo:
+			pNonPbrAlbedo = color;
 			break;
 			
 		default:
@@ -2390,7 +1852,7 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 		}
 		
 	}else if( identify.IsMapped() ){
-		deoglSkinTextureProperty *materialProperty = NULL;
+		deoglSkinTextureProperty *materialProperty = nullptr;
 		bool requiresTexture = false;
 		
 		switch( propertyType ){
@@ -2415,6 +1877,7 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			
 		case deoglSkinPropertyMap::eptColorTintMask:
 			materialProperty = pMaterialProperties + empColorTintMask;
+			requiresTexture = true;
 			break;
 			
 		case deoglSkinPropertyMap::eptColorGamma:
@@ -2573,6 +2036,14 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			materialProperty = pMaterialProperties + empTexCoordRotate;
 			break;
 			
+		case deoglSkinPropertyMap::eptOmniDirRotate:
+			materialProperty = pMaterialProperties + empOmniDirRotate;
+			break;
+			
+		case deoglSkinPropertyMap::eptOmniDirRotateSpot:
+			materialProperty = pMaterialProperties + empOmniDirRotateSpot;
+			break;
+			
 		case deoglSkinPropertyMap::eptVariationU:
 			materialProperty = pMaterialProperties + empVariationU;
 			break;
@@ -2581,8 +2052,33 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			materialProperty = pMaterialProperties + empVariationV;
 			break;
 			
+		case deoglSkinPropertyMap::eptRimEmissivity:
+			materialProperty = pMaterialProperties + empRimEmissivity;
+			requiresTexture = true;
+			break;
+			
+		case deoglSkinPropertyMap::eptRimEmissivityTint:
+			materialProperty = pMaterialProperties + empRimEmissivityTint;
+			break;
+			
+		case deoglSkinPropertyMap::eptRimEmissivityIntensity:
+			materialProperty = pMaterialProperties + empRimEmissivityIntensity;
+			break;
+			
+		case deoglSkinPropertyMap::eptRimAngle:
+			materialProperty = pMaterialProperties + empRimAngle;
+			break;
+			
+		case deoglSkinPropertyMap::eptRimExponent:
+			materialProperty = pMaterialProperties + empRimExponent;
+			break;
+			
 		case deoglSkinPropertyMap::eptOutlineColor:
 			materialProperty = pMaterialProperties + empOutlineColor;
+			break;
+			
+		case deoglSkinPropertyMap::eptOutlineColorTint:
+			materialProperty = pMaterialProperties + empOutlineColorTint;
 			break;
 			
 		case deoglSkinPropertyMap::eptOutlineThickness:
@@ -2599,9 +2095,31 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			materialProperty = pMaterialProperties + empOutlineEmissivity;
 			break;
 			
+		case deoglSkinPropertyMap::eptOutlineEmissivityTint:
+			materialProperty = pMaterialProperties + empOutlineEmissivityTint;
+			break;
+			
 		case deoglSkinPropertyMap::eptOutlineEmissivityIntensity:
 			materialProperty = pMaterialProperties + empOutlineEmissivityIntensity;
 			pIsOutlineEmissive = true;
+			break;
+			
+		case deoglSkinPropertyMap::eptNonPbrAlbedo:
+			materialProperty = pMaterialProperties + empNonPbrAlbedo;
+			requiresTexture = true;
+			break;
+			
+		case deoglSkinPropertyMap::eptNonPbrMetalness:
+			materialProperty = pMaterialProperties + empNonPbrMetalness;
+			requiresTexture = true;
+			break;
+			
+		case deoglSkinPropertyMap::eptClipPlane:
+			materialProperty = pMaterialProperties + empSkinClipPlane;
+			break;
+			
+		case deoglSkinPropertyMap::eptClipPlaneBorder:
+			materialProperty = pMaterialProperties + empSkinClipPlaneBorder;
 			break;
 			
 		default:
@@ -2611,25 +2129,23 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 		if( materialProperty ){
 			const deSkinPropertyMapped &mapped = identify.CastToMapped();
 			
-			deObjectReference refCalculated;
-			refCalculated.TakeOver( new deoglSkinCalculatedProperty );
+			const deoglSkinCalculatedProperty::Ref calculated(
+				deoglSkinCalculatedProperty::Ref::New( new deoglSkinCalculatedProperty ) );
 			
-			deoglSkinCalculatedProperty &calculated = ( deoglSkinCalculatedProperty& )( deObject& )refCalculated;
-			calculated.GetMappedComponent( 0 ) = mapped.GetRed();
-			calculated.GetMappedComponent( 1 ) = mapped.GetGreen();
-			calculated.GetMappedComponent( 2 ) = mapped.GetBlue();
-			calculated.GetMappedComponent( 3 ) = mapped.GetAlpha();
-			calculated.SetRequiresTexture( requiresTexture );
-			calculated.Prepare();
+			calculated->SetMappedComponent( 0, mapped.GetRed() );
+			calculated->SetMappedComponent( 1, mapped.GetGreen() );
+			calculated->SetMappedComponent( 2, mapped.GetBlue() );
+			calculated->SetMappedComponent( 3, mapped.GetAlpha() );
+			calculated->SetRequiresTexture( requiresTexture );
 			
-			materialProperty->SetCalculatedProperty( skin.AddCalculatedProperty( &calculated ) );
+			materialProperty->SetCalculatedProperty( skin.AddCalculatedProperty( calculated ) );
 			pCalculatedProperties = true;
 		}
 	}
 	
 	// check if the property has a renderable
 	if( ! property.GetRenderable().IsEmpty() ){
-		const char * const renderable = property.GetRenderable().GetString();
+		const decString &renderable = property.GetRenderable();
 		
 		switch( propertyType ){
 		case deoglSkinPropertyMap::eptColor:
@@ -2657,6 +2173,8 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			
 		case deoglSkinPropertyMap::eptColorTintMask:
 			pMaterialProperties[ empColorTintMask ].SetRenderable( skin.AddRenderable( renderable ) );
+			skin.GetRenderableAt( pMaterialProperties[ empColorTintMask ].GetRenderable() ).
+				SetRequiresTexture( true );
 			break;
 			
 		case deoglSkinPropertyMap::eptColorGamma:
@@ -2824,6 +2342,14 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			pMaterialProperties[ empTexCoordRotate ].SetRenderable( skin.AddRenderable( renderable ) );
 			break;
 			
+		case deoglSkinPropertyMap::eptOmniDirRotate:
+			pMaterialProperties[ empOmniDirRotate ].SetRenderable( skin.AddRenderable( renderable ) );
+			break;
+			
+		case deoglSkinPropertyMap::eptOmniDirRotateSpot:
+			pMaterialProperties[ empOmniDirRotateSpot ].SetRenderable( skin.AddRenderable( renderable ) );
+			break;
+			
 		case deoglSkinPropertyMap::eptVariationU:
 			pMaterialProperties[ empVariationU ].SetRenderable( skin.AddRenderable( renderable ) );
 			break;
@@ -2832,8 +2358,34 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			pMaterialProperties[ empVariationV ].SetRenderable( skin.AddRenderable( renderable ) );
 			break;
 			
+		case deoglSkinPropertyMap::eptRimEmissivity:
+			pMaterialProperties[ empRimEmissivity ].SetRenderable( skin.AddRenderable( renderable ) );
+			skin.GetRenderableAt( pMaterialProperties[ empRimEmissivity ].GetRenderable() )
+				.SetRequiresTexture( true );
+			break;
+			
+		case deoglSkinPropertyMap::eptRimEmissivityTint:
+			pMaterialProperties[ empRimEmissivityTint ].SetRenderable( skin.AddRenderable( renderable ) );
+			break;
+			
+		case deoglSkinPropertyMap::eptRimEmissivityIntensity:
+			pMaterialProperties[ empRimEmissivityIntensity ].SetRenderable( skin.AddRenderable( renderable ) );
+			break;
+			
+		case deoglSkinPropertyMap::eptRimAngle:
+			pMaterialProperties[ empRimAngle ].SetRenderable( skin.AddRenderable( renderable ) );
+			break;
+			
+		case deoglSkinPropertyMap::eptRimExponent:
+			pMaterialProperties[ empRimExponent ].SetRenderable( skin.AddRenderable( renderable ) );
+			break;
+			
 		case deoglSkinPropertyMap::eptOutlineColor:
 			pMaterialProperties[ empOutlineColor ].SetRenderable( skin.AddRenderable( renderable ) );
+			break;
+			
+		case deoglSkinPropertyMap::eptOutlineColorTint:
+			pMaterialProperties[ empOutlineColorTint ].SetRenderable( skin.AddRenderable( renderable ) );
 			break;
 			
 		case deoglSkinPropertyMap::eptOutlineThickness:
@@ -2848,12 +2400,188 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			pMaterialProperties[ empOutlineEmissivity ].SetRenderable( skin.AddRenderable( renderable ) );
 			break;
 			
+		case deoglSkinPropertyMap::eptOutlineEmissivityTint:
+			pMaterialProperties[ empOutlineEmissivityTint ].SetRenderable( skin.AddRenderable( renderable ) );
+			break;
+			
 		case deoglSkinPropertyMap::eptOutlineEmissivityIntensity:
 			pMaterialProperties[ empOutlineEmissivityIntensity ].SetRenderable( skin.AddRenderable( renderable ) );
+			break;
+			
+		case deoglSkinPropertyMap::eptNonPbrAlbedo:
+			pMaterialProperties[ empNonPbrAlbedo ].SetRenderable( skin.AddRenderable( renderable ) );
+			skin.GetRenderableAt( pMaterialProperties[ empNonPbrAlbedo ].GetRenderable() ).SetRequiresTexture( true );
+			break;
+			
+		case deoglSkinPropertyMap::eptNonPbrMetalness:
+			pMaterialProperties[ empNonPbrMetalness ].SetRenderable( skin.AddRenderable( renderable ) );
+			skin.GetRenderableAt( pMaterialProperties[ empNonPbrMetalness ].GetRenderable() ).SetRequiresTexture( true );
+			break;
+			
+		case deoglSkinPropertyMap::eptClipPlane:
+			pMaterialProperties[ empSkinClipPlane ].SetRenderable( skin.AddRenderable( renderable ) );
+			break;
+			
+		case deoglSkinPropertyMap::eptClipPlaneBorder:
+			pMaterialProperties[ empSkinClipPlaneBorder ].SetRenderable( skin.AddRenderable( renderable ) );
 			break;
 			
 		default:
 			break;
 		}
+	}
+	
+	// check if the property has a boner
+	if( ! property.GetBone().IsEmpty() ){
+		switch( propertyType ){
+		case deoglSkinPropertyMap::eptClipPlane:
+			pMaterialProperties[ empSkinClipPlane ].SetBone( skin.AddBone( property.GetBone() ) );
+			break;
+			
+		default:
+			break;
+		}
+	}
+}
+
+void deoglSkinTexture::pUpdateParamBlock( deoglShaderParameterBlock &spb, int element ){
+	// etutValueColorTransparency,
+	// etutValueNormalHeight,
+	// etutValueReflectivityRoughness,
+	// etutValueRefractionDistort,
+	// etutValueAO,
+	spb.SetParameterDataVec3( deoglSkinShader::etutTexColorTint, element,
+		powf( pColorTint.r, 2.2f ), powf( pColorTint.g, 2.2f ), powf( pColorTint.b, 2.2f ) );
+	
+	spb.SetParameterDataFloat( deoglSkinShader::etutTexColorGamma, element, pColorGamma );
+	
+	spb.SetParameterDataFloat( deoglSkinShader::etutTexColorSolidMultiplier, element,
+		pColorSolidityMultiplier );
+	
+	spb.SetParameterDataFloat( deoglSkinShader::etutTexAOSolidityMultiplier, element,
+		pAmbientOcclusionSolidityMultiplier );
+	
+	spb.SetParameterDataFloat( deoglSkinShader::etutTexTransparencyMultiplier, element,
+		pTransparencyMultiplier );
+	
+	spb.SetParameterDataFloat( deoglSkinShader::etutTexSolidityMultiplier, element,
+		pSolidityMultiplier );
+	
+	// (texHeight - 0.5 + offset) * scale = texHeight*scale + (offset-0.5)*scale
+	spb.SetParameterDataVec2( deoglSkinShader::etutTexHeightRemap, element,
+		pHeightScale, ( pHeightOffset - 0.5f ) * pHeightScale );
+	
+	spb.SetParameterDataFloat( deoglSkinShader::etutTexNormalStrength, element, pNormalStrength );
+	
+	spb.SetParameterDataFloat( deoglSkinShader::etutTexNormalSolidityMultiplier, element,
+		pNormalSolidityMultiplier );
+	
+	spb.SetParameterDataVec2( deoglSkinShader::etutTexRoughnessRemap, element,
+		pRoughnessRemapUpper - pRoughnessRemapLower, pRoughnessRemapLower );
+	
+	spb.SetParameterDataFloat( deoglSkinShader::etutTexRoughnessGamma, element, pRoughnessGamma );
+	
+	spb.SetParameterDataFloat( deoglSkinShader::etutTexRoughnessSolidityMultiplier, element,
+		pRoughnessSolidityMultiplier );
+	
+	spb.SetParameterDataFloat( deoglSkinShader::etutTexReflectivitySolidityMultiplier, element,
+		pReflectivitySolidityMultiplier );
+	
+	spb.SetParameterDataFloat( deoglSkinShader::etutTexRefractionDistortStrength, element,
+		pRefractDistortStrength );
+	
+	spb.SetParameterDataVec3( deoglSkinShader::etutTexEmissivityIntensity, element,
+		powf( pEmissivityTint.r, 2.2f ) * pEmissivityIntensity,
+		powf( pEmissivityTint.g, 2.2f ) * pEmissivityIntensity,
+		powf( pEmissivityTint.b, 2.2f ) * pEmissivityIntensity );
+	
+	spb.SetParameterDataVec2( deoglSkinShader::etutTexEnvRoomSize, element,
+		1.0f / pEnvironmentRoomSize.x, -1.0f / pEnvironmentRoomSize.y );
+	
+	spb.SetParameterDataVec3( deoglSkinShader::etutTexEnvRoomOffset, element,
+		pEnvironmentRoomOffset );
+	
+	spb.SetParameterDataVec3( deoglSkinShader::etutTexEnvRoomEmissivityIntensity, element,
+		powf( pEnvironmentRoomEmissivityTint.r, 2.2f ) * pEnvironmentRoomEmissivityIntensity,
+		powf( pEnvironmentRoomEmissivityTint.g, 2.2f ) * pEnvironmentRoomEmissivityIntensity,
+		powf( pEnvironmentRoomEmissivityTint.b, 2.2f ) * pEnvironmentRoomEmissivityIntensity );
+	
+	spb.SetParameterDataFloat( deoglSkinShader::etutTexThickness, element, pThickness );
+	spb.SetParameterDataFloat( deoglSkinShader::etutTexAbsorptionRange, element, pAbsorptionRange );
+	
+	spb.SetParameterDataVec2( deoglSkinShader::etutTexVariationEnableScale, element,
+		pVariationU ? 1.0f : 0.0f, pVariationV ? 1.0f : 0.0f );
+	
+	spb.SetParameterDataFloat( deoglSkinShader::etutTexReflectivityMultiplier, element,
+		pReflectivityMultiplier );
+	
+	// see shader source geometry/defren/skin/particle_ribbon.glsl for the
+	// calculation of the maximum number of supported sheets (8)
+	spb.SetParameterDataInt( deoglSkinShader::etutTexParticleSheetCount, element,
+		decMath::clamp( pParticleSheetCount, 1, 8 ) );
+	
+	spb.SetParameterDataVec3( deoglSkinShader::etutTexRimEmissivityIntensity, element,
+		powf( pRimEmissivityTint.r, 2.2f ) * pRimEmissivityIntensity,
+		powf( pRimEmissivityTint.g, 2.2f ) * pRimEmissivityIntensity,
+		powf( pRimEmissivityTint.b, 2.2f ) * pRimEmissivityIntensity );
+	
+	spb.SetParameterDataFloat( deoglSkinShader::etutTexRimAngle, element,
+		pRimAngle > 0.001f ? 1.0f / ( pRimAngle * HALF_PI ) : 0.0f );
+	
+	spb.SetParameterDataFloat( deoglSkinShader::etutTexRimExponent, element,
+		decMath::max( pRimExponent, 0.001f ) );
+	
+	spb.SetParameterDataVec3( deoglSkinShader::etutTexOutlineColor, element,
+		powf( pOutlineColor.r, 2.2f ), powf( pOutlineColor.g, 2.2f ),
+		powf( pOutlineColor.b, 2.2f ) );
+	
+	spb.SetParameterDataVec3( deoglSkinShader::etutTexOutlineColorTint, element,
+		powf( pOutlineColorTint.r, 2.2f ), powf( pOutlineColorTint.g, 2.2f ),
+		powf( pOutlineColorTint.b, 2.2f ) );
+	
+	spb.SetParameterDataFloat( deoglSkinShader::etutTexOutlineThickness, element, pOutlineThickness );
+	spb.SetParameterDataFloat( deoglSkinShader::etutTexOutlineSolidity, element, pOutlineSolidity );
+	
+	spb.SetParameterDataVec3( deoglSkinShader::etutTexOutlineEmissivity, element,
+		powf( pOutlineEmissivity.r, 2.2f ) * pOutlineEmissivityIntensity,
+		powf( pOutlineEmissivity.g, 2.2f ) * pOutlineEmissivityIntensity,
+		powf( pOutlineEmissivity.b, 2.2f ) * pOutlineEmissivityIntensity );
+	
+	spb.SetParameterDataVec3( deoglSkinShader::etutTexOutlineEmissivityTint, element,
+		powf( pOutlineEmissivityTint.r, 2.2f ), powf( pOutlineEmissivityTint.g, 2.2f ),
+		powf( pOutlineEmissivityTint.b, 2.2f ) );
+	
+	spb.SetParameterDataBool( deoglSkinShader::etutTexEmissivityCameraAdapted, element,
+		pEmissivityCameraAdapted );
+	
+	spb.SetParameterDataFloat( deoglSkinShader::etutTexSkinClipPlane, element, pSkinClipPlane );
+	spb.SetParameterDataFloat( deoglSkinShader::etutTexSkinClipPlaneBorder, element, pSkinClipPlaneBorder );
+}
+
+void deoglSkinTexture::pUpdateRenderTaskFilters(){
+	pRenderTaskFilters = ertfRender;
+	if( pXRay ){
+		pRenderTaskFilters |= ertfXRay;
+	}
+	if( pSolid ){
+		pRenderTaskFilters |= ertfSolid;
+	}
+	if( pHasOutline ){
+		pRenderTaskFilters |= ertfOutline;
+	}
+	if( pIsOutlineSolid ){
+		pRenderTaskFilters |= ertfOutlineSolid;
+	}
+	if( pHasHoles ){
+		pRenderTaskFilters |= ertfHoles;
+	}
+	if( pShadowNone ){
+		pRenderTaskFilters |= ertfShadowNone;
+	}
+	if( pReflected ){
+		pRenderTaskFilters |= ertfReflected;
+	}
+	if( pRendered ){
+		pRenderTaskFilters |= ertfRendered;
 	}
 }

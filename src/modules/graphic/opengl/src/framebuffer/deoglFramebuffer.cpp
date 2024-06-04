@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -25,12 +28,13 @@
 
 #include "deoglFramebuffer.h"
 #include "../capabilities/deoglCapabilities.h"
+#include "../delayedoperation/deoglDelayedOperations.h"
 #include "../renderthread/deoglRenderThread.h"
+#include "../renderthread/deoglRTFramebuffer.h"
 #include "../renderthread/deoglRTLogger.h"
+#include "../renderthread/deoglRTDebug.h"
 #include "../texture/arraytexture/deoglArrayTexture.h"
 #include "../texture/cubemap/deoglCubeMap.h"
-#include "../texture/deoglRenderbuffer.h"
-#include "../texture/texture1d/deoglTexture1D.h"
 #include "../texture/texture2d/deoglTexture.h"
 
 #include <dragengine/common/exceptions.h>
@@ -47,7 +51,6 @@
 static GLenum targetMap[] = {
 	0, // eatNone
 	GL_TEXTURE_2D, // eatTexture
-	GL_TEXTURE_1D, // eatTexture1D
 	GL_TEXTURE_CUBE_MAP, // eatCubeMap
 	GL_TEXTURE_CUBE_MAP_POSITIVE_X, // eatCubeMapPosX
 	GL_TEXTURE_CUBE_MAP_NEGATIVE_X, // eatCubeMapNegX
@@ -56,8 +59,7 @@ static GLenum targetMap[] = {
 	GL_TEXTURE_CUBE_MAP_POSITIVE_Z, // eatCubeMapPosZ
 	GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, // eatCubeMapNegZ
 	0, // eatArrayTexture
-	0, // eatArrayTextureLayer
-	GL_RENDERBUFFER // eatRenderbuffer
+	0 // eatArrayTextureLayer
 };
 
 // define to make Verify check the framebuffer for errors. comment this
@@ -140,7 +142,7 @@ void deoglFramebuffer::DecreaseUsageCount(){
 
 
 
-void deoglFramebuffer::SetAsCurrent(){
+void deoglFramebuffer::SetAsCurrent() const{
 	// if primary, pFBO is 0 which is what we need
 	OGL_CHECK( pRenderThread, pglBindFramebuffer( GL_FRAMEBUFFER, pFBO ) );
 }
@@ -209,7 +211,7 @@ void deoglFramebuffer::Verify(){
 			
 		}else{
 // 			tracePoint.AddValueInt( "error", status );
-// 			tracePoint.AddValue( "description", "An unknown error has occured that is not listed in the OpenGL specifications ( broken driver ? )" );
+// 			tracePoint.AddValue( "description", "An unknown error has occurred that is not listed in the OpenGL specifications ( broken driver ? )" );
 			pRenderThread.GetLogger().LogErrorFormat( "FBO: Unknown Error Code %d!", status );
 		}
 		
@@ -247,52 +249,7 @@ void deoglFramebuffer::AttachColorTextureLevel( int index, deoglTexture *texture
 	if( pPrimary || index < 0 || index >= FBO_MAX_ATTACHMENT_COUNT || ! texture ){
 		DETHROW( deeInvalidParam );
 	}
-	
-	const GLuint image = texture->GetTexture();
-	
-	if( pAttColor[ index ].DoesNotMatch( image, eatTexture, level ) ){
-		DetachColorImage( index );
-		
-		if( pglFramebufferTexture
-		&& pRenderThread.GetCapabilities().GetFramebufferTextureSingle().Working() ){
-			OGL_CHECK( pRenderThread, pglFramebufferTexture( GL_FRAMEBUFFER,
-				GL_COLOR_ATTACHMENT0 + index, image, level ) );
-			
-		}else{
-			OGL_CHECK( pRenderThread, pglFramebufferTexture2D( GL_FRAMEBUFFER,
-				GL_COLOR_ATTACHMENT0 + index, GL_TEXTURE_2D, image, level ) );
-		}
-		
-		pAttColor[ index ].Set( image, eatTexture, level );
-	}
-}
-
-void deoglFramebuffer::AttachColorTexture1D( int index, deoglTexture1D *texture ){
-	AttachColorTexture1DLevel( index, texture, 0 );
-}
-
-void deoglFramebuffer::AttachColorTexture1DLevel( int index, deoglTexture1D *texture, int level ){
-	if( pPrimary || index < 0 || index >= FBO_MAX_ATTACHMENT_COUNT || ! texture ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	const GLuint image = texture->GetTexture();
-	
-	if( pAttColor[ index ].DoesNotMatch( image, eatTexture1D, level ) ){
-		DetachColorImage( index );
-		
-		if( pglFramebufferTexture
-		&& pRenderThread.GetCapabilities().GetFramebufferTextureSingle().Working() ){
-			OGL_CHECK( pRenderThread, pglFramebufferTexture( GL_FRAMEBUFFER,
-				GL_COLOR_ATTACHMENT0 + index, image, level ) );
-			
-		}else{
-			OGL_CHECK( pRenderThread, pglFramebufferTexture1D( GL_FRAMEBUFFER,
-				GL_COLOR_ATTACHMENT0 + index, GL_TEXTURE_1D, image, level ) );
-		}
-		
-		pAttColor[ index ].Set( image, eatTexture1D, level );
-	}
+	AttachColorTextureLevel( index, texture->GetTexture(), level );
 }
 
 void deoglFramebuffer::AttachColorCubeMap( int index, deoglCubeMap* texture ){
@@ -418,13 +375,34 @@ deoglArrayTexture *texture, int layer, int level ){
 	}
 }
 
+void deoglFramebuffer::AttachColorTextureLevel( int index, GLuint texture, int level ){
+	if( pPrimary || index < 0 || index >= FBO_MAX_ATTACHMENT_COUNT ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	if( pAttColor[ index ].DoesNotMatch( texture, eatTexture, level ) ){
+		DetachColorImage( index );
+		
+		if( pglFramebufferTexture
+		&& pRenderThread.GetCapabilities().GetFramebufferTextureSingle().Working() ){
+			OGL_CHECK( pRenderThread, pglFramebufferTexture( GL_FRAMEBUFFER,
+				GL_COLOR_ATTACHMENT0 + index, texture, level ) );
+			
+		}else{
+			OGL_CHECK( pRenderThread, pglFramebufferTexture2D( GL_FRAMEBUFFER,
+				GL_COLOR_ATTACHMENT0 + index, GL_TEXTURE_2D, texture, level ) );
+		}
+		
+		pAttColor[ index ].Set( texture, eatTexture, level );
+	}
+}
+
 void deoglFramebuffer::DetachColorImage( int index ){
 	if( pAttColor[ index ].type == eatNone ){
 		return;
 	}
 	
-	if( pglFramebufferTexture
-	&& pRenderThread.GetCapabilities().GetFramebufferTextureSingle().Working() ){
+	if( pglFramebufferTexture && pRenderThread.GetCapabilities().GetFramebufferTextureSingle().Working() ){
 		OGL_CHECK( pRenderThread, pglFramebufferTexture( GL_FRAMEBUFFER,
 			GL_COLOR_ATTACHMENT0 + index, 0, 0 ) );
 		
@@ -438,22 +416,7 @@ void deoglFramebuffer::DetachColorImage( int index ){
 
 void deoglFramebuffer::DetachColorImages( int startIndex ){
 	while( startIndex < FBO_MAX_ATTACHMENT_COUNT ){
-		if( pAttColor[ startIndex ].type != eatNone ){
-			if( pglFramebufferTexture
-			&& pRenderThread.GetCapabilities().GetFramebufferTextureSingle().Working() ){
-				OGL_CHECK( pRenderThread, pglFramebufferTexture( GL_FRAMEBUFFER,
-					GL_COLOR_ATTACHMENT0 + startIndex, 0, 0 ) );
-				
-			}else{
-				OGL_CHECK( pRenderThread, pglFramebufferTexture2D( GL_FRAMEBUFFER,
-					GL_COLOR_ATTACHMENT0 + startIndex,
-					targetMap[ pAttColor[ startIndex ].type ], 0, 0 ) );
-			}
-			
-			pAttColor[ startIndex ].Reset();
-		}
-		
-		startIndex++;
+		DetachColorImage( startIndex++ );
 	}
 }
 
@@ -503,34 +466,6 @@ void deoglFramebuffer::AttachDepthTextureLevel( deoglTexture *texture, int level
 		}
 		
 		pAttDepth.Set( image, eatTexture, level );
-	}
-}
-
-void deoglFramebuffer::AttachDepthTexture1D( deoglTexture1D *texture ){
-	AttachDepthTexture1DLevel( texture, 0 );
-}
-
-void deoglFramebuffer::AttachDepthTexture1DLevel( deoglTexture1D *texture, int level ){
-	if( pPrimary || ! texture ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	const GLuint image = texture->GetTexture();
-	
-	if( pAttDepth.DoesNotMatch( image, eatTexture1D, level ) ){
-		DetachDepthImage();
-		
-		if( pglFramebufferTexture
-		&& pRenderThread.GetCapabilities().GetFramebufferTextureSingle().Working() ){
-			OGL_CHECK( pRenderThread, pglFramebufferTexture( GL_FRAMEBUFFER,
-				GL_DEPTH_ATTACHMENT, image, level ) );
-			
-		}else{
-			OGL_CHECK( pRenderThread, pglFramebufferTexture2D( GL_FRAMEBUFFER,
-				GL_DEPTH_ATTACHMENT, GL_TEXTURE_1D, image, level ) );
-		}
-		
-		pAttDepth.Set( image, eatTexture1D, level );
 	}
 }
 
@@ -654,33 +589,12 @@ void deoglFramebuffer::AttachDepthArrayTextureLayerLevel( deoglArrayTexture *tex
 	}
 }
 
-void deoglFramebuffer::AttachDepthRenderbuffer( deoglRenderbuffer *renderbuffer ){
-	if( pPrimary || ! renderbuffer ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	const GLuint image = renderbuffer->GetRenderbuffer();
-	
-	if( pAttDepth.DoesNotMatch( image, eatRenderbuffer ) ){
-		DetachDepthImage();
-		
-		OGL_CHECK( pRenderThread, pglFramebufferRenderbuffer( GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, image ) );
-		
-		pAttDepth.Set( image, eatRenderbuffer );
-	}
-}
-
 void deoglFramebuffer::DetachDepthImage(){
 	if( pAttDepth.type == eatNone ){
 		return;
 	}
 	
-	if( pAttDepth.type == eatRenderbuffer ){
-		OGL_CHECK( pRenderThread, pglFramebufferRenderbuffer( GL_FRAMEBUFFER,
-			GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, 0 ) );
-		
-	}else if( pglFramebufferTexture
-	&& pRenderThread.GetCapabilities().GetFramebufferTextureSingle().Working() ){
+	if( pglFramebufferTexture && pRenderThread.GetCapabilities().GetFramebufferTextureSingle().Working() ){
 		OGL_CHECK( pRenderThread, pglFramebufferTexture( GL_FRAMEBUFFER,
 			GL_DEPTH_ATTACHMENT, 0, 0 ) );
 		
@@ -742,34 +656,6 @@ void deoglFramebuffer::AttachStencilTextureLevel( deoglTexture *texture, int lev
 	pAttStencil.Set( image, eatTexture, level );
 }
 
-void deoglFramebuffer::AttachStencilTexture1D( deoglTexture1D *texture ){
-	AttachStencilTexture1DLevel( texture, 0 );
-}
-
-void deoglFramebuffer::AttachStencilTexture1DLevel( deoglTexture1D *texture, int level ){
-	if( pPrimary || ! texture ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	const GLuint image = texture->GetTexture();
-	
-	if( pAttStencil.DoesNotMatch( image, eatTexture1D, level ) ){
-		DetachStencilImage();
-		
-		if( pglFramebufferTexture
-		&& pRenderThread.GetCapabilities().GetFramebufferTextureSingle().Working() ){
-			OGL_CHECK( pRenderThread, pglFramebufferTexture( GL_FRAMEBUFFER,
-				GL_STENCIL_ATTACHMENT, image, level ) );
-			
-		}else{
-			OGL_CHECK( pRenderThread, pglFramebufferTexture1D( GL_FRAMEBUFFER,
-				GL_STENCIL_ATTACHMENT, GL_TEXTURE_1D, image, level ) );
-		}
-		
-		pAttStencil.Set( image, eatTexture1D, level );
-	}
-}
-
 void deoglFramebuffer::AttachStencilArrayTexture( deoglArrayTexture *texture ){
 	AttachStencilArrayTextureLevel( texture, 0 );
 }
@@ -808,28 +694,11 @@ void deoglFramebuffer::AttachStencilArrayTextureLayerLevel( deoglArrayTexture *t
 	const GLuint image = texture->GetTexture();
 	
 	if( pAttStencil.DoesNotMatch( image, eatArrayTextureLayer, level, pAttStencil.layer ) ){
-		DetachDepthImage();
+		DetachStencilImage();
 		
 		OGL_CHECK( pRenderThread, pglFramebufferTextureLayer( GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, image, level, layer ) );
 		
 		pAttStencil.Set( image, eatArrayTextureLayer, level, layer );
-	}
-}
-
-void deoglFramebuffer::AttachStencilRenderbuffer( deoglRenderbuffer *renderbuffer ){
-	if( pPrimary || ! renderbuffer ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	const GLuint image = renderbuffer->GetRenderbuffer();
-	
-	if( pAttStencil.DoesNotMatch( image, eatRenderbuffer ) ){
-		DetachStencilImage();
-		
-		OGL_CHECK( pRenderThread, pglFramebufferRenderbuffer( GL_FRAMEBUFFER,
-			GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, image ) );
-		
-		pAttStencil.Set( image, eatRenderbuffer );
 	}
 }
 
@@ -838,12 +707,7 @@ void deoglFramebuffer::DetachStencilImage(){
 		return;
 	}
 	
-	if( pAttStencil.type == eatRenderbuffer ){
-		OGL_CHECK( pRenderThread, pglFramebufferRenderbuffer( GL_FRAMEBUFFER,
-			GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, 0 ) );
-		
-	}else if( pglFramebufferTexture
-		&& pRenderThread.GetCapabilities().GetFramebufferTextureSingle().Working() ){
+	if( pglFramebufferTexture && pRenderThread.GetCapabilities().GetFramebufferTextureSingle().Working() ){
 		OGL_CHECK( pRenderThread, pglFramebufferTexture( GL_FRAMEBUFFER,
 			GL_STENCIL_ATTACHMENT, 0, 0 ) );
 		
@@ -944,11 +808,16 @@ void deoglFramebuffer::UpdateReadWriteBuffers(){
 // Debugging
 //////////////
 
+static const char * const vAttTypeName[] = {
+	"none",
+	"texture", "cubeMap",
+	"cubeMapPosX", "cubeMapNegX",
+	"cubeMapPosY", "cubeMapNegY",
+	"cubeMapPosZ", "cubeMapNegZ",
+	"arrayTexture", "arrayTextureLayer"
+};
+
 void deoglFramebuffer::DebugPrint( const char *prefix ){
-	const char * const attTypes[] = {
-		"eatNone", "eatTexture", "eatTexture1D", "eatRectTexture", "eatCubeMap", "eatCubeMapPosX",
-		"eatCubeMapNegX", "eatCubeMapPosY", "eatCubeMapNegY", "eatCubeMapPosZ", "eatCubeMapNegZ",
-		"eatArrayTexture", "eatArrayTextureLayer", "eatRenderbuffer" };
 	decString text;
 	int i;
 	
@@ -957,21 +826,17 @@ void deoglFramebuffer::DebugPrint( const char *prefix ){
 	
 	for( i=0; i<FBO_MAX_ATTACHMENT_COUNT; i++ ){
 		pRenderThread.GetLogger().LogInfoFormat( "- AttachmentColor%d: type=%s image=%d layer=%d level=%d",
-			i + 1, attTypes[ pAttColor[ i ].type ], pAttColor[ i ].image, pAttColor[ i ].layer, pAttColor[ i ].level );
+			i + 1, vAttTypeName[ pAttColor[ i ].type ], pAttColor[ i ].image, pAttColor[ i ].layer, pAttColor[ i ].level );
 	}
 	
 	pRenderThread.GetLogger().LogInfoFormat( "- AttachmentDepth: type=%s image=%d layer=%d level=%d",
-		attTypes[ pAttDepth.type ], pAttDepth.image, pAttDepth.layer, pAttDepth.level );
+		vAttTypeName[ pAttDepth.type ], pAttDepth.image, pAttDepth.layer, pAttDepth.level );
 	
 	pRenderThread.GetLogger().LogInfoFormat( "- AttachmentStencil: type=%s image=%d layer=%d level=%d",
-		attTypes[ pAttStencil.type ], pAttStencil.image, pAttStencil.layer, pAttStencil.level );
+		vAttTypeName[ pAttStencil.type ], pAttStencil.image, pAttStencil.layer, pAttStencil.level );
 }
 
 void deoglFramebuffer::AddConfigToTrace( deErrorTracePoint &tracePoint ){
-	const char * const attTypes[] = {
-		"eatNone", "eatTexture", "eatTexture1D", "eatRectTexture", "eatCubeMap", "eatCubeMapPosX",
-		"eatCubeMapNegX", "eatCubeMapPosY", "eatCubeMapNegY", "eatCubeMapPosZ", "eatCubeMapNegZ",
-		"eatArrayTexture", "eatArrayTextureLayer", "eatRenderbuffer" };
 	decString text;
 	int i;
 	
@@ -988,23 +853,29 @@ void deoglFramebuffer::AddConfigToTrace( deErrorTracePoint &tracePoint ){
 		
 		deErrorTraceValue &valueColor = *valueConfig.AddSubValue( text.GetString(), "<sAttachement>" );
 		
-		valueColor.AddSubValue( "type", attTypes[ pAttColor[ i ].type ] );
+		valueColor.AddSubValue( "type", vAttTypeName[ pAttColor[ i ].type ] );
 		valueColor.AddSubValueInt( "image", pAttColor[ i ].image );
 		valueColor.AddSubValueInt( "layer", pAttColor[ i ].layer );
 		valueColor.AddSubValueInt( "level", pAttColor[ i ].level );
 	}
 	
 	deErrorTraceValue &valueDepth = *valueConfig.AddSubValue( "attachmentDepth", "<sAttachement>" );
-	valueDepth.AddSubValue( "type", attTypes[ pAttDepth.type ] );
+	valueDepth.AddSubValue( "type", vAttTypeName[ pAttDepth.type ] );
 	valueDepth.AddSubValueInt( "image", pAttDepth.image );
 	valueDepth.AddSubValueInt( "layer", pAttDepth.layer );
 	valueDepth.AddSubValueInt( "level", pAttDepth.level );
 	
 	deErrorTraceValue &valueStencil = *valueConfig.AddSubValue( "attachmentStencil", "<sAttachement>" );
-	valueStencil.AddSubValue( "type", attTypes[ pAttStencil.type ] );
+	valueStencil.AddSubValue( "type", vAttTypeName[ pAttStencil.type ] );
 	valueStencil.AddSubValueInt( "image", pAttStencil.image );
 	valueStencil.AddSubValueInt( "layer", pAttStencil.layer );
 	valueStencil.AddSubValueInt( "level", pAttStencil.level );
+}
+
+void deoglFramebuffer::SetDebugObjectLabel( const char *name ){
+	if( pFBO ){
+		pRenderThread.GetDebug().SetDebugObjectLabel( GL_FRAMEBUFFER, pFBO, decString( "FB: " ) + name );
+	}
 }
 
 
@@ -1019,7 +890,7 @@ void deoglFramebuffer::pCleanUp(){
 			pUsageWidth, pUsageHeight, pUsageCount );
 	}
 	
-	if( ! pPrimary && pFBO ){
-		pglDeleteFramebuffers( 1, &pFBO );
+	if( ! pPrimary ){
+		pRenderThread.GetDelayedOperations().DeleteOpenGLFramebuffer( pFBO );
 	}
 }

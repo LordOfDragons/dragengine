@@ -1,0 +1,67 @@
+/* 
+ * Drag[en]gine Testing
+ *
+ * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
+ * 
+ * This program is free software; you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License 
+ * as published by the Free Software Foundation; either 
+ * version 2 of the License, or (at your option) any later 
+ * version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+namespace DETesting
+
+pin Dragengine.TestSystem
+
+
+/**
+ * Drag[en]gine Testing.
+ */
+class DETestingApp extends BaseGameAppTesting
+	/** Create Application. */
+	public func new()
+	end
+	
+	
+	/** Create test suites. */
+	protected func Array createTestSuites()
+		var Array suites = Array.new()
+		
+		suites.add(TSFileReader.new())
+		suites.add(TSColorConversion.new())
+		
+		suites.add(TSBBehaviorElement.new())
+		suites.add(TSECBComponent.new())
+		suites.add(TSECBAnchorElement.new())
+		suites.add(TSECBAvoidedByActor.new())
+		suites.add(TSECBBillboard.new())
+		suites.add(TSECBCamera.new())
+		suites.add(TSECBCollider.new())
+		suites.add(TSECBComposed.new())
+		suites.add(TSECBConvoCoordSystem.new())
+		suites.add(TSECBCustomColor.new())
+		suites.add(TSECBDecal.new())
+		suites.add(TSECBEnvMapProbe.new())
+		suites.add(TSECBForceField.new())
+		
+		return suites
+	end
+	
+	/** Add test suites to test window. */
+	protected func void addTestSuites()
+		var WindowTesting window = getWindowTesting()
+		createTestSuites().forEach(block TestSuite each
+			window.addTestSuite(each)
+		end)
+	end
+end

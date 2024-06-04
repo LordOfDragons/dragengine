@@ -76,5 +76,23 @@ class SkyInstance
 	public func SkyController getControllerAt( int index )
 		return null
 	end
+	
+	/**
+	 * \brief Get wrapper for controller if present.
+	 * 
+	 * \warning The wrapper is only valid as long as the controller structure in the sky
+	 *          is not changed.
+	 * 
+	 * \param name Name of controller. If no controller with this name is present
+	 *             \em null is returned.
+	 */
+	public func SkyController getControllerNamed( String name )
+		return null
+	end
+	
+	/** \brief Index of named controller or -1 if not found. */
+	public func int indexOfControllerNamed( String name )
+		return 0
+	end
 	/*@}*/
 end

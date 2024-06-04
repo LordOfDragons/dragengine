@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -44,100 +47,100 @@ pin Dragengine.Utils
 class ECBehaviorAvoidedByActor extends DefaultECBehavior
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
-		private var ECBehaviorAvoidedByActor pECBehavior
-		private var Vector pOrigin
-		private var Vector2 pSize
-		private var float pOrientation
-		private var float pRadius
-		private var bool pEnabled
-		private var bool pHasShape
+		var ECBehaviorAvoidedByActor pECBehavior
+		var Vector pOrigin
+		var Vector2 pSize
+		var float pOrientation
+		var float pRadius
+		var bool pEnabled
+		var bool pHasShape
 		
 		
 		
 		/** \brief Create behavior instance. */
-		public func new( ECBehaviorAvoidedByActor ecbehavior, BehaviorElement element ) super( element )
-			this.pECBehavior = ecbehavior
-			this.pEnabled = true
-			this.pHasShape = false
+		func new(ECBehaviorAvoidedByActor ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
+			pEnabled = true
+			pHasShape = false
 		end
 		
 		
 		
 		/** \brief Initialize behavior element from stub. */
-		public func void init( StubElement stub )
-			var CodecPropertyString codec = this.getElement().getClass().getCodecPropertyString()
+		func void init(StubElement stub)
+			var CodecPropertyString codec = getElement().getClass().getCodecPropertyString()
 			
-			this.pOrigin = this.pECBehavior.getOrigin().getVector( stub, codec )
-			this.pOrientation = this.pECBehavior.getOrientation().getValue( stub )
-			this.pRadius = this.pECBehavior.getRadius().getValue( stub )
-			this.pSize = this.pECBehavior.getSize().getVector2( stub, codec )
+			pOrigin = pECBehavior.getOrigin().getVector(stub, codec)
+			pOrientation = pECBehavior.getOrientation().getValue(stub)
+			pRadius = pECBehavior.getRadius().getValue(stub)
+			pSize = pECBehavior.getSize().getVector2(stub, codec)
 			
-			if this.pRadius <= 0.001 and pSize.isZero()
-				this.pRadius = 0
-				this.pSize = Vector2.new()
+			if pRadius <= 0.001 and pSize.isZero()
+				pRadius = 0
+				pSize = Vector2.new()
 				
 			else
-				this.pHasShape = true
+				pHasShape = true
 			end
 		end
 		
 		
 		
 		/** \brief Behavior. */
-		public func ECBehaviorAvoidedByActor getECBehavior()
-			return this.pECBehavior
+		func ECBehaviorAvoidedByActor getECBehavior()
+			return pECBehavior
 		end
 		
 		
 		
 		/** \brief Origin of shape relative to owner element. */
-		public func Vector getOrigin()
-			return this.pOrigin
+		func Vector getOrigin()
+			return pOrigin
 		end
 		
 		/** \brief Set origin of shape relative to owner element. */
-		protected func void setOrigin( Vector origin )
-			this.pOrigin = origin
+		protected func void setOrigin(Vector origin)
+			pOrigin = origin
 		end
 		
 		/** \brief Size of shape. */
-		public func Vector2 getSize()
-			return this.pSize
+		func Vector2 getSize()
+			return pSize
 		end
 		
 		/** \brief Set size of shape. */
-		protected func void setSize( Vector2 size )
-			this.pSize = Vector2.new().largest( size )
+		protected func void setSize(Vector2 size)
+			pSize = Vector2.new().largest(size)
 		end
 		
 		/** \brief Orientation in degrees of shape along Y-Axis. */
-		public func float getOrientation()
-			return this.pOrientation
+		func float getOrientation()
+			return pOrientation
 		end
 		
 		/** \brief Set orientation in degrees of shape along Y-Axis. */
-		protected func void setOrientation( float orientation )
-			this.pOrientation = orientation
+		protected func void setOrientation(float orientation)
+			pOrientation = orientation
 		end
 		
 		/** \brief Border radius of shape. */
-		public func float getRadius()
-			return this.pRadius
+		func float getRadius()
+			return pRadius
 		end
 		
 		/** \brief Set border radius of shape. */
-		protected func void setRadius( float radius )
-			this.pRadius = DEMath.max( radius, 0.0 )
+		protected func void setRadius(float radius)
+			pRadius = DEMath.max(radius, 0.0)
 		end
 		
 		/** \brief Behavior is enabled. */
-		public func bool getEnabled()
-			return this.pEnabled
+		func bool getEnabled()
+			return pEnabled
 		end
 		
 		/** \brief Set if behavior is enabled. */
-		public func void setEnabled( bool enabled )
-			this.pEnabled = enabled
+		func void setEnabled(bool enabled)
+			pEnabled = enabled
 		end
 		
 		
@@ -146,84 +149,84 @@ class ECBehaviorAvoidedByActor extends DefaultECBehavior
 		 * \brief Has shape defined.
 		 * \returns true if radius or size are not 0.
 		 */
-		public func bool hasShape()
-			return this.pHasShape
+		func bool hasShape()
+			return pHasShape
 		end
 		
 		/**
 		 * \brief Should be avoided by actors.
 		 * \returns true if hasShape() and getEnabled() are true.
 		 */
-		public func bool shouldBeAvoided()
-			return this.pHasShape and this.pEnabled
+		func bool shouldBeAvoided()
+			return pHasShape and pEnabled
 		end
 	end
 	
 	
 	
-	private var ECPVector pOrigin
-	private var ECPVector2 pSize
-	private var ECPFloat pOrientation
-	private var ECPFloat pRadius
+	var ECPVector pOrigin
+	var ECPVector2 pSize
+	var ECPFloat pOrientation
+	var ECPFloat pRadius
 	
 	
 	
 	/** \brief Create behavior element class. */
-	public func new( BehaviorElementClass eclass ) this( eclass, "" )
+	func new(BehaviorElementClass eclass) this(eclass, "")
 	end
 	
-	public func new( BehaviorElementClass eclass, String id ) this( eclass, id, \
-	id.empty() if "avoidedByActor" else "avoidedByActor(" + id + ")" )
+	func new(BehaviorElementClass eclass, String id) this(eclass, id, \
+	id.empty() if "avoidedByActor" else "avoidedByActor(" + id + ")")
 	end
 	
-	public func new( BehaviorElementClass eclass, String id, String subId ) \
-	this( eclass, id, subId, subId + "." )
+	func new(BehaviorElementClass eclass, String id, String subId) \
+	this(eclass, id, subId, subId + ".")
 	end
 	
-	public func new( BehaviorElementClass eclass, String id, String subId, \
-	String prefix ) super( eclass, id )
-		this.pOrigin = ECPVector.new( prefix + "origin", Vector.new() )
-		eclass.addProperty( this.pOrigin )
+	func new(BehaviorElementClass eclass, String id, String subId, \
+	String prefix) super(eclass, id)
+		pOrigin = ECPVector.new(prefix + "origin", Vector.new())
+		eclass.addProperty(pOrigin)
 		
-		this.pSize = ECPVector2.new( prefix + "size", Vector2.new() )
-		eclass.addProperty( this.pSize )
+		pSize = ECPVector2.new(prefix + "size", Vector2.new())
+		eclass.addProperty(pSize)
 		
-		this.pOrientation = ECPFloat.new( prefix + "orientation", 0 )
-		eclass.addProperty( this.pOrientation )
+		pOrientation = ECPFloat.new(prefix + "orientation", 0)
+		eclass.addProperty(pOrientation)
 		
-		this.pRadius = ECPFloat.new( prefix + "radius", 0, 0 )
-		eclass.addProperty( this.pRadius )
+		pRadius = ECPFloat.new(prefix + "radius", 0, 0)
+		eclass.addProperty(pRadius)
 		
-		eclass.addBehavior( this )
+		eclass.addBehavior(this)
 	end
 	
 	
 	
 	/** \brief Origin relative to element. */
-	public func ECPVector getOrigin()
-		return this.pOrigin
+	func ECPVector getOrigin()
+		return pOrigin
 	end
 	
 	/** \brief Size. */
-	public func ECPVector2 getSize()
-		return this.pSize
+	func ECPVector2 getSize()
+		return pSize
 	end
 	
 	/** \brief Orientation along world Y axis relative to element world Y orientation. */
-	public func ECPFloat getOrientation()
-		return this.pOrientation
+	func ECPFloat getOrientation()
+		return pOrientation
 	end
 	
 	/** \brief Radius. */
-	public func ECPFloat getRadius()
-		return this.pRadius
+	func ECPFloat getRadius()
+		return pRadius
 	end
 	
 	
 	
 	/** \brief Get instance in element from owner element class. */
-	public func Instance instance( BehaviorElement element )
-		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
 	
 	
@@ -234,10 +237,10 @@ class ECBehaviorAvoidedByActor extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorCollider.
 	 */
-	static public func ECBehaviorAvoidedByActor getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehavior each
-			return each castable ECBehaviorAvoidedByActor
-		end ) cast ECBehaviorAvoidedByActor
+	static func ECBehaviorAvoidedByActor getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorAvoidedByActor each
+			return true
+		end) cast ECBehaviorAvoidedByActor
 	end
 	
 	/**
@@ -246,11 +249,10 @@ class ECBehaviorAvoidedByActor extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorCamera with specific identifier.
 	 */
-	static public func ECBehaviorAvoidedByActor getBehaviorIn( BehaviorElementClass eclass, String id )
-		return eclass.findBehavior( block ECBehaviorAvoidedByActor each
-			return each castable ECBehaviorAvoidedByActor and \
-				( each cast ECBehaviorAvoidedByActor ).getID().equals( id )
-		end ) cast ECBehaviorAvoidedByActor
+	static func ECBehaviorAvoidedByActor getBehaviorIn(BehaviorElementClass eclass, String id)
+		return eclass.findBehavior(block ECBehaviorAvoidedByActor each
+			return each.getID().equals(id)
+		end) cast ECBehaviorAvoidedByActor
 	end
 	
 	/**
@@ -259,14 +261,10 @@ class ECBehaviorAvoidedByActor extends DefaultECBehavior
 	 * Returns list contains ECBehaviorCamera behaviors in the order they have
 	 * been created in the element.
 	 */
-	static public func Array getAllBehaviorsIn( BehaviorElementClass eclass )
-		var Array list = Array.new()
-		eclass.forEachBehavior( block ECBehavior each
-			if each castable ECBehaviorAvoidedByActor
-				list.add( each )
-			end
-		end )
-		return list
+	static func Array getAllBehaviorsIn(BehaviorElementClass eclass)
+		return eclass.collectBehaviors(block ECBehaviorAvoidedByActor each
+			return true
+		end)
 	end
 	
 	
@@ -277,10 +275,10 @@ class ECBehaviorAvoidedByActor extends DefaultECBehavior
 	 * of type ECBehaviorCamera.Instance . If more than one instance is present returns
 	 * the first instance.
 	 */
-	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance
-		end ) cast Instance
+	static func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
+			return true
+		end) cast Instance
 	end
 	
 	/**
@@ -289,11 +287,10 @@ class ECBehaviorAvoidedByActor extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
 	 * of type ECBehaviorCamera.Instance with specific identifier.
 	 */
-	static public func Instance getInstanceIn( BehaviorElement element, String id )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance and \
-				( each cast Instance ).getECBehavior().getID().equals( id )
-		end ) cast Instance
+	static func Instance getInstanceIn(BehaviorElement element, String id)
+		return element.findInstance(block Instance each
+			return each.getECBehavior().getID().equals(id)
+		end) cast Instance
 	end
 	
 	/**
@@ -302,20 +299,16 @@ class ECBehaviorAvoidedByActor extends DefaultECBehavior
 	 * Returns list contains ECBehaviorCamera.Instance instances in the order they have
 	 * been created in the element.
 	 */
-	static public func Array getAllInstancesIn( BehaviorElement element )
-		var Array list = Array.new()
-		element.forEachInstance( block ECBehaviorInstance each
-			if each castable Instance
-				list.add( each )
-			end
-		end )
-		return list
+	static func Array getAllInstancesIn(BehaviorElement element)
+		return element.collectInstances(block Instance each
+			return true
+		end)
 	end
 	
 	
 	
 	/** \brief Create Behavior instance. */
-	public func ECBehaviorInstance createInstance( BehaviorElement element )
-		return Instance.new( this, element )
+	func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
 	end
 end

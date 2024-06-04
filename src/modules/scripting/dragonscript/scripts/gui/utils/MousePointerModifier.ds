@@ -1,0 +1,188 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.Gui.Events
+pin Dragengine.Gui.Listeners
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+/**
+ * \brief Modifies active desktop mouse pointer.
+ * \version 1.17
+ * 
+ * Changes mouse pointer canvas properties like transparency, color transform and transform.
+ * Tracks mouse pointer changes to re-apply the changes. Subclass can extend the possible
+ * modifications if required.
+ * 
+ * Mouse pointer modifier can be enabled/disabled by setting/clearing desktop instance.
+ */
+class MousePointerModifier extends DefaultMousePointerListener
+	private var Desktop pDesktop
+	private var float pTransparency
+	private var ColorMatrix pColorTransform
+	private var TexMatrix2 pTransform
+	
+	
+	
+	/**
+	 * \brief Create mouse pointer modifier.
+	 */
+	public func new()
+		pTransparency = 1
+		pColorTransform = ColorMatrix.new()
+		pTransform = TexMatrix2.new()
+	end
+	
+	/**
+	 * \brief Dispose of mouse pointer modifier.
+	 */
+	public func void dispose()
+		setDesktop(null)
+	end
+	
+	
+	
+	/** \brief Desktop or null. */
+	public func Desktop getDesktop()
+		return pDesktop
+	end
+	
+	/** \brief Set desktop or null. */
+	public func void setDesktop(Desktop desktop)
+		if desktop == pDesktop
+			return
+		end
+		
+		if pDesktop != null
+			try
+				pDesktop.removeMousePointerListener(this)
+			catch Exception e
+				// avoid problems with dispose order
+			end
+		end
+		
+		pDesktop = desktop
+		
+		if desktop != null
+			desktop.addMousePointerListener(this)
+			updateMousePointer()
+		end
+	end
+	
+	/** \brief Transparency. */
+	public func float getTransparency()
+		return pTransparency
+	end
+	
+	/** \brief Set transparency. */
+	public func void setTransparency(float transparency)
+		transparency = DEMath.clamp(transparency, 0.0, 1.0)
+		if DEMath.fabs(transparency - pTransparency) < 0.001
+			return
+		end
+		
+		pTransparency = transparency
+		
+		var Canvas canvas = getMousePointerCanvas()
+		if canvas != null
+			canvas.setTransparency(transparency)
+		end
+	end
+	
+	/** \brief Color transformation. */
+	public func ColorMatrix getColorTransform()
+		return pColorTransform
+	end
+	
+	/** \brief Set color transformation. */
+	public func void setColorTransform(ColorMatrix transform)
+		if transform.equals(pColorTransform)
+			return
+		end
+		
+		pColorTransform = transform
+		
+		var Canvas canvas = getMousePointerCanvas()
+		if canvas != null
+			canvas.setColorTransform(transform)
+		end
+	end
+	
+	/** \brief Transformation. */
+	public func TexMatrix2 getTransform()
+		return pTransform
+	end
+	
+	/** \brief Set transformation. */
+	public func void setTransform(TexMatrix2 transform)
+		if transform.equals(pTransform)
+			return
+		end
+		
+		pTransform = transform
+		
+		var Canvas canvas = getMousePointerCanvas()
+		if canvas != null
+			canvas.setTransform(transform)
+		end
+	end
+	
+	
+	
+	/**
+	 * \brief Mouse pointer changed.
+	 * 
+	 * Updates the active mouse pointer instance with the current modifications.
+	 */
+	public func void onMousePointerChanged(MousePointerEvent event)
+		updateMousePointer()
+	end
+	
+	/** \brief Update mouse pointer. */
+	public func void updateMousePointer()
+		var Canvas canvas = getMousePointerCanvas()
+		if canvas != null
+			canvas.setTransparency(pTransparency)
+			canvas.setColorTransform(pColorTransform)
+			canvas.setTransform(pTransform)
+		end
+	end
+	
+	
+	
+	/** \brief Mouse pointer instance or null. */
+	public func MousePointer getMousePointerInstance()
+		return pDesktop != null if pDesktop.getMousePointerInstance() else null
+	end
+	
+	/** \brief Mouse pointer instance canvas or null. */
+	public func Canvas getMousePointerCanvas()
+		var MousePointer mousePointer = getMousePointerInstance()
+		return mousePointer != null if mousePointer.getCanvas() else null
+	end
+end

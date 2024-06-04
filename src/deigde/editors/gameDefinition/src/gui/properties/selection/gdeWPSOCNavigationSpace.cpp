@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Game Definition Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -43,6 +46,7 @@
 #include "../../../undosys/objectClass/navspace/gdeUOCNavSpaceSetPropertyName.h"
 #include "../../../undosys/objectClass/navspace/gdeUOCNavSpaceSetSnapAngle.h"
 #include "../../../undosys/objectClass/navspace/gdeUOCNavSpaceSetSnapDistance.h"
+#include "../../../undosys/objectClass/navspace/gdeUOCNavSpaceSetType.h"
 
 #include <deigde/codec/igdeCodecPropertyString.h>
 #include <deigde/environment/igdeEnvironment.h>
@@ -51,6 +55,7 @@
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/igdeComboBoxFilter.h>
 #include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/igdeWindow.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/composed/igdeEditPathListener.h>
@@ -247,6 +252,21 @@ public:
 	}
 };
 
+class cComboType : public cBaseComboBoxListener{
+public:
+	cComboType( gdeWPSOCNavigationSpace &panel ) : cBaseComboBoxListener( panel ){ }
+	
+	virtual igdeUndo *OnChanged( igdeComboBox &comboBox, gdeObjectClass *objectClass,
+	gdeOCNavigationSpace *navspace ){
+		const deNavigationSpace::eSpaceTypes value =
+			( deNavigationSpace::eSpaceTypes )( intptr_t )comboBox.GetSelectedItem()->GetData();
+		if( value == navspace->GetType() ){
+			return NULL;
+		}
+		return new gdeUOCNavSpaceSetType( objectClass, navspace, value );
+	}
+};
+
 class cTextBlockingPriority : public cBaseTextFieldListener{
 public:
 	cTextBlockingPriority( gdeWPSOCNavigationSpace &panel ) : cBaseTextFieldListener( panel ){ }
@@ -280,7 +300,7 @@ public:
 			codec.DecodeShapeList( encoded, shapeList );
 			
 		}catch( const deException & ){
-			igdeCommonDialogs::Error( &pPanel, "Invalid Input",
+			igdeCommonDialogs::Error( pPanel.GetParentWindow(), "Invalid Input",
 				"Input value does not decode to a proper shape list" );
 			textField.Focus();
 			return NULL;
@@ -368,6 +388,11 @@ pGameDefinition( NULL )
 		pEditSnapDistance, new cTextSnapDistance( *this ) );
 	helper.EditFloat( groupBox, "Snap angle:", "Snap angle", 4, 1,
 		pEditSnapAngle, new cTextSnapAngle( *this ) );
+	
+	helper.ComboBox( groupBox, "Type:", "Navigation space ", pCBType, new cComboType( *this ) );
+	pCBType->AddItem( "Grid", NULL, ( void* )( intptr_t )deNavigationSpace::estGrid );
+	pCBType->AddItem( "Mesh", NULL, ( void* )( intptr_t )deNavigationSpace::estMesh );
+	pCBType->AddItem( "Volume", NULL, ( void* )( intptr_t )deNavigationSpace::estVolume );
 	
 	helper.EditInteger( groupBox, "Blocking priority:",
 		"Blocks navigation spaces with the same or lower priority",
@@ -478,6 +503,7 @@ void gdeWPSOCNavigationSpace::UpdateNavigationSpace(){
 		pEditLayer->SetInteger( navspace->GetLayer() );
 		pEditSnapDistance->SetFloat( navspace->GetSnapDistance() );
 		pEditSnapAngle->SetFloat( navspace->GetSnapAngle() );
+		pCBType->SetSelectionWithData( ( void* )( intptr_t )navspace->GetType() );
 		pEditBlockingPriority->SetInteger( navspace->GetBlockingPriority() );
 		
 		igdeCodecPropertyString codec;
@@ -493,6 +519,7 @@ void gdeWPSOCNavigationSpace::UpdateNavigationSpace(){
 		pEditLayer->ClearText();
 		pEditSnapDistance->ClearText();
 		pEditSnapAngle->ClearText();
+		pCBType->SetSelectionWithData( ( void* )( intptr_t )deNavigationSpace::estGrid );
 		pEditBlockingPriority->ClearText();
 		pEditBlockerShape->ClearText();
 	}
@@ -505,6 +532,7 @@ void gdeWPSOCNavigationSpace::UpdateNavigationSpace(){
 	pEditLayer->SetEnabled( enabled);
 	pEditSnapDistance->SetEnabled( enabled);
 	pEditSnapAngle->SetEnabled( enabled);
+	pCBType->SetEnabled( enabled );
 	pEditBlockingPriority->SetEnabled( enabled);
 	pEditBlockerShape->SetEnabled( enabled);
 	

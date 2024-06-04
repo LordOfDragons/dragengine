@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Animator Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEARANIMATIONKEYFRAME_H_
@@ -28,7 +31,7 @@ class deAnimationKeyframe;
 
 
 /**
- * \brief Animation move keyframe.
+ * Animation move keyframe.
  * \details Stores information about a keyframe and the change up to the next keyframe.
  *          if existing. The step values are stored as valueDifference/timeDifference.
  *          This way the interpolated value can be quickly retrieved as
@@ -48,50 +51,50 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Creates a new animation move keyframe. */
+	/** Creates a new animation move keyframe. */
 	dearAnimationKeyframe();
-	/** \brief Cleans up the animation move keyframe. */
+	/** Cleans up the animation move keyframe. */
 	~dearAnimationKeyframe();
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Retrieves the time in seconds. */
+	/** Retrieves the time in seconds. */
 	inline float GetTime() const{ return pTime; }
-	/** \brief Retrieves the time step. */
+	/** Retrieves the time step. */
 	inline float GetTimeStep() const{ return pTimeStep; }
-	/** \brief Retrieves the position. */
+	/** Retrieves the position. */
 	inline const decVector &GetPosition() const{ return pPosition; }
-	/** \brief Retrieves the position step. */
+	/** Retrieves the position step. */
 	inline const decVector &GetPositionStep() const{ return pPositionStep; }
-	/** \brief Retrieves the quaternion rotation. */
+	/** Retrieves the quaternion rotation. */
 	inline const decQuaternion &GetRotation() const{ return pRotation; }
-	/** \brief Retrieves the quaternion rotation step. */
+	/** Retrieves the quaternion rotation step. */
 	inline const decQuaternion &GetRotationStep() const{ return pRotationStep; }
-	/** \brief Retrieves the scaling. */
+	/** Retrieves the scaling. */
 	inline const decVector &GetScaling() const{ return pScaling; }
-	/** \brief Retrieves the scaling step. */
+	/** Retrieves the scaling step. */
 	inline const decVector &GetScalingStep() const{ return pScalingStep; }
 	
 	/**
-	 * \brief Retrieve interpolated position.
+	 * Retrieve interpolated position.
 	 * \details Time has to be interpolationTime - keyframeTime. No range checking is done.
 	 */
 	decVector InterpolatePosition( float time ) const;
 	/**
-	 * \brief Retrieve interpolated rotation.
+	 * Retrieve interpolated rotation.
 	 * \details Time has to be interpolationTime - keyframeTime. No range checking is done.
 	 */
 	decQuaternion InterpolateRotation( float time ) const;
 	/**
-	 * \brief Retrieve interpolated scaling.
+	 * Retrieve interpolated scaling.
 	 * \details Time has to be interpolationTime - keyframeTime. No range checking is done.
 	 */
 	decVector InterpolateScaling( float time ) const;
 	
-	/** \brief Set keyframe without interpolation data. */
+	/** Set keyframe without interpolation data. */
 	void Set( const deAnimationKeyframe &keyframe, bool &negate );
-	/** \brief Set keyframe with interpolation data. */
+	/** Set keyframe with interpolation data. */
 	void Set( const deAnimationKeyframe &keyframe, const deAnimationKeyframe &nextKeyframe, bool &negate );
 	/*@}*/
 };

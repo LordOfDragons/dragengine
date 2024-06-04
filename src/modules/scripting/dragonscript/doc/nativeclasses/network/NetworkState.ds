@@ -40,17 +40,32 @@ class NetworkState
 	/*@{*/
 	/** \brief Nnumber of values. */
 	public func int getValueCount()
+		return 0
 	end
 	
-	/** \brief Add value with type and format. */
-	public func void addValue( NetworkStateValueType type, NetworkStateValueFormat format )
+	/**
+	 * \brief Add value.
+	 * \param type Type of value to add.
+	 * \param format Format to use. Has to be non-null for these types:
+	 *               <ul>
+	 *               <li>NetworkStateValueType.integer</li>
+	 *               <li>NetworkStateValueType.floating</li>
+	 *               <li>NetworkStateValueType.point2</li>
+	 *               <li>NetworkStateValueType.point3</li>
+	 *               <li>NetworkStateValueType.vector2</li>
+	 *               <li>NetworkStateValueType.vector3</li>
+	 *               </ul>
+	 *               For all other types this parameter is not used.
+	 */
+	public func void addValue(NetworkStateValueType type, NetworkStateValueFormat format)
 	end
 	
 	/**
 	 * \brief format of value at index.
 	 * \throws EOutOfBoundary \em index is less than 0 or greater than or equal to getValueCount().
 	 */
-	public func NetworkStateValueFormat getValueFormatAt( int index )
+	public func NetworkStateValueFormat getValueFormatAt(int index)
+		return null
 	end
 	
 	
@@ -59,63 +74,82 @@ class NetworkState
 	 * \brief Value of integer value at index.
 	 * \throws EOutOfBoundary \em index is less than 0 or greater than or equal to getValueCount().
 	 */
-	public func int getValueIntAt( int index )
+	public func int getValueIntAt(int index)
+		return null
 	end
 	
 	/**
 	 * \brief Value of float value at index.
 	 * \throws EOutOfBoundary \em index is less than 0 or greater than or equal to getValueCount().
 	 */
-	public func float getValueFloatAt( int index )
+	public func float getValueFloatAt(int index)
+		return 0.0
 	end
 	
 	/**
 	 * \brief Value of string value at index.
 	 * \throws EOutOfBoundary \em index is less than 0 or greater than or equal to getValueCount().
 	 */
-	public func String getValueStringAt( int index )
+	public func String getValueStringAt(int index)
+		return null
 	end
 	
 	/**
 	 * \brief Value of point-2 value at index.
 	 * \throws EOutOfBoundary \em index is less than 0 or greater than or equal to getValueCount().
 	 */
-	public func Point getValuePoint2At( int index )
+	public func Point getValuePoint2At(int index)
+		return null
 	end
 	
 	/**
 	 * \brief Value of point-3 value at index.
 	 * \throws EOutOfBoundary \em index is less than 0 or greater than or equal to getValueCount().
 	 */
-	public func Point3 getValuePoint3At( int index )
+	public func Point3 getValuePoint3At(int index)
+		return null
 	end
 	
 	/**
 	 * \brief Value of vector-2 value at index.
 	 * \throws EOutOfBoundary \em index is less than 0 or greater than or equal to getValueCount().
 	 */
-	public func Vector2 getValueVector2At( int index )
+	public func Vector2 getValueVector2At(int index)
+		return null
 	end
 	
 	/**
 	 * \brief Value of vector-3 value at index.
 	 * \throws EOutOfBoundary \em index is less than 0 or greater than or equal to getValueCount().
 	 */
-	public func Vector getValueVectorAt( int index )
+	public func Vector getValueVector3At(int index)
+		return null
 	end
 	
 	/**
 	 * \brief Value of dvector-3 value at index.
 	 * \throws EOutOfBoundary \em index is less than 0 or greater than or equal to getValueCount().
 	 */
-	public func DVector getValueDVectorAt( int index )
+	public func DVector getValueDVector3At(int index)
+		return null
 	end
 	
 	/**
 	 * \brief Value of quaternion value at index.
 	 * \throws EOutOfBoundary \em index is less than 0 or greater than or equal to getValueCount().
 	 */
-	public func Quaternion getValueQuaternionAt( int index )
+	public func Quaternion getValueQuaternionAt(int index)
+		return null
+	end
+	
+	/**
+	 * \brief Value of data value at index.
+	 * \version 1.13
+	 * \throws EOutOfBoundary \em index is less than 0 or greater than or equal to getValueCount().
+	 * 
+	 * Value is read into the provided memory file.
+	 */
+	public func void getValueDataAt(int index, MemoryFile data)
 	end
 	
 	
@@ -124,63 +158,71 @@ class NetworkState
 	 * \brief Set value of integer value at index.
 	 * \throws EOutOfBoundary \em index is less than 0 or greater than or equal to getValueCount().
 	 */
-	public func void setValueIntAt( int index, int value )
+	public func void setValueIntAt(int index, int value)
 	end
 	
 	/**
 	 * \brief Set value of float value at index.
 	 * \throws EOutOfBoundary \em index is less than 0 or greater than or equal to getValueCount().
 	 */
-	public func void setValueFloatAt( int index, float value )
+	public func void setValueFloatAt(int index, float value)
 	end
 	
 	/**
 	 * \brief Set value of string value at index.
 	 * \throws EOutOfBoundary \em index is less than 0 or greater than or equal to getValueCount().
 	 */
-	public func void setValueStringAt( int index, String value )
+	public func void setValueStringAt(int index, String value)
 	end
 	
 	/**
 	 * \brief Set value of point-2 value at index.
 	 * \throws EOutOfBoundary \em index is less than 0 or greater than or equal to getValueCount().
 	 */
-	public func void setValuePoint2At( int index, Point value )
+	public func void setValuePoint2At(int index, Point value)
 	end
 	
 	/**
 	 * \brief Set value of point-3 value at index.
 	 * \throws EOutOfBoundary \em index is less than 0 or greater than or equal to getValueCount().
 	 */
-	public func void setValuePoint3At( int index, Point3 value )
+	public func void setValuePoint3At(int index, Point3 value)
 	end
 	
 	/**
 	 * \brief Set value of vector-2 value at index.
 	 * \throws EOutOfBoundary \em index is less than 0 or greater than or equal to getValueCount().
 	 */
-	public func void setValueVector2At( int index, Vector2 value )
+	public func void setValueVector2At(int index, Vector2 value)
 	end
 	
 	/**
 	 * \brief Set value of vector-3 value at index.
 	 * \throws EOutOfBoundary \em index is less than 0 or greater than or equal to getValueCount().
 	 */
-	public func void setValueVector3At( int index, Vector value )
+	public func void setValueVector3At(int index, Vector value)
 	end
 	
 	/**
 	 * \brief Set value of dvector-3 value at index.
 	 * \throws EOutOfBoundary \em index is less than 0 or greater than or equal to getValueCount().
 	 */
-	public func void setValueDVector3At( int index, DVector value )
+	public func void setValueDVector3At(int index, DVector value)
 	end
 	
 	/**
 	 * \brief Set value of quaternion value at index.
 	 * \throws EOutOfBoundary \em index is less than 0 or greater than or equal to getValueCount().
 	 */
-	public func void setValueQuaternionAt( int index, Quaternion value )
+	public func void setValueQuaternionAt(int index, Quaternion value)
+	end
+	
+	/**
+	 * \brief Set value of data value at index.
+	 * \version 1.13
+	 * \throws EOutOfBoundary \em index is less than 0 or greater than or equal to getValueCount().
+	 */
+	public func void setValueDataAt(int index, MemoryFile data)
 	end
 	
 	
@@ -191,7 +233,8 @@ class NetworkState
 	 * \throws EInvalidParam Value at \em index is not VALUE_FLOAT, VALUE_QUATERNION,
 	 *                       VALUE_VECTOR2 or VALUE_VECTOR3
 	 */
-	public func float getValuePrecisionAt( int index )
+	public func float getValuePrecisionAt(int index)
+		return 0.0
 	end
 	
 	/**
@@ -200,7 +243,7 @@ class NetworkState
 	 * \throws EInvalidParam Value at \em index is not VALUE_FLOAT, VALUE_QUATERNION,
 	 *                       VALUE_VECTOR2 or VALUE_VECTOR3
 	 */
-	public func void setValuePrecisionAt( int index, float precision )
+	public func void setValuePrecisionAt(int index, float precision)
 	end
 	
 	
@@ -211,10 +254,11 @@ class NetworkState
 	 * \throws EOutOfBoundary \em index is less than 0 or greater than or equal to getValueCount().
 	 */
 	public func NetworkStateListener getStateListener()
+		return null
 	end
 	
 	/** \brief Set state listener or \em null if not set. */
-	public func void setStateListener( NetworkStateListener listener )
+	public func void setStateListener(NetworkStateListener listener)
 	end
 	/*@}*/
 end

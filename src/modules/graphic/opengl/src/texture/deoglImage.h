@@ -1,40 +1,44 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLIMAGE_H_
 #define _DEOGLIMAGE_H_
 
+#include "deoglRImage.h"
+#include "pixelbuffer/deoglPixelBuffer.h"
+
 #include <dragengine/common/collection/decPointerSet.h>
 #include <dragengine/systems/modules/graphic/deBaseGraphicImage.h>
 #include <dragengine/threading/deMutex.h>
 
-class deoglPixelBuffer;
-class deoglRImage;
 class deGraphicOpenGl;
 class deImage;
 
 
 
 /**
- * \brief Image Peer.
+ * Image Peer.
  * 
  * Images can be used by two different types of parties.
  * 
@@ -57,12 +61,12 @@ private:
 	deGraphicOpenGl &pOgl;
 	deImage &pImage;
 	
-	deoglRImage *pRImage;
+	deoglRImage::Ref pRImage;
 	
 	deMutex pMutex;
 	int pPixelBufferUseCount;
-	deoglPixelBuffer *pPixelBuffer;
-	deoglPixelBuffer *pPixelBufferRImageTexture;
+	deoglPixelBuffer::Ref pPixelBuffer;
+	deoglPixelBuffer::Ref pPixelBufferRImageTexture;
 	bool pDirtyTexture;
 	
 	decPointerSet pNotifyCanvas;
@@ -72,10 +76,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create image. */
+	/** Create image. */
 	deoglImage( deGraphicOpenGl &ogl, deImage &image );
 	
-	/** \brief Clean up image. */
+	/** Clean up image. */
 	virtual ~deoglImage();
 	/*@}*/
 	
@@ -83,29 +87,29 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Image resource. */
+	/** Image resource. */
 	inline const deImage &GetImage() const{ return pImage; }
 	
-	/** \brief Render image or \em NULL if not created. */
-	inline deoglRImage *GetRImage() const{ return pRImage; }
+	/** Render image or nullptr if not created. */
+	inline const deoglRImage::Ref &GetRImage() const{ return pRImage; }
 	
 	/**
-	 * \brief Update render thread counterpart if required.
+	 * Update render thread counterpart if required.
 	 * \warning Only allowed to be called from main thread.
 	 */
 	void SyncToRender();
 	
-	/** \brief Mark texture dirty. */
+	/** Mark texture dirty. */
 	void MarkTextureDirty();
 	
-	/** \brief Canvas to notify about dirty events. */
+	/** Canvas to notify about dirty events. */
 	inline decPointerSet &GetNotifyCanvas(){ return pNotifyCanvas; }
 	inline const decPointerSet &GetNotifyCanvas() const{ return pNotifyCanvas; }
 	
 	
 	
 	/**
-	 * \brief Add use to pixel buffer ensuring pixel buffer is created.
+	 * Add use to pixel buffer ensuring pixel buffer is created.
 	 * 
 	 * If pixel buffer is not created image data is retained and released if required and
 	 * the pixel buffer created. Increments use count by one.
@@ -115,7 +119,7 @@ public:
 	void CreatePixelBuffer();
 	
 	/**
-	 * \brief Remove use to pixel buffer releasing it if not used anymore.
+	 * Remove use to pixel buffer releasing it if not used anymore.
 	 * 
 	 * Decrements use count by one. If use count drops to 0 pixel buffer is released.
 	 * 
@@ -124,23 +128,23 @@ public:
 	void ReleasePixelBuffer();
 	
 	/**
-	 * \brief Pixel buffer present only if CreatePixelBuffer() has been called.
+	 * Pixel buffer present only if CreatePixelBuffer() has been called.
 	 * */
-	inline deoglPixelBuffer *GetPixelBuffer() const{ return pPixelBuffer; }
+	inline const deoglPixelBuffer::Ref &GetPixelBuffer() const{ return pPixelBuffer; }
 	/*@}*/
 	
 	
 	
 	/** \name Notifications */
 	/*@{*/
-	/** \brief Image data changed. */
+	/** Image data changed. */
 	virtual void ImageDataChanged();
 	
-	/** \brief Image data has been restored from original file. */
+	/** Image data has been restored from original file. */
 	virtual void ImageDataRestored();
 	
 	/**
-	 * \brief Graphic module requires image data to remain loaded.
+	 * Graphic module requires image data to remain loaded.
 	 * 
 	 * Used to optimized memory consumption. Default implementation returns \em false.
 	 */
@@ -148,10 +152,8 @@ public:
 	/*@}*/
 	
 private:
-	void pCleanUp();
-	
-	deoglPixelBuffer *pCreatePixelBuffer();
-	void pCreatePixelBufferSafe( deoglPixelBuffer* &pixelBuffer );
+	deoglPixelBuffer::Ref pCreatePixelBuffer();
+	void pCreatePixelBufferSafe( deoglPixelBuffer::Ref &pixelBuffer );
 	void pRequiresSync();
 };
 

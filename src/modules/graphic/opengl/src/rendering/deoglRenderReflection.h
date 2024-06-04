@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLRENDERREFLECTION_H_
@@ -32,59 +35,53 @@ class deoglEnvironmentMap;
 class deoglFramebuffer;
 class deoglRenderPlan;
 class deoglRenderTask;
-class deoglSPBlockUBO;
-class deoglShaderProgram;
 class deoglTexture;
-
+class deoglArrayTexture;
 
 
 /**
- * @brief Reflection Renderer.
+ * Reflection Renderer.
  */
 class deoglRenderReflection : public deoglRenderBase{
 private:
-	deoglShaderProgram *pShaderIndexPass1;
-	deoglShaderProgram *pShaderIndexPass2;
-	/*
-	deoglShaderProgram *pShaderRenderEnvMaps;
-	*/
+	const deoglPipeline *pPipelineCopyColor;
+	const deoglPipeline *pPipelineCopyColorMipMap;
+	const deoglPipeline *pPipelineCopyColorStereo;
+	const deoglPipeline *pPipelineCopyColorMipMapStereo;
+	const deoglPipeline *pPipelineMinMaxMipMapMin;
+	const deoglPipeline *pPipelineMinMaxMipMapMax;
+	const deoglPipeline *pPipelineMinMaxMipMapInitial;
+	const deoglPipeline *pPipelineMinMaxMipMapDownsample;
+	const deoglPipeline *pPipelineScreenSpace;
+	const deoglPipeline *pPipelineScreenSpaceStereo;
+	const deoglPipeline *pPipelineApplyReflections;
+	const deoglPipeline *pPipelineApplyReflectionsStereo;
 	
-	deoglShaderProgram *pShaderCopyColor;
-	deoglShaderProgram *pShaderCopyColorMipMap;
-	deoglShaderProgram *pShaderMinMaxMipMapMin;
-	deoglShaderProgram *pShaderMinMaxMipMapMax;
-	deoglShaderProgram *pShaderMinMaxMipMapInitial;
-	deoglShaderProgram *pShaderMinMaxMipMapDownsample;
-	deoglShaderProgram *pShaderScreenSpace;
-	deoglShaderProgram *pShaderApplyReflections;
+	const deoglPipeline *pPipelineCopyMaterial;
+	const deoglPipeline *pPipelineEnvMapLightGI;
+	const deoglPipeline *pPipelineEnvMapCopy;
+	const deoglPipeline *pPipelineReflection;
+	const deoglPipeline *pPipelineReflectionStereo;
+	const deoglPipeline *pPipelineCubeMap2EquiMap;
+	const deoglPipeline *pPipelineBuildEnvMap;
+	const deoglPipeline *pPipelineEnvMapMask;
 	
-	deoglShaderProgram *pShaderReflection;
-	deoglShaderProgram *pShaderCubeMap2EquiMap;
-	deoglShaderProgram *pShaderBuildEnvMap;
-	deoglShaderProgram *pShaderEnvMapMask;
-	
-	deoglSPBlockUBO *pRenderParamBlock;
+	deoglSPBSingleUse::Ref pRenderParamBlockSingleUse;
+	deoglSPBlockUBO::Ref pRenderParamBlock;
 	deoglRenderTask *pRenderTask;
 	deoglAddToRenderTask *pAddToRenderTask;
 	
 	bool pUseEquiEnvMap;
 	deoglCubeMap *pEnvMap;
 	deoglTexture *pEnvMapEqui;
-	deoglSPBlockUBO *pEnvMapsParamBlock;
-	
-	int pIndexTextureWidth;
-	int pIndexTextureHeight;
-	deoglTexture *pTextureIndices;
-	deoglTexture *pTextureDistance1;
-	deoglTexture *pTextureDistance2;
-	deoglFramebuffer *pFBOIndexPass1;
-	deoglFramebuffer *pFBOIndexPass2;
+	deoglSPBSingleUse::Ref pEnvMapsParamBlockSingleUse;
+	deoglSPBlockUBO::Ref pEnvMapsParamBlock;
 	
 	deoglEnvironmentMap *pDirectEnvMapActive; ///< weak reference
 	deoglEnvironmentMap *pDirectEnvMapFading; ///< weak reference
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new renderer. */
 	deoglRenderReflection( deoglRenderThread &renderThread );
@@ -92,7 +89,7 @@ public:
 	virtual ~deoglRenderReflection();
 	/*@}*/
 	
-	/** @name Rendering */
+	/** \name Rendering */
 	/*@{*/
 	/** Determines if equirectangular environment maps are used. */
 	inline bool GetUseEquiEnvMap() const{ return pUseEquiEnvMap; }
@@ -123,14 +120,21 @@ public:
 	void UpdateRenderParameterBlock( deoglRenderPlan &plan );
 	
 	
-	/** Render indices. */
-	void RenderIndices( deoglRenderPlan &plan );
-	/** Render environment maps. */
-	//void RenderEnvMaps( deoglRenderPlan &plan );
 	/** Render depth min-max mip-map texture for use with screen space reflections. */
 	void RenderDepthMinMaxMipMap( deoglRenderPlan &plan );
+	
 	/** Copy color texture to temporary1 texture and create mip-map levels. */
 	void CopyColorToTemporary1( deoglRenderPlan &plan );
+	
+	/** Copy material. */
+	void CopyMaterial( deoglRenderPlan &plan, bool solid );
+	
+	/** Render GI lit environment maps. */
+	void RenderGIEnvMaps( deoglRenderPlan &plan );
+	
+	/** Copy environment map. */
+	void CopyEnvMap( deoglArrayTexture &source, deoglCubeMap &target );
+	
 	/** Render screen space reflections. */
 	void RenderScreenSpace( deoglRenderPlan &plan );
 	/*@}*/

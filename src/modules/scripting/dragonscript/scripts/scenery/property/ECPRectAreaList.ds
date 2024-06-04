@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -31,60 +34,69 @@ pin Dragengine.Utils
  * \brief List of rect area values class property for use with XML loading.
  */
 class ECPRectAreaList extends ElementClassProperty
-	/** \brief List of rect areas (Array of RectArea). */
 	private var Array pRectAreas
 	
 	
 	
 	/** \brief Create property. */
-	public func new( String name ) super( name )
-		this.pRectAreas = Array.new()
+	public func new(String name) super(name)
+		pRectAreas = Array.new()
 	end
 	
 	
 	
 	/** \brief Number of rect areas. */
 	public func int getCount()
-		return this.pRectAreas.getCount()
+		return pRectAreas.getCount()
 	end
 	
 	/** \brief RectArea at index. */
-	public func RectArea getAt( int index )
-		return this.pRectAreas.getAt( index ) cast RectArea
+	public func RectArea getAt(int index)
+		return pRectAreas.getAt(index) cast RectArea
 	end
 	
 	/** \brief Get random react area or \em null if no react areas are present. */
 	public func RectArea getRandom()
-		if this.pRectAreas.getCount() == 0
+		if pRectAreas.getCount() == 0
 			return null
 			
 		else
-			return this.pRectAreas.random() cast RectArea
+			return pRectAreas.random() cast RectArea
 		end
 	end
 	
 	/** \brief For each react area with block with RectArea as parameter. */
-	public func void forEach( Block ablock )
-		this.pRectAreas.forEach( ablock )
+	public func void forEach(Block ablock)
+		pRectAreas.forEach(ablock)
 	end
 	
 	/** \brief Remove all react areas. */
 	public func void removeAll()
-		this.pRectAreas.removeAll()
+		pRectAreas.removeAll()
 	end
 	
 	/** \brief Add react area. */
-	public func void add( RectArea area )
-		this.pRectAreas.add( area )
+	public func void add(RectArea area)
+		pRectAreas.add(area)
 	end
 	
 	
 	
 	/** \brief Set value of property from XML decoded value. */
-	public func void setValue( Object value )
-		this.pRectAreas.removeAll()
-		( value cast Array ).forEach( block RectArea each
-			this.pRectAreas.add( each )
-		end )
+	public func void setValue(Object value)
+		pRectAreas.removeAll()
+		(value cast Array).forEach(block RectArea each
+			pRectAreas.add(each)
+		end)
+	end
+	
+	/**
+	 * \brief Copy value from another element class property of the same type.
+	 * \version 1.17
+	 */
+	public func void copyValue(ElementClass elementClass, ElementClassProperty property)
+		pRectAreas = (property cast ECPRectAreaList).pRectAreas.map(block RectArea each
+			return RectArea.new(each)
+		end)
 	end
 end

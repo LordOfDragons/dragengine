@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Speech Animation Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _SAEWPSANIM_H_
@@ -26,6 +29,7 @@
 #include <deigde/gui/igdeTextFieldReference.h>
 #include <deigde/gui/igdeComboBoxReference.h>
 #include <deigde/gui/igdeComboBoxFilterReference.h>
+#include <deigde/gui/igdeListBoxReference.h>
 #include <deigde/gui/composed/igdeEditPathReference.h>
 #include <deigde/gui/event/igdeActionReference.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
@@ -39,7 +43,7 @@ class saeWord;
 
 
 /**
- * \brief Speech Animation property window.
+ * Speech Animation property window.
  */
 class saeWPSAnim : public igdeContainerScroll{
 private:
@@ -54,11 +58,17 @@ private:
 	igdeEditPathReference pEditAnimPath;
 	igdeComboBoxFilterReference pCBNeutralMove;
 	
+	igdeListBoxReference pListNeutralVertexPositionSets;
+	igdeComboBoxFilterReference pCBNeutralVertexPositionSets;
+	igdeButtonReference pBtnNeutralVertexPositionSetAdd;
+	igdeButtonReference pBtnNeutralVertexPositionSetDel;
+	
 	igdeComboBoxReference pCBPhoneme;
 	igdeTextFieldReference pEditPhonemeIPA;
 	igdeTextFieldReference pEditPhonemeSampleText;
 	igdeTextFieldReference pEditPhonemeLength;
 	igdeComboBoxFilterReference pCBPhonemeMove;
+	igdeComboBoxFilterReference pCBPhonemeVertexPositionSet;
 	
 	igdeComboBoxFilterReference pCBWord;
 	igdeTextFieldReference pEditWordName;
@@ -70,11 +80,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create panel. */
+	/** Create panel. */
 	saeWPSAnim( saeWindowProperties &windowProperties );
 	
 protected:
-	/** \brief Clean up panel. */
+	/** Clean up panel. */
 	virtual ~saeWPSAnim();
 	/*@}*/
 	
@@ -83,52 +93,67 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Properties window. */
+	/** Properties window. */
 	inline saeWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
-	/** \brief Speech animation. */
+	/** Speech animation. */
 	inline saeSAnimation *GetSAnimation() const{ return pSAnimation; }
 	
-	/** \brief Set speech animation. */
+	/** Set speech animation. */
 	void SetSAnimation( saeSAnimation *sanimation );
 	
+	/** Speech animation path changed. */
+	void OnSAnimationPathChanged();
 	
 	
-	/** \brief Update speech animation. */
+	
+	/** Update speech animation. */
 	void UpdateSAnimation();
 	
-	/** \brief Update neutral move list. */
+	/** Update neutral move list. */
 	void UpdateNeutralMoveList();
 	
+	/** Update neutral vertex position set list. */
+	void UpdateNeutralVertexPositionSetList();
+	
+	/** Neutral vertex position set combo box text. */
+	const decString &GetCBNeutralVertexPositionSetText() const;
+	
+	/** Set neutral vertex position set combo box text. */
+	void SetCBNeutralVertexPositionSetText( const char *text );
 	
 	
-	/** \brief Active phoneme or NULL. */
+	
+	/** Active phoneme or NULL. */
 	saePhoneme *GetActivePhoneme() const;
 	
-	/** \brief Update phoneme list. */
+	/** Update phoneme list. */
 	void UpdatePhonemeList();
 	
-	/** \brief Change selection to active phoneme. */
+	/** Change selection to active phoneme. */
 	void SelectActivePhoneme();
 	
-	/** \brief Update phoneme. */
+	/** Update phoneme. */
 	void UpdatePhoneme();
 	
-	/** \brief Update phoneme move list. */
+	/** Update phoneme move list. */
 	void UpdatePhonemeMoveList();
 	
+	/** Update phoneme vertex position set list. */
+	void UpdatePhonemeVertexPositionSetList();
 	
 	
-	/** \brief Active word or NULL. */
+	
+	/** Active word or NULL. */
 	saeWord *GetActiveWord() const;
 	
-	/** \brief Update word list. */
+	/** Update word list. */
 	void UpdateWordList();
 	
-	/** \brief Change selection to active word. */
+	/** Change selection to active word. */
 	void SelectActiveWord();
 	
-	/** \brief Update word. */
+	/** Update word. */
 	void UpdateWord();
 	/*@}*/
 };

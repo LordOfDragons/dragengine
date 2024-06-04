@@ -1,23 +1,28 @@
-/* 
- * Drag[en]gine IGDE
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
+
+#ifdef IGDE_TOOLKIT_FOX
 
 #include "igdeNativeFoxFileDialog.h"
 #include "igdeNativeFoxVFSDirectoryBox.h"
@@ -81,22 +86,22 @@ FXIMPLEMENT( igdeNativeFoxFileDialog, FXDialogBox, igdeNativeFoxFileDialogMap, A
 
 igdeNativeFoxFileDialog::igdeNativeFoxFileDialog(){ }
 
-igdeNativeFoxFileDialog::igdeNativeFoxFileDialog( igdeWidget &owner, FXComposite *parent,
+igdeNativeFoxFileDialog::igdeNativeFoxFileDialog( igdeWidget &powner, FXComposite *pparent,
 const FXString &name, FXuint opts, FXint x, FXint y, FXint w, FXint h ) :
-FXDialogBox( parent, name, opts | DECOR_TITLE | DECOR_BORDER | DECOR_RESIZE | DECOR_CLOSE,
+FXDialogBox( pparent, name, opts | DECOR_TITLE | DECOR_BORDER | DECOR_RESIZE | DECOR_CLOSE,
 x, y, w, h, 0, 0, 0, 0, 4, 4 ),
-pOwner( &owner ),
-pVFS( owner.GetEnvironment().GetFileSystemGame() ),
+pOwner( &powner ),
+pVFS( powner.GetEnvironment().GetFileSystemGame() ),
 pFilePatternList( NULL )
 {
 	pCreateDialog();
 }
 
-igdeNativeFoxFileDialog::igdeNativeFoxFileDialog( igdeWidget &owner, deVirtualFileSystem *vfs,
-FXComposite *parent, const FXString& name, FXuint opts, FXint x, FXint y, FXint w, FXint h ) :
-FXDialogBox( parent, name, opts | DECOR_TITLE | DECOR_BORDER | DECOR_RESIZE | DECOR_CLOSE,
+igdeNativeFoxFileDialog::igdeNativeFoxFileDialog( igdeWidget &powner, deVirtualFileSystem *vfs,
+FXComposite *pparent, const FXString& name, FXuint opts, FXint x, FXint y, FXint w, FXint h ) :
+FXDialogBox( pparent, name, opts | DECOR_TITLE | DECOR_BORDER | DECOR_RESIZE | DECOR_CLOSE,
 x, y, w, h, 0, 0, 0, 0, 4, 4 ),
-pOwner( &owner ),
+pOwner( &powner ),
 pVFS( vfs ),
 pFilePatternList( NULL )
 {
@@ -219,7 +224,7 @@ void igdeNativeFoxFileDialog::UpdateFileTypeBox(){
 // Callbacks
 //////////////
 
-long igdeNativeFoxFileDialog::onCmdAccept( FXObject *sender, FXSelector selector, void *data ){
+long igdeNativeFoxFileDialog::onCmdAccept( FXObject *sender, FXSelector selector, void *pdata ){
 	const FXString filename( pEditFilename->getText() );
 	
 	// only do something if a selection was made
@@ -259,13 +264,13 @@ long igdeNativeFoxFileDialog::onCmdAccept( FXObject *sender, FXSelector selector
 	// if the directory exists this is enough ( for the time being )
 	if( pVFS->ExistsFile( directory ) && pVFS->GetFileType( directory ) == deVFSContainer::eftDirectory ){
 		pSetFilenameAndAppendExtension( path.GetPathUnix() );
-		return FXDialogBox::onCmdAccept( sender, selector, data ); // close dialog
+		return FXDialogBox::onCmdAccept( sender, selector, pdata ); // close dialog
 	}
 	
 	// otherwise if the file exists this is good too ( for the time being )
 	if( pVFS->ExistsFile( path ) ){
 		pSetFilenameAndAppendExtension( path.GetPathUnix() );
-		return FXDialogBox::onCmdAccept( sender, selector, data ); // close dialog
+		return FXDialogBox::onCmdAccept( sender, selector, pdata ); // close dialog
 	}
 	
 	// go the the latest directory still existing
@@ -608,3 +613,5 @@ void igdeNativeFoxFileDialog::pSetFilenameAndAppendExtension( const char *filena
 	
 	pEditFilename->setText( finalFilename.text() );
 }
+
+#endif

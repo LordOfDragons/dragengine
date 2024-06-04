@@ -28,7 +28,7 @@ fixed class LanguagePack
 	 * same loaded language pack resource. Once no object instance uses an language pack
 	 * file anymore it is released from memory.
 	 */
-	public func new( String filename )
+	public func new(String filename)
 	end
 	
 	/**
@@ -38,7 +38,7 @@ fixed class LanguagePack
 	 * or if the file is already loaded the listener is used to deliver the loaded
 	 * language pack or \em null if the loading failed.
 	 */
-	static public func void loadAsynchron( String filename, ResourceListener listener )
+	static public func void loadAsynchron(String filename, ResourceListener listener)
 	end
 	/*@}*/
 	
@@ -48,24 +48,56 @@ fixed class LanguagePack
 	/*@{*/
 	/** \brief Normalized filename the language pack has been loaded from. */
 	public func String getFilename()
+		return null
 	end
 	
-	/** \brief Name. */
+	/**
+	 * \brief Unique identifier.
+	 * \version 1.16
+	 * 
+	 * This is used to uniquely identify the language pack.
+	 */
+	public func String getIdentifier()
+		return null
+	end
+	
+	/**
+	 * \brief Name in native language.
+	 * 
+	 * This string is typically shown in language settings screens to the user.
+	 */
 	public func UnicodeString getName()
+		return null
 	end
 	
-	/** \brief Description. */
+	/**
+	 * \brief Description in native language.
+	 * 
+	 * This string can be optionally shown to the user to describe the language pack
+	 * in more detail, for example if the language uses some kind of dialect.
+	 */
 	public func UnicodeString getDescription()
+		return null
 	end
 	
 	
 	
 	/** \brief Translation for entry name or missing text if absent. */
-	public func UnicodeString translate( String name )
+	public func UnicodeString translate(String name)
+		return null
 	end
 	
 	/** \brief Translation for entry name or default value if absent. */
-	public func UnicodeString translate( String name, UnicodeString defaultValue )
+	public func UnicodeString translate(String name, UnicodeString defaultValue)
+		return null
+	end
+	
+	/**
+	 * \brief Text used for missing translations.
+	 * \version 1.16
+	 */
+	public func UnicodeString getMissingText()
+		return null
 	end
 	
 	
@@ -78,7 +110,8 @@ fixed class LanguagePack
 	 * \returns \em true if \em other is of type LanguagePack and both point to the same engine
 	 *          language pack resource.
 	 */
-	public func bool equals( Object other )
+	public func bool equals(Object other)
+		return false
 	end
 	
 	/**
@@ -87,6 +120,7 @@ fixed class LanguagePack
 	 * Implements Object.hashCode().
 	 */
 	public func int hashCode()
+		return 0
 	end
 	/*@}*/
 end

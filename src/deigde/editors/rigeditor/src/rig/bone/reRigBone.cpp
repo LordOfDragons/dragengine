@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Rig Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -54,7 +57,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-reRigBone::reRigBone( deEngine *engine ){
+reRigBone::reRigBone( deEngine *engine ) :
+pIKLimitsLower( TWO_PI, TWO_PI, TWO_PI ),
+pIKLimitsUpper( 0.0f, 0.0f, 0.0f ),
+pIKResistance( 0.0f, 0.0f, 0.0f )
+{
 	if( ! engine ){
 		DETHROW( deeInvalidParam );
 	}
@@ -536,6 +543,95 @@ void reRigBone::RemoveAllShapes(){
 
 
 
+// Inverse kinematics
+///////////////////////
+
+void reRigBone::SetIKLimitsLower( const decVector &lower ){
+	if( lower.IsEqualTo( pIKLimitsLower ) ){
+		return;
+	}
+	
+	pIKLimitsLower = lower;
+	
+	if( pRig ){
+		pRig->NotifyAllBoneChanged( this );
+	}
+}
+
+void reRigBone::SetIKLimitsUpper( const decVector &upper ){
+	if( upper.IsEqualTo( pIKLimitsUpper ) ){
+		return;
+	}
+	
+	pIKLimitsUpper = upper;
+	
+	if( pRig ){
+		pRig->NotifyAllBoneChanged( this );
+	}
+}
+
+void reRigBone::SetIKResistance( const decVector &resistance ){
+	if( resistance.IsEqualTo( pIKResistance ) ){
+		return;
+	}
+	
+	pIKResistance = resistance;
+	
+	if( pRig ){
+		pRig->NotifyAllBoneChanged( this );
+	}
+}
+
+void reRigBone::SetIKLockedX( bool locked ){
+	if( locked == pIKLocked[ 0 ] ){
+		return;
+	}
+	
+	pIKLocked[ 0 ] = locked;
+	
+	if( pRig ){
+		pRig->NotifyAllBoneChanged( this );
+	}
+}
+
+void reRigBone::SetIKLockedY( bool locked ){
+	if( locked == pIKLocked[ 1 ] ){
+		return;
+	}
+	
+	pIKLocked[ 1 ] = locked;
+	
+	if( pRig ){
+		pRig->NotifyAllBoneChanged( this );
+	}
+}
+
+void reRigBone::SetIKLockedZ( bool locked ){
+	if( locked == pIKLocked[ 2 ] ){
+		return;
+	}
+	
+	pIKLocked[ 2 ] = locked;
+	
+	if( pRig ){
+		pRig->NotifyAllBoneChanged( this );
+	}
+}
+
+void reRigBone::SetIKLocked( int axis, bool locked ){
+	if( locked == pIKLocked[ axis ] ){
+		return;
+	}
+	
+	pIKLocked[ axis ] = locked;
+	
+	if( pRig ){
+		pRig->NotifyAllBoneChanged( this );
+	}
+}
+
+
+
 // Constraints
 ////////////////
 
@@ -659,12 +755,12 @@ void reRigBone::pUpdateDDSCmpColor(){
 	pDDSCmp->SetVisible( pSelected );
 	
 	if( pActive ){
-		pDDSCmp->SetEdgeColor( decColor( 1.0f, 0.5f, 0.0f, 1.0 ) );
-		pDDSCmp->SetFillColor( decColor( 1.0f, 0.5f, 0.0f, 0.1 ) );
+		pDDSCmp->SetEdgeColor( decColor( 1.0f, 0.5f, 0.0f, 1.0f ) );
+		pDDSCmp->SetFillColor( decColor( 1.0f, 0.5f, 0.0f, 0.1f ) );
 		
 	}else if( pSelected ){
-		pDDSCmp->SetEdgeColor( decColor( 0.6f, 1.0f, 1.0f, 1.0 ) );
-		pDDSCmp->SetFillColor( decColor( 0.6f, 1.0f, 1.0f, 0.1 ) );
+		pDDSCmp->SetEdgeColor( decColor( 0.6f, 1.0f, 1.0f, 1.0f ) );
+		pDDSCmp->SetFillColor( decColor( 0.6f, 1.0f, 1.0f, 0.1f ) );
 		
 	}else{
 		pDDSCmp->SetEdgeColor( decColor( 0.3f, 0.7f, 1.0f, 1.0f ) );
@@ -680,12 +776,12 @@ void reRigBone::pUpdateDDSBoneShape(){
 
 void reRigBone::pUpdateDDSBoneColor(){
 	if( pActive ){
-		pDDSBone->SetEdgeColor( decColor( 1.0f, 0.5f, 0.0f, 1.0 ) );
-		pDDSBone->SetFillColor( decColor( 1.0f, 0.5f, 0.0f, 0.1 ) );
+		pDDSBone->SetEdgeColor( decColor( 1.0f, 0.5f, 0.0f, 1.0f ) );
+		pDDSBone->SetFillColor( decColor( 1.0f, 0.5f, 0.0f, 0.1f ) );
 		
 	}else if( pSelected ){
-		pDDSBone->SetEdgeColor( decColor( 0.6f, 1.0f, 1.0f, 1.0 ) );
-		pDDSBone->SetFillColor( decColor( 0.6f, 1.0f, 1.0f, 0.1 ) );
+		pDDSBone->SetEdgeColor( decColor( 0.6f, 1.0f, 1.0f, 1.0f ) );
+		pDDSBone->SetFillColor( decColor( 0.6f, 1.0f, 1.0f, 0.1f ) );
 		
 	}else{
 		pDDSBone->SetEdgeColor( decColor( 0.3f, 0.7f, 1.0f, 1.0f ) );

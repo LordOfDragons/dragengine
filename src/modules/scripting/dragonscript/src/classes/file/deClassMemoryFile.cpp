@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -36,6 +39,8 @@
 #include <dragengine/common/file/decMemoryFile.h>
 #include <dragengine/common/file/decMemoryFileReader.h>
 #include <dragengine/common/file/decMemoryFileWriter.h>
+#include <dragengine/common/file/decZFileReader.h>
+#include <dragengine/common/file/decZFileWriter.h>
 #include <dragengine/common/string/decString.h>
 #include <libdscript/exceptions.h>
 
@@ -155,19 +160,9 @@ deClassMemoryFile::nfGetReader::nfGetReader( const sInitData &init ) : dsFunctio
 void deClassMemoryFile::nfGetReader::RunFunction( dsRunTime *rt, dsValue *myself ){
 	decMemoryFile * const memoryFile = ( ( const sMemFileNatDat * )p_GetNativeData( myself ) )->memoryFile;
 	deScriptingDragonScript &ds = ( ( deClassMemoryFile* )GetOwnerClass() )->GetDS();
-	decMemoryFileReader *reader = NULL;
 	
-	try{
-		reader = new decMemoryFileReader( memoryFile );
-		ds.GetClassFileReader()->PushFileReader( rt, reader );
-		reader->FreeReference();
-		
-	}catch( ... ){
-		if( reader ){
-			reader->FreeReference();
-		}
-		throw;
-	}
+	ds.GetClassFileReader()->PushFileReader( rt, decMemoryFileReader::Ref::New(
+		new decMemoryFileReader( memoryFile ) ) );
 }
 
 // public func FileWriter getWriter( bool append )
@@ -178,21 +173,37 @@ deClassMemoryFile::nfGetWriter::nfGetWriter( const sInitData &init ) : dsFunctio
 void deClassMemoryFile::nfGetWriter::RunFunction( dsRunTime *rt, dsValue *myself ){
 	decMemoryFile * const memoryFile = ( ( const sMemFileNatDat * )p_GetNativeData( myself ) )->memoryFile;
 	deScriptingDragonScript &ds = ( ( deClassMemoryFile* )GetOwnerClass() )->GetDS();
-	decMemoryFileWriter *writer = NULL;
 	
 	const bool append = rt->GetValue( 0 )->GetBool();
 	
-	try{
-		writer = new decMemoryFileWriter( memoryFile, append );
-		ds.GetClassFileWriter()->PushFileWriter( rt, writer );
-		writer->FreeReference();
-		
-	}catch( ... ){
-		if( writer ){
-			writer->FreeReference();
-		}
-		throw;
-	}
+	ds.GetClassFileWriter()->PushFileWriter( rt, decMemoryFileWriter::Ref::New(
+		new decMemoryFileWriter( memoryFile, append ) ) );
+}
+
+// public func FileReader getReaderZCompressed()
+deClassMemoryFile::nfGetReaderZCompressed::nfGetReaderZCompressed( const sInitData &init ) :
+dsFunction( init.clsMemFile, "getReaderZCompressed", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsFRead ){
+}
+void deClassMemoryFile::nfGetReaderZCompressed::RunFunction( dsRunTime *rt, dsValue *myself ){
+	decMemoryFile * const memoryFile = ( ( const sMemFileNatDat * )p_GetNativeData( myself ) )->memoryFile;
+	deScriptingDragonScript &ds = ( ( deClassMemoryFile* )GetOwnerClass() )->GetDS();
+	
+	ds.GetClassFileReader()->PushFileReader( rt, decZFileReader::Ref::New( new decZFileReader(
+		decMemoryFileReader::Ref::New( new decMemoryFileReader( memoryFile ) ) ) ) );
+}
+
+// public func FileWriter getWriterZCompressed()
+deClassMemoryFile::nfGetWriterZCompressed::nfGetWriterZCompressed( const sInitData &init ) :
+dsFunction( init.clsMemFile, "getWriterZCompressed", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsFWrite ){
+}
+void deClassMemoryFile::nfGetWriterZCompressed::RunFunction( dsRunTime *rt, dsValue *myself ){
+	decMemoryFile * const memoryFile = ( ( const sMemFileNatDat * )p_GetNativeData( myself ) )->memoryFile;
+	deScriptingDragonScript &ds = ( ( deClassMemoryFile* )GetOwnerClass() )->GetDS();
+	
+	ds.GetClassFileWriter()->PushFileWriter( rt, decZFileWriter::Ref::New( new decZFileWriter(
+		decMemoryFileWriter::Ref::New( new decMemoryFileWriter( memoryFile, false ) ) ) ) );
 }
 
 
@@ -246,6 +257,8 @@ void deClassMemoryFile::CreateClassMembers( dsEngine *engine ){
 	
 	AddFunction( new nfGetReader( init ) );
 	AddFunction( new nfGetWriter( init ) );
+	AddFunction( new nfGetReaderZCompressed( init ) );
+	AddFunction( new nfGetWriterZCompressed( init ) );
 	
 	CalcMemberOffsets();
 }

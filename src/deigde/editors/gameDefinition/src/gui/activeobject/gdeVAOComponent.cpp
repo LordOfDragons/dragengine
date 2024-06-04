@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Game Definition Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <math.h>
@@ -29,6 +32,7 @@
 #include "../gdeWindowMain.h"
 #include "../../gdEditor.h"
 #include "../../gamedef/gdeGameDefinition.h"
+#include "../../gamedef/objectClass/gdeObjectClass.h"
 #include "../../gamedef/objectClass/component/gdeOCComponent.h"
 #include "../../gamedef/objectClass/component/gdeOCComponentTexture.h"
 
@@ -95,8 +99,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeVAOComponent::gdeVAOComponent( gdeViewActiveObject &view, gdeOCComponent *occomponent ) :
-pView( view ),
+gdeVAOComponent::gdeVAOComponent( gdeViewActiveObject &view, const gdeObjectClass &objectClass,
+	const decString &propertyPrefix, gdeOCComponent *occomponent ) :
+gdeVAOSubObject( view, objectClass, propertyPrefix ),
 pOCComponent( occomponent ),
 pPlayback( false )
 {
@@ -216,11 +221,13 @@ void gdeVAOComponent::pCreateComponent(){
 	deVirtualFileSystem * const vfs = pView.GetGameDefinition()->GetPreviewVFS();
 	igdeEnvironment &environment = pView.GetWindowMain().GetEnvironment();
 	const deEngine &engine = *pView.GetGameDefinition()->GetEngine();
+	decString path;
 	
 	// model
-	if( ! pOCComponent->GetModelPath().IsEmpty() ){
+	path = PropertyString( pOCComponent->GetPropertyName( gdeOCComponent::epModel ), pOCComponent->GetModelPath() );
+	if( ! path.IsEmpty() ){
 		try{
-			model.TakeOver( engine.GetModelManager()->LoadModel( vfs, pOCComponent->GetModelPath(), "/" ) );
+			model.TakeOver( engine.GetModelManager()->LoadModel( vfs, path, "/" ) );
 			
 		}catch( const deException &e ){
 			environment.GetLogger()->LogException( LOGSOURCE, e );
@@ -228,19 +235,21 @@ void gdeVAOComponent::pCreateComponent(){
 	}
 	
 	// skin
-	if( ! pOCComponent->GetSkinPath().IsEmpty() ){
+	path = PropertyString( pOCComponent->GetPropertyName( gdeOCComponent::epSkin ), pOCComponent->GetSkinPath() );
+	if( ! path.IsEmpty() ){
 		try{
-			skin.TakeOver( engine.GetSkinManager()->LoadSkin( vfs, pOCComponent->GetSkinPath(), "/" ) );
+			skin.TakeOver( engine.GetSkinManager()->LoadSkin( vfs, path, "/" ) );
 			
-		}catch( const deException &e ){
-			skin = environment.GetErrorSkin();
+		}catch( const deException & ){
+			skin = environment.GetStockSkin( igdeEnvironment::essError );
 		}
 	}
 	
 	// rig
-	if( ! pOCComponent->GetRigPath().IsEmpty() ){
+	path = PropertyString( pOCComponent->GetPropertyName( gdeOCComponent::epRig ), pOCComponent->GetRigPath() );
+	if( ! path.IsEmpty() ){
 		try{
-			rig.TakeOver( engine.GetRigManager()->LoadRig( vfs, pOCComponent->GetRigPath(), "/" ) );
+			rig.TakeOver( engine.GetRigManager()->LoadRig( vfs, path, "/" ) );
 			
 		}catch( const deException &e ){
 			environment.GetLogger()->LogException( LOGSOURCE, e );
@@ -248,10 +257,10 @@ void gdeVAOComponent::pCreateComponent(){
 	}
 	
 	// occlusion mesh
-	if( ! pOCComponent->GetOcclusionMeshPath().IsEmpty() ){
+	path = PropertyString( pOCComponent->GetPropertyName( gdeOCComponent::epOcclusionMesh ), pOCComponent->GetOcclusionMeshPath() );
+	if( ! path.IsEmpty() ){
 		try{
-			occlusionMesh.TakeOver( engine.GetOcclusionMeshManager()->LoadOcclusionMesh(
-				vfs, pOCComponent->GetOcclusionMeshPath(), "/" ) );
+			occlusionMesh.TakeOver( engine.GetOcclusionMeshManager()->LoadOcclusionMesh( vfs, path, "/" ) );
 			
 		}catch( const deException &e ){
 			environment.GetLogger()->LogException( LOGSOURCE, e );
@@ -259,10 +268,10 @@ void gdeVAOComponent::pCreateComponent(){
 	}
 	
 	// audio model
-	if( ! pOCComponent->GetAudioModelPath().IsEmpty() ){
+	path = PropertyString( pOCComponent->GetPropertyName( gdeOCComponent::epAudioModel ), pOCComponent->GetAudioModelPath() );
+	if( ! path.IsEmpty() ){
 		try{
-			audioModel.TakeOver( engine.GetModelManager()->LoadModel(
-				vfs, pOCComponent->GetAudioModelPath(), "/" ) );
+			audioModel.TakeOver( engine.GetModelManager()->LoadModel( vfs, path, "/" ) );
 			
 		}catch( const deException &e ){
 			environment.GetLogger()->LogException( LOGSOURCE, e );
@@ -280,7 +289,7 @@ void gdeVAOComponent::pCreateComponent(){
 	
 	// create component if model and skin are present
 	if( model && skin ){
-		pComponent = engine.GetComponentManager()->CreateComponent( model, skin );
+		pComponent.TakeOver( engine.GetComponentManager()->CreateComponent( model, skin ) );
 		pView.GetGameDefinition()->GetWorld()->AddComponent( pComponent );
 	}
 	if( pComponent ){
@@ -303,7 +312,10 @@ void gdeVAOComponent::pCreateComponentTextures(){
 	
 	for( i=0; i<textureCount; i++ ){
 		const decString &textureName = model.GetTextureAt( i )->GetName();
-		pUpdateComponentTexture( pOCComponent->GetTextures().GetNamed( textureName ),
+		const gdeOCComponentTexture * const componentTexture = pOCComponent->GetTextures().GetNamed( textureName );
+		const gdeOCComponentTexture * const objectClassTexture = pView.GetObjectClass()->GetTextures().GetNamed( textureName );
+		
+		pUpdateComponentTexture( objectClassTexture ? objectClassTexture : componentTexture,
 			pComponent->GetTextureAt( i ), i );
 	}
 }
@@ -334,8 +346,8 @@ deComponentTexture &engTexture, int engTextureIndex ){
 				occtextureSkin.TakeOver( engine.GetSkinManager()->LoadSkin( texture->GetPathSkin(), "/" ) );
 			}
 			
-		}catch( const deException &e ){
-			occtextureSkin = environment.GetErrorSkin();
+		}catch( const deException & ){
+			occtextureSkin = environment.GetStockSkin( igdeEnvironment::essError );
 		}
 		
 		if( occtextureSkin ){
@@ -424,27 +436,101 @@ void gdeVAOComponent::pCreateAnimator(){
 	deVirtualFileSystem &vfs = *pView.GetGameDefinition()->GetPreviewVFS();
 	igdeEnvironment &environment = pView.GetWindowMain().GetEnvironment();
 	const deEngine &engine = *pView.GetGameDefinition()->GetEngine();
-	deAnimatorReference animator;
+	deAnimation::Ref animation;
+	deAnimator::Ref animator;
 	
-	if( pOCComponent->GetAnimatorPath().IsEmpty() ){
+	const decString &pathAnimator = pOCComponent->GetAnimatorPath();
+	const decString &pathAnimation = pOCComponent->GetAnimationPath();
+	const decString &move = pOCComponent->GetMove();
+	
+	if( pathAnimator.IsEmpty() && pathAnimation.IsEmpty() ){
 		return;
 	}
 	
-	try{
-		const decPath vfsPath( decPath::CreatePathUnix( pOCComponent->GetAnimatorPath() ) );
+	if( ! pathAnimation.IsEmpty() && vfs.ExistsFile( decPath::CreatePathUnix( pathAnimation ) ) ){
+		try{
+			animation.TakeOver( engine.GetAnimationManager()->LoadAnimation( &vfs, pathAnimation, "/" ) );
+			
+		}catch( const deException &e ){
+			environment.GetLogger()->LogException( LOGSOURCE, e );
+			animation = nullptr;
+		}
+	}
+	
+	if( ! pathAnimator.IsEmpty() ){
+		const decPath vfsPath( decPath::CreatePathUnix( pathAnimator ) );
 		if( ! vfs.ExistsFile( vfsPath ) ){
 			return;
 		}
 		
-		decBaseFileReaderReference reader;
-		reader.TakeOver( vfs.OpenFileForReading( vfsPath ) );
 		igdeLoadAnimator loader( environment, environment.GetLogger(), LOGSOURCE );
-		animator.TakeOver( engine.GetAnimatorManager()->CreateAnimator() );
-		loader.Load( pOCComponent->GetAnimatorPath(), animator, reader );
+		try{
+			const decBaseFileReader::Ref reader(
+				decBaseFileReader::Ref::New( vfs.OpenFileForReading( vfsPath ) ) );
+			animator.TakeOver( engine.GetAnimatorManager()->CreateAnimator() );
+			loader.Load( pathAnimator, animator, reader );
+			animator->SetAnimation( animation );
+			
+		}catch( const deException &e ){
+			environment.GetLogger()->LogException( LOGSOURCE, e );
+			return;
+		}
 		
-	}catch( const deException &e ){
-		environment.GetLogger()->LogException( LOGSOURCE, e );
-		return;
+	}else if ( animation ){
+		const int moveIndex = animation->FindMove( move );
+		if( moveIndex == -1 ){
+			return;
+		}
+		
+		animator.TakeOver( engine.GetAnimatorManager()->CreateAnimator() );
+		animator->SetAnimation( animation );
+		
+		deAnimatorController *controller = nullptr;
+		deAnimatorLink *link = nullptr;
+		
+		try{
+			controller = new deAnimatorController;
+			controller->SetName( pOCComponent->GetPlaybackController() );
+			controller->SetValueRange( 0.0f, animation->GetMove( moveIndex )->GetPlaytime() );
+			animator->AddController( controller );
+			
+		}catch( const deException &e ){
+			if( controller ){
+				delete controller;
+			}
+			environment.GetLogger()->LogException( LOGSOURCE, e );
+			return;
+		}
+		
+		try{
+			link = new deAnimatorLink;
+			link->SetController( 0 );
+			
+			decCurveBezier curve;
+			curve.SetDefaultLinear();
+			link->SetCurve( curve );
+			animator->AddLink( link );
+			
+		}catch( const deException &e ){
+			if( link ){
+				delete link;
+			}
+			environment.GetLogger()->LogException( LOGSOURCE, e );
+			return;
+		}
+		
+		try{
+			const deAnimatorRuleAnimation::Ref rule(
+				deAnimatorRuleAnimation::Ref::New( new deAnimatorRuleAnimation ) );
+			rule->SetEnableSize( true );
+			rule->SetMoveName( move );
+			rule->GetTargetMoveTime().AddLink( 0 );
+			animator->AddRule( rule );
+			
+		}catch( const deException &e ){
+			environment.GetLogger()->LogException( LOGSOURCE, e );
+			return;
+		}
 	}
 	
 	pAnimator.TakeOver( engine.GetAnimatorInstanceManager()->CreateAnimatorInstance() );
@@ -468,7 +554,7 @@ void gdeVAOComponent::pAttachComponent(){
 		pCollider->AddAttachment( attachment );
 		attachment = NULL;
 		
-	}catch( const deException &e ){
+	}catch( const deException & ){
 		if( attachment ){
 			delete attachment;
 		}

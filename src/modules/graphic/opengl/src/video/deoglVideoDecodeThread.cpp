@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -26,7 +29,6 @@
 #include "deoglVideoDecodeThread.h"
 
 #include "../deoglBasics.h"
-#include "../texture/pixelbuffer/deoglPixelBuffer.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/utils/decTimer.h>
@@ -60,10 +62,6 @@ pDecoder( decoder ),
 pVideo( video ),
 pFrame( -1 ),
 pNextFrame( -1 ),
-
-pPixelBufferDecode( NULL ),
-pPixelBufferTexture( NULL ),
-
 pDecoding( false ),
 pHasDecodedFrame( false ),
 pShutDown( false )
@@ -79,13 +77,6 @@ pShutDown( false )
 deoglVideoDecodeThread::~deoglVideoDecodeThread(){
 	//printf( "Shut down decode thread %p\n", this );
 	pSafelyShutDownThread();
-	
-	if( pPixelBufferTexture ){
-		delete pPixelBufferTexture;
-	}
-	if( pPixelBufferDecode ){
-		delete pPixelBufferDecode;
-	}
 }
 
 
@@ -97,8 +88,8 @@ void deoglVideoDecodeThread::StartDecode( int frame ){
 	bool startDecoding = false;
 	bool waitFinished = false;
 	
-	deMutexGuard guard( pMutex );
-	
+	{
+	const deMutexGuard lock( pMutex );
 // 	printf( "DecodeThread(%p) StartDecode(%p,%p,%i)\n", this, decoder, video, frame );
 	
 	if( pDecoding && ! pHasDecodedFrame ){
@@ -125,8 +116,7 @@ void deoglVideoDecodeThread::StartDecode( int frame ){
 			//printf( "DecodeThread(%p) StartDecode(%p,%p,%i): Same frame, not decoding.\n", this, decoder, video, frame );
 		}
 	}
-	
-	guard.Unlock();
+	}
 	
 	if( waitFinished ){
 		DEBUG_SYNC_MT_WAIT("StartDecode() finished")
@@ -142,11 +132,21 @@ void deoglVideoDecodeThread::StartDecode( int frame ){
 	}
 }
 
-deoglPixelBuffer *deoglVideoDecodeThread::GetTexturePixelBuffer(){
-	if( pDecoding ){
+deoglPixelBuffer::Ref deoglVideoDecodeThread::GetTexturePixelBuffer(){
+	bool decoding;
+	{
+	const deMutexGuard lock( pMutex );
+	decoding = pDecoding;
+	}
+	
+	if( decoding ){
 		DEBUG_SYNC_MT_WAIT("GetTexturePixelBuffer() finished")
 		pSemaphoreFinished.Wait();
 		DEBUG_SYNC_MT_DONE("GetTexturePixelBuffer() finished")
+	}
+	
+	const deMutexGuard lock( pMutex );
+	if( decoding ){
 		pDecoding = false;
 	}
 	
@@ -156,7 +156,7 @@ deoglPixelBuffer *deoglVideoDecodeThread::GetTexturePixelBuffer(){
 		
 	}else{
 		//printf( "DecodeThread(%p) GetTexturePixelBuffer not decoding.\n", this );
-		return NULL;
+		return nullptr;
 	}
 }
 
@@ -167,39 +167,54 @@ void deoglVideoDecodeThread::SetTexturePixelBuffer( deoglPixelBuffer *pixelBuffe
 void deoglVideoDecodeThread::StopDecode(){
 	// clear the next decoding parameters if set.
 	// stops the decoder from decoding a new frame
-	deMutexGuard guard( pMutex );
+	bool decoding;
+	{
+	const deMutexGuard lock( pMutex );
 	pNextFrame = -1;
-	guard.Unlock();
+	decoding = pDecoding;
+	}
 	
 	// wait for the decoding to finish if running
-	if( pDecoding ){
+	if( decoding ){
 		DEBUG_SYNC_MT_WAIT("SetTexturePixelBuffer() finished")
 		pSemaphoreFinished.Wait();
 		DEBUG_SYNC_MT_DONE("SetTexturePixelBuffer() finished")
-		pDecoding = false;
 	}
 	
 	// clear the decoding parameters
+	const deMutexGuard lock( pMutex );
 	pFrame = -1;
+	if( decoding ){
+		pDecoding = false;
+	}
 }
 
 
 
 void deoglVideoDecodeThread::Run(){
-	bool keepDecoding;
 // 	decTimer timer;
-	
-	while( ! pShutDown ){
+	while( true ){
+		{
+		const deMutexGuard lock( pMutex );
+		if( pShutDown ){
+			return;
+		}
+		}
+		
 		DEBUG_SYNC_MT_WAIT("Run() decode")
 		pSemaphoreDecode.Wait();
 		DEBUG_SYNC_MT_DONE("Run() decode")
 		
-		if( pShutDown ){
-			break;
-		}
-		
-		keepDecoding = true;
-		while( keepDecoding && ! pShutDown ){
+		bool keepDecoding = true;
+		while( keepDecoding ){
+			{
+			const deMutexGuard lock( pMutex );
+			if( pShutDown ){
+				DEBUG_SYNC_MT_SIGNAL("Run() finished then exit")
+				pSemaphoreFinished.Signal();
+				return;
+			}
+			}
 			keepDecoding = false;
 			
 // 			timer.Reset();
@@ -214,8 +229,7 @@ void deoglVideoDecodeThread::Run(){
 			
 // 			printf( "DecodeThread(%p) Run(%p,%p,%i): Decoded in %iys\n", this, pDecoder, pVideo, pFrame, ( int )( timer.GetElapsedTime() * 1e6f ) );
 			
-			deMutexGuard guard( pMutex );
-			
+			const deMutexGuard lock( pMutex );
 			if( pNextFrame != -1 ){
 				pFrame = pNextFrame;
 				pNextFrame = -1;
@@ -237,38 +251,54 @@ void deoglVideoDecodeThread::Run(){
 
 
 void deoglVideoDecodeThread::PreparePixelBuffers(){
-	deoglPixelBuffer::ePixelFormats pbFormat = deoglPixelBuffer::epfByte3;
-	const deVideo::ePixelFormat pixelFormat = pVideo->GetPixelFormat();
+	const int componentCount = pVideo->GetComponentCount();
 	const int height = pVideo->GetHeight();
 	const int width = pVideo->GetWidth();
 	
 	// determine the pixel buffer format to use
-	if( pixelFormat == deVideo::epf4444 ){
+	deoglPixelBuffer::ePixelFormats pbFormat;
+	
+	switch( componentCount ){
+	case 1:
+		pbFormat = deoglPixelBuffer::epfByte1;
+		break;
+		
+	case 2:
+		pbFormat = deoglPixelBuffer::epfByte2;
+		break;
+		
+	case 3:
+		pbFormat = deoglPixelBuffer::epfByte3;
+		break;
+		
+	case 4:
 		pbFormat = deoglPixelBuffer::epfByte4;
+		break;
+		
+	default:
+		DETHROW_INFO( deeInvalidParam, "invalid component count" );
 	}
 	
 	// if the pixel buffers do not match the required size free them
 	if( pPixelBufferTexture ){
 		if( pPixelBufferTexture->GetWidth() != width || pPixelBufferTexture->GetHeight() != height ){
-			delete pPixelBufferTexture;
-			pPixelBufferTexture = NULL;
+			pPixelBufferTexture = nullptr;
 		}
 	}
 	
 	if( pPixelBufferDecode ){
 		if( pPixelBufferDecode->GetWidth() != width || pPixelBufferDecode->GetHeight() != height ){
-			delete pPixelBufferDecode;
-			pPixelBufferDecode = NULL;
+			pPixelBufferDecode = nullptr;
 		}
 	}
 	
 	// create pixel buffers if not existing
 	if( ! pPixelBufferDecode ){
-		pPixelBufferDecode = new deoglPixelBuffer( pbFormat, width, height, 1 );
+		pPixelBufferDecode.TakeOver( new deoglPixelBuffer( pbFormat, width, height, 1 ) );
 	}
 	
 	if( ! pPixelBufferTexture ){
-		pPixelBufferTexture = new deoglPixelBuffer( pbFormat, width, height, 1 );
+		pPixelBufferTexture.TakeOver( new deoglPixelBuffer( pbFormat, width, height, 1 ) );
 	}
 }
 
@@ -282,8 +312,7 @@ void deoglVideoDecodeThread::DecodeFrame(){
 	
 	pDecoder->SetPosition( pFrame ); // in most cases this should not seek
 	
-	if( ! pDecoder->DecodeFrame( pPixelBufferDecode->GetPointer(),
-	pPixelBufferDecode->GetImageSize(), NULL, 0 ) ){
+	if( ! pDecoder->DecodeFrame( pPixelBufferDecode->GetPointer(), pPixelBufferDecode->GetImageSize() ) ){
 		SetErrorPixelBuffer();
 		return;
 	}
@@ -294,6 +323,46 @@ void deoglVideoDecodeThread::DecodeFrame(){
 	int x, y;
 	
 	switch( pPixelBufferTexture->GetFormat() ){
+	case deoglPixelBuffer::epfByte1:
+		{
+		const deoglPixelBuffer::sByte1 * const pixelsDecode = pPixelBufferDecode->GetPointerByte1();
+		deoglPixelBuffer::sByte1 * const pixelsTexture = pPixelBufferTexture->GetPointerByte1();
+		
+		for( y=0; y<height; y++ ){
+			deoglPixelBuffer::sByte1 * const pixelLineTexture = pixelsTexture + width * ( height - y - 1 );
+			const deoglPixelBuffer::sByte1 * const pixelLineDecode = pixelsDecode + width * y;
+			
+			for( x=0; x<width; x++ ){
+				color.r = ( float )pixelLineDecode[ x ].r * factor;
+				
+				color = colorMatrix * color;
+				
+				pixelLineTexture[ x ].r = decMath::clamp( ( int )( color.r * 255.0f ), 0, 255 );
+			}
+		}
+		} break;
+		
+	case deoglPixelBuffer::epfByte2:
+		{
+		const deoglPixelBuffer::sByte2 * const pixelsDecode = pPixelBufferDecode->GetPointerByte2();
+		deoglPixelBuffer::sByte2 * const pixelsTexture = pPixelBufferTexture->GetPointerByte2();
+		
+		for( y=0; y<height; y++ ){
+			deoglPixelBuffer::sByte2 * const pixelLineTexture = pixelsTexture + width * ( height - y - 1 );
+			const deoglPixelBuffer::sByte2 * const pixelLineDecode = pixelsDecode + width * y;
+			
+			for( x=0; x<width; x++ ){
+				color.r = ( float )pixelLineDecode[ x ].r * factor;
+				color.g = ( float )pixelLineDecode[ x ].g * factor;
+				
+				color = colorMatrix * color;
+				
+				pixelLineTexture[ x ].r = decMath::clamp( ( int )( color.r * 255.0f ), 0, 255 );
+				pixelLineTexture[ x ].g = decMath::clamp( ( int )( color.g * 255.0f ), 0, 255 );
+			}
+		}
+		} break;
+		
 	case deoglPixelBuffer::epfByte3:
 		{
 		const deoglPixelBuffer::sByte3 * const pixelsDecode = pPixelBufferDecode->GetPointerByte3();
@@ -330,9 +399,10 @@ void deoglVideoDecodeThread::DecodeFrame(){
 				color.r = ( float )pixelLineDecode[ x ].r * factor;
 				color.g = ( float )pixelLineDecode[ x ].g * factor;
 				color.b = ( float )pixelLineDecode[ x ].b * factor;
-				color.a = ( float )pixelLineDecode[ x ].a * factor;
 				
-				color = colorMatrix * color;
+				color = colorMatrix * color; // sets a=1 so alpha has to be set afterwards
+				
+				color.a = ( float )pixelLineDecode[ x ].a * factor;
 				
 				pixelLineTexture[ x ].r = decMath::clamp( ( int )( color.r * 255.0f ), 0, 255 );
 				pixelLineTexture[ x ].g = decMath::clamp( ( int )( color.g * 255.0f ), 0, 255 );
@@ -340,6 +410,7 @@ void deoglVideoDecodeThread::DecodeFrame(){
 				pixelLineTexture[ x ].a = decMath::clamp( ( int )( color.a * 255.0f ), 0, 255 );
 			}
 		}
+		
 		} break;
 		
 	default:
@@ -354,6 +425,23 @@ void deoglVideoDecodeThread::SetErrorPixelBuffer(){
 	int i;
 	
 	switch( pPixelBufferTexture->GetFormat() ){
+	case deoglPixelBuffer::epfByte1:
+		{
+		deoglPixelBuffer::sByte1 * const pixels = pPixelBufferTexture->GetPointerByte1();
+		for( i=0; i<count; i++ ){
+			pixels[ i ].r = 255;
+		}
+		} break;
+		
+	case deoglPixelBuffer::epfByte2:
+		{
+		deoglPixelBuffer::sByte2 * const pixels = pPixelBufferTexture->GetPointerByte2();
+		for( i=0; i<count; i++ ){
+			pixels[ i ].r = 255;
+			pixels[ i ].g = 0;
+		}
+		} break;
+		
 	case deoglPixelBuffer::epfByte3:
 		{
 		deoglPixelBuffer::sByte3 * const pixels = pPixelBufferTexture->GetPointerByte3();
@@ -390,10 +478,11 @@ void deoglVideoDecodeThread::pSafelyShutDownThread(){
 		return;
 	}
 	
-	deMutexGuard guard( pMutex );
+	{
+	const deMutexGuard lock( pMutex );
 	pNextFrame = -1;
 	pShutDown = true;
-	guard.Unlock();
+	}
 	
 	DEBUG_SYNC_MT_SIGNAL("pSafelyShutDownThread() decode")
 	pSemaphoreDecode.Signal();

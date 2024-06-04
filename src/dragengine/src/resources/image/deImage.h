@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Game Engine
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEIMAGE_H_
@@ -32,56 +35,56 @@ class deResourceManager;
 
 
 /** \brief 8-Bit Grayscale */
-struct sGrayscale8{
+struct DE_DLL_EXPORT sGrayscale8{
 	unsigned char value;
 };
 
 /** \brief 16-Bit Grayscale */
-struct sGrayscale16{
+struct DE_DLL_EXPORT sGrayscale16{
 	unsigned short value;
 };
 
 /** \brief 32-Bit Grayscale */
-struct sGrayscale32{
+struct DE_DLL_EXPORT sGrayscale32{
 	float value;
 };
 
 
 /** \brief 8-Bit Grayscale-Alpha */
-struct sGrayscaleAlpha8{
+struct DE_DLL_EXPORT sGrayscaleAlpha8{
 	unsigned char value;
 	unsigned char alpha;
 };
 
 /** \brief 16-Bit Grayscale-Alpha */
-struct sGrayscaleAlpha16{
+struct DE_DLL_EXPORT sGrayscaleAlpha16{
 	unsigned short value;
 	unsigned short alpha;
 };
 
 /** \brief 32-Bit Grayscale-Alpha */
-struct sGrayscaleAlpha32{
+struct DE_DLL_EXPORT sGrayscaleAlpha32{
 	float value;
 	float alpha;
 };
 
 
 /** \brief 8-Bit Red-Green-Blue */
-struct sRGB8{
+struct DE_DLL_EXPORT sRGB8{
 	unsigned char red;
 	unsigned char green;
 	unsigned char blue;
 };
 
 /** \brief 16-Bit Red-Green-Blue */
-struct sRGB16{
+struct DE_DLL_EXPORT sRGB16{
 	unsigned short red;
 	unsigned short green;
 	unsigned short blue;
 };
 
 /** \brief 32-Bit Red-Green-Blue */
-struct sRGB32{
+struct DE_DLL_EXPORT sRGB32{
 	float red;
 	float green;
 	float blue;
@@ -89,7 +92,7 @@ struct sRGB32{
 
 
 /** \brief 8-Bit Red-Green-Blue-Alpha */
-struct sRGBA8{
+struct DE_DLL_EXPORT sRGBA8{
 	unsigned char red;
 	unsigned char green;
 	unsigned char blue;
@@ -97,7 +100,7 @@ struct sRGBA8{
 };
 
 /** \brief 16-Bit Red-Green-Blue-Alpha */
-struct sRGBA16{
+struct DE_DLL_EXPORT sRGBA16{
 	unsigned short red;
 	unsigned short green;
 	unsigned short blue;
@@ -105,7 +108,7 @@ struct sRGBA16{
 };
 
 /** \brief 32-Bit Red-Green-Blue-Alpha */
-struct sRGBA32{
+struct DE_DLL_EXPORT sRGBA32{
 	float red;
 	float green;
 	float blue;
@@ -138,7 +141,13 @@ struct sRGBA32{
  * main thread frame updating of the respective scripting module. For accessing the data no
  * locking is required since GetData() is only valid after RetainImageData() finished.
  */
-class deImage : public deFileResource{
+class DE_DLL_EXPORT deImage : public deFileResource{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deImage> Ref;
+	
+	
+	
 private:
 	int pWidth;
 	int pHeight;

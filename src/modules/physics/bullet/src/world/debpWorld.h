@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Bullet Physics Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEBPWORLD_H_
@@ -38,18 +41,18 @@ class debpOverlapFilterCallback;
 class debpUnstuckCollider;
 class debpCollider;
 class debpSharedCollisionFiltering;
+class debpConstraintSolver;
 
 class btDynamicsWorld;
 class btBroadphaseInterface;
 class btCollisionDispatcher;
-class btMultiBodyConstraintSolver;
 class btCollisionConfiguration;
 struct btSoftBodyWorldInfo;
 class btSoftBodySolver;
 
 
 /**
- * \brief Physics world peer.
+ * Physics world peer.
  */
 class debpWorld : public deBasePhysicsWorld{
 private:
@@ -65,7 +68,7 @@ private:
 	debpCollisionWorld *pDynWorld;
 	btBroadphaseInterface *pBroadPhase;
 	btCollisionDispatcher *pColDisp;
-	btMultiBodyConstraintSolver *pConstraintSolver;
+	debpConstraintSolver *pConstraintSolver;
 	btSoftBodySolver *pSoftBodySolver;
 	btCollisionConfiguration *pColConfig;
 	btSoftBodyWorldInfo	*pSoftBodyWorldInfo;
@@ -103,6 +106,8 @@ private:
 	decVector pGravity;
 	float pDynCollisionVelocityThreshold;
 	
+	bool pProcessingPhysics;
+	
 	decTimer pPerfTimer;
 	decTimer pPerfTimer2;
 	
@@ -113,114 +118,117 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create world peer. */
+	/** Create world peer. */
 	debpWorld( dePhysicsBullet &bullet, deWorld &world );
 	
-	/** \brief Clean up world peer. */
+	/** Clean up world peer. */
 	virtual ~debpWorld();
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Module. */
+	/** Module. */
 	inline dePhysicsBullet &GetBullet() const{ return pBullet; }
 	
-	/** \brief Engine world resource. */
+	/** Engine world resource. */
 	inline deWorld &GetWorld() const{ return pWorld; }
 	
-	/** \brief Shared collision information. */
+	/** Shared collision information. */
 	inline deCollisionInfo *GetCollisionInfo() const{ return pColInfo; }
 	
-	/** \brief Unstuck collider. */
+	/** Unstuck collider. */
 	inline debpUnstuckCollider *GetUnstuckCollider() const{ return pUnstuckCollider; }
 	
 	
 	
-	/** \brief Maximum sub steps for dynamic simulation. */
+	/** Maximum sub steps for dynamic simulation. */
 	inline int GetSimulationMaxSubSteps() const{ return pSimMaxSubStep; }
 	
-	/** \brief Fixed time step for dynamic simulation. */
+	/** Fixed time step for dynamic simulation. */
 	inline float GetSimulationTimeStep() const{ return pSimTimeStep; }
 	
 	
 	
-	/** \brief Gravity. */
+	/** Gravity. */
 	inline const decVector &GetGravity() const{ return pGravity; }
 	
 	/**
-	 * \brief Dynamic collision velocity threshold.
+	 * Dynamic collision velocity threshold.
 	 * \see debpCollisionWorld::CheckDynamicCollisions.
 	 */
 	inline float GetDynamicCollisionVelocityThreshold() const{ return pDynCollisionVelocityThreshold; }
 	
+	/** In progress of processing physics. */
+	inline bool GetProcessingPhysics() const{ return pProcessingPhysics; }
 	
 	
-	/** \brief Update octrees if dirty. */
+	
+	/** Update octrees if dirty. */
 	void UpdateOctrees();
 	
 	/**
-	 * \brief Mark octrees dirty.
+	 * Mark octrees dirty.
 	 * \details Used by world elements to request an octree update the next time.
 	 */
 	void MarkOctreeDirty();
 	
-	/** \brief Update dynamic world aabbs. */
+	/** Update dynamic world aabbs. */
 	void UpdateDynWorldAABBs();
 	
 	
 	
-	/** \brief Add collider for prepare collision detection. */
+	/** Add collider for prepare collision detection. */
 	void pColDetPrepareColliderAdd( debpCollider *collider );
 	
-	/** \brief Remove collider for prepare collision detection. */
+	/** Remove collider for prepare collision detection. */
 	void pColDetPrepareColliderRemove( debpCollider *collider );
 	
 	
 	
-	/** \brief Add collider for finish collision detection. */
+	/** Add collider for finish collision detection. */
 	void pColDetFinishColliderAdd( debpCollider *collider );
 	
-	/** \brief Remove collider for finish collision detection. */
+	/** Remove collider for finish collision detection. */
 	void pColDetFinishColliderRemove( debpCollider *collider );
 	
 	
 	
-	/** \brief Add collider for post physics collision test processing. */
+	/** Add collider for post physics collision test processing. */
 	void pPPCTColliderAdd( debpCollider *collider );
 	
-	/** \brief Remove collider for post physics collision test processing. */
+	/** Remove collider for post physics collision test processing. */
 	void pPPCTColliderRemove( debpCollider *collider );
 	
 	
 	
-	/** \brief Add collider for update octree processing. */
+	/** Add collider for update octree processing. */
 	void pUpdateOctreeColliderAdd( debpCollider *collider );
 	
-	/** \brief Remove collider for update octree processing. */
+	/** Remove collider for update octree processing. */
 	void pUpdateOctreeColliderRemove( debpCollider *collider );
 	
 	
 	
-	/** \brief Shared collision filteringNULL. */
+	/** Shared collision filteringNULL. */
 	inline debpSharedCollisionFiltering &GetSharedCollisionFiltering() const{ return *pSharedCollisionFiltering; }
 	
 	
 	
-	/** \brief Height terrain or \em NULL. */
+	/** Height terrain or \em NULL. */
 	inline debpHeightTerrain *GetHeightTerrain() const{ return pHeightTerrain; }
 	
-	/** \brief Dynamics world. */
+	/** Dynamics world. */
 	inline debpCollisionWorld *GetDynamicsWorld() const{ return pDynWorld; }
 	
 	
 	
 	/**
-	 * \brief Update dynamic parts of scene.
+	 * Update dynamic parts of scene.
 	 * \param elapsed Seconds elapsed since last update
 	 */
 	virtual void Update( float elapsed );
 	/**
-	 * \brief Process physics simulation using the physics module.
+	 * Process physics simulation using the physics module.
 	 * \details Apply collision detection on moving kinematic collider, physical simulation
 	 *          on dynamic colliders, particle and prop field simulations as well as moving
 	 *          colliders attached to other colliders.
@@ -288,7 +296,7 @@ public:
 	/** @name Collision Detection */
 	/*@{*/
 	/**
-	 * \brief Test a point for collision with colliders.
+	 * Test a point for collision with colliders.
 	 * 
 	 * For each collision the collisionResponse function the given listener is called. To
 	 * stop testing set StopTesting in the provided collision information object to true.
@@ -297,7 +305,7 @@ public:
 	const decCollisionFilter &collisionFilter );
 	
 	/**
-	 * \brief Tests a ray for collision with the element in the world.
+	 * Tests a ray for collision with the element in the world.
 	 * \details For each collision the collisionResponse function the given listener is called. To
 	 *          stop testing set StopTesting in the provided collision information object to true.
 	 */
@@ -305,14 +313,14 @@ public:
 	deBaseScriptingCollider *listener, const decCollisionFilter &collisionFilter );
 	
 	/**
-	 * \brief Tests the collider for collision with world elements.
+	 * Tests the collider for collision with world elements.
 	 * \details For each collision the collisionResponse function of the listener is called. To
 	 *          stop testing set StopTesting in the provided collision information object to true.
 	 */
 	virtual void ColliderHits( deCollider *collider, deBaseScriptingCollider *listener );
 	
 	/**
-	 * \brief Tests the moving collider for collision with world elements.
+	 * Tests the moving collider for collision with world elements.
 	 * \details For each collision starting with the earliest the collisionResponse function
 	 *          of the listener is called. To stop testing set StopTesting in the provided
 	 *          collision information object to true.
@@ -321,7 +329,7 @@ public:
 	deBaseScriptingCollider *listener );
 	
 	/**
-	 * \brief Tests the rotating collider for collision with world elements.
+	 * Tests the rotating collider for collision with world elements.
 	 * \details For each collision starting with the earliest the collisionResponse function
 	 *          of the listener is called. To stop testing set StopTesting in the provided
 	 *          collision information object to true.
@@ -330,7 +338,7 @@ public:
 	deBaseScriptingCollider *listener );
 	
 	/**
-	 * \brief Tests the moving and rotating collider for collision with world elements.
+	 * Tests the moving and rotating collider for collision with world elements.
 	 * \details For each collision starting with the earliest the collisionResponse function
 	 *          of the listener is called. To stop testing set StopTesting in the provided
 	 *          collision information object to true.
@@ -344,10 +352,12 @@ public:
 private:
 	void pCleanUp();
 	
+	void pProcessPhysics( float elapsed );
+	
 	void pPrepareDetection( float elapsed );
 	
 	void pPrepareForStep();
-	bool pStepPhysics();
+// 	bool pStepPhysics();
 	void pStepForceFields( float elapsed );
 	
 	void pPrepareParticleEmitters( float elapsed );
@@ -356,11 +366,11 @@ private:
 	void pUpdateFromBody();
 	void pFinishDetection();
 	
-	/** \brief Update collider post physics collision tests. */
+	/** Update collider post physics collision tests. */
 	void pUpdatePostPhysicsCollisionTests();
 	
 	/**
-	 * \brief Make touch sensors notify their peers about touch changes accumulated during collision detection.
+	 * Make touch sensors notify their peers about touch changes accumulated during collision detection.
 	 * \details This potentially modifies colliders including adding or removing them.
 	 */
 	void pApplyTouchSensorChanges();

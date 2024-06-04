@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdlib.h>
@@ -56,7 +59,9 @@ pSkinStateController( NULL ),
 pSkin( NULL ),
 pDynamicSkin( NULL ),
 
-pDirtyTexture( true )
+pDirtyTexture( true ),
+pDynamicSkinRenderablesChanged( true ),
+pDirtyRenderableMapping( true )
 {
 	try{
 		pRTexture = new deoglRComponentTexture( *component.GetRComponent(), index );
@@ -88,7 +93,7 @@ void deoglComponentTexture::SyncToRender(){
 			pRTexture->SetSkin( pSkin->GetRSkin() );
 			
 		}else{
-			pRTexture->SetSkin( NULL );
+			pRTexture->SetSkin( nullptr );
 		}
 		
 		// update dynamic skin
@@ -96,23 +101,38 @@ void deoglComponentTexture::SyncToRender(){
 			pRTexture->SetDynamicSkin( pDynamicSkin->GetRDynamicSkin() );
 			
 		}else{
-			pRTexture->SetDynamicSkin( NULL );
+			pRTexture->SetDynamicSkin( nullptr );
 		}
 		
 		// other stuff
 		pRTexture->SetTransform( texture.GetTransform() );
 		
-		pRTexture->UpdateSkinState();
+		pRTexture->UpdateSkinState( pComponent );
 		
 		InitSkinState();
 		
 		pDirtyTexture = false;
+		pDirtyRenderableMapping = true; // to be on the safe side
+	}
+	
+	if( pDirtyRenderableMapping ){
+		pRTexture->UpdateRenderableMapping();
+		pDirtyRenderableMapping = false;
 	}
 	
 	pSkinStateController->SyncToRender();
 }
 
+void deoglComponentTexture::SetDynamicSkinRenderablesChanged( bool changed ){
+	pDynamicSkinRenderablesChanged = changed;
+	pDirtyRenderableMapping = true;
+}
 
+
+
+void deoglComponentTexture::DirtyRenderableMapping(){
+	pDirtyRenderableMapping = true;
+}
 
 void deoglComponentTexture::InitSkinState(){
 	if( pRTexture->GetSkinState() ){
@@ -131,11 +151,33 @@ void deoglComponentTexture::AdvanceTime( float timeStep ){
 	pSkinStateController->AdvanceTime( timeStep );
 }
 
-void deoglComponentTexture::PrepareSkinStateRenderables(){
-}
-
 void deoglComponentTexture::ClearSkinStateController(){
 	pSkinStateController->Clear();
+}
+
+
+
+// Dynamic skin listener
+//////////////////////////
+
+void deoglComponentTexture::DynamicSkinDestroyed(){
+	pDynamicSkin = NULL;
+}
+
+void deoglComponentTexture::DynamicSkinRenderablesChanged(){
+	pDynamicSkinRenderablesChanged = true;
+	pDirtyRenderableMapping = true;
+	pComponent.TextureDynamicSkinRenderableChanged();
+}
+
+void deoglComponentTexture::DynamicSkinRenderableChanged( deoglDSRenderable& ){
+	pDynamicSkinRenderablesChanged = true;
+	pDirtyRenderableMapping = true;
+	pComponent.TextureDynamicSkinRenderableChanged();
+}
+
+void deoglComponentTexture::DynamicSkinRenderableRequiresSync( deoglDSRenderable& ){
+	pComponent.TextureDynamicSkinRequiresSync();
 }
 
 
@@ -145,31 +187,39 @@ void deoglComponentTexture::ClearSkinStateController(){
 
 void deoglComponentTexture::TextureChanged( const deComponentTexture &texture ){
 	// skin
+	deoglSkin *skin = nullptr;
 	if( texture.GetSkin() ){
-		pSkin = ( deoglSkin* )texture.GetSkin()->GetPeerGraphic();
-		
-	}else{
-		pSkin = NULL;
+		skin = ( deoglSkin* )texture.GetSkin()->GetPeerGraphic();
+	}
+	
+	if( skin != pSkin ){
+		pSkin = skin;
+		pDirtyRenderableMapping = true;
+		pComponent.DirtyTextureUseSkin();
 	}
 	
 	// dynamic skin
-	if( pDynamicSkin ){
-		pDynamicSkin->GetNotifyComponentTextures().Remove( this );
+	deoglDynamicSkin *dynamicSkin = nullptr;
+	if( texture.GetDynamicSkin() ){
+		dynamicSkin = ( deoglDynamicSkin* )texture.GetDynamicSkin()->GetPeerGraphic();
 	}
 	
-	if( texture.GetDynamicSkin() ){
-		pDynamicSkin = ( deoglDynamicSkin* )texture.GetDynamicSkin()->GetPeerGraphic();
-		pDynamicSkin->GetNotifyComponentTextures().Add( this );
+	if( dynamicSkin != pDynamicSkin ){
+		if( pDynamicSkin ){
+			pDynamicSkin->RemoveListener( this );
+		}
 		
-	}else{
-		pDynamicSkin = NULL;
+		pDynamicSkin = dynamicSkin;
+		
+		if( dynamicSkin ){
+			dynamicSkin->AddListener( this );
+		}
+		
+		pDirtyRenderableMapping = true;
+		pComponent.DirtyTextureUseSkin();
 	}
 	
 	pDirtyTexture = true;
-}
-
-void deoglComponentTexture::DropDynamicSkin(){
-	pDynamicSkin = NULL;
 }
 
 
@@ -187,6 +237,6 @@ void deoglComponentTexture::pCleanUp(){
 	}
 	
 	if( pDynamicSkin ){
-		pDynamicSkin->GetNotifyComponentTextures().Remove( this );
+		pDynamicSkin->RemoveListener( this );
 	}
 }

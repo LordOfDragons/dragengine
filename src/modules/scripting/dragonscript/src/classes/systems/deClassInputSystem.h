@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DECLASSINPUTSYSTEM_H_
@@ -27,12 +30,12 @@
 #include <libdscript/libdscript.h>
 
 class deScriptingDragonScript;
-class deInputDevice;
+class dedsInputDevice;
 
 
 
 /**
- * \brief Input system script class.
+ * Input system script class.
  */
 class deClassInputSystem : public dsClass{
 private:
@@ -40,16 +43,17 @@ private:
 	
 	decObjectList pCachedDevices;
 	bool pCacheDirty;
+	dsClass *pClsInputEventKeyLocation;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create script class. */
+	/** Create script class. */
 	deClassInputSystem( deScriptingDragonScript &ds );
 	
-	/** \brief Clean up script class. */
+	/** Clean up script class. */
 	virtual ~deClassInputSystem();
 	/*@}*/
 	
@@ -57,20 +61,25 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Create class members. */
+	/** Create class members. */
 	virtual void CreateClassMembers( dsEngine *engine );
 	
-	/** \brief Script module. */
+	/** Script module. */
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
-	/** \brief Cached input device count. */
+	/** Cached input device count. */
 	int GetCachedDeviceCount();
 	
-	/** \brief Cached device. */
-	deInputDevice *GetCachedDeviceAt( int index );
+	/** Cached device. */
+	dedsInputDevice *GetCachedDeviceAt( int index );
 	
-	/** \brief Invalidate cached devices. */
+	/** Invalidate cached devices. */
 	void InvalidCachedDevices();
+	
+	/** Frame update. */
+	void OnFrameUpdate();
+	
+	inline dsClass *GetClassInputEventKeyLocation() const{ return pClsInputEventKeyLocation; }
 	/*@}*/
 	
 	
@@ -89,6 +98,7 @@ private:
 		
 		dsClass *clsModPar;
 		dsClass *clsInputDevice;
+		dsClass *clsInputEventKeyLocation;
 	};
 #define DEF_NATFUNC(name) \
 	class name : public dsFunction{ \
@@ -107,11 +117,14 @@ private:
 	DEF_NATFUNC( nfIndexOfAxisWithID );
 	DEF_NATFUNC( nfIndexOfFeedbackWithID );
 	DEF_NATFUNC( nfGetButtonPressed );
+	DEF_NATFUNC( nfGetButtonTouched );
 	DEF_NATFUNC( nfGetAxisValue );
 	DEF_NATFUNC( nfGetFeedbackValue );
 	DEF_NATFUNC( nfSetFeedbackValue );
 	DEF_NATFUNC( nfButtonMatchingKeyCode );
 	DEF_NATFUNC( nfButtonMatchingKeyChar );
+	DEF_NATFUNC( nfButtonMatchingKeyCode2 );
+	DEF_NATFUNC( nfButtonMatchingKeyChar2 );
 	
 	DEF_NATFUNC( nfGetParameterCount );
 	DEF_NATFUNC( nfGetParameterInfo );

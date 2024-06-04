@@ -1,38 +1,43 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLSKINSHADERMANAGER_H_
 #define _DEOGLSKINSHADERMANAGER_H_
 
+#include "deoglSkinShader.h"
+
 #include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/threading/deMutex.h>
 
 class deoglRenderThread;
-class deoglSkinShader;
 class deoglSkinShaderConfig;
 class deoglShaderUnitSourceCode;
 
 
 
 /**
- * @brief Skin Shader Manager.
+ * Skin Shader Manager.
  */
 class deoglSkinShaderManager{
 public:
@@ -42,6 +47,7 @@ public:
 		euscpVertexDepth,
 		euscpVertexParticle,
 		euscpVertexPassThrough,
+		euscpVertexGIMaterialMap,
 		
 		euscpGeometryGeometry,
 		euscpGeometryDepth,
@@ -56,17 +62,23 @@ public:
 		
 		euscpFragmentGeometry,
 		euscpFragmentDepth,
-		
-		EUSCP_COUNT
+		euscpFragmentGIMaterialMap
 	};
+	
+	const static int UnitSourceCodePathCount = euscpFragmentGIMaterialMap + 1;
+	
+	
 	
 private:
 	deoglRenderThread &pRenderThread;
 	decObjectOrderedSet pShaderList;
 	int pMaintananceInterval;
+	deMutex pMutex;
+	
+	
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new shader manager object. */
 	deoglSkinShaderManager( deoglRenderThread &renderThread );
@@ -74,32 +86,22 @@ public:
 	~deoglSkinShaderManager();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
-	/** \brief Render thread. */
+	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
-	/** Retrieves a unit source code path. */
+	/** Unit source code path. */
 	const char *GetUnitSourceCodePath( eUnitSourceCodePath unitSourceCodePath ) const;
 	
-	/** Determines if a shader with the given configuration exists. */
-	bool HasShaderWith( deoglSkinShaderConfig &configuration ) const;
-	/** Retrieves the shader with the given configuration creating it if not existing. */
+	/** Shader with configuration creating it if absent. */
 	deoglSkinShader *GetShaderWith( deoglSkinShaderConfig &configuration );
 	
 	/** Retrieves the number of shaders. */
-	int GetShaderCount() const;
-	/** Retrieves shader by index. */
-	deoglSkinShader *GetShaderAt( int index ) const;
-	/** Adds a shader. */
-	void AddShader( deoglSkinShader *shader );
-	/** Removes a shader. */
-	void RemoveShader( deoglSkinShader *shader );
-	/** Removes all shaders. */
-	void RemoveAllShaders();
+	int GetShaderCount();
 	
-	/** Per-frame maintanance call from the graphic module. */
-	void Maintanance();
+	/** Retrieves shader by index. */
+	const deoglSkinShader &GetShaderAt( int index );
 	/*@}*/
 };
 

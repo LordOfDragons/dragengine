@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="ReleaseDebug|Win32">
+      <Configuration>ReleaseDebug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="ReleaseDebug|x64">
+      <Configuration>ReleaseDebug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\dragengine\dragengine.vcxproj">
+      <Project>{f9098b91-18fa-4754-b089-e3d613b13b71}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\shared\igde_shared.vcxproj">
+      <Project>{1dcfacb0-ab85-4adc-b18a-91322511c121}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\src\deigde\deigde\SConscript" />
+    <None Include="post_build.ps1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\deigde\deigde\src\configuration\igdeConfiguration.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\src\configuration\igdeConfigurationLocal.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\src\configuration\igdeConfigurationLocalXML.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\src\configuration\igdeConfigurationXML.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\src\deigde.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\src\engine\igdeScriptModule.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\src\engine\igdeSMCollider.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\src\engine\igdeSMPropField.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\src\engine\igdeSMTouchSensor.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\src\environment\igdeEnvironmentIGDE.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\src\gui\igdeCreateProject.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\src\gui\igdeDialogNewGameProject.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\src\gui\igdeDialogProjectSettings.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\src\gui\igdeDialogStartUp.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\src\gui\igdeRealApplication.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\src\gui\igdeSharedFontList.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\src\gui\igdeTaskSyncGameDefinition.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\src\gui\igdeWindowMain.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\src\loadsave\igdeLoadSaveSystem.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\src\loadsave\igdeLoadTemplate.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\src\loadsave\igdeLSGameProject.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\src\module\igdeEditorModuleDefinition.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\src\module\igdeEditorModuleManager.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\src\template\igdeTemplate.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\src\template\igdeTemplateFile.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\src\template\igdeTemplateFileList.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\src\template\igdeTemplateList.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\src\template\igdeTemplateReplace.cpp" />
+    <ClCompile Include="..\..\..\src\deigde\deigde\src\template\igdeTemplateReplaceList.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\src\deigde\deigde\src\configuration\igdeConfiguration.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\src\configuration\igdeConfigurationLocal.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\src\configuration\igdeConfigurationLocalXML.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\src\configuration\igdeConfigurationXML.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\src\deigde.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\src\engine\igdeScriptModule.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\src\engine\igdeSMCollider.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\src\engine\igdeSMPropField.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\src\engine\igdeSMTouchSensor.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\src\environment\igdeEnvironmentIGDE.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\src\gui\igdeCreateProject.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\src\gui\igdeDialogNewGameProject.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\src\gui\igdeDialogProjectSettings.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\src\gui\igdeDialogStartUp.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\src\gui\igdeRealApplication.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\src\gui\igdeSharedFontList.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\src\gui\igdeTaskSyncGameDefinition.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\src\gui\igdeWindowMain.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\src\loadsave\igdeLoadSaveSystem.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\src\loadsave\igdeLoadTemplate.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\src\loadsave\igdeLSGameProject.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\src\module\igdeEditorModuleDefinition.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\src\module\igdeEditorModuleManager.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\src\template\igdeTemplate.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\src\template\igdeTemplateFile.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\src\template\igdeTemplateFileList.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\src\template\igdeTemplateList.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\src\template\igdeTemplateReplace.h" />
+    <ClInclude Include="..\..\..\src\deigde\deigde\src\template\igdeTemplateReplaceList.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\..\..\src\deigde\deigde\src\deigde-res.rc" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{1008F1D5-4549-4F1E-99C7-C950C4662507}</ProjectGuid>
+    <RootNamespace>deai</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>igde</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebug|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(IncludePath)</IncludePath>
+    <TargetName>deigde</TargetName>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\deigde\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(IncludePath)</IncludePath>
+    <TargetName>deigde</TargetName>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\deigde\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebug|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(IncludePath)</IncludePath>
+    <TargetName>deigde</TargetName>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\deigde\</OutDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;DEAI_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;DEAI_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;DEAI_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);IGDE_PATH="@ProgramFiles\\DEIGDE";IGDE_CONFIG_PATH="@ProgramFiles\\DEIGDE\\Config";IGDE_SHARE_PATH="@ProgramFiles\\DEIGDE\\Share";IGDE_LIB_PATH="@ProgramFiles\\DEIGDE\\Data"</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <IgnoreSpecificDefaultLibraries>LIBCMT;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+    </Link>
+    <PostBuildEvent>
+      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\deigde\deigde\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)"</Command>
+    </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);IGDE_PATH="@ProgramFiles\\DEIGDE";IGDE_CONFIG_PATH="@ProgramFiles\\DEIGDE\\Config";IGDE_SHARE_PATH="@ProgramFiles\\DEIGDE\\Share";IGDE_LIB_PATH="@ProgramFiles\\DEIGDE\\Data"</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <DisableSpecificWarnings>4251</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <IgnoreSpecificDefaultLibraries>LIBCMT;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+    </Link>
+    <PostBuildEvent>
+      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\deigde\deigde\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)"</Command>
+    </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);IGDE_PATH="@ProgramFiles\\DEIGDE";IGDE_CONFIG_PATH="@ProgramFiles\\DEIGDE\\Config";IGDE_SHARE_PATH="@ProgramFiles\\DEIGDE\\Share";IGDE_LIB_PATH="@ProgramFiles\\DEIGDE\\Data"</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <DisableSpecificWarnings>4251</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <IgnoreSpecificDefaultLibraries>LIBCMT;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+    </Link>
+    <PostBuildEvent>
+      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\deigde\deigde\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)"</Command>
+    </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

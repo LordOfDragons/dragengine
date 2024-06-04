@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Project Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <math.h>
@@ -40,6 +43,7 @@
 #include "../undosys/profile/projUProfileSetGameDescription.h"
 #include "../undosys/profile/projUProfileSetWindowSize.h"
 #include "../undosys/profile/projUProfileSetDelgaPath.h"
+#include "../undosys/profile/projUProfileSetRunArguments.h"
 #include "../undosys/profile/projUProfileSetIcons.h"
 #include "../undosys/profile/projUProfileSetExcludePatterns.h"
 #include "../undosys/profile/projUProfileSetRequiredExtensions.h"
@@ -63,6 +67,7 @@
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeActionSelectFile.h>
 #include <deigde/gui/event/igdeActionReference.h>
+#include <deigde/gui/event/igdeActionExternOpen.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
 #include <deigde/gui/event/igdeListBoxListener.h>
 #include <deigde/gui/event/igdeTextAreaListener.h>
@@ -344,6 +349,39 @@ public:
 	}
 };
 
+class cActionGenerateIdentifier : public cActionBase{
+public:
+	cActionGenerateIdentifier( projPanelProfiles &panel ) : cActionBase( panel,
+		"Generate Identifier", nullptr, "Generate Identifier" ){}
+	
+	virtual igdeUndo *OnAction( projProject*, projProfile *profile ){
+		if( igdeCommonDialogs::Question( &pPanel, igdeCommonDialogs::ebsYesNo, "Generate Identifier",
+		"Generating new identifier can break the game. Do you really want to generate new identifier?" )
+		== igdeCommonDialogs::ebYes ){
+			return new projUProfileSetIdentifier( profile, decUuid::Random() );
+		}
+		return nullptr;
+	}
+};
+
+class cActionMenuIdentifier : public igdeActionContextMenu{
+	projPanelProfiles &pPanel;
+	
+public:
+	cActionMenuIdentifier( projPanelProfiles &panel ) : igdeActionContextMenu( "",
+		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiSmallDown ), "Identifier menu" ),
+	pPanel( panel ){}
+	
+	virtual void AddContextMenuEntries( igdeMenuCascade &contextMenu ){
+		if( ! pPanel.GetActiveProfile() ){
+			return;
+		}
+		
+		igdeUIHelper &helper = pPanel.GetEnvironment().GetUIHelper();
+		helper.MenuCommand( contextMenu, new cActionGenerateIdentifier( pPanel ), true );
+	}
+};
+
 class cTextIdentifier : public cBaseTextFieldListener{
 public:
 	cTextIdentifier( projPanelProfiles &panel ) : cBaseTextFieldListener( panel ){ }
@@ -601,6 +639,20 @@ public:
 	}
 };
 
+
+
+class cTextRunArguments : public cBaseTextFieldListener{
+public:
+	cTextRunArguments( projPanelProfiles &panel ) : cBaseTextFieldListener( panel ){ }
+	
+	virtual igdeUndo *OnChanged( igdeTextField *textField, projProject*, projProfile *profile ){
+		if( textField->GetText() == profile->GetRunArguments() ){
+			return nullptr;
+		}
+		return new projUProfileSetRunArguments( profile, textField->GetText() );
+	}
+};
+
 }
 
 
@@ -637,8 +689,17 @@ pListener( NULL )
 	helper.Button( sidePanel, windowMain.GetActionProfileAdd() );
 	helper.Button( sidePanel, windowMain.GetActionProfileRemove() );
 	helper.Button( sidePanel, windowMain.GetActionProfileDuplicate() );
-	helper.Button( sidePanel, windowMain.GetActionProfileDistribute() );
-	helper.Button( sidePanel, windowMain.GetActionProfileTestRun() );
+	
+	igdeContainerReference groupBox, formLine;
+	helper.GroupBoxStaticFlow( sidePanel, groupBox, "Content:" );
+	helper.Button( groupBox, windowMain.GetActionShowContent() );
+	
+	helper.GroupBoxStaticFlow( sidePanel, groupBox, "Test-Run:" );
+	helper.Button( groupBox, windowMain.GetActionProfileTestRun() );
+	
+	helper.GroupBoxStaticFlow( sidePanel, groupBox, "Distribution:" );
+	helper.Button( groupBox, windowMain.GetActionProfileDistribute() );
+	helper.Button( groupBox, windowMain.GetActionShowDistribute() );
 	
 	
 	
@@ -647,7 +708,7 @@ pListener( NULL )
 	sidePanel->SetWidgetGuiThemeName( "" );
 	AddChild( scroll, eaCenter );
 	
-	igdeContainerReference groupBox, frameLine;
+	igdeContainerReference frameLine;
 	const char *description;
 	
 	groupBox.TakeOver( new igdeContainerForm( env ) );
@@ -684,8 +745,13 @@ pListener( NULL )
 	pActionPathCapture.TakeOver( new cActionPathCapture( *this ) );
 	helper.Button( frameLine, pActionPathCapture );
 	
-	helper.EditString( groupBox, "Identifier:", "Unique identifier of game used by Launchers. CHANGING THIS CAN BREAK YOUR GAME!",
+	pActionMenuIdentifier.TakeOver( new cActionMenuIdentifier( *this ) );
+	helper.FormLineStretchFirst( groupBox, "Identifier:",
+		"Unique identifier of game used by Launchers. CHANGING THIS CAN BREAK YOUR GAME!", formLine );
+	helper.EditString( formLine, "Unique identifier of game used by Launchers. CHANGING THIS CAN BREAK YOUR GAME!",
 		pEditIdentifier, new cTextIdentifier( *this ) );
+	helper.Button( formLine, pBtnMenuIdentifier, pActionMenuIdentifier );
+	pActionMenuIdentifier->SetWidget( pBtnMenuIdentifier );
 	
 	helper.EditString( groupBox, "Alias Identifier:", "Alias identifier of game used by Launchers to simplify running the game.",
 		pEditAliasIdentifier, new cTextAliasIdentifier( *this ) );
@@ -760,14 +826,25 @@ pListener( NULL )
 	helper.Button( frameLine, pActionRemoveRequiredExtension );
 	
 	
+	// row
+	subGroup.TakeOver( new igdeContainerBox( env, igdeContainerBox::eaX ) );
+	sidePanel->AddChild( subGroup );
+	
 	// delga parameters
-	helper.GroupBox( sidePanel, groupBox, "DELGA Parameters:" );
+	helper.GroupBox( subGroup, groupBox, "DELGA Parameters:" );
 	
 	description = "VFS directory where to place the build DELGA file.";
 	helper.FormLineStretchFirst( groupBox, "DELGA File:", description, frameLine );
 	helper.EditString( frameLine, description, pEditDelgaPath, new cTextDelgaPath( *this ) );
 	pActionDelgaPath.TakeOver( new cActionDelgaPath( *this ) );
 	helper.Button( frameLine, pActionDelgaPath );
+	
+	
+	// test running
+	helper.GroupBox( subGroup, groupBox, "Test Run:" );
+	
+	helper.EditString( groupBox, "Arguments:", "Arguments to use while test running",
+		pEditRunArguments, new cTextRunArguments( *this ) );
 }
 
 projPanelProfiles::~projPanelProfiles(){
@@ -867,6 +944,7 @@ void projPanelProfiles::UpdateProfile(){
 	pEditGameDescription->SetEnabled( enable );
 	pEditWindowSize->SetEnabled( enable );
 	pEditDelgaPath->SetEnabled( enable );
+	pEditRunArguments->SetEnabled( enable );
 	
 	if( profile ){
 		pEditName->SetText( profile->GetName() );
@@ -883,6 +961,7 @@ void projPanelProfiles::UpdateProfile(){
 		pEditWebsite->SetText( profile->GetWebsite() );
 		pEditWindowSize->SetPoint( profile->GetWindowSize() );
 		pEditDelgaPath->SetText( profile->GetDelgaPath() );
+		pEditRunArguments->SetText( profile->GetRunArguments() );
 		
 	}else{
 		pEditName->ClearText();
@@ -899,6 +978,7 @@ void projPanelProfiles::UpdateProfile(){
 		pEditWebsite->ClearText();
 		pEditWindowSize->SetPoint( decPoint() );
 		pEditDelgaPath->ClearText();
+		pEditRunArguments->ClearText();
 	}
 	
 	UpdateIcons();

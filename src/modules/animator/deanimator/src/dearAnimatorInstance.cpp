@@ -1,32 +1,33 @@
-/* 
- * Drag[en]gine Animator Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
-
-#include <stdio.h>
-#include <string.h>
-#include <unistd.h>
 
 #include "dearAnimator.h"
 #include "dearAnimatorInstance.h"
 #include "dearBoneState.h"
 #include "dearBoneStateList.h"
+#include "dearVPSState.h"
+#include "dearVPSStateList.h"
 #include "dearControllerStates.h"
 #include "deDEAnimator.h"
 #include "rule/dearCreateRuleVisitor.h"
@@ -36,6 +37,7 @@
 #include "task/dearTaskApplyRules.h"
 #include "component/dearComponent.h"
 #include "component/dearComponentBoneState.h"
+#include "component/dearComponentVPSState.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
@@ -47,6 +49,8 @@
 #include <dragengine/resources/animation/deAnimation.h>
 #include <dragengine/resources/component/deComponentBone.h>
 #include <dragengine/resources/component/deComponent.h>
+#include <dragengine/resources/model/deModel.h>
+#include <dragengine/resources/model/deModelVertexPositionSet.h>
 #include <dragengine/resources/rig/deRigBone.h>
 #include <dragengine/resources/rig/deRig.h>
 #include <dragengine/resources/animator/controller/deAnimatorControllerTarget.h>
@@ -64,7 +68,7 @@ dearAnimatorInstance::dearAnimatorInstance( deDEAnimator &module, deAnimatorInst
 pModule( module ),
 pAnimatorInstance( instance ),
 
-pAnimator( NULL ),
+pAnimator( nullptr ),
 
 pDirtyMappings( true ),
 pDirtyAnimator( true ),
@@ -73,19 +77,21 @@ pDirtyRuleParams( false ),
 pUseBlending( false ),
 pSkipApply( false ),
 pUseAllBones( true ),
+pUseAllVPS( true ),
 
 pAnimatorUpdateTracker( 0 ),
 
-pAnimation( NULL ),
-pComponent( NULL ),
+pAnimation( nullptr ),
+pComponent( nullptr ),
 
-pRules( NULL ),
+pRules( nullptr ),
 pRuleCount( 0 ),
 pDirtyRules( true ),
 
 pCaptureComponentState( false ),
 
-pActiveTaskApplyRule( NULL )
+pUseParallelTask( true ),
+pActiveTaskApplyRule( nullptr )
 {
 	try{
 		AnimatorChanged();
@@ -134,77 +140,21 @@ dearLink *dearAnimatorInstance::GetLinkAt( int index ) const{
 }
 
 void dearAnimatorInstance::AddLink( dearLink *link ){
-	if( ! link ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( link )
+	
 	pLinks.Add( link );
 }
 
 
 
-void dearAnimatorInstance::UpdateControllerStates(){
-	const int stateCount = pControllerStates.GetStateCount();
-	int i;
-	
-	for( i=0; i<stateCount; i++ ){
-		const deAnimatorController &controller = pAnimatorInstance.GetControllerAt( i );
-		
-		const float minValue = controller.GetMinimumValue();
-		const float range = controller.GetMaximumValue() - minValue;
-		
-		if( range > 1e-5f ){
-			pControllerStates.SetStateAt( i, ( controller.GetCurrentValue() - minValue ) / range, controller.GetVector() );
-			
-		}else{
-			pControllerStates.ResetStateAt( i );
-		}
-	}
-}
-
-
-
 void dearAnimatorInstance::SetCaptureComponentState(){
-	if( pCaptureComponentState ){
-		return;
-	}
-	
 	pCaptureComponentState = true;
 }
 
 void dearAnimatorInstance::ApplyRules(){
 	int i;
 	for( i=0; i<pRuleCount; i++ ){
-		pRules[ i ]->Apply( pBoneStateList );
-	}
-}
-
-void dearAnimatorInstance::ApplyStateToComponent() const{
-	if( ! pAnimator || ! pComponent ){
-		return;
-	}
-	
-	deComponent &component = pComponent->GetComponent();
-	const deAnimatorRule::eBlendModes blendMode = pAnimatorInstance.GetBlendMode();
-	const deRig * const sourceRig = pAnimator->GetAnimator().GetRig();
-	const deRig * const destRig = component.GetRig();
-	float blendFactor = 1.0f;
-	
-	if( pUseBlending ){
-		blendFactor = pAnimatorInstance.GetBlendFactor();
-	}
-	
-	if( sourceRig == destRig ){
-		if( pUseBlending ){
-			pBoneStateList.ApplyToComponent( &component, blendMode, blendFactor );
-DEBUG_PRINT_TIMER( "ApplyStateToComponent with blending" );
-			
-		}else{
-			pBoneStateList.ApplyToComponent( &component );
-DEBUG_PRINT_TIMER( "ApplyStateToComponent directly" );
-		}
-		
-	}else{
-		// TODO retarget
+		pRules[ i ]->Apply( pBoneStateList, pVPSStateList );
 	}
 }
 
@@ -221,10 +171,12 @@ void dearAnimatorInstance::ApplyStateToArComponent() const{
 		if( pUseBlending ){
 			const float blendFactor = pAnimatorInstance.GetBlendFactor();
 			pBoneStateList.ApplyToComponent( *pComponent, blendMode, blendFactor );
+			pVPSStateList.ApplyToComponent( *pComponent, blendMode, blendFactor );
 DEBUG_PRINT_TIMER( "ApplyStateToArComponent with blending" );
 			
 		}else{
 			pBoneStateList.ApplyToComponent( *pComponent );
+			pVPSStateList.ApplyToComponent( *pComponent );
 DEBUG_PRINT_TIMER( "ApplyStateToArComponent directly" );
 		}
 		
@@ -233,17 +185,12 @@ DEBUG_PRINT_TIMER( "ApplyStateToArComponent directly" );
 	}
 }
 
-
-
-void dearAnimatorInstance::StartTaskApplyRules(){
+void dearAnimatorInstance::pStartTaskApplyRules(){
 	if( ! pComponent ){
 		return;
 	}
 	
-	const bool useParallelTask = true;
-	
-	if( useParallelTask ){
-		CancelTaskApplyRules();
+	if( pUseParallelTask ){
 		dearTaskApplyRules * const task = pNewTaskApplyRules();
 		
 		// if we are the first task on the component update the arcomponent. if not set
@@ -281,29 +228,9 @@ void dearAnimatorInstance::StartTaskApplyRules(){
 		ApplyRules();
 		DEBUG_PRINT_TIMER( "ApplyRules" );
 		
-		ApplyStateToComponent();
+		pApplyStateToComponent();
 		DEBUG_PRINT_TIMER( "ApplyStateToComponent" );
 	}
-}
-
-void dearAnimatorInstance::CancelTaskApplyRules(){
-	if( ! pActiveTaskApplyRule ){
-		return;
-	}
-	
-	if( pModule.GetGameEngine()->GetParallelProcessing().GetOutputDebugMessages() ){
-		pModule.LogInfoFormat( "Cancel task %p (instance=%p component=%p list=%d)",
-			pActiveTaskApplyRule, this, pComponent, pTaskApplyRules.GetCount() );
-	}
-	pActiveTaskApplyRule->Cancel();
-	
-	deParallelProcessing &parallelProcessing = pModule.GetGameEngine()->GetParallelProcessing();
-	if( ! parallelProcessing.GetPaused() ){
-		// parallel processing is paused if the engine is in progress of being stopped. in this
-		// case all tasks have been waited for already and no tasks are running
-		parallelProcessing.WaitForTask( pActiveTaskApplyRule );
-	}
-	pActiveTaskApplyRule = NULL;
 }
 
 void dearAnimatorInstance::StopTaskApplyRules(){
@@ -316,7 +243,7 @@ void dearAnimatorInstance::StopTaskApplyRules(){
 	if( pComponent ){
 		deComponent &component = pComponent->GetComponent();
 		if( component.GetAnimatorTask() == pActiveTaskApplyRule ){
-			component.SetAnimatorTask( NULL );
+			component.SetAnimatorTask( nullptr );
 		}
 	}
 	
@@ -324,7 +251,7 @@ void dearAnimatorInstance::StopTaskApplyRules(){
 		pModule.LogInfoFormat( "Stop task %p (instance=%p component=%p list=%d)",
 			pActiveTaskApplyRule, this, pComponent, pTaskApplyRules.GetCount() );
 	}
-	pActiveTaskApplyRule = NULL;
+	pActiveTaskApplyRule = nullptr;
 }
 
 
@@ -333,6 +260,12 @@ void dearAnimatorInstance::Apply( bool direct ){
 	if( pSkipApply || ! pComponent || ! pAnimator ){
 		return;
 	}
+	
+	// it is important to ensure a potentially running parallel task is finished beyond here.
+	// the calll to StartTaskApplyRules() does wait for the task but until then the code below
+	// applies changes which potentially cause segfaults. wait has to be called no matter if
+	// direct or indirect application is requested
+	pWaitTaskApplyRules();
 	
 	DEBUG_RESET_TIMERS;
 	
@@ -344,14 +277,14 @@ void dearAnimatorInstance::Apply( bool direct ){
 	pUpdateAnimator();
 	DEBUG_PRINT_TIMER( "UpdateAnimator" );
 	
-	pUpdateBoneMappings();
-	DEBUG_PRINT_TIMER( "UpdateBoneMappings" );
+	pUpdateMappings();
+	DEBUG_PRINT_TIMER( "UpdateMappings" );
 	
 	pUpdateRules();
 	pUpdateRuleParams();
 	DEBUG_PRINT_TIMER( "UpdateRules" );
 	
-	UpdateControllerStates();
+	pUpdateControllerStates();
 	DEBUG_PRINT_TIMER( "UpdateControllerStates" );
 	
 	pUpdateFakeRootBones();
@@ -370,10 +303,10 @@ void dearAnimatorInstance::Apply( bool direct ){
 			pComponent->UpdateFromComponent(); // does also UpdateMatrixFromComponent()
 			//pComponent->UpdateMatrixFromComponent(); // required for track to rule
 			ApplyRules();
-			ApplyStateToComponent();
+			pApplyStateToComponent();
 			
 		}else{
-			StartTaskApplyRules();
+			pStartTaskApplyRules();
 		}
 	}
 	DEBUG_PRINT_TIMER_TOTAL( "Apply" );
@@ -382,19 +315,16 @@ void dearAnimatorInstance::Apply( bool direct ){
 void dearAnimatorInstance::CaptureStateInto( int identifier ){
 	// if there is a bound component and it has an animator task assigned we have to wait first for
 	// the task to finish before we can capture the correct state
-	if( pComponent ){
-		deParallelTask * const task = pComponent->GetComponent().GetAnimatorTask();
-		
-		if( task ){
-			pModule.GetGameEngine()->GetParallelProcessing().WaitForTask( task );
-		}
-	}
+	pWaitAnimTaskFinished();
+	
+	// better safe than sorry. ensure no parallel task is running beyond this point
+	pWaitTaskApplyRules();
 	
 	// ensure rules are ready to capture state
 	pCheckAnimatorChanged(); // this has to be first since changes to animator invalidates rules
 	pCheckRequireRebuild();
 	pUpdateAnimator();
-	pUpdateBoneMappings();
+	pUpdateMappings();
 	pUpdateRules();
 	pUpdateRuleParams();
 	
@@ -406,23 +336,18 @@ void dearAnimatorInstance::CaptureStateInto( int identifier ){
 }
 
 void dearAnimatorInstance::StoreFrameInto( int identifier, const char *moveName, float moveTime ){
-	// if there is a bound component and it has an animator task assigned wait first. in theory
-	// the state can be captured while a task is running but it produces management overhead.
-	// this situation can happen though only during specific game situations and is not worth
-	// implementing overhead management just for this
-	if( pComponent ){
-		deParallelTask * const task = pComponent->GetComponent().GetAnimatorTask();
-		
-		if( task ){
-			pModule.GetGameEngine()->GetParallelProcessing().WaitForTask( task );
-		}
-	}
+	// if there is a bound component and it has an animator task assigned we have to wait first for
+	// the task to finish before we can capture the correct state
+	pWaitAnimTaskFinished();
+	
+	// better safe than sorry. ensure no parallel task is running beyond this point
+	pWaitTaskApplyRules();
 	
 	// ensure rules are ready to capture state
 	pCheckAnimatorChanged(); // this has to be first since changes to animator invalidates rules
 	pCheckRequireRebuild();
 	pUpdateAnimator();
-	pUpdateBoneMappings();
+	pUpdateMappings();
 	pUpdateRules();
 	pUpdateRuleParams();
 	
@@ -439,28 +364,22 @@ void dearAnimatorInstance::StoreFrameInto( int identifier, const char *moveName,
 //////////////////
 
 void dearAnimatorInstance::AnimatorChanged(){
+	// this is safe with parallel tasks since animator is only accessed to create local copies
 	deAnimator * const engAnimator = pAnimatorInstance.GetAnimator();
 	
-	if( engAnimator ){
-		pAnimator = ( dearAnimator* )engAnimator->GetPeerAnimator();
-		
-	}else{
-		pAnimator = NULL;
-	}
+	pAnimator = engAnimator ? ( dearAnimator* )engAnimator->GetPeerAnimator() : nullptr;
 	
 	pDirtyAnimator = true;
 	pDirtyRules = true;
 }
 
 void dearAnimatorInstance::ComponentChanged(){
-	CancelTaskApplyRules();
+	// parallel task rules can access the component. we have to wait to not segfault
+	pWaitTaskApplyRules();
 	
 	deComponent * const component = pAnimatorInstance.GetComponent();
-	dearComponent *arcomponent = NULL;
-	
-	if( component ){
-		arcomponent = ( dearComponent* )component->GetPeerAnimator();
-	}
+	dearComponent * const arcomponent = component
+		? ( dearComponent* )component->GetPeerAnimator() : nullptr;
 	
 	if( arcomponent != pComponent ){
 		if( pComponent ){
@@ -477,6 +396,8 @@ void dearAnimatorInstance::ComponentChanged(){
 }
 
 void dearAnimatorInstance::BlendFactorChanged(){
+	// this is safe with parallel tasks since blend factor is only accessed only during
+	// pApplyStateToComponent.
 	const deAnimatorRule::eBlendModes blendMode = pAnimatorInstance.GetBlendMode();
 	const float blendFactor = pAnimatorInstance.GetBlendFactor();
 	
@@ -494,18 +415,9 @@ void dearAnimatorInstance::BlendFactorChanged(){
 }
 
 void dearAnimatorInstance::AnimationChanged(){
-	deAnimation *animation = pAnimatorInstance.GetAnimation();
-	if( ! animation && pAnimator ){
-		animation = pAnimator->GetAnimator().GetAnimation();
-	}
-	
-	if( animation ){
-		pAnimation = ( dearAnimation* )animation->GetPeerAnimator();
-		
-	}else{
-		pAnimation = NULL;
-	}
-	
+	// this is safe with parallel tasks since animation is only accessed during prepare
+	pAnimation = pAnimatorInstance.GetAnimation()
+		? ( dearAnimation* )pAnimatorInstance.GetAnimation()->GetPeerAnimator() : nullptr;
 	pDirtyRuleParams = true;
 }
 
@@ -513,9 +425,23 @@ void dearAnimatorInstance::EnableRetargetingChanged(){
 }
 
 void dearAnimatorInstance::ProtectDynamicBonesChanged(){
-	if( pAnimator ){
-		pAnimator->BonesChanged();
-		pDirtyAnimator = true;
+	if( ! pAnimator ){
+		return;
+	}
+	
+	const int count = pBoneStateList.GetStateCount();
+	int i;
+	
+	if( pAnimatorInstance.GetProtectDynamicBones() ){
+		for( i=0; i<count; i++ ){
+			dearBoneState &boneState = *pBoneStateList.GetStateAt( i );
+			boneState.SetProtected( boneState.GetRigBone() && boneState.GetRigBone()->GetDynamic() );
+		}
+		
+	}else{
+		for( i=0; i<count; i++ ){
+			pBoneStateList.GetStateAt( i )->SetProtected( false );
+		}
 	}
 }
 
@@ -528,7 +454,7 @@ void dearAnimatorInstance::ControllerChanged( int ){
 //////////////////////
 
 void dearAnimatorInstance::pCleanUp(){
-	CancelTaskApplyRules();
+	pCancelTaskApplyRules();
 	pTaskApplyRules.RemoveAll();
 	
 	pDropRules();
@@ -561,7 +487,7 @@ void dearAnimatorInstance::pCheckRequireRebuild(){
 	}
 }
 
-void dearAnimatorInstance::pUpdateBoneMappings(){
+void dearAnimatorInstance::pUpdateMappings(){
 	if( ! pDirtyMappings ){
 		return;
 	}
@@ -570,12 +496,19 @@ void dearAnimatorInstance::pUpdateBoneMappings(){
 		pBoneStateList.SetStateCount( 0 );
 		pMappingRigToState.RemoveAll();
 		pUseAllBones = true;
+		
+		pVPSStateList.SetStateCount( 0 );
+		pMappingModelToVPSState.RemoveAll();
+		pUseAllVPS = true;
+		
 		pDirtyMappings = false;
 		return;
 	}
 	
+	const deComponent * const component = pAnimatorInstance.GetComponent();
+	const deModel * const model = component ? component->GetModel() : nullptr;
 	const deAnimator &animator = pAnimator->GetAnimator();
-	deRig * const rig = animator.GetRig();
+	const deRig * const rig = animator.GetRig();
 	
 	pBoneStateList.UpdateMappings( animator );
 	pUseAllBones = animator.GetListBones().GetCount() == 0;
@@ -583,9 +516,7 @@ void dearAnimatorInstance::pUpdateBoneMappings(){
 	pMappingRigToState.RemoveAll();
 	
 	if( rig ){
-		int i, count;
-		
-		count = rig->GetBoneCount();
+		int i, count = rig->GetBoneCount();
 		for( i=0; i<count; i++ ){
 			pMappingRigToState.Add( -1 );
 		}
@@ -603,6 +534,23 @@ void dearAnimatorInstance::pUpdateBoneMappings(){
 				//printf( "bone='%s' dynamic=%i protected=%i\n", boneState.GetRigBoneName(),
 				//  (boneState.GetRigBone()&&boneState.GetRigBone()->GetDynamic())?1:0, boneState.GetProtected()?1:0 );
 			}
+		}
+	}
+	
+	pVPSStateList.UpdateMappings( animator, component );
+	pUseAllVPS = animator.GetListVertexPositionSets().GetCount() == 0;
+	
+	pMappingModelToVPSState.RemoveAll();
+	
+	if( model ){
+		int i, count = model->GetVertexPositionSetCount();
+		for( i=0; i<count; i++ ){
+			pMappingModelToVPSState.Add( -1 );
+		}
+		
+		count = pVPSStateList.GetStateCount();
+		for( i=0; i<count; i++ ){
+			pMappingModelToVPSState.SetAt( pVPSStateList.GetStateAt( i ).GetModelIndex(), i );
 		}
 	}
 	
@@ -714,7 +662,7 @@ void dearAnimatorInstance::pAddAnimatorLinks(){
 	if( linkCount > 0 ){
 		const int controllerCount = pAnimatorInstance.GetControllerCount();
 		decIntList controllerMapping;
-		dearLink *link = NULL;
+		dearLink *link = nullptr;
 		int i;
 		
 		try{
@@ -723,12 +671,12 @@ void dearAnimatorInstance::pAddAnimatorLinks(){
 			}
 			
 			for( i=0; i<linkCount; i++ ){
-				link = new dearLink( *animator.GetLinkAt( i ), controllerMapping );
+				link = new dearLink( *this, *animator.GetLinkAt( i ), controllerMapping );
 				AddLink( link );
-				link = NULL;
+				link = nullptr;
 			}
 			
-		}catch( const deException &exception ){
+		}catch( const deException & ){
 			if( link ){
 				delete link;
 			}
@@ -745,7 +693,7 @@ void dearAnimatorInstance::pDropRules(){
 		}
 		
 		delete [] pRules;
-		pRules = NULL;
+		pRules = nullptr;
 	}
 	
 	pRemoveAllLinks();
@@ -775,7 +723,7 @@ void dearAnimatorInstance::pUpdateRules(){
 				controllerMapping.Add( i );
 			}
 			
-			dearCreateRuleVisitor visitor( *this, animator, controllerMapping, 0 );
+			dearCreateRuleVisitor visitor( *this, *pAnimator, controllerMapping, 0 );
 			
 			pRules = new dearRule*[ ruleCount ];
 			
@@ -805,6 +753,60 @@ void dearAnimatorInstance::pUpdateRuleParams(){
 }
 
 
+
+void dearAnimatorInstance::pUpdateControllerStates(){
+	const int stateCount = pControllerStates.GetStateCount();
+	int i;
+	
+	for( i=0; i<stateCount; i++ ){
+		const deAnimatorController &controller = pAnimatorInstance.GetControllerAt( i );
+		
+		const float minValue = controller.GetMinimumValue();
+		const float range = controller.GetMaximumValue() - minValue;
+		
+		if( range > 1e-5f ){
+			pControllerStates.SetStateAt( i,
+				( controller.GetCurrentValue() - minValue ) / range, controller.GetVector() );
+			
+		}else{
+			pControllerStates.ResetStateAt( i );
+		}
+	}
+}
+
+void dearAnimatorInstance::pApplyStateToComponent() const{
+	if( ! pAnimator || ! pComponent ){
+		return;
+	}
+	
+	deComponent &component = pComponent->GetComponent();
+	const deAnimatorRule::eBlendModes blendMode = pAnimatorInstance.GetBlendMode();
+	const deRig * const sourceRig = pAnimator->GetAnimator().GetRig();
+	const deRig * const destRig = component.GetRig();
+	float blendFactor = 1.0f;
+	
+	if( pUseBlending ){
+		blendFactor = pAnimatorInstance.GetBlendFactor();
+	}
+	
+	if( sourceRig == destRig ){
+		if( pUseBlending ){
+			pBoneStateList.ApplyToComponent( &component, blendMode, blendFactor );
+			pVPSStateList.ApplyToComponent( component, blendMode, blendFactor );
+DEBUG_PRINT_TIMER( "ApplyStateToComponent with blending" );
+			
+		}else{
+			pBoneStateList.ApplyToComponent( &component );
+			pVPSStateList.ApplyToComponent( component );
+DEBUG_PRINT_TIMER( "ApplyStateToComponent directly" );
+		}
+		
+	}else{
+		// TODO retarget
+	}
+}
+
+
 dearTaskApplyRules *dearAnimatorInstance::pNewTaskApplyRules(){
 	// find task to reuse. only tasks that are finished and not depended on by any other task
 	// can be reused. just checking the finished state is not enough since tasks can be fully
@@ -827,4 +829,44 @@ dearTaskApplyRules *dearAnimatorInstance::pNewTaskApplyRules(){
 	task.TakeOver( new dearTaskApplyRules( *this ) );
 	pTaskApplyRules.Add( task );
 	return ( dearTaskApplyRules* )( deThreadSafeObject* )task;
+}
+
+void dearAnimatorInstance::pCancelTaskApplyRules(){
+	if( ! pActiveTaskApplyRule ){
+		return;
+	}
+	
+	if( pModule.GetGameEngine()->GetParallelProcessing().GetOutputDebugMessages() ){
+		pModule.LogInfoFormat( "Cancel task %p (instance=%p component=%p list=%d)",
+			pActiveTaskApplyRule, this, pComponent, pTaskApplyRules.GetCount() );
+	}
+	pActiveTaskApplyRule->Cancel();
+	
+	pWaitTaskApplyRules();
+}
+
+void dearAnimatorInstance::pWaitTaskApplyRules(){
+	if( ! pActiveTaskApplyRule ){
+		return;
+	}
+	
+	deParallelProcessing &parallelProcessing = pModule.GetGameEngine()->GetParallelProcessing();
+	if( parallelProcessing.GetPaused() ){
+		pActiveTaskApplyRule->Drop();
+		
+	}else{
+		// parallel processing is paused if the engine is in progress of being stopped.
+		// in this case all tasks have been waited for already and no tasks are running
+		parallelProcessing.WaitForTask( pActiveTaskApplyRule );
+	}
+	pActiveTaskApplyRule = nullptr;
+}
+
+void dearAnimatorInstance::pWaitAnimTaskFinished(){
+	if( pComponent ){
+		deParallelTask * const task = pComponent->GetComponent().GetAnimatorTask();
+		if( task ){
+			pModule.GetGameEngine()->GetParallelProcessing().WaitForTask( task );
+		}
+	}
 }

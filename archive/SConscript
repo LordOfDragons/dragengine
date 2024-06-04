@@ -24,20 +24,32 @@ def normalizePath(path):
 	match = reWindowsDrive.match(path)
 	if match:
 		path = path[match.end():]
+	elif path[0] == '/':
+		path = path[1:]  # no root path in archives
 	
 	return path
 
 def archiveTarBz2(env, target, source):
 	with tarfile.open(target[0].abspath, 'w:bz2', dereference=True) as arcfile:
 		for path, node in env['ArchiveFiles'].items():
-			info = arcfile.gettarinfo(node.abspath, normalizePath(path))
-			#info.mode = ...
-			info.uid = 0
-			info.gid = 0
-			info.uname = 'root'
-			info.gname = 'root'
-			with open(node.abspath, 'rb') as nf:
-				arcfile.addfile(info, nf)
+			# NOTE gettarinfo uses os.stat instead of os.lstat and thus fails to detect links
+			if os.path.islink(node.abspath):
+				info = tarfile.TarInfo(normalizePath(path))
+				info.type = tarfile.SYMTYPE
+				info.linkname = os.readlink(node.abspath)
+				info.uid = 0
+				info.gid = 0
+				info.uname = 'root'
+				info.gname = 'root'
+				arcfile.addfile(info)
+			else:
+				info = arcfile.gettarinfo(node.abspath, normalizePath(path))
+				info.uid = 0
+				info.gid = 0
+				info.uname = 'root'
+				info.gname = 'root'
+				with open(node.abspath, 'rb') as nf:
+					arcfile.addfile(info, nf)
 
 def archiveZip(env, target, source):
 	with zipfile.ZipFile(target[0].abspath, 'w', zipfile.ZIP_DEFLATED) as arcfile:
@@ -62,6 +74,8 @@ for target in parent_targets.values():
 		filesEngineDev.update(target['archive-engine-develop'])
 	if 'archive-launcher' in target:
 		filesEngine.update(target['archive-launcher'])
+	if 'archive-launcher-develop' in target:
+		filesEngineDev.update(target['archive-launcher-develop'])
 	if 'archive-igde' in target:
 		filesIGDE.update(target['archive-igde'])
 	if 'archive-igde-develop' in target:

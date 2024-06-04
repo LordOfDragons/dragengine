@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DECLASSARBONETRANSFORMATOR_H_
@@ -32,14 +35,15 @@ class deScriptingDragonScript;
 
 /**
  * \brief Class animator rule bone transformator.
- * \details Script class wrapping an attached or detached animator rule. Objects of
- *          this class hold a pointer to the rule and optional an animator. If the
- *          animator is non-NULL the rule pointer is held by the object. Otherwise
- *          only a reference to the animator is held and the pointer to the rule
- *          is not held. In addition an index is stored used to update the rule in
- *          the animator if existing. This index is not necessary the index of the
- *          rule itself but the index of the top most rule altered by changes made
- *          to this rule.
+ * 
+ * Script class wrapping an attached or detached animator rule. Objects of
+ * this class hold a pointer to the rule and optional an animator. If the
+ * animator is non-NULL the rule pointer is held by the object. Otherwise
+ * only a reference to the animator is held and the pointer to the rule
+ * is not held. In addition an index is stored used to update the rule in
+ * the animator if existing. This index is not necessary the index of the
+ * rule itself but the index of the top most rule altered by changes made
+ * to this rule.
  */
 class deClassARBoneTransformator : public dsClass{
 public:
@@ -47,7 +51,7 @@ public:
 		etBlendFactor,
 		etTranslation,
 		etRotation,
-		etScaling,
+		etScaling
 	};
 	
 private:
@@ -113,6 +117,10 @@ private:
 	DEF_NATFUNC( nfSetMaximumRotation );
 	DEF_NATFUNC( nfSetMinimumScaling );
 	DEF_NATFUNC( nfSetMaximumScaling );
+	DEF_NATFUNC( nfSetAxis );
+	DEF_NATFUNC( nfSetMinimumAngle );
+	DEF_NATFUNC( nfSetMaximumAngle );
+	DEF_NATFUNC( nfSetUseAxis );
 	DEF_NATFUNC( nfSetCoordinateFrame );
 	DEF_NATFUNC( nfSetTargetBone );
 	

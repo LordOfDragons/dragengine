@@ -1,97 +1,108 @@
-/* 
- * Drag[en]gine Basic Network Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 // include only once
 #ifndef _DEBNMESSAGE_H_
 #define _DEBNMESSAGE_H_
 
-// predefintions
+#include <dragengine/resources/network/deNetworkMessage.h>
+
 class debnMessage;
 class debnSocket;
 class debnAddress;
-class deNetworkMessage;
-
 
 
 /**
- * @brief Message class.
  * Manages a package to be send or received.
  */
 class debnMessage{
 public:
-	/** Message states. */
 	enum eMessageStates{
-		/** Message is pending to be send. */
 		emsPending,
-		/** Message has been send awaiting ack. */
 		emsSend,
-		/** Message is done. */
 		emsDone
 	};
 	
 private:
-	deNetworkMessage *pMessage;
+	const deNetworkMessage::Ref pMessage;
 	int pNumber;
-	int pState;
+	eMessageStates pState;
 	int pType;
-	float pSecSinceSend;
+	float pResendElapsed;
+	float pTimeoutElapsed;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new message object. */
 	debnMessage();
+	
 	/** Creates a new message object. */
 	debnMessage( deNetworkMessage *message );
-	/** Cleans up the package object. */
-	~debnMessage();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the network package. */
 	inline deNetworkMessage *GetMessage() const{ return pMessage; }
+	
 	/** Retrieves the number. */
 	inline int GetNumber() const{ return pNumber; }
+	
 	/** Sets the number. */
 	void SetNumber( int number );
+	
 	/** Retrieves the message state. */
-	inline int GetState() const{ return pState; }
+	inline eMessageStates GetState() const{ return pState; }
+	
 	/** Sets the message state. */
-	void SetState( int state );
+	void SetState( eMessageStates state );
+	
 	/** Retrieves the message type. */
 	inline int GetType() const{ return pType; }
+	
 	/** Sets the message type. */
 	void SetType( int type );
-	/** Retrieves the seconds since send. */
-	inline float GetSecondsSinceSend() const{ return pSecSinceSend; }
-	/** Sets the seconds since send. */
-	void SetSecondsSinceSend( float seconds );
-	/** Adds to seconds since send. */
-	void IncreaseSecondsSinceSend( float seconds );
-	/*@}*/
 	
-private:
-	void pCleanUp();
+	/** Resend elapsed time. */
+	inline float GetResendElapsed() const{ return pResendElapsed; }
+	
+	/** Set resend elapsed time. */
+	void SetResendElapsed( float elapsed );
+	
+	/** Timeout elapsed time. */
+	inline float GetTimeoutElapsed() const{ return pTimeoutElapsed; }
+	
+	/** Set timeout elapsed time. */
+	void SetTimeoutElapsed( float elapsed );
+	
+	/** Increment elapsed times. */
+	void IncrementElapsed( float elapsed );
+	
+	/** Reset elapsed times. */
+	void ResetElapsed();
+	/*@}*/
 };
 
-// end of include only once
 #endif

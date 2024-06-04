@@ -1,31 +1,35 @@
-/* 
- * Drag[en]gine Animator Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
 #include <string.h>
-#include <unistd.h>
 
 #include "dearRuleForeignState.h"
 #include "../dearBoneState.h"
 #include "../dearBoneStateList.h"
+#include "../dearVPSState.h"
+#include "../dearVPSStateList.h"
 #include "../dearAnimatorInstance.h"
 
 #include <dragengine/resources/animator/deAnimator.h>
@@ -59,24 +63,32 @@
 /////////////////////////////////
 
 dearRuleForeignState::dearRuleForeignState( dearAnimatorInstance &instance,
-int firstLink, const deAnimatorRuleForeignState &rule ) :
-dearRule( instance, firstLink, rule ),
+const dearAnimator &animator, int firstLink, const deAnimatorRuleForeignState &rule ) :
+dearRule( instance, animator, firstLink, rule ),
 
 pForeignState( rule ),
 pForeignBone( -1 ),
+pForeignVPS( -1 ),
 
 pTargetPosition( rule.GetTargetPosition(), firstLink ),
 pTargetOrientation( rule.GetTargetOrientation(), firstLink ),
 pTargetSize( rule.GetTargetSize(), firstLink ),
+pTargetVPS( rule.GetTargetVertexPositionSet(), firstLink ),
 
+pScalePosition( rule.GetScalePosition() ),
+pScaleOrientation( rule.GetScaleOrientation() ),
+pScaleSize( rule.GetScaleSize() ),
+pScaleVPS( rule.GetScaleVertexPositionSet() ),
+pSourceCoordFrame( rule.GetSourceCoordinateFrame() ),
+pDestCoordFrame( rule.GetDestCoordinateFrame() ),
+pLockX( ! rule.GetModifyX() ),
+pLockY( ! rule.GetModifyY() ),
+pLockZ( ! rule.GetModifyZ() ),
+pLockNone( ! pLockX && ! pLockY && ! pLockZ ),
 pEnablePosition( rule.GetEnablePosition() ),
 pEnableOrientation( rule.GetEnableOrientation() ),
 pEnableSize( rule.GetEnableSize() ),
-pSourceCoordFrame( rule.GetSourceCoordinateFrame() ),
-pDestCoordFrame( rule.GetDestCoordinateFrame() ),
-pScalePosition( rule.GetScalePosition() ),
-pScaleOrientation( rule.GetScaleOrientation() ),
-pScaleSize( rule.GetScaleSize() )
+pEnableVPS( rule.GetEnableVertexPositionSet() )
 {
 	RuleChanged();
 }
@@ -89,7 +101,7 @@ dearRuleForeignState::~dearRuleForeignState(){
 // Management
 ///////////////
 
-void dearRuleForeignState::Apply( dearBoneStateList &stalist ){
+void dearRuleForeignState::Apply( dearBoneStateList &stalist, dearVPSStateList &vpsstalist ){
 DEBUG_RESET_TIMERS;
 	if( ! GetEnabled() ){
 		return;
@@ -103,16 +115,19 @@ DEBUG_RESET_TIMERS;
 	const deAnimatorRule::eBlendModes blendMode = GetBlendMode();
 	const dearAnimatorInstance &instance = GetInstance();
 	const int boneCount = GetBoneMappingCount();
+	const int vpsCount = GetVPSMappingCount();
 	int i;
 	
 	// controller affected values
-	const float scalePosition = decMath::clamp( pTargetPosition.GetValue( instance, pScalePosition ), 0.0f, 1.0f );
-	const float scaleOrientation = decMath::clamp( pTargetOrientation.GetValue( instance, pScaleOrientation ), 0.0f, 1.0f );
-	const float scaleSize = decMath::clamp( pTargetSize.GetValue( instance, pScaleSize ), 0.0f, 1.0f );
+	const float scalePosition = pTargetPosition.GetValue( instance, pScalePosition );
+	const float scaleOrientation = pTargetOrientation.GetValue( instance, pScaleOrientation );
+	const float scaleSize = pTargetSize.GetValue( instance, pScaleSize );
+	const float scaleVPS = pTargetVPS.GetValue( instance, pScaleVPS );
 	
 	// calculate the foreign state
 	decVector scale( 1.0f, 1.0f, 1.0f );
 	decQuaternion orientation;
+	float weight = 0.0f;
 	decVector position;
 	decMatrix matrix;
 	
@@ -160,7 +175,17 @@ DEBUG_RESET_TIMERS;
 		}
 	}
 	
-	// apply state
+	if( pForeignVPS != -1 && pEnableVPS ){
+		weight = vpsstalist.GetStateAt( pForeignVPS ).GetWeight() * scaleVPS;
+	}
+	
+	// apply state.
+	// 
+	// NOTE do not modify "position", "orientation" and "scale" beyond this point
+	
+	decVector modifyPosition, modifyScale;
+	decQuaternion modifyOrientation;
+	
 	for( i=0; i<boneCount; i++ ){
 		const int animatorBone = GetBoneMappingFor( i );
 		if( animatorBone == -1 ){
@@ -171,19 +196,134 @@ DEBUG_RESET_TIMERS;
 		
 		switch( pDestCoordFrame ){
 		case deAnimatorRuleForeignState::ecfBoneLocal:
-			boneState.BlendWith( position, orientation, scale,
-				blendMode, blendFactor, pEnablePosition, pEnableOrientation, pEnableSize );
+			if( pLockNone ){
+				boneState.BlendWith( position, orientation, scale, blendMode,
+					blendFactor, pEnablePosition, pEnableOrientation, pEnableSize );
+				
+			}else{
+				if( pEnablePosition ){
+					const decVector &lockPosition = boneState.GetPosition();
+					modifyPosition = position;
+					
+					if( pLockX ){
+						modifyPosition.x = lockPosition.x;
+					}
+					if( pLockY ){
+						modifyPosition.y = lockPosition.y;
+					}
+					if( pLockZ ){
+						modifyPosition.z = lockPosition.z;
+					}
+				}
+				
+				if( pEnableOrientation ){
+					const decVector lockRotation( boneState.GetOrientation().GetEulerAngles() );
+					decVector rotation( orientation.GetEulerAngles() );
+					
+					if( pLockX ){
+						rotation.x = lockRotation.x;
+					}
+					if( pLockY ){
+						rotation.y = lockRotation.y;
+					}
+					if( pLockZ ){
+						rotation.z = lockRotation.z;
+					}
+					
+					modifyOrientation = decQuaternion::CreateFromEuler( rotation );
+				}
+				
+				if( pEnableSize ){
+					const decVector &lockScale = boneState.GetScale();
+					modifyScale = scale;
+					
+					if( pLockX ){
+						modifyScale.x = lockScale.x;
+					}
+					if( pLockY ){
+						modifyScale.y = lockScale.y;
+					}
+					if( pLockZ ){
+						modifyScale.z = lockScale.z;
+					}
+				}
+				
+				boneState.BlendWith( modifyPosition, modifyOrientation, modifyScale,
+					blendMode, blendFactor, pEnablePosition, pEnableOrientation, pEnableSize );
+			}
 			break;
 			
 		case deAnimatorRuleForeignState::ecfComponent:
 			boneState.UpdateMatrices();
 			
-			const decMatrix m( matrix.QuickMultiply( boneState.GetInverseGlobalMatrix() ).QuickMultiply( boneState.GetLocalMatrix() ) );
+			const decMatrix m( matrix.QuickMultiply( boneState.GetInverseGlobalMatrix() )
+				.QuickMultiply( boneState.GetLocalMatrix() ) );
 			
-			boneState.BlendWith( m.GetPosition(), m.ToQuaternion(), m.GetScale(),
-				blendMode, blendFactor, pEnablePosition, pEnableOrientation, pEnableSize );
+			if( pLockNone ){
+				boneState.BlendWith( m.GetPosition(), m.ToQuaternion(), m.GetScale(),
+					blendMode, blendFactor, pEnablePosition, pEnableOrientation, pEnableSize );
+				
+			}else{
+				if( pEnablePosition ){
+					const decVector &lockPosition = boneState.GetPosition();
+					modifyPosition = m.GetPosition();
+					
+					if( pLockX ){
+						modifyPosition.x = lockPosition.x;
+					}
+					if( pLockY ){
+						modifyPosition.y = lockPosition.y;
+					}
+					if( pLockZ ){
+						modifyPosition.z = lockPosition.z;
+					}
+				}
+				
+				if( pEnableOrientation ){
+					const decVector lockRotation( boneState.GetOrientation().GetEulerAngles() );
+					decVector rotation( m.GetEulerAngles() );
+					
+					if( pLockX ){
+						rotation.x = lockRotation.x;
+					}
+					if( pLockY ){
+						rotation.y = lockRotation.y;
+					}
+					if( pLockZ ){
+						rotation.z = lockRotation.z;
+					}
+					
+					modifyOrientation = decQuaternion::CreateFromEuler( rotation );
+				}
+				
+				if( pEnableSize ){
+					const decVector &lockScale = boneState.GetScale();
+					modifyScale = m.GetScale();
+					
+					if( pLockX ){
+						modifyScale.x = lockScale.x;
+					}
+					if( pLockY ){
+						modifyScale.y = lockScale.y;
+					}
+					if( pLockZ ){
+						modifyScale.z = lockScale.z;
+					}
+				}
+				
+				boneState.BlendWith( modifyPosition, modifyOrientation, modifyScale,
+					blendMode, blendFactor, pEnablePosition, pEnableOrientation, pEnableSize );
+			}
 			break;
 		}
+	}
+	
+	for( i=0; i<vpsCount; i++ ){
+		const int animatorVps = GetVPSMappingFor( i );
+		if( animatorVps == -1 ){
+			continue;
+		}
+		vpsstalist.GetStateAt( animatorVps ).BlendWith( weight, blendMode, blendFactor, pEnableVPS );
 	}
 DEBUG_PRINT_TIMER;
 }
@@ -203,4 +343,5 @@ void dearRuleForeignState::RuleChanged(){
 
 void dearRuleForeignState::pUpdateForeignBone(){
 	pForeignBone = GetInstance().GetBoneStateList().IndexOfStateNamed( pForeignState.GetForeignBone() );
+	pForeignVPS = GetInstance().GetVPSStateList().IndexOfStateNamed( pForeignState.GetForeignVertexPositionSet() );
 }

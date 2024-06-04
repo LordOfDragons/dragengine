@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenAL Audio Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -80,7 +83,7 @@ pCounterTraceSoundRays( 0 ),
 pCounterEstimateRoom( 0 ),
 pCounterListen( 0 ),
 pElapsedRTTime( 0.0f ),
-pBarrierTask( NULL )
+pBarrierTask( nullptr )
 {
 #if 0
 	// NOTE
@@ -185,9 +188,10 @@ deoalRTParallelEnvProbe::~deoalRTParallelEnvProbe(){
 // #include "../../../model/deoalAModel.h"
 
 void deoalRTParallelEnvProbe::TraceSoundRays( sRoomParameters &roomParameters,
-deoalSoundRayList &soundRayList, const decDVector &position, float range, float refDist,
-float rollOff, deoalAWorld &world, deoalRTWorldBVH *rtWorldBVH,
-const decLayerMask &layerMask, const deoalATRayTracing::sConfigSoundTracing &config ){
+deoalSoundRayList &soundRayList, const decDVector &position, float range,
+float refDist, float rollOff, float distanceOffset, deoalAWorld &world,
+deoalRTWorldBVH *rtWorldBVH, const decLayerMask &layerMask,
+const deoalATRayTracing::sConfigSoundTracing &config ){
 	if( pAudioThread.GetDebug().GetLogCalcEnvProbe() ){
 		pAudioThread.GetLogger().LogInfoFormat(
 			"Parallel-TraceSoundRays: pos=(%.3f,%.3f,%.3f) range=%.3f rays=%d",
@@ -197,7 +201,7 @@ const decLayerMask &layerMask, const deoalATRayTracing::sConfigSoundTracing &con
 	pTimer.Reset();
 	
 	pRunTraceSoundRaysUsingTasks( roomParameters, soundRayList, position, range,
-		refDist, rollOff, world, rtWorldBVH, layerMask, config );
+		refDist, rollOff, distanceOffset, world, rtWorldBVH, layerMask, config );
 	#if defined WOVRAYHITSELEMENT_DO_TIMING || defined RTWOVRAYHITSELEMENT_DO_TIMING \
 	|| defined RTWOVRAYHITSCLOSEST_DO_TIMING || defined RTWOVRAYBLOCKED_DO_TIMING
 	const decPointerList wovTimingTasks( pTasksWaitTraceSoundRays );
@@ -325,7 +329,10 @@ deoalRTWorldBVH *rtWorldBVH, const decLayerMask &layerMask, const decDVector &po
 	
 	pTimer.Reset();
 	
-	pRunListenUsingTasks( sourceProbe, listenProbe, listener, world, rtWorldBVH, layerMask, position );
+	if( ! pRunListenUsingTasks( sourceProbe, listenProbe, listener, world, rtWorldBVH, layerMask, position ) ){
+		return; // cancelled
+	}
+	
 	#ifdef RTWOVRAYBLOCKED_DO_TIMING
 	const decPointerList wovTimingTasks( pTasksWaitListen );
 	#endif
@@ -450,13 +457,12 @@ void deoalRTParallelEnvProbe::FinishTaskFinished( deParallelTask *task ){
 		return;
 	}
 	
-	deMutexGuard lock( pMutex );
+	{
+	const deMutexGuard lock( pMutex );
 	if( pBarrierTask != task ){
 		return;
 	}
-	
-	pBarrierTask = NULL;
-	lock.Unlock();
+	}
 	
 	pBarrier.Wait();
 }
@@ -548,7 +554,7 @@ void deoalRTParallelEnvProbe::Enable( deoalRTPTListen *task ){
 */
 
 void deoalRTParallelEnvProbe::Enable( deoalRTPTListenFinish *task ){
-	deMutexGuard lock( pMutex );
+	const deMutexGuard lock( pMutex );
 	
 	// enable listen tasks then remove them all from the finish task
 	const int count = task->GetListenTasks().GetCount();
@@ -578,9 +584,10 @@ void deoalRTParallelEnvProbe::Enable( deoalRTPTListenFinish *task ){
 
 void deoalRTParallelEnvProbe::pRunTraceSoundRaysUsingTasks( sRoomParameters &roomParameters,
 deoalSoundRayList &soundRayList, const decDVector &position, float range, float refDist,
-float rollOff, deoalAWorld &world, deoalRTWorldBVH *rtWorldBVH, const decLayerMask &layerMask,
-const deoalATRayTracing::sConfigSoundTracing &config ){
+float rollOff, float distanceOffset, deoalAWorld &world, deoalRTWorldBVH *rtWorldBVH,
+const decLayerMask &layerMask, const deoalATRayTracing::sConfigSoundTracing &config ){
 	deMutexGuard lock( pMutex );
+	DEASSERT_NULL( pBarrierTask )
 	
 // 	#ifdef WOVRAYHITSELEMENT_DO_TIMING
 // 	deoalRTPTTraceSoundRays &task = *( ( deoalRTPTTraceSoundRays* )
@@ -590,7 +597,7 @@ const deoalATRayTracing::sConfigSoundTracing &config ){
 // 	task.SetWorld( &world );
 // 	task.SetPosition( position );
 // 	task.SetRange( range );
-// 	task.SetAttenuationParameters( refDist, rollOff );
+// 	task.SetAttenuationParameters( refDist, rollOff, distanceOffset );
 // 	task.SetProbeConfig( config.rtConfig );
 // 	task.SetAddRayMinLength( config.addRayMinLength );
 // 	task.SetFirstRay( 0 );
@@ -636,7 +643,7 @@ const deoalATRayTracing::sConfigSoundTracing &config ){
 		task.SetWorld( &world, rtWorldBVH );
 		task.SetPosition( position );
 		task.SetRange( range );
-		task.SetAttenuationParameters( refDist, rollOff );
+		task.SetAttenuationParameters( refDist, rollOff, distanceOffset );
 		task.SetProbeConfig( config.rtConfig );
 		task.SetAddRayMinLength( config.addRayMinLength );
 		task.SetMaxBounceCount( config.maxBounceCount );
@@ -687,8 +694,7 @@ const deoalATRayTracing::sConfigSoundTracing &config ){
 		
 	}catch( const deException & ){
 		// do NOT call RemoveAllDependsOn! we are asynchronous and the task could have started!
-		pBarrierTask = NULL;
-		int i;
+		pBarrierTask = nullptr;
 		for( i=0; i<pTasksRunningTraceSoundRays.GetCount(); i++ ){
 			( ( deParallelTask* )pTasksRunningTraceSoundRays.GetAt( i ) )->Cancel();
 		}
@@ -706,10 +712,11 @@ const deoalATRayTracing::sConfigSoundTracing &config ){
 
 
 
-void deoalRTParallelEnvProbe::pRunListenUsingTasks( const deoalEnvProbe &sourceProbe,
+bool deoalRTParallelEnvProbe::pRunListenUsingTasks( const deoalEnvProbe &sourceProbe,
 const deoalEnvProbe *listenProbe, deoalEnvProbeListener &listener, deoalAWorld &world,
 deoalRTWorldBVH *rtWorldBVH, const decLayerMask &layerMask, const decDVector &position ){
 	deMutexGuard lock( pMutex );
+	DEASSERT_NULL( pBarrierTask )
 	
 	// prepare listen tasks
 	const deoalSoundRayList &soundRayList = listenProbe
@@ -789,8 +796,7 @@ deoalRTWorldBVH *rtWorldBVH, const decLayerMask &layerMask, const decDVector &po
 		
 	}catch( const deException & ){
 		// do NOT call RemoveAllDependsOn! we are asynchronous and the task could have started!
-		pBarrierTask = NULL;
-		int i;
+		pBarrierTask = nullptr;
 		for( i=0; i<pTasksRunningListen.GetCount(); i++ ){
 			( ( deParallelTask* )pTasksRunningListen.GetAt( i ) )->Cancel();
 		}
@@ -801,9 +807,7 @@ deoalRTWorldBVH *rtWorldBVH, const decLayerMask &layerMask, const decDVector &po
 	// wait for finish task to finish
 	lock.Unlock();
 	pWaitForFinishTask( parallel, &task );
-	if( task.IsCancelled() ){
-		DETHROW( deeInvalidParam );
-	}
+	return ! task.IsCancelled();
 }
 
 
@@ -913,6 +917,7 @@ void deoalRTParallelEnvProbe::pRunRoomEstimateUsingTasks( sRoomParameters &roomP
 const decDVector &position, float range, deoalAWorld &world, const decLayerMask &layerMask,
 const deoalRayTraceConfig &probeConfig ){
 	deMutexGuard lock( pMutex );
+	DEASSERT_NULL( pBarrierTask )
 	
 	// prepare estimate tasks
 	#ifdef RTPTRE_ONE_TASK_PER_RAY
@@ -990,8 +995,7 @@ const deoalRayTraceConfig &probeConfig ){
 		
 	}catch( const deException & ){
 		// do NOT call RemoveAllDependsOn! we are asynchronous and the task could have started!
-		pBarrierTask = NULL;
-		int i;
+		pBarrierTask = nullptr;
 		for( i=0; i<pTasksRunningRoomEstimate.GetCount(); i++ ){
 			( ( deParallelTask* )pTasksRunningRoomEstimate.GetAt( i ) )->Cancel();
 		}
@@ -1043,6 +1047,11 @@ void deoalRTParallelEnvProbe::pAddTask( deParallelProcessing &parallel, deParall
 void deoalRTParallelEnvProbe::pWaitForFinishTask( deParallelProcessing &parallel, deParallelTask *task ){
 	if( pAudioThread.GetAsyncAudio() ){
 		pBarrier.Wait();
+		{
+		const deMutexGuard lock( pMutex );
+		DEASSERT_TRUE( pBarrierTask == task )
+		pBarrierTask = nullptr;
+		}
 		
 	}else{
 		parallel.WaitForTask( task );

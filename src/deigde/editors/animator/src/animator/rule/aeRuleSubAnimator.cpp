@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Animator Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdlib.h>
@@ -34,6 +37,7 @@
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/file/decPath.h>
 #include <dragengine/common/curve/decCurveBezierPoint.h>
 #include <dragengine/logger/deLogger.h>
 #include <dragengine/resources/animator/deAnimator.h>
@@ -64,7 +68,8 @@ aeRule( deAnimatorRuleVisitorIdentify::ertSubAnimator ),
 pSubAnimator( NULL ),
 pEnablePosition( true ),
 pEnableOrientation( true ),
-pEnableSize( true )
+pEnableSize( true ),
+pEnableVertexPositionSet( true )
 {
 	SetName( "Sub Animator" );
 }
@@ -76,6 +81,7 @@ pSubAnimator( NULL ),
 pEnablePosition( copy.pEnablePosition ),
 pEnableOrientation( copy.pEnableOrientation ),
 pEnableSize( copy.pEnableSize ),
+pEnableVertexPositionSet( copy.pEnableVertexPositionSet ),
 pConnections( copy.pConnections )
 {
 	pSubAnimator = copy.pSubAnimator;
@@ -103,9 +109,20 @@ void aeRuleSubAnimator::SetPathSubAnimator( const char *path ){
 }
 
 void aeRuleSubAnimator::LoadSubAnimator(){
-	// release the sub animator
-	pConnections.RemoveAll();
+	// clear connections only if not manually set
+	int i, count = pConnections.GetCount();
+	for( i=0; i<count; i++ ){
+		if( pConnections.GetAt( i ) ){
+			break;
+		}
+	}
 	
+	const bool autoConnections = i == count;
+	if( autoConnections ){
+		pConnections.RemoveAll();
+	}
+	
+	// release the sub animator
 	if( pSubAnimator ){
 		pSubAnimator->FreeReference();
 		pSubAnimator = NULL;
@@ -135,7 +152,8 @@ void aeRuleSubAnimator::LoadSubAnimator(){
 		
 		try{
 			// load from file
-			animator = parentAnimator->GetWindowMain().GetLoadSaveSystem().LoadAnimator( pPathSubAnimator );
+			animator = parentAnimator->GetWindowMain().GetLoadSaveSystem().LoadAnimator(
+				decPath::AbsolutePathUnix( pPathSubAnimator, parentAnimator->GetDirectoryPath() ).GetPathUnix() );
 			
 			controllerCount = animator->GetControllers().GetCount();
 			linkCount = animator->GetLinks().GetCount();
@@ -153,6 +171,7 @@ void aeRuleSubAnimator::LoadSubAnimator(){
 				engController = new deAnimatorController;
 				engController->SetName( controller.GetName() );
 				engController->SetValueRange( controller.GetMinimumValue(), controller.GetMaximumValue() );
+				engController->SetCurrentValue( controller.GetCurrentValue() );
 				engController->SetFrozen( controller.GetFrozen() );
 				engController->SetClamp( controller.GetClamp() );
 				engController->SetVector( controller.GetVector() );
@@ -176,6 +195,12 @@ void aeRuleSubAnimator::LoadSubAnimator(){
 				
 				engLink->SetCurve( link.GetCurve() );
 				engLink->SetRepeat( link.GetRepeat() );
+				engLink->SetBone( link.GetBone() );
+				engLink->SetBoneParameter( link.GetBoneParameter() );
+				engLink->SetBoneValueRange( link.GetBoneMinimum(), link.GetBoneMaximum() );
+				engLink->SetVertexPositionSet( link.GetVertexPositionSet() );
+				engLink->SetVertexPositionSetValueRange(
+					link.GetVertexPositionSetMinimum(), link.GetVertexPositionSetMaximum() );
 				
 				pSubAnimator->AddLink( engLink );
 				engLink = NULL;
@@ -190,10 +215,6 @@ void aeRuleSubAnimator::LoadSubAnimator(){
 				engRule->FreeReference();
 				engRule = NULL;
 			}
-			
-			// assign component and animation
-			//pSubAnimator->SetComponent( parentAnimator->GetEngineComponent() );
-			pSubAnimator->SetAnimation( parentAnimator->GetEngineAnimator()->GetAnimation() );
 			
 			// free the loaded animator as it is no more needed
 			animator->FreeReference();
@@ -216,18 +237,18 @@ void aeRuleSubAnimator::LoadSubAnimator(){
 		}
 	}
 	
+	if( pSubAnimator && autoConnections ){
+		while( pConnections.GetCount() < pSubAnimator->GetControllerCount() ){
+			pConnections.Add( NULL );
+		}
+	}
+	
 	// if the engine rule exists assign sub animator
 	if( ! rule ){
 		return;
 	}
 	
 	rule->SetSubAnimator( pSubAnimator );
-	
-	if( pSubAnimator ){
-		while( pConnections.GetCount() < pSubAnimator->GetControllerCount() ){
-			pConnections.Add( NULL );
-		}
-	}
 	
 	pUpdateConnections( *rule );
 	NotifyRuleChanged();
@@ -293,6 +314,16 @@ void aeRuleSubAnimator::SetEnableSize( bool enabled ){
 	}
 }
 
+void aeRuleSubAnimator::SetEnableVertexPositionSet( bool enabled ){
+	if( enabled != pEnableVertexPositionSet ){
+		pEnableVertexPositionSet = enabled;
+		
+		if( GetEngineRule() ){
+			( ( deAnimatorRuleSubAnimator* )GetEngineRule() )->SetEnableVertexPositionSet( enabled );
+			NotifyRuleChanged();
+		}
+	}
+}
 
 
 
@@ -311,6 +342,7 @@ deAnimatorRule *aeRuleSubAnimator::CreateEngineRule(){
 		engRule->SetEnablePosition( pEnablePosition );
 		engRule->SetEnableOrientation( pEnableOrientation );
 		engRule->SetEnableSize( pEnableSize );
+		engRule->SetEnableVertexPositionSet( pEnableVertexPositionSet );
 		
 	}catch( const deException & ){
 		if( engRule ){
@@ -326,24 +358,9 @@ deAnimatorRule *aeRuleSubAnimator::CreateEngineRule(){
 
 
 void aeRuleSubAnimator::UpdateCompAnim(){
-	deAnimatorRuleSubAnimator *rule = ( deAnimatorRuleSubAnimator* )GetEngineRule();
-	aeAnimator *animator = GetAnimator();
-	
-	if( rule ){
-		rule->SetSubAnimator( NULL );
-	}
-	
-	if( pSubAnimator ){
-		//pSubAnimator->SetComponent( NULL );
-		pSubAnimator->SetAnimation( NULL );
-		
-		//pSubAnimator->SetComponent( animator->GetEngineComponent() );
-		pSubAnimator->SetAnimation( animator->GetEngineAnimator()->GetAnimation() );
-	}
-	
+	deAnimatorRuleSubAnimator * const rule = ( deAnimatorRuleSubAnimator* )GetEngineRule();
 	if( rule ){
 		rule->SetSubAnimator( pSubAnimator );
-		
 		NotifyRuleChanged();
 	}
 }
@@ -359,6 +376,7 @@ aeRuleSubAnimator &aeRuleSubAnimator::operator=( const aeRuleSubAnimator &copy )
 	SetEnablePosition( copy.pEnablePosition );
 	SetEnableOrientation( copy.pEnableOrientation );
 	SetEnableSize( copy.pEnableSize );
+	SetEnableVertexPositionSet( copy.pEnableVertexPositionSet );
 	
 	if( pSubAnimator ){
 		pSubAnimator->FreeReference();

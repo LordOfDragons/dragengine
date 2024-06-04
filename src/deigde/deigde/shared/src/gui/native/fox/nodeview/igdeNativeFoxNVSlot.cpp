@@ -1,23 +1,28 @@
-/* 
- * Drag[en]gine IGDE
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
+
+#ifdef IGDE_TOOLKIT_FOX
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -65,23 +70,23 @@ FXIMPLEMENT( igdeNativeFoxNVSlot, FXHorizontalFrame,
 
 igdeNativeFoxNVSlot::igdeNativeFoxNVSlot(){ }
 
-igdeNativeFoxNVSlot::igdeNativeFoxNVSlot( igdeNVSlot &owner, FXComposite *parent,
+igdeNativeFoxNVSlot::igdeNativeFoxNVSlot( igdeNVSlot &powner, FXComposite *pparent,
 	const igdeUIFoxHelper::sChildLayoutFlags &layoutFlags, const igdeGuiTheme &guitheme ) :
-FXHorizontalFrame( parent, layoutFlags.flags | NVSlotFlags( owner ), 0, 0, 0, 0,
-	NVSlotPadLeft( guitheme ) + ( owner.GetIsInput() ? 0 : 20 ),
-	NVSlotPadRight( guitheme ) + ( owner.GetIsInput() ? 20 : 0 ),
+FXHorizontalFrame( pparent, layoutFlags.flags | NVSlotFlags( powner ), 0, 0, 0, 0,
+	NVSlotPadLeft( guitheme ) + ( powner.GetIsInput() ? 0 : 20 ),
+	NVSlotPadRight( guitheme ) + ( powner.GetIsInput() ? 20 : 0 ),
 	NVSlotPadTop( guitheme ), NVSlotPadBottom( guitheme ) ),
-pOwner( &owner ),
-pFont( NVSlotFont( owner, guitheme ) ),
+pOwner( &powner ),
+pFont( NVSlotFont( powner, guitheme ) ),
 pSocket( NULL ),
 pLabel( NULL ),
-pDragTypeSocket( parent->getApp()->registerDragType( "application/deigde_nodesystem_socket") ),
+pDragTypeSocket( pparent->getApp()->registerDragType( "application/deigde_nodesystem_socket") ),
 pIsDnd( false )
 {
-	pSocket = new igdeNativeFoxNVSocket( this, this, ID_SOCKET, LAYOUT_FILL_Y | ( owner.GetIsInput()
+	pSocket = new igdeNativeFoxNVSocket( this, this, ID_SOCKET, LAYOUT_FILL_Y | ( powner.GetIsInput()
 		? LAYOUT_SIDE_LEFT | LAYOUT_LEFT : LAYOUT_SIDE_RIGHT | LAYOUT_RIGHT ), guitheme );
 	
-	pLabel = new FXLabel( this, owner.GetText().GetString(), NULL, LAYOUT_FILL_Y | ( owner.GetIsInput()
+	pLabel = new FXLabel( this, powner.GetText().GetString(), NULL, LAYOUT_FILL_Y | ( powner.GetIsInput()
 			? JUSTIFY_LEFT | JUSTIFY_CENTER_Y | ICON_BEFORE_TEXT | LAYOUT_SIDE_RIGHT | LAYOUT_LEFT
 			: JUSTIFY_RIGHT | JUSTIFY_CENTER_Y | ICON_AFTER_TEXT | LAYOUT_SIDE_LEFT | LAYOUT_RIGHT
 		), 0, 0, 0, 0, 0, 0, 0, 0 );
@@ -97,6 +102,31 @@ pIsDnd( false )
 }
 
 igdeNativeFoxNVSlot::~igdeNativeFoxNVSlot(){
+}
+
+igdeNativeFoxNVSlot *igdeNativeFoxNVSlot::CreateNativeWidget( igdeNVSlot &powner ){
+	if( ! powner.GetParent() ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	FXComposite * const pparent = ( FXComposite* ) powner.GetParent()->GetNativeContainer();
+	if( ! pparent ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	return new igdeNativeFoxNVSlot( powner, pparent,
+		igdeUIFoxHelper::GetChildLayoutFlagsAll( &powner ), *powner.GetGuiTheme() );
+}
+
+void igdeNativeFoxNVSlot::PostCreateNativeWidget(){
+	FXComposite &pparent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
+	if( pparent.id() ){
+		create();
+	}
+}
+
+void igdeNativeFoxNVSlot::DestroyNativeWidget(){
+	delete this;
 }
 
 
@@ -219,12 +249,12 @@ int igdeNativeFoxNVSlot::NVSlotFlags( const igdeNVSlot & ){
 	return 0;
 }
 
-igdeFont *igdeNativeFoxNVSlot::NVSlotFont( const igdeNVSlot &owner, const igdeGuiTheme &guitheme ){
+igdeFont *igdeNativeFoxNVSlot::NVSlotFont( const igdeNVSlot &powner, const igdeGuiTheme &guitheme ){
 	igdeFont::sConfiguration configuration;
-	owner.GetEnvironment().GetApplicationFont( configuration );
+	powner.GetEnvironment().GetApplicationFont( configuration );
 	
 	if( guitheme.HasProperty( igdeGuiThemePropertyNames::nodeViewSlotFontSizeAbsolute ) ){
-		configuration.size = guitheme.GetIntProperty(
+		configuration.size = ( float )guitheme.GetIntProperty(
 			igdeGuiThemePropertyNames::nodeViewSlotFontSizeAbsolute, 0 );
 		
 	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::nodeViewSlotFontSize ) ){
@@ -232,7 +262,7 @@ igdeFont *igdeNativeFoxNVSlot::NVSlotFont( const igdeNVSlot &owner, const igdeGu
 			igdeGuiThemePropertyNames::nodeViewSlotFontSize, 1.0f );
 		
 	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::fontSizeAbsolute ) ){
-		configuration.size = guitheme.GetIntProperty(
+		configuration.size = ( float )guitheme.GetIntProperty(
 			igdeGuiThemePropertyNames::fontSizeAbsolute, 0 );
 		
 	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::fontSize ) ){
@@ -240,7 +270,7 @@ igdeFont *igdeNativeFoxNVSlot::NVSlotFont( const igdeNVSlot &owner, const igdeGu
 			igdeGuiThemePropertyNames::fontSize, 1.0f );
 	}
 	
-	return owner.GetEnvironment().GetSharedFont( configuration );
+	return powner.GetEnvironment().GetSharedFont( configuration );
 }
 
 int igdeNativeFoxNVSlot::NVSlotPadLeft( const igdeGuiTheme &guitheme ){
@@ -259,8 +289,8 @@ int igdeNativeFoxNVSlot::NVSlotPadBottom( const igdeGuiTheme &guitheme ){
 	return guitheme.GetIntProperty( igdeGuiThemePropertyNames::nodeViewSlotPaddingBottom, DEFAULT_PAD );
 }
 
-long igdeNativeFoxNVSlot::onChildLayoutFlags( FXObject*, FXSelector, void *data ){
-	igdeUIFoxHelper::sChildLayoutFlags &clflags = *( ( igdeUIFoxHelper::sChildLayoutFlags* )data );
+long igdeNativeFoxNVSlot::onChildLayoutFlags( FXObject*, FXSelector, void *pdata ){
+	igdeUIFoxHelper::sChildLayoutFlags &clflags = *( ( igdeUIFoxHelper::sChildLayoutFlags* )pdata );
 	clflags.flags = pOwner->GetIsInput()
 		? LAYOUT_SIDE_RIGHT | LAYOUT_LEFT | LAYOUT_FILL_X | LAYOUT_FILL_Y
 		: LAYOUT_SIDE_LEFT | LAYOUT_RIGHT | LAYOUT_FILL_X | LAYOUT_FILL_Y;
@@ -274,10 +304,10 @@ long igdeNativeFoxNVSlot::onChildLayoutFlags( FXObject*, FXSelector, void *data 
 // Events
 ///////////
 
-long igdeNativeFoxNVSlot::onPaint( FXObject *sender, FXSelector selector, void *data ){
+long igdeNativeFoxNVSlot::onPaint( FXObject *sender, FXSelector selector, void *pdata ){
 	setBackColor( getParent()->getBackColor() );
 	pLabel->setBackColor( getBackColor() );
-	return FXHorizontalFrame::onPaint( sender, selector, data );
+	return FXHorizontalFrame::onPaint( sender, selector, pdata );
 }
 
 long igdeNativeFoxNVSlot::onSocketCommand( FXObject*, FXSelector, void* ){
@@ -309,7 +339,7 @@ long igdeNativeFoxNVSlot::onSocketLeftMouseDown( FXObject*, FXSelector, void* ){
 	return 1;
 }
 
-long igdeNativeFoxNVSlot::onSocketMouseMoved( FXObject*, FXSelector, void *data ){
+long igdeNativeFoxNVSlot::onSocketMouseMoved( FXObject*, FXSelector, void *pdata ){
 	if( ! pIsDnd ){
 		return 1;
 	}
@@ -321,7 +351,7 @@ long igdeNativeFoxNVSlot::onSocketMouseMoved( FXObject*, FXSelector, void *data 
 	
 	igdeNativeFoxNVBoard &nativeBoard = *( ( igdeNativeFoxNVBoard* )
 		pOwner->GetOwnerNode()->GetOwnerBoard()->GetNativeWidget() );
-	const FXEvent &event = *( ( FXEvent* )data );
+	const FXEvent &event = *( ( FXEvent* )pdata );
 	
 	decPoint position;
 	nativeBoard.translateCoordinatesFrom( position.x, position.y, pSocket, event.win_x, event.win_y );
@@ -398,7 +428,7 @@ long igdeNativeFoxNVSlot::onSocketDndDrop( FXObject*, FXSelector, void* ){
 	return 1;
 }
 
-long igdeNativeFoxNVSlot::onSocketDndMotion( FXObject*, FXSelector, void *data ){
+long igdeNativeFoxNVSlot::onSocketDndMotion( FXObject*, FXSelector, void *pdata ){
 	if( pIsDnd ){
 		return 1;
 	}
@@ -411,7 +441,7 @@ long igdeNativeFoxNVSlot::onSocketDndMotion( FXObject*, FXSelector, void *data )
 	
 	igdeNativeFoxNVBoard &nativeBoard = *( ( igdeNativeFoxNVBoard* )
 		pOwner->GetOwnerNode()->GetOwnerBoard()->GetNativeWidget() );
-	const FXEvent &event = *( ( FXEvent* )data );
+	const FXEvent &event = *( ( FXEvent* )pdata );
 	
 	if( offeredDNDType( FROM_DRAGNDROP, pDragTypeSocket )
 	&& pSocket->IsInsideSocket( decPoint( event.win_x, event.win_y ) ) ){
@@ -436,7 +466,7 @@ long igdeNativeFoxNVSlot::onSocketDndMotion( FXObject*, FXSelector, void *data )
 
 /*
 
-long meWVNodeSlot::onLeftMouseDown( FXObject *sender, FXSelector selector, void *data ){
+long meWVNodeSlot::onLeftMouseDown( FXObject*, FXSelector, void* ){
 	meWindowVegetation *windowVegetation = pParentNode->GetWindowVegetation();
 	FXEvent *event = ( FXEvent* )data;
 	FXint vlayerRelX, vlayerRelY;
@@ -451,7 +481,7 @@ long meWVNodeSlot::onLeftMouseDown( FXObject *sender, FXSelector selector, void 
 	return 1;
 }
 
-long meWVNodeSlot::onMouseMove( FXObject *sender, FXSelector selector, void *data ){
+long meWVNodeSlot::onMouseMove( FXObject*, FXSelector, void* ){
 //	FXEvent *event = ( FXEvent* )data;
 //	bool shift = ( event->state & SHIFTMASK ) == SHIFTMASK;
 //	bool control = ( event->state & CONTROLMASK ) == CONTROLMASK;
@@ -461,11 +491,11 @@ long meWVNodeSlot::onMouseMove( FXObject *sender, FXSelector selector, void *dat
 	return 1;
 }
 
-long meWVNodeSlot::onLeftMouseUp( FXObject *sender, FXSelector selector, void *data ){
+long meWVNodeSlot::onLeftMouseUp( FXObject*, FXSelector, void* ){
 	return 1;
 }
 
-long meWVNodeSlot::onRightMouseDown( FXObject *sender, FXSelector selector, void *data ){
+long meWVNodeSlot::onRightMouseDown( FXObject*, FXSelector, void* ){
 //	FXEvent *event = ( FXEvent* )data;
 //	bool shift = ( event->state & SHIFTMASK ) == SHIFTMASK;
 //	bool control = ( event->state & CONTROLMASK ) == CONTROLMASK;
@@ -475,8 +505,10 @@ long meWVNodeSlot::onRightMouseDown( FXObject *sender, FXSelector selector, void
 	return 1;
 }
 
-long meWVNodeSlot::onRightMouseUp( FXObject *sender, FXSelector selector, void *data ){
+long meWVNodeSlot::onRightMouseUp( FXObject*, FXSelector, void* ){
 	return 1;
 }
 
 */
+
+#endif

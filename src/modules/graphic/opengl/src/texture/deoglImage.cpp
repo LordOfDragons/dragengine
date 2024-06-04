@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -24,8 +27,6 @@
 #include <string.h>
 
 #include "deoglImage.h"
-#include "deoglRImage.h"
-#include "pixelbuffer/deoglPixelBuffer.h"
 #include "../deoglBasics.h"
 #include "../deGraphicOpenGl.h"
 #include "../canvas/deoglCanvasImage.h"
@@ -47,24 +48,25 @@
 deoglImage::deoglImage( deGraphicOpenGl &ogl, deImage &image ) :
 pOgl( ogl ),
 pImage( image ),
-pRImage( NULL ),
+pRImage( deoglRImage::Ref::New( new deoglRImage( ogl.GetRenderThread(), image ) ) ),
 pPixelBufferUseCount( 0 ),
-pPixelBuffer( NULL ),
-pPixelBufferRImageTexture( NULL ),
-pDirtyTexture( true )
-{
-	try{
-		pRImage = new deoglRImage( ogl.GetRenderThread(), image );
-		pPixelBufferRImageTexture = pCreatePixelBuffer();
-		
-	}catch( const deException & ){
-		pCleanUp();
-		throw;
-	}
+pPixelBufferRImageTexture( pCreatePixelBuffer() ),
+pDirtyTexture( true ){
 }
 
 deoglImage::~deoglImage(){
-	pCleanUp();
+	if( pPixelBufferUseCount > 0 ){
+		pOgl.LogErrorFormat( "Image(%s): pPixelBufferUseCount > 0 (%d)",
+			pImage.GetFilename().GetString(), pPixelBufferUseCount );
+	}
+	
+	// notify owners we are about to be deleted. required since owners hold only a weak pointer
+	// to the image and are notified only after switching to a new image. in this case they can
+	// not use the old pointer to remove themselves from the image
+	int i, count = pNotifyCanvas.GetCount();
+	for( i=0; i<count; i++ ){
+		( ( deoglCanvasImage* )pNotifyCanvas.GetAt( i ) )->DropImage();
+	}
 }
 
 
@@ -80,7 +82,7 @@ void deoglImage::SyncToRender(){
 	if( ! pPixelBufferRImageTexture ){
 		if( pPixelBuffer ){
 			// if there is a pixel buffer held already copy this one which is faster
-			pPixelBufferRImageTexture = new deoglPixelBuffer( *pPixelBuffer );
+			pPixelBufferRImageTexture.TakeOver( new deoglPixelBuffer( pPixelBuffer ) );
 			
 		}else{
 			// if there is no pixel buffer held create a new one which can cause retaining
@@ -89,7 +91,7 @@ void deoglImage::SyncToRender(){
 	}
 	
 	pRImage->SetPixelBuffer( pPixelBufferRImageTexture );
-	pPixelBufferRImageTexture = NULL;
+	pPixelBufferRImageTexture = nullptr;
 	
 	pDirtyTexture = false;
 }
@@ -128,10 +130,7 @@ void deoglImage::ReleasePixelBuffer(){
 	}
 	
 	// last use of pixel buffer removed. delete pixel buffer
-	if( pPixelBuffer ){
-		delete pPixelBuffer;
-		pPixelBuffer = NULL;
-	}
+	pPixelBuffer = nullptr;
 }
 
 
@@ -141,10 +140,7 @@ void deoglImage::ReleasePixelBuffer(){
 
 void deoglImage::ImageDataChanged(){
 	pDirtyTexture = true;
-	if( pPixelBufferRImageTexture ){
-		delete pPixelBufferRImageTexture;
-		pPixelBufferRImageTexture = NULL;
-	}
+	pPixelBufferRImageTexture = nullptr;
 	pRequiresSync();
 }
 
@@ -164,39 +160,8 @@ bool deoglImage::RetainImageData(){
 // Private Functions
 //////////////////////
 
-void deoglImage::pCleanUp(){
-	if( pPixelBufferUseCount > 0 ){
-		pOgl.LogErrorFormat( "Image(%s): pPixelBufferUseCount > 0 (%d)",
-			pImage.GetFilename().GetString(), pPixelBufferUseCount );
-	}
-	
-	if( pRImage ){
-		pRImage->FreeReference();
-		pRImage = NULL;
-	}
-	
-	if( pPixelBufferRImageTexture ){
-		delete pPixelBufferRImageTexture;
-		pPixelBufferRImageTexture = NULL;
-	}
-	if( pPixelBuffer ){
-		delete pPixelBuffer;
-		pPixelBuffer = NULL;
-	}
-	
-	// notify owners we are about to be deleted. required since owners hold only a weak pointer
-	// to the image and are notified only after switching to a new image. in this case they can
-	// not use the old pointer to remove themselves from the image
-	int i, count = pNotifyCanvas.GetCount();
-	for( i=0; i<count; i++ ){
-		( ( deoglCanvasImage* )pNotifyCanvas.GetAt( i ) )->DropImage();
-	}
-}
-
-
-
-deoglPixelBuffer *deoglImage::pCreatePixelBuffer(){
-	deoglPixelBuffer *pixelBuffer = NULL;
+deoglPixelBuffer::Ref deoglImage::pCreatePixelBuffer(){
+	deoglPixelBuffer::Ref pixelBuffer;
 	
 	if( pImage.GetData() ){
 		// somebody else keeps the image data retained so jump the bandwagon
@@ -224,7 +189,7 @@ deoglPixelBuffer *deoglImage::pCreatePixelBuffer(){
 	return pixelBuffer;
 }
 
-void deoglImage::pCreatePixelBufferSafe( deoglPixelBuffer *& pixelBuffer ){
+void deoglImage::pCreatePixelBufferSafe( deoglPixelBuffer::Ref &pixelBuffer ){
 	const int componentCount = pImage.GetComponentCount();
 	const int bitCount = pImage.GetBitCount();
 	const int width = pImage.GetWidth();
@@ -236,7 +201,7 @@ void deoglImage::pCreatePixelBufferSafe( deoglPixelBuffer *& pixelBuffer ){
 	
 	if( componentCount == 1 ){
 		if( bitCount == 8 ){
-			pixelBuffer = new deoglPixelBuffer( deoglPixelBuffer::epfByte1, width, height, depth );
+			pixelBuffer.TakeOver( new deoglPixelBuffer( deoglPixelBuffer::epfByte1, width, height, depth ) );
 			const sGrayscale8 * const srcData = pImage.GetDataGrayscale8();
 			
 			if( srcData ){
@@ -262,7 +227,7 @@ void deoglImage::pCreatePixelBufferSafe( deoglPixelBuffer *& pixelBuffer ){
 			}
 			
 		}else if( bitCount == 16 ){
-			pixelBuffer = new deoglPixelBuffer( deoglPixelBuffer::epfFloat1, width, height, depth );
+			pixelBuffer.TakeOver( new deoglPixelBuffer( deoglPixelBuffer::epfFloat1, width, height, depth ) );
 			const sGrayscale16 * const srcData = pImage.GetDataGrayscale16();
 			
 			if( srcData ){
@@ -289,7 +254,7 @@ void deoglImage::pCreatePixelBufferSafe( deoglPixelBuffer *& pixelBuffer ){
 			}
 			
 		}else{
-			pixelBuffer = new deoglPixelBuffer( deoglPixelBuffer::epfFloat1, width, height, depth );
+			pixelBuffer.TakeOver( new deoglPixelBuffer( deoglPixelBuffer::epfFloat1, width, height, depth ) );
 			const sGrayscale32 * const srcData = pImage.GetDataGrayscale32();
 			
 			if( srcData ){
@@ -317,7 +282,7 @@ void deoglImage::pCreatePixelBufferSafe( deoglPixelBuffer *& pixelBuffer ){
 		
 	}else if( componentCount == 2 ){
 		if( bitCount == 8 ){
-			pixelBuffer = new deoglPixelBuffer( deoglPixelBuffer::epfByte2, width, height, depth );
+			pixelBuffer.TakeOver( new deoglPixelBuffer( deoglPixelBuffer::epfByte2, width, height, depth ) );
 			const sGrayscaleAlpha8 * const srcData = pImage.GetDataGrayscaleAlpha8();
 			
 			if( srcData ){
@@ -344,7 +309,7 @@ void deoglImage::pCreatePixelBufferSafe( deoglPixelBuffer *& pixelBuffer ){
 			}
 			
 		}else if( bitCount == 16 ){
-			pixelBuffer = new deoglPixelBuffer( deoglPixelBuffer::epfFloat2, width, height, depth );
+			pixelBuffer.TakeOver( new deoglPixelBuffer( deoglPixelBuffer::epfFloat2, width, height, depth ) );
 			const sGrayscaleAlpha16 * const srcData = pImage.GetDataGrayscaleAlpha16();
 			
 			if( srcData ){
@@ -372,7 +337,7 @@ void deoglImage::pCreatePixelBufferSafe( deoglPixelBuffer *& pixelBuffer ){
 			}
 			
 		}else{
-			pixelBuffer = new deoglPixelBuffer( deoglPixelBuffer::epfFloat2, width, height, depth );
+			pixelBuffer.TakeOver( new deoglPixelBuffer( deoglPixelBuffer::epfFloat2, width, height, depth ) );
 			const sGrayscaleAlpha32 * const srcData = pImage.GetDataGrayscaleAlpha32();
 			
 			if( srcData ){
@@ -401,7 +366,7 @@ void deoglImage::pCreatePixelBufferSafe( deoglPixelBuffer *& pixelBuffer ){
 		
 	}else if( componentCount == 3 ){
 		if( bitCount == 8 ){
-			pixelBuffer = new deoglPixelBuffer( deoglPixelBuffer::epfByte3, width, height, depth );
+			pixelBuffer.TakeOver( new deoglPixelBuffer( deoglPixelBuffer::epfByte3, width, height, depth ) );
 			const sRGB8 * const srcData = pImage.GetDataRGB8();
 			
 			if( srcData ){
@@ -429,7 +394,7 @@ void deoglImage::pCreatePixelBufferSafe( deoglPixelBuffer *& pixelBuffer ){
 			}
 			
 		}else if( bitCount == 16 ){
-			pixelBuffer = new deoglPixelBuffer( deoglPixelBuffer::epfFloat3, width, height, depth );
+			pixelBuffer.TakeOver( new deoglPixelBuffer( deoglPixelBuffer::epfFloat3, width, height, depth ) );
 			const sRGB16 * const srcData = pImage.GetDataRGB16();
 			
 			if( srcData ){
@@ -458,7 +423,7 @@ void deoglImage::pCreatePixelBufferSafe( deoglPixelBuffer *& pixelBuffer ){
 			}
 			
 		}else{
-			pixelBuffer = new deoglPixelBuffer( deoglPixelBuffer::epfFloat3, width, height, depth );
+			pixelBuffer.TakeOver( new deoglPixelBuffer( deoglPixelBuffer::epfFloat3, width, height, depth ) );
 			const sRGB32 * const srcData = pImage.GetDataRGB32();
 			
 			if( srcData ){
@@ -488,7 +453,7 @@ void deoglImage::pCreatePixelBufferSafe( deoglPixelBuffer *& pixelBuffer ){
 		
 	}else{ // componentCount == 4
 		if( bitCount == 8 ){
-			pixelBuffer = new deoglPixelBuffer( deoglPixelBuffer::epfByte4, width, height, depth );
+			pixelBuffer.TakeOver( new deoglPixelBuffer( deoglPixelBuffer::epfByte4, width, height, depth ) );
 			const sRGBA8 * const srcData = pImage.GetDataRGBA8();
 			
 			if( srcData ){
@@ -517,7 +482,7 @@ void deoglImage::pCreatePixelBufferSafe( deoglPixelBuffer *& pixelBuffer ){
 			}
 			
 		}else if( bitCount == 16 ){
-			pixelBuffer = new deoglPixelBuffer( deoglPixelBuffer::epfFloat4, width, height, depth );
+			pixelBuffer.TakeOver( new deoglPixelBuffer( deoglPixelBuffer::epfFloat4, width, height, depth ) );
 			const sRGBA16 * const srcData = pImage.GetDataRGBA16();
 			
 			if( srcData ){
@@ -547,7 +512,7 @@ void deoglImage::pCreatePixelBufferSafe( deoglPixelBuffer *& pixelBuffer ){
 			}
 			
 		}else{
-			pixelBuffer = new deoglPixelBuffer( deoglPixelBuffer::epfFloat4, width, height, depth );
+			pixelBuffer.TakeOver( new deoglPixelBuffer( deoglPixelBuffer::epfFloat4, width, height, depth ) );
 			const sRGBA32 * const srcData = pImage.GetDataRGBA32();
 			
 			if( srcData ){

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine AI Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -59,7 +62,10 @@
 // Definitions
 ////////////////
 
-#define THRESHOLD_EQUAL 0.0001
+#define THRESHOLD_EQUAL		1e-4f
+
+// has to match dedaiConvexFaceList.cpp THRESHOLD_EQUAL
+// #define THRESHOLD_EQUAL 0.005f
 
 
 
@@ -296,7 +302,12 @@ dedaiSpaceMeshFace *dedaiSpaceMesh::GetFaceClosestTo( const decVector &position,
 		for( c=0; c<cornerCount; c++ ){
 			const decVector &ev1 = pVertices[ corners[ c ].GetVertex() ];
 			const decVector &ev2 = pVertices[ corners[ ( c + 1 ) % cornerCount ].GetVertex() ];
-			const decVector edgeNormal( ( faceNormal % ( ev2 - ev1 ) ).Normalized() );
+			const decVector edgeVector( faceNormal % ( ev2 - ev1 ) );
+			if( edgeVector.IsZero() ){
+				continue;
+			}
+			
+			const decVector edgeNormal( edgeVector.Normalized() );
 			const float lambda = edgeNormal * ( testPos - ev1 );
 			
 			if( lambda < 0.0f ){
@@ -349,7 +360,12 @@ decVector &nearestPosition, float &nearestDistSquared ) const{
 		for( c=0; c<cornerCount; c++ ){
 			const decVector &ev1 = pVertices[ corners[ c ].GetVertex() ];
 			const decVector &ev2 = pVertices[ corners[ ( c + 1 ) % cornerCount ].GetVertex() ];
-			const decVector edgeNormal( ( faceNormal % ( ev2 - ev1 ) ).Normalized() );
+			const decVector edgeVector( faceNormal % ( ev2 - ev1 ) );
+			if( edgeVector.IsZero() ){
+				continue;
+			}
+			
+			const decVector edgeNormal( edgeVector.Normalized() );
 			const float lambda = edgeNormal * ( testPos - ev1 );
 			
 			if( lambda < 0.0f ){
@@ -619,9 +635,9 @@ void dedaiSpaceMesh::UpdateDDSSpaceShape(){
 	deDebugDrawerShape * const ddsCorners = pSpace.GetDDSCorners();
 	deDebugDrawerShape * const ddsNormals = pSpace.GetDDSNormals();
 	deDebugDrawerShape * const ddsMismatching = pSpace.GetDDSMismatching();
-	deDebugDrawerShape * const ddsHilightCostType = pSpace.GetDDSHilightCostType();
+	deDebugDrawerShape * const ddsHighlightCostType = pSpace.GetDDSHighlightCostType();
 	deDebugDrawerShapeFace *ddsFace = NULL;
-	unsigned short hilightCostType = ~0;
+	unsigned short highlightCostType = ~0;
 	const float normalLength = 0.1f;
 	const float cornerCrossLength = 0.025f;
 	const decVector cornerCross1( -cornerCrossLength, 0.0f, cornerCrossLength );
@@ -646,14 +662,14 @@ void dedaiSpaceMesh::UpdateDDSSpaceShape(){
 		ddsMismatching->RemoveAllFaces();
 		ddsMismatching->GetShapeList().RemoveAll();
 	}
-	if( ddsHilightCostType ){
-		ddsHilightCostType->RemoveAllFaces();
-		ddsHilightCostType->GetShapeList().RemoveAll();
+	if( ddsHighlightCostType ){
+		ddsHighlightCostType->RemoveAllFaces();
+		ddsHighlightCostType->GetShapeList().RemoveAll();
 		
-		const int costType = pSpace.GetDEAI().GetDeveloperMode().GetSpaceHilightCostType();
+		const int costType = pSpace.GetDEAI().GetDeveloperMode().GetSpaceHighlightCostType();
 		if( costType != -1 ){
 			if( pSpace.GetLayer() ){
-				hilightCostType = ( unsigned short )pSpace.GetLayer()->GetCostTable().GetTypeWith( costType, hilightCostType );
+				highlightCostType = ( unsigned short )pSpace.GetLayer()->GetCostTable().GetTypeWith( costType, highlightCostType );
 			}
 		}
 	}
@@ -710,15 +726,15 @@ void dedaiSpaceMesh::UpdateDDSSpaceShape(){
 					ddsFace = NULL;
 				}
 				
-				// hilight if required
-				if( ddsHilightCostType ){
-					if( hilightCostType != ( unsigned short )~0 && pFaces[ f ].GetTypeNumber() == hilightCostType ){
+				// highlight if required
+				if( ddsHighlightCostType ){
+					if( highlightCostType != ( unsigned short )~0 && pFaces[ f ].GetTypeNumber() == highlightCostType ){
 						ddsFace = new deDebugDrawerShapeFace;
 						for( c=0; c<cornerCount; c++ ){
 							ddsFace->AddVertex( pVertices[ pCorners[ firstCorner + c ].GetVertex() ] );
 						}
 						ddsFace->SetNormal( pFaces[ f ].GetNormal() );
-						ddsHilightCostType->AddFace( ddsFace );
+						ddsHighlightCostType->AddFace( ddsFace );
 						ddsFace = NULL;
 					}
 				}
@@ -937,30 +953,39 @@ void dedaiSpaceMesh::pInitFromNavSpace(){
 		// ensures we do not have to deal with fudge factors for the smallest angle to allow.
 		const decVector &p1 = vertices[ corners[ firstCorner ].GetVertex() ];
 		const decVector &p2 = vertices[ corners[ firstCorner + 1 ].GetVertex() ];
-		const decVector edge1( ( p2 - p1 ).Normalized() );
-		float bestAbsDot = 1.0f;
-		decVector bestEdge2;
-		int bestCorner = -1;
-		
-		for( c=2; c<cornerCount; c++ ){
-			const decVector &p3 = vertices[ corners[ firstCorner + c ].GetVertex() ];
-			const decVector edge2( ( p3 - p1 ).Normalized() );
-			const float absDot = fabsf( edge1 * edge2 );
+		if( ! p1.IsEqualTo( p2 ) ){
+			const decVector edge1( ( p2 - p1 ).Normalized() );
+			float bestAbsDot = 1.0f;
+			decVector bestEdge2;
+			int bestCorner = -1;
 			
-			if( absDot < bestAbsDot ){
-				bestAbsDot = absDot;
-				bestEdge2 = edge2;
-				bestCorner = c;
+			for( c=2; c<cornerCount; c++ ){
+				const decVector &p3 = vertices[ corners[ firstCorner + c ].GetVertex() ];
+				if( p3.IsEqualTo( p1 ) ){
+					continue;
+				}
+				
+				const decVector edge2( ( p3 - p1 ).Normalized() );
+				const float absDot = fabsf( edge1 * edge2 );
+				
+				if( absDot < bestAbsDot ){
+					bestAbsDot = absDot;
+					bestEdge2 = edge2;
+					bestCorner = c;
+				}
 			}
-		}
-		
-		if( bestCorner == -1 ){
-			pSpace.GetDEAI().LogErrorFormat( "Degenerated face %d", f );
-			DETHROW( deeInvalidParam );
-			//pFaces[ f ].SetNormal( decVector( 0.0f, 1.0f, 0.0f ) );
+			
+			if( bestCorner == -1 ){
+// 				pSpace.GetDEAI().LogErrorFormat( "Degenerated face %d", f );
+// 				DETHROW( deeInvalidParam );
+				pFaces[ f ].SetNormal( decVector( 0.0f, 1.0f, 0.0f ) );
+				
+			}else{
+				pFaces[ f ].SetNormal( edge1 % bestEdge2 );
+			}
 			
 		}else{
-			pFaces[ f ].SetNormal( edge1 % bestEdge2 );
+			pFaces[ f ].SetNormal( decVector( 0.0f, 1.0f, 0.0f ) );
 		}
 		
 		pFaces[ f ].SetDistance( pFaces[ f ].GetNormal() * pFaces[ f ].GetCenter() );
@@ -1120,30 +1145,39 @@ void dedaiSpaceMesh::pInitFromHTNavSpace(){
 		// ensures we do not have to deal with fudge factors for the smallest angle to allow.
 		const decVector &p1 = pVertices[ corners[ firstCorner ] ];
 		const decVector &p2 = pVertices[ corners[ firstCorner + 1 ] ];
-		const decVector edge1( ( p2 - p1 ).Normalized() );
-		float bestAbsDot = 1.0f;
-		decVector bestEdge2;
-		int bestCorner = -1;
-		
-		for( j=2; j<cornerCount; j++ ){
-			const decVector &p3 = pVertices[ corners[ firstCorner + j ] ];
-			const decVector edge2( ( p3 - p1 ).Normalized() );
-			const float absDot = fabsf( edge1 * edge2 );
+		if( ! p1.IsEqualTo( p2 ) ){
+			const decVector edge1( ( p2 - p1 ).Normalized() );
+			float bestAbsDot = 1.0f;
+			decVector bestEdge2;
+			int bestCorner = -1;
 			
-			if( absDot < bestAbsDot ){
-				bestAbsDot = absDot;
-				bestEdge2 = edge2;
-				bestCorner = j;
+			for( j=2; j<cornerCount; j++ ){
+				const decVector &p3 = pVertices[ corners[ firstCorner + j ] ];
+				if( p3.IsEqualTo( p1 ) ){
+					continue;
+				}
+				
+				const decVector edge2( ( p3 - p1 ).Normalized() );
+				const float absDot = fabsf( edge1 * edge2 );
+				
+				if( absDot < bestAbsDot ){
+					bestAbsDot = absDot;
+					bestEdge2 = edge2;
+					bestCorner = j;
+				}
 			}
-		}
-		
-		if( bestCorner == -1 ){
-			pSpace.GetDEAI().LogErrorFormat( "Degenerated face %d", i );
-			DETHROW( deeInvalidParam );
-			//pFaces[ i ].SetNormal( decVector( 0.0f, 1.0f, 0.0f ) );
+			
+			if( bestCorner == -1 ){
+// 				pSpace.GetDEAI().LogErrorFormat( "Degenerated face %d", i );
+// 				DETHROW( deeInvalidParam );
+				pFaces[ i ].SetNormal( decVector( 0.0f, 1.0f, 0.0f ) );
+				
+			}else{
+				pFaces[ i ].SetNormal( edge1 % bestEdge2 );
+			}
 			
 		}else{
-			pFaces[ i ].SetNormal( edge1 % bestEdge2 );
+			pFaces[ i ].SetNormal( decVector( 0.0f, 1.0f, 0.0f ) );
 		}
 		
 		pFaces[ i ].SetDistance( pFaces[ i ].GetNormal() * pFaces[ i ].GetCenter() );
@@ -1250,7 +1284,8 @@ void dedaiSpaceMesh::pOptimizeBlockedFaces( dedaiConvexFaceList &list, int initi
 				}
 				
 				dedaiConvexFace * const testFace = list.GetFaceAt( f2 );
-				if( testFace->GetVertexCount() < 3 ){
+				const int testVertexCount = testFace->GetVertexCount();
+				if( testVertexCount < 3 ){
 					continue;
 				}
 				
@@ -1266,8 +1301,8 @@ void dedaiSpaceMesh::pOptimizeBlockedFaces( dedaiConvexFaceList &list, int initi
 				// is only required for the two face test case. because collapsing test is
 				// order independent only face after this face need to be check which is faster
 				if( f2 > f ){
-					const int testVertexCount = testFace->GetVertexCount();
-					const int testVertexPrev = testFace->GetVertexAt( ( testCorner - 1 + testVertexCount ) % testVertexCount );
+					const int testVertexPrev = testFace->GetVertexAt(
+						( testCorner - 1 + testVertexCount ) % testVertexCount );
 					
 					if( testVertexPrev != nextVertex ){
 						continue;
@@ -1291,8 +1326,14 @@ void dedaiSpaceMesh::pOptimizeBlockedFaces( dedaiConvexFaceList &list, int initi
 				const decVector &position2 = list.GetVertexAt( vertex );
 				const decVector &position3 = list.GetVertexAt( nextVertex );
 				const decVector &position4 = list.GetVertexAt( nextVertex2 );
-				const decVector normal1( ( face.GetNormal() % ( position2 - position1 ) ).Normalized() );
-				const decVector normal2( ( face.GetNormal() % ( position4 - position3 ) ).Normalized() );
+				const decVector direction1( position2 - position1 );
+				const decVector direction2( position4 - position3 );
+				if( direction1.IsZero() || direction2.IsZero() ){
+					lastVertex = vertex;
+					continue; // should not happen
+				}
+				const decVector normal1( face.GetNormal() % direction1.Normalized() );
+				const decVector normal2( face.GetNormal() % direction2.Normalized() );
 				
 				const int otherVertexCount = otherFace->GetVertexCount();
 				const int otherVertexPrev2 = otherFace->GetVertexAt( ( otherCorner - 2 + otherVertexCount ) % otherVertexCount );
@@ -1300,17 +1341,15 @@ void dedaiSpaceMesh::pOptimizeBlockedFaces( dedaiConvexFaceList &list, int initi
 				const decVector &otherPosition1 = list.GetVertexAt( otherVertexNext );
 				const decVector &otherPosition2 = list.GetVertexAt( otherVertexPrev2 );
 				
-				if( normal1 * ( otherPosition1 - position2 ) < -thresholdConvex ){
+				const decVector otherDirection1( otherPosition1 - position2 );
+				const decVector otherDirection2( otherPosition2 - position3 );
+				if( normal1 * otherDirection1 < -thresholdConvex || normal2 * otherDirection2 < -thresholdConvex ){
 					lastVertex = vertex;
-					continue; // first edge would lead into a concave face
-				}
-				if( normal2 * ( otherPosition2 - position3 ) < -thresholdConvex ){
-					lastVertex = vertex;
-					continue; // second edge would lead into a concave face
+					continue; // first/second edge would lead into a concave face
 				}
 				
-				// the joined face is convex. insert the vertices of the other face into this face
-				// and remove the other face
+				// the joined face is convex. insert the vertices of the other face into this
+				// face and remove the other face
 				for( v2=0; v2<otherVertexCount-2; v2++ ){
 					face.InsertVertex( nextCorner + v2, otherFace->GetVertexAt(
 						( otherCorner + 1 + v2 ) % otherVertexCount ) );
@@ -1355,15 +1394,20 @@ void dedaiSpaceMesh::pOptimizeBlockedFaces( dedaiConvexFaceList &list, int initi
 				const decVector &position1 = list.GetVertexAt( lastVertex );
 				const decVector &position2 = list.GetVertexAt( vertex );
 				const decVector &position3 = list.GetVertexAt( nextVertex );
-				const decVector normal( ( face.GetNormal() % ( position2 - position1 ) ).Normalized() );
+				const decVector direction( position2 - position1 );
+				if( direction.IsZero() ){
+					lastVertex = vertex;
+					continue;
+				}
+				const decVector normal( face.GetNormal() % direction.Normalized() );
 				
 				if( fabsf( normal * ( position3 - position2 ) ) > thresholdColinear ){
 					lastVertex = vertex;
 					continue; // edges are not co-linear
 				}
 				
-				// edges are co-linear. remove vertex. continue testing with the current vertex since
-				// the next edge could be co-linear again
+				// edges are co-linear. remove vertex. continue testing with the current
+				// vertex since the next edge could be co-linear again
 				face.RemoveVertexFrom( v );
 				vertexCount--;
 				if( vertexCount < 3 ){
@@ -1534,7 +1578,7 @@ void dedaiSpaceMesh::pLinkToMesh( dedaiSpaceMesh *mesh, float snapDistance, floa
 		
 		// retrieve the position of the vertices in this navigation mesh transformed into the
 		// coordinate system of the navigation mesh to link to
-		const short localFaceIndex = localEdge.GetFace1(); // splitting the edge potentially invalides the reference
+		const short localFaceIndex = localEdge.GetFace1(); // splitting the edge potentially invalids the reference
 		
 		const decVector &localVertex1 = pVertices[ localEdge.GetVertex1() ];
 		const decVector &localVertex2 = pVertices[ localEdge.GetVertex2() ];
@@ -1794,7 +1838,6 @@ void dedaiSpaceMesh::pSplitEdge( int edgeIndex, const decVector &splitVertex ){
 		const int cornerCount = nextFace.GetCornerCount();
 		const int firstCorner = nextFace.GetFirstCorner();
 		const int newFirstCorner = pCornerCount;
-		int i;
 		
 		for( i=0; i<cornerCount; i++ ){
 			dedaiSpaceMeshCorner &corner = pCorners[ firstCorner + i ]; // AddCorner invalidates reference

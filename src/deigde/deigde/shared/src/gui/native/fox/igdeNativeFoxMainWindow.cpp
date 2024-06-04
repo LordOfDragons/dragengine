@@ -1,23 +1,28 @@
-/* 
- * Drag[en]gine IGDE
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
+
+#ifdef IGDE_TOOLKIT_FOX
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -61,12 +66,12 @@ FXIMPLEMENT( igdeNativeFoxMainWindow, FXMainWindow,
 igdeNativeFoxMainWindow::igdeNativeFoxMainWindow(){
 }
 
-igdeNativeFoxMainWindow::igdeNativeFoxMainWindow( igdeMainWindow &owner ) :
-FXMainWindow( FXApp::instance(), owner.GetTitle().GetString(),
-	owner.GetIcon() ? ( FXIcon* )owner.GetIcon()->GetNativeIcon() : NULL,
-	owner.GetIcon() ? ( FXIcon* )owner.GetIcon()->GetNativeIcon() : NULL,
-	DECOR_ALL, 0, 0, owner.GetInitialSize().x, owner.GetInitialSize().y ),
-pOwner( &owner )
+igdeNativeFoxMainWindow::igdeNativeFoxMainWindow( igdeMainWindow &powner ) :
+FXMainWindow( FXApp::instance(), powner.GetTitle().GetString(),
+	powner.GetIcon() ? ( FXIcon* ) powner.GetIcon()->GetNativeIcon() : NULL,
+	powner.GetIcon() ? ( FXIcon* ) powner.GetIcon()->GetNativeIcon() : NULL,
+	DECOR_ALL, 0, 0, powner.GetInitialSize().x, powner.GetInitialSize().y ),
+pOwner( &powner )
 {
 	if( ! pOwner->GetVisible() ){
 		hide();
@@ -76,6 +81,33 @@ pOwner( &owner )
 igdeNativeFoxMainWindow::~igdeNativeFoxMainWindow(){
 }
 
+igdeNativeFoxMainWindow *igdeNativeFoxMainWindow::CreateNativeWidget( igdeMainWindow &powner ){
+	return new igdeNativeFoxMainWindow( powner );
+}
+
+void igdeNativeFoxMainWindow::PostCreateNativeWidget(){
+	// NOTE we need to fix the maximize problem during showing the window using PLACEMENT_* .
+	//      if we try to maximize(true) here things become the opposite. no idea how FOX
+	//      manages to mess up so hard. calling maximize at the end does work albeit looking
+	//      ugly while doing so. fixing this when main window is converted to new UI system
+	create();
+	
+	// here maximize seems to work
+	maximize( true );
+	
+	raise();
+}
+
+void igdeNativeFoxMainWindow::DestroyNativeWidget(){
+	// we use close() on purpose instead of delete because fox requires this
+	//delete ( igdeNativeFoxMainWindow* )GetNativeWidget();
+	close( false );
+}
+
+
+
+// Management
+///////////////
 
 void igdeNativeFoxMainWindow::create(){
 	FXMainWindow::create();
@@ -103,7 +135,7 @@ decColor igdeNativeFoxMainWindow::GetSystemColor( igdeEnvironment::eSystemColors
 	case igdeEnvironment::escWidgetForeground:
 		return igdeUIFoxHelper::ConvertColor( getApp()->getForeColor() );
 		
-	case igdeEnvironment::escWidgetHilight:
+	case igdeEnvironment::escWidgetHighlight:
 		return igdeUIFoxHelper::ConvertColor( getApp()->getHiliteColor() );
 		
 	case igdeEnvironment::escWidgetShadow:
@@ -174,9 +206,17 @@ void igdeNativeFoxMainWindow::UpdatePosition(){
 }
 
 void igdeNativeFoxMainWindow::UpdateIcon(){
-	FXIcon * const icon = pOwner->GetIcon() ? ( FXIcon* )pOwner->GetIcon()->GetNativeIcon() : NULL;
-	setIcon( icon );
-	setMiniIcon( icon );
+	FXIcon * const iicon = pOwner->GetIcon() ? ( FXIcon* )pOwner->GetIcon()->GetNativeIcon() : NULL;
+	setIcon( iicon );
+	setMiniIcon( iicon );
+}
+
+void igdeNativeFoxMainWindow::UpdateTitle(){
+	setTitle( pOwner->GetTitle().GetString() );
+}
+
+void igdeNativeFoxMainWindow::UpdateSize(){
+	resize( pOwner->GetSize().x, pOwner->GetSize().y );
 }
 
 void igdeNativeFoxMainWindow::SetWindowState(){
@@ -203,8 +243,8 @@ void igdeNativeFoxMainWindow::GetAppFontConfig( igdeFont::sConfiguration &config
 
 
 
-long igdeNativeFoxMainWindow::onConfigure( FXObject *sender, FXSelector selector, void *data ){
-	const int result = FXMainWindow::onConfigure( sender, selector, data );
+long igdeNativeFoxMainWindow::onConfigure( FXObject *sender, FXSelector selector, void *pdata ){
+	const int result = FXMainWindow::onConfigure( sender, selector, pdata );
 	
 	const decPoint position( getX(), getY() );
 	if( position != pOwner->GetPosition() ){
@@ -232,8 +272,8 @@ long igdeNativeFoxMainWindow::onClose( FXObject*, FXSelector, void* ){
 	return 1;
 }
 
-long igdeNativeFoxMainWindow::onChildLayoutFlags( FXObject*, FXSelector, void *data ){
-	igdeUIFoxHelper::sChildLayoutFlags &clflags = *( ( igdeUIFoxHelper::sChildLayoutFlags* )data );
+long igdeNativeFoxMainWindow::onChildLayoutFlags( FXObject*, FXSelector, void *pdata ){
+	igdeUIFoxHelper::sChildLayoutFlags &clflags = *( ( igdeUIFoxHelper::sChildLayoutFlags* )pdata );
 	clflags.flags = LAYOUT_FILL_X | LAYOUT_FILL_Y;
 	return 1;
 }
@@ -256,3 +296,5 @@ long igdeNativeFoxMainWindow::onMaximized( FXObject*, FXSelector, void* ){
 	SetWindowState();
 	return 0;
 }
+
+#endif

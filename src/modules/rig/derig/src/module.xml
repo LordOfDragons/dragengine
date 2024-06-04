@@ -1,12 +1,12 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<!DOCTYPE module SYSTEM "DragengineModule.dtd">
 <module>
 	<name>DERig</name>
 	<description>Handles rigs in the XML Drag[en]gine rig format.</description>
 	<author>Plüss Roland (roland@rptd.ch)</author>
-	<version>1.0</version>
+	<version>VERSION</version>
 	<type>Rig</type>
 	<pattern>.derig</pattern>
+	<priority>1</priority>
 	<library>
 		<file>FILENAME</file>
 		<size>FILESIZE</size>

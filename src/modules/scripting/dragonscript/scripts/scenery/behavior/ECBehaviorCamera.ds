@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -39,7 +42,7 @@ pin Dragengine.Utils
  * 
  * \code{.ds}
  * class MyElement extends BehaviorElementClass
- *    public func new()
+ *    func new()
  *       ECBehaviorCamera.new(this)
  *       ECBehaviorCamera.new(this, "subCamera")
  *    end
@@ -71,54 +74,70 @@ pin Dragengine.Utils
 class ECBehaviorCamera extends DefaultECBehavior
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
-		private var ECBehaviorCamera pECBehavior
-		private var ECBehaviorCollider.Instance pCollider
-		private var Camera pCamera
+		var ECBehaviorCamera pECBehavior
+		var ECBehaviorCollider.Instance pCollider
+		var Camera pCamera
 		
 		
 		
 		/** \brief Create behavior instance. */
-		public func new( ECBehaviorCamera ecbehavior, BehaviorElement element ) super( element )
-			this.pECBehavior = ecbehavior
+		func new(ECBehaviorCamera ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
 		end
 		
 		/** \brief Dispose of behavior instance. */
-		public func void dispose()
-			this.pCamera = null
-			this.pCollider = null
+		func void dispose()
+			pCamera = null
+			pCollider = null
 			super.dispose()
 		end
 		
 		
 		
 		/** \brief Initialize behavior element from stub. */
-		public func void init( StubElement stub )
-			if this.pECBehavior.getCollider() != null
-				this.pCollider = this.pECBehavior.getCollider().instance( this.getElement() )
+		func void init(StubElement stub)
+			if pECBehavior.getCollider() != null
+				pCollider = pECBehavior.getCollider().instance(getElement())
 			end
 			
-			this.pCamera = this.createCamera( stub )
-			if this.pCamera == null
+			pCamera = createCamera(stub)
+			if pCamera == null
 				return
 			end
 			
-			if this.pCollider != null and this.pCollider.getCollider() != null
-				this.attachCamera( stub, this.pCollider )
+			if pCollider != null and pCollider.getCollider() != null
+				attachCamera(stub, pCollider)
 			end
 		end
 		
 		/** \brief Create camera. */
-		protected func Camera createCamera( StubElement stub )
+		protected func Camera createCamera(StubElement stub)
+			var Element element = getElement()
 			var Camera camera = Camera.new()
-			camera.setFov( this.pECBehavior.getFov().getValue( stub ) )
-			camera.setFovRatio( this.pECBehavior.getFovRatio().getValue( stub ) )
-			camera.setImageDistance( this.pECBehavior.getImageDistance().getValue( stub ) )
-			camera.setViewDistance( this.pECBehavior.getViewDistance().getValue( stub ) )
-			camera.setExposure( this.pECBehavior.getExposure().getValue( stub ) )
-			camera.setLowestIntensity( this.pECBehavior.getLowestIntensity().getValue( stub ) )
-			camera.setHighestIntensity( this.pECBehavior.getHighestIntensity().getValue( stub ) )
-			camera.setAdaptionTime( this.pECBehavior.getAdaptionTime().getValue( stub ) )
-			camera.setLayerMask( this.pECBehavior.getLayerMask() )
+			
+			camera.setPosition(element.getPosition())
+			camera.setOrientation(element.getOrientation())
+			
+			camera.setFov(pECBehavior.getFov().getValue(stub))
+			camera.setFovRatio(pECBehavior.getFovRatio().getValue(stub))
+			camera.setImageDistance(pECBehavior.getImageDistance().getValue(stub))
+			camera.setViewDistance(pECBehavior.getViewDistance().getValue(stub))
+			camera.setEnableHDRR(pECBehavior.getEnableHDRR().getValue(stub))
+			camera.setExposure(pECBehavior.getExposure().getValue(stub))
+			camera.setLowestIntensity(pECBehavior.getLowestIntensity().getValue(stub))
+			camera.setHighestIntensity(pECBehavior.getHighestIntensity().getValue(stub))
+			camera.setAdaptionTime(pECBehavior.getAdaptionTime().getValue(stub))
+			camera.setEnableGI(pECBehavior.getEnableGI().getValue(stub))
+			camera.setLayerMask(pECBehavior.getLayerMask())
+			
+			var String pathParameters = pECBehavior.getPathParameters().getValueOrNull(stub)
+			if pathParameters != null
+				var LoadCamera loader = pECBehavior.getLoadCamera()
+				if loader != null
+					loader.loadFromFile(pathParameters, camera)
+				end
+			end
+			
 			return camera
 		end
 		
@@ -127,53 +146,57 @@ class ECBehaviorCamera extends DefaultECBehavior
 		 * 
 		 * Default implementation calls ECComposeAttachResource.attach().
 		 */
-		protected func void attachCamera( StubElement stub, ECBehaviorCollider.Instance collider )
-			this.pECBehavior.getAttach().attach( collider.getCollider(), this.pCamera, stub )
+		protected func void attachCamera(StubElement stub, ECBehaviorCollider.Instance collider)
+			pECBehavior.getAttach().attach(collider.getCollider(), pCamera, stub)
 		end
 		
 		
 		
 		/** \brief Behavior. */
-		public func ECBehaviorCamera getECBehavior()
-			return this.pECBehavior
+		func ECBehaviorCamera getECBehavior()
+			return pECBehavior
 		end
 		
 		/** \brief Collider behavior or null if not attached. */
-		public func ECBehaviorCollider.Instance getCollider()
-			return this.pCollider
+		func ECBehaviorCollider.Instance getCollider()
+			return pCollider
 		end
 		
 		/** \brief Camera. */
-		public func Camera getCamera()
-			return this.pCamera
+		func Camera getCamera()
+			return pCamera
 		end
 		
 		
 		
 		/** \brief Add element to game world. */
-		public func void addToGameWorld()
-			this.getElement().getGameWorld().getWorld().addCamera( this.pCamera )
+		func void addToGameWorld()
+			getElement().getGameWorld().getWorld().addCamera(pCamera)
 		end
 		
 		/** \brief Remove element from game world. */
-		public func void removeFromGameWorld()
-			this.getElement().getGameWorld().getWorld().removeCamera( this.pCamera )
+		func void removeFromGameWorld()
+			getElement().getGameWorld().getWorld().removeCamera(pCamera)
 		end
 	end
 	
 	
 	
-	private var ECBehaviorCollider pCollider
-	private var ECComposeAttachResource pAttach
-	private var ECPFloat pFov
-	private var ECPFloat pFovRatio
-	private var ECPFloat pImageDistance
-	private var ECPFloat pViewDistance
-	private var ECPFloat pExposure
-	private var ECPFloat pLowestIntensity
-	private var ECPFloat pHighestIntensity
-	private var ECPFloat pAdaptionTime
-	private var LayerMask pLayerMask
+	var ECBehaviorCollider pCollider
+	var ECComposeAttachResource pAttach
+	var ECPFloat pFov
+	var ECPFloat pFovRatio
+	var ECPFloat pImageDistance
+	var ECPFloat pViewDistance
+	var ECPBoolean pEnableHDRR
+	var ECPFloat pExposure
+	var ECPFloat pLowestIntensity
+	var ECPFloat pHighestIntensity
+	var ECPFloat pAdaptionTime
+	var ECPBoolean pEnableGI
+	var LayerMask pLayerMask
+	var ECPString pPathParameters
+	var LoadCamera pLoadCamera
 	
 	
 	
@@ -182,124 +205,178 @@ class ECBehaviorCamera extends DefaultECBehavior
 	 * 
 	 * These values are optional and can be null: \em collider.
 	 */
-	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider ) \
-	this( eclass, collider, "" )
+	func new(BehaviorElementClass eclass, ECBehaviorCollider collider) \
+	this(eclass, collider, "")
 	end
 	
-	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider, String id ) \
-	this( eclass, collider, id, id.empty() if "camera." else "camera(" + id + ")." )
+	func new(BehaviorElementClass eclass, ECBehaviorCollider collider, String id) \
+	this(eclass, collider, id, id.empty() if "camera." else "camera(" + id + ").")
 	end
 	
-	public func new( BehaviorElementClass eclass, ECBehaviorCollider collider, String id, \
-	String prefix ) super( eclass, id )
-		this.pCollider = collider
-		this.pLayerMask = LayerMask.new()
+	func new(BehaviorElementClass eclass, ECBehaviorCollider collider, String id, \
+	String prefix) super(eclass, id)
+		pCollider = collider
+		pLayerMask = LayerMask.new()
 		
-		this.pAttach = ECComposeAttachResource.new( eclass, prefix )
+		var BaseGameApp app = BaseGameApp.getApp()
+		if app != null
+			pLoadCamera = app.getLoaders().getCamera()
+		end
 		
-		this.pFov = ECPFloat.new( prefix + ".fov", 39.60, 0, 180 )
-		eclass.addProperty( this.pFov )
+		pAttach = ECComposeAttachResource.new(eclass, prefix)
 		
-		this.pFovRatio = ECPFloat.new( prefix + ".fovRatio", 1, 0.01 )
-		eclass.addProperty( this.pFovRatio )
+		pFov = ECPFloat.new(prefix + "fov", 39.60, 0, 180)
+		eclass.addProperty(pFov)
 		
-		this.pImageDistance = ECPFloat.new( prefix + ".imageDistance", 0.01, 0.001 )
-		eclass.addProperty( this.pImageDistance )
+		pFovRatio = ECPFloat.new(prefix + "fovRatio", 1, 0.01)
+		eclass.addProperty(pFovRatio)
 		
-		this.pViewDistance = ECPFloat.new( prefix + ".viewDistance", 200, 0.01 )
-		eclass.addProperty( this.pViewDistance )
+		pImageDistance = ECPFloat.new(prefix + "imageDistance", 0.01, 0.001)
+		eclass.addProperty(pImageDistance)
 		
-		this.pExposure = ECPFloat.new( prefix + ".exposure", 1, 0 )
-		eclass.addProperty( this.pExposure )
+		pViewDistance = ECPFloat.new(prefix + "viewDistance", 200, 0.01)
+		eclass.addProperty(pViewDistance)
 		
-		this.pLowestIntensity = ECPFloat.new( prefix + ".lowestIntensity", 10, 0 )
-		eclass.addProperty( this.pLowestIntensity )
+		pEnableHDRR = ECPBoolean.new(prefix + "enableHDRR", true)
+		eclass.addProperty(pEnableHDRR)
 		
-		this.pHighestIntensity = ECPFloat.new( prefix + ".higtestIntensity", 20, 0 )
-		eclass.addProperty( this.pHighestIntensity )
+		pExposure = ECPFloat.new(prefix + "exposure", 1, 0)
+		eclass.addProperty(pExposure)
 		
-		this.pAdaptionTime = ECPFloat.new( prefix + ".adaptionTime", 0.1, 0 )
-		eclass.addProperty( this.pAdaptionTime )
+		pLowestIntensity = ECPFloat.new(prefix + "lowestIntensity", 1, 0)
+		eclass.addProperty(pLowestIntensity)
 		
-		eclass.addBehavior( this )
+		pHighestIntensity = ECPFloat.new(prefix + "highestIntensity", 20, 0)
+		eclass.addProperty(pHighestIntensity)
+		
+		pAdaptionTime = ECPFloat.new(prefix + "adaptionTime", 0.1, 0)
+		eclass.addProperty(pAdaptionTime)
+		
+		pEnableGI = ECPBoolean.new(prefix + "enableGI", Engine.getDefaultEnableGI())
+		eclass.addProperty(pEnableGI)
+		
+		pPathParameters = ECPString.new(prefix + "pathParameters", null)
+		eclass.addProperty(pPathParameters)
+		
+		eclass.addBehavior(this)
 	end
 	
 	/** \brief Dispose of behavior. */
-	public func void dispose()
-		this.pCollider = null
+	func void dispose()
+		pCollider = null
 		super.dispose()
 	end
 	
 	
 	
 	/** \brief Collider behavior or null to not attach. */
-	public func ECBehaviorCollider getCollider()
-		return this.pCollider
+	func ECBehaviorCollider getCollider()
+		return pCollider
 	end
 	
 	/** \brief Attach resource. */
-	public func ECComposeAttachResource getAttach()
-		return this.pAttach
+	func ECComposeAttachResource getAttach()
+		return pAttach
 	end
 	
 	/** \brief Vertical field  of view in degrees for the entire view. */
-	public func ECPFloat getFov()
-		return this.pFov
+	func ECPFloat getFov()
+		return pFov
 	end
 	
 	/** \brief Aspect ratio of the horizontal field of view to the vertical field of view. */
-	public func ECPFloat getFovRatio()
-		return this.pFovRatio
+	func ECPFloat getFovRatio()
+		return pFovRatio
 	end
 	
 	/** \brief Distance to the image plane. */
-	public func ECPFloat getImageDistance()
-		return this.pImageDistance
+	func ECPFloat getImageDistance()
+		return pImageDistance
 	end
 	
 	/** \brief Viewing distance up to which world geometry is rendered. */
-	public func ECPFloat getViewDistance()
-		return this.pViewDistance
+	func ECPFloat getViewDistance()
+		return pViewDistance
+	end
+	
+	/** \brief Enable high definition range rendering (HDRR) if supported. */
+	func ECPBoolean getEnableHDRR()
+		return pEnableHDRR
 	end
 	
 	/** \brief Exposure. */
-	public func ECPFloat getExposure()
-		return this.pExposure
+	func ECPFloat getExposure()
+		return pExposure
 	end
 	
 	/** \brief \brief Lowest intensity the eye can adapt to. */
-	public func ECPFloat getLowestIntensity()
-		return this.pLowestIntensity
+	func ECPFloat getLowestIntensity()
+		return pLowestIntensity
 	end
 	
 	/** \brief \brief Highest intensity the eye can adapt to. */
-	public func ECPFloat getHighestIntensity()
-		return this.pHighestIntensity
+	func ECPFloat getHighestIntensity()
+		return pHighestIntensity
 	end
 	
 	/** \brief Adaption time of the eye in seconds. */
-	public func ECPFloat getAdaptionTime()
-		return this.pAdaptionTime
+	func ECPFloat getAdaptionTime()
+		return pAdaptionTime
+	end
+	
+	/** \brief Enable global illumination (GI) if supported. */
+	func ECPBoolean getEnableGI()
+		return pEnableGI
 	end
 	
 	/** \brief Layer mask. */
-	public func LayerMask getLayerMask()
-		return this.pLayerMask
+	func LayerMask getLayerMask()
+		return pLayerMask
 	end
 	
 	/** \brief Set layer mask. */
-	public func void setLayerMask( LayerMask layerMask )
+	func void setLayerMask(LayerMask layerMask)
 		if layerMask == null
 			throw EInvalidParam.new()
 		end
-		this.pLayerMask = layerMask
+		pLayerMask = layerMask
+	end
+	
+	/**
+	 * \brief Path to camera parameters file (*.decamera) to use or null/empty string.
+	 * \version 1.22
+	 * 
+	 * If not null/empty path the settings override the manual settings.
+	 * Requires camera loader to be set.
+	 */
+	func ECPString getPathParameters()
+		return pPathParameters
+	end
+	
+	/**
+	 * \brief Camera loader or null.
+	 * \version 1.22
+	 * 
+	 * By default set to BaseGameApp.getApp().getLoaders().getCamera() if
+	 * BaseGameApp.getApp() is not null.
+	 */
+	func LoadCamera getLoadCamera()
+		return pLoadCamera
+	end
+	
+	/**
+	 * \brief Set camera loader or null.
+	 * \version 1.22
+	 */
+	func void setLoadCamera(LoadCamera loader)
+		pLoadCamera = loader
 	end
 	
 	
 	
 	/** \brief Get instance in element from owner element class. */
-	public func Instance instance( BehaviorElement element )
-		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
 	
 	
@@ -310,10 +387,10 @@ class ECBehaviorCamera extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorCollider.
 	 */
-	static public func ECBehaviorCamera getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehavior each
-			return each castable ECBehaviorCamera
-		end ) cast ECBehaviorCamera
+	static func ECBehaviorCamera getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorCamera each
+			return true
+		end) cast ECBehaviorCamera
 	end
 	
 	/**
@@ -322,11 +399,10 @@ class ECBehaviorCamera extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorCamera with specific identifier.
 	 */
-	static public func ECBehaviorCamera getBehaviorIn( BehaviorElementClass eclass, String id )
-		return eclass.findBehavior( block ECBehaviorCamera each
-			return each castable ECBehaviorCamera and \
-				( each cast ECBehaviorCamera ).getID().equals( id )
-		end ) cast ECBehaviorCamera
+	static func ECBehaviorCamera getBehaviorIn(BehaviorElementClass eclass, String id)
+		return eclass.findBehavior(block ECBehaviorCamera each
+			return each.getID().equals(id)
+		end) cast ECBehaviorCamera
 	end
 	
 	/**
@@ -335,14 +411,10 @@ class ECBehaviorCamera extends DefaultECBehavior
 	 * Returns list contains ECBehaviorCamera behaviors in the order they have
 	 * been created in the element.
 	 */
-	static public func Array getAllBehaviorsIn( BehaviorElementClass eclass )
-		var Array list = Array.new()
-		eclass.forEachBehavior( block ECBehavior each
-			if each castable ECBehaviorCamera
-				list.add( each )
-			end
-		end )
-		return list
+	static func Array getAllBehaviorsIn(BehaviorElementClass eclass)
+		return eclass.collectBehaviors(block ECBehaviorCamera each
+			return true
+		end)
 	end
 	
 	
@@ -354,10 +426,10 @@ class ECBehaviorCamera extends DefaultECBehavior
 	 * of type ECBehaviorCamera.Instance . If more than one instance is present returns
 	 * the first instance.
 	 */
-	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance
-		end ) cast Instance
+	static func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
+			return true
+		end) cast Instance
 	end
 	
 	/**
@@ -366,11 +438,10 @@ class ECBehaviorCamera extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
 	 * of type ECBehaviorCamera.Instance with specific identifier.
 	 */
-	static public func Instance getInstanceIn( BehaviorElement element, String id )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance and \
-				( each cast Instance ).getECBehavior().getID().equals( id )
-		end ) cast Instance
+	static func Instance getInstanceIn(BehaviorElement element, String id)
+		return element.findInstance(block Instance each
+			return each.getECBehavior().getID().equals(id)
+		end) cast Instance
 	end
 	
 	/**
@@ -379,20 +450,16 @@ class ECBehaviorCamera extends DefaultECBehavior
 	 * Returns list contains ECBehaviorCamera.Instance instances in the order they have
 	 * been created in the element.
 	 */
-	static public func Array getAllInstancesIn( BehaviorElement element )
-		var Array list = Array.new()
-		element.forEachInstance( block ECBehaviorInstance each
-			if each castable Instance
-				list.add( each )
-			end
-		end )
-		return list
+	static func Array getAllInstancesIn(BehaviorElement element)
+		return element.collectInstances(block Instance each
+			return true
+		end)
 	end
 	
 	
 	
 	/** \brief Create Behavior instance. */
-	public func ECBehaviorInstance createInstance( BehaviorElement element )
-		return Instance.new( this, element )
+	func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
 	end
 end

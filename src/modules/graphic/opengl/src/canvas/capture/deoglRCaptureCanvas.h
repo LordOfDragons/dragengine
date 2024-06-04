@@ -1,53 +1,61 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLRCAPTURECANVAS_H_
 #define _DEOGLRCAPTURECANVAS_H_
 
+#include "../../texture/pixelbuffer/deoglPixelBuffer.h"
+
 #include <dragengine/deObject.h>
 
 class deoglRRenderWindow;
-class deoglPixelBuffer;
 class deoglRCanvasView;
 class deoglRenderThread;
 
 
 
 /**
- * \brief Render capture canvas.
+ * Render capture canvas.
  */
 class deoglRCaptureCanvas : public deObject{
 private:
 	deoglRenderThread &pRenderThread;
 	deoglRCanvasView *pCanvasView;
-	deoglPixelBuffer *pPixelBuffer;
+	deoglPixelBuffer::Ref pPixelBuffer;
 	bool pCapturePending;
+	int pComponentCount;
+	int pBitCount;
+	
+	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create peer. */
+	/** Create peer. */
 	deoglRCaptureCanvas( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up peer. */
+	/** Clean up peer. */
 	virtual ~deoglRCaptureCanvas();
 	/*@}*/
 	
@@ -55,39 +63,39 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Render thread. */
+	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
-	/** \brief Canvas view. */
+	/** Canvas view. */
 	inline deoglRCanvasView *GetCanvasView() const{ return pCanvasView; }
 	
-	/** \brief Set canvas view. */
+	/** Set canvas view. */
 	void SetCanvasView( deoglRCanvasView *canvasView );
 	
-	/** \brief Pixel buffer or \em NULL if no capture is pending. */
-	inline deoglPixelBuffer *GetPixelBuffer() const{ return pPixelBuffer; }
+	/** Pixel buffer or \em NULL if no capture is pending. */
+	inline const deoglPixelBuffer::Ref &GetPixelBuffer() const{ return pPixelBuffer; }
 	
-	/** \brief Create pixel buffer. */
+	/** Create pixel buffer. */
 	void StartCapture( int width, int height, int componentCount, int bitCount );
 	
-	/** \brief Drop pixel buffer. */
+	/** Drop pixel buffer. */
 	void DropPixelBuffer();
 	
-	/** \brief Capture is pending. */
+	/** Capture is pending. */
 	inline bool GetCapturePending() const{ return pCapturePending; }
 	
-	/** \brief Set capture is pending. */
+	/** Set capture is pending. */
 	void SetCapturePending( bool capturePending );
 	
 	
 	
-	/** \brief Capture render window canvas view required. */
+	/** Capture render window canvas view required. */
 	void CaptureRenderWindow( deoglRRenderWindow &renderWindow );
 	
-	/** \brief Capture canvas view not linked to a render window. */
+	/** Capture canvas view not linked to a render window. */
 	void CapturePending();
 	
-	/** \brief Set capture to black. */
+	/** Set capture to black. */
 	void CaptureBlack();
 	/*@}*/
 };

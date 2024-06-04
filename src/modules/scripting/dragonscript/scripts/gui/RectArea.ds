@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -45,34 +48,34 @@ fixed class RectArea
 	/*@{*/
 	/** \brief Create rectangular area with all coordinates set to 0. */
 	public func new()
-		this.pX1 = 0
-		this.pY1 = 0
-		this.pX2 = 0
-		this.pY2 = 0
+		pX1 = 0
+		pY1 = 0
+		pX2 = 0
+		pY2 = 0
 	end
 	
 	/** \brief Create rectangular area with initial coordinates. */
-	public func new( int x1, int y1, int x2, int y2 )
-		this.pX1 = x1
-		this.pY1 = y1
-		this.pX2 = x2
-		this.pY2 = y2
+	public func new(int x1, int y1, int x2, int y2)
+		pX1 = x1
+		pY1 = y1
+		pX2 = x2
+		pY2 = y2
 	end
 	
 	/** \brief Create copy of rectangular area. */
-	public func new( RectArea rect )
-		this.pX1 = rect.pX1
-		this.pY1 = rect.pY1
-		this.pX2 = rect.pX2
-		this.pY2 = rect.pY2
+	public func new(RectArea rect)
+		pX1 = rect.pX1
+		pY1 = rect.pY1
+		pX2 = rect.pX2
+		pY2 = rect.pY2
 	end
 	
 	/** \brief Create recangular area from a point and size. */
-	public func new( Point position, Point size )
-		this.pX1 = position.getX()
-		this.pY1 = position.getY()
-		this.pX2 = this.pX1 + size.getX()
-		this.pY2 = this.pY1 + size.getY()
+	public func new(Point position, Point size)
+		pX1 = position.getX()
+		pY1 = position.getY()
+		pX2 = pX1 + size.getX()
+		pY2 = pY1 + size.getY()
 	end
 	/*@}*/
 	
@@ -82,116 +85,169 @@ fixed class RectArea
 	/*@{*/
 	/** \brief X1-Coordinate. */
 	public func int getX1()
-		return this.pX1
+		return pX1
 	end
 	
 	/** \brief Y1-Coordinate. */
 	public func int getY1()
-		return this.pY1
+		return pY1
 	end
 	
 	/** \brief X2-Coordinate. */
 	public func int getX2()
-		return this.pX2
+		return pX2
 	end
 	
 	/** \brief Y2-Coordinate. */
 	public func int getY2()
-		return this.pY2
+		return pY2
 	end
 	
 	/** \brief Orientate rectangular area placing (x1,y1) top-left and (x2,y2) bottom-right. */
 	public func RectArea orientate()
 		var int x1, x2, y1, y2
 		
-		if this.pX2 > this.pX1
-			x1 = this.pX1
-			x2 = this.pX2
+		if pX2 > pX1
+			x1 = pX1
+			x2 = pX2
 		else
-			x1 = this.pX2
-			x2 = this.pX1
+			x1 = pX2
+			x2 = pX1
 		end
-		if this.pY2 > this.pY1
-			y1 = this.pY1
-			y2 = this.pY2
+		if pY2 > pY1
+			y1 = pY1
+			y2 = pY2
 		else
-			y1 = this.pY2
-			y2 = this.pY1
+			y1 = pY2
+			y2 = pY1
 		end
 		
-		return RectArea.new( x1, y1, x2, y2 )
+		return RectArea.new(x1, y1, x2, y2)
 	end
 	
 	/** \brief Position. */
 	public func Point getPosition()
-		return Point.new( this.pX1, this.pY1 )
+		return Point.new(pX1, pY1)
 	end
 	
 	/** \brief Size. */
 	public func Point getSize()
-		return Point.new( this.pX2 - this.pX1, this.pY2 - this.pY1 )
+		return Point.new(pX2 - pX1, pY2 - pY1)
+	end
+	
+	/**
+	 * \brief Width.
+	 * \version 1.13
+	 */
+	public func int getWidth()
+		return pX2 - pX1
+	end
+	
+	/**
+	 * \brief Height.
+	 * \version 1.13
+	 */
+	public func int getHeight()
+		return pY2 - pY1
+	end
+	
+	/** 
+	 * \brief Top-left corner (x1, y1).
+	 * \version 1.13
+	 */
+	public func Point getTopLeft()
+		return Point.new(pX1, pY1)
+	end
+	
+	/** 
+	 * \brief Top-right corner (x2, y1).
+	 * \version 1.13
+	 */
+	public func Point getTopRight()
+		return Point.new(pX2, pY1)
+	end
+	
+	/** 
+	 * \brief Bottom-left corner (x1, y2).
+	 * \version 1.13
+	 */
+	public func Point getBottomLeft()
+		return Point.new(pX1, pY2)
+	end
+	
+	/** 
+	 * \brief Bottom-right corner (x2, y2).
+	 * \version 1.13
+	 */
+	public func Point getBottomRight()
+		return Point.new(pX2, pY2)
 	end
 	
 	/** \brief Rectangular area moved by offset. */
-	public func RectArea move( int x, int y )
-		return new( this.pX1 + x, this.pY1 + y, this.pX2 + x, this.pY2 + y )
+	public func RectArea move(int x, int y)
+		return new(pX1 + x, pY1 + y, pX2 + x, pY2 + y)
 	end
 	
 	/** \brief Rectangular area moved by offset. */
-	public func RectArea move( Point distance )
-		return move( distance.getX(), distance.getY() )
+	public func RectArea move(Point distance)
+		return move(distance.getX(), distance.getY())
 	end
 	
 	/** \brief Rectangular area grown by size at bottom right. */
-	public func RectArea grow( int x, int y )
-		return new( this.pX1, this.pY1, this.pX2 + x, this.pY2 + y )
+	public func RectArea grow(int x, int y)
+		return new(pX1, pY1, pX2 + x, pY2 + y)
 	end
 	
 	/** \brief Rectangular area grown by size at bottom right. */
-	public func RectArea grow( Point size )
-		return grow( size.getX(), size.getY() )
+	public func RectArea grow(Point size)
+		return grow(size.getX(), size.getY())
 	end
 	
 	/** \brief Rectangular area grown by size at top left. */
-	public func RectArea growInverse( int x, int y )
-		return new( this.pX1 - x, this.pY1 - y, this.pX2, this.pY2 )
+	public func RectArea growInverse(int x, int y)
+		return new(pX1 - x, pY1 - y, pX2, pY2)
 	end
 	
 	/** \brief Rectangular area grown by size at top left. */
-	public func RectArea growInverse( Point size )
-		return growInverse( size.getX(), size.getY() )
+	public func RectArea growInverse(Point size)
+		return growInverse(size.getX(), size.getY())
 	end
 	
 	/** \brief Rectangular area grown to include another rectangular area. */
-	public func RectArea include( RectArea rect )
-		return RectArea.new( DEMath.min( this.pX1, rect.pX1 ), DEMath.min( this.pY1, rect.pY1 ), \
-			DEMath.max( this.pX2, rect.pX2 ), DEMath.max( this.pY2, rect.pY2 ) )
+	public func RectArea include(RectArea rect)
+		return RectArea.new(DEMath.min(pX1, rect.pX1), DEMath.min(pY1, rect.pY1), \
+			DEMath.max(pX2, rect.pX2), DEMath.max(pY2, rect.pY2))
 	end
 	
 	/** \brief Rectangular set to the intersection area between two rectangular areas. */
-	public func RectArea intersect( RectArea rect )
-		return RectArea.new( DEMath.max( this.pX1, rect.pX1 ), DEMath.max( this.pY1, rect.pY1 ), \
-			DEMath.min( this.pX2, rect.pX2 ), DEMath.min( this.pY2, rect.pY2 ) )
+	public func RectArea intersect(RectArea rect)
+		return RectArea.new(DEMath.max(pX1, rect.pX1), DEMath.max(pY1, rect.pY1), \
+			DEMath.min(pX2, rect.pX2), DEMath.min(pY2, rect.pY2))
 	end
 	
 	/** \brief Point clamped to rectangular area. */
-	public func Point clamp( Point point )
-		return Point.new( DEMath.clamp( point.getX(), this.pX1, this.pX2 ), DEMath.clamp( point.getY(), this.pY1, this.pY2 ) )
+	public func Point clamp(Point point)
+		return Point.new(DEMath.clamp(point.getX(), pX1, pX2), DEMath.clamp(point.getY(), pY1, pY2))
 	end
 	
 	
 	
 	/** \brief Point is inside rectangular area. */
-	public func bool isInside( int x, int y )
-		return x >= this.pX1 and x < this.pX2 and y >= this.pY1 and y < this.pY2
+	public func bool isInside(int x, int y)
+		return x >= pX1 and x < pX2 and y >= pY1 and y < pY2
 	end
 	
 	
 	
 	/** \brief Rrectangular areas is equal to another rectangular area. */
-	public func bool isEqual( RectArea rect )
-		return this.pX1 == rect.pX1 and this.pY1 == rect.pY1 and \
-			this.pX2 == rect.pX2 and this.pY2 == rect.pY2
+	public func bool isEqual(RectArea rect)
+		return pX1 == rect.pX1 and pY1 == rect.pY1 and \
+			pX2 == rect.pX2 and pY2 == rect.pY2
+	end
+	
+	/** \brief String representation. */
+	public func String toString()
+		return "RectArea({},{},{},{})".format(Array.newWith(pX1, pY1, pX2, pY2))
 	end
 	/*@}*/
 	
@@ -200,7 +256,7 @@ fixed class RectArea
 	/** \name File Handling */
 	/*@{*/
 	/** \brief Read rectangular area from file reader. */
-	static public func RectArea readFromFile( FileReader reader )
+	static public func RectArea readFromFile(FileReader reader)
 		var RectArea area = RectArea.new()
 		area.pX1 = reader.readInt()
 		area.pY1 = reader.readInt()
@@ -210,11 +266,11 @@ fixed class RectArea
 	end
 	
 	/** \brief Write rectangular area to file writer. */
-	public func void writeToFile( FileWriter writer )
-		writer.writeInt( this.pX1 )
-		writer.writeInt( this.pY1 )
-		writer.writeInt( this.pX2 )
-		writer.writeInt( this.pY2 )
+	public func void writeToFile(FileWriter writer)
+		writer.writeInt(pX1)
+		writer.writeInt(pY1)
+		writer.writeInt(pX2)
+		writer.writeInt(pY2)
 	end
 	/*@}*/
 end

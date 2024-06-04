@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenAL Audio Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOALEXTENSIONS_H_
@@ -29,7 +32,7 @@ class deoalAudioThread;
 
 
 /**
- * \brief OpenAL Extensions.
+ * OpenAL Extensions.
  */
 class deoalExtensions{
 public:
@@ -65,10 +68,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create extensions. */
+	/** Create extensions. */
 	deoalExtensions( deoalAudioThread &audioThread );
 	
-	/** \brief Clean up extensions. */
+	/** Clean up extensions. */
 	~deoalExtensions();
 	/*@}*/
 	
@@ -76,48 +79,54 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Print summary of findings. */
+	/** Scan device extensions. */
+	void ScanDeviceExtensions();
+	
+	/** Scan context extensions. */
+	void ScanContextExtensions();
+	
+	/** Print summary of findings. */
 	void PrintSummary();
 	
-	/** \brief Returns true if all required extensions are present. */
+	/** Returns true if all required extensions are present. */
 	bool VerifyPresence();
 	
 	
 	
-	/** \brief Major version. */
+	/** Major version. */
 	inline int GetVersionMajor() const{ return pVersionMajor; }
 	
-	/** \brief Minor version. */
+	/** Minor version. */
 	inline int GetVersionMinor() const{ return pVersionMinor; }
 	
-	/** \brief List of extension strings supported by hardware. */
+	/** List of extension strings supported by hardware. */
 	inline const decStringList &GetStringListExtensions() const{ return pStrListExtensions; }
 	
 	
 	
-	/** \brief Extensions is supported. */
+	/** Extensions is supported. */
 	bool GetHasExtension( eExtensions extension ) const;
 	
-	/** \brief Name of extension. */
+	/** Name of extension. */
 	const char *GetExtensionName( eExtensions extension ) const;
 	
-	/** \brief Disable extension. */
+	/** Disable extension. */
 	void DisableExtension( eExtensions extension );
 	
 	
 	
-	/** \brief EFX major version. */
+	/** EFX major version. */
 	inline int GetEfxVersionMajor() const{ return pEfxVersionMajor; }
 	
-	/** \brief EFX minor version. */
+	/** EFX minor version. */
 	inline int GetEfxVersionMinor() const{ return pEfxVersionMinor; }
 	
 	
 	
-	/** \brief EFX is supported. */
+	/** EFX is supported. */
 	inline bool GetHasEFX() const{ return pHasEFX; }
 	
-	/** \brief HRTF is supported. */
+	/** HRTF is supported. */
 	inline bool GetHasHRTF() const{ return pHasHRTF; }
 	/*@}*/
 	
@@ -125,7 +134,6 @@ public:
 	
 private:
 	void pScanVersion();
-	void pScanExtensions();
 	void pDisableExtensions();
 	
 	void pFetchRequiredFunctions();

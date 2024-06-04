@@ -1,0 +1,190 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.Commands
+pin Dragengine.Gui
+pin Dragengine.Utils
+
+
+/**
+ * \brief Interact prompt entry.
+ * 
+ * Contains the prompt information to show for use in an InteractPrompt widget. The entry
+ * contains a bunch of information which can be displayed in a prompt. View widgets
+ * decide what information to show.
+ */
+class InteractPromptEntry
+	var Image pImage
+	var Video pVideo
+	var UnicodeString pVerb
+	var UnicodeString pDescription
+	var String pStyle
+	var Command pCommand
+	var Array pAlternativeCommands
+	var Object pSettings
+	
+	
+	
+	/** \brief Create interact prompt entry. */
+	func new()
+		pVerb = UnicodeString.new()
+		pDescription = UnicodeString.new()
+		pStyle = ""
+		pAlternativeCommands = Array.new()
+	end
+	
+	/** \brief Create copy of interact prompt entry. */
+	func new(InteractPromptEntry copy)
+		pImage = copy.pImage
+		pVideo = copy.pVideo
+		pVerb = copy.pVerb
+		pDescription = copy.pDescription
+		pStyle = copy.pStyle
+		pCommand = copy.pCommand
+		pAlternativeCommands = Array.new(copy.pAlternativeCommands)
+		pSettings = copy.pSettings
+	end
+	
+	
+	
+	/** \brief Image or null. */
+	func Image getImage()
+		return pImage
+	end
+	
+	/** \brief Set image or null. */
+	func void setImage(Image image)
+		pImage = image
+	end
+	
+	/** \brief Video or null. */
+	func Video getVideo()
+		return pVideo
+	end
+	
+	/** \brief Set video or null. */
+	func void setVideo(Video video)
+		pVideo = video
+	end
+	
+	/** \brief Style or empty string if not used. */
+	func String getStyle()
+		return pStyle
+	end
+	
+	/** \brief Set style or empty string if not used. */
+	func void setStyle(String style)
+		if style == null
+			throw ENullPointer.new()
+		end
+		pStyle = style
+	end
+	
+	/** \brief Verb. */
+	func UnicodeString getVerb()
+		return pVerb
+	end
+	
+	/** \brief Set verb. */
+	func void setVerb(UnicodeString verb)
+		if verb == null
+			throw ENullPointer.new()
+		end
+		pVerb = verb
+	end
+	
+	/** \brief Description. */
+	func UnicodeString getDescription()
+		return pDescription
+	end
+	
+	/** \brief Set description. */
+	func void setDescription(UnicodeString description)
+		if description == null
+			throw ENullPointer.new()
+		end
+		pDescription = description
+	end
+	
+	/** \brief Command or null if not used. */
+	func Command getCommand()
+		return pCommand
+	end
+	
+	/** \brief Set command or null if not used. */
+	func void setCommand(Command command)
+		pCommand = command
+	end
+	
+	/**
+	 * \brief Alternative commands as Array of Command.
+	 * \version 1.20
+	 */
+	func Array getAlternativeCommands()
+		return pAlternativeCommands
+	end
+	
+	/**
+	 * \brief Optional settings or null if not used.
+	 * \version 1.19
+	 */
+	func Object getSettings()
+		return pSettings
+	end
+	
+	/**
+	 * \brief Set optional settings or null if not used.
+	 * \version 1.19
+	 */
+	func void setSettings(Object settings)
+		pSettings = settings
+	end
+	
+	
+	
+	/** \brief String representation. */
+	func String toString()
+		return pVerb.toUTF8()
+	end
+	
+	/** \brief Prompts are equal. */
+	func bool equals(Object other)
+		if not other castable InteractPromptEntry
+			return false
+		end
+		
+		var InteractPromptEntry ipe = other cast InteractPromptEntry
+		return pImage == ipe.pImage\
+			and pVideo == ipe.pVideo\
+			and pCommand == ipe.pCommand\
+			and pAlternativeCommands.equals(ipe.pAlternativeCommands)\
+			and pVerb.equals(ipe.pVerb)\
+			and pDescription.equals(ipe.pDescription)\
+			and pStyle.equals(ipe.pStyle)\
+			and (pSettings != null if pSettings.equals(ipe.pSettings) else ipe.pSettings == null)
+	end
+end

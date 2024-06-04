@@ -1,27 +1,29 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <string.h>
 
 #include "deoglRModel.h"
@@ -31,7 +33,6 @@
 #include "../deoglCaches.h"
 #include "../deGraphicOpenGl.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
-#include "../delayedoperation/deoglDelayedDeletion.h"
 #include "../imposter/deoglImposterBillboard.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTLogger.h"
@@ -51,6 +52,7 @@
 #include <dragengine/resources/model/deModelLOD.h>
 #include <dragengine/resources/model/deModelBone.h>
 #include <dragengine/resources/model/deModelTexture.h>
+#include <dragengine/resources/model/deModelVertexPositionSet.h>
 
 
 
@@ -60,7 +62,7 @@
 // Cache version in the range from 0 to 255. Increment each time the cache
 // format changed. If reaching 256 wrap around to 0. Important is only the
 // number changes to force discarding old caches
-#define CACHE_VERSION		4
+#define CACHE_VERSION 5
 
 
 
@@ -107,7 +109,6 @@ pSharedSPBListUBO( NULL )
 	try{
 		if( ! pIsCached ){
 			pInitLODs( model );
-			pInitExtends( model );
 			pSaveCached();
 		}
 		
@@ -124,10 +125,7 @@ pSharedSPBListUBO( NULL )
 		
 		pInitBoneNames( model );
 		pInitTextureNames( model );
-		
-		// TODO this only prepares the vbo block of each lod level. with render threads this is
-		//      not the biggest issue anymore. remove this some time later to make it all simpler
-		renderThread.GetDelayedOperations().AddInitModel( this );
+		pInitVPSNames( model );
 		
 	}catch( const deException & ){
 		pCleanUp();
@@ -150,6 +148,9 @@ deoglRModel::~deoglRModel(){
 ///////////////
 
 deoglModelLOD &deoglRModel::GetLODAt( int index ) const{
+	if( index < 0 ){
+		index += pLODCount;
+	}
 	if( index < 0 || index >= pLODCount ){
 		DETHROW( deeInvalidParam );
 	}
@@ -290,65 +291,23 @@ void deoglRModel::DebugVCOptimize(){
 // Private functions
 //////////////////////
 
-class deoglRModelDeletion : public deoglDelayedDeletion{
-public:
-	deoglModelLOD **lods;
-	int lodCount;
-	deoglImposterBillboard *imposterBillboard;
-	deoglSharedSPBListUBO *sharedSPBListUBO;
-	
-	deoglRModelDeletion() :
-	lods( NULL ),
-	lodCount( 0 ),
-	imposterBillboard( NULL ),
-	sharedSPBListUBO( NULL ){
-	}
-	
-	virtual ~deoglRModelDeletion(){
-	}
-	
-	virtual void DeleteObjects( deoglRenderThread &renderThread ){
-		if( sharedSPBListUBO ){
-			delete sharedSPBListUBO;
-		}
-		if( imposterBillboard ){
-			delete imposterBillboard;
-		}
-		if( lods ){
-			int i;
-			for( i=0; i<lodCount; i++ ){
-				delete lods[ i ];
-			}
-			delete [] lods;
-		}
-	}
-};
-
 void deoglRModel::pCleanUp(){
-	pRenderThread.GetDelayedOperations().RemoveInitModel( this );
-	
 	if( pBoneExtends ){
 		delete [] pBoneExtends;
 		pBoneExtends = NULL;
 	}
-	
-	// delayed deletion of opengl containing objects
-	deoglRModelDeletion *delayedDeletion = NULL;
-	
-	try{
-		delayedDeletion = new deoglRModelDeletion;
-		delayedDeletion->imposterBillboard = pImposterBillboard;
-		delayedDeletion->sharedSPBListUBO = pSharedSPBListUBO;
-		delayedDeletion->lods = pLODs;
-		delayedDeletion->lodCount = pLODCount;
-		pRenderThread.GetDelayedOperations().AddDeletion( delayedDeletion );
-		
-	}catch( const deException &e ){
-		if( delayedDeletion ){
-			delete delayedDeletion;
+	if( pSharedSPBListUBO ){
+		delete pSharedSPBListUBO;
+	}
+	if( pImposterBillboard ){
+		delete pImposterBillboard;
+	}
+	if( pLODs ){
+		int i;
+		for( i=0; i<pLODCount; i++ ){
+			delete pLODs[ i ];
 		}
-		pRenderThread.GetLogger().LogException( e );
-		throw;
+		delete [] pLODs;
 	}
 }
 
@@ -370,6 +329,14 @@ void deoglRModel::pInitTextureNames( const deModel &engModel ){
 	}
 }
 
+void deoglRModel::pInitVPSNames( const deModel &engModel ){
+	const int count = engModel.GetVertexPositionSetCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		pVPSNames.Add( engModel.GetVertexPositionSetAt( i )->GetName() );
+	}
+}
+
 void deoglRModel::pInitLODs( const deModel &engModel ){
 	const int lodCount = engModel.GetLODCount();
 	
@@ -377,19 +344,32 @@ void deoglRModel::pInitLODs( const deModel &engModel ){
 	
 	pLODs = new deoglModelLOD*[ lodCount ];
 	
-	for( pLODCount=0; pLODCount<lodCount; pLODCount++ ){
+	if( lodCount == 0 ){
+		return;
+	}
+	
+	// init base lod
+	pLODs[ 0 ] = new deoglModelLOD( *this, pLODCount, engModel );
+	pDoubleSided = pLODs[ 0 ]->GetDoubleSided();
+	pLODCount = 1;
+	
+	// init extends. this has to come now and not after higher lods since error calculation
+	// requires creating octrees which in turn require the base lod extends
+	pInitExtends( engModel, *pLODs[ 0 ] );
+	
+	// init higher lod levels
+	for( ; pLODCount<lodCount; pLODCount++ ){
 		pLODs[ pLODCount ] = new deoglModelLOD( *this, pLODCount, engModel );
-		
 		if( pLODs[ pLODCount ]->GetDoubleSided() ){
 			pDoubleSided = true;
 		}
 	}
 }
 
-void deoglRModel::pInitExtends( const deModel &engModel ){
+void deoglRModel::pInitExtends( const deModel &engModel, const deoglModelLOD &baseLod ){
 	// extends of all points
-	const oglModelPosition * const positions = pLODs[ 0 ]->GetPositions();
-	const int positionCount = pLODs[ 0 ]->GetPositionCount();
+	const oglModelPosition * const positions = baseLod.GetPositions();
+	const int positionCount = baseLod.GetPositionCount();
 	int i;
 	
 	if( positionCount > 0 ){
@@ -420,10 +400,10 @@ void deoglRModel::pInitExtends( const deModel &engModel ){
 	pBoneExtends = new sExtends[ boneCount ];
 	pBoneCount = boneCount;
 	
-	const int weightsCount = pLODs[ 0 ]->GetWeightsCount();
+	const int weightsCount = baseLod.GetWeightsCount();
 	if( weightsCount > 0 ){
-		const int * const weightsCounts = pLODs[ 0 ]->GetWeightsCounts();
-		const oglModelWeight *weightEntries = pLODs[ 0 ]->GetWeightsEntries();
+		const int * const weightsCounts = baseLod.GetWeightsCounts();
+		const oglModelWeight *weightEntries = baseLod.GetWeightsEntries();
 		int * const dominatingBones = new int[ weightsCount ];
 		bool * const boneHasExtends = new bool[ boneCount ];
 		
@@ -449,8 +429,8 @@ void deoglRModel::pInitExtends( const deModel &engModel ){
 			const decVector &position = positions[ i ].position;
 			
 			int dominatingBone = -1;
-			if( positions[ i ].weight != -1 ){
-				dominatingBone = dominatingBones[ positions[ i ].weight ];
+			if( positions[ i ].weights != -1 ){
+				dominatingBone = dominatingBones[ positions[ i ].weights ];
 			}
 			
 			if( dominatingBone != -1 ){
@@ -626,7 +606,6 @@ void deoglRModel::pSaveCached(){
 		writer->WriteVector( pWeightlessExtends.minimum );
 		writer->WriteVector( pWeightlessExtends.maximum );
 		writer->WriteByte( pHasWeightlessExtends ? 1 : 0 );
-		int i;
 		for( i=0; i<pBoneCount; i++ ){
 			writer->WriteVector( pBoneExtends[ i ].minimum );
 			writer->WriteVector( pBoneExtends[ i ].maximum );

@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<module>
+	<name>FBXRig</name>
+	<description>Handles rigs in the binary FBX format.</description>
+	<author>Plüss Roland (roland@rptd.ch)</author>
+	<version>VERSION</version>
+	<type>Rig</type>
+	<pattern>.fbx</pattern>
+	<noSaving/>
+	<noCompress/>
+	<priority>1</priority>
+	<library>
+		<file>FILENAME</file>
+		<size>FILESIZE</size>
+		<sha1>SHA1SUM</sha1>
+		<entrypoint>FBXRigCreateModule</entrypoint>
+	</library>
+</module>

@@ -1,0 +1,391 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.Preloading
+pin Dragengine.LoadSave
+pin Dragengine.Utils
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Behavior element behavior adding support to track if actors look at element.
+ * 
+ * This behavior tracks if actors are looking at the element. If actors start looking at the
+ * element they are added to the list and listeners are notified. If the actors stop looking
+ * at the element they are removed from the list and listeners are notified. The actors can
+ * be an NPC or the player. The behavior itself is passive. It requires to be triggered by
+ * the actor elements. The ECBehaviorLookAt behavior provides this functionality.
+ * 
+ * This behavior supports persistable element classes (setPersistable).
+ */
+class ECBehaviorLookedAt extends DefaultECBehavior
+	/** \brief Listener for behavior instance events. */
+	interface Listener
+		/** \brief Actor starts looking at element. */
+		func void actorStartsLookingAt( Instance instance, BehaviorElement actor )
+		
+		/** \brief Actor stops looking at element. */
+		func void actorStopsLookingAt( Instance instance, BehaviorElement actor )
+	end
+	
+	/** \brief Default implementation of behavior instance listener. */
+	class DefaultListener implements Listener
+		/** \brief Create default listener. */
+		public func new()
+		end
+		
+		/** \brief Actor starts looking at element. */
+		public func void actorStartsLookingAt( Instance instance, BehaviorElement actor )
+		end
+		
+		/** \brief Actor stops looking at element. */
+		public func void actorStopsLookingAt( Instance instance, BehaviorElement actor )
+		end
+	end
+	
+	/** \brief Factory creating listeners. */
+	interface ListenerFactory
+		/** \brief Create listener. */
+		func Listener createListener( Instance instance )
+	end
+	
+	/** \brief Factory creating listeners using block. */
+	class BlockListenerFactory implements ListenerFactory
+		private var Block pBlock
+		
+		/** \brief Create factory using block receiving Instance as parameter returning Listener. */
+		public func new( Block blockFactory )
+			if blockFactory == null
+				throw ENullPointer.new()
+			end
+			this.pBlock = blockFactory
+		end
+		
+		/** \brief Create listener. */
+		public func Listener createListener( Instance instance )
+			return this.pBlock.run( instance ) cast Listener
+		end
+	end
+	
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		private var ECBehaviorLookedAt pECBehavior
+		private var ElementResolver pElementResolver
+		private var Array pLookingActors
+		private var Array pListeners
+		
+		
+		
+		/** \brief Create element. */
+		public func new( ECBehaviorLookedAt ecbehavior, BehaviorElement element ) super( element )
+			this.pECBehavior = ecbehavior
+			this.pLookingActors = Array.new()
+			this.pListeners = Array.new()
+		end
+		
+		/** \brief Dispose of inventory. */
+		public func void dispose()
+			this.pListeners = null
+			this.pLookingActors = null
+			this.pElementResolver = null
+			super.dispose()
+		end
+		
+		
+		
+		/** \brief Initialize behavior from stub. */
+		public func void init( StubElement stub )
+			this.pECBehavior.createListeners( this )
+		end
+		
+		
+		
+		/** \brief Behavior. */
+		public func ECBehaviorLookedAt getECBehavior()
+			return this.pECBehavior
+		end
+		
+		
+		
+		/** \brief Count of actors looking at element. */
+		public func int getLookingActorCount()
+			return this.pLookingActors.getCount()
+		end
+		
+		/** \brief Actor looking at element by index. */
+		public func BehaviorElement getLookingActorAt( int index )
+			return this.pLookingActors.getAt( index ) cast BehaviorElement
+		end
+		
+		/** \brief Actor is looking at element. */
+		public func bool hasLookingActor( BehaviorElement element )
+			return this.pLookingActors.has( element )
+		end
+		
+		/**
+		 * \brief Visit actors looking at element using block.
+		 * 
+		 * Block receives as first argument each element of type BehaviorElement.
+		 */
+		public func void forEachLookingActor( Block ablock )
+			this.pLookingActors.forEach( ablock )
+		end
+		
+		/**
+		 * \brief Find actor looking at element using block.
+		 * 
+		 * Block receives as first argument each element of type BehaviorElement and has
+		 * to return true if the actor is found otherwise false. Method returns the found
+		 * actor or null if not found.
+		 */
+		public func BehaviorElement findLookingActor( Block ablock )
+			return this.pLookingActors.find( ablock ) cast BehaviorElement
+		end
+		
+		/**
+		 * \brief Checks if player is looking at element and if so returns the player actor.
+		 * 
+		 * Checks each actor in the list of actors looking at the element if it has
+		 * ECBehaviorPlayerControllable and it is the active player actor. If found
+		 * returns the player actor. If not found null is returned.
+		 */
+		public func BehaviorElement getPlayerLooking()
+			return this.pLookingActors.find( block BehaviorElement each
+				var ECBehaviorPlayerControllable.Instance behavior = \
+					ECBehaviorPlayerControllable.getInstanceIn( each )
+				return behavior != null and behavior.isPlayerControlled()
+			end ) cast BehaviorElement
+		end
+		
+		/**
+		 * \brief Player is looking at element.
+		 * 
+		 * Checks each actor in the list of actors looking at the element if it has
+		 * ECBehaviorPlayerControllable and it is the active player actor.
+		 */
+		public func bool isPlayerLooking()
+			return this.getPlayerLooking() != null
+		end
+		
+		/**
+		 * \brief Add actor to list if absent.
+		 * 
+		 * If actor is added to the list actorStartsLookingAt() is called on all listeners.
+		 */
+		public func void addLookingActor( BehaviorElement actor )
+			if actor == null
+				throw ENullPointer.new()
+			end
+			
+			if this.pLookingActors.has( actor )
+				return
+			end
+			
+			this.pLookingActors.add( actor )
+			
+			this.pListeners.forEach( block Listener each
+				each.actorStartsLookingAt( this, actor )
+			end )
+		end
+		
+		/**
+		 * \brief Remove actor from list if present.
+		 * 
+		 * If actor is removed from list actorStopsLookingAt() is called on all listeners.
+		 */
+		public func void removeLookingActor( BehaviorElement actor )
+			if actor == null
+				throw ENullPointer.new()
+			end
+			
+			if not this.pLookingActors.has( actor )
+				return
+			end
+			
+			this.pLookingActors.remove( actor )
+			
+			this.pListeners.forEach( block Listener each
+				each.actorStopsLookingAt( this, actor )
+			end )
+		end
+		
+		
+		
+		/** \brief Add listener. */
+		public func void addListener( Listener listener )
+			if listener == null
+				throw EInvalidParam.new( "listener is null" )
+			end
+			this.pListeners.add( listener )
+		end
+		
+		/** \brief Remove listener. */
+		public func void removeListener( Listener listener )
+			this.pListeners.remove( listener )
+		end
+		
+		
+		
+		/** \brief Frame update started. */
+		public func void enterFrame()
+			if this.pElementResolver != null
+				this.pElementResolver.resolve( this.getElement().getGameWorld() )
+				this.pElementResolver = null
+			end
+		end
+		
+		
+		
+		/** \brief Read element from file. */
+		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+			select reader.readByte() // version
+			case 0
+				var int i, count = reader.readUShort()
+				if count == 0
+					return
+				end
+				
+				this.pElementResolver = ElementResolver.new()
+				for i = 0 to count
+					this.pElementResolver.add( reader, block BehaviorElement element
+						this.pLookingActors.add( element )
+					end )
+				end
+				this.setRequiresEnterFrame( true )
+				
+			else
+				throw EInvalidParam.new( "unsupported version" )
+			end
+		end
+		
+		/** \brief Write element to file. */
+		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			writer.writeByte( 0 ) // version
+			
+			writer.writeUShort( this.pLookingActors.getCount() )
+			this.pLookingActors.forEach( block BehaviorElement each
+				ElementResolver.writeToFile( writer, each )
+			end )
+		end
+	end
+	
+	
+	
+	private var Array pListenerFactories
+	
+	
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass ) super( eclass )
+		if this.getBehaviorIn( eclass ) != null
+			throw BEMultipleInstanceException.new( eclass, this )
+		end
+		
+		this.pListenerFactories = Array.new()
+		
+		eclass.addBehavior( this )
+	end
+	
+	/** \brief Dispose of behavior. */
+	public func void dispose()
+		this.pListenerFactories = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Add listener factory. */
+	public func void addListenerFactory( ListenerFactory factory )
+		if factory == null
+			throw ENullPointer.new()
+		end
+		this.pListenerFactories.add( factory )
+	end
+	
+	/**
+	 * \brief Add listener factory using block.
+	 * 
+	 * Block receives as parameter Instance and returns Listener.
+	 */
+	public func void addListenerFactory( Block blockFactory )
+		this.pListenerFactories.add( BlockListenerFactory.new( blockFactory ) )
+	end
+	
+	/** \brief Visit listener factories with block with argument ListenerFactory. */
+	public func void forEachListenerFactory( Block ablock )
+		this.pListenerFactories.forEach( ablock )
+	end
+	
+	/** \brief Create listeners from factories adding them to behavior instance. */
+	public func void createListeners( Instance instance )
+		this.pListenerFactories.forEach( block ListenerFactory each
+			instance.addListener( each.createListener( instance ) )
+		end )
+	end
+	
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	public func Instance instance( BehaviorElement element )
+		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	end
+	
+	
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorComponent.
+	 */
+	static public func ECBehaviorLookedAt getBehaviorIn( BehaviorElementClass eclass )
+		return eclass.findBehavior( block ECBehaviorLookedAt each
+			return true
+		end ) cast ECBehaviorLookedAt
+	end
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorLookedAt.Instance . If more than one instance is present returns
+	 * the first instance.
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element )
+		return element.findInstance( block Instance each
+			return true
+		end ) cast Instance
+	end
+	
+	
+	
+	/** \brief Create Behavior instance. */
+	public func ECBehaviorInstance createInstance( BehaviorElement element )
+		return Instance.new( this, element )
+	end
+end

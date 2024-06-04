@@ -1,29 +1,34 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLHTSCLUSTER_H_
 #define _DEOGLHTSCLUSTER_H_
 
 #include "../../deoglBasics.h"
+#include "../../world/deoglWorldComputeElement.h"
 
+#include <dragengine/common/collection/decPointerList.h>
 #include <dragengine/common/math/decMath.h>
 
 #define HTSC_MAX_LOD				4
@@ -34,16 +39,6 @@ class deImage;
 class deoglTerrainHeightImage;
 class deoglVAO;
 
-enum eHTSCBorders{
-	ehtscbLeft = 0,
-	ehtscbTop,
-	ehtscbRight,
-	ehtscbBottom,
-	ehtscbFixLeft,
-	ehtscbFixTop,
-	ehtscbFixRight,
-	ehtscbFixBottom
-};
 
 /** Height Terrain Sector Cluster LOD. */
 struct deoglHTSClusterLOD{
@@ -57,8 +52,6 @@ struct deoglHTSClusterLOD{
 
 
 /**
- * @brief Height Terrain Sector Cluster.
- *
  * Cluster in a height terrain sector. Stores the maximum variance in the cluster
  * as well as an axis aligned box enclosing all contained vertices. The AABB is
  * stored only as the middle height and half-height since the X and Z values of
@@ -69,7 +62,22 @@ struct deoglHTSClusterLOD{
  */
 class deoglHTSCluster{
 private:
+	/** World compute element. */
+	class WorldComputeElement: public deoglWorldComputeElement{
+		deoglHTSCluster &pCluster;
+	public:
+		WorldComputeElement( deoglHTSCluster &cluster );
+		virtual void UpdateData( sDataElement &data ) const;
+		virtual void UpdateDataGeometries( sDataElementGeometry *data ) const;
+	};
+	
+	
+	
 	deoglRHTSector *pHTSector;
+	decPoint pCoordinates;
+	int pIndex;
+	
+	deoglWorldComputeElement::Ref pWorldComputeElement;
 	
 	int pFirstPointX;
 	int pFirstPointZ;
@@ -97,101 +105,177 @@ private:
 	deoglVBOHeightTerrain2 *pDataPoints2;
 	int pDataPointCount;
 	
+	
+	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new cluster. */
+	/** Create cluster. */
 	deoglHTSCluster();
-	/** Cleans up the cluster. */
+	
+	/** Clean up cluster. */
 	~deoglHTSCluster();
 	/*@}*/
 	
-	/** @name Management */
+	
+	
+	/** \name Management */
 	/*@{*/
-	/** Sets the height terrain sector. */
+	/** Height terrain sector. */
+	inline deoglRHTSector *GetHTSector() const{ return pHTSector; }
+	
+	/** Set height terrain sector. */
 	void SetHTSector( deoglRHTSector *htsector );
 	
-	/** Retrieves the first point in X direction. */
+	/** Coordinates. */
+	inline const decPoint &GetCoordinates() const{ return pCoordinates; }
+	
+	/** Set coordinates. */
+	void SetCoordinates( const decPoint &coordinates );
+	
+	/** Index. */
+	inline int GetIndex() const{ return pIndex; }
+	
+	/** Set index. */
+	void SetIndex( int index );
+	
+	
+	
+	/** First point in X direction. */
 	inline int GetFirstPointX() const{ return pFirstPointX; }
-	/** Retrieves the first point in Z direction. */
+	
+	/** First point in Z direction. */
 	inline int GetFirstPointZ() const{ return pFirstPointZ; }
-	/** Retrieves the number of points in X direction. */
+	
+	/** Count of points in X direction. */
 	inline int GetPointCountX() const{ return pPointCountX; }
-	/** Retrieves the number of points in Z direction. */
+	
+	/** Count of points in Z direction. */
 	inline int GetPointCountZ() const{ return pPointCountZ; }
-	/** Sets the size. */
+	
+	/** Set size. */
 	void SetSize( int firstPointX, int firstPointZ, int pointCountX, int pointCountZ );
 	
-	/** Retrieves the center of the enclosing box. */
+	
+	
+	/** Center of the enclosing box. */
 	inline const decVector &GetCenter() const{ return pCenter; }
-	/** Retrieves the half extends of the enclosing box. */
+	
+	/** Half extends of the enclosing box. */
 	inline const decVector &GetHalfExtends() const{ return pHalfExtends; }
 	
-	/** \brief Initializes the cluster from the given height image during main thread. */
+	
+	
+	/** Initializes the cluster from the given height image during main thread. */
 	void InitFromHeightImage( const deHeightTerrainSector &sector );
 	
-	/** Determines if this cluster has no lod levels. */
-	inline bool GetNoLOD() const{ return pNoLOD; }
-	/** Retrieves the given LOD level. */
-	deoglHTSClusterLOD &GetLODAt( int level );
 	
-	/** Updates the height extends. */
+	
+	/** Cluster has no lod levels. */
+	inline bool GetNoLOD() const{ return pNoLOD; }
+	
+	/** LOD level. */
+	deoglHTSClusterLOD &GetLODAt( int level );
+	const deoglHTSClusterLOD &GetLODAt( int level ) const;
+	
+	
+	
+	/** Update height extends. */
 	void UpdateHeightExtends( float minHeight, float maxHeight );
 	
-	/** Print out some debuging informations. */
+	/** Print out some debuging information. */
 	void DebugPrint();
 	
-	/** Retrieves the vbo point offset. */
+	
+	
+	/** VBO point offset. */
 	inline int GetOffsetVBODataPoints() const{ return pOffsetVBODataPoints; }
-	/** Sets the offset to the data vbo. */
+	
+	/** Set offset data vbo. */
 	void SetOffsetVBODataPoints( int offset );
-	/** Retrieves the number of data vbo points. */
+	
+	/** Count of data vbo points. */
 	inline int GetCountVBODataPoints() const{ return pDataPointCount; }
 	
-	/** Retrieves the position data vbo. */
+	/** Position data vbo. */
 	inline GLuint GetVBODataPoints1() const{ return pVBODataPoints1; }
-	/** Sets the position data vbo. */
+	
+	/** Set position data vbo. */
 	void SetVBODataPoints1( GLuint vbo );
-	/** Updates the position vbo. */
+	
+	/** Update position vbo. */
 	void UpdateVBOData1();
 	
-	/** Retrieves the height data vbo. */
+	/** Height data vbo. */
 	inline GLuint GetVBODataPoints2() const{ return pVBODataPoints2; }
-	/** Sets the height data vbo. */
+	
+	/** Set height data vbo. */
 	void SetVBODataPoints2( GLuint vbo );
-	/** Update the height vbo. */
+	
+	/** Update height vbo. */
 	void UpdateVBOData2();
 	
-	/** Retrieves the vao. */
+	
+	
+	/** VAO. */
 	inline deoglVAO *GetVAO() const{ return pVAO; }
-	/** Update the vao. */
+	
+	/** Update vao. */
 	void UpdateVAO();
 	
-	/** Retrieves the vbo data faces offset. */
+	
+	
+	/** VBO data faces offset. */
 	inline int GetOffsetVBODataFaces() const{ return pOffsetVBODataFaces; }
-	/** Sets the offset to the data faces vbo. */
+	
+	/** Set offset data faces vbo. */
 	void SetOffsetVBODataFaces( int offset );
-	/** Retrieves the number of data vbo faces. */
+	
+	/** Count of data vbo faces. */
 	inline int GetCountVBODataFaces() const{ return pFacePointCount; }
-	/** Retrieves the faces data vbo. */
+	
+	/** Faces data vbo. */
 	inline GLuint GetVBODataFaces() const{ return pVBODataFaces; }
-	/** Sets the faces data vbo. */
+	
+	/** Set faces data vbo. */
 	void SetVBODataFaces( GLuint vbo );
-	/** Updates the data faces vbo. */
+	
+	/** Update data faces vbo. */
 	void UpdateVBODataFaces();
+	
+	
+	
+	/** Add to world compute. */
+	void AddToWorldCompute( deoglWorldCompute &worldCompute );
+	
+	/** Update world compute. */
+	void UpdateWorldCompute();
+	
+	/** Update world compute textures. */
+	void UpdateWorldComputeTextures();
+	
+	/** Remove from world compute. */
+	void RemoveFromWorldCompute();
 	/*@}*/
 	
-	/** @name Face Points */
+	
+	
+	/** \name Face Points */
 	/*@{*/
-	/** Retrieves the face points. */
+	/** Face points. */
 	inline GLushort *GetFacePoints() const{ return pFacePoints; }
-	/** Retrieves the number of face points. */
+	
+	/** Count of face points. */
 	inline int GetFacePointCount() const{ return pFacePointCount; }
-	/** Adds a face point. */
+	
+	/** Add face point. */
 	void AddFacePoints( int p1, int p2, int p3 );
-	/** Sets the face point count. Has to be less or equal the current point count. */
+	
+	/** Set face point count. Has to be less or equal the current point count. */
 	void SetFacePointCount( int count );
 	/*@}*/
+	
+	
 	
 private:
 	void pCreateBaseLOD( const deHeightTerrainSector &sector, int width );

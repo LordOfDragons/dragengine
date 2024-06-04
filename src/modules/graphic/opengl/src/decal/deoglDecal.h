@@ -1,26 +1,31 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLDECAL_H_
 #define _DEOGLDECAL_H_
+
+#include "../skin/dynamic/deoglDynamicSkinListener.h"
 
 #include <dragengine/systems/modules/graphic/deBaseGraphicDecal.h>
 
@@ -34,9 +39,9 @@ class deDecal;
 
 
 /**
- * \brief Decal peer.
+ * Decal peer.
  */
-class deoglDecal : public deBaseGraphicDecal{
+class deoglDecal : public deBaseGraphicDecal, deoglDynamicSkinListener{
 public:
 	deGraphicOpenGl &pOgl;
 	const deDecal &pDecal;
@@ -52,8 +57,13 @@ public:
 	bool pDirtyDynamicSkin;
 	bool pDirtyVisibility;
 	bool pDirtyParamBlocks;
+	bool pDirtyRenderableMapping;
+	bool pDirtyStaticTexture;
 	
 	bool pDynamicSkinRequiresSync;
+	
+	bool pNotifyTextureChanged;
+	bool pNotifyTUCChanged;
 	
 	deoglComponent *pParentComponent;
 	
@@ -62,10 +72,10 @@ public:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create peer. */
+	/** Create peer. */
 	deoglDecal( deGraphicOpenGl &ogl, const deDecal &decal );
 	
-	/** \brief Clean up peer. */
+	/** Clean up peer. */
 	virtual ~deoglDecal();
 	/*@}*/
 	
@@ -73,56 +83,60 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Opengl object. */
+	/** Opengl object. */
 	inline deGraphicOpenGl &GetOgl() const{ return pOgl; }
 	
-	/** \brief Decal engine resource. */
+	/** Decal engine resource. */
 	inline const deDecal &GetDecal() const{ return pDecal; }
 	
 	
 	
-	/** \brief Render decal. */
+	/** Render decal. */
 	inline deoglRDecal *GetRDecal() const{ return pRDecal; }
 	
-	/** \brief Update render thread counterpart if required. */
+	/** Update render thread counterpart if required. */
 	void SyncToRender();
 	
 	
 	
-	/** \brief Parent component or \em NULL. */
+	/** Parent component or \em NULL. */
 	inline deoglComponent *GetParentComponent() const{ return pParentComponent; }
 	
-	/** \brief Set parent component or \em NULL. */
+	/** Set parent component or \em NULL. */
 	void SetParentComponent( deoglComponent *component );
+	/*@}*/
 	
 	
 	
-	/** \brief Dynamic skin needs sync. */
-	void DynamicSkinRequiresSync();
-	
-	/** \brief Drop dynamic skin because it is about to be deleted. */
-	void DropDynamicSkin();
+	/** \name Dynamic skin listener */
+	/*@{*/
+	virtual void DynamicSkinDestroyed();
+	virtual void DynamicSkinRenderablesChanged();
+	virtual void DynamicSkinRenderableChanged( deoglDSRenderable &renderable );
+	virtual void DynamicSkinRenderableRequiresSync( deoglDSRenderable &renderable );
 	/*@}*/
 	
 	
 	
 	/** \name Notifications */
 	/*@{*/
-	/** \brief Position, orientation or size changed. */
+	/** Position, orientation or size changed. */
 	virtual void GeometryChanged();
 	
-	/** \brief Texture coordinates transformation changed. */
+	/** Texture coordinates transformation changed. */
 	virtual void TransformChanged();
 	
-	/** \brief Skin changed. */
+	/** Skin changed. */
 	virtual void SkinChanged();
 	
-	/** \brief Dynamic skin changed. */
+	/** Dynamic skin changed. */
 	virtual void DynamicSkinChanged();
 	
-	/** \brief Visible changed. */
+	/** Visible changed. */
 	virtual void VisibleChanged();
 	/*@}*/
+	
+	
 	
 private:
 	void pCleanUp();

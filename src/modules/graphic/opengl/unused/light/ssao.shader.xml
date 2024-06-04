@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shader>
+	<name>DefRen SSAO</name>
+	
+	<uniformBlock name='RenderParameters' target='0'/>
+	
+	<texture name='texDepth' target='0'/>
+	
+	<sourceCode unit='compute'>compute/defren/light/ssao/ssao.glsl</sourceCode>
+</shader>

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -46,7 +49,7 @@ struct sRuntimeMeterNatDat{
 	sCounter *counters;
 	int counterCount;
 	
-	decTimer &GetTimerAt( int index ){
+	decTimer &GetMeterAt( int index ){
 		if( index < 0 ){
 			DSTHROW( dueInvalidParam );
 		}
@@ -138,7 +141,7 @@ deClassRuntimeMeter::nfReset::nfReset( const sInitData &init ) : dsFunction( ini
 void deClassRuntimeMeter::nfReset::RunFunction( dsRunTime *rt, dsValue *myself ){
 	sRuntimeMeterNatDat &nd = *( ( sRuntimeMeterNatDat* )p_GetNativeData( myself ) );
 	const int meter = rt->GetValue( 0 )->GetInt();
-	nd.GetTimerAt( meter ).Reset();
+	nd.GetMeterAt( meter ).Reset();
 }
 
 // public func void reset( int meterFirst, int meterCount )
@@ -154,7 +157,7 @@ void deClassRuntimeMeter::nfReset2::RunFunction( dsRunTime *rt, dsValue *myself 
 	int i;
 	
 	for( i=0; i<meterCount; i++ ){
-		nd.GetTimerAt( meterFirst + i ).Reset();
+		nd.GetMeterAt( meterFirst + i ).Reset();
 	}
 }
 
@@ -166,7 +169,7 @@ deClassRuntimeMeter::nfElapsed::nfElapsed( const sInitData &init ) : dsFunction(
 void deClassRuntimeMeter::nfElapsed::RunFunction( dsRunTime *rt, dsValue *myself ){
 	sRuntimeMeterNatDat &nd = *( ( sRuntimeMeterNatDat* )p_GetNativeData( myself ) );
 	const int meter = rt->GetValue( 0 )->GetInt();
-	const float elapsed = nd.GetTimerAt( meter ).GetElapsedTime();
+	const float elapsed = nd.GetMeterAt( meter ).GetElapsedTime();
 	rt->PushFloat( elapsed );
 }
 
@@ -178,7 +181,7 @@ deClassRuntimeMeter::nfElapsedMicroSec::nfElapsedMicroSec( const sInitData &init
 void deClassRuntimeMeter::nfElapsedMicroSec::RunFunction( dsRunTime *rt, dsValue *myself ){
 	sRuntimeMeterNatDat &nd = *( ( sRuntimeMeterNatDat* )p_GetNativeData( myself ) );
 	const int meter = rt->GetValue( 0 )->GetInt();
-	const int elapsed = ( int )( nd.GetTimerAt( meter ).GetElapsedTime() * 1e6f );
+	const int elapsed = ( int )( nd.GetMeterAt( meter ).GetElapsedTime() * 1e6f );
 	rt->PushInt( elapsed );
 }
 
@@ -224,7 +227,7 @@ deClassRuntimeMeter::nfCounterAdd::nfCounterAdd( const sInitData &init ) : dsFun
 void deClassRuntimeMeter::nfCounterAdd::RunFunction( dsRunTime *rt, dsValue *myself ){
 	sRuntimeMeterNatDat &nd = *( ( sRuntimeMeterNatDat* )p_GetNativeData( myself ) );
 	const int meter = rt->GetValue( 0 )->GetInt();
-	const int elapsed = ( int )( nd.GetTimerAt( meter ).GetElapsedTime() * 1e6f );
+	const int elapsed = ( int )( nd.GetMeterAt( meter ).GetElapsedTime() * 1e6f );
 	sRuntimeMeterNatDat::sCounter &counter = nd.GetCounterAt( rt->GetValue( 1 )->GetInt() );
 	counter.time += elapsed;
 	counter.updates++;
@@ -239,6 +242,17 @@ void deClassRuntimeMeter::nfCounterTime::RunFunction( dsRunTime *rt, dsValue *my
 	sRuntimeMeterNatDat &nd = *( ( sRuntimeMeterNatDat* )p_GetNativeData( myself ) );
 	const sRuntimeMeterNatDat::sCounter &counter = nd.GetCounterAt( rt->GetValue( 0 )->GetInt() );
 	rt->PushInt( counter.time );
+}
+
+// public func float counterTimeSeconds( int counter )
+deClassRuntimeMeter::nfCounterTimeSeconds::nfCounterTimeSeconds( const sInitData &init ) :
+dsFunction( init.clsRTM, "counterTimeSeconds", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt ){
+	p_AddParameter( init.clsInt ); // counter
+}
+void deClassRuntimeMeter::nfCounterTimeSeconds::RunFunction( dsRunTime *rt, dsValue *myself ){
+	sRuntimeMeterNatDat &nd = *( ( sRuntimeMeterNatDat* )p_GetNativeData( myself ) );
+	const sRuntimeMeterNatDat::sCounter &counter = nd.GetCounterAt( rt->GetValue( 0 )->GetInt() );
+	rt->PushFloat( ( float )( 1e-6 * ( double )counter.time ) );
 }
 
 // public func int counterUpdates( int counter )
@@ -266,6 +280,23 @@ void deClassRuntimeMeter::nfCounterAverageTime::RunFunction( dsRunTime *rt, dsVa
 		
 	}else{
 		rt->PushInt( 0 );
+	}
+}
+
+// public func float counterAverageTimeSeconds( int counter )
+deClassRuntimeMeter::nfCounterAverageTimeSeconds::nfCounterAverageTimeSeconds( const sInitData &init ) :
+dsFunction( init.clsRTM, "counterAverageTimeSeconds", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt ){
+	p_AddParameter( init.clsInt ); // counter
+}
+void deClassRuntimeMeter::nfCounterAverageTimeSeconds::RunFunction( dsRunTime *rt, dsValue *myself ){
+	sRuntimeMeterNatDat &nd = *( ( sRuntimeMeterNatDat* )p_GetNativeData( myself ) );
+	const sRuntimeMeterNatDat::sCounter &counter = nd.GetCounterAt( rt->GetValue( 0 )->GetInt() );
+	
+	if( counter.updates > 0 ){
+		rt->PushFloat( ( float )( ( 1e-6 * ( double )counter.time ) / ( double )counter.updates ) );
+		
+	}else{
+		rt->PushFloat( 0.0f );
 	}
 }
 
@@ -324,8 +355,10 @@ void deClassRuntimeMeter::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfCounterReset2( init ) );
 	AddFunction( new nfCounterAdd( init ) );
 	AddFunction( new nfCounterTime( init ) );
+	AddFunction( new nfCounterTimeSeconds( init ) );
 	AddFunction( new nfCounterUpdates( init ) );
 	AddFunction( new nfCounterAverageTime( init ) );
+	AddFunction( new nfCounterAverageTimeSeconds( init ) );
 	
 	// calculate member offsets
 	CalcMemberOffsets();

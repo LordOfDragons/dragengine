@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shader>
+	<name>Sky Body</name>
+	
+	<uniformBlock name='RenderParameters' target='0'/>
+	
+	<texture name='texColor' target='0'/>
+	<texture name='texTransparency' target='1'/>
+	
+	<parameter name='pMatrixBody'/>
+	<parameter name='pColor'/>
+	<parameter name='pMaterialGamma'/>
+	
+	<attribute name='inPosition' target='0'/>
+	<attribute name='inLayer' target='1'/>
+	
+	<output name='outColor' target='0'/>
+	
+	<sourceCode unit='vertex'>vertex/sky/body.glsl</sourceCode>
+	<sourceCode unit='fragment'>fragment/sky/body.glsl</sourceCode>
+</shader>

@@ -13,10 +13,12 @@ envLibrary = parent_env.Clone()
 buildStaticLinking = True
 
 # parameters
+oalversion = '1.22.2'
+
 if envLibrary['platform_android'] != 'no' and False:
 	srcdir = 'android-libopenalsoft-1.0.0'
 else:
-	srcdir = 'openal-soft-1.19.1'
+	srcdir = 'openal-soft-{}'.format(oalversion)
 
 if envLibrary['OSWindows']:
 	libFileName = 'bin/OpenAL32.dll'
@@ -33,6 +35,7 @@ else:
 
 # check if system openal is present
 hasSystemOpenAL = False
+""" force false due to annoying limitations
 conf = envLibrary.Configure()
 if envLibrary['with_system_openal'] != TernaryVariableNo:
 	hasSystemOpenAL = conf.CheckLibWithHeader(libLinkName, 'AL/al.h', 'c++', 'alEnable(0);')
@@ -40,6 +43,7 @@ conf.Finish()
 
 if not hasSystemOpenAL and envLibrary['with_system_openal'] == TernaryVariableYes:
 	Exit('Requested to use system OpenAL but no usable OpenAL found.')
+"""
 
 libs = [libLinkName]
 #libs.extend(parent_targets['lib_sndio']['libs'])
@@ -62,6 +66,10 @@ def openalBuild(target, source, env):
 	
 	untarArchive(buildDir.abspath, source[0].abspath)
 	
+	cmakeBuildDir = buildDir.Dir('build').abspath
+	if not os.path.isdir(cmakeBuildDir):
+		os.mkdir(cmakeBuildDir)
+	
 	if env['platform_android'] != 'no':
 		# https://github.com/kcat/openal-soft/issues/274#issuecomment-471091942
 		# OpenAL reacts badly to set up cross compilers manually because it is
@@ -71,12 +79,13 @@ def openalBuild(target, source, env):
 		#script = createScriptHeader(env, deps=[parent_targets['lib_sndio']])
 		script = createScriptHeader(env)
 	
-	script.append('cd "{}" || exit 1'.format(buildDir.Dir(srcdir).abspath))
+	realSrcDir = buildDir.Dir(srcdir).abspath
+	script.append('cd "{}" || exit 1'.format(realSrcDir))
 	
 	for p in env['PATCHES']:
 		script.append('patch -p1 <{} || exit 1'.format(p.srcnode().abspath))
 	
-	script.append('cd build')
+	script.append('cd "{}" || exit 1'.format(cmakeBuildDir))
 	cmdline = ['cmake']
 	cmdline.append('-DCMAKE_INSTALL_PREFIX="{}"'.format(buildDir.abspath))
 	cmdline.append('-DALSOFT_CONFIG=OFF')
@@ -87,8 +96,9 @@ def openalBuild(target, source, env):
 	cmdline.append('-DALSOFT_TESTS=OFF')
 	cmdline.append('-DALSOFT_UTILS=OFF')
 	cmdline.append('-DALSOFT_INSTALL=ON')
+	cmdline.append('-DALSOFT_EAX=ON')
 	if env['with_debug']:
-		cmdline.append('-DCMAKE_BUILD_TYPE=RelWithDebInfo')
+		cmdline.append('-DCMAKE_BUILD_TYPE=Debug')
 	else:
 		cmdline.append('-DCMAKE_BUILD_TYPE=Release')
 	
@@ -114,7 +124,7 @@ def openalBuild(target, source, env):
 		cmdline.append('-DCMAKE_POSITION_INDEPENDENT_CODE=ON')
 		cmdline.append('-DLIBTYPE=STATIC')
 	
-	cmdline.append('..')
+	cmdline.append('"{}"'.format(realSrcDir))
 	
 	if env['platform_android'] != 'no':
 		cmdline.append('-DANDROID_PLATFORM={}'.format(env['ANDROID_APILEVEL']))
@@ -128,15 +138,17 @@ def openalBuild(target, source, env):
 	
 	script.append('{} || exit 1'.format(' '.join(cmdline)))
 	
-	script.append('make install || exit 1')
+	script.append('make -j {} install || exit 1'.format(env['with_threads']))
 	
 	# fix annoying wrong-library problems in 64-bit systems
-	script.append('if [ -f ../../lib64/libopenal.a ]')
+	script.append('if [ -f "{}" ]'.format(buildDir.File('lib64/libopenal.a').abspath))
 	script.append('then')
-	script.append('  cp -fL ../../lib64/libopenal.a ../../lib/libopenal.a')
+	script.append('  cp -fL "{}" "{}"'.format(
+		buildDir.File('lib64/libopenal.a').abspath,
+		buildDir.File('lib/libopenal.a').abspath))
 	script.append('fi')
 	
-	if not env.RunIsolatedSystem(script):
+	if not env.RunExternalCommand(script):
 		raise Exception('Failed building openal')
 
 def openalPrecompiled(target, source, env):
@@ -195,7 +207,7 @@ if envLibrary['OSWindows']:
 	
 elif envLibrary['OSBeOS']:
 	# BeOS requires some additional patches
-	globFiles(envLibrary, 'patches_beos', '*.patch', patches, recursive=False)
+	globFiles(envLibrary, os.path.join('patches_beos', oalversion), '*.patch', patches, recursive=False)
 	envLibrary.Append(PATCHES = [envLibrary.File(x) for x in sorted(patches)])
 	library = envLibrary.Command(targets, '{}.tar.bz2'.format(srcdir),
 		envLibrary.Action(openalBuild, 'Build OpenAL'))
@@ -206,7 +218,7 @@ else:
 	# 
 	# android is also compiled using the same source but has some peculiarities handled
 	# directly in the openalBuild function
-	globFiles(envLibrary, 'patches', '*.patch', patches, recursive=False)
+	globFiles(envLibrary, os.path.join('patches', oalversion), '*.patch', patches, recursive=False)
 	envLibrary.Append(PATCHES = [envLibrary.File(x) for x in sorted(patches)])
 	library = envLibrary.Command(targets, '{}.tar.bz2'.format(srcdir),
 		envLibrary.Action(openalBuild, 'Build OpenAL'))
@@ -216,9 +228,11 @@ else:
 
 envLibrary.Depends(library, envLibrary['PATCHES'])
 
+envLibrary.SideEffect('#notParallelCMake', library)
+
 depends = parent_env.Alias('lib_openal', library)
 
-envLibrary.Clean(library, ['bin', 'include', 'lib', srcdir])
+envLibrary.Clean(library, ['bin', 'include', 'lib', 'build', srcdir])
 
 cpppath = [envLibrary.Dir('include')]
 #cpppath.extend(parent_targets['lib_sndio']['cpppath'])

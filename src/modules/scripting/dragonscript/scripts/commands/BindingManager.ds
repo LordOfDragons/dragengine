@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -45,26 +48,30 @@ class BindingManager
 	/** \brief Input device information as array of InputDevice. */
 	private var Array pDevices
 	
+	/** \brief Listeners. */
+	private var Array pListeners
+	
 	
 	
 	/** \brief Create binding manager. */
 	public func new()
-		this.pAxisBindings = Array.new()
-		this.pButtonBindings = Array.new()
-		this.pDevices = Array.new()
+		pAxisBindings = Array.new()
+		pButtonBindings = Array.new()
+		pDevices = Array.new()
+		pListeners = Array.new()
 		
-		this.reloadDevices()
+		reloadDevices()
 	end
 	
 	/** \brief Create copy of binding manager. */
-	public func new( BindingManager bindingManager )
-		this.pAxisBindings = bindingManager.pAxisBindings.map( block Binding each
-			return Binding.new( each )
-		end )
-		this.pButtonBindings = bindingManager.pButtonBindings.map( block Binding each
-			return Binding.new( each )
-		end )
-		this.pDevices = Array.new( bindingManager.pDevices )
+	public func new(BindingManager bindingManager)
+		pAxisBindings = bindingManager.pAxisBindings.map(block Binding each
+			return Binding.new(each)
+		end)
+		pButtonBindings = bindingManager.pButtonBindings.map(block Binding each
+			return Binding.new(each)
+		end)
+		pDevices = Array.new(bindingManager.pDevices)
 	end
 	
 	
@@ -75,12 +82,37 @@ class BindingManager
 	 * Call after receiving input events of any kind. Updates internal data structures
 	 * if certain input events arrive.
 	 */
-	public func void checkInputEvent( InputEvent event )
+	public func void checkInputEvent(InputEvent event)
 		select event.getType()
-		case InputEventType.deviceAttached, \
-			InputEventType.deviceDetached, \
-			InputEventType.deviceParamsChanged
-				this.reloadDevices()
+		case InputEventType.deviceAttachedDetached
+			var Array oldDevices = Array.new(pDevices)
+			
+			reloadDevices()
+			
+			// notify listeners about removed devices
+			oldDevices.forEach(block InputDevice oldDevice
+				if pDevices.find(block InputDevice newDevice
+					return newDevice.getID().equals(oldDevice.getID())
+				end) == null
+					pListeners.forEach(block BindingManagerListener each
+						each.deviceDetached(this, oldDevice)
+					end)
+				end
+			end)
+			
+			// notify listeners about added devices
+			pDevices.forEach(block InputDevice newDevice
+				if oldDevices.find(block InputDevice oldDevice
+					return oldDevice.getID().equals(newDevice.getID())
+				end) == null
+					pListeners.forEach(block BindingManagerListener each
+						each.deviceAttached(this, newDevice)
+					end)
+				end
+			end)
+			
+		case InputEventType.deviceParamsChanged
+			reloadDevices()
 		end
 	end
 	
@@ -88,161 +120,249 @@ class BindingManager
 	
 	/** \brief Number of axis bindings. */
 	public func int getAxisBindingCount()
-		return this.pAxisBindings.getCount()
+		return pAxisBindings.getCount()
 	end
 	
 	/** \brief Axis binding at index. */
-	public func Binding getAxisBindingAt( int index )
-		return this.pAxisBindings.getAt( index ) cast Binding
+	public func Binding getAxisBindingAt(int index)
+		return pAxisBindings.getAt(index) cast Binding
 	end
 	
 	/** \brief Add axis binding. */
-	public func void addAxisBinding( Binding binding )
+	public func void addAxisBinding(Binding binding)
 		if binding == null
 			throw EInvalidParam.new()
 		end
 		
-		this.pAxisBindings.add( binding )
+		pAxisBindings.add(binding)
 		
-		this.updateAxisBindingIndices( binding )
+		updateAxisBindingIndices(binding)
+		
+		pListeners.forEach(block BindingManagerListener each
+			each.axisBindingAdded(this, binding)
+		end)
 	end
 	
 	/** \brief Remove axis binding. */
-	public func void removeAxisBinding( Binding binding )
-		this.pAxisBindings.remove( binding )
+	public func void removeAxisBinding(Binding binding)
+		pAxisBindings.remove(binding)
+		
+		pListeners.forEach(block BindingManagerListener each
+			each.axisBindingRemoved(this, binding)
+		end)
 	end
 	
 	/** \brief Remove all axis bindings. */
 	public func void removeAllAxisBindings()
-		this.pAxisBindings.removeAll()
+		if pAxisBindings.getCount() == 0
+			return
+		end
+		
+		pAxisBindings.removeAll()
+		
+		pListeners.forEach(block BindingManagerListener each
+			each.allAxisBindingsRemoved(this)
+		end)
 	end
 	
 	/** \brief Visit axis bindings with block with parameter Binding. */
-	public func void forEachAxisBinding( Block ablock )
-		this.pAxisBindings.forEach( ablock )
+	public func void forEachAxisBinding(Block ablock)
+		pAxisBindings.forEach(ablock)
+	end
+	
+	/**
+	 * \brief Find axis binding matching device and source.
+	 * \deprecated Use findAxisBinding(InputEventSource,int,int).
+	 */
+	public func Binding findAxisBinding(int device, int axis)
+		return findAxisBinding(InputEventSource.input, device, axis)
+	end
+	
+	/**
+	 * \brief Find axis binding matching device and source.
+	 * \version 1.6
+	 */
+	public func Binding findAxisBinding(InputEventSource source, int device, int axis)
+		return pAxisBindings.find(block Binding each
+			return each.getSystem() == source and each.getDeviceIndex() == device \
+				and each.getSourceIndex() == axis
+		end) cast Binding
+	end
+	
+	/**
+	 * \brief Find axis binding matching device and source.
+	 * \deprecated Use findAxisBinding(InputEventSource,int,int,bool)
+	 */
+	public func Binding findAxisBinding(int device, int axis, bool inverseAxis)
+		return findAxisBinding(InputEventSource.input, device, axis, inverseAxis)
+	end
+	
+	/**
+	 * \brief Find axis binding matching device and source.
+	 * \version 1.6
+	 */
+	public func Binding findAxisBinding(InputEventSource source, int device, int axis, bool inverseAxis)
+		return pAxisBindings.find(block Binding each
+			return each.getSystem() == source and each.getDeviceIndex() == device \
+				and each.getSourceIndex() == axis and each.getInverseAxis() == inverseAxis
+		end) cast Binding
 	end
 	
 	/** \brief Find axis binding matching device and source. */
-	public func Binding findAxisBinding( int device, int axis )
-		return this.pAxisBindings.find( block Binding each
-			return each.getDeviceIndex() == device and each.getSourceIndex() == axis
-		end ) cast Binding
+	public func Binding findAxisBinding(String deviceID, String axisID)
+		return pAxisBindings.find(block Binding each
+			return each.getDeviceID().equals(deviceID) \
+				and each.getSourceID().equals(axisID)
+		end) cast Binding
 	end
 	
 	/** \brief Find axis binding matching device and source. */
-	public func Binding findAxisBinding( int device, int axis, bool inverseAxis )
-		return this.pAxisBindings.find( block Binding each
-			return each.getDeviceIndex() == device and each.getSourceIndex() == axis \
+	public func Binding findAxisBinding(String deviceID, String axisID, bool inverseAxis)
+		return pAxisBindings.find(block Binding each
+			return each.getDeviceID().equals(deviceID) \
+				and each.getSourceID().equals(axisID) \
 				and each.getInverseAxis() == inverseAxis
-		end ) cast Binding
-	end
-	
-	/** \brief Find axis binding matching device and source. */
-	public func Binding findAxisBinding( String deviceID, String axisID )
-		return this.pAxisBindings.find( block Binding each
-			return each.getDeviceID().equals( deviceID ) \
-				and each.getSourceID().equals( axisID )
-		end ) cast Binding
-	end
-	
-	/** \brief Find axis binding matching device and source. */
-	public func Binding findAxisBinding( String deviceID, String axisID, bool inverseAxis )
-		return this.pAxisBindings.find( block Binding each
-			return each.getDeviceID().equals( deviceID ) \
-				and each.getSourceID().equals( axisID ) \
-				and each.getInverseAxis() == inverseAxis
-		end ) cast Binding
+		end) cast Binding
 	end
 	
 	/** \brief Find axis binding matching block with parameter Binding. */
-	public func Binding findAxisBinding( Block ablock )
-		return this.pAxisBindings.find( ablock ) cast Binding
+	public func Binding findAxisBinding(Block ablock)
+		return pAxisBindings.find(ablock) cast Binding
+	end
+	
+	/**
+	 * \brief Collect axis binding matching block with parameter Binding as Array of Binding.
+	 * \version 1.10
+	 */
+	public func Array collectAxisBinding(Block ablock)
+		return pAxisBindings.collect(ablock)
 	end
 	
 	
 	
 	/** \brief Number of button bindings. */
 	public func int getButtonBindingCount()
-		return this.pButtonBindings.getCount()
+		return pButtonBindings.getCount()
 	end
 	
 	/** \brief Button binding at index. */
-	public func Binding getButtonBindingAt( int index )
-		return this.pButtonBindings.getAt( index ) cast Binding
+	public func Binding getButtonBindingAt(int index)
+		return pButtonBindings.getAt(index) cast Binding
 	end
 	
 	/** \brief Add button binding. */
-	public func void addButtonBinding( Binding binding )
+	public func void addButtonBinding(Binding binding)
 		if binding == null
 			throw EInvalidParam.new()
 		end
 		
-		this.pButtonBindings.add( binding )
+		pButtonBindings.add(binding)
 		
-		this.updateButtonBindingIndices( binding )
+		updateButtonBindingIndices(binding)
+		
+		pListeners.forEach(block BindingManagerListener each
+			each.buttonBindingAdded(this, binding)
+		end)
 	end
 	
 	/** \brief Remove button binding. */
-	public func void removeButtonBinding( Binding binding )
-		this.pButtonBindings.remove( binding )
+	public func void removeButtonBinding(Binding binding)
+		pButtonBindings.remove(binding)
+		
+		pListeners.forEach(block BindingManagerListener each
+			each.buttonBindingRemoved(this, binding)
+		end)
 	end
 	
 	/** \brief Remove all button bindings. */
 	public func void removeAllButtonBindings()
-		this.pButtonBindings.removeAll()
+		if pButtonBindings.getCount() == 0
+			return
+		end
+		
+		pButtonBindings.removeAll()
+		
+		pListeners.forEach(block BindingManagerListener each
+			each.allButtonBindingsRemoved(this)
+		end)
 	end
 	
 	/** \brief Visit button bindings with block with parameter Binding. */
-	public func void forEachButtonBinding( Block ablock )
-		this.pButtonBindings.forEach( ablock )
+	public func void forEachButtonBinding(Block ablock)
+		pButtonBindings.forEach(ablock)
+	end
+	
+	/**
+	 * \brief Find button binding matching device and source.
+	 * \deprecated Use findButtonBinding(InputEventSource,int,int)
+	 */
+	public func Binding findButtonBinding(int device, int button)
+		return findButtonBinding(InputEventSource.input, device, button)
+	end
+	
+	/**
+	 * \brief Find button binding matching device and source.
+	 * \version 1.6
+	 */
+	public func Binding findButtonBinding(InputEventSource source, int device, int button)
+		return pButtonBindings.find(block Binding each
+			return each.getSystem() == source and each.getDeviceIndex() == device \
+				and each.getSourceIndex() == button
+		end) cast Binding
 	end
 	
 	/** \brief Find button binding matching device and source. */
-	public func Binding findButtonBinding( int device, int button )
-		return this.pButtonBindings.find( block Binding each
-			return each.getDeviceIndex() == device and each.getSourceIndex() == button
-		end ) cast Binding
-	end
-	
-	/** \brief Find button binding matching device and source. */
-	public func Binding findButtonBinding( String deviceID, String buttonID )
-		return this.pButtonBindings.find( block Binding each
-			return each.getDeviceID().equals( deviceID ) and each.getSourceID().equals( buttonID )
-		end ) cast Binding
+	public func Binding findButtonBinding(String deviceID, String buttonID)
+		return pButtonBindings.find(block Binding each
+			return each.getDeviceID().equals(deviceID) and each.getSourceID().equals(buttonID)
+		end) cast Binding
 	end
 	
 	/** \brief Find button binding matching block with parameter Binding. */
-	public func Binding findButtonBinding( Block ablock )
-		return this.pButtonBindings.find( ablock ) cast Binding
+	public func Binding findButtonBinding(Block ablock)
+		return pButtonBindings.find(ablock) cast Binding
+	end
+	
+	/**
+	 * \brief Collect button binding matching block with parameter Binding as Array of Binding.
+	 * \version 1.10
+	 */
+	public func Array collectButtonBinding(Block ablock)
+		return pButtonBindings.collect(ablock)
 	end
 	
 	
 	
 	/** \brief Remove all bindings with command. */
-	public func void removeBindingsWithCommand( Command command )
-		this.pAxisBindings.removeIf( block Binding each
+	public func void removeBindingsWithCommand(Command command)
+		pAxisBindings.collect(block Binding each
 			return each.getCommand() == command
-		end )
-		this.pButtonBindings.removeIf( block Binding each
+		end).forEach(block Binding each
+			removeAxisBinding(each)
+		end)
+		
+		pButtonBindings.collect(block Binding each
 			return each.getCommand() == command
-		end )
+		end).forEach(block Binding each
+			removeButtonBinding(each)
+		end)
 	end
 	
 	
 	
 	/** \brief Number of input devices. */
 	public func int getDeviceCount()
-		return this.pDevices.getCount()
+		return pDevices.getCount()
 	end
 	
 	/** \brief Device at index. */
-	public func InputDevice getDeviceAt( int index )
-		return this.pDevices.getAt( index ) cast InputDevice
+	public func InputDevice getDeviceAt(int index)
+		return pDevices.getAt(index) cast InputDevice
 	end
 	
 	/** \brief Visit devices with block with parameter InputDevice. */
-	public func void forEachDevice( Block ablock )
-		this.pDevices.forEach( ablock )
+	public func void forEachDevice(Block ablock)
+		pDevices.forEach(ablock)
 	end
 	
 	/**
@@ -250,8 +370,16 @@ class BindingManager
 	 * 
 	 * \returns \em null if no device matches.
 	 */
-	public func InputDevice findDevice( Block ablock )
-		return this.pDevices.find( ablock ) cast InputDevice
+	public func InputDevice findDevice(Block ablock)
+		return pDevices.find(ablock) cast InputDevice
+	end
+	
+	/**
+	 * \brief Collect devices with block with parameter InputDevice as Array of InputDevice.
+	 * \version 1.10
+	 */
+	public func Array collectDevices(Block ablock)
+		return pDevices.collect(ablock)
 	end
 	
 	
@@ -262,17 +390,36 @@ class BindingManager
 	 * Call if you made changes to the binding affecting device and source id.
 	 * You do not need to call this if you added or removed the binding.
 	 */
-	public func void updateAxisBindingIndices( Binding binding )
-		var int deviceIndex = InputSystem.indexOfDeviceWithID( binding.getDeviceID() )
-		binding.setDeviceIndex( deviceIndex )
+	public func void updateAxisBindingIndices(Binding binding)
+		var int deviceIndex = -1
+		var int sourceIndex = -1
 		
+		deviceIndex = InputSystem.indexOfDeviceWithID(binding.getDeviceID())
 		if deviceIndex != -1
-			binding.setSourceIndex( InputSystem.indexOfAxisWithID( \
-				deviceIndex, binding.getSourceID() ) )
+			sourceIndex = InputSystem.indexOfAxisWithID(deviceIndex, binding.getSourceID())
+			if sourceIndex != -1
+				binding.setSystem(InputEventSource.input)
+				binding.setDeviceIndex(deviceIndex)
+				binding.setSourceIndex(sourceIndex)
+				return
+			end
 			
 		else
-			binding.setSourceIndex( -1 )
+			deviceIndex = VRSystem.indexOfDeviceWithID(binding.getDeviceID())
+			if deviceIndex != -1
+				sourceIndex = VRSystem.indexOfAxisWithID(deviceIndex, binding.getSourceID())
+				if sourceIndex != -1
+					binding.setSystem(InputEventSource.vr)
+					binding.setDeviceIndex(deviceIndex)
+					binding.setSourceIndex(sourceIndex)
+					return
+				end
+			end
 		end
+		
+		binding.setSystem(null)
+		binding.setDeviceIndex(-1)
+		binding.setSourceIndex(-1)
 	end
 	
 	/**
@@ -281,17 +428,36 @@ class BindingManager
 	 * Call if you made changes to the binding affecting device and source id.
 	 * You do not need to call this if you added or removed the binding.
 	 */
-	public func void updateButtonBindingIndices( Binding binding )
-		var int deviceIndex = InputSystem.indexOfDeviceWithID( binding.getDeviceID() )
-		binding.setDeviceIndex( deviceIndex )
+	public func void updateButtonBindingIndices(Binding binding)
+		var int deviceIndex = -1
+		var int sourceIndex = -1
 		
+		deviceIndex = InputSystem.indexOfDeviceWithID(binding.getDeviceID())
 		if deviceIndex != -1
-			binding.setSourceIndex( InputSystem.indexOfButtonWithID( \
-				deviceIndex, binding.getSourceID() ) )
+			sourceIndex = InputSystem.indexOfButtonWithID(deviceIndex, binding.getSourceID())
+			if sourceIndex != -1
+				binding.setSystem(InputEventSource.input)
+				binding.setDeviceIndex(deviceIndex)
+				binding.setSourceIndex(sourceIndex)
+				return
+			end
 			
 		else
-			binding.setSourceIndex( -1 )
+			deviceIndex = VRSystem.indexOfDeviceWithID(binding.getDeviceID())
+			if deviceIndex != -1
+				sourceIndex = VRSystem.indexOfButtonWithID(deviceIndex, binding.getSourceID())
+				if sourceIndex != -1
+					binding.setSystem(InputEventSource.vr)
+					binding.setDeviceIndex(deviceIndex)
+					binding.setSourceIndex(sourceIndex)
+					return
+				end
+			end
 		end
+		
+		binding.setSystem(null)
+		binding.setDeviceIndex(-1)
+		binding.setSourceIndex(-1)
 	end
 	
 	/**
@@ -301,28 +467,56 @@ class BindingManager
 	 * You do not need to call this if you just added or removed bindings.
 	 */
 	public func void updateAllBindingIndices()
-		this.pAxisBindings.forEach( block Binding each
-			this.updateAxisBindingIndices( each )
-		end )
+		pAxisBindings.forEach(block Binding each
+			updateAxisBindingIndices(each)
+		end)
 		
-		this.pButtonBindings.forEach( block Binding each
-			this.updateButtonBindingIndices( each )
-		end )
+		pButtonBindings.forEach(block Binding each
+			updateButtonBindingIndices(each)
+		end)
 	end
 	
 	/** \brief Update input devices and all binding indices. */
 	public func void reloadDevices()
-		var int deviceCount = InputSystem.getDeviceCount()
-		var InputDevice device
-		var int i
+		var int i, deviceCount
 		
-		this.pDevices.removeAll()
+		pDevices.removeAll()
 		
+		deviceCount = InputSystem.getDeviceCount()
 		for i = 0 to deviceCount
-			device = InputSystem.getDeviceAt( i )
-			this.pDevices.add( InputSystem.getDeviceAt( i ) )
+			pDevices.add(InputSystem.getDeviceAt(i))
 		end
 		
-		this.updateAllBindingIndices()
+		deviceCount = VRSystem.getDeviceCount()
+		for i = 0 to deviceCount
+			pDevices.add(VRSystem.getDeviceAt(i))
+		end
+		
+		updateAllBindingIndices()
+		
+		pListeners.forEach(block BindingManagerListener each
+			each.devicesReloaded(this)
+		end)
+	end
+	
+	
+	
+	/**
+	 * \brief Add listener.
+	 * \version 1.6
+	 */
+	public func void addListener(BindingManagerListener listener)
+		if listener == null
+			throw ENullPointer.new("listener")
+		end
+		pListeners.add(listener)
+	end
+	
+	/**
+	 * \brief Remove listener.
+	 * \version 1.6
+	 */
+	public func void removeListener(BindingManagerListener listener)
+		pListeners.remove(listener)
 	end
 end

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -27,189 +30,172 @@ pin Dragengine.Utils
 
 
 /**
- * Conversation script.
+ * \brief Conversation script.
  */
 class Conversation
-	/** Path of file the conversation has been loaded from. */
-	private var String pPathFile
-	/** Targets. */
-	private var Array pTargets
-	/** Camera shots. */
-	private var Array pCameraShots
-	/** Look-Ats. */
-	private var Array pLookAts
-	/** Gestures. */
-	private var Array pGestures
-	/** Face poses. */
-	private var Array pFacePoses
-	/** Topic groups. */
-	private var Array pTopicGroups
+	var String pPathFile
+	var Dictionary pTargets
+	var Dictionary pCameraShots
+	var Dictionary pGestures
+	var Dictionary pFacePoses
+	var Dictionary pTopicGroups
 	
 	
 	
-	/** Create a new conversation. */
-	public func new( String pathFile )
-		this.pPathFile = pathFile
-		this.pTargets = Array.new()
-		this.pLookAts = Array.new()
-		this.pCameraShots = Array.new()
-		this.pGestures = Array.new()
-		this.pFacePoses = Array.new()
-		this.pTopicGroups = Array.new()
+	/** \brief Create conversation. */
+	func new(String pathFile)
+		pPathFile = pathFile
+		pTargets = Dictionary.new()
+		pCameraShots = Dictionary.new()
+		pGestures = Dictionary.new()
+		pFacePoses = Dictionary.new()
+		pTopicGroups = Dictionary.new()
 	end
 	
 	
 	
-	/** Retrieves the path the conversation has been loaded from. */
-	public func String getPathFile()
-		return this.pPathFile
+	/** \brief Path conversation has been loaded from. */
+	func String getPathFile()
+		return pPathFile
 	end
 	
 	
 	
-	/** Retrieves the named target or null if not found. */
-	public func ConversationTarget getTargetNamed( StringID name )
-		return this.pTargets.find( block ConversationTarget each
-			return each.getName().equals( name )
-		end ) cast ConversationTarget
+	/** \brief Named target or null if absent. */
+	func ConversationTarget getTargetNamed(StringID name)
+		return pTargets.getAt(name, null) cast ConversationTarget
 	end
 	
-	/** Adds a target. */
-	public func void addTarget( ConversationTarget target )
-		if this.getTargetNamed( target.getName() ) != null
-			throw EInvalidParam.new()
+	/** \brief Add target replacing existing one if present. */
+	func void addTarget(ConversationTarget target)
+		pTargets.setAt(target.getName(), target)
+	end
+	
+	/** \brief Visit targets with block with parameter ConversationTarget. */
+	func void forEachTarget(Block ablock)
+		pTargets.forEachValue(ablock)
+	end
+	
+	
+	
+	/** \brief Named camera shot or null if absent. */
+	func ConversationCameraShot getCameraShotNamed(StringID name)
+		return pCameraShots.getAt(name, null) cast ConversationCameraShot
+	end
+	
+	/** \brief Add camera shot replacing existing one if present. */
+	func void addCameraShot(ConversationCameraShot cameraShot)
+		pCameraShots.setAt(cameraShot.getName(), cameraShot)
+	end
+	
+	/** \brief Visit camera shots with block with parameter ConversationCameraShot. */
+	func void forEachCameraShot(Block ablock)
+		pCameraShots.forEachValue(ablock)
+	end
+	
+	
+	
+	/** \brief Named gesture or null if absent. */
+	func ConversationGesture getGestureNamed(StringID name)
+		return pGestures.getAt(name, null) cast ConversationGesture
+	end
+	
+	/** \brief Add gesture replacing existing one if present. */
+	func void addGesture(ConversationGesture gesture)
+		pGestures.setAt(gesture.getName(), gesture)
+	end
+	
+	/** \brief Visit gestures with block with parameter ConversationGesture. */
+	func void forEachGesture(Block ablock)
+		pGestures.forEachValue(ablock)
+	end
+	
+	
+	
+	/** \brief Named face pose or null if absent. */
+	func ConversationFacePose getFacePoseNamed(StringID name)
+		return pFacePoses.getAt(name, null) cast ConversationFacePose
+	end
+	
+	/** \brief Add face pose replacing existing one if present. */
+	func void addFacePose(ConversationFacePose facePose)
+		pFacePoses.setAt(facePose.getName(), facePose)
+	end
+	
+	/** \brief Visit face poses with block with parameter ConversationFacePose. */
+	func void forEachFacePose(Block ablock)
+		pFacePoses.forEachValue(ablock)
+	end
+	
+	
+	
+	/** \brief Topic group with ID or null if absent. */
+	func ConversationTopicGroup getTopicGroupWithID(StringID id)
+		return pTopicGroups.getAt(id, null) cast ConversationTopicGroup
+	end
+	
+	/** \brief Add topic group replacing existing one if present. */
+	func void addTopicGroup(ConversationTopicGroup group)
+		pTopicGroups.setAt(group.getID(), group)
+	end
+	
+	/** \brief Visit topic groups with block with parameter ConversationTopicGroup. */
+	func void forEachTopicGroup(Block ablock)
+		pTopicGroups.forEachValue(ablock)
+	end
+	
+	/** \brief Topic in group or null if absent. */
+	func ConversationTopic findTopic(StringID groupID, StringID topicID)
+		var ConversationTopicGroup group = pTopicGroups.getAt(groupID, null) cast ConversationTopicGroup
+		if group != null
+			return group.getTopicWithID(topicID)
 		end
-		this.pTargets.add( target )
-	end
-	
-	/** Visit all targets. */
-	public func void forEachTarget( Block aBlock )
-		this.pTargets.forEach( aBlock )
+		return null
 	end
 	
 	
-	
-	/** Retrieves the named look-at or null if not found. */
-	public func ConversationLookAt getLookAtNamed( StringID name )
-		return this.pLookAts.find( block ConversationLookAt each
-			return each.getName().equals( name )
-		end ) cast ConversationLookAt
-	end
-	
-	/** Adds a look-at. */
-	public func void addLookAt( ConversationLookAt lookAt )
-		if this.getLookAtNamed( lookAt.getName() ) != null
-			throw EInvalidParam.new()
-		end
-		this.pLookAts.add( lookAt )
-	end
-	
-	/** Visit all look-ats. */
-	public func void forEachLookAt( Block aBlock )
-		this.pLookAts.forEach( aBlock )
-	end
-	
-	
-	
-	/** Retrieves the named camera shot or null if not found. */
-	public func ConversationCameraShot getCameraShotNamed( StringID name )
-		return this.pCameraShots.find( block ConversationCameraShot each
-			return each.getName().equals( name )
-		end ) cast ConversationCameraShot
-	end
-	
-	/** Adds a camera shot. */
-	public func void addCameraShot( ConversationCameraShot cameraShot )
-		if this.getCameraShotNamed( cameraShot.getName() ) != null
-			throw EInvalidParam.new()
-		end
-		this.pCameraShots.add( cameraShot )
-	end
-	
-	/** Visit all camera shots. */
-	public func void forEachCameraShot( Block aBlock )
-		this.pCameraShots.forEach( aBlock )
-	end
-	
-	
-	
-	/** Retrieves the named gesture or null if not found. */
-	public func ConversationGesture getGestureNamed( StringID name )
-		return this.pGestures.find( block ConversationGesture each
-			return each.getName().equals( name )
-		end ) cast ConversationGesture
-	end
-	
-	/** Adds a gesture. */
-	public func void addGesture( ConversationGesture gesture )
-		if this.getGestureNamed( gesture.getName() ) != null
-			throw EInvalidParam.new()
-		end
-		this.pGestures.add( gesture )
-	end
-	
-	/** Visit all gestures. */
-	public func void forEachGesture( Block aBlock )
-		this.pGestures.forEach( aBlock )
-	end
-	
-	
-	
-	/** Retrieves the named face pose or null if not found. */
-	public func ConversationFacePose getFacePoseNamed( StringID name )
-		return this.pFacePoses.find( block ConversationFacePose each
-			return each.getName().equals( name )
-		end ) cast ConversationFacePose
-	end
-	
-	/** Adds a face pose. */
-	public func void addFacePose( ConversationFacePose facePose )
-		if this.getFacePoseNamed( facePose.getName() ) != null
-			throw EInvalidParam.new()
-		end
-		this.pFacePoses.add( facePose )
-	end
-	
-	/** Visit all face poses. */
-	public func void forEachFacePose( Block aBlock )
-		this.pFacePoses.forEach( aBlock )
-	end
-	
-	
-	
-	/** Retrieves the topic group with the given ID or null if not found. */
-	public func ConversationTopicGroup getTopicGroupWithID( StringID id )
-		return this.pTopicGroups.find( block ConversationTopicGroup each
-			return each.getID().equals( id )
-		end ) cast ConversationTopicGroup
-	end
-	
-	/** Adds a topic group. */
-	public func void addTopicGroup( ConversationTopicGroup group )
-		if this.getTopicGroupWithID( group.getID() ) != null
-			throw EInvalidParam.new()
-		end
-		this.pTopicGroups.add( group )
-	end
-	
-	/** Visit all topic groups. */
-	public func void forEachTopicGroup( Block aBlock )
-		this.pTopicGroups.forEach( aBlock )
-	end
 	
 	/**
-	 * Finds a topic. Looks first in this conversation. If not found looks in the
-	 * base conversation if assigned. If the topic can not be found null is returned.
+	 * \brief Import content of conversation into this conversation.
+	 * 
+	 * For targets, camera shots, look-ats, gestures and face poses replaces existing
+	 * elements of the same name with the elements from conversation (no copies).
+	 * 
+	 * For topic groups inserts topics (with replacing existing ones without copying)
+	 * topics from matching topic groups.
 	 */
-	public func ConversationTopic findTopic( StringID groupID, StringID topicID )
-		var ConversationTopicGroup group
-		var ConversationTopic topic
+	func void import(Conversation conversation)
+		// insert elements replacing existing ones
+		conversation.pTargets.forEachValue(block ConversationTarget each
+			pTargets.setAt(each.getName(), each)
+		end)
+		conversation.pCameraShots.forEachValue(block ConversationCameraShot each
+			pCameraShots.setAt(each.getName(), each)
+		end)
+		conversation.pGestures.forEachValue(block ConversationGesture each
+			pGestures.setAt(each.getName(), each)
+		end)
+		conversation.pFacePoses.forEachValue(block ConversationFacePose each
+			pFacePoses.setAt(each.getName(), each)
+		end)
 		
-		group = this.getTopicGroupWithID( groupID )
-		if group != null
-			topic = group.getTopicWithID( topicID )
-		end
-		
-		return topic
+		// update existing topic groups by inserting topics replacing existing ones.
+		// add non existing topic groups
+		conversation.pTopicGroups.forEachValue(block ConversationTopicGroup group
+			var ConversationTopicGroup updateGroup = pTopicGroups.getAt(group.getID(), null) cast ConversationTopicGroup
+			
+			if updateGroup == null
+				group.lock()
+				pTopicGroups.setAt(group.getID(), group)
+				
+			else
+				if updateGroup.isLocked()
+					updateGroup = ConversationTopicGroup.new(updateGroup)
+					pTopicGroups.setAt(updateGroup.getID(), updateGroup)
+				end
+				
+				updateGroup.importTopics(group)
+			end
+		end)
 	end
 end

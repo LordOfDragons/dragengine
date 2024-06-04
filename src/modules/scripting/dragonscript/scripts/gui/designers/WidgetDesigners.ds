@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -42,50 +45,55 @@ class WidgetDesigners
 	
 	/** \brief Create widget designer factories. */
 	public func new()
-		this.pDesigners = Dictionary.new()
+		pDesigners = Dictionary.new()
 	end
 	
 	
 	
 	/** \brief Add designer. */
-	public func void add( String name, WidgetDesigner designer )
-		this.pDesigners.setAt( name, designer )
+	public func void add(String name, WidgetDesigner designer)
+		pDesigners.setAt(name, designer)
 	end
 	
 	/** \brief Named designer or \em null if not found. */
-	public func WidgetDesigner getNamed( String name )
-		return this.pDesigners.getAt( name, null ) cast WidgetDesigner
+	public func WidgetDesigner getNamed(String name)
+		return pDesigners.getAt(name, null) cast WidgetDesigner
 	end
 	
 	/** \brief Remove designer if present. */
-	public func void removeNamed( String name )
-		this.pDesigners.removeIfExisting( name )
+	public func void removeNamed(String name)
+		pDesigners.removeIfExisting(name)
 	end
 	
 	/** \brief Remove all factories. */
 	public func void removeAll()
-		this.pDesigners.removeAll()
+		pDesigners.removeAll()
 	end
 	
 	
 	
 	/** \brief Add default factories. */
 	public func void addDefaultDesigners()
-		this.add( "Button", DefaultButtonDesigner.new() )
-		this.add( "ButtonWidget", DefaultButtonWidgetDesigner.new() )
-		this.add( "CheckBox", DefaultCheckBoxDesigner.new() )
-		this.add( "ComboBox", DefaultComboBoxDesigner.new() )
-		this.add( "Desktop", DefaultWidgetDesigner.new() )
-		this.add( "Label", DefaultLabelDesigner.new() )
-		this.add( "ListBox", DefaultWidgetDesigner.new() )
-		this.add( "OptionBox", DefaultOptionBoxDesigner.new() )
-		this.add( "PlayerChoiceEntry", DefaultLabelDesigner.new() )
-		this.add( "ProgressBar", DefaultProgressBarDesigner.new() )
-		this.add( "ScrollBar", DefaultScrollBarDesigner.new() )
-		this.add( "SpinButton", DefaultSpinButtonDesigner.new() )
-		this.add( "TextArea", DefaultWidgetDesigner.new() )
-		this.add( "TextField", DefaultWidgetDesigner.new() )
-		this.add( "Widget", DefaultWidgetDesigner.new() )
-		this.add( "Window", DefaultWindowDesigner.new() )
+		add("Button", DefaultButtonDesigner.new())
+		add("ButtonWidget", DefaultButtonWidgetDesigner.new())
+		add("CheckBox", DefaultCheckBoxDesigner.new())
+		add("ComboBox", DefaultComboBoxDesigner.new())
+		add("Desktop", DefaultWidgetDesigner.new())
+		add("Image", DefaultImageDesigner.new())
+		add("Label", DefaultLabelDesigner.new())
+		add("ListBox", DefaultWidgetDesigner.new())
+		add("OptionBox", DefaultOptionBoxDesigner.new())
+		add("PlayerChoiceEntry", DefaultLabelDesigner.new())
+		add("ProgressBar", DefaultProgressBarDesigner.new())
+		add("ScrollBar", DefaultScrollBarDesigner.new())
+		add("Slider", DefaultSliderDesigner.new())
+		add("SpinButton", DefaultSpinButtonDesigner.new())
+		add("TextArea", DefaultWidgetDesigner.new())
+		add("TextField", DefaultWidgetDesigner.new())
+		add("Video", DefaultVideoDesigner.new())
+		add("Widget", DefaultWidgetDesigner.new())
+		add("Window", DefaultWindowDesigner.new())
+		add("MenuItemToggle", DefaultMenuItemToggleDesigner.new())
+		add("MenuItemSubMenu", DefaultMenuItemSubMenuDesigner.new())
 	end
 end

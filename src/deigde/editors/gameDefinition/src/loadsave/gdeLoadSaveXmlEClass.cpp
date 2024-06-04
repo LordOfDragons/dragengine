@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Game Definition Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -37,6 +40,8 @@
 #include <dragengine/deEngine.h>
 #include <dragengine/logger/deLogger.h>
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/collection/decPointerDictionary.h>
+#include <dragengine/common/collection/decPointerList.h>
 #include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/file/decBaseFileWriter.h>
 #include <dragengine/common/file/decPath.h>
@@ -92,10 +97,11 @@ gdeObjectClass *gdeLoadSaveXmlEClass::LoadXmlEClass( decBaseFileReader &reader )
 	return pReadElementClass( *root );
 }
 
-void gdeLoadSaveXmlEClass::SaveXmlEClass( const gdeObjectClass &objectClass, decBaseFileWriter &writer ){
+void gdeLoadSaveXmlEClass::SaveXmlEClass( const gdeGameDefinition &gameDefinition,
+const gdeObjectClass &objectClass, decBaseFileWriter &writer ){
 	decXmlWriter xmlWriter( &writer );
 	xmlWriter.WriteXMLDeclaration();
-	pWriteElementClass( xmlWriter, objectClass );
+	pWriteElementClass( xmlWriter, gameDefinition, objectClass );
 }
 
 
@@ -177,7 +183,8 @@ gdeObjectClass *gdeLoadSaveXmlEClass::pReadElementClass( const decXmlElementTag 
 
 
 
-void gdeLoadSaveXmlEClass::pWriteElementClass( decXmlWriter &writer, const gdeObjectClass &objectClass ){
+void gdeLoadSaveXmlEClass::pWriteElementClass( decXmlWriter &writer,
+const gdeGameDefinition &gameDefinition, const gdeObjectClass &objectClass ){
 	// element class tag
 	writer.WriteOpeningTagStart( "elementClass" );
 	
@@ -212,31 +219,62 @@ void gdeLoadSaveXmlEClass::pWriteElementClass( decXmlWriter &writer, const gdeOb
 		pWritePropertyValue( writer, objectClass, false, name, properties.GetAt( name ) );
 	}
 	
-	// write texture replacements. we assume the default texture replacement element class
-	// property is used as provided by scripting modules. for all this we use the first
-	// child compnent if present. a better solution would be to look at all components
-	// and build a unique list of textures across all of them
-	const gdeOCComponentList &components = objectClass.GetComponents();
-	if( components.GetCount() > 0 ){
-		const gdeOCComponent &component = *components.GetAt( 0 );
-		const gdeOCComponentTextureList &textures = component.GetTextures();
-		const int textureCount = textures.GetCount();
+	// write texture replacements
+	gdeOCComponentTextureList textures;
+	pCollectTextures( gameDefinition, objectClass, textures );
+	
+	const int textureCount = textures.GetCount();
+	if( textureCount > 0 ){
+		writer.WriteOpeningTagStart( "map" );
+		writer.WriteAttributeString( "name", "textureReplacements" );
+		writer.WriteOpeningTagEnd();
 		
-		if( textureCount > 0 ){
-			writer.WriteOpeningTagStart( "map" );
-			writer.WriteAttributeString( "name", "textureReplacements" );
-			writer.WriteOpeningTagEnd();
-			
-			for( i=0; i<textureCount; i++ ){
-				pWritePropertyTextureReplacement( writer, objectClass, *textures.GetAt( i ) );
-			}
-			
-			writer.WriteClosingTag( "map" );
+		for( i=0; i<textureCount; i++ ){
+			pWritePropertyTextureReplacement( writer, objectClass, *textures.GetAt( i ) );
 		}
+		
+		writer.WriteClosingTag( "map" );
 	}
 	
 	// end of element class tag
 	writer.WriteClosingTag( "elementClass" );
+}
+
+void gdeLoadSaveXmlEClass::pCollectTextures( const gdeGameDefinition &gameDefinition,
+const gdeObjectClass &objectClass, gdeOCComponentTextureList &list ){
+	const gdeOCComponentTextureList &textures = objectClass.GetTextures();
+	const int textureCount = textures.GetCount();
+	int i;
+	
+	for( i=0; i<textureCount; i++ ){
+		gdeOCComponentTexture * const texture = textures.GetAt( i );
+		if( ! list.HasNamed( texture->GetName() ) ){
+			list.Add( texture );
+		}
+	}
+	
+	const gdeOCComponentList &components = objectClass.GetComponents();
+	const int componentCount = components.GetCount();
+	
+	for( i=0; i<componentCount; i++ ){
+		const gdeOCComponentTextureList &textures2 = components.GetAt( i )->GetTextures();
+		const int textureCount2 = textures2.GetCount();
+		for( i=0; i<textureCount2; i++ ){
+			gdeOCComponentTexture * const texture = textures2.GetAt( i );
+			if( ! list.HasNamed( texture->GetName() ) ){
+				list.Add( texture );
+			}
+		}
+	}
+	
+	const gdeOCInheritList &inherits = objectClass.GetInherits();
+	const int inheritCount = inherits.GetCount();
+	for( i=0; i<inheritCount; i++ ){
+		const gdeObjectClass * const resolvedClass = gameDefinition.FindObjectClass( inherits.GetAt( i )->GetName() );
+		if( resolvedClass ){
+			pCollectTextures( gameDefinition, *resolvedClass, list );
+		}
+	}
 }
 
 void gdeLoadSaveXmlEClass::pWritePropertyValue( decXmlWriter &writer, const gdeObjectClass &objectClass,

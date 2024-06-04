@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -37,65 +40,66 @@ pin Dragengine.Gui.Layouts
  * to do anything else than adding debug information objects to the window.
  */
 class PanelDebugInformation extends Panel
-	private var Array pDebugInformation
-	private var Array pSortedList
+	var Array pDebugInformation
+	var Array pSortedList
 	
 	
 	
 	/** \brief Create window. */
-	public func new() super( 10, 10, 100, 50 )
-		this.pDebugInformation = Array.new()
+	func new() super(10, 10, 100, 50)
+		pDebugInformation = Array.new()
 		
-		this.setLayout( FormLayout.new( true, 10, 1 ) )
-		this.setDesignerSelector( "PanelDebugInformation" )
-		this.setVisible( false )
+		setLayout(FormLayout.new(true, 10, 1))
+		setDesignerSelector("PanelDebugInformation")
+		setVisible(false)
 	end
 	
 	/** \brief Dispose of widget. */
-	public func void dispose()
-		this.pDebugInformation = null
+	func void dispose()
+		pDebugInformation = null
+		pSortedList = null
 		super.dispose()
 	end
 	
 	
 	
 	/** \brief Number of debug information. */
-	public func int getDebugInfoCount()
-		return this.pDebugInformation.getCount()
+	func int getDebugInfoCount()
+		return pDebugInformation.getCount()
 	end
 	
 	/** \brief Debug information is present. */
-	public func bool hasDebugInfo( DebugInformation debugInfo )
-		return this.pDebugInformation.has( debugInfo )
+	func bool hasDebugInfo(DebugInformation debugInfo)
+		return pDebugInformation.has(debugInfo)
 	end
 	
 	/** \brief Debug information at position. */
-	public func DebugInformation getDebugInfoAt( int index )
-		return this.pDebugInformation.getAt( index ) cast DebugInformation
+	func DebugInformation getDebugInfoAt(int index)
+		return pDebugInformation.getAt(index) cast DebugInformation
 	end
 	
 	/** \brief Add debug information. */
-	public func void addDebugInfo( DebugInformation debugInfo )
-		this.pDebugInformation.add( debugInfo )
-		this.pSortedList = null
-		this.startFrameUpdater()
+	func void addDebugInfo(DebugInformation debugInfo)
+		pDebugInformation.add(debugInfo)
+		pSortedList = null
+		startFrameUpdater()
 	end
 	
 	/** \brief Remove debug information. */
-	public func void removeDebugInfo( DebugInformation debugInfo )
-		this.pDebugInformation.remove( debugInfo )
-		this.pSortedList = null
+	func void removeDebugInfo(DebugInformation debugInfo)
+		pDebugInformation.remove(debugInfo)
+		pSortedList = null
 	end
 	
 	/** \brief Remove all debug information. */
-	public func void removeAllDebugInfo()
-		this.pDebugInformation.removeAll()
-		this.pSortedList = null
+	func void removeAllDebugInfo()
+		pDebugInformation.removeAll()
+		pSortedList = null
 	end
 	
 	/** \brief Visit debug information with block with parameter DebugInformation. */
-	public func void forEach( Block ablock )
-		this.pDebugInformation.forEach( ablock )
+	func void forEach(Block ablock)
+		pDebugInformation.forEach(ablock)
 	end
 	
 	
@@ -107,13 +111,13 @@ class PanelDebugInformation extends Panel
 	 * information. Shows the window if debug information are present. Does nothing
 	 * if there are no debug information present.
 	 */
-	public func void onFrameUpdate( float elapsed )
-		this.captureDebugInfo()
+	func void onFrameUpdate(float elapsed)
+		captureDebugInfo()
 		
-		this.setVisible( this.pDebugInformation.getCount() > 0 )
+		setVisible(pDebugInformation.getCount() > 0)
 		
-		if not this.getVisible()
-			this.stopFrameUpdater()
+		if not getVisible()
+			stopFrameUpdater()
 		end
 	end
 	
@@ -121,39 +125,32 @@ class PanelDebugInformation extends Panel
 	
 	/** \brief Capture debug information. */
 	protected func void captureDebugInfo()
-		if this.pSortedList == null
-			this.pSortedList = Array.new( this.pDebugInformation )
+		if pSortedList == null
+			pSortedList = Array.new(pDebugInformation)
 		end
 		
-		var int count = this.pSortedList.getCount()
+		var int count = pSortedList.getCount()
 		if count == 0
-			this.removeAllWidgets()
+			removeAllWidgets()
 			return
 		end
 		
-		/*this.pSortedList.sort( block DebugInformation a, DebugInformation b
-			return a.getLabel().compare( b.getLabel() )
-		end )*/
+		/*pSortedList.sort(block DebugInformation a, DebugInformation b
+			return a.getLabel().compare(b.getLabel())
+		end)*/
 		
-		this.runWhileBlockingLayout( block
-			var int widgetIndex = this.getWidgetCount()
+		runWhileBlockingLayout(block
+			var int widgetIndex = getWidgetCount()
 			var int requiredCount = count * 2
-			var Label label
 			while widgetIndex > requiredCount
 				widgetIndex--
-				this.removeWidget( this.getWidget( widgetIndex ) )
+				getWidget(widgetIndex).safeDispose()
 			end
 			
-			widgetIndex = this.getWidgetCount() / 2
+			widgetIndex = getWidgetCount() / 2
 			while widgetIndex < count
-				label = Label.new( "" )
-				label.setDesignerSelector( "Label.PanelDebugInformation.Label" )
-				this.addWidget( label )
-				
-				label = Label.new( "" )
-				label.setDesignerSelector( "Label.PanelDebugInformation.Details" )
-				this.addWidget( label )
-				
+				addWidget(Label.new("", "Label.PanelDebugInformation.Label"))
+				addWidget(Label.new("", "Label.PanelDebugInformation.Details"))
 				widgetIndex++
 			end
 			
@@ -162,14 +159,14 @@ class PanelDebugInformation extends Panel
 			
 			widgetIndex = 0
 			for i = 0 to count
-				debugInfo = this.pSortedList.getAt( i ) cast DebugInformation
-				( this.getWidget( widgetIndex++ ) cast Label ).setText( debugInfo.getLabel() )
-				( this.getWidget( widgetIndex++ ) cast Label ).setText( debugInfo.getDetails() )
+				debugInfo = pSortedList.getAt(i) cast DebugInformation
+				(getWidget(widgetIndex++) cast Label).setText(debugInfo.getLabel())
+				(getWidget(widgetIndex++) cast Label).setText(debugInfo.getDetails())
 				debugInfo.reset()
 			end
-		end )
+		end)
 		
-		this.doLayout()
+		doLayout()
 	end
 end
 

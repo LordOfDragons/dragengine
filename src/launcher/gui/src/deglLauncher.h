@@ -1,107 +1,94 @@
-/* 
- * Drag[en]gine GUI Launcher
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEGLLAUNCHER_H_
 #define _DEGLLAUNCHER_H_
 
-#include "game/patch/deglPatchManager.h"
+#include "deglSignalHandler.h"
+#include "config/deglConfiguration.h"
 
-#include <dragengine/common/string/unicode/decUnicodeArgumentList.h>
+#include <delauncher/delLauncher.h>
+#include <delauncher/game/delGame.h>
 #include <dragengine/common/string/decString.h>
+#include <dragengine/common/string/unicode/decUnicodeArgumentList.h>
 
 class deglConfiguration;
-class deglEngine;
-class deVirtualFileSystem;
-class deglGameManager;
-class deglGame;
-class deglLoggerHistory;
-class deLogger;
 class deglWindowMain;
 
 
-
 /**
- * @brief Main Launcher Class.
+ * Launcher.
  */
-class deglLauncher{
+class deglLauncher : public delLauncher{
 private:
+	deglSignalHandler pSignalHandler;
+	deglConfiguration pConfiguration;
+	
 	deglWindowMain *pWindowMain;
 	
-	decUnicodeArgumentList pArgList;
-	deVirtualFileSystem *pFileSystem;
-	deglConfiguration *pConfiguration;
-	deglEngine *pEngine;
-	deglGameManager *pGameManager;
-	deglPatchManager pPatchManager;
-	deglGame *pCmdLineGame;
-	deLogger *pLogger;
-	deglLoggerHistory *pLoggerHistory;
+	decUnicodeArgumentList pArguments;
+	delGame::Ref pCmdLineGame;
 	
 	decString pRunGame;
 	decUnicodeArgumentList pRunGameArgList;
 	decString pRunProfileName;
 	decString pCmdLineInstallDelga;
 	
+	bool pCmdLineQuitNow;
+	
+	
+	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new launcher. */
+	/** Create launcher. */
 	deglLauncher( deglWindowMain *windowMain, int argc, char **argv );
-	/** Cleans up the launcher. */
-	~deglLauncher();
+	
+	/** Clean up launcher. */
+	virtual ~deglLauncher();
 	/*@}*/
 	
-	/** @name Management */
+	
+	
+	/** \name Management */
 	/*@{*/
-	/** Retrieves the command line arguments. */
-	inline const decUnicodeArgumentList &GetArgumentList() const{ return pArgList; }
-	/** Retrieves the file system. */
-	inline deVirtualFileSystem *GetFileSystem() const{ return pFileSystem; }
-	/** Retrieves the configuration. */
-	inline deglConfiguration *GetConfiguration() const{ return pConfiguration; }
-	/** Retrieves the engine. */
-	inline deglEngine *GetEngine() const{ return pEngine; }
-	/** Retrieves the game manager. */
-	inline deglGameManager *GetGameManager() const{ return pGameManager; }
+	/** Command line arguments. */
+	inline const decUnicodeArgumentList &GetArguments() const{ return pArguments; }
 	
-	/** \brief Patch manager. */
-	inline deglPatchManager &GetPatchManager(){ return pPatchManager; }
-	inline const deglPatchManager &GetPatchManager() const{ return pPatchManager; }
-	
-	/** Retrieves the logger. */
-	inline deLogger *GetLogger() const{ return pLogger; }
-	/** Retrieves the logger history. */
-	inline deglLoggerHistory *GetLoggerHistory() const{ return pLoggerHistory; }
+	/** Configuration. */
+	inline deglConfiguration &GetConfiguration(){ return pConfiguration; }
+	inline const deglConfiguration &GetConfiguration() const{ return pConfiguration; }
 	
 	/** \brief Install delga command line argument. */
 	inline const decString &GetCommandLineInstallDelga() const{ return pCmdLineInstallDelga; }
 	
-	/** Determines if a game has to be run due to command line arguments. */
+	/** Game has to be run due to command line arguments. */
 	bool HasCommandLineRunGame() const;
 	
-	/**
-	 * \brief Run game from command line.
-	 * \returns True to start the application loop or false to exit
-	 */
+	/** Run game from command line. Returns true to start the application loop or false to exit */
 	bool RunCommandLineGame();
+	
 	/**
 	 * Run game from command line stop check. Called when a game stops. Checks if the last
 	 * game stopped running and shuts down the application if run from the command line.
@@ -110,12 +97,23 @@ public:
 	
 	/** Pulse checking. */
 	void PulseChecking();
+	
+	/** Quit now requested from the command line. */
+	inline bool GetCmdLineQuitNow() const{ return pCmdLineQuitNow; }
+	
+	
+	
+	/** Create game icon instance. */
+	virtual delGameIcon *CreateGameIcon( int size, const char *path );
 	/*@}*/
+	
+	
 	
 private:
 	void pParseArguments();
+	bool pParseWindowsURIScheme();
 	void pInitLogger();
-	void pRegisterSignals();
+	static decString pUrlDecode( const char *url );
 };
 
 #endif

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Game Engine
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -25,9 +28,11 @@
 #include <stdarg.h>
 
 #include "deLoggerFile.h"
-#include "../common/file/decBaseFileWriter.h"
 #include "../common/exceptions.h"
+#include "../common/file/decBaseFileWriter.h"
 #include "../common/string/decString.h"
+#include "../common/utils/decDateTime.h"
+#include "../threading/deMutexGuard.h"
 
 
 
@@ -60,88 +65,33 @@ deLoggerFile::~deLoggerFile(){
 ///////////////
 
 void deLoggerFile::LogInfo( const char *source, const char *message ){
-	if( ! source || ! message ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	const int len = strlen( message );
-	decString string;
-	
-	if( len == 0 || message[ len - 1 ] != '\n' ){
-		string.Format( "II [%s] %s\n", source, message );
-		
-	}else{
-		string.Format( "II [%s] %s", source, message );
-	}
-	
-	pMutex.Lock();
-	
-	try{
-		pWriter->Write( string.GetString(), string.GetLength() );
-		fflush( NULL );
-		
-		pMutex.Unlock();
-		
-	}catch( const deException & ){
-		pMutex.Unlock();
-		throw;
-	}
+	LogPrefix( source, message, "II " );
 }
 
 void deLoggerFile::LogWarn( const char *source, const char *message ){
-	if( ! source || ! message ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	const int len = strlen( message );
-	decString string;
-	
-	if( len == 0 || message[ len - 1 ] != '\n' ){
-		string.Format( "WW [%s] %s\n", source, message );
-		
-	}else{
-		string.Format( "WW [%s] %s", source, message );
-	}
-	
-	pMutex.Lock();
-	
-	try{
-		pWriter->Write( string.GetString(), string.GetLength() );
-		fflush( NULL );
-		
-		pMutex.Unlock();
-		
-	}catch( const deException & ){
-		pMutex.Unlock();
-		throw;
-	}
+	LogPrefix( source, message, "WW " );
 }
 
 void deLoggerFile::LogError( const char *source, const char *message ){
-	if( ! source || ! message ){
+	LogPrefix( source, message, "EE " );
+}
+
+void deLoggerFile::LogPrefix( const char *source, const char *message, const char *prefix ){
+	if( ! source || ! message || ! prefix ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	const int len = strlen( message );
+	const int len =( int )strlen( message );
+	const decDateTime timestamp;
 	decString string;
 	
-	if( len == 0 || message[ len - 1 ] != '\n' ){
-		string.Format( "EE [%s] %s\n", source, message );
-		
-	}else{
-		string.Format( "EE [%s] %s", source, message );
-	}
+	string.Format( "%s[%s] [%4d-%02d-%02d %02d:%02d:%02d] %s%s", prefix, source,
+		timestamp.GetYear(), timestamp.GetMonth() + 1, timestamp.GetDay() + 1,
+		timestamp.GetHour(), timestamp.GetMinute(), timestamp.GetSecond(),
+		message, ( len == 0 || message[ len - 1 ] != '\n' ) ? "\n" : "" );
 	
-	pMutex.Lock();
+	const deMutexGuard lock( pMutex );
 	
-	try{
-		pWriter->Write( string.GetString(), string.GetLength() );
-		fflush( NULL );
-		
-		pMutex.Unlock();
-		
-	}catch( const deException & ){
-		pMutex.Unlock();
-		throw;
-	}
+	pWriter->Write( string.GetString(), string.GetLength() );
+	fflush( NULL );
 }

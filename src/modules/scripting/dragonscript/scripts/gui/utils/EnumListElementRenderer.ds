@@ -1,0 +1,186 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.Gui.Events
+pin Dragengine.Gui.Listeners
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+/**
+ * \brief List element renderer showing a pre-define name for enumeration values.
+ * \version 1.9
+ * 
+ * Simple way to display a ListModel of Enumeration values with nice looking names.
+ * If an enumeration constant has no name assigned the value name without the class
+ * name is displayed.
+ * 
+ * \par Version 1.20
+ * 
+ * Optionally a Translation prefix can be set. If not null this is used to construct
+ * a translation entry name using the following format:
+ *   "{TranslationPrefix}{enumValue.name()}"
+ * Hence the enumeration constant name is appended to the translation prefix and
+ * looked up in the translation manager.
+ * 
+ * The following order is used to determine the name to display (first found name is used):
+ * - Mapped name set with setNameFor()
+ * - Translation if setTranslationPrefix() is not empty and entry is found
+ * - Name of enumeration constant
+ */
+class EnumListElementRenderer extends DefaultListElementRenderer
+	var Dictionary pMap
+	var String pTranslationPrefix
+	var TranslationManager pTranslationManager
+	
+	
+	
+	/** \brief Create list element renderer. */
+	func new()
+		pMap = Dictionary.new()
+	end
+	
+	
+	
+	/** \brief Set name for enumeration value. */
+	func void setNameFor(Enumeration value, String name)
+		if value == null
+			throw ENullPointer.new("value")
+		end
+		if name == null
+			throw ENullPointer.new("name")
+		end
+		
+		pMap.setAt(value, name)
+	end
+	
+	/** \brief Remove name for enumeration value if present. */
+	func void removeNameFor(Enumeration value)
+		pMap.removeIfExisting(value)
+	end
+	
+	/** \brief Remove all enumeration value names. */
+	func void removeAllNames()
+		pMap.removeAll()
+	end
+	
+	/** \brief Name for enumeration value or null if not set. */
+	func String nameFor(Enumeration value)
+		if value == null
+			return null
+		end
+		return pMap.getAt(value, null) cast String
+	end
+	
+	/**
+	 * \brief Visit name mappings with block.
+	 * 
+	 * Block receives as first argument Enumeration value and as second argument String name.
+	 */
+	func void forEachName(Block ablock)
+		pMap.forEach(ablock)
+	end
+	
+	
+	
+	/**
+	 * \brief Translation prefix to use or null.
+	 * \version 1.20
+	 * 
+	 * If not null the translation is looked up using the name "{prefix}{enumValue.name()}.
+	 */
+	func String getTranslationPrefix()
+		return pTranslationPrefix
+	end
+	
+	/**
+	 * \brief Set translation prefix to use or null.
+	 * \version 1.20
+	 * 
+	 * If not null the translation is looked up using the name "{prefix}{enumValue.name()}.
+	 */
+	func void setTranslationPrefix(String prefix)
+		pTranslationPrefix = prefix
+	end
+	
+	/**
+	 * \brief Translation manager to use or null.
+	 * \version 1.20
+	 * 
+	 * Used if getTranslationPrefix() is not null. If translation manager is null
+	 * TranslationManager.get() is used.
+	 */
+	func TranslationManager getTranslationManager()
+		return pTranslationManager
+	end
+	
+	/**
+	 * \brief Set translation manager to use or null.
+	 * \version 1.20
+	 * 
+	 * Used if getTranslationPrefix() is not null. If translation manager is null
+	 * TranslationManager.get() is used.
+	 */
+	func void setTranslationManager(TranslationManager manager)
+		pTranslationManager = manager
+	end
+	
+	
+	
+	/** \brief Update renderer value. */
+	func void updateRenderer(ListBox listBox, Widget renderer, Object element, bool selected, bool focused)
+		var Enumeration value = element cast Enumeration
+		var String text
+		
+		if value != null
+			text = nameFor(value)
+			
+			if text == null and pTranslationPrefix != null
+				var UnicodeString translated = (pTranslationManager != null\
+					if pTranslationManager else TranslationManager.get()).translate(\
+						pTranslationPrefix + value.name(), null)
+				if translated != null
+					text = translated.toUTF8()
+				end
+			end
+			
+			if text == null
+				text = value.name()
+				
+				var int index = text.findReverse('.')
+				if index != -1
+					text = text.substring(index + 1)
+				end
+			end
+			
+		else
+			text = "<null>"
+		end
+		
+		super.updateRenderer(listBox, renderer, text, selected, focused)
+	end
+end

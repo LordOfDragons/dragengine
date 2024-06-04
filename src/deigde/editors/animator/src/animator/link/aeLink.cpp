@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Animator Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdlib.h>
@@ -45,7 +48,13 @@ pAnimator( NULL ),
 pEngLink( NULL ),
 pName( name ),
 pController( NULL ),
-pRepeat( 1 )
+pRepeat( 1 ),
+pBoneParameter( deAnimatorLink::ebpPositionZ ),
+pBoneMinimum( 0.0f ),
+pBoneMaximum( 1.0f ),
+pVertexPositionSetMinimum( 0.0f ),
+pVertexPositionSetMaximum( 1.0f ),
+pWrapY( false )
 {
 	pCurve.SetDefaultLinear();
 }
@@ -56,7 +65,15 @@ pEngLink( NULL ),
 pName( copy.pName ),
 pController( NULL ),
 pRepeat( copy.pRepeat ),
-pCurve( copy.pCurve )
+pCurve( copy.pCurve ),
+pBone( copy.pBone ),
+pBoneParameter( copy.pBoneParameter ),
+pBoneMinimum( copy.pBoneMinimum ),
+pBoneMaximum( copy.pBoneMaximum ),
+pVertexPositionSet( copy.pVertexPositionSet ),
+pVertexPositionSetMinimum( copy.pVertexPositionSetMinimum ),
+pVertexPositionSetMaximum( copy.pVertexPositionSetMaximum ),
+pWrapY( copy.pWrapY )
 {
 	pController = copy.pController;
 	if( pController ){
@@ -107,6 +124,13 @@ void aeLink::SetAnimator( aeAnimator *animator ){
 		UpdateController();
 		
 		pEngLink->SetRepeat( pRepeat );
+		pEngLink->SetBone( pBone );
+		pEngLink->SetBoneParameter( pBoneParameter );
+		pEngLink->SetVertexPositionSet( pVertexPositionSet );
+		pEngLink->SetVertexPositionSetValueRange( pVertexPositionSetMinimum, pVertexPositionSetMaximum );
+		pEngLink->SetWrapY( pWrapY );
+		pUpdateBoneLimits();
+		
 		NotifyLinkChanged();
 		
 		pUpdateCurve();
@@ -182,6 +206,143 @@ void aeLink::SetCurve( const decCurveBezier &curve ){
 	}
 }
 
+void aeLink::SetBone( const char *bone ){
+	if( pBone == bone ){
+		return;
+	}
+	
+	pBone = bone;
+	
+	if( pEngLink ){
+		pEngLink->SetBone( pBone );
+		NotifyLinkChanged();
+	}
+	
+	if( pAnimator ){
+		pAnimator->NotifyLinkChanged( this );
+	}
+}
+
+void aeLink::SetBoneParameter( deAnimatorLink::eBoneParameter parameter ){
+	if( pBoneParameter == parameter ){
+		return;
+	}
+	
+	pBoneParameter = parameter;
+	
+	if( pEngLink ){
+		pEngLink->SetBoneParameter( pBoneParameter );
+		pUpdateBoneLimits();
+		NotifyLinkChanged();
+	}
+	
+	if( pAnimator ){
+		pAnimator->NotifyLinkChanged( this );
+	}
+}
+
+void aeLink::SetBoneMinimum( float value ){
+	if( fabsf( pBoneMinimum - value ) < FLOAT_SAFE_EPSILON ){
+		return;
+	}
+	
+	pBoneMinimum = value;
+	
+	if( pEngLink ){
+		pUpdateBoneLimits();
+		NotifyLinkChanged();
+	}
+	
+	if( pAnimator ){
+		pAnimator->NotifyLinkChanged( this );
+	}
+}
+
+void aeLink::SetBoneMaximum( float value ){
+	if( fabsf( pBoneMaximum - value ) < FLOAT_SAFE_EPSILON ){
+		return;
+	}
+	
+	pBoneMaximum = value;
+	
+	if( pEngLink ){
+		pUpdateBoneLimits();
+		NotifyLinkChanged();
+	}
+	
+	if( pAnimator ){
+		pAnimator->NotifyLinkChanged( this );
+	}
+}
+
+void aeLink::SetVertexPositionSet( const char *vertexPositionSet ){
+	if( pVertexPositionSet == vertexPositionSet ){
+		return;
+	}
+	
+	pVertexPositionSet = vertexPositionSet;
+	
+	if( pEngLink ){
+		pEngLink->SetVertexPositionSet( pVertexPositionSet );
+		NotifyLinkChanged();
+	}
+	
+	if( pAnimator ){
+		pAnimator->NotifyLinkChanged( this );
+	}
+}
+
+void aeLink::SetVertexPositionSetMinimum( float value ){
+	if( fabsf( pVertexPositionSetMinimum - value ) < FLOAT_SAFE_EPSILON ){
+		return;
+	}
+	
+	pVertexPositionSetMinimum = value;
+	
+	if( pEngLink ){
+		pEngLink->SetVertexPositionSetValueRange( pVertexPositionSetMinimum, pVertexPositionSetMaximum );
+		NotifyLinkChanged();
+	}
+	
+	if( pAnimator ){
+		pAnimator->NotifyLinkChanged( this );
+	}
+}
+
+void aeLink::SetVertexPositionSetMaximum( float value ){
+	if( fabsf( pVertexPositionSetMaximum - value ) < FLOAT_SAFE_EPSILON ){
+		return;
+	}
+	
+	pVertexPositionSetMaximum = value;
+	
+	if( pEngLink ){
+		pEngLink->SetVertexPositionSetValueRange( pVertexPositionSetMinimum, pVertexPositionSetMaximum );
+		NotifyLinkChanged();
+	}
+	
+	if( pAnimator ){
+		pAnimator->NotifyLinkChanged( this );
+	}
+}
+
+void aeLink::SetWrapY( bool wrap ){
+	if( wrap == pWrapY ){
+		return;
+	}
+	
+	pWrapY = wrap;
+	
+	if( pEngLink ){
+		pEngLink->SetWrapY( wrap );
+		NotifyLinkChanged();
+	}
+	
+	if( pAnimator ){
+		pAnimator->NotifyLinkChanged( this );
+	}
+}
+
 
 
 void aeLink::NotifyLinkChanged(){
@@ -221,6 +382,14 @@ aeLink &aeLink::operator=( const aeLink &copy ){
 	SetController( copy.pController );
 	SetRepeat( copy.pRepeat );
 	pCurve = copy.pCurve;
+	pBone = copy.pBone;
+	pBoneParameter = copy.pBoneParameter;
+	pBoneMinimum = copy.pBoneMinimum;
+	pBoneMaximum = copy.pBoneMaximum;
+	pVertexPositionSet = copy.pVertexPositionSet;
+	pVertexPositionSetMinimum = copy.pVertexPositionSetMinimum;
+	pVertexPositionSetMaximum = copy.pVertexPositionSetMaximum;
+	pWrapY = copy.pWrapY;
 	return *this;
 }
 
@@ -232,4 +401,21 @@ void aeLink::pUpdateCurve(){
 	pEngLink->SetCurve( pCurve );
 	
 	NotifyLinkChanged();
+}
+
+void aeLink::pUpdateBoneLimits(){
+	if( ! pEngLink ){
+		return;
+	}
+	
+	switch( pBoneParameter ){
+	case deAnimatorLink::ebpRotationX:
+	case deAnimatorLink::ebpRotationY:
+	case deAnimatorLink::ebpRotationZ:
+		pEngLink->SetBoneValueRange( pBoneMinimum * DEG2RAD, pBoneMaximum * DEG2RAD );
+		break;
+		
+	default:
+		pEngLink->SetBoneValueRange( pBoneMinimum, pBoneMaximum );
+	}
 }

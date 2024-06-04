@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -96,6 +99,21 @@ static inline void fSet( GLuint *d, bool v1, bool v2, bool v3, bool v4 ){
 	d[ 2 ] = ( GLuint )v3;  d[ 3 ] = ( GLuint )v4;
 }
 
+static inline void fSet( GLuint *d, unsigned int v ){
+	d[ 0 ] = ( GLuint )v;
+}
+static inline void fSet( GLuint *d, unsigned int v1, unsigned int v2 ){
+	d[ 0 ] = ( GLuint )v1;  d[ 1 ] = ( GLuint )v2;
+}
+static inline void fSet( GLuint *d, unsigned int v1, unsigned int v2, unsigned int v3 ){
+	d[ 0 ] = ( GLuint )v1;  d[ 1 ] = ( GLuint )v2;
+	d[ 2 ] = ( GLuint )v3;
+}
+static inline void fSet( GLuint *d, unsigned int v1, unsigned int v2, unsigned int v3, unsigned int v4 ){
+	d[ 0 ] = ( GLuint )v1;  d[ 1 ] = ( GLuint )v2;
+	d[ 2 ] = ( GLuint )v3;  d[ 3 ] = ( GLuint )v4;
+}
+
 
 
 // Class deoglShaderParameterBlock
@@ -146,15 +164,14 @@ pElementUpper( 0 )
 	
 	int i;
 	for( i=0; i<pParameterCount; i++ ){
-		const deoglSPBParameter &src = paramBlock.pParameters[ i ];
-		deoglSPBParameter &dest = pParameters[ i ];
+		const deoglSPBParameter &s = paramBlock.pParameters[ i ];
+		deoglSPBParameter &d = pParameters[ i ];
 		
-		dest.SetAll( src.GetValueType(), src.GetComponentCount(),
-			src.GetVectorCount(), src.GetArrayCount() );
-		dest.SetOffset( src.GetOffset() );
-		dest.SetStride( src.GetStride() );
-		dest.SetArrayStride( src.GetArrayStride() );
-		dest.SetDataSize( src.GetDataSize() );
+		d.SetAll( s.GetValueType(), s.GetComponentCount(), s.GetVectorCount(), s.GetArrayCount() );
+		d.SetOffset( s.GetOffset() );
+		d.SetStride( s.GetStride() );
+		d.SetArrayStride( s.GetArrayStride() );
+		d.SetDataSize( s.GetDataSize() );
 	}
 }
 
@@ -196,9 +213,7 @@ deoglSPBParameter &deoglShaderParameterBlock::GetParameterAt( int index ) const{
 }
 
 void deoglShaderParameterBlock::SetRowMajor( bool rowMajor ){
-	if( pMapped ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_FALSE( pMapped )
 	pRowMajor = rowMajor;
 }
 
@@ -211,16 +226,12 @@ void deoglShaderParameterBlock::SetElementCount( int count ){
 	pUpdateBufferSize();
 }
 
-void deoglShaderParameterBlock::CalculateOffsetPadding(){
-	const int alignment = GetRenderThread().GetCapabilities().GetUBOOffsetAlignment();
-	pOffsetPadding = ( alignment - ( pElementStride % alignment ) ) % alignment;
-	pSetElementStride( pElementStride + pOffsetPadding );
+int deoglShaderParameterBlock::GetAlignmentRequirements() const{
+	return 16;
 }
 
 void deoglShaderParameterBlock::MapToStd140(){
-	if( pMapped ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_FALSE( pMapped )
 	
 	int i, alignment, stride, adjust, chunkOffset = 0;
 	int componentCount, vectorCount, elementStride = 0;
@@ -270,14 +281,25 @@ void deoglShaderParameterBlock::MapToStd140(){
 	}
 	
 	// element stride is aligned like arrays to 16-byte boundary
-	adjust = ( 16 - ( elementStride % 16 ) ) % 16;
-	pSetElementStride( elementStride + adjust );
+	alignment = decMath::max( 16, GetAlignmentRequirements() );
+	pOffsetPadding = ( alignment - ( elementStride % alignment ) ) % alignment;
+	pSetElementStride( elementStride + pOffsetPadding );
 }
 
 
 
 bool deoglShaderParameterBlock::IsBufferMapped() const{
 	return pMapped != NULL;
+}
+
+void deoglShaderParameterBlock::EnsureBuffer(){
+	MapBuffer();
+	UnmapBuffer();
+}
+
+void deoglShaderParameterBlock::Clear(){
+	DEASSERT_TRUE( pMapped )
+	memset( pMapped, 0, pElementStride * ( pElementUpper - pElementLower + 1 ) );
 }
 
 void deoglShaderParameterBlock::SetParameterDataFloat( int p, float v ){
@@ -303,6 +325,9 @@ void deoglShaderParameterBlock::SetParameterDataVec3( int p, const decVector &v 
 void deoglShaderParameterBlock::SetParameterDataVec3( int p, const decDVector &v ){
 	SetParameterDataVec3( p, pElementLower, v );
 }
+void deoglShaderParameterBlock::SetParameterDataVec3( int p, const oglVector3 &v ){
+	SetParameterDataVec3( p, pElementLower, v );
+}
 
 void deoglShaderParameterBlock::SetParameterDataVec4( int p, float v1, float v2, float v3, float v4 ){
 	SetParameterDataVec4( p, pElementLower, v1, v2, v3, v4 );
@@ -323,6 +348,9 @@ void deoglShaderParameterBlock::SetParameterDataVec4( int p, const decVector &v,
 	SetParameterDataVec4( p, pElementLower, v, w );
 }
 void deoglShaderParameterBlock::SetParameterDataVec4( int p, const decDVector4 &v, double w ){
+	SetParameterDataVec4( p, pElementLower, v, w );
+}
+void deoglShaderParameterBlock::SetParameterDataVec4( int p, const oglVector3 &v, float w ){
 	SetParameterDataVec4( p, pElementLower, v, w );
 }
 
@@ -364,6 +392,9 @@ void deoglShaderParameterBlock::SetParameterDataMat4x3( int p, const decMatrix &
 void deoglShaderParameterBlock::SetParameterDataMat4x3( int p, const decDMatrix &m ){
 	SetParameterDataMat4x3( p, pElementLower, m );
 }
+void deoglShaderParameterBlock::SetParameterDataMat4x3( int p, const oglMatrix3x4 &m ){
+	SetParameterDataMat4x3( p, pElementLower, m );
+}
 
 void deoglShaderParameterBlock::SetParameterDataMat4x4( int p, const float *v ){
 	SetParameterDataMat4x4( p, pElementLower, v );
@@ -381,11 +412,31 @@ void deoglShaderParameterBlock::SetParameterDataInt( int p, int v ){
 void deoglShaderParameterBlock::SetParameterDataIVec2( int p, int v1, int v2 ){
 	SetParameterDataIVec2( p, pElementLower, v1, v2 );
 }
+void deoglShaderParameterBlock::SetParameterDataIVec2( int p, const decPoint &pt ){
+	SetParameterDataIVec2( p, pElementLower, pt.x, pt.y );
+}
 void deoglShaderParameterBlock::SetParameterDataIVec3( int p, int v1, int v2, int v3 ){
 	SetParameterDataIVec3( p, pElementLower, v1, v2, v3 );
 }
+void deoglShaderParameterBlock::SetParameterDataIVec3( int p, const decPoint3 &v ){
+	SetParameterDataIVec3( p, pElementLower, v.x, v.y, v.z );
+}
+
 void deoglShaderParameterBlock::SetParameterDataIVec4( int p, int v1, int v2, int v3, int v4 ){
 	SetParameterDataIVec4( p, pElementLower, v1, v2, v3, v4 );
+}
+
+void deoglShaderParameterBlock::SetParameterDataUInt( int p, unsigned int v ){
+	SetParameterDataUInt( p, pElementLower, v );
+}
+void deoglShaderParameterBlock::SetParameterDataUVec2( int p, unsigned int v1, unsigned int v2 ){
+	SetParameterDataUVec2( p, pElementLower, v1, v2 );
+}
+void deoglShaderParameterBlock::SetParameterDataUVec3( int p, unsigned int v1, unsigned int v2, unsigned int v3 ){
+	SetParameterDataUVec3( p, pElementLower, v1, v2, v3 );
+}
+void deoglShaderParameterBlock::SetParameterDataUVec4( int p, unsigned int v1, unsigned int v2, unsigned int v3, unsigned int v4 ){
+	SetParameterDataUVec4( p, pElementLower, v1, v2, v3, v4 );
 }
 
 void deoglShaderParameterBlock::SetParameterDataBool( int p, bool v ){
@@ -424,6 +475,9 @@ void deoglShaderParameterBlock::SetParameterDataArrayVec3( int p, int a, const d
 void deoglShaderParameterBlock::SetParameterDataArrayVec3( int p, int a, const decDVector &v ){
 	SetParameterDataArrayVec3( p, pElementLower, a, v );
 }
+void deoglShaderParameterBlock::SetParameterDataArrayVec3( int p, int a, const oglVector3 &v ){
+	SetParameterDataArrayVec3( p, pElementLower, a, v );
+}
 
 void deoglShaderParameterBlock::SetParameterDataArrayVec4( int p, int a, float v1, float v2, float v3, float v4 ){
 	SetParameterDataArrayVec4( p, pElementLower, a, v1, v2, v3, v4 );
@@ -444,6 +498,9 @@ void deoglShaderParameterBlock::SetParameterDataArrayVec4( int p, int a, const d
 	SetParameterDataArrayVec4( p, pElementLower, a, v, w );
 }
 void deoglShaderParameterBlock::SetParameterDataArrayVec4( int p, int a, const decDVector &v, double w ){
+	SetParameterDataArrayVec4( p, pElementLower, a, v, w );
+}
+void deoglShaderParameterBlock::SetParameterDataArrayVec4( int p, int a, const oglVector3 &v, float w ){
 	SetParameterDataArrayVec4( p, pElementLower, a, v, w );
 }
 
@@ -485,6 +542,9 @@ void deoglShaderParameterBlock::SetParameterDataArrayMat4x3( int p, int a, const
 void deoglShaderParameterBlock::SetParameterDataArrayMat4x3( int p, int a, const decDMatrix &m ){
 	SetParameterDataArrayMat4x3( p, pElementLower, a, m );
 }
+void deoglShaderParameterBlock::SetParameterDataArrayMat4x3( int p, int a, const oglMatrix3x4 &m ){
+	SetParameterDataArrayMat4x3( p, pElementLower, a, m );
+}
 
 void deoglShaderParameterBlock::SetParameterDataArrayMat4x4( int p, int a, const float *v ){
 	SetParameterDataArrayMat4x4( p, pElementLower, a, v );
@@ -514,6 +574,22 @@ void deoglShaderParameterBlock::SetParameterDataArrayIVec4( int p, int a, int v1
 }
 void deoglShaderParameterBlock::SetParameterDataArrayInt( int p, int *values, int count ){
 	SetParameterDataArrayInt( p, pElementLower, values, count );
+}
+
+void deoglShaderParameterBlock::SetParameterDataArrayUInt( int p, int a, unsigned int v ){
+	SetParameterDataArrayUInt( p, pElementLower, a, v );
+}
+void deoglShaderParameterBlock::SetParameterDataArrayUVec2( int p, int a, unsigned int v1, unsigned int v2 ){
+	SetParameterDataArrayUVec2( p, pElementLower, a, v1, v2 );
+}
+void deoglShaderParameterBlock::SetParameterDataArrayUVec3( int p, int a, unsigned int v1, unsigned int v2, unsigned int v3 ){
+	SetParameterDataArrayUVec3( p, pElementLower, a, v1, v2, v3 );
+}
+void deoglShaderParameterBlock::SetParameterDataArrayUVec4( int p, int a, unsigned int v1, unsigned int v2, unsigned int v3, unsigned int v4 ){
+	SetParameterDataArrayUVec4( p, pElementLower, a, v1, v2, v3, v4 );
+}
+void deoglShaderParameterBlock::SetParameterDataArrayUInt( int p, unsigned int *values, int count ){
+	SetParameterDataArrayUInt( p, pElementLower, values, count );
 }
 
 void deoglShaderParameterBlock::SetParameterDataArrayBool( int p, int a, bool v ){
@@ -557,6 +633,9 @@ void deoglShaderParameterBlock::SetParameterDataVec3( int p, int e, const decVec
 void deoglShaderParameterBlock::SetParameterDataVec3( int p, int e, const decDVector &v ){
 	fSet( pDataFloat( pParamFloat( p, 3 ), e ), v.x, v.y, v.z );
 }
+void deoglShaderParameterBlock::SetParameterDataVec3( int p, int e, const oglVector3 &v ){
+	fSet( pDataFloat( pParamFloat( p, 3 ), e ), v.x, v.y, v.z );
+}
 
 void deoglShaderParameterBlock::SetParameterDataVec4( int p, int e, float v1, float v2, float v3, float v4 ){
 	fSet( pDataFloat( pParamFloat( p, 4 ), e ), v1, v2, v3, v4 );
@@ -576,7 +655,13 @@ void deoglShaderParameterBlock::SetParameterDataVec4( int p, int e, const decDVe
 void deoglShaderParameterBlock::SetParameterDataVec4( int p, int e, const decVector &v, float w ){
 	fSet( pDataFloat( pParamFloat( p, 4 ), e ), v.x, v.y, v.z, w );
 }
+void deoglShaderParameterBlock::SetParameterDataVec4( int p, int e, const decDVector &v, double w ){
+	fSet( pDataFloat( pParamFloat( p, 4 ), e ), v.x, v.y, v.z, w );
+}
 void deoglShaderParameterBlock::SetParameterDataVec4( int p, int e, const decDVector4 &v, double w ){
+	fSet( pDataFloat( pParamFloat( p, 4 ), e ), v.x, v.y, v.z, w );
+}
+void deoglShaderParameterBlock::SetParameterDataVec4( int p, int e, const oglVector3 &v, float w ){
 	fSet( pDataFloat( pParamFloat( p, 4 ), e ), v.x, v.y, v.z, w );
 }
 
@@ -700,6 +785,9 @@ void deoglShaderParameterBlock::SetParameterDataMat4x3( int p, int e, const decM
 void deoglShaderParameterBlock::SetParameterDataMat4x3( int p, int e, const decDMatrix &m ){
 	IMPL_SET_PARAM_DATA_MAT_4x3( p, e, m )
 }
+void deoglShaderParameterBlock::SetParameterDataMat4x3( int p, int e, const oglMatrix3x4 &m ){
+	IMPL_SET_PARAM_DATA_MAT_4x3( p, e, m )
+}
 
 
 void deoglShaderParameterBlock::SetParameterDataMat4x4( int p, int e, const float *v ){
@@ -751,8 +839,25 @@ void deoglShaderParameterBlock::SetParameterDataIVec2( int p, int e, int v1, int
 void deoglShaderParameterBlock::SetParameterDataIVec3( int p, int e, int v1, int v2, int v3 ){
 	fSet( pDataInt( pParamInt( p, 3 ), e ), v1, v2, v3 );
 }
+void deoglShaderParameterBlock::SetParameterDataIVec3( int p, int e, const decPoint3 &v ){
+	fSet( pDataInt( pParamInt( p, 3 ), e ), v.x, v.y, v.z );
+}
+
 void deoglShaderParameterBlock::SetParameterDataIVec4( int p, int e, int v1, int v2, int v3, int v4 ){
 	fSet( pDataInt( pParamInt( p, 4 ), e ), v1, v2, v3, v4 );
+}
+
+void deoglShaderParameterBlock::SetParameterDataUInt( int p, int e, unsigned int v ){
+	fSet( pDataUInt( pParamInt( p, 1 ), e ), v );
+}
+void deoglShaderParameterBlock::SetParameterDataUVec2( int p, int e, unsigned int v1, unsigned int v2 ){
+	fSet( pDataUInt( pParamInt( p, 2 ), e ), v1, v2 );
+}
+void deoglShaderParameterBlock::SetParameterDataUVec3( int p, int e, unsigned int v1, unsigned int v2, unsigned int v3 ){
+	fSet( pDataUInt( pParamInt( p, 3 ), e ), v1, v2, v3 );
+}
+void deoglShaderParameterBlock::SetParameterDataUVec4( int p, int e, unsigned int v1, unsigned int v2, unsigned int v3, unsigned int v4 ){
+	fSet( pDataUInt( pParamInt( p, 4 ), e ), v1, v2, v3, v4 );
 }
 
 void deoglShaderParameterBlock::SetParameterDataBool( int p, int e, bool v ){
@@ -791,6 +896,9 @@ void deoglShaderParameterBlock::SetParameterDataArrayVec3( int p, int e, int a, 
 void deoglShaderParameterBlock::SetParameterDataArrayVec3( int p, int e, int a, const decDVector &v ){
 	fSet( pDataFloat( pParamFloat( p, 3, 1, a ), e, a ), v.x, v.y, v.z );
 }
+void deoglShaderParameterBlock::SetParameterDataArrayVec3( int p, int e, int a, const oglVector3 &v ){
+	fSet( pDataFloat( pParamFloat( p, 3, 1, a ), e, a ), v.x, v.y, v.z );
+}
 
 void deoglShaderParameterBlock::SetParameterDataArrayVec4( int p, int e, int a, float v1, float v2, float v3, float v4 ){
 	fSet( pDataFloat( pParamFloat( p, 4, 1, a ), e, a ), v1, v2, v3, v4 );
@@ -811,6 +919,9 @@ void deoglShaderParameterBlock::SetParameterDataArrayVec4( int p, int e, int a, 
 	fSet( pDataFloat( pParamFloat( p, 4, 1, a ), e, a ), v.x, v.y, v.z, w );
 }
 void deoglShaderParameterBlock::SetParameterDataArrayVec4( int p, int e, int a, const decDVector &v, double w ){
+	fSet( pDataFloat( pParamFloat( p, 4, 1, a ), e, a ), v.x, v.y, v.z, w );
+}
+void deoglShaderParameterBlock::SetParameterDataArrayVec4( int p, int e, int a, const oglVector3 &v, float w ){
 	fSet( pDataFloat( pParamFloat( p, 4, 1, a ), e, a ), v.x, v.y, v.z, w );
 }
 
@@ -932,6 +1043,9 @@ void deoglShaderParameterBlock::SetParameterDataArrayMat4x3( int p, int e, int a
 void deoglShaderParameterBlock::SetParameterDataArrayMat4x3( int p, int e, int a, const decDMatrix &m ){
 	IMPL_SET_PARAM_DATA_ARRAY_MAT_4x3( p, e, a, m )
 }
+void deoglShaderParameterBlock::SetParameterDataArrayMat4x3( int p, int e, int a, const oglMatrix3x4 &m ){
+	IMPL_SET_PARAM_DATA_ARRAY_MAT_4x3( p, e, a, m )
+}
 
 void deoglShaderParameterBlock::SetParameterDataArrayMat4x4( int p, int e, int a, const float *v ){
 	GLfloat *d[ 4 ];
@@ -1022,6 +1136,40 @@ void deoglShaderParameterBlock::SetParameterDataArrayInt( int p, int e, int *val
 	}
 }
 
+void deoglShaderParameterBlock::SetParameterDataArrayUInt( int p, int e, int a, unsigned int v ){
+	fSet( pDataUInt( pParamInt( p, 1, 1, a ), e, a ), v );
+}
+void deoglShaderParameterBlock::SetParameterDataArrayUVec2( int p, int e, int a,
+unsigned int v1, unsigned int v2 ){
+	fSet( pDataUInt( pParamInt( p, 2, 1, a ), e, a ), v1, v2 );
+}
+void deoglShaderParameterBlock::SetParameterDataArrayUVec3( int p, int e, int a,
+unsigned int v1, unsigned int v2, unsigned int v3 ){
+	fSet( pDataUInt( pParamInt( p, 3, 1, a ), e, a ), v1, v2, v3 );
+}
+void deoglShaderParameterBlock::SetParameterDataArrayUVec4( int p, int e, int a,
+unsigned int v1, unsigned int v2, unsigned int v3, unsigned int v4 ){
+	fSet( pDataUInt( pParamInt( p, 4, 1, a ), e, a ), v1, v2, v3, v4 );
+}
+
+void deoglShaderParameterBlock::SetParameterDataArrayUInt( int p, int e, unsigned int *values, int count ){
+	if( count == 0 ){
+		return;
+	}
+	if( ! values || count < 0 ){
+		DETHROW( deeInvalidParam );
+	}
+	const deoglSPBParameter &parameter = pParamInt( p, 1, 1, count - 1 );
+	char * const mapped = pData( parameter, e, 0 );
+	
+	const int stride = parameter.GetArrayStride();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		fSet( ( GLuint* )( mapped + stride * i ), values[ i ] );
+	}
+}
+
 void deoglShaderParameterBlock::SetParameterDataArrayBool( int p, int e, int a, bool v ){
 	fSet( pDataUInt( pParamBool( p, 1, 1, a ), e, a ), v );
 }
@@ -1059,37 +1207,34 @@ void deoglShaderParameterBlock::SetParameterDataArrayBool( int p, int e, bool *v
 ////////////////////////
 
 void deoglShaderParameterBlock::pSetMapped( char *data ){
-	if( pMapped || pBufferSize == 0 ){
-		DETHROW( deeInvalidParam );
-	}
-	if( ! data ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	pMapped = data;
-	pElementLower = 0;
-	pElementUpper = pElementCount - 1;
+	pSetMapped( data, 0, pElementCount );
 }
 
 void deoglShaderParameterBlock::pSetMapped( char *data, int element ){
+	pSetMapped( data, element, 1 );
+}
+
+void deoglShaderParameterBlock::pSetMapped( char *data, int element, int count ){
 	if( pMapped || pBufferSize == 0 ){
 		DETHROW( deeInvalidParam );
 	}
-	if( ! data || element < 0 || element >= pElementCount ){
+	if( ! data || element < 0 || count < 1 || element + count > pElementCount ){
 		DETHROW( deeInvalidParam );
 	}
 	
 	pMapped = data;
 	pElementLower = element;
-	pElementUpper = element;
+	pElementUpper = element + count - 1;
 }
 
 void deoglShaderParameterBlock::pClearMapped(){
-	if( ! pMapped ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	pMapped = NULL;
+	DEASSERT_NOTNULL( pMapped )
+	pMapped = nullptr;
+}
+
+void deoglShaderParameterBlock::pSetOffsetPadding( int padding ){
+	pOffsetPadding = padding;
+	pUpdateBufferSize();
 }
 
 void deoglShaderParameterBlock::pSetElementStride( int stride ){

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -32,111 +35,110 @@ pin Dragengine.Preloading
  * \brief Integer value element class property for use with XML loading.
  */
 class ECPInteger extends ElementClassProperty
-	/** \brief Value. */
 	private var int pValue
-	
-	/** \brief Enable lower limit. */
 	private var bool pEnableLimitLower
-	
-	/** \brief Lower limit. */
 	private var int pLimitLower
-	
-	/** \brief Enable upper limit. */
 	private var bool pEnableLimitUpper
-	
-	/** \brief Upper limit. */
 	private var int pLimitUpper
 	
 	
 	
 	/** \brief Create property. */
-	public func new( String name, int value ) super( name )
-		this.pValue = value
-		this.pEnableLimitLower = false
-		this.pLimitLower = 0
-		this.pEnableLimitUpper = false
-		this.pLimitUpper = 1
+	public func new(String name, int value) super(name)
+		pValue = value
+		pEnableLimitLower = false
+		pLimitLower = 0
+		pEnableLimitUpper = false
+		pLimitUpper = 1
 	end
 	
 	/** \brief Create property. */
-	public func new( String name, int value, int lowerLimit ) this( name, value )
-		this.pEnableLimitLower = true
-		this.pLimitLower = lowerLimit
+	public func new(String name, int value, int lowerLimit) this(name, value)
+		pEnableLimitLower = true
+		pLimitLower = lowerLimit
 	end
 	
 	/** \brief Create property. */
-	public func new( String name, int value, int lowerLimit, int upperLimit ) this( name, value, lowerLimit )
-		this.pEnableLimitUpper = true
-		this.pLimitUpper = upperLimit
+	public func new(String name, int value, int lowerLimit, int upperLimit) this(name, value, lowerLimit)
+		pEnableLimitUpper = true
+		pLimitUpper = upperLimit
 	end
 	
 	
 	
 	/** \brief Value. */
 	public func int getValue()
-		return this.pValue
+		return pValue
 	end
 	
 	/** \brief Enable lower limit. */
 	public func bool getEnableLimitLower()
-		return this.pEnableLimitLower
+		return pEnableLimitLower
 	end
 	
 	/** \brief Set enable lower limit. */
-	public func void setEnableLimitLower( bool enable )
-		this.pEnableLimitLower = enable
+	public func void setEnableLimitLower(bool enable)
+		pEnableLimitLower = enable
 	end
 	
 	/** \brief Lower limit. */
 	public func int getLimitLower()
-		return this.pLimitLower
+		return pLimitLower
 	end
 	
 	/** \brief Set lower limit. */
-	public func void setLimitLower( int limit )
-		this.pLimitLower = limit
+	public func void setLimitLower(int limit)
+		pLimitLower = limit
 	end
 	
 	/** \brief Enable upper limit. */
 	public func bool getEnableLimitUpper()
-		return this.pEnableLimitUpper
+		return pEnableLimitUpper
 	end
 	
 	/** \brief Set enable upper limit. */
-	public func void setEnableLimitUpper( bool enable )
-		this.pEnableLimitUpper = enable
+	public func void setEnableLimitUpper(bool enable)
+		pEnableLimitUpper = enable
 	end
 	
 	/** \brief Upper limit. */
 	public func int getLimitUpper()
-		return this.pLimitUpper
+		return pLimitUpper
 	end
 	
 	/** \brief Set upper limit. */
-	public func void setLimitUpper( int limit )
-		this.pLimitUpper = limit
+	public func void setLimitUpper(int limit)
+		pLimitUpper = limit
 	end
 	
 	/** \brief Set limits. */
-	public func void setLimits( bool enableLower, int limitLower, bool enableUpper, int limitUpper )
-		this.pEnableLimitLower = enableLower
-		this.pLimitLower = limitLower
-		this.pEnableLimitUpper = enableUpper
-		this.pLimitUpper = limitUpper
+	public func void setLimits(bool enableLower, int limitLower, bool enableUpper, int limitUpper)
+		pEnableLimitLower = enableLower
+		pLimitLower = limitLower
+		pEnableLimitUpper = enableUpper
+		pLimitUpper = limitUpper
 	end
 	
 	
 	
 	/** \brief Set value of property from XML decoded value. */
-	public func void setValue( Object value )
-		this.pValue = value cast int
+	public func void setValue(Object value)
+		pValue = value cast int
 		
-		if this.pEnableLimitUpper
-			this.pValue = DEMath.min( this.pValue, this.pLimitUpper )
+		if pEnableLimitUpper
+			pValue = DEMath.min(pValue, pLimitUpper)
 		end
-		if this.pEnableLimitLower
-			this.pValue = DEMath.max( this.pValue, this.pLimitLower )
+		if pEnableLimitLower
+			pValue = DEMath.max(pValue, pLimitLower)
 		end
+	end
+	
+	/**
+	 * \brief Copy value from another element class property of the same type.
+	 * \version 1.17
+	 */
+	public func void copyValue(ElementClass elementClass, ElementClassProperty property)
+		pValue = (property cast ECPInteger).pValue
 	end
 	
 	
@@ -147,7 +149,7 @@ class ECPInteger extends ElementClassProperty
 	 * If named stub property is not present or empty string the stored value is returned.
 	 * If the named stub property is present it is returned.
 	 */
-	public func int getValue( StubWithProperties stub )
-		return stub.getPropertyIntFor( this.getName(), this.pValue )
+	public func int getValue(StubWithProperties stub)
+		return stub.getPropertyIntFor(getName(), pValue)
 	end
 end

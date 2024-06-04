@@ -1,29 +1,34 @@
-/* 
- * Drag[en]gine IGDE Animator Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _AEWPLINK_H_
 #define _AEWPLINK_H_
 
 #include <deigde/gui/igdeButtonReference.h>
+#include <deigde/gui/igdeCheckBoxReference.h>
 #include <deigde/gui/igdeComboBoxReference.h>
+#include <deigde/gui/igdeComboBoxFilterReference.h>
 #include <deigde/gui/igdeListBoxReference.h>
 #include <deigde/gui/igdeSpinTextFieldReference.h>
 #include <deigde/gui/igdeTextFieldReference.h>
@@ -39,7 +44,7 @@ class aeEditLinkMapping;
 
 
 /**
- * \brief Link panel.
+ * Link panel.
  */
 class aeWPLink : public igdeContainerScroll{
 private:
@@ -53,6 +58,14 @@ private:
 	igdeComboBoxReference pCBController;
 	igdeSpinTextFieldReference pSpinRepeat;
 	igdeViewCurveBezierReference pEditCurve;
+	igdeComboBoxFilterReference pCBBone;
+	igdeComboBoxReference pCBBoneParameter;
+	igdeTextFieldReference pEditBoneMinimum;
+	igdeTextFieldReference pEditBoneMaximum;
+	igdeComboBoxFilterReference pCBVertexPositionSet;
+	igdeTextFieldReference pEditVertexPositionSetMinimum;
+	igdeTextFieldReference pEditVertexPositionSetMaximum;
+	igdeCheckBoxReference pChkWrapY;
 	
 	bool pPreventUpdate;
 	
@@ -61,11 +74,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create panel. */
+	/** Create panel. */
 	aeWPLink( aeWindowProperties &windowProperties );
 	
 protected:
-	/** \brief Clean up panel. */
+	/** Clean up panel. */
 	virtual ~aeWPLink();
 	/*@}*/
 	
@@ -74,28 +87,34 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Properties window. */
+	/** Properties window. */
 	inline aeWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
-	/** \brief Animator. */
+	/** Animator. */
 	inline aeAnimator *GetAnimator() const{ return pAnimator; }
 	
-	/** \brief Set animator. */
+	/** Set animator. */
 	void SetAnimator( aeAnimator *animator );
 	
-	/** \brief Active link. */
+	/** Active link. */
 	aeLink *GetLink() const;
 	
-	/** \brief Update link list. */
+	/** Update link list. */
 	void UpdateLinkList();
 	
-	/** \brief Select active link. */
+	/** Select active link. */
 	void SelectActiveLink();
 	
-	/** \brief Update link. */
+	/** Update link. */
 	void UpdateLink();
 	
-	/** \brief Update controller list. */
+	/** Update rig bone list. */
+	void UpdateRigBoneList();
+	
+	/** Update model vertex position set list. */
+	void UpdateModelVertexPositionSetList();
+	
+	/** Update controller list. */
 	void UpdateControllerList();
 	/*@}*/
 };

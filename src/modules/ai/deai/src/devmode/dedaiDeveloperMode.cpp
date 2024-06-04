@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine AI Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -46,7 +49,7 @@ pEnabled( false ),
 
 pShowSpaces( false ),
 pShowSpaceLinks( false ),
-pSpaceHilightCostType( -1 ),
+pSpaceHighlightCostType( -1 ),
 pShowBlockers( false ),
 pShowPath( false ),
 pShowPathFaces( false ),
@@ -57,7 +60,7 @@ pUpdateTracker( 0 ){
 	// debug
 // 	pEnabled = true;
 // 	pShowNavSpaces = true;
-// 	pNavSpaceHilightCostType = 0;
+// 	pNavSpaceHighlightCostType = 0;
 // 	pShowNavPathFaces = true;
 }
 
@@ -87,8 +90,8 @@ bool dedaiDeveloperMode::ExecuteCommand( const decUnicodeArgumentList &command, 
 			pCmdShowSpaceLinks( command, answer );
 			return true;
 			
-		}else if( command.MatchesArgumentAt( 0, "dm_space_hilight_cost_type" ) ){
-			pCmdSpaceHilightCostType( command, answer );
+		}else if( command.MatchesArgumentAt( 0, "dm_space_highlight_cost_type" ) ){
+			pCmdSpaceHighlightCostType( command, answer );
 			return true;
 			
 		}else if( command.MatchesArgumentAt( 0, "dm_show_blockers" ) ){
@@ -127,7 +130,7 @@ void dedaiDeveloperMode::pCmdHelp( const decUnicodeArgumentList &command, decUni
 	answer.SetFromUTF8( "dm_help => Displays this help screen.\n" );
 	answer.AppendFromUTF8( "dm_show_spaces [1|0] => Displays navigation spaces.\n" );
 	answer.AppendFromUTF8( "dm_show_space_links [1|0] => Displays navigation space links.\n" );
-	answer.AppendFromUTF8( "dm_space_hilight_cost_type [costType] => Hilight navigation space element of a certain cost type.\n" );
+	answer.AppendFromUTF8( "dm_space_highlight_cost_type [costType] => Highlight navigation space element of a certain cost type.\n" );
 	answer.AppendFromUTF8( "dm_show_blockers [1|0] => Displays navigation blockers.\n" );
 	answer.AppendFromUTF8( "dm_show_path [1|0] => Dispaly navigator path.\n" );
 	answer.AppendFromUTF8( "dm_show_path_faces [1|0] => Dispaly navigator path faces.\n" );
@@ -172,17 +175,17 @@ void dedaiDeveloperMode::pCmdShowSpaceLinks( const decUnicodeArgumentList &comma
 	answer.AppendFromUTF8( text );
 }
 
-void dedaiDeveloperMode::pCmdSpaceHilightCostType( const decUnicodeArgumentList &command, decUnicodeString &answer ){
+void dedaiDeveloperMode::pCmdSpaceHighlightCostType( const decUnicodeArgumentList &command, decUnicodeString &answer ){
 	if( command.GetArgumentCount() == 2 ){
 		const int newValue = command.GetArgumentAt( 1 )->ToInt();
-		if( newValue != pSpaceHilightCostType ){
+		if( newValue != pSpaceHighlightCostType ){
 			TouchUpdateTracker();
 		}
-		pSpaceHilightCostType = newValue;
+		pSpaceHighlightCostType = newValue;
 	}
 	
 	decString text;
-	text.Format( "dm_space_hilight_cost_type = %i\n", pSpaceHilightCostType );
+	text.Format( "dm_space_highlight_cost_type = %i\n", pSpaceHighlightCostType );
 	answer.AppendFromUTF8( text );
 }
 

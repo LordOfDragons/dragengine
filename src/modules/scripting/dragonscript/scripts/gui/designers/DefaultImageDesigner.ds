@@ -1,0 +1,186 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+
+namespace Dragengine.Gui.Designers
+
+pin Dragengine.Gui.CanvasCreators
+pin Dragengine.Gui.Borders.Factories
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Default implementation of WidgetDesigner for DisplayImage.
+ */
+class DefaultImageDesigner extends DefaultWidgetDesigner
+	/** \brief Design for a particular widget state. */
+	public class ImageStateDesign extends StateDesign
+		private var ColorMatrix pImageColorTransform
+		
+		
+		
+		/** \brief Create state design. */
+		public func new()
+		end
+		
+		/** \brief Create copy of state design. */
+		public func new( ImageStateDesign stateDesign ) super( stateDesign )
+			this.pImageColorTransform = stateDesign.pImageColorTransform
+		end
+		
+		
+		
+		/** \brief Image color transform or null. */
+		public func ColorMatrix getImageColorTransform()
+			return this.pImageColorTransform
+		end
+		
+		/** \brief Set image color transform or null. */
+		public func void setImageColorTransform( ColorMatrix colorMatrix )
+			this.pImageColorTransform = colorMatrix
+		end
+		
+		
+		
+		/**
+		 * \brief Set parameter.
+		 * 
+		 * Supported parameters:
+		 * | name | value | Setter |
+		 * | imageColorTransform | ColorMatrix | setImageColorTransform |
+		 */
+		public func void setParameter( String name, Object value )
+			if name.equals( "imageColorTransform" )
+				this.setImageColorTransform( value cast ColorMatrix )
+				
+			else
+				super.setParameter( name, value )
+			end
+		end
+		
+		
+		
+		/** \brief Create copy of state. */
+		public func DefaultWidgetDesigner.StateDesign copyDesign()
+			return ImageStateDesign.new( this )
+		end
+		
+		/**
+		 * \brief Merge states.
+		 * 
+		 * Updates state with parameters of this state if defined. Used to find the first
+		 * defined parameter for a series of states acting as fallback for each other.
+		 */
+		public func void merge( DefaultWidgetDesigner.StateDesign state )
+			super.merge( state )
+			
+			var ImageStateDesign idesign = state cast ImageStateDesign
+			
+			if this.pImageColorTransform != null
+				idesign.pImageColorTransform = this.pImageColorTransform
+			end
+		end
+		
+		/**
+		 * \brief Apply state design to widget.
+		 * 
+		 * This is typically called on a merged design to find the first defined parameters.
+		 */
+		public func void apply( Widget widget )
+			super.apply( widget )
+			
+			var DisplayImage displayImage = widget cast DisplayImage
+			if not displayImage.getProtectImageColorTransform()
+				if this.pImageColorTransform != null
+					displayImage.setImageColorTransform( this.pImageColorTransform )
+					
+				else
+					displayImage.setImageColorTransform( ColorMatrix.new() )
+				end
+			end
+		end
+	end
+	
+	
+	
+	/** \brief Create new image designer. */
+	public func new()
+		this.setDesignNormal( ImageStateDesign.new() )
+		this.setDesignDisabled( ImageStateDesign.new() )
+		this.setDesignFocused( ImageStateDesign.new() )
+		this.setDesignHover( ImageStateDesign.new() )
+		this.setDesignFocusedHover( ImageStateDesign.new() )
+	end
+	
+	/** \brief Create copy of widget designer designer. */
+	public func new( DefaultImageDesigner designer ) super( designer )
+	end
+	
+	
+	
+	/** \brief Design for normal state. */
+	public func ImageStateDesign getImageDesignNormal()
+		return this.getDesignNormal() cast ImageStateDesign
+	end
+	
+	/** \brief Design for disabled state. */
+	public func ImageStateDesign getImageDesignDisabled()
+		return this.getDesignDisabled() cast ImageStateDesign
+	end
+	
+	/** \brief Design for focused state. */
+	public func ImageStateDesign getImageDesignFocused()
+		return this.getDesignFocused() cast ImageStateDesign
+	end
+	
+	/** \brief Design for hover state. */
+	public func ImageStateDesign getImageDesignHover()
+		return this.getDesignHover() cast ImageStateDesign
+	end
+	
+	/** \brief Design for focused hover state. */
+	public func ImageStateDesign getImageDesignFocusedHover()
+		return this.getDesignFocusedHover() cast ImageStateDesign
+	end
+	
+	
+	
+	/**
+	 * \brief Set parameter.
+	 * 
+	 * See DefaultWidgetDesigner.setParameter for supported parameters.
+	 * 
+	 * Additional supported parameters:
+	 * | name | value | Setter |
+	 * | {state}.imageColorTransform | ColorMatrix | getDesign{state}.setImageColorTransform |
+	 */
+	public func void setParameter( String name, Object value )
+		super.setParameter( name, value )
+	end
+	
+	/** \brief Create copy of designer. */
+	public func WidgetDesigner copyDesigner()
+		return DefaultImageDesigner.new( this )
+	end
+end

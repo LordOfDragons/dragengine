@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Animator Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -39,6 +42,7 @@
 #include "panels/aeWPAPanelRuleTrackTo.h"
 #include "panels/aeWPAPanelRuleLimit.h"
 #include "panels/aeWPAPanelRuleGroup.h"
+#include "panels/aeWPAPanelRuleMirror.h"
 #include "../aeWindowMain.h"
 #include "../../animator/aeAnimator.h"
 #include "../../animator/rule/aeRule.h"
@@ -204,8 +208,9 @@ public:
 
 class cActionPasteIntoGroup : public cActionPaste{
 public:
-	cActionPasteIntoGroup( aeWPRule &panel, const char *name, igdeIcon *icon,
-		const char *description, bool insert ) : cActionPaste( panel, name, icon, description, insert ){ }
+	cActionPasteIntoGroup( aeWPRule &panel ) : cActionPaste( panel, "Paste Into Group",
+		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPaste ),
+		"Paste rules from clipboard into group", false ){ }
 	
 	virtual igdeUndo *OnAction( aeAnimator*, aeRule *rule ){
 		aeClipboardDataRule * const cdata = ( aeClipboardDataRule* )pPanel.GetWindowProperties()
@@ -216,31 +221,14 @@ public:
 		
 		aeRuleGroup * const group = ( aeRuleGroup* )rule;
 		const aeRuleList &list = group->GetRules();
-		return new aeURuleGroupPasteRule( group, cdata->GetRules(),
-			pInsert ? list.IndexOf( rule ) : list.GetCount() );
+		return new aeURuleGroupPasteRule( group, cdata->GetRules(), list.GetCount() );
 	}
 	
 	virtual void Update( const aeAnimator & , const aeRule &rule ){
-		SetSelected( rule.GetType() == deAnimatorRuleVisitorIdentify::ertGroup
+		SetEnabled( rule.GetType() == deAnimatorRuleVisitorIdentify::ertGroup
 			&& pPanel.GetWindowProperties().GetWindowMain().GetClipboard()
 				.GetWithTypeName( aeClipboardDataRule::TYPE_NAME ) );
 	}
-};
-
-class cActionPasteIntoGroupAppend : public cActionPasteIntoGroup{
-public:
-	cActionPasteIntoGroupAppend( aeWPRule &panel ) : cActionPasteIntoGroup( panel,
-		"Paste Into Group Append",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPaste ),
-		"Paste and append rule from clipboard into group", false ){ }
-};
-
-class cActionPasteIntoGroupInsert : public cActionPasteIntoGroup{
-public:
-	cActionPasteIntoGroupInsert( aeWPRule &panel ) : cActionPasteIntoGroup( panel,
-		"Paste Into Group Insert",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPaste ),
-		"Paste and insert rule from clipboard into group", true ){ }
 };
 
 class cTreeRules : public igdeTreeListListener{
@@ -289,6 +277,7 @@ public:
 		helper.MenuCommand( submenu, windowMain.GetActionRuleAddSubAnimator() );
 		helper.MenuCommand( submenu, windowMain.GetActionRuleAddTrackTo() );
 		helper.MenuCommand( submenu, windowMain.GetActionRuleAddLimit() );
+		helper.MenuCommand( submenu, windowMain.GetActionRuleAddMirror() );
 		menu.AddChild( submenu );
 		
 		submenu.TakeOver( new igdeMenuCascade( menu.GetEnvironment(), "Add Into Group" ) );
@@ -304,6 +293,7 @@ public:
 		helper.MenuCommand( submenu, windowMain.GetActionRuleAddIntoGroupSubAnimator() );
 		helper.MenuCommand( submenu, windowMain.GetActionRuleAddIntoGroupTrackTo() );
 		helper.MenuCommand( submenu, windowMain.GetActionRuleAddIntoGroupLimit() );
+		helper.MenuCommand( submenu, windowMain.GetActionRuleAddIntoGroupMirror() );
 		menu.AddChild( submenu );
 		
 		submenu.TakeOver( new igdeMenuCascade( menu.GetEnvironment(), "Insert" ) );
@@ -319,6 +309,7 @@ public:
 		helper.MenuCommand( submenu, windowMain.GetActionRuleInsertSubAnimator() );
 		helper.MenuCommand( submenu, windowMain.GetActionRuleInsertTrackTo() );
 		helper.MenuCommand( submenu, windowMain.GetActionRuleInsertLimit() );
+		helper.MenuCommand( submenu, windowMain.GetActionRuleInsertMirror() );
 		menu.AddChild( submenu );
 		
 		helper.MenuCommand( menu, windowMain.GetActionRuleRemove() );
@@ -330,8 +321,7 @@ public:
 		helper.MenuCommand( menu, new cActionCut( pPanel ), true );
 		helper.MenuCommand( menu, new cActionPasteAppend( pPanel ), true );
 		helper.MenuCommand( menu, new cActionPasteInsert( pPanel ), true );
-		helper.MenuCommand( menu, new cActionPasteIntoGroupAppend( pPanel ), true );
-		helper.MenuCommand( menu, new cActionPasteIntoGroupInsert( pPanel ), true );
+		helper.MenuCommand( menu, new cActionPasteIntoGroup( pPanel ), true );
 	}
 };
 
@@ -362,6 +352,7 @@ pPanelSSnapshot( NULL ),
 pPanelSubAnimator( NULL ),
 pPanelTrackTo( NULL ),
 pPanelLimit( NULL ),
+pPanelMirror( nullptr ),
 pActivePanel( NULL )
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
@@ -422,6 +413,9 @@ pActivePanel( NULL )
 	panel.TakeOver( pPanelLimit = new aeWPAPanelRuleLimit( *this ) );
 	pSwitcher->AddChild( panel );
 	
+	panel.TakeOver( pPanelMirror = new aeWPAPanelRuleMirror( *this ) );
+	pSwitcher->AddChild( panel );
+	
 	pSwitcher->SetCurrent( 0 );  // empty
 }
 
@@ -457,12 +451,14 @@ void aeWPRule::SetAnimator( aeAnimator *animator ){
 	
 	if( pActivePanel ){
 		pActivePanel->OnAnimatorChanged();
+		pActivePanel->OnAnimatorPathChanged();
 	}
 	
 	UpdateRuleTree();
 	UpdateRule();
 	UpdateRuleMoveList();
 	UpdateRuleBoneList();
+	UpdateRuleVertexPositionSetList();
 	UpdateLinkList();
 	UpdateControllerList();
 }
@@ -556,7 +552,7 @@ void aeWPRule::UpdateRuleTreeItem( igdeTreeItem *item, aeRule *rule ){
 		}
 		
 		for( i=0; i<count; i++ ){
-			aeRule * const rule = list.GetAt( i );
+			aeRule * const rule2 = list.GetAt( i );
 			
 			if( ! nextItem ){
 				igdeTreeItemReference newItem;
@@ -565,7 +561,7 @@ void aeWPRule::UpdateRuleTreeItem( igdeTreeItem *item, aeRule *rule ){
 				nextItem = newItem;
 			}
 			
-			UpdateRuleTreeItem( nextItem, rule );
+			UpdateRuleTreeItem( nextItem, rule2 );
 			
 			nextItem = nextItem->GetNext();
 		}
@@ -642,6 +638,10 @@ void aeWPRule::ShowActiveSourcePanel(){
 		pSwitcher->SetCurrent( 12 );
 		pActivePanel = pPanelLimit;
 		
+	}else if( type == pPanelMirror->GetRequiredType() ){
+		pSwitcher->SetCurrent( 13 );
+		pActivePanel = pPanelMirror;
+		
 	}else{
 		pSwitcher->SetCurrent( 0 );  // empty
 	}
@@ -671,8 +671,20 @@ void aeWPRule::UpdateRuleBoneList(){
 	}
 }
 
+void aeWPRule::UpdateRuleVertexPositionSetList(){
+	if( pActivePanel ){
+		pActivePanel->UpdateModelVertexPositionSetList();
+	}
+}
+
 void aeWPRule::UpdateRuleMoveList(){
 	if( pActivePanel ){
 		pActivePanel->UpdateAnimMoveList();
+	}
+}
+
+void aeWPRule::OnAnimatorPathChanged(){
+	if( pActivePanel ){
+		pActivePanel->OnAnimatorPathChanged();
 	}
 }

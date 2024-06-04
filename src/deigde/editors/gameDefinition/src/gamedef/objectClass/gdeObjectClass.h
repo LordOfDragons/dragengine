@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Game Definition Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _GDEOBJECTCLASS_H_
@@ -25,6 +28,7 @@
 #include "billboard/gdeOCBillboardList.h"
 #include "camera/gdeOCCameraList.h"
 #include "component/gdeOCComponentList.h"
+#include "component/gdeOCComponentTextureList.h"
 #include "envmapprobe/gdeOCEnvMapProbeList.h"
 #include "inherit/gdeOCInheritList.h"
 #include "light/gdeOCLightList.h"
@@ -37,6 +41,7 @@
 #include "../property/gdePropertyList.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/deObjectReference.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringSet.h>
@@ -48,19 +53,19 @@ class gdeOCComponentTexture;
 
 
 /**
- * \brief Object class.
+ * Object class.
  */
 class gdeObjectClass : public deObject{
 public:
-	/** \brief Scale modes. */
+	/** Scale modes. */
 	enum eScaleModes{
-		/** \brief Fixed size. */
+		/** Fixed size. */
 		esmFixed,
 		
-		/** \brief Scalable uniformly. */
+		/** Scalable uniformly. */
 		esmUniform,
 		
-		/** \brief Scalable freely. */
+		/** Scalable freely. */
 		esmFree
 	};
 	
@@ -85,7 +90,8 @@ private:
 	decString pDefaultInheritPropertyPrefix;
 	
 	bool pIsGhost;
-	bool pCanInstanciate;
+	bool pCanInstantiate;
+	int pInheritSubObjects;
 	
 	gdeOCBillboardList pBillboards;
 	gdeOCCameraList pCameras;
@@ -99,18 +105,21 @@ private:
 	gdeOCNavigationBlockerList pNavigationBlockers;
 	gdeOCNavigationSpaceList pNavigationSpaces;
 	
+	gdeOCComponentTextureList pTextures;
+	deObjectReference pActiveTexture;
+	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create object class. */
+	/** Create object class. */
 	gdeObjectClass( const char *name = "NewClass" );
 	
-	/** \brief Create copy of object class. */
+	/** Create copy of object class. */
 	gdeObjectClass( const gdeObjectClass &objectClass );
 	
-	/** \brief Clean up object class. */
+	/** Clean up object class. */
 	virtual ~gdeObjectClass();
 	/*@}*/
 	
@@ -118,297 +127,331 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Parent game definition. */
+	/** Parent game definition. */
 	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
 	
-	/** \brief Set parent game definition. */
+	/** Set parent game definition. */
 	void SetGameDefinition( gdeGameDefinition *gamedef );
 	
 	
 	
-	/** \brief Class name. */
+	/** Class name. */
 	inline const decString &GetName() const{ return pName; }
 	
-	/** \brief Set class name. */
+	/** Set class name. */
 	void SetName( const char *name );
 	
-	/** \brief Description. */
+	/** Description. */
 	inline const decString &GetDescription() const{ return pDescription; }
 	
-	/** \brief Set description. */
+	/** Set description. */
 	void SetDescription( const char *description );
 	
 	
 	
-	/** \brief Scale mode. */
+	/** Scale mode. */
 	inline eScaleModes GetScaleMode() const{ return pScaleMode; }
 	
-	/** \brief Set scale mode. */
+	/** Set scale mode. */
 	void SetScaleMode( eScaleModes mode );
 	
 	
 	
-	/** \brief Cathegory. */
+	/** Cathegory. */
 	inline const decString &GetCategory() const{ return pCategory; }
 	
-	/** \brief Set cathegory. */
+	/** Set cathegory. */
 	void SetCategory( const char *category );
 	
-	/** \brief Hide tags. */
+	/** Hide tags. */
 	inline const decStringSet &GetHideTags() const{ return pHideTags; }
 	
-	/** \brief Set hide tags. */
+	/** Set hide tags. */
 	void SetHideTags( const decStringSet &tags );
 	
-	/** \brief Partial hide tags. */
+	/** Partial hide tags. */
 	inline const decStringSet &GetPartialHideTags() const{ return pPartialHideTags; }
 	
-	/** \brief Set partial hide tags. */
+	/** Set partial hide tags. */
 	void SetPartialHideTags( const decStringSet &tags );
 	
 	
 	
-	/** \brief Properties. */
+	/** Properties. */
 	inline gdePropertyList &GetProperties(){ return pProperties; }
 	inline const gdePropertyList &GetProperties() const{ return pProperties; }
 	
-	/** \brief Property values. */
+	/** Property values. */
 	inline decStringDictionary &GetPropertyValues(){ return pPropertyValues; }
 	inline const decStringDictionary &GetPropertyValues() const{ return pPropertyValues; }
 	
-	/** \brief Notify listeners property changed. */
+	/** Notify listeners property changed. */
 	void NotifyPropertyChanged( gdeProperty *property );
 	
-	/** \brief Notify listeners property name changed. */
+	/** Notify listeners property name changed. */
 	void NotifyPropertyNameChanged( gdeProperty *property );
 	
-	/** \brief Notify listeners properties changed. */
+	/** Notify listeners properties changed. */
 	void NotifyPropertiesChanged();
 	
-	/** \brief Notify listeners property values changed. */
+	/** Notify listeners property values changed. */
 	void NotifyPropertyValuesChanged();
 	
 	
 	
-	/** \brief Texture properties. */
+	/** Texture properties. */
 	inline gdePropertyList &GetTextureProperties(){ return pTextureProperties; }
 	inline const gdePropertyList &GetTextureProperties() const{ return pTextureProperties; }
 	
-	/** \brief Notify listeners texture property changed. */
+	/** Notify listeners texture property changed. */
 	void NotifyTexturePropertyChanged( gdeProperty *property );
 	
-	/** \brief Notify listeners texture property name changed. */
+	/** Notify listeners texture property name changed. */
 	void NotifyTexturePropertyNameChanged( gdeProperty *property );
 	
-	/** \brief Notify listeners texture properties changed. */
+	/** Notify listeners texture properties changed. */
 	void NotifyTexturePropertiesChanged();
 	
 	
 	
-	/** \brief Inherit. */
+	/** Inherit. */
 	inline gdeOCInheritList &GetInherits(){ return pInherits; }
 	inline const gdeOCInheritList &GetInherits() const{ return pInherits; }
 	
-	/** \brief Notify listeners inherit changed. */
+	/** Notify listeners inherit changed. */
 	void NotifyInheritChanged( gdeOCInherit *inherit );
 	
-	/** \brief Notify listeners inherit structure changed. */
+	/** Notify listeners inherit structure changed. */
 	void NotifyInheritsChanged();
 	
-	/** \brief Default property name to propose if this object class is inherited. */
+	/** Default property name to propose if this object class is inherited. */
 	inline const decString &GetDefaultInheritPropertyPrefix() const{ return pDefaultInheritPropertyPrefix; }
 	
-	/** \brief Set default property name to propose if this object class is inherited. */
+	/** Set default property name to propose if this object class is inherited. */
 	void SetDefaultInheritPropertyPrefix( const char *propertyName );
 	
+	/** Object class inherits (in-)directly object class. */
+	bool InheritsFrom( const gdeObjectClass *objectClass ) const;
 	
-	/** \brief Billboards. */
+	/** Object class is or inherits (in-)directly object class. */
+	bool IsOrInheritsFrom( const gdeObjectClass *objectClass ) const;
+	bool IsOrInheritsFrom( const char *name ) const;
+	
+	
+	
+	/** Billboards. */
 	inline gdeOCBillboardList &GetBillboards(){ return pBillboards; }
 	inline const gdeOCBillboardList &GetBillboards() const{ return pBillboards; }
 	
-	/** \brief Notify listeners billboards changed. */
+	/** Notify listeners billboards changed. */
 	void NotifyBillboardsChanged();
 	
-	/** \brief Notify listeners billboard changed. */
+	/** Notify listeners billboard changed. */
 	void NotifyBillboardChanged( gdeOCBillboard *billboard );
 	
 	
 	
-	/** \brief Cameras. */
+	/** Cameras. */
 	inline gdeOCCameraList &GetCameras(){ return pCameras; }
 	inline const gdeOCCameraList &GetCameras() const{ return pCameras; }
 	
-	/** \brief Notify listeners cameras changed. */
+	/** Notify listeners cameras changed. */
 	void NotifyCamerasChanged();
 	
-	/** \brief Notify listeners camera changed. */
+	/** Notify listeners camera changed. */
 	void NotifyCameraChanged( gdeOCCamera *camera );
 	
 	
 	
-	/** \brief Components. */
+	/** Components. */
 	inline gdeOCComponentList &GetComponents(){ return pComponents; }
 	inline const gdeOCComponentList &GetComponents() const{ return pComponents; }
 	
-	/** \brief Notify listeners components changed. */
+	/** Notify listeners components changed. */
 	void NotifyComponentsChanged();
 	
-	/** \brief Notify listeners component changed. */
+	/** Notify listeners component changed. */
 	void NotifyComponentChanged( gdeOCComponent *component );
 	
-	/** \brief Notify listeners component texture changed. */
+	/** Notify listeners component texture changed. */
 	void NotifyComponentTextureChanged( gdeOCComponent *component,
 		gdeOCComponentTexture *texture );
 	
-	/** \brief Notify listeners component texture name changed. */
+	/** Notify listeners component texture name changed. */
 	void NotifyComponentTextureNameChanged( gdeOCComponent *component,
 		gdeOCComponentTexture *texture );
 	
-	/** \brief Notify listeners component texture properties changed. */
+	/** Notify listeners component texture properties changed. */
 	void NotifyComponentTexturePropertiesChanged( gdeOCComponent *component,
 		gdeOCComponentTexture *texture );
 	
 	
 	
-	/** \brief Lights. */
+	/** Lights. */
 	inline gdeOCLightList &GetLights(){ return pLights; }
 	inline const gdeOCLightList &GetLights() const{ return pLights; }
 	
-	/** \brief Notify listeners lights changed. */
+	/** Notify listeners lights changed. */
 	void NotifyLightsChanged();
 	
-	/** \brief Notify listeners light changed. */
+	/** Notify listeners light changed. */
 	void NotifyLightChanged( gdeOCLight *light );
 	
 	
 	
-	/** \brief Environment map probes. */
+	/** Environment map probes. */
 	inline gdeOCEnvMapProbeList &GetEnvMapProbes(){ return pEnvMapProbes; }
 	inline const gdeOCEnvMapProbeList &GetEnvMapProbes() const{ return pEnvMapProbes; }
 	
-	/** \brief Notify listeners environment map probes changed. */
+	/** Notify listeners environment map probes changed. */
 	void NotifyEnvMapProbesChanged();
 	
-	/** \brief Notify listeners environment map probe changed. */
+	/** Notify listeners environment map probe changed. */
 	void NotifyEnvMapProbeChanged( gdeOCEnvMapProbe *envMapProbe );
 	
 	
 	
-	/** \brief Navigation blockers. */
+	/** Navigation blockers. */
 	inline gdeOCNavigationBlockerList &GetNavigationBlockers(){ return pNavigationBlockers; }
 	inline const gdeOCNavigationBlockerList &GetNavigationBlockers() const{ return pNavigationBlockers; }
 	
-	/** \brief Notify listeners navigation blockers changed. */
+	/** Notify listeners navigation blockers changed. */
 	void NotifyNavigationBlockersChanged();
 	
-	/** \brief Notify listeners navigation blocker changed. */
+	/** Notify listeners navigation blocker changed. */
 	void NotifyNavigationBlockerChanged( gdeOCNavigationBlocker *navblocker );
 	
 	
 	
-	/** \brief Navigation spaces. */
+	/** Navigation spaces. */
 	inline gdeOCNavigationSpaceList &GetNavigationSpaces(){ return pNavigationSpaces; }
 	inline const gdeOCNavigationSpaceList &GetNavigationSpaces() const{ return pNavigationSpaces; }
 	
-	/** \brief Notify listeners navigation spaces changed. */
+	/** Notify listeners navigation spaces changed. */
 	void NotifyNavigationSpacesChanged();
 	
-	/** \brief Notify listeners navigation space changed. */
+	/** Notify listeners navigation space changed. */
 	void NotifyNavigationSpaceChanged( gdeOCNavigationSpace *navspace );
 	
 	
 	
-	/** \brief Particle emitters. */
+	/** Particle emitters. */
 	inline gdeOCParticleEmitterList &GetParticleEmitters(){ return pParticleEmitters; }
 	inline const gdeOCParticleEmitterList &GetParticleEmitters() const{ return pParticleEmitters; }
 	
-	/** \brief Notify listeners particle emitters changed. */
+	/** Notify listeners particle emitters changed. */
 	void NotifyParticleEmittersChanged();
 	
-	/** \brief Notify listeners particle emitter changed. */
+	/** Notify listeners particle emitter changed. */
 	void NotifyParticleEmitterChanged( gdeOCParticleEmitter *emitter );
 	
 	
 	
-	/** \brief Force fields. */
+	/** Force fields. */
 	inline gdeOCForceFieldList &GetForceFields(){ return pForceFields; }
 	inline const gdeOCForceFieldList &GetForceFields() const{ return pForceFields; }
 	
-	/** \brief Notify listeners force fields changed. */
+	/** Notify listeners force fields changed. */
 	void NotifyForceFieldsChanged();
 	
-	/** \brief Notify listeners force fields changed. */
+	/** Notify listeners force fields changed. */
 	void NotifyForceFieldChanged( gdeOCForceField *field );
 	
 	
 	
-	/** \brief Snap points. */
+	/** Snap points. */
 	inline gdeOCSnapPointList &GetSnapPoints(){ return pSnapPoints; }
 	inline const gdeOCSnapPointList &GetSnapPoints() const{ return pSnapPoints; }
 	
-	/** \brief Notify listeners snap points changed. */
+	/** Notify listeners snap points changed. */
 	void NotifySnapPointsChanged();
 	
-	/** \brief Notify listeners snap point changed. */
+	/** Notify listeners snap point changed. */
 	void NotifySnapPointChanged( gdeOCSnapPoint *snapoint );
 	
-	/** \brief Notify listeners snap point name changed. */
+	/** Notify listeners snap point name changed. */
 	void NotifySnapPointNameChanged( gdeOCSnapPoint *snapoint );
 	
 	
 	
-	/** \brief Speakers. */
+	/** Speakers. */
 	inline gdeOCSpeakerList &GetSpeakers(){ return pSpeakers; }
 	inline const gdeOCSpeakerList &GetSpeakers() const{ return pSpeakers; }
 	
-	/** \brief Notify listeners speakers changed. */
+	/** Notify listeners speakers changed. */
 	void NotifySpeakersChanged();
 	
-	/** \brief Notify listeners speaker changed. */
+	/** Notify listeners speaker changed. */
 	void NotifySpeakerChanged( gdeOCSpeaker *speaker );
 	
 	
 	
-	/** \brief Object is ghost not blocking other objects. */
+	/** List of textures. */
+	inline gdeOCComponentTextureList &GetTextures(){ return pTextures; }
+	inline const gdeOCComponentTextureList &GetTextures() const{ return pTextures; }
+	
+	/** Active texture or \em NULL if none. */
+	inline gdeOCComponentTexture *GetActiveTexture() const{
+		return ( gdeOCComponentTexture* )( deObject* )pActiveTexture;
+	}
+	
+	/** Set active texture or \em NULL if none. */
+	void SetActiveTexture( gdeOCComponentTexture *texture );
+	
+	/** Notify listeners textures changed. */
+	void NotifyTexturesChanged();
+	
+	/** Notify listeners texture changed. */
+	void NotifyTextureChanged( gdeOCComponentTexture *texture );
+	
+	
+	
+	/** Object is ghost not blocking other objects. */
 	inline bool GetIsGhost() const{ return pIsGhost; }
 	
-	/** \brief Set if object is a ghost not blocking other objects. */
+	/** Set if object is a ghost not blocking other objects. */
 	void SetIsGhost( bool isGhost );
 	
-	/** \brief Object can be instantiated. */
-	inline bool GetCanInstanciate() const{ return pCanInstanciate; }
+	/** Object can be instantiated. */
+	inline bool GetCanInstantiate() const{ return pCanInstantiate; }
 	
-	/** \brief Set if object can be instantiated. */
-	void SetCanInstanciate( bool canInstanciate );
+	/** Set if object can be instantiated. */
+	void SetCanInstantiate( bool canInstantiate );
+	
+	/** Inherit sub objects. */
+	inline int GetInheritSubObjects() const{ return pInheritSubObjects; }
+	
+	/** Set inherit sub objects. */
+	void SetInheritSubObjects( int filter );
 	
 	
 	
-	/** \brief Named property searching inheritance. */
+	/** Named property searching inheritance. */
 	bool DeepGetNamedProperty( const char *name, const gdeObjectClass* &objectClass,
 		const gdeProperty* &property ) const;
 	
-	/** \brief Named property default value searching inheritance. */
+	/** Named property default value searching inheritance. */
 	bool NamedPropertyDefaultValue( const char *name, decString &value ) const;
 	
 	/**
-	 * \brief Add property names in this class and optionally inherited classes.
+	 * Add property names in this class and optionally inherited classes.
 	 * \param[out] set Set to add property names to.
 	 * \param[in] inherited Include inherited parameters.
 	 */
 	void AddPropertyNamesTo( decStringSet &set, bool inherited = false ) const;
 	
 	/**
-	 * \brief Add property names in this class and optionally inherited classes.
+	 * Add property names in this class and optionally inherited classes.
 	 * \param[out] set Set to add property names to.
 	 * \param[in] inherited Include inherited parameters.
 	 */
 	void AddTexturePropertyNamesTo( decStringSet &set, bool inherited = false ) const;
 	
-	/** \brief Add all properties with inheritance if required. */
+	/** Add all properties with inheritance if required. */
 	void AddPropertiesTo( decStringDictionary &properties, bool inherited = false,
 		bool includeValues = true ) const;
 	
-	/** \brief Find identifiers. */
+	/** Find identifiers. */
 	void GetDefinedUsedIDs( decStringSet &definedIDs, decStringSet &usedIDs ) const;
 	/*@}*/
 	

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -26,7 +29,6 @@
 #include "igdeContainerForm.h"
 #include "../native/toolkit.h"
 #include "../igdeWidget.h"
-#include "../native/fox/igdeNativeFoxContainerForm.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -50,14 +52,7 @@ void igdeContainerForm::RemoveChild( igdeWidget *child ){
 		return;
 	}
 	
-	if( pStretching == esLast ){
-		const int index = count - ( count % 2 );
-		igdeUIFoxHelper::UpdateLayoutFlags( GetChildAt( index ) );
-		if( index + 1 < count ){
-			igdeUIFoxHelper::UpdateLayoutFlags( GetChildAt( index + 1 ) );
-		}
-		( ( igdeNativeFoxContainerForm* )GetNativeContainer() )->recalc();
-	}
+	( ( igdeNativeContainerForm* )GetNativeContainer() )->ChildRemoved();
 }
 
 
@@ -87,23 +82,9 @@ void igdeContainerForm::CreateNativeWidget(){
 		return;
 	}
 	
-	igdeContainer * const parent = GetParent();
-	if( ! parent ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	FXComposite * const nativeParent = ( FXComposite* )parent->GetNativeContainer();
-	if( ! nativeParent ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	int layoutFlags = igdeUIFoxHelper::GetChildLayoutFlags( this );
-	FXPacker * const native = new igdeNativeFoxContainerForm( *this, nativeParent, layoutFlags );
-	
+	igdeNativeContainerForm * const native = igdeNativeContainerForm::CreateNativeWidget( *this );
 	SetNativeWidget( native );
-	if( nativeParent->id() ){
-		native->create();
-	}
+	native->PostCreateNativeWidget();
 	
 	CreateChildWidgetNativeWidgets();
 }
@@ -113,7 +94,7 @@ void igdeContainerForm::DestroyNativeWidget(){
 		return;
 	}
 	
-	igdeNativeFoxContainerForm * const native = ( igdeNativeFoxContainerForm* )GetNativeWidget();
+	igdeNativeContainerForm * const native = ( igdeNativeContainerForm* )GetNativeWidget();
 	DropNativeWidget();
-	delete native;
+	native->DestroyNativeWidget();
 }

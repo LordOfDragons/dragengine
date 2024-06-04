@@ -1,86 +1,90 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLRRTSHADER_H_
 #define _DEOGLRRTSHADER_H_
 
 #include "../deoglBasics.h"
+#include "../shaders/paramblock/deoglSPBlockSSBO.h"
 
 class deoglLightShaderManager;
 class deoglRenderThread;
 class deoglShaderManager;
 class deoglShaderProgram;
+class deoglShaderDefines;
 class deoglSkinShaderManager;
 class deoglTexSamplerConfig;
 class deoglTexUnitsConfigList;
 
 
-
 /**
- * \brief Render thread shader related objects.
+ * Render thread shader related objects.
  */
 class deoglRTShader{
 public:
-	/** \brief Texture sampler configurations. */
+	/** Texture sampler configurations. */
 	enum eTextureSamplerConfigurations{
-		/** \brief Clamp to edge with nearest filtering without mip mapping. */
+		/** Clamp to edge with nearest filtering without mip mapping. */
 		etscClampNearest,
 		
-		/** \brief Clamp to edge with linear filtering without mip mapping. */
+		/** Clamp to edge with linear filtering without mip mapping. */
 		etscClampLinear,
 		
-		/** \brief Clamp to edge with nearest filtering with mip mapping. */
+		/** Clamp to edge with nearest filtering with mip mapping. */
 		etscClampNearestMipMap,
 		
-		/** \brief Clamp to edge with linear filtering with mip mapping. */
+		/** Clamp to edge with linear filtering with mip mapping. */
 		etscClampLinearMipMap,
 		
-		/** \brief Clamp to edge with linear filtering with nearest mip mapping. */
+		/** Clamp to edge with linear filtering with nearest mip mapping. */
 		etscClampLinearMipMapNearest,
 		
-		/** \brief Repeating with nearest filtering without mip mapping. */
+		/** Repeating with nearest filtering without mip mapping. */
 		etscRepeatNearest,
 		
-		/** \brief Repeating with linear filtering without mip mapping. */
+		/** Repeating with linear filtering without mip mapping. */
 		etscRepeatLinear,
 		
-		/** \brief Repeating with linear filtering with mip mapping. */
+		/** Repeating with linear filtering with mip mapping. */
 		etscRepeatLinearMipMap,
 		
-		/** \brief Clamped shadow testing with nearest filtering. */
+		/** Clamped shadow testing with nearest filtering. */
 		etscShadowClampNearest,
 		
-		/** \brief Clamped shadow testing with linear filtering. */
+		/** Clamped shadow testing with linear filtering. */
 		etscShadowClampLinear,
 		
-		/** \brief Clamped shadow testing with linear filtering for inverse depth testing. */
+		/** Clamped shadow testing with linear filtering for inverse depth testing. */
 		etscShadowClampLinearInverse,
 		
-		/** \brief Repeating shadow testing with nearest filtering. */
+		/** Repeating shadow testing with nearest filtering. */
 		etscShadowRepeatNearest,
 		
-		/** \brief Repeating shadow testing with linear filtering. */
+		/** Repeating shadow testing with linear filtering. */
 		etscShadowRepeatLinear,
 		
-		/** \brief Number of texture sampler configurations. */
+		/** Number of texture sampler configurations. */
 		ETSC_COUNT
 	};
 	
@@ -93,15 +97,20 @@ private:
 	deoglShaderManager *pShaderManager;
 	deoglSkinShaderManager *pSkinShaderManager;
 	deoglLightShaderManager *pLightShaderManager;
-	deoglShaderProgram *pCurShaderProg;
+	const deoglShaderProgram *pCurShaderProg;
+	
+	deoglSPBlockSSBO::Ref pSSBOSkinTextures;
+	bool pDirtySSBOSkinTextures;
+	
+	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create render thread texture related object. */
+	/** Create render thread texture related object. */
 	deoglRTShader( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up render thread texture related object. */
+	/** Clean up render thread texture related object. */
 	virtual ~deoglRTShader();
 	/*@}*/
 	
@@ -109,27 +118,43 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Texture units configuration manager. */
+	/** Texture units configuration manager. */
 	inline deoglTexUnitsConfigList &GetTexUnitsConfigList() const{ return *pTexUnitsConfigList; }
 	
-	/** \brief Texture sampler configuration. */
+	/** Texture sampler configuration. */
 	deoglTexSamplerConfig *GetTexSamplerConfig( const eTextureSamplerConfigurations type ) const;
 	
-	/** \brief Shader manager. */
+	/** Shader manager. */
 	inline deoglShaderManager &GetShaderManager() const{ return *pShaderManager; }
 	
-	/** \brief Skin shader manager. */
+	/** Skin shader manager. */
 	inline deoglSkinShaderManager &GetSkinShaderManager() const{ return *pSkinShaderManager; }
 	
-	/** \brief Light shader manager. */
+	/** Light shader manager. */
 	inline deoglLightShaderManager &GetLightShaderManager() const{ return *pLightShaderManager; }
 	
-	/** \brief Current shader program or NULL if none is set. */
-	inline deoglShaderProgram *GetActiveShader() const{ return pCurShaderProg; }
+	/** Current shader program or NULL if none is set. */
+	inline const deoglShaderProgram *GetActiveShader() const{ return pCurShaderProg; }
 	
-	/** \brief Activate shader if not active yet. */
-	void ActivateShader( deoglShaderProgram *shader );
+	/** Activate shader if not active yet. */
+	void ActivateShader( const deoglShaderProgram *shader );
+	
+	/** Add common defines. */
+	void SetCommonDefines( deoglShaderDefines &defines ) const;
+	
+	
+	
+	/** SSBO skin textures. */
+	inline const deoglSPBlockSSBO::Ref &GetSSBOSkinTextures() const{ return pSSBOSkinTextures; }
+	
+	/** Invalidate SSBO skin textures. */
+	void InvalidateSSBOSkinTextures();
+	
+	/** Update SSBO skin textures if required. */
+	void UpdateSSBOSkinTextures();
 	/*@}*/
+	
+	
 	
 private:
 	void pCleanUp();

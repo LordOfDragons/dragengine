@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLRENDERTASKTEXTURE_H_
@@ -24,29 +27,22 @@
 
 #include "../../deoglBasics.h"
 
-class deoglTexUnitsConfig;
-class deoglSkinTexture;
+#include <dragengine/common/collection/decPointerList.h>
+
+class deoglRenderTaskSharedTexture;
+class deoglRenderTaskSharedVAO;
 class deoglRenderTaskVAO;
-class deoglSPBlockUBO;
-class deoglVAO;
 
 
 /**
- * \brief Render Task Texture.
+ * Render Task Texture.
  */
 class deoglRenderTaskTexture{
 private:
-	deoglTexUnitsConfig *pTUC;
-	deoglSkinTexture *pTexture;
-	deoglSPBlockUBO *pParamBlock;
+	const deoglRenderTaskSharedTexture *pTexture;
 	
-	deoglRenderTaskVAO *pRootVAO;
-	deoglRenderTaskVAO *pTailVAO;
+	decPointerList pVAOs;
 	int pVAOCount;
-	
-	deoglRenderTaskTexture *pNextTexture;
-	
-	deoglRenderTaskTexture *pLLNext;
 	
 	deoglRenderTaskVAO **pHasVAO;
 	int pHasVAOCount;
@@ -57,61 +53,47 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new render task shader. */
+	/** Create render task shader. */
 	deoglRenderTaskTexture();
-	/** Cleans up the render task shader. */
+	
+	/** Clean up render task shader. */
 	~deoglRenderTaskTexture();
 	/*@}*/
 	
+	
+	
 	/** \name Management */
 	/*@{*/
-	/** Reset the texture. */
+	/** Reset. */
 	void Reset();
 	
-	/** Retrieves the total amount of points in this texture. */
+	/** Total count of points. */
 	int GetTotalPointCount() const;
-	/** Retrieves the total amount of instances in this texture. */
+	
+	/** Total count of instances. */
 	int GetTotalInstanceCount() const;
-	/** Retrieves the total amount of subinstances in this texture. */
+	
+	/** Total count of subinstances. */
 	int GetTotalSubInstanceCount() const;
 	
-	/** Retrieves the texture units configuration. */
-	inline deoglTexUnitsConfig *GetTUC() const{ return pTUC; }
-	/** Sets the texture units configuration. */
-	void SetTUC( deoglTexUnitsConfig *tuc );
-	/** Retrieves the skin texture. */
-	inline deoglSkinTexture *GetTexture() const{ return pTexture; }
-	/** Sets the skin texture. */
-	void SetTexture( deoglSkinTexture *texture );
-	/** Retrieves the shader parameter block or NULL if not used. */
-	inline deoglSPBlockUBO *GetParameterBlock() const{ return pParamBlock; }
-	/** Sets the shader parameter block or NULL if not used. */
-	void SetParameterBlock( deoglSPBlockUBO *block );
 	
-	/** Retrieves the root render task vao or NULL if there is none. */
-	inline deoglRenderTaskVAO *GetRootVAO() const{ return pRootVAO; }
-	/** Retrieves the number of render task vaos. */
+	
+	/** Shared texture. */
+	inline const deoglRenderTaskSharedTexture *GetTexture() const{ return pTexture; }
+	
+	/** Set shared texture. */
+	void SetTexture( const deoglRenderTaskSharedTexture *texture );
+	
+	
+	
+	/** Count of render task vaos. */
 	inline int GetVAOCount() const{ return pVAOCount; }
-	/** Retrieves the render task with the given vao or NULL if not found. */
-	deoglRenderTaskVAO *GetVAOWith( deoglVAO *vao );
-	/** Adds a render task vao. */
-	void AddVAO( deoglRenderTaskVAO *vao );
 	
-	/** Retrieves the vao for a vao index or NULL if not existing yet. */
-	deoglRenderTaskVAO *GetVAOForIndex( int vaoIndex );
+	/** Render task vao at index. */
+	deoglRenderTaskVAO *GetVAOAt( int index ) const;
 	
-	/** Retrieves the next texture to render or NULL if this is the last one. */
-	inline deoglRenderTaskTexture *GetNextTexture() const{ return pNextTexture; }
-	/** Sets the next texture to render or NULL if this is the last one. */
-	void SetNextTexture( deoglRenderTaskTexture *texture );
-	/*@}*/
-	
-	/** \name Linked List */
-	/*@{*/
-	/** Retrieves the next texture in the pool in the parent render task or NULL if there is none. */
-	inline deoglRenderTaskTexture *GetLLNext() const{ return pLLNext; }
-	/** Sets the next texture in the pool in the parent render task or NULL if there is none. */
-	void SetLLNext( deoglRenderTaskTexture *texture );
+	/** Add render task vao. */
+	deoglRenderTaskVAO *AddVAO( const deoglRenderTaskSharedVAO *vao );
 	/*@}*/
 };
 

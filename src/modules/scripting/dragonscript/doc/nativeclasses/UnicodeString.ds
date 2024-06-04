@@ -8,7 +8,6 @@
 
 namespace Dragengine
 
-
 /**
  * \brief Unicode string.
  * 
@@ -22,15 +21,16 @@ class UnicodeString
 	end
 	
 	/** \brief Create copy of unicode string. */
-	public func new( UnicodeString string )
+	public func new(UnicodeString string)
 	end
 	
 	/** \brief Create unicode string from unicode character. */
-	public static func UnicodeString newFromCharacter( int character )
+	public func new(int character)
 	end
 	
 	/** \brief Create unicode string from utf8 encoded string. */
-	public static func UnicodeString newFromUTF8( String string )
+	public static func UnicodeString newFromUTF8(String string)
+		return null
 	end
 	/*@}*/
 	
@@ -40,27 +40,31 @@ class UnicodeString
 	/*@{*/
 	/** \brief Count of characters in the unicode string. */
 	public func int getLength()
+		return 0
 	end
 	
 	/**
 	 * \brief Unicode character at the given location.
 	 * \throws EOutOfBoundary \em position is less than 0 or greater than or equal to getLength().
 	 */
-	public func int getCharacterAt( int position )
+	public func int getCharacterAt(int position)
+		return 0
 	end
 	
 	/**
 	 * \brief Unicode string with characters from beginning.
 	 * \throws EOutOfBoundary \em count is less than 0 or greater than or equal to getLength().
 	 */
-	public func UnicodeString getLeft( int count )
+	public func UnicodeString getLeft(int count)
+		return null
 	end
 	
 	/**
 	 * \brief Unicode string with characters from the end.
 	 * \throws EOutOfBoundary \em count is less than 0 or greater than or equal to getLength().
 	 */
-	public func UnicodeString getRight( int count )
+	public func UnicodeString getRight(int count)
+		return null
 	end
 	
 	/**
@@ -68,11 +72,13 @@ class UnicodeString
 	 * \throws EOutOfBoundary \em position is less than 0 or greater than or equal to getLength().
 	 * \throws EOutOfBoundary \em count is less than 0 or greater than or equal to getLength().
 	 */
-	public func UnicodeString getSubString( int position,  int count )
+	public func UnicodeString getSubString(int position,  int count)
+		return null
 	end
 	
 	/** \brief Unicode string with the reversed order of characters. */
 	public func UnicodeString reverse()
+		return null
 	end
 	/*@}*/
 	
@@ -82,14 +88,17 @@ class UnicodeString
 	/*@{*/
 	/** \brief Unicode string with white spaces stripped from beginning. */
 	public func UnicodeString trimLeft()
+		return null
 	end
 	
 	/** \brief Unicode string with white spaces stripped from the end. */
 	public func UnicodeString trimRight()
+		return null
 	end
 	
 	/** \brief Unicode string with white spaces stripped from beginning and end. */
 	public func UnicodeString trimBoth()
+		return null
 	end
 	/*@}*/
 	
@@ -101,14 +110,16 @@ class UnicodeString
 	 * \brief Index of first occurance of character.
 	 * \throws EOutOfBoundary \em position is less than 0 or greater than or equal to getLength().
 	 */
-	public func int findCharacter( int character, int position )
+	public func int findCharacter(int character, int position)
+		return 0
 	end
 	
 	/**
 	 * \brief Index of first occurance of character from end to start.
 	 * \throws EOutOfBoundary \em position is less than 0 or greater than or equal to getLength().
 	 */
-	public func int findCharacterReverse( int character, int position )
+	public func int findCharacterReverse(int character, int position)
+		return 0
 	end
 	/*@}*/
 	
@@ -122,7 +133,8 @@ class UnicodeString
 	 * \retval <0 First differing character has smaller lexicographical value.
 	 * \retval >0 First differing character has larger lexicographical value.
 	 */
-	public func int compareTo( UnicodeString string )
+	public func int compareTo(UnicodeString string)
+		return 0
 	end
 	
 	/**
@@ -131,13 +143,15 @@ class UnicodeString
 	 * \retval <0 First differing character has smaller lexicographical value.
 	 * \retval >0 First differing character has larger lexicographical value.
 	 */
-	public func int compareToNoCase( UnicodeString string )
+	public func int compareToNoCase(UnicodeString string)
+		return 0
 	end
 	
 	
 	
 	/** \brief UTF8 encoded string. */
 	public func String toString()
+		return null
 	end
 	
 	/**
@@ -145,7 +159,8 @@ class UnicodeString
 	 * \details Implements Object.equals(Object).
 	 * \returns \em true if \em other is of type UnicodeString and both are equal.
 	 */
-	public func bool equals( Object other )
+	public func bool equals(Object other)
+		return false
 	end
 	
 	/**
@@ -153,6 +168,18 @@ class UnicodeString
 	 * \details Implements Object.hashCode().
 	 */
 	public func int hashCode()
+		return 0
+	end
+	
+	/**
+	 * \brief Compare object with another object.
+	 * \details Used to sort objects. Overwrite to implement sorting.
+	 * \retval 0 Object is equal to \em obj.
+	 * \retval <0 Object comes before \em obj.
+	 * \retval >0 Object comes after \em obj.
+	 */
+	public func int compare(Object obj)
+		return 0
 	end
 	/*@}*/
 	
@@ -162,22 +189,27 @@ class UnicodeString
 	/*@{*/
 	/** \brief Unicode string with all characters converted to lower case. */
 	public func UnicodeString toLower()
+		return null
 	end
 	
 	/** \brief Unicode string with all characters converted to upper case. */
 	public func UnicodeString toUpper()
+		return null
 	end
 	
 	/** \brief Converted to integer if possible. */
 	public func int toInt()
+		return 0
 	end
 	
 	/** \brief Converted to floating point value if possible. */
 	public func float toFloat()
+		return 0.0
 	end
 	
 	/** \brief UTF8 encoding of the unicode string. */
 	public func String toUTF8()
+		return null
 	end
 	/*@}*/
 	
@@ -186,27 +218,33 @@ class UnicodeString
 	/** \name Operators */
 	/*@{*/
 	/** \brief Concatenation of two unicode strings. */
-	public func UnicodeString +( UnicodeString string )
+	public func UnicodeString +(UnicodeString string)
+		return null
 	end
 	
 	/** \brief Concatenation of unicode string and character. */
-	public func UnicodeString +( byte value )
+	public func UnicodeString +(byte value)
+		return null
 	end
 	
 	/** \brief Concatenation of unicode string and boolean value converted to string. */
-	public func UnicodeString +( bool value )
+	public func UnicodeString +(bool value)
+		return null
 	end
 	
 	/** \brief Concatenation of unicode string and integer value converted to string. */
-	public func UnicodeString +( int value )
+	public func UnicodeString +(int value)
+		return null
 	end
 	
 	/** \brief Concatenation of unicode string and floating point value converted to string. */
-	public func UnicodeString +( float value )
+	public func UnicodeString +(float value)
+		return null
 	end
 	
 	/** \brief Concatenation of unicode string and object value converted to string using Object.toString(). */
-	public func UnicodeString +( Object object )
+	public func UnicodeString +(Object object)
+		return null
 	end
 	/*@}*/
 end

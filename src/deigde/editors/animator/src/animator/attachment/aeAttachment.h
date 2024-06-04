@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Animator Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _AEATTACHMENT_H_
@@ -36,19 +39,19 @@ class deEngine;
 
 
 /**
- * \brief Attach object.
+ * Attach object.
  */
 class aeAttachment : public deObject{
 public:
-	/** \brief Attach types. */
+	/** Attach types. */
 	enum eAttachTypes{
-		/** \brief No attaching. */
+		/** No attaching. */
 		eatNone,
 		
-		/** \brief Attach to bone. */
+		/** Attach to bone. */
 		eatBone,
 		
-		/** \brief Attach to rig. */
+		/** Attach to rig. */
 		eatRig
 	};
 	
@@ -64,10 +67,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create attachment. */
+	/** Create attachment. */
 	aeAttachment( igdeEnvironment *environment, const char *name = "Attachment" );
 	
-	/** \brief Clean up attachment. */
+	/** Clean up attachment. */
 	virtual ~aeAttachment();
 	/*@}*/
 	
@@ -75,49 +78,49 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Parent animator. */
+	/** Parent animator. */
 	inline aeAnimator *GetAnimator() const{ return pAnimator; }
 	
-	/** \brief Set parent animator. */
+	/** Set parent animator. */
 	void SetAnimator( aeAnimator *animator );
 	
 	
 	
-	/** \brief Name. */
+	/** Name. */
 	inline const decString &GetName() const{ return pName; }
 	
-	/** \brief Set name. */
+	/** Set name. */
 	void SetName( const char *name );
 	
-	/** \brief Attach type. */
+	/** Attach type. */
 	inline eAttachTypes GetAttachType() const{ return pAttachType; }
 	
-	/** \brief Set attached type. */
+	/** Set attached type. */
 	void SetAttachType( eAttachTypes type );
 	
-	/** \brief Name of the bone to attach to. */
+	/** Name of the bone to attach to. */
 	inline const decString &GetBoneName() const{ return pBoneName; }
 	
-	/** \brief Set name of the bone to attach to. */
+	/** Set name of the bone to attach to. */
 	void SetBoneName( const char *name );
 	
 	
 	
-	/** \brief Update attachment. */
+	/** Update attachment. */
 	void Update( float elapsed );
 	
-	/** \brief Reset attachment physics state. */
+	/** Reset attachment physics state. */
 	void ResetPhysics();
 	
-	/** \brief Attach collider if possible. */
+	/** Attach collider if possible. */
 	void AttachCollider();
 	
-	/** \brief Dettach collider if attached. */
+	/** Dettach collider if attached. */
 	void DetachCollider();
 	
 	
 	
-	/** \brief Object wrapper. */
+	/** Object wrapper. */
 	inline igdeWObject *GetObjectWrapper() const{ return pObjectWrapper; }
 	/*@}*/
 	

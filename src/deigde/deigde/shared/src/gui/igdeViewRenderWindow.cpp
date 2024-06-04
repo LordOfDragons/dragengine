@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -26,7 +29,7 @@
 #include "igdeContainer.h"
 #include "igdeViewRenderWindow.h"
 #include "event/igdeMouseKeyListener.h"
-#include "native/fox/igdeNativeFoxRenderView.h"
+#include "native/toolkit.h"
 #include "../engine/igdeEngineController.h"
 #include "../environment/igdeEnvironment.h"
 
@@ -65,19 +68,19 @@ void igdeViewRenderWindow::SetEnableRendering( bool enable ){
 	pEnableRendering = enable;
 	
 	if( pRenderWindow ){
-		igdeNativeFoxRenderView * const native = ( igdeNativeFoxRenderView* )GetNativeWidget();
-		pRenderWindow->SetPaint( enable && native && native->shown() );
+		igdeNativeRenderView * const native = ( igdeNativeRenderView* )GetNativeWidget();
+		pRenderWindow->SetPaint( enable && native && native->IsShown() );
 	}
 }
 
 bool igdeViewRenderWindow::GetCanRender() const{
-	const igdeNativeFoxRenderView * const native = ( const igdeNativeFoxRenderView* )GetNativeWidget();
+	const igdeNativeRenderView * const native = ( const igdeNativeRenderView* )GetNativeWidget();
 	return native && native->GetCanRender();
 }
 
 decPoint igdeViewRenderWindow::GetRenderAreaSize() const{
-	const igdeNativeFoxRenderView * const native = ( igdeNativeFoxRenderView* )GetNativeWidget();
-	return native ? decPoint( native->getWidth(), native->getHeight() ) : decPoint();
+	const igdeNativeRenderView * const native = ( igdeNativeRenderView* )GetNativeWidget();
+	return native ? native->GetSize() : decPoint();
 }
 
 
@@ -89,7 +92,7 @@ void igdeViewRenderWindow::ClearErrorRenderWindow(){
 
 
 void igdeViewRenderWindow::OnAfterEngineStart(){
-	igdeNativeFoxRenderView * const native = ( igdeNativeFoxRenderView* )GetNativeWidget();
+	igdeNativeRenderView * const native = ( igdeNativeRenderView* )GetNativeWidget();
 	if( native ){
 		native->AttachRenderWindow();
 	}
@@ -97,7 +100,7 @@ void igdeViewRenderWindow::OnAfterEngineStart(){
 }
 
 void igdeViewRenderWindow::OnBeforeEngineStop(){
-	igdeNativeFoxRenderView * const native = ( igdeNativeFoxRenderView* )GetNativeWidget();
+	igdeNativeRenderView * const native = ( igdeNativeRenderView* )GetNativeWidget();
 	if( native ){
 		native->DetachRenderWindow();
 	}
@@ -109,18 +112,11 @@ void igdeViewRenderWindow::OnFrameUpdate( float ){
 		return;
 	}
 	
-	// window updates are rendered to the window by the graphic module. FOX does not notice
-	// this update so we have to tell it outself. for this we need to check if the window is
-	// visible on screen. this check is required since there is no way to figure out otherwise
-	// if the window is actually visible on screen or hidden (either itself or a parent
-	// somewhere up the chain). disabling rendering here is important since otherwise strange
-	// UI artifacts can happen
-	igdeNativeFoxRenderView * const native = ( igdeNativeFoxRenderView* )GetNativeWidget();
+	igdeNativeRenderView * const native = ( igdeNativeRenderView* )GetNativeWidget();
 	pRenderWindow->SetPaint( pEnableRendering && native && native->IsReallyVisible() );
 	
-	// update only if painting is enabled
-	if( pRenderWindow->GetPaint() ){
-		native->update();
+	if( native ){
+		native->OnFrameUpdate();
 	}
 }
 
@@ -187,14 +183,14 @@ void igdeViewRenderWindow::CreateCanvas(){
 }
 
 void igdeViewRenderWindow::GrabInput(){
-	igdeNativeFoxRenderView * const native = ( igdeNativeFoxRenderView* )GetNativeWidget();
+	igdeNativeRenderView * const native = ( igdeNativeRenderView* )GetNativeWidget();
 	if( native ){
 		native->GrabInput();
 	}
 }
 
 void igdeViewRenderWindow::ReleaseInput(){
-	igdeNativeFoxRenderView * const native = ( igdeNativeFoxRenderView* )GetNativeWidget();
+	igdeNativeRenderView * const native = ( igdeNativeRenderView* )GetNativeWidget();
 	if( native ){
 		native->ReleaseInput();
 	}
@@ -286,6 +282,26 @@ void igdeViewRenderWindow::NotifyMouseWheeled( const decPoint &position, const d
 	}
 }
 
+void igdeViewRenderWindow::NotifyMouseEnter(){
+	const decObjectOrderedSet listeners( pListeners );
+	const int count = listeners.GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		( ( igdeMouseKeyListener* )listeners.GetAt( i ) )->OnMouseEnter( this );
+	}
+}
+
+void igdeViewRenderWindow::NotifyMouseLeave(){
+	const decObjectOrderedSet listeners( pListeners );
+	const int count = listeners.GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		( ( igdeMouseKeyListener* )listeners.GetAt( i ) )->OnMouseLeave( this );
+	}
+}
+
 
 
 void igdeViewRenderWindow::CreateNativeWidget(){
@@ -293,29 +309,14 @@ void igdeViewRenderWindow::CreateNativeWidget(){
 		return;
 	}
 	
-	if( ! GetParent() ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	FXComposite * const nativeParent = ( FXComposite* )GetParent()->GetNativeContainer();
-	if( ! nativeParent ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	igdeNativeFoxRenderView * const native = new igdeNativeFoxRenderView(
-		*this, nativeParent, igdeUIFoxHelper::GetChildLayoutFlags( this ) );
+	igdeNativeRenderView * const native = igdeNativeRenderView::CreateNativeWidget( *this );
 	SetNativeWidget( native );
-	
-	if( ! nativeParent->id() ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	native->create();
+	native->PostCreateNativeWidget();
 }
 
 void igdeViewRenderWindow::DropNativeWidget(){
 	if( GetNativeWidget() ){
-		( ( igdeNativeFoxRenderView* )GetNativeWidget() )->DropNativeWindow();
+		( ( igdeNativeRenderView* )GetNativeWidget() )->DropNativeWindow();
 	}
 	
 	igdeWidget::DropNativeWidget();
@@ -326,7 +327,7 @@ void igdeViewRenderWindow::DestroyNativeWidget(){
 		return;
 	}
 	
-	delete ( igdeNativeFoxRenderView* )GetNativeWidget();
+	( ( igdeNativeRenderView* )GetNativeWidget() )->DestroyNativeWidget();
 	DropNativeWidget();
 }
 
@@ -342,6 +343,6 @@ void igdeViewRenderWindow::CreateAndAttachRenderWindow(){
 	}
 	
 	if( pEngineRunning ){
-		( ( igdeNativeFoxRenderView* )GetNativeWidget() )->AttachRenderWindow();
+		( ( igdeNativeRenderView* )GetNativeWidget() )->AttachRenderWindow();
 	}
 }

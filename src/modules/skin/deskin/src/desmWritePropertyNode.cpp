@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Skin Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <math.h>
@@ -29,6 +32,8 @@
 #include <dragengine/common/xmlparser/decXmlWriter.h>
 #include <dragengine/resources/font/deFont.h>
 #include <dragengine/resources/image/deImage.h>
+#include <dragengine/resources/skin/deSkin.h>
+#include <dragengine/resources/skin/deSkinMapped.h>
 #include <dragengine/resources/skin/property/node/deSkinPropertyNodeGroup.h>
 #include <dragengine/resources/skin/property/node/deSkinPropertyNodeImage.h>
 #include <dragengine/resources/skin/property/node/deSkinPropertyNodeShape.h>
@@ -42,8 +47,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-desmWritePropertyNode::desmWritePropertyNode( decXmlWriter &writer ) :
-pWriter( writer ){
+desmWritePropertyNode::desmWritePropertyNode( decXmlWriter &writer, const deSkin &skin ) :
+pWriter( writer ),
+pSkin( skin ){
 }
 
 desmWritePropertyNode::~desmWritePropertyNode(){
@@ -119,6 +125,41 @@ void desmWritePropertyNode::WriteNodeCommon( const deSkinPropertyNode &node ){
 		pWriter.WriteOpeningTag( "mask" );
 		node.GetMask()->Visit( *this );
 		pWriter.WriteClosingTag( "mask" );
+	}
+	
+	const struct sMapped{
+		deSkinPropertyNode::eMapped mapped;
+		const char *name;
+	} mapped[ 15 ] = {
+		{ deSkinPropertyNode::emPositionX, "positionX" },
+		{ deSkinPropertyNode::emPositionY, "positionY" },
+		{ deSkinPropertyNode::emPositionZ, "positionZ" },
+		{ deSkinPropertyNode::emSizeX, "sizeX" },
+		{ deSkinPropertyNode::emSizeY, "sizeY" },
+		{ deSkinPropertyNode::emSizeZ, "sizeZ" },
+		{ deSkinPropertyNode::emRotation, "rotation" },
+		{ deSkinPropertyNode::emShear, "shear" },
+		{ deSkinPropertyNode::emBrightness, "brightness" },
+		{ deSkinPropertyNode::emContrast, "contrast" },
+		{ deSkinPropertyNode::emGamma, "gamma" },
+		{ deSkinPropertyNode::emColorizeRed, "colorizeR" },
+		{ deSkinPropertyNode::emColorizeGreen, "colorizeG" },
+		{ deSkinPropertyNode::emColorizeBlue, "colorizeB" },
+		{ deSkinPropertyNode::emTransparency, "transparency" }
+	};
+	
+	int i;
+	for( i=0; i<15; i++ ){
+		const int index = node.GetMappedFor( mapped[ i ].mapped );
+		if( index == -1 ){
+			continue;
+		}
+		
+		pWriter.WriteOpeningTagStart( "mapped" );
+		pWriter.WriteAttributeString( "name", mapped[ i ].name );
+		pWriter.WriteOpeningTagEnd( false, false );
+		pWriter.WriteTextString( pSkin.GetMappedAt( index )->GetName() );
+		pWriter.WriteClosingTag( "mapped", false );
 	}
 }
 
@@ -206,6 +247,35 @@ void desmWritePropertyNode::VisitShape( deSkinPropertyNodeShape &node ){
 	
 	pWriter.WriteDataTagFloat( "thickness", node.GetThickness() );
 	
+	const struct sMapped{
+		deSkinPropertyNodeShape::eShapeMapped mapped;
+		const char *name;
+	} mapped[ 9 ] = {
+		{ deSkinPropertyNodeShape::esmFillColorRed, "fillColorR" },
+		{ deSkinPropertyNodeShape::esmFillColorGreen, "fillColorG" },
+		{ deSkinPropertyNodeShape::esmFillColorBlue, "fillColorB" },
+		{ deSkinPropertyNodeShape::esmFillColorAlpha, "fillColorA" },
+		{ deSkinPropertyNodeShape::esmLineColorRed, "fillColorR" },
+		{ deSkinPropertyNodeShape::esmLineColorGreen, "fillColorG" },
+		{ deSkinPropertyNodeShape::esmLineColorBlue, "fillColorB" },
+		{ deSkinPropertyNodeShape::esmLineColorAlpha, "fillColorA" },
+		{ deSkinPropertyNodeShape::esmThickness, "thickness" }
+	};
+	
+	int i;
+	for( i=0; i<9; i++ ){
+		const int index = node.GetShapeMappedFor( mapped[ i ].mapped );
+		if( index == -1 ){
+			continue;
+		}
+		
+		pWriter.WriteOpeningTagStart( "shapeMapped" );
+		pWriter.WriteAttributeString( "name", mapped[ i ].name );
+		pWriter.WriteOpeningTagEnd( false, false );
+		pWriter.WriteTextString( pSkin.GetMappedAt( index )->GetName() );
+		pWriter.WriteClosingTag( "shapeMapped", false );
+	}
+	
 	pWriter.WriteClosingTag( "shape" );
 }
 
@@ -227,6 +297,30 @@ void desmWritePropertyNode::VisitText( deSkinPropertyNodeText &node ){
 		pWriter.WriteAttributeFloat( "a", color.a );
 	}
 	pWriter.WriteOpeningTagEnd( true );
+	
+	const struct sMapped{
+		deSkinPropertyNodeText::eTextMapped mapped;
+		const char *name;
+	} mapped[ 4 ] = {
+		{ deSkinPropertyNodeText::etmFontSize, "fontSize" },
+		{ deSkinPropertyNodeText::etmColorRed, "colorR" },
+		{ deSkinPropertyNodeText::etmColorGreen, "colorG" },
+		{ deSkinPropertyNodeText::etmColorBlue, "colorB" }
+	};
+	
+	int i;
+	for( i=0; i<4; i++ ){
+		const int index = node.GetTextMappedFor( mapped[ i ].mapped );
+		if( index == -1 ){
+			continue;
+		}
+		
+		pWriter.WriteOpeningTagStart( "textMapped" );
+		pWriter.WriteAttributeString( "name", mapped[ i ].name );
+		pWriter.WriteOpeningTagEnd( false, false );
+		pWriter.WriteTextString( pSkin.GetMappedAt( index )->GetName() );
+		pWriter.WriteClosingTag( "textMapped", false );
+	}
 	
 	pWriter.WriteClosingTag( "text" );
 }

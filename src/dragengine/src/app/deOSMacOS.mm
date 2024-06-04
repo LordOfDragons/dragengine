@@ -26,6 +26,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <signal.h>
+#include <locale.h>
 #include <sys/time.h>
 
 #include "deOSMacOS.h"
@@ -55,6 +56,9 @@ pHostingRenderWindow( NULL )
 	pScreenWidth = 1024;
 	pScreenHeight = 768;
 	pRefreshRate = 30;
+	
+	// init locale
+	setlocale( LC_ALL, "" );
 }
 
 deOSMacOS::~deOSMacOS(){
@@ -124,31 +128,34 @@ int deOSMacOS::GetDisplayCount(){
 }
 
 decPoint deOSMacOS::GetDisplayCurrentResolution( int display ){
-	if( display != 0 ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( display == 0 )
+	
 	return decPoint( pScreenWidth, pScreenHeight );
 }
 
 int deOSMacOS::GetDisplayCurrentRefreshRate( int display ){
-	if( display != 0 ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( display == 0 )
+	
 	return pRefreshRate;
 }
 
 int deOSMacOS::GetDisplayResolutionCount( int display ){
-	if( display != 0 ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( display == 0 )
+	
 	return 1;
 }
 
 decPoint deOSMacOS::GetDisplayResolution( int display, int resolution ){
-	if( display != 0 || resolution != 0 ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( display == 0 )
+	DEASSERT_TRUE( resolution == 0 )
+	
 	return decPoint( pScreenWidth, pScreenHeight );
+}
+
+int deOSMacOS::GetDisplayCurrentScaleFactor( int display ){
+	DEASSERT_TRUE( display == 0 )
+	
+	return 100;
 }
 
 
@@ -219,6 +226,42 @@ void deOSMacOS::ProcessEventLoop( bool sendToInputModule ){
 			break;
 		}
 	}
+}
+
+decString deOSMacOS::GetUserLocaleLanguage(){
+	const char * const l = setlocale( LC_ALL, nullptr );
+	if( l ){
+		const decString ls( l );
+		const int deli = ls.Find( '_' );
+		if( deli != -1 ){
+			return ls.GetLeft( deli ).GetLower();
+			
+		}else{
+			return ls.GetLower();
+		}
+	}
+	return "en";
+}
+
+decString deOSMacOS::GetUserLocaleTerritory(){
+	const char * const l = setlocale( LC_ALL, nullptr );
+	if( l ){
+		const decString ls( l );
+		const int deli = ls.Find( '_' );
+		if( deli != -1 ){
+			const int deli2 = ls.Find( '.', deli + 1 );
+			if( deli2 != -1 ){
+				return ls.GetMiddle( deli + 1, deli2 ).GetLower();
+				
+			}else{
+				return ls.GetMiddle( deli + 1 ).GetLower();
+			}
+			
+		}else{
+			return ls.GetLower();
+		}
+	}
+	return "";
 }
 
 

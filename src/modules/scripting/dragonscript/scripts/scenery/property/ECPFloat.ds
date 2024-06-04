@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -41,94 +44,102 @@ class ECPFloat extends ElementClassProperty
 	
 	
 	/** \brief Create property. */
-	public func new( String name, float value ) super( name )
-		this.pValue = value
-		this.pEnableLimitLower = false
-		this.pLimitLower = 0.0
-		this.pEnableLimitUpper = false
-		this.pLimitUpper = 1.0
+	public func new(String name, float value) super(name)
+		pValue = value
+		pEnableLimitLower = false
+		pLimitLower = 0
+		pEnableLimitUpper = false
+		pLimitUpper = 1
 	end
 	
 	/** \brief Create property. */
-	public func new( String name, float value, float lowerLimit ) this( name, value )
-		this.pEnableLimitLower = true
-		this.pLimitLower = lowerLimit
+	public func new(String name, float value, float lowerLimit) this(name, value)
+		pEnableLimitLower = true
+		pLimitLower = lowerLimit
 	end
 	
 	/** \brief Create property. */
-	public func new( String name, float value, float lowerLimit, float upperLimit ) \
-	this( name, value, lowerLimit )
-		this.pEnableLimitUpper = true
-		this.pLimitUpper = upperLimit
+	public func new(String name, float value, float lowerLimit, float upperLimit) \
+	this(name, value, lowerLimit)
+		pEnableLimitUpper = true
+		pLimitUpper = upperLimit
 	end
 	
 	
 	
 	/** \brief Value. */
 	public func float getValue()
-		return this.pValue
+		return pValue
 	end
 	
 	/** \brief Enable lower limit. */
 	public func bool getEnableLimitLower()
-		return this.pEnableLimitLower
+		return pEnableLimitLower
 	end
 	
 	/** \brief Set enable lower limit. */
-	public func void setEnableLimitLower( bool enable )
-		this.pEnableLimitLower = enable
+	public func void setEnableLimitLower(bool enable)
+		pEnableLimitLower = enable
 	end
 	
 	/** \brief Lower limit. */
 	public func float getLimitLower()
-		return this.pLimitLower
+		return pLimitLower
 	end
 	
 	/** \brief Set lower limit. */
-	public func void setLimitLower( float limit )
-		this.pLimitLower = limit
+	public func void setLimitLower(float limit)
+		pLimitLower = limit
 	end
 	
 	/** \brief Enable upper limit. */
 	public func bool getEnableLimitUpper()
-		return this.pEnableLimitUpper
+		return pEnableLimitUpper
 	end
 	
 	/** \brief Set enable upper limit. */
-	public func void setEnableLimitUpper( bool enable )
-		this.pEnableLimitUpper = enable
+	public func void setEnableLimitUpper(bool enable)
+		pEnableLimitUpper = enable
 	end
 	
 	/** \brief Upper limit. */
 	public func float getLimitUpper()
-		return this.pLimitUpper
+		return pLimitUpper
 	end
 	
 	/** \brief Set upper limit. */
-	public func void setLimitUpper( float limit )
-		this.pLimitUpper = limit
+	public func void setLimitUpper(float limit)
+		pLimitUpper = limit
 	end
 	
 	/** \brief Set limits. */
-	public func void setLimits( bool enableLower, float limitLower, bool enableUpper, float limitUpper )
-		this.pEnableLimitLower = enableLower
-		this.pLimitLower = limitLower
-		this.pEnableLimitUpper = enableUpper
-		this.pLimitUpper = limitUpper
+	public func void setLimits(bool enableLower, float limitLower, bool enableUpper, float limitUpper)
+		pEnableLimitLower = enableLower
+		pLimitLower = limitLower
+		pEnableLimitUpper = enableUpper
+		pLimitUpper = limitUpper
 	end
 	
 	
 	
 	/** \brief Set value of property from XML decoded value. */
-	public func void setValue( Object value )
-		this.pValue = value cast float
+	public func void setValue(Object value)
+		pValue = value cast float
 		
-		if this.pEnableLimitUpper
-			this.pValue = DEMath.min( this.pValue, this.pLimitUpper )
+		if pEnableLimitUpper
+			pValue = DEMath.min(pValue, pLimitUpper)
 		end
-		if this.pEnableLimitLower
-			this.pValue = DEMath.max( this.pValue, this.pLimitLower )
+		if pEnableLimitLower
+			pValue = DEMath.max(pValue, pLimitLower)
 		end
+	end
+	
+	/**
+	 * \brief Copy value from another element class property of the same type.
+	 * \version 1.17
+	 */
+	public func void copyValue(ElementClass elementClass, ElementClassProperty property)
+		pValue = (property cast ECPFloat).pValue
 	end
 	
 	
@@ -139,7 +150,7 @@ class ECPFloat extends ElementClassProperty
 	 * If named stub property is not present or empty string the stored value is returned.
 	 * If the named stub property is present it is returned.
 	 */
-	public func float getValue( StubWithProperties stub )
-		return stub.getPropertyFloatFor( this.getName(), this.pValue )
+	public func float getValue(StubWithProperties stub)
+		return stub.getPropertyFloatFor(getName(), pValue)
 	end
 end

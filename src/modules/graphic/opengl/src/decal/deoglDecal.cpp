@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -59,8 +62,13 @@ pDirtySkin( true ),
 pDirtyDynamicSkin( true ),
 pDirtyVisibility( true ),
 pDirtyParamBlocks( false ),
+pDirtyRenderableMapping( true ),
+pDirtyStaticTexture( true ),
 
 pDynamicSkinRequiresSync( true ),
+
+pNotifyTextureChanged( false ),
+pNotifyTUCChanged( false ),
 
 pParentComponent( NULL )
 {
@@ -103,14 +111,43 @@ void deoglDecal::SyncToRender(){
 	pSyncSkin();
 	pSyncDynamicSkin();
 	
+	if( pDirtyRenderableMapping ){
+		pDirtyRenderableMapping = false;
+		pRDecal->UpdateRenderableMapping();
+		
+		// we have to do this here and not in DirtyRenderableMapping() because
+		// DirtyRenderableMapping() can be called between the UpdateRenderableMapping()
+		// call above and the NotifyTexturesChanged() call below. if this happens the
+		// pNotifyTexturesChanged flag will be cleared below while the
+		// pDirtyRenderableMapping is true. this causes pNotifyTexturesChanged to be
+		// not called the next time UpdateRenderableMapping() above is called. this in
+		// turn causes listeners to miss an update and working with old data
+		pNotifyTextureChanged = true;
+	}
+	
 	if( pDirtyVBO ){
-		pRDecal->SetDirtyVBO();
 		pDirtyVBO = false;
+		pRDecal->SetDirtyVBO();
+		pRDecal->SetDirtyGIBVH();
+		pRDecal->NotifyGeometryChanged();
 	}
 	
 	if( pDirtyParamBlocks ){
-		pRDecal->MarkParamBlocksDirty();
 		pDirtyParamBlocks = false;
+		pRDecal->MarkParamBlocksDirty();
+	}
+	
+	if( pDirtyStaticTexture ){
+		pDirtyStaticTexture = false;
+		pRDecal->UpdateStaticTexture();
+	}
+	if( pNotifyTextureChanged ){
+		pNotifyTextureChanged = false;
+		pRDecal->NotifyTextureChanged();
+	}
+	if( pNotifyTUCChanged ){
+		pNotifyTUCChanged = false;
+		pRDecal->NotifyTUCChanged();
 	}
 }
 
@@ -122,13 +159,36 @@ void deoglDecal::SetParentComponent( deoglComponent *component ){
 
 
 
-void deoglDecal::DynamicSkinRequiresSync(){
+// Dynamic skin listener
+//////////////////////////
+
+void deoglDecal::DynamicSkinDestroyed(){
+	pDynamicSkin = NULL;
+}
+
+void deoglDecal::DynamicSkinRenderablesChanged(){
 	pDynamicSkinRequiresSync = true;
+	pDirtyRenderableMapping = true;
+	pDirtyStaticTexture = true;
+	pNotifyTextureChanged = true;
+	pNotifyTUCChanged = true;
 	pRequiresSync();
 }
 
-void deoglDecal::DropDynamicSkin(){
-	pDynamicSkin = NULL;
+void deoglDecal::DynamicSkinRenderableChanged( deoglDSRenderable& ){
+	pDynamicSkinRequiresSync = true;
+	pDirtyRenderableMapping = true;
+	pDirtyStaticTexture = true;
+	pNotifyTextureChanged = true;
+	pNotifyTUCChanged = true;
+	pRequiresSync();
+}
+
+void deoglDecal::DynamicSkinRenderableRequiresSync( deoglDSRenderable& ){
+	pDynamicSkinRequiresSync = true;
+	pDirtyStaticTexture = true;
+	pNotifyTextureChanged = true;
+	pRequiresSync();
 }
 
 
@@ -152,25 +212,33 @@ void deoglDecal::TransformChanged(){
 
 void deoglDecal::SkinChanged(){
 	pDirtySkin  = true;
+	pDirtyRenderableMapping = true;
+	pDirtyStaticTexture = true;
+	pNotifyTextureChanged = true;
+	pNotifyTUCChanged = true;
 	
 	pRequiresSync();
 }
 
 void deoglDecal::DynamicSkinChanged(){
 	if( pDynamicSkin ){
-		pDynamicSkin->GetNotifyDecals().Remove( this );
+		pDynamicSkin->RemoveListener( this );
 	}
 	
 	if( pDecal.GetDynamicSkin() ){
 		pDynamicSkin = ( deoglDynamicSkin* )pDecal.GetDynamicSkin()->GetPeerGraphic();
-		pDynamicSkin->GetNotifyDecals().Add( this );
+		pDynamicSkin->AddListener( this );
 		
 	}else{
 		pDynamicSkin = NULL;
 	}
 	
 	pDirtyDynamicSkin = true;
+	pDirtyRenderableMapping = true;
 	pDynamicSkinRequiresSync = true;
+	pDirtyStaticTexture = true;
+	pNotifyTextureChanged = true;
+	pNotifyTUCChanged = true;
 	
 	pRequiresSync();
 }
@@ -192,7 +260,7 @@ void deoglDecal::pCleanUp(){
 	}
 	
 	if( pDynamicSkin ){
-		pDynamicSkin->GetNotifyDecals().Remove( this );
+		pDynamicSkin->RemoveListener( this );
 	}
 }
 

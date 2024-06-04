@@ -1,28 +1,28 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
-
 namespace Dragengine.Gui
-
-
 
 /**
  * \brief Value of scrollbar like widgets.
@@ -42,45 +42,34 @@ namespace Dragengine.Gui
  * scroll buttons.
  */
 class DefaultRangeModel implements RangeModel
-	/** \brief Minimum value */
 	private var int pMinimum
-	
-	/** \brief Maximum value */
 	private var int pMaximum
-	
-	/** \brief Page Size */
 	private var int pPageSize
-	
-	/** \brief Current Value */
 	private var int pValue
-	
-	/** \brief Increment for changing the value by small increments. */
 	private var int pIncrement
-	
-	/** \brief Listeners */
 	private var Array pListeners
 	
 	
 	
 	/** \brief Create range model from 0 to 100 with 10 page an 1 increment. */
-	public func new() this( 0, 100, 10, 0, 1 )
+	public func new() this(0, 100, 10, 0, 1)
 	end
 	
 	/** \brief Create range model with values adjusted to satisfy invariants. */
-	public func new( int minimum, int maximum, int pageSize, int value, int increment )
-		this.pMinimum = minimum
-		this.pMaximum = DEMath.max( maximum, minimum )
-		this.pPageSize = DEMath.max( pageSize, 1 )
-		this.pValue = DEMath.clamp( value, minimum, maximum )
-		this.pIncrement = DEMath.max( increment, 1 )
-		this.pListeners = Array.new()
+	public func new(int minimum, int maximum, int pageSize, int value, int increment)
+		pMinimum = minimum
+		pMaximum = DEMath.max(maximum, minimum)
+		pPageSize = DEMath.max(pageSize, 1)
+		pValue = DEMath.clamp(value, minimum, maximum)
+		pIncrement = DEMath.max(increment, 1)
+		pListeners = Array.new()
 	end
 	
 	
 	
 	/** \brief Minimum value. */
 	public func int getMinimum()
-		return this.pMinimum
+		return pMinimum
 	end
 	
 	/**
@@ -88,27 +77,27 @@ class DefaultRangeModel implements RangeModel
 	 * \details If minimum is larger than maximum the maximum is set to the minimum.
 	 *          Value is clamped to the range from minimum to maximum.
 	 */
-	public func void setMinimum( int minimum )
-		if minimum == this.pMinimum
+	public func void setMinimum(int minimum)
+		if minimum == pMinimum
 			return
 		end
 		
-		this.pMinimum = minimum
-		this.pMaximum = DEMath.max( this.pMaximum, minimum )
+		pMinimum = minimum
+		pMaximum = DEMath.max(pMaximum, minimum)
 		
-		var int oldValue = this.pValue
-		this.pValue = DEMath.clamp( this.pValue, minimum, this.pMaximum )
+		var int oldValue = pValue
+		pValue = DEMath.clamp(pValue, minimum, pMaximum)
 		
-		this.notifyAllRange()
+		notifyAllRange()
 		
-		if this.pValue != oldValue
-			this.notifyAllValue()
+		if pValue != oldValue
+			notifyAllValue()
 		end
 	end
 	
 	/** \brief Maximum value. */
 	public func int getMaximum()
-		return this.pMaximum
+		return pMaximum
 	end
 	
 	/**
@@ -116,76 +105,76 @@ class DefaultRangeModel implements RangeModel
 	 * \details If maximum is less than minimum the minimum is set to the maximum.
 	 *          Value is clamped to the range from minimum to maximum.
 	 */
-	public func void setMaximum( int maximum )
-		if maximum == this.pMaximum
+	public func void setMaximum(int maximum)
+		if maximum == pMaximum
 			return
 		end
 		
-		this.pMaximum = maximum
-		this.pMinimum = DEMath.min( this.pMinimum, maximum )
+		pMaximum = maximum
+		pMinimum = DEMath.min(pMinimum, maximum)
 		
-		var int oldValue = this.pValue
-		this.pValue = DEMath.clamp( this.pValue, this.pMinimum, maximum )
+		var int oldValue = pValue
+		pValue = DEMath.clamp(pValue, pMinimum, maximum)
 		
-		this.notifyAllRange()
+		notifyAllRange()
 		
-		if this.pValue != oldValue
-			this.notifyAllValue()
+		if pValue != oldValue
+			notifyAllValue()
 		end
 	end
 	
 	/** \brief Page size. */
 	public func int getPageSize()
-		return this.pPageSize
+		return pPageSize
 	end
 	
 	/**
 	 * \brief Set page size.
 	 * \details \em pagesize is clamped to 1 or larger.
 	 */
-	public func void setPageSize( int pageSize )
-		pageSize = DEMath.max( pageSize, 1 )
-		if pageSize == this.pPageSize
+	public func void setPageSize(int pageSize)
+		pageSize = DEMath.max(pageSize, 1)
+		if pageSize == pPageSize
 			return
 		end
 		
-		this.pPageSize = pageSize
-		this.notifyAllRange()
+		pPageSize = pageSize
+		notifyAllRange()
 	end
 	
 	/** \brief Current value. */
 	public func int getValue()
-		return this.pValue
+		return pValue
 	end
 	
 	/**
 	 * \brief Set current value.
 	 * \details Value is clamped to the range from minimum to maximum.
 	 */
-	public func void setValue( int value )
-		value = DEMath.clamp( value, this.pMinimum, this.pMaximum )
-		if value == this.pValue
+	public func void setValue(int value)
+		value = DEMath.clamp(value, pMinimum, pMaximum)
+		if value == pValue
 			return
 		end
 		
-		this.pValue = value
-		this.notifyAllValue()
+		pValue = value
+		notifyAllValue()
 	end
 	
 	/** \brief Increment for changing the value by small increments. */
 	public func int getIncrement()
-		return this.pIncrement
+		return pIncrement
 	end
 	
 	/** \brief Set increment for changing the value by small increments. */
-	public func void setIncrement( int increment )
-		increment = DEMath.max( increment, 1 )
-		if increment == this.pIncrement
+	public func void setIncrement(int increment)
+		increment = DEMath.max(increment, 1)
+		if increment == pIncrement
 			return
 		end
 		
-		this.pIncrement = increment
-		this.notifyAllRange()
+		pIncrement = increment
+		notifyAllRange()
 	end
 	
 	/**
@@ -194,31 +183,31 @@ class DefaultRangeModel implements RangeModel
 	 *          to 1 or larger. \em value is clamped to the range from \em minimum
 	 *          to \em maximum.
 	 */
-	public func void setAll( int minimum, int maximum, int pageSize, int value, int increment )
-		maximum = DEMath.max( maximum, minimum )
-		pageSize = DEMath.max( pageSize, 1 )
-		value = DEMath.clamp( value, minimum, maximum )
-		increment = DEMath.max( increment, 1 )
+	public func void setAll(int minimum, int maximum, int pageSize, int value, int increment)
+		maximum = DEMath.max(maximum, minimum)
+		pageSize = DEMath.max(pageSize, 1)
+		value = DEMath.clamp(value, minimum, maximum)
+		increment = DEMath.max(increment, 1)
 		
-		var bool valueUnchanged = value == this.pValue
-		var bool rangeUnchanged = minimum == this.pMinimum and maximum == this.pMaximum \
-			and pageSize == this.pPageSize and increment == this.pIncrement
+		var bool valueUnchanged = value == pValue
+		var bool rangeUnchanged = minimum == pMinimum and maximum == pMaximum \
+			and pageSize == pPageSize and increment == pIncrement
 		
 		if rangeUnchanged and valueUnchanged
 			return
 		end
 		
-		this.pMinimum = minimum
-		this.pMaximum = maximum
-		this.pPageSize = pageSize
-		this.pValue = value
-		this.pIncrement = increment
+		pMinimum = minimum
+		pMaximum = maximum
+		pPageSize = pageSize
+		pValue = value
+		pIncrement = increment
 		
 		if not rangeUnchanged
-			this.notifyAllRange()
+			notifyAllRange()
 		end
 		if not valueUnchanged
-			this.notifyAllValue()
+			notifyAllValue()
 		end
 	end
 	
@@ -229,34 +218,34 @@ class DefaultRangeModel implements RangeModel
 	 * \throws ENullPointer \em listener is \em null.
 	 * \throws EInvalidParam \em listener is present.
 	 */
-	public func void addListener( RangeModelListener listener )
+	public func void addListener(RangeModelListener listener)
 		if listener == null
 			throw ENullPointer.new()
 		end
-		this.pListeners.add( listener )
+		pListeners.add(listener)
 	end
 	
 	/**
 	 * \brief Remove listener.
 	 * \throws EInvalidParam \em listener is absent.
 	 */
-	public func void removeListener( RangeModelListener listener )
-		this.pListeners.remove( listener )
+	public func void removeListener(RangeModelListener listener)
+		pListeners.remove(listener)
 	end
 	
 	
 	
 	/** \brief Notify all range properties changed. */
 	private func void notifyAllRange()
-		this.pListeners.forEach( block RangeModelListener each
-			each.rangeChanged( this )
-		end )
+		pListeners.forEach(block RangeModelListener each
+			each.rangeChanged(this)
+		end)
 	end
 	
 	/** \brief Notify all value changed. */
 	private func void notifyAllValue()
-		this.pListeners.forEach( block RangeModelListener each
-			each.valueChanged( this )
-		end )
+		pListeners.forEach(block RangeModelListener each
+			each.valueChanged(this)
+		end)
 	end
 end

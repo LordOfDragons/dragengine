@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -38,47 +41,55 @@ class ElementClassList
 	
 	/** \brief Create element class manager. */
 	public func new()
-		this.pClasses = Dictionary.new()
+		pClasses = Dictionary.new()
 	end
 	
 	/** \brief Dispose of all classes. */
 	public func void dispose()
-		this.pClasses.forEachValue( block ElementClass each
+		pClasses.forEachValue(block ElementClass each
 			each.dispose()
-		end )
+		end)
 	end
 	
 	
 	
 	/** \brief Number of classes. */
 	public func int getCount()
-		return this.pClasses.getCount()
+		return pClasses.getCount()
 	end
 	
 	/** \brief Named class or \em null if absent. */
-	public func ElementClass getNamed( String name )
-		return this.pClasses.getAt( name, null ) cast ElementClass
+	public func ElementClass getNamed(String name)
+		return pClasses.getAt(name, null) cast ElementClass
 	end
 	
 	/** \brief Named class is present. */
-	public func bool hasNamed( String name )
-		return this.pClasses.has( name )
+	public func bool hasNamed(String name)
+		return pClasses.has(name)
+	end
+	
+	/**
+	 * \brief Element class is present.
+	 * \version 1.21
+	 */
+	public func bool has(ElementClass eclass)
+		return pClasses.has(eclass.getClassname())
 	end
 	
 	/** \brief Add class. */
-	public func void add( ElementClass eclass )
-		if this.pClasses.has( eclass.getClassname() )
+	public func void add(ElementClass eclass)
+		if pClasses.has(eclass.getClassname())
 			throw EInvalidParam.new()
 		end
-		this.pClasses.setAt( eclass.getClassname(), eclass )
+		pClasses.setAt(eclass.getClassname(), eclass)
 	end
 	
 	/**
 	 * \brief Remove class.
 	 * \details Calls ElementClass.dispose().
 	 */
-	public func void remove( ElementClass eclass )
-		this.pClasses.remove( eclass.getClassname() )
+	public func void remove(ElementClass eclass)
+		pClasses.remove(eclass.getClassname())
 		eclass.dispose()
 	end
 	
@@ -86,10 +97,10 @@ class ElementClassList
 	 * \brief Remove named class if present.
 	 * \details Calls ElementClass.dispose() if removed.
 	 */
-	public func void removeNamed( String name )
-		var ElementClass eclass = this.pClasses.getAt( name, null ) cast ElementClass
+	public func void removeNamed(String name)
+		var ElementClass eclass = pClasses.getAt(name, null) cast ElementClass
 		if eclass != null
-			this.pClasses.remove( name )
+			pClasses.remove(name)
 			eclass.dispose()
 		end
 	end
@@ -99,25 +110,72 @@ class ElementClassList
 	 * \details Calls all ElementClass.dispose().
 	 */
 	public func void removeAll()
-		this.pClasses.forEachValue( block ElementClass each
+		pClasses.forEachValue(block ElementClass each
 			each.dispose()
-		end )
-		this.pClasses.removeAll()
+		end)
+		pClasses.removeAll()
+	end
+	
+	/**
+	 * \brief Remove class without calling ElementClass.dispose().
+	 * \version 1.21
+	 */
+	public func void removeNoDispose(ElementClass eclass)
+		pClasses.remove(eclass.getClassname())
+	end
+	
+	/**
+	 * \brief Remove named class if present without calling ElementClass.dispose().
+	 * \version 1.21
+	 */
+	public func void removeNamedNoDispose(String name)
+		pClasses.removeIfExisting(name)
+	end
+	
+	/**
+	 * \brief Remove all classes without calling ElementClass.dispose().
+	 * \version 1.21
+	 */
+	public func void removeAllNoDispose()
+		pClasses.removeAll()
 	end
 	
 	/**
 	 * \brief Visit element classes using block.
-	 * \details Block parameter is of type ElementClass.
+	 * 
+	 * Block parameter is of type ElementClass.
 	 */
-	public func void forEach( Block ablock )
-		this.pClasses.forEachValue( ablock )
+	public func void forEach(Block ablock)
+		pClasses.forEachValue(ablock)
+	end
+	
+	/**
+	 * \brief Visit element classes using block if castable.
+	 * \version 1.7
+	 * 
+	 * Block is called only for classes castable to block parameter.
+	 */
+	public func void forEachCastable(Block ablock)
+		pClasses.forEachValueCastable(ablock)
+	end
+	
+	/**
+	 * \brief Find element classes using block.
+	 * \version 1.7
+	 * 
+	 * Block parameter is of type ElementClass and returns true if found.
+	 */
+	public func ElementClass find(Block ablock)
+		return pClasses.find(block String key, ElementClass value
+			return ablock.run(value)
+		end) cast ElementClass
 	end
 	
 	/** \brief Add all element classes. */
-	public func void preloadAll( PreloadManager preload )
-		this.pClasses.forEachValue( block ElementClass each
-			preload.addElementClass( each )
-		end )
+	public func void preloadAll(PreloadManager preload)
+		pClasses.forEachValue(block ElementClass each
+			preload.addElementClass(each)
+		end)
 	end
 	
 	
@@ -133,11 +191,11 @@ class ElementClassList
 	 * \brief Log preloading problems.
 	 * \returns True if problems are present.
 	 */
-	public func bool logPreloadProblems( Console console )
-		return this.pClasses.injectValue( false, block bool hasProblems, ElementClass elementClass
-			return elementClass.injectProperty( hasProblems, block bool hasProblems, ElementClassProperty property
-				return property.logPreloadProblems( elementClass, console ) | hasProblems
-			end )
-		end ) cast bool
+	public func bool logPreloadProblems(Console console)
+		return pClasses.injectValue(false, block bool hasProblems, ElementClass elementClass
+			return elementClass.injectProperty(hasProblems, block bool hasProblems, ElementClassProperty property
+				return property.logPreloadProblems(elementClass, console) or hasProblems
+			end)
+		end) cast bool
 	end
 end

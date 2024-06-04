@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLVAO_H_
@@ -26,11 +29,11 @@
 #include "../vbo/deoglVBOLayout.h"
 
 class deoglRenderThread;
+class deoglRenderTaskSharedVAO;
 
 
 /**
- * @brief OpenGL VAO.
- * A small wrapper for VAO objects to help with tracking VAO switches, storing indexed rendering
+ * Small wrapper for VAO objects to help with tracking VAO switches, storing indexed rendering
  * properties and speeding up render task creation.
  */
 class deoglVAO{
@@ -43,43 +46,51 @@ public:
 	int pIndexSize;
 	int pIndexGLType;
 	
-	unsigned int pRenderTaskTrackingNumber;
-	int pRenderTaskVAOIndex;
+	unsigned int pUniqueKey;
+	deoglRenderTaskSharedVAO *pRTSVAO;
+	
+	
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new shared vbo. */
+	/** Create vao. */
 	deoglVAO( deoglRenderThread &renderThread );
-	/** Cleans up the shared vbo. */
+	
+	/** Clean up vao. */
 	virtual ~deoglVAO();
 	/*@}*/
 	
-	/** @name Management */
+	
+	
+	/** \name Management */
 	/*@{*/
-	/** \brief Render thread. */
+	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
-	/** Retrieves the VAO. */
+	/** VAO. */
 	inline GLuint GetVAO() const{ return pVAO; }
 	
-	/** Retrieves the index type. */
+	/** Index type. */
 	inline deoglVBOLayout::eIndexTypes GetIndexType() const{ return pIndexType; }
-	/** Sets the index type. */
+	
+	/** Set index type. */
 	void SetIndexType( deoglVBOLayout::eIndexTypes indexType );
-	/** Retrieves the size in bytes of indices. */
+	
+	/** Size in bytes of indices. */
 	inline int GetIndexSize() const{ return pIndexSize; }
-	/** Retrieves the opengl type of the indices. */
+	
+	/** OpenGL type of the indices. */
 	inline int GetIndexGLType() const{ return pIndexGLType; }
 	
-	/** Retrieves the render task tracking number. */
-	inline unsigned int GetRenderTaskTrackingNumber() const{ return pRenderTaskTrackingNumber; }
-	/** Sets the render task tracking number. */
-	void SetRenderTaskTrackingNumber( unsigned int trackingNumber );
-	/** Retrieves the render task vao index. */
-	inline int GetRenderTaskVAOIndex() const{ return pRenderTaskVAOIndex; }
-	/** Sets the render task vao index. */
-	void SetRenderTaskVAOIndex( int vaoIndex );
+	/** Unique key for use with dictionaries. */
+	inline unsigned int GetUniqueKey() const{ return pUniqueKey; }
+	
+	/** Render task shared vao or NULL. */
+	inline deoglRenderTaskSharedVAO *GetRTSVAO() const{ return pRTSVAO; }
+	
+	/** Ensure render task shared vao is present. */
+	void EnsureRTSVAO();
 	/*@}*/
 };
 

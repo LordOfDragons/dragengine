@@ -1,0 +1,841 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Gui
+
+pin Dragengine.Gui.CanvasCreators
+pin Dragengine.Gui.Borders
+pin Dragengine.Gui.Designers
+pin Dragengine.Gui.Events
+pin Dragengine.Gui.Layouts
+pin Dragengine.Gui.Listeners
+pin Dragengine.Scenery
+pin Dragengine.Utils
+
+
+/**
+ * \brief Horizontal or vertical slider allowing user to select value from range.
+ * \version 1.13
+ * 
+ * The knob and slider bar are of fixed size. Ticks are showed behind the slider.
+ * 
+ * Supports designing using designer selector "Slider". Designer has to implement interface
+ * SliderDesigner.
+ */
+class Slider extends Container implements RangeModelListener
+	/** \brief Action slide. */
+	abstract class ActionSlide extends DefaultActionListener
+		protected var Slider pSlider
+		protected var bool pIsWheelAction
+		
+		public func new(Slider slider)
+			pSlider = slider
+		end
+		
+		public func new(Slider slider, bool isWheelAction)
+			pSlider = slider
+			pIsWheelAction = isWheelAction
+		end
+		
+		public func void onAction(ActionEvent event)
+			var RangeModel model = pSlider.getModel()
+			
+			if increaseValue()
+				if (event.getModifiers() & ModifiableEvent.shift) == ModifiableEvent.shift
+					model.setValue(model.getValue() + model.getPageSize())
+					
+				else
+					model.setValue(model.getValue() + model.getIncrement())
+				end
+				
+			else
+				if (event.getModifiers() & ModifiableEvent.shift) == ModifiableEvent.shift
+					model.setValue(model.getValue() - model.getPageSize())
+					
+				else
+					model.setValue(model.getValue() - model.getIncrement())
+				end
+			end
+		end
+		
+		abstract protected func bool increaseValue()
+	end
+	
+	/** \brief Action slide up action. */
+	class ActionSlideUp extends ActionSlide
+		public func new(Slider slider) super(slider)
+		end
+		
+		public func new(Slider slider, bool isWheelAction) super(slider, isWheelAction)
+		end
+		
+		protected func bool increaseValue()
+			return pIsWheelAction if not pSlider.getReverseWheel() else true
+		end
+	end
+	
+	/** \brief Action slide down action. */
+	class ActionSlideDown extends ActionSlide
+		public func new(Slider slider) super(slider)
+		end
+		
+		public func new(Slider slider, bool isWheelAction) super(slider, isWheelAction)
+		end
+		
+		protected func bool increaseValue()
+			return pIsWheelAction if pSlider.getReverseWheel() else false
+		end
+	end
+	
+	/** \brief Action slide page up action. */
+	class ActionSlidePageUp extends DefaultActionListener
+		private var Slider pSlider
+		
+		public func new(Slider slider)
+			pSlider = slider
+		end
+		
+		public func void onAction(ActionEvent event)
+			var RangeModel model = pSlider.getModel()
+			model.setValue(model.getValue() + DEMath.max(model.getPageSize(), 1))
+		end
+	end
+	
+	/** \brief Action slide page down action. */
+	class ActionSlidePageDown extends DefaultActionListener
+		private var Slider pSlider
+		
+		public func new(Slider slider)
+			pSlider = slider
+		end
+		
+		public func void onAction(ActionEvent event)
+			var RangeModel model = pSlider.getModel()
+			model.setValue(model.getValue() - DEMath.max(model.getPageSize(), 1))
+		end
+	end
+	
+	/** \brief Drag knob mouse listener. */
+	class DragKnobMouseListener extends DefaultMouseListener
+		private var Slider pSlider
+		private var Point pOffset
+		
+		public func new(Slider slider)
+			pSlider = slider
+		end
+		
+		public func void onButtonPress(MouseEvent event)
+			if event.getButton() == InputEventMouseButton.left
+				var Widget knob = event.getSource() cast Widget
+				pOffset = knob.getSize() / 2 - event.getPosition()
+				knob.captureMouse()
+			end
+		end
+		
+		public func void onButtonRelease(MouseEvent event)
+			if event.getButton() == InputEventMouseButton.left
+				(event.getSource() cast Widget).releaseMouse()
+				pOffset = null
+			end
+		end
+		
+		public func void onMouseMove(MouseEvent event)
+			if pOffset != null
+				var Widget knob = event.getSource() cast Widget
+				pSlider.getModel().setValue(pSlider.getKnobValue(\
+					event.getPosition() + pOffset + knob.getPosition()))
+			end
+		end
+	end
+	
+	/** \brief Knob key listener. */
+	class KnobKeyListener extends DefaultKeyListener
+		private var Slider pSlider
+		
+		public func new(Slider slider)
+			pSlider = slider
+		end
+		
+		public func void onKeyPress(KeyEvent event)
+			select event.getKeyCode()
+			case InputEventKey.arrowUp, InputEventKey.arrowRight
+				var RangeModel model = pSlider.getModel()
+				
+				if (event.getModifiers() & ModifiableEvent.shift) == ModifiableEvent.shift
+					model.setValue(model.getValue() + model.getPageSize())
+					
+				else
+					model.setValue(model.getValue() + model.getIncrement())
+				end
+				
+			case InputEventKey.arrowDown, InputEventKey.arrowLeft
+				var RangeModel model = pSlider.getModel()
+				
+				if (event.getModifiers() & ModifiableEvent.shift) == ModifiableEvent.shift
+					model.setValue(model.getValue() - model.getPageSize())
+					
+				else
+					model.setValue(model.getValue() - model.getIncrement())
+				end
+				
+			case InputEventKey.home
+				var RangeModel model = pSlider.getModel()
+				model.setValue(model.getMinimum())
+				
+			case InputEventKey.last
+				var RangeModel model = pSlider.getModel()
+				model.setValue(model.getMaximum())
+			end
+		end
+	end
+	
+	/** \brief Slider layout. */
+	protected class SliderLayout implements Layout
+		enum Target
+			bar
+			knob
+		end
+		
+		protected var Widget pWidgetBar
+		protected var Widget pWidgetKnob
+		
+		public func new()
+		end
+		
+		public func void addWidget(Widget widget, Object settings)
+			if widget == null
+				throw ENullPointer.new("widget")
+			end
+			
+			select settings cast Target
+			case Target.bar
+				pWidgetBar = widget
+				
+			case Target.knob
+				pWidgetKnob = widget
+			end
+		end
+		
+		public func void removeWidget(Widget widget)
+			if widget == pWidgetBar
+				pWidgetBar = null
+			end
+			if widget == pWidgetKnob
+				pWidgetKnob = null
+			end
+		end
+		
+		public func void doLayout(Container container)
+			var Slider slider = container cast Slider
+			var int sliderSize = slider.getSliderSize()
+			var BorderSize padding = slider.getPadding()
+			
+			if pWidgetBar != null
+				if slider.getOrientation() == Orientation.horizontal
+					pWidgetBar.setSize(Point.new(slider.getContainerWidth(), sliderSize))
+					pWidgetBar.setPosition(Point.new(padding.getLeft(),\
+						padding.getTop() + (slider.getContainerHeight() - sliderSize) / 2))
+					
+				else
+					pWidgetBar.setSize(Point.new(sliderSize, slider.getContainerHeight()))
+					pWidgetBar.setPosition(Point.new(padding.getLeft()\
+						+ (slider.getContainerWidth() - sliderSize) / 2, padding.getTop()))
+				end
+			end
+			
+			if pWidgetKnob != null
+				pWidgetKnob.setSize(pWidgetKnob.getMinimumSize())
+				slider.repositionKnob()
+			end
+		end
+		
+		public func Point getMinimumSize(Container container)
+			var Slider slider = container cast Slider
+			if slider.getOrientation() == Orientation.horizontal
+				return Point.new(0, slider.getSliderSize())
+			else
+				return Point.new(slider.getSliderSize(), 0)
+			end
+		end
+		
+		public func Point getMinimumSizeForWidth(Container container, int width)
+			return getMinimumSize(container)
+		end
+		
+		public func Point getMinimumSizeForHeight(Container container, int height)
+			return getMinimumSize(container)
+		end
+	end
+	
+	protected enum DragArea
+		none
+	end
+	
+	
+	
+	private var Orientation pOrientation
+	private var RangeModel pModel
+	private var int pSliderSize
+	private var int pKnobOffset
+	private var int pTickSize
+	private var float pSmallTickCountRatio
+	private var RepeatActionTimer pRepeatSlideTimer
+	private var Widget pWidgetBar
+	private var Widget pWidgetKnob
+	private var bool pReverseWheel
+	private var bool pShowTicks
+	private var RectArea pSlideArea
+	
+	
+	
+	/** \brief Create slide widget. */
+	public func new(Orientation orientation)
+		pModel = DefaultRangeModel.new()
+		pModel.addListener(this)
+		pReverseWheel = false
+		pShowTicks = true
+		pSliderSize = 24
+		pKnobOffset = 12
+		pTickSize = 2
+		pSmallTickCountRatio = 1
+		
+		runWhileBlockingLayout(block
+			setDesignerSelector("Slider")
+			
+			setOrientation(orientation)
+			setCanFocus(false)
+			
+			createContent()
+			
+			addMouseListener(WheelActionMouseListener.new(\
+				ActionSlideUp.new(this, true), ActionSlideDown.new(this, true)))
+		end)
+	end
+	
+	/** \brief Create slide bar widget with model. */
+	public func new(Orientation orientation, RangeModel model) this(orientation)
+		setModel(model)
+	end
+	
+	/** \brief Dispose of widget. */
+	public func void dispose()
+		stopRepeatSlideTimer()
+		pModel.removeListener(this)
+		pModel = null
+		pWidgetBar = null
+		pWidgetKnob = null
+		
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Orientation. */
+	public func Orientation getOrientation()
+		return pOrientation
+	end
+	
+	/** \brief Set orientation. */
+	public func void setOrientation(Orientation orientation)
+		if pOrientation == orientation
+			return
+		end
+		
+		pOrientation = orientation
+		
+		createContent()
+	end
+	
+	/** \brief Range model. */
+	public func RangeModel getModel()
+		return pModel
+	end
+	
+	/** \brief Set range model. */
+	public func void setModel(RangeModel model)
+		if model == null
+			throw ENullPointer.new("model")
+		end
+		
+		if pModel == model
+			return
+		end
+		
+		pModel.removeListener(this)
+		pModel = model
+		model.addListener(this)
+		
+		repositionKnob()
+	end
+	
+	/**
+	 * \brief Reverse wheel direction.
+	 * 
+	 * If false wheeling up decreases the range model. If true increases the range model.
+	 */
+	public func bool getReverseWheel()
+		return pReverseWheel
+	end
+	
+	/**
+	 * \brief Set reverse wheel direction
+	 * 
+	 * If false wheeling up decreases the range model. If true increases the range model.
+	 */
+	public func void setReverseWheel(bool reverseWheel)
+		pReverseWheel = reverseWheel
+	end
+	
+	/**
+	 * \brief Show ticks.
+	 * 
+	 * If page size in model is 1 shows only large ticks. Otherwise shows large ticks every
+	 * page size step with small ticks for each value step. If the density is too large
+	 * tick count is reduced.
+	 */
+	public func bool getShowTicks()
+		return pShowTicks
+	end
+	
+	/**
+	 * \brief Set show ticks.
+	 * 
+	 * If page size in model is 1 shows only large ticks. Otherwise shows large ticks every
+	 * page size step with small ticks for each value step. If the density is too large
+	 * tick count is reduced.
+	 */
+	public func void setShowTicks(bool showTicks)
+		if showTicks == pShowTicks
+			return
+		end
+		
+		pShowTicks = showTicks
+		createTicksCanvas()
+	end
+	
+	/**
+	 * \brief Percentage of small ticks to show per large tick.
+	 * 
+	 * Value is in the range from 0 to 1. Model page size is multiplied by this value to
+	 * get the count of small ticks to show.
+	 */
+	public func float getSmallTickCountRatio()
+		return pSmallTickCountRatio
+	end
+	
+	/**
+	 * \brief Set percentage of small ticks to show per large tick.
+	 * 
+	 * Value is in the range from 0 to 1. Model page size is multiplied by this value to
+	 * get the count of small ticks to show.
+	 */
+	public func void setSmallTickCountRatio(float ratio)
+		ratio = DEMath.clamp(ratio, 0.0, 1.0)
+		if DEMath.fabs(ratio - pSmallTickCountRatio) < 0.001
+			return
+		end
+		
+		pSmallTickCountRatio = ratio
+		createTicksCanvas()
+	end
+	
+	/**
+	 * \brief Slider size along non-orientation axis.
+	 * 
+	 * Stored value from designer.
+	 */
+	public func int getSliderSize()
+		return pSliderSize
+	end
+	
+	/**
+	 * \brief Knob offset along orientation axis.
+	 * 
+	 * Stored value from designer.
+	 */
+	public func int getKnobOffset()
+		return pKnobOffset
+	end
+	
+	/**
+	 * \brief Tick size along orientation axis.
+	 * 
+	 * Stored value from designer.
+	 */
+	public func int getTickSize()
+		return pTickSize
+	end
+	
+	/** \brief Bar widget. */
+	public func Widget getWidgetBar()
+		return pWidgetBar
+	end
+	
+	/** \brief Knob widget. */
+	public func Widget getWidgetKnob()
+		return pWidgetKnob
+	end
+	
+	
+	
+	/**
+	 * Send if the outer range properties like minimum value, maximum
+	 * value or page size has changed.
+	 */
+	public func void rangeChanged(RangeModel rangeModel)
+		repositionKnob()
+	end
+	
+	/** Send if the value has changed. */
+	public func void valueChanged(RangeModel rangeModel)
+		repositionKnob()
+	end
+	
+	
+	
+	/** Notification that the gui theme changed. */
+	public func void onGuiThemeChanged()
+		super.onGuiThemeChanged()
+		createContent()
+	end
+	
+	/** \brief Designer changed. */
+	public func void onDesignerChanged()
+		createContent()
+	end
+	
+	/** \brief Size changed. */
+	public func void onResize(WidgetEvent event)
+		pSlideArea = null
+		super.onResize(event)
+	end
+	
+	
+	
+	/** Mouse button has been pressed. */
+	public func void onButtonPress(MouseEvent event)
+		super.onButtonPress(event)
+		
+		if event.getSource() != pWidgetBar
+			return
+		end
+		
+		if event.getButton() == InputEventMouseButton.left
+			var Point position = event.getPosition()
+			var ActionListener action
+			
+			if pOrientation == Orientation.horizontal
+				if position.getX() < pWidgetKnob.getX() + pWidgetKnob.getWidth() / 2
+					action = ActionSlideDown.new(this)
+					
+				else
+					action = ActionSlideUp.new(this)
+				end
+				
+			else
+				if position.getY() < pWidgetKnob.getY() + pWidgetKnob.getHeight() / 2
+					action = ActionSlideUp.new(this)
+					
+				else
+					action = ActionSlideDown.new(this)
+				end
+			end
+			
+			if action != null
+				stopRepeatSlideTimer()
+				pRepeatSlideTimer = RepeatActionTimer.new(action, event.getSource(), event.getModifiers())
+				pRepeatSlideTimer.sendEvent()
+			end
+			
+			captureMouse()
+		end
+	end
+	
+	/** Mouse button has been released. */
+	public func void onButtonRelease(MouseEvent event)
+		super.onButtonRelease(event)
+		
+		if event.getButton() == InputEventMouseButton.left
+			stopRepeatSlideTimer()
+			releaseMouse()
+		end
+	end
+	
+	
+	
+	/**
+	 * \brief Get designer from gui theme.
+	 * 
+	 * Modified to ensure a DefaultSliderDesigner is used if
+	 * super.getDesignerFromTheme() returns null.
+	 */
+	protected func WidgetDesigner getDesignerFromTheme()
+		var WidgetDesigner designer = super.getDesignerFromTheme()
+		if designer == null
+			designer = DefaultSliderDesigner.new()
+		end
+		return designer
+	end
+	
+	
+	
+	/**
+	 * \brief Slide area in pixels.
+	 * 
+	 * For horizontal slider returns X coordinate of left and right slide end point and
+	 * Y coordinate center of slider. For vertical slider returns Y coordinate of top
+	 * and bottom slide end point and X coordinate center of slider.
+	 */
+	public func RectArea getSlideArea()
+		if pSlideArea == null
+			var Point size = getContainerSize()
+			var BorderSize padding = getPadding()
+			
+			if pOrientation == Orientation.horizontal
+				var int center = padding.getTop() + size.getY() / 2
+				pSlideArea = RectArea.new(padding.getLeft() + pKnobOffset, center, size.getX() - pKnobOffset, center)
+				
+			else
+				var int center = padding.getLeft() + size.getX() / 2
+				pSlideArea = RectArea.new(center, padding.getTop() + pKnobOffset, center, size.getY() - pKnobOffset)
+			end
+		end
+		
+		return pSlideArea
+	end
+	
+	/** \brief Knob position matching model value. */
+	public func Point getKnobPosition(int value)
+		if pWidgetKnob == null
+			return Point.new()
+		end
+		
+		var RectArea slideArea = getSlideArea()
+		var int range = pModel.getMaximum() - pModel.getMinimum()
+		var float factor = (DEMath.clamp(value - pModel.getMinimum(), 0, range) cast float) / (DEMath.max(range, 1) cast float)
+		var int x, y
+		
+		if pOrientation == Orientation.horizontal
+			y = slideArea.getY1()
+			x = slideArea.getX1() + (factor * slideArea.getWidth()) cast int
+			
+		else
+			x = slideArea.getX1()
+			y = slideArea.getY1() + ((1.0 - factor) * slideArea.getHeight()) cast int
+		end
+		
+		return Point.new(x, y)
+	end
+	
+	/** \brief Closest model value matching knob position. */
+	public func int getKnobValue(Point position)
+		if position == null
+			throw ENullPointer.new("position")
+		end
+		if pWidgetKnob == null
+			return pModel.getMinimum()
+		end
+		
+		var RectArea slideArea = getSlideArea()
+		var float factor
+		
+		if pOrientation == Orientation.horizontal
+			factor = ((position.getX() - slideArea.getX1()) cast float) / DEMath.max(slideArea.getWidth(), 1)
+			
+		else
+			factor = 1.0 - ((position.getY() - slideArea.getY1()) cast float) / DEMath.max(slideArea.getHeight(), 1)
+		end
+		
+		var int range = pModel.getMaximum() - pModel.getMinimum()
+		return pModel.getMinimum() + DEMath.clamp((factor * range + 0.5) cast int, 0, range)
+	end
+	
+	/** \brief Reposition knob to match current model value. */
+	public func void repositionKnob()
+		if pWidgetKnob != null
+			pWidgetKnob.setPosition(getKnobPosition(pModel.getValue()) - pWidgetKnob.getSize() / 2)
+		end
+	end
+	
+	/** \brief Layout widget. */
+	public func void doLayout()
+		super.doLayout()
+		
+		if not getBlockLayout()
+			createTicksCanvas()
+		end
+	end
+	
+	/** \brief Set if widget is enabled. */
+	public func void setEnabled(bool enabled)
+		super.setEnabled(enabled)
+		
+		if pWidgetKnob != null
+			pWidgetKnob.setEnabled(enabled)
+		end
+	end
+	
+	
+	
+	/** Create content widgets. */
+	protected func void createContent()
+		pSlideArea = null
+		
+		if getGuiTheme() == null
+			removeAllWidgets()
+			return
+		end
+		
+		var SliderDesigner designer = getDesigner() cast SliderDesigner
+		pSliderSize = designer.sliderSize(this)
+		pKnobOffset = designer.knobOffset(this)
+		
+		var MouseListener wheelListener = WheelActionMouseListener.new(\
+			ActionSlideUp.new(this, true), ActionSlideDown.new(this, true))
+		
+		runWhileBlockingLayout(block
+			removeAllWidgets()
+			setLayout(SliderLayout.new())
+			
+			// bar widget including
+			pWidgetBar = Widget.new()
+			
+			if pOrientation == Orientation.horizontal
+				pWidgetBar.setBackgroundCanvasCreator(designer.canvasCreatorBarHorizontal(this))
+				
+			else
+				pWidgetBar.setBackgroundCanvasCreator(designer.canvasCreatorBarVertical(this))
+			end
+			
+			addWidget(pWidgetBar, SliderLayout.Target.bar)
+			
+			// knob widget
+			pWidgetKnob = designer.createKnob(this)
+			pWidgetKnob.setCanFocus(true)
+			pWidgetKnob.addMouseListener(DragKnobMouseListener.new(this))
+			pWidgetKnob.addMouseListener(wheelListener)
+			pWidgetKnob.addKeyListener(KnobKeyListener.new(this))
+			addWidget(pWidgetKnob, SliderLayout.Target.knob)
+		end)
+		doLayout()
+	end
+	
+	/** \brief Create ticks canvas in bar widget. */
+	protected func void createTicksCanvas()
+		if pWidgetBar == null
+			return
+		end
+		
+		var CanvasView canvasContent = pWidgetBar.getCanvasContent()
+		canvasContent.removeAllCanvas()
+		
+		if not pShowTicks
+			return
+		end
+		
+		var bool horizontal = pOrientation == Orientation.horizontal
+		var int availableSpace, areaBegin
+		var RectArea slideArea = getSlideArea()
+		
+		if horizontal
+			availableSpace = slideArea.getWidth()
+			areaBegin = slideArea.getX1()
+			
+		else
+			availableSpace = slideArea.getHeight()
+			areaBegin = slideArea.getY1()
+		end
+		
+		if availableSpace < 20
+			return
+		end
+		
+		var int maxCountLarge = (availableSpace - 1) / 20 + 1
+		
+		var int range = DEMath.max(pModel.getMaximum() - pModel.getMinimum(), 1)
+		var int pageSize = pModel.getPageSize()
+		
+		var int countLarge = DEMath.min((range - 1) / pageSize + 1, maxCountLarge)
+		
+		var int spacingLarge = DEMath.max(availableSpace / countLarge, 1)
+		var int maxCountSmall = (spacingLarge - 1) / 5 + 1
+		
+		pageSize = (pSmallTickCountRatio * pageSize + 0.5) cast int
+		
+		var int countSmall = DEMath.clamp(pageSize, 1, maxCountSmall)
+		
+		var int countTicks = countLarge * countSmall + 1
+		var int lastTick = countTicks - 1
+		
+		var Canvas canvasTick
+		var int tickShift = pTickSize / 2
+		var Point canvasSize
+		var int position, i
+		
+		var SliderDesigner designer = getDesigner() cast SliderDesigner
+		var CanvasCreator ccreatorLarge, ccreatorSmall
+		
+		if horizontal
+			ccreatorLarge = designer.canvasCreatorTickLargeHorizontal(this)
+			ccreatorSmall = designer.canvasCreatorTickSmallHorizontal(this)
+			canvasSize = Point.new(tickShift, pSliderSize)
+			
+		else
+			ccreatorLarge = designer.canvasCreatorTickLargeVertical(this)
+			ccreatorSmall = designer.canvasCreatorTickSmallVertical(this)
+			canvasSize = Point.new(pSliderSize, tickShift)
+		end
+		
+		for i = 0 to countTicks
+			if i % countSmall == 0
+				canvasTick = ccreatorLarge.createCanvas(canvasSize)
+				
+			else
+				canvasTick = ccreatorSmall.createCanvas(canvasSize)
+			end
+			canvasTick.setOrder(i)
+			
+			position = areaBegin + availableSpace * i / lastTick - tickShift
+			
+			if horizontal
+				canvasTick.setPosition(Point.new(position, 0))
+				
+			else
+				canvasTick.setPosition(Point.new(0, position))
+			end
+			
+			canvasContent.addCanvas(canvasTick)
+		end
+	end
+	
+	/** \brief Stop repeat slide timer. */
+	private func void stopRepeatSlideTimer()
+		if pRepeatSlideTimer == null
+			return
+		end
+		
+		pRepeatSlideTimer.giveUp()
+		pRepeatSlideTimer = null
+	end
+end

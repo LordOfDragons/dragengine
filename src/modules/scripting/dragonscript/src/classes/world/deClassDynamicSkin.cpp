@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -73,7 +76,7 @@ struct sDSkinNatDat{
 deClassDynamicSkin::nfNew::nfNew( const sInitData &init ) : dsFunction( init.clsDSkin,
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
 }
-void deClassDynamicSkin::nfNew::RunFunction( dsRunTime *rt, dsValue *myself ){
+void deClassDynamicSkin::nfNew::RunFunction( dsRunTime*, dsValue *myself ){
 	sDSkinNatDat &nd = *( ( sDSkinNatDat* )p_GetNativeData( myself ) );
 	deClassDynamicSkin &clsDSkin = *( ( deClassDynamicSkin* )GetOwnerClass() );
 	deDynamicSkinManager &dskinmgr = *clsDSkin.GetDS()->GetGameEngine()->GetDynamicSkinManager();
@@ -90,7 +93,7 @@ void deClassDynamicSkin::nfNew::RunFunction( dsRunTime *rt, dsValue *myself ){
 deClassDynamicSkin::nfDestructor::nfDestructor( const sInitData &init ) : dsFunction( init.clsDSkin,
 DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
 }
-void deClassDynamicSkin::nfDestructor::RunFunction( dsRunTime *rt, dsValue *myself ){
+void deClassDynamicSkin::nfDestructor::RunFunction( dsRunTime*, dsValue *myself ){
 	if( myself->GetRealObject()->GetRefCount() != 1 ){
 		return; // protected against GC cleaning up leaking
 	}
@@ -216,7 +219,7 @@ void deClassDynamicSkin::nfRemoveRenderable::RunFunction( dsRunTime *rt, dsValue
 deClassDynamicSkin::nfRemoveAllRenderables::nfRemoveAllRenderables( const sInitData &init ) : dsFunction( init.clsDSkin,
 "removeAllRenderables", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
 }
-void deClassDynamicSkin::nfRemoveAllRenderables::RunFunction( dsRunTime *rt, dsValue *myself ){
+void deClassDynamicSkin::nfRemoveAllRenderables::RunFunction( dsRunTime*, dsValue *myself ){
 	deDynamicSkin &dynamicSkin = *( ( ( sDSkinNatDat* )p_GetNativeData( myself ) )->dynamicSkin );
 	
 	dynamicSkin.RemoveAllRenderables();
@@ -242,6 +245,25 @@ void deClassDynamicSkin::nfGetTypeAt::RunFunction( dsRunTime *rt, dsValue *mysel
 
 
 
+// public func float getValueAt(int renderable)
+deClassDynamicSkin::nfGetValueAt::nfGetValueAt( const sInitData &init ) : dsFunction( init.clsDSkin,
+"getValueAt", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt ){
+	p_AddParameter( init.clsInt ); // renderable
+}
+void deClassDynamicSkin::nfGetValueAt::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deDynamicSkin &dynamicSkin = *( ( ( sDSkinNatDat* )p_GetNativeData( myself ) )->dynamicSkin );
+	const int renderable = rt->GetValue( 0 )->GetInt();
+	
+	deDSRenderableVisitorIdentify identify;
+	
+	dynamicSkin.GetRenderableAt( renderable )->Visit( identify );
+	if( ! identify.IsValue() ){
+		DSTHROW( dueInvalidParam );
+	}
+	
+	rt->PushFloat( identify.CastToValue().GetValue() );
+}
+
 // public func void setValueAt( int renderable, float value )
 deClassDynamicSkin::nfSetValueAt::nfSetValueAt( const sInitData &init ) : dsFunction( init.clsDSkin,
 "setValueAt", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
@@ -260,6 +282,26 @@ void deClassDynamicSkin::nfSetValueAt::RunFunction( dsRunTime *rt, dsValue *myse
 	
 	identify.CastToValue().SetValue( value );
 	dynamicSkin.NotifyRenderableChanged( renderable );
+}
+
+// public func Color getColorAt(int renderable)
+deClassDynamicSkin::nfGetColorAt::nfGetColorAt( const sInitData &init ) : dsFunction( init.clsDSkin,
+"getColorAt", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsClr ){
+	p_AddParameter( init.clsInt ); // renderable
+}
+void deClassDynamicSkin::nfGetColorAt::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deDynamicSkin &dynamicSkin = *( ( ( sDSkinNatDat* )p_GetNativeData( myself ) )->dynamicSkin );
+	const deScriptingDragonScript &ds = *(( ( deClassDynamicSkin* )GetOwnerClass() )->GetDS());
+	const int renderable = rt->GetValue( 0 )->GetInt();
+	
+	deDSRenderableVisitorIdentify identify;
+	
+	dynamicSkin.GetRenderableAt( renderable )->Visit( identify );
+	if( ! identify.IsColor() ){
+		DSTHROW( dueInvalidParam );
+	}
+	
+	ds.GetClassColor()->PushColor( rt, identify.CastToColor().GetColor() );
 }
 
 // public func void setColorAt( int renderable, Color color )
@@ -284,6 +326,26 @@ void deClassDynamicSkin::nfSetColorAt::RunFunction( dsRunTime *rt, dsValue *myse
 	
 	identify.CastToColor().SetColor( clsClr.GetColor( objColor ) );
 	dynamicSkin.NotifyRenderableChanged( renderable );
+}
+
+// public func Image getImageAt(int renderable)
+deClassDynamicSkin::nfGetImageAt::nfGetImageAt( const sInitData &init ) : dsFunction( init.clsDSkin,
+"getImageAt", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsImg ){
+	p_AddParameter( init.clsInt ); // renderable
+}
+void deClassDynamicSkin::nfGetImageAt::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deDynamicSkin &dynamicSkin = *( ( ( sDSkinNatDat* )p_GetNativeData( myself ) )->dynamicSkin );
+	const deScriptingDragonScript &ds = *(( ( deClassDynamicSkin* )GetOwnerClass() )->GetDS());
+	const int renderable = rt->GetValue( 0 )->GetInt();
+	
+	deDSRenderableVisitorIdentify identify;
+	
+	dynamicSkin.GetRenderableAt( renderable )->Visit( identify );
+	if( ! identify.IsImage() ){
+		DSTHROW( dueInvalidParam );
+	}
+	
+	ds.GetClassImage()->PushImage( rt, identify.CastToImage().GetImage() );
 }
 
 // public func void setImageAt( int renderable, Image image )
@@ -352,6 +414,85 @@ void deClassDynamicSkin::nfSetCanvasAt::RunFunction( dsRunTime *rt, dsValue *mys
 	dynamicSkin.NotifyRenderableChanged( renderable );
 }
 
+// public func void setCanvasAt(int renderable, CanvasView canvas, int componentCount)
+deClassDynamicSkin::nfSetCanvasAt2::nfSetCanvasAt2( const sInitData &init ) :
+dsFunction( init.clsDSkin, "setCanvasAt", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsInt ); // renderable
+	p_AddParameter( init.clsCView ); // canvas
+	p_AddParameter( init.clsInt ); // componentCount
+}
+void deClassDynamicSkin::nfSetCanvasAt2::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deDynamicSkin &dynamicSkin = *( ( ( sDSkinNatDat* )p_GetNativeData( myself ) )->dynamicSkin );
+	const deScriptingDragonScript &ds = *(( ( deClassDynamicSkin* )GetOwnerClass() )->GetDS());
+	const int renderable = rt->GetValue( 0 )->GetInt();
+	deCanvasView * const canvas = ds.GetClassCanvasView()->GetCanvas( rt->GetValue( 1 )->GetRealObject() );
+	const int componentCount = rt->GetValue( 2 )->GetInt();
+	
+	deDSRenderableVisitorIdentify identify;
+	
+	dynamicSkin.GetRenderableAt( renderable )->Visit( identify );
+	if( ! identify.IsCanvas() ){
+		DSTHROW( dueInvalidParam );
+	}
+	
+	deDSRenderableCanvas &renderableCanvas = identify.CastToCanvas();
+	renderableCanvas.SetCanvas( canvas );
+	renderableCanvas.SetComponentCount( componentCount );
+	
+	dynamicSkin.NotifyRenderableChanged( renderable );
+}
+
+// public func void setCanvasAt(int renderable, CanvasView canvas, int componentCount, int bitCount)
+deClassDynamicSkin::nfSetCanvasAt3::nfSetCanvasAt3( const sInitData &init ) :
+dsFunction( init.clsDSkin, "setCanvasAt", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsInt ); // renderable
+	p_AddParameter( init.clsCView ); // canvas
+	p_AddParameter( init.clsInt ); // componentCount
+	p_AddParameter( init.clsInt ); // bitCount
+}
+void deClassDynamicSkin::nfSetCanvasAt3::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deDynamicSkin &dynamicSkin = *( ( ( sDSkinNatDat* )p_GetNativeData( myself ) )->dynamicSkin );
+	const deScriptingDragonScript &ds = *(( ( deClassDynamicSkin* )GetOwnerClass() )->GetDS());
+	const int renderable = rt->GetValue( 0 )->GetInt();
+	deCanvasView * const canvas = ds.GetClassCanvasView()->GetCanvas( rt->GetValue( 1 )->GetRealObject() );
+	const int componentCount = rt->GetValue( 2 )->GetInt();
+	const int bitCount = rt->GetValue( 3 )->GetInt();
+	
+	deDSRenderableVisitorIdentify identify;
+	
+	dynamicSkin.GetRenderableAt( renderable )->Visit( identify );
+	if( ! identify.IsCanvas() ){
+		DSTHROW( dueInvalidParam );
+	}
+	
+	deDSRenderableCanvas &renderableCanvas = identify.CastToCanvas();
+	renderableCanvas.SetCanvas( canvas );
+	renderableCanvas.SetComponentCount( componentCount );
+	renderableCanvas.SetBitCount( bitCount );
+	
+	dynamicSkin.NotifyRenderableChanged( renderable );
+}
+
+// public func Camera getCameraAt(int renderable)
+deClassDynamicSkin::nfGetCameraAt::nfGetCameraAt( const sInitData &init ) : dsFunction( init.clsDSkin,
+"getCameraAt", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsCam ){
+	p_AddParameter( init.clsInt ); // renderable
+}
+void deClassDynamicSkin::nfGetCameraAt::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deDynamicSkin &dynamicSkin = *( ( ( sDSkinNatDat* )p_GetNativeData( myself ) )->dynamicSkin );
+	const deScriptingDragonScript &ds = *(( ( deClassDynamicSkin* )GetOwnerClass() )->GetDS());
+	const int renderable = rt->GetValue( 0 )->GetInt();
+	
+	deDSRenderableVisitorIdentify identify;
+	
+	dynamicSkin.GetRenderableAt( renderable )->Visit( identify );
+	if( ! identify.IsCamera() ){
+		DSTHROW( dueInvalidParam );
+	}
+	
+	ds.GetClassCamera()->PushCamera( rt, identify.CastToCamera().GetCamera() );
+}
+
 // public func void setCameraAt( int renderable, Camera camera )
 deClassDynamicSkin::nfSetCameraAt::nfSetCameraAt( const sInitData &init ) : dsFunction( init.clsDSkin,
 "setCameraAt", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
@@ -372,6 +513,26 @@ void deClassDynamicSkin::nfSetCameraAt::RunFunction( dsRunTime *rt, dsValue *mys
 	
 	identify.CastToCamera().SetCamera( clsCam.GetCamera( objCamera ) );
 	dynamicSkin.NotifyRenderableChanged( renderable );
+}
+
+// public func VideoPlayer getVideoPlayerAt(int renderable)
+deClassDynamicSkin::nfGetVideoPlayerAt::nfGetVideoPlayerAt( const sInitData &init ) : dsFunction( init.clsDSkin,
+"getVideoPlayerAt", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVP ){
+	p_AddParameter( init.clsInt ); // renderable
+}
+void deClassDynamicSkin::nfGetVideoPlayerAt::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deDynamicSkin &dynamicSkin = *( ( ( sDSkinNatDat* )p_GetNativeData( myself ) )->dynamicSkin );
+	const deScriptingDragonScript &ds = *(( ( deClassDynamicSkin* )GetOwnerClass() )->GetDS());
+	const int renderable = rt->GetValue( 0 )->GetInt();
+	
+	deDSRenderableVisitorIdentify identify;
+	
+	dynamicSkin.GetRenderableAt( renderable )->Visit( identify );
+	if( ! identify.IsVideoFrame() ){
+		DSTHROW( dueInvalidParam );
+	}
+	
+	ds.GetClassVideoPlayer()->PushVideoPlayer( rt, identify.CastToVideoFrame().GetVideoPlayer() );
 }
 
 // public func void setVideoPlayerAt( int renderable, VideoPlayer videoPlayer )
@@ -406,7 +567,7 @@ deClassDynamicSkin::nfHashCode::nfHashCode( const sInitData &init ) : dsFunction
 void deClassDynamicSkin::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
 	deDynamicSkin *dynamicSkin = ( ( sDSkinNatDat* )p_GetNativeData( myself ) )->dynamicSkin;
 	
-	rt->PushInt( ( intptr_t )dynamicSkin );
+	rt->PushInt( ( int )( intptr_t )dynamicSkin );
 }
 
 // public func bool equals( Object obj )
@@ -488,17 +649,24 @@ void deClassDynamicSkin::CreateClassMembers( dsEngine *engine ){
 	
 	AddFunction( new nfGetTypeAt( init ) );
 	
+	AddFunction( new nfGetValueAt( init ) );
 	AddFunction( new nfSetValueAt( init ) );
 	
+	AddFunction( new nfGetColorAt( init ) );
 	AddFunction( new nfSetColorAt( init ) );
 	
+	AddFunction( new nfGetImageAt( init ) );
 	AddFunction( new nfSetImageAt( init ) );
 	
 	AddFunction( new nfGetCanvasAt( init ) );
 	AddFunction( new nfSetCanvasAt( init ) );
+	AddFunction( new nfSetCanvasAt2( init ) );
+	AddFunction( new nfSetCanvasAt3( init ) );
 	
+	AddFunction( new nfGetCameraAt( init ) );
 	AddFunction( new nfSetCameraAt( init ) );
 	
+	AddFunction( new nfGetVideoPlayerAt( init ) );
 	AddFunction( new nfSetVideoPlayerAt( init ) );
 	
 	AddFunction( new nfHashCode( init ) );

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLCAPFMTSUPPORT_H_
@@ -31,12 +34,12 @@ class deoglCapsTextureFormat;
 
 
 /**
- * \brief OpenGL capabilities texture format support.
+ * OpenGL capabilities texture format support.
  */
 class deoglCapsFmtSupport{
 public:
 	/**
-	 * \brief 2D-Texture format configuration.
+	 * 2D-Texture format configuration.
 	 * 
 	 * The constants are encoded like this: eutfR{G{B{A}}}{8,16,32}{I}{UI}{_C}.
 	 * R{G{B{A}}} stands for the number of components, {8,16,32} for the bit depth,
@@ -53,6 +56,8 @@ public:
 		eutfR16I,
 		eutfR8UI,
 		eutfR16UI,
+		eutfR8_S,
+		eutfR16_S,
 		
 		eutfRG8,
 		eutfRG16,
@@ -63,6 +68,8 @@ public:
 		eutfRG16I,
 		eutfRG8UI,
 		eutfRG16UI,
+		eutfRG8_S,
+		eutfRG16_S,
 		
 		eutfR3G3B2,
 		eutfRGB4,
@@ -77,6 +84,8 @@ public:
 		eutfRGB16I,
 		eutfRGB8UI,
 		eutfRGB16UI,
+		eutfRGB8_S,
+		eutfRGB16_S,
 		
 		eutfRGBA2,
 		eutfRGBA4,
@@ -91,6 +100,8 @@ public:
 		eutfRGBA16I,
 		eutfRGBA8UI,
 		eutfRGBA16UI,
+		eutfRGBA8_S,
+		eutfRGBA16_S,
 		
 		eutfDepth,
 		eutfDepth_Stencil,
@@ -112,7 +123,6 @@ private:
 	deoglCapsTextureFormatList pFoundFBOTex2DFormats;
 	deoglCapsTextureFormatList pFoundFBOTexCubeFormats;
 	deoglCapsTextureFormatList pFoundFBOArrTexFormats;
-	deoglCapsTextureFormatList pFoundRenBufFormats;
 	
 	const deoglCapsTextureFormat *pUseTex2DFormats[ UseTextureFormatCount ];
 	const deoglCapsTextureFormat *pUseTexCubeFormats[ UseTextureFormatCount ];
@@ -120,14 +130,13 @@ private:
 	const deoglCapsTextureFormat *pUseFBOTex2DFormats[ UseTextureFormatCount ];
 	const deoglCapsTextureFormat *pUseFBOTexCubeFormats[ UseTextureFormatCount ];
 	const deoglCapsTextureFormat *pUseFBOArrTexFormats[ UseTextureFormatCount ];
-	const deoglCapsTextureFormat *pUseRenBufFormats[ UseTextureFormatCount ];
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create capabilities format support. */
+	/** Create capabilities format support. */
 	deoglCapsFmtSupport( deoglCapabilities &capabilities );
 	/*@}*/
 	
@@ -135,60 +144,53 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief List of found texture 2d formats. */
+	/** List of found texture 2d formats. */
 	const deoglCapsTextureFormatList &GetFoundTex2DFormats() const{ return pFoundTex2DFormats; }
 	deoglCapsTextureFormatList &GetFoundTex2DFormats(){ return pFoundTex2DFormats; }
 	
-	/** \brief List of found texture cube formats. */
+	/** List of found texture cube formats. */
 	const deoglCapsTextureFormatList &GetFoundTexCubeFormats() const{ return pFoundTexCubeFormats; }
 	deoglCapsTextureFormatList &GetFoundTexCubeFormats(){ return pFoundTexCubeFormats; }
 	
-	/** \brief List of found array texture formats. */
+	/** List of found array texture formats. */
 	const deoglCapsTextureFormatList &GetFoundArrayTexFormats() const{ return pFoundArrTexFormats; }
 	deoglCapsTextureFormatList &GetFoundArrayTexFormats(){ return pFoundArrTexFormats; }
 	
-	/** \brief List of found fbo texture 2d formats. */
+	/** List of found fbo texture 2d formats. */
 	const deoglCapsTextureFormatList &GetFoundFBOTex2DFormats() const{ return pFoundFBOTex2DFormats; }
 	deoglCapsTextureFormatList &GetFoundFBOTex2DFormats(){ return pFoundFBOTex2DFormats; }
 	
-	/** \brief List of found fbo texture cube formats. */
+	/** List of found fbo texture cube formats. */
 	const deoglCapsTextureFormatList &GetFoundFBOTexCubeFormats() const{ return pFoundFBOTexCubeFormats; }
 	deoglCapsTextureFormatList &GetFoundFBOTexCubeFormats(){ return pFoundFBOTexCubeFormats; }
 	
-	/** \brief List of found fbo array texture formats. */
+	/** List of found fbo array texture formats. */
 	const deoglCapsTextureFormatList &GetFoundFBOArrayTexFormats() const{ return pFoundFBOArrTexFormats; }
 	deoglCapsTextureFormatList &GetFoundFBOArrayTexFormats(){ return pFoundFBOArrTexFormats; }
 	
-	/** \brief List of found render buffer formats. */
-	const deoglCapsTextureFormatList &GetFoundRenBufFormats() const{ return pFoundRenBufFormats; }
-	deoglCapsTextureFormatList &GetFoundRenBufFormats(){ return pFoundRenBufFormats; }
 	
 	
-	
-	/** \brief Format to use for texture 2d type or \em NULL if not supported. */
+	/** Format to use for texture 2d type or \em NULL if not supported. */
 	const deoglCapsTextureFormat *GetUseTex2DFormatFor( eUseTextureFormats type ) const;
 	
-	/** \brief Format to use for texture cube type or \em NULL if not supported. */
+	/** Format to use for texture cube type or \em NULL if not supported. */
 	const deoglCapsTextureFormat *GetUseTexCubeFormatFor( eUseTextureFormats type ) const;
 	
-	/** \brief Format to use for array texture type or \em NULL if not supported. */
+	/** Format to use for array texture type or \em NULL if not supported. */
 	const deoglCapsTextureFormat *GetUseArrayTexFormatFor( eUseTextureFormats type ) const;
 	
-	/** \brief Format to use for fbo texture 2d type or \em NULL if not supported. */
+	/** Format to use for fbo texture 2d type or \em NULL if not supported. */
 	const deoglCapsTextureFormat *GetUseFBOTex2DFormatFor( eUseTextureFormats type ) const;
 	
-	/** \brief Format to use for fbo texture cube type or \em NULL if not supported. */
+	/** Format to use for fbo texture cube type or \em NULL if not supported. */
 	const deoglCapsTextureFormat *GetUseFBOTexCubeFormatFor( eUseTextureFormats type ) const;
 	
-	/** \brief Format to use for fbo array texture type or \em NULL if not supported. */
+	/** Format to use for fbo array texture type or \em NULL if not supported. */
 	const deoglCapsTextureFormat *GetUseFBOArrayTexFormatFor( eUseTextureFormats type ) const;
 	
-	/** \brief Format to use for render buffer texture type or \em NULL if not supported. */
-	const deoglCapsTextureFormat *GetUseRenBufFormatFor( eUseTextureFormats type ) const;
 	
 	
-	
-	/** \brief Detect format support. */
+	/** Detect format support. */
 	void DetectFormats( GLuint fbo );
 	/*@}*/
 	
@@ -201,7 +203,6 @@ private:
 	void pDetectFBOTex2DFormats( GLuint fbo );
 	void pDetectFBOTexCubeFormats( GLuint fbo );
 	void pDetectFBOArrayTexFormats( GLuint fbo );
-	void pDetectRenBufFormats( GLuint fbo );
 	
 	bool pTestTex2DFormat( GLint format, GLenum pixelFormat, GLenum pixelType,
 		int bitsPerPixel, int flags, const char *name );
@@ -215,8 +216,6 @@ private:
 		GLenum pixelType, int bitsPerPixel, int flags, const char *name, int what );
 	bool pTestFBOArrayTexFormat( GLuint fbo, GLint format, GLenum pixelFormat,
 		GLenum pixelType, int bitsPerPixel, int flags, const char *name, int what );
-	bool pTestRenBufFormat( GLuint fbo, GLint format, int bitsPerPixel, int flags,
-		const char *name, int what );
 };
 
 #endif

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -25,16 +28,22 @@
 
 #include "deoglRTShader.h"
 #include "deoglRenderThread.h"
+#include "../capabilities/deoglCapabilities.h"
+#include "../extensions/deoglExtensions.h"
 #include "../light/shader/deoglLightShaderManager.h"
+#include "../rendering/task/shared/deoglRenderTaskSharedPool.h"
 #include "../shaders/deoglShaderCompiled.h"
 #include "../shaders/deoglShaderManager.h"
 #include "../shaders/deoglShaderProgram.h"
+#include "../shaders/paramblock/deoglSPBMapBuffer.h"
+#include "../skin/deoglSkinTexture.h"
 #include "../skin/shader/deoglSkinShaderManager.h"
 #include "../texture/deoglTextureStageManager.h"
 #include "../texture/texsamplerconfig/deoglTexSamplerConfig.h"
 #include "../texture/texunitsconfig/deoglTexUnitsConfigList.h"
 
 #include <dragengine/common/exceptions.h>
+#include <dragengine/threading/deMutexGuard.h>
 
 
 
@@ -46,17 +55,16 @@
 
 deoglRTShader::deoglRTShader( deoglRenderThread &renderThread ) :
 pRenderThread( renderThread ),
-
-pTexUnitsConfigList( NULL ),
-
-pShaderManager( NULL ),
-pSkinShaderManager( NULL ),
-pLightShaderManager( NULL ),
-pCurShaderProg( NULL )
+pTexUnitsConfigList( nullptr ),
+pShaderManager( nullptr ),
+pSkinShaderManager( nullptr ),
+pLightShaderManager( nullptr ),
+pCurShaderProg( nullptr ),
+pDirtySSBOSkinTextures( true )
 {
 	int i;
 	for( i=0; i<ETSC_COUNT; i++ ){
-		pTexSamplerConfigs[ i ] = NULL;
+		pTexSamplerConfigs[ i ] = nullptr;
 	}
 	
 	try{
@@ -66,9 +74,12 @@ pCurShaderProg( NULL )
 		pShaderManager = new deoglShaderManager( renderThread );
 		pShaderManager->LoadUnitSourceCodes();
 		pShaderManager->LoadSources();
+		pShaderManager->ValidateCaches();
 		
 		pSkinShaderManager = new deoglSkinShaderManager( renderThread );
 		pLightShaderManager = new deoglLightShaderManager( renderThread );
+		
+		// NOTE we can not create here SSBOs or alike due to the initialization order
 		
 	}catch( const deException & ){
 		pCleanUp();
@@ -93,17 +104,14 @@ deoglTexSamplerConfig *deoglRTShader::GetTexSamplerConfig( const deoglRTShader::
 	return pTexSamplerConfigs[ type ];
 }
 
-void deoglRTShader::ActivateShader( deoglShaderProgram *shader ){
+void deoglRTShader::ActivateShader( const deoglShaderProgram *shader ){
 	if( shader == pCurShaderProg ){
 		return;
 	}
 	
 	if( shader ){
 		deoglShaderCompiled * const compiled = shader->GetCompiled();
-		if( ! compiled ){
-			DETHROW( deeInvalidParam );
-		}
-		
+		DEASSERT_NOTNULL( compiled )
 		compiled->Activate();
 		
 	}else{
@@ -111,6 +119,110 @@ void deoglRTShader::ActivateShader( deoglShaderProgram *shader ){
 	}
 	
 	pCurShaderProg = shader;
+}
+
+void deoglRTShader::SetCommonDefines( deoglShaderDefines &defines ) const{
+	defines.SetDefine( "HIGH_PRECISION", true );
+	defines.SetDefine( "HIGHP", "highp" ); // if not supported by GPU medp
+	
+	if( pglUniformBlockBinding ){
+		defines.SetDefine( "UBO", true );
+		
+		if( pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Broken() ){
+			defines.SetDefine( "UBO_IDMATACCBUG", true );
+		}
+		if( pRenderThread.GetCapabilities().GetUBODirectLinkDeadloop().Broken() ){
+			defines.SetDefine( "BUG_UBO_DIRECT_LINK_DEAD_LOOP", true );
+		}
+	}
+	
+	if( pRenderThread.GetExtensions().SupportsGSInstancing() ){
+		defines.SetDefine( "GS_INSTANCING", true );
+	}
+	
+	// OpenGL extensions would define symbols for these extentions which would work in
+	// shaders but our pre-processor does not know about them. so add them manually.
+	// this is mainly required for broken intel and nvidia drivers
+	if( pRenderThread.GetExtensions().GetHasExtension( deoglExtensions::ext_ARB_shader_viewport_layer_array ) ){
+		defines.SetDefine( "EXT_ARB_SHADER_VIEWPORT_LAYER_ARRAY", true );
+		
+	}else if( pRenderThread.GetExtensions().GetHasExtension( deoglExtensions::ext_AMD_vertex_shader_layer ) ){
+		defines.SetDefine( "EXT_AMD_VERTEX_SHADER_LAYER", true );
+	}
+	
+	if( pRenderThread.GetExtensions().GetHasExtension( deoglExtensions::ext_ARB_shader_draw_parameters ) ){
+		defines.SetDefine( "EXT_ARB_SHADER_DRAW_PARAMETERS", true );
+	}
+}
+
+
+
+void deoglRTShader::InvalidateSSBOSkinTextures(){
+	pDirtySSBOSkinTextures = true;
+}
+
+void deoglRTShader::UpdateSSBOSkinTextures(){
+	if( ! pDirtySSBOSkinTextures ){
+		return;
+	}
+	
+	pDirtySSBOSkinTextures = false;
+	
+	if( ! pSSBOSkinTextures ){
+		pSSBOSkinTextures.TakeOver( new deoglSPBlockSSBO( pRenderThread, deoglSPBlockSSBO::etStream ) );
+		pSSBOSkinTextures->SetRowMajor( pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working() );
+		pSSBOSkinTextures->SetParameterCount( 1 );
+		pSSBOSkinTextures->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtInt, 4, 1, 1 ); // uvec4
+		pSSBOSkinTextures->MapToStd140();
+		pSSBOSkinTextures->SetElementCount( 1 );
+	}
+	
+	deoglRenderTaskSharedPool &pool = pRenderThread.GetRenderTaskSharedPool();
+	const deMutexGuard guard( pool.GetMutexSkinTextures() );
+	
+	const int pipelinesPerTexture = deoglSkinTexturePipelinesList::PipelineTypesCount
+		* deoglSkinTexturePipelines::TypeCount * deoglSkinTexturePipelines::ModifiersPerType;
+	const int count = pool.GetSkinTextureCount();
+	const int pipelineCount = count * pipelinesPerTexture;
+	const int pipelinesPerElement = 8;
+	const int elementCount = ( ( pipelineCount - 1 ) / pipelinesPerElement ) + 1;
+	deoglSPBlockSSBO &ssbo = pSSBOSkinTextures;
+	int i, j, k, l;
+	
+	if( elementCount > ssbo.GetElementCount() ){
+		ssbo.SetElementCount( elementCount );
+	}
+	
+	const deoglSPBMapBuffer mapped( ssbo );
+	uint16_t *values = ( uint16_t* )ssbo.GetMappedBuffer();
+	
+	for( i=0; i<count; i++ ){
+		const deoglSkinTexture * const texture = pool.GetSkinTextureAt( i );
+		if( ! texture ){
+			for( j=0; j<pipelinesPerTexture; j++ ){
+				*( values++ ) = 0;
+			}
+			continue;
+		}
+		
+		const deoglSkinTexturePipelinesList &stpsl = texture->GetPipelines();
+		for( j=0; j<deoglSkinTexturePipelinesList::PipelineTypesCount; j++ ){
+			const deoglSkinTexturePipelines &stps = stpsl.GetAt( ( deoglSkinTexturePipelinesList::ePipelineTypes )j );
+			
+			for( k=0; k<deoglSkinTexturePipelines::TypeCount; k++ ){
+				for( l=0; l<deoglSkinTexturePipelines::ModifiersPerType; l++ ){
+					const deoglSkinTexturePipeline * const stp = stps.GetWith( ( deoglSkinTexturePipelines::eTypes )k, l );
+					
+					if( stp ){
+						*( values++ ) = ( uint16_t )decMath::max( stp->GetPipeline()->GetRTSIndex(), 0 );
+						
+					}else{
+						*( values++ ) = 0;
+					}
+				}
+			}
+		}
+	}
 }
 
 

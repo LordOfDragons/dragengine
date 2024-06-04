@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Game Engine
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -44,7 +47,7 @@
 ////////////////////////////
 
 decZFileWriter::decZFileWriter( decBaseFileWriter *writer ) :
-pWriter( NULL ),
+pPureMode( false ),
 
 pZStream( NULL ),
 
@@ -58,40 +61,25 @@ pBufferOutSize( 0 )
 	if( ! writer ){
 		DETHROW( deeInvalidParam );
 	}
-	
-	writer->WriteByte( 0 ); // options in case we want to expand on functionality internally
-	
-	pBufferIn = NULL;
-	pBufferInPosition = 0;
-	pBufferInSize = 0;
-	pBufferOut = NULL;
-	pBufferOutSize = 0;
-	
-	z_stream * const zstream = new z_stream;
-	memset( zstream, 0, sizeof( z_stream ) );
-	zstream->zalloc = NULL;
-	zstream->zfree = NULL;
-	zstream->opaque = NULL;
-	//if( deflateInit( zstream, Z_BEST_SPEED ) != Z_OK ){
-	//if( deflateInit( zstream, Z_BEST_COMPRESSION ) != Z_OK ){
-	if( deflateInit( zstream, Z_DEFAULT_COMPRESSION ) != Z_OK ){
-		delete zstream;
-		DETHROW( deeOutOfMemory );
+	pInit( writer, false );
+}
+
+decZFileWriter::decZFileWriter( decBaseFileWriter *writer, bool pureMode ) :
+pPureMode( pureMode ),
+
+pZStream( NULL ),
+
+pBufferIn( NULL ),
+pBufferInSize( 0 ),
+pBufferInPosition( 0 ),
+
+pBufferOut( NULL ),
+pBufferOutSize( 0 )
+{
+	if( ! writer ){
+		DETHROW( deeInvalidParam );
 	}
-	
-	pBufferIn = new Bytef[ BUFFER_SIZE ];
-	pBufferInSize = BUFFER_SIZE;
-	pBufferOut = new Bytef[ BUFFER_SIZE ];
-	pBufferOutSize = BUFFER_SIZE;
-	
-	zstream->next_in = ( Bytef* )pBufferIn;
-	zstream->avail_in = 0;
-	zstream->next_out = ( Bytef* )pBufferOut;
-	zstream->avail_out = pBufferOutSize;
-	pZStream = zstream;
-	
-	pWriter = writer;
-	pWriter->AddReference();
+	pInit( writer, pureMode );
 }
 
 decZFileWriter::~decZFileWriter(){
@@ -101,9 +89,7 @@ decZFileWriter::~decZFileWriter(){
 		delete ( z_stream* )pZStream;
 	}
 	
-	if( pWriter ){
-		pWriter->FreeReference();
-	}
+	pWriter = nullptr;
 	if( pBufferOut ){
 		delete [] ( Bytef* )pBufferOut;
 	}
@@ -178,6 +164,10 @@ void decZFileWriter::Write( const void *buffer, int size ){
 	}
 }
 
+decBaseFileWriter::Ref decZFileWriter::Duplicate(){
+	DETHROW_INFO( deeInvalidAction, "Duplicate not supported" );
+}
+
 
 
 void decZFileWriter::EndZWriting(){
@@ -213,4 +203,46 @@ void decZFileWriter::EndZWriting(){
 	if( deflateEnd( zstream ) != Z_OK ){
 		DETHROW( deeInvalidParam );
 	}
+}
+
+
+
+// Private Functions
+//////////////////////
+
+void decZFileWriter::pInit( decBaseFileWriter *writer, bool pureMode ){
+	if( ! pureMode ){
+		writer->WriteByte( 0 ); // options in case we want to expand on functionality internally
+	}
+	
+	pBufferIn = NULL;
+	pBufferInPosition = 0;
+	pBufferInSize = 0;
+	pBufferOut = NULL;
+	pBufferOutSize = 0;
+	
+	z_stream * const zstream = new z_stream;
+	memset( zstream, 0, sizeof( z_stream ) );
+	zstream->zalloc = NULL;
+	zstream->zfree = NULL;
+	zstream->opaque = NULL;
+	//if( deflateInit( zstream, Z_BEST_SPEED ) != Z_OK ){
+	//if( deflateInit( zstream, Z_BEST_COMPRESSION ) != Z_OK ){
+	if( deflateInit( zstream, Z_DEFAULT_COMPRESSION ) != Z_OK ){
+		delete zstream;
+		DETHROW( deeOutOfMemory );
+	}
+	
+	pBufferIn = new Bytef[ BUFFER_SIZE ];
+	pBufferInSize = BUFFER_SIZE;
+	pBufferOut = new Bytef[ BUFFER_SIZE ];
+	pBufferOutSize = BUFFER_SIZE;
+	
+	zstream->next_in = ( Bytef* )pBufferIn;
+	zstream->avail_in = 0;
+	zstream->next_out = ( Bytef* )pBufferOut;
+	zstream->avail_out = pBufferOutSize;
+	pZStream = zstream;
+	
+	pWriter = writer;
 }

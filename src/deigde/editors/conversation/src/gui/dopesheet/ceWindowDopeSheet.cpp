@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Conversation Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -356,17 +359,17 @@ pVAPreview( NULL )
 	
 	// lanes
 	deObjectReference lane;
-	lane.TakeOver( new ceWDSLaneWord( *this, 0, "Word", "Speech animation" ) );
+	lane.TakeOver( new ceWDSLaneWord( *this, 0, "Word", "Speech animation." ) );
 	pLanes.Add( lane );
-	lane.TakeOver( new ceWDSLaneFacePose( *this, 1, "Face Pose", "Facial animation" ) );
+	lane.TakeOver( new ceWDSLaneFacePose( *this, 1, "Face Pose", "Facial animation." ) );
 	pLanes.Add( lane );
-	lane.TakeOver( new ceWDSLaneGesture( *this, 2, "Gesture", "Gesture playback" ) );
+	lane.TakeOver( new ceWDSLaneGesture( *this, 2, "Gesture", "Gesture playback." ) );
 	pLanes.Add( lane );
-	lane.TakeOver( new ceWDSLaneBodyLookAt( *this, 3, "Body Look-At", "Body orientation" ) );
+	lane.TakeOver( new ceWDSLaneBodyLookAt( *this, 3, "Body Look-At", "Body orientation." ) );
 	pLanes.Add( lane );
-	lane.TakeOver( new ceWDSLaneHeadLookAt( *this, 4, "Head Look-At", "Head orientation" ) );
+	lane.TakeOver( new ceWDSLaneHeadLookAt( *this, 4, "Head Look-At", "Head orientation." ) );
 	pLanes.Add( lane );
-	lane.TakeOver( new ceWDSLaneEyesLookAt( *this, 5, "Eyes Look-At", "Eyes orientation" ) );
+	lane.TakeOver( new ceWDSLaneEyesLookAt( *this, 5, "Eyes Look-At", "Eyes orientation. If empty uses Head Look-At." ) );
 	pLanes.Add( lane );
 	
 	// voice audio preview
@@ -391,10 +394,10 @@ pVAPreview( NULL )
 	
 	panel4.TakeOver( new igdeContainerBox( env, igdeContainerBox::eaY ) );
 	for( i=0; i<pLanes.GetCount(); i++ ){
-		const ceWDSLane &lane = *( ( ceWDSLane* )pLanes.GetAt( i ) );
+		const ceWDSLane &lane2 = *( ( ceWDSLane* )pLanes.GetAt( i ) );
 		panel5.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY ) );
 		helper.Spacer( panel5, decPoint( 10, 2 ) );
-		helper.Label( panel5, lane.GetLabel(), lane.GetDescription(), igdeLabel::eaLeft | igdeLabel::eaMiddle );
+		helper.Label( panel5, lane2.GetLabel(), lane2.GetDescription(), igdeLabel::eaLeft | igdeLabel::eaMiddle );
 		helper.Spacer( panel5, decPoint( 10, 2 ) );
 		panel4->AddChild( panel5 );
 	}
@@ -521,14 +524,11 @@ void ceWindowDopeSheet::SetZoomTime( float zoom ){
 	text.Format( "%d", ( int )( zoom * 100.0f + 0.5f ) );
 	pCBTimeScale->SetText( text );
 	
-	pRebuildTimeLinesAndLabels();
+	pUpdateScrollbars();
+	OnTimeChanged();
 	if( pVAPreview ){
 		pVAPreview->InvalidatePreview();
 	}
-	
-	pUpdateScrollbars();
-	
-	OnTimeChanged();
 }
 
 float ceWindowDopeSheet::GetMaximumLinesTime() const{
@@ -595,12 +595,11 @@ void ceWindowDopeSheet::OnActionChanged(){
 		( ( ceWDSLane* )pLanes.GetAt( i ) )->OnActionChanged();
 	}
 	
+	pUpdateScrollbars();
 	pRebuildTimeLinesAndLabels();
 	if( pVAPreview ){
 		pVAPreview->OnActionChanged();
 	}
-	
-	pUpdateScrollbars();
 	pUpdateActions();
 }
 
@@ -620,27 +619,27 @@ void ceWindowDopeSheet::CreateDopeSheetCanvas( igdeViewRenderWindow &view ){
 	pCanvasPanelDopeSheet.TakeOver( canvasManager.CreateCanvasPaint() );
 	pCanvasPanelDopeSheet->SetFillColor( colorBorder );
 	pCanvasPanelDopeSheet->SetThickness( 0 );
-	pCanvasPanelDopeSheet->SetOrder( content.GetCanvasCount() );
+	pCanvasPanelDopeSheet->SetOrder( ( float )content.GetCanvasCount() );
 	view.AddCanvas( pCanvasPanelDopeSheet );
 	
 	pCanvasPanelVAPreview.TakeOver( canvasManager.CreateCanvasPaint() );
 	pCanvasPanelVAPreview->SetFillColor( colorBackground );
 	pCanvasPanelVAPreview->SetThickness( 0 );
-	pCanvasPanelVAPreview->SetOrder( content.GetCanvasCount() );
+	pCanvasPanelVAPreview->SetOrder( ( float )content.GetCanvasCount() );
 	view.AddCanvas( pCanvasPanelVAPreview );
 	
 	pCanvasPanelVAPreviewLine.TakeOver( canvasManager.CreateCanvasPaint() );
 	pCanvasPanelVAPreviewLine->SetFillColor( colorBorder );
 	pCanvasPanelVAPreviewLine->SetThickness( 0 );
-	pCanvasPanelVAPreviewLine->SetOrder( content.GetCanvasCount() );
+	pCanvasPanelVAPreviewLine->SetOrder( ( float )content.GetCanvasCount() );
 	view.AddCanvas( pCanvasPanelVAPreviewLine );
 	
 	pCanvasTimeLines.TakeOver( canvasManager.CreateCanvasView() );
-	pCanvasTimeLines->SetOrder( content.GetCanvasCount() );
+	pCanvasTimeLines->SetOrder( ( float )content.GetCanvasCount() );
 	view.AddCanvas( pCanvasTimeLines );
 	
 	pCanvasTimeLineLabels.TakeOver( canvasManager.CreateCanvasView() );
-	pCanvasTimeLineLabels->SetOrder( content.GetCanvasCount() );
+	pCanvasTimeLineLabels->SetOrder( ( float )content.GetCanvasCount() );
 	view.AddCanvas( pCanvasTimeLineLabels );
 	
 	const int laneCount = pLanes.GetCount();
@@ -649,7 +648,7 @@ void ceWindowDopeSheet::CreateDopeSheetCanvas( igdeViewRenderWindow &view ){
 		ceWDSLane &lane = *( ( ceWDSLane* )pLanes.GetAt( i ) );
 		lane.CreateCanvas();
 		if( lane.GetCanvas() ){
-			lane.GetCanvas()->SetOrder( content.GetCanvasCount() );
+			lane.GetCanvas()->SetOrder( ( float )content.GetCanvasCount() );
 			view.AddCanvas( lane.GetCanvas() );
 		}
 	}
@@ -657,7 +656,7 @@ void ceWindowDopeSheet::CreateDopeSheetCanvas( igdeViewRenderWindow &view ){
 	pCanvasVAPreviewTime.TakeOver( canvasManager.CreateCanvasPaint() );
 	pCanvasVAPreviewTime->SetFillColor( colorPreviewTime );
 	pCanvasVAPreviewTime->SetThickness( 0 );
-	pCanvasVAPreviewTime->SetOrder( content.GetCanvasCount() );
+	pCanvasVAPreviewTime->SetOrder( ( float )content.GetCanvasCount() );
 	view.AddCanvas( pCanvasVAPreviewTime );
 	
 	ResizeDopeSheetCanvas();
@@ -693,10 +692,9 @@ void ceWindowDopeSheet::ResizeDopeSheetCanvas(){
 		( ( ceWDSLane* )pLanes.GetAt( i ) )->RebuildCanvas();
 	}
 	
+	pUpdateScrollbars();
 	pRebuildTimeLinesAndLabels();
 	pUpdateCanvasVAPreviewTime();
-	
-	pUpdateScrollbars();
 }
 
 void ceWindowDopeSheet::OnTimeChanged(){
@@ -739,7 +737,7 @@ void ceWindowDopeSheet::pGetFontText(){
 	GetEnvironment().GetApplicationFont( configuration );
 	
 	if( guitheme.HasProperty( igdeGuiThemePropertyNames::textFieldFontSizeAbsolute ) ){
-		configuration.size = guitheme.GetIntProperty(
+		configuration.size = ( float )guitheme.GetIntProperty(
 			igdeGuiThemePropertyNames::textFieldFontSizeAbsolute, 0 );
 		
 	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::textFieldFontSize ) ){
@@ -747,7 +745,7 @@ void ceWindowDopeSheet::pGetFontText(){
 			igdeGuiThemePropertyNames::textFieldFontSize, 1.0f );
 		
 	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::fontSizeAbsolute ) ){
-		configuration.size = guitheme.GetIntProperty(
+		configuration.size = ( float )guitheme.GetIntProperty(
 			igdeGuiThemePropertyNames::fontSizeAbsolute, 0 );
 		
 	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::fontSize ) ){
@@ -772,9 +770,6 @@ void ceWindowDopeSheet::pUpdateScrollbars(){
 	ceCAActorSpeak * const action = GetActionASpeak();
 	if( action && action->GetEngineSound() ){
 		playtime = action->GetEngineSound()->GetPlayTime();
-		
-	}else{
-		playtime = 2.0f;
 	}
 	
 	// maximum length of all lines
@@ -788,8 +783,9 @@ void ceWindowDopeSheet::pUpdateScrollbars(){
 	
 	// update the scrollbars
 	if( pSBTime ){
-		const int page = GetSizeDopeSheet().x / 2;
-		pSBTime->SetUpper( ( int )( playtime * pPixelPerSecond ) - page );
+		const int range = decMath::max( ( int )( playtime * pPixelPerSecond ) - GetSizeDopeSheet().x, 0 );
+		const int page = decMath::max( GetSizeDopeSheet().x / 2, 1 );
+		pSBTime->SetUpper( range + page );
 		pSBTime->SetPageSize( page );
 	}
 }
@@ -824,23 +820,23 @@ void ceWindowDopeSheet::pRebuildTimeLinesAndLabels(){
 			deCanvasTextReference canvas;
 			canvas.TakeOver( GetEngine()->GetCanvasManager()->CreateCanvasText() );
 			canvas->SetFont( font );
-			canvas->SetFontSize( font->GetLineHeight() );
+			canvas->SetFontSize( ( float )font->GetLineHeight() );
 			canvas->SetColor( GetEnvironment().GetSystemColor( igdeEnvironment::escWidgetForeground ) );
 			pTimeLineLabels.Add( ( deCanvasText* )canvas );
 		}
 		
 		deCanvasPaint * const canvasLine = ( deCanvasPaint* )pTimeLines.GetAt( i - timeFirst );
-		canvasLine->SetPosition( decPoint( GetXForTime( i ), 0 ) );
+		canvasLine->SetPosition( decPoint( GetXForTime( ( float )i ), 0 ) );
 		canvasLine->SetSize( decPoint( 1, sizeDopeSheet.y ) );
-		canvasLine->SetOrder( pCanvasTimeLines->GetCanvasCount() );
+		canvasLine->SetOrder( ( float )pCanvasTimeLines->GetCanvasCount() );
 		pCanvasTimeLines->AddCanvas( canvasLine );
 		
 		deCanvasText * const canvasText = ( deCanvasText* )pTimeLineLabels.GetAt( i - timeFirst );
 		text.Format( "%ds", i );
 		canvasText->SetText( text );
 		canvasText->SetPosition( canvasLine->GetPosition() + decPoint( 2, 2 ) );
-		canvasText->SetSize( decPoint( 80, canvasText->GetFontSize() ) ); // TODO add method to get text size
-		canvasText->SetOrder( pCanvasTimeLines->GetCanvasCount() );
+		canvasText->SetSize( decPoint( 80, ( int )canvasText->GetFontSize() ) ); // TODO add method to get text size
+		canvasText->SetOrder( ( float )pCanvasTimeLines->GetCanvasCount() );
 		pCanvasTimeLines->AddCanvas( canvasText );
 	}
 }

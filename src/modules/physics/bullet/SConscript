@@ -21,9 +21,9 @@ if not buildModule:
 useDebugSnapshot = True
 
 # fetch values in expanded form for later use
-versionMajor = 1
-versionMinor = 0
-versionString = '{}.{}'.format( versionMajor, versionMinor )
+versionString = '1.21'
+if envModule['force_version']:
+	versionString = envModule['force_version']
 
 pathSConscript = Dir( "." ).srcnode().abspath
 
@@ -48,8 +48,13 @@ envModule.Append(CPPFLAGS = ['-I{}/Bullet'.format(pathSConscript)])
 	envModule.Append( CPPFLAGS = '-DBULLET_USE_DEBUG_SNAPSHOT' )"""
 
 # bullet misses user-provided default constructors in some structs
-envModule.Append(CFLAGS = ['-fpermissive'])
 envModule.Append(CPPFLAGS = ['-fpermissive'])
+
+envModule.Append(CPPFLAGS = ['-Wno-shadow'])
+
+# make bullet use internal opencl headers. this avoids dependency on system opencl
+# ... and again something that does not compile/work in bullet U_U
+#envModule.Append(CPPFLAGS = ['-DB3_USE_CLEW'])
 
 """
 if envModule['with_debug'] and envModule['with_sanitize']:
@@ -63,15 +68,18 @@ if envModule['with_debug'] and envModule['with_sanitize']:
 	envModule.Append(CPPFLAGS = fixFlags)
 	envModule.Append(LINKFLAGS = fixFlags)
 
+if envModule['with_debug']:
+	envModule.Append(CPPFLAGS = '-DWITH_DEBUG')
+
 envSpecialBullet = envModule.Clone()
 
 """if useDebugSnapshot:
 	envSpecialBulletExtras = envSpecialBullet.Clone()
 	
-	envSpecialBulletExtras.Append( CPPFLAGS = '-I{}/BulletExtras/COLLADA_DOM/include/1.4'.format( pathSConscript ) )
+	envSpecialBulletExtras.Append( CPPFLAGS = '-I{}/BulletExtras/COLLADA_DOM/include/{}'.format(pathSConscript, versionString))
 	envSpecialBulletExtras.Append( CPPFLAGS = '-I{}/BulletExtras/COLLADA_DOM/include'.format( pathSConscript ) )
 	envSpecialBulletExtras.Append( CPPFLAGS = '-I{}/BulletExtras/LibXML/include'.format( pathSConscript ) )
-	envSpecialBulletExtras.Append( CFLAGS = '-I{}/BulletExtras/COLLADA_DOM/include/1.4'.format( pathSConscript ) )
+	envSpecialBulletExtras.Append( CFLAGS = '-I{}/BulletExtras/COLLADA_DOM/include/{}'.format(pathSConscript, versionString))
 	envSpecialBulletExtras.Append( CFLAGS = '-I{}/BulletExtras/COLLADA_DOM/include'.format( pathSConscript ) )
 	envSpecialBulletExtras.Append( CFLAGS = '-I{}/BulletExtras/LibXML/include'.format( pathSConscript ) )"""
 
@@ -115,13 +123,6 @@ headersBullet = []
 globFiles( envModule, 'Bullet', '*.cpp', sourcesBullet )
 globFiles( envModule, 'Bullet', '*.h', headersBullet )
 
-sourcesBulletExtras = []
-headersBulletExtras = []
-if useDebugSnapshot and False:
-	globFiles( envModule, 'BulletExtras', '*.cpp', sourcesBulletExtras )
-	globFiles( envModule, 'BulletExtras', '*.c', sourcesBulletExtras )
-	globFiles( envModule, 'BulletExtras', '*.h', headersBulletExtras )
-
 # setup the builders
 objects = [ envModule.SharedObject( s ) for s in sources ]
 
@@ -132,23 +133,13 @@ if envModule['OSWindows']:
 	libgroup1 = envModule.StaticLibrary( target='objgroup1', source=objgroup1 )
 	objects.append( libgroup1 )
 	
-	"""if useDebugSnapshot:
-		objgroup2 = []
-		for s in sourcesBulletExtras:
-			objgroup2.append( envSpecialBulletExtras.SharedObject( s ) )
-		libgroup2 = envModule.StaticLibrary( target='objgroup2', source=objgroup2 )
-		objects.append( libgroup2 )"""
-	
 else:
 	for s in sourcesBullet:
 		objects.append( envSpecialBullet.SharedObject( s ) )
-	"""if useDebugSnapshot:
-		for s in sourcesBulletExtras:
-			objects.append( envSpecialBulletExtras.SharedObject( s ) )"""
 
 appendLibrary( envModule, parent_targets[ 'dragengine' ], libs )
 
-library = envModule.SharedLibrary( target='phybullet', source=objects, LIBS=libs )
+library = envModule.LoadableModule( target='phybullet', source=objects, LIBS=libs )
 targetBuild = envModule.Alias( 'phy_bullet_build', library )
 
 install = []
@@ -158,15 +149,22 @@ for l in library:
 		install.append( envModule.Install( pathModule, l ) )
 		archive[ os.path.join( pathModule, l.name ) ] = l
 
+if envModule['OSWindows'] and envModule['CROSSCOMPILE_CLANG'] and envModule['with_install_pdb']:
+	pathPdb = os.path.join(envModule.subst(envModule['path_pdb']), 'EngineModules')
+	install.append(envModule.Install(pathPdb, 'phybullet.pdb'))
+	archive['{}/phybullet.pdb'.format(pathPdb)] = envModule.File('phybullet.pdb')
+
 manifestUpdates = [
 	{ 'action': 'filename', 'name': library[ 0 ].name, 'keyword': 'FILENAME' },
 	{ 'action': 'filesize', 'path': library[ 0 ].abspath, 'keyword': 'FILESIZE' },
-	{ 'action': 'filehash', 'path': library[ 0 ].abspath, 'keyword': 'SHA1SUM' } ]
+	{ 'action': 'filehash', 'path': library[ 0 ].abspath, 'keyword': 'SHA1SUM' },
+	{'action': 'text', 'value': versionString, 'keyword': 'VERSION'}]
 
 manifest = envModule.File( 'src/module.xml' )
 updateManifest = envModule.Command( manifest, manifest.srcnode(),
 	Action( UpdateModuleManifest ), ManifestUpdates=manifestUpdates )
 Depends( updateManifest, library )
+Depends(updateManifest, 'SConscript')
 
 install.append( envModule.Install( pathModule, updateManifest ) )
 archive[ os.path.join( pathModule, 'module.xml' ) ] = updateManifest[ 0 ]
@@ -187,6 +185,7 @@ parent_targets[ 'phy_bullet' ] = {
 	'name' : 'Bullet Physics Module',
 	'build' : targetBuild,
 	'install' : targetInstall,
+	'install-engine-runtime' : targetInstall,
 	'archive-engine' : archive,
 	'cloc' : buildCloc,
 	'clocReport' : '{}/clocreport.csv'.format( srcdir ) }

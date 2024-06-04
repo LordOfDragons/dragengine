@@ -1,0 +1,525 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.ConversationSystem
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Scenery
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief Behavior adding support to actors to step aside if told.
+ * 
+ * This behavior is useful for situations where actors can get in the way of the player
+ * or other actors. The behavior is a reactive behavior not acting by itself. It is triggered
+ * by ECBehaviorClearPath or other behaviors supporting it if the find a future collision.
+ * 
+ * This behavior has no effect if actor mover has a goal set.
+ * 
+ * This behavior can be disabled temporarily to prevent actors from stepping aside.
+ * 
+ * Requires these behaviors to be present:
+ * - ECBehaviorActorMover
+ * - ECBehaviorNavigator
+ */
+class ECBehaviorStepAside extends DefaultECBehavior
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		/** \brief Step aside result. */
+		class StepAside
+			private var BehaviorElement pElement
+			private var float pSpeed
+			private var DVector pPosition
+			private var DVector pDirection
+			private var DVector pAxisRight
+			private var float pLeft
+			private var float pRight
+			
+			/** \brief Create step aside result. */
+			public func new(BehaviorElement element, DVector position, DVector direction, float speed)
+				pElement = element
+				pSpeed = speed
+				pPosition = position
+				pDirection = direction
+				pAxisRight = DVector.new(0, 1, 0) % direction
+			end
+			
+			
+			
+			/** \brief Element requesting stepping aside. */
+			public func BehaviorElement getElement()
+				return pElement
+			end
+			
+			/** \brief Speed of element. */
+			public func float getSpeed()
+				return pSpeed
+			end
+			
+			/** \brief Position of element. */
+			public func DVector getPosition()
+				return pPosition
+			end
+			
+			/** \brief Normalized direction the element is moving. */
+			public func DVector getDirection()
+				return pDirection
+			end
+			
+			/** \brief Normalized right axis perpendicular to up and direction. */
+			public func DVector getAxisRight()
+				return pAxisRight
+			end
+			
+			
+			
+			/** \brief Distance in meters to step aside to the left side. */
+			public func float getLeft()
+				return pLeft
+			end
+			
+			/** \brief Set distance in meters to step aside to the left side. */
+			public func void setLeft(float distance)
+				pLeft = distance
+			end
+			
+			/** \brief Distance in meters to step aside to the right side. */
+			public func float getRight()
+				return pRight
+			end
+			
+			/** \brief Set distance in meters to step aside to the right side. */
+			public func void setRight(float distance)
+				pRight = distance
+			end
+			
+			/** \brief Extend left or right distance if smaller/larger. */
+			public func void extend(float distance, float radius)
+				pLeft = DEMath.min(pLeft, distance - radius)
+				pRight = DEMath.max(pRight, distance + radius)
+			end
+		end
+		
+		/** \brief Navigation side result. */
+		class NavSideResult
+			enum Side
+				both
+				left
+				right
+				none
+			end
+			
+			var DVector pLeftPosition
+			var DVector pRightPosition
+			var Side pSide
+			
+			/** \brief Create navigation side result. */
+			public func new(DVector leftPosition, DVector rightPosition, Side side)
+				pLeftPosition = leftPosition
+				pRightPosition = rightPosition
+				pSide = side
+			end
+			
+			/** \brief Right position. */
+			public func DVector getLeftPosition()
+				return pLeftPosition
+			end
+			
+			/** \brief Right position. */
+			public func DVector getRightPosition()
+				return pRightPosition
+			end
+			
+			/** \brief Side to choose. */
+			public func Side getSide()
+				return pSide
+			end
+		end
+		
+		
+		
+		private var ECBehaviorStepAside pECBehavior
+		private var ECBehaviorActorMover.Instance pActorMover
+		
+		private var float pRadius
+		private var bool pEnabled
+		
+		
+		
+		/** \brief Create behavior instance. */
+		public func new(ECBehaviorStepAside ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
+			
+			pRadius = 0.4
+			pEnabled = true
+			
+			pActorMover = ecbehavior.getActorMover().instance(element)
+		end
+		
+		/** \brief Dispose of behavior instance. */
+		public func void dispose()
+			pActorMover = null
+			
+			super.dispose()
+		end
+		
+		
+		
+		/** \brief Initialize from stub. */
+		public func void init(StubElement stub)
+			pRadius = pECBehavior.getRadius().getValue(stub)
+			pEnabled = pECBehavior.getEnabled().getValue(stub)
+		end
+		
+		
+		
+		/** \brief Behavior. */
+		public func ECBehaviorStepAside getECBehavior()
+			return pECBehavior
+		end
+		
+		/** \brief Actor mover behavior. */
+		public func ECBehaviorActorMover.Instance getActorMover()
+			return pActorMover
+		end
+		
+		
+		
+		/** \brief Step aside radius. */
+		public func float getRadius()
+			return pRadius
+		end
+		
+		/** \brief Set step aside radius. */
+		public func void setRadius(float radius)
+			pRadius = DEMath.max(radius, 0.0)
+		end
+		
+		/** \brief Stepping aside is enabled. */
+		public func bool getEnabled()
+			return pEnabled
+		end
+		
+		/** \brief Set if stepping aside is enabled. */
+		public func void setEnabled(bool enabled)
+			pEnabled = enabled
+		end
+		
+		/**
+		 * \brief Check if actor can step aside.
+		 * 
+		 * Returns true if behavior is enabled and actor mover has no goal set.
+		 */
+		public func bool canStepAside()
+			return pEnabled and pActorMover.hasNoGoal()
+		end
+		
+		/**
+		 * \brief Check if actor can not step aside.
+		 * 
+		 * Returns true if behavior is disabled or actor mover has goal set.
+		 */
+		public func bool canNotStepAside()
+			return not pEnabled or pActorMover.hasGoal()
+		end
+		
+		
+		
+		/**
+		 * \brief Step aside behavior element.
+		 * 
+		 * Called by ECBehaviorClearPath and other behaviors supporting ECBehaviorStepAside.
+		 * If canNotStepAside() returns false does nothing. Otherwise calls
+		 * stepAsideBehaviorElement for all ECBehaviorAvoidedByActor instances present
+		 * in the element to determine the largest distance to step aside to the left or right.
+		 * 
+		 * \param element Element requesting owner to step aside.
+		 * \param position Position to use as source of calculation. Usually the element
+		 *                 position but could be somewhere else.
+		 * \param direction Normalized direction the element is moving.
+		 * \param speed Speed in m/s of element.
+		 */
+		public func void stepAsideBehaviorElement(BehaviorElement element, \
+		DVector position, DVector direction, float speed)
+			if canNotStepAside()
+				return
+			end
+			
+			var StepAside sa = StepAside.new(element, position, direction, speed)
+			
+			element.forEachInstance(block ECBehaviorAvoidedByActor.Instance each
+				stepAsideAvoidedByActor(each, sa)
+			end)
+			
+			if sa.getLeft() > 0.01 or sa.getRight() > 0.01
+				stepAside(sa)
+			end
+		end
+		
+		/**
+		 * \brief Step aside using ECBehaviorAvoidedByActor.
+		 * 
+		 * Updates step aside result with keeping the larger values on each side.
+		 */
+		public func void stepAsideAvoidedByActor(ECBehaviorAvoidedByActor.Instance behavior, StepAside stepAside)
+			if not behavior.shouldBeAvoided()
+				return
+			end
+			
+			// find the extreme points using the avoid shape
+			var DVector axisRight = stepAside.getAxisRight()
+			var DMatrix matrix = stepAside.getElement().getElementMatrix()
+			var DVector origin = DVector.new(behavior.getOrigin())
+			var float radius = behavior.getRadius()
+			var Vector2 size = behavior.getSize()
+			var float sx = size.getX()
+			var float sy = size.getY()
+			
+			stepAside.extend(axisRight * matrix.transformNormal(origin + DVector.new(-sx, 0, sy)), radius)
+			stepAside.extend(axisRight * matrix.transformNormal(origin + DVector.new(sx, 0, sy)), radius)
+			stepAside.extend(axisRight * matrix.transformNormal(origin + DVector.new(sx, 0, -sy)), radius)
+			stepAside.extend(axisRight * matrix.transformNormal(origin + DVector.new(-sx, 0, -sy)), radius)
+		end
+		
+		/**
+		 * \brief Step aside using found left and right distances.
+		 */
+		public func void stepAside(StepAside stepAside)
+			var DVector actorPosition = pActorMover.getLocomotion().getColliderAI().getCollider().getPosition()
+			var DVector axisRight = stepAside.getAxisRight()
+			var float offset = axisRight * (actorPosition - stepAside.getPosition())
+			var float rightDist = stepAside.getRight() - offset + pRadius
+			var float leftDist = stepAside.getLeft() - offset - pRadius
+			var DVector leftTarget = actorPosition + axisRight * leftDist
+			var DVector rightTarget = actorPosition + axisRight * rightDist
+			var DVector target
+			
+			var NavSideResult nsResult = bestNavSide(actorPosition, leftTarget, rightTarget)
+			
+			select nsResult.getSide()
+			case NavSideResult.Side.left
+				target = nsResult.getLeftPosition()
+				
+			case NavSideResult.Side.right
+				target = nsResult.getRightPosition()
+				
+			case NavSideResult.Side.both
+				if (nsResult.getRightPosition() - actorPosition).getLength() \
+				< (nsResult.getLeftPosition() - actorPosition).getLength()
+					target = nsResult.getRightPosition()
+					
+				else
+					target = nsResult.getLeftPosition()
+				end
+			end
+			
+			if target != null
+				pActorMover.moveTo(target, 0.1)
+			end
+		end
+		
+		/**
+		 * \brief Determine side to evade using navigation space.
+		 * 
+		 * Returns result with nearest left and right position still inside navigation space.
+		 */
+		public func NavSideResult bestNavSide(DVector origin, DVector leftPosition, DVector rightPosition)
+			var Navigator navigator = pActorMover.getNavigator().getNavigator()
+			
+			var NavigationInfo niOrigin = navigator.nearestPoint(origin, 0.1)
+			if niOrigin == null
+				return NavSideResult.new(origin, origin, NavSideResult.Side.none)
+			end
+			origin = niOrigin.getPosition()
+			
+			var NavigationInfo niLeft = navigator.lineCollide(origin, (leftPosition - origin).toVector())
+			if niLeft != null
+				leftPosition = niLeft.getPosition()
+			end
+			
+			var NavigationInfo niRight = navigator.lineCollide(origin, (rightPosition - origin).toVector())
+			if niRight != null
+				rightPosition = niRight.getPosition()
+			end
+			
+			if niLeft != null and niRight != null
+				return NavSideResult.new(leftPosition, rightPosition, NavSideResult.Side.none)
+				
+			elif niLeft != null
+				return NavSideResult.new(leftPosition, rightPosition, NavSideResult.Side.right)
+				
+			elif niRight != null
+				return NavSideResult.new(leftPosition, rightPosition, NavSideResult.Side.left)
+			end
+			
+			// both sides are not obstructed so compare the costs
+			niLeft = navigator.nearestPoint(leftPosition, 0.1)
+			niRight = navigator.nearestPoint(rightPosition, 0.1)
+			
+			var float fixCostRight = navigator.getTypeFixCost(niRight.getCostType())
+			var float fixCostLeft = navigator.getTypeFixCost(niLeft.getCostType())
+			var float costPerMeterRight = navigator.getTypeCostPerMeter(niRight.getCostType())
+			var float costPerMeterLeft = navigator.getTypeCostPerMeter(niLeft.getCostType())
+			var NavSideResult.Side side = NavSideResult.Side.both
+			
+			if fixCostRight < fixCostLeft
+				side = NavSideResult.Side.right
+				
+			elif fixCostLeft < fixCostRight
+				side = NavSideResult.Side.left
+				
+			elif costPerMeterRight < costPerMeterLeft
+				side = NavSideResult.Side.right
+				
+			elif costPerMeterLeft < costPerMeterRight
+				side = NavSideResult.Side.left
+			end
+			
+			return NavSideResult.new(leftPosition, rightPosition, side)
+		end
+		
+		
+		
+		/** \brief Read behavior from file. */
+		public func void readFromFile(PersistencyEnvironment env, FileReader reader)
+			select reader.readByte() // version
+			case 0
+				var PersistencyFlags flags = PersistencyFlags.new(1, reader)
+				pEnabled = flags.getAt(0)
+				
+			else
+				throw EInvalidParam.new("unsupported version")
+			end
+		end
+		
+		/** \brief Write behavior to file. */
+		public func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+			writer.writeByte(0) // version
+			
+			var PersistencyFlags flags = PersistencyFlags.new(1)
+			flags.setAt(0, pEnabled)
+			flags.writeToFile(writer)
+		end
+	end
+	
+	
+	
+	private var ECBehaviorActorMover pActorMover
+	private var ECPFloat pRadius
+	private var ECPBoolean pEnabled
+	
+	
+	
+	/** \brief Create behavior element class. */
+	public func new(BehaviorElementClass eclass, ECBehaviorActorMover actorMover) \
+	this(eclass, actorMover, "stepAside.")
+	end
+	
+	public func new(BehaviorElementClass eclass, ECBehaviorActorMover actorMover, String prefix) super(eclass)
+		if actorMover == null
+			throw ENullPointer.new("actorMover")
+		end
+		if getBehaviorIn(eclass) != null
+			throw BEMultipleInstanceException.new(eclass, this)
+		end
+		
+		pActorMover = actorMover
+		
+		pEnabled = ECPBoolean.new(prefix + "enabled", true)
+		eclass.addProperty(pEnabled)
+		
+		pRadius = ECPFloat.new(prefix + "radius", 0.4, 0)
+		eclass.addProperty(pRadius)
+		
+		eclass.addBehavior(this)
+	end
+	
+	/** \brief Dispose of behavior. */
+	public func void dispose()
+		pActorMover = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Actor mover behavior. */
+	public func ECBehaviorActorMover getActorMover()
+		return pActorMover
+	end
+	
+	/** \brief Avoid radius. */
+	public func ECPFloat getRadius()
+		return pRadius
+	end
+	
+	/** \brief Behavior is initially enabled. */
+	public func ECPBoolean getEnabled()
+		return pEnabled
+	end
+	
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	public func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
+	end
+	
+	
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorStepAside.
+	 */
+	static public func ECBehaviorStepAside getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorStepAside each
+			return true
+		end) cast ECBehaviorStepAside
+	end
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorStepAside.Instance .
+	 */
+	static public func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
+			return true
+		end) cast Instance
+	end
+	
+	
+	
+	/** \brief Create Behavior instance. */
+	public func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
+	end
+end

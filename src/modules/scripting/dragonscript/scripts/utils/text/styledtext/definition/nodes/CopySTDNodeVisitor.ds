@@ -1,0 +1,121 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Utils.StyledText.Definition.Nodes
+
+pin Dragengine.Gui
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Styled text definition node creating copy of styled text definition.
+ * \version 1.19
+ * 
+ * This class is useful as base class for visitors processing some content of styled text
+ * definitions without needing to process all. Typical examples are visitors resolving dynamic
+ * content including dropping or adding nodes.
+ * 
+ * To use this visitor assign it the definition to add nodes to and call initDefinition().
+ * The following code is an example usage:
+ * 
+ * \code{.ds}
+ * // Source definition to copy
+ * var StyledTextDefinition sourceDefinition = ...
+ * 
+ * // Create visitor. This creates an empty definition
+ * var CopySTDNodeVisitor visitor = CopySTDNodeVisitor.new()
+ * 
+ * // Init definition from source. Copies parameters and styles and removes all nodes.
+ * // After this call the definition stored in the visitor is ready to be used
+ * visitor.initDefinition(sourceDefinition)
+ * 
+ * // Visit all nodes in the source document
+ * visitor.visitAllNodes(sourceDefinition)
+ * 
+ * // The definition is now ready to be used. Before visiting again call setDefinition()
+ * // to assign a new definition or the old one is overwritten
+ * var StyledTextDefinition copiedDefinition = visitor.getDefinition()
+ * \endcode
+ */
+class CopySTDNodeVisitor extends DefaultSTDNodeVisitor
+	var StyledTextDefinition pDefinition
+	
+	
+	
+	/** \brief Create visitor with empty definition. */
+	func new()
+		pDefinition = StyledTextDefinition.new()
+	end
+	
+	
+	
+	/** \brief Definition to add nodes to. */
+	func StyledTextDefinition getDefinition()
+		return pDefinition
+	end
+	
+	/** \brief Set definition to add nodes to. */
+	func void setDefinition(StyledTextDefinition definition)
+		if definition == null
+			throw ENullPointer.new("definition")
+		end
+		pDefinition = definition
+	end
+	
+	/**
+	 * \brief Init definition to add nodes to from another definition.
+	 * 
+	 * Copies definition parameters and styles and removes all nodes.
+	 */
+	func void initDefinition(StyledTextDefinition definition)
+		pDefinition.removeAllNodes()
+		pDefinition.removeAllStyles()
+		
+		pDefinition.setPageStyle(STDStyle.new(definition.getPageStyle()))
+		pDefinition.setDefaultStyle(STDStyle.new(definition.getDefaultStyle()))
+		
+		definition.forEachStyle(block STDStyle each
+			pDefinition.addStyle(STDStyle.new(each))
+		end)
+		pDefinition.setPageSize(definition.getPageSize())
+	end
+	
+	/** \brief Convenience call to visit all nodes in the definition with this visitor. */
+	func void visitAllNodes(StyledTextDefinition definition)
+		definition.forEachNode(block STDNode each
+			each.visit(this)
+		end)
+	end
+	
+	
+	
+	/**
+	 * \brief Visit node.
+	 * 
+	 * Creates copy of node and adds it to the definition.
+	 */
+	func void visitNode(STDNode node)
+		pDefinition.addNode(node.copy())
+	end
+end

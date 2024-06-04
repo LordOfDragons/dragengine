@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -24,9 +27,14 @@
 
 #include "deoglShaderCompiled.h"
 #include "deoglShaderProgram.h"
+#include "deoglShaderSources.h"
 #include "deoglShaderUnitSourceCode.h"
+#include "../rendering/task/shared/deoglRenderTaskSharedPool.h"
+#include "../renderthread/deoglRenderThread.h"
+#include "../renderthread/deoglRTUniqueKey.h"
 
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/string/decStringList.h>
 
 
 
@@ -36,11 +44,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglShaderProgram::deoglShaderProgram( deoglShaderSources *sources ){
-	if( ! sources ){
-		DETHROW( deeInvalidParam );
-	}
+deoglShaderProgram::deoglShaderProgram( deoglRenderThread &renderThread, const deoglShaderSources *sources ) :
+pRenderThread( renderThread )
+{
+	DEASSERT_NOTNULL( sources )
 	
+	pSCCompute = NULL;
 	pSCTessellationControl = NULL;
 	pSCTessellationEvaluation = NULL;
 	pSCGeometry = NULL;
@@ -50,17 +59,16 @@ deoglShaderProgram::deoglShaderProgram( deoglShaderSources *sources ){
 	pCompiled = NULL;
 	pSources = sources;
 	
-	pRenderTaskShader = NULL;
-	pRenderTaskTrackingNumber = 0;
-	
-	pUsageCount = 1;
+	pUniqueKey = renderThread.GetUniqueKey().Get();
 }
 
-deoglShaderProgram::deoglShaderProgram( deoglShaderSources *sources, const deoglShaderDefines &defines ){
-	if( ! sources ){
-		DETHROW( deeInvalidParam );
-	}
+deoglShaderProgram::deoglShaderProgram( deoglRenderThread &renderThread,
+const deoglShaderSources *sources, const deoglShaderDefines &defines ) :
+pRenderThread( renderThread )
+{
+	DEASSERT_NOTNULL( sources )
 	
+	pSCCompute = NULL;
 	pSCTessellationControl = NULL;
 	pSCTessellationEvaluation = NULL;
 	pSCGeometry = NULL;
@@ -70,24 +78,31 @@ deoglShaderProgram::deoglShaderProgram( deoglShaderSources *sources, const deogl
 	pCompiled = NULL;
 	pSources = sources;
 	
-	pRenderTaskShader = NULL;
-	pRenderTaskTrackingNumber = 0;
-	
-	pUsageCount = 1;
-	
 	pDefines = defines;
+	
+	pUniqueKey = renderThread.GetUniqueKey().Get();
 }
 
 deoglShaderProgram::~deoglShaderProgram(){
 	if( pCompiled ){
 		delete pCompiled;
 	}
+	
+	pRenderThread.GetUniqueKey().Return( pUniqueKey );
 }
 
 
 
 // Management
 ///////////////
+
+void deoglShaderProgram::SetCacheId( const decString &id ){
+	pCacheId = id;
+}
+
+void deoglShaderProgram::SetComputeSourceCode( deoglShaderUnitSourceCode *sourceCode ){
+	pSCCompute = sourceCode;
+}
 
 void deoglShaderProgram::SetTessellationControlSourceCode( deoglShaderUnitSourceCode *sourceCode ){
 	pSCTessellationControl = sourceCode;
@@ -110,32 +125,13 @@ void deoglShaderProgram::SetFragmentSourceCode( deoglShaderUnitSourceCode *sourc
 }
 
 void deoglShaderProgram::SetCompiled( deoglShaderCompiled *compiled ){
-	if( compiled != pCompiled ){
-		if( pCompiled ) delete pCompiled;
-		
-		pCompiled = compiled;
-	}
-}
-
-void deoglShaderProgram::SetRenderTaskShader( deoglRenderTaskShader *renderTaskShader ){
-	pRenderTaskShader = renderTaskShader;
-}
-
-void deoglShaderProgram::SetRenderTaskTrackingNumber( unsigned int trackingNumber ){
-	pRenderTaskTrackingNumber = trackingNumber;
-}
-
-
-
-void deoglShaderProgram::AddUsage(){
-	pUsageCount++;
-}
-
-void deoglShaderProgram::RemoveUsage(){
-	if( pUsageCount == 0 ){
-		//DETHROW( deeInvalidParam );
-		// this is bad. we let it slip though and let the shader manager notify about what happened the next possible time
+	if( compiled == pCompiled ){
+		return;
 	}
 	
-	pUsageCount--;
+	if( pCompiled ){
+		delete pCompiled;
+	}
+	
+	pCompiled = compiled;
 }

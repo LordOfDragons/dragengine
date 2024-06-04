@@ -24,7 +24,7 @@
 
 import bpy
 
-from .de_porting import registerClass
+from .de_porting import registerClass, appendToMenu
 
 
 
@@ -33,11 +33,12 @@ from .de_porting import registerClass
 
 class OBJECT_OT_DEToolMirrorAnimation( bpy.types.Operator ):
 	bl_idname = "dragengine.mirroranimation"
-	bl_label = "Drag[en]gine Mirror Animation"
+	bl_label = "Mirror Animation"
+	bl_icon = 'MOD_MIRROR'
 	bl_options = { 'REGISTER', 'UNDO' }
 	__doc__ = """Mirror animation"""
 	
-	#digits = bpy.props.IntProperty( name="Digits", description="Digits to round to", soft_min=0, soft_max=5, default=5 )
+	#digits: bpy.props.IntProperty( name="Digits", description="Digits to round to", soft_min=0, soft_max=5, default=5 )
 	
 	@classmethod
 	def poll( cls, context ):
@@ -90,4 +91,6 @@ class OBJECT_OT_DEToolMirrorAnimation( bpy.types.Operator ):
 			keyframe.co = [ keyframe.co[ 0 ], -keyframe.co[ 1 ] ]
 			keyframe.handle_left = [ keyframe.handle_left[ 0 ], -keyframe.handle_left[ 1 ] ]
 			keyframe.handle_right = [ keyframe.handle_right[ 0 ], -keyframe.handle_right[ 1 ] ]
+
 registerClass(OBJECT_OT_DEToolMirrorAnimation)
+appendToMenu(bpy.types.VIEW3D_MT_pose, OBJECT_OT_DEToolMirrorAnimation)

@@ -1,13 +1,13 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<!DOCTYPE module SYSTEM "DragengineModule.dtd">
 <module>
 	<name>OpenGL</name>
 	<description>Renders game screen using OpenGL.
 		Required is a Pixel-Shader 1.3 aware graphic card.
 		Runs only on Linux operating systems.</description>
 	<author>Plüss Roland (roland@rptd.ch)</author>
-	<version>1.0</version>
+	<version>VERSION</version>
 	<type>Graphic</type>
+	<priority>1</priority>
 	<library>
 		<file>FILENAME</file>
 		<size>FILESIZE</size>

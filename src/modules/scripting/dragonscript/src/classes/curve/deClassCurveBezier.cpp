@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -60,6 +63,21 @@ void deClassCurveBezier::nfNew::RunFunction( dsRunTime *rt, dsValue *myself ){
 	
 	nd.curve = new decCurveBezier;
 	if( ! nd.curve ) DSTHROW( dueOutOfMemory );
+}
+
+// public func new(CurveBezier curve)
+deClassCurveBezier::nfNewCopy::nfNewCopy( const sInitData &init ) :
+dsFunction( init.clsCBe, DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsCBe );
+}
+void deClassCurveBezier::nfNewCopy::RunFunction( dsRunTime *rt, dsValue *myself ){
+	sCBeNatDat &nd = *( ( sCBeNatDat* )p_GetNativeData( myself ) );
+	const deClassCurveBezier &clsCBe = *( ( deClassCurveBezier* )GetOwnerClass() );
+	
+	nd.curve = NULL;
+	
+	nd.curve = new decCurveBezier( clsCBe.GetCurve( rt->GetValue( 0 )->GetRealObject() ) );
 }
 
 // public static func newDefaultLinear()
@@ -154,6 +172,34 @@ void deClassCurveBezier::nfGetPointAt::RunFunction( dsRunTime *rt, dsValue *myse
 	int position = rt->GetValue( 0 )->GetInt();
 	
 	ds->GetClassVector2()->PushVector2( rt, curve.GetPointAt( position ).GetPoint() );
+}
+
+// public func Vector2 getHandle1At( int position )
+deClassCurveBezier::nfGetHandle1At::nfGetHandle1At( const sInitData &init ) :
+dsFunction( init.clsCBe, "getHandle1At", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec2 ){
+	p_AddParameter( init.clsInt ); // position
+}
+void deClassCurveBezier::nfGetHandle1At::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const decCurveBezier &curve = *( ( sCBeNatDat* )p_GetNativeData( myself ) )->curve;
+	const deScriptingDragonScript &ds = *( ( ( deClassCurveBezier* )GetOwnerClass() )->GetDS() );
+	
+	int position = rt->GetValue( 0 )->GetInt();
+	
+	ds.GetClassVector2()->PushVector2( rt, curve.GetPointAt( position ).GetHandle1() );
+}
+
+// public func Vector2 getHandle2At( int position )
+deClassCurveBezier::nfGetHandle2At::nfGetHandle2At( const sInitData &init ) :
+dsFunction( init.clsCBe, "getHandle2At", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec2 ){
+	p_AddParameter( init.clsInt ); // position
+}
+void deClassCurveBezier::nfGetHandle2At::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const decCurveBezier &curve = *( ( sCBeNatDat* )p_GetNativeData( myself ) )->curve;
+	const deScriptingDragonScript &ds = *( ( ( deClassCurveBezier* )GetOwnerClass() )->GetDS() );
+	
+	int position = rt->GetValue( 0 )->GetInt();
+	
+	ds.GetClassVector2()->PushVector2( rt, curve.GetPointAt( position ).GetHandle2() );
 }
 
 // public func int findPointPriorTo( float coordinate )
@@ -441,12 +487,15 @@ void deClassCurveBezier::CreateClassMembers( dsEngine *engine ){
 	
 	// add functions
 	AddFunction( new nfNew( init ) );
+	AddFunction( new nfNewCopy( init ) );
 	AddFunction( new nfNewDefaultLinear( init ) );
 	AddFunction( new nfNewDefaultBezier( init ) );
 	AddFunction( new nfDestructor( init ) );
 	
 	AddFunction( new nfGetPointCount( init ) );
 	AddFunction( new nfGetPointAt( init ) );
+	AddFunction( new nfGetHandle1At( init ) );
+	AddFunction( new nfGetHandle2At( init ) );
 	AddFunction( new nfFindPointPriorTo( init ) );
 	AddFunction( new nfAddPoint( init ) );
 	AddFunction( new nfAddPoint2( init ) );

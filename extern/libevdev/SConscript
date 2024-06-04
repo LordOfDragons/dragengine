@@ -35,7 +35,7 @@ hasSystemEvdev = False
 conf = envLibrary.Configure()
 if envLibrary['with_system_libevdev'] != TernaryVariableNo:
 	hasSystemEvdev = conf.CheckLibWithHeader(
-		libLinkName, 'evdev.h', 'c++', 'libevdev_has_event_type(0,0);')
+		libLinkName, 'libevdev-1.0/libevdev/libevdev.h', 'c++', 'libevdev_has_event_type(0,0);')
 conf.Finish()
 
 if not hasSystemEvdev and envLibrary['with_system_libevdev'] == TernaryVariableYes:
@@ -84,12 +84,12 @@ def libevdevBuild(target, source, env):
 	
 	script.append('{} || exit 1'.format(' '.join(cmdline)))
 	
-	script.append('make || exit 1')
+	script.append('make -j {} || exit 1'.format(env['with_threads']))
 	
 	script.append('cd libevdev || exit 1')
-	script.append('make install-libLTLIBRARIES install-libevdevincludeHEADERS || exit 1')
+	script.append('make -j {} install-libLTLIBRARIES install-libevdevincludeHEADERS || exit 1'.format(env['with_threads']))
 	
-	if not env.RunIsolatedSystem(script):
+	if not env.RunExternalCommand(script):
 		raise Exception('Failed building libevdev')
 
 if not buildStaticLinking:
@@ -110,6 +110,8 @@ library = envLibrary.Command(targets, '{}.tar.bz2'.format(srcdir),
 
 if not buildStaticLinking:
 	envLibrary.Depends(library, envLibrary['PATCHES'])
+
+#envLibrary.SideEffect('#notParallelCMake', library)
 
 depends = parent_env.Alias('lib_libevdev', library)
 

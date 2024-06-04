@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -26,6 +29,8 @@
 #include "deoglSPBParameter.h"
 #include "deoglSPBlockUBO.h"
 #include "../deoglShaderCompiled.h"
+#include "../../capabilities/deoglCapabilities.h"
+#include "../../delayedoperation/deoglDelayedOperations.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTLogger.h"
 
@@ -44,6 +49,7 @@ deoglSPBlockUBO::deoglSPBlockUBO( deoglRenderThread &renderThread ) :
 deoglShaderParameterBlock( renderThread ),
 pUBO( 0 ),
 pBindingPoint( 0 ),
+pCompact( true ),
 pAllocateBuffer( true ),
 pWriteBuffer( NULL ),
 pWriteBufferCapacity( 0 ),
@@ -54,6 +60,7 @@ deoglSPBlockUBO::deoglSPBlockUBO( const deoglSPBlockUBO &paramBlock ) :
 deoglShaderParameterBlock( paramBlock ),
 pUBO( 0 ),
 pBindingPoint( paramBlock.pBindingPoint ),
+pCompact( paramBlock.pCompact ),
 pAllocateBuffer( true ),
 pWriteBuffer( NULL ),
 pWriteBufferCapacity( 0 ),
@@ -62,11 +69,9 @@ pWriteBufferUsed( false ){
 
 deoglSPBlockUBO::~deoglSPBlockUBO(){
 	if( IsBufferMapped() ){
-		deoglSPBlockUBO::UnmapBuffer();
+		pClearMapped(); // done by delete
 	}
-	if( pUBO ){
-		pglDeleteBuffers( 1, &pUBO );
-	}
+	GetRenderThread().GetDelayedOperations().DeleteOpenGLBuffer( pUBO );
 	if( pWriteBuffer ){
 		delete [] pWriteBuffer;
 	}
@@ -81,22 +86,37 @@ void deoglSPBlockUBO::SetBindingPoint( int bindingPoint ){
 	pBindingPoint = bindingPoint;
 }
 
-void deoglSPBlockUBO::Activate(){
-	if( ! pUBO || IsBufferMapped() ){
-		DETHROW( deeInvalidParam );
-	}
+void deoglSPBlockUBO::SetCompact( bool compact ){
+	DEASSERT_FALSE( IsBufferMapped() )
+	
+	pCompact = compact;
+}
+
+void deoglSPBlockUBO::Activate() const{
+	DEASSERT_NOTNULL( pUBO )
+	DEASSERT_FALSE( IsBufferMapped() )
 	
 	OGL_CHECK( GetRenderThread(), pglBindBufferBase( GL_UNIFORM_BUFFER, pBindingPoint, pUBO ) );
 }
 
-void deoglSPBlockUBO::Deactivate(){
+void deoglSPBlockUBO::Activate( int bindingPoint ) const{
+	DEASSERT_NOTNULL( pUBO )
+	DEASSERT_FALSE( IsBufferMapped() )
+	
+	OGL_CHECK( GetRenderThread(), pglBindBufferBase( GL_UNIFORM_BUFFER, bindingPoint, pUBO ) );
+}
+
+void deoglSPBlockUBO::Deactivate() const{
 	OGL_CHECK( GetRenderThread(), pglBindBufferBase( GL_UNIFORM_BUFFER, pBindingPoint, 0 ) );
 }
 
+void deoglSPBlockUBO::Deactivate( int bindingPoint ) const{
+	OGL_CHECK( GetRenderThread(), pglBindBufferBase( GL_UNIFORM_BUFFER, bindingPoint, 0 ) );
+}
+
 void deoglSPBlockUBO::MapBuffer(){
-	if( IsBufferMapped() || GetBufferSize() == 0 ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_FALSE( IsBufferMapped()  )
+	DEASSERT_TRUE( GetBufferSize() > 0 )
 	
 	if( false ){ // use mapped
 		if( ! pUBO ){
@@ -145,9 +165,15 @@ void deoglSPBlockUBO::MapBuffer(){
 }
 
 void deoglSPBlockUBO::MapBuffer( int element ){
-	if( IsBufferMapped() || GetBufferSize() == 0 || element < 0 || element >= GetElementCount() ){
-		DETHROW( deeInvalidParam );
-	}
+	MapBuffer( element, 1 );
+}
+
+void deoglSPBlockUBO::MapBuffer( int element, int count ){
+	DEASSERT_FALSE( IsBufferMapped()  )
+	DEASSERT_TRUE( GetBufferSize() > 0 )
+	DEASSERT_TRUE( element >= 0 )
+	DEASSERT_TRUE( count > 0 )
+	DEASSERT_TRUE( element + count <= GetElementCount() )
 	
 	if( false ){ // use mapped
 		if( ! pUBO ){
@@ -170,13 +196,13 @@ void deoglSPBlockUBO::MapBuffer( int element ){
 			char *data;
 			
 			OGL_CHECK( GetRenderThread(), data = ( char* )pglMapBufferRange( GL_UNIFORM_BUFFER,
-				GetElementStride() * element, GetElementStride(),
+				GetElementStride() * element, GetElementStride() * count,
 				GL_WRITE_ONLY | GL_MAP_INVALIDATE_RANGE_BIT ) );
 			
 			if( ! data ){
 				DETHROW( deeInvalidParam );
 			}
-			pSetMapped( data, element );
+			pSetMapped( data, element, count );
 			
 		}catch( const deException & ){
 			OGL_CHECK( GetRenderThread(), pglBindBuffer( GL_UNIFORM_BUFFER, 0 ) );
@@ -184,16 +210,14 @@ void deoglSPBlockUBO::MapBuffer( int element ){
 		}
 		
 	}else{
-		pGrowWriteBuffer( GetElementStride() );
+		pGrowWriteBuffer( GetElementStride() * count );
 		pWriteBufferUsed = true;
-		pSetMapped( pWriteBuffer, element );
+		pSetMapped( pWriteBuffer, element, count );
 	}
 }
 
 void deoglSPBlockUBO::UnmapBuffer(){
-	if( ! IsBufferMapped() ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE( IsBufferMapped() )
 	
 	if( pWriteBufferUsed ){
 		OGL_IF_CHECK( deoglRenderThread &renderThread = GetRenderThread(); )
@@ -206,21 +230,29 @@ void deoglSPBlockUBO::UnmapBuffer(){
 			pAllocateBuffer = true;
 		}
 		
-		OGL_CHECK( renderThread, pglBindBuffer( GL_UNIFORM_BUFFER, pUBO ) );
-		
-		if( pAllocateBuffer ){
-			OGL_CHECK( renderThread, pglBufferData( GL_UNIFORM_BUFFER,
-				GetBufferSize(), NULL, GL_DYNAMIC_DRAW ) );
-			pAllocateBuffer = false;
-		}
-		
 		const int stride = GetElementStride();
 		const int lower = pGetElementLower();
 		const int upper = pGetElementUpper();
 		
-		OGL_CHECK( renderThread, pglBufferSubData( GL_UNIFORM_BUFFER,
-			stride * lower, stride * ( upper - lower + 1 ), pWriteBuffer ) );
+		const int offset = stride * lower;
+		const int size = stride * ( upper - lower + 1 );
 		
+		if( pAllocateBuffer ){
+			OGL_CHECK( renderThread, pglBindBuffer( GL_UNIFORM_BUFFER, pUBO ) );
+			OGL_CHECK( renderThread, pglBufferData( GL_UNIFORM_BUFFER,
+				GetBufferSize(), NULL, GL_DYNAMIC_DRAW ) );
+			pAllocateBuffer = false;
+			
+		}else{
+			if( pglBindBufferRange ){
+				OGL_CHECK( renderThread, pglBindBufferRange( GL_UNIFORM_BUFFER, 0, pUBO, offset, size ) );
+				
+			}else{
+				OGL_CHECK( renderThread, pglBindBuffer( GL_UNIFORM_BUFFER, pUBO ) );
+			}
+		}
+		
+		OGL_CHECK( renderThread, pglBufferSubData( GL_UNIFORM_BUFFER, offset, size, pWriteBuffer ) );
 		pWriteBufferUsed = false;
 		
 	}else{
@@ -229,8 +261,15 @@ void deoglSPBlockUBO::UnmapBuffer(){
 	}
 	
 	OGL_CHECK( GetRenderThread(), pglBindBuffer( GL_UNIFORM_BUFFER, 0 ) );
-	
 	pClearMapped();
+}
+
+int deoglSPBlockUBO::GetAlignmentRequirements() const{
+	return pCompact ? 0 : GetRenderThread().GetCapabilities().GetUBOOffsetAlignment();
+}
+
+deoglShaderParameterBlock *deoglSPBlockUBO::Copy() const{
+	return new deoglSPBlockUBO( *this );
 }
 
 
@@ -277,12 +316,18 @@ void deoglSPBlockUBO::pGrowWriteBuffer( int size ){
 		return;
 	}
 	
+	char * const newBuffer = new char[ size ];
+	
 	if( pWriteBuffer ){
+		if( pWriteBufferCapacity > 0 ){
+			memcpy( newBuffer, pWriteBuffer, pWriteBufferCapacity );
+		}
+		
 		delete [] pWriteBuffer;
 		pWriteBuffer = NULL;
 		pWriteBufferCapacity = 0;
 	}
 	
-	pWriteBuffer = new char[ size ];
+	pWriteBuffer = newBuffer;
 	pWriteBufferCapacity = size;
 }

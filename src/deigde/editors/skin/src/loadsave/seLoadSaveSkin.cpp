@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Skin Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -25,6 +28,7 @@
 
 #include "seLoadSaveSkin.h"
 #include "../skin/seSkin.h"
+#include "../skin/mapped/seMapped.h"
 #include "../skin/texture/seTexture.h"
 #include "../skin/property/seProperty.h"
 #include "../skin/property/node/sePropertyNodeImage.h"
@@ -126,6 +130,7 @@ const igdeTexturePropertyList &knownPropertyList ){
 	deSkin *engSkin = NULL;
 	int p, propertyCount;
 	int t, textureCount;
+	int i;
 	
 	deSkinBuilder builder;
 	
@@ -133,6 +138,30 @@ const igdeTexturePropertyList &knownPropertyList ){
 		engSkin = engine->GetSkinManager()->CreateSkin( "", builder );
 		pModule->LoadSkin( *file, *engSkin );
 		
+		// mapped
+		const int mappedCount = engSkin->GetMappedCount();
+		for( i=0; i<mappedCount; i++ ){
+			const deSkinMapped &engMapped = *engSkin->GetMappedAt( i );
+			
+			const seMapped::Ref mapped( seMapped::Ref::New( new seMapped( engMapped.GetName() ) ) );
+			
+			mapped->SetCurve( engMapped.GetCurve() );
+			mapped->SetInputType( engMapped.GetInputType() );
+			mapped->SetInputLower( engMapped.GetInputLower() );
+			mapped->SetInputUpper( engMapped.GetInputUpper() );
+			mapped->SetInputClamped( engMapped.GetInputClamped() );
+			mapped->SetOutputLower( engMapped.GetOutputLower() );
+			mapped->SetOutputUpper( engMapped.GetOutputUpper() );
+			mapped->SetBone( engMapped.GetBone() );
+			mapped->SetRenderable( engMapped.GetRenderable() );
+			mapped->SetRenderableComponent( engMapped.GetRenderableComponent() );
+			
+			skin->AddMapped( mapped );
+		}
+		
+		const seMappedList &listMapped = skin->GetMappedList();
+		
+		// textures
 		textureCount = engSkin->GetTextureCount();
 		
 		for( t=0; t<textureCount; t++ ){
@@ -147,10 +176,11 @@ const igdeTexturePropertyList &knownPropertyList ){
 				deSkinProperty &engProperty = *engTexture.GetPropertyAt( p );
 				
 				property = new seProperty( engine );
-				property->SetName( engProperty.GetType().GetString() );
+				property->SetName( engProperty.GetType() );
 				property->InitDefaults( knownPropertyList );
 				
-				property->SetRenderableName( engProperty.GetRenderable().GetString() );
+				property->SetRenderableName( engProperty.GetRenderable() );
+				property->SetBoneName( engProperty.GetBone() );
 				
 				engProperty.Visit( identifyProperty );
 				
@@ -176,13 +206,22 @@ const igdeTexturePropertyList &knownPropertyList ){
 					property->SetVideoSharedTime( identifyProperty.CastToVideo().GetSharedTime() );
 					break;
 					
-				case deSkinPropertyVisitorIdentify::eptMapped:
+				case deSkinPropertyVisitorIdentify::eptMapped:{
+					const deSkinPropertyMapped &mapped = identifyProperty.CastToMapped();
 					property->SetValueType( seProperty::evtMapped );
-					property->SetMappedComponent( 0, identifyProperty.CastToMapped().GetRed() );
-					property->SetMappedComponent( 1, identifyProperty.CastToMapped().GetGreen() );
-					property->SetMappedComponent( 2, identifyProperty.CastToMapped().GetBlue() );
-					property->SetMappedComponent( 3, identifyProperty.CastToMapped().GetAlpha() );
-					break;
+					if( mapped.GetRed() != -1 ){
+						property->SetMappedComponent( 0, listMapped.GetAt( mapped.GetRed() ) );
+					}
+					if( mapped.GetGreen() != -1 ){
+						property->SetMappedComponent( 1, listMapped.GetAt( mapped.GetGreen() ) );
+					}
+					if( mapped.GetBlue() != -1 ){
+						property->SetMappedComponent( 2, listMapped.GetAt( mapped.GetBlue() ) );
+					}
+					if( mapped.GetAlpha() != -1 ){
+						property->SetMappedComponent( 3, listMapped.GetAt( mapped.GetAlpha() ) );
+					}
+					}break;
 					
 				case deSkinPropertyVisitorIdentify::eptConstructed:{
 					const deSkinPropertyConstructed &constructed = identifyProperty.CastToConstructed();
@@ -190,7 +229,8 @@ const igdeTexturePropertyList &knownPropertyList ){
 					property->SetNodeColor( constructed.GetColor() );
 					property->SetNodeTileX( constructed.GetTileX() );
 					property->SetNodeTileY( constructed.GetTileY() );
-					nodeGroup = LoadPropertyNodeGroup( constructed.GetContent() );
+					property->SetNodeBitCount( constructed.GetBitCount() );
+					nodeGroup = LoadPropertyNodeGroup( *skin, constructed.GetContent() );
 					property->SetNodeGroup( nodeGroup );
 					nodeGroup->FreeReference();
 					nodeGroup = NULL;
@@ -215,7 +255,7 @@ const igdeTexturePropertyList &knownPropertyList ){
 		
 		engSkin->FreeReference();
 		
-	}catch( const deException &e ){
+	}catch( const deException & ){
 		if( nodeGroup ){
 			nodeGroup->FreeReference();
 		}
@@ -232,7 +272,8 @@ const igdeTexturePropertyList &knownPropertyList ){
 	}
 }
 
-sePropertyNodeGroup *seLoadSaveSkin::LoadPropertyNodeGroup( const deSkinPropertyNodeGroup &engNodeGroup ){
+sePropertyNodeGroup *seLoadSaveSkin::LoadPropertyNodeGroup( seSkin &skin,
+const deSkinPropertyNodeGroup &engNodeGroup ){
 	deEngine &engine = *pModule->GetGameEngine();
 	deSkinPropertyNodeVisitorIdentify identifyNode;
 	sePropertyNodeGroup *nodeGroup = NULL;
@@ -242,16 +283,16 @@ sePropertyNodeGroup *seLoadSaveSkin::LoadPropertyNodeGroup( const deSkinProperty
 	
 	try{
 		nodeGroup = new sePropertyNodeGroup( engine );
-		LoadPropertyNodeCommon( *nodeGroup, engNodeGroup );
+		LoadPropertyNodeCommon( skin, *nodeGroup, engNodeGroup );
 		
 		for( i=0; i<count; i++ ){
-			childNode = LoadPropertyNode( *engNodeGroup.GetNodeAt( i ) );
+			childNode = LoadPropertyNode( skin, *engNodeGroup.GetNodeAt( i ) );
 			nodeGroup->AddNode( childNode );
 			childNode->FreeReference();
 			childNode = NULL;
 		}
 		
-	}catch( const deException &e ){
+	}catch( const deException & ){
 		if( childNode ){
 			childNode->FreeReference();
 		}
@@ -264,10 +305,11 @@ sePropertyNodeGroup *seLoadSaveSkin::LoadPropertyNodeGroup( const deSkinProperty
 	return nodeGroup;
 }
 
-sePropertyNode *seLoadSaveSkin::LoadPropertyNode( deSkinPropertyNode &engNode ){
+sePropertyNode *seLoadSaveSkin::LoadPropertyNode( seSkin &skin, deSkinPropertyNode &engNode ){
 	deEngine &engine = *pModule->GetGameEngine();
 	deSkinPropertyNodeVisitorIdentify identifyNode;
 	sePropertyNode *childNode = NULL;
+	int i;
 	
 	try{
 		engNode.Visit( identifyNode );
@@ -277,7 +319,7 @@ sePropertyNode *seLoadSaveSkin::LoadPropertyNode( deSkinPropertyNode &engNode ){
 			const deSkinPropertyNodeImage &engNodeImage = identifyNode.CastToImage();
 			sePropertyNodeImage * const childImage = new sePropertyNodeImage( engine );
 			childNode = childImage;
-			LoadPropertyNodeCommon( *childNode, engNode );
+			LoadPropertyNodeCommon( skin, *childNode, engNode );
 			childImage->SetPath( engNodeImage.GetPath() );
 			childImage->SetRepeat( engNodeImage.GetRepeat() );
 			}break;
@@ -286,33 +328,73 @@ sePropertyNode *seLoadSaveSkin::LoadPropertyNode( deSkinPropertyNode &engNode ){
 			const deSkinPropertyNodeShape &engNodeShape = identifyNode.CastToShape();
 			sePropertyNodeShape * const childShape = new sePropertyNodeShape( engine );
 			childNode = childShape;
-			LoadPropertyNodeCommon( *childNode, engNode );
+			LoadPropertyNodeCommon( skin, *childNode, engNode );
 			childShape->SetShapeType( engNodeShape.GetShapeType() );
 			childShape->SetFillColor( engNodeShape.GetFillColor() );
 			childShape->SetLineColor( engNodeShape.GetLineColor() );
 			childShape->SetThickness( engNodeShape.GetThickness() );
+			
+			const struct sMappedShape{
+				sePropertyNodeShape::eShapeMapped to;
+				deSkinPropertyNodeShape::eShapeMapped from;
+			} mappingsShape[ 9 ] = {
+				{ sePropertyNodeShape::esmFillColorRed, deSkinPropertyNodeShape::esmFillColorRed },
+				{ sePropertyNodeShape::esmFillColorGreen, deSkinPropertyNodeShape::esmFillColorGreen },
+				{ sePropertyNodeShape::esmFillColorBlue, deSkinPropertyNodeShape::esmFillColorBlue },
+				{ sePropertyNodeShape::esmFillColorAlpha, deSkinPropertyNodeShape::esmFillColorAlpha },
+				{ sePropertyNodeShape::esmLineColorRed, deSkinPropertyNodeShape::esmLineColorRed },
+				{ sePropertyNodeShape::esmLineColorGreen, deSkinPropertyNodeShape::esmLineColorGreen },
+				{ sePropertyNodeShape::esmLineColorBlue, deSkinPropertyNodeShape::esmLineColorBlue },
+				{ sePropertyNodeShape::esmLineColorAlpha, deSkinPropertyNodeShape::esmLineColorAlpha },
+				{ sePropertyNodeShape::esmThickness, deSkinPropertyNodeShape::esmThickness }
+			};
+			
+			for( i=0; i<9; i++ ){
+				const int index = engNodeShape.GetShapeMappedFor( mappingsShape[ i ].from );
+				if( index != -1 ){
+					childShape->SetMappedFor( mappingsShape[ i ].to, skin.GetMappedList().GetAt( index ) );
+				}
+			}
+			
 			}break;
 			
 		case deSkinPropertyNodeVisitorIdentify::entText:{
 			const deSkinPropertyNodeText &engNodeText = identifyNode.CastToText();
 			sePropertyNodeText * const childText = new sePropertyNodeText( engine );
 			childNode = childText;
-			LoadPropertyNodeCommon( *childNode, engNode );
+			LoadPropertyNodeCommon( skin, *childNode, engNode );
 			childText->SetPath( engNodeText.GetPath() );
 			childText->SetFontSize( engNodeText.GetFontSize() );
 			childText->SetText( engNodeText.GetText() );
 			childText->SetColor( engNodeText.GetColor() );
+			
+			const struct sMappedText{
+				sePropertyNodeText::eTextMapped to;
+				deSkinPropertyNodeText::eTextMapped from;
+			} mappingsText[ 4 ] = {
+				{ sePropertyNodeText::etmFontSize, deSkinPropertyNodeText::etmFontSize },
+				{ sePropertyNodeText::etmColorRed, deSkinPropertyNodeText::etmColorRed },
+				{ sePropertyNodeText::etmColorGreen, deSkinPropertyNodeText::etmColorGreen },
+				{ sePropertyNodeText::etmColorBlue, deSkinPropertyNodeText::etmColorBlue }
+			};
+			
+			for( i=0; i<4; i++ ){
+				const int index = engNodeText.GetTextMappedFor( mappingsText[ i ].from );
+				if( index != -1 ){
+					childText->SetMappedFor( mappingsText[ i ].to, skin.GetMappedList().GetAt( index ) );
+				}
+			}
 			}break;
 			
 		case deSkinPropertyNodeVisitorIdentify::entGroup:
-			childNode = LoadPropertyNodeGroup( identifyNode.CastToGroup() );
+			childNode = LoadPropertyNodeGroup( skin, identifyNode.CastToGroup() );
 			break;
 			
 		default:
 			DETHROW( deeInvalidParam );
 		}
 		
-	}catch( const deException &e ){
+	}catch( const deException & ){
 		if( childNode ){
 			childNode->FreeReference();
 		}
@@ -322,7 +404,8 @@ sePropertyNode *seLoadSaveSkin::LoadPropertyNode( deSkinPropertyNode &engNode ){
 	return childNode;
 }
 
-void seLoadSaveSkin::LoadPropertyNodeCommon( sePropertyNode &node, const deSkinPropertyNode &engNode ){
+void seLoadSaveSkin::LoadPropertyNodeCommon( seSkin &skin, sePropertyNode &node,
+const deSkinPropertyNode &engNode ){
 	node.SetPosition( engNode.GetPosition() );
 	node.SetSize( engNode.GetSize() );
 	node.SetRotation( engNode.GetRotation() / DEG2RAD );
@@ -340,15 +423,44 @@ void seLoadSaveSkin::LoadPropertyNodeCommon( sePropertyNode &node, const deSkinP
 		sePropertyNode *mask = NULL;
 		
 		try{
-			mask = LoadPropertyNode( *engNode.GetMask() );
+			mask = LoadPropertyNode( skin, *engNode.GetMask() );
 			node.SetMask( mask );
 			mask->FreeReference();
 			
-		}catch( const deException &e ){
+		}catch( const deException & ){
 			if( mask ){
 				mask->FreeReference();
 			}
 			throw;
+		}
+	}
+	
+	const struct sMapped{
+		sePropertyNode::eMapped to;
+		deSkinPropertyNode::eMapped from;
+	} mappings[ 15 ] = {
+		{ sePropertyNode::emPositionX, deSkinPropertyNode::emPositionX },
+		{ sePropertyNode::emPositionY, deSkinPropertyNode::emPositionY },
+		{ sePropertyNode::emPositionZ, deSkinPropertyNode::emPositionZ },
+		{ sePropertyNode::emSizeX, deSkinPropertyNode::emSizeX },
+		{ sePropertyNode::emSizeY, deSkinPropertyNode::emSizeY },
+		{ sePropertyNode::emSizeZ, deSkinPropertyNode::emSizeZ },
+		{ sePropertyNode::emRotation, deSkinPropertyNode::emRotation },
+		{ sePropertyNode::emShear, deSkinPropertyNode::emShear },
+		{ sePropertyNode::emBrightness, deSkinPropertyNode::emBrightness },
+		{ sePropertyNode::emContrast, deSkinPropertyNode::emContrast },
+		{ sePropertyNode::emGamma, deSkinPropertyNode::emGamma },
+		{ sePropertyNode::emColorizeRed, deSkinPropertyNode::emColorizeRed },
+		{ sePropertyNode::emColorizeGreen, deSkinPropertyNode::emColorizeGreen },
+		{ sePropertyNode::emColorizeBlue, deSkinPropertyNode::emColorizeBlue },
+		{ sePropertyNode::emTransparency, deSkinPropertyNode::emTransparency }
+	};
+	
+	int i;
+	for( i=0; i<15; i++ ){
+		const int index = engNode.GetMappedFor( mappings[ i ].from );
+		if( index != -1 ){
+			node.SetMappedFor( mappings[ i ].to, skin.GetMappedList().GetAt( index ) );
 		}
 	}
 }

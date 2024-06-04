@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLSPBPARAMETER_H_
@@ -25,19 +28,19 @@
 
 
 /**
- * \brief Shader parameter block parameter.
+ * Shader parameter block parameter.
  */
 class deoglSPBParameter{
 public:
-	/** \brief Value types. */
+	/** Value types. */
 	enum eValueTypes{
-		/** \brief Float values. */
+		/** Float values. */
 		evtFloat,
 		
-		/** \brief Integer values. */
+		/** Integer values. */
 		evtInt,
 		
-		/** \brief Boolean values. */
+		/** Boolean values. */
 		evtBool
 	};
 	
@@ -59,10 +62,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create shader parameter. */
+	/** Create shader parameter. */
 	deoglSPBParameter();
 	
-	/** \brief Clean up shader parameter. */
+	/** Clean up shader parameter. */
 	~deoglSPBParameter();
 	/*@}*/
 	
@@ -70,56 +73,56 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Value type. */
+	/** Value type. */
 	inline eValueTypes GetValueType() const{ return pValueType; }
 	
-	/** \brief Set value type. */
+	/** Set value type. */
 	void SetValueType( eValueTypes valueType );
 	
-	/** \brief Number of components in vector. */
+	/** Number of components in vector. */
 	inline int GetComponentCount() const{ return pComponentCount; }
 	
-	/** \brief Set number of components in vector. */
+	/** Set number of components in vector. */
 	void SetComponentCount( int componentCount );
 	
-	/** \brief Number of vectors. */
+	/** Number of vectors. */
 	inline int GetVectorCount() const{ return pVectorCount; }
 	
-	/** \brief Set number of vectors. */
+	/** Set number of vectors. */
 	void SetVectorCount( int vectorCount );
 	
-	/** \brief Array count. */
+	/** Array count. */
 	inline int GetArrayCount() const{ return pArrayCount; }
 	
-	/** \brief Set array count. */
+	/** Set array count. */
 	void SetArrayCount( int arrayCount );
 	
-	/** \brief Set all parameters. */
+	/** Set all parameters. */
 	void SetAll( eValueTypes valueType, int componentCount,
 		int vectorCount, int arrayCount );
 	
-	/** \brief Offset to first value component in data block. */
+	/** Offset to first value component in data block. */
 	inline int GetOffset() const{ return pOffset; }
 	
-	/** \brief Set offset to first value component in data block. */
+	/** Set offset to first value component in data block. */
 	void SetOffset( int offset );
 	
-	/** \brief Vector stride. */
+	/** Vector stride. */
 	inline int GetStride() const{ return pStride; }
 	
-	/** \brief Set vector stride. */
+	/** Set vector stride. */
 	void SetStride( int stride );
 	
-	/** \brief Array stride. */
+	/** Array stride. */
 	inline int GetArrayStride() const{ return pArrayStride; }
 	
-	/** \brief Set array stride. */
+	/** Set array stride. */
 	void SetArrayStride( int arrayStride );
 	
-	/** \brief Size of data in block. */
+	/** Size of data in block. */
 	inline int GetDataSize() const{ return pDataSize; }
 	
-	/** \brief Set size of data in block. */
+	/** Set size of data in block. */
 	void SetDataSize( int size );
 	/*@}*/
 };

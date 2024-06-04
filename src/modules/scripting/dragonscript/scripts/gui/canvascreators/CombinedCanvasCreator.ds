@@ -1,0 +1,161 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+
+namespace Dragengine.Gui.CanvasCreators
+
+pin Dragengine.Gui
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Canvas creator creating a combined canvas.
+ * \version 1.13
+ * 
+ * Combining canvas creators allows to create complex nested canvas out of existing canvas
+ * creators. The combined canvas creator creates a CanvasView canvas with up to two child
+ * canvas. An outer and inner canvas creator can be defined. The outer canvas creator can
+ * be null. The inner canvas creator size is shrinked by a padding value. Using a null
+ * outer canvas creator allows to create padding around an inner canvas creator. If not
+ * null the padding allows to nest the inner canvas creator.
+ */
+class CombinedCanvasCreator extends DefaultCanvasCreator
+	private var CanvasCreator pOuterCanvas
+	private var CanvasCreator pInnerCanvas
+	private var BorderSize pPadding
+	
+	
+	
+	/** \brief Create canvas creator. */
+	public func new()
+		pPadding = BorderSize.new()
+	end
+	
+	/** \brief Create copy of canvas creator. */
+	public func new(CombinedCanvasCreator creator) super(creator)
+		if creator.pOuterCanvas != null
+			pOuterCanvas = creator.pOuterCanvas.copyCanvasCreator()
+		end
+		if creator.pInnerCanvas != null
+			pInnerCanvas = creator.pInnerCanvas.copyCanvasCreator()
+		end
+		pPadding = creator.pPadding
+	end
+	
+	
+	
+	/** \brief Outer canvas creator or null. */
+	public func CanvasCreator getOuterCanvas()
+		return pOuterCanvas
+	end
+	
+	/** \brief Set outer canvas creator or null. */
+	public func void setOuterCanvas(CanvasCreator creator)
+		pOuterCanvas = creator
+	end
+	
+	/** \brief Inner canvas creator or null. */
+	public func CanvasCreator getInnerCanvas()
+		return pInnerCanvas
+	end
+	
+	/** \brief Set inner canvas creator or null. */
+	public func void setInnerCanvas(CanvasCreator creator)
+		pInnerCanvas = creator
+	end
+	
+	/** \brief Padding of inner canvas creator. */
+	public func BorderSize getPadding()
+		return pPadding
+	end
+	
+	/** \brief Set padding of inner canvas creator. */
+	public func void setPadding(BorderSize padding)
+		if padding == null
+			throw ENullPointer.new("padding")
+		end
+		pPadding = padding
+	end
+	
+	
+	
+	/**
+	 * \brief Set parameter.
+	 * 
+	 * Supported parameters:
+	 * | name | value | Setter |
+	 * | outerCanvas | CanvasCreator | setOuterCanvas |
+	 * | innerCanvas | CanvasCreator | setInnerCanvas |
+	 * | padding | BorderSize | setPadding |
+	 */
+	public func void setParameter(String name, Object value)
+		if name.equals("outerCanvas")
+			setOuterCanvas(value cast CanvasCreator)
+			
+		elif name.equals("innerCanvas")
+			setInnerCanvas(value cast CanvasCreator)
+			
+		elif name.equals("padding")
+			setPadding(value cast BorderSize)
+			
+		else
+			throw EInvalidParam.new()
+		end
+	end
+	
+	/** \brief Create copy of canvas creator. */
+	public func CanvasCreator copyCanvasCreator()
+		return CombinedCanvasCreator.new(this)
+	end
+	
+	
+	
+	/** \brief Create canvas for a specific widget size. */
+	public func Canvas createCanvas(Point size)
+		var CanvasView canvas = CanvasView.new()
+		canvas.setSize(size)
+		
+		if pOuterCanvas != null
+			var Canvas outer = pOuterCanvas.createCanvas(size)
+			if outer != null
+				outer.setOrder(canvas.getCanvasCount())
+				canvas.addCanvas(outer)
+			end
+		end
+		
+		if pInnerCanvas != null
+			var Point childSize = size - pPadding.getSize()
+			if childSize > Point.new()
+				var Canvas inner = pInnerCanvas.createCanvas(childSize)
+				if inner != null
+					inner.setPosition(Point.new(pPadding.getLeft(), pPadding.getTop()))
+					inner.setOrder(canvas.getCanvasCount())
+					canvas.addCanvas(inner)
+				end
+			end
+		end
+		
+		return canvas
+	end
+end

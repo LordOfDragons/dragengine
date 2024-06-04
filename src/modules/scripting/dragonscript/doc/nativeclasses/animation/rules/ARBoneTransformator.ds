@@ -63,6 +63,34 @@ class ARBoneTransformator extends AnimatorRule
 	public func void setMaximumScaling( Vector scaling )
 	end
 	
+	/**
+	 * \brief Set rotation axis.
+	 * \version 1.6
+	 */
+	public func void setAxis( Vector axis )
+	end
+	
+	/**
+	 * \brief Set minimum axis rotation angle.
+	 * \version 1.6
+	 */
+	public func void setMinimumAngle( float angle )
+	end
+	
+	/**
+	 * \brief Set maximum axis rotation angle.
+	 * \version 1.6
+	 */
+	public func void setMaximumAngle( float angle )
+	end
+	
+	/**
+	 * \brief Use rotation axis instead of rotation directly.
+	 * \version 1.6
+	 */
+	public func void setUseAxis( bool useAxis )
+	end
+	
 	
 	
 	/**

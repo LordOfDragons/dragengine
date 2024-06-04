@@ -1,0 +1,107 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Gui
+
+
+/**
+ * \brief Clipboard storing data clip.
+ * \version 1.11
+ */
+class Clipboard
+	private var ClipboardClip pClip
+	private var Array pListeners
+	
+	
+	
+	/** \brief Create clipboard. */
+	public func new()
+		pListeners = Array.new()
+	end
+	
+	/** \brief Dispose of clipboard. */
+	public func void dispose()
+		pListeners.removeAll()
+		pClip = null
+	end
+	
+	
+	
+	/** \brief Get clip or null if not set. */
+	public func ClipboardClip getClip()
+		return pClip
+	end
+	
+	/** \brief Set clip or null to clear. */
+	public func void setClip(ClipboardClip clip)
+		if clip == pClip
+			return
+		end
+		
+		pClip = clip
+		
+		pListeners.forEach(block ClipboardListener each
+			each.clipChanged(this)
+		end)
+	end
+	
+	/**
+	 * \brief Set clip with data.
+	 * 
+	 * Convenience method to call setClip(ClipboardClip.newWith(data)).
+	 */
+	public func void setClipWith(Object data)
+		setClip(ClipboardClip.newWith(data))
+	end
+	
+	/** \brief Clear clipboard. */
+	public func void clear()
+		setClip(null)
+	end
+	
+	/** \brief Clip is present. */
+	public func bool hasClip()
+		return pClip != null
+	end
+	
+	/** \brief Clip is absent. */
+	public func bool isEmpty()
+		return pClip == null
+	end
+	
+	
+	
+	/** \brief Add listener. */
+	public func void addListener(ClipboardListener listener)
+		if listener == null
+			throw ENullPointer.new("listener")
+		end
+		pListeners.add(listener)
+	end
+	
+	/** \brief Remove listener. */
+	public func void removeListener(ClipboardListener listener)
+		pListeners.remove(listener)
+	end
+end

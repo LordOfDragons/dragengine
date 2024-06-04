@@ -30,6 +30,7 @@ class Canvas
 	/*@{*/
 	/** \brief Position in parent canvas view units. */
 	public func Point getPosition()
+		return null
 	end
 	
 	/** \brief Set position in parent canvas view units. */
@@ -38,6 +39,7 @@ class Canvas
 	
 	/** \brief Size in parent canvas view units. */
 	public func Point getSize()
+		return null
 	end
 	
 	/** \brief Set size in parent canvas view units. */
@@ -46,6 +48,7 @@ class Canvas
 	
 	/** \brief Transformation matrix affecting the canvas and all its content. */
 	public func TexMatrix2 getTransform()
+		return null
 	end
 	
 	/** \brief Set transformation matrix affecting the canvas and all its content. */
@@ -54,6 +57,7 @@ class Canvas
 	
 	/** \brief Color transformation matrix affecting the canvas and all its content. */
 	public func ColorMatrix getColorTransform()
+		return null
 	end
 	
 	/** \brief Set color transformation matrix affecting the canvas and all its content. */
@@ -62,6 +66,7 @@ class Canvas
 	
 	/** \brief Canvas is visible. */
 	public func bool getVisible()
+		return false
 	end
 	
 	/** \brief Set if canvas is visible. */
@@ -70,6 +75,7 @@ class Canvas
 	
 	/** \brief Render order. Larger renders ontop of smaller. */
 	public func float getOrder()
+		return 0.0
 	end
 	
 	/** \brief Set render order. Larger renders ontop of smaller. */
@@ -78,6 +84,7 @@ class Canvas
 	
 	/** \brief Transparency in the range from 0 to 1 where 1 is opaque and 0 fully transparent. */
 	public func float getTransparency()
+		return 0.0
 	end
 	
 	/** \brief Set transparency in the range from 0 to 1 where 1 is opaque and 0 fully transparent. */
@@ -86,10 +93,46 @@ class Canvas
 	
 	/** \brief Blend mode used to blend canvas over previous content. */
 	public func CanvasBlendMode getBlendMode()
+		return null
 	end
 	
 	/** \brief Set blend mode used to blend canvas over previous content. */
 	public func void setBlendMode( CanvasBlendMode blendMode )
+	end
+	
+	/**
+	 * \brief Mask canvas or null.
+	 * \version 1.5
+	 * 
+	 * Mask canvas content is converted to grayscale.
+	 */
+	public func Canvas getMask()
+		return null
+	end
+	
+	/**
+	 * \brief Set mask canvas or null.
+	 * \version 1.5
+	 * 
+	 * Mask canvas content is converted to grayscale.
+	 */
+	public func void setMask( Canvas mask )
+	end
+	
+	/**
+	 * \brief Parent canvas view or null.
+	 * \version 1.11
+	 */
+	public func CanvasView getParentView()
+		return null
+	end
+	
+	/**
+	 * \brief Parent canvas mask or null.
+	 * \version 1.11
+	 */
+	public func Canvas getParentMask()
+		return null
 	end
 	
 	
@@ -100,6 +143,7 @@ class Canvas
 	 * \returns \em true if \em other is of type canvas and components are equal.
 	 */
 	public func bool equals( Object other )
+		return false
 	end
 	
 	/**
@@ -107,6 +151,7 @@ class Canvas
 	 * \details Implements Object.hashCode().
 	 */
 	public func int hashCode()
+		return 0
 	end
 	/*@}*/
 end

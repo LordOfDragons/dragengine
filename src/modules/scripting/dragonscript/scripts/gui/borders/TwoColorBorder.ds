@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
  
  
@@ -24,17 +27,17 @@ namespace Dragengine.Gui.Borders
 
 
 /**
- * Base class for borders drawn using a hilight and a shadow color which
+ * Base class for borders drawn using a highlight and a shadow color which
  * can be raised or lowered.
  */
 class TwoColorBorder extends DefaultBorder
 	/** Raised or lowered edge. */
 	private var bool pRaised
 	
-	/** Highlight color or null to use the widget gui theme highlight color. */
-	private var Color pColorHilight
+	/** Highlight color or null to not draw. */
+	private var Color pColorHighlight
 	
-	/** Shadow color or null to use the widget gui theme shadow color. */
+	/** Shadow color or null to not draw. */
 	private var Color pColorShadow
 	
 	
@@ -45,9 +48,9 @@ class TwoColorBorder extends DefaultBorder
 	end
 	
 	/** Creates a new raised etched border with the given colors. */
-	public func new( Color colorHilight, Color colorShadow )
+	public func new( Color colorHighlight, Color colorShadow )
 		this.pRaised = true
-		this.pColorHilight = colorHilight
+		this.pColorHighlight = colorHighlight
 		this.pColorShadow = colorShadow
 	end
 	
@@ -57,9 +60,9 @@ class TwoColorBorder extends DefaultBorder
 	end
 	
 	/** Creates a new etched border with the given colors. */
-	public func new( bool raised, Color colorHilight, Color colorShadow )
+	public func new( bool raised, Color colorHighlight, Color colorShadow )
 		this.pRaised = raised
-		this.pColorHilight = colorHilight
+		this.pColorHighlight = colorHighlight
 		this.pColorShadow = colorShadow
 	end
 	
@@ -80,18 +83,18 @@ class TwoColorBorder extends DefaultBorder
 		this.updateCanvas()
 	end
 	
-	/** Retrieves the hilight color. If null the widget gui theme hilight color is returned. */
-	public func Color getColorHilight()
-		return this.pColorHilight
+	/** Retrieves the highlight color. If null the widget gui theme highlight color is returned. */
+	public func Color getColorHighlight()
+		return this.pColorHighlight
 	end
 	
-	/** Sets the hilight color or null to use the widget gui theme hilight color. */
-	public func void setColorHilight( Color color )
-		if color == this.pColorHilight
+	/** Sets the highlight color or null to not draw. */
+	public func void setColorHighlight( Color color )
+		if color == this.pColorHighlight
 			return
 		end
 		
-		this.pColorHilight = color
+		this.pColorHighlight = color
 		this.updateCanvas()
 	end
 	
@@ -100,7 +103,7 @@ class TwoColorBorder extends DefaultBorder
 		return this.pColorShadow
 	end
 	
-	/** Sets the shadow color or null to use the widget gui theme shadow color. */
+	/** Sets the shadow color or null to not draw. */
 	public func void setColorShadow( Color color )
 		if color == this.pColorShadow
 			return
@@ -108,5 +111,18 @@ class TwoColorBorder extends DefaultBorder
 		
 		this.pColorShadow = color
 		this.updateCanvas()
+	end
+	
+	
+	
+	
+	/** \deprecated Use getColorHighlight(). */
+	public func Color getColorHilight()
+		return this.getColorHighlight()
+	end
+	
+	/** \deprecated Use setColorHighlight(Color). */
+	public func void setColorHilight( Color color )
+		this.setColorHighlight( color )
 	end
 end

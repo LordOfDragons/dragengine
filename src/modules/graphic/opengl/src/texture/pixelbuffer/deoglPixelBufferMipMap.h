@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLPIXELBUFFERMIPMAP_H_
@@ -27,57 +30,72 @@
 
 
 /**
- * @brief Pixel Buffer Mip Map.
+ * Pixel Buffer Mip Map.
  * Mip map chain of pixel buffers.
  */
-class deoglPixelBufferMipMap{
+class deoglPixelBufferMipMap : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglPixelBufferMipMap> Ref;
+	
+	
+	
 private:
-	deoglPixelBuffer **pPixelBuffers;
+	deoglPixelBuffer::Ref *pPixelBuffers;
 	int pPixelBufferCount;
 	
+	
+	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new pixel buffer mip map. */
 	deoglPixelBufferMipMap( deoglPixelBuffer::ePixelFormats format, int width, int height, int depth, int maxLevel );
+	
+protected:
 	/** Cleans up the opengl array texture. */
-	~deoglPixelBufferMipMap();
+	virtual ~deoglPixelBufferMipMap();
 	/*@}*/
 	
-	/** @name Management */
+	
+	
+public:
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the number of pixel buffers which is the mip map level count. */
 	inline int GetPixelBufferCount() const{ return pPixelBufferCount; }
 	/** Retrieves the pixel buffer for a mip map level. */
-	deoglPixelBuffer *GetPixelBuffer( int level ) const;
+	const deoglPixelBuffer::Ref &GetPixelBuffer( int level ) const;
 	
-	/**
-	 * \brief Create mip maps from the base level using simple box filtering.
-	 * 
-	 * Only components with their mask set to true are processed.
-	 */
+	/** Reduce maximum mip map level count. */
+	void ReducePixelBufferCount( int reduceByCount );
+	
+	/** Create mip maps from the base level using simple box filtering. */
 	void CreateMipMaps();
 	
 	/**
-	 * \brief Create mip maps from the base level using simple box filtering.
-	 * 
+	 * Create mip maps from the base level using simple box filtering.
 	 * Only components with their mask set to true are processed.
 	 */
 	void CreateMipMaps( bool maskRed, bool maskGreen, bool maskBlue, bool maskAlpha );
 	
-	/**
-	 * \brief Create mip maps from the base level using maximum filtering.
-	 * 
-	 * Only components with their mask set to true are processed.
-	 */
+	/** Create mip maps from the base level using maximum filtering. */
 	void CreateMipMapsMax();
 	
 	/**
-	 * \brief Create mip maps from the base level using maximum filtering.
-	 * 
+	 * Create mip maps from the base level using maximum filtering.
 	 * Only components with their mask set to true are processed.
 	 */
 	void CreateMipMapsMax( bool maskRed, bool maskGreen, bool maskBlue, bool maskAlpha );
+	
+	/** Create mip maps from the base level using minimum filtering. */
+	void CreateMipMapsMin();
+	
+	/**
+	 * Create mip maps from the base level using minimum filtering.
+	 * Only components with their mask set to true are processed.
+	 */
+	void CreateMipMapsMin( bool maskRed, bool maskGreen, bool maskBlue, bool maskAlpha );
 	
 	/**
 	 * Create normal mip maps from the base level using simple box filtering. In addition
@@ -92,6 +110,8 @@ public:
 	 */
 	void CreateRoughnessMipMaps( deoglPixelBufferMipMap &normalPixeBufferMipMap );
 	/*@}*/
+	
+	
 	
 private:
 	void pCleanUp();

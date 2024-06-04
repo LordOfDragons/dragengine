@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -25,9 +28,9 @@
 
 #include "igdeSpinTextField.h"
 #include "igdeContainer.h"
-#include "native/toolkit.h"
 #include "igdeCommonDialogs.h"
 #include "event/igdeSpinTextFieldListener.h"
+#include "native/toolkit.h"
 #include "resources/igdeFont.h"
 #include "resources/igdeFontReference.h"
 #include "theme/igdeGuiTheme.h"
@@ -39,150 +42,8 @@
 
 
 
-// Native Widget
-//////////////////
-
-class cNativeIgdeSpinTextField : public FXSpinner{
-	FXDECLARE( cNativeIgdeSpinTextField )
-	
-protected:
-	cNativeIgdeSpinTextField();
-	
-public:
-	enum eFoxIDs{
-		ID_SELF = FXSpinner::ID_LAST,
-	};
-	
-private:
-	igdeSpinTextField *pOwner;
-	igdeFontReference pFont;
-	
-public:
-	cNativeIgdeSpinTextField( igdeSpinTextField &owner, FXComposite *parent,
-		int layoutFlags, const igdeGuiTheme &guitheme );
-	virtual ~cNativeIgdeSpinTextField();
-	
-	void UpdateRange();
-	virtual void Focus();
-	
-	long onCommand( FXObject *sender, FXSelector selector, void *data );
-	
-	static int SpinTextFieldFlags( const igdeSpinTextField &owner );
-	static igdeFont *SpinTextFieldFont( const igdeSpinTextField &owner, const igdeGuiTheme &guitheme );
-	static int SpinTextFieldPadLeft( const igdeGuiTheme &guitheme );
-	static int SpinTextFieldPadRight( const igdeGuiTheme &guitheme );
-	static int SpinTextFieldPadTop( const igdeGuiTheme &guitheme );
-	static int SpinTextFieldPadBottom( const igdeGuiTheme &guitheme );
-};
-
-
-FXDEFMAP( cNativeIgdeSpinTextField ) cNativeIgdeSpinTextFieldMap[] = {
-	FXMAPFUNC( SEL_COMMAND, cNativeIgdeSpinTextField::ID_SELF, cNativeIgdeSpinTextField::onCommand )
-};
-
-
-FXIMPLEMENT( cNativeIgdeSpinTextField, FXSpinner, cNativeIgdeSpinTextFieldMap, ARRAYNUMBER( cNativeIgdeSpinTextFieldMap ) )
-
-cNativeIgdeSpinTextField::cNativeIgdeSpinTextField(){ }
-
-cNativeIgdeSpinTextField::cNativeIgdeSpinTextField( igdeSpinTextField &owner, FXComposite *parent,
-int layoutFlags, const igdeGuiTheme &guitheme ) :
-FXSpinner( parent, owner.GetColumns(), this, ID_SELF, layoutFlags | SpinTextFieldFlags( owner ),
-	0, 0, 0, 0,
-	SpinTextFieldPadLeft( guitheme ), SpinTextFieldPadRight( guitheme ),
-	SpinTextFieldPadTop( guitheme ), SpinTextFieldPadBottom( guitheme ) ),
-pOwner( &owner ),
-pFont( SpinTextFieldFont( owner, guitheme ) )
-{
-	setFont( (FXFont*)pFont->GetNativeFont() );
-	
-	if( ! owner.GetEnabled() ){
-		disable();
-	}
-	
-	setRange( owner.GetLower(), owner.GetUpper() );
-	setValue( owner.GetValue() );
-	setTipText( owner.GetDescription().GetString() );
-	setHelpText( owner.GetDescription().GetString() );
-}
-
-cNativeIgdeSpinTextField::~cNativeIgdeSpinTextField(){
-}
-
-void cNativeIgdeSpinTextField::UpdateRange(){
-	setRange( pOwner->GetLower(), pOwner->GetUpper() );
-}
-
-void cNativeIgdeSpinTextField::Focus(){
-	setFocus();
-}
-
-long cNativeIgdeSpinTextField::onCommand( FXObject *sender, FXSelector selector, void *data ){
-	if( ! pOwner->GetEnabled() ){
-		return 0;
-	}
-	
-	try{
-		pOwner->SetValue( getValue() );
-		pOwner->NotifyValueChanged();
-		
-	}catch( const deException &e ){
-		pOwner->GetLogger()->LogException( "IGDE", e );
-		igdeCommonDialogs::Exception( pOwner, e );
-		return 0;
-	}
-	
-	return 1;
-}
-
-int cNativeIgdeSpinTextField::SpinTextFieldFlags( const igdeSpinTextField &owner ){
-	return FRAME_SUNKEN;
-}
-
-igdeFont *cNativeIgdeSpinTextField::SpinTextFieldFont( const igdeSpinTextField &owner, const igdeGuiTheme &guitheme ){
-	igdeFont::sConfiguration configuration;
-	owner.GetEnvironment().GetApplicationFont( configuration );
-	
-	if( guitheme.HasProperty( igdeGuiThemePropertyNames::spinTextFieldFontSizeAbsolute ) ){
-		configuration.size = guitheme.GetIntProperty(
-			igdeGuiThemePropertyNames::spinTextFieldFontSizeAbsolute, 0 );
-		
-	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::spinTextFieldFontSize ) ){
-		configuration.size *= guitheme.GetFloatProperty(
-			igdeGuiThemePropertyNames::spinTextFieldFontSize, 1.0f );
-		
-	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::fontSizeAbsolute ) ){
-		configuration.size = guitheme.GetIntProperty(
-			igdeGuiThemePropertyNames::fontSizeAbsolute, 0 );
-		
-	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::fontSize ) ){
-		configuration.size *= guitheme.GetFloatProperty(
-			igdeGuiThemePropertyNames::fontSize, 1.0f );
-	}
-	
-	return owner.GetEnvironment().GetSharedFont( configuration );
-}
-
-int cNativeIgdeSpinTextField::SpinTextFieldPadLeft( const igdeGuiTheme &guitheme ){
-	return guitheme.GetIntProperty( igdeGuiThemePropertyNames::spinTextFieldPaddingLeft, DEFAULT_PAD );
-}
-
-int cNativeIgdeSpinTextField::SpinTextFieldPadRight( const igdeGuiTheme &guitheme ){
-	return guitheme.GetIntProperty( igdeGuiThemePropertyNames::spinTextFieldPaddingRight, DEFAULT_PAD );
-}
-
-int cNativeIgdeSpinTextField::SpinTextFieldPadTop( const igdeGuiTheme &guitheme ){
-	return guitheme.GetIntProperty( igdeGuiThemePropertyNames::spinTextFieldPaddingTop, DEFAULT_PAD );
-}
-
-int cNativeIgdeSpinTextField::SpinTextFieldPadBottom( const igdeGuiTheme &guitheme ){
-	return guitheme.GetIntProperty( igdeGuiThemePropertyNames::spinTextFieldPaddingBottom, DEFAULT_PAD );
-}
-
-
-
 // Class igdeSpinTextField
-///////////////////////
+////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
@@ -231,7 +92,7 @@ void igdeSpinTextField::SetDescription( const char *description ){
 
 void igdeSpinTextField::Focus(){
 	if( GetNativeWidget() ){
-		( ( cNativeIgdeSpinTextField* )GetNativeWidget() )->Focus();
+		( ( igdeNativeSpinTextField* )GetNativeWidget() )->Focus();
 	}
 }
 
@@ -295,22 +156,9 @@ void igdeSpinTextField::CreateNativeWidget(){
 		return;
 	}
 	
-	if( ! GetParent() ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	FXComposite * const foxParent = ( FXComposite* )GetParent()->GetNativeContainer();
-	if( ! foxParent ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	int layoutFlags = igdeUIFoxHelper::GetChildLayoutFlags( this );
-	cNativeIgdeSpinTextField * const foxWidget = new cNativeIgdeSpinTextField(
-		*this, foxParent, layoutFlags, *GetGuiTheme() );
-	SetNativeWidget( foxWidget );
-	if( foxParent->id() ){
-		foxWidget->create();
-	}
+	igdeNativeSpinTextField * const native = igdeNativeSpinTextField::CreateNativeWidget( *this );
+	SetNativeWidget( native );
+	native->PostCreateNativeWidget();
 }
 
 void igdeSpinTextField::DestroyNativeWidget(){
@@ -318,48 +166,30 @@ void igdeSpinTextField::DestroyNativeWidget(){
 		return;
 	}
 	
-	delete ( cNativeIgdeSpinTextField* )GetNativeWidget();
+	( ( igdeNativeSpinTextField* )GetNativeWidget() )->DestroyNativeWidget();
 	DropNativeWidget();
 }
 
 void igdeSpinTextField::OnRangeChanged(){
-	if( ! GetNativeWidget() ){
-		return;
+	if( GetNativeWidget() ){
+		( ( igdeNativeSpinTextField* )GetNativeWidget() )->UpdateRange();
 	}
-	
-	cNativeIgdeSpinTextField &native = *( ( cNativeIgdeSpinTextField* )GetNativeWidget() );
-	native.UpdateRange();
 }
 
 void igdeSpinTextField::OnValueChanged(){
-	if( ! GetNativeWidget() ){
-		return;
+	if( GetNativeWidget() ){
+		( ( igdeNativeSpinTextField* )GetNativeWidget() )->UpdateValue();
 	}
-	
-	cNativeIgdeSpinTextField &native = *( ( cNativeIgdeSpinTextField* )GetNativeWidget() );
-	native.setValue( pValue );
 }
 
 void igdeSpinTextField::OnEnabledChanged(){
-	if( ! GetNativeWidget() ){
-		return;
-	}
-	
-	cNativeIgdeSpinTextField &native = *( ( cNativeIgdeSpinTextField* )GetNativeWidget() );
-	if( pEnabled ){
-		native.enable();
-		
-	}else{
-		native.disable();
+	if( GetNativeWidget() ){
+		( ( igdeNativeSpinTextField* )GetNativeWidget() )->UpdateEnabled();
 	}
 }
 
 void igdeSpinTextField::OnDescriptionChanged(){
-	if( ! GetNativeWidget() ){
-		return;
+	if( GetNativeWidget() ){
+		( ( igdeNativeSpinTextField* )GetNativeWidget() )->UpdateDescription();
 	}
-	
-	cNativeIgdeSpinTextField &native = *( ( cNativeIgdeSpinTextField* )GetNativeWidget() );
-	native.setTipText( pDescription.GetString() );
-	native.setHelpText( pDescription.GetString() );
 }

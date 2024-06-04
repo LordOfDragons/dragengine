@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -29,9 +32,9 @@
 #include "../igdeUIHelper.h"
 #include "../dialog/igdeDialog.h"
 #include "../dialog/igdeDialogReference.h"
-#include "../native/fox/igdeNativeFoxViewCurveBezier.h"
 #include "../menu/igdeMenuCascade.h"
 #include "../menu/igdeMenuCascadeReference.h"
+#include "../native/toolkit.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -203,6 +206,20 @@ void igdeViewCurveBezier::cActionClearCurve::OnAction(){
 
 
 
+// class igdeViewCurveBezier::cActionSetDefaultConstant
+/////////////////////////////////////////////////////////
+
+igdeViewCurveBezier::cActionSetDefaultConstant::cActionSetDefaultConstant( igdeViewCurveBezier &view ) :
+igdeAction( "Set to Default Constant", nullptr, "Set curve to constant interpolation switching from 0 to 1 at 0.5" ),
+pView( view ){
+}
+
+void igdeViewCurveBezier::cActionSetDefaultConstant::OnAction(){
+	pView.SetDefaultConstant();
+}
+
+
+
 // class igdeViewCurveBezier::cActionSetDefaultLinear
 ///////////////////////////////////////////////////////
 
@@ -231,6 +248,34 @@ void igdeViewCurveBezier::cActionSetDefaultBezier::OnAction(){
 
 
 
+// class igdeViewCurveBezier::cActionInvertCurveX
+///////////////////////////////////////////////////
+
+igdeViewCurveBezier::cActionInvertCurveX::cActionInvertCurveX( igdeViewCurveBezier &view ) :
+igdeAction( "Invert curve along X axis", NULL, "Invert curve along X axis" ),
+pView( view ){
+}
+
+void igdeViewCurveBezier::cActionInvertCurveX::OnAction(){
+	pView.InvertCurveX();
+}
+
+
+
+// class igdeViewCurveBezier::cActionInvertCurveY
+///////////////////////////////////////////////////
+
+igdeViewCurveBezier::cActionInvertCurveY::cActionInvertCurveY( igdeViewCurveBezier &view ) :
+igdeAction( "Invert curve along Y axis", NULL, "Invert curve along Y axis" ),
+pView( view ){
+}
+
+void igdeViewCurveBezier::cActionInvertCurveY::OnAction(){
+	pView.InvertCurveY();
+}
+
+
+
 // class igdeViewCurveBezier::cActionEditClamp
 ////////////////////////////////////////////////
 
@@ -251,6 +296,20 @@ void igdeViewCurveBezier::cActionEditClamp::OnAction(){
 	pView.SetClamp( cbc.GetClamp() );
 	pView.SetClampMin( cbc.GetClampMin() );
 	pView.SetClampMax( cbc.GetClampMax() );
+}
+
+
+
+// class igdeViewCurveBezier::cActionAutoHandles
+//////////////////////////////////////////////////
+
+igdeViewCurveBezier::cActionAutoHandles::cActionAutoHandles( igdeViewCurveBezier &view ) :
+igdeAction( "Auto Handles", nullptr, "Set default handles for interpolation type" ),
+pView( view ){
+}
+
+void igdeViewCurveBezier::cActionAutoHandles::OnAction(){
+	pView.SetAutoHandles();
 }
 
 
@@ -325,7 +384,64 @@ void igdeViewCurveBezier::SetCurve( const decCurveBezier &curve, bool changing )
 
 void igdeViewCurveBezier::ClearCurve(){
 	SetCurve( decCurveBezier() );
-	FitViewToCurve();
+	ResetView();
+}
+
+void igdeViewCurveBezier::InvertCurveX(){
+	decCurveBezier curve;
+	curve.SetInterpolationMode( pCurve.GetInterpolationMode() );
+	
+	const int count = pCurve.GetPointCount();
+	const float l = pClampMin.x;
+	const float r = pClampMax.x;
+	int i;
+	
+	for( i=count-1; i>=0; i-- ){
+		const decCurveBezierPoint &point = pCurve.GetPointAt( i );
+		const decVector2 &p = point.GetPoint();
+		const decVector2 &h1 = point.GetHandle1();
+		const decVector2 &h2 = point.GetHandle2();
+		
+		curve.AddPoint( decCurveBezierPoint( \
+			decVector2( decMath::linearStep( p.x, l, r, r, l ), p.y ),
+			decVector2( decMath::linearStep( h2.x, l, r, r, l ), h2.y ),
+			decVector2( decMath::linearStep( h1.x, l, r, r, l ), h1.y ) ) );
+	}
+	SetCurve( curve );
+}
+
+void igdeViewCurveBezier::InvertCurveY(){
+	decCurveBezier curve;
+	curve.SetInterpolationMode( pCurve.GetInterpolationMode() );
+	
+	const int count = pCurve.GetPointCount();
+	const float l = pClampMin.y;
+	const float u = pClampMax.y;
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		const decCurveBezierPoint &point = pCurve.GetPointAt( i );
+		const decVector2 &p = point.GetPoint();
+		const decVector2 &h1 = point.GetHandle1();
+		const decVector2 &h2 = point.GetHandle2();
+		
+		curve.AddPoint( decCurveBezierPoint( \
+			decVector2( p.x, decMath::linearStep( p.y, l, u, u, l ) ),
+			decVector2( h1.x, decMath::linearStep( h1.y, l, u, u, l ) ),
+			decVector2( h2.x, decMath::linearStep( h2.y, l, u, u, l ) ) ) );
+	}
+	SetCurve( curve );
+}
+
+void igdeViewCurveBezier::SetDefaultConstant(){
+	const decVector2 center( ( pClampMin + pClampMax ) * 0.5f );
+	decCurveBezier curve;
+	curve.AddPoint( decCurveBezierPoint( pClampMin ) );
+	curve.AddPoint( decCurveBezierPoint( decVector2( center.x, pClampMax.y ) ) );
+	curve.SetInterpolationMode( decCurveBezier::eimConstant );
+	SetCurve( curve );
+	
+	ResetView();
 }
 
 void igdeViewCurveBezier::SetDefaultLinear(){
@@ -348,6 +464,54 @@ void igdeViewCurveBezier::SetDefaultBezier(){
 	SetCurve( curve );
 	
 	FitViewToCurve();
+}
+
+void igdeViewCurveBezier::SetAutoHandles(){
+	const int count = pCurve.GetPointCount();
+	const float f = 0.25f;
+	decCurveBezier curve;
+	int i;
+	
+	if( pCurve.GetInterpolationMode() == decCurveBezier::eimBezier ){
+		if( count == 1 ){
+			const decVector2 &pt = pCurve.GetPointAt( 0 ).GetPoint();
+			const decVector2 offset( f, 0.0f );
+			curve.AddPoint( decCurveBezierPoint( pt, pt - offset, pt + offset ) );
+			
+		}else if( count > 1 ){
+			for( i=0; i<count; i++ ){
+				const decVector2 &pt = pCurve.GetPointAt( i ).GetPoint();
+				
+				if( i == 0 ){
+					decVector2 h1( pt.Mix( pCurve.GetPointAt( i + 1 ).GetPoint(), f ) );
+					h1.y = pt.y;
+					const decVector2 h2( pt - ( h1 - pt ) );
+					curve.AddPoint( decCurveBezierPoint( pt, h2, h1 ) );
+					
+				}else if( i == count - 1 ){
+					decVector2 h1( pt.Mix( pCurve.GetPointAt( i - 1 ).GetPoint(), f ) );
+					h1.y = pt.y;
+					const decVector2 h2( pt + ( pt - h1 ) );
+					curve.AddPoint( decCurveBezierPoint( pt, h1, h2 ) );
+					
+				}else{
+					decVector2 h1( pt.Mix( pCurve.GetPointAt( i - 1 ).GetPoint(), f ) );
+					decVector2 h2( pt.Mix( pCurve.GetPointAt( i + 1 ).GetPoint(), f ) );
+					h1.y = pt.y;
+					h2.y = pt.y;
+					curve.AddPoint( decCurveBezierPoint( pt, h1, h2 ) );
+				}
+			}
+		}
+		
+	}else{
+		for( i=0; i<count; i++ ){
+			const decVector2 &pt = pCurve.GetPointAt( i ).GetPoint();
+			curve.AddPoint( decCurveBezierPoint( pt, pt, pt ) );
+		}
+	}
+	
+	SetCurve( curve );
 }
 
 
@@ -438,8 +602,14 @@ void igdeViewCurveBezier::ShowContextMenu( const decPoint &position ){
 	
 	helper.MenuSeparator( menu );
 	helper.MenuCommand( menu, new cActionClearCurve( *this ), true );
+	helper.MenuCommand( menu, new cActionSetDefaultConstant( *this ), true );
 	helper.MenuCommand( menu, new cActionSetDefaultLinear( *this ), true );
 	helper.MenuCommand( menu, new cActionSetDefaultBezier( *this ), true );
+	
+	helper.MenuSeparator( menu );
+	helper.MenuCommand( menu, new cActionInvertCurveX( *this ), true );
+	helper.MenuCommand( menu, new cActionInvertCurveY( *this ), true );
+	helper.MenuCommand( menu, new cActionAutoHandles( *this ), true );
 	
 	helper.MenuSeparator( menu );
 	helper.MenuCommand( menu, new cActionEditClamp( *this ), true );
@@ -509,22 +679,9 @@ void igdeViewCurveBezier::CreateNativeWidget(){
 		return;
 	}
 	
-	if( ! GetParent() ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	FXComposite * const nativeParent = ( FXComposite* )GetParent()->GetNativeContainer();
-	if( ! nativeParent ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	const igdeUIFoxHelper::sChildLayoutFlags layoutFlags( igdeUIFoxHelper::GetChildLayoutFlagsAll( this ) );
-	igdeNativeFoxViewCurveBezier * const native = new igdeNativeFoxViewCurveBezier(
-		*this, nativeParent, layoutFlags, *GetGuiTheme() );
+	igdeNativeViewCurveBezier * const native = igdeNativeViewCurveBezier::CreateNativeWidget( *this );
 	SetNativeWidget( native );
-	if( nativeParent->id() ){
-		native->create();
-	}
+	native->PostCreateNativeWidget();
 }
 
 void igdeViewCurveBezier::DestroyNativeWidget(){
@@ -532,7 +689,7 @@ void igdeViewCurveBezier::DestroyNativeWidget(){
 		return;
 	}
 	
-	delete ( igdeNativeFoxViewCurveBezier* )GetNativeWidget();
+	( ( igdeNativeViewCurveBezier* )GetNativeWidget() )->DestroyNativeWidget();
 	DropNativeWidget();
 }
 
@@ -541,8 +698,7 @@ void igdeViewCurveBezier::OnDefaultSizeChanged(){
 		return;
 	}
 	
-	igdeNativeFoxViewCurveBezier &native = *( ( igdeNativeFoxViewCurveBezier* )GetNativeWidget() );
-	native.GetView().UpdateDefaultSize();
+	( ( igdeNativeViewCurveBezier* )GetNativeWidget() )->GetView().UpdateDefaultSize();
 }
 
 void igdeViewCurveBezier::OnCurveChanged(){
@@ -550,8 +706,7 @@ void igdeViewCurveBezier::OnCurveChanged(){
 		return;
 	}
 	
-	igdeNativeFoxViewCurveBezier &native = *( ( igdeNativeFoxViewCurveBezier* )GetNativeWidget() );
-	native.GetView().UpdateCurve();
+	( ( igdeNativeViewCurveBezier* )GetNativeWidget() )->GetView().UpdateCurve();
 }
 
 void igdeViewCurveBezier::OnEnabledChanged(){
@@ -559,8 +714,7 @@ void igdeViewCurveBezier::OnEnabledChanged(){
 		return;
 	}
 	
-	igdeNativeFoxViewCurveBezier &native = *( ( igdeNativeFoxViewCurveBezier* )GetNativeWidget() );
-	native.GetView().UpdateEnabled();
+	( ( igdeNativeViewCurveBezier* )GetNativeWidget() )->GetView().UpdateEnabled();
 }
 
 void igdeViewCurveBezier::OnSelectedPointChanged(){
@@ -568,8 +722,7 @@ void igdeViewCurveBezier::OnSelectedPointChanged(){
 		return;
 	}
 	
-	igdeNativeFoxViewCurveBezier &native = *( ( igdeNativeFoxViewCurveBezier* )GetNativeWidget() );
-	native.GetView().UpdateSelectedPoint();
+	( ( igdeNativeViewCurveBezier* )GetNativeWidget() )->GetView().UpdateSelectedPoint();
 }
 
 void igdeViewCurveBezier::OnClampChanged(){
@@ -577,8 +730,7 @@ void igdeViewCurveBezier::OnClampChanged(){
 		return;
 	}
 	
-	igdeNativeFoxViewCurveBezier &native = *( ( igdeNativeFoxViewCurveBezier* )GetNativeWidget() );
-	native.GetView().UpdateClamp();
+	( ( igdeNativeViewCurveBezier* )GetNativeWidget() )->GetView().UpdateClamp();
 }
 
 void igdeViewCurveBezier::OnResetView(){
@@ -586,8 +738,7 @@ void igdeViewCurveBezier::OnResetView(){
 		return;
 	}
 	
-	igdeNativeFoxViewCurveBezier &native = *( ( igdeNativeFoxViewCurveBezier* )GetNativeWidget() );
-	native.GetView().ResetView();
+	( ( igdeNativeViewCurveBezier* )GetNativeWidget() )->GetView().ResetView();
 }
 
 void igdeViewCurveBezier::OnFitToCurve(){
@@ -595,6 +746,5 @@ void igdeViewCurveBezier::OnFitToCurve(){
 		return;
 	}
 	
-	igdeNativeFoxViewCurveBezier &native = *( ( igdeNativeFoxViewCurveBezier* )GetNativeWidget() );
-	native.GetView().FitViewToCurve();
+	( ( igdeNativeViewCurveBezier* )GetNativeWidget() )->GetView().FitViewToCurve();
 }

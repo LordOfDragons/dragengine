@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLCAPABILITIES_H_
@@ -26,12 +29,10 @@
 #include "deoglCapsFmtSupport.h"
 #include "checks/deoglCapCheckATLUnbind.h"
 #include "checks/deoglCapCheckUBOIndirectMatrixAccess.h"
-#include "checks/deoglCapCheckRasterizerDiscard.h"
-#include "checks/deoglCapCheckClearEntireCubeMap.h"
 #include "checks/deoglCapCheckClearEntireArrayTexture.h"
-#include "checks/deoglCapCheckGeometryShaderLayer.h"
 #include "checks/deoglCapCheckUBODirectLinkDeadloop.h"
 #include "checks/deoglCapCheckFramebufferTextureSingle.h"
+#include "checks/deoglCapCheckStd430.h"
 #include "../deoglBasics.h"
 
 class deoglRenderThread;
@@ -42,7 +43,7 @@ class deoglFramebuffer;
 
 
 /**
- * \brief OpenGL capabilities.
+ * OpenGL capabilities.
  * 
  * Stores the capabilities of the hardware. The capabilities are tested during
  * start up time using opengl getter calls where possible or else trial-and-error
@@ -57,34 +58,37 @@ private:
 	
 	deoglCapsFmtSupport pFormats;
 	
+	int pMaxTextureSize;
+	int pMax3DTextureSize;
 	int pMaxDrawBuffers;
 	int pUBOMaxSize;
+	int pTBOMaxSize;
 	int pSSBOMaxSize;
 	int pSSBOMaxBlocksVertex;
 	int pSSBOMaxBlocksFragment;
 	int pSSBOMaxBlocksGeometry;
+	int pSSBOMaxBlocksCompute;
 	int pUBOOffsetAlignment;
 	int pGeometryShaderMaxVertices;
 	int pGeometryShaderMaxComponents;
+	int pNumProgramBinaryFormats;
 	
 	deoglCapCheckATLUnbind pATLUnbind;
 	deoglCapCheckUBOIndirectMatrixAccess pUBOIndirectMatrixAccess;
-	deoglCapCheckRasterizerDiscard pRasterizerDiscard;
-	deoglCapCheckClearEntireCubeMap pClearEntireCubeMap;
 	deoglCapCheckClearEntireArrayTexture pClearEntireArrayTexture;
-	deoglCapCheckGeometryShaderLayer pGeometryShaderLayer;
 	deoglCapCheckUBODirectLinkDeadloop pUBODirectLinkDeadloop;
 	deoglCapCheckFramebufferTextureSingle pFramebufferTextureSingle;
+	deoglCapCheckStd430 pStd430;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create capabilities object. */
+	/** Create capabilities object. */
 	deoglCapabilities( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up capabilities object. */
+	/** Clean up capabilities object. */
 	~deoglCapabilities();
 	/*@}*/
 	
@@ -92,101 +96,101 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Render thread. */
+	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
-	/** \brief Texture format support. */
+	/** Texture format support. */
 	inline const deoglCapsFmtSupport &GetFormats() const{ return pFormats; }
 	
 	
 	
+	/** Maximum texture size. */
+	inline int GetMaxTextureSize() const{ return pMaxTextureSize; }
+	
+	/** Maximum 3D texture size. */
+	inline int GetMax3DTextureSize() const{ return pMax3DTextureSize; }
+	
 	/**
-	 * \brief Maximum number of draw buffers available by the hardware.
+	 * Maximum number of draw buffers available by the hardware.
 	 * 
 	 * OpenGL Spec requires a minimum value of \em 8.
 	 * OpenGL EM Spec requires a minimum value of \em 4.
 	 */
 	inline int GetMaxDrawBuffers() const{ return pMaxDrawBuffers; }
 	
-	/**
-	 * \brief Maximum size of UBOs.
-	 * 
-	 * OpenGL Spec requires a minimum value of \em 16384.
-	 */
+	/** Maximum size of UBOs. OpenGL Spec requires a minimum value of \em 16384. */
 	inline int GetUBOMaxSize() const{ return pUBOMaxSize; }
 	
-	/**
-	 * \brief Maximum size of SSBOs.
-	 * 
-	 * OpenGL Spec requires a minimum value of \em 16777216.
-	 */
+	/** Maximum size of TBOs. OpenGL Spec requires a minimum value of \em 128000. */
+	inline int GetTBOMaxSize() const{ return pTBOMaxSize; }
+	
+	/** Maximum size of SSBOs. OpenGL Spec requires a minimum value of \em 16777216. */
 	inline int GetSSBOMaxSize() const{ return pSSBOMaxSize; }
 	
-	/** \brief Maximum number of supported SSBO per vertex shader. */
+	/** Maximum number of supported SSBO per vertex shader. */
 	inline int GetSSBOMaxBlocksVertex() const{ return pSSBOMaxBlocksVertex; }
 	
-	/** \brief Maximum number of supported SSBO per fragment shader. */
+	/** Maximum number of supported SSBO per fragment shader. */
 	inline int GetSSBOMaxBlocksFragment() const{ return pSSBOMaxBlocksFragment; }
 	
-	/** \brief Maximum number of supported SSBO per geometry shader. */
+	/** Maximum number of supported SSBO per geometry shader. */
 	inline int GetSSBOMaxBlocksGeometry() const{ return pSSBOMaxBlocksGeometry; }
 	
-	/** \brief Uniform buffer offset alignment. */
+	/** Maximum number of supported SSBO per geometry shader. */
+	inline int GetSSBOMaxBlocksCompute() const{ return pSSBOMaxBlocksCompute; }
+	
+	/** Uniform buffer offset alignment. */
 	inline int GetUBOOffsetAlignment() const{ return pUBOOffsetAlignment; }
 	
 	/**
-	 * \brief Maximum number of vertices a geometry shader can emit.
+	 * Maximum number of vertices a geometry shader can emit.
 	 * 
 	 * OpenGL Spec requires a minimum value of \em 256.
 	 */
 	inline int GetGeometryShaderMaxVertices() const{ return pGeometryShaderMaxVertices; }
 	
 	/**
-	 * \brief Maximum number of components per invocation a geometry shader can emit.
+	 * Maximum number of components per invocation a geometry shader can emit.
 	 * 
 	 * OpenGL Spec requires a minimum value of \em 1024.
 	 */
 	inline int GetGeometryShaderMaxComponents() const{ return pGeometryShaderMaxComponents; }
 	
+	/** Count of binary shader formats the driver supports. */
+	inline int GetNumProgramBinaryFormats() const{ return pNumProgramBinaryFormats; }
 	
 	
-	/** \brief Array texture layer check. */
+	
+	/** Array texture layer check. */
 	inline const deoglCapCheckATLUnbind &ATLUnbind() const{ return pATLUnbind; }
 	
-	/** \brief Indirect UBO matrix access check. */
+	/** Indirect UBO matrix access check. */
 	inline const deoglCapCheckUBOIndirectMatrixAccess &GetUBOIndirectMatrixAccess() const{
 		return pUBOIndirectMatrixAccess; }
 	
-	/** \brief Rasterizer discard. */
-	inline const deoglCapCheckRasterizerDiscard &GetRasterizerDiscard() const{
-		return pRasterizerDiscard; }
-	
-	/** \brief Clear entire cube map. */
-	inline const deoglCapCheckClearEntireCubeMap &GetClearEntireCubeMap() const{
-		return pClearEntireCubeMap; }
-	
-	/** \brief Cleare all layers in an array texture. */
+	/** Cleare all layers in an array texture. */
 	inline const deoglCapCheckClearEntireArrayTexture &GetClearEntireArrayTexture() const{
 		return pClearEntireArrayTexture; }
 	
-	/** \brief glLayer geometry shaders handling. */
-	inline const deoglCapCheckGeometryShaderLayer &GetGeometryShaderLayer() const{
-		return pGeometryShaderLayer; }
-	
-	/** \brief UBO direct linking dead-loop. */
+	/** UBO direct linking dead-loop. */
 	inline const deoglCapCheckUBODirectLinkDeadloop &GetUBODirectLinkDeadloop() const{
 		return pUBODirectLinkDeadloop; }
 	
-	/** \brief Framebuffer texture single. */
+	/** Framebuffer texture single. */
 	inline const deoglCapCheckFramebufferTextureSingle &GetFramebufferTextureSingle() const{
 		return pFramebufferTextureSingle; }
+	
+	/** Std430 support. */
+	inline const deoglCapCheckStd430 &GetStd430() const{ return pStd430; }
 	
 	/** Tests the hardware for its capabilities. */
 	void DetectCapabilities();
 	
-	/** \brief Full-Screen Quad VAO for internal testing only. */
+	/** Full-Screen Quad VAO for internal testing only. */
 	inline GLuint GetFSQuadVAO() const{ return pFSQuadVAO; }
 	
+	/** Verify capabilities. */
+	bool Verify() const;
 	/*@}*/
 	
 private:

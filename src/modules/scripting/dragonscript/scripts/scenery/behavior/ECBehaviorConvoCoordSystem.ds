@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -50,30 +53,30 @@ class ECBehaviorConvoCoordSystem extends DefaultECBehavior
 		
 		
 		/** \brief Create element. */
-		public func new( ECBehaviorConvoCoordSystem ecbehavior, BehaviorElement element ) super( element )
-			this.pECBehavior = ecbehavior
+		public func new(ECBehaviorConvoCoordSystem ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
 		end
 		
 		/** \brief Dispose of composeable instance. */
 		public func void dispose()
-			this.pConvoCoordSystem = null
+			pConvoCoordSystem = null
 			super.dispose()
 		end
 		
 		
 		
 		/** \brief Initialize element from stub. */
-		public func void init( StubElement stub )
-			var StringID name = this.pECBehavior.getName().getValue( stub )
+		public func void init(StubElement stub)
+			var StringID name = pECBehavior.getName().getValue(stub)
 			if name == null
 				return
 			end
 			
-			var CodecPropertyString codec = this.getElement().getClass().getCodecPropertyString()
-			var Vector position = this.pECBehavior.getPosition().getVector( stub, codec )
-			var Vector orientation = this.pECBehavior.getOrientation().getVector( stub, codec )
+			var CodecPropertyString codec = getElement().getClass().getCodecPropertyString()
+			var Vector position = pECBehavior.getPosition().getVector(stub, codec)
+			var Vector orientation = pECBehavior.getOrientation().getVector(stub, codec)
 			
-			this.pConvoCoordSystem = this.createCoordSystem( stub, name, position, orientation )
+			pConvoCoordSystem = createCoordSystem(stub, name, position, orientation)
 		end
 		
 		/**
@@ -81,45 +84,43 @@ class ECBehaviorConvoCoordSystem extends DefaultECBehavior
 		 * 
 		 * Default implementation creates instance of ElementConvoCoordSystem.
 		 */
-		protected func ElementConvoCoordSystem createCoordSystem( StubElement stub, \
-		StringID name, Vector position, Vector orientation )
-			return ElementConvoCoordSystem.new( name, \
-				DMatrix.newRT( DVector.new( orientation ), DVector.new( position ) ), \
-				this.getElement() )
+		protected func ElementConvoCoordSystem createCoordSystem(StubElement stub, \
+		StringID name, Vector position, Vector orientation)
+			return ElementConvoCoordSystem.new(name, \
+				DMatrix.newRT(DVector.new(orientation), DVector.new(position)), getElement())
 		end
 		
 		
 		
 		/** \brief Behavior. */
 		public func ECBehaviorConvoCoordSystem getECBehavior()
-			return this.pECBehavior
+			return pECBehavior
 		end
 		
 		/** \brief Conversation coordinate system or \em null. */
 		public func ElementConvoCoordSystem getConvoCoordSystem()
-			return this.pConvoCoordSystem
+			return pConvoCoordSystem
 		end
 		
 		
 		
 		/** \brief Add element to game world. */
 		public func void addToGameWorld()
-			if this.pConvoCoordSystem != null
-				this.getElement().getGameWorld().getConvoCoordSystemList().add( this.pConvoCoordSystem )
+			if pConvoCoordSystem != null
+				getElement().getGameWorld().getConvoCoordSystemList().add(pConvoCoordSystem)
 			end
 		end
 		
 		/** \brief Remove element from game world. */
 		public func void removeFromGameWorld()
-			if this.pConvoCoordSystem != null
-				this.getElement().getGameWorld().getConvoCoordSystemList().remove( this.pConvoCoordSystem.getID() )
+			if pConvoCoordSystem != null
+				getElement().getGameWorld().getConvoCoordSystemList().remove(pConvoCoordSystem.getID())
 			end
 		end
 	end
 	
 	
 	
-	private var ECComposeAnimator pAnimator
 	private var ECPStringID pName
 	private var ECPVector pPosition
 	private var ECPVector pOrientation
@@ -127,49 +128,49 @@ class ECBehaviorConvoCoordSystem extends DefaultECBehavior
 	
 	
 	/** \brief Create behavior element class. */
-	public func new( BehaviorElementClass eclass ) this( eclass, "" )
+	public func new(BehaviorElementClass eclass) this(eclass, "")
 	end
 	
 	/** \brief Create behavior element class. */
-	public func new( BehaviorElementClass eclass, String id ) \
-	this( eclass, id, id.empty() if "convoCoordSystem." else "convoCoordSystem(" + id + ")." )
+	public func new(BehaviorElementClass eclass, String id) \
+	this(eclass, id, id.empty() if "convoCoordSystem." else "convoCoordSystem(" + id + ").")
 	end
 	
-	public func new( BehaviorElementClass eclass, String id, String prefix ) super( eclass, id )
-		this.pName = ECPStringID.new( prefix + "name" )
-		eclass.addProperty( this.pName )
+	public func new(BehaviorElementClass eclass, String id, String prefix) super(eclass, id)
+		pName = ECPStringID.new(prefix + "name")
+		eclass.addProperty(pName)
 		
-		this.pPosition = ECPVector.new( prefix + "position" )
-		eclass.addProperty( this.pPosition )
+		pPosition = ECPVector.new(prefix + "position")
+		eclass.addProperty(pPosition)
 		
-		this.pOrientation = ECPVector.new( prefix + "orientation" )
-		eclass.addProperty( this.pOrientation )
+		pOrientation = ECPVector.new(prefix + "orientation")
+		eclass.addProperty(pOrientation)
 		
-		eclass.addBehavior( this )
+		eclass.addBehavior(this)
 	end
 	
 	
 	
 	/** \brief Name of conversation coordinate system. */
 	public func ECPStringID getName()
-		return this.pName
+		return pName
 	end
 	
 	/** \brief Position relative to behavior element. */
 	public func ECPVector getPosition()
-		return this.pPosition
+		return pPosition
 	end
 	
 	/** \brief Orientation relative to behavior element. */
 	public func ECPVector getOrientation()
-		return this.pOrientation
+		return pOrientation
 	end
 	
 	
 	
 	/** \brief Get instance in element from owner element class. */
-	public func Instance instance( BehaviorElement element )
-		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	public func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
 	
 	
@@ -180,10 +181,10 @@ class ECBehaviorConvoCoordSystem extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorComponent.
 	 */
-	static public func ECBehaviorConvoCoordSystem getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehavior each
-			return each castable ECBehaviorConvoCoordSystem
-		end ) cast ECBehaviorConvoCoordSystem
+	static public func ECBehaviorConvoCoordSystem getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorConvoCoordSystem each
+			return true
+		end) cast ECBehaviorConvoCoordSystem
 	end
 	
 	/**
@@ -192,11 +193,10 @@ class ECBehaviorConvoCoordSystem extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorConvoCoordSystem with specific identifier.
 	 */
-	static public func ECBehaviorConvoCoordSystem getBehaviorIn( BehaviorElementClass eclass, String id )
-		return eclass.findBehavior( block ECBehaviorConvoCoordSystem each
-			return each castable ECBehaviorConvoCoordSystem and \
-				( each cast ECBehaviorConvoCoordSystem ).getID().equals( id )
-		end ) cast ECBehaviorConvoCoordSystem
+	static public func ECBehaviorConvoCoordSystem getBehaviorIn(BehaviorElementClass eclass, String id)
+		return eclass.findBehavior(block ECBehaviorConvoCoordSystem each
+			return each.getID().equals(id)
+		end) cast ECBehaviorConvoCoordSystem
 	end
 	
 	/**
@@ -205,14 +205,10 @@ class ECBehaviorConvoCoordSystem extends DefaultECBehavior
 	 * Returns list contains ECBehaviorConvoCoordSystem behaviors in the order they have
 	 * been created in the element.
 	 */
-	static public func Array getAllBehaviorsIn( BehaviorElementClass eclass )
-		var Array list = Array.new()
-		eclass.forEachBehavior( block ECBehavior each
-			if each castable ECBehaviorConvoCoordSystem
-				list.add( each )
-			end
-		end )
-		return list
+	static public func Array getAllBehaviorsIn(BehaviorElementClass eclass)
+		return eclass.collectBehaviors(block ECBehaviorConvoCoordSystem each
+			return true
+		end)
 	end
 	
 	
@@ -224,10 +220,10 @@ class ECBehaviorConvoCoordSystem extends DefaultECBehavior
 	 * of type ECBehaviorConvoCoordSystem.Instance . If more than one instance is present returns
 	 * the first instance.
 	 */
-	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance
-		end ) cast Instance
+	static public func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
+			return true
+		end) cast Instance
 	end
 	
 	/**
@@ -236,11 +232,10 @@ class ECBehaviorConvoCoordSystem extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
 	 * of type ECBehaviorConvoCoordSystem.Instance with specific identifier.
 	 */
-	static public func Instance getInstanceIn( BehaviorElement element, String id )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance and \
-				( each cast Instance ).getECBehavior().getID().equals( id )
-		end ) cast Instance
+	static public func Instance getInstanceIn(BehaviorElement element, String id)
+		return element.findInstance(block Instance each
+			return each.getECBehavior().getID().equals(id)
+		end) cast Instance
 	end
 	
 	/**
@@ -249,20 +244,16 @@ class ECBehaviorConvoCoordSystem extends DefaultECBehavior
 	 * Returns list contains ECBehaviorConvoCoordSystem.Instance instances in the order they have
 	 * been created in the element.
 	 */
-	static public func Array getAllInstancesIn( BehaviorElement element )
-		var Array list = Array.new()
-		element.forEachInstance( block ECBehaviorInstance each
-			if each castable Instance
-				list.add( each )
-			end
-		end )
-		return list
+	static public func Array getAllInstancesIn(BehaviorElement element)
+		return element.collectInstances(block Instance each
+			return true
+		end)
 	end
 	
 	
 	
 	/** \brief Create Behavior instance. */
-	public func ECBehaviorInstance createInstance( BehaviorElement element )
-		return Instance.new( this, element )
+	public func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
 	end
 end

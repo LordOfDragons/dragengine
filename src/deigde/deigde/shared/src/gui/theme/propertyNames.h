@@ -1,26 +1,31 @@
-/* 
- * Drag[en]gine IGDE
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _PROPERTYNAMES_H_
 #define _PROPERTYNAMES_H_
+
+#include <dragengine/dragengine_export.h>
 
 /**
  * \brief Names for gui theme properties provided by the basic IGDE implementation.
@@ -34,7 +39,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 1.
 	 * Target: All text
 	 */
-	extern const char *fontSize;
+	extern DE_DLL_EXPORT const char * fontSize;
 	
 	/**
 	 * \brief Absolute font size in points.
@@ -46,7 +51,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: All text
 	 */
-	extern const char *fontSizeAbsolute;
+	extern DE_DLL_EXPORT const char * fontSizeAbsolute;
 	
 	
 	
@@ -58,7 +63,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 1.
 	 * Target: igdeGroupBox
 	 */
-	extern const char *groupBoxFontSize;
+	extern DE_DLL_EXPORT const char * groupBoxFontSize;
 	
 	/**
 	 * \brief GroupBox title absolute font size in points.
@@ -70,7 +75,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeGroupBox
 	 */
-	extern const char *groupBoxFontSizeAbsolute;
+	extern DE_DLL_EXPORT const char * groupBoxFontSizeAbsolute;
 	
 	/**
 	 * \brief GroupBox left padding in pixels.
@@ -80,7 +85,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeGroupBox
 	 */
-	extern const char *groupBoxPaddingLeft;
+	extern DE_DLL_EXPORT const char * groupBoxPaddingLeft;
 	
 	/**
 	 * \brief GroupBox right padding in pixels.
@@ -90,7 +95,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeGroupBox
 	 */
-	extern const char *groupBoxPaddingRight;
+	extern DE_DLL_EXPORT const char * groupBoxPaddingRight;
 	
 	/**
 	 * \brief GroupBox top padding in pixels.
@@ -100,7 +105,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeGroupBox
 	 */
-	extern const char *groupBoxPaddingTop;
+	extern DE_DLL_EXPORT const char * groupBoxPaddingTop;
 	
 	/**
 	 * \brief GroupBox bottom padding in pixels.
@@ -110,7 +115,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeGroupBox
 	 */
-	extern const char *groupBoxPaddingBottom;
+	extern DE_DLL_EXPORT const char * groupBoxPaddingBottom;
 	
 	
 	
@@ -122,7 +127,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 1.
 	 * Target: igdeLabel
 	 */
-	extern const char *labelFontSize;
+	extern DE_DLL_EXPORT const char * labelFontSize;
 	
 	/**
 	 * \brief Label absolute font size in points.
@@ -134,7 +139,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeLabel
 	 */
-	extern const char *labelFontSizeAbsolute;
+	extern DE_DLL_EXPORT const char * labelFontSizeAbsolute;
 	
 	
 	
@@ -146,7 +151,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 1.
 	 * Target: igdeTextField
 	 */
-	extern const char *textFieldFontSize;
+	extern DE_DLL_EXPORT const char * textFieldFontSize;
 	
 	/**
 	 * \brief TextField absolute font size in points.
@@ -158,7 +163,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeTextField
 	 */
-	extern const char *textFieldFontSizeAbsolute;
+	extern DE_DLL_EXPORT const char * textFieldFontSizeAbsolute;
 	
 	/**
 	 * \brief TextField left padding in pixels.
@@ -168,7 +173,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeTextField
 	 */
-	extern const char *textFieldPaddingLeft;
+	extern DE_DLL_EXPORT const char * textFieldPaddingLeft;
 	
 	/**
 	 * \brief TextField right padding in pixels.
@@ -178,7 +183,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeTextField
 	 */
-	extern const char *textFieldPaddingRight;
+	extern DE_DLL_EXPORT const char * textFieldPaddingRight;
 	
 	/**
 	 * \brief TextField top padding in pixels.
@@ -188,7 +193,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeTextField
 	 */
-	extern const char *textFieldPaddingTop;
+	extern DE_DLL_EXPORT const char * textFieldPaddingTop;
 	
 	/**
 	 * \brief TextField bottom padding in pixels.
@@ -198,7 +203,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeTextField
 	 */
-	extern const char *textFieldPaddingBottom;
+	extern DE_DLL_EXPORT const char * textFieldPaddingBottom;
 	
 	
 	
@@ -210,7 +215,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 1.
 	 * Target: igdeSpinTextField
 	 */
-	extern const char *spinTextFieldFontSize;
+	extern DE_DLL_EXPORT const char * spinTextFieldFontSize;
 	
 	/**
 	 * \brief SpinTextField absolute font size in points.
@@ -222,7 +227,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeSpinTextField
 	 */
-	extern const char *spinTextFieldFontSizeAbsolute;
+	extern DE_DLL_EXPORT const char * spinTextFieldFontSizeAbsolute;
 	
 	/**
 	 * \brief SpinTextField left padding in pixels.
@@ -232,7 +237,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeSpinTextField
 	 */
-	extern const char *spinTextFieldPaddingLeft;
+	extern DE_DLL_EXPORT const char * spinTextFieldPaddingLeft;
 	
 	/**
 	 * \brief SpinTextField right padding in pixels.
@@ -242,7 +247,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeSpinTextField
 	 */
-	extern const char *spinTextFieldPaddingRight;
+	extern DE_DLL_EXPORT const char * spinTextFieldPaddingRight;
 	
 	/**
 	 * \brief SpinTextField top padding in pixels.
@@ -252,7 +257,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeSpinTextField
 	 */
-	extern const char *spinTextFieldPaddingTop;
+	extern DE_DLL_EXPORT const char * spinTextFieldPaddingTop;
 	
 	/**
 	 * \brief SpinTextField bottom padding in pixels.
@@ -262,7 +267,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeSpinTextField
 	 */
-	extern const char *spinTextFieldPaddingBottom;
+	extern DE_DLL_EXPORT const char * spinTextFieldPaddingBottom;
 	
 	
 	
@@ -274,7 +279,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 1.
 	 * Target: igdeProgressBar
 	 */
-	extern const char *progressBarFontSize;
+	extern DE_DLL_EXPORT const char * progressBarFontSize;
 	
 	/**
 	 * \brief ProgressBar absolute font size in points.
@@ -286,7 +291,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeProgressBar
 	 */
-	extern const char *progressBarFontSizeAbsolute;
+	extern DE_DLL_EXPORT const char * progressBarFontSizeAbsolute;
 	
 	/**
 	 * \brief ProgressBar left padding in pixels.
@@ -296,7 +301,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeProgressBar
 	 */
-	extern const char *progressBarPaddingLeft;
+	extern DE_DLL_EXPORT const char * progressBarPaddingLeft;
 	
 	/**
 	 * \brief ProgressBar right padding in pixels.
@@ -306,7 +311,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeProgressBar
 	 */
-	extern const char *progressBarPaddingRight;
+	extern DE_DLL_EXPORT const char * progressBarPaddingRight;
 	
 	/**
 	 * \brief ProgressBar top padding in pixels.
@@ -316,7 +321,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeProgressBar
 	 */
-	extern const char *progressBarPaddingTop;
+	extern DE_DLL_EXPORT const char * progressBarPaddingTop;
 	
 	/**
 	 * \brief ProgressBar bottom padding in pixels.
@@ -326,7 +331,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeProgressBar
 	 */
-	extern const char *progressBarPaddingBottom;
+	extern DE_DLL_EXPORT const char * progressBarPaddingBottom;
 	
 	
 	
@@ -338,7 +343,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 1.
 	 * Target: igdeComboBox
 	 */
-	extern const char *comboBoxFontSize;
+	extern DE_DLL_EXPORT const char * comboBoxFontSize;
 	
 	/**
 	 * \brief ComboBox absolute font size in points.
@@ -350,7 +355,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeComboBox
 	 */
-	extern const char *comboBoxFontSizeAbsolute;
+	extern DE_DLL_EXPORT const char * comboBoxFontSizeAbsolute;
 	
 	/**
 	 * \brief ComboBox left padding in pixels.
@@ -360,7 +365,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeComboBox
 	 */
-	extern const char *comboBoxPaddingLeft;
+	extern DE_DLL_EXPORT const char * comboBoxPaddingLeft;
 	
 	/**
 	 * \brief ComboBox right padding in pixels.
@@ -370,7 +375,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeComboBox
 	 */
-	extern const char *comboBoxPaddingRight;
+	extern DE_DLL_EXPORT const char * comboBoxPaddingRight;
 	
 	/**
 	 * \brief ComboBox top padding in pixels.
@@ -380,7 +385,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeComboBox
 	 */
-	extern const char *comboBoxPaddingTop;
+	extern DE_DLL_EXPORT const char * comboBoxPaddingTop;
 	
 	/**
 	 * \brief ComboBox bottom padding in pixels.
@@ -390,7 +395,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeComboBox
 	 */
-	extern const char *comboBoxPaddingBottom;
+	extern DE_DLL_EXPORT const char * comboBoxPaddingBottom;
 	
 	
 	
@@ -402,7 +407,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 1.
 	 * Target: igdeListBox
 	 */
-	extern const char *listBoxFontSize;
+	extern DE_DLL_EXPORT const char * listBoxFontSize;
 	
 	/**
 	 * \brief ListBox absolute font size in points.
@@ -414,7 +419,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeListBox
 	 */
-	extern const char *listBoxFontSizeAbsolute;
+	extern DE_DLL_EXPORT const char * listBoxFontSizeAbsolute;
 	
 	/**
 	 * \brief ListBox left padding in pixels.
@@ -424,7 +429,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeListBox
 	 */
-	extern const char *listBoxPaddingLeft;
+	extern DE_DLL_EXPORT const char * listBoxPaddingLeft;
 	
 	/**
 	 * \brief ListBox right padding in pixels.
@@ -434,7 +439,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeListBox
 	 */
-	extern const char *listBoxPaddingRight;
+	extern DE_DLL_EXPORT const char * listBoxPaddingRight;
 	
 	/**
 	 * \brief ListBox top padding in pixels.
@@ -444,7 +449,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeListBox
 	 */
-	extern const char *listBoxPaddingTop;
+	extern DE_DLL_EXPORT const char * listBoxPaddingTop;
 	
 	/**
 	 * \brief ListBox bottom padding in pixels.
@@ -454,7 +459,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeListBox
 	 */
-	extern const char *listBoxPaddingBottom;
+	extern DE_DLL_EXPORT const char * listBoxPaddingBottom;
 	
 	
 	
@@ -466,7 +471,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 1.
 	 * Target: igdeIconListBox
 	 */
-	extern const char *iconListBoxFontSize;
+	extern DE_DLL_EXPORT const char * iconListBoxFontSize;
 	
 	/**
 	 * \brief IconListBox absolute font size in points.
@@ -478,7 +483,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeIconListBox
 	 */
-	extern const char *iconListBoxFontSizeAbsolute;
+	extern DE_DLL_EXPORT const char * iconListBoxFontSizeAbsolute;
 	
 	/**
 	 * \brief IconListBox left padding in pixels.
@@ -488,7 +493,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeIconListBox
 	 */
-	extern const char *iconListBoxPaddingLeft;
+	extern DE_DLL_EXPORT const char * iconListBoxPaddingLeft;
 	
 	/**
 	 * \brief IconListBox right padding in pixels.
@@ -498,7 +503,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeIconListBox
 	 */
-	extern const char *iconListBoxPaddingRight;
+	extern DE_DLL_EXPORT const char * iconListBoxPaddingRight;
 	
 	/**
 	 * \brief IconListBox top padding in pixels.
@@ -508,7 +513,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeIconListBox
 	 */
-	extern const char *iconListBoxPaddingTop;
+	extern DE_DLL_EXPORT const char * iconListBoxPaddingTop;
 	
 	/**
 	 * \brief IconListBox bottom padding in pixels.
@@ -518,7 +523,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeIconListBox
 	 */
-	extern const char *iconListBoxPaddingBottom;
+	extern DE_DLL_EXPORT const char * iconListBoxPaddingBottom;
 	
 	
 	
@@ -530,7 +535,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 1.
 	 * Target: igdeTreeList
 	 */
-	extern const char *treeListFontSize;
+	extern DE_DLL_EXPORT const char * treeListFontSize;
 	
 	/**
 	 * \brief TreeList absolute font size in points.
@@ -542,7 +547,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeTreeList
 	 */
-	extern const char *treeListFontSizeAbsolute;
+	extern DE_DLL_EXPORT const char * treeListFontSizeAbsolute;
 	
 	/**
 	 * \brief TreeList left padding in pixels.
@@ -552,7 +557,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeTreeList
 	 */
-	extern const char *treeListPaddingLeft;
+	extern DE_DLL_EXPORT const char * treeListPaddingLeft;
 	
 	/**
 	 * \brief TreeList right padding in pixels.
@@ -562,7 +567,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeTreeList
 	 */
-	extern const char *treeListPaddingRight;
+	extern DE_DLL_EXPORT const char * treeListPaddingRight;
 	
 	/**
 	 * \brief TreeList top padding in pixels.
@@ -572,7 +577,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeTreeList
 	 */
-	extern const char *treeListPaddingTop;
+	extern DE_DLL_EXPORT const char * treeListPaddingTop;
 	
 	/**
 	 * \brief TreeList bottom padding in pixels.
@@ -582,7 +587,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeTreeList
 	 */
-	extern const char *treeListPaddingBottom;
+	extern DE_DLL_EXPORT const char * treeListPaddingBottom;
 	
 	
 	
@@ -594,7 +599,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 1.
 	 * Target: igdeButton
 	 */
-	extern const char *buttonFontSize;
+	extern DE_DLL_EXPORT const char * buttonFontSize;
 	
 	/**
 	 * \brief Button absolute font size in points.
@@ -606,7 +611,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeButton
 	 */
-	extern const char *buttonFontSizeAbsolute;
+	extern DE_DLL_EXPORT const char * buttonFontSizeAbsolute;
 	
 	/**
 	 * \brief Button left padding in pixels.
@@ -616,7 +621,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeButton
 	 */
-	extern const char *buttonPaddingLeft;
+	extern DE_DLL_EXPORT const char * buttonPaddingLeft;
 	
 	/**
 	 * \brief Button right padding in pixels.
@@ -626,7 +631,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeButton
 	 */
-	extern const char *buttonPaddingRight;
+	extern DE_DLL_EXPORT const char * buttonPaddingRight;
 	
 	/**
 	 * \brief Button top padding in pixels.
@@ -636,7 +641,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeButton
 	 */
-	extern const char *buttonPaddingTop;
+	extern DE_DLL_EXPORT const char * buttonPaddingTop;
 	
 	/**
 	 * \brief Button bottom padding in pixels.
@@ -646,7 +651,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeButton
 	 */
-	extern const char *buttonPaddingBottom;
+	extern DE_DLL_EXPORT const char * buttonPaddingBottom;
 	
 	
 	
@@ -658,7 +663,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 1.
 	 * Target: igdeCheckBox
 	 */
-	extern const char *checkBoxFontSize;
+	extern DE_DLL_EXPORT const char * checkBoxFontSize;
 	
 	/**
 	 * \brief CheckBox absolute font size in points.
@@ -670,7 +675,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeCheckBox
 	 */
-	extern const char *checkBoxFontSizeAbsolute;
+	extern DE_DLL_EXPORT const char * checkBoxFontSizeAbsolute;
 	
 	/**
 	 * \brief CheckBox left padding in pixels.
@@ -680,7 +685,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeCheckBox
 	 */
-	extern const char *checkBoxPaddingLeft;
+	extern DE_DLL_EXPORT const char * checkBoxPaddingLeft;
 	
 	/**
 	 * \brief CheckBox right padding in pixels.
@@ -690,7 +695,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeCheckBox
 	 */
-	extern const char *checkBoxPaddingRight;
+	extern DE_DLL_EXPORT const char * checkBoxPaddingRight;
 	
 	/**
 	 * \brief CheckBox top padding in pixels.
@@ -700,7 +705,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeCheckBox
 	 */
-	extern const char *checkBoxPaddingTop;
+	extern DE_DLL_EXPORT const char * checkBoxPaddingTop;
 	
 	/**
 	 * \brief CheckBox bottom padding in pixels.
@@ -710,7 +715,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeCheckBox
 	 */
-	extern const char *checkBoxPaddingBottom;
+	extern DE_DLL_EXPORT const char * checkBoxPaddingBottom;
 	
 	
 	
@@ -722,7 +727,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 1.
 	 * Target: igdeTabBook
 	 */
-	extern const char *tabBookFontSize;
+	extern DE_DLL_EXPORT const char * tabBookFontSize;
 	
 	/**
 	 * \brief TabBook absolute font size in points.
@@ -734,7 +739,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeTabBook
 	 */
-	extern const char *tabBookFontSizeAbsolute;
+	extern DE_DLL_EXPORT const char * tabBookFontSizeAbsolute;
 	
 	/**
 	 * \brief TabBook left padding in pixels.
@@ -744,7 +749,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeTabBook
 	 */
-	extern const char *tabBookPaddingLeft;
+	extern DE_DLL_EXPORT const char * tabBookPaddingLeft;
 	
 	/**
 	 * \brief TabBook right padding in pixels.
@@ -754,7 +759,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeTabBook
 	 */
-	extern const char *tabBookPaddingRight;
+	extern DE_DLL_EXPORT const char * tabBookPaddingRight;
 	
 	/**
 	 * \brief TabBook top padding in pixels.
@@ -764,7 +769,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeTabBook
 	 */
-	extern const char *tabBookPaddingTop;
+	extern DE_DLL_EXPORT const char * tabBookPaddingTop;
 	
 	/**
 	 * \brief TabBook bottom padding in pixels.
@@ -774,7 +779,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeTabBook
 	 */
-	extern const char *tabBookPaddingBottom;
+	extern DE_DLL_EXPORT const char * tabBookPaddingBottom;
 	
 	
 	
@@ -786,7 +791,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeDialog
 	 */
-	extern const char *dialogPaddingLeft;
+	extern DE_DLL_EXPORT const char * dialogPaddingLeft;
 	
 	/**
 	 * \brief Dialog right padding in pixels.
@@ -796,7 +801,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeDialog
 	 */
-	extern const char *dialogPaddingRight;
+	extern DE_DLL_EXPORT const char * dialogPaddingRight;
 	
 	/**
 	 * \brief Dialog top padding in pixels.
@@ -806,7 +811,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeDialog
 	 */
-	extern const char *dialogPaddingTop;
+	extern DE_DLL_EXPORT const char * dialogPaddingTop;
 	
 	/**
 	 * \brief Dialog bottom padding in pixels.
@@ -816,7 +821,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeDialog
 	 */
-	extern const char *dialogPaddingBottom;
+	extern DE_DLL_EXPORT const char * dialogPaddingBottom;
 	
 	/**
 	 * \brief Dialog padding between content and button line in pixels.
@@ -826,7 +831,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeDialog
 	 */
-	extern const char *dialogPaddingContent;
+	extern DE_DLL_EXPORT const char * dialogPaddingContent;
 	
 	/**
 	 * \brief Dialog padding between buttons in button line in pixels.
@@ -836,7 +841,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeDialog
 	 */
-	extern const char *dialogPaddingButtons;
+	extern DE_DLL_EXPORT const char * dialogPaddingButtons;
 	
 	
 	
@@ -848,7 +853,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeWindow
 	 */
-	extern const char *windowPaddingLeft;
+	extern DE_DLL_EXPORT const char * windowPaddingLeft;
 	
 	/**
 	 * \brief Window right padding in pixels.
@@ -858,7 +863,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeWindow
 	 */
-	extern const char *windowPaddingRight;
+	extern DE_DLL_EXPORT const char * windowPaddingRight;
 	
 	/**
 	 * \brief Window top padding in pixels.
@@ -868,7 +873,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeWindow
 	 */
-	extern const char *windowPaddingTop;
+	extern DE_DLL_EXPORT const char * windowPaddingTop;
 	
 	/**
 	 * \brief Window bottom padding in pixels.
@@ -878,7 +883,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeWindow
 	 */
-	extern const char *windowPaddingBottom;
+	extern DE_DLL_EXPORT const char * windowPaddingBottom;
 	
 	
 	
@@ -890,7 +895,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 15.
 	 * Target: igdeColorBox
 	 */
-	extern const char *colorBoxHeight;
+	extern DE_DLL_EXPORT const char * colorBoxHeight;
 	
 	
 	
@@ -902,7 +907,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 1.
 	 * Target: igdeViewCurveBezier
 	 */
-	extern const char *viewCurveBezierFontSize;
+	extern DE_DLL_EXPORT const char * viewCurveBezierFontSize;
 	
 	/**
 	 * \brief ViewCurveBezier absolute font size in points.
@@ -914,7 +919,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeViewCurveBezier
 	 */
-	extern const char *viewCurveBezierFontSizeAbsolute;
+	extern DE_DLL_EXPORT const char * viewCurveBezierFontSizeAbsolute;
 	
 	
 	
@@ -926,7 +931,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 1.
 	 * Target: igdeNodeView Slot
 	 */
-	extern const char *nodeViewSlotFontSize;
+	extern DE_DLL_EXPORT const char * nodeViewSlotFontSize;
 	
 	/**
 	 * \brief NodeView Slot absolute font size in points.
@@ -938,7 +943,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeNodeView Slot
 	 */
-	extern const char *nodeViewSlotFontSizeAbsolute;
+	extern DE_DLL_EXPORT const char * nodeViewSlotFontSizeAbsolute;
 	
 	/**
 	 * \brief NodeView Slot left padding in pixels.
@@ -948,7 +953,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeNodeView Slot
 	 */
-	extern const char *nodeViewSlotPaddingLeft;
+	extern DE_DLL_EXPORT const char * nodeViewSlotPaddingLeft;
 	
 	/**
 	 * \brief NodeView Slot right padding in pixels.
@@ -958,7 +963,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeNodeView Slot
 	 */
-	extern const char *nodeViewSlotPaddingRight;
+	extern DE_DLL_EXPORT const char * nodeViewSlotPaddingRight;
 	
 	/**
 	 * \brief NodeView Slot top padding in pixels.
@@ -968,7 +973,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeNodeView Slot
 	 */
-	extern const char *nodeViewSlotPaddingTop;
+	extern DE_DLL_EXPORT const char * nodeViewSlotPaddingTop;
 	
 	/**
 	 * \brief NodeView Slot bottom padding in pixels.
@@ -978,7 +983,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeNodeView Slot
 	 */
-	extern const char *nodeViewSlotPaddingBottom;
+	extern DE_DLL_EXPORT const char * nodeViewSlotPaddingBottom;
 	
 	
 	
@@ -990,7 +995,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 1.
 	 * Target: igdeNodeView Node
 	 */
-	extern const char *nodeViewNodeFontSize;
+	extern DE_DLL_EXPORT const char * nodeViewNodeFontSize;
 	
 	/**
 	 * \brief NodeView Node absolute font size in points.
@@ -1002,7 +1007,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeNodeView Node
 	 */
-	extern const char *nodeViewNodeFontSizeAbsolute;
+	extern DE_DLL_EXPORT const char * nodeViewNodeFontSizeAbsolute;
 	
 	/**
 	 * \brief NodeView Node left padding in pixels.
@@ -1012,7 +1017,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeNodeView Node
 	 */
-	extern const char *nodeViewNodePaddingLeft;
+	extern DE_DLL_EXPORT const char * nodeViewNodePaddingLeft;
 	
 	/**
 	 * \brief NodeView Node right padding in pixels.
@@ -1022,7 +1027,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeNodeView Node
 	 */
-	extern const char *nodeViewNodePaddingRight;
+	extern DE_DLL_EXPORT const char * nodeViewNodePaddingRight;
 	
 	/**
 	 * \brief NodeView Node top padding in pixels.
@@ -1032,7 +1037,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeNodeView Node
 	 */
-	extern const char *nodeViewNodePaddingTop;
+	extern DE_DLL_EXPORT const char * nodeViewNodePaddingTop;
 	
 	/**
 	 * \brief NodeView Node bottom padding in pixels.
@@ -1042,7 +1047,7 @@ namespace igdeGuiThemePropertyNames{
 	 * Default: 0.
 	 * Target: igdeNodeView Node
 	 */
-	extern const char *nodeViewNodePaddingBottom;
+	extern DE_DLL_EXPORT const char * nodeViewNodePaddingBottom;
 };
 
 #endif

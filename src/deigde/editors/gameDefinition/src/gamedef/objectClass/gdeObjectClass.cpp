@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Game Definition Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <math.h>
@@ -28,6 +31,7 @@
 #include "billboard/gdeOCBillboard.h"
 #include "camera/gdeOCCamera.h"
 #include "component/gdeOCComponent.h"
+#include "component/gdeOCComponentTexture.h"
 #include "envmapprobe/gdeOCEnvMapProbe.h"
 #include "inherit/gdeOCInherit.h"
 #include "light/gdeOCLight.h"
@@ -39,6 +43,8 @@
 #include "speaker/gdeOCSpeaker.h"
 #include "../gdeGameDefinition.h"
 #include "../property/gdeProperty.h"
+
+#include <deigde/gamedefinition/class/igdeGDClass.h>
 
 #include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
@@ -54,10 +60,11 @@
 gdeObjectClass::gdeObjectClass( const char *name ) :
 pGameDefinition( NULL ),
 pName( name ),
-pScaleMode( esmFixed ),
+pScaleMode( esmUniform ),
 
 pIsGhost( false ),
-pCanInstanciate( true ){
+pCanInstantiate( true ),
+pInheritSubObjects( igdeGDClass::FilterSubObjectsAll ){
 }
 
 gdeObjectClass::gdeObjectClass( const gdeObjectClass &objectClass ) :
@@ -73,7 +80,8 @@ pHideTags( objectClass.pHideTags ),
 pPartialHideTags( objectClass.pPartialHideTags ),
 
 pIsGhost( objectClass.pIsGhost ),
-pCanInstanciate( objectClass.pCanInstanciate )
+pCanInstantiate( objectClass.pCanInstantiate ),
+pInheritSubObjects( objectClass.pInheritSubObjects )
 {
 	deObjectReference objRef;
 	int i, count;
@@ -161,6 +169,12 @@ pCanInstanciate( objectClass.pCanInstanciate )
 		for( i=0; i<count; i++ ){
 			objRef.TakeOver( new gdeOCSpeaker( *objectClass.pSpeakers.GetAt( i ) ) );
 			pSpeakers.Add( ( gdeOCSpeaker* )( deObject* )objRef );
+		}
+		
+		count = objectClass.pTextures.GetCount();
+		for( i=0; i<count; i++ ){
+			objRef.TakeOver( new gdeOCComponentTexture( *objectClass.pTextures.GetAt( i ) ) );
+			pTextures.Add( ( gdeOCComponentTexture* )( deObject* )objRef );
 		}
 		
 	}catch( const deException & ){
@@ -333,6 +347,29 @@ void gdeObjectClass::SetDefaultInheritPropertyPrefix( const char *propertyName )
 	}
 }
 
+bool gdeObjectClass::InheritsFrom( const gdeObjectClass *objectClass ) const{
+	const int count = pInherits.GetCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		const gdeOCInherit &inherit = *pInherits.GetAt( i );
+		const gdeObjectClass * const inheritOC = pGameDefinition->FindObjectClass( inherit.GetName() );
+		if( inheritOC && inheritOC->IsOrInheritsFrom( objectClass ) ){
+			return true;
+		}
+	}
+	return false;
+}
+
+bool gdeObjectClass::IsOrInheritsFrom( const gdeObjectClass *objectClass ) const{
+	return this == objectClass || InheritsFrom( objectClass );
+}
+
+bool gdeObjectClass::IsOrInheritsFrom( const char *name ) const{
+	const gdeObjectClass * const objectClass = pGameDefinition->FindObjectClass( name );
+	return objectClass && IsOrInheritsFrom( objectClass );
+}
+
+
 void gdeObjectClass::NotifyBillboardsChanged(){
 	if( pGameDefinition ){
 		pGameDefinition->NotifyOCBillboardsChanged( this );
@@ -494,6 +531,24 @@ void gdeObjectClass::NotifySpeakerChanged( gdeOCSpeaker *speaker ){
 
 
 
+void gdeObjectClass::SetActiveTexture( gdeOCComponentTexture *texture ){
+	pActiveTexture = texture;
+}
+
+void gdeObjectClass::NotifyTexturesChanged(){
+	if( pGameDefinition ){
+		pGameDefinition->NotifyOCTexturesChanged( this );
+	}
+}
+
+void gdeObjectClass::NotifyTextureChanged( gdeOCComponentTexture *texture ){
+	if( pGameDefinition ){
+		pGameDefinition->NotifyOCTextureChanged( this, texture );
+	}
+}
+
+
+
 void gdeObjectClass::SetIsGhost( bool isGhost ){
 	if( pIsGhost == isGhost ){
 		return;
@@ -506,12 +561,24 @@ void gdeObjectClass::SetIsGhost( bool isGhost ){
 	}
 }
 
-void gdeObjectClass::SetCanInstanciate( bool canInstanciate ){
-	if( pCanInstanciate == canInstanciate ){
+void gdeObjectClass::SetCanInstantiate( bool canInstantiate ){
+	if( pCanInstantiate == canInstantiate ){
 		return;
 	}
 	
-	pCanInstanciate = canInstanciate;
+	pCanInstantiate = canInstantiate;
+	
+	if( pGameDefinition ){
+		pGameDefinition->NotifyObjectClassChanged( this );
+	}
+}
+
+void gdeObjectClass::SetInheritSubObjects( int filter ){
+	if( pInheritSubObjects == filter ){
+		return;
+	}
+	
+	pInheritSubObjects = filter;
 	
 	if( pGameDefinition ){
 		pGameDefinition->NotifyObjectClassChanged( this );
@@ -532,7 +599,7 @@ const gdeProperty* &property ) const{
 		return false;
 	}
 	
-	const int nameLen = strlen( name );
+	const int nameLen = ( int )strlen( name );
 	const int count = pInherits.GetCount();
 	int i;
 	for( i=0; i<count; i++ ){
@@ -569,7 +636,7 @@ bool gdeObjectClass::NamedPropertyDefaultValue( const char *name, decString &val
 		return true;
 	}
 	
-	const int nameLen = strlen( name );
+	const int nameLen = ( int )strlen( name );
 	const int count = pInherits.GetCount();
 	int i;
 	for( i=0; i<count; i++ ){

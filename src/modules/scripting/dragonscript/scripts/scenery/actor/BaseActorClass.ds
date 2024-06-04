@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -32,225 +35,230 @@ pin Dragengine.Utils
  * \brief Actor element class.
  */
 class BaseActorClass extends BehaviorElementClass
-	private var ECBehaviorComponent pComponent
-	private var ECBehaviorCollider pCollider
-	private var ECBehaviorColliderAI pColliderAI
-	private var ECBehaviorParameterTable pParameterTable
-	private var ECBehaviorProjectToGround pProjectToGround
-	private var ECBehaviorLocomotion pLocomotion
-	private var ECBehaviorActorAnimated pActorAnimated
-	private var ECBehaviorConversationActor pConversationActor
-	private var ECBCTRRBindings pCTRRBindings
-	private var ECBehaviorNavigator pNavigator
-	private var ECBehaviorFootSteps pFootSteps
-	private var ECBehaviorRideOn pRideOn
-	private var ECBehaviorActorMover pActorMover
-	private var ECBehaviorAlignActor pAlignActor
-	private var ECBehaviorAvoidedByActor pAvoidedByActor
-	private var ECBehaviorAvoidCollision pAvoidCollision
-	private var ECBehaviorPlayerInputLook pPlayerInputLook
-	private var ECBehaviorPlayerInputTurn pPlayerInputTurn
-	private var ECBehaviorPlayerInputCrouch pPlayerInputCrouch
-	private var ECBehaviorPlayerInputMove pPlayerInputMove
-	private var ECBehaviorPlayerControllable pPlayerControllable
-	private var ECBehaviorActorAIAction pAIAction
+	var ECBehaviorComponent pComponent
+	var ECBehaviorCollider pCollider
+	var ECBehaviorColliderAI pColliderAI
+	var ECBehaviorParameterTable pParameterTable
+	var ECBehaviorProjectToGround pProjectToGround
+	var ECBehaviorLocomotion pLocomotion
+	var ECBehaviorActorAnimated pActorAnimated
+	var ECBehaviorConversationActor pConversationActor
+	var ECBCTRRBindings pCTRRBindings
+	var ECBehaviorNavigator pNavigator
+	var ECBehaviorFootSteps pFootSteps
+	var ECBehaviorRideOn pRideOn
+	var ECBehaviorActorMover pActorMover
+	var ECBehaviorAlignActor pAlignActor
+	var ECBehaviorAvoidedByActor pAvoidedByActor
+	var ECBehaviorAvoidCollision pAvoidCollision
+	var ECBehaviorPlayerInputLook pPlayerInputLook
+	var ECBehaviorPlayerInputTurn pPlayerInputTurn
+	var ECBehaviorPlayerInputCrouch pPlayerInputCrouch
+	var ECBehaviorPlayerInputMove pPlayerInputMove
+	var ECBehaviorPlayerControllable pPlayerControllable
+	var ECBehaviorActorAIAction pAIAction
 	
 	
 	
 	/** \brief Create element class using loaders from BaseGameApp. */
-	public func new() this( "Actor", BaseGameApp.getApp().getLoaders(), \
-	BaseGameApp.getApp().getPlayerControlledActor() )
+	func new() this("Actor", BaseGameApp.getApp().getLoaders(), \
+	BaseGameApp.getApp().getPlayerControlledActor())
 	end
 	
 	/** \brief Create element class. */
-	public func new( Loaders loaders, ECBehaviorPlayerControllable.Tracker tracker ) \
-	this( "Actor", loaders, tracker )
+	func new(Loaders loaders, ECBehaviorPlayerControllable.Tracker tracker) \
+	this("Actor", loaders, tracker)
 	end
 	
 	/** \brief Create element class using loaders from BaseGameApp. */
-	public func new( String className ) this( className, BaseGameApp.getApp().getLoaders(), \
-	BaseGameApp.getApp().getPlayerControlledActor() )
+	func new(String className) this(className, BaseGameApp.getApp().getLoaders(), \
+	BaseGameApp.getApp().getPlayerControlledActor())
 	end
 	
 	/** \brief Create element class. */
-	public func new( String className, Loaders loaders, ECBehaviorPlayerControllable.Tracker tracker ) \
-	super( className )
-		this.pComponent = ECBehaviorComponent.new( this, null )
+	func new(String className, Loaders loaders, ECBehaviorPlayerControllable.Tracker tracker) \
+	super(className)
+		pComponent = ECBehaviorComponent.new(this, null)
 		
 		// collider
-		this.pCollider = ECBehaviorCollider.new( this, this.pComponent )
+		pCollider = ECBehaviorCollider.new(this, pComponent)
 		
-		var ECComposeCollider collider = this.pCollider.getCollider()
-		collider.setCollisionFilter( CollisionFilter.new( \
-			LayerMask.newWith( BaseGameApp.CollisionFilterBit.actor ), \
-			LayerMask.newWith( BaseGameApp.CollisionFilterBit.geometry, \
-				BaseGameApp.CollisionFilterBit.particle ) ) )
-		collider.getPhysicsType().setEnumeration( CollisionResponse.kinematic )
-		collider.getLocalGravity().setVector( Vector.new() )
+		var ECComposeCollider collider = pCollider.getCollider()
+		
+		var LayerMask cfcategory = LayerMask.newWith(BaseGameApp.CollisionFilterBit.actor)
+		
+		var LayerMask cffilter = LayerMask.new()
+		cffilter.setBit(BaseGameApp.CollisionFilterBit.geometry)
+		cffilter.setBit(BaseGameApp.CollisionFilterBit.dynamic)
+		cffilter.setBit(BaseGameApp.CollisionFilterBit.particle)
+		
+		collider.setCollisionFilter(CollisionFilter.new(cfcategory, cffilter))
+		collider.getPhysicsType().setEnumeration(CollisionResponse.kinematic)
+		collider.getLocalGravity().setVector(Vector.new())
 		
 		// add behaviors
-		this.pColliderAI = ECBehaviorColliderAI.new( this, this.pCollider )
-		this.pParameterTable = ECBehaviorParameterTable.new( this )
-		this.pProjectToGround = ECBehaviorProjectToGround.new( this, this.pColliderAI )
-		this.pLocomotion = ECBehaviorLocomotion.new( this, this.pColliderAI )
+		pColliderAI = ECBehaviorColliderAI.new(this, pCollider)
+		pParameterTable = ECBehaviorParameterTable.new(this)
+		pProjectToGround = ECBehaviorProjectToGround.new(this, pColliderAI)
+		pLocomotion = ECBehaviorLocomotion.new(this, pColliderAI)
 		
-		this.pActorAnimated = ECBehaviorActorAnimated.new( this, this.pComponent, this.pLocomotion )
-		this.pActorAnimated.setDefaultControllerMappings()
+		pActorAnimated = ECBehaviorActorAnimated.new(this, pComponent, pLocomotion)
+		pActorAnimated.setDefaultControllerMappings()
 		
-		this.pConversationActor = ECBehaviorConversationActor.new( this )
-		this.pConversationActor.setActorAnimated( this.pActorAnimated )
-		this.pConversationActor.setLocomotion( this.pLocomotion )
-		this.pConversationActor.setParameterTable( this.pParameterTable )
+		pConversationActor = ECBehaviorConversationActor.new(this)
+		pConversationActor.setActorAnimated(pActorAnimated)
+		pConversationActor.setLocomotion(pLocomotion)
+		pConversationActor.setParameterTable(pParameterTable)
 		
-		this.pCTRRBindings = ECBCTRRBindings.new( this, this.pConversationActor )
+		pCTRRBindings = ECBCTRRBindings.new(this, pConversationActor)
 		
-		this.pNavigator = ECBehaviorNavigator.new( this )
-		this.pFootSteps = ECBehaviorFootSteps.new( this )
-		this.pRideOn = ECBehaviorRideOn.new( this, this.pLocomotion, this.pProjectToGround )
+		pNavigator = ECBehaviorNavigator.new(this)
+		pFootSteps = ECBehaviorFootSteps.new(this)
+		pRideOn = ECBehaviorRideOn.new(this, pLocomotion, pProjectToGround)
 		
-		this.pActorMover = ECBehaviorActorMover.new( this, this.pLocomotion, this.pNavigator, this.pRideOn )
-		this.pActorMover.setConversationActor( this.pConversationActor )
+		pActorMover = ECBehaviorActorMover.new(this, pLocomotion, pNavigator, pRideOn)
+		pActorMover.setConversationActor(pConversationActor)
 		
-		this.pAlignActor = ECBehaviorAlignActor.new( this, this.pLocomotion, this.pConversationActor )
-		this.pAvoidedByActor = ECBehaviorAvoidedByActor.new( this )
-		this.pAvoidCollision = ECBehaviorAvoidCollision.new( this, this.pActorMover, this.pRideOn )
-		this.pPlayerInputLook = ECBehaviorPlayerInputLook.new( this, this.pLocomotion )
-		this.pPlayerInputTurn = ECBehaviorPlayerInputTurn.new( this, this.pLocomotion )
-		this.pPlayerInputCrouch = ECBehaviorPlayerInputCrouch.new( this, this.pLocomotion )
-		this.pPlayerInputMove = ECBehaviorPlayerInputMove.new( this, this.pLocomotion )
+		pAlignActor = ECBehaviorAlignActor.new(this, pLocomotion, pConversationActor)
+		pAvoidedByActor = ECBehaviorAvoidedByActor.new(this)
+		pAvoidCollision = ECBehaviorAvoidCollision.new(this, pActorMover, pRideOn)
+		pPlayerInputLook = ECBehaviorPlayerInputLook.new(this, pLocomotion)
+		pPlayerInputTurn = ECBehaviorPlayerInputTurn.new(this, pLocomotion)
+		pPlayerInputCrouch = ECBehaviorPlayerInputCrouch.new(this, pLocomotion)
+		pPlayerInputMove = ECBehaviorPlayerInputMove.new(this, pLocomotion)
 		
 		// actor can be controlled by player
-		this.pPlayerControllable = ECBehaviorPlayerControllable.new( this, tracker )
-		this.pPlayerControllable.setConversationActor( this.pConversationActor )
+		pPlayerControllable = ECBehaviorPlayerControllable.new(this, tracker)
+		pPlayerControllable.setConversationActor(pConversationActor)
 		
 		// AI and action support
-		this.pAIAction = ECBehaviorActorAIAction.new( this, this.pColliderAI, \
-			this.pConversationActor, this.pPlayerControllable )
+		pAIAction = ECBehaviorActorAIAction.new(this, pColliderAI, \
+			pConversationActor, pPlayerControllable)
 		
 		// actors are best not affecting sound nor showing up in env maps since they
 		// are dynamic. still doing so is usually expensive for modules to perform. 
-		var ECComposeComponent component = this.getComponent().getComponent()
-		component.getRenderEnvMap().setValue( false )
-		component.getAffectsAudio().setValue( false )
-		component.getHintMovement().setEnumeration( ComponentHintMovement.dynamic )
+		var ECComposeComponent component = getComponent().getComponent()
+		component.getRenderEnvMap().setValue(false)
+		component.getAffectsAudio().setValue(false)
+		component.getHintMovement().setEnumeration(ComponentHintMovement.dynamic)
 	end
 	
 	
 	
 	/** \brief Component behavior. */
-	public func ECBehaviorComponent getComponent()
-		return this.pComponent
+	func ECBehaviorComponent getComponent()
+		return pComponent
 	end
 	
 	/** \brief Collider behavior. */
-	public func ECBehaviorCollider getCollider()
-		return this.pCollider
+	func ECBehaviorCollider getCollider()
+		return pCollider
 	end
 	
 	/** \brief Collider AI behavior. */
-	public func ECBehaviorColliderAI getColliderAI()
-		return this.pColliderAI
+	func ECBehaviorColliderAI getColliderAI()
+		return pColliderAI
 	end
 	
 	/** \brief Parameter table behavior. */
-	public func ECBehaviorParameterTable getParameterTable()
-		return this.pParameterTable
+	func ECBehaviorParameterTable getParameterTable()
+		return pParameterTable
 	end
 	
 	/** \brief Project to ground behavior. */
-	public func ECBehaviorProjectToGround getProjectToGround()
-		return this.pProjectToGround
+	func ECBehaviorProjectToGround getProjectToGround()
+		return pProjectToGround
 	end
 	
 	/** \brief Locomotion behavior. */
-	public func ECBehaviorLocomotion getLocomotion()
-		return this.pLocomotion
+	func ECBehaviorLocomotion getLocomotion()
+		return pLocomotion
 	end
 	
 	/** \brief Actor animated behavior. */
-	public func ECBehaviorActorAnimated getActorAnimated()
-		return this.pActorAnimated
+	func ECBehaviorActorAnimated getActorAnimated()
+		return pActorAnimated
 	end
 	
 	/** \brief Navigator behavior. */
-	public func ECBehaviorNavigator getNavigator()
-		return this.pNavigator
+	func ECBehaviorNavigator getNavigator()
+		return pNavigator
 	end
 	
 	/** \brief Foot steps behavior. */
-	public func ECBehaviorFootSteps getFootSteps()
-		return this.pFootSteps
+	func ECBehaviorFootSteps getFootSteps()
+		return pFootSteps
 	end
 	
 	/** \brief Ride on behavior. */
-	public func ECBehaviorRideOn getRideOn()
-		return this.pRideOn
+	func ECBehaviorRideOn getRideOn()
+		return pRideOn
 	end
 	
 	/** \brief Actor mover behavior. */
-	public func ECBehaviorActorMover getActorMover()
-		return this.pActorMover
+	func ECBehaviorActorMover getActorMover()
+		return pActorMover
 	end
 	
 	/** \brief Align actor behavior. */
-	public func ECBehaviorAlignActor getAlignActor()
-		return this.pAlignActor
+	func ECBehaviorAlignActor getAlignActor()
+		return pAlignActor
 	end
 	
 	/** \brief Avoided by actor behavior. */
-	public func ECBehaviorAvoidedByActor getAvoidedByActor()
-		return this.pAvoidedByActor
+	func ECBehaviorAvoidedByActor getAvoidedByActor()
+		return pAvoidedByActor
 	end
 	
 	/** \brief Avoid collision behavior. */
-	public func ECBehaviorAvoidCollision getAvoidCollision()
-		return this.pAvoidCollision
+	func ECBehaviorAvoidCollision getAvoidCollision()
+		return pAvoidCollision
 	end
 	
 	/** \brief Conversation actor behavior. */
-	public func ECBehaviorConversationActor getConversationActor()
-		return this.pConversationActor
+	func ECBehaviorConversationActor getConversationActor()
+		return pConversationActor
 	end
 	
 	/** \brief Binding tag resolver for conversation actor behavior. */
-	public func ECBCTRRBindings getCTRRBindings()
-		return this.pCTRRBindings
+	func ECBCTRRBindings getCTRRBindings()
+		return pCTRRBindings
 	end
 	
 	/** \brief Player input looking around behavior. */
-	public func ECBehaviorPlayerInputLook getPlayerInputLook()
-		return this.pPlayerInputLook
+	func ECBehaviorPlayerInputLook getPlayerInputLook()
+		return pPlayerInputLook
 	end
 	
 	/** \brief Player input turning behavior. */
-	public func ECBehaviorPlayerInputTurn getPlayerInputTurn()
-		return this.pPlayerInputTurn
+	func ECBehaviorPlayerInputTurn getPlayerInputTurn()
+		return pPlayerInputTurn
 	end
 	
 	/** \brief Player input crouching behavior. */
-	public func ECBehaviorPlayerInputCrouch getPlayerInputCrouch()
-		return this.pPlayerInputCrouch
+	func ECBehaviorPlayerInputCrouch getPlayerInputCrouch()
+		return pPlayerInputCrouch
 	end
 	
 	/** \brief Player input moving behavior. */
-	public func ECBehaviorPlayerInputMove getPlayerInputMove()
-		return this.pPlayerInputMove
+	func ECBehaviorPlayerInputMove getPlayerInputMove()
+		return pPlayerInputMove
 	end
 	
 	/** \brief Player controllable behavior. */
-	public func ECBehaviorPlayerControllable getPlayerControllable()
-		return this.pPlayerControllable
+	func ECBehaviorPlayerControllable getPlayerControllable()
+		return pPlayerControllable
 	end
 	
 	/** \brief AI-Action behavior. */
-	public func ECBehaviorActorAIAction getAIAction()
-		return this.pAIAction
+	func ECBehaviorActorAIAction getAIAction()
+		return pAIAction
 	end
 	
 	
 	
 	/** \brief Create element instance. */
 	protected func Element createElement()
-		return BaseActor.new( this )
+		return BaseActor.new(this)
 	end
 end

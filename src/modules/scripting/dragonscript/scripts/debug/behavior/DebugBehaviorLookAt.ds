@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -38,173 +41,175 @@ pin Dragengine.Utils
 class DebugBehaviorLookAt
 	/** \brief Watch behavior listener. */
 	class WatchBehavior extends ECBehaviorLookAt.DefaultListener
-		private var DebugBehaviorLookAt pDebug
+		var DebugBehaviorLookAt pDebug
 		
-		public func new( DebugBehaviorLookAt debug )
-			this.pDebug = debug
+		func new(DebugBehaviorLookAt debug)
+			pDebug = debug
 		end
 		
-		public func void enabledChanged( ECBehaviorLookAt.Instance instance )
-			this.pDebug.onEnabledChanged()
+		func void enabledChanged(ECBehaviorLookAt.Instance instance)
+			pDebug.onEnabledChanged()
 		end
 		
-		public func void lookAtChanged( ECBehaviorLookAt.Instance instance )
-			this.pDebug.onLookAtChanged()
+		func void lookAtChanged(ECBehaviorLookAt.Instance instance)
+			pDebug.onLookAtChanged()
 		end
 	end
 	
 	/** \brief Debug information. */
 	class LookAtDebugInfo implements DebugInformation
-		private var ECBehaviorLookAt.Instance pBehavior
-		private var String pLabel
-		private var String pDetails
+		var ECBehaviorLookAt.Instance pBehavior
+		var String pLabel
+		var String pDetails
 		
-		public func new( ECBehaviorLookAt.Instance behavior, String label )
-			this.pBehavior = behavior
-			this.pLabel = label + ":"
-			this.pDetails = ""
+		func new(ECBehaviorLookAt.Instance behavior, String label)
+			pBehavior = behavior
+			pLabel = label + ":"
+			pDetails = ""
 		end
 		
-		public func String getLabel()
-			return this.pLabel
+		func String getLabel()
+			return pLabel
 		end
 		
-		public func String getDetails()
-			return this.pDetails
+		func String getDetails()
+			return pDetails
 		end
 		
-		public func void reset()
-			var Element element = this.pBehavior.getLookAtElement()
+		func void reset()
+			var Element element = pBehavior.getLookAtElement()
 			if element == null
-				this.pDetails = "(none)"
+				pDetails = "(none)"
 				return
 			end
 			
-			this.pDetails = element.getClass().getClassname() + "[" + element.getID() + "]"
+			pDetails = "{}[{}]".format(Array.newWith(element.getClass().getClassname(), element.getID()))
 			
-			var String bone = this.pBehavior.getLookAtBoneName()
+			var String bone = pBehavior.getLookAtBoneName()
 			if bone != null
-				this.pDetails = this.pDetails + "(" + bone + ")"
+				pDetails = "{}({})".format(Array.newWith(pDetails, bone))
 			end
 			
-			this.pDetails = this.pDetails + " " + this.pBehavior.getLookAtDistance()
+			pDetails = "{} {:.3f}".format(Array.newWith(pDetails, pBehavior.getLookAtDistance()))
 		end
 	end
 	
 	
 	
-	private var ECBehaviorLookAt.Instance pBehavior
-	private var PanelDebugInformation pPanelDebugInformation
-	private var Console pConsole
-	private var WeakReference pWatchBehavior
-	private var LookAtDebugInfo pLookAtDebugInfo
-	private var String pLabel
+	var ECBehaviorLookAt.Instance pBehavior
+	var PanelDebugInformation pPanelDebugInformation
+	var Console pConsole
+	var WeakReference pWatchBehavior
+	var LookAtDebugInfo pLookAtDebugInfo
+	var String pLabel
 	
-	private var Element pLookAtElement
-	private var String pLookAtBone
+	var Element pLookAtElement
+	var String pLookAtBone
 	
 	
 	
 	/** \brief Create debug instance for behavior. */
-	public func new( ECBehaviorLookAt.Instance behavior, PanelDebugInformation panelDebugInfo ) \
-	this( behavior, panelDebugInfo, null )
+	func new(ECBehaviorLookAt.Instance behavior, PanelDebugInformation panelDebugInfo)\
+	this(behavior, panelDebugInfo, null)
 	end
 	
 	/** \brief Create debug instance for behavior. */
-	public func new( ECBehaviorLookAt.Instance behavior, Console console ) this( behavior, null, console )
+	func new(ECBehaviorLookAt.Instance behavior, Console console) this(behavior, null, console)
 	end
 	
-	private func new( ECBehaviorLookAt.Instance behavior, PanelDebugInformation panelDebugInfo, Console console )
+	private func new(ECBehaviorLookAt.Instance behavior, PanelDebugInformation panelDebugInfo, Console console)
 		if panelDebugInfo == null and console == null
 			throw EInvalidParam.new()
 		end
 		
-		this.pBehavior = behavior
-		var WatchBehavior watchBehavior = WatchBehavior.new( this )
-		behavior.addListener( watchBehavior )
-		this.pWatchBehavior = WeakReference.new( watchBehavior )
+		pBehavior = behavior
+		var WatchBehavior watchBehavior = WatchBehavior.new(this)
+		behavior.addListener(watchBehavior)
+		pWatchBehavior = WeakReference.new(watchBehavior)
 		
-		this.pLabel = "Look-At(" + behavior.getECBehavior().getID() + ") " + behavior.getElement().getID()
+		pLabel = "Look-At({}) {}".format(Array.newWith(\
+			behavior.getECBehavior().getID(), behavior.getElement().getID()))
 		
 		if panelDebugInfo != null
-			this.pPanelDebugInformation = panelDebugInfo
-			this.pLookAtDebugInfo = LookAtDebugInfo.new( behavior, this.pLabel )
-			panelDebugInfo.addDebugInfo( this.pLookAtDebugInfo )
+			pPanelDebugInformation = panelDebugInfo
+			pLookAtDebugInfo = LookAtDebugInfo.new(behavior, pLabel)
+			panelDebugInfo.addDebugInfo(pLookAtDebugInfo)
 			
 		else
-			this.pConsole = console
+			pConsole = console
 		end
 	end
 	
 	/** \brief Destructor. */
-	public func void destructor()
-		if this.pLookAtDebugInfo != null
-			this.pPanelDebugInformation.removeDebugInfo( this.pLookAtDebugInfo )
+	func destructor()
+		if pLookAtDebugInfo != null
+			pPanelDebugInformation.removeDebugInfo(pLookAtDebugInfo)
 		end
 	end
 	
 	
 	
 	/** \brief Remove from behavior. */
-	public func void removeFromBehavior()
-		var WatchBehavior watchBehavior = this.pWatchBehavior.get() cast WatchBehavior
+	func void removeFromBehavior()
+		var WatchBehavior watchBehavior = pWatchBehavior.get() cast WatchBehavior
 		if watchBehavior != null
-			this.pWatchBehavior.set( null )
-			this.pBehavior.removeListener( watchBehavior )
+			pWatchBehavior.set(null)
+			pBehavior.removeListener(watchBehavior)
 		end
 		
-		if this.pLookAtDebugInfo != null
-			this.pPanelDebugInformation.removeDebugInfo( this.pLookAtDebugInfo )
-			this.pLookAtDebugInfo = null
+		if pLookAtDebugInfo != null
+			pPanelDebugInformation.removeDebugInfo(pLookAtDebugInfo)
+			pLookAtDebugInfo = null
 		end
 	end
 	
 	
 	
-	public func void onEnabledChanged()
-		if this.pLookAtDebugInfo != null
+	func void onEnabledChanged()
+		if pLookAtDebugInfo != null
 			return
 		end
 		
-		if this.pBehavior.getEnabled()
-			this.pConsole.addMessage( this.pLabel + ": Enabled" )
+		if pBehavior.getEnabled()
+			pConsole.addMessage(pLabel + ": Enabled")
 			
 		else
-			this.pConsole.addMessage( this.pLabel + ": Disabled" )
+			pConsole.addMessage(pLabel + ": Disabled")
 		end
 	end
 	
-	public func void onLookAtChanged()
-		if this.pLookAtDebugInfo != null
+	func void onLookAtChanged()
+		if pLookAtDebugInfo != null
 			return
 		end
 		
-		var Element element = this.pBehavior.getLookAtElement()
-		var String bone = this.pBehavior.getLookAtBoneName()
+		var Element element = pBehavior.getLookAtElement()
+		var String bone = pBehavior.getLookAtBoneName()
 		
 		var String oldElement = "(none)"
-		if this.pLookAtElement != null
-			if this.pLookAtBone != null
-				oldElement = this.pLookAtElement.getClass().getClassname() + "(" + this.pLookAtBone + ")"
+		if pLookAtElement != null
+			if pLookAtBone != null
+				oldElement = "{}({})".format(Array.newWith(\
+					pLookAtElement.getClass().getClassname(), pLookAtBone))
 				
 			else
-				oldElement = this.pLookAtElement.getClass().getClassname()
+				oldElement = pLookAtElement.getClass().getClassname()
 			end
 		end
 		
 		var String newElement = "(none)"
 		if element != null
 			if bone != null
-				newElement = element.getClass().getClassname() + "(" + bone + ")"
+				newElement = "{}({})".format(Array.newWith(element.getClass().getClassname(), bone))
 				
 			else
 				newElement = element.getClass().getClassname()
 			end
 		end
 		
-		this.pConsole.addMessage( this.pLabel + ": Changed " + oldElement + " => " + newElement )
+		pConsole.addMessage("{}: Changed {} => {}".format(Array.newWith(pLabel, oldElement, newElement)))
 		
-		this.pLookAtElement = element
-		this.pLookAtBone = bone
+		pLookAtElement = element
+		pLookAtBone = bone
 	end
 end

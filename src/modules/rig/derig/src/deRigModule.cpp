@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Rig Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -312,7 +315,7 @@ void deRigModule::pParseRig( decXmlElementTag *root, deRig &rig ){
 }
 
 void deRigModule::pParseBone( decXmlElementTag *root, deRig &rig, dermNameList &boneNameList ){
-	decVector ikLimitsLower( 1.0f, 1.0f, 1.0f );
+	decVector ikLimitsLower( TWO_PI, TWO_PI, TWO_PI );
 	decVector ikLimitsUpper( 0.0f, 0.0f, 0.0f );
 	decVector ikResistance( 0.0f, 0.0f, 0.0f );
 	bool ikLocked[ 3 ] = { false, false, false };
@@ -972,7 +975,7 @@ void deRigModule::pParseConstraint( decXmlElementTag *root, deRig &rig, deRigBon
 					}
 					
 				}else if( strcmp( tag->GetName(), "breakingThreshold" ) == 0 ){
-					const decXmlCharacterData * const cdata = tag->GetFirstData();
+					cdata = tag->GetFirstData();
 					if( cdata ){
 						constraint->SetBreakingThreshold( strtof( cdata->GetData(), NULL ) );
 					}
@@ -1295,7 +1298,7 @@ void deRigModule::pWriteBone( decXmlWriter &writer, const deRig &rig, const deRi
 		writer.WriteOpeningTagEnd( true );
 	}
 	
-	const decVector rotation( bone.GetRotation() / DEG2RAD );
+	const decVector rotation( bone.GetRotation() * RAD2DEG );
 	if( ! rotation.IsZero() ){
 		writer.WriteOpeningTagStart( "rotation" );
 		writer.WriteAttributeFloat( "x", rotation.x );
@@ -1321,32 +1324,69 @@ void deRigModule::pWriteBone( decXmlWriter &writer, const deRig &rig, const deRi
 		writer.WriteDataTagBool( "dynamic", bone.GetDynamic() );
 	}
 	
-	const decVector &ikLimitsLower = bone.GetIKLimitsLower();
-	const decVector &ikLimitsUpper = bone.GetIKLimitsUpper();
+	const decVector ikLimitsLower( bone.GetIKLimitsLower() * RAD2DEG );
+	const decVector ikLimitsUpper( bone.GetIKLimitsUpper() * RAD2DEG );
 	const decVector &ikResistance = bone.GetIKResistance();
 	
-	if( ! ikLimitsLower.IsZero() || ! ikResistance.IsZero()
-	|| ! ikLimitsUpper.IsEqualTo( decVector( 1.0f, 1.0f, 1.0f ) ) ){
-		writer.WriteOpeningTag( "ikX" );
-		writer.WriteDataTagFloat( "lower", ikLimitsLower.x );
-		writer.WriteDataTagFloat( "upper", ikLimitsUpper.x );
-		writer.WriteDataTagFloat( "resistance", ikResistance.x );
-		writer.WriteDataTagInt( "locked", bone.GetIKLockedX() ? 1 : 0 );
-		writer.WriteClosingTag( "ikX" );
+	if( ! ikLimitsUpper.IsZero() || ! ikResistance.IsZero()
+	|| ! ikLimitsLower.IsEqualTo( decVector( 360.0f, 360.0f, 360.0f ) )
+	|| bone.GetIKLockedX() || bone.GetIKLockedY() || bone.GetIKLockedZ() ){
+		if( fabsf( ikLimitsLower.x - 360.0f ) > FLOAT_SAFE_EPSILON
+		|| fabsf( ikLimitsUpper.x ) > FLOAT_SAFE_EPSILON
+		|| fabsf( ikResistance.x ) > FLOAT_SAFE_EPSILON
+		|| bone.GetIKLockedX() ){
+			writer.WriteOpeningTag( "ikX" );
+			if( fabsf( ikLimitsLower.x - 360.0f ) > FLOAT_SAFE_EPSILON
+			|| fabsf( ikLimitsUpper.x ) > FLOAT_SAFE_EPSILON ){
+				writer.WriteDataTagFloat( "lower", ikLimitsLower.x );
+				writer.WriteDataTagFloat( "upper", ikLimitsUpper.x );
+			}
+			if( fabsf( ikResistance.x ) > FLOAT_SAFE_EPSILON ){
+				writer.WriteDataTagFloat( "resistance", ikResistance.x );
+			}
+			if( bone.GetIKLockedX() ){
+				writer.WriteDataTagInt( "locked", bone.GetIKLockedX() ? 1 : 0 );
+			}
+			writer.WriteClosingTag( "ikX" );
+		}
 		
-		writer.WriteOpeningTag( "ikY" );
-		writer.WriteDataTagFloat( "lower", ikLimitsLower.y );
-		writer.WriteDataTagFloat( "upper", ikLimitsUpper.y );
-		writer.WriteDataTagFloat( "resistance", ikResistance.y );
-		writer.WriteDataTagInt( "locked", bone.GetIKLockedY() ? 1 : 0 );
-		writer.WriteClosingTag( "ikY" );
+		if( fabsf( ikLimitsLower.y - 360.0f ) > FLOAT_SAFE_EPSILON
+		|| fabsf( ikLimitsUpper.y ) > FLOAT_SAFE_EPSILON
+		|| fabsf( ikResistance.y ) > FLOAT_SAFE_EPSILON
+		|| bone.GetIKLockedY() ){
+			writer.WriteOpeningTag( "ikY" );
+			if( fabsf( ikLimitsLower.y - 360.0f ) > FLOAT_SAFE_EPSILON
+			|| fabsf( ikLimitsUpper.y ) > FLOAT_SAFE_EPSILON ){
+				writer.WriteDataTagFloat( "lower", ikLimitsLower.y );
+				writer.WriteDataTagFloat( "upper", ikLimitsUpper.y );
+			}
+			if( fabsf( ikResistance.y ) > FLOAT_SAFE_EPSILON ){
+				writer.WriteDataTagFloat( "resistance", ikResistance.y );
+			}
+			if( bone.GetIKLockedY() ){
+				writer.WriteDataTagInt( "locked", bone.GetIKLockedY() ? 1 : 0 );
+			}
+			writer.WriteClosingTag( "ikY" );
+		}
 		
-		writer.WriteOpeningTag( "ikZ" );
-		writer.WriteDataTagFloat( "lower", ikLimitsLower.z );
-		writer.WriteDataTagFloat( "upper", ikLimitsUpper.z );
-		writer.WriteDataTagFloat( "resistance", ikResistance.z );
-		writer.WriteDataTagInt( "locked", bone.GetIKLockedZ() ? 1 : 0 );
-		writer.WriteClosingTag( "ikZ" );
+		if( fabsf( ikLimitsLower.z - 360.0f ) > FLOAT_SAFE_EPSILON
+		|| fabsf( ikLimitsUpper.z ) > FLOAT_SAFE_EPSILON
+		|| fabsf( ikResistance.z ) > FLOAT_SAFE_EPSILON
+		|| bone.GetIKLockedZ() ){
+			writer.WriteOpeningTag( "ikZ" );
+			if( fabsf( ikLimitsLower.z - 360.0f ) > FLOAT_SAFE_EPSILON
+			|| fabsf( ikLimitsUpper.z ) > FLOAT_SAFE_EPSILON ){
+				writer.WriteDataTagFloat( "lower", ikLimitsLower.z );
+				writer.WriteDataTagFloat( "upper", ikLimitsUpper.z );
+			}
+			if( fabsf( ikResistance.z ) > FLOAT_SAFE_EPSILON ){
+				writer.WriteDataTagFloat( "resistance", ikResistance.z );
+			}
+			if( bone.GetIKLockedZ() ){
+				writer.WriteDataTagInt( "locked", bone.GetIKLockedZ() ? 1 : 0 );
+			}
+			writer.WriteClosingTag( "ikZ" );
+		}
 	}
 	
 	const decStringList &shapeProperties = bone.GetShapeProperties();

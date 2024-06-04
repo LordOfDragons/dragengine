@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Game Engine
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <ctype.h>
@@ -48,7 +51,9 @@
 
 decXmlVisitorWriter::decXmlVisitorWriter() :
 pCompact( false ),
-pWriter( NULL ){
+pWriter( NULL ),
+pTagIndent( false ),
+pTagNewline( false ){
 }
 
 decXmlVisitorWriter::~decXmlVisitorWriter(){
@@ -70,6 +75,9 @@ void decXmlVisitorWriter::WriteDocument( decBaseFileWriter *file, decXmlDocument
 	if( pWriter ){
 		DETHROW( deeInvalidAction );
 	}
+	
+	pTagIndent = true;
+	pTagNewline = true;
 	
 	try{
 		pWriter = new decXmlWriter( file );
@@ -99,7 +107,7 @@ void decXmlVisitorWriter::WriteDocument( decBaseFileWriter *file, decXmlDocument
 /////////////
 
 void decXmlVisitorWriter::VisitComment( decXmlComment &comment ){
-	pWriter->WriteComment( comment.GetComment(), ! pCompact, ! pCompact );
+	pWriter->WriteComment( comment.GetComment(), ! pCompact && pTagIndent, ! pCompact && pTagNewline );
 }
 
 void decXmlVisitorWriter::VisitPI( decXmlPI &pi ){
@@ -108,12 +116,16 @@ void decXmlVisitorWriter::VisitPI( decXmlPI &pi ){
 
 void decXmlVisitorWriter::VisitElementTag( decXmlElementTag &tag ){
 	const int elementCount = tag.GetElementCount();
+	const bool tagNewline = pTagNewline;
+	const bool tagIndent = pTagIndent;
 	int i;
 	
 	// check if the tag has children
 	bool firstChildIsTag = false;
 	bool lastChildCData = true;
 	bool emptyTag = true;
+	bool hasTags = false;
+	bool hasCData = false;
 	
 	for( i=0; i<elementCount; i++ ){
 		const decXmlElement &child = *tag.GetElementAt( i );
@@ -127,16 +139,18 @@ void decXmlVisitorWriter::VisitElementTag( decXmlElementTag &tag ){
 				firstChildIsTag = true;
 			}
 			lastChildCData = false;
+			hasTags = true;
 			
 		}else if( child.CanCastToCharacterData() || child.CanCastToCDSect() ){
 			lastChildCData = true;
+			hasCData = true;
 		}
 		
 		emptyTag = false;
 	}
 	
 	// write opening tag
-	pWriter->WriteOpeningTagStart( tag.GetName(), ! pCompact );
+	pWriter->WriteOpeningTagStart( tag.GetName(), ! pCompact && tagIndent );
 	
 	for( i=0; i<elementCount; i++ ){
 		decXmlElement &child = *tag.GetElementAt( i );
@@ -146,10 +160,12 @@ void decXmlVisitorWriter::VisitElementTag( decXmlElementTag &tag ){
 		}
 	}
 	
-	pWriter->WriteOpeningTagEnd( emptyTag, ( emptyTag || firstChildIsTag ) && ! pCompact );
+	pWriter->WriteOpeningTagEnd( emptyTag, ( ( emptyTag && tagNewline ) || firstChildIsTag ) && ! pCompact );
 	
 	// write tag content if present
 	if( ! emptyTag ){
+		pTagNewline = pTagIndent = hasTags && ! hasCData;
+		
 		for( i=0; i<elementCount; i++ ){
 			decXmlElement &child = *tag.GetElementAt( i );
 			if( ! child.CanCastToAttValue() ){
@@ -158,8 +174,11 @@ void decXmlVisitorWriter::VisitElementTag( decXmlElementTag &tag ){
 		}
 		
 		// write end tag
-		pWriter->WriteClosingTag( tag.GetName(), ! lastChildCData && ! pCompact, ! pCompact );
+		pWriter->WriteClosingTag( tag.GetName(), ! lastChildCData && ! pCompact, ! pCompact && tagNewline );
 	}
+	
+	pTagIndent = tagIndent;
+	pTagNewline = tagNewline;
 }
 
 void decXmlVisitorWriter::VisitCharacterData( decXmlCharacterData &data ){

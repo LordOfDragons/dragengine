@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Basic Crash Recovery Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 // includes
@@ -72,8 +75,8 @@ void decrbWindowMain::create(){
 // Constructor, destructor
 ////////////////////////////
 
-decrbWindowMain::decrbWindowMain( FXApp* app, deCRBasic *crBasic ) :
-FXMainWindow( app, "Drag[en]gine Crash Recovery", NULL, NULL, DECOR_ALL, 0, 0, 600, 500 ){
+decrbWindowMain::decrbWindowMain( FXApp* papp, deCRBasic *crBasic ) :
+FXMainWindow( papp, "Drag[en]gine Crash Recovery", NULL, NULL, DECOR_ALL, 0, 0, 600, 500 ){
 	// prepare
 	pCRBasic = crBasic;
 	pEngine = pCRBasic->GetGameEngine();
@@ -129,13 +132,13 @@ const char *decrbWindowMain::GetTextForError( const char *error ){
 	if( strcmp( error, "NullPointer" ) == 0 ){
 		return "Invalid operation on a NULL pointer";
 	}else if( strcmp( error, "AssertionException" ) == 0 ){
-		return "Assertion exception has occured";
+		return "Assertion exception has occurred";
 	}else if( strcmp( error, "DivisionByZero" ) == 0 ){
 		return "Division By Zero";
 	}else if( strcmp( error, "IllegalInstruction" ) == 0 ){
-		return "An illegal instruction occured";
+		return "An illegal instruction occurred";
 	}else if( strcmp( error, "SegmentationFault" ) == 0 ){
-		return "An invalid read or write operation occured on non-acquired memory";
+		return "An invalid read or write operation occurred on non-acquired memory";
 	}else{
 		return "Unknown error";
 	}
@@ -146,7 +149,7 @@ const char *decrbWindowMain::GetTextForError( const char *error ){
 // Callbacks
 //////////////
 
-long decrbWindowMain::onClose( FXObject *sender, FXSelector selector, void *data ){
+long decrbWindowMain::onClose( FXObject*, FXSelector, void* ){
 	pCRBasic->LogInfo( "received onClose." );
 	pCRBasic->SetQuitEngine( true );
 	close();
@@ -154,14 +157,14 @@ long decrbWindowMain::onClose( FXObject *sender, FXSelector selector, void *data
 	return 1;
 }
 
-long decrbWindowMain::onBtnContinue( FXObject *sender, FXSelector selector, void *data ){
+long decrbWindowMain::onBtnContinue( FXObject*, FXSelector, void* ){
 	pCRBasic->SetQuitEngine( false );
 	close();
 	
 	return 1;
 }
 
-long decrbWindowMain::onBtnShutdown( FXObject *sender, FXSelector selector, void *data ){
+long decrbWindowMain::onBtnShutdown( FXObject*, FXSelector, void* ){
 	pCRBasic->SetQuitEngine( true );
 	close();
 	

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Game Engine
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -37,7 +40,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-deMutex::deMutex(){
+deMutex::deMutex()
+#ifdef OS_W32
+: pMutex( NULL )
+#endif
+{
 #if defined OS_UNIX || defined OS_BEOS
 	/*
 	const int result = pthread_mutex_init( &pMutex, NULL );
@@ -55,7 +62,10 @@ deMutex::deMutex(){
 #endif
 
 #ifdef OS_W32
-	InitializeCriticalSection( &pCritSec );
+	pMutex = CreateMutex( NULL, FALSE, NULL );
+	if( pMutex == NULL ){
+		DETHROW( deeOutOfMemory );
+	}
 #endif
 }
 
@@ -70,7 +80,9 @@ deMutex::~deMutex(){
 #endif
 
 #ifdef OS_W32
-	DeleteCriticalSection( &pCritSec );
+	if( pMutex != NULL ){
+		CloseHandle( pMutex );
+	}
 #endif
 }
 
@@ -85,27 +97,76 @@ void deMutex::Lock(){
 		DETHROW( deeInvalidAction );
 	}
 #endif
-
+	
 #ifdef OS_W32
-	EnterCriticalSection( &pCritSec );
+	if( WaitForSingleObject( pMutex, INFINITE ) != WAIT_OBJECT_0 ){
+		DETHROW( deeInvalidAction );
+	}
 #endif
 }
 
 bool deMutex::TryLock(){
 #if defined OS_UNIX || defined OS_BEOS
-	const int result = pthread_mutex_trylock( &pMutex );
-	if( result == 0 ){
+	switch( pthread_mutex_trylock( &pMutex ) ){
+	case 0:
 		return true;
-	}
-	if( result == EBUSY ){
+		
+	case EBUSY:
 		return false;
+		
+	default:
+		DETHROW( deeInvalidAction );
+	}
+#endif
+	
+#ifdef OS_W32
+	switch( WaitForSingleObject( pMutex, 0 ) ){
+	case WAIT_OBJECT_0:
+		return true;
+		
+	case WAIT_TIMEOUT:
+		return false;
+		
+	default:
+		DETHROW( deeInvalidAction );
+	}
+#endif
+}
+
+bool deMutex::TryLock( int timeout ){
+#if defined OS_UNIX || defined OS_BEOS
+	timespec ts;
+	clock_gettime( CLOCK_REALTIME, &ts );
+	ts.tv_sec += timeout / 1000;
+	ts.tv_nsec += ( long )( timeout % 1000 ) * 1000000L;
+	if( ts.tv_nsec >= 1000000000L ){
+		ts.tv_sec++;
+		ts.tv_nsec %= 1000000000L;
 	}
 	
-	DETHROW( deeInvalidAction );
+	switch( pthread_mutex_timedlock( &pMutex, &ts ) ){
+	case 0:
+		return true;
+		
+	case ETIMEDOUT:
+		return false;
+		
+	default:
+		DETHROW( deeInvalidAction );
+	}
 #endif
-
+	
 #ifdef OS_W32
-	return TryEnterCriticalSection( &pCritSec ) != 0;
+	switch( WaitForSingleObject( pMutex, timeout ) ){
+	case WAIT_OBJECT_0:
+		return true;
+		
+	case WAIT_TIMEOUT:
+		return false;
+		
+	default:
+		DETHROW( deeInvalidAction );
+	}
 #endif
 }
 
@@ -115,8 +176,10 @@ void deMutex::Unlock(){
 		DETHROW( deeInvalidAction );
 	}
 #endif
-
+	
 #ifdef OS_W32
-	LeaveCriticalSection( &pCritSec );
+	if( ! ReleaseMutex( pMutex ) ){
+		DETHROW( deeInvalidAction );
+	}
 #endif
 }

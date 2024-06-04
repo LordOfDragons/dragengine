@@ -1,0 +1,85 @@
+name: Build Msix
+
+on:
+  workflow_call:
+    inputs:
+      branch:
+        required: false
+        type: string
+        default: master
+      releaseVersion:
+        required: true
+        type: string
+      artifactArchive:
+        required: true
+        type: string
+      artifactMsix:
+        required: true
+        type: string
+      lfscache:
+        required: false
+        default: true
+        type: boolean
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch }}
+          lfs: ${{ !inputs.lfscache }}
+        
+      - name: Create LFS file hash list
+        if: ${{ inputs.lfscache }}
+        run: git lfs ls-files -l | cut -d' ' -f1 | sort > .lfs-objects-id
+
+      - name: Restore LFS Cache
+        uses: actions/cache@v4
+        id: lfs-cache
+        if: ${{ inputs.lfscache }}
+        with:
+          path: .git/lfs
+          key: lfs-cache-${{ hashFiles('.lfs-objects-id') }}
+          restore-keys: lfs-cache-
+
+      - name: Git LFS Pull
+        if: ${{ inputs.lfscache }}
+        run: |
+          git lfs pull 2>&1 | tee lfs.log
+          if grep -q "error:" "lfs.log" ; then
+            git lfs logs last
+            exit 1
+          fi
+      
+      - name: Install required packages
+        run: |
+          sudo apt -y update
+          sudo apt -y install scons
+        
+      - name: Get Archives
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.artifactArchive }}
+          path: installer/artifacts
+      
+      - name: Build MSIX
+        working-directory: installer
+        run: ./build_msix.py ${{ inputs.releaseVersion }}
+        
+      - name: Copy MSXI
+        run: |
+          cp -a installer/build_msix/dragengine-${{ inputs.releaseVersion }}.msixupload dragengine-${{ inputs.releaseVersion }}.msixupload
+          cp -a installer/build_msix/deigde-${{ inputs.releaseVersion }}.msixupload deigde-${{ inputs.releaseVersion }}.msixupload
+        
+      - name: Store MSIX
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.artifactMsix }}
+          path: |
+            dragengine-${{ inputs.releaseVersion }}.msixupload
+            deigde-${{ inputs.releaseVersion }}.msixupload
+            installer/build_msix/msix/dragengine/AppxManifest.xml
+            installer/build_msix/msix/deigde/AppxManifest.xml
+          if-no-files-found: error

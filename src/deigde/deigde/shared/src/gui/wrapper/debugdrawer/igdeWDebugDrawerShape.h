@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _IGDEWDEBUGDRAWERSHAPE_H_
@@ -37,19 +40,19 @@ class deOcclusionMesh;
 /**
  * \brief Debug drawer shape wrapper.
  * 
- * Manages a debug drawer shape for displaying editing informations in the world.
+ * Manages a debug drawer shape for displaying editing information in the world.
  * Debug drawer shapes can be tricky to handle directly since they are direct
  * allocated with reference counting. This class stores the definition of a debug
  * drawer shape and creates, updates and destroys the engine debug drawer shape
  * according to this definition. This class is designed to greatly assist in
- * rendering editing informations in the world without having to deal with the
+ * rendering editing information in the world without having to deal with the
  * low level tasks involved. The debug drawer shape is placed in the provided
  * debug drawer. If no debug drawer is set this equals to the debug drawer shape
  * being invisible. This class does not hold a reference to the provided debug
  * drawer. Therefore make sure the debug drawer is held as long as a debug drawer
  * wrapper object is using the debug drawer.
  */
-class igdeWDebugDrawerShape{
+class DE_DLL_EXPORT igdeWDebugDrawerShape{
 private:
 	deDebugDrawer *pEngDebugDrawer;
 	deDebugDrawerShape *pEngDDShape;

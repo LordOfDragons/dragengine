@@ -1,37 +1,43 @@
-/* 
- * Drag[en]gine Animator Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
 #include <string.h>
-#include <unistd.h>
 
 #include "dearRuleAnimationDifference.h"
 #include "../dearBoneState.h"
 #include "../dearBoneStateList.h"
+#include "../dearVPSState.h"
+#include "../dearVPSStateList.h"
 #include "../dearAnimationState.h"
 #include "../deDEAnimator.h"
-#include "../animation/dearAnimationMove.h"
-#include "../animation/dearAnimationKeyframeList.h"
-#include "../animation/dearAnimationKeyframe.h"
 #include "../animation/dearAnimation.h"
+#include "../animation/dearAnimationKeyframe.h"
+#include "../animation/dearAnimationKeyframeList.h"
+#include "../animation/dearAnimationKeyframeVPS.h"
+#include "../animation/dearAnimationKeyframeVPSList.h"
+#include "../animation/dearAnimationMove.h"
 #include "../dearAnimatorInstance.h"
 
 #include <dragengine/resources/animation/deAnimation.h>
@@ -39,6 +45,8 @@
 #include <dragengine/resources/animation/deAnimationMove.h>
 #include <dragengine/resources/animation/deAnimationKeyframe.h>
 #include <dragengine/resources/animation/deAnimationKeyframeList.h>
+#include <dragengine/resources/animation/deAnimationKeyframeVertexPositionSet.h>
+#include <dragengine/resources/animation/deAnimationKeyframeVertexPositionSetList.h>
 #include <dragengine/resources/animator/deAnimator.h>
 #include <dragengine/resources/animator/controller/deAnimatorController.h>
 #include <dragengine/resources/animator/controller/deAnimatorControllerTarget.h>
@@ -71,29 +79,32 @@
 /////////////////////////////////
 
 dearRuleAnimationDifference::dearRuleAnimationDifference( dearAnimatorInstance &instance,
-int firstLink, const deAnimatorRuleAnimationDifference &rule ) :
-dearRule( instance, firstLink, rule ),
+const dearAnimator &animator, int firstLink, const deAnimatorRuleAnimationDifference &rule ) :
+dearRule( instance, animator, firstLink, rule ),
 
 pAnimationDifference( rule ),
 
 pMove1( NULL ),
 pMove2( NULL ),
-//pDirtyAnimState( false ),
-//pAnimStates( NULL ),
-//pAnimStateCount( 0 ),
 
 pTargetLeadingMoveTime( rule.GetTargetLeadingMoveTime(), firstLink ),
 pTargetReferenceMoveTime( rule.GetTargetReferenceMoveTime(), firstLink ),
 
 pEnablePosition( rule.GetEnablePosition() ),
 pEnableOrientation( rule.GetEnableOrientation() ),
-pEnableSize( rule.GetEnableSize() )
+pEnableSize( rule.GetEnableSize() ),
+pEnableVPS( rule.GetEnableVertexPositionSet() )
 {
 	RuleChanged();
 }
 
 dearRuleAnimationDifference::~dearRuleAnimationDifference(){
-//	if( pAnimStates ) delete [] pAnimStates;
+	if( pMove1 ){
+		pMove1->FreeReference();
+	}
+	if( pMove2 ){
+		pMove2->FreeReference();
+	}
 }
 	
 
@@ -101,12 +112,9 @@ dearRuleAnimationDifference::~dearRuleAnimationDifference(){
 // Management
 ///////////////
 
-void dearRuleAnimationDifference::Apply( dearBoneStateList &stalist ){
+void dearRuleAnimationDifference::Apply( dearBoneStateList &stalist, dearVPSStateList &vpsstalist ){
 DEBUG_RESET_TIMERS;
-	if( ! GetEnabled() ){
-		return;
-	}
-	if( ! pMove1 || ! pMove2 ){
+	if( ! GetEnabled() || ! pMove1 || ! pMove2 ){
 		return;
 	}
 	
@@ -116,18 +124,18 @@ DEBUG_RESET_TIMERS;
 	}
 	
 	const deAnimatorRule::eBlendModes blendMode = GetBlendMode();
-//	bool useRefMove = pAnimationDifference.GetUseReferenceMove();
 	const int boneCount = GetBoneMappingCount();
+	const int vpsCount = GetVPSMappingCount();
 	int i;
 	
 	bool newBlendMode = true;//true; // temporary hack
 	
 	// move times
-	const float ltime = pMove1->GetPlaytime() *
-		decMath::clamp( pTargetLeadingMoveTime.GetValue( GetInstance(), pAnimationDifference.GetLeadingMoveTime() ), 0.0f, 1.0f );
+	const float ltime = pMove1->GetPlaytime() * decMath::clamp(
+		pTargetLeadingMoveTime.GetValue( GetInstance(), pAnimationDifference.GetLeadingMoveTime() ), 0.0f, 1.0f );
 	
-	const float rtime = pMove2->GetPlaytime() *
-		decMath::clamp( pTargetReferenceMoveTime.GetValue( GetInstance(), pAnimationDifference.GetReferenceMoveTime() ), 0.0f, 1.0f );
+	const float rtime = pMove2->GetPlaytime() * decMath::clamp(
+		pTargetReferenceMoveTime.GetValue( GetInstance(), pAnimationDifference.GetReferenceMoveTime() ), 0.0f, 1.0f );
 	
 	// step through all bones and set animation
 	for( i=0; i<boneCount; i++ ){
@@ -136,10 +144,8 @@ DEBUG_RESET_TIMERS;
 			continue;
 		}
 		
-		dearBoneState &boneState = *stalist.GetStateAt( animatorBone );
-		const int animationBone = boneState.GetAnimationBone();
-		
 		// if there is no valid bone index there is no difference
+		const int animationBone = pMapAnimationBones.GetAt( i );
 		if( animationBone == -1 ){
 			continue;
 		}
@@ -187,6 +193,8 @@ DEBUG_RESET_TIMERS;
 		}
 		
 		// blend difference with current state
+		dearBoneState &boneState = *stalist.GetStateAt( animatorBone );
+		
 		if( newBlendMode ){
 			rposition = boneState.GetPosition() + ( lposition - rposition );
 			rorientation = ( lorientation * rorientation.Conjugate() ) * boneState.GetOrientation();
@@ -216,6 +224,52 @@ DEBUG_RESET_TIMERS;
 		boneState.BlendWith( rposition, rorientation, rscale, blendMode,
 			blendFactor, pEnablePosition, pEnableOrientation, pEnableSize );
 	}
+	
+	// step through all vertex position sets and set animation
+	for( i=0; i<vpsCount; i++ ){
+		const int animatorVps = GetVPSMappingFor( i );
+		if( animatorVps == -1 ){
+			continue;
+		}
+		
+		// if there is no valid bone index there is no difference
+		const int animationVps = pMapAnimationVPS.GetAt( i );
+		if( animationVps == -1 ){
+			continue;
+		}
+		
+		// determine leading animation state
+		const dearAnimationKeyframeVPSList &kflist1 = *pMove1->GetKeyframeVPSListAt( animationVps );
+		const dearAnimationKeyframeVPS * const keyframe1 = kflist1.GetWithTime( ltime );
+		
+		float lweight = 0.0f;
+		
+		if( keyframe1 ){
+			const float time = ltime - keyframe1->GetTime();
+			if( pEnableVPS ){
+				lweight = keyframe1->InterpolateWeight( time );
+			}
+		}
+		
+		// determine reference animation state
+		const dearAnimationKeyframeVPSList &kflist2 = *pMove2->GetKeyframeVPSListAt( animationVps );
+		const dearAnimationKeyframeVPS * const keyframe2 = kflist2.GetWithTime( rtime );
+		
+		float rweight = 0.0f;
+		
+		if( keyframe2 ){
+			const float time = rtime - keyframe2->GetTime();
+			if( pEnableVPS ){
+				rweight = keyframe2->InterpolateWeight( time );
+			}
+		}
+		
+		// blend difference with current state
+		dearVPSState &vpsState = vpsstalist.GetStateAt( animatorVps );
+		rweight = vpsState.GetWeight() + ( lweight - rweight );
+		
+		vpsState.BlendWith( rweight, blendMode, blendFactor, pEnableVPS );
+	}
 DEBUG_PRINT_TIMER;
 }
 
@@ -223,6 +277,8 @@ void dearRuleAnimationDifference::RuleChanged(){
 	dearRule::RuleChanged();
 	
 	pUpdateMove();
+	pMapAnimationBones.Init( *this );
+	pMapAnimationVPS.Init( *this );
 }
 
 
@@ -240,7 +296,7 @@ void dearRuleAnimationDifference::pUpdateMove(){
 		pMove2 = NULL;
 	}
 	
-	const dearAnimation * const animation = GetInstance().GetAnimation();
+	const dearAnimation * const animation = GetUseAnimation();
 	if( animation ){
 		pMove1 = animation->GetMoveNamed( pAnimationDifference.GetLeadingMoveName() );
 		if( pMove1 ){

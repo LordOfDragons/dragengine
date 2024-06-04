@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -39,34 +42,34 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeCamera::igdeCamera( deEngine *engine ){
-	if( ! engine ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	pEngine = engine;
-	
-	pFov = 90.0f;
-	pFovRatio = 1.0f;
-	pImageDistance = 0.01f;
-	pViewDistance = 500.0f;
-	
-	pExposure = 1.0f;
-	pLowestIntensity = 10.0f;
-	pHighestIntensity = 20.0f;
-	pAdaptionTime = 1.0f;
-	
-	pDistance = 0.0f;
+igdeCamera::igdeCamera( deEngine *engine ) :
+pEngine( engine ),
+pEnableHDRR( true ),
+pEnableGI( true ),
+pDistance( 0.0f )
+{
+	DEASSERT_NOTNULL( engine )
 	
 	pEngCamera.TakeOver( engine->GetCameraManager()->CreateCamera() );
-	pEngCamera->SetFov( pFov * DEG2RAD );
-	pEngCamera->SetFovRatio( pFovRatio );
-	pEngCamera->SetImageDistance( pImageDistance );
-	pEngCamera->SetViewDistance( pViewDistance );
-	pEngCamera->SetExposure( pExposure );
-	pEngCamera->SetLowestIntensity( pLowestIntensity );
-	pEngCamera->SetHighestIntensity( pHighestIntensity );
-	pEngCamera->SetAdaptionTime( pAdaptionTime );
+	
+	pFov = pEngCamera->GetFov() * RAD2DEG;
+	pFovRatio = pEngCamera->GetFovRatio();
+	pImageDistance = pEngCamera->GetImageDistance();
+	pViewDistance = pEngCamera->GetViewDistance();
+	
+	pEngCamera->SetEnableGI( pEnableGI );
+	pEngCamera->SetEnableHDRR( pEnableHDRR );
+	pExposure = pEngCamera->GetExposure();
+	pLowestIntensity = pEngCamera->GetLowestIntensity();
+	pHighestIntensity = pEngCamera->GetHighestIntensity();
+	pAdaptionTime = pEngCamera->GetAdaptionTime();
+	
+	pWhiteIntensity = pEngCamera->GetWhiteIntensity();
+	pBloomIntensity = pEngCamera->GetBloomIntensity();
+	pBloomStrength = pEngCamera->GetBloomStrength();
+	pBloomBlend = pEngCamera->GetBloomBlend();
+	pBloomSize = pEngCamera->GetBloomSize();
+	pToneMapCurve = pEngCamera->GetToneMapCurve();
 	
 	SetName( "Camera" );
 }
@@ -103,128 +106,243 @@ void igdeCamera::SetName( const char *name ){
 }
 
 void igdeCamera::SetPosition( const decDVector &position ){
-	if( ! position.IsEqualTo( pPosition ) ){
-		pPosition = position;
-		
-		pUpdateViewMatrix();
-		pUpdateCameraPosition();
-		
-		GeometryChanged();
+	if( position.IsEqualTo( pPosition ) ){
+		return;
 	}
+	
+	pPosition = position;
+	
+	pUpdateViewMatrix();
+	pUpdateCameraPosition();
+	
+	GeometryChanged();
 }
 
 void igdeCamera::SetOrientation( const decVector &orientation ){
-	if( ! orientation.IsEqualTo( pOrientation ) ){
-		pOrientation = orientation;
-		
-		pUpdateViewMatrix();
-		pUpdateCameraPosition();
-		
-		GeometryChanged();
+	if( orientation.IsEqualTo( pOrientation ) ){
+		return;
 	}
+	
+	pOrientation = orientation;
+	
+	pUpdateViewMatrix();
+	pUpdateCameraPosition();
+	
+	GeometryChanged();
 }	
 
 void igdeCamera::SetFov( float fov ){
-	if( fabs( fov - pFov ) > 1e-5 ){
-		pFov = fov;
-		
-		pEngCamera->SetFov( pFov * DEG2RAD );
-		
-		GeometryChanged();
+	if( fabs( fov - pFov ) <= FLOAT_SAFE_EPSILON ){
+		return;
 	}
+	
+	pFov = fov;
+	
+	pEngCamera->SetFov( pFov * DEG2RAD );
+	
+	GeometryChanged();
 }
 
 void igdeCamera::SetFovRatio( float fovRatio ){
-	if( fabs( fovRatio - pFovRatio ) > 1e-5 ){
-		pFovRatio = fovRatio;
-		
-		pEngCamera->SetFovRatio( pFovRatio );
-		
-		GeometryChanged();
+	if( fabs( fovRatio - pFovRatio ) <= FLOAT_SAFE_EPSILON ){
+		return;
 	}
+	
+	pFovRatio = fovRatio;
+	
+	pEngCamera->SetFovRatio( pFovRatio );
+	
+	GeometryChanged();
 }
 
 void igdeCamera::SetImageDistance( float imageDistance ){
-	if( fabs( imageDistance - pImageDistance ) > 1e-5 ){
-		pImageDistance = imageDistance;
-		
-		pEngCamera->SetImageDistance( imageDistance );
-		
-		GeometryChanged();
+	if( fabs( imageDistance - pImageDistance ) <= FLOAT_SAFE_EPSILON ){
+		return;
 	}
+	
+	pImageDistance = imageDistance;
+	
+	pEngCamera->SetImageDistance( imageDistance );
+	
+	GeometryChanged();
 }
 
 void igdeCamera::SetViewDistance( float viewDistance ){
-	if( fabs( viewDistance - pViewDistance ) > 1e-5 ){
-		pViewDistance = viewDistance;
-		
-		pEngCamera->SetViewDistance( viewDistance );
-		
-		GeometryChanged();
+	if( fabs( viewDistance - pViewDistance ) <= FLOAT_SAFE_EPSILON ){
+		return;
 	}
+	
+	pViewDistance = viewDistance;
+	
+	pEngCamera->SetViewDistance( viewDistance );
+	
+	GeometryChanged();
+}
+
+void igdeCamera::SetEnableHDRR( bool enable ){
+	if( enable == pEnableHDRR ){
+		return;
+	}
+	
+	pEnableHDRR = enable;
+	pEngCamera->SetEnableHDRR( enable );
+	
+	AdaptionChanged();
 }
 
 void igdeCamera::SetExposure( float exposure ){
-	if( exposure < 0.0f ) exposure = 0.0f;
-	
-	if( fabs( exposure - pExposure ) > 1e-4 ){
-		pExposure = exposure;
-		
-		pEngCamera->SetExposure( exposure );
-		
-		AdaptionChanged();
+	exposure = decMath::max( exposure, 0.0f );
+	if( fabs( exposure - pExposure ) <= FLOAT_SAFE_EPSILON ){
+		return;
 	}
+	
+	pExposure = exposure;
+	pEngCamera->SetExposure( exposure );
+	
+	AdaptionChanged();
 }
 
 void igdeCamera::SetLowestIntensity( float lowestIntensity ){
-	if( lowestIntensity < 0.0f ) lowestIntensity = 0.0f;
-	
-	if( fabs( lowestIntensity - pLowestIntensity ) > 1e-4 ){
-		pLowestIntensity = lowestIntensity;
-		
-		pEngCamera->SetLowestIntensity( lowestIntensity );
-		
-		AdaptionChanged();
+	lowestIntensity = decMath::max( lowestIntensity, 0.0f );
+	if( fabs( lowestIntensity - pLowestIntensity ) <= FLOAT_SAFE_EPSILON ){
+		return;
 	}
+	
+	pLowestIntensity = lowestIntensity;
+	pEngCamera->SetLowestIntensity( lowestIntensity );
+	
+	AdaptionChanged();
 }
 
 void igdeCamera::SetHighestIntensity( float highestIntensity ){
-	if( highestIntensity < 0.0f ) highestIntensity = 0.0f;
-	
-	if( fabs( highestIntensity - pHighestIntensity ) > 1e-4 ){
-		pHighestIntensity = highestIntensity;
-		
-		pEngCamera->SetHighestIntensity( highestIntensity );
-		
-		AdaptionChanged();
+	highestIntensity = decMath::max( highestIntensity, 0.0f );
+	if( fabs( highestIntensity - pHighestIntensity ) <= FLOAT_SAFE_EPSILON ){
+		return;
 	}
+	
+	pHighestIntensity = highestIntensity;
+	pEngCamera->SetHighestIntensity( highestIntensity );
+	
+	AdaptionChanged();
 }
 
 void igdeCamera::SetAdaptionTime( float adaptionTime ){
-	if( adaptionTime < 0.0f ) adaptionTime = 0.0f;
-	
-	if( fabs( adaptionTime - pAdaptionTime ) > 1e-4 ){
-		pAdaptionTime = adaptionTime;
-		
-		pEngCamera->SetAdaptionTime( adaptionTime );
-		
-		AdaptionChanged();
+	adaptionTime = decMath::max( adaptionTime, 0.0f );
+	if( fabs( adaptionTime - pAdaptionTime ) <= FLOAT_SAFE_EPSILON ){
+		return;
 	}
+	
+	pAdaptionTime = adaptionTime;
+	pEngCamera->SetAdaptionTime( adaptionTime );
+	
+	AdaptionChanged();
+}
+
+
+
+void igdeCamera::SetEnableGI( bool enable ){
+	if( enable == pEnableGI ){
+		return;
+	}
+	
+	pEnableGI = enable;
+	pEngCamera->SetEnableGI( enable );
+	
+	AdaptionChanged();
+}
+
+
+
+void igdeCamera::SetWhiteIntensity( float intensity ){
+	intensity = decMath::max( intensity, 0.1f );
+	
+	if( fabs( intensity - pWhiteIntensity ) <= FLOAT_SAFE_EPSILON ){
+		return;
+	}
+	
+	pWhiteIntensity = intensity;
+	pEngCamera->SetWhiteIntensity( intensity );
+	
+	AdaptionChanged();
+}
+
+void igdeCamera::SetBloomIntensity( float intensity ){
+	intensity = decMath::max( intensity, 0.0f );
+	
+	if( fabs( intensity - pBloomIntensity ) <= FLOAT_SAFE_EPSILON ){
+		return;
+	}
+	
+	pBloomIntensity = intensity;
+	pEngCamera->SetBloomIntensity( intensity );
+	
+	AdaptionChanged();
+}
+
+void igdeCamera::SetBloomStrength( float strength ){
+	strength = decMath::max( strength, 0.0f );
+	
+	if( fabs( strength - pBloomStrength ) <= FLOAT_SAFE_EPSILON ){
+		return;
+	}
+	
+	pBloomStrength = strength;
+	pEngCamera->SetBloomStrength( strength );
+	
+	AdaptionChanged();
+}
+
+void igdeCamera::SetBloomBlend( float blend ){
+	blend = decMath::clamp( blend, 0.0f, 1.0f );
+	
+	if( fabs( blend - pBloomBlend ) <= FLOAT_SAFE_EPSILON ){
+		return;
+	}
+	
+	pBloomBlend = blend;
+	pEngCamera->SetBloomBlend( blend );
+	
+	AdaptionChanged();
+}
+
+void igdeCamera::SetBloomSize( float size ){
+	size = decMath::clamp( size, 0.0f, 1.0f );
+	
+	if( fabs( size - pBloomSize ) <= FLOAT_SAFE_EPSILON ){
+		return;
+	}
+	
+	pBloomSize = size;
+	pEngCamera->SetBloomSize( size );
+	
+	AdaptionChanged();
+}
+
+
+
+void igdeCamera::SetToneMapCurve( const decCurveBezier &curve ){
+	if( curve == pToneMapCurve ){
+		return;
+	}
+	
+	pToneMapCurve = curve;
+	pEngCamera->SetToneMapCurve( curve );
+	
+	AdaptionChanged();
 }
 
 
 
 void igdeCamera::SetDistance( float distance ){
-	if( distance < 0.0f ){
-		distance = 0.0f;
+	distance = decMath::max( distance, 0.01f );
+	if( fabs( distance - pDistance ) <= FLOAT_SAFE_EPSILON ){
+		return;
 	}
 	
-	if( fabs( distance - pDistance ) > 1e-5 ){
-		pDistance = distance;
-		
-		pUpdateViewMatrix();
-		pUpdateCameraPosition();
-	}
+	pDistance = distance;
+	
+	pUpdateViewMatrix();
+	pUpdateCameraPosition();
 }
 
 void igdeCamera::Reset(){
@@ -244,6 +362,49 @@ decVector igdeCamera::GetDirectionFor( int width, int height, int x, int y ) con
 	
 	direction.Normalize();
 	return pViewMatrix.TransformNormal( direction ).ToVector();
+}
+
+void igdeCamera::SetDefaultParameters( float lowestIntensity, float highestIntensity, float adaptionTime ){
+	const deCamera::Ref camera( deCamera::Ref::New( pEngine->GetCameraManager()->CreateCamera() ) );
+	
+	pFov = camera->GetFov() * RAD2DEG;
+	pFovRatio = camera->GetFovRatio();
+	pImageDistance = camera->GetImageDistance();
+	pViewDistance = camera->GetViewDistance();
+	
+	pEnableGI = true;
+	pEnableHDRR = true;
+	pExposure = camera->GetExposure();
+	pLowestIntensity = lowestIntensity;
+	pHighestIntensity = highestIntensity;
+	pAdaptionTime = adaptionTime;
+	
+	pWhiteIntensity = camera->GetWhiteIntensity();
+	pBloomIntensity = camera->GetBloomIntensity();
+	pBloomStrength = camera->GetBloomStrength();
+	pBloomBlend = camera->GetBloomBlend();
+	pBloomSize = camera->GetBloomSize();
+	pToneMapCurve = camera->GetToneMapCurve();
+	
+	pEngCamera->SetFov( pFov * DEG2RAD );
+	pEngCamera->SetFovRatio( pFovRatio );
+	pEngCamera->SetImageDistance( pImageDistance );
+	pEngCamera->SetViewDistance( pViewDistance );
+	pEngCamera->SetEnableHDRR( pEnableHDRR );
+	pEngCamera->SetExposure( pExposure );
+	pEngCamera->SetLowestIntensity( pLowestIntensity );
+	pEngCamera->SetHighestIntensity( pHighestIntensity );
+	pEngCamera->SetAdaptionTime( pAdaptionTime );
+	pEngCamera->SetEnableGI( pEnableGI );
+	pEngCamera->SetWhiteIntensity( pWhiteIntensity );
+	pEngCamera->SetBloomIntensity( pBloomIntensity );
+	pEngCamera->SetBloomStrength( pBloomStrength );
+	pEngCamera->SetBloomBlend( pBloomBlend );
+	pEngCamera->SetBloomSize( pBloomSize );
+	pEngCamera->SetToneMapCurve( pToneMapCurve );
+	
+	GeometryChanged();
+	AdaptionChanged();
 }
 
 

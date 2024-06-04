@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _IGDENATIVEFOXFILEDIALOG_H_
@@ -143,28 +146,28 @@ public:
 	
 	/** \name Events */
 	/*@{*/
-	long onCmdAccept( FXObject *sender, FXSelector selector, void *data );
+	long onCmdAccept( FXObject*, FXSelector, void* );
 	
-	long onBtnUpDir( FXObject *sender, FXSelector selector, void *data );
-	long onBtnGoRoot( FXObject *sender, FXSelector selector, void *data );
-	long onBtnMkDir( FXObject *sender, FXSelector selector, void *data );
-	long onBtnListMode( FXObject *sender, FXSelector selector, void *data );
-	long onBtnIconMode( FXObject *sender, FXSelector selector, void *data );
-	long onBtnDetailMode( FXObject *sender, FXSelector selector, void *data );
-	long updateBtnUpDir( FXObject *sender, FXSelector selector, void *data );
-	long updateBtnGoRoot( FXObject *sender, FXSelector selector, void *data );
-	long updateBtnMkDir( FXObject *sender, FXSelector selector, void *data );
-	long updateBtnListMode( FXObject *sender, FXSelector selector, void *data );
-	long updateBtnIconMode( FXObject *sender, FXSelector selector, void *data );
-	long updateBtnDetailMode( FXObject *sender, FXSelector selector, void *data );
+	long onBtnUpDir( FXObject*, FXSelector, void* );
+	long onBtnGoRoot( FXObject*, FXSelector, void* );
+	long onBtnMkDir( FXObject*, FXSelector, void* );
+	long onBtnListMode( FXObject*, FXSelector, void* );
+	long onBtnIconMode( FXObject*, FXSelector, void* );
+	long onBtnDetailMode( FXObject*, FXSelector, void* );
+	long updateBtnUpDir( FXObject*, FXSelector, void* );
+	long updateBtnGoRoot( FXObject*, FXSelector, void* );
+	long updateBtnMkDir( FXObject*, FXSelector, void* );
+	long updateBtnListMode( FXObject*, FXSelector, void* );
+	long updateBtnIconMode( FXObject*, FXSelector, void* );
+	long updateBtnDetailMode( FXObject*, FXSelector, void* );
 	
-	long onCBDirectoryChanged( FXObject *sender, FXSelector selector, void *data );
-	long onCBFilterChanged( FXObject *sender, FXSelector selector, void *data );
+	long onCBDirectoryChanged( FXObject*, FXSelector, void* );
+	long onCBFilterChanged( FXObject*, FXSelector, void* );
 	
-	long onFLItemDoubleClicked( FXObject *sender, FXSelector selector, void *data );
-	long onFLRightMouseUp( FXObject *sender, FXSelector selector, void *data );
-	long onFLItemSelected( FXObject *sender, FXSelector selector, void *data );
-	long onFLItemDeselected( FXObject *sender, FXSelector selector, void *data );
+	long onFLItemDoubleClicked( FXObject*, FXSelector, void* );
+	long onFLRightMouseUp( FXObject*, FXSelector, void* );
+	long onFLItemSelected( FXObject*, FXSelector, void* );
+	long onFLItemDeselected( FXObject*, FXSelector, void* );
 	/*@}*/
 	
 private:

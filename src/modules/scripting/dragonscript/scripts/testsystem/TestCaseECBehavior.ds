@@ -1,0 +1,395 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.TestSystem
+
+pin Dragengine.LoadSave
+pin Dragengine.Scenery
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+
+/**
+ * \brief Base class for testing BehaviorElementClass behaviors.
+ * \version 1.5
+ * 
+ * This class helps to test ECBehavior subclasses by providing the boiler plate code required
+ * to set up such tests. In particular this base class does the following:
+ * <ul>
+ * <li>Create a GameWorld instance</li>
+ * <li>Create a BehaviorElementClass instance</li>
+ * <li>Wait for preloading resources to finish</li>
+ * <li>Create a StubElement instance</li>
+ * <li>Create BehaviorElement instance</li>
+ * <li>Safely tear down all created resources</li>
+ * </ul>
+ * 
+ * This class calls hook methods at specific points during the test to allow the subclass to
+ * set up the behaviors in the required layout as well as running the tests. The following
+ * example implementation shows how a subclass can be written.
+ * 
+ * \code{.ds}
+ * class MyTestCase extends TestCaseECBehavior
+ *    public func new()
+ *    end
+ *    
+ *    protected var ECBehaviorComponent behavior
+ *    
+ *    // Overwrite method to add behaviors to element class. Created behaviors
+ *    // have to be store aside if required during tests later on. Overwriting
+ *    // this method is mandatory
+ *    protected func void addBehaviors()
+ *      behavior = ECBehaviorComponent.new(getElementClass(), null)
+ *    end
+ *    
+ *    // Overwrite method to set element stub properties. This simulates mapper setting
+ *    // object properties in the world editor. Overwriting this method is optional.
+ *    protected func void setStubProperties()
+ *      getStubElement().setPropertyValueFor("component.model", "/content/models/test.demodel")
+ *    end
+ *    
+ *    // Overwrite method to set up element after it has been created. Overwriting
+ *    // this method is optional
+ *    protected func void elementCreated()
+ *      getElement().setPosition(DVector.new(2, 1, 3))
+ *    end
+ *    
+ *    // Overwrite to run your tests on the behavior. Overwriting this method is mandatory
+ *    protected func bool testBehaviors(TestSuite testSuite)
+ *       var ECBehaviorComponent.Instance component = behavior.instance(getElement())
+ *       assertNotNull(component.getComponent())
+ *       
+ *       // Return true to continue testing during the next frame update or false
+ *       // if the test finished successfully.
+ *       return false
+ *    end
+ * end
+ * \endcode
+ */
+abstract class TestCaseECBehavior extends TestCase
+	/** \brief Helper class to store the created element aside. */
+	protected class TestBehaviorElementClass extends BehaviorElementClass
+		public var TestCaseECBehavior test
+		
+		/** \brief Create element class. */
+		public func new(TestCaseECBehavior test) super("TestBehaviorElement")
+			this.test = test
+		end
+		
+		/** \brief Dispose of element class. */
+		public func void dispose()
+			test = null
+			super.dispose()
+		end
+		
+		/** \brief Store element aside. */
+		protected func Element createElement()
+			var Element element = super.createElement()
+			test.setElement(element cast BehaviorElement)
+			return element
+		end
+	end
+	
+	
+	
+	private var BehaviorElementClass elementClass
+	private var StubElement stubElement
+	private var BehaviorElement element
+	private var PreloadCounter preloadCounter
+	private var GameWorld gameWorld
+	private var bool pCreateAndAddElementShouldFail
+	private var bool pPreloadShouldFail
+	
+	
+	
+	/** \brief Create test. */
+	public func new(String id, UnicodeString name) super(id, name)
+	end
+	
+	
+	
+	/** \brief Element class to use for testing. */
+	protected func BehaviorElementClass getElementClass()
+		return elementClass
+	end
+	
+	/** \brief Stub element to use for testing. */
+	protected func StubElement getStubElement()
+		return stubElement
+	end
+	
+	/** \brief Element to use for testing. */
+	protected func BehaviorElement getElement()
+		return element
+	end
+	
+	/** \brief Preload counter used to preload element class resources. */
+	protected func PreloadCounter getPreloadCounter()
+		return preloadCounter
+	end
+	
+	/** \brief Game world to use for testing. */
+	protected func GameWorld getGameWorld()
+		return gameWorld
+	end
+	
+	/**
+	 * \brief Calling createAndAddElement() on element stub should fail by throwing an exception.
+	 * \version 1.12
+	 */
+	public func bool getCreateAndAddElementShouldFail()
+		return pCreateAndAddElementShouldFail
+	end
+	
+	/**
+	 * \brief Set calling createAndAddElement() on element stub should fail by throwing an exception.
+	 * \version 1.12
+	 */
+	public func void setCreateAndAddElementShouldFail(bool shouldFail)
+		pCreateAndAddElementShouldFail = shouldFail
+	end
+	
+	/**
+	 * \brief Preloading on element class should fail.
+	 * \version 1.12
+	 */
+	public func bool getPreloadShouldFail()
+		return pPreloadShouldFail
+	end
+	
+	/**
+	 * \brief Set preloading on element class should fail.
+	 * \version 1.12
+	 */
+	public func void setPreloadShouldFail(bool shouldFail)
+		pPreloadShouldFail = shouldFail
+	end
+	
+	
+	
+	/** \brief Add behaviors to element class. */
+	protected abstract func void addBehaviors()
+	
+	/** \brief Set stub properties. */
+	protected func void setStubProperties()
+	end
+	
+	/** \brief Element created. */
+	protected func void elementCreated()
+	end
+	
+	/** \brief Test behaviors. */
+	protected abstract func bool testBehaviors(TestSuite testSuite)
+	
+	
+	
+	/** \brief Assert element class has named property. */
+	protected func void assertHasProperty(String name)
+		assertNotNull(elementClass.getPropertyNamed(name))
+	end
+	
+	/**
+	 * \brief Assert element class float property.
+	 * \version 1.12
+	 */
+	protected func void assertFloatProperty(ECPFloat property, float value)
+		assertEquals(property.getValue(), value)
+		assertFalse(property.getEnableLimitLower())
+		assertFalse(property.getEnableLimitUpper())
+	end
+	
+	/**
+	 * \brief Assert element class float property.
+	 * \version 1.12
+	 */
+	protected func void assertFloatProperty(ECPFloat property, float value, float limitLower)
+		assertEquals(property.getValue(), value)
+		assertTrue(property.getEnableLimitLower())
+		assertEquals(property.getLimitLower(), limitLower)
+		assertFalse(property.getEnableLimitUpper())
+	end
+	
+	/**
+	 * \brief Assert element class float property.
+	 * \version 1.12
+	 */
+	protected func void assertFloatProperty(ECPFloat property, float value, float limitLower, float limitUpper)
+		assertEquals(property.getValue(), value)
+		assertTrue(property.getEnableLimitLower())
+		assertEquals(property.getLimitLower(), limitLower)
+		assertTrue(property.getEnableLimitUpper())
+		assertEquals(property.getLimitUpper(), limitUpper)
+	end
+	
+	/**
+	 * \brief Assert element class integer property.
+	 * \version 1.12
+	 */
+	protected func void assertIntegerProperty(ECPInteger property, int value)
+		assertEquals(property.getValue(), value)
+		assertFalse(property.getEnableLimitLower())
+		assertFalse(property.getEnableLimitUpper())
+	end
+	
+	/**
+	 * \brief Assert element class integer property.
+	 * \version 1.12
+	 */
+	protected func void assertIntegerProperty(ECPInteger property, int value, int limitLower)
+		assertEquals(property.getValue(), value)
+		assertTrue(property.getEnableLimitLower())
+		assertEquals(property.getLimitLower(), limitLower)
+		assertFalse(property.getEnableLimitUpper())
+	end
+	
+	/**
+	 * \brief Assert element class integer property.
+	 * \version 1.12
+	 */
+	protected func void assertIntegerProperty(ECPInteger property, int value, int limitLower, int limitUpper)
+		assertEquals(property.getValue(), value)
+		assertTrue(property.getEnableLimitLower())
+		assertEquals(property.getLimitLower(), limitLower)
+		assertTrue(property.getEnableLimitUpper())
+		assertEquals(property.getLimitUpper(), limitUpper)
+	end
+	
+	/**
+	 * \brief Assert element class enumeration property.
+	 * \version 1.12
+	 */
+	protected func void assertEnumProperty(ECPEnumeration property, Enumeration value, Set enumerationValues)
+		assertEquals(property.getEnumeration(), value)
+		var Dictionary propertyEnums = property.getMapping()
+		assertEquals(propertyEnums.getCount(), enumerationValues.getCount())
+		enumerationValues.forEach(block Enumeration each
+			assertTrue(propertyEnums.has(each.name()))
+			assertEquals(propertyEnums.getAt(each.name()), each)
+		end)
+	end
+	
+	
+	
+	/**
+	 * \brief Set element.
+	 * 
+	 * For internal use only.
+	 */
+	public func void setElement(BehaviorElement element)
+		this.element = element
+	end
+	
+	/** \brief Initialize test. */
+	public func void init()
+		// create game world
+		gameWorld = GameWorld.new()
+		
+		// create element class
+		elementClass = TestBehaviorElementClass.new(this)
+		
+		// add behaviors
+		addBehaviors()
+		
+		// start preloading
+		preloadCounter = PreloadCounter.new()
+		elementClass.preloadResources(preloadCounter)
+	end
+	
+	/** \brief Run test. */
+	public func bool run(TestSuite testSuite)
+		// if preloading
+		if preloadCounter != null
+			// if still preloading wait
+			if preloadCounter.isNotZero()
+				return true
+			end
+			
+			// preloading finished
+			preloadCounter = null
+			
+			var Console console = Console.new(1)
+			elementClass.forEachProperty(block ElementClassProperty each
+				assertEquals(each.logPreloadProblems(elementClass, console), pPreloadShouldFail)
+			end)
+			assertFalse(pPreloadShouldFail and elementClass.getPropertyCount() == 0)
+			
+			// create element stub
+			stubElement = StubElement.new(elementClass, UniqueID.new(123))
+			setStubProperties()
+			
+			// create element. assert element has been created and has been added to game world
+			if pCreateAndAddElementShouldFail
+				var bool failed
+				
+				try
+					stubElement.createAndAddElement(gameWorld)
+					
+				catch Exception e
+					failed = true
+				end
+				
+				assertTrue(failed)
+				return false
+				
+			else
+				stubElement.createAndAddElement(gameWorld)
+			end
+			//assertNotNull(element)
+			//assertEquals(element.getGameWorld(), gameWorld)
+			
+			elementCreated()
+		end
+		
+		// run test
+		return testBehaviors(testSuite)
+	end
+	
+	/** \brief Clean up resources. */
+	public func void tearDown()
+		// stop preloading
+		preloadCounter = null
+		
+		// dispose of element
+		if element != null
+			element.safeDispose()
+			element = null
+		end
+		
+		// drop stub
+		stubElement = null
+		
+		// dispose of element class
+		if elementClass != null
+			elementClass.dispose()
+			elementClass = null
+		end
+		
+		// dispose of game world
+		if gameWorld != null
+			gameWorld.dispose()
+			gameWorld = null
+		end
+	end
+end

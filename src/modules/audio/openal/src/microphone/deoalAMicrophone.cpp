@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenAL Audio Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -29,10 +32,12 @@
 #include "../audiothread/deoalAudioThread.h"
 #include "../audiothread/deoalATDebug.h"
 #include "../audiothread/deoalATLogger.h"
+#include "../effect/deoalSharedEffectSlotManager.h"
 #include "../environment/deoalEnvProbe.h"
 #include "../environment/deoalEnvProbeList.h"
 #include "../environment/raytrace/deoalSoundRay.h"
 #include "../environment/raytrace/deoalSoundRaySegment.h"
+#include "../extensions/deoalExtensions.h"
 #include "../speaker/deoalASpeaker.h"
 #include "../world/deoalAWorld.h"
 #include "../world/octree/deoalWorldOctree.h"
@@ -59,6 +64,8 @@ deoalAMicrophone::deoalAMicrophone( deoalAudioThread &audioThread ) :
 pAudioThread( audioThread ),
 pVolume( 1.0f ),
 pMuted( true ),
+pSpeakerGain( 1.0f ),
+pEnableAuralization( true ),
 pParentWorld( NULL ),
 pOctreeNode( NULL ),
 pEnvProbeList( NULL ),
@@ -130,17 +137,18 @@ void deoalAMicrophone::SetLayerMask( const decLayerMask &layerMask ){
 	}
 }
 
+void deoalAMicrophone::SetSpeakerGain( float gain ){
+	pSpeakerGain = gain;
+}
+
+void deoalAMicrophone::SetEnableAuralization( bool enable ){
+	pEnableAuralization = enable;
+}
+
 
 
 void deoalAMicrophone::SetActive( bool active ){
 	// WARNING Called during synchronization time from main thread.
-	
-	// WARNING The active microphone is required to hold a strong reference to the parent world
-	//         otherwise segfaults can happen if the world resource is released in the main
-	//         thread while still used in the audio thread. The reason is that the microphone is
-	//         held by the audio module not the world resources. Without holding a reference to
-	//         the parent world the deoalAWorld reference drops to zero and vanishes. This can
-	//         be achieved in this method in a simple way
 	
 	if( active == pActive ){
 		return;
@@ -153,15 +161,12 @@ void deoalAMicrophone::SetActive( bool active ){
 		
 		if( pParentWorld ){
 			pParentWorld->SetAllSpeakersEnabled( false );
-			//pParentWorld->FreeReference();  // delayed until ProcessDeactivate()
 		}
 	}
 	
 	pActive = active;
 	
 	if( active && pParentWorld ){
-		pParentWorld->AddReference();
-		
 		pDirtyGeometry = true;
 		pDirtyGain = true;
 		pEnableAttachedSpeakers( true );
@@ -181,6 +186,7 @@ deoalASpeaker *deoalAMicrophone::GetSpeakerAt( int index ) const{
 void deoalAMicrophone::AddSpeaker( deoalASpeaker *speaker ){
 	// WARNING Called during synchronization time from main thread.
 	
+	pInvalidateSpeakers.RemoveIfPresent( speaker );
 	pSpeakers.Add( speaker );
 	
 	speaker->SetPositionless( true );
@@ -197,8 +203,8 @@ void deoalAMicrophone::RemoveSpeaker( deoalASpeaker *speaker ){
 	
 	speaker->SetEnabled( false );
 	
-	if( pAudioThread.GetActiveMicrophone() ){
-		pAudioThread.GetActiveMicrophone()->InvalidateSpeaker( speaker );
+	if( pAudioThread.GetActiveMicrophone() == this ){
+		InvalidateSpeaker( speaker );
 	}
 	
 	pSpeakers.RemoveFrom( index );
@@ -207,14 +213,15 @@ void deoalAMicrophone::RemoveSpeaker( deoalASpeaker *speaker ){
 void deoalAMicrophone::RemoveAllSpeakers(){
 	// WARNING Called during synchronization time from main thread.
 	
+	const bool isActive = pAudioThread.GetActiveMicrophone() == this;
 	const int count = pSpeakers.GetCount();
 	int i;
 	
 	for( i=0; i<count; i++ ){
 		deoalASpeaker * const speaker = ( deoalASpeaker* )pSpeakers.GetAt( i );
 		speaker->SetEnabled( false );
-		if( pAudioThread.GetActiveMicrophone() ){
-			pAudioThread.GetActiveMicrophone()->InvalidateSpeaker( speaker );
+		if( isActive ){
+			InvalidateSpeaker( speaker );
 		}
 	}
 	
@@ -278,11 +285,6 @@ void deoalAMicrophone::SetParentWorld( deoalAWorld *world ){
 	if( pActive ){
 		pEnableAttachedSpeakers( false );
 		pActiveSpeakers.EnableAll( false );
-		
-		if( pParentWorld ){
-			// see SetActive() why this reference is released here
-			pParentWorld->FreeReference();
-		}
 	}
 	
 	pActiveSpeakers.RemoveAll();
@@ -299,9 +301,6 @@ void deoalAMicrophone::SetParentWorld( deoalAWorld *world ){
 	pParentWorld = world;
 	
 	if( pActive && world ){
-		// see SetActive() why this reference is released here
-		world->AddReference();
-		
 		// if the microphone is the active one enable all active speakers if added to a new world
 		pEnableAttachedSpeakers( true );
 		pActiveSpeakers.EnableAll( true );
@@ -349,8 +348,7 @@ deoalEnvProbe *deoalAMicrophone::GetEnvProbe(){
 	pDirtyEnvProbe = false;
 	pEnvProbe = NULL;
 	
-	deoalAWorld * const world = GetParentWorld();
-	if( ! world || pActiveSpeakers.GetCount() == 0 ){
+	if( ! pParentWorld || pActiveSpeakers.GetCount() == 0 ){
 		return NULL;
 	}
 	
@@ -431,13 +429,18 @@ void deoalAMicrophone::ProcessAudio(){
 	// update all speakers
 	pActiveSpeakers.UpdateAll();
 	
+	int i, count = pInvalidateSpeakers.GetCount();
+	for( i=0; i<count; i++ ){
+		( ( deoalASpeaker* )pInvalidateSpeakers.GetAt( i ) )->PrepareProcessAudio();
+	}
+	pInvalidateSpeakers.RemoveAll();
+	
 	// process speakers stored in the world and this microphone
 	if( pParentWorld ){
 		pParentWorld->PrepareProcessAudio();
 	}
 	
-	const int count = pSpeakers.GetCount();
-	int i;
+	count = pSpeakers.GetCount();
 	for( i=0; i<count; i++ ){
 		( ( deoalASpeaker* )pSpeakers.GetAt( i ) )->PrepareProcessAudio();
 	}
@@ -446,22 +449,49 @@ void deoalAMicrophone::ProcessAudio(){
 	pProcessEffects();
 }
 
+void deoalAMicrophone::ProcessAudioFast(){
+	if( ! pActive ){
+		return;
+	}
+	
+	pActiveSpeakers.UpdateAll();
+	
+	int i, count = pInvalidateSpeakers.GetCount();
+	for( i=0; i<count; i++ ){
+		( ( deoalASpeaker* )pInvalidateSpeakers.GetAt( i ) )->PrepareProcessAudio();
+	}
+	pInvalidateSpeakers.RemoveAll();
+	
+	if( pParentWorld ){
+		pParentWorld->PrepareProcessAudio();
+	}
+	
+	count = pSpeakers.GetCount();
+	for( i=0; i<count; i++ ){
+		( ( deoalASpeaker* )pSpeakers.GetAt( i ) )->PrepareProcessAudio();
+	}
+}
+
 void deoalAMicrophone::ProcessDeactivate(){
-	const int count = pSpeakers.GetCount();
-	int i;
+	int i, count = pInvalidateSpeakers.GetCount();
+	for( i=0; i<count; i++ ){
+		( ( deoalASpeaker* )pInvalidateSpeakers.GetAt( i ) )->ProcessDeactivate();
+	}
+	pInvalidateSpeakers.RemoveAll();
+	
+	count = pSpeakers.GetCount();
 	for( i=0; i<count; i++ ){
 		( ( deoalASpeaker* )pSpeakers.GetAt( i ) )->ProcessDeactivate();
 	}
 	
 	if( pParentWorld ){
 		pParentWorld->ProcessDeactivate();
-		
-		pParentWorld->FreeReference();
 	}
 }
 
 void deoalAMicrophone::InvalidateSpeaker( deoalASpeaker *speaker ){
 	pActiveSpeakers.RemoveIfExisting( speaker );
+	pInvalidateSpeakers.AddIfAbsent( speaker );
 }
 
 
@@ -568,8 +598,8 @@ void deoalAMicrophone::DebugUpdateInfo( deDebugBlockInfo &debugInfo ){
 	debugInfo.UpdateView();
 }
 
-void deoalAMicrophone::DebugCaptureRays( deDebugDrawer &debugDrawer, bool xray ){
-	pDebugCaptureRays( debugDrawer, xray );
+void deoalAMicrophone::DebugCaptureRays( deDebugDrawer &debugDrawer, bool xray, bool volume ){
+	pDebugCaptureRays( debugDrawer, xray, volume );
 }
 
 
@@ -595,6 +625,7 @@ void deoalAMicrophone::SetLLWorldNext( deoalAMicrophone *microphone ){
 //////////////////////
 
 void deoalAMicrophone::pCleanUp(){
+	pParentWorld = NULL;
 	pEnvProbe = NULL;
 	if( pEnvProbeList ){
 		delete pEnvProbeList;
@@ -709,10 +740,26 @@ void deoalAMicrophone::pProcessEffects(){
 	#endif
 	
 	// update effects of all speakers in audible range
+	// if( pAudioThread.GetConfiguration().GetUseSharedEffectSlots() ){
+		// pAudioThread.GetSharedEffectSlotManager().ClearSpeakers();
+	// }
+	
 	pActiveSpeakers.UpdateEffectsAll();
+	
+	// if( pAudioThread.GetConfiguration().GetUseSharedEffectSlots() ){
+		// pAudioThread.GetSharedEffectSlotManager().AssignSpeakers();
+	// }
+	
+	if( ! pAudioThread.GetExtensions().GetHasEFX()
+	|| ! pAudioThread.GetConfiguration().GetEnableEFX() ){
+		pAudioThread.GetSharedEffectSlotManager().DropEffects();
+		
+	}else{
+		// pAudioThread.GetSharedEffectSlotManager().DebugLogState();
+	}
 }
 
-void deoalAMicrophone::pDebugCaptureRays( deDebugDrawer &debugDrawer, bool xray ){
+void deoalAMicrophone::pDebugCaptureRays( deDebugDrawer &debugDrawer, bool xray, bool volume ){
 	debugDrawer.RemoveAllShapes();
 	
 	deoalEnvProbe * const envProbe = GetEnvProbe();
@@ -740,37 +787,42 @@ void deoalAMicrophone::pDebugCaptureRays( deDebugDrawer &debugDrawer, bool xray 
 			continue;
 		}
 		
-		// colorize rays. HSV to RGB (H=0..360, S=0..1, V=0..1):
-		// c = v * s = 1  // because v=1 and s=1
-		// t = h / 60  // with H=0..1 => t = h * 6
-		// x = c * (1 - abs(mod(t, 2) - 1))
-		//   = 1 - abs(mod(t, 2) - 1)
-		// m = v - c = 0
-		// switch(t):
-		// case 0: rgb = (c+m, x+m, m) = (1, x, 0)
-		// case 1: rgb = (x+m, c+m, m) = (x, 1, 0)
-		// case 2: rgb = (m, c+m, x+m) = (0, 1, x)
-		// case 3: rgb = (m, x+m, c+m) = (0, x, 1)
-		// case 4: rgb = (x+m, m, c+m) = (x, 0, 1)
-		// case 5: rgb = (c+m, m, x+m) = (1, 0, x)
-		const float hsvT = hsvFactor * i;
-		const float hsvX = 1.0f - fabsf( fmodf( hsvT, 2.0f ) - 1.0f );
-		
-		switch( ( int )hsvT ){
-		case 0: color.Set( 1.0f, hsvX, 0.0f, colorA ); break;
-		case 1: color.Set( hsvX, 1.0f, 0.0f, colorA ); break;
-		case 2: color.Set( 0.0f, 1.0f, hsvX, colorA ); break;
-		case 3: color.Set( 0.0f, hsvX, 1.0f, colorA ); break;
-		case 4: color.Set( hsvX, 0.0f, 1.0f, colorA ); break;
-		case 5:
-		default: color.Set( 1.0f, 0.0f, hsvX, colorA );
+		if( volume ){
+			color.Set(1, 0, 0);
+			
+		}else{
+			// colorize rays. HSV to RGB (H=0..360, S=0..1, V=0..1):
+			// c = v * s = 1  // because v=1 and s=1
+			// t = h / 60  // with H=0..1 => t = h * 6
+			// x = c * (1 - abs(mod(t, 2) - 1))
+			//   = 1 - abs(mod(t, 2) - 1)
+			// m = v - c = 0
+			// switch(t):
+			// case 0: rgb = (c+m, x+m, m) = (1, x, 0)
+			// case 1: rgb = (x+m, c+m, m) = (x, 1, 0)
+			// case 2: rgb = (m, c+m, x+m) = (0, 1, x)
+			// case 3: rgb = (m, x+m, c+m) = (0, x, 1)
+			// case 4: rgb = (x+m, m, c+m) = (x, 0, 1)
+			// case 5: rgb = (c+m, m, x+m) = (1, 0, x)
+			const float hsvT = hsvFactor * i;
+			const float hsvX = 1.0f - fabsf( fmodf( hsvT, 2.0f ) - 1.0f );
+			
+			switch( ( int )hsvT ){
+			case 0: color.Set( 1.0f, hsvX, 0.0f, colorA ); break;
+			case 1: color.Set( hsvX, 1.0f, 0.0f, colorA ); break;
+			case 2: color.Set( 0.0f, 1.0f, hsvX, colorA ); break;
+			case 3: color.Set( 0.0f, hsvX, 1.0f, colorA ); break;
+			case 4: color.Set( hsvX, 0.0f, 1.0f, colorA ); break;
+			case 5:
+			default: color.Set( 1.0f, 0.0f, hsvX, colorA );
+			}
 		}
 		
 		deDebugDrawerShape * const shape = new deDebugDrawerShape;
 		shape->SetFillColor( decColor( 0.0f, 0.0f, 0.0f, 0.0f ) );
 		shape->SetEdgeColor( color );
 		
-		pDebugCaptureRays( *shape, srlist, ray );
+		pDebugCaptureRays( *shape, srlist, ray, volume );
 		
 		debugDrawer.AddShape( shape );
 	}
@@ -805,7 +857,7 @@ void deoalAMicrophone::pDebugCaptureRays( deDebugDrawer &debugDrawer, bool xray 
 }
 
 void deoalAMicrophone::pDebugCaptureRays( deDebugDrawerShape &shape,
-const deoalSoundRayList &rayList, const deoalSoundRay &ray ){
+const deoalSoundRayList &rayList, const deoalSoundRay &ray, bool volume ){
 	const int segmentCount = ray.GetSegmentCount();
 	const int firstSegment = ray.GetFirstSegment();
 	int i;
@@ -825,7 +877,7 @@ const deoalSoundRayList &rayList, const deoalSoundRay &ray ){
 	const int firstTransmittedRay = ray.GetFirstTransmittedRay();
 	
 	for( i=0; i<transmittedRayCount; i++ ){
-		pDebugCaptureRays( shape, rayList, rayList.GetTransmittedRayAt( firstTransmittedRay + i ) );
+		pDebugCaptureRays( shape, rayList, rayList.GetTransmittedRayAt( firstTransmittedRay + i ), volume );
 	}
 }
 

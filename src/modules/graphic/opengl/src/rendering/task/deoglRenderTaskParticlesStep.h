@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLRENDERTASKPARTICLESSTEP_H_
@@ -29,15 +32,15 @@
 
 class deoglCubeMap;
 class deoglRDynamicSkin;
-class deoglSPBlockUBO;
-class deoglShaderProgram;
+class deoglShaderParameterBlock;
+class deoglPipeline;
 class deoglRSkin;
 class deoglTexture;
 class deoglTexUnitsConfig;
 class deoglVAO;
 
 /**
- * @brief Render Task Particles Step.
+ * Render Task Particles Step.
  */
 class deoglRenderTaskParticlesStep{
 public:
@@ -46,14 +49,14 @@ public:
 	};
 	
 private:
-	deoglShaderProgram *pShader;
-	deoglSPBlockUBO *pParamBlockTexture;
-	deoglSPBlockUBO *pParamBlockInstance;
-	deoglTexUnitsConfig *pTUC;
+	const deoglPipeline *pPipeline;
+	const deoglShaderParameterBlock *pParamBlockTexture;
+	const deoglShaderParameterBlock *pParamBlockInstance;
+	const deoglTexUnitsConfig *pTUC;
 	
-	deoglVAO *pVAO;
-	deoglRSkin *pSkin;
-	deoglRDynamicSkin *pDynamicSkin;
+	const deoglVAO *pVAO;
+	const deoglRSkin *pSkin;
+	const deoglRDynamicSkin *pDynamicSkin;
 	int pTexture;
 	
 	sInstance *pInstances;
@@ -65,7 +68,7 @@ private:
 	GLenum pPrimitiveType;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new render task particles step. */
 	deoglRenderTaskParticlesStep();
@@ -73,40 +76,42 @@ public:
 	~deoglRenderTaskParticlesStep();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Resets the step. */
 	void Reset();
 	
-	/** Retrieves the shader. */
-	inline deoglShaderProgram *GetShader() const{ return pShader; }
-	/** Sets the shader. */
-	void SetShader( deoglShaderProgram *shader );
+	/** Pipeline. */
+	inline const deoglPipeline *GetPipeline() const{ return pPipeline; }
+	
+	/** Set pipeline. */
+	void SetPipeline( const deoglPipeline *pipeline );
+	
 	/** Retrieves the texture shader parameter block or NULL if not used. */
-	inline deoglSPBlockUBO *GetParameterBlockTexture() const{ return pParamBlockTexture; }
+	inline const deoglShaderParameterBlock *GetParameterBlockTexture() const{ return pParamBlockTexture; }
 	/** Sets the texture shader parameter block or NULL if not used. */
-	void SetParameterBlockTexture( deoglSPBlockUBO *block );
+	void SetParameterBlockTexture( const deoglShaderParameterBlock *block );
 	/** Retrieves the instance shader parameter block or NULL if not used. */
-	inline deoglSPBlockUBO *GetParameterBlockInstance() const{ return pParamBlockInstance; }
+	inline const deoglShaderParameterBlock *GetParameterBlockInstance() const{ return pParamBlockInstance; }
 	/** Sets the instance shader parameter block or NULL if not used. */
-	void SetParameterBlockInstance( deoglSPBlockUBO *block );
+	void SetParameterBlockInstance( const deoglShaderParameterBlock *block );
 	/** Retrieves the texture units configuration. */
-	inline deoglTexUnitsConfig *GetTUC() const{ return pTUC; }
+	inline const deoglTexUnitsConfig *GetTUC() const{ return pTUC; }
 	/** Sets the texture units configuration. */
-	void SetTUC( deoglTexUnitsConfig *tuc );
+	void SetTUC( const deoglTexUnitsConfig *tuc );
 	
 	/** Retrieves the vao. */
-	inline deoglVAO *GetVAO() const{ return pVAO; }
+	inline const deoglVAO *GetVAO() const{ return pVAO; }
 	/** Sets the vao. */
-	void SetVAO( deoglVAO *vao );
+	void SetVAO( const deoglVAO *vao );
 	/** Retrieves the skin. */
-	inline deoglRSkin *GetSkin() const{ return pSkin; }
+	inline const deoglRSkin *GetSkin() const{ return pSkin; }
 	/** Sets the skin. */
-	void SetSkin( deoglRSkin *skin );
+	void SetSkin( const deoglRSkin *skin );
 	/** Retrieves the dynamic skin. */
-	inline deoglRDynamicSkin *GetDynamicSkin() const{ return pDynamicSkin; }
+	inline const deoglRDynamicSkin *GetDynamicSkin() const{ return pDynamicSkin; }
 	/** Sets the dynamic skin. */
-	void SetDynamicSkin( deoglRDynamicSkin *dynamicSkin );
+	void SetDynamicSkin( const deoglRDynamicSkin *dynamicSkin );
 	/** Retrieves the texture index. */
 	inline int GetTexture() const{ return pTexture; }
 	/** Sets the texture index. */
@@ -128,7 +133,7 @@ public:
 	void SetPrimitiveType( GLenum primitiveType );
 	/*@}*/
 	
-	/** @name Instances */
+	/** \name Instances */
 	/*@{*/
 	/** Retrieves the direct pointer to the instances. */
 	inline sInstance *GetInstances() const{ return pInstances; }

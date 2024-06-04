@@ -27,6 +27,7 @@ class TouchSensor
 	/*@{*/
 	/** \brief Pposition. */
 	public func DVector getPosition()
+		return null
 	end
 	
 	/** \brief Set position. */
@@ -35,6 +36,7 @@ class TouchSensor
 	
 	/** \brief Orientation. */
 	public func Quaternion getOrientation()
+		return null
 	end
 	
 	/** \brief Set orientation. */
@@ -43,6 +45,7 @@ class TouchSensor
 	
 	/** \brief Collision filter. */
 	public func CollisionFilter getCollisionFilter()
+		return null
 	end
 	
 	/** \brief Set collision filter. */
@@ -51,6 +54,7 @@ class TouchSensor
 	
 	/** \brief Track enter leave. */
 	public func bool getTrackEnterLeave()
+		return false
 	end
 	
 	/** \brief Set if enter and leaving is tracked. */
@@ -59,6 +63,7 @@ class TouchSensor
 	
 	/** \brief Touch sensor is enabled. */
 	public func bool getEnabled()
+		return false
 	end
 	
 	/** \brief Set if touch sensor is enabled. */
@@ -67,6 +72,7 @@ class TouchSensor
 	
 	/** \brief Get shape. */
 	public func ShapeList getShape()
+		return null
 	end
 	
 	/** \brief Set shape. */
@@ -77,6 +83,7 @@ class TouchSensor
 	
 	/** \brief Touch sensor listener or \em null if not set. */
 	public func TouchSensorListener getListener()
+		return null
 	end
 	
 	/** \brief Set touch sensor listener or \em null if not set. */
@@ -87,10 +94,12 @@ class TouchSensor
 	
 	/** \brief Touch sensor contains colliders. */
 	public func bool isEmpty()
+		return false
 	end
 	
 	/** \brief Number of colliders in touch sensor. */
 	public func int getColliderCount()
+		return 0
 	end
 	
 	/**
@@ -99,6 +108,7 @@ class TouchSensor
 	 * \throws EOutOfBoundary \em collider is less than 0 or larger than or equal to getColliderCount().
 	 */
 	public func Collider getColliderAt( int collider )
+		return null
 	end
 	/*@}*/
 	
@@ -108,6 +118,7 @@ class TouchSensor
 	/*@{*/
 	/** \brief Number of colliders to ignore. */
 	public func int getIgnoreColliderCount()
+		return 0
 	end
 	
 	/**
@@ -115,10 +126,12 @@ class TouchSensor
 	 * \throws deeInvalidParam \em index is less than 0 or equal than or equal to getIgnoreColliderCount().
 	 */
 	public func Collider getIgnoreColliderAt( int index )
+		return null
 	end
 	
 	/** \brief Ignore collider is present. */
 	public func bool hasIgnoreCollider( Collider collider )
+		return false
 	end
 	
 	/** \brief Add collider to ignore. */
@@ -143,10 +156,11 @@ class TouchSensor
 	/*@{*/
 	/** \brief Point is inside touch sensor. */
 	public func bool pointInside( DVector point )
+		return false
 	end
 	
 	/**
-	 * \brief Visit all touching elements..
+	 * \brief Visit all touching elements.
 	 * \throws EOutOfBoundary \em shape is less than 0 or larger than or equal to getShapeCount().
 	 */
 	public func void allHits( ColliderListener listener )

@@ -49,6 +49,7 @@
 	<class name='DE_IMM_CameraSpot'>
 		<description>Defines the camera position and orientation to focus on a hot-spot.</description>
 		<ghost>true</ghost>
+		<scaleMode>fixed</scaleMode>
 		<billboard>
 			<skin>/igde/billboards/camera.deskin</skin>
 			<size x='0.4' y='0.4'/>
@@ -72,6 +73,7 @@
 	<class name='DE_IMM_Light'>
 		<description>Base light class for interactive main menu. Don't use it directly.</description>
 		<ghost>true</ghost>
+		<scaleMode>fixed</scaleMode>
 		<inherit name='ECBehaviorLight'>
 			<propertyPrefix>light.</propertyPrefix>
 		</inherit>
@@ -89,6 +91,7 @@
 	<class name='DE_IMM_Speaker'>
 		<description>Speaker for interactive main menu.</description>
 		<ghost>true</ghost>
+		<scaleMode>fixed</scaleMode>
 		<inherit name='ECBehaviorSpeaker'>
 			<propertyPrefix>speaker.</propertyPrefix>
 		</inherit>
@@ -106,6 +109,7 @@
 	<class name='DE_IMM_ParticleEmitter'>
 		<description>Particle emitter for interactive main menu.</description>
 		<ghost>true</ghost>
+		<scaleMode>fixed</scaleMode>
 		<inherit name='ECBehaviorParticleEmitter'>
 			<propertyPrefix>particleEmitter.</propertyPrefix>
 		</inherit>
@@ -122,6 +126,7 @@
 	<class name='DE_IMM_EnvMap'>
 		<description>Environment map probe.</description>
 		<ghost>true</ghost>
+		<scaleMode>fixed</scaleMode>
 		<inherit name='ECBehaviorEnvMapProbe'>
 			<propertyPrefix>envMapProbe.</propertyPrefix>
 		</inherit>
@@ -131,6 +136,7 @@
 	<class name='DE_IMM_TriggerEvaluate'>
 		<description>Base trigger firing if a trigger expression becomes true. This trigger is useful to reuse complex trigger expressions for various other objects.</description>
 		<ghost>true</ghost>
+		<scaleMode>fixed</scaleMode>
 		<inherit name='TriggerEvaluate'>
 		</inherit>
 		<partialHideTag>Editing</partialHideTag>
@@ -140,6 +146,7 @@
 	<class name='DE_IMM_TriggerTimer'>
 		<description>Trigger firing and resetting a trigger target after a certain time elapses if trigger expression holds true.</description>
 		<ghost>true</ghost>
+		<scaleMode>fixed</scaleMode>
 		<inherit name='TriggerTimer'>
 		</inherit>
 		<partialHideTag>Editing</partialHideTag>
@@ -149,6 +156,7 @@
 	<class name='DE_IMM_TriggerToggle'>
 		<description>Trigger toggling a trigger target if trigger expression holds true.</description>
 		<ghost>true</ghost>
+		<scaleMode>fixed</scaleMode>
 		<inherit name='TriggerToggle'>
 		</inherit>
 		<partialHideTag>Editing</partialHideTag>
@@ -187,6 +195,10 @@
 		</property>
 		<property name='displayText'>
 			<description>Display text to tell the player what this hotspot is going to do if used.</description>
+			<type>string</type>
+		</property>
+		<property name='displayTextTranslate'>
+			<description>Similar to "displayText" but using TranslationManager to get translation matching name. If used "displayText" is ignored.</description>
 			<type>string</type>
 		</property>
 		<property name='targetHotSpotActive'>

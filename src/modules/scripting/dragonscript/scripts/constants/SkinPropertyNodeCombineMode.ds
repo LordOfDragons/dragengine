@@ -1,0 +1,55 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+
+namespace Dragengine.Scenery
+
+
+/**
+ * \brief SkinPropertyNode combine mode.
+ */
+enum SkinPropertyNodeCombineMode
+	/**
+	 * \brief Blend canvas with content below using combine strength.
+	 * 
+	 * Result will be <em>d.rgba = (d.rgb * (1 - strength)) + s.rgb * strength</em> where
+	 * d=destination, s=source and strength=combine-strength.
+	 * 
+	 * For "normal" texture property d.rgb will be normalized like a normal vector.
+	 */
+	blend
+	
+	/**
+	 * \brief Overlay canvas to content below using combine strength.
+	 * 
+	 * Result will be <em>d.rgb += s.rgb * strength</em> where d=destination, s=source
+	 * and strength=combine-strength.
+	 * 
+	 * For "normal" texture property the result will be the source normal added to the
+	 * destination normal and the result normalized. This allows to super-impose fine
+	 * grained normals over coarse grained normals. The calculation is carried out in
+	 * texture space.
+	 */
+	overlay
+end

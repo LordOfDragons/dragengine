@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLVBOLAYOUT_H_
@@ -28,22 +31,22 @@ class deoglRenderThread;
 
 
 /**
- * \brief OpenGL VBO Layout.
+ * OpenGL VBO Layout.
  */
 class deoglVBOLayout{
 public:
-	/** \brief Index types. */
+	/** Index types. */
 	enum eIndexTypes{
-		/** \brief No indices. */
+		/** No indices. */
 		eitNone,
 		
-		/** \brief Unsigned int indices. */
+		/** Unsigned int indices. */
 		eitUnsignedInt,
 		
-		/** \brief Unsigned short indices. */
+		/** Unsigned short indices. */
 		eitUnsignedShort,
 		
-		/** \brief Unsigned byte indices. */
+		/** Unsigned byte indices. */
 		eitUnsignedByte
 	};
 	
@@ -63,13 +66,13 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create vbo layout. */
+	/** Create vbo layout. */
 	deoglVBOLayout();
 	
-	/** \brief Create vbo layout. */
+	/** Create vbo layout. */
 	deoglVBOLayout( const deoglVBOLayout &layout );
 	
-	/** \brief Clean up vbo layout. */
+	/** Clean up vbo layout. */
 	~deoglVBOLayout();
 	/*@}*/
 	
@@ -77,28 +80,28 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief VBO size. */
+	/** VBO size. */
 	inline int GetSize() const{ return pSize; }
 	
-	/** \brief Set VBO size. */
+	/** Set VBO size. */
 	void SetSize( int size );
 	
-	/** \brief Stride. */
+	/** Stride. */
 	inline int GetStride() const{ return pStride; }
 	
-	/** \brief Set stride. */
+	/** Set stride. */
 	void SetStride( int stride );
 	
-	/** \brief Index type. */
+	/** Index type. */
 	inline eIndexTypes GetIndexType() const{ return pIndexType; }
 	
-	/** \brief Set index type. */
+	/** Set index type. */
 	void SetIndexType( eIndexTypes indexType );
 	
-	/** \brief Size in bytes of indices. */
+	/** Size in bytes of indices. */
 	inline int GetIndexSize() const{ return pIndexSize; }
 	
-	/** \brief Opengl type of the indices. */
+	/** Opengl type of the indices. */
 	inline int GetIndexGLType() const{ return pIndexGLType; }
 	/*@}*/
 	
@@ -106,24 +109,24 @@ public:
 	
 	/** \name Attributes */
 	/*@{*/
-	/** \brief Number of attributes. */
+	/** Number of attributes. */
 	inline int GetAttributeCount() const{ return pAttributeCount; }
 	
-	/** \brief Set number of attributes. */
+	/** Set number of attributes. */
 	void SetAttributeCount( int count );
 	
-	/** \brief Attribute by index. */
+	/** Attribute by index. */
 	deoglVBOAttribute &GetAttributeAt( int index ) const;
 	
 	/**
-	 * \brief Set VAO attribute.
+	 * Set VAO attribute.
 	 * 
 	 * The VBO is supposed to be already selected. The attribute is enabled prior to be set.
 	 */
 	void SetVAOAttributeAt( deoglRenderThread &renderThread, int attribute, int target ) const;
 	
 	/**
-	 * \brief Set VAO attribute.
+	 * Set VAO attribute.
 	 * 
 	 * The VBO is supposed to be already selected. The attribute is enabled prior to be set.
 	 */
@@ -134,13 +137,13 @@ public:
 	
 	/** \name Operators */
 	/*@{*/
-	/** \brief Set layout. */
+	/** Set layout. */
 	deoglVBOLayout &operator=( const deoglVBOLayout &layout );
 	
-	/** \brief Layout matches another one. */
+	/** Layout matches another one. */
 	bool operator==( const deoglVBOLayout &layout ) const;
 	
-	/** \brief Layout does not match another one. */
+	/** Layout does not match another one. */
 	bool operator!=( const deoglVBOLayout &layout ) const;
 	/*@}*/
 	
@@ -148,7 +151,7 @@ public:
 	
 	/** \name Debugging */
 	/*@{*/
-	/** \brief Print layout to the console. */
+	/** Print layout to the console. */
 	void PrintToConsole( deoglRenderThread &renderThread, const char *name );
 	/*@}*/
 };

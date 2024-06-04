@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<module>
+	<name>IES</name>
+	<description>Handles photometric IES files loading them as Equi-Rectangular 3D images.</description>
+	<author>Plüss Roland (roland@rptd.ch)</author>
+	<version>VERSION</version>
+	<type>Image</type>
+	<pattern>.ies</pattern>
+	<priority>1</priority>
+	<library>
+		<file>FILENAME</file>
+		<size>FILESIZE</size>
+		<sha1>SHA1SUM</sha1>
+		<entrypoint>IESCreateModule</entrypoint>
+	</library>
+</module>

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -31,6 +34,13 @@ pin Dragengine.Gui.Layouts
  * 
  * Widgets are resized to fill the entire panel with only the active
  * Widget set visible. Switching is provided using a RangeModel.
+ * 
+ * \par Version 1.17
+ * 
+ * By default the minimum size of the layout lines up with the largest minimum size of all
+ * widgets. This ensures the container does not change size when the selected child widget
+ * changes. Since version 1.17 this behavior can be changed to matche the minimum size of
+ * the selected widget instead. This allows to make compact SwitchPanel layouts.
  */
 class SwitchPanel extends Panel implements RangeModelListener
 	/** \brief Switch panel action listener. */
@@ -39,29 +49,29 @@ class SwitchPanel extends Panel implements RangeModelListener
 		private var int pIndex
 		
 		/** \brief Create listener. */
-		public func new( SwitchPanel switchPanel, int index )
-			this.pSwitchPanel = switchPanel
-			this.pIndex = index
+		public func new(SwitchPanel switchPanel, int index)
+			pSwitchPanel = switchPanel
+			pIndex = index
 		end
 		
 		/** \brief Switch panel. */
 		public func SwitchPanel getSwitchPanel()
-			return this.pSwitchPanel
+			return pSwitchPanel
 		end
 		
 		/** \brief Index of panel to switch to. */
 		public func int getIndex()
-			return this.pIndex
+			return pIndex
 		end
 		
 		/** \brief Set index of panel to switch to. */
-		public func void setIndex( int index )
-			this.pIndex = index
+		public func void setIndex(int index)
+			pIndex = index
 		end
 		
 		/** \brief Run action. */
-		public func void onAction( ActionEvent event )
-			this.pSwitchPanel.getModel().setValue( this.pIndex )
+		public func void onAction(ActionEvent event)
+			pSwitchPanel.getModel().setValue(pIndex)
 		end
 	end
 	
@@ -70,18 +80,48 @@ class SwitchPanel extends Panel implements RangeModelListener
 		private var SwitchPanel pSwitchPanel
 		
 		/** \brief Create listener. */
-		public func new( SwitchPanel switchPanel )
-			this.pSwitchPanel = switchPanel
+		public func new(SwitchPanel switchPanel)
+			pSwitchPanel = switchPanel
 		end
 		
 		/** \brief Switch panel. */
 		public func SwitchPanel getSwitchPanel()
-			return this.pSwitchPanel
+			return pSwitchPanel
 		end
 		
 		/** \brief Selection in the model changed. */
-		public func void selectionChanged( ListModel listModel )
-			this.pSwitchPanel.getModel().setValue( listModel.getSelected() )
+		public func void selectionChanged(ListModel listModel)
+			var RangeModel model = pSwitchPanel.getModel()
+			if model != null // protect against disposing
+				model.setValue(listModel.getSelected())
+			end
+		end
+	end
+	
+	/**
+	 * \brief Mouse listener scrolling ToggleButtonGroup if used as headers.
+	 * \version 1.9
+	 */
+	class ScrollHeaderToggleButtons extends DefaultMouseListener
+		private var ToggleButtonGroup pGroup
+		
+		/** \brief Create mouse listener. */
+		public func new(ToggleButtonGroup group)
+			if group == null
+				throw ENullPointer.new("group")
+			end
+			pGroup = group
+		end
+		
+		/** \brief Toggle button group to scroll. */
+		public func ToggleButtonGroup getGroup()
+			return pGroup
+		end
+		
+		/** \brief Mouse wheel moved. */
+		public func void onMouseWheel(MouseEvent event)
+			var int y = event.getPosition().getY()
+			pGroup.setSelected(DEMath.clamp(pGroup.getSelected() - y, 0, pGroup.getCount() - 1))
 		end
 	end
 	
@@ -94,23 +134,14 @@ class SwitchPanel extends Panel implements RangeModelListener
 	/**
 	 * \brief Create switch panel.
 	 */
-	public func new() this( DefaultRangeModel.new() )
+	public func new() this(DefaultRangeModel.new())
 	end
 	
 	/**
 	 * \brief Create switch panel.
 	 */
-	public func new( RangeModel model ) super( TabLayout.new() )
-		this.setModel( model )
-	end
-	
-	/**
-	 * \brief Create switch panel.
-	 * 
-	 * Block receives panel as argument. Block call is wrapped inside runWhileBlockingLayout()
-	 * for efficiency. doLayout() will be called after leaving the block.
-	 */
-	public func new( Block blockAddContent ) this( DefaultRangeModel.new(), blockAddContent )
+	public func new(RangeModel model) super(TabLayout.new())
+		setModel(model)
 	end
 	
 	/**
@@ -119,15 +150,24 @@ class SwitchPanel extends Panel implements RangeModelListener
 	 * Block receives panel as argument. Block call is wrapped inside runWhileBlockingLayout()
 	 * for efficiency. doLayout() will be called after leaving the block.
 	 */
-	public func new( RangeModel model, Block blockAddContent ) super( TabLayout.new(), blockAddContent )
-		this.setModel( model )
+	public func new(Block blockAddContent) this(DefaultRangeModel.new(), blockAddContent)
+	end
+	
+	/**
+	 * \brief Create switch panel.
+	 * 
+	 * Block receives panel as argument. Block call is wrapped inside runWhileBlockingLayout()
+	 * for efficiency. doLayout() will be called after leaving the block.
+	 */
+	public func new(RangeModel model, Block blockAddContent) super(TabLayout.new(), blockAddContent)
+		setModel(model)
 	end
 	
 	/** Dispose of the widget. */
 	public func void dispose()
-		if this.pModel != null
-			this.pModel.removeListener( this )
-			this.pModel = null
+		if pModel != null
+			pModel.removeListener(this)
+			pModel = null
 		end
 		
 		super.dispose()
@@ -137,55 +177,85 @@ class SwitchPanel extends Panel implements RangeModelListener
 	
 	/** \brief Selection model. */
 	public func RangeModel getModel()
-		return this.pModel
+		return pModel
 	end
 	
 	/** \brief Set selection model. */
-	public func void setModel( RangeModel model )
+	public func void setModel(RangeModel model)
 		if model == null
 			throw EInvalidParam.new()
 		end
 		
-		if model == this.pModel
+		if model == pModel
 			return
 		end
 		
-		if this.pModel != null
-			this.pModel.removeListener( this )
+		if pModel != null
+			pModel.removeListener(this)
 		end
 		
-		this.pModel = model
+		pModel = model
 		
-		model.setAll( 0, this.getWidgetCount() - 1, 1, 0, 1 )
-		model.addListener( this )
+		model.setAll(0, getWidgetCount() - 1, 1, 0, 1)
+		model.addListener(this)
+	end
+	
+	
+	
+	/**
+	 * \brief Compact mode.
+	 * \version 1.17
+	 * 
+	 * If compact mode is used the minimum size of the layout matches the minimum size of the
+	 * selected child widget instead of the largest minimum size of all child widgets.
+	 */
+	public func bool getCompact()
+		return (getLayout() cast TabLayout).getCompact()
+	end
+	
+	/**
+	 * \brief Set compact mode.
+	 * \version 1.17
+	 * 
+	 * If compact mode is used the minimum size of the layout matches the minimum size of the
+	 * selected child widget instead of the largest minimum size of all child widgets.
+	 */
+	public func void setCompact(bool compact)
+		var TabLayout layout = getLayout() cast TabLayout
+		if compact == layout.getCompact()
+			return
+		end
+		
+		layout.setCompact(compact)
+		doLayout()
 	end
 	
 	
 	
 	/** \brief Add widget to container using default settings. */
-	public func void addWidget( Widget widget )
-		super.addWidget( widget )
+	public func void addWidget(Widget widget)
+		super.addWidget(widget)
 		
-		if this.pModel != null
-			this.pModel.setMaximum( this.getWidgetCount() - 1 )
+		if pModel != null
+			pModel.setMaximum(getWidgetCount() - 1)
 		end
 	end
 	
 	/** \brief Add widget to container using the specified settings. */
-	public func void addWidget( Widget widget, Object settings )
-		super.addWidget( widget, settings )
+	public func void addWidget(Widget widget, Object settings)
+		super.addWidget(widget, settings)
 		
-		if this.pModel != null
-			this.pModel.setMaximum( this.getWidgetCount() - 1 )
+		if pModel != null
+			pModel.setMaximum(getWidgetCount() - 1)
 		end
 	end
 	
 	/** \brief Remove widget from container. */
-	public func void removeWidget( Widget widget )
-		super.removeWidget( widget )
+	public func void removeWidget(Widget widget)
+		super.removeWidget(widget)
 		
-		if this.pModel != null
-			this.pModel.setMaximum( this.getWidgetCount() - 1 )
+		if pModel != null
+			pModel.setMaximum(getWidgetCount() - 1)
 		end
 	end
 	
@@ -193,8 +263,8 @@ class SwitchPanel extends Panel implements RangeModelListener
 	public func void removeAllWidgets()
 		super.removeAllWidgets()
 		
-		if this.pModel != null
-			this.pModel.setMaximum( 0 )
+		if pModel != null
+			pModel.setMaximum(0)
 		end
 	end
 	
@@ -202,17 +272,17 @@ class SwitchPanel extends Panel implements RangeModelListener
 	
 	/** \brief Update selected tab. */
 	public func void updateSelectedTab()
-		( this.getLayout() cast TabLayout ).selectTab( this, this.pModel.getValue() )
+		(getLayout() cast TabLayout).selectTab(this, pModel.getValue())
 	end
 	
 	
 	
 	/** \brief Minimum, maximum or page size changed. */
-	public func void rangeChanged( RangeModel rangeModel )
+	public func void rangeChanged(RangeModel rangeModel)
 	end
 	
 	/** \brief Value changed. */
-	public func void valueChanged( RangeModel rangeModel )
-		this.updateSelectedTab()
+	public func void valueChanged(RangeModel rangeModel)
+		updateSelectedTab()
 	end
 end

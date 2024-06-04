@@ -1,0 +1,433 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.ConversationSystem
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief Behavior adding Action support to VR hands.
+ * \version 1.10
+ * 
+ * Allows instance of BaseVRHandAction to be assigned to actor VR hands. During thinking
+ * the Action is called.
+ * 
+ * Actions allow actors to perform a specific, well defined and enclosed action like
+ * interacting with an object for each hand separately. These actions run after the main
+ * actor action as provided by ECBehaviorActorAIAction. VR hand actions are typically
+ * only suitable for the player.
+ * 
+ * Supports these optional behaviors:
+ * - ECBehaviorConversationActor
+ * 
+ * Requires these behaviors:
+ * - ECBehaviorVRHand
+ */
+class ECBehaviorVRHandAction extends DefaultECBehavior
+	/** \brief Factory for creating action. */
+	interface ActionFactory
+		/** \brief Create action for behavior instance. */
+		func BaseVRHandAction createAction(Instance instance)
+	end
+	
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		/** \brief Hand collider listener forwarding to Action. */
+		class HandColliderListener extends ECBehaviorVRHand.DefaultCollisionListener
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func void collisionResponse(ECBehaviorVRHand.Instance instance,\
+			Collider collider, CollisionInfo info)
+				if pInstance.getAction() != null
+					pInstance.getAction().collisionResponse(collider, info)
+				end
+			end
+		end
+		
+		/** \brief Conversation actor listener forwarding to Action/AI. */
+		class ConvoActorListener extends ECBehaviorConversationActor.DefaultListener
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func bool wait(ECBehaviorConversationActor.Instance instance)
+				return pInstance.getAction() != null and pInstance.getAction().conversationWait()
+			end
+		end
+		
+		
+		var ECBehaviorVRHandAction pECBehavior
+		var ECBehaviorVRHand.Instance pVRHand
+		var ECBehaviorConversationActor.Instance pConversationActor
+		
+		var BaseVRHandAction pAction
+		
+		
+		/** \brief Create behavior instance. */
+		func new(ECBehaviorVRHandAction ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
+			
+			setRequiresEnterFrame(true)
+		end
+		
+		/** \brief Dispose of behavior instance. */
+		func void dispose()
+			setActionAndDispose(null)
+			
+			pConversationActor = null
+			pVRHand = null
+			super.dispose()
+		end
+		
+		
+		/** \brief Initialize behavior from stub. */
+		func void init(StubElement stub)
+			var BehaviorElement element = getElement()
+			
+			if pECBehavior.getVRHand() != null
+				pVRHand = pECBehavior.getVRHand().instance(element)
+			end
+			if pECBehavior.getConversationActor() != null
+				pConversationActor = pECBehavior.getConversationActor().instance(element)
+			end
+			
+			if pVRHand != null
+				pVRHand.addCollisionListener(HandColliderListener.new(this))
+			end
+			if pConversationActor != null
+				pConversationActor.addListener(ConvoActorListener.new(this))
+			end
+			
+			setAction(pECBehavior.getActionFactory().createAction(this))
+		end
+		
+		
+		/** \brief Behavior. */
+		func ECBehaviorVRHandAction getECBehavior()
+			return pECBehavior
+		end
+		
+		/** \brief Conversation actor if present. */
+		func ECBehaviorConversationActor.Instance getConversationActor()
+			return pConversationActor
+		end
+		
+		
+		/** \brief Active action or \em null. */
+		func BaseVRHandAction getAction()
+			return pAction
+		end
+		
+		/**
+		 * \brief Set active action or \em null.
+		 * 
+		 * Does not call dispose() on old action if present.
+		 */
+		func void setAction(BaseVRHandAction action)
+			if action == pAction
+				return
+			end
+			
+			if pAction != null
+				pAction.deactivate()
+			end
+			
+			pAction = action
+			
+			if action != null
+				action.activate(getElement(), pVRHand)
+			end
+			
+			setRequiresThink(action != null)
+		end
+		
+		/**
+		 * \brief Set active action or \em null.
+		 * 
+		 * Calls dispose() on old action if present.
+		 */
+		func void setActionAndDispose(BaseVRHandAction action)
+			var BaseVRHandAction disposeAction = pAction
+			setAction(null)
+			if disposeAction != null
+				disposeAction.dispose()
+			end
+		end
+		
+		
+		/** \brief Frame update started. */
+		func void enterFrame()
+			if pAction != null
+				pAction.enterFrame()
+			end
+		end
+		
+		/**
+		 * \brief Think about what to do for the next frame update.
+		 * 
+		 * Calls BaseVRHandAction.think().
+		 */
+		func void think(float elapsed)
+			if pAction != null
+				pAction.think(elapsed)
+			end
+		end
+		
+		/**
+		 * \brief Post thinking after physics processing is finished.
+		 * 
+		 * If actor is player controlled calls BaseVRHandAction.playerPostThink(float)
+		 * and BaseVRHandAction.postThink(float). If actor is not player controlled only
+		 * BaseVRHandAction.postThink(float) is called.
+		 */
+		func void postThink(float elapsed)
+			if pAction != null
+				pAction.postThink(elapsed)
+			end
+		end
+		
+		/** \brief Add element to game world. */
+		func void addToGameWorld()
+			if pAction != null
+				pAction.enteredGameWorld()
+			end
+		end
+		
+		/** \brief Remove element from game world. */
+		func void removeFromGameWorld()
+			if pAction != null
+				pAction.leftGameWorld()
+			end
+		end
+		
+		
+		/** \brief Read behavior from file. */
+		func void readFromFile(PersistencyEnvironment env, FileReader reader)
+			select reader.readByte() // version
+			case 0
+				var BehaviorElement element = getElement()
+				
+				pAction = env.readObjectOrNull(reader) cast BaseVRHandAction
+				if pAction != null
+					pAction.activateWhileLoading(element, pVRHand)
+				end
+				
+			else
+				throw EInvalidParam.new("unsupported version")
+			end
+			
+			setRequiresThink(pAction != null)
+		end
+		
+		/** \brief Write behavior to file. */
+		func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+			writer.writeByte(0) // version
+			
+			env.writeObjectOrNull(writer, pAction)
+		end
+	end
+	
+	
+	
+	var ECBehaviorVRHand pVRHand
+	var ECBehaviorConversationActor pConversationActor
+	var ActionFactory pActionFactory
+	
+	
+	
+	/**
+	 * \brief Create behavior element class.
+	 * 
+	 * These values are optional and can be null: \em conversationActor.
+	 * 
+	 * The default Action is BVRHAEmpty.
+	 */
+	func new(BehaviorElementClass eclass, ECBehaviorVRHand vrHand, \
+	ECBehaviorConversationActor conversationActor, String id) \
+	this(eclass, vrHand, conversationActor, id, "vrHandAction(" + id + ").")
+	end
+	
+	func new(BehaviorElementClass eclass, ECBehaviorVRHand vrHand, \
+	ECBehaviorConversationActor conversationActor, String id, String prefix) super(eclass, id)
+		if vrHand == null
+			throw ENullPointer.new("vrHand")
+		end
+		
+		pVRHand = vrHand
+		pConversationActor = conversationActor
+		pActionFactory = BaseVRHandAction.Factory.new()
+		
+		eclass.addBehavior(this)
+	end
+	
+	/** \brief Dispose of behavior. */
+	func void dispose()
+		pVRHand = null
+		pConversationActor = null
+		pActionFactory = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Collider AI behavior or null. */
+	func ECBehaviorVRHand getVRHand()
+		return pVRHand
+	end
+	
+	/** \brief Set collider AI behavior or null. */
+	func void setColliderAI(ECBehaviorVRHand vrHand)
+		pVRHand = vrHand
+	end
+	
+	/** \brief Conversation actor behavior or null. */
+	func ECBehaviorConversationActor getConversationActor()
+		return pConversationActor
+	end
+	
+	/**
+	 * \brief Set conversation actor behavior or null.
+	 * 
+	 * If set conversation conditions and commands are added.
+	 */
+	func void setConversationActor(ECBehaviorConversationActor conversationActor)
+		pConversationActor = conversationActor
+	end
+	
+	/** \brief Action factory. */
+	func ActionFactory getActionFactory()
+		return pActionFactory
+	end
+	
+	/** \brief Set action factory. */
+	func void setActionFactory(ActionFactory factory)
+		if factory == null
+			throw ENullPointer.new()
+		end
+		pActionFactory = factory
+	end
+	
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
+	end
+	
+	
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorVRHandAction.
+	 */
+	static func ECBehaviorVRHandAction getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorVRHandAction each
+			return true
+		end) cast ECBehaviorVRHandAction
+	end
+	
+	/**
+	 * \brief Get behavior with id in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorVRHandAction with specific identifier.
+	 */
+	static func ECBehaviorVRHandAction getBehaviorIn(BehaviorElementClass eclass, String id)
+		return eclass.findBehavior(block ECBehaviorVRHandAction each
+			return each.getID().equals(id)
+		end) cast ECBehaviorVRHandAction
+	end
+	
+	/**
+	 * \brief Get list of all behaviors in element.
+	 * 
+	 * Returns list contains ECBehaviorVRHandAction behaviors in the order they have
+	 * been created in the element.
+	 */
+	static func Array getAllBehaviorsIn(BehaviorElementClass eclass)
+		return eclass.collectBehaviors(block ECBehaviorVRHandAction each
+			return true
+		end)
+	end
+	
+	
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorVRHandAction.Instance . If more than one instance is present returns
+	 * the first instance.
+	 */
+	static func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
+			return true
+		end) cast Instance
+	end
+	
+	/**
+	 * \brief Get instance with id in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorVRHandAction.Instance with specific identifier.
+	 */
+	static func Instance getInstanceIn(BehaviorElement element, String id)
+		return element.findInstance(block Instance each
+			return each.getECBehavior().getID().equals(id)
+		end) cast Instance
+	end
+	
+	/**
+	 * \brief Get list of all instances in element.
+	 * 
+	 * Returns list contains ECBehaviorVRHandAction.Instance instances in the order they have
+	 * been created in the element.
+	 */
+	static func Array getAllInstancesIn(BehaviorElement element)
+		return element.collectInstances(block Instance each
+			return true
+		end)
+	end
+	
+	
+	
+	/** \brief Create Behavior instance. */
+	func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
+	end
+end

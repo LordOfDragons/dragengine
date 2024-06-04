@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Sky Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -261,6 +264,20 @@ public:
 	}
 	
 	virtual igdeUndo *OnAction( seSky *sky ) = 0;
+	
+	virtual void Update(){
+		seSky * const sky = pPanel.GetSky();
+		if( sky ){
+			UpdateSky( *sky );
+			
+		}else{
+			SetEnabled( false );
+		}
+	}
+	
+	virtual void UpdateSky( const seSky & ){
+		SetEnabled( true );
+	}
 };
 
 class cBaseActionLayer : public cBaseAction{
@@ -285,6 +302,20 @@ public:
 	}
 	
 	virtual igdeUndo *OnActionLayer( seSky *sky, seLayer *layer ) = 0;
+	
+	virtual void UpdateSky ( const seSky &sky ){
+		seLayer * const layer = pPanel.GetLayer();
+		if( layer ){
+			UpdateLayer( sky, *layer );
+			
+		}else{
+			SetEnabled( false );
+		}
+	}
+	
+	virtual void UpdateLayer( const seSky &, const seLayer & ){
+		SetEnabled( true );
+	}
 };
 
 
@@ -336,10 +367,6 @@ public:
 	virtual igdeUndo *OnActionLayer( seSky*, seLayer *layer ){
 		return new seULayerRemove( layer );
 	}
-	
-	virtual void Update(){
-		SetEnabled( pPanel.GetLayer() != NULL );
-	}
 };
 
 class cActionLayerUp : public cBaseActionLayer{
@@ -354,7 +381,7 @@ public:
 		return new seULayerMoveUp( layer );
 	}
 	
-	virtual void Update(){
+	virtual void UpdateLayer( const seSky &, const seLayer & ){
 		SetEnabled( pListBox.GetSelection() > 0 );
 	}
 };
@@ -371,7 +398,7 @@ public:
 		return new seULayerMoveDown( layer );
 	}
 	
-	virtual void Update(){
+	virtual void UpdateLayer( const seSky &, const seLayer & ){
 		SetEnabled( pListBox.GetSelection() >= 0 && pListBox.GetSelection() < pListBox.GetItemCount() - 1 );
 	}
 };
@@ -490,7 +517,7 @@ public:
 class cActionMulBySkyLight : public cBaseActionLayer{
 public:
 	cActionMulBySkyLight( seWPLayer &panel ) : cBaseActionLayer( panel, "Multiply By Sky Light",
-		"Determins if the layer intensity is multiplied by the sky light intensity" ){ }
+		"Determines if the layer intensity is multiplied by the sky light intensity" ){ }
 	
 	virtual igdeUndo *OnActionLayer( seSky*, seLayer *layer ){
 		return new seULayerToggleMulBySkyLight( layer );
@@ -500,7 +527,7 @@ public:
 class cActionMulBySkyColor : public cBaseActionLayer{
 public:
 	cActionMulBySkyColor( seWPLayer &panel ) : cBaseActionLayer( panel, "Multiply By Sky Color",
-		"Determins if the layer color is multiplied by the sky light color" ){ }
+		"Determines if the layer color is multiplied by the sky light color" ){ }
 	
 	virtual igdeUndo *OnActionLayer( seSky*, seLayer *layer ){
 		return new seULayerToggleMulBySkyColor( layer );
@@ -627,8 +654,8 @@ public:
 		return new seUBodyRemove( body );
 	}
 	
-	virtual void Update(){
-		SetEnabled( pPanel.GetBody() != NULL );
+	void UpdateLayer( const seSky &, const seLayer & ){
+		SetEnabled( pPanel.GetBody() );
 	}
 };
 
@@ -650,7 +677,7 @@ public:
 		return new seUBodyMoveUp( body );
 	}
 	
-	virtual void Update(){
+	void UpdateLayer( const seSky &, const seLayer & ){
 		SetEnabled( pSpinTextField.GetValue() > pSpinTextField.GetLower() );
 	}
 };
@@ -673,7 +700,7 @@ public:
 		return new seUBodyMoveDown( body );
 	}
 	
-	virtual void Update(){
+	void UpdateLayer( const seSky &, const seLayer & ){
 		SetEnabled( pSpinTextField.GetValue() < pSpinTextField.GetUpper() );
 	}
 };
@@ -778,8 +805,8 @@ public:
 		return new seUTargetAddLink( layer, target, link );
 	}
 	
-	virtual void Update(){
-		SetEnabled( pPanel.GetLayer() && pComboLinks.GetSelectedItem() );
+	virtual void UpdateLayer( const seSky &, const seLayer & ){
+		SetEnabled( pComboLinks.GetSelectedItem() );
 	}
 };
 
@@ -806,8 +833,8 @@ public:
 		return new seUTargetRemoveLink( layer, target, link );
 	}
 	
-	virtual void Update(){
-		SetEnabled( pPanel.GetLayer() && pPanel.GetLayer()->GetBodies().GetCount() > 0 );
+	virtual void UpdateLayer( const seSky &, const seLayer &layer ){
+		SetEnabled( layer.GetTarget( layer.GetActiveTarget() ).GetLinks().GetCount() > 0 );
 	}
 };
 
@@ -976,6 +1003,18 @@ void seWPLayer::SetSky( seSky *sky ){
 	
 	UpdateLayerList();
 	UpdateLinkList();
+	OnSkyPathChanged();
+}
+
+void seWPLayer::OnSkyPathChanged(){
+	if( pSky ){
+		pEditSkin->SetBasePath( pSky->GetDirectoryPath() );
+		pEditBodySkin->SetBasePath( pSky->GetDirectoryPath() );
+		
+	}else{
+		pEditSkin->SetBasePath( "" );
+		pEditBodySkin->SetBasePath( "" );
+	}
 }
 
 seLayer *seWPLayer::GetLayer() const{

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLDCOLLISIONDETECTION_H_
@@ -28,7 +31,7 @@
 
 
 /**
- * @brief Collection of collision detection routines.
+ * Collection of collision detection routines.
  *
  * Contains a set of collision detection routines used often
  * in a game engine or similar 3D project. Some collision
@@ -50,13 +53,13 @@ public:
 	};
 	
 public:
-	/** @name Closest Point Routines */
+	/** \name Closest Point Routines */
 	/*@{*/
-	/** \brief Retrieves the closest point on a line to another point. */
+	/** Retrieves the closest point on a line to another point. */
 	static decDVector ClosestPointOnLine( const decDVector &lineFrom, const decDVector &lineTo, const decDVector &point );
 	
 	/**
-	 * \brief Retrieves the closest point on an infinite ray to another point.
+	 * Retrieves the closest point on an infinite ray to another point.
 	 * \details rayDirection has to be normalized.
 	 */
 	decDVector ClosestPointOnRay( const decDVector &rayOrigin, const decDVector &rayDirection, const decDVector &point );
@@ -106,7 +109,7 @@ public:
 		const decDVector &tp3, const decDVector &tp4, const decDVector &p );
 	/*@}*/
 	
-	/** @name Intersection Routines */
+	/** \name Intersection Routines */
 	/*@{*/
 	/**
 	 * Intersections a ray with a plane.
@@ -135,7 +138,7 @@ public:
 	static double RaySphere( const decDVector &rp, const decDVector &rd, const decDVector &sc, double sr );
 	/*@}*/
 	
-	/** @name Distance Routines */
+	/** \name Distance Routines */
 	/*@{*/
 	/**
 	 * Retrieves the smallest distance of a line segment to another line segment.
@@ -147,13 +150,13 @@ public:
 	static double SegmentSegmentDistance( const decDVector &as, const decDVector &ae, const decDVector &bs, const decDVector &be );
 	
 	/**
-	 * \brief Retrieves the distance of a point to an infinite ray.
+	 * Retrieves the distance of a point to an infinite ray.
 	 * \details rayDirection has to be normalized.
 	 */
 	static double PointRayDistance( const decDVector &rayOrigin, const decDVector &rayDirection, const decDVector &point );
 	/*@}*/
 	
-	/** @name Collision Tests */
+	/** \name Collision Tests */
 	/*@{*/
 	/**
 	 * Determines if a point is inside a triangle. The point has
@@ -369,7 +372,7 @@ public:
 		const decDVector &trinormal );
 	/*@}*/
 	
-	/** @name Side Test Routines */
+	/** \name Side Test Routines */
 	/*@{*/
 	/**
 	 * Determines on which side of a plane the given point lies

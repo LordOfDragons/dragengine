@@ -1,33 +1,38 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DESCRIPTINGDRAGONSCRIPT_H_
 #define _DESCRIPTINGDRAGONSCRIPT_H_
 
 #include <libdscript/libdscript.h>
-#include "dragengine/systems/modules/scripting/deBaseScriptingModule.h"
 #include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/systems/modules/scripting/deBaseScriptingModule.h>
+
+#include "dedsLoadingScreen.h"
+
 
 class deClassPhysicsSystem;
-// predefinitions
 class deEngine;
 
 class deClassAISystem;
@@ -46,6 +51,7 @@ class deClassARForeignState;
 class deClassARGroup;
 class deClassARInverseKinematic;
 class deClassARLimit;
+class deClassARMirror;
 class deClassARStateManipulator;
 class deClassARStateSnapshot;
 class deClassARSubAnimator;
@@ -110,10 +116,13 @@ class deClassGame;
 class deClassGraphicSystem;
 class deClassHeightTerrain;
 class deClassImage;
+class deClassImagePixels;
+class deClassEditableImage;
 class deClassInputDevice;
 class deClassInputDeviceAxis;
 class deClassInputDeviceButton;
 class deClassInputDeviceFeedback;
+class deClassInputDeviceComponent;
 class deClassInputEvent;
 class deClassInputSystem;
 class deClassLanguagePack;
@@ -203,7 +212,11 @@ class deClassVector;
 class deClassVector2;
 class deClassVideo;
 class deClassVideoPlayer;
+class deClassVRSystem;
 class deClassWorld;
+class deClassService;
+class deClassServiceListener;
+class deClassServiceObject;
 
 class deCollisionInfo;
 class dedsColliderListenerClosest;
@@ -221,7 +234,7 @@ class deErrorTraceValue;
 
 // scripting dragonscript class
 class deScriptingDragonScript : public deBaseScriptingModule{
-private:
+public:
 	enum eKeyEventIdentifiers{
 		eeiKeyPress,
 		eeiKeyRelease,
@@ -231,8 +244,32 @@ private:
 		eeiMouseMove,
 		eeiCount, // no value, just count of entries
 	};
-
+	
+	enum eState{
+		esStopped,
+		esSkipOneFrame,
+		esLoadBasicPackages,
+		esLoadGame,
+		esCreateGameObject,
+		esInitGameObject,
+		esReady
+	};
+	
+	struct sModuleVersion{
+		decString version;
+		int major;
+		int minor;
+		int patch;
+		
+		sModuleVersion();
+		void SetVersion( const char *version );
+	};
+	
 private:
+	sModuleVersion pCompatibleVersion;
+	sModuleVersion pModuleVersion;
+	eState pState;
+	
 	deClassAISystem *pClsAISys;
 	deClassAnimation *pClsAnim;
 	deClassAnimationBuilder *pClsAnimBuilder;
@@ -245,10 +282,11 @@ private:
 	deClassARAnimationDifference *pClsARAnimDiff;
 	deClassARAnimationSelect *pClsARAnimSelect;
 	deClassARBoneTransformator *pClsARBoneTrans;
-	deClassARForeignState *pClsFSta;
+	deClassARForeignState *pClsARFSta;
 	deClassARGroup *pClsARGroup;
 	deClassARInverseKinematic *pClsARIK;
 	deClassARLimit *pClsARLimit;
+	deClassARMirror *pClsARMirror;
 	deClassARStateManipulator *pClsARStaM;
 	deClassARStateSnapshot *pClsARSnap;
 	deClassARSubAnimator *pClsARSubA;
@@ -313,11 +351,14 @@ private:
 	deClassGraphicSystem *pClsGraSys;
 	deClassHeightTerrain *pClsHT;
 	deClassImage *pClsImg;
+	deClassImagePixels *pClsImagePixels;
+	deClassEditableImage *pClsEditableImage;
 	deClassInputEvent *pClsInpEvent;
 	deClassInputDevice *pClsInpDev;
 	deClassInputDeviceAxis *pClsInpDevAxis;
 	deClassInputDeviceButton *pClsInpDevBtn;
 	deClassInputDeviceFeedback *pClsInpDevFb;
+	deClassInputDeviceComponent *pClsInpDevComp;
 	deClassInputSystem *pClsInpSys;
 	deClassLanguagePack *pClsLP;
 	deClassLanguagePackBuilder *pClsLangPackBuilder;
@@ -363,6 +404,9 @@ private:
 	deClassSafeArray *pClsSA;
 	deClassScriptSystem *pClsScrSys;
 	deClassShapeList *pClsShaList;
+	deClassService *pClsService;
+	deClassServiceListener *pClsServiceListener;
+	deClassServiceObject *pClsServiceObject;
 	deClassServer *pClsSvr;
 	deClassSkin *pClsSkin;
 	deClassSkinBuilder *pClsSkinBuilder;
@@ -407,7 +451,15 @@ private:
 	deClassVector2 *pClsVec2;
 	deClassVideo *pClsVid;
 	deClassVideoPlayer *pClsVP;
+	deClassVRSystem *pClsVRSys;
 	deClassWorld *pClsWorld;
+	
+	dedsLoadingScreen::Ref pLoadingScreen;
+	
+	decString pInitScriptDirectory;
+	decString pInitGameObject;
+	
+	dsClass *pClsResourceLoaderType;
 	
 	dsEngine *pScriptEngine;
 	dsClass *pClsGameObj;
@@ -423,6 +475,7 @@ private:
 	
 	// objects
 	dsValue *pGameObj;
+	
 public:
 	// constructor, destructor
 	deScriptingDragonScript( deLoadableModule &loadableModule );
@@ -441,8 +494,9 @@ public:
 	 */
 	virtual const char *GetVFSSharedDataDir() const;
 	
-	bool Init( const char *scriptDirectory, const char *gameObject );
-	void ShutDown();
+	virtual bool Init( const char *scriptDirectory, const char *gameObject );
+	
+	virtual void ShutDown();
 
 	// script packages
 	void LoadPackage(const char *name, const char *directory);
@@ -469,6 +523,12 @@ public:
 	
 	/** \brief Create deSpeaker peer. */
 	virtual deBaseScriptingSpeaker *CreateSpeaker( deSpeaker *speaker );
+	
+	/**
+	 * \brief Create deService peer.
+	 * \version 1.23
+	 */
+	virtual deBaseScriptingService *CreateService( deService *service );
 	
 	/**
 	 * Initializes the game scripts. This usually involves creating the
@@ -504,7 +564,22 @@ public:
 	 * Default implementation calls deEngine.Quit().
 	 */
 	virtual void UserRequestQuit();
+	
+	/**
+	 * \brief Called after the application received or lost focus.
+	 * \return true if the call has been successfull or false otherwise
+	 * \version 1.22
+	 */
+	virtual bool OnAppActivate();
+	
+	/** Requested compatible module version. */
+	inline const sModuleVersion &GetModuleVersion() const{ return pModuleVersion; }
+	
+	/** Module version. */
+	inline const sModuleVersion &GetCompatibleVersion() const{ return pCompatibleVersion; }
 	/*@}*/
+	
+	
 	
 public:
 	// script management
@@ -538,7 +613,8 @@ public:
 	inline deClassARAnimationDifference *GetClassARAnimationDifference() const{ return pClsARAnimDiff; }
 	inline deClassARAnimationSelect *GetClassARAnimationSelect() const{ return pClsARAnimSelect; }
 	inline deClassARBoneTransformator *GetClassARBoneTransformator() const{ return pClsARBoneTrans; }
-	inline deClassARForeignState *GetClassARForeignState() const{ return pClsFSta; }
+	inline deClassARForeignState *GetClassARForeignState() const{ return pClsARFSta; }
+	inline deClassARMirror *GetClassARMirror() const{ return pClsARMirror; }
 	inline deClassARGroup *GetClassARGroup() const{ return pClsARGroup; }
 	inline deClassARInverseKinematic *GetClassARInverseKinematic() const{ return pClsARIK; }
 	inline deClassARLimit *GetClassARLimit() const{ return pClsARLimit; }
@@ -607,10 +683,13 @@ public:
 	inline deClassGraphicSystem *GetClassGraphicSystem() const{ return pClsGraSys; }
 	inline deClassHeightTerrain *GetClassHeightTerrain() const{ return pClsHT; }
 	inline deClassImage *GetClassImage() const{ return pClsImg; }
+	inline deClassImagePixels *GetClassImagePixels() const{ return pClsImagePixels; }
+	inline deClassEditableImage *GetClassEditableImage() const{ return pClsEditableImage; }
 	inline deClassInputDevice *GetClassInputDevice() const{ return pClsInpDev; }
 	inline deClassInputDeviceAxis *GetClassInputDeviceAxis() const{ return pClsInpDevAxis; }
 	inline deClassInputDeviceButton *GetClassInputDeviceButton() const{ return pClsInpDevBtn; }
 	inline deClassInputDeviceFeedback *GetClassInputDeviceFeedback() const{ return pClsInpDevFb; }
+	inline deClassInputDeviceComponent *GetClassInputDeviceComponent() const{ return pClsInpDevComp; }
 	inline deClassInputEvent *GetClassInputEvent() const{ return pClsInpEvent; }
 	inline deClassInputSystem *GetClassInputSystem() const{ return pClsInpSys; }
 	inline deClassLanguagePack *GetClassLanguagePack() const{ return pClsLP; }
@@ -657,6 +736,9 @@ public:
 	inline deClassServer *GetClassServer() const{ return pClsSvr; }
 	inline deClassServerListener *GetClassServerListener() const{ return pClsSvrL; }
 	inline deClassShapeList *GetClassShapeList() const{ return pClsShaList; }
+	inline deClassService *GetClassService() const{ return pClsService; }
+	inline deClassServiceListener *GetClassServiceListener() const{ return pClsServiceListener; }
+	inline deClassServiceObject *GetClassServiceObject() const{ return pClsServiceObject; }
 	inline deClassSkin *GetClassSkin() const{ return pClsSkin; }
 	inline deClassSkinBuilder *GetClassSkinBuilder() const{ return pClsSkinBuilder; }
 	inline deClassSky *GetClassSky() const{ return pClsSky; }
@@ -700,7 +782,10 @@ public:
 	inline deClassVector2 *GetClassVector2() const{ return pClsVec2; }
 	inline deClassVideo *GetClassVideo() const{ return pClsVid; }
 	inline deClassVideoPlayer *GetClassVideoPlayer() const{ return pClsVP; }
+	inline deClassVRSystem *GetClassVRSystem() const{ return pClsVRSys; }
 	inline deClassWorld *GetClassWorld() const{ return pClsWorld; }
+	
+	inline dsClass *GetClassResourceLoaderType() const{ return pClsResourceLoaderType; }
 	
 	/** @name Management */
 	/*@{*/

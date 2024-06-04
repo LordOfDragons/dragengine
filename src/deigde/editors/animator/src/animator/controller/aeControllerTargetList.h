@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Animator Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _AECONTROLLERTARGETLIST_H_
@@ -29,7 +32,7 @@ class aeControllerTarget;
 
 
 /**
- * \brief Controller target List.
+ * Controller target List.
  */
 class aeControllerTargetList{
 private:
@@ -38,54 +41,54 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create new controller target list. */
+	/** Create new controller target list. */
 	aeControllerTargetList();
 	
-	/** \brief Create copy of a controller target list. */
+	/** Create copy of a controller target list. */
 	aeControllerTargetList( const aeControllerTargetList &copy );
 	
-	/** \brief Clean up controller target list. */
+	/** Clean up controller target list. */
 	~aeControllerTargetList();
 	/*@}*/
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Number of controller targets. */
+	/** Number of controller targets. */
 	int GetCount() const;
 	
 	/**
-	 * \brief Controller target at index.
+	 * Controller target at index.
 	 * \throws deeInvalidParam \em index is less than 0 or greater than GetCount()-1.
 	 */
 	aeControllerTarget *GetAt( int index ) const;
 	
 	/**
-	 * \brief Index of controller target or -1 if not present in the list.
+	 * Index of controller target or -1 if not present in the list.
 	 * \throws deeInvalidParam \em target is \em NULL.
 	 */
 	int IndexOf( aeControllerTarget *target ) const;
 	
 	/**
-	 * \brief Determine if a controller target is present in the list.
+	 * Determine if a controller target is present in the list.
 	 * \throws deeInvalidParam \em target is \em NULL.
 	 */
 	bool Has( aeControllerTarget *target ) const;
 	
 	/**
-	 * \brief Add controller target.
+	 * Add controller target.
 	 * \throws deeInvalidParam \em target is \em NULL.
 	 */
 	void Add( aeControllerTarget *target );
 	
 	/**
-	 * \brief Insert controller target.
+	 * Insert controller target.
 	 * \throws deeInvalidParam \em target is \em NULL.
 	 * \throws deeInvalidParam \em index is less than 0 or greater than GetCount()-1.
 	 */
 	void Insert( aeControllerTarget *target, int index );
 	
 	/**
-	 * \brief Move controller target.
+	 * Move controller target.
 	 * \throws deeInvalidParam \em target is \em NULL.
 	 * \throws deeInvalidParam \em from is less than 0 or greater than GetCount()-1.
 	 * \throws deeInvalidParam \em to is less than 0 or greater than GetCount().
@@ -93,19 +96,19 @@ public:
 	void Move( aeControllerTarget *target, int index );
 	
 	/**
-	 * \brief Remove controller target.
+	 * Remove controller target.
 	 * \throws deeInvalidParam \em target is \em NULL.
 	 * \throws deeInvalidParam \em target is not present in the list.
 	 */
 	void Remove( aeControllerTarget *target );
 	
-	/** \brief Remove all controller targets. */
+	/** Remove all controller targets. */
 	void RemoveAll();
 	/*@}*/
 	
 	/** \name Operators */
 	/*@{*/
-	/** \brief Copy controller target list to this controller target list. */
+	/** Copy controller target list to this controller target list. */
 	aeControllerTargetList &operator=( const aeControllerTargetList &list );
 	/*@}*/
 };

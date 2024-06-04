@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -59,73 +62,73 @@ pin Dragengine.Preloading
  * use in your layout.
  */
 class WindowLoading extends Window
-	private var TextModel pModelText
-	private var TextModel pModelTextFinished
-	private var RangeModel pModelProgress
-	private var RangeModel pModelFinished
-	private var PreloadManager pPreloadManager
-	private var ActionListener pWaitForPlayerListener
+	var TextModel pModelText
+	var TextModel pModelTextFinished
+	var RangeModel pModelProgress
+	var RangeModel pModelFinished
+	var PreloadManager pPreloadManager
+	var ActionListener pWaitForPlayerListener
 	
 	
 	
 	/** \brief Create window. */
-	public func new()
-		this.pModelText = DefaultTextModel.new( "Loading..." )
-		this.pModelTextFinished = DefaultTextModel.new( "Press any key to Start" )
-		this.pModelProgress = DefaultRangeModel.new( 0, 100, 1, 0, 1 )
-		this.pModelFinished = DefaultRangeModel.new( 0, 2, 1, 0, 1 )
+	func new()
+		pModelText = DefaultTextModel.new("Loading...")
+		pModelTextFinished = DefaultTextModel.new("Press any key to Start")
+		pModelProgress = DefaultRangeModel.new(0, 100, 1, 0, 1)
+		pModelFinished = DefaultRangeModel.new(0, 2, 1, 0, 1)
 		
-		this.createWindowContent()
-		this.startFrameUpdater()
+		createWindowContent()
+		startFrameUpdater()
 	end
 	
 	/** \brief Dispose of Widget. */
-	public func void dispose()
+	func void dispose()
 		super.dispose()
 		
-		this.pWaitForPlayerListener = null
-		this.pPreloadManager = null
-		this.pModelFinished = null
-		this.pModelProgress = null
-		this.pModelTextFinished = null
-		this.pModelText = null
+		pWaitForPlayerListener = null
+		pPreloadManager = null
+		pModelFinished = null
+		pModelProgress = null
+		pModelTextFinished = null
+		pModelText = null
 	end
 	
 	
 	
 	/** \brief Set window style, for example "Bg1". */
-	public func void setBgStyle( String style )
+	func void setBgStyle(String style)
 		if style != null
-			this.setDesignerSelector( "WindowLoading." + style )
+			setDesignerSelector("WindowLoading." + style)
 			
 		else
-			this.setDesignerSelector( "WindowLoading" )
+			setDesignerSelector("WindowLoading")
 		end
 	end
 	
 	/** \brief Text model. */
-	public func TextModel getModelText()
-		return this.pModelText
+	func TextModel getModelText()
+		return pModelText
 	end
 	
 	/** \brief Finished text model. */
-	public func TextModel getModelTextFinished()
-		return this.pModelTextFinished
+	func TextModel getModelTextFinished()
+		return pModelTextFinished
 	end
 	
 	/** \brief Progress range model. */
-	public func RangeModel getModelProgress()
-		return this.pModelProgress
+	func RangeModel getModelProgress()
+		return pModelProgress
 	end
 	
 	/** \brief Range model switching between progress bar (0) and finished text (1). */
-	public func RangeModel getModelFinished()
-		return this.pModelFinished
+	func RangeModel getModelFinished()
+		return pModelFinished
 	end
 	
 	/** \brief Preload manager */
-	public func PreloadManager getPreloadManager()
-		return this.pPreloadManager
+	func PreloadManager getPreloadManager()
+		return pPreloadManager
 	end
 	
 	/**
@@ -134,24 +137,24 @@ class WindowLoading extends Window
 	 * If preload manager is not null the progress model is updated with the number of
 	 * resources to preload as the maximum value and the current value set to 0.
 	 */
-	public func void setPreloadManager( PreloadManager preloadManager )
-		this.pPreloadManager = preloadManager
+	func void setPreloadManager(PreloadManager preloadManager)
+		pPreloadManager = preloadManager
 		
 		if preloadManager == null
 			return
 		end
 		
-		this.pModelProgress.setMaximum( preloadManager.getCounter().getValue() )
-		this.pModelProgress.setValue( 0 )
+		pModelProgress.setMaximum(preloadManager.getCounter().getValue())
+		pModelProgress.setValue(0)
 	end
 	
 	/**
 	 * \brief Switch to finished text and wait for player to use any input device to continue.
 	 */
-	public func void waitForPlayer( ActionListener listener )
-		this.pModelFinished.setValue( 1 )
-		this.grabFocus()
-		this.pWaitForPlayerListener = listener
+	func void waitForPlayer(ActionListener listener)
+		pModelFinished.setValue(1)
+		grabFocus()
+		pWaitForPlayerListener = listener
 	end
 	
 	
@@ -163,43 +166,31 @@ class WindowLoading extends Window
 	 * 
 	 * \param elapsed Elapsed time since the last frame update. Equals Engine.getElapsedTime().
 	 */
-	public func void onFrameUpdate( float elapsed )
-		this.updateProgress()
+	func void onFrameUpdate(float elapsed)
+		updateProgress()
 	end
 	
-	/**
-	 * \brief Mouse button has been released.
-	 */
-	public func void onButtonRelease( MouseEvent event )
-		super.onButtonRelease( event )
-		this.triggerWaitForPlayer()
+	/** \brief Mouse button has been released. */
+	func void onButtonRelease(MouseEvent event)
+		super.onButtonRelease(event)
+		triggerWaitForPlayer()
 	end
 	
-	/**
-	 * \brief Key on the keyboard has been released.
-	 */
-	public func void onKeyRelease( KeyEvent event )
-		super.onKeyRelease( event )
-		this.triggerWaitForPlayer()
-	end
-	
-	/**
-	 * \brief Gamepad button has been released.
-	 */
-	public func void onGamepadButtonReleased( GamepadEvent event )
-		super.onGamepadButtonReleased( event )
-		this.triggerWaitForPlayer()
+	/** \brief Key on the keyboard has been released. */
+	func void onKeyRelease(KeyEvent event)
+		super.onKeyRelease(event)
+		triggerWaitForPlayer()
 	end
 	
 	/** \brief Trigger wait for player listener if present. */
 	protected func void triggerWaitForPlayer()
-		if this.pWaitForPlayerListener == null
+		if pWaitForPlayerListener == null
 			return
 		end
 		
-		var ActionListener listener = this.pWaitForPlayerListener
-		this.pWaitForPlayerListener = null
-		listener.onAction( ActionEvent.new( this, ActionEvent.idAction, 0 ) )
+		var ActionListener listener = pWaitForPlayerListener
+		pWaitForPlayerListener = null
+		listener.onAction(ActionEvent.new(this, ActionEvent.idAction, 0))
 	end
 	
 	
@@ -210,23 +201,23 @@ class WindowLoading extends Window
 	 * Called during constructor time.
 	 */
 	protected func void createWindowContent()
-		this.runWhileBlockingLayout( block
-			this.setDesignerSelector( "WindowLoading" )
-			this.setLayout( StackLayout.new() )
-			this.setWindowState( Window.WindowState.maximized )
-			this.setCanReorder( false )
-			this.setCanMove( false )
-			this.setCanResize( false )
-			this.setCanClose( false )
-			this.setCanMaximize( false )
-			this.setCanMinimize( false )
+		runWhileBlockingLayout(block
+			setDesignerSelector("WindowLoading")
+			setLayout(StackLayout.new())
+			setWindowState(Window.WindowState.maximized)
+			setCanReorder(false)
+			setCanMove(false)
+			setCanResize(false)
+			setCanClose(false)
+			setCanMaximize(false)
+			setCanMinimize(false)
 			
-			this.setCanFocus( true ) // on purpose
+			setCanFocus(true) // on purpose
 			
-			this.addWidget( this.createPanelProgress() )
+			addWidget(createPanelProgress())
 			
-			this.pModelFinished.setValue( 0 )
-		end )
+			pModelFinished.setValue(0)
+		end)
 	end
 	
 	/**
@@ -236,21 +227,21 @@ class WindowLoading extends Window
 	 * Called from createWindowContent() during constructor time.
 	 */
 	protected func Panel createPanelProgress()
-		return Panel.new( CentrizedBoxLayout.new( LayoutAxis.y, 0 ), block Panel panel
-			panel.addWidget( Panel.new( FlowLayout.new( LayoutAxis.y, 5 ), block Panel panel2
-				panel2.setDesignerSelector( "Panel.WindowLoading" )
+		return Panel.new(CentrizedBoxLayout.new(LayoutAxis.y, 0), block Panel panel
+			panel.addWidget(Panel.new(FlowLayout.new(LayoutAxis.y, 5), block Panel panel2
+				panel2.setDesignerSelector("Panel.WindowLoading")
 				
-				panel2.addWidget( Label.new( this.pModelText, "Label.WindowLoading" ) )
+				panel2.addWidget(Label.new(pModelText, "Label.WindowLoading"))
 				
-				panel2.addWidget( SwitchPanel.new( this.pModelFinished, block SwitchPanel switchPanel
-					var ProgressBar progressBar = ProgressBar.new( Orientation.horizontal, this.pModelProgress )
-					progressBar.setDesignerSelector( "ProgressBar.WindowLoading" )
-					switchPanel.addWidget( progressBar )
+				panel2.addWidget(SwitchPanel.new(pModelFinished, block SwitchPanel switchPanel
+					var ProgressBar progressBar = ProgressBar.new(Orientation.horizontal, pModelProgress)
+					progressBar.setDesignerSelector("ProgressBar.WindowLoading")
+					switchPanel.addWidget(progressBar)
 					
-					switchPanel.addWidget( Label.new( this.pModelTextFinished, "Label.WindowLoading.Finished" ) )
-				end ) )
-			end ) )
-		end )
+					switchPanel.addWidget(Label.new(pModelTextFinished, "Label.WindowLoading.Finished"))
+				end))
+			end))
+		end)
 	end
 	
 	/**
@@ -260,9 +251,9 @@ class WindowLoading extends Window
 	 * loaded resources.
 	 */
 	protected func void updateProgress()
-		if this.pPreloadManager != null
-			this.pModelProgress.setValue( this.pModelProgress.getMaximum() \
-				- this.pPreloadManager.getCounter().getValue() )
+		if pPreloadManager != null
+			pModelProgress.setValue(pModelProgress.getMaximum() \
+				- pPreloadManager.getCounter().getValue())
 		end
 	end
 end

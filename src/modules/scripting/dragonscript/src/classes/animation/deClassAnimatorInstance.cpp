@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -248,7 +251,7 @@ void deClassAnimatorInstance::nfSetBlendFactor::RunFunction( dsRunTime *rt, dsVa
 // public func bool getEnableRetargeting()
 deClassAnimatorInstance::nfGetEnableRetargeting::nfGetEnableRetargeting( const sInitData &init ) :
 dsFunction( init.clsAnimatorInstance, "getEnableRetargeting", DSFT_FUNCTION,
-DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt ){
+DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
 }
 void deClassAnimatorInstance::nfGetEnableRetargeting::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const deAnimatorInstance &instance = *( ( ( sArINatDat* )p_GetNativeData( myself ) )->instance );
@@ -256,16 +259,39 @@ void deClassAnimatorInstance::nfGetEnableRetargeting::RunFunction( dsRunTime *rt
 	rt->PushBool( instance.GetEnableRetargeting() );
 }
 
-// public func void setEnableRetargeting( bool enableRetargeting )
+// public func void setEnableRetargeting(bool enableRetargeting)
 deClassAnimatorInstance::nfSetEnableRetargeting::nfSetEnableRetargeting( const sInitData &init ) :
 dsFunction( init.clsAnimatorInstance, "setEnableRetargeting", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
-	p_AddParameter( init.clsFlt ); // enableRetargeting
+	p_AddParameter( init.clsBool ); // enableRetargeting
 }
 void deClassAnimatorInstance::nfSetEnableRetargeting::RunFunction( dsRunTime *rt, dsValue *myself ){
 	deAnimatorInstance &instance = *( ( ( sArINatDat* )p_GetNativeData( myself ) )->instance );
 	
 	instance.SetEnableRetargeting( rt->GetValue( 0 )->GetBool() );
+}
+
+// public func bool getProtectDynamicBones()
+deClassAnimatorInstance::nfGetProtectDynamicBones::nfGetProtectDynamicBones( const sInitData &init ) :
+dsFunction( init.clsAnimatorInstance, "getProtectDynamicBones", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
+}
+void deClassAnimatorInstance::nfGetProtectDynamicBones::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deAnimatorInstance &instance = *( ( ( sArINatDat* )p_GetNativeData( myself ) )->instance );
+	
+	rt->PushBool( instance.GetProtectDynamicBones() );
+}
+
+// public func void setProtectDynamicBones(bool protectDynamicBones)
+deClassAnimatorInstance::nfSetProtectDynamicBones::nfSetProtectDynamicBones( const sInitData &init ) :
+dsFunction( init.clsAnimatorInstance, "setProtectDynamicBones", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsBool ); // protectDynamicBones
+}
+void deClassAnimatorInstance::nfSetProtectDynamicBones::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deAnimatorInstance &instance = *( ( ( sArINatDat* )p_GetNativeData( myself ) )->instance );
+	
+	instance.SetProtectDynamicBones( rt->GetValue( 0 )->GetBool() );
 }
 
 
@@ -515,7 +541,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInt ){
 void deClassAnimatorInstance::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
 	deAnimatorInstance *instance = ( ( sArINatDat* )p_GetNativeData( myself ) )->instance;
 	// hash code = memory location
-	rt->PushInt( ( intptr_t )instance );
+	rt->PushInt( ( int )( intptr_t )instance );
 }
 
 // public func bool equals( Object obj )
@@ -599,6 +625,8 @@ void deClassAnimatorInstance::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfSetBlendFactor( init ) );
 	AddFunction( new nfGetEnableRetargeting( init ) );
 	AddFunction( new nfSetEnableRetargeting( init ) );
+	AddFunction( new nfGetProtectDynamicBones( init ) );
+	AddFunction( new nfSetProtectDynamicBones( init ) );
 	
 	AddFunction( new nfGetControllerCount( init ) );
 	AddFunction( new nfGetControllerAt( init ) );

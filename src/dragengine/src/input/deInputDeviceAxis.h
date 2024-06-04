@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Game Engine
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _INPUTDEVICEAXIS_H_
@@ -55,7 +58,7 @@
  * in that they have no limited range. The returned value is always the last change in
  * position reported which can be larger than 1.
  */
-class deInputDeviceAxis{
+class DE_DLL_EXPORT deInputDeviceAxis{
 public:
 	/** \brief Axis types. */
 	enum eAxisTypes{
@@ -89,7 +92,63 @@ public:
 		eatTouchPad,
 		
 		/** \brief Generic. */
-		eatGeneric
+		eatGeneric,
+		
+		/**
+		 * \brief Trigger.
+		 * \version 1.6
+		 */
+		eatTrigger,
+		
+		/**
+		 * \brief Controller grip grabing.
+		 * \version 1.6
+		 * 
+		 * Value 0 indicates open hand up to value 1 indicating closed hand.
+		 */
+		eatGripGrab,
+		
+		/**
+		 * \brief Controller grip squeezing.
+		 * \version 1.6
+		 * 
+		 * Value 0 indicates no force applied up to value 1 indicating maximum force applied.
+		 */
+		eatGripSqueeze,
+		
+		/**
+		 * \brief Controller grip pinching.
+		 * \version 1.6
+		 * 
+		 * Value 0 indicates no pinching to value 1 indicating maximum pinching.
+		 */
+		eatGripPinch,
+		
+		/**
+		 * \brief Finger bending.
+		 * \version 1.6
+		 * 
+		 * If finger bending is supported 5 axes of type eatFingerBend are added in this
+		 * order: thumb, index, middle, ring, pinky
+		 */
+		eatFingerBend,
+		
+		/**
+		 * \brief Finger spreading.
+		 * \version 1.6
+		 * 
+		 * If finger spreading is supported 4 axes of type eatFingerSpread are added in
+		 * this order: thumb-index, index-middle, middle-ring, ring-pinky.
+		 */
+		eatFingerSpread,
+		
+		/**
+		 * \brief Battery level.
+		 * \version 1.20
+		 * 
+		 * Indicates the battery charge level in the range from 0 (discharged) to 1 (fully charged).
+		 */
+		eatBatteryLevel
 	};
 	
 	
@@ -103,6 +162,9 @@ private:
 	
 	/** \brief Axis type. */
 	eAxisTypes pType;
+	
+	/** \brief Identifier of component or empty string. */
+	decString pComponent;
 	
 	/**
 	 * \brief Image to represent the axis in 2D user interfaces or NULL if not set.
@@ -165,6 +227,18 @@ public:
 	
 	/** \brief Axis type. */
 	void SetType( eAxisTypes type );
+	
+	/**
+	 * \brief Identifier of component or empty string.
+	 * \version 1.6
+	 */
+	inline const decString &GetComponent() const{ return pComponent; }
+	
+	/**
+	 * \brief Set identifier of component or empty string.
+	 * \version 1.6
+	 */
+	void SetComponent( const char *component );
 	
 	/**
 	 * \brief Image to represent the device in 2D user interfaces or NULL if not set.

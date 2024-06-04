@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 namespace Dragengine.Gui.Events
@@ -30,29 +33,25 @@ namespace Dragengine.Gui.Events
  */
 class GamepadEvent extends ModifiableEvent
 	/** \brief Input device axis moved event identifier. */
-	public fixed var int idGamepadAxisMoved = 90
+	public static fixed var int idGamepadAxisMoved = 90
 	
 	/** \brief Input device button pressed event identifier. */
-	public fixed var int idGamepadButtonPressed = 91
+	public static fixed var int idGamepadButtonPressed = 91
 	
 	/** \brief Input device button released event identifier. */
-	public fixed var int idGamepadButtonReleased = 92
+	public static fixed var int idGamepadButtonReleased = 92
 	
 	
 	
-	/** \brief Input device index. */
-	private var int pDevice
-	
-	/** \brief Axis or button index or -1 if not used. */
-	private var int pCode
-	
-	/** \brief Axis value or 0 if not used. */
-	private var float pAxisValue
+	var InputEventSource pSystem
+	var int pDevice
+	var int pCode
+	var float pAxisValue
 	
 	
 	
 	/** \brief Event identifier is an input device event identifier. */
-	public static func bool isGamepadEvent( int identifier )
+	static func bool isGamepadEvent(int identifier)
 		return identifier >= idGamepadAxisMoved and identifier <= idGamepadButtonReleased
 	end
 	
@@ -60,42 +59,149 @@ class GamepadEvent extends ModifiableEvent
 	
 	/**
 	 * \brief Create event.
-	 * 
-	 * For use with idGamepadButtonPressed and idGamepadButtonReleased.
+	 * \deprecated Use new(Object,int,InputEventSource,int,int,int)
 	 */
-	public func new( Object source, int id, int device, int code, int modifiers ) \
-	super( source, id, modifiers )
-		this.pDevice = device
-		this.pCode = code
-		this.pAxisValue = 0.0
+	func new(Object source, int id, int device, int code, int modifiers) \
+	this(source, id, InputEventSource.input, device, code, modifiers)
 	end
 	
 	/**
 	 * \brief Create event.
+	 * \deprecated Use new(Object,int,InputEventSource,int,int,int,float)
+	 */
+	func new(Object source, int id, int device, int code, int modifiers, float axisValue) \
+	this(source, id, InputEventSource.input, device, code, modifiers, axisValue)
+	end
+	
+	/**
+	 * \brief Create event.
+	 * \version 1.6
+	 * 
+	 * For use with idGamepadButtonPressed and idGamepadButtonReleased.
+	 */
+	func new(Object source, int id, InputEventSource system, int device, int code, \
+	int modifiers) super(source, id, modifiers)
+		pSystem = system
+		pDevice = device
+		pCode = code
+		pAxisValue = 0.0
+	end
+	
+	/**
+	 * \brief Create event.
+	 * \version 1.6
 	 * 
 	 * For use with idGamepadAxisMoved.
 	 */
-	public func new( Object source, int id, int device, int code, int modifiers, float axisValue ) \
-	super( source, id, modifiers )
-		this.pDevice = device
-		this.pCode = code
-		this.pAxisValue = axisValue
+	func new(Object source, int id, InputEventSource system, int device, int code, \
+	int modifiers, float axisValue) super(source, id, modifiers)
+		pSystem = system
+		pDevice = device
+		pCode = code
+		pAxisValue = axisValue
 	end
 	
 	
 	
+	/**
+	 * \brief Source system.
+	 * \version 1.6
+	 */
+	func InputEventSource getSystem()
+		return pSystem
+	end
+	
 	/** \brief Input device index. */
-	public func int getDevice()
-		return this.pDevice
+	func int getDevice()
+		return pDevice
 	end
 	
 	/** \brief Axis or button index. */
-	public func int getCode()
-		return this.pCode
+	func int getCode()
+		return pCode
 	end
 	
 	/** \brief Axis value. */
-	public func float getAxisValue()
-		return this.pAxisValue
+	func float getAxisValue()
+		return pAxisValue
+	end
+	
+	
+	
+	/**
+	 * \brief Input device or null.
+	 * \version 1.20
+	 */
+	func InputDevice getInputDevice()
+		select pSystem
+		case InputEventSource.input
+			return InputSystem.getDeviceAt(pDevice)
+			
+		case InputEventSource.vr
+			return VRSystem.getDeviceAt(pDevice)
+			
+		else
+			return null
+		end
+	end
+	
+	/**
+	 * \brief Input device button or null.
+	 * \version 1.20
+	 * 
+	 * Call this only for events of type idGamepadButtonPressed or idGamepadButtonReleased.
+	 */
+	func InputDeviceButton getInputDeviceButton()
+		var InputDevice device = getInputDevice()
+		if device == null
+			return null
+		end
+		
+		return device.getButtonAt(pCode)
+	end
+	
+	/**
+	 * \brief Input button type or null if not valid.
+	 * \version 1.20
+	 * 
+	 * Call this only for events of type idGamepadButtonPressed or idGamepadButtonReleased.
+	 */
+	func InputDeviceButtonType getInputButtonType()
+		var InputDeviceButton button = getInputDeviceButton()
+		if button == null
+			return null
+		end
+		
+		return button.getType()
+	end
+	
+	/**
+	 * \brief Input device axis or null.
+	 * \version 1.20
+	 * 
+	 * Call this only for events of type idGamepadAxisPressed or idGamepadAxisReleased.
+	 */
+	func InputDeviceAxis getInputDeviceAxis()
+		var InputDevice device = getInputDevice()
+		if device == null
+			return null
+		end
+		
+		return device.getAxisAt(pCode)
+	end
+	
+	/**
+	 * \brief Input axis type or null if not valid.
+	 * \version 1.20
+	 * 
+	 * Call this only for events of type idGamepadAxisMoved.
+	 */
+	func InputDeviceAxisType getInputAxisType()
+		var InputDeviceAxis axis = getInputDeviceAxis()
+		if axis == null
+			return null
+		end
+		
+		return axis.getType()
 	end
 end

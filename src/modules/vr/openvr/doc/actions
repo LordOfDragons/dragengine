@@ -1,0 +1,31 @@
+Actions found on VR controllers
+===============================
+
+Index controller
+================
+
+poses:
+	/pose/raw : 1cm beyond tip pointing roughly 30° upwards from comortable holding direction
+	/pose/handgrip : 
+	/pose/base : 
+	/pose/tip : 
+	/pose/gdc2015 : legacy stuff
+
+skeleton: 
+	/skeleton/left
+	/skeleton/right
+	
+haptics:
+	haptic
+
+chords:
+
+sources
+	trigger (mode trigger): touch, click, pull
+	a (mode button): touch, click
+	b (mode button): touch, click
+	thumbstick (mode joystick): touch, click, position
+	trackpad (mode trackpad): touch, click, position
+	grip (mode trigger): touch, click, pull
+	grip (mode force_sensor): force
+	pinch (mode grab): grab

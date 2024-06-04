@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <math.h>
@@ -25,9 +28,12 @@
 
 #include "deoglCollideList.h"
 #include "deoglCollideListComponent.h"
+#include "deoglCollideListLight.h"
 #include "deoglCollideListPropField.h"
 #include "deoglCollideListPropFieldType.h"
+#include "deoglCollideListPropFieldCluster.h"
 #include "deoglCollideListHTSector.h"
+#include "deoglCollideListHTSCluster.h"
 #include "deoglCLVisitorElements.h"
 
 #include "../component/deoglRComponent.h"
@@ -52,7 +58,6 @@
 #include "../utils/collision/deoglDCollisionBox.h"
 #include "../utils/collision/deoglDCollisionSphere.h"
 #include "../utils/collision/deoglDCollisionFrustum.h"
-#include "../utils/octree/deoglDefaultDOctree.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -81,9 +86,17 @@ deoglCollideList::deoglCollideList(){
 	pHTSectorCount = 0;
 	pHTSectorSize = 0;
 	
+	pHTSClusters = nullptr;
+	pHTSClusterCount = 0;
+	pHTSClusterSize = 0;
+	
 	pPropFields = NULL;
 	pPropFieldCount = 0;
 	pPropFieldSize = 0;
+	
+	pPropFieldClusters = NULL;
+	pPropFieldClusterCount = 0;
+	pPropFieldClusterSize = 0;
 	
 	pTransformVolume = NULL;
 	
@@ -106,7 +119,9 @@ deoglCollideList::~deoglCollideList(){
 ///////////////
 
 void deoglCollideList::Clear(){
+	RemoveAllPropFieldClusters();
 	RemoveAllPropFields();
+	RemoveAllHTSClusters();
 	RemoveAllHTSectors();
 	RemoveAllBillboards();
 	RemoveAllLights();
@@ -159,16 +174,34 @@ void deoglCollideList::AddElementsColliding( deoglWorldOctree *octree, deoglDCol
 	octree->VisitNodesCollidingVolume( &visitor, volume );
 }
 
-void deoglCollideList::MarkElementsVisible( bool visible ){
-	MarkComponentsVisible( visible );
-	MarkLightsVisible( visible );
-	MarkBillboardsVisible( visible );
+void deoglCollideList::RemoveCulledElements(){
+	RemoveCulledComponents();
+	RemoveCulledLights();
+	RemoveCulledBillboards();
 }
 
-void deoglCollideList::RemoveVisibleElements( bool visible ){
-	RemoveVisibleComponents( visible );
-	RemoveVisibleLights( visible );
-	RemoveVisibleBillboards( visible );
+void deoglCollideList::UpdateCubeFaceMasks( const decDVector &position ) const{
+	int i;
+	
+	for( i=0; i<pComponentCount; i++ ){
+		deoglCollideListComponent &component = *pComponents[ i ];
+		component.UpdateCubeFaceMask( position );
+		component.SetSpecialFlags( component.GetCubeFaceMask() );
+	}
+	
+	// TODO same for billboard
+}
+
+void deoglCollideList::UpdateOccMeshCubeFaceMasks( const decDVector &position ) const{
+	int i;
+	
+	for( i=0; i<pComponentCount; i++ ){
+		deoglCollideListComponent &component = *pComponents[ i ];
+		if( component.GetComponent()->GetOcclusionMesh() ){
+			component.UpdateCubeFaceMask( position );
+			component.SetSpecialFlags( component.GetCubeFaceMask() );
+		}
+	}
 }
 
 
@@ -191,21 +224,46 @@ void deoglCollideList::AddParticleEmittersColliding( deoglWorldOctree &octree, d
 void deoglCollideList::AddEnvironmentMapsColliding( deoglWorldOctree &octree, deoglDCollisionVolume *volume ){
 }
 
+void deoglCollideList::DebugSingleLine( deoglRTLogger &logger, bool sorted ) const{
+	decStringList pointers;
+	decString string, temp;
+	int i;
+	
+	for( i=0; i<pComponentCount; i++ ){
+		temp.Format( "%p", pComponents[ i ]->GetComponent() );
+		pointers.Add( temp );
+	}
+	if( sorted ) pointers.SortAscending();
+	string.AppendFormat( "c[%s]", pointers.Join( ", " ).GetString() );
+	
+	for( i=0; i<pBillboardCount; i++ ){
+		temp.Format( "%p", pBillboards[ i ] );
+		pointers.Add( temp );
+	}
+	if( sorted ) pointers.SortAscending();
+	string.AppendFormat( " b[%s]", pointers.Join( ", " ).GetString() );
+	
+	logger.LogInfoFormat( "CollideList %p: %s", this, string.GetString() );
+}
+
 
 
 // Components
 ///////////////
 
 deoglCollideListComponent *deoglCollideList::GetComponentAt( int index ) const{
-	if( index < 0 || index >= pComponentCount ) DETHROW( deeInvalidParam );
-	
+	if( index < 0 || index >= pComponentCount ){
+		DETHROW( deeInvalidParam );
+	}
 	return pComponents[ index ];
 }
 
 int deoglCollideList::IndexOfComponent( deoglRComponent *component ) const{
-	if( ! component ) DETHROW( deeInvalidParam );
-	int i;
+	if( ! component ){
+		DETHROW( deeInvalidParam );
+	}
 	
+	int i;
 	for( i=0; i<pComponentCount; i++ ){
 		if( component == pComponents[ i ]->GetComponent() ){
 			return i;
@@ -216,9 +274,11 @@ int deoglCollideList::IndexOfComponent( deoglRComponent *component ) const{
 }
 
 bool deoglCollideList::HasComponent( deoglRComponent *component ) const{
-	if( ! component ) DETHROW( deeInvalidParam );
-	int i;
+	if( ! component ){
+		DETHROW( deeInvalidParam );
+	}
 	
+	int i;
 	for( i=0; i<pComponentCount; i++ ){
 		if( component == pComponents[ i ]->GetComponent() ){
 			return true;
@@ -228,13 +288,14 @@ bool deoglCollideList::HasComponent( deoglRComponent *component ) const{
 	return false;
 }
 
-void deoglCollideList::AddComponent( deoglRComponent *component ){
-	if( ! component ) DETHROW( deeInvalidParam );
+deoglCollideListComponent *deoglCollideList::AddComponent( deoglRComponent *component ){
+	if( ! component ){
+		DETHROW( deeInvalidParam );
+	}
 	
 	if( pComponentCount == pComponentSize ){
 		int i, newSize = pComponentCount * 3 / 2 + 1;
 		deoglCollideListComponent **newArray = new deoglCollideListComponent*[ newSize ];
-		if( ! newArray ) DETHROW( deeOutOfMemory );
 		for( i=pComponentSize; i<newSize; i++ ){
 			newArray[ i ] = NULL;
 		}
@@ -250,10 +311,11 @@ void deoglCollideList::AddComponent( deoglRComponent *component ){
 	
 	if( ! pComponents[ pComponentCount ] ){
 		pComponents[ pComponentCount ] = new deoglCollideListComponent;
-		if( ! pComponents[ pComponentCount ] ) DETHROW( deeOutOfMemory );
 	}
-	pComponents[ pComponentCount ]->SetComponent( component );
-	pComponentCount++;
+	
+	deoglCollideListComponent * const clcomponent = pComponents[ pComponentCount++ ];
+	clcomponent->SetComponent( component );
+	return clcomponent;
 }
 
 void deoglCollideList::RemoveComponent( deoglRComponent *component ){
@@ -261,76 +323,71 @@ void deoglCollideList::RemoveComponent( deoglRComponent *component ){
 }
 
 void deoglCollideList::RemoveComponentFrom( int index ){
-	if( index == -1 ) DETHROW( deeInvalidParam );
+	if( index == -1 ){
+		DETHROW( deeInvalidParam );
+	}
 	
-	deoglCollideListComponent *clcomp = pComponents[ index ];
-	int i;
-	
+	deoglCollideListComponent * const clcomp = pComponents[ index ];
 	clcomp->Clear();
 	
+	int i;
 	for( i=index+1; i<pComponentCount; i++ ){
 		pComponents[ i - 1 ] = pComponents[ i ];
 	}
-	pComponentCount--;
-	pComponents[ pComponentCount ] = clcomp;
+	pComponents[ --pComponentCount ] = clcomp;
 }
 
 void deoglCollideList::RemoveAllComponents(){
-	pComponentCount = 0;
+	while( pComponentCount > 0 ){
+		pComponents[ --pComponentCount ]->Clear();
+	}
 }
 
 
 
 void deoglCollideList::AddComponentsColliding( deoglWorldOctree &octree, deoglDCollisionVolume *volume ){
-	if( ! volume ) DETHROW( deeInvalidParam );
-	deoglCLVisitorElements visitor( this, volume );
+	if( ! volume ){
+		DETHROW( deeInvalidParam );
+	}
 	
+	deoglCLVisitorElements visitor( this, volume );
 	visitor.SetVisitAll( false );
 	visitor.SetVisitComponents( true );
 	
 	octree.VisitNodesCollidingVolume( &visitor, volume );
 }
 
-void deoglCollideList::MarkComponentsVisible( bool visible ){
-	int c;
-	
-	for( c=0; c<pComponentCount; c++ ){
-		pComponents[ c ]->GetComponent()->SetRenderVisible( visible );
-	}
-}
-
-void deoglCollideList::RemoveVisibleComponents( bool visible ){
-	deoglCollideListComponent *exchange;
-	int c, last = 0;
-	
-	for( c=0; c<pComponentCount; c++ ){
-		if( pComponents[ c ]->GetComponent()->GetRenderVisible() != visible ){
-			if( c != last ){
-				pComponents[ last ]->Clear();
-				exchange = pComponents[ last ];
-				pComponents[ last ] = pComponents[ c ];
-				pComponents[ c ] = exchange;
-			}
-			last++;
+void deoglCollideList::RemoveCulledComponents(){
+	int i, last = 0;
+	for( i=0; i<pComponentCount; i++ ){
+		if( pComponents[ i ]->GetCulled() ){
+			pComponents[ i ]->Clear();
+			continue;
 		}
+		
+		if( i != last ){
+			deoglCollideListComponent * const exchange = pComponents[ last ];
+			pComponents[ last ] = pComponents[ i ];
+			pComponents[ i ] = exchange;
+		}
+		last++;
 	}
 	pComponentCount = last;
 }
 
 void deoglCollideList::RemoveSolidComponents(){
-	deoglCollideListComponent *exchange;
-	int c, last = 0;
-	
-	for( c=0; c<pComponentCount; c++ ){
-		deoglRSkin * const skin = pComponents[ c ]->GetComponent()->GetSkin();
+	int i, last = 0;
+	for( i=0; i<pComponentCount; i++ ){
+		deoglRSkin * const skin = pComponents[ i ]->GetComponent()->GetSkin();
 		if( skin && ! skin->GetIsSolid() ){
+			pComponents[ i ]->Clear();
 			continue;
 		}
-		if( c != last ){
-			pComponents[ last ]->Clear();
-			exchange = pComponents[ last ];
-			pComponents[ last ] = pComponents[ c ];
-			pComponents[ c ] = exchange;
+		
+		if( i != last ){
+			deoglCollideListComponent * const exchange = pComponents[ last ];
+			pComponents[ last ] = pComponents[ i ];
+			pComponents[ i ] = exchange;
 		}
 		last++;
 	}
@@ -338,18 +395,15 @@ void deoglCollideList::RemoveSolidComponents(){
 }
 
 void deoglCollideList::SortComponentsByModels(){
-	deoglCollideListComponent *exchange;
-	deoglRModel *referenceModel;
 	int i = 0, j;
-	
 	while( i < pComponentCount ){
-		referenceModel = pComponents[ i ]->GetComponent()->GetModel();
+		deoglRModel * const referenceModel = pComponents[ i ]->GetComponent()->GetModel();
 		i++;
 		
 		for( j=i; j<pComponentCount; j++ ){
 			if( pComponents[ j ]->GetComponent()->GetModel() == referenceModel ){
 				if( j > i ){
-					exchange = pComponents[ i ];
+					deoglCollideListComponent * const exchange = pComponents[ i ];
 					pComponents[ i ] = pComponents[ j ];
 					pComponents[ j ] = exchange;
 				}
@@ -375,6 +429,13 @@ void deoglCollideList::SortComponentsByDistance( const decVector &pos, const dec
 		
 		// sort by distance
 		pSortCompByDist( 0, pComponentCount - 1 );
+	}
+}
+
+void deoglCollideList::MarkComponents( bool marked ) const{
+	int i;
+	for( i=0; i<pComponentCount; i++ ){
+		pComponents[ i ]->GetComponent()->SetMarked( marked );
 	}
 }
 
@@ -411,62 +472,131 @@ void deoglCollideList::LogComponents() const{
 // Lights
 ///////////
 
-deoglRLight *deoglCollideList::GetLightAt( int index ) const{
-	if( index < 0 || index >= pLightCount ) DETHROW( deeInvalidParam );
+deoglCollideListLight *deoglCollideList::GetLightAt( int index ) const{
+	if( index < 0 || index >= pLightCount ){
+		DETHROW( deeInvalidParam );
+	}
 	return pLights[ index ];
 }
 
-void deoglCollideList::AddLight( deoglRLight *light ){
-	if( ! light ) DETHROW( deeInvalidParam );
+int deoglCollideList::IndexOfLight( deoglRLight *light ) const{
+	if( ! light ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	int i;
+	for( i=0; i<pLightCount; i++ ){
+		if( light == pLights[ i ]->GetLight() ){
+			return i;
+		}
+	}
+	
+	return -1;
+}
+
+bool deoglCollideList::HasLight( deoglRLight *light ) const{
+	if( ! light ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	int i;
+	for( i=0; i<pLightCount; i++ ){
+		if( light == pLights[ i ]->GetLight() ){
+			return true;
+		}
+	}
+	
+	return false;
+}
+
+deoglCollideListLight *deoglCollideList::AddLight( deoglRLight *light ){
+	if( ! light ){
+		DETHROW( deeInvalidParam );
+	}
 	
 	if( pLightCount == pLightSize ){
 		int i, newSize = pLightCount * 3 / 2 + 1;
-		deoglRLight **newArray = new deoglRLight*[ newSize ];
-		if( ! newArray ) DETHROW( deeOutOfMemory );
+		deoglCollideListLight **newArray = new deoglCollideListLight*[ newSize ];
+		for( i=pLightSize; i<newSize; i++ ){
+			newArray[ i ] = NULL;
+		}
 		if( pLights ){
-			for( i=0; i<pLightCount; i++ ) newArray[ i ] = pLights[ i ];
+			for( i=0; i<pLightSize; i++ ){
+				newArray[ i ] = pLights[ i ];
+			}
 			delete [] pLights;
 		}
 		pLights = newArray;
 		pLightSize = newSize;
 	}
 	
-	pLights[ pLightCount ] = light;
-	pLightCount++;
+	if( ! pLights[ pLightCount ] ){
+		pLights[ pLightCount ] = new deoglCollideListLight;
+	}
+	
+	deoglCollideListLight * const cllight = pLights[ pLightCount++ ];
+	cllight->SetLight( light );
+	return cllight;
+}
+
+void deoglCollideList::RemoveLight( deoglRLight *light ){
+	RemoveLightFrom( IndexOfLight( light ) );
+}
+
+void deoglCollideList::RemoveLightFrom( int index ){
+	if( index == -1 ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	deoglCollideListLight * const cllight = pLights[ index ];
+	cllight->Clear();
+	
+	int i;
+	for( i=index+1; i<pLightCount; i++ ){
+		pLights[ i - 1 ] = pLights[ i ];
+	}
+	pLights[ --pLightCount ] = cllight;
 }
 
 void deoglCollideList::RemoveAllLights(){
-	pLightCount = 0;
+	while( pLightCount > 0 ){
+		pLights[ --pLightCount ]->Clear();
+	}
 }
 
 void deoglCollideList::AddLightsColliding( deoglWorldOctree *octree, deoglDCollisionVolume *colVol ){
-	if( ! octree || ! colVol ) DETHROW( deeInvalidParam );
-	deoglCLVisitorElements visitor( this, colVol );
+	if( ! octree || ! colVol ){
+		DETHROW( deeInvalidParam );
+	}
 	
+	deoglCLVisitorElements visitor( this, colVol );
 	visitor.SetVisitAll( false );
 	visitor.SetVisitLights( true );
 	
 	octree->VisitNodesCollidingVolume( &visitor, colVol );
 }
 
-void deoglCollideList::MarkLightsVisible( bool visible ){
-	int l;
-	
-	for( l=0; l<pLightCount; l++ ){
-		pLights[ l ]->SetVisible( visible );
+void deoglCollideList::MarkLightsCulled( bool culled ){
+	int i;
+	for( i=0; i<pLightCount; i++ ){
+		pLights[ i ]->SetCulled( culled );
 	}
 }
 
-void deoglCollideList::RemoveVisibleLights( bool visible ){
-	int l, last = 0;
-	
-	for( l=0; l<pLightCount; l++ ){
-		if( pLights[ l ]->GetVisible() != visible ){
-			if( l != last ){
-				pLights[ last ] = pLights[ l ];
-			}
-			last++;
+void deoglCollideList::RemoveCulledLights(){
+	int i, last = 0;
+	for( i=0; i<pLightCount; i++ ){
+		if( pLights[ i ]->GetCulled() ){
+			pLights[ i ]->Clear();
+			continue;
 		}
+		
+		if( i != last ){
+			deoglCollideListLight * const exchange = pLights[ last ];
+			pLights[ last ] = pLights[ i ];
+			pLights[ i ] = exchange;
+		}
+		last++;
 	}
 	pLightCount = last;
 }
@@ -520,24 +650,19 @@ void deoglCollideList::AddBillboardsColliding( deoglWorldOctree &octree, deoglDC
 	octree.VisitNodesCollidingVolume( &visitor, colVol );
 }
 
-void deoglCollideList::MarkBillboardsVisible( bool visible ){
-	int l;
-	
-	for( l=0; l<pBillboardCount; l++ ){
-		pBillboards[ l ]->SetRenderVisible( visible );
-	}
-}
-
-void deoglCollideList::RemoveVisibleBillboards( bool visible ){
-	int l, last = 0;
-	
-	for( l=0; l<pBillboardCount; l++ ){
-		if( pBillboards[ l ]->GetVisible() != visible ){
-			if( l != last ){
-				pBillboards[ last ] = pBillboards[ l ];
-			}
-			last++;
+void deoglCollideList::RemoveCulledBillboards(){
+	int i, last = 0;
+	for( i=0; i<pBillboardCount; i++ ){
+		//if( pBillboards[ i ]->GetCulled() ){
+		if( ! pBillboards[ i ]->GetVisible() ){
+			//pBillboards[ i ]->Clear();
+			continue;
 		}
+		
+		if( i != last ){
+			pBillboards[ last ] = pBillboards[ i ];
+		}
+		last++;
 	}
 	pBillboardCount = last;
 }
@@ -553,18 +678,17 @@ deoglCollideListHTSector *deoglCollideList::GetHTSectorAt( int index ) const{
 	return pHTSectors[ index ];
 }
 
-void deoglCollideList::AddHTSector( deoglHTViewSector *sector, deoglDCollisionVolume *volume ){
-	if( ! sector ) DETHROW( deeInvalidParam );
-	
-	deoglCollideListHTSector *clsector;
-	bool empty = true;
+deoglCollideListHTSector *deoglCollideList::AddHTSector( deoglHTViewSector *sector ){
+	if( ! sector ){
+		DETHROW( deeInvalidParam );
+	}
 	
 	if( pHTSectorCount == pHTSectorSize ){
-		int newSize = pHTSectorCount * 3 / 2 + 1;
-		deoglCollideListHTSector **newArray = new deoglCollideListHTSector*[ newSize ];
-		if( ! newArray ) DETHROW( deeOutOfMemory );
+		const int newSize = pHTSectorCount * 3 / 2 + 1;
+		deoglCollideListHTSector ** const newArray = new deoglCollideListHTSector*[ newSize ];
 		if( newSize > pHTSectorSize ){
-			memset( newArray + pHTSectorSize, '\0', sizeof( deoglCollideListHTSector* ) * ( newSize - pHTSectorSize ) );
+			memset( newArray + pHTSectorSize, 0,
+				sizeof( deoglCollideListHTSector* ) * ( newSize - pHTSectorSize ) );
 		}
 		if( pHTSectors ){
 			memcpy( newArray, pHTSectors, sizeof( deoglCollideListHTSector* ) * pHTSectorSize );
@@ -576,31 +700,37 @@ void deoglCollideList::AddHTSector( deoglHTViewSector *sector, deoglDCollisionVo
 	
 	if( ! pHTSectors[ pHTSectorCount ] ){
 		pHTSectors[ pHTSectorCount ] = new deoglCollideListHTSector;
-		if( ! pHTSectors[ pHTSectorCount ] ) DETHROW( deeOutOfMemory );
 	}
 	pHTSectors[ pHTSectorCount ]->SetSector( sector );
-	clsector = pHTSectors[ pHTSectorCount ];
-	pHTSectorCount++;
+	return pHTSectors[ pHTSectorCount++ ];
+}
+
+void deoglCollideList::AddHTSector( deoglHTViewSector *sector, deoglDCollisionVolume *volume ){
+	deoglCollideListHTSector &clsector = *AddHTSector( sector );
+	bool empty = true;
 	
 	if( volume ){
-		deoglRHTSector &htsector = sector->GetSector();
-		int c, clusterCount = htsector.GetClusterCount() * htsector.GetClusterCount();
-		deoglHTSCluster * const clusters = htsector.GetClusters();
+		const deoglRHTSector &htsector = sector->GetSector();
+		const int count = htsector.GetClusterCount();
+		const deoglHTSCluster *cluster = htsector.GetClusters();
 		deoglDCollisionBox box;
+		decPoint i;
 		
-		for( c=0; c<clusterCount; c++ ){
-			box.SetCenter( clusters[ c ].GetCenter() );
-			box.SetHalfSize( clusters[ c ].GetHalfExtends() );
-			
-			if( volume->BoxHitsVolume( &box ) ){
-				clsector->AddCluster( c );
-				empty = false;
+		for( i.y=0; i.y<count; i.y++ ){
+			for( i.x=0; i.x<count; i.x++, cluster++ ){
+				box.SetCenter( cluster->GetCenter() );
+				box.SetHalfSize( cluster->GetHalfExtends() );
+				
+				if( volume->BoxHitsVolume( &box ) ){
+					clsector.AddCluster( i );
+					empty = false;
+				}
 			}
 		}
 	}
 	
 	if( empty ){
-		clsector->Clear();
+		clsector.Clear();
 		pHTSectorCount--;
 	}
 }
@@ -613,21 +743,62 @@ void deoglCollideList::RemoveAllHTSectors(){
 }
 
 void deoglCollideList::AddHTSectorsColliding( deoglHTView *htview, deoglDCollisionVolume *volume ){
-	if( ! htview || ! volume ) DETHROW( deeInvalidParam );
+	if( ! htview || ! volume ){
+		DETHROW( deeInvalidParam );
+	}
 	
 	//htview->DetermineVisibilityUsing( volume );
 	
-	int s, sectorCount = htview->GetSectorCount();
-	deoglHTViewSector *sector;
+	const int count = htview->GetSectorCount();
+	int i;
 	
-	for( s=0; s<sectorCount; s++ ){
-		sector = htview->GetSectorAt( s );
+	for( i=0; i<count; i++ ){
+		deoglHTViewSector * const sector = htview->GetSectorAt( i );
 		
 		// TODO test if the sector is visible using a bounding box test
 		
-		//if( sector->GetVisible() ){
-			AddHTSector( sector, volume );
-		//}
+		AddHTSector( sector, volume );
+	}
+}
+
+
+
+// Height Terrain Sector Clusters
+///////////////////////////////////
+
+deoglCollideListHTSCluster *deoglCollideList::GetHTSClusterAt( int index ) const{
+	if( index < 0 || index >= pHTSClusterCount ) DETHROW( deeInvalidParam );
+	return pHTSClusters[ index ];
+}
+
+deoglCollideListHTSCluster *deoglCollideList::AddHTSCluster( deoglHTViewSectorCluster *cluster ){
+	DEASSERT_NOTNULL( cluster )
+	
+	if( pHTSClusterCount == pHTSClusterSize ){
+		const int newSize = pHTSClusterCount * 3 / 2 + 1;
+		deoglCollideListHTSCluster ** const newArray = new deoglCollideListHTSCluster*[ newSize ];
+		if( newSize > pHTSClusterSize ){
+			memset( newArray + pHTSClusterSize, 0, sizeof( deoglCollideListHTSCluster* ) * ( newSize - pHTSClusterSize ) );
+		}
+		if( pHTSClusters ){
+			memcpy( newArray, pHTSClusters, sizeof( deoglCollideListHTSCluster* ) * pHTSClusterSize );
+			delete [] pHTSClusters;
+		}
+		pHTSClusters = newArray;
+		pHTSClusterSize = newSize;
+	}
+	
+	if( ! pHTSClusters[ pHTSClusterCount ] ){
+		pHTSClusters[ pHTSClusterCount ] = new deoglCollideListHTSCluster;
+	}
+	pHTSClusters[ pHTSClusterCount ]->SetCluster( cluster );
+	return pHTSClusters[ pHTSClusterCount++ ];
+}
+
+void deoglCollideList::RemoveAllHTSClusters(){
+	while( pHTSClusterCount > 0 ){
+		pHTSClusterCount--;
+		pHTSClusters[ pHTSClusterCount ]->Clear();
 	}
 }
 
@@ -637,22 +808,23 @@ void deoglCollideList::AddHTSectorsColliding( deoglHTView *htview, deoglDCollisi
 ////////////////
 
 deoglCollideListPropField *deoglCollideList::GetPropFieldAt( int index ) const{
-	if( index < 0 || index >= pPropFieldCount ) DETHROW( deeInvalidParam );
-	
+	if( index < 0 || index >= pPropFieldCount ){
+		DETHROW( deeInvalidParam );
+	}
 	return pPropFields[ index ];
 }
 
-void deoglCollideList::AddPropField( deoglRPropField *propField, deoglDCollisionVolume *volume ){
-	if( ! propField ) DETHROW( deeInvalidParam );
-	
-	deoglCollideListPropField *clpf;
+deoglCollideListPropField *deoglCollideList::AddPropField( deoglRPropField *propField ){
+	if( ! propField ){
+		DETHROW( deeInvalidParam );
+	}
 	
 	if( pPropFieldCount == pPropFieldSize ){
 		int newSize = pPropFieldCount * 3 / 2 + 1;
 		deoglCollideListPropField **newArray = new deoglCollideListPropField*[ newSize ];
-		if( ! newArray ) DETHROW( deeOutOfMemory );
 		if( newSize > pPropFieldSize ){
-			memset( newArray + pPropFieldSize, '\0', sizeof( deoglCollideListPropField* ) * ( newSize - pPropFieldSize ) );
+			memset( newArray + pPropFieldSize, '\0',
+				sizeof( deoglCollideListPropField* ) * ( newSize - pPropFieldSize ) );
 		}
 		if( pPropFields ){
 			memcpy( newArray, pPropFields, sizeof( deoglCollideListPropField* ) * pPropFieldSize );
@@ -664,47 +836,43 @@ void deoglCollideList::AddPropField( deoglRPropField *propField, deoglDCollision
 	
 	if( ! pPropFields[ pPropFieldCount ] ){
 		pPropFields[ pPropFieldCount ] = new deoglCollideListPropField;
-		if( ! pPropFields[ pPropFieldCount ] ) DETHROW( deeOutOfMemory );
 	}
 	pPropFields[ pPropFieldCount ]->SetPropField( propField );
-	clpf = pPropFields[ pPropFieldCount++ ];
+	return pPropFields[ pPropFieldCount++ ];
+}
+
+void deoglCollideList::AddPropField( deoglRPropField *propField, deoglDCollisionVolume &volume ){
+	const decDVector &pfpos = propField->GetPosition();
+	const int typeCount = propField->GetTypeCount();
+	deoglDCollisionBox box;
+	int i, j;
 	
-	if( volume ){
-		const decDVector &pfpos = propField->GetPosition();
-		decDVector clusterMinExtend, clusterMaxExtend;
-		int t, typeCount = clpf->GetTypeCount();
-		deoglCollideListPropFieldType *cltype;
-		deoglPropFieldCluster *cluster;
-		deoglDCollisionBox box;
-		int c, clusterCount;
-		bool isEmpty = true;
+	deoglCollideListPropField *clpropfield = NULL;
+	
+	for( i=0; i<typeCount; i++ ){
+		deoglRPropFieldType &type = propField->GetTypeAt( i );
+		const int clusterCount = type.GetClusterCount();
 		
-		for( t=0; t<typeCount; t++ ){
-			cltype = clpf->GetTypeAt( t );
-			deoglRPropFieldType &type = propField->GetTypeAt( t );
-			clusterCount = type.GetClusterCount();
+		deoglCollideListPropFieldType *cltype = NULL;
+		
+		for( j=0; j<clusterCount; j++ ){
+			deoglPropFieldCluster &cluster = *type.GetClusterAt( j );
 			
-			cltype->RemoveAllClusters();
+			const decDVector clusterMinExtend( pfpos + cluster.GetMinimumExtend() );
+			const decDVector clusterMaxExtend( pfpos + cluster.GetMaximumExtend() );
+			box.SetFromExtends( clusterMinExtend, clusterMaxExtend );
 			
-			for( c=0; c<clusterCount; c++ ){
-				cluster = type.GetClusterAt( c );
-				
-				clusterMinExtend = pfpos + cluster->GetMinimumExtend();
-				clusterMaxExtend = pfpos + cluster->GetMaximumExtend();
-				
-				box.SetFromExtends( clusterMinExtend, clusterMaxExtend );
-				
-				if( volume->BoxHitsVolume( &box ) ){
-					cltype->AddCluster( cluster );
-					isEmpty = false;
-				}
+			if( ! volume.BoxHitsVolume( &box ) ){
+				continue;
 			}
-			//propField->GetOpenGL()->LogInfo( "CollideList: propField=%p t=%i(%p;%p) c=%i", propField, t, cltype, type, cltype->GetClusterCount() );
-		}
-		
-		if( isEmpty ){
-			clpf->Clear();
-			pPropFieldCount--;
+			
+			if( ! clpropfield ){
+				clpropfield = AddPropField( propField );
+			}
+			if( ! cltype ){
+				cltype = clpropfield->AddType( &type );
+			}
+			cltype->AddCluster( &cluster );
 		}
 	}
 }
@@ -716,28 +884,68 @@ void deoglCollideList::RemoveAllPropFields(){
 	}
 }
 
-void deoglCollideList::AddPropFieldsColliding( deoglRWorld &world, deoglDCollisionVolume *volume ){
-	if( ! volume ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	int p, propFieldCount = world.GetPropFieldCount();
+void deoglCollideList::AddPropFieldsColliding( deoglRWorld &world, deoglDCollisionVolume &volume ){
+	const int count = world.GetPropFieldCount();
 	deoglDCollisionBox box;
+	int i;
 	
-	for( p=0; p<propFieldCount; p++ ){
-		deoglRPropField * const propField = world.GetPropFieldAt( p );
+	for( i=0; i<count; i++ ){
+		deoglRPropField &propField = *world.GetPropFieldAt( i );
+		const decDVector &minExtend = propField.GetMinimumExtend();
+		const decDVector &maxExtend = propField.GetMaximumExtend();
 		
-		if( propField ){
-			const decDVector &minExtend = propField->GetMinimumExtend();
-			const decDVector &maxExtend = propField->GetMaximumExtend();
-			
-			box.SetFromExtends( minExtend, maxExtend );
-			if( volume->BoxHitsVolume( &box ) ){
-				AddPropField( propField, volume );
-			}
+		box.SetFromExtends( minExtend, maxExtend );
+		if( volume.BoxHitsVolume( &box ) ){
+			AddPropField( &propField, volume );
 		}
 	}
 }
+
+
+
+// Prop Field Clusters
+////////////////////////
+
+deoglCollideListPropFieldCluster *deoglCollideList::GetPropFieldClusterAt( int index ) const{
+	if( index < 0 || index >= pPropFieldClusterCount ){
+		DETHROW( deeInvalidParam );
+	}
+	return pPropFieldClusters[ index ];
+}
+
+deoglCollideListPropFieldCluster *deoglCollideList::AddPropFieldCluster( deoglPropFieldCluster *cluster ){
+	DEASSERT_NOTNULL( cluster )
+	
+	if( pPropFieldClusterCount == pPropFieldClusterSize ){
+		const int newSize = pPropFieldClusterCount * 3 / 2 + 1;
+		deoglCollideListPropFieldCluster ** const newArray = new deoglCollideListPropFieldCluster*[ newSize ];
+		if( newSize > pPropFieldClusterSize ){
+			memset( newArray + pPropFieldClusterSize, '\0',
+				sizeof( deoglCollideListPropFieldCluster* ) * ( newSize - pPropFieldClusterSize ) );
+		}
+		if( pPropFieldClusters ){
+			memcpy( newArray, pPropFieldClusters, sizeof( deoglCollideListPropFieldCluster* ) * pPropFieldClusterSize );
+			delete [] pPropFieldClusters;
+		}
+		pPropFieldClusters = newArray;
+		pPropFieldClusterSize = newSize;
+	}
+	
+	if( ! pPropFieldClusters[ pPropFieldClusterCount ] ){
+		pPropFieldClusters[ pPropFieldClusterCount ] = new deoglCollideListPropFieldCluster;
+	}
+	pPropFieldClusters[ pPropFieldClusterCount ]->SetCluster( cluster );
+	return pPropFieldClusters[ pPropFieldClusterCount++ ];
+}
+
+void deoglCollideList::RemoveAllPropFieldClusters(){
+	while( pPropFieldClusterCount > 0 ){
+		pPropFieldClusterCount--;
+		pPropFieldClusters[ pPropFieldClusterCount ]->Clear();
+	}
+}
+
+
 
 #if 0
 void deoglCollideList::AddParticlesColliding( deoglRWorld *world, deoglDCollisionVolume *volume ){
@@ -780,12 +988,30 @@ void deoglCollideList::AddParticlesColliding( deoglRWorld *world, deoglDCollisio
 void deoglCollideList::pCleanUp(){
 	Clear();
 	
+	if( pPropFieldClusters ){
+		while( pPropFieldClusterSize > 0 ){
+			if( pPropFieldClusters[ pPropFieldClusterSize - 1 ] ) delete pPropFieldClusters[ pPropFieldClusterSize - 1 ];
+			pPropFieldClusterSize--;
+		}
+		delete [] pPropFieldClusters;
+	}
+	
 	if( pPropFields ){
 		while( pPropFieldSize > 0 ){
 			if( pPropFields[ pPropFieldSize - 1 ] ) delete pPropFields[ pPropFieldSize - 1 ];
 			pPropFieldSize--;
 		}
 		delete [] pPropFields;
+	}
+	
+	if( pHTSClusters ){
+		while( pHTSClusterSize > 0 ){
+			if( pHTSClusters[ pHTSClusterSize - 1 ] ){
+				delete pHTSClusters[ pHTSClusterSize - 1 ];
+			}
+			pHTSClusterSize--;
+		}
+		delete [] pHTSClusters;
 	}
 	
 	if( pHTSectors ){
@@ -798,7 +1024,19 @@ void deoglCollideList::pCleanUp(){
 		delete [] pHTSectors;
 	}
 	
-	if( pLights ) delete [] pLights;
+	if( pBillboards ){
+		delete [] pBillboards;
+	}
+	
+	if( pLights ){
+		while( pLightSize > 0 ){
+			pLightSize--;
+			if( pLights[ pLightSize ] ){
+				delete pLights[ pLightSize ];
+			}
+		}
+		delete [] pLights;
+	}
 	
 	if( pComponents ){
 		while( pComponentSize > 0 ){

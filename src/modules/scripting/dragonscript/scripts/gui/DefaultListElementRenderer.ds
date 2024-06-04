@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -42,29 +45,31 @@ pin Dragengine.Gui.Designers
 class DefaultListElementRenderer implements ListElementRenderer
 	private var String pDesignerSelector
 	private var Object pDefaultObject
+	private var Point pDefaultMinimumSize
 	
 	
 	
 	/** \brief Create default list element renderer. */
-	public func new() this( null )
+	public func new() this(null)
 	end
 	
 	/** \brief Create default list element renderer. */
-	public func new( Object defaultObject )
-		this.pDesignerSelector = "Label.ListRenderer"
-		this.pDefaultObject = defaultObject
+	public func new(Object defaultObject)
+		pDesignerSelector = "Label.ListRenderer"
+		pDefaultObject = defaultObject
+		pDefaultMinimumSize = Point.new()
 	end
 	
 	
 	
 	/** \brief Dsigner selector. */
 	public func String getDesignerSelector()
-		return this.pDesignerSelector
+		return pDesignerSelector
 	end
 	
 	/** \brief Set designer selector. */
-	public func void setDesignerSelector( String selector )
-		this.pDesignerSelector = selector
+	public func void setDesignerSelector(String selector)
+		pDesignerSelector = selector
 	end
 	
 	/**
@@ -73,38 +78,57 @@ class DefaultListElementRenderer implements ListElementRenderer
 	 * Default reference object is null.
 	 */
 	public func Object getDefaultObject()
-		return this.pDefaultObject
+		return pDefaultObject
 	end
 	
 	/** \brief Object used to measure default size with. */
-	public func void setDefaultObject( Object object )
-		this.pDefaultObject = object
+	public func void setDefaultObject(Object object)
+		pDefaultObject = object
+	end
+	
+	/**
+	 * \brief Minimum size to use unless default element is larger.
+	 * \version 1.7
+	 */
+	public func Point getDefaultMinimumSize()
+		return pDefaultMinimumSize
+	end
+	
+	/**
+	 * \brief Set minimum size to use unless default element is larger.
+	 * \version 1.7
+	 */
+	public func void setDefaultMinimumSize(Point size)
+		if size == null
+			throw ENullPointer.new("size")
+		end
+		pDefaultMinimumSize = Point.new().largest(size)
 	end
 	
 	
 	
 	/** \brief Create renderer. */
-	public func Widget createRenderer( ListBox listBox )
-		return Label.new( "", Label.middleLeft )
+	public func Widget createRenderer(ListBox listBox)
+		return Label.new("", Label.middleLeft)
 	end
 	
 	/** \brief Update renderer with object state. */
-	public func void updateRenderer( ListBox listBox, Widget renderer, \
-	Object element, bool selected, bool focused )
+	public func void updateRenderer(ListBox listBox, Widget renderer, \
+	Object element, bool selected, bool focused)
 		var Label label = renderer cast Label
 		
 		if selected
-			label.setDesignerSelector( this.pDesignerSelector + ".Selected" )
+			label.setDesignerSelector(pDesignerSelector + ".Selected")
 			
 		else
-			label.setDesignerSelector( this.pDesignerSelector )
+			label.setDesignerSelector(pDesignerSelector)
 		end
 		
 		if element == null
-			label.setText( "" )
+			label.setText("")
 			
 		else
-			label.setText( element.toString() )
+			label.setText(element.toString())
 		end
 	end
 	
@@ -115,26 +139,26 @@ class DefaultListElementRenderer implements ListElementRenderer
 	 * updates using updateRenderer() with the assigned minimum size object. The minimum
 	 * size reported by this renderer instance is returned as default size.
 	 */
-	public func Point getDefaultSize( ListBox listBox )
+	public func Point getDefaultSize(ListBox listBox)
 		// to properly measure the size a Container instance is created with the gui theme
 		// from the listBox. if the gui theme would be assigned directly to the renderer
 		// potentially use of gui theme selectors are skipped causing strange to find
 		// errors. the empty widget designer ensures the container has no padding nor any
 		// other unwanted designer parameters applied
 		var Container container = Container.new()
-		container.runWhileBlockingLayout( block
-			container.setLayout( BoxLayout.new( LayoutAxis.y ) )
-			container.setDesigner( DefaultWidgetDesigner.new() )
-			container.setGuiTheme( listBox.getGuiTheme() )
+		container.runWhileBlockingLayout(block
+			container.setLayout(BoxLayout.new(LayoutAxis.y))
+			container.setDesigner(DefaultWidgetDesigner.new())
+			container.setGuiTheme(listBox.getGuiTheme())
 			
-			var Widget renderer = this.createRenderer( listBox )
-			container.addWidget( renderer )
-			this.updateRenderer( listBox, renderer, this.pDefaultObject, false, false )
-		end )
+			var Widget renderer = createRenderer(listBox)
+			container.addWidget(renderer)
+			updateRenderer(listBox, renderer, pDefaultObject, false, false)
+		end)
 		container.doLayout()
 		
 		var Point size = container.getMinimumSize()
 		container.dispose()
-		return size
+		return size.largest(pDefaultMinimumSize)
 	end
 end

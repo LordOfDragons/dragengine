@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 // includes
@@ -1520,6 +1523,25 @@ void deClassWorld::nfSetLightColorMatrix::RunFunction( dsRunTime *rt, dsValue *m
 	world->SetLightColorMatrix( clsWorld->GetClassMatrix()->GetMatrix( object ) );
 }
 
+// public func float getSpeakerGain()
+deClassWorld::nfGetSpeakerGain::nfGetSpeakerGain( const sInitData &init ) :
+dsFunction( init.clsWorld, "getSpeakerGain", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt ){
+}
+void deClassWorld::nfGetSpeakerGain::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deWorld &world = *( ( ( sWorldNatDat* )p_GetNativeData( myself ) )->world );
+	rt->PushFloat( world.GetSpeakerGain() );
+}
+
+// public func void setSpeakerGain(float gain)
+deClassWorld::nfSetSpeakerGain::nfSetSpeakerGain(const sInitData &init) :
+dsFunction( init.clsWorld, "setSpeakerGain", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsFlt ); // gain
+}
+void deClassWorld::nfSetSpeakerGain::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deWorld &world = *( ( ( sWorldNatDat* )p_GetNativeData( myself ) )->world );
+	world.SetSpeakerGain( rt->GetValue( 0 )->GetFloat() );
+}
+
 
 
 // Height Terrain
@@ -1736,6 +1758,40 @@ void deClassWorld::nfRayHitsClosest::RunFunction( dsRunTime *rt, dsValue *myself
 
 
 
+// public func int hashCode()
+deClassWorld::nfHashCode::nfHashCode( const sInitData &init ) :
+dsFunction( init.clsWorld, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt ){
+}
+
+void deClassWorld::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
+	sWorldNatDat &nd = *( ( sWorldNatDat* )p_GetNativeData( myself ) );
+	
+	// hash code = memory location
+	rt->PushInt( ( int )( intptr_t )nd.world );
+}
+
+// public func bool equals( Object obj )
+deClassWorld::nfEquals::nfEquals( const sInitData &init ) :
+dsFunction( init.clsWorld, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool ){
+	p_AddParameter( init.clsObject ); // obj
+}
+void deClassWorld::nfEquals::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const sWorldNatDat &nd = *( ( sWorldNatDat* )p_GetNativeData( myself ) );
+	deClassWorld * const clsWorld = ( deClassWorld* )GetOwnerClass();
+	dsValue * const obj = rt->GetValue( 0 );
+	
+	if( obj->GetType()->GetPrimitiveType() != DSPT_OBJECT || ! obj->GetRealObject()
+	|| obj->GetRealObject()->GetType() != clsWorld ){
+		rt->PushBool( false );
+		
+	}else{
+		const sWorldNatDat &other = *( ( sWorldNatDat* )p_GetNativeData( obj ) );
+		rt->PushBool( nd.world == other.world );
+	}
+}
+
+
+
 // Class deClassWorld
 ///////////////////////
 
@@ -1789,6 +1845,7 @@ void deClassWorld::CreateClassMembers( dsEngine *engine ){
 	init.clsInt = engine->GetClassInt();
 	init.clsFlt = engine->GetClassFloat();
 	init.clsBool = engine->GetClassBool();
+	init.clsObject = engine->GetClassObject();
 	init.clsCam = pClsCam;
 	init.clsClr = pClsClr;
 	init.clsCol = pClsCol;
@@ -1835,6 +1892,9 @@ void deClassWorld::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfSetAmbientLight( init ) );
 	AddFunction( new nfGetLightColorMatrix( init ) );
 	AddFunction( new nfSetLightColorMatrix( init ) );
+	
+	AddFunction( new nfGetSpeakerGain( init ) );
+	AddFunction( new nfSetSpeakerGain( init ) );
 	
 	AddFunction( new nfGetHeightTerrain( init ) );
 	AddFunction( new nfSetHeightTerrain( init ) );
@@ -1948,6 +2008,9 @@ void deClassWorld::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfColliderMoveHitsClosest( init ) );
 	AddFunction( new nfRayHits( init ) );
 	AddFunction( new nfRayHitsClosest( init ) );
+	
+	AddFunction( new nfEquals( init ) );
+	AddFunction( new nfHashCode( init ) );
 }
 
 

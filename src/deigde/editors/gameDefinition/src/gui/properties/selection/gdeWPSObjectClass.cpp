@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Game Definition Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -35,6 +38,7 @@
 #include "../../../gamedef/category/gdeCategory.h"
 #include "../../../gamedef/filepattern/gdeFilePattern.h"
 #include "../../../gamedef/objectClass/gdeObjectClass.h"
+#include "../../../gamedef/objectClass/component/gdeOCComponentTexture.h"
 #include "../../../gamedef/objectClass/inherit/gdeOCInherit.h"
 #include "../../../gamedef/property/gdeProperty.h"
 #include "../../../undosys/objectClass/gdeUOCSetName.h"
@@ -47,7 +51,8 @@
 #include "../../../undosys/objectClass/gdeUOCSetPropertyValues.h"
 #include "../../../undosys/objectClass/gdeUOCPropertyValuesFromSubObjects.h"
 #include "../../../undosys/objectClass/gdeUOCToggleIsGhost.h"
-#include "../../../undosys/objectClass/gdeUOCToggleCanInstanciate.h"
+#include "../../../undosys/objectClass/gdeUOCToggleCanInstantiate.h"
+#include "../../../undosys/objectClass/gdeUOCSetInheritSubObjects.h"
 #include "../../../undosys/objectClass/property/gdeUOCPropertyAdd.h"
 #include "../../../undosys/objectClass/property/gdeUOCPropertyRemove.h"
 #include "../../../undosys/objectClass/property/gdeUOCPSetName.h"
@@ -84,26 +89,43 @@
 #include "../../../undosys/objectClass/texproperty/gdeUOCTPCFPSetExtension.h"
 #include "../../../undosys/objectClass/inherit/gdeUOCAddInherit.h"
 #include "../../../undosys/objectClass/inherit/gdeUOCRemoveInherit.h"
+#include "../../../undosys/objectClass/inherit/gdeUOCRemoveAllInherits.h"
 #include "../../../undosys/objectClass/inherit/gdeUOCInheritSetName.h"
 #include "../../../undosys/objectClass/inherit/gdeUOCInheritSetPropertyPrefix.h"
+#include "../../../undosys/objectClass/texture/gdeUOCAddTexture.h"
+#include "../../../undosys/objectClass/texture/gdeUOCRemoveTexture.h"
+#include "../../../undosys/objectClass/texture/gdeUOCTextureSetColorTint.h"
+#include "../../../undosys/objectClass/texture/gdeUOCTextureSetName.h"
+#include "../../../undosys/objectClass/texture/gdeUOCTextureSetOffset.h"
+#include "../../../undosys/objectClass/texture/gdeUOCTextureSetPathSkin.h"
+#include "../../../undosys/objectClass/texture/gdeUOCTextureSetRotation.h"
+#include "../../../undosys/objectClass/texture/gdeUOCTextureSetScale.h"
 
 #include <deigde/environment/igdeEnvironment.h>
+#include <deigde/gamedefinition/class/igdeGDClass.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeCheckBox.h>
 #include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeColorBox.h>
 #include <deigde/gui/igdeIconListBox.h>
 #include <deigde/gui/igdeListBox.h>
 #include <deigde/gui/igdeTextArea.h>
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/igdeComboBoxFilter.h>
+#include <deigde/gui/igdeWindow.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/composed/igdeEditPathListener.h>
+#include <deigde/gui/composed/igdeEditVector2.h>
+#include <deigde/gui/composed/igdeEditVector2Listener.h>
 #include <deigde/gui/event/igdeActionContextMenu.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
+#include <deigde/gui/event/igdeColorBoxListener.h>
+#include <deigde/gui/event/igdeListBoxListener.h>
 #include <deigde/gui/event/igdeIconListBoxListener.h>
 #include <deigde/gui/event/igdeTextAreaListener.h>
 #include <deigde/gui/event/igdeTextFieldListener.h>
+#include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/undo/igdeUndoReference.h>
@@ -264,13 +286,33 @@ public:
 	virtual void Update(){ /* empty on purpose! */ }
 };
 
-class cActionCanInstanciate : public cBaseAction {
+class cActionCanInstantiate : public cBaseAction {
 public:
-	cActionCanInstanciate( gdeWPSObjectClass &panel ) : cBaseAction( panel, "Can Instanciate", NULL,
+	cActionCanInstantiate( gdeWPSObjectClass &panel ) : cBaseAction( panel, "Can Instantiate", NULL,
 		"Object can be instantiated (visible in browser and usable). Disable for classes only inherited from." ){ }
 	
 	virtual igdeUndo *OnActionObjectClass( gdeObjectClass *objectClass ){
-		return new gdeUOCToggleCanInstanciate( objectClass );
+		return new gdeUOCToggleCanInstantiate( objectClass );
+	}
+	
+	virtual void Update(){ /* empty on purpose! */ }
+};
+
+class cActionInheritSubObjects : public cBaseAction {
+	const int pMask;
+public:
+	cActionInheritSubObjects( gdeWPSObjectClass &panel, int mask, const char *text,
+	const char *description ) : cBaseAction( panel, text, nullptr, description ), pMask( mask ){ }
+	
+	virtual igdeUndo *OnActionObjectClass( gdeObjectClass *objectClass ){
+		int filter = objectClass->GetInheritSubObjects();
+		if( ( filter & pMask ) == pMask ){
+			filter &= ~pMask;
+			
+		}else{
+			filter |= pMask;
+		}
+		return new gdeUOCSetInheritSubObjects( objectClass, filter );
 	}
 	
 	virtual void Update(){ /* empty on purpose! */ }
@@ -453,27 +495,21 @@ public:
 
 
 
-class cComboInherits : public cBaseComboBoxListener {
-public:
-	cComboInherits( gdeWPSObjectClass &panel ) : cBaseComboBoxListener( panel ){ }
-	
-	virtual igdeUndo *OnChanged( igdeComboBox&, gdeObjectClass* ){
-		pPanel.UpdateInherit();
-		return NULL;
-	}
-};
-
-class cActionInheritMenu : public igdeActionContextMenu {
+class cListInherits : public igdeListBoxListener{
 	gdeWPSObjectClass &pPanel;
-public:
-	cActionInheritMenu( gdeWPSObjectClass &panel ) : igdeActionContextMenu( "",
-		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiSmallDown ),
-		"Inherits menu" ), pPanel( panel ){ }
 	
-	virtual void AddContextMenuEntries( igdeMenuCascade &contextMenu ){
-		igdeUIHelper &helper = contextMenu.GetEnvironment().GetUIHelper();
-		helper.MenuCommand( contextMenu, pPanel.GetActionInheritAdd() );
-		helper.MenuCommand( contextMenu, pPanel.GetActionInheritRemove() );
+public:
+	cListInherits( gdeWPSObjectClass &panel ) : pPanel( panel ){ }
+	
+	virtual void OnSelectionChanged( igdeListBox* ){
+		pPanel.UpdateInherit();
+	}
+	
+	virtual void AddContextMenuEntries( igdeListBox*, igdeMenuCascade &menu ){
+		igdeUIHelper &helper = menu.GetEnvironment().GetUIHelper();
+		helper.MenuCommand( menu, pPanel.GetActionInheritAdd() );
+		helper.MenuCommand( menu, pPanel.GetActionInheritRemove() );
+		helper.MenuCommand( menu, pPanel.GetActionInheritRemoveAll() );
 	}
 };
 
@@ -483,9 +519,29 @@ public:
 		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ), "Add inherit" ){ }
 	
 	virtual igdeUndo *OnActionObjectClass( gdeObjectClass *objectClass ){
+		const decStringSet &classNames = pPanel.GetGameDefinition()->GetClassNameList();
+		const int count = classNames.GetCount();
+		decStringList proposals;
+		int i;
+		for( i=0; i<count; i++ ){
+			proposals.Add( classNames.GetAt( i ) );
+		}
+		proposals.SortAscending();
+		
 		decString name( "Name" );
-		if( ! igdeCommonDialogs::GetString( &pPanel, "Add Inherit", "Name:", name ) ){
-			return NULL;
+		if( ! igdeCommonDialogs::GetString( pPanel.GetParentWindow(), "Add Inherit", "Name:", name, proposals ) ){
+			return nullptr;
+		}
+		const gdeObjectClass * const inheritOC = pPanel.GetGameDefinition()->FindObjectClass( name );
+		if( inheritOC ){
+			if( objectClass == inheritOC ){
+				igdeCommonDialogs::Error( &pPanel, "Add Inherit", "Can not inherit from yourself" );
+				return nullptr;
+			}
+			if( inheritOC->InheritsFrom( objectClass ) ){
+				igdeCommonDialogs::Error( &pPanel, "Add Inherit", "Inheritance loop" );
+				return nullptr;
+			}
 		}
 		
 		deObjectReference objRef;
@@ -522,6 +578,20 @@ public:
 	}
 };
 
+class cActionInheritRemoveAll : public cBaseAction {
+public:
+	cActionInheritRemoveAll( gdeWPSObjectClass &panel ) : cBaseAction( panel, "Remove All",
+		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ), "Remove all inherits" ){ }
+	
+	virtual igdeUndo *OnActionObjectClass( gdeObjectClass *objectClass ){
+		return objectClass->GetInherits().GetCount() > 0 ? new gdeUOCRemoveAllInherits( objectClass ) : NULL;
+	}
+	
+	virtual void Update(){
+		SetEnabled( pPanel.GetInherit() != NULL );
+	}
+};
+
 class cComboInheritName : public cBaseComboBoxListener {
 public:
 	cComboInheritName( gdeWPSObjectClass &panel ) : cBaseComboBoxListener( panel ){ }
@@ -529,7 +599,20 @@ public:
 	virtual igdeUndo *OnChanged( igdeComboBox &comboBox, gdeObjectClass *objectClass ){
 		gdeOCInherit * const inherit = pPanel.GetInherit();
 		if( ! inherit || inherit->GetName() == comboBox.GetText() ){
-			return NULL;
+			return nullptr;
+		}
+		const gdeObjectClass * const inheritOC = pPanel.GetGameDefinition()->FindObjectClass( comboBox.GetText() );
+		if( inheritOC ){
+			if( objectClass == inheritOC ){
+				igdeCommonDialogs::Error( &pPanel, "Set Inherit Name", "Can not inherit from yourself" );
+				comboBox.SetText( inherit->GetName() );
+				return nullptr;
+			}
+			if( inheritOC->InheritsFrom( objectClass ) ){
+				igdeCommonDialogs::Error( &pPanel, "Set Inherit Name", "Inheritance loop" );
+				comboBox.SetText( inherit->GetName() );
+				return nullptr;
+			}
 		}
 		return new gdeUOCInheritSetName( objectClass, inherit, comboBox.GetText() );
 	}
@@ -545,6 +628,25 @@ public:
 			return NULL;
 		}
 		return new gdeUOCInheritSetPropertyPrefix( objectClass, inherit, textField.GetText() );
+	}
+};
+
+class cActionInheritResetPropertyPrefix : public cBaseAction {
+public:
+	cActionInheritResetPropertyPrefix( gdeWPSObjectClass &panel ) : cBaseAction( panel, "R", NULL,
+		"Reset property prefix to default property prefix of inherited object class" ){ }
+	
+	virtual igdeUndo *OnActionObjectClass( gdeObjectClass *objectClass ){
+		gdeOCInherit * const inherit = pPanel.GetInherit();
+		if( inherit ){
+			const gdeObjectClass * const ioc = pPanel.GetGameDefinition()->FindObjectClass( inherit->GetName() );
+			if( ioc ){
+				if( inherit->GetPropertyPrefix() != ioc->GetDefaultInheritPropertyPrefix() ){
+					return new gdeUOCInheritSetPropertyPrefix( objectClass, inherit, ioc->GetDefaultInheritPropertyPrefix() );
+				}
+			}
+		}
+		return NULL;
 	}
 };
 
@@ -641,7 +743,7 @@ public:
 		
 		decString value;
 		objectClass->NamedPropertyDefaultValue( key, value );
-		if( ! igdeCommonDialogs::GetString( &pPanel, "Set Property Value", "Value:", value ) ){
+		if( ! igdeCommonDialogs::GetMultilineString( pPanel.GetParentWindow(), "Set Property Value", "Value:", value ) ){
 			return NULL;
 		}
 		
@@ -724,7 +826,7 @@ public:
 		
 		const decString &key = listBox->GetItemAt( index )->GetText();
 		decString value( objectClass->GetPropertyValues().GetAt( key, "" ) );
-		if( ! igdeCommonDialogs::GetString( &pPanel, "Edit Property Value", "Value:", value ) ){
+		if( ! igdeCommonDialogs::GetMultilineString( pPanel.GetParentWindow(), "Edit Property Value", "Value:", value ) ){
 			return;
 		}
 		
@@ -746,6 +848,256 @@ public:
 	}
 };
 
+
+// textures
+
+class cBaseComboBoxTextureListener : public cBaseComboBoxListener{
+public:
+	cBaseComboBoxTextureListener( gdeWPSObjectClass &panel ) : cBaseComboBoxListener( panel ){ }
+	
+	igdeUndo *OnChanged( igdeComboBox &comboBox, gdeObjectClass *objectClass ){
+		gdeOCComponentTexture * const texture = pPanel.GetTexture();
+		return texture ? OnChangedTexture( comboBox, objectClass, texture ) : NULL;
+	}
+	
+	virtual igdeUndo *OnChangedTexture( igdeComboBox &comboBox, gdeObjectClass *objectClass,
+		gdeOCComponentTexture *texture ) = 0;
+};
+
+class cBaseActionTexture : public cBaseAction{
+public:
+	cBaseActionTexture( gdeWPSObjectClass &panel, const char *text, igdeIcon *icon, const char *description ) :
+		cBaseAction( panel, text, icon, description ){ }
+	
+	virtual igdeUndo *OnActionObjectClass( gdeObjectClass *objectClass ){
+		gdeOCComponentTexture * const texture = pPanel.GetTexture();
+		return texture ? OnActionTexture( objectClass, texture ) : NULL;
+	}
+	
+	virtual igdeUndo *OnActionTexture( gdeObjectClass *objectClass, gdeOCComponentTexture *texture ) = 0;
+	
+	virtual void Update(){
+		SetEnabled( pPanel.GetTexture() );
+	}
+};
+
+class cBaseTextFieldTextureListener : public cBaseTextFieldListener{
+public:
+	cBaseTextFieldTextureListener( gdeWPSObjectClass &panel ) : cBaseTextFieldListener( panel ){ }
+	
+	virtual igdeUndo *OnChanged( igdeTextField &textField, gdeObjectClass *objectClass ){
+		gdeOCComponentTexture * const texture = pPanel.GetTexture();
+		return texture ? OnChangedTexture( textField, objectClass, texture ) : NULL;
+	}
+	
+	virtual igdeUndo *OnChangedTexture( igdeTextField &textField, gdeObjectClass *objectClass,
+		gdeOCComponentTexture *texture ) = 0;
+};
+
+class cBaseEditVector2TextureListener : public igdeEditVector2Listener{
+protected:
+	gdeWPSObjectClass &pPanel;
+	
+public:
+	cBaseEditVector2TextureListener( gdeWPSObjectClass &panel ) : pPanel( panel ){ }
+	
+	virtual void OnVector2Changed( igdeEditVector2 *editVector2 ){
+		gdeOCComponentTexture * const texture = pPanel.GetTexture();
+		if( ! texture ){
+			return;
+		}
+		
+		igdeUndoReference undo;
+		undo.TakeOver( OnChangedTexture( editVector2->GetVector2(), pPanel.GetObjectClass(), texture ) );
+		if( undo ){
+			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
+		}
+	}
+	
+	virtual igdeUndo *OnChangedTexture( const decVector2 &vector, gdeObjectClass *objectClass,
+		gdeOCComponentTexture *texture ) = 0;
+};
+
+
+class cComboTextures : public cBaseComboBoxListener{
+public:
+	cComboTextures( gdeWPSObjectClass &panel ) : cBaseComboBoxListener( panel ){ }
+	
+	virtual igdeUndo *OnChanged( igdeComboBox &comboBox, gdeObjectClass *objectClass ){
+		const igdeListItem * const selection = comboBox.GetSelectedItem();
+		objectClass->SetActiveTexture( selection ? ( gdeOCComponentTexture* )selection->GetData() : NULL );
+		pPanel.GetGameDefinition()->NotifyOCActiveTextureChanged( objectClass );
+		return NULL;
+	}
+};
+
+class cActionTextureAdd : public cBaseAction{
+	const decString pTextureName;
+	
+public:
+	cActionTextureAdd( gdeWPSObjectClass &panel ) : cBaseAction( panel, "Add...",
+		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ), "Add texture" ){ }
+	
+	cActionTextureAdd( gdeWPSObjectClass &panel, const decString &textureName ) :
+		cBaseAction( panel, textureName, NULL, "Add texture" ), pTextureName( textureName ){ }
+	
+	virtual igdeUndo *OnActionObjectClass( gdeObjectClass *objectClass ){
+		decString name( pTextureName );
+		
+		if( name.IsEmpty() ){
+			name = "Texture";
+			
+			while( true ){
+				if( ! igdeCommonDialogs::GetString( pPanel.GetParentWindow(), "Add Texture", "Name:", name ) ){
+					return NULL;
+				}
+				
+				if( objectClass->GetTextures().HasNamed( name ) ){
+					igdeCommonDialogs::Error( pPanel.GetParentWindow(), "Add Texture", "A texture with this name exists already." );
+					
+				}else{
+					break;
+				}
+			}
+		}
+		
+		deObjectReference texture;
+		texture.TakeOver( new gdeOCComponentTexture( name ) );
+		
+		igdeUndoReference undo;
+		undo.TakeOver( new gdeUOCAddTexture( objectClass, ( gdeOCComponentTexture* )( deObject* )texture ) );
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
+		
+		objectClass->SetActiveTexture( ( gdeOCComponentTexture* )( deObject* )texture );
+		pPanel.GetGameDefinition()->NotifyOCActiveTextureChanged( objectClass );
+		return NULL;
+	}
+	
+	virtual void Update(){
+		const gdeObjectClass * const objectClass = pPanel.GetObjectClass();
+		SetEnabled( objectClass && ( pTextureName.IsEmpty() || ! objectClass->GetTextures().HasNamed( pTextureName ) ) );
+	}
+};
+
+class cActionTextureRemove : public cBaseActionTexture{
+public:
+	cActionTextureRemove( gdeWPSObjectClass &panel ) : cBaseActionTexture( panel, "Remove",
+		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ), "Remove selected texture" ){ }
+	
+	virtual igdeUndo *OnActionTexture( gdeObjectClass *objectClass, gdeOCComponentTexture *texture ){
+		return new gdeUOCRemoveTexture( objectClass, texture );
+	}
+};
+
+class cActionTexturesMenu : public igdeActionContextMenu{
+	gdeWPSObjectClass &pPanel;
+	
+public:
+	cActionTexturesMenu( gdeWPSObjectClass &panel ) : igdeActionContextMenu( "",
+		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiSmallDown ),
+		"Textures menu" ), pPanel( panel ){ }
+	
+	virtual void AddContextMenuEntries( igdeMenuCascade &contextMenu ){
+		igdeEnvironment &env = contextMenu.GetEnvironment();
+		igdeUIHelper &helper = env.GetUIHelper();
+		
+		helper.MenuCommand( contextMenu, pPanel.GetActionTextureAdd() );
+		helper.MenuCommand( contextMenu, pPanel.GetActionTextureRemove() );
+	}
+};
+
+class cTextTextureEditName : public cBaseTextFieldTextureListener{
+public:
+	cTextTextureEditName( gdeWPSObjectClass &panel ) : cBaseTextFieldTextureListener( panel ){ }
+	
+	virtual igdeUndo *OnChangedTexture( igdeTextField &textField, gdeObjectClass *objectClass, gdeOCComponentTexture *texture ){
+		if( texture->GetName() == textField.GetText() ){
+			return NULL;
+		}
+		
+		if( objectClass->GetTextures().HasNamed( textField.GetText() ) ){
+			igdeCommonDialogs::Information( pPanel.GetParentWindow(), "Rename texture", "A texture with this name exists already." );
+			textField.SetText( texture->GetName() );
+			return NULL;
+		}
+		
+		return new gdeUOCTextureSetName( objectClass, texture, textField.GetText() );
+	}
+};
+
+class cEditTextureEditPathSkin : public igdeEditPathListener{
+	gdeWPSObjectClass &pPanel;
+	
+public:
+	cEditTextureEditPathSkin( gdeWPSObjectClass &panel ) : pPanel( panel ){ }
+	
+	virtual void OnEditPathChanged( igdeEditPath *editPath ){
+		gdeOCComponentTexture * const texture = pPanel.GetTexture();
+		if( ! texture || texture->GetPathSkin() == editPath->GetPath() ){
+			return;
+		}
+		
+		igdeUndoReference undo;
+		undo.TakeOver( new gdeUOCTextureSetPathSkin( pPanel.GetObjectClass(), texture, editPath->GetPath() ) );
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
+	}
+};
+
+class cEditTextureEditOffset : public cBaseEditVector2TextureListener{
+public:
+	cEditTextureEditOffset( gdeWPSObjectClass &panel ) : cBaseEditVector2TextureListener( panel ){ }
+	
+	virtual igdeUndo *OnChangedTexture( const decVector2 &vector, gdeObjectClass *objectClass, gdeOCComponentTexture *texture ){
+		if( texture->GetOffset().IsEqualTo( vector ) ){
+			return NULL;
+		}
+		return new gdeUOCTextureSetOffset( objectClass, texture, vector );
+	}
+};
+
+class cTextTextureEditRotation : public cBaseTextFieldTextureListener{
+public:
+	cTextTextureEditRotation( gdeWPSObjectClass &panel ) : cBaseTextFieldTextureListener( panel ){ }
+	
+	virtual igdeUndo *OnChangedTexture( igdeTextField &textField, gdeObjectClass *objectClass, gdeOCComponentTexture *texture ){
+		const float value = textField.GetFloat();
+		if( fabsf( texture->GetRotation() - value ) < FLOAT_SAFE_EPSILON ){
+			return NULL;
+		}
+		return new gdeUOCTextureSetRotation( objectClass, texture, value );
+	}
+};
+
+class cEditTextureEditScale : public cBaseEditVector2TextureListener{
+public:
+	cEditTextureEditScale( gdeWPSObjectClass &panel ) : cBaseEditVector2TextureListener( panel ){ }
+	
+	virtual igdeUndo *OnChangedTexture( const decVector2 &vector, gdeObjectClass *objectClass, gdeOCComponentTexture *texture ){
+		if( texture->GetScale().IsEqualTo( vector ) ){
+			return NULL;
+		}
+		return new gdeUOCTextureSetScale( objectClass, texture, vector );
+	}
+};
+
+class cColorTextureTint : public igdeColorBoxListener{
+	gdeWPSObjectClass &pPanel;
+	
+public:
+	cColorTextureTint( gdeWPSObjectClass &panel ) : pPanel( panel ){ }
+	
+	virtual void OnColorChanged( igdeColorBox *colorBox ){
+		gdeOCComponentTexture * const texture = pPanel.GetTexture();
+		if( ! texture || texture->GetColorTint().IsEqualTo( colorBox->GetColor() ) ){
+			return;
+		}
+		
+		igdeUndoReference undo;
+		undo.TakeOver( new gdeUOCTextureSetColorTint( pPanel.GetObjectClass(), texture, colorBox->GetColor() ) );
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
+	}
+};
+
 }
 
 
@@ -764,7 +1116,7 @@ pGameDefinition( NULL )
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference content, groupBox, frameLine;
+	igdeContainerReference content, groupBox, form, frameLine;
 	
 	pListener = new gdeWPSObjectClassListener( *this );
 	
@@ -773,14 +1125,18 @@ pGameDefinition( NULL )
 	
 	
 	// actions
-	pActionInheritMenu.TakeOver( new cActionInheritMenu( *this ) );
 	pActionInheritAdd.TakeOver( new cActionInheritAdd( *this ) );
 	pActionInheritRemove.TakeOver( new cActionInheritRemove( *this ) );
+	pActionInheritRemoveAll.TakeOver( new cActionInheritRemoveAll( *this ) );
 	
 	pActionPropertyValueSet.TakeOver( new cActionPropertyValueSet( *this ) );
 	pActionPropertyValueRemove.TakeOver( new cActionPropertyValueRemove( *this ) );
 	pActionPropertyValueClear.TakeOver( new cActionPropertyValueClear( *this ) );
 	pActionPropertyValuesFromSubObjects.TakeOver( new cActionPropertyValuesFromSubObjects( *this ) );
+	
+	pActionTexturesMenu.TakeOver( new cActionTexturesMenu( *this ) );
+	pActionTextureAdd.TakeOver( new cActionTextureAdd( *this ) );
+	pActionTextureRemove.TakeOver( new cActionTextureRemove( *this ) );
 	
 	
 	// object class
@@ -800,13 +1156,60 @@ pGameDefinition( NULL )
 		pEditDefaultInheritPropertyPrefix, new cTextDefaultInheritPropertyPrefix( *this ) );
 	
 	helper.CheckBox( groupBox, pChkIsGhost, new cActionIsGhost( *this ), true );
-	helper.CheckBox( groupBox, pChkCanInstanciate, new cActionCanInstanciate( *this ), true );
+	helper.CheckBox( groupBox, pChkCanInstantiate, new cActionCanInstantiate( *this ), true );
 	
 	helper.FormLineStretchFirst( groupBox, "Category: ", "Category", frameLine );
 	helper.ComboBoxFilter( frameLine, true, "Category", pCBCategory, new cComboCategory( *this ) );
 	pCBCategory->SetDefaultSorter();
 	pCBCategory->SetFilterCaseInsentive( true );
 	helper.Button( frameLine, pBtnJumpToCategory, new cActionJumpToCategory( *this ), true );
+	
+	
+	// inherits
+	helper.GroupBoxFlow( content, groupBox, "Inherits:" );
+	
+	helper.ListBox( groupBox, 5, "Inherited object classes", pListInherits, new cListInherits( *this ) );
+	pListInherits->SetDefaultSorter();
+	
+	form.TakeOver( new igdeContainerForm( env ) );
+	groupBox->AddChild( form );
+	
+	helper.FormLineStretchFirst( form, "Name:", "Name of class to inherit", frameLine );
+	helper.ComboBoxFilter( frameLine, true, "Name of class to inherit",
+		pInheritCBClass, new cComboInheritName( *this ) );
+	pInheritCBClass->SetDefaultSorter();
+	pInheritCBClass->SetFilterCaseInsentive( true );
+	helper.Button( frameLine, pBtnJumpToInheritClass, new cActionInheritJumpToClass( *this ), true );
+	
+	helper.FormLineStretchFirst( form, "Property Prefix:",
+		"Prefix to apply to inherited property names", frameLine );
+	helper.EditString( frameLine, "Prefix to apply to inherited property names",
+		pInheritEditPropertyPrefix, new cTextInheritPropertyPrefix( *this ) );
+	helper.Button( frameLine, pBtnInheritPropertyPrefixReset, new cActionInheritResetPropertyPrefix( *this ), true );
+	
+	
+	// inherit sub objects
+	helper.GroupBoxFlow( content, groupBox, "Inherit Sub-Objects:", false, true );
+	helper.CheckBox( groupBox, pChkInheritSOBillboards, new cActionInheritSubObjects( *this,
+		igdeGDClass::efsoBillboards, "Billboards", "Inherit billboards" ), true );
+	helper.CheckBox( groupBox, pChkInheritSOComponents, new cActionInheritSubObjects( *this,
+		igdeGDClass::efsoComponents, "Components", "Inherit components" ), true );
+	helper.CheckBox( groupBox, pChkInheritSOLights, new cActionInheritSubObjects( *this,
+		igdeGDClass::efsoLights, "Lights", "Inherit lights" ), true );
+	helper.CheckBox( groupBox, pChkInheritSOSnapPoints, new cActionInheritSubObjects( *this,
+		igdeGDClass::efsoSnapPoints, "Snap Points", "Inherit snap points" ), true );
+	helper.CheckBox( groupBox, pChkInheritSOParticleEmitters, new cActionInheritSubObjects( *this,
+		igdeGDClass::efsoParticleEmitters, "Particle Emitters", "Inherit particle emitters" ), true );
+	helper.CheckBox( groupBox, pChkInheritSOForceFields, new cActionInheritSubObjects( *this,
+		igdeGDClass::efsoForceFields, "Force Fields", "Inherit force fields" ), true );
+	helper.CheckBox( groupBox, pChkInheritSOEnvMapProbes, new cActionInheritSubObjects( *this,
+		igdeGDClass::efsoEnvMapProbes, "Environment Map Probes", "Inherit environment map probes" ), true );
+	helper.CheckBox( groupBox, pChkInheritSOSpeakers, new cActionInheritSubObjects( *this,
+		igdeGDClass::efsoSpeakers, "Speakers", "Inherit speakers" ), true );
+	helper.CheckBox( groupBox, pChkInheritSONavigationSpaces, new cActionInheritSubObjects( *this,
+		igdeGDClass::efsoNavigationSpaces, "Navigation Spaces", "Inherit navigation spaces" ), true );
+	helper.CheckBox( groupBox, pChkInheritSONavigationBlockers, new cActionInheritSubObjects( *this,
+		igdeGDClass::efsoNavigationBlockers, "Navigation Blockers", "Inherit navigation blockers" ), true );
 	
 	
 	// properties
@@ -816,7 +1219,7 @@ pGameDefinition( NULL )
 	
 	
 	// property values
-	helper.GroupBoxFlow( content, groupBox, "Property Values:", false, true );
+	helper.GroupBoxFlow( content, groupBox, "Property Values:", true );
 	
 	frameLine.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst ) );
 	helper.ComboBox( frameLine, true, "Property value to set", pCBPropertyValuesKeys, NULL );
@@ -828,8 +1231,8 @@ pGameDefinition( NULL )
 		igdeUIHelper::sColumnHeader( "Key", NULL, 150 ),
 		igdeUIHelper::sColumnHeader( "Value", NULL, 200 )
 	};
-	helper.IconListBox( groupBox, pListPropertyValues, 5, headersPropertyValues, 2,
-		"Property values", new cListPropertyValues( *this ) );
+	helper.IconListBox( groupBox, pListPropertyValues, decPoint( 100, 120 ),
+		headersPropertyValues, 2, "Property values", new cListPropertyValues( *this ) );
 	pListPropertyValues->SetDefaultSorter();
 	
 	
@@ -839,25 +1242,6 @@ pGameDefinition( NULL )
 	groupBox->AddChild( pEditTextureProperties );
 	
 	
-	// inherits
-	helper.GroupBox( content, groupBox, "Inherits:", true );
-	
-	helper.FormLineStretchFirst( groupBox, "Inherit:", "Inherit to edit", frameLine );
-	helper.ComboBox( frameLine, "Inherit to edit", pCBInherits, new cComboInherits( *this ) );
-	pCBInherits->SetDefaultSorter();
-	helper.Button( frameLine, pBtnMenuInherits, pActionInheritMenu );
-	pActionInheritMenu->SetWidget( pBtnMenuInherits );
-	
-	helper.FormLineStretchFirst( groupBox, "Name:", "Name of class to inherit", frameLine );
-	helper.ComboBoxFilter( frameLine, true, "Name of class to inherit",
-		pInheritCBClass, new cComboInheritName( *this ) );
-	pInheritCBClass->SetDefaultSorter();
-	pInheritCBClass->SetFilterCaseInsentive( true );
-	helper.Button( frameLine, pBtnJumpToInheritClass, new cActionInheritJumpToClass( *this ), true );
-	
-	helper.EditString( groupBox, "Property Prefix:", "Prefix to apply to inherited property names",
-		pInheritEditPropertyPrefix, new cTextInheritPropertyPrefix( *this ) );
-	
 	// tagging
 	helper.GroupBoxFlow( content, groupBox, "Hide Tags:", false, true );
 	pListHideTags.TakeOver( new cListHideTags( *this, helper ) );
@@ -866,6 +1250,29 @@ pGameDefinition( NULL )
 	helper.GroupBoxFlow( content, groupBox, "Partial Hide Tags:", false, true );
 	pListPartialHideTags.TakeOver( new cListPartialHideTags( *this, helper ) );
 	groupBox->AddChild( pListPartialHideTags );
+	
+	
+	// textures
+	helper.GroupBox( content, groupBox, "Textures:" );
+	
+	helper.FormLineStretchFirst( groupBox, "Texture:", "Texture to edit", frameLine );
+	helper.ComboBox( frameLine, "Texture to edit", pCBTextures, new cComboTextures( *this ) );
+	pCBTextures->SetDefaultSorter();
+	helper.Button( frameLine, pBtnTextures, pActionTexturesMenu );
+	pActionTexturesMenu->SetWidget( pBtnTextures );
+	
+	helper.EditString( groupBox, "Name:", "Name of texture", pTextureEditName, new cTextTextureEditName( *this ) );
+	helper.EditPath( groupBox, "Skin:", "Path to skin file to use",
+		igdeEnvironment::efpltSkin, pTextureEditPathSkin, new cEditTextureEditPathSkin( *this ) );
+	helper.EditVector2( groupBox, "Offset:", "Texture coordinate offset",
+		pTextureEditOffset, new cEditTextureEditOffset( *this ) );
+	helper.EditFloat( groupBox, "Rotation:",
+		"Texture coordinate rotation around texture center in degrees",
+		pTextureEditRotation, new cTextTextureEditRotation( *this ) );
+	helper.EditVector2( groupBox, "Scale:", "Texture coordinate scaling",
+		pTextureEditScale, new cEditTextureEditScale( *this ) );
+	helper.ColorBox( groupBox, "Tint:", "Texture tint color",
+		pTextureClrTint, new cColorTextureTint( *this ) );
 }
 
 gdeWPSObjectClass::~gdeWPSObjectClass(){
@@ -946,7 +1353,7 @@ gdeOCInherit *gdeWPSObjectClass::GetInherit() const{
 		return NULL;
 	}
 	
-	const igdeListItem * const selection = pCBInherits->GetSelectedItem();
+	const igdeListItem * const selection = pListInherits->GetSelectedItem();
 	return selection ? ( gdeOCInherit* )selection->GetData() : NULL;
 }
 
@@ -957,6 +1364,11 @@ const decString &gdeWPSObjectClass::GetPropertyKey() const{
 const char *gdeWPSObjectClass::GetPropertyValue() const{
 	const igdeListItem * const selection = pListPropertyValues->GetSelectedItem();
 	return selection ? selection->GetText().GetString() : NULL;
+}
+
+gdeOCComponentTexture *gdeWPSObjectClass::GetTexture() const{
+	gdeObjectClass * const objectClass = GetObjectClass();
+	return objectClass ? objectClass->GetActiveTexture() : NULL;
 }
 
 
@@ -1033,12 +1445,24 @@ void gdeWPSObjectClass::UpdateObjectClass(){
 	gdeWPTagList &partialHideTags = ( gdeWPTagList& )( igdeWidget& )pListPartialHideTags;
 	
 	if( objectClass ){
+		const int iso = objectClass->GetInheritSubObjects();
+		
 		pEditName->SetText( objectClass->GetName() );
 		pEditDescription->SetText( objectClass->GetDescription() );
 		pEditDefaultInheritPropertyPrefix->SetText( objectClass->GetDefaultInheritPropertyPrefix() );
 		pCBScaleMode->SetSelectionWithData( ( void* )( intptr_t )objectClass->GetScaleMode() );
 		pChkIsGhost->SetChecked( objectClass->GetIsGhost() );
-		pChkCanInstanciate->SetChecked( objectClass->GetCanInstanciate() );
+		pChkCanInstantiate->SetChecked( objectClass->GetCanInstantiate() );
+		pChkInheritSOBillboards->SetChecked( (iso & igdeGDClass::efsoBillboards ) != 0 );
+		pChkInheritSOComponents->SetChecked( (iso & igdeGDClass::efsoComponents ) != 0 );
+		pChkInheritSOLights->SetChecked( (iso & igdeGDClass::efsoLights ) != 0 );
+		pChkInheritSOSnapPoints->SetChecked( (iso & igdeGDClass::efsoSnapPoints ) != 0 );
+		pChkInheritSOParticleEmitters->SetChecked( (iso & igdeGDClass::efsoParticleEmitters ) != 0 );
+		pChkInheritSOForceFields->SetChecked( (iso & igdeGDClass::efsoForceFields ) != 0 );
+		pChkInheritSOEnvMapProbes->SetChecked( (iso & igdeGDClass::efsoEnvMapProbes ) != 0 );
+		pChkInheritSOSpeakers->SetChecked( (iso & igdeGDClass::efsoSpeakers ) != 0 );
+		pChkInheritSONavigationSpaces->SetChecked( (iso & igdeGDClass::efsoNavigationSpaces ) != 0 );
+		pChkInheritSONavigationBlockers->SetChecked( (iso & igdeGDClass::efsoNavigationBlockers ) != 0 );
 		pCBCategory->SetText( objectClass->GetCategory() );
 		pCBCategory->SetInvalidValue( ! pCBCategory->GetText().IsEmpty()
 			&& ! pCBCategory->GetSelectedItem() );
@@ -1053,7 +1477,17 @@ void gdeWPSObjectClass::UpdateObjectClass(){
 		pEditDefaultInheritPropertyPrefix->ClearText();
 		pCBScaleMode->SetSelectionWithData( ( void* )( intptr_t )gdeObjectClass::esmFixed );
 		pChkIsGhost->SetChecked( false );
-		pChkCanInstanciate->SetChecked( true );
+		pChkCanInstantiate->SetChecked( true );
+		pChkInheritSOBillboards->SetChecked( true );
+		pChkInheritSOComponents->SetChecked( true );
+		pChkInheritSOLights->SetChecked( true );
+		pChkInheritSOSnapPoints->SetChecked( true );
+		pChkInheritSOParticleEmitters->SetChecked( true );
+		pChkInheritSOForceFields->SetChecked( true );
+		pChkInheritSOEnvMapProbes->SetChecked( true );
+		pChkInheritSOSpeakers->SetChecked( true );
+		pChkInheritSONavigationSpaces->SetChecked( true );
+		pChkInheritSONavigationBlockers->SetChecked( true );
 		pCBCategory->ClearText();
 		pCBCategory->SetInvalidValue( false );
 		properties.SetPropertyList( NULL );
@@ -1068,9 +1502,18 @@ void gdeWPSObjectClass::UpdateObjectClass(){
 	pEditDefaultInheritPropertyPrefix->SetEnabled( enabled );
 	pCBScaleMode->SetEnabled( enabled );
 	pChkIsGhost->SetEnabled( enabled );
-	pChkCanInstanciate->SetEnabled( enabled );
+	pChkCanInstantiate->SetEnabled( enabled );
+	pChkInheritSOBillboards->SetEnabled( enabled );
+	pChkInheritSOComponents->SetEnabled( enabled );
+	pChkInheritSOLights->SetEnabled( enabled );
+	pChkInheritSOSnapPoints->SetEnabled( enabled );
+	pChkInheritSOParticleEmitters->SetEnabled( enabled );
+	pChkInheritSOForceFields->SetEnabled( enabled );
+	pChkInheritSOEnvMapProbes->SetEnabled( enabled );
+	pChkInheritSOSpeakers->SetEnabled( enabled );
+	pChkInheritSONavigationSpaces->SetEnabled( enabled );
+	pChkInheritSONavigationBlockers->SetEnabled( enabled );
 	pCBCategory->SetEnabled( enabled );
-	pActionInheritMenu->Update();
 	pActionPropertyValueSet->Update();
 	
 	UpdateProperties();
@@ -1080,6 +1523,7 @@ void gdeWPSObjectClass::UpdateObjectClass(){
 	UpdateInherits();
 	UpdateHideTags();
 	UpdatePartialHideTags();
+	UpdateTextureList();
 }
 
 void gdeWPSObjectClass::UpdateProperties(){
@@ -1093,7 +1537,7 @@ void gdeWPSObjectClass::UpdateProperty(){
 void gdeWPSObjectClass::UpdatePropertyValues(){
 	const gdeObjectClass * const objectClass = GetObjectClass();
 	decString selection( pListPropertyValues->GetSelectedItem()
-		? pListPropertyValues->GetSelectedItem()->GetText() : "" );
+		? pListPropertyValues->GetSelectedItem()->GetText() : decString() );
 	
 	pListPropertyValues->RemoveAllItems();
 	
@@ -1149,7 +1593,7 @@ void gdeWPSObjectClass::UpdateInherits(){
 	const gdeObjectClass * const objectClass = GetObjectClass();
 	gdeOCInherit * const activeInherit = GetInherit();
 	
-	pCBInherits->RemoveAllItems();
+	pListInherits->RemoveAllItems();
 	
 	if( objectClass ){
 		const gdeOCInheritList &list = objectClass->GetInherits();
@@ -1160,15 +1604,14 @@ void gdeWPSObjectClass::UpdateInherits(){
 		for( i=0; i<count; i++ ){
 			gdeOCInherit * const inherit = list.GetAt( i );
 			text.Format( "%s: '%s'", inherit->GetName().GetString(), inherit->GetPropertyPrefix().GetString() );
-			pCBInherits->AddItem( text, NULL, inherit );
+			pListInherits->AddItem( text, NULL, inherit );
 		}
-		
-		pCBInherits->SortItems();
+		pListInherits->SortItems();
 	}
 	
-	pCBInherits->SetSelectionWithData( activeInherit );
-	if( ! pCBInherits->GetSelectedItem() && pCBInherits->GetItemCount() > 0 ){
-		pCBInherits->SetSelection( 0 );
+	pListInherits->SetSelectionWithData( activeInherit );
+	if( ! pListInherits->GetSelectedItem() && pListInherits->GetItemCount() > 0 ){
+		pListInherits->SetSelection( 0 );
 	}
 	
 	UpdateInherit();
@@ -1194,7 +1637,7 @@ void gdeWPSObjectClass::UpdateInherit(){
 }
 
 void gdeWPSObjectClass::SelectInherit( gdeOCInherit *inherit ){
-	pCBInherits->SetSelectionWithData( inherit );
+	pListInherits->SetSelectionWithData( inherit );
 }
 
 void gdeWPSObjectClass::UpdateHideTags(){
@@ -1203,6 +1646,62 @@ void gdeWPSObjectClass::UpdateHideTags(){
 
 void gdeWPSObjectClass::UpdatePartialHideTags(){
 	( ( gdeWPTagList& )( igdeWidget& )pListPartialHideTags ).UpdateList();
+}
+
+void gdeWPSObjectClass::UpdateTextureList(){
+	const gdeObjectClass * const objectClass = GetObjectClass();
+	
+	pCBTextures->RemoveAllItems();
+	
+	if( objectClass ){
+		const gdeOCComponentTextureList &textures = objectClass->GetTextures();
+		const int count = textures.GetCount();
+		int i;
+		
+		for( i=0; i<count; i++ ){
+			gdeOCComponentTexture * const texture = textures.GetAt( i );
+			pCBTextures->AddItem( texture->GetName(), NULL, texture );
+		}
+	}
+	
+	pCBTextures->SortItems();
+	
+	SelectActiveTexture();
+	UpdateTexture();
+}
+
+void gdeWPSObjectClass::SelectActiveTexture(){
+	pCBTextures->SetSelectionWithData( GetTexture() );
+}
+
+void gdeWPSObjectClass::UpdateTexture(){
+	const gdeOCComponentTexture * const texture = GetTexture();
+	
+	if( texture ){
+		pTextureEditName->SetText( texture->GetName() );
+		pTextureEditPathSkin->SetPath( texture->GetPathSkin() );
+		pTextureEditOffset->SetVector2( texture->GetOffset() );
+		pTextureEditRotation->SetFloat( texture->GetRotation() );
+		pTextureEditScale->SetVector2( texture->GetScale() );
+		pTextureClrTint->SetColor( texture->GetColorTint() );
+		
+	}else{
+		pTextureEditName->ClearText();
+		pTextureEditPathSkin->ClearPath();
+		pTextureEditOffset->SetVector2(decVector2() );
+		pTextureEditRotation->ClearText();
+		pTextureEditScale->SetVector2(decVector2() );
+		pTextureClrTint->SetColor( decColor( 1.0f, 1.0f, 1.0f ) );
+	}
+	
+	const bool enabled = texture;
+	
+	pTextureEditName->SetEnabled( enabled );
+	pTextureEditPathSkin->SetEnabled( enabled );
+	pTextureEditOffset->SetEnabled( enabled );
+	pTextureEditRotation->SetEnabled( enabled );
+	pTextureEditScale->SetEnabled( enabled );
+	pTextureClrTint->SetEnabled( enabled );
 }
 
 

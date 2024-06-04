@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE World Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -43,26 +46,21 @@ meUMoveObject::meUMoveObject( meWorld *world, const meObjectList &objects ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	int count = objects.GetCount();
+	const int count = objects.GetCount();
+	deObjectReference ref;
 	
 	SetShortInfo( "Move Object" );
 	
 	pWorld = NULL;
 	
-	pObjects = NULL;
-	pObjectCount = 0;
-	
 	try{
 		pWorld = world;
 		world->AddReference();
 		
-		if( count > 0 ){
-			pObjects = new meUndoDataObject*[ count ];
-			
-			while( pObjectCount < count ){
-				pObjects[ pObjectCount ] = new meUndoDataObject( objects.GetAt( pObjectCount ) );
-				pObjectCount++;
-			}
+		int i;
+		for( i=0; i<count; i++ ){
+			ref.TakeOver( new meUndoDataObject( objects.GetAt( i ) ) );
+			pObjects.Add( ref );
 		}
 		
 	}catch( const deException & ){
@@ -81,25 +79,30 @@ meUMoveObject::~meUMoveObject(){
 /////////////////////////////
 
 void meUMoveObject::Undo(){
+	const int count = pObjects.GetCount();
 	int i;
 	
-	for( i=0; i<pObjectCount; i++ ){
-		meObject * const object = pObjects[ i ]->GetObject();
-		object->SetPosition( pObjects[ i ]->GetOldPosition() );
-		object->SetRotation( pObjects[ i ]->GetOldOrientation() );
+	for( i=0; i<count; i++ ){
+		const meUndoDataObject &data = *( ( meUndoDataObject* )pObjects.GetAt( i ) );
+		meObject * const object = data.GetObject();
+		object->SetPosition( data.GetOldPosition() );
+		object->SetRotation( data.GetOldOrientation() );
 		pWorld->NotifyObjectGeometryChanged( object );
 	}
 }
 
 void meUMoveObject::Redo(){
+	const int count = pObjects.GetCount();
+	int i;
+	
 	if( GetModifyOrientation() ){
-		int i;
 		
-		for( i=0; i<pObjectCount; i++ ){
-			meObject * const object = pObjects[ i ]->GetObject();
+		for( i=0; i<count; i++ ){
+			const meUndoDataObject &data = *( ( meUndoDataObject* )pObjects.GetAt( i ) );
+			meObject * const object = data.GetObject();
 			
-			decDVector position( pObjects[ i ]->GetOldPosition() );
-			decDVector rotation( pObjects[ i ]->GetOldOrientation() );
+			decDVector position( data.GetOldPosition() );
+			decDVector rotation( data.GetOldOrientation() );
 			
 			TransformElement( position, rotation );
 			
@@ -110,12 +113,12 @@ void meUMoveObject::Redo(){
 		
 	}else{
 		const decDVector &distance = GetDistance();
-		int i;
 		
-		for( i=0; i<pObjectCount; i++ ){
-			meObject * const object = pObjects[ i ]->GetObject();
-			object->SetPosition( pObjects[ i ]->GetOldPosition() + distance );
-			object->SetRotation( pObjects[ i ]->GetOldOrientation() );
+		for( i=0; i<count; i++ ){
+			const meUndoDataObject &data = *( ( meUndoDataObject* )pObjects.GetAt( i ) );
+			meObject * const object = data.GetObject();
+			object->SetPosition( data.GetOldPosition() + distance );
+			object->SetRotation( data.GetOldOrientation() );
 			pWorld->NotifyObjectGeometryChanged( object );
 		}
 	}
@@ -131,15 +134,6 @@ void meUMoveObject::ProgressiveRedo(){
 //////////////////////
 
 void meUMoveObject::pCleanUp(){
-	if( pObjects ){
-		while( pObjectCount > 0 ){
-			pObjectCount--;
-			delete pObjects[ pObjectCount ];
-		}
-		
-		delete [] pObjects;
-	}
-	
 	if( pWorld ){
 		pWorld->FreeReference();
 	}

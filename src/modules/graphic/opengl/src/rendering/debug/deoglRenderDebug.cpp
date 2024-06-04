@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <math.h>
@@ -47,7 +50,10 @@
 #include "../../texture/cubemap/deoglCubeMap.h"
 #include "../../texture/deoglTextureStageManager.h"
 #include "../../texture/texture2d/deoglTexture.h"
+#include "../../tbo/deoglDynamicTBOFloat32.h"
+#include "../../tbo/deoglDynamicTBOFloat8.h"
 #include "../../utils/collision/deoglDCollisionBox.h"
+#include "../../vao/deoglVAO.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/string/unicode/decUTF8Decoder.h>
@@ -97,67 +103,60 @@ enum eSPRectangle{
 deoglRenderDebug::deoglRenderDebug( deoglRenderThread &renderThread ) :
 deoglRenderBase( renderThread ),
 
-pShaderXRay( NULL ),
-pShaderSolid( NULL ),
+pDebugFont( nullptr ),
 
-pShaderSphere( NULL ),
+pTBORenderText1( nullptr ),
+pTBORenderText2( nullptr ),
 
-pShaderOutTex( NULL ),
-pShaderOutTexLayer( NULL ),
-pShaderOutArrTex( NULL ),
-
-pShaderRectangle( NULL ),
-
-pDebugFont( NULL )
+pTBORenderRectangle1( nullptr ),
+pTBORenderRectangle2( nullptr )
 {
-	deoglShaderManager &shaderManager = renderThread.GetShader().GetShaderManager();
-	const deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
-	deoglShaderSources *sources;
+	deoglPipelineManager &pipelineManager = renderThread.GetPipelineManager();
+	deoglPipelineConfiguration pipconf;
 	deoglShaderDefines defines;
 	
 	try{
-		sources = shaderManager.GetSourcesNamed( "DefRen Debug Color-Only" );
-		if( defren.GetUseEncodedDepth() ){
-			defines.AddDefine( "ENCODE_DEPTH", "1" );
-		}
-		if( defren.GetUseInverseDepth() ){
-			defines.AddDefine( "INVERSE_DEPTH", "1" );
-		}
-		pShaderXRay = shaderManager.GetProgramWith( sources, defines );
+		pipconf.Reset();
+		pipconf.SetDepthMask( false );
+		pipconf.EnableBlendBlend();
 		
-		defines.AddDefine( "WITH_DEPTH", "1" );
-		pShaderSolid = shaderManager.GetProgramWith( sources, defines );
+		// x-ray
+		pipconf.SetShader( renderThread, "DefRen Debug Color-Only", defines );
+		pPipelineXRay = pipelineManager.GetWith( pipconf );
 		defines.RemoveAllDefines();
 		
+		// texture layer
+		defines.SetDefines( "TEXTURELEVEL" );
+		pipconf.SetShader( renderThread, "Debug Display Texture", defines );
+		pPipelineOutTexLayer = pipelineManager.GetWith( pipconf );
 		
-		
-		sources = shaderManager.GetSourcesNamed( "DefRen Debug Sphere" );
-		pShaderSphere = shaderManager.GetProgramWith( sources, defines );
-		
-		
-		
-		sources = shaderManager.GetSourcesNamed( "Debug Display Texture" );
-		pShaderOutTex = shaderManager.GetProgramWith( sources, defines );
-		
-		defines.AddDefine( "TEXTURELEVEL", "1" );
-		pShaderOutTexLayer = shaderManager.GetProgramWith( sources, defines );
+		// texture array
+		defines.SetDefines( "ARRAYTEXTURE" );
+		pipconf.SetShader( renderThread, "Debug Display Texture", defines );
+		pPipelineOutArrTex = pipelineManager.GetWith( pipconf );
 		defines.RemoveAllDefines();
 		
-		defines.AddDefine( "ARRAYTEXTURE", "1" );
-		pShaderOutArrTex = shaderManager.GetProgramWith( sources, defines );
-		defines.RemoveAllDefines();
+		// text
+		pipconf.SetShader( renderThread, "Debug Render Text", defines );
+		pPipelineRenderText = pipelineManager.GetWith( pipconf );
 		
-		
-		
-		sources = shaderManager.GetSourcesNamed( "Debug Rectangle" );
-		defines.AddDefine( "NO_TCTRANSFORM", "1" );
-		defines.AddDefine( "NO_TEXCOORD", "1" );
-		pShaderRectangle = shaderManager.GetProgramWith( sources, defines );
+		// rectangle
+		pipconf.SetShader( renderThread, "Debug Rectangle", defines );
+		pPipelineRectangle = pipelineManager.GetWith( pipconf );
 		
 		
 		
 		// create debug font
 		pDebugFont = new deoglDebugFont( renderThread );
+		
+		
+		
+		// TBOs
+		pTBORenderText1 = new deoglDynamicTBOFloat32( renderThread, 4 );
+		pTBORenderText2 = new deoglDynamicTBOFloat8( renderThread, 4 );
+		
+		pTBORenderRectangle1 = new deoglDynamicTBOFloat32( renderThread, 4 );
+		pTBORenderRectangle2 = new deoglDynamicTBOFloat8( renderThread, 4 );
 		
 	}catch( const deException & ){
 		pCleanUp();
@@ -184,7 +183,6 @@ void deoglRenderDebug::DisplayTextureLevel( deoglRenderPlan &plan, deoglTexture 
 	}
 	
 	deoglRenderThread &renderThread = GetRenderThread();
-	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	
 	int texWidth = texture->GetWidth();
@@ -216,22 +214,8 @@ void deoglRenderDebug::DisplayTextureLevel( deoglRenderPlan &plan, deoglTexture 
 	// => scale.x = tex.width / view.width
 	// => offset.x = ( tex.width / view.width ) - 1 = scale.x - 1
 	
-	// set opengl states
-	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
-	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
-	
-	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
-	
-	OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
-	
-	OGL_CHECK( renderThread, glEnable( GL_BLEND ) );
-	OGL_CHECK( renderThread, glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA ) );
-	
-	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
-	
-	// set shader and options
-	renderThread.GetShader().ActivateShader( pShaderOutTexLayer );
-	deoglShaderCompiled &shader = *pShaderOutTexLayer->GetCompiled();
+	pPipelineOutTexLayer->Activate();
+	deoglShaderCompiled &shader = pPipelineOutTexLayer->GetGlShader();
 	
 	shader.SetParameterFloat( spotPosTransform, scaleX, scaleY, scaleX - 1.0f, scaleY - 1.0f );
 	shader.SetParameterFloat( spotTCTransform, 0.5f, 0.5f, 0.5f, 0.5f );
@@ -250,27 +234,43 @@ void deoglRenderDebug::DisplayTextureLevel( deoglRenderPlan &plan, deoglTexture 
 		shader.SetParameterFloat( spotGamma, 1.0f, 1.0f, 1.0f, 1.0f );
 	}
 	
-	// set texture
 	tsmgr.EnableTexture( 0, *texture, GetSamplerClampNearestMipMap() );
 	
-	// render full screen quad
-	defren.RenderFSQuadVAO();
+	RenderFullScreenQuadVAO();
 	
-	// cleanup
 	tsmgr.DisableStage( 0 );
 }
 
-void deoglRenderDebug::DisplayArrayTextureLayer( deoglRenderPlan &plan, deoglArrayTexture *texture, int layer, bool gammaCorrect ){
+void deoglRenderDebug::DisplayArrayTextureLayer( deoglRenderPlan &plan,
+deoglArrayTexture *texture, int layer, bool gammaCorrect ){
+	DisplayArrayTextureLayerLevel( plan, texture, layer, 0, gammaCorrect );
+}
+
+void deoglRenderDebug::DisplayArrayTextureLayerLevel( deoglRenderPlan &plan,
+deoglArrayTexture *texture, int layer, int level, bool gammaCorrect ){
 	if( ! texture || layer < 0 || layer >= texture->GetLayerCount() ) DETHROW( deeInvalidParam );
 	
 	deoglRenderThread &renderThread = GetRenderThread();
-	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
+	
+	int texWidth = texture->GetWidth();
+	int texHeight = texture->GetHeight();
+	int i;
+	
+	for( i=0; i<level; i++ ){
+		texWidth >>= 1;
+		if( texWidth < 1 ){
+			texWidth = 1;
+		}
+		
+		texHeight >>= 1;
+		if( texHeight < 1 ){
+			texHeight = 1;
+		}
+	}
 	
 	int viewWidth = plan.GetViewportWidth();
 	int viewHeight = plan.GetViewportHeight();
-	int texWidth = texture->GetWidth();
-	int texHeight = texture->GetHeight();
 	float scaleX = ( float )texWidth / ( float )viewWidth;
 	float scaleY = ( float )texHeight / ( float )viewHeight;
 	
@@ -282,22 +282,8 @@ void deoglRenderDebug::DisplayArrayTextureLayer( deoglRenderPlan &plan, deoglArr
 	// => scale.x = tex.width / view.width
 	// => offset.x = ( tex.width / view.width ) - 1 = scale.x - 1
 	
-	// set opengl states
-	OGL_CHECK( renderThread, glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE ) );
-	OGL_CHECK( renderThread, glDepthMask( GL_FALSE ) );
-	
-	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
-	
-	OGL_CHECK( renderThread, glDisable( GL_STENCIL_TEST ) );
-	
-	OGL_CHECK( renderThread, glEnable( GL_BLEND ) );
-	OGL_CHECK( renderThread, glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA ) );
-	
-	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
-	
-	// set shader and options
-	renderThread.GetShader().ActivateShader( pShaderOutArrTex );
-	deoglShaderCompiled &shader = *pShaderOutArrTex->GetCompiled();
+	pPipelineOutArrTex->Activate();
+	deoglShaderCompiled &shader = pPipelineOutArrTex->GetGlShader();
 	
 	shader.SetParameterFloat( spotPosTransform, scaleX, scaleY, scaleX - 1.0f, scaleY - 1.0f );
 	shader.SetParameterFloat( spotTCTransform, 0.5f, 0.5f, 0.5f, 0.5f );
@@ -311,14 +297,12 @@ void deoglRenderDebug::DisplayArrayTextureLayer( deoglRenderPlan &plan, deoglArr
 	}
 	
 	shader.SetParameterFloat( spotLayer, ( float )layer );
+	shader.SetParameterFloat( spotLevel, ( float )level );
 	
-	// set texture
 	tsmgr.EnableArrayTexture( 0, *texture, GetSamplerClampNearest() );
 	
-	// render full screen quad
-	defren.RenderFSQuadVAO();
+	RenderFullScreenQuadVAO();
 	
-	// cleanup
 	tsmgr.DisableStage( 0 );
 }
 
@@ -327,22 +311,14 @@ void deoglRenderDebug::RenderComponentsStatic( sRenderParameters &params ){
 	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	const deoglCollideList &clist = *params.collideList;
-	int c, componentCount;
 	
-	// set states
-	OGL_CHECK( renderThread, glEnable( GL_BLEND ) );
-	OGL_CHECK( renderThread, glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA ) );
-	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
-	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
+	tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
 	
-	// prepare depth testing
-	tsmgr.EnableTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
+	const int count = clist.GetComponentCount();
+	int i;
 	
-	// render component boxes
-	componentCount = clist.GetComponentCount();
-	
-	for( c=0; c<componentCount; c++ ){
-		deoglRComponent &component = *clist.GetComponentAt( c )->GetComponent();
+	for( i=0; i<count; i++ ){
+		deoglRComponent &component = *clist.GetComponentAt( i )->GetComponent();
 		
 		if( component.GetRenderStatic() ){
 			RenderComponentBox( params, component, decColor( 0.0f, 0.5f, 0.0f, 1.0f ) );
@@ -361,85 +337,59 @@ void deoglRenderDebug::RenderComponentBox( sRenderParameters &params, deoglRComp
 	deoglShape &shapeBox = *shapeManager.GetShapeAt( deoglRTBufferObject::esBox );
 	
 	decDMatrix matrixCP( params.matrixCamera * params.matrixProjection );
-	deoglShaderCompiled *shader = NULL;
 	decDMatrix matrixMVP;
 	deoglDCollisionBox box;
 	decColor edgeColor;
 	
-	// set states
-	OGL_CHECK( renderThread, glEnable( GL_BLEND ) );
-	OGL_CHECK( renderThread, glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA ) );
-	OGL_CHECK( renderThread, glDisable( GL_DEPTH_TEST ) );
-	OGL_CHECK( renderThread, glDisable( GL_CULL_FACE ) );
+	pPipelineXRay->Activate();
+	deoglShaderCompiled &shader = pPipelineXRay->GetGlShader();
 	
-	// prepare depth testing
-	tsmgr.EnableTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
-	
-	// select shader
-	renderThread.GetShader().ActivateShader( pShaderXRay );
-	shader = pShaderXRay->GetCompiled();
+	tsmgr.EnableArrayTexture( 0, *defren.GetDepthTexture1(), GetSamplerClampNearest() );
 	
 	edgeColor.r = powf( color.r, OGL_RENDER_GAMMA );
 	edgeColor.g = powf( color.g, OGL_RENDER_GAMMA );
 	edgeColor.b = powf( color.b, OGL_RENDER_GAMMA );
 	
-	// set matrix
 	box.SetFromExtends( component.GetMinimumExtend(), component.GetMaximumExtend() );
-	
 	matrixMVP = decDMatrix::CreateScale( box.GetHalfSize() ) * decDMatrix::CreateTranslation( box.GetCenter() ) * matrixCP;
 	
-	shader->SetParameterDMatrix4x4( sprMatrixMVP, matrixMVP );
+	shader.SetParameterDMatrix4x4( sprMatrixMVP, matrixMVP );
 	
-	// render
-	shader->SetParameterColor4( sprColor, edgeColor );
+	shader.SetParameterColor4( sprColor, edgeColor );
 	shapeBox.ActivateVAO();
 	shapeBox.RenderLines();
 	pglBindVertexArray( 0 );
 }
 
-void deoglRenderDebug::RenderText( deoglRenderPlan &plan, const char *text, int x, int y, const decColor &color ){
+void deoglRenderDebug::BeginRenderText(){
+	pTBORenderText1->Clear();
+	pTBORenderText2->Clear();
+}
+
+void deoglRenderDebug::AddRenderText( const decPoint &viewport, const char *text, int x, int y, const decColor &color ){
 	if( ! text ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	deoglRenderThread &renderThread = GetRenderThread();
-	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
-	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	const deoglDebugFont::sGlyph * const glyphs = pDebugFont->GetGlyphs();
-	float texCoordWidth, texCoordHeight, quadWidth, quadHeight;
-	int curx, x1, y1, x2, y2, cw, adv;
 	const float fontScale = 1.0f;
-	decUTF8Decoder utf8Decoder;
-	int character, len;
 	
-	const float scalePosition1X = 1.0f / ( float )plan.GetViewportWidth();
-	const float scalePosition1Y = -1.0f / ( float )plan.GetViewportHeight();
-	const float scalePosition2X = 2.0f / ( float )plan.GetViewportWidth();
-	const float scalePosition2Y = -2.0f / ( float )plan.GetViewportHeight();
+	const float scalePosition1X = 1.0f / ( float )viewport.x;
+	const float scalePosition1Y = -1.0f / ( float )viewport.y;
+	const float scalePosition2X = 2.0f / ( float )viewport.x;
+	const float scalePosition2Y = -2.0f / ( float )viewport.y;
 	const float offsetPositionX = scalePosition2X * 0.375f - 1.0f;
 	const float offsetPositionY = scalePosition2Y * 0.375f + 1.0f;
 	
-	// set texture
-	tsmgr.EnableTexture( 0, *pDebugFont->GetTexture(), GetSamplerClampNearest() );
-	
-	// set shader
-	renderThread.GetShader().ActivateShader( pShaderOutTex );
-	deoglShaderCompiled &shader = *pShaderOutTex->GetCompiled();
-	
-	shader.SetParameterFloat( spotColor, color.r, color.g, color.b, color.a );
-	shader.SetParameterFloat( spotGamma, 1.0f, 1.0f, 1.0f, 1.0f );
-	
 	// render text
-	curx = x;
+	int curx = x;
 	
+	decUTF8Decoder utf8Decoder;
 	utf8Decoder.SetString( text );
-	len = strlen( text );
-	if( len > utf8Decoder.GetLength() ){
-		len = utf8Decoder.GetLength();
-	}
+	const int len = decMath::min( ( int )strlen( text ), utf8Decoder.GetLength() );
 	
 	while( utf8Decoder.GetPosition() < len ){
-		character = utf8Decoder.DecodeNextCharacter();
+		const int character = utf8Decoder.DecodeNextCharacter();
 		if( character < 0 || character > 255 ){
 			continue; // temp hack: not working for unicode
 		}
@@ -447,58 +397,106 @@ void deoglRenderDebug::RenderText( deoglRenderPlan &plan, const char *text, int 
 		const deoglDebugFont::sGlyph &glyph = glyphs[ character ];
 		
 		// calculate positions
-		x1 = curx;
-		y1 = y;
-		cw = ( int )( ( float )glyph.width * fontScale );
-		x2 = x1 + cw;
-		y2 = y1 + ( int )( ( float )glyph.height * fontScale );
-		adv = ( int )( ( float )glyph.advance * fontScale );
+		const int x1 = curx;
+		const int y1 = y;
+		const int cw = ( int )( ( float )glyph.width * fontScale );
+		const int x2 = x1 + cw;
+		const int y2 = y1 + ( int )( ( float )glyph.height * fontScale );
+		const int adv = ( int )( ( float )glyph.advance * fontScale );
 		
-		quadWidth = ( float )( x2 - x1 );
-		quadHeight = ( float )( y2 - y1 );
-		texCoordWidth = glyph.x2 - glyph.x1;
-		texCoordHeight = glyph.y2 - glyph.y1;
+		const float quadWidth = ( float )( x2 - x1 );
+		const float quadHeight = ( float )( y2 - y1 );
+		const float texCoordWidth = glyph.x2 - glyph.x1;
+		const float texCoordHeight = glyph.y2 - glyph.y1;
 		
-		// render char
-		shader.SetParameterFloat( spotPosTransform,
-			scalePosition1X * quadWidth, scalePosition1Y * quadHeight,
+		// add to TBO
+		pTBORenderText1->AddVec4( scalePosition1X * quadWidth, scalePosition1Y * quadHeight,
 			scalePosition2X * ( ( float )( x1 ) + quadWidth * 0.5f ) + offsetPositionX,
 			scalePosition2Y * ( ( float )( y1 ) + quadHeight * 0.5f ) + offsetPositionY );
-		shader.SetParameterFloat( spotTCTransform,
-			texCoordWidth * 0.5f, texCoordHeight * 0.5f, glyph.x1 + texCoordWidth * 0.5f, glyph.y1 + texCoordHeight * 0.5f );
 		
-		defren.RenderFSQuadVAO();
+		pTBORenderText1->AddVec4( texCoordWidth * 0.5f, texCoordHeight * 0.5f,
+			glyph.x1 + texCoordWidth * 0.5f, glyph.y1 + texCoordHeight * 0.5f );
+		
+		pTBORenderText2->AddVec4( color );
 		
 		// next round
 		curx += adv;
 	}
+}
+
+void deoglRenderDebug::EndRenderText(){
+	if( pTBORenderText1->GetDataCount() == 0 ){
+		return;
+	}
 	
-	tsmgr.DisableStage( 0 );
+	pTBORenderText1->Update();
+	pTBORenderText2->Update();
+	
+	deoglRenderThread &renderThread = GetRenderThread();
+	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
+	
+	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
+	tsmgr.EnableTexture( 0, *pDebugFont->GetTexture(), GetSamplerClampNearest() );
+	tsmgr.EnableTBO( 1, pTBORenderText1->GetTBO(), GetSamplerClampNearest() );
+	tsmgr.EnableTBO( 2, pTBORenderText2->GetTBO(), GetSamplerClampNearest() );
+	tsmgr.DisableStagesAbove( 2 );
+	
+	pPipelineRenderText->Activate();
+	
+	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
+	OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_TRIANGLE_FAN, 0, 4, pTBORenderText2->GetPixelCount() ) );
+	
+	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
+	tsmgr.DisableAllStages();
 }
 
 
 
-void deoglRenderDebug::RenderRectangle( deoglRenderPlan &plan, int x1, int y1, int x2, int y2, const decColor &color ){
-	deoglRenderThread &renderThread = GetRenderThread();
-	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
-	const float scalePosition1X = 1.0f / ( float )plan.GetViewportWidth();
-	const float scalePosition1Y = -1.0f / ( float )plan.GetViewportHeight();
-	const float scalePosition2X = 2.0f / ( float )plan.GetViewportWidth();
-	const float scalePosition2Y = -2.0f / ( float )plan.GetViewportHeight();
+void deoglRenderDebug::BeginRenderRectangle(){
+	pTBORenderRectangle1->Clear();
+	pTBORenderRectangle2->Clear();
+}
+
+void deoglRenderDebug::AddRenderRectangle( const decPoint &viewport,
+int x1, int y1, int x2, int y2, const decColor &color ){
+	const float scalePosition1X = 1.0f / ( float )viewport.x;
+	const float scalePosition1Y = -1.0f / ( float )viewport.y;
+	const float scalePosition2X = 2.0f / ( float )viewport.x;
+	const float scalePosition2Y = -2.0f / ( float )viewport.y;
 	const float offsetPositionX = scalePosition2X * 0.375f - 1.0f;
 	const float offsetPositionY = scalePosition2Y * 0.375f + 1.0f;
 	
-	renderThread.GetShader().ActivateShader( pShaderRectangle );
-	deoglShaderCompiled &shader = *pShaderRectangle->GetCompiled();
-	
-	shader.SetParameterFloat( sprectPosTransform,
-		scalePosition1X * ( float )( x2 - x1 ), scalePosition1Y * ( float )( y2 - y1 ),
+	// add to TBO
+	pTBORenderRectangle1->AddVec4( scalePosition1X * ( float )( x2 - x1 ), scalePosition1Y * ( float )( y2 - y1 ),
 		scalePosition2X * ( ( float )( x1 + x2 ) * 0.5f ) + offsetPositionX,
 		scalePosition2Y * ( ( float )( y1 + y2 ) * 0.5f ) + offsetPositionY );
 	
-	shader.SetParameterFloat( sprectColor, color.r, color.g, color.b, color.a );
+	pTBORenderRectangle2->AddVec4( color );
+}
+
+void deoglRenderDebug::EndRenderRectangle(){
+	if( pTBORenderRectangle1->GetDataCount() == 0 ){
+		return;
+	}
 	
-	defren.RenderFSQuadVAO();
+	pTBORenderRectangle1->Update();
+	pTBORenderRectangle2->Update();
+	
+	deoglRenderThread &renderThread = GetRenderThread();
+	deoglDeferredRendering &defren = renderThread.GetDeferredRendering();
+	
+	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
+	tsmgr.EnableTBO( 0, pTBORenderRectangle1->GetTBO(), GetSamplerClampNearest() );
+	tsmgr.EnableTBO( 1, pTBORenderRectangle2->GetTBO(), GetSamplerClampNearest() );
+	tsmgr.DisableStagesAbove( 1 );
+	
+	pPipelineRectangle->Activate();
+	
+	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
+	OGL_CHECK( renderThread, pglDrawArraysInstanced( GL_TRIANGLE_FAN, 0, 4, pTBORenderRectangle2->GetPixelCount() ) );
+	
+	OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
+	tsmgr.DisableAllStages();
 }
 
 
@@ -507,29 +505,19 @@ void deoglRenderDebug::RenderRectangle( deoglRenderPlan &plan, int x1, int y1, i
 //////////////////////
 
 void deoglRenderDebug::pCleanUp(){
+	if( pTBORenderRectangle2 ){
+		pTBORenderRectangle2->FreeReference();
+	}
+	if( pTBORenderRectangle1 ){
+		pTBORenderRectangle1->FreeReference();
+	}
+	if( pTBORenderText2 ){
+		pTBORenderText2->FreeReference();
+	}
+	if( pTBORenderText1 ){
+		pTBORenderText1->FreeReference();
+	}
 	if( pDebugFont ){
 		delete pDebugFont;
-	}
-	
-	if( pShaderRectangle ){
-		pShaderRectangle->RemoveUsage();
-	}
-	if( pShaderXRay ){
-		pShaderXRay->RemoveUsage();
-	}
-	if( pShaderSolid ){
-		pShaderSolid->RemoveUsage();
-	}
-	if( pShaderSphere ){
-		pShaderSphere->RemoveUsage();
-	}
-	if( pShaderOutTex ){
-		pShaderOutTex->RemoveUsage();
-	}
-	if( pShaderOutTexLayer ){
-		pShaderOutTexLayer->RemoveUsage();
-	}
-	if( pShaderOutArrTex ){
-		pShaderOutArrTex->RemoveUsage();
 	}
 }

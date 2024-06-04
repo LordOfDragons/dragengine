@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -44,29 +47,29 @@ class LoadCanvasCreator extends BaseXmlLoader
 	
 	
 	/** \brief Create loader. */
-	public func new( Console console ) this( console, "LoadCanvasCreator" )
+	public func new(Console console) this(console, "LoadCanvasCreator")
 	end
 	
 	/** \brief Create loader. */
-	public func new( Console console, String name ) super( console, name )
-		this.pLoadedCreators = Dictionary.new()
-		this.pCreators = CanvasCreators.new()
-		this.pCreators.addDefaultCreators()
+	public func new(Console console, String name) super(console, name)
+		pLoadedCreators = Dictionary.new()
+		pCreators = CanvasCreators.new()
+		pCreators.addDefaultCreators()
 	end
 	
 	
 	
 	/** \brief Factories. */
 	public func CanvasCreators getFactories()
-		return this.pCreators
+		return pCreators
 	end
 	
 	/** \brief Set factories. */
-	public func void setFactories( CanvasCreators factories )
+	public func void setFactories(CanvasCreators factories)
 		if factories == null
 			throw EInvalidParam.new()
 		end
-		this.pCreators = factories
+		pCreators = factories
 	end
 	
 	
@@ -77,30 +80,30 @@ class LoadCanvasCreator extends BaseXmlLoader
 	 * Creators are loaded once then shared across upcoming loading requests.
 	 * Call copyCanvasCreator() if you want to modify the canvas creator.
 	 */
-	public func CanvasCreator loadFromFile( String filename )
-		var CanvasCreator creator = this.pLoadedCreators.getAt( filename, null ) cast CanvasCreator
+	public func CanvasCreator loadFromFile(String filename)
+		var CanvasCreator creator = pLoadedCreators.getAt(filename, null) cast CanvasCreator
 		if creator != null
 			return creator
 		end
 		
-		this.logLoadingFromFile( filename )
+		logLoadingFromFile(filename)
 		
-		var EasyXML document = EasyXML.new( filename )
+		var EasyXML document = EasyXML.new(filename)
 		if document.hasParseFailed()
-			this.logParsingFailed( document.getParseLog() )
+			logParsingFailed(document.getParseLog())
 			throw EInvalidParam.new()
 		end
 		
 		var EasyXMLElement root = document.getRootElement()
-		if not root.getTagName().equals( "canvasCreator" )
-			this.logUnknownTag( filename, root )
+		if not root.getTagName().equals("canvasCreator")
+			logUnknownTag(filename, root)
 			throw EInvalidParam.new()
 		end
 		
-		var String basePath = File.new( filename ).getParent().getPath()
+		var String basePath = File.new(filename).getParent().getPath()
 		
-		creator = this.parseCanvasCreator( filename, root, basePath )
-		this.pLoadedCreators.setAt( filename, creator )
+		creator = parseCanvasCreator(filename, root, basePath)
+		pLoadedCreators.setAt(filename, creator)
 		return creator
 	end
 	
@@ -113,33 +116,33 @@ class LoadCanvasCreator extends BaseXmlLoader
 	 * across upcoming loading requests. Call copyCanvasCreator() if you want to
 	 * modify the canvas creator.
 	 */
-	public func CanvasCreator parseCanvasCreator( String filename, \
-	EasyXMLElement root, String basePath )
+	public func CanvasCreator parseCanvasCreator(String filename, \
+	EasyXMLElement root, String basePath)
 		var CanvasCreator creator
 		
-		if root.hasAttributeNamed( "extend" )
+		if root.hasAttributeNamed("extend")
 			try
-				creator = this.loadFromFile( File.absolutePath( \
-					root.getAttributeNamed( "extend" ), basePath ).getPath() )
+				creator = loadFromFile(File.absolutePath(\
+					root.getAttributeNamed("extend"), basePath).getPath())
 				
 			catch Exception e
-				this.printOnConsole( filename, root, "Failed loading canvas creator '" \
-					+ root.getAttributeNamed( "extend" ) + "'" )
+				printOnConsole(filename, root, "Failed loading canvas creator '" \
+					+ root.getAttributeNamed("extend") + "'")
 				throw
 			end
 			
-		elif root.hasAttributeNamed( "type" )
+		elif root.hasAttributeNamed("type")
 			try
-				creator = this.pCreators.getNamed( root.getAttributeNamed( "type" ) )
+				creator = pCreators.getNamed(root.getAttributeNamed("type"))
 				
 			catch Exception e
-				this.printOnConsole( filename, root, "Canvas creator type '" \
-					+ root.getAttributeNamed( "type" ) + "' not found" )
+				printOnConsole(filename, root, "Canvas creator type '" \
+					+ root.getAttributeNamed("type") + "' not found")
 				throw
 			end
 			
 		else
-			this.printOnConsole( filename, root, "Missing source attribute" )
+			printOnConsole(filename, root, "Missing source attribute")
 			throw EInvalidParam.new()
 		end
 		
@@ -148,10 +151,9 @@ class LoadCanvasCreator extends BaseXmlLoader
 		var Object parameterValue
 		var String parameterName
 		var bool isShared = true
-		var String tagName
 		
 		for i = 0 to elementCount
-			element = root.getElementAt( i )
+			element = root.getElementAt(i)
 			if element.getType() != EasyXMLElementType.tag
 				continue
 			end
@@ -161,16 +163,16 @@ class LoadCanvasCreator extends BaseXmlLoader
 				isShared = false
 			end
 			
-			parameterName = element.getAttributeNamed( "parameter" )
-			parameterValue = this.parseParameter( filename, element, basePath )
+			parameterName = element.getAttributeNamed("parameter")
+			parameterValue = parseParameter(filename, element, basePath)
 			
 			try
-				creator.setParameter( parameterName, parameterValue )
+				creator.setParameter(parameterName, parameterValue)
 				
 			catch Exception e
-				this.printOnConsole( filename, element, creator.className() \
+				printOnConsole(filename, element, creator.className() \
 					+ " does not understand parameter '" + parameterName \
-					+ "' with value '" + parameterValue + "'" )
+					+ "' with value '" + parameterValue + "'")
 			end
 		end
 		
@@ -181,66 +183,69 @@ class LoadCanvasCreator extends BaseXmlLoader
 	 * \brief Parse canvas creator parameter.
 	 * \details Overwrite in subclass to extend the supported parameter types.
 	 */
-	private func Object parseParameter( String filename, EasyXMLElement element, String basePath )
+	private func Object parseParameter(String filename, EasyXMLElement element, String basePath)
 		var String tagName = element.getTagName()
 		
-		if tagName.equals( "integer" )
+		if tagName.equals("integer")
 			return element.getFirstCDataInt()
 			
-		elif tagName.equals( "float" )
+		elif tagName.equals("float")
 			return element.getFirstCDataFloat()
 			
-		elif tagName.equals( "boolean" )
+		elif tagName.equals("boolean")
 			return element.getFirstCDataBool()
 			
-		elif tagName.equals( "string" )
+		elif tagName.equals("string")
 			return element.getFirstCData()
 			
-		elif tagName.equals( "color" )
-			return this.readColor( element )
+		elif tagName.equals("color")
+			return readColor(element)
 			
-		elif tagName.equals( "borderSize" )
-			return this.readBorderSize( element )
+		elif tagName.equals("borderSize")
+			return readBorderSize(element)
 			
-		elif tagName.equals( "point" )
-			return this.readPoint( element )
+		elif tagName.equals("point")
+			return readPoint(element)
 			
-		elif tagName.equals( "colorMatrix" )
-			return this.readColorMatrix( element )
+		elif tagName.equals("colorMatrix")
+			return readColorMatrix(element)
 			
-		elif tagName.equals( "image" )
+		elif tagName.equals("image")
 			var String path = element.getFirstCData()
 			if path.empty()
 				return null
 			end
 			
 			try
-				return Image.new( File.absolutePath( path, basePath ).getPath() )
+				return Image.new(File.absolutePath(path, basePath).getPath())
 				
 			catch Exception e
-				this.printOnConsole( filename, element, "Failed loading image '" + path + "'" )
+				printOnConsole(filename, element, "Failed loading image '" + path + "'")
 				throw
 			end
 			
-		elif tagName.equals( "video" )
+		elif tagName.equals("video")
 			var String path = element.getFirstCData()
 			if path.empty()
 				return null
 			end
 			
 			try
-				return Video.new( File.absolutePath( path, basePath ).getPath() )
+				return Video.new(File.absolutePath(path, basePath).getPath())
 				
 			catch Exception e
-				this.printOnConsole( filename, element, "Failed loading video '" + path + "'" )
+				printOnConsole(filename, element, "Failed loading video '" + path + "'")
 				throw
 			end
 			
-		elif tagName.equals( "null" )
+		elif tagName.equals("canvasCreator")
+			return parseCanvasCreator(filename, element, basePath)
+			
+		elif tagName.equals("null")
 			return null
 			
 		else
-			this.logUnknownTag( filename, element )
+			logUnknownTag(filename, element)
 			throw EInvalidParam.new()
 		end
 	end

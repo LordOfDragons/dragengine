@@ -1,51 +1,47 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLRENDERGEOMETRYPASS_H_
 #define _DEOGLRENDERGEOMETRYPASS_H_
 
 #include "deoglRenderBase.h"
-#include "../shaders/deoglShaderProgramUsage.h"
-
 
 class deoglRenderPlan;
 class deoglRenderPlanMasked;
 
 
 /**
- * \brief Geometry pass renderer.
+ * Geometry pass renderer.
  */
 class deoglRenderGeometryPass : public deoglRenderBase{
-private:
-	deoglShaderProgramUsage pShaderDEBUG;
-	
-	
-	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create renderer. */
+	/** Create renderer. */
 	deoglRenderGeometryPass( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up renderer. */
+	/** Clean up renderer. */
 	virtual ~deoglRenderGeometryPass();
 	/*@}*/
 	
@@ -54,7 +50,7 @@ public:
 	/** \name Rendering */
 	/*@{*/
 	/**
-	 * \brief Render solid geometry pass.
+	 * Render solid geometry pass.
 	 * 
 	 * Using FBO Def-Ren Depth. Clears depth. Depth buffer only is used to take advantage of
 	 * double write optimization. Prevents use of Depth+Color to avoid FBO switch in RenderSky.
@@ -71,20 +67,25 @@ public:
 	 * - Light.RenderAO (if not No-Reflections)
 	 * Invalidates no attachments.
 	 */
-	void RenderSolidGeometryPass( deoglRenderPlan &plan, deoglRenderPlanMasked *mask );
+	void RenderSolidGeometryPass( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask, bool xray );
+	
+	/**
+	 * Render luminance only pass.
+	 */
+// 	void RenderLuminanceOnly( deoglRenderPlan &plan );
 	
 	
 	
 	/**
-	 * \brief Render decals.
+	 * Render decals.
 	 * 
 	 * Using FBO Def-Ren Material buffers set by RenderSolidGeometryPass. No clearing.
 	 * Invalidating no buffers.
 	 */
-	void RenderDecals( deoglRenderPlan &plan );
+	void RenderDecals( deoglRenderPlan &plan, bool xray );
 	
-	/** \brief Render volumetric pass. */
-	void RenderVolumetricPass( deoglRenderPlan &plan, deoglRenderPlanMasked *mask, bool inbetween );
+	/** Render volumetric pass. */
+	void RenderVolumetricPass( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask, bool inbetween );
 	/*@}*/
 };
 

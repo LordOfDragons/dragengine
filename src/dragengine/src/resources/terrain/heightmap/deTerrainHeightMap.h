@@ -1,28 +1,32 @@
-/* 
- * Drag[en]gine Game Engine
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DETERRAINHEIGHTMAP_H_
 #define _DETERRAINHEIGHTMAP_H_
 
 #include "../../../common/math/decMath.h"
+#include "../../../common/string/decString.h"
 
 class deImage;
 
@@ -56,16 +60,16 @@ class deImage;
  * influence physics or audio propagation. If the height map is missing all grid
  * points take on the height of the offset parameter.
  */
-class deTerrainHeightMap{
+class DE_DLL_EXPORT deTerrainHeightMap{
 private:
 	decPoint pPointCount;
 	decVector2 pSize;
 	float pScaling;
 	
-	char *pPathHeightImage;
+	decString pPathHeightImage;
 	deImage *pHeightImage;
 	
-	char *pPathVisImage;
+	decString pPathVisImage;
 	unsigned char *pVisibleFaces;
 	int pVFByteCount;
 	
@@ -104,7 +108,7 @@ public:
 	void SetScaling( float scaling );
 	
 	/** \brief Path of the image used to store the height map or NULL if not used. */
-	inline const char *GetPathHeightImage() const{ return ( const char * )pPathHeightImage; }
+	inline const decString &GetPathHeightImage() const{ return pPathHeightImage; }
 	
 	/** \brief Set path of the image used to store the height map or NULL if not used. */
 	void SetPathHeightImage( const  char *path );
@@ -124,7 +128,7 @@ public:
 	/** \name Face Visibility */
 	/*@{*/
 	/** \brief Path of the image used to store the visibility map or NULL if not used. */
-	inline const char *GetPathVisibilityImage() const{ return ( const char * )pPathVisImage; }
+	inline const decString &GetPathVisibilityImage() const{ return pPathVisImage; }
 	
 	/** \brief Set path of the image used to store the visibility map or NULL if not used. */
 	void SetPathVisibilityImage( const  char *path );

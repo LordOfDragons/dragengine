@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -29,7 +32,6 @@
 #include "../../../../renderthread/deoglRTLogger.h"
 #include "../../../../texture/texture2d/deoglTexture.h"
 #include "../../../../texture/pixelbuffer/deoglPixelBuffer.h"
-#include "../../../../delayedoperation/deoglDelayedDeletion.h"
 #include "../../../../delayedoperation/deoglDelayedOperations.h"
 
 #include <dragengine/common/exceptions.h>
@@ -43,48 +45,17 @@
 ////////////////////////////
 
 deoglRDSRenderableColor::deoglRDSRenderableColor( deoglRDynamicSkin &dynamicSkin ) :
-deoglRDSRenderable( dynamicSkin ),
+deoglRDSRenderable( etColor, dynamicSkin ),
 pTexture( NULL ),
 pDirty( true )
 {
 	LEAK_CHECK_CREATE( dynamicSkin.GetRenderThread(), DSRenderableColor );
 }
 
-class deoglRDSRenderableColorDeletion : public deoglDelayedDeletion{
-public:
-	deoglTexture *texture;
-	
-	deoglRDSRenderableColorDeletion() :
-	texture( NULL ){
-	}
-	
-	virtual ~deoglRDSRenderableColorDeletion(){
-	}
-	
-	virtual void DeleteObjects( deoglRenderThread &renderThread ){
-		if( texture){
-			delete texture;
-		}
-	}
-};
-
 deoglRDSRenderableColor::~deoglRDSRenderableColor(){
 	LEAK_CHECK_FREE( GetDynamicSkin().GetRenderThread(), DSRenderableColor );
-	
-	// delayed deletion of opengl containing objects
-	deoglRDSRenderableColorDeletion *delayedDeletion = NULL;
-	
-	try{
-		delayedDeletion = new deoglRDSRenderableColorDeletion;
-		delayedDeletion->texture = pTexture;
-		GetDynamicSkin().GetRenderThread().GetDelayedOperations().AddDeletion( delayedDeletion );
-		
-	}catch( const deException &e ){
-		if( delayedDeletion ){
-			delete delayedDeletion;
-		}
-		GetDynamicSkin().GetRenderThread().GetLogger().LogException( e );
-		//throw; -> otherwise terminate
+	if( pTexture ){
+		delete pTexture;
 	}
 }
 
@@ -100,14 +71,12 @@ void deoglRDSRenderableColor::SetColor( const decColor &color ){
 	
 	pColor = color;
 	pDirty = true;
-	
-	GetDynamicSkin().TextureConfigurationChanged();
 }
 
-void deoglRDSRenderableColor::PrepareForRender(){
+void deoglRDSRenderableColor::PrepareForRender( const deoglRenderPlanMasked * ){
 }
 
-decColor deoglRDSRenderableColor::GetRenderColor( const decColor &defaultColor ){
+decColor deoglRDSRenderableColor::GetRenderColor( const decColor & ){
 	return pColor;
 }
 
@@ -122,8 +91,9 @@ deoglTexture *deoglRDSRenderableColor::GetRenderTexture(){
 	}
 	
 	if( pDirty ){
-		deoglPixelBuffer pixelBuffer( deoglPixelBuffer::epfByte4, 1, 1, 1 );
-		pixelBuffer.SetToFloatColor( pColor.r, pColor.g, pColor.b, pColor.a );
+		const deoglPixelBuffer::Ref pixelBuffer( deoglPixelBuffer::Ref::New(
+			new deoglPixelBuffer( deoglPixelBuffer::epfByte4, 1, 1, 1 ) ) );
+		pixelBuffer->SetToFloatColor( pColor.r, pColor.g, pColor.b, pColor.a );
 		pTexture->SetPixels( pixelBuffer );
 		
 		pDirty = false;

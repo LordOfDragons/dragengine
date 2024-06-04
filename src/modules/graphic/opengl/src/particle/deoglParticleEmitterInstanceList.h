@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLPARTICLEEMITTERINSTANCELIST_H_
@@ -27,7 +30,7 @@ class deoglRParticleEmitterInstance;
 
 
 /**
- * \brief Particle Emitter Instance List.
+ * Particle Emitter Instance List.
  * 
  * List of pointers to particle emitter instances. The ordering of the instances in the list is
  * not defined and can change when emitters are removed. This allows to remove elements with
@@ -42,10 +45,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create particle emitter instance list. */
+	/** Create particle emitter instance list. */
 	deoglParticleEmitterInstanceList();
 	
-	/** \brief Clean up particle emitter instance list. */
+	/** Clean up particle emitter instance list. */
 	~deoglParticleEmitterInstanceList();
 	/*@}*/
 	
@@ -53,34 +56,34 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Number of instances. */
+	/** Number of instances. */
 	inline int GetCount() const{ return pInstanceCount; }
 	
-	/** \brief Index of the instance or -1 if not in the list. */
+	/** Index of the instance or -1 if not in the list. */
 	int IndexOf( deoglRParticleEmitterInstance *instance ) const;
 	
-	/** \brief Instance exists. */
+	/** Instance exists. */
 	bool Has( deoglRParticleEmitterInstance *instance ) const;
 	
-	/** \brief Instance at the given index. */
+	/** Instance at the given index. */
 	deoglRParticleEmitterInstance *GetAt( int index ) const;
 	
-	/** \brief Add instance. */
+	/** Add instance. */
 	void Add( deoglRParticleEmitterInstance *instance );
 	
-	/** \brief Add instance if missing in the list. Returns true if added. */
+	/** Add instance if missing in the list. Returns true if added. */
 	bool AddIfMissing( deoglRParticleEmitterInstance *instance );
 	
-	/** \brief Remove instance. */
+	/** Remove instance. */
 	void Remove( deoglRParticleEmitterInstance *instance );
 	
-	/** \brief Remove instance if existing in the list. Returns true if removed. */
+	/** Remove instance if existing in the list. Returns true if removed. */
 	bool RemoveIfExisting( deoglRParticleEmitterInstance *instance );
 	
-	/** \brief Remove instance from the given index. */
+	/** Remove instance from the given index. */
 	void RemoveFrom( int index );
 	
-	/** \brief Remove all instances. */
+	/** Remove all instances. */
 	void RemoveAll();
 	/*@}*/
 	

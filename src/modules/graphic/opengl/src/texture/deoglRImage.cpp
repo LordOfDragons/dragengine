@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -24,14 +27,12 @@
 #include <string.h>
 
 #include "deoglRImage.h"
-#include "pixelbuffer/deoglPixelBuffer.h"
 #include "texture2d/deoglTexture.h"
 #include "cubemap/deoglCubeMap.h"
 #include "arraytexture/deoglArrayTexture.h"
 #include "../deoglBasics.h"
 #include "../configuration/deoglConfiguration.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
-#include "../delayedoperation/deoglDelayedDeletion.h"
 #include "../memory/deoglMemoryManager.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTLogger.h"
@@ -57,14 +58,14 @@ pDepth( image.GetDepth() ),
 pComponentCount( image.GetComponentCount() ),
 pBitCount( image.GetBitCount() ),
 
-pPixelBuffer( NULL ),
-
 pTexture( NULL ),
 pCubeMap( NULL ),
 pArrayTexture( NULL ),
 pSkinUse( false ),
 pScaleU( 1.0f ),
-pScaleV( 1.0f )
+pScaleV( 1.0f ),
+
+pSkinMemUse( renderThread.GetMemoryManager().GetConsumption().skin )
 {
 	LEAK_CHECK_CREATE( renderThread, Image );
 }
@@ -82,14 +83,6 @@ deoglRImage::~deoglRImage(){
 void deoglRImage::SetPixelBuffer( deoglPixelBuffer *pixelBuffer ){
 	// WARNING Called during synchronization from main thread only
 	
-	if( pixelBuffer == pPixelBuffer ){
-		return;
-	}
-	
-	if( pPixelBuffer ){
-		delete pPixelBuffer;
-	}
-	
 	pPixelBuffer = pixelBuffer;
 }
 
@@ -101,7 +94,7 @@ void deoglRImage::SetTexture( deoglTexture *texture ){
 	pDirectReleaseTextures();
 	pTexture = texture;
 	pSkinUse = true;
-	pUpdateSkinMemoryUsage( true );
+	pUpdateSkinMemoryUsage();
 }
 
 void deoglRImage::SetCubeMap( deoglCubeMap *cubemap ){
@@ -112,7 +105,7 @@ void deoglRImage::SetCubeMap( deoglCubeMap *cubemap ){
 	pDirectReleaseTextures();
 	pCubeMap = cubemap;
 	pSkinUse = true;
-	pUpdateSkinMemoryUsage( true );
+	pUpdateSkinMemoryUsage();
 }
 
 void deoglRImage::SetArrayTexture( deoglArrayTexture *arrayTexture ){
@@ -123,7 +116,7 @@ void deoglRImage::SetArrayTexture( deoglArrayTexture *arrayTexture ){
 	pDirectReleaseTextures();
 	pArrayTexture = arrayTexture;
 	pSkinUse = true;
-	pUpdateSkinMemoryUsage( true );
+	pUpdateSkinMemoryUsage();
 }
 
 
@@ -142,7 +135,11 @@ void deoglRImage::PrepareForRender(){
 		// if the image is too small disable compression. otherwise the result
 		// can turn out smeared out. observed are problems at less than 5 pixel
 		// width or height. with 5 or more pixel no such problem is observed
-		const bool compressed = pWidth >= 5 && pHeight >= 5;
+		const bool compressed = false; //pWidth >= 5 && pHeight >= 5;
+		
+		// NOTE since this is usually called for images used in UI using compression typically
+		//      results in visible artifacts. since these places have no way to tell if using
+		//      compression is a problem default to not use compression
 		
 		if( pDepth == 1 ){
 			pTexture = new deoglTexture( pRenderThread );
@@ -165,17 +162,16 @@ void deoglRImage::PrepareForRender(){
 	}
 	
 	if( pArrayTexture ){
-		pArrayTexture->SetPixels( *pPixelBuffer );
+		pArrayTexture->SetPixels( pPixelBuffer );
 		
 	}else if( pCubeMap ){
-		pCubeMap->SetPixels( *pPixelBuffer );
+		pCubeMap->SetPixels( pPixelBuffer );
 		
 	}else{
-		pTexture->SetPixels( *pPixelBuffer );
+		pTexture->SetPixels( pPixelBuffer );
 	}
 	
-	delete pPixelBuffer;
-	pPixelBuffer = NULL;
+	pPixelBuffer = nullptr;
 }
 
 
@@ -183,72 +179,17 @@ void deoglRImage::PrepareForRender(){
 // Private Functions
 //////////////////////
 
-class deoglRImageDeletion : public deoglDelayedDeletion{
-public:
-	deoglTexture *texture;
-	deoglCubeMap *cubemap;
-	deoglArrayTexture *arrayTexture;
-	
-	deoglRImageDeletion() :
-	texture( NULL ),
-	cubemap( NULL ),
-	arrayTexture( NULL ){
-	}
-	
-	virtual ~deoglRImageDeletion(){
-	}
-	
-	virtual void DeleteObjects( deoglRenderThread& ){
-		if( texture ){
-			delete texture;
-		}
-		if( cubemap ){
-			delete cubemap;
-		}
-		if( arrayTexture ){
-			delete arrayTexture;
-		}
-	}
-};
-
 void deoglRImage::pCleanUp(){
-	if( pPixelBuffer ){
-		delete pPixelBuffer;
-	}
 	pReleaseTextures();
 }
 
 void deoglRImage::pReleaseTextures(){
-	pUpdateSkinMemoryUsage( false );
-	
 	pRenderThread.GetDelayedOperations().RemoveInitImage( this );
-	
-	deoglRImageDeletion *delayedDeletion = NULL;
-	
-	try{
-		delayedDeletion = new deoglRImageDeletion;
-		delayedDeletion->texture = pTexture;
-		delayedDeletion->cubemap = pCubeMap;
-		delayedDeletion->arrayTexture = pArrayTexture;
-		pRenderThread.GetDelayedOperations().AddDeletion( delayedDeletion );
-		
-	}catch( const deException &e ){
-		if( delayedDeletion ){
-			delete delayedDeletion;
-		}
-		pRenderThread.GetLogger().LogException( e );
-		throw;
-	}
-	
-	pTexture = NULL;
-	pCubeMap = NULL;
-	pArrayTexture = NULL;
+	pDirectReleaseTextures();
 }
 
 void deoglRImage::pDirectReleaseTextures(){
-	// called from render thread. does not use delayed operations to avoid dead-locking
-	pUpdateSkinMemoryUsage( false );
-	
+	// called from render thread and from pReleaseTextures
 	if( pTexture ){
 		delete pTexture;
 		pTexture = NULL;
@@ -261,65 +202,29 @@ void deoglRImage::pDirectReleaseTextures(){
 		delete pArrayTexture;
 		pArrayTexture = NULL;
 	}
+	
+	pUpdateSkinMemoryUsage();
 }
 
-void deoglRImage::pUpdateSkinMemoryUsage( bool add ){
+void deoglRImage::pUpdateSkinMemoryUsage(){
+	pSkinMemUse.Clear();
+	
 	if( ! pSkinUse ){
 		return;
 	}
 	
-	deoglMemoryConsumptionTexture &consumption = pRenderThread.GetMemoryManager().GetConsumption().GetSkin();
-	int usageGPUUncompressed = 0;
-	int usageGPUCompressed = 0;
-	int usageGPU = 0;
-	int usageCount = 0;
-	
 	if( pTexture ){
-		usageGPU += pTexture->GetMemoryUsageGPU();
-		usageCount++;
-		
-		if( pTexture->GetMemoryUsageCompressed() ){
-			usageGPUCompressed += pTexture->GetMemoryUsageGPU();
-			
-		}else{
-			usageGPUUncompressed += pTexture->GetMemoryUsageGPU();
-		}
+		pSkinMemUse.compressed += pTexture->GetMemoryConsumption().TotalCompressed();
+		pSkinMemUse.uncompressed += pTexture->GetMemoryConsumption().TotalUncompressed();
 	}
 	
 	if( pCubeMap ){
-		usageGPU += pCubeMap->GetMemoryUsageGPU();
-		usageCount++;
-		
-		if( pCubeMap->GetMemoryUsageCompressed() ){
-			usageGPUCompressed += pCubeMap->GetMemoryUsageGPU();
-			
-		}else{
-			usageGPUUncompressed += pCubeMap->GetMemoryUsageGPU();
-		}
+		pSkinMemUse.compressed += pCubeMap->GetMemoryConsumption().TotalCompressed();
+		pSkinMemUse.uncompressed += pCubeMap->GetMemoryConsumption().TotalUncompressed();
 	}
 	
 	if( pArrayTexture ){
-		usageGPU += pArrayTexture->GetMemoryUsageGPU();
-		usageCount++;
-		
-		if( pArrayTexture->GetMemoryUsageCompressed() ){
-			usageGPUCompressed += pArrayTexture->GetMemoryUsageGPU();
-			
-		}else{
-			usageGPUUncompressed += pArrayTexture->GetMemoryUsageGPU();
-		}
-	}
-	
-	if( add ){
-		consumption.IncrementGPU( usageGPU );
-		consumption.IncrementGPUCompressed( usageGPUCompressed );
-		consumption.IncrementGPUUncompressed( usageGPUUncompressed );
-		consumption.IncrementCountBy( usageCount );
-		
-	}else{
-		consumption.DecrementGPU( usageGPU );
-		consumption.DecrementGPUCompressed( usageGPUCompressed );
-		consumption.DecrementGPUUncompressed( usageGPUUncompressed );
-		consumption.DecrementCountBy( usageCount );
+		pSkinMemUse.compressed += pArrayTexture->GetMemoryConsumption().TotalCompressed();
+		pSkinMemUse.uncompressed += pArrayTexture->GetMemoryConsumption().TotalUncompressed();
 	}
 }

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenAL Audio Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <math.h>
@@ -376,35 +379,35 @@ void deoalCollisionFrustum::SetFarPlane(const decVector &normal, float dist){
 void deoalCollisionFrustum::SetFrustum(const decDMatrix &mat){
 	float len;
 	// left clipping plane
-	pNormalLeft.Set( mat.a41 + mat.a11, mat.a42 + mat.a12, mat.a43 + mat.a13 );
+	pNormalLeft.Set( ( float )( mat.a41 + mat.a11 ), ( float )( mat.a42 + mat.a12 ), ( float )( mat.a43 + mat.a13 ) );
 	len = pNormalLeft.Length();
 	pNormalLeft /= len;
-	pDistLeft = -( mat.a44 + mat.a14 ) / len;
+	pDistLeft = -( float )( mat.a44 + mat.a14 ) / len;
 	// right clipping plane
-	pNormalRight.Set( mat.a41 - mat.a11, mat.a42 - mat.a12, mat.a43 - mat.a13 );
+	pNormalRight.Set( ( float )( mat.a41 - mat.a11 ), ( float )( mat.a42 - mat.a12 ), ( float )( mat.a43 - mat.a13 ) );
 	len = pNormalRight.Length();
 	pNormalRight /= len;
-	pDistRight = -( mat.a44 - mat.a14 ) / len;
+	pDistRight = -( float )( mat.a44 - mat.a14 ) / len;
 	// top clipping plane
-	pNormalTop.Set( mat.a41 - mat.a21, mat.a42 - mat.a22, mat.a43 - mat.a23 );
+	pNormalTop.Set( ( float )( mat.a41 - mat.a21 ), ( float )( mat.a42 - mat.a22 ), ( float )( mat.a43 - mat.a23 ) );
 	len = pNormalTop.Length();
 	pNormalTop /= len;
-	pDistTop = -( mat.a44 - mat.a24 ) / len;
+	pDistTop = -( float )( mat.a44 - mat.a24 ) / len;
 	// bottom clipping plane
-	pNormalBottom.Set( mat.a41 + mat.a21, mat.a42 + mat.a22, mat.a43 + mat.a23 );
+	pNormalBottom.Set( ( float )( mat.a41 + mat.a21 ), ( float )( mat.a42 + mat.a22 ), ( float )( mat.a43 + mat.a23 ) );
 	len = pNormalBottom.Length();
 	pNormalBottom /= len;
-	pDistBottom = -( mat.a44 + mat.a24 ) / len;
+	pDistBottom = -( float )( mat.a44 + mat.a24 ) / len;
 	// near clipping plane
-	pNormalNear.Set( mat.a41 + mat.a31, mat.a42 + mat.a32, mat.a43 + mat.a33 );
+	pNormalNear.Set( ( float )( mat.a41 + mat.a31 ), ( float )( mat.a42 + mat.a32 ), ( float )( mat.a43 + mat.a33 ) );
 	len = pNormalNear.Length();
 	pNormalNear /= len;
-	pDistNear = -( mat.a44 + mat.a34 ) / len;
+	pDistNear = -( float )( mat.a44 + mat.a34 ) / len;
 	// far clipping plane
-	pNormalFar.Set( mat.a41 - mat.a31, mat.a42 - mat.a32, mat.a43 - mat.a33 );
+	pNormalFar.Set( ( float )( mat.a41 - mat.a31 ), ( float )( mat.a42 - mat.a32 ), ( float )( mat.a43 - mat.a33 ) );
 	len = pNormalFar.Length();
 	pNormalFar /= len;
-	pDistFar = -( mat.a44 - mat.a34 ) / len;
+	pDistFar = -( float )( mat.a44 - mat.a34 ) / len;
 }
 
 void deoalCollisionFrustum::SetFrustum(const decVector &origin, const decVector &r1, const decVector &r2, const decVector &r3, const decVector &r4, float nearDist){

@@ -1,12 +1,12 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<!DOCTYPE module SYSTEM "DragengineModule.dtd">
 <module>
 	<name>DEOcclusionMesh</name>
 	<description>Handles occlusion meshes in the Drag[en]gine occlusion mesh format.</description>
 	<author>Plüss Roland (roland@rptd.ch)</author>
-	<version>1.0</version>
+	<version>VERSION</version>
 	<type>OcclusionMesh</type>
 	<pattern>.deoccmesh</pattern>
+	<priority>1</priority>
 	<library>
 		<file>FILENAME</file>
 		<size>FILESIZE</size>

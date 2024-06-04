@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -50,14 +53,13 @@
 deoglHeightTerrain::deoglHeightTerrain( deGraphicOpenGl &ogl, const deHeightTerrain &heightTerrain ) :
 pOgl( ogl ),
 pHeightTerrain( heightTerrain ),
-pRHeightTerrain( NULL ),
 pDirtySectors( true )
 {
 	const int sectorCount = heightTerrain.GetSectorCount();
 	int i;
 	
 	try{
-		pRHeightTerrain = new deoglRHeightTerrain( ogl.GetRenderThread(), pHeightTerrain );
+		pRHeightTerrain.TakeOver( new deoglRHeightTerrain( ogl.GetRenderThread(), heightTerrain ) );
 		
 		for( i=0; i<sectorCount; i++ ){
 			SectorAdded( heightTerrain.GetSectorAt( i ) );
@@ -186,46 +188,22 @@ const decPoint &fromCoordinates, const decPoint &toSector, const decPoint &toCoo
 
 
 void deoglHeightTerrain::SectorAdded( deHeightTerrainSector *sector ){
-	deoglHTSector *htsector = NULL;
-	
-	try{
-		htsector = new deoglHTSector( *this, *sector );
-		pSectors.Add( htsector );
-		
-	}catch( const deException & ){
-		if( htsector ){
-			delete htsector;
-		}
-		throw;
-	}
-	
+	pSectors.Add( deoglHTSector::Ref::New( new deoglHTSector( *this, *sector ) ) );
 	pDirtySectors = true;
 }
 
 void deoglHeightTerrain::SectorRemoved( int index ){
-	deoglHTSector * const htsector = ( deoglHTSector* )pSectors.GetAt( index );
 	pSectors.RemoveFrom( index );
-	delete htsector;
-	
 	pDirtySectors = true;
 }
 
 void deoglHeightTerrain::AllSectorsRemoved(){
-	int count = pSectors.GetCount();
-	while( count > 0 ){
-		count--;
-		deoglHTSector * const htsector = ( deoglHTSector* )pSectors.GetAt( count );
-		pSectors.RemoveFrom( count );
-		delete htsector;
-	}
-	
+	pSectors.RemoveAll();
 	pDirtySectors = true;
 }
 
 void deoglHeightTerrain::SectorChanged( int index ){
-	deoglHTSector &htsector = *( ( deoglHTSector* )pSectors.GetAt( index ) );
-	
-	htsector.SectorChanged();
+	( ( deoglHTSector* )pSectors.GetAt( index ) )->SectorChanged();
 	pDirtySectors = true;
 }
 
@@ -247,8 +225,4 @@ void deoglHeightTerrain::AllDecalsRemoved( int sector ){
 
 void deoglHeightTerrain::pCleanUp(){
 	AllSectorsRemoved();
-	
-	if( pRHeightTerrain ){
-		pRHeightTerrain->FreeReference();
-	}
 }

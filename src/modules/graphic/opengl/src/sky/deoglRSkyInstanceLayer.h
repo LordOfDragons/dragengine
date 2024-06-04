@@ -1,62 +1,53 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLRSKYINSTANCELAYER_H_
 #define _DEOGLRSKYINSTANCELAYER_H_
 
+#include "../light/pipeline/deoglLightPipelinesSky.h"
+#include "../shaders/paramblock/deoglSPBlockUBO.h"
+
+#include <dragengine/common/collection/decPointerList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/sky/deSkyLayer.h>
 
-class deoglLightShader;
 class deoglLightShaderConfig;
 class deoglRenderThread;
 class deoglRSkyInstance;
-class deoglSPBlockUBO;
-class deoglSkyLayerShadowCaster;
 class deoglSkyLayerTracker;
+class deoglShadowCaster;
+class deoglSkyLayerGICascade;
+class deoglGIState;
+class deoglGICascade;
+class deoglRComponent;
 
 
 
 /**
- * \brief Render sky Layer.
+ * Render sky Layer.
  */
 class deoglRSkyInstanceLayer{
-public:
-	/** \brief Shader Types. */
-	enum eShaderTypes{
-		/** \brief No shadow casting. */
-		estNoShadow,
-		
-		/** \brief Ambient light only. */
-		estAmbient,
-		
-		/** \brief Solid shadow. */
-		estSolid,
-		
-		/** Number of shaders. */
-		EST_COUNT
-	};
-	
-	
-	
 private:
 	deoglRSkyInstance &pInstance;
 	int pIndex;
@@ -78,21 +69,24 @@ private:
 	deoglSkyLayerTracker *pTrackerEnvMap;
 	bool pSkyNeedsUpdate;
 	
-	deoglLightShader *pShaders[ EST_COUNT ];
-	deoglSPBlockUBO *pParamBlockLight;
-	deoglSPBlockUBO *pParamBlockInstance;
+	deoglLightPipelines::Ref pPipelines;
+	deoglSPBlockUBO::Ref pParamBlockLight;
+	deoglSPBlockUBO::Ref pParamBlockInstance;
 	
-	deoglSkyLayerShadowCaster *pShadowCaster;
+	deoglShadowCaster *pShadowCaster;
+	
+	decPointerList pGICascades;
+	
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create sky instance layer. */
+	/** Create sky instance layer. */
 	deoglRSkyInstanceLayer( deoglRSkyInstance &instance, int index );
 	
-	/** \brief Clean up sky instance layer. */
+	/** Clean up sky instance layer. */
 	~deoglRSkyInstanceLayer();
 	/*@}*/
 	
@@ -100,72 +94,98 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Parent sky instance, */
+	/** Parent sky instance, */
 	inline deoglRSkyInstance &GetInstance() const{ return pInstance; }
 	
-	/** \brief Update. */
+	/** Layer index. */
+	inline int GetIndex() const{ return pIndex; }
+	
+	/** Update. */
 	void Update();
 	
-	/** \brief Apply multiply by total values modifiers. */
+	/** Apply multiply by total values modifiers. */
 	void UpdateWithModifiers();
 	
-	/** \brief Sky needs update. */
+	/** Sky needs update. */
 	inline bool GetSkyNeedsUpdate() const{ return pSkyNeedsUpdate; }
 	
 	
 	
-	/** \brief Matrix. */
+	/** Matrix. */
 	inline const decMatrix &GetMatrix() const{ return pMatrix; }
 	
-	/** \brief Inverse matrix. */
+	/** Inverse matrix. */
 	inline const decMatrix &GetInverseMatrix() const{ return pInvMatrix; }
 	
-	/** \brief Blending color. */
+	/** Blending color. */
 	inline const decColor &GetColor() const{ return pColor; }
 	
-	/** \brief Intensity. */
+	/** Intensity. */
 	inline float GetIntensity() const{ return pIntensity; }
 	
-	/** \brief Transparency. */
+	/** Transparency. */
 	inline float GetTransparency() const{ return pTransparency; }
 	
-	/** \brief Layer is visible. */
+	/** Layer is visible. */
 	bool GetVisible() const;
 	
-	/** \brief Orientation of the sky light. */
+	/** Orientation of the sky light. */
 	inline const decQuaternion &GetLightOrientation() const{ return pLightOrientation; }
 	
-	/** \brief Color of the sky light. */
+	/** Color of the sky light. */
 	inline const decColor &GetLightColor() const{ return pLightColor; }
 	
-	/** \brief Intensity of the direct sky light. */
+	/** Intensity of the direct sky light. */
 	inline float GetLightIntensity() const{ return pLightIntensity; }
 	
-	/** \brief Intensity of the diffuse sky light. */
+	/** Intensity of the diffuse sky light. */
 	inline float GetAmbientIntensity() const{ return pAmbientIntensity; }
 	
-	/** \brief Layer has direct light. */
+	/** Total light intensity. */
+	inline float GetTotalLightIntensity() const{ return pLightIntensity + pAmbientIntensity; }
+	
+	/** Layer has direct light. */
 	bool GetHasLightDirect() const;
 	
-	/** \brief Layer has diffuse light. */
+	/** Layer has diffuse light. */
 	bool GetHasLightAmbient() const;
 	
 	
 	
-	/** \brief Shader for shader type. */
-	deoglLightShader *GetShaderFor( int shaderType );
+	/** Pipelines. */
+	deoglLightPipelines &GetPipelines();
 	
-	/** \brief Shader configuration for shader type. */
-	bool GetShaderConfigFor( int shaderType, deoglLightShaderConfig &config );
+	// /** Light parameter block. */
+	const deoglSPBlockUBO::Ref &GetLightParameterBlock();
 	
-	/** \brief Light parameter block. */
-	deoglSPBlockUBO *GetLightParameterBlock();
+	/** Instance parameter block. */
+	const deoglSPBlockUBO::Ref &GetInstanceParameterBlock();
 	
-	/** \brief Instance parameter block. */
-	deoglSPBlockUBO *GetInstanceParameterBlock();
+	/** Shadow caster. */
+	inline deoglShadowCaster &GetShadowCaster() const{ return *pShadowCaster; }
 	
-	/** \brief Shadow caster. */
-	inline deoglSkyLayerShadowCaster &GetShadowCaster() const{ return *pShadowCaster; }
+	/** Notify skies render static component changed requiring updates. */
+	void NotifyUpdateStaticComponent( deoglRComponent *component );
+	
+	
+	
+	/** Count of GI cascades. */
+	int GetGICascadeCount() const;
+	
+	/** GI Cascade or NULL if not found. */
+	deoglSkyLayerGICascade *GetGICascade( const deoglGICascade &cascade ) const;
+	
+	/** Add GI Cascade if absent. */
+	deoglSkyLayerGICascade *AddGICascade( const deoglGICascade &cascade );
+	
+	/** Remove GI Cascade if present. */
+	void RemoveGICascade( const deoglGICascade &cascade );
+	
+	/** Remove all GI Cascades for GI State if present. */
+	void RemoveAllGICascades( const deoglGIState &state );
+	
+	/** Remove all GI Cascades. */
+	void RemoveAllGICascades();
 	/*@}*/
 	
 	

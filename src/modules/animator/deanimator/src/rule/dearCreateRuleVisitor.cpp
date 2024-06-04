@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Animator Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -35,9 +38,9 @@
 #include "dearRuleForeignState.h"
 #include "dearRuleGroup.h"
 #include "dearRuleSubAnimator.h"
-#include "dearRuleRetarget.h"
 #include "dearRuleTrackTo.h"
 #include "dearRuleLimit.h"
+#include "dearRuleMirror.h"
 #include "../dearAnimatorInstance.h"
 
 #include <dragengine/resources/animator/deAnimator.h>
@@ -52,9 +55,9 @@
 #include <dragengine/resources/animator/rule/deAnimatorRuleForeignState.h>
 #include <dragengine/resources/animator/rule/deAnimatorRuleGroup.h>
 #include <dragengine/resources/animator/rule/deAnimatorRuleSubAnimator.h>
-#include <dragengine/resources/animator/rule/deAnimatorRuleRetarget.h>
 #include <dragengine/resources/animator/rule/deAnimatorRuleTrackTo.h>
 #include <dragengine/resources/animator/rule/deAnimatorRuleLimit.h>
+#include <dragengine/resources/animator/rule/deAnimatorRuleMirror.h>
 #include <dragengine/common/exceptions.h>
 
 
@@ -66,12 +69,12 @@
 ////////////////////////////
 
 dearCreateRuleVisitor::dearCreateRuleVisitor( dearAnimatorInstance &instance,
-const deAnimator &animator, const decIntList &controllerMapping, int firstLink ) :
+const dearAnimator &animator, const decIntList &controllerMapping, int firstLink ) :
 pInstance( instance ),
 pAnimator( animator ),
 pControllerMapping( controllerMapping ),
 pFirstLink( firstLink ),
-pCreatedRule( NULL ){
+pCreatedRule( nullptr ){
 }
 
 dearCreateRuleVisitor::~dearCreateRuleVisitor(){
@@ -83,7 +86,7 @@ dearCreateRuleVisitor::~dearCreateRuleVisitor(){
 ///////////////
 
 void dearCreateRuleVisitor::Reset(){
-	pCreatedRule = NULL;
+	pCreatedRule = nullptr;
 }
 
 bool dearCreateRuleVisitor::HasCreatedRule() const{
@@ -106,53 +109,53 @@ void dearCreateRuleVisitor::VisitRule( deAnimatorRule& ){
 }
 
 void dearCreateRuleVisitor::VisitAnimation( deAnimatorRuleAnimation &rule ){
-	pCreatedRule = new dearRuleAnimation( pInstance, pFirstLink, rule );
+	pCreatedRule = new dearRuleAnimation( pInstance, pAnimator, pFirstLink, rule );
 }
 
 void dearCreateRuleVisitor::VisitAnimationDifference( deAnimatorRuleAnimationDifference &rule ){
-	pCreatedRule = new dearRuleAnimationDifference( pInstance, pFirstLink, rule );
+	pCreatedRule = new dearRuleAnimationDifference( pInstance, pAnimator, pFirstLink, rule );
 }
 
 void dearCreateRuleVisitor::VisitAnimationSelect( deAnimatorRuleAnimationSelect &rule ){
-	pCreatedRule = new dearRuleAnimationSelect( pInstance, pFirstLink, rule );
+	pCreatedRule = new dearRuleAnimationSelect( pInstance, pAnimator, pFirstLink, rule );
 }
 
 void dearCreateRuleVisitor::VisitBoneTransformator( deAnimatorRuleBoneTransformator &rule ){
-	pCreatedRule = new dearRuleBoneTransformator( pInstance, pFirstLink, rule );
+	pCreatedRule = new dearRuleBoneTransformator( pInstance, pAnimator, pFirstLink, rule );
 }
 
 void dearCreateRuleVisitor::VisitInverseKinematic( deAnimatorRuleInverseKinematic &rule ){
-	pCreatedRule = new dearRuleInverseKinematic( pInstance, pFirstLink, rule );
+	pCreatedRule = new dearRuleInverseKinematic( pInstance, pAnimator, pFirstLink, rule );
 }
 
 void dearCreateRuleVisitor::VisitStateManipulator( deAnimatorRuleStateManipulator &rule ){
-	pCreatedRule = new dearRuleStateManipulator( pInstance, pFirstLink, rule );
+	pCreatedRule = new dearRuleStateManipulator( pInstance, pAnimator, pFirstLink, rule );
 }
 
 void dearCreateRuleVisitor::VisitStateSnapshot( deAnimatorRuleStateSnapshot &rule ){
-	pCreatedRule = new dearRuleStateSnapshot( pInstance, pFirstLink, rule );
+	pCreatedRule = new dearRuleStateSnapshot( pInstance, pAnimator, pFirstLink, rule );
 }
 
 void dearCreateRuleVisitor::VisitForeignState( deAnimatorRuleForeignState &rule ){
-	pCreatedRule = new dearRuleForeignState( pInstance, pFirstLink, rule );
+	pCreatedRule = new dearRuleForeignState( pInstance, pAnimator, pFirstLink, rule );
 }
 
 void dearCreateRuleVisitor::VisitGroup( deAnimatorRuleGroup &rule ){
-	pCreatedRule = new dearRuleGroup( pInstance, pFirstLink, rule, pAnimator, pControllerMapping );
+	pCreatedRule = new dearRuleGroup( pInstance, pAnimator, pFirstLink, rule, pControllerMapping );
 }
 
 void dearCreateRuleVisitor::VisitSubAnimator( deAnimatorRuleSubAnimator &rule ){
-	pCreatedRule = new dearRuleSubAnimator( pInstance, pFirstLink, rule, pControllerMapping );
-}
-
-void dearCreateRuleVisitor::VisitRetarget( deAnimatorRuleRetarget &rule ){
-	pCreatedRule = new dearRuleRetarget( pInstance, pFirstLink, rule );
+	pCreatedRule = new dearRuleSubAnimator( pInstance, pAnimator, pFirstLink, rule, pControllerMapping );
 }
 
 void dearCreateRuleVisitor::VisitTrackTo( deAnimatorRuleTrackTo &rule ){
-	pCreatedRule = new dearRuleTrackTo( pInstance, pFirstLink, rule );
+	pCreatedRule = new dearRuleTrackTo( pInstance, pAnimator, pFirstLink, rule );
 }
 
 void dearCreateRuleVisitor::VisitLimit( deAnimatorRuleLimit &rule ){
-	pCreatedRule = new dearRuleLimit( pInstance, pFirstLink, rule );
+	pCreatedRule = new dearRuleLimit( pInstance, pAnimator, pFirstLink, rule );
+}
+
+void dearCreateRuleVisitor::VisitMirror( deAnimatorRuleMirror &rule ){
+	pCreatedRule = new dearRuleMirror( pInstance, pAnimator, pFirstLink, rule );
 }

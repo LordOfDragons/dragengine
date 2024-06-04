@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -41,7 +44,7 @@ pin Dragengine.Utils
  */
 class IMMTextDisplay extends Panel
 	/** \brief States. */
-	public enum State
+	enum State
 		/** \brief Text hidden. */
 		hidden
 		
@@ -57,151 +60,138 @@ class IMMTextDisplay extends Panel
 	
 	
 	
-	/** \brief Interactive main menu. */
-	private var InteractiveMainMenu pMainMenu
-	
-	/** \brief Text to display. */
-	private var String pText
-	
-	/** \brief Real display text required for fading. */
-	private var String pRealText
-	
-	/** \brief Label. */
-	private var Label pLabel
-	
-	/** \brief Fade time. */
-	private var float pFadeTime
-	
-	/** \brief Elapsed fade time. */
-	private var float pElapsedTime
-	
-	/** \brief State. */
-	private var State pState
+	var InteractiveMainMenu pMainMenu
+	var String pText
+	var String pRealText
+	var Label pLabel
+	var float pFadeTime
+	var float pElapsedTime
+	var State pState
 	
 	
 	
 	/** \brief Create text display for interactive main menu. */
-	public func new( InteractiveMainMenu mainMenu )
+	func new(InteractiveMainMenu mainMenu)
 		if mainMenu == null
 			throw EInvalidParam.new()
 		end
 		
-		this.pMainMenu = mainMenu
-		this.pText = ""
-		this.pRealText = ""
-		this.pFadeTime = 0.3
-		this.pElapsedTime = 0.0
-		this.pState = State.hidden
+		pMainMenu = mainMenu
+		pText = ""
+		pRealText = ""
+		pFadeTime = 0.3
+		pElapsedTime = 0
+		pState = State.hidden
 		
-		this.setDesignerSelector( "Panel.IMMTextDisplay" )
-		this.setLayout( BorderLayout.new() )
+		setDesignerSelector("Panel.IMMTextDisplay")
+		setLayout(BorderLayout.new())
 		
 		var Panel panel = Panel.new()
-		panel.setLayout( CentrizedBoxLayout.new( LayoutAxis.y ) )
+		panel.setLayout(CentrizedBoxLayout.new(LayoutAxis.y))
 		
-		this.pLabel = Label.new( "" )
-		this.pLabel.setDesignerSelector( "Label.IMMTextDisplay" )
-		panel.addWidget( this.pLabel )
-		this.addWidget( panel, BorderLayout.Area.bottom )
-		mainMenu.addWidget( this )
+		pLabel = Label.new("")
+		pLabel.setDesignerSelector("Label.IMMTextDisplay")
+		panel.addWidget(pLabel)
+		addWidget(panel, BorderLayout.Area.bottom)
+		mainMenu.addWidget(this)
 		
-		//this.setVisible( false )
-		this.setTransparency( 0.0 )
+		//setVisible(false)
+		setTransparency(0.0)
 	end
 	
 	/** \brief Dispose of widget. */
-	public func void dispose()
+	func void dispose()
 		super.dispose()
-		this.pLabel = null
+		pLabel = null
 	end
 	
 	
 	
 	/** \brief Interactive main menu. */
-	public func InteractiveMainMenu getMainMenu()
-		return this.pMainMenu
+	func InteractiveMainMenu getMainMenu()
+		return pMainMenu
 	end
 	
 	/** \brief Text to display. */
-	public func String getText()
-		return this.pText
+	func String getText()
+		return pText
 	end
 	
 	/** \brief Set text to display. */
-	public func void setText( String text )
-		if text.equals( this.pText )
+	func void setText(String text)
+		if text.equals(pText)
 			return
 		end
 		
-		this.pText = text
+		pText = text
 		
 		if not text.empty()
-			this.pRealText = text  // avoid empty text while fading
+			pRealText = text  // avoid empty text while fading
 		end
 		
-		this.onTextChanged()
+		onTextChanged()
 	end
 	
 	/** \brief Clear text to display. */
-	public func void clearText()
-		this.setText( "" )
+	func void clearText()
+		setText("")
 	end
 	
 	/** \brief Fade time. */
-	public func float getFadeTime()
-		return this.pFadeTime
+	func float getFadeTime()
+		return pFadeTime
 	end
 	
 	/** \brief Set fade time. */
-	public func void setFadeTime( float time )
-		this.pFadeTime = DEMath.max( time, 0.0 )
+	func void setFadeTime(float time)
+		pFadeTime = DEMath.max(time, 0.0)
 	end
 	
 	/** \brief Elapsed fade time. */
-	public func float getElapsedTime()
-		return this.pElapsedTime
+	func float getElapsedTime()
+		return pElapsedTime
 	end
 	
 	/** \brief Set elapsed fade time. */
-	protected func void setElapsedTime( float time )
-		this.pElapsedTime = time
+	protected func void setElapsedTime(float time)
+		pElapsedTime = time
 	end
 	
 	/** \brief State. */
-	public func State getState()
-		return this.pState
+	func State getState()
+		return pState
 	end
 	
 	/** \brief Set state. */
-	protected func void setState( State state )
-		this.pState = state
+	protected func void setState(State state)
+		pState = state
 	end
 	
 	/** \brief Reset. */
-	public func void reset()
-		this.pText = ""
-		this.pRealText = ""
-		this.pElapsedTime = 0
-		this.pState = State.hidden
+	func void reset()
+		pText = ""
+		pRealText = ""
+		pElapsedTime = 0
+		pState = State.hidden
 	end
 	
 	
 	
 	/** \brief Update camera. */
-	public func void update( float elapsed )
-		select this.pState
+	func void update(float elapsed)
+		select pState
 		case State.fadeIn
-			this.pElapsedTime += elapsed
-			this.updateFading()
-			if this.pElapsedTime >= this.pFadeTime
-				this.pState = State.shown
+			pElapsedTime += elapsed
+			updateFading()
+			if pElapsedTime >= pFadeTime
+				pState = State.shown
 			end
 			
 		case State.fadeOut
-			this.pElapsedTime += elapsed
-			this.updateFading()
-			if this.pElapsedTime >= this.pFadeTime
-				this.pState = State.hidden
+			pElapsedTime += elapsed
+			updateFading()
+			if pElapsedTime >= pFadeTime
+				pState = State.hidden
 			end
 		end
 	end
@@ -210,49 +200,49 @@ class IMMTextDisplay extends Panel
 	
 	/** \brief Text changed. */
 	protected func void onTextChanged()
-		this.pLabel.setText( this.pRealText )
+		pLabel.setText(pRealText)
 		
-		if this.pText.empty()
-			select this.pState
+		if pText.empty()
+			select pState
 			case State.shown
-				this.pState = State.fadeOut
-				this.pElapsedTime = 0
+				pState = State.fadeOut
+				pElapsedTime = 0
 				
 			case State.fadeIn
-				this.pState = State.fadeOut
-				this.pElapsedTime = this.pFadeTime - this.pElapsedTime
+				pState = State.fadeOut
+				pElapsedTime = pFadeTime - pElapsedTime
 			end
 			
 		else
-			select this.pState
+			select pState
 			case State.hidden
-				this.pState = State.fadeIn
-				this.pElapsedTime = 0
+				pState = State.fadeIn
+				pElapsedTime = 0
 				
 			case State.fadeOut
-				this.pState = State.fadeIn
-				this.pElapsedTime = this.pFadeTime - this.pElapsedTime
+				pState = State.fadeIn
+				pElapsedTime = pFadeTime - pElapsedTime
 			end
 		end
 		
-		//this.setVisible( not this.pText.empty() )
+		//setVisible(not pText.empty())
 	end
 	
 	/** \brief Update fading. */
 	protected func void updateFading()
-		select this.pState
+		select pState
 		case State.fadeIn
-			this.setTransparency( DEMath.linearStep( this.pElapsedTime, 0.0, this.pFadeTime, 0.0, 1.0 ) )
+			setTransparency(DEMath.linearStep(pElapsedTime, 0.0, pFadeTime, 0.0, 1.0))
 			
 		case State.fadeOut
-			this.setTransparency( DEMath.linearStep( this.pElapsedTime, 0.0, this.pFadeTime, 1.0, 0.0 ) )
+			setTransparency(DEMath.linearStep(pElapsedTime, 0.0, pFadeTime, 1.0, 0.0))
 		end
 	end
 	
 	
 	
 	/** \brief Label. */
-	public func Label getLabel()
-		return this.pLabel
+	func Label getLabel()
+		return pLabel
 	end
 end

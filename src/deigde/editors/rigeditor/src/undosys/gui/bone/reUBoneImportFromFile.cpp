@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Rig Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -99,6 +102,12 @@ reUBoneImportFromFile::reUBoneImportFromFile( reRig *rig, reRig *importedRig ){
 					ubone.oldCMP = bone->GetCentralMassPoint();
 					ubone.oldMass = bone->GetMass();
 					ubone.oldDynamic = bone->GetDynamic();
+					ubone.oldIKLimitsLower = bone->GetIKLimitsLower();
+					ubone.oldIKLimitsUpper = bone->GetIKLimitsUpper();
+					ubone.oldIKResistance = bone->GetIKResistance();
+					ubone.oldIKLocked[ 0 ] = bone->GetIKLockedX();
+					ubone.oldIKLocked[ 1 ] = bone->GetIKLockedY();
+					ubone.oldIKLocked[ 2 ] = bone->GetIKLockedZ();
 					
 					ubone.oldShapes = new reRigShapeList;
 					
@@ -170,6 +179,12 @@ void reUBoneImportFromFile::Undo(){
 			bone->SetCentralMassPoint( ubone.oldCMP );
 			bone->SetMass( ubone.oldMass );
 			bone->SetDynamic( ubone.oldDynamic );
+			bone->SetIKLimitsLower( ubone.oldIKLimitsLower );
+			bone->SetIKLimitsUpper( ubone.oldIKLimitsUpper );
+			bone->SetIKResistance( ubone.oldIKResistance );
+			bone->SetIKLockedX( ubone.oldIKLocked[ 0 ] );
+			bone->SetIKLockedY( ubone.oldIKLocked[ 1 ] );
+			bone->SetIKLockedZ( ubone.oldIKLocked[ 2 ] );
 		}
 		
 		if( pImportShapes ){
@@ -211,6 +226,12 @@ void reUBoneImportFromFile::Redo(){
 				bone->SetCentralMassPoint( importBone->GetCentralMassPoint() * pScale );
 				bone->SetMass( importBone->GetMass() );
 				bone->SetDynamic( importBone->GetDynamic() );
+				bone->SetIKLimitsLower( importBone->GetIKLimitsLower() );
+				bone->SetIKLimitsUpper( importBone->GetIKLimitsUpper() );
+				bone->SetIKResistance( importBone->GetIKResistance() );
+				bone->SetIKLockedX( importBone->GetIKLockedX() );
+				bone->SetIKLockedY( importBone->GetIKLockedY() );
+				bone->SetIKLockedZ( importBone->GetIKLockedZ() );
 			}
 			
 			if( pImportShapes ){

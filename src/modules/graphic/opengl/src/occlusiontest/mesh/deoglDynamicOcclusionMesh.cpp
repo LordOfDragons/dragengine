@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -27,6 +30,10 @@
 #include "deoglROcclusionMesh.h"
 #include "deoglDynamicOcclusionMesh.h"
 #include "../../component/deoglRComponent.h"
+#include "../../delayedoperation/deoglDelayedOperations.h"
+#include "../../model/deoglRModel.h"
+#include "../../utils/bvh/deoglBVH.h"
+#include "../../utils/bvh/deoglBVHNode.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTLogger.h"
 #include "../../vao/deoglVAO.h"
@@ -35,9 +42,6 @@
 #include "../../vbo/deoglSharedVBOList.h"
 #include "../../vbo/deoglSharedVBOListList.h"
 #include "../../vbo/deoglVBOAttribute.h"
-#include "../../model/deoglRModel.h"
-#include "../../delayedoperation/deoglDelayedDeletion.h"
-#include "../../delayedoperation/deoglDelayedOperations.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/resources/component/deComponent.h>
@@ -58,7 +62,8 @@
 
 deoglDynamicOcclusionMesh::deoglDynamicOcclusionMesh( deoglRenderThread &renderThread,
 deoglROcclusionMesh *occlusionmesh, deoglRComponent *component ) :
-pRenderThread( renderThread )
+pRenderThread( renderThread ),
+pBVH( NULL )
 {
 	if( ! occlusionmesh || ! component ){
 		DETHROW( deeInvalidParam );
@@ -71,7 +76,7 @@ pRenderThread( renderThread )
 	pWeights = NULL;
 	pWeightCount = 0;
 	
-	pVertices = 0;
+	pVertices = NULL;
 	
 	pVBO = 0;
 	pVAO = NULL;
@@ -92,7 +97,7 @@ deoglDynamicOcclusionMesh::~deoglDynamicOcclusionMesh(){
 // Management
 ///////////////
 
-deoglVAO *deoglDynamicOcclusionMesh::GetVAO(){
+deoglVAO *deoglDynamicOcclusionMesh::GetVAO() const{
 	if( pVAO ){
 		return pVAO;
 		
@@ -143,7 +148,7 @@ void deoglDynamicOcclusionMesh::UpdateBoneMappings( const deComponent &component
 	pDirtyVBO = true;
 }
 
-void deoglDynamicOcclusionMesh::Prepare(){
+void deoglDynamicOcclusionMesh::PrepareForRender(){
 	if( ! pDirtyVBO ){
 		return;
 	}
@@ -157,61 +162,78 @@ void deoglDynamicOcclusionMesh::Prepare(){
 	pDirtyVBO = false;
 }
 
+void deoglDynamicOcclusionMesh::PrepareBVH(){
+	if( pBVH ){
+		return;
+	}
+	
+	   PrepareForRender(); // make sure vertices are transformed
+	
+	deoglBVH::sBuildPrimitive *primitives = NULL;
+	const int faceCount = pOcclusionMesh->GetSingleSidedFaceCount() + pOcclusionMesh->GetDoubleSidedFaceCount();
+	
+	if( faceCount > 0 ){
+		primitives = new deoglBVH::sBuildPrimitive[ faceCount ];
+		const unsigned short *corners = pOcclusionMesh->GetCorners();
+		int i;
+		
+		for( i=0; i<faceCount; i++ ){
+			deoglBVH::sBuildPrimitive &primitive = primitives[ i ];
+			const decVector &v1 = pVertices[ *(corners++) ];
+			const decVector &v2 = pVertices[ *(corners++) ];
+			const decVector &v3 = pVertices[ *(corners++) ];
+			
+			primitive.minExtend = v1.Smallest( v2 ).Smallest( v3 );
+			primitive.maxExtend = v1.Largest( v2 ).Largest( v3 );
+			primitive.center = ( primitive.minExtend + primitive.maxExtend ) * 0.5f;
+		}
+	}
+	
+	try{
+		pBVH = new deoglBVH;
+		pBVH->Build( primitives, faceCount, 6 );
+		
+	}catch( const deException & ){
+		if( pBVH ){
+			delete pBVH;
+			pBVH = NULL;
+		}
+		if( primitives ){
+			delete [] primitives;
+		}
+		throw;
+	}
+	
+	if( primitives ){
+		delete [] primitives;
+	}
+}
+
 
 
 // Private Functions
 //////////////////////
-
-class deoglDynamicOcclusionMeshDeletion : public deoglDelayedDeletion{
-public:
-	GLuint vbo;
-	deoglVAO *vao;
-	
-	deoglDynamicOcclusionMeshDeletion() :
-	vbo( 0 ), vao( NULL ){
-	}
-	
-	virtual ~deoglDynamicOcclusionMeshDeletion(){
-	}
-	
-	virtual void DeleteObjects( deoglRenderThread &renderThread ){
-		if( vao ){
-			delete vao;
-		}
-		if( vbo ){
-			pglDeleteBuffers( 1, &vbo );
-		}
-	}
-};
 
 void deoglDynamicOcclusionMesh::pCleanUp(){
 	if( pOcclusionMesh ){
 		pOcclusionMesh->FreeReference();
 	}
 	
+	if( pVBOData ){
+		delete [] pVBOData;
+	}
 	if( pVertices ){
 		delete [] pVertices;
 	}
 	if( pWeights ){
 		delete [] pWeights;
 	}
-	
-	// delayed deletion of opengl containing objects
-	deoglDynamicOcclusionMeshDeletion *delayedDeletion = NULL;
-	
-	try{
-		delayedDeletion = new deoglDynamicOcclusionMeshDeletion;
-		delayedDeletion->vao = pVAO;
-		delayedDeletion->vbo = pVBO;
-		pRenderThread.GetDelayedOperations().AddDeletion( delayedDeletion );
-		
-	}catch( const deException &e ){
-		if( delayedDeletion ){
-			delete delayedDeletion;
-		}
-		pRenderThread.GetLogger().LogException( e );
-		throw;
+	if( pVAO ){
+		delete pVAO;
 	}
+	
+	deoglDelayedOperations &dops = pRenderThread.GetDelayedOperations();
+	dops.DeleteOpenGLBuffer( pVBO );
 }
 
 void deoglDynamicOcclusionMesh::pBuildArrays(){
@@ -468,7 +490,11 @@ void deoglDynamicOcclusionMesh::pUpdateVAO(){
 	vboLayout.SetVAOAttributeAt( pRenderThread, 0, 0 ); // pos(0) => vao(0)
 	OGL_CHECK( pRenderThread, pglBindBuffer( GL_ARRAY_BUFFER, 0 ) );
 	
-	OGL_CHECK( pRenderThread, pglBindBuffer( GL_ELEMENT_ARRAY_BUFFER, vboBlock.GetVBO()->GetIBO() ) );
+	if( vboBlock.GetVBO()->GetIBO() ){
+		OGL_CHECK( pRenderThread, pglBindBuffer( GL_ELEMENT_ARRAY_BUFFER, vboBlock.GetVBO()->GetIBO() ) );
+	}
 	
 	OGL_CHECK( pRenderThread, pglBindVertexArray( 0 ) );
+	
+	pVAO->EnsureRTSVAO();
 }

@@ -8,6 +8,10 @@
 
 namespace Dragengine
 
+pin Dragengine.Gui
+pin Dragengine.Scenery
+
+
 /**
  * \brief Input device information.
  * 
@@ -36,6 +40,16 @@ class InputDevice
 	
 	/** \name Management */
 	/*@{*/
+	/**
+	 * \brief System owning the device.
+	 * \version 1.6
+	 * 
+	 * Device index is only valid for the matching system.
+	 */
+	public func InputEventSource getSource()
+		return null
+	end
+	
 	/**
 	 * \brief Device index.
 	 */
@@ -100,7 +114,7 @@ class InputDevice
 	 * 
 	 * Icon typically has a size of 16, 24, 32 or 64.
 	 */
-	public func Image getDisplayIconAt( int index )
+	public func Image getDisplayIconAt(int index)
 		return null
 	end
 	
@@ -109,7 +123,7 @@ class InputDevice
 	 * 
 	 * Icon typically has a size of 16, 24, 32 or 64.
 	 */
-	public func Image getLargestDisplayIconX( int maxWidth )
+	public func Image getLargestDisplayIconX(int maxWidth)
 		return null
 	end
 	
@@ -118,13 +132,75 @@ class InputDevice
 	 * 
 	 * Icon typically has a size of 16, 24, 32 or 64.
 	 */
-	public func Image getLargestDisplayIconY( int maxHeight )
+	public func Image getLargestDisplayIconY(int maxHeight)
 		return null
 	end
 	
 	/** \brief Text to display centered across display image or icon. */
-	public String getDisplayText()
-		return ""
+	public func String getDisplayText()
+		return null
+	end
+	
+	
+	
+	/**
+	 * \brief Device bone configuration.
+	 * \version 1.6
+	 */
+	public func InputDeviceBoneConfiguration getBoneConfiguration()
+		return null
+	end
+	
+	/**
+	 * \brief Finger tip offsets.
+	 * \version 1.6
+	 * 
+	 * For use with ebcHand bone configuration. Defines the offset of the finger tip point
+	 * relative to the last finger segment coordinate frame. These are typically used to
+	 * figure out where finger tips touch objects in the world.
+	 */
+	public func Vector getFingerTipOffset(int index)
+		return null
+	end
+	
+	/**
+	 * \brief Hand rig if ebcHand is used.
+	 * \version 1.6
+	 */
+	public func Rig getHandRig()
+		return null
+	end
+	
+	/**
+	 * \brief Device supports face eye expressions.
+	 * \version 1.12
+	 */
+	public  func bool getSupportsFaceEyeExpressions()
+		return false
+	end
+	
+	/**
+	 * \brief Device supports face mouth expressions.
+	 * \version 1.12
+	 */
+	public  func bool getSupportsFaceMouthExpressions()
+		return false
+	end
+	
+	/**
+	 * \brief Model to represent the device in VR environments or null if not set.
+	 * \version 1.6
+	 */
+	public func Model getVRModel()
+		return null
+	end
+	
+	/**
+	 * \brief Skin for VR model or null if not set.
+	 * \version 1.6
+	 */
+	public func Skin getVRSkin()
+		return null
 	end
 	
 	
@@ -137,12 +213,14 @@ class InputDevice
 	 * to be thrown.
 	 */
 	public func bool isPresent()
+		return false
 	end
 	
 	
 	
 	/** \brief Number of axes. */
 	public func int getAxisCount()
+		return 0
 	end
 	
 	/**
@@ -151,13 +229,15 @@ class InputDevice
 	 * \throws EOutOfBoundary \em index is less than 0 or larger than or equal
 	 *                        to getAxisCount().
 	 */
-	public func InputDeviceAxis getAxisAt( int index )
+	public func InputDeviceAxis getAxisAt(int index)
+		return null
 	end
 	
 	
 	
 	/** \brief Number of buttons. */
 	public func int getButtonCount()
+		return 0
 	end
 	
 	/**
@@ -166,13 +246,15 @@ class InputDevice
 	 * \throws EOutOfBoundary \em index is less than 0 or larger than or equal
 	 *                        to getButtonCount().
 	 */
-	public func InputDeviceButton getButtonAt( int index )
+	public func InputDeviceButton getButtonAt(int index)
+		return null
 	end
 	
 	
 	
 	/** \brief Number of feedbacks. */
 	public func int getFeedbackCount()
+		return 0
 	end
 	
 	/**
@@ -181,7 +263,25 @@ class InputDevice
 	 * \throws EOutOfBoundary \em index is less than 0 or larger than or equal
 	 *                        to getFeedbackCount().
 	 */
-	public func InputDeviceFeedback getFeedbackAt( int index )
+	public func InputDeviceFeedback getFeedbackAt(int index)
+		return null
+	end
+	
+	
+	
+	/** \brief Number of components. */
+	public func int getComponentCount()
+		return 0
+	end
+	
+	/**
+	 * \brief Get wrapper for component.
+	 * 
+	 * \throws EOutOfBoundary \em index is less than 0 or larger than or equal
+	 *                        to getComponentCount().
+	 */
+	public func InputDeviceComponent getComponentAt(int index)
+		return null
 	end
 	
 	
@@ -197,7 +297,8 @@ class InputDevice
 	 * Can be used for example to locate keyboard keys to create default binding
 	 * layouts without the user pressing input keys.
 	 */
-	public func int buttonMatchingKeyCode( int keyCode )
+	public func int buttonMatchingKeyCode(int keyCode)
+		return 0
 	end
 	
 	/**
@@ -217,7 +318,112 @@ class InputDevice
 	 * Can be used for example to locate keyboard keys to create default binding
 	 * layouts without the user pressing input keys.
 	 */
-	public func int buttonMatchingKeyChar( int character )
+	public func int buttonMatchingKeyChar(int character)
+		return 0
+	end
+	
+	/**
+	 * \brief Index of button best matching key code or -1 if not found.
+	 * \version 1.7
+	 * 
+	 * Same as buttonMatchingKeyChar(int) but allows to distinguish between multiple
+	 * keys of the same type, for example left and right shift key.
+	 */
+	public func int buttonMatchingKeyCode(int keyCode, InputEventKeyLocation location)
+		return 0
+	end
+	
+	/**
+	 * \brief Index of button best matching character or -1 if not found.
+	 * \version 1.7
+	 * 
+	 * Same as buttonMatchingKeyChar(int) but allows to distinguish between multiple
+	 * keys of the same type, for example left and right shift key.
+	 */
+	public func int buttonMatchingKeyChar(int character, InputEventKeyLocation location)
+		return 0
+	end
+	
+	
+	
+	/** \brief Device pose position relative to tracking reference coordinate frame. */
+	public func Vector getDevicePosePosition()
+		return null
+	end
+	
+	/** \brief Device pose orientation relative to tracking reference coordinate frame. */
+	public func Quaternion getDevicePoseOrientation()
+		return null
+	end
+	
+	/** \brief Device pose linear velocity relative to tracking reference coordinate frame. */
+	public func Vector getDevicePoseLinearVelocity()
+		return null
+	end
+	
+	/** \brief Device pose angular velocity relative to tracking reference coordinate frame. */
+	public func Vector getDevicePoseAngularVelocity()
+		return null
+	end
+	
+	/** \brief Device pose matrix relative to tracking reference coordinate frame. */
+	public func Matrix getDevicePoseMatrix()
+		return null
+	end
+	
+	
+	
+	/** \brief Count of device bone pose positions. */
+	public func int getDeviceBonePoseCount()
+		return 0
+	end
+	
+	/**
+	 * \brief Device bone pose position relative to parent reference coordinate frame.
+	 * \param bone Index of bone to retrieve.
+	 * \param withController If true returns bone position as accurate as possible to the
+	 *                       real hand position. If false remaps the position to simulate
+	 *                       not holding the controller in hand.
+	 */
+	public func Vector getDeviceBonePosePosition(int bone, bool withController)
+		return null
+	end
+	
+	/**
+	 * \brief Device bone pose orientation relative to parent reference coordinate frame.
+	 * \param withController If true returns bone position as accurate as possible to the
+	 *                       real hand position. If false remaps the position to simulate
+	 *                       not holding the controller in hand.
+	 */
+	public func Quaternion getDeviceBonePoseOrientation(int bone, bool withController)
+		return null
+	end
+	
+	/**
+	 * \brief Device bone pose matrix relative to parent reference coordinate frame.
+	 * \param withController If true returns bone position as accurate as possible to the
+	 *                       real hand position. If false remaps the position to simulate
+	 *                       not holding the controller in hand.
+	 */
+	public func Matrix getDeviceBonePoseMatrix(int bone, bool withController)
+		return null
+	end
+	
+	
+	
+	/**
+	 * \brief Count of device face expressions.
+	 */
+	public func int getDeviceFaceExpressionCount()
+		return 0
+	end
+	
+	/**
+	 * \brief Device face expression.
+	 * \param index Index of face expression. Use InputDeviceFaceExpression constants.
+	 */
+	public func float getDeviceFaceExpressionAt(int index)
+		return null
 	end
 	/*@}*/
 end

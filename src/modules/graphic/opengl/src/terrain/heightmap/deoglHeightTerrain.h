@@ -1,31 +1,35 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLHEIGHTTERRAIN_H_
 #define _DEOGLHEIGHTTERRAIN_H_
 
-#include <dragengine/systems/modules/graphic/deBaseGraphicHeightTerrain.h>
-#include <dragengine/common/collection/decPointerList.h>
+#include "deoglRHeightTerrain.h"
 
-class deoglRHeightTerrain;
+#include <dragengine/systems/modules/graphic/deBaseGraphicHeightTerrain.h>
+#include <dragengine/common/collection/decObjectList.h>
+
 class deoglWorld;
 class deoglHTSector;
 class deGraphicOpenGl;
@@ -35,25 +39,25 @@ class deHeightTerrain;
 
 
 /**
- * \brief Height terrain peer.
+ * Height terrain peer.
  */
 class deoglHeightTerrain : public deBaseGraphicHeightTerrain{
 private:
 	deGraphicOpenGl &pOgl;
 	const deHeightTerrain &pHeightTerrain;
 	
-	deoglRHeightTerrain *pRHeightTerrain;
+	deoglRHeightTerrain::Ref pRHeightTerrain;
 	
-	decPointerList pSectors;
+	decObjectList pSectors;
 	bool pDirtySectors;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create peer. */
+	/** Create peer. */
 	deoglHeightTerrain( deGraphicOpenGl &ogl, const deHeightTerrain &heightTerrain );
 	
-	/** \brief Clean up peer. */
+	/** Clean up peer. */
 	virtual ~deoglHeightTerrain();
 	/*@}*/
 	
@@ -61,19 +65,19 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Opengl object. */
+	/** Opengl object. */
 	inline deGraphicOpenGl &GetOgl() const{ return pOgl; }
 	
-	/** \brief Height terrain. */
+	/** Height terrain. */
 	inline const deHeightTerrain &GetHeightTerrain() const{ return pHeightTerrain; }
 	
-	/** \brief Render height terrain. */
-	inline deoglRHeightTerrain *GetRHeightTerrain() const{ return pRHeightTerrain; }
+	/** Render height terrain. */
+	inline const deoglRHeightTerrain::Ref &GetRHeightTerrain() const{ return pRHeightTerrain; }
 	
-	/** \brief Update. */
+	/** Update. */
 	void Update( float elapsed );
 	
-	/** \brief Update render thread counterpart if required. */
+	/** Update render thread counterpart if required. */
 	void SyncToRender();
 	/*@}*/
 	
@@ -81,36 +85,36 @@ public:
 	
 	/** \name Notifications */
 	/*@{*/
-	/** \brief Parameter changes. */
+	/** Parameter changes. */
 	virtual void ParametersChanged();
 	
-	/** \brief Sector heights changed. */
+	/** Sector heights changed. */
 	virtual void HeightChanged( const decPoint &fromSector, const decPoint &fromCoordinates,
 		const decPoint &toSector, const decPoint &toCoordinates );
 	
 	
 	
-	/** \brief Sector has been added. */
+	/** Sector has been added. */
 	virtual void SectorAdded( deHeightTerrainSector *sector );
 	
-	/** \brief Sector has been removed. */
+	/** Sector has been removed. */
 	virtual void SectorRemoved( int index );
 	
-	/** \brief All sectors have been removed. */
+	/** All sectors have been removed. */
 	virtual void AllSectorsRemoved();
 	
-	/** \brief Sector changed. */
+	/** Sector changed. */
 	virtual void SectorChanged( int index );
 	
 	
 	
-	/** \brief Decal has been added. */
+	/** Decal has been added. */
 	virtual void DecalAdded( int sector, deDecal *decal );
 	
-	/** \brief Decal has been removed. */
+	/** Decal has been removed. */
 	virtual void DecalRemoved( int sector, deDecal *decal );
 	
-	/** \brief All decals have been removed. */
+	/** All decals have been removed. */
 	virtual void AllDecalsRemoved( int sector );
 	/*@}*/
 	

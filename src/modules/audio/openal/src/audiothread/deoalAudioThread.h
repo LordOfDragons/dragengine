@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenAL Audio Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOALAUDIOTHREAD_H_
@@ -24,11 +27,13 @@
 
 #include "deoalATLeakTracker.h"
 #include "../configuration/deoalConfiguration.h"
-#include "../utils/deoalTimeHistory.h"
 
+#include <dragengine/common/collection/decObjectSet.h>
 #include <dragengine/common/utils/decTimer.h>
+#include <dragengine/common/utils/decTimeHistory.h>
 #include <dragengine/threading/deBarrier.h>
 #include <dragengine/threading/deThread.h>
+#include <dragengine/threading/deMutex.h>
 
 class deAudioOpenAL;
 class deoalAMicrophone;
@@ -50,6 +55,8 @@ class deoalRayTraceHitElementList;
 class deoalRayTraceResult;
 class deoalSharedBufferList;
 class deoalSoundRayInteractionList;
+class deoalEffectSlotManager;
+class deoalSharedEffectSlotManager;
 class deoalSourceManager;
 class deoalSpeakerList;
 class deoalWOVCollectElements;
@@ -58,7 +65,7 @@ class deoalWOVRayHitsElement;
 
 
 /**
- * \brief Audio thread.
+ * Audio thread.
  */
 class deoalAudioThread : public deThread{
 private:
@@ -93,6 +100,8 @@ private:
 	
 	deoalExtensions *pExtensions;
 	deoalCapabilities *pCapabilities;
+	deoalEffectSlotManager *pEffectSlotManager;
+	deoalSharedEffectSlotManager *pSharedEffectSlotManager;
 	deoalSourceManager *pSourceManager;
 	deoalSharedBufferList *pSharedBufferList;
 	
@@ -105,20 +114,29 @@ private:
 	
 	deoalAMicrophone *pActiveMicrophone;
 	deoalAMicrophone *pDeactiveMicrophone;
+	deoalAWorld *pActiveWorld;
 	
-	decTimer pTimerElapsed;
-	float pElapsed;
+	decObjectSet pProcessOnceWorld; // audio thread
+	
+	decTimer pTimerElapsed; // audio thread
+	float pElapsed; // audio thread
+	float pElapsedFull; // audio thread
 	
 	// time history
-	deoalTimeHistory pTimeHistoryMain;
-	deoalTimeHistory pTimeHistoryAudio;
-	deoalTimeHistory pTimeHistoryAudioEstimated;
-	decTimer pTimerMain;
-	decTimer pTimerAudio;
-	float pEstimatedAudioTime;
-	float pAccumulatedMainTime;
-	float pFrameTimeLimit;
-	bool pReadyToWait;
+	decTimeHistory pTimeHistoryMain; // both (main, audio)
+	decTimeHistory pTimeHistoryAudio; // audio thread
+	decTimeHistory pTimeHistoryAudioEstimated; // audio thread
+	decTimeHistory pTimeHistoryUpdate; // both (main, audio)
+	decTimer pTimerMain; // main thread
+	decTimer pTimerAudio; // audio thread
+	float pEstimatedAudioTime; // both (main, audio)
+	float pAccumulatedMainTime; // main thread
+	float pFrameTimeLimit; // audio thread
+	int pFPSRate; // main thread
+	bool pReadyToWait; // shared (main, audio)
+	bool pWaitSkipped; // audio thread
+	float pWaitSkippedElapsed; // audio thread
+	deMutex pMutexShared;
 	
 	// thread control
 	eThreadStates pThreadState;
@@ -131,10 +149,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create audio thread. */
+	/** Create audio thread. */
 	deoalAudioThread( deAudioOpenAL &oal );
 	
-	/** \brief Clean up audio thread. */
+	/** Clean up audio thread. */
 	virtual ~deoalAudioThread();
 	/*@}*/
 	
@@ -142,38 +160,38 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief OpenAL module. */
+	/** OpenAL module. */
 	inline deAudioOpenAL &GetOal() const{ return pOal; }
 	
 	
 	
-	/** \brief Async audio. */
+	/** Async audio. */
 	inline bool GetAsyncAudio() const{ return pAsyncAudio; }
 	
-	/** \brief Set async audio. */
+	/** Set async audio. */
 	void SetAsyncAudio( bool asyncAudio );
 	
 	
 	
-	/** \brief Active microphone. */
+	/** Active microphone. */
 	inline deoalAMicrophone *GetActiveMicrophone() const{ return pActiveMicrophone; }
 	
-	/** \brief Set active microphone. */
+	/** Set active microphone. */
 	void SetActiveMicrophone( deoalAMicrophone *microphone );
 	
-	/** \brief Active world if a microphone is active and has a parent world. */
-	deoalAWorld *GetActiveWorld() const;
+	/** Active world if a microphone is active and has a parent world. */
+	inline deoalAWorld *GetActiveWorld() const{ return pActiveWorld; }
 	
 	
 	
-	/** \brief Initialize. */
+	/** Initialize. */
 	void Init();
 	
-	/** \brief Clean up. */
+	/** Clean up. */
 	void CleanUp();
 	
 	/**
-	 * \brief Main thread wait for audio thread to finish.
+	 * Main thread wait for audio thread to finish.
 	 * 
 	 * Called only by main thread. Wraps WaitFinishAudio with debug time measuring if enabled
 	 * and waiting optimization. If audio is done asynchronously time history is used to judge
@@ -191,20 +209,20 @@ public:
 	 */
 	bool MainThreadWaitFinishAudio();
 	
-	/** \brief Wait for audio thread to finish. */
+	/** Wait for audio thread to finish. */
 	void WaitFinishAudio();
 	
-	/** \brief Retain resource data. */
+	/** Retain resource data. */
 	void RetainResourceData();
 	
-	/** \brief Finalize asynchronously loaded resources. */
+	/** Finalize asynchronously loaded resources. */
 	void FinalizeAsyncResLoading();
 	
-	/** \brief Synchronize. */
+	/** Synchronize. */
 	void Synchronize();
 	
 	/**
-	 * \brief Freeze audio thread.
+	 * Freeze audio thread.
 	 * 
 	 * Waits until the audio thread finished rendering and no parallel task is running.
 	 * Upon returning from this function data members of the audio thread can be accessed
@@ -212,97 +230,109 @@ public:
 	 */
 	void Freeze();
 	
-	/** \brief Unfreeze audio thread. */
+	/** Unfreeze audio thread. */
 	void Unfreeze();
 	
 	
 	
-	/** \brief Run audio thread. */
+	/** Run audio thread. */
 	virtual void Run();
 	
 	
 	
-	/** \brief Context. */
+	/** Context. */
 	inline deoalATContext &GetContext(){ return *pContext; }
 	inline const deoalATContext &GetContext() const{ return *pContext; }
 	
 	
 	
-	/** \brief Logger. */
+	/** Logger. */
 	inline deoalATLogger &GetLogger() const{ return *pLogger; }
 	
-	/** \brief Debug information. */
+	/** Debug information. */
 	inline deoalDebugInfo &GetDebugInfo() const{ return *pDebugInfo; }
 	
-	/** \brief Debug. */
+	/** Debug. */
 	inline deoalATDebug &GetDebug() const{ return *pDebug; }
 	
-	/** \brief Delayed. */
+	/** Delayed. */
 	inline deoalATDelayed &GetDelayed() const{ return *pDelayed; }
 	
-	/** \brief Ray tracing. */
+	/** Ray tracing. */
 	inline deoalATRayTracing &GetRayTracing() const{ return *pRayTracing; }
 	
-	/** \brief Shared speaker list. */
+	/** Shared speaker list. */
 	inline deoalSpeakerList &GetSpeakerList() const{ return *pSpeakerList; }
 	
-	/** \brief Caches. */
+	/** Caches. */
 	inline deoalCaches &GetCaches() const{ return *pCaches; }
 	
-	/** \brief Shared decode buffer. */
+	/** Shared decode buffer. */
 	inline deoalDecodeBuffer &GetDecodeBuffer() const{ return *pDecodeBuffer; }
 	
-	/** \brief Configuration. */
+	/** Configuration. */
 	inline deoalConfiguration &GetConfiguration(){ return pConfiguration; }
 	inline const deoalConfiguration &GetConfiguration() const{ return pConfiguration; }
 	
-	/** \brief Leak tracker. */
+	/** Leak tracker. */
 	inline deoalATLeakTracker &GetLeakTracker(){ return pLeakTracker; }
 	
-	/** \brief Extensions. */
+	/** Extensions. */
 	inline deoalExtensions &GetExtensions() const{ return *pExtensions; }
 	
-	/** \brief Capabilities. */
+	/** Capabilities. */
 	inline deoalCapabilities &GetCapabilities() const{ return *pCapabilities; }
 	
-	/** \brief Source manager. */
+	/** Effect slot manager. */
+	inline deoalEffectSlotManager &GetEffectSlotManager() const{ return *pEffectSlotManager; }
+	
+	/** Shared effect slot manager. */
+	inline deoalSharedEffectSlotManager &GetSharedEffectSlotManager() const{ return *pSharedEffectSlotManager; }
+	
+	/** Source manager. */
 	inline deoalSourceManager &GetSourceManager() const{ return *pSourceManager; }
 	
-	/** \brief Shared buffer list. */
+	/** Shared buffer list. */
 	inline deoalSharedBufferList &GetSharedBufferList() const{ return *pSharedBufferList; }
 	
-	/** \brief Parallel env-probe ray-tracer. */
+	/** Parallel env-probe ray-tracer. */
 	inline deoalRTParallelEnvProbe &GetRTParallelEnvProbe() const{ return *pRTParallelEnvProbe; }
 	
-	/** \brief Shared ray trace result for direct sound tracing. */
+	/** Shared ray trace result for direct sound tracing. */
 	inline deoalRayTraceResult &GetRTResultDirect() const{ return *pRTResultDirect; }
 	
-	/** \brief Shared ray trace hit element list. */
+	/** Shared ray trace hit element list. */
 	inline deoalRayTraceHitElementList &GetRTHitElementList() const{ return *pRTHitElementList; }
 	
-	/** \brief Shared sound ray interaction list. */
+	/** Shared sound ray interaction list. */
 	inline deoalSoundRayInteractionList &GetSRInteractionList() const{ return *pSRInteractionList; }
 	
-	/** \brief Shared ray hits element world octree visitor. */
+	/** Shared ray hits element world octree visitor. */
 	inline deoalWOVRayHitsElement &GetWOVRayHitsElement() const{ return *pWOVRayHitsElement; }
 	
-	/** \brief Shared collect elements world octree visitor. */
+	/** Shared collect elements world octree visitor. */
 	inline deoalWOVCollectElements &GetWOVCollectElements() const{ return *pWOVCollectElements; }
 	
 	
 	
-	/** \brief Elapsed time. */
+	/** Elapsed time. */
 	inline float GetElapsed() const{ return pElapsed; }
 	
+	/** Elapsed time since the last full update. */
+	inline float GetElapsedFull() const{ return pElapsedFull; }
+	
+	/** FPS Rate. */
+	inline int GetFPSRate() const{ return pFPSRate; }
 	
 	
-	/** \brief Main thread time history. */
-	inline deoalTimeHistory &GetTimeHistoryMain(){ return pTimeHistoryMain; }
-	inline const deoalTimeHistory &GetTimeHistoryMain() const{ return pTimeHistoryMain; }
 	
-	/** \brief Audio thread time history. */
-	inline deoalTimeHistory &GetTimeHistoryAudio(){ return pTimeHistoryAudio; }
-	inline const deoalTimeHistory &GetTimeHistoryAudio() const{ return pTimeHistoryAudio; }
+	/** Main thread time history. */
+	inline decTimeHistory &GetTimeHistoryMain(){ return pTimeHistoryMain; }
+	inline const decTimeHistory &GetTimeHistoryMain() const{ return pTimeHistoryMain; }
+	
+	/** Audio thread time history. */
+	inline decTimeHistory &GetTimeHistoryAudio(){ return pTimeHistoryAudio; }
+	inline const decTimeHistory &GetTimeHistoryAudio() const{ return pTimeHistoryAudio; }
 	/*@}*/
 	
 	
@@ -318,6 +348,7 @@ private:
 	void pPrepareConfiguration();
 	
 	void pProcessAudio();
+	void pProcessAudioFast();
 	
 	void pReportLeaks();
 };

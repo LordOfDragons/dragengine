@@ -1,0 +1,476 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief Behavior element behavior inventory support.
+ * 
+ * Adds inventory where stashable elements can be put into.
+ * 
+ * This behavior does require the element class to be persistable (setPersistable).
+ */
+class ECBehaviorInventory extends DefaultECBehavior
+	/** \brief Listener for behavior instance events. */
+	interface Listener
+		/** \brief Stashable has been added to inventory. */
+		func void stashableAdded( Instance instance, ECBehaviorStashable.Instance stashable )
+		
+		/** \brief Stashable has been removed from slot. */
+		func void stashableRemoved( Instance instance, ECBehaviorStashable.Instance stashable )
+	end
+	
+	/** \brief Default implementation of behavior instance listener. */
+	class DefaultListener implements Listener
+		/** \brief Create default listener. */
+		public func new()
+		end
+		
+		/** \brief Stashable has been attached to slot. */
+		public func void stashableAdded( Instance instance, ECBehaviorStashable.Instance stashable )
+		end
+		
+		/** \brief Stashable has been removed from slot. */
+		public func void stashableRemoved( Instance instance, ECBehaviorStashable.Instance stashable )
+		end
+	end
+	
+	/** \brief Factory creating listeners. */
+	interface ListenerFactory
+		/** \brief Create listener. */
+		func Listener createListener( Instance instance )
+	end
+	
+	/** \brief Factory creating listeners using block. */
+	class BlockListenerFactory implements ListenerFactory
+		private var Block pBlock
+		
+		/** \brief Create factory using block receiving Instance as parameter returning Listener. */
+		public func new( Block blockFactory )
+			if blockFactory == null
+				throw ENullPointer.new()
+			end
+			this.pBlock = blockFactory
+		end
+		
+		/** \brief Create listener. */
+		public func Listener createListener( Instance instance )
+			return this.pBlock.run( instance ) cast Listener
+		end
+	end
+	
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		private var ECBehaviorInventory pECBehavior
+		private var ECBehaviorStashable.Instance pStashable
+		private var Array pStashables
+		private var ElementResolver pElementResolver
+		private var Array pListeners
+		
+		
+		
+		/** \brief Create element. */
+		public func new( ECBehaviorInventory ecbehavior, BehaviorElement element ) super( element )
+			this.pECBehavior = ecbehavior
+			this.pStashables = Array.new()
+			this.pListeners = Array.new()
+		end
+		
+		/** \brief Dispose of composeable instance. */
+		public func void dispose()
+			if this.pStashables != null
+				var int count = this.pStashables.getCount()
+				while count > 0
+					count--
+					( this.pStashables.getAt( count ) cast ECBehaviorStashable.Instance ).getElement().safeDispose()
+					if count < this.pStashables.getCount()
+						this.pStashables.removeFrom( count )
+					end
+				end
+				this.pStashables = null
+			end
+			
+			this.pListeners = null
+			this.pElementResolver = null
+			
+			super.dispose()
+		end
+		
+		
+		
+		/** \brief Initialize element from stub. */
+		public func void init( StubElement stub )
+			this.pECBehavior.createListeners( this )
+		end
+		
+		
+		
+		/** \brief Behavior. */
+		public func ECBehaviorInventory getECBehavior()
+			return this.pECBehavior
+		end
+		
+		
+		
+		/** \brief Count of stashables. */
+		public func int getCount()
+			return this.pStashables.getCount()
+		end
+		
+		/** \brief Stashable at index. */
+		public func ECBehaviorStashable.Instance getAt( int index )
+			return this.pStashables.getAt( index ) cast ECBehaviorStashable.Instance
+		end
+		
+		/** \brief Stashable is present. */
+		public func bool has( ECBehaviorStashable.Instance stashable )
+			return this.pStashables.has( stashable )
+		end
+		
+		/**
+		 * \brief Visit stashables with block.
+		 * 
+		 * Block receives as only argument ECBehaviorStashable.Instance stashable.
+		 */
+		public func void forEach( Block ablock )
+			this.pStashables.forEach( ablock )
+		end
+		
+		/**
+		 * \brief Collect stashables with block.
+		 * 
+		 * Block receives as only argument ECBehaviorStashable.Instance stashable and has to
+		 * return true to include the stashable in the returned Array of
+		 * ECBehaviorStashable.Instance .
+		 */
+		public func Array collect( Block ablock )
+			return this.pStashables.collect( ablock )
+		end
+		
+		/**
+		 * \brief Find stashables with block.
+		 * 
+		 * Block receives as only argument ECBehaviorStashable.Instance stashable and has to
+		 * return true if the matching stashable is found.
+		 */
+		public func ECBehaviorStashable.Instance find( Block ablock )
+			return this.pStashables.find( ablock ) cast ECBehaviorStashable.Instance
+		end
+		
+		/** \brief Inventory is empty. */
+		public func bool isEmpty()
+			return this.pStashables.getCount() == 0
+		end
+		
+		/** \brief Inventory is not empty. */
+		public func bool isNotEmpty()
+			return this.pStashables.getCount() > 0
+		end
+		
+		/**
+		 * \brief Stashable can be added to this inventory.
+		 * \retval false Stashable is already in another inventory.
+		 * \retval true Adding is possible
+		 */
+		public func bool canAdd( ECBehaviorStashable.Instance stashable )
+			return this.pStashable == null and not stashable.isStashed()
+		end
+		
+		/**
+		 * \brief Add stashable to inventory.
+		 * \throws EInvalidParam \em stashable is \em null.
+		 * \throws EInvalidParam \em stashable is already in another inventory.
+		 */
+		public func void add( ECBehaviorStashable.Instance stashable )
+			if stashable.isStashed()
+				throw EInvalidParam.new( "stashable is already stashed" )
+			end
+			
+			this.pStashables.add( stashable )
+			stashable.setInventory( this )
+			
+			this.pListeners.forEach( block Listener each
+				each.stashableAdded( this, stashable )
+			end )
+		end
+		
+		/** \brief Remove stashable without disposing of it. */
+		public func void remove( ECBehaviorStashable.Instance stashable )
+			this.pStashables.remove( stashable )
+			stashable.setInventory( null )
+			
+			this.pListeners.forEach( block Listener each
+				each.stashableRemoved( this, stashable )
+			end )
+		end
+		
+		/**
+		 * \brief Remove stashable and dispose of it.
+		 * 
+		 * Calls removeFromGameWorldIfPresent() then dispose() on the stashable.
+		 */
+		public func void removeAndDispose( ECBehaviorStashable.Instance stashable )
+			this.remove( stashable )
+			stashable.getElement().safeDispose()
+		end
+		
+		/** \brief Element resolver used during loading or \em null if not set. */
+		public func ElementResolver getElementResolver()
+			return this.pElementResolver
+		end
+		
+		
+		
+		/** \brief Add listener. */
+		public func void addListener( Listener listener )
+			if listener == null
+				throw EInvalidParam.new( "listener is null" )
+			end
+			this.pListeners.add( listener )
+		end
+		
+		/** \brief Remove listener. */
+		public func void removeListener( Listener listener )
+			this.pListeners.remove( listener )
+		end
+		
+		
+		
+		/** \brief Frame update started. */
+		public func void enterFrame()
+			if this.pElementResolver != null
+				this.pElementResolver.resolve( this.getElement().getGameWorld() )
+				this.pElementResolver = null
+			end
+		end
+		
+		
+		
+		/** \brief Add element to game world. */
+		public func void addToGameWorld()
+			var GameWorld gameWorld = this.getElement().getGameWorld()
+			this.pStashables.forEach( block ECBehaviorStashable.Instance each
+				var BehaviorElement element = each.getElement()
+				if element.getGameWorld() == null
+					gameWorld.addElement( element )
+				end
+			end )
+		end
+		
+		/** \brief Remove element from game world. */
+		public func void removeFromGameWorld()
+			this.pStashables.forEach( block ECBehaviorStashable.Instance each
+				each.getElement().removeFromGameWorldIfPresent()
+			end )
+		end
+		
+		
+		
+		/** \brief Read element from file. */
+		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+			select reader.readByte() // version
+			case 0
+				var int i, count = reader.readUShort()
+				if count > 0
+					this.pElementResolver = ElementResolver.new()
+					for i = 0 to count
+						this.pElementResolver.addBehavior( reader, block ECBehaviorStashable.Instance behavior
+							this.add( behavior )
+						end )
+					end
+					this.setRequiresEnterFrame( true )
+				end
+				
+			else
+				throw EInvalidParam.new( "unsupported version" )
+			end
+		end
+		
+		/** \brief Write element to file. */
+		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+			writer.writeByte( 0 ) // version
+			
+			writer.writeUShort( this.pStashables.getCount() )
+			this.pStashables.forEach( block ECBehaviorStashable.Instance each
+				ElementResolver.writeToFileBehavior( writer, each )
+			end )
+		end
+	end
+	
+	
+	
+	private var Array pListenerFactories
+	
+	
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass ) this( eclass, "" )
+	end
+	
+	/** \brief Create behavior element class. */
+	public func new( BehaviorElementClass eclass, String id ) \
+	this( eclass, id, id.empty() if "inventory." else "inventory(" + id + ")." )
+	end
+	
+	public func new( BehaviorElementClass eclass, String id, String prefix ) super( eclass, id )
+		this.pListenerFactories = Array.new()
+		
+		eclass.addBehavior( this )
+	end
+	
+	/** \brief Dispose of behavior. */
+	public func void dispose()
+		this.pListenerFactories = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	public func Instance instance( BehaviorElement element )
+		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	end
+	
+	
+	
+	/** \brief Add listener factory. */
+	public func void addListenerFactory( ListenerFactory factory )
+		if factory == null
+			throw ENullPointer.new()
+		end
+		this.pListenerFactories.add( factory )
+	end
+	
+	/**
+	 * \brief Add listener factory using block.
+	 * 
+	 * Block receives as parameter Instance and returns Listener.
+	 */
+	public func void addListenerFactory( Block blockFactory )
+		this.pListenerFactories.add( BlockListenerFactory.new( blockFactory ) )
+	end
+	
+	/** \brief Visit listener factories with block with argument ListenerFactory. */
+	public func void forEachListenerFactory( Block ablock )
+		this.pListenerFactories.forEach( ablock )
+	end
+	
+	/** \brief Create listeners from factories adding them to behavior instance. */
+	public func void createListeners( Instance instance )
+		this.pListenerFactories.forEach( block ListenerFactory each
+			instance.addListener( each.createListener( instance ) )
+		end )
+	end
+	
+	
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorComponent.
+	 */
+	static public func ECBehaviorInventory getBehaviorIn( BehaviorElementClass eclass )
+		return eclass.findBehavior( block ECBehaviorInventory each
+			return true
+		end ) cast ECBehaviorInventory
+	end
+	
+	/**
+	 * \brief Get behavior with id in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorInventory with specific identifier.
+	 */
+	static public func ECBehaviorInventory getBehaviorIn( BehaviorElementClass eclass, String id )
+		return eclass.findBehavior( block ECBehaviorInventory each
+			return each.getID().equals( id )
+		end ) cast ECBehaviorInventory
+	end
+	
+	/**
+	 * \brief Get list of all behaviors in element.
+	 * 
+	 * Returns list contains ECBehaviorInventory behaviors in the order they have
+	 * been created in the element.
+	 */
+	static public func Array getAllBehaviorsIn( BehaviorElementClass eclass )
+		return eclass.collectBehaviors( block ECBehaviorInventory each
+			return true
+		end )
+	end
+	
+	
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorInventory.Instance . If more than one instance is present returns
+	 * the first instance.
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element )
+		return element.findInstance( block Instance each
+			return true
+		end ) cast Instance
+	end
+	
+	/**
+	 * \brief Get instance with id in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorInventory.Instance with specific identifier.
+	 */
+	static public func Instance getInstanceIn( BehaviorElement element, String id )
+		return element.findInstance( block Instance each
+			return each.getECBehavior().getID().equals( id )
+		end ) cast Instance
+	end
+	
+	/**
+	 * \brief Get list of all instances in element.
+	 * 
+	 * Returns list contains ECBehaviorInventory.Instance instances in the order they have
+	 * been created in the element.
+	 */
+	static public func Array getAllInstancesIn( BehaviorElement element )
+		return element.collectInstances( block Instance each
+			return true
+		end )
+	end
+	
+	
+	
+	/** \brief Create Behavior instance. */
+	public func ECBehaviorInstance createInstance( BehaviorElement element )
+		return Instance.new( this, element )
+	end
+end

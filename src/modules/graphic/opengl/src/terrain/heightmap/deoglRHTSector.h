@@ -1,28 +1,32 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLRHTSECTOR_H_
 #define _DEOGLRHTSECTOR_H_
 
 #include "../../deoglBasics.h"
+#include "../../texture/pixelbuffer/deoglPixelBuffer.h"
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/deObject.h>
@@ -31,21 +35,26 @@
 
 class deoglHTSCluster;
 class deoglHTSTexture;
-class deoglPixelBuffer;
 class deoglRenderThread;
 class deoglRHeightTerrain;
 class deoglTexture;
+class deoglWorldCompute;
 
 class deHeightTerrainSector;
 
 
 
 /**
- * \brief Render height terrain sector.
+ * Render height terrain sector.
  */
 class deoglRHTSector : public deObject{
+public:
+	/** Type holding strong reference. */
+	typedef deTObjectReference<deoglRHTSector> Ref;
+	
 private:
 	deoglRHeightTerrain &pHeightTerrain;
+	int pIndex;
 	
 	decPoint pCoordinates;
 	float pBaseHeight;
@@ -54,12 +63,15 @@ private:
 	deoglHTSTexture **pTextures;
 	int pTextureCount;
 	bool pValidTextures;
-	bool pDirtyTextures;
+	bool pDirtyMaskTextures;
+	bool pTexturesRequirePrepareForRender;
 	
 	deoglTexture *pMasks[ OGLHTS_MAX_MASK_TEXTURES ];
-	deoglPixelBuffer *pPixBufMasks[ OGLHTS_MAX_MASK_TEXTURES ];
+	deoglPixelBuffer::Ref pPixBufMasks[ OGLHTS_MAX_MASK_TEXTURES ];
 	
 	float *pHeights;
+	float pMinHeight;
+	float pMaxHeight;
 	
 	GLuint *pVBODataPoints1;
 	int pVBODataPoints1Count;
@@ -75,74 +87,116 @@ private:
 	
 	bool pValid;
 	
+	
+	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create height terrain sector. */
+	/** Create height terrain sector. */
 	deoglRHTSector( deoglRHeightTerrain &heightTerrain, const deHeightTerrainSector &sector );
 	
-	/** \brief Clean up height terrain sector. */
+protected:
+	/** Clean up height terrain sector. */
 	virtual ~deoglRHTSector();
 	/*@}*/
 	
 	
 	
+public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Height terrain. */
+	/** Height terrain. */
 	inline deoglRHeightTerrain &GetHeightTerrain() const{ return pHeightTerrain; }
 	
-	/** \brief Update vbo if required. */
-	void UpdateVBO();
+	/** Index. */
+	inline int GetIndex() const{ return pIndex; }
 	
-	/** \brief Sector coordinates. */
+	/** Set index. */
+	void SetIndex( int index );
+	
+	/** Sector coordinates. */
 	inline const decPoint &GetCoordinates() const{ return pCoordinates; }
 	
-	/** \brief Base height. */
+	/** Base height. */
 	inline float GetBaseHeight() const{ return pBaseHeight; }
 	
-	/** \brief Scaling. */
+	/** Scaling. */
 	inline float GetScaling() const{ return pScaling; }
 	
+	/** Calculate world matrix. */
+	decDMatrix CalcWorldMatrix() const;
+	decDMatrix CalcWorldMatrix( const decDVector &referencePosition ) const;
+	
+	/** Calculate world position. */
+	decDVector CalcWorldPosition() const;
+	decDVector CalcWorldPosition( const decDVector &referencePosition ) const;
+	
+	/** Add to world compute. */
+	void AddToWorldCompute( deoglWorldCompute &worldCompute );
+	
+	/** Update world compute. */
+	void UpdateWorldCompute();
+	
+	/** Remove from world compute. */
+	void RemoveFromWorldCompute();
+	
+	/** Prepare for render. */
+	void PrepareForRender();
 	
 	
-	/** \brief Number of textures. */
+	
+	/** Number of textures. */
 	inline int GetTextureCount() const{ return pTextureCount; }
 	
-	/** \brief Texture at index. */
-	deoglHTSTexture &GetTextureAt( int index );
+	/** Texture at index. */
+	deoglHTSTexture &GetTextureAt( int index ) const;
 	
-	/** \brief Terrain height map mask textures. */
+	/** Terrain height map mask textures. */
 	inline deoglTexture **GetMaskTextures(){ return pMasks; }
 	
-	/** \brief Sector is valid. */
+	/** Sector is valid. */
 	inline bool GetValid() const{ return pValid; }
 	
-	/** \brief Textures are valid. */
+	/** Textures are valid. */
 	inline bool GetValidTextures() const{ return pValidTextures; }
 	
+	/** Texture requires prepare for render. */
+	void TextureRequirePrepareForRender();
 	
 	
-	/** \brief Heights. */
+	
+	/** Heights. */
 	inline float *GetHeights() const{ return pHeights; }
 	
-	/** \brief Height changed. */
+	/** Minimum height. */
+	inline float GetMinHeight() const{ return pMinHeight; }
+	
+	/** Maximum height. */
+	inline float GetMaxHeight() const{ return pMaxHeight; }
+	
+	/** Height changed. */
 	void HeightChanged( const deHeightTerrainSector &sector, const decPoint &from, const decPoint &to );
 	
-	/** \brief Sector changed. */
+	/** Sector changed. */
 	void SectorChanged( const deHeightTerrainSector &sector );
 	
 	
 	
-	/** \brief Number of clusters. */
+	/** Number of clusters. */
 	inline int GetClusterCount() const{ return pClusterCount; }
 	
-	/** \brief Cluster at location. */
+	/** Cluster at location. */
 	deoglHTSCluster &GetClusterAt( int x, int z ) const;
+	deoglHTSCluster &GetClusterAt( const decPoint &coordinate ) const;
 	
-	/** \brief List of clusters. */
+	/** List of clusters. */
 	inline deoglHTSCluster *GetClusters() const{ return pClusters; }
+	
+	/** Clusters update world compute element textures. */
+	void ClustersUpdateWorldComputeElementTextures();
 	/*@}*/
+	
+	
 	
 private:
 	void pCleanUp();
@@ -159,10 +213,7 @@ private:
 	void pSyncMaskTextures( const deHeightTerrainSector &sector );
 	void pSyncHeightMap( const deHeightTerrainSector &sector, const decPoint &from, const decPoint &to );
 	
-	void pUpdateTextures();
 	void pUpdateMaskTextures();
-	void pCalculateUVs();
-	void pCalculateUVsPlanar( int textureIndex );
 	void pCreateVBODataPoints1();
 	void pCreateVBODataFaces();
 	void pUpdateHeightMap();

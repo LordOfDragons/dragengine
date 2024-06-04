@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Game Engine
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEANIMATORRULEVISITORIDENTIFY_H_
@@ -34,7 +37,7 @@
  * Furthermore save casting is provided. If the cast is not valid an
  * exception is raised.
  */
-class deAnimatorRuleVisitorIdentify : public deAnimatorRuleVisitor{
+class DE_DLL_EXPORT deAnimatorRuleVisitorIdentify : public deAnimatorRuleVisitor{
 public:
 	enum eRuleTypes{
 		ertUnknown,
@@ -48,9 +51,11 @@ public:
 		ertForeignState,
 		ertGroup,
 		ertSubAnimator,
-		ertRetarget,
 		ertTrackTo,
-		ertLimit
+		ertLimit,
+		
+		/** \version 1.9 */
+		ertMirror
 	};
 	
 	
@@ -109,14 +114,17 @@ public:
 	/** \brief Rule is a sub animator rule. */
 	inline bool IsSubAnimator() const{ return pType == ertSubAnimator; }
 	
-	/** \brief Rule is a retarget rule. */
-	inline bool IsRetarget() const{ return pType == ertRetarget; }
-	
 	/** \brief Rule is a track to rule. */
 	inline bool IsTrackTo() const{ return pType == ertTrackTo; }
 	
 	/** \brief Rule is a limit rule. */
 	inline bool IsLimit() const{ return pType == ertLimit; }
+	
+	/**
+	 * \brief Rule is a mirror rule.
+	 * \version 1.9
+	 */
+	inline bool IsMirror() const{ return pType == ertMirror; }
 	
 	/**
 	 * \brief Cast to animation rule.
@@ -179,12 +187,6 @@ public:
 	deAnimatorRuleSubAnimator &CastToSubAnimator() const;
 	
 	/**
-	 * \brief Cast to retarget rule.
-	 * \throws deeInvalidParam Type of rule is not deAnimatorRuleVisitorIdentify::ertRetarget.
-	 */
-	deAnimatorRuleRetarget &CastToRetarget() const;
-	
-	/**
 	 * \brief Cast to track to rule.
 	 * \throws deeInvalidParam Type of rule is not deAnimatorRuleVisitorIdentify::ertTrackTo.
 	 */
@@ -195,6 +197,12 @@ public:
 	 * \throws deeInvalidParam Type of rule is not deAnimatorRuleVisitorIdentify::ertLimit.
 	 */
 	deAnimatorRuleLimit &CastToLimit() const;
+	
+	/**
+	 * \brief Cast to mirror rule.
+	 * \throws deeInvalidParam Type of rule is not deAnimatorRuleVisitorIdentify::ertMirror.
+	 */
+	deAnimatorRuleMirror &CastToMirror() const;
 	
 	/** \brief Reset visitor. */
 	void Reset();
@@ -237,14 +245,17 @@ public:
 	/** \brief Visit sub animator rule. */
 	virtual void VisitSubAnimator( deAnimatorRuleSubAnimator &rule );
 	
-	/** \brief Visit retarget rule. */
-	virtual void VisitRetarget( deAnimatorRuleRetarget &rule );
-	
 	/** \brief Visit track to rule. */
 	virtual void VisitTrackTo( deAnimatorRuleTrackTo &rule );
 	
 	/** \brief Visit limit rule. */
 	virtual void VisitLimit( deAnimatorRuleLimit &rule );
+	
+	/**
+	 * \brief Visit mirror rule.
+	 * \version 1.9
+	 */
+	virtual void VisitMirror( deAnimatorRuleMirror &rule );
 	/*@}*/
 };
 

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -28,9 +31,11 @@
 #include "../../configuration/deoglConfiguration.h"
 #include "../../capabilities/deoglCapabilities.h"
 #include "../../capabilities/deoglCapsTextureFormat.h"
+#include "../../delayedoperation/deoglDelayedOperations.h"
 #include "../../memory/deoglMemoryManager.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTTexture.h"
+#include "../../renderthread/deoglRTDebug.h"
 
 #ifdef ANDROID
 #include "../../framebuffer/deoglFramebuffer.h"
@@ -50,7 +55,8 @@
 ////////////////////////////
 
 deoglCubeMap::deoglCubeMap( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread )
+pRenderThread( renderThread ),
+pMemUse( pRenderThread.GetMemoryManager().GetConsumption().textureCube )
 {
 	pTexture = 0;
 	
@@ -59,10 +65,6 @@ pRenderThread( renderThread )
 	pMipMapLevelCount = 0;
 	pRealMipMapLevelCount = 0;
 	pMipMapped = false;
-	
-	pMemoryUsageGPU = 0;
-	pMemoryUsageCompressed = false;
-	pMemoryUsageColor = true;
 }
 
 deoglCubeMap::~deoglCubeMap(){
@@ -156,7 +158,7 @@ void deoglCubeMap::CreateCubeMap(){
 		int i;
 		
 		if( count == 0 ){
-			count = ( int )( floorf( log2f( pSize ) ) );
+			count = ( int )( floorf( log2f( ( float )pSize ) ) );
 		}
 		
 		for( i=0; i<count; i++ ){
@@ -217,17 +219,12 @@ void deoglCubeMap::CreateCubeMap(){
 	tsmgr.DisableStage( 0 );
 	
 	UpdateMemoryUsage();
+	pUpdateDebugObjectLabel();
 }
 
 void deoglCubeMap::DestroyCubeMap(){
-	// to avoid problems with threading and such it would be a good idea to move this deletion call
-	// out to a safe place. for this we need a texture deletion manager which hosts opengl textures
-	// to be deleted the next time it is safe. a safe time would be before or after frame rendering
-	// calls or somewhere during the clean up process. in this case the texture would be simply
-	// registered with the deletion manager and set to NULL in here
-	
 	if( pTexture ){
-		OGL_CHECK( pRenderThread, glDeleteTextures( 1, &pTexture ) );
+		pRenderThread.GetDelayedOperations().DeleteOpenGLTexture( pTexture );
 		pTexture = 0;
 		
 		UpdateMemoryUsage();
@@ -572,160 +569,48 @@ void deoglCubeMap::CopyFrom( const deoglCubeMap &cubemap, bool withMipMaps, int 
 
 
 void deoglCubeMap::UpdateMemoryUsage(){
-	deoglMemoryConsumptionTexture &consumption = pRenderThread.GetMemoryManager().GetConsumption().GetTextureCube();
+	pMemUse.Clear();
 	
-	if( pMemoryUsageGPU > 0 ){
-		consumption.DecrementCount();
-		consumption.DecrementGPU( pMemoryUsageGPU );
-		
-		if( pMemoryUsageColor ){
-			consumption.DecrementColorCount();
-			consumption.DecrementColorGPU( pMemoryUsageGPU );
-			
-			if( pMemoryUsageCompressed ){
-				consumption.DecrementGPUCompressed( pMemoryUsageGPU );
-				consumption.DecrementColorGPUCompressed( pMemoryUsageGPU );
-				
-			}else{
-				consumption.DecrementGPUUncompressed( pMemoryUsageGPU );
-				consumption.DecrementColorGPUUncompressed( pMemoryUsageGPU );
-			}
-			
-		}else{
-			consumption.DecrementDepthCount();
-			consumption.DecrementDepthGPU( pMemoryUsageGPU );
-			
-			if( pMemoryUsageCompressed ){
-				consumption.DecrementGPUCompressed( pMemoryUsageGPU );
-				consumption.DecrementDepthGPUCompressed( pMemoryUsageGPU );
-				
-			}else{
-				consumption.DecrementGPUUncompressed( pMemoryUsageGPU );
-				consumption.DecrementDepthGPUUncompressed( pMemoryUsageGPU );
-			}
-		}
-		
-		pMemoryUsageGPU = 0;
-		pMemoryUsageCompressed = false;
-		pMemoryUsageColor = true;
+	if( ! pTexture || ! pFormat ){
+		return;
 	}
 	
-	if( pTexture ){
-		const int bitsPerPixel = pFormat->GetBitsPerPixel();
-		int baseSize, mipmappedSize;
-		double mipmapFactor = 1.0;
+	#ifdef ANDROID
+	pMemUse.SetUncompressed( *pFormat, pSize, pSize, 6, pRealMipMapLevelCount );
+	
+	#else
+	if( pFormat->GetIsCompressed() ){
+		deoglTextureStageManager &tsmgr = pRenderThread.GetTexture().GetStages();
+		tsmgr.EnableBareCubeMap( 0, *this );
 		
-		baseSize = pSize * pSize * 6;
+		GLint isReallyCompressed = 0;
+		OGL_CHECK( pRenderThread, glGetTexLevelParameteriv( GL_TEXTURE_CUBE_MAP_POSITIVE_X,
+			0, GL_TEXTURE_COMPRESSED, &isReallyCompressed ) );
 		
-		if( pMipMapped ){
-			int size = pSize;
-			int i;
+		if( isReallyCompressed ){
+			unsigned long consumption = 0ull;
+			GLint t, l, compressedSize;
 			
-			mipmappedSize = baseSize;
-			
-			for( i=0; i<pRealMipMapLevelCount; i++ ){
-				size >>= 1;
-				if( size < 1 ){
-					size = 1;
-				}
-				
-				mipmappedSize += size * size;
-			}
-			
-			mipmapFactor = ( double )mipmappedSize / ( double )baseSize;
-		}
-		
-		baseSize *= bitsPerPixel >> 3;
-		if( ( bitsPerPixel & 0x7 ) > 0 ){
-			baseSize >>= 1;
-		}
-		
-		pMemoryUsageColor = ! pFormat->GetIsDepth();
-		
-		#ifdef ANDROID
-		if( pMipMapped ){
-			pMemoryUsageGPU = ( int )( ( double )baseSize * mipmapFactor );
-			
-		}else{
-			pMemoryUsageGPU = baseSize;
-		}
-		
-		#else
-		if( pFormat->GetIsCompressed() ){
-			deoglTextureStageManager &tsmgr = pRenderThread.GetTexture().GetStages();
-			GLint compressedSize, isReallyCompressed;
-			
-			tsmgr.EnableBareCubeMap( 0, *this );
-			
-			isReallyCompressed = 0;
-			OGL_CHECK( pRenderThread, glGetTexLevelParameteriv( GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_TEXTURE_COMPRESSED, &isReallyCompressed ) );
-			
-			if( isReallyCompressed ){
-				compressedSize = 0;
-				OGL_CHECK( pRenderThread, glGetTexLevelParameteriv( GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_TEXTURE_COMPRESSED_IMAGE_SIZE, &compressedSize ) );
-				compressedSize *= 6;
-				
-				if( pMipMapped ){
-					pMemoryUsageGPU = ( int )( ( double )compressedSize * mipmapFactor );
-					
-				}else{
-					pMemoryUsageGPU = compressedSize;
-				}
-				pMemoryUsageCompressed = true;
-				
-			}else{
-				if( pMipMapped ){
-					pMemoryUsageGPU = ( int )( ( double )baseSize * mipmapFactor );
-					
-				}else{
-					pMemoryUsageGPU = baseSize;
+			for( l=0; l<pRealMipMapLevelCount; l++ ){
+				for( t=GL_TEXTURE_CUBE_MAP_POSITIVE_X; t<=GL_TEXTURE_CUBE_MAP_NEGATIVE_Z; t++ ){
+					OGL_CHECK( pRenderThread, glGetTexLevelParameteriv( t, l,
+						GL_TEXTURE_COMPRESSED_IMAGE_SIZE, &compressedSize ) );
+					consumption += ( unsigned long long )compressedSize;
 				}
 			}
 			
-			tsmgr.DisableStage( 0 );
+			pMemUse.SetCompressed( consumption, *pFormat );
 			
 		}else{
-			if( pMipMapped ){
-				pMemoryUsageGPU = ( int )( ( double )baseSize * mipmapFactor );
-				
-			}else{
-				pMemoryUsageGPU = baseSize;
-			}
+			pMemUse.SetUncompressed( *pFormat, pSize, pSize, 6, pMipMapped ? pRealMipMapLevelCount : 0 );
 		}
-		#endif
-	}
-	
-	if( pMemoryUsageGPU > 0 ){
-		consumption.IncrementCount();
-		consumption.IncrementGPU( pMemoryUsageGPU );
 		
-		if( pMemoryUsageColor ){
-			consumption.IncrementColorCount();
-			consumption.IncrementColorGPU( pMemoryUsageGPU );
-			
-			if( pMemoryUsageCompressed ){
-				consumption.IncrementGPUCompressed( pMemoryUsageGPU );
-				consumption.IncrementColorGPUCompressed( pMemoryUsageGPU );
-				
-			}else{
-				consumption.IncrementGPUUncompressed( pMemoryUsageGPU );
-				consumption.IncrementColorGPUUncompressed( pMemoryUsageGPU );
-			}
-			
-		}else{
-			consumption.IncrementDepthCount();
-			consumption.IncrementDepthGPU( pMemoryUsageGPU );
-			
-			if( pMemoryUsageCompressed ){
-				consumption.IncrementGPUCompressed( pMemoryUsageGPU );
-				consumption.IncrementDepthGPUCompressed( pMemoryUsageGPU );
-				
-			}else{
-				consumption.IncrementGPUUncompressed( pMemoryUsageGPU );
-				consumption.IncrementDepthGPUUncompressed( pMemoryUsageGPU );
-			}
-		}
+		tsmgr.DisableStage( 0 );
+		
+	}else{
+		pMemUse.SetUncompressed( *pFormat, pSize, pSize, 6, pMipMapped ? pRealMipMapLevelCount : 0 );
 	}
+	#endif
 }
 
 
@@ -829,20 +714,13 @@ void deoglCubeMap::SetFBOFormat( int channels, bool useFloat ){
 	}
 }
 
-void deoglCubeMap::SetDepthFormat(){
-	SetFormatFBOByNumber( deoglCapsFmtSupport::eutfDepth );
-}
-
-void deoglCubeMap::SetFBODepthFormat(){
-	SetFormatFBOByNumber( deoglCapsFmtSupport::eutfDepth );
-}
-
-void deoglCubeMap::SetFBODepth16Format(){
-	SetFormatFBOByNumber( deoglCapsFmtSupport::eutfDepth16 );
-}
-
-void deoglCubeMap::SetDepthFormatFloat(){
-	SetFormatFBOByNumber( deoglCapsFmtSupport::eutfDepthF );
+void deoglCubeMap::SetDepthFormat( bool useFloat ){
+	if( useFloat ){
+		SetFormatFBOByNumber( deoglCapsFmtSupport::eutfDepthF );
+		
+	}else{
+		SetFormatFBOByNumber( deoglCapsFmtSupport::eutfDepth );
+	}
 }
 
 
@@ -941,4 +819,15 @@ void deoglCubeMap::CreateMatrixForFace( decDMatrix &matrix, const decDVector &po
 	}
 	
 	matrix.a41 = 0.0; matrix.a42 = 0.0; matrix.a43 = 0.0; matrix.a44 = 1.0;
+}
+
+void deoglCubeMap::SetDebugObjectLabel( const char *name ){
+	pDebugObjectLabel.Format( "Cube: %s", name );
+	if( pTexture ){
+		pUpdateDebugObjectLabel();
+	}
+}
+
+void deoglCubeMap::pUpdateDebugObjectLabel(){
+	pRenderThread.GetDebug().SetDebugObjectLabel( GL_TEXTURE, pTexture, pDebugObjectLabel );
 }

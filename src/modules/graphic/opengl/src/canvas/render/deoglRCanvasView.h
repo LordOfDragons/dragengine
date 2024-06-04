@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLRCANVASVIEW_H_
@@ -27,10 +30,11 @@
 #include <dragengine/common/collection/decObjectList.h>
 
 class deoglRenderTarget;
+class deoglRenderPlanMasked;
 
 
 /**
- * \brief Render canvas view.
+ * Render canvas view.
  */
 class deoglRCanvasView : public deoglRCanvas{
 private:
@@ -44,10 +48,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create peer. */
+	/** Create peer. */
 	deoglRCanvasView( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up peer. */
+	/** Clean up peer. */
 	virtual ~deoglRCanvasView();
 	/*@}*/
 	
@@ -55,46 +59,51 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Add children with the correct sorting by order. */
+	/** Add children with the correct sorting by order. */
 	void AddChild( deoglRCanvas *canvas );
 	
-	/** \brief Remove all children. */
+	/** Remove all children. */
 	void RemoveAllChildren();
 	
-	/** \brief Has no children. */
+	/** Has no children. */
 	bool HasNoChildren() const;
 	
 	
 	
-	/** \brief Paint tracker number. */
+	/** Paint tracker number. */
 	inline unsigned int GetPaintTracker() const{ return pPaintTracker; }
 	
-	/** \brief Increment paint tracker number by one. */
+	/** Increment paint tracker number by one. */
 	void IncrementPaintTracker();
 	
-	/** \brief Render target or \em NULL if not ready. */
+	/** Render target or \em NULL if not ready. */
 	inline deoglRenderTarget *GetRenderTarget() const{ return pRenderTarget; }
 	
-	/** \brief Render target has to be resized. */
+	/** Render target has to be resized. */
 	void SetResizeRenderTarget();
 	
 	/**
-	 * \brief Prepare render target.
-	 * \details If not existing the render target is created. If dirty the render
-	 *          target texture is rendered. After this call returns GetRenderTarget()
-	 *          returns a render target with a valid texture object suitable for
-	 *          rendering unless an error occured.
+	 * Prepare render target. If not existing the render target is created. If dirty the render
+	 * target texture is rendered. After this call returns GetRenderTarget() returns a render
+	 * target with a valid texture object suitable for rendering unless an error occurred.
 	 */
-	void PrepareRenderTarget();
+	void PrepareRenderTarget( const deoglRenderPlanMasked *renderPlanMask,
+		int componentCount, int bitCount );
+	
+	/** Render render target if dirty. */
+	void RenderRenderTarget( const deoglRenderPlanMasked *renderPlanMask );
 	
 	
 	
-	/** \brief Prepare for rendering. */
-	virtual void PrepareForRender();
+	/** Prepare for rendering. */
+	virtual void PrepareForRender( const deoglRenderPlanMasked *renderPlanMask );
+	
+	/** Prepare for rendering render. */
+	virtual void PrepareForRenderRender( const deoglRenderPlanMasked *renderPlanMask );
 	
 	/**
-	 * \brief Render.
-	 * \details Resets paint dirty flag. Paint tracker is kept unchanged.
+	 * Render.
+	 * Resets paint dirty flag. Paint tracker is kept unchanged.
 	 */
 	virtual void Render( const deoglRenderCanvasContext &context );
 	/*@}*/

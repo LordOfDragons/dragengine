@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -82,6 +85,9 @@
 #include "composed/igdeEditSliderText.h"
 #include "composed/igdeEditSliderTextReference.h"
 #include "composed/igdeEditSliderTextListener.h"
+#include "composed/igdeEditDVector.h"
+#include "composed/igdeEditDVectorReference.h"
+#include "composed/igdeEditDVectorListener.h"
 #include "composed/igdeEditVector.h"
 #include "composed/igdeEditVectorReference.h"
 #include "composed/igdeEditVectorListener.h"
@@ -141,10 +147,10 @@
 // struct igdeUIHelper::sColumnHeader
 ///////////////////////////////////////
 
-igdeUIHelper::sColumnHeader::sColumnHeader( const char *title, igdeIcon *icon, int size ) :
-title( title ),
-icon( icon ),
-size( size ){
+igdeUIHelper::sColumnHeader::sColumnHeader( const char *ptitle, igdeIcon *picon, int psize ) :
+title( ptitle ),
+icon( picon ),
+size( psize ){
 }
 
 
@@ -521,6 +527,18 @@ const char *description, igdeComboBoxReference &comboBox, igdeComboBoxListener *
 	FormLine( form, label, description, comboBox );
 }
 
+void igdeUIHelper::ComboBox( igdeContainer &form, const char *label, int columns, bool editable,
+const char *description, igdeComboBoxReference &comboBox, igdeComboBoxListener *listener ){
+	ComboBox( columns, 10, editable, description, comboBox, listener );
+	FormLine( form, label, description, comboBox );
+}
+
+void igdeUIHelper::ComboBox( igdeContainer &form, const char *label, int columns, int rows,
+bool editable, const char *description, igdeComboBoxReference &comboBox, igdeComboBoxListener *listener ){
+	ComboBox( columns, rows, editable, description, comboBox, listener );
+	FormLine( form, label, description, comboBox );
+}
+
 void igdeUIHelper::ComboBox( igdeContainer &parent, const char *description,
 igdeComboBoxReference &comboBox, igdeComboBoxListener *listener ){
 	ComboBox( parent, 15, 10, false, description, comboBox, listener );
@@ -561,6 +579,19 @@ const char *description, igdeComboBoxFilterReference &comboBox, igdeComboBoxList
 void igdeUIHelper::ComboBoxFilter( igdeContainer &form, const char *label, bool editable,
 const char *description, igdeComboBoxFilterReference &comboBox, igdeComboBoxListener *listener ){
 	ComboBoxFilter( 15, 10, editable, description, comboBox, listener );
+	FormLine( form, label, description, comboBox );
+}
+
+void igdeUIHelper::ComboBoxFilter( igdeContainer &form, const char *label, int columns, bool editable,
+const char *description, igdeComboBoxFilterReference &comboBox, igdeComboBoxListener *listener ){
+	ComboBoxFilter( columns, 10, editable, description, comboBox, listener );
+	FormLine( form, label, description, comboBox );
+}
+
+void igdeUIHelper::ComboBoxFilter( igdeContainer &form, const char *label, int columns, int rows,
+bool editable, const char *description, igdeComboBoxFilterReference &comboBox,
+igdeComboBoxListener *listener ){
+	ComboBoxFilter( columns, rows, editable, description, comboBox, listener );
 	FormLine( form, label, description, comboBox );
 }
 
@@ -840,6 +871,44 @@ igdeEditDirectoryListener *listener, bool useGameVFS ){
 
 
 
+void igdeUIHelper::EditDVector( igdeContainer &form, const char *label, const char *description,
+igdeEditDVectorReference &editDVector, igdeEditDVectorListener *listener ){
+	EditDVector( form, label, description, 6, 3, editDVector, listener );
+}
+
+void igdeUIHelper::EditDVector( igdeContainer &form, const char *label, const char *description,
+int columns, int precision, igdeEditDVectorReference &editDVector, igdeEditDVectorListener *listener ){
+	EditDVector( description, columns, precision, editDVector, listener );
+	FormLine( form, label, description, editDVector );
+}
+
+void igdeUIHelper::EditDVector( igdeContainer &parent, const char *description,
+igdeEditDVectorReference &editDVector, igdeEditDVectorListener *listener ){
+	EditDVector( parent, description, 6, 3, editDVector, listener );
+}
+
+void igdeUIHelper::EditDVector( igdeContainer &parent, const char *description, int columns,
+int precision, igdeEditDVectorReference &editDVector, igdeEditDVectorListener *listener ){
+	EditDVector( description, columns, precision, editDVector, listener );
+	parent.AddChild( editDVector );
+}
+
+void igdeUIHelper::EditDVector( const char *description, igdeEditDVectorReference &editDVector,
+igdeEditDVectorListener *listener ){
+	EditDVector( description, 6, 3, editDVector, listener );
+}
+
+void igdeUIHelper::EditDVector( const char *description, int columns, int precision,
+igdeEditDVectorReference &editDVector, igdeEditDVectorListener *listener ){
+	editDVector.TakeOver( new igdeEditDVector( *this, columns, precision, description ) );
+	if( listener ){
+		editDVector->AddListener( listener );
+		listener->FreeReference(); // we take over the reference
+	}
+}
+
+
+
 void igdeUIHelper::EditVector( igdeContainer &form, const char *label, const char *description,
 igdeEditVectorReference &editVector, igdeEditVectorListener *listener ){
 	EditVector( form, label, description, 6, 3, editVector, listener );
@@ -1033,32 +1102,54 @@ igdeListBoxListener *listener ){
 
 
 void igdeUIHelper::IconListBox( igdeContainer &parent, igdeIconListBoxReference &listBox,
-int rows, const sColumnHeader *headers, int headerCount, const char *description,
-igdeIconListBoxListener *listener ){
-	IconListBox( rows, headers, headerCount, description, listBox, listener );
+const sColumnHeader *headers, int headerCount, const char *description, igdeIconListBoxListener *listener ){
+	IconListBox( headers, headerCount, description, listBox, listener );
 	parent.AddChild( listBox );
 }
 
-void igdeUIHelper::IconListBox( int rows, const sColumnHeader *headers, int headerCount,
-const char *description, igdeIconListBoxReference &listBox, igdeIconListBoxListener *listener ){
-	if( ! headers || headerCount < 1 ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	listBox.TakeOver( new igdeIconListBox( pEnvironment, rows, description ) );
+
+void igdeUIHelper::IconListBox( igdeContainer &parent, igdeIconListBoxReference &listBox,
+const decPoint &minimumSize, const sColumnHeader *headers, int headerCount, const char *description,
+igdeIconListBoxListener *listener ){
+	IconListBox( minimumSize, headers, headerCount, description, listBox, listener );
+	parent.AddChild( listBox );
+}
+
+static void igdeUIHelperIconListBoxShared( igdeIconListBox &listBox,
+const igdeUIHelper::sColumnHeader *headers, int headerCount, igdeIconListBoxListener *listener ){
 	igdeListHeaderReference realHeader;
 	
 	int i;
 	for( i=0; i<headerCount; i++ ){
 		realHeader.TakeOver( new igdeListHeader( headers[ i ].title,
 			headers[ i ].icon, headers[ i ].size ) );
-		listBox->AddHeader( realHeader );
+		listBox.AddHeader( realHeader );
 	}
 	
 	if( listener ){
-		listBox->AddListener( listener );
+		listBox.AddListener( listener );
 		listener->FreeReference(); // we take over the reference
 	}
+}
+
+void igdeUIHelper::IconListBox( const sColumnHeader *headers, int headerCount,
+const char *description, igdeIconListBoxReference &listBox, igdeIconListBoxListener *listener ){
+	if( ! headers || headerCount < 1 ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	listBox.TakeOver( new igdeIconListBox( pEnvironment, description ) );
+	igdeUIHelperIconListBoxShared( listBox, headers, headerCount, listener );
+}
+
+void igdeUIHelper::IconListBox( const decPoint &minimumSize, const sColumnHeader *headers, int headerCount,
+const char *description, igdeIconListBoxReference &listBox, igdeIconListBoxListener *listener ){
+	if( ! headers || headerCount < 1 ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	listBox.TakeOver( new igdeIconListBox( pEnvironment, minimumSize, description ) );
+	igdeUIHelperIconListBoxShared( listBox, headers, headerCount, listener );
 }
 
 

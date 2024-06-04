@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -125,38 +128,36 @@ class CTRRBinding implements ConversationTagResolverRule
 		
 		// buttons
 		this.pBindings.forEachButtonBinding( block Binding each
-			if each.getCommand() == command and each.getDeviceIndex() != -1 \
-			and each.getSourceIndex() != -1
-				var InputDevice device = this.pBindings.getDeviceAt( each.getDeviceIndex() )
-				var InputDeviceButton button = device.getButtonAt( each.getSourceIndex() )
-				var Image icon = button.getLargestDisplayIconY( maxHeight )
-				
-				images.add( icon )
-				
-				if icon != null
-					values.add( button.getDisplayText() )
+			if each.getCommand() == command
+				var InputDeviceButton button = each.getInputDeviceButton()
+				if button != null
+					var Image icon = button.getLargestDisplayIconY( maxHeight )
+					images.add( icon )
 					
-				else
-					values.add( this.devicePrefix( device ) + button.getName() )
+					if icon != null
+						values.add( button.getDisplayText() )
+						
+					else
+						values.add( this.devicePrefix( button.getInputDevice() ) + button.getName() )
+					end
 				end
 			end
 		end )
 		
 		// axis
 		this.pBindings.forEachAxisBinding( block Binding each
-			if each.getCommand() == command and each.getDeviceIndex() != -1 \
-			and each.getSourceIndex() != -1
-				var InputDevice device = this.pBindings.getDeviceAt( each.getDeviceIndex() )
-				var InputDeviceAxis axis = device.getAxisAt( each.getSourceIndex() )
-				var Image icon = axis.getLargestDisplayIconY( maxHeight )
-				
-				images.add( icon )
-				
-				if icon != null
-					values.add( axis.getDisplayText() )
+			if each.getCommand() == command
+				var InputDeviceAxis axis = each.getInputDeviceAxis()
+				if axis != null
+					var Image icon = axis.getLargestDisplayIconY( maxHeight )
+					images.add( icon )
 					
-				else
-					values.add( this.devicePrefix( device ) + axis.getName() )
+					if icon != null
+						values.add( axis.getDisplayText() )
+						
+					else
+						values.add( this.devicePrefix( axis.getInputDevice() ) + axis.getName() )
+					end
 				end
 			end
 		end )

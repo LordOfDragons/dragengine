@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine GUI Launcher
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -27,23 +30,16 @@
 #include "deglWindowMain.h"
 #include "../deglLauncher.h"
 #include "../config/deglConfiguration.h"
-#include "../engine/deglEngine.h"
-#include "../engine/deglEngineInstance.h"
-#include "../game/deglGame.h"
-#include "../game/deglGameManager.h"
-#include "../game/patch/deglPatch.h"
-#include "../game/patch/deglPatchManager.h"
+
+#include <delauncher/game/patch/delPatch.h>
 
 #include <dragengine/common/exceptions.h>
-#include <dragengine/common/file/decBaseFileReaderReference.h>
-#include <dragengine/common/file/decBaseFileWriterReference.h>
 #include <dragengine/common/file/decDiskFileReader.h>
 #include <dragengine/common/file/decDiskFileWriter.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
 #include <dragengine/filesystem/deVFSDiskDirectory.h>
-#include <dragengine/filesystem/deVFSContainerReference.h>
 #include <dragengine/logger/deLogger.h>
 
 
@@ -66,7 +62,7 @@ deglUninstall::~deglUninstall(){
 // Management
 ///////////////
 
-bool deglUninstall::UninstallGame( deglGame &game ){
+bool deglUninstall::UninstallGame( delGame &game ){
 	// check if the game is located in a delga file
 	if( game.GetDelgaFile().IsEmpty() ){
 		FXMessageBox::information( &pWindow, MBOX_OK, "Uninstall Game",
@@ -75,11 +71,11 @@ bool deglUninstall::UninstallGame( deglGame &game ){
 	}
 	
 	// check if another game or patch shares the same delga file
-	const deglGameList &gameList = pWindow.GetLauncher()->GetGameManager()->GetGameList();
+	const delGameList &gameList = pWindow.GetLauncher()->GetGameManager().GetGames();
 	decString text;
 	int i, count = gameList.GetCount();
 	for( i=0; i<count; i++ ){
-		const deglGame &checkGame = *gameList.GetAt( i );
+		const delGame &checkGame = *gameList.GetAt( i );
 		if( &checkGame == &game || checkGame.GetDelgaFile() != game.GetDelgaFile() ){
 			continue;
 		}
@@ -89,20 +85,20 @@ bool deglUninstall::UninstallGame( deglGame &game ){
 			checkGame.GetIdentifier().ToHexString( false ).GetString() );
 	}
 	
-	const deglPatchList &patchList = pWindow.GetLauncher()->GetPatchManager().GetPatches();
+	const delPatchList &patchList = pWindow.GetLauncher()->GetPatchManager().GetPatches();
 	count = patchList.GetCount();
 	
 	for( i=0; i<count; i++ ){
-		const deglPatch &checkPatch = *patchList.GetAt( i );
+		const delPatch &checkPatch = *patchList.GetAt( i );
 		if( checkPatch.GetDelgaFile() != game.GetDelgaFile() ){
 			continue;
 		}
 		
-		const deglGame * const game = gameList.GetWithID( checkPatch.GetGameID() );
+		const delGame * const pgame = gameList.GetWithID( checkPatch.GetGameID() );
 		text.AppendFormat( "Patch '%s'(%s) for game '%s' shares the same *.delga file.\n",
 			checkPatch.GetName().ToUTF8().GetString(),
 			checkPatch.GetIdentifier().ToHexString( false ).GetString(),
-			game ? game->GetTitle().ToUTF8().GetString() : "?" );
+			pgame ? pgame->GetTitle().ToUTF8().GetString() : "?" );
 	}
 	
 	if( ! text.IsEmpty() ){
@@ -126,7 +122,7 @@ bool deglUninstall::UninstallGame( deglGame &game ){
 	return true;
 }
 
-bool deglUninstall::UninstallPatch( deglPatch &patch ){
+bool deglUninstall::UninstallPatch( delPatch &patch ){
 	// check if the patch is located in a delga file
 	if( patch.GetDelgaFile().IsEmpty() ){
 		FXMessageBox::information( &pWindow, MBOX_OK, "Uninstall Patch",
@@ -135,11 +131,11 @@ bool deglUninstall::UninstallPatch( deglPatch &patch ){
 	}
 	
 	// check if another game or patch shares the same delga file
-	const deglGameList &gameList = pWindow.GetLauncher()->GetGameManager()->GetGameList();
+	const delGameList &gameList = pWindow.GetLauncher()->GetGameManager().GetGames();
 	decString text;
 	int i, count = gameList.GetCount();
 	for( i=0; i<count; i++ ){
-		const deglGame &checkGame = *gameList.GetAt( i );
+		const delGame &checkGame = *gameList.GetAt( i );
 		if( checkGame.GetDelgaFile() != patch.GetDelgaFile() ){
 			continue;
 		}
@@ -149,16 +145,16 @@ bool deglUninstall::UninstallPatch( deglPatch &patch ){
 			checkGame.GetIdentifier().ToHexString( false ).GetString() );
 	}
 	
-	const deglPatchList &patchList = pWindow.GetLauncher()->GetPatchManager().GetPatches();
+	const delPatchList &patchList = pWindow.GetLauncher()->GetPatchManager().GetPatches();
 	count = patchList.GetCount();
 	
 	for( i=0; i<count; i++ ){
-		const deglPatch &checkPatch = *patchList.GetAt( i );
+		const delPatch &checkPatch = *patchList.GetAt( i );
 		if( &checkPatch == &patch || checkPatch.GetDelgaFile() != patch.GetDelgaFile() ){
 			continue;
 		}
 		
-		const deglGame * const game = gameList.GetWithID( checkPatch.GetGameID() );
+		const delGame * const game = gameList.GetWithID( checkPatch.GetGameID() );
 		text.AppendFormat( "Patch '%s'(%s) for game '%s' shares the same *.delga file.\n",
 			checkPatch.GetName().ToUTF8().GetString(),
 			checkPatch.GetIdentifier().ToHexString( false ).GetString(),
@@ -192,11 +188,10 @@ bool deglUninstall::UninstallPatch( deglPatch &patch ){
 //////////////////////
 
 void deglUninstall::pUninstallDelga( const decString &filename ){
-	deVFSContainerReference container;
-	container.TakeOver( new deVFSDiskDirectory( decPath::CreatePathNative(
-		pWindow.GetLauncher()->GetConfiguration()->GetPathGames() ) ) );
-	
 	decPath target( decPath::CreatePathUnix( "/" ) );
 	target.AddComponent( decPath::CreatePathNative( filename ).GetLastComponent() );
-	container->DeleteFile( target );
+	
+	deVFSDiskDirectory::Ref::New( new deVFSDiskDirectory(
+		decPath::CreatePathNative( pWindow.GetLauncher()->GetPathGames() ) ) )
+			->DeleteFile( target );
 }

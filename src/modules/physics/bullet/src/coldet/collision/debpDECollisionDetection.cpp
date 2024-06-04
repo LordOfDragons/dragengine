@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Bullet Physics Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <math.h>
@@ -236,7 +239,7 @@ const decVector &sc, float sr){
 	float c = rp * rp + sc * sc - ( rp * sc ) * 2.0f - sr * sr;
 	float disc = b * b - a * c;
 	if( disc < 0.0f ) return -1.0f;
-	disc = sqrt( disc );
+	disc = sqrtf( disc );
 	float lambda = -b - disc;
 	if( lambda < 0.0f ) lambda = -b + disc;
 	return lambda / a;
@@ -375,11 +378,11 @@ const decVector &tp3, const decVector &tp4, const decVector &p){
 	v2.Normalize();
 	v3.Normalize();
 	v4.Normalize();
-	arcsum += acos( v1 * v2 );
-	arcsum += acos( v2 * v3 );
-	arcsum += acos( v3 * v4 );
-	arcsum += acos( v4 * v1 );
-	return fabs(arcsum - 2.0f*PI) <= 0.005f;
+	arcsum += acosf( v1 * v2 );
+	arcsum += acosf( v2 * v3 );
+	arcsum += acosf( v3 * v4 );
+	arcsum += acosf( v4 * v1 );
+	return fabsf(arcsum - 2.0f*PI) <= 0.005f;
 }
 
 
@@ -396,7 +399,7 @@ const decVector &sphereCenter, float sphereRadius, float &hitDistance ){
 		return false;
 	}
 	
-	disc = sqrt( disc );
+	disc = sqrtf( disc );
 	float lambda = -b - disc;
 	if( lambda < 0.0f ){
 		lambda = -b + disc;
@@ -444,7 +447,7 @@ const decVector &sphere2Center, float sphere2Radius, const decVector &displaceme
 	if( disc < 0.0f ) return 1.0f;
 	
 	// determine the closer of the two points
-	disc = sqrt( disc );
+	disc = sqrtf( disc );
 	factor = 1.0f / ( a * 2.0f );
 	lambda = ( -b - disc ) * factor;
 	if( lambda < 0.0f ) lambda = ( -b + disc ) * factor;
@@ -605,7 +608,7 @@ const decVector &cylinderCenter, float cylinderHalfHeight, float cylinderRadius,
 	disc = b * b - 4.0f * a * c;
 	
 	if( disc > 1e-6f ){
-		disc = sqrt( disc );
+		disc = sqrtf( disc );
 		
 		distance = ( disc - b ) / ( 2.0f * a );
 		if( distance >= 0.0f && distance <= 1.0f ){
@@ -687,7 +690,7 @@ float &hitDistance ){
 	disc = b * b - 4.0f * a * c;
 	
 	if( disc > 1e-6f ){
-		disc = sqrt( disc );
+		disc = sqrtf( disc );
 		
 		distance = ( disc - b ) / ( 2.0f * a );
 		if( distance >= 0.0f && distance <= 1.0f ){
@@ -760,7 +763,7 @@ const decVector &capsuleCenter, float capsuleHalfHeight, float capsuleRadius, fl
 	disc = b * b - 4.0f * a * c;
 	
 	if( disc > 1e-6f ){
-		disc = sqrt( disc );
+		disc = sqrtf( disc );
 		
 		distance = ( disc - b ) / ( 2.0f * a );
 		if( distance >= 0.0f && distance <= 1.0f ){
@@ -820,7 +823,7 @@ float &hitDistance ){
 	
 	// adjust parameters
 	f1 = ( capsuleBottomRadius - capsuleTopRadius ) / ( 2.0f * capsuleHalfHeight ); // sin(a)
-	f2 = sqrt( 1.0f - f1 * f1 ); // cos(a)
+	f2 = sqrtf( 1.0f - f1 * f1 ); // cos(a)
 	
 	f3 = capsuleBottomRadius * f1;
 	halfHeight = capsuleHalfHeight + ( capsuleTopRadius * f1 - f3 ) * 0.5f;
@@ -844,7 +847,7 @@ float &hitDistance ){
 	disc = b * b - 4.0f * a * c;
 	
 	if( disc > 1e-6f ){
-		disc = sqrt( disc );
+		disc = sqrtf( disc );
 		
 		distance = ( disc - b ) / ( 2.0f * a );
 		if( distance >= 0.0f && distance <= 1.0f ){

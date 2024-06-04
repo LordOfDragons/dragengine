@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -24,6 +27,7 @@
 #include <string.h>
 
 #include "deoglDynamicSkin.h"
+#include "deoglDynamicSkinListener.h"
 #include "deoglRDynamicSkin.h"
 #include "renderables/deoglDSRenderable.h"
 #include "renderables/deoglDSRenderableCamera.h"
@@ -32,6 +36,7 @@
 #include "renderables/deoglDSRenderableImage.h"
 #include "renderables/deoglDSRenderableValue.h"
 #include "renderables/deoglDSRenderableVideoFrame.h"
+#include "renderables/render/deoglRDSRenderable.h"
 #include "../../deGraphicOpenGl.h"
 #include "../../billboard/deoglBillboard.h"
 #include "../../component/deoglComponent.h"
@@ -115,8 +120,50 @@ void deoglDynamicSkin::SyncToRender(){
 
 
 
-void deoglDynamicSkin::RenderableRequiresSync(){
-	pRequiresSync();
+// Listeners
+//////////////
+
+void deoglDynamicSkin::AddListener( deoglDynamicSkinListener *listener ){
+	if( ! listener ){
+		DETHROW( deeInvalidParam );
+	}
+	pListeners.Add( listener );
+}
+
+void deoglDynamicSkin::RemoveListener( deoglDynamicSkinListener *listener ){
+	pListeners.RemoveIfPresent( listener );
+}
+
+void deoglDynamicSkin::NotifyDestroyed(){
+	const int count = pListeners.GetCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		( ( deoglDynamicSkinListener* )pListeners.GetAt( i ) )->DynamicSkinDestroyed();
+	}
+}
+
+void deoglDynamicSkin::NotifyRenderablesChanged(){
+	const int count = pListeners.GetCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		( ( deoglDynamicSkinListener* )pListeners.GetAt( i ) )->DynamicSkinRenderablesChanged();
+	}
+}
+
+void deoglDynamicSkin::NotifyRenderableChanged( deoglDSRenderable &renderable ){
+	const int count = pListeners.GetCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		( ( deoglDynamicSkinListener* )pListeners.GetAt( i ) )->DynamicSkinRenderableChanged( renderable );
+	}
+}
+
+void deoglDynamicSkin::NotifyRenderableRequiresSync( deoglDSRenderable &renderable ){
+	const int count = pListeners.GetCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		( ( deoglDynamicSkinListener* )pListeners.GetAt( i ) )->DynamicSkinRenderableRequiresSync( renderable );
+	}
 }
 
 
@@ -124,7 +171,7 @@ void deoglDynamicSkin::RenderableRequiresSync(){
 // Notifications
 //////////////////
 
-void deoglDynamicSkin::RenderableAdded( int index, deDSRenderable *renderable ){
+void deoglDynamicSkin::RenderableAdded( int, deDSRenderable *renderable ){
 	if( ! renderable ){
 		DETHROW( deeInvalidParam );
 	}
@@ -162,21 +209,19 @@ void deoglDynamicSkin::RenderableAdded( int index, deDSRenderable *renderable ){
 	}
 	
 	pDirtyRenderables = true;
-	pRequiresSync();
+	NotifyRenderablesChanged();
 }
 
 void deoglDynamicSkin::RenderableChanged( int index, deDSRenderable *renderable ){
 	( ( deoglDSRenderable* )pRenderables.GetAt( index ) )->RenderableChanged();
-	
-	pRequiresSync();
 }
 
-void deoglDynamicSkin::RenderableRemoved( int index, deDSRenderable *renderable ){
+void deoglDynamicSkin::RenderableRemoved( int index, deDSRenderable* ){
 	delete ( deoglDSRenderable* )pRenderables.GetAt( index );
 	pRenderables.RemoveFrom( index );
 	
 	pDirtyRenderables = true;
-	pRequiresSync();
+	NotifyRenderablesChanged();
 }
 
 void deoglDynamicSkin::AllRenderablesRemoved(){
@@ -189,7 +234,7 @@ void deoglDynamicSkin::AllRenderablesRemoved(){
 	pRenderables.RemoveAll();
 	
 	pDirtyRenderables = true;
-	pRequiresSync();
+	NotifyRenderablesChanged();
 }
 
 
@@ -211,46 +256,5 @@ void deoglDynamicSkin::pCleanUp(){
 	// notify owners we are about to be deleted. required since owners hold only a weak pointer
 	// to the dynamic skin and are notified only after switching to a new dynamic skin. in this
 	// case they can not use the old pointer to remove themselves from the dynamic skin
-	count = pNotifyComponents.GetCount();
-	for( i=0; i<count; i++ ){
-		( ( deoglComponent* )pNotifyComponents.GetAt( i ) )->DropDynamicSkin();
-	}
-	
-	count = pNotifyComponentTextures.GetCount();
-	for( i=0; i<count; i++ ){
-		( ( deoglComponentTexture* )pNotifyComponentTextures.GetAt( i ) )->DropDynamicSkin();
-	}
-	
-	count = pNotifyBillboards.GetCount();
-	for( i=0; i<count; i++ ){
-		( ( deoglBillboard* )pNotifyBillboards.GetAt( i ) )->DropDynamicSkin();
-	}
-	
-	count = pNotifyDecals.GetCount();
-	for( i=0; i<count; i++ ){
-		( ( deoglDecal* )pNotifyDecals.GetAt( i ) )->DropDynamicSkin();
-	}
-}
-
-void deoglDynamicSkin::pRequiresSync(){
-	int i, count = pNotifyComponents.GetCount();
-	for( i=0; i<count; i++ ){
-		( ( deoglComponent* )pNotifyComponents.GetAt( i ) )->DynamicSkinRequiresSync();
-	}
-	
-	count = pNotifyComponentTextures.GetCount();
-	for( i=0; i<count; i++ ){
-		( ( deoglComponentTexture* )pNotifyComponentTextures.GetAt( i ) )->
-			GetComponent().TextureDynamicSkinRequiresSync();
-	}
-	
-	count = pNotifyBillboards.GetCount();
-	for( i=0; i<count; i++ ){
-		( ( deoglBillboard* )pNotifyBillboards.GetAt( i ) )->DynamicSkinRequiresSync();
-	}
-	
-	count = pNotifyDecals.GetCount();
-	for( i=0; i<count; i++ ){
-		( ( deoglDecal* )pNotifyDecals.GetAt( i ) )->DynamicSkinRequiresSync();
-	}
+	NotifyDestroyed();
 }

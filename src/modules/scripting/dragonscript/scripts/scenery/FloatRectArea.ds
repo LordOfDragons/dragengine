@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -31,16 +34,9 @@ namespace Dragengine.Scenery
  * area guaranteed to be correctly oriented.
  */
 fixed class FloatRectArea
-	/** \brief X1-Coordinate of rectangular area. */
 	private var float pX1
-	
-	/** \brief Y1-Coordinate of rectangular area. */
 	private var float pY1
-	
-	/** \brief X2-Coordinate of rectangular area. */
 	private var float pX2
-	
-	/** \brief Y2-Coordinate of rectangular area. */
 	private var float pY2
 	
 	
@@ -49,10 +45,10 @@ fixed class FloatRectArea
 	/*@{*/
 	/** \brief Create rectangular area with all coordinates set to 0. */
 	public func new()
-		this.pX1 = 0.0
-		this.pY1 = 0.0
-		this.pX2 = 0.0
-		this.pY2 = 0.0
+		this.pX1 = 0
+		this.pY1 = 0
+		this.pX2 = 0
+		this.pY2 = 0
 	end
 	
 	/** \brief Create rectangular area with initial coordinates. */
@@ -226,7 +222,7 @@ fixed class FloatRectArea
 	
 	/** \brief Vector2 is inside rectangular area. */
 	public func bool isInside( float x, float y )
-		return x >= this.pX1 and x < this.pX2 and y >= this.pY1 and y < this.pY2
+		return x >= this.pX1 and x <= this.pX2 and y >= this.pY1 and y <= this.pY2
 	end
 	
 	/** \brief Vector2 is inside rectangular area. */

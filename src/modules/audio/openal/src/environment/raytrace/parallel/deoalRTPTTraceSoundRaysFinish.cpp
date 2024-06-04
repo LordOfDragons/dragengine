@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenAL Audio Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -239,12 +242,15 @@ void deoalRTPTTraceSoundRaysFinish::pRun(){
 	pRoomParameters->sabineLow *= pProbeConfig->GetRayUnitSurface();
 	pRoomParameters->sabineHigh *= pProbeConfig->GetRayUnitSurface();
 	
-	pRoomParameters->roomSurface *= pProbeConfig->GetRayUnitSurface();
+	pRoomParameters->roomSurface = decMath::max( 0.01f,
+		pRoomParameters->roomSurface * pProbeConfig->GetRayUnitSurface() );
+	
 	pRoomParameters->roomAbsorptionLow = pRoomParameters->sabineLow / pRoomParameters->roomSurface;
 	pRoomParameters->roomAbsorptionMedium = pRoomParameters->sabineMedium / pRoomParameters->roomSurface;
 	pRoomParameters->roomAbsorptionHigh = pRoomParameters->sabineHigh / pRoomParameters->roomSurface;
 	
-	pRoomParameters->roomVolume *= pProbeConfig->GetRayUnitVolume();
+	pRoomParameters->roomVolume = decMath::max( 0.01f,
+		pRoomParameters->roomVolume * pProbeConfig->GetRayUnitVolume() );
 // 	pRoomParameters->roomG = 10.0f * log10f( decMath::max( FLOAT_SAFE_EPSILON,
 // 		4.0f * ( 1.0f - pRoomParameters->roomAbsorptionMedium )
 // 			/ decMath::max( pRoomParameters->sabineMedium, 0.01f ) ) );
@@ -318,15 +324,15 @@ void deoalRTPTTraceSoundRaysFinish::pRun(){
 	const float rtfactor = 13.8f * pRoomParameters->meanFreePath * -INV_SOUND_SPEED;
 	if( pRoomParameters->avgAbsorptionLow > FLOAT_SAFE_EPSILON ){
 		pRoomParameters->reverberationTimeLow = rtfactor
-			/ log( 1.0f - decMath::min( pRoomParameters->avgAbsorptionLow, 0.99f ) );
+			/ logf( 1.0f - decMath::min( pRoomParameters->avgAbsorptionLow, 0.99f ) );
 	}
 	if( pRoomParameters->avgAbsorptionMedium > FLOAT_SAFE_EPSILON ){
 		pRoomParameters->reverberationTimeMedium = rtfactor
-			/ log( 1.0f - decMath::min( pRoomParameters->avgAbsorptionMedium, 0.99f ) );
+			/ logf( 1.0f - decMath::min( pRoomParameters->avgAbsorptionMedium, 0.99f ) );
 	}
 	if( pRoomParameters->avgAbsorptionHigh > FLOAT_SAFE_EPSILON ){
 		pRoomParameters->reverberationTimeHigh = rtfactor
-			/ log( 1.0f - decMath::min( pRoomParameters->avgAbsorptionHigh, 0.99f ) );
+			/ logf( 1.0f - decMath::min( pRoomParameters->avgAbsorptionHigh, 0.99f ) );
 	}
 	
 	/*

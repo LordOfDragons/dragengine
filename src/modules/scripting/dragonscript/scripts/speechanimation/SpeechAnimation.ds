@@ -1,24 +1,26 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
-
 
 namespace Dragengine.SpeechAnimations
 
@@ -32,166 +34,192 @@ pin Dragengine.Utils
  * Speech animation.
  */
 class SpeechAnimation
-	/** Name of the neutral move. */
 	private var String pNeutralMove
-	/** List of phonemes. */
+	private var Set pNeutralVertexPositionSets
 	private var Array pPhonemes
-	/** List of words. */
 	private var Array pWords
-	/** Path to the animation. */
 	private var String pPathAnimation
-	/** Path to the rig. */
 	private var String pPathRig
-	/** Animator for playback. */
 	private var Animator pAnimator
 	
 	
 	
-	/** Creates a new speech animation. */
+	/** Create speech animation. */
 	public func new()
-		this.pNeutralMove = ""
-		this.pPhonemes = Array.new()
-		this.pWords = Array.new()
-		this.pAnimator = Animator.new()
+		pNeutralMove = ""
+		pNeutralVertexPositionSets = Set.new()
+		pPhonemes = Array.new()
+		pWords = Array.new()
+		pAnimator = Animator.new()
 	end
 	
 	
 	
-	/** Retrieves the name of the neutral move. */
+	/** Name of neutral move. */
 	public func String getNeutralMove()
-		return this.pNeutralMove
+		return pNeutralMove
 	end
 	
-	/** Sets the name of the neutral move. */
-	public func void setNeutralMove( String moveName )
+	/** Set name of neutral move. */
+	public func void setNeutralMove(String moveName)
 		if moveName == null
 			throw EInvalidParam.new()
 		end
 		
-		this.pNeutralMove = moveName
+		pNeutralMove = moveName
 	end
 	
-	/** Retrieves the path to the animation or null if not set. */
+	/**
+	 * Neutral vertex position sets (Set of String).
+	 * \version 1.17
+	 */
+	public func Set getNeutralVertexPositionSets()
+		return pNeutralVertexPositionSets
+	end
+	
+	/** Path to animation or null if not set. */
 	public func String getPathAnimation()
-		return this.pPathAnimation
+		return pPathAnimation
 	end
 	
-	/** Sets the path to the animation or null if not set. */
-	public func void setPathAnimation( String path )
-		this.pPathAnimation = path
+	/** Set path to animation or null if not set. */
+	public func void setPathAnimation(String path)
+		pPathAnimation = path
 	end
 	
-	/** Retrieves the path to the rig or null if not set. */
+	/** Path to rig or null if not set. */
 	public func String getPathRig()
-		return this.pPathRig
+		return pPathRig
 	end
 	
-	/** Sets the path to the rig or null if not set. */
-	public func void setPathRig( String path )
-		this.pPathRig = path
+	/** Set path to rig or null if not set. */
+	public func void setPathRig(String path)
+		pPathRig = path
 	end
 	
-	/** Retrieves the phoneme with the given IPA symbol or null if not found. */
-	public func SpeechAnimationPhoneme getPhonemeWithIPA( int ipa )
-		return this.pPhonemes.find( block SpeechAnimationPhoneme each
+	/** Phoneme with IPA symbol or null if absent. */
+	public func SpeechAnimationPhoneme getPhonemeWithIPA(int ipa)
+		return pPhonemes.find(block SpeechAnimationPhoneme each
 			return each.getIPA() == ipa
-		end ) cast SpeechAnimationPhoneme
+		end) cast SpeechAnimationPhoneme
 	end
 	
-	/** Adds a phoneme. */
-	public func void addPhoneme( SpeechAnimationPhoneme phoneme )
-		if this.getPhonemeWithIPA( phoneme.getIPA() ) != null
+	/** Add phoneme. */
+	public func void addPhoneme(SpeechAnimationPhoneme phoneme)
+		if getPhonemeWithIPA(phoneme.getIPA()) != null
 			throw EInvalidParam.new()
 		end
 		
-		this.pPhonemes.add( phoneme )
+		pPhonemes.add(phoneme)
 	end
 	
-	/** Visits each phoneme. */
-	public func void forEachPhoneme( Block aBlock )
-		this.pPhonemes.forEach( aBlock )
+	/** Visit phoneme. */
+	public func void forEachPhoneme(Block aBlock)
+		pPhonemes.forEach(aBlock)
 	end
 	
-	/** Retrieves the word with the given name or null if not found. */
-	public func SpeechAnimationWord getWordNamed( StringID name )
-		return this.pWords.find( block SpeechAnimationWord each
-			return each.getName().equals( name )
-		end ) cast SpeechAnimationWord
+	/** Word with name or null if absent. */
+	public func SpeechAnimationWord getWordNamed(StringID name)
+		return pWords.find(block SpeechAnimationWord each
+			return each.getName().equals(name)
+		end) cast SpeechAnimationWord
 	end
 	
-	/** Adds a word. */
-	public func void addWord( SpeechAnimationWord word )
-		if this.getWordNamed( word.getName() ) != null
+	/** Add word. */
+	public func void addWord(SpeechAnimationWord word)
+		if getWordNamed(word.getName()) != null
 			throw EInvalidParam.new()
 		end
 		
-		this.pWords.add( word )
+		pWords.add(word)
 	end
 	
-	/** Visits each word. */
-	public func void forEachWord( Block aBlock )
-		this.pWords.forEach( aBlock )
+	/** Visit word. */
+	public func void forEachWord(Block aBlock)
+		pWords.forEach(aBlock)
 	end
 	
-	/** Retrieves the animator. */
+	/** Animator. */
 	public func Animator getAnimator()
-		return this.pAnimator
+		return pAnimator
 	end
 	
 	/** Build animator. */
 	public func void buildAnimator()
-		var int phonemeCount = this.pPhonemes.getCount()
-		var Array visemeList = Array.new()
-		var int i, visemeCount
+		var Array visemeMoves = Array.new()
+		var Array visemeVPS = Array.new()
+		var int controllerIndex, offsetVPS
 		
 		// build list of the viseme move names and set the controller indices at the same time
-		this.pPhonemes.forEach( block SpeechAnimationPhoneme phoneme
-			phoneme.setController( visemeList.indexOf( visemeList.find( block String each
-				return each.equals( phoneme.getMoveName() )
-			end ) cast String ) )
-			
-			if phoneme.getController() == -1
-				phoneme.setController( visemeList.getCount() )
-				visemeList.add( phoneme.getMoveName() )
+		pPhonemes.forEach(block SpeechAnimationPhoneme each
+			if not each.getMoveName().empty() and each.getVertexPositionSet().empty()
+				controllerIndex = visemeMoves.indexOf(each.getMoveName())
+				if controllerIndex == -1
+					controllerIndex = visemeMoves.getCount()
+					visemeMoves.add(each.getMoveName())
+				end
+				each.setController(controllerIndex)
 			end
-		end )
-		visemeCount = visemeList.getCount()
+		end)
+		offsetVPS = visemeMoves.getCount()
+		
+		pPhonemes.forEach(block SpeechAnimationPhoneme each
+			if not each.getVertexPositionSet().empty()
+				controllerIndex = offsetVPS + visemeVPS.indexOf(each.getVertexPositionSet())
+				if controllerIndex < offsetVPS
+					controllerIndex = offsetVPS + visemeVPS.getCount()
+					visemeVPS.add(each.getVertexPositionSet())
+				end
+				each.setController(controllerIndex)
+			end
+		end)
 		
 		// for each animation move used in all phonemes/ one controller and one
 		// animation rule is added. these are considered the used visemes of all
 		// phonemes. the controller is used to set the blend strength of each
 		// viseme. The matching controllers are then assigned to each phoneme.
 		// Multiple phonemes can therefore use the same controller.
-		this.pAnimator.removeAllRules()
-		this.pAnimator.removeAllLinks()
-		this.pAnimator.setControllerCount( visemeCount )
+		pAnimator.removeAllRules()
+		pAnimator.removeAllLinks()
+		pAnimator.setControllerCount(visemeMoves.getCount() + visemeVPS.getCount())
 		
 		// use the existing animation state
 		var ARStateSnapshot ruleLastState = ARStateSnapshot.new()
-		ruleLastState.setEnabled( true )
-		ruleLastState.setBlendMode( AnimatorRuleBlendMode.blend )
-		ruleLastState.setBlendFactor( 1 )
-		ruleLastState.setUseLastState( true )
-		this.pAnimator.addRule( ruleLastState )
+		ruleLastState.setUseLastState(true)
+		pAnimator.addRule(ruleLastState)
+		
+		// add rule for neutral vertex position sets
+		if pNeutralVertexPositionSets.getCount() > 0
+			var ARStateManipulator rule = ARStateManipulator.new()
+			rule.setEnableOrientation(false)
+			pNeutralVertexPositionSets.forEach(block String each
+				rule.addVertexPositionSet(each)
+			end)
+			pAnimator.addRule(rule)
+		end
 		
 		// set up controllers and add links and rules
-		var AnimatorController controller
-		for i = 0 to visemeCount
-			controller = this.pAnimator.getControllerAt( i )
-			controller.setClamp( true )
-			controller.setRange( 0, 1 )
-			
-			this.pAnimator.addLink( i )
-			this.pAnimator.setLinkCurve( i, CurveBezier.newDefaultLinear() )
+		visemeMoves.forEach(block int index, String moveName
+			pAnimator.addLink(index)
 			
 			var ARAnimation rule = ARAnimation.new()
-			rule.setEnabled( true )
-			rule.setBlendMode( AnimatorRuleBlendMode.overlay )
-			rule.setBlendFactor( 1 )
-			rule.setMoveName( visemeList.getAt( i ) cast String )
-			rule.setMoveTime( 0 )
-			rule.targetAddLink( ARAnimationTarget.blendFactor, i )
-			this.pAnimator.addRule( rule )
-		end
+			rule.setBlendMode(AnimatorRuleBlendMode.overlay)
+			rule.setMoveName(moveName)
+			rule.targetAddLink(ARAnimationTarget.blendFactor, index)
+			pAnimator.addRule(rule)
+		end)
+		
+		visemeVPS.forEach(block int index, String vertexPositionSet
+			index += offsetVPS
+			
+			pAnimator.addLink(index)
+			
+			var ARStateManipulator rule = ARStateManipulator.new()
+			rule.addVertexPositionSet(vertexPositionSet)
+			rule.setEnableOrientation(false)
+			rule.setMaximumVertexPositionSet(1)
+			rule.targetAddLink(ARStateManipulatorTarget.vertexPositionSet, index)
+			pAnimator.addRule(rule)
+		end)
 	end
 end

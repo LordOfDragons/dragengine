@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLCOMBINEDTEXTURELIST_H_
@@ -31,7 +34,7 @@ class deoglRImage;
 
 
 /**
- * \brief Combined Texture List.
+ * Combined Texture List.
  */
 class deoglCombinedTextureList{
 private:
@@ -44,10 +47,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create list. */
+	/** Create list. */
 	deoglCombinedTextureList( deoglRenderThread &pRenderThread );
 	
-	/** \brief Clean up list. */
+	/** Clean up list. */
 	~deoglCombinedTextureList();
 	/*@}*/
 	
@@ -55,19 +58,19 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Render thread. */
+	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	
 	
-	/** \brief Number of combined textures in the list. */
+	/** Number of combined textures in the list. */
 	inline int GetCount() const{ return pCount; }
 	
-	/** \brief Root combined texture. */
+	/** Root combined texture. */
 	inline deoglCombinedTexture *GetRoot() const{ return pRoot; }
 	
 	/**
-	 * \brief Combined texture with parameters.
+	 * Combined texture with parameters.
 	 * \details Creates combined texture if not existing. This adds a usage to the combined
 	 *          texture. To remove a usage use the RemoveUsage function on the returned
 	 *          combined texture.
@@ -75,7 +78,7 @@ public:
 	deoglCombinedTexture *GetWith( const decColor &color, deoglRImage *images[ 4 ] );
 	
 	/**
-	 * \brief Remove combined texture.
+	 * Remove combined texture.
 	 * \details For use by deoglCombinedTexture only.
 	 */
 	void Remove( deoglCombinedTexture *combinedTexture );

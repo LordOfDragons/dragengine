@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -32,123 +35,110 @@ pin Dragengine.Utils
  */
 class Label extends Widget implements TextModelListener
 	/** \brief Align text left side. */
-	public fixed var int left = 0
+	public static fixed var int left = 0
 	
 	/** \brief Align text right side. */
-	public fixed var int right = 1
+	public static fixed var int right = 1
 	
 	/** \brief Align text center. */
-	public fixed var int center = 2
+	public static fixed var int center = 2
 	
 	/** \brief Align text at top side. */
-	public fixed var int top = 0
+	public static fixed var int top = 0
 	
 	/** \brief Align text at bottom side. */
-	public fixed var int bottom = 4
+	public static fixed var int bottom = 4
 	
 	/** \brief Align text middled. */
-	public fixed var int middle = 8
+	public static fixed var int middle = 8
 	
 	/** \brief Align text top-left. */
-	public fixed var int topLeft = top | left
+	public static fixed var int topLeft = top | left
 	
 	/** \brief Align text middle-center. */
-	public fixed var int topCenter = top | center
+	public static fixed var int topCenter = top | center
 	
 	/** \brief Align text top-right. */
-	public fixed var int topRight = top | right
+	public static fixed var int topRight = top | right
 	
 	/** \brief Align text middle-left. */
-	public fixed var int middleLeft = middle | left
+	public static fixed var int middleLeft = middle | left
 	
 	/** \brief Align text middle-center. */
-	public fixed var int middleCenter = middle | center
+	public static fixed var int middleCenter = middle | center
 	
 	/** \brief Align text middle-right. */
-	public fixed var int middleRight = middle | right
+	public static fixed var int middleRight = middle | right
 	
 	/** \brief Align text bottom-left. */
-	public fixed var int bottomLeft = bottom | left
+	public static fixed var int bottomLeft = bottom | left
 	
 	/** \brief Align text middle-center. */
-	public fixed var int bottomCenter = bottom | center
+	public static fixed var int bottomCenter = bottom | center
 	
 	/** \brief Align text bottom-right. */
-	public fixed var int bottomRight = bottom | right
+	public static fixed var int bottomRight = bottom | right
 	
 	/** \brief Default alignment middle-center. */
-	public fixed var int defaultAlignment = middleCenter
+	public static fixed var int defaultAlignment = middleCenter
 	
 	
 	
-	/** \brief Text Layout. */
-	private var TextLayout pTextLayout
-	
-	/** \brief Text Model. */
-	private var TextModel pModel
-	
-	/** \brief Text alignment. */
-	private var int pAlignment
-	
-	/** \brief Maximal width of text before break occurs. */
-	private var int pMaxWidth
-	
-	/** \brief Minimum Size of the text with max width applied. */
-	private var Point pMinTextSize
-	
-	/** \brief Word wrap if line is too long. */
-	private var bool pWordWrap
-	
-	/** \brief Cached minimum size for getMinimumSizeForWidth or \em null to calculate next time. */
-	private var Point pMinSizeForWidthSize
-	
-	/** \brief Width used for cached minimum size for getMinimumSizeForWidth if set. */
-	private var int pMinSizeForWidthWidth
+	var TextLayout pTextLayout
+	var TextModel pModel
+	var int pAlignment
+	var int pMaxWidth
+	var Point pMinTextSize
+	var bool pWordWrap
+	var Point pMinSizeForWidthSize
+	var int pMinSizeForWidthWidth
 	
 	
 	
 	/** \brief Create label. */
-	public func new( String text ) this( DefaultTextModel.new( text ), defaultAlignment )
+	func new(String text) this(DefaultTextModel.new(text), defaultAlignment)
 	end
 	
-	public func new( String text, int alignment ) this( DefaultTextModel.new( text ), alignment )
+	func new(String text, int alignment) this(DefaultTextModel.new(text), alignment)
 	end
 	
-	public func new( TextModel model ) this( model, defaultAlignment )
+	func new(TextModel model) this(model, defaultAlignment)
 	end
 	
-	public func new( TextModel model, int alignment )
+	func new(TextModel model, int alignment)
 		if model == null
 			throw EInvalidParam.new()
 		end
-		if ( alignment & right == right and alignment & center == center ) \
-		or ( alignment & bottom == bottom and alignment & middle == middle )
+		if (alignment & right == right and alignment & center == center) \
+		or (alignment & bottom == bottom and alignment & middle == middle)
 			throw EInvalidParam.new()
 		end
 		
-		this.pModel = model
-		this.pModel.addListener( this )
-		this.pAlignment = alignment
-		this.pMaxWidth = 0
-		this.pWordWrap = false
-		this.pMinSizeForWidthWidth = 0
-		this.setDesignerSelector( "Label" )
+		pModel = model
+		pModel.addListener(this)
+		pAlignment = alignment
+		pMaxWidth = 0
+		pWordWrap = false
+		pMinSizeForWidthWidth = 0
+		setDesignerSelector("Label")
 		
-		//this.updateCanvasText() // there is no font yet so this is a waste of time
+		//updateCanvasText() // there is no font yet so this is a waste of time
 	end
 	
-	public func new( String text, String designerSelector ) this( text )
-		this.setDesignerSelector( designerSelector )
+	func new(String text, String designerSelector) this(text)
+		setDesignerSelector(designerSelector)
 	end
 	
-	public func new( TextModel model, String designerSelector ) this( model )
-		this.setDesignerSelector( designerSelector )
+	func new(TextModel model, String designerSelector) this(model)
+		setDesignerSelector(designerSelector)
 	end
 	
 	/** \brief Dispose of widget. */
-	public func void dispose()
-		this.pModel.removeListener( this )
-		this.pModel = null
+	func void dispose()
+		if pModel != null
+			pModel.removeListener(this)
+			pModel = null
+		end
 		
 		super.dispose()
 	end
@@ -156,117 +146,117 @@ class Label extends Widget implements TextModelListener
 	
 	
 	/** \brief Text model. */
-	public func TextModel getModel()
-		return this.pModel
+	func TextModel getModel()
+		return pModel
 	end
 	
 	/** \brief Set text model. */
-	public func void setModel( TextModel model )
+	func void setModel(TextModel model)
 		if model == null
 			throw EInvalidParam.new()
 		end
 		
-		if model == this.pModel
+		if model == pModel
 			return
 		end
 		
-		this.pModel.removeListener( this )
-		this.pModel = model
-		model.addListener( this )
+		pModel.removeListener(this)
+		pModel = model
+		model.addListener(this)
 		
-		this.updateCanvasText()
-		this.layoutParent()
+		updateCanvasText()
+		layoutParent()
 	end
 	
 	/** \brief Text. */
-	public func String getText()
-		return this.pModel.getText()
+	func String getText()
+		return pModel.getText()
 	end
 	
 	/** \brief Set text. */
-	public func void setText( String text )
-		this.pModel.setText( text )
+	func void setText(String text)
+		pModel.setText(text)
 	end
 	
 	/** \brief Text alignment. */
-	public func int getAlignment()
-		return this.pAlignment
+	func int getAlignment()
+		return pAlignment
 	end
 	
 	/**
 	 * \brief Set text alignment.
 	 * \param alignment One of left, right, center combined with one of top, bottom, middle.
 	 */
-	public func void setAlignment( int alignment )
-		if ( alignment & right == right and alignment & center == center ) \
-		or ( alignment & bottom == bottom and alignment & middle == middle )
+	func void setAlignment(int alignment)
+		if (alignment & right == right and alignment & center == center) \
+		or (alignment & bottom == bottom and alignment & middle == middle)
 			throw EInvalidParam.new()
 		end
 		
-		if alignment == this.pAlignment
+		if alignment == pAlignment
 			return
 		end
 		
-		this.pAlignment = alignment
-		this.updateCanvasText()
-		this.layoutParent()
+		pAlignment = alignment
+		updateCanvasText()
+		layoutParent()
 	end
 	
 	/** \brief Maximal width of text before break occurs. */
-	public func int getMaximalWidth()
-		return this.pMaxWidth
+	func int getMaximalWidth()
+		return pMaxWidth
 	end
 	
 	/** \brief Set maximal width of text before break occurs. */
-	public func void setMaximalWidth( int width )
+	func void setMaximalWidth(int width)
 		if width < 0
 			throw EInvalidParam.new()
 		end
 		
-		if width == this.pMaxWidth
+		if width == pMaxWidth
 			return
 		end
 		
-		this.pMaxWidth = width
-		this.updateCanvasText()
-		this.layoutParent()
+		pMaxWidth = width
+		updateCanvasText()
+		layoutParent()
 	end
 	
 	/** \brief Word wrap if line is too long. */
-	public func bool getWordWrap()
-		return this.pWordWrap
+	func bool getWordWrap()
+		return pWordWrap
 	end
 	
 	/** \brief Set word wrap if line is too long. */
-	public func void setWordWrap( bool wordWrap )
-		if wordWrap == this.pWordWrap
+	func void setWordWrap(bool wordWrap)
+		if wordWrap == pWordWrap
 			return
 		end
 		
-		this.pWordWrap = wordWrap
+		pWordWrap = wordWrap
 		
-		this.updateCanvasText()
-		this.layoutParent()
+		updateCanvasText()
+		layoutParent()
 	end
 	
 	
 	
 	/** \brief Size of text. */
-	public func Point getTextSize()
-		var BorderSize padding = this.getPadding()
-		return Point.new( \
-			this.pTextLayout.getWidth() + padding.getWidth(), \
-			this.pTextLayout.getHeight() + padding.getHeight() )
+	func Point getTextSize()
+		var BorderSize padding = getPadding()
+		return Point.new(\
+			pTextLayout.getWidth() + padding.getWidth(), \
+			pTextLayout.getHeight() + padding.getHeight())
 	end
 	
 	
 	
 	/** \brief Minimal size of widget. */
-	public func Point getMinimumSize()
-		if this.isMinimumSizeSet()
+	func Point getMinimumSize()
+		if isMinimumSizeSet()
 			return super.getMinimumSize()
 		end
-		return this.minTextSize()
+		return minTextSize()
 	end
 	
 	
@@ -275,181 +265,191 @@ class Label extends Widget implements TextModelListener
 	 * \brief Minimum size of widget using reference widget width and variable height.
 	 * \details Default implementation uses getMinimumSize().
 	 */
-	public func Point getMinimumSizeForWidth( int width )
-		if this.isMinimumSizeSet()
+	func Point getMinimumSizeForWidth(int width)
+		if isMinimumSizeSet()
 			return super.getMinimumSize()
 		end
 		
-		if this.pMinSizeForWidthSize != null and width == this.pMinSizeForWidthWidth
-			return this.pMinSizeForWidthSize
+		if pMinSizeForWidthSize != null and width == pMinSizeForWidthWidth
+			return pMinSizeForWidthSize
 		end
 		
-		var Font font = this.getFont()
+		var Font font = getFont()
 		if font == null
-			this.pMinSizeForWidthSize = null
+			pMinSizeForWidthSize = null
 			return Point.new()
 		end
 		
 		// NOTE a possible optimization is the following. if getMinimumSize().getX()
 		//      is less then width then using getMinimumSize() is good enough since
-		//      the size never can be larger. uses the optimized minium version as
+		//      the size never can be larger. uses the optimized minimum version as
 		//      long as the width is not smaller potentially forcing different height.
-		var TextLayout textLayout = TextLayout.new( this.pModel.getText(), font )
+		var TextLayout textLayout = TextLayout.new(translate(pModel.getText()), font)
+		var BorderSize padding = getPadding()
+		var int maxWidth = pMaxWidth
 		
-		if this.pWordWrap
-			if this.pMaxWidth > 0
-				textLayout.setMaximalWidth( DEMath.min( width, this.pMaxWidth ) )
-				
-			else
-				textLayout.setMaximalWidth( width )
+		if pWordWrap
+			maxWidth = width - padding.getWidth()
+			if pMaxWidth > 0
+				maxWidth = DEMath.min(maxWidth, pMaxWidth)
 			end
-			
-		else
-			textLayout.setMaximalWidth( this.pMaxWidth )
 		end
+		textLayout.setMaximalWidth(DEMath.max(maxWidth, 0))
 		
 		textLayout.layoutText()
 		
-		var BorderSize padding = this.getPadding()
-		this.pMinSizeForWidthSize = Point.new( \
+		pMinSizeForWidthSize = Point.new(\
 			textLayout.getWidth() + padding.getWidth(), \
-			textLayout.getHeight() + padding.getHeight() )
-		this.pMinSizeForWidthWidth = width
+			textLayout.getHeight() + padding.getHeight())
+		pMinSizeForWidthWidth = width
 		
-		return this.pMinSizeForWidthSize
+		return pMinSizeForWidthSize
 	end
 	
 	
 	
 	/** \brief Font changed. */
-	public func void onSetFont()
-		this.updateCanvasText()
-		this.layoutParent()
+	func void onSetFont()
+		updateCanvasText()
+		layoutParent()
 	end
 	
 	/** \brief Foreground color changed. */
-	public func void onSetTextColor()
-		this.updateCanvasText()
+	func void onSetTextColor()
+		updateCanvasText()
 	end
 	
 	/** \brief Size changed. */
-	public func void onResize( WidgetEvent event )
-		super.onResize( event )
-		this.updateCanvasText()
+	func void onResize(WidgetEvent event)
+		super.onResize(event)
+		updateCanvasText()
 	end
 	
 	/** \brief Gui theme changed. */
-	public func void onGuiThemeChanged()
+	func void onGuiThemeChanged()
 		super.onGuiThemeChanged()
 		
-		this.updateCanvasText()
-		this.layoutParent()
+		updateCanvasText()
+		layoutParent()
 	end
 	
 	/**
 	 * \brief State changed.
 	 * \details Sends event to listeners.
 	 */
-	public func void onStateChanged( StateChangeEvent event )
-		super.onStateChanged( event )
-		this.updateCanvasText()
+	func void onStateChanged(StateChangeEvent event)
+		super.onStateChanged(event)
+		updateCanvasText()
+	end
+	
+	/**
+	 * \brief Translation manager or active language pack changed.
+	 * \version 1.20
+	 */
+	func void onTranslationChanged()
+		super.onTranslationChanged()
+		updateCanvasText()
+		layoutParent()
 	end
 	
 	
 	
 	/** \brief Text size for the given text width. */
 	private func Point minTextSize()
-		if this.pMinTextSize != null
-			return this.pMinTextSize
+		if pMinTextSize != null
+			return pMinTextSize
 		end
 		
-		if this.pTextLayout == null
-			return Point.new()
+		if pTextLayout == null
+			if getFont() == null
+				return Point.new()
+			end
+			updateTextLayout()
 		end
 		
-		var TextLayout textLayout = TextLayout.new( this.pTextLayout, this.pMaxWidth )
+		var TextLayout textLayout = TextLayout.new(pTextLayout, pMaxWidth)
 		textLayout.layoutText()
 		
-		var BorderSize padding = this.getPadding()
-		this.pMinTextSize = Point.new( \
+		var BorderSize padding = getPadding()
+		pMinTextSize = Point.new(\
 			textLayout.getWidth() + padding.getWidth(), \
-			textLayout.getHeight() + padding.getHeight() )
+			textLayout.getHeight() + padding.getHeight())
 		
-		return this.pMinTextSize
+		return pMinTextSize
 	end
 	
 	
 	
 	/** \brief Update canvas. */
 	private func void updateCanvasText()
-		if this.getFont() == null
-			this.getCanvasContent().removeAllCanvas()
+		if getFont() == null
+			getCanvasContent().removeAllCanvas()
 			return
 		end
 		
-		this.updateTextLayout()
+		updateTextLayout()
 		
-		var BorderSize padding = this.getPadding()
-		var int width = this.getWidth() - 1 - padding.getWidth()
-		var int height = this.getHeight() - 1 - padding.getHeight()
+		var BorderSize padding = getPadding()
+		var int width = getWidth() - 1 - padding.getWidth()
+		var int height = getHeight() - 1 - padding.getHeight()
 		var int x = 0
 		var int y = 0
 		
-		if this.getTextColor() != null
-			this.pTextLayout.setColor( this.getTextColor() )
+		if getTextColor() != null
+			pTextLayout.setColor(getTextColor())
 		end
 		
-		if this.pAlignment & right == right
-			x = width - this.pTextLayout.getWidth()
+		if pAlignment & right == right
+			x = width - pTextLayout.getWidth()
 			
-		elif this.pAlignment & center == center
-			x = ( width - this.pTextLayout.getWidth() ) / 2
+		elif pAlignment & center == center
+			x = (width - pTextLayout.getWidth()) / 2
 		end
 		
-		if this.pAlignment & bottom == bottom
-			y = height - this.pTextLayout.getHeight()
+		if pAlignment & bottom == bottom
+			y = height - pTextLayout.getHeight()
 			
-		elif this.pAlignment & middle == middle
-			y = ( height - this.pTextLayout.getHeight() ) / 2
+		elif pAlignment & middle == middle
+			y = (height - pTextLayout.getHeight()) / 2
 		end
 		
-		var CanvasView canvas = this.getCanvasContent()
+		var CanvasView canvas = getCanvasContent()
 		canvas.removeAllCanvas()
-		this.pTextLayout.addToCanvas( canvas, padding.getLeft() + x, padding.getTop() + y )
+		pTextLayout.addToCanvas(canvas, padding.getLeft() + x, padding.getTop() + y)
 	end
 	
 	/** \brief Update text layout. */
 	private func void updateTextLayout()
-		this.pTextLayout = TextLayout.new( this.pModel.getText(), this.getFont() )
+		pTextLayout = TextLayout.new(translate(pModel.getText()), getFont())
 		
-		if this.pWordWrap
-			this.pTextLayout.setMaximalWidth( DEMath.max( \
-				this.getWidth() - this.getPadding().getWidth(), 0 ) )
+		if pWordWrap
+			pTextLayout.setMaximalWidth(DEMath.max(\
+				getWidth() - getPadding().getWidth(), 0))
 		end
 		
-		this.pTextLayout.setAlignment( TextLayout.Align.center )
+		pTextLayout.setAlignment(TextLayout.Align.center)
 		
-		if this.pAlignment & right == right
-			this.pTextLayout.setAlignment( TextLayout.Align.right )
+		if pAlignment & right == right
+			pTextLayout.setAlignment(TextLayout.Align.right)
 			
-		elif this.pAlignment & center == center
-			this.pTextLayout.setAlignment( TextLayout.Align.center )
+		elif pAlignment & center == center
+			pTextLayout.setAlignment(TextLayout.Align.center)
 			
 		else
-			this.pTextLayout.setAlignment( TextLayout.Align.left )
+			pTextLayout.setAlignment(TextLayout.Align.left)
 		end
 		
-		this.pTextLayout.layoutText()
+		pTextLayout.layoutText()
 		
-		this.pMinTextSize = null
-		this.pMinSizeForWidthSize = null
+		pMinTextSize = null
+		pMinSizeForWidthSize = null
 	end
 	
 	
 	
 	/** \brief Text changed. */
-	public func void textChanged( TextModel textModel )
-		this.updateCanvasText()
-		this.layoutParent()
+	func void textChanged(TextModel textModel)
+		updateCanvasText()
+		layoutParent()
 	end
 end

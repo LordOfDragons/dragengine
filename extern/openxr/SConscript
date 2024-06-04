@@ -1,0 +1,141 @@
+import os
+import sys
+import SCons
+
+from SConsCommon import *
+from SConsExternCommon import *
+
+Import('parent_env parent_targets parent_report')
+
+envLibrary = parent_env.Clone()
+
+# switch
+buildStaticLinking = True
+
+# parameters
+openxrVersion = '1.0.22'
+
+srcdir = 'OpenXR-SDK-release-{}'.format(openxrVersion)
+
+if envLibrary['OSWindows']:
+	staticFileName = envLibrary.subst('lib/libopenxr_loader.a')
+	libLinkName = 'libopenxr_loader'
+	libpath = [envLibrary.Dir('lib')]
+	
+	# openxr reacts badly to these
+	if '-Wl,--nxcompat' in envLibrary['CROSSCOMPILE_LINKFLAGS']:
+		envLibrary['CROSSCOMPILE_LINKFLAGS'].remove('-Wl,--nxcompat')
+	
+	if '-Wl,--dynamicbase' in envLibrary['CROSSCOMPILE_LINKFLAGS']:
+		envLibrary['CROSSCOMPILE_LINKFLAGS'].remove('-Wl,--dynamicbase')
+	
+elif envLibrary['OSBeOS']:
+	Return()
+else:
+	staticFileName = envLibrary.subst('lib/${LIBPREFIX}openxr_loader${LIBSUFFIX}')
+	libLinkName = 'libopenxr_loader'
+	libpath = [envLibrary.Dir('lib')]
+
+def openxrBuild(target, source, env):
+	buildDir = target[0].get_dir().up()
+	
+	untarArchive(buildDir.abspath, source[ 0 ].abspath)
+	untarArchive(buildDir.Dir(srcdir).abspath,
+		env.File('#extern/mingw/mingw_stdthreads.tar.bz2').abspath)
+	
+	script = createScriptHeader(env)
+	script.append('cd "{}" || exit 1'.format(buildDir.Dir(srcdir).abspath))
+	
+	for p in env['PATCHES']:
+		script.append('patch -p1 <{} || exit 1'.format(p.srcnode().abspath))
+	
+	cmdline = ['cmake']
+	cmdline.append('-DCMAKE_INSTALL_PREFIX="{}"'.format(buildDir.abspath))
+	
+	# this is required to force output into the lib-dir we want. otherwise on some platforms the library
+	# is written to 'lib' directory, on others to 'lib64'. this makes it impossible to write an SConscript
+	# that properly tracks this library. using --libdir we force the 'lib' directory name and all is fine
+	cmdline.append('-DCMAKE_INSTALL_LIBDIR="{}"'.format(buildDir.Dir('lib').abspath))
+	
+	if env['OSWindows'] and not env['CROSSCOMPILE_CLANG']:
+		cmdline.append('-DMINGW_STDTHREADS_GENERATE_STDHEADERS=ON')
+	
+	if env['with_debug']:
+		#cmdline.append('-DCMAKE_BUILD_TYPE=Debug') # for some strange reason this fails to compile
+		cmdline.append('-DCMAKE_BUILD_TYPE=Release')
+	else:
+		cmdline.append('-DCMAKE_BUILD_TYPE=Release')
+	
+	if env['platform_android'] != 'no':
+		cmdline.append('-DANDROID_PLATFORM={}'.format(env['ANDROID_APILEVEL']))
+		cmdline.append('-DCMAKE_TOOLCHAIN_FILE="{}/build/cmake/android.toolchain.cmake"'.format(env['ndkroot']))
+		
+	elif 'CROSSCOMPILE_HOST' in env:
+		cmdline.append('-DCMAKE_SYSTEM_NAME="{}"'.format(env['CROSSCOMPILE_HOST']))
+	
+	if env['OSWindows']:
+		cmdline.append('-DCMAKE_TOOLCHAIN_FILE="{}"'.format(
+			env.File('#extern/mingw/mingw-w64-x86_64.cmake').abspath))
+	
+	#cmdline.append('-DBUILD_ALL_EXTENSIONS=Yes')
+	cmdline.append('-DBUILD_API_LAYERS=No')
+	cmdline.append('-DBUILD_TESTS=No')
+	cmdline.append('-DBUILD_WITH_STD_FILESYSTEM=No')
+	cmdline.append('-DBUILD_WITH_SYSTEM_JSONCPP=No')
+	cmdline.append('-DBUILD_WITH_WAYLAND_HEADERS=No')
+	cmdline.append('-DBUILD_WITH_XCB_HEADERS=No')
+	
+	cmdline.append('-DDYNAMIC_LOADER={}'.format('No' if buildStaticLinking else 'Yes'))
+	
+	cmdline.append('-Wno-dev')  # silence a warning not important for us
+	
+	cmdline.append('../{}'.format(srcdir))
+	script.append('{} || exit 1'.format(' '.join(cmdline)))
+	
+	script.append('make -j {} install || exit 1'.format(env['with_threads']))
+	
+	if not env.RunExternalCommand(script):
+		raise Exception('Failed building OpenXR')
+
+patches = [] # create with 'diff -rupN original_sources patches_sources'
+globFiles(envLibrary, 'patches/{}'.format(openxrVersion), '*.patch', patches, recursive=False)
+envLibrary.Append(PATCHES = [envLibrary.File(x) for x in sorted(patches)])
+
+if buildStaticLinking:
+	targets = [staticFileName]
+else:
+	targets = [libFileName]
+
+targets.extend([
+	'include/openxr/openxr_platform_defines.h',
+	'include/openxr/openxr_platform.h',
+	'include/openxr/openxr_reflection.h',
+	'include/openxr/openxr.h'])
+
+library = envLibrary.Command(targets, '{}.tar.bz2'.format(srcdir),
+	envLibrary.Action(openxrBuild, 'Build OpenXR'))
+
+envLibrary.SideEffect('#notParallelCMake', library)
+
+depends = parent_env.Alias('lib_openxr', library)
+cpppath = [envLibrary.Dir('include')]
+
+libs = []
+runtimelibs = []
+
+if buildStaticLinking:
+	libs.append(library[0])
+else:
+	libs.append(libLinkName)
+	runtimelibs.append(library[0])
+
+cppflags = []
+
+parent_targets['lib_openxr'] = {
+	'name' : 'Internal openxr library',
+	'cpppath' : cpppath,
+	'cppflags' : cppflags,
+	'libpath' : libpath,
+	'libs' : libs,
+	'runtimelibs' : runtimelibs,
+	'depends' : depends }

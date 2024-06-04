@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -163,6 +166,9 @@ const igdeFilePatternList *igdeEnvironmentIGDE::GetOpenFilePatternList( eFilePat
 	case efpltSpeechAnimation:
 		return &lssys.GetOpenFilePatternList( igdeLoadSaveSystem::efplSpeechAnimation );
 		
+	case efpltCamera:
+		return &lssys.GetOpenFilePatternList( igdeLoadSaveSystem::efplCamera );
+		
 	default:
 		DETHROW( deeInvalidParam );
 	}
@@ -175,47 +181,56 @@ const igdeFilePatternList *igdeEnvironmentIGDE::GetSaveFilePatternList( eFilePat
 	case efpltAll:
 		return &lssys.GetSaveFilePatternList( igdeLoadSaveSystem::efplAll );
 		
-	case efpltModel:
-		return &lssys.GetSaveFilePatternList( igdeLoadSaveSystem::efplModel );
-		
-	case efpltSkin:
-		return &lssys.GetSaveFilePatternList( igdeLoadSaveSystem::efplSkin );
-		
-	case efpltRig:
-		return &lssys.GetSaveFilePatternList( igdeLoadSaveSystem::efplRig );
-		
 	case efpltAnimation:
 		return &lssys.GetSaveFilePatternList( igdeLoadSaveSystem::efplAnimation );
 		
-	case efpltImage:
-		return &lssys.GetSaveFilePatternList( igdeLoadSaveSystem::efplImage );
-		
-	case efpltSound:
-		return &lssys.GetSaveFilePatternList( igdeLoadSaveSystem::efplSound );
-		
-	case efpltParticleEmitter:
-		return &lssys.GetSaveFilePatternList( igdeLoadSaveSystem::efplParticleEmitter );
-		
-	case efpltOcclusionMesh:
-		return &lssys.GetSaveFilePatternList( igdeLoadSaveSystem::efplOcclusionMesh );
-		
-	case efpltNavigationSpace:
-		return &lssys.GetSaveFilePatternList( igdeLoadSaveSystem::efplNavigationSpace );
-		
-	case efpltVideo:
-		return &lssys.GetSaveFilePatternList( igdeLoadSaveSystem::efplVideo );
-		
-	case efpltLanguagePack:
-		return &lssys.GetSaveFilePatternList( igdeLoadSaveSystem::efplLanguagePack );
+	case efpltAnimator:
+		return &lssys.GetSaveFilePatternList( igdeLoadSaveSystem::efplAnimator );
 		
 	case efpltFont:
 		return &lssys.GetSaveFilePatternList( igdeLoadSaveSystem::efplFont );
 		
+	case efpltImage:
+		return &lssys.GetSaveFilePatternList( igdeLoadSaveSystem::efplImage );
+		
+	case efpltLanguagePack:
+		return &lssys.GetSaveFilePatternList( igdeLoadSaveSystem::efplLanguagePack );
+		
+	case efpltModel:
+		return &lssys.GetSaveFilePatternList( igdeLoadSaveSystem::efplModel );
+		
+	case efpltNavigationSpace:
+		return &lssys.GetSaveFilePatternList( igdeLoadSaveSystem::efplNavigationSpace );
+		
+	case efpltOcclusionMesh:
+		return &lssys.GetSaveFilePatternList( igdeLoadSaveSystem::efplOcclusionMesh );
+		
+	case efpltParticleEmitter:
+		return &lssys.GetSaveFilePatternList( igdeLoadSaveSystem::efplParticleEmitter );
+		
+	case efpltRig:
+		return &lssys.GetSaveFilePatternList( igdeLoadSaveSystem::efplRig );
+		
 	case efpltSky:
 		return &lssys.GetOpenFilePatternList( igdeLoadSaveSystem::efplSky );
 		
+	case efpltSkin:
+		return &lssys.GetSaveFilePatternList( igdeLoadSaveSystem::efplSkin );
+		
+	case efpltSound:
+		return &lssys.GetSaveFilePatternList( igdeLoadSaveSystem::efplSound );
+		
+	case efpltSynthesizer:
+		return &lssys.GetSaveFilePatternList( igdeLoadSaveSystem::efplSynthesizer );
+		
+	case efpltVideo:
+		return &lssys.GetSaveFilePatternList( igdeLoadSaveSystem::efplVideo );
+		
 	case efpltSpeechAnimation:
 		return &lssys.GetOpenFilePatternList( igdeLoadSaveSystem::efplSpeechAnimation );
+		
+	case efpltCamera:
+		return &lssys.GetOpenFilePatternList( igdeLoadSaveSystem::efplCamera );
 		
 	default:
 		DETHROW( deeInvalidParam );
@@ -224,6 +239,18 @@ const igdeFilePatternList *igdeEnvironmentIGDE::GetSaveFilePatternList( eFilePat
 
 igdeIcon *igdeEnvironmentIGDE::GetStockIcon( eStockIcons icon ){
 	return pWindowMain->GetStockIcon( icon );
+}
+
+deSkin::Ref igdeEnvironmentIGDE::GetStockSkin( eStockSkins skin ){
+	return pWindowMain->GetStockSkin( skin );
+}
+
+deRig::Ref igdeEnvironmentIGDE::GetStockRig( eStockRigs rig ){
+	return pWindowMain->GetStockRig( rig );
+}
+
+deModel::Ref igdeEnvironmentIGDE::GetStockModel( eStockModels model ){
+	return pWindowMain->GetStockModel( model );
 }
 
 deLogger *igdeEnvironmentIGDE::GetLogger(){
@@ -267,10 +294,6 @@ igdeUIHelper &igdeEnvironmentIGDE::GetUIHelperProperties(){
 	return pWindowMain->GetUIHelperProperties();
 }
 
-deSkin *igdeEnvironmentIGDE::GetErrorSkin(){
-	return pWindowMain->GetErrorSkin();
-}
-
 igdeGuiTheme *igdeEnvironmentIGDE::GetGuiThemeNamed( const char *name ){
 	igdeGuiTheme *guitheme = pWindowMain->GetGuiThemeNamed( name );
 	return guitheme ? guitheme : pWindowMain->GetDefaultGuiTheme();
@@ -304,72 +327,56 @@ void igdeEnvironmentIGDE::ActiveModuleSharedToolBarsChanged(){
 	pWindowMain->ActiveModuleSharedToolBarsChanged();
 }
 
+void igdeEnvironmentIGDE::ActivateEditor( igdeEditorModule *editor ){
+	pWindowMain->ActivateEditor( editor );
+}
+
 
 
 void igdeEnvironmentIGDE::SetColliderDelegee( deCollider *collider,
 deBaseScriptingCollider *delegee ){
-	if( ! collider ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( collider )
 	
 	igdeSMCollider * const peer = ( igdeSMCollider* )collider->GetPeerScripting();
-	if( ! peer ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( peer )
 	
 	peer->SetDelegee( delegee );
 }
 
 void *igdeEnvironmentIGDE::GetColliderUserPointer( deCollider *collider ){
-	if( ! collider ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( collider )
 	
 	const igdeSMCollider * const peer = ( const igdeSMCollider * )collider->GetPeerScripting();
-	if( ! peer ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( peer )
 	
 	return peer->GetUserPointer();
 }
 
 void igdeEnvironmentIGDE::SetColliderUserPointer( deCollider *collider, void *userPointer ){
-	if( ! collider ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( collider )
 	
 	igdeSMCollider * const peer = ( igdeSMCollider* )collider->GetPeerScripting();
-	if( ! peer ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( peer )
 	
 	peer->SetUserPointer( userPointer );
 }
 
 void igdeEnvironmentIGDE::SetTouchSensorDelegee( deTouchSensor *touchSensor,
 deBaseScriptingTouchSensor *delegee ){
-	if( ! touchSensor ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( touchSensor )
 	
 	igdeSMTouchSensor * const peer = ( igdeSMTouchSensor* )touchSensor->GetPeerScripting();
-	if( ! peer ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( peer )
 	
 	peer->SetDelegee( delegee );
 }
 
 void igdeEnvironmentIGDE::SetPropFieldDelegee( dePropField *propField,
 deBaseScriptingPropField *delegee ){
-	if( ! propField ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( propField )
 	
 	igdeSMPropField * const peer = ( igdeSMPropField* )propField->GetPeerScripting();
-	if( ! peer ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( peer )
 	
 	peer->SetDelegee( delegee );
 }
@@ -414,4 +421,11 @@ void igdeEnvironmentIGDE::AddRecentEditorFile( const char *filename ){
 		configuration.SaveConfiguration();
 	}
 }
+
+void igdeEnvironmentIGDE::CloseApplication(){
+	if( pWindowMain->CloseWindow() ){
+		pWindowMain->Close();
+	}
+}
+
 /*@}*/

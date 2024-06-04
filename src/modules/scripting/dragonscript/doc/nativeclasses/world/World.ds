@@ -8,6 +8,10 @@
 
 namespace Dragengine.Scenery
 
+pin Dragengine.Gui
+pin Dragengine.Networking
+
+
 /**
  * \brief World.
  * 
@@ -17,7 +21,7 @@ class World
 	/** \name Constructors */
 	/*@{*/
 	/** \brief Create world. */
-	public func new()
+	func new()
 	end
 	/*@}*/
 	
@@ -25,16 +29,21 @@ class World
 	
 	/** \name Management */
 	/*@{*/
+	/** \brief Detect collisions. */
+	func void detectCollisions( float elapsed )
+	end
+	
 	/** \brief Update the world. */
-	public func void update( float elapsed )
+	func void update( float elapsed )
 	end
 	
 	/** \brief Size of the world. */
-	public func DVector getSize()
+	func DVector getSize()
+		return null
 	end
 	
 	/** \brief Set size of the world. */
-	public func void setSize( DVector size )
+	func void setSize( DVector size )
 	end
 	/*@}*/
 	
@@ -43,11 +52,32 @@ class World
 	/** \name Physics */
 	/*@{*/
 	/** \brief Gravity vector. */
-	public func Vector getGravity()
+	func Vector getGravity()
+		return null
 	end
 	
 	/** \brief Set gravity vector. */
-	public func void setGravity( Vector gravity )
+	func void setGravity( Vector gravity )
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Audio */
+	/*@{*/
+	/**
+	 * \brief Gain to multiply all speakers with.
+	 * \version 1.16
+	 */
+	func float getSpeakerGain()
+		return 0.0
+	end
+	
+	/**
+	 * \brief Set gain to multiply all speakers with.
+	 * \version 1.16
+	 */
+	func void setSpeakerGain(float gain)
 	end
 	/*@}*/
 	
@@ -56,27 +86,30 @@ class World
 	/** \name Lighting */
 	/*@{*/
 	/** \brief All lights are disabled rendering world in full bright. */
-	public func bool getDisableLights()
+	func bool getDisableLights()
+		return false
 	end
 	
 	/** \brief Set if all lights are disabled rendering world in full bright. */
-	public func void setDisableLights(bool disable)
+	func void setDisableLights(bool disable)
 	end
 	
 	/** \brief Ambient light. */
-	public func Color getAmbientLight()
+	func Color getAmbientLight()
+		return null
 	end
 	
 	/** \brief Set ambient light. */
-	public func void setAmbientLight(Color light)
+	func void setAmbientLight(Color light)
 	end
 	
 	/** \brief Light color matrix. */
-	public func Matrix getLightColorMatrix()
+	func Matrix getLightColorMatrix()
+		return null
 	end
 	
 	/** \brief Set light color matrix. */
-	public func void setLightColorMatrix( Matrix matrix )
+	func void setLightColorMatrix( Matrix matrix )
 	end
 	/*@}*/
 	
@@ -85,19 +118,20 @@ class World
 	/** \name Skies */
 	/*@{*/
 	/** \brief Number of skies. */
-	public func int getSkyCount()
+	func int getSkyCount()
+		return 0
 	end
 	
 	/** \brief Add sky. */
-	public func void addSky( SkyInstance sky )
+	func void addSky( SkyInstance sky )
 	end
 	
 	/** \brief Remove sky. */
-	public func void removeSky( SkyInstance sky )
+	func void removeSky( SkyInstance sky )
 	end
 	
 	/** \brief Remove all skies. */
-	public func void removeAllSkies()
+	func void removeAllSkies()
 	end
 	/*@}*/
 	
@@ -106,11 +140,12 @@ class World
 	/** \name Height terrain */
 	/*@{*/
 	/** \brief Hheight terrain or \em null if not set. */
-	public func HeightTerrain getHeightTerrain()
+	func HeightTerrain getHeightTerrain()
+		return null
 	end
 	
 	/** \brief Set height terrain or \em null if not set. */
-	public func void setHeightTerrain( HeightTerrain heightTerrain )
+	func void setHeightTerrain( HeightTerrain heightTerrain )
 	end
 	/*@}*/
 	
@@ -119,19 +154,20 @@ class World
 	/** \name Cameras */
 	/*@{*/
 	/** \brief Number of camera. */
-	public func int getCameraCount()
+	func int getCameraCount()
+		return 0
 	end
 	
 	/** \brief Add camera. */
-	public func void addCamera( Camera camera )
+	func void addCamera( Camera camera )
 	end
 	
 	/** \brief Remove camera. */
-	public func void removeCamera( Camera camera )
+	func void removeCamera( Camera camera )
 	end
 	
 	/** \brief Remove all cameras. */
-	public func void removeAllCameras()
+	func void removeAllCameras()
 	end
 	/*@}*/
 	
@@ -140,19 +176,20 @@ class World
 	/** \name Speakers */
 	/*@{*/
 	/** \brief Number of speakers. */
-	public func int getSpeakerCount()
+	func int getSpeakerCount()
+		return 0
 	end
 	
 	/** \brief Add speaker. */
-	public func void addSpeaker( Speaker speaker )
+	func void addSpeaker( Speaker speaker )
 	end
 	
 	/** \brief Remove speaker. */
-	public func void removeSpeaker( Speaker speaker )
+	func void removeSpeaker( Speaker speaker )
 	end
 	
 	/** \brief Remove all speakers. */
-	public func void removeAllSpeakers()
+	func void removeAllSpeakers()
 	end
 	/*@}*/
 	
@@ -161,19 +198,20 @@ class World
 	/** \name Microphones */
 	/*@{*/
 	/** \brief Number of microphones. */
-	public func int getMicrophoneCount()
+	func int getMicrophoneCount()
+		return 0
 	end
 	
 	/** \brief Add microphone. */
-	public func void addMicrophone( Microphone microphone )
+	func void addMicrophone( Microphone microphone )
 	end
 	
 	/** \brief Remove microphone. */
-	public func void removeMicrophone( Microphone microphone )
+	func void removeMicrophone( Microphone microphone )
 	end
 	
 	/** \brief Remove all microphones. */
-	public func void removeAllMicrophones()
+	func void removeAllMicrophones()
 	end
 	/*@}*/
 	
@@ -182,20 +220,20 @@ class World
 	/** \name Sound level meters */
 	/*@{*/
 	/** \brief Number of sound level meters. */
-	public func int getSoundLevelMeterCount()
+	func int getSoundLevelMeterCount()
 		return 0
 	end
 	
 	/** \brief Add sound level meter. */
-	public func void addSoundLevelMeter( SoundLevelMeter soundLevelMeter )
+	func void addSoundLevelMeter( SoundLevelMeter soundLevelMeter )
 	end
 	
 	/** \brief Remove sound level meter. */
-	public func void removeSoundLevelMeter( SoundLevelMeter soundLevelMeter )
+	func void removeSoundLevelMeter( SoundLevelMeter soundLevelMeter )
 	end
 	
 	/** \brief Remove all sound level meters. */
-	public func void removeAllSoundLevelMeters()
+	func void removeAllSoundLevelMeters()
 	end
 	/*@}*/
 	
@@ -204,19 +242,20 @@ class World
 	/** \name Network states */
 	/*@{*/
 	/** \brief Number of network states. */
-	public func int getNetworkStateCount()
+	func int getNetworkStateCount()
+		return 0
 	end
 	
 	/** \brief Add network state. */
-	public func void addNetworkState( NetworkState networkState )
+	func void addNetworkState( NetworkState networkState )
 	end
 	
 	/** \brief Remove network state. */
-	public func void removeNetworkState( NetworkState networkState )
+	func void removeNetworkState( NetworkState networkState )
 	end
 	
 	/** \brief Remove all network states. */
-	public func void removeAllNetworkStates()
+	func void removeAllNetworkStates()
 	end
 	/*@}*/
 	
@@ -225,19 +264,20 @@ class World
 	/** \name Components */
 	/*@{*/
 	/** \brief Number of components. */
-	public func int getComponentCount()
+	func int getComponentCount()
+		return 0
 	end
 	
 	/** \brief Add component. */
-	public func void addComponent(Component comp)
+	func void addComponent(Component comp)
 	end
 	
 	/** \brief Remove component. */
-	public func void removeComponent(Component comp)
+	func void removeComponent(Component comp)
 	end
 	
 	/** \brief Remove all components. */
-	public func void removeAllComponents()
+	func void removeAllComponents()
 	end
 	/*@}*/
 	
@@ -246,19 +286,20 @@ class World
 	/** \name Lights */
 	/*@{*/
 	/** \brief Number of lights. */
-	public func int getLightCount()
+	func int getLightCount()
+		return 0
 	end
 	
 	/** \brief Add light. */
-	public func void addLight(Light light)
+	func void addLight(Light light)
 	end
 	
 	/** \brief Remove light. */
-	public func void removeLight(Light light)
+	func void removeLight(Light light)
 	end
 	
 	/** \brief Remove all lights. */
-	public func void removeAllLights()
+	func void removeAllLights()
 	end
 	/*@}*/
 	
@@ -267,19 +308,20 @@ class World
 	/** \name Colliders */
 	/*@{*/
 	/** \brief Number of colliders. */
-	public func int getColliderCount()
+	func int getColliderCount()
+		return 0
 	end
 	
 	/** \brief Add collider. */
-	public func void addCollider( Collider collider )
+	func void addCollider( Collider collider )
 	end
 	
 	/** \brief Remove collider. */
-	public func void removeCollider( Collider collider )
+	func void removeCollider( Collider collider )
 	end
 	
 	/** \brief Remove all colliders. */
-	public func void removeAllColliders()
+	func void removeAllColliders()
 	end
 	/*@}*/
 	
@@ -288,19 +330,20 @@ class World
 	/** \name Lumimeters */
 	/*@{*/
 	/** \brief Number of lumimeters. */
-	public func int getLumimeterCount()
+	func int getLumimeterCount()
+		return 0
 	end
 	
 	/** \brief Add lumimeter. */
-	public func void addLumimeter( Lumimeter lumimeter )
+	func void addLumimeter( Lumimeter lumimeter )
 	end
 	
 	/** \brief Remove lumimeter. */
-	public func void removeLumimeter( Lumimeter lumimeter )
+	func void removeLumimeter( Lumimeter lumimeter )
 	end
 	
 	/** \brief Remove all lumimeters. */
-	public func void removeAllLumimeters()
+	func void removeAllLumimeters()
 	end
 	/*@}*/
 	
@@ -309,19 +352,20 @@ class World
 	/** \name Touch sensors */
 	/*@{*/
 	/** \brief Number of touch sensors. */
-	public func int getTouchSensorCount()
+	func int getTouchSensorCount()
+		return 0
 	end
 	
 	/** \brief Add touch sensor. */
-	public func void addTouchSensor( TouchSensor touchSensor )
+	func void addTouchSensor( TouchSensor touchSensor )
 	end
 	
 	/** \brief Remove touch sensor. */
-	public func void removeTouchSensor( TouchSensor touchSensor )
+	func void removeTouchSensor( TouchSensor touchSensor )
 	end
 	
 	/** \brief Remove all touch sensors. */
-	public func void removeAllTouchSensors()
+	func void removeAllTouchSensors()
 	end
 	/*@}*/
 	
@@ -330,19 +374,20 @@ class World
 	/** \name Prop fields */
 	/*@{*/
 	/** \brief Number of prop fields. */
-	public func int getPropFieldCount()
+	func int getPropFieldCount()
+		return 0
 	end
 	
 	/** \brief Add prop field. */
-	public func void addPropField( PropField propfield )
+	func void addPropField( PropField propfield )
 	end
 	
 	/** \brief Remove prop field. */
-	public func void removePropField( PropField propfield )
+	func void removePropField( PropField propfield )
 	end
 	
 	/** \brief Remove all prop fields. */
-	public func void removeAllPropFields()
+	func void removeAllPropFields()
 	end
 	/*@}*/
 	
@@ -351,19 +396,20 @@ class World
 	/** \name Force fields */
 	/*@{*/
 	/** \brief Number of force fields. */
-	public func int getForceFieldCount()
+	func int getForceFieldCount()
+		return 0
 	end
 	
 	/** \brief Add force field. */
-	public func void addForceField( ForceField forcefield )
+	func void addForceField( ForceField forcefield )
 	end
 	
 	/** \brief Remove force field. */
-	public func void removeForceField( ForceField forcefield )
+	func void removeForceField( ForceField forcefield )
 	end
 	
 	/** \brief Remove all force fields. */
-	public func void removeAllForceFields()
+	func void removeAllForceFields()
 	end
 	/*@}*/
 	
@@ -372,19 +418,20 @@ class World
 	/** \name Particle emitters */
 	/*@{*/
 	/** \brief Number of particle emitters. */
-	public func int getParticleEmitterCount()
+	func int getParticleEmitterCount()
+		return 0
 	end
 	
 	/** \brief Add particle emitter. */
-	public func void addParticleEmitter( ParticleEmitterInstance emitter )
+	func void addParticleEmitter( ParticleEmitterInstance emitter )
 	end
 	
 	/** \brief Remove particle emitter. */
-	public func void removeParticleEmitter( ParticleEmitterInstance emitter )
+	func void removeParticleEmitter( ParticleEmitterInstance emitter )
 	end
 	
 	/** \brief Remove all particle emitters. */
-	public func void removeAllParticleEmitters()
+	func void removeAllParticleEmitters()
 	end
 	/*@}*/
 	
@@ -393,19 +440,20 @@ class World
 	/** \name Debug drawers */
 	/*@{*/
 	/** \brief Number of debug drawers. */
-	public func int getDebugDrawerCount()
+	func int getDebugDrawerCount()
+		return 0
 	end
 	
 	/** \brief Add debug drawer. */
-	public func void addDebugDrawer( DebugDrawer debugDrawer )
+	func void addDebugDrawer( DebugDrawer debugDrawer )
 	end
 	
 	/** \brief Remove debug drawer. */
-	public func void removeDebugDrawer( DebugDrawer debugDrawer )
+	func void removeDebugDrawer( DebugDrawer debugDrawer )
 	end
 	
 	/** \brief Remove all debug drawers. */
-	public func void removeAllDebugDrawers()
+	func void removeAllDebugDrawers()
 	end
 	/*@}*/
 	
@@ -414,19 +462,20 @@ class World
 	/** \name Navigation spaces */
 	/*@{*/
 	/** \brief Number of navigation spaces. */
-	public func int getNavigationSpaceCount()
+	func int getNavigationSpaceCount()
+		return 0
 	end
 	
 	/** \brief Add navigation space if absent. */
-	public func void addNavigationSpace( NavigationSpace navspace )
+	func void addNavigationSpace( NavigationSpace navspace )
 	end
 	
 	/** \brief Remove navigation space if present. */
-	public func void removeNavigationSpace( NavigationSpace navspace )
+	func void removeNavigationSpace( NavigationSpace navspace )
 	end
 	
 	/** \brief Remove all navigation spaces. */
-	public func void removeAllNavigationSpaces()
+	func void removeAllNavigationSpaces()
 	end
 	/*@}*/
 	
@@ -435,19 +484,20 @@ class World
 	/** \name Navigation blockers */
 	/*@{*/
 	/** \brief Number of navigation blockers. */
-	public func int getNavigationBlockerCount()
+	func int getNavigationBlockerCount()
+		return 0
 	end
 	
 	/** \brief Add navigation blockers if absent. */
-	public func void addNavigationBlocker( NavigationBlocker blocker )
+	func void addNavigationBlocker( NavigationBlocker blocker )
 	end
 	
 	/** \brief Remove navigation blocker if present. */
-	public func void removeNavigationBlocker( NavigationBlocker blocker )
+	func void removeNavigationBlocker( NavigationBlocker blocker )
 	end
 	
 	/** \brief Remove all navigation blockers. */
-	public func void removeAllNavigationBlockers()
+	func void removeAllNavigationBlockers()
 	end
 	/*@}*/
 	
@@ -456,19 +506,20 @@ class World
 	/** \name Navigators */
 	/*@{*/
 	/** \brief Number of navigators. */
-	public func int getNavigatorCount()
+	func int getNavigatorCount()
+		return 0
 	end
 	
 	/** \brief Add navigator if absent. */
-	public func void addNavigator( Navigator navigator )
+	func void addNavigator( Navigator navigator )
 	end
 	
 	/** \brief Remove navigator if present. */
-	public func void removeNavigator( Navigator navigator )
+	func void removeNavigator( Navigator navigator )
 	end
 	
 	/** \brief Remove all navigators. */
-	public func void removeAllNavigators()
+	func void removeAllNavigators()
 	end
 	/*@}*/
 	
@@ -477,19 +528,20 @@ class World
 	/** \name Environment map probes */
 	/*@{*/
 	/** \brief Number of environment map probes. */
-	public func int getEnvMapProbeCount()
+	func int getEnvMapProbeCount()
+		return 0
 	end
 	
 	/** \brief Add environment map probe if absent. */
-	public func void addEnvMapProbe( EnvMapProbe envMapProbe )
+	func void addEnvMapProbe( EnvMapProbe envMapProbe )
 	end
 	
 	/** \brief Remove environment map probe if present. */
-	public func void removeEnvMapProbe( EnvMapProbe envMapProbe )
+	func void removeEnvMapProbe( EnvMapProbe envMapProbe )
 	end
 	
 	/** \brief Remove all environment map probes. */
-	public func void removeAllEnvMapProbes()
+	func void removeAllEnvMapProbes()
 	end
 	/*@}*/
 	
@@ -498,19 +550,20 @@ class World
 	/** \name Billboards */
 	/*@{*/
 	/** \brief Number of billboards. */
-	public func int getBillboardCount()
+	func int getBillboardCount()
+		return 0
 	end
 	
 	/** \brief Add billboard. */
-	public func void addBillboard( Billboard billboard )
+	func void addBillboard( Billboard billboard )
 	end
 	
 	/** \brief Remove billboard. */
-	public func void removeBillboard( Billboard billboard )
+	func void removeBillboard( Billboard billboard )
 	end
 	
 	/** \brief Remove all billboards. */
-	public func void removeAllBillboards()
+	func void removeAllBillboards()
 	end
 	/*@}*/
 	
@@ -524,35 +577,49 @@ class World
 	 * For each collision the collisionResponse function the given listener is called. To
 	 * stop testing set StopTesting in the provided collision information object to true.
 	 */
-	public func void pointHits( DVector point, ColliderListener listener, \
-	CollisionFilter collisionFilter )
+	func void pointHits( DVector point, ColliderListener listener, CollisionFilter collisionFilter )
 	end
 	
 	/** \brief Static collider intersection test. */
-	public func void colliderHits( Collider collider, ColliderListener listener )
+	func void colliderHits( Collider collider, ColliderListener listener )
 	end
 	
 	/** \brief Moving collider collision test. */
-	public func void colliderMoveHits( Collider collider, Vector displacement, \
-	ColliderListener listener )
+	func void colliderMoveHits( Collider collider, Vector displacement, ColliderListener listener )
 	end
 	
 	/** \brief Moving collider collision test reporting only closest hit. */
-	public func void colliderMoveHitsClosest( Collider collider, Vector displacement, \
-	ColliderListener listener )
+	func void colliderMoveHitsClosest( Collider collider, Vector displacement, ColliderListener listener )
 	end
 	
 	/** \brief Ray cast intersection test. */
-	public func void rayHits( DVector rayOrigin, Vector rayDirection, \
-	ColliderListener listener, CollisionFilter collisionFilter )
+	func void rayHits( DVector rayOrigin, Vector rayDirection, ColliderListener listener, CollisionFilter collisionFilter )
 	end
 	
 	/**
 	 * \brief Closest ray cast intersection test.
 	 * \details Only closest intersection is reported to listener. rayHits() reports all intersections.
 	 */
-	public func void rayHitsClosest( DVector rayOrigin, Vector rayDirection, \
-	ColliderListener listener, CollisionFilter collisionFilter )
+	func void rayHitsClosest( DVector rayOrigin, Vector rayDirection, ColliderListener listener, CollisionFilter collisionFilter )
+	end
+	
+	
+	
+	/**
+	 * \brief World is equal to another object.
+	 * \details Implements Object.equals(Object).
+	 * \returns \em true if \em other is of type World and both point to the same engine world resource.
+	 */
+	func bool equals(Object other)
+		return false
+	end
+	
+	/**
+	 * \brief Hash code for use as dictionary keys.
+	 * \details Implements Object.hashCode().
+	 */
+	func int hashCode()
+		return 0
 	end
 	/*@}*/
 end

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _IGDEENVIRONMENT_H_
@@ -25,6 +28,9 @@
 #include "../gui/resources/igdeFont.h"
 
 #include <dragengine/resources/loader/deResourceLoader.h>
+#include <dragengine/resources/skin/deSkin.h>
+#include <dragengine/resources/rig/deRig.h>
+#include <dragengine/resources/model/deModel.h>
 
 class igdeEngineController;
 class igdeFilePatternList;
@@ -39,6 +45,7 @@ class igdeTexturePropertyList;
 class igdeToolBarDock;
 class igdeUIHelper;
 class igdeResourceLoaderListener;
+class igdeEditorModule;
 
 class deBaseScriptingCollider;
 class deBaseScriptingPropField;
@@ -49,7 +56,6 @@ class dePropField;
 class deTouchSensor;
 class deVirtualFileSystem;
 class deRig;
-class deSkin;
 class decStringList;
 
 
@@ -59,60 +65,28 @@ class decStringList;
  * 
  * Provides access for editor modules to the editing environment.
  */
-class igdeEnvironment{
+class DE_DLL_EXPORT igdeEnvironment{
 public:
 	/** \brief File Pattern List Types. */
 	enum eFilePatternListTypes{
-		/** \brief All files. */
-		efpltAll,
-		
-		/** \brief Animation. */
-		efpltAnimation,
-		
-		/** \brief Animator. */
-		efpltAnimator,
-		
-		/** \brief Font. */
-		efpltFont,
-		
-		/** \brief Image. */
-		efpltImage,
-		
-		/** \brief Language pack. */
-		efpltLanguagePack,
-		
-		/** \brief Model. */
-		efpltModel,
-		
-		/** \brief Navigation space. */
-		efpltNavigationSpace,
-		
-		/** \brief Occlusion mesh. */
-		efpltOcclusionMesh,
-		
-		/** \brief Particle Emitter. */
-		efpltParticleEmitter,
-		
-		/** \brief Rig. */
-		efpltRig,
-		
-		/** \brief Skin. */
-		efpltSkin,
-		
-		/** \brief Sky. */
-		efpltSky,
-		
-		/** \brief Synthesizer. */
-		efpltSynthesizer,
-		
-		/** \brief Sound. */
-		efpltSound,
-		
-		/** \brief Video. */
-		efpltVideo,
-		
-		/** \brief Speech animation. */
-		efpltSpeechAnimation
+		efpltAll, //<! All files.
+		efpltAnimation, //<! Animation.
+		efpltAnimator, //<! Animator.
+		efpltFont, //<! Font.
+		efpltImage, //<! Image.
+		efpltLanguagePack, //<! Language pack.
+		efpltModel, //<! Model.
+		efpltNavigationSpace, //<! Navigation space.
+		efpltOcclusionMesh, //<! Occlusion mesh.
+		efpltParticleEmitter, //<! Particle Emitter.
+		efpltRig, //<! Rig.
+		efpltSkin, //<! Skin.
+		efpltSky, //<! Sky.
+		efpltSynthesizer, //<! Synthesizer.
+		efpltSound, //<! Sound.
+		efpltVideo, //<! Video.
+		efpltSpeechAnimation, //<! Speech animation.
+		efpltCamera, //<! Camera file.
 	};
 	
 	/** \brief Stock icons. */
@@ -154,34 +128,102 @@ public:
 		esiSmallStrongDown,
 		esiSmallStrongLeft,
 		esiSmallStrongRight,
-		esiSmallWarning
+		esiSmallWarning,
+		
+		esiEdit,
+		esiConfig
 	};
 	
 	/** \brief System colors. */
 	enum eSystemColors{
-		/** \brief Window background color. */
-		escWindowBackground,
+		escWindowBackground, //<! Window background color.
+		escWindowForeground, //<! Window foreground color.
+		escWidgetBackground, //<! Widget background color.
+		escWidgetForeground, //<! Widget foreground color.
+		escWidgetHighlight, //<! Widget highlight color.
+		escWidgetShadow, //<! Widget shadow color.
+		escWidgetSelectedBackground, //<! Widget selected background color.
+		escWidgetSelectedForeground //<! Widget selected foreground color.
+	};
+	
+	/** \brief Stock skins. */
+	enum eStockSkins{
+		/**
+		 * \brief Skin is missing for a component texture.
+		 * 
+		 * This skin has no renderables defined.
+		 */
+		essMissing,
 		
-		/** \brief Window foreground color. */
-		escWindowForeground,
+		/**
+		 * \brief Skin to display an error condition.
+		 * 
+		 * This skin has no renderables defined.
+		 */
+		essError,
 		
-		/** \brief Widget background color. */
-		escWidgetBackground,
+		/**
+		 * \brief Skin with test map typically used to examine texture coordinate layout.
+		 * 
+		 * This skin has no renderables defined.
+		 */
+		essTestMap,
 		
-		/** \brief Widget foreground color. */
-		escWidgetForeground,
+		/**
+		 * \brief Skin to highlight edited objects using outline.
+		 * 
+		 * This skin has these renderables defined:
+		 * - color: Color of the outline. Default value (1,0,0)
+		 * - thickness: Thickness of the outline. Default value 0.005
+		 */
+		essEditOutline,
 		
-		/** \brief Widget hilight color. */
-		escWidgetHilight,
+		/**
+		 * \brief Skin to highlight edited objects using rim.
+		 * 
+		 * This skin has these renderables defined:
+		 * - color: Color of the rim. Default value (1,0,0)
+		 * - angle: Angle of rim. Default value 0.4
+		 * - exponent: Exponent of rim. Default value 0.5
+		 */
+		essEditRim,
 		
-		/** \brief Widget shadow color. */
-		escWidgetShadow,
+		/**
+		 * \brief Skin to highlight edited objects using rim and outline.
+		 * 
+		 * This skin has these renderables defined:
+		 * - color: Color of the outline and rim. Default value (1,0,0)
+		 * - thickness: Thickness of the outline. Default value 0.005
+		 * - angle: Angle of rim. Default value 0.4
+		 * - exponent: Exponent of rim. Default value 0.5
+		 */
+		essEditRimOutline
+	};
+	
+	/** \brief Stock models. */
+	enum eStockModels{
+		/** \brief Gizmo move. */
+		esmGizmoMove
+	};
+	
+	/** \brief Stock rigs. */
+	enum eStockRigs{
+		/**
+		 * \brief Model collision rig.
+		 * 
+		 * This rig uses model collision.
+		 */
+		esrModelCollision,
 		
-		/** \brief Widget selected background olor. */
-		escWidgetSelectedBackground,
+		/**
+		 * \brief Ghost collision rig.
+		 * 
+		 * This rig uses no collision.
+		 */
+		esrGhostCollision,
 		
-		/** \brief Widget selected foreground olor. */
-		escWidgetSelectedForeground
+		/** \brief Gizmo move. */
+		esrGizmoMove
 	};
 	
 	
@@ -211,8 +253,32 @@ public:
 	 */
 	virtual igdeContainer *GetUIContainer() = 0;
 	
-	/** \brief Retrieves a stock icon. */
+	/** \brief Stock icon. */
 	virtual igdeIcon *GetStockIcon( eStockIcons icon ) = 0;
+	
+	/**
+	 * \brief Stock skin.
+	 * 
+	 * Stock skins are only available after the engine controller has been started for the
+	 * first time. If not available nullptr is returned.
+	 */
+	virtual deSkin::Ref GetStockSkin( eStockSkins skin ) = 0;
+	
+	/**
+	 * \brief Stock rig.
+	 * 
+	 * Stock rigs are only available after the engine controller has been started for the
+	 * first time. If not available nullptr is returned.
+	 */
+	virtual deRig::Ref GetStockRig( eStockRigs rig ) = 0;
+	
+	/**
+	 * \brief Stock model.
+	 * 
+	 * Stock models are only available after the engine controller has been started for the
+	 * first time. If not available nullptr is returned.
+	 */
+	virtual deModel::Ref GetStockModel( eStockModels model ) = 0;
 	
 	/** \brief Engine controller. */
 	virtual igdeEngineController *GetEngineController() = 0;
@@ -271,9 +337,6 @@ public:
 	/** \brief UI Helper for properties panels. */
 	virtual igdeUIHelper &GetUIHelperProperties() = 0;
 	
-	/** \brief Error skin. */
-	virtual deSkin *GetErrorSkin() = 0;
-	
 	
 	
 	/** \brief Named GuiTheme or default if not found. */
@@ -300,6 +363,9 @@ public:
 	
 	/** \brief Active module shared toolbars changed. */
 	virtual void ActiveModuleSharedToolBarsChanged() = 0;
+	
+	/** \brief Activate editor and bring it to the front. */
+	virtual void ActivateEditor( igdeEditorModule *editor ) = 0;
 	
 	
 	
@@ -416,6 +482,9 @@ public:
 	 * \brief Add a file to the recent editor files list.
 	 */
 	virtual void AddRecentEditorFile( const char *filename ) = 0;
+	
+	/** \brief Close application. */
+	virtual void CloseApplication() = 0;
 	/*@}*/
 };
 

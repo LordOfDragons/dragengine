@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Game Definition Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -42,7 +45,6 @@
 #include <dragengine/deEngine.h>
 #include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
-#include <dragengine/common/string/decStringSet.h>
 #include <dragengine/logger/deLogger.h>
 
 
@@ -52,18 +54,22 @@
 
 namespace{
 
-class cActionAdd : public igdeAction {
+class cActionAppend : public igdeAction {
 	gdeWPPathList &pPanel;
 	igdeEditPathReference &pEditPath;
 	igdeListBoxReference &pListBox;
 	
 public:
-	cActionAdd( gdeWPPathList &panel, igdeEditPathReference &editPath, igdeListBoxReference &listBox ) : 
-	igdeAction( "Add", panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ), "Add path" ),
+	cActionAppend( gdeWPPathList &panel, igdeEditPathReference &editPath, igdeListBoxReference &listBox ) : 
+	igdeAction( "Append", panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ), "Append path" ),
 	pPanel( panel ), pEditPath( editPath ), pListBox( listBox ){ }
 	
 	virtual void OnAction(){
 		if( ! pPanel.GetPathList() || ! pPanel.GetUndoSystem() ){
+			return;
+		}
+		if( pPanel.GetPathList()->Has( pEditPath->GetPath() ) ){
+			pListBox->SetSelection( pListBox->IndexOfItem( pEditPath->GetPath() ) );
 			return;
 		}
 		
@@ -72,6 +78,44 @@ public:
 		pPanel.GetUndoSystem()->Add( undo );
 		
 		pListBox->SetSelection( pListBox->IndexOfItem( pEditPath->GetPath() ) );
+	}
+};
+
+class cActionInsert : public igdeAction {
+	gdeWPPathList &pPanel;
+	igdeEditPathReference &pEditPath;
+	igdeListBoxReference &pListBox;
+	
+public:
+	cActionInsert( gdeWPPathList &panel, igdeEditPathReference &editPath, igdeListBoxReference &listBox ) : 
+	igdeAction( "Insert", panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ), "Insert path" ),
+	pPanel( panel ), pEditPath( editPath ), pListBox( listBox ){ }
+	
+	virtual void OnAction(){
+		if( ! pPanel.GetPathList() || ! pPanel.GetUndoSystem() ){
+			return;
+		}
+		if( pPanel.GetPathList()->Has( pEditPath->GetPath() ) ){
+			pListBox->SetSelection( pListBox->IndexOfItem( pEditPath->GetPath() ) );
+			return;
+		}
+		
+		const int position = pListBox->GetSelection();
+		if( position == -1 ){
+			return;
+		}
+		
+		igdeUndoReference undo;
+		decStringList list( *pPanel.GetPathList() );
+		list.InsertAt( pEditPath->GetPath(), position );
+		undo.TakeOver( pPanel.UndoSet( list ) );
+		pPanel.GetUndoSystem()->Add( undo );
+		
+		pListBox->SetSelection( position );
+	}
+	
+	virtual void Update(){
+		SetEnabled( pListBox->GetSelection() != -1 );
 	}
 };
 
@@ -89,8 +133,11 @@ public:
 			return;
 		}
 		
-		decStringSet paths( *pPanel.GetPathList() );
-		paths.Remove( pListBox->GetSelectedItem()->GetText() );
+		decStringList paths( *pPanel.GetPathList() );
+		const int index = paths.IndexOf( pListBox->GetSelectedItem()->GetText() );
+		if( index != -1 ){
+			paths.RemoveFrom( index );
+		}
 		
 		igdeUndoReference undo;
 		undo.TakeOver( pPanel.UndoSet( paths ) );
@@ -116,7 +163,7 @@ public:
 		}
 		
 		igdeUndoReference undo;
-		undo.TakeOver( pPanel.UndoSet( decStringSet() ) );
+		undo.TakeOver( pPanel.UndoSet( decStringList() ) );
 		pPanel.GetUndoSystem()->Add( undo );
 	}
 };
@@ -132,7 +179,8 @@ public:
 	
 	virtual void AddContextMenuEntries( igdeListBox*, igdeMenuCascade &menu ){
 		igdeUIHelper &helper = pListBox.GetEnvironment().GetUIHelper();
-		helper.MenuCommand( menu, pListBox.GetActionAdd() );
+		helper.MenuCommand( menu, pListBox.GetActionAppend() );
+		helper.MenuCommand( menu, pListBox.GetActionInsert() );
 		helper.MenuCommand( menu, pListBox.GetActionRemove() );
 		helper.MenuCommand( menu, pListBox.GetActionClear() );
 	}
@@ -153,7 +201,8 @@ igdeContainerFlow( helper.GetEnvironment(), igdeContainerFlow::eaY, igdeContaine
 pPathList( NULL ),
 pUndoSystem( NULL )
 {
-	pActionAdd.TakeOver( new cActionAdd( *this, pEditPath, pListBox ) );
+	pActionAppend.TakeOver( new cActionAppend( *this, pEditPath, pListBox ) );
+	pActionInsert.TakeOver( new cActionInsert( *this, pEditPath, pListBox ) );
 	pActionRemove.TakeOver( new cActionRemove( *this, pListBox ) );
 	pActionClear.TakeOver( new cActionClear( *this, pListBox ) );
 	
@@ -161,7 +210,6 @@ pUndoSystem( NULL )
 	pEditPath->SetAutoValidatePath( false );
 	
 	helper.ListBox( *this, rows, description, pListBox, new cListPaths( *this ) );
-	pListBox->SetDefaultSorter();
 }
 
 gdeWPPathList::~gdeWPPathList(){
@@ -172,7 +220,7 @@ gdeWPPathList::~gdeWPPathList(){
 // Management
 ///////////////
 
-void gdeWPPathList::SetPathList( const decStringSet *tagList ){
+void gdeWPPathList::SetPathList( const decStringList *tagList ){
 	if( tagList == pPathList ){
 		return;
 	}
@@ -210,8 +258,6 @@ void gdeWPPathList::UpdateList(){
 		for( i=0; i<count; i++ ){
 			pListBox->AddItem( pPathList->GetAt( i ) );
 		}
-		
-		pListBox->SortItems();
 	}
 	
 	SelectPath( selection );

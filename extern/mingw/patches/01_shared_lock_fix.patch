@@ -1,0 +1,21 @@
+diff -rupN mingw_stdthreads-org/mingw.shared_mutex.h mingw_stdthreads-patched/mingw.shared_mutex.h
+--- mingw_stdthreads-org/mingw.shared_mutex.h	2022-05-23 02:47:41.384801377 +0200
++++ mingw_stdthreads-patched/mingw.shared_mutex.h	2022-05-23 02:48:14.749824136 +0200
+@@ -303,7 +303,7 @@ public:
+ };
+ 
+ #if __cplusplus >= 201402L
+-using std::shared_lock;
++// using std::shared_lock;
+ #else
+ //    If not supplied by shared_mutex (eg. because C++14 is not supported), I
+ //  supply the various helper classes that the header should have defined.
+@@ -489,7 +489,7 @@ using mingw_stdthread::shared_mutex;
+ #endif
+ #if (__cplusplus < 201402L) || (defined(__MINGW32__ ) && !defined(_GLIBCXX_HAS_GTHREADS))
+ using mingw_stdthread::shared_timed_mutex;
+-using mingw_stdthread::shared_lock;
++// using mingw_stdthread::shared_lock;
+ #elif !defined(MINGW_STDTHREAD_REDUNDANCY_WARNING)  //  Skip repetition
+ #define MINGW_STDTHREAD_REDUNDANCY_WARNING
+ #pragma message "This version of MinGW seems to include a win32 port of\

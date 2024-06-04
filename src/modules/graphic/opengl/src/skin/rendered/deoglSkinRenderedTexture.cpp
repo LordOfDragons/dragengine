@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -33,8 +36,12 @@
 #include "../../model/deoglRModel.h"
 #include "../../model/deoglModelLOD.h"
 #include "../../model/face/deoglModelFace.h"
+#include "../../rendering/light/deoglRenderGI.h"
+#include "../../rendering/light/deoglRenderLight.h"
 #include "../../rendering/plan/deoglRenderPlan.h"
 #include "../../rendering/plan/deoglRenderPlanMasked.h"
+#include "../../renderthread/deoglRenderThread.h"
+#include "../../renderthread/deoglRTRenderers.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -91,9 +98,10 @@ void deoglSkinRenderedTexture::DropDelayedDeletionObjects(){
 //////////////////////
 
 void deoglSkinRenderedTexture::pMirrorAddRenderPlans( deoglRenderPlan &plan ){
-	decDMatrix ownerMatrix;
+	sMirrorMatrix mirrorMatrix;
+	
 	if( pSkinRendered.GetOwnerComponent() ){
-		ownerMatrix = pSkinRendered.GetOwnerComponent()->GetMatrix();
+		mirrorMatrix.ownerMatrix = pSkinRendered.GetOwnerComponent()->GetMatrix();
 		
 	}else if( pSkinRendered.GetOwnerBillboard() ){
 		// similar to what is set in the SPB parameters. needs to be turned into a function
@@ -109,11 +117,8 @@ void deoglSkinRenderedTexture::pMirrorAddRenderPlans( deoglRenderPlan &plan ){
 	
 	// get the plane parrameters. this is done first since if the plane is facing
 	// away from the camera the entire mirror rendering can be skipped altogether
-	decVector planeNormal;
-	decVector planePosition;
-	
 	if( pSkinRendered.GetOwnerComponent() ){
-		pPlaneFromTexture( planeNormal, planePosition );
+		pPlaneFromTexture( mirrorMatrix );
 		
 	}else if( pSkinRendered.GetOwnerBillboard() ){
 		// depends on billboard orientation
@@ -133,49 +138,14 @@ void deoglSkinRenderedTexture::pMirrorAddRenderPlans( deoglRenderPlan &plan ){
 	}
 	*/
 	
-	decDVector mirrorNormal( ownerMatrix.TransformNormal( decDVector( planeNormal ) ) );
-	mirrorNormal.Normalize();
-	decDVector mirrorRefPoint( ownerMatrix * decDVector( planePosition ) );
-	const double mirrorDot = mirrorNormal * mirrorRefPoint;
-	
-	// calculate mirror properties
-	const decDMatrix &invCamMat = plan.GetInverseCameraMatrix();
-	const decDVector cameraPos( invCamMat.GetPosition() );
-	const decDVector cameraView( invCamMat.TransformView() );
-	const decDVector cameraUp( invCamMat.TransformUp() );
-	const decDVector cameraRight( invCamMat.TransformRight() );
-	
-	const decDVector mirrorPos( cameraPos - mirrorNormal * ( ( cameraPos * mirrorNormal - mirrorDot ) * 2.0 ) );
-	const decDVector mirrorView( cameraView - mirrorNormal * ( ( cameraView * mirrorNormal ) * 2.0 ) );
-	const decDVector mirrorUp( cameraUp - mirrorNormal * ( ( cameraUp * mirrorNormal ) * 2.0 ) );
-	const decDVector mirrorRight( cameraRight - mirrorNormal * ( ( cameraRight * mirrorNormal ) * 2.0 ) );
-	
-	decDMatrix mirrorMatrix;
-	mirrorMatrix.a11 = mirrorRight.x;
-	mirrorMatrix.a12 = mirrorRight.y;
-	mirrorMatrix.a13 = mirrorRight.z;
-	mirrorMatrix.a14 = -( mirrorPos * mirrorRight );
-	mirrorMatrix.a21 = mirrorUp.x;
-	mirrorMatrix.a22 = mirrorUp.y;
-	mirrorMatrix.a23 = mirrorUp.z;
-	mirrorMatrix.a24 = -( mirrorPos * mirrorUp );
-	mirrorMatrix.a31 = mirrorView.x;
-	mirrorMatrix.a32 = mirrorView.y;
-	mirrorMatrix.a33 = mirrorView.z;
-	mirrorMatrix.a34 = -( mirrorPos * mirrorView );
-	mirrorMatrix.a41 = 0.0;
-	mirrorMatrix.a42 = 0.0;
-	mirrorMatrix.a43 = 0.0;
-	mirrorMatrix.a44 = 1.0;
-	
-	mirrorNormal = mirrorMatrix.TransformNormal( mirrorNormal );
-	mirrorRefPoint = mirrorMatrix * mirrorRefPoint;
+	pMirrorMatrix( plan.GetInverseCameraMatrix(), mirrorMatrix );
 	
 	// set the plan properties
 	pPlan->SetWorld( plan.GetWorld() );
-	pPlan->SetCamera( NULL ); // since this is a fake camera
+	pPlan->SetCamera( nullptr ); // since this is a fake camera
 	pPlan->CopyCameraParametersFrom( plan );
-	pPlan->SetCameraMatrix( mirrorMatrix );
+	pPlan->SetCameraMatrix( mirrorMatrix.mirrorMatrix );
+	pPlan->SetCameraMatrixNonMirrored( mirrorMatrix.mirrorFreeMatrix );
 	pPlan->UpdateRefPosCameraMatrix();
 	
 	pPlan->SetFlipCulling( ! plan.GetFlipCulling() );
@@ -183,13 +153,19 @@ void deoglSkinRenderedTexture::pMirrorAddRenderPlans( deoglRenderPlan &plan ){
 	
 	pPlan->SetNoReflections( true ); // HACK prevent re-entrant problem for the time being
 	
+	// use the parent plan gi state but without modifying it. allows to use GI with
+	// no extra cost and witout messing up parent GI state. for mirrors this is good
+	// enough since mirrors need to be in view of the parent camera
+	pPlan->SetUseConstGIState( plan.GetRenderGIState() );
+	pPlan->SetUseGIState( pPlan->GetUseConstGIState() != NULL );
+	
 	// calculate the frustum for this texture
 	//matrixMVP = ( ownerMatrix * pPlan->GetCameraMatrix() ).ToMatrix() * pPlan->GetProjectionMatrix();
 	const decDMatrix matrixInvCamera( decDMatrix::CreateScale( -1.0, 1.0, 1.0 ) * pPlan->GetInverseCameraMatrix() );
 	//matrixInvCamera = mirrorMatrix;
 	
 	if( pSkinRendered.GetOwnerComponent() ){
-		const decMatrix matrixMVP( ( ownerMatrix * plan.GetCameraMatrix() ).ToMatrix() * plan.GetProjectionMatrix() );
+		const decMatrix matrixMVP( ( mirrorMatrix.ownerMatrix * plan.GetCameraMatrix() ).ToMatrix() * plan.GetProjectionMatrix() );
 		double projX = 1.0 / ( double )plan.GetProjectionMatrix().a11;
 		double projY = 1.0 / ( double )plan.GetProjectionMatrix().a22;
 		double projNear = ( double )plan.GetCameraImageDistance();
@@ -211,29 +187,54 @@ void deoglSkinRenderedTexture::pMirrorAddRenderPlans( deoglRenderPlan &plan ){
 	maskedPlan.SetComponent( pSkinRendered.GetOwnerComponent(), pModelTexture );
 	
 	maskedPlan.SetUseClipPlane( true );
-	maskedPlan.SetClipNormal( mirrorNormal.ToVector() );
-	maskedPlan.SetClipDistance( mirrorNormal * mirrorRefPoint );
+	maskedPlan.SetClipNormal( mirrorMatrix.mirrorNormal.ToVector() );
+	maskedPlan.SetClipDistance( ( float )( mirrorMatrix.mirrorNormal * mirrorMatrix.mirrorRefPoint ) );
+	
+	// stereo rendering
+	if( plan.GetRenderStereo() ){
+		pPlan->SetRenderStereo( true );
+		
+		sMirrorMatrix mirrorMatrixStereo( mirrorMatrix );
+		
+		pMirrorMatrix( plan.GetCameraMatrix().QuickMultiply(
+			plan.GetCameraStereoMatrix() ).QuickInvert(), mirrorMatrixStereo );
+		
+		// camMatStereo = invert(invert(camMatStereo) * camMat)
+		//              = invert(camMat) * invert(invert(camMatStereo))
+		//              = invert(camMat) * camMatStereo
+		pPlan->SetCameraStereoMatrix( mirrorMatrix.mirrorMatrix.QuickInvert().
+			QuickMultiply( mirrorMatrixStereo.mirrorMatrix ) );
+		
+		// mirror-free matrix is not used by anybody. we skipp it for the time being
+		//pPlan->SetCameraStereoMatrixNonMirrored( mirrorMatrix.mirrorFreeMatrix );
+		//pPlan->UpdateRefPosCameraStereoMatrix();
+		
+		// we use only the left eye frustum for the time being
+		//pFrustumFromTexture( width, height, projX, projY, projNear, projFar, matrixInvCamera, matrixMVP );
+		
+		maskedPlan.SetClipNormalStereo( mirrorMatrixStereo.mirrorNormal.ToVector() );
+		maskedPlan.SetClipDistanceStereo( ( float )( mirrorMatrixStereo.mirrorNormal * mirrorMatrixStereo.mirrorRefPoint ) );
+		
+	}else{
+		pPlan->SetRenderStereo( false );
+	}
 	
 	// prepare the just added plan for rendering
-	pPlan->PrepareRender();
+	pPlan->PrepareRender( &maskedPlan );
 }
 
-void deoglSkinRenderedTexture::pPlaneFromTexture( decVector &planeNormal, decVector &planePosition ) const{
+void deoglSkinRenderedTexture::pPlaneFromTexture( sMirrorMatrix &mirrorMatrix ) const{
 	if( ! pSkinRendered.GetOwnerComponent() ){
 		DETHROW( deeInvalidParam );
 	}
 	
 	deoglRComponent &component = *pSkinRendered.GetOwnerComponent();
-	if( ! component.GetModel() ){
-		DETHROW( deeInvalidParam );
-	}
-	
 	deoglRComponentLOD &componentLOD = component.GetLODAt( 0 );
 	componentLOD.PrepareNormalsTangents();
-	const oglVector * const compFaceNormals = componentLOD.GetFaceNormals();
-	const oglVector * const compPositions = componentLOD.GetPositions();
+	const oglVector3 * const compFaceNormals = componentLOD.GetFaceNormals();
+	const oglVector3 * const compPositions = componentLOD.GetPositions();
 	
-	const deoglModelLOD &modelLOD = component.GetModel()->GetLODAt( 0 );
+	const deoglModelLOD &modelLOD = component.GetModelRef().GetLODAt( 0 );
 	const oglModelVertex * const modelVertices = modelLOD.GetVertices();
 	deoglModelFace * const faces = modelLOD.GetFaces();
 	const int faceCount = modelLOD.GetFaceCount();
@@ -241,7 +242,7 @@ void deoglSkinRenderedTexture::pPlaneFromTexture( decVector &planeNormal, decVec
 	
 	int planePositionCount = 0;
 	
-	planeNormal.SetZero();
+	mirrorMatrix.planeNormal.SetZero();
 	
 	// hack for the time being
 	if( component.GetRenderMode() == deoglRComponent::ermDynamic ){
@@ -249,20 +250,20 @@ void deoglSkinRenderedTexture::pPlaneFromTexture( decVector &planeNormal, decVec
 			const deoglModelFace &face = faces[ i ];
 			
 			if( face.GetTexture() == pModelTexture ){
-				const oglVector &v1 = compPositions[ modelVertices[ face.GetVertex1() ].position ];
-				planePosition += decVector( v1.x, v1.y, v1.z );
+				const oglVector3 &v1 = compPositions[ modelVertices[ face.GetVertex1() ].position ];
+				mirrorMatrix.planePosition += decVector( v1.x, v1.y, v1.z );
 				planePositionCount++;
 				
-				const oglVector &v2 = compPositions[ modelVertices[ face.GetVertex2() ].position ];
-				planePosition += decVector( v2.x, v2.y, v2.z );
+				const oglVector3 &v2 = compPositions[ modelVertices[ face.GetVertex2() ].position ];
+				mirrorMatrix.planePosition += decVector( v2.x, v2.y, v2.z );
 				planePositionCount++;
 				
-				const oglVector &v3 = compPositions[ modelVertices[ face.GetVertex3() ].position ];
-				planePosition += decVector( v3.x, v3.y, v3.z );
+				const oglVector3 &v3 = compPositions[ modelVertices[ face.GetVertex3() ].position ];
+				mirrorMatrix.planePosition += decVector( v3.x, v3.y, v3.z );
 				planePositionCount++;
 				
-				const oglVector &fn = compFaceNormals[ i ];
-				planeNormal += decVector( fn.x, fn.y, fn.z );
+				const oglVector3 &fn = compFaceNormals[ i ];
+				mirrorMatrix.planeNormal += decVector( fn.x, fn.y, fn.z );
 			}
 		}
 		
@@ -272,30 +273,30 @@ void deoglSkinRenderedTexture::pPlaneFromTexture( decVector &planeNormal, decVec
 			const deoglModelFace &face = faces[ i ];
 			
 			if( face.GetTexture() == pModelTexture ){
-				planePosition += positions[ modelVertices[ face.GetVertex1() ].position ].position;
+				mirrorMatrix.planePosition += positions[ modelVertices[ face.GetVertex1() ].position ].position;
 				planePositionCount++;
 				
-				planePosition += positions[ modelVertices[ face.GetVertex2() ].position ].position;
+				mirrorMatrix.planePosition += positions[ modelVertices[ face.GetVertex2() ].position ].position;
 				planePositionCount++;
 				
-				planePosition += positions[ modelVertices[ face.GetVertex3() ].position ].position;
+				mirrorMatrix.planePosition += positions[ modelVertices[ face.GetVertex3() ].position ].position;
 				planePositionCount++;
 				
-				planeNormal += face.GetFaceNormal();
+				mirrorMatrix.planeNormal += face.GetFaceNormal();
 			}
 		}
 	}
 	
-	float length = planeNormal.Length();
+	float length = mirrorMatrix.planeNormal.Length();
 	if( length != 0.0f ){
-		planeNormal /= length;
+		mirrorMatrix.planeNormal /= length;
 		
 	}else{
-		planeNormal.Set( 0.0f, 0.0f, 1.0f );
+		mirrorMatrix.planeNormal.Set( 0.0f, 0.0f, 1.0f );
 	}
 	
 	if( planePositionCount > 0 ){
-		planePosition /= ( float )planePositionCount;
+		mirrorMatrix.planePosition /= ( float )planePositionCount;
 	}
 }
 
@@ -306,12 +307,8 @@ double near, double far, const decDMatrix &matrixInvCamera, const decMatrix &mat
 	}
 	
 	deoglRComponent &component = *pSkinRendered.GetOwnerComponent();
-	if( ! component.GetModel() ){
-		DETHROW( deeInvalidParam );
-	}
-	
 	deoglRComponentLOD &componentLOD = component.GetLODAt( 0 );
-	const deoglModelLOD &modelLOD = component.GetModel()->GetLODAt( 0 );
+	const deoglModelLOD &modelLOD = component.GetModelRef().GetLODAt( 0 );
 	const oglModelVertex * const modelVertices = modelLOD.GetVertices();
 	deoglModelFace * const faces = modelLOD.GetFaces();
 	int f, faceCount = modelLOD.GetFaceCount();
@@ -325,15 +322,15 @@ double near, double far, const decDMatrix &matrixInvCamera, const decMatrix &mat
 	// hack for the time being
 	if( component.GetRenderMode() == deoglRComponent::ermDynamic ){
 		componentLOD.PreparePositions();
-		const oglVector * const compVertices = componentLOD.GetPositions();
+		const oglVector3 * const compVertices = componentLOD.GetPositions();
 		
 		for( f=0; f<faceCount; f++ ){
 			const deoglModelFace &face = faces[ f ];
 			
 			if( face.GetTexture() == pModelTexture ){
-				const oglVector &v1 = compVertices[ modelVertices[ face.GetVertex1() ].position ];
-				const oglVector &v2 = compVertices[ modelVertices[ face.GetVertex2() ].position ];
-				const oglVector &v3 = compVertices[ modelVertices[ face.GetVertex3() ].position ];
+				const oglVector3 &v1 = compVertices[ modelVertices[ face.GetVertex1() ].position ];
+				const oglVector3 &v2 = compVertices[ modelVertices[ face.GetVertex2() ].position ];
+				const oglVector3 &v3 = compVertices[ modelVertices[ face.GetVertex3() ].position ];
 				
 				// vertex 1
 				vector = matrixMVP * decVector4( v1.x, v1.y, v1.z, 1.0f );
@@ -486,4 +483,52 @@ double near, double far, const decDMatrix &matrixInvCamera, const decMatrix &mat
 	}else{
 		pPlan->SetUseCustomFrustum( false );
 	}
+}
+
+void deoglSkinRenderedTexture::pMirrorMatrix( const decDMatrix &invCamMatrix, sMirrorMatrix &mirrorMatrix ){
+	mirrorMatrix.mirrorNormal = mirrorMatrix.ownerMatrix.TransformNormal( mirrorMatrix.planeNormal );
+	mirrorMatrix.mirrorNormal.Normalize();
+	mirrorMatrix.mirrorRefPoint = mirrorMatrix.ownerMatrix * mirrorMatrix.planePosition;
+	const double mirrorDot = mirrorMatrix.mirrorNormal * mirrorMatrix.mirrorRefPoint;
+	
+	// calculate mirror properties
+	const decDVector cameraPos( invCamMatrix.GetPosition() );
+	const decDVector cameraView( invCamMatrix.TransformView() );
+	const decDVector cameraUp( invCamMatrix.TransformUp() );
+	const decDVector cameraRight( invCamMatrix.TransformRight() );
+	
+	const decDVector mirrorPos( cameraPos - mirrorMatrix.mirrorNormal
+		* ( ( cameraPos * mirrorMatrix.mirrorNormal - mirrorDot ) * 2.0 ) );
+	const decDVector mirrorView( cameraView - mirrorMatrix.mirrorNormal
+		* ( ( cameraView * mirrorMatrix.mirrorNormal ) * 2.0 ) );
+	const decDVector mirrorUp( cameraUp - mirrorMatrix.mirrorNormal
+		* ( ( cameraUp * mirrorMatrix.mirrorNormal ) * 2.0 ) );
+	const decDVector mirrorRight( cameraRight - mirrorMatrix.mirrorNormal
+		* ( ( cameraRight * mirrorMatrix.mirrorNormal ) * 2.0 ) );
+	
+	mirrorMatrix.mirrorMatrix.a11 = mirrorRight.x;
+	mirrorMatrix.mirrorMatrix.a12 = mirrorRight.y;
+	mirrorMatrix.mirrorMatrix.a13 = mirrorRight.z;
+	mirrorMatrix.mirrorMatrix.a14 = -( mirrorPos * mirrorRight );
+	mirrorMatrix.mirrorMatrix.a21 = mirrorUp.x;
+	mirrorMatrix.mirrorMatrix.a22 = mirrorUp.y;
+	mirrorMatrix.mirrorMatrix.a23 = mirrorUp.z;
+	mirrorMatrix.mirrorMatrix.a24 = -( mirrorPos * mirrorUp );
+	mirrorMatrix.mirrorMatrix.a31 = mirrorView.x;
+	mirrorMatrix.mirrorMatrix.a32 = mirrorView.y;
+	mirrorMatrix.mirrorMatrix.a33 = mirrorView.z;
+	mirrorMatrix.mirrorMatrix.a34 = -( mirrorPos * mirrorView );
+	mirrorMatrix.mirrorMatrix.a41 = 0.0;
+	mirrorMatrix.mirrorMatrix.a42 = 0.0;
+	mirrorMatrix.mirrorMatrix.a43 = 0.0;
+	mirrorMatrix.mirrorMatrix.a44 = 1.0;
+	
+	mirrorMatrix.mirrorNormal = mirrorMatrix.mirrorMatrix.TransformNormal( mirrorMatrix.mirrorNormal );
+	mirrorMatrix.mirrorRefPoint = mirrorMatrix.mirrorMatrix * mirrorMatrix.mirrorRefPoint;
+	
+	mirrorMatrix.mirrorFreeMatrix = mirrorMatrix.mirrorMatrix;
+	mirrorMatrix.mirrorFreeMatrix.a11 = -mirrorMatrix.mirrorMatrix.a11;
+	mirrorMatrix.mirrorFreeMatrix.a12 = -mirrorMatrix.mirrorMatrix.a12;
+	mirrorMatrix.mirrorFreeMatrix.a13 = -mirrorMatrix.mirrorMatrix.a13;
+	mirrorMatrix.mirrorFreeMatrix.a14 = -mirrorMatrix.mirrorMatrix.a14;
 }

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Conversation Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -59,15 +62,31 @@
 
 
 
+// ceWPTTreeModel::PreventUpdateGuard
+///////////////////////////////////////
+
+ceWPTTreeModel::PreventUpdateGuard::PreventUpdateGuard( ceWPTTreeModel &model ) :
+pModel( model ), pPrevPreventUpdate( model.pPreventUpdate ){
+	model.pPreventUpdate = true;
+}
+
+ceWPTTreeModel::PreventUpdateGuard::~PreventUpdateGuard(){
+	pModel.pPreventUpdate = pPrevPreventUpdate;
+}
+
+
+
 // Constructor, destructor
 ////////////////////////////
 
-ceWPTTreeModel::ceWPTTreeModel( ceWindowMain &windowMain, ceConversation *conversation ) :
+ceWPTTreeModel::ceWPTTreeModel( ceWindowMain &windowMain, ceConversation *conversation,
+	ceConversationListener &forwardListener ) :
 pWindowMain( windowMain ),
 pConversation( NULL ),
 pListener( NULL ),
-
-pTreeList( NULL )
+pForwardListener( forwardListener ),
+pTreeList( NULL ),
+pPreventUpdate( false )
 {
 	if( ! conversation ){
 		DETHROW( deeInvalidParam );
@@ -108,7 +127,7 @@ void ceWPTTreeModel::SetTreeList( igdeTreeList *treeList ){
 	
 	if( treeList ){
 		UpdateActions();
-		SelectActiveAction();
+		      SelectTopicActive();
 	}
 }
 
@@ -171,7 +190,7 @@ void ceWPTTreeModel::RemoveChild( ceWPTTreeItemModel *child ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	if( ! child || child->GetParent() || child->GetTree() != this ){
+	if( ! child || child->GetTree() != this ){
 		DETHROW( deeInvalidParam );
 	}
 	
@@ -241,7 +260,6 @@ void ceWPTTreeModel::MoveChild( int from, int to ){
 	pChildren.Move( child, to );
 	
 	igdeTreeItem *otherItem = NULL;
-	
 	if( otherChild ){
 		otherItem = otherChild->GetTreeItem();
 	}
@@ -271,6 +289,8 @@ void ceWPTTreeModel::UpdateActions(){
 	if( ! pTreeList ){
 		return;
 	}
+	
+	const PreventUpdateGuard preventUpdate( *this );
 	
 	const ceConversationFile * const file = pConversation->GetActiveFile();
 	if( ! file ){
@@ -376,6 +396,8 @@ void ceWPTTreeModel::ContextMenuAction( igdeMenuCascade &contextMenu, ceConversa
 	helper.MenuCommand( contextMenu, new ceWPTMATopicPasteActions( pWindowMain, *pConversation,
 		*topic, indexAction + 1, "Paste Actions After" ), true );
 	helper.MenuSeparator( contextMenu );
+	helper.MenuCommand( contextMenu, new ceWPTMATopicPasteSnippet(
+		pWindowMain, *pConversation, *topic, indexAction + 1 ), true );
 	
 	helper.MenuCommand( contextMenu, new ceWPTMATopicRemoveAction(
 		pWindowMain, *pConversation, *topic, action ), true );
@@ -470,26 +492,38 @@ ceWPTTIMCondition *ceWPTTreeModel::DeepFindCondition( ceConversationCondition *c
 	return NULL;
 }
 
-void ceWPTTreeModel::SelectActiveAction(){
+void ceWPTTreeModel::SelectTopicActive(){
 	if( ! pTreeList ){
 		return;
 	}
 	
-	ceWPTTIMAction *modelAction = NULL;
-	ceConversationFile * const file = pConversation->GetActiveFile();
-	if( file ){
-		ceConversationTopic * const topic = file->GetActiveTopic();
-		if( topic ){
-			ceConversationAction * const action = topic->GetActiveAction();
-			if( action ){
-				modelAction = DeepFindAction( action );
-			}
+	const ceConversationFile * const file = pConversation->GetActiveFile();
+	if( ! file ){
+		return;
+	}
+	
+	const ceConversationTopic * const topic = file->GetActiveTopic();
+	if( ! topic ){
+		return;
+	}
+	
+	ceConversationCondition * const condition = topic->GetActiveCondition();
+	if( condition ){
+		ceWPTTIMCondition * const model = DeepFindCondition( condition );
+		if( model ){
+			model->SetAsCurrentItem();
+			pWindowMain.GetWindowProperties().GetPanelTopic().SelectActivePanel();
+			return;
 		}
 	}
 	
-	if( modelAction ){
-		modelAction->SetAsCurrentItem();
-		pWindowMain.GetWindowProperties().GetPanelTopic().SelectActiveAction();
+	ceConversationAction * const action = topic->GetActiveAction();
+	if( action ){
+		ceWPTTIMAction * const model = DeepFindAction( action );
+		if( model ){
+			model->SetAsCurrentItem();
+			pWindowMain.GetWindowProperties().GetPanelTopic().SelectActivePanel();
+		}
 	}
 }
 

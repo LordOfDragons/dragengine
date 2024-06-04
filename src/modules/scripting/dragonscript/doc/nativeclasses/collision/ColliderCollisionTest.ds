@@ -48,26 +48,23 @@ class ColliderCollisionTest
 	end
 	
 	/** \brief Create copy of collider collision test. */
-	public func new( ColliderCollisionTest collisionTest )
+	public func new(ColliderCollisionTest collisionTest)
 	end
 	
 	/** \brief Create collider collision test. */
-	public func new( CollisionFilter collisionFilter, Vector origin, Vector direction )
+	public func new(CollisionFilter collisionFilter, Vector origin, Vector direction)
 	end
 	
 	/** \brief Create a collider collision test. */
-	public func new( CollisionFilter collisionFilter, Component component, String bone, \
-	Vector origin, Vector direction )
+	public func new(CollisionFilter collisionFilter, Component component, String bone, Vector origin, Vector direction)
 	end
 	
 	/** \brief Create collider collision test. */
-	public func new( TouchSensor touchSensor, CollisionFilter collisionFilter, \
-	Vector origin, Vector direction )
+	public func new(TouchSensor touchSensor, CollisionFilter collisionFilter, Vector origin, Vector direction)
 	end
 	
 	/** \brief Create a collider collision test. */
-	public func new( TouchSensor touchSensor, CollisionFilter collisionFilter, \
-	Component component, String bone, Vector origin, Vector direction )
+	public func new(TouchSensor touchSensor, CollisionFilter collisionFilter, Component component, String bone, Vector origin, Vector direction)
 	end
 	/*@}*/
 	
@@ -77,78 +74,102 @@ class ColliderCollisionTest
 	/*@{*/
 	/** \brief Touch sensor to use for testing collisions or \em null if not set. */
 	public func TouchSensor getTouchSensor()
+		return null
 	end
 	
 	/** \brief Set touch sensor to use for testing collisions or \em null if not set. */
-	public func void setTouchSensor( TouchSensor touchSensor )
+	public func void setTouchSensor(TouchSensor touchSensor)
 	end
 	
 	
 	
 	/** \brief Collider or \em null to test using a ray. */
 	public func Collider getCollider()
+		return null
 	end
 	
 	/** \brief Set collider or \em null to test using a ray. */
-	public func void setCollider( Collider collider )
+	public func void setCollider(Collider collider)
 	end
 	
 	/** \brief Collision filter. */
 	public func CollisionFilter getCollisionFilter()
+		return null
 	end
 	
 	/** \brief Set collision filter. */
-	public func void setCollisionFilter( CollisionFilter collisionFilter )
+	public func void setCollisionFilter(CollisionFilter collisionFilter)
 	end
 	
 	
 	
 	/** \brief Component to use to retrieve bone position from or \em NULL if not used. */
 	public func Component getComponent()
+		return null
 	end
 	
 	/** \brief Set component to use to retrieve bone position from or \em NULL if not used. */
-	public func void setComponent( Component component )
+	public func void setComponent(Component component)
 	end
 	
 	/** \brief Bone to apply origin to for testing or empty string to use parent collider position. */
 	public func String getBone()
+		return null
 	end
 	
 	/** \brief Set bone to apply origin to for testing or empty string to use parent collider position. */
-	public func void setBone( String name )
+	public func void setBone(String name)
 	end
 	
 	/** \brief Cast origin. */
 	public func Vector getOrigin()
+		return null
 	end
 	
 	/** \brief Set cast origin. */
-	public func void setOrigin( Vector origin )
+	public func void setOrigin(Vector origin)
+	end
+	
+	/**
+	 * \brief Cast orientation.
+	 * \version 1.16
+	 */
+	public func Quaternion getOrientation()
+		return null
+	end
+	
+	/**
+	 * \brief Set cast orientation.
+	 * \version 1.16
+	 */
+	public func void setOrientation(Quaternion orientation)
 	end
 	
 	/** \brief Cast direction. */
 	public func Vector getDirection()
+		return null
 	end
 	
 	/** \brief Set cast direction. */
-	public func void setDirection( Vector direction )
+	public func void setDirection(Vector direction)
 	end
 	
 	/** \brief Local direction. */
 	public func bool getLocalDirection()
+		return false
 	end
 	
 	/** \brief Set if direction is local. */
-	public func void setLocalDirection( bool localDirection )
+	public func void setLocalDirection(bool localDirection)
 	end
 	
 	/** \brief Collision tets is enabled. */
 	public func bool getEnabled()
+		return false
 	end
 	
 	/** \brief Set if collision test is enabled. */
-	public func void setEnabled( bool enabled )
+	public func void setEnabled(bool enabled)
 	end
 	/*@}*/
 	
@@ -158,24 +179,37 @@ class ColliderCollisionTest
 	/*@{*/
 	/** \brief Test origin used by physics module during the last update. */
 	public func DVector getTestOrigin()
+		return null
+	end
+	
+	/**
+	 * \brief Test orientation used by physics module during the last update.
+	 * \version 1.16
+	 */
+	public func Quaternion getTestOrientation()
+		return null
 	end
 	
 	/** \brief Test direction used by physics module during the last update. */
 	public func DVector getTestDirection()
+		return null
 	end
 	
 	
 	
 	/** \brief Collision has been found. */
 	public func bool getHasCollision()
+		return false
 	end
 	
 	/** \brief Number of found collisions. */
 	public func int getCollisionCount()
+		return 0
 	end
 	
 	/** \brief Collision at index. */
-	public func CollisionInfo getCollisionAt( int index )
+	public func CollisionInfo getCollisionAt(int index)
+		return null
 	end
 	
 	/** \brief Remove all collisions reverting test to no collision found state. */
@@ -185,31 +219,38 @@ class ColliderCollisionTest
 	
 	
 	/** \brief Direction length multiplied by hit distance. */
-	public func float hitDistance( int index )
+	public func float hitDistance(int index)
+		return 0.0
 	end
 	
 	/** \brief Hit point in collider space. */
-	public func Vector hitPointCollider( int index )
+	public func Vector hitPointCollider(int index)
+		return null
 	end
 	
 	/** \brief Hit point in world space. */
-	public func DVector hitPointWorld( int index )
+	public func DVector hitPointWorld(int index)
+		return null
 	end
 	
 	/** \brief Hit normal in collider space. */
-	public func Vector hitNormalCollider( int index )
+	public func Vector hitNormalCollider(int index)
+		return null
 	end
 	
 	/** \brief Hit normal in world space. */
-	public func Vector hitNormalWorld( int index )
+	public func Vector hitNormalWorld(int index)
+		return null
 	end
 	
 	/** \brief Hit collider or \em null if hit object is not a collider. */
-	public func Collider hitCollider( int index )
+	public func Collider hitCollider(int index)
+		return null
 	end
 	
 	/** \brief Hit bone or -1 if hit object is not a collider. */
-	public func int hitBone( int index )
+	public func int hitBone(int index)
+		return 0
 	end
 	/*@}*/
 end

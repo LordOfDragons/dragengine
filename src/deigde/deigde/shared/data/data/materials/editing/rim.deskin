@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<skin>
+	<texture name='material'>
+		<value property='solidity'>0</value>
+		<value property='solidity.masked'>1</value>
+		<value property='reflectivity'>0</value>
+		<value property='roughness'>1</value>
+		<value property='reflected'>0</value>
+		<value property='shadow.none'>1</value>
+		<value property='sound.none'>1</value>
+		<color property='rim.emissivity' renderable='color' r='1' g='0' b='0'/>
+		<value property='rim.emissivity.intensity'>0.75</value>
+		<value property='rim.angle' renderable='angle'>0.4</value>
+		<value property='rim.exponent' renderable='exponent'>0.5</value>
+		<value property='emissivity.camera.adapted'>1</value>
+	</texture>
+</skin>

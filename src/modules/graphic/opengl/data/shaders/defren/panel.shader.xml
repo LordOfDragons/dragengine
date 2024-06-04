@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shader>
+	<name>DefRen Panel</name>
+	
+	<texture name='texTexture' target='0'/>
+	
+	<parameter name='pMatrixModel'/>
+	<parameter name='pMatrixVP'/>
+	<parameter name='pMatrixVP2'/>
+	<parameter name='pColorTransform'/>
+	<parameter name='pColorTransform2'/>
+	
+	<attribute name='inPosition' target='0'/>
+	<attribute name='inTexCoord' target='4'/>
+	<attribute name='inLayer' target='5'/>
+	
+	<output name='outColor' target='0'/>
+	
+	<sourceCode unit='vertex'>vertex/defren/panel.glsl</sourceCode>
+	<sourceCode unit='fragment'>fragment/defren/panel.glsl</sourceCode>
+</shader>

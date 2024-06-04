@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -31,34 +34,36 @@ pin Dragengine.Scenery
  * 
  * Provides default timer manager for simple timer creation. Individual instances of
  * timer managers can be created to provide timer handling at different speeds if required.
+ * 
+ * \par 1.9
+ * 
+ * If you create a TimerManager besides the default TimerManager make sure to call
+ * giveUpAllTimers() to avoid memory leaks.
  */
 class TimerManager
-	/** \brief Default timer manager. */
 	private static var TimerManager pDefaultManager = null
-	
-	/** \brief Registered timers */
 	private var SafeArray pTimers
 	
 	
 	
 	/** \brief Create timer manager. */
 	public func new()
-		this.pTimers = SafeArray.new()
+		pTimers = SafeArray.new()
 	end
 	
 	
 	
 	/** \brief Register timer. */
-	public func void addTimer( Timer timer )
+	public func void addTimer(Timer timer)
 		if timer == null
-			throw EInvalidParam.new()
+			throw ENullPointer.new("timer")
 		end
-		this.pTimers.add( timer )
+		pTimers.add(timer)
 	end
 	
 	/** \brief Unregister timer. */
-	public func void removeTimer( Timer timer )
-		this.pTimers.removeIfPresent( timer )
+	public func void removeTimer(Timer timer)
+		pTimers.removeIfPresent(timer)
 	end
 	
 	
@@ -68,14 +73,30 @@ class TimerManager
 	 * 
 	 * Timer implementation handles triggering. Ensures all timers are advanced once.
 	 */
-	public func void advance( float elapsed )
-		if elapsed <= 0.0
+	public func void advance(float elapsed)
+		if elapsed <= 0
 			return
 		end
 		
-		this.pTimers.forEach( block Timer each
-			each.advance( elapsed )
-		end )
+		pTimers.forEach(block Timer each
+			each.advance(elapsed)
+		end)
+	end
+	
+	/**
+	 * \brief Give up all timers and remove them.
+	 * \version 1.9
+	 * 
+	 * Use this call before exiting the game to cancel registered timers and properly
+	 * cleaning them up to avoid memory leaks.
+	 */
+	public func void giveUpAllTimers()
+		var SafeArray timers = pTimers
+		pTimers = SafeArray.new()
+		
+		timers.forEach(block Timer each
+			each.giveUp()
+		end)
 	end
 	
 	
@@ -94,7 +115,7 @@ class TimerManager
 	 * Timer implementation handles triggering. Ensures all timers are advanced once.
 	 */
 	public static func void advanceDefault()
-		getDefault().advance( Engine.getElapsedTime() )
+		getDefault().advance(Engine.getElapsedTime())
 	end
 	
 	/**
@@ -102,7 +123,18 @@ class TimerManager
 	 * 
 	 * Timer implementation handles triggering. Ensures all timers are advanced once.
 	 */
-	public static func void advanceDefault( float elapsed )
-		getDefault().advance( elapsed )
+	public static func void advanceDefault(float elapsed)
+		getDefault().advance(elapsed)
+	end
+	
+	/**
+	 * \brief Give up all timers of default timer manager and remove them.
+	 * \version 1.9
+	 * 
+	 * Use this call before exiting the game to cancel registered timers and properly
+	 * cleaning them up to avoid memory leaks.
+	 */
+	public static func void giveUpAllTimersDefault()
+		getDefault().giveUpAllTimers()
 	end
 end

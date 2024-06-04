@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Game Definition Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -61,44 +64,9 @@
 
 gdeConfiguration::gdeConfiguration( gdeWindowMain &windowMain ) :
 pWindowMain( windowMain ),
-
-pColorBoundingBox( 0.75f, 0.25f, 0.25f, COLOR_ALPHA ),
-
-pColorCamera( 0.0f, 0.0f, 1.0f, COLOR_ALPHA ),
-pColorCameraActive( 0.0f, 0.5f, 1.0f, COLOR_ALPHA_ACTIVE ),
-
-pColorEnvMapProbe( 0.5f, 0.5f, 0.5f, COLOR_ALPHA ),
-pColorEnvMapProbeReflection( 0.65f, 0.35f, 0.35f, COLOR_ALPHA ),
-pColorEnvMapProbeInfluence( 0.35f, 0.65f, 0.35f, COLOR_ALPHA ),
-pColorEnvMapProbeMask( 0.35f, 0.35f, 0.65f, COLOR_ALPHA ),
-pColorEnvMapProbeActive( 0.7f, 0.7f, 0.7f, COLOR_ALPHA_ACTIVE ),
-pColorEnvMapProbeActiveReflection( 0.85f, 0.55f, 0.55f, COLOR_ALPHA_ACTIVE ),
-pColorEnvMapProbeActiveInfluence( 0.55f, 0.85f, 0.55f, COLOR_ALPHA_ACTIVE ),
-pColorEnvMapProbeActiveMask( 0.55f, 0.55f, 0.85f, COLOR_ALPHA_ACTIVE ),
-
-pColorLight( 1.0f, 1.0f, 0.0f, COLOR_ALPHA ),
-pColorLightActive( 1.0f, 1.0f, 0.25f, COLOR_ALPHA_ACTIVE ),
-
-pColorNavigationSpace( 0.0f, 0.25f, 1.0f, COLOR_ALPHA ),
-pColorNavigationSpaceActive( 0.0f, 0.5f, 1.0f, COLOR_ALPHA_ACTIVE ),
-
-pColorNavigationBlocker( 0.0f, 0.5f, 0.0f, COLOR_ALPHA ),
-pColorNavigationBlockerActive( 0.0f, 0.5f, 0.25f, COLOR_ALPHA_ACTIVE ),
-
-pColorParticleEmitter( 0.5f, 0.0f, 0.25f, COLOR_ALPHA ),
-pColorParticleEmitterActive( 1.0f, 0.0f, 0.5f, COLOR_ALPHA_ACTIVE ),
-
-pColorForceField( 0.5f, 0.25f, 0.25f, COLOR_ALPHA ),
-pColorForceFieldActive( 1.0f, 0.25f, 0.5f, COLOR_ALPHA_ACTIVE ),
-
-pColorSnapPoint( 0.0f, 0.5f, 0.0f, COLOR_ALPHA ),
-pColorSnapPointActive( 0.0f, 0.75f, 0.0f, COLOR_ALPHA_ACTIVE ),
-
-pColorSpeaker( 0.5f, 0.0f, 0.0f, COLOR_ALPHA ),
-pColorSpeakerActive( 0.75f, 0.0f, 0.0f, COLOR_ALPHA_ACTIVE ),
-
 pPreventSaving( false )
 {
+	pReset();
 }
 
 gdeConfiguration::~gdeConfiguration(){
@@ -115,16 +83,20 @@ void gdeConfiguration::SetPreventSaving( bool preventSaving ){
 }
 
 void gdeConfiguration::LoadConfiguration(){
-	deVirtualFileSystem &vfs = *pWindowMain.GetEnvironment().GetFileSystemGame();
-	
-	const decPath pathFile( decPath::CreatePathUnix( "/igde/local/gameDefinitionEditor.xml" ) );
-	if( ! vfs.ExistsFile( pathFile ) || vfs.GetFileType( pathFile ) != deVFSContainer::eftRegularFile ){
-		return;
-	}
-	
-	decBaseFileReaderReference reader;
 	pPreventSaving = true;
 	try{
+		deVirtualFileSystem &vfs = *pWindowMain.GetEnvironment().GetFileSystemGame();
+		
+		pReset();
+		pWindowMain.GetRecentFiles().RemoveAllFiles();
+		
+		const decPath pathFile( decPath::CreatePathUnix( "/igde/local/gameDefinitionEditor.xml" ) );
+		if( ! vfs.ExistsFile( pathFile ) || vfs.GetFileType( pathFile ) != deVFSContainer::eftRegularFile ){
+			pPreventSaving = false;
+			return;
+		}
+		
+		decBaseFileReaderReference reader;
 		reader.TakeOver( vfs.OpenFileForReading( pathFile ) );
 		gdeConfigurationXML( pWindowMain.GetLogger(), LOGSOURCE ).ReadFromFile( reader, *this );
 		pPreventSaving = false;
@@ -163,4 +135,41 @@ void gdeConfiguration::SaveConfiguration(){
 //////////////////////
 
 void gdeConfiguration::pCleanUp(){
+}
+
+void gdeConfiguration::pReset(){
+	pColorBoundingBox.Set( 0.75f, 0.25f, 0.25f, COLOR_ALPHA );
+	
+	pColorCamera.Set( 0.0f, 0.0f, 1.0f, COLOR_ALPHA );
+	pColorCameraActive.Set( 0.0f, 0.5f, 1.0f, COLOR_ALPHA_ACTIVE );
+	
+	pColorEnvMapProbe.Set( 0.5f, 0.5f, 0.5f, COLOR_ALPHA );
+	pColorEnvMapProbeReflection.Set( 0.65f, 0.35f, 0.35f, COLOR_ALPHA );
+	pColorEnvMapProbeInfluence.Set( 0.35f, 0.65f, 0.35f, COLOR_ALPHA );
+	pColorEnvMapProbeMask.Set( 0.35f, 0.35f, 0.65f, COLOR_ALPHA );
+	pColorEnvMapProbeActive.Set( 0.7f, 0.7f, 0.7f, COLOR_ALPHA_ACTIVE );
+	pColorEnvMapProbeActiveReflection.Set( 0.85f, 0.55f, 0.55f, COLOR_ALPHA_ACTIVE );
+	pColorEnvMapProbeActiveInfluence.Set( 0.55f, 0.85f, 0.55f, COLOR_ALPHA_ACTIVE );
+	pColorEnvMapProbeActiveMask.Set( 0.55f, 0.55f, 0.85f, COLOR_ALPHA_ACTIVE );
+	
+	pColorLight.Set( 1.0f, 1.0f, 0.0f, COLOR_ALPHA );
+	pColorLightActive.Set( 1.0f, 1.0f, 0.25f, COLOR_ALPHA_ACTIVE );
+	
+	pColorNavigationSpace.Set( 0.0f, 0.25f, 1.0f, COLOR_ALPHA );
+	pColorNavigationSpaceActive.Set( 0.0f, 0.5f, 1.0f, COLOR_ALPHA_ACTIVE );
+	
+	pColorNavigationBlocker.Set( 0.0f, 0.5f, 0.0f, COLOR_ALPHA );
+	pColorNavigationBlockerActive.Set( 0.0f, 0.5f, 0.25f, COLOR_ALPHA_ACTIVE );
+	
+	pColorParticleEmitter.Set( 0.5f, 0.0f, 0.25f, COLOR_ALPHA );
+	pColorParticleEmitterActive.Set( 1.0f, 0.0f, 0.5f, COLOR_ALPHA_ACTIVE );
+	
+	pColorForceField.Set( 0.5f, 0.25f, 0.25f, COLOR_ALPHA );
+	pColorForceFieldActive.Set( 1.0f, 0.25f, 0.5f, COLOR_ALPHA_ACTIVE );
+	
+	pColorSnapPoint.Set( 0.0f, 0.5f, 0.0f, COLOR_ALPHA );
+	pColorSnapPointActive.Set( 0.0f, 0.75f, 0.0f, COLOR_ALPHA_ACTIVE );
+	
+	pColorSpeaker.Set( 0.5f, 0.0f, 0.0f, COLOR_ALPHA );
+	pColorSpeakerActive.Set( 0.75f, 0.0f, 0.0f, COLOR_ALPHA_ACTIVE );
 }

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -52,19 +55,29 @@ class GuiTheme
 	
 	/** \brief Creates default gui theme. */
 	public func new()
-		this.pWidgetDesigners = Dictionary.new()
-		this.pWidgetDesigners.setAt( "Button", DefaultButtonDesigner.new() )
-		this.pWidgetDesigners.setAt( "CheckBox", DefaultCheckBoxDesigner.new() )
-		this.pWidgetDesigners.setAt( "ComboBox", DefaultComboBoxDesigner.new() )
-		this.pWidgetDesigners.setAt( "OptionBox", DefaultOptionBoxDesigner.new() )
-		this.pWidgetDesigners.setAt( "PlayerChoiceEntry", DefaultWidgetDesigner.new() )
-		this.pWidgetDesigners.setAt( "ProgressBar", DefaultProgressBarDesigner.new() )
-		this.pWidgetDesigners.setAt( "ScrollBar", DefaultScrollBarDesigner.new() )
-		this.pWidgetDesigners.setAt( "SpinButton", DefaultSpinButtonDesigner.new() )
-		this.pWidgetDesigners.setAt( "TextArea", DefaultWidgetDesigner.new() )
-		this.pWidgetDesigners.setAt( "TextField", DefaultWidgetDesigner.new() )		
+		pWidgetDesigners = Dictionary.new()
+		pWidgetDesigners.setAt("Button", DefaultButtonDesigner.new())
+		pWidgetDesigners.setAt("ButtonWidget", DefaultButtonWidgetDesigner.new())
+		pWidgetDesigners.setAt("CheckBox", DefaultCheckBoxDesigner.new())
+		pWidgetDesigners.setAt("ComboBox", DefaultComboBoxDesigner.new())
+		pWidgetDesigners.setAt("Desktop", DefaultWidgetDesigner.new())
+		pWidgetDesigners.setAt("Image", DefaultImageDesigner.new())
+		pWidgetDesigners.setAt("Label", DefaultLabelDesigner.new())
+		pWidgetDesigners.setAt("ListBox", DefaultWidgetDesigner.new())
+		pWidgetDesigners.setAt("OptionBox", DefaultOptionBoxDesigner.new())
+		pWidgetDesigners.setAt("PlayerChoiceEntry", DefaultWidgetDesigner.new())
+		pWidgetDesigners.setAt("ProgressBar", DefaultProgressBarDesigner.new())
+		pWidgetDesigners.setAt("ScrollBar", DefaultScrollBarDesigner.new())
+		pWidgetDesigners.setAt("Slider", DefaultSliderDesigner.new())
+		pWidgetDesigners.setAt("SpinButton", DefaultSpinButtonDesigner.new())
+		pWidgetDesigners.setAt("TextArea", DefaultWidgetDesigner.new())
+		pWidgetDesigners.setAt("TextField", DefaultWidgetDesigner.new())
+		pWidgetDesigners.setAt("Video", DefaultVideoDesigner.new())
+		pWidgetDesigners.setAt("Window", DefaultWindowDesigner.new())
+		pWidgetDesigners.setAt("MenuItemToggle", DefaultMenuItemToggleDesigner.new())
+		pWidgetDesigners.setAt("MenuItemSubMenu", DefaultMenuItemSubMenuDesigner.new())
 		
-		this.pNamedGuiThemes = Dictionary.new()
+		pNamedGuiThemes = Dictionary.new()
 	end
 	
 	/**
@@ -74,23 +87,23 @@ class GuiTheme
 	 * a widget designer using setParameter() you have to call copyDesigner()
 	 * first and replace the entry in this dictionary.
 	 */
-	public func new( GuiTheme guitheme )
-		this.pFontWidget = guitheme.pFontWidget
+	public func new(GuiTheme guitheme)
+		pFontWidget = guitheme.pFontWidget
 		
-		this.pWidgetDesigners = Dictionary.new( guitheme.pWidgetDesigners )
-		this.pNamedGuiThemes = Dictionary.new( guitheme.pNamedGuiThemes )
+		pWidgetDesigners = Dictionary.new(guitheme.pWidgetDesigners)
+		pNamedGuiThemes = Dictionary.new(guitheme.pNamedGuiThemes)
 	end
 	
 	
 	
 	/** \brief Font for widgets. */
 	public func Font getWidgetFont()
-		return this.pFontWidget
+		return pFontWidget
 	end
 	
 	/** \brief Set font for widgets. */
-	public func void setWidgetFont( Font font )
-		this.pFontWidget = font
+	public func void setWidgetFont(Font font)
+		pFontWidget = font
 	end
 	
 	
@@ -111,22 +124,22 @@ class GuiTheme
 	 * Returned widget designer is shared. Do not modify directly. If you need to modify
 	 * using setParameter() call first copyDesigner().
 	 */
-	public func WidgetDesigner getWidgetDesigner( String selector )
+	public func WidgetDesigner getWidgetDesigner(String selector)
 		var WidgetDesigner designer
 		var int index
 		
 		while not selector.empty()
-			designer = this.pWidgetDesigners.getAt( selector, null ) cast WidgetDesigner
+			designer = pWidgetDesigners.getAt(selector, null) cast WidgetDesigner
 			if designer != null
 				return designer
 			end
 			
-			index = selector.findReverse( '.' )
+			index = selector.findReverse('.')
 			if index == -1
 				break
 			end
 			
-			selector = selector.substring( 0, index )
+			selector = selector.substring(0, index)
 		end
 		
 		return null
@@ -134,20 +147,20 @@ class GuiTheme
 	
 	/** \brief Number of widget designers. */
 	public func int getWidgetDesignerCount()
-		return this.pWidgetDesigners.getCount()
+		return pWidgetDesigners.getCount()
 	end
 	
 	/** \brief Set named widget designer. */
-	public func WidgetDesigner getNamedWidgetDesigner( String name )
-		return this.pWidgetDesigners.getAt( name ) cast WidgetDesigner
+	public func WidgetDesigner getNamedWidgetDesigner(String name)
+		return pWidgetDesigners.getAt(name) cast WidgetDesigner
 	end
 	
 	/** \brief Set widget designer. */
-	public func void setWidgetDesigner( String name, WidgetDesigner designer )
+	public func void setWidgetDesigner(String name, WidgetDesigner designer)
 		if name == null or designer == null
 			throw EInvalidParam.new()
 		end
-		this.pWidgetDesigners.setAt( name, designer )
+		pWidgetDesigners.setAt(name, designer)
 	end
 	
 	/**
@@ -155,42 +168,42 @@ class GuiTheme
 	 * 
 	 * First parameter String name. Second parameter WidgetDesigner designer.
 	 */
-	public func void forEachWidgetDesigner( Block ablock )
-		this.pWidgetDesigners.forEach( ablock )
+	public func void forEachWidgetDesigner(Block ablock)
+		pWidgetDesigners.forEach(ablock)
 	end
 	
 	
 	
 	/** \brief Number of named gui themes. */
 	public func int getNamedGuiThemeCount()
-		return this.pNamedGuiThemes.getCount()
+		return pNamedGuiThemes.getCount()
 	end
 	
 	/** \brief Get named gui theme or \em null if absent. */
-	public func GuiTheme getNamedGuiTheme( String name )
-		return this.pNamedGuiThemes.getAt( name, null ) cast GuiTheme
+	public func GuiTheme getNamedGuiTheme(String name)
+		return pNamedGuiThemes.getAt(name, null) cast GuiTheme
 	end
 	
 	/** \brief Set named gui theme. */
-	public func void setNamedGuiTheme( String name, GuiTheme guitheme )
+	public func void setNamedGuiTheme(String name, GuiTheme guitheme)
 		if name == null or guitheme == null
 			throw EInvalidParam.new()
 		end
-		this.pNamedGuiThemes.setAt( name, guitheme )
+		pNamedGuiThemes.setAt(name, guitheme)
 	end
 	
 	/** \brief Remove named gui theme. */
-	public func void removeNamedGuiTheme( String name )
-		this.pNamedGuiThemes.remove( name )
+	public func void removeNamedGuiTheme(String name)
+		pNamedGuiThemes.remove(name)
 	end
 	
 	/** \brief Remove all named gui themes. */
 	public func void removeAllNamedGuiThemes()
-		this.pNamedGuiThemes.removeAll()
+		pNamedGuiThemes.removeAll()
 	end
 	
 	/** \brief Visit named gui themes with block with parameters String and GuiTheme. */
-	public func void forEachNamedGuiTheme( Block ablock )
-		this.pNamedGuiThemes.forEach( ablock )
+	public func void forEachNamedGuiTheme(Block ablock)
+		pNamedGuiThemes.forEach(ablock)
 	end
 end

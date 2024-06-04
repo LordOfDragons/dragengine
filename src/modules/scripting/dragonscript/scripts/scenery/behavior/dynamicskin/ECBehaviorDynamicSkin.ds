@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -43,12 +46,11 @@ pin Dragengine.Utils
  * \code{.ds}
  * class MyElement extends BehaviorElementClass
  *    public func new()
- *       ECBehaviorComponent.new(this)
- *       ECBehaviorDynamicSkin.new(this)
+ *       var ECBehaviorComponent component = ECBehaviorComponent.new(this)
+ *       ECBehaviorDynamicSkin.new(this, component)
  *       
- *       ECBehaviorComponent.new(this, "subComponent")
- *       var ECBehaviorDynamicSkin dynamicSkin = ECBehaviorDynamicSkin.new(this, "subDynamicSkin")
- *       dynamicSkin.setComponentID("subComponent")
+ *       var ECBehaviorComponent subComponent = ECBehaviorComponent.new(this, "subComponent")
+ *       ECBehaviorDynamicSkin.new(this, subComponent)
  *    end
  * end
  * \endcode
@@ -169,8 +171,8 @@ class ECBehaviorDynamicSkin extends DefaultECBehavior
 	 * of type ECBehaviorComponent.
 	 */
 	static public func ECBehaviorDynamicSkin getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehavior each
-			return each castable ECBehaviorDynamicSkin
+		return eclass.findBehavior( block ECBehaviorDynamicSkin each
+			return true
 		end ) cast ECBehaviorDynamicSkin
 	end
 	
@@ -182,8 +184,7 @@ class ECBehaviorDynamicSkin extends DefaultECBehavior
 	 */
 	static public func ECBehaviorDynamicSkin getBehaviorIn( BehaviorElementClass eclass, String id )
 		return eclass.findBehavior( block ECBehaviorDynamicSkin each
-			return each castable ECBehaviorDynamicSkin and \
-				( each cast ECBehaviorDynamicSkin ).getID().equals( id )
+			return each.getID().equals( id )
 		end ) cast ECBehaviorDynamicSkin
 	end
 	
@@ -194,13 +195,9 @@ class ECBehaviorDynamicSkin extends DefaultECBehavior
 	 * been created in the element.
 	 */
 	static public func Array getAllBehaviorsIn( BehaviorElementClass eclass )
-		var Array list = Array.new()
-		eclass.forEachBehavior( block ECBehavior each
-			if each castable ECBehaviorDynamicSkin
-				list.add( each )
-			end
+		return eclass.collectBehaviors( block ECBehaviorDynamicSkin each
+			return true
 		end )
-		return list
 	end
 	
 	
@@ -213,8 +210,8 @@ class ECBehaviorDynamicSkin extends DefaultECBehavior
 	 * the first instance.
 	 */
 	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance
+		return element.findInstance( block Instance each
+			return true
 		end ) cast Instance
 	end
 	
@@ -225,9 +222,8 @@ class ECBehaviorDynamicSkin extends DefaultECBehavior
 	 * of type ECBehaviorDynamicSkin.Instance with specific identifier.
 	 */
 	static public func Instance getInstanceIn( BehaviorElement element, String id )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance and \
-				( each cast Instance ).getECBehavior().getID().equals( id )
+		return element.findInstance( block Instance each
+			return each.getECBehavior().getID().equals( id )
 		end ) cast Instance
 	end
 	
@@ -238,13 +234,9 @@ class ECBehaviorDynamicSkin extends DefaultECBehavior
 	 * been created in the element.
 	 */
 	static public func Array getAllInstancesIn( BehaviorElement element )
-		var Array list = Array.new()
-		element.forEachInstance( block ECBehaviorInstance each
-			if each castable Instance
-				list.add( each )
-			end
+		return element.collectInstances( block Instance each
+			return true
 		end )
-		return list
 	end
 	
 	

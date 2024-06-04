@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -55,16 +58,17 @@ pin Dragengine.XML
  * - &lt;borderSize left='' top='' right='' bottom=''/&gt;: BorderSize (int)
  * - &lt;rectArea x1='' y1='' x2='' y2=''/&gt;: RectArea (int)
  * - &lt;floatRectArea x1='' y1='' x2='' y2=''/&gt;: FloatRectArea (float)
- * - &lt;list&gt;&lt;/list&gt;: List of values (anything except &lt;list&gt;)
+ * - &lt;list&gt;&lt;/list&gt;: List of values
+ * - &lt;map&gt;&lt;/map&gt;: Dictionary of key/value pairs
  * - &lt;null/&gt;: null value
  */
 class LoadSkinAnnotations extends BaseXmlLoader
 	/** \brief Create loader. */
-	public func new( Console console ) this( console, "LoadSkinAnnotations" )
+	func new(Console console) this(console, "LoadSkinAnnotations")
 	end
 	
 	/** \brief Create loader. */
-	public func new( Console console, String name ) super( console, name )
+	func new(Console console, String name) super(console, name)
 	end
 	
 	
@@ -74,30 +78,30 @@ class LoadSkinAnnotations extends BaseXmlLoader
 	 * 
 	 * Loaded content is added to \em skinAnnotations. It is not cleared first.
 	 */
-	public func void loadFromFile( String filename, SkinAnnotations skinAnnotations )
+	func void loadFromFile(String filename, SkinAnnotations skinAnnotations)
 		if skinAnnotations == null
 			throw EInvalidParam.new()
 		end
 		
-		this.logLoadingFromFile( filename )
+		logLoadingFromFile(filename)
 		
-		var EasyXML document = EasyXML.new( filename )
+		var EasyXML document = EasyXML.new(filename)
 		if document.hasParseFailed()
-			this.logParsingFailed( document.getParseLog() + " in " + filename )
+			logParsingFailed(document.getParseLog() + " in " + filename)
 			throw EInvalidParam.new()
 		end
 		
 		var EasyXMLElement root = document.getRootElement()
-		if not root.getTagName().equals( "skinAnnotations" )
-			this.logUnknownTag( root )
+		if not root.getTagName().equals("skinAnnotations")
+			logUnknownTag(root)
 			throw EInvalidParam.new()
 		end
 		
 		try
-			this.readSkinAnnotations( root, skinAnnotations, File.new( filename ).getParent().getPath() )
+			readSkinAnnotations(root, skinAnnotations, File.new(filename).getParent().getPath())
 			
 		catch Exception e
-			this.logParsingFailed( "Failed parsing " + filename )
+			logParsingFailed("Failed parsing " + filename)
 			throw
 		end
 	end
@@ -111,8 +115,8 @@ class LoadSkinAnnotations extends BaseXmlLoader
 	 * \param directory Absolute path to directory to scan for files.
 	 * \param recursive If true scans also in all child directories.
 	 */
-	public func void loadFromFiles( SkinAnnotations skinAnnotations, String directory, bool recursive )
-		this.loadFromFiles( skinAnnotations, directory, "*.deskinann", recursive )
+	func void loadFromFiles(SkinAnnotations skinAnnotations, String directory, bool recursive)
+		loadFromFiles(skinAnnotations, directory, "*.deskinann", recursive)
 	end
 	
 	/**
@@ -125,135 +129,205 @@ class LoadSkinAnnotations extends BaseXmlLoader
 	 * \param pattern File pattern to match. Has to be of the form "*.extension"
 	 * \param recursive If true scans also in all child directories.
 	 */
-	public func void loadFromFiles( SkinAnnotations skinAnnotations, String directory, \
-	String pattern, bool recursive )
-		FileSystem.searchFiles( directory, recursive, block String each, FileType type
-			if type == FileType.file and FileSystem.pathMatchesPattern( each, pattern )
-				this.loadFromFile( each, skinAnnotations )
+	func void loadFromFiles(SkinAnnotations skinAnnotations, String directory,\
+	String pattern, bool recursive)
+		FileSystem.searchFiles(directory, recursive, block String each, FileType type
+			if type == FileType.file and FileSystem.pathMatchesPattern(File.new(each).getName(), pattern)
+				loadFromFile(each, skinAnnotations)
 			end
 			return true
-		end )
+		end)
 	end
 	
 	
 	
 	/** \brief Parse skin annotations tag. */
-	protected func void readSkinAnnotations( EasyXMLElement root, \
-	SkinAnnotations skinAnnotations, String baseDirectory )
+	protected func void readSkinAnnotations(EasyXMLElement root,\
+	SkinAnnotations skinAnnotations, String baseDirectory)
 		var Object value
 		var String path
 		var String key
 		
-		root.forEachTag( block EasyXMLElement element, String tagName
-			if element.hasAttributeNamed( "path" )
-				path = File.absolutePath( element.getAttributeNamed( "path" ), baseDirectory ).getPath()
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if element.hasAttributeNamed("path")
+				path = File.absolutePath(element.getAttributeNamed("path"), baseDirectory).getPath()
 				
 			else
 				path = baseDirectory
 			end
 			
-			key = element.getAttributeNamed( "key" )
+			key = element.getAttributeNamed("key")
 			
-			if tagName.equals( "string" )
+			if tagName.equals("string")
 				value = element.getFirstCData()
 				
-			elif tagName.equals( "float" )
+			elif tagName.equals("float")
 				value = element.getFirstCDataFloat()
 				
-			elif tagName.equals( "integer" )
+			elif tagName.equals("integer")
 				value = element.getFirstCDataInt()
 				
-			elif tagName.equals( "boolean" )
+			elif tagName.equals("boolean")
 				value = element.getFirstCDataBool()
 				
-			elif tagName.equals( "vector" )
-				value = this.readVector( element )
+			elif tagName.equals("vector")
+				value = readVector(element)
 				
-			elif tagName.equals( "vector2" )
-				value = this.readVector2( element )
+			elif tagName.equals("vector2")
+				value = readVector2(element)
 				
-			elif tagName.equals( "point" )
-				value = this.readPoint( element )
+			elif tagName.equals("point")
+				value = readPoint(element)
 				
-			elif tagName.equals( "point3" )
-				value = this.readPoint3( element )
+			elif tagName.equals("point3")
+				value = readPoint3(element)
 				
-			elif tagName.equals( "borderSize" )
-				value = this.readBorderSize( element )
+			elif tagName.equals("borderSize")
+				value = readBorderSize(element)
 				
-			elif tagName.equals( "rectArea" )
-				value = this.readRectArea( element )
+			elif tagName.equals("rectArea")
+				value = readRectArea(element)
 				
-			elif tagName.equals( "floatRectArea" )
-				value = this.readFloatRectArea( element )
+			elif tagName.equals("floatRectArea")
+				value = readFloatRectArea(element)
 				
-			elif tagName.equals( "color" )
-				value = this.readColor( element )
+			elif tagName.equals("color")
+				value = readColor(element)
 				
-			elif tagName.equals( "null" )
+			elif tagName.equals("null")
 				value = null
 				
-			elif tagName.equals( "list" )
-				value = this.readList( element )
+			elif tagName.equals("list")
+				value = readList(element)
+				
+			elif tagName.equals("map")
+				value = readMap(element)
 				
 			else
-				this.logUnknownTag( element )
+				logUnknownTag(element)
 				throw EInvalidParam.new()
 			end
 			
-			skinAnnotations.set( path, key, value )
-		end )
+			skinAnnotations.set(path, key, value)
+		end)
 	end
 	
 	/** \brief Parse list tag. */
-	protected func Array readList( EasyXMLElement root )
+	protected func Array readList(EasyXMLElement root)
 		var Array list = Array.new()
 		
-		root.forEachTag( block EasyXMLElement element, String tagName
-			if tagName.equals( "string" )
-				list.add( element.getFirstCData() )
+		root.forEachTag(block EasyXMLElement element, String tagName
+			if tagName.equals("string")
+				list.add(element.getFirstCData())
 				
-			elif tagName.equals( "float" )
-				list.add( element.getFirstCDataFloat() )
+			elif tagName.equals("float")
+				list.add(element.getFirstCDataFloat())
 				
-			elif tagName.equals( "integer" )
-				list.add( element.getFirstCDataInt() )
+			elif tagName.equals("integer")
+				list.add(element.getFirstCDataInt())
 				
-			elif tagName.equals( "boolean" )
-				list.add( element.getFirstCDataBool() )
+			elif tagName.equals("boolean")
+				list.add(element.getFirstCDataBool())
 				
-			elif tagName.equals( "vector" )
-				list.add( this.readVector( element ) )
+			elif tagName.equals("vector")
+				list.add(readVector(element))
 				
-			elif tagName.equals( "vector2" )
-				list.add( this.readVector2( element ) )
+			elif tagName.equals("vector2")
+				list.add(readVector2(element))
 				
-			elif tagName.equals( "point" )
-				list.add( this.readPoint( element ) )
+			elif tagName.equals("point")
+				list.add(readPoint(element))
 				
-			elif tagName.equals( "point3" )
-				list.add( this.readPoint3( element ) )
+			elif tagName.equals("point3")
+				list.add(readPoint3(element))
 				
-			elif tagName.equals( "borderSize" )
-				list.add( this.readBorderSize( element ) )
+			elif tagName.equals("borderSize")
+				list.add(readBorderSize(element))
 				
-			elif tagName.equals( "rectArea" )
-				list.add( this.readRectArea( element ) )
+			elif tagName.equals("rectArea")
+				list.add(readRectArea(element))
 				
-			elif tagName.equals( "floatRectArea" )
-				list.add( this.readFloatRectArea( element ) )
+			elif tagName.equals("floatRectArea")
+				list.add(readFloatRectArea(element))
 				
-			elif tagName.equals( "color" )
-				list.add( this.readColor( element ) )
+			elif tagName.equals("color")
+				list.add(readColor(element))
 				
-			elif tagName.equals( "null" )
-				list.add( null )
+			elif tagName.equals("null")
+				list.add(null)
+				
+			elif tagName.equals("list")
+				list.add(readList(element))
+				
+			elif tagName.equals("map")
+				list.add(readMap(element))
 				
 			else
-				this.logUnknownTag( element )
+				logUnknownTag(element)
 			end
-		end )
+		end)
 		
 		return list
+	end
+	
+	/** \brief Parse map tag. */
+	protected func Dictionary readMap(EasyXMLElement root)
+		var Dictionary dict = Dictionary.new()
+		var String key
+		
+		root.forEachTag(block EasyXMLElement element, String tagName
+			key = element.getAttributeNamed("key")
+			
+			if tagName.equals("string")
+				dict.setAt(key, element.getFirstCData())
+				
+			elif tagName.equals("float")
+				dict.setAt(key, element.getFirstCDataFloat())
+				
+			elif tagName.equals("integer")
+				dict.setAt(key, element.getFirstCDataInt())
+				
+			elif tagName.equals("boolean")
+				dict.setAt(key, element.getFirstCDataBool())
+				
+			elif tagName.equals("vector")
+				dict.setAt(key, readVector(element))
+				
+			elif tagName.equals("vector2")
+				dict.setAt(key, readVector2(element))
+				
+			elif tagName.equals("point")
+				dict.setAt(key, readPoint(element))
+				
+			elif tagName.equals("point3")
+				dict.setAt(key, readPoint3(element))
+				
+			elif tagName.equals("borderSize")
+				dict.setAt(key, readBorderSize(element))
+				
+			elif tagName.equals("rectArea")
+				dict.setAt(key, readRectArea(element))
+				
+			elif tagName.equals("floatRectArea")
+				dict.setAt(key, readFloatRectArea(element))
+				
+			elif tagName.equals("color")
+				dict.setAt(key, readColor(element))
+				
+			elif tagName.equals("null")
+				dict.setAt(key, null)
+				
+			elif tagName.equals("list")
+				dict.setAt(key, readList(element))
+				
+			elif tagName.equals("map")
+				dict.setAt(key, readMap(element))
+				
+			else
+				logUnknownTag(element)
+			end
+		end)
+		
+		return dict
 	end
 end

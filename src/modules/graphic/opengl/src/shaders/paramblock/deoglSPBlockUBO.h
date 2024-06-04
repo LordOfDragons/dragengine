@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLSPBLOCKVBO_H_
@@ -27,16 +30,21 @@
 
 
 /**
- * \brief Shader parameter block based on VBO.
- * 
- * Stores the data for a shader parameter block. This is used to set the value of a GLSL
- * uniform block in shader programs. Each block is defined as a byte array with members
- * in the uniform block mapped areas inde the data block.
+ * Shader parameter block based on VBO. Stores the data for a shader parameter block.
+ * This is used to set the value of a GLSL uniform block in shader programs. Each block
+ * is defined as a byte array with members in the uniform block mapped areas inde the
+ * data block.
  */
 class deoglSPBlockUBO : public deoglShaderParameterBlock{
+public:
+	typedef deTObjectReference<deoglSPBlockUBO> Ref;
+	
+	
+	
 private:
 	GLuint pUBO;
 	int pBindingPoint;
+	bool pCompact;
 	bool pAllocateBuffer;
 	
 	char *pWriteBuffer;
@@ -48,14 +56,14 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create shader parameter block. */
+	/** Create shader parameter block. */
 	deoglSPBlockUBO( deoglRenderThread &renderThread );
 	
-	/** \brief Create copy of shader storage buffer object. */
+	/** Create copy of shader storage buffer object. */
 	deoglSPBlockUBO( const deoglSPBlockUBO &paramBlock );
 	
 protected:
-	/** \brief Clean up shader parameter block. */
+	/** Clean up shader parameter block. */
 	virtual ~deoglSPBlockUBO();
 	/*@}*/
 	
@@ -64,36 +72,65 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Uniform buffer object or 0 if not created yet. */
+	/** Uniform buffer object or 0 if not created yet. */
 	inline GLuint GetUBO() const{ return pUBO; }
 	
-	/** \brief Binding point. */
+	/** Binding point. */
 	inline int GetBindingPoint() const{ return pBindingPoint; }
 	
-	/** \brief Set binding point. */
+	/** Set binding point. */
 	void SetBindingPoint( int bindingPoint );
 	
-	/** \brief Activate buffer. */
-	virtual void Activate();
+	/** Compact elements. If true mapping individual elements is prohibited. */
+	inline bool GetCompact() const{ return pCompact; }
 	
-	/** \brief Deactivate buffer. */
-	virtual void Deactivate();
+	/** Set if elements are compact. If true mapping individual elements is prohibited. */
+	void SetCompact( bool compact );
 	
-	/** \brief Map buffer discarding content. */
+	/** Activate buffer. */
+	virtual void Activate() const;
+	
+	/** Activate buffer overriding binding point. */
+	virtual void Activate( int bindingPoint ) const;
+	
+	/** Deactivate buffer. */
+	virtual void Deactivate() const;
+	
+	/** Deactivate buffer overriding binding point. */
+	virtual void Deactivate( int bindingPoint ) const;
+	
+	/** Map buffer discarding content. */
 	virtual void MapBuffer();
 	
 	/**
-	 * \brief Map buffer for specific element discarding content.
+	 * Map buffer for specific element discarding content.
 	 * 
 	 * Data outside the element range is retained. Any attempt to call SetParameter* with
 	 * an element index other than the one used for mapping throws an exception.
 	 */
 	virtual void MapBuffer( int element );
 	
-	/** \brief Unmap buffer uploading data to GPU. */
+	/**
+	 * Map buffer for specific elements discarding content.
+	 * 
+	 * Data outside the element range is retained. Any attempt to call SetParameter* with
+	 * an element index other than the one used for mapping throws an exception.
+	 */
+	virtual void MapBuffer( int element, int count );
+	
+	/** Unmap buffer uploading data to GPU. */
 	virtual void UnmapBuffer();
 	
-	/** \brief Debug print configuration. */
+	/** Direct access to write buffer. Use with care. Can be nullptr. */
+	inline char *GetWriteBuffer() const{ return pWriteBuffer; }
+	
+	/** Get platform alignment requirements. */
+	virtual int GetAlignmentRequirements() const;
+	
+	/** Create copy of shader parameter block. */
+	virtual deoglShaderParameterBlock *Copy() const;
+	
+	/** Debug print configuration. */
 	void DebugPrintConfig( const char *name );
 	/*@}*/
 	

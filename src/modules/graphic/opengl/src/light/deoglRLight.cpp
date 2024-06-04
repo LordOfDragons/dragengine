@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <math.h>
@@ -27,17 +30,18 @@
 #include "deoglRLight.h"
 #include "deoglLightTestForTouch.h"
 #include "deoglLightGatherOcclusionMeshes.h"
-#include "volume/deoglLightVolume.h"
-#include "volume/deoglLightVolumeBuilder.h"
+#include "pipeline/deoglLightPipelinesPoint.h"
+#include "pipeline/deoglLightPipelinesSpot.h"
 #include "shader/deoglLightShader.h"
 #include "shader/deoglLightShaderManager.h"
+#include "volume/deoglLightVolume.h"
+#include "volume/deoglLightVolumeBuilder.h"
 #include "deoglNotifyEnvMapLightChanged.h"
 #include "../canvas/render/deoglRCanvasView.h"
 #include "../collidelist/deoglCollideListComponent.h"
 #include "../collidelist/deoglCollideList.h"
 #include "../component/deoglRComponent.h"
 #include "../configuration/deoglConfiguration.h"
-#include "../delayedoperation/deoglDelayedDeletion.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
 #include "../occlusiontest/deoglOcclusionTest.h"
 #include "../occlusiontest/mesh/deoglROcclusionMesh.h"
@@ -48,7 +52,7 @@
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTLogger.h"
 #include "../renderthread/deoglRTShader.h"
-#include "../shaders/paramblock/deoglSPBlockUBO.h"
+#include "../renderthread/deoglRTChoices.h"
 #include "../shadow/deoglSCSolid.h"
 #include "../shadow/deoglSCTransparent.h"
 #include "../shadow/deoglShadowCaster.h"
@@ -88,6 +92,23 @@ static decTimer timer;
 
 
 
+// Class deoglRLight::WorldComputeElement
+///////////////////////////////////////////
+
+deoglRLight::WorldComputeElement::WorldComputeElement( deoglRLight &light ) :
+deoglWorldComputeElement( eetLight, &light ),
+pLight( light ){
+}
+
+void deoglRLight::WorldComputeElement::UpdateData( sDataElement &data ) const {
+	const decDVector &refpos = GetReferencePosition();
+	data.SetExtends( pLight.GetMinimumExtend() - refpos, pLight.GetMaximumExtend() - refpos );
+	data.SetLayerMask( pLight.GetLayerMask() );
+	data.flags = ( uint32_t )deoglWorldCompute::eefLight;
+}
+
+
+
 // Class deoglRLight
 /////////////////////
 
@@ -99,6 +120,7 @@ pRenderThread( renderThread ),
 
 pParentWorld( NULL ),
 pOctreeNode( NULL ),
+pWorldComputeElement( deoglWorldComputeElement::Ref::New( new WorldComputeElement( *this ) ) ),
 
 pActive( false ),
 pLightType( deLight::eltPoint ),
@@ -115,14 +137,20 @@ pColor( 1.0f, 1.0f, 1.0f ),
 pLightSkin( NULL ),
 pLightCanvas( NULL ),
 pDynamicSkin( NULL ),
-pDirtyRenderables( false ),
 pSkinState( NULL ),
 pUseSkinTexture( NULL ),
+pDirtyPrepareSkinStateRenderables( true ),
+pDirtyRenderSkinStateRenderables( true ),
+pDirtyPrepareLightCanvas( true ),
 
-pWorldMarkedRemove( false )
+pCSOctreeIndex( 0 ),
+
+pWorldMarkedRemove( false ),
+pLLWorldPrev( NULL ),
+pLLWorldNext( NULL ),
+
+pLLPrepareForRenderWorld( this )
 {
-	int i;
-	
 	pDirtyColVol = true;
 	pDirtyConvexVolumeList = true;
 	pDirtyFullExtends = true;
@@ -136,23 +164,13 @@ pWorldMarkedRemove( false )
 	pDirtyCollideLists = true;
 	pStaticCollideList = NULL;
 	pDynamicCollideList = NULL;
-	pVisible = true;
 	
 	pLightVolume = NULL;
 	pLightVolumeCropBox = NULL;
 	
-	pOcclusionQuery = NULL;
-	
 	pDirtyTouching = true;
 	pMarked = false;
-	pInsideCamera = false;
 	pUpdateOnRemoveComponent = true;
-	
-	for( i=0; i<EST_COUNT; i++ ){
-		pShaders[ i ] = NULL;
-	}
-	pParamBlockLight = NULL;
-	pParamBlockInstance = NULL;
 	
 	try{
 		pConvexVolumeList = new decConvexVolumeList;
@@ -181,6 +199,8 @@ void deoglRLight::SetParentWorld( deoglRWorld *parentWorld ){
 		return;
 	}
 	
+	pWorldComputeElement->RemoveFromCompute();
+	
 	pParentWorld = parentWorld;
 	
 	RemoveAllComponents();
@@ -200,14 +220,25 @@ void deoglRLight::SetOctreeNode( deoglWorldOctree *octreeNode ){
 }
 
 void deoglRLight::UpdateOctreeNode(){
+	// WARNING called from main thread during synchronization
+	
 	if( ! pParentWorld ){
 		return;
 	}
 	
 	if( pActive ){
-		pParentWorld->GetOctree().InsertLightIntoTree( this, 8 );
+		pUpdateExtends(); // required or we might end up in the wrong octree
+		pParentWorld->GetOctree().InsertLightIntoTree( this );
+		
+		if( pWorldComputeElement->GetWorldCompute() ){
+			pWorldComputeElement->ComputeUpdateElement();
+			
+		}else{
+			pParentWorld->GetCompute().AddElement( pWorldComputeElement );
+		}
 		
 	}else{
+		pWorldComputeElement->RemoveFromCompute();
 		if( pOctreeNode ){
 			pOctreeNode->RemoveLight( this );
 			pOctreeNode = NULL;
@@ -224,7 +255,15 @@ void deoglRLight::UpdateSkin( float elapsed ){
 
 
 void deoglRLight::SetActive( bool active ){
+	if( active == pActive ){
+		return;
+	}
+	
 	pActive = active;
+	
+	if( active ){
+		pRequiresPrepareForRender();
+	}
 }
 
 void deoglRLight::SetLightType( deLight::eLightTypes type ){
@@ -311,6 +350,8 @@ void deoglRLight::SetLightCanvas( deoglRCanvasView *canvas ){
 	if( canvas ){
 		canvas->AddReference();
 	}
+	
+	   pRequiresPrepareForRender();
 }
 
 void deoglRLight::SetDynamicSkin( deoglRDynamicSkin *dynamicSkin ){
@@ -331,10 +372,6 @@ void deoglRLight::SetDynamicSkin( deoglRDynamicSkin *dynamicSkin ){
 
 void deoglRLight::SetTransform( const decTexMatrix2 &matrix ){
 	pTransform = matrix;
-}
-
-void deoglRLight::SetRenderablesDirty(){
-	pDirtyRenderables = true;
 }
 
 
@@ -383,6 +420,95 @@ bool deoglRLight::HasShadowIgnoreComponent( deoglRComponent *component ) const{
 	return pShadowIgnoreComponents.Has( component );
 }
 
+bool deoglRLight::StaticMatchesCamera( const decLayerMask &layerMask ) const{
+	// if layer mask restriction is used dynamic only shadows have to be used to filter properly.
+	// the logic is this. lights filter scene elements to be included in their shadow maps by
+	// matching the element "layer mask" against the "shadow layer mask". if the camera restricts
+	// the layer mask this filtering stays correct if all bits of the "shadow layer mask" are
+	// covered by the bits of the "camery layer mask".
+	// 
+	// as a side note it would be also possible for this rule to not apply if not all bits of
+	// the "shadow layer mask" match the "camera layer mask". this requires or combining all
+	// layer masks of all filtered scene elements. if this combined layer mask does match in
+	// all bits the "camera layer mask" then this would be enough to still fullfil the
+	// requirement to use the static shadow maps.
+	// TODO check if this special filter check should be added or not
+	if( pLayerMaskShadow.IsEmpty() || pLayerMaskShadow.IsFull() ){
+		return layerMask.IsEmpty() || layerMask.IsFull();
+		
+	}else{
+		return layerMask.IsEmpty() || ( pLayerMaskShadow & layerMask ) == pLayerMaskShadow;
+	}
+}
+
+
+
+void deoglRLight::InitSkinStateStates(){
+	if( pSkinState ){
+		pSkinState->InitAll();
+	}
+}
+
+void deoglRLight::UpdateSkinStateStates(){
+	if( pSkinState ){
+		pSkinState->UpdateAll();
+	}
+}
+
+void deoglRLight::DirtyPrepareSkinStateRenderables(){
+	pDirtyPrepareSkinStateRenderables = true;
+	pDirtyRenderSkinStateRenderables = true;
+	pRequiresPrepareForRender();
+}
+
+void deoglRLight::PrepareSkinStateRenderables( const deoglRenderPlanMasked *renderPlanMask ){
+	if( pSkinState ){
+		pSkinState->PrepareRenderables( pLightSkin, pDynamicSkin, renderPlanMask );
+	}
+}
+
+void deoglRLight::RenderSkinStateRenderables( const deoglRenderPlanMasked *renderPlanMask ){
+	if( pSkinState ){
+		pSkinState->RenderRenderables( pLightSkin, pDynamicSkin, renderPlanMask );
+	}
+}
+
+void deoglRLight::PrepareSkinStateConstructed(){
+	if( pSkinState ){
+		pSkinState->PrepareConstructedProperties();
+	}
+}
+
+void deoglRLight::DynamicSkinRenderablesChanged(){
+// 	if( ! pDynamicSkin || ! pLightSkin || ! pLightSkin->GetHasRenderables() ){
+// 		return;
+// 	}
+// 	
+// 	MarkParamBlocksDirty();
+// 	MarkTUCsDirty();
+}
+
+void deoglRLight::UpdateRenderableMapping(){
+	if( ! pSkinState ){
+		return;
+	}
+	
+	// udpate mappings of dynamic skin of component itself
+	pSkinState->RemoveAllRenderables();
+	if( pLightSkin && pDynamicSkin ){
+		pSkinState->AddRenderables( *pLightSkin, *pDynamicSkin );
+	}
+	
+// 	MarkParamBlocksDirty();
+// 	MarkTUCsDirty();
+// 	MarkUseSkinDirty(); // required?
+}
+
+void deoglRLight::DirtyPrepareLightCanvas(){
+	pDirtyPrepareLightCanvas = true;
+	pRequiresPrepareForRender();
+}
+
 
 
 void deoglRLight::SetMatrix( const decDMatrix &matrix ){
@@ -392,10 +518,6 @@ void deoglRLight::SetMatrix( const decDMatrix &matrix ){
 
 
 
-void deoglRLight::UpdateConvexVolumeList(){
-	UpdateLightVolume();
-}
-
 bool deoglRLight::HasExtends() const{
 	/*if( pLight->GetType() == deLight::eltDirectional ){
 		return false;
@@ -403,155 +525,20 @@ bool deoglRLight::HasExtends() const{
 	return true;
 }
 
-const decDVector &deoglRLight::GetFullMinExtend(){
-	pUpdateFullExtends();
-	return pFullMinExtend;
-}
-
-const decDVector &deoglRLight::GetFullMaxExtend(){
-	pUpdateFullExtends();
-	return pFullMaxExtend;
-}
-
 void deoglRLight::SetDirtyFullExtends(){
 	pDirtyFullExtends = true;
 }
 
-const decDVector &deoglRLight::GetMinimumExtend(){
-	pUpdateExtends();
-	return pMinExtend;
-}
-
-const decDVector &deoglRLight::GetMaximumExtend(){
-	pUpdateExtends();
-	return pMaxExtend;
-}
-
-
 void deoglRLight::SetDirtyExtends(){
 	pDirtyExtends = true;
+	pRequiresPrepareForRender();
 }
 
 
-
-deoglDCollisionVolume *deoglRLight::GetCollisionVolume(){
-	if( ! pDirtyColVol ){
-		return pColVol;
-	}
-	
-	const decDVector lightPosition( pMatrix.GetPosition() );
-	deoglDCollisionVolume *newColVol = NULL;
-	
-	try{
-		// if there exists no light volume yet create a default collision volume
-		if( pConvexVolumeList->GetVolumeCount() == 0 ){
-			switch( pLightType ){
-			case deLight::eltPoint:
-				// create a sphere enclosing the point light
-				newColVol = new deoglDCollisionSphere( lightPosition, pRange );
-				break;
-				
-			default:
-				// create a sphere around the spot light. a frustum would be the best
-				// solution but currently the frustum is not able to test for collisions
-				// with another frustum
-				newColVol = new deoglDCollisionSphere( lightPosition, pRange );
-			}
-			
-		// otherwise calculate a box around the light volume list
-		}else{
-			pUpdateExtends();
-			const decDVector halfSize( ( pMaxExtend - pMinExtend ) * 0.5f );
-			newColVol = new deoglDCollisionBox( pMinExtend + halfSize, halfSize );
-		}
-		
-		// replace old collision volumes
-		if( pColVol ){
-			delete pColVol;
-		}
-		pColVol = newColVol;
-		
-	}catch( const deException & ){
-		if( newColVol ){
-			delete newColVol;
-		}
-		throw;
-	}
-	
-	pDirtyColVol = false;
-	
-	return pColVol;
-}
 
 void deoglRLight::SetDirtyCollisionVolume(){
 	pDirtyColVol = true;
-}
-
-
-
-void deoglRLight::TestCameraInside( deoglRenderPlan &plan ){
-	const float safetyMargin = 0.01; // 1cm should be enough to be safe
-	const float imageDistance = plan.GetCameraImageDistance();
-	const float nx = imageDistance * tanf( plan.GetCameraFov() * 0.5f );
-	const float ny = imageDistance * tanf( plan.GetCameraFov() * plan.GetCameraFovRatio() * 0.5f );
-	const float nd = sqrtf( nx * nx + ny * ny + imageDistance * imageDistance ) + safetyMargin;
-	const decDVector &cameraPosition = plan.GetCameraPosition();
-	const decDVector extendOffset( nd, nd, nd );
-	
-	// by default the camera is not inside unless some other evidence is found
-	pCameraInside = false;
-	
-	// if the camera is not inside the extends box then there is no chance to inside the light volumes at all.
-	// to avoid flickering the box is slightly enlarged as the camera near plane has a certain distance from
-	// the position itself
-	pUpdateExtends();
-	
-	pCameraInside = ( cameraPosition >= pMinExtend - extendOffset )
-		&& ( cameraPosition <= pMaxExtend + extendOffset );
-	
-	if( ! pCameraInside ){
-		return;
-	}
-	
-	// test against all convex volumes. to get a safe testing we can not simply test the camera point since
-	// the camera clips already into the light volume at the near clipping plane. this can be achieved by
-	// not just testing on what side the point is on a plane but adding a small offset. a too large offset
-	// only causes a full screen render that might not have been necessary but is never wrong
-	const decVector localCameraPosition = ( pInverseMatrix * cameraPosition ).ToVector();
-	const int volumeCount = pConvexVolumeList->GetVolumeCount();
-	bool insideVolume;
-	int i, j;
-	
-	// this test is not working correctly. the correct test requires finding for each volume
-	// the point inside the volume that is closes to the camera point. this has to be done
-	// by clamping the point against all faces (keep normal*(cam-facepoint) <= 0). then
-	// check if the distance from the camera point to this closest point is at most nd.
-	// using squared check removes the need for a square root.
-	
-	pCameraInside = false;
-	
-	for( i=0; i<volumeCount; i++ ){
-		const decConvexVolume &convexVolume = *pConvexVolumeList->GetVolumeAt( i );
-		const int faceCount = convexVolume.GetFaceCount();
-		
-		insideVolume = true;
-		
-		for( j=0; j<faceCount; j++ ){
-			const decConvexVolumeFace &convexVolumeFace = *convexVolume.GetFaceAt( j );
-			const decVector &normal = convexVolumeFace.GetNormal();
-			const decVector &point = convexVolume.GetVertexAt( convexVolumeFace.GetVertexAt( 0 ) );
-			
-			if( normal * ( localCameraPosition - point ) > nd ){
-				insideVolume = false;
-				break;
-			}
-		}
-		
-		if( insideVolume ){
-			pCameraInside = true;
-			break;
-		}
-	}
+	pRequiresPrepareForRender();
 }
 
 
@@ -580,112 +567,8 @@ void deoglRLight::SetLightVolumeDirty(){
 	}else{
 		// we have to create one... TODO
 	}
-}
-
-void deoglRLight::UpdateLightVolume(){
-	if( ! pDirtyConvexVolumeList ){
-		return;
-	}
 	
-	deoglLightVolumeBuilder builder;
-	
-	// cropping produces unfortunately a concave volume which we can't use. to solve this
-	// a convex hull has to be calculated from the volume points. this is correctly done
-	// using a gift-wrap algorithm. for the time being though we simply calculate an axis
-	// aligned bounding box and clip the volume against it. this produces a result that
-	// is not as optimal as the gift-wrap but it's better than nothing for the time being
-//	decDVector boundingBoxMinExtend, boundingBoxMaxExtend;
-	
-//	builder.GetTransformedVolumeExtends( *pConvexVolumeList, pMatrix, boundingBoxMinExtend, boundingBoxMaxExtend );
-	
-	switch( pLightType ){
-	case deLight::eltPoint:
-		builder.BuildSphere( *pConvexVolumeList, decVector(), pRange );
-		break;
-		
-	case deLight::eltSpot:
-		builder.BuildCone( *pConvexVolumeList, decMatrix(), pRange,
-			pSpotAngle * 0.5f, pSpotAngle * pSpotRatio * 0.5f, 12 );
-		break;
-		
-	case deLight::eltProjector:
-		builder.BuildFrustum( *pConvexVolumeList, decMatrix(), pRange,
-			pSpotAngle * 0.5f, pSpotAngle * pSpotRatio * 0.5f );
-		break;
-	}
-	
-	if( pLightVolumeCropBox ){
-		const decDVector minExtend( pLightVolumeCropBox->GetPosition()
-			- pLightVolumeCropBox->GetHalfExtends() );
-		const decDVector maxExtend( pLightVolumeCropBox->GetPosition()
-			+ pLightVolumeCropBox->GetHalfExtends() );
-		
-		builder.CropByBoundingBox( *pConvexVolumeList,
-			pInverseMatrix.GetRotationMatrix(), minExtend, maxExtend );
-	}
-	
-//	builder.CropByBoundingBox( *pConvexVolumeList, invLightMatrix, boundingBoxMinExtend, boundingBoxMaxExtend );
-	
-	// optimizer stuff
-#if 0
-	if( ! pOptimizer ){
-		try{
-			pOptimizer = new deoglOptimizerLight( this, oglWorld );
-			if( ! pOptimizer ) DETHROW( deeOutOfMemory );
-			
-			if( lightType == deLight::eltPoint ){
-				pOptimizer->SetOptimizeShadowCaster( false );
-			}else{
-				pOptimizer->SetOptimizeShadowCaster( true );
-			}
-			
-			if( pLight->GetHintMovement() == deLight::emhStationary ){
-				pOptimizer->SetInitialWarmUpTime( 100 );
-				if( lightType == deLight::eltPoint ){
-					pOptimizer->SetMaximalVolumeCount( 200 );
-				}else{
-					pOptimizer->SetMaximalVolumeCount( 50 );
-				}
-				
-			}else{
-				pOptimizer->SetInitialWarmUpTime( 500 );
-				if( lightType == deLight::eltPoint ){
-					pOptimizer->SetMaximalVolumeCount( 100 );
-				}else{
-					pOptimizer->SetMaximalVolumeCount( 25 );
-				}
-			}
-			
-			pOptimizer->ResetAllOptimizations();
-			
-			pOgl->GetOptimizerManager()->AddOptimizer( pOptimizer );
-			
-		}catch( const deException & ){
-			if( pOptimizer ) delete pOptimizer;
-			throw;
-		}
-	}
-#endif
-	
-	// sanity check. if there is not a single volume in the list the chance is high the light volume
-	// becomes concave. we only write a warning here for the case we experiment during debugging
-	if( pConvexVolumeList->GetVolumeCount() > 1 ){
-		const decDVector position( pMatrix.GetPosition() );
-		pRenderThread.GetLogger().LogWarnFormat( "Light at (%g,%g,%g) has a light volume with %i volumes (potentially concave)",
-			position.x, position.y, position.z, pConvexVolumeList->GetVolumeCount() );
-	}
-	
-	// rebuild the light volume using the convex volume list
-	pLightVolume->CreateFrom( *pConvexVolumeList );
-	
-	// extends are usually dirty now
-	pDirtyExtends = true;
-	pDirtyCollideLists = true;
-	pDirtyColVol = true;
-	pDirtyTouching = true;
-	
-	// no more dirty
-	pDirtyConvexVolumeList = false;
+	pRequiresPrepareForRender();
 }
 
 
@@ -702,12 +585,6 @@ void deoglRLight::SetLightVolumeCropBox( decShapeBox *box ){
 	pLightVolumeCropBox = box;
 	
 	SetLightVolumeDirty();
-}
-
-
-
-void deoglRLight::SetInsideCamera( bool inside ){
-	pInsideCamera = inside;
 }
 
 
@@ -774,10 +651,8 @@ void deoglRLight::SetDirtyShadows(){
 	pDirtyDynamicShadows = true;
 }
 
-void deoglRLight::SetShadowParameters( const decVector &shadowOrigin, float shadowGap ){
-	pShadowCaster->SetShadowOrigin( shadowOrigin );
-	pShadowCaster->SetStaticCutOff( -shadowGap );
-	pShadowCaster->SetDynamicCutOff( -shadowGap );
+void deoglRLight::ShadowCasterRequiresPrepare(){
+	pRequiresPrepareForRender();
 }
 
 
@@ -804,320 +679,105 @@ void deoglRLight::ClearOptimizer(){
 
 
 
-void deoglRLight::PrepareForRender( deoglRenderPlan &plan ){
-	/*if( pLightSkin ){
-		pLightSkin->PrepareForRender();
-	}*/
-	if( pLightCanvas ){
-		pLightCanvas->PrepareForRender();
+void deoglRLight::EarlyPrepareForRender(){
+	pUpdateFullExtends();
+	pUpdateExtends();
+	pUpdateLightVolume();
+	pUpdateCollisionVolume();
+}
+
+void deoglRLight::PrepareForRender( const deoglRenderPlanMasked *renderPlanMask ){
+	if( pDirtyPrepareLightCanvas ){
+		if( pLightCanvas ){
+			pLightCanvas->PrepareForRender( renderPlanMask );
+		}
+		pDirtyPrepareLightCanvas = false;
 	}
 	
-	pUpdateRenderables();
+	PrepareSkinStateConstructed();
+	
+	if( pDirtyPrepareSkinStateRenderables ){
+		PrepareSkinStateRenderables( renderPlanMask );
+		pDirtyPrepareSkinStateRenderables = false;
+		pDirtyRenderSkinStateRenderables = true;
+	}
+	
 	pCheckTouching();
 	
 	pShadowCaster->Update();
 	
-//DEBUG_RESET_TIMERS;
-	bool castShadows = pCastShadows; // && plan.GetDisableLights(); // disabled while debugging
-	
-	UpdateConvexVolumeList();
-//DEBUG_PRINT_TIMER( "UpdateConvexVolumeList" );
-	
-	// updating components is only required if we cast shadows
-	if( castShadows ){
-		int c, componentCount;
-		
-//DEBUG_RESET_TIMERS;
-		// update renderables of shadow casting components. this does not
-		// update the vbo as this has to be done when lights are really
-		// visible.
-		componentCount = pStaticComponentList.GetCount();
-		for( c=0; c<componentCount; c++ ){
-			pStaticComponentList.GetAt( c )->UpdateRenderables( plan );
-		}
-		
-		componentCount = pDynamicComponentList.GetCount();
-		for( c=0; c<componentCount; c++ ){
-			pDynamicComponentList.GetAt( c )->UpdateRenderables( plan );
-		}
-//DEBUG_PRINT_TIMER( "PrerenderComponents" );
-	}
-	
 	// make sure the shadow caster is cleared of off dyamic shadow maps
 	//pShadowCaster->GetSolid().DropDynamic();
 	
-	// update light volume vbo if existing
+	// update light volume vbo if existing. has to be done here. see UpdateLightVolume()
 	if( pLightVolume ){
 		pLightVolume->UpdateVBO();
 	}
+	
+	// force update next frame if required
+	if( pShadowCaster->RequiresUpdate() ){
+		pRequiresPrepareForRender();
+	}
 }
 
-void deoglRLight::PrepareForShadowCasting( deoglRenderPlan &plan ){
-	int c, componentCount;
-	
-	componentCount = pStaticComponentList.GetCount();
-	for( c=0; c<componentCount; c++ ){
-		deoglRComponent &component = *pStaticComponentList.GetAt( c );
-		component.UpdateVBO();
-		component.UpdateRenderables( plan );
-	}
-	
-	componentCount = pDynamicComponentList.GetCount();
-	for( c=0; c<componentCount; c++ ){
-		deoglRComponent &component = *pDynamicComponentList.GetAt( c );
-		component.UpdateVBO();
-		component.UpdateRenderables( plan );
+void deoglRLight::PrepareForRenderRender( const deoglRenderPlanMasked *renderPlanMask ){
+	if( pDirtyRenderSkinStateRenderables ){
+		RenderSkinStateRenderables( renderPlanMask );
+		pDirtyRenderSkinStateRenderables = false;
 	}
 }
 
 
 
-deoglLightShader *deoglRLight::GetShaderFor( deoglRLight::eShaderTypes shaderType ){
-	if( shaderType < 0 || shaderType >= EST_COUNT ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	if( ! pShaders[ shaderType ] ){
-		deoglLightShaderConfig config;
-		
-		if( GetShaderConfigFor( shaderType, config ) ){
-			//#ifdef OS_ANDROID
-			//	decString debugString;
-			//	config.DebugGetConfigString(debugString);
-			//	pRenderThread.GetLogger().LogInfoFormat("GetShaderFor(%p): IN %s", this, debugString.GetString());
-			//#endif
-			pShaders[ shaderType ] = pRenderThread.GetShader().GetLightShaderManager().GetShaderWith( config );
-			//#ifdef OS_ANDROID
-			//	pRenderThread.GetLogger().LogInfoFormat("GetShaderFor(%p): OUT %p", this, pShaders[shaderType]);
-			//#endif
-		}
-	}
-	
-	return pShaders[ shaderType ];
-}
-
-bool deoglRLight::GetShaderConfigFor( deoglRLight::eShaderTypes shaderType,
-deoglLightShaderConfig &config ){
-	if( shaderType < 0 || shaderType >= EST_COUNT ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	const deoglConfiguration &oglconfig = pRenderThread.GetConfiguration();
-	
-	config.Reset();
-	
-	config.SetMaterialNormalMode( deoglLightShaderConfig::emnmIntBasic );
-	config.SetSubSurface( oglconfig.GetSSSSSEnable() );
-	
-	switch( pLightType ){
-	case deLight::eltPoint:
-		config.SetLightMode( deoglLightShaderConfig::elmPoint );
-		config.SetShadowMappingAlgorithm1( deoglLightShaderConfig::esmaCube );
-		config.SetShadowMappingAlgorithm2( deoglLightShaderConfig::esmaCube );
-		
-		if( oglconfig.GetUseShadowCubeEncodeDepth() ){
-			config.SetHWDepthCompare( false );
-			config.SetDecodeInShadow( true );
-			config.SetShadowMatrix2EqualsMatrix1( true );
+deoglLightPipelines &deoglRLight::GetPipelines(){
+	if( ! pPipelines ){
+		if( pLightType == deLight::eltPoint ){
+			pPipelines.TakeOver( new deoglLightPipelinesPoint( *this ) );
 			
 		}else{
-			config.SetHWDepthCompare( true );
-			config.SetDecodeInShadow( false );
-			config.SetShadowMatrix2EqualsMatrix1( true );
+			pPipelines.TakeOver( new deoglLightPipelinesSpot( *this ) );
 		}
-		
-		config.SetShadowTapMode( deoglLightShaderConfig::estmPcf9 );
-		//config.SetShadowTapMode( deoglLightShaderConfig::estmPcfVariableTap );
-		config.SetTextureNoise( false );
-		
-		if( pLightCanvas ){
-			// right now canvas can not have depth. once it has light canvas can only be used
-			// as cube map texture. since this is not possible right now equirect is used.
-			config.SetTextureColorOmnidirEquirect( true );
-			
-		}else if( pUseSkinTexture ){
-			if( pUseSkinTexture->IsChannelEnabled( deoglSkinChannel::ectColorOmnidirCube ) ){
-				config.SetTextureColorOmnidirCube( true );
-				
-			}else if( pUseSkinTexture->IsChannelEnabled(
-			deoglSkinChannel::ectColorOmnidirEquirect ) ){
-				config.SetTextureColorOmnidirEquirect( true );
-				
-			}else if( pUseSkinTexture->GetMaterialPropertyAt(
-			deoglSkinTexture::empColorOmnidirCube ).GetRenderable() != -1 ){
-				config.SetTextureColorOmnidirCube( true );
-				
-			}else if( pUseSkinTexture->GetMaterialPropertyAt(
-			deoglSkinTexture::empColorOmnidirEquirect ).GetRenderable() != -1 ){
-				config.SetTextureColorOmnidirEquirect( true );
-			}
-		}
-		break;
-		
-	case deLight::eltSpot:
-	case deLight::eltProjector:
-		if( pLightType == deLight::eltSpot ){
-			config.SetLightMode( deoglLightShaderConfig::elmSpot );
-			
-		}else{
-			config.SetLightMode( deoglLightShaderConfig::elmProjector );
-		}
-		
-		config.SetShadowMappingAlgorithm1( deoglLightShaderConfig::esma2D );
-		config.SetShadowMappingAlgorithm2( deoglLightShaderConfig::esma2D );
-		
-		config.SetHWDepthCompare( true );
-		config.SetDecodeInShadow( false );
-		config.SetShadowMatrix2EqualsMatrix1( true );
-		config.SetShadowInverseDepth( true );
-		
-		config.SetShadowTapMode( deoglLightShaderConfig::estmPcf9 );
-		//config.SetShadowTapMode( deoglLightShaderConfig::estmPcfVariableTap );
-		config.SetTextureNoise( false );
-		
-		if( pLightSkin || pLightCanvas ){
-			config.SetTextureColor( true );
-		}
-		break;
+		pPipelines->Prepare();
 	}
 	
-	config.SetDecodeInDepth( oglconfig.GetDefRenEncDepth() );
-	
-	switch( shaderType ){
-	case estNoShadow:
-		break;
-		
-	case estSolid1:
-		config.SetTextureShadow1Solid( true );
-		config.SetTextureShadowAmbient( true );
-		break;
-		
-	case estSolid1NoAmbient:
-		config.SetTextureShadow1Solid( true );
-		break;
-		
-	case estSolid1Transp1:
-		config.SetTextureShadow1Solid( true );
-		config.SetTextureShadow1Transparent( true );
-		config.SetTextureShadowAmbient( true );
-		break;
-		
-	case estSolid1Transp1NoAmbient:
-		config.SetTextureShadow1Solid( true );
-		config.SetTextureShadow1Transparent( true );
-		break;
-		
-	case estSolid2:
-		config.SetTextureShadow1Solid( true );
-		config.SetTextureShadow2Solid( true );
-		config.SetTextureShadowAmbient( true );
-		break;
-		
-	case estSolid2Transp1:
-		config.SetTextureShadow1Solid( true );
-		config.SetTextureShadow1Transparent( true );
-		config.SetTextureShadow2Solid( true );
-		config.SetTextureShadowAmbient( true );
-		break;
-		
-	case estSolid2Transp2:
-		config.SetTextureShadow1Solid( true );
-		config.SetTextureShadow1Transparent( true );
-		config.SetTextureShadow2Solid( true );
-		config.SetTextureShadow2Transparent( true );
-		config.SetTextureShadowAmbient( true );
-		break;
-		
-	default:
-		return false;
-	}
-	
-	return true;
+	return *pPipelines;
 }
 
-deoglSPBlockUBO *deoglRLight::GetLightParameterBlock(){
-	if( pParamBlockLight ){
-		return pParamBlockLight;
+const deoglSPBlockUBO::Ref &deoglRLight::GetLightParameterBlock(){
+	if( ! pParamBlockLight ){
+		pParamBlockLight = GetPipelines().GetWithRef(
+			deoglLightPipelines::etNoShadow, 0 ).GetShader()->CreateSPBLightParam();
 	}
-	
-	deoglLightShader *shader = NULL;
-	int i;
-	
-	for( i=0; i<EST_COUNT; i++ ){
-		if( pShaders[ i ] ){
-			shader = pShaders[ i ];
-			break;
-		}
-	}
-	if( ! shader ){
-		// this is correct since the light parameter block only contains parameters which
-		// depend on the light configuration and are the same for all possible shaders
-		shader = GetShaderFor( estNoShadow );
-	}
-	
-	shader->EnsureShaderExists();
-	pParamBlockLight = shader->CreateSPBLightParam();
-	
 	return pParamBlockLight;
 }
 
-deoglSPBlockUBO *deoglRLight::GetInstanceParameterBlock(){
-	if( pParamBlockInstance ){
-		return pParamBlockInstance;
+const deoglSPBlockUBO::Ref &deoglRLight::GetInstanceParameterBlock(){
+	if( ! pParamBlockInstance ){
+		pParamBlockInstance = GetPipelines().GetWithRef(
+			deoglLightPipelines::etNoShadow, 0 ).GetShader()->CreateSPBInstParam();
 	}
-	
-	deoglLightShader *shader = NULL;
-	int i;
-	
-	for( i=0; i<EST_COUNT; i++ ){
-		if( pShaders[ i ] ){
-			shader = pShaders[ i ];
-			break;
-		}
-	}
-	if( ! shader ){
-		// this is correct since the light parameter block only contains parameters which
-		// depend on the light configuration and are the same for all possible shaders
-		shader = GetShaderFor( estNoShadow );
-	}
-	
-	shader->EnsureShaderExists();
-	pParamBlockInstance = shader->CreateSPBInstParam();
-	
 	return pParamBlockInstance;
 }
 
-void deoglRLight::DropShaders(){
-	int i;
-	
-	if( pParamBlockInstance ){
-		pParamBlockInstance->FreeReference();;
-		pParamBlockInstance = NULL;
+const deoglSPBlockUBO::Ref &deoglRLight::GetOccQueryParameterBlock(){
+	if( ! pParamBlockOccQuery ){
+		pParamBlockOccQuery = deoglLightShader::CreateSPBOccQueryParam( pRenderThread );
 	}
-	
-	if( pParamBlockLight ){
-		pParamBlockLight->FreeReference();;
-		pParamBlockLight = NULL;
-	}
-	
-	for( i=0; i<EST_COUNT; i++ ){
-		if( pShaders[ i ] ){
-			pShaders[ i ]->FreeReference();
-			pShaders[ i ] = NULL;
-		}
-	}
+	return pParamBlockOccQuery;
 }
 
-
-
-void deoglRLight::SetVisible( bool visible ){
-	pVisible = visible;
+void deoglRLight::DropPipelines(){
+	pParamBlockOccQuery = nullptr;
+	pParamBlockInstance = nullptr;
+	pParamBlockLight = nullptr;
+	pPipelines = nullptr;
 }
 
 
 
 void deoglRLight::SetDirtyTouching(){
 	pDirtyTouching = true;
+	pRequiresPrepareForRender();
 }
 
 void deoglRLight::EnvMapNotifyLightChanged(){
@@ -1125,8 +785,9 @@ void deoglRLight::EnvMapNotifyLightChanged(){
 		return;
 	}
 	
-	deoglNotifyEnvMapLightChanged visitor( *this );
 	pUpdateExtends();
+	
+	deoglNotifyEnvMapLightChanged visitor( *this );
 	pParentWorld->VisitRegion( pMinExtend, pMaxExtend, visitor );
 }
 
@@ -1346,51 +1007,6 @@ void deoglRLight::TestComponent( deoglRComponent *component ){
 
 
 
-// Culling
-////////////
-
-void deoglRLight::StartOcclusionTest( const decDVector &cameraPosition ){
-	UpdateLightVolume();
-	
-	if( pDirtyExtends ){
-		pUpdateExtends();
-	}
-	
-	const decVector minExtend = ( pMinExtend - cameraPosition ).ToVector();
-	const decVector maxExtend = ( pMaxExtend - cameraPosition ).ToVector();
-	
-	pRenderThread.GetOcclusionTest().AddInputData( minExtend, maxExtend, this );
-}
-
-void deoglRLight::OcclusionTestInvisible(){
-	pVisible = false;
-}
-
-
-
-deoglOcclusionQuery &deoglRLight::GetOcclusionQuery(){
-	if( ! pOcclusionQuery ){
-		pOcclusionQuery = new deoglOcclusionQuery( pRenderThread );
-	}
-	return *pOcclusionQuery;
-}
-
-bool deoglRLight::IsHiddenByOccQuery(){
-	if( ! pInsideCamera && pOcclusionQuery ){
-		// check if the query result exists already
-		//if( pOcclusionQuery->HasResult() ){
-			// retrieve the result. later on we are going to store this value
-			// somewhere so we do not have to trip down to the driver to get
-			// the result since lights can be queried multiple times if they
-			// should be drawn. might be improved once upon time.
-			return ! pOcclusionQuery->GetResultAny();
-		//}
-	}
-	return false;
-}
-
-
-
 // Optimizations
 //////////////////
 
@@ -1401,6 +1017,7 @@ void deoglRLight::LightVolumeImproved(){
 	pDirtyStaticShadows = true;
 	pDirtyDynamicShadows = true;
 	pDirtyTouching = true;
+	pRequiresPrepareForRender();
 }
 
 void deoglRLight::ReplaceLightVolume( decConvexVolumeList *list ){
@@ -1435,65 +1052,18 @@ void deoglRLight::SetWorldMarkedRemove( bool marked ){
 	pWorldMarkedRemove = marked;
 }
 
+void deoglRLight::SetLLWorldPrev( deoglRLight *light ){
+	pLLWorldPrev = light;
+}
+
+void deoglRLight::SetLLWorldNext( deoglRLight *light ){
+	pLLWorldNext = light;
+}
+
 
 
 // Private Functions
 //////////////////////
-
-class deoglRLightDeletion : public deoglDelayedDeletion{
-public:
-	deoglShadowCaster *shadowCaster;
-	deoglLightVolume *lightVolume;
-	deoglOcclusionQuery *occlusionQuery;
-	deoglLightShader *shaders[ deoglRLight::EST_COUNT ];
-	deoglSPBlockUBO *paramBlockLight;
-	deoglSPBlockUBO *paramBlockInstance;
-	deoglSkinState *skinState;
-	
-	deoglRLightDeletion() :
-	shadowCaster( NULL ),
-	lightVolume( NULL ),
-	occlusionQuery( NULL ),
-	paramBlockLight( NULL ),
-	paramBlockInstance( NULL ),
-	skinState( NULL )
-	{
-		int i;
-		for( i=0; i<deoglRLight::EST_COUNT; i++ ){
-			shaders[ i ] = NULL;
-		}
-	}
-	
-	virtual ~deoglRLightDeletion(){
-	}
-	
-	virtual void DeleteObjects( deoglRenderThread &renderThread ){
-		int i;
-		if( paramBlockInstance ){
-			paramBlockInstance->FreeReference();
-		}
-		if( paramBlockLight ){
-			paramBlockLight->FreeReference();
-		}
-		for( i=0; i<deoglRLight::EST_COUNT; i++ ){
-			if( shaders[ i ] ){
-				shaders[ i ]->FreeReference();
-			}
-		}
-		if( lightVolume ){
-			delete lightVolume;
-		}
-		if( shadowCaster ){
-			delete shadowCaster;
-		}
-		if( occlusionQuery ){
-			delete occlusionQuery;
-		}
-		if( skinState ){
-			delete skinState;
-		}
-	}
-};
 
 void deoglRLight::pCleanUp(){
 	SetParentWorld( NULL );
@@ -1532,34 +1102,14 @@ void deoglRLight::pCleanUp(){
 		pDynamicSkin->FreeReference();
 	}
 	
-	// delayed deletion of opengl containing objects
-	deoglRLightDeletion *delayedDeletion = NULL;
-	int i;
-	
-	if( pSkinState ){
-		pSkinState->DropDelayedDeletionObjects(); // avoid race conditions
+	if( pLightVolume ){
+		delete pLightVolume;
 	}
-	
-	try{
-		delayedDeletion = new deoglRLightDeletion;
-		delayedDeletion->lightVolume = pLightVolume;
-		delayedDeletion->occlusionQuery = pOcclusionQuery;
-		delayedDeletion->paramBlockInstance = pParamBlockInstance;
-		delayedDeletion->paramBlockLight = pParamBlockLight;
-		for( i=0; i<EST_COUNT; i++ ){
-			delayedDeletion->shaders[ i ] = pShaders[ i ];
-		}
-		delayedDeletion->shadowCaster = pShadowCaster;
-		delayedDeletion->skinState = pSkinState;
-		
-		pRenderThread.GetDelayedOperations().AddDeletion( delayedDeletion );
-		
-	}catch( const deException &e ){
-		if( delayedDeletion ){
-			delete delayedDeletion;
-		}
-		pRenderThread.GetLogger().LogException( e );
-		throw;
+	if( pShadowCaster ){
+		delete pShadowCaster;
+	}
+	if( pSkinState ){
+		delete pSkinState;
 	}
 }
 
@@ -1681,7 +1231,7 @@ void deoglRLight::pUpdateExtends(){
 	pMinExtend = pFullMinExtend;
 	pMaxExtend = pFullMaxExtend;
 	
-	UpdateLightVolume();
+	pUpdateLightVolume();
 	
 	// if the light casts shadows determine a matching box using the light volume if existing
 	if( pCastShadows ){
@@ -1778,30 +1328,166 @@ void deoglRLight::pCheckTouching(){
 	pDynamicComponentList.RemoveAllMarked( true );
 }
 
-void deoglRLight::pUpdateRenderables(){
-	if( ! pSkinState ){
+void deoglRLight::pUpdateCollisionVolume(){
+	if( ! pDirtyColVol ){
 		return;
 	}
 	
-	// check if an update is needed
-	if( pDynamicSkin && pLightSkin && pLightSkin->GetHasRenderables() ){
-		const int updateNumber = pDynamicSkin->Update();
-		if( updateNumber != pSkinState->GetUpdateNumber() ){
-			pSkinState->SetUpdateNumber( updateNumber );
-			pDirtyRenderables = true;
-		}
-	}
+	const decDVector lightPosition( pMatrix.GetPosition() );
+	deoglDCollisionVolume *newColVol = NULL;
 	
-	// update renderable mappings in the dynamic skins
-	if( pDirtyRenderables ){
-		pSkinState->RemoveAllRenderables();
-		if( pLightSkin && pDynamicSkin ){
-			pSkinState->AddRenderables( *pLightSkin, *pDynamicSkin );
+	try{
+		// if there exists no light volume yet create a default collision volume
+		if( pConvexVolumeList->GetVolumeCount() == 0 ){
+			switch( pLightType ){
+			case deLight::eltPoint:
+				// create a sphere enclosing the point light
+				newColVol = new deoglDCollisionSphere( lightPosition, pRange );
+				break;
+				
+			default:
+				// create a sphere around the spot light. a frustum would be the best
+				// solution but currently the frustum is not able to test for collisions
+				// with another frustum
+				newColVol = new deoglDCollisionSphere( lightPosition, pRange );
+			}
+			
+		// otherwise calculate a box around the light volume list
+		}else{
+			pUpdateExtends();
+			const decDVector halfSize( ( pMaxExtend - pMinExtend ) * 0.5f );
+			newColVol = new deoglDCollisionBox( pMinExtend + halfSize, halfSize );
 		}
 		
-		pDirtyRenderables = false;
+		// replace old collision volumes
+		if( pColVol ){
+			delete pColVol;
+		}
+		pColVol = newColVol;
+		
+	}catch( const deException & ){
+		if( newColVol ){
+			delete newColVol;
+		}
+		throw;
 	}
 	
-	// prepare renderables
-	pSkinState->PrepareRenderables( pLightSkin, pDynamicSkin );
+	pDirtyColVol = false;
+}
+
+void deoglRLight::pUpdateLightVolume(){
+	// NOTE Can be called indirectly from main thread during synchronization.
+	
+	if( ! pDirtyConvexVolumeList ){
+		return;
+	}
+	
+	deoglLightVolumeBuilder builder;
+	
+	// cropping produces unfortunately a concave volume which we can't use. to solve this
+	// a convex hull has to be calculated from the volume points. this is correctly done
+	// using a gift-wrap algorithm. for the time being though we simply calculate an axis
+	// aligned bounding box and clip the volume against it. this produces a result that
+	// is not as optimal as the gift-wrap but it's better than nothing for the time being
+//	decDVector boundingBoxMinExtend, boundingBoxMaxExtend;
+	
+//	builder.GetTransformedVolumeExtends( *pConvexVolumeList, pMatrix, boundingBoxMinExtend, boundingBoxMaxExtend );
+	
+	switch( pLightType ){
+	case deLight::eltPoint:
+		builder.BuildSphere( *pConvexVolumeList, decVector(), pRange );
+		break;
+		
+	case deLight::eltSpot:
+		builder.BuildCone( *pConvexVolumeList, decMatrix(), pRange,
+			pSpotAngle * 0.5f, pSpotAngle * pSpotRatio * 0.5f, 12 );
+		break;
+		
+	case deLight::eltProjector:
+		builder.BuildFrustum( *pConvexVolumeList, decMatrix(), pRange,
+			pSpotAngle * 0.5f, pSpotAngle * pSpotRatio * 0.5f );
+		break;
+	}
+	
+	if( pLightVolumeCropBox ){
+		const decDVector minExtend( pLightVolumeCropBox->GetPosition()
+			- pLightVolumeCropBox->GetHalfExtends() );
+		const decDVector maxExtend( pLightVolumeCropBox->GetPosition()
+			+ pLightVolumeCropBox->GetHalfExtends() );
+		
+		builder.CropByBoundingBox( *pConvexVolumeList,
+			pInverseMatrix.GetRotationMatrix(), minExtend, maxExtend );
+	}
+	
+//	builder.CropByBoundingBox( *pConvexVolumeList, invLightMatrix, boundingBoxMinExtend, boundingBoxMaxExtend );
+	
+	// optimizer stuff
+#if 0
+	if( ! pOptimizer ){
+		try{
+			pOptimizer = new deoglOptimizerLight( this, oglWorld );
+			if( ! pOptimizer ) DETHROW( deeOutOfMemory );
+			
+			if( lightType == deLight::eltPoint ){
+				pOptimizer->SetOptimizeShadowCaster( false );
+			}else{
+				pOptimizer->SetOptimizeShadowCaster( true );
+			}
+			
+			if( pLight->GetHintMovement() == deLight::emhStationary ){
+				pOptimizer->SetInitialWarmUpTime( 100 );
+				if( lightType == deLight::eltPoint ){
+					pOptimizer->SetMaximalVolumeCount( 200 );
+				}else{
+					pOptimizer->SetMaximalVolumeCount( 50 );
+				}
+				
+			}else{
+				pOptimizer->SetInitialWarmUpTime( 500 );
+				if( lightType == deLight::eltPoint ){
+					pOptimizer->SetMaximalVolumeCount( 100 );
+				}else{
+					pOptimizer->SetMaximalVolumeCount( 25 );
+				}
+			}
+			
+			pOptimizer->ResetAllOptimizations();
+			
+			pOgl->GetOptimizerManager()->AddOptimizer( pOptimizer );
+			
+		}catch( const deException & ){
+			if( pOptimizer ) delete pOptimizer;
+			throw;
+		}
+	}
+#endif
+	
+	// sanity check. if there is not a single volume in the list the chance is high the light volume
+	// becomes concave. we only write a warning here for the case we experiment during debugging
+	if( pConvexVolumeList->GetVolumeCount() > 1 ){
+		const decDVector position( pMatrix.GetPosition() );
+		pRenderThread.GetLogger().LogWarnFormat( "Light at (%g,%g,%g) has a light volume with %i volumes (potentially concave)",
+			position.x, position.y, position.z, pConvexVolumeList->GetVolumeCount() );
+	}
+	
+	// rebuild the light volume using the convex volume list
+	pLightVolume->CreateFrom( *pConvexVolumeList );
+	// we can not update the VBO here because this metho can be potentially called by the
+	// main thread during synchronization over detours
+	
+	// extends are usually dirty now
+	pDirtyExtends = true;
+	pDirtyCollideLists = true;
+	pDirtyColVol = true;
+	pDirtyTouching = true;
+	pRequiresPrepareForRender();
+	
+	// no more dirty
+	pDirtyConvexVolumeList = false;
+}
+
+void deoglRLight::pRequiresPrepareForRender(){
+	if( ! pLLPrepareForRenderWorld.GetList() && pParentWorld ){
+		pParentWorld->AddPrepareForRenderLight( this );
+	}
 }

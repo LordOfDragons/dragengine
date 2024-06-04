@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -28,71 +31,6 @@
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
-
-
-
-// Native Widget
-//////////////////
-
-namespace {
-
-class cNativeWidget : public FXScrollWindow{
-	FXDECLARE( cNativeWidget )
-	
-protected:
-	cNativeWidget();
-	
-private:
-	igdeContainerScroll *pOwner;
-	
-public:
-	cNativeWidget( igdeContainerScroll &owner, FXComposite *parent, int layoutFlags );
-	virtual ~cNativeWidget();
-	
-	long onResize( FXObject *sender, FXSelector selector, void *data );
-	long onChildLayoutFlags( FXObject *sender, FXSelector selector, void *data );
-};
-
-
-FXDEFMAP( cNativeWidget ) cNativeWidgetMap[] = {
-	FXMAPFUNC( SEL_CONFIGURE, 0, cNativeWidget::onResize ),
-	FXMAPFUNC( SEL_IGDE_CHILD_LAYOUT_FLAGS, 0, cNativeWidget::onChildLayoutFlags )
-};
-
-FXIMPLEMENT( cNativeWidget, FXScrollWindow, cNativeWidgetMap, ARRAYNUMBER( cNativeWidgetMap ) )
-
-cNativeWidget::cNativeWidget(){ }
-
-cNativeWidget::cNativeWidget( igdeContainerScroll &owner,
-	FXComposite *parent, int layoutFlags ) :
-FXScrollWindow( parent, layoutFlags, 0, 0, 0, 0 ),
-pOwner( &owner ){
-}
-
-cNativeWidget::~cNativeWidget(){
-}
-
-long cNativeWidget::onResize( FXObject*, FXSelector, void* ){
-	pOwner->OnResize();
-	return 1;
-}
-
-long cNativeWidget::onChildLayoutFlags( FXObject*, FXSelector, void *data ){
-	igdeUIFoxHelper::sChildLayoutFlags &clflags = *( ( igdeUIFoxHelper::sChildLayoutFlags* )data );
-	clflags.flags = LAYOUT_SIDE_TOP;
-	
-	//if( ! pOwner->GetCanScrollX() ){
-		clflags.flags |= LAYOUT_FILL_X;
-	//}
-	//if( ! pOwner->GetCanScrollY() ){
-		clflags.flags |= LAYOUT_FILL_Y;
-	//}
-	
-	return 1;
-}
-
-}
-
 
 
 // Class igdeContainerScroll
@@ -131,30 +69,9 @@ void igdeContainerScroll::CreateNativeWidget(){
 		return;
 	}
 	
-	igdeContainer * const parent = GetParent();
-	if( ! parent ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	FXComposite * const foxParent = ( FXComposite* )parent->GetNativeContainer();
-	if( ! foxParent ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	int layoutFlags = igdeUIFoxHelper::GetChildLayoutFlags( this ) | SCROLLERS_NORMAL | SCROLLERS_TRACK;
-	if( ! pCanScrollX ){
-		layoutFlags |= HSCROLLING_OFF;
-	}
-	if( ! pCanScrollY ){
-		layoutFlags |= VSCROLLING_OFF;
-	}
-	
-	cNativeWidget * const container = new cNativeWidget( *this, foxParent, layoutFlags );
-	
-	SetNativeWidget( container );
-	if( foxParent->id() ){
-		container->create();
-	}
+	igdeNativeContainerScroll * const native = igdeNativeContainerScroll::CreateNativeWidget( *this );
+	SetNativeWidget( native );
+	native->PostCreateNativeWidget();
 	
 	CreateChildWidgetNativeWidgets();
 }
@@ -164,7 +81,7 @@ void igdeContainerScroll::DestroyNativeWidget(){
 		return;
 	}
 	
-	cNativeWidget * const native = ( cNativeWidget* )GetNativeWidget();
+	igdeNativeContainerScroll * const native = ( igdeNativeContainerScroll* )GetNativeWidget();
 	DropNativeWidget();
-	delete native;
+	native->DestroyNativeWidget();
 }

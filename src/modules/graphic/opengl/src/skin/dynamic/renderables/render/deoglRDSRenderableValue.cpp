@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -29,7 +32,6 @@
 #include "../../../../renderthread/deoglRTLogger.h"
 #include "../../../../texture/texture2d/deoglTexture.h"
 #include "../../../../texture/pixelbuffer/deoglPixelBuffer.h"
-#include "../../../../delayedoperation/deoglDelayedDeletion.h"
 #include "../../../../delayedoperation/deoglDelayedOperations.h"
 
 #include <dragengine/common/exceptions.h>
@@ -43,7 +45,7 @@
 ////////////////////////////
 
 deoglRDSRenderableValue::deoglRDSRenderableValue( deoglRDynamicSkin &dynamicSkin ) :
-deoglRDSRenderable( dynamicSkin ),
+deoglRDSRenderable( etValue, dynamicSkin ),
 pTexture( NULL ),
 pValue( 0.0f ),
 pDirty( true )
@@ -51,41 +53,10 @@ pDirty( true )
 	LEAK_CHECK_CREATE( dynamicSkin.GetRenderThread(), DSRenderableValue );
 }
 
-class deoglRDSRenderableValueDeletion : public deoglDelayedDeletion{
-public:
-	deoglTexture *texture;
-	
-	deoglRDSRenderableValueDeletion() :
-	texture( NULL ){
-	}
-	
-	virtual ~deoglRDSRenderableValueDeletion(){
-	}
-	
-	virtual void DeleteObjects( deoglRenderThread &renderThread ){
-		if( texture){
-			delete texture;
-		}
-	}
-};
-
 deoglRDSRenderableValue::~deoglRDSRenderableValue(){
 	LEAK_CHECK_FREE( GetDynamicSkin().GetRenderThread(), DSRenderableValue );
-	
-	// delayed deletion of opengl containing objects
-	deoglRDSRenderableValueDeletion *delayedDeletion = NULL;
-	
-	try{
-		delayedDeletion = new deoglRDSRenderableValueDeletion;
-		delayedDeletion->texture = pTexture;
-		GetDynamicSkin().GetRenderThread().GetDelayedOperations().AddDeletion( delayedDeletion );
-		
-	}catch( const deException &e ){
-		if( delayedDeletion ){
-			delete delayedDeletion;
-		}
-		GetDynamicSkin().GetRenderThread().GetLogger().LogException( e );
-		//throw; -> otherwise terminate
+	if( pTexture ){
+		delete pTexture;
 	}
 }
 
@@ -101,18 +72,16 @@ void deoglRDSRenderableValue::SetValue( float value ){
 	
 	pValue = value;
 	pDirty = true;
-	
-	GetDynamicSkin().TextureConfigurationChanged();
 }
 
-void deoglRDSRenderableValue::PrepareForRender(){
+void deoglRDSRenderableValue::PrepareForRender( const deoglRenderPlanMasked * ){
 }
 
-float deoglRDSRenderableValue::GetRenderValue( float defaultValue ){
+float deoglRDSRenderableValue::GetRenderValue( float ){
 	return pValue;
 }
 
-decColor deoglRDSRenderableValue::GetRenderColor( const decColor &defaultColor ){
+decColor deoglRDSRenderableValue::GetRenderColor( const decColor & ){
 	return decColor( pValue, pValue, pValue, 1.0f );
 }
 
@@ -127,8 +96,9 @@ deoglTexture *deoglRDSRenderableValue::GetRenderTexture(){
 	}
 	
 	if( pDirty ){
-		deoglPixelBuffer pixelBuffer( deoglPixelBuffer::epfByte4, 1, 1, 1 );
-		pixelBuffer.SetToFloatColor( pValue, pValue, pValue, 1.0f );
+		const deoglPixelBuffer::Ref pixelBuffer( deoglPixelBuffer::Ref::New(
+			new deoglPixelBuffer( deoglPixelBuffer::epfByte4, 1, 1, 1 ) ) );
+		pixelBuffer->SetToFloatColor( pValue, pValue, pValue, 1.0f );
 		pTexture->SetPixels( pixelBuffer );
 		
 		pDirty = false;

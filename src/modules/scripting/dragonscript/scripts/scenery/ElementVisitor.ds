@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -28,147 +31,165 @@ namespace Dragengine.Scenery
  */
 class ElementVisitor
 	/** \brief Create element visitor. */
-	public func new()
+	func new()
 	end
 	
 	
 	
 	/** \brief Visit element. */
-	public func void visitElement( Element element )
+	func void visitElement(Element element)
 	end
 	
 	/** \brief Visit behavior element. */
-	public func void visitBehaviorElement( BehaviorElement element )
-		this.visitElement( element )
+	func void visitBehaviorElement(BehaviorElement element)
+		visitElement(element)
 	end
 	
 	/** \brief Visit simple element. */
-	public func void visitSimpleElement( SimpleElement element )
-		this.visitBehaviorElement( element )
+	func void visitSimpleElement(SimpleElement element)
+		visitBehaviorElement(element)
+	end
+	
+	/** \brief Visit physics element. */
+	func void visitPhysicsElement(PhysicsElement element)
+		visitBehaviorElement(element)
 	end
 	
 	/** \brief Visit ghost element. */
-	public func void visitGhostElement( GhostElement element )
-		this.visitBehaviorElement( element )
+	func void visitGhostElement(GhostElement element)
+		visitBehaviorElement(element)
 	end
 	
 	/** \brief Visit animated element. */
-	public func void visitAnimatedElement( AnimatedElement element )
-		this.visitSimpleElement( element )
+	func void visitAnimatedElement(AnimatedElement element)
+		visitSimpleElement(element)
 	end
 	
 	/** \brief Visit two state animated element. */
-	public func void visitTwoStateAnimatedElement( TwoStateAnimatedElement element )
-		this.visitSimpleElement( element )
+	func void visitTwoStateAnimatedElement(TwoStateAnimatedElement element)
+		visitSimpleElement(element)
+	end
+	
+	/** \brief Visit hidden element. */
+	func void visitHiddenElement(HiddenElement element)
+		visitSimpleElement(element)
 	end
 	
 	/** \brief Visit simple element on rail. */
-	public func void visitSimpleElementOnRail( SimpleElementOnRail element )
-		this.visitSimpleElement( element )
+	func void visitSimpleElementOnRail(SimpleElementOnRail element)
+		visitSimpleElement(element)
 	end
 	
 	/** \brief Visit base light. */
-	public func void visitBaseLight( BaseLight light )
-		this.visitBehaviorElement( light )
+	func void visitBaseLight(BaseLight light)
+		visitBehaviorElement(light)
 	end
 	
 	/** \brief Visit attachable base light. */
-	public func void visitAttachableBaseLight( AttachableBaseLight light )
-		this.visitBehaviorElement( light )
+	func void visitAttachableBaseLight(AttachableBaseLight light)
+		visitBehaviorElement(light)
 	end
 	
 	/** \brief Visit base speaker. */
-	public func void visitBaseSpeaker( BaseSpeaker speaker )
-		this.visitBehaviorElement( speaker )
+	func void visitBaseSpeaker(BaseSpeaker speaker)
+		visitBehaviorElement(speaker)
 	end
 	
 	/** \brief Visit attachable base speaker. */
-	public func void visitAttachableBaseSpeaker( AttachableBaseSpeaker speaker )
-		this.visitBehaviorElement( speaker )
+	func void visitAttachableBaseSpeaker(AttachableBaseSpeaker speaker)
+		visitBehaviorElement(speaker)
 	end
 	
 	/** \brief Visit base particle emitter. */
-	public func void visitBaseParticleEmitter( BaseParticleEmitter particleEmitter )
-		this.visitBehaviorElement( particleEmitter )
+	func void visitBaseParticleEmitter(BaseParticleEmitter particleEmitter)
+		visitBehaviorElement(particleEmitter)
 	end
 	
 	/** \brief Visit attachable base particle emitter. */
-	public func void visitAttachableBaseParticleEmitter( AttachableBaseParticleEmitter particleEmitter )
-		this.visitBehaviorElement( particleEmitter )
+	func void visitAttachableBaseParticleEmitter(AttachableBaseParticleEmitter particleEmitter)
+		visitBehaviorElement(particleEmitter)
 	end
 	
 	/** \brief Visit base force field. */
-	public func void visitBaseForceField( BaseForceField forceField )
-		this.visitBehaviorElement( forceField )
+	func void visitBaseForceField(BaseForceField forceField)
+		visitBehaviorElement(forceField)
 	end
 	
 	/** \brief Visit attachable base force field. */
-	public func void visitAttachableBaseForceField( AttachableBaseForceField forceField )
-		this.visitBehaviorElement( forceField )
+	func void visitAttachableBaseForceField(AttachableBaseForceField forceField)
+		visitBehaviorElement(forceField)
 	end
 	
 	/** \brief Visit base sky. */
-	public func void visitBaseSky( BaseSky sky )
-		this.visitBehaviorElement( sky )
+	func void visitBaseSky(BaseSky sky)
+		visitBehaviorElement(sky)
 	end
 	
 	/** \brief Visit base billboard element. */
-	public func void visitBaseBillboard( BaseBillboard element )
-		this.visitBehaviorElement( element )
+	func void visitBaseBillboard(BaseBillboard element)
+		visitBehaviorElement(element)
 	end
 	
 	/** \brief Visit attachable base billboard. */
-	public func void visitAttachableBaseBillboard( AttachableBaseBillboard baseBillboard )
-		this.visitBehaviorElement( baseBillboard )
+	func void visitAttachableBaseBillboard(AttachableBaseBillboard baseBillboard)
+		visitBehaviorElement(baseBillboard)
 	end
 	
 	/** \brief Visit attach slot. */
-	public func void visitAttachSlot( AttachSlot attachSlot )
-		this.visitBehaviorElement( attachSlot )
+	func void visitAttachSlot(AttachSlot attachSlot)
+		visitBehaviorElement(attachSlot)
 	end
 	
 	/** \brief Visit base actor. */
-	public func void visitBaseActor( BaseActor actor )
-		this.visitBehaviorElement( actor )
+	func void visitBaseActor(BaseActor actor)
+		visitBehaviorElement(actor)
+	end
+	
+	/**
+	 * \brief Visit base VR actor.
+	 * \version 1.6
+	 */
+	func void visitBaseVRActor(BaseVRActor actor)
+		visitBaseActor(actor)
 	end
 	
 	/** \brief Visit environment map. */
-	public func void visitEnvironmentMap( EnvironmentMap environmentMap )
-		this.visitBehaviorElement( environmentMap )
+	func void visitEnvironmentMap(EnvironmentMap environmentMap)
+		visitBehaviorElement(environmentMap)
 	end
 	
 	/** \brief Visit info conversation coordinate system. */
-	public func void visitInfoConvoCoordSystem( InfoConvoCoordSystem info )
-		this.visitBehaviorElement( info )
+	func void visitInfoConvoCoordSystem(InfoConvoCoordSystem info)
+		visitBehaviorElement(info)
 	end
 	
 	/** \brief Visit base evaluate trigger. */
-	public func void visitTriggerEvaluate( TriggerEvaluate trigger )
-		this.visitBehaviorElement( trigger )
+	func void visitTriggerEvaluate(TriggerEvaluate trigger)
+		visitBehaviorElement(trigger)
 	end
 	
 	/** \brief Visit base timer trigger. */
-	public func void visitTriggerTimer( TriggerTimer trigger )
-		this.visitBehaviorElement( trigger )
+	func void visitTriggerTimer(TriggerTimer trigger)
+		visitBehaviorElement(trigger)
 	end
 	
 	/** \brief Visit base toggle trigger. */
-	public func void visitTriggerToogle( TriggerToggle trigger )
-		this.visitBehaviorElement( trigger )
+	func void visitTriggerToogle(TriggerToggle trigger)
+		visitBehaviorElement(trigger)
 	end
 	
 	/** \brief Visit base touch trigger. */
-	public func void visitTriggerTouch( TriggerTouch trigger )
-		this.visitBehaviorElement( trigger )
+	func void visitTriggerTouch(TriggerTouch trigger)
+		visitBehaviorElement(trigger)
 	end
 	
 	/** \brief Visit shout trigger. */
-	public func void visitTriggerShout( TriggerShout trigger )
-		this.visitBehaviorElement( trigger )
+	func void visitTriggerShout(TriggerShout trigger)
+		visitBehaviorElement(trigger)
 	end
 	
 	/** \brief Visit conversation trigger. */
-	public func void visitTriggerConversation( TriggerConversation trigger )
-		this.visitBehaviorElement( trigger )
+	func void visitTriggerConversation(TriggerConversation trigger)
+		visitBehaviorElement(trigger)
 	end
 end

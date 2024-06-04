@@ -1,32 +1,33 @@
-/* 
- * Drag[en]gine Animator Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <string.h>
-#include <unistd.h>
-
 #include "dearRule.h"
-#include "../dearBoneStateList.h"
 #include "../deDEAnimator.h"
+#include "../dearAnimator.h"
 #include "../dearAnimatorInstance.h"
+#include "../dearBoneStateList.h"
+#include "../dearVPSStateList.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
@@ -42,23 +43,32 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-dearRule::dearRule( dearAnimatorInstance &instance, int firstLink, const deAnimatorRule &rule ) :
+dearRule::dearRule( dearAnimatorInstance &instance, const dearAnimator &animator,
+	int firstLink, const deAnimatorRule &rule ) :
 pInstance( instance ),
+pAnimator( animator ),
 pRule( rule ),
 
-pBoneMappings( NULL ),
+pBoneMappings( nullptr ),
 pBoneMappingCount( 0 ),
 pUseAllBones( false ),
+
+pVPSMappings( nullptr ),
+pVPSMappingCount( 0 ),
+pUseAllVPS( false ),
 
 pTargetBlendFactor( rule.GetTargetBlendFactor(), firstLink ),
 
 pBlendMode( rule.GetBlendMode() ),
 pBlendFactor( rule.GetBlendFactor() ),
-pEnabled( rule.GetEnabled() )
-{
+pInvertBlendFactor( rule.GetInvertBlendFactor() ),
+pEnabled( rule.GetEnabled() ){
 }
 
 dearRule::~dearRule(){
+	if( pVPSMappings ){
+		delete [] pVPSMappings;
+	}
 	if( pBoneMappings ){
 		delete [] pBoneMappings;
 	}
@@ -73,32 +83,53 @@ deDEAnimator &dearRule::GetModule() const{
 	return pInstance.GetModule();
 }
 
+
+
 int dearRule::GetBoneMappingCount() const{
-	if( pUseAllBones ){
-		return pInstance.GetBoneStateList().GetStateCount();
-		
-	}else{
-		return pBoneMappingCount;
-	}
+	return pUseAllBones ? pInstance.GetBoneStateList().GetStateCount() : pBoneMappingCount;
 }
 
 int dearRule::GetBoneMappingFor( int boneIndex ) const{
 	if( pUseAllBones ){
-		if( boneIndex < 0 || boneIndex >= pInstance.GetBoneStateList().GetStateCount() ){
-			DETHROW( deeInvalidParam );
-		}
+		DEASSERT_TRUE( boneIndex >= 0 )
+		DEASSERT_TRUE( boneIndex < pInstance.GetBoneStateList().GetStateCount() )
 		return boneIndex;
 		
 	}else{
-		if( boneIndex < 0 || boneIndex >= pBoneMappingCount ){
-			DETHROW( deeInvalidParam );
-		}
+		DEASSERT_TRUE( boneIndex >= 0 )
+		DEASSERT_TRUE( boneIndex < pBoneMappingCount )
 		return pBoneMappings[ boneIndex ];
 	}
 }
 
+
+
+int dearRule::GetVPSMappingCount() const{
+	return pUseAllVPS ? pInstance.GetVPSStateList().GetStateCount() : pVPSMappingCount;
+}
+
+int dearRule::GetVPSMappingFor( int vpsIndex ) const{
+	if( pUseAllVPS ){
+		DEASSERT_TRUE( vpsIndex >= 0 )
+		DEASSERT_TRUE( vpsIndex < pInstance.GetVPSStateList().GetStateCount() )
+		return vpsIndex;
+		
+	}else{
+		DEASSERT_TRUE( vpsIndex >= 0 )
+		DEASSERT_TRUE( vpsIndex < pVPSMappingCount )
+		return pVPSMappings[ vpsIndex ];
+	}
+}
+
+
+
 float dearRule::GetBlendFactor() const{
-	return pTargetBlendFactor.GetValue( pInstance, pBlendFactor );
+	const float blendFactor = pTargetBlendFactor.GetValue( pInstance, pBlendFactor );
+	return pInvertBlendFactor ? 1.0f - blendFactor : blendFactor;
+}
+
+dearAnimation *dearRule::GetUseAnimation() const{
+	return pInstance.GetAnimation() ? pInstance.GetAnimation() : pAnimator.GetAnimation();
 }
 
 
@@ -109,7 +140,7 @@ void dearRule::CaptureStateInto( int ){
 void dearRule::StoreFrameInto( int, const char *, float ){
 }
 
-bool dearRule::RebuildInstance(){
+bool dearRule::RebuildInstance() const{
 	return false;
 }
 
@@ -118,6 +149,7 @@ void dearRule::ControllerChanged( int ){
 
 void dearRule::RuleChanged(){
 	pUpdateBoneMappings();
+	pUpdateVPSMappings();
 }
 
 
@@ -132,11 +164,11 @@ void dearRule::pUpdateBoneMappings(){
 	int i;
 	
 	// determine the count of bones
-	pUseAllBones = ( boneCount == 0 );
+	pUseAllBones = boneCount == 0;
 	
 	// if the count differs recreate the array
 	if( pBoneMappingCount != boneCount ){
-		int *newArray = NULL;
+		int *newArray = nullptr;
 		
 		if( boneCount > 0 ){
 			newArray = new int[ boneCount ];
@@ -153,5 +185,36 @@ void dearRule::pUpdateBoneMappings(){
 	// same as the bones in the component rig.
 	for( i=0; i<pBoneMappingCount; i++ ){
 		pBoneMappings[ i ] = stalist.IndexOfStateNamed( boneList.GetAt( i ) );
+	}
+}
+
+void dearRule::pUpdateVPSMappings(){
+	const dearVPSStateList &stalist = pInstance.GetVPSStateList();
+	const decStringSet &vpsList = pRule.GetListVertexPositionSets();
+	const int vpsCount = vpsList.GetCount();
+	int i;
+	
+	// determine the count of vertex position sets
+	pUseAllVPS = vpsCount == 0;
+	
+	// if the count differs recreate the array
+	if( pVPSMappingCount != vpsCount ){
+		int *newArray = nullptr;
+		
+		if( vpsCount > 0 ){
+			newArray = new int[ vpsCount ];
+		}
+		
+		if( pVPSMappings ){
+			delete [] pVPSMappings;
+		}
+		pVPSMappings = newArray;
+		pVPSMappingCount = vpsCount;
+	}
+	
+	// update the vertex position set mappings. the vertex position sets in the animator are the
+	// same as the vertex position sets in the component model.
+	for( i=0; i<pVPSMappingCount; i++ ){
+		pVPSMappings[ i ] = stalist.IndexOfStateNamed( vpsList.GetAt( i ) );
 	}
 }

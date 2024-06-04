@@ -2,7 +2,7 @@ from SConsCommon import *
 
 Import( 'parent_env parent_targets parent_report' )
 
-envModule = parent_env.Clone()
+envEditor = parent_env.Clone()
 
 buildModule = 'deigde_shared' in parent_targets
 parent_report[ 'build IGDE Project' ] = 'yes' if buildModule else 'no'
@@ -11,123 +11,133 @@ if not buildModule:
 
 libs = []
 
-appendLibrary(envModule, parent_targets['deigde_shared'], libs)
-appendLibrary(envModule, parent_targets['lib_zlib'], libs)
-if envModule[ 'OSBeOS' ]:
+appendLibrary(envEditor, parent_targets['deigde_shared'], libs)
+appendLibrary(envEditor, parent_targets['lib_zlib'], libs)
+if envEditor[ 'OSBeOS' ]:
 	libs.append( [ 'root', 'be' ] )
 
+versionString = '1.10'
+if envEditor['force_version']:
+	versionString = envEditor['force_version']
+
 # fetch values in expanded form for later use
-pathConfig = '{}/modules/project'.format( envModule.subst( envModule[ 'path_igde_config' ] ) )
-pathModule = '{}/modules/project'.format( envModule.subst( envModule[ 'path_igde_data' ] ) )
-pathShared = '{}/modules/project'.format( envModule.subst( envModule[ 'path_igde_share' ] ) )
+pathConfig = '{}/modules/project'.format( envEditor.subst( envEditor[ 'path_igde_config' ] ) )
+pathModule = '{}/modules/project'.format( envEditor.subst( envEditor[ 'path_igde_data' ] ) )
+pathShared = '{}/modules/project'.format( envEditor.subst( envEditor[ 'path_igde_share' ] ) )
 
-envModule.Append( CPPFLAGS = parent_env[ 'MODULE_CPPFLAGS' ] )
-envModule.Append( LINKFLAGS = parent_env[ 'MODULE_LINKFLAGS' ] )
+envEditor.Append( CPPFLAGS = parent_env[ 'MODULE_CPPFLAGS' ] )
+envEditor.Append( LINKFLAGS = parent_env[ 'MODULE_LINKFLAGS' ] )
 
-pathLauncherShare = envModule.subst(envModule['path_launcher_share'])
-pathLauncherConfig = envModule.subst(envModule['path_launcher_config'])
-envModule.Append(CPPFLAGS = [
-	cmdlineDefinePath(envModule, 'LAUNCHER_SHARE_PATH', pathLauncherShare),
-	cmdlineDefinePath(envModule, 'LAUNCHER_CONFIG_PATH', pathLauncherConfig)])
+pathLauncherShare = envEditor.subst(envEditor['path_launcher_share'])
+pathLauncherConfig = envEditor.subst(envEditor['path_launcher_config'])
+envEditor.Append(CPPFLAGS = [
+	cmdlineDefinePath(envEditor, 'LAUNCHER_SHARE_PATH', pathLauncherShare),
+	cmdlineDefinePath(envEditor, 'LAUNCHER_CONFIG_PATH', pathLauncherConfig)])
 
 # minizip special environment
-envMiniZip = envModule.Clone()
+envMiniZip = envEditor.Clone()
 envMiniZip.Append(CPPFLAGS = ['-DUSE_FILE32API'])
 envMiniZip.Append(CPPFLAGS = ['-Wno-all', '-Wno-error'])
 
-envModule.Append(CPPPATH = [envModule.Dir('minizip').srcnode().abspath])
+envEditor.Append(CPPPATH = [envEditor.Dir('minizip').srcnode().abspath])
 
 # setup the builders
 sources = []
 headers = []
 data = []
-globFiles( envModule, 'src', '*.cpp', sources )
-globFiles( envModule, 'src', '*.h', headers )
-globFiles( envModule, 'data', '*', data )
+globFiles( envEditor, 'src', '*.cpp', sources )
+globFiles( envEditor, 'src', '*.h', headers )
+globFiles( envEditor, 'data', '*', data )
 
-objects = [ envModule.SharedObject( s ) for s in sources ]
+objects = [ envEditor.SharedObject( s ) for s in sources ]
 objects.append(envMiniZip.SharedObject('minizip/zip.c'))
 objects.append(envMiniZip.SharedObject('minizip/unzip.c'))
 objects.append(envMiniZip.SharedObject('minizip/ioapi.c'))
 
-library = envModule.SharedLibrary( target='project', source=objects, LIBS=libs )
+library = envEditor.LoadableModule( target='project', source=objects, LIBS=libs )
 
 # test runner binary
-envTestRun = envModule.Clone()
+envTestRun = envEditor.Clone()
 
 libsTestRun = []
 appendLibrary(envTestRun, parent_targets['dragengine'], libsTestRun)
 libsTestRun.extend(parent_targets['dragengine']['binlibs'])
-if envModule['OSWindows']:
-	libsTestRun.extend(['kernel32', 'user32'])
+if envTestRun['OSWindows']:
+	envTestRun.Append(LINKFLAGS = '-mwindows')  # prevent dos window to appear
 
 sourcesTestRun = []
 globFiles(envTestRun, 'testrun', '*.cpp', sourcesTestRun)
 
 objectsTestRun = [envTestRun.StaticObject(s) for s in sourcesTestRun]
 
-if envTestRun['OSWindows']:
-	nameProgramTestRun = 'DEIGDEProjectTestRun'
-else:
-	nameProgramTestRun = 'deigde_project_testrun'
-
-programTestRun = envTestRun.Program(target=nameProgramTestRun, source=objectsTestRun, LIBS=libsTestRun)
+programTestRun = envTestRun.Program(target='testrunner', source=objectsTestRun, LIBS=libsTestRun)
 
 # install and package
-targetBuild = envModule.Alias('editor_project_build', [library, programTestRun])
+targetBuild = envEditor.Alias('editor_project_build', [library, programTestRun])
 
 install = []
 archive = {}
 for l in library:
-	if l.name.endswith( envModule[ 'SHLIBSUFFIX' ] ):
-		install.append( envModule.Install( pathModule, l ) )
+	if l.name.endswith( envEditor[ 'SHLIBSUFFIX' ] ):
+		install.append( envEditor.Install( pathModule, l ) )
 		archive[ os.path.join( pathModule, l.name ) ] = l
 
-pathBin = envModule.subst(envModule['path_igde_bin'])
-install.append(envTestRun.Install(pathBin, programTestRun))
+pathBin = envEditor.subst(envEditor['path_igde_bin'])
+install.append(envTestRun.Install(pathModule, programTestRun))
 for p in programTestRun:
-	archive[os.path.join(pathBin, p.name)] = p
+	archive[os.path.join(pathModule, p.name)] = p
+
+if 'lib_mingw_runtime' in parent_targets:
+	for l in parent_targets['lib_mingw_runtime']['runtimelibs']:
+		archive[os.path.join(pathModule, l.name)] = l
+
+if envEditor['OSWindows'] and envEditor['CROSSCOMPILE_CLANG'] and envEditor['with_install_pdb']:
+	pathPdb = os.path.join(envEditor.subst(envEditor['path_pdb']), 'IGDEEditors')
+	install.append(envEditor.Install(pathPdb, 'testrunner.pdb'))
+	archive['{}/testrunner.pdb'.format(pathPdb)] = envEditor.File('testrunner.pdb')
 
 manifestUpdates = [
 	{ 'action': 'filename', 'name': library[ 0 ].name, 'keyword': 'FILENAME' },
 	{ 'action': 'filesize', 'path': library[ 0 ].abspath, 'keyword': 'FILESIZE' },
-	{ 'action': 'filehash', 'path': library[ 0 ].abspath, 'keyword': 'SHA1SUM' } ]
+	{ 'action': 'filehash', 'path': library[ 0 ].abspath, 'keyword': 'SHA1SUM' },
+	{'action': 'text', 'value': versionString, 'keyword': 'VERSION'}]
 
 for l in reversed( parent_targets['lib_zlib']['runtimelibs']):
 	manifestUpdates.append({'action': 'preloadLibrary', 'path': l.name})
-	install.append(envModule.Install(pathModule, l))
+	install.append(envEditor.Install(pathModule, l))
 	archive[os.path.join(pathModule, l.name)] = l
 
-manifest = envModule.File( 'src/module.xml' )
-updateManifest = envModule.Command( manifest, manifest.srcnode(),
+manifest = envEditor.File( 'src/module.xml' )
+updateManifest = envEditor.Command( manifest, manifest.srcnode(),
 	Action( UpdateModuleManifest ), ManifestUpdates=manifestUpdates )
 Depends( updateManifest, library )
 Depends(updateManifest, parent_targets['lib_zlib']['runtimelibs'])
 
-install.append( envModule.Install( pathModule, updateManifest ) )
+install.append( envEditor.Install( pathModule, updateManifest ) )
 archive[ os.path.join( pathModule, 'module.xml' ) ] = updateManifest[ 0 ]
 
 for s in data:
 	filename = os.path.join( pathShared, *(s.split(os.sep)[1:]) )
-	install.append( envModule.InstallAs( filename, s ) )
-	archive[ filename ] = envModule.File( s ).srcnode()
+	install.append( envEditor.InstallAs( filename, s ) )
+	archive[ filename ] = envEditor.File( s ).srcnode()
 
-targetInstall = envModule.Alias( 'editor_project', install )
+targetInstall = envEditor.Alias( 'editor_project', install )
 
 # source directory required for special commands
 srcdir = Dir( '.' ).srcnode().abspath
 
 # cloc
-buildClocBare = BuildCLOC( envModule, [ '{}/src'.format( srcdir ) ], '{}/clocreport.csv'.format( srcdir ), [ 'doc' ] )
+buildClocBare = BuildCLOC( envEditor, [ '{}/src'.format( srcdir ) ], '{}/clocreport.csv'.format( srcdir ), [ 'doc' ] )
 Depends( buildClocBare, sources )
 Depends( buildClocBare, headers )
-buildCloc = envModule.Alias( 'editor_project_cloc', buildClocBare )
+buildCloc = envEditor.Alias( 'editor_project_cloc', buildClocBare )
 
 # add the targets to the targets list
 parent_targets[ 'editor_project' ] = {
 	'name' : 'IGDE Project',
 	'build' : targetBuild,
 	'install' : targetInstall,
+	'install-igde-runtime' : targetInstall,
 	'archive-igde' : archive,
 	'cloc' : buildCloc,
 	'clocReport' : '{}/clocreport.csv'.format( srcdir ) }

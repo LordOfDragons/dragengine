@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _IGDEEDITEDITPATH_H_
@@ -51,10 +54,10 @@ class igdeUIHelper;
  * the path can be selected with. If more than one source exists a popup menu is used to
  * allow the user to select the source to use to locate the path.
  */
-class igdeEditPath : public igdeContainerFlow{
+class DE_DLL_EXPORT igdeEditPath : public igdeContainerFlow{
 protected:
 	/** \brief Text field listener. */
-	class cListenerTextField : public igdeTextFieldListener{
+	class DE_DLL_EXPORT cListenerTextField : public igdeTextFieldListener{
 	protected:
 		igdeEditPath &pEditPath;
 		
@@ -65,7 +68,7 @@ protected:
 	};
 	
 	/** \brief Button action. */
-	class cActionButton : public igdeActionContextMenu{
+	class DE_DLL_EXPORT cActionButton : public igdeAction{
 	protected:
 		igdeEditPath &pEditPath;
 		
@@ -73,23 +76,37 @@ protected:
 		cActionButton( igdeEditPath &editPath, const char *description );
 		virtual ~cActionButton();
 		virtual void OnAction();
+		virtual void Update();
+	};
+	
+	/** \brief Button menu action. */
+	class DE_DLL_EXPORT cActionButtonMenu : public igdeActionContextMenu{
+	protected:
+		igdeEditPath &pEditPath;
+		
+	public:
+		cActionButtonMenu( igdeEditPath &editPath, const char *description );
+		virtual ~cActionButtonMenu();
 		virtual void AddContextMenuEntries( igdeMenuCascade &contextMenu );
 		virtual void Update();
 	};
 	
 	/** \brief Select file using file dialog action. */
-	class cActionSelectFileDialog : public igdeActionSelectFile{
+	class DE_DLL_EXPORT cActionSelectFileDialog : public igdeActionSelectFile{
 	protected:
 		igdeEditPath &pEditPath;
+		bool pUseRelativePath;
 		
 	public:
 		cActionSelectFileDialog( igdeEditPath &editPath, igdeTextField &textField );
 		virtual ~cActionSelectFileDialog();
+		virtual void PrepareFile( decString &path );
+		virtual bool AcceptFile( decString &path );
 		virtual decString DefaultPath();
 	};
 	
 	/** \brief Select skin resource using skin selection dialog. */
-	class cActionSkinSelectDialog : public igdeAction{
+	class DE_DLL_EXPORT cActionSkinSelectDialog : public igdeAction{
 	protected:
 		igdeEditPath &pEditPath;
 		
@@ -97,6 +114,42 @@ protected:
 		cActionSkinSelectDialog( igdeEditPath &editPath );
 		virtual ~cActionSkinSelectDialog();
 		virtual void OnAction();
+	};
+	
+	/** \brief Browse file action. */
+	class DE_DLL_EXPORT cActionBrowseFile : public igdeAction{
+	protected:
+		igdeEditPath &pEditPath;
+		
+	public:
+		cActionBrowseFile( igdeEditPath &editPath );
+		virtual ~cActionBrowseFile();
+		virtual void OnAction();
+		virtual void Update();
+	};
+	
+	/** \brief Convert to absolute path. */
+	class DE_DLL_EXPORT cActionConvertAbsolute : public igdeAction{
+	protected:
+		igdeEditPath &pEditPath;
+		
+	public:
+		cActionConvertAbsolute( igdeEditPath &editPath );
+		virtual ~cActionConvertAbsolute();
+		virtual void OnAction();
+		virtual void Update();
+	};
+	
+	/** \brief Convert to relative path. */
+	class DE_DLL_EXPORT cActionConvertRelative : public igdeAction{
+	protected:
+		igdeEditPath &pEditPath;
+		
+	public:
+		cActionConvertRelative( igdeEditPath &editPath );
+		virtual ~cActionConvertRelative();
+		virtual void OnAction();
+		virtual void Update();
 	};
 	
 	
@@ -109,11 +162,14 @@ private:
 	decString pDefaultPath;
 	bool pAutoValidatePath;
 	bool pUseGameVFS;
+	decString pBasePath;
 	
-	igdeActionContextMenuReference pActionButton;
+	igdeActionReference pActionButton;
+	igdeActionContextMenuReference pActionButtonMenu;
 	
 	igdeTextFieldReference pText;
 	igdeButtonReference pButton;
+	igdeButtonReference pButtonMenu;
 	
 	decObjectOrderedSet pListeners;
 	
@@ -156,7 +212,11 @@ public:
 	 */
 	void SetResourceType( igdeEnvironment::eFilePatternListTypes resourceType );
 	
-	/** \brief Custom pattern list overruling GetResourceType if not empty. */
+	/**
+	 * \brief Custom pattern list overruling GetResourceType if not empty.
+	 * 
+	 * If you change the content call SetSelectPathActions() to make the changes effective.
+	 */
 	inline igdeFilePatternList &GetCustomPatternList(){ return pCustomPatternList; }
 	inline const igdeFilePatternList &GetCustomPatternList() const{ return pCustomPatternList; }
 	
@@ -174,6 +234,9 @@ public:
 	
 	/** \brief Clear path. */
 	void ClearPath();
+	
+	/** \brief Absolute path. */
+	decString GetAbsolutePath() const;
 	
 	/** \brief Widget is enabled. */
 	bool GetEnabled() const;
@@ -208,6 +271,20 @@ public:
 	/** \brief Use game virtual file system or native file system. */
 	inline bool GetUseGameVFS() const{ return pUseGameVFS; }
 	
+	/**
+	 * \brief Base path or empty string.
+	 * 
+	 * If base is set relative path can be entered.
+	 */
+	inline const decString &GetBasePath() const{ return pBasePath; }
+	
+	/**
+	 * \brief Set base path or empty string.
+	 * 
+	 * If base is set relative path can be entered.
+	 */
+	void SetBasePath( const char *path );
+	
 	/** \brief Focus widget. */
 	void Focus();
 	
@@ -239,6 +316,24 @@ public:
 	 * \warning Called by the constructor.
 	 */
 	virtual void SetSelectPathActions();
+	
+	
+	
+	/**
+	 * \brief Add context menu entries.
+	 * 
+	 * Called by menu button action.
+	 */
+	virtual void AddContextMenuEntries( igdeMenuCascade &contextMenu );
+	
+	/** \brief Convert to absolute path if possible. */
+	void ToAbsolutePath();
+	
+	/** \brief Convert to relative path if possible. */
+	void ToRelativePath();
+	
+	/** \brief Open path in file system browser. */
+	void BrowsePath();
 	
 	
 	

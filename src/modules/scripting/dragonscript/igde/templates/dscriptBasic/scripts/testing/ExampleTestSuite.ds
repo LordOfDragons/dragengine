@@ -1,0 +1,86 @@
+// pin namespaces to located script classes
+pin Dragengine.Scenery
+pin Dragengine.Preloading
+pin Dragengine.TestSystem
+
+
+/**
+ * Example test suite. To write tests for your game add test suites with test cases.
+ * Only the test cases need to be subclasses of TestCase. You can create instances
+ * of TestSuite and add your test cases to it. It is usually though better to add
+ * your tests into test suite subclasses like shown here. This keeps tests organized
+ * and allows to add a test suite with all test cases inside by just constructing
+ * the test suite.
+ * 
+ * This example test suite test if ECBehaviorComponent has a Component resource
+ * after the BehaviorElement has been created.
+ */
+class ExampleTestSuite extends TestSuite
+	/**
+	 * Example test case testing if ECBehaviorComponent has a Component resource
+	 * after the BehaviorElement has been created.
+	 * 
+	 * TestCaseECBehavior is a convenience class to easily test element class behaviors.
+	 */
+	class BasicTest extends TestCaseECBehavior
+		/**
+		 * Create test. First argument is the unique identifier in the test suite which
+		 * can be used to refer to individual test cases. The second argument is the
+		 * display text shown in WindowTesting or other UI.
+		 */
+		func new() super("basicTest", UnicodeString.newFromUTF8("Basic Test"))
+		end
+		
+		
+		protected var ECBehaviorComponent behavior
+		
+		
+		/**
+		 * Overwrite method to add behaviors to element class. Created behaviors
+		 * have to be store aside if required during tests later on. Overwriting
+		 * this method is mandatory
+		 */
+		protected func void addBehaviors()
+			behavior = ECBehaviorComponent.new(getElementClass(), null)
+		end
+		
+		/**
+		 * Overwrite method to set element stub properties. This simulates mapper setting
+		 * object properties in the world editor. Overwriting this method is optional.
+		 */
+		protected func void setStubProperties()
+			//getStubElement().setPropertyValueFor("component.model", "/content/models/test.demodel")
+		end
+		
+		/**
+		 * Overwrite method to set up element after it has been created. Overwriting
+		 * this method is optional
+		 */
+		protected func void elementCreated()
+			getElement().setPosition(DVector.new(2, 1, 3))
+		end
+		
+		/**
+		 * Overwrite to run your tests on the behavior. Overwriting this method is mandatory
+		 */
+		protected func bool testBehaviors(TestSuite testSuite)
+			var ECBehaviorComponent.Instance component = behavior.instance(getElement())
+			assertNotNull(component.getComponent())
+			
+			// Return true to continue testing during the next frame update or false
+			// if the test finished successfully.
+			return false
+		end
+	end
+	
+	
+	
+	/**
+	 * Create test suite. Add all test cases here. The first argument is the unique test
+	 * suite identifier and can be used to refer to the test suite. The second argument
+	 * is the display text shown in WindowTesting or other UI.
+	 */
+	func new() super("ecbcomponent", UnicodeString.newFromUTF8("ECBehaviorComponent"))
+		addTestCase(BasicTest.new())
+	end
+end

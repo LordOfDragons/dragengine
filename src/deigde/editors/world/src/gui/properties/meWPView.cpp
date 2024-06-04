@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE World Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include "meWPView.h"
@@ -305,6 +308,41 @@ public:
 	}
 };
 
+class cComboCamera: public igdeComboBoxListener{
+	meWPView &pPanel;
+public:
+	cComboCamera( meWPView &panel ) : igdeComboBoxListener(), pPanel( panel ){}
+	
+	void OnTextChanged( igdeComboBox *comboBox ) override{
+		meWorld * const world = pPanel.GetWorld();
+		if( ! world ){
+			return;
+		}
+		
+		meCamera * const camera = ( meCamera* )comboBox->GetSelectedItemData();
+		if( camera == world->GetActiveCamera()
+		|| camera == world->GetFreeRoamingCamera()
+		|| camera == world->GetPlayerCamera() ){
+			return;
+		}
+		
+		world->SetActiveCamera( camera );
+	}
+};
+
+
+class cActionEnableAuralization : public cBaseAction{
+public:
+	cActionEnableAuralization( meWPView &panel ) : cBaseAction( panel,
+		"Enable Auralization", "Enable auralization if supported by audio module" ){ }
+	
+	virtual void OnAction( meWorld &world ){
+		meConfiguration &configuration = pPanel.GetWindowProperties().GetWindowMain().GetConfiguration();
+		configuration.SetEnableAuralization( ! configuration.GetEnableAuralization() );
+		world.NotifyEditingChanged();
+	}
+};
+
 
 class cActionSkyChanged : public cBaseAction{
 public:
@@ -320,8 +358,10 @@ public:
 	cActionCameraChanged( meWPView &panel ) : cBaseAction( panel, "", "" ){ }
 	
 	virtual void OnAction( meWorld &world ){
-		if( world.GetActiveCamera() ){
-			world.NotifyCameraChanged( world.GetActiveCamera() );
+		meCamera * const camera = world.GetActiveCamera();
+		if( camera ){
+			pPanel.GetWindowProperties().GetWindowMain().GetConfiguration().SetEnableGI( camera->GetEnableGI() );
+			world.NotifyCameraChanged( camera );
 		}
 	}
 };
@@ -353,7 +393,7 @@ pWorld( NULL )
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference content, groupBox, formLine;
+	igdeContainerReference content, groupBox, form, formLine;
 	
 	pListener = new meWPViewListener( *this );
 	
@@ -368,7 +408,7 @@ pWorld( NULL )
 	helper.EditFloat( groupBox, "Snap moving distance", pEditMoveStep, new cTextMoveStep( *this ) );
 	
 	helper.CheckBoxOnly( groupBox, pChkRotSnap, new cActionRotateSnap( *this ) );
-	helper.EditFloat( groupBox, "Snap rotation angle", pEditRotStep, new cTextMoveStep( *this ) );
+	helper.EditFloat( groupBox, "Snap rotation angle", pEditRotStep, new cTextRotateStep( *this ) );
 	
 	helper.CheckBoxOnly( groupBox, pChkScaleSnap, new cActionScaleSnap( *this ) );
 	helper.EditFloat( groupBox, "Snap scaling factor", pEditScaleStep, new cTextScaleStep( *this ) );
@@ -403,12 +443,15 @@ pWorld( NULL )
 	
 	
 	// camera
-	helper.GroupBox( content, groupBox, "Camera:" );
+	helper.GroupBoxFlow( content, groupBox, "Camera:" );
 	
-	helper.EditString( groupBox, "Active:", "Active camera", pEditActiveCamera, NULL );
+	form.TakeOver( new igdeContainerForm( env ) );
+	groupBox->AddChild( form );
+	
+	helper.EditString( form, "Active:", "Active camera", pEditActiveCamera, NULL );
 	pEditActiveCamera->SetEditable( false );
 	
-	helper.FormLine( groupBox, "", "", formLine );
+	helper.FormLine( form, "", "", formLine );
 	pActionCameraFreeRoaming.TakeOver( new cActionCameraFreeRoaming( *this ) );
 	helper.Button( formLine, pActionCameraFreeRoaming );
 	pActionCameraPlayer.TakeOver( new cActionCameraPlayer( *this ) );
@@ -416,15 +459,20 @@ pWorld( NULL )
 	pActionCameraObject.TakeOver( new cActionCameraObject( *this ) );
 	helper.Button( formLine, pActionCameraObject );
 	
-	helper.ComboBox( groupBox, "Object Camera:", "Object camera", pCBCameraObjects, NULL );
+	helper.ComboBox( form, "Object Camera:", "Object camera", pCBCameraObjects, NULL );
 	pCBCameraObjects->SetDefaultSorter();
+	
+	helper.WPCamera( groupBox, pWPCamera, new cActionCameraChanged( *this ),
+		"Camera Parameters:", false, false, true );
+	
+	
+	// microphone
+	helper.GroupBoxFlow( content, groupBox, "Microphone:" );
+	helper.CheckBox( groupBox, pChkEnableAuralization, new cActionEnableAuralization( *this ) );
 	
 	
 	// property panels
-	helper.WPSky( content, pWPSky, new cActionSkyChanged( *this ),
-		"Sky:", false, true, true );
-	helper.WPCamera( content, pWPCamera, new cActionCameraChanged( *this ),
-		"Camera:", false, true, true );
+	helper.WPSky( content, pWPSky, new cActionSkyChanged( *this ), "Sky:", false, false, true );
 	helper.WPTriggerTable( content, pWPTriggerTable, new cActionTriggerTable( *this ),
 		"Trigger Table:", false, true, true );
 }
@@ -498,6 +546,8 @@ void meWPView::UpdateView(){
 	pChkScaleSnap->SetChecked( configuration.GetScaleSnap() );
 	pEditScaleStep->SetFloat( configuration.GetScaleStep() );
 	pEditSensitivity->SetFloat( configuration.GetSensitivity() );
+	pChkAutoUpdate->SetChecked( configuration.GetAutoUpdate() );
+	pChkEnableAuralization->SetChecked( configuration.GetEnableAuralization() );
 	
 	if( pWorld ){
 		const meWorldGuiParameters &guiParams = pWorld->GetGuiParameters();
@@ -515,8 +565,7 @@ void meWPView::UpdateView(){
 }
 
 void meWPView::UpdateCameraList(){
-	meCamera * const selectedCamera = pCBCameraObjects->GetSelectedItem()
-		? ( meCamera* )pCBCameraObjects->GetSelectedItem()->GetData() : NULL;
+	meCamera * const selectedCamera = ( meCamera* )pCBCameraObjects->GetSelectedItemData();
 	
 	pCBCameraObjects->RemoveAllItems();
 	
@@ -528,7 +577,7 @@ void meWPView::UpdateCameraList(){
 		for( i=0; i<count; i++ ){
 			meCamera * const camera = objects.GetAt( i )->GetCamera();
 			if( camera ){
-				pCBCameraObjects->AddItem( camera->GetName(), NULL, camera );
+				pCBCameraObjects->AddItem( camera->GetName(), nullptr, camera );
 			}
 		}
 	}
@@ -544,7 +593,7 @@ void meWPView::UpdateCameraList(){
 }
 
 void meWPView::UpdateCamera(){
-	meCamera * const camera = pWorld ? pWorld->GetActiveCamera() : NULL;
+	meCamera * const camera = pWorld ? pWorld->GetActiveCamera() : nullptr;
 	
 	if( camera ){
 		pEditActiveCamera->SetText( camera->GetName() );

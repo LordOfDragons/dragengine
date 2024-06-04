@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shader>
+	<name>Effect Overlay Stereo</name>
+	
+	<uniformBlock name='RenderParameters' target='0'/>
+	
+	<texture name="texColor" target="0"/>
+	
+	<parameter name="pGamma"/>
+	<parameter name="pColor"/>
+	
+	<attribute name="inPosition" target="0"/>
+	
+	<output name="outColor" target="0"/>
+	
+	<sourceCode unit="vertex">vertex/generic/screenspace.glsl</sourceCode>
+	<sourceCode unit='geometry'>geometry/generic/stereo.glsl</sourceCode>
+	<sourceCode unit="fragment">fragment/effect/overlay_image.glsl</sourceCode>
+</shader>

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLENVMAPPROBE_H_
@@ -31,7 +34,7 @@ class deEnvMapProbe;
 
 
 /**
- * \brief Environment map probe peer.
+ * Environment map probe peer.
  */
 class deoglEnvMapProbe : public deBaseGraphicEnvMapProbe{
 private:
@@ -49,10 +52,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create peer. */
+	/** Create peer. */
 	deoglEnvMapProbe( deGraphicOpenGl &ogl, const deEnvMapProbe &envMapProbe );
 	
-	/** \brief Clean up peer. */
+	/** Clean up peer. */
 	virtual ~deoglEnvMapProbe();
 	/*@}*/
 	
@@ -60,18 +63,18 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Opengl object. */
+	/** Opengl object. */
 	inline deGraphicOpenGl &GetOgl() const{ return pOgl; }
 	
-	/** \brief Environment map probe. */
+	/** Environment map probe. */
 	inline const deEnvMapProbe &GetEnvMapProbe() const{ return pEnvMapProbe; }
 	
 	
 	
-	/** \brief Render environment map probe. */
+	/** Render environment map probe. */
 	inline deoglREnvMapProbe *GetREnvMapProbe() const{ return pREnvMapProbe; }
 	
-	/** \brief Update render thread counterpart if required. */
+	/** Update render thread counterpart if required. */
 	void SyncToRender();
 	/*@}*/
 	
@@ -79,31 +82,31 @@ public:
 	
 	/** \name Notifications */
 	/*@{*/
-	/** \brief Position changed. */
+	/** Position changed. */
 	virtual void PositionChanged();
 	
-	/** \brief Orientation changed. */
+	/** Orientation changed. */
 	virtual void OrientationChanged();
 	
-	/** \brief Scaling changed. */
+	/** Scaling changed. */
 	virtual void ScalingChanged();
 	
-	/** \brief Shape list influence changed. */
+	/** Shape list influence changed. */
 	virtual void ShapeListInfluenceChanged();
 	
-	/** \brief Shape reflection changed. */
+	/** Shape reflection changed. */
 	virtual void ShapeReflectionChanged();
 	
-	/** \brief Influence border size changed. */
+	/** Influence border size changed. */
 	virtual void InfluenceBorderSizeChanged();
 	
-	/** \brief Influence priority changed. */
+	/** Influence priority changed. */
 	virtual void InfluencePriorityChanged();
 	
-	/** \brief Image changed. */
+	/** Image changed. */
 	virtual void ImageChanged();
 	
-	/** \brief Layer mask changed. */
+	/** Layer mask changed. */
 	virtual void LayerMaskChanged();
 	/*@}*/
 	

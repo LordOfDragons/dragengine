@@ -1,0 +1,155 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+
+namespace Dragengine.Commands
+
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Commands for player controlled BaseActor with BAAVRTriggerInput action.
+ * \version 1.12
+ * 
+ * Contains various commands as sub classes. A static helper method adds instances of each
+ * command to the command manager of a BaseGameApp.
+ */
+class CommandsBAAVRTriggerInput
+	/** \brief Base class operating only on actors with BAAVRTriggerInput action. */
+	public class TriggerAction extends Command
+		protected var ECBehaviorPlayerControllable.Tracker pTracker
+		protected var bool pRightHand
+		
+		public func new(ECBehaviorPlayerControllable.Tracker tracker, String name, \
+		String description, bool rightHand) super(name, description)
+			if tracker == null
+				throw ENullPointer.new("tracker")
+			end
+			pTracker = tracker
+			pRightHand = rightHand
+		end
+		
+		protected func ECBehaviorPlayerControllable.Tracker getTracker()
+			return pTracker
+		end
+		
+		protected func BAAVRTriggerInput getInterface()
+			var ECBehaviorPlayerControllable.Instance actor = pTracker.getActor()
+			if actor == null
+				return null
+			end
+			
+			var ECBehaviorVRHandAction.Instance action
+			
+			if pRightHand
+				action = ECBehaviorVRHandAction.getInstanceIn(actor.getElement(), BaseVRActorClass.idVRRightHand)
+				
+			else
+				action = ECBehaviorVRHandAction.getInstanceIn(actor.getElement(), BaseVRActorClass.idVRLeftHand)
+			end
+			
+			if action != null and action.getAction() castable BAAVRTriggerInput
+				return action.getAction() cast BAAVRTriggerInput
+				
+			else
+				return null
+			end
+		end
+		
+		public func void touch()
+			var BAAVRTriggerInput iface = getInterface()
+			if iface != null
+				iface.triggerTouch()
+			end
+		end
+		
+		public func void untouch()
+			var BAAVRTriggerInput iface = getInterface()
+			if iface != null
+				iface.triggerUntouch()
+			end
+		end
+		
+		public func void start()
+			var BAAVRTriggerInput iface = getInterface()
+			if iface != null
+				iface.triggerPull()
+			end
+		end
+		
+		public func void stop()
+			var BAAVRTriggerInput iface = getInterface()
+			if iface != null
+				iface.triggerRelease()
+			end
+		end
+		
+		public func void analogAbsolute(float value)
+			var BAAVRTriggerInput iface = getInterface()
+			if iface != null
+				iface.triggerAnalog(value)
+			end
+		end
+	end
+	
+	
+	
+	/**
+	 * \brief Add commands to command manager.
+	 * 
+	 * Adds these commands:
+	 * - triggerRight: Right hand trigger
+	 * - triggerLeft: Left hand trigger
+	 */
+	public static func void addCommands(CommandManager commands, ECBehaviorPlayerControllable.Tracker tracker)
+		var TriggerAction trigger = TriggerAction.new(tracker, "triggerRight", "Trigger Right Hand", true)
+		trigger.setTranslateDescription("UI.Command.TriggerRight.Description")
+		trigger.setTranslateDisplayName("UI.Command.TriggerRight.DisplayName")
+		commands.add(trigger)
+		
+		trigger = TriggerAction.new(tracker, "triggerLeft", "Trigger Left Hand", false)
+		trigger.setTranslateDescription("UI.Command.TriggerLeft.Description")
+		trigger.setTranslateDisplayName("UI.Command.TriggerLeft.DisplayName")
+		commands.add(trigger)
+	end
+	
+	
+	
+	/**
+	 * \brief Add default bindings for commands.
+	 * 
+	 * Adds bindings for these commands if present in binding manager:
+	 * - "triggerRight"
+	 * - "triggerLeft"
+	 */
+	public static func void addDefaultBindings(DefaultBindingHelper helper)
+		if helper.hasVRHand(true)
+			helper.vrHandBindTrigger(true, InputDeviceAxisType.trigger, 0, "triggerRight")
+		end
+		
+		if helper.hasVRHand(false)
+			helper.vrHandBindTrigger(false, InputDeviceAxisType.trigger, 0, "triggerLeft")
+		end
+	end
+end

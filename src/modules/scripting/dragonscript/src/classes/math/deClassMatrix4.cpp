@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -815,6 +818,17 @@ void deClassMatrix4::nfGetInverse::RunFunction( dsRunTime *rt, dsValue *myself )
 	clsMatrix.PushMatrix4( rt, matrix.Invert() );
 }
 
+// public func Matrix4 normalize()
+deClassMatrix4::nfNormalize::nfNormalize( const sInitData &init ) :
+dsFunction( init.clsMatrix4, "normalize", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsMatrix4 ){
+}
+void deClassMatrix4::nfNormalize::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const decMatrix &matrix = ( ( sMatNatDat* )p_GetNativeData( myself ) )->matrix;
+	deClassMatrix &clsMatrix = *( ( deClassMatrix* )GetOwnerClass() );
+	clsMatrix.PushMatrix( rt, matrix.Normalized() );
+}
+
 // public func Quaternion toQuaternion()
 deClassMatrix4::nfToQuaternion::nfToQuaternion( const sInitData &init ) : dsFunction( init.clsMatrix4,
 "toQuaternion", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsQuat ){
@@ -1089,6 +1103,40 @@ void deClassMatrix4::nfToString::RunFunction( dsRunTime *rt, dsValue *myself ){
 }
 
 
+// public func String nfToStringPrecision()
+deClassMatrix4::nfToStringPrecision::nfToStringPrecision( const sInitData &init ) :
+dsFunction( init.clsMatrix4, "toString", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsStr ){
+	p_AddParameter( init.clsInt ); // precision
+}
+void deClassMatrix4::nfToStringPrecision::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const int precision = rt->GetValue( 0 )->GetInt();
+	if( precision < 0 ){
+		DSTHROW_INFO( dueInvalidParam, "precision < 0" );
+	}
+	if( precision > 9 ){
+		DSTHROW_INFO( dueInvalidParam, "precision > 9" );
+	}
+	
+	const unsigned short p = ( unsigned short )precision;
+	char format[ 90 ];
+	snprintf( format, sizeof( format ), "[[%%.%huf,%%.%huf,%%.%huf,%%.%huf],"
+		"[%%.%huf,%%.%huf,%%.%huf,%%.%huf],"
+		"[%%.%huf,%%.%huf,%%.%huf,%%.%huf],"
+		"[%%.%huf,%%.%huf,%%.%huf,%%.%huf]]",
+		p, p, p, p, p, p, p, p, p, p, p, p, p, p, p, p );
+	
+	const decMatrix &matrix = ( ( sMatNatDat* )p_GetNativeData( myself ) )->matrix;
+	decString str;
+	
+	str.Format( format,
+		matrix.a11, matrix.a12, matrix.a13, matrix.a14, matrix.a21, matrix.a22, matrix.a23, matrix.a24,
+		matrix.a31, matrix.a32, matrix.a33, matrix.a34, matrix.a41, matrix.a42, matrix.a43, matrix.a44 );
+	
+	rt->PushString( str );
+}
+
+
 
 // Class deClassMatrix4
 ////////////////////////
@@ -1188,6 +1236,7 @@ void deClassMatrix4::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfTransformNormal( init ) );
 	AddFunction( new nfGetEulerAngles( init ) );
 	AddFunction( new nfGetInverse( init ) );
+	AddFunction( new nfNormalize( init ) );
 	AddFunction( new nfToQuaternion( init ) );
 	AddFunction( new nfToDMatrix4( init ) );
 	AddFunction( new nfToDMatrix( init ) );
@@ -1206,6 +1255,7 @@ void deClassMatrix4::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfEquals( init ) );
 	AddFunction( new nfHashCode( init ) );
 	AddFunction( new nfToString( init ) );
+	AddFunction( new nfToStringPrecision( init ) );
 }
 
 const decMatrix &deClassMatrix4::GetMatrix4( dsRealObject *myself ) const{

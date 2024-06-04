@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -74,407 +77,427 @@ class ECBehaviorPlayerInputMove extends DefaultECBehavior
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
-		private var ECBehaviorPlayerInputMove pECBehavior
-		private var ECBehaviorLocomotion.Instance pLocomotion
+		var ECBehaviorPlayerInputMove pECBehavior
+		var ECBehaviorLocomotion.Instance pLocomotion
 		
-		private var LocomotionType pLocomotionType
+		var LocomotionType pLocomotionType
 		
-		private var bool pMoveForward
-		private var bool pMoveBackward
-		private var bool pMoveLeft
-		private var bool pMoveRight
-		private var float pAnalogMoveForwardBackward
-		private var float pAnalogMoveLeftRight
-		private var float pAnalogMoveForwardBackwardSticky
-		private var float pAnalogMoveLeftRightSticky
-		private var bool pCanMove
+		var bool pMoveForward
+		var bool pMoveBackward
+		var bool pMoveLeft
+		var bool pMoveRight
+		var float pAnalogMoveForwardBackward
+		var float pAnalogMoveLeftRight
+		var float pAnalogMoveForwardBackwardSticky
+		var float pAnalogMoveLeftRightSticky
+		var bool pCanMove
 		
-		private var bool pRun
-		private var float pSpeedWalk
-		private var float pSpeedFactorWalkForward
-		private var float pSpeedFactorWalkBackward
-		private var float pSpeedFactorWalkLeft
-		private var float pSpeedFactorWalkRight
-		private var float pSpeedRun
-		private var float pSpeedFactorRunForward
-		private var float pSpeedFactorRunBackward
-		private var float pSpeedFactorRunLeft
-		private var float pSpeedFactorRunRight
+		var bool pRun
+		var float pSpeedWalk
+		var float pSpeedFactorWalkForward
+		var float pSpeedFactorWalkBackward
+		var float pSpeedFactorWalkLeft
+		var float pSpeedFactorWalkRight
+		var float pSpeedRun
+		var float pSpeedFactorRunForward
+		var float pSpeedFactorRunBackward
+		var float pSpeedFactorRunLeft
+		var float pSpeedFactorRunRight
 		
-		private var float pMovingDirection
-		private var float pMovingBodyTurn
-		private var float pMovingSpeed
+		var float pMovingDirection
+		var float pMovingBodyTurn
+		var float pMovingSpeed
 		
 		
 		
 		/** \brief Create instance. */
-		public func new( ECBehaviorPlayerInputMove ecbehavior, BehaviorElement element ) super( element )
-			this.pECBehavior = ecbehavior
+		func new(ECBehaviorPlayerInputMove ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
 			
-			this.pLocomotionType = LocomotionType.natural
-			this.pCanMove = true
+			pLocomotionType = LocomotionType.natural
+			pCanMove = true
 			
-			this.pSpeedFactorWalkForward = 1
-			this.pSpeedFactorWalkBackward = 1
-			this.pSpeedFactorWalkLeft = 1
-			this.pSpeedFactorWalkRight = 1
-			this.pSpeedFactorRunForward = 1
-			this.pSpeedFactorRunBackward = 1
-			this.pSpeedFactorRunLeft = 1
-			this.pSpeedFactorRunRight = 1
+			pSpeedFactorWalkForward = 1
+			pSpeedFactorWalkBackward = 1
+			pSpeedFactorWalkLeft = 1
+			pSpeedFactorWalkRight = 1
+			
+			pSpeedFactorRunForward = 1
+			pSpeedFactorRunBackward = 1
+			pSpeedFactorRunLeft = 1
+			pSpeedFactorRunRight = 1
 		end
 		
 		/** \brief Dispose of instance. */
-		public func void dispose()
-			this.pLocomotion = null
+		func void dispose()
+			pLocomotion = null
 			super.dispose()
 		end
 		
 		
 		
 		/** \brief Initialize element from stub. */
-		public func void init( StubElement stub )
-			if this.pECBehavior.getLocomotion() != null
-				this.pLocomotion = this.pECBehavior.getLocomotion().instance( this.getElement() )
+		func void init(StubElement stub)
+			if pECBehavior.getLocomotion() != null
+				pLocomotion = pECBehavior.getLocomotion().instance(getElement())
 			end
 			
-			this.pSpeedWalk = this.pECBehavior.getSpeedWalk().getValue( stub )
-			this.pSpeedRun = this.pECBehavior.getSpeedRun().getValue( stub )
+			pSpeedWalk = pECBehavior.getSpeedWalk().getValue(stub)
+			pSpeedFactorWalkForward = pECBehavior.getSpeedFactorWalkForward().getValue(stub)
+			pSpeedFactorWalkBackward = pECBehavior.getSpeedFactorWalkBackward().getValue(stub)
+			pSpeedFactorWalkLeft = pECBehavior.getSpeedFactorWalkLeft().getValue(stub)
+			pSpeedFactorWalkRight = pECBehavior.getSpeedFactorWalkRight().getValue(stub)
+			
+			pSpeedRun = pECBehavior.getSpeedRun().getValue(stub)
+			pSpeedFactorRunForward = pECBehavior.getSpeedFactorRunForward().getValue(stub)
+			pSpeedFactorRunBackward = pECBehavior.getSpeedFactorRunBackward().getValue(stub)
+			pSpeedFactorRunLeft = pECBehavior.getSpeedFactorRunLeft().getValue(stub)
+			pSpeedFactorRunRight = pECBehavior.getSpeedFactorRunRight().getValue(stub)
 		end
 		
 		
 		
 		/** \brief Behavior. */
-		public func ECBehaviorPlayerInputMove getECBehavior()
-			return this.pECBehavior
+		func ECBehaviorPlayerInputMove getECBehavior()
+			return pECBehavior
 		end
 		
 		/** \brief Locomotion behavior or null if absent. */
-		public func ECBehaviorLocomotion.Instance getLocomotion()
-			return this.pLocomotion
+		func ECBehaviorLocomotion.Instance getLocomotion()
+			return pLocomotion
 		end
 		
 		
 		
 		/** \brief Locomotion type. */
-		public func LocomotionType getLocomotionType()
-			return this.pLocomotionType
+		func LocomotionType getLocomotionType()
+			return pLocomotionType
 		end
 		
 		/** \brief Set locomotion type. */
-		public func void setLocomotionType( LocomotionType type )
-			this.pLocomotionType = type
+		func void setLocomotionType(LocomotionType type)
+			pLocomotionType = type
 		end
 		
 		
 		
 		/** \brief Move forward key is pressed. */
-		public func bool getMoveForward()
-			return this.pMoveForward
+		func bool getMoveForward()
+			return pMoveForward
 		end
 		
 		/** \brief Set if move forward key is pressed. */
-		public func void setMoveForward( bool pressed )
-			this.pMoveForward = pressed
+		func void setMoveForward(bool pressed)
+			pMoveForward = pressed
 		end
 		
 		/** \brief Toggle move forward key pressed. */
-		public func void toggleMoveForward()
-			this.pMoveForward = not this.pMoveForward
+		func void toggleMoveForward()
+			pMoveForward = not pMoveForward
 		end
 		
 		/** \brief Move backward key is pressed. */
-		public func bool getMoveBackward()
-			return this.pMoveBackward
+		func bool getMoveBackward()
+			return pMoveBackward
 		end
 		
 		/** \brief Set if move backward key is pressed. */
-		public func void setMoveBackward( bool pressed )
-			this.pMoveBackward = pressed
+		func void setMoveBackward(bool pressed)
+			pMoveBackward = pressed
 		end
 		
 		/** \brief Toggle move backward key pressed. */
-		public func void toggleMoveBackward()
-			this.pMoveBackward = not this.pMoveBackward
+		func void toggleMoveBackward()
+			pMoveBackward = not pMoveBackward
 		end
 		
 		/** \brief Move left key is pressed. */
-		public func bool getMoveLeft()
-			return this.pMoveLeft
+		func bool getMoveLeft()
+			return pMoveLeft
 		end
 		
 		/** \brief Set if move left key is pressed. */
-		public func void setMoveLeft( bool pressed )
-			this.pMoveLeft = pressed
+		func void setMoveLeft(bool pressed)
+			pMoveLeft = pressed
 		end
 		
 		/** \brief Toggle move left key pressed. */
-		public func void toggleMoveLeft()
-			this.pMoveLeft = not this.pMoveLeft
+		func void toggleMoveLeft()
+			pMoveLeft = not pMoveLeft
 		end
 		
 		/** \brief Move right key is pressed. */
-		public func bool getMoveRight()
-			return this.pMoveRight
+		func bool getMoveRight()
+			return pMoveRight
 		end
 		
 		/** \brief Set if move right key is pressed. */
-		public func void setMoveRight( bool pressed )
-			this.pMoveRight = pressed
+		func void setMoveRight(bool pressed)
+			pMoveRight = pressed
 		end
 		
 		/** \brief Toggle move right key pressed. */
-		public func void toggleMoveRight()
-			this.pMoveRight = not this.pMoveRight
+		func void toggleMoveRight()
+			pMoveRight = not pMoveRight
 		end
 		
 		/** \brief Analog move forward backward. */
-		public func float getAnalogMoveForwardBackward()
-			return this.pAnalogMoveForwardBackward
+		func float getAnalogMoveForwardBackward()
+			return pAnalogMoveForwardBackward
 		end
 		
 		/** \brief Set analog move forward backward. */
-		public func void setAnalogMoveForwardBackward( float value )
-			this.pAnalogMoveForwardBackward = value
+		func void setAnalogMoveForwardBackward(float value)
+			pAnalogMoveForwardBackward = value
 		end
 		
 		/** \brief Analog move left right. */
-		public func float getAnalogMoveLeftRight()
-			return this.pAnalogMoveLeftRight
+		func float getAnalogMoveLeftRight()
+			return pAnalogMoveLeftRight
 		end
 		
 		/** \brief Set analog move left right. */
-		public func void setAnalogMoveLeftRight( float value )
-			this.pAnalogMoveLeftRight = value
+		func void setAnalogMoveLeftRight(float value)
+			pAnalogMoveLeftRight = value
 		end
 		
 		/** \brief Sticky analog move forward backward. */
-		public func float getAnalogMoveForwardBackwardSticky()
-			return this.pAnalogMoveForwardBackwardSticky
+		func float getAnalogMoveForwardBackwardSticky()
+			return pAnalogMoveForwardBackwardSticky
 		end
 		
 		/** \brief Set sticky analog move forward backward. */
-		public func void setAnalogMoveForwardBackwardSticky( float value )
-			this.pAnalogMoveForwardBackwardSticky = value
+		func void setAnalogMoveForwardBackwardSticky(float value)
+			pAnalogMoveForwardBackwardSticky = value
 		end
 		
 		/** \brief Sticky analog move left right. */
-		public func float getAnalogMoveLeftRightSticky()
-			return this.pAnalogMoveLeftRightSticky
+		func float getAnalogMoveLeftRightSticky()
+			return pAnalogMoveLeftRightSticky
 		end
 		
 		/** \brief Set sticky analog move left right. */
-		public func void setAnalogMoveLeftRightSticky( float value )
-			this.pAnalogMoveLeftRightSticky = value
+		func void setAnalogMoveLeftRightSticky(float value)
+			pAnalogMoveLeftRightSticky = value
 		end
 		
 		/** \brief Player can move. */
-		public func bool getCanMove()
-			return this.pCanMove
+		func bool getCanMove()
+			return pCanMove
 		end
 		
 		/** \brief Set if player can move. */
-		public func void setCanMove( bool canMove )
-			this.pCanMove = canMove
+		func void setCanMove(bool canMove)
+			pCanMove = canMove
 		end
 		
 		/** \brief Toggle can move. */
-		public func void toggleCanMove()
-			this.pCanMove = not this.pCanMove
+		func void toggleCanMove()
+			pCanMove = not pCanMove
 		end
 		
 		/** \brief Player is moving. */
-		public func bool isMoving()
-			return this.pCanMove and ( this.pMoveForward or this.pMoveBackward \
-				or this.pMoveLeft or this.pMoveRight \
-				or DEMath.fabs( this.pAnalogMoveForwardBackward ) > 0.01 \
-				or DEMath.fabs( this.pAnalogMoveForwardBackwardSticky ) > 0.01 )
+		func bool isMoving()
+			return pCanMove and (pMoveForward or pMoveBackward \
+				or pMoveLeft or pMoveRight \
+				or DEMath.fabs(pAnalogMoveForwardBackward) > 0.01 \
+				or DEMath.fabs(pAnalogMoveForwardBackwardSticky) > 0.01)
 		end
 		
 		
 		
 		/** \brief Run key is pressed. */
-		public func bool getRun()
-			return this.pRun
+		func bool getRun()
+			return pRun
 		end
 		
 		/** \brief Set if run key is pressed. */
-		public func void setRun( bool pressed )
-			this.pRun = pressed
-			this.updateMovingSpeed()
+		func void setRun(bool pressed)
+			pRun = pressed
+			updateMovingSpeed()
 		end
 		
 		/** \brief Toggle run key pressed. */
-		public func void toggleRun()
-			this.pRun = not this.pRun
-			this.updateMovingSpeed()
+		func void toggleRun()
+			pRun = not pRun
+			updateMovingSpeed()
 		end
 		
 		
 		
 		/** \brief Walk speed. */
-		public func float getSpeedWalk()
-			return this.pSpeedWalk
+		func float getSpeedWalk()
+			return pSpeedWalk
 		end
 		
 		/** \brief Set walk speed. */
-		public func void setSpeedWalk( float speed )
-			this.pSpeedWalk = DEMath.max( speed, 0.0 )
-			this.updateMovingSpeed()
+		func void setSpeedWalk(float speed)
+			pSpeedWalk = DEMath.max(speed, 0.0)
+			updateMovingSpeed()
 		end
 		
 		/** \brief Speed factor Walk forward. */
-		public func float getSpeedFactorWalkForward()
-			return this.pSpeedFactorWalkForward
+		func float getSpeedFactorWalkForward()
+			return pSpeedFactorWalkForward
 		end
 		
 		/** \brief Set speed factor walk forward. */
-		public func void setSpeedFactorWalkForward( float speed )
-			this.pSpeedFactorWalkForward = DEMath.max( speed, 0.0 )
-			this.updateMovingSpeed()
+		func void setSpeedFactorWalkForward(float speed)
+			pSpeedFactorWalkForward = DEMath.max(speed, 0.0)
+			updateMovingSpeed()
 		end
 		
 		/** \brief Speed factor walk backward. */
-		public func float getSpeedFactorWalkBackward()
-			return this.pSpeedFactorWalkBackward
+		func float getSpeedFactorWalkBackward()
+			return pSpeedFactorWalkBackward
 		end
 		
 		/** \brief Set speed factor walk backward. */
-		public func void setSpeedFactorWalkBackward( float speed )
-			this.pSpeedFactorWalkBackward = DEMath.max( speed, 0.0 )
-			this.updateMovingSpeed()
+		func void setSpeedFactorWalkBackward(float speed)
+			pSpeedFactorWalkBackward = DEMath.max(speed, 0.0)
+			updateMovingSpeed()
 		end
 		
 		/** \brief Speed factor walk left. */
-		public func float getSpeedFactorWalkLeft()
-			return this.pSpeedFactorWalkLeft
+		func float getSpeedFactorWalkLeft()
+			return pSpeedFactorWalkLeft
 		end
 		
 		/** \brief Set speed factor walk left. */
-		public func void setSpeedFactorWalkLeft( float speed )
-			this.pSpeedFactorWalkLeft = DEMath.max( speed, 0.0 )
-			this.updateMovingSpeed()
+		func void setSpeedFactorWalkLeft(float speed)
+			pSpeedFactorWalkLeft = DEMath.max(speed, 0.0)
+			updateMovingSpeed()
 		end
 		
 		/** \brief Speed factor walk right. */
-		public func float getSpeedFactorWalkRight()
-			return this.pSpeedFactorWalkRight
+		func float getSpeedFactorWalkRight()
+			return pSpeedFactorWalkRight
 		end
 		
 		/** \brief Set speed factor walk right. */
-		public func void setSpeedFactorWalkRight( float speed )
-			this.pSpeedFactorWalkRight = DEMath.max( speed, 0.0 )
-			this.updateMovingSpeed()
+		func void setSpeedFactorWalkRight(float speed)
+			pSpeedFactorWalkRight = DEMath.max(speed, 0.0)
+			updateMovingSpeed()
 		end
 		
 		
 		
 		/** \brief Run speed. */
-		public func float getSpeedRun()
-			return this.pSpeedRun
+		func float getSpeedRun()
+			return pSpeedRun
 		end
 		
 		/** \brief Set run speed. */
-		public func void setSpeedRun( float speed )
-			this.pSpeedRun = DEMath.max( speed, 0.0 )
-			this.updateMovingSpeed()
+		func void setSpeedRun(float speed)
+			pSpeedRun = DEMath.max(speed, 0.0)
+			updateMovingSpeed()
 		end
 		
 		/** \brief Speed factor run forward. */
-		public func float getSpeedFactorRunForward()
-			return this.pSpeedFactorRunForward
+		func float getSpeedFactorRunForward()
+			return pSpeedFactorRunForward
 		end
 		
 		/** \brief Set speed factor walk forward. */
-		public func void setSpeedFactorRunForward( float speed )
-			this.pSpeedFactorRunForward = DEMath.max( speed, 0.0 )
-			this.updateMovingSpeed()
+		func void setSpeedFactorRunForward(float speed)
+			pSpeedFactorRunForward = DEMath.max(speed, 0.0)
+			updateMovingSpeed()
 		end
 		
 		/** \brief Speed factor run backward. */
-		public func float getSpeedFactorRunBackward()
-			return this.pSpeedFactorRunBackward
+		func float getSpeedFactorRunBackward()
+			return pSpeedFactorRunBackward
 		end
 		
 		/** \brief Set speed factor walk backward. */
-		public func void setSpeedFactorRunBackward( float speed )
-			this.pSpeedFactorRunBackward = DEMath.max( speed, 0.0 )
-			this.updateMovingSpeed()
+		func void setSpeedFactorRunBackward(float speed)
+			pSpeedFactorRunBackward = DEMath.max(speed, 0.0)
+			updateMovingSpeed()
 		end
 		
 		/** \brief Speed factor run left. */
-		public func float getSpeedFactorRunLeft()
-			return this.pSpeedFactorRunLeft
+		func float getSpeedFactorRunLeft()
+			return pSpeedFactorRunLeft
 		end
 		
 		/** \brief Set speed factor walk left. */
-		public func void setSpeedFactorRunLeft( float speed )
-			this.pSpeedFactorRunLeft = DEMath.max( speed, 0.0 )
-			this.updateMovingSpeed()
+		func void setSpeedFactorRunLeft(float speed)
+			pSpeedFactorRunLeft = DEMath.max(speed, 0.0)
+			updateMovingSpeed()
 		end
 		
 		/** \brief Speed factor run right. */
-		public func float getSpeedFactorRunRight()
-			return this.pSpeedFactorRunRight
+		func float getSpeedFactorRunRight()
+			return pSpeedFactorRunRight
 		end
 		
 		/** \brief Set speed factor walk right. */
-		public func void setSpeedFactorRunRight( float speed )
-			this.pSpeedFactorRunRight = DEMath.max( speed, 0.0 )
-			this.updateMovingSpeed()
+		func void setSpeedFactorRunRight(float speed)
+			pSpeedFactorRunRight = DEMath.max(speed, 0.0)
+			updateMovingSpeed()
 		end
 		
 		
 		
 		/** \brief Reset input. */
-		public func void reset()
-			this.pMoveForward = false
-			this.pMoveBackward = false
-			this.pMoveLeft = false
-			this.pMoveRight = false
-			this.pAnalogMoveForwardBackward = 0
-			this.pAnalogMoveLeftRight = 0
-			this.pAnalogMoveForwardBackwardSticky = 0
-			this.pAnalogMoveLeftRightSticky = 0
-			this.pMovingDirection = 0
-			this.pMovingBodyTurn = 0
-			this.pMovingSpeed = 0
+		func void reset()
+			pMoveForward = false
+			pMoveBackward = false
+			pMoveLeft = false
+			pMoveRight = false
+			pAnalogMoveForwardBackward = 0
+			pAnalogMoveLeftRight = 0
+			pAnalogMoveForwardBackwardSticky = 0
+			pAnalogMoveLeftRightSticky = 0
+			pMovingDirection = 0
+			pMovingBodyTurn = 0
+			pMovingSpeed = 0
 		end
 		
+		/**
+		 * \brief Reset analog input.
+		 * \version 1.20
+		 */
+		func void resetAnalog()
+			pAnalogMoveForwardBackward = 0
+			pAnalogMoveLeftRight = 0
+			pAnalogMoveForwardBackwardSticky = 0
+			pAnalogMoveLeftRightSticky = 0
+		end
 		
 		
 		/** \brief Locomotion moving direction. */
-		public func float getMovingDirection()
-			return this.pMovingDirection
+		func float getMovingDirection()
+			return pMovingDirection
 		end
 		
 		/** \brief Set locomotion moving direction. */
-		public func void setMovingDirection( float direction )
-			this.pMovingDirection = DEMath.normalize( direction, -180.0, 180.0 )
+		func void setMovingDirection(float direction)
+			pMovingDirection = DEMath.normalize(direction, -180.0, 180.0)
 		end
 		
 		/** \brief Locomotion moving speed. */
-		public func float getMovingSpeed()
-			return this.pMovingSpeed
+		func float getMovingSpeed()
+			return pMovingSpeed
 		end
 		
 		/** \brief Set locomotion moving speed. */
-		public func void setMovingSpeed( float speed )
-			this.pMovingSpeed = speed
+		func void setMovingSpeed(float speed)
+			pMovingSpeed = speed
 		end
 		
 		
 		
 		/** \brief Calculate moving direction. */
-		public func float calculateMovingDirection()
+		func float calculateMovingDirection()
 			// movement using analog input
-			var float analogFB = this.pAnalogMoveForwardBackward + this.pAnalogMoveForwardBackwardSticky
-			var float analogLR = this.pAnalogMoveLeftRight + this.pAnalogMoveLeftRightSticky
+			var float analogFB = pAnalogMoveForwardBackward + pAnalogMoveForwardBackwardSticky
+			var float analogLR = pAnalogMoveLeftRight + pAnalogMoveLeftRightSticky
 			var bool hasMovingDirectionAnalog = false
 			var float movingDirectionAnalog = 0
 			
-			if DEMath.fabs( analogFB ) > 0.01 or DEMath.fabs( analogLR ) > 0
-				movingDirectionAnalog = DEMath.atan2( -analogLR, analogFB )
+			if DEMath.fabs(analogFB) > 0.01 or DEMath.fabs(analogLR) > 0
+				movingDirectionAnalog = DEMath.atan2(-analogLR, analogFB)
 				hasMovingDirectionAnalog = true
 			end
 			
@@ -482,20 +505,20 @@ class ECBehaviorPlayerInputMove extends DefaultECBehavior
 			var bool hasMovingDirectionDigital = false
 			var float movingDirectionDigital = 0
 			
-			if this.pMoveForward
-				if this.pMoveLeft
+			if pMoveForward
+				if pMoveLeft
 					movingDirectionDigital = 45
 					
-				elif this.pMoveRight
+				elif pMoveRight
 					movingDirectionDigital = -45
 				end
 				hasMovingDirectionDigital = true
 				
-			elif this.pMoveBackward
-				if this.pMoveLeft
+			elif pMoveBackward
+				if pMoveLeft
 					movingDirectionDigital = 135
 					
-				elif this.pMoveRight
+				elif pMoveRight
 					movingDirectionDigital = -135
 					
 				else
@@ -503,18 +526,18 @@ class ECBehaviorPlayerInputMove extends DefaultECBehavior
 				end
 				hasMovingDirectionDigital = true
 				
-			elif this.pMoveLeft
+			elif pMoveLeft
 				movingDirectionDigital = 90
 				hasMovingDirectionDigital = true
 				
-			elif this.pMoveRight
+			elif pMoveRight
 				movingDirectionDigital = -90
 				hasMovingDirectionDigital = true
 			end
 			
 			// combine moving speeds
 			if hasMovingDirectionAnalog and hasMovingDirectionDigital
-				return ( movingDirectionDigital + movingDirectionAnalog ) * 0.5
+				return (movingDirectionDigital + movingDirectionAnalog) * 0.5
 				
 			elif hasMovingDirectionAnalog
 				return movingDirectionAnalog
@@ -528,33 +551,37 @@ class ECBehaviorPlayerInputMove extends DefaultECBehavior
 		end
 		
 		/** \brief Calculate moving speed. */
-		public func float calculateMovingSpeed()
-			// analog movement
-			var float analogFB = this.pAnalogMoveForwardBackward + this.pAnalogMoveForwardBackwardSticky
-			var float analogLR = this.pAnalogMoveLeftRight + this.pAnalogMoveLeftRightSticky
-			var float movingSpeedAnalog = Vector2.new( analogFB, analogLR ).getLength()
+		func float calculateMovingSpeed()
+			if not pCanMove
+				return 0
+			end
 			
-			if DEMath.fabs( movingSpeedAnalog ) > 0.001
-				var float orientation = DEMath.atan2( -analogLR, analogFB )
+			// analog movement
+			var float analogFB = pAnalogMoveForwardBackward + pAnalogMoveForwardBackwardSticky
+			var float analogLR = pAnalogMoveLeftRight + pAnalogMoveLeftRightSticky
+			var float movingSpeedAnalog = Vector2.new(analogFB, analogLR).getLength()
+			
+			if DEMath.fabs(movingSpeedAnalog) > 0.001
+				var float orientation = DEMath.atan2(-analogLR, analogFB)
 				
 				if orientation < -90
-					movingSpeedAnalog *= DEMath.linearStep( orientation, -180.0, -90.0, \
-						this.pSpeedFactorRunBackward, this.pSpeedFactorRunRight )
+					movingSpeedAnalog *= DEMath.linearStep(orientation, -180.0, -90.0, \
+						pSpeedFactorRunBackward, pSpeedFactorRunRight)
 					
 				elif orientation < 0
-					movingSpeedAnalog *= DEMath.linearStep( orientation, -90.0, 0.0, \
-						this.pSpeedFactorRunRight, this.pSpeedFactorRunForward )
+					movingSpeedAnalog *= DEMath.linearStep(orientation, -90.0, 0.0, \
+						pSpeedFactorRunRight, pSpeedFactorRunForward)
 					
 				elif orientation < 90
-					movingSpeedAnalog *= DEMath.linearStep( orientation, 0.0, 90.0, \
-						this.pSpeedFactorRunForward, this.pSpeedFactorRunLeft )
+					movingSpeedAnalog *= DEMath.linearStep(orientation, 0.0, 90.0, \
+						pSpeedFactorRunForward, pSpeedFactorRunLeft)
 					
 				else
-					movingSpeedAnalog *= DEMath.linearStep( orientation, 90.0, 180.0, \
-						this.pSpeedFactorRunLeft, this.pSpeedFactorRunBackward )
+					movingSpeedAnalog *= DEMath.linearStep(orientation, 90.0, 180.0, \
+						pSpeedFactorRunLeft, pSpeedFactorRunBackward)
 				end
 				
-				movingSpeedAnalog *= this.pSpeedRun
+				movingSpeedAnalog *= pSpeedRun
 				
 			else
 				movingSpeedAnalog = 0
@@ -563,246 +590,314 @@ class ECBehaviorPlayerInputMove extends DefaultECBehavior
 			// digital movement
 			var float movingSpeedDigital = 0
 			
-			if this.pRun
-				if this.pMoveForward
-					if this.pMoveLeft
-						movingSpeedDigital = this.pSpeedRun * ( this.pSpeedFactorRunForward + this.pSpeedFactorRunLeft ) * 0.5
+			if pRun
+				if pMoveForward
+					if pMoveLeft
+						movingSpeedDigital = pSpeedRun * (pSpeedFactorRunForward + pSpeedFactorRunLeft) * 0.5
 						
-					elif this.pMoveRight
-						movingSpeedDigital = this.pSpeedRun * ( this.pSpeedFactorRunForward + this.pSpeedFactorRunRight ) * 0.5
-						
-					else
-						movingSpeedDigital = this.pSpeedRun * this.pSpeedFactorRunForward
-					end
-					
-				elif this.pMoveBackward
-					if this.pMoveLeft
-						movingSpeedDigital = this.pSpeedRun * ( this.pSpeedFactorRunBackward + this.pSpeedFactorRunLeft ) * 0.5
-						
-					elif this.pMoveRight
-						movingSpeedDigital = this.pSpeedRun * ( this.pSpeedFactorRunBackward + this.pSpeedFactorRunRight ) * 0.5
+					elif pMoveRight
+						movingSpeedDigital = pSpeedRun * (pSpeedFactorRunForward + pSpeedFactorRunRight) * 0.5
 						
 					else
-						movingSpeedDigital = this.pSpeedRun * this.pSpeedFactorRunBackward
+						movingSpeedDigital = pSpeedRun * pSpeedFactorRunForward
 					end
 					
-				elif this.pMoveLeft
-					movingSpeedDigital = this.pSpeedRun * this.pSpeedFactorRunLeft
+				elif pMoveBackward
+					if pMoveLeft
+						movingSpeedDigital = pSpeedRun * (pSpeedFactorRunBackward + pSpeedFactorRunLeft) * 0.5
+						
+					elif pMoveRight
+						movingSpeedDigital = pSpeedRun * (pSpeedFactorRunBackward + pSpeedFactorRunRight) * 0.5
+						
+					else
+						movingSpeedDigital = pSpeedRun * pSpeedFactorRunBackward
+					end
 					
-				elif this.pMoveRight
-					movingSpeedDigital = this.pSpeedRun * this.pSpeedFactorRunRight
+				elif pMoveLeft
+					movingSpeedDigital = pSpeedRun * pSpeedFactorRunLeft
+					
+				elif pMoveRight
+					movingSpeedDigital = pSpeedRun * pSpeedFactorRunRight
 				end
 				
 			else
-				if this.pMoveForward
-					if this.pMoveLeft
-						movingSpeedDigital = this.pSpeedWalk * ( this.pSpeedFactorWalkForward + this.pSpeedFactorWalkLeft ) * 0.5
+				if pMoveForward
+					if pMoveLeft
+						movingSpeedDigital = pSpeedWalk * (pSpeedFactorWalkForward + pSpeedFactorWalkLeft) * 0.5
 						
-					elif this.pMoveRight
-						movingSpeedDigital = this.pSpeedWalk * ( this.pSpeedFactorWalkForward + this.pSpeedFactorWalkRight ) * 0.5
-						
-					else
-						movingSpeedDigital = this.pSpeedWalk * this.pSpeedFactorWalkForward
-					end
-					
-				elif this.pMoveBackward
-					if this.pMoveLeft
-						movingSpeedDigital = this.pSpeedWalk * ( this.pSpeedFactorWalkBackward + this.pSpeedFactorWalkLeft ) * 0.5
-						
-					elif this.pMoveRight
-						movingSpeedDigital = this.pSpeedWalk * ( this.pSpeedFactorWalkBackward + this.pSpeedFactorWalkRight ) * 0.5
+					elif pMoveRight
+						movingSpeedDigital = pSpeedWalk * (pSpeedFactorWalkForward + pSpeedFactorWalkRight) * 0.5
 						
 					else
-						movingSpeedDigital = this.pSpeedWalk * this.pSpeedFactorWalkBackward
+						movingSpeedDigital = pSpeedWalk * pSpeedFactorWalkForward
 					end
 					
-				elif this.pMoveLeft
-					movingSpeedDigital = this.pSpeedWalk * this.pSpeedFactorWalkLeft
+				elif pMoveBackward
+					if pMoveLeft
+						movingSpeedDigital = pSpeedWalk * (pSpeedFactorWalkBackward + pSpeedFactorWalkLeft) * 0.5
+						
+					elif pMoveRight
+						movingSpeedDigital = pSpeedWalk * (pSpeedFactorWalkBackward + pSpeedFactorWalkRight) * 0.5
+						
+					else
+						movingSpeedDigital = pSpeedWalk * pSpeedFactorWalkBackward
+					end
 					
-				elif this.pMoveRight
-					movingSpeedDigital = this.pSpeedWalk * this.pSpeedFactorWalkRight
+				elif pMoveLeft
+					movingSpeedDigital = pSpeedWalk * pSpeedFactorWalkLeft
+					
+				elif pMoveRight
+					movingSpeedDigital = pSpeedWalk * pSpeedFactorWalkRight
 				end
 			end
 			
 			// combine moving speeds
-			return DEMath.max( movingSpeedDigital, movingSpeedAnalog )
+			return DEMath.max(movingSpeedDigital, movingSpeedAnalog)
 		end
 		
 		
 		
 		
 		/** \brief Update moving direction and moving body turn. */
-		public func void updateMovingDirection()
-			this.pMovingDirection = this.calculateMovingDirection()
+		func void updateMovingDirection()
+			pMovingDirection = calculateMovingDirection()
 			
 			// body turn
-			if this.isMoving()
+			if isMoving()
 				// slightly larger than 90 degrees required to get normalizing affecting only
-				// moving orientations pointing strictly backwards
-				this.pMovingBodyTurn = DEMath.normalize( this.pMovingDirection, -90.1, 90.1 )
+				// moving orientations pointing strictly backward
+				pMovingBodyTurn = DEMath.normalize(pMovingDirection, -90.1, 90.1)
 				
 			else
-				this.pMovingBodyTurn = 0
+				pMovingBodyTurn = 0
 			end
 		end
 		
 		/** \brief Update moving speed. */
-		public func void updateMovingSpeed()
-			this.pMovingSpeed = this.calculateMovingSpeed()
+		func void updateMovingSpeed()
+			pMovingSpeed = calculateMovingSpeed()
 		end
 		
 		/**
 		 * \brief Update locomotion.
 		 */
-		public func void updateLocomotion( float elapsed )
-			this.updateMovingDirection()
-			this.updateMovingSpeed()
+		func void updateLocomotion(float elapsed)
+			updateMovingDirection()
+			updateMovingSpeed()
 			
-			this.pAnalogMoveForwardBackward = 0
-			this.pAnalogMoveLeftRight = 0
+			pAnalogMoveForwardBackward = 0
+			pAnalogMoveLeftRight = 0
 			
-			if this.pLocomotion == null
+			if pLocomotion == null
 				return
 			end
 			
-			var Locomotion locomotion = this.pLocomotion.getLocomotion()
-			locomotion.setAnalogMovingSpeed( this.pMovingSpeed )
+			var Locomotion locomotion = pLocomotion.getLocomotion()
+			locomotion.setAnalogMovingSpeed(pMovingSpeed)
 			
-			select this.pLocomotionType
+			select pLocomotionType
 			case LocomotionType.natural
-				locomotion.setAnalogMovingHorizontalGoal( this.pMovingDirection + locomotion.getLookHorizontalGoal() )
-				if this.pMovingSpeed > 0.001
-					locomotion.setTurnHorizontal( locomotion.getLookHorizontalGoal() + this.pMovingBodyTurn )
+				locomotion.setAnalogMovingHorizontalGoal(pMovingDirection + locomotion.getLookHorizontalGoal())
+				if pMovingSpeed > 0.001 or not locomotion.getCanTurnInPlace()
+					locomotion.setTurnHorizontal(locomotion.getLookHorizontalGoal() + pMovingBodyTurn)
 					
 				else
-					locomotion.setTurnHorizontal( 0 )
+					locomotion.setTurnHorizontal(0)
 				end
 				
 			case LocomotionType.fps
-				locomotion.setAnalogMovingHorizontalGoal( this.pMovingDirection + locomotion.getLookHorizontalGoal() )
-				if this.pMovingSpeed > 0.001
-					locomotion.setTurnHorizontal( locomotion.getLookHorizontalGoal() )
-					
-				else
-					locomotion.setTurnHorizontal( 0 )
-				end
+				locomotion.setAnalogMovingHorizontalGoal(pMovingDirection)
+				locomotion.setTurnHorizontal(locomotion.getLookHorizontalGoal())
 				
 			case LocomotionType.vehicle
-				locomotion.setAnalogMovingHorizontalGoal( this.pMovingDirection )
+				locomotion.setAnalogMovingHorizontalGoal(pMovingDirection)
 			end
-		end
-		
-		
-		
-		/**
-		 * \brief Add element to game world.
-		 * 
-		 * Clears player input to ensure actor is not unintentially moving.
-		 */
-		public func void addToGameWorld()
-			this.reset()
 		end
 		
 		
 		
 		/** \brief Read element from file. */
-		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
-			var PersistencyFlags flags = PersistencyFlags.new( 2, reader )
-			this.pCanMove = flags.getAt( 0 )
-			this.pRun = flags.getAt( 1 )
-			
-			this.pLocomotionType = LocomotionType.withOrder( reader.readByte() )
-			this.pSpeedWalk = reader.readFloat()
-			this.pSpeedFactorWalkForward = reader.readFloat()
-			this.pSpeedFactorWalkBackward = reader.readFloat()
-			this.pSpeedFactorWalkLeft = reader.readFloat()
-			this.pSpeedFactorWalkRight = reader.readFloat()
-			this.pSpeedRun = reader.readFloat()
-			this.pSpeedFactorRunForward = reader.readFloat()
-			this.pSpeedFactorRunBackward = reader.readFloat()
-			this.pSpeedFactorRunLeft = reader.readFloat()
-			this.pSpeedFactorRunRight = reader.readFloat()
+		func void readFromFile(PersistencyEnvironment env, FileReader reader)
+			select reader.readByte() // version
+			case 0
+				var PersistencyFlags flags = PersistencyFlags.new(2, reader)
+				pCanMove = flags.getAt(0)
+				pRun = flags.getAt(1)
+				
+				pLocomotionType = LocomotionType.withOrder(reader.readByte())
+				
+				pSpeedWalk = reader.readFloat()
+				pSpeedFactorWalkForward = reader.readFloat()
+				pSpeedFactorWalkBackward = reader.readFloat()
+				pSpeedFactorWalkLeft = reader.readFloat()
+				pSpeedFactorWalkRight = reader.readFloat()
+				
+				pSpeedRun = reader.readFloat()
+				pSpeedFactorRunForward = reader.readFloat()
+				pSpeedFactorRunBackward = reader.readFloat()
+				pSpeedFactorRunLeft = reader.readFloat()
+				pSpeedFactorRunRight = reader.readFloat()
+				
+			else
+				throw EInvalidParam.new("unsupported version")
+			end
 		end
 		
 		/** \brief Write element to file. */
-		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
-			var PersistencyFlags flags = PersistencyFlags.new( 2 )
-			flags.setAt( 0, this.pCanMove )
-			flags.setAt( 1, this.pRun )
-			flags.writeToFile( writer )
+		func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+			writer.writeByte(0) // version
 			
-			writer.writeByte( this.pLocomotionType.order() )
-			writer.writeFloat( this.pSpeedWalk )
-			writer.writeFloat( this.pSpeedFactorWalkForward )
-			writer.writeFloat( this.pSpeedFactorWalkBackward )
-			writer.writeFloat( this.pSpeedFactorWalkLeft )
-			writer.writeFloat( this.pSpeedFactorWalkRight )
-			writer.writeFloat( this.pSpeedRun )
-			writer.writeFloat( this.pSpeedFactorRunForward )
-			writer.writeFloat( this.pSpeedFactorRunBackward )
-			writer.writeFloat( this.pSpeedFactorRunLeft )
-			writer.writeFloat( this.pSpeedFactorRunRight )
+			var PersistencyFlags flags = PersistencyFlags.new(2)
+			flags.setAt(0, pCanMove)
+			flags.setAt(1, pRun)
+			flags.writeToFile(writer)
+			
+			writer.writeByte(pLocomotionType.order())
+			
+			writer.writeFloat(pSpeedWalk)
+			writer.writeFloat(pSpeedFactorWalkForward)
+			writer.writeFloat(pSpeedFactorWalkBackward)
+			writer.writeFloat(pSpeedFactorWalkLeft)
+			writer.writeFloat(pSpeedFactorWalkRight)
+			
+			writer.writeFloat(pSpeedRun)
+			writer.writeFloat(pSpeedFactorRunForward)
+			writer.writeFloat(pSpeedFactorRunBackward)
+			writer.writeFloat(pSpeedFactorRunLeft)
+			writer.writeFloat(pSpeedFactorRunRight)
 		end
 	end
 	
 	
 	
-	private var ECBehaviorLocomotion pLocomotion
-	private var ECPFloat pSpeedWalk
-	private var ECPFloat pSpeedRun
+	var ECBehaviorLocomotion pLocomotion
+	var ECPFloat pSpeedWalk
+	var ECPFloat pSpeedRun
+	var ECPFloat pSpeedFactorWalkForward
+	var ECPFloat pSpeedFactorWalkBackward
+	var ECPFloat pSpeedFactorWalkLeft
+	var ECPFloat pSpeedFactorWalkRight
+	var ECPFloat pSpeedFactorRunForward
+	var ECPFloat pSpeedFactorRunBackward
+	var ECPFloat pSpeedFactorRunLeft
+	var ECPFloat pSpeedFactorRunRight
 	
 	
 	
 	/** \brief Create behavior element class. */
-	public func new( BehaviorElementClass eclass, ECBehaviorLocomotion locomotion ) \
-	this( eclass, locomotion, "playerInputMove." )
+	func new(BehaviorElementClass eclass, ECBehaviorLocomotion locomotion) \
+	this(eclass, locomotion, "playerInputMove.")
 	end
 	
-	public func new( BehaviorElementClass eclass, ECBehaviorLocomotion locomotion, \
-	String prefix ) super( eclass )
-		if this.getBehaviorIn( eclass ) != null
-			throw BEMultipleInstanceException.new( eclass, this )
+	func new(BehaviorElementClass eclass, ECBehaviorLocomotion locomotion, \
+	String prefix) super(eclass)
+		if getBehaviorIn(eclass) != null
+			throw BEMultipleInstanceException.new(eclass, this)
 		end
 		
-		this.pLocomotion = locomotion
+		pLocomotion = locomotion
 		
-		this.pSpeedWalk = ECPFloat.new( prefix + "speedWalk", 1.25, 0 )
-		eclass.addProperty( this.pSpeedWalk )
+		pSpeedWalk = ECPFloat.new(prefix + "speedWalk", 1.25, 0)
+		eclass.addProperty(pSpeedWalk)
 		
-		this.pSpeedRun = ECPFloat.new( prefix + "speedRun", 4, 0 )
-		eclass.addProperty( this.pSpeedRun )
+		pSpeedRun = ECPFloat.new(prefix + "speedRun", 4, 0)
+		eclass.addProperty(pSpeedRun)
 		
-		eclass.addBehavior( this )
+		pSpeedFactorWalkForward = ECPFloat.new(prefix + "speedFactorWalkForward", 1, 0)
+		eclass.addProperty(pSpeedFactorWalkForward)
+		
+		pSpeedFactorWalkBackward = ECPFloat.new(prefix + "speedFactorWalkBackward", 1, 0)
+		eclass.addProperty(pSpeedFactorWalkBackward)
+		
+		pSpeedFactorWalkLeft = ECPFloat.new(prefix + "speedFactorWalkLeft", 1, 0)
+		eclass.addProperty(pSpeedFactorWalkLeft)
+		
+		pSpeedFactorWalkRight = ECPFloat.new(prefix + "speedFactorWalkRight", 1, 0)
+		eclass.addProperty(pSpeedFactorWalkRight)
+		
+		pSpeedFactorRunForward = ECPFloat.new(prefix + "speedFactorRunForward", 1, 0)
+		eclass.addProperty(pSpeedFactorRunForward)
+		
+		pSpeedFactorRunBackward = ECPFloat.new(prefix + "speedFactorRunBackward", 1, 0)
+		eclass.addProperty(pSpeedFactorRunBackward)
+		
+		pSpeedFactorRunLeft = ECPFloat.new(prefix + "speedFactorRunLeft", 1, 0)
+		eclass.addProperty(pSpeedFactorRunLeft)
+		
+		pSpeedFactorRunRight = ECPFloat.new(prefix + "speedFactorRunRight", 1, 0)
+		eclass.addProperty(pSpeedFactorRunRight)
+		
+		eclass.addBehavior(this)
 	end
 	
 	/** \brief Dispose of behavior. */
-	public func void dispose()
-		this.pLocomotion = null
+	func void dispose()
+		pLocomotion = null
 		super.dispose()
 	end
 	
 	
 	
 	/** \brief Locomotion behavior or null. */
-	public func ECBehaviorLocomotion getLocomotion()
-		return this.pLocomotion
+	func ECBehaviorLocomotion getLocomotion()
+		return pLocomotion
 	end
 	
 	/** \brief Walk speed. */
-	public func ECPFloat getSpeedWalk()
-		return this.pSpeedWalk
+	func ECPFloat getSpeedWalk()
+		return pSpeedWalk
 	end
 	
 	/** \brief Run speed. */
-	public func ECPFloat getSpeedRun()
-		return this.pSpeedRun
+	func ECPFloat getSpeedRun()
+		return pSpeedRun
+	end
+	
+	/** \brief Speed factor Walk forward. */
+	func ECPFloat getSpeedFactorWalkForward()
+		return pSpeedFactorWalkForward
+	end
+	
+	/** \brief Speed factor walk backward. */
+	func ECPFloat getSpeedFactorWalkBackward()
+		return pSpeedFactorWalkBackward
+	end
+	
+	/** \brief Speed factor walk left. */
+	func ECPFloat getSpeedFactorWalkLeft()
+		return pSpeedFactorWalkLeft
+	end
+	
+	/** \brief Speed factor walk right. */
+	func ECPFloat getSpeedFactorWalkRight()
+		return pSpeedFactorWalkRight
+	end
+	
+	/** \brief Speed factor Run forward. */
+	func ECPFloat getSpeedFactorRunForward()
+		return pSpeedFactorRunForward
+	end
+	
+	/** \brief Speed factor run backward. */
+	func ECPFloat getSpeedFactorRunBackward()
+		return pSpeedFactorRunBackward
+	end
+	
+	/** \brief Speed factor run left. */
+	func ECPFloat getSpeedFactorRunLeft()
+		return pSpeedFactorRunLeft
+	end
+	
+	/** \brief Speed factor run right. */
+	func ECPFloat getSpeedFactorRunRight()
+		return pSpeedFactorRunRight
 	end
 	
 	
 	
 	/** \brief Get instance in element from owner element class. */
-	public func Instance instance( BehaviorElement element )
-		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
 	
 	
@@ -813,10 +908,10 @@ class ECBehaviorPlayerInputMove extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorPlayerInputMove.
 	 */
-	static public func ECBehaviorPlayerInputMove getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehavior each
-			return each castable ECBehaviorPlayerInputMove
-		end ) cast ECBehaviorPlayerInputMove
+	static func ECBehaviorPlayerInputMove getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorPlayerInputMove each
+			return true
+		end) cast ECBehaviorPlayerInputMove
 	end
 	
 	/**
@@ -825,16 +920,16 @@ class ECBehaviorPlayerInputMove extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
 	 * of type ECBehaviorPlayerInputMove.Instance .
 	 */
-	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance
-		end ) cast Instance
+	static func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
+			return true
+		end) cast Instance
 	end
 	
 	
 	
 	/** \brief Create Behavior instance. */
-	public func ECBehaviorInstance createInstance( BehaviorElement element )
-		return Instance.new( this, element )
+	func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
 	end
 end

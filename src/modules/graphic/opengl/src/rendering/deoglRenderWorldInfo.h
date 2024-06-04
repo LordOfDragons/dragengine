@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLRENDERWORLDINFO_H_
@@ -29,55 +32,57 @@ class deoglDebugInformation;
 
 
 /**
- * \brief World renderer information for debugging purpose.
+ * World renderer information for debugging purpose.
  */
 class deoglRenderWorldInfo : public deoglRenderBase{
 public:
-	deoglDebugInformation *infoWorld;
-	deoglDebugInformation *infoPrepare;
-	deoglDebugInformation *infoPassMasked;
-	deoglDebugInformation *infoSolidGeometry;
-	deoglDebugInformation *infoReflection;
-	deoglDebugInformation *infoSSR;
-	deoglDebugInformation *infoSolidGeometryLights;
-	deoglDebugInformation *infoTransparent;
-	deoglDebugInformation *infoToneMapping;
-	deoglDebugInformation *infoDebugDrawers;
-	deoglDebugInformation *infoPostProcessing;
+	deoglDebugInformation::Ref infoWorld;
+	deoglDebugInformation::Ref infoPassMasked;
+	deoglDebugInformation::Ref infoGITraceRays;
+	deoglDebugInformation::Ref infoSolidGeometry;
+	deoglDebugInformation::Ref infoReflection;
+	deoglDebugInformation::Ref infoSSR;
+	deoglDebugInformation::Ref infoLuminancePrepare;
+	deoglDebugInformation::Ref infoSolidGeometryLights;
+	deoglDebugInformation::Ref infoTransparent;
+	deoglDebugInformation::Ref infoToneMapping;
+	deoglDebugInformation::Ref infoDebugDrawers;
+	deoglDebugInformation::Ref infoPostProcessing;
+	deoglDebugInformation::Ref infoDeveloperMode;
+	deoglDebugInformation::Ref infoDeveloperModeTemp;
 	
-	deoglDebugInformation *infoSolidGeometryDetails;
-	deoglDebugInformation *infoSolidGeometryClear;
-	deoglDebugInformation *infoSolidGeometryDepthTask;
-	deoglDebugInformation *infoSolidGeometryDepthRender;
-	deoglDebugInformation *infoSolidGeometryOcclusion;
-	deoglDebugInformation *infoSolidGeometryTranspCounter;
-	deoglDebugInformation *infoSolidGeometrySky;
-	deoglDebugInformation *infoSolidGeometryTask;
-	deoglDebugInformation *infoSolidGeometryRender;
-	deoglDebugInformation *infoSolidGeometryDecals;
-	deoglDebugInformation *infoSolidGeometryDownsampleDepth;
-	deoglDebugInformation *infoSolidGeometrySSAO;
+	deoglDebugInformation::Ref infoSolidGeometryDetails;
+	deoglDebugInformation::Ref infoSolidGeometryDepthTask;
+	deoglDebugInformation::Ref infoSolidGeometryDepthRender;
+	deoglDebugInformation::Ref infoSolidGeometryOcclusion;
+	deoglDebugInformation::Ref infoSolidGeometryTranspCounter;
+	deoglDebugInformation::Ref infoSolidGeometrySky;
+	deoglDebugInformation::Ref infoSolidGeometryTask;
+	deoglDebugInformation::Ref infoSolidGeometryRender;
+	deoglDebugInformation::Ref infoSolidGeometryDecals;
+	deoglDebugInformation::Ref infoSolidGeometryDownsampleDepth;
+	deoglDebugInformation::Ref infoSolidGeometrySSAO;
 	
-	deoglDebugInformation *infoTransparentDetails;
-	deoglDebugInformation *infoTransparentClear;
-	deoglDebugInformation *infoTransparentDepthTask;
-	deoglDebugInformation *infoTransparentDepthRender;
-	deoglDebugInformation *infoTransparentCopyDepth;
-	deoglDebugInformation *infoTransparentTask;
-	deoglDebugInformation *infoTransparentRender;
-	deoglDebugInformation *infoTransparentSSR;
-	deoglDebugInformation *infoTransparentLights;
-	deoglDebugInformation *infoTransparentVolumetric;
+	deoglDebugInformation::Ref infoTransparentDetails;
+	deoglDebugInformation::Ref infoTransparentClear;
+	deoglDebugInformation::Ref infoTransparentDepthTask;
+	deoglDebugInformation::Ref infoTransparentDepthRender;
+	deoglDebugInformation::Ref infoTransparentCopyDepth;
+	deoglDebugInformation::Ref infoTransparentTask;
+	deoglDebugInformation::Ref infoTransparentRender;
+	deoglDebugInformation::Ref infoTransparentSSR;
+	deoglDebugInformation::Ref infoTransparentLights;
+	deoglDebugInformation::Ref infoTransparentVolumetric;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create info. */
+	/** Create info. */
 	deoglRenderWorldInfo( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up info. */
+	/** Clean up info. */
 	virtual ~deoglRenderWorldInfo();
 	/*@}*/
 	
@@ -85,13 +90,13 @@ public:
 	
 	/** \name Debug */
 	/*@{*/
-	/** \brief Clear all. */
+	/** Clear all. */
 	void ClearAll();
 	
-	/** \brief Add top level debug information in the right order. */
+	/** Add top level debug information in the right order. */
 	virtual void AddTopLevelDebugInfo();
 	
-	/** \brief Developer mode debug information changed. */
+	/** Developer mode debug information changed. */
 	virtual void DevModeDebugInfoChanged();
 	/*@}*/
 	

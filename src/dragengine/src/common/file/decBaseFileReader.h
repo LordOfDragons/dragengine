@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Game Engine
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DECBASEFILEREADER_H_
@@ -24,10 +27,10 @@
 
 #include <stdint.h>
 
-#include "../../deObject.h"
 #include "../math/decMath.h"
 #include "../string/decString.h"
 #include "../utils/decDateTime.h"
+#include "../../deObject.h"
 
 class decDataChunk;
 
@@ -35,7 +38,13 @@ class decDataChunk;
 /**
  * \brief File reader interface.
  */
-class decBaseFileReader : public deObject{
+class DE_DLL_EXPORT decBaseFileReader : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<decBaseFileReader> Ref;
+	
+	
+	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -84,6 +93,9 @@ public:
 	 * \throws deeInvalidParam \em size is less than 1.
 	 */
 	virtual void Read( void *buffer, int size ) = 0;
+	
+	/** \brief Duplicate file reader. */
+	virtual Ref Duplicate() = 0;
 	/*@}*/
 	
 	
@@ -119,6 +131,19 @@ public:
 	/** \brief Read one unsigned integer (8 bytes) and advances the file pointer. */
 	uint64_t ReadULong();
 	
+	/**
+	 * \brief Read variable length unsigned integer (1-4 bytes) and advances file pointer.
+	 * 
+	 * Variable length integers are written using 1 to 4 bytes. The highest 2 bits of the
+	 * first byte stores the total length (0=1 byte, 1=2 bytes, 2=3 bytes, 3=4 bytes).
+	 * The lower 6 bits are used as value. With each added byte the previous bits are
+	 * shifted up. The maximum storable value is thus 1073741823.
+	 * 
+	 * Variable length unsigned integers are typically used for values like versions
+	 * or revisions which start low and potentially grow large over time.
+	 */
+	uint32_t ReadVarUInt();
+	
 	/** \brief Read one float (4 bytes) and advances the file pointer. */
 	float ReadFloat();
 	
@@ -140,16 +165,43 @@ public:
 	void ReadString8Into( decString &string );
 	
 	/**
-	 * \brief Read a string prefixed by a 2-byte2 length field and advances the file pointer.
+	 * \brief Read a string prefixed by a 2-bytes length field and advances the file pointer.
 	 * 
 	 * The returned string pointer has to be freed by the caller itself.
 	 */
 	decString ReadString16();
 	
 	/**
-	 * \brief Read string prefixed by a 2-byte2 length field and advances the file pointer.
+	 * \brief Read string prefixed by a 2-bytes length field and advances the file pointer.
 	 */
 	void ReadString16Into( decString &string );
+	
+	/**
+	 * \brief Read a string prefixed by a 4-bytes length field and advances the file pointer.
+	 * 
+	 * The returned string pointer has to be freed by the caller itself.
+	 */
+	decString ReadString32();
+	
+	/**
+	 * \brief Read string prefixed by a 4-bytes length field and advances the file pointer.
+	 */
+	void ReadString32Into( decString &string );
+	
+	/**
+	 * \brief Read a variable string prefixed by a 1-4 bytes length field and advances the file pointer.
+	 * 
+	 * The length is stored as variable unsigned integer (ReadVarUInt).
+	 * The returned string pointer has to be freed by the caller itself.
+	 */
+	decString ReadVarString();
+	
+	/**
+	 * \brief Read variable string prefixed by a 1-4 bytes length field and advances the file pointer.
+	 * 
+	 * The length is stored as variable unsigned integer (ReadVarUInt).
+	 */
+	void ReadVarStringInto( decString &string );
 	
 	/**
 	 * \brief Read a 3-float vector and advances the file pointer.
@@ -289,6 +341,9 @@ public:
 	/** \brief Skip one unsigned integer (8 bytes) and advances the file pointer. */
 	void SkipULong();
 	
+	/** \brief Skip variable length unsigned integer (1-4 bytes) and advances file pointer. */
+	void SkipVarUInt();
+	
 	/** \brief Skip one float (4 bytes) and advances the file pointer. */
 	void SkipFloat();
 	
@@ -298,8 +353,14 @@ public:
 	/** \brief Skip a string prefixed by a 1-byte length field and advances the file pointer. */
 	void SkipString8();
 	
-	/** \brief Skip a string prefixed by a 2-byte2 length field and advances the file pointer. */
+	/** \brief Skip a string prefixed by a 2-byte length field and advances the file pointer. */
 	void SkipString16();
+	
+	/** \brief Skip a string prefixed by a 4-byte length field and advances the file pointer. */
+	void SkipString32();
+	
+	/** \brief Skip a string prefixed by a 1-4 byte length field and advances the file pointer. */
+	void SkipVarString();
 	
 	/** \brief Skip a 3-float vector and advances the file pointer. */
 	void SkipVector();

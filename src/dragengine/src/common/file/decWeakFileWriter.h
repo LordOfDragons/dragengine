@@ -1,29 +1,31 @@
-/* 
- * Drag[en]gine Game Engine
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DECWEAKFILEWRITER_H_
 #define _DECWEAKFILEWRITER_H_
 
 #include "decBaseFileWriter.h"
-#include "decBaseFileWriterReference.h"
 
 
 /**
@@ -33,9 +35,15 @@
  * all future operations to fail. This is used for readers created by engine modules
  * to avoid problems if the engine module is unloaded while the writer is still held.
  */
-class decWeakFileWriter : public decBaseFileWriter{
+class DE_DLL_EXPORT decWeakFileWriter : public decBaseFileWriter{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<decWeakFileWriter> Ref;
+	
+	
+	
 private:
-	decBaseFileWriterReference pWriter;
+	decBaseFileWriter::Ref pWriter;
 	
 	
 	
@@ -82,6 +90,18 @@ public:
 	/** \brief Name of the file. */
 	virtual const char *GetFilename();
 	
+	/** \brief Current writing position in the file. */
+	virtual int GetPosition();
+	
+	/** \brief Set file position for the next write action. */
+	virtual void SetPosition( int position );
+	
+	/** \brief Move file position by the given offset. */
+	virtual void MovePosition( int offset );
+	
+	/** \brief Set file position to the given position measured from the end of the file. */
+	virtual void SetPositionEnd( int position );
+	
 	/**
 	 * \brief Write \em size bytes from \em buffer and advances the file pointer.
 	 * \throws deeInvalidParam \em buffer is NULL.
@@ -89,6 +109,9 @@ public:
 	 * \throws deeInvalidParam Error compressing data.
 	 */
 	virtual void Write( const void *buffer, int size );
+	
+	/** \brief Duplicate file writer. */
+	virtual decBaseFileWriter::Ref Duplicate();
 	/*@}*/
 };
 

@@ -1,0 +1,565 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+
+namespace Dragengine.Scenery
+
+pin Dragengine.ConversationSystem
+pin Dragengine.Gui
+pin Dragengine.LoadSave
+pin Dragengine.Scenery
+pin Dragengine.Preloading
+pin Dragengine.Utils
+
+
+/**
+ * \brief Behavior adding support to actors to make other actors get out of the way.
+ * 
+ * This behavior is useful for situations where actors can get in the way of the player or
+ * other actors. The behavior uses a collider collision test along the movement direction to
+ * periodically check for obstacles. If an obstacle is detected and it has ECBehaviorStepAside
+ * support it is told to step aside if possible.
+ * 
+ * This behavior can be used together with ECBehaviorAvoidCollision but the two can potentially
+ * affect each other depending on the configuration used for this behavior. Should this happen
+ * either adjust the configuration or make sure only one behavior is enabled at each time.
+ * 
+ * This behavior can be disabled temporarily.
+ * 
+ * To use this behavior add it to the element class and make sure to call setShapeSphere()
+ * to set up the collision test shapes. The best time to do this is either in
+ * BehaviorElement.init() or inside BaseActorAction if you need to change them per action.
+ * 
+ * \par Configurations
+ * 
+ * There are usually two possible configurations used for this behavior.
+ * 
+ * The first configuration applies to short distances only. In this configuration the check
+ * interval is around 1s or lower and the clear path time is around 0.05s. This results in
+ * the actor clearing the path up ahead of only 0.06m (assuming a walk speed of 1.25 m/s).
+ * This configuration results in the actor clearing path only if he is nearly bumping into
+ * other actors. The advantage of this configuration is that actors do not move away other
+ * actors when approaching them but still moves them away if blocking the path.
+ * This configuration works best if you just want to ensure actors can not block the path
+ * of other actors without needing them to have a clear path a long distance ahead.
+ * 
+ * The second configuration applies to long distance clearing of path. In this configuration
+ * the check interval is around 1s and the clear path time is around 2s. This results in the
+ * actor clearing the path up ahead to 2.5m (assuming a walk speed of 1.25 m/s). In this
+ * configuration the actor usually does not get in contact with actors standing in his way.
+ * The downside is though actors trying to approach other actors. In this case they are easily
+ * made stepping aside which is not always what you want.
+ * 
+ * For most situations the first configuration is the one to choose since it prevents the
+ * actor-actor stuck problems while exhibiting the least side effects. The second configuration
+ * though can be insteresting to switch to if actors need a clear path for example while
+ * running away. For this reason the first configuration is used as default.
+ * 
+ * Requires these behaviors to be present:
+ * - ECBehaviorColliderAI
+ * - ECBehaviorLocomotion
+ */
+class ECBehaviorClearPath extends DefaultECBehavior
+	/** \brief Behavior instance. */
+	class Instance extends DefaultECBehaviorInstance
+		/** \brief Visitor for make element clear path. */
+		protected class ClearPathElement extends ElementVisitor
+			var Instance pInstance
+			
+			func new(Instance instance)
+				pInstance = instance
+			end
+			
+			func void visitBehaviorElement(BehaviorElement element)
+				pInstance.clearPathBehaviorElement(element)
+			end
+		end
+		
+		
+		
+		var ECBehaviorClearPath pECBehavior
+		var ECBehaviorLocomotion.Instance pLocomotion
+		
+		var ColliderCollisionTest pCollisionTest
+		var ElementVisitor pClearPathElement
+		var bool pEnabled
+		
+		var float pCheckInterval
+		var float pCheckTimer
+		var float pClearPathTime
+		
+		
+		
+		/** \brief Create behavior instance. */
+		func new(ECBehaviorClearPath ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
+			
+			pClearPathElement = ClearPathElement.new(this)
+			pEnabled = true
+			
+			pLocomotion = ecbehavior.getLocomotion().instance(element)
+			
+			pCheckInterval = 1
+			pCheckTimer = 0
+			pClearPathTime = 0.05
+			
+			setRequiresThink(true)
+		end
+		
+		/** \brief Dispose of behavior instance. */
+		func void dispose()
+			pLocomotion = null
+			pClearPathElement = null
+			
+			pEnabled = false // safety measure
+			
+			super.dispose()
+		end
+		
+		
+		
+		/** \brief Initialize from stub. */
+		func void init(StubElement stub)
+			var Collider collider = pLocomotion.getColliderAI().getCollider()
+			if collider == null
+				return
+			end
+			
+			var CollisionFilter collisionFilter = pECBehavior.getCollisionFilter().getCollisionFilter()
+			pEnabled = pECBehavior.getEnabled().getValue(stub)
+			pCheckInterval = pECBehavior.getCheckInterval().getValue(stub)
+			pClearPathTime = pECBehavior.getClearPathTime().getValue(stub)
+			
+			pCollisionTest = ColliderCollisionTest.new(collisionFilter, Vector.new(), Vector.new())
+			pCollisionTest.setCollider(ColliderVolume.new())
+			pCollisionTest.setLocalDirection(false)
+			pCollisionTest.setEnabled(false)
+			collider.addCollisionTest(pCollisionTest)
+			collider.addIgnoreCollider(pCollisionTest.getCollider())
+		end
+		
+		
+		
+		/** \brief Behavior. */
+		func ECBehaviorClearPath getECBehavior()
+			return pECBehavior
+		end
+		
+		/** \brief Actor mover behavior. */
+		func ECBehaviorLocomotion.Instance getLocomotion()
+			return pLocomotion
+		end
+		
+		
+		
+		/** \brief Collider collision test. */
+		func ColliderCollisionTest getCollisionTest()
+			return pCollisionTest
+		end
+		
+		/** \brief Clear path element visitor. */
+		func ElementVisitor getClearPathElement()
+			return pClearPathElement
+		end
+		
+		/** \brief Set clear path element visitor. */
+		func void setClearPathElement(ElementVisitor visitor)
+			pClearPathElement = visitor
+		end
+		
+		/** \brief Stepping aside is enabled. */
+		func bool getEnabled()
+			return pEnabled
+		end
+		
+		/** \brief Set if stepping aside is enabled. */
+		func void setEnabled(bool enabled)
+			if enabled == pEnabled
+				return
+			end
+			
+			pEnabled = enabled
+			
+			if not enabled
+				disarmTest()
+			end
+			
+			setRequiresThink(enabled)
+		end
+		
+		/** \brief Check interval in seconds. */
+		func float getCheckInterval()
+			return pCheckInterval
+		end
+		
+		/** \brief Set check interval in seconds. */
+		func void setCheckInterval(float interval)
+			pCheckInterval = DEMath.max(interval, 0.0)
+		end
+		
+		/** \brief Check timer. */
+		func float getCheckTimer()
+			return pCheckTimer
+		end
+		
+		/** \brief Set check timer. */
+		func void setCheckTimer(float timer)
+			pCheckTimer = timer
+		end
+		
+		/** \brief Clear path time in seconds indicating how far ahead the actors clear path. */
+		func float getClearPathTime()
+			return pClearPathTime
+		end
+		
+		/** \brief Set path time in seconds indicating how far ahead the actors clear path. */
+		func void setClearPathTime(float time)
+			pClearPathTime = DEMath.max(time, 0.0)
+		end
+		
+		
+		
+		/**
+		 * \brief Set sphere collision test collider shape.
+		 * 
+		 * Uses sphere shape located a distance above ground.
+		 */
+		func void setShapeSphere(float radius, float distanceAboveGround)
+			var ShapeList shape = ShapeList.new()
+			shape.addSphere(Vector.new(0, distanceAboveGround, 0), radius)
+			(pCollisionTest.getCollider() cast ColliderVolume).setShape(shape)
+		end
+		
+		/** \brief Add collider required for collision test as collider to ignore. */
+		func void addIgnoreColliderTo(Collider collider)
+			collider.addIgnoreCollider(pCollisionTest.getCollider())
+		end
+		
+		/**
+		 * \brief Add collider to ignore to collider required for collision test.
+		 * \version 1.17
+		 */
+		func void addIgnoreCollider(Collider collider)
+			pCollisionTest.getCollider().addIgnoreCollider(collider)
+		end
+		
+		/**
+		 * \brief Mutually ignore colliders.
+		 * \version 1.17
+		 * 
+		 * Same as calling addIgnoreCollidersTo() and addIgnoreCollider() for the same collider.
+		 * Use this call to make sure the given collider is ignored by collider required for
+		 * collision test and vice versa. The ECBehaviorColliderAI from ECBehaviorLocomotion
+		 * is automatically made mutually ignore.
+		 */
+		func void mutualIgnoreColliders(Collider collider)
+			addIgnoreColliderTo(collider)
+			addIgnoreCollider(collider)
+		end
+		
+		
+		
+		/** \brief Collision test is armed. */
+		func bool isTestArmed()
+			return pCollisionTest.getEnabled()
+		end
+		
+		/** \brief Arm collision test with direction. */
+		func void armTest(Vector direction)
+			pCollisionTest.setDirection(direction)
+			pCollisionTest.setEnabled(true)
+		end
+		
+		/** \brief Disarm collision test. */
+		func void disarmTest()
+			pCollisionTest.setEnabled(false)
+		end
+		
+		
+		
+		/**
+		 * \brief Clear path if enabled and a collision has been found.
+		 * 
+		 * Called by think().
+		 */
+		func void update(float elapsed)
+			if not pEnabled
+				return
+			end
+			
+			// if a collision test has been done the last frame evaluate it
+			if isTestArmed()
+				clearPath(elapsed)
+				disarmTest()
+			end
+			
+			// update timer. if elapsed trigger a collision test unless not moving. the test
+			// direction depends on the moving orientation but not the movement speed. for this
+			// reason the running state of the actor is used to pick the suitable interval
+			pCheckTimer += elapsed
+			if pCheckTimer < pCheckInterval
+				return
+			end
+			
+			// trigger a collision test for the next frame update if the actor has a mover goal
+			// and is moving not too slow
+			pCheckTimer = 0
+			startTest(elapsed)
+		end
+		
+		
+		
+		/** \brief Clear path if required. */
+		func void clearPath(float elapsed)
+			if pCollisionTest.getHasCollision()
+				clearPath(pCollisionTest.hitCollider(0).getOwner() cast Element)
+			end
+		end
+		
+		/** \brief Start collision test for next interval if applicable. */
+		func void startTest(float elapsed)
+			var Vector velocity = pLocomotion.getLocomotion().getLinearVelocity()
+			var float speed = velocity.getLength()
+			if speed < 0.01
+				return
+			end
+			
+			// we use here the clear path time to determine the check distance. this sort of
+			// alerts the other element ahead of time providing him with with the necessary
+			// time to react. using the check interval time for this is usually not fitting.
+			// using an own time the user can adjust to the speed with which his actors can
+			// move out of the way
+			// 
+			// the test is only armed if the direction is longer than 1dm.
+			var Vector direction = velocity * pClearPathTime
+			if direction.getLength() > 0
+				armTest(direction)
+			end
+		end
+		
+		
+		
+		/**
+		 * \brief Clear path using element if deemded necessary.
+		 * 
+		 * Does nothing if element is null. Otherwise uses clear path visitor on element
+		 * to apply element specific clearing of path.
+		 */
+		protected func void clearPath(Element element)
+			if element != null
+				element.visit(pClearPathElement)
+			end
+		end
+		
+		/**
+		 * \brief Clear path behavior element.
+		 * 
+		 * Called by ClearPathElement visitor. If element has ECBehaviorStepAsidebehavior
+		 * calls stepAsideBehaviorElement(). Does nothing if collider velocity is too small
+		 */
+		func void clearPathBehaviorElement(BehaviorElement element)
+			var ECBehaviorStepAside.Instance behavior = ECBehaviorStepAside.getInstanceIn(element)
+			if behavior != null
+				clearPathBehavior(behavior)
+			end
+		end
+		
+		/**
+		 * \brief Clear path behavior element.
+		 * \version 1.19
+		 * 
+		 * Calls stepAsideBehaviorElement(). Does nothing if collider velocity is too small
+		 */
+		func void clearPathBehavior(ECBehaviorStepAside.Instance behavior)
+			var Vector velocity = pLocomotion.getLocomotion().getLinearVelocity()
+			var float speed = velocity.getLength()
+			if speed < 0.1
+				return
+			end
+			
+			var BehaviorElement owner = getElement()
+			behavior.stepAsideBehaviorElement(owner, owner.getPosition(),\
+				DVector.new(velocity).normalize(), speed)
+		end
+		
+		
+		
+		/** \brief Think about what to do for the next frame update. */
+		func void think(float elapsed)
+			update(elapsed)
+		end
+		
+		
+		
+		/** \brief Read behavior from file. */
+		func void readFromFile(PersistencyEnvironment env, FileReader reader)
+			select reader.readByte() // version
+			case 0
+				var PersistencyFlags flags = PersistencyFlags.new(1, reader)
+				pEnabled = flags.getAt(0)
+				
+				pCheckInterval = reader.readFloat()
+				pCheckTimer = reader.readFloat()
+				pClearPathTime = reader.readFloat()
+				
+			else
+				throw EInvalidParam.new("unsupported version")
+			end
+			
+			setRequiresThink(pEnabled)
+		end
+		
+		/** \brief Write behavior to file. */
+		func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+			writer.writeByte(0) // version
+			
+			var PersistencyFlags flags = PersistencyFlags.new(1)
+			flags.setAt(0, pEnabled)
+			flags.writeToFile(writer)
+			
+			writer.writeFloat(pCheckInterval)
+			writer.writeFloat(pCheckTimer)
+			writer.writeFloat(pClearPathTime)
+		end
+	end
+	
+	
+	
+	var ECBehaviorLocomotion pLocomotion
+	var ECComposeCollisionFilter pCollisionFilter
+	var ECPBoolean pEnabled
+	var ECPFloat pCheckInterval
+	var ECPFloat pClearPathTime
+	
+	
+	
+	/** \brief Create behavior element class. */
+	func new(BehaviorElementClass eclass, ECBehaviorLocomotion locomotion) \
+	this(eclass, locomotion, "clearPath.")
+	end
+	
+	func new(BehaviorElementClass eclass, ECBehaviorLocomotion locomotion, String prefix) super(eclass)
+		if locomotion == null
+			throw ENullPointer.new("locomotion")
+		end
+		if getBehaviorIn(eclass) != null
+			throw BEMultipleInstanceException.new(eclass, this)
+		end
+		
+		pLocomotion = locomotion
+		
+		var LayerMask cfCategory = LayerMask.newWith(BaseGameApp.CollisionFilterBit.actorAI)
+		
+		var LayerMask cfFilter = LayerMask.new()
+		cfFilter.setBit(BaseGameApp.CollisionFilterBit.geometry)
+		cfFilter.setBit(BaseGameApp.CollisionFilterBit.dynamic)
+		cfFilter.setBit(BaseGameApp.CollisionFilterBit.actorAI)
+		
+		pCollisionFilter = ECComposeCollisionFilter.new(CollisionFilter.new(cfCategory, cfFilter))
+		
+		pEnabled = ECPBoolean.new(prefix + "enabled", true)
+		eclass.addProperty(pEnabled)
+		
+		pCheckInterval = ECPFloat.new(prefix + "checkInterval", 1, 0)
+		eclass.addProperty(pCheckInterval)
+		
+		pClearPathTime = ECPFloat.new(prefix + "clearPathTime", 0.05, 0)
+		eclass.addProperty(pClearPathTime)
+		
+		eclass.addBehavior(this)
+	end
+	
+	/** \brief Dispose of behavior. */
+	func void dispose()
+		pLocomotion = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Locomotion behavior. */
+	func ECBehaviorLocomotion getLocomotion()
+		return pLocomotion
+	end
+	
+	/** \brief Collision filter. */
+	func ECComposeCollisionFilter getCollisionFilter()
+		return pCollisionFilter
+	end
+	
+	/** \brief Behavior is initially enabled. */
+	func ECPBoolean getEnabled()
+		return pEnabled
+	end
+	
+	/** \brief Check interval in seconds. */
+	func ECPFloat getCheckInterval()
+		return pCheckInterval
+	end
+	
+	/** \brief Clear path time in seconds indicating how far ahead the actors clear path. */
+	func ECPFloat getClearPathTime()
+		return pClearPathTime
+	end
+	
+	
+	
+	/** \brief Get instance in element from owner element class. */
+	func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
+	end
+	
+	
+	
+	/**
+	 * \brief Get behavior in element class or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElementClass contains a behavior
+	 * of type ECBehaviorClearPath.
+	 */
+	static func ECBehaviorClearPath getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorClearPath each
+			return true
+		end) cast ECBehaviorClearPath
+	end
+	
+	/**
+	 * \brief Get instance in element or \em null if absent.
+	 * 
+	 * Use this method to check if a particular BehaviorElement contains a behavior instance
+	 * of type ECBehaviorClearPath.Instance .
+	 */
+	static func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
+			return true
+		end) cast Instance
+	end
+	
+	
+	
+	/** \brief Create Behavior instance. */
+	func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
+	end
+end

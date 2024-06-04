@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -32,6 +35,7 @@
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTDebug.h"
 #include "../renderthread/deoglRTLogger.h"
+#include "../renderthread/deoglRTChoices.h"
 #include "../texture/arraytexture/deoglArrayTexture.h"
 #include "../texture/cubemap/deoglCubeMap.h"
 #include "../texture/texture2d/deoglTexture.h"
@@ -63,6 +67,9 @@ pEnableReflectivity( false ),
 pEnableRoughness( false ),
 pEnableAOSolidity( false ),
 pEnablePostProcess( false ),
+pEnableTemporary1( false ),
+pEnableTemporary2( false ),
+pEnableTemporary3( false ),
 pStatesKeyWidth( 35 ){
 }
 
@@ -132,6 +139,18 @@ void deoglDebugSnapshot::SetEnablePostProcess( bool enable ){
 	pEnablePostProcess = enable;
 }
 
+void deoglDebugSnapshot::SetEnableTemporary1( bool enable ){
+	pEnableTemporary1 = enable;
+}
+
+void deoglDebugSnapshot::SetEnableTemporary2( bool enable ){
+	pEnableTemporary2 = enable;
+}
+
+void deoglDebugSnapshot::SetEnableTemporary3( bool enable ){
+	pEnableTemporary3 = enable;
+}
+
 
 
 void deoglDebugSnapshot::SetEnableDepthStencil( bool enable ){
@@ -164,6 +183,9 @@ void deoglDebugSnapshot::SetEnableAllBuffers( bool enable ){
 	pEnableRoughness = enable;
 	pEnableAOSolidity = enable;
 	pEnablePostProcess = enable;
+	pEnableTemporary1 = enable;
+	pEnableTemporary2 = enable;
+	pEnableTemporary3 = enable;
 }
 
 
@@ -179,7 +201,7 @@ void deoglDebugSnapshot::TakeSnapshot() const{
 	if( pEnableDepth || pEnableDepth2 || pEnableDepth3 ){
 		deoglDebugSaveTexture::eDepthTypes depthType;
 		
-		if( defren.GetUseInverseDepth() ){
+		if( pRenderThread.GetChoices().GetUseInverseDepth() ){
 			depthType = deoglDebugSaveTexture::edtDepthInverse;
 			
 		}else{
@@ -187,56 +209,71 @@ void deoglDebugSnapshot::TakeSnapshot() const{
 		}
 		
 		if( pEnableDepth ){
-			dst.SaveDepthTexture( *defren.GetDepthTexture1(), pName + "depth", depthType );
+			dst.SaveDepthArrayTexture( *defren.GetDepthTexture1(), pName + "depth", depthType );
 		}
 		if( pEnableDepth2 ){
-			dst.SaveDepthTexture( *defren.GetDepthTexture2(), pName + "depth2", depthType );
+			dst.SaveDepthArrayTexture( *defren.GetDepthTexture2(), pName + "depth2", depthType );
 		}
 		if( pEnableDepth3 ){
-			dst.SaveDepthTexture( *defren.GetDepthTexture3(), pName + "depth3", depthType );
+			dst.SaveDepthArrayTexture( *defren.GetDepthTexture3(), pName + "depth3", depthType );
 		}
 	}
 	
 	if( pEnableStencil ){
-		dst.SaveStencilTexture( *defren.GetDepthTexture1(), pName + "stencil");
+		dst.SaveStencilArrayTexture( *defren.GetDepthTexture1(), pName + "stencil");
 	}
 	if( pEnableStencil2 ){
-		dst.SaveStencilTexture( *defren.GetDepthTexture2(), pName + "stencil2");
+		dst.SaveStencilArrayTexture( *defren.GetDepthTexture2(), pName + "stencil2");
 	}
 	
 	if( pEnableColor ){
-		dst.SaveTextureConversion( *defren.GetTextureColor(), pName + "color",
+		dst.SaveArrayTextureConversion( *defren.GetTextureColor(), pName + "color",
 			deoglDebugSaveTexture::ecColorLinear2sRGB );
 	}
 	
 	if( pEnableDiffuse ){
-		dst.SaveTextureConversion( *defren.GetTextureDiffuse(), pName + "diffuse",
+		dst.SaveArrayTextureConversion( *defren.GetTextureDiffuse(), pName + "diffuse",
 			deoglDebugSaveTexture::ecColorLinear2sRGB );
 	}
 	
 	if( pEnableNormal ){
-		dst.SaveTextureConversion( *defren.GetTextureNormal(), pName + "normal",
+		dst.SaveArrayTextureConversion( *defren.GetTextureNormal(), pName + "normal",
 			deoglDebugSaveTexture::ecNormal );
 	}
 	
 	if( pEnableReflectivity ){
-		dst.SaveTextureConversion( *defren.GetTextureReflectivity(), pName + "reflectivity",
+		dst.SaveArrayTextureConversion( *defren.GetTextureReflectivity(), pName + "reflectivity",
 			deoglDebugSaveTexture::ecColorLinear2sRGB );
 	}
 	
 	if( pEnableRoughness ){
-		dst.SaveTextureConversion( *defren.GetTextureRoughness(), pName + "roughness",
+		dst.SaveArrayTextureConversion( *defren.GetTextureRoughness(), pName + "roughness",
 			deoglDebugSaveTexture::ecNoConversion );
 	}
 	
 	if( pEnableAOSolidity ){
-		dst.SaveTextureConversion( *defren.GetTextureAOSolidity(), pName + "aosolidity",
+		dst.SaveArrayTextureConversion( *defren.GetTextureAOSolidity(), pName + "aosolidity",
 			deoglDebugSaveTexture::ecNoConversion );
 	}
 	
 	if( pEnablePostProcess ){
-		dst.SaveTextureConversion( *defren.GetPostProcessTexture(), pName + "postprocess",
+		dst.SaveArrayTextureConversion( *defren.GetPostProcessTexture(), pName + "postprocess",
 			deoglDebugSaveTexture::ecNoConversion );
+	}
+	
+	if( pEnableTemporary1 ){
+		dst.SaveArrayTextureConversion( *defren.GetTextureTemporary1(), pName + "temporary1",
+			deoglDebugSaveTexture::ecColorLinear2sRGB );
+	}
+	
+	if( pEnableTemporary2 ){
+		dst.SaveArrayTextureConversion( *defren.GetTextureTemporary2(), pName + "temporary2",
+			deoglDebugSaveTexture::ecColorLinear2sRGB );
+	}
+	
+	if( pEnableTemporary3 ){
+		dst.SaveArrayTextureConversion( *defren.GetTextureTemporary3(), pName + "temporary3",
+			deoglDebugSaveTexture::ecColorLinear2sRGB );
 	}
 }
 
@@ -269,7 +306,6 @@ void deoglDebugSnapshot::pTakeSnapshotStates() const{
 		pWriteState( *writer, "GL_CULL_FACE", glIsEnabled( GL_CULL_FACE ) ? "true": "false");
 		pWriteState( *writer, "GL_DEPTH_TEST", glIsEnabled( GL_DEPTH_TEST ) ? "true": "false");
 		pWriteState( *writer, "GL_POLYGON_OFFSET_FILL", glIsEnabled( GL_POLYGON_OFFSET_FILL ) ? "true": "false");
-		pWriteState( *writer, "GL_RASTERIZER_DISCARD", glIsEnabled( GL_RASTERIZER_DISCARD ) ? "true": "false");
 		pWriteState( *writer, "GL_SCISSOR_TEST", glIsEnabled( GL_SCISSOR_TEST ) ? "true": "false");
 		pWriteState( *writer, "GL_STENCIL_TEST", glIsEnabled( GL_STENCIL_TEST ) ? "true": "false");
 		pWriteLine( *writer, "");
@@ -478,7 +514,7 @@ void deoglDebugSnapshot::pTakeSnapshotStates() const{
 }
 
 void deoglDebugSnapshot::pWriteLine( decBaseFileWriter &writer, const char *text ) const{
-	writer.Write( text, strlen( text ) );
+	writer.Write( text, ( int )strlen( text ) );
 	writer.WriteByte( '\n' );
 }
 

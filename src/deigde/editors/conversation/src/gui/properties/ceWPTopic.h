@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Conversation Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _CEWPTOPIC_H_
@@ -72,7 +75,7 @@ class ceWPTTreeItem;
 
 
 /**
- * \brief Topic property window.
+ * Topic property window.
  */
 class ceWPTopic : public igdeContainerFlow{
 private:
@@ -125,11 +128,11 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create panel. */
+	/** Create panel. */
 	ceWPTopic( ceWindowProperties &windowProperties );
 	
 protected:
-	/** \brief Clean up panel. */
+	/** Clean up panel. */
 	virtual ~ceWPTopic();
 	/*@}*/
 	
@@ -138,86 +141,88 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Main window. */
+	/** Main window. */
 	inline ceWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
-	/** \brief Conversation. */
+	/** Conversation. */
 	inline ceConversation *GetConversation() const{ return pConversation; }
 	
-	/** \brief Set conversation. */
+	/** Set conversation. */
 	void SetConversation( ceConversation *conversation );
 	
-	/** \brief Action tree model. */
+	/** Action tree model. */
 	inline ceWPTTreeModel *GetActionTreeModel() const{ return pModelTreeActions; }
 	
-	/** \brief Active action tree item model. */
+	/** Active action tree item model. */
 	ceWPTTreeItemModel *GetActionTreeItem();
 	
-	/** \brief Active file. */
+	/** Active file. */
 	ceConversationFile *GetFile() const;
 	
-	/** \brief Update list of files. */
+	/** Update list of files. */
 	void UpdateFileList();
 	
-	/** \brief Select active file. */
+	/** Select active file. */
 	void SelectActiveFile();
 	
-	/** \brief Update active file. */
+	/** Update active file. */
 	void UpdateFile();
 	
-	/** \brief Active topic. */
+	/** Active topic. */
 	ceConversationTopic *GetTopic() const;
 	
-	/** \brief Update list of topics. */
+	/** Update list of topics. */
 	void UpdateTopicList();
 	
-	/** \brief Select active topic. */
+	/** Select active topic. */
 	void SelectActiveTopic();
 	
-	/** \brief Update active topic. */
+	/** Update active topic. */
 	void UpdateTopic();
 	
-	/** \brief Active action. */
-	ceConversationAction *GetAction() const;
+	/** Active action from tree. */
+	ceConversationAction *GetTreeAction() const;
 	
-	/** \brief Active condition. */
-	ceConversationCondition *GetCondition() const;
+	/** Active condition from tree. */
+	ceConversationCondition *GetTreeCondition() const;
 	
-	/** \brief Selected active action. */
-	void SelectActiveAction();
+	/** Set topic active element from tree selection. */
+	void SyncTopicActive();
 	
-	/** \brief Update active action. */
-	void UpdateAction();
+	/** Selected active panel. */
+	void SelectActivePanel();
+	
+	/** Update active. */
+	void UpdateActive();
 	
 	
-	
-	/** \brief Update gesture lists. */
+	/** Update gesture lists. */
 	void UpdateGestureLists();
 	
-	/** \brief Update face pose lists. */
+	/** Update face pose lists. */
 	void UpdateFacePoseLists();
 	
-	/** \brief Update camera shot lists. */
+	/** Update camera shot lists. */
 	void UpdateCameraShotLists();
 	
-	/** \brief Update actor lists. */
+	/** Update actor lists. */
 	void UpdateActorLists();
 	
-	/** \brief Update target lists. */
+	/** Update target lists. */
 	void UpdateTargetLists();
 	
-	/** \brief Update look-at lists. */
-	void UpdateLookAtLists();
-	
-	/** \brief Update conversation coordinate system lists. */
+	/** Update conversation coordinate system lists. */
 	void UpdateConvoCoordSysLists();
 	
+	/** Conversation path changed. */
+	void OnConversationPathChanged();
 	
 	
-	/** \brief Locate action from active topic in tree and make it visible. */
+	
+	/** Locate action from active topic in tree and make it visible. */
 	void LocateAction( ceConversationAction *action );
 	
-	/** \brief Start playing starting with action selected in tree. */
+	/** Start playing starting with action selected in tree. */
 	void PlayActionFromHere();
 	/*@}*/
 };

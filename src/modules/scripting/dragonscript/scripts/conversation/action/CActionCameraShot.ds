@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -33,98 +36,104 @@ pin Dragengine.Utils
  */
 class CActionCameraShot extends ConversationAction
 	/** \brief Factory for loading actor actions. */
-	public class Factory implements PersistencyFactory
+	class Factory implements PersistencyFactory
 		public static fixed var String NAME = "CActionCameraShot"
 		
-		public func new()
+		func new()
 		end
 		
-		public func Persistable readObjectFromFile( PersistencyEnvironment env, FileReader reader )
-			return CActionCameraShot.new( env, reader )
+		func Persistable readObjectFromFile(PersistencyEnvironment env, FileReader reader)
+			return CActionCameraShot.new(env, reader)
 		end
 		
-		public static func void registerFactory( Persistency persistency )
-			persistency.addFactory( NAME, Factory.new() )
+		static func void registerFactory(Persistency persistency)
+			persistency.addFactory(NAME, Factory.new())
 		end
 	end
 	
 	
 	
-	private var StringID pName
-	private var float pDuration
-	private var StringID pCameraTarget
-	private var StringID pLookAtTarget
+	var StringID pName
+	var float pDuration
+	var StringID pCameraTarget
+	var StringID pLookAtTarget
 	
 	
 	
 	/** \brief Create conversation action. */
-	public func new()
-		this.pDuration = 5
+	func new()
+		pDuration = 5
 	end
 	
 	/** \brief Read from file. */
-	public func new( PersistencyEnvironment env, FileReader reader )
-		this.pName = env.readStringIDOrNullIfEmpty( reader )
-		this.pDuration = reader.readFloat()
-		this.pCameraTarget = env.readStringIDOrNullIfEmpty( reader )
-		this.pLookAtTarget = env.readStringIDOrNullIfEmpty( reader )
+	func new(PersistencyEnvironment env, FileReader reader) super(env, reader)
+		select reader.readByte() // version
+		case 0
+			pName = env.readStringIDOrNullIfEmpty(reader)
+			pDuration = reader.readFloat()
+			pCameraTarget = env.readStringIDOrNullIfEmpty(reader)
+			pLookAtTarget = env.readStringIDOrNullIfEmpty(reader)
+			
+		else
+			throw EInvalidParam.new("unsupported version")
+		end
 	end
 	
 	
 	
 	/** \brief Name of the camera shot to use. */
-	public func StringID getName()
-		return this.pName
+	func StringID getName()
+		return pName
 	end
 	
 	/** \brief Set name of the camera shot to use. */
-	public func void setName( StringID name )
+	func void setName(StringID name)
 		if name == null
 			throw EInvalidParam.new()
 		end
-		this.pName = name
+		pName = name
 	end
 	
 	/** \brief Duration. */
-	public func float getDuration()
-		return this.pDuration
+	func float getDuration()
+		return pDuration
 	end
 	
 	/** \brief Set duration. */
-	public func void setDuration( float duration )
-		this.pDuration = duration
+	func void setDuration(float duration)
+		pDuration = duration
 	end
 	
 	/** \brief Target the camera is attached to or null if not set. */
-	public func StringID getCameraTarget()
-		return this.pCameraTarget
+	func StringID getCameraTarget()
+		return pCameraTarget
 	end
 	
 	/** \brief Set target the camera is attached to or null if not set. */
-	public func void setCameraTarget( StringID target )
-		this.pCameraTarget = target
+	func void setCameraTarget(StringID target)
+		pCameraTarget = target
 	end
 	
 	/** \brief Target the camera is looking at or null if not set. */
-	public func StringID getLookAtTarget()
-		return this.pLookAtTarget
+	func StringID getLookAtTarget()
+		return pLookAtTarget
 	end
 	
 	/** \brief Set target the camera is looking at or null if not set. */
-	public func void setLookAtTarget( StringID target )
-		this.pLookAtTarget = target
+	func void setLookAtTarget(StringID target)
+		pLookAtTarget = target
 	end
 	
 	
 	
 	/** \brief Execute action. */
-	public func void execute( ConversationPlayback playback )
+	func void execute(ConversationPlayback playback)
 		if playback.getCameraDirector() == null
 			playback.advanceToNextAction()
 			return
 		end
 		
-		var ConversationCameraShot cameraShot = playback.getConversation().getCameraShotNamed( this.pName )
+		var ConversationCameraShot cameraShot = playback.getConversation().getCameraShotNamed(pName)
 		if cameraShot == null
 			playback.advanceToNextAction()
 			return
@@ -140,38 +149,38 @@ class CActionCameraShot extends ConversationAction
 		var ConversationCoordSystem lookAtCoordSystem
 		
 		// determine targets to use and their parameters if required
-		if this.pCameraTarget != null
-			cameraTarget = playback.getConversation().getTargetNamed( this.pCameraTarget )
+		if pCameraTarget != null
+			cameraTarget = playback.getConversation().getTargetNamed(pCameraTarget)
 		end
-		if this.pLookAtTarget != null
-			lookAtTarget = playback.getConversation().getTargetNamed( this.pLookAtTarget )
+		if pLookAtTarget != null
+			lookAtTarget = playback.getConversation().getTargetNamed(pLookAtTarget)
 		end
 		
 		if cameraTarget != null
 			if cameraTarget.getCoordSystemID() == null
-				cameraActor = playback.getActorMatching( cameraTarget.getActorID() )
+				cameraActor = playback.getActorMatching(cameraTarget.getActorID())
 				
 			else
-				cameraCoordSystem = playback.getCoordSystemByID( cameraTarget.getCoordSystemID() )
+				cameraCoordSystem = playback.getCoordSystemByID(cameraTarget.getCoordSystemID())
 			end
 		end
 		if lookAtTarget != null
 			if lookAtTarget.getCoordSystemID() == null
-				lookAtActor = playback.getActorMatching( lookAtTarget.getActorID() )
+				lookAtActor = playback.getActorMatching(lookAtTarget.getActorID())
 				
 			else
-				lookAtCoordSystem = playback.getCoordSystemByID( lookAtTarget.getCoordSystemID() )
+				lookAtCoordSystem = playback.getCoordSystemByID(lookAtTarget.getCoordSystemID())
 			end
 		end
 		
 		// set the coordinate system (temporary solution)
 		if actorCount == 1
-			director.setCoordSys( DMatrix.newRotationY( 180 ) * playback.getActorAt( 0 ).getMatrix() )
+			director.setCoordSys(DMatrix.newRotationY(180) * playback.getActorAt(0).getMatrix())
 			
 		elif actorCount > 1
 			if cameraShot.getActorCount() > 1
-				var ConversationActor actor1 = playback.getActorAt( 0 )
-				var ConversationActor actor2 = playback.getActorAt( 1 )
+				var ConversationActor actor1 = playback.getActorAt(0)
+				var ConversationActor actor2 = playback.getActorAt(1)
 				var DMatrix actor1Matrix = actor1.getMatrix()
 				var DMatrix actor2Matrix = actor2.getMatrix()
 				var DVector position1 = actor1Matrix.getPosition()
@@ -180,40 +189,40 @@ class CActionCameraShot extends ConversationAction
 				var float distance = view.getLength()
 				
 				if distance < 0.00001
-					director.setCoordSys( DMatrix.newRotationY( 180.0 ) * actor1Matrix )
+					director.setCoordSys(DMatrix.newRotationY(180) * actor1Matrix)
 					
 				else
 					if view.normalize().getY() >= 0.999
 						// too close to the up vector. use a different up vector
-						director.setCoordSys( DMatrix.newWorld( ( position1 + position2 ) * 0.5, view, DVector.new( 0.0, 0.0, 1.0 ) ) )
+						director.setCoordSys(DMatrix.newWorld((position1 + position2) * 0.5, view, DVector.new(0, 0, 1)))
 						
 					else
-						director.setCoordSys( DMatrix.newWorld( ( position1 + position2 ) * 0.5, view, DVector.new( 0.0, 1.0, 0.0 ) ) )
+						director.setCoordSys(DMatrix.newWorld((position1 + position2) * 0.5, view, DVector.new(0, 1, 0)))
 					end
 				end
 				
 			else
-				director.setCoordSys( DMatrix.newRotationY( 180.0 ) * playback.getActorAt( 0 ).getMatrix() )
+				director.setCoordSys(DMatrix.newRotationY(180) * playback.getActorAt(0).getMatrix())
 			end
 		end
 		
 		var DMatrix coordsys = director.getCoordSys()
 		var DVector cspos = coordsys.getPosition()
 		var DVector csview = coordsys.getViewVector()
-		var DVector csup = DVector.new( 0.0, 1.0, 0.0 )
-		director.setCoordSys( DMatrix.newWorld( cspos, ( csup % csview ) % csup, csup ) )
+		var DVector csup = DVector.new(0, 1, 0)
+		director.setCoordSys(DMatrix.newWorld(cspos, (csup % csview) % csup, csup))
 		
 		// set the other parameters straight into the camera
-		director.setCameraShot( cameraShot )
-		director.setCameraActor( cameraActor )
-		director.setCameraCoordSystem( cameraCoordSystem )
-		director.setCameraTarget( cameraTarget )
-		director.setLookAtActor( lookAtActor )
-		director.setLookAtCoordSystem( lookAtCoordSystem )
-		director.setLookAtTarget( lookAtTarget )
-		director.setDuration( this.pDuration )
-		director.setLooping( false )
-		director.setElapsed( 0.0 )
+		director.setCameraShot(cameraShot)
+		director.setCameraActor(cameraActor)
+		director.setCameraCoordSystem(cameraCoordSystem)
+		director.setCameraTarget(cameraTarget)
+		director.setLookAtActor(lookAtActor)
+		director.setLookAtCoordSystem(lookAtCoordSystem)
+		director.setLookAtTarget(lookAtTarget)
+		director.setDuration(pDuration)
+		director.setLooping(false)
+		director.setElapsed(0.0)
 		
 		playback.advanceToNextAction()
 	end
@@ -230,15 +239,19 @@ class CActionCameraShot extends ConversationAction
 	 * instance used for loading objects. Object is read using
 	 * PersistencyFactory.readObjectFromFile() of the matching PersistencyFactory.
 	 */
-	public func String persistencyFactoryName()
+	func String persistencyFactoryName()
 		return Factory.NAME
 	end
 	
 	/** \brief Write object to file writer. */
-	public func void writeObjectToFile( PersistencyEnvironment env, FileWriter writer )
-		env.writeStringIDOrEmptyIfNull( writer, this.pName )
-		writer.writeFloat( this.pDuration )
-		env.writeStringIDOrEmptyIfNull( writer, this.pCameraTarget )
-		env.writeStringIDOrEmptyIfNull( writer, this.pLookAtTarget )
+	func void writeObjectToFile(PersistencyEnvironment env, FileWriter writer)
+		super.writeObjectToFile(env, writer)
+		
+		writer.writeByte(0) // version
+		
+		env.writeStringIDOrEmptyIfNull(writer, pName)
+		writer.writeFloat(pDuration)
+		env.writeStringIDOrEmptyIfNull(writer, pCameraTarget)
+		env.writeStringIDOrEmptyIfNull(writer, pLookAtTarget)
 	end
 end

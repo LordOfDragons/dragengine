@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -25,6 +28,8 @@ namespace Dragengine.LoadSave
 pin Dragengine.Audio.Announcer
 pin Dragengine.Audio.DynamicMusic
 pin Dragengine.Audio.MaterialSounds
+pin Dragengine.ConversationSystem
+pin Dragengine.Gui
 pin Dragengine.Utils
 pin Dragengine.Scenery
 
@@ -54,223 +59,240 @@ pin Dragengine.Scenery
  * Extend class to add your own loaders keeping them in a single place.
  */
 class Loaders
-	private var LoadAnimator pAnimator
-	private var LoadAnnouncer pAnnouncer
-	private var LoadBehaviorTree pBehaviorTree
-	private var LoadBorder pBorder
-	private var LoadCanvasCreator pCanvasCreator
-	private var LoadConversation pConversation
-	private var LoadDecoration pDecoration
-	private var LoadMousePointer pMousePointer
-	private var LoadWidgetDesigner pWidgetDesigner
-	private var LoadDynamicMusic pDynamicMusic
-	private var LoadElementClass pElementClass
-	private var LoadGuiTheme pGuiTheme
-	private var LoadHeightTerrainNavSpace pHeightTerrainNavSpace
-	private var LoadHeightTerrain pHeightTerrain
-	private var LoadBindings pBindings
-	private var LoadNavigationSpace pNavigationSpace
-	private var LoadParticleEmitter pParticleEmitter
-	private var LoadSky pSky
-	private var LoadSpeechAnimation pSpeechAnimation
-	private var LoadStyledTextDefinition pStyledTextDefinition
-	private var LoadSynthesizer pSynthesizer
-	private var LoadWorld pWorld
-	private var LoadParameterTree pParameterTree
-	private var LoadSkinAnnotations pSkinAnnotations
-	private var LoadImpactMaterialSound pImpactMaterialSound
-	private var Persistency pPersistency
+	var LoadAnimator pAnimator
+	var LoadAnnouncer pAnnouncer
+	var LoadBehaviorTree pBehaviorTree
+	var LoadStateMachine pStateMachine
+	var LoadBorder pBorder
+	var LoadCanvasCreator pCanvasCreator
+	var LoadConversation pConversation
+	var LoadDecoration pDecoration
+	var LoadMousePointer pMousePointer
+	var LoadWidgetDesigner pWidgetDesigner
+	var LoadDynamicMusic pDynamicMusic
+	var LoadElementClass pElementClass
+	var LoadGuiTheme pGuiTheme
+	var LoadHeightTerrainNavSpace pHeightTerrainNavSpace
+	var LoadHeightTerrain pHeightTerrain
+	var LoadBindings pBindings
+	var LoadNavigationSpace pNavigationSpace
+	var LoadParticleEmitter pParticleEmitter
+	var LoadSky pSky
+	var LoadSpeechAnimation pSpeechAnimation
+	var LoadStyledTextDefinition pStyledTextDefinition
+	var LoadSynthesizer pSynthesizer
+	var LoadWorld pWorld
+	var LoadParameterTree pParameterTree
+	var LoadSkinAnnotations pSkinAnnotations
+	var LoadImpactMaterialSound pImpactMaterialSound
+	var LoadCamera pCamera
+	var Persistency pPersistency
 	
 	
 	
 	/** \brief Create loaders instance. */
-	public func new( Console console )
+	func new(Console console)
 		if console == null
 			throw EInvalidParam.new()
 		end
 		
 		// create loaders
-		this.pAnimator = LoadAnimator.new( console )
-		this.pAnnouncer = LoadAnnouncer.new( console )
-		this.pBehaviorTree = LoadBehaviorTree.new( console )
-		this.pBorder = LoadBorder.new( console )
-		this.pCanvasCreator = LoadCanvasCreator.new( console )
-		this.pConversation = LoadConversation.new( console )
-		this.pDecoration = LoadDecoration.new( console )
-		this.pMousePointer = LoadMousePointer.new( console )
-		this.pWidgetDesigner = LoadWidgetDesigner.new( console )
-		this.pDynamicMusic = LoadDynamicMusic.new( console )
-		this.pElementClass = LoadElementClass.new( console )
-		this.pGuiTheme = LoadGuiTheme.new( console )
-		this.pHeightTerrainNavSpace = LoadHeightTerrainNavSpace.new( console )
-		this.pBindings = LoadBindings.new( console )
-		this.pNavigationSpace = LoadNavigationSpace.new() // TODO add console
-		this.pParticleEmitter = LoadParticleEmitter.new( console )
-		this.pSky = LoadSky.new( console )
-		this.pSpeechAnimation = LoadSpeechAnimation.new( console )
-		this.pStyledTextDefinition = LoadStyledTextDefinition.new( console )
-		this.pSynthesizer = LoadSynthesizer.new( console )
-		this.pParameterTree = LoadParameterTree.new( console )
-		this.pSkinAnnotations = LoadSkinAnnotations.new( console )
-		this.pImpactMaterialSound = LoadImpactMaterialSound.new( console )
+		pAnimator = LoadAnimator.new(console)
+		pAnnouncer = LoadAnnouncer.new(console)
+		pBehaviorTree = LoadBehaviorTree.new(console)
+		pStateMachine = LoadStateMachine.new(console)
+		pBorder = LoadBorder.new(console)
+		pCanvasCreator = LoadCanvasCreator.new(console)
+		pConversation = LoadConversation.new(console)
+		pDecoration = LoadDecoration.new(console)
+		pMousePointer = LoadMousePointer.new(console)
+		pWidgetDesigner = LoadWidgetDesigner.new(console)
+		pDynamicMusic = LoadDynamicMusic.new(console)
+		pElementClass = LoadElementClass.new(console)
+		pGuiTheme = LoadGuiTheme.new(console)
+		pHeightTerrainNavSpace = LoadHeightTerrainNavSpace.new(console)
+		pBindings = LoadBindings.new(console)
+		pNavigationSpace = LoadNavigationSpace.new() // TODO add console
+		pParticleEmitter = LoadParticleEmitter.new(console)
+		pSky = LoadSky.new(console)
+		pSpeechAnimation = LoadSpeechAnimation.new(console)
+		pStyledTextDefinition = LoadStyledTextDefinition.new(console)
+		pSynthesizer = LoadSynthesizer.new(console)
+		pParameterTree = LoadParameterTree.new(console)
+		pSkinAnnotations = LoadSkinAnnotations.new(console)
+		pImpactMaterialSound = LoadImpactMaterialSound.new(console)
+		pCamera = LoadCamera.new(console)
 		
-		this.pHeightTerrain = LoadHeightTerrain.new( console, this.pHeightTerrainNavSpace )
-		this.pWorld = LoadWorld.new( console, this.pHeightTerrain )
+		pHeightTerrain = LoadHeightTerrain.new(console, pHeightTerrainNavSpace)
+		pWorld = LoadWorld.new(console, pHeightTerrain)
 		
 		// assign loaders to other loaders required them
-		this.pAnnouncer.setSynthesizerLoader( this.pSynthesizer )
+		pAnnouncer.setSynthesizerLoader(pSynthesizer)
 		
-		this.pBorder.setCanvasCreatorLoader( this.pCanvasCreator )
+		pBorder.setCanvasCreatorLoader(pCanvasCreator)
 		
-		this.pDecoration.setCanvasCreatorLoader( this.pCanvasCreator )
+		pDecoration.setCanvasCreatorLoader(pCanvasCreator)
 		
-		this.pMousePointer.setCanvasCreatorLoader( this.pCanvasCreator )
+		pMousePointer.setCanvasCreatorLoader(pCanvasCreator)
 		
-		this.pWidgetDesigner.setCanvasCreatorLoader( this.pCanvasCreator )
-		this.pWidgetDesigner.setBorderLoader( this.pBorder )
-		this.pWidgetDesigner.setMousePointerLoader( this.pMousePointer )
-		this.pWidgetDesigner.setDecorationLoader( this.pDecoration )
+		pWidgetDesigner.setCanvasCreatorLoader(pCanvasCreator)
+		pWidgetDesigner.setBorderLoader(pBorder)
+		pWidgetDesigner.setMousePointerLoader(pMousePointer)
+		pWidgetDesigner.setDecorationLoader(pDecoration)
 		
-		this.pGuiTheme.setDecorationLoader( this.pDecoration )
-		this.pGuiTheme.setWidgetDesignerLoader( this.pWidgetDesigner )
+		pGuiTheme.setDecorationLoader(pDecoration)
+		pGuiTheme.setWidgetDesignerLoader(pWidgetDesigner)
 		
-		this.pImpactMaterialSound.setSynthesizerLoader( this.pSynthesizer )
+		pImpactMaterialSound.setSynthesizerLoader(pSynthesizer)
 		
 		// create persistency and add default persistency factories
-		this.pPersistency = Persistency.new( console )
-		this.addDefaultPersistencyFactories( this.pPersistency )
+		pPersistency = Persistency.new(console)
+		addDefaultPersistencyFactories(pPersistency)
 	end
 	
 	
 	
 	/** \brief Animator loader. */
-	public func LoadAnimator getAnimator()
-		return this.pAnimator
+	func LoadAnimator getAnimator()
+		return pAnimator
 	end
 	
 	/** \brief Announcer loader. */
-	public func LoadAnnouncer getAnnouncer()
-		return this.pAnnouncer
+	func LoadAnnouncer getAnnouncer()
+		return pAnnouncer
 	end
 	
 	/** \brief Behavior tree loader. */
-	public func LoadBehaviorTree getBehaviorTree()
-		return this.pBehaviorTree
+	func LoadBehaviorTree getBehaviorTree()
+		return pBehaviorTree
+	end
+	
+	/** \brief State machine loader. */
+	func LoadStateMachine getStateMachine()
+		return pStateMachine
 	end
 	
 	/** \brief Border loader. */
-	public func LoadBorder getBorder()
-		return this.pBorder
+	func LoadBorder getBorder()
+		return pBorder
 	end
 	
 	/** \brief Canvas creator loader. */
-	public func LoadCanvasCreator getCanvasCreator()
-		return this.pCanvasCreator
+	func LoadCanvasCreator getCanvasCreator()
+		return pCanvasCreator
 	end
 	
 	/** \brief Conversation loader. */
-	public func LoadConversation getConversation()
-		return this.pConversation
+	func LoadConversation getConversation()
+		return pConversation
 	end
 	
 	/** \brief Decoration loader. */
-	public func LoadDecoration getDecoration()
-		return this.pDecoration
+	func LoadDecoration getDecoration()
+		return pDecoration
 	end
 	
 	/** \brief Mouse pointer loader. */
-	public func LoadMousePointer getMousePointer()
-		return this.pMousePointer
+	func LoadMousePointer getMousePointer()
+		return pMousePointer
 	end
 	
 	/** \brief Designer loader. */
-	public func LoadWidgetDesigner getDesigner()
-		return this.pWidgetDesigner
+	func LoadWidgetDesigner getDesigner()
+		return pWidgetDesigner
 	end
 	
 	/** \brief Dynamic music loader. */
-	public func LoadDynamicMusic getDynamicMusic()
-		return this.pDynamicMusic
+	func LoadDynamicMusic getDynamicMusic()
+		return pDynamicMusic
 	end
 	
 	/** \brief Element class loader. */
-	public func LoadElementClass getElementClass()
-		return this.pElementClass
+	func LoadElementClass getElementClass()
+		return pElementClass
 	end
 	
 	/** \brief Gui theme loader. */
-	public func LoadGuiTheme getGuiTheme()
-		return this.pGuiTheme
+	func LoadGuiTheme getGuiTheme()
+		return pGuiTheme
 	end
 	
 	/** \brief Height terrain navspace loader. */
-	public func LoadHeightTerrainNavSpace getHeightTerrainNavSpace()
-		return this.pHeightTerrainNavSpace
+	func LoadHeightTerrainNavSpace getHeightTerrainNavSpace()
+		return pHeightTerrainNavSpace
 	end
 	
 	/** \brief Height terrain loader. */
-	public func LoadHeightTerrain getHeightTerrain()
-		return this.pHeightTerrain
+	func LoadHeightTerrain getHeightTerrain()
+		return pHeightTerrain
 	end
 	
 	/** \brief Bindings loader. */
-	public func LoadBindings getBindings()
-		return this.pBindings
+	func LoadBindings getBindings()
+		return pBindings
 	end
 	
 	/** \brief Navigation space loader. */
-	public func LoadNavigationSpace getNavigationSpace()
-		return this.pNavigationSpace
+	func LoadNavigationSpace getNavigationSpace()
+		return pNavigationSpace
 	end
 	
 	/** \brief Particle emitter loader. */
-	public func LoadParticleEmitter getParticleEmitter()
-		return this.pParticleEmitter
+	func LoadParticleEmitter getParticleEmitter()
+		return pParticleEmitter
 	end
 	
 	/** \brief Load skyanimation. */
-	public func LoadSky getSky()
-		return this.pSky
+	func LoadSky getSky()
+		return pSky
 	end
 	
 	/** \brief Load speech animation. */
-	public func LoadSpeechAnimation getSpeechAnimation()
-		return this.pSpeechAnimation
+	func LoadSpeechAnimation getSpeechAnimation()
+		return pSpeechAnimation
 	end
 	
 	/** \brief Styled text document loader. */
-	public func LoadStyledTextDefinition getStyledTextDefinition()
-		return this.pStyledTextDefinition
+	func LoadStyledTextDefinition getStyledTextDefinition()
+		return pStyledTextDefinition
 	end
 	
 	/** \brief Synthesizer loader. */
-	public func LoadSynthesizer getSynthesizer()
-		return this.pSynthesizer
+	func LoadSynthesizer getSynthesizer()
+		return pSynthesizer
 	end
 	
 	/** \brief World loader. */
-	public func LoadWorld getWorld()
-		return this.pWorld
+	func LoadWorld getWorld()
+		return pWorld
 	end
 	
 	/** \brief Parameter tree loader. */
-	public func LoadParameterTree getParameterTree()
-		return this.pParameterTree
+	func LoadParameterTree getParameterTree()
+		return pParameterTree
 	end
 	
 	/** \brief Material sound loader. */
-	public func LoadSkinAnnotations getSkinAnnotations()
-		return this.pSkinAnnotations
+	func LoadSkinAnnotations getSkinAnnotations()
+		return pSkinAnnotations
 	end
 	
 	/** \brief Impact material sound loader. */
-	public func LoadImpactMaterialSound getImpactMaterialSound()
-		return this.pImpactMaterialSound
+	func LoadImpactMaterialSound getImpactMaterialSound()
+		return pImpactMaterialSound
+	end
+	
+	/**
+	 * \brief Camera parameter loader (loading and saving).
+	 * \version 1.21
+	 */
+	func LoadCamera getCamera()
+		return pCamera
 	end
 	
 	/** \brief Persistency. */
-	public func Persistency getPersistency()
-		return this.pPersistency
+	func Persistency getPersistency()
+		return pPersistency
 	end
 	
 	
@@ -282,44 +304,48 @@ class Loaders
 	 * There is usually no reason to change this method. Subclass should add
 	 * additional persistency factories elsewhere.
 	 */
-	 public func void addDefaultPersistencyFactories( Persistency persistency )
-		ConversationSystem.ConversationCustomTarget.Factory.registerFactory( persistency )
+	 func void addDefaultPersistencyFactories(Persistency persistency)
+		// conversation system
+		ConversationCustomTarget.Factory.registerFactory(persistency)
 		
-		ConversationSystem.CActionActorAdd.Factory.registerFactory( persistency )
-		ConversationSystem.CActionActorCommand.Factory.registerFactory( persistency )
-		ConversationSystem.CActionActorRemove.Factory.registerFactory( persistency )
-		ConversationSystem.CActionActorSpeak.Factory.registerFactory( persistency )
-		ConversationSystem.CActionCameraShot.Factory.registerFactory( persistency )
-		ConversationSystem.CActionCoordSystemAdd.Factory.registerFactory( persistency )
-		ConversationSystem.CActionCoordSystemRemove.Factory.registerFactory( persistency )
-		ConversationSystem.CActionGameCommand.Factory.registerFactory( persistency )
-		ConversationSystem.CActionMusic.Factory.registerFactory( persistency )
-		ConversationSystem.CActionIfElse.Factory.registerFactory( persistency )
-		ConversationSystem.CActionPlayerChoice.Factory.registerFactory( persistency )
-		ConversationSystem.CActionSetActorParameter.Factory.registerFactory( persistency )
-		ConversationSystem.CActionSetVariable.Factory.registerFactory( persistency )
-		ConversationSystem.CActionSnippet.Factory.registerFactory( persistency )
-		ConversationSystem.CActionStopConversation.Factory.registerFactory( persistency )
-		ConversationSystem.CActionStopTopic.Factory.registerFactory( persistency )
-		ConversationSystem.CActionTrigger.Factory.registerFactory( persistency )
-		ConversationSystem.CActionWait.Factory.registerFactory( persistency )
+		CActionActorAdd.Factory.registerFactory(persistency)
+		CActionActorCommand.Factory.registerFactory(persistency)
+		CActionActorRemove.Factory.registerFactory(persistency)
+		CActionActorSpeak.Factory.registerFactory(persistency)
+		CActionCameraShot.Factory.registerFactory(persistency)
+		CActionCoordSystemAdd.Factory.registerFactory(persistency)
+		CActionCoordSystemRemove.Factory.registerFactory(persistency)
+		CActionGameCommand.Factory.registerFactory(persistency)
+		CActionMusic.Factory.registerFactory(persistency)
+		CActionIfElse.Factory.registerFactory(persistency)
+		CActionPlayerChoice.Factory.registerFactory(persistency)
+		CActionSetActorParameter.Factory.registerFactory(persistency)
+		CActionSetVariable.Factory.registerFactory(persistency)
+		CActionSnippet.Factory.registerFactory(persistency)
+		CActionStopConversation.Factory.registerFactory(persistency)
+		CActionStopTopic.Factory.registerFactory(persistency)
+		CActionTrigger.Factory.registerFactory(persistency)
+		CActionWait.Factory.registerFactory(persistency)
 		
-		ConversationSystem.CConditionActorCommand.Factory.registerFactory( persistency )
-		ConversationSystem.CConditionActorInConversation.Factory.registerFactory( persistency )
-		ConversationSystem.CConditionActorParameter.Factory.registerFactory( persistency )
-		ConversationSystem.CConditionGameCommand.Factory.registerFactory( persistency )
-		ConversationSystem.CConditionHasActor.Factory.registerFactory( persistency )
-		ConversationSystem.CConditionLogic.Factory.registerFactory( persistency )
-		ConversationSystem.CConditionTrigger.Factory.registerFactory( persistency )
-		ConversationSystem.CConditionVariable.Factory.registerFactory( persistency )
+		CConditionActorCommand.Factory.registerFactory(persistency)
+		CConditionActorInConversation.Factory.registerFactory(persistency)
+		CConditionActorParameter.Factory.registerFactory(persistency)
+		CConditionGameCommand.Factory.registerFactory(persistency)
+		CConditionHasActor.Factory.registerFactory(persistency)
+		CConditionLogic.Factory.registerFactory(persistency)
+		CConditionTrigger.Factory.registerFactory(persistency)
+		CConditionVariable.Factory.registerFactory(persistency)
 		
-		Gui.SubTitleBoxTextBorder.Factory.registerFactory( persistency )
+		// gui
+		SubTitleBoxTextBorder.Factory.registerFactory(persistency)
 		
-		Scenery.BaseActorAction.Factory.registerFactory( persistency )
-		Scenery.BAAFirstPerson.Factory.registerFactory( persistency )
-		Scenery.BAAVehicle.Factory.registerFactory( persistency )
+		// scenery
+		BaseActorAction.Factory.registerFactory(persistency)
+		BAAFirstPerson.Factory.registerFactory(persistency)
+		BAAFirstPersonVR.Factory.registerFactory(persistency)
+		BAAVehicle.Factory.registerFactory(persistency)
 		
-		Scenery.BaseActorAI.Factory.registerFactory( persistency )
-		Scenery.BAAIBehaviorTree.Factory.registerFactory( persistency )
+		BaseActorAI.Factory.registerFactory(persistency)
+		BAAIBehaviorTree.Factory.registerFactory(persistency)
 	 end
 end

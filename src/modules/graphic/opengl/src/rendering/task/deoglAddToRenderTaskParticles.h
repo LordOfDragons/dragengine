@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLADDTORENDERTASKPARTICLES_H_
@@ -30,15 +33,11 @@
 
 class deoglParticleEmitterInstanceList;
 class deoglRenderTaskParticles;
-class deoglRenderTaskParticlesStep;
 class deoglRenderThread;
-class deoglSPBlockUBO;
-class deoglShaderProgram;
-class deoglTexture;
 
 
 /**
- * \brief Add To Render Task Particles.
+ * Add To Render Task Particles.
  */
 class deoglAddToRenderTaskParticles{
 private:
@@ -46,20 +45,18 @@ private:
 	
 	deoglRenderTaskParticles *pRenderTask;
 	
-	deoglSkinTexture::eShaderTypes pSkinShaderType;
-	deoglSkinTexture::eShaderTypes pSkinShaderTypeRibbon;
-	deoglSkinTexture::eShaderTypes pSkinShaderTypeBeam;
+	deoglSkinTexturePipelines::eTypes pSkinPipelineType;
+	int pSkinPipelineModifier;
 	
-	deoglShaderProgram *pEnforceShader;
-	deoglSPBlockUBO *pEnforceParamBlock;
+	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create add to render task particles object. */
+	/** Create add to render task particles object. */
 	deoglAddToRenderTaskParticles( deoglRenderThread &renderThread, deoglRenderTaskParticles *renderTask );
 	
-	/** \brief Clean up add to render task particles object. */
+	/** Clean up add to render task particles object. */
 	~deoglAddToRenderTaskParticles();
 	/*@}*/
 	
@@ -67,44 +64,24 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Shader type to be used for skin shaders. */
-	inline deoglSkinTexture::eShaderTypes GetSkinShaderType() const{ return pSkinShaderType; }
+	/** Pipeline type. */
+	inline deoglSkinTexturePipelines::eTypes GetSkinPipelineType() const{ return pSkinPipelineType; }
 	
-	/** \brief Set shader type to be used for skin shaders. */
-	void SetSkinShaderType( deoglSkinTexture::eShaderTypes shaderType );
+	/** Set pipeline type. */
+	void SetSkinPipelineType( deoglSkinTexturePipelines::eTypes type );
 	
-	/** \brief Shader type to be used for ribbon skin shaders. */
-	inline deoglSkinTexture::eShaderTypes GetSkinShaderTypeRibbon() const{ return pSkinShaderTypeRibbon; }
+	/** Pipeline modifier. */
+	inline int GetSkinPipelineModifier() const{ return pSkinPipelineModifier; }
 	
-	/** \brief Set shader type to be used for ribbon skin shaders. */
-	void SetSkinShaderTypeRibbon( deoglSkinTexture::eShaderTypes shaderType );
-	
-	/** \brief Shader type to be used for beam skin shaders. */
-	inline deoglSkinTexture::eShaderTypes GetSkinShaderTypeBeam() const{ return pSkinShaderTypeBeam; }
-	
-	/** \brief Set shader type to be used for beam skin shaders. */
-	void SetSkinShaderTypeBeam( deoglSkinTexture::eShaderTypes shaderType );
+	/** Set pipeline modifier. */
+	void SetSkinPipelineModifier( int modifier );
 	
 	
 	
-	/** \brief Shader to enforce or NULL if free. */
-	inline deoglShaderProgram *GetEnforcedShader() const{ return pEnforceShader; }
-	
-	/** \brief Set shader to enforce or NULL if free. */
-	void SetEnforceShader( deoglShaderProgram *shader );
-	
-	/** \brief Shader parameter block to enforce or NULL if free. */
-	inline deoglSPBlockUBO *GetEnforcedParamBlock() const{ return pEnforceParamBlock; }
-	
-	/** \brief Set shader parameter block to enforce or NULL if free. */
-	void SetEnforceParamBlock( deoglSPBlockUBO *block );
-	
-	
-	
-	/** \brief Add particle emitter particless from all emitters in a list to the render task. */
+	/** Add particle emitter particless from all emitters in a list to the render task. */
 	void AddParticles( const deoglParticleEmitterInstanceList &list );
 	
-	/** \brief Add a particle emitter particles to the render task. */
+	/** Add a particle emitter particles to the render task. */
 	void AddParticle( deoglRParticleEmitterInstance &emitter, const deoglRParticleEmitterInstance::sParticle *particle );
 	/*@}*/
 };

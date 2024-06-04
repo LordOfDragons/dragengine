@@ -1,0 +1,3157 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="post_build.ps1" />
+    <None Include="..\..\..\..\src\deigde\editors\conversation\SConscript" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\ceIGDEModule.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\clipboard\ceClipboardDataAction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\clipboard\ceClipboardDataCondition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\clipboard\ceClipboardDataFile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\clipboard\ceClipboardDataTopic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\configuration\ceConfiguration.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\configuration\ceConfigurationXML.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\action\ceCAActorAdd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\action\ceCAActorCommand.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\action\ceCAActorRemove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\action\ceCAActorSpeak.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\action\ceCACameraShot.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\action\ceCAComment.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\action\ceCACoordSystemAdd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\action\ceCACoordSystemRemove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\action\ceCAGameCommand.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\action\ceCAIfElse.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\action\ceCAIfElseCase.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\action\ceCAIfElseCaseList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\action\ceCAMusic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\action\ceCAPlayerChoice.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\action\ceCAPlayerChoiceOption.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\action\ceCAPlayerChoiceOptionList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\action\ceCASetActorParameter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\action\ceCASetVariable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\action\ceCASnippet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\action\ceCAStopConversation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\action\ceCAStopTopic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\action\ceCATrigger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\action\ceCAWait.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\action\ceConversationAction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\action\ceConversationActionList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\action\ceConversationActionReference.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\ceConversationActor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\ceConversationActorList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\controller\ceActorController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\controller\ceActorControllerList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\gesture\ceActorGesture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\gesture\ceActorGestureList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\parameters\ceActorParameter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\parameters\ceActorParameterList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\pose\ceActorPose.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\pose\ceActorPoseList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\speechAnimation\ceSAPhoneme.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\speechAnimation\ceSAPhonemeList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\speechAnimation\ceSAWord.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\speechAnimation\ceSAWordList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\speechAnimation\ceSpeechAnimation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\speechAnimation\ceSpeechAnimationXML.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\camerashot\ceCameraShot.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\camerashot\ceCameraShotList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\ceConversation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\ceConversationList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\ceConversationListener.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\condition\ceCConditionActorCommand.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\condition\ceCConditionActorInConversation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\condition\ceCConditionActorParameter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\condition\ceCConditionGameCommand.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\condition\ceCConditionHasActor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\condition\ceCConditionLogic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\condition\ceCConditionTrigger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\condition\ceCConditionVariable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\condition\ceConversationCondition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\condition\ceConversationConditionList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\condition\ceConversationConditionReference.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\coordsystem\ceCoordSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\coordsystem\ceCoordSystemList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\facepose\ceFacePose.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\facepose\ceFacePoseList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\file\ceConversationFile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\file\ceConversationFileList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\gesture\ceGesture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\gesture\ceGestureList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\infobox\ceConversationInfoBox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\playback\cePlayback.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\playback\cePlaybackActionStack.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\playback\cePlaybackActionStackEntry.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\playback\cePlaybackActor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\playback\cePlaybackCamera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\playback\cePlaybackEvaluateCondition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\playback\cePlaybackProcessAction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\playback\command\cePlaybackCommand.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\playback\command\cePlaybackCommandList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\playback\variable\cePlaybackVariable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\playback\variable\cePlaybackVariableList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\playerChoiceBox\cePCBOption.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\playerChoiceBox\cePCBOptionList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\playerChoiceBox\cePlayerChoiceBox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\prop\ceProp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\prop\cePropList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\strip\ceStrip.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\strip\ceStripList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\target\ceTarget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\target\ceTargetList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\textbox\ceTextBox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\textbox\ceTextBoxText.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\textbox\ceTextBoxTextList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\topic\ceConversationTopic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\topic\ceConversationTopicList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\ConvoEditor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\ceCanvasRuleOfThirdsAid.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\ceTaskSyncGameDefinition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\ceViewConversation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\ceViewConversationListener.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\ceWindowMain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\ceWindowMainListener.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\dialog\ceDialogEditStringWithList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\dialog\ceDialogEditStrip.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\dialog\ceDialogPasteSnippet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\dopesheet\ceWDSVAPreview.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\dopesheet\ceWindowDopeSheet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\dopesheet\ceWindowDopeSheetListener.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\dopesheet\lane\ceWDSLane.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\dopesheet\lane\ceWDSLaneBodyLookAt.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\dopesheet\lane\ceWDSLaneEyesLookAt.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\dopesheet\lane\ceWDSLaneFacePose.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\dopesheet\lane\ceWDSLaneGesture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\dopesheet\lane\ceWDSLaneHeadLookAt.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\dopesheet\lane\ceWDSLaneWord.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\actions\ceWPAActorAdd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\actions\ceWPAActorCmd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\actions\ceWPAActorRemove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\actions\ceWPAActorSpeak.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\actions\ceWPACameraShot.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\actions\ceWPAComment.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\actions\ceWPACoordSystemAdd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\actions\ceWPACoordSystemRemove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\actions\ceWPAction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\actions\ceWPAGameCommand.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\actions\ceWPAIfElse.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\actions\ceWPAMusic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\actions\ceWPAPlayerChoice.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\actions\ceWPASetAParam.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\actions\ceWPASetVariable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\actions\ceWPASnippet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\actions\ceWPAStopConversation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\actions\ceWPAStopTopic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\actions\ceWPATrigger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\actions\ceWPAWait.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\ceWindowProperties.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\ceWPConversation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\ceWPConversationListener.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\ceWPTopic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\ceWPTopicListener.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\ceWPUndoHistory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\ceWPUndoHistoryListener.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\ceWPView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\ceWPViewListener.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\conditions\ceWPCActorCommand.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\conditions\ceWPCActorInConversation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\conditions\ceWPCAParam.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\conditions\ceWPCGameCommand.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\conditions\ceWPCHasActor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\conditions\ceWPCLogic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\conditions\ceWPCondition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\conditions\ceWPCTrigger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\conditions\ceWPCVariable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\action\ceWPTTIMAActorAdd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\action\ceWPTTIMAActorCommand.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\action\ceWPTTIMAActorRemove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\action\ceWPTTIMAActorSpeak.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\action\ceWPTTIMACameraShot.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\action\ceWPTTIMAComment.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\action\ceWPTTIMACoordSystemAdd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\action\ceWPTTIMACoordSystemRemove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\action\ceWPTTIMAction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\action\ceWPTTIMActions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\action\ceWPTTIMAGameCommand.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\action\ceWPTTIMAMusic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\action\ceWPTTIMASetActorParameter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\action\ceWPTTIMASetVariable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\action\ceWPTTIMASnippet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\action\ceWPTTIMAStopConversation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\action\ceWPTTIMAStopTopic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\action\ceWPTTIMATrigger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\action\ifelse\ceWPTTIMAIfElse.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\action\ifelse\ceWPTTIMAIfElseElse.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\action\ifelse\ceWPTTIMAIfElseIfCase.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\action\ifelse\ceWPTTIMAIfElseIfCaseActions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\action\ifelse\ceWPTTIMAIfElseIfCaseCondition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\action\playerChoice\ceWPTTIMAPlayerChoice.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\action\playerChoice\ceWPTTIMAPlayerChoiceActions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\action\playerChoice\ceWPTTIMAPlayerChoiceOption.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\action\playerChoice\ceWPTTIMAPlayerChoiceOptionActions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\action\playerChoice\ceWPTTIMAPlayerChoiceOptionCondition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\action\wait\ceWPTTIMAWait.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\action\wait\ceWPTTIMAWaitActions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\action\wait\ceWPTTIMAWaitCondition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\ceWPTTreeItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\ceWPTTreeItemModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\ceWPTTreeModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\ceWPTTreeModelListener.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\condition\ceWPTTIMCActorCommand.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\condition\ceWPTTIMCActorInConversation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\condition\ceWPTTIMCActorParameter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\condition\ceWPTTIMCGameCommand.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\condition\ceWPTTIMCHasActor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\condition\ceWPTTIMCLogic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\condition\ceWPTTIMCondition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\condition\ceWPTTIMConditionContainer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\condition\ceWPTTIMConditions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\condition\ceWPTTIMCTrigger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\condition\ceWPTTIMCVariable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\ceWPTMACopyAction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\ceWPTMACopyActions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\ceWPTMACreateAction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\ceWPTMAPasteActions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\ceWPTMAPasteSnippet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\ceWPTMARemoveAllActions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\ifelse\ceWPTMAIfElseCaseAdd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\ifelse\ceWPTMAIfElseCaseAddAction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\ifelse\ceWPTMAIfElseCaseClearCondition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\ifelse\ceWPTMAIfElseCaseCopyActions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\ifelse\ceWPTMAIfElseCaseCutAction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\ifelse\ceWPTMAIfElseCaseMove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\ifelse\ceWPTMAIfElseCaseMoveAction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\ifelse\ceWPTMAIfElseCasePasteActions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\ifelse\ceWPTMAIfElseCasePasteCondition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\ifelse\ceWPTMAIfElseCasePasteSnippet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\ifelse\ceWPTMAIfElseCaseRemove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\ifelse\ceWPTMAIfElseCaseRemoveAction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\ifelse\ceWPTMAIfElseCaseRemoveAllActions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\ifelse\ceWPTMAIfElseCaseSetCondition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\ifelse\ceWPTMAIfElseElseAddAction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\ifelse\ceWPTMAIfElseElseCopyActions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\ifelse\ceWPTMAIfElseElseCutAction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\ifelse\ceWPTMAIfElseElseMoveAction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\ifelse\ceWPTMAIfElseElsePasteActions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\ifelse\ceWPTMAIfElseElsePasteSnippet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\ifelse\ceWPTMAIfElseElseRemoveAction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\ifelse\ceWPTMAIfElseElseRemoveAllActions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\playerChoice\ceWPTMAPChoiceActionsAddAction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\playerChoice\ceWPTMAPChoiceActionsCopyActions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\playerChoice\ceWPTMAPChoiceActionsCutAction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\playerChoice\ceWPTMAPChoiceActionsMoveAction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\playerChoice\ceWPTMAPChoiceActionsPasteActions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\playerChoice\ceWPTMAPChoiceActionsPasteSnippet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\playerChoice\ceWPTMAPChoiceActionsRemoveAction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\playerChoice\ceWPTMAPChoiceActionsRemoveAllActions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\playerChoice\ceWPTMAPChoiceOptionAdd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\playerChoice\ceWPTMAPChoiceOptionAddAction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\playerChoice\ceWPTMAPChoiceOptionClearCondition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\playerChoice\ceWPTMAPChoiceOptionCopyActions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\playerChoice\ceWPTMAPChoiceOptionCutAction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\playerChoice\ceWPTMAPChoiceOptionMove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\playerChoice\ceWPTMAPChoiceOptionMoveAction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\playerChoice\ceWPTMAPChoiceOptionPasteActions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\playerChoice\ceWPTMAPChoiceOptionPasteCondition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\playerChoice\ceWPTMAPChoiceOptionPasteSnippet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\playerChoice\ceWPTMAPChoiceOptionRemove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\playerChoice\ceWPTMAPChoiceOptionRemoveAction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\playerChoice\ceWPTMAPChoiceOptionRemoveAllActions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\playerChoice\ceWPTMAPChoiceOptionSetCondition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\topic\ceWPTMATopicAddAction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\topic\ceWPTMATopicCopyActions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\topic\ceWPTMATopicCutAction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\topic\ceWPTMATopicMoveAction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\topic\ceWPTMATopicPasteActions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\topic\ceWPTMATopicPasteSnippet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\topic\ceWPTMATopicRemoveAction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\topic\ceWPTMATopicRemoveAllActions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\wait\ceWPTMAWaitActionsAddAction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\wait\ceWPTMAWaitActionsClearCondition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\wait\ceWPTMAWaitActionsCopyActions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\wait\ceWPTMAWaitActionsCutAction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\wait\ceWPTMAWaitActionsMoveAction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\wait\ceWPTMAWaitActionsPasteActions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\wait\ceWPTMAWaitActionsPasteCondition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\wait\ceWPTMAWaitActionsPasteSnippet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\wait\ceWPTMAWaitActionsRemoveAction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\wait\ceWPTMAWaitActionsRemoveAllActions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\wait\ceWPTMAWaitActionsSetCondition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\ceWPTMenuAction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\condition\ceWPTMACopyCondition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\condition\ceWPTMACreateCondition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\condition\ceWPTMAPasteCondition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\condition\logic\ceWPTMACLogicAddCondition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\condition\logic\ceWPTMACLogicClearCondition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\condition\logic\ceWPTMACLogicCutCondition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\condition\logic\ceWPTMACLogicPasteCondition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\condition\logic\ceWPTMACLogicRemoveCondition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\loadsave\ceLoadSaveConversation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\loadsave\ceLoadSaveCTA.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\loadsave\ceLoadSaveCTGS.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\loadsave\ceLoadSaveCTS.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\loadsave\ceLoadSaveSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorAdd\ceUCAActorAddSetActor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorAdd\ceUCAActorAddSetAliasID.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorCommand\ceUCAACmdSetActor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorCommand\ceUCAACmdSetCommand.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorRemove\ceUCAActorRemoveSetActor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\bodyLookAt\ceUCAASpeakBodyLAAdd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\bodyLookAt\ceUCAASpeakBodyLAClear.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\bodyLookAt\ceUCAASpeakBodyLAMove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\bodyLookAt\ceUCAASpeakBodyLARemove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\bodyLookAt\ceUCAASpeakBodyLAScale.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\bodyLookAt\ceUCAASpeakBodyLASet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\bodyLookAt\ceUCAASpeakBodyLASetDuration.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\bodyLookAt\ceUCAASpeakBodyLASetName.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\bodyLookAt\ceUCAASpeakBodyLASetPause.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\ceUCAASpeakSetActor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\ceUCAASpeakSetMinSpeechTime.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\ceUCAASpeakSetMovement.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\ceUCAASpeakSetPathSound.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\ceUCAASpeakSetTextBoxText.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\ceUCAASpeakSetTextBoxTextStyle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\ceUCAASpeakSetTextBoxTextTranslate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\ceUCAASpeakToggleUseSpeechAnimation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\eyesLookAt\ceUCAASpeakEyesLAAdd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\eyesLookAt\ceUCAASpeakEyesLAClear.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\eyesLookAt\ceUCAASpeakEyesLAFromHeadLA.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\eyesLookAt\ceUCAASpeakEyesLAMove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\eyesLookAt\ceUCAASpeakEyesLARemove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\eyesLookAt\ceUCAASpeakEyesLAScale.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\eyesLookAt\ceUCAASpeakEyesLASet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\eyesLookAt\ceUCAASpeakEyesLASetDuration.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\eyesLookAt\ceUCAASpeakEyesLASetName.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\eyesLookAt\ceUCAASpeakEyesLASetPause.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\facePose\ceUCAASpeakFaceAdd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\facePose\ceUCAASpeakFaceClear.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\facePose\ceUCAASpeakFaceMove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\facePose\ceUCAASpeakFaceRemove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\facePose\ceUCAASpeakFaceSet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\facePose\ceUCAASpeakFaceSetDuration.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\facePose\ceUCAASpeakFaceSetName.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\facePose\ceUCAASpeakFaceSetPause.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\facePose\ceUCAASpeakFacesScale.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\gesture\ceUCAASpeakGestureAdd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\gesture\ceUCAASpeakGestureClear.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\gesture\ceUCAASpeakGestureMove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\gesture\ceUCAASpeakGestureRemove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\gesture\ceUCAASpeakGestureSet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\gesture\ceUCAASpeakGestureSetDuration.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\gesture\ceUCAASpeakGestureSetName.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\gesture\ceUCAASpeakGestureSetPause.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\gesture\ceUCAASpeakGesturesScale.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\headLookAt\ceUCAASpeakHeadLAAdd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\headLookAt\ceUCAASpeakHeadLAClear.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\headLookAt\ceUCAASpeakHeadLAFromEyesLA.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\headLookAt\ceUCAASpeakHeadLAMove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\headLookAt\ceUCAASpeakHeadLARemove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\headLookAt\ceUCAASpeakHeadLAScale.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\headLookAt\ceUCAASpeakHeadLASet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\headLookAt\ceUCAASpeakHeadLASetDuration.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\headLookAt\ceUCAASpeakHeadLASetName.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\headLookAt\ceUCAASpeakHeadLASetPause.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\strip\ceUCAASpeakStripSetDuration.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\strip\ceUCAASpeakStripSetID.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\strip\ceUCAASpeakStripSetPause.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\strip\ceUCAASpeakStripsScale.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\word\ceUCAASpeakWordAdd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\word\ceUCAASpeakWordClear.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\word\ceUCAASpeakWordFromText.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\word\ceUCAASpeakWordMove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\word\ceUCAASpeakWordRemove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\word\ceUCAASpeakWordSet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\word\ceUCAASpeakWordSetDuration.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\word\ceUCAASpeakWordSetName.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\word\ceUCAASpeakWordSetPause.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\word\ceUCAASpeakWordsScale.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\cameraShot\ceUCACameraShotSetName.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\cameraShot\ceUCACShotSetCameraTarget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\cameraShot\ceUCACShotSetDuration.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\cameraShot\ceUCACShotSetLookAtTarget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\cameraShot\ceUCACShotToggleLockCameraTarget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\cameraShot\ceUCACShotToggleLockLookAtTarget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\ceUActionHelpers.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\ceUCActionAdd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\ceUCActionMove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\ceUCActionPaste.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\ceUCActionRemove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\ceUCActionRemoveAll.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\ceUCActionSetDelay.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\ceUCActionSetWaitForActorID.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\ceUCActionToggleWaitForActor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\ceUCTopicActionPaste.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\ceUndoCAction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\ceUndoCActionList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\comment\ceUCACommentSetComment.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\coordSystemAdd\ceUCACoordSysAddSetAliasID.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\coordSystemAdd\ceUCACoordSysAddSetCoordSysID.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\coordSystemRemove\ceUCACoordSysRemoveSetCoordSysID.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\gameCommand\ceUCAGameCmdSetCommand.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\ifElse\ceUCAIfElseAdd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\ifElse\ceUCAIfElseCaseAdd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\ifElse\ceUCAIfElseCaseCutCondition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\ifElse\ceUCAIfElseCaseMove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\ifElse\ceUCAIfElseCasePasteCondition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\ifElse\ceUCAIfElseCaseRemove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\ifElse\ceUCAIfElseCaseSetCondition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\ifElse\ceUCAIfElseMove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\ifElse\ceUCAIfElsePaste.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\ifElse\ceUCAIfElseRemove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\ifElse\ceUCAIfElseRemoveAll.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\music\ceUCAMusicSetName.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\playerChoice\ceUCAPChoiceActionAdd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\playerChoice\ceUCAPChoiceActionMove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\playerChoice\ceUCAPChoiceActionPaste.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\playerChoice\ceUCAPChoiceActionRemove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\playerChoice\ceUCAPChoiceActionRemoveAll.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\playerChoice\ceUCAPChoiceOptionAdd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\playerChoice\ceUCAPChoiceOptionCutCondition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\playerChoice\ceUCAPChoiceOptionMove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\playerChoice\ceUCAPChoiceOptionPasteCondition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\playerChoice\ceUCAPChoiceOptionRemove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\playerChoice\ceUCAPChoiceOptionSetCondition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\playerChoice\ceUCAPChoiceOptionSetText.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\playerChoice\ceUCAPChoiceSetVarName.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\setActorParameter\ceUCASetAParamSetActor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\setActorParameter\ceUCASetAParamSetName.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\setActorParameter\ceUCASetAParamSetOp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\setActorParameter\ceUCASetAParamSetValue.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\setActorParameter\ceUCASetAParamSetValueVariable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\setVariable\ceUCASetVarSetName.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\setVariable\ceUCASetVarSetOp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\setVariable\ceUCASetVarSetValue.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\setVariable\ceUCASetVarSetValueVariable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\snippet\ceUCASnippetSetFile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\snippet\ceUCASnippetSetTopic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\trigger\ceUCATriggerSetAction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\trigger\ceUCATriggerSetName.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\wait\ceUCAWaitAdd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\wait\ceUCAWaitCutCondition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\wait\ceUCAWaitMove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\wait\ceUCAWaitPaste.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\wait\ceUCAWaitPasteCondition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\wait\ceUCAWaitRemove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\wait\ceUCAWaitRemoveAll.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\wait\ceUCAWaitSetCondition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\wait\ceUCAWaitSetInterval.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\cameraShot\ceUCCShotAdd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\cameraShot\ceUCCShotRemove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\cameraShot\ceUCCShotSetActorCount.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\cameraShot\ceUCCShotSetCamDistFrom.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\cameraShot\ceUCCShotSetCamDistTo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\cameraShot\ceUCCShotSetCameraTarget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\cameraShot\ceUCCShotSetCamOrbitFrom.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\cameraShot\ceUCCShotSetCamOrbitTo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\cameraShot\ceUCCShotSetFovFrom.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\cameraShot\ceUCCShotSetFovTo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\cameraShot\ceUCCShotSetLookAtTarget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\cameraShot\ceUCCShotSetName.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\cameraShot\ceUCCShotSetOffCamFrom.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\cameraShot\ceUCCShotSetOffCamTo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\cameraShot\ceUCCShotSetOffLookAtFrom.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\cameraShot\ceUCCShotSetOffLookAtTo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\cameraShot\ceUCCShotSetParameter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\cameraShot\ceUCCShotSetPosFrom.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\cameraShot\ceUCCShotSetPosTo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\cameraShot\ceUCCShotSetRotFrom.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\cameraShot\ceUCCShotSetRotTo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\cameraShot\ceUCCShotSetTiltFrom.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\cameraShot\ceUCCShotSetTiltTo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\cameraShot\ceUCCShotToggleAlignTargets.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\cameraShot\ceUCCShotToggleLockCameraTarget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\cameraShot\ceUCCShotToggleLockLookAtTarget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\cameraShot\ceUCCShotToggleLockUpAxis.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\cameraShot\ceUCCShotToggleRelativeToLookAt.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\ceUConvoSetImportConvoPath.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\condition\actorCommand\ceUCCACommandSetActor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\condition\actorCommand\ceUCCACommandSetCommand.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\condition\actorCommand\ceUCCACommandToggleNegate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\condition\actorInConversation\ceUCCAInConvoSetActor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\condition\actorInConversation\ceUCCAInConvoToggleNegate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\condition\actorParameter\ceUCCAParamSetActor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\condition\actorParameter\ceUCCAParamSetOperator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\condition\actorParameter\ceUCCAParamSetParameter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\condition\actorParameter\ceUCCAParamSetTestValue.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\condition\actorParameter\ceUCCAParamSetTestVariable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\condition\ceUConditionHelpers.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\condition\gameCommand\ceUCCGameCmdSetCommand.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\condition\gameCommand\ceUCCGameCmdToggleNegate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\condition\hasActor\ceUCCHasActorSetActor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\condition\hasActor\ceUCCHasActorToggleNegate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\condition\logic\ceUCCLogicAdd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\condition\logic\ceUCCLogicPaste.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\condition\logic\ceUCCLogicRemove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\condition\logic\ceUCCLogicRemoveAll.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\condition\logic\ceUCCLogicSetOperator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\condition\trigger\ceUCCTriggerSetTestMode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\condition\trigger\ceUCCTriggerSetTrigger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\condition\variable\ceUCCVarSetOperator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\condition\variable\ceUCCVarSetTestValue.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\condition\variable\ceUCCVarSetTestVariable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\condition\variable\ceUCCVarSetVariable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\facePose\ceUCFacePoseAdd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\facePose\ceUCFacePoseRemove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\facePose\ceUCFacePoseSetName.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\facePose\controller\ceUCFPControllerAdd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\facePose\controller\ceUCFPControllerRemove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\facePose\controller\ceUCFPControllerSetValue.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\file\ceUCFileAdd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\file\ceUCFileDuplicate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\file\ceUCFilePaste.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\file\ceUCFileRemove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\file\ceUCFileSetID.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\gesture\ceUCGestureAdd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\gesture\ceUCGestureRemove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\gesture\ceUCGestureSetAnimator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\gesture\ceUCGestureSetDuration.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\gesture\ceUCGestureSetName.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\gesture\ceUCGestureToggleHold.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\target\ceUCTargetAdd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\target\ceUCTargetRemove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\target\ceUCTargetSetActor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\target\ceUCTargetSetBone.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\target\ceUCTargetSetEntityID.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\target\ceUCTargetSetName.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\target\ceUCTargetSetOrientation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\target\ceUCTargetSetPosition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\topic\ceUCTopicAdd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\topic\ceUCTopicDuplicate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\topic\ceUCTopicPaste.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\topic\ceUCTopicRemove.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\topic\ceUCTopicSetID.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\utils\ceControllerValue.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\utils\ceControllerValueList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\langpack\ceLangPack.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\langpack\ceLangPackEntry.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\loadsave\ceLoadSaveLangPack.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\ceUCAASpeakMoveTbt2Translation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\ceIGDEModule.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\clipboard\ceClipboardDataAction.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\clipboard\ceClipboardDataCondition.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\clipboard\ceClipboardDataFile.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\clipboard\ceClipboardDataTopic.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\configuration\ceConfiguration.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\configuration\ceConfigurationXML.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\action\ceCAActorAdd.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\action\ceCAActorCommand.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\action\ceCAActorRemove.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\action\ceCAActorSpeak.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\action\ceCACameraShot.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\action\ceCAComment.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\action\ceCACoordSystemAdd.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\action\ceCACoordSystemRemove.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\action\ceCAGameCommand.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\action\ceCAIfElse.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\action\ceCAIfElseCase.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\action\ceCAIfElseCaseList.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\action\ceCAMusic.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\action\ceCAPlayerChoice.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\action\ceCAPlayerChoiceOption.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\action\ceCAPlayerChoiceOptionList.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\action\ceCASetActorParameter.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\action\ceCASetVariable.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\action\ceCASnippet.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\action\ceCAStopConversation.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\action\ceCAStopTopic.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\action\ceCATrigger.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\action\ceCAWait.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\action\ceConversationAction.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\action\ceConversationActionList.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\action\ceConversationActionReference.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\ceConversationActor.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\ceConversationActorList.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\controller\ceActorController.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\controller\ceActorControllerList.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\gesture\ceActorGesture.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\gesture\ceActorGestureList.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\parameters\ceActorParameter.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\parameters\ceActorParameterList.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\pose\ceActorPose.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\pose\ceActorPoseList.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\speechAnimation\ceSAPhoneme.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\speechAnimation\ceSAPhonemeList.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\speechAnimation\ceSAWord.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\speechAnimation\ceSAWordList.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\speechAnimation\ceSpeechAnimation.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\speechAnimation\ceSpeechAnimationXML.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\camerashot\ceCameraShot.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\camerashot\ceCameraShotList.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\ceConversation.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\ceConversationList.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\ceConversationListener.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\condition\ceCConditionActorCommand.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\condition\ceCConditionActorInConversation.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\condition\ceCConditionActorParameter.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\condition\ceCConditionGameCommand.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\condition\ceCConditionHasActor.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\condition\ceCConditionLogic.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\condition\ceCConditionTrigger.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\condition\ceCConditionVariable.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\condition\ceConversationCondition.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\condition\ceConversationConditionList.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\condition\ceConversationConditionReference.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\coordsystem\ceCoordSystem.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\coordsystem\ceCoordSystemList.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\facepose\ceFacePose.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\facepose\ceFacePoseList.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\file\ceConversationFile.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\file\ceConversationFileList.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\gesture\ceGesture.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\gesture\ceGestureList.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\infobox\ceConversationInfoBox.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\playback\cePlayback.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\playback\cePlaybackActionStack.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\playback\cePlaybackActionStackEntry.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\playback\cePlaybackActor.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\playback\cePlaybackCamera.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\playback\cePlaybackEvaluateCondition.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\playback\cePlaybackProcessAction.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\playback\command\cePlaybackCommand.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\playback\command\cePlaybackCommandList.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\playback\variable\cePlaybackVariable.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\playback\variable\cePlaybackVariableList.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\playerChoiceBox\cePCBOption.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\playerChoiceBox\cePCBOptionList.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\playerChoiceBox\cePlayerChoiceBox.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\prop\ceProp.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\prop\cePropList.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\strip\ceStrip.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\strip\ceStripList.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\target\ceTarget.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\target\ceTargetList.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\textbox\ceTextBox.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\textbox\ceTextBoxText.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\textbox\ceTextBoxTextList.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\topic\ceConversationTopic.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\topic\ceConversationTopicList.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\ConvoEditor.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\ceCanvasRuleOfThirdsAid.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\ceTaskSyncGameDefinition.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\ceViewConversation.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\ceViewConversationListener.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\ceWindowMain.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\ceWindowMainListener.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\dialog\ceDialogEditStringWithList.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\dialog\ceDialogEditStrip.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\dialog\ceDialogPasteSnippet.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\dopesheet\ceWDSVAPreview.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\dopesheet\ceWindowDopeSheet.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\dopesheet\ceWindowDopeSheetListener.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\dopesheet\lane\ceWDSLane.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\dopesheet\lane\ceWDSLaneBodyLookAt.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\dopesheet\lane\ceWDSLaneEyesLookAt.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\dopesheet\lane\ceWDSLaneFacePose.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\dopesheet\lane\ceWDSLaneGesture.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\dopesheet\lane\ceWDSLaneHeadLookAt.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\dopesheet\lane\ceWDSLaneWord.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\actions\ceWPAActorAdd.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\actions\ceWPAActorCmd.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\actions\ceWPAActorRemove.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\actions\ceWPAActorSpeak.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\actions\ceWPACameraShot.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\actions\ceWPAComment.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\actions\ceWPACoordSystemAdd.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\actions\ceWPACoordSystemRemove.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\actions\ceWPAction.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\actions\ceWPAGameCommand.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\actions\ceWPAIfElse.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\actions\ceWPAMusic.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\actions\ceWPAPlayerChoice.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\actions\ceWPASetAParam.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\actions\ceWPASetVariable.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\actions\ceWPASnippet.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\actions\ceWPAStopConversation.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\actions\ceWPAStopTopic.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\actions\ceWPATrigger.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\actions\ceWPAWait.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\ceWindowProperties.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\ceWPConversation.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\ceWPConversationListener.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\ceWPTopic.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\ceWPTopicListener.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\ceWPUndoHistory.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\ceWPUndoHistoryListener.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\ceWPView.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\ceWPViewListener.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\conditions\ceWPCActorCommand.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\conditions\ceWPCActorInConversation.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\conditions\ceWPCAParam.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\conditions\ceWPCGameCommand.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\conditions\ceWPCHasActor.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\conditions\ceWPCLogic.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\conditions\ceWPCondition.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\conditions\ceWPCTrigger.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\conditions\ceWPCVariable.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\action\ceWPTTIMAActorAdd.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\action\ceWPTTIMAActorCommand.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\action\ceWPTTIMAActorRemove.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\action\ceWPTTIMAActorSpeak.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\action\ceWPTTIMACameraShot.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\action\ceWPTTIMAComment.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\action\ceWPTTIMACoordSystemAdd.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\action\ceWPTTIMACoordSystemRemove.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\action\ceWPTTIMAction.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\action\ceWPTTIMActions.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\action\ceWPTTIMAGameCommand.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\action\ceWPTTIMAMusic.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\action\ceWPTTIMASetActorParameter.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\action\ceWPTTIMASetVariable.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\action\ceWPTTIMASnippet.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\action\ceWPTTIMAStopConversation.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\action\ceWPTTIMAStopTopic.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\action\ceWPTTIMATrigger.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\action\ifelse\ceWPTTIMAIfElse.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\action\ifelse\ceWPTTIMAIfElseElse.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\action\ifelse\ceWPTTIMAIfElseIfCase.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\action\ifelse\ceWPTTIMAIfElseIfCaseActions.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\action\ifelse\ceWPTTIMAIfElseIfCaseCondition.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\action\playerChoice\ceWPTTIMAPlayerChoice.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\action\playerChoice\ceWPTTIMAPlayerChoiceActions.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\action\playerChoice\ceWPTTIMAPlayerChoiceOption.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\action\playerChoice\ceWPTTIMAPlayerChoiceOptionActions.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\action\playerChoice\ceWPTTIMAPlayerChoiceOptionCondition.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\action\wait\ceWPTTIMAWait.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\action\wait\ceWPTTIMAWaitActions.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\action\wait\ceWPTTIMAWaitCondition.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\ceWPTTreeItem.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\ceWPTTreeItemModel.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\ceWPTTreeModel.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\ceWPTTreeModelListener.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\condition\ceWPTTIMCActorCommand.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\condition\ceWPTTIMCActorInConversation.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\condition\ceWPTTIMCActorParameter.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\condition\ceWPTTIMCGameCommand.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\condition\ceWPTTIMCHasActor.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\condition\ceWPTTIMCLogic.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\condition\ceWPTTIMCondition.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\condition\ceWPTTIMConditionContainer.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\condition\ceWPTTIMConditions.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\condition\ceWPTTIMCTrigger.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\condition\ceWPTTIMCVariable.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\ceWPTMACopyAction.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\ceWPTMACopyActions.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\ceWPTMACreateAction.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\ceWPTMAPasteActions.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\ceWPTMAPasteSnippet.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\ceWPTMARemoveAllActions.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\ifelse\ceWPTMAIfElseCaseAdd.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\ifelse\ceWPTMAIfElseCaseAddAction.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\ifelse\ceWPTMAIfElseCaseClearCondition.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\ifelse\ceWPTMAIfElseCaseCopyActions.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\ifelse\ceWPTMAIfElseCaseCutAction.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\ifelse\ceWPTMAIfElseCaseMove.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\ifelse\ceWPTMAIfElseCaseMoveAction.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\ifelse\ceWPTMAIfElseCasePasteActions.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\ifelse\ceWPTMAIfElseCasePasteCondition.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\ifelse\ceWPTMAIfElseCasePasteSnippet.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\ifelse\ceWPTMAIfElseCaseRemove.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\ifelse\ceWPTMAIfElseCaseRemoveAction.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\ifelse\ceWPTMAIfElseCaseRemoveAllActions.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\ifelse\ceWPTMAIfElseCaseSetCondition.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\ifelse\ceWPTMAIfElseElseAddAction.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\ifelse\ceWPTMAIfElseElseCopyActions.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\ifelse\ceWPTMAIfElseElseCutAction.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\ifelse\ceWPTMAIfElseElseMoveAction.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\ifelse\ceWPTMAIfElseElsePasteActions.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\ifelse\ceWPTMAIfElseElsePasteSnippet.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\ifelse\ceWPTMAIfElseElseRemoveAction.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\ifelse\ceWPTMAIfElseElseRemoveAllActions.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\playerChoice\ceWPTMAPChoiceActionsAddAction.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\playerChoice\ceWPTMAPChoiceActionsCopyActions.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\playerChoice\ceWPTMAPChoiceActionsCutAction.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\playerChoice\ceWPTMAPChoiceActionsMoveAction.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\playerChoice\ceWPTMAPChoiceActionsPasteActions.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\playerChoice\ceWPTMAPChoiceActionsPasteSnippet.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\playerChoice\ceWPTMAPChoiceActionsRemoveAction.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\playerChoice\ceWPTMAPChoiceActionsRemoveAllActions.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\playerChoice\ceWPTMAPChoiceOptionAdd.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\playerChoice\ceWPTMAPChoiceOptionAddAction.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\playerChoice\ceWPTMAPChoiceOptionClearCondition.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\playerChoice\ceWPTMAPChoiceOptionCopyActions.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\playerChoice\ceWPTMAPChoiceOptionCutAction.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\playerChoice\ceWPTMAPChoiceOptionMove.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\playerChoice\ceWPTMAPChoiceOptionMoveAction.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\playerChoice\ceWPTMAPChoiceOptionPasteActions.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\playerChoice\ceWPTMAPChoiceOptionPasteCondition.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\playerChoice\ceWPTMAPChoiceOptionPasteSnippet.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\playerChoice\ceWPTMAPChoiceOptionRemove.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\playerChoice\ceWPTMAPChoiceOptionRemoveAction.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\playerChoice\ceWPTMAPChoiceOptionRemoveAllActions.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\playerChoice\ceWPTMAPChoiceOptionSetCondition.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\topic\ceWPTMATopicAddAction.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\topic\ceWPTMATopicCopyActions.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\topic\ceWPTMATopicCutAction.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\topic\ceWPTMATopicMoveAction.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\topic\ceWPTMATopicPasteActions.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\topic\ceWPTMATopicPasteSnippet.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\topic\ceWPTMATopicRemoveAction.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\topic\ceWPTMATopicRemoveAllActions.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\wait\ceWPTMAWaitActionsAddAction.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\wait\ceWPTMAWaitActionsClearCondition.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\wait\ceWPTMAWaitActionsCopyActions.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\wait\ceWPTMAWaitActionsCutAction.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\wait\ceWPTMAWaitActionsMoveAction.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\wait\ceWPTMAWaitActionsPasteActions.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\wait\ceWPTMAWaitActionsPasteCondition.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\wait\ceWPTMAWaitActionsPasteSnippet.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\wait\ceWPTMAWaitActionsRemoveAction.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\wait\ceWPTMAWaitActionsRemoveAllActions.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\action\wait\ceWPTMAWaitActionsSetCondition.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\ceWPTMenuAction.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\condition\ceWPTMACopyCondition.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\condition\ceWPTMACreateCondition.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\condition\ceWPTMAPasteCondition.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\condition\logic\ceWPTMACLogicAddCondition.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\condition\logic\ceWPTMACLogicClearCondition.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\condition\logic\ceWPTMACLogicCutCondition.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\condition\logic\ceWPTMACLogicPasteCondition.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\gui\properties\model\menuactions\condition\logic\ceWPTMACLogicRemoveCondition.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\loadsave\ceLoadSaveConversation.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\loadsave\ceLoadSaveCTA.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\loadsave\ceLoadSaveCTGS.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\loadsave\ceLoadSaveCTS.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\loadsave\ceLoadSaveSystem.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorAdd\ceUCAActorAddSetActor.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorAdd\ceUCAActorAddSetAliasID.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorCommand\ceUCAACmdSetActor.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorCommand\ceUCAACmdSetCommand.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorRemove\ceUCAActorRemoveSetActor.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\bodyLookAt\ceUCAASpeakBodyLAAdd.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\bodyLookAt\ceUCAASpeakBodyLAClear.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\bodyLookAt\ceUCAASpeakBodyLAMove.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\bodyLookAt\ceUCAASpeakBodyLARemove.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\bodyLookAt\ceUCAASpeakBodyLAScale.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\bodyLookAt\ceUCAASpeakBodyLASet.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\bodyLookAt\ceUCAASpeakBodyLASetDuration.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\bodyLookAt\ceUCAASpeakBodyLASetName.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\bodyLookAt\ceUCAASpeakBodyLASetPause.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\ceUCAASpeakSetActor.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\ceUCAASpeakSetMinSpeechTime.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\ceUCAASpeakSetMovement.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\ceUCAASpeakSetPathSound.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\ceUCAASpeakSetTextBoxText.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\ceUCAASpeakSetTextBoxTextStyle.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\ceUCAASpeakSetTextBoxTextTranslate.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\ceUCAASpeakToggleUseSpeechAnimation.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\eyesLookAt\ceUCAASpeakEyesLAAdd.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\eyesLookAt\ceUCAASpeakEyesLAClear.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\eyesLookAt\ceUCAASpeakEyesLAFromHeadLA.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\eyesLookAt\ceUCAASpeakEyesLAMove.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\eyesLookAt\ceUCAASpeakEyesLARemove.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\eyesLookAt\ceUCAASpeakEyesLAScale.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\eyesLookAt\ceUCAASpeakEyesLASet.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\eyesLookAt\ceUCAASpeakEyesLASetDuration.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\eyesLookAt\ceUCAASpeakEyesLASetName.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\eyesLookAt\ceUCAASpeakEyesLASetPause.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\facePose\ceUCAASpeakFaceAdd.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\facePose\ceUCAASpeakFaceClear.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\facePose\ceUCAASpeakFaceMove.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\facePose\ceUCAASpeakFaceRemove.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\facePose\ceUCAASpeakFaceSet.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\facePose\ceUCAASpeakFaceSetDuration.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\facePose\ceUCAASpeakFaceSetName.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\facePose\ceUCAASpeakFaceSetPause.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\facePose\ceUCAASpeakFacesScale.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\gesture\ceUCAASpeakGestureAdd.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\gesture\ceUCAASpeakGestureClear.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\gesture\ceUCAASpeakGestureMove.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\gesture\ceUCAASpeakGestureRemove.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\gesture\ceUCAASpeakGestureSet.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\gesture\ceUCAASpeakGestureSetDuration.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\gesture\ceUCAASpeakGestureSetName.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\gesture\ceUCAASpeakGestureSetPause.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\gesture\ceUCAASpeakGesturesScale.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\headLookAt\ceUCAASpeakHeadLAAdd.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\headLookAt\ceUCAASpeakHeadLAClear.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\headLookAt\ceUCAASpeakHeadLAFromEyesLA.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\headLookAt\ceUCAASpeakHeadLAMove.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\headLookAt\ceUCAASpeakHeadLARemove.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\headLookAt\ceUCAASpeakHeadLAScale.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\headLookAt\ceUCAASpeakHeadLASet.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\headLookAt\ceUCAASpeakHeadLASetDuration.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\headLookAt\ceUCAASpeakHeadLASetName.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\headLookAt\ceUCAASpeakHeadLASetPause.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\strip\ceUCAASpeakStripSetDuration.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\strip\ceUCAASpeakStripSetID.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\strip\ceUCAASpeakStripSetPause.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\strip\ceUCAASpeakStripsScale.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\word\ceUCAASpeakWordAdd.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\word\ceUCAASpeakWordClear.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\word\ceUCAASpeakWordFromText.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\word\ceUCAASpeakWordMove.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\word\ceUCAASpeakWordRemove.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\word\ceUCAASpeakWordScale.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\word\ceUCAASpeakWordSet.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\word\ceUCAASpeakWordSetDuration.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\word\ceUCAASpeakWordSetName.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\word\ceUCAASpeakWordSetPause.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\word\ceUCAASpeakWordsScale.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\cameraShot\ceUCACameraShotSetName.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\cameraShot\ceUCACShotSetCameraTarget.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\cameraShot\ceUCACShotSetDuration.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\cameraShot\ceUCACShotSetLookAtTarget.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\cameraShot\ceUCACShotToggleLockCameraTarget.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\cameraShot\ceUCACShotToggleLockLookAtTarget.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\ceUActionHelpers.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\ceUCActionAdd.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\ceUCActionMove.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\ceUCActionPaste.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\ceUCActionRemove.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\ceUCActionRemoveAll.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\ceUCActionSetDelay.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\ceUCActionSetWaitForActorID.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\ceUCActionToggleWaitForActor.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\ceUCTopicActionPaste.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\ceUndoCAction.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\ceUndoCActionList.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\comment\ceUCACommentSetComment.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\coordSystemAdd\ceUCACoordSysAddSetAliasID.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\coordSystemAdd\ceUCACoordSysAddSetCoordSysID.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\coordSystemRemove\ceUCACoordSysRemoveSetCoordSysID.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\gameCommand\ceUCAGameCmdSetCommand.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\ifElse\ceUCAIfElseAdd.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\ifElse\ceUCAIfElseCaseAdd.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\ifElse\ceUCAIfElseCaseCutCondition.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\ifElse\ceUCAIfElseCaseMove.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\ifElse\ceUCAIfElseCasePasteCondition.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\ifElse\ceUCAIfElseCaseRemove.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\ifElse\ceUCAIfElseCaseSetCondition.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\ifElse\ceUCAIfElseMove.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\ifElse\ceUCAIfElsePaste.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\ifElse\ceUCAIfElseRemove.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\ifElse\ceUCAIfElseRemoveAll.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\music\ceUCAMusicSetName.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\playerChoice\ceUCAPChoiceActionAdd.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\playerChoice\ceUCAPChoiceActionMove.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\playerChoice\ceUCAPChoiceActionPaste.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\playerChoice\ceUCAPChoiceActionRemove.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\playerChoice\ceUCAPChoiceActionRemoveAll.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\playerChoice\ceUCAPChoiceOptionAdd.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\playerChoice\ceUCAPChoiceOptionCutCondition.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\playerChoice\ceUCAPChoiceOptionMove.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\playerChoice\ceUCAPChoiceOptionPasteCondition.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\playerChoice\ceUCAPChoiceOptionRemove.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\playerChoice\ceUCAPChoiceOptionSetCondition.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\playerChoice\ceUCAPChoiceOptionSetText.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\playerChoice\ceUCAPChoiceSetVarName.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\setActorParameter\ceUCASetAParamSetActor.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\setActorParameter\ceUCASetAParamSetName.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\setActorParameter\ceUCASetAParamSetOp.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\setActorParameter\ceUCASetAParamSetValue.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\setActorParameter\ceUCASetAParamSetValueVariable.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\setVariable\ceUCASetVarSetName.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\setVariable\ceUCASetVarSetOp.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\setVariable\ceUCASetVarSetValue.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\setVariable\ceUCASetVarSetValueVariable.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\snippet\ceUCASnippetSetFile.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\snippet\ceUCASnippetSetTopic.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\trigger\ceUCATriggerSetAction.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\trigger\ceUCATriggerSetName.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\wait\ceUCAWaitAdd.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\wait\ceUCAWaitCutCondition.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\wait\ceUCAWaitMove.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\wait\ceUCAWaitPaste.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\wait\ceUCAWaitPasteCondition.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\wait\ceUCAWaitRemove.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\wait\ceUCAWaitRemoveAll.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\wait\ceUCAWaitSetCondition.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\wait\ceUCAWaitSetInterval.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\cameraShot\ceUCCShotAdd.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\cameraShot\ceUCCShotRemove.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\cameraShot\ceUCCShotSetActorCount.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\cameraShot\ceUCCShotSetCamDistFrom.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\cameraShot\ceUCCShotSetCamDistTo.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\cameraShot\ceUCCShotSetCameraTarget.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\cameraShot\ceUCCShotSetCamOrbitFrom.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\cameraShot\ceUCCShotSetCamOrbitTo.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\cameraShot\ceUCCShotSetFovFrom.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\cameraShot\ceUCCShotSetFovTo.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\cameraShot\ceUCCShotSetLookAtTarget.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\cameraShot\ceUCCShotSetName.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\cameraShot\ceUCCShotSetOffCamFrom.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\cameraShot\ceUCCShotSetOffCamTo.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\cameraShot\ceUCCShotSetOffLookAtFrom.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\cameraShot\ceUCCShotSetOffLookAtTo.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\cameraShot\ceUCCShotSetParameter.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\cameraShot\ceUCCShotSetPosFrom.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\cameraShot\ceUCCShotSetPosTo.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\cameraShot\ceUCCShotSetRotFrom.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\cameraShot\ceUCCShotSetRotTo.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\cameraShot\ceUCCShotSetTiltFrom.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\cameraShot\ceUCCShotSetTiltTo.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\cameraShot\ceUCCShotToggleAlignTargets.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\cameraShot\ceUCCShotToggleLockCameraTarget.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\cameraShot\ceUCCShotToggleLockLookAtTarget.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\cameraShot\ceUCCShotToggleLockUpAxis.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\cameraShot\ceUCCShotToggleRelativeToLookAt.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\ceUConvoSetImportConvoPath.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\condition\actorCommand\ceUCCACommandSetActor.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\condition\actorCommand\ceUCCACommandSetCommand.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\condition\actorCommand\ceUCCACommandToggleNegate.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\condition\actorInConversation\ceUCCAInConvoSetActor.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\condition\actorInConversation\ceUCCAInConvoToggleNegate.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\condition\actorParameter\ceUCCAParamSetActor.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\condition\actorParameter\ceUCCAParamSetOperator.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\condition\actorParameter\ceUCCAParamSetParameter.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\condition\actorParameter\ceUCCAParamSetTestValue.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\condition\actorParameter\ceUCCAParamSetTestVariable.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\condition\ceUConditionHelpers.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\condition\gameCommand\ceUCCGameCmdSetCommand.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\condition\gameCommand\ceUCCGameCmdToggleNegate.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\condition\hasActor\ceUCCHasActorSetActor.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\condition\hasActor\ceUCCHasActorToggleNegate.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\condition\logic\ceUCCLogicAdd.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\condition\logic\ceUCCLogicPaste.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\condition\logic\ceUCCLogicRemove.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\condition\logic\ceUCCLogicRemoveAll.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\condition\logic\ceUCCLogicSetOperator.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\condition\trigger\ceUCCTriggerSetTestMode.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\condition\trigger\ceUCCTriggerSetTrigger.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\condition\variable\ceUCCVarSetOperator.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\condition\variable\ceUCCVarSetTestValue.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\condition\variable\ceUCCVarSetTestVariable.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\condition\variable\ceUCCVarSetVariable.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\facePose\ceUCFacePoseAdd.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\facePose\ceUCFacePoseRemove.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\facePose\ceUCFacePoseSetName.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\facePose\controller\ceUCFPControllerAdd.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\facePose\controller\ceUCFPControllerRemove.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\facePose\controller\ceUCFPControllerSetValue.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\file\ceUCFileAdd.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\file\ceUCFileDuplicate.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\file\ceUCFilePaste.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\file\ceUCFileRemove.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\file\ceUCFileSetID.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\gesture\ceUCGestureAdd.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\gesture\ceUCGestureRemove.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\gesture\ceUCGestureSetAnimator.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\gesture\ceUCGestureSetDuration.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\gesture\ceUCGestureSetLength.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\gesture\ceUCGestureSetName.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\gesture\ceUCGestureToggleHold.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\target\ceUCTargetAdd.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\target\ceUCTargetRemove.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\target\ceUCTargetSetActor.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\target\ceUCTargetSetBone.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\target\ceUCTargetSetEntityID.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\target\ceUCTargetSetName.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\target\ceUCTargetSetOrientation.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\target\ceUCTargetSetPosition.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\topic\ceUCTopicAdd.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\topic\ceUCTopicDuplicate.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\topic\ceUCTopicPaste.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\topic\ceUCTopicRemove.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\topic\ceUCTopicSetID.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\utils\ceControllerValue.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\utils\ceControllerValueList.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\langpack\ceLangPack.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\langpack\ceLangPackEntry.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\loadsave\ceLoadSaveLangPack.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\undosys\action\actorSpeak\ceUCAASpeakMoveTbt2Translation.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

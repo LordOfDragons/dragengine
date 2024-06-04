@@ -15,9 +15,9 @@ appendLibrary( envModule, parent_targets[ 'dragengine' ], libs )
 appendLibrary( envModule, parent_targets[ 'lib_libapng' ], libs )
 
 # fetch values in expanded form for later use
-versionMajor = 1
-versionMinor = 0
-versionString = '{}.{}'.format( versionMajor, versionMinor )
+versionString = '1.17'
+if envModule['force_version']:
+	versionString = envModule['force_version']
 
 pathConfig = '{}/modules/video/apng/{}'.format( envModule.subst( envModule[ 'path_de_config' ] ), versionString )
 pathModule = '{}/modules/video/apng/{}'.format( envModule.subst( envModule[ 'path_de_data' ] ), versionString )
@@ -33,7 +33,7 @@ globFiles( envModule, 'src', '*.h', headers )
 
 objects = [ envModule.SharedObject( s ) for s in sources ]
 
-library = envModule.SharedLibrary( target='vidapng', source=objects, LIBS=libs )
+library = envModule.LoadableModule( target='vidapng', source=objects, LIBS=libs )
 targetBuild = envModule.Alias( 'vid_apng_build', library )
 
 install = []
@@ -43,10 +43,16 @@ for l in library:
 		install.append( envModule.Install( pathModule, l ) )
 		archive[ os.path.join( pathModule, l.name ) ] = l
 
+if envModule['OSWindows'] and envModule['CROSSCOMPILE_CLANG'] and envModule['with_install_pdb']:
+	pathPdb = os.path.join(envModule.subst(envModule['path_pdb']), 'EngineModules')
+	install.append(envModule.Install(pathPdb, 'vidapng.pdb'))
+	archive['{}/vidapng.pdb'.format(pathPdb)] = envModule.File('vidapng.pdb')
+
 manifestUpdates = [
 	{ 'action': 'filename', 'name': library[ 0 ].name, 'keyword': 'FILENAME' },
 	{ 'action': 'filesize', 'path': library[ 0 ].abspath, 'keyword': 'FILESIZE' },
-	{ 'action': 'filehash', 'path': library[ 0 ].abspath, 'keyword': 'SHA1SUM' } ]
+	{ 'action': 'filehash', 'path': library[ 0 ].abspath, 'keyword': 'SHA1SUM' },
+	{'action': 'text', 'value': versionString, 'keyword': 'VERSION'}]
 
 for l in reversed( parent_targets[ 'lib_libapng' ][ 'runtimelibs' ] ):
 	manifestUpdates.append( { 'action': 'preloadLibrary', 'path': l.name } )
@@ -57,6 +63,7 @@ manifest = envModule.File( 'src/module.xml' )
 updateManifest = envModule.Command( manifest, manifest.srcnode(),
 	Action( UpdateModuleManifest ), ManifestUpdates=manifestUpdates )
 Depends( updateManifest, library )
+Depends(updateManifest, 'SConscript')
 Depends( updateManifest, parent_targets[ 'lib_libapng' ][ 'runtimelibs' ] )
 
 install.append( envModule.Install( pathModule, updateManifest ) )
@@ -78,6 +85,7 @@ parent_targets[ 'vid_apng' ] = {
 	'name' : 'Animated PNG Video Module',
 	'build' : targetBuild,
 	'install' : targetInstall,
+	'install-engine-runtime' : targetInstall,
 	'archive-engine' : archive,
 	'cloc' : buildCloc,
 	'clocReport' : '{}/clocreport.csv'.format( srcdir ) }

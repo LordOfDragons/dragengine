@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Bullet Physics Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEBPTOUCHSENSOR_H_
@@ -39,7 +42,7 @@ class deDebugDrawerShape;
 
 
 /**
- * \brief Bullet touch sensor peer.
+ * Bullet touch sensor peer.
  */
 class debpTouchSensor : public deBasePhysicsTouchSensor{
 private:
@@ -71,10 +74,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create peer. */
+	/** Create peer. */
 	debpTouchSensor( dePhysicsBullet &bullet, deTouchSensor &touchSensor );
 	
-	/** \brief Clean up peer. */
+	/** Clean up peer. */
 	virtual ~debpTouchSensor();
 	/*@}*/
 	
@@ -82,99 +85,102 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Module. */
+	/** Module. */
 	inline dePhysicsBullet &GetBullet() const{ return pBullet; }
 	
-	/** \brief Touch sensor. */
+	/** Touch sensor. */
 	inline deTouchSensor &GetTouchSensor() const{ return pTouchSensor; }
 	
 	
 	
-	/** \brief Shape. */
+	/** Shape. */
 	inline const debpShapeList &GetShape() const{ return pShape; }
 	
-	/** \brief Retrieves the ghost object. */
+	/** Retrieves the ghost object. */
 	inline debpGhostObject *GetGhostObject() const{ return pGhostObject; }
 	
-	/** \brief Retrieves the list of touching colliders. */
+	/** Retrieves the list of touching colliders. */
 	inline decPointerOrderedSet &GetTouchingColliders(){ return pTouchingColliders; }
 	inline const decPointerOrderedSet &GetTouchingColliders() const{ return pTouchingColliders; }
 	
-	/** \brief Retrieves the list of leaving colliders. */
+	/** Retrieves the list of leaving colliders. */
 	inline decPointerOrderedSet &GetLeavingColliders(){ return pLeavingColliders; }
 	inline const decPointerOrderedSet &GetLeavingColliders() const{ return pLeavingColliders; }
 	
 	
 	
-	/** \brief Parent world or \em NULL. */
+	/** Parent world or \em NULL. */
 	inline debpWorld *GetParentWorld() const{ return pParentWorld; }
 	
-	/** \brief Set parent world or \em NULL. */
+	/** Set parent world or \em NULL. */
 	void SetParentWorld( debpWorld *parentWorld );
 	
-	/** \brief Minimum extend. */
+	/** Minimum extend. */
 	const decDVector &GetMinimumExtend();
 	
-	/** \brief Maximum extend. */
+	/** Maximum extend. */
 	const decDVector &GetMaximumExtend();
 	
-	/** \brief Matrix. */
+	/** Matrix. */
 	const decDMatrix &GetMatrix();
 	
-	/** \brief Inverse matrix. */
+	/** Inverse matrix. */
 	const decDMatrix &GetInverseMatrix();
 	
-	/** \brief Apply accumulated changes. */
+	/** Apply accumulated changes. */
 	void ApplyChanges();
 	
-	/** \brief Mark ghost object dirty to force an update. */
+	/** Mark ghost object dirty to force an update. */
 	void MarkGhostObjectDirty();
 	
-	/** \brief Touch sensor and collider collide. */
+	/** Touch sensor and collider collide. */
 	bool Collides( const debpCollider &collider ) const;
 	
-	/** \brief Touch sensor and collider do not collide. */
+	/** Touch sensor and collider do not collide. */
 	bool CollidesNot( const debpCollider &collider ) const;
 	
-	/** \brief Determines if a collider touches the shape. */
+	/** Determines if a collider touches the shape. */
 	bool TestCollider( debpCollider *collider );
+	
+	/** Remove collider immediately. For use by debpCollider only during cleaning up. */
+	void RemoveColliderImmediately( debpCollider *collider );
 	/*@}*/
 	
 	
 	
 	/** \name Notifications */
 	/*@{*/
-	/** \brief Position changed. */
+	/** Position changed. */
 	virtual void PositionChanged();
 	
-	/** \brief Orientation changed. */
+	/** Orientation changed. */
 	virtual void OrientationChanged();
 	
-	/** \brief Layer mask changed. */
+	/** Layer mask changed. */
 	virtual void CollisionFilterChanged();
 	
-	/** \brief Ignore colliders changed. */
+	/** Ignore colliders changed. */
 	virtual void IgnoreCollidersChanged();
 	
-	/** \brief Track enter/leave changed. */
+	/** Track enter/leave changed. */
 	virtual void TrackEnterLeaveChanged();
 	
-	/** \brief Enabled changed. */
+	/** Enabled changed. */
 	virtual void EnabledChanged();
 	
-	/** \brief Touch sensor contains no colliders. */
+	/** Touch sensor contains no colliders. */
 	virtual bool IsEmpty();
 	
-	/** \brief Number of colliders in touch sensor. */
+	/** Number of colliders in touch sensor. */
 	virtual int GetColliderCount();
 	
 	/**
-	 * \brief Collider at index in touch sensor.
+	 * Collider at index in touch sensor.
 	 * \param collider Index of the collider retrieve.
 	 */
 	virtual deCollider *GetColliderAt( int collider );
 	
-	/** \brief Shape changed. */
+	/** Shape changed. */
 	virtual void ShapeChanged();
 	/*@}*/
 	
@@ -182,18 +188,18 @@ public:
 	
 	/** \name Collision Detection */
 	/*@{*/
-	/** \brief Test if a point is located inside the collider. */
+	/** Test if a point is located inside the collider. */
 	virtual bool PointInside( const decDVector &point );
 	
 	/**
-	 * \brief Visit all touching elements with listener.
+	 * Visit all touching elements with listener.
 	 * 
 	 * To stop testing set StopTesting in the provided collision information object to true.
 	 */
 	virtual void AllHits( deBaseScriptingCollider *listener );
 	
 	/**
-	 * \brief Test ray for collision with the element in the given shape.
+	 * Test ray for collision with the element in the given shape.
 	 * 
 	 * For each collision the collisionResponse function the given listener is called.
 	 * To stop testing set StopTesting in the provided collision information object to true.
@@ -204,7 +210,7 @@ public:
 	deBaseScriptingCollider *listener );
 	
 	/**
-	 * \brief Test collider for collision with scene elements.
+	 * Test collider for collision with scene elements.
 	 * 
 	 * For each collision the collisionResponse function of the listener assigned to the
 	 * collider is called. To stop testing set StopTesting in the provided collision
@@ -213,7 +219,7 @@ public:
 	virtual void ColliderHits( deCollider *collider, deBaseScriptingCollider *listener );
 	
 	/**
-	 * \brief Test moving collider for collision with scene elements.
+	 * Test moving collider for collision with scene elements.
 	 * 
 	 * For each collision starting with the earliest the collisionResponse function of the
 	 * listener assigned to the collider is called. To stop testing set StopTesting in the
@@ -223,7 +229,7 @@ public:
 	deBaseScriptingCollider *listener );
 	
 	/**
-	 * \brief Test rotating collider for collision with scene elements.
+	 * Test rotating collider for collision with scene elements.
 	 * 
 	 * For each collision starting with the earliest the collisionResponse function of the
 	 * listener assigned to the collider is called. To stop testing set StopTesting in the
@@ -233,7 +239,7 @@ public:
 	deBaseScriptingCollider *listener );
 	
 	/**
-	 * \brief Test moving and rotating collider for collision with scene elements.
+	 * Test moving and rotating collider for collision with scene elements.
 	 * 
 	 * For each collision starting with the earliest the collisionResponse function of the
 	 * listener assigned to the collider is called. To stop testing set StopTesting in the
@@ -247,17 +253,17 @@ public:
 	
 	/** \name Debugging */
 	/*@{*/
-	/** \brief Debug drawer or \em NULL if not activated .*/
+	/** Debug drawer or \em NULL if not activated .*/
 	inline deDebugDrawer *GetDebugDrawer() const{ return pDebugDrawer; }
 	
-	/** \brief Debug drawer shape or \em NULL if not ativated. */
+	/** Debug drawer shape or \em NULL if not ativated. */
 	inline deDebugDrawerShape *GetDDSShape() const{ return pDDSShape; }
 	
-	/** \brief Update debug drawer if developer mode is enabled. */
+	/** Update debug drawer if developer mode is enabled. */
 	void UpdateDebugDrawer();
 	
 	/**
-	 * \brief Update debug drawer shape shape.
+	 * Update debug drawer shape shape.
 	 * \details Called after creating debug drawer or if the collider subclass requires an update.
 	 */
 	void UpdateDDSShape();

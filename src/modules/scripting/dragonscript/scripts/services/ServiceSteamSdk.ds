@@ -1,0 +1,342 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Services
+
+
+/**
+ * \brief Service providing access to Steam SDK functionality if supported.
+ * \version 1.23
+ * 
+ * Provides acess to these functionalities:
+ * - Stats/Achievements
+ */
+class ServiceSteamSdk implements ServiceStats, ServiceListener
+	var int pAppId
+	var Service pService
+	var Array pStatsListeners
+	var Set pGetStatsApiNames, pGetAchievementsApiNames
+	var Set pSetStatsApiNames, pSetAchievementsApiNames
+	
+	
+	
+	/**
+	 * \brief Create service ServiceSteamSdk.
+	 * \param appId Application identifier.
+	 * \throws EInvalidParam Steam service module is not present.
+	 * \throws EInvalidAction Steam is not running.
+	 * \throws EInvalidAction Steam SDK can not be initialized.
+	 */
+	func new(int appId)
+		pAppId = appId
+		pStatsListeners = Array.new()
+		
+		var ServiceObject so = ServiceObject.new()
+		so.setIntChildAt("appId", pAppId)
+		pService = Service.new("SteamSDK", so)
+		
+		pService.setListener(this)
+	end
+	
+	/**
+	 * \brief Dispose of Steam SDK service.
+	 */
+	func void dispose()
+		pStatsListeners.removeAll()
+		
+		if pService != null
+			pService.setListener(null)
+		end
+		pService = null
+	end
+	
+	
+	
+	/**
+	 * \brief Checks if Steam SDK service is supported.
+	 * 
+	 * Service is reported supported if the Steam SDK Service Module is present.
+	 * Creating the service can still fail if Steam is not running.
+	 */
+	static func bool isServiceSupported()
+		return Engine.getSupportedServices().has("SteamSDK")
+	end
+	
+	
+	
+	/**
+	 * Steam application identifier.
+	 */
+	func int getAppId()
+		return pAppId
+	end
+	
+	
+	
+	/**
+	 * \brief Add stats and achievements listener.
+	 * \param listener Listener to add
+	 */
+	func void addStatListener(ServiceStatsListener listener)
+		if listener == null
+			throw ENullPointer.new("listener")
+		end
+		pStatsListeners.add(listener)
+	end
+	
+	/**
+	 * \brief Remove stats and achievements listener.
+	 * \param listener Listener to remove.
+	 */
+	func void removeStatsListener(ServiceStatsListener listener)
+		pStatsListeners.remove(listener)
+	end
+	
+	
+	
+	/**
+	 * \brief Get stats and achievements.
+	 * 
+	 * Requests from the steam server the set of stats and achievements with the matching
+	 * api names. Once retrieved calls
+	 * \ref ServiceStatsListener#statsReceived(Object,Dictionary,Dictionary) or
+	 * \ref ServiceStatsListener#statsReceivedFailed(Object,String).
+	 */
+	func void getStatsAndAchievements(Set stats, Set achievements)
+		if stats == null
+			throw ENullPointer.new("stats")
+		end
+		if achievements == null
+			throw ENullPointer.new("achievements")
+		end
+		
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "requestCurrentStats")
+		
+		pGetStatsApiNames = Set.new(stats)
+		pGetAchievementsApiNames = Set.new(achievements)
+		
+		pService.startRequest(so)
+	end
+	
+	/**
+	 * \brief Set stats and achievements.
+	 * 
+	 * Stores stats and achievements to steam server. Once stored calls
+	 * \ref ServiceStatsListener#statsStored(Object,Set,Set) or
+	 * \ref ServiceStatsListener#statsStoredFailed(Object,String).
+	 * 
+	 * \param stats Dictionary of stats to store. Key is api name as String. Values is
+	 * either an int or float value depending on the stat type.
+	 * 
+	 * \param achievements Dictionary of achievements to store. Key is api name as String.
+	 * Value is true or false to set or clear the achievement.
+	 */
+	func void setStatsAndAchievements(Dictionary stats, Dictionary achievements)
+		if stats == null
+			throw ENullPointer.new("stats")
+		end
+		if achievements == null
+			throw ENullPointer.new("achievements")
+		end
+		
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "setStats")
+		
+		if stats.getCount() > 0
+			var ServiceObject so2 = ServiceObject.new()
+			stats.forEach(block String key, Object value
+				if value castable int
+					so2.setIntChildAt(key, value cast int)
+					
+				elif value castable float
+					so2.setFloatChildAt(key, value cast float)
+				end
+			end)
+			so.setChildAt("stats", so2)
+		end
+		
+		if achievements.getCount() > 0
+			var ServiceObject so2 = ServiceObject.new()
+			achievements.forEach(block String key, bool value
+				so2.setBoolChildAt(key, value)
+			end)
+			so.setChildAt("achievements", so2)
+		end
+		
+		pSetStatsApiNames = Set.newFrom(stats.getKeys())
+		pSetAchievementsApiNames = Set.newFrom(achievements.getKeys())
+		
+		pService.startRequest(so)
+	end
+	
+	/**
+	 * \brief Reset all stats on steam server.
+	 * 
+	 * This is mainly for development purpose to test stats and achievements.
+	 * For this reason this call does not send events to listeners.
+	 * 
+	 * \param resetAchievements Reset also achievements not just stats.
+	 */
+	func void resetAllStats(bool resetAchievements)
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "resetAllStats")
+		so.setBoolChildAt("resetAchievements", resetAchievements)
+		pService.startRequest(so)
+	end
+	
+	
+	
+	/**
+	 * \brief Service request response received.
+	 */
+	func void requestResponse(Service service, UniqueID id, ServiceObject response, bool finished)
+		var String function = response.getChildAt("function").getString()
+		
+		if function.equals("requestCurrentStats")
+			if pGetStatsApiNames == null or pGetAchievementsApiNames == null
+				return
+			end
+			
+			var ServiceObject so = ServiceObject.new()
+			so.setStringChildAt("function", "getStats")
+			
+			var ServiceObject soApiNames = ServiceObject.newList()
+			pGetStatsApiNames.forEach(block String each
+				soApiNames.addStringChild(each)
+			end)
+			so.setChildAt("stats", soApiNames)
+			
+			soApiNames = ServiceObject.newList()
+			soApiNames.addStringChild("achieveTest1")
+			so.setChildAt("achievements", soApiNames)
+			
+			pGetStatsApiNames = null
+			pGetAchievementsApiNames = null
+			
+			pService.startRequest(so)
+			
+		elif function.equals("getStats")
+			var Dictionary stats = Dictionary.new()
+			var ServiceObject so = response.getChildAt("stats")
+			so.getChildrenKeys().forEach(block String each
+				var ServiceObject so2 = so.getChildAt(each)
+				select so2.getValueType()
+				case ServiceObjectType.integer
+					stats.setAt(each, so2.getInteger())
+					
+				case ServiceObjectType.floating
+					stats.setAt(each, so2.getFloat())
+				end
+			end)
+			
+			var Dictionary achievements = Dictionary.new()
+			so = response.getChildAt("achievements")
+			so.getChildrenKeys().forEach(block String each
+				stats.setAt(each, so.getChildAt(each).getBoolean())
+			end)
+			
+			pStatsListeners.forEach(block ServiceStatsListener each
+				each.statsReceived(this, stats, achievements)
+			end)
+			
+		elif function.equals("setStats")
+			var Dictionary stats = Dictionary.new()
+			var ServiceObject so = response.getChildAt("stats")
+			so.getChildrenKeys().forEach(block String each
+				var ServiceObject so2 = so.getChildAt(each)
+				select so2.getValueType()
+				case ServiceObjectType.integer
+					stats.setAt(each, so2.getInteger())
+					
+				case ServiceObjectType.floating
+					stats.setAt(each, so2.getFloat())
+				end
+			end)
+			
+			var Dictionary achievements = Dictionary.new()
+			so = response.getChildAt("achievements")
+			so.getChildrenKeys().forEach(block String each
+				stats.setAt(each, so.getChildAt(each).getBoolean())
+			end)
+			
+			pStatsListeners.forEach(block ServiceStatsListener each
+				each.statsStored(this, stats, achievements)
+			end)
+		end
+	end
+	
+	/**
+	 * \brief Service request failed.
+	 */
+	func void requestFailed(Service service, UniqueID id, ServiceObject error)
+		var String function = error.getChildAt("function").getString()
+		
+		if function.equals("requestCurrentStats")
+			if pGetStatsApiNames == null or pGetAchievementsApiNames == null
+				return
+			end
+			
+			var String message = getErrorMessage(error)
+			pStatsListeners.forEach(block ServiceStatsListener each
+				each.statsReceivedFailed(this, message)
+			end)
+			
+		elif function.equals("getStats")
+			var String message = getErrorMessage(error)
+			pStatsListeners.forEach(block ServiceStatsListener each
+				each.statsReceivedFailed(this, message)
+			end)
+			
+		elif function.equals("setStats")
+			var String message = getErrorMessage(error)
+			pStatsListeners.forEach(block ServiceStatsListener each
+				each.statsStoredFailed(this, message)
+			end)
+		end
+	end
+	
+	/**
+	 * \brief Service notification received.
+	 */
+	func void eventReceived(Service service, ServiceObject event)
+	end
+	
+	
+	
+	/**
+	 * \brief Service module service instance.
+	 */
+	protected func Service getService()
+		return pService
+	end
+	
+	/**
+	 * \brief Get error message from response.
+	 */
+	func String getErrorMessage(ServiceObject error)
+		error = error.getChildAt("message")
+		return error != null if error.getString() else "Unknown error"
+	end
+end

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE World Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -33,6 +36,7 @@
 
 #include <deigde/engine/igdeEngineController.h>
 #include <deigde/environment/igdeEnvironment.h>
+#include <deigde/gui/igdeTimer.h>
 #include <deigde/gui/wrapper/debugdrawer/igdeWDebugDrawerShape.h>
 
 #include <dragengine/deEngine.h>
@@ -61,6 +65,24 @@
 #include <dragengine/resources/debug/deDebugDrawerManager.h>
 #include <dragengine/resources/debug/deDebugDrawer.h>
 #include <dragengine/systems/modules/physics/deBasePhysicsWorld.h>
+
+
+
+// Reattach declas timer
+//////////////////////////
+
+class meDecalTimerReattachDecals : public igdeTimer {
+private:
+	meDecal &pDecal;
+	
+public:
+	meDecalTimerReattachDecals( meDecal &decal ) : igdeTimer( *decal.GetEnvironment() ), pDecal( decal ){
+	}
+	
+	virtual void OnTimeout(){
+		pDecal.AttachDecals();
+	}
+};
 
 
 
@@ -106,39 +128,7 @@ pColliderOwner( this )
 		DETHROW( deeInvalidParam );
 	}
 	
-	deEngine &engine = *environment->GetEngineController()->GetEngine();
-	
-	try{
-		pCollider = engine.GetColliderManager()->CreateColliderVolume();
-		pCollider->SetEnabled( true );
-		pCollider->SetResponseType( deCollider::ertKinematic );
-		pCollider->SetUseLocalGravity( true );
-		
-		decLayerMask collisionCategory;
-		collisionCategory.SetBit( meWorld::eclmDecals );
-		
-		decLayerMask collisionFilter;
-		collisionFilter.SetBit( meWorld::eclmEditing );
-		
-		pCollider->SetCollisionFilter( decCollisionFilter( collisionCategory, collisionFilter ) );
-		
-		pEnvironment->SetColliderUserPointer( pCollider, &pColliderOwner );
-		
-		// create debug drawer and shapes
-		pDebugDrawer = engine.GetDebugDrawerManager()->CreateDebugDrawer();
-		pDebugDrawer->SetXRay( true );
-		
-		pDDSDecal = new igdeWDebugDrawerShape;
-		pDDSDecal->SetVisible( true );
-		pDDSDecal->SetFillColor( decColor( 0.0f, 0.0f, 0.0f, 0.0f ) );
-		pDDSDecal->SetParentDebugDrawer( pDebugDrawer );
-		
-		pUpdateDDSColors();
-		
-	}catch( const deException & ){
-		pCleanUp();
-		throw;
-	}
+	pInitShared();
 }
 
 meDecal::meDecal( const meDecal &decal ) :
@@ -181,35 +171,10 @@ pActive( false ),
 
 pColliderOwner( this )
 {
-	deEngine &engine = *pEnvironment->GetEngineController()->GetEngine();
+	pInitShared();
 	
 	try{
-		pCollider = engine.GetColliderManager()->CreateColliderVolume();
-		pCollider->SetEnabled( true );
-		pCollider->SetResponseType( deCollider::ertKinematic );
-		pCollider->SetUseLocalGravity( true );
-		
-		decLayerMask collisionCategory;
-		collisionCategory.SetBit( meWorld::eclmDecals );
-		
-		decLayerMask collisionFilter;
-		collisionFilter.SetBit( meWorld::eclmEditing );
-		
-		pCollider->SetCollisionFilter( decCollisionFilter( collisionCategory, collisionFilter ) );
-		
-		pEnvironment->SetColliderUserPointer( pCollider, &pColliderOwner );
-		
-		// create debug drawer and shapes
-		pDebugDrawer = engine.GetDebugDrawerManager()->CreateDebugDrawer();
-		pDebugDrawer->SetXRay( true );
-		
-		pDDSDecal = new igdeWDebugDrawerShape;
-		pDDSDecal->SetVisible( true );
-		pDDSDecal->SetFillColor( decColor( 0.0f, 0.0f, 0.0f, 0.0f ) );
-		pDDSDecal->SetParentDebugDrawer( pDebugDrawer );
-		
-		// init the rest
-		pEngSkin = decal.GetEngineSkin();
+		pEngSkin = decal.pEngSkin;
 		if( pEngSkin ){
 			pEngSkin->AddReference();
 		}
@@ -219,7 +184,6 @@ pColliderOwner( this )
 		pUpdateShapes();
 		// pAttachDecals(); // not needed as we have no parent world yet
 		
-		pUpdateDDSColors();
 		UpdateDynamicSkin();
 		
 	}catch( const deException & ){
@@ -238,7 +202,7 @@ meDecal::~meDecal(){
 ///////////////
 
 void meDecal::SetWorld( meWorld *world ){
-	pDetachDecals();
+	DetachDecals();
 	
 	if( pWorld ){
 		pWorld->GetEngineWorld()->RemoveCollider( pCollider );
@@ -252,8 +216,8 @@ void meDecal::SetWorld( meWorld *world ){
 		world->GetEngineWorld()->AddCollider( pCollider );
 	}
 	
-	pAttachDecals();
 	ShowStateChanged();
+	InvalidateDecals();
 }
 
 void meDecal::SetParentObject( meObject *object ){
@@ -361,9 +325,7 @@ void meDecal::SetPosition( const decDVector &position ){
 	
 	pRepositionShapes();
 	pUpdateShapes();
-	
-	pDetachDecals();
-	pAttachDecals();
+	InvalidateDecals();
 }
 
 void meDecal::SetRotation( const decVector &rotation ){
@@ -380,9 +342,7 @@ void meDecal::SetRotation( const decVector &rotation ){
 	
 	pRepositionShapes();
 	pUpdateShapes();
-	
-	pDetachDecals();
-	pAttachDecals();
+	InvalidateDecals();
 }
 
 void meDecal::SetSize( const decVector &size ){
@@ -399,9 +359,7 @@ void meDecal::SetSize( const decVector &size ){
 	}
 	
 	pUpdateShapes();
-	
-	pDetachDecals();
-	pAttachDecals();
+	InvalidateDecals();
 }
 
 void meDecal::SetTexCoordOffset( const decVector2 &offset ){
@@ -545,9 +503,7 @@ void meDecal::SetActive( bool active ){
 void meDecal::NotifyParentChanged(){
 	pRepositionShapes();
 	pUpdateShapes();
-	
-	pDetachDecals();
-	pAttachDecals();
+	InvalidateDecals();
 }
 
 
@@ -561,6 +517,16 @@ void meDecal::ShowStateChanged(){
 		pDDSDecal->SetVisible( modeDecal );
 	}
 }
+
+void meDecal::InvalidateDecals(){
+	DetachDecals();
+	pTimerReattachDecals->Start( 250, false );
+}
+
+void meDecal::OnGameDefinitionChanged(){
+	InvalidateDecals();
+}
+
 
 
 
@@ -685,6 +651,44 @@ void meDecal::NotifyActivePropertyChanged(){
 // Private Functions
 //////////////////////
 
+void meDecal::pInitShared(){
+	deEngine &engine = *pEnvironment->GetEngineController()->GetEngine();
+	
+	try{
+		pTimerReattachDecals.TakeOver( new meDecalTimerReattachDecals( *this ) );
+		
+		pCollider = engine.GetColliderManager()->CreateColliderVolume();
+		pCollider->SetEnabled( true );
+		pCollider->SetResponseType( deCollider::ertKinematic );
+		pCollider->SetUseLocalGravity( true );
+		
+		decLayerMask collisionCategory;
+		collisionCategory.SetBit( meWorld::eclmDecals );
+		
+		decLayerMask collisionFilter;
+		collisionFilter.SetBit( meWorld::eclmEditing );
+		
+		pCollider->SetCollisionFilter( decCollisionFilter( collisionCategory, collisionFilter ) );
+		
+		pEnvironment->SetColliderUserPointer( pCollider, &pColliderOwner );
+		
+		// create debug drawer and shapes
+		pDebugDrawer = engine.GetDebugDrawerManager()->CreateDebugDrawer();
+		pDebugDrawer->SetXRay( true );
+		
+		pDDSDecal = new igdeWDebugDrawerShape;
+		pDDSDecal->SetVisible( true );
+		pDDSDecal->SetFillColor( decColor( 0.0f, 0.0f, 0.0f, 0.0f ) );
+		pDDSDecal->SetParentDebugDrawer( pDebugDrawer );
+		
+		pUpdateDDSColors();
+		
+	}catch( const deException & ){
+		pCleanUp();
+		throw;
+	}
+}
+
 void meDecal::pCleanUp(){
 	SetWorld( NULL );
 	SetParentObject( NULL );
@@ -694,7 +698,7 @@ void meDecal::pCleanUp(){
 		pCollider->FreeReference();
 	}
 	
-	pDetachDecals();
+	DetachDecals();
 	
 	if( pDynamicSkin ){
 		pDynamicSkin->FreeReference();
@@ -713,7 +717,7 @@ void meDecal::pCleanUp(){
 
 
 
-void meDecal::pDetachDecals(){
+void meDecal::DetachDecals(){
 	if( ! pAttachedDecals ){
 		return;
 	}
@@ -727,11 +731,10 @@ void meDecal::pDetachDecals(){
 	pAttachedDecals = NULL;
 }
 
-void meDecal::pAttachDecals(){
+void meDecal::AttachDecals(){
+	DetachDecals();
+	
 	meWorld *world = NULL;
-	
-	pDetachDecals();
-	
 	if( pWorld ){
 		world = pWorld;
 	}
@@ -757,27 +760,22 @@ void meDecal::pAttachDecals(){
 		
 		const meCLHitList &hitlist = collect.GetCollectedElements();
 		int e, entryCount = hitlist.GetEntryCount();
-		meObject *object;
 		
 		if( entryCount > 0 ){
 			pAttachedDecals = new meAttachedDecal*[ entryCount ];
-			if( ! pAttachedDecals ) DETHROW( deeOutOfMemory );
-			
 			pAttachedDecalCount = 0;
 			
 			for( e=0; e<entryCount; e++ ){
-				const meCLHitListEntry &entry = *hitlist.GetEntryAt( e );
-				
-				object = entry.GetObject();
-				
-				if( object ){
-					deEngine * const engine = pEnvironment->GetEngineController()->GetEngine();
-					
-					pAttachedDecals[ pAttachedDecalCount ] = new meAttachedDecal( engine, this );
-					meAttachedDecal &attachedDecal = *pAttachedDecals[ pAttachedDecalCount++ ];
-					attachedDecal.SetParentObject( object );
-					attachedDecal.AttachToParent();
+				meObject * const object = hitlist.GetEntryAt( e )->GetObject();
+				if( ! object ){
+					continue;
 				}
+				
+				pAttachedDecals[ pAttachedDecalCount ] = new meAttachedDecal(
+					pEnvironment->GetEngineController()->GetEngine(), this );
+				meAttachedDecal &attachedDecal = *pAttachedDecals[ pAttachedDecalCount++ ];
+				attachedDecal.SetParentObject( object );
+				attachedDecal.AttachToParent();
 			}
 		}
 	}
@@ -928,7 +926,7 @@ void meDecal::pLoadSkin(){
 			skin = skinMgr->LoadSkin( pSkinPath, "/" );
 			
 		}catch( const deException & ){
-			skin = pEnvironment->GetErrorSkin();
+			skin = pEnvironment->GetStockSkin( igdeEnvironment::essError );
 			skin->AddReference();
 		}
 	}

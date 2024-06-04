@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -57,30 +60,56 @@ pin Dragengine.Utils
 class ECBehaviorRideOn extends DefaultECBehavior
 	/** \brief Listener for behavior instance events. */
 	interface Listener
-		func void ridableChanged( Instance instance )
+		func void ridableChanged(Instance instance)
 	end
 	
 	/** \brief Default implementation of behavior instance listener. */
 	class DefaultListener implements Listener
-		public func new()
+		func new()
 		end
 		
-		public func void ridableChanged( Instance instance )
+		func void ridableChanged(Instance instance)
 		end
 	end
+	
+	/** \brief Factory creating listeners. */
+	interface ListenerFactory
+		/** \brief Create listener. */
+		func Listener createListener(Instance instance)
+	end
+	
+	/** \brief Factory creating listeners using block. */
+	class BlockListenerFactory implements ListenerFactory
+		var Block pBlock
+		
+		/** \brief Create factory using block receiving Instance as parameter returning Listener. */
+		func new(Block blockFactory)
+			if blockFactory == null
+				throw ENullPointer.new()
+			end
+			pBlock = blockFactory
+		end
+		
+		/** \brief Create listener. */
+		func Listener createListener(Instance instance)
+			return pBlock.run(instance) cast Listener
+		end
+	end
+	
+	
 	
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
 		/** \brief Update locomotion on collider changed. */
 		protected class UpdateLocomotionListener extends ECBehaviorColliderAI.DefaultListener
-			private var Instance pInstance
+			var Instance pInstance
 			
-			public func new( Instance instance )
-				this.pInstance = instance
+			func new(Instance instance)
+				pInstance = instance
 			end
 			
-			public func void colliderChanged( ECBehaviorColliderAI.Instance instance, Collider collider )
-				this.pInstance.updateLocomotion()
+			func void colliderChanged(ECBehaviorColliderAI.Instance instance, Collider collider)
+				pInstance.updateLocomotion()
 			end
 		end
 		
@@ -88,82 +117,84 @@ class ECBehaviorRideOn extends DefaultECBehavior
 		class NoMoreTouchingGround extends ECBehaviorProjectToGround.DefaultListener
 			protected var Instance pInstance
 			
-			public func new( Instance instance )
-				this.pInstance = instance
+			func new(Instance instance)
+				pInstance = instance
 			end
 			
-			public func void touchesGroundChanged( ECBehaviorProjectToGround.Instance instance )
+			func void touchesGroundChanged(ECBehaviorProjectToGround.Instance instance)
 				if not instance.getTouchesGround()
-					this.pInstance.onNoMoreTouchingGround()
+					pInstance.onNoMoreTouchingGround()
 				end
 			end
 		end
 		
 		
-		private var ECBehaviorRideOn pECBehavior
-		private var ECBehaviorProjectToGround.Instance pProjectToGround
-		private var ECBehaviorLocomotion.Instance pLocomotion
-		private var ECBehaviorRidable.Instance pRidable
+		var ECBehaviorRideOn pECBehavior
+		var ECBehaviorProjectToGround.Instance pProjectToGround
+		var ECBehaviorLocomotion.Instance pLocomotion
+		var ECBehaviorRidable.Instance pRidable
 		
-		private var bool pLocked
-		private var ElementResolver pElementResolver
-		private var Array pListeners
+		var bool pLocked
+		var ElementResolver pElementResolver
+		var Array pListeners
 		
 		
 		
 		/** \brief Create behavior instance. */
-		public func new( ECBehaviorRideOn ecbehavior, BehaviorElement element ) super( element )
-			this.pECBehavior = ecbehavior
+		func new(ECBehaviorRideOn ecbehavior, BehaviorElement element) super(element)
+			pECBehavior = ecbehavior
 			
-			this.pLocked = false
-			this.pListeners = Array.new()
+			pLocked = false
+			pListeners = Array.new()
 			
-			this.pLocomotion = ecbehavior.getLocomotion().instance( element )
-			this.pProjectToGround = ecbehavior.getProjectToGround().instance( element )
+			pLocomotion = ecbehavior.getLocomotion().instance(element)
+			pProjectToGround = ecbehavior.getProjectToGround().instance(element)
 			
-			this.setRequiresThink( true )
+			setRequiresThink(true)
 		end
 		
 		/** \brief Dispose of behavior instance. */
-		public func void dispose()
-			this.pRidable = null
-			this.pListeners = null
-			this.pLocomotion = null
-			this.pProjectToGround = null
-			this.pElementResolver = null
+		func void dispose()
+			pRidable = null
+			pListeners = null
+			pLocomotion = null
+			pProjectToGround = null
+			pElementResolver = null
 			super.dispose()
 		end
 		
 		
 		
 		/** \brief Initialize element from stub. */
-		public func void init( StubElement stub )
-			this.pLocomotion.getColliderAI().addListener( UpdateLocomotionListener.new( this ) )
-			this.pProjectToGround.addListener( NoMoreTouchingGround.new( this ) )
+		func void init(StubElement stub)
+			pLocomotion.getColliderAI().addListener(UpdateLocomotionListener.new(this))
+			pProjectToGround.addListener(NoMoreTouchingGround.new(this))
+			
+			pECBehavior.createListeners(this)
 		end
 		
 		
 		
 		/** \brief Behavior. */
-		public func ECBehaviorRideOn getECBehavior()
-			return this.pECBehavior
+		func ECBehaviorRideOn getECBehavior()
+			return pECBehavior
 		end
 		
 		/** \brief Project to ground behavior instance. */
-		public func ECBehaviorProjectToGround.Instance getProjectToGround()
-			return this.pProjectToGround
+		func ECBehaviorProjectToGround.Instance getProjectToGround()
+			return pProjectToGround
 		end
 		
 		/** \brief Locomotion behavior instance. */
-		public func ECBehaviorLocomotion.Instance getLocomotion()
-			return this.pLocomotion
+		func ECBehaviorLocomotion.Instance getLocomotion()
+			return pLocomotion
 		end
 		
 		
 		
 		/** \brief Ridable the actor is riding on or null. */
-		public func ECBehaviorRidable.Instance getRidable()
-			return this.pRidable
+		func ECBehaviorRidable.Instance getRidable()
+			return pRidable
 		end
 		
 		/**
@@ -174,45 +205,48 @@ class ECBehaviorRideOn extends DefaultECBehavior
 		 * the direction the ridable has been moving if the actor for example jumps or
 		 * the ridable vanishes.
 		 */
-		public func void setRidable( ECBehaviorRidable.Instance ridable )
-			if ridable == this.pRidable
+		func void setRidable(ECBehaviorRidable.Instance ridable)
+			if ridable == pRidable
 				return
 			end
 			
-			var ColliderVolume colliderAI = this.pLocomotion.getColliderAI().getCollider()
+			var ColliderVolume colliderAI = pLocomotion.getColliderAI().getCollider()
 			
-			if this.pRidable != null
+			// this method can be called during disposal time. it is possible the ridable has
+			// been just disposed. in this case getElement() returns null and any use of the
+			// behavior produces incorrect results. check for this edge case to avoid problems
+			if pRidable != null and pRidable.getElement() != null
 				// during game world disposing it is possible the behavior is disposed of before
 				// the elements riding on it are disposed of. in this case the collider becomes
 				// null before we properly detach from it. avoid a null pointer in this case
-				var Collider collider = this.pRidable.getCollider().getCollider()
+				var Collider collider = pRidable.getCollider().getCollider()
 				if collider != null
-					collider.detach( colliderAI )
+					collider.detach(colliderAI)
 				end
 				
 				// apply ridable linear velocity to AI collider
-				this.pLocomotion.getColliderAI().addLinearVelocity( this.pRidable.getLinearVelocity() )
+				pLocomotion.getColliderAI().addLinearVelocity(pRidable.getLinearVelocity())
 			end
 			
-			this.pRidable = ridable
+			pRidable = ridable
 			
 			if ridable != null
-				ridable.getCollider().getCollider().attachRelativeMovement( colliderAI )
+				ridable.getCollider().getCollider().attachRelativeMovement(colliderAI)
 			end
 			
-			this.pListeners.forEach( block Listener each
-				each.ridableChanged( this )
-			end )
+			pListeners.forEach(block Listener each
+				each.ridableChanged(this)
+			end)
 		end
 		
 		/** \brief Actor is riding. */
-		public func bool isRiding()
-			return this.pRidable != null
+		func bool isRiding()
+			return pRidable != null
 		end
 		
 		/** \brief Actor is not riding. */
-		public func bool isNotRiding()
-			return this.pRidable == null
+		func bool isNotRiding()
+			return pRidable == null
 		end
 		
 		/**
@@ -220,35 +254,41 @@ class ECBehaviorRideOn extends DefaultECBehavior
 		 * 
 		 * Same as calling setRidable(null).
 		 */
-		public func void clearRidable()
-			this.setRidable( null )
+		func void clearRidable()
+			setRidable(null)
 		end
 		
 		/** \brief Lock ridable. */
-		public func bool getLocked()
-			return this.pLocked
+		func bool getLocked()
+			return pLocked
 		end
 		
 		/** \brief Set if ridable is locked. */
-		public func void setLocked( bool locked )
-			this.pLocked = locked
+		func void setLocked(bool locked)
+			if locked == pLocked
+				return
+			end
+			
+			pLocked = locked
+			
+			setRequiresThink(not locked)
 		end
 		
 		
 		
 		/** \brief Linear velocity of ridable or zero vector if absent. */
-		public func Vector getLinearVelocity()
-			if this.pRidable != null
-				return this.pRidable.getLinearVelocity()
+		func Vector getLinearVelocity()
+			if pRidable != null
+				return pRidable.getLinearVelocity()
 			end
 			return Vector.new()
 		end
 		
 		/** \brief Update locomotion orientation from ridable if present. */
-		public func void updateLocomotion()
-			if this.pRidable != null
-				this.pLocomotion.getLocomotion().setOrientation( this.pLocomotion.getColliderAI() \
-					.getCollider().getOrientation().getEulerAngles().getY() )
+		func void updateLocomotion()
+			if pRidable != null
+				pLocomotion.getLocomotion().setOrientation(pLocomotion.getColliderAI() \
+					.getCollider().getOrientation().getEulerAngles().getY())
 			end
 		end
 		
@@ -259,27 +299,27 @@ class ECBehaviorRideOn extends DefaultECBehavior
 		 * 
 		 * If not locked calls setRidable(null).
 		 */
-		public func void onNoMoreTouchingGround()
-			if this.pLocked
+		func void onNoMoreTouchingGround()
+			if pLocked
 				return
 			end
 			
-			this.setRidable( null )
+			setRidable(null)
 		end
 		
 		
 		
 		/** \brief Add listener. */
-		public func void addListener( Listener listener )
+		func void addListener(Listener listener)
 			if listener == null
 				throw EInvalidParam.new()
 			end
-			this.pListeners.add( listener )
+			pListeners.add(listener)
 		end
 		
 		/** \brief Remove listener. */
-		public func void removeListener( Listener listener )
-			this.pListeners.remove( listener )
+		func void removeListener(Listener listener)
+			pListeners.remove(listener)
 		end
 		
 		
@@ -292,24 +332,67 @@ class ECBehaviorRideOn extends DefaultECBehavior
 		 * behavior element set it as ridable otherwise clear it. If ridable is cleared applies
 		 * ridable velocities to owner element.
 		 */
-		public func void postThink( float elapsed )
-			if this.pLocked
+		func void postThink(float elapsed)
+			if pLocked
 				return
 			end
 			
-			var Element groundElement = this.pProjectToGround.getGroundElement()
-			if groundElement != null and groundElement castable BehaviorElement
-				this.setRidable( ECBehaviorRidable.getInstanceIn( groundElement cast BehaviorElement ) )
+			// the default behavior checks if the ground supports ECBehaviorRidable and assings
+			// this instance if present otherwise null. there are tough edge cases and situations
+			// where this check is not enough. for example on a moving platform there can be some
+			// element blocking player movement which has no ECBehaviorRidable assigned. if the
+			// collider is just touching this element it is possible the project to ground
+			// reacts to the element but not the ground below. in this case this behavior
+			// considers the actor not riding on anything incorrectly causing the actor to
+			// drift of the moving platform.
+			// 
+			// to solve this problem if the found element is not ECBehaviorRidable it is checked
+			// if the ground element is attached to another element. typically such elements are
+			// attached to the platform element directly or indirectly. by traveling up the
+			// chain we can find the ridable platform and assign it. this is more stable than
+			// the simple solution while remaining functionally valid solution
+			/*
+			var Element groundElement = pProjectToGround.getGroundElement()
+			if groundElement == null or not groundElement castable BehaviorElement
+				return
 			end
+			setRidable(ECBehaviorRidable.getInstanceIn(groundElement cast BehaviorElement))
+			*/
+			
+			var Element groundElement = pProjectToGround.getGroundElement()
+			var ECBehaviorRidable.Instance ridable
+			var ECBehaviorRideOn.Instance rideOn
+			var BehaviorElement checkElement
+			
+			while groundElement != null and groundElement castable BehaviorElement
+				checkElement = groundElement cast BehaviorElement
+				ridable = ECBehaviorRidable.getInstanceIn(checkElement)
+				if ridable != null
+					setRidable(ridable)
+					return
+				end
+				
+				// if the element supports ride-on behavior use this solution
+				rideOn = ECBehaviorRideOn.getInstanceIn(checkElement)
+				if rideOn != null
+					setRidable(rideOn.pRidable)
+					return
+				end
+				
+				// check the parent if element is attached
+				groundElement = checkElement.getParent()
+			end
+			
+			setRidable(null)
 		end
 		
 		
 		
 		/** \brief Frame update started. */
-		public func void enterFrame()
-			if this.pElementResolver != null
-				this.pElementResolver.resolve( this.getElement().getGameWorld() )
-				this.pElementResolver = null
+		func void enterFrame()
+			if pElementResolver != null
+				pElementResolver.resolve(getElement().getGameWorld())
+				pElementResolver = null
 			end
 		end
 		
@@ -318,90 +401,132 @@ class ECBehaviorRideOn extends DefaultECBehavior
 		 * 
 		 * Calls setRidable(null).
 		 */
-		public func void removeFromGameWorld()
-			this.setRidable( null )
+		func void removeFromGameWorld()
+			setRidable(null)
 		end
 		
 		
 		
 		/** \brief Read behavior from file. */
-		public func void readFromFile( PersistencyEnvironment env, FileReader reader )
-			var PersistencyFlags flags = PersistencyFlags.new( 2, reader )
-			this.pLocked = flags.getAt( 0 )
-			
-			if flags.getAt( 1 )
-				this.pElementResolver = ElementResolver.new()
-				this.pElementResolver.addBehavior( reader, block ECBehaviorRidable.Instance ridable
-					this.setRidable( ridable )
-				end )
-				this.setRequiresEnterFrame( true )
+		func void readFromFile(PersistencyEnvironment env, FileReader reader)
+			select reader.readByte() // version
+			case 0
+				var PersistencyFlags flags = PersistencyFlags.new(2, reader)
+				pLocked = flags.getAt(0)
+				
+				if flags.getAt(1)
+					pElementResolver = ElementResolver.new()
+					pElementResolver.addBehavior(reader, block ECBehaviorRidable.Instance ridable
+						setRidable(ridable)
+					end)
+					setRequiresEnterFrame(true)
+				end
+				
+			else
+				throw EInvalidParam.new("unsupported version")
 			end
+			
+			setRequiresThink(not pLocked)
 		end
 		
 		/** \brief Write behavior to file. */
-		public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
-			var PersistencyFlags flags = PersistencyFlags.new( 2 )
-			flags.setAt( 0, this.pLocked )
-			flags.setAt( 1, this.pRidable != null )
-			flags.writeToFile( writer )
+		func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+			writer.writeByte(0) // version
 			
-			if this.pRidable != null
-				ElementResolver.writeToFileBehavior( writer, this.pRidable )
+			var PersistencyFlags flags = PersistencyFlags.new(2)
+			flags.setAt(0, pLocked)
+			flags.setAt(1, pRidable != null)
+			flags.writeToFile(writer)
+			
+			if pRidable != null
+				ElementResolver.writeToFileBehavior(writer, pRidable)
 			end
 		end
 	end
 	
 	
 	
-	private var ECBehaviorLocomotion pLocomotion
-	private var ECBehaviorProjectToGround pProjectToGround
+	var ECBehaviorLocomotion pLocomotion
+	var ECBehaviorProjectToGround pProjectToGround
+	var Array pListenerFactories
 	
 	
 	
 	/** \brief Create behavior element class. */
-	public func new( BehaviorElementClass eclass, ECBehaviorLocomotion locomotion, \
-	ECBehaviorProjectToGround projectToGround ) super( eclass )
+	func new(BehaviorElementClass eclass, ECBehaviorLocomotion locomotion, \
+	ECBehaviorProjectToGround projectToGround) super(eclass)
 		if locomotion == null
-			throw ENullPointer.new( "locomotion" )
+			throw ENullPointer.new("locomotion")
 		end
 		if projectToGround == null
-			throw ENullPointer.new( "projectToGround" )
+			throw ENullPointer.new("projectToGround")
 		end
-		if this.getBehaviorIn( eclass ) != null
-			throw BEMultipleInstanceException.new( eclass, this )
+		if getBehaviorIn(eclass) != null
+			throw BEMultipleInstanceException.new(eclass, this)
 		end
 		
-		this.pLocomotion = locomotion
-		this.pProjectToGround = projectToGround
+		pLocomotion = locomotion
+		pProjectToGround = projectToGround
+		pListenerFactories = Array.new()
 		
-		eclass.addBehavior( this )
+		eclass.addBehavior(this)
 	end
 	
 	/** \brief Dispose of behavior. */
-	public func void dispose()
-		this.pLocomotion = null
-		this.pProjectToGround = null
+	func void dispose()
+		pLocomotion = null
+		pProjectToGround = null
+		pListenerFactories = null
 		super.dispose()
 	end
 	
 	
 	
 	/** \brief Locomotion behavior. */
-	public func ECBehaviorLocomotion getLocomotion()
-		return this.pLocomotion
+	func ECBehaviorLocomotion getLocomotion()
+		return pLocomotion
 	end
 	
 	/** \brief Project to ground behavior. */
-	public func ECBehaviorProjectToGround getProjectToGround()
-		return this.pProjectToGround
+	func ECBehaviorProjectToGround getProjectToGround()
+		return pProjectToGround
+	end
+	
+	/** \brief Add listener factory. */
+	func void addListenerFactory(ListenerFactory factory)
+		if factory == null
+			throw ENullPointer.new()
+		end
+		pListenerFactories.add(factory)
+	end
+	
+	/**
+	 * \brief Add listener factory using block.
+	 * 
+	 * Block receives as parameter Instance and returns Listener.
+	 */
+	func void addListenerFactory(Block blockFactory)
+		pListenerFactories.add(BlockListenerFactory.new(blockFactory))
+	end
+	
+	/** \brief Visit listener factories with block with argument ListenerFactory. */
+	func void forEachListenerFactory(Block ablock)
+		pListenerFactories.forEach(ablock)
+	end
+	
+	/** \brief Create listeners from factories adding them to behavior instance. */
+	func void createListeners(Instance instance)
+		pListenerFactories.forEach(block ListenerFactory each
+			instance.addListener(each.createListener(instance))
+		end)
 	end
 	
 	
 	
 	/** \brief Create behavior element class. */
 	/** \brief Get instance in element from owner element class. */
-	public func Instance instance( BehaviorElement element )
-		return element.getInstanceAt( this.getInstanceIndex() ) cast Instance
+	func Instance instance(BehaviorElement element)
+		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
 	
 	
@@ -412,10 +537,10 @@ class ECBehaviorRideOn extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorProjectToGround.
 	 */
-	static public func ECBehaviorRideOn getBehaviorIn( BehaviorElementClass eclass )
-		return eclass.findBehavior( block ECBehavior each
-			return each castable ECBehaviorRideOn
-		end ) cast ECBehaviorRideOn
+	static func ECBehaviorRideOn getBehaviorIn(BehaviorElementClass eclass)
+		return eclass.findBehavior(block ECBehaviorRideOn each
+			return true
+		end) cast ECBehaviorRideOn
 	end
 	
 	/**
@@ -424,16 +549,16 @@ class ECBehaviorRideOn extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
 	 * of type ECBehaviorProjectToGround.Instance .
 	 */
-	static public func Instance getInstanceIn( BehaviorElement element )
-		return element.findInstance( block ECBehaviorInstance each
-			return each castable Instance
-		end ) cast Instance
+	static func Instance getInstanceIn(BehaviorElement element)
+		return element.findInstance(block Instance each
+			return true
+		end) cast Instance
 	end
 	
 	
 	
 	/** \brief Create Behavior instance. */
-	public func ECBehaviorInstance createInstance( BehaviorElement element )
-		return Instance.new( this, element )
+	func ECBehaviorInstance createInstance(BehaviorElement element)
+		return Instance.new(this, element)
 	end
 end

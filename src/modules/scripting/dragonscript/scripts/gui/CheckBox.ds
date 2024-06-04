@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -33,48 +36,42 @@ pin Dragengine.Scenery
  * Specialization of the ToggleButton showing a tickable check box.
  */
 class CheckBox extends ToggleButton
-	/** \brief Check box widget. */
 	private var Widget pWidgetCheckBox
-	
-	/** \brief Check widget. */
 	private var Widget pWidgetCheck
-	
-	/** \brief Panel hosting checkbox widget. */
+	private var Panel pPanelCheckTextImage
 	private var Panel pPanelCheckBox
-	
-	/** \brief Panel hosting check widget. */
 	private var Panel pPanelCheck
 	
 	
 	
 	/** \brief Create check box. */
 	public func new()
-		this.setDesignerSelector( "CheckBox" )
+		setDesignerSelector("CheckBox")
 	end
 	
 	/** \brief Create text check button. */
-	public func new( String text ) super( text )
-		this.setDesignerSelector( "CheckBox" )
+	public func new(String text) super(text)
+		setDesignerSelector("CheckBox")
 	end
 	
 	/** \brief Create text and image check button. */
-	public func new( String text, Image image ) super( text, image )
-		this.setDesignerSelector( "CheckBox" )
+	public func new(String text, Image image) super(text, image)
+		setDesignerSelector("CheckBox")
 	end
 	
 	/** \brief Create check box. */
-	public func new( ToggleModel model ) super( model )
-		this.setDesignerSelector( "CheckBox" )
+	public func new(ToggleModel model) super(model)
+		setDesignerSelector("CheckBox")
 	end
 	
 	/** \brief Create text check button. */
-	public func new( ToggleModel model, String text ) super( model, text )
-		this.setDesignerSelector( "CheckBox" )
+	public func new(ToggleModel model, String text) super(model, text)
+		setDesignerSelector("CheckBox")
 	end
 	
 	/** \brief Create text and image check button. */
-	public func new( ToggleModel model, String text, Image image ) super( model, text, image )
-		this.setDesignerSelector( "CheckBox" )
+	public func new(ToggleModel model, String text, Image image) super(model, text, image)
+		setDesignerSelector("CheckBox")
 	end
 	
 	/**
@@ -82,10 +79,11 @@ class CheckBox extends ToggleButton
 	 * for beeing freed. If the widget is already disposed nothing happens.
 	 */
 	public func void dispose()
-		this.pWidgetCheckBox = null
-		this.pWidgetCheck = null
-		this.pPanelCheckBox = null
-		this.pPanelCheck = null
+		pWidgetCheckBox = null
+		pWidgetCheck = null
+		pPanelCheckBox = null
+		pPanelCheck = null
+		pPanelCheckTextImage = null
 		
 		super.dispose()
 	end
@@ -97,26 +95,26 @@ class CheckBox extends ToggleButton
 	 * \details For use by check box designers.
 	 */
 	public func Widget getCheckBoxWidget()
-		return this.pWidgetCheckBox
+		return pWidgetCheckBox
 	end
 	
 	/**
 	 * \brief Set check box widget or \em null if not set.
 	 * \details For use by check box designers.
 	 */
-	public func void setCheckBoxWidget( Widget widget )
-		if widget == this.pWidgetCheckBox
+	public func void setCheckBoxWidget(Widget widget)
+		if widget == pWidgetCheckBox
 			return
 		end
 		
-		if this.pWidgetCheckBox != null
-			this.pPanelCheckBox.removeWidget( this.pWidgetCheckBox )
+		if pWidgetCheckBox != null
+			pWidgetCheckBox.safeDispose()
 		end
 		
-		this.pWidgetCheckBox = widget
+		pWidgetCheckBox = widget
 		
 		if widget != null
-			this.pPanelCheckBox.addWidget( widget )
+			pPanelCheckBox.addWidget(widget)
 		end
 	end
 	
@@ -125,26 +123,26 @@ class CheckBox extends ToggleButton
 	 * \details For use by check box designers.
 	 */
 	public func Widget getCheckWidget()
-		return this.pWidgetCheck
+		return pWidgetCheck
 	end
 	
 	/**
 	 * \brief Set check mark widget.
 	 * \details For use by check box designers.
 	 */
-	public func void setCheckWidget( Widget widget )
-		if widget == this.pWidgetCheck
+	public func void setCheckWidget(Widget widget)
+		if widget == pWidgetCheck
 			return
 		end
 		
-		if this.pWidgetCheck != null
-			this.pPanelCheck.removeWidget( this.pWidgetCheck )
+		if pWidgetCheck != null
+			pWidgetCheck.safeDispose()
 		end
 		
-		this.pWidgetCheck = widget
+		pWidgetCheck = widget
 		
 		if widget != null
-			this.pPanelCheck.addWidget( widget )
+			pPanelCheck.addWidget(widget)
 		end
 	end
 	
@@ -153,8 +151,8 @@ class CheckBox extends ToggleButton
 	/** \brief Designer changed. */
 	public func void onDesignerChanged()
 		super.onDesignerChanged()
-		this.setCheckBoxWidget( null )
-		this.setCheckWidget( null )
+		setCheckBoxWidget(null)
+		setCheckWidget(null)
 	end
 	
 	
@@ -164,51 +162,58 @@ class CheckBox extends ToggleButton
 	 * \details Call if the layout of the widgets changes. Removes the old widgets first.
 	 */
 	public func void createContentWidgets()
-		var bool enabled = this.getEnabled()
-		var String text = this.getText()
+		var bool enabled = getEnabled()
+		var String text = getText()
 		
-		this.pWidgetCheckBox = null
-		this.pWidgetCheck = null
-		this.pPanelCheckBox = null
-		this.pPanelCheck = null
+		pWidgetCheckBox = null
+		pWidgetCheck = null
+		pPanelCheckBox = null
+		pPanelCheck = null
+		pPanelCheckTextImage = null
 		
-		this.removeAllWidgets()
-		this.setWidgetImage( null )
-		this.setWidgetText( null )
+		removeAllWidgets()
+		setWidgetImage(null)
+		setWidgetText(null)
 		
-		this.setLayout( BorderLayout.new( 5 ) )
+		setLayout(BorderLayout.new(5))
 		
 		// checkbox with check mark
-		var Panel panel = Panel.new()
-		panel.setLayout( StackLayout.new() )
-		this.addWidget( panel, BorderLayout.Area.left )
-		
-		this.pPanelCheckBox = Panel.new()
-		this.pPanelCheckBox.setLayout( CentrizedBoxLayout.new( LayoutAxis.y ) )
-		panel.addWidget( this.pPanelCheckBox )
-		
-		this.pPanelCheck = Panel.new()
-		this.pPanelCheck.setLayout( CentrizedBoxLayout.new( LayoutAxis.y ) )
-		panel.addWidget( this.pPanelCheck )
+		addWidget(Panel.new(StackLayout.new(), block Panel p
+			pPanelCheckBox = Panel.new(CentrizedBoxLayout.new(LayoutAxis.y))
+			p.addWidget(pPanelCheckBox)
+			
+			pPanelCheck = Panel.new(CentrizedBoxLayout.new(LayoutAxis.y))
+			p.addWidget(pPanelCheck)
+		end), BorderLayout.Area.left)
 		
 		// image and text
-		panel = Panel.new()
-		panel.setLayout( FlowLayout.new( LayoutAxis.x ) )
-		this.addWidget( panel, BorderLayout.Area.content )
-		
-		var DisplayImage widgetImage = DisplayImage.new()
-		widgetImage.setEnabled( enabled )
-		panel.addWidget( widgetImage )
-		widgetImage.setVisible( false )
-		this.setWidgetImage( widgetImage )
-		
-		var Label widgetText = Label.new( text )
-		widgetText.setFont( this.getFont() )
-		widgetText.setTextColor( this.getTextColor() )
-		widgetText.setEnabled( enabled )
-		widgetText.setAlignment( Label.middleLeft )
-		panel.addWidget( widgetText )
-		widgetText.setVisible( not text.empty() )
-		this.setWidgetText( widgetText )
+		pPanelCheckTextImage = Panel.new(FlowLayout.new(LayoutAxis.x), block Panel p
+			var DisplayImage widgetImage = DisplayImage.new(null, "Image." + getDesignerSelector())
+			widgetImage.setEnabled(enabled)
+			p.addWidget(widgetImage)
+			widgetImage.setVisible(false)
+			setWidgetImage(widgetImage)
+			
+			var Label widgetText = Label.new(text, "Label." + getDesignerSelector())
+			widgetText.setEnabled(enabled)
+			p.addWidget(widgetText)
+			widgetText.setVisible(not text.empty())
+			setWidgetText(widgetText)
+			
+			p.setVisible(not text.empty())
+		end)
+		addWidget(pPanelCheckTextImage, BorderLayout.Area.content)
+	end
+	
+	/** \brief Set text of the button. */
+	public func void setText(String text)
+		super.setText(text)
+		pPanelCheckTextImage.setVisible(getWidgetText().getVisible() or getWidgetImage().getVisible())
+	end
+	
+	/** \brief Update image to display depending on current button state. */
+	public func void updateWidgetImage()
+		super.updateWidgetImage()
+		pPanelCheckTextImage.setVisible(getWidgetText().getVisible() or getWidgetImage().getVisible())
 	end
 end

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -35,58 +38,63 @@ pin Dragengine.Preloading
  * using an encoded string decoded using CodecPropertyString.
  */
 class ECPShapeList extends ElementClassProperty
-	/** \brief Coded used to decode shape string. */
 	private var CodecPropertyString pCodec
-	
-	/** \brief ShapeList. */
 	private var ShapeList pShapeList
 	
 	
 	
 	/** \brief Create property. */
-	public func new( String name, CodecPropertyString codec ) super( name )
-		this.pCodec = codec
-		this.pShapeList = ShapeList.new()
+	public func new(String name, CodecPropertyString codec) super(name)
+		pCodec = codec
+		pShapeList = ShapeList.new()
 	end
 	
 	/** \brief Create property with initial path. */
-	public func new( String name, CodecPropertyString codec, ShapeList shapeList ) super( name )
-		this.pCodec = codec
-		this.pShapeList = shapeList
+	public func new(String name, CodecPropertyString codec, ShapeList shapeList) super(name)
+		pCodec = codec
+		pShapeList = shapeList
 	end
 	
 	
 	
 	/** \brief Coded used to decode shape string. */
 	public func CodecPropertyString getCodec()
-		return this.pCodec
+		return pCodec
 	end
 	
 	/** \brief Shape list. */
 	public func ShapeList getShapeList()
-		return this.pShapeList
+		return pShapeList
 	end
 	
 	/** \brief Set shape. */
-	public func void setShapeList( ShapeList shape )
-		this.pShapeList = shape
+	public func void setShapeList(ShapeList shape)
+		pShapeList = shape
 	end
 	
 	/** \brief Shape list string. */
 	public func String getShapeListString()
-		return this.pCodec.encodeShapeList( this.pShapeList )
+		return pCodec.encodeShapeList(pShapeList)
 	end
 	
 	/** \brief Set shape list from shape string. */
-	public func void setShapeListFromString( String string )
-		this.pShapeList = this.pCodec.decodeShapeList( string )
+	public func void setShapeListFromString(String string)
+		pShapeList = pCodec.decodeShapeList(string)
 	end
 	
 	
 	
 	/** \brief Set value of property from XML decoded value. */
-	public func void setValue( Object value )
-		this.setShapeListFromString( value cast String )
+	public func void setValue(Object value)
+		setShapeListFromString(value cast String)
+	end
+	
+	/**
+	 * \brief Copy value from another element class property of the same type.
+	 * \version 1.17
+	 */
+	public func void copyValue(ElementClass elementClass, ElementClassProperty property)
+		pShapeList = ShapeList.new((property cast ECPShapeList).pShapeList)
 	end
 	
 	
@@ -99,8 +107,8 @@ class ECPShapeList extends ElementClassProperty
 	 * 
 	 * Uses the stored property name as stub property name.
 	 */
-	public func ShapeList getShapeList( StubWithProperties stub )
-		return this.getShapeList( stub, this.getName() )
+	public func ShapeList getShapeList(StubWithProperties stub)
+		return getShapeList(stub, getName())
 	end
 	
 	/**
@@ -109,13 +117,13 @@ class ECPShapeList extends ElementClassProperty
 	 * If named stub property is not present the stored shape list is returned. If the named
 	 * stub property is present it is decoded using the stored decoder and the result returned.
 	 */
-	public func ShapeList getShapeList( StubWithProperties stub, String name )
-		var String value = stub.getPropertyValueFor( name, null )
+	public func ShapeList getShapeList(StubWithProperties stub, String name)
+		var String value = stub.getPropertyValueFor(name, null)
 		if value != null
-			return this.pCodec.decodeShapeList( value )
+			return pCodec.decodeShapeList(value)
 			
 		else
-			return this.pShapeList
+			return pShapeList
 		end
 	end
 end

@@ -8,6 +8,8 @@
 
 namespace Dragengine.Scenery
 
+pin Dragengine.Gui
+
 /**
  * \brief Sky layer.
  * 
@@ -35,10 +37,12 @@ class SkyLayer
 	/*@{*/
 	/** \brief Owner sky. */
 	public func Sky getSky()
+		return null
 	end
 	
 	/** \brief Layer index. */
 	public func int getLayerIndex()
+		return 0
 	end
 	/*@}*/
 	
@@ -48,6 +52,7 @@ class SkyLayer
 	/*@{*/
 	/** \brief Relative offset of layer center. */
 	public func Vector getOffset()
+		return null
 	end
 	
 	/** \brief Set relative offset of layer center. */
@@ -56,6 +61,7 @@ class SkyLayer
 	
 	/** \brief Orientation. */
 	public func Vector getOrientation()
+		return null
 	end
 	
 	/** \brief Set orientation. */
@@ -64,6 +70,7 @@ class SkyLayer
 	
 	/** \brief Tint color. */
 	public func Color getColor()
+		return null
 	end
 	
 	/** \brief Set tint color. */
@@ -71,7 +78,8 @@ class SkyLayer
 	end
 	
 	/** \brief Intensity. */
-	public func float getIntensity
+	public func float getIntensity()
+		return 0.0
 	end
 	
 	/** \brief Set intensity. */
@@ -80,6 +88,7 @@ class SkyLayer
 	
 	/** \brief Transparency. */
 	public func float getTransparency()
+		return 0.0
 	end
 	
 	/** \brief Set transparency. */
@@ -88,6 +97,7 @@ class SkyLayer
 	
 	/** \brief Skin or \em null to use background color only. */
 	public func Skin getSkin()
+		return null
 	end
 	
 	/** \brief Set skin or \em null to use background color only. */
@@ -98,6 +108,7 @@ class SkyLayer
 	
 	/** \brief Light orientation. */
 	public func Quaternion getLightOrientation()
+		return null
 	end
 	
 	/** \brief Set light orientation. */
@@ -106,6 +117,7 @@ class SkyLayer
 	
 	/** \brief Light color. */
 	public func Color getLightColor()
+		return null
 	end
 	
 	/** \brief Set light color. */
@@ -114,6 +126,7 @@ class SkyLayer
 	
 	/** \brief Direct light intensity. */
 	public func float getLightIntensity()
+		return 0.0
 	end
 	
 	/** \brief Set direct light intensity. */
@@ -122,6 +135,7 @@ class SkyLayer
 	
 	/** \brief Diffuse ambient light intensity. */
 	public func float getAmbientIntensity()
+		return 0.0
 	end
 	
 	/** \brief Set diffuse ambient light intensity. */
@@ -132,6 +146,7 @@ class SkyLayer
 	
 	/** \brief Number of bodies. */
 	public func int getBodyCount()
+		return 0
 	end
 	
 	/**
@@ -152,6 +167,7 @@ class SkyLayer
 	 *                        to getBodyCount().
 	 */
 	public func SkyBody getBodyAt( int index )
+		return null
 	end
 	
 	
@@ -163,12 +179,14 @@ class SkyLayer
 	 *          sky is not changed.
 	 */
 	public func SkyTarget getTarget( SkyLayerTargetType target )
+		return null
 	end
 	
 	
 	
 	/** \brief Layer intensity is multiplied by total sky light intensity. */
 	public func bool getMuliplyBySkyLight()
+		return false
 	end
 	
 	/** \brief Set if layer intensity is multiplied by total sky light intensity. */
@@ -177,6 +195,7 @@ class SkyLayer
 	
 	/** \brief Layer color is multiplied by total sky light color. */
 	public func bool getMuliplyBySkyColor()
+		return false
 	end
 	
 	/** \brief Set if layer color is multiplied by total sky light color. */

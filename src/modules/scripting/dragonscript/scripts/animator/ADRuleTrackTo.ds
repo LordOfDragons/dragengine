@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -28,116 +31,135 @@ pin Dragengine.Utils
 
 
 /**
- * Definition of a track to animator rule. Once defined a rule can be
- * added to an animator using the stored definition.
+ * \brief Definition of track to animator rule.
+ * 
+ * Once defined a rule can be added to an animator using the stored definition.
  */
 class ADRuleTrackTo extends ADRule
-	/** Name of the track bone or empty string to use none. */
 	private var String pTrackBone
-	/** Track axis. */
 	private var ARTrackToAxis pTrackAxis
-	/** Up axis. */
 	private var ARTrackToAxis pUpAxis
-	/** Up target. */
 	private var ARTrackToUp pUpTarget
-	/** Locked axis. */
 	private var ARTrackToLocked pLockedAxis
 	
 	
 	
-	/** Creates a new animation rule definition. */
+	/** \brief Create animation rule definition. */
 	public func new()
-		this.pTrackBone = ""
-		this.pTrackAxis = ARTrackToAxis.posZ
-		this.pUpAxis = ARTrackToAxis.posY
-		this.pUpTarget = ARTrackToUp.componentY
-		this.pLockedAxis = ARTrackToLocked.none
+		pTrackBone = ""
+		pTrackAxis = ARTrackToAxis.posZ
+		pUpAxis = ARTrackToAxis.posY
+		pUpTarget = ARTrackToUp.componentY
+		pLockedAxis = ARTrackToLocked.none
+	end
+	
+	/**
+	 * \brief Create copy of animation rule definition.
+	 * \version 1.13
+	 */
+	public func new(AnimatorDefinition fromDef, AnimatorDefinition toDef,\
+	ADRuleTrackTo rule) super(fromDef, toDef, rule)
+		pTrackBone = rule.pTrackBone
+		pTrackAxis = rule.pTrackAxis
+		pUpAxis = rule.pUpAxis
+		pUpTarget = rule.pUpTarget
+		pLockedAxis = rule.pLockedAxis
 	end
 	
 	
 	
-	/** Retrieves the name of the track bone or empty string to use none. */
+	/** \brief Name of track bone or empty string to use none. */
 	public func String getTrackBone()
-		return this.pTrackBone
+		return pTrackBone
 	end
 	
-	/** Sets the name of the track bone or empty string to use none. */
-	public func void setTrackBone( String boneName )
+	/** \brief Set name of track bone or empty string to use none. */
+	public func void setTrackBone(String boneName)
 		if boneName == null
-			throw EInvalidParam.new()
+			throw ENullPointer.new("boneName")
 		end
-		this.pTrackBone = boneName
+		pTrackBone = boneName
 	end
 	
-	/** Retrieves the track axis. */
+	/** \brief Ttrack axis. */
 	public func ARTrackToAxis getTrackAxis()
-		return this.pTrackAxis
+		return pTrackAxis
 	end
 	
-	/** Sets the track axis. */
-	public func void setTrackAxis( ARTrackToAxis axis )
-		this.pTrackAxis = axis
+	/** \brief Set track axis. */
+	public func void setTrackAxis(ARTrackToAxis axis)
+		pTrackAxis = axis
 	end
 	
-	/** Retrieves the up axis. */
+	/** \brief Up axis. */
 	public func ARTrackToAxis getUpAxis()
-		return this.pUpAxis
+		return pUpAxis
 	end
 	
-	/** Sets the up axis. */
-	public func void setUpAxis( ARTrackToAxis axis )
-		this.pUpAxis = axis
+	/** \brief Set up axis. */
+	public func void setUpAxis(ARTrackToAxis axis)
+		pUpAxis = axis
 	end
 	
-	/** Retrieves the up target. */
+	/** \brief Up target. */
 	public func ARTrackToUp getUpTarget()
-		return this.pUpTarget
+		return pUpTarget
 	end
 	
-	/** Sets the up target. */
-	public func void setUpTarget( ARTrackToUp target )
-		this.pUpTarget = target
+	/** \brief Set up target. */
+	public func void setUpTarget(ARTrackToUp target)
+		pUpTarget = target
 	end
 	
-	/** Retrieves the locked axis. */
+	/** \brief Locked axis. */
 	public func ARTrackToLocked getLockedAxis()
-		return this.pLockedAxis
+		return pLockedAxis
 	end
 	
-	/** Sets the locked axis. */
-	public func void setLockedAxis( ARTrackToLocked axis )
-		this.pLockedAxis = axis
+	/** \brief Set locked axis. */
+	public func void setLockedAxis(ARTrackToLocked axis)
+		pLockedAxis = axis
 	end
 	
 	
 	
-	/** Build engine animator rule using the stored definition. */
-	public func AnimatorRule buildRule( Animator animator )
+	/** \brief Build engine animator rule using the stored definition. */
+	public func AnimatorRule buildRule(Animator animator)
 		var ARTrackTo rule = ARTrackTo.new()
 		
-		this.buildRuleCommon( rule )
+		buildRuleCommon(rule)
 		
-		this.forEachTarget( block ADRuleTargetLink each
-			rule.targetAddLink( each.getTarget() cast ARTrackToTarget, each.getLink().getIndex() )
-		end )
+		forEachTarget(block ADRuleTargetLink each
+			rule.targetAddLink(each.getTarget() cast ARTrackToTarget, each.getLink().getIndex())
+		end)
 		
-		rule.setTrackBone( this.pTrackBone )
-		rule.setTrackAxis( this.pTrackAxis )
-		rule.setUpAxis( this.pUpAxis )
-		rule.setUpTarget( this.pUpTarget )
-		rule.setLockedAxis( this.pLockedAxis )
+		rule.setTrackBone(pTrackBone)
+		rule.setTrackAxis(pTrackAxis)
+		rule.setUpAxis(pUpAxis)
+		rule.setUpTarget(pUpTarget)
+		rule.setLockedAxis(pLockedAxis)
 		
 		return rule
 	end
 	
 	
 	
-	public func void debug( Console console )
-		console.addMessage( this.debugCommon( "Track To" ) + \
-			" trackBone=" + this.pTrackBone + \
-			" trackAxis=" + this.pTrackAxis + \
-			" upAxis=" + this.pUpAxis + \
-			" upTarget=" + this.pUpTarget + \
-			" lockedAxis=" + this.pLockedAxis + " )" )
+	/**
+	 * \brief Create copy of rule.
+	 * \version 1.13
+	 */
+	public func ADRule copy(AnimatorDefinition fromDef, AnimatorDefinition toDef)
+		return new(fromDef, toDef, this)
+	end
+	
+	
+	
+	public func void debug(Console console)
+		console.addMessage(debugCommon("Track To") + \
+			" trackBone=" + pTrackBone + \
+			" trackAxis=" + pTrackAxis + \
+			" upAxis=" + pUpAxis + \
+			" upTarget=" + pUpTarget + \
+			" lockedAxis=" + pLockedAxis + ")")
 	end
 end

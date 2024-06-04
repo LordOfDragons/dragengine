@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Animator Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _AEANIMATOR_H_
@@ -65,24 +68,35 @@ class deLogger;
 
 
 /**
- * @brief Animator.
+ * Animator.
  *
  * Working object for an animator.
  */
 class aeAnimator : public igdeEditableEntity{
 public:
+	typedef deTObjectReference<aeAnimator> Ref;
+	
+	
+public:
 	/** Collision Layers. */
 	enum eCollisionLayers{
 		/** Non-AI Elements blocked by walls. */
 		eclTerrain,
+		
 		/** Non-AI Elements ignoring walls. */
 		eclElements,
+		
 		/** Proxies. */
 		eclProxies,
+		
 		/** AI Elements ignoring walls. */
 		eclAI,
+		
 		/** Everything that actors can stand upon. */
 		eclGround,
+		
+		/** Gizmos. */
+		eclGizmo
 	};
 	
 private:
@@ -123,6 +137,7 @@ private:
 	aeRule *pActiveRule;
 	
 	decStringSet pListBones;
+	decStringSet pListVertexPositionSets;
 	
 	aeAttachment **pAttachments;
 	int pAttachmentCount;
@@ -146,7 +161,7 @@ private:
 	int pNotifierSize;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new actor animator. */
 	aeAnimator( aeWindowMain &windowMain );
@@ -155,9 +170,9 @@ public:
 	virtual ~aeAnimator();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
-	/** \brief Main window. */
+	/** Main window. */
 	aeWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** Dispose of all resources. */
@@ -227,9 +242,9 @@ public:
 	/** Retrieves the testing sub animator. */
 	inline aeSubAnimator *GetTestingSubAnimator() const{ return pTestingSubAnimator; }
 	
-	/** \brief Determines if the state is reset before applying the animator. */
+	/** Determines if the state is reset before applying the animator. */
 	inline bool GetResetState() const{ return pResetState; }
-	/** \brief Sets if the state is reset before applying the animator. */
+	/** Sets if the state is reset before applying the animator. */
 	void SetResetState( bool resetState );
 	
 	/** Force physics module to update attachments. */
@@ -239,14 +254,14 @@ public:
 	
 	
 	
-	/** \brief Last file dialog attachment configuration path. */
+	/** Last file dialog attachment configuration path. */
 	inline const decString &GetPathAttachmentConfig() const{ return pPathAttConfig; }
 	
-	/** \brief Set last file dialog attachment configuration path. */
+	/** Set last file dialog attachment configuration path. */
 	void SetPathAttachmentConfig( const char *path );
 	/*@}*/
 	
-	/** @name Engine Specific */
+	/** \name Engine Specific */
 	/*@{*/
 	/** Retrieves the engine world. */
 	inline deWorld *GetEngineWorld() const{ return pEngWorld; }
@@ -265,7 +280,7 @@ public:
 	/** Retrieves the camera. */
 	inline aeCamera *GetCamera() const{ return pCamera; }
 	
-	/** \brief Engine rig if present. */
+	/** Engine rig if present. */
 	inline deRig *GetEngineRig() const{ return pEngRig; }
 	/*@}*/
 	
@@ -273,40 +288,40 @@ public:
 	
 	/** \name Controllers */
 	/*@{*/
-	/** \brief Controllers. */
+	/** Controllers. */
 	inline const aeControllerList &GetControllers() const{ return pControllers; }
 	
-	/** \brief Add controller. */
+	/** Add controller. */
 	void AddController( aeController *controller );
 	
-	/** \brief Insert new controller. */
+	/** Insert new controller. */
 	void InsertControllerAt( aeController *controller, int index );
 	
-	/** \brief Move controller to a new position. */
+	/** Move controller to a new position. */
 	void MoveControllerTo( aeController *controller, int index );
 	
-	/** \brief Remove given controller. */
+	/** Remove given controller. */
 	void RemoveController( aeController *controller );
 	
-	/** \brief Remove all controllers. */
+	/** Remove all controllers. */
 	void RemoveAllControllers();
 	
-	/** \brief Active controller or NULL. */
+	/** Active controller or NULL. */
 	inline aeController *GetActiveController() const{ return pActiveController; }
 	
-	/** \brief Set active controller or NULL. */
+	/** Set active controller or NULL. */
 	void SetActiveController( aeController *controller );
 	
-	/** \brief Reset all controllers for use with the locomotion system. */
+	/** Reset all controllers for use with the locomotion system. */
 	void ResetControllers();
 	
-	/** \brief Reset all controller with the given locomotion attribute. */
+	/** Reset all controller with the given locomotion attribute. */
 	void ResetControllersWith( int locomotionAttribute );
 	
-	/** \brief Inverse all controller with the given locomotion attribute. */
+	/** Inverse all controller with the given locomotion attribute. */
 	void InverseControllersWith( int locomotionAttribute );
 	
-	/** \brief Increment all controller with the given locomotion attribute. */
+	/** Increment all controller with the given locomotion attribute. */
 	void IncrementControllersWith( int locomotionAttribute, float incrementBy );
 	/*@}*/
 	
@@ -314,25 +329,25 @@ public:
 	
 	/** \name Links */
 	/*@{*/
-	/** \brief Links. */
+	/** Links. */
 	inline const aeLinkList &GetLinks() const{ return pLinks; }
 	
-	/** \brief Add link. */
+	/** Add link. */
 	void AddLink( aeLink *link );
 	
-	/** \brief Remove link. */
+	/** Remove link. */
 	void RemoveLink( aeLink *link );
 	
-	/** \brief Remove all links. */
+	/** Remove all links. */
 	void RemoveAllLinks();
 	
-	/** \brief Active link or NULL. */
+	/** Active link or NULL. */
 	inline aeLink *GetActiveLink() const{ return pActiveLink; }
 	
-	/** \brief Set active link or NULL. */
+	/** Set active link or NULL. */
 	void SetActiveLink( aeLink *link );
 	
-	/** \brief Number of targets using a given link. */
+	/** Number of targets using a given link. */
 	int CountLinkUsage( aeLink *link ) const;
 	/*@}*/
 	
@@ -340,51 +355,77 @@ public:
 	
 	/** \name Rules */
 	/*@{*/
-	/** \brief Rules. */
+	/** Rules. */
 	inline const aeRuleList &GetRules() const{ return pRules; }
 	
-	/** \brief Add rule. */
+	/** Add rule. */
 	void AddRule( aeRule *rule );
 	
-	/** \brief Insert rule. */
+	/** Insert rule. */
 	void InsertRuleAt( aeRule *rule, int index );
 	
-	/** \brief Move rule to new position. */
+	/** Move rule to new position. */
 	void MoveRuleTo( aeRule *rule, int index );
 	
-	/** \brief Remove rule. */
+	/** Remove rule. */
 	void RemoveRule( aeRule *rule );
 	
-	/** \brief Remove all rules. */
+	/** Remove all rules. */
 	void RemoveAllRules();
 	
-	/** \brief Active rule or NULL. */
+	/** Active rule or NULL. */
 	inline aeRule *GetActiveRule() const{ return pActiveRule; }
 	
-	/** \brief Set active rule or NULL. */
+	/** Set active rule or NULL. */
 	void SetActiveRule( aeRule *rule );
 	
-	/** \brief Rebuild rules. */
+	/** Rebuild rules. */
 	void RebuildRules();
 	/*@}*/
 	
 	
 	
-	/** @name Bone Management */
+	/** \name Bone Management */
 	/*@{*/
-	/** Retrieves the list of bones. */
+	/** List of bones. */
 	inline const decStringSet &GetListBones() const{ return pListBones; }
-	/** \brief Set list of bones. */
+	
+	/** Set list of bones. */
 	void SetListBones( const decStringSet &bones );
+	
 	/** Adds a bone. */
 	void AddBone( const char *bone );
+	
 	/** Removes the given bone. */
 	void RemoveBone( const char *bone );
+	
 	/** Removes all bones. */
 	void RemoveAllBones();
 	/*@}*/
 	
-	/** @name Attachments */
+	
+	
+	/** \name Vertex position set Management */
+	/*@{*/
+	/** List of vertex position sets. */
+	inline const decStringSet &GetListVertexPositionSets() const{ return pListVertexPositionSets; }
+	
+	/** Set list of vertex position sets. */
+	void SetListVertexPositionSets( const decStringSet &sets );
+	
+	/** Adds a vertex position set. */
+	void AddVertexPositionSet( const char *vertexPositionSet );
+	
+	/** Removes the given vertex position set. */
+	void RemoveVertexPositionSet( const char *vertexPositionSet );
+	
+	/** Removes all vertex position sets. */
+	void RemoveAllVertexPositionSets();
+	/*@}*/
+	
+	
+	
+	/** \name Attachments */
 	/*@{*/
 	/** Retrieves the number of attachments. */
 	inline int GetAttachmentCount() const{ return pAttachmentCount; }
@@ -417,7 +458,7 @@ public:
 	void AttachmentsResetPhysics();
 	/*@}*/
 	
-	/** @name Notifiers */
+	/** \name Notifiers */
 	/*@{*/
 	/** Retrieves the number of notifiers. */
 	inline int GetNotifierCount() const{ return pNotifierCount; }
@@ -461,7 +502,7 @@ public:
 	void NotifyActiveControllerChanged();
 	/** Notifies all that a controller has changed. */
 	void NotifyControllerChanged( aeController *controller );
-	/** \brief Notify all controller name changed. */
+	/** Notify all controller name changed. */
 	void NotifyControllerNameChanged( aeController *controller );
 	/** Notifies all that a controller value has changed. */
 	void NotifyControllerValueChanged( aeController *controller );

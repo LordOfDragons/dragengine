@@ -1,43 +1,49 @@
-/* 
- * Drag[en]gine Animator Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
 #include <string.h>
-#include <unistd.h>
 
 #include "dearRuleSubAnimator.h"
 #include "dearCreateRuleVisitor.h"
 #include "../dearAnimator.h"
 #include "../dearBoneState.h"
 #include "../dearBoneStateList.h"
+#include "../dearVPSState.h"
+#include "../dearVPSStateList.h"
 #include "../dearControllerStates.h"
 #include "../dearAnimatorInstance.h"
 #include "../dearLink.h"
+#include "../animation/dearAnimation.h"
 
 #include <dragengine/deEngine.h>
+#include <dragengine/common/exceptions.h>
+#include <dragengine/resources/animation/deAnimation.h>
 #include <dragengine/resources/animator/deAnimator.h>
 #include <dragengine/resources/animator/controller/deAnimatorController.h>
 #include <dragengine/resources/animator/controller/deAnimatorControllerTarget.h>
 #include <dragengine/resources/animator/rule/deAnimatorRuleSubAnimator.h>
-#include <dragengine/common/exceptions.h>
 
 
 
@@ -66,22 +72,24 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-dearRuleSubAnimator::dearRuleSubAnimator( dearAnimatorInstance &instance, int firstLink,
-const deAnimatorRuleSubAnimator &rule, const decIntList &controllerMapping ) :
-dearRule( instance, firstLink, rule ),
+dearRuleSubAnimator::dearRuleSubAnimator( dearAnimatorInstance &instance, const dearAnimator &animator,
+	int firstLink, const deAnimatorRuleSubAnimator &rule, const decIntList &controllerMapping ) :
+dearRule( instance, animator, firstLink, rule ),
 pSubAnimator( rule ),
 
-pArSubAnimator( NULL ),
+pArSubAnimator( nullptr ),
 pSubAnimatorUpdateTracker( 0 ),
 
-pRules( NULL ),
+pRules( nullptr ),
 pRuleCount( 0 ),
 
-pStateList( NULL ),
+pStateList( nullptr ),
+pVPSStateList( nullptr ),
 
 pEnablePosition( rule.GetEnablePosition() ),
 pEnableOrientation( rule.GetEnableOrientation() ),
 pEnableSize( rule.GetEnableSize() ),
+pEnableVPS( rule.GetEnableVertexPositionSet() ),
 
 // determine if the sub animator rules can be applied directly using our bone state list. this
 // avoids the need for the copy and the apply phase. this optimization is only possible if:
@@ -94,17 +102,21 @@ pEnableSize( rule.GetEnableSize() ),
 // all except the blend factor can be precalculated since they stay the same
 pDirectUseStates(
 	  ( rule.GetBlendMode() == deAnimatorRule::ebmBlend )
-	& ( rule.GetListBones().GetCount() == 0 )
-	& rule.GetEnablePosition() & rule.GetEnableOrientation() & rule.GetEnableSize() ),
+	&& ( rule.GetListBones().GetCount() == 0 )
+	&& ( rule.GetListVertexPositionSets().GetCount() == 0 )
+	&& rule.GetEnablePosition()
+	&& rule.GetEnableOrientation()
+	&& rule.GetEnableSize()
+	&& rule.GetEnableVertexPositionSet() ),
 
-pHasSubAnimator( rule.GetSubAnimator() != NULL )
+pHasSubAnimator( rule.GetSubAnimator() )
 {
-	deAnimator * const animator = rule.GetSubAnimator();
 	try{
 		pStateList = instance.GetBoneStateList().CreateCopy();
+		pVPSStateList = instance.GetVPSStateList().CreateCopy();
 		
-		if( animator ){
-			pArSubAnimator = ( dearAnimator* )animator->GetPeerAnimator();
+		if( pHasSubAnimator ){
+			pArSubAnimator = ( dearAnimator* )rule.GetSubAnimator()->GetPeerAnimator();
 			pSubAnimatorUpdateTracker = pArSubAnimator->GetUpdateTracker();
 			pCreateRules( controllerMapping );
 		}
@@ -140,9 +152,9 @@ void dearRuleSubAnimator::StoreFrameInto( int identifier, const char *moveName, 
 	}
 }
 
-bool dearRuleSubAnimator::RebuildInstance(){
+bool dearRuleSubAnimator::RebuildInstance() const{
 	deAnimator * const animator = pSubAnimator.GetSubAnimator();
-	dearAnimator * arAnimator = NULL;
+	dearAnimator * arAnimator = nullptr;
 	
 	if( animator ){
 		arAnimator = ( dearAnimator* )animator->GetPeerAnimator();
@@ -165,7 +177,7 @@ bool dearRuleSubAnimator::RebuildInstance(){
 	return rebuild;
 }
 
-void dearRuleSubAnimator::Apply( dearBoneStateList &stalist ){
+void dearRuleSubAnimator::Apply( dearBoneStateList &stalist, dearVPSStateList &vpsstalist ){
 DEBUG_RESET_TIMERS;
 	if( ! GetEnabled() ){
 		return;
@@ -181,26 +193,26 @@ DEBUG_RESET_TIMERS;
 	
 DEBUG_PRINT_TIMER( "Prepare" );
 	
-	// if we have a valid sub animator we apply it
 	if( pHasSubAnimator ){
+		// if we have a valid sub animator we apply it
+		
 		// determine if the sub animator rules can be applied directly
 		// using our bone state list. this avoids the need for the copy
 		// and the apply phase. this optimization is only possible if
 		// blend mode is blend and blend factor is 1
-		const bool directUse = ( pDirectUseStates && fabsf( 1.0f - blendFactor ) < FLOAT_SAFE_EPSILON );
+		const bool directUse = pDirectUseStates && fabsf( 1.0f - blendFactor ) < FLOAT_SAFE_EPSILON;
 		
-		// direct use allows to directly use our states list without needing a copy/apply
 		if( directUse ){
+			// direct use allows to directly use our states list without needing a copy/apply
 			for( i=0; i<pRuleCount; i++ ){
-				pRules[ i ]->Apply( stalist );
+				pRules[ i ]->Apply( stalist, vpsstalist );
 			}
 			
 DEBUG_PRINT_TIMER( "Update Bone States Directly" );
 			
-		// otherwise use the safer but slower way
 		}else{
+			// otherwise use the safer but slower way
 			const int boneCount = GetBoneMappingCount();
-			
 			for( i=0; i<boneCount; i++ ){
 				const int animatorBone = GetBoneMappingFor( i );
 				if( animatorBone == -1 ){
@@ -210,10 +222,19 @@ DEBUG_PRINT_TIMER( "Update Bone States Directly" );
 				pStateList->GetStateAt( animatorBone )->SetFrom( *stalist.GetStateAt( animatorBone ) );
 			}
 			
-DEBUG_PRINT_TIMER( "Copy Bone States" );
+			const int vpsCount = GetVPSMappingCount();
+			for( i=0; i<vpsCount; i++ ){
+				const int animatorVps = GetVPSMappingFor( i );
+				if( animatorVps == -1 ){
+					continue;
+				}
+				
+				pVPSStateList->GetStateAt( animatorVps ).SetFrom( vpsstalist.GetStateAt( animatorVps ) );
+			}
+DEBUG_PRINT_TIMER( "Copy States" );
 			
 			for( i=0; i<pRuleCount; i++ ){
-				pRules[ i ]->Apply( *pStateList );
+				pRules[ i ]->Apply( *pStateList, *pVPSStateList );
 			}
 DEBUG_PRINT_TIMER( "Apply Rules" );
 			
@@ -223,25 +244,40 @@ DEBUG_PRINT_TIMER( "Apply Rules" );
 					continue;
 				}
 				
-				const dearBoneState &stateFrom = *pStateList->GetStateAt( animatorBone );
-				dearBoneState &stateTo = *stalist.GetStateAt( animatorBone );
-				
-				stateTo.BlendWith( stateFrom, blendMode, blendFactor,
+				stalist.GetStateAt( animatorBone )->BlendWith(
+					*pStateList->GetStateAt( animatorBone ), blendMode, blendFactor,
 					pEnablePosition, pEnableOrientation, pEnableSize );
+			}
+			
+			for( i=0; i<vpsCount; i++ ){
+				const int animatorVps = GetVPSMappingFor( i );
+				if( animatorVps == -1 ){
+					continue;
+				}
+				
+				vpsstalist.GetStateAt( animatorVps ).BlendWith(
+					pVPSStateList->GetStateAt( animatorVps ), blendMode, blendFactor, pEnableVPS );
 			}
 DEBUG_PRINT_TIMER( "Apply Temporary State" );
 		}
 		
-	// if the animator does not exist or is not valid we apply a reference state instead
 	}else{
+		// if the animator does not exist or is not valid we apply a reference state instead
 		const int boneCount = GetBoneMappingCount();
-		int i;
-		
 		for( i =0; i <boneCount; i++ ){
 			const int animatorBone = GetBoneMappingFor( i );
 			if( animatorBone != -1 ){
 				stalist.GetStateAt( animatorBone )->BlendWithDefault( blendMode,
 					blendFactor, pEnablePosition, pEnableOrientation, pEnableSize );
+			}
+		}
+		
+		const int vpsCount = GetVPSMappingCount();
+		for( i =0; i <vpsCount; i++ ){
+			const int animatorVps = GetVPSMappingFor( i );
+			if( animatorVps != -1 ){
+				vpsstalist.GetStateAt( animatorVps ).BlendWithDefault(
+					blendMode, blendFactor, pEnableVPS );
 			}
 		}
 	}
@@ -263,6 +299,9 @@ void dearRuleSubAnimator::pCleanUp(){
 		delete [] pRules;
 	}
 	
+	if( pVPSStateList ){
+		delete pVPSStateList;
+	}
 	if( pStateList ){
 		delete pStateList;
 	}
@@ -308,16 +347,16 @@ void dearRuleSubAnimator::pCreateRules( const decIntList &controllerMapping ){
 	const int firstLink = instance.GetLinkCount();
 	
 	if( linkCount > 0 ){
-		dearLink *link = NULL;
+		dearLink *link = nullptr;
 		
 		try{
 			for( i=0; i<linkCount; i++ ){
-				link = new dearLink( *animator->GetLinkAt( i ), subControllerMapping );
+				link = new dearLink( instance, *animator->GetLinkAt( i ), subControllerMapping );
 				instance.AddLink( link );
-				link = NULL;
+				link = nullptr;
 			}
 			
-		}catch( const deException &exception ){
+		}catch( const deException & ){
 			if( link ){
 				delete link;
 			}
@@ -326,7 +365,8 @@ void dearRuleSubAnimator::pCreateRules( const decIntList &controllerMapping ){
 	}
 	
 	// create rules
-	dearCreateRuleVisitor visitor( instance, *animator, subControllerMapping, firstLink );
+	dearCreateRuleVisitor visitor( instance, *( dearAnimator* )animator->GetPeerAnimator(),
+		subControllerMapping, firstLink );
 	
 	pRules = new dearRule*[ ruleCount ];
 	

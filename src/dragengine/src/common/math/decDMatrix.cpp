@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Game Engine
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <string.h>
@@ -759,19 +762,23 @@ decQuaternion decDMatrix::ToQuaternion() const{
 	
 	if( trace > 0.0 ){
 		const double s = 0.5 / sqrt( trace + 1.0 );
-		return decQuaternion( ( a32 - a23 ) * s, ( a13 - a31 ) * s, ( a21 - a12 ) * s, 0.25 / s );
+		return decQuaternion( ( float )( ( a32 - a23 ) * s ), ( float )( ( a13 - a31 ) * s ),
+			( float )( ( a21 - a12 ) * s ), ( float )( 0.25 / s ) );
 		
 	}else if( a11 > a22 && a11 > a33 ){
 		const double s = 2.0 * sqrt( 1.0 + a11 - a22 - a33 );
-		return decQuaternion( 0.25 * s, ( a12 + a21 ) / s, ( a13 + a31 ) / s, ( a32 - a23 ) / s );
+		return decQuaternion( ( float )( 0.25 * s ), ( float )( ( a12 + a21 ) / s ),
+			( float )( ( a13 + a31 ) / s ), ( float )( ( a32 - a23 ) / s ) );
 		
 	}else if( a22 > a33 ){
 		const double s = 2.0 * sqrt( 1.0 + a22 - a11 - a33 );
-		return decQuaternion( ( a12 + a21 ) / s, 0.25 * s, ( a23 + a32 ) / s, ( a13 - a31 ) / s );
+		return decQuaternion( ( float )( ( a12 + a21 ) / s ), ( float )( 0.25 * s ), 
+			( float )( ( a23 + a32 ) / s ), ( float )( ( a13 - a31 ) / s ) );
 		
 	}else{
 		const double s = 2.0 * sqrt( 1.0 + a33 - a11 - a22 );
-		return decQuaternion( ( a13 + a31 ) / s, ( a23 + a32 ) / s, 0.25 * s, ( a21 - a12 ) / s );
+		return decQuaternion( ( float )( ( a13 + a31 ) / s ), ( float )( ( a23 + a32 ) / s ),
+			( float )( 0.25 * s ), ( float )( ( a21 - a12 ) / s ) );
 	}
 	
 	/*
@@ -902,6 +909,34 @@ decDMatrix decDMatrix::GetRotationMatrix() const{
 	return m;
 }
 
+void decDMatrix::Normalize(){
+	decVector view( TransformView() );
+	if( view.IsZero() ){
+		view.Set( 0.0, 0.0, 1.0 );
+	}
+	
+	decVector up( TransformUp() );
+	if( up.IsZero() ){
+		up.Set( 0.0, 1.0, 0.0 );
+	}
+	
+	SetWorld( GetPosition(), view, up );
+}
+
+decDMatrix decDMatrix::Normalized() const{
+	decVector view( TransformView() );
+	if( view.IsZero() ){
+		view.Set( 0.0, 0.0, 1.0 );
+	}
+	
+	decVector up( TransformUp() );
+	if( up.IsZero() ){
+		up.Set( 0.0, 1.0, 0.0 );
+	}
+	
+	return CreateWorld( GetPosition(), view, up );
+}
+
 bool decDMatrix::IsEqualTo( const decDMatrix &matrix, double threshold ) const{
 	return fabs( a11 - matrix.a11 ) < threshold
 		&& fabs( a12 - matrix.a12 ) < threshold
@@ -936,6 +971,29 @@ decDMatrix decDMatrix::QuickMultiply( const decDMatrix &m ) const{
 	n.a32 = a12 * m.a31 + a22 * m.a32 + a32 * m.a33;
 	n.a33 = a13 * m.a31 + a23 * m.a32 + a33 * m.a33;
 	n.a34 = a14 * m.a31 + a24 * m.a32 + a34 * m.a33 + m.a34;
+	n.a41 = 0.0;
+	n.a42 = 0.0;
+	n.a43 = 0.0;
+	n.a44 = 1.0;
+	
+	return n;
+}
+
+decDMatrix decDMatrix::QuickMultiplyRotation( const decDMatrix &m ) const{
+	decDMatrix n;
+	
+	n.a11 = a11 * m.a11 + a21 * m.a12 + a31 * m.a13;
+	n.a12 = a12 * m.a11 + a22 * m.a12 + a32 * m.a13;
+	n.a13 = a13 * m.a11 + a23 * m.a12 + a33 * m.a13;
+	n.a14 = 0.0;
+	n.a21 = a11 * m.a21 + a21 * m.a22 + a31 * m.a23;
+	n.a22 = a12 * m.a21 + a22 * m.a22 + a32 * m.a23;
+	n.a23 = a13 * m.a21 + a23 * m.a22 + a33 * m.a23;
+	n.a24 = 0.0;
+	n.a31 = a11 * m.a31 + a21 * m.a32 + a31 * m.a33;
+	n.a32 = a12 * m.a31 + a22 * m.a32 + a32 * m.a33;
+	n.a33 = a13 * m.a31 + a23 * m.a32 + a33 * m.a33;
+	n.a34 = 0.0;
 	n.a41 = 0.0;
 	n.a42 = 0.0;
 	n.a43 = 0.0;

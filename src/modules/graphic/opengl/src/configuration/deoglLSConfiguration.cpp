@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -92,7 +95,7 @@ void deoglLSConfiguration::LoadConfig( deoglConfiguration &configuration ){
 	}
 }
 
-void deoglLSConfiguration::SaveConfig( const deoglConfiguration &configuration ){
+void deoglLSConfiguration::SaveConfig( const deoglConfiguration & ){
 }
 
 
@@ -147,9 +150,6 @@ void deoglLSConfiguration::pLoadConfigOpenGL( deoglConfiguration &configuration,
 							tag->GetPositionNumber(), value.GetString(), name );
 					}
 					
-				}else if( strcmp( name, "debugUseShadow" ) == 0 ){
-					configuration.SetDebugUseShadow( strtol( tag->GetFirstData()->GetData(), NULL, 10 ) != 0 );
-					
 				}else if( strcmp( name, "debugShowCB" ) == 0 ){
 					configuration.SetDebugShowCB( strtol( tag->GetFirstData()->GetData(), NULL, 10 ) != 0 );
 					
@@ -174,17 +174,37 @@ void deoglLSConfiguration::pLoadConfigOpenGL( deoglConfiguration &configuration,
 				}else if( strcmp( name, "mapFaceSplitThreshold" ) == 0 ){
 					configuration.SetMapFaceSplitThreshold( strtof( tag->GetFirstData()->GetData(), NULL ) );
 					
-				}else if( strcmp( name, "shadowMapSize" ) == 0 ){
-					configuration.SetShadowMapSize( (int)strtol( tag->GetFirstData()->GetData(), NULL, 10 ) );
+				}else if( strcmp( name, "shadowQuality" ) == 0 ){
+					const decString value( tag->GetFirstData()->GetData() );
+					if( value == "veryHigh" ){
+						configuration.SetShadowQuality( deoglConfiguration::esqVeryHigh );
+						
+					}else if( value == "high" ){
+						configuration.SetShadowQuality( deoglConfiguration::esqHigh );
+						
+					}else if( value == "medium" ){
+						configuration.SetShadowQuality( deoglConfiguration::esqMedium );
+						
+					}else if( value == "low" ){
+						configuration.SetShadowQuality( deoglConfiguration::esqLow );
+						
+					}else if( value == "veryLow" ){
+						configuration.SetShadowQuality( deoglConfiguration::esqVeryLow );
+						
+					}else if( value == "off" ){
+						configuration.SetShadowQuality( deoglConfiguration::esqOff );
+						
+					}else{
+						pOgl.LogWarnFormat( "opengl.xml %s(%i:%i): Invalid property value %s.",
+							tag->GetName().GetString(), tag->GetLineNumber(),
+							tag->GetPositionNumber(), value.GetString() );
+					}
 					
 				}else if( strcmp( name, "shadowMapOffsetScale" ) == 0 ){
 					configuration.SetShadowMapOffsetScale( strtof( tag->GetFirstData()->GetData(), NULL ) );
 					
 				}else if( strcmp( name, "shadowMapOffsetBias" ) == 0 ){
 					configuration.SetShadowMapOffsetBias( strtof( tag->GetFirstData()->GetData(), NULL ) );
-					
-				}else if( strcmp( name, "shadowCubeSize" ) == 0 ){
-					configuration.SetShadowCubeSize( (int)strtol( tag->GetFirstData()->GetData(), NULL, 10 ) );
 					
 				}else if( strcmp( name, "shadowCubePCFSize" ) == 0 ){
 					configuration.SetShadowCubePCFSize( strtof( tag->GetFirstData()->GetData(), NULL ) );
@@ -213,26 +233,14 @@ void deoglLSConfiguration::pLoadConfigOpenGL( deoglConfiguration &configuration,
 				}else if( strcmp( name, "useEncodeDepth" ) == 0 ){
 					configuration.SetUseEncodeDepth( strtol( tag->GetFirstData()->GetData(), NULL, 10 ) != 0 );
 					
-				}else if( strcmp( name, "useShadowCubeEncodeDepth" ) == 0 ){
-					configuration.SetUseShadowCubeEncodeDepth( strtol( tag->GetFirstData()->GetData(), NULL, 10 ) != 0 );
-					
 				}else if( strcmp( name, "disableStencil" ) == 0 ){
 					configuration.SetDisableStencil( strtol( tag->GetFirstData()->GetData(), NULL, 10 ) != 0 );
-					
-				}else if( strcmp( name, "stencilOnlyOnRenderbuffer" ) == 0 ){
-					configuration.SetStencilOnlyOnRB( strtol( tag->GetFirstData()->GetData(), NULL, 10 ) != 0 );
 					
 				}else if( strcmp( name, "lightCutOffIntensity" ) == 0 ){
 					configuration.SetLightCutOffIntensity( strtof( tag->GetFirstData()->GetData(), NULL ) );
 					
 				}else if( strcmp( name, "useTextureCompression" ) == 0 ){
 					configuration.SetUseTextureCompression( strtol( tag->GetFirstData()->GetData(), NULL, 10 ) != 0 );
-					
-				}else if( strcmp( name, "defRenEncDepth" ) == 0 ){
-					configuration.SetDefRenEncDepth( strtol( tag->GetFirstData()->GetData(), NULL, 10 ) != 0 );
-					
-				}else if( strcmp( name, "defRenUsePOTs" ) == 0 ){
-					configuration.SetDefRenUsePOTs( strtol( tag->GetFirstData()->GetData(), NULL, 10 ) != 0 );
 					
 				}else if( strcmp( name, "defRenSizeLimit" ) == 0 ){
 					configuration.SetDefRenSizeLimit( (int)strtol( tag->GetFirstData()->GetData(), NULL, 10 ) );
@@ -266,9 +274,6 @@ void deoglLSConfiguration::pLoadConfigOpenGL( deoglConfiguration &configuration,
 					
 				}else if( strcmp( name, "lodMaxPixelError" ) == 0 ){
 					configuration.SetLODMaxPixelError( (int)strtol( tag->GetFirstData()->GetData(), NULL, 10 ) );
-					
-				}else if( strcmp( name, "lodMaxErrorPerLevel" ) == 0 ){
-					configuration.SetLODMaxErrorPerLevel( strtof( tag->GetFirstData()->GetData(), NULL ) );
 					
 					
 					
@@ -356,10 +361,6 @@ void deoglLSConfiguration::pLoadConfigOpenGL( deoglConfiguration &configuration,
 				}else if( strcmp( name, "bugNo2ComponentFBOTex" ) == 0 ){
 					configuration.SetBugNo2ComponentFBOTex( (int)strtol( tag->GetFirstData()->GetData(), NULL, 10 ) );
 					
-				}else if( strcmp( name, "occlusionTestMode" ) == 0 ){
-					configuration.SetOcclusionTestMode( ( deoglConfiguration::eOcclusionTestModes )
-						strtol( tag->GetFirstData()->GetData(), NULL, 10 ) );
-					
 				}else if( strcmp( name, "disableCubeMapLinearFiltering" ) == 0 ){
 					configuration.SetDisableCubeMapLinearFiltering( strtol( tag->GetFirstData()->GetData(), NULL, 10 ) != 0 );
 					
@@ -379,6 +380,79 @@ void deoglLSConfiguration::pLoadConfigOpenGL( deoglConfiguration &configuration,
 				}else if( strcmp( name, "maxSPBIndexCount" ) == 0 ){
 					configuration.SetMaxSPBIndexCount( (int)strtol( tag->GetFirstData()->GetData(), NULL, 10 ) != 0 );
 					
+					
+					
+				}else if( strcmp( name, "giQuality" ) == 0 ){
+					const decString value( tag->GetFirstData()->GetData() );
+					if( value == "veryHigh" ){
+						configuration.SetGIQuality( deoglConfiguration::egiqVeryHigh );
+						
+					}else if( value == "high" ){
+						configuration.SetGIQuality( deoglConfiguration::egiqHigh );
+						
+					}else if( value == "medium" ){
+						configuration.SetGIQuality( deoglConfiguration::egiqMedium );
+						
+					}else if( value == "low" ){
+						configuration.SetGIQuality( deoglConfiguration::egiqLow );
+						
+					}else if( value == "veryLow" ){
+						configuration.SetGIQuality( deoglConfiguration::egiqVeryLow );
+						
+					}else if( value == "off" ){
+						configuration.SetGIQuality( deoglConfiguration::egiqOff );
+						
+					}else{
+						pOgl.LogWarnFormat( "opengl.xml %s(%i:%i): Invalid property value %s.",
+							tag->GetName().GetString(), tag->GetLineNumber(),
+							tag->GetPositionNumber(), value.GetString() );
+					}
+					
+				}else if( strcmp( name, "giUpdateSpeed" ) == 0 ){
+					const decString value( tag->GetFirstData()->GetData() );
+					if( value == "veryHigh" ){
+						configuration.SetGIUpdateSpeed( deoglConfiguration::egiusVeryHigh );
+						
+					}else if( value == "high" ){
+						configuration.SetGIUpdateSpeed( deoglConfiguration::egiusHigh );
+						
+					}else if( value == "medium" ){
+						configuration.SetGIUpdateSpeed( deoglConfiguration::egiusMedium );
+						
+					}else if( value == "low" ){
+						configuration.SetGIUpdateSpeed( deoglConfiguration::egiusLow );
+						
+					}else if( value == "veryLow" ){
+						configuration.SetGIUpdateSpeed( deoglConfiguration::egiusVeryLow );
+						
+					}else{
+						pOgl.LogWarnFormat( "opengl.xml %s(%i:%i): Invalid property value %s.",
+							tag->GetName().GetString(), tag->GetLineNumber(),
+							tag->GetPositionNumber(), value.GetString() );
+					}
+					
+				}else if( strcmp( name, "vsyncMode" ) == 0 ){
+					const decString value( tag->GetFirstData()->GetData() );
+					if( value == "adaptive" ){
+						configuration.SetVSyncMode( deoglConfiguration::evsmAdaptive );
+						
+					}else if( value == "on" ){
+						configuration.SetVSyncMode( deoglConfiguration::evsmOn );
+						
+					}else if( value == "off" ){
+						configuration.SetVSyncMode( deoglConfiguration::evsmOff );
+						
+					}else{
+						pOgl.LogWarnFormat( "opengl.xml %s(%i:%i): Invalid property value %s.",
+							tag->GetName().GetString(), tag->GetLineNumber(),
+							tag->GetPositionNumber(), value.GetString() );
+					}
+					
+				}else if( strcmp( name, "vrRenderScale" ) == 0 ){
+					configuration.SetVRRenderScale( tag->GetFirstData()->GetData().ToFloat() );
+					
+				}else if( strcmp( name, "vrForceFrameRate" ) == 0 ){
+					configuration.SetVRForceFrameRate( tag->GetFirstData()->GetData().ToInt() );
 					
 				}else{
 					pOgl.LogWarnFormat( "opengl.xml %s(%i:%i): Invalid property name %s.",

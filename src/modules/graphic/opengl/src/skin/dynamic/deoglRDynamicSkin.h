@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLRDYNAMICSKIN_H_
@@ -31,58 +34,52 @@ class deoglRenderThread;
 
 
 /**
- * \brief Render dynamic skin.
+ * Render dynamic skin.
  */
 class deoglRDynamicSkin : public deObject{
 private:
 	deoglRenderThread &pRenderThread;
 	
 	decObjectList pRenderables;
-	int pUpdateNumber;
+	
+	
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create render dynamic skin. */
+	/** Create render dynamic skin. */
 	deoglRDynamicSkin( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up render dynamic skin. */
+protected:
+	/** Clean up render dynamic skin. */
 	virtual ~deoglRDynamicSkin();
 	/*@}*/
 	
-	/** @name Management */
+	
+	
+public:
+	/** \name Management */
 	/*@{*/
-	/** \brief Render thread. */
+	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
-	/** \brief Number of renderables. */
+	/** Number of renderables. */
 	int GetRenderableCount() const;
 	
-	/** \brief Renderable at index. */
+	/** Renderable at index. */
 	deoglRDSRenderable *GetRenderableAt( int index ) const;
 	
-	/** \brief Named renderable or \em NULL if absent. */
+	/** Named renderable or \em NULL if absent. */
 	deoglRDSRenderable *GetRenderableNamed( const char *name ) const;
 	
-	/** \brief Index of named renderable or -1 if absent. */
+	/** Index of named renderable or -1 if absent. */
 	int IndexOfRenderableNamed( const char *name ) const;
 	
-	/** \brief Remove all renderables. */
+	/** Remove all renderables. */
 	void RemoveAllRenderables();
 	
-	/** \brief Add renderable. */
+	/** Add renderable. */
 	void AddRenderable( deoglRDSRenderable *renderable );
-	
-	/**
-	 * \brief Texture configuration changed.
-	 * \details Increments the update number for users to know they need to update their
-	 *          texture unit configurations and potentially shaders. This is to be called
-	 *          only by deoglRDSRenderable subclasses.
-	 */
-	void TextureConfigurationChanged();
-	
-	/** \brief Update the dynamic skin if required. Returns the current update number. */
-	int Update();
 	/*@}*/
 };
 

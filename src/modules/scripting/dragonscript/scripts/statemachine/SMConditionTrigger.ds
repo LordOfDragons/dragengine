@@ -1,0 +1,181 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+
+namespace Dragengine.StateMachineSystem
+
+pin Dragengine.Scenery
+pin Dragengine.TriggerSystem
+pin Dragengine.Utils
+
+
+
+/**
+ * \brief State machine condition evaluating a boolean parameter table entry.
+ */
+class SMConditionTrigger implements SMCondition
+	/** \brief Test mode. */
+	public enum TestMode
+		/** \brief True if the trigger is in the fired state. */
+		fired
+		
+		/** \brief True if the trigger is in the reset state. */
+		notFired
+		
+		/** \brief True if the trigger has ever been fired. */
+		everFired
+		
+		/** \brief True if the trigger has never been fired. */
+		neverFired
+	end
+	
+	
+	
+	/** \brief Trigger table. */
+	private var TSTriggerTable pTriggerTable
+	
+	/** \brief Trigger target name. */
+	private var StringID pName
+	
+	/** \brief Cached trigger target. */
+	private var TSTriggerTarget pTriggerTarget
+	
+	/** \brief Trigger test mode. */
+	private var TestMode pTestMode
+	
+	
+	
+	/** \brief Create condition. */
+	public func new( StringID name, TestMode testMode ) \
+	this( BaseGameApp.getApp().getTriggerTable(), name, testMode )
+	end
+	
+	/** \brief Create condition. */
+	public func new( TSTriggerTable triggerTable, StringID name, TestMode testMode )
+		if triggerTable == null
+			throw ENullPointer.new( "triggerTable" )
+		end
+		if name == null
+			throw ENullPointer.new( "name" )
+		end
+		if testMode == null
+			throw ENullPointer.new( "testMode" )
+		end
+		
+		this.pTriggerTable = triggerTable
+		this.pName = name
+		this.pTestMode = testMode
+	end
+	
+	
+	
+	/** \brief Trigger table. */
+	public func TSTriggerTable getTriggerTable()
+		return this.pTriggerTable
+	end
+	
+	/** \brief Set trigger table. */
+	protected func void setTriggerTable( TSTriggerTable triggerTable )
+		this.pTriggerTable = triggerTable
+		this.pTriggerTarget = null
+	end
+	
+	/** \brief Name of the trigger to evaluate. */
+	public func StringID getName()
+		return this.pName
+	end
+	
+	/** \brief Set name of the trigger to evaluate. */
+	public func void setName( StringID name )
+		this.pName = name
+		this.pTriggerTarget = null
+	end
+	
+	/** \brief Cached trigger target. */
+	public func TSTriggerTarget getTriggerTarget()
+		if this.pTriggerTarget == null
+			this.pTriggerTarget = pTriggerTable.getOrAddNamed( this.pName )
+		end
+		return this.pTriggerTarget
+	end
+	
+	/** \brief TestMode. */
+	public func TestMode getTestMode()
+		return this.pTestMode
+	end
+	
+	/** \brief Set action. */
+	public func void setTestMode( TestMode testMode )
+		this.pTestMode = testMode
+	end
+	
+	
+	
+	/** \brief Create condition testing the exact opposite. */
+	public func SMConditionTrigger negated()
+		var TestMode testMode = this.pTestMode
+		
+		select testMode
+		case TestMode.fired
+			testMode = TestMode.notFired
+			
+		case TestMode.notFired
+			testMode = TestMode.fired
+			
+		case TestMode.everFired
+			testMode = TestMode.neverFired
+			
+		case TestMode.neverFired
+			testMode = TestMode.everFired
+		end
+		
+		return SMConditionTrigger.new( this.pTriggerTable, this.pName, testMode )
+	end
+	
+	
+	
+	/**
+	 * \brief Evaluate condition.
+	 * \param parameters Dictionary with parameters of type String key and String value.
+	 *                   Do not change the content of the dictionary as it is shared.
+	 */
+	public func bool evaluateCondition( SMContext context, Dictionary parameters )
+		select this.pTestMode
+		case TestMode.fired
+			return this.getTriggerTarget().getFired()
+			
+		case TestMode.notFired
+			return not this.getTriggerTarget().getFired()
+			
+		case TestMode.everFired
+			return this.getTriggerTarget().getHasFired()
+			
+		case TestMode.neverFired
+			return not this.getTriggerTarget().getHasFired()
+			
+		else
+			return false
+		end
+	end
+end

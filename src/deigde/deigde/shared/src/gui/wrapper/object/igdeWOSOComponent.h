@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _IGDEWOSOCOMPONENT_H_
@@ -27,11 +30,12 @@
 
 #include <dragengine/common/collection/decObjectDictionary.h>
 #include <dragengine/resources/animator/deAnimatorInstanceReference.h>
-#include <dragengine/resources/component/deComponentReference.h>
-#include <dragengine/resources/collider/deColliderReference.h>
+#include <dragengine/resources/collider/deColliderComponent.h>
+#include <dragengine/resources/component/deComponent.h>
 
 
 class deColliderAttachment;
+class igdeGDClass;
 class igdeGDCComponent;
 class deAnimatorController;
 
@@ -39,25 +43,28 @@ class deAnimatorController;
 /**
  * \brief Object wrapper sub object.
  */
-class igdeWOSOComponent : public igdeWOSubObject{
+class DE_DLL_EXPORT igdeWOSOComponent : public igdeWOSubObject{
 private:
 	const igdeGDCComponent &pGDComponent;
-	deComponentReference pComponent;
-	deColliderReference pCollider;
+	deComponent::Ref pComponent;
+	deComponent::Ref pComponentInteraction;
+	deColliderComponent::Ref pCollider;
+	deColliderComponent::Ref pColliderInteraction;
 	igdeResourceLoaderListenerReference pResLoad;
 	bool pAddedToWorld;
-	deColliderReference pAttachedToCollider;
+	deCollider::Ref pAttachedToCollider;
 	deColliderAttachment *pAttachment;
 	deAnimatorInstanceReference pAnimator;
 	int pPlaybackControllerIndex;
 	decString pPathAnimator;
+	decString pMove;
 	bool pRenderEnvMap;
 	bool pAffectsAudio;
+	bool pLightShadowIgnore;
 	decObjectDictionary pTextureSkins;
 	bool pColliderCanInteract;
 	bool pColliderAddedToWorld;
 	deComponentReference pOutlineComponent;
-	deColliderReference pOutlineCollider;
 	
 	
 	
@@ -76,16 +83,25 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Component. */
-	inline deComponent *GetComponent() const{ return pComponent; }
+	inline const deComponent::Ref &GetComponent() const{ return pComponent; }
+	
+	/** \brief Component interaction. */
+	inline const deComponent::Ref &GetComponentInteraction() const{ return pComponentInteraction; }
 	
 	/** \brief Collider. */
-	inline deColliderComponent *GetCollider() const{ return ( deColliderComponent* )( deCollider* )pCollider; }
+	inline const deColliderComponent::Ref &GetCollider() const{ return pCollider; }
+	
+	/** \brief Interaction collider. */
+	inline const deColliderComponent::Ref &GetColliderInteraction() const{ return pColliderInteraction; }
 	
 	/** \brief Animator. */
 	inline deAnimatorInstance *GetAnimator() const{ return pAnimator; }
 	
 	/** \brief Playback controller index. */
 	inline int GetPlaybackControllerIndex() const{ return pPlaybackControllerIndex; }
+	
+	/** \brief Ignore component while casting shadows by lights present in the same object. */
+	inline bool GetLightShadowIgnore() const{ return pLightShadowIgnore; }
 	
 	/** \brief Update parameters. */
 	virtual void UpdateParameters();
@@ -145,6 +161,7 @@ private:
 	void pDestroyComponent();
 	bool pIsVisible() const;
 	void pUpdateOutlineComponent();
+	void pReleaseOutlineComponent();
 };
 
 #endif

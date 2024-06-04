@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Speech Animation Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <math.h>
@@ -200,13 +203,23 @@ void saeSAnimation::SetAnimationPath( const char *path ){
 }
 
 void saeSAnimation::SetNeutralMoveName( const char *name ){
-	if( ! name ) DETHROW( deeInvalidParam );
-	
-	if( ! pNeutralMoveName.Equals( name ) ){
-		pNeutralMoveName = name;
-		pDirtyAnimator = true;
-		NotifySAnimationChanged();
+	if( pNeutralMoveName == name ){
+		return;
 	}
+	
+	pNeutralMoveName = name;
+	pDirtyAnimator = true;
+	NotifySAnimationChanged();
+}
+
+void saeSAnimation::SetNeutralVertexPositionSets( const decStringSet &sets ){
+	if( pNeutralVertexPositionSets == sets ){
+		return;
+	}
+	
+	pNeutralVertexPositionSets = sets;
+	pDirtyAnimator = true;
+	NotifySAnimationChanged();
 }
 
 
@@ -238,7 +251,7 @@ void saeSAnimation::RebuildAnimator(){
 		}
 		
 		// remove the animator from the instance just for safety
-		pEngAnimatorInstance->SetAnimator( NULL );
+		pEngAnimatorInstance->SetAnimator( nullptr );
 		
 		// rebuild the animator. for each animation move used in all phonemes
 		// one controller and one animation rule is added. these are considered
@@ -251,71 +264,73 @@ void saeSAnimation::RebuildAnimator(){
 		pEngAnimator->RemoveAllControllers();
 		
 		// reset the animation state to a well known state for testing purpose
-		deAnimatorRuleReference engRule;
-		engRule.TakeOver( new deAnimatorRuleStateManipulator );
-		( ( deAnimatorRuleStateManipulator& )( deAnimatorRule& )engRule ).SetEnableRotation( true );
-		( ( deAnimatorRuleStateManipulator& )( deAnimatorRule& )engRule ).SetEnablePosition( true );
-		( ( deAnimatorRuleStateManipulator& )( deAnimatorRule& )engRule ).SetEnableSize( false );
-		engRule->SetEnabled( true );
-		engRule->SetBlendMode( deAnimatorRule::ebmBlend );
-		engRule->SetBlendFactor( 1.0f );
-		pEngAnimator->AddRule( engRule );
+		const deAnimatorRuleStateManipulator::Ref ruleReset(
+			deAnimatorRuleStateManipulator::Ref::New( new deAnimatorRuleStateManipulator ) );
+		ruleReset->SetEnablePosition( true );
+		pEngAnimator->AddRule( ruleReset );
 		
-		// add rule for the neutral position
-		engRule.TakeOver( new deAnimatorRuleAnimation );
-		( ( deAnimatorRuleAnimation& )( deAnimatorRule& )engRule ).SetMoveName( pNeutralMoveName.GetString() );
-		( ( deAnimatorRuleAnimation& )( deAnimatorRule& )engRule ).SetMoveTime( 0.0f );
-		engRule->SetEnabled( true );
-		engRule->SetBlendMode( deAnimatorRule::ebmBlend );
-		engRule->SetBlendFactor( 1.0f );
-		pEngAnimator->AddRule( engRule );
+		// usually we would need a rule for neutral vertex position sets. since though we use
+		// a reset rule at the top all vertex position sets are reset already. if this rule
+		// is not ues the following code has ot be enabled
+		/*
+		if( pNeutralVertexPositionSets.GetCount() > 0 ){
+			const deAnimatorRuleStateManipulator::Ref rule(
+				deAnimatorRuleStateManipulator::Ref::New( new deAnimatorRuleStateManipulator ) );
+			rule->SetEnableRotation( false );
+			rule->GetListVertexPositionSets() = pNeutralVertexPositionSets;
+			pEngAnimator->AddRule( rule );
+		}
+		*/
 		
 		// add all unique visemes used by all phonemes
 		for( i=0; i<phonemeCount; i++ ){
 			saePhoneme &phoneme = *pPhonemeList.GetAt( i );
+			if( phoneme.GetEngineController() != -1 ){
+				continue;
+			}
 			
-			if( phoneme.GetEngineController() == -1 ){
-				const decString &moveName = pPhonemeList.GetAt( i )->GetMoveName();
+			const decString &vertexPositionSet = phoneme.GetVertexPositionSet();
+			const decString &moveName = phoneme.GetMoveName();
+			
+			// add a controller for the new viseme
+			const int controllerIndex = pEngAnimator->GetControllerCount();
+			pEngAnimator->AddController( new deAnimatorController );
+			
+			// add a link for the new viseme
+			const int linkIndex = pEngAnimator->GetLinkCount();
+			
+			deAnimatorLink * const engLink = new deAnimatorLink;
+			engLink->SetController( controllerIndex );
+			pEngAnimator->AddLink( engLink );
+			
+			// add an animation rule for the new viseme
+			if( ! vertexPositionSet.IsEmpty() ){
+				const deAnimatorRuleStateManipulator::Ref rule(
+					deAnimatorRuleStateManipulator::Ref::New( new deAnimatorRuleStateManipulator ) );
+				rule->GetListVertexPositionSets().Add( vertexPositionSet );
+				rule->SetEnableRotation( false );
+				rule->SetMaximumVertexPositionSet( 1.0f );
+				rule->GetTargetVertexPositionSet().AddLink( linkIndex );
+				pEngAnimator->AddRule( rule );
 				
-				// add a controller for the new viseme
-				const int controllerIndex = pEngAnimator->GetControllerCount();
+			}else{
+				const deAnimatorRuleAnimation::Ref rule(
+					deAnimatorRuleAnimation::Ref::New( new deAnimatorRuleAnimation ) );
+				rule->SetMoveName( moveName );
+				rule->SetBlendMode( deAnimatorRule::ebmOverlay );
+				rule->GetTargetBlendFactor().AddLink( linkIndex );
+				pEngAnimator->AddRule( rule );
+			}
+			
+			// assign the controller to this phoneme and all other phonemes
+			// using the same move name
+			phoneme.SetEngineController( controllerIndex );
+			
+			for( j=i+1; j<phonemeCount; j++ ){
+				saePhoneme &phoneme2 = *pPhonemeList.GetAt( j );
 				
-				deAnimatorController * const engController = new deAnimatorController;
-				engController->SetValueRange( 0.0f, 1.0f );
-				engController->SetClamp( true );
-				engController->SetCurrentValue( 0.0f );
-				pEngAnimator->AddController( engController );
-				
-				// add a link for the new viseme
-				const int linkIndex = pEngAnimator->GetLinkCount();
-				
-				deAnimatorLink * const engLink = new deAnimatorLink;
-				engLink->SetController( controllerIndex );
-				decCurveBezier curve;
-				curve.SetDefaultLinear();
-				engLink->SetCurve( curve );
-				pEngAnimator->AddLink( engLink );
-				
-				// add an animation rule for the new viseme
-				engRule.TakeOver( new deAnimatorRuleAnimation );
-				( ( deAnimatorRuleAnimation& )( deAnimatorRule& )engRule ).SetMoveName( phoneme.GetMoveName() );
-				( ( deAnimatorRuleAnimation& )( deAnimatorRule& )engRule ).SetMoveTime( 0.0f );
-				engRule->SetEnabled( true );
-				engRule->SetBlendMode( deAnimatorRule::ebmOverlay );
-				engRule->SetBlendFactor( 1.0f );
-				engRule->GetTargetBlendFactor().AddLink( linkIndex );
-				pEngAnimator->AddRule( engRule );
-				
-				// assign the controller to this phoneme and all other phonemes
-				// using the same move name
-				phoneme.SetEngineController( controllerIndex );
-				
-				for( j=i+1; j<phonemeCount; j++ ){
-					saePhoneme &phoneme2 = *pPhonemeList.GetAt( j );
-					
-					if( moveName.Equals( phoneme2.GetMoveName() ) ){
-						phoneme2.SetEngineController( controllerIndex );
-					}
+				if( moveName == phoneme2.GetMoveName() && vertexPositionSet == phoneme2.GetVertexPositionSet() ){
+					phoneme2.SetEngineController( controllerIndex );
 				}
 			}
 		}
@@ -373,8 +388,6 @@ void saeSAnimation::Update( float elapsed ){
 		const float wordGapTime = 2.0f * talkSpeed;
 		const float windUpTime = 0.1f * talkSpeed;
 		const float pauseTime = 0.1f * talkSpeed;
-		saePhoneme *phoneme1 = NULL;
-		saePhoneme *phoneme2 = NULL;
 		float blendFactor = 1.0f;
 		int controller1 = -1;
 		int controller2 = -1;
@@ -385,8 +398,8 @@ void saeSAnimation::Update( float elapsed ){
 		pDispWordElapsed += elapsed;
 		
 		while( true ){
-			phoneme1 = NULL;
-			phoneme2 = NULL;
+			saePhoneme *phoneme1 = nullptr;
+			saePhoneme *phoneme2 = nullptr;
 			
 			if( pDispWordPos >= 0 && pDispWordPos < phoneticsLen ){
 				phoneme1 = pPhonemeList.GetIPA( phonetics.GetAt( pDispWordPos ) );
@@ -747,6 +760,17 @@ void saeSAnimation::NotifyWordStructureChanged(){
 	
 	for( l=0; l<listenerCount; l++ ){
 		( ( saeSAnimationListener* )pListeners.GetAt( l ) )->WordStructureChanged( this );
+	}
+	
+	SetChanged( true );
+}
+
+void saeSAnimation::NotifyWordNameChanged( saeWord *word ){
+	const int count = pListeners.GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		( ( saeSAnimationListener* )pListeners.GetAt( i ) )->WordNameChanged( this, word );
 	}
 	
 	SetChanged( true );

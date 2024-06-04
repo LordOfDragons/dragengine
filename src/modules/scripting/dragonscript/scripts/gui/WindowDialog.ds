@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -50,264 +53,259 @@ class WindowDialog extends WindowModal
 	/** \brief Interface for result event. */
 	interface ResultListener
 		/** \brief Dialog closed with result. */
-		public func void onResult( Object result )
+		func void onResult(Object result)
 	end
 	
 	/** \brief ResultListener implementstion calling block with Object result. */
 	class BlockResultListener implements ResultListener
 		/** \brief Block to call. */
-		private var Block pBlock
+		var Block pBlock
 		
 		/** \brief Create result listener. */
-		public func new( Block resultBlock )
+		func new(Block resultBlock)
 			if resultBlock == null
 				throw EInvalidParam.new()
 			end
-			this.pBlock = resultBlock
+			pBlock = resultBlock
 		end
 		
 		/** \brief Block to call. */
-		public func Block getBlock()
-			return this.pBlock
+		func Block getBlock()
+			return pBlock
 		end
 		
 		/** \brief Dialog closed with result. */
-		public func void onResult( Object result )
-			this.pBlock.run( result )
+		func void onResult(Object result)
+			pBlock.run(result)
 		end
 	end
 	
 	/** \brief Close dialog with result. */
 	class CloseDialog implements ActionListener
 		/** \brief Dialog to close. */
-		private var WindowDialog pDialog
+		var WindowDialog pDialog
 		
 		/** \brief Result to set. */
-		private var Object pResult
+		var Object pResult
 		
 		/** \brief Create action listener with null result. */
-		public func new( WindowDialog dialog ) this( dialog, null )
+		func new(WindowDialog dialog) this(dialog, null)
 		end
 		
 		/** \brief Create action listener. */
-		public func new( WindowDialog dialog, Object result )
+		func new(WindowDialog dialog, Object result)
 			if dialog == null
 				throw EInvalidParam.new()
 			end
-			this.pDialog = dialog
-			this.pResult = result
+			pDialog = dialog
+			pResult = result
 		end
 		
 		/** \brief Perform action. */
-		public func void onAction( ActionEvent event )
-			this.pDialog.setResult( this.pResult )
-			this.pDialog.close()
+		func void onAction(ActionEvent event)
+			pDialog.setResult(pResult)
+			pDialog.close()
 		end
 	end
 	
 	/** \brief Close dialog with selection from ToggleButtonGroup. */
 	class CloseDialogToggleButtonGroup implements ActionListener
-		private var WindowDialog pDialog
-		private var ToggleButtonGroup pGroup
+		var WindowDialog pDialog
+		var ToggleButtonGroup pGroup
 		
 		/** \brief Create action listener. */
-		public func new( WindowDialog dialog, ToggleButtonGroup group )
+		func new(WindowDialog dialog, ToggleButtonGroup group)
 			if dialog == null or group == null
 				throw EInvalidParam.new()
 			end
-			this.pDialog = dialog
-			this.pGroup = group
+			pDialog = dialog
+			pGroup = group
 		end
 		
 		/** \brief Perform action. */
-		public func void onAction( ActionEvent event )
-			this.pDialog.setResult( this.pGroup.getSelected() )
-			this.pDialog.close()
+		func void onAction(ActionEvent event)
+			pDialog.setResult(pGroup.getSelected())
+			pDialog.close()
 		end
 	end
 	
 	/** \brief Close dialog with selection from ListBox. */
 	class CloseDialogListBox implements ActionListener
 		/** \brief Dialog to close. */
-		private var WindowDialog pDialog
+		var WindowDialog pDialog
 		
 		/** \brief List box to set result with. */
-		private var ListBox pListBox
+		var ListBox pListBox
 		
 		/** \brief Create action listener. */
-		public func new( WindowDialog dialog, ListBox listBox )
+		func new(WindowDialog dialog, ListBox listBox)
 			if dialog == null or listBox == null
 				throw EInvalidParam.new()
 			end
-			this.pDialog = dialog
-			this.pListBox = listBox
+			pDialog = dialog
+			pListBox = listBox
 		end
 		
 		/** \brief Perform action. */
-		public func void onAction( ActionEvent event )
-			this.pDialog.setResult( this.pListBox.getSelectedElement() )
-			this.pDialog.close()
+		func void onAction(ActionEvent event)
+			pDialog.setResult(pListBox.getSelectedElement())
+			pDialog.close()
 		end
 	end
 	
 	/** \brief Close dialog with selection from Array with CheckBox. */
 	class CloseDialogCheckBox implements ActionListener
 		/** \brief Dialog to close. */
-		private var WindowDialog pDialog
+		var WindowDialog pDialog
 		
 		/** \brief Array of CheckBox to set result with. */
-		private var Array pCheckBoxes
+		var Array pCheckBoxes
 		
 		/** \brief Create action listener. */
-		public func new( WindowDialog dialog, Array checkBoxes )
+		func new(WindowDialog dialog, Array checkBoxes)
 			if dialog == null or checkBoxes == null
 				throw EInvalidParam.new()
 			end
-			this.pDialog = dialog
-			this.pCheckBoxes = checkBoxes
+			pDialog = dialog
+			pCheckBoxes = checkBoxes
 		end
 		
 		/** \brief Perform action. */
-		public func void onAction( ActionEvent event )
-			var int i, count = this.pCheckBoxes.getCount()
+		func void onAction(ActionEvent event)
+			var int i, count = pCheckBoxes.getCount()
 			var Array selectedElements = Array.new()
 			
 			for i = 0 to count
-				if ( this.pCheckBoxes.getAt( i ) cast CheckBox ).getToggled()
-					selectedElements.add( i )
+				if (pCheckBoxes.getAt(i) cast CheckBox).getToggled()
+					selectedElements.add(i)
 				end
 			end
 			
-			this.pDialog.setResult( selectedElements )
-			this.pDialog.close()
+			pDialog.setResult(selectedElements)
+			pDialog.close()
 		end
 	end
 	
 	/** \brief Close dialog with text from TextModel. */
 	class CloseDialogTextModel implements ActionListener
 		/** \brief Dialog to close. */
-		private var WindowDialog pDialog
+		var WindowDialog pDialog
 		
 		/** \brief Text model. */
-		private var TextModel pModel
+		var TextModel pModel
 		
 		/** \brief Create action listener. */
-		public func new( WindowDialog dialog, TextModel model )
+		func new(WindowDialog dialog, TextModel model)
 			if dialog == null or model == null
 				throw EInvalidParam.new()
 			end
-			this.pDialog = dialog
-			this.pModel = model
+			pDialog = dialog
+			pModel = model
 		end
 		
 		/** \brief Perform action. */
-		public func void onAction( ActionEvent event )
-			this.pDialog.setResult( this.pModel.getText() )
-			this.pDialog.close()
+		func void onAction(ActionEvent event)
+			pDialog.setResult(pModel.getText())
+			pDialog.close()
 		end
 	end
 	
 	/** \brief Button configuration. */
 	public class ButtonConfiguration
 		/** \brief Text of button. */
-		private var String pText
+		var String pText
 		
 		/** \brief Image of button. */
-		private var Image pImage
+		var Image pImage
 		
 		/** \brief Result to set if button is pressed. */
-		private var Object pResult
+		var Object pResult
 		
 		/** \brief Designer selector or null. */
-		private var String pDesignerSelector
+		var String pDesignerSelector
 		
 		/** \brief Create button configuration with null result. */
-		public func new( String text ) this( text, null, null )
+		func new(String text) this(text, null, null)
 		end
 		
 		/** \brief Create button configuration. */
-		public func new( String text, Object result ) this( text, null, result )
+		func new(String text, Object result) this(text, null, result)
 		end
 		
 		/** \brief Create button configuration. */
-		public func new( String text, Image image, Object result )
-			this.pText = text
-			this.pImage = image
-			this.pResult = result
+		func new(String text, Image image, Object result)
+			pText = text
+			pImage = image
+			pResult = result
 		end
 		
 		/** \brief Text of button. */
-		public func String getText()
-			return this.pText
+		func String getText()
+			return pText
 		end
 		
 		/** \brief Set text of button. */
-		public func void setText( String text )
-			this.pText = text
+		func void setText(String text)
+			pText = text
 		end
 		
 		/** \brief Image of button. */
-		public func Image getImage()
-			return this.pImage
+		func Image getImage()
+			return pImage
 		end
 		
 		/** \brief Set image of button. */
-		public func void setImage( Image image )
-			this.pImage = image
+		func void setImage(Image image)
+			pImage = image
 		end
 		
 		/** \brief Result to set if button is pressed. */
-		public func Object getResult()
-			return this.pResult
+		func Object getResult()
+			return pResult
 		end
 		
 		/** \brief Set result to set if button is pressed. */
-		public func void setResult( Object result )
-			this.pResult = result
+		func void setResult(Object result)
+			pResult = result
 		end
 		
 		/** \brief Designer selector or null. */
-		public func String getDesignerSelector()
-			return this.pDesignerSelector
+		func String getDesignerSelector()
+			return pDesignerSelector
 		end
 		
 		/** \brief Set designer selector or null. */
-		public func void setDesignerSelector( String selector )
-			this.pDesignerSelector = selector
+		func void setDesignerSelector(String selector)
+			pDesignerSelector = selector
 		end
 	end
 	
 	
 	
-	/** \brief Window this window is blocking. */
-	private var Window pBlockWindow
-	
-	/** \brief Dialog action listener or \em null if not set. */
-	private var ResultListener pResultListener
-	
-	/** \brief Result to send to action listener upon closing dialog. */
-	private var Object pResult
-	
-	/** \brief Minimum size the dialog should have but it can be larger or null. */
-// 	private var Point pMinDialogSize
+	var Window pBlockWindow
+	var ResultListener pResultListener
+	var Object pResult
+// 	var Point pMinDialogSize
+	var ForwardKeyPressListener pAcceptWidgetListener
 	
 	
 	
 	/** \brief Create dialog window. */
-	public func new()
-		this.setDesignerSelector( "Window.Dialog" )
+	func new()
+		setDesignerSelector("Window.Dialog")
 	end
 	
 	/** \brief Create window with the given geometry. */
-	public func new( int x, int y, int width, int height ) super( x, y, width, height )
-		this.setDesignerSelector( "Window.Dialog" )
+	func new(int x, int y, int width, int height) super(x, y, width, height)
+		setDesignerSelector("Window.Dialog")
 	end
 	
 	/** \brief Dispose of window. */
-	public func void dispose()
-		this.pBlockWindow = null
-		this.pResultListener = null
-		this.pResult = null
+	func void dispose()
+		pAcceptWidgetListener = null
+		pBlockWindow = null
+		pResultListener = null
+		pResult = null
 		
 		super.dispose()
 	end
@@ -315,38 +313,65 @@ class WindowDialog extends WindowModal
 	
 	
 	/** \brief Result to send to action listener upon closing dialog. */
-	public func Object getResult()
-		return this.pResult
+	func Object getResult()
+		return pResult
 	end
 	
 	/** \brief Set result to send to action listener upon closing dialog. */
-	public func void setResult( Object result )
-		this.pResult = result
+	func void setResult(Object result)
+		pResult = result
 	end
 	
 	
 	
 	/** \brief Result listener or \em null if not set. */
-	public func ResultListener getResultListener()
-		return this.pResultListener
+	func ResultListener getResultListener()
+		return pResultListener
 	end
 	
 	/** \brief Set result listener or \em null if not set. */
-	public func void setResultListener( ResultListener listener )
-		this.pResultListener = listener
+	func void setResultListener(ResultListener listener)
+		pResultListener = listener
 	end
 	
 	
 	
 	/** \brief Minimum size the dialog should have but it can be larger or null. */
-// 	public func Point getMinDialogSize()
-// 		return this.pMinDialogSize
+// 	func Point getMinDialogSize()
+// 		return pMinDialogSize
 // 	end
 	
 	/** \brief Minimum size the dialog should have but it can be larger or null. */
-// 	public func void setMinDialogSize( Point size )
-// 		this.pMinDialogSize = size
+// 	func void setMinDialogSize(Point size)
+// 		pMinDialogSize = size
 // 	end
+	
+	
+	
+	/** \brief Widget to send InputEventKey.enter key press to or null. */
+	func Widget getAcceptWidget()
+		if pAcceptWidgetListener != null
+			return pAcceptWidgetListener.getWidget()
+		end
+		return null
+	end
+	
+	/** \brief Set widget to send InputEventKey.enter key press to or null. */
+	func void setAcceptWidget(Widget widget)
+		if widget != null
+			if pAcceptWidgetListener != null
+				pAcceptWidgetListener.setWidget(widget)
+				
+			else
+				pAcceptWidgetListener = ForwardKeyPressListener.new(InputEventKey.enter, widget)
+				addKeyListener(pAcceptWidgetListener)
+			end
+			
+		elif pAcceptWidgetListener != null
+			removeKeyListener(pAcceptWidgetListener)
+			pAcceptWidgetListener = null
+		end
+	end
 	
 	
 	
@@ -354,16 +379,16 @@ class WindowDialog extends WindowModal
 	 * \brief Close dialog.
 	 * \details Unblocks window and sends notification with result to listener if present.
 	 */
-	public func void close()
-		var ResultListener listener = this.pResultListener
-		var Object result = this.pResult
+	func void close()
+		var ResultListener listener = pResultListener
+		var Object result = pResult
 		
 		super.close()
 		
 		// listener has to be called after window is closed and disposed of hence why
 		// values are stored aside at the top
 		if listener != null
-			listener.onResult( result )
+			listener.onResult(result)
 		end
 	end
 	
@@ -378,67 +403,58 @@ class WindowDialog extends WindowModal
 	 * \param button Button configuration or \em null to show button with "Close" text.
 	 * \param listener Listener to call closing message box.
 	 */
-	public static func WindowDialog message( Window window, String title, \
-	String message, Image image, ButtonConfiguration button, ResultListener listener )
-		var WindowDialog dialog = WindowDialog.new( 0, 0, 400, 200 )
+	public static func WindowDialog message(Window window, String title, \
+	String message, Image image, ButtonConfiguration button, ResultListener listener)
+		var WindowDialog dialog = WindowDialog.new(0, 0, 400, 200)
 		
-		dialog.runWhileBlockingLayout( block
-			//dialog.setMinDialogSize( Point.new( 180, 120 ) )
-			dialog.setLayout( BorderLayout.new() )
-			dialog.setCanResize( false )
-			dialog.setTitle( title )
-			dialog.setResult( null ) // result for closing window without button
-			dialog.setResultListener( listener )
+		dialog.runWhileBlockingLayout(block
+			//dialog.setMinDialogSize(Point.new(180, 120))
+			dialog.setGuiTheme(window.getGuiTheme())
+			dialog.setLayout(BorderLayout.new())
+			dialog.setCanResize(false)
+			dialog.setTitle(title)
+			dialog.setResult(null) // result for closing window without button
+			dialog.setResultListener(listener)
 			
 			// message
-			var Label label = Label.new( message )
-			label.setDesignerSelector( "Label.WindowDialog" )
-			label.setWordWrap( true )
-			dialog.addWidget( label, BorderLayout.Area.content )
+			var Label label = Label.new(message, "Label.WindowDialog")
+			label.setWordWrap(true)
+			dialog.addWidget(label, BorderLayout.Area.content)
 			
 			// image
 			if image != null
-				var Panel panelImage = Panel.new()
-				panelImage.setDesignerSelector( "Panel.WindowDialogImage" )
-				panelImage.setLayout( CentrizedBoxLayout.new( LayoutAxis.y ) )
-				panelImage.addWidget( DisplayImage.new( image ) )
-				dialog.addWidget( panelImage, BorderLayout.Area.left )
+				dialog.addWidget(Panel.new(CentrizedBoxLayout.new(LayoutAxis.y), block Panel p
+					p.setDesignerSelector("Panel.WindowDialogImage")
+					p.addWidget(DisplayImage.new(image))
+				end), BorderLayout.Area.left)
 			end
 			
 			// panel with close button
-			var Panel panelButton = Panel.new()
-			
-			panelButton.runWhileBlockingLayout( block
-				panelButton.setLayout( CentrizedBoxLayout.new( LayoutAxis.x ) )
-				panelButton.setDesignerSelector( "Panel.WindowDialogButtons" )
+			dialog.addWidget(Panel.new(CentrizedBoxLayout.new(LayoutAxis.x), block Panel p
+				p.setDesignerSelector("Panel.WindowDialogButtons")
 				
 				var Button widgetButton
 				if button == null
-					widgetButton = Button.new( "Close" )
-					widgetButton.setDesignerSelector( "Button.WindowDialog" )
-					widgetButton.addActionListener( CloseDialog.new( dialog, null ) )
+					widgetButton = Button.new("Close", CloseDialog.new(dialog, null))
+					widgetButton.setDesignerSelector("Button.WindowDialog")
 					
 				else
-					widgetButton = Button.new( button.getText(), button.getImage() )
+					widgetButton = Button.new(button.getText(), button.getImage(), \
+						CloseDialog.new(dialog, button.getResult()))
 					
 					if button.getDesignerSelector() != null
-						widgetButton.setDesignerSelector( button.getDesignerSelector() )
+						widgetButton.setDesignerSelector(button.getDesignerSelector())
 						
 					else
-						widgetButton.setDesignerSelector( "Button.WindowDialog" )
+						widgetButton.setDesignerSelector("Button.WindowDialog")
 					end
-					
-					widgetButton.addActionListener( CloseDialog.new( dialog, button.getResult() ) )
 				end
-				
-				panelButton.addWidget( widgetButton )
-			end )
-			
-			dialog.addWidget( panelButton, BorderLayout.Area.bottom )
-		end )
+				p.addWidget(widgetButton)
+			end), BorderLayout.Area.bottom)
+		end)
 		
 		// show dialog
-		dialog.show( window, true, WindowModal.Placement.window )
+		dialog.show(window, true, WindowModal.Placement.window)
 		return dialog
 	end
 	
@@ -452,66 +468,67 @@ class WindowDialog extends WindowModal
 	 * \param buttons Array of ButtonConfiguration of buttons to show.
 	 * \param listener Listener to call closing message box.
 	 */
-	public static func WindowDialog question( Window window, String title, \
-	String message, Image image, Array buttons, ResultListener listener )
-		var WindowDialog dialog = WindowDialog.new( 0, 0, 400, 200 )
+	public static func WindowDialog question(Window window, String title, \
+	String message, Image image, Array buttons, ResultListener listener)
+		var WindowDialog dialog = WindowDialog.new(0, 0, 400, 200)
 		
-		dialog.runWhileBlockingLayout( block
-			//dialog.setMinDialogSize( Point.new( 180, 120 ) )
-			dialog.setLayout( BorderLayout.new() )
-			dialog.setCanResize( false )
-			dialog.setTitle( title )
-			dialog.setResult( null ) // result for closing window without button
-			dialog.setResultListener( listener )
+		dialog.runWhileBlockingLayout(block
+			//dialog.setMinDialogSize(Point.new(180, 120))
+			dialog.setGuiTheme(window.getGuiTheme())
+			dialog.setLayout(BorderLayout.new())
+			dialog.setCanResize(false)
+			dialog.setTitle(title)
+			dialog.setResult(null) // result for closing window without button
+			dialog.setResultListener(listener)
 			
 			// message
-			var Label label = Label.new( message )
-			label.setDesignerSelector( "Label.WindowDialog" )
-			label.setWordWrap( true )
-			dialog.addWidget( label, BorderLayout.Area.content )
+			var Label label = Label.new(message)
+			label.setDesignerSelector("Label.WindowDialog")
+			label.setWordWrap(true)
+			dialog.addWidget(label, BorderLayout.Area.content)
 			
 			// image
 			if image != null
 				var Panel panelImage = Panel.new()
-				panelImage.setDesignerSelector( "Panel.WindowDialogImage" )
-				panelImage.setLayout( CentrizedBoxLayout.new( LayoutAxis.y ) )
-				panelImage.addWidget( DisplayImage.new( image ) )
-				dialog.addWidget( panelImage, BorderLayout.Area.left )
+				panelImage.setDesignerSelector("Panel.WindowDialogImage")
+				panelImage.setLayout(CentrizedBoxLayout.new(LayoutAxis.y))
+				panelImage.addWidget(DisplayImage.new(image))
+				dialog.addWidget(panelImage, BorderLayout.Area.left)
 			end
 			
 			// panel with buttons
 			var Panel panelButtons = Panel.new()
 			
-			panelButtons.runWhileBlockingLayout( block
-				panelButtons.setLayout( CentrizedBoxLayout.new( LayoutAxis.x ) )
-				panelButtons.setDesignerSelector( "Panel.WindowDialogButtons" )
+			panelButtons.runWhileBlockingLayout(block
+				panelButtons.setLayout(CentrizedBoxLayout.new(LayoutAxis.x))
+				panelButtons.setDesignerSelector("Panel.WindowDialogButtons")
 				
 				var Panel panelButtonGrid = Panel.new()
-				//panelButtonGrid.setLayout( GridLayout.new( buttons.getCount(), 1, 5 ) )
-				panelButtonGrid.setLayout( BoxLayout.new( LayoutAxis.x, 5 ) )
+				//panelButtonGrid.setLayout(GridLayout.new(buttons.getCount(), 1, 5))
+				panelButtonGrid.setLayout(BoxLayout.new(LayoutAxis.x, 5))
 				
-				buttons.forEach( block ButtonConfiguration each
-					var Button widgetButton = Button.new( each.getText(), each.getImage() )
+				buttons.forEach(block ButtonConfiguration each
+					var Button widgetButton = Button.new(each.getText(), each.getImage())
 					
 					if each.getDesignerSelector() != null
-						widgetButton.setDesignerSelector( each.getDesignerSelector() )
+						widgetButton.setDesignerSelector(each.getDesignerSelector())
 						
 					else
-						widgetButton.setDesignerSelector( "Button.WindowDialog" )
+						widgetButton.setDesignerSelector("Button.WindowDialog")
 					end
 					
-					widgetButton.addActionListener( CloseDialog.new( dialog, each.getResult() ) )
-					panelButtonGrid.addWidget( widgetButton )
-				end )
+					widgetButton.addActionListener(CloseDialog.new(dialog, each.getResult()))
+					panelButtonGrid.addWidget(widgetButton)
+				end)
 				
-				panelButtons.addWidget( panelButtonGrid )
-			end )
+				panelButtons.addWidget(panelButtonGrid)
+			end)
 			
-			dialog.addWidget( panelButtons, BorderLayout.Area.bottom )
-		end )
+			dialog.addWidget(panelButtons, BorderLayout.Area.bottom)
+		end)
 		
 		// show dialog
-		dialog.show( window, true, WindowModal.Placement.window )
+		dialog.show(window, true, WindowModal.Placement.window)
 		return dialog
 	end
 	
@@ -529,59 +546,62 @@ class WindowDialog extends WindowModal
 	 * \param buttonCancel Button configuration for cancel button or \em null to use "Cancel".
 	 * \param listener Listener to call closing message box.
 	 */
-	public static func WindowDialog choose( Window window, String title, String message, \
+	public static func WindowDialog choose(Window window, String title, String message, \
 	Image image, Array elements, int selectElement, ButtonConfiguration buttonAccept, \
-	ButtonConfiguration buttonCancel, ResultListener listener )
-		var WindowDialog dialog = WindowDialog.new( 0, 0, 400, 200 )
+	ButtonConfiguration buttonCancel, ResultListener listener)
+		var WindowDialog dialog = WindowDialog.new(0, 0, 400, 200)
 		
-		dialog.runWhileBlockingLayout( block
-			//dialog.setMinDialogSize( Point.new( 180, 120 ) )
-			dialog.setLayout( BorderLayout.new() )
-			dialog.setCanResize( false )
-			dialog.setTitle( title )
-			dialog.setResult( -1 ) // result for closing window without button
-			dialog.setResultListener( listener )
+		dialog.runWhileBlockingLayout(block
+			//dialog.setMinDialogSize(Point.new(180, 120))
+			dialog.setGuiTheme(window.getGuiTheme())
+			dialog.setLayout(BorderLayout.new())
+			dialog.setCanResize(false)
+			dialog.setTitle(title)
+			dialog.setResult(-1) // result for closing window without button
+			dialog.setResultListener(listener)
 			
 			// message with option boxes
 			var Panel panelContent = Panel.new()
-			panelContent.setLayout( CentrizedBoxLayout.new( LayoutAxis.y, 5 ) )
+			panelContent.setLayout(CentrizedBoxLayout.new(LayoutAxis.y, 5))
 			
-			var Label label = Label.new( message )
-			label.setDesignerSelector( "Label.WindowDialog" )
-			label.setWordWrap( true )
-			panelContent.addWidget( label )
+			var Label label = Label.new(message)
+			label.setDesignerSelector("Label.WindowDialog")
+			label.setWordWrap(true)
+			panelContent.addWidget(label)
 			
 			var Panel panelOptions = Panel.new()
-			panelOptions.setLayout( FlowLayout.new( LayoutAxis.y, 0 ) )
+			panelOptions.setLayout(FlowLayout.new(LayoutAxis.y, 0))
 			
 			var ToggleButtonGroup group = ToggleButtonGroup.new()
-			elements.forEach( block Object each
-				var OptionBox optionBox = OptionBox.new( each.toString() )
-				group.add( optionBox )
-				panelOptions.addWidget( optionBox )
-			end )
-			group.setSelected( selectElement )
+			elements.forEach(block Object each
+				var OptionBox optionBox = OptionBox.new(each.toString())
+				group.add(optionBox)
+				panelOptions.addWidget(optionBox)
+			end)
+			group.setSelected(selectElement)
 			
-			panelContent.addWidget( panelOptions )
-			dialog.addWidget( panelContent, BorderLayout.Area.content )
+			panelContent.addWidget(panelOptions)
+			dialog.addWidget(panelContent, BorderLayout.Area.content)
 			
 			// image
 			if image != null
 				var Panel panelImage = Panel.new()
-				panelImage.setDesignerSelector( "Panel.WindowDialogImage" )
-				panelImage.setLayout( CentrizedBoxLayout.new( LayoutAxis.y ) )
-				panelImage.addWidget( DisplayImage.new( image ) )
-				dialog.addWidget( panelImage, BorderLayout.Area.left )
+				panelImage.setDesignerSelector("Panel.WindowDialogImage")
+				panelImage.setLayout(CentrizedBoxLayout.new(LayoutAxis.y))
+				panelImage.addWidget(DisplayImage.new(image))
+				dialog.addWidget(panelImage, BorderLayout.Area.left)
 			end
 			
 			// panel with accept and cancel button
-			dialog.addWidget( createButtonsAcceptCancel( buttonAccept, buttonCancel, \
-				CloseDialogToggleButtonGroup.new( dialog, group ), \
-				CloseDialog.new( dialog, -1 ) ), BorderLayout.Area.bottom )
-		end )
+			var ObjectReference acceptWidget = ObjectReference.new()
+			dialog.addWidget(createButtonsAcceptCancel(buttonAccept, buttonCancel, \
+				CloseDialogToggleButtonGroup.new(dialog, group), \
+				CloseDialog.new(dialog, -1), acceptWidget), BorderLayout.Area.bottom)
+			dialog.setAcceptWidget(acceptWidget.get() cast Widget)
+		end)
 		
 		// show dialog
-		dialog.show( window, true, WindowModal.Placement.window )
+		dialog.show(window, true, WindowModal.Placement.window)
 		return dialog
 	end
 	
@@ -599,54 +619,125 @@ class WindowDialog extends WindowModal
 	 * \param buttonCancel Button configuration for cancel button or \em null to use "Cancel".
 	 * \param listener Listener to call closing message box.
 	 */
-	public static func WindowDialog chooseList( Window window, String title, String message, \
+	public static func WindowDialog chooseList(Window window, String title, String message, \
 	Image image, ListModel elements, ListElementRenderer renderer, \
-	ButtonConfiguration buttonAccept, ButtonConfiguration buttonCancel, ResultListener listener )
+	ButtonConfiguration buttonAccept, ButtonConfiguration buttonCancel, ResultListener listener)
 		if elements.getCount() == 0
 			throw EInvalidParam.new()
 		end
 		
-		var WindowDialog dialog = WindowDialog.new( 0, 0, 400, 200 )
+		var WindowDialog dialog = WindowDialog.new(0, 0, 400, 200)
 		
-		dialog.runWhileBlockingLayout( block
-			//dialog.setMinDialogSize( Point.new( 180, 120 ) )
-			dialog.setLayout( BorderLayout.new() )
-			//dialog.setCanResize( false ) // resizing is not so bad in this dialog type
-			dialog.setTitle( title )
-			dialog.setResult( -1 ) // result for closing window without button
-			dialog.setResultListener( listener )
+		dialog.runWhileBlockingLayout(block
+			//dialog.setMinDialogSize(Point.new(180, 120))
+			dialog.setGuiTheme(window.getGuiTheme())
+			dialog.setLayout(BorderLayout.new())
+			//dialog.setCanResize(false) // resizing is not so bad in this dialog type
+			dialog.setTitle(title)
+			dialog.setResult(-1) // result for closing window without button
+			dialog.setResultListener(listener)
 			
 			// message with list box
 			var Panel panelContent = Panel.new()
-			panelContent.setLayout( FlowLayout.new( LayoutAxis.y, 5, FlowLayout.Stretch.last ) )
+			panelContent.setLayout(FlowLayout.new(LayoutAxis.y, 5, FlowLayout.Stretch.last))
 			
-			var Label label = Label.new( message )
-			label.setDesignerSelector( "Label.WindowDialog" )
-			label.setWordWrap( true )
-			panelContent.addWidget( label )
+			var Label label = Label.new(message)
+			label.setDesignerSelector("Label.WindowDialog")
+			label.setWordWrap(true)
+			panelContent.addWidget(label)
 			
-			var ListBox listBox = ListBox.new( elements, renderer )
-			listBox.setNumberDisplayLines( DEMath.min( elements.getCount(), 10 ) )
-			panelContent.addWidget( ScrollPanel.new( listBox ) )
-			dialog.addWidget( panelContent, BorderLayout.Area.content )
+			var ListBox listBox = ListBox.new(elements, renderer)
+			listBox.setNumberDisplayLines(DEMath.min(elements.getCount(), 10))
+			panelContent.addWidget(ScrollPanel.new(listBox))
+			dialog.addWidget(panelContent, BorderLayout.Area.content)
 			
 			// image
 			if image != null
 				var Panel panelImage = Panel.new()
-				panelImage.setDesignerSelector( "Panel.WindowDialogImage" )
-				panelImage.setLayout( CentrizedBoxLayout.new( LayoutAxis.y ) )
-				panelImage.addWidget( DisplayImage.new( image ) )
-				dialog.addWidget( panelImage, BorderLayout.Area.left )
+				panelImage.setDesignerSelector("Panel.WindowDialogImage")
+				panelImage.setLayout(CentrizedBoxLayout.new(LayoutAxis.y))
+				panelImage.addWidget(DisplayImage.new(image))
+				dialog.addWidget(panelImage, BorderLayout.Area.left)
 			end
 			
 			// panel with accept and cancel button
-			dialog.addWidget( createButtonsAcceptCancel( buttonAccept, buttonCancel, \
-				CloseDialogListBox.new( dialog, listBox ), \
-				CloseDialog.new( dialog, -1 ) ), BorderLayout.Area.bottom )
-		end )
+			var ObjectReference acceptWidget = ObjectReference.new()
+			dialog.addWidget(createButtonsAcceptCancel(buttonAccept, buttonCancel, \
+				CloseDialogListBox.new(dialog, listBox), \
+				CloseDialog.new(dialog, -1), acceptWidget), BorderLayout.Area.bottom)
+			dialog.setAcceptWidget(acceptWidget.get() cast Widget)
+		end)
 		
 		// show dialog
-		dialog.show( window, true, WindowModal.Placement.window )
+		dialog.show(window, true, WindowModal.Placement.window)
+		return dialog
+	end
+	
+	/**
+	 * \brief Show reorder message box dialog using list box.
+	 * \version 1.11
+	 * \param window Window to block while dialog window is shown.
+	 * \param title Title of the dialog window.
+	 * \param message Message to show above the option boxes.
+	 * \param image Image to show next to the message or \em null to show none.
+	 * \param elements List to reorder.
+	 * \param renderer List element renderer to use.
+	 * \param buttonAccept Button configuration for accept button or \em null to use "Accept".
+	 * \param buttonCancel Button configuration for cancel button or \em null to use "Cancel".
+	 * \param listener Listener to call closing message box.
+	 * 
+	 * Result send to listener is true if reorder accepted or false if cancelled.
+	 */
+	public static func WindowDialog reorderList(Window window, String title, String message,\
+	Image image, DefaultListModel elements, ListElementRenderer renderer,\
+	ButtonConfiguration buttonAccept, ButtonConfiguration buttonCancel, ResultListener listener)
+		if elements.getCount() == 0
+			throw EInvalidParam.new()
+		end
+		
+		var WindowDialog dialog = WindowDialog.new(0, 0, 400, 250)
+		
+		dialog.runWhileBlockingLayout(block
+			dialog.setGuiTheme(window.getGuiTheme())
+			dialog.setLayout(BorderLayout.new())
+			dialog.setTitle(title)
+			dialog.setResult(false) // result for closing window without button
+			dialog.setResultListener(listener)
+			
+			// message with list box
+			var Panel panelContent = Panel.new()
+			panelContent.setLayout(FlowLayout.new(LayoutAxis.y, 5, FlowLayout.Stretch.last))
+			
+			var Label label = Label.new(message)
+			label.setDesignerSelector("Label.WindowDialog")
+			label.setWordWrap(true)
+			panelContent.addWidget(label)
+			
+			var ListBox listBox = ListBox.new(elements, renderer)
+			listBox.setNumberDisplayLines(DEMath.min(elements.getCount(), 15))
+			listBox.addMouseListener(ReorderListMouseListener.new(elements, listBox))
+			panelContent.addWidget(ScrollPanel.new(listBox))
+			dialog.addWidget(panelContent, BorderLayout.Area.content)
+			
+			// image
+			if image != null
+				var Panel panelImage = Panel.new()
+				panelImage.setDesignerSelector("Panel.WindowDialogImage")
+				panelImage.setLayout(CentrizedBoxLayout.new(LayoutAxis.y))
+				panelImage.addWidget(DisplayImage.new(image))
+				dialog.addWidget(panelImage, BorderLayout.Area.left)
+			end
+			
+			// panel with accept and cancel button
+			var ObjectReference acceptWidget = ObjectReference.new()
+			dialog.addWidget(createButtonsAcceptCancel(buttonAccept, buttonCancel,\
+				CloseDialog.new(dialog, true), CloseDialog.new(dialog, false), acceptWidget),\
+					BorderLayout.Area.bottom)
+			dialog.setAcceptWidget(acceptWidget.get() cast Widget)
+		end)
+		
+		// show dialog
+		dialog.show(window, true, WindowModal.Placement.window)
 		return dialog
 	end
 	
@@ -664,61 +755,64 @@ class WindowDialog extends WindowModal
 	 * \param buttonCancel Button configuration for cancel button or \em null to use "Cancel".
 	 * \param listener Listener to call closing message box.
 	 */
-	public static func WindowDialog selection( Window window, String title, String message, \
+	public static func WindowDialog selection(Window window, String title, String message, \
 	Image image, Array elements, Array selectElements, ButtonConfiguration buttonAccept, \
-	ButtonConfiguration buttonCancel, ResultListener listener )
-		var WindowDialog dialog = WindowDialog.new( 0, 0, 400, 200 )
+	ButtonConfiguration buttonCancel, ResultListener listener)
+		var WindowDialog dialog = WindowDialog.new(0, 0, 400, 200)
 		
-		dialog.runWhileBlockingLayout( block
-			//dialog.setMinDialogSize( Point.new( 180, 120 ) )
-			dialog.setLayout( BorderLayout.new() )
-			dialog.setCanResize( false )
-			dialog.setTitle( title )
-			dialog.setResult( -1 ) // result for closing window without button
-			dialog.setResultListener( listener )
+		dialog.runWhileBlockingLayout(block
+			//dialog.setMinDialogSize(Point.new(180, 120))
+			dialog.setGuiTheme(window.getGuiTheme())
+			dialog.setLayout(BorderLayout.new())
+			dialog.setCanResize(false)
+			dialog.setTitle(title)
+			dialog.setResult(-1) // result for closing window without button
+			dialog.setResultListener(listener)
 			
 			// message with check boxes
 			var Panel panelContent = Panel.new()
-			panelContent.setLayout( CentrizedBoxLayout.new( LayoutAxis.y, 5 ) )
+			panelContent.setLayout(CentrizedBoxLayout.new(LayoutAxis.y, 5))
 			
-			var Label label = Label.new( message )
-			label.setDesignerSelector( "Label.WindowDialog" )
-			label.setWordWrap( true )
-			panelContent.addWidget( label )
+			var Label label = Label.new(message)
+			label.setDesignerSelector("Label.WindowDialog")
+			label.setWordWrap(true)
+			panelContent.addWidget(label)
 			
 			var Panel panelOptions = Panel.new()
-			panelOptions.setLayout( FlowLayout.new( LayoutAxis.y, 0 ) )
+			panelOptions.setLayout(FlowLayout.new(LayoutAxis.y, 0))
 			
 			var Array checkBoxes = Array.new()
-			elements.forEach( block Object each
-				var CheckBox checkBox = CheckBox.new( each.toString() )
-				checkBoxes.add( checkBox )
-				panelOptions.addWidget( checkBox )
-			end )
-			selectElements.forEach( block int each
-				( checkBoxes.getAt( each ) cast CheckBox ).setToggled( true )
-			end )
+			elements.forEach(block Object each
+				var CheckBox checkBox = CheckBox.new(each.toString())
+				checkBoxes.add(checkBox)
+				panelOptions.addWidget(checkBox)
+			end)
+			selectElements.forEach(block int each
+				(checkBoxes.getAt(each) cast CheckBox).setToggled(true)
+			end)
 			
-			panelContent.addWidget( panelOptions )
-			dialog.addWidget( panelContent, BorderLayout.Area.content )
+			panelContent.addWidget(panelOptions)
+			dialog.addWidget(panelContent, BorderLayout.Area.content)
 			
 			// image
 			if image != null
 				var Panel panelImage = Panel.new()
-				panelImage.setDesignerSelector( "Panel.WindowDialogImage" )
-				panelImage.setLayout( CentrizedBoxLayout.new( LayoutAxis.y ) )
-				panelImage.addWidget( DisplayImage.new( image ) )
-				dialog.addWidget( panelImage, BorderLayout.Area.left )
+				panelImage.setDesignerSelector("Panel.WindowDialogImage")
+				panelImage.setLayout(CentrizedBoxLayout.new(LayoutAxis.y))
+				panelImage.addWidget(DisplayImage.new(image))
+				dialog.addWidget(panelImage, BorderLayout.Area.left)
 			end
 			
 			// panel with accept and cancel button
-			dialog.addWidget( createButtonsAcceptCancel( buttonAccept, buttonCancel, \
-				CloseDialogCheckBox.new( dialog, checkBoxes ), \
-				CloseDialog.new( dialog, null ) ), BorderLayout.Area.bottom )
-		end )
+			var ObjectReference acceptWidget = ObjectReference.new()
+			dialog.addWidget(createButtonsAcceptCancel(buttonAccept, buttonCancel, \
+				CloseDialogCheckBox.new(dialog, checkBoxes), \
+				CloseDialog.new(dialog, null), acceptWidget), BorderLayout.Area.bottom)
+			dialog.setAcceptWidget(acceptWidget.get() cast Widget)
+		end)
 		
 		// show dialog
-		dialog.show( window, true, WindowModal.Placement.window )
+		dialog.show(window, true, WindowModal.Placement.window)
 		return dialog
 	end
 	
@@ -735,53 +829,121 @@ class WindowDialog extends WindowModal
 	 * \param buttonCancel Button configuration for cancel button or \em null to use "Cancel".
 	 * \param listener Listener to call closing message box.
 	 */
-	public static func WindowDialog input( Window window, String title, String message, \
+	public static func WindowDialog input(Window window, String title, String message, \
 	Image image, String initialText, ButtonConfiguration buttonAccept, \
-	ButtonConfiguration buttonCancel, ResultListener listener )
-		var WindowDialog dialog = WindowDialog.new( 0, 0, 400, 200 )
+	ButtonConfiguration buttonCancel, ResultListener listener)
+		var WindowDialog dialog = WindowDialog.new(0, 0, 400, 200)
 		
-		dialog.runWhileBlockingLayout( block
-			//dialog.setMinDialogSize( Point.new( 180, 120 ) )
-			dialog.setLayout( BorderLayout.new() )
-			dialog.setCanResize( false )
-			dialog.setTitle( title )
-			dialog.setResult( null ) // result for closing window without button
-			dialog.setResultListener( listener )
+		dialog.runWhileBlockingLayout(block
+			//dialog.setMinDialogSize(Point.new(180, 120))
+			dialog.setGuiTheme(window.getGuiTheme())
+			dialog.setLayout(BorderLayout.new())
+			dialog.setCanResize(false)
+			dialog.setTitle(title)
+			dialog.setResult(null) // result for closing window without button
+			dialog.setResultListener(listener)
 			
 			// message with input field
 			var Panel panelContent = Panel.new()
-			panelContent.setLayout( CentrizedBoxLayout.new( LayoutAxis.y, 5 ) )
+			panelContent.setLayout(CentrizedBoxLayout.new(LayoutAxis.y, 5))
 			
-			var Label label = Label.new( message )
-			label.setDesignerSelector( "Label.WindowDialog" )
-			label.setWordWrap( true )
-			panelContent.addWidget( label )
+			var Label label = Label.new(message)
+			label.setDesignerSelector("Label.WindowDialog")
+			label.setWordWrap(true)
+			panelContent.addWidget(label)
 			
-			var TextModel modelText = DefaultTextModel.new( initialText )
-			var TextField textField = TextField.new( modelText )
-			textField.setDisplayCharCount( 20 )
-			textField.setCursorPosition( modelText.getText().getLength() )
-			panelContent.addWidget( textField )
+			var TextModel modelText = DefaultTextModel.new(initialText)
+			var TextField textField = TextField.new(modelText)
+			textField.setDisplayCharCount(20)
+			textField.setCursorPosition(modelText.getText().getLength())
+			panelContent.addWidget(textField)
 			
-			dialog.addWidget( panelContent, BorderLayout.Area.content )
+			dialog.addWidget(panelContent, BorderLayout.Area.content)
 			
 			// image
 			if image != null
 				var Panel panelImage = Panel.new()
-				panelImage.setDesignerSelector( "Panel.WindowDialogImage" )
-				panelImage.setLayout( CentrizedBoxLayout.new( LayoutAxis.y ) )
-				panelImage.addWidget( DisplayImage.new( image ) )
-				dialog.addWidget( panelImage, BorderLayout.Area.left )
+				panelImage.setDesignerSelector("Panel.WindowDialogImage")
+				panelImage.setLayout(CentrizedBoxLayout.new(LayoutAxis.y))
+				panelImage.addWidget(DisplayImage.new(image))
+				dialog.addWidget(panelImage, BorderLayout.Area.left)
 			end
 			
 			// panel with accept and cancel button
-			dialog.addWidget( createButtonsAcceptCancel( buttonAccept, buttonCancel, \
-				CloseDialogTextModel.new( dialog, modelText ), \
-				CloseDialog.new( dialog, null ) ), BorderLayout.Area.bottom )
-		end )
+			var ObjectReference acceptWidget = ObjectReference.new()
+			dialog.addWidget(createButtonsAcceptCancel(buttonAccept, buttonCancel, \
+				CloseDialogTextModel.new(dialog, modelText), \
+				CloseDialog.new(dialog, null), acceptWidget), BorderLayout.Area.bottom)
+			dialog.setAcceptWidget(acceptWidget.get() cast Widget)
+		end)
 		
 		// show dialog
-		dialog.show( window, true, WindowModal.Placement.window )
+		dialog.show(window, true, WindowModal.Placement.window)
+		return dialog
+	end
+	
+	/**
+	 * \brief Request text input from user with proposed values to choose from.
+	 * \version 1.5
+	 * 
+	 * Result send to listener is the text string entered by the user or null
+	 * if the dialog has been cancelled.
+	 * 
+	 * \param window Window to block while dialog window is shown.
+	 * \param title Title of the dialog window.
+	 * \param message Message to show above the input field.
+	 * \param image to show next to the message or \em null to show none.
+	 * \param initialText Initial text in the input field.
+	 * \param proposed Proposals for the user to input.
+	 * \param buttonAccept Button configuration for accept button or \em null to use "Accept".
+	 * \param buttonCancel Button configuration for cancel button or \em null to use "Cancel".
+	 * \param listener Listener to call closing message box.
+	 */
+	public static func WindowDialog inputPropose(Window window, String title, String message, \
+	Image image, String initialText, DefaultListModel proposed, ButtonConfiguration buttonAccept, \
+	ButtonConfiguration buttonCancel, ResultListener listener)
+		var WindowDialog dialog = WindowDialog.new(0, 0, 400, 200)
+		
+		dialog.runWhileBlockingLayout(block
+			//dialog.setMinDialogSize(Point.new(180, 120))
+			dialog.setGuiTheme(window.getGuiTheme())
+			dialog.setLayout(BorderLayout.new())
+			dialog.setCanResize(false)
+			dialog.setTitle(title)
+			dialog.setResult(null) // result for closing window without button
+			dialog.setResultListener(listener)
+			
+			// message with input field
+			var TextModel modelText = DefaultTextModel.new(initialText)
+			
+			dialog.addWidget(Panel.new(CentrizedBoxLayout.new(LayoutAxis.y, 5), block Panel p
+				var Label label = Label.new(message, "Label.WindowDialog")
+				label.setWordWrap(true)
+				p.addWidget(label)
+				
+				var ComboBox comboBox = ComboBox.new(proposed, DefaultComboBoxEditor.new(modelText, 20))
+				(comboBox.getEditor() cast TextField).setCursorPosition(modelText.getText().getLength())
+				p.addWidget(comboBox)
+			end), BorderLayout.Area.content)
+			
+			// image
+			if image != null
+				dialog.addWidget(Panel.new(CentrizedBoxLayout.new(LayoutAxis.y), block Panel p
+					p.setDesignerSelector("Panel.WindowDialogImage")
+					p.addWidget(DisplayImage.new(image))
+				end), BorderLayout.Area.left)
+			end
+			
+			// panel with accept and cancel button
+			var ObjectReference acceptWidget = ObjectReference.new()
+			dialog.addWidget(createButtonsAcceptCancel(buttonAccept, buttonCancel, \
+				CloseDialogTextModel.new(dialog, modelText), \
+				CloseDialog.new(dialog, null), acceptWidget), BorderLayout.Area.bottom)
+			dialog.setAcceptWidget(acceptWidget.get() cast Widget)
+		end)
+		
+		// show dialog
+		dialog.show(window, true, WindowModal.Placement.window)
 		return dialog
 	end
 	
@@ -795,62 +957,67 @@ class WindowDialog extends WindowModal
 	 * \param actionAccept Action to use if \em buttonAccept is pressed.
 	 * \param actionCancel Action to use if \em buttonCancel is pressed.
 	 */
-	public static func Panel createButtonsAcceptCancel( \
+	public static func Panel createButtonsAcceptCancel(\
 	ButtonConfiguration buttonAccept, ButtonConfiguration buttonCancel, \
-	ActionListener actionAccept, ActionListener actionCancel )
-		// panel
-		var Panel panelButtons = Panel.new()
-		
-		panelButtons.runWhileBlockingLayout( block
-			panelButtons.setLayout( CentrizedBoxLayout.new( LayoutAxis.x ) )
-			panelButtons.setDesignerSelector( "Panel.WindowDialogButtons" )
+	ActionListener actionAccept, ActionListener actionCancel)
+		return createButtonsAcceptCancel(buttonAccept, buttonCancel, \
+			actionAccept, actionCancel, ObjectReference.new())
+	end
+	
+	/**
+	 * \brief Create button panel with accept/cancel buttons.
+	 * \details Helper method.
+	 * \param buttonAccept Button configuration for accept button or \em null to use "Accept".
+	 * \param buttonCancel Button configuration for cancel button or \em null to use "Cancel".
+	 * \param actionAccept Action to use if \em buttonAccept is pressed.
+	 * \param actionCancel Action to use if \em buttonCancel is pressed.
+	 * \param acceptWidget Store reference to button to use as accept widget.
+	 */
+	public static func Panel createButtonsAcceptCancel(\
+	ButtonConfiguration buttonAccept, ButtonConfiguration buttonCancel, \
+	ActionListener actionAccept, ActionListener actionCancel, ObjectReference acceptWidget)
+		return Panel.new(CentrizedBoxLayout.new(LayoutAxis.x), block Panel p
+			p.setDesignerSelector("Panel.WindowDialogButtons")
 			
 			// grid of buttons to make them use only as much space horizontally as needed
-			var Panel panelButtonGrid = Panel.new()
-			panelButtonGrid.setLayout( BoxLayout.new( LayoutAxis.x, 5 ) )
-			
-			// accept button
-			var Button widgetButton
-			
-			if buttonAccept == null
-				widgetButton = Button.new( "Accept" )
+			p.addWidget(Panel.new(BoxLayout.new(LayoutAxis.x, 5), block Panel p2
+				// accept button
+				var Button widgetButton
 				
-			else
-				widgetButton = Button.new( buttonAccept.getText(), buttonAccept.getImage() )
-				
-				if buttonAccept.getDesignerSelector() != null
-					widgetButton.setDesignerSelector( buttonAccept.getDesignerSelector() )
+				if buttonAccept == null
+					widgetButton = Button.new("@UI.Accept", actionAccept)
 					
 				else
-					widgetButton.setDesignerSelector( "Button.WindowDialog" )
+					widgetButton = Button.new(buttonAccept.getText(), buttonAccept.getImage(), actionAccept)
+					
+					if buttonAccept.getDesignerSelector() != null
+						widgetButton.setDesignerSelector(buttonAccept.getDesignerSelector())
+						
+					else
+						widgetButton.setDesignerSelector("Button.WindowDialog")
+					end
 				end
-			end
-			
-			widgetButton.addActionListener( actionAccept )
-			panelButtonGrid.addWidget( widgetButton )
-			
-			// cancel button
-			if buttonCancel == null
-				widgetButton = Button.new( "Cancel" )
 				
-			else
-				widgetButton = Button.new( buttonCancel.getText(), buttonCancel.getImage() )
+				p2.addWidget(widgetButton)
+				acceptWidget.set(widgetButton)
 				
-				if buttonCancel.getDesignerSelector() != null
-					widgetButton.setDesignerSelector( buttonCancel.getDesignerSelector() )
+				// cancel button
+				if buttonCancel == null
+					widgetButton = Button.new("@UI.Cancel", actionCancel)
 					
 				else
-					widgetButton.setDesignerSelector( "Button.WindowDialog" )
+					widgetButton = Button.new(buttonCancel.getText(), buttonCancel.getImage(), actionCancel)
+					
+					if buttonCancel.getDesignerSelector() != null
+						widgetButton.setDesignerSelector(buttonCancel.getDesignerSelector())
+						
+					else
+						widgetButton.setDesignerSelector("Button.WindowDialog")
+					end
 				end
-			end
-			
-			widgetButton.addActionListener( actionCancel )
-			panelButtonGrid.addWidget( widgetButton )
-			
-			panelButtons.addWidget( panelButtonGrid )
-		end )
-		
-		return panelButtons
+				p2.addWidget(widgetButton)
+			end))
+		end)
 	end
 	
 	/**
@@ -859,7 +1026,18 @@ class WindowDialog extends WindowModal
 	 * \param buttons Array of ButtonConfiguration.
 	 * \param actions Array of ActionListener matching elements in buttons by index.
 	 */
-	public static func Panel createButtonsActions( Array buttons, Array actions )
+	public static func Panel createButtonsActions(Array buttons, Array actions)
+		return createButtonsActions(buttons, actions, ObjectReference.new())
+	end
+	
+	/**
+	 * \brief Create button panel with buttons.
+	 * \details Helper method.
+	 * \param buttons Array of ButtonConfiguration.
+	 * \param actions Array of ActionListener matching elements in buttons by index.
+	 * \param acceptWidget Store reference to button to use as accept widget.
+	 */
+	public static func Panel createButtonsActions(Array buttons, Array actions, ObjectReference acceptWidget)
 		if buttons == null or actions == null
 			throw EInvalidParam.new()
 		end
@@ -870,61 +1048,35 @@ class WindowDialog extends WindowModal
 			throw EInvalidParam.new()
 		end
 		
-		// panel
-		var Panel panelButtons = Panel.new()
-		
-		panelButtons.runWhileBlockingLayout( block
-			panelButtons.setLayout( CentrizedBoxLayout.new( LayoutAxis.x ) )
-			panelButtons.setDesignerSelector( "Panel.WindowDialogButtons" )
+		return Panel.new(CentrizedBoxLayout.new(LayoutAxis.x), block Panel p
+			p.setDesignerSelector("Panel.WindowDialogButtons")
 			
 			// grid of buttons to make them use only as much space horizontally as needed
-			var Panel panelButtonGrid = Panel.new()
-			panelButtonGrid.setLayout( BoxLayout.new( LayoutAxis.x, 5 ) )
-			
-			// buttons
-			var int count = buttons.getCount()
-			var ButtonConfiguration configuration
-			var Button widgetButton
-			var int i
-			
-			for i = 0 to count
-				configuration = buttons.getAt( i ) cast ButtonConfiguration
-				widgetButton = Button.new( configuration.getText(), configuration.getImage() )
+			p.addWidget(Panel.new(BoxLayout.new(LayoutAxis.x, 5), block Panel p2
+				var int count = buttons.getCount()
+				var ButtonConfiguration configuration
+				var Button widgetButton
+				var int i
 				
-				if configuration.getDesignerSelector() != null
-					widgetButton.setDesignerSelector( configuration.getDesignerSelector() )
+				for i = 0 to count
+					configuration = buttons.getAt(i) cast ButtonConfiguration
+					widgetButton = Button.new(configuration.getText(), \
+						configuration.getImage(), actions.getAt(i) cast ActionListener)
 					
-				else
-					widgetButton.setDesignerSelector( "Button.WindowDialog" )
+					if configuration.getDesignerSelector() != null
+						widgetButton.setDesignerSelector(configuration.getDesignerSelector())
+						
+					else
+						widgetButton.setDesignerSelector("Button.WindowDialog")
+					end
+					
+					p2.addWidget(widgetButton)
+					
+					if i == 0
+						acceptWidget.set(widgetButton)
+					end
 				end
-				
-				widgetButton.addActionListener( actions.getAt( i ) cast ActionListener )
-				panelButtonGrid.addWidget( widgetButton )
-			end
-			
-			panelButtons.addWidget( panelButtonGrid )
-		end )
-		
-		return panelButtons
+			end))
+		end)
 	end
-	
-	
-	
-	/**
-	 * \brief Fit window size to content size.
-	 * 
-	 * Modifies base class behavior to keep dialog size above desired minimum size if set.
-	 * Placed in this method to modify the behavior of WindowModal.show() before the window
-	 * placement takes place.
-	 */
-	/*
-	public func void fitToContent()
-		if this.pMinDialogSize != null
-			this.setSize( this.getLayout().getMinimumSize( this ).largest( this.pMinDialogSize ) )
-			
-		else
-			super.fitToContent()
-		end
-	end
-	*/
 end

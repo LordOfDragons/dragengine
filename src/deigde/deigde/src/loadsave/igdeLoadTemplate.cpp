@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -65,7 +68,7 @@ void igdeLoadTemplate::Load( decBaseFileReader &reader, igdeTemplate &atemplate 
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if( ! root || strcmp( root->GetName(), "projectTemplate" ) != 0 ){
+	if( ! root || root->GetName() != "projectTemplate" ){
 		DETHROW( deeInvalidParam );
 	}
 	
@@ -87,19 +90,19 @@ void igdeLoadTemplate::pReadTemplate( const decXmlElementTag &root, igdeTemplate
 			continue;
 		}
 		
-		if( strcmp( tag->GetName(), "name" ) == 0 ){
+		if( tag->GetName() == "name" ){
 			atemplate.SetName( GetCDataString( *tag ) );
 			
-		}else if( strcmp( tag->GetName(), "description" ) == 0 ){
+		}else if( tag->GetName() == "description" ){
 			atemplate.SetDescription( ReadMultilineString( *tag ) );
 			
-		}else if( strcmp( tag->GetName(), "scriptModule" ) == 0 ){
+		}else if( tag->GetName() == "scriptModule" ){
 			atemplate.SetScriptModule( GetCDataString( *tag ) );
 			
-		}else if( strcmp( tag->GetName(), "baseGameDefinition" ) == 0 ){
+		}else if( tag->GetName() == "baseGameDefinition" ){
 			atemplate.GetBaseGameDefinitions().Add( GetCDataString( *tag ) );
 			
-		}else if( strcmp( tag->GetName(), "file" ) == 0 ){
+		}else if( tag->GetName() == "file" ){
 			igdeTemplateFile *file = NULL;
 			
 			try{
@@ -131,13 +134,16 @@ void igdeLoadTemplate::pReadFile( const decXmlElementTag &root, igdeTemplateFile
 			continue;
 		}
 		
-		if( strcmp( tag->GetName(), "path" ) == 0 ){
+		if( tag->GetName() == "path" ){
 			file.SetPath( GetCDataString( *tag ) );
 			
-		}else if( strcmp( tag->GetName(), "pattern" ) == 0 ){
+		}else if( tag->GetName() == "pathRename" ){
+			file.SetPathRename( GetCDataString( *tag ) );
+			
+		}else if( tag->GetName() == "pattern" ){
 			file.SetPattern( GetCDataString( *tag ) );
 			
-		}else if( strcmp( tag->GetName(), "directory" ) == 0 ){
+		}else if( tag->GetName() == "directory" ){
 			const decString directory( GetCDataString( *tag ) );
 			
 			if( directory == "data" ){
@@ -150,7 +156,7 @@ void igdeLoadTemplate::pReadFile( const decXmlElementTag &root, igdeTemplateFile
 				LogWarnUnknownValue( *tag, directory );
 			}
 			
-		}else if( strcmp( tag->GetName(), "replace" ) == 0 ){
+		}else if( tag->GetName() == "replace" ){
 			igdeTemplateReplace *replace = NULL;
 			
 			try{
@@ -182,17 +188,23 @@ void igdeLoadTemplate::pReadReplace( const decXmlElementTag &root, igdeTemplateR
 			continue;
 		}
 		
-		if( strcmp( tag->GetName(), "token" ) == 0 ){
+		if( tag->GetName() == "token" ){
 			replace.SetToken( GetCDataString( *tag ) );
 			
-		}else if( strcmp( tag->GetName(), "value" ) == 0 ){
+		}else if( tag->GetName() == "value" ){
 			const decString value( GetCDataString( *tag ) );
 			
 			if( value == "projectPath" ){
 				replace.SetValue( igdeTemplateReplace::evProjectPath );
 				
+			}else if( value == "projectPathDirectory" ){
+				replace.SetValue( igdeTemplateReplace::evProjectPathDirectory );
+				
 			}else if( value == "dataPath" ){
 				replace.SetValue( igdeTemplateReplace::evDataPath );
+				
+			}else if( value == "dataDirectory" ){
+				replace.SetValue( igdeTemplateReplace::evDataDirectory );
 				
 			}else if( value == "projectName" ){
 				replace.SetValue( igdeTemplateReplace::evProjectName );
@@ -210,7 +222,7 @@ void igdeLoadTemplate::pReadReplace( const decXmlElementTag &root, igdeTemplateR
 				LogWarnUnknownValue( *tag, value );
 			}
 			
-		}else if( strcmp( tag->GetName(), "format" ) == 0 ){
+		}else if( tag->GetName() == "format" ){
 			const decString format( GetCDataString( *tag ) );
 			
 			if( format == "text" ){

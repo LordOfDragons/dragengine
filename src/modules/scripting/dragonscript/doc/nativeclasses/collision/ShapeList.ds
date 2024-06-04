@@ -28,11 +28,11 @@ class ShapeList
 	/** \name Constructors */
 	/*@{*/
 	/** \brief Create shape list. */
-	public func new()
+	func new()
 	end
 	
 	/** \brief Create copy of shape list. */
-	public func new( ShapeList copy )
+	func new(ShapeList copy)
 	end
 	/*@}*/
 	
@@ -41,19 +41,130 @@ class ShapeList
 	/** \name Management */
 	/*@{*/
 	/** \brief Number of shapes. */
-	public func int getCount()
+	func int getCount()
+		return 0
 	end
 	
 	/** \brief Has no shapes. */
-	public func bool empty()
+	func bool empty()
+		return false
 	end
 	
 	/** \brief Has shapes. */
-	public func bool notEmpty()
+	func bool notEmpty()
+		return false
 	end
 	
 	/** \brief Remove all shapes. */
-	public func void removeAllShapes()
+	func void removeAllShapes()
+	end
+	
+	
+	
+	/**
+	 * \brief Type of shape at index.
+	 * \throws EInvalidParam \em index is less than 0 or grater than or equal to getCount().
+	 */
+	func ShapeType getTypeAt(int index)
+		return null
+	end
+	
+	/**
+	 * \brief Position of shape at index.
+	 * \throws EInvalidParam \em index is less than 0 or grater than or equal to getCount().
+	 */
+	func Vector getPositionAt(int index)
+		return null
+	end
+	
+	/**
+	 * \brief Orientation of shape at index.
+	 * \throws EInvalidParam \em index is less than 0 or grater than or equal to getCount().
+	 */
+	func Quaternion getOrientationAt(int index)
+		return null
+	end
+	
+	/**
+	 * \brief Radius of shape at index.
+	 * \throws EInvalidParam \em index is less than 0 or grater than or equal to getCount().
+	 * \throws EInvalidParam Shape is not of type ShapeType.sphere .
+	 */
+	func float getRadiusAt(int index)
+		return 0.0
+	end
+	
+	/**
+	 * \brief Half extends of shape at index.
+	 * \throws EInvalidParam \em index is less than 0 or grater than or equal to getCount().
+	 * \throws EInvalidParam Shape is not of type ShapeType.box .
+	 */
+	func Vector getHalfExtendsAt(int index)
+		return null
+	end
+	
+	/**
+	 * \brief Half height of shape at index.
+	 * \throws EInvalidParam \em index is less than 0 or grater than or equal to getCount().
+	 * \throws EInvalidParam Shape is not of type ShapeType.cylinder or ShapeType.capsule .
+	 */
+	func float getHalfHeightAt(int index)
+		return 0.0
+	end
+	
+	/**
+	 * \brief Top radius of shape at index.
+	 * \throws EInvalidParam \em index is less than 0 or grater than or equal to getCount().
+	 * \throws EInvalidParam Shape is not of type ShapeType.cylinder or ShapeType.capsule .
+	 */
+	func float getTopRadiusAt(int index)
+		return 0.0
+	end
+	
+	/**
+	 * \brief Bottom radius of shape at index.
+	 * \throws EInvalidParam \em index is less than 0 or grater than or equal to getCount().
+	 * \throws EInvalidParam Shape is not of type ShapeType.cylinder or ShapeType.capsule .
+	 */
+	func float getBottomRadiusAt(int index)
+		return 0.0
+	end
+	
+	/**
+	 * \brief Top axis scaling of shape at index.
+	 * \throws EInvalidParam \em index is less than 0 or grater than or equal to getCount().
+	 * \throws EInvalidParam Shape is not of type ShapeType.cylinder or ShapeType.capsule .
+	 */
+	func Vector2 getTopAxisScalingAt(int index)
+		return null
+	end
+	
+	/**
+	 * \brief Bottom axis scaling of shape at index.
+	 * \throws EInvalidParam \em index is less than 0 or grater than or equal to getCount().
+	 * \throws EInvalidParam Shape is not of type ShapeType.cylinder or ShapeType.capsule .
+	 */
+	func Vector2 getBottomAxisScalingAt(int index)
+		return null
+	end
+	
+	/**
+	 * \brief Count of points of shape at index.
+	 * \throws EInvalidParam \em index is less than 0 or grater than or equal to getCount().
+	 * \throws EInvalidParam Shape is not of type ShapeType.hull .
+	 */
+	func int getPointCountAt(int index)
+		return 0
+	end
+	
+	/**
+	 * \brief Point at index of shape at index.
+	 * \throws EInvalidParam \em shape is less than 0 or grater than or equal to getCount().
+	 * \throws EInvalidParam \em point is less than 0 or grater than or equal to getPointCountAt(shape).
+	 * \throws EInvalidParam Shape is not of type ShapeType.hull .
+	 */
+	func Vector getPointAt(int shape, int point)
+		return null
 	end
 	/*@}*/
 	
@@ -62,7 +173,7 @@ class ShapeList
 	/** \name Sphere */
 	/*@{*/
 	/** \brief Add sphere shape. */
-	public func void addSphere( Vector position, float radius )
+	func void addSphere(Vector position, float radius)
 	end
 	/*@}*/
 	
@@ -71,11 +182,19 @@ class ShapeList
 	/** \name Box */
 	/*@{*/
 	/** \brief Add box shape. */
-	public func void addBox( Vector center, Vector halfExtents )
+	func void addBox(Vector center, Vector halfExtents)
 	end
 	
 	/** \brief Add box shape. */
-	public func void addBox( Vector center, Vector halfExtents, Quaternion orientation )
+	func void addBox(Vector center, Vector halfExtents, Quaternion orientation)
+	end
+	
+	/** \brief Add box shape with tapering applied at the top. */
+	func void addBox(Vector center, Vector halfExtents, Vector2 tapering)
+	end
+	
+	/** \brief Add box shape with tapering applied at the top. */
+	func void addBox(Vector center, Vector halfExtents, Vector2 tapering, Quaternion orientation)
 	end
 	/*@}*/
 	
@@ -84,43 +203,39 @@ class ShapeList
 	/** \name Cylinder */
 	/*@{*/
 	/** \brief Add cylinder shape. */
-	public func void addCylinder( float halfHeight, float radius )
+	func void addCylinder(float halfHeight, float radius)
 	end
 	
 	/** \brief Add cylinder shape. */
-	public func void addCylinder( float halfHeight, float radius, Vector position )
+	func void addCylinder(float halfHeight, float radius, Vector position)
 	end
 	
 	/** \brief Add cylinder shape. */
-	public func void addCylinder( float halfHeight, float radius, Vector position, Quaternion orientation )
+	func void addCylinder(float halfHeight, float radius, Vector position, Quaternion orientation)
 	end
 	
 	/** \brief Add tapered cylinder shape. */
-	public func void addCylinder( float halfHeight, float topRadius, float bottomRadius )
+	func void addCylinder(float halfHeight, float topRadius, float bottomRadius)
 	end
 	
 	/** \brief Add tapered cylinder shape. */
-	public func void addCylinder( float halfHeight, float topRadius, float bottomRadius, Vector position )
+	func void addCylinder(float halfHeight, float topRadius, float bottomRadius, Vector position)
 	end
 	
 	/** \brief Add tapered cylinder shape. */
-	public func void addCylinder( float halfHeight, float topRadius, float bottomRadius, \
-	Vector position, Quaternion orientation )
+	func void addCylinder(float halfHeight, float topRadius, float bottomRadius, Vector position, Quaternion orientation)
 	end
 	
 	/** \brief Add tapered cylinder shape. */
-	public func void addCylinder( float halfHeight, float topRadius, float bottomRadius, \
-	Vector2 topAxisScaling, Vector2 bottomAxisScaling )
+	func void addCylinder(float halfHeight, float topRadius, float bottomRadius, Vector2 topAxisScaling, Vector2 bottomAxisScaling)
 	end
 	
 	/** \brief Add tapered cylinder shape. */
-	public func void addCylinder( float halfHeight, float topRadius, float bottomRadius, \
-	Vector2 topAxisScaling, Vector2 bottomAxisScaling, Vector position )
+	func void addCylinder(float halfHeight, float topRadius, float bottomRadius, Vector2 topAxisScaling, Vector2 bottomAxisScaling, Vector position)
 	end
 	
 	/** \brief Add tapered cylinder shape. */
-	public func void addCylinder( float halfHeight, float topRadius, float bottomRadius, \
-	Vector2 topAxisScaling, Vector2 bottomAxisScaling, Vector position, Quaternion orientation )
+	func void addCylinder(float halfHeight, float topRadius, float bottomRadius, Vector2 topAxisScaling, Vector2 bottomAxisScaling, Vector position, Quaternion orientation)
 	end
 	/*@}*/
 	
@@ -129,43 +244,39 @@ class ShapeList
 	/** \name Capsule */
 	/*@{*/
 	/** \brief Add a capsule shape. */
-	public func void addCapsule( float halfHeight, float radius )
+	func void addCapsule(float halfHeight, float radius)
 	end
 	
 	/** \brief Add a capsule shape. */
-	public func void addCapsule( float halfHeight, float radius, Vector position )
+	func void addCapsule(float halfHeight, float radius, Vector position)
 	end
 	
 	/** \brief Add a capsule shape. */
-	public func void addCapsule( float halfHeight, float radius, Vector position, Quaternion orientation )
+	func void addCapsule(float halfHeight, float radius, Vector position, Quaternion orientation)
 	end
 	
 	/** \brief Add a tapered capsule shape. */
-	public func void addCapsule( float halfHeight, float topRadius, float bottomRadius )
+	func void addCapsule(float halfHeight, float topRadius, float bottomRadius)
 	end
 	
 	/** \brief Add a tapered capsule shape. */
-	public func void addCapsule( float halfHeight, float topRadius, float bottomRadius, Vector position )
+	func void addCapsule(float halfHeight, float topRadius, float bottomRadius, Vector position)
 	end
 	
 	/** \brief Add a tapered capsule shape. */
-	public func void addCapsule( float halfHeight, float topRadius, float bottomRadius, \
-	Vector position, Quaternion orientation )
+	func void addCapsule(float halfHeight, float topRadius, float bottomRadius, Vector position, Quaternion orientation)
 	end
 	
 	/** \brief Add a tapered capsule shape. */
-	public func void addCapsule( float halfHeight, float topRadius, float bottomRadius, \
-	Vector2 topAxisScaling, Vector2 bottomAxisScaling )
+	func void addCapsule(float halfHeight, float topRadius, float bottomRadius, Vector2 topAxisScaling, Vector2 bottomAxisScaling)
 	end
 	
 	/** \brief Add a tapered capsule shape. */
-	public func void addCapsule( float halfHeight, float topRadius, float bottomRadius, \
-	Vector2 topAxisScaling, Vector2 bottomAxisScaling, Vector position )
+	func void addCapsule(float halfHeight, float topRadius, float bottomRadius, Vector2 topAxisScaling, Vector2 bottomAxisScaling, Vector position)
 	end
 	
 	/** \brief Add a tapered capsule shape. */
-	public func void addCapsule( float halfHeight, float topRadius, float bottomRadius, \
-	Vector2 topAxisScaling, Vector2 bottomAxisScaling, Vector position, Quaternion orientation )
+	func void addCapsule(float halfHeight, float topRadius, float bottomRadius, Vector2 topAxisScaling, Vector2 bottomAxisScaling, Vector position, Quaternion orientation)
 	end
 	/*@}*/
 	
@@ -177,21 +288,21 @@ class ShapeList
 	 * \brief Add a hull shape.
 	 * \param points Array of Vector.
 	 */
-	public func void addHull( Array points )
+	func void addHull(Array points)
 	end
 	
 	/**
 	 * \brief Add a hull shape.
 	 * \param points Array of Vector.
 	 */
-	public func void addHull( Array points, Vector position )
+	func void addHull(Array points, Vector position)
 	end
 	
 	/**
 	 * \brief Add a hull shape.
 	 * \param points Array of Vector.
 	 */
-	public func void addHull( Array points, Vector position, Quaternion orientation )
+	func void addHull(Array points, Vector position, Quaternion orientation)
 	end
 	/*@}*/
 	
@@ -200,11 +311,12 @@ class ShapeList
 	/** \name File Handling */
 	/*@{*/
 	/** \brief Read vector from a file reader. */
-	static public func ShapeList readFromFile( FileReader reader )
+	static func ShapeList readFromFile(FileReader reader)
+		return null
 	end
 	
 	/** \brief Write vector to a file writer. */
-	public func void writeToFile( FileWriter writer )
+	func void writeToFile(FileWriter writer)
 	end
 	/*@}*/
 	

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _IGDEEDITORMODULE_H_
@@ -31,7 +34,7 @@ class igdeStepableTask;
 class deEngine;
 class deLogger;
 class deException;
-
+class decUnicodeStringList;
 
 
 /**
@@ -40,11 +43,12 @@ class deException;
  * The definition of editor module is stored in an XML file not in this class.
  * This is just the editor module itself.
  */
-class igdeEditorModule{
+class DE_DLL_EXPORT igdeEditorModule{
 private:
 	igdeEnvironment &pEnvironment;
 	decString pLoggingName;
 	decString pEditorDirectory;
+	decString pEditorPathLib;
 	igdeEditorWindow *pEditorWindow;
 	
 	
@@ -78,6 +82,16 @@ public:
 	 * To be used only by IGDE. Do not call from editor modules.
 	 */
 	void SetEditorDirectory( const char *directory );
+	
+	/** \brief Editor module libraries directory path. */
+	inline const decString &GetEditorPathLib() const{ return pEditorPathLib; }
+	
+	/**
+	 * \brief Set editor module libraries directory path.
+	 * 
+	 * To be used only by IGDE. Do not call from editor modules.
+	 */
+	void SetEditorPathLib( const char *path );
 	
 	/** \brief Editor window used by module. */
 	inline igdeEditorWindow *GetEditorWindow() const{ return pEditorWindow; }
@@ -175,6 +189,17 @@ public:
 	 * The default implementation returns NULL.
 	 */
 	virtual igdeStepableTask *OnGameDefinitionChanged();
+	
+	/**
+	 * \brief Process command line arguments.
+	 * 
+	 * This method can be called multiple times. Module has to process arguments from the
+	 * first argument in the list and has to stop at the first unsupported argument. The
+	 * consumed arguments have to be removed from the beginning of the list. If the module
+	 * wishes to close the application it has to return false. Return true to continue
+	 * processing command line arguments.
+	 */
+	virtual bool ProcessCommandLine( decUnicodeStringList &arguments );
 	/*@}*/
 	
 	

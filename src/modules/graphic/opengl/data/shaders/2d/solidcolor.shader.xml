@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shader>
+	<name>2D Solid Color</name>
+	
+	<parameter name='pColor'/> <!-- 0 -->
+	<parameter name='pPosTransform'/> <!-- 1 -->
+	
+	<attribute name='inPosition' target='0'/>
+	
+	<output name='outColor' target='0'/>
+	
+	<sourceCode unit='vertex'>vertex/2d/solidcolor.glsl</sourceCode>
+	<sourceCode unit='fragment'>fragment/2d/solidcolor.glsl</sourceCode>
+</shader>

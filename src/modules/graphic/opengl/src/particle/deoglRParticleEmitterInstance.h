@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLRPARTICLEEMITTERINSTANCE_H_
@@ -28,6 +31,7 @@
 #include <dragengine/common/utils/decLayerMask.h>
 
 #include "../deoglBasics.h"
+#include "../world/deoglWorldComputeElement.h"
 
 class deoglRenderThread;
 class deoglEnvironmentMap;
@@ -41,11 +45,11 @@ class deParticleEmitterInstance;
 
 
 /**
- * \brief Particle Emitter Instance Peer.
+ * Particle Emitter Instance Peer.
  */
 class deoglRParticleEmitterInstance : public deObject{
 public:
-	/** \brief Particle data. */
+	/** Particle data. */
 	struct sParticle{
 		deoglRParticleEmitterInstance *emitterInstance;
 		int type;
@@ -54,19 +58,31 @@ public:
 		unsigned char renderType;
 	};
 	
-	/** \brief Local vbo data. */
+	/** Local vbo data. */
 	struct sLocalVBOData{
-		/** \brief Beam location from 0 to 1. */
+		/** Beam location from 0 to 1. */
 		float beamLocation;
 	};
 	
 private:
+	/** World compute element. */
+	class WorldComputeElement: public deoglWorldComputeElement{
+		deoglRParticleEmitterInstance &pEmitter;
+	public:
+		WorldComputeElement( deoglRParticleEmitterInstance &emitter );
+		virtual void UpdateData( sDataElement &data ) const;
+		virtual void UpdateDataGeometries( sDataElementGeometry *data ) const;
+	};
+	
+	
+	
 	deoglRenderThread &pRenderThread;
 	
 	deoglRParticleEmitter *pEmitter;
 	
 	deoglRWorld *pParentWorld;
 	deoglWorldOctree *pOctreeNode;
+	deoglWorldComputeElement::Ref pWorldComputeElement;
 	
 	float pBurstTime;
 	decDVector pPosition;
@@ -101,15 +117,17 @@ private:
 	
 	bool pDirtyParticles;
 	
+	uint32_t pCSOctreeIndex;
+	
 	bool pWorldMarkedRemove;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create render emitter instance. */
+	/** Create render emitter instance. */
 	deoglRParticleEmitterInstance( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up render emitter instance. */
+	/** Clean up render emitter instance. */
 	virtual ~deoglRParticleEmitterInstance();
 	/*@}*/
 	
@@ -117,135 +135,141 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Render thread. */
+	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	
 	
-	/** \brief Emitter or \em NULL if not set. */
+	/** Emitter or \em NULL if not set. */
 	inline deoglRParticleEmitter *GetEmitter() const{ return pEmitter; }
 	
-	/** \brief Set emitter or \em NULL if not set. */
+	/** Set emitter or \em NULL if not set. */
 	void SetEmitter( deoglRParticleEmitter *emitter );
 	
 	
 	
-	/** \brief Parent world. */
+	/** Parent world. */
 	inline deoglRWorld *GetParentWorld() const{ return pParentWorld; }
 	
-	/** \brief Set parent world. */
+	/** Set parent world. */
 	void SetParentWorld( deoglRWorld *world );
 	
 	
 	
-	/** \brief Octree node or \em NULL if there is none. */
+	/** Octree node or \em NULL if there is none. */
 	inline deoglWorldOctree *GetOctreeNode() const{ return pOctreeNode; }
 	
-	/** \brief Set octree node or \em NULL if there is none. */
+	/** Set octree node or \em NULL if there is none. */
 	void SetOctreeNode( deoglWorldOctree *node );
 	
-	/** \brief Update octree node. */
+	/** Update octree node. */
 	void UpdateOctreeNode();
 	
 	
 	
-	/** \brief Burst time. */
+	/** Burst time. */
 	inline float GetBurstTime() const{ return pBurstTime; }
 	
-	/** \brief Set burst time. */
+	/** Set burst time. */
 	void SetBurstTime( float burstTime );
 	
-	/** \brief Position. */
+	/** Position. */
 	inline const decDVector &GetPosition() const{ return pPosition; }
 	
-	/** \brief Set position. */
+	/** Set position. */
 	void SetPosition( const decDVector &position );
 	
-	/** \brief Reference position. */
+	/** Reference position. */
 	inline const decDVector &GetReferencePosition() const{ return pReferencePosition; }
 	
-	/** \brief Set reference position. */
+	/** Set reference position. */
 	void SetReferencePosition( const decDVector &position );
 	
-	/** \brief Layer mask. */
+	/** Layer mask. */
 	inline const decLayerMask &GetLayerMask() const{ return pLayerMask; }
 	
-	/** \brief Set layer mask. */
+	/** Set layer mask. */
 	void SetLayerMask( const decLayerMask &layerMask );
 	
 	
 	
-	/** \brief Prepare for rendering. */
+	/** Prepare for rendering. */
 	void PrepareForRender();
 	
 	
 	
-	/** \brief VAO. */
+	/** VAO. */
 	inline deoglVAO *GetVAO() const{ return pVAO; }
 	
 	
 	
-	/** \brief Minimum extend. */
+	/** Minimum extend. */
 	inline const decDVector &GetMinExtend() const{ return pMinExtend; }
 	
-	/** \brief Maximum extend. */
+	/** Maximum extend. */
 	inline const decDVector &GetMaxExtend() const{ return pMaxExtend; }
 	
-	/** \brief Update extends. */
+	/** Update extends. */
 	void UpdateExtends( const deParticleEmitterInstance &instance );
 	
 	
 	
-	/** \brief Render environment map or \em NULL if not used. */
+	/** Render environment map or \em NULL if not used. */
 	inline deoglEnvironmentMap *GetRenderEnvMap() const{ return pRenderEnvMap; }
 	
-	/** \brief Set render environment map or \em NULL if not assigned yet. */
+	/** Set render environment map or \em NULL if not assigned yet. */
 	void SetRenderEnvMap( deoglEnvironmentMap *envmap );
 	
 	
 	
-	/** \brief The world environment map layout changed. */
+	/** The world environment map layout changed. */
 	void WorldEnvMapLayoutChanged();
 	
-	/** \brief Update the render environment map. */
+	/** Update the render environment map. */
 	void UpdateRenderEnvMap();
 	
-	/** \brief Invalidates the render environment map. */
+	/** Invalidates the render environment map. */
 	void InvalidateRenderEnvMap();
 	
-	/** \brief Invalidates the render environment map. */
+	/** Invalidates the render environment map. */
 	void InvalidateRenderEnvMapIf( deoglEnvironmentMap *envmap );
 	
-	/** \brief World reference point changed. */
+	/** World reference point changed. */
 	void WorldReferencePointChanged();
 	
 	
 	
-	/** \brief Prepare for quick disposal of particle emitter instance. */
+	/** Prepare for quick disposal of particle emitter instance. */
 	void PrepareQuickDispose();
+	
+	
+	
+	/** Compute shader octree index. */
+	inline uint32_t GetCSOctreeIndex() const{ return pCSOctreeIndex; }
+	void SetCSOctreeIndex( uint32_t index ){ pCSOctreeIndex = index; }
 	/*@}*/
 	
 	
 	
 	/** \name Particles. */
 	/*@{*/
-	/** \brief Particles. */
+	/** Particles. */
 	inline const sParticle *GetParticles() const{ return pParticles; }
 	
-	/** \brief Number of particles. */
+	/** Number of particles. */
 	inline int GetParticleCount() const{ return pParticleCount; }
 	
-	/** \brief Update particles. */
+	/** Update particles. */
 	void UpdateParticles( const deParticleEmitterInstance &instance );
 	
-	/** \brief Update particles. */
+	/** Update particles. */
 	void UpdateParticlesVBO();
 	
-	/** \brief Release particles from memory. */
+	/** Release particles from memory. */
 	void ReleaseParticles();
 	
 	/**
-	 * \brief Get particle position.
+	 * Get particle position.
 	 * \warning Temporary HACK!
 	 */
 	decVector GetParticlePositionAt( int index ) const;
@@ -255,25 +279,25 @@ public:
 	
 	/** \name Types. */
 	/*@{*/
-	/** \brief Number of types. */
+	/** Number of types. */
 	int GetTypeCount() const;
 	
-	/** \brief Type by index. */
+	/** Type by index. */
 	deoglRParticleEmitterInstanceType &GetTypeAt( int index ) const;
 	
-	/** \brief Remove all types. */
+	/** Remove all types. */
 	void RemoveAllTypes();
 	
-	/** \brief Add type. */
+	/** Add type. */
 	void AddType( deoglRParticleEmitterInstanceType *type );
 	
-	/** \brief Invalidate parameter blocks of all types. */
+	/** Invalidate parameter blocks of all types. */
 	void InvalidateAllTypesParamBlocks();
 	
-	/** \brief Mark parameter blocks of all types dirty. */
+	/** Mark parameter blocks of all types dirty. */
 	void MarkAllTypesParamBlocksDirty();
 	
-	/** \brief Mark texture units configurations of all types dirty. */
+	/** Mark texture units configurations of all types dirty. */
 	void MarkAllTypesTUCsDirty();
 	/*@}*/
 	
@@ -281,19 +305,19 @@ public:
 	
 	/** \name Index Buffer */
 	/*@{*/
-	/** \brief Number of indices used in the index buffer. */
+	/** Number of indices used in the index buffer. */
 	inline int GetIBOUsedIndexCount() const{ return pIndexUsedCount; }
 	
-	/** \brief Remove all entries from the index buffer. */
+	/** Remove all entries from the index buffer. */
 	void ClearIBO();
 	
-	/** \brief Add index buffer entry. */
+	/** Add index buffer entry. */
 	void AddIBOEntry( int index );
 	
-	/** \brief Add four index buffer entries at the same time. */
+	/** Add four index buffer entries at the same time. */
 	void AddIBOEntries( int index1, int index2, int index3, int index4 );
 	
-	/** \brief Update index buffer if required. */
+	/** Update index buffer if required. */
 	void UpdateIBO();
 	/*@}*/
 	
@@ -302,13 +326,13 @@ public:
 	/** \name Render world usage */
 	/*@{*/
 	/**
-	 * \brief Marked for removal.
+	 * Marked for removal.
 	 * \details For use by deoglRWorld only. Non-thread safe.
 	 */
 	inline bool GetWorldMarkedRemove() const{ return pWorldMarkedRemove; }
 	
 	/**
-	 * \brief Set marked for removal.
+	 * Set marked for removal.
 	 * \details For use by deoglRWorld only. Non-thread safe.
 	 */
 	void SetWorldMarkedRemove( bool marked );

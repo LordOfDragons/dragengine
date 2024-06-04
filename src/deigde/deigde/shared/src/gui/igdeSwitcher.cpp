@@ -1,77 +1,36 @@
-/* 
- * Drag[en]gine IGDE
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#include "native/toolkit.h"
 #include "igdeSwitcher.h"
+#include "native/toolkit.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
-
-
-
-// Native Widget
-//////////////////
-
-namespace {
-
-class cNativeWidget : public FXSwitcher{
-	FXDECLARE( cNativeWidget )
-	
-protected:
-	cNativeWidget();
-	
-public:
-	enum eFoxIDs{
-		ID_SELF = FXSwitcher::ID_LAST,
-	};
-	
-private:
-	igdeSwitcher *pOwner;
-	
-public:
-	cNativeWidget( igdeSwitcher &owner, FXComposite *parent, int layoutFlags );
-	virtual ~cNativeWidget();
-};
-
-
-FXDEFMAP( cNativeWidget ) cNativeWidgetMap[] = { };
-
-FXIMPLEMENT( cNativeWidget, FXSwitcher, cNativeWidgetMap, ARRAYNUMBER( cNativeWidgetMap ) )
-
-cNativeWidget::cNativeWidget(){ }
-
-cNativeWidget::cNativeWidget( igdeSwitcher &owner, FXComposite *parent, int layoutFlags ) :
-FXSwitcher( parent, layoutFlags, 0, 0, 0, 0, 0, 0, 0, 0 ),
-pOwner( &owner ){
-}
-
-cNativeWidget::~cNativeWidget(){
-}
-
-}
-
 
 
 // Class igdeSwitcher
@@ -150,26 +109,13 @@ void igdeSwitcher::CreateNativeWidget(){
 		return;
 	}
 	
-	igdeContainer * const parent = GetParent();
-	if( ! parent ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	FXComposite * const foxParent = ( FXComposite* )parent->GetNativeContainer();
-	if( ! foxParent ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	cNativeWidget * const native = new cNativeWidget( *this, foxParent,
-		igdeUIFoxHelper::GetChildLayoutFlags( this ) );
+	igdeNativeSwitcher * const native = igdeNativeSwitcher::CreateNativeWidget( *this );
 	SetNativeWidget( native );
-	if( foxParent->id() ){
-		native->create();
-	}
+	native->PostCreateNativeWidget();
 	
 	CreateChildWidgetNativeWidgets();
 	
-	native->setCurrent( pCurrent );
+	native->UpdateCurrent();
 }
 
 void igdeSwitcher::DestroyNativeWidget(){
@@ -177,7 +123,7 @@ void igdeSwitcher::DestroyNativeWidget(){
 		return;
 	}
 	
-	delete ( cNativeWidget* )GetNativeWidget();
+	( ( igdeNativeSwitcher* )GetNativeWidget() )->DestroyNativeWidget();
 	DropNativeWidget();
 }
 
@@ -187,10 +133,7 @@ void igdeSwitcher::DestroyNativeWidget(){
 ////////////////////////
 
 void igdeSwitcher::OnCurrentChanged(){
-	if( ! GetNativeWidget() ){
-		return;
+	if( GetNativeWidget() ){
+		( ( igdeNativeSwitcher* )GetNativeWidget() )->UpdateCurrent();
 	}
-	
-	cNativeWidget &native = *( ( cNativeWidget* )GetNativeWidget() );
-	native.setCurrent( pCurrent );
 }

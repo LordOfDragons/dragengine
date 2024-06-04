@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine GUI Launcher
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEGLDIALOGRUNGAME_H_
@@ -24,16 +27,17 @@
 
 #include "../../foxtoolkit.h"
 
+#include <delauncher/game/delGame.h>
+#include <delauncher/game/profile/delGameProfile.h>
+
 class deglWindowMain;
-class deglGameProfile;
-class deglGame;
 class deglDGPPanelSystem;
 class deglDGPPanelFileFormats;
 
 
 
 /**
- * @brief Game Problems Dialog.
+ * Game Problems Dialog.
  * Dialog showing problems preventing a game from being run. Provides also
  * support to solve the problems.
  */
@@ -51,9 +55,9 @@ public:
 	
 private:
 	deglWindowMain *pWindowMain;
-	deglGameProfile *pProfileOrg;
-	deglGameProfile *pProfileWork;
-	deglGame *pGame;
+	const delGameProfile::Ref pProfileOrg;
+	const delGameProfile::Ref pProfileWork;
+	const delGame::Ref pGame;
 	bool pStatusWorking;
 	
 	FXColor pClrValidBack;
@@ -77,53 +81,64 @@ private:
 	FXButton *pBtnRunGame;
 	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new dialog. */
-	deglDialogGameProblems( deglWindowMain *windowMain, deglGame *game, deglGameProfile *profile, FXWindow *owner );
-	/** Cleans up the dialog. */
+	/** Create dialog. */
+	deglDialogGameProblems( deglWindowMain *windowMain,
+		delGame *game, delGameProfile *profile, FXWindow *owner );
+	
+	/** Clean up dialog. */
 	virtual ~deglDialogGameProblems();
 	/*@}*/
 	
-	/** @name Management */
+	
+	
+	/** \name Management */
 	/*@{*/
-	/** Retrieves the main window. */
+	/** Main window. */
 	inline deglWindowMain *GetWindowMain() const{ return pWindowMain; }
-	/** Retrieves the game. */
-	inline deglGame *GetGame() const{ return pGame; }
-	/** Retrieves the original game profile. */
-	inline deglGameProfile *GetOriginalProfile() const{ return pProfileOrg; }
-	/** Retrieves the working game profile. */
-	inline deglGameProfile *GetWorkingProfile() const{ return pProfileWork; }
-	/** Determines if the game is working. */
+	
+	/** Game. */
+	inline delGame *GetGame() const{ return pGame; }
+	
+	/** Original game profile. */
+	inline delGameProfile *GetOriginalProfile() const{ return pProfileOrg; }
+	
+	/** Working game profile. */
+	inline delGameProfile *GetWorkingProfile() const{ return pProfileWork; }
+	
+	/** Game is working. */
 	inline bool GetStatusWorking() const{ return pStatusWorking; }
 	
-	/** Retrieves the background color for valid elements. */
+	/** Background color for valid elements. */
 	inline FXColor GetBackColorValid() const{ return pClrValidBack; }
-	/** Retrieves the background color for problem elements. */
+	
+	/** Background color for problem elements. */
 	inline FXColor GetBackColorProblem() const{ return pClrProblemBack; }
-	/** Retrieves the text color for valid elements. */
+	
+	/** Text color for valid elements. */
 	inline FXColor GetTextColorValid() const{ return pClrValidText; }
-	/** Retrieves the text color for problem elements. */
+	
+	/** Text color for problem elements. */
 	inline FXColor GetTextColorProblem() const{ return pClrProblemText; }
 	
 	/** Update modules. */
 	void UpdateSystemModuleLists();
+	
 	/** Verify game and profile. */
 	void VerifyGameAndProfile();
+	
 	/** Update panels. */
 	void UpdatePanels();
+	
 	/** Update game panel. */
 	void UpdatePanelGame();
 	/*@}*/
 	
-	/** @name Events */
-	/*@{*/
-	/*@}*/
+	
 	
 private:
 	void pCreateTabGame();
 };
 
-// end of include only once
 #endif

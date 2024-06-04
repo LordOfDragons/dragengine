@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Animator Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdlib.h>
@@ -43,10 +46,14 @@ aeRuleBoneTransformator::aeRuleBoneTransformator() :
 aeRule( deAnimatorRuleVisitorIdentify::ertBoneTransformator ),
 pMinScaling( 1.0f, 1.0f, 1.0f ),
 pMaxScaling( 1.0f, 1.0f, 1.0f ),
+pAxis( 0.0f, 0.0f, 1.0f ),
+pMinAngle( 0.0f ),
+pMaxAngle( 0.0f ),
 pCoordinateFrame( deAnimatorRuleBoneTransformator::ecfComponent ),
 pEnablePosition( false ),
 pEnableOrientation( true ),
-pEnableSize( false )
+pEnableSize( false ),
+pUseAxis( false )
 {
 	SetName( "Bone Transformator" );
 }
@@ -59,10 +66,14 @@ pMinRotation( copy.pMinRotation ),
 pMaxRotation( copy.pMaxRotation ),
 pMinScaling( copy.pMinScaling ),
 pMaxScaling( copy.pMaxScaling ),
+pAxis( copy.pAxis ),
+pMinAngle( copy.pMinAngle ),
+pMaxAngle( copy.pMaxAngle ),
 pCoordinateFrame( copy.pCoordinateFrame ),
 pEnablePosition( copy.pEnablePosition ),
 pEnableOrientation( copy.pEnableOrientation ),
 pEnableSize( copy.pEnableSize ),
+pUseAxis( copy.pUseAxis ),
 pTargetBone( copy.pTargetBone ),
 pTargetTranslation( copy.pTargetTranslation ),
 pTargetRotation( copy.pTargetRotation ),
@@ -161,6 +172,48 @@ void aeRuleBoneTransformator::SetMaximumScaling( const decVector &scaling ){
 	}
 }
 
+void aeRuleBoneTransformator::SetAxis( const decVector &axis ){
+	if( axis.IsEqualTo( pAxis ) ){
+		return;
+	}
+	
+	pAxis = axis;
+	
+	deAnimatorRuleBoneTransformator * const rule = ( deAnimatorRuleBoneTransformator* )GetEngineRule();
+	if( rule ){
+		rule->SetAxis( axis );
+		NotifyRuleChanged();
+	}
+}
+
+void aeRuleBoneTransformator::SetMinimumAngle( float angle ){
+	if( fabsf( angle - pMinAngle ) < FLOAT_SAFE_EPSILON ){
+		return;
+	}
+	
+	pMinAngle = angle;
+	
+	deAnimatorRuleBoneTransformator * const rule = ( deAnimatorRuleBoneTransformator* )GetEngineRule();
+	if( rule ){
+		rule->SetMinimumAngle( angle * DEG2RAD );
+		NotifyRuleChanged();
+	}
+}
+
+void aeRuleBoneTransformator::SetMaximumAngle( float angle ){
+	if( fabsf( angle - pMaxAngle ) < FLOAT_SAFE_EPSILON ){
+		return;
+	}
+	
+	pMaxAngle = angle;
+	
+	deAnimatorRuleBoneTransformator * const rule = ( deAnimatorRuleBoneTransformator* )GetEngineRule();
+	if( rule ){
+		rule->SetMaximumAngle( angle * DEG2RAD );
+		NotifyRuleChanged();
+	}
+}
+
 
 
 void aeRuleBoneTransformator::SetCoordinateFrame( deAnimatorRuleBoneTransformator::eCoordinateFrames coordinateFrame ){
@@ -222,6 +275,20 @@ void aeRuleBoneTransformator::SetEnableSize( bool enable ){
 	deAnimatorRuleBoneTransformator * const rule = ( deAnimatorRuleBoneTransformator* )GetEngineRule();
 	if( rule ){
 		rule->SetEnableSize( enable );
+		NotifyRuleChanged();
+	}
+}
+
+void aeRuleBoneTransformator::SetUseAxis( bool useAxis ){
+	if( useAxis == pUseAxis ){
+		return;
+	}
+	
+	pUseAxis = useAxis;
+	
+	deAnimatorRuleBoneTransformator * const rule = ( deAnimatorRuleBoneTransformator* )GetEngineRule();
+	if( rule ){
+		rule->SetUseAxis( useAxis );
 		NotifyRuleChanged();
 	}
 }
@@ -315,10 +382,14 @@ deAnimatorRule *aeRuleBoneTransformator::CreateEngineRule(){
 		engRule->SetMaximumRotation( pMaxRotation * DEG2RAD );
 		engRule->SetMinimumScaling( pMinScaling );
 		engRule->SetMaximumScaling( pMaxScaling );
+		engRule->SetAxis( pAxis );
+		engRule->SetMinimumAngle( pMinAngle * DEG2RAD );
+		engRule->SetMaximumAngle( pMaxAngle * DEG2RAD );
 		engRule->SetCoordinateFrame( pCoordinateFrame );
 		engRule->SetEnablePosition( pEnablePosition );
 		engRule->SetEnableOrientation( pEnableOrientation );
 		engRule->SetEnableSize( pEnableSize );
+		engRule->SetUseAxis( pUseAxis );
 		engRule->SetTargetBone( pTargetBone.GetString() );
 		
 		pTargetTranslation.UpdateEngineTarget( GetAnimator(), engRule->GetTargetTranslation() );
@@ -361,10 +432,14 @@ aeRuleBoneTransformator &aeRuleBoneTransformator::operator=( const aeRuleBoneTra
 	SetMaximumRotation( copy.pMaxRotation );
 	SetMinimumScaling( copy.pMinScaling );
 	SetMaximumScaling( copy.pMaxScaling );
+	SetAxis( copy.pAxis );
+	SetMinimumAngle( copy.pMinAngle );
+	SetMaximumAngle( copy.pMaxAngle );
 	SetCoordinateFrame( copy.pCoordinateFrame );
 	SetEnablePosition( copy.pEnablePosition );
 	SetEnableOrientation( copy.pEnableOrientation );
 	SetEnableSize( copy.pEnableSize );
+	SetUseAxis( copy.pUseAxis );
 	SetTargetBone( copy.pTargetBone );
 	pTargetTranslation = copy.pTargetTranslation;
 	pTargetRotation = copy.pTargetRotation;

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -234,7 +237,7 @@ deClassTexMatrix2::nfNewSRT2::nfNewSRT2( const sInitData &init ) : dsFunction( i
 	p_AddParameter( init.clsFlt ); // translationU
 	p_AddParameter( init.clsFlt ); // translationV
 }
-void deClassTexMatrix2::nfNewCenterSRT2::RunFunction( dsRunTime *rt, dsValue *myself ){
+void deClassTexMatrix2::nfNewSRT2::RunFunction( dsRunTime *rt, dsValue *myself ){
 	deClassTexMatrix2 &clsTexMatrix2 = *( ( deClassTexMatrix2* )GetOwnerClass() );
 	const float scalingU = rt->GetValue( 0 )->GetFloat();
 	const float scalingV = rt->GetValue( 1 )->GetFloat();
@@ -272,7 +275,7 @@ deClassTexMatrix2::nfNewCenterSRT2::nfNewCenterSRT2( const sInitData &init ) : d
 	p_AddParameter( init.clsFlt ); // translationU
 	p_AddParameter( init.clsFlt ); // translationV
 }
-void deClassTexMatrix2::nfNewSRT2::RunFunction( dsRunTime *rt, dsValue *myself ){
+void deClassTexMatrix2::nfNewCenterSRT2::RunFunction( dsRunTime *rt, dsValue *myself ){
 	deClassTexMatrix2 &clsTexMatrix2 = *( ( deClassTexMatrix2* )GetOwnerClass() );
 	const float scalingU = rt->GetValue( 0 )->GetFloat();
 	const float scalingV = rt->GetValue( 1 )->GetFloat();
@@ -281,6 +284,18 @@ void deClassTexMatrix2::nfNewSRT2::RunFunction( dsRunTime *rt, dsValue *myself )
 	const float translationV = rt->GetValue( 4 )->GetFloat();
 	
 	clsTexMatrix2.PushTexMatrix( rt, decTexMatrix2::CreateCenterSRT( scalingU, scalingV, rotation * DEG2RAD, translationU, translationV ) );
+}
+
+// public static func TexMatrix newCenterRotation( float rotation )
+deClassTexMatrix2::nfNewCenterRotation::nfNewCenterRotation( const sInitData &init ) :
+dsFunction( init.clsTexMat, "newCenterRotation", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_STATIC | DSTM_NATIVE, init.clsTexMat ){
+	p_AddParameter( init.clsFlt ); // rotation
+}
+void deClassTexMatrix2::nfNewCenterRotation::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deClassTexMatrix2 &clsTexMatrix2 = *( ( deClassTexMatrix2* )GetOwnerClass() );
+	const float rotation = rt->GetValue( 0 )->GetFloat();
+	
+	clsTexMatrix2.PushTexMatrix( rt, decTexMatrix2::CreateCenterRotation( rotation * DEG2RAD ) );
 }
 
 // public func destructor()
@@ -584,6 +599,51 @@ void deClassTexMatrix2::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself 
 	rt->PushInt( hash );
 }
 
+// public func String toString()
+deClassTexMatrix2::nfToString::nfToString( const sInitData &init ) : dsFunction( init.clsTexMat,
+"toString", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsStr ){
+}
+void deClassTexMatrix2::nfToString::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const decTexMatrix2 &matrix = ( ( sTMatNatDat* )p_GetNativeData( myself ) )->matrix;
+	decString str;
+	
+	str.Format( "[[%g,%g,%g],[%g,%g,%g]]",
+		matrix.a11, matrix.a12, matrix.a13,
+		matrix.a21, matrix.a22, matrix.a23 );
+	
+	rt->PushString( str );
+}
+
+// public func String toString( int precision )
+deClassTexMatrix2::nfToStringPrecision::nfToStringPrecision( const sInitData &init ) :
+dsFunction( init.clsTexMat, "toString", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsStr ){
+	p_AddParameter( init.clsInt ); // precision
+}
+void deClassTexMatrix2::nfToStringPrecision::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const int precision = rt->GetValue( 0 )->GetInt();
+	if( precision < 0 ){
+		DSTHROW_INFO( dueInvalidParam, "precision < 0" );
+	}
+	if( precision > 9 ){
+		DSTHROW_INFO( dueInvalidParam, "precision > 9" );
+	}
+	
+	const unsigned short p = ( unsigned short )precision;
+	char format[ 36 ];
+	snprintf( format, sizeof( format ), "[[%%.%huf,%%.%huf,%%.%huf],"
+		"[%%.%huf,%%.%huf,%%.%huf]]", p, p, p, p, p, p );
+	
+	const decTexMatrix2 &matrix = ( ( sTMatNatDat* )p_GetNativeData( myself ) )->matrix;
+	decString str;
+	
+	str.Format( format,
+		matrix.a11, matrix.a12, matrix.a13,
+		matrix.a21, matrix.a22, matrix.a23 );
+	
+	rt->PushString( str );
+}
+
 
 
 // Class deClassTexMatrix2
@@ -642,6 +702,7 @@ void deClassTexMatrix2::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfNewSRT2( init ) );
 	AddFunction( new nfNewCenterSRT( init ) );
 	AddFunction( new nfNewCenterSRT2( init ) );
+	AddFunction( new nfNewCenterRotation( init ) );
 	AddFunction( new nfDestructor( init ) );
 	
 	AddFunction( new nfGetAt( init ) );
@@ -665,6 +726,8 @@ void deClassTexMatrix2::CreateClassMembers( dsEngine *engine ){
 	
 	AddFunction( new nfHashCode( init ) );
 	AddFunction( new nfEquals( init ) );
+	AddFunction( new nfToString( init ) );
+	AddFunction( new nfToStringPrecision( init ) );
 }
 
 const decTexMatrix2 &deClassTexMatrix2::GetTexMatrix( dsRealObject *myself ) const{

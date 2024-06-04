@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -40,44 +43,55 @@ pin Dragengine.Utils
  * elements between game worlds. Elements removed using removeAllElements though get disposed.
  */
 class GameWorld
-	private var World pWorld
-	private var SafeArray pElements
-	private var SafeArray pThinkers
-	private var Dictionary pElementIDMap
-	private var Array pEnterFrameOnce
-	private var LayerMask pLayerMaskOneShotSpeaker
-	private var Array pOneShotSpeakers
-	private var SpawnPointList pSpawnPoints
-	private var TemporaryDecalManager pTempDecalMgr
-	private var CachedVegetation pCachedVegetation
-	private var UniqueID pNextObjectID
-	private var UniqueIDRemapper pUniqueIDRemapper
-	private var Vector pGravity
-	private var RailList pRailList
-	private var ConversationActorList pConvoActorList
-	private var ConversationCoordSystemList pConvoCoordSystemList
-	private var AnchoredElementList pAnchoredElementList
+	var World pWorld
+	var SafeArray pElements
+	var SafeArray pThinkers
+	var Dictionary pElementIDMap
+	var Array pEnterFrameOnce
+	var bool pLockEnterFrameOnce
+	var SpawnPointList pSpawnPoints
+	var TemporaryDecalManager pTempDecalMgr
+	var CachedVegetation pCachedVegetation
+	var UniqueID pNextObjectID
+	var UniqueIDRemapper pUniqueIDRemapper
+	var Vector pGravity
+	var RailList pRailList
+	var ConversationActorList pConvoActorList
+	var ConversationCoordSystemList pConvoCoordSystemList
+	var AnchoredElementList pAnchoredElementList
+	var StubGameWorld pStub
+	var Array pBehaviors
+	var bool pBehaviorsInited
+	var Array pThinkingBehaviors
+	var bool pEnablePersistency
+	
+	var GWBehaviorOneShotSpeaker pBehaviorOneShotSpeaker
 	
 	
 	
 	/** \brief Create game world. */
 	public func new()
-		this.pWorld = World.new()
+		pWorld = World.new()
+		pEnablePersistency = not Engine.isCompatibleVersionOlder(1, 17)
 		
-		this.pElements = SafeArray.new()
-		this.pThinkers = SafeArray.new()
-		this.pElementIDMap = Dictionary.new()
-		this.pEnterFrameOnce = Array.new()
-		this.pLayerMaskOneShotSpeaker = LayerMask.newWith( BaseGameApp.WorldLayerBit.audio )
-		this.pOneShotSpeakers = Array.new()
-		this.pSpawnPoints = SpawnPointList.new()
-		this.pTempDecalMgr = TemporaryDecalManager.new()
-		this.pUniqueIDRemapper = UniqueIDRemapper.new()
-		this.pGravity = Vector.new( 0.0, -9.81, 0.0 )
-		this.pRailList = RailList.new()
-		this.pConvoActorList = ConversationActorList.new()
-		this.pConvoCoordSystemList = ConversationCoordSystemList.new()
-		this.pAnchoredElementList = AnchoredElementList.new()
+		pElements = SafeArray.new()
+		pThinkers = SafeArray.new()
+		pElementIDMap = Dictionary.new()
+		pEnterFrameOnce = Array.new()
+		pSpawnPoints = SpawnPointList.new()
+		pTempDecalMgr = TemporaryDecalManager.new()
+		pUniqueIDRemapper = UniqueIDRemapper.new()
+		pGravity = Vector.new(0, -9.81, 0)
+		pRailList = RailList.new()
+		pConvoActorList = ConversationActorList.new()
+		pConvoCoordSystemList = ConversationCoordSystemList.new()
+		pAnchoredElementList = AnchoredElementList.new()
+		pBehaviors = Array.new()
+		pThinkingBehaviors = Array.new()
+		
+		// add behaviors
+		pBehaviorOneShotSpeaker = GWBehaviorOneShotSpeaker.new(this)
+		addBehavior(pBehaviorOneShotSpeaker)
 	end
 	
 	
@@ -86,54 +100,195 @@ class GameWorld
 	public func void dispose()
 		/*
 		// for debugging purpose this code here can be used
-		this.removeAllElements()
-		if this.pThinkers != null
-			this.pThinkers.forEach( block Element each
-				BaseGameApp.getApp().getConsole().addMessage( "GameWorld.dispose: Object of class " + each.className() + " left behind thinker" )
-			end )
+		removeAllElements()
+		if pThinkers != null
+			pThinkers.forEach(block Element each
+				BaseGameApp.getApp().getConsole().addMessage("GameWorld.dispose: Object of class " + each.className() + " left behind thinker")
+			end)
 		end
 		*/
 		
-		this.pElements.removeAll( block Element each
-			each.setGameWorld( null )
+		pElements.removeAll(block Element each
+			each.setGameWorld(null)
 			each.safeDispose()
-		end )
-		this.pElementIDMap = null
+		end)
 		
-		this.pThinkers = null
-		this.pEnterFrameOnce = null
+		if pBehaviors != null
+			pBehaviors.forEachReverse(block GWBehavior each
+				each.dispose()
+			end)
+			pBehaviors = null
+		end
+		pThinkingBehaviors = null
+		pBehaviorOneShotSpeaker = null
 		
-		if this.pCachedVegetation != null
-			this.pCachedVegetation.setWorld( null )
-			this.pCachedVegetation = null
+		pThinkers = null
+		pEnterFrameOnce = null
+		pElementIDMap = null
+		
+		if pCachedVegetation != null
+			pCachedVegetation.setWorld(null)
+			pCachedVegetation = null
 		end
 		
-		this.pConvoActorList = null
-		this.pConvoCoordSystemList = null
-		this.pAnchoredElementList = null
-		this.pTempDecalMgr = null
-		this.pOneShotSpeakers = null
-		this.pSpawnPoints = null
+		pConvoActorList = null
+		pConvoCoordSystemList = null
+		pAnchoredElementList = null
+		pTempDecalMgr = null
+		pSpawnPoints = null
 		
-		if this.pRailList != null
-			this.pRailList.dispose()
-			this.pRailList = null
+		if pRailList != null
+			pRailList.dispose()
+			pRailList = null
 		end
 		
-		this.pWorld = null
+		pWorld = null
+		pStub = null
 	end
 	
 	
 	
 	/** \brief Engine world resource. */
 	public func World getWorld()
-		return this.pWorld
+		return pWorld
+	end
+	
+	
+	
+	/**
+	 * \brief Count of behaviors.
+	 * \version 1.17
+	 */
+	public func int getBehaviorCount()
+		return pBehaviors.getCount()
+	end
+	
+	/**
+	 * \brief Behavior at index.
+	 * \version 1.17
+	 */
+	public func GWBehavior getBehaviorAt(int index)
+		return pBehaviors.getAt(index) cast GWBehavior
+	end
+	
+	/**
+	 * \brief Add behavior.
+	 * \version 1.17
+	 * 
+	 * This is called by constructors of class implementing GWBehavior. Usually you do not
+	 * have to call this manually.
+	 */
+	public func void addBehavior(GWBehavior behavior)
+		if behavior == null or pBehaviors.has(behavior)
+			throw EInvalidParam.new("duplicate behavior")
+		end
+		
+		pBehaviors.add(behavior)
+		
+		if behavior.requiresThink()
+			pThinkingBehaviors.add(behavior)
+		end
+		
+		if pBehaviorsInited
+			behavior.init(pStub)
+		end
+	end
+	
+	/**
+	 * \brief Visit behaviors with block.
+	 * \versoin 1.17
+	 * 
+	 * Block is required to have one parameter of type GWBehavior or subclass thereof.
+	 * Block is called only for behaviors castable to block parameter type.
+	 */
+	public func void forEachBehavior(Block ablock)
+		pBehaviors.forEachCastable(ablock)
+	end
+	
+	/**
+	 * \brief Find behavior with block.
+	 * \version 1.17
+	 * 
+	 * Block is required to have one parameter GWBehavior or subclass thereof and returning
+	 * true if the right behavior is found otherwise false. Block is called only for
+	 * behaviors castable to block parameter type.
+	 */
+	public func GWBehavior findBehavior(Block ablock)
+		return pBehaviors.findCastable(ablock) cast GWBehavior
+	end
+	
+	/**
+	 * \brief Collect behaviors with block into Array.
+	 * \version 1.17
+	 * 
+	 * Block is required to have one parameter GWBehavior or subclass thereof and returning
+	 * true if the right behavior is found otherwise false. Block is called only for
+	 * behaviors castable to block parameter type.
+	 */
+	public func Array collectBehaviors(Block ablock)
+		return pBehaviors.collectCastable(ablock)
+	end
+	
+	/**
+	 * \brief Requires thinking changed.
+	 * \version 1.17
+	 * 
+	 * Called by GWBehavior if their requirement for thinking changed. This means requiresThink()
+	 * implementations return different values than last time they have been checked. Game world
+	 * will check all behaviors for their thinking requirements changes. Using this method helps
+	 * to reduce script processing load by not making calling update(), think() and postThink()
+	 * on behaviors not requiring it.
+	 */
+	public func void requiresThinkChanged()
+		pThinkingBehaviors = pBehaviors.collect(block GWBehavior each
+			return each.requiresThink()
+		end)
+	end
+	
+	
+	
+	/**
+	 * \brief One shot speaker game world behavior.
+	 * \version 1.17
+	 */
+	public func GWBehaviorOneShotSpeaker getBehaviorOneShotSpeaker()
+		return pBehaviorOneShotSpeaker
+	end
+	
+	
+	
+	/**
+	 * \brief Enable persistency (backward compatibility).
+	 * \version 1.17
+	 * 
+	 * Since Drag[en]gine 1.17 GameWorld supports persistency to load and save game world
+	 * behavior states. This is incompatible with old saves where GameWorld did not persist
+	 * any data. To support loading and saving saves prior to 1.17 use this method.
+	 * 
+	 * - While loading save states created prior to 1.17 set false
+	 * - While loading save states created using 1.17 or later set to true
+	 * - While saving converted save states supported 1.17 and later set to true
+	 * - While saving save states not supporting 1.17 or later set to false
+	 * 
+	 * Hence to support loading old saves and saving new saves load with false and save with true.
+	 * 
+	 * By default enable persistency is set to true if the required version of the game project
+	 * is set to 1.17 or newer and false otherwise. Hence projects require an earlier version
+	 * will always operate with enable persistency set to false keeping them compatible while
+	 * projects requiring 1.17 or newer enable persistency.
+	 */
+	public func bool getEnablePersistency()
+		return pEnablePersistency
+	end
+	
+	public func void setEnablePersistency(bool enable)
+		pEnablePersistency = enable
 	end
 	
 	
 	
 	/** \brief Add Element. */
-	public func void addElement( Element element )
+	public func void addElement(Element element)
 		if element.getGameWorld() == this
 			return // adding more than once is allowed to make scripts simpler and more robust
 		end
@@ -141,128 +296,129 @@ class GameWorld
 			throw EInvalidParam.new()
 		end
 		
-		this.pElements.add( element )
-		element.setGameWorld( this )
-		this.pElementIDMap.setAt( element.getID(), element )
+		pElements.add(element)
+		element.setGameWorld(this)
+		pElementIDMap.setAt(element.getID(), element)
 	end
 	
 // 	public static var RuntimeMeter rtm = null
 	/** \brief Remove Element without disposing it. */
-	public func void removeElement( Element element )
+	public func void removeElement(Element element)
 		/*if rtm != null
-			rtm.reset( 0, 1 )
+			rtm.reset(0, 1)
 			
-			this.pElements.remove( element )
-			rtm.counterAdd( 0, 6 )
+			pElements.remove(element)
+			rtm.counterAdd(0, 6)
 			
-			element.setGameWorld( null )
-			rtm.counterAdd( 0, 7 )
+			element.setGameWorld(null)
+			rtm.counterAdd(0, 7)
 			
-			if this.pThinkers.has( element )
-				BaseGameApp.getApp().getConsole().addMessage( "GameWorld.removeElement: Object of class " + element.className() + " left behind thinker" )
-				this.pThinkers.remove( element )
+			if pThinkers.has(element)
+				BaseGameApp.getApp().getConsole().addMessage("GameWorld.removeElement: Object of class " + element.className() + " left behind thinker")
+				pThinkers.remove(element)
 			end
-			var int index = this.pEnterFrameOnce.indexOf( element )
+			var int index = pEnterFrameOnce.indexOf(element)
 			if index != -1
-				BaseGameApp.getApp().getConsole().addMessage( "GameWorld.removeElement: Object of class " + element.className() + " left behind enter frame once" )
-				this.pEnterFrameOnce.removeFrom( index )
+				BaseGameApp.getApp().getConsole().addMessage("GameWorld.removeElement: Object of class " + element.className() + " left behind enter frame once")
+				pEnterFrameOnce.removeFrom(index)
 			end
-			rtm.counterAdd( 0, 8 )
+			rtm.counterAdd(0, 8)
 			return
 		end*/
 		
-		this.pElements.remove( element )
-		element.setGameWorld( null )
-		this.pElementIDMap.removeIfExisting( element.getID() )
+		pElements.remove(element)
+		element.setGameWorld(null)
+		pElementIDMap.removeIfExisting(element.getID())
 		
-		if this.pThinkers.has( element )
-			BaseGameApp.getApp().getConsole().addMessage( "GameWorld.removeElement: Object of class " + element.className() + " left behind thinker" )
-			this.pThinkers.remove( element )
+		if pThinkers.has(element)
+			BaseGameApp.getApp().getConsole().addMessage("GameWorld.removeElement: Object of class " + element.className() + " left behind thinker")
+			pThinkers.remove(element)
 		end
 		
-		var int index = this.pEnterFrameOnce.indexOf( element )
+		var int index = pEnterFrameOnce.indexOf(element)
 		if index != -1
-			BaseGameApp.getApp().getConsole().addMessage( "GameWorld.removeElement: Object of class " + element.className() + " left behind enter frame once" )
-			this.pEnterFrameOnce.removeFrom( index )
+			BaseGameApp.getApp().getConsole().addMessage("GameWorld.removeElement: Object of class " + element.className() + " left behind enter frame once")
+			pPrepareUpdateEnterFrameOnce()
+			pEnterFrameOnce.removeFrom(index)
 		end
 	end
 	
 	/** \brief Remove all elements calling safeDispose() on them. */
 	public func void removeAllElements()
-		this.pElements.removeAll( block Element each
-			each.setGameWorld( null )
+		pElements.removeAll(block Element each
+			each.setGameWorld(null)
 			each.safeDispose()
-		end )
-		this.pElementIDMap.removeAll()
+		end)
+		pElementIDMap.removeAll()
 	end
 	
 	/** \brief Element is present. */
-	public func bool hasElement( Element element )
-		return this.pElements.has( element )
+	public func bool hasElement(Element element)
+		return pElements.has(element)
 	end
 	
 	/** \brief Element with identifier or \em null if absent. */
-	public func Element getElementWithID( UniqueID id )
-		return this.pElementIDMap.getAt( id, null ) cast Element
-// 		return this.pElements.find( block Element each
-// 			return each.getID().equals( id )
-// 		end ) cast Element
+	public func Element getElementWithID(UniqueID id)
+		return pElementIDMap.getAt(id, null) cast Element
 	end
 	
 	/** \brief Visit elements. */
-	public func void visitElements( ElementVisitor visitor )
-		this.pElements.forEach( block Element each
-			each.visit( visitor )
-		end )
+	public func void visitElements(ElementVisitor visitor)
+		pElements.forEach(block Element each
+			each.visit(visitor)
+		end)
 	end
 	
 	/** \brief Visit elements with block with parameter Element. */
-	public func void forEachElement( Block ablock )
-		this.pElements.forEach( ablock )
+	public func void forEachElement(Block ablock)
+		pElements.forEach(ablock)
 	end
 	
 	/** \brief Find element with block with parameter Element. */
-	public func Element findElement( Block ablock )
-		return this.pElements.find( ablock ) cast Element
+	public func Element findElement(Block ablock)
+		return pElements.find(ablock) cast Element
 	end
 	
 	
 	
 	/** \brief Add element requiring thinking on frame updates. */
-	public func void addThinker( Element element )
+	public func void addThinker(Element element)
 		if element == null
 			throw EInvalidParam.new()
 		end
-		this.pThinkers.addIfAbsent( element )
+		pThinkers.addIfAbsent(element)
 	end
 	
 	/** \brief Remove element requiring thinking on frame updates. */
-	public func void removeThinker( Element element )
-		this.pThinkers.removeIfPresent( element )
+	public func void removeThinker(Element element)
+		pThinkers.removeIfPresent(element)
 	end
 	
 	/** \brief Visit thinkers with block with parameter Element. */
-	public func void forEachThinker( Block ablock )
-		this.pThinkers.forEach( ablock )
+	public func void forEachThinker(Block ablock)
+		pThinkers.forEach(ablock)
 	end
 	
 	
 	
 	/** \brief Call Element.enterFrame() on element once at start of next frame update. */
-	public func void addEnterFrameOnce( Element element )
+	public func void addEnterFrameOnce(Element element)
 		if element == null
 			throw EInvalidParam.new()
 		end
-		if not this.pEnterFrameOnce.has( element )
-			this.pEnterFrameOnce.add( element )
+		
+		if not pEnterFrameOnce.has(element)
+			pPrepareUpdateEnterFrameOnce()
+			pEnterFrameOnce.add(element)
 		end
 	end
 	
 	/** \brief Stop call Element.enterFrame() on element once at start of next frame update. */
-	public func void removeEnterFrameOnce( Element element )
-		var int index = this.pEnterFrameOnce.indexOf( element )
+	public func void removeEnterFrameOnce(Element element)
+		var int index = pEnterFrameOnce.indexOf(element)
 		if index != -1
-			this.pEnterFrameOnce.removeFrom( index )
+			pPrepareUpdateEnterFrameOnce()
+			pEnterFrameOnce.removeFrom(index)
 		end
 	end
 	
@@ -270,201 +426,132 @@ class GameWorld
 	
 	/** \brief Cached vegetation. */
 	public func CachedVegetation getCachedVegetation()
-		return this.pCachedVegetation
+		return pCachedVegetation
 	end
 	
 	/** \brief Set cached vegetation. */
-	public func void setCachedVegetation( CachedVegetation cachedVegetation )
-		this.pCachedVegetation = cachedVegetation
+	public func void setCachedVegetation(CachedVegetation cachedVegetation)
+		pCachedVegetation = cachedVegetation
 		if cachedVegetation != null
-			cachedVegetation.setWorld( this.pWorld )
+			cachedVegetation.setWorld(pWorld)
 		end
 	end
 	
 	/** \brief Gravity. */
 	public func Vector getGravity()
-		return this.pGravity
+		return pGravity
 	end
 	
 	/** \brief Set gravity. */
-	public func void setGravity( Vector gravity )
+	public func void setGravity(Vector gravity)
 		if gravity == null
-			throw EInvalidParam.new()
+			throw ENullPointer.new("gravity")
 		end
-		this.pGravity = gravity
+		
+		pGravity = gravity
 	end
 	
 	
 	
-	/** \brief Layer mask to use for one shot speaker. */
+	/** \deprecated Use getBehaviorOneShotSpeaker(). */
 	public func LayerMask getLayerMaskOneShotSpeaker()
-		return pLayerMaskOneShotSpeaker
+		return pBehaviorOneShotSpeaker.getLayerMask()
 	end
 	
-	/** \brief Set layer mask to use for one shot speaker. */
-	public func void setLayerMaskOneShotSpeaker( LayerMask layerMask )
-		if layerMask == null
-			throw EInvalidParam.new()
-		end
-		pLayerMaskOneShotSpeaker = layerMask
+	/** \deprecated Use getBehaviorOneShotSpeaker(). */
+	public func void setLayerMaskOneShotSpeaker(LayerMask layerMask)
+		pBehaviorOneShotSpeaker.setLayerMask(layerMask)
 	end
 	
-	/**
-	 * \brief Add one shot speaker.
-	 * \details Plays a short sound once and will be deleted once finished playing.
-	 */
-	public func void addOneShotSpeaker( Speaker speaker )
-		speaker.setLooping( false ) // just in case somebody forgot it
-		speaker.play()
-		this.pWorld.addSpeaker( speaker )
-		this.pOneShotSpeakers.add( speaker )
+	/** \deprecated Use getBehaviorOneShotSpeaker(). */
+	public func void addOneShotSpeaker(Speaker speaker)
+		pBehaviorOneShotSpeaker.addSpeaker(speaker)
 	end
 	
-	/**
-	 * \brief Play sound once.
-	 * \details Creates a speaker with the sound and parameters playing it once.
-	 *          If sound it \em null nothing is done.
-	 */
-	public func void playSoundOnce( Sound sound, Element element, float volume, float range )
-		this.playSoundOnce( sound, element.getPosition(), element.getOrientation(), volume, range )
+	/** \deprecated Use getBehaviorOneShotSpeaker(). */
+	public func void playSoundOnce(Sound sound, Element element, float volume, float range)
+		pBehaviorOneShotSpeaker.playSoundOnce(sound, element, volume, range)
 	end
 	
-	/**
-	 * \brief Play sound once.
-	 * \details Creates a speaker with the sound and parameters playing it once.
-	 *          If sound it \em null nothing is done.
-	 */
-	public func void playSoundOnce( Sound sound, DVector position, float volume, float range )
-		this.playSoundOnce( sound, position, Quaternion.new(), volume, range )
+	/** \deprecated Use getBehaviorOneShotSpeaker(). */
+	public func void playSoundOnce(Sound sound, DVector position, float volume, float range)
+		pBehaviorOneShotSpeaker.playSoundOnce(sound, position, volume, range)
 	end
 	
-	/**
-	 * \brief Play sound once.
-	 * \details Creates a speaker with the sound and parameters playing it once.
-	 *          If sound it \em null nothing is done.
-	 */
-	public func void playSoundOnce( Sound sound, DVector position, Quaternion orientation, \
-	float volume, float range )
-		if sound == null
-			return
-		end
-		
-		var Speaker speaker = Speaker.new()
-		speaker.setSound( sound )
-		speaker.setPosition( position )
-		speaker.setOrientation( orientation )
-		speaker.setLooping( false )
-		speaker.setVolume( volume )
-		speaker.setRange( range )
-		speaker.setLayerMask( this.pLayerMaskOneShotSpeaker )
-		speaker.play()
-		
-		this.pWorld.addSpeaker( speaker )
-		this.pOneShotSpeakers.add( speaker )
+	/** \deprecated Use getBehaviorOneShotSpeaker(). */
+	public func void playSoundOnce(Sound sound, DVector position, Quaternion orientation, \
+	float volume, float range)
+		pBehaviorOneShotSpeaker.playSoundOnce(sound, position, orientation, volume, range)
 	end
 	
-	/**
-	 * \brief Play synthesizer instance once.
-	 * \details Creates speaker with synthesizer instance and parameters playing it once.
-	 *          If synthesizer is \em null nothing is done.
-	 */
-	public func void playSynthesizerOnce( SynthesizerInstance synthesizer, Element element, \
-	float volume, float range )
-		this.playSynthesizerOnce( synthesizer, element.getPosition(), \
-			element.getOrientation(), volume, range )
+	/** \deprecated Use getBehaviorOneShotSpeaker(). */
+	public func void playSynthesizerOnce(SynthesizerInstance synthesizer, Element element, \
+	float volume, float range)
+		pBehaviorOneShotSpeaker.playSynthesizerOnce(synthesizer, element, volume, range)
 	end
 	
-	/**
-	 * \brief Play synthesizer instance once.
-	 * \details Creates speaker with synthesizer instance and parameters playing it once.
-	 *          If synthesizer is \em null nothing is done.
-	 */
-	public func void playSynthesizerOnce( SynthesizerInstance synthesizer, DVector position, \
-	float volume, float range )
-		this.playSynthesizerOnce( synthesizer, position, Quaternion.new(), volume, range )
+	/** \deprecated Use getBehaviorOneShotSpeaker(). */
+	public func void playSynthesizerOnce(SynthesizerInstance synthesizer, DVector position, \
+	float volume, float range)
+		pBehaviorOneShotSpeaker.playSynthesizerOnce(synthesizer, position, volume, range)
 	end
 	
-	/**
-	 * \brief Play synthesizer instance once.
-	 * \details Creates speaker with synthesizer instance and parameters playing it once.
-	 *          If synthesizer is \em null nothing is done.
-	 */
-	public func void playSynthesizerOnce( SynthesizerInstance synthesizer, DVector position, \
-	Quaternion orientation, float volume, float range )
-		if synthesizer == null
-			return
-		end
-		
-		var Speaker speaker = Speaker.new()
-		
-		speaker.setSynthesizer( synthesizer )
-		speaker.setPosition( position )
-		speaker.setOrientation( orientation )
-		speaker.setLooping( false )
-		speaker.setVolume( volume )
-		speaker.setRange( range )
-		speaker.setLayerMask( this.pLayerMaskOneShotSpeaker )
-		speaker.play()
-		
-		this.pWorld.addSpeaker( speaker )
-		this.pOneShotSpeakers.add( speaker )
+	/** \deprecated Use getBehaviorOneShotSpeaker(). */
+	public func void playSynthesizerOnce(SynthesizerInstance synthesizer, DVector position, \
+	Quaternion orientation, float volume, float range)
+		pBehaviorOneShotSpeaker.playSynthesizerOnce(synthesizer, position, orientation, volume, range)
 	end
 	
-	/**
-	 * \brief Remove one shot speakers that finished playing.
-	 */
+	/** \deprecated Use getBehaviorOneShotSpeaker(). */
 	public func void removeFinishedOneShotSpeakers()
-		this.pOneShotSpeakers.removeIf( block Speaker each
-			if each.getStopped()
-				this.pWorld.removeSpeaker( each )
-				return true
-				
-			else
-				return false
-			end
-		end )
+		pBehaviorOneShotSpeaker.removeFinishedSpeakers()
 	end
 	
-	/**
-	 * \brief Stop and remove all one shot speakers.
-	 */
+	/** \deprecated Use getBehaviorOneShotSpeaker(). */
 	public func void removeAllOneShotSpeakers()
-		this.pOneShotSpeakers.forEach( block Speaker each
-			each.stop()
-			this.pWorld.removeSpeaker( each )
-		end )
-		this.pOneShotSpeakers.removeAll()
+		pBehaviorOneShotSpeaker.removeAllSpeakers()
 	end
 	
 	
 	
 	/** \brief Make elements think. */
-	public func void think( float elapsed )
-		this.pThinkers.forEach( block Element each
-			each.think( elapsed )
-		end )
+	public func void think(float elapsed)
+		pThinkingBehaviors.forEach(block GWBehavior each
+			each.think(elapsed)
+		end)
+		
+		pThinkers.forEach(block Element each
+			each.think(elapsed)
+		end)
 	end
 	
 	/** \brief Make elements think after physics simulation. */
-	public func void postThink( float elapsed )
-		this.pThinkers.forEach( block Element each
-			each.postThink( elapsed )
-		end )
+	public func void postThink(float elapsed)
+		pThinkers.forEach(block Element each
+			each.postThink(elapsed)
+		end)
+		
+		pThinkingBehaviors.forEach(block GWBehavior each
+			each.postThink(elapsed)
+		end)
 	end
 	
 	/**
 	 * \brief Call Element.enterFrame() on registered elements then unregister all elements.
-	 * \warning Do not call addEnterFrameOnce or removeEnterFrameOnce from inside enterFrame().
+	 * 
+	 * Calling addEnterFrameOnce and removeEnterFrameOnce from inside enterFrame() is allowed.
 	 */
 	public func void enterFrame()
-		if this.pEnterFrameOnce.getCount() == 0
-			return
+		while pEnterFrameOnce.getCount() > 0
+			var Array list = pEnterFrameOnce
+			pLockEnterFrameOnce = true
+			
+			list.forEach(block Element each
+				each.enterFrame()
+			end)
+			list.removeAll()
+			pLockEnterFrameOnce = false
 		end
-		
-		this.pEnterFrameOnce.forEach( block Element each
-			each.enterFrame()
-		end )
-		this.pEnterFrameOnce.removeAll()
 	end
 	
 	/**
@@ -472,82 +559,217 @@ class GameWorld
 	 * \details Call once at beginning of frame update cycle. Afterwards world can
 	 *          be rendered multiple times.
 	 */
-	public func void update( float elapsed )
-		this.enterFrame()
+	public func void update(float elapsed)
+		pThinkingBehaviors.forEach(block GWBehavior each
+			each.update(elapsed)
+		end)
 		
-		this.pWorld.update( elapsed )
-		this.pTempDecalMgr.update( elapsed )
+		enterFrame()
 		
-		this.think( elapsed )
-		this.pWorld.detectCollisions( elapsed )
-		this.postThink( elapsed )
+		pWorld.update(elapsed)
+		pTempDecalMgr.update(elapsed)
 		
-		this.removeFinishedOneShotSpeakers()
+		think(elapsed)
+		pWorld.detectCollisions(elapsed)
+		postThink(elapsed)
 	end
 	
 	/** \brief Update game world with debug timing. */
-	public func void updateDebug( float elapsed, \
+	public func void updateDebug(float elapsed, \
 			Debugging.DebugPerformanceCounter debugUpdate, \
 			Debugging.DebugPerformanceCounter debugThink, \
 			Debugging.DebugPerformanceCounter debugCollisions, \
-			Debugging.DebugPerformanceCounter debugPostThink )
-		this.enterFrame()
+			Debugging.DebugPerformanceCounter debugPostThink)
+		pBehaviors.forEach(block GWBehavior each
+			each.update(elapsed)
+		end)
+		
+		enterFrame()
 		
 		debugUpdate.start()
-		this.pWorld.update( elapsed )
+		pWorld.update(elapsed)
 		debugUpdate.stop()
-		this.pTempDecalMgr.update( elapsed )
+		pTempDecalMgr.update(elapsed)
 		
 		debugThink.start()
-		this.think( elapsed )
+		think(elapsed)
 		debugThink.stop()
 		debugCollisions.start()
-		this.pWorld.detectCollisions( elapsed )
+		pWorld.detectCollisions(elapsed)
 		debugCollisions.stop()
 		debugPostThink.start()
-		this.postThink( elapsed )
+		postThink(elapsed)
 		debugPostThink.stop()
-		
-		this.removeFinishedOneShotSpeakers()
 	end
 	
 	
 	
 	/** \brief Next object ID from world file required for saving and remapping ID ranges. */
 	public func UniqueID getNextObjectID()
-		return this.pNextObjectID
+		return pNextObjectID
 	end
 	
 	/** \brief Set next object ID from world file required for saving and remapping ID ranges. */
-	public func void setNextObjectID( UniqueID nextObjectID )
-		this.pNextObjectID = nextObjectID
+	public func void setNextObjectID(UniqueID nextObjectID)
+		pNextObjectID = nextObjectID
 	end
 	
 	/** \brief Unique ID remapper. */
 	public func UniqueIDRemapper getUniqueIDRemapper()
-		return this.pUniqueIDRemapper
+		return pUniqueIDRemapper
 	end
 	
 	/** \brief Set Unique ID remapper. */
-	public func void setUniqueIDRemapper( UniqueIDRemapper remapper )
+	public func void setUniqueIDRemapper(UniqueIDRemapper remapper)
 		if remapper == null
 			throw EInvalidParam.new()
 		end
-		this.pUniqueIDRemapper = remapper
+		pUniqueIDRemapper = remapper
 	end
 	
 	
 	
-	/** \brief Read from file. */
-	public func void readFromFile( PersistencyEnvironment env, FileReader reader )
-	end
-	
-	/** \brief Write to file. */
-	public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
+	/**
+	 * \brief Stub used to create game world.
+	 * \version 1.17
+	 */
+	public func StubGameWorld getStub()
+		return pStub
 	end
 	
 	/**
-	 * \brief Write elemen stubs to file.
+	 * \brief Set stub used to create game world.
+	 * \version 1.17
+	 */
+	public func void setStub(StubGameWorld stub)
+		pStub = stub
+	end
+	
+	
+	
+	/**
+	 * \brief Init game world from stub.
+	 * \version 1.17
+	 * 
+	 * Subclass is required to super-call init() to init behaviors properly.
+	 */
+	public func void init(StubGameWorld stub)
+		pBehaviors.forEach(block GWBehavior each
+			each.init(stub)
+		end)
+		pBehaviorsInited = true
+	end
+	
+	
+	
+	/**
+	 * \brief Read from file.
+	 * 
+	 * Subclass has to super-call readFromFile() to save behaviors properly.
+	 */
+	public func void readFromFile(PersistencyEnvironment env, FileReader reader)
+		if not pEnablePersistency
+			return
+		end
+		
+		select reader.readByte() // version
+		case 0
+			var Dictionary map = Dictionary.new()
+			pBehaviors.forEach(block int index, GWBehavior each
+				map.setAt((pBehaviors.getAt(index) cast GWBehavior).getBehaviorID(), each)
+			end)
+			
+			var int i, dataLength, count = reader.readUShort()
+			var GWBehavior behavior
+			var String identifier
+			
+			for i = 0 to count
+				identifier = reader.readString8()
+				behavior = map.getAt(identifier, null) cast GWBehavior
+				dataLength = reader.readInt()
+				
+				if behavior != null
+					behavior.readFromFile(env, reader)
+					
+				elif pBehaviors.find(block int index, GWBehavior each
+					if each.supportsBehaviorID(identifier)
+						each.loadSupportedData(identifier, env, reader)
+						return true
+						
+					else
+						return false
+					end
+					
+				end) == null
+					reader.movePosition(dataLength)
+				end
+			end
+			
+		else
+			throw EInvalidParam.new("unsupported version")
+		end
+	end
+	
+	/**
+	 * \brief Write to file.
+	 * 
+	 * Subclass has to super-call writeToFile() to save behaviors properly.
+	 */
+	public func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+		if not pEnablePersistency
+			return
+		end
+		
+		writer.writeByte(0) // version
+		
+		var Array behaviors = pBehaviors.collect(block GWBehavior each
+			return each.requiresPersistency()
+		end)
+		
+		writer.writeUShort(behaviors.getCount())
+		
+		if behaviors.getCount() > 0
+			var MemoryFile behaviorData = MemoryFile.new("behaviorData")
+			
+			behaviors.forEach(block GWBehavior each
+				each.writeToFile(env, behaviorData.getWriter(false))
+				writer.writeString8(each.getBehaviorID())
+				writer.writeInt(behaviorData.getSize())
+				writer.writeData(behaviorData.getReader())
+			end)
+		end
+	end
+	
+	/**
+	 * \brief Read element stubs from file.
+	 * 
+	 * Reads first the next object ID and Unique ID remapper. Then remaps the stub elements
+	 * in the stub world. Then reads the element stubs.
+	 */
+	public func void readElementStubsFromFile(PersistencyEnvironment env, FileReader reader, \
+	MutableID idGenerator, ElementClassList elementClassList, StubGameWorld stubWorld)
+		select reader.readByte() // version
+		case 0
+			var UniqueID lastNextObjectID = UniqueID.readFromFile(reader)
+			pUniqueIDRemapper = UniqueIDRemapper.readFromFile(reader)
+			
+			var UniqueID nextObjectID = stubWorld.getNextObjectID()
+			if nextObjectID > lastNextObjectID
+				stubWorld.setNewElementsRange(pUniqueIDRemapper.add(\
+					lastNextObjectID, nextObjectID, idGenerator.toUniqueID()))
+				idGenerator.incrementBy(nextObjectID - lastNextObjectID)
+			end
+			
+			stubWorld.remapObjectIDs(pUniqueIDRemapper)
+			stubWorld.readElementStubsFromFile(env, reader, elementClassList)
+			
+		else
+			throw EInvalidParam.new("unsupported version")
+		end
+	end
+	
+	/**
+	 * \brief Write element stubs to file.
 	 * 
 	 * Writes first the next object ID and Unique ID remapper. While loading the next object
 	 * ID and mapper can be used to modify remapping in case the object ID range of the
@@ -564,16 +786,18 @@ class GameWorld
 	 * Once done the elements are created and their dynamic data read. The order of stubs
 	 * has to stay the same for them to properly read their dynamic data.
 	 */
-	public func void writeElementStubsToFile( PersistencyEnvironment env, FileWriter writer )
-		this.pNextObjectID.writeToFile( writer )
-		this.pUniqueIDRemapper.writeToFile( writer )
+	public func void writeElementStubsToFile(PersistencyEnvironment env, FileWriter writer)
+		writer.writeByte(0) // version
 		
-		this.pElements.forEach( block Element each
+		pNextObjectID.writeToFile(writer)
+		pUniqueIDRemapper.writeToFile(writer)
+		
+		pElements.forEach(block Element each
 			if each.getClass().getPersistable()
-				each.getStub().writeToFile( writer )
+				each.getStub().writeToFile(writer)
 			end
-		end )
-		writer.writeString8( "" ) // empty classname is end of list marker
+		end)
+		writer.writeString8("") // empty classname is end of list marker
 	end
 	
 	/**
@@ -588,22 +812,22 @@ class GameWorld
 	 * Once done the elements are created and their dynamic data read. The order of stubs
 	 * has to stay the same for them to properly read their dynamic data.
 	 */
-	public func void writeDynamicElementDataToFile( PersistencyEnvironment env, FileWriter writer )
+	public func void writeDynamicElementDataToFile(PersistencyEnvironment env, FileWriter writer)
 		if env.getPersistency().getDebugEnableCanaryValue()
-			this.pElements.forEach( block Element each
+			pElements.forEach(block Element each
 				if each.getClass().getPersistable()
-					writer.writeString( Persistency.debugCanaryValue_BEGIN )
-					each.writeToFile( env, writer )
-					writer.writeString( Persistency.debugCanaryValue_END )
+					writer.writeString(Persistency.debugCanaryValue_BEGIN)
+					each.writeToFile(env, writer)
+					writer.writeString(Persistency.debugCanaryValue_END)
 				end
-			end )
+			end)
 			
 		else
-			this.pElements.forEach( block Element each
+			pElements.forEach(block Element each
 				if each.getClass().getPersistable()
-					each.writeToFile( env, writer )
+					each.writeToFile(env, writer)
 				end
-			end )
+			end)
 		end
 	end
 	
@@ -611,42 +835,51 @@ class GameWorld
 	
 	/** \brief Spawn point list. */
 	public func SpawnPointList getSpawnPoints()
-		return this.pSpawnPoints
+		return pSpawnPoints
 	end
 	
 	/** \brief Rail list. */
 	public func RailList getRailList()
-		return this.pRailList
+		return pRailList
 	end
 	
 	/** \brief Conversation actor list. */
 	public func ConversationActorList getConvoActorList()
-		return this.pConvoActorList
+		return pConvoActorList
 	end
 	
 	/** \brief Conversation coordinate system list. */
 	public func ConversationCoordSystemList getConvoCoordSystemList()
-		return this.pConvoCoordSystemList
+		return pConvoCoordSystemList
 	end
 	
 	/** \brief Anchored element list. */
 	public func AnchoredElementList getAnchoredElementList()
-		return this.pAnchoredElementList
+		return pAnchoredElementList
 	end
 	
 	
 	
 	/** \brief Temporary decal manager. */
 	public func TemporaryDecalManager getTemporaryDecalManager()
-		return this.pTempDecalMgr
+		return pTempDecalMgr
 	end
 	
 	/** \brief Set temporary decal manager. */
-	public func void setTemporaryDecalManager( TemporaryDecalManager manager )
+	public func void setTemporaryDecalManager(TemporaryDecalManager manager)
 		if manager == null
 			throw EInvalidParam.new()
 		end
-		this.pTempDecalMgr = manager
+		pTempDecalMgr = manager
+	end
+	
+	
+	
+	private func void pPrepareUpdateEnterFrameOnce()
+		if pLockEnterFrameOnce
+			pEnterFrameOnce = Array.new(pEnterFrameOnce)
+			pLockEnterFrameOnce = false
+		end
 	end
 	
 	
@@ -681,30 +914,30 @@ class GameWorld
 	 */
 	public func Dictionary debugStatistics()
 		var Dictionary stats = Dictionary.new()
-		stats.setAt( "elements", this.pElements.getCount() )
-		stats.setAt( "thinkers", this.pThinkers.getCount() )
-		stats.setAt( "enterFrameOnce", this.pEnterFrameOnce.getCount() )
-		stats.setAt( "oneShotSpeakers", this.pOneShotSpeakers.getCount() )
-		stats.setAt( "spawnPoints", this.pSpawnPoints.getCount() )
-		stats.setAt( "rails", this.pRailList.getCount() )
-		stats.setAt( "temporaryDecals", this.pTempDecalMgr.getCount() )
-		stats.setAt( "resources.camera", this.pWorld.getCameraCount() )
-		stats.setAt( "resources.speaker", this.pWorld.getSpeakerCount() )
-		stats.setAt( "resources.microphone", this.pWorld.getMicrophoneCount() )
-		stats.setAt( "resources.networkState", this.pWorld.getNetworkStateCount() )
-		stats.setAt( "resources.component", this.pWorld.getComponentCount() )
-		stats.setAt( "resources.light", this.pWorld.getLightCount() )
-		stats.setAt( "resources.collider", this.pWorld.getColliderCount() )
-		stats.setAt( "resources.lumimeter", this.pWorld.getLumimeterCount() )
-		stats.setAt( "resources.touchSensor", this.pWorld.getTouchSensorCount() )
-		stats.setAt( "resources.propField", this.pWorld.getPropFieldCount() )
-		stats.setAt( "resources.forceField", this.pWorld.getForceFieldCount() )
-		stats.setAt( "resources.particleEmitter", this.pWorld.getParticleEmitterCount() )
-		stats.setAt( "resources.debugDrawer", this.pWorld.getDebugDrawerCount() )
-		stats.setAt( "resources.navigationSpace", this.pWorld.getNavigationSpaceCount() )
-		stats.setAt( "resources.navigationBlocker", this.pWorld.getNavigationBlockerCount() )
-		stats.setAt( "resources.navigator", this.pWorld.getNavigatorCount() )
-		stats.setAt( "resources.envMapProbe", this.pWorld.getEnvMapProbeCount() )
+		stats.setAt("elements", pElements.getCount())
+		stats.setAt("thinkers", pThinkers.getCount())
+		stats.setAt("enterFrameOnce", pEnterFrameOnce.getCount())
+		stats.setAt("oneShotSpeakers", pBehaviorOneShotSpeaker.getSpeakerCount())
+		stats.setAt("spawnPoints", pSpawnPoints.getCount())
+		stats.setAt("rails", pRailList.getCount())
+		stats.setAt("temporaryDecals", pTempDecalMgr.getCount())
+		stats.setAt("resources.camera", pWorld.getCameraCount())
+		stats.setAt("resources.speaker", pWorld.getSpeakerCount())
+		stats.setAt("resources.microphone", pWorld.getMicrophoneCount())
+		stats.setAt("resources.networkState", pWorld.getNetworkStateCount())
+		stats.setAt("resources.component", pWorld.getComponentCount())
+		stats.setAt("resources.light", pWorld.getLightCount())
+		stats.setAt("resources.collider", pWorld.getColliderCount())
+		stats.setAt("resources.lumimeter", pWorld.getLumimeterCount())
+		stats.setAt("resources.touchSensor", pWorld.getTouchSensorCount())
+		stats.setAt("resources.propField", pWorld.getPropFieldCount())
+		stats.setAt("resources.forceField", pWorld.getForceFieldCount())
+		stats.setAt("resources.particleEmitter", pWorld.getParticleEmitterCount())
+		stats.setAt("resources.debugDrawer", pWorld.getDebugDrawerCount())
+		stats.setAt("resources.navigationSpace", pWorld.getNavigationSpaceCount())
+		stats.setAt("resources.navigationBlocker", pWorld.getNavigationBlockerCount())
+		stats.setAt("resources.navigator", pWorld.getNavigatorCount())
+		stats.setAt("resources.envMapProbe", pWorld.getEnvMapProbeCount())
 		return stats
 	end
 	
@@ -722,39 +955,39 @@ class GameWorld
 		var String key
 		
 		summary = Dictionary.new()
-		this.pThinkers.forEach( block Element each
+		pThinkers.forEach(block Element each
 			key = each.getClass().getClassname()
-			summary.setAt( key, summary.getAt( key, 0 ) cast int + 1 )
-		end )
-		stats.setAt( "thinkers", summary )
+			summary.setAt(key, summary.getAt(key, 0) cast int + 1)
+		end)
+		stats.setAt("thinkers", summary)
 		
 		summary = Dictionary.new()
-		this.pEnterFrameOnce.forEach( block Element each
+		pEnterFrameOnce.forEach(block Element each
 			key = each.getClass().getClassname()
-			summary.setAt( key, summary.getAt( key, 0 ) cast int + 1 )
-		end )
-		stats.setAt( "enterFrameOnce", summary )
+			summary.setAt(key, summary.getAt(key, 0) cast int + 1)
+		end)
+		stats.setAt("enterFrameOnce", summary)
 		
 		return stats
 	end
 	
 	/** \brief Print statistics to console. */
-	public func void debugPrintStatistics( Console console )
-		var Dictionary stats = this.debugStatistics()
-		stats.getKeys().sorted().forEach( block String key
-			console.addMessage( "- " + key + ": " + stats.getAt( key ) )
-		end )
+	public func void debugPrintStatistics(Console console)
+		var Dictionary stats = debugStatistics()
+		stats.getKeys().sorted().forEach(block String key
+			console.addMessage("- " + key + ": " + stats.getAt(key))
+		end)
 	end
 	
 	/** \brief Print statistics summary to console. */
-	public func void debugPrintStatisticsSummary( Console console )
-		var Dictionary summary, stats = this.debugStatisticsSummary()
-		stats.getKeys().sorted().forEach( block String key
-			console.addMessage( "- " + key + ":" )
-			summary = stats.getAt( key ) cast Dictionary
-			summary.getKeys().sorted().forEach( block String key2
-				console.addMessage( "  - " + key2 + ": " + summary.getAt( key2 ) )
-			end )
-		end )
+	public func void debugPrintStatisticsSummary(Console console)
+		var Dictionary summary, stats = debugStatisticsSummary()
+		stats.getKeys().sorted().forEach(block String key
+			console.addMessage("- " + key + ":")
+			summary = stats.getAt(key) cast Dictionary
+			summary.getKeys().sorted().forEach(block String key2
+				console.addMessage("  - " + key2 + ": " + summary.getAt(key2))
+			end)
+		end)
 	end
 end

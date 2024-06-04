@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -33,108 +36,6 @@
 #include <dragengine/logger/deLogger.h>
 
 
-
-// Native Widget
-//////////////////
-
-class cNativeIgdeScrollBar : public FXScrollBar{
-	FXDECLARE( cNativeIgdeScrollBar )
-	
-protected:
-	cNativeIgdeScrollBar();
-	
-public:
-	enum eFoxIDs{
-		ID_SELF = FXScrollBar::ID_LAST,
-	};
-	
-private:
-	igdeScrollBar *pOwner;
-	
-public:
-	cNativeIgdeScrollBar( igdeScrollBar &owner, FXComposite *parent, int layoutFlags );
-	virtual ~cNativeIgdeScrollBar();
-	
-	long onCommand( FXObject *sender, FXSelector selector, void *data );
-	virtual FXbool canFocus() const;
-	
-	static int ScrollBarFlags( const igdeScrollBar &owner );
-	void UpdateRange();
-	void UpdateValue();
-};
-
-
-FXDEFMAP( cNativeIgdeScrollBar ) cNativeIgdeScrollBarMap[] = {
-	FXMAPFUNC( SEL_COMMAND, cNativeIgdeScrollBar::ID_SELF, cNativeIgdeScrollBar::onCommand ),
-	FXMAPFUNC( SEL_CHANGED, cNativeIgdeScrollBar::ID_SELF, cNativeIgdeScrollBar::onCommand )
-};
-
-
-FXIMPLEMENT( cNativeIgdeScrollBar, FXScrollBar, cNativeIgdeScrollBarMap, ARRAYNUMBER( cNativeIgdeScrollBarMap ) )
-
-cNativeIgdeScrollBar::cNativeIgdeScrollBar(){ }
-
-cNativeIgdeScrollBar::cNativeIgdeScrollBar( igdeScrollBar &owner, FXComposite *parent, int layoutFlags ) :
-FXScrollBar( parent, this, ID_SELF, layoutFlags | ScrollBarFlags( owner ) ),
-pOwner( &owner )
-{
-	UpdateRange();
-	UpdateValue();
-	if( ! owner.GetEnabled() ){
-		disable();
-	}
-}
-
-cNativeIgdeScrollBar::~cNativeIgdeScrollBar(){
-}
-
-long cNativeIgdeScrollBar::onCommand( FXObject *sender, FXSelector selector, void *data ){
-	if( ! pOwner->GetEnabled() ){
-		return 0;
-	}
-	
-	try{
-		pOwner->SetValue( pOwner->GetLower() + getPosition() );
-		pOwner->NotifyValueChanged();
-		
-	}catch( const deException &e ){
-		pOwner->GetLogger()->LogException( "IGDE", e );
-		igdeCommonDialogs::Exception( pOwner, e );
-		return 0;
-	}
-	
-	return 1;
-}
-
-FXbool cNativeIgdeScrollBar::canFocus() const{
-	return false;
-	//return FXScrollBar::canFocus();
-}
-
-int cNativeIgdeScrollBar::ScrollBarFlags( const igdeScrollBar &owner ){
-	switch( owner.GetOrientation() ){
-	case igdeScrollBar::eoHorizontal:
-		return SCROLLBAR_HORIZONTAL | SCROLLBAR_WHEELJUMP;
-		
-	case igdeScrollBar::eoVertical:
-		return SCROLLBAR_VERTICAL | SCROLLBAR_WHEELJUMP;
-		
-	default:
-		return 0;
-	}
-}
-
-void cNativeIgdeScrollBar::UpdateRange(){
-	setRange( decMath::max( pOwner->GetUpper() - pOwner->GetLower(), 0 ) );
-	setPage( pOwner->GetPageSize() );
-}
-
-void cNativeIgdeScrollBar::UpdateValue(){
-	setPosition( decMath::clamp( pOwner->GetValue() - pOwner->GetLower(), 0, getRange() ) );
-}
-
-
-
 // Class igdeScrollBar
 ////////////////////////
 
@@ -146,7 +47,7 @@ igdeWidget( environment ),
 pOrientation( orientation ),
 pLower( 0 ),
 pUpper( 100 ),
-pPageSize( 10),
+pPageSize( 10 ),
 pValue( 0 ),
 pEnabled( true ){
 }
@@ -161,8 +62,11 @@ pPageSize( pageSize ),
 pValue( value ),
 pEnabled( true )
 {
+	if( upper < lower ){
+		DETHROW_INFO( deeInvalidParam, "upper < lower" );
+	}
 	if( pageSize < 1 ){
-		DETHROW( deeInvalidParam );
+		DETHROW_INFO( deeInvalidParam, "pageSize < 1" );
 	}
 }
 
@@ -176,39 +80,71 @@ igdeScrollBar::~igdeScrollBar(){
 ///////////////
 
 void igdeScrollBar::SetLower( int lower ){
+	if( lower > pUpper ){
+		DETHROW_INFO( deeInvalidParam, "lower > upper" );
+	}
 	if( pLower == lower ){
 		return;
 	}
 	
 	pLower = lower;
 	OnRangeChanged();
+	
+	SetValue( pValue );
 }
 
 void igdeScrollBar::SetUpper( int upper ){
+	if( upper < pLower ){
+		DETHROW_INFO( deeInvalidParam, "upper < lower" );
+	}
 	if( pUpper == upper ){
 		return;
 	}
 	
 	pUpper = upper;
 	OnRangeChanged();
+	
+	SetValue( pValue );
+}
+
+void igdeScrollBar::SetRange( int lower, int upper ){
+	if( upper < lower ){
+		DETHROW_INFO( deeInvalidParam, "upper < lower" );
+	}
+	if( pLower == lower && pUpper == upper ){
+		return;
+	}
+	
+	pLower = lower;
+	pUpper = upper;
+	OnRangeChanged();
+	
+	SetValue( pValue );
 }
 
 void igdeScrollBar::SetPageSize( int pageSize ){
+	if( pageSize < 1 ){
+		DETHROW_INFO( deeInvalidParam, "pageSize < 1" );
+	}
 	if( pPageSize == pageSize ){
 		return;
 	}
 	
 	pPageSize = pageSize;
 	OnRangeChanged();
+	
+	SetValue( pValue );
 }
 
 void igdeScrollBar::SetValue( int value ){
+	value = decMath::max( decMath::min( value, pUpper - pPageSize ), pLower );
 	if( pValue == value ){
 		return;
 	}
 	
 	pValue = value;
 	OnValueChanged();
+	NotifyValueChanged();
 }
 
 void igdeScrollBar::SetEnabled( bool enabled ){
@@ -250,21 +186,9 @@ void igdeScrollBar::CreateNativeWidget(){
 		return;
 	}
 	
-	if( ! GetParent() ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	FXComposite * const foxParent = ( FXComposite* )GetParent()->GetNativeContainer();
-	if( ! foxParent ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	int layoutFlags = igdeUIFoxHelper::GetChildLayoutFlags( this );
-	cNativeIgdeScrollBar * const foxWidget = new cNativeIgdeScrollBar( *this, foxParent, layoutFlags );
-	SetNativeWidget( foxWidget );
-	if( foxParent->id() ){
-		foxWidget->create();
-	}
+	igdeNativeScrollBar * const native = igdeNativeScrollBar::CreateNativeWidget( *this );
+	SetNativeWidget( native );
+	native->PostCreateNativeWidget();
 }
 
 void igdeScrollBar::DestroyNativeWidget(){
@@ -272,37 +196,26 @@ void igdeScrollBar::DestroyNativeWidget(){
 		return;
 	}
 	
-	delete ( cNativeIgdeScrollBar* )GetNativeWidget();
+	( ( igdeNativeScrollBar* )GetNativeWidget() )->DestroyNativeWidget();
 	DropNativeWidget();
 }
 
 
 
 void igdeScrollBar::OnRangeChanged(){
-	if( ! GetNativeWidget() ){
-		return;
+	if( GetNativeWidget() ){
+		( ( igdeNativeScrollBar* )GetNativeWidget() )->UpdateRange();
 	}
-	
-	( ( cNativeIgdeScrollBar* )GetNativeWidget() )->UpdateRange();
 }
 
 void igdeScrollBar::OnValueChanged(){
-	if( ! GetNativeWidget() ){
-		return;
+	if( GetNativeWidget() ){
+		( ( igdeNativeScrollBar* )GetNativeWidget() )->UpdateValue();
 	}
-	
-	( ( cNativeIgdeScrollBar* )GetNativeWidget() )->UpdateValue();
 }
 
 void igdeScrollBar::OnEnabledChanged(){
-	if( ! GetNativeWidget() ){
-		return;
-	}
-	
-	if( pEnabled ){
-		( ( cNativeIgdeScrollBar* )GetNativeWidget() )->enable();
-		
-	}else{
-		( ( cNativeIgdeScrollBar* )GetNativeWidget() )->disable();
+	if( GetNativeWidget() ){
+		( ( igdeNativeScrollBar* )GetNativeWidget() )->UpdateEnabled();
 	}
 }

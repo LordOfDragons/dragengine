@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <string.h>
@@ -168,8 +171,8 @@ igdeWObject::igdeWObject( igdeEnvironment &environment ) :
 pEnvironment( environment ),
 pScaling( 1.0f, 1.0f, 1.0f ),
 pRenderLayerMask( 0x1 ),
-pRenderEnvMapMask( 0x1 ),
-pAudioLayerMask( 0x2 ),
+pRenderEnvMapMask( 0x2 ),
+pAudioLayerMask( 0x4 ),
 pDynamicCollider( false ),
 pVisible( true ),
 pPartiallyHidden( false ),
@@ -193,7 +196,7 @@ pAsyncLoadCounter( 0 )
 		pColliderFallback->SetUseLocalGravity( true );
 		decShapeList shapeList;
 		shapeList.Add( new decShapeBox( decVector( 0.1f, 0.1f, 0.1f ) ) );
-		( ( deColliderVolume& )( deCollider& )pColliderFallback ).SetShapes( shapeList );
+		pColliderFallback->SetShapes( shapeList );
 		pColliderFallback->SetMass( 5.0f );
 		
 		pListenerCollider = new igdeWObjectColliderListener( this );
@@ -272,6 +275,9 @@ void igdeWObject::SetGDClass( igdeGDClass *gdClass ){
 	
 	if( pWorld ){
 		pCreateSubObjects();
+		
+		pSubObjectsInitTriggers();
+		pSubObjectsUpdateTriggers();
 	}
 }
 
@@ -429,6 +435,16 @@ void igdeWObject::SetCollisionFilterFallback( const decCollisionFilter &collisio
 	pSubObjectsUpdateCollisionFilter();
 }
 
+void igdeWObject::SetCollisionFilterInteract( const decCollisionFilter &collisionFilter ){
+	if( collisionFilter == pCollisionFilterInteract ){
+		return;
+	}
+	
+	pCollisionFilterInteract = collisionFilter;
+	
+	pSubObjectsUpdateCollisionFilter();
+}
+
 void igdeWObject::SetDynamicCollider( bool dynamic ){
 	if( dynamic == pDynamicCollider ){
 		return;
@@ -512,17 +528,7 @@ void igdeWObject::SetOutlineSkin( deSkin *skin ){
 }
 
 void igdeWObject::SetOutlineSkinSharedEditing(){
-	deSkinReference skin;
-	
-	try{
-		skin.TakeOver( pEnvironment.GetEngineController()->GetEngine()->GetSkinManager()->LoadSkin(
-			pEnvironment.GetFileSystemIGDE(), "/data/data/materials/editing/outlined.deskin", "/" ) );
-		
-	}catch( const deException &e ){
-		pEnvironment.GetLogger()->LogException( LOGSOURCE, e );
-	}
-	
-	SetOutlineSkin( skin );
+	SetOutlineSkin( pEnvironment.GetStockSkin( igdeEnvironment::essEditOutline ) );
 }
 
 void igdeWObject::SetOutlineColor( const decColor &color ){
@@ -595,7 +601,7 @@ void igdeWObject::AttachColliderRig( deColliderComponent *parentCollider ){
 		attachment->SetAttachType( deColliderAttachment::eatStatic );
 		parentCollider->AddAttachment( attachment );
 		
-	}catch( const deException &e ){
+	}catch( const deException & ){
 		if( attachment ){
 			delete attachment;
 		}
@@ -633,7 +639,7 @@ const decVector &position, const decQuaternion &orientation ){
 			attachment->SetOrientation( orientation );
 			parentCollider->AddAttachment( attachment );
 			
-		}catch( const deException &e ){
+		}catch( const deException & ){
 			if( attachment ){
 				delete attachment;
 			}
@@ -674,11 +680,16 @@ void igdeWObject::DetachCollider(){
 }
 
 deCollider *igdeWObject::GetCollider() const{
-	return pColliderComponent ? pColliderComponent : pColliderFallback;
+	if( pColliderComponent ){
+		return pColliderComponent;
+		
+	}else{
+		return pColliderFallback;
+	}
 }
 
 deComponent *igdeWObject::GetComponent() const{
-	return pColliderComponent ? ( ( deColliderComponent& )( deCollider& )pColliderComponent ).GetComponent() : NULL;
+	return pColliderComponent ? pColliderComponent->GetComponent() : nullptr;
 }
 
 void igdeWObject::SetColliderUserPointer( void *userPointer ){
@@ -686,6 +697,12 @@ void igdeWObject::SetColliderUserPointer( void *userPointer ){
 		pEnvironment.SetColliderUserPointer( pColliderComponent, userPointer );
 	}
 	pEnvironment.SetColliderUserPointer( pColliderFallback, userPointer );
+	
+	const int count = pCollidersInteraction.GetCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		pEnvironment.SetColliderUserPointer( ( deCollider* ) pCollidersInteraction.GetAt( i ), userPointer );
+	}
 }
 
 void igdeWObject::OnColliderChanged(){
@@ -735,20 +752,54 @@ void igdeWObject::SubObjectExtendsDirty(){
 
 void igdeWObject::SetInteractCollider( deColliderComponent *collider ){
 	if( pColliderComponent ){
-		pEnvironment.SetColliderDelegee( pColliderComponent, NULL );
-		pEnvironment.SetColliderUserPointer( pColliderComponent, NULL );
-		pColliderComponent = NULL;
+		pEnvironment.SetColliderDelegee( pColliderComponent, nullptr );
+		pEnvironment.SetColliderUserPointer( pColliderComponent, nullptr );
+		pColliderComponent = nullptr;
 		pColliderFallback->SetEnabled( pVisible && ! pPartiallyHidden );
+	}
+	
+	const int count = pCollidersInteraction.GetCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		deCollider * const colliderInteract = ( deCollider* ) pCollidersInteraction.GetAt( i );
+		pEnvironment.SetColliderDelegee( colliderInteract, nullptr );
+		pEnvironment.SetColliderUserPointer( colliderInteract, nullptr );
 	}
 	
 	if( ! collider ){
 		return;
 	}
 	
+	void * const userPointer = pEnvironment.GetColliderUserPointer( pColliderFallback );
+	
 	pColliderFallback->SetEnabled( false );
 	pColliderComponent = collider;
 	pEnvironment.SetColliderDelegee( collider, pListenerCollider );
+	pEnvironment.SetColliderUserPointer( collider, userPointer );
+	
+	for( i=0; i<count; i++ ){
+		deCollider * const colliderInteract = ( deCollider* ) pCollidersInteraction.GetAt( i );
+		pEnvironment.SetColliderDelegee( colliderInteract, pListenerCollider );
+		pEnvironment.SetColliderUserPointer( colliderInteract, userPointer );
+	}
+}
+
+void igdeWObject::AddInteractionCollider( deCollider *collider ){
+	DEASSERT_NOTNULL( collider )
+	
+	pCollidersInteraction.Add( collider );
+	
+	pEnvironment.SetColliderDelegee( collider, pListenerCollider );
 	pEnvironment.SetColliderUserPointer( collider, pEnvironment.GetColliderUserPointer( pColliderFallback ) );
+}
+
+void igdeWObject::RemoveInteractionCollider( deCollider *collider ){
+	DEASSERT_NOTNULL( collider );
+	
+	pEnvironment.SetColliderDelegee( collider, nullptr );
+	pEnvironment.SetColliderUserPointer( collider, nullptr );
+	
+	pCollidersInteraction.Remove( collider );
 }
 
 
@@ -759,11 +810,17 @@ void igdeWObject::SetInteractCollider( deColliderComponent *collider ){
 void igdeWObject::pCleanUp(){
 	DetachCollider();
 	pDestroySubObjects();
-	   SetWorld( NULL );
+	SetWorld( nullptr );
+	
+	const int count = pCollidersInteraction.GetCount();
+	int i;
+	for( i=0; i<count; i++ ){
+		pEnvironment.SetColliderUserPointer( ( deCollider* ) pCollidersInteraction.GetAt( i ), nullptr );
+	}
 	
 	if( pColliderFallback ){
-		pEnvironment.SetColliderDelegee( pColliderFallback, NULL );
-		pColliderFallback = NULL;
+		pEnvironment.SetColliderDelegee( pColliderFallback, nullptr );
+		pColliderFallback = nullptr;
 	}
 	if( pListenerCollider ){
 		delete pListenerCollider;
@@ -785,158 +842,178 @@ void igdeWObject::pCreateSubObjects(){
 	pAsyncLoadCounter = 1;
 	
 	if( pGDClass && pWorld ){
-		pCreateSubObjects( "", pGDClass );
+		pCreateSubObjects( "", pGDClass, igdeGDClass::FilterSubObjectsAll );
 	}
 	
 	pAsyncLoadCounter--;
 	pCheckAsyncLoadFinished();
 }
 
-void igdeWObject::pCreateSubObjects( const decString &prefix, const igdeGDClass &gdclass ){
+void igdeWObject::pCreateSubObjects( const decString &prefix, const igdeGDClass &gdclass, int filter ){
 	deObjectReference refSubObject;
 	int i;
 	
 	// components
-	const igdeGDCComponentList &components = gdclass.GetComponentList();
-	const int componentCount = components.GetCount();
-	for( i=0; i<componentCount; i++ ){
-		pAsyncLoadCounter++;
-		try{
-			refSubObject.TakeOver( new igdeWOSOComponent( *this, *components.GetAt( i ), prefix ) );
-			pSubObjects.Add( refSubObject );
-			
-		}catch( const deException &e ){
-			pEnvironment.GetLogger()->LogException( LOGSOURCE, e );
-			pAsyncLoadCounter--;
+	if( ( filter & igdeGDClass::efsoComponents ) != 0 ){
+		const igdeGDCComponentList &components = gdclass.GetComponentList();
+		const int componentCount = components.GetCount();
+		for( i=0; i<componentCount; i++ ){
+			pAsyncLoadCounter++;
+			try{
+				refSubObject.TakeOver( new igdeWOSOComponent( *this, *components.GetAt( i ), prefix ) );
+				pSubObjects.Add( refSubObject );
+				
+			}catch( const deException &e ){
+				pEnvironment.GetLogger()->LogException( LOGSOURCE, e );
+				pAsyncLoadCounter--;
+			}
 		}
 	}
 	
 	// billboards
-	const igdeGDCBillboardList &billboards = gdclass.GetBillboardList();
-	const int billboardCount = billboards.GetCount();
-	for( i=0; i<billboardCount; i++ ){
-		pAsyncLoadCounter++;
-		try{
-			refSubObject.TakeOver( new igdeWOSOBillboard( *this, *billboards.GetAt( i ), prefix ) );
-			pSubObjects.Add( refSubObject );
-			
-		}catch( const deException &e ){
-			pEnvironment.GetLogger()->LogException( LOGSOURCE, e );
-			pAsyncLoadCounter--;
+	if( ( filter & igdeGDClass::efsoBillboards ) != 0 ){
+		const igdeGDCBillboardList &billboards = gdclass.GetBillboardList();
+		const int billboardCount = billboards.GetCount();
+		for( i=0; i<billboardCount; i++ ){
+			pAsyncLoadCounter++;
+			try{
+				refSubObject.TakeOver( new igdeWOSOBillboard( *this, *billboards.GetAt( i ), prefix ) );
+				pSubObjects.Add( refSubObject );
+				
+			}catch( const deException &e ){
+				pEnvironment.GetLogger()->LogException( LOGSOURCE, e );
+				pAsyncLoadCounter--;
+			}
 		}
 	}
 	
 	// lights
-	const igdeGDCLightList &lights = gdclass.GetLightList();
-	const int lightCount = lights.GetCount();
-	for( i=0; i<lightCount; i++ ){
-		pAsyncLoadCounter++;
-		try{
-			refSubObject.TakeOver( new igdeWOSOLight( *this, *lights.GetAt( i ), prefix ) );
-			pSubObjects.Add( refSubObject );
-			
-		}catch( const deException &e ){
-			pEnvironment.GetLogger()->LogException( LOGSOURCE, e );
-			pAsyncLoadCounter--;
+	if( ( filter & igdeGDClass::efsoLights ) != 0 ){
+		const igdeGDCLightList &lights = gdclass.GetLightList();
+		const int lightCount = lights.GetCount();
+		for( i=0; i<lightCount; i++ ){
+			pAsyncLoadCounter++;
+			try{
+				refSubObject.TakeOver( new igdeWOSOLight( *this, *lights.GetAt( i ), prefix ) );
+				pSubObjects.Add( refSubObject );
+				
+			}catch( const deException &e ){
+				pEnvironment.GetLogger()->LogException( LOGSOURCE, e );
+				pAsyncLoadCounter--;
+			}
 		}
 	}
 	
 	// speakers
-	const igdeGDCSpeakerList &speakers = gdclass.GetSpeakerList();
-	const int speakerCount = speakers.GetCount();
-	for( i=0; i<speakerCount; i++ ){
-		pAsyncLoadCounter++;
-		try{
-			refSubObject.TakeOver( new igdeWOSOSpeaker( *this, *speakers.GetAt( i ), prefix ) );
-			pSubObjects.Add( refSubObject );
-			
-		}catch( const deException &e ){
-			pEnvironment.GetLogger()->LogException( LOGSOURCE, e );
-			pAsyncLoadCounter--;
+	if( ( filter & igdeGDClass::efsoSpeakers ) != 0 ){
+		const igdeGDCSpeakerList &speakers = gdclass.GetSpeakerList();
+		const int speakerCount = speakers.GetCount();
+		for( i=0; i<speakerCount; i++ ){
+			pAsyncLoadCounter++;
+			try{
+				refSubObject.TakeOver( new igdeWOSOSpeaker( *this, *speakers.GetAt( i ), prefix ) );
+				pSubObjects.Add( refSubObject );
+				
+			}catch( const deException &e ){
+				pEnvironment.GetLogger()->LogException( LOGSOURCE, e );
+				pAsyncLoadCounter--;
+			}
 		}
 	}
 	
 	// particle emitters
-	const igdeGDCParticleEmitterList &particleEmitters = gdclass.GetParticleEmitterList();
-	const int particleEmitterCount = particleEmitters.GetCount();
-	for( i=0; i<particleEmitterCount; i++ ){
-		pAsyncLoadCounter++;
-		try{
-			refSubObject.TakeOver( new igdeWOSOParticleEmitter( *this, *particleEmitters.GetAt( i ), prefix ) );
-			pSubObjects.Add( refSubObject );
-			
-		}catch( const deException &e ){
-			pEnvironment.GetLogger()->LogException( LOGSOURCE, e );
-			pAsyncLoadCounter--;
+	if( ( filter & igdeGDClass::efsoParticleEmitters ) != 0 ){
+		const igdeGDCParticleEmitterList &particleEmitters = gdclass.GetParticleEmitterList();
+		const int particleEmitterCount = particleEmitters.GetCount();
+		for( i=0; i<particleEmitterCount; i++ ){
+			pAsyncLoadCounter++;
+			try{
+				refSubObject.TakeOver( new igdeWOSOParticleEmitter( *this, *particleEmitters.GetAt( i ), prefix ) );
+				pSubObjects.Add( refSubObject );
+				
+			}catch( const deException &e ){
+				pEnvironment.GetLogger()->LogException( LOGSOURCE, e );
+				pAsyncLoadCounter--;
+			}
 		}
 	}
 	
 	// force fields
-	const igdeGDCForceFieldList &forceFields = gdclass.GetForceFieldList();
-	const int forceFieldCount = forceFields.GetCount();
-	for( i=0; i<forceFieldCount; i++ ){
-		pAsyncLoadCounter++;
-		try{
-			refSubObject.TakeOver( new igdeWOSOForceField( *this, *forceFields.GetAt( i ), prefix ) );
-			pSubObjects.Add( refSubObject );
-			
-		}catch( const deException &e ){
-			pEnvironment.GetLogger()->LogException( LOGSOURCE, e );
-			pAsyncLoadCounter--;
+	if( ( filter & igdeGDClass::efsoForceFields ) != 0 ){
+		const igdeGDCForceFieldList &forceFields = gdclass.GetForceFieldList();
+		const int forceFieldCount = forceFields.GetCount();
+		for( i=0; i<forceFieldCount; i++ ){
+			pAsyncLoadCounter++;
+			try{
+				refSubObject.TakeOver( new igdeWOSOForceField( *this, *forceFields.GetAt( i ), prefix ) );
+				pSubObjects.Add( refSubObject );
+				
+			}catch( const deException &e ){
+				pEnvironment.GetLogger()->LogException( LOGSOURCE, e );
+				pAsyncLoadCounter--;
+			}
 		}
 	}
 	
 	// envMapProbes
-	const igdeGDCEnvMapProbeList &envMapProbes = gdclass.GetEnvironmentMapProbeList();
-	const int envMapProbeCount = envMapProbes.GetCount();
-	for( i=0; i<envMapProbeCount; i++ ){
-		pAsyncLoadCounter++;
-		try{
-			refSubObject.TakeOver( new igdeWOSOEnvMapProbe( *this, *envMapProbes.GetAt( i ), prefix ) );
-			pSubObjects.Add( refSubObject );
-			
-		}catch( const deException &e ){
-			pEnvironment.GetLogger()->LogException( LOGSOURCE, e );
-			pAsyncLoadCounter--;
+	if( ( filter & igdeGDClass::efsoEnvMapProbes ) != 0 ){
+		const igdeGDCEnvMapProbeList &envMapProbes = gdclass.GetEnvironmentMapProbeList();
+		const int envMapProbeCount = envMapProbes.GetCount();
+		for( i=0; i<envMapProbeCount; i++ ){
+			pAsyncLoadCounter++;
+			try{
+				refSubObject.TakeOver( new igdeWOSOEnvMapProbe( *this, *envMapProbes.GetAt( i ), prefix ) );
+				pSubObjects.Add( refSubObject );
+				
+			}catch( const deException &e ){
+				pEnvironment.GetLogger()->LogException( LOGSOURCE, e );
+				pAsyncLoadCounter--;
+			}
 		}
 	}
 	
 	// navigation spaces
-	const igdeGDCNavigationSpaceList &navigationSpaces = gdclass.GetNavigationSpaceList();
-	const int navigationSpaceCount = navigationSpaces.GetCount();
-	for( i=0; i<navigationSpaceCount; i++ ){
-		pAsyncLoadCounter++;
-		try{
-			refSubObject.TakeOver( new igdeWOSONavigationSpace( *this, *navigationSpaces.GetAt( i ), prefix ) );
-			pSubObjects.Add( refSubObject );
-			
-		}catch( const deException &e ){
-			pEnvironment.GetLogger()->LogException( LOGSOURCE, e );
-			pAsyncLoadCounter--;
+	if( ( filter & igdeGDClass::efsoNavigationSpaces ) != 0 ){
+		const igdeGDCNavigationSpaceList &navigationSpaces = gdclass.GetNavigationSpaceList();
+		const int navigationSpaceCount = navigationSpaces.GetCount();
+		for( i=0; i<navigationSpaceCount; i++ ){
+			pAsyncLoadCounter++;
+			try{
+				refSubObject.TakeOver( new igdeWOSONavigationSpace( *this, *navigationSpaces.GetAt( i ), prefix ) );
+				pSubObjects.Add( refSubObject );
+				
+			}catch( const deException &e ){
+				pEnvironment.GetLogger()->LogException( LOGSOURCE, e );
+				pAsyncLoadCounter--;
+			}
 		}
 	}
 	
-	// navigation spaces
-	const igdeGDCNavigationBlockerList &navigationBlockers = gdclass.GetNavigationBlockerList();
-	const int navigationBlockerCount = navigationBlockers.GetCount();
-	for( i=0; i<navigationBlockerCount; i++ ){
-		pAsyncLoadCounter++;
-		try{
-			refSubObject.TakeOver( new igdeWOSONavigationBlocker( *this, *navigationBlockers.GetAt( i ), prefix ) );
-			pSubObjects.Add( refSubObject );
-			
-		}catch( const deException &e ){
-			pEnvironment.GetLogger()->LogException( LOGSOURCE, e );
-			pAsyncLoadCounter--;
+	// navigation blockers
+	if( ( filter & igdeGDClass::efsoNavigationBlockers ) != 0 ){
+		const igdeGDCNavigationBlockerList &navigationBlockers = gdclass.GetNavigationBlockerList();
+		const int navigationBlockerCount = navigationBlockers.GetCount();
+		for( i=0; i<navigationBlockerCount; i++ ){
+			pAsyncLoadCounter++;
+			try{
+				refSubObject.TakeOver( new igdeWOSONavigationBlocker( *this, *navigationBlockers.GetAt( i ), prefix ) );
+				pSubObjects.Add( refSubObject );
+				
+			}catch( const deException &e ){
+				pEnvironment.GetLogger()->LogException( LOGSOURCE, e );
+				pAsyncLoadCounter--;
+			}
 		}
 	}
 	
 	// inherited classes
 	const int inheritCount = gdclass.GetInheritClassCount();
+	filter &= gdclass.GetInheritSubObjects();
+	
 	for( i=0; i<inheritCount; i++ ){
 		const igdeGDClassInherit &inherit = *gdclass.GetInheritClassAt( i );
 		if( inherit.GetClass() ){
-			pCreateSubObjects( inherit.GetPropertyPrefix() + prefix, *inherit.GetClass() );
+			pCreateSubObjects( prefix + inherit.GetPropertyPrefix(), *inherit.GetClass(), filter );
 		}
 	}
 }
@@ -1110,7 +1187,7 @@ void igdeWObject::pUpdateColliderShapes(){
 		shapeList.Add( new decShapeBox( decVector( 0.1f, 0.1f, 0.1f ) ) );
 	}
 	
-	( ( deColliderVolume& )( deCollider& )pColliderFallback ).SetShapes( shapeList );
+	pColliderFallback->SetShapes( shapeList );
 }
 
 void igdeWObject::pPrepareExtends(){

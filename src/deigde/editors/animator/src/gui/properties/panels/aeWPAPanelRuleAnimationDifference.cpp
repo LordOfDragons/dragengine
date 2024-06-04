@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Animator Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <math.h>
@@ -35,6 +38,7 @@
 #include "../../../undosys/rule/animdiff/aeURuleAnimDiffToggleEnablePosition.h"
 #include "../../../undosys/rule/animdiff/aeURuleAnimDiffToggleEnableRotation.h"
 #include "../../../undosys/rule/animdiff/aeURuleAnimDiffToggleEnableSize.h"
+#include "../../../undosys/rule/animdiff/aeURuleAnimDiffToggleEnableVertexPositionSet.h"
 #include "../../../animatoreditor.h"
 
 #include <deigde/environment/igdeEnvironment.h>
@@ -246,6 +250,22 @@ public:
 	}
 };
 
+class cActionEnableVertexPositionSet : public cBaseAction{
+public:
+	cActionEnableVertexPositionSet( aeWPAPanelRuleAnimationDifference &panel ) : cBaseAction( panel,
+		"Enable vertex position set manipulation", nullptr,
+		"Determines if vertex position set is modified or kept as it is" ){ }
+	
+	virtual igdeUndo *OnAction( aeAnimator*, aeRuleAnimationDifference *rule ){
+		return new aeURuleAnimDiffToggleEnableVertexPositionSet( rule );
+	}
+	
+	virtual void Update( const aeAnimator & , const aeRuleAnimationDifference &rule ){
+		SetEnabled( true );
+		SetSelected( rule.GetEnableVertexPositionSet() );
+	}
+};
+
 }
 
 
@@ -270,18 +290,19 @@ aeWPAPanelRule( wpRule, deAnimatorRuleVisitorIdentify::ertAnimationDifference )
 		pCBLMoveName, new cComboLeadingMoveName( *this ) );
 	pCBLMoveName->SetDefaultSorter();
 	
-	helper.EditFloat( groupBox, "Leading Move Time:", "Time in seconds of leading animation frame to retrieve",
+	helper.EditFloat( groupBox, "Leading Move Time:", "Time relative to leading move playtime to retrieve",
 		pEditLMoveTime, new cTextLeadingMoveTime( *this ) );
 	
 	helper.ComboBoxFilter( groupBox, "Reference Move Name:", true, "Name of reference animation move to use",
 		pCBRMoveName, new cComboReferenceMoveName( *this ) );
 	pCBRMoveName->SetDefaultSorter();
 	
-	helper.EditFloat( groupBox, "Reference Move Time:", "Time in seconds of reference animation frame to retrieve",
+	helper.EditFloat( groupBox, "Reference Move Time:", "Time relative to reference move playtime to retrieve",
 		pEditRMoveTime, new cTextReferenceMoveTime( *this ) );
 	helper.CheckBox( groupBox, pChkEnablePosition, new cActionEnablePosition( *this ), true );
 	helper.CheckBox( groupBox, pChkEnableRotation, new cActionEnableRotation( *this ), true );
 	helper.CheckBox( groupBox, pChkEnableSize, new cActionEnableSize( *this ), true );
+	helper.CheckBox( groupBox, pChkEnableVertexPositionSet, new cActionEnableVertexPositionSet( *this ), true );
 }
 
 aeWPAPanelRuleAnimationDifference::~aeWPAPanelRuleAnimationDifference(){
@@ -350,6 +371,7 @@ void aeWPAPanelRuleAnimationDifference::UpdateRule(){
 	pChkEnablePosition->GetAction()->Update();
 	pChkEnableRotation->GetAction()->Update();
 	pChkEnableSize->GetAction()->Update();
+	pChkEnableVertexPositionSet->GetAction()->Update();
 }
 
 void aeWPAPanelRuleAnimationDifference::UpdateTargetList(){

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -37,6 +40,8 @@
 #include <dragengine/resources/animation/deAnimationBuilder.h>
 #include <dragengine/resources/animation/deAnimationKeyframe.h>
 #include <dragengine/resources/animation/deAnimationKeyframeList.h>
+#include <dragengine/resources/animation/deAnimationKeyframeVertexPositionSet.h>
+#include <dragengine/resources/animation/deAnimationKeyframeVertexPositionSetList.h>
 #include <dragengine/resources/animation/deAnimationManager.h>
 #include <dragengine/resources/animation/deAnimationMove.h>
 #include <dragengine/resources/animation/deAnimationReference.h>
@@ -172,6 +177,26 @@ void deClassAnimationBuilder::nfAddBone::RunFunction( dsRunTime *rt, dsValue *my
 	}
 }
 
+// protected func void addVertexPositionSet(String name)
+deClassAnimationBuilder::nfAddVertexPositionSet::nfAddVertexPositionSet( const sInitData &init ) :
+dsFunction( init.clsAnimationBuilder, "addVertexPositionSet", DSFT_FUNCTION,
+DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsString ); // name
+}
+void deClassAnimationBuilder::nfAddVertexPositionSet::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deClassAnimationBuilder_Builder * const builder = ( ( sAnimBldNatDat* )p_GetNativeData( myself ) )->builder;
+	if( ! builder || ! builder->GetAnimation() ){
+		DSTHROW( dueInvalidAction );
+	}
+	
+	const char * const name = rt->GetValue( 0 )->GetString();
+	if( builder->GetAnimation()->GetVertexPositionSets().Has( name ) ){
+		DSTHROW( dueInvalidParam );
+	}
+	
+	builder->GetAnimation()->GetVertexPositionSets().Add( name );
+}
+
 // protected func void addMove( String name, float playTime )
 deClassAnimationBuilder::nfAddMove::nfAddMove( const sInitData &init ) :
 dsFunction( init.clsAnimationBuilder, "addMove", DSFT_FUNCTION,
@@ -192,6 +217,37 @@ void deClassAnimationBuilder::nfAddMove::RunFunction( dsRunTime *rt, dsValue *my
 	try{
 		move->SetName( name );
 		move->SetPlaytime( playTime );
+		builder->GetAnimation()->AddMove( move );
+		
+	}catch( ... ){
+		delete move;
+		throw;
+	}
+}
+
+// protected func void addMove( String name, float playTime, float fps )
+deClassAnimationBuilder::nfAddMove2::nfAddMove2( const sInitData &init ) :
+dsFunction( init.clsAnimationBuilder, "addMove", DSFT_FUNCTION,
+DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsString ); // name
+	p_AddParameter( init.clsFloat ); // playTime
+	p_AddParameter( init.clsFloat ); // fps
+}
+void deClassAnimationBuilder::nfAddMove2::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deClassAnimationBuilder_Builder * const builder = ( ( sAnimBldNatDat* )p_GetNativeData( myself ) )->builder;
+	if( ! builder || ! builder->GetAnimation() ){
+		DSTHROW( dueInvalidAction );
+	}
+	
+	const char * const name = rt->GetValue( 0 )->GetString();
+	const float playTime = rt->GetValue( 1 )->GetFloat();
+	const float fps = rt->GetValue( 2 )->GetFloat();
+	
+	deAnimationMove * const move = new deAnimationMove;
+	try{
+		move->SetName( name );
+		move->SetPlaytime( playTime );
+		move->SetFPS( fps );
 		builder->GetAnimation()->AddMove( move );
 		
 	}catch( ... ){
@@ -236,6 +292,7 @@ dsFunction( init.clsAnimationBuilder, "addKeyframe", DSFT_FUNCTION,
 DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid ){
 	p_AddParameter( init.clsInteger ); // move
 	p_AddParameter( init.clsInteger ); // keyFrameList
+	p_AddParameter( init.clsFloat ); // time
 	p_AddParameter( init.clsVector ); // position
 	p_AddParameter( init.clsVector ); // rotation
 	p_AddParameter( init.clsVector ); // scale
@@ -254,8 +311,69 @@ void deClassAnimationBuilder::nfAddKeyframe::RunFunction( dsRunTime *rt, dsValue
 	try{
 		keyframe->SetTime( rt->GetValue( 2 )->GetFloat() );
 		keyframe->SetPosition( ds.GetClassVector()->GetVector( rt->GetValue( 3 )->GetRealObject() ) );
-		keyframe->SetRotation( ds.GetClassVector()->GetVector( rt->GetValue( 4 )->GetRealObject() ) );
+		keyframe->SetRotation( ds.GetClassVector()->GetVector( rt->GetValue( 4 )->GetRealObject() ) * DEG2RAD );
 		keyframe->SetScale( ds.GetClassVector()->GetVector( rt->GetValue( 5 )->GetRealObject() ) );
+		kflist.AddKeyframe( keyframe );
+		
+	}catch( ... ){
+		delete keyframe;
+		throw;
+	}
+}
+
+// protected func void setVertexPositionSetKeyframeListCount(int move, int count)
+deClassAnimationBuilder::nfSetVertexPositionSetKeyframeListCount::nfSetVertexPositionSetKeyframeListCount( const sInitData &init ) :
+dsFunction( init.clsAnimationBuilder, "setVertexPositionSetKeyframeListCount", DSFT_FUNCTION,
+DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsInteger ); // move
+	p_AddParameter( init.clsInteger ); // count
+}
+void deClassAnimationBuilder::nfSetVertexPositionSetKeyframeListCount::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deClassAnimationBuilder_Builder * const builder = ( ( sAnimBldNatDat* )p_GetNativeData( myself ) )->builder;
+	if( ! builder || ! builder->GetAnimation() ){
+		DSTHROW( dueInvalidAction );
+	}
+	
+	deAnimationMove &move = *builder->GetAnimation()->GetMove( rt->GetValue( 0 )->GetInt() );
+	const int count = rt->GetValue( 1 )->GetInt();
+	
+	deAnimationKeyframeVertexPositionSetList *kflist = nullptr;
+	try{
+		while( move.GetVertexPositionSetKeyframeListCount() < count ){
+			kflist = new deAnimationKeyframeVertexPositionSetList;
+			move.AddVertexPositionSetKeyframeList( kflist );
+			kflist = nullptr;
+		}
+		
+	}catch( ... ){
+		delete kflist;
+		throw;
+	}
+}
+
+// protected func void addVertexPositionSetKeyframe(int move, int keyFrameList, float time, float weight)
+deClassAnimationBuilder::nfAddVertexPositionSetKeyframe::nfAddVertexPositionSetKeyframe( const sInitData &init ) :
+dsFunction( init.clsAnimationBuilder, "addVertexPositionSetKeyframe", DSFT_FUNCTION,
+DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsInteger ); // move
+	p_AddParameter( init.clsInteger ); // keyFrameList
+	p_AddParameter( init.clsFloat ); // time
+	p_AddParameter( init.clsFloat ); // weight
+}
+void deClassAnimationBuilder::nfAddVertexPositionSetKeyframe::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deClassAnimationBuilder_Builder * const builder = ( ( sAnimBldNatDat* )p_GetNativeData( myself ) )->builder;
+	if( ! builder || ! builder->GetAnimation() ){
+		DSTHROW( dueInvalidAction );
+	}
+	
+	deAnimationMove &move = *builder->GetAnimation()->GetMove( rt->GetValue( 0 )->GetInt() );
+	deAnimationKeyframeVertexPositionSetList &kflist =
+		*move.GetVertexPositionSetKeyframeList( rt->GetValue( 1 )->GetInt() );
+	
+	deAnimationKeyframeVertexPositionSet * const keyframe = new deAnimationKeyframeVertexPositionSet;
+	try{
+		keyframe->SetTime( rt->GetValue( 2 )->GetFloat() );
+		keyframe->SetWeight( rt->GetValue( 3 )->GetFloat() );
 		kflist.AddKeyframe( keyframe );
 		
 	}catch( ... ){
@@ -309,7 +427,11 @@ void deClassAnimationBuilder::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfBuild( init ) );
 	AddFunction( new nfBuildAnimation( init ) );
 	AddFunction( new nfAddBone( init ) );
+	AddFunction( new nfAddVertexPositionSet( init ) );
 	AddFunction( new nfAddMove( init ) );
+	AddFunction( new nfAddMove2( init ) );
 	AddFunction( new nfSetKeyframeListCount( init ) );
 	AddFunction( new nfAddKeyframe( init ) );
+	AddFunction( new nfSetVertexPositionSetKeyframeListCount( init ) );
+	AddFunction( new nfAddVertexPositionSetKeyframe( init ) );
 }

@@ -1,32 +1,36 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLSHAREDVBO_H_
 #define _DEOGLSHAREDVBO_H_
 
+#include "deoglVBOLayout.h"
+#include "../deoglBasics.h"
+#include "../memory/consumption/deoglMemoryConsumptionGPUUse.h"
+
 #include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/deObject.h>
-
-#include "../deoglBasics.h"
-#include "deoglVBOLayout.h"
 
 class deoglSharedVBOBlock;
 class deoglSharedVBOList;
@@ -34,7 +38,7 @@ class deoglVAO;
 
 
 /**
- * \brief OpenGL Shared VBO.
+ * OpenGL Shared VBO.
  * 
  * Shared VBO contain one or more blocks of data belonging to different resources. Each VBO
  * has one VAO assigned to reduce the VAO switching. Shared VBOs can be used in a static or
@@ -53,14 +57,14 @@ public:
 	int pIndexUsedSize;
 	bool pDirty;
 	
-	int pMemoryGPUVBO;
-	int pMemoryGPUIBO;
+	deoglMemoryConsumptionGPUUse pMemUseVBO;
+	deoglMemoryConsumptionGPUUse pMemUseIBO;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new shared vbo. */
-	deoglSharedVBO( deoglSharedVBOList *parentList, int size );
+	deoglSharedVBO( deoglSharedVBOList *parentList, int size, int indexSize );
 	/** Cleans up the shared vbo. */
 	virtual ~deoglSharedVBO();
 	/*@}*/
@@ -90,10 +94,9 @@ public:
 	/** Marks the VBO dirty. */
 	void MarkDirty();
 	
-	/** Retrieves the GPU memory consumption for the VBO. */
-	inline int GetMemoryConsumptionGPUVBO() const{ return pMemoryGPUVBO; }
-	/** Retrieves the GPU memory consumption for the IBO. */
-	inline int GetMemoryConsumptionGPUIBO() const{ return pMemoryGPUIBO; }
+	/** Memory consumption. */
+	inline const deoglMemoryConsumptionGPUUse &GetMemoryConsumptionVBO() const{ return pMemUseVBO; }
+	inline const deoglMemoryConsumptionGPUUse &GetMemoryConsumptionIBO() const{ return pMemUseIBO; }
 	/*@}*/
 	
 	/** \name Data Management */
@@ -102,20 +105,17 @@ public:
 	int GetBlockCount() const;
 	/** Retrieves the block at the given location. */
 	deoglSharedVBOBlock *GetBlockAt( int index ) const;
+	
 	/**
 	 * Tries to add a block of data to the VBO. Returns the block representing this data if a suitable
 	 * location has been found or NULL if there is not enough space left in the VBO.
 	 */
-	deoglSharedVBOBlock *AddBlock( int size );
-	/**
-	 * Tries to add a block of data to the VBO. Returns the block representing this data if a suitable
-	 * location has been found or NULL if there is not enough space left in the VBO.
-	 */
-	deoglSharedVBOBlock *AddBlock( int size, int indexCount );
+	deoglSharedVBOBlock *AddBlock( int size, int indexCount = 0 );
 	/** Removes a block of data returning the space to the pool of free space. */
 	void RemoveBlock( deoglSharedVBOBlock *block );
-	/** Retrieves the index of the first empty block with at least the given amount of size or NULL if not found. */
-	int IndexOfEmptyBlockWithMinSize( int size );
+	
+	/** Index of first empty block with minimum size and index count available or NULL if not found. */
+	int IndexOfEmptyBlockWithMinSize( int size, int indexCount );
 	/*@}*/
 	
 private:

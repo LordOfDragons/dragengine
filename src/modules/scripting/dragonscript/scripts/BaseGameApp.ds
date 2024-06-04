@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -113,8 +116,17 @@ class BaseGameApp extends Game
 	public static fixed var String defaultPathGuiTheme = \
 		"/shareddata/guithemes/modern/modern.guitheme.xml"
 	
-	/** \brief Invert looking up-down setting key. */
+	/**
+	 * \brief Invert looking up-down setting key.
+	 * \note The '.' separator is deprecated. Future values should use '/' separator.
+	 */
 	public static fixed var String settingInputInvertLookVertical = "input.invertLookVertical"
+	
+	/**
+	 * \brief Mouse sensitivity.
+	 * \version 1.18
+	 */
+	public static fixed var String settingInputMouseSensitivity = "input/mouseSensitivity"
 	
 	/**
 	 * \brief Collision filter bits.
@@ -244,6 +256,22 @@ class BaseGameApp extends Game
 		public static fixed var int custom = 3
 	end
 	
+	/**
+	 * \brief Global event send if input devices have been attached or detached.
+	 * \version 1.20
+	 * 
+	 * The event receives no additional data.
+	 */
+	public static var String eventDeviceAttachedDetached = "deviceAttachedDetached"
+	
+	/**
+	 * \brief Global event send if input device parameters have changed.
+	 * \version 1.20
+	 * 
+	 * The event receives no additional data.
+	 */
+	public static var String eventDeviceParamsChanged = "deviceParamsChanged"
+	
 	
 	
 	/**
@@ -278,11 +306,21 @@ class BaseGameApp extends Game
 	
 	/**
 	 * \brief Name of default language pack to activate.
+	 * \deprecated Use defaultLanguagePackIdentifier.
 	 * 
 	 * Default value is "English". If no such language pack is found internationalization
 	 * is disabled. The language pack name is matched case sensitive.
 	 */
 	protected var UnicodeString defaultLanguagePackName
+	
+	/**
+	 * \brief Name of default language pack to activate.
+	 * \version 1.16
+	 * 
+	 * Default value is the current user locale language at the start of the game.
+	 * If no such language pack is found internationalization is disabled.
+	 */
+	protected var String defaultLanguagePackIdentifier
 	
 	/**
 	 * \brief Binding save file path property.
@@ -300,6 +338,30 @@ class BaseGameApp extends Game
 	 */
 	protected var String pathSavedSettings
 	
+	/**
+	 * \brief Default console buffer size.
+	 * \version 1.7
+	 * 
+	 * Default value is 50.
+	 */
+	protected var int defaultConsoleBufferSize
+	
+	/**
+	 * \brief Default binding input processor mouse axis scale factor.
+	 * \version 1.18
+	 * 
+	 * Default value is 0.2.
+	 */
+	protected var float defaultInputMouseAxisScale
+	
+	/**
+	 * \brief Default binding input processor mouse wheel scale factor.
+	 * \version 1.18
+	 * 
+	 * Default value is 0.2.
+	 */
+	protected var float defaultInputMouseWheelScale
+	
 	
 	
 	private var ParameterTree pConfiguration
@@ -316,6 +378,7 @@ class BaseGameApp extends Game
 	private var ScreenshotCreator pScreenshotCreator
 	private var WindowConsole pWindowConsole
 	private var WindowGameWorld pWindowGameWorld
+	private var PanelHud pPanelHud
 	private var WindowSubTitle pWindowSubTitle
 	private var WindowPlayerChoice pWindowPlayerChoice
 	private var GameWorldLoader pGameWorldLoader
@@ -325,6 +388,7 @@ class BaseGameApp extends Game
 	private var ConnectionTracker pConnectionTracker
 	private var NetworkStateTracker pNetworkStateTracker
 	private var MutableID pIDGenerator
+	private var GlobalEvents pGlobalEvents
 	
 	private static var BaseGameApp pApp = null
 	
@@ -337,12 +401,16 @@ class BaseGameApp extends Game
 	 * method call to support proper hook-method calls with custom subclass behavior.
 	 */
 	public func new()
-		this.pathDesktopGuiTheme = defaultPathGuiTheme
-		this.pathLanguagePacks = null
-		this.defaultLanguagePackName = UnicodeString.newFromUTF8( "English" )
-		this.pathConfiguration = "/configuration.ptree.xml"
-		this.pathSavedBindings = "/config/bindings.xml"
-		this.pathSavedSettings = "/config/settings.ptree.xml"
+		pathDesktopGuiTheme = defaultPathGuiTheme
+		pathLanguagePacks = null
+		defaultLanguagePackName = UnicodeString.newFromUTF8("English")
+		defaultLanguagePackIdentifier = "en"
+		pathConfiguration = "/configuration.ptree.xml"
+		pathSavedBindings = "/config/bindings.xml"
+		pathSavedSettings = "/config/settings.ptree.xml"
+		defaultConsoleBufferSize = 50
+		defaultInputMouseAxisScale = 0.2
+		defaultInputMouseWheelScale = 0.2
 			// TODO: make the config path used by the game available to the script
 			//       then this value can be calculated requiring less setting up
 	end
@@ -374,6 +442,7 @@ class BaseGameApp extends Game
 	 * - initLanguages()
 	 * - registerPersistencyFactories()
 	 * - createWindowGameWorld()
+	 * - createPanelHud()
 	 * - createWindowConsole()
 	 * - createTriggerTable()
 	 * - createSkinAnnotations()
@@ -385,74 +454,85 @@ class BaseGameApp extends Game
 	 * - loadBindings() and optionally defaultBindings()
 	 */
 	public func void initGame()
-		this.pApp = this
+		pApp = this
 		
-		InputSystem.setCaptureInputDevices( true )
-		this.pIDGenerator = MutableID.new( 1 )
+		InputSystem.setCaptureInputDevices(true)
+		pIDGenerator = MutableID.new(1)
+		pGlobalEvents = GlobalEvents.new()
 		
-		this.pConsole = Console.new( 50 )
-		this.pConsole.addListener( LogConsoleMessages.new() )
+		pConsole = Console.new(defaultConsoleBufferSize)
 		
-		this.pConfiguration = ParameterTree.new()
-		this.pLoaders = Loaders.new( this.pConsole )
-		this.pTranslationManager = TranslationManager.new()
-		this.pPlayerControlledActor = ECBehaviorPlayerControllable.Tracker.new()
+		pConsole.addListener(LogConsoleMessages.new())
 		
-		this.loadConfiguration()
-		this.initLanguages()
-		this.registerPersistencyFactories()
+		pConfiguration = ParameterTree.new()
+		pLoaders = Loaders.new(pConsole)
+		pTranslationManager = createTranslationManager()
+		EngineTranslations.get() // preload engine translations
+		pPlayerControlledActor = ECBehaviorPlayerControllable.Tracker.new()
 		
-		this.createAndSetDesktop()
-		this.setInputProcessorDesktop()
+		loadConfiguration()
 		
-		this.pWindowGameWorld = this.createWindowGameWorld()
-		if this.pWindowGameWorld != null
-			this.pDesktop.addWindow( this.pWindowGameWorld )
+		Engine.setDefaultEnableGI(pConfiguration.getBoolAt("defaultEnableGI", false))
+		Engine.setDefaultEnableAuralization(pConfiguration.getBoolAt("defaultEnableAuralization", true))
+		
+		initLanguages()
+		registerPersistencyFactories()
+		
+		pSettings = ParameterTree.new()
+		loadSettings()
+		
+		createAndSetDesktop()
+		setInputProcessorDesktop()
+		
+		pWindowGameWorld = createWindowGameWorld()
+		if pWindowGameWorld != null
+			pDesktop.addWindow(pWindowGameWorld)
+			
+			pPanelHud = createPanelHud()
+			if pPanelHud != null
+				pWindowGameWorld.getPanelStack().addWidget(pPanelHud)
+			end
 		end
 		
-		this.pWindowSubTitle = this.createWindowSubTitle()
-		if this.pWindowSubTitle != null
-			this.pDesktop.addWindow( this.pWindowSubTitle )
+		pWindowSubTitle = createWindowSubTitle()
+		if pWindowSubTitle != null
+			pDesktop.addWindow(pWindowSubTitle)
 		end
 		
-		this.pWindowPlayerChoice = this.createWindowPlayerChoice()
-		if this.pWindowPlayerChoice != null
-			this.pDesktop.addWindow( this.pWindowPlayerChoice )
+		pWindowPlayerChoice = createWindowPlayerChoice()
+		if pWindowPlayerChoice != null
+			pDesktop.addWindow(pWindowPlayerChoice)
 		end
 		
-		this.pWindowConsole = this.createWindowConsole()
-		if this.pWindowConsole != null
-			this.pDesktop.addWindow( this.pWindowConsole )
+		pWindowConsole = createWindowConsole()
+		if pWindowConsole != null
+			pDesktop.addWindow(pWindowConsole)
 		end
 		
-		this.pTriggerTable = createTriggerTable()
-		this.pSkinAnnotations = createSkinAnnotations()
-		this.pConnectionTracker = createConnectionTracker()
-		this.pNetworkStateTracker = createNetworkStateTracker()
+		pTriggerTable = createTriggerTable()
+		pSkinAnnotations = createSkinAnnotations()
+		pConnectionTracker = createConnectionTracker()
+		pNetworkStateTracker = createNetworkStateTracker()
+		pScreenshotCreator = createScreenshotCreator()
 		
-		this.pScreenshotCreator = ScreenshotCreator.new()
-		this.pScreenshotCreator.setConsole( this.pConsole )
+		pCommandManager = CommandManager.new()
+		pConsoleCommands = ConsoleCommandList.new()
 		
-		this.pCommandManager = CommandManager.new()
-		this.pConsoleCommands = ConsoleCommandList.new()
+		createAndAddCommands()
+		createAndAddConsoleCommands()
 		
-		this.createAndAddCommands()
-		this.createAndAddConsoleCommands()
-		
-		if this.pWindowConsole != null
-			this.pWindowConsole.setCommandManager( this.pCommandManager )
-			this.pWindowConsole.setConsoleCommands( this.pConsoleCommands )
+		if pWindowConsole != null
+			pWindowConsole.setCommandManager(pCommandManager)
+			pWindowConsole.setConsoleCommands(pConsoleCommands)
 		end
 		
-		this.pSettings = ParameterTree.new()
-		this.loadSettings()
+		pBindingManager = BindingManager.new()
+		loadBindings()
+		pBindingManager.addListener(AttachDeviceDefaultBindings.new())
 		
-		this.pBindingManager = BindingManager.new()
-		this.loadBindings()
-		
-		this.pElementClassList = ElementClassList.new()
-		this.createAndAddElementClasses()
-		this.pLoaders.getWorld().setElementClassList( this.pElementClassList )
+		pElementClassList = ElementClassList.new()
+		createAndAddElementClasses()
+		pLoaders.getWorld().setElementClassList(pElementClassList)
 	end
 	
 	/**
@@ -463,61 +543,69 @@ class BaseGameApp extends Game
 	 * After this super-call BaseGameApp.getApp() returns null.
 	 */
 	public func void cleanUp()
-		if this.pScreenshotCreator != null
-			this.pScreenshotCreator.dispose()
+		if pScreenshotCreator != null
+			pScreenshotCreator.dispose()
 		end
 		
-		if this.pElementClassList != null
-			this.pElementClassList.dispose()
+		if pElementClassList != null
+			pElementClassList.dispose()
 		end
 		
-		if this.pGameWorldLoader != null
-			this.cancelLoadGameWorld()
+		if pGameWorldLoader != null
+			cancelLoadGameWorld()
 		end
 		
-		this.pPlayerControlledActor = null
+		pPlayerControlledActor = null
 		
-		this.pWindowSubTitle = null
-		this.pWindowPlayerChoice = null
-		this.pWindowConsole = null
-		this.pWindowGameWorld = null
+		pWindowSubTitle = null
+		pWindowPlayerChoice = null
+		pWindowConsole = null
+		pWindowGameWorld = null
+		pPanelHud = null
 		
-		this.pBindingManager = null
-		
-		if this.pCommandManager != null
-			this.pCommandManager.removeAll()
+		if pBindingManager != null
+			pBindingManager.removeAllAxisBindings()
+			pBindingManager.removeAllButtonBindings()
 		end
 		
-		if this.pConsoleCommands != null
-			this.pConsoleCommands.removeAll()
+		if pCommandManager != null
+			pCommandManager.removeAll()
 		end
 		
-		this.pTranslationManager = null
-		
-		this.pInputProcessor = null
-		
-		if this.pDesktop != null
-			GraphicSystem.getPrimaryCanvas().removeCanvas( this.pDesktop.getCanvasWidget() )
-			this.pDesktop.dispose()
+		if pConsoleCommands != null
+			pConsoleCommands.removeAll()
 		end
 		
-		if this.pTriggerTable != null
-			this.pTriggerTable.dispose()
-			this.pTriggerTable = null
+		pInputProcessor = null
+		
+		if pDesktop != null
+			GraphicSystem.getPrimaryCanvas().removeCanvas(pDesktop.getCanvasWidget())
+			pDesktop.dispose()
 		end
 		
-		this.pNetworkStateTracker = null
-		if this.pConnectionTracker != null
-			this.pConnectionTracker.removeAll()
-			this.pConnectionTracker = null
+		if pTriggerTable != null
+			pTriggerTable.dispose()
+			pTriggerTable = null
 		end
 		
-		this.pSkinAnnotations = null
+		pNetworkStateTracker = null
+		if pConnectionTracker != null
+			pConnectionTracker.removeAll()
+			pConnectionTracker = null
+		end
 		
-		this.pLoaders = null
-		this.pConsole = null
+		pBindingManager = null
+		pSkinAnnotations = null
+		pGlobalEvents = null
+		pLoaders = null
 		
-		this.pApp = null
+		TimerManager.giveUpAllTimersDefault()
+		
+		pConsole = null
+		
+		pTranslationManager = null
+		
+		pApp = null
 	end
 	
 	/**
@@ -528,10 +616,27 @@ class BaseGameApp extends Game
 	 * 
 	 * There is usually no need to overwrite this method in a subclass. If you do so
 	 * super-call this method first.
+	 * 
+	 * \par Version 1.20
+	 * 
+	 * Upon receiving an event of type InputEventType.deviceAttachedDetached or
+	 * InputEventType.deviceParamsChanged a global event is send. The event name is
+	 * BaseGameApp.eventDeviceAttachedDetached respectively BaseGameApp.eventDeviceParamsChanged.
+	 * Both events receive no additional arguments. The event is send before the active
+	 * InputProcessor receives the event for processing.
 	 */
-	public func void inputEvent( InputEvent event )
-		this.pBindingManager.checkInputEvent( event )
-		this.pInputProcessor.inputEvent( event )
+	public func void inputEvent(InputEvent event)
+		pBindingManager.checkInputEvent(event)
+		
+		select event.getType()
+		case InputEventType.deviceAttachedDetached
+			pGlobalEvents.sendEvent(eventDeviceAttachedDetached)
+			
+		case InputEventType.deviceParamsChanged
+			pGlobalEvents.sendEvent(eventDeviceParamsChanged)
+		end
+		
+		pInputProcessor.inputEvent(event)
 	end
 	
 	/**
@@ -545,9 +650,9 @@ class BaseGameApp extends Game
 	 * Subclass has to super-call this method first before doing per-frame updates.
 	 */
 	public func void onFrameUpdate()
-		TimerManager.advanceDefault( Engine.getElapsedTime() )
+		TimerManager.advanceDefault(Engine.getElapsedTime())
 		FrameUpdateManager.notifyAllDefault()
-		this.pScreenshotCreator.update()
+		pScreenshotCreator.update()
 	end
 	
 	/**
@@ -556,7 +661,7 @@ class BaseGameApp extends Game
 	 * Resizes desktop widget to fix primary canvas size.
 	 */
 	public func void onResizeRenderWindow()
-		this.pDesktop.setSize( GraphicSystem.getWindowSize() )
+		pDesktop.setSize(GraphicSystem.getWindowSize())
 	end
 	
 	/**
@@ -565,7 +670,7 @@ class BaseGameApp extends Game
 	 * Default implementation calls quitGame().
 	 */
 	public func void userRequestedQuit()
-		this.quitGame()
+		quitGame()
 	end
 	
 	
@@ -595,36 +700,36 @@ class BaseGameApp extends Game
 	
 	/** \brief Game configuration. */
 	public func ParameterTree getConfiguration()
-		return this.pConfiguration
+		return pConfiguration
 	end
 	
 	/** \brief Saved settings. */
 	public func ParameterTree getSettings()
-		return this.pSettings
+		return pSettings
 	end
 	
 	
 	
 	/** \brief Console object. */
 	public func Console getConsole()
-		return this.pConsole
+		return pConsole
 	end
 	
 	/** \brief Loaders. */
 	public func Loaders getLoaders()
-		return this.pLoaders
+		return pLoaders
 	end
 	
 	/** \brief Translation manager. */
 	public func TranslationManager getTranslationManager()
-		return this.pTranslationManager
+		return pTranslationManager
 	end
 	
 	
 	
 	/** \brief Desktop widget. */
 	public func Desktop getDesktop()
-		return this.pDesktop
+		return pDesktop
 	end
 	
 	/**
@@ -637,139 +742,182 @@ class BaseGameApp extends Game
 	 * This method does not modify the input processor. To change input processor to
 	 * send events to the set desktop instance call setInputProcessorDesktop().
 	 */
-	public func void setDesktop( Desktop desktop )
+	public func void setDesktop(Desktop desktop)
 		if desktop == null
 			throw EInvalidParam.new()
 		end
 		
-		if desktop == this.pDesktop
+		if desktop == pDesktop
 			return
 		end
 		
-		desktop.setSize( GraphicSystem.getWindowSize() )
+		desktop.setSize(GraphicSystem.getWindowSize())
 		
-		if this.pDesktop != null
-			GraphicSystem.getPrimaryCanvas().removeCanvas( this.pDesktop.getCanvasWidget() )
-			this.pDesktop.dispose()
+		if pDesktop != null
+			GraphicSystem.getPrimaryCanvas().removeCanvas(pDesktop.getCanvasWidget())
+			pDesktop.dispose()
 		end
 		
-		this.pDesktop = desktop
-		GraphicSystem.getPrimaryCanvas().addCanvas( desktop.getCanvasWidget() )
+		pDesktop = desktop
+		GraphicSystem.getPrimaryCanvas().addCanvas(desktop.getCanvasWidget())
 	end
 	
 	
 	
 	/** \brief Element classes list. */
 	public func ElementClassList getElementClassList()
-		return this.pElementClassList
+		return pElementClassList
 	end
 	
 	/** \brief Command Manager. */
 	public func CommandManager getCommandManager()
-		return this.pCommandManager
+		return pCommandManager
 	end
 	
 	/** \brief Console command list. */
 	public func ConsoleCommandList getConsoleCommands()
-		return this.pConsoleCommands
+		return pConsoleCommands
 	end
 	
 	/** \brief Binding manager. */
 	public func BindingManager getBindingManager()
-		return this.pBindingManager
+		return pBindingManager
 	end
 	
 	/** \brief Screenshot creator. */
 	public func ScreenshotCreator getScreenshotCreator()
-		return this.pScreenshotCreator
+		return pScreenshotCreator
 	end
 	
 	/** \brief Trigger table. */
 	public func TSTriggerTable getTriggerTable()
-		return this.pTriggerTable
+		return pTriggerTable
 	end
 	
 	/** \brief Skin annotations. */
 	public func SkinAnnotations getSkinAnnotations()
-		return this.pSkinAnnotations
+		return pSkinAnnotations
 	end
 	
 	/** \brief Connection tracker. */
 	public func ConnectionTracker getConnectionTracker()
-		return this.pConnectionTracker
+		return pConnectionTracker
 	end
 	
 	/** \brief Network state tracker. */
 	public func NetworkStateTracker getNetworkStateTracker()
-		return this.pNetworkStateTracker
+		return pNetworkStateTracker
 	end
 	
 	/** \brief ID Generator. */ 
 	public func MutableID getIDGenerator()
-		return this.pIDGenerator
+		return pIDGenerator
+	end
+	
+	/** \brief Global event manager. */ 
+	public func GlobalEvents getGlobalEvents()
+		return pGlobalEvents
 	end
 	
 	
 	
 	/** \brief Console window toggled using CommandToggleConsole or \em null if absent. */
 	public func WindowConsole getWindowConsole()
-		return this.pWindowConsole
+		return pWindowConsole
 	end
 	
 	/** \brief SubTitle window or \em null if absent. */
 	public func WindowSubTitle getWindowSubTitle()
-		return this.pWindowSubTitle
+		return pWindowSubTitle
 	end
 	
 	/** \brief PlayerChoice window or \em null if absent. */
 	public func WindowPlayerChoice getWindowPlayerChoice()
-		return this.pWindowPlayerChoice
+		return pWindowPlayerChoice
 	end
 	
 	/** \brief Game world window or \em null. */
 	public func WindowGameWorld getWindowGameWorld()
-		return this.pWindowGameWorld
+		return pWindowGameWorld
+	end
+	
+	/** \brief Game world HUD panel or \em null. */
+	public func PanelHud getPanelHud()
+		return pPanelHud
 	end
 	
 	
 	
 	/** \brief Input Processor. */
 	public func InputProcessor getInputProcessor()
-		return this.pInputProcessor
+		return pInputProcessor
 	end
 	
 	/** \brief Set input processor. */
-	public func void setInputProcessor( InputProcessor inputProcessor )
-		this.pInputProcessor = inputProcessor
+	public func void setInputProcessor(InputProcessor inputProcessor)
+		pInputProcessor = inputProcessor
+		
+		if pDesktop != null and pDesktop.getGamepadController() != null
+			pDesktop.getGamepadController().clear()
+		end
 	end
 	
 	/** \brief Set input processor to forward events to desktop widget. */
 	public func void setInputProcessorDesktop()
-		this.setInputProcessor( WidgetInputProcessor.new( this.pDesktop ) )
+		setInputProcessor(createInputProcessorDesktop())
+	end
+	
+	/**
+	 * \brief Create input processor to forward events to desktop widget.
+	 * \version 1.18
+	 */
+	public func InputProcessor createInputProcessorDesktop()
+		return WidgetInputProcessor.new(pDesktop)
 	end
 	
 	/** \brief Set input processor to forward events to binding manager. */
 	public func void setInputProcessorBindings()
-		this.setInputProcessor( BindingInputProcessor.new( this.pBindingManager ) )
+		setInputProcessor(createInputProcessorBindings())
+	end
+	
+	/**
+	 * \brief Create input processor to forward events to binding manager.
+	 * \version 1.18
+	 */
+	public func InputProcessor createInputProcessorBindings()
+		var BindingInputProcessor processor = BindingInputProcessor.new(pBindingManager)
+		processor.setScaleMouseAxis(defaultInputMouseAxisScale)
+		processor.setScaleMouseWheel(defaultInputMouseWheelScale)
+		return processor
+	end
+	
+	/**
+	 * \brief Set input processor to nothing.
+	 * 
+	 * This is useful in situation where your game transitions from one input situation to
+	 * another and you do not want to have any user interaction causing disturbances.
+	 */
+	public func void setInputProcessorNothing()
+		setInputProcessor(DefaultInputProcessor.new())
 	end
 	
 	
 	
 	/** \brief Load gui theme and assign it to desktop widget. */
-	public func void desktopLoadGuiTheme( String filename )
-		this.pDesktop.setGuiTheme( this.pLoaders.getGuiTheme().loadFromFile( filename ) )
+	public func void desktopLoadGuiTheme(String filename)
+		pDesktop.setGuiTheme(pLoaders.getGuiTheme().loadFromFile(filename))
 	end
 	
 	
 	
 	/** \brief Player controlled actor tracker. */
 	public func ECBehaviorPlayerControllable.Tracker getPlayerControlledActor()
-		return this.pPlayerControlledActor
+		return pPlayerControlledActor
 	end
 	
 	/** \brief Invert looking up-down. */
 	public func bool getInverseLookVertical()
-		return this.pSettings.getBoolAt( BaseGameApp.settingInputInvertLookVertical, false )
+		return pSettings.getBoolAt(BaseGameApp.settingInputInvertLookVertical, false)
 	end
 	
 	/**
@@ -777,8 +925,26 @@ class BaseGameApp extends Game
 	 * 
 	 * Call saveSettings() after changing value. Not called automatically.
 	 */
-	public func void setInverseLookVertical( bool inverseLookVertical )
-		this.pSettings.setAt( BaseGameApp.settingInputInvertLookVertical, inverseLookVertical )
+	public func void setInverseLookVertical(bool inverseLookVertical)
+		pSettings.setAt(BaseGameApp.settingInputInvertLookVertical, inverseLookVertical)
+	end
+	
+	/**
+	 * \brief Mouse sensitivity.
+	 * \version 1.18
+	 */
+	public func float getMouseSensitivity()
+		return DEMath.max(pSettings.getFloatAt(BaseGameApp.settingInputMouseSensitivity, 1), 0.01)
+	end
+	
+	/**
+	 * \brief Set mouse sensitivity.
+	 * \version 1.18
+	 * 
+	 * Call saveSettings() after changing value. Not called automatically.
+	 */
+	public func void setMouseSensitivity(float sensitivity)
+		pSettings.setAt(BaseGameApp.settingInputMouseSensitivity, DEMath.max(sensitivity, 0.01))
 	end
 	
 	
@@ -789,31 +955,32 @@ class BaseGameApp extends Game
 	 * Uses pathConfiguration to located the file.
 	 */
 	protected func void loadConfiguration()
-		if pathConfiguration == null or not FileSystem.existsFile( this.pathConfiguration )
+		if pathConfiguration == null or not FileSystem.existsFile(pathConfiguration)
 			return
 		end
 		
 		try
-			this.pLoaders.getParameterTree().loadFromFile( \
-				this.pathConfiguration, this.pConfiguration )
+			pLoaders.getParameterTree().loadFromFile(\
+				pathConfiguration, pConfiguration)
 			
 		catch Exception e
-			this.pConsole.addError( "Failed loading configuration file '" \
-				+ this.pathConfiguration + "'.", e )
+			pConsole.addError("Failed loading configuration file '" \
+				+ pathConfiguration + "'.", e)
 		end
 		
-		//this.pConfiguration.log( this.pConsole, "BaseGameApp.Configuration" )
+		//pConfiguration.log(pConsole, "BaseGameApp.Configuration")
 	end
 	
 	/** \brief Create and set desktop. */
 	protected func void createAndSetDesktop()
-		var GuiTheme guitheme = this.pLoaders.getGuiTheme().loadFromFile( \
-			this.pConfiguration.getStringAt( "pathDesktopGuiTheme", this.pathDesktopGuiTheme ) )
-		var Desktop desktop = Desktop.new( GraphicSystem.getWindowSize() )
+		var GuiTheme guitheme = pLoaders.getGuiTheme().loadFromFile(\
+			pConfiguration.getStringAt("pathDesktopGuiTheme", pathDesktopGuiTheme))
+		var Desktop desktop = Desktop.new(GraphicSystem.getWindowSize())
 		
 		try
-			desktop.setGuiTheme( guitheme )
-			this.setDesktop( desktop )
+			desktop.setGuiTheme(guitheme)
+			desktop.setGamepadController(GamepadController.new(pGlobalEvents, desktop))
+			setDesktop(desktop)
 			
 		catch Exception e
 			if desktop != null
@@ -837,27 +1004,61 @@ class BaseGameApp extends Game
 	end
 	
 	/**
+	 * \brief Create translation manager.
+	 * \version 1.21
+	 * 
+	 * Creates instance of TranslationManager.
+	 */
+	protected func TranslationManager createTranslationManager()
+		return TranslationManager.new()
+	end
+	
+	/**
 	 * \brief Load language packs and select active language pack.
 	 * 
-	 * Default implementation loads language packsg from path specified by property
-	 * pathLanguagePacks if property is not \em null and path is valid. Then activates the
-	 * language pack with name matching property defaultLanguagePackName if any such language
-	 * pack is present. The language pack name is matched case sensitive.
+	 * Default implementation loads language packs from path specified by property
+	 * pathLanguagePacks if property is not \em null and path is valid. Activates the
+	 * language pack with the first matching identifier from the below list:
+	 * - Configuration property named "defaultLanguagePackIdentifier"
+	 * - Current user locale language
+	 * - Class property defaultLanguagePackIdentifier
+	 * The language pack identifier is matched case sensitive.
+	 * 
+	 * \par Since Version 1.16
+	 * 
+	 * Sets fallback language pack to active language pack. When changing language pack the
+	 * fallback language pack stays untouched. This ensures default language translations
+	 * are shown if the active translation is missing translations.
 	 */
 	protected func void initLanguages()
-		var String path = this.pConfiguration.getStringAt( "pathLanguagePacks", this.pathLanguagePacks )
+		var String path = pConfiguration.getStringAt("pathLanguagePacks", pathLanguagePacks)
 		if path == null
 			return
 		end
 		
-		this.pTranslationManager.addFromDirectory( path, true )
+		pTranslationManager.addFromDirectory(path, true)
 		
-		var UnicodeString lpName = this.defaultLanguagePackName
-		var String paramValue = this.pConfiguration.getStringAt( "defaultLanguagePackName", null )
-		if paramValue != null
-			lpName = UnicodeString.newFromUTF8( paramValue )
+		var String id = pConfiguration.getStringAt(\
+			"defaultLanguagePackIdentifier", Engine.getUserLocaleLanguage())
+		pTranslationManager.setActiveWithIdIfPresent(id)
+		EngineTranslations.get().setActiveWithIdIfPresent(id)
+		
+		if pTranslationManager.getActive() == null
+			pTranslationManager.setActiveWithIdIfPresent(defaultLanguagePackIdentifier)
+			EngineTranslations.get().setActiveWithIdIfPresent(defaultLanguagePackIdentifier)
 		end
-		this.pTranslationManager.setActiveNamedIfPresent( lpName )
+		
+		if pTranslationManager.getActive() == null
+			// backward compatibility
+			var UnicodeString lpName = defaultLanguagePackName
+			var String paramValue = pConfiguration.getStringAt("defaultLanguagePackName", null)
+			if paramValue != null
+				lpName = UnicodeString.newFromUTF8(paramValue)
+			end
+			pTranslationManager.setActiveNamedIfPresent(lpName)
+		end
+		
+		pTranslationManager.setFallback(pTranslationManager.getActive())
 	end
 	
 	/**
@@ -865,10 +1066,20 @@ class BaseGameApp extends Game
 	 * 
 	 * Default implementation creates an instance of WindowGameWorld. Subclass can return
 	 * \em null to not use a game world window or changing window parameters for example
-	 * to hide it if a main menu requires this.
+	 * to hide it if a main menu requires 
 	 */
 	protected func WindowGameWorld createWindowGameWorld()
 		return WindowGameWorld.new()
+	end
+	
+	/**
+	 * \brief Create game world hud panel.
+	 * 
+	 * Default implementation creates an instance of PanelHud. Subclass can return \em null
+	 * to not use a game world hud panel or changing parameters.
+	 */
+	protected func PanelHud createPanelHud()
+		return PanelHud.new()
 	end
 	
 	/**
@@ -879,7 +1090,7 @@ class BaseGameApp extends Game
 	 */
 	protected func WindowConsole createWindowConsole()
 		var WindowConsole window = WindowConsole.new()
-		window.setConsole( this.pConsole )
+		window.setConsole(pConsole)
 		return window
 	end
 	
@@ -904,7 +1115,7 @@ class BaseGameApp extends Game
 	 * does fulfill this requirement.
 	 */
 	protected func WindowPlayerChoice createWindowPlayerChoice()
-		return WindowPlayerChoice.new( this.pDesktop )
+		return WindowPlayerChoice.new(pDesktop)
 	end
 	
 	/**
@@ -955,6 +1166,18 @@ class BaseGameApp extends Game
 	end
 	
 	/**
+	 * \brief Create screen shot creater.
+	 * \version 1.19
+	 * 
+	 * Creates instance of ScreenshotCreator and assigns console.
+	 */
+	protected func ScreenshotCreator createScreenshotCreator()
+		var ScreenshotCreator creator = ScreenshotCreator.new()
+		creator.setConsole(pConsole)
+		return creator
+	end
+	
+	/**
 	 * \brief Create element classes and add them to element class list.
 	 * 
 	 * Element classes list contains all element classes world files are allowed to be used.
@@ -966,18 +1189,21 @@ class BaseGameApp extends Game
 	 * - AttachableBaseForceFieldClass named "AttachableBaseForceField"
 	 * - AttachableBillboardClass named "AttachableBillboard"
 	 * - BaseActorClass named "Actor"
+	 * - BaseVRActorClass named "VRActor" (since version 1.6)
 	 * - BaseSpeakerClass named "BaseSpeaker"
 	 * - BaseParticleEmitterClass named "BaseParticleEmitter"
 	 * - BaseSkyClass named "BaseSky"
 	 * - BaseLightClass named "BaseLight"
 	 * - BaseForceFieldClass named "BaseForceField"
 	 * - EnvironmentMapClass named "EnvironmentMap"
+	 * - HiddenElementClass named "HiddenElement"
 	 * - IgnoreElementClass named "MapperNote" (helper IGDE class)
 	 * - IgnoreElementClass named "VirtualElement" (helper IGDE class)
 	 * - InfoConvoCoordSystem named "InfoConvoCoordSystem"
 	 * - RailCornerClass named "RailCorner"
 	 * - RandomElementClass named "RandomElement"
 	 * - SimpleElementClass named "SimpleElement"
+	 * - PhysicsElementClass named "PhysicsElement"
 	 * - SimpleElementOnRailClass named "SimpleElementOnRail"
 	 * - BaseBillboardClass named "BaseBillboard"
 	 * - SpawnPointClass named "SpawnPoint"
@@ -995,37 +1221,40 @@ class BaseGameApp extends Game
 	 * classes above manually according to your needs.
 	 */
 	protected func void createAndAddElementClasses()
-		this.pElementClassList.add( IgnoreElementClass.new( "VirtualElement" ) )
-		this.pElementClassList.add( IgnoreElementClass.new( "MapperNote" ) )
-		this.pElementClassList.add( SimpleElementClass.new( this.pLoaders ) )
-		this.pElementClassList.add( AnimatedElementClass.new( this.pLoaders, this.pTriggerTable ) )
-		this.pElementClassList.add( TwoStateAnimatedElementClass.new( this.pLoaders, this.pTriggerTable ) )
-		this.pElementClassList.add( RandomElementClass.new( this.pElementClassList ) )
-		this.pElementClassList.add( BaseLightClass.new() )
-		this.pElementClassList.add( BaseSpeakerClass.new() )
-		this.pElementClassList.add( BaseParticleEmitterClass.new() )
-		this.pElementClassList.add( BaseSkyClass.new() )
-		this.pElementClassList.add( BaseForceFieldClass.new() )
-		this.pElementClassList.add( BaseBillboardClass.new() )
-		this.pElementClassList.add( AttachableBaseLightClass.new() )
-		this.pElementClassList.add( AttachableBaseSpeakerClass.new() )
-		this.pElementClassList.add( AttachableBaseParticleEmitterClass.new() )
-		this.pElementClassList.add( AttachableBaseForceFieldClass.new() )
-		this.pElementClassList.add( AttachableBaseBillboardClass.new() )
-		this.pElementClassList.add( AttachSlotClass.new() )
-		this.pElementClassList.add( SpawnPointClass.new() )
-		this.pElementClassList.add( BaseActorClass.new() )
-		this.pElementClassList.add( EnvironmentMapClass.new() )
-		this.pElementClassList.add( TriggerEvaluateClass.new( this.pTriggerTable ) )
-		this.pElementClassList.add( TriggerTimerClass.new( this.pTriggerTable ) )
-		this.pElementClassList.add( TriggerToggleClass.new( this.pTriggerTable ) )
-		this.pElementClassList.add( TriggerTouchClass.new( this.pTriggerTable ) )
-		this.pElementClassList.add( TriggerShoutClass.new( this.pTriggerTable, this.pConsole ) )
-		this.pElementClassList.add( TriggerConversationClass.new( \
-			this.pTriggerTable, this.pLoaders, this.pPlayerControlledActor ) )
-		this.pElementClassList.add( RailCornerClass.new() )
-		this.pElementClassList.add( SimpleElementOnRailClass.new() )
-		this.pElementClassList.add( InfoConvoCoordSystemClass.new() )
+		pElementClassList.add(IgnoreElementClass.new("VirtualElement"))
+		pElementClassList.add(IgnoreElementClass.new("MapperNote"))
+		pElementClassList.add(SimpleElementClass.new(pLoaders))
+		pElementClassList.add(PhysicsElementClass.new())
+		pElementClassList.add(AnimatedElementClass.new(pLoaders, pTriggerTable))
+		pElementClassList.add(TwoStateAnimatedElementClass.new(pLoaders, pTriggerTable))
+		pElementClassList.add(HiddenElementClass.new(pLoaders, pTriggerTable))
+		pElementClassList.add(RandomElementClass.new(pElementClassList))
+		pElementClassList.add(BaseLightClass.new())
+		pElementClassList.add(BaseSpeakerClass.new())
+		pElementClassList.add(BaseParticleEmitterClass.new())
+		pElementClassList.add(BaseSkyClass.new())
+		pElementClassList.add(BaseForceFieldClass.new())
+		pElementClassList.add(BaseBillboardClass.new())
+		pElementClassList.add(AttachableBaseLightClass.new())
+		pElementClassList.add(AttachableBaseSpeakerClass.new())
+		pElementClassList.add(AttachableBaseParticleEmitterClass.new())
+		pElementClassList.add(AttachableBaseForceFieldClass.new())
+		pElementClassList.add(AttachableBaseBillboardClass.new())
+		pElementClassList.add(AttachSlotClass.new())
+		pElementClassList.add(SpawnPointClass.new())
+		pElementClassList.add(BaseActorClass.new())
+		pElementClassList.add(BaseVRActorClass.new())
+		pElementClassList.add(EnvironmentMapClass.new())
+		pElementClassList.add(TriggerEvaluateClass.new(pTriggerTable))
+		pElementClassList.add(TriggerTimerClass.new(pTriggerTable))
+		pElementClassList.add(TriggerToggleClass.new(pTriggerTable))
+		pElementClassList.add(TriggerTouchClass.new(pTriggerTable))
+		pElementClassList.add(TriggerShoutClass.new(pTriggerTable, pConsole))
+		pElementClassList.add(TriggerConversationClass.new(\
+			pTriggerTable, pLoaders, pPlayerControlledActor))
+		pElementClassList.add(RailCornerClass.new())
+		pElementClassList.add(SimpleElementOnRailClass.new())
+		pElementClassList.add(InfoConvoCoordSystemClass.new())
 	end
 	
 	/**
@@ -1042,15 +1271,15 @@ class BaseGameApp extends Game
 	 * - CommandToggleConsole named "toggleConsole"
 	 */
 	protected func void createAndAddCommands()
-		this.pCommandManager.add( CommandQuitGame.new() )
-		this.pCommandManager.add( CommandScreenshot.new( this.pScreenshotCreator ) )
+		pCommandManager.add(CommandQuitGame.new())
+		pCommandManager.add(CommandScreenshot.new(pScreenshotCreator))
 		
-		if this.pWindowConsole != null
-			this.pCommandManager.add( CommandToggleConsole.new( this.pWindowConsole ) )
+		if pWindowConsole != null
+			pCommandManager.add(CommandToggleConsole.new(pWindowConsole))
 		end
 		
-		CommandsBAAMovement.addCommands( this.pCommandManager, this.pPlayerControlledActor )
-		CommandsBAAInteract.addCommands( this.pCommandManager, this.pPlayerControlledActor )
+		CommandsBAAMovement.addCommands(pCommandManager, pPlayerControlledActor)
+		CommandsBAAInteract.addCommands(pCommandManager, pPlayerControlledActor)
 	end
 	
 	/**
@@ -1066,21 +1295,21 @@ class BaseGameApp extends Game
 	 * - LanguageConsoleCommand named "language"
 	 */
 	protected func void createAndAddConsoleCommands()
-		this.pConsoleCommands.add( HelpConsoleCommand.new( this.pConsoleCommands, this.pCommandManager ) )
-		this.pConsoleCommands.add( AISysConsoleCommand.new() )
-		this.pConsoleCommands.add( AmrSysConsoleCommand.new() )
-		this.pConsoleCommands.add( AudSysConsoleCommand.new() )
-		this.pConsoleCommands.add( CRSysConsoleCommand.new() )
-		this.pConsoleCommands.add( GraSysConsoleCommand.new() )
-		this.pConsoleCommands.add( InpSysConsoleCommand.new() )
-		this.pConsoleCommands.add( NetSysConsoleCommand.new() )
-		this.pConsoleCommands.add( PhySysConsoleCommand.new() )
-		this.pConsoleCommands.add( ScrSysConsoleCommand.new() )
-		this.pConsoleCommands.add( SynthSysConsoleCommand.new() )
-		this.pConsoleCommands.add( LanguageConsoleCommand.new( this.pTranslationManager ) )
+		pConsoleCommands.add(HelpConsoleCommand.new(pConsoleCommands, pCommandManager))
+		pConsoleCommands.add(AISysConsoleCommand.new())
+		pConsoleCommands.add(AmrSysConsoleCommand.new())
+		pConsoleCommands.add(AudSysConsoleCommand.new())
+		pConsoleCommands.add(CRSysConsoleCommand.new())
+		pConsoleCommands.add(GraSysConsoleCommand.new())
+		pConsoleCommands.add(InpSysConsoleCommand.new())
+		pConsoleCommands.add(NetSysConsoleCommand.new())
+		pConsoleCommands.add(PhySysConsoleCommand.new())
+		pConsoleCommands.add(ScrSysConsoleCommand.new())
+		pConsoleCommands.add(SynthSysConsoleCommand.new())
+		pConsoleCommands.add(LanguageConsoleCommand.new(pTranslationManager))
 		
 		// if debugging is enabled
-		this.pConsoleCommands.add( ScriptModuleStatsConsoleCommand.new() )
+		pConsoleCommands.add(ScriptModuleStatsConsoleCommand.new())
 	end
 	
 	/**
@@ -1095,20 +1324,20 @@ class BaseGameApp extends Game
 	 * It is best to save changes to the bindings immediately.
 	 */
 	protected func void loadSettings()
-		var String path = this.pConfiguration.getStringAt( "pathSavedSettings", this.pathSavedSettings )
+		var String path = pConfiguration.getStringAt("pathSavedSettings", pathSavedSettings)
 		
-		if FileSystem.existsFile( path )
+		if FileSystem.existsFile(path)
 			try
-				this.pLoaders.getParameterTree().loadFromFile( path, this.pSettings )
+				pLoaders.getParameterTree().loadFromFile(path, pSettings)
 				return
 				
 			catch Exception e
-				this.pConsole.addError( "Failed loading '" + path + "'.", e )
+				pConsole.addError("Failed loading '" + path + "'.", e)
 			end
 		end
 		
-		this.initSettings()
-		this.saveSettings()
+		initSettings()
+		saveSettings()
 	end
 	
 	/**
@@ -1118,18 +1347,18 @@ class BaseGameApp extends Game
 	 * first a backup copy with ".backup" appended to pathSavedBindings.
 	 */
 	public func void saveSettings()
-		var String path = this.pConfiguration.getStringAt( "pathSavedSettings", this.pathSavedSettings )
+		var String path = pConfiguration.getStringAt("pathSavedSettings", pathSavedSettings)
 		
-		if FileSystem.existsFile( path )
+		if FileSystem.existsFile(path)
 			try
-				FileWriter.new( path + ".backup" ).writeData( FileReader.new( path ) )
+				FileWriter.new(path + ".backup").writeData(FileReader.new(path))
 				
 			catch Exception e
-				this.pConsole.addError( "Failed copying '" + path + "' to '" + path + ".backup'.", e )
+				pConsole.addError("Failed copying '" + path + "' to '" + path + ".backup'.", e)
 			end
 		end
 		
-		this.pLoaders.getParameterTree().saveToFile( path, this.pSettings )
+		pLoaders.getParameterTree().saveToFile(path, pSettings)
 	end
 	
 	/**
@@ -1139,7 +1368,7 @@ class BaseGameApp extends Game
 	 * can modify the settings file and knows all possible settings without searching.
 	 */
 	public func void initSettings()
-		this.setInverseLookVertical( false )
+		setInverseLookVertical(false)
 	end
 	
 	/**
@@ -1160,22 +1389,22 @@ class BaseGameApp extends Game
 	 * call saveBindings() on your own no bindings save file will be produced.
 	 */
 	protected func void loadBindings()
-		var String path = this.pConfiguration.getStringAt( "pathSavedBindings", this.pathSavedBindings )
+		var String path = pConfiguration.getStringAt("pathSavedBindings", pathSavedBindings)
 		
-		if FileSystem.existsFile( path )
-			this.pConsole.addMessage( "Loading saved bindings..." )
+		if FileSystem.existsFile(path)
+			pConsole.addMessage("Loading saved bindings...")
 			
 			try
-				this.pLoaders.getBindings().loadFromFile( path, this.pBindingManager, this.pCommandManager )
+				pLoaders.getBindings().loadFromFile(path, pBindingManager, pCommandManager)
 				return
 				
 			catch Exception e
-				this.pConsole.addError( "Failed loading bindings file.", e )
+				pConsole.addError("Failed loading bindings file.", e)
 			end
 		end
 		
-		this.pConsole.addMessage( "Creating default bindings..." )
-		this.defaultBindings().updateBindingManager( true )
+		pConsole.addMessage("Creating default bindings...")
+		defaultBindings().updateBindingManager(true)
 	end
 	
 	/**
@@ -1197,19 +1426,19 @@ class BaseGameApp extends Game
 	 * // or use the super-call created helper
 	 * 
 	 * if helper.hasMouse()
-	 *    helper.mouseBindMove( "analogTurn", "analogLook" )
-	 *    helper.mouseBindWheel( 0, "prevItem", "nextItem" )
-	 *    helper.mouseBindLMR( "use", "putAwayItem", "equipItem" )
+	 *    helper.mouseBindMove("analogTurn", "analogLook")
+	 *    helper.mouseBindWheel(0, "prevItem", "nextItem")
+	 *    helper.mouseBindLMR("use", "putAwayItem", "equipItem")
 	 * end
 	 * 
 	 * if helper.hasKeyboard()
-	 *    helper.keyboardBindKeyCode( InputEventKey.escape, "showMainMenu" )
+	 *    helper.keyboardBindKeyCode(InputEventKey.escape, "showMainMenu")
 	 *    // more keyboard bindings
 	 * end
 	 * 
 	 * if helper.hasGamepad()
-	 *    helper.gamepadBindStick( 0, "turnLeft", "turnRight", "lookUp", "lookDown" )
-	 *    helper.gamepadBindButton( 0, "use" )
+	 *    helper.gamepadBindStick(0, "turnLeft", "turnRight", "lookUp", "lookDown")
+	 *    helper.gamepadBindButton(0, "use")
 	 *    // more game pad button and axis bindings
 	 * end
 	 * \endcode
@@ -1218,22 +1447,22 @@ class BaseGameApp extends Game
 		var DefaultBindingHelper helper = DefaultBindingHelper.new()
 		
 		if helper.hasKeyboard()
-			if this.pCommandManager.hasNamed( "quit" )
-				helper.keyboardBindKeyCode( InputEventKey.escape, "quit" )
-				helper.keyboardBindKeyCode( InputEventKey.q, "quit" )
+			if pCommandManager.hasNamed("quit")
+				helper.keyboardBindKeyCode(InputEventKey.escape, "quit")
+				helper.keyboardBindKeyCode(InputEventKey.q, "quit")
 			end
 			
-			if this.pCommandManager.hasNamed( "screenshot" )
-				helper.keyboardBindKeyCode( InputEventKey.f10, "screenshot" )
+			if pCommandManager.hasNamed("screenshot")
+				helper.keyboardBindKeyCode(InputEventKey.f10, "screenshot")
 			end
 			
-			if this.pWindowConsole != null and this.pCommandManager.hasNamed( "toggleConsole" )
-				helper.keyboardBindKeyCode( InputEventKey.f1, "toggleConsole" )
+			if pWindowConsole != null and pCommandManager.hasNamed("toggleConsole")
+				helper.keyboardBindKeyCode(InputEventKey.f1, "toggleConsole")
 			end
 		end
 		
-		CommandsBAAMovement.addDefaultBindings( helper, CommandsBAAMovement.InputScheme.wasd )
-		CommandsBAAInteract.addDefaultBindings( helper )
+		CommandsBAAMovement.addDefaultBindings(helper, CommandsBAAMovement.InputScheme.wasd)
+		CommandsBAAInteract.addDefaultBindings(helper)
 		
 		return helper
 	end
@@ -1244,15 +1473,15 @@ class BaseGameApp extends Game
 	 * Uses property pathSavedBindings as file name.
 	 */
 	public func void saveBindings()
-		this.pLoaders.getBindings().saveToFile( this.pConfiguration.getStringAt( \
-			"pathSavedBindings", this.pathSavedBindings ), this.pBindingManager )
+		pLoaders.getBindings().saveToFile(pConfiguration.getStringAt(\
+			"pathSavedBindings", pathSavedBindings), pBindingManager)
 	end
 	
 	
 	
 	/** \brief Game world loader or \em null. */
 	public func GameWorldLoader getGameWorldLoader()
-		return this.pGameWorldLoader
+		return pGameWorldLoader
 	end
 	
 	/**
@@ -1264,18 +1493,18 @@ class BaseGameApp extends Game
 	 * 
 	 * \throws EInvalidParam A game world loader is already active.
 	 */
-	public func void startLoadGameWorld( GameWorldLoader loader )
-		if this.pGameWorldLoader != null or loader == null
+	public func void startLoadGameWorld(GameWorldLoader loader)
+		if pGameWorldLoader != null or loader == null
 			throw EInvalidParam.new()
 		end
 		
-		this.pGameWorldLoader = loader
+		pGameWorldLoader = loader
 		
 		try
 			loader.startLoading()
 			
 		catch Exception e
-			this.pGameWorldLoader = null
+			pGameWorldLoader = null
 			loader.cancelLoading()
 			loader.dispose()
 			throw
@@ -1290,12 +1519,12 @@ class BaseGameApp extends Game
 	 * world loader is active.
 	 */
 	public func void cancelLoadGameWorld()
-		if this.pGameWorldLoader == null
+		if pGameWorldLoader == null
 			return
 		end
 		
-		var GameWorldLoader loader = this.pGameWorldLoader
-		this.pGameWorldLoader = null
+		var GameWorldLoader loader = pGameWorldLoader
+		pGameWorldLoader = null
 		
 		loader.cancelLoading()
 		loader.dispose()
@@ -1308,12 +1537,12 @@ class BaseGameApp extends Game
 	 * on the active game world. After this call returns no game world loader is active.
 	 */
 	public func void finishLoadGameWorld()
-		if this.pGameWorldLoader == null
+		if pGameWorldLoader == null
 			return
 		end
 		
-		var GameWorldLoader loader = this.pGameWorldLoader
-		this.pGameWorldLoader = null
+		var GameWorldLoader loader = pGameWorldLoader
+		pGameWorldLoader = null
 		
 		loader.dispose()
 	end
@@ -1321,11 +1550,32 @@ class BaseGameApp extends Game
 	/**
 	 * \brief Create conversation playback.
 	 * 
-	 * Default implementation create instance of BaseConversationPlayback. Overwrite to
-	 * create playback supporting game specific features like obtaining conversation actors
-	 * and coordinate system by identifier and running game commands and conditions.
+	 * Create instance of BaseConversationPlayback. Overwrite to create playback supporting
+	 * game specific features like obtaining conversation actors and coordinate system by
+	 * identifier and running game commands and conditions.
+	 * 
+	 * For many game projects the base BaseConversationPlayback implementation is enough
+	 * with game specific behavior defined by adding game commands and game conditions.
+	 * This example shows a typical subclass implementation for this common scenario.
+	 * 
+	 * \code{.ds}
+	 * public func BaseConversationPlayback createConversationPlayback(Conversation conversation)
+	 *    var BaseConversationPlayback playback = super.createConversationPlayback(conversation)
+	 *    playback.addCommand("player", PlayerGameCommand.new())
+	 *    playback.addCondition("player", PlayerGameCondition.new())
+	 *    return playback
+	 * end
+	 * \endcode
+	 * 
+	 * Where PlayerGameCommand implements BaseConversationPlayback.ConversationCommand
+	 * and PlayerGameCondition implements BaseConversationPlayback.ConversationCondition.
+	 * Conversation scripts can then use "player arg1 arg2 ... argN" game command and game
+	 * condition with the classes above receiving the command conveniently as Array of String.
+	 * 
+	 * Any number of commands and conditions can be added easily this way without needing
+	 * to subclass BaseConversationPlayback.
 	 */
-	public func BaseConversationPlayback createConversationPlayback( Conversation conversation )
-		return BaseConversationPlayback.new( conversation )
+	public func BaseConversationPlayback createConversationPlayback(Conversation conversation)
+		return BaseConversationPlayback.new(conversation)
 	end
 end

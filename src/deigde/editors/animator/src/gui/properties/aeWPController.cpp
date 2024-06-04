@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Animator Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -31,6 +34,7 @@
 #include "../../animator/aeAnimator.h"
 #include "../../animator/locomotion/aeAnimatorLocomotion.h"
 #include "../../animator/controller/aeController.h"
+#include "../../clipboard/aeClipboardDataController.h"
 #include "../../undosys/controller/aeUAddController.h"
 #include "../../undosys/controller/aeURemoveController.h"
 #include "../../undosys/controller/aeUMoveControllerUp.h"
@@ -41,7 +45,11 @@
 #include "../../undosys/controller/aeUControllerSetFromMove.h"
 #include "../../undosys/controller/aeUControllerToggleClamp.h"
 #include "../../undosys/controller/aeUControllerToggleFrozen.h"
+#include "../../undosys/controller/aeUControllerPaste.h"
+#include "../../undosys/controller/aeUControllerSetDefaultValue.h"
+#include "../../undosys/controller/aeUControllerSetDefaultVector.h"
 
+#include <deigde/clipboard/igdeClipboardDataReference.h>
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeUIHelper.h>
@@ -148,6 +156,65 @@ public:
 
 
 
+class cActionCopy : public cBaseAction{
+public:
+	cActionCopy( aeWPController &panel ) : cBaseAction( panel, "Copy",
+		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ),
+		"Copy controller to clipboard" ){ }
+	
+	virtual igdeUndo *OnAction( aeAnimator*, aeController *controller ){
+		igdeClipboardDataReference cdata;
+		cdata.TakeOver( new aeClipboardDataController( controller ) );
+		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set( cdata );
+		return nullptr;
+	}
+};
+
+class cActionCut : public cBaseAction{
+public:
+	cActionCut( aeWPController &panel ) : cBaseAction( panel, "Cut",
+		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiCut ),
+		"Cut controller into clipboard" ){ }
+	
+	virtual igdeUndo *OnAction( aeAnimator *animator, aeController *controller ){
+		igdeClipboardDataReference cdata;
+		cdata.TakeOver( new aeClipboardDataController( controller ) );
+		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set( cdata );
+		return new aeURemoveController( animator, controller );
+	}
+};
+
+class cActionPaste : public igdeAction{
+	aeWPController &pPanel;
+	
+public:
+	cActionPaste( aeWPController &panel ) : igdeAction( "Paste",
+		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPaste ),
+		"Paste controller from clipboard" ), pPanel( panel ){ }
+	
+	virtual void OnAction(){
+		aeAnimator * const animator = pPanel.GetAnimator();
+		if( ! animator ){
+			return;
+		}
+		
+		aeClipboardDataController * const cdata = ( aeClipboardDataController* )pPanel.GetWindowProperties()
+			.GetWindowMain().GetClipboard().GetWithTypeName( aeClipboardDataController::TYPE_NAME );
+		if( ! cdata ){
+			return;
+		}
+		
+		igdeUndoReference undo;
+		undo.TakeOver( new aeUControllerPaste( animator, cdata->GetControllers() ) );
+		animator->GetUndoSystem()->Add( undo );
+	}
+	
+	virtual void Update(){
+		SetEnabled( pPanel.GetWindowProperties().GetWindowMain().GetClipboard()
+			.GetWithTypeName( aeClipboardDataController::TYPE_NAME ) && pPanel.GetAnimator() );
+	}
+};
+
 class cListControllers : public igdeListBoxListener{
 	aeWPController &pPanel;
 	
@@ -157,7 +224,7 @@ public:
 	virtual void OnSelectionChanged( igdeListBox *listBox ){
 		if( pPanel.GetAnimator() ){
 			pPanel.GetAnimator()->SetActiveController( listBox->GetSelectedItem()
-				? ( aeController* )listBox->GetSelectedItem()->GetData() : NULL );
+				? ( aeController* )listBox->GetSelectedItem()->GetData() : nullptr );
 		}
 	}
 	
@@ -166,11 +233,17 @@ public:
 		igdeUIHelper &helper = menu.GetEnvironment().GetUIHelper();
 		
 		helper.MenuCommand( menu, windowMain.GetActionControllerAdd() );
+		helper.MenuCommand( menu, windowMain.GetActionControllerDuplicate() );
 		helper.MenuCommand( menu, windowMain.GetActionControllerRemove() );
 		
 		helper.MenuSeparator( menu );
 		helper.MenuCommand( menu, windowMain.GetActionControllerUp() );
 		helper.MenuCommand( menu, windowMain.GetActionControllerDown() );
+		
+		helper.MenuSeparator( menu );
+		helper.MenuCommand( menu, new cActionCopy( pPanel ), true );
+		helper.MenuCommand( menu, new cActionCut( pPanel ), true );
+		helper.MenuCommand( menu, new cActionPaste( pPanel ), true );
 	}
 };
 
@@ -181,12 +254,12 @@ public:
 	virtual igdeUndo *OnChanged( igdeTextField *textField, aeAnimator *animator, aeController *controller ){
 		const decString value = textField->GetText();
 		if( controller->GetName() == value ){
-			return NULL;
+			return nullptr;
 		}
 		if( animator->GetControllers().HasNamed( value ) ){
 			igdeCommonDialogs::Error( &pPanel, "Set Controller Name", "Duplicate Controller Name" );
 			textField->SetText( controller->GetName() );
-			return NULL;
+			return nullptr;
 		}
 		return new aeUControllerSetName( controller, value );
 	}
@@ -199,7 +272,7 @@ public:
 	virtual igdeUndo *OnChanged( igdeTextField *textField, aeAnimator*, aeController *controller ){
 		const float value = textField->GetFloat();
 		return fabsf( controller->GetMinimumValue() - value ) > FLOAT_SAFE_EPSILON
-			? new aeUControllerSetMinimumValue( controller, value ) : NULL;
+			? new aeUControllerSetMinimumValue( controller, value ) : nullptr;
 	}
 };
 
@@ -210,18 +283,18 @@ public:
 	virtual igdeUndo *OnChanged( igdeTextField *textField, aeAnimator*, aeController *controller ){
 		const float value = textField->GetFloat();
 		return fabsf( controller->GetMaximumValue() - value ) > FLOAT_SAFE_EPSILON
-			? new aeUControllerSetMaximumValue( controller, value ) : NULL;
+			? new aeUControllerSetMaximumValue( controller, value ) : nullptr;
 	}
 };
 
 class cActionSetFromMove : public cBaseAction{
 public:
 	cActionSetFromMove( aeWPController &panel ) : cBaseAction( panel, "Set From Move",
-		NULL, "Sets the ranges from the playtime of a move" ){ }
+		nullptr, "Sets the ranges from the playtime of a move" ){ }
 	
 	virtual igdeUndo *OnAction( aeAnimator *animator, aeController *controller ){
 		const deAnimation * const animation = animator->GetEngineAnimator()
-			? animator->GetEngineAnimator()->GetAnimation() : NULL;
+			? animator->GetEngineAnimator()->GetAnimation() : nullptr;
 		decStringList names;
 		int selection = 0;
 		
@@ -236,7 +309,7 @@ public:
 		names.SortAscending();
 		if( names.GetCount() == 0 || ! igdeCommonDialogs::SelectString( &pPanel, "Set range from move playtime",
 		"Range limits are set to the playtime of the selected move.", names, selection ) ){
-			return NULL;
+			return nullptr;
 		}
 		
 		const deAnimationMove &move = *animation->GetMove( animation->FindMove( names.GetAt( selection ) ) );
@@ -252,7 +325,7 @@ public:
 	
 	virtual igdeUndo *OnAction( aeAnimator*, aeController *controller ){
 		controller->SetCurrentValue( controller->GetMinimumValue() );
-		return NULL;
+		return nullptr;
 	}
 };
 
@@ -291,7 +364,7 @@ public:
 class cActionClamp : public cBaseAction{
 public:
 	cActionClamp( aeWPController &panel ) : cBaseAction( panel, "Clamp value to range",
-		NULL, "Determines if the value of the controller is clamped to the given range" ){ }
+		nullptr, "Determines if the value of the controller is clamped to the given range" ){ }
 	
 	virtual igdeUndo *OnAction( aeAnimator*, aeController *controller ){
 		return new aeUControllerToggleClamp( controller );
@@ -306,7 +379,7 @@ public:
 class cActionFrozen : public cBaseAction{
 public:
 	cActionFrozen( aeWPController &panel ) : cBaseAction( panel, "Freeze Controller value",
-		NULL, "Prevents the controller from changing the current value" ){ }
+		nullptr, "Prevents the controller from changing the current value" ){ }
 	
 	virtual igdeUndo *OnAction( aeAnimator*, aeController *controller ){
 		return new aeUControllerToggleFrozen( controller );
@@ -342,7 +415,55 @@ public:
 		if( value >= 0 && value < animator->GetLocomotion().GetLegCount() ){
 			controller->SetLocomotionLeg( value );
 		}
-		return NULL;
+		return nullptr;
+	}
+};
+
+class cComboVectorSimulation : public igdeComboBoxListener{
+	aeWPController &pPanel;
+	
+public:
+	cComboVectorSimulation( aeWPController &panel ) : pPanel( panel ){ }
+	
+	virtual void OnTextChanged( igdeComboBox *comboBox ){
+		aeController * const controller = pPanel.GetController();
+		if( controller && comboBox->GetSelectedItem() ){
+			controller->SetVectorSimulation( ( aeController::eVectorSimulation )
+				( intptr_t )comboBox->GetSelectedItem()->GetData() );
+		}
+	}
+};
+
+class cTextDefaultValue : public cBaseTextField{
+public:
+	cTextDefaultValue( aeWPController &panel ) : cBaseTextField( panel ){ }
+	
+	virtual igdeUndo *OnChanged( igdeTextField *textField, aeAnimator*, aeController *controller ){
+		const float value = textField->GetFloat();
+		return fabsf( controller->GetDefaultValue() - value ) > FLOAT_SAFE_EPSILON
+			? new aeUControllerSetDefaultValue( controller, value ) : nullptr;
+	}
+};
+
+class cEditDefaultVector : public igdeEditVectorListener{
+	aeWPController &pPanel;
+	
+public:
+	cEditDefaultVector( aeWPController &panel ) : pPanel( panel ){ }
+	
+	virtual void OnVectorChanged( igdeEditVector *editVector ){
+		aeAnimator * const animator = pPanel.GetAnimator();
+		aeController * const controller = pPanel.GetController();
+		if( ! animator || ! controller ){
+			return;
+		}
+		
+		const decVector &vector = editVector->GetVector();
+		if( ! controller->GetDefaultVector().IsEqualTo( vector ) ){
+			igdeUndoReference undo;
+			undo.TakeOver( new aeUControllerSetDefaultVector( controller, vector ) );
+			animator->GetUndoSystem()->Add( undo );
+		}
 	}
 };
 
@@ -359,8 +480,8 @@ public:
 aeWPController::aeWPController( aeWindowProperties &windowProperties ) :
 igdeContainerScroll( windowProperties.GetEnvironment(), false, true ),
 pWindowProperties( windowProperties ),
-pListener( NULL ),
-pAnimator( NULL )
+pListener( nullptr ),
+pAnimator( nullptr )
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
@@ -397,38 +518,50 @@ pAnimator( NULL )
 	helper.CheckBox( groupBox, pChkClamp, new cActionClamp( *this ), true );
 	helper.CheckBox( groupBox, pChkFrozen, new cActionFrozen( *this ), true );
 	
+	helper.EditFloat( groupBox, "Default Value:", "Default controller value",
+		pEditDefaultValue, new cTextDefaultValue( *this ) );
+	helper.EditVector( groupBox, "Default Vector:", "Default vector value of controller",
+		pEditDefaultVector, new cEditDefaultVector( *this ) );
+	
 	
 	// locomotion testing
 	helper.GroupBox( content, groupBox, "Locomotion Testing:" );
 	
 	helper.ComboBox( groupBox, "Attribute:", "Selects the locomotion attribute affecting this controller",
 		pCBLocoAttr, new cComboLocoAttr( *this ) );
-	pCBLocoAttr->AddItem( "None", NULL, ( void* )( intptr_t )aeAnimatorLocomotion::eaNone );
-	pCBLocoAttr->AddItem( "Elapsed Time", NULL, ( void* )( intptr_t )aeAnimatorLocomotion::eaElapsedTime );
-	pCBLocoAttr->AddItem( "Look Up-Down", NULL, ( void* )( intptr_t )aeAnimatorLocomotion::eaLookUpDown );
-	pCBLocoAttr->AddItem( "Look Left-Right", NULL, ( void* )( intptr_t )aeAnimatorLocomotion::eaLookLeftRight );
-	pCBLocoAttr->AddItem( "Moving Speed", NULL, ( void* )( intptr_t )aeAnimatorLocomotion::eaMovingSpeed );
-	pCBLocoAttr->AddItem( "Moving Direction", NULL, ( void* )( intptr_t )aeAnimatorLocomotion::eaMovingDirection );
-	pCBLocoAttr->AddItem( "Relative Moving Speed", NULL, ( void* )( intptr_t )aeAnimatorLocomotion::eaRelativeMovingSpeed );
-	pCBLocoAttr->AddItem( "Turning Speed", NULL, ( void* )( intptr_t )aeAnimatorLocomotion::eaTurningSpeed );
-	pCBLocoAttr->AddItem( "Stance", NULL, ( void* )( intptr_t )aeAnimatorLocomotion::eaStance );
-	pCBLocoAttr->AddItem( "Displacement", NULL, ( void* )( intptr_t )aeAnimatorLocomotion::eaDisplacement );
-	pCBLocoAttr->AddItem( "Body Tilt Offset", NULL, ( void* )( intptr_t )aeAnimatorLocomotion::eaBodyTiltOffset );
-	pCBLocoAttr->AddItem( "Body Tilt Up-Down", NULL, ( void* )( intptr_t )aeAnimatorLocomotion::eaBodyTiltUpDown );
-	pCBLocoAttr->AddItem( "Body Tilt Left-Right", NULL, ( void* )( intptr_t )aeAnimatorLocomotion::eaBodyTiltRightLeft );
-	pCBLocoAttr->AddItem( "Turn In-Place", NULL, ( void* )( intptr_t )aeAnimatorLocomotion::eaTimeTurnIP );
-	pCBLocoAttr->AddItem( "Leg Ground Position", NULL, ( void* )( intptr_t )aeAnimatorLocomotion::eaLegGroundPosition );
-	pCBLocoAttr->AddItem( "Leg Ground Normal", NULL, ( void* )( intptr_t )aeAnimatorLocomotion::eaLegGroundNormal );
-	pCBLocoAttr->AddItem( "Leg Influence", NULL, ( void* )( intptr_t )aeAnimatorLocomotion::eaLegInfluence );
-	pCBLocoAttr->AddItem( "Leg Position", NULL, ( void* )( intptr_t )aeAnimatorLocomotion::eaLegPosition );
-	pCBLocoAttr->AddItem( "Leg Orientation", NULL, ( void* )( intptr_t )aeAnimatorLocomotion::eaLegOrientation );
+	pCBLocoAttr->AddItem( "None", nullptr, ( void* )( intptr_t )aeAnimatorLocomotion::eaNone );
+	pCBLocoAttr->AddItem( "Elapsed Time", nullptr, ( void* )( intptr_t )aeAnimatorLocomotion::eaElapsedTime );
+	pCBLocoAttr->AddItem( "Look Up-Down", nullptr, ( void* )( intptr_t )aeAnimatorLocomotion::eaLookUpDown );
+	pCBLocoAttr->AddItem( "Look Left-Right", nullptr, ( void* )( intptr_t )aeAnimatorLocomotion::eaLookLeftRight );
+	pCBLocoAttr->AddItem( "Moving Speed", nullptr, ( void* )( intptr_t )aeAnimatorLocomotion::eaMovingSpeed );
+	pCBLocoAttr->AddItem( "Moving Direction", nullptr, ( void* )( intptr_t )aeAnimatorLocomotion::eaMovingDirection );
+	pCBLocoAttr->AddItem( "Relative Moving Speed", nullptr, ( void* )( intptr_t )aeAnimatorLocomotion::eaRelativeMovingSpeed );
+	pCBLocoAttr->AddItem( "Turning Speed", nullptr, ( void* )( intptr_t )aeAnimatorLocomotion::eaTurningSpeed );
+	pCBLocoAttr->AddItem( "Stance", nullptr, ( void* )( intptr_t )aeAnimatorLocomotion::eaStance );
+	pCBLocoAttr->AddItem( "Displacement", nullptr, ( void* )( intptr_t )aeAnimatorLocomotion::eaDisplacement );
+	pCBLocoAttr->AddItem( "Relative Displacement", nullptr, ( void* )( intptr_t )aeAnimatorLocomotion::eaRelativeDisplacement );
+	pCBLocoAttr->AddItem( "Body Tilt Offset", nullptr, ( void* )( intptr_t )aeAnimatorLocomotion::eaBodyTiltOffset );
+	pCBLocoAttr->AddItem( "Body Tilt Up-Down", nullptr, ( void* )( intptr_t )aeAnimatorLocomotion::eaBodyTiltUpDown );
+	pCBLocoAttr->AddItem( "Body Tilt Left-Right", nullptr, ( void* )( intptr_t )aeAnimatorLocomotion::eaBodyTiltRightLeft );
+	pCBLocoAttr->AddItem( "Turn In-Place", nullptr, ( void* )( intptr_t )aeAnimatorLocomotion::eaTimeTurnIP );
+	pCBLocoAttr->AddItem( "Leg Ground Position", nullptr, ( void* )( intptr_t )aeAnimatorLocomotion::eaLegGroundPosition );
+	pCBLocoAttr->AddItem( "Leg Ground Normal", nullptr, ( void* )( intptr_t )aeAnimatorLocomotion::eaLegGroundNormal );
+	pCBLocoAttr->AddItem( "Leg Influence", nullptr, ( void* )( intptr_t )aeAnimatorLocomotion::eaLegInfluence );
+	pCBLocoAttr->AddItem( "Leg Position", nullptr, ( void* )( intptr_t )aeAnimatorLocomotion::eaLegPosition );
+	pCBLocoAttr->AddItem( "Leg Orientation", nullptr, ( void* )( intptr_t )aeAnimatorLocomotion::eaLegOrientation );
 	
 	helper.EditInteger( groupBox, "Leg:", "Number of the leg to track starting with 0 ( max 3 )",
 		pEditLocoLeg, new cTextLocoLeg( *this ) );
+	
+	helper.ComboBox( groupBox, "Vector Simulation:", "Select how to simulate vector value",
+		pCBVectorSimulation, new cComboVectorSimulation( *this ) );
+	pCBVectorSimulation->AddItem( "None", nullptr, ( void* )( intptr_t )aeController::evsNone );
+	pCBVectorSimulation->AddItem( "Position", nullptr, ( void* )( intptr_t )aeController::evsPosition );
+	pCBVectorSimulation->AddItem( "Rotation", nullptr, ( void* )( intptr_t )aeController::evsRotation );
 }
 
 aeWPController::~aeWPController(){
-	SetAnimator( NULL );
+	SetAnimator( nullptr );
 	
 	if( pListener ){
 		pListener->FreeReference();
@@ -461,7 +594,7 @@ void aeWPController::SetAnimator( aeAnimator *animator ){
 }
 
 aeController *aeWPController::GetController() const{
-	return pAnimator ? pAnimator->GetActiveController() : NULL;
+	return pAnimator ? pAnimator->GetActiveController() : nullptr;
 }
 
 void aeWPController::SelectActiveController(){
@@ -482,7 +615,7 @@ void aeWPController::UpdateControllerList(){
 		for( i=0; i<count; i++ ){
 			aeController * const controller = list.GetAt( i );
 			text.Format( "%d: %s", i, controller->GetName().GetString() );
-			pListController->AddItem( text, NULL, controller );
+			pListController->AddItem( text, nullptr, controller );
 		}
 	}
 	
@@ -511,6 +644,10 @@ void aeWPController::UpdateController(){
 		pEditVector->SetVector( controller->GetVector() );
 		pCBLocoAttr->SetSelectionWithData( ( void* )( intptr_t )controller->GetLocomotionAttribute() );
 		pEditLocoLeg->SetInteger( controller->GetLocomotionLeg() );
+		pCBVectorSimulation->SetSelectionWithData( ( void* )( intptr_t )controller->GetVectorSimulation() );
+		
+		pEditDefaultValue->SetFloat( controller->GetDefaultValue() );
+		pEditDefaultVector->SetVector( controller->GetDefaultVector() );
 		
 	}else{
 		pEditName->ClearText();
@@ -522,12 +659,16 @@ void aeWPController::UpdateController(){
 		pEditVector->SetVector( decVector() );
 		pCBLocoAttr->SetSelectionWithData( ( void* )( intptr_t )aeAnimatorLocomotion::eaNone );
 		pEditLocoLeg->ClearText();
+		pCBVectorSimulation->SetSelectionWithData( ( void* )( intptr_t )aeController::evsNone );
+		pEditDefaultValue->ClearText();
+		pEditDefaultVector->SetVector( decVector() );
 	}
 	
 	const bool enabled = controller;
 	pEditName->SetEnabled( enabled );
 	pCBLocoAttr->SetEnabled( enabled );
 	pEditLocoLeg->SetEnabled( enabled );
+	pCBVectorSimulation->SetEnabled( enabled );
 	
 	pChkClamp->GetAction()->Update();
 	pChkFrozen->GetAction()->Update();
@@ -536,11 +677,15 @@ void aeWPController::UpdateController(){
 	pEditMax->SetEnabled( enabled );
 	pSldValue->SetEnabled( enabled );
 	pEditVector->SetEnabled( enabled );
+	
+	pEditDefaultValue->SetEnabled( enabled );
+	pEditDefaultVector->SetEnabled( enabled );
 }
 
 void aeWPController::UpdateControllerValue(){
 	const aeController * const controller = GetController();
 	if( controller ){
 		pSldValue->SetValue( controller->GetCurrentValue() );
+		pEditVector->SetVector( controller->GetVector() );
 	}
 }

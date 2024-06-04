@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 namespace Dragengine.Utils.StyledText.Converter
@@ -125,55 +128,6 @@ class StyledTextConverter extends DefaultSTDNodeVisitor
 			this.pPages.add( this.pPageInProgress )
 			this.pPageInProgress = null
 		end
-		
-		/*
-		var StyledTextRendering page
-		var STRElement element
-		var Font font = Font.new( "/epsylon/fonts/epsylon_7.font.xml", 22 )
-		
-		this.pPages.removeAll()
-		this.pBlockers.removeAll()
-		
-		page = StyledTextRendering.new()
-		
-		element = STREText.new()
-		( element cast STREText ).setText( "This is the first line." )
-		( element cast STREText ).setFont( font )
-		( element cast STREText ).setTextColor( Color.black )
-		( element cast STREText ).setBackgroundColor( page.getBackgroundColor() )
-		( element cast STREText ).setX( 5 )
-		( element cast STREText ).setY( 5 )
-		page.addElement( element )
-		
-		element = STREText.new()
-		( element cast STREText ).setText( "This is another line a bit longer." )
-		( element cast STREText ).setFont( font )
-		( element cast STREText ).setTextColor( Color.blue )
-		( element cast STREText ).setBackgroundColor( page.getBackgroundColor() )
-		( element cast STREText ).setX( 5 )
-		( element cast STREText ).setY( 27 )
-		page.addElement( element )
-		
-		element = STREText.new()
-		( element cast STREText ).setText( "Oh god, a red line!" )
-		( element cast STREText ).setFont( font )
-		( element cast STREText ).setTextColor( Color.red )
-		( element cast STREText ).setBackgroundColor( page.getBackgroundColor() )
-		( element cast STREText ).setX( 20 )
-		( element cast STREText ).setY( 49 )
-		page.addElement( element )
-		
-		element = STREText.new()
-		( element cast STREText ).setText( "A normal line again." )
-		( element cast STREText ).setFont( font )
-		( element cast STREText ).setTextColor( Color.black )
-		( element cast STREText ).setBackgroundColor( page.getBackgroundColor() )
-		( element cast STREText ).setX( 5 )
-		( element cast STREText ).setY( 71 )
-		page.addElement( element )
-		
-		this.pPages.add( page )
-		*/
 	end
 	
 	
@@ -345,15 +299,25 @@ class StyledTextConverter extends DefaultSTDNodeVisitor
 // " tlw=" + textLineWidth + " TT=" + font.getTextSize( spanText.substring( spanStart, lastPosition ) ).getX() + "\n" )
 				
 				if spanImage != null
-					testWidth = textLineWidth + spanSpacesWidth + spanWidth + spanImage.getWidth()
+					// if we are at the start of a new word increase the word count by one
+					if wordCharacters == 0
+						wordCount++
+					end
 					
-					if testWidth > fmaxLineWidth
-						textLineWidth += spanSpacesWidth
-						spanSpacesWidth = 0
-						
+					// increase character count of word by one. the image width is not added to
+					// the word width but used for the line width exceed test
+					var int imageHeight = spanImage.getHeight()
+					var int imageWidth = spanImage.getWidth()
+					wordCharacters++
+					
+					textLineWidth += spanSpacesWidth
+					spanSpacesWidth = 0
+					
+					testWidth = textLineWidth + spanWidth + wordWidth + spacesWidth
+					textLineHeight = Math.max( textLineHeight, Math.max( imageHeight, lineHeight ) )
+					
+					if testWidth + imageWidth > fmaxLineWidth
 						textLineWidth += spanWidth
-						textLineHeight = Math.max( textLineHeight, lineHeight )
-						
 						spanStart = wordStart
 					end
 					
@@ -364,7 +328,7 @@ class StyledTextConverter extends DefaultSTDNodeVisitor
 					var STREImage streImage = STREImage.new()
 					streImage.setImage( spanImage )
 					streImage.setPosition( Point.new( textLineWidth cast int, \
-						( lineHeight - spanImage.getHeight() ) / 2 ) )
+						Math.max( lineHeight - spanImage.getHeight(), 0 ) / 2 ) )
 					textLine.add( streImage )
 					
 					textLineWidth += spanImage.getWidth()
@@ -616,7 +580,7 @@ class StyledTextConverter extends DefaultSTDNodeVisitor
 		var RectArea nodeMargins = nodeStyle.getMargins()
 		var STDStyle.Align alignment = nodeStyle.getAlignment()
 		
-		if this.pPageInProgress == null
+		if this.pPageInProgress == null or this.pCurPIPPosY + image.getHeight() > this.pMaxPIPPosY
 			this.beginNewPage()
 		end
 		

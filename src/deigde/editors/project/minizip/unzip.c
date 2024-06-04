@@ -1038,8 +1038,6 @@ local int unz64local_GetCurrentFileInfoInternal (unzFile file,
             /* ZIP64 extra fields */
             if (headerId == 0x0001)
             {
-                                                        uLong uL;
-
                                                                 if(file_info.uncompressed_size == (ZPOS64_T)(unsigned long)-1)
                                                                 {
                                                                         if (unz64local_getLong64(&s->z_filefunc, s->filestream,&file_info.uncompressed_size) != UNZ_OK)

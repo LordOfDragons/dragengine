@@ -1,37 +1,43 @@
-/* 
- * Drag[en]gine Animator Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
 #include <string.h>
-#include <unistd.h>
 
 #include "dearRuleAnimationSelect.h"
 #include "../dearBoneState.h"
 #include "../dearBoneStateList.h"
+#include "../dearVPSState.h"
+#include "../dearVPSStateList.h"
 #include "../dearAnimationState.h"
 #include "../deDEAnimator.h"
-#include "../animation/dearAnimationMove.h"
-#include "../animation/dearAnimationKeyframeList.h"
-#include "../animation/dearAnimationKeyframe.h"
 #include "../animation/dearAnimation.h"
+#include "../animation/dearAnimationKeyframe.h"
+#include "../animation/dearAnimationKeyframeList.h"
+#include "../animation/dearAnimationKeyframeVPS.h"
+#include "../animation/dearAnimationKeyframeVPSList.h"
+#include "../animation/dearAnimationMove.h"
 #include "../dearAnimatorInstance.h"
 
 #include <dragengine/resources/animation/deAnimation.h>
@@ -39,6 +45,8 @@
 #include <dragengine/resources/animation/deAnimationMove.h>
 #include <dragengine/resources/animation/deAnimationKeyframe.h>
 #include <dragengine/resources/animation/deAnimationKeyframeList.h>
+#include <dragengine/resources/animation/deAnimationKeyframeVertexPositionSet.h>
+#include <dragengine/resources/animation/deAnimationKeyframeVertexPositionSetList.h>
 #include <dragengine/resources/animator/deAnimator.h>
 #include <dragengine/resources/animator/controller/deAnimatorController.h>
 #include <dragengine/resources/animator/controller/deAnimatorControllerTarget.h>
@@ -71,8 +79,8 @@
 /////////////////////////////////
 
 dearRuleAnimationSelect::dearRuleAnimationSelect( dearAnimatorInstance &instance,
-int firstLink, const deAnimatorRuleAnimationSelect &rule ) :
-dearRule( instance, firstLink, rule ),
+const dearAnimator &animator, int firstLink, const deAnimatorRuleAnimationSelect &rule ) :
+dearRule( instance, animator, firstLink, rule ),
 
 pAnimationSelect( rule ),
 
@@ -81,7 +89,8 @@ pTargetSelect( rule.GetTargetSelect(), firstLink ),
 
 pEnablePosition( rule.GetEnablePosition() ),
 pEnableOrientation( rule.GetEnableOrientation() ),
-pEnableSize( rule.GetEnableSize() )
+pEnableSize( rule.GetEnableSize() ),
+pEnableVPS( rule.GetEnableVertexPositionSet() )
 {
 	RuleChanged();
 }
@@ -94,7 +103,7 @@ dearRuleAnimationSelect::~dearRuleAnimationSelect(){
 // Management
 ///////////////
 
-void dearRuleAnimationSelect::Apply( dearBoneStateList &stalist ){
+void dearRuleAnimationSelect::Apply( dearBoneStateList &stalist, dearVPSStateList &vpsstalist ){
 DEBUG_RESET_TIMERS;
 	if( ! GetEnabled() ){
 		return;
@@ -107,6 +116,7 @@ DEBUG_RESET_TIMERS;
 	
 	const deAnimatorRule::eBlendModes blendMode = GetBlendMode();
 	const int boneCount = GetBoneMappingCount();
+	const int vpsCount = GetVPSMappingCount();
 	int i;
 	
 	const int countMoves = pMoves.GetCount();
@@ -140,7 +150,7 @@ DEBUG_RESET_TIMERS;
 		}
 		
 		// determine animation state
-		const int animationBone = boneState.GetAnimationBone();
+		const int animationBone = pMapAnimationBones.GetAt( i );
 		if( animationBone == -1  ){
 			boneState.BlendWithDefault( blendMode, blendFactor, pEnablePosition, pEnableOrientation, pEnableSize );
 			continue;
@@ -176,6 +186,44 @@ DEBUG_RESET_TIMERS;
 		boneState.BlendWith( position, orientation, scale, blendMode,
 			blendFactor, pEnablePosition, pEnableOrientation, pEnableSize );
 	}
+	
+	// step through all vertex position sets and set animation
+	for( i=0; i<vpsCount; i++ ){
+		const int animatorVps = GetVPSMappingFor( i );
+		if( animatorVps == -1 ){
+			continue;
+		}
+		
+		dearVPSState &vpsState = vpsstalist.GetStateAt( animatorVps );
+		
+		if( ! move ){
+			vpsState.BlendWithDefault( blendMode, blendFactor, pEnableVPS );
+			continue;
+		}
+		
+		// determine animation state
+		const int animationVps = pMapAnimationVPS.GetAt( i );
+		if( animationVps == -1  ){
+			vpsState.BlendWithDefault( blendMode, blendFactor, pEnableVPS );
+			continue;
+		}
+		
+		// determine keyframe containing the move time
+		const dearAnimationKeyframeVPSList &kflist = *move->GetKeyframeVPSListAt( animationVps );
+		const dearAnimationKeyframeVPS * const keyframe = kflist.GetWithTime( moveTime );
+		
+		// if there are no keyframes use the default state
+		if( ! keyframe ){
+			vpsState.BlendWithDefault( blendMode, blendFactor, pEnableVPS );
+			continue;
+		}
+		
+		// calculate bone data
+		const float time = moveTime - keyframe->GetTime();
+		float weight = pEnableVPS ? keyframe->InterpolateWeight( time ) : 0.0f;
+		
+		vpsState.BlendWith( weight, blendMode, blendFactor, pEnableVPS );
+	}
 DEBUG_PRINT_TIMER;
 }
 
@@ -183,6 +231,8 @@ void dearRuleAnimationSelect::RuleChanged(){
 	dearRule::RuleChanged();
 	
 	pUpdateMoves();
+	pMapAnimationBones.Init( *this );
+	pMapAnimationVPS.Init( *this );
 }
 
 
@@ -193,7 +243,7 @@ void dearRuleAnimationSelect::RuleChanged(){
 void dearRuleAnimationSelect::pUpdateMoves(){
 	pMoves.RemoveAll();
 	
-	const dearAnimation * const animation = GetInstance().GetAnimation();
+	const dearAnimation * const animation = GetUseAnimation();
 	if( ! animation ){
 		return;
 	}

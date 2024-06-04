@@ -1,0 +1,218 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+
+namespace Dragengine.TestSystem
+
+
+
+/**
+ * \brief Test Suite.
+ * \version 1.5
+ * 
+ * Groups multiple TestCase. Test suites typically test various functionality of an object type.
+ * Also supports init() and tearDown() method. This allows to set up testing environment for
+ * a group of tests to run in avoiding the need to set them up for each test.
+ */
+class TestSuite
+	/** \brief Test State. */
+	public enum State
+		/** \brief Test suite has not run yet. */
+		pending
+		
+		/** \brief Test suite is running. */
+		running
+		
+		/** \brief All test case finished successfully. */
+		passed
+		
+		/** \brief One or more test case finished with failure. */
+		failed
+	end
+	
+	
+	
+	/** \brief Identifier. */
+	var String pID
+	
+	/** \brief Display  name. */
+	var UnicodeString pName
+	
+	/** \brief Test cases as Array of TestCase. */
+	var Array pTestCases
+	
+	/** \brief Test state. */
+	var State pState
+	
+	/** \brief Exception if test case failed. */
+	var Exception pException
+	
+	
+	
+	/**
+	 * \brief Create test suite.
+	 */
+	func new( String id, UnicodeString name )
+		if id == null
+			throw ENullPointer.new( "id" )
+		end
+		if id.empty()
+			throw EInvalidParam.new( "id is empty" )
+		end
+		if name == null
+			throw ENullPointer.new( "name" )
+		end
+		
+		this.pID = id
+		this.pName = name
+		this.pTestCases = Array.new()
+		this.pState = State.pending
+	end
+	
+	
+	
+	/** \brief Identifier. */
+	func String getID()
+		return this.pID
+	end
+	
+	/** \brief Display name. */
+	func UnicodeString getName()
+		return this.pName
+	end
+	
+	/** \brief Test state. */
+	func State getState()
+		return this.pState
+	end
+	
+	/** \brief Set test state. */
+	func void setState( State state )
+		if state == null
+			throw ENullPointer.new( "state" )
+		end
+		
+		this.pState = state
+	end
+	
+	/** \brief Exception if test suite failed. */
+	func Exception getException()
+		return this.pException
+	end
+	
+	/** \brief Set exception if test suite failed. */
+	func void setException( Exception exception )
+		this.pException = exception
+	end
+	
+	
+	
+	/** \brief Count of test cases. */
+	func int getTestCaseCount()
+		return this.pTestCases.getCount()
+	end
+	
+	/** \brief Get test case at index. */
+	func TestCase getTestCaseAt( int index )
+		return this.pTestCases.getAt( index ) cast TestCase
+	end
+	
+	/** \brief Get test case with identifier or null if not found. */
+	func TestCase getTestCaseWithID( String id )
+		return this.pTestCases.find( block TestCase each
+			return each.getID().equals( id )
+		end ) cast TestCase
+	end
+	
+	/** \brief Index of test or -1 if absent. */
+	func int indexOfTestCase( TestCase testCase )
+		return this.pTestCases.indexOf( testCase )
+	end
+	
+	/** \brief Add test case. */
+	func void addTestCase( TestCase testCase )
+		if testCase == null
+			throw ENullPointer.new( "testCase" )
+		end
+		if this.getTestCaseWithID( testCase.getID() ) != null
+			throw EInvalidParam.new( "test case exists with id: " + testCase.getID() )
+		end
+		this.pTestCases.add( testCase )
+		testCase.setTestSuite( this )
+	end
+	
+	/** brief Remove test case. */
+	func void removeTestCase( TestCase testCase )
+		this.pTestCases.remove( testCase )
+		testCase.setTestSuite( null )
+	end
+	
+	/** \brief Remove all test cases. */
+	func void removeAllTestCases()
+		this.pTestCases.forEach( block TestCase each
+			each.setTestSuite( null )
+		end )
+		this.pTestCases.removeAll()
+	end
+	
+	/**
+	 * \brief Visit test cases block.
+	 * 
+	 * Block receives as single parameter TestCase instance.
+	 */
+	func void forEachTestCase( Block ablock )
+		this.pTestCases.forEach( ablock )
+	end
+	
+	/**
+	 * \brief Find test case with block.
+	 * 
+	 * Block receives as single parameter TestCase instance and returns true if the desires
+	 * test case has been found or false to continue searching.
+	 * 
+	 * \returns Found TestCase or null.
+	 */
+	func TestCase findTestCase( Block ablock )
+		return this.pTestCases.find( ablock ) cast TestCase
+	end
+	
+	/**
+	 * \brief Collect failed test cases.
+	 * \returns Array of TestCase.
+	 */
+	func Array failedTestCases()
+		return this.pTestCases.collect( block TestCase each
+			return each.getState() == TestCase.State.failed
+		end )
+	end
+	
+	
+	/** \brief Initialize test suite. */
+	func void init()
+	end
+	
+	/** \brief Tear down after test suite finished. */
+	func void tearDown()
+	end
+end

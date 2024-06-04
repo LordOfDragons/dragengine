@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -451,6 +454,25 @@ void deClassSpeaker::nfSetRollOff::RunFunction( dsRunTime *rt, dsValue *myself )
 	speaker.SetRollOff( rt->GetValue( 0 )->GetFloat() );
 }
 
+// public func float getDistanceOffset()
+deClassSpeaker::nfGetDistanceOffset::nfGetDistanceOffset( const sInitData &init ) :
+dsFunction( init.clsSpk, "getDistanceOffset", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt ){
+}
+void deClassSpeaker::nfGetDistanceOffset::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const deSpeaker &speaker = *( ( ( sSpkNatDat* )p_GetNativeData( myself ) )->speaker );
+	rt->PushFloat( speaker.GetDistanceOffset() );
+}
+
+// public func void setDistanceOffset( float distanceOffset )
+deClassSpeaker::nfSetDistanceOffset::nfSetDistanceOffset( const sInitData &init ) :
+dsFunction( init.clsSpk, "setDistanceOffset", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsFlt ); // distanceOffset
+}
+void deClassSpeaker::nfSetDistanceOffset::RunFunction( dsRunTime *rt, dsValue *myself ){
+	deSpeaker &speaker = *( ( ( sSpkNatDat* )p_GetNativeData( myself ) )->speaker );
+	speaker.SetDistanceOffset( rt->GetValue( 0 )->GetFloat() );
+}
+
 // public func ShapeList getShape()
 deClassSpeaker::nfGetShape::nfGetShape( const sInitData &init ) :
 dsFunction( init.clsSpk, "getShape", DSFT_FUNCTION,
@@ -608,7 +630,7 @@ dsFunction( init.clsSpk, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, i
 void deClassSpeaker::nfHashCode::RunFunction( dsRunTime *rt, dsValue *myself ){
 	deSpeaker *speaker = ( ( sSpkNatDat* )p_GetNativeData( myself ) )->speaker;
 	
-	rt->PushInt( ( intptr_t )speaker );
+	rt->PushInt( ( int )( intptr_t )speaker );
 }
 
 // public func bool equals( Object object )
@@ -645,7 +667,7 @@ dsClass( "Speaker", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE ){
 	pGameEngine = gameEngine;
 	pScrMgr = scrMgr;
 	
-	// store informations into parser info
+	// store information into parser info
 	GetParserInfo()->SetParent( DENS_SCENERY );
 	GetParserInfo()->SetBase( "Object" );
 	
@@ -718,6 +740,8 @@ void deClassSpeaker::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfSetRange( init ) );
 	AddFunction( new nfGetRollOff( init ) );
 	AddFunction( new nfSetRollOff( init ) );
+	AddFunction( new nfGetDistanceOffset( init ) );
+	AddFunction( new nfSetDistanceOffset( init ) );
 	AddFunction( new nfGetShape( init ) );
 	AddFunction( new nfSetShape( init ) );
 	AddFunction( new nfGetLayerMask( init ) );

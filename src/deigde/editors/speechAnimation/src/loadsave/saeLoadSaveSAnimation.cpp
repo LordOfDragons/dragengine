@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Speech Animation Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -107,9 +110,18 @@ void saeLoadSaveSAnimation::pWriteSAnimation( decXmlWriter &writer, const saeSAn
 	
 	pWriteDisplay( writer, sanimation );
 	
-	writer.WriteDataTagString( "rig", sanimation.GetRigPath().GetString() );
-	writer.WriteDataTagString( "animation", sanimation.GetAnimationPath().GetString() );
-	writer.WriteDataTagString( "neutralMoveName", sanimation.GetNeutralMoveName().GetString() );
+	writer.WriteDataTagString( "rig", sanimation.GetRigPath() );
+	writer.WriteDataTagString( "animation", sanimation.GetAnimationPath() );
+	
+	if( ! sanimation.GetNeutralMoveName().IsEmpty() ){
+		writer.WriteDataTagString( "neutralMoveName", sanimation.GetNeutralMoveName() );
+	}
+	
+	const decStringSet &neutralVertexPositionSets = sanimation.GetNeutralVertexPositionSets();
+	count = neutralVertexPositionSets.GetCount();
+	for( i=0; i<count; i++ ){
+		writer.WriteDataTagString( "neutralVertexPositionSet", neutralVertexPositionSets.GetAt( i ) );
+	}
 	
 	count = phonemeList.GetCount();
 	for( i=0; i<count; i++ ){
@@ -127,9 +139,9 @@ void saeLoadSaveSAnimation::pWriteSAnimation( decXmlWriter &writer, const saeSAn
 void saeLoadSaveSAnimation::pWriteDisplay( decXmlWriter &writer, const saeSAnimation &sanimation ){
 	writer.WriteOpeningTag( "display" );
 	
-	writer.WriteDataTagString( "model", sanimation.GetDisplayModelPath().GetString() );
-	writer.WriteDataTagString( "skin", sanimation.GetDisplaySkinPath().GetString() );
-	writer.WriteDataTagString( "rig", sanimation.GetDisplayRigPath().GetString() );
+	writer.WriteDataTagString( "model", sanimation.GetDisplayModelPath() );
+	writer.WriteDataTagString( "skin", sanimation.GetDisplaySkinPath() );
+	writer.WriteDataTagString( "rig", sanimation.GetDisplayRigPath() );
 	
 	writer.WriteClosingTag( "display" );
 }
@@ -139,8 +151,15 @@ void saeLoadSaveSAnimation::pWritePhoneme( decXmlWriter &writer, const saePhonem
 	writer.WriteAttributeInt( "ipa", phoneme.GetIPA() );
 	writer.WriteOpeningTagEnd();
 	
-	writer.WriteDataTagString( "sampleText", phoneme.GetSampleText().GetString() );
-	writer.WriteDataTagString( "moveName", phoneme.GetMoveName().GetString() );
+	if( ! phoneme.GetSampleText().IsEmpty() ){
+		writer.WriteDataTagString( "sampleText", phoneme.GetSampleText() );
+	}
+	if( ! phoneme.GetMoveName().IsEmpty() ){
+		writer.WriteDataTagString( "moveName", phoneme.GetMoveName() );
+	}
+	if( ! phoneme.GetVertexPositionSet().IsEmpty() ){
+		writer.WriteDataTagString( "vertexPositionSet", phoneme.GetVertexPositionSet() );
+	}
 	writer.WriteDataTagFloat( "length", phoneme.GetLength() );
 	
 	writer.WriteClosingTag( "phoneme" );
@@ -160,6 +179,7 @@ void saeLoadSaveSAnimation::pWriteWord( decXmlWriter &writer, const saeWord &wor
 
 void saeLoadSaveSAnimation::pReadSAnimation( const decXmlElementTag &root, saeSAnimation &sanimation ){
 	const int elementCount = root.GetElementCount();
+	decStringSet neutralVertexPositionSets;
 	const decXmlElementTag *tag;
 	int e;
 	
@@ -179,6 +199,9 @@ void saeLoadSaveSAnimation::pReadSAnimation( const decXmlElementTag &root, saeSA
 			}else if( strcmp( tag->GetName(), "neutralMoveName" ) == 0 ){
 				sanimation.SetNeutralMoveName( GetCDataString( *tag ) );
 				
+			}else if( strcmp( tag->GetName(), "neutralVertexPositionSet" ) == 0 ){
+				neutralVertexPositionSets.Add( GetCDataString( *tag ) );
+				
 			}else if( strcmp( tag->GetName(), "phoneme" ) == 0 ){
 				pReadPhoneme( *tag, sanimation );
 				
@@ -190,6 +213,8 @@ void saeLoadSaveSAnimation::pReadSAnimation( const decXmlElementTag &root, saeSA
 			}
 		}
 	}
+	
+	sanimation.SetNeutralVertexPositionSets( neutralVertexPositionSets );
 }
 
 void saeLoadSaveSAnimation::pReadDisplay( const decXmlElementTag &root, saeSAnimation &sanimation ){
@@ -242,13 +267,16 @@ void saeLoadSaveSAnimation::pReadPhoneme( const decXmlElementTag &root, saeSAnim
 			tag = root.GetElementIfTag( e );
 			
 			if( tag ){
-				if( strcmp( tag->GetName(), "sampleText" ) == 0 ){
+				if( tag->GetName() == "sampleText" ){
 					phoneme->SetSampleText( GetCDataString( *tag ) );
 					
-				}else if( strcmp( tag->GetName(), "moveName" ) == 0 ){
+				}else if( tag->GetName() == "moveName" ){
 					phoneme->SetMoveName( GetCDataString( *tag ) );
 					
-				}else if( strcmp( tag->GetName(), "length" ) == 0 ){
+				}else if( tag->GetName() == "vertexPositionSet" ){
+					phoneme->SetVertexPositionSet( GetCDataString( *tag ) );
+					
+				}else if( tag->GetName() == "length" ){
 					phoneme->SetLength( GetCDataFloat( *tag ) );
 					
 				}else{

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -26,6 +29,8 @@
 #include <libdscript/libdscript.h>
 
 #include "deClassPoint3.h"
+#include "deClassVector.h"
+#include "deClassDVector.h"
 #include "../file/deClassFileReader.h"
 #include "../file/deClassFileWriter.h"
 #include "../../deScriptingDragonScript.h"
@@ -354,6 +359,28 @@ void deClassPoint3::nfIsZero::RunFunction( dsRunTime *rt, dsValue *myself ){
 
 
 
+// public func Vector toVector()
+deClassPoint3::nfToVector::nfToVector( const sInitData &init ) :
+dsFunction( init.clsPt3, "toVector", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVector ){
+}
+void deClassPoint3::nfToVector::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const decPoint3 &point = ( ( sPt3NatDat* )p_GetNativeData( myself ) )->point;
+	( ( deClassPoint3* )GetOwnerClass() )->GetScriptModule()->GetClassVector()->
+		PushVector( rt, decVector( point ) );
+}
+
+// public func DVector toDVector()
+deClassPoint3::nfToDVector::nfToDVector( const sInitData &init ) :
+dsFunction( init.clsPt3, "toDVector", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsDVector ){
+}
+void deClassPoint3::nfToDVector::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const decPoint3 &point = ( ( sPt3NatDat* )p_GetNativeData( myself ) )->point;
+	( ( deClassPoint3* )GetOwnerClass() )->GetScriptModule()->GetClassDVector()->
+		PushDVector( rt, decDVector( point ) );
+}
+
+
+
 // File Handling
 //////////////////
 
@@ -456,9 +483,9 @@ void deClassPoint3::nfOpDivide::RunFunction( dsRunTime *rt, dsValue *myself ){
 	clsPt3->PushPoint( rt, point / rt->GetValue( 0 )->GetInt() );
 }
 
-// public func float *( Point3 v )
+// public func int *( Point3 v )
 deClassPoint3::nfOpDot::nfOpDot( const sInitData &init ) : dsFunction( init.clsPt3,
-"*", DSFT_OPERATOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt ){
+"*", DSFT_OPERATOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt ){
 	p_AddParameter( init.clsPt3 ); // v
 }
 void deClassPoint3::nfOpDot::RunFunction( dsRunTime *rt, dsValue *myself ){
@@ -466,7 +493,7 @@ void deClassPoint3::nfOpDot::RunFunction( dsRunTime *rt, dsValue *myself ){
 	deClassPoint3 *clsPt3 = ( deClassPoint3* )GetOwnerClass();
 	dsRealObject *objPt = rt->GetValue( 0 )->GetRealObject();
 	if( ! objPt ) DSTHROW( dueNullPointer );
-	rt->PushFloat( point * clsPt3->GetPoint( objPt ) );
+	rt->PushInt( point * clsPt3->GetPoint( objPt ) );
 }
 
 // public func bool <( Point3 v )
@@ -561,7 +588,7 @@ deClassPoint3::nfToString::nfToString( const sInitData &init ) : dsFunction( ini
 void deClassPoint3::nfToString::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const decPoint3 &point = ( ( sPt3NatDat* )p_GetNativeData( myself ) )->point;
 	char buffer[ 50 ];
-	sprintf( ( char* )&buffer, "(%i,%i,%i)", point.x, point.y, point.z );
+	snprintf( ( char* )&buffer, sizeof( buffer ), "(%i,%i,%i)", point.x, point.y, point.z );
 	rt->PushString( buffer );
 }
 
@@ -598,6 +625,8 @@ void deClassPoint3::CreateClassMembers( dsEngine *engine ){
 	init.clsFlt = engine->GetClassFloat();
 	init.clsFileReader = pScrMgr->GetClassFileReader();
 	init.clsFileWriter = pScrMgr->GetClassFileWriter();
+	init.clsVector = pScrMgr->GetClassVector();
+	init.clsDVector = pScrMgr->GetClassDVector();
 	
 	// add functions
 	AddFunction( new nfNew( init ) );
@@ -619,6 +648,9 @@ void deClassPoint3::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfIsAtLeast( init ) );
 	AddFunction( new nfIsAtMost( init ) );
 	AddFunction( new nfIsZero( init ) );
+	
+	AddFunction( new nfToVector( init ) );
+	AddFunction( new nfToDVector( init ) );
 	
 	AddFunction( new nfCompMultiply( init ) );
 	AddFunction( new nfCompDivide( init ) );

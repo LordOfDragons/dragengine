@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <math.h>
@@ -196,6 +199,7 @@ void dedsLocomotion::SetTurnAdjustLookHorizontal( bool turnAdjust ){
 
 void dedsLocomotion::SetAnalogMovingVertical( float value ){
 	pAnalogMovingVertical = decMath::clamp( value, -90.0f, 90.0f );
+// 	pAnalogMovingVertical = decMath::clamp( value, pLimitLookLeft, pLimitLookRight );
 }
 
 void dedsLocomotion::SetTurnHorizontal( float value ){
@@ -580,10 +584,14 @@ void dedsLocomotion::ForceBodyAdjustment(){
 		return;
 	}
 	
-	pIsTurningIP = true;
-	pTurnIP = pLookHorizontal.GetGoal();
+	pTurnHorizontal += pLookHorizontal.GetGoal();
 	
-	pResetTimeTurnIP = true;
+	if( pCanTurnInPlace ){
+		pTurnHorizontal += pTurnIP;
+	}
+	pIsTurningIP = false;
+	pTurnIP = 0.0f;
+	pResetTimeTurnIP = false;
 }
 
 
@@ -682,25 +690,7 @@ void dedsLocomotion::UpdateOrientation( float elapsed ){
 	}
 	
 	CheckLookingRangeViolation( adjustOrientation );
-	
-	SetOrientation( pOrientation + adjustOrientation );
-	
-	pLookHorizontal.SetValue( pLookHorizontal.GetValue() - adjustOrientation );
-	pAnalogMovingHorizontal.SetValue( pAnalogMovingHorizontal.GetValue() - adjustOrientation );
-	
-	if( pTurnAdjustLookHorizontal ){
-		pLookHorizontal.SetGoal( pLookHorizontal.GetGoal() - adjustOrientation );
-		pAnalogMovingHorizontal.SetGoal( pAnalogMovingHorizontal.GetGoal() - adjustOrientation );
-	}
-	
-//	SetTurnHorizontal( pTurnHorizontal - adjustOrientation );
-	if( adjustOrientation > 0.0f ){
-		SetTurnHorizontal( decMath::max( pTurnHorizontal - adjustOrientation, 0.0f ) );
-		
-	}else{
-		SetTurnHorizontal( decMath::min( pTurnHorizontal - adjustOrientation, 0.0f ) );
-	}
-	
+	AdjustOrientation( adjustOrientation );
 	SetTurningSpeed( adjustOrientation / elapsed );
 }
 
@@ -808,6 +798,11 @@ void dedsLocomotion::UpdateOrientationNotMoving( float elapsed, float &adjustOri
 				pResetTimeTurnIP = true;
 			}
 		}
+		
+	}else{
+		pIsTurningIP = false;
+		pTurnIP = 0.0f;
+		pResetTimeTurnIP = false;
 	}
 	
 	if( pIsTurningIP ){
@@ -841,12 +836,12 @@ void dedsLocomotion::UpdateOrientationNotMoving( float elapsed, float &adjustOri
 void dedsLocomotion::CheckLookingRangeViolation( float &adjustOrientation ){
 	// if we can turn the body keep the looking always inside the limits.
 	// if leaving adjust the adjustOrientation to satisfy the limits again.
-	if( pCanTurn && pCanTurnInPlace ){
-		if( pLookHorizontal.GetGoal() - adjustOrientation > 90.0f ){
-			adjustOrientation = pLookHorizontal.GetGoal() - 90.0f;
+	if( pCanTurn ){
+		if( pLookHorizontal.GetGoal() - adjustOrientation > pLimitLookRight ){
+			adjustOrientation = pLookHorizontal.GetGoal() - pLimitLookRight;
 			
-		}else if( pLookHorizontal.GetGoal() - adjustOrientation < -90.0f ){
-			adjustOrientation = pLookHorizontal.GetGoal() + 90.0f;
+		}else if( pLookHorizontal.GetGoal() - adjustOrientation < pLimitLookLeft ){
+			adjustOrientation = pLookHorizontal.GetGoal() - pLimitLookLeft;
 		}
 		
 	// if we can not turn clamp the looking to the limits
@@ -876,7 +871,7 @@ void dedsLocomotion::UpdateLinearVelocity( float elapsed ){
 	pMovingSpeed = linearVelocity.Length();
 	
 	if( pMovingSpeed > 0.001f ){ // otherwise undefined orientation
-		SetMovingOrientation( -atan2f( linearVelocity.x, linearVelocity.z ) / DEG2RAD );
+		SetMovingOrientation( -atan2f( linearVelocity.x, linearVelocity.z ) * RAD2DEG );
 	}
 	
 	SetMovingDirection( pMovingOrientation - pOrientation );
@@ -989,10 +984,10 @@ void dedsLocomotion::UpdateTiltWeightCast( float elapsed ){
 	const float spreadFrontBack = decMath::max( pCCTTiltFrontLeft->GetOrigin().z - pCCTTiltBackLeft->GetOrigin().z, 0.01f );
 	
 	// calculate the tilt values. this is "(v1-v2)*0.5 + (v3-v4)*0.5".
-	const float hdiffHorizontal = ( heightFrontLeft - heightFrontRight ) * 0.5 + ( heightBackLeft - heightBackRight ) * 0.5f;
+	const float hdiffHorizontal = ( heightFrontLeft - heightFrontRight ) * 0.5f + ( heightBackLeft - heightBackRight ) * 0.5f;
 	SetTiltHorizontalGoal( atanf( hdiffHorizontal / spreadHorizontal ) / DEG2RAD );
 	
-	const float hdiffVertical = ( heightFrontLeft - heightBackLeft ) * 0.5 + ( heightFrontRight - heightBackRight ) * 0.5f;
+	const float hdiffVertical = ( heightFrontLeft - heightBackLeft ) * 0.5f + ( heightFrontRight - heightBackRight ) * 0.5f;
 	SetTiltVerticalGoal( atanf( hdiffVertical / spreadFrontBack ) / DEG2RAD );
 	
 	// tilt offset from samples
@@ -1017,6 +1012,26 @@ void dedsLocomotion::UpdateAICollider(){
 		if( pUpdateAIColliderAngularVelocity ){
 			pAICollider->SetAngularVelocity( pAngularVelocity * DEG2RAD );
 		}
+	}
+}
+
+void dedsLocomotion::AdjustOrientation( float angle ){
+	SetOrientation( pOrientation + angle );
+	
+	pLookHorizontal.SetValue( pLookHorizontal.GetValue() - angle );
+	pAnalogMovingHorizontal.SetValue( pAnalogMovingHorizontal.GetValue() - angle );
+	
+	if( pTurnAdjustLookHorizontal ){
+		pLookHorizontal.SetGoal( pLookHorizontal.GetGoal() - angle );
+		pAnalogMovingHorizontal.SetGoal( pAnalogMovingHorizontal.GetGoal() - angle );
+	}
+	
+	//SetTurnHorizontal( pTurnHorizontal - angle );
+	if( angle > 0.0f ){
+		SetTurnHorizontal( decMath::max( pTurnHorizontal - angle, 0.0f ) );
+		
+	}else{
+		SetTurnHorizontal( decMath::min( pTurnHorizontal - angle, 0.0f ) );
 	}
 }
 

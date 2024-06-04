@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenAL Audio Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -48,7 +51,8 @@ deoalEnvProbeList::deoalEnvProbeList( deoalAWorld &world, double reuseDistance, 
 pWorld( world ),
 pAttenuationRefDist( 1.0f ),
 pAttenuationRolloff( 1.0f ),
-    pRTWorldBVH( NULL ),
+pAttenuationDistanceOffset( 0.0f ),
+pRTWorldBVH( NULL ),
 pRTConfig( NULL ),
 pReuseDistance( reuseDistance ),
 pReuseDistanceSquared( reuseDistance * reuseDistance ),
@@ -77,11 +81,12 @@ void deoalEnvProbeList::SetRange( float range ){
 	pRange = range;
 }
 
-void deoalEnvProbeList::SetAttenuation( float refDist, float rolloff ){
+void deoalEnvProbeList::SetAttenuation( float refDist, float rolloff, float distanceOffset ){
 	InvalidateAllProbes();
 	
 	pAttenuationRefDist = refDist;
 	pAttenuationRolloff = rolloff;
+	pAttenuationDistanceOffset = distanceOffset;
 }
 
 void deoalEnvProbeList::SetLayerMask( const decLayerMask &layerMask ){
@@ -190,7 +195,7 @@ deoalEnvProbe *deoalEnvProbeList::GetProbeEstimateRoom( const decDVector &positi
 		probe->EstimateRoomParameters( pWorld, rtconfig );
 		pProbes.Add( probe );
 		
-	}catch( const deException &e ){
+	}catch( const deException & ){
 		if( probe ){
 			delete probe;
 		}
@@ -200,7 +205,7 @@ deoalEnvProbe *deoalEnvProbeList::GetProbeEstimateRoom( const decDVector &positi
 	try{
 		pWorld.GetOctree()->InsertEnvProbeIntoTree( probe, 8 );
 		
-	}catch( const deException &e ){
+	}catch( const deException & ){
 		pProbes.RemoveFrom( pProbes.GetCount() - 1 );
 		delete probe;
 		throw;
@@ -246,7 +251,7 @@ deoalEnvProbe *deoalEnvProbeList::GetProbeTraceSoundRays( const decDVector &posi
 			// we need to re-add it to the octree because tracing sound rays changes extends
 			bestProbe->GetOctreeNode()->RemoveEnvProbe( bestProbe );
 			bestProbe->Invalidate();
-			bestProbe->SetAttenuation( pAttenuationRefDist, pAttenuationRolloff );
+			bestProbe->SetAttenuation( pAttenuationRefDist, pAttenuationRolloff, pAttenuationDistanceOffset );
 			bestProbe->SetLayerMask( pLayerMask );
 			bestProbe->SetRTConfig( pRTConfig );
 			bestProbe->SetLastUsed( pLastUsedCounter );
@@ -301,14 +306,14 @@ deoalEnvProbe *deoalEnvProbeList::GetProbeTraceSoundRays( const decDVector &posi
 		probe = new deoalEnvProbe( pWorld.GetAudioThread() );
 		probe->SetPosition( position );
 		probe->SetRange( pRange );
-		probe->SetAttenuation( pAttenuationRefDist, pAttenuationRolloff );
+		probe->SetAttenuation( pAttenuationRefDist, pAttenuationRolloff, pAttenuationDistanceOffset );
 		probe->SetLayerMask( pLayerMask );
 		probe->SetRTConfig( pRTConfig );
 		probe->SetLastUsed( pLastUsedCounter );
 		probe->TraceSoundRays( pWorld, pRTWorldBVH, rtconfig );
 		pProbes.Add( probe );
 		
-	}catch( const deException &e ){
+	}catch( const deException & ){
 		if( probe ){
 			delete probe;
 		}
@@ -318,7 +323,7 @@ deoalEnvProbe *deoalEnvProbeList::GetProbeTraceSoundRays( const decDVector &posi
 	try{
 		pWorld.GetOctree()->InsertEnvProbeIntoTree( probe, 8 );
 		
-	}catch( const deException &e ){
+	}catch( const deException & ){
 		pProbes.RemoveFrom( pProbes.GetCount() - 1 );
 		delete probe;
 		throw;

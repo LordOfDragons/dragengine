@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLSHADERPREPROCESSOR_H_
@@ -27,6 +30,7 @@
 
 class deoglRenderThread;
 class deoglShaderPreprocessorSymbol;
+class deoglShaderSourceLocation;
 
 class deoglShaderDefines;
 class deoglShaderProgram;
@@ -37,7 +41,7 @@ class deoglShaderBindingList;
 
 
 /**
- * \brief GLSL shader preprocessor.
+ * GLSL shader preprocessor.
  *
  * Applies preprocessing to GLSL shaders. There are a couple of reasons why
  * the preprocessing is not done by the GPU driver:
@@ -107,10 +111,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create shader preprocessor. */
+	/** Create shader preprocessor. */
 	deoglShaderPreprocessor( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up shader preprocessor. */
+	/** Clean up shader preprocessor. */
 	~deoglShaderPreprocessor();
 	/*@}*/
 	
@@ -118,33 +122,36 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Clear. */
+	/** Clear. */
 	void Clear();
 	
-	/** \brief Log line map to renderthread logger. */
+	/** Log line map to renderthread logger. */
 	void LogSourceLocationMap();
+	
+	/** Resolve source location or NULL. */
+	const deoglShaderSourceLocation *ResolveSourceLocation( int line ) const;
 	/*@}*/
 	
 	
 	
 	/** \name Sources */
 	/*@{*/
-	/** \brief Sources. */
+	/** Sources. */
 	inline const char *GetSources() const{ return pSources; }
 	
-	/** \brief Sources length. */
+	/** Sources length. */
 	inline int GetSourcesLength() const{ return pSourcesLen; }
 	
-	/** \brief Append to sources. */
+	/** Append to sources. */
 	void SourcesAppend( const char *text, bool mapLines );
 	
-	/** \brief Append to sources. */
+	/** Append to sources. */
 	void SourcesAppend( const char *text, int length, bool mapLines );
 	
-	/** \brief Process source code. */
+	/** Process source code. */
 	void SourcesAppendProcessed( const char *sourceCode );
 	
-	/** \brief Process source code. */
+	/** Process source code. */
 	void SourcesAppendProcessed( const char *sourceCode, const char *inputFile,
 		bool resetState = false );
 	/*@}*/
@@ -153,28 +160,28 @@ public:
 	
 	/** \name Symbol Table */
 	/*@{*/
-	/** \brief Number of symbols. */
+	/** Number of symbols. */
 	int GetSymbolCount() const;
 	
-	/** \brief Named symbol is present. */
+	/** Named symbol is present. */
 	bool HasSymbolNamed( const char *name ) const;
 	
-	/** \brief Named symbol or \em NULL if absent. */
+	/** Named symbol or \em NULL if absent. */
 	deoglShaderPreprocessorSymbol *GetSymbolNamed( const char *name ) const;
 	
-	/** \brief Set symbol. */
+	/** Set symbol. */
 	void SetSymbol( deoglShaderPreprocessorSymbol *symbol );
 	
-	/** \brief Set symbol. */
+	/** Set symbol. */
 	void SetSymbol( const char *name, const char *value );
 	
-	/** \brief Clear symbol. */
+	/** Clear symbol. */
 	void ClearSymbol( const char *name );
 	
-	/** \brief Clear all symbols. */
+	/** Clear all symbols. */
 	void ClearAllSymbols();
 	
-	/** \brief Set symbols from defines. */
+	/** Set symbols from defines. */
 	void SetSymbolsFromDefines( const deoglShaderDefines &defines );
 	/*@}*/
 	

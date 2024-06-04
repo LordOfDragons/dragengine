@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenAL Audio Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -58,6 +61,7 @@ pAudioThread( audioThread ),
 pRange( 0.0f ),
 pAttenuationRefDist( 1.0f ),
 pAttenuationRolloff( 0.0f ),
+pAttenuationDistanceOffset( 0.0f ),
 pRTConfig( NULL ),
 pRayCount( 0 ),
 pRayOpeningAngle( 0.0f ),
@@ -103,9 +107,10 @@ void deoalEnvProbe::SetRange( float range ){
 	Invalidate();
 }
 
-void deoalEnvProbe::SetAttenuation( float refDist, float rolloff ){
+void deoalEnvProbe::SetAttenuation( float refDist, float rolloff, float distanceOffset ){
 	pAttenuationRefDist = refDist;
 	pAttenuationRolloff = rolloff;
+	pAttenuationDistanceOffset = distanceOffset;
 	Invalidate();
 }
 
@@ -178,7 +183,7 @@ float deoalEnvProbe::AttenuatedGain( float distance ) const{
 	// gain = AL_REFERENCE_DISTANCE / (AL_REFERENCE_DISTANCE
 	//        + AL_ROLLOFF_FACTOR * ( distance - AL_REFERENCE_DISTANCE ) );
 	return pAttenuationRefDist / ( pAttenuationRefDist + pAttenuationRolloff
-		* decMath::max( distance - pAttenuationRefDist, 0.0f ) );
+		* decMath::max( distance + pAttenuationDistanceOffset - pAttenuationRefDist, 0.0f ) );
 }
 
 
@@ -249,7 +254,7 @@ const deoalRayTraceConfig &probeConfig ){
 	
 	pAudioThread.GetRTParallelEnvProbe().TraceSoundRays( roomParameters,
 		pSoundRayList, pPosition, pRange, pAttenuationRefDist, pAttenuationRolloff,
-		world, rtWorldBVH, pLayerMask, *pRTConfig );
+		pAttenuationDistanceOffset, world, rtWorldBVH, pLayerMask, *pRTConfig );
 	
 	pMinExtend = roomParameters.minExtend;
 	pMaxExtend = roomParameters.maxExtend;
@@ -405,7 +410,16 @@ const decDVector &position, deoalAMicrophone *microphone, deoalASoundLevelMeter 
 	
 	// create probe if required
 	if( createProbe ){
-		deoalEnvProbeListenerCached *replaceCached = NULL;
+		// GetEnvProbe can cause ray-tracing to be done
+		
+		// GetEnvProbe can cause Invalidate() to be called which in turn causes
+		// pRemoveAllListeners to be called. this would remove the listener we use to listen.
+		// to avoid this GetEnvProbe() has to be called before the pListeners array is accessed
+		deoalEnvProbe * const listenProbe = microphone
+			? microphone->GetEnvProbe() : soundLevelMeter->GetEnvProbe();
+		
+		// now it is safe to access pListeners
+		deoalEnvProbeListenerCached *replaceCached = nullptr;
 		
 		if( count == 100 ){
 			replaceCached = ( deoalEnvProbeListenerCached* )pListeners.GetAt( 0 );
@@ -441,25 +455,16 @@ const decDVector &position, deoalAMicrophone *microphone, deoalASoundLevelMeter 
 		replaceCached->SetPosition( localPosition );
 		replaceCached->SetLastUsed( pListenerTracking );
 		
-		// NOTE GetEnvProbe can cause ray-tracing to be done
-		deoalEnvProbe *listenProbe;
-		
-		if( microphone ){
-			listenProbe = microphone->GetEnvProbe();
-			if( listenProbe ){
+		if( listenProbe ){
+			if( microphone ){
 				pAudioThread.GetRTParallelEnvProbe().Listen( *this, listenProbe, *replaceCached,
 					world, &microphone->GetRTWorldBVH(), microphone->GetLayerMask(), position );
+				
+			}else{
+				pAudioThread.GetRTParallelEnvProbe().Listen( *this, listenProbe, *replaceCached,
+					world, nullptr, soundLevelMeter->GetLayerMask(), position );
 			}
 			
-		}else{
-			listenProbe = soundLevelMeter->GetEnvProbe();
-			if( listenProbe ){
-				pAudioThread.GetRTParallelEnvProbe().Listen( *this, listenProbe, *replaceCached,
-					world, NULL, soundLevelMeter->GetLayerMask(), position );
-			}
-		}
-		
-		if( listenProbe ){
 			// copy the extends from the listener. this is required since these extends are
 			// only calculated during TraceSoundRays(). it is not enough to find all ray
 			// segments leading from source to listener because geometry changes outside

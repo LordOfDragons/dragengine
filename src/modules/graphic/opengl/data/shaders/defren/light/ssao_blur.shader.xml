@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<shader>
+	<name>DefRen SSAO Blur</name>
+	
+	<uniformBlock name='RenderParameters' target='0'/>
+	
+	<parameter name='pTCDataToDepth'/>
+	<parameter name='pOffsetRead'/>
+	<parameter name='pOffsetWrite'/>
+	<parameter name='pClamp'/>
+	<parameter name='pDepthDifferenceThreshold'/>
+	
+	<texture name='texDepth' target='0'/>
+	
+	<sourceCode unit='compute'>compute/defren/light/ssao_blur.glsl</sourceCode>
+</shader>

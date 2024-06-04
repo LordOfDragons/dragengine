@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLLIGHTLIST_H_
@@ -29,7 +32,7 @@ class deoglRLight;
 
 
 /**
- * \brief Light list.
+ * Light list.
  * 
  * List of pointers to lights. The ordering of the lights in the list is
  * not defined and can change when lights are removed. This allows to
@@ -44,13 +47,13 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create light list. */
+	/** Create light list. */
 	deoglLightList();
 	
-	/** \brief Create copy of light list. */
+	/** Create copy of light list. */
 	deoglLightList( const deoglLightList &copy );
 	
-	/** \brief Clean up light list. */
+	/** Clean up light list. */
 	~deoglLightList();
 	/*@}*/
 	
@@ -58,36 +61,36 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Number of lights. */
+	/** Number of lights. */
 	int GetCount() const;
 	
-	/** \brief Light is present. */
+	/** Light is present. */
 	bool Has( deoglRLight *light ) const;
 	
-	/** \brief Light at index. */
+	/** Light at index. */
 	deoglRLight *GetAt( int index ) const;
 	
-	/** \brief Add light. */
+	/** Add light. */
 	void Add( deoglRLight *light );
 	
 	/**
-	 * \brief Add light if absent.
+	 * Add light if absent.
 	 * 
 	 * \returns \em true if added otherwise \em false.
 	 */
 	bool AddIfMissing( deoglRLight *light );
 	
-	/** \brief Remove light. */
+	/** Remove light. */
 	void Remove( deoglRLight *light );
 	
 	/**
-	 * \brief Remove light if present.
+	 * Remove light if present.
 	 * 
 	 * \returns \em true if removed otherwise \em false.
 	 */
 	bool RemoveIfExisting( deoglRLight *light );
 	
-	/** \brief Remove all lights. */
+	/** Remove all lights. */
 	void RemoveAll();
 	/*@}*/
 };

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -24,17 +27,22 @@
 #include <string.h>
 
 #include "deoglRSkin.h"
+#include "deoglSkinBone.h"
+#include "deoglSkinMapped.h"
 #include "deoglSkinTexture.h"
 #include "deoglSkinRenderable.h"
 #include "deoglSkinCalculatedProperty.h"
+#include "deoglSkinConstructedProperty.h"
 #include "channel/deoglSkinChannel.h"
 #include "visitor/deoglVSRetainImageData.h"
 #include "../deoglBasics.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
-#include "../delayedoperation/deoglDelayedDeletion.h"
 #include "../memory/deoglMemoryManager.h"
+#include "../renderthread/deoglLoaderThread.h"
+#include "../renderthread/deoglLoaderThreadTask.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTLogger.h"
+#include "../shaders/deoglShaderLoadingTimeout.h"
 #include "../texture/deoglRImage.h"
 #include "../texture/deoglTextureStageManager.h"
 #include "../texture/arraytexture/deoglArrayTexture.h"
@@ -46,9 +54,26 @@
 #include <dragengine/common/utils/decTimer.h>
 #include <dragengine/resources/skin/deSkin.h>
 #include <dragengine/resources/skin/deSkinTexture.h>
+#include <dragengine/resources/skin/deSkinMapped.h>
 #include <dragengine/resources/skin/property/deSkinProperty.h>
 #include <dragengine/threading/deSemaphore.h>
 
+
+
+// Class cTaskPrepareTexturePipelines
+///////////////////////////////////////
+
+class cTaskPrepareTexturePipelines : public deoglLoaderThreadTask{
+private:
+	deoglRSkin &pSkin;
+	
+public:
+	cTaskPrepareTexturePipelines( deoglRSkin &skin ) : pSkin( skin ){ }
+	
+	virtual void Run(){
+		pSkin.PrepareTexturePipelines();
+	}
+};
 
 
 
@@ -68,6 +93,7 @@ pTextureCount( 0 ),
 
 pIsSolid( true ),
 pHasHoles( false ),
+pHasXRay( false ),
 pShadeless( false ),
 pHasMirrors( false ),
 pHasDynamicChannels( false ),
@@ -80,19 +106,29 @@ pCastTranspShadow( false ),
 
 pVideoPlayerCount( 0 ),
 
-pMemoryUsageGPU( 0 ),
-pMemoryUsageGPUCompressed( 0 ),
-pMemoryUsageGPUUncompressed( 0 ),
-pMemoryUsageCount( 0 ),
-
-pVSRetainImageData( NULL )
+pVSRetainImageData( nullptr ),
+pTexturePipelinesReady( false ),
+pMemUse( renderThread.GetMemoryManager().GetConsumption().skin )
 {
 	// NOTE this is called during asynchronous resource loading. careful accessing other objects
 	
 	const int textureCount = skin.GetTextureCount();
+	const int mappedCount = skin.GetMappedCount();
 	int i;
 	
 	try{
+		// created mapped
+		for( i=0; i<mappedCount; i++ ){
+			const deSkinMapped &mapped = *skin.GetMappedAt( i );
+			const deoglSkinMapped::Ref oglMapped( deoglSkinMapped::Ref::New( new deoglSkinMapped( mapped ) ) );
+			
+			if( mapped.GetInputType() == deSkinMapped::eitRenderable && ! mapped.GetRenderable().IsEmpty() ){
+				oglMapped->SetRenderable( AddRenderable( mapped.GetRenderable() ) );
+			}
+			
+			pMapped.Add( oglMapped );
+		}
+		
 		// create textures. we create only what does not require an opengl call.
 		// these are delayed until a time where we can safely create opengl objects.
 		// loads textures from caches. skips already loaded shared images
@@ -165,6 +201,9 @@ pVSRetainImageData( NULL )
 			if( pTextures[ i ]->GetHasHoles() ){
 				pHasHoles = true;
 			}
+			if( pTextures[ i ]->GetXRay() ){
+				pHasXRay = true;
+			}
 			if( pTextures[ i ]->GetMirror() ){
 				pHasMirrors = true;
 			}
@@ -232,6 +271,12 @@ pVSRetainImageData( NULL )
 		}
 		
 		if( skin.GetAsynchron() ){
+			// prepare texture pipelines using the loader thread and wait for the task to
+			// finish. if the loader thread is disabled do nothing. in this case delayed
+			// operations will prepare the texture pipelines which is less optimal
+			pRenderThread.GetLoaderThread().AwaitTask( deoglLoaderThreadTask::Ref::New(
+				new cTaskPrepareTexturePipelines( *this ) ) );
+			
 			// register for delayed async res initialize. we do not call AddInitSkin here since
 			// it is possible (albeit highly unlikely) for the render thread to run before the
 			// synchronization part. but better safe than sorry
@@ -252,12 +297,6 @@ pVSRetainImageData( NULL )
 
 deoglRSkin::~deoglRSkin(){
 	LEAK_CHECK_FREE( pRenderThread, Skin );
-	deoglMemoryConsumptionTexture &consumption = pRenderThread.GetMemoryManager().GetConsumption().GetSkin();
-	consumption.DecrementGPU( pMemoryUsageGPU );
-	consumption.DecrementGPUCompressed( pMemoryUsageGPUCompressed );
-	consumption.DecrementGPUUncompressed( pMemoryUsageGPUUncompressed );
-	consumption.DecrementCountBy( pMemoryUsageCount );
-	
 	pCleanUp();
 }
 
@@ -287,6 +326,20 @@ void deoglRSkin::FinalizeAsyncResLoading(){
 	pRenderThread.GetDelayedOperations().AddInitSkin( this );
 }
 
+void deoglRSkin::PrepareTexturePipelines(){
+	if( pTexturePipelinesReady ){
+		return;
+	}
+	
+	deoglShaderLoadingTimeout timeout( 1000.0f );
+	int i;
+	for( i=0; i<pTextureCount; i++ ){
+		pTextures[ i ]->GetPipelines().Prepare( timeout );
+	}
+	
+	pTexturePipelinesReady = true;
+}
+
 
 
 deoglSkinTexture &deoglRSkin::GetTextureAt( int index ) const{
@@ -296,77 +349,6 @@ deoglSkinTexture &deoglRSkin::GetTextureAt( int index ) const{
 	
 	return *pTextures[ index ];
 }
-
-void deoglRSkin::UpdateMemoryUsage(){
-	deoglMemoryConsumptionTexture &consumption = pRenderThread.GetMemoryManager().GetConsumption().GetSkin();
-	int t, c;
-	
-	consumption.DecrementGPU( pMemoryUsageGPU );
-	consumption.DecrementGPUCompressed( pMemoryUsageGPUCompressed );
-	consumption.DecrementGPUUncompressed( pMemoryUsageGPUUncompressed );
-	consumption.DecrementCountBy( pMemoryUsageCount );
-	
-	pMemoryUsageGPU = 0;
-	pMemoryUsageGPUCompressed = 0;
-	pMemoryUsageGPUUncompressed = 0;
-	pMemoryUsageCount = 0;
-	
-	for( t=0; t<pTextureCount; t++ ){
-		const deoglSkinTexture &skinTexture = *pTextures[ t ];
-		
-		for( c=0; c<deoglSkinChannel::CHANNEL_COUNT; c++ ){
-			deoglSkinChannel * const channel = skinTexture.GetChannelAt( ( deoglSkinChannel::eChannelTypes )c );
-			if( ! channel ){
-				continue;
-			}
-			
-			deoglTexture * const texture = channel->GetTexture();
-			if( texture ){
-				pMemoryUsageGPU += texture->GetMemoryUsageGPU();
-				pMemoryUsageCount++;
-				
-				if( texture->GetMemoryUsageCompressed() ){
-					pMemoryUsageGPUCompressed += texture->GetMemoryUsageGPU();
-					
-				}else{
-					pMemoryUsageGPUUncompressed += texture->GetMemoryUsageGPU();
-				}
-			}
-			
-			deoglCubeMap * const cubemap = channel->GetCubeMap();
-			if( cubemap ){
-				pMemoryUsageGPU += cubemap->GetMemoryUsageGPU();
-				pMemoryUsageCount++;
-				
-				if( cubemap->GetMemoryUsageCompressed() ){
-					pMemoryUsageGPUCompressed += cubemap->GetMemoryUsageGPU();
-					
-				}else{
-					pMemoryUsageGPUUncompressed += cubemap->GetMemoryUsageGPU();
-				}
-			}
-			
-			deoglArrayTexture * const arrayTexture = channel->GetArrayTexture();
-			if( arrayTexture ){
-				pMemoryUsageGPU += arrayTexture->GetMemoryUsageGPU();
-				pMemoryUsageCount++;
-				
-				if( arrayTexture->GetMemoryUsageCompressed() ){
-					pMemoryUsageGPUCompressed += arrayTexture->GetMemoryUsageGPU();
-					
-				}else{
-					pMemoryUsageGPUUncompressed += arrayTexture->GetMemoryUsageGPU();
-				}
-			}
-		}
-	}
-	
-	consumption.IncrementGPU( pMemoryUsageGPU );
-	consumption.IncrementGPUCompressed( pMemoryUsageGPUCompressed );
-	consumption.IncrementGPUUncompressed( pMemoryUsageGPUUncompressed );
-	consumption.IncrementCountBy( pMemoryUsageCount );
-}
-
 
 
 
@@ -445,70 +427,79 @@ int deoglRSkin::AddCalculatedProperty( deoglSkinCalculatedProperty *calculated )
 
 
 
+// Mapped
+///////////
+
+int deoglRSkin::GetMappedCount() const{
+	return pMapped.GetCount();
+}
+
+deoglSkinMapped *deoglRSkin::GetMappedAt( int index ) const{
+	return ( deoglSkinMapped* )pMapped.GetAt( index );
+}
+
+
+
+// Constructed properties
+///////////////////////////
+
+int deoglRSkin::GetConstructedPropertyCount() const{
+	return pConstructedProperties.GetCount();
+}
+
+deoglSkinConstructedProperty *deoglRSkin::GetConstructedPropertyAt( int index ) const{
+	return ( deoglSkinConstructedProperty* )pConstructedProperties.GetAt( index );
+}
+
+int deoglRSkin::AddConstructedProperty( deoglSkinConstructedProperty *constructed ){
+	DEASSERT_NOTNULL( constructed )
+	
+	pConstructedProperties.Add( constructed );
+	return pConstructedProperties.GetCount() - 1;
+}
+
+
+
+// Bones
+/////////
+
+int deoglRSkin::GetBoneCount() const{
+	return pBones.GetCount();
+}
+
+deoglSkinBone *deoglRSkin::GetBoneAt( int index ) const{
+	return ( deoglSkinBone* )pBones.GetAt( index );
+}
+
+int deoglRSkin::AddBone( const char *name ){
+	DEASSERT_NOTNULL( name )
+	
+	pBones.Add( deoglSkinBone::Ref::New( new deoglSkinBone( name ) ) );
+	return pBones.GetCount() - 1;
+}
+
+
+
 // Private Functions
 //////////////////////
-
-class deoglRSkinDeletion : public deoglDelayedDeletion{
-public:
-	deoglSkinTexture **textures;
-	int textureCount;
-	
-	deoglRSkinDeletion() :
-	textures( NULL ),
-	textureCount( 0 ){
-	}
-	
-	virtual ~deoglRSkinDeletion(){
-	}
-	
-	virtual void DeleteObjects( deoglRenderThread& ){
-		if( textures ){
-			int i;
-			for( i=0; i<textureCount; i++ ){
-				if( textures[ i ] ){
-					delete textures[ i ];
-				}
-			}
-			delete [] textures;
-		}
-	}
-};
 
 void deoglRSkin::pCleanUp(){
 	if( pVSRetainImageData ){
 		delete pVSRetainImageData;
-		pVSRetainImageData = NULL;
+		pVSRetainImageData = nullptr;
 	}
 	
 	pRenderThread.GetDelayedOperations().RemoveInitSkin( this );
 	pRenderThread.GetDelayedOperations().RemoveAsyncResInitSkin( this );
 	
-	// drop reference otherwise deletion can cause other deletions to be generated
-	// causing a deletion race
 	if( pTextures ){
 		int i;
 		for( i=0; i<pTextureCount; i++ ){
 			if( pTextures[ i ] ){
-				pTextures[ i ]->DropDelayedDeletionObjects();
+				delete pTextures[ i ];
 			}
 		}
-	}
-	
-	// delayed deletion of opengl containing objects
-	deoglRSkinDeletion *delayedDeletion = NULL;
-	
-	try{
-		delayedDeletion = new deoglRSkinDeletion;
-		delayedDeletion->textures = pTextures;
-		delayedDeletion->textureCount = pTextureCount;
-		pRenderThread.GetDelayedOperations().AddDeletion( delayedDeletion );
-		
-	}catch( const deException &e ){
-		if( delayedDeletion ){
-			delete delayedDeletion;
-		}
-		pRenderThread.GetLogger().LogException( e );
-		throw;
+		delete [] pTextures;
 	}
 }
 

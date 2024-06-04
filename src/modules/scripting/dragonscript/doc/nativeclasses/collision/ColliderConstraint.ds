@@ -11,6 +11,19 @@ namespace Dragengine.Scenery
 /**
  * \brief Collider constraint.
  * 
+ * Collider constraints define a physical constraint between two colliders or a collider and
+ * the world. Optionally bones inside the colliders can be referenced.
+ * 
+ * Constraints are defined by a reference coordinate system, a target coordinate system and
+ * up to 6 constraint limits one for each degree of freedom.
+ * 
+ * The reference and target coordinate system are relative to the collider position and
+ * orientation. If bones are used the reference respectively target coordinate system is
+ * relative to the rig bone position and orientation. The bone center mass position is not
+ * used. This is contrary to ColliderRig where the position and orientation is the position
+ * and orientation of the bone center mass point in world coordinates. Keep this in mind if
+ * you create collider constraints during runtime for collider bones.
+ * 
  * This is a native class.
  */
 class ColliderConstraint
@@ -27,60 +40,67 @@ class ColliderConstraint
 	/*@{*/
 	/** \brief Target collider or \em null to target the world. */
 	public func Collider getTargetCollider()
+		return null
 	end
 	
 	/** \brief Set target collider or \em null to target the world. */
-	public func void setTargetCollider( Collider collider )
+	public func void setTargetCollider(Collider collider)
 	end
 	
 	/** \brief Taret bone or empty string if not targeting a bone. */
 	public func String getTargetBone()
+		return null
 	end
 	
 	/** \brief Set target bone or empty string if not targeting a bone. */
-	public func void setTargetBone( String bone )
+	public func void setTargetBone(String bone)
 	end
 	
 	
 	
 	/** \brief Position of the reference coordinate system. */
 	public func Vector getPosition1()
+		return null
 	end
 	
 	/** \brief Set position of the reference coordinate system. */
-	public func void setPosition1( Vector position )
+	public func void setPosition1(Vector position)
 	end
 	
 	/** \brief Orientation of the reference coordinate system. */
 	public func Quaternion getOrientation1()
+		return null
 	end
 	
-	/** \brief Set orientation of the reference coordinate system. */
-	public func void setOrientation1( Quaternion orientation )
+	/** \brief Set orientation of the target coordinate system. */
+	public func void setOrientation1(Quaternion orientation)
 	end
 	
-	/** \brief Position of the reference coordinate system. */
+	/** \brief Position of the target coordinate system. */
 	public func Vector getPosition2()
+		return null
 	end
 	
-	/** \brief Set position of the reference coordinate system. */
-	public func void setPosition2( Vector position )
+	/** \brief Set position of the target coordinate system. */
+	public func void setPosition2(Vector position)
 	end
 	
-	/** \brief Orientation of the reference coordinate system. */
+	/** \brief Orientation of the target coordinate system. */
 	public func Quaternion getOrientation2()
+		return null
 	end
 	
 	/** \brief Set orientation of the reference coordinate system. */
-	public func void setOrientation2( Quaternion orientation )
+	public func void setOrientation2(Quaternion orientation)
 	end
 	
 	/** \brief Bone index or -1 if attached to the entire component. */
 	public func int getBone()
+		return 0
 	end
 	
 	/** \brief Set bone index or -1 if attached to the entire component. */
-	public func void setBone( int bone )
+	public func void setBone(int bone)
 	end
 	/*@}*/
 	
@@ -92,61 +112,67 @@ class ColliderConstraint
 	 * \brief Lower limit for DOF.
 	 * \throws EInvalidParam \em degreeOfFreedom is not a valid value.
 	 */
-	public func float getLowerLimitFor( ColliderConstraintDof dof )
+	public func float getLowerLimitFor(ColliderConstraintDof dof)
+		return 0.0
 	end
 	
 	/**
 	 * \brief Upper limit for DOF.
 	 * \throws EInvalidParam \em degreeOfFreedom is not a valid value.
 	 */
-	public func float getUpperLimitFor( ColliderConstraintDof dof )
+	public func float getUpperLimitFor(ColliderConstraintDof dof)
+		return 0.0
 	end
 	
 	/**
 	 * \brief Set lower and upper limit.
 	 * \throws EInvalidParam \em degreeOfFreedom is not a valid value.
 	 */
-	public func void setLimitsFor( ColliderConstraintDof dof, float lowerLimit, float upperLimit )
+	public func void setLimitsFor(ColliderConstraintDof dof, float lowerLimit, float upperLimit)
 	end
 	
 	/**
 	 * \brief Set given DOF to locked.
 	 * \throws EInvalidParam \em degreeOfFreedom is not a valid value.
 	 */
-	public func void setLockedFor( ColliderConstraintDof dof )
+	public func void setLockedFor(ColliderConstraintDof dof)
 	end
 	
 	/**
 	 * \brief Set given DOF free.
 	 * \throws EInvalidParam \em degreeOfFreedom is not a valid value.
 	 */
-	public func void setFreeFor( ColliderConstraintDof dof )
+	public func void setFreeFor(ColliderConstraintDof dof)
 	end
 	
 	
 	
 	/** \brief Lower limits for all linear DOFs as a vector. */
 	public func Vector getLinearLowerLimits()
+		return null
 	end
 	
 	/** \brief Upper limits for all linear DOFs as a vector. */
 	public func Vector getLinearUpperLimits()
+		return null
 	end
 	
 	/** \brief Set limits for linear all linear DOFs from vectors. */
-	public func void setLinearLimits( Vector lowerLimits, Vector upperLimits )
+	public func void setLinearLimits(Vector lowerLimits, Vector upperLimits)
 	end
 	
 	/** \brief Lower limits for all angular DOFs as a vector. */
 	public func Vector getAngularLowerLimits()
+		return null
 	end
 	
 	/** \brief Upper limits for all angular DOFs as a vector. */
 	public func Vector getAngularUpperLimits()
+		return null
 	end
 	
 	/** \brief Set limits for angular all angular DOFs from vectors. */
-	public func void setAngularLimits( Vector lowerLimits, Vector upperLimits )
+	public func void setAngularLimits(Vector lowerLimits, Vector upperLimits)
 	end
 	
 	
@@ -160,11 +186,67 @@ class ColliderConstraint
 	end
 	
 	/** \brief Set upper and lower limit for the given angular DOF and locks all others. */
-	public func void setToHingeJoint( ColliderConstraintDof dof, float lowerLimit, float upperLimit )
+	public func void setToHingeJoint(ColliderConstraintDof dof, float lowerLimit, float upperLimit)
 	end
 	
 	/** \brief Set upper and lower limit for the given linear DOF and locks all others. */
-	public func void setPistonJoint( ColliderConstraintDof dof, float lowerLimit, float upperLimit )
+	public func void setPistonJoint(ColliderConstraintDof dof, float lowerLimit, float upperLimit)
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Degree of freedom (DOF) friction and spring */
+	/*@{*/
+	/**
+	 * \brief Static friction force.
+	 * \version 1.11
+	 * \throws EInvalidParam \em degreeOfFreedom is not a valid value.
+	 */
+	public func float getStaticFrictionFor(ColliderConstraintDof dof)
+		return 0.0
+	end
+	
+	/**
+	 * \brief Set static friction force.
+	 * \version 1.11
+	 * \throws EInvalidParam \em degreeOfFreedom is not a valid value.
+	 */
+	public func void setStaticFrictionFor(ColliderConstraintDof dof, float friction)
+	end
+	
+	/**
+	 * \brief Kinematic friction factor.
+	 * \version 1.11
+	 * \throws EInvalidParam \em degreeOfFreedom is not a valid value.
+	 */
+	public func float getKinematicFrictionFor(ColliderConstraintDof dof)
+		return 0.0
+	end
+	
+	/**
+	 * \brief Set kinematic friction factor.
+	 * \version 1.11
+	 * \throws EInvalidParam \em degreeOfFreedom is not a valid value.
+	 */
+	public func void setKinematicFrictionFor(ColliderConstraintDof dof, float friction)
+	end
+	
+	/**
+	 * \brief Spring stiffness.
+	 * \version 1.11
+	 * \throws EInvalidParam \em degreeOfFreedom is not a valid value.
+	 */
+	public func float getSpringStiffnessFor(ColliderConstraintDof dof)
+		return 0.0
+	end
+	
+	/**
+	 * \brief Set spring stiffness.
+	 * \version 1.11
+	 * \throws EInvalidParam \em degreeOfFreedom is not a valid value.
+	 */
+	public func void setSpringStiffnessFor(ColliderConstraintDof dof, float stiffness)
 	end
 	/*@}*/
 	
@@ -177,13 +259,14 @@ class ColliderConstraint
 	 * \throws EInvalidParam \em degreeOfFreedom is not a valid value.
 	 */
 	public func float getLinearDamping()
+		return 0.0
 	end
 	
 	/**
 	 * \brief Set linear damping for DOF.
 	 * \throws EInvalidParam \em degreeOfFreedom is not a valid value.
 	 */
-	public func void setLinearDamping( float damping )
+	public func void setLinearDamping(float damping)
 	end
 	
 	/**
@@ -191,13 +274,14 @@ class ColliderConstraint
 	 * \throws EInvalidParam \em degreeOfFreedom is not a valid value.
 	 */
 	public func float getAngularDamping()
+		return 0.0
 	end
 	
 	/**
 	 * \brief Set angular damping for DOF.
 	 * \throws EInvalidParam \em degreeOfFreedom is not a valid value.
 	 */
-	public func void setAngularDamping( float damping )
+	public func void setAngularDamping(float damping)
 	end
 	
 	/**
@@ -205,13 +289,14 @@ class ColliderConstraint
 	 * \throws EInvalidParam \em degreeOfFreedom is not a valid value.
 	 */
 	public func float getSpringDamping()
+		return 0.0
 	end
 	
 	/**
 	 * \brief Set spring damping for DOF.
 	 * \throws EInvalidParam \em degreeOfFreedom is not a valid value.
 	 */
-	public func void setSpringDamping( float damping )
+	public func void setSpringDamping(float damping)
 	end
 	/*@}*/
 	
@@ -221,10 +306,11 @@ class ColliderConstraint
 	/*@{*/
 	/** \brief Use rope physics. */
 	public func bool getIsRope()
+		return false
 	end
 	
 	/** \brief Set use rope physics. */
-	public func void setIsRope( bool isRope )
+	public func void setIsRope(bool isRope)
 	end
 	/*@}*/
 	
@@ -234,10 +320,11 @@ class ColliderConstraint
 	/*@{*/
 	/** \brief Breaking threshold impulse. */
 	public func float getBreakingThreshold()
+		return 0.0
 	end
 	
 	/** \brief Set breaking threshold impulse. */
-	public func void setBreakingThreshold( float impuls )
+	public func void setBreakingThreshold(float impuls)
 	end
 	/*@}*/
 end

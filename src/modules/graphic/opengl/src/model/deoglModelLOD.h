@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLMODELLOD_H_
@@ -32,8 +35,11 @@ class deoglModelFace;
 class deoglModelTexture;
 class deoglModelOctree;
 class deoglModelLODTexCoordSet;
+class deoglModelLODVertPosSet;
 class deoglSharedVBOBlock;
+class deoglSharedSPB;
 class deoglSharedSPBRTIGroupList;
+class deoglGIBVHLocal;
 
 class deGraphicOpenGl;
 class deModel;
@@ -51,7 +57,7 @@ struct oglModelWeight{
 struct oglModelPosition{
 	decVector position;
 	decVector normal;
-	int weight;
+	int weights;
 };
 
 struct oglModelVertex{
@@ -64,14 +70,14 @@ struct oglModelVertex{
 
 
 /**
- * @brief Model LOD Mesh.
+ * Model LOD Mesh.
  */
 class deoglModelLOD{
 public:
 	deoglRModel &pModel;
 	const int pLODIndex;
 	
-	deoglModelTexture *pTextures;
+	deoglModelTexture **pTextures;
 	int pTextureCount;
 	
 	oglModelPosition *pPositions;
@@ -101,11 +107,16 @@ public:
 	deoglModelLODTexCoordSet *pTexCoordSets;
 	int pTexCoordSetCount;
 	
+	deoglModelLODVertPosSet *pVertPosSets;
+	int pVertPosSetCount;
+	int pVertPosSetPosCount;
+	
 	deoglSharedVBOBlock *pVBOBlock;
 	deoglSharedVBOBlock *pVBOBlockPositionWeight;
 	deoglSharedVBOBlock *pVBOBlockCalcNormalTangent;
 	deoglSharedVBOBlock *pVBOBlockWriteSkinnedVBO;
 	deoglSharedVBOBlock *pVBOBlockWithWeight;
+	deoglSharedVBOBlock *pVBOBlockVertPosSet;
 	GLuint pIBO;
 	deoglVBOLayout::eIndexTypes pIBOType;
 	
@@ -117,18 +128,22 @@ public:
 	float pMaxError;
 	float pAvgError;
 	
+	deoglGIBVHLocal *pGIBVHLocal;
+	
+	
+	
 public:
-	/** @name Constructors and Destructors */
+	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Creates a new model lod. */
+	/** Creates a new model lod. */
 	deoglModelLOD( deoglRModel &model, int lodIndex, const deModel &engModel );
-	/** \brief Creates a new model lod from cache. */
+	/** Creates a new model lod from cache. */
 	deoglModelLOD( deoglRModel &model, int lodIndex, decBaseFileReader &cacheReader );
 	/** Cleans up the model lod. */
 	~deoglModelLOD();
 	/*@}*/
 	
-	/** @name Management */
+	/** \name Management */
 	/*@{*/
 	/** Retrieves the parent model. */
 	inline deoglRModel &GetModel() const{ return pModel; }
@@ -137,42 +152,44 @@ public:
 	
 	
 	
-	/** Retrieves the VBO block. */
-	deoglSharedVBOBlock *GetVBOBlock();
+	/** Prepare VBO block. */
+	void PrepareVBOBlock();
+	// void PrepareVBOBlockPositionWeight();
+	// void PrepareVBOBlockCalcNormalTangent();
+	// void PrepareVBOBlockWriteSkinnedVBO();
+	void PrepareVBOBlockWithWeight();
+	void PrepareVBOBlockVertPosSet();
 	
-	/** \brief Retrieves the position weight VBO block. */
-	deoglSharedVBOBlock *GetVBOBlockPositionWeight();
+	/** VBO block. */
+	inline deoglSharedVBOBlock *GetVBOBlock() const{ return pVBOBlock; }
+	// inline deoglSharedVBOBlock *GetVBOBlockPositionWeight() const{ return pVBOBlockPositionWeight; }
+	// inline deoglSharedVBOBlock *GetVBOBlockCalcNormalTangent() const{ return pVBOBlockCalcNormalTangent; }
+	// inline deoglSharedVBOBlock *GetVBOBlockWriteSkinnedVBO() const{ return pVBOBlockWriteSkinnedVBO; }
+	inline deoglSharedVBOBlock *GetVBOBlockWithWeight() const{ return pVBOBlockWithWeight; }
+	inline deoglSharedVBOBlock *GetVBOBlockVertPosSet() const{ return pVBOBlockVertPosSet; }
 	
-	/** \brief Retrieves the calculate normal tangent VBO block. */
-	deoglSharedVBOBlock *GetVBOBlockCalcNormalTangent();
-	
-	/** \brief Retrieves the write skinned vbo VBO block. */
-	deoglSharedVBOBlock *GetVBOBlockWriteSkinnedVBO();
-	
-	/** \brief Retrieves the vbo block with weight. */
-	deoglSharedVBOBlock *GetVBOBlockWithWeight();
-	
-	/** \brief Index buffer object. */
+	/** Index buffer object. */
 	GLuint GetIBO();
 	
-	/** \brief Index buffer object data type. */
+	/** Index buffer object data type. */
 	inline deoglVBOLayout::eIndexTypes GetIBOType() const{ return pIBOType; }
 	
 	
 	
-	/** \brief Number of textures. */
+	/** Number of textures. */
 	inline int GetTextureCount() const{ return pTextureCount; }
 	
-	/** \brief Texture at index. */
+	/** Texture at index. */
+	deoglModelTexture &GetTextureAt( int index );
 	const deoglModelTexture &GetTextureAt( int index ) const;
 	
-	/** \brief Texture render task instance group. */
+	/** Texture render task instance group. */
 	deoglSharedSPBRTIGroupList &GetSharedSPBRTIGroupListAt( int texture ) const;
 	
-	/** \brief Model has double sided textures. */
+	/** Model has double sided textures. */
 	inline bool GetDoubleSided() const{ return pDoubleSided; }
 	
-	/** \brief Model has decal textures. */
+	/** Model has decal textures. */
 	inline bool GetDecal() const{ return pDecal; }
 	
 	/** Retrieves the positions. */
@@ -221,10 +238,16 @@ public:
 	/** Retrieves the texture coordinate set at the given index. */
 	const deoglModelLODTexCoordSet &GetTextureCoordSetAt( int index ) const;
 	
-	/** \brief Octree or \em NULL if there is none. */
+	/** Count of vertex position sets. */
+	inline int GetVertexPositionSetCount() const{ return pVertPosSetCount; }
+	
+	/** Vertex position set at index. */
+	const deoglModelLODVertPosSet &GetVertexPositionSetAt( int index ) const;
+	
+	/** Octree or \em NULL if there is none. */
 	inline deoglModelOctree *GetOctree() const{ return pOctree; }
 	
-	/** \brief Prepare octree if not existing already. */
+	/** Prepare octree if not existing already. */
 	void PrepareOctree();
 	
 	/** Retrieves the maximum error in meters compared to LOD 0. */
@@ -232,10 +255,18 @@ public:
 	/** Retrieves the average error in meters compared to LOD 0. */
 	inline float GetAvgError() const{ return pAvgError; }
 	
-	/** \brief Load from cache file. */
+	/** Load from cache file. */
 	void LoadFromCache( decBaseFileReader &reader );
-	/** \brief Save to cache file. */
+	/** Save to cache file. */
 	void SaveToCache( decBaseFileWriter &writer );
+	
+	
+	
+	/** GI Local BVH or NULL. */
+	inline deoglGIBVHLocal *GetGIBVHLocal() const{ return pGIBVHLocal; }
+	
+	/** Prepare GI Local BVH if not build yet. */
+	void PrepareGILocalBVH();
 	/*@}*/
 	
 private:
@@ -245,10 +276,11 @@ private:
 	void pCalcErrorMetrics( const deModel &engModel );
 	void pOptimizeVertexCache();
 	void pWriteVBOData();
-	void pWriteVBODataPositionWeight();
-	void pWriteVBODataCalcNormalTangent();
-	void pWriteVBODataWriteSkinnedVBO();
+	// void pWriteVBODataPositionWeight();
+	// void pWriteVBODataCalcNormalTangent();
+	// void pWriteVBODataWriteSkinnedVBO();
 	void pWriteVBODataWithWeight();
+	void pWriteVBOBlockVertPosSet();
 };
 
 #endif

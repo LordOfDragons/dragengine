@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Game Definition Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -43,6 +46,7 @@ pRenderEnvMap( true ),
 pAffectsAudio( true ),
 pPartialHide( false ),
 pAttachTarget( true ),
+pLightShadowIgnore( false ),
 pColliderResponseType( deCollider::ertStatic ),
 pActiveTexture( NULL ){
 }
@@ -51,16 +55,19 @@ gdeOCComponent::gdeOCComponent( const gdeOCComponent &component ) :
 pModelPath( component.pModelPath ),
 pSkinPath( component.pSkinPath ),
 pRigPath( component.pRigPath ),
-pAnimPath( component.pAnimPath ),
+pAnimatorPath( component.pAnimatorPath ),
 pOccMeshPath( component.pOccMeshPath ),
 pAudioModelPath( component.pAudioModelPath ),
 pPlaybackController( component.pPlaybackController ),
+pAnimationPath( component.pAnimationPath ),
+pMove( component.pMove ),
 pDoNotScale( component.pDoNotScale ),
 pStatic( component.pStatic ),
 pRenderEnvMap( component.pRenderEnvMap ),
 pAffectsAudio( component.pAffectsAudio ),
 pPartialHide( component.pPartialHide ),
 pAttachTarget( component.pAttachTarget ),
+pLightShadowIgnore( component.pLightShadowIgnore ),
 pColliderResponseType( component.pColliderResponseType ),
 pPosition( component.pPosition ),
 pRotation( component.pRotation ),
@@ -79,7 +86,7 @@ pActiveTexture( NULL )
 			texture = NULL;
 		}
 		
-		for( i=0; i<=epAttachRotation; i++ ){
+		for( i=0; i<=epMove; i++ ){
 			pPropertyNames[ i ] = component.pPropertyNames[ i ];
 		}
 		
@@ -115,7 +122,15 @@ void gdeOCComponent::SetRigPath( const char *path ){
 }
 
 void gdeOCComponent::SetAnimatorPath( const char *path ){
-	pAnimPath = path;
+	pAnimatorPath = path;
+}
+
+void gdeOCComponent::SetAnimationPath( const char *path ){
+	pAnimationPath = path;
+}
+
+void gdeOCComponent::SetMove( const char *move ){
+	pMove = move;
 }
 
 void gdeOCComponent::SetOcclusionMeshPath( const char *path ){
@@ -158,6 +173,10 @@ void gdeOCComponent::SetAffectsAudio( bool affectsAudio ){
 	pAffectsAudio = affectsAudio;
 }
 
+void gdeOCComponent::SetLightShadowIgnore( bool lightShadowIgnore ){
+	pLightShadowIgnore = lightShadowIgnore;
+}
+
 void gdeOCComponent::SetPosition( const decVector &position ){
 	pPosition = position;
 }
@@ -186,7 +205,7 @@ void gdeOCComponent::SetPropertyName( eProperties property, const char *name ){
 
 bool gdeOCComponent::HasPropertyWithName( const char *name ) const{
 	int i;
-	for( i=0; i<=epAttachRotation; i++ ){
+	for( i=0; i<=epMove; i++ ){
 		if( pPropertyNames[ i ] == name ){
 			return true;
 		}

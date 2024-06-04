@@ -4,7 +4,7 @@ Import( 'parent_env parent_targets parent_report' )
 
 envEditor = parent_env.Clone()
 
-buildEditor = 'deigde_shared' in parent_targets
+buildEditor = 'deigde_shared' in parent_targets and parent_env['build_editor_synthesizer'] != TernaryVariableNo
 parent_report[ 'build IGDE Synthesizer Editor' ] = 'yes' if buildEditor else 'no'
 if not buildEditor:
 	Return()
@@ -16,6 +16,10 @@ pathShared = '{}/modules/synthesizer'.format( envEditor.subst( envEditor[ 'path_
 
 envEditor.Append( CPPFLAGS = parent_env[ 'MODULE_CPPFLAGS' ] )
 envEditor.Append( LINKFLAGS = parent_env[ 'MODULE_LINKFLAGS' ] )
+
+versionString = '1.0'
+if envEditor['force_version']:
+	versionString = envEditor['force_version']
 
 # setup the builders
 sources = []
@@ -32,7 +36,7 @@ appendLibrary( envEditor, parent_targets[ 'deigde_shared' ], libs )
 if envEditor[ 'OSBeOS' ]:
 	libs.append( [ 'root', 'be' ] )
 
-library = envEditor.SharedLibrary( target='synthesizer', source=objects, LIBS=libs )
+library = envEditor.LoadableModule( target='synthesizer', source=objects, LIBS=libs )
 targetBuild = envEditor.Alias( 'editor_synthesizer_build', library )
 
 install = []
@@ -42,10 +46,16 @@ for l in library:
 		install.append( envEditor.Install( pathModule, l ) )
 		archive[ os.path.join( pathModule, l.name ) ] = l
 
+if envEditor['OSWindows'] and envEditor['CROSSCOMPILE_CLANG'] and envEditor['with_install_pdb']:
+	pathPdb = os.path.join(envEditor.subst(envEditor['path_pdb']), 'IGDEEditors')
+	install.append(envEditor.Install(pathPdb, 'synthesizer.pdb'))
+	archive['{}/synthesizer.pdb'.format(pathPdb)] = envEditor.File('synthesizer.pdb')
+
 manifestUpdates = [
 	{ 'action': 'filename', 'name': library[ 0 ].name, 'keyword': 'FILENAME' },
 	{ 'action': 'filesize', 'path': library[ 0 ].abspath, 'keyword': 'FILESIZE' },
-	{ 'action': 'filehash', 'path': library[ 0 ].abspath, 'keyword': 'SHA1SUM' } ]
+	{ 'action': 'filehash', 'path': library[ 0 ].abspath, 'keyword': 'SHA1SUM' },
+	{'action': 'text', 'value': versionString, 'keyword': 'VERSION'}]
 
 manifest = envEditor.File( 'src/module.xml' )
 updateManifest = envEditor.Command( manifest, manifest.srcnode(),
@@ -76,6 +86,7 @@ parent_targets[ 'editor_synthesizer' ] = {
 	'name' : 'IGDE Synthesizer Editor',
 	'build' : targetBuild,
 	'install' : targetInstall,
+	'install-igde-runtime' : targetInstall,
 	'archive-igde' : archive,
 	'cloc' : buildCloc,
 	'clocReport' : '{}/clocreport.csv'.format( srcdir ) }

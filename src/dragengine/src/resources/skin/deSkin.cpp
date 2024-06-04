@@ -1,35 +1,37 @@
-/* 
- * Drag[en]gine Game Engine
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
-// includes
-#include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
+
 #include "deSkin.h"
 #include "deSkinTexture.h"
 #include "deSkinManager.h"
+#include "deSkinMapped.h"
+#include "../../common/exceptions.h"
 #include "../../systems/modules/graphic/deBaseGraphicSkin.h"
 #include "../../systems/modules/audio/deBaseAudioSkin.h"
 #include "../../systems/modules/physics/deBasePhysicsSkin.h"
-#include "../../common/exceptions.h"
 
 
 
@@ -62,12 +64,11 @@ deSkin::~deSkin(){
 /////////////
 
 void deSkin::AddTexture( deSkinTexture *tex ){
-	if( ! tex ) DETHROW( deeInvalidParam );
+	DEASSERT_NOTNULL( tex )
 	
 	if( pTextureCount == pTextureSize ){
 		int newSize = pTextureSize * 3 / 2 + 1;
 		deSkinTexture **newArray = new deSkinTexture*[ newSize ];
-		if( ! newArray ) DETHROW( deeOutOfMemory );
 		if( pTextures ){
 			memcpy( newArray, pTextures, sizeof( deSkinTexture* ) * pTextureSize );
 			delete [] pTextures;
@@ -81,13 +82,14 @@ void deSkin::AddTexture( deSkinTexture *tex ){
 }
 
 deSkinTexture *deSkin::GetTextureAt( int index ) const{
-	if( index < 0 || index >= pTextureCount ) DETHROW( deeOutOfBoundary );
+	DEASSERT_TRUE( index >= 0 )
+	DEASSERT_TRUE( index < pTextureCount )
 	
 	return pTextures[ index ];
 }
 
 int deSkin::IndexOfTextureNamed( const char *name ) const{
-	if( ! name ) DETHROW( deeInvalidParam );
+	DEASSERT_NOTNULL( name )
 	int i;
 	
 	for( i=0; i<pTextureCount; i++ ){
@@ -95,6 +97,74 @@ int deSkin::IndexOfTextureNamed( const char *name ) const{
 	}
 	
 	return -1;
+}
+
+
+
+// Mapped Values
+//////////////////
+
+int deSkin::GetMappedCount() const{
+	return pMapped.GetCount();
+}
+
+deSkinMapped *deSkin::GetMappedAt( int index ) const{
+	return ( deSkinMapped * )pMapped.GetAt( index );
+}
+
+deSkinMapped *deSkin::GetMappedNamed( const char *name ) const{
+	const int count = pMapped.GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		deSkinMapped * const mapped = ( deSkinMapped * )pMapped.GetAt( i );
+		if( mapped->GetName() == name ){
+			return mapped;
+		}
+	}
+	
+	return nullptr;
+}
+
+int deSkin::IndexOfMapped( deSkinMapped *mapped ) const{
+	return pMapped.IndexOf( mapped );
+}
+
+int deSkin::IndexOfMappedNamed( const char *name ) const{
+	const int count = pMapped.GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		if( ( ( deSkinMapped * )pMapped.GetAt( i ) )->GetName() == name ){
+			return i;
+		}
+	}
+	
+	return -1;
+}
+
+bool deSkin::HasMapped( deSkinMapped *mapped ) const{
+	return pMapped.Has( mapped );
+}
+
+bool deSkin::HasMappedNamed( const char *name ) const{
+	const int count = pMapped.GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		if( ( ( deSkinMapped * )pMapped.GetAt( i ) )->GetName() == name ){
+			return true;
+		}
+	}
+	
+	return false;
+}
+
+void deSkin::AddMapped( deSkinMapped *mapped ){
+	DEASSERT_NOTNULL( mapped )
+	DEASSERT_FALSE( HasMapped( mapped ) )
+	
+	pMapped.Add( mapped );
 }
 
 
@@ -129,9 +199,15 @@ void deSkin::SetPeerPhysics( deBasePhysicsSkin *peer ){
 //////////////////////
 
 void deSkin::pCleanUp(){
-	if( pPeerPhysics ) delete pPeerPhysics;
-	if( pPeerAudio ) delete pPeerAudio;
-	if( pPeerGraphic ) delete pPeerGraphic;
+	if( pPeerPhysics ){
+		delete pPeerPhysics;
+	}
+	if( pPeerAudio ){
+		delete pPeerAudio;
+	}
+	if( pPeerGraphic ){
+		delete pPeerGraphic;
+	}
 	
 	if( pTextures ){
 		while( pTextureCount > 0 ){

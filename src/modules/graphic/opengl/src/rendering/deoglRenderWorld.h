@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLRENDERWORLD_H_
@@ -24,7 +27,7 @@
 
 #include "deoglRenderBase.h"
 #include "deoglRenderWorldInfo.h"
-#include "../shaders/deoglShaderProgramUsage.h"
+#include "../pipeline/deoglPipeline.h"
 
 class deoglAddToRenderTask;
 class deoglAddToRenderTaskParticles;
@@ -32,24 +35,27 @@ class deoglParticleSorter;
 class deoglRenderTask;
 class deoglRenderPlanMasked;
 class deoglRenderTaskParticles;
-class deoglSPBlockUBO;
 
 
 
 /**
- * \brief World renderer.
+ * World renderer.
  */
 class deoglRenderWorld : public deoglRenderBase{
 private:
-	deoglSPBlockUBO *pRenderPB;
-	deoglSPBlockUBO *pRenderCubePB;
+	deoglSPBSingleUse::Ref pRenderPBSingleUse;
+	deoglSPBlockUBO::Ref pRenderPB;
 	deoglRenderTask *pRenderTask;
 	deoglAddToRenderTask *pAddToRenderTask;
 	deoglParticleSorter *pParticleSorter;
 	deoglRenderTaskParticles *pRenderTaskParticles;
 	deoglAddToRenderTaskParticles *pAddToRenderTaskParticles;
 	
-	deoglShaderProgramUsage pShaderFinalize;
+	const deoglPipeline *pPipelineFinalize;
+	const deoglPipeline *pPipelineFinalizeStereo;
+	const deoglPipeline *pPipelineFinalizeBlend;
+	const deoglPipeline *pPipelineFinalizeBlendStereo;
+	const deoglPipeline *pPipelineFinalizeSplit;
 	
 	deoglRenderWorldInfo pDebugInfo;
 	
@@ -58,10 +64,10 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create renderer. */
+	/** Create renderer. */
 	deoglRenderWorld( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up renderer. */
+	/** Clean up renderer. */
 	virtual ~deoglRenderWorld();
 	/*@}*/
 	
@@ -69,65 +75,62 @@ public:
 	
 	/** \name Rendering */
 	/*@{*/
-	/** \brief Debug info. */
+	/** Debug info. */
 	inline deoglRenderWorldInfo &GetDebugInfo(){ return pDebugInfo; }
 	
-	/** \brief Render parameter block. */
-	inline deoglSPBlockUBO *GetRenderPB() const{ return pRenderPB; }
+	/** Render parameter block. */
+	inline const deoglSPBlockUBO::Ref &GetRenderPB() const{ return pRenderPB; }
 	
-	/** \brief Render parameter block cube map. */
-	inline deoglSPBlockUBO *GetRenderCubePB() const{ return pRenderCubePB; }
-	
-	/** \brief Render task. */
+	/** Render task. */
 	inline deoglRenderTask *GetRenderTask() const{ return pRenderTask; }
 	
-	/** \brief Render task for particles. */
+	/** Render task for particles. */
 	inline deoglRenderTaskParticles *GetRenderTaskParticles() const{ return pRenderTaskParticles; }
 	
-	/** \brief Add to render task. */
+	/** Add to render task. */
 	inline deoglAddToRenderTask *GetAddToRenderTask() const{ return pAddToRenderTask; }
 	
-	/** \brief Add to render task particles. */
+	/** Add to render task particles. */
 	inline deoglAddToRenderTaskParticles *GetAddToRenderTaskParticles() const{ return pAddToRenderTaskParticles; }
 	
-	/** \brief Particle sorter. */
+	/** Particle sorter. */
 	inline deoglParticleSorter *GetParticleSorter() const{ return pParticleSorter; }
 	
 	
 	
-	/** \brief Render black screen. */
+	/** Render black screen. */
 	void RenderBlackScreen( deoglRenderPlan &plan );
 	
-	/** \brief Render world. */
-	void RenderWorld( deoglRenderPlan &plan, deoglRenderPlanMasked *mask );
+	/** Render world. */
+	void RenderWorld( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
 	
-	/** \brief Prepare render parameter shader parameter block. */
-	void PrepareRenderParamBlock( deoglRenderPlan &plan, deoglRenderPlanMasked *mask );
+	/** Prepare render parameter shader parameter block. */
+	void PrepareRenderParamBlock( deoglRenderPlan &plan, const deoglRenderPlanMasked *mask );
 	
-	/** \brief Render masked pass. */
+	/** Render masked pass. */
 	void RenderMaskedPass( deoglRenderPlan &plan );
 	
-	/** \brief Render debug drawers. */
+	/** Render debug drawers. */
 	void RenderDebugDrawers( deoglRenderPlan &plan );
 	
-	/** \brief Render effects. */
+	/** Render effects. */
 	void RenderEffects( deoglRenderPlan &plan );
 	
-	/** \brief Render anti aliasing pass. */
+	/** Render anti aliasing pass. */
 	void RenderAntiAliasingPass();
 	
-	/** \brief Render finalize pass to an FBO without color correction. */
-	void RenderFinalizeFBO( deoglRenderPlan &plan );
+	/** Render finalize pass to an FBO without color correction. */
+	void RenderFinalizeFBO( deoglRenderPlan &plan, bool withColorCorrection, bool withGammaCorrection );
 	
-	/** \brief Render finalize pass to active graphics context with color correction. */
+	/** Render finalize pass to active graphics context with color correction. */
 	void RenderFinalizeContext( deoglRenderPlan &plan );
 	
 	
 	
-	/** \brief Add top level debug information in the right order. */
+	/** Add top level debug information in the right order. */
 	virtual void AddTopLevelDebugInfo();
 	
-	/** \brief Developer mode debug information changed. */
+	/** Developer mode debug information changed. */
 	virtual void DevModeDebugInfoChanged();
 	/*@}*/
 	

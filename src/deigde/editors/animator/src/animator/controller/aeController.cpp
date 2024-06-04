@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Animator Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdlib.h>
@@ -28,6 +31,7 @@
 #include "../locomotion/aeAnimatorLocomotion.h"
 #include "../locomotion/aeAnimatorLocomotionLeg.h"
 #include "../wakeboard/aeWakeboard.h"
+#include "../../visitors/aeElementVisitor.h"
 
 #include <dragengine/resources/animator/deAnimator.h>
 #include <dragengine/resources/animator/deAnimatorInstance.h>
@@ -43,7 +47,7 @@
 ////////////////////////////
 
 aeController::aeController( const char *name ) :
-pAnimator( NULL ),
+pAnimator( nullptr ),
 pEngControllerIndex( -1 ),
 pName( name ),
 pMinValue( 0.0f ),
@@ -52,7 +56,25 @@ pCurValue( 0.0f ),
 pClamp( true ),
 pFrozen( false ),
 pLocoAttr( aeAnimatorLocomotion::eaNone ),
-pLocoLeg( 0 ){
+pLocoLeg( 0 ),
+pVectorSimulation( evsNone ),
+pDefaultValue( 0.0f ){
+}
+
+aeController::aeController( const aeController &copy ) :
+pAnimator( nullptr ),
+pEngControllerIndex( -1 ),
+pName( copy.pName ),
+pMinValue( copy.pMinValue ),
+pMaxValue( copy.pMaxValue ),
+pCurValue( copy.pCurValue ),
+pClamp( copy.pClamp ),
+pFrozen( copy.pFrozen ),
+pLocoAttr( copy.pLocoAttr ),
+pLocoLeg( copy.pLocoLeg ),
+pVectorSimulation( copy.pVectorSimulation ),
+pDefaultValue( copy.pDefaultValue ),
+pDefaultVector( copy.pDefaultVector ){
 }
 
 aeController::~aeController(){
@@ -65,10 +87,16 @@ aeController::~aeController(){
 ///////////////
 
 void aeController::SetAnimator( aeAnimator *animator ){
-	if( animator != pAnimator ){
-		pAnimator = animator;
-		pEngControllerIndex = -1;
+	if( animator == pAnimator ){
+		return;
 	}
+	
+	pReleaseGizmos();
+	
+	pAnimator = animator;
+	pEngControllerIndex = -1;
+	
+	pCreateGizmos();
 }
 
 void aeController::SetEngineControllerIndex( int index ){
@@ -96,8 +124,6 @@ void aeController::SetEngineControllerIndex( int index ){
 
 
 void aeController::SetName( const char *name ){
-	if( ! name ) DETHROW( deeInvalidParam );
-	
 	pName = name;
 	
 	if( pAnimator ){
@@ -229,28 +255,33 @@ void aeController::SetClamp( bool clamp ){
 }
 
 void aeController::SetVector( const decVector &vector ){
-	if( ! vector.IsEqualTo( pVector ) ){
-		pVector = vector;
+	if( vector.IsEqualTo( pVector ) ){
+		return;
+	}
+	
+	pVector = vector;
+	
+	if( pEngControllerIndex != -1 ){
+		deAnimatorInstance &instance = *pAnimator->GetEngineAnimatorInstance();
+		deAnimatorController &controller = instance.GetControllerAt( pEngControllerIndex );
 		
-		if( pEngControllerIndex != -1 ){
-			deAnimatorInstance &instance = *pAnimator->GetEngineAnimatorInstance();
-			deAnimatorController &controller = instance.GetControllerAt( pEngControllerIndex );
-			
-			controller.SetVector( vector );
-			
-			instance.NotifyControllerChangedAt( pEngControllerIndex );
-		}
+		controller.SetVector( vector );
 		
-		if( pAnimator ){
-			pAnimator->NotifyControllerValueChanged( this );
-		}
+		instance.NotifyControllerChangedAt( pEngControllerIndex );
+	}
+	
+	if( pAnimator ){
+		pAnimator->NotifyControllerValueChanged( this );
+	}
+	if( pGizmoIKPosition ){
+		pGizmoIKPosition->OnObjectGeometryChanged();
 	}
 }
 
 void aeController::SetLocomotionAttribute( int attribute ){
 	if( attribute != pLocoAttr ){
 		pLocoAttr = attribute;
-			
+		
 		if( pAnimator ){
 			pAnimator->NotifyControllerChanged( this );
 		}
@@ -259,6 +290,46 @@ void aeController::SetLocomotionAttribute( int attribute ){
 
 void aeController::SetLocomotionLeg( int leg ){
 	pLocoLeg = leg;
+}
+
+void aeController::SetVectorSimulation( eVectorSimulation simulation ){
+	if( simulation == pVectorSimulation ){
+		return;
+	}
+	
+	pReleaseGizmos();
+	
+	pVectorSimulation = simulation;
+	
+	pCreateGizmos();
+	
+	if( pAnimator ){
+		pAnimator->NotifyControllerChanged( this );
+	}
+}
+
+void aeController::SetDefaultValue( float value ){
+	if( fabsf( value - pDefaultValue ) <= FLOAT_SAFE_EPSILON ){
+		return;
+	}
+	
+	pDefaultValue = value;
+	
+	if( pAnimator ){
+		pAnimator->NotifyControllerChanged( this );
+	}
+}
+
+void aeController::SetDefaultVector( const decVector &vector ){
+	if( vector.IsEqualTo( pDefaultVector ) ){
+		return;
+	}
+	
+	pDefaultVector = vector;
+	
+	if( pAnimator ){
+		pAnimator->NotifyControllerChanged( this );
+	}
 }
 
 
@@ -305,7 +376,13 @@ void aeController::UpdateValue( float elapsed ){
 		
 	case aeAnimatorLocomotion::eaDisplacement:
 		if( enabled ){
-			IncrementCurrentValue( fabsf( locomotion.GetMovingSpeed() ) * elapsed );
+			IncrementCurrentValue( locomotion.GetMovingSpeed() * elapsed );
+		}
+		break;
+		
+	case aeAnimatorLocomotion::eaRelativeDisplacement:
+		if( enabled ){
+			IncrementCurrentValue( locomotion.GetRelativeMovingSpeed() * elapsed );
 		}
 		break;
 		
@@ -421,6 +498,7 @@ void aeController::ResetValue(){
 		break;
 		
 	case aeAnimatorLocomotion::eaDisplacement:
+	case aeAnimatorLocomotion::eaRelativeDisplacement:
 		SetCurrentValue( 0.0f );
 		break;
 		
@@ -467,6 +545,10 @@ void aeController::ResetValue(){
 			SetVector( locomotion.GetLegAt( pLocoLeg )->GetIKOrientation() );
 		}
 		break;
+		
+	default:
+		SetCurrentValue( pDefaultValue );
+		SetVector( pDefaultVector );
 	}
 }
 
@@ -513,4 +595,29 @@ float aeController::pCheckValue( float value ){
 	}
 	
 	return value;
+}
+
+void aeController::pReleaseGizmos(){
+	if( ! pGizmoIKPosition ){
+		return;
+	}
+	
+	pGizmoIKPosition->SetWorld( nullptr );
+	pGizmoIKPosition = nullptr;
+}
+
+void aeController::pCreateGizmos(){
+	if( pGizmoIKPosition || ! pAnimator ){
+		return;
+	}
+	
+	switch( pVectorSimulation ){
+	case evsPosition:
+		pGizmoIKPosition.TakeOver( new aeGizmoControllerIKPosition( *pAnimator->GetEnvironment(), *this ) );
+		pGizmoIKPosition->SetWorld( pAnimator->GetEngineWorld() );
+		break;
+		
+	default:
+		break;
+	}
 }

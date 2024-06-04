@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -32,113 +35,309 @@ namespace Dragengine.Utils
  * the translation methods again to obtain the new text.
  */
 class TranslationManager
-	private var Dictionary pLanguagePacks
-	private var LanguagePack pActiveLanguagePack
-	private var UnicodeString pTextNoLanguagePack
+	var Dictionary pLanguagePacks
+	var LanguagePack pActiveLanguagePack
+	var LanguagePack pFallbackLanguagePack
+	var UnicodeString pTextNoLanguagePack
 	
 	
 	
 	/** \brief Create translation manager. */
-	public func new()
-		this.pLanguagePacks = Dictionary.new()
-		this.pTextNoLanguagePack = UnicodeString.newFromUTF8( "Missing Language Pack" )
+	func new()
+		pLanguagePacks = Dictionary.new()
+		pTextNoLanguagePack = UnicodeString.newFromUTF8("Missing Language Pack")
+	end
+	
+	/**
+	 * \brief Create copy of translation manager.
+	 * \version 1.20
+	 */
+	func new(TranslationManager manager)
+		pLanguagePacks = Dictionary.new(manager.pLanguagePacks)
+		pActiveLanguagePack = manager.pActiveLanguagePack
+		pFallbackLanguagePack = manager.pFallbackLanguagePack
+		pTextNoLanguagePack = manager.pTextNoLanguagePack
+	end
+	
+	
+	
+	/**
+	 * \brief Get TranslationManager from BaseGameApp.
+	 * \version 1.16
+	 * 
+	 * Convenience method for BaseGameApp.getApp().getTranslationManager() .
+	 */
+	static func TranslationManager get()
+		return BaseGameApp.getApp().getTranslationManager()
 	end
 	
 	
 	
 	/** \brief Translation for entry name or missing text if absent. */
-	public func UnicodeString translate( String name )
-		if this.pActiveLanguagePack != null
-			return this.pActiveLanguagePack.translate( name )
+	func UnicodeString translate(String name)
+		var UnicodeString text = translate(name, null)
+		
+		if text != null
+			return text
+			
+		elif pActiveLanguagePack != null
+			return pActiveLanguagePack.getMissingText()
+			
+		elif pFallbackLanguagePack != null
+			return pFallbackLanguagePack.getMissingText()
 			
 		else
-			return this.pTextNoLanguagePack
+			return pTextNoLanguagePack
 		end
 	end
 	
 	/** \brief Translation for entry name or default value if absent. */
-	public func UnicodeString translate( String name, UnicodeString defaultValue )
-		if this.pActiveLanguagePack != null
-			return this.pActiveLanguagePack.translate( name, defaultValue )
-			
+	func UnicodeString translate(String name, UnicodeString defaultValue)
+		if pActiveLanguagePack != null
+			var UnicodeString text = pActiveLanguagePack.translate(name, null)
+			if text != null
+				return text
+			end
+		end
+		
+		if pFallbackLanguagePack != null
+			var UnicodeString text = pFallbackLanguagePack.translate(name, null)
+			if text != null
+				return text
+			end
+		end
+		
+		return defaultValue
+	end
+	
+	/**
+	 * \brief Translate text if it starts with a translation character.
+	 * \version 1.16
+	 *
+	 * This call can be used for plain text and text prefixed with a marker
+	 * character. If text is empty or the first character in text does not
+	 * match the translation character the text is returned unmodified.
+	 * Otherwise the entire text after the translation character converted to
+	 * UTF-8 encoding is used as name in a call to translate(String).
+	 * 
+	 * Choose the marker character to not be found at the start of any text
+	 * you can possibly encounter. A typical choice is '@'.
+	 */
+	func UnicodeString translateIf(UnicodeString text, int marker)
+		if text.getLength() > 0 and text.getCharacterAt(0) == marker
+			return translate(text.getRight(text.getLength() - 1).toUTF8())
+
 		else
-			return defaultValue
+			return text
+		end
+	end
+	
+	/**
+	 * \brief Translation text if it starts with a translation character.
+	 * \version 1.16
+	 *
+	 * This call can be used for plain text and text prefixed with a marker
+	 * character. If text is empty or the first character in text does not
+	 * match the translation character the text is returned unmodified.
+	 * Otherwise the entire text after the translation character converted to
+	 * UTF-8 encoding is used as name in a call to translate(String, UnicodeString).
+	 * 
+	 * Choose the marker character to not be found at the start of any text
+	 * you can possibly encounter. A typical choice is '@'.
+	 */
+	func UnicodeString translateIf(UnicodeString text, int marker, UnicodeString defaultValue)
+		if text.getLength() > 0 and text.getCharacterAt(0) == marker
+			return translate(text.getRight(text.getLength() - 1).toUTF8(), defaultValue)
+
+		else
+			return text
 		end
 	end
 	
 	
 	
 	/** \brief Missing language pack translation. */
-	public func UnicodeString getTextNoLanguagePack()
-		return this.pTextNoLanguagePack
+	func UnicodeString getTextNoLanguagePack()
+		return pTextNoLanguagePack
 	end
 	
 	/** \brief Set missing language pack translation. */
-	public func void setTextNoLanguagePack( UnicodeString text )
-		this.pTextNoLanguagePack = text
+	func void setTextNoLanguagePack(UnicodeString text)
+		pTextNoLanguagePack = text
 	end
 	
 	
 	
 	/** \brief Number of language packs. */
-	public func int getCount()
-		return this.pLanguagePacks.getCount()
+	func int getCount()
+		return pLanguagePacks.getCount()
 	end
 	
-	/** \brief Named language pack or \em null if absent. */
-	public func LanguagePack getNamed( UnicodeString name )
-		return this.pLanguagePacks.getAt( name, null ) cast LanguagePack
+	/**
+	 * \brief Named language pack or \em null if absent.
+	 * \deprecated Use getWithId.
+	 */
+	func LanguagePack getNamed(UnicodeString name)
+		return pLanguagePacks.find(block String key, LanguagePack value
+			return value.getName().equals(name)
+		end) cast LanguagePack
+	end
+	
+	/**
+	 * \brief Language pack with identifier or \em null if absent.
+	 * \version 1.16
+	 */
+	func LanguagePack getWithId(String identifier)
+		return pLanguagePacks.getAt(identifier, null) cast LanguagePack
 	end
 	
 	/** \brief Add language pack. */
-	public func void add( LanguagePack languagePack )
-		if this.getNamed( languagePack.getName() ) != null
+	func void add(LanguagePack languagePack)
+		if getWithId(languagePack.getIdentifier()) != null
 			throw EInvalidParam.new()
 		end
-		this.pLanguagePacks.setAt( languagePack.getName(), languagePack )
+		pLanguagePacks.setAt(languagePack.getIdentifier(), languagePack)
 	end
 	
 	/** \brief Remove all language packs. */
-	public func void removeAll()
-		this.pLanguagePacks.removeAll()
+	func void removeAll()
+		pLanguagePacks.removeAll()
 	end
 	
-	/** \brief Get array of language pack names as array of UnicodeString. */
-	public func Array getNames()
-		return this.pLanguagePacks.getKeys()
+	/**
+	 * \brief Get array of language pack names as array of UnicodeString.
+	 * \deprecated Use getIdentifiers()
+	 */
+	func Array getNames()
+		return pLanguagePacks.getValues().map(block LanguagePack each
+			return each.getName()
+		end)
+	end
+	
+	/**
+	 * \brief Get array of language pack identifier as array of String.
+	 * \version 1.16
+	 */
+	func Array getIdentifiers()
+		return pLanguagePacks.getKeys()
 	end
 	
 	/** \brief Visit language packs with block with parameter LanguagePack. */
-	public func void forEach( Block ablock )
-		this.pLanguagePacks.forEachValue( ablock )
+	func void forEach(Block ablock)
+		pLanguagePacks.forEachValue(ablock)
+	end
+	
+	/**
+	 * \brief Array with all languages sorted alphabetically by name.
+	 * \version 1.20
+	 */
+	func Array allSorted()
+		var Array languages = Array.new()
+		pLanguagePacks.forEachValue(block LanguagePack each
+			languages.add(each)
+		end)
+		languages.sort(block LanguagePack a, LanguagePack b
+			return a.getName().compare(b.getName())
+		end)
+		return languages
 	end
 	
 	
 	
 	/** \brief Active language pack. */
-	public func LanguagePack getActive()
-		return this.pActiveLanguagePack
+	func LanguagePack getActive()
+		return pActiveLanguagePack
 	end
 	
 	/** \brief Set active language pack. */
-	public func void setActive( LanguagePack languagePack )
-		this.pActiveLanguagePack = languagePack
+	func void setActive(LanguagePack languagePack)
+		pActiveLanguagePack = languagePack
 	end
 	
-	/** \brief Set active language pack by name. */
-	public func void setActiveNamed( UnicodeString name )
-		var LanguagePack languagePack = this.getNamed( name )
+	/**
+	 * \brief Set active language pack by name.
+	 * \deprecated Use setActiveWithId.
+	 */
+	func void setActiveNamed(UnicodeString name)
+		var LanguagePack languagePack = getNamed(name)
 		if languagePack == null
 			throw EInvalidParam.new()
 		end
-		this.setActive( languagePack )
+		setActive(languagePack)
 	end
 	
-	/** \brief Set active language pack by name if present. */
-	public func void setActiveNamedIfPresent( UnicodeString name )
-		var LanguagePack languagePack = this.getNamed( name )
+	/**
+	 * \brief Set active language pack by identifier.
+	 * \version 1.16
+	 */
+	func void setActiveWithId(String identifier)
+		var LanguagePack languagePack = getWithId(identifier)
+		if languagePack == null
+			throw EInvalidParam.new()
+		end
+		setActive(languagePack)
+	end
+	
+	/**
+	 * \brief Set active language pack by name if present.
+	 * \deprecated Use setActiveWithIdIfPresent.
+	 */
+	func void setActiveNamedIfPresent(UnicodeString name)
+		var LanguagePack languagePack = getNamed(name)
 		if languagePack != null
-			this.setActive( languagePack )
+			setActive(languagePack)
+		end
+	end
+	
+	/**
+	 * \brief Set active language pack by identifier if present.
+	 * \version 1.16
+	 */
+	func void setActiveWithIdIfPresent(String identifier)
+		var LanguagePack languagePack = getWithId(identifier)
+		if languagePack != null
+			setActive(languagePack)
+		end
+	end
+	
+	
+	
+	/**
+	 * \brief Fallback language pack.
+	 * \version 1.16
+	 */
+	func LanguagePack getFallback()
+		return pFallbackLanguagePack
+	end
+	
+	/**
+	 * \brief Set fallback language pack.
+	 * \version 1.16
+	 */
+	func void setFallback(LanguagePack languagePack)
+		pFallbackLanguagePack = languagePack
+	end
+	
+	/**
+	 * \brief Set fallback language pack by identifier.
+	 * \version 1.16
+	 */
+	func void setFallbackWithId(String identifier)
+		var LanguagePack languagePack = getWithId(identifier)
+		if languagePack == null
+			throw EInvalidParam.new()
+		end
+		setFallback(languagePack)
+	end
+	
+	/**
+	 * \brief Set fallback language pack by identifier if present.
+	 * \version 1.16
+	 */
+	func void setFallbackWithIdIfPresent(String identifier)
+		var LanguagePack languagePack = getWithId(identifier)
+		if languagePack != null
+			setFallback(languagePack)
 		end
 	end
 	
@@ -153,8 +352,8 @@ class TranslationManager
 	 * \param directory Absolute path to directory to scan for files.
 	 * \param recursive If true scans also in all child directories.
 	 */
-	public func void addFromDirectory( String directory, bool recursive )
-		this.addFromDirectory( directory, "*.delangpack", recursive )
+	func void addFromDirectory(String directory, bool recursive)
+		addFromDirectory(directory, "*.delangpack", recursive)
 	end
 	
 	/**
@@ -167,12 +366,12 @@ class TranslationManager
 	 * \param pattern File pattern to match. Has to be of the form "*.extension"
 	 * \param recursive If true scans also in all child directories.
 	 */
-	public func void addFromDirectory( String directory, String pattern, bool recursive )
-		FileSystem.searchFiles( directory, recursive, block String each, FileType type
-			if type == FileType.file and FileSystem.pathMatchesPattern( each, pattern )
-				this.add( LanguagePack.new( each ) )
+	func void addFromDirectory(String directory, String pattern, bool recursive)
+		FileSystem.searchFiles(directory, recursive, block String each, FileType type
+			if type == FileType.file and FileSystem.pathMatchesPattern(File.new(each).getName(), pattern)
+				add(LanguagePack.new(each))
 			end
 			return true
-		end )
+		end)
 	end
 end

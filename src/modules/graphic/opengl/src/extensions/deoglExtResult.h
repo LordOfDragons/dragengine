@@ -1,29 +1,32 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLEXTRESULT_H_
 #define _DEOGLEXTRESULT_H_
 
 /**
- * @brief OpenGL Extensions Result.
+ * OpenGL Extensions Result.
  *
  * Header file containing the result of the opengl extensions. This
  * file has to be included in any source file requiring opengl
@@ -34,8 +37,6 @@
  * The definitions used here are taken from the header files provided
  * on http://www.opengl.org/registry/ .
  */
-
-#include "../deoglBasics.h"
 
 // it is often the case that the glext header is already included by the gl header above.
 // this is bad for us since these gl headers usually do not have all the extensions that
@@ -245,6 +246,15 @@ extern GLAPI PFNGLGETQUERYOBJECTUIVPROC pglGetQueryObjectuiv;
 
 
 
+// opengl version 2.0
+///////////////////////
+
+extern PFNGLSTENCILOPSEPARATEPROC pglStencilOpSeparate;
+extern PFNGLSTENCILFUNCSEPARATEPROC pglStencilFuncSeparate;
+extern PFNGLSTENCILMASKSEPARATEPROC pglStencilMaskSeparate;
+
+
+
 // GL_ARB_vertex_program . opengl version 2.0
 ///////////////////////////////////////////////
 
@@ -407,13 +417,23 @@ extern GLAPI PFNGLCLEARBUFFERFIPROC pglClearBufferfi;
 
 
 
+// OpenGL 3.2 core stuff
+//////////////////////////
+
+extern GLAPI PFNGLFENCESYNCPROC pglFenceSync;
+extern GLAPI PFNGLDELETESYNCPROC pglDeleteSync;
+extern GLAPI PFNGLCLIENTWAITSYNCPROC pglClientWaitSync;
+extern GLAPI PFNGLWAITSYNCPROC pglWaitSync;
+
+
+
 // GL_ARB_draw_elements_base_vertex : opengl version 3.2
 //////////////////////////////////////////////////////////
 
 extern GLAPI PFNGLDRAWELEMENTSBASEVERTEXPROC pglDrawElementsBaseVertex;
 extern GLAPI PFNGLDRAWRANGEELEMENTSBASEVERTEXPROC pglDrawRangeElementsBaseVertex;
 extern GLAPI PFNGLDRAWELEMENTSINSTANCEDBASEVERTEXPROC pglDrawElementsInstancedBaseVertex;
-//extern GLAPI PFNGLMULTIDRAWELEMENTSBASEVERTEXPROC pglMultiDrawElementsBaseVertex;
+extern GLAPI PFNGLMULTIDRAWELEMENTSBASEVERTEXPROC pglMultiDrawElementsBaseVertex;
 extern GLAPI PFNGLVERTEXATTRIBIPOINTERPROC pglVertexAttribIPointer;
 
 
@@ -459,7 +479,6 @@ extern GLAPI PFNGLBINDFRAMEBUFFERPROC pglBindFramebuffer;
 extern GLAPI PFNGLDELETEFRAMEBUFFERSPROC pglDeleteFramebuffers;
 extern GLAPI PFNGLGENFRAMEBUFFERSPROC pglGenFramebuffers;
 extern GLAPI PFNGLCHECKFRAMEBUFFERSTATUSPROC pglCheckFramebufferStatus;
-extern GLAPI PFNGLFRAMEBUFFERTEXTURE1DPROC pglFramebufferTexture1D;
 extern GLAPI PFNGLFRAMEBUFFERTEXTURE2DPROC pglFramebufferTexture2D;
 extern GLAPI PFNGLFRAMEBUFFERTEXTURE3DPROC pglFramebufferTexture3D;
 extern GLAPI PFNGLFRAMEBUFFERRENDERBUFFERPROC pglFramebufferRenderbuffer;
@@ -558,14 +577,14 @@ extern GLAPI PFNGLGETTRANSFORMFEEDBACKVARYINGPROC pglGetTransformFeedbackVarying
 // extern GLAPI PFNGLGETUNIFORMUIVEXTPROC pglGetUniformuiv;
 extern GLAPI PFNGLBINDFRAGDATALOCATIONEXTPROC pglBindFragDataLocation;
 // extern GLAPI PFNGLGETFRAGDATALOCATIONEXTPROC pglGetFragDataLocation;
-// extern GLAPI PFNGLUNIFORM1UIEXTPROC pglUniform1ui;
-// extern GLAPI PFNGLUNIFORM2UIEXTPROC pglUniform2ui;
-// extern GLAPI PFNGLUNIFORM3UIEXTPROC pglUniform3ui;
-// extern GLAPI PFNGLUNIFORM4UIEXTPROC pglUniform4ui;
-// extern GLAPI PFNGLUNIFORM1UIVEXTPROC pglUniform1uiv;
-// extern GLAPI PFNGLUNIFORM2UIVEXTPROC pglUniform2uiv;
-// extern GLAPI PFNGLUNIFORM3UIVEXTPROC pglUniform3uiv;
-// extern GLAPI PFNGLUNIFORM4UIVEXTPROC pglUniform4uiv;
+extern GLAPI PFNGLUNIFORM1UIEXTPROC pglUniform1ui;
+extern GLAPI PFNGLUNIFORM2UIEXTPROC pglUniform2ui;
+extern GLAPI PFNGLUNIFORM3UIEXTPROC pglUniform3ui;
+extern GLAPI PFNGLUNIFORM4UIEXTPROC pglUniform4ui;
+extern GLAPI PFNGLUNIFORM1UIVEXTPROC pglUniform1uiv;
+extern GLAPI PFNGLUNIFORM2UIVEXTPROC pglUniform2uiv;
+extern GLAPI PFNGLUNIFORM3UIVEXTPROC pglUniform3uiv;
+extern GLAPI PFNGLUNIFORM4UIVEXTPROC pglUniform4uiv;
 
 
 
@@ -592,6 +611,11 @@ extern GLAPI PFNGLGETQUERYOBJECTUI64VPROC pglGetQueryObjectui64v;
 // extern GLAPI PFNGLBLENDEQUATIONSEPARATEIARBPROC pglBlendEquationSeparatei;
 // extern GLAPI PFNGLBLENDFUNCIARBPROC pglBlendFunci;
 // extern GLAPI PFNGLBLENDFUNCSEPARATEIARBPROC pglBlendFuncSeparatei;
+
+// OpenGL version 1.4
+///////////////////////
+
+extern GLAPI PFNGLBLENDFUNCSEPARATEPROC pglBlendFuncSeparate;
 
 
 
@@ -676,11 +700,165 @@ extern GLAPI PFNGLSHADERSTORAGEBLOCKBINDINGPROC pglShaderStorageBlockBinding;
 
 
 
+// GL_ARB_program_interface_query : opengl version 4.3
+/////////////////////////////////////////////////////////////
+
+extern GLAPI PFNGLGETPROGRAMINTERFACEIVPROC pglGetProgramInterfaceiv;
+extern GLAPI PFNGLGETPROGRAMRESOURCEINDEXPROC pglGetProgramResourceIndex;
+
+
+
+// GL_ARB_compute_shader : opengl version 4.3
+///////////////////////////////////////////////
+
+extern GLAPI PFNGLDISPATCHCOMPUTEPROC pglDispatchCompute;
+extern GLAPI PFNGLDISPATCHCOMPUTEINDIRECTPROC pglDispatchComputeIndirect;
+
+
+
+// GL_ARB_draw_indirect : opengl version 4.3
+//////////////////////////////////////////////
+
+struct oglDrawArraysIndirectCommand{
+	GLuint count;
+	GLuint instanceCount;
+	GLuint first;
+	GLuint baseInstance;
+	
+	oglDrawArraysIndirectCommand();
+};
+
+struct oglDrawElementsIndirectCommand{
+	GLuint count;
+	GLuint instanceCount;
+	GLuint firstIndex;
+	GLint baseVertex;
+	GLuint baseInstance;
+	
+	oglDrawElementsIndirectCommand();
+};
+
+union oglDrawIndirectCommand{
+	struct Element{
+		GLuint count;
+		GLuint instanceCount;
+		GLuint firstIndex;
+		GLint baseVertex;
+		GLuint baseInstance;
+	} element;
+	
+	struct Array{
+		GLuint count;
+		GLuint instanceCount;
+		GLuint first;
+		GLuint baseInstance;
+	} array;
+};
+
+extern GLAPI PFNGLDRAWARRAYSINDIRECTPROC pglDrawArraysIndirect;
+extern GLAPI PFNGLDRAWELEMENTSINDIRECTPROC pglDrawElementsIndirect;
+
+
+
+// GL_ARB_multi_draw_indirect : opengl version 4.3
+////////////////////////////////////////////////////
+
+/**
+ * WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING
+ * 
+ * Sourcing parameters from client memory is NOT allowed although the documentatin claims so!
+ * If you try doing this you get GL_INVALID_OPERATION and weeks of big headaches!
+ * This ONLY works with GL_DRAW_INDIRECT_BUFFER and nothing else!
+ * 
+ * WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING
+ */
+extern GLAPI PFNGLMULTIDRAWARRAYSINDIRECTPROC pglMultiDrawArraysIndirect;
+
+/**
+ * WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING
+ * 
+ * Sourcing parameters from client memory is NOT allowed although the documentatin claims so!
+ * If you try doing this you get GL_INVALID_OPERATION and weeks of big headaches!
+ * This ONLY works with GL_DRAW_INDIRECT_BUFFER and nothing else!
+ * 
+ * WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING
+ */
+extern GLAPI PFNGLMULTIDRAWELEMENTSINDIRECTPROC pglMultiDrawElementsIndirect;
+
+
+
+// GL_ARB_clear_buffer_data : opengl version 4.3
+//////////////////////////////////////////////////
+
+extern GLAPI PFNGLCLEARBUFFERSUBDATAPROC pglClearBufferSubData;
+
+
+
+// GL_ARB_buffer_storage : opengl version 4.3
+///////////////////////////////////////////////
+
+extern GLAPI PFNGLBUFFERSTORAGEPROC pglBufferStorage;
+
+
+
+// GL_ARB_direct_state_access : opengl version 4.4
+////////////////////////////////////////////////////
+
+extern GLAPI PFNGLCREATEBUFFERSPROC pglCreateBuffers;
+extern GLAPI PFNGLNAMEDBUFFERSTORAGEPROC pglNamedBufferStorage;
+extern GLAPI PFNGLNAMEDBUFFERDATAPROC pglNamedBufferData;
+extern GLAPI PFNGLNAMEDBUFFERSUBDATAPROC pglNamedBufferSubData;
+extern GLAPI PFNGLCOPYNAMEDBUFFERSUBDATAPROC pglCopyNamedBufferSubData;
+extern GLAPI PFNGLCLEARNAMEDBUFFERDATAPROC pglClearNamedBufferData;
+extern GLAPI PFNGLCLEARNAMEDBUFFERSUBDATAPROC pglClearNamedBufferSubData;
+extern GLAPI PFNGLMAPNAMEDBUFFERPROC pglMapNamedBuffer;
+extern GLAPI PFNGLMAPNAMEDBUFFERRANGEPROC pglMapNamedBufferRange;
+extern GLAPI PFNGLUNMAPNAMEDBUFFERPROC pglUnmapNamedBuffer;
+extern GLAPI PFNGLCREATEFRAMEBUFFERSPROC pglCreateFramebuffers;
+extern GLAPI PFNGLNAMEDFRAMEBUFFERTEXTUREPROC pglNamedFramebufferTexture;
+extern GLAPI PFNGLNAMEDFRAMEBUFFERTEXTURELAYERPROC pglNamedFramebufferTextureLayer;
+extern GLAPI PFNGLNAMEDFRAMEBUFFERDRAWBUFFERSPROC pglNamedFramebufferDrawBuffers;
+extern GLAPI PFNGLCLEARNAMEDFRAMEBUFFERFVPROC pglClearNamedFramebufferfv;
+extern GLAPI PFNGLCLEARNAMEDFRAMEBUFFERFIPROC pglClearNamedFramebufferfi;
+extern GLAPI PFNGLBLITNAMEDFRAMEBUFFERPROC pglBlitNamedFramebuffer;
+extern GLAPI PFNGLCHECKNAMEDFRAMEBUFFERSTATUSPROC pglCheckNamedFramebufferStatus;
+extern GLAPI PFNGLCREATETEXTURESPROC pglCreateTextures;
+extern GLAPI PFNGLTEXTUREBUFFERPROC pglTextureBuffer;
+extern GLAPI PFNGLTEXTUREBUFFERRANGEPROC pglTextureBufferRange;
+extern GLAPI PFNGLTEXTURESTORAGE2DPROC pglTextureStorage2D;
+extern GLAPI PFNGLTEXTURESTORAGE3DPROC pglTextureStorage3D;
+extern GLAPI PFNGLTEXTURESUBIMAGE2DPROC pglTextureSubImage2D;
+extern GLAPI PFNGLTEXTURESUBIMAGE3DPROC pglTextureSubImage3D;
+extern GLAPI PFNGLCOMPRESSEDTEXTURESUBIMAGE2DPROC pglCompressedTextureSubImage2D;
+extern GLAPI PFNGLCOMPRESSEDTEXTURESUBIMAGE3DPROC pglCompressedTextureSubImage3D;
+extern GLAPI PFNGLCOPYTEXTURESUBIMAGE2DPROC pglCopyTextureSubImage2D;
+extern GLAPI PFNGLCOPYTEXTURESUBIMAGE3DPROC pglCopyTextureSubImage3D;
+extern GLAPI PFNGLTEXTUREPARAMETERIPROC pglTextureParameteri;
+extern GLAPI PFNGLGENERATETEXTUREMIPMAPPROC pglGenerateTextureMipmap;
+extern GLAPI PFNGLBINDTEXTUREUNITPROC pglBindTextureUnit;
+extern GLAPI PFNGLGETCOMPRESSEDTEXTUREIMAGEPROC pglGetCompressedTextureImage;
+extern GLAPI PFNGLGETTEXTURELEVELPARAMETERIVPROC pglGetTextureLevelParameteriv;
+extern GLAPI PFNGLCREATEVERTEXARRAYSPROC pglCreateVertexArrays;
+extern GLAPI PFNGLENABLEVERTEXARRAYATTRIBPROC pglEnableVertexArrayAttrib;
+extern GLAPI PFNGLVERTEXARRAYELEMENTBUFFERPROC pglVertexArrayElementBuffer;
+extern GLAPI PFNGLVERTEXARRAYVERTEXBUFFERSPROC pglVertexArrayVertexBuffers;
+extern GLAPI PFNGLVERTEXARRAYATTRIBBINDINGPROC pglVertexArrayAttribBinding;
+extern GLAPI PFNGLVERTEXARRAYBINDINGDIVISORPROC pglVertexArrayBindingDivisor;
+
+
 
 // GL_ARB_clip_control : opengl version 4.5
 /////////////////////////////////////////////
 
 extern GLAPI PFNGLCLIPCONTROLPROC pglClipControl;
+
+
+
+// GL_ARB_indirect_parameters : opengl version 4.6
+////////////////////////////////////////////////////
+
+extern GLAPI PFNGLMULTIDRAWARRAYSINDIRECTCOUNTARBPROC pglMultiDrawArraysIndirectCountARB;
+extern GLAPI PFNGLMULTIDRAWELEMENTSINDIRECTCOUNTARBPROC pglMultiDrawElementsIndirectCountARB;
 
 
 
@@ -700,7 +878,7 @@ extern GLAPI PFNGLUNIFORMBLOCKBINDINGPROC pglUniformBlockBinding;
 // GL_ARB_copy_buffer : no opengl version
 ///////////////////////////////////////////
 
-// extern GLAPI PFNGLCOPYBUFFERSUBDATAPROC pglCopyBufferSubData;
+extern GLAPI PFNGLCOPYBUFFERSUBDATAPROC pglCopyBufferSubData;
 
 
 
@@ -717,9 +895,9 @@ extern GLAPI PFNGLUNIFORMBLOCKBINDINGPROC pglUniformBlockBinding;
 // GL_ARB_get_program_binary : no opengl version
 //////////////////////////////////////////////////
 
-// extern GLAPI PFNGLGETPROGRAMBINARYPROC pglGetProgramBinary;
-// extern GLAPI PFNGLPROGRAMBINARYPROC pglProgramBinary;
-// extern GLAPI PFNGLPROGRAMPARAMETERIPROC pglProgramParameteri;
+extern GLAPI PFNGLGETPROGRAMBINARYPROC pglGetProgramBinary;
+extern GLAPI PFNGLPROGRAMBINARYPROC pglProgramBinary;
+extern GLAPI PFNGLPROGRAMPARAMETERIPROC pglProgramParameteri;
 
 
 
@@ -873,6 +1051,11 @@ extern GLAPI PFNGLGETVARYINGLOCATIONNVPROC pglGetVaryingLocationNV;
 extern GLAPI PFNGLBINDIMAGETEXTUREPROC pglBindImageTexture;
 
 
+// OpenGL 4.2 : no extension
+//////////////////////////////
+
+extern GLAPI PFNGLMEMORYBARRIERPROC pglMemoryBarrier;
+
 
 // OpenGL 4.3 : no extension
 //////////////////////////////
@@ -884,11 +1067,46 @@ extern GLAPI PFNGLINVALIDATEFRAMEBUFFERPROC pglInvalidateFramebuffer;
 
 extern GLAPI PFNGLGETINTEGER64VPROC pglGetInteger64v;
 
+// OpenGL 2.0 : no extension
+//////////////////////////////
+
+extern GLAPI PFNGLMULTIDRAWARRAYSPROC pglMultiDrawArrays;
+extern GLAPI PFNGLMULTIDRAWELEMENTSPROC pglMultiDrawElements;
+
 
 
 // GL_NV_texture_barrier : no opengl version
 //////////////////////////////////////////////
 
 extern GLAPI PFNGLTEXTUREBARRIERNVPROC pglTextureBarrier;
+
+
+
+// GL_ARB_bindless_texture : no opengl version
+////////////////////////////////////////////////
+
+extern GLAPI PFNGLGETTEXTUREHANDLEARBPROC pglGetTextureHandleARB;
+extern GLAPI PFNGLGETTEXTURESAMPLERHANDLEARBPROC pglGetTextureSamplerHandleARB;
+extern GLAPI PFNGLMAKETEXTUREHANDLERESIDENTARBPROC pglMakeTextureHandleResidentARB;
+extern GLAPI PFNGLMAKETEXTUREHANDLENONRESIDENTARBPROC pglMakeTextureHandleNonResidentARB;
+extern GLAPI PFNGLGETIMAGEHANDLEARBPROC pglGetImageHandleARB;
+extern GLAPI PFNGLMAKEIMAGEHANDLERESIDENTARBPROC pglMakeImageHandleResidentARB;
+extern GLAPI PFNGLMAKEIMAGEHANDLENONRESIDENTARBPROC pglMakeImageHandleNonResidentARB;
+extern GLAPI PFNGLUNIFORMHANDLEUI64ARBPROC pglUniformHandleui64ARB;
+extern GLAPI PFNGLUNIFORMHANDLEUI64VARBPROC pglUniformHandleui64vARB;
+extern GLAPI PFNGLPROGRAMUNIFORMHANDLEUI64ARBPROC pglProgramUniformHandleui64ARB;
+extern GLAPI PFNGLPROGRAMUNIFORMHANDLEUI64VARBPROC pglProgramUniformHandleui64vARB;
+extern GLAPI PFNGLVERTEXATTRIBL1UI64ARBPROC pglVertexAttribL1ui64ARB;
+extern GLAPI PFNGLVERTEXATTRIBL1UI64VARBPROC pglVertexAttribL1ui64vARB;
+extern GLAPI PFNGLGETVERTEXATTRIBLUI64VARBPROC pglGetVertexAttribLui64vARB;
+
+
+
+// GL_KHR_debug : no opengl version
+/////////////////////////////////////
+
+extern GLAPI PFNGLPUSHDEBUGGROUPPROC pglPushDebugGroup;
+extern GLAPI PFNGLPOPDEBUGGROUPPROC pglPopDebugGroup;
+extern GLAPI PFNGLOBJECTLABELPROC pglObjectLabel;
 
 #endif

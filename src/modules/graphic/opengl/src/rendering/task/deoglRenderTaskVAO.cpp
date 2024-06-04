@@ -1,31 +1,35 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
+#include "deoglRenderTask.h"
 #include "deoglRenderTaskVAO.h"
 #include "deoglRenderTaskInstance.h"
-#include "deoglRenderTaskInstanceGroup.h"
+#include "shared/deoglRenderTaskSharedInstance.h"
 #include "../../vbo/deoglVBOLayout.h"
 #include "../../utils/deoglQuickSorter.h"
 
@@ -41,11 +45,7 @@
 
 deoglRenderTaskVAO::deoglRenderTaskVAO() :
 pVAO( NULL ),
-pRootInstance( NULL ),
-pTailInstance( NULL ),
 pInstanceCount( 0 ),
-pNextVAO( NULL ),
-pLLNext( NULL ),
 pHasInstance( NULL ),
 pHasInstanceCount( 0 ),
 pHasInstanceSize( 0 ){
@@ -55,6 +55,13 @@ deoglRenderTaskVAO::~deoglRenderTaskVAO(){
 	if( pHasInstance ){
 		delete [] pHasInstance;
 	}
+	
+	const int instanceCount = pInstances.GetCount();
+	int i;
+	for( i=0; i<instanceCount; i++ ){
+		delete ( deoglRenderTaskInstance* )pInstances.GetAt( i );
+	}
+	pInstances.RemoveAll();
 }
 
 
@@ -64,98 +71,58 @@ deoglRenderTaskVAO::~deoglRenderTaskVAO(){
 
 void deoglRenderTaskVAO::Reset(){
 	pVAO = NULL;
-	
-	pRootInstance = NULL;
-	pTailInstance = NULL;
 	pInstanceCount = 0;
-	
 	pHasInstanceCount = 0;
-	
-	pNextVAO = NULL;
 }
 
 
 
-void deoglRenderTaskVAO::SetVAO( deoglVAO *vao ){
+void deoglRenderTaskVAO::SetVAO( const deoglRenderTaskSharedVAO *vao ){
 	pVAO = vao;
 }
 
 
 
 int deoglRenderTaskVAO::GetTotalPointCount() const{
-	deoglRenderTaskInstance *instance = pRootInstance;
-	int subInstanceCount;
-	int pointCount = 0;
-	
-	while( instance ){
-		subInstanceCount = instance->GetSubInstanceCount();
-		if( subInstanceCount < 1 ){
-			subInstanceCount = 1;
-		}
-		
-		pointCount += ( instance->GetIndexCount() + instance->GetPointCount() ) * subInstanceCount;
-		instance = instance->GetNextInstance();
+	int i, pointCount = 0;
+	for( i=0; i<pInstanceCount; i++ ){
+		const deoglRenderTaskSharedInstance &instance =
+			*( ( deoglRenderTaskInstance* )pInstances.GetAt( i ) )->GetInstance();
+		pointCount += ( instance.GetIndexCount() + instance.GetPointCount() )
+			* decMath::max( instance.GetSubInstanceCount(), 1 );
 	}
-	
 	return pointCount;
 }
 
 int deoglRenderTaskVAO::GetTotalSubInstanceCount() const{
-	deoglRenderTaskInstance *instance = pRootInstance;
-	int subInstanceCount = 0;
-	
-	while( instance ){
-		subInstanceCount += instance->GetSubInstanceCount();
-		instance = instance->GetNextInstance();
+	int i, subInstanceCount = 0;
+	for( i=0; i<pInstanceCount; i++ ){
+		subInstanceCount += ( ( deoglRenderTaskInstance* )pInstances.GetAt( i ) )->GetSubInstanceCount();
 	}
-	
 	return subInstanceCount;
 }
 
 
 
-deoglRenderTaskInstance *deoglRenderTaskVAO::GetInstanceWith( deoglRenderTaskInstanceGroup *group ){
-	deoglRenderTaskInstance *instance = pRootInstance;
-	while( instance ){
-		if( instance->GetGroup() == group ){
-			return instance;
-		}
-		instance = instance->GetNextInstance();
-	}
-	return NULL;
+deoglRenderTaskInstance *deoglRenderTaskVAO::GetInstanceAt( int index ) const{
+	return ( deoglRenderTaskInstance* )pInstances.GetAt( index );
 }
 
-void deoglRenderTaskVAO::AddInstance( deoglRenderTaskInstance *instance ){
+deoglRenderTaskInstance *deoglRenderTaskVAO::AddInstance( const deoglRenderTaskSharedInstance *instance ){
 	if( ! instance ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	if( pTailInstance ){
-		pTailInstance->SetNextInstance( instance );
-	}
-	instance->SetNextInstance( NULL );
-	
-	pTailInstance = instance;
-	
-	if( ! pRootInstance ){
-		pRootInstance = instance;
-	}
-	
-	pInstanceCount++;
-	
-	// mark as added if group is present
-	if( ! instance->GetGroup() ){
-		return;
-	}
-	
-	const int index = instance->GetGroup()->GetIndex();
+	const int index = instance->GetIndex();
 	
 	if( index >= pHasInstanceCount ){
 		if( index >= pHasInstanceSize ){
 			deoglRenderTaskInstance ** const newArray = new deoglRenderTaskInstance*[ index + 1 ];
 			
-			if( pHasInstanceCount > 0 ){
-				memcpy( newArray, pHasInstance, sizeof( deoglRenderTaskInstance* ) * pHasInstanceCount );
+			if( pHasInstance ){
+				if( pHasInstanceCount > 0 ){
+					memcpy( newArray, pHasInstance, sizeof( deoglRenderTaskInstance* ) * pHasInstanceCount );
+				}
 				delete [] pHasInstance;
 			}
 			
@@ -163,17 +130,31 @@ void deoglRenderTaskVAO::AddInstance( deoglRenderTaskInstance *instance ){
 			pHasInstanceSize = index + 1;
 		}
 		
-		while( pHasInstanceCount < index ){
-			pHasInstance[ pHasInstanceCount++ ] = NULL;
+		if( pHasInstanceCount <= index ){
+			memset( pHasInstance + pHasInstanceCount, 0,
+				sizeof( deoglRenderTaskInstance* ) * ( index - pHasInstanceCount + 1 ) );
+			pHasInstanceCount = index + 1;
 		}
-		pHasInstanceCount++;
 	}
 	
-	pHasInstance[ index ] = instance;
-}
-
-deoglRenderTaskInstance * deoglRenderTaskVAO::GetInstanceForIndex( int index ){
-	return index < pHasInstanceCount ? pHasInstance[ index ] : NULL;
+	deoglRenderTaskInstance *rtinstance = pHasInstance[ index ];
+	if( rtinstance ){
+		return rtinstance;
+	}
+	
+	if( pInstanceCount == pInstances.GetCount() ){
+		rtinstance = new deoglRenderTaskInstance;
+		pInstances.Add( rtinstance );
+		
+	}else{
+		rtinstance = ( deoglRenderTaskInstance* )pInstances.GetAt( pInstanceCount );
+		rtinstance->Reset();
+	}
+	pInstanceCount++;
+	
+	rtinstance->SetInstance( instance );
+	pHasInstance[ index ] = rtinstance;
+	return rtinstance;
 }
 
 
@@ -213,19 +194,4 @@ const decDVector &position, const decDVector &direction, double posDotDir ){
 		pTailInstance = newTail;
 	}
 #endif
-}
-
-
-
-void deoglRenderTaskVAO::SetNextVAO( deoglRenderTaskVAO *vao ){
-	pNextVAO = vao;
-}
-
-
-
-// Linked List
-////////////////
-
-void deoglRenderTaskVAO::SetLLNext( deoglRenderTaskVAO *vao ){
-	pLLNext = vao;
 }

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -38,8 +41,8 @@
 
 deoglVBOWriterModel::deoglVBOWriterModel( deoglRenderThread &renderThread ) :
 pRenderThread( renderThread ),
-pDataPoints( NULL ),
-pDataIndices( NULL ){
+pDataPoints( nullptr ),
+pDataIndices( nullptr ){
 }
 
 deoglVBOWriterModel::~deoglVBOWriterModel(){
@@ -52,12 +55,12 @@ deoglVBOWriterModel::~deoglVBOWriterModel(){
 
 void deoglVBOWriterModel::Reset( deoglSharedVBOBlock *vboBlock ){
 	if( vboBlock ){
-		pDataPoints = ( char* )vboBlock->GetData();
+		pDataPoints = ( GLfloat* )vboBlock->GetData();
 		pDataIndices = ( GLuint* )vboBlock->GetIndexData();
 		
 	}else{
-		pDataPoints = NULL;
-		pDataIndices = NULL;
+		pDataPoints = nullptr;
+		pDataIndices = nullptr;
 	}
 }
 
@@ -66,72 +69,63 @@ void deoglVBOWriterModel::Reset( deoglSharedVBOBlock *vboBlock ){
 void deoglVBOWriterModel::WritePoint( const decVector &position, const decVector &normal,
 const decVector &tangent, bool negateTangent, const decVector2 &texCoord,
 const decVector &realNormal ){
-	if( ! pDataPoints ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( pDataPoints )
 	
-	GLfloat * const ptrPosition = ( GLfloat* )pDataPoints;
+	GLfloat * const ptrPosition = pDataPoints;
 	ptrPosition[ 0 ] = ( GLfloat )position.x;
 	ptrPosition[ 1 ] = ( GLfloat )position.y;
 	ptrPosition[ 2 ] = ( GLfloat )position.z;
 	
-	GLbyte * const ptrRealNormal = ( GLbyte* )( pDataPoints + 12 );
-	ptrRealNormal[ 0 ] = ( GLbyte )decMath::clamp( ( int )( realNormal.x * 127.0f ), -128, 127 );
-	ptrRealNormal[ 1 ] = ( GLbyte )decMath::clamp( ( int )( realNormal.y * 127.0f ), -128, 127 );
-	ptrRealNormal[ 2 ] = ( GLbyte )decMath::clamp( ( int )( realNormal.z * 127.0f ), -128, 127 );
+	GLfloat * const ptrRealNormal = pDataPoints + 4;
+	ptrRealNormal[ 0 ] = ( GLfloat )realNormal.x;
+	ptrRealNormal[ 1 ] = ( GLfloat )realNormal.y;
+	ptrRealNormal[ 2 ] = ( GLfloat )realNormal.z;
 	
-	GLshort * const ptrNormal = ( GLshort* )( pDataPoints + 16 );
-	ptrNormal[ 0 ] = ( GLshort )decMath::clamp( ( int )( normal.x * 32767.0f ), -32768, 32767 );
-	ptrNormal[ 1 ] = ( GLshort )decMath::clamp( ( int )( normal.y * 32767.0f ), -32768, 32767 );
-	ptrNormal[ 2 ] = ( GLshort )decMath::clamp( ( int )( normal.z * 32767.0f ), -32768, 32767 );
+	GLfloat * const ptrNormal = pDataPoints + 8;
+	ptrNormal[ 0 ] = ( GLfloat )normal.x;
+	ptrNormal[ 1 ] = ( GLfloat )normal.y;
+	ptrNormal[ 2 ] = ( GLfloat )normal.z;
 	
-	GLshort * const ptrTangent = ( GLshort* )( pDataPoints + 24 );
-	ptrTangent[ 0 ] = ( GLshort )decMath::clamp( ( int )( tangent.x * 32767.0f ), -32768, 32767 );
-	ptrTangent[ 1 ] = ( GLshort )decMath::clamp( ( int )( tangent.y * 32767.0f ), -32768, 32767 );
-	ptrTangent[ 2 ] = ( GLshort )decMath::clamp( ( int )( tangent.z * 32767.0f ), -32768, 32767 );
-	ptrTangent[ 3 ] = ( GLshort )( negateTangent ? -32768 : 32767 );
+	GLfloat * const ptrTangent = pDataPoints + 12;
+	ptrTangent[ 0 ] = ( GLfloat )tangent.x;
+	ptrTangent[ 1 ] = ( GLfloat )tangent.y;
+	ptrTangent[ 2 ] = ( GLfloat )tangent.z;
+	ptrTangent[ 3 ] = ( GLfloat )( negateTangent ? -1.0f : 1.0f );
 	
-	GLfloat * const ptrTexCoord = ( GLfloat* )( pDataPoints + 32 );
+	GLfloat * const ptrTexCoord = pDataPoints + 16;
 	ptrTexCoord[ 0 ] = ( GLfloat )texCoord.x;
 	ptrTexCoord[ 1 ] = ( GLfloat )texCoord.y;
 	
-	pDataPoints += 40;
+	pDataPoints += 20;
+}
+
+void deoglVBOWriterModel::WritePoint( const decVector &position, const decVector &normal,
+const decVector &tangent, bool negateTangent, const decVector2 &texCoord,
+const decVector &realNormal, int weights ){
+	WritePoint( position, normal, tangent, negateTangent, texCoord, realNormal );
+	
+	*( ( GLint* )( pDataPoints - 2 ) ) = ( GLint )weights;
 }
 
 void deoglVBOWriterModel::WriteTexCoordSetPoint( const decVector &tangent,
 bool negateTangent, const decVector2 &texCoord ){
-	if( ! pDataPoints ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( pDataPoints )
 	
-	GLshort * const ptrTangent = ( GLshort* )pDataPoints;
-	ptrTangent[ 0 ] = ( GLshort )decMath::clamp( ( int )( tangent.x * 32767.0f ), -32768, 32767 );
-	ptrTangent[ 1 ] = ( GLshort )decMath::clamp( ( int )( tangent.y * 32767.0f ), -32768, 32767 );
-	ptrTangent[ 2 ] = ( GLshort )decMath::clamp( ( int )( tangent.z * 32767.0f ), -32768, 32767 );
-	ptrTangent[ 3 ] = ( GLshort )( negateTangent ? -32768 : 32767 );
+	GLfloat * const ptrTangent = pDataPoints;
+	ptrTangent[ 0 ] = ( GLfloat )tangent.x;
+	ptrTangent[ 1 ] = ( GLfloat )tangent.y;
+	ptrTangent[ 2 ] = ( GLfloat )tangent.z;
+	ptrTangent[ 3 ] = ( GLfloat )( negateTangent ? -1.0f : 1.0f );
 	
-	GLfloat * const ptrTexCoord = ( GLfloat* )( pDataPoints + 8 );
+	GLfloat * const ptrTexCoord = pDataPoints + 2;
 	ptrTexCoord[ 0 ] = ( GLfloat )texCoord.x;
 	ptrTexCoord[ 1 ] = ( GLfloat )texCoord.y;
-	
-	pDataPoints += 16;
-}
-
-void deoglVBOWriterModel::WriteWeight( int weight ){
-	if( ! pDataPoints ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	GLint * const ptrWeight = ( GLint* )pDataPoints;
-	ptrWeight[ 0 ] = ( GLint )weight;
 	
 	pDataPoints += 4;
 }
 
 void deoglVBOWriterModel::WriteIndices( int index1, int index2, int index3 ){
-	if( ! pDataIndices ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( pDataIndices )
 	
 	pDataIndices[ 0 ] = ( GLuint )index1;
 	pDataIndices[ 1 ] = ( GLuint )index2;

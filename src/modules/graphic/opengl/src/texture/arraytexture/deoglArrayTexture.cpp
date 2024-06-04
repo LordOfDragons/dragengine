@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -28,10 +31,12 @@
 #include "../texture2d/deoglTexture.h"
 #include "../../capabilities/deoglCapabilities.h"
 #include "../../capabilities/deoglCapsTextureFormat.h"
+#include "../../delayedoperation/deoglDelayedOperations.h"
 #include "../../memory/deoglMemoryManager.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTTexture.h"
 #include "../../renderthread/deoglRTLogger.h"
+#include "../../renderthread/deoglRTDebug.h"
 
 #ifdef ANDROID
 #include "../../framebuffer/deoglFramebuffer.h"
@@ -51,21 +56,16 @@
 ////////////////////////////
 
 deoglArrayTexture::deoglArrayTexture( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread )
+pRenderThread( renderThread ),
+pSize( 1, 1, 1 ),
+pMemUse( pRenderThread.GetMemoryManager().GetConsumption().textureArray )
 {
 	pTexture = 0;
 	pFormat = renderThread.GetCapabilities().GetFormats().GetUseArrayTexFormatFor( deoglCapsFmtSupport::eutfRGB8 );
 	
-	pWidth = 1;
-	pHeight = 1;
-	pLayerCount = 1;
 	pMipMapLevelCount = 0;
 	pRealMipMapLevelCount = 0;
 	pMipMapped = false;
-	
-	pMemoryUsageGPU = 0;
-	pMemoryUsageCompressed = false;
-	pMemoryUsageColor = true;
 }
 
 deoglArrayTexture::~deoglArrayTexture(){
@@ -77,18 +77,21 @@ deoglArrayTexture::~deoglArrayTexture(){
 // Management
 ///////////////
 
-void deoglArrayTexture::SetSize( int width, int height, int layerCount ){
-	if( width < 1 || height < 1 || layerCount < 1 ){
+void deoglArrayTexture::SetSize( const decPoint3 &size ){
+	if( ! ( size >= decPoint3( 1, 1, 1 ) ) ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	if( width != pWidth || height != pHeight || layerCount != pLayerCount ){
-		DestroyTexture();
-		
-		pWidth = width;
-		pHeight = height;
-		pLayerCount = layerCount;
+	if( size == pSize ){
+		return;
 	}
+	
+	DestroyTexture();
+	pSize = size;
+}
+
+void deoglArrayTexture::SetSize( int width, int height, int layerCount ){
+	SetSize( decPoint3( width, height, layerCount ) );
 }
 
 void deoglArrayTexture::SetFormat( const deoglCapsTextureFormat *format ){
@@ -152,16 +155,17 @@ void deoglArrayTexture::CreateTexture(){
 	
 	tsmgr.EnableBareArrayTexture( 0, *this );
 	
-	OGL_CHECK( pRenderThread, pglTexImage3D( GL_TEXTURE_2D_ARRAY, 0, glformat, pWidth, pHeight, pLayerCount, 0, glpixelformat, glpixeltype, NULL ) );
+	OGL_CHECK( pRenderThread, pglTexImage3D( GL_TEXTURE_2D_ARRAY, 0, glformat,
+		pSize.x, pSize.y, pSize.z, 0, glpixelformat, glpixeltype, NULL ) );
 	
 	if( pMipMapped ){
 		int count = pMipMapLevelCount;
-		int height = pHeight;
-		int width = pWidth;
+		int height = pSize.y;
+		int width = pSize.x;
 		int i;
 		
 		if( count == 0 ){
-			count = ( int )( floorf( log2f( ( height > width ) ? height : width ) ) );
+			count = ( int )( floorf( log2f( ( float )( ( height > width ) ? height : width ) ) ) );
 		}
 		
 		for( i=0; i<count; i++ ){
@@ -175,7 +179,8 @@ void deoglArrayTexture::CreateTexture(){
 				height = 1;
 			}
 			
-			OGL_CHECK( pRenderThread, pglTexImage3D( GL_TEXTURE_2D_ARRAY, i + 1, glformat, width, height, pLayerCount, 0, glpixelformat, glpixeltype, NULL ) );
+			OGL_CHECK( pRenderThread, pglTexImage3D( GL_TEXTURE_2D_ARRAY, i + 1, glformat,
+				width, height, pSize.z, 0, glpixelformat, glpixeltype, NULL ) );
 		}
 		
 		pRealMipMapLevelCount = count;
@@ -219,17 +224,12 @@ void deoglArrayTexture::CreateTexture(){
 	tsmgr.DisableStage( 0 );
 	
 	UpdateMemoryUsage();
+	pUpdateDebugObjectLabel();
 }
 
 void deoglArrayTexture::DestroyTexture(){
-	// to avoid problems with threading and such it would be a good idea to move this deletion call
-	// out to a safe place. for this we need a texture deletion manager which hosts opengl textures
-	// to be deleted the next time it is safe. a safe time would be before or after frame rendering
-	// calls or somewhere during the clean up process. in this case the texture would be simply
-	// registered with the deletion manager and set to NULL in here
-	
 	if( pTexture ){
-		OGL_CHECK( pRenderThread, glDeleteTextures( 1, &pTexture ) );
+		pRenderThread.GetDelayedOperations().DeleteOpenGLTexture( pTexture );
 		pTexture = 0;
 		
 		UpdateMemoryUsage();
@@ -244,9 +244,9 @@ void deoglArrayTexture::SetPixelsLevel( int level, const deoglPixelBuffer &pixel
 	int width, height;
 	GetLevelSize( level, width, height );
 	
-	if( pixelBuffer.GetWidth() != width || pixelBuffer.GetHeight() != height || pixelBuffer.GetDepth() != pLayerCount ){
+	if( pixelBuffer.GetWidth() != width || pixelBuffer.GetHeight() != height || pixelBuffer.GetDepth() != pSize.z ){
 		//pRenderThread.GetLogger().LogErrorFormat( "SetPixelsLevel(%d) mismatch: Image(%d %d %d) PixelBuffer(%d %d %d)",
-		//	level, width, height, pLayerCount, pixelBuffer.GetWidth(), pixelBuffer.GetHeight(), pixelBuffer.GetDepth() );
+		//	level, width, height, pSize.z, pixelBuffer.GetWidth(), pixelBuffer.GetHeight(), pixelBuffer.GetDepth() );
 		DETHROW( deeInvalidParam );
 	}
 	
@@ -259,12 +259,12 @@ void deoglArrayTexture::SetPixelsLevel( int level, const deoglPixelBuffer &pixel
 	
 	if( pixelBuffer.GetCompressed() ){
 		OGL_CHECK( pRenderThread, pglCompressedTexImage3D( GL_TEXTURE_2D_ARRAY, level, pFormat->GetFormat(),
-			width, height, pLayerCount, 0, pixelBuffer.GetImageSize(), ( const GLvoid * )pixelBuffer.GetPointer() ) );
+			width, height, pSize.z, 0, pixelBuffer.GetImageSize(), ( const GLvoid * )pixelBuffer.GetPointer() ) );
 		//OGL_CHECK( pRenderThread, pglCompressedTexSubImage3D( GL_TEXTURE_2D_ARRAY, level, 0, 0, width, height,
 		//	pFormat->GetFormat(), pixels.GetImageSize(), ( const GLvoid * )pixels.GetPointer() ) );
 		
 	}else{
-		OGL_CHECK( pRenderThread, pglTexSubImage3D( GL_TEXTURE_2D_ARRAY, level, 0, 0, 0, width, height, pLayerCount,
+		OGL_CHECK( pRenderThread, pglTexSubImage3D( GL_TEXTURE_2D_ARRAY, level, 0, 0, 0, width, height, pSize.z,
 			pixelBuffer.GetGLPixelFormat(), pixelBuffer.GetGLPixelType(), ( const GLvoid * )pixelBuffer.GetPointer() ) );
 	}
 	
@@ -281,7 +281,7 @@ void deoglArrayTexture::GetPixelsLevel( int level, deoglPixelBuffer &pixelBuffer
 	int width, height;
 	GetLevelSize( level, width, height );
 	
-	if( pixelBuffer.GetWidth() != width || pixelBuffer.GetHeight() != height || pixelBuffer.GetDepth() != pLayerCount ){
+	if( pixelBuffer.GetWidth() != width || pixelBuffer.GetHeight() != height || pixelBuffer.GetDepth() != pSize.z ){
 		DETHROW( deeInvalidParam );
 	}
 	if( ! pTexture ){
@@ -297,7 +297,7 @@ void deoglArrayTexture::GetPixelsLevel( int level, deoglPixelBuffer &pixelBuffer
 	case deoglPixelBuffer::epfByte1:
 	case deoglPixelBuffer::epfByte2:
 	case deoglPixelBuffer::epfByte3:{
-		deoglPixelBuffer tempPixBuf( deoglPixelBuffer::epfByte4, width, height, pLayerCount );
+		deoglPixelBuffer tempPixBuf( deoglPixelBuffer::epfByte4, width, height, pSize.z );
 		const int count = width * height;
 		int i, j;
 		
@@ -305,7 +305,7 @@ void deoglArrayTexture::GetPixelsLevel( int level, deoglPixelBuffer &pixelBuffer
 		
 		switch( pixelBuffer.GetFormat() ){
 		case deoglPixelBuffer::epfByte1:{
-			for( j=0; j<pLayerCount; j++ ){
+			for( j=0; j<pSize.z; j++ ){
 				deoglPixelBuffer::sByte1 *dataDest = pixelBuffer.GetPointerByte1() + count;
 				const deoglPixelBuffer::sByte4 *dataSrc = tempPixBuf.GetPointerByte4() + count;
 				for( i=0; i<count; i++ ){
@@ -315,7 +315,7 @@ void deoglArrayTexture::GetPixelsLevel( int level, deoglPixelBuffer &pixelBuffer
 			}return;
 			
 		case deoglPixelBuffer::epfByte2:{
-			for( j=0; j<pLayerCount; j++ ){
+			for( j=0; j<pSize.z; j++ ){
 				deoglPixelBuffer::sByte2 *dataDest = pixelBuffer.GetPointerByte2() + count;
 				const deoglPixelBuffer::sByte4 *dataSrc = tempPixBuf.GetPointerByte4() + count;
 				for( i=0; i<count; i++ ){
@@ -326,7 +326,7 @@ void deoglArrayTexture::GetPixelsLevel( int level, deoglPixelBuffer &pixelBuffer
 			}return;
 			
 		case deoglPixelBuffer::epfByte3:{
-			for( j=0; j<pLayerCount; j++ ){
+			for( j=0; j<pSize.z; j++ ){
 				deoglPixelBuffer::sByte3 *dataDest = pixelBuffer.GetPointerByte3() + count;
 				const deoglPixelBuffer::sByte4 *dataSrc = tempPixBuf.GetPointerByte4() + count;
 				for( i=0; i<count; i++ ){
@@ -345,7 +345,7 @@ void deoglArrayTexture::GetPixelsLevel( int level, deoglPixelBuffer &pixelBuffer
 	case deoglPixelBuffer::epfFloat1:
 	case deoglPixelBuffer::epfFloat2:
 	case deoglPixelBuffer::epfFloat3:{
-		deoglPixelBuffer tempPixBuf( deoglPixelBuffer::epfFloat4, width, height, pLayerCount );
+		deoglPixelBuffer tempPixBuf( deoglPixelBuffer::epfFloat4, width, height, pSize.z );
 		const int count = width * height;
 		int i, j;
 		
@@ -353,7 +353,7 @@ void deoglArrayTexture::GetPixelsLevel( int level, deoglPixelBuffer &pixelBuffer
 		
 		switch( pixelBuffer.GetFormat() ){
 		case deoglPixelBuffer::epfFloat1:{
-			for( j=0; j<pLayerCount; j++ ){
+			for( j=0; j<pSize.z; j++ ){
 				deoglPixelBuffer::sFloat1 *dataDest = pixelBuffer.GetPointerFloat1() + count;
 				const deoglPixelBuffer::sFloat4 *dataSrc = tempPixBuf.GetPointerFloat4() + count;
 				for( i=0; i<count; i++ ){
@@ -363,7 +363,7 @@ void deoglArrayTexture::GetPixelsLevel( int level, deoglPixelBuffer &pixelBuffer
 			}return;
 			
 		case deoglPixelBuffer::epfFloat2:{
-			for( j=0; j<pLayerCount; j++ ){
+			for( j=0; j<pSize.z; j++ ){
 				deoglPixelBuffer::sFloat2 *dataDest = pixelBuffer.GetPointerFloat2() + count;
 				const deoglPixelBuffer::sFloat4 *dataSrc = tempPixBuf.GetPointerFloat4() + count;
 				for( i=0; i<count; i++ ){
@@ -374,7 +374,7 @@ void deoglArrayTexture::GetPixelsLevel( int level, deoglPixelBuffer &pixelBuffer
 			}return;
 			
 		case deoglPixelBuffer::epfFloat3:{
-			for( j=0; j<pLayerCount; j++ ){
+			for( j=0; j<pSize.z; j++ ){
 				deoglPixelBuffer::sFloat3 *dataDest = pixelBuffer.GetPointerFloat3() + count;
 				const deoglPixelBuffer::sFloat4 *dataSrc = tempPixBuf.GetPointerFloat4() + count;
 				for( i=0; i<count; i++ ){
@@ -418,7 +418,7 @@ void deoglArrayTexture::GetPixelsLevel( int level, deoglPixelBuffer &pixelBuffer
 		
 		OGL_CHECK( pRenderThread, glPixelStorei( GL_PACK_ALIGNMENT, 1 ) );
 		
-		for( i=0; i<pLayerCount; i++ ){
+		for( i=0; i<pSize.z; i++ ){
 			if( pFormat->GetIsDepth() ){
 				fbo->AttachDepthArrayTextureLayerLevel( ( deoglArrayTexture* )this, i, level );
 			}else{
@@ -472,8 +472,8 @@ void deoglArrayTexture::GetLevelSize( int level, int &width, int &height ) const
 	
 	int i;
 	
-	width = pWidth;
-	height = pHeight;
+	width = pSize.x;
+	height = pSize.y;
 	
 	for( i=0; i<level; i++ ){
 		width >>= 1;
@@ -500,14 +500,18 @@ void deoglArrayTexture::CreateMipMaps(){
 
 
 
+void deoglArrayTexture::CopyFrom( const deoglArrayTexture &texture, bool withMipMaps ){
+	CopyFrom( texture, withMipMaps, 0, 0, pSize.x, pSize.y, pSize.z, 0, 0, 0, 0 );
+}
+
 void deoglArrayTexture::CopyFrom( const deoglArrayTexture &texture, bool withMipMaps, int srcLayer, int destLayer ){
-	CopyFrom( texture, withMipMaps, srcLayer, destLayer, pWidth, pHeight, 1, 0, 0, 0, 0 );
+	CopyFrom( texture, withMipMaps, srcLayer, destLayer, pSize.x, pSize.y, 1, 0, 0, 0, 0 );
 }
 
 void deoglArrayTexture::CopyFrom( const deoglArrayTexture &texture, bool withMipMaps, int srcLayer, int destLayer,
 int width, int height, int layerCount, int srcX, int srcY, int destX, int destY ){
 	if( destX < 0 || destY < 0 || srcX < 0 || srcY < 0 || srcLayer < 0 || destLayer < 0
-	|| destX + width > pWidth || destY + height > pHeight || destLayer + layerCount > pLayerCount ){
+	|| destX + width > pSize.x || destY + height > pSize.y || destLayer + layerCount > pSize.z ){
 		DETHROW( deeInvalidParam );
 	}
 	
@@ -527,10 +531,10 @@ int width, int height, int layerCount, int srcX, int srcY, int destX, int destY 
 		int i, mipMapLevelCount;
 		
 		if( destMipMapLevelCount == 0 ){
-			destMipMapLevelCount = ( int )( ceilf( log2f( ( pHeight > pWidth ) ? pHeight : pWidth ) ) ) + 1;
+			destMipMapLevelCount = ( int )( ceilf( log2f( ( float )( ( pSize.y > pSize.x ) ? pSize.y : pSize.x ) ) ) ) + 1;
 		}
 		if( srcMipMapLevelCount == 0 ){
-			srcMipMapLevelCount = ( int )( ceilf( log2f( ( srcHeight > srcWidth ) ? srcHeight : srcWidth ) ) ) + 1;
+			srcMipMapLevelCount = ( int )( ceilf( log2f( ( float )( ( srcHeight > srcWidth ) ? srcHeight : srcWidth ) ) ) ) + 1;
 		}
 		mipMapLevelCount = ( ( srcMipMapLevelCount < destMipMapLevelCount ) ? srcMipMapLevelCount : destMipMapLevelCount );
 		
@@ -577,7 +581,7 @@ int width, int height, int layerCount, int srcX, int srcY, int destX, int destY 
 }
 
 void deoglArrayTexture::CopyFrom( const deoglTexture &texture, bool withMipMaps, int destLayer ){
-	CopyFrom( texture, withMipMaps, destLayer, pWidth, pHeight, 0, 0, 0, 0 );
+	CopyFrom( texture, withMipMaps, destLayer, pSize.x, pSize.y, 0, 0, 0, 0 );
 }
 
 void deoglArrayTexture::CopyFrom( const deoglTexture &texture, bool withMipMaps, int destLayer,
@@ -585,7 +589,7 @@ int width, int height, int srcX, int srcY, int destX, int destY ){
 	//printf( "deoglArrayTexture.CopyFrom: tex=%u destLayer=%i width=%i height=%i srcX=%i srcY=%i destX=%i destY=%i\n", texture.GetTexture(), destLayer, width, height, srcX, srcY, destX, destY );
 	//printf( "TEX: width=%i height=%i\n", texture.GetWidth(), texture.GetHeight() );
 	if( destX < 0 || destY < 0 || srcX < 0 || srcY < 0 || destLayer < 0
-	|| destX + width > pWidth || destY + height > pHeight || destLayer >= pLayerCount ){
+	|| destX + width > pSize.x || destY + height > pSize.y || destLayer >= pSize.z ){
 		DETHROW( deeInvalidParam );
 	}
 	
@@ -604,10 +608,10 @@ int width, int height, int srcX, int srcY, int destX, int destY ){
 		int i, mipMapLevelCount;
 		
 		if( destMipMapLevelCount == 0 ){
-			destMipMapLevelCount = ( int )( ceilf( log2f( ( pHeight > pWidth ) ? pHeight : pWidth ) ) ) + 1;
+			destMipMapLevelCount = ( int )( ceilf( log2f( ( float )( ( pSize.y > pSize.x ) ? pSize.y : pSize.x ) ) ) ) + 1;
 		}
 		if( srcMipMapLevelCount == 0 ){
-			srcMipMapLevelCount = ( int )( ceilf( log2f( ( srcHeight > srcWidth ) ? srcHeight : srcWidth ) ) ) + 1;
+			srcMipMapLevelCount = ( int )( ceilf( log2f( ( float )( ( srcHeight > srcWidth ) ? srcHeight : srcWidth ) ) ) ) + 1;
 		}
 		mipMapLevelCount = ( ( srcMipMapLevelCount < destMipMapLevelCount ) ? srcMipMapLevelCount : destMipMapLevelCount );
 		
@@ -657,119 +661,45 @@ int width, int height, int srcX, int srcY, int destX, int destY ){
 
 
 void deoglArrayTexture::UpdateMemoryUsage(){
-	deoglMemoryConsumptionTexture &consumption = pRenderThread.GetMemoryManager().GetConsumption().GetTextureArray();
+	pMemUse.Clear();
 	
-	if( pMemoryUsageGPU > 0 ){
-		consumption.DecrementCount();
-		consumption.DecrementGPU( pMemoryUsageGPU );
-		
-		if( pMemoryUsageColor ){
-			consumption.DecrementColorCount();
-			consumption.DecrementColorGPU( pMemoryUsageGPU );
-			
-			if( pMemoryUsageCompressed ){
-				consumption.DecrementGPUCompressed( pMemoryUsageGPU );
-				consumption.DecrementColorGPUCompressed( pMemoryUsageGPU );
-				
-			}else{
-				consumption.DecrementGPUUncompressed( pMemoryUsageGPU );
-				consumption.DecrementColorGPUUncompressed( pMemoryUsageGPU );
-			}
-			
-		}else{
-			consumption.DecrementDepthCount();
-			consumption.DecrementDepthGPU( pMemoryUsageGPU );
-			
-			if( pMemoryUsageCompressed ){
-				consumption.DecrementGPUCompressed( pMemoryUsageGPU );
-				consumption.DecrementDepthGPUCompressed( pMemoryUsageGPU );
-				
-			}else{
-				consumption.DecrementGPUUncompressed( pMemoryUsageGPU );
-				consumption.DecrementDepthGPUUncompressed( pMemoryUsageGPU );
-			}
-		}
-		
-		pMemoryUsageGPU = 0;
-		pMemoryUsageCompressed = false;
-		pMemoryUsageColor = true;
+	if( ! pTexture || ! pFormat ){
+		return;
 	}
 	
-	if( pTexture ){
-		const int bitsPerPixel = pFormat->GetBitsPerPixel();
-		int baseSize;
-		
-		baseSize = pWidth * pHeight * pLayerCount;
-		
-		baseSize *= bitsPerPixel >> 3;
-		if( ( bitsPerPixel & 0x7 ) > 0 ){
-			baseSize >>= 1;
-		}
-		
-		pMemoryUsageColor = ! pFormat->GetIsDepth();
-		
-		#ifdef ANDROID
-		pMemoryUsageGPU = baseSize;
-		
-		#else
-		if( pFormat->GetIsCompressed() ){
-			deoglTextureStageManager &tsmgr = pRenderThread.GetTexture().GetStages();
-			GLint compressedSize, isCompressed;
-			
-			tsmgr.EnableBareArrayTexture( 0, *this );
-			
-			isCompressed = 0;
-			OGL_CHECK( pRenderThread, glGetTexLevelParameteriv( GL_TEXTURE_2D_ARRAY, 0, GL_TEXTURE_COMPRESSED, &isCompressed ) );
-			
-			if( isCompressed ){
-				compressedSize = 0;
-				OGL_CHECK( pRenderThread, glGetTexLevelParameteriv( GL_TEXTURE_2D_ARRAY, 0, GL_TEXTURE_COMPRESSED_IMAGE_SIZE, &compressedSize ) );
-				pMemoryUsageGPU = compressedSize;
-				pMemoryUsageCompressed = true;
-				
-			}else{
-				pMemoryUsageGPU = baseSize;
-			}
-			
-			tsmgr.DisableStage( 0 );
-			
-		}else{
-			pMemoryUsageGPU = baseSize;
-		}
-		#endif
-	}
+	#ifdef ANDROID
+	pMemUse.SetUncompressed( *pFormat, pSize.x, pSize.y, pSize.z, pRealMipMapLevelCount );
 	
-	if( pMemoryUsageGPU > 0 ){
-		consumption.IncrementCount();
-		consumption.IncrementGPU( pMemoryUsageGPU );
+	#else
+	if( pFormat->GetIsCompressed() ){
+		deoglTextureStageManager &tsmgr = pRenderThread.GetTexture().GetStages();
+		tsmgr.EnableBareArrayTexture( 0, *this );
 		
-		if( pMemoryUsageColor ){
-			consumption.IncrementColorCount();
-			consumption.IncrementColorGPU( pMemoryUsageGPU );
-			
-			if( pMemoryUsageCompressed ){
-				consumption.IncrementGPUCompressed( pMemoryUsageGPU );
-				consumption.IncrementColorGPUCompressed( pMemoryUsageGPU );
-				
-			}else{
-				consumption.IncrementGPUUncompressed( pMemoryUsageGPU );
-				consumption.IncrementColorGPUUncompressed( pMemoryUsageGPU );
+		GLint isCompressed = 0;
+		OGL_CHECK( pRenderThread, glGetTexLevelParameteriv( GL_TEXTURE_2D_ARRAY,
+			0, GL_TEXTURE_COMPRESSED, &isCompressed ) );
+		
+		if( isCompressed ){
+			unsigned long consumption = 0ull;
+			GLint compressedSize, l;
+			for( l=0; l<pRealMipMapLevelCount; l++ ){
+				OGL_CHECK( pRenderThread, glGetTexLevelParameteriv( GL_TEXTURE_2D_ARRAY, l,
+					GL_TEXTURE_COMPRESSED_IMAGE_SIZE, &compressedSize ) );
+				consumption += ( unsigned long long )compressedSize;
 			}
+			
+			pMemUse.SetCompressed( consumption, *pFormat );
 			
 		}else{
-			consumption.IncrementDepthCount();
-			consumption.IncrementDepthGPU( pMemoryUsageGPU );
-			
-			if( pMemoryUsageCompressed ){
-				consumption.IncrementGPUCompressed( pMemoryUsageGPU );
-				consumption.IncrementDepthGPUCompressed( pMemoryUsageGPU );
-				
-			}else{
-				consumption.IncrementGPUUncompressed( pMemoryUsageGPU );
-				consumption.IncrementDepthGPUUncompressed( pMemoryUsageGPU );
-			}
+			pMemUse.SetUncompressed( *pFormat, pSize.x, pSize.y, pSize.z, pRealMipMapLevelCount );
 		}
+		
+		tsmgr.DisableStage( 0 );
+		
+	}else{
+		pMemUse.SetUncompressed( *pFormat, pSize.x, pSize.y, pSize.z, pRealMipMapLevelCount );
 	}
+	#endif
 }
 
 
@@ -873,11 +803,183 @@ void deoglArrayTexture::SetFBOFormat( int channels, bool useFloat ){
 	}
 }
 
-void deoglArrayTexture::SetDepthFormat( bool packedStencil ){
-	if( packedStencil ){
-		SetFormatFBOByNumber( deoglCapsFmtSupport::eutfDepth_Stencil );
+void deoglArrayTexture::SetFBOFormatFloat32( int channels ){
+	if( channels == 1 ){
+		SetFormatFBOByNumber( deoglCapsFmtSupport::eutfR32F );
+		
+	}else if( channels == 2 ){
+		SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRG32F );
+		
+	}else if( channels == 3 ){
+		SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRGB32F );
+		
+	}else if( channels == 4 ){
+		SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRGBA32F );
 		
 	}else{
-		SetFormatFBOByNumber( deoglCapsFmtSupport::eutfDepth );
+		DETHROW( deeInvalidParam );
 	}
+}
+
+void deoglArrayTexture::SetFBOFormatIntegral( int channels, int bpp, bool useUnsigned ){
+	if( bpp == 8 ){
+		if( channels == 1 ){
+			if( useUnsigned ){
+				SetFormatFBOByNumber( deoglCapsFmtSupport::eutfR8UI );
+				
+			}else{
+				SetFormatFBOByNumber( deoglCapsFmtSupport::eutfR8I );
+			}
+			
+		}else if( channels == 2 ){
+			if( useUnsigned ){
+				SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRG8UI );
+				
+			}else{
+				SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRG8I );
+			}
+			
+		}else if( channels == 3 ){
+			if( useUnsigned ){
+				SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRGB8UI );
+				
+			}else{
+				SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRGB8I );
+			}
+			
+		}else if( channels == 4 ){
+			if( useUnsigned ){
+				SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRGBA8UI );
+				
+			}else{
+				SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRGBA8I );
+			}
+			
+		}else{
+			DETHROW( deeInvalidParam );
+		}
+		
+	}else if( bpp == 16 ){
+		if( channels == 1 ){
+			if( useUnsigned ){
+				SetFormatFBOByNumber( deoglCapsFmtSupport::eutfR16UI );
+				
+			}else{
+				SetFormatFBOByNumber( deoglCapsFmtSupport::eutfR16I );
+			}
+			
+		}else if( channels == 2 ){
+			if( useUnsigned ){
+				SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRG16UI );
+				
+			}else{
+				SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRG16I );
+			}
+			
+		}else if( channels == 3 ){
+			if( useUnsigned ){
+				SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRGB16UI );
+				
+			}else{
+				SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRGB16I );
+			}
+			
+		}else if( channels == 4 ){
+			if( useUnsigned ){
+				SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRGBA16UI );
+				
+			}else{
+				SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRGBA16I );
+			}
+			
+		}else{
+			DETHROW( deeInvalidParam );
+		}
+		
+	}else{
+		DETHROW( deeInvalidParam );
+	}
+}
+
+void deoglArrayTexture::SetFBOFormatSNorm( int channels, int bpp ){
+	switch( bpp ){
+	case 8:
+		switch( channels ){
+		case 1:
+			SetFormatFBOByNumber( deoglCapsFmtSupport::eutfR8_S );
+			break;
+			
+		case 2:
+			SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRG8_S );
+			break;
+			
+		case 3:
+			SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRGB8_S );
+			break;
+			
+		case 4:
+			SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRGBA8_S );
+			break;
+			
+		default:
+			DETHROW( deeInvalidParam );
+		}
+		break;
+		
+	case 16:
+		switch( channels ){
+		case 1:
+			SetFormatFBOByNumber( deoglCapsFmtSupport::eutfR16_S );
+			break;
+			
+		case 2:
+			SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRG16_S );
+			break;
+			
+		case 3:
+			SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRGB16_S );
+			break;
+			
+		case 4:
+			SetFormatFBOByNumber( deoglCapsFmtSupport::eutfRGBA16_S );
+			break;
+			
+		default:
+			DETHROW( deeInvalidParam );
+		}
+		break;
+		
+	default:
+		DETHROW( deeInvalidParam );
+	}
+}
+
+void deoglArrayTexture::SetDepthFormat( bool packedStencil, bool useFloat ){
+	if( packedStencil ){
+		if( useFloat ){
+			SetFormatFBOByNumber( deoglCapsFmtSupport::eutfDepthF_Stencil );
+			
+		}else{
+			SetFormatFBOByNumber( deoglCapsFmtSupport::eutfDepth_Stencil );
+		}
+		
+	}else{
+		if( useFloat ){
+			SetFormatFBOByNumber( deoglCapsFmtSupport::eutfDepthF );
+			
+		}else{
+			SetFormatFBOByNumber( deoglCapsFmtSupport::eutfDepth );
+		}
+	}
+}
+
+void deoglArrayTexture::SetDebugObjectLabel( const char *name ){
+	pDebugObjectLabel.Format( "ArrT: %s", name );
+	if( pTexture ){
+		pUpdateDebugObjectLabel();
+	}
+}
+
+void deoglArrayTexture::pUpdateDebugObjectLabel(){
+	pRenderThread.GetDebug().SetDebugObjectLabel( GL_TEXTURE, pTexture, pDebugObjectLabel );
 }

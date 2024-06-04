@@ -1,67 +1,91 @@
-/* 
- * Drag[en]gine Live Launcher
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DELLLAUNCHER_H_
 #define _DELLLAUNCHER_H_
 
-#include "game/dellGameManager.h"
-#include "engine/dellEngine.h"
+#include <delauncher/delLauncher.h>
 
+#include <dragengine/common/collection/decObjectSet.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/unicode/decUnicodeArgumentList.h>
 #include <dragengine/filesystem/deVirtualFileSystemReference.h>
 #include <dragengine/logger/deLoggerReference.h>
 
-class dellEngine;
+#ifdef OS_BEOS
+#include <delauncher/game/delGame.h>
+#endif
 
 
 
 /**
- * \brief Launcher.
+ * Live launcher.
  */
 class dellLauncher{
+public:
+	class Launcher : public delLauncher{
+	public:
+		Launcher();
+		virtual ~Launcher();
+	};
+	
+#ifdef OS_UNIX
+	class PreloadLibrary : public deObject{
+		void * const pHandle;
+	public:
+		PreloadLibrary( const decPath &basePath, const char *filename );
+		virtual ~PreloadLibrary();
+	};
+#endif
+	
+	
+	
 private:
 	decUnicodeArgumentList pArguments;
 	decPath pWorkingDir;
 	decPath pPathConfigUser;
 	decStringList pEnvParamsStore;
-	deVirtualFileSystemReference pFileSystem;
-	deLoggerReference pLogger;
-	dellEngine pEngine;
-	dellGameManager pGameManager;
+	
+#ifdef OS_UNIX
+	decObjectSet pPreloadLibraries;
+#endif
+	
+	Launcher *pLauncher;
 	
 	decString pDelgaFile;
 	decUnicodeArgumentList pGameArgs;
-	decString pWindowTitle;
 	
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create launcher. */
+	/** Create launcher. */
 	dellLauncher();
 	
-	/** \brief Clean up launcher. */
+	/** Clean up launcher. */
 	~dellLauncher();
 	/*@}*/
 	
@@ -69,41 +93,29 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Command line arguments. */
+	/** Command line arguments. */
 	inline const decUnicodeArgumentList &GetArguments() const{ return pArguments; }
 	
-	/** \brief Add argument to the command line argument list. */
+	/** Add argument to the command line argument list. */
 	void AddArgument( const decUnicodeString &argument );
 	
-	/** \brief File system. */
-	inline deVirtualFileSystem *GetFileSystem() const{ return pFileSystem; }
-	
-	/** \brief Engine. */
-	inline dellEngine &GetEngine(){ return pEngine; }
-	inline const dellEngine &GetEngine() const{ return pEngine; }
-	
-	/** \brief Game manager. */
-	inline dellGameManager &GetGameManager(){ return pGameManager; }
-	inline const dellGameManager &GetGameManager() const{ return pGameManager; }
-	
-	/** \brief Logger. */
-	inline deLogger *GetLogger() const{ return pLogger; }
-	
-	/** \brief Working directory. */
+	/** Working directory. */
 	inline const decPath GetWorkingDirectory() const{ return pWorkingDir; }
 	
-	/** \brief Init. */
-	void Init();
+	/** Launcher. */
+	inline Launcher &GetLauncher() const{ return *pLauncher; }
 	
-	/** \brief Run. */
+	/** Run. */
 	void Run();
+
+#ifdef OS_BEOS
+	delGame::Ref runningGame;
+#endif
 	/*@}*/
 	
 	
 	
 private:
-	void pInitVFS();
-	void pInitLogger();
 	void pUpdateEnvironment();
 };
 

@@ -1,23 +1,28 @@
-/* 
- * Drag[en]gine IGDE
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
+
+#ifdef IGDE_TOOLKIT_FOX
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -25,6 +30,7 @@
 #include <stdint.h>
 
 #include "igdeNativeFoxProgressBar.h"
+#include "../../igdeContainer.h"
 #include "../../igdeProgressBar.h"
 #include "../../resources/igdeFont.h"
 #include "../../theme/igdeGuiTheme.h"
@@ -39,10 +45,7 @@
 // Event map
 //////////////
 
-FXDEFMAP( igdeNativeFoxProgressBar ) igdeNativeFoxProgressBarMap[] = { };
-
-FXIMPLEMENT( igdeNativeFoxProgressBar, FXProgressBar,
-	igdeNativeFoxProgressBarMap, ARRAYNUMBER( igdeNativeFoxProgressBarMap ) )
+FXIMPLEMENT( igdeNativeFoxProgressBar, FXProgressBar, nullptr, 0 )
 
 
 
@@ -54,14 +57,14 @@ FXIMPLEMENT( igdeNativeFoxProgressBar, FXProgressBar,
 
 igdeNativeFoxProgressBar::igdeNativeFoxProgressBar(){ }
 
-igdeNativeFoxProgressBar::igdeNativeFoxProgressBar( igdeProgressBar &owner, FXComposite *parent,
+igdeNativeFoxProgressBar::igdeNativeFoxProgressBar( igdeProgressBar &powner, FXComposite *pparent,
 	const igdeUIFoxHelper::sChildLayoutFlags &layoutFlags, const igdeGuiTheme &guitheme ) :
-FXProgressBar( parent, NULL, 0, layoutFlags.flags | ProgressBarFlags( owner ), 0, 0, 0, 0,
+FXProgressBar( pparent, NULL, 0, layoutFlags.flags | ProgressBarFlags( powner ), 0, 0, 0, 0,
 	ProgressBarPadLeft( guitheme ), ProgressBarPadRight( guitheme ),
 	ProgressBarPadTop( guitheme ), ProgressBarPadBottom( guitheme ) ),
-pOwner( &owner )
+pOwner( &powner )
 {
-	setFont( (FXFont*)ProgressBarFont( owner, guitheme )->GetNativeFont() );
+	setFont( (FXFont*)ProgressBarFont( powner, guitheme )->GetNativeFont() );
 	if( ! pOwner->GetVisible() ){
 		hide();
 	}
@@ -72,6 +75,31 @@ pOwner( &owner )
 }
 
 igdeNativeFoxProgressBar::~igdeNativeFoxProgressBar(){
+}
+
+igdeNativeFoxProgressBar *igdeNativeFoxProgressBar::CreateNativeWidget( igdeProgressBar &powner ){
+	if( ! powner.GetParent() ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	FXComposite * const pparent = ( FXComposite* ) powner.GetParent()->GetNativeContainer();
+	if( ! pparent ){
+		DETHROW( deeInvalidParam );
+	}
+	
+	return new igdeNativeFoxProgressBar( powner, pparent,
+		igdeUIFoxHelper::GetChildLayoutFlagsAll( &powner ), *powner.GetGuiTheme() );
+}
+
+void igdeNativeFoxProgressBar::PostCreateNativeWidget(){
+	FXComposite &pparent = *( ( FXComposite* )pOwner->GetParent()->GetNativeContainer() );
+	if( pparent.id() ){
+		create();
+	}
+}
+
+void igdeNativeFoxProgressBar::DestroyNativeWidget(){
+	delete this;
 }
 
 
@@ -102,31 +130,31 @@ void igdeNativeFoxProgressBar::UpdateDescription(){
 
 
 
-int igdeNativeFoxProgressBar::ProgressBarFlags( const igdeProgressBar &owner ){
-	int flags = PROGRESSBAR_NORMAL;
+int igdeNativeFoxProgressBar::ProgressBarFlags( const igdeProgressBar &powner ){
+	int fflags = PROGRESSBAR_NORMAL;
 	
-	switch( owner.GetOrientation() ){
+	switch( powner.GetOrientation() ){
 	case igdeProgressBar::eoHorizontal:
-		flags |= PROGRESSBAR_HORIZONTAL;
+		fflags |= PROGRESSBAR_HORIZONTAL;
 		break;
 		
 	case igdeProgressBar::eoVertical:
-		flags |= PROGRESSBAR_VERTICAL;
+		fflags |= PROGRESSBAR_VERTICAL;
 		break;
 		
 	default:
 		break;
 	}
 	
-	return flags;
+	return fflags;
 }
 
-igdeFont *igdeNativeFoxProgressBar::ProgressBarFont( const igdeProgressBar &owner, const igdeGuiTheme &guitheme ){
+igdeFont *igdeNativeFoxProgressBar::ProgressBarFont( const igdeProgressBar &powner, const igdeGuiTheme &guitheme ){
 	igdeFont::sConfiguration configuration;
-	owner.GetEnvironment().GetApplicationFont( configuration );
+	powner.GetEnvironment().GetApplicationFont( configuration );
 	
 	if( guitheme.HasProperty( igdeGuiThemePropertyNames::progressBarFontSizeAbsolute ) ){
-		configuration.size = guitheme.GetIntProperty(
+		configuration.size = ( float )guitheme.GetIntProperty(
 			igdeGuiThemePropertyNames::progressBarFontSizeAbsolute, 0 );
 		
 	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::progressBarFontSize ) ){
@@ -134,7 +162,7 @@ igdeFont *igdeNativeFoxProgressBar::ProgressBarFont( const igdeProgressBar &owne
 			igdeGuiThemePropertyNames::progressBarFontSize, 1.0f );
 		
 	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::fontSizeAbsolute ) ){
-		configuration.size = guitheme.GetIntProperty(
+		configuration.size = ( float )guitheme.GetIntProperty(
 			igdeGuiThemePropertyNames::fontSizeAbsolute, 0 );
 		
 	}else if( guitheme.HasProperty( igdeGuiThemePropertyNames::fontSize ) ){
@@ -142,7 +170,7 @@ igdeFont *igdeNativeFoxProgressBar::ProgressBarFont( const igdeProgressBar &owne
 			igdeGuiThemePropertyNames::fontSize, 1.0f );
 	}
 	
-	return owner.GetEnvironment().GetSharedFont( configuration );
+	return powner.GetEnvironment().GetSharedFont( configuration );
 }
 
 int igdeNativeFoxProgressBar::ProgressBarPadLeft( const igdeGuiTheme &guitheme ){
@@ -160,3 +188,5 @@ int igdeNativeFoxProgressBar::ProgressBarPadTop( const igdeGuiTheme &guitheme ){
 int igdeNativeFoxProgressBar::ProgressBarPadBottom( const igdeGuiTheme &guitheme ){
 	return guitheme.GetIntProperty( igdeGuiThemePropertyNames::progressBarPaddingBottom, DEFAULT_PAD );
 }
+
+#endif

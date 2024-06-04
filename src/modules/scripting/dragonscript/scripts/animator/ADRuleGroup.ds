@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -28,161 +31,198 @@ pin Dragengine.Utils
 
 
 /**
- * Definition of a group animator rule. Once defined a rule can be
- * added to an animator using the stored definition.
+ * \brief Definition of group animator rule.
+ * 
+ * Once defined a rule can be added to an animator using the stored definition.
  */
 class ADRuleGroup extends ADRule
-	/** Application type. */
 	private var ARGroupApplication pApplicationType
-	
-	/** \brief Use current animation state instead of empty state. */
 	private var bool pUseCurrentState
-	
-	/** Rules. */
 	private var Array pRules
-	/** Enables position manipulation. */
 	private var bool pEnablePosition
-	/** Enables orientation manipulation. */
 	private var bool pEnableOrientation
-	/** Enables size manipulation. */
 	private var bool pEnableSize
+	private var bool pEnableVertexPositionSet
 	
 	
 	
-	/** Create a new animation rule definition. */
+	/** \brief Create animation rule definition. */
 	public func new()
-		this.pApplicationType = ARGroupApplication.all
-		this.pUseCurrentState = false
-		this.pRules = Array.new()
-		this.pEnablePosition = true
-		this.pEnableOrientation = true
-		this.pEnableSize = true
+		pApplicationType = ARGroupApplication.all
+		pUseCurrentState = false
+		pRules = Array.new()
+		pEnablePosition = true
+		pEnableOrientation = true
+		pEnableSize = true
+		pEnableVertexPositionSet = true
+	end
+	
+	/**
+	 * \brief Create copy animation rule definition.
+	 * \version 1.13
+	 */
+	public func new(AnimatorDefinition fromDef, AnimatorDefinition toDef,\
+	ADRuleGroup rule) super(fromDef, toDef, rule)
+		pApplicationType = rule.pApplicationType
+		pUseCurrentState = rule.pUseCurrentState
+		pEnablePosition = rule.pEnablePosition
+		pEnableOrientation = rule.pEnableOrientation
+		pEnableSize = rule.pEnableSize
+		pEnableVertexPositionSet = rule.pEnableVertexPositionSet
+		
+		pRules = rule.pRules.map(block ADRule rule
+			return rule.copy(fromDef, toDef)
+		end)
 	end
 	
 	
 	
-	/** Retrieve the application type. */
+	/** \brief Application type. */
 	public func ARGroupApplication getApplicationType()
-		return this.pApplicationType
+		return pApplicationType
 	end
 	
-	/** Set the application type. */
-	public func void setApplicationType( ARGroupApplication applicationType )
-		this.pApplicationType = applicationType
+	/** \brief Set application type. */
+	public func void setApplicationType(ARGroupApplication applicationType)
+		pApplicationType = applicationType
 	end
 	
 	/** \brief Use current animation state instead of empty state. */
 	public func bool getUseCurrentState()
-		return this.pUseCurrentState
+		return pUseCurrentState
 	end
 	
 	/** \brief Set if current animation state is used instead of empty state. */
-	public func void setUseCurrentState( bool useCurrentState )
-		this.pUseCurrentState = useCurrentState
+	public func void setUseCurrentState(bool useCurrentState)
+		pUseCurrentState = useCurrentState
 	end
 	
-	/** Determines if the position manipulation is enabled. */
+	/** \brief Pposition manipulation is enabled. */
 	public func bool getEnablePosition()
-		return this.pEnablePosition
+		return pEnablePosition
 	end
 	
-	/** Sets if the position manipulation is enabled. */
-	public func void setEnablePosition( bool enable )
-		this.pEnablePosition = enable
+	/** \brief Set if position manipulation is enabled. */
+	public func void setEnablePosition(bool enable)
+		pEnablePosition = enable
 	end
 	
-	/** Determines if the orientation manipulation is enabled. */
+	/** \brief Orientation manipulation is enabled. */
 	public func bool getEnableOrientation()
-		return this.pEnableOrientation
+		return pEnableOrientation
 	end
 	
-	/** Sets if the orientation manipulation is enabled. */
-	public func void setEnableOrientation( bool enable )
-		this.pEnableOrientation = enable
+	/** \brief Set if orientation manipulation is enabled. */
+	public func void setEnableOrientation(bool enable)
+		pEnableOrientation = enable
 	end
 	
-	/** Determines if the size manipulation is enabled. */
+	/** \brief Size manipulation is enabled. */
 	public func bool getEnableSize()
-		return this.pEnableSize
+		return pEnableSize
 	end
 	
-	/** Sets if the size manipulation is enabled. */
-	public func void setEnableSize( bool enable )
-		this.pEnableSize = enable
+	/** \brief Set if size manipulation is enabled. */
+	public func void setEnableSize(bool enable)
+		pEnableSize = enable
+	end
+	
+	/**
+	 * \brief Vertex position set manipulation is enabled.
+	 * \version 1.17
+	 */
+	public func bool getEnableVertexPositionSet()
+		return pEnableVertexPositionSet
+	end
+	
+	/**
+	 * \brief Set if vertex position set manipulation is enabled.
+	 * \version 1.17
+	 */
+	public func void setEnableVertexPositionSet(bool enable)
+		pEnableVertexPositionSet = enable
 	end
 	
 	
 	
-	/** Retrieve the number of rules. */
+	/** \brief Count of rules. */
 	public func int getRuleCount()
-		return this.pRules.getCount()
+		return pRules.getCount()
 	end
 	
-	/** Get rule by index. */
-	public func ADRule getRuleAt( int index )
-		return this.pRules.getAt( index ) cast ADRule
+	/** \brief Rule at index. */
+	public func ADRule getRuleAt(int index)
+		return pRules.getAt(index) cast ADRule
 	end
 	
-	/** Add a rule. */
-	public func void addRule( ADRule rule )
-		if rule == null or this.pRules.has( rule )
-			throw EInvalidParam.new()
+	/** \brief Add rule. */
+	public func void addRule(ADRule rule)
+		if rule == null or pRules.has(rule)
+			throw ENullPointer.new("rule")
 		end
-		this.pRules.add( rule )
+		pRules.add(rule)
 	end
 	
-	/** Remove a rule. */
-	public func void removeRule( ADRule rule )
-		if rule == null
-			throw EInvalidParam.new()
-		end
-		this.pRules.remove( rule )
+	/** \brief Remove rule. */
+	public func void removeRule(ADRule rule)
+		pRules.remove(rule)
 	end
 	
-	/** Remove all rules. */
+	/** \brief Remove all rules. */
 	public func void removeAllRules()
-		this.pRules.removeAll()
+		pRules.removeAll()
 	end
 	
-	/** Visit rules using a block. */
-	public func void forEachRule( Block ablock )
-		this.pRules.forEach( ablock )
+	/** \brief Visit rules using block. */
+	public func void forEachRule(Block ablock)
+		pRules.forEach(ablock)
 	end
 	
 	
 	
-	/** Build engine animator rule using the stored definition. */
-	public func AnimatorRule buildRule( Animator animator )
+	/** \brief Build engine animator rule using the stored definition. */
+	public func AnimatorRule buildRule(Animator animator)
 		var ARGroup rule = ARGroup.new()
 		
-		this.buildRuleCommon( rule )
+		buildRuleCommon(rule)
 		
-		this.forEachTarget( block ADRuleTargetLink each
-			rule.targetAddLink( each.getTarget() cast ARGroupTarget, each.getLink().getIndex() )
-		end )
+		forEachTarget(block ADRuleTargetLink each
+			rule.targetAddLink(each.getTarget() cast ARGroupTarget, each.getLink().getIndex())
+		end)
 		
-		rule.setEnablePosition( this.pEnablePosition )
-		rule.setEnableOrientation( this.pEnableOrientation )
-		rule.setEnableSize( this.pEnableSize )
+		rule.setEnablePosition(pEnablePosition)
+		rule.setEnableOrientation(pEnableOrientation)
+		rule.setEnableSize(pEnableSize)
+		rule.setEnableVertexPositionSet(pEnableVertexPositionSet)
 		
-		rule.setApplicationType( this.pApplicationType )
-		rule.setUseCurrentState( this.pUseCurrentState )
-		this.pRules.forEach( block ADRule each
-			rule.addRule( each.buildRule( animator ) )
-		end )
+		rule.setApplicationType(pApplicationType)
+		rule.setUseCurrentState(pUseCurrentState)
+		pRules.forEach(block ADRule each
+			rule.addRule(each.buildRule(animator))
+		end)
 		
 		return rule
 	end
 	
 	
 	
-	public func void debug( Console console )
-		console.addMessage( this.debugCommon( "Group" ) + \
-			" applicationType=" + this.pApplicationType + \
-			" useCurrentState=" + this.pUseCurrentState + \
-			" rules=" + this.pRules.getCount() + " )" )
-		this.pRules.forEach( block ADRule each
-			each.debug( console )
-		end )
+	/**
+	 * \brief Create copy of rule.
+	 * \version 1.13
+	 */
+	public func ADRule copy(AnimatorDefinition fromDef, AnimatorDefinition toDef)
+		return new(fromDef, toDef, this)
+	end
+	
+	
+	
+	public func void debug(Console console)
+		console.addMessage(debugCommon("Group") + \
+			" applicationType=" + pApplicationType + \
+			" useCurrentState=" + pUseCurrentState + \
+			" rules=" + pRules.getCount() + ")")
+		pRules.forEach(block ADRule each
+			each.debug(console)
+		end)
 	end
 end

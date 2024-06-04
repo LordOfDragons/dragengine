@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Conversation Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <math.h>
@@ -62,7 +65,6 @@
 #include "../gesture/ceGesture.h"
 #include "../facepose/ceFacePose.h"
 #include "../file/ceConversationFile.h"
-#include "../lookat/ceLookAt.h"
 #include "../playerChoiceBox/cePlayerChoiceBox.h"
 #include "../playerChoiceBox/cePCBOption.h"
 #include "../target/ceTarget.h"
@@ -161,7 +163,7 @@ void cePlaybackProcessAction::ProcessAction( ceConversation &conversation, ceCon
 
 
 void cePlaybackProcessAction::ProcessCameraShot( ceConversation &conversation, const ceCACameraShot &action ){
-	ceCameraShot * const cameraShot = conversation.GetCameraShotList().GetNamed( action.GetName() );
+	ceCameraShot * const cameraShot = conversation.GetCameraShotNamed( action.GetName() );
 	cePlayback &playback = *conversation.GetPlayback();
 	
 	if( cameraShot ){
@@ -174,7 +176,7 @@ void cePlaybackProcessAction::ProcessCameraShot( ceConversation &conversation, c
 		
 		// determine targets
 		if( ! action.GetCameraTarget().IsEmpty() ){
-			cameraTarget = conversation.GetTargetList().GetNamed( action.GetCameraTarget() );
+			cameraTarget = conversation.GetTargetNamed( action.GetCameraTarget() );
 			
 			if( cameraTarget ){
 				cameraActor = conversation.GetActorList().IndexWithIDOrAliasID( cameraTarget->GetActor() );
@@ -190,7 +192,7 @@ void cePlaybackProcessAction::ProcessCameraShot( ceConversation &conversation, c
 		}
 		
 		if( ! action.GetLookAtTarget().IsEmpty() ){
-			lookAtTarget = conversation.GetTargetList().GetNamed( action.GetLookAtTarget() );
+			lookAtTarget = conversation.GetTargetNamed( action.GetLookAtTarget() );
 			
 			if( lookAtTarget ){
 				lookAtActor = conversation.GetActorList().IndexWithIDOrAliasID( lookAtTarget->GetActor() );
@@ -302,7 +304,6 @@ void cePlaybackProcessAction::ProcessActorSpeak( ceConversation &conversation, c
 			int saPhonemeIndex;
 			int i, j, length2;
 			ceSAWord *saWord;
-			decString word;
 			float scaling;
 			
 			speechAnimation.RemoveAllSpeakPhonemes();
@@ -425,13 +426,14 @@ void cePlaybackProcessAction::ProcessActorSpeak( ceConversation &conversation, c
 	}
 	
 	// update the sub title
-	if( action.GetTextBoxText().GetLength() > 0 ){
+	const decUnicodeString &textBoxText = action.ResolveTextBoxText( conversation );
+	if( textBoxText.GetLength() > 0 ){
 		ceTextBoxText *text = NULL;
 		
 		try{
 			text = new ceTextBoxText;
 			text->SetName( conversationActor.GetTextBoxName() );
-			text->SetText( action.GetTextBoxText() );
+			text->SetText( textBoxText );
 			// TODO text style 
 			playbackActor.SetTextBoxText( text );
 			text->FreeReference();
@@ -446,7 +448,6 @@ void cePlaybackProcessAction::ProcessActorSpeak( ceConversation &conversation, c
 	
 	// update the gesture to play
 	if( action.GetGestureList().GetCount() > 0 ){
-		const ceGestureList &gestureList = conversation.GetGestureList();
 		const ceStripList &caGestureList = action.GetGestureList();
 		const int count = caGestureList.GetCount();
 		int i;
@@ -456,14 +457,13 @@ void cePlaybackProcessAction::ProcessActorSpeak( ceConversation &conversation, c
 		for( i=0; i<count; i++ ){
 			const ceStrip &caGesture = *caGestureList.GetAt( i );
 			
-			conversationActor.AddPlayGesture( gestureList.GetNamed( caGesture.GetID() ),
+			conversationActor.AddPlayGesture( conversation.GetGestureNamed( caGesture.GetID() ),
 				caGesture.GetPause(), caGesture.GetDuration() );
 		}
 	}
 	
 	// update the face pose to play
 	if( action.GetFacePoseList().GetCount() > 0 ){
-		const ceFacePoseList &facePoseList = conversation.GetFacePoseList();
 		const ceStripList &caFacePoseList = action.GetFacePoseList();
 		const int count = caFacePoseList.GetCount();
 		int i;
@@ -473,14 +473,13 @@ void cePlaybackProcessAction::ProcessActorSpeak( ceConversation &conversation, c
 		for( i=0; i<count; i++ ){
 			const ceStrip &caFacePose = *caFacePoseList.GetAt( i );
 			
-			conversationActor.AddPlayFacePose( facePoseList.GetNamed( caFacePose.GetID() ),
+			conversationActor.AddPlayFacePose( conversation.GetFacePoseNamed( caFacePose.GetID() ),
 				caFacePose.GetPause(), caFacePose.GetDuration() );
 		}
 	}
 	
 	// update the head look-at to play
 	if( action.GetHeadLookAtList().GetCount() > 0 ){
-		const ceLookAtList &lookAtList = conversation.GetLookAtList();
 		const ceStripList &caHeadLAList = action.GetHeadLookAtList();
 		const int count = caHeadLAList.GetCount();
 		int i;
@@ -490,15 +489,15 @@ void cePlaybackProcessAction::ProcessActorSpeak( ceConversation &conversation, c
 		for( i=0; i<count; i++ ){
 			const ceStrip &caHeadLA = *caHeadLAList.GetAt( i );
 			
-			conversationActor.AddPlayHeadLookAt( lookAtList.GetNamed( caHeadLA.GetID() ),
+			conversationActor.AddPlayHeadLookAt( conversation.GetTargetNamed( caHeadLA.GetID() ),
 				caHeadLA.GetPause(), caHeadLA.GetDuration() );
 		}
 	}
 	
-	// update the eyes look-at to play
-	if( action.GetEyesLookAtList().GetCount() > 0 ){
-		const ceLookAtList &lookAtList = conversation.GetLookAtList();
-		const ceStripList &caEyesLAList = action.GetEyesLookAtList();
+	// update the eyes look-at to play. uses head look-ats if empty
+	const ceStripList &caEyesLAList = action.GetEyesLookAtList().GetCount() > 0
+		? action.GetEyesLookAtList() : action.GetHeadLookAtList();
+	if( caEyesLAList.GetCount() > 0 ){
 		const int count = caEyesLAList.GetCount();
 		int i;
 		
@@ -507,7 +506,7 @@ void cePlaybackProcessAction::ProcessActorSpeak( ceConversation &conversation, c
 		for( i=0; i<count; i++ ){
 			const ceStrip &caEyesLA = *caEyesLAList.GetAt( i );
 			
-			conversationActor.AddPlayEyesLookAt( lookAtList.GetNamed( caEyesLA.GetID() ),
+			conversationActor.AddPlayEyesLookAt( conversation.GetTargetNamed( caEyesLA.GetID() ),
 				caEyesLA.GetPause(), caEyesLA.GetDuration() );
 		}
 	}
@@ -523,14 +522,8 @@ void cePlaybackProcessAction::ProcessActorSpeak( ceConversation &conversation, c
 }
 
 void cePlaybackProcessAction::ProcessSnippet( ceConversation &conversation, ceCASnippet *action ){
+	ceConversationTopic * const topic = conversation.GetTopicWithID( action->GetFile(), action->GetTopic() );
 	cePlayback &playback = *conversation.GetPlayback();
-	ceConversationFile *file = NULL;
-	ceConversationTopic *topic = NULL;
-	
-	file = conversation.GetFileList().GetWithID( action->GetFile() );
-	if( file ){
-		topic = file->GetTopicList().GetWithID( action->GetTopic() );
-	}
 	
 	if( topic ){
 		playback.GetActionStack().Push( topic, action, &topic->GetActionList(), 0 );
@@ -769,6 +762,11 @@ const ceCASetActorParameter &action ){
 }
 
 void cePlaybackProcessAction::ProcessActorCommand( ceConversation &conversation, const ceCAActorCommand &action ){
+	if( conversation.GetPlayback()->GetAutoAdvanceCommands() ){
+		conversation.GetPlayback()->AdvanceToNextAction();
+		return;
+	}
+	
 	const decString &actorID = action.GetActor();
 	
 	// show information
@@ -782,6 +780,11 @@ void cePlaybackProcessAction::ProcessActorCommand( ceConversation &conversation,
 }
 
 void cePlaybackProcessAction::ProcessGameCommand( ceConversation &conversation, const ceCAGameCommand &action ){
+	if( conversation.GetPlayback()->GetAutoAdvanceCommands() ){
+		conversation.GetPlayback()->AdvanceToNextAction();
+		return;
+	}
+	
 	ceConversationInfoBox &infobox = conversation.GetInfoBox();
 	decString text;
 	
@@ -834,11 +837,21 @@ void cePlaybackProcessAction::ProcessTrigger( ceConversation &conversation, cons
 		text.Format( "Action Trigger fully resetting trigger '%s'", action.GetName().GetString() );
 	}
 	
+	if( conversation.GetPlayback()->GetAutoAdvanceCommands() ){
+		conversation.GetPlayback()->AdvanceToNextAction();
+		return;
+	}
+	
 	infobox.SetBackgroundColor( decColor( 1.0f, 0.5f, 0.0f, 0.5f ) );
 	infobox.SetText( text );
 }
 
 void cePlaybackProcessAction::ProcessActorAdd( ceConversation &conversation, const ceCAActorAdd &action ){
+	if( conversation.GetPlayback()->GetAutoAdvanceCommands() ){
+		conversation.GetPlayback()->AdvanceToNextAction();
+		return;
+	}
+	
 	ceConversationInfoBox &infobox = conversation.GetInfoBox();
 	decString text;
 	
@@ -855,6 +868,11 @@ void cePlaybackProcessAction::ProcessActorAdd( ceConversation &conversation, con
 }
 
 void cePlaybackProcessAction::ProcessActorRemove( ceConversation &conversation, const ceCAActorRemove &action ){
+	if( conversation.GetPlayback()->GetAutoAdvanceCommands() ){
+		conversation.GetPlayback()->AdvanceToNextAction();
+		return;
+	}
+	
 	ceConversationInfoBox &infobox = conversation.GetInfoBox();
 	decString text;
 	
@@ -865,6 +883,11 @@ void cePlaybackProcessAction::ProcessActorRemove( ceConversation &conversation, 
 }
 
 void cePlaybackProcessAction::ProcessCoordSystemAdd( ceConversation &conversation, const ceCACoordSystemAdd &action ){
+	if( conversation.GetPlayback()->GetAutoAdvanceCommands() ){
+		conversation.GetPlayback()->AdvanceToNextAction();
+		return;
+	}
+	
 	ceConversationInfoBox &infobox = conversation.GetInfoBox();
 	decString text;
 	
@@ -881,6 +904,11 @@ void cePlaybackProcessAction::ProcessCoordSystemAdd( ceConversation &conversatio
 }
 
 void cePlaybackProcessAction::ProcessCoordSystemRemove( ceConversation &conversation, const ceCACoordSystemRemove &action ){
+	if( conversation.GetPlayback()->GetAutoAdvanceCommands() ){
+		conversation.GetPlayback()->AdvanceToNextAction();
+		return;
+	}
+	
 	ceConversationInfoBox &infobox = conversation.GetInfoBox();
 	decString text;
 	
@@ -896,7 +924,7 @@ int cePlaybackProcessAction::GetTargetActor( ceConversation &conversation, const
 	int actor = -1;
 	
 	if( ! targetName.IsEmpty() ){
-		const ceTarget * const target = conversation.GetTargetList().GetNamed( targetName );
+		const ceTarget * const target = conversation.GetTargetNamed( targetName );
 		cePlayback &playback = *conversation.GetPlayback();
 		
 		if( target ){

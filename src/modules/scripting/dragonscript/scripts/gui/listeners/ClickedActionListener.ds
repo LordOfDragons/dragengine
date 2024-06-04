@@ -1,0 +1,291 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+
+namespace Dragengine.Gui
+
+pin Dragengine.Gui.Events
+pin Dragengine.Utils
+
+
+/**
+ * \brief Run action if widget is clicked without moving mouse.
+ * 
+ * Useful for situations where an action should be triggered if a widget is clicked upon
+ * which does not provide this kind of interaction. This listener does not capture the
+ * mouse like for example Button does. This allows other mouse listeners to apply to the
+ * widget while this listener tracks the press and release button action. While the button
+ * is pressed the mouse movement relative to the parent desktop is tracked. If the mouse
+ * moves outside a given range the tracking is interrupted. Once the button is released
+ * the action is triggered but tracking has not been interrupted.
+ * 
+ * \par Version 1.7
+ * 
+ * Multi-click can be detected by setting the required amount of clicks to detect using
+ * setMultiClickCount(). The default time between multi clicks is 0.4s and can be set
+ * using setMultiClickTimeout(). Successful multi click is detected if all required
+ * clicks occure at most getMultiClickTimeout() seconds apart and are located at most
+ * getRange() compared to the position of the first click.
+ */
+abstract class ClickedActionListener extends DefaultMouseListener
+	/** \brief Multi-click reset timer. */
+	public class ResetMultiClickTimer extends Timer
+		private var WeakReference pListener
+		
+		public func new(ClickedActionListener listener) super(listener.getMultiClickTimeout(), false)
+			if listener == null
+				throw ENullPointer.new("listener")
+			end
+			pListener = WeakReference.new(listener)
+		end
+		
+		public func void fire()
+			var ClickedActionListener listener = pListener.get() cast ClickedActionListener
+			if listener != null
+				listener.resetMultiClickDetection()
+			end
+		end
+	end
+	
+	
+	
+	private var int pButton
+	private var int pRange
+	private var Point pPosition
+	private var int pMultiClickCount
+	private var float pMultiClickTimeout
+	private var int pClickedCount
+	private var ResetMultiClickTimer pResetMultiClickTimer
+	
+	
+	
+	/**
+	 * \brief Create mouse listener tracking left mouse button and range of 5 pixels.
+	 */
+	public func new() this(InputEventMouseButton.left, 5)
+	end
+	
+	/**
+	 * \brief Create mouse listener.
+	 * \param trackButton Value from InputEventMouseButton or custom.
+	 * \param range Range in pixels the mouse is allowed to move to fire the action.
+	 * \throws EInvalidParam range is less than 0.
+	 */
+	public func new(int trackButton, int range)
+		if range < 0
+			throw EInvalidParam.new("range < 0")
+		end
+		
+		pButton = trackButton
+		pRange = range
+		pMultiClickCount = 1
+		pMultiClickTimeout = 0.4
+		pClickedCount = 0
+	end
+	
+	
+	
+	/** \brief Mouse button to track. */
+	public func int getButton()
+		return pButton
+	end
+	
+	/** \brief Range in pixels the mouse is allowed to move to fire the action. */
+	public func int getRange()
+		return pRange
+	end
+	
+	/** \brief Mouse position at button press time or null if not tracked. */
+	public func Point getPosition()
+		return pPosition
+	end
+	
+	/** \brief Set mouse position at button press time or null if not tracked. */
+	protected func void setPosition(Point position)
+		pPosition = position
+	end
+	
+	/**
+	 * \brief Count of multi clicks before fire action.
+	 * \version 1.7
+	 */
+	public func int getMultiClickCount()
+		return pMultiClickCount
+	end
+	
+	/**
+	 * \brief Set count of multi clicks before fire action.
+	 * \version 1.7
+	 * \throws EInvalidParam count is less than 1
+	 */
+	public func void setMultiClickCount(int count)
+		if count < 1
+			throw EInvalidParam.new("count < 1")
+		end
+		pMultiClickCount = count
+	end
+	
+	/**
+	 * \brief Maximum time in seconds between clicks to count as multi-click.
+	 * \version 1.7
+	 */
+	public func float getMultiClickTimeout()
+		return pMultiClickTimeout
+	end
+	
+	/**
+	 * \brief Set maximum time in seconds between clicks to count as multi-click.
+	 * \version 1.7
+	 */
+	public func void setMultiClickTimeout(float time)
+		pMultiClickTimeout = DEMath.max(time, 0.0)
+	end
+	
+	/**
+	 * \brief Count of multi-clicks detected so far.
+	 * \version 1.7
+	 */
+	public func int getClickedCount()
+		return pClickedCount
+	end
+	
+	/**
+	 * \brief Reset multi click detection.
+	 * \version 1.7
+	 * 
+	 * Called by internal multi-click reset timer.
+	 */
+	public func void resetMultiClickDetection()
+		if pResetMultiClickTimer != null
+			pResetMultiClickTimer.giveUp()
+			pResetMultiClickTimer = null
+		end
+		
+		pClickedCount = 0
+		pPosition = null
+	end
+	
+	
+	
+	/**
+	 * \brief Mouse button pressed.
+	 * 
+	 * Starts tracking if button matches the track button
+	 */
+	public func void onButtonPress(MouseEvent event)
+		if event.getButton() != pButton
+			resetMultiClickDetection()
+			return
+		end
+		
+		var Point position = getEventPosition(event)
+		if position == null
+			resetMultiClickDetection()
+			return
+		end
+		
+		if pClickedCount > 0 and pPosition != null and not (position - pPosition).absolute().isAtMost(pRange)
+			resetMultiClickDetection()
+		end
+		
+		if pClickedCount == 0
+			pPosition = position
+		end
+		
+		pClickedCount++
+		
+		if pResetMultiClickTimer != null
+			pResetMultiClickTimer.giveUp()
+			pResetMultiClickTimer = null
+		end
+		
+		if pClickedCount < pMultiClickCount
+			pResetMultiClickTimer = ResetMultiClickTimer.new(this)
+		end
+	end
+	
+	/**
+	 * \brief Mouse moved.
+	 * 
+	 * Check track position and disable tracking if moved outside range.
+	 */
+	public func void onMouseMove(MouseEvent event)
+		if pPosition == null
+			return
+		end
+		
+		var Point position = getEventPosition(event)
+		if position == null
+			return
+		end
+		
+		if not (position - pPosition).absolute().isAtMost(pRange)
+			resetMultiClickDetection()
+		end
+	end
+	
+	/**
+	 * \brief Mouse button release.
+	 * 
+	 * If button matches tracking button and tracking is active perform action.
+	 */
+	public func void onButtonRelease(MouseEvent event)
+		if pPosition == null or event.getButton() != pButton or pClickedCount != pMultiClickCount
+			return
+		end
+		
+		resetMultiClickDetection()
+		onAction()
+	end
+	
+	
+	
+	/**
+	 * \brief Action to perform.
+	 */
+	abstract public func void onAction()
+	
+	
+	
+	/**
+	 * \brief Get event position in desktop or widget coordinates.
+	 * \returns Event position or null if source is not a widget.
+	 */
+	protected func Point getEventPosition(MouseEvent event)
+		var Object source = event.getSource()
+		if source == null or not source castable Widget
+			return null
+		end
+		
+		var Widget widget = source cast Widget
+		var Desktop desktop = widget.getDesktop()
+		var Point position = event.getPosition()
+		
+		if desktop != null
+			position = widget.getDesktopPosition() + position
+		end
+		
+		return position
+	end
+end

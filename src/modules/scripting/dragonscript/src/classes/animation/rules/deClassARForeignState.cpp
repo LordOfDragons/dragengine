@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -105,6 +108,51 @@ void deClassARForeignState::nfDestructor::RunFunction( dsRunTime *rt, dsValue *m
 	}
 }
 
+// public func void setModifyX( bool modify )
+deClassARForeignState::nfSetModifyX::nfSetModifyX( const sInitData &init ) : dsFunction( init.clsARFSta,
+"setModifyX", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsBool ); // modify
+}
+void deClassARForeignState::nfSetModifyX::RunFunction( dsRunTime *rt, dsValue *myself ){
+	sARFStaNatDat &nd = *( ( sARFStaNatDat* )p_GetNativeData( myself ) );
+	
+	nd.rule->SetModifyX( rt->GetValue( 0 )->GetBool() );
+	
+	if( nd.animator ){
+		nd.animator->NotifyRulesChanged();
+	}
+}
+
+// public func void setModifyY( bool modify )
+deClassARForeignState::nfSetModifyY::nfSetModifyY( const sInitData &init ) : dsFunction( init.clsARFSta,
+"setModifyY", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsBool ); // modify
+}
+void deClassARForeignState::nfSetModifyY::RunFunction( dsRunTime *rt, dsValue *myself ){
+	sARFStaNatDat &nd = *( ( sARFStaNatDat* )p_GetNativeData( myself ) );
+	
+	nd.rule->SetModifyY( rt->GetValue( 0 )->GetBool() );
+	
+	if( nd.animator ){
+		nd.animator->NotifyRulesChanged();
+	}
+}
+
+// public func void setModifyZ( bool modify )
+deClassARForeignState::nfSetModifyZ::nfSetModifyZ( const sInitData &init ) : dsFunction( init.clsARFSta,
+"setModifyZ", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsBool ); // modify
+}
+void deClassARForeignState::nfSetModifyZ::RunFunction( dsRunTime *rt, dsValue *myself ){
+	sARFStaNatDat &nd = *( ( sARFStaNatDat* )p_GetNativeData( myself ) );
+	
+	nd.rule->SetModifyZ( rt->GetValue( 0 )->GetBool() );
+	
+	if( nd.animator ){
+		nd.animator->NotifyRulesChanged();
+	}
+}
+
 
 
 
@@ -153,6 +201,21 @@ void deClassARForeignState::nfSetEnableSize::RunFunction( dsRunTime *rt, dsValue
 	}
 }
 
+// public func void setEnableVertexPositionSet( bool enabled )
+deClassARForeignState::nfSetEnableVertexPositionSet::nfSetEnableVertexPositionSet( const sInitData &init ) :
+dsFunction( init.clsARFSta, "setEnableVertexPositionSet", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsBool ); // enabled
+}
+void deClassARForeignState::nfSetEnableVertexPositionSet::RunFunction( dsRunTime *rt, dsValue *myself ){
+	sARFStaNatDat &nd = *( ( sARFStaNatDat* )p_GetNativeData( myself ) );
+	
+	nd.rule->SetEnableVertexPositionSet( rt->GetValue( 0 )->GetBool() );
+	
+	if( nd.animator ){
+		nd.animator->NotifyRulesChanged();
+	}
+}
+
 
 
 // public func void targetAddLink( ARForeignStateTarget target, int link )
@@ -187,6 +250,10 @@ void deClassARForeignState::nfTargetAddLink::RunFunction( dsRunTime *rt, dsValue
 		
 	case deClassARForeignState::etSize:
 		nd.rule->GetTargetSize().AddLink( link );
+		break;
+		
+	case deClassARForeignState::etVertexPositionSet:
+		nd.rule->GetTargetVertexPositionSet().AddLink( link );
 		break;
 		
 	default:
@@ -228,6 +295,10 @@ void deClassARForeignState::nfTargetRemoveAllLinks::RunFunction( dsRunTime *rt, 
 		
 	case deClassARForeignState::etSize:
 		nd.rule->GetTargetSize().RemoveAllLinks();
+		break;
+		
+	case deClassARForeignState::etVertexPositionSet:
+		nd.rule->GetTargetVertexPositionSet().RemoveAllLinks();
 		break;
 		
 	default:
@@ -286,6 +357,21 @@ void deClassARForeignState::nfSetScaleSize::RunFunction( dsRunTime *rt, dsValue 
 	}
 }
 
+// public func void setScaleVertexPositionSet( float scaleVertexPositionSet )
+deClassARForeignState::nfSetScaleVertexPositionSet::nfSetScaleVertexPositionSet( const sInitData &init ) :
+dsFunction( init.clsARFSta, "setScaleVertexPositionSet", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsFlt ); // scaleVertexPositionSet
+}
+void deClassARForeignState::nfSetScaleVertexPositionSet::RunFunction( dsRunTime *rt, dsValue *myself ){
+	sARFStaNatDat &nd = *( ( sARFStaNatDat* )p_GetNativeData( myself ) );
+	
+	nd.rule->SetScaleVertexPositionSet( rt->GetValue( 0 )->GetFloat() );
+	
+	if( nd.animator ){
+		nd.animator->NotifyRulesChanged();
+	}
+}
+
 // public func void setForeignBone( String boneName )
 deClassARForeignState::nfSetForeignBone::nfSetForeignBone( const sInitData &init ) : dsFunction( init.clsARFSta,
 "setForeignBone", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
@@ -296,6 +382,21 @@ void deClassARForeignState::nfSetForeignBone::RunFunction( dsRunTime *rt, dsValu
 	const char * const boneName = rt->GetValue( 0 )->GetString();
 	
 	nd.rule->SetForeignBone( boneName );
+	
+	if( nd.animator ){
+		nd.animator->NotifyRulesChanged();
+	}
+}
+
+// public func void setForeignVertexPositionSet(String name)
+deClassARForeignState::nfSetForeignVertexPositionSet::nfSetForeignVertexPositionSet( const sInitData &init ) :
+dsFunction( init.clsARFSta, "setForeignVertexPositionSet", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsStr ); // name
+}
+void deClassARForeignState::nfSetForeignVertexPositionSet::RunFunction( dsRunTime *rt, dsValue *myself ){
+	sARFStaNatDat &nd = *( ( sARFStaNatDat* )p_GetNativeData( myself ) );
+	
+	nd.rule->SetForeignVertexPositionSet( rt->GetValue( 0 )->GetString() );
 	
 	if( nd.animator ){
 		nd.animator->NotifyRulesChanged();
@@ -391,19 +492,25 @@ void deClassARForeignState::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfNew( init ) );
 	AddFunction( new nfDestructor( init ) );
 	
-	AddFunction( new nfSetEnablePosition( init ) );
-	AddFunction( new nfSetEnableOrientation( init ) );
-	AddFunction( new nfSetEnableSize( init ) );
-	
-	AddFunction( new nfTargetAddLink( init ) );
-	AddFunction( new nfTargetRemoveAllLinks( init ) );
-	
 	AddFunction( new nfSetScalePosition( init ) );
 	AddFunction( new nfSetScaleOrientation( init ) );
 	AddFunction( new nfSetScaleSize( init ) );
+	AddFunction( new nfSetScaleVertexPositionSet( init ) );
 	AddFunction( new nfSetForeignBone( init ) );
+	AddFunction( new nfSetForeignVertexPositionSet( init ) );
 	AddFunction( new nfSetSourceCoordinateFrame( init ) );
 	AddFunction( new nfSetDestinationCoordinateFrame( init ) );
+	AddFunction( new nfSetModifyX( init ) );
+	AddFunction( new nfSetModifyY( init ) );
+	AddFunction( new nfSetModifyZ( init ) );
+	
+	AddFunction( new nfSetEnablePosition( init ) );
+	AddFunction( new nfSetEnableOrientation( init ) );
+	AddFunction( new nfSetEnableSize( init ) );
+	AddFunction( new nfSetEnableVertexPositionSet( init ) );
+	
+	AddFunction( new nfTargetAddLink( init ) );
+	AddFunction( new nfTargetRemoveAllLinks( init ) );
 	
 	// calculate member offsets
 	CalcMemberOffsets();

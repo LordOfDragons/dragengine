@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -29,40 +32,59 @@ pin Dragengine.Utils
  * \brief Console command shows available languages and changing active language.
  */
 class LanguageConsoleCommand extends ConsoleCommand
-	/** \brief Translation manager. */
-	private var TranslationManager pTranslationManager
+	var TranslationManager pTranslationManager
+	var bool pChangeEngineTranslations
 	
 	
 	
 	/** \brief Create console command. */
-	public func new( TranslationManager translationManager )
+	func new(TranslationManager translationManager)
 		if translationManager == null
 			throw EInvalidParam.new()
 		end
 		
-		this.pTranslationManager = translationManager
+		pTranslationManager = translationManager
+		pChangeEngineTranslations = true
 		
-		this.setName( "language" )
-		this.setDescription( "Shows languages and set active language." )
-		this.setSyntax( "language { list | active { <name> }\n" + \
+		setName("language")
+		setDescription("Shows languages and set active language.")
+		setSyntax("language { list | active { <id> }\n" + \
 			"   list => display list of all available languages\n" + \
-			"   active => display name of the active language\n" + \
-			"   active <name> => set active language" )
+			"   active => display active language\n" + \
+			"   active <name> => set active language")
 	end
 	
 	
 	
 	/** \brief Translation manager. */
-	public func TranslationManager getTranslationManager()
-		return this.pTranslationManager
+	func TranslationManager getTranslationManager()
+		return pTranslationManager
 	end
 	
 	/** \brief Set translation manager. */
-	public func void setTranslationManager( TranslationManager translationManager )
+	func void setTranslationManager(TranslationManager translationManager)
 		if translationManager == null
 			throw EInvalidParam.new()
 		end
-		this.pTranslationManager = translationManager
+		pTranslationManager = translationManager
+	end
+	
+	/**
+	 * \brief Change also engine translations.
+	 * \version 1.20
+	 * 
+	 * Enabled by default.
+	 */
+	func bool getChangeEngineTranslations()
+		return pChangeEngineTranslations
+	end
+	
+	/**
+	 * \brief Set to change also engine translations.
+	 * \version 1.20
+	 */
+	func void setChangeEngineTranslations(bool change)
+		pChangeEngineTranslations = change
 	end
 	
 	
@@ -72,47 +94,53 @@ class LanguageConsoleCommand extends ConsoleCommand
 	 * \param console Console to send output to.
 	 * \param params List of parameters. Has to match command syntax.
 	 */
-	public func void execute( Console console, Array params )
+	func void execute(Console console, Array params)
 		if params.getCount() == 0
-			console.addMessage( this.getSyntax() )
+			console.addMessage(getSyntax())
 			return
 		end
 		
 		var LanguagePack languagePack
 		
-		if params.getAt( 0 ).equals( "list" )
-			var Array names = this.pTranslationManager.getNames()
-			
-			if names.getCount() > 0
-				console.addMessage( names.sorted().fold( block String a, String b
-					return a + ", " + b
-				end ).toString() )
+		if params.getAt(0).equals("list")
+			if pTranslationManager.getCount() > 0
+				pTranslationManager.forEach(block LanguagePack each
+					console.addMessage("- {}: {}".format(Array.newWith(\
+						each.getIdentifier(), each.getName())))
+				end)
 				
 			else
-				console.addMessage( "< no languages >" )
+				console.addMessage("< no languages >")
 			end
 			
-		elif params.getAt( 0 ).equals( "active" )
+		elif params.getAt(0).equals("active")
 			if params.getCount() == 1
-				languagePack = this.pTranslationManager.getActive()
-				console.addMessage( languagePack.getName().toString() \
-					+ ": " + languagePack.getDescription() )
+				languagePack = pTranslationManager.getActive()
+				console.addMessage("{}: {}".format(Array.newWith(\
+					languagePack.getIdentifier(), languagePack.getName())))
 				
 			else
-				languagePack = this.pTranslationManager.getNamed( \
-					UnicodeString.newFromUTF8( params.getAt( 1 ).toString() ) )
+				languagePack = pTranslationManager.getWithId(params.getAt(1).toString())
 				
 				if languagePack == null
-					console.addMessage( "Language not found: " + params.getAt( 1 ) )
+					languagePack = pTranslationManager.getNamed(\
+						UnicodeString.newFromUTF8(params.getAt(1).toString()))
+				end
+				
+				if languagePack == null
+					console.addMessage("Language not found: " + params.getAt(1))
 					
 				else
-					this.pTranslationManager.setActive( languagePack )
-					console.addMessage( "Activated language: " + params.getAt( 1 ) )
+					pTranslationManager.setActive(languagePack)
+					EngineTranslations.get().setActiveWithIdIfPresent(languagePack.getIdentifier())
+					
+					console.addMessage("Activated language: {} ({})".format(Array.newWith(\
+						languagePack.getIdentifier(), languagePack.getName())))
 				end
 			end
 			
 		else
-			console.addMessage( "invalid command: " + params.getAt( 0 ) )
+			console.addMessage("invalid command: " + params.getAt(0))
 		end
 	end
 end

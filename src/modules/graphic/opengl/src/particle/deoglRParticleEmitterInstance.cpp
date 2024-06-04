@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -29,7 +32,6 @@
 #include "deoglRParticleEmitter.h"
 #include "deoglRParticleEmitterInstanceType.h"
 #include "../envmap/deoglEnvironmentMap.h"
-#include "../extensions/deoglExtResult.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTLogger.h"
 #include "../skin/deoglRSkin.h"
@@ -41,7 +43,6 @@
 #include "../visitors/deoglFindBestEnvMap.h"
 #include "../world/deoglRWorld.h"
 #include "../world/deoglWorldOctree.h"
-#include "../delayedoperation/deoglDelayedDeletion.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
 
 #include <dragengine/common/exceptions.h>
@@ -56,6 +57,29 @@
 
 
 
+// Class deoglRParticleEmitterInstance::WorldComputeElement
+/////////////////////////////////////////////////////////////
+
+deoglRParticleEmitterInstance::WorldComputeElement::WorldComputeElement( deoglRParticleEmitterInstance &emitter ) :
+deoglWorldComputeElement( eetParticleEmitter, &emitter ),
+pEmitter( emitter ){
+}
+
+void deoglRParticleEmitterInstance::WorldComputeElement::UpdateData( sDataElement &data ) const{
+	const decDVector &refpos = GetReferencePosition();
+	data.SetExtends( pEmitter.GetMinExtend() - refpos, pEmitter.GetMaxExtend() - refpos );
+	data.SetLayerMask( pEmitter.GetLayerMask() );
+	data.flags = ( uint32_t )( deoglWorldCompute::eefParticleEmitter
+		| deoglWorldCompute::eefDynamic | deoglWorldCompute::eefGIDynamic );
+	data.geometryCount = 0; //1;
+	data.highestLod = 0;
+}
+
+void deoglRParticleEmitterInstance::WorldComputeElement::UpdateDataGeometries( sDataElementGeometry *data ) const{
+}
+
+
+
 // Class deoglRParticleEmitterInstance
 ////////////////////////////////////////
 
@@ -67,6 +91,7 @@ pRenderThread( renderThread ),
 pEmitter( NULL ),
 pParentWorld( NULL ),
 pOctreeNode( NULL ),
+pWorldComputeElement( deoglWorldComputeElement::Ref::New( new WorldComputeElement( *this ) ) ),
 
 pBurstTime( 0.0f ),
 
@@ -83,7 +108,7 @@ pIndexSize( 0 ),
 pIndexUsedCount( 0 ),
 pDirtyIBO( false ),
 
-pRenderEnvMap( NULL ),
+pRenderEnvMap( nullptr ),
 pDirtyRenderEnvMap( true ),
 
 pVBOShared( 0 ),
@@ -93,42 +118,11 @@ pVAO( NULL ),
 
 pDirtyParticles( true ),
 
+pCSOctreeIndex( 0 ),
+
 pWorldMarkedRemove( false ){
 	LEAK_CHECK_CREATE( renderThread, ParticleEmitterInstance );
 }
-
-class deoglRParticleEmitterInstanceDeletion : public deoglDelayedDeletion{
-public:
-	GLuint vboShared;
-	GLuint vboLocal;
-	GLuint ibo;
-	deoglVAO *vao;
-	
-	deoglRParticleEmitterInstanceDeletion() :
-	vboShared( 0 ),
-	vboLocal( 0 ),
-	ibo( 0 ),
-	vao( NULL ){
-	}
-	
-	virtual ~deoglRParticleEmitterInstanceDeletion(){
-	}
-	
-	virtual void DeleteObjects( deoglRenderThread &renderThread ){
-		if( vao ){
-			delete vao;
-		}
-		if( ibo ){
-			OGL_CHECK( renderThread, pglDeleteBuffers( 1, &ibo ) );
-		}
-		if( vboLocal ){
-			OGL_CHECK( renderThread, pglDeleteBuffers( 1, &vboLocal ) );
-		}
-		if( vboShared ){
-			OGL_CHECK( renderThread, pglDeleteBuffers( 1, &vboShared ) );
-		}
-	}
-};
 
 deoglRParticleEmitterInstance::~deoglRParticleEmitterInstance(){
 	LEAK_CHECK_FREE( pRenderThread, ParticleEmitterInstance );
@@ -143,25 +137,14 @@ deoglRParticleEmitterInstance::~deoglRParticleEmitterInstance(){
 	if( pRenderEnvMap ){
 		pRenderEnvMap->FreeReference();
 	}
-	
-	// delayed deletion of opengl containing objects
-	deoglRParticleEmitterInstanceDeletion *delayedDeletion = NULL;
-	
-	try{
-		delayedDeletion = new deoglRParticleEmitterInstanceDeletion;
-		delayedDeletion->ibo = pIBO;
-		delayedDeletion->vao = pVAO;
-		delayedDeletion->vboLocal = pVBOLocal;
-		delayedDeletion->vboShared = pVBOShared;
-		pRenderThread.GetDelayedOperations().AddDeletion( delayedDeletion );
-		
-	}catch( const deException &e ){
-		if( delayedDeletion ){
-			delete delayedDeletion;
-		}
-		pRenderThread.GetLogger().LogException( e );
-		//throw; -> otherwise terminate
+	if( pVAO ){
+		delete pVAO;
 	}
+	
+	deoglDelayedOperations &dops = pRenderThread.GetDelayedOperations();
+	dops.DeleteOpenGLBuffer( pIBO );
+	dops.DeleteOpenGLBuffer( pVBOLocal );
+	dops.DeleteOpenGLBuffer( pVBOShared );
 }
 
 
@@ -195,6 +178,7 @@ void deoglRParticleEmitterInstance::SetParentWorld( deoglRWorld *world ){
 		pRenderEnvMap->FreeReference();
 		pRenderEnvMap = NULL;
 	}
+	pWorldComputeElement->RemoveFromCompute();
 	if( pOctreeNode ){
 		pOctreeNode->RemoveParticleEmitter( this );
 		pOctreeNode = NULL;
@@ -212,9 +196,19 @@ void deoglRParticleEmitterInstance::SetOctreeNode( deoglWorldOctree *node ){
 void deoglRParticleEmitterInstance::UpdateOctreeNode(){
 	if( pParentWorld ){
 		//if( pParticleEmitter->GetVisible() ){
-			pParentWorld->GetOctree().InsertParticleEmitterIntoTree( this, 8 );
+			pParentWorld->GetOctree().InsertParticleEmitterIntoTree( this );
+			
+			if( pWorldComputeElement->GetWorldCompute() ){
+				pWorldComputeElement->ComputeUpdateElement();
+				
+			}else{
+				pParentWorld->GetCompute().AddElement( pWorldComputeElement );
+			}
 			
 		/*}else{
+			if( pWorldComputeElement->GetIndex() != -1 ){
+				pParentWorld->GetCompute().RemoveElement( pWorldComputeElement );
+			}
 			if( pOctreeNode ){
 				pOctreeNode->GetParticleEmittersList().Remove( this );
 				pOctreeNode = NULL;
@@ -309,6 +303,11 @@ void deoglRParticleEmitterInstance::UpdateRenderEnvMap(){
 	if( ! pDirtyRenderEnvMap ){
 		return;
 	}
+	pDirtyRenderEnvMap = false;
+	
+	if( deoglSkinShader::REFLECTION_TEST_MODE == deoglSkinShader::ertmSingleBlenderEnvMap ){
+		return;
+	}
 	
 	// for the time being we simply pick the environment map that is closest to the component position.
 	// this can lead to wrong picks and harshly switching environment maps but this is enough for the
@@ -341,11 +340,9 @@ void deoglRParticleEmitterInstance::UpdateRenderEnvMap(){
 		SetRenderEnvMap( pParentWorld->GetSkyEnvironmentMap() );
 		
 	}else{
-		SetRenderEnvMap( NULL );
+		SetRenderEnvMap( nullptr );
 	}
 	//pOgl->LogInfoFormat( "update particle emitter instance %p render env map %p\n", pInstance, pRenderEnvMap );
-	
-	pDirtyRenderEnvMap = false;
 }
 
 void deoglRParticleEmitterInstance::InvalidateRenderEnvMap(){
@@ -353,7 +350,7 @@ void deoglRParticleEmitterInstance::InvalidateRenderEnvMap(){
 		return;
 	}
 	
-	SetRenderEnvMap( NULL );
+	SetRenderEnvMap( nullptr );
 	pDirtyRenderEnvMap = true;
 }
 
@@ -579,6 +576,8 @@ void deoglRParticleEmitterInstance::UpdateParticlesVBO(){
 		OGL_CHECK( pRenderThread, pglBindBuffer( GL_ELEMENT_ARRAY_BUFFER, pIBO ) );
 		
 		OGL_CHECK( pRenderThread, pglBindVertexArray( 0 ) );
+		
+		pVAO->EnsureRTSVAO();
 	}
 	
 	OGL_CHECK( pRenderThread, pglBindBuffer( GL_ARRAY_BUFFER, 0 ) );

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Console Launcher
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -27,21 +30,19 @@
 #include "declActionDelgaHelper.h"
 #include "../declLauncher.h"
 #include "../config/declConfiguration.h"
-#include "../engine/declEngine.h"
-#include "../game/declGame.h"
-#include "../game/declGameManager.h"
-#include "../game/patch/declPatch.h"
-#include "../game/patch/declPatchManager.h"
+
+#include <delauncher/engine/delEngine.h>
+#include <delauncher/game/delGame.h>
+#include <delauncher/game/delGameManager.h>
+#include <delauncher/game/patch/delPatch.h>
+#include <delauncher/game/patch/delPatchManager.h>
 
 #include <dragengine/common/exceptions.h>
-#include <dragengine/common/file/decBaseFileReaderReference.h>
-#include <dragengine/common/file/decBaseFileWriterReference.h>
 #include <dragengine/common/file/decDiskFileReader.h>
 #include <dragengine/common/file/decDiskFileWriter.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
-#include <dragengine/filesystem/deVFSContainerReference.h>
 #include <dragengine/filesystem/deVFSDiskDirectory.h>
 #include <dragengine/logger/deLogger.h>
 
@@ -82,30 +83,16 @@ void declActionDelga::PrintSyntax(){
 	printf( "Syntax:\n" );
 	printf( "delauncher-console delga content <filename>\n" );
 	printf( "   List content of DELGA file\n" );
+	/*
 	printf( "\n" );
 	printf( "delauncher-console delga install <filename>\n" );
 	printf( "   Install DELGA file. If content is already installed the call fails.\n" );
 	printf( "   Return code 0: DELGA installed successfully\n" );
 	printf( "   Return code 1: Installing DELGA failed\n" );
+	*/
 }
 
 
-
-void declActionDelga::InitLauncher(){
-	pLauncher.GetEngine()->LoadModuleList();
-	pLauncher.GetEngine()->LoadConfig();
-	pLauncher.GetEngine()->Start( pLauncher.GetEngineLogger(), "" );
-	try{
-		pLauncher.GetGameManager()->LoadGameList();
-		pLauncher.GetPatchManager().LoadPatchList();
-		pLauncher.GetGameManager()->LoadGameConfigs();
-		
-	}catch( const deException & ){
-		pLauncher.GetEngine()->Stop();
-		throw;
-	}
-	pLauncher.GetEngine()->Stop();
-}
 
 int declActionDelga::Run(){
 	const decUnicodeArgumentList &argumentList = pLauncher.GetArgumentList();
@@ -117,12 +104,14 @@ int declActionDelga::Run(){
 	const decString action( argumentList.GetArgumentAt( 1 )->ToUTF8() );
 	
 	if( action == "content" ){
-		InitLauncher();
+		pLauncher.Prepare();
 		return pContent();
 		
+		/*
 	}else if( action == "install" ){
-		InitLauncher();
+		pLauncher.Prepare();
 		return pInstall();
+		*/
 		
 	}else{
 		PrintSyntax();
@@ -146,11 +135,11 @@ int declActionDelga::pContent(){
 	delga.Load();
 	
 	printf( "Games (alias (identifier) => title):\n" );
-	const declGameList &games = delga.GetGames();
+	const delGameList &games = delga.GetGames();
 	const int gameCount = games.GetCount();
 	int i;
 	for( i=0; i<gameCount; i++ ){
-		const declGame &game = *games.GetAt( i );
+		const delGame &game = *games.GetAt( i );
 		printf( "- '%s' (%s) => %s\n",
 			game.GetAliasIdentifier().GetString(),
 			game.GetIdentifier().ToHexString( false ).GetString(),
@@ -158,11 +147,11 @@ int declActionDelga::pContent(){
 	}
 	
 	printf( "\nPatches (name (patch alias) => identifier (patch identifier):\n" );
-	const declPatchList &patches = delga.GetPatches();
+	const delPatchList &patches = delga.GetPatches();
 	const int patchCount = patches.GetCount();
 	for( i=0; i<patchCount; i++ ){
-		const declPatch &patch = *patches.GetAt( i );
-		const declGame * const game = pLauncher.GetGameManager()->GetGameList().GetWithID( patch.GetGameID() );
+		const delPatch &patch = *patches.GetAt( i );
+		const delGame * const game = pLauncher.GetGameManager().GetGames().GetWithID( patch.GetGameID() );
 		printf( "- '%s' (%s) => %s (%s)\n",
 			patch.GetName().ToUTF8().GetString(),
 			game ? game->GetTitle().ToUTF8().GetString() : "?",
@@ -189,16 +178,16 @@ int declActionDelga::pInstall(){
 	}
 	
 	// check if any of the games inside are installed
-	const declGameList &games = delga.GetGames();
+	const delGameList &games = delga.GetGames();
 	int i;
 	for( i=0; i<games.GetCount(); i++ ){
-		if( pLauncher.GetGameManager()->GetGameList().HasWithID( games.GetAt( i )->GetIdentifier() ) ){
+		if( pLauncher.GetGameManager().GetGames().HasWithID( games.GetAt( i )->GetIdentifier() ) ){
 			printf( "Game '%s' is already installed\n", games.GetAt( i )->GetTitle().ToUTF8().GetString() );
 			return -1;
 		}
 	}
 	
-	const declPatchList &patches = delga.GetPatches();
+	const delPatchList &patches = delga.GetPatches();
 	for( i=0; i<patches.GetCount(); i++ ){
 		if( pLauncher.GetPatchManager().GetPatches().HasWithID( patches.GetAt( i )->GetIdentifier() ) ){
 			printf( "Patch '%s' is already installed\n", patches.GetAt( i )->GetName().ToUTF8().GetString() );
@@ -209,12 +198,12 @@ int declActionDelga::pInstall(){
 	// show what would be installed and ask if this is the right thing to do
 	printf( "The following content will be installed:\n" );
 	for( i=0; i<games.GetCount(); i++ ){
-		const declGame &game = *games.GetAt( i );
+		const delGame &game = *games.GetAt( i );
 		printf( "- Game '%s'\n", game.GetTitle().ToUTF8().GetString() );
 	}
 	for( i=0; i<patches.GetCount(); i++ ){
-		const declPatch &patch = *patches.GetAt( i );
-		const declGame *game = pLauncher.GetGameManager()->GetGameList().GetWithID( patch.GetGameID() );
+		const delPatch &patch = *patches.GetAt( i );
+		const delGame *game = pLauncher.GetGameManager().GetGames().GetWithID( patch.GetGameID() );
 		if( ! game ){
 			game = delga.GetGames().GetWithID( patch.GetGameID() );
 		}

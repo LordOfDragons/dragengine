@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Animator Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include "aeWindowMain.h"
@@ -39,6 +42,7 @@
 #include "../animator/rule/aeRuleSubAnimator.h"
 #include "../animator/rule/aeRuleTrackTo.h"
 #include "../animator/rule/aeRuleLimit.h"
+#include "../animator/rule/aeRuleMirror.h"
 #include "../animator/rule/aeRuleGroup.h"
 #include "../animator/wakeboard/aeWakeboard.h"
 #include "../configuration/aeConfiguration.h"
@@ -232,10 +236,17 @@ void aeWindowMain::SaveAnimator( const char *filename ){
 		return;
 	}
 	
+	const decString basePath( pAnimator->GetDirectoryPath() );
+	
 	pLoadSaveSystem->SaveAnimator( pAnimator, filename );
 	pAnimator->SetFilePath( filename );
 	pAnimator->SetChanged( false );
 	pAnimator->SetSaved( true );
+	
+	if( pAnimator->GetDirectoryPath() != basePath ){
+		pWindowProperties->OnAnimatorPathChanged();
+	}
+	
 	GetRecentFiles().AddFile( filename );
 }
 
@@ -344,9 +355,7 @@ void aeWindowMain::LoadDocument( const char *filename ){
 		}
 	}
 	
-	deObjectReference animator;
-	animator.TakeOver( pLoadSaveSystem->LoadAnimator( filename ) );
-	SetAnimator( ( aeAnimator* )( deObject* )animator );
+	SetAnimator( aeAnimator::Ref::New( pLoadSaveSystem->LoadAnimator( filename ) ) );
 	GetRecentFiles().AddFile( filename );
 }
 
@@ -412,6 +421,9 @@ igdeIcon *aeWindowMain::GetRuleIcon( deAnimatorRuleVisitorIdentify::eRuleTypes t
 		
 	case deAnimatorRuleVisitorIdentify::ertLimit:
 		return pIconRuleLimit;
+		
+	case deAnimatorRuleVisitorIdentify::ertMirror:
+		return pIconRuleMirror;
 		
 	default:
 		return NULL;
@@ -528,9 +540,7 @@ public:
 			return;
 		}
 		
-		deObjectReference animator;
-		animator.TakeOver( pWindow.GetLoadSaveSystem().LoadAnimator( filename ) );
-		pWindow.SetAnimator( ( aeAnimator* )( deObject* )animator );
+		pWindow.SetAnimator( aeAnimator::Ref::New( pWindow.GetLoadSaveSystem().LoadAnimator( filename ) ) );
 		pWindow.GetRecentFiles().AddFile( filename );
 	}
 };
@@ -545,7 +555,7 @@ public:
 		decString filename( animator->GetFilePath() );
 		if( igdeCommonDialogs::GetFileSave( &pWindow, "Save Animator",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
-		*pWindow.GetEnvironment().GetOpenFilePatternList( igdeEnvironment::efpltAnimator ), filename ) ){
+		*pWindow.GetEnvironment().GetSaveFilePatternList( igdeEnvironment::efpltAnimator ), filename ) ){
 			pWindow.SaveAnimator( filename );
 		}
 		return NULL;
@@ -696,28 +706,6 @@ public:
 };
 
 
-class cActionControllerAdd : public cActionBase{
-public:
-	cActionControllerAdd( aeWindowMain &window ) : cActionBase( window, "Add...",
-		window.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ),
-		"Add a controller", deInputEvent::ekcA ){}
-	
-	virtual igdeUndo *OnAction( aeAnimator *animator ){
-		decString name( "Controller" );
-		if( ! igdeCommonDialogs::GetString( &pWindow, "Add Controller", "Name:", name ) ){
-			return NULL;
-		}
-		if( animator->GetControllers().HasNamed( name ) ){
-			igdeCommonDialogs::Error( &pWindow, "Add Controller", "Name exists already" );
-			return NULL;
-		}
-		
-		deObjectReference controller;
-		controller.TakeOver( new aeController( name ) );
-		return new aeUAddController( animator, ( aeController* )( deObject* )controller );
-	}
-};
-
 class cActionBaseController : public cActionBase{
 public:
 	cActionBaseController( aeWindowMain &window, const char *text, igdeIcon *icon,
@@ -750,6 +738,51 @@ public:
 	virtual void UpdateController( const aeAnimator &, const aeController & ){
 		SetEnabled( true );
 		SetSelected( false );
+	}
+};
+
+class cActionControllerAdd : public cActionBase{
+public:
+	cActionControllerAdd( aeWindowMain &window ) : cActionBase( window, "Add...",
+		window.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ),
+		"Add a controller", deInputEvent::ekcA ){}
+	
+	virtual igdeUndo *OnAction( aeAnimator *animator ){
+		decString name( "Controller" );
+		if( ! igdeCommonDialogs::GetString( &pWindow, "Add Controller", "Name:", name ) ){
+			return NULL;
+		}
+		if( animator->GetControllers().HasNamed( name ) ){
+			igdeCommonDialogs::Error( &pWindow, "Add Controller", "Name exists already" );
+			return NULL;
+		}
+		
+		deObjectReference controller;
+		controller.TakeOver( new aeController( name ) );
+		return new aeUAddController( animator, ( aeController* )( deObject* )controller );
+	}
+};
+
+class cActionControllerDuplicate : public cActionBaseController{
+public:
+	cActionControllerDuplicate( aeWindowMain &window ) : cActionBaseController( window, "Duplicate",
+		window.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ),
+		"Duplicate controller", deInputEvent::ekcD ){}
+	
+	virtual igdeUndo *OnActionController( aeAnimator *animator, aeController *controller ){
+		decString name( controller->GetName() + " Copy" );
+		if( ! igdeCommonDialogs::GetString( &pWindow, "Duplicate Controller", "Name:", name ) ){
+			return nullptr;
+		}
+		
+		if( animator->GetControllers().HasNamed( name ) ){
+			igdeCommonDialogs::Error( &pWindow, "Add Controller", "Name exists already" );
+			return nullptr;
+		}
+		
+		const aeController::Ref duplicate( aeController::Ref::New( new aeController( *controller ) ) );
+		duplicate->SetName( name );
+		return new aeUAddController( animator, duplicate );
 	}
 };
 
@@ -879,7 +912,7 @@ class cActionLinkDuplicate : public cActionBaseLink{
 public:
 	cActionLinkDuplicate( aeWindowMain &window ) : cActionBaseLink( window, "Duplicate",
 		window.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ),
-		"Duplicate link", deInputEvent::ekcR ){}
+		"Duplicate link", deInputEvent::ekcD ){}
 	
 	virtual igdeUndo *OnActionLink( aeAnimator *animator, aeLink *link ){
 		decString name( link->GetName() + " Copy" );
@@ -1099,6 +1132,7 @@ void aeWindowMain::pLoadIcons(){
 	pIconRuleStateSnapshot.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/rule_state_snapshot.png" ) );
 	pIconRuleSubAnimator.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/rule_sub_animator.png" ) );
 	pIconRuleTrackTo.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/rule_track_to.png" ) );
+	pIconRuleMirror.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/rule_mirror.png" ) );
 }
 
 void aeWindowMain::pCreateActions(){
@@ -1122,6 +1156,7 @@ void aeWindowMain::pCreateActions(){
 	pActionEditDDBoneSize.TakeOver( new cActionEditDDBoneSize( *this ) );
 	
 	pActionControllerAdd.TakeOver( new cActionControllerAdd( *this ) );
+	pActionControllerDuplicate.TakeOver( new cActionControllerDuplicate( *this ) );
 	pActionControllerRemove.TakeOver( new cActionControllerRemove( *this ) );
 	pActionControllerUp.TakeOver( new cActionControllerUp( *this ) );
 	pActionControllerDown.TakeOver( new cActionControllerDown( *this ) );
@@ -1155,6 +1190,8 @@ void aeWindowMain::pCreateActions(){
 		false, "Track To", pIconRuleTrackTo, "Add a track to rule" ) );
 	pActionRuleAddLimit.TakeOver( new cActionRuleAdd( *this, deAnimatorRuleVisitorIdentify::ertLimit,
 		false, "Limit", pIconRuleLimit, "Add a limit rule" ) );
+	pActionRuleAddMirror.TakeOver( new cActionRuleAdd( *this, deAnimatorRuleVisitorIdentify::ertMirror,
+		false, "Mirror", pIconRuleMirror, "Add a mirror rule" ) );
 	
 	pActionRuleAddIntoGroupAnim.TakeOver( new cActionRuleAddIntoGroup( *this, deAnimatorRuleVisitorIdentify::ertAnimation,
 		false, "Animation", pIconRuleAnimation, "Add an animation rule" ) );
@@ -1180,6 +1217,8 @@ void aeWindowMain::pCreateActions(){
 		false, "Track To", pIconRuleTrackTo, "Add a track to rule" ) );
 	pActionRuleAddIntoGroupLimit.TakeOver( new cActionRuleAddIntoGroup( *this, deAnimatorRuleVisitorIdentify::ertLimit,
 		false, "Limit", pIconRuleLimit, "Add a limit rule" ) );
+	pActionRuleAddIntoGroupMirror.TakeOver( new cActionRuleAddIntoGroup( *this, deAnimatorRuleVisitorIdentify::ertMirror,
+		false, "Mirror", pIconRuleMirror, "Add a mirror rule" ) );
 	
 	pActionRuleInsertAnim.TakeOver( new cActionRuleAdd( *this, deAnimatorRuleVisitorIdentify::ertAnimation,
 		true, "Animation", pIconRuleAnimation, "Insert an animation rule" ) );
@@ -1205,6 +1244,8 @@ void aeWindowMain::pCreateActions(){
 		true, "Track To", pIconRuleTrackTo, "Insert a track to rule" ) );
 	pActionRuleInsertLimit.TakeOver( new cActionRuleAdd( *this, deAnimatorRuleVisitorIdentify::ertLimit,
 		true, "Limit", pIconRuleLimit, "Insert a limit rule" ) );
+	pActionRuleInsertMirror.TakeOver( new cActionRuleAdd( *this, deAnimatorRuleVisitorIdentify::ertMirror,
+		true, "Mirror", pIconRuleMirror, "Insert a mirror rule" ) );
 	
 	pActionRuleRemove.TakeOver( new cActionRuleRemove( *this ) );
 	pActionRuleUp.TakeOver( new cActionRuleUp( *this ) );
@@ -1229,6 +1270,7 @@ void aeWindowMain::pCreateActions(){
 	AddUpdateAction( pActionEditDDBoneSize );
 	
 	AddUpdateAction( pActionControllerAdd );
+	AddUpdateAction( pActionControllerDuplicate );
 	AddUpdateAction( pActionControllerRemove );
 	AddUpdateAction( pActionControllerUp );
 	AddUpdateAction( pActionControllerDown );
@@ -1250,6 +1292,7 @@ void aeWindowMain::pCreateActions(){
 	AddUpdateAction( pActionRuleAddSubAnimator );
 	AddUpdateAction( pActionRuleAddTrackTo );
 	AddUpdateAction( pActionRuleAddLimit );
+	AddUpdateAction( pActionRuleAddMirror );
 	
 	AddUpdateAction( pActionRuleInsertAnim );
 	AddUpdateAction( pActionRuleInsertAnimDiff );
@@ -1263,6 +1306,7 @@ void aeWindowMain::pCreateActions(){
 	AddUpdateAction( pActionRuleInsertSubAnimator );
 	AddUpdateAction( pActionRuleInsertTrackTo );
 	AddUpdateAction( pActionRuleInsertLimit );
+	AddUpdateAction( pActionRuleInsertMirror );
 	
 	AddUpdateAction( pActionRuleRemove );
 	AddUpdateAction( pActionRuleUp );
@@ -1307,6 +1351,7 @@ void aeWindowMain::pCreateToolBarEdit(){
 	helper.ToolBarButton( pTBEdit, pActionRuleAddSubAnimator );
 	helper.ToolBarButton( pTBEdit, pActionRuleAddTrackTo );
 	helper.ToolBarButton( pTBEdit, pActionRuleAddLimit );
+	helper.ToolBarButton( pTBEdit, pActionRuleAddMirror );
 	
 	AddSharedToolBar( pTBEdit );
 }
@@ -1370,6 +1415,7 @@ void aeWindowMain::pCreateMenuController( igdeMenuCascade &menu ){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
 	helper.MenuCommand( menu, pActionControllerAdd );
+	helper.MenuCommand( menu, pActionControllerDuplicate );
 	helper.MenuCommand( menu, pActionControllerRemove );
 	helper.MenuCommand( menu, pActionControllerUp );
 	helper.MenuCommand( menu, pActionControllerDown );
@@ -1402,6 +1448,7 @@ void aeWindowMain::pCreateMenuRule( igdeMenuCascade &menu ){
 	helper.MenuCommand( subMenu, pActionRuleAddSubAnimator );
 	helper.MenuCommand( subMenu, pActionRuleAddTrackTo );
 	helper.MenuCommand( subMenu, pActionRuleAddLimit );
+	helper.MenuCommand( subMenu, pActionRuleAddMirror );
 	
 	subMenu.TakeOver( new igdeMenuCascade( GetEnvironment(), "Insert", deInputEvent::ekcI ) );
 	menu.AddChild( subMenu );
@@ -1417,6 +1464,7 @@ void aeWindowMain::pCreateMenuRule( igdeMenuCascade &menu ){
 	helper.MenuCommand( subMenu, pActionRuleInsertSubAnimator );
 	helper.MenuCommand( subMenu, pActionRuleInsertTrackTo );
 	helper.MenuCommand( subMenu, pActionRuleInsertLimit );
+	helper.MenuCommand( subMenu, pActionRuleInsertMirror );
 	
 	helper.MenuCommand( subMenu, pActionRuleRemove );
 	helper.MenuCommand( subMenu, pActionRuleUp );

@@ -8,6 +8,8 @@
 
 namespace Dragengine.Scenery
 
+pin Dragengine.Gui
+
 /**
  * \brief Light.
  * 
@@ -27,6 +29,7 @@ class Light
 	/*@{*/
 	/** \brief Type. */
 	public func LightType getType()
+		return null
 	end
 	
 	/** \brief Set type. */
@@ -37,6 +40,7 @@ class Light
 	
 	/** \brief Position. */
 	public func DVector getPosition()
+		return null
 	end
 	
 	/** \brief position. */
@@ -45,6 +49,7 @@ class Light
 	
 	/** \brief Orientation. */
 	public func Quaternion getOrientation()
+		return null
 	end
 	
 	/** \brief Set orientation. */
@@ -53,6 +58,7 @@ class Light
 	
 	/** \brief Light is actived. */
 	public func bool getActivated()
+		return false
 	end
 	
 	/** \brief Set if light is activated. */
@@ -63,6 +69,7 @@ class Light
 	
 	/** \brief Light color. */
 	public func Color getColor()
+		return null
 	end
 	
 	/** \brief Set light color. */
@@ -71,6 +78,7 @@ class Light
 	
 	/** \brief Light intensity. */
 	public func float getIntensity()
+		return 0.0
 	end
 	
 	/** \brief Set light intensity. */
@@ -79,6 +87,7 @@ class Light
 	
 	/** \brief Range in meters. */
 	public func float getRange()
+		return 0.0
 	end
 	
 	/** \brief Set range in meters. */
@@ -87,6 +96,7 @@ class Light
 	
 	/** \brief Half intensity distance in meters. */
 	public func float getHalfIntensityDistance()
+		return 0.0
 	end
 	
 	/** \brief Set half intensity distance in meters. */
@@ -95,6 +105,7 @@ class Light
 	
 	/** \brief Ratio of ambient light in relation to the total intensity. */
 	public func float getAmbientRatio()
+		return 0.0
 	end
 	
 	/** \brief Set ratio of ambient light in relation to the total intensity. */
@@ -103,6 +114,7 @@ class Light
 	
 	/** \brief Light shape. */
 	public func ShapeList getShape()
+		return null
 	end
 	
 	/** \brief Set light shape. */
@@ -111,6 +123,7 @@ class Light
 	
 	/** \brief Layer mask affecting lighting. */
 	public func LayerMask getLayerMask()
+		return null
 	end
 	
 	/** \brief Set layer mask affecting lighting. */
@@ -124,6 +137,7 @@ class Light
 	/*@{*/
 	/** \brief Outer spot Angle. */
 	public func float getSpotAngle()
+		return 0.0
 	end
 	
 	/** \brief Set outer spot angle. */
@@ -132,6 +146,7 @@ class Light
 	
 	/** \brief Spot ratio as height divided by width. */
 	public func float getSpotRatio()
+		return 0.0
 	end
 	
 	/** \brief Set spot ratio as height divided by width. */
@@ -140,6 +155,7 @@ class Light
 	
 	/** \brief Spot smoothness. */
 	public func float getSpotSmoothness()
+		return 0.0
 	end
 	
 	/** \brief Set spot smoothness. */
@@ -148,14 +164,7 @@ class Light
 	
 	/** \brief Spot exponent. */
 	public func float getSpotExponent()
-	end
-	
-	/** \brief Set spot exponent. */
-	public func void setSpotExponent( float exponent )
-	end
-	
-	/** \brief Spot exponent. */
-	public func float getSpotExponent()
+		return 0.0
 	end
 	
 	/** \brief Set spot exponent. */
@@ -169,6 +178,7 @@ class Light
 	/*@{*/
 	/** \brief Light skin or \em NULL if not used. */
 	public func Skin getLightSkin()
+		return null
 	end
 	
 	/** \brief Set light skin or \em NULL if not used. */
@@ -177,6 +187,7 @@ class Light
 	
 	/** \brief Light canvas view or \em NULL if not used. */
 	public func CanvasView getLightCanvas()
+		return null
 	end
 	
 	/** \brief Set light canvas view or \em NULL if not used. */
@@ -185,6 +196,7 @@ class Light
 	
 	/** \brief Light dynamic skin or \em NULL if not used. */
 	public func DynamicSkin getDynamicSkin()
+		return null
 	end
 	
 	/** \brief Set light dynamic skin or \em NULL if not used. */
@@ -193,6 +205,7 @@ class Light
 	
 	/** \brief Light texture coordinate transformation matrix. */
 	public func TexMatrix2 getTransform()
+		return null
 	end
 	
 	/** \brief Set light texture coordinate transformation matrix. */
@@ -206,6 +219,7 @@ class Light
 	/*@{*/
 	/** \brief Light is casting shadows. */
 	public func bool getCastShadows()
+		return false
 	end
 	
 	/** \brief Set if light is casting shadows. */
@@ -214,6 +228,7 @@ class Light
 	
 	/** \brief Layer mask affecting shadow casting. */
 	public func LayerMask getLayerMaskShadow()
+		return null
 	end
 	
 	/** \brief Set layer mask affecting shadow casting. */
@@ -222,6 +237,7 @@ class Light
 	
 	/** \brief Number of components to ignore for shadow casting. */
 	public func int getShadowIgnoreComponentCount()
+		return 0
 	end
 	
 	/**
@@ -230,10 +246,12 @@ class Light
 	 * \throws EInvalidParam \em index is greater or equal than getIgnoreComponentCount()-1.
 	 */
 	public func Component getShadowIgnoreComponentAt( int index )
+		return null
 	end
 	
 	/** \brief Component to ignore for shadow casting is present. */
 	public func bool hasShadowIgnoreComponent( Component component )
+		return false
 	end
 	
 	/**
@@ -261,6 +279,7 @@ class Light
 	/*@{*/
 	/** \brief Light importannce in the range from 0 (least important) to 100 (most important). */
 	public func int getHintLightImportance()
+		return 0
 	end
 	
 	/** \brief Sets light importannce in the range from 0 (least important) to 100 (most important). */
@@ -269,6 +288,7 @@ class Light
 	
 	/** \brief Shadow important in the range from 0 (least important) to 100 (most important). */
 	public func int getHintShadowImportance()
+		return 0
 	end
 	
 	/** \brief Set shadow important in the range from 0 (least important) to 100 (most important). */
@@ -277,6 +297,7 @@ class Light
 	
 	/** \brief Movement hint. */
 	public func LightHintMovement getHintMovement()
+		return null
 	end
 	
 	/** \brief Set movement hint. */
@@ -285,6 +306,7 @@ class Light
 	
 	/** \brief Parameter change hint. */
 	public func LightHintParameter getHintParameters()
+		return null
 	end
 	
 	/** \brief Set parameter change hint. */
@@ -293,6 +315,7 @@ class Light
 	
 	/** \brief Light cage. */
 	public func ShapeList getCage()
+		return null
 	end
 	
 	/** \brief Set light cage. */

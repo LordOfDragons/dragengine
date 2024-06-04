@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Game Engine
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <ctype.h>
@@ -41,6 +44,7 @@
 #include "../exceptions.h"
 #include "../file/decBaseFileReader.h"
 #include "../../logger/deLogger.h"
+#include "../../dragengine_configuration.h"
 
 
 
@@ -53,7 +57,7 @@
 decXmlParser::decXmlParser( deLogger *logger ){
 	if( ! logger ) DETHROW( deeInvalidParam );
 	
-	pLogger = NULL;
+	pLogger = logger;
 	pLine = 1;
 	pPos = 1;
 	pToken = NULL;
@@ -74,19 +78,11 @@ decXmlParser::decXmlParser( deLogger *logger ){
 		if( pToken ) delete [] pToken;
 		throw;
 	}
-	
-	pLogger = logger;
-	logger->AddReference();
 }
 
 decXmlParser::~decXmlParser(){
 	if( pCleanString ) delete [] pCleanString;
 	if( pToken ) delete [] pToken;
-	
-	if( pFile ){
-		pFile->FreeReference();
-	}
-	if( pLogger ) pLogger->FreeReference();
 }
 
 
@@ -126,7 +122,6 @@ void decXmlParser::UnexpectedToken( int line, int pos, const char *token ){
 void decXmlParser::PrepareParse( decBaseFileReader *file ){
 	if( ! file ) DETHROW( deeInvalidParam );
 	pFile = file;
-	file->AddReference();
 	pFilePos = file->GetPosition();
 	pFileLen = file->GetLength();
 	ClearToken();
@@ -428,7 +423,6 @@ bool decXmlParser::ParseReference( decXmlContainer *container ){
 //						if( ! charRef ) DETHROW( deeOutOfMemory );
 					}
 				}
-				RemoveFromToken( count + 1 );
 				if( charRef ){
 					charRef->SetLineNumber( lineNumber );
 					charRef->SetPositionNumber( posNumber );
@@ -436,19 +430,39 @@ bool decXmlParser::ParseReference( decXmlContainer *container ){
 					charRef->FreeReference();
 					charRef = NULL;
 				}
+				
 			}else{
 				count = ParseName( count + 1, false );
 				if( GetTokenAt( count ) != ';' ) RaiseFatalError();
 				SetCleanString( count );
-				entRef = new decXmlEntityReference( pCleanString + 1 );
-				if( ! entRef ) DETHROW( deeOutOfMemory );
-				entRef->SetLineNumber( lineNumber );
-				entRef->SetPositionNumber( posNumber );
-				RemoveFromToken( count + 1 );
-				container->AddElement( entRef );
-				entRef->FreeReference();
-				entRef = NULL;
+				
+				const char * const name = pCleanString + 1;
+				if( strcmp( name, "lt" ) == 0 ){
+					pAddCharacterData( container, '<', lineNumber, posNumber );
+					
+				} else if( strcmp( name, "gt" ) == 0 ){
+					pAddCharacterData( container, '>', lineNumber, posNumber );
+					
+				} else if( strcmp( name, "amp" ) == 0 ){
+					pAddCharacterData( container, '&', lineNumber, posNumber );
+					
+				} else if( strcmp( name, "quot" ) == 0 ){
+					pAddCharacterData( container, '"', lineNumber, posNumber );
+					
+				} else if( strcmp( name, "apos" ) == 0 ){
+					pAddCharacterData( container, '\'', lineNumber, posNumber );
+					
+				} else {
+					entRef = new decXmlEntityReference( name );
+					entRef->SetLineNumber( lineNumber );
+					entRef->SetPositionNumber( posNumber );
+					container->AddElement( entRef );
+					entRef->FreeReference();
+					entRef = nullptr;
+				}
 			}
+			
+			RemoveFromToken( count + 1 );
 		}else{
 			return false;
 		}
@@ -606,8 +620,31 @@ void decXmlParser::ParseAttValue( decXmlAttValue *value ){
 				}
 				count = pTokenLen;
 			}else{
+				safeguard = count;
 				count = ParseName( count + 1, false );
 				if( GetTokenAt( count ) != ';' ) RaiseFatalError();
+				
+				const char * const name = pToken + safeguard + 1;
+				if( strncmp( name, "lt", 2 ) == 0 ){
+					pToken[ safeguard ] = '<';
+					count = pTokenLen = safeguard + 1;
+					
+				} else if( strncmp( name, "gt", 2 ) == 0 ){
+					pToken[ safeguard ] = '>';
+					count = pTokenLen = safeguard + 1;
+					
+				} else if( strncmp( name, "amp", 3 ) == 0 ){
+					pToken[ safeguard ] = '&';
+					count = pTokenLen = safeguard + 1;
+					
+				} else if( strncmp( name, "quot", 4 ) == 0 ){
+					pToken[ safeguard ] = '"';
+					count = pTokenLen = safeguard + 1;
+					
+				} else if( strncmp( name, "apos", 4 ) == 0 ){
+					pToken[ safeguard ] = '\'';
+					count = pTokenLen = safeguard + 1;
+				}
 			}
 		}
 		count++;
@@ -618,7 +655,7 @@ void decXmlParser::ParseAttValue( decXmlAttValue *value ){
 }
 
 bool decXmlParser::ParseToken( const char *expected ){
-	int i, nextChar, expLen = strlen( expected );
+	int i, nextChar, expLen = ( int )strlen( expected );
 	for( i=0; i<expLen; i++ ){
 		nextChar = GetTokenAt( i );
 		if( nextChar == DEXP_EOF || nextChar != expected[ i ] ) return false;
@@ -698,10 +735,10 @@ bool decXmlParser::ParseComment( decXmlContainer *container ){
 				if( nextChar != '>' ) RaiseFatalError();
 				break;
 			}
-			if( ! IsChar( nextChar ) ) RaiseFatalError();
+// 			if( ! IsChar( nextChar ) ) RaiseFatalError();
 			count++;
 		}else{
-			if( ! IsChar( nextChar ) ) RaiseFatalError();
+// 			if( ! IsChar( nextChar ) ) RaiseFatalError();
 		}
 		count++;
 	}
@@ -751,10 +788,10 @@ bool decXmlParser::ParsePI( decXmlContainer *container ){
 					nextChar = GetTokenAt( count + 1 );
 					if( nextChar == DEXP_EOF ) RaiseFatalError();
 					if( nextChar == '>' ) break;
-					if( ! IsChar( nextChar ) ) RaiseFatalError();
+// 					if( ! IsChar( nextChar ) ) RaiseFatalError();
 					count++;
 				}else{
-					if( ! IsChar( nextChar ) ) RaiseFatalError();
+// 					if( ! IsChar( nextChar ) ) RaiseFatalError();
 				}
 				count++;
 			}
@@ -772,7 +809,7 @@ bool decXmlParser::ParsePI( decXmlContainer *container ){
 }
 
 bool decXmlParser::TestToken( int offset, const char *expected ){
-	int i, nextChar, expLen = strlen( expected );
+	int i, nextChar, expLen = ( int )strlen( expected );
 	for( i=0; i<expLen; i++ ){
 		nextChar = GetTokenAt( offset + i );
 		if( nextChar == DEXP_EOF || nextChar != expected[ i ] ) return false;
@@ -1006,7 +1043,11 @@ void decXmlParser::SetCleanString( int length ){
 		pCleanString = newStr;
 		pCleanStringSize = length;
 	}
-	strncpy( pCleanString, pToken, length );
+	#ifdef OS_W32_VS
+		strncpy_s( pCleanString, length + 1, pToken, length );
+	#else
+		strncpy( pCleanString, pToken, length );
+	#endif
 	pCleanString[ length ] = '\0';
 }
 
@@ -1049,7 +1090,13 @@ void decXmlParser::pGrowToken(){
 	char *newToken = new char[ newSize + 1 ];
 	if( ! newToken ) DETHROW( deeOutOfMemory );
 	if( pToken ){
-		if( pTokenLen > 0 ) strncpy( newToken, pToken, pTokenLen );
+		if( pTokenLen > 0 ){
+			#ifdef OS_W32_VS
+				strncpy_s( newToken, pTokenLen + 1, pToken, pTokenLen );
+			#else
+				strncpy( newToken, pToken, pTokenLen );
+			#endif
+		}
 		newToken[ pTokenLen ] = '\0';
 		delete [] pToken;
 	}

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLRRDSRENDERABLE_H_
@@ -30,24 +33,40 @@ class deoglCubeMap;
 class deoglTexture;
 class deoglRDynamicSkin;
 class deoglRenderPlan;
+class deoglRenderPlanMasked;
 
 
 
 /**
- * \brief Render dynamic skin renderable.
+ * Render dynamic skin renderable.
  */
 class deoglRDSRenderable : public deObject{
+public:
+	enum eType{
+		etValue,
+		etColor,
+		etImage,
+		etVideoFrame,
+		etCanvas,
+		etCamera
+	};
+	
+	
+	
 private:
+	const eType pType;
 	decString pName;
 	deoglRDynamicSkin &pDynamicSkin;
+	
+	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create render dynamic skin renderable. */
-	deoglRDSRenderable( deoglRDynamicSkin &dynamicSkin );
+	/** Create render dynamic skin renderable. */
+	deoglRDSRenderable( eType type, deoglRDynamicSkin &dynamicSkin );
 	
-	/** \brief Clean up render dynamic skin renderable. */
+	/** Clean up render dynamic skin renderable. */
 	virtual ~deoglRDSRenderable();
 	/*@}*/
 	
@@ -55,47 +74,53 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Dynamic skin. */
+	/** Type. */
+	inline const eType GetType() const{ return pType; }
+	
+	/** Dynamic skin. */
 	inline deoglRDynamicSkin &GetDynamicSkin() const{ return pDynamicSkin; }
 	
-	/** \brief Name. */
+	/** Name. */
 	inline const decString &GetName() const{ return pName; }
 	
-	/** \brief Set name. */
+	/** Set name. */
 	void SetName( const char *name );
 	
-	/** \brief Prepare for render. */
-	virtual void PrepareForRender() = 0;
+	/** Prepare for render. */
+	virtual void PrepareForRender( const deoglRenderPlanMasked *renderPlanMask ) = 0;
+	
+	/** Render if required. */
+	virtual void Render( const deoglRenderPlanMasked *renderPlanMask );
 	
 	/**
-	 * \brief Get value if support or default value.
+	 * Get value if support or default value.
 	 * \details Default implementation returns default value.
 	 */
 	virtual float GetRenderValue( float defaultValue );
 	
 	/**
-	 * \brief Get color if support or default color.
+	 * Get color if support or default color.
 	 * \details Default implementation returns default value.
 	 */
 	virtual decColor GetRenderColor( const decColor &defaultColor );
 	
 	/**
-	 * \brief Get texture to use for rendering or \em NULL if not applicable.
+	 * Get texture to use for rendering or \em NULL if not applicable.
 	 * \details Default implementation returns \em NULL.
 	 */
 	virtual deoglTexture *GetRenderTexture();
 	
 	/**
-	 * \brief Get cubemap to use for rendering or \em NULL if not applicable.
+	 * Get cubemap to use for rendering or \em NULL if not applicable.
 	 * \details Default implementation returns \em NULL.
 	 */
 	virtual deoglCubeMap *GetRenderCubeMap();
 	
 	/**
-	 * \brief Get render plan to use for rendering or \em NULL if not applicable.
+	 * Get render plan to use for rendering or \em NULL if not applicable.
 	 * \details Default implementation returns \em NULL.
 	 */
-	virtual deoglRenderPlan *GetRenderPlan();
+	virtual deoglRenderPlan *GetRenderPlan() const;
 	/*@}*/
 };
 

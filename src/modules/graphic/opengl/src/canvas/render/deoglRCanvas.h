@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLRCANVAS_H_
@@ -26,16 +29,23 @@
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/resources/canvas/deCanvas.h>
 
 class deoglRenderCanvasContext;
 class deoglRenderThread;
-
+class deoglRenderTarget;
+class deoglRenderPlanMasked;
 
 
 /**
- * \brief Render canvas.
+ * Render canvas.
  */
 class deoglRCanvas : public deObject{
+public:
+	static const int BlendModeCount = deCanvas::ebmAdd + 1;
+	
+	
+	
 private:
 	deoglRenderThread &pRenderThread;
 	decVector2 pPosition;
@@ -44,17 +54,20 @@ private:
 	decColorMatrix pColorTransform;
 	float pOrder;
 	float pTransparency;
-	GLenum pBlendSrc;
-	GLenum pBlendDest;
+	deCanvas::eBlendModes pBlendMode;
+	deoglRCanvas *pMask;
 	bool pVisible;
+	deoglRenderTarget *pMaskRenderTarget;
+	
+	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create peer. */
+	/** Create peer. */
 	deoglRCanvas( deoglRenderThread &renderThread );
 	
-	/** \brief Clean up peer. */
+	/** Clean up peer. */
 	virtual ~deoglRCanvas();
 	/*@}*/
 	
@@ -62,69 +75,78 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Render thread. */
+	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
-	/** \brief Position. */
+	/** Position. */
 	inline const decVector2 &GetPosition() const{ return pPosition; }
 	
-	/** \brief Set position. */
+	/** Set position. */
 	void SetPosition( const decVector2 &position );
 	
-	/** \brief Size. */
+	/** Size. */
 	inline const decVector2 &GetSize() const{ return pSize; }
 	
-	/** \brief Set size. */
+	/** Set size. */
 	virtual void SetSize( const decVector2 &size );
 	
-	/** \brief Transformation matrix. */
+	/** Transformation matrix. */
 	inline const decTexMatrix2 &GetTransform() const{ return pTransform; }
 	
-	/** \brief Set transformation matrix. */
+	/** Set transformation matrix. */
 	void SetTransform( const decTexMatrix2 &transform );
 	
-	/** \brief Color transformation matrix. */
+	/** Color transformation matrix. */
 	inline const decColorMatrix &GetColorTransform() const{ return pColorTransform; }
 	
-	/** \brief Set color transformation matrix. */
+	/** Set color transformation matrix. */
 	void SetColorTransform( const decColorMatrix &transform );
 	
-	/** \brief Order used for sorting. */
+	/** Order used for sorting. */
 	inline float GetOrder() const{ return pOrder; }
 	
-	/** \brief Set order. */
+	/** Set order. */
 	void SetOrder( float order );
 	
-	/** \brief Transparency. */
+	/** Transparency. */
 	inline float GetTransparency() const{ return pTransparency; }
 	
-	/** \brief Set transparency. */
+	/** Set transparency. */
 	void SetTransparency( float transparency );
 	
-	/** \brief OpenGL source blend mode. */
-	inline GLenum GetBlendSrc() const{ return pBlendSrc; }
+	/** Blend mode. */
+	inline deCanvas::eBlendModes GetBlendMode() const{ return pBlendMode; }
 	
-	/** \brief Set OpenGL source blend mode. */
-	void SetBlendSrc( GLenum blendSrc );
+	/** Set blend mode. */
+	void SetBlendMode( deCanvas::eBlendModes mode );
 	
-	/** \brief OpenGL destination blend mode. */
-	inline GLenum GetBlendDest() const{ return pBlendDest; }
+	/** Mask. */
+	inline deoglRCanvas *GetMask() const{ return pMask; }
 	
-	/** \brief Set OpenGL destination blend mode. */
-	void SetBlendDest( GLenum blendDest );
+	/** Set mask. */
+	void SetMask( deoglRCanvas *mask );
 	
-	/** \brief Visible. */
+	/** Visible. */
 	inline bool GetVisible() const{ return pVisible; }
 	
-	/** \brief Set visible. */
+	/** Set visible. */
 	void SetVisible( bool visible );
 	
+	/** Mask render target or \em NULL if not ready. */
+	inline deoglRenderTarget *GetMaskRenderTarget() const{ return pMaskRenderTarget; }
+	
+	/** Dirty mask render target if present. */
+	void DirtyMaskRenderTarget();
 	
 	
-	/** \brief Prepare for rendering. */
-	virtual void PrepareForRender();
 	
-	/** \brief Render. */
+	/** Prepare for rendering. */
+	virtual void PrepareForRender( const deoglRenderPlanMasked *renderPlanMask );
+	
+	/** Prepare for rendering render. */
+	virtual void PrepareForRenderRender( const deoglRenderPlanMasked *renderPlanMask );
+	
+	/** Render. */
 	virtual void Render( const deoglRenderCanvasContext &context ) = 0;
 	/*@}*/
 };

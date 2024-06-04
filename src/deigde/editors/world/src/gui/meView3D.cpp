@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE World Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <math.h>
@@ -72,7 +75,7 @@ public:
 	cEditorInteraction( meView3D &view ) : pView( view ){ }
 	
 public:
-	virtual void OnButtonPress( igdeWidget*, int button, const decPoint &position, int modifiers ){
+	void OnButtonPress( igdeWidget*, int button, const decPoint &position, int modifiers ) override{
 		if( ! pView.GetEditor() ){
 			return;
 		}
@@ -95,7 +98,7 @@ public:
 		}
 	}
 	
-	virtual void OnButtonRelease( igdeWidget*, int button, const decPoint &position, int modifiers ){
+	void OnButtonRelease( igdeWidget*, int button, const decPoint &position, int modifiers ) override{
 		if( ! pView.GetEditor() ){
 			return;
 		}
@@ -118,7 +121,7 @@ public:
 		}
 	}
 	
-	virtual void OnMouseMoved(igdeWidget*, const decPoint &position, int modifiers ){
+	void OnMouseMoved(igdeWidget*, const decPoint &position, int modifiers ) override{
 		if( ! pView.GetEditor() ){
 			return;
 		}
@@ -128,7 +131,7 @@ public:
 			( modifiers & deInputEvent::esmControl ) == deInputEvent::esmControl );
 	}
 	
-	virtual void OnMouseWheeled( igdeWidget*, const decPoint &, const decPoint &change, int modifiers ){
+	void OnMouseWheeled( igdeWidget*, const decPoint &, const decPoint &change, int modifiers ) override{
 		if( ! pView.GetEditor() ){
 			return;
 		}
@@ -138,7 +141,7 @@ public:
 			( modifiers & deInputEvent::esmControl ) == deInputEvent::esmControl );
 	}
 	
-	virtual void OnKeyPress( igdeWidget*, deInputEvent::eKeyCodes keyCode, int ){
+	void OnKeyPress( igdeWidget*, deInputEvent::eKeyCodes keyCode, int ) override{
 		if( ! pView.GetEditor() ){
 			return;
 		}
@@ -147,13 +150,25 @@ public:
 			pView.GetEditor()->GetControlStart() );
 	}
 	
-	virtual void OnKeyRelease( igdeWidget*, deInputEvent::eKeyCodes keyCode, int ){
+	void OnKeyRelease( igdeWidget*, deInputEvent::eKeyCodes keyCode, int ) override{
 		if( ! pView.GetEditor() ){
 			return;
 		}
 		
 		pView.GetEditor()->OnKeyRelease( keyCode, pView.GetEditor()->GetShiftStart(),
 			pView.GetEditor()->GetControlStart() );
+	}
+	
+	void OnMouseEnter( igdeWidget* ) override{
+		if( pView.GetEditor() ){
+			pView.GetEditor()->OnMouseEnter();
+		}
+	}
+	
+	void OnMouseLeave ( igdeWidget* ) override{
+		if( pView.GetEditor() ){
+			pView.GetEditor()->OnMousLeave();
+		}
 	}
 };
 
@@ -295,7 +310,7 @@ void meView3D::CreateCanvas(){
 		pCanvasFPSText.TakeOver( GetEngine()->GetCanvasManager()->CreateCanvasText() );
 		pCanvasFPSText->SetColor( decColor( 1.0f, 1.0f, 1.0f, 1.0f ) );
 		pCanvasFPSText->SetFont( pFontStats );
-		pCanvasFPSText->SetFontSize( pFontStats->GetLineHeight() );
+		pCanvasFPSText->SetFontSize( ( float )pFontStats->GetLineHeight() );
 		pCanvasFPSText->SetOrder( 1.0f );
 		pCanvasFPSText->SetPosition( decPoint( 1, 0 ) );
 		pCanvasFPSText->SetSize( pCanvasFPS->GetSize() - decPoint( 2, 0 ) );

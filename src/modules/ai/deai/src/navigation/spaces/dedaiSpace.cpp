@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine AI Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -89,9 +92,9 @@ pDDSSpace( NULL ),
 pDDSCorners( NULL ),
 pDDSNormals( NULL ),
 pDDSMismatching( NULL ),
-pDDSHilightCostType( NULL ),
+pDDSHighlightCostType( NULL ),
 
-pDebugLastHilightCostType( -1 ){
+pDebugLastHighlightCostType( -1 ){
 }
 
 dedaiSpace::~dedaiSpace(){
@@ -465,18 +468,18 @@ void dedaiSpace::UpdateDDSSpace(){
 			updateShapes = true;
 		}
 		
-		if( ! pDDSHilightCostType ){
-			pDDSHilightCostType = new deDebugDrawerShape;
-			pDDSHilightCostType->SetFillColor( decColor( 1.0f, 0.0f, 0.0f, 0.1f ) );
-			pDDSHilightCostType->SetEdgeColor( decColor( 1.0f, 0.0f, 0.0f, 0.8f ) );
-			pDebugDrawer->AddShape( pDDSHilightCostType );
+		if( ! pDDSHighlightCostType ){
+			pDDSHighlightCostType = new deDebugDrawerShape;
+			pDDSHighlightCostType->SetFillColor( decColor( 1.0f, 0.0f, 0.0f, 0.1f ) );
+			pDDSHighlightCostType->SetEdgeColor( decColor( 1.0f, 0.0f, 0.0f, 0.8f ) );
+			pDebugDrawer->AddShape( pDDSHighlightCostType );
 			updateShapes = true;
 		}
 		
 		// update the shapes if required
-		if( devmode.GetSpaceHilightCostType() != pDebugLastHilightCostType ){
+		if( devmode.GetSpaceHighlightCostType() != pDebugLastHighlightCostType ){
 			updateShapes = true;
-			pDebugLastHilightCostType = devmode.GetSpaceHilightCostType();
+			pDebugLastHighlightCostType = devmode.GetSpaceHighlightCostType();
 		}
 		
 		if( updateShapes ){
@@ -495,7 +498,7 @@ void dedaiSpace::UpdateDDSSpace(){
 			pDDSCorners = NULL;
 			pDDSNormals = NULL;
 			pDDSMismatching = NULL;
-			pDDSHilightCostType = NULL;
+			pDDSHighlightCostType = NULL;
 			
 			pDebugDrawer->FreeReference();
 			pDebugDrawer = NULL;
@@ -597,7 +600,13 @@ void dedaiSpace::AddBlockerSplitters( decConvexVolumeList &list ){
 							const decVector &fv1 = volume->GetVertexAt( bcvface.GetVertexAt( 0 ) );
 							const decVector &fv2 = volume->GetVertexAt( bcvface.GetVertexAt( 1 ) );
 							const decVector &fv3 = volume->GetVertexAt( bcvface.GetVertexAt( 2 ) );
-							volumeFace->SetNormal( ( ( fv2 - fv1 ) % ( fv3 - fv2 ) ).Normalized() );
+							const decVector edgeVector( ( fv2 - fv1 ) % ( fv3 - fv2 ) );
+							if( ! edgeVector.IsZero() ){
+								volumeFace->SetNormal( edgeVector.Normalized() );
+								
+							}else{
+								volumeFace->SetNormal( decVector( 0.0f, 1.0f, 0.0f ) );
+							}
 							
 							volume->AddFace( volumeFace );
 							volumeFace = NULL;
@@ -692,7 +701,13 @@ void dedaiSpace::AddSpaceBlockerSplitters( decConvexVolumeList &list ){
 							const decVector &fv1 = volume->GetVertexAt( bcvface.GetVertexAt( 0 ) );
 							const decVector &fv2 = volume->GetVertexAt( bcvface.GetVertexAt( 1 ) );
 							const decVector &fv3 = volume->GetVertexAt( bcvface.GetVertexAt( 2 ) );
-							volumeFace->SetNormal( ( ( fv2 - fv1 ) % ( fv3 - fv2 ) ).Normalized() );
+							const decVector edgeVector( ( fv2 - fv1 ) % ( fv3 - fv2 ) );
+							if( ! edgeVector.IsZero() ){
+								volumeFace->SetNormal( edgeVector.Normalized() );
+								
+							}else{
+								volumeFace->SetNormal( decVector( 0.0f, 1.0f, 0.0f ) );
+							}
 							
 							volume->AddFace( volumeFace );
 							volumeFace = NULL;
@@ -789,9 +804,9 @@ void dedaiSpace::pUpdateExtendsNavSpace(){
 		
 		for( j=0; j<faceCount; j++ ){
 			const decConvexVolumeFace &face = *volume.GetFaceAt( j );
-			const int vertexCount = face.GetVertexCount();
+			const int faceVertexCount = face.GetVertexCount();
 			
-			for( k=0; k<vertexCount; k++ ){
+			for( k=0; k<faceVertexCount; k++ ){
 				const decDVector position = matrix * decDVector( volume.GetVertexAt( face.GetVertexAt( k ) ) );
 				pMinExtends.SetSmallest( position );
 				pMaxExtends.SetLargest( position );
@@ -876,7 +891,7 @@ void dedaiSpace::pUpdateSpace(){
 		break;
 	}
 	
-	if( pDDSSpace || pDDSCorners || pDDSNormals || pDDSMismatching || pDDSHilightCostType ){
+	if( pDDSSpace || pDDSCorners || pDDSNormals || pDDSMismatching || pDDSHighlightCostType ){
 		UpdateDDSSpaceShape();
 	}
 }
@@ -891,7 +906,7 @@ void dedaiSpace::pUpdateBlocking(){
 	}else{
 	}
 	
-	if( pDDSSpace || pDDSCorners || pDDSNormals || pDDSMismatching || pDDSHilightCostType ){
+	if( pDDSSpace || pDDSCorners || pDDSNormals || pDDSMismatching || pDDSHighlightCostType ){
 		UpdateDDSSpaceShape();
 	}
 }

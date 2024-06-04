@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 // includes
@@ -35,6 +38,7 @@
 #include "peers/dedsParticleEmitter.h"
 #include "peers/dedsSpeaker.h"
 #include "peers/dedsSoundLevelMeter.h"
+#include "peers/dedsService.h"
 #include "deScriptSource.h"
 #include "deClassPathes.h"
 
@@ -70,6 +74,7 @@
 #include "classes/animation/rules/deClassARStateSnapshot.h"
 #include "classes/animation/rules/deClassARSubAnimator.h"
 #include "classes/animation/rules/deClassARTrackTo.h"
+#include "classes/animation/rules/deClassARMirror.h"
 
 #include "classes/cachedveg/deClassCachedVegetation.h"
 
@@ -116,6 +121,8 @@
 #include "classes/graphics/deClassEnvMapProbe.h"
 #include "classes/graphics/deClassFont.h"
 #include "classes/graphics/deClassImage.h"
+#include "classes/graphics/deClassImagePixels.h"
+#include "classes/graphics/deClassEditableImage.h"
 #include "classes/graphics/deClassLight.h"
 #include "classes/graphics/deClassLumimeter.h"
 #include "classes/graphics/deClassOcclusionMesh.h"
@@ -128,6 +135,7 @@
 #include "classes/input/deClassInputDeviceAxis.h"
 #include "classes/input/deClassInputDeviceButton.h"
 #include "classes/input/deClassInputDeviceFeedback.h"
+#include "classes/input/deClassInputDeviceComponent.h"
 #include "classes/input/deClassInputEvent.h"
 
 #include "classes/particle/deClassParticleEmitter.h"
@@ -183,6 +191,10 @@
 #include "classes/sound/deClassSoundLevelMeterSpeaker.h"
 #include "classes/sound/deClassSoundLevelMeterListener.h"
 
+#include "classes/service/deClassService.h"
+#include "classes/service/deClassServiceListener.h"
+#include "classes/service/deClassServiceObject.h"
+
 #include "classes/sky/deClassSky.h"
 #include "classes/sky/deClassSkyBody.h"
 #include "classes/sky/deClassSkyController.h"
@@ -219,6 +231,7 @@
 #include "classes/systems/deClassScriptSystem.h"
 #include "classes/systems/deClassSynthesizerSystem.h"
 #include "classes/systems/deClassSystem.h"
+#include "classes/systems/deClassVRSystem.h"
 
 #include "classes/translation/deClassLanguagePack.h"
 #include "classes/translation/deClassLanguagePackBuilder.h"
@@ -252,30 +265,37 @@
 #include <dragengine/deEngine.h>
 #include <dragengine/app/deCmdLineArgs.h>
 #include <dragengine/app/deOS.h>
-#include <dragengine/input/deInputEvent.h>
+#include <dragengine/common/file/decPath.h>
+#include <dragengine/common/file/decBaseFileReader.h>
+#include <dragengine/common/exceptions/deException.h>
 #include <dragengine/errortracing/deErrorTrace.h>
 #include <dragengine/errortracing/deErrorTracePoint.h>
 #include <dragengine/errortracing/deErrorTraceValue.h>
-#include <dragengine/resources/collider/deCollider.h>
-#include <dragengine/resources/loader/deResourceLoader.h>
-#include <dragengine/resources/loader/deResourceLoaderInfo.h>
-#include <dragengine/resources/collider/deCollisionInfo.h>
-
 #include <dragengine/filesystem/dePathList.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/filesystem/deVFSContainer.h>
 #include <dragengine/filesystem/deCollectFileSearchVisitor.h>
-
-#include <dragengine/common/file/decPath.h>
-#include <dragengine/common/file/decBaseFileReader.h>
-#include <dragengine/common/exceptions/deException.h>
+#include <dragengine/input/deInputEvent.h>
 #include <dragengine/logger/deLogger.h>
+#include <dragengine/resources/collider/deCollider.h>
+#include <dragengine/resources/loader/deResourceLoader.h>
+#include <dragengine/resources/loader/deResourceLoaderInfo.h>
+#include <dragengine/resources/collider/deCollisionInfo.h>
+#include <dragengine/systems/deScriptingSystem.h>
 #include <dragengine/systems/modules/deLoadableModule.h>
 
 #include <libdscript/exceptions.h>
 
+#ifdef OS_W32_VS
+#include <dragengine/app/deOSWindows.h>
+#endif
+
 // definitions
 #define DESM_GAME_PACKAGE		"GamePackage"
+
+#ifndef DS_MODULE_VERSION
+#include "module_version.h"
+#endif
 
 
 // export definition
@@ -293,14 +313,13 @@ MOD_ENTRY_POINT_ATTR deBaseModule *DSCreateModule( deLoadableModule *loadableMod
 // has to be named CreateModule returning deBaseModule.
 // returns NULL on error.
 /////////////////////////////////////////////////////////
+
 deBaseModule *DSCreateModule( deLoadableModule *loadableModule ){
-	deBaseModule *module = NULL;
 	try{
-		module = new deScriptingDragonScript( *loadableModule );
-	}catch( const duException & ){
-		return NULL;
+		return new deScriptingDragonScript( *loadableModule );
+	}catch( ... ){
+		return nullptr;
 	}
-	return module;
 }
 
 
@@ -308,193 +327,214 @@ deBaseModule *DSCreateModule( deLoadableModule *loadableModule ){
 // class deScriptingDragonScript
 //////////////////////////////////
 
+deScriptingDragonScript::sModuleVersion::sModuleVersion() : major( 0 ), minor( 0 ), patch( 0 ){
+}
+
+void deScriptingDragonScript::sModuleVersion::SetVersion( const char *pversion ){
+	version = pversion;
+	const decStringList parts( version.Split( '.' ) );
+	major = parts.GetAt( 0 ).ToInt();
+	minor = parts.GetAt( 1 ).ToInt();
+	patch = parts.GetCount() > 2 ? parts.GetAt( 2 ).ToInt() : 0;
+}
+
 // constructor, destructor
 deScriptingDragonScript::deScriptingDragonScript( deLoadableModule &loadableModule ) :
-deBaseScriptingModule( loadableModule ){
-	pScriptEngine = NULL;
-	
-	pClsAISys = NULL;
-	pClsAnim = NULL;
-	pClsAnimBuilder = NULL;
-	pClsAr = NULL;
-	pClsArI = NULL;
-	pClsAnimatorCtrl = NULL;
-	pClsArR = NULL;
-	pClsARAnim = NULL;
-	pClsARAnimDiff = NULL;
-	pClsARAnimSelect = NULL;
-	pClsARBoneTrans = NULL;
-	pClsAnimatorSystem = NULL;
-	pClsFSta = NULL;
-	pClsARGroup = NULL; 
-	pClsARIK = NULL;
-	pClsARLimit = NULL;
-	pClsARStaM = NULL;
-	pClsARSnap = NULL;
-	pClsARSubA = NULL;
-	pClsARTrack = NULL;
-	pClsAudSys = NULL;
-	pClsCVeg = NULL;
-	pClsCam = NULL;
-	pClsCanvas = NULL;
-	pClsCanvasCView = NULL;
-	pClsCanvasImage = NULL;
-	pClsCanvasPaint = NULL;
-	pClsCanvasRenW = NULL;
-	pClsCanvasText = NULL;
-	pClsCanvasVidP = NULL;
-	pClsCanvasView = NULL;
-	pClsCapCan = NULL;
-	pClsCache = NULL;
-	pClsCI = NULL;
-	pClsCT = NULL;
-	pClsCLL = NULL;
-	pClsCBL = NULL;
-	pClsCCon = NULL;
-	pClsClr = NULL;
-	pClsClrMat = NULL;
-	pClsCF = NULL;
-	pClsCol = NULL;
-	pClsColVol = NULL;
-	pClsColComp = NULL;
-	pClsColRig = NULL;
-	pClsCCT = NULL;
-	pClsComp = NULL;
-	pClsConL = NULL;
-	pClsCon = NULL;
-	pClsCRSys = NULL;
-	pClsCurve2D = NULL;
-	pClsCBe = NULL;
-	pClsCBezier3D = NULL;
-	pClsCDistMap = NULL;
-	pClsDD = NULL;
-	pClsBillboard = NULL;
-	pClsDec = NULL;
-	pClsDVec = NULL;
-	pClsDMat = NULL;
-	pClsDMat4 = NULL;
-	pClsDSkin = NULL;
-	pClsEff = NULL;
-	pClsEffClrMat = NULL;
-	pClsEffDistImg = NULL;
-	pClsEffFilKer = NULL;
-	pClsEffOverImg = NULL;
-	pClsEngine = NULL;
-	pClsEnvMapProbe = NULL;
-	pClsFileReader = NULL;
-	pClsFileWriter = NULL;
-	pClsFileSys = NULL;
-	pClsFnt = NULL;
-	pClsFontBuilder = NULL;
-	pClsFF = NULL;
-	pClsGame = NULL;
-	pClsGraSys = NULL;
-	pClsHT = NULL;
-	pClsImg = NULL;
-	pClsInpDev = NULL;
-	pClsInpDevAxis = NULL;
-	pClsInpDevBtn = NULL;
-	pClsInpDevFb = NULL;
-	pClsInpEvent = NULL;
-	pClsInpSys = NULL;
-	pClsLyM = NULL;
-	pClsLig = NULL;
-	pClsLoco = NULL;
-	pClsLP = NULL;
-	pClsLangPackBuilder = NULL;
-	pClsLM = NULL;
-	pClsMat = NULL;
-	pClsMat4 = NULL;
-	pClsMath = NULL;
-	pClsMemoryFile = NULL;
-	pClsMdl = NULL;
-	pClsModelBuilder = NULL;
-	pClsMic = NULL;
-	pClsModPar = NULL;
-	pClsMUID = NULL;
-	pClsNavInfo = NULL;
-	pClsNavBlocker = NULL;
-	pClsNavSpace = NULL;
-	pClsNavigator = NULL;
-	pClsNM = NULL;
-	pClsNSL = NULL;
-	pClsNS = NULL;
-	pClsNetSys = NULL;
-	pClsOccM = NULL;
-	pClsOccMBuilder = NULL;
-	pClsPE = NULL;
-	pClsPEC = NULL;
-	pClsPEI = NULL;
-	pClsPEIL = NULL;
-	pClsPhySys = NULL;
-	pClsPt3 = NULL;
-	pClsPt = NULL;
-	pClsPF = NULL;
-	pClsPFL = NULL;
-	pClsQuat = NULL;
-	pClsRN = NULL;
-	pClsRig = NULL;
-	pClsRigBuilder = NULL;
-	pClsRTM = NULL;
-	pClsSA = NULL;
-	pClsShaList = NULL;
-	pClsSID = NULL;
-	pClsSkin = NULL;
-	pClsSkinBuilder = NULL;
-	pClsSky = NULL;
-	pClsSkyBody = NULL;
-	pClsSkyCtrl = NULL;
-	pClsSkyInst = NULL;
-	pClsSkyLayer = NULL;
-	pClsSkyLink = NULL;
-	pClsSkyTarget = NULL;
-	pClsSmFlt = NULL;
-	pClsSmDbl = NULL;
-	pClsSmVec = NULL;
-	pClsSmVec2 = NULL;
-	pClsSmDVec = NULL;
-	pClsSnd = NULL;
-	pClsSoundLevelMeter = NULL;
-	pClsSoundLevelMeterSpeaker = NULL;
-	pClsSoundLevelMeterListener = NULL;
-	pClsSpk = NULL;
-	pClsSvrL = NULL;
-	pClsSvr = NULL;
-	pClsSyn = NULL;
-	pClsSynEff = NULL;
-	pClsSynI = NULL;
-	pClsSynS = NULL;
-	pClsSynthesizerSystem = NULL;
-	pClsSEStretch = NULL;
-	pClsSSSound = NULL;
-	pClsSSWave = NULL;
-	pClsSSChain = NULL;
-	pClsSSSyn = NULL;
-	pClsSSGroup = NULL;
-	pClsTexMatrix = NULL;
-	pClsTexMatrix2 = NULL;
-	pClsTS = NULL;
-	pClsTSL = NULL;
-	pClsU8D = NULL;
-	pClsUID = NULL;
-	pClsUS = NULL;
-	pClsVec = NULL;
-	pClsVec2 = NULL;
-	pClsVid = NULL;
-	pClsVP = NULL;
-	pClsWorld = NULL;
-	pClsXMLEl = NULL;
-	pClsXML = NULL;
-	
-	pClsGameObj = NULL;
-	pGameObj = NULL;
-	
-	pResourceLoader = NULL;
-//	pLockManager = NULL;
-	pColInfo = NULL;
-	pColliderListenerClosest = NULL;
-	pColliderListenerAdaptor = NULL;
+deBaseScriptingModule( loadableModule ),
+pState( esStopped ),
+pClsAISys( nullptr ),
+pClsAnim( nullptr ),
+pClsAnimBuilder( nullptr ),
+pClsAr( nullptr ),
+pClsArI( nullptr ),
+pClsAnimatorCtrl( nullptr ),
+pClsArR( nullptr ),
+pClsAnimatorSystem( nullptr ),
+pClsARAnim( nullptr ),
+pClsARAnimDiff( nullptr ),
+pClsARAnimSelect( nullptr ),
+pClsARBoneTrans( nullptr ),
+pClsARFSta( nullptr ),
+pClsARGroup( nullptr ), 
+pClsARIK( nullptr ),
+pClsARLimit( nullptr ),
+pClsARMirror( nullptr ),
+pClsARStaM( nullptr ),
+pClsARSnap( nullptr ),
+pClsARSubA( nullptr ),
+pClsARTrack( nullptr ),
+pClsAudSys( nullptr ),
+pClsBillboard( nullptr ),
+pClsCVeg( nullptr ),
+pClsCam( nullptr ),
+pClsCanvas( nullptr ),
+pClsCanvasCView( nullptr ),
+pClsCanvasImage( nullptr ),
+pClsCanvasPaint( nullptr ),
+pClsCanvasRenW( nullptr ),
+pClsCanvasText( nullptr ),
+pClsCanvasVidP( nullptr ),
+pClsCanvasView( nullptr ),
+pClsCapCan( nullptr ),
+pClsCache( nullptr ),
+pClsCLL( nullptr ),
+pClsCBL( nullptr ),
+pClsCCon( nullptr ),
+pClsCCT( nullptr ),
+pClsCol( nullptr ),
+pClsColVol( nullptr ),
+pClsColComp( nullptr ),
+pClsColRig( nullptr ),
+pClsCF( nullptr ),
+pClsCI( nullptr ),
+pClsCT( nullptr ),
+pClsClr( nullptr ),
+pClsClrMat( nullptr ),
+pClsComp( nullptr ),
+pClsConL( nullptr ),
+pClsCon( nullptr ),
+pClsCurve2D( nullptr ),
+pClsCBe( nullptr ),
+pClsCBezier3D( nullptr ),
+pClsCDistMap( nullptr ),
+pClsCRSys( nullptr ),
+pClsDD( nullptr ),
+pClsDec( nullptr ),
+pClsDVec( nullptr ),
+pClsDMat( nullptr ),
+pClsDMat4( nullptr ),
+pClsDSkin( nullptr ),
+pClsXMLEl( nullptr ),
+pClsXML( nullptr ),
+pClsEff( nullptr ),
+pClsEffClrMat( nullptr ),
+pClsEffDistImg( nullptr ),
+pClsEffFilKer( nullptr ),
+pClsEffOverImg( nullptr ),
+pClsEngine( nullptr ),
+pClsEnvMapProbe( nullptr ),
+pClsFileReader( nullptr ),
+pClsFileWriter( nullptr ),
+pClsFileSys( nullptr ),
+pClsFnt( nullptr ),
+pClsFontBuilder( nullptr ),
+pClsFF( nullptr ),
+pClsGame( nullptr ),
+pClsGraSys( nullptr ),
+pClsHT( nullptr ),
+pClsImg( nullptr ),
+pClsImagePixels( nullptr ),
+pClsEditableImage( nullptr ),
+pClsInpEvent( nullptr ),
+pClsInpDev( nullptr ),
+pClsInpDevAxis( nullptr ),
+pClsInpDevBtn( nullptr ),
+pClsInpDevFb( nullptr ),
+pClsInpDevComp( nullptr ),
+pClsInpSys( nullptr ),
+pClsLP( nullptr ),
+pClsLangPackBuilder( nullptr ),
+pClsLyM( nullptr ),
+pClsLig( nullptr ),
+pClsLoco( nullptr ),
+pClsLM( nullptr ),
+pClsMath( nullptr ),
+pClsMat( nullptr ),
+pClsMat4( nullptr ),
+pClsMemoryFile( nullptr ),
+pClsMic( nullptr ),
+pClsMdl( nullptr ),
+pClsModelBuilder( nullptr ),
+pClsModPar( nullptr ),
+pClsMUID( nullptr ),
+pClsNavInfo( nullptr ),
+pClsNavSpace( nullptr ),
+pClsNavBlocker( nullptr ),
+pClsNavigator( nullptr ),
+pClsNM( nullptr ),
+pClsNSL( nullptr ),
+pClsNetSys( nullptr ),
+pClsOccM( nullptr ),
+pClsOccMBuilder( nullptr ),
+pClsNS( nullptr ),
+pClsPE( nullptr ),
+pClsPEC( nullptr ),
+pClsPEI( nullptr ),
+pClsPEIL( nullptr ),
+pClsPhySys( nullptr ),
+pClsPt3( nullptr ),
+pClsPt( nullptr ),
+pClsPF( nullptr ),
+pClsPFL( nullptr ),
+pClsQuat( nullptr ),
+pClsRN( nullptr ),
+pClsRig( nullptr ),
+pClsRigBuilder( nullptr ),
+pClsRTM( nullptr ),
+pClsSvrL( nullptr ),
+pClsSA( nullptr ),
+pClsShaList( nullptr ),
+pClsService( nullptr ),
+pClsServiceListener( nullptr ),
+pClsServiceObject( nullptr ),
+pClsSvr( nullptr ),
+pClsSkin( nullptr ),
+pClsSkinBuilder( nullptr ),
+pClsSky( nullptr ),
+pClsSkyBody( nullptr ),
+pClsSkyCtrl( nullptr ),
+pClsSkyInst( nullptr ),
+pClsSkyLayer( nullptr ),
+pClsSkyLink( nullptr ),
+pClsSkyTarget( nullptr ),
+pClsSmFlt( nullptr ),
+pClsSmDbl( nullptr ),
+pClsSmVec( nullptr ),
+pClsSmVec2( nullptr ),
+pClsSmDVec( nullptr ),
+pClsSnd( nullptr ),
+pClsSoundLevelMeter( nullptr ),
+pClsSoundLevelMeterSpeaker( nullptr ),
+pClsSoundLevelMeterListener( nullptr ),
+pClsSpk( nullptr ),
+pClsSID( nullptr ),
+pClsSyn( nullptr ),
+pClsSynEff( nullptr ),
+pClsSynI( nullptr ),
+pClsSynS( nullptr ),
+pClsSynthesizerSystem( nullptr ),
+pClsSEStretch( nullptr ),
+pClsSSSound( nullptr ),
+pClsSSWave( nullptr ),
+pClsSSChain( nullptr ),
+pClsSSSyn( nullptr ),
+pClsSSGroup( nullptr ),
+pClsTexMatrix( nullptr ),
+pClsTexMatrix2( nullptr ),
+pClsTS( nullptr ),
+pClsTSL( nullptr ),
+pClsUS( nullptr ),
+pClsUID( nullptr ),
+pClsU8D( nullptr ),
+pClsVec( nullptr ),
+pClsVec2( nullptr ),
+pClsVid( nullptr ),
+pClsVP( nullptr ),
+pClsVRSys( nullptr ),
+pClsWorld( nullptr ),
+pClsResourceLoaderType( nullptr ),
+pScriptEngine( nullptr ),
+pClsGameObj( nullptr ),
+pResourceLoader( nullptr ),
+//pLockManager( nullptr ),
+pColInfo( nullptr ),
+pColliderListenerClosest( nullptr ),
+pColliderListenerAdaptor( nullptr ),
+pGameObj( nullptr )
+{
+	pModuleVersion.SetVersion( DS_MODULE_VERSION );
 }
+
 deScriptingDragonScript::~deScriptingDragonScript(){
 	ShutDown();
 }
@@ -513,9 +553,25 @@ const char *deScriptingDragonScript::GetVFSSharedDataDir() const{
 }
 
 bool deScriptingDragonScript::Init( const char *scriptDirectory, const char *gameObject ){
-	deDSEngineManager *dsmanager = NULL;
+	if( pState != esStopped ){
+		return false;
+	}
+	
+	deDSEngineManager *dsmanager = nullptr;
 	
 	try{
+		pInitScriptDirectory = scriptDirectory;
+		pInitGameObject = gameObject;
+		
+		decString version( GetGameEngine()->GetScriptingSystem()->GetScriptVersion() );
+		if( version.IsEmpty() ){
+			version = "1.8"; // added in version 1.9
+		}
+		
+		pCompatibleVersion.SetVersion( version );
+		LogInfoFormat( "Requested compatible script version: %s", pCompatibleVersion.version.GetString() );
+		LogInfoFormat( "Module version: %s", pModuleVersion.version.GetString() );
+		
 		// create lock manager
 	//	pLockManager = new dedsLockManager;
 	//	if( ! pLockManager ) return false;
@@ -531,12 +587,20 @@ bool deScriptingDragonScript::Init( const char *scriptDirectory, const char *gam
 		pathContrib.AddComponent( "dsinstall" );
 		LogInfoFormat( "Set contrib installation path '%s'", pathContrib.GetPathNative().GetString() );
 		
-		#ifdef OS_W32
+		#ifdef OS_W32_VS
+		TCHAR envValBuf[ MAX_PATH ];
+		deOSWindows::Utf8ToWide( pathContrib.GetPathNative(), envValBuf, sizeof( envValBuf ) );
+		if( ! SetEnvironmentVariable( L"DS_PAKAGE_PATH", envValBuf ) ){
+			DSTHROW( dueInvalidAction );
+		}
+
+		#elif defined OS_W32
 		decString pestr;
 		pestr.Format( "DS_PAKAGE_PATH=%s", pathContrib.GetPathNative().GetString() );
 		if( putenv( pestr ) ){
 			DSTHROW( dueInvalidAction );
 		}
+
 		#else
 		if( setenv( "DS_PAKAGE_PATH", pathContrib.GetPathNative(), 1 ) ){
 			DSTHROW( dueInvalidAction );
@@ -546,9 +610,7 @@ bool deScriptingDragonScript::Init( const char *scriptDirectory, const char *gam
 		
 		// create script engine
 		pScriptEngine = new dsEngine;
-		if( ! pScriptEngine ){
-			DSTHROW( dueInvalidAction );
-		}
+		DEASSERT_NOTNULL( pScriptEngine )
 		#ifdef USE_INTERNAL_DSCRIPT
 		/*
 		const int sharePathCount = pScriptEngine->GetSharedPathCount();
@@ -563,25 +625,11 @@ bool deScriptingDragonScript::Init( const char *scriptDirectory, const char *gam
 		dsmanager = new deDSEngineManager( this );
 		
 		pScriptEngine->SetEngineManager( dsmanager );
-		dsmanager = NULL;
+		dsmanager = nullptr;
 		
-		// load basic package
-		pLoadBasicPackage();
+		pLoadingScreen.TakeOver( new dedsLoadingScreen( *this ) );
 		
-		// load game package
-		pLoadGamePackage( scriptDirectory, gameObject );
-		
-		// create the resource loader
-		pResourceLoader = new dedsResourceLoader( this );
-		
-		// create shared collision info
-		pColInfo = new deCollisionInfo;
-		
-		// create shared collider move hits closest
-		pColliderListenerClosest = new dedsColliderListenerClosest( *this );
-		
-		// create shared ray hits
-		pColliderListenerAdaptor = new dedsColliderListenerAdaptor( *this );
+		pState = esSkipOneFrame;
 		
 	}catch( const duException &e ){
 		if( dsmanager ){
@@ -631,68 +679,61 @@ bool deScriptingDragonScript::Init( const char *scriptDirectory, const char *gam
 }
 
 void deScriptingDragonScript::ShutDown(){
-	if( pScriptEngine ){
-		// clear collider move hits closest
-		if( pColliderListenerClosest ){
-			pColliderListenerClosest->SetListener( NULL );
-		}
-		
-		// clear ray hits
-		if( pColliderListenerAdaptor ){
-			pColliderListenerAdaptor->SetListener( NULL );
-		}
-		
-		// the game should be exited by now but if not do so
-		if( pGameObj ){
-			ExitGame();
-		}
-		
-		// delete values pending registered to be deleted later
-		DeleteValuesDeleteLater();
-		
-		// free resource loader
-		if( pResourceLoader ){
-			delete pResourceLoader;
-			pResourceLoader = NULL;
-		}
-		
-		// give up all locks if there are still some around ( which should never happen )
-//		pLockManager->RemoveAllLocks();
-		
-		// delete collider move hits closest
-		if( pColliderListenerClosest ){
-			delete pColliderListenerClosest;
-			pColliderListenerClosest = NULL;
-		}
-		
-		// delete ray hits
-		if( pColliderListenerAdaptor ){
-			delete pColliderListenerAdaptor;
-			pColliderListenerAdaptor = NULL;
-		}
-		
-		// clear collision info
-		if( pColInfo ){
-			pColInfo->Clear();
-		}
-		
-		// free the script engine
-		delete pScriptEngine;
-		pScriptEngine = NULL;
-		
-		// forget about the game class
-		pClsGameObj = NULL;
-		
-		// delete collision info
-		if( pColInfo ){
-			pColInfo->FreeReference();
-			pColInfo = NULL;
-		}
-		
-		// free the lock manager
-//		delete pLockManager;
-//		pLockManager = NULL;
+	pLoadingScreen = nullptr;
+	if( ! pScriptEngine ){
+		return;
 	}
+	
+	if( pColliderListenerClosest ){
+		pColliderListenerClosest->SetListener( nullptr );
+	}
+	if( pColliderListenerAdaptor ){
+		pColliderListenerAdaptor->SetListener( nullptr );
+	}
+	
+	if( pGameObj ){
+		ExitGame(); // the game should be exited by now but if not do so
+	}
+	
+	DeleteValuesDeleteLater();
+	
+	if( pResourceLoader ){
+		delete pResourceLoader;
+		pResourceLoader = nullptr;
+	}
+	
+//	pLockManager->RemoveAllLocks();
+	
+	if( pColliderListenerClosest ){
+		delete pColliderListenerClosest;
+		pColliderListenerClosest = nullptr;
+	}
+	if( pColliderListenerAdaptor ){
+		delete pColliderListenerAdaptor;
+		pColliderListenerAdaptor = nullptr;
+	}
+	
+	if( pColInfo ){
+		pColInfo->Clear();
+	}
+	
+	delete pScriptEngine;
+	pScriptEngine = nullptr;
+	
+	pClsGameObj = nullptr;
+	
+	DeleteValuesDeleteLater();
+	
+	if( pColInfo ){
+		pColInfo->FreeReference();
+		pColInfo = nullptr;
+	}
+	
+	// free the lock manager
+//	delete pLockManager;
+//	pLockManager = nullptr;
+	
+	pState = esStopped;
 }
 
 void deScriptingDragonScript::LoadPackage( const char *name, const char *directory ){
@@ -788,60 +829,34 @@ deBaseScriptingSpeaker *deScriptingDragonScript::CreateSpeaker( deSpeaker *speak
 	return new dedsSpeaker( *this, speaker );
 }
 
+deBaseScriptingService *deScriptingDragonScript::CreateService( deService *service ){
+	return new dedsService( *this, service );
+}
+
 bool deScriptingDragonScript::InitGame(){
-	// create game object
-	try{
-		if( ! pScriptEngine ){
-			DSTHROW( dueInvalidParam );
-		}
-		if( ! pClsGameObj ){
-			DSTHROW( dueInvalidParam );
-		}
-		
-		dsRunTime &rt = *pScriptEngine->GetMainRunTime();
-		pGameObj = rt.CreateValue( pClsGameObj );
-		rt.CreateObject( pGameObj, pClsGameObj, 0 );
-		
-	}catch( const duException &e ){
-		SetErrorTraceDS( e );
-		LogExceptionDS( e );
-		deErrorTracePoint *tracePoint = AddErrorTracePoint( "deScriptingDragonScript::InitGame", __LINE__ );
-		pAddExceptionTrace( tracePoint );
-		pScriptEngine->GetMainRunTime()->ClearExceptionTrace();
-		return false;
-		
-	}catch( const deException &e ){
-		SetErrorTrace( e );
-		LogException( e );
-		deErrorTracePoint * const tracePoint = AddErrorTracePoint( "deScriptingDragonScript::InitGame", __LINE__ );
-		pAddExceptionTrace( tracePoint );
-		pScriptEngine->GetMainRunTime()->ClearExceptionTrace();
-		return false;
-	}
-	
-	// call the init function
-	return pCallFunction( "initGame" );
+	return true;
 }
 
 bool deScriptingDragonScript::ExitGame(){
 	if( ! pGameObj ){
 		return true;
 	}
-	
-	if( ! pCallFunction( "cleanUp" ) ){
+	if( pState == esReady && ! pCallFunction( "cleanUp" ) ){
 		return false;
 	}
 	
 	try{
 		pScriptEngine->GetMainRunTime()->FreeValue( pGameObj );
-		pGameObj = NULL;
+		pGameObj = nullptr;
 		
 		// free static and run garbage collection. this should clean up all
 		// but can also result in ugly segfaults if this can segfault in so many bad ways it's not funny.
 		//pScriptEngine->Clear();
 		
+		pState = esStopped;
+		
 	}catch( const duException &e ){
-		pGameObj = NULL;
+		pGameObj = nullptr;
 		LogExceptionDS( e );
 		deErrorTracePoint *tracePoint = AddErrorTracePoint( "deScriptingDragonScript::InitGame", __LINE__ );
 		pAddExceptionTrace( tracePoint );
@@ -849,7 +864,7 @@ bool deScriptingDragonScript::ExitGame(){
 		return false;
 		
 	}catch( const deException &e ){
-		pGameObj = NULL;
+		pGameObj = nullptr;
 		SetErrorTrace( e );
 		LogException( e );
 		LogExceptionDSTrace();
@@ -872,37 +887,175 @@ extern int timerColliderChanged;
 extern int timerColliderChangedCount;
 #endif
 bool deScriptingDragonScript::OnFrameUpdate(){
-	#ifdef SPECIAL_DEBUG
-	timerCollisionResponse = 0; timerCollisionResponseCount = 0;
-	timerCanHitCollider = 0; timerCanHitColliderCount = 0;
-	timerColliderChanged = 0; timerColliderChangedCount = 0;
-	#endif
-	pResourceLoader->Update();
-	DeleteValuesDeleteLater();
-	const bool result = pCallFunction( "onFrameUpdate" );
-	#ifdef SPECIAL_DEBUG
-	LogInfoFormat( "OnFrameUpdate: collisionResponse(%i) = %iys", timerCollisionResponseCount, timerCollisionResponse );
-	LogInfoFormat( "OnFrameUpdate: canHitCollider(%i) = %iys", timerCanHitColliderCount, timerCanHitCollider );
-	LogInfoFormat( "OnFrameUpdate: colliderChanged(%i) = %iys", timerColliderChangedCount, timerColliderChanged );
-	#endif
-	return result;
+	if( pLoadingScreen ){
+		pLoadingScreen->Update();
+	}
 	
-// 	pResourceLoader->Update();
-// 	DeleteValuesDeleteLater();
-// 	return pCallFunction( "onFrameUpdate" );
+	switch( pState ){
+	case esReady:{
+		pLoadingScreen = nullptr;
+		
+		#ifdef SPECIAL_DEBUG
+		timerCollisionResponse = 0; timerCollisionResponseCount = 0;
+		timerCanHitCollider = 0; timerCanHitColliderCount = 0;
+		timerColliderChanged = 0; timerColliderChangedCount = 0;
+		#endif
+		pResourceLoader->OnFrameUpdate();
+		pClsInpSys->OnFrameUpdate();
+		pClsVRSys->OnFrameUpdate();
+		
+		DeleteValuesDeleteLater();
+		
+		const bool result = pCallFunction( "onFrameUpdate" );
+		#ifdef SPECIAL_DEBUG
+		LogInfoFormat( "OnFrameUpdate: collisionResponse(%i) = %iys", timerCollisionResponseCount, timerCollisionResponse );
+		LogInfoFormat( "OnFrameUpdate: canHitCollider(%i) = %iys", timerCanHitColliderCount, timerCanHitCollider );
+		LogInfoFormat( "OnFrameUpdate: colliderChanged(%i) = %iys", timerColliderChangedCount, timerColliderChanged );
+		#endif
+		return result;
+		
+		// pResourceLoader->Update();
+		// DeleteValuesDeleteLater();
+		// return pCallFunction( "onFrameUpdate" );
+		}
+		
+	case esSkipOneFrame:
+		pState = esLoadBasicPackages;  // required to allow graphic module to update once
+		return true;
+		
+	case esLoadBasicPackages:
+		try{
+			pLoadBasicPackage();
+			pState = esLoadGame;
+			return true;
+			
+		}catch( const duException &e ){
+			SetErrorTraceDS( e );
+			LogExceptionDS( e );
+			deErrorTracePoint * const tracePoint = AddErrorTracePoint( "deScriptingDragonScript::OnFrameUpdate", __LINE__ );
+			tracePoint->AddValue( "scriptDirectory", pInitScriptDirectory.GetString() );
+			tracePoint->AddValue( "gameObject", pInitGameObject.GetString() );
+			pAddExceptionTrace( tracePoint );
+			pScriptEngine->GetMainRunTime()->ClearExceptionTrace();
+			return false;
+			
+		}catch( const deException &e ){
+			SetErrorTrace( e );
+			LogException( e );
+			deErrorTracePoint * const tracePoint = AddErrorTracePoint( "deScriptingDragonScript::OnFrameUpdate", __LINE__ );
+			tracePoint->AddValue( "scriptDirectory", pInitScriptDirectory.GetString() );
+			tracePoint->AddValue( "gameObject", pInitGameObject.GetString() );
+			pAddExceptionTrace( tracePoint );
+			pScriptEngine->GetMainRunTime()->ClearExceptionTrace();
+			return false;
+		}
+		
+	case esLoadGame:
+		try{
+			pLoadGamePackage( pInitScriptDirectory, pInitGameObject );
+			
+			pResourceLoader = new dedsResourceLoader( this );
+			pColInfo = new deCollisionInfo;
+			pColliderListenerClosest = new dedsColliderListenerClosest( *this );
+			pColliderListenerAdaptor = new dedsColliderListenerAdaptor( *this );
+			
+			pState = esCreateGameObject;
+			return true;
+			
+		}catch( const duException &e ){
+			SetErrorTraceDS( e );
+			LogExceptionDS( e );
+			deErrorTracePoint * const tracePoint = AddErrorTracePoint( "deScriptingDragonScript::OnFrameUpdate", __LINE__ );
+			tracePoint->AddValue( "scriptDirectory", pInitScriptDirectory.GetString() );
+			tracePoint->AddValue( "gameObject", pInitGameObject.GetString() );
+			pAddExceptionTrace( tracePoint );
+			pScriptEngine->GetMainRunTime()->ClearExceptionTrace();
+			return false;
+			
+		}catch( const deException &e ){
+			SetErrorTrace( e );
+			LogException( e );
+			deErrorTracePoint * const tracePoint = AddErrorTracePoint( "deScriptingDragonScript::OnFrameUpdate", __LINE__ );
+			tracePoint->AddValue( "scriptDirectory", pInitScriptDirectory.GetString() );
+			tracePoint->AddValue( "gameObject", pInitGameObject.GetString() );
+			pAddExceptionTrace( tracePoint );
+			pScriptEngine->GetMainRunTime()->ClearExceptionTrace();
+			return false;
+		}
+		
+	case esCreateGameObject:
+		try{
+			if( ! pScriptEngine ){
+				DSTHROW( dueInvalidParam );
+			}
+			if( ! pClsGameObj ){
+				DSTHROW( dueInvalidParam );
+			}
+			
+			LogInfo( "Create game object" );
+			dsRunTime &rt = *pScriptEngine->GetMainRunTime();
+			pGameObj = rt.CreateValue( pClsGameObj );
+			rt.CreateObject( pGameObj, pClsGameObj, 0 );
+			
+			pState = esInitGameObject;
+			
+		}catch( const duException &e ){
+			SetErrorTraceDS( e );
+			LogExceptionDS( e );
+			deErrorTracePoint *tracePoint = AddErrorTracePoint( "deScriptingDragonScript::OnFrameUpdate", __LINE__ );
+			pAddExceptionTrace( tracePoint );
+			pScriptEngine->GetMainRunTime()->ClearExceptionTrace();
+			return false;
+			
+		}catch( const deException &e ){
+			SetErrorTrace( e );
+			LogException( e );
+			deErrorTracePoint * const tracePoint = AddErrorTracePoint( "deScriptingDragonScript::OnFrameUpdate", __LINE__ );
+			pAddExceptionTrace( tracePoint );
+			pScriptEngine->GetMainRunTime()->ClearExceptionTrace();
+			return false;
+		}
+		
+	case esInitGameObject:
+		LogInfo( "Init game object" );
+		if( ! pCallFunction( "initGame" ) ){
+			return false;
+		}
+		
+		pState = esReady;
+		return true;
+		
+	default:
+		return false;
+	}
 }
 
 bool deScriptingDragonScript::OnResizeRenderWindow(){
-	return pCallFunction( "onResizeRenderWindow" );
+	return pState != esReady || pCallFunction( "onResizeRenderWindow" );
 }
 
 bool deScriptingDragonScript::SendEvent( deInputEvent *event ){
-	if( ! pGameObj ){
-		return false;
+	if( pState != esReady ){
+		return true; // ignore
 	}
 	
-	if( event->GetType() == deInputEvent::eeDeviceParamsChanged ){
-		pClsInpSys->InvalidCachedDevices();
+	switch( event->GetType() ){
+	//case deInputEvent::eeDeviceAttached: // deprecated
+	//case deInputEvent::eeDeviceDetached: // deprecated
+	case deInputEvent::eeDeviceParamsChanged:
+	case deInputEvent::eeDevicesAttachedDetached:
+		switch( event->GetSource() ){
+		case deInputEvent::esInput:
+			pClsInpSys->InvalidCachedDevices();
+			break;
+			
+		case deInputEvent::esVR:
+			pClsVRSys->InvalidCachedDevices();
+			break;
+		}
+		
+	default:
+		break;
 	}
 	
 	dsRunTime &rt = *pScriptEngine->GetMainRunTime();
@@ -934,7 +1087,7 @@ bool deScriptingDragonScript::SendEvent( deInputEvent *event ){
 }
 
 void deScriptingDragonScript::UserRequestQuit(){
-	if( ! pGameObj ){
+	if( pState != esReady ){
 		return;
 	}
 	
@@ -959,6 +1112,10 @@ void deScriptingDragonScript::UserRequestQuit(){
 		pScriptEngine->GetMainRunTime()->ClearExceptionTrace();
 		GetGameEngine()->Quit();
 	}
+}
+
+bool deScriptingDragonScript::OnAppActivate(){
+	return pState != esReady || pCallFunction( "onAppActivate" );
 }
 
 
@@ -1055,6 +1212,8 @@ void deScriptingDragonScript::pLoadBasicPackage(){
 	
 	// load basic package
 	try{
+		LogInfo( "Load basic package" );
+		
 		// load engine class Math
 		pScriptEngine->LoadPackage( "Math" );
 		
@@ -1110,7 +1269,7 @@ void deScriptingDragonScript::pLoadBasicPackage(){
 		package->AddHostClass( pClsRN = new deClassResourceListener( engine, this ) );
 		
 		package->AddHostClass( pClsGame = new deClassGame( *this ) );
-		package->AddHostClass( pClsEngine = new deClassEngine( engine, this ) );
+		package->AddHostClass( pClsEngine = new deClassEngine( *this ) );
 		package->AddHostClass( pClsMath = new deClassMath( this ) );
 		package->AddHostClass( pClsModPar = new deClassModuleParameter( engine, this ) );
 		package->AddHostClass( pClsScrSys = new deClassScriptSystem( *this ) );
@@ -1121,11 +1280,13 @@ void deScriptingDragonScript::pLoadBasicPackage(){
 		package->AddHostClass( pClsAudSys = new deClassAudioSystem( *this ) );
 		package->AddHostClass( pClsSynthesizerSystem = new deClassSynthesizerSystem( *this ) );
 		package->AddHostClass( pClsInpSys = new deClassInputSystem( *this ) );
+		package->AddHostClass( pClsVRSys = new deClassVRSystem( *this ) );
 		package->AddHostClass( pClsInpEvent = new deClassInputEvent( *this ) );
 		package->AddHostClass( pClsInpDev = new deClassInputDevice( *this ) );
 		package->AddHostClass( pClsInpDevAxis = new deClassInputDeviceAxis( *this ) );
 		package->AddHostClass( pClsInpDevBtn = new deClassInputDeviceButton( *this ) );
 		package->AddHostClass( pClsInpDevFb = new deClassInputDeviceFeedback( *this ) );
+		package->AddHostClass( pClsInpDevComp = new deClassInputDeviceComponent( *this ) );
 		package->AddHostClass( pClsPhySys = new deClassPhysicsSystem( *this ) );
 		package->AddHostClass( pClsNetSys = new deClassNetworkSystem( *this ) );
 		package->AddHostClass( pClsEnvMapProbe = new deClassEnvMapProbe( this ) );
@@ -1150,7 +1311,7 @@ void deScriptingDragonScript::pLoadBasicPackage(){
 		package->AddHostClass( pClsARAnimDiff = new deClassARAnimationDifference( *this ) );
 		package->AddHostClass( pClsARAnimSelect = new deClassARAnimationSelect( *this ) );
 		package->AddHostClass( pClsARBoneTrans = new deClassARBoneTransformator( *this ) );
-		package->AddHostClass( pClsFSta = new deClassARForeignState( *this ) );
+		package->AddHostClass( pClsARFSta = new deClassARForeignState( *this ) );
 		package->AddHostClass( pClsARGroup = new deClassARGroup( *this ) );
 		package->AddHostClass( pClsARIK = new deClassARInverseKinematic( *this ) );
 		package->AddHostClass( pClsARLimit = new deClassARLimit( *this ) );
@@ -1158,12 +1319,15 @@ void deScriptingDragonScript::pLoadBasicPackage(){
 		package->AddHostClass( pClsARSnap = new deClassARStateSnapshot( *this ) );
 		package->AddHostClass( pClsARSubA = new deClassARSubAnimator( *this ) );
 		package->AddHostClass( pClsARTrack = new deClassARTrackTo( *this ) );
+		package->AddHostClass( pClsARMirror = new deClassARMirror( *this ) );
 		package->AddHostClass( pClsCI = new deClassCollisionInfo( engine, this ) );
 		package->AddHostClass( pClsCT = new deClassCollisionTester( *this ) );
 		package->AddHostClass( pClsSkin = new deClassSkin( *this ) );
 		package->AddHostClass( pClsSkinBuilder = new deClassSkinBuilder( *this ) );
 		package->AddHostClass( pClsDSkin = new deClassDynamicSkin( this ) );
 		package->AddHostClass( pClsImg = new deClassImage( engine, this ) );
+		package->AddHostClass( pClsImagePixels = new deClassImagePixels( *this ) );
+		package->AddHostClass( pClsEditableImage = new deClassEditableImage( *this ) );
 		package->AddHostClass( pClsComp = new deClassComponent( engine, this ) );
 		package->AddHostClass( pClsCol = new deClassCollider( *this ) );
 		package->AddHostClass( pClsColVol = new deClassColliderVolume( *this ) );
@@ -1172,7 +1336,7 @@ void deScriptingDragonScript::pLoadBasicPackage(){
 		package->AddHostClass( pClsCCT = new deClassColliderCollisionTest( *this ) );
 		package->AddHostClass( pClsLig = new deClassLight( *this ) );
 		package->AddHostClass( pClsLoco = new deClassLocomotion( *this ) );
-		package->AddHostClass( pClsCam = new deClassCamera( engine, this ) );
+		package->AddHostClass( pClsCam = new deClassCamera( *this ) );
 		package->AddHostClass( pClsCanvas = new deClassCanvas( *this ) );
 		package->AddHostClass( pClsCanvasCView = new deClassCanvasCanvasView( *this ) );
 		package->AddHostClass( pClsCanvasImage = new deClassCanvasImage( *this ) );
@@ -1183,6 +1347,9 @@ void deScriptingDragonScript::pLoadBasicPackage(){
 		package->AddHostClass( pClsCanvasView = new deClassCanvasView( *this ) );
 		package->AddHostClass( pClsCapCan = new deClassCaptureCanvas( *this ) );
 		package->AddHostClass( pClsCache = new deClassCache( *this ) );
+		package->AddHostClass( pClsService = new deClassService( *this ) );
+		package->AddHostClass( pClsServiceListener = new deClassServiceListener( *this ) );
+		package->AddHostClass( pClsServiceObject = new deClassServiceObject( *this ) );
 		package->AddHostClass( pClsSky = new deClassSky( *this ) );
 		package->AddHostClass( pClsSkyBody = new deClassSkyBody( *this ) );
 		package->AddHostClass( pClsSkyCtrl = new deClassSkyController( *this ) );
@@ -1261,6 +1428,9 @@ void deScriptingDragonScript::pLoadBasicPackage(){
 //		package->PrintClasses();
 		package = NULL;
 		
+		// find constant classes
+		pClsResourceLoaderType = pScriptEngine->GetClass( "Dragengine.ResourceLoaderType" );
+		
 	}catch( const duException &e ){
 		if( package ){
 			delete package;
@@ -1300,6 +1470,8 @@ void deScriptingDragonScript::pLoadGamePackage( const char *directory, const cha
 		if( ! pClsGame ){
 			DSTHROW_INFO( dueInvalidParam, "Game class could not be found" ); // deeScriptError
 		}
+		
+		LogInfo( "Load game package" );
 		
 		// load package
 //		if( ! ( path = new char[strlen( basePath )+strlen( directory )+2] ) ) DSTHROW( dueOutOfMemory );

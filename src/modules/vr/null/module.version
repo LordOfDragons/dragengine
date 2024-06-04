@@ -1,0 +1,4 @@
+VRNULL {
+  global: NullVRCreateModule;
+  local: *;
+};

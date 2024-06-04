@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Bullet Physics Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -319,7 +322,13 @@ void debpColliderRig::PrepareForStep(){
 	pPreventAttNotify = true;
 	RegisterColDetFinish(); // to disable pPreventAttNotify
 	
-	if( ! pSimplePhyBody ){
+	// this is dirty but i've got no better idea right now
+	if( GetConstraintCount() > 0 ){
+		pBones->SetAllBonesDirty();
+	}
+	
+	if( pBones ){
+		pBones->ActivateDirtyPhysicsBodies();
 		pDirtyBones = false;
 	}
 	
@@ -331,6 +340,19 @@ void debpColliderRig::PrepareForStep(){
 
 void debpColliderRig::PrepareDetection( float elapsed ){
 	debpCollider::PrepareDetection( elapsed );
+	
+	// update the kinematic bones if using bone test mode
+	if( pBones && pDirtyBones ){
+		// bullet uses interpolation of the previous transformation and velocities with the current
+		// values to calculate CCD in particular. if the user sets the collider bone parameter himself
+		// it is assumed the object teleported or has been reset. in this case the interpolation has
+		// to be reset to prevent wrong results. to achieve this the pResetKinematicInterpolation is
+		// used to determine if Bone*Changed calls do reset the interpolation or not. during this
+		// preparation code Bone*Changed is not allowed to reset the interpolation or the CCD breaks
+// 		pResetKinematicInterpolation = false;
+		pBones->PrepareForDetection( elapsed );
+// 		pResetKinematicInterpolation = true;
+	}
 }
 
 void debpColliderRig::FinishDetection(){
@@ -629,6 +651,9 @@ void debpColliderRig::PositionChanged(){
 			pSimplePhyBody->SetPosition( position );
 			
 		}else{
+			if( pBones ){
+				pBones->UpdateFromKinematic( false /*pResetKinematicInterpolation*/ );
+			}
 			DirtyBones();
 		}
 	}
@@ -660,11 +685,40 @@ void debpColliderRig::OrientationChanged(){
 			pSimplePhyBody->SetOrientation( orientation );
 			
 		}else{
+			if( pBones ){
+				pBones->UpdateFromKinematic( false /*pResetKinematicInterpolation*/ );
+			}
 			DirtyBones();
 		}
 	}
 	
 	pDirtyShapes = true;
+	
+	RequiresUpdate();
+	
+	if( pColliderRig.GetAttachmentCount() > 0 ){
+		pUpdateAttachments( true );
+	}
+}
+
+void debpColliderRig::ScaleChanged(){
+	const decVector &scale = pColliderRig.GetScale();
+	
+	if( pScale.IsEqualTo( scale ) ){
+		return;
+	}
+	
+	pScale = scale;
+	
+	MarkMatrixDirty();
+	MarkDirtyOctree();
+	
+	if( ! pPreventUpdate && ! pSimplePhyBody ){
+		DirtyBones();
+	}
+	
+	pDirtyShapes = true;
+	pUpdateBones();
 	
 	RequiresUpdate();
 	
@@ -694,33 +748,9 @@ void debpColliderRig::GeometryChanged(){
 			pSimplePhyBody->SetOrientation( orientation );
 			
 		}else{
-			DirtyBones();
-		}
-	}
-	
-	pDirtyShapes = true;
-	
-	RequiresUpdate();
-	
-	if( pColliderRig.GetAttachmentCount() > 0 ){
-		pUpdateAttachments( true );
-	}
-}
-
-void debpColliderRig::ScaleChanged(){
-	const decVector &scale = pColliderRig.GetScale();
-	
-	if( pScale.IsEqualTo( scale ) ){
-		return;
-	}
-	
-	pScale = scale;
-	
-	MarkMatrixDirty();
-	MarkDirtyOctree();
-	
-	if( ! pPreventUpdate ){
-		if( ! pSimplePhyBody ){
+			if( pBones ){
+				pBones->UpdateFromKinematic( false /*pResetKinematicInterpolation*/ );
+			}
 			DirtyBones();
 		}
 	}
@@ -1127,7 +1157,6 @@ void debpColliderRig::pUpdateBones(){
 	}else if( shapeCount > 0 ){
 		// create the physics body which is the same no matter what shape we have
 		pSimplePhyBody = new debpPhysicsBody;
-		if( ! pSimplePhyBody ) DETHROW( deeOutOfMemory );
 		
 		pSimplePhyBody->SetOwnerCollider( this, -1 );
 		pSimplePhyBody->SetDynamicsWorld( dynWorld );
@@ -1173,6 +1202,7 @@ void debpColliderRig::pUpdateBones(){
 			createBulletShape.SetShapeIndex( s );
 			engRig->GetShapes().GetAt( s )->Visit( createBulletShape );
 		}
+		createBulletShape.Finish();
 		pSimplePhyBody->SetShape( createBulletShape.GetBulletShape() );
 		
 		//pSimplePhyBody->SetCcdParameters( createBulletShape.GetCcdThreshold(), createBulletShape.GetCcdRadius() );
@@ -1201,10 +1231,7 @@ void debpColliderRig::pUpdateBones(){
 	}
 	
 	DirtyBones();
-	
-	if( pColliderRig.GetAttachmentCount() > 0 ){
-		DirtyAttachments();
-	}
+	DirtyAttachments();
 	
 	UpdateDDSShape(); // debug if enabled
 	
@@ -1234,18 +1261,18 @@ void debpColliderRig::pUpdateAttachments( bool force ){
 		debpColliderAttachment &bpAttachment = *GetAttachmentAt( i );
 		const deColliderAttachment &attachment = *bpAttachment.GetAttachment();
 		deResource * const attachedResource = attachment.GetResource();
-		if( attachedResource->GetResourceManager()->GetResourceType() != deResourceManager::ertCollider ){
-			continue;
-		}
-		deCollider &attachedCollider = *( ( deCollider* )attachedResource );
-		const int attachType = attachment.GetAttachType();
+		deCollider *attachedCollider = nullptr;
 		
-		attachedCollider.Visit( visitor );
+		if( attachedResource->GetResourceManager()->GetResourceType() == deResourceManager::ertCollider ){
+			attachedCollider = ( deCollider* )attachedResource;
+			attachedCollider->Visit( visitor );
+		}
+		const int attachType = attachment.GetAttachType();
 		
 		changed = false;
 		
 		if( attachType == deColliderAttachment::eatStatic ){
-			bpAttachment.Reposition( posMatrix, ! pPreventAttNotify );
+			bpAttachment.Reposition( posMatrix, pLinVelo, ! pPreventAttNotify );
 			
 		}else if( attachType == deColliderAttachment::eatRig ){
 			if( ! engRig ){
@@ -1311,11 +1338,12 @@ void debpColliderRig::pUpdateAttachments( bool force ){
 				boneIndex = bpAttachment.GetTrackBone();
 				
 				if( boneIndex == -1 ){
-					bpAttachment.Reposition( posMatrix, ! pPreventAttNotify );
+					bpAttachment.Reposition( posMatrix, pLinVelo, ! pPreventAttNotify );
 					
 				}else{
 					const deColliderBone &colBone = pColliderRig.GetBoneAt( boneIndex );
-					bpAttachment.Reposition( colBone.GetMatrix(), ! pPreventAttNotify );
+					bpAttachment.Reposition( colBone.GetMatrix(), colBone.GetLinearVelocity(),
+						! pPreventAttNotify );
 				}
 			}
 			
@@ -1336,17 +1364,20 @@ void debpColliderRig::pUpdateAttachments( bool force ){
 				
 				if( weightCount > 0 ){
 					decDMatrix transform;
+					decVector velocity;
 					
 					for( j=0; j<weightCount; j++ ){
 						boneIndex = bpAttachment.GetBoneMappingAt( j );
 						weightFactor = weights[ j ].weight;
 						
 						if( boneIndex != -1 ){
-							transform.QuickAddTo( pColliderRig.GetBoneAt( boneIndex ).GetMatrix().QuickMultiply( weightFactor ) );
+							const deColliderBone &cbone = pColliderRig.GetBoneAt( boneIndex );
+							transform.QuickAddTo( cbone.GetMatrix().QuickMultiply( weightFactor ) );
+							velocity += cbone.GetLinearVelocity() * weightFactor;
 						}
 					}
 					
-					bpAttachment.Reposition( transform, ! pPreventAttNotify );
+					bpAttachment.Reposition( transform, velocity, ! pPreventAttNotify );
 				}
 			}
 			
@@ -1355,8 +1386,8 @@ void debpColliderRig::pUpdateAttachments( bool force ){
 		}
 		
 		// notify attachments if not prevented
-		if( changed ){
-			debpCollider &bpCollider = *( ( debpCollider* )attachedCollider.GetPeerPhysics() );
+		if( changed && attachedCollider ){
+			debpCollider &bpCollider = *( ( debpCollider* )attachedCollider->GetPeerPhysics() );
 			
 			if( pPreventAttNotify ){
 				// notification is prevented. register collider for finish detection.
@@ -1364,7 +1395,7 @@ void debpColliderRig::pUpdateAttachments( bool force ){
 				bpCollider.RegisterColDetFinish();
 				
 			}else{
-				attachedCollider.GetPeerScripting()->ColliderChanged( &attachedCollider );
+				attachedCollider->GetPeerScripting()->ColliderChanged( attachedCollider );
 				bpCollider.ClearRequiresUpdate();
 			}
 		}

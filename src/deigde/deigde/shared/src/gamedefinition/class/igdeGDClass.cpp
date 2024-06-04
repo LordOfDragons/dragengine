@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -29,6 +32,7 @@
 #include "igdeGDCamera.h"
 #include "billboard/igdeGDCBillboard.h"
 #include "component/igdeGDCComponent.h"
+#include "component/igdeGDCCTexture.h"
 #include "snappoint/igdeGDCSnapPoint.h"
 #include "particleemitter/igdeGDCParticleEmitter.h"
 #include "forcefield/igdeGDCForceField.h"
@@ -43,6 +47,7 @@
 #include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/collection/decIntList.h>
+#include <dragengine/common/string/decStringSet.h>
 #include <dragengine/resources/image/deImage.h>
 
 
@@ -59,12 +64,13 @@ igdeGDClass::igdeGDClass( const char *name ){
 	}
 	
 	pName = name;
-	pScaleMode = esmFixed;
+	pScaleMode = esmUniform;
 	
 	pCamera = NULL;
 	pHasCamera = false;
 	pIsGhost = false;
-	pCanInstanciate = true;
+	pCanInstantiate = true;
+	pInheritSubObjects = FilterSubObjectsAll;
 	
 	pPreviewImage = NULL;
 	
@@ -96,7 +102,8 @@ igdeGDClass::igdeGDClass( const igdeGDClass &gdclass ){
 		}
 		pHasCamera = gdclass.pHasCamera;
 		pIsGhost = gdclass.pIsGhost;
-		pCanInstanciate = gdclass.pCanInstanciate;
+		pCanInstantiate = gdclass.pCanInstantiate;
+		pInheritSubObjects = gdclass.pInheritSubObjects;
 		
 		pCategory = gdclass.pCategory;
 		
@@ -133,6 +140,7 @@ igdeGDClass::igdeGDClass( const igdeGDClass &gdclass ){
 		}
 		
 		pPathEClass = gdclass.pPathEClass;
+		pComponentTextures.SetToDeepCopyFrom( gdclass.pComponentTextures );
 		
 	}catch( const deException & ){
 		if( snappoint ){
@@ -158,10 +166,6 @@ void igdeGDClass::SetDescription( const char *description ){
 }
 
 void igdeGDClass::SetScaleMode( eScaleModes mode ){
-	if( mode < esmFixed || mode > esmFree ){
-		DETHROW( deeInvalidParam );
-	}
-	
 	pScaleMode = mode;
 }
 
@@ -173,8 +177,8 @@ void igdeGDClass::SetIsGhost( bool isGhost ){
 	pIsGhost = isGhost;
 }
 
-void igdeGDClass::SetCanInstanciate( bool canInstanciate ){
-	pCanInstanciate = canInstanciate;
+void igdeGDClass::SetCanInstantiate( bool canInstantiate ){
+	pCanInstantiate = canInstantiate;
 }
 
 void igdeGDClass::SetCategory( const char *category ){
@@ -183,6 +187,10 @@ void igdeGDClass::SetCategory( const char *category ){
 	}
 	
 	pCategory = category;
+}
+
+void igdeGDClass::SetInheritSubObjects( int filter ){
+	pInheritSubObjects = filter;
 }
 
 
@@ -258,6 +266,25 @@ void igdeGDClass::SetPathEClass( const decString &pathEClass ){
 	pPathEClass = pathEClass;
 }
 
+void igdeGDClass::GetDeepComponentTextures( igdeGDCCTextureList &list ) const{
+	const int textureCount = pComponentTextures.GetCount();
+	int i;
+	for( i=0; i<textureCount; i++ ){
+		igdeGDCCTexture * const texture = pComponentTextures.GetAt( i );
+		if( ! list.HasNamed( texture->GetName() ) ){
+			list.Add( texture );
+		}
+	}
+	
+	const int inheritCount = pInheritClasses.GetCount();
+	for( i=0; i<inheritCount; i++ ){
+		const igdeGDClassInherit &inherit = *( ( igdeGDClassInherit* )pInheritClasses.GetAt( i ) );
+		if( inherit.GetClass() ){
+			inherit.GetClass()->GetDeepComponentTextures( list );
+		}
+	}
+}
+
 
 
 // Properties
@@ -287,7 +314,7 @@ igdeGDProperty *igdeGDClass::GetPropertyNamed( const char *name ) const{
 	}
 	
 	const int count = pInheritClasses.GetCount();
-	const int nameLen = strlen( name );
+	const int nameLen = ( int )strlen( name );
 	int i;
 	
 	for( i=0; i<count; i++ ){
@@ -329,7 +356,7 @@ bool igdeGDClass::GetDefaultPropertyValue( const char *name, decString &value) c
 	}
 	
 	const int count = pInheritClasses.GetCount();
-	const int nameLen = strlen( name );
+	const int nameLen = ( int )strlen( name );
 	int i;
 	
 	for( i=0; i<count; i++ ){
@@ -406,7 +433,7 @@ igdeGDProperty *igdeGDClass::GetTexturePropertyNamed( const char *name ) const{
 	}
 	
 	const int count = pInheritClasses.GetCount();
-	const int nameLen = strlen( name );
+	const int nameLen = ( int )strlen( name );
 	int i;
 	
 	for( i=0; i<count; i++ ){
@@ -442,7 +469,7 @@ bool igdeGDClass::GetDefaultTexturePropertyValue( const char *name, decString &v
 	}
 	
 	const int count = pInheritClasses.GetCount();
-	const int nameLen = strlen( name );
+	const int nameLen = ( int )strlen( name );
 	int i;
 	
 	for( i=0; i<count; i++ ){

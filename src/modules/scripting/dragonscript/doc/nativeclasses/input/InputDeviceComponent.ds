@@ -1,0 +1,129 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine
+
+pin Dragengine.Gui
+
+
+/**
+ * \brief Input device component.
+ * 
+ * Wraps a input device component by component index.
+ * 
+ * Components group buttons, axes and feedbacks into a single unit. For example a joystick
+ * on a gamepad typically composes of 2 axes and optionally buttons (for example press
+ * down) and feedbacks (rumbling). Using components enables the user to relate these
+ * input features.
+ * 
+ * This is a native class.
+ */
+class InputDeviceComponent
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Input device component can not be created directly. */
+	private func new()
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Owner input device. */
+	public func InputDevice getInputDevice()
+		return null
+	end
+	
+	/** \brief Component index. */
+	public func int getComponentIndex()
+		return 0
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Components */
+	/*@{*/
+	/**
+	 * \brief Component identifier.
+	 * 
+	 * Unique identifier for the component identifying it inside the parent device. The prefix
+	 * is a normalized string that contains only letters, numbers and underscores. It is
+	 * suitable to be combined with the device identifier to store them in config files as
+	 * key bindings.
+	 */
+	public func String getID()
+		return null
+	end
+	
+	/**
+	 * \brief Display name.
+	 * 
+	 * Dispaly name is human readable like for example 'Component #1'. The name is unique but
+	 * not guaranteed to stay the same across restarting the input module or game engine.
+	 */
+	public func String getName()
+		return null
+	end
+	
+	/**
+	 * \brief Component type.
+	 * \version 1.6
+	 */
+	public func InputDeviceComponentType getType()
+		return null
+	end
+	
+	/**
+	 * \brief Image to represent the component in 2D user interfaces or NULL if not set.
+	 * 
+	 * Large image of 128 pixels squared or larger.
+	 */
+	public func Image getDisplayImage()
+		return null
+	end
+	
+	/** \brief Count of icons representing the component in bindings. */
+	public func int getDisplayIconCount()
+		return 0
+	end
+	
+	/**
+	 * \brief Icon at index representing the component in bindings.
+	 * 
+	 * Icon is of square size and typically has a size of 16, 24, 32 or 64.
+	 */
+	public func Image getDisplayIconAt( int index )
+		return null
+	end
+	
+	/**
+	 * \brief Largest icon not exceeding width representing the device in bindings.
+	 * 
+	 * Icon typically has a size of 16, 24, 32 or 64.
+	 */
+	public func Image getLargestDisplayIconX( int maxWidth )
+		return null
+	end
+	
+	/**
+	 * \brief Largest icon not exceeding height representing the device in bindings.
+	 * 
+	 * Icon typically has a size of 16, 24, 32 or 64.
+	 */
+	public func Image getLargestDisplayIconY( int maxHeight )
+		return null
+	end
+	
+	/** \brief Text to display centered across display image or icon. */
+	public func String getDisplayText()
+		return null
+	end
+	/*@}*/
+end

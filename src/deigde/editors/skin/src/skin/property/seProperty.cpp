@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE Skin Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -70,6 +73,7 @@ pNodeSelection( *this ),
 pActiveNodeLayer( 0 ),
 pNodeTileX( false ),
 pNodeTileY( false ),
+pNodeBitCount( 8 ),
 
 pSelected( false ),
 pActive( false )
@@ -90,6 +94,7 @@ pTexture( NULL ),
 pName( property.pName ),
 pValueType( property.pValueType ),
 pRenderableName( property.pRenderableName ),
+pBoneName( property.pBoneName ),
 
 pValue( property.pValue ),
 
@@ -110,6 +115,7 @@ pActiveNodeLayer( 0 ),
 pNodeColor( property.pNodeColor ),
 pNodeTileX( property.pNodeTileX ),
 pNodeTileY( property.pNodeTileY ),
+pNodeBitCount( property.pNodeBitCount ),
 
 pSelected( false ),
 pActive( false )
@@ -158,6 +164,15 @@ void seProperty::SetRenderableName( const char *name ){
 	}
 	
 	pRenderableName = name;
+	NotifyChanged();
+}
+
+void seProperty::SetBoneName( const char *name ){
+	if( pBoneName.Equals( name ) ){
+		return;
+	}
+	
+	pBoneName = name;
 	NotifyChanged();
 }
 
@@ -251,19 +266,18 @@ void seProperty::SetVideoSharedTime( bool shareTime ){
 
 
 
-const deSkinPropertyMapped::cComponent &seProperty::GetMappedComponent( int index ) const{
-	if( index < 0 || index > 3 ){
-		DETHROW( deeInvalidParam );
-	}
+const seMapped::Ref &seProperty::GetMappedComponent( int index ) const{
+	DEASSERT_TRUE( index >= 0 )
+	DEASSERT_TRUE( index <= 3 )
+	
 	return pMappedComponents[ index ];
 }
 
-void seProperty::SetMappedComponent( int index, const deSkinPropertyMapped::cComponent &component ){
-	if( index < 0 || index > 3 ){
-		DETHROW( deeInvalidParam );
-	}
+void seProperty::SetMappedComponent( int index, seMapped *mapped ){
+	DEASSERT_TRUE( index >= 0 )
+	DEASSERT_TRUE( index <= 3 )
 	
-	pMappedComponents[ index ] = component;
+	pMappedComponents[ index ] = mapped;
 	NotifyChanged();
 }
 
@@ -366,6 +380,24 @@ void seProperty::SetNodeTileY( bool tileY ){
 	
 	pNodeTileY = tileY;
 	NotifyChanged();
+}
+
+void seProperty::SetNodeBitCount( int bitCount ){
+	if( bitCount == pNodeBitCount ){
+		return;
+	}
+	
+	switch( bitCount ){
+	case 8:
+	case 16:
+	case 32:
+		pNodeBitCount = bitCount;
+		NotifyChanged();
+		break;
+		
+	default:
+		DETHROW( deeInvalidParam );
+	}
 }
 
 

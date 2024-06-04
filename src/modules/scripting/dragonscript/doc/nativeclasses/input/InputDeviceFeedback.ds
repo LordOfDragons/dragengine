@@ -8,6 +8,9 @@
 
 namespace Dragengine
 
+pin Dragengine.Gui
+
+
 /**
  * \brief Input device feedback.
  * 
@@ -35,10 +38,12 @@ class InputDeviceFeedback
 	/*@{*/
 	/** \brief Owner input device. */
 	public func InputDevice getInputDevice()
+		return null
 	end
 	
 	/** \brief Feedback index. */
 	public func int getFeedbackIndex()
+		return 0
 	end
 	/*@}*/
 	
@@ -55,6 +60,7 @@ class InputDeviceFeedback
 	 * key bindings.
 	 */
 	public func String getID()
+		return null
 	end
 	
 	/**
@@ -64,10 +70,20 @@ class InputDeviceFeedback
 	 * not guaranteed to stay the same across restarting the input module or game engine.
 	 */
 	public func String getName()
+		return null
 	end
 	
 	/** \brief Feedback type. */
 	public func InputDeviceFeedbackType getType()
+		return null
+	end
+	
+	/**
+	 * \brief Identifier of component or empty string if standalone.
+	 * \version 1.6
+	 */
+	public func String getComponent()
+		return null
 	end
 	
 	/**
@@ -112,8 +128,8 @@ class InputDeviceFeedback
 	end
 	
 	/** \brief Text to display centered across display image or icon. */
-	public String getDisplayText()
-		return ""
+	public func String getDisplayText()
+		return null
 	end
 	
 	
@@ -128,6 +144,7 @@ class InputDeviceFeedback
 	 * properly works again.
 	 */
 	public func float getValue()
+		return 0.0
 	end
 	
 	/**

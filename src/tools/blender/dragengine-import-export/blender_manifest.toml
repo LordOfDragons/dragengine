@@ -1,0 +1,23 @@
+schema_version = "1.0.0"
+id = "dragengine_tools"
+version = "{VERSION_MAJOR}.{VERSION_MINOR}.{VERSION_PATCH}"
+name = "Drag[en]gine Import/Export"
+tagline = "Import/Export Drag[en]gine Resources including helper tools"
+maintainer = "DragonDreams GmbH <info@dragondreams.ch>"
+type = "add-on"
+permissions = ["files"]
+website = "https://developer.dragondreams.ch/wiki/doku.php/tag:blender?do=showtag&tag=blender"
+tags = [
+  "Import-Export",
+  "3D View",
+  "Mesh",
+  "Object",
+  "Animation"
+]
+blender_version_min = "4.2.0"
+license = [
+  "SPDX:GPL-2.0-or-later"
+]
+copyright = [
+  "2024 DragonDreams GmbH",
+]
