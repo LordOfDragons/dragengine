@@ -126,8 +126,8 @@ public:
 	
 	/** \name System Peer Management */
 	/*@{*/
-	void SystemScriptingLoad();
-	void SystemScriptingUnload();
+	void SystemScriptingLoad() override;
+	void SystemScriptingUnload() override;
 	/*@}*/
 	
 	

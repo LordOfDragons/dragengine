@@ -41,6 +41,9 @@ if useInternalLoader:
 	envModule.Append(CPPFLAGS = ['-DINTERNAL_XR_LOADER'])
 	envModule.Append(CPPPATH = ['extern/include'])
 
+if envModule['platform_android'] != 'no':
+	envModule.Append(CPPFLAGS = ['-Wno-cast-calling-convention'])
+
 # setup the builders
 sources = []
 headers = []

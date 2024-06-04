@@ -75,6 +75,7 @@ def openalBuild(target, source, env):
 		# OpenAL reacts badly to set up cross compilers manually because it is
 		# using host system compiler for certain things
 		script = []
+		script = createScriptHeader(env)
 	else:
 		#script = createScriptHeader(env, deps=[parent_targets['lib_sndio']])
 		script = createScriptHeader(env)
@@ -127,10 +128,15 @@ def openalBuild(target, source, env):
 	cmdline.append('"{}"'.format(realSrcDir))
 	
 	if env['platform_android'] != 'no':
-		cmdline.append('-DANDROID_PLATFORM={}'.format(env['ANDROID_APILEVEL']))
+		cmdline.append('-DANDROID_ABI="{}"'.format(env['ANDROID_ABI']))
+		cmdline.append('-DANDROID_ARM_MODE="{}"'.format(env['ANDROID_ARCH']))
+		cmdline.append('-DANDROID_PLATFORM=android-{}'.format(env['ANDROID_APILEVEL']))
+		cmdline.append('-DANDROID_TOOLCHAIN=clang')
+		cmdline.append('-DCMAKE_ASM_FLAGS="--target={}"'.format(env['ANDROID_COMPILER']))
+		cmdline.append('-DCMAKE_C_FLAGS="-Wall"')
+		cmdline.append('-DCMAKE_TOOLCHAIN_FILE="{}"'.format(env['ANDROID_CMAKETOOLCHAIN']))
 		#cmdline.append('-DCMAKE_SYSTEM_NAME=Linux')
 		#cmdline.append('-DCMAKE_SYSTEM_PROCESSOR=arm')
-		cmdline.append('-DCMAKE_TOOLCHAIN_FILE="{}/build/cmake/android.toolchain.cmake"'.format(env['ndkroot']))
 		#cmdline.append('-DCMAKE_VERBOSE_MAKEFILE=ON')
 		
 	elif 'CROSSCOMPILE_HOST' in env:

@@ -6,7 +6,7 @@ envEditor = parent_env.Clone()
 
 buildEditor = 'deigde_shared' in parent_targets and parent_env['build_editor_font'] != TernaryVariableNo
 parent_report[ 'build IGDE Font Editor' ] = 'yes' if buildEditor else 'no'
-if not buildEditor:
+if not buildEditor or 'deigde_shared' not in parent_env:
 	Return()
 
 # fetch values in expanded form for later use

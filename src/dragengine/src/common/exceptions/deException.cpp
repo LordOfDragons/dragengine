@@ -213,12 +213,14 @@ void deException::pBuildBacktrace(){
 			char * const demangled = abi::__cxa_demangle( symbol, 0, 0, &status );
 			if( demangled ){
 				symbol.Format( "%s(%s+0x%x) [%p] %s", info.dli_fname, info.dli_sname,
-					( const char* )addr - ( const char* )info.dli_saddr, addr, demangled );
+					( unsigned int )( ( const char* )addr - ( const char* )info.dli_saddr ),
+					addr, demangled );
 				free( demangled );
 				
 			}else{
 				symbol.Format( "%s(%s+0x%x) [%p]", info.dli_fname, info.dli_sname,
-					( const char* )addr - ( const char* )info.dli_saddr, addr );
+					( unsigned int )( ( const char* )addr - ( const char* )info.dli_saddr ),
+					addr );
 			}
 			
 		}else{

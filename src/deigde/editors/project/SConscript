@@ -6,7 +6,7 @@ envEditor = parent_env.Clone()
 
 buildModule = 'deigde_shared' in parent_targets
 parent_report[ 'build IGDE Project' ] = 'yes' if buildModule else 'no'
-if not buildModule:
+if not buildModule or 'deigde_shared' not in parent_env:
 	Return()
 
 libs = []

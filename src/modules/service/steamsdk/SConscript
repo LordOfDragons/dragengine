@@ -7,7 +7,7 @@ envModule = parent_env.Clone()
 buildModule = envModule['build_service_steamsdk'] != TernaryVariableNo
 parent_report['build SteamSDK Service Module'] = 'yes' if buildModule else 'no'
 
-if not buildModule:
+if not buildModule or 'lib_steamsdk' not in parent_targets:
 	Return()
 
 libs = []

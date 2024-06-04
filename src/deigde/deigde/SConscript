@@ -4,7 +4,7 @@ Import('parent_env parent_targets parent_report')
 
 buildIGDE = parent_env['build_igde'] != TernaryVariableNo
 parent_report['build IGDE'] = 'yes' if buildIGDE else 'no'
-if not buildIGDE:
+if not buildIGDE or parent_env['platform_android'] != 'no':
 	Return()
 
 envIGDELib = parent_env.Clone()

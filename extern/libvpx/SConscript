@@ -60,7 +60,7 @@ def libvpxBuild(target, source, env):
 	
 	script.append('cd "{}" || exit 1'.format(buildDir.Dir(srcdir).abspath))
 	
-	if 'CROSSCOMPILE_HOST' in env and env['OSWindows']:
+	if 'CROSSCOMPILE_HOST' in env and (env['OSWindows'] or env['platform_android'] != 'no'):
 		script.append('CROSS={}'.format(env['CROSSCOMPILE_HOST']))
 	
 	cmdline = ['./configure --prefix="{}"'.format(buildDir.abspath)]
@@ -76,7 +76,8 @@ def libvpxBuild(target, source, env):
 	cmdline.append('--disable-decode-perf-tests')
 	cmdline.append('--disable-encode-perf-tests')
 	cmdline.append('--disable-unit-tests')
-	cmdline.append('--as=nasm')  # yasm, nasm, auto
+	if env['platform_android'] == 'no':
+		cmdline.append('--as=nasm')  # yasm, nasm, auto
 	# --cpu=CPU    tune for the specified CPU (ARM: cortex-a8, X86: sse3)
 	if buildStaticLinking:
 		cmdline.append('--disable-shared')
@@ -93,7 +94,11 @@ def libvpxBuild(target, source, env):
 		# cmdline.append('--host={}'.format(env['CROSSCOMPILE_HOST']))
 		if env['OSWindows']:
 			cmdline.append('--target=generic-gnu')
-	
+		elif env['platform_android'] == 'armv7':
+			cmdline.append('--target=armv7-android-gcc')
+		elif env['platform_android'] == 'armv8':
+			cmdline.append('--target=arm64-android-gcc')
+
 	script.append('{} || exit 1'.format(' '.join(cmdline)))
 	
 	script.append('make -j {} install || exit 1'.format(env['with_threads']))

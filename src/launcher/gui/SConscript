@@ -8,7 +8,7 @@ envLauncher.Tool('symlink')
 buildLauncher = envLauncher['build_guilauncher'] != TernaryVariableNo
 
 parent_report['build GUI Launcher'] = 'yes' if buildLauncher else 'no'
-if not buildLauncher:
+if not buildLauncher or parent_env['platform_android'] != 'no':
 	Return()
 
 # fetch values in expanded form for later use

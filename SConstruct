@@ -154,7 +154,7 @@ if not (parent_env['OSPosix'] or parent_env['OSWindows'] or parent_env['OSBeOS']
 #params = Variables(['parameters.cache', 'custom.py'])
 params = Variables(['custom.py'])
 
-params.Add(EnumVariable('platform_android', 'Build for Android platform', 'no', ['no','armv7','x86']))
+params.Add(EnumVariable('platform_android', 'Build for Android platform', 'no', ['no', 'armv7', 'armv8', 'x86']))
 params.Add(BoolVariable('with_tests', 'Build engine tests', False))
 params.Add(BoolVariable('with_debug', 'Build with debug symbols for GDB usage', False))
 params.Add(BoolVariable('with_warnerrors', 'Treat warnings as errors (dev-builds)', False))
@@ -621,13 +621,16 @@ else:
 
 # android
 if parent_env['platform_android'] != 'no':
-	params.Add(PathVariable('ndkroot', 'Path to NDK toolchain (NDK_ROOT env-param by default)',
-		os.path.expanduser(os.environ['NDK_ROOT']), PathVariable.PathAccept))
+	ndkRoot = ''
+	if 'NDK_ROOT' in os.environ:
+		ndkroot = os.path.expanduser(os.environ['NDK_ROOT'])
+
+	params.Add(PathVariable('ndkroot', 'Path to NDK toolchain (NDK_ROOT env-param by default)', ndkRoot, PathVariable.PathAccept))
 	params.Add(StringVariable('apilevel', 'Android API level', '18'))
 	params.Add(BoolVariable('hardfp', 'Use hardware floating point support instead of softfp on ARMv7 only', False))
-	
+
 	params.Update(parent_env)
-	
+
 	androidUpdateEnv(parent_env)
 
 # disable verbose compile messages if requested

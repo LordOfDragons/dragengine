@@ -89,10 +89,21 @@ def jpegBuild(target, source, env):
 	if env['OSWindows']:
 		# libjpeg fails if system name is not this value
 		cmdline.append('-DCMAKE_SYSTEM_NAME=Windows')
+		cmdline.append('-DCMAKE_SYSTEM_PROCESSOR=AMD64')
+	elif env['platform_android'] != 'no':
+		cmdline.append('-DANDROID_ABI="{}"'.format(env['ANDROID_ABI']))
+		cmdline.append('-DANDROID_ARM_MODE="{}"'.format(env['ANDROID_ARCH']))
+		cmdline.append('-DANDROID_PLATFORM=android-{}'.format(env['ANDROID_APILEVEL']))
+		cmdline.append('-DANDROID_TOOLCHAIN=clang')
+		cmdline.append('-DCMAKE_ASM_FLAGS="--target={}"'.format(env['ANDROID_COMPILER']))
+		cmdline.append('-DCMAKE_C_FLAGS="-Wall"')
+		cmdline.append('-DCMAKE_TOOLCHAIN_FILE="{}"'.format(env['ANDROID_CMAKETOOLCHAIN']))
+		cmdline.append('-DWITH_JAVA=0')
+		cmdline.append('-DREQUIRE_SIMD=1')
+		cmdline.append('-DWITH_SIMD=1')
 	elif 'CROSSCOMPILE_HOST' in env:
 		cmdline.append('-DCMAKE_SYSTEM_NAME="{}"'.format(env['CROSSCOMPILE_HOST']))
-	
-	cmdline.append('-DCMAKE_SYSTEM_PROCESSOR=AMD64')
+		cmdline.append('-DCMAKE_SYSTEM_PROCESSOR=AMD64')
 	
 	#cmdline.append('-DWITH_SIMD=0')
 	if env['OSBeOS']:

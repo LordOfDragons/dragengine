@@ -127,7 +127,7 @@ void deVROpenXR::InputEventSetTimestamp( deInputEvent &event ) const{
 	#ifdef OS_W32
 	event.SetTime( { ( long )decDateTime().ToSystemTime(), 0 } );
 	#else
-	event.SetTime( { decDateTime().ToSystemTime(), 0 } );
+	event.SetTime( { ( time_t )decDateTime().ToSystemTime(), 0 } );
 	#endif
 }
 
