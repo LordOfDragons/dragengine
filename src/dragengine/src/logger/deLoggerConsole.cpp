@@ -34,7 +34,7 @@
 #include "../common/utils/decDateTime.h"
 #include "../threading/deMutexGuard.h"
 
-#ifdef ANDROID
+#ifdef OS_ANDROID
 #include <android/log.h>
 #define printf(...) __android_log_print(ANDROID_LOG_VERBOSE, "Dragengine", __VA_ARGS__);
 #endif

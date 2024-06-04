@@ -34,7 +34,7 @@ class deoglShaderSourceLocation;
 
 class deoglShaderDefines;
 class deoglShaderProgram;
-#ifdef ANDROID
+#ifdef OS_ANDROID
 class deoglShaderBindingList;
 #endif
 

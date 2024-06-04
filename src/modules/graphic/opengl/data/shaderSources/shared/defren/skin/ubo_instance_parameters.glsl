@@ -84,7 +84,7 @@ struct sInstanceParameters{
 // it boils down to anything but constants working reliably). SSBOs on the other hand
 // can be of any size
 #ifdef SHARED_SPB_USE_SSBO
-	#ifdef ANDROID
+	#ifdef OS_ANDROID
 		UBOLAYOUT_BIND(0) readonly buffer InstanceParametersSSBO
 	#else
 		UBOLAYOUT readonly buffer InstanceParametersSSBO

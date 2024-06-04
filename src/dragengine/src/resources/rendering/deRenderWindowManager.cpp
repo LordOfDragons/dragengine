@@ -79,7 +79,7 @@ deRenderWindow *deRenderWindowManager::CreateRenderWindow(){
 	return renderWindow;
 }
 
-#ifdef ANDROID
+#ifdef OS_ANDROID
 deRenderWindow *deRenderWindowManager::CreateRenderWindowInside( void *window )
 #endif
 #ifdef OS_BEOS
@@ -91,7 +91,7 @@ deRenderWindow *deRenderWindowManager::CreateRenderWindowInside( Window window )
 #ifdef OS_W32
 deRenderWindow *deRenderWindowManager::CreateRenderWindowInside( HWND window )
 #endif
-#if ( defined OS_UNIX && defined HAS_LIB_X11 ) || defined OS_BEOS || defined OS_W32 || defined ANDROID
+#if ( defined OS_UNIX && defined HAS_LIB_X11 ) || defined OS_BEOS || defined OS_W32 || defined OS_ANDROID
 {
 	deRenderWindow *renderWindow = NULL;
 	

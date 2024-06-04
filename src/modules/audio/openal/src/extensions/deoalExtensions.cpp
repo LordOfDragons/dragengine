@@ -33,7 +33,7 @@
 #include "../audiothread/deoalATContext.h"
 
 /*
-#ifdef ANDROID
+#ifdef OS_ANDROID
 extern __eglMustCastToProperFunctionPointerType androidGetProcAddress( const char *name );
 #endif
 */

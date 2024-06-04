@@ -25,7 +25,7 @@
 #ifndef _DECUNICODESTRING_H_
 #define _DECUNICODESTRING_H_
 
-#ifdef ANDROID
+#ifdef OS_ANDROID
 #include <stdarg.h>
 #endif
 

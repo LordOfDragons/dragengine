@@ -93,7 +93,7 @@ void deoglCapCheckClearEntireArrayTexture::Check( GLuint fbo ){
 	
 	deoglRenderThread &renderThread = pCapabilities.GetRenderThread();
 	
-	#ifdef ANDROID
+	#ifdef OS_ANDROID
 		pWorking = false;
 		renderThread.GetLogger().LogWarn(
 			"Capabilities: Clear entire array texture: Working (Android)" );

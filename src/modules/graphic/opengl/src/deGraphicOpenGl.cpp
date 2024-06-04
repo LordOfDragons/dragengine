@@ -297,7 +297,7 @@ void deGraphicOpenGl::CleanUp(){
 void deGraphicOpenGl::InputOverlayCanvasChanged(){
 }
 
-#ifdef ANDROID
+#ifdef OS_ANDROID
 /** Application window has been created. */
 void deGraphicOpenGl::InitAppWindow(){
 	if( pConfiguration.GetDoLogInfo() ){
@@ -667,7 +667,7 @@ void deGraphicOpenGl::pLoadConfig(){
 	deoglLSConfiguration loadConfig( *this );
 	loadConfig.LoadConfig( pConfiguration );
 	
-	#ifdef ANDROID
+	#ifdef OS_ANDROID
 	pConfiguration.SetLogLevel( deoglConfiguration::ellDebug );
 	#endif
 }

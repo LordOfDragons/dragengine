@@ -55,7 +55,7 @@ public:
 	/** \brief Set render window. */
 	virtual void SetRenderWindow( deRenderWindow *renderWindow );
 	
-	#ifdef ANDROID
+	#ifdef OS_ANDROID
 	/** \brief Application window has been created. */
 	virtual void InitAppWindow();
 	

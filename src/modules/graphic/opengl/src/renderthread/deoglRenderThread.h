@@ -96,7 +96,7 @@ private:
 		etsFinishedRendering,
 		etsCleaningUp,
 		etsFrozen,
-		#ifdef ANDROID
+		#ifdef OS_ANDROID
 		etsWindowTerminate,
 		etsWindowDown,
 		etsWindowInit
@@ -411,7 +411,7 @@ public:
 	/** Clean up. */
 	void CleanUp();
 	
-	#ifdef ANDROID
+	#ifdef OS_ANDROID
 	/** Application window has been created. */
 	void InitAppWindow();
 	

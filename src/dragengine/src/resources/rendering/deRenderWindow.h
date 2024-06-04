@@ -86,7 +86,7 @@ public:
 	
 	
 private:
-#ifdef ANDROID
+#ifdef OS_ANDROID
 	void *pHostWindow;
 	void *pWindow;
 #endif
@@ -142,7 +142,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Hosting render window or NULL if not set. */
-	#ifdef ANDROID
+	#ifdef OS_ANDROID
 	inline void *GetHostWindow() const{ return pHostWindow; }
 	#endif
 	#ifdef OS_W32
@@ -164,7 +164,7 @@ public:
 	 * This has to be set before creating the graphic module peer.
 	 * For this reason for use only by deRenderWindowManager.
 	 */
-	#ifdef ANDROID
+	#ifdef OS_ANDROID
 	void SetHostWindow( void *window );
 	#endif
 	#ifdef OS_W32
@@ -181,7 +181,7 @@ public:
 	#endif
 	
 	/** \brief Render window. */
-	#ifdef ANDROID
+	#ifdef OS_ANDROID
 	inline void *GetWindow() const{ return pWindow; }
 	#endif
 	#ifdef OS_W32
@@ -202,7 +202,7 @@ public:
 	 * 
 	 * For use by Graphic Module only.
 	 */
-	#ifdef ANDROID
+	#ifdef OS_ANDROID
 	void SetWindow( void *window );
 	#endif
 	#ifdef OS_W32

@@ -128,7 +128,7 @@ public:
 	/** \brief Input system overlay canvas view changed. */
 	virtual void InputOverlayCanvasChanged() = 0;
 	
-	#ifdef ANDROID
+	#ifdef OS_ANDROID
 	/** \brief Application window has been created. */
 	virtual void InitAppWindow() = 0;
 	

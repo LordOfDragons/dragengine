@@ -51,7 +51,7 @@
 // free to be added by our own glext header. already defined ones are not required to
 // be redefined which is the correct behavior we are looking for.
 
-#ifdef ANDROID
+#ifdef OS_ANDROID
 	#undef __glext_h_
 	#undef __gl2ext_h_
 	#undef __gl3ext_h_

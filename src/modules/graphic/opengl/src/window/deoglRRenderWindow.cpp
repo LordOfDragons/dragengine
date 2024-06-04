@@ -39,13 +39,13 @@
 #include "../renderthread/deoglRTLogger.h"
 #include "../renderthread/deoglRTRenderers.h"
 
-#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! OS_MACOS
+#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! OS_MACOS
 #include <dragengine/app/deOSUnix.h>
 #include <X11/Xatom.h>
 #include "../extensions/deoglXExtResult.h"
 #endif
 
-#ifdef ANDROID
+#ifdef OS_ANDROID
 #include <dragengine/app/deOSAndroid.h>
 #endif
 
@@ -80,7 +80,7 @@
 
 //#define REUSE_WINDOW 1
 
-#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 #define WSA_MASK             ( CWColormap | CWEventMask | CWDontPropagate | CWCursor \
                              | CWOverrideRedirect | CWSaveUnder | CWWinGravity \
                              | CWBitGravity | CWBorderPixel | CWBackingStore )
@@ -202,7 +202,7 @@ void deoglRRenderWindow::cGLWindow::SetBlockQuitRequested( bool blockQuitRequest
 deoglRRenderWindow::deoglRRenderWindow( deoglRenderThread &renderThread ) :
 pRenderThread( renderThread ),
 
-#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 pHostWindow( 0 ),
 pWindow( 0 ),
 pNullCursor( 0 ),
@@ -253,13 +253,13 @@ deoglRRenderWindow::~deoglRRenderWindow(){
 // Management
 ///////////////
 
-#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 void deoglRRenderWindow::SetHostWindow( Window window ){
 	pHostWindow = window;
 };
 #endif
 
-#ifdef ANDROID
+#ifdef OS_ANDROID
 void deoglRRenderWindow::SetHostWindow( void *window ){
 };
 #endif
@@ -382,7 +382,7 @@ void deoglRRenderWindow::CreateWindow(){
 	// NOTE It might be possible to hold an own display connection in the main thread. It should
 	//      not be required since CreateWindow runs only while the render thread is waiting
 	
-#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 	// if the window exists we do nothing
 	if( pWindow > 255 ){
 		return;
@@ -573,7 +573,7 @@ void deoglRRenderWindow::SwapBuffers(){
 	
 	const deoglDebugTraceGroup debugTrace( pRenderThread, "Window.SwapBuffers" );
 	
-#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 	pUpdateVSync();
 	
 	// [XERR] BadMatch (invalid parameter attributes): request_code(155) minor_code(11)
@@ -604,7 +604,7 @@ void deoglRRenderWindow::SwapBuffers(){
 		//XSync( pRenderThread.GetContext().GetDisplay(), False );
 #endif
 	
-#ifdef ANDROID
+#ifdef OS_ANDROID
 	if( eglSwapBuffers( pRenderThread.GetContext().GetDisplay(), pRenderThread.GetContext().GetSurface() ) == EGL_FALSE ){
 		// log failure but do not thow exception
 	}
@@ -729,7 +729,7 @@ void deoglRRenderWindow::Capture(){
 }
 
 void deoglRRenderWindow::CenterOnScreen(){
-	#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+	#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 	if( pWindow < 255 ){
 		return;
 	}
@@ -775,7 +775,7 @@ void deoglRRenderWindow::OnResize( int width, int height ){
 	pWidth = width;
 	pHeight = height;
 	
-	#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+	#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 	#endif
 	
 	#ifdef OS_BEOS
@@ -820,7 +820,7 @@ void deoglRRenderWindow::pDestroyWindow(){
 	}
 	
 	// Linux
-	#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+	#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 	if( pWindow > 255 ){
 		if( pRenderThread.HasContext() ){
 			Display * const display = pRenderThread.GetContext().GetDisplay();
@@ -878,7 +878,7 @@ void deoglRRenderWindow::pDestroyWindow(){
 }
 
 void deoglRRenderWindow::pResizeWindow(){
-#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 	if( pWindow > 255 ){
 		Display * const display = pRenderThread.GetContext().GetDisplay();
 		
@@ -923,7 +923,7 @@ void deoglRRenderWindow::pResizeWindow(){
 }
 
 void deoglRRenderWindow::pSetWindowTitle(){
-#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 	if( pWindow > 255 ){
 		Display * const display = pRenderThread.GetContext().GetDisplay();
 		XTextProperty textProp;
@@ -965,7 +965,7 @@ void deoglRRenderWindow::pUpdateFullScreen(){
 	}else{
 	}
 	
-#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 	if( pWindow > 255 ){
 		Display * const display = pRenderThread.GetContext().GetDisplay();
 		const XVisualInfo &visInfo = *pRenderThread.GetContext().GetVisualInfo();
@@ -1061,7 +1061,7 @@ void deoglRRenderWindow::pUpdateFullScreen(){
 }
 
 void deoglRRenderWindow::pSetIcon(){
-#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 	if( pWindow <= 255 ){
 		return;
 	}
@@ -1332,7 +1332,7 @@ void deoglRRenderWindow::pSetIcon(){
 }
 
 
-#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 void deoglRRenderWindow::pCreateNullCursor(){
 	if( pNullCursor ){
 		return;
@@ -1379,7 +1379,7 @@ void deoglRRenderWindow::pUpdateVSync(){
 	deoglRTLogger &logger = pRenderThread.GetLogger();
 	#endif
 	
-#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 	if( ext.GetHasExtension( deoglExtensions::ext_GLX_EXT_swap_control ) ){
 		switch( pVSyncMode ){
 		case deoglConfiguration::evsmAdaptive:

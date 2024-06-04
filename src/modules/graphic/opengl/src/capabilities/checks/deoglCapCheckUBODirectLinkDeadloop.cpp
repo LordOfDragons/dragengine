@@ -100,7 +100,7 @@ void deoglCapCheckUBODirectLinkDeadloop::Check( GLuint fbo ){
 	
 	deoglRTLogger &logger = pCapabilities.GetRenderThread().GetLogger();
 	
-	#ifdef ANDROID
+	#ifdef OS_ANDROID
 		pWorking = false;
 		logger.LogWarn( "Capabilities: UBO Direct Link Deadloop: Driver Bug (Android)!" );
 		

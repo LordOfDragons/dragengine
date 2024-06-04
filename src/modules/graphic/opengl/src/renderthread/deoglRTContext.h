@@ -27,13 +27,13 @@
 
 #include "../deoglBasics.h"
 
-#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 #include <GL/glx.h>
 #include "../extensions/glxext.h"
 class deOSUnix;
 #endif
 
-#ifdef ANDROID
+#ifdef OS_ANDROID
 class deOSAndroid;
 #endif
 
@@ -63,11 +63,11 @@ class deOSWindows;
 #endif
 
 // HACK HACK HACK
-#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 #include <dragengine/app/deOSUnix.h>
 #endif
 
-#ifdef ANDROID
+#ifdef OS_ANDROID
 #include <dragengine/app/deOSAndroid.h>
 #endif
 
@@ -100,7 +100,7 @@ private:
 	
 	
 	
-#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 	deOSUnix *pOSUnix;
 	
 	Display *pDisplay;
@@ -117,7 +117,7 @@ private:
 	Atom pAtomDeleteWindow;
 #endif
 	
-#ifdef ANDROID
+#ifdef OS_ANDROID
 	deOSAndroid *pOSAndroid;
 	
 	EGLDisplay pDisplay;
@@ -206,7 +206,7 @@ public:
 	
 	
 
-#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 	/** OS Unix. */
 	inline deOSUnix *GetOSUnix(){ return pOSUnix; }
 	
@@ -237,7 +237,7 @@ public:
 	void ProcessEventLoop();
 #endif
 
-#ifdef ANDROID
+#ifdef OS_ANDROID
 	/** OS Android. */
 	inline deOSAndroid *GetOSAndroid(){ return pOSAndroid; }
 	
@@ -320,7 +320,7 @@ public:
 	
 	
 private:
-	#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+	#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 	void pOpenDisplay();
 	void pChooseVisual();
 	void pPrintVisualInfo();
@@ -333,7 +333,7 @@ private:
 	void pCloseDisplay();
 	#endif
 	
-	#ifdef ANDROID
+	#ifdef OS_ANDROID
 	void pInitDisplay();
 	void pCloseDisplay();
 	#endif

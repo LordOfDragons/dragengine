@@ -146,7 +146,7 @@ public:
 		const char *title, deImage *icon );
 	
 	/** \brief Creates and sets a new hosted render window. */
-	#ifdef ANDROID
+	#ifdef OS_ANDROID
 	void CreateAndSetHostedRenderWindow( int width, int height, bool fullScreen,
 		const char *title, deImage *icon, void *hostWindow );
 	#endif
@@ -181,7 +181,7 @@ public:
 	 */
 	inline deCanvasView *GetDebugOverlayCanvas() const{ return pDebugOverlayCanvas; }
 	
-	#ifdef ANDROID
+	#ifdef OS_ANDROID
 	/** \brief Application window has been created. */
 	void InitAppWindow();
 	

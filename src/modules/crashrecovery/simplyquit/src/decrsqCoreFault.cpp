@@ -36,7 +36,7 @@
 #endif
 
 #ifdef OS_UNIX
-#ifndef ANDROID
+#ifndef OS_ANDROID
 #ifndef OS_BEOS
 #include <execinfo.h>
 #include <unistd.h>
@@ -44,7 +44,7 @@
 #endif
 #endif
 
-#ifdef ANDROID
+#ifdef OS_ANDROID
 #include <android/log.h>
 #include <unwind.h>
 #include <dlfcn.h>
@@ -181,7 +181,7 @@ static LONG WINAPI unhandledException( _EXCEPTION_POINTERS *ei){
 // this many first entries are related to exception handling. skip them
 #define SKIP_SELF_TRACE_COUNT	3
 
-#ifdef ANDROID
+#ifdef OS_ANDROID
 struct sBacktraceState{
 	void **current;
 	void **end;
@@ -242,7 +242,7 @@ static void signalSegV( int number, siginfo_t *infos, void *ptrContext ){
 		module->LogError( "Backtrace:" );
 	}
 	
-#if ! defined ANDROID && ! defined OS_BEOS
+#if ! defined OS_ANDROID && ! defined OS_BEOS
 	void *btentries[ 50 ]; // should be enough as usually only the last few are important
 	size_t btentryCount;
 	
@@ -264,7 +264,7 @@ static void signalSegV( int number, siginfo_t *infos, void *ptrContext ){
 	}
 #endif
 	
-#ifdef ANDROID
+#ifdef OS_ANDROID
 	// NOTE unwindCallback can segfault for strange reasons. The void* pointers are not
 	//      const on purpose. Using them const can result in segfault due to compiler
 	//      trying to optimize the wrong way
@@ -371,7 +371,7 @@ static void signalAbort( int number, siginfo_t *infos, void *ptrContext ){
 		module->LogError( "Backtrace:" );
 	}
 	
-#if ! defined ANDROID && ! defined OS_BEOS
+#if ! defined OS_ANDROID && ! defined OS_BEOS
 	void *btentries[ 50 ]; // should be enough as usually only the last few are important
 	size_t btentryCount;
 	
@@ -393,7 +393,7 @@ static void signalAbort( int number, siginfo_t *infos, void *ptrContext ){
 	}
 #endif
 	
-#ifdef ANDROID
+#ifdef OS_ANDROID
 	// NOTE unwindCallback can segfault for strange reasons. The void* pointers are not
 	//      const on purpose. Using them const can result in segfault due to compiler
 	//      trying to optimize the wrong way
@@ -480,7 +480,7 @@ static void signalBusError( int number, siginfo_t *infos, void *ptrContext ){
 		module->LogError( "Backtrace:" );
 	}
 	
-#if ! defined ANDROID && ! defined OS_BEOS
+#if ! defined OS_ANDROID && ! defined OS_BEOS
 	void *btentries[ 50 ]; // should be enough as usually only the last few are important
 	size_t btentryCount;
 	
@@ -502,7 +502,7 @@ static void signalBusError( int number, siginfo_t *infos, void *ptrContext ){
 	}
 #endif
 	
-#ifdef ANDROID
+#ifdef OS_ANDROID
 	// NOTE unwindCallback can segfault for strange reasons. The void* pointers are not
 	//      const on purpose. Using them const can result in segfault due to compiler
 	//      trying to optimize the wrong way

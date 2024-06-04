@@ -27,7 +27,7 @@
 
 #include <dragengine/dragengine_configuration.h>
 
-#ifdef ANDROID
+#ifdef OS_ANDROID
 	#undef __glext_h_
 	#define __glext_h_ 1
 	

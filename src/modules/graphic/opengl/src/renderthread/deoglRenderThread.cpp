@@ -82,7 +82,7 @@
 #include <dragengine/systems/deScriptingSystem.h>
 #include <dragengine/threading/deMutexGuard.h>
 
-#ifdef ANDROID
+#ifdef OS_ANDROID
 #include <dragengine/systems/deInputSystem.h>
 #include <dragengine/systems/deGraphicSystem.h>
 #endif
@@ -420,7 +420,7 @@ void deoglRenderThread::CleanUp(){
 	}
 }
 
-#ifdef ANDROID
+#ifdef OS_ANDROID
 void deoglRenderThread::InitAppWindow(){
 	if( pAsyncRendering ){
 		if( pThreadState != etsWindowDown ){
@@ -619,7 +619,7 @@ void deoglRenderThread::Run(){
 				1.0f / decMath::max( pLastFrameTime, 0.001f ) );
 			*/
 			
-		#ifdef ANDROID
+		#ifdef OS_ANDROID
 		}else if( pThreadState == etsWindowTerminate ){
 			try{
 				pContext->TerminateAppWindow();
@@ -670,7 +670,7 @@ void deoglRenderThread::FinalizeAsyncResLoading(){
 void deoglRenderThread::Synchronize(){
 	pLogger->Synchronize(); // send asynchronous logs to game logger
 	
-	#ifdef ANDROID
+	#ifdef OS_ANDROID
 	if( pContext->GetScreenResized() ){
 		pContext->ClearScreenResized();
 		
@@ -1516,7 +1516,7 @@ void deoglRenderThread::pInitCapabilities(){
 	pCapabilities = new deoglCapabilities( *this );
 	pCapabilities->DetectCapabilities();
 	
-	#ifdef ANDROID
+	#ifdef OS_ANDROID
 	pLogger->LogInfo( "Hardware information:" );
 	
 	int i, j;
@@ -2205,7 +2205,7 @@ void deoglRenderThread::pSwapBuffers(){
 
 void deoglRenderThread::pBeginFrame(){
 	const deoglDebugTraceGroup debugTrace( *this, "BeginFrame" );
-	#ifdef ANDROID
+	#ifdef OS_ANDROID
 	pContext->CheckConfigurationChanged();
 	#endif
 	
@@ -2222,7 +2222,7 @@ void deoglRenderThread::pBeginFrame(){
 	pBufferObject->GetSharedVBOListList().PrepareAllLists();
 	pEnvMapSlotManager->IncreaseSlotLastUsedCounters();
 	
-	#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+	#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 	pContext->ProcessEventLoop();
 	#endif
 	

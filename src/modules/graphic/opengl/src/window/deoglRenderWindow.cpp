@@ -212,11 +212,11 @@ void deoglRenderWindow::pCleanUp(){
 		pRRenderWindow->FreeReference();
 	}
 	
-	#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+	#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 	pRenderWindow.SetWindow( 0 );
 	#endif
 	
-	#ifdef ANDROID
+	#ifdef OS_ANDROID
 	pRenderWindow.SetWindow( NULL );
 	#endif
 	
