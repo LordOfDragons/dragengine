@@ -6,7 +6,7 @@ envEditor = parent_env.Clone()
 
 buildEditor = 'deigde_shared' in parent_targets and parent_env['build_editor_speechanimation'] != TernaryVariableNo
 parent_report[ 'build IGDE Speech Animation Editor' ] = 'yes' if buildEditor else 'no'
-if not buildEditor or 'deigde_shared' not in parent_env:
+if not buildEditor:
 	Return()
 
 # fetch values in expanded form for later use
