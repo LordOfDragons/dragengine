@@ -163,10 +163,10 @@ pRenderDocMode( false )
 	// would affect also 2D graphics. the default should only cut down on the heavy
 	// processing of 3D graphics while keeping 2D graphics crisp if possible
 	pShadowQuality = esqVeryLow;
-	pShadowMapSize = 256; //1024
-	pShadowCubeSize = 256; //1024
 	pOcclusionReduction = 2; //1
 	pRenderDownScale = 2; //1
+	
+	pGIQuality = egiqOff;
 	
 	// disable advanced render effects requiring a strong GPU with good fill-rate.
 	// the user can enable these options if he really wants them at his own risk.
@@ -206,7 +206,7 @@ pRenderDocMode( false )
 	
 	// renderdoc
 	#if defined WITH_DEBUG && defined OS_UNIX
-	#ifdef OS_BEOS
+	#if defined OS_BEOS or defined OS_ANDROID
 	const char * const envRenderDocDebug = getenv( "DE_OGL_RENDERDOC_DEBUG" );
 	#else
 	const char * const envRenderDocDebug = secure_getenv( "DE_OGL_RENDERDOC_DEBUG" );
@@ -218,7 +218,7 @@ pRenderDocMode( false )
 	#endif
 	
 	#ifdef OS_UNIX
-	#ifdef OS_BEOS
+	#if defined OS_BEOS or defined OS_ANDROID
 	const char * const envRenderDocMode = getenv( "DE_OGL_RENDERDOC_MODE" );
 	#else
 	const char * const envRenderDocMode = secure_getenv( "DE_OGL_RENDERDOC_MODE" );

@@ -126,7 +126,10 @@ public:
 	/** Unload. */
 	void Unload();
 	
-#ifdef OS_UNIX
+#ifdef OS_ANDROID
+	// nothing
+	
+#elif defined OS_UNIX
 	/** Get current drawable. */
 	GLXDrawable GetCurrentDrawable();
 	

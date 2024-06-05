@@ -54,7 +54,9 @@ typedef int GLint;
 #define GL_COLOR_ATTACHMENT0 0x8CE0
 #define GL_TEXTURE_2D 0x0DE1
 
-#ifdef OS_UNIX
+#ifdef OS_ANDROID
+	// nothing
+#elif defined OS_UNIX
 	typedef GLXDrawable ( *PFNGLXGETCURRENTDRAWABLE )();
 	typedef Bool ( *PFNGLXMAKECURRENT )( Display *dpy, GLXDrawable drawable, GLXContext ctx );
 #elif defined OS_W32
@@ -166,7 +168,10 @@ void deoxrGraphicApiOpenGL::Unload(){
 #endif
 }
 
-#ifdef OS_UNIX
+#ifdef OS_ANDROID
+	// nothing
+
+#elif defined OS_UNIX
 GLXDrawable deoxrGraphicApiOpenGL::GetCurrentDrawable(){
 	if( ! pFuncGetCurrentDrawable ){
 		DETHROW( deeInvalidParam );

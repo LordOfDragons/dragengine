@@ -112,7 +112,11 @@ private:
 	
 	// graphic api connection
 	bool pIsGACOpenGL;
-#ifdef OS_UNIX
+#ifdef OS_ANDROID
+	EGLDisplay pGACOpenGLDisplay;
+	EGLConfig pGACOpenGLConfig;
+	EGLContext pGACOpenGLContext;
+#elif defined OS_UNIX
 	Display *pGACOpenGLDisplay;
 	GLXDrawable pGACOpenGLDrawable;
 	GLXContext pGACOpenGLContext;

@@ -328,8 +328,9 @@ void deoglTexture::GetPixelsLevel( int level, deoglPixelBuffer &pixelBuffer ) co
 	case deoglPixelBuffer::epfByte1:
 	case deoglPixelBuffer::epfByte2:
 	case deoglPixelBuffer::epfByte3:{
-		deoglPixelBuffer tempPixBuf( deoglPixelBuffer::epfByte4, width, height, 1 );
-		const deoglPixelBuffer::sByte4 *dataSrc = tempPixBuf.GetPointerByte4();
+		const deoglPixelBuffer::Ref tempPixBuf( deoglPixelBuffer::Ref::New(
+			new deoglPixelBuffer( deoglPixelBuffer::epfByte4, width, height, 1 ) ) );
+		const deoglPixelBuffer::sByte4 *dataSrc = tempPixBuf->GetPointerByte4();
 		const int count = width * height;
 		int i;
 		
@@ -368,8 +369,9 @@ void deoglTexture::GetPixelsLevel( int level, deoglPixelBuffer &pixelBuffer ) co
 	case deoglPixelBuffer::epfFloat1:
 	case deoglPixelBuffer::epfFloat2:
 	case deoglPixelBuffer::epfFloat3:{
-		deoglPixelBuffer tempPixBuf( deoglPixelBuffer::epfFloat4, width, height, 1 );
-		const deoglPixelBuffer::sFloat4 *dataSrc = tempPixBuf.GetPointerFloat4();
+		const deoglPixelBuffer::Ref tempPixBuf( deoglPixelBuffer::Ref::New(
+			new deoglPixelBuffer( deoglPixelBuffer::epfFloat4, width, height, 1 ) ) );
+		const deoglPixelBuffer::sFloat4 *dataSrc = tempPixBuf->GetPointerFloat4();
 		const int count = width * height;
 		int i;
 		

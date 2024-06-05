@@ -912,8 +912,8 @@ void deoglExtensions::pFetchRequiredFunctions(){
 	if( ! pSupportsComputeShader ){
 		DETHROW_INFO( deeInvalidParam, "Computer Shader support missing" );
 	}
-	pglDispatchCompute = eglDispatchCompute;
-	pglDispatchComputeIndirect = eglDispatchComputeIndirect;
+	pglDispatchCompute = glDispatchCompute;
+	pglDispatchComputeIndirect = glDispatchComputeIndirect;
 	#else
 	pGetRequiredFunction( (void**)&pglDispatchCompute, "glDispatchCompute" );
 	pGetRequiredFunction( (void**)&pglDispatchComputeIndirect, "glDispatchComputeIndirect" );
@@ -1041,8 +1041,8 @@ void deoglExtensions::pFetchOptionalFunctions(){
 	pHasExtension[ ext_ARB_program_interface_query ] &= ! pDisableExtension[ ext_ARB_program_interface_query ];
 	if( pHasExtension[ ext_ARB_program_interface_query ] ){
 		#ifdef OS_ANDROID
-		pglGetProgramInterfaceiv = eglGetProgramInterfaceiv;
-		pglGetProgramResourceIndex = eglGetProgramResourceIndex;
+		pglGetProgramInterfaceiv = glGetProgramInterfaceiv;
+		pglGetProgramResourceIndex = glGetProgramResourceIndex;
 		#else
 		pGetOptionalFunction( (void**)&pglGetProgramInterfaceiv,
 			"glGetProgramInterfaceiv", ext_ARB_program_interface_query );

@@ -297,7 +297,8 @@ void deoglArrayTexture::GetPixelsLevel( int level, deoglPixelBuffer &pixelBuffer
 	case deoglPixelBuffer::epfByte1:
 	case deoglPixelBuffer::epfByte2:
 	case deoglPixelBuffer::epfByte3:{
-		deoglPixelBuffer tempPixBuf( deoglPixelBuffer::epfByte4, width, height, pSize.z );
+		const deoglPixelBuffer::Ref tempPixBuf( deoglPixelBuffer::Ref::New(
+			new deoglPixelBuffer( deoglPixelBuffer::epfByte4, width, height, pSize.z ) ) );
 		const int count = width * height;
 		int i, j;
 		
@@ -307,7 +308,7 @@ void deoglArrayTexture::GetPixelsLevel( int level, deoglPixelBuffer &pixelBuffer
 		case deoglPixelBuffer::epfByte1:{
 			for( j=0; j<pSize.z; j++ ){
 				deoglPixelBuffer::sByte1 *dataDest = pixelBuffer.GetPointerByte1() + count;
-				const deoglPixelBuffer::sByte4 *dataSrc = tempPixBuf.GetPointerByte4() + count;
+				const deoglPixelBuffer::sByte4 *dataSrc = tempPixBuf->GetPointerByte4() + count;
 				for( i=0; i<count; i++ ){
 					dataDest[ i ].r = dataSrc[ i ].r;
 				}
@@ -317,7 +318,7 @@ void deoglArrayTexture::GetPixelsLevel( int level, deoglPixelBuffer &pixelBuffer
 		case deoglPixelBuffer::epfByte2:{
 			for( j=0; j<pSize.z; j++ ){
 				deoglPixelBuffer::sByte2 *dataDest = pixelBuffer.GetPointerByte2() + count;
-				const deoglPixelBuffer::sByte4 *dataSrc = tempPixBuf.GetPointerByte4() + count;
+				const deoglPixelBuffer::sByte4 *dataSrc = tempPixBuf->GetPointerByte4() + count;
 				for( i=0; i<count; i++ ){
 					dataDest[ i ].r = dataSrc[ i ].r;
 					dataDest[ i ].g = dataSrc[ i ].g;
@@ -328,7 +329,7 @@ void deoglArrayTexture::GetPixelsLevel( int level, deoglPixelBuffer &pixelBuffer
 		case deoglPixelBuffer::epfByte3:{
 			for( j=0; j<pSize.z; j++ ){
 				deoglPixelBuffer::sByte3 *dataDest = pixelBuffer.GetPointerByte3() + count;
-				const deoglPixelBuffer::sByte4 *dataSrc = tempPixBuf.GetPointerByte4() + count;
+				const deoglPixelBuffer::sByte4 *dataSrc = tempPixBuf->GetPointerByte4() + count;
 				for( i=0; i<count; i++ ){
 					dataDest[ i ].r = dataSrc[ i ].r;
 					dataDest[ i ].g = dataSrc[ i ].g;
@@ -345,7 +346,8 @@ void deoglArrayTexture::GetPixelsLevel( int level, deoglPixelBuffer &pixelBuffer
 	case deoglPixelBuffer::epfFloat1:
 	case deoglPixelBuffer::epfFloat2:
 	case deoglPixelBuffer::epfFloat3:{
-		deoglPixelBuffer tempPixBuf( deoglPixelBuffer::epfFloat4, width, height, pSize.z );
+		const deoglPixelBuffer::Ref tempPixBuf( deoglPixelBuffer::Ref::New(
+			new deoglPixelBuffer( deoglPixelBuffer::epfFloat4, width, height, pSize.z ) ) );
 		const int count = width * height;
 		int i, j;
 		
@@ -355,7 +357,7 @@ void deoglArrayTexture::GetPixelsLevel( int level, deoglPixelBuffer &pixelBuffer
 		case deoglPixelBuffer::epfFloat1:{
 			for( j=0; j<pSize.z; j++ ){
 				deoglPixelBuffer::sFloat1 *dataDest = pixelBuffer.GetPointerFloat1() + count;
-				const deoglPixelBuffer::sFloat4 *dataSrc = tempPixBuf.GetPointerFloat4() + count;
+				const deoglPixelBuffer::sFloat4 *dataSrc = tempPixBuf->GetPointerFloat4() + count;
 				for( i=0; i<count; i++ ){
 					dataDest[ i ].r = dataSrc[ i ].r;
 				}
@@ -365,7 +367,7 @@ void deoglArrayTexture::GetPixelsLevel( int level, deoglPixelBuffer &pixelBuffer
 		case deoglPixelBuffer::epfFloat2:{
 			for( j=0; j<pSize.z; j++ ){
 				deoglPixelBuffer::sFloat2 *dataDest = pixelBuffer.GetPointerFloat2() + count;
-				const deoglPixelBuffer::sFloat4 *dataSrc = tempPixBuf.GetPointerFloat4() + count;
+				const deoglPixelBuffer::sFloat4 *dataSrc = tempPixBuf->GetPointerFloat4() + count;
 				for( i=0; i<count; i++ ){
 					dataDest[ i ].r = dataSrc[ i ].r;
 					dataDest[ i ].g = dataSrc[ i ].g;
@@ -376,7 +378,7 @@ void deoglArrayTexture::GetPixelsLevel( int level, deoglPixelBuffer &pixelBuffer
 		case deoglPixelBuffer::epfFloat3:{
 			for( j=0; j<pSize.z; j++ ){
 				deoglPixelBuffer::sFloat3 *dataDest = pixelBuffer.GetPointerFloat3() + count;
-				const deoglPixelBuffer::sFloat4 *dataSrc = tempPixBuf.GetPointerFloat4() + count;
+				const deoglPixelBuffer::sFloat4 *dataSrc = tempPixBuf->GetPointerFloat4() + count;
 				for( i=0; i<count; i++ ){
 					dataDest[ i ].r = dataSrc[ i ].r;
 					dataDest[ i ].g = dataSrc[ i ].g;

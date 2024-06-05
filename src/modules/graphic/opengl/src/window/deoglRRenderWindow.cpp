@@ -1374,12 +1374,10 @@ void deoglRRenderWindow::pUpdateVSync(){
 	
 	pInitSwapInterval = false;
 	
-	#ifndef OS_BEOS
+#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 	const deoglExtensions &ext = pRenderThread.GetExtensions();
 	deoglRTLogger &logger = pRenderThread.GetLogger();
-	#endif
 	
-#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 	if( ext.GetHasExtension( deoglExtensions::ext_GLX_EXT_swap_control ) ){
 		switch( pVSyncMode ){
 		case deoglConfiguration::evsmAdaptive:
@@ -1406,6 +1404,9 @@ void deoglRRenderWindow::pUpdateVSync(){
 #endif
 	
 #ifdef OS_W32
+	const deoglExtensions &ext = pRenderThread.GetExtensions();
+	deoglRTLogger &logger = pRenderThread.GetLogger();
+	
 	if( ext.GetHasExtension( deoglExtensions::ext_WGL_EXT_swap_control ) ){
 		switch( pVSyncMode ){
 		case deoglConfiguration::evsmAdaptive:

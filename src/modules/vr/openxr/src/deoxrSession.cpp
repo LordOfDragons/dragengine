@@ -61,7 +61,11 @@ pFrameRunning( false ),
 pSwapchainFormats( nullptr ),
 pSwapchainFormatCount( 0 ),
 pIsGACOpenGL( false ),
-#ifdef OS_UNIX
+#ifdef OS_ANDROID
+	pGACOpenGLDisplay( nullptr ),
+	pGACOpenGLConfig( nullptr ),
+	pGACOpenGLContext( nullptr )
+#elif defined OS_UNIX
 	pGACOpenGLDisplay( nullptr ),
 	pGACOpenGLDrawable( 0 ),
 	pGACOpenGLContext( nullptr )
@@ -95,6 +99,10 @@ pIsGACOpenGL( false ),
 		
 		#ifdef OS_BEOS
 			#error Unsupported
+		#elif defined OS_ANDROID
+			pGACOpenGLDisplay = ( EGLDisplay )gacon.opengl.display;
+			pGACOpenGLConfig = ( EGLConfig )gacon.opengl.config;
+			pGACOpenGLContext = ( EGLContext )gacon.opengl.context;
 		#elif defined OS_UNIX
 			pGACOpenGLDisplay = ( Display* )gacon.opengl.display;
 			pGACOpenGLDrawable = ( GLXDrawable )gacon.opengl.glxDrawable;
@@ -113,7 +121,9 @@ pIsGACOpenGL( false ),
 		const void *graphicBinding = nullptr;
 		
 		// opengl
-		#ifdef OS_UNIX
+		#ifdef OS_ANDROID
+		XrGraphicsBindingOpenGLESAndroidKHR gbopengl;
+		#elif defined OS_UNIX
 		XrGraphicsBindingOpenGLXlibKHR gbopengl;
 		#elif defined OS_W32
 		XrGraphicsBindingOpenGLWin32KHR gbopengl;
@@ -122,15 +132,40 @@ pIsGACOpenGL( false ),
 		if( instance.SupportsExtension( deoxrInstance::extKHROpenglEnable ) ){
 			oxr.LogInfo( "Create Session: Testing OpenGL Support" );
 			// openxr specification requires this call to be done although the result is not used
-			XrGraphicsRequirementsOpenGLKHR requirements;
-			memset( &requirements, 0, sizeof( requirements ) );
-			requirements.type = XR_TYPE_GRAPHICS_REQUIREMENTS_OPENGL_KHR;
-			
-			instance.xrGetOpenGLGraphicsRequirementsKHR(
-				instance.GetInstance(), system.GetSystemId(), &requirements );
+			#ifdef OS_ANDROID
+				XrGraphicsRequirementsOpenGLESKHR requirements;
+				memset( &requirements, 0, sizeof( requirements ) );
+				requirements.type = XR_TYPE_GRAPHICS_REQUIREMENTS_OPENGL_ES_KHR;
+				
+				instance.xrGetOpenGLESGraphicsRequirementsKHR(
+					instance.GetInstance(), system.GetSystemId(), &requirements );
+			#else
+				XrGraphicsRequirementsOpenGLKHR requirements;
+				memset( &requirements, 0, sizeof( requirements ) );
+				requirements.type = XR_TYPE_GRAPHICS_REQUIREMENTS_OPENGL_KHR;
+				
+				instance.xrGetOpenGLGraphicsRequirementsKHR(
+					instance.GetInstance(), system.GetSystemId(), &requirements );
+			#endif
 			
 			// add opengl connection struct
-			#ifdef OS_UNIX
+			#ifdef OS_ANDROID
+				if( gacon.opengl.display && gacon.opengl.config && gacon.opengl.context ){
+					oxr.GetGraphicApiOpenGL().Load();
+					
+					memset( &gbopengl, 0, sizeof( gbopengl ) );
+					gbopengl.type = XR_TYPE_GRAPHICS_BINDING_OPENGL_ES_ANDROID_KHR;
+					gbopengl.display = pGACOpenGLDisplay;
+					gbopengl.config = pGACOpenGLConfig;
+					gbopengl.context = pGACOpenGLContext;
+					
+					pGraphicApi = egaOpenGL;
+					graphicBinding = &gbopengl;
+					pIsGACOpenGL = true;
+					oxr.LogInfo( "Create Session: Using OpenGL on Android" );
+				}
+				
+			#elif defined OS_UNIX
 				if( gacon.opengl.display && gacon.opengl.display
 				&& gacon.opengl.glxFBConfig && gacon.opengl.glxDrawable ){
 					oxr.GetGraphicApiOpenGL().Load();
@@ -564,10 +599,11 @@ void deoxrSession::UpdateRightEyeHiddenMesh(){
 }
 
 void deoxrSession::RestoreOpenGLCurrent(){
-	#ifdef OS_UNIX
+	#ifdef OS_ANDROID
+		// nothing
+	#elif defined OS_UNIX
 		pSystem.GetInstance().GetOxr().GetGraphicApiOpenGL().MakeCurrent(
 			pGACOpenGLDisplay, pGACOpenGLDrawable, pGACOpenGLContext );
-		
 	#elif defined OS_W32
 		pSystem.GetInstance().GetOxr().GetGraphicApiOpenGL().MakeCurrent(
 			pGACOpenGLHDC, pGACOpenGLContext );

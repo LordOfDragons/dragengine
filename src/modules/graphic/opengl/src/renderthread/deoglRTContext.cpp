@@ -95,6 +95,7 @@ static LRESULT CALLBACK oglW32WndFunc( HWND hwnd, UINT message, WPARAM wParam, L
 }
 #endif
 
+#ifndef OS_ANDROID
 struct sOpenGlVersion{
 	int major;
 	int minor;
@@ -102,6 +103,7 @@ struct sOpenGlVersion{
 static const int vOpenGLVersionCount = 9;
 static const sOpenGlVersion vOpenGLVersions[ vOpenGLVersionCount ] = {
 	{ 4, 6 }, { 4, 5 }, { 4, 4 }, { 4, 3 }, { 4, 2 }, { 4, 1 }, { 4, 0 }, { 3, 3 }, { 3, 2 } };
+#endif
 
 
 

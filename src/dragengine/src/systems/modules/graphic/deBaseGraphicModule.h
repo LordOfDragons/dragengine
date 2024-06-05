@@ -283,6 +283,11 @@ public:
 			#ifdef OS_BEOS
 			void *dummy; //<! avoid empty struct
 			
+			#elif defined OS_ANDROID
+			void *display; //<! Android: EGLDisplay
+			void *config; //<! Android: EGLConfig
+			void *context; //<! Android: EGLContext
+			
 			#elif defined OS_UNIX
 			void *display; //<! X11: Display*
 			uint32_t visualid; //<! X11: uint32_t
