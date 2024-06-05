@@ -46,6 +46,9 @@ void meWorldNotifier::WorldParametersChanged( meWorld* ){
 void meWorldNotifier::SkyChanged( meWorld* ){
 }
 
+void meWorldNotifier::BgObjectChanged( meWorld* ){
+}
+
 void meWorldNotifier::ModeChanged( meWorld* ){
 }
 

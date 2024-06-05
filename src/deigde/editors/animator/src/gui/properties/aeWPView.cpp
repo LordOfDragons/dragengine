@@ -616,7 +616,7 @@ pAnimator( NULL )
 	helper.CheckBox( groupBox, pChkResetState, new cActionResetState( *this ), true );
 	
 	
-	// sky, encironment object, camera
+	// sky, environment object, camera
 	helper.WPSky( content, pWPSky, new cEditSky( *this ), "Sky:", false, true, true );
 	helper.WPWObject( content, pWPEnvObject, new cEditEnvObject( *this ), "Environment Object:", false, true, true );
 	helper.WPCamera( content, pWPCamera, new cEditCamera( *this ), "Camera:", false, true, true );

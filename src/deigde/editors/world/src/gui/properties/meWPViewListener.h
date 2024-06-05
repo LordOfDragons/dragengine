@@ -57,6 +57,9 @@ public:
 	/** \brief Sky changed. */
 	virtual void SkyChanged( meWorld *world );
 	
+	/** Background object changed. */
+	virtual void BgObjectChanged( meWorld *world );
+	
 	/** \brief Editing parameters changed. */
 	virtual void EditingChanged( meWorld *world );
 	

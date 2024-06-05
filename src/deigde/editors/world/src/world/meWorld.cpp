@@ -98,6 +98,7 @@
 meWorld::meWorld( meWindowMain &windowMain, igdeEnvironment *environment ) :
 igdeEditableEntity( environment ),
 pWindowMain( windowMain ),
+pBgObject( nullptr ),
 pNextObjectID( 1 ) // 0 is reserved for invalid or undefined IDs
 {
 	deEngine * const engine = GetEngine();
@@ -161,6 +162,10 @@ pNextObjectID( 1 ) // 0 is reserved for invalid or undefined IDs
 		pSky = new igdeWSky( *environment );
 		pSky->SetGDDefaultSky();
 		pSky->SetWorld( pDEWorld );
+		
+		// background object
+		pBgObject = new igdeWObject( *environment );
+		pBgObject->SetWorld( pDEWorld );
 		
 		// create weather
 		pWeather = new meWeather( this );
@@ -780,6 +785,8 @@ DEBUG_PRINT_TIMER( "Update World" );
 	// detect collisions
 	pDEWorld->ProcessPhysics( elapsed );
 DEBUG_PRINT_TIMER( "Detect Collisions" );
+	
+	pBgObject->Update( elapsed );
 DEBUG_PRINT_TIMER_TOTAL();
 }
 
@@ -905,6 +912,16 @@ void meWorld::NotifySkyChanged(){
 	}
 	
 	SetChanged( true ); // this is correct. sky information is saved as world-editor specific data
+}
+
+void meWorld::NotifyBgObjectChanged(){
+	int i;
+	
+	for( i=0; i<pNotifierCount; i++ ){
+		pNotifiers[ i ]->BgObjectChanged( this );
+	}
+	
+	// SetChanged( true ); // not required until we save this
 }
 
 void meWorld::NotifyModeChanged(){
@@ -1730,6 +1747,9 @@ void meWorld::pCleanUp(){
 		pEngColCollider->FreeReference();
 	}
 	
+	if( pBgObject ){
+		delete pBgObject;
+	}
 	if( pSky ){
 		delete pSky;
 	}

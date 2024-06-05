@@ -75,6 +75,8 @@ public:
 	
 	/** Sky changed. */
 	virtual void SkyChanged( meWorld *world );
+	/** Background object changed. */
+	virtual void BgObjectChanged( meWorld *world );
 	/** Element or workd mode changed. */
 	virtual void ModeChanged( meWorld *world );
 	/** Changed or saved state changed. */
