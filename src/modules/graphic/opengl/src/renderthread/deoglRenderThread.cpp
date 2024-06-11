@@ -1999,7 +1999,7 @@ void deoglRenderThread::DebugMemoryUsage( const char *prefix ){
 	// malloc info
 	const struct mallinfo minfo( mallinfo() );
 	//pLogger->LogInfoFormat( "HeapSize=%d HeapAllocSize=%d", minfo.usmblks, minfo.uordblks );
-	pLogger->LogInfoFormat( "TotalAllocSpace=%lu TotalFreeSpace=%lu", minfo.uordblks, minfo.fordblks );
+	pLogger->LogInfoFormat( "TotalAllocSpace=%zu TotalFreeSpace=%zu", minfo.uordblks, minfo.fordblks );
 	
 	#if 0
 	char *minfoString = NULL;
@@ -2194,7 +2194,7 @@ void deoglRenderThread::DebugMemoryUsageSmall( const char *prefix ){
 	if( ! DoesDebugMemoryUsage() ) return;
 	
 	const struct mallinfo minfo( mallinfo() );
-	pLogger->LogInfoFormat( "DebugMemoryUsageSmall: %s) TotalAllocSpace=%lu TotalFreeSpace=%lu",
+	pLogger->LogInfoFormat( "DebugMemoryUsageSmall: %s) TotalAllocSpace=%zu TotalFreeSpace=%zu",
 		prefix, minfo.uordblks, minfo.fordblks );
 }
 #endif
