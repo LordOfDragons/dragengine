@@ -16,12 +16,6 @@ on:
       artifactArchive:
         required: true
         type: string
-      artifactInstaller:
-        required: true
-        type: string
-      artifactTools:
-        required: true
-        type: string
       lfscache:
         required: false
         default: true
