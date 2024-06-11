@@ -50,6 +50,16 @@ def androidUpdateEnv( env ):
 	env['RANLIB'] = '{}-ranlib'.format(pathCompiler2)
 	env['NASM'] = '{}/yasm'.format(pathBin)
 	
+	# newer NDK changed compiler file names. how lovely U_U
+	if env.Detect(os.path.join(pathBin, 'llvm-ar')):
+		pathCompiler2 = os.path.join(pathBin, 'llvm')
+		env['LD'] = '{}-link'.format(pathCompiler2)
+		env['STRIP'] = '{}-strip'.format(pathCompiler2)
+		env['OBJCOPY'] = '{}-objcopy'.format(pathCompiler2)
+		env['AS'] = '{}-as'.format(pathCompiler2)
+		env['AR'] = '{}-ar'.format(pathCompiler2)
+		env['RANLIB'] = '{}-ranlib'.format(pathCompiler2)
+	
 	#env['ANDROID_SYSROOT'] = pathSysroot
 	env['ANDROID_BIN'] = pathBin
 	env['ANDROID_COMPILER'] = compiler
