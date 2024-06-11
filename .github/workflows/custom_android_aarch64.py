@@ -7,6 +7,7 @@ with_verbose = 'no'
 with_threads = '14'
 version = '{BuildVersion}'
 
+ndkroot = '{NdkRoot}'
 platform_android = 'armv8'
 apilevel = '29' # Android 10
 hardfp = True
