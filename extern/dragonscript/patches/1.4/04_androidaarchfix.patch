@@ -811,3 +811,24 @@ diff -rupN org-dragonscript-1.4/site_scons/site_tools/crosscompile/android.py cu
  		hardfp = True
  		
  	elif env['android_arch'] == 'x86':
+diff -rupN org-dragonscript-1.4/src/scriptengine/dsRunTime.cpp dragonscript-1.4/src/scriptengine/dsRunTime.cpp
+--- org-dragonscript-1.4/src/scriptengine/dsRunTime.cpp	2023-01-28 23:41:53.000000000 +0100
++++ dragonscript-1.4/src/scriptengine/dsRunTime.cpp	2024-06-11 14:10:59.799320409 +0200
+@@ -1631,7 +1631,7 @@ void dsRunTime::p_ExecFunc(dsRealObject
+ 				if( primType == DSPT_BYTE ){
+ 					SetByte( &tmpVal, execObj->GetByte() & vTmpValPtr->GetByte() );
+ 				}else if( primType == DSPT_BOOL ){
+-					SetBool( &tmpVal, execObj->GetBool() & vTmpValPtr->GetBool() );
++					SetBool( &tmpVal, execObj->GetBool() && vTmpValPtr->GetBool() );
+ 				}else if( primType == DSPT_INT ){
+ 					SetInt( &tmpVal, execObj->GetInt() & vTmpValPtr->GetInt() );
+ 				}
+@@ -1646,7 +1646,7 @@ void dsRunTime::p_ExecFunc(dsRealObject
+ 				if( primType == DSPT_BYTE ){
+ 					SetByte( &tmpVal, execObj->GetByte() | vTmpValPtr->GetByte() );
+ 				}else if( primType == DSPT_BOOL ){
+-					SetBool( &tmpVal, execObj->GetBool() | vTmpValPtr->GetBool() );
++					SetBool( &tmpVal, execObj->GetBool() || vTmpValPtr->GetBool() );
+ 				}else if( primType == DSPT_INT ){
+ 					SetInt( &tmpVal, execObj->GetInt() | vTmpValPtr->GetInt() );
+ 				}
