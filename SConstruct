@@ -617,6 +617,10 @@ else:
 	if not parent_env['OSMacOS']:
 		parent_env.Append(MODULE_LINKFLAGS = ['-Wl,--version-script=module.version'])
 		parent_env.Append(MODULE_LINKFLAGS = ['-s'])
+	
+	if parent_env['platform_android'] != 'no':
+		parent_env.Append(MODULE_LINKFLAGS = ['-Wl,--undefined-version'])
+	
 	parent_env.Append(MODULE_CPPFLAGS = ['-DMOD_ENTRY_POINT_ATTR=__attribute__\\(\\(visibility\\(\\"default\\"\\)\\)\\)'])
 
 # android

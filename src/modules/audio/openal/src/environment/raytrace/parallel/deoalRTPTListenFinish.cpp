@@ -639,6 +639,10 @@ void deoalRTPTListenFinish::pRun(){
 // 		frAvgDelay = ( frSumDistance / ( float )frCount - directDistance ) * INV_SOUND_SPEED;
 		frMinDelay = ( frMinDistance - directDistance ) * INV_SOUND_SPEED;
 // 		frMaxDelay = ( frMaxDistance - directDistance ) * INV_SOUND_SPEED;
+		( void )frSumDistance;
+		( void )frPanDirectionWeightSum;
+		( void )lrPanDirectionWeightSum;
+		( void )lrCount;
 	}
 	
 // 	const float lrGainLow = gainLow - frGainLow;

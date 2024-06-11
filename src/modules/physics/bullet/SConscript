@@ -52,6 +52,8 @@ envModule.Append(CPPFLAGS = ['-fpermissive'])
 
 envModule.Append(CPPFLAGS = ['-Wno-shadow'])
 
+# android/llvm is very picky causing problems with bullet headers
+envModule.Append(CPPFLAGS = ['-Wno-unused-but-set-variable'])
 # make bullet use internal opencl headers. this avoids dependency on system opencl
 # ... and again something that does not compile/work in bullet U_U
 #envModule.Append(CPPFLAGS = ['-DB3_USE_CLEW'])
