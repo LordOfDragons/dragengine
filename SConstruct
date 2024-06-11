@@ -621,11 +621,11 @@ else:
 
 # android
 if parent_env['platform_android'] != 'no':
-	ndkRoot = ''
+	ndkroot = ''
 	if 'NDK_ROOT' in os.environ:
 		ndkroot = os.path.expanduser(os.environ['NDK_ROOT'])
 
-	params.Add(PathVariable('ndkroot', 'Path to NDK toolchain (NDK_ROOT env-param by default)', ndkRoot, PathVariable.PathAccept))
+	params.Add(PathVariable('ndkroot', 'Path to NDK toolchain (NDK_ROOT env-param by default)', ndkroot, PathVariable.PathAccept))
 	params.Add(StringVariable('apilevel', 'Android API level', '18'))
 	params.Add(BoolVariable('hardfp', 'Use hardware floating point support instead of softfp on ARMv7 only', False))
 
