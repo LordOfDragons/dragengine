@@ -1,4 +1,4 @@
-name: Build Android AArch64
+name: Build Android Armv7
 
 on:
   workflow_call:
@@ -48,7 +48,7 @@ on:
         description: 'Artifact Archive'
         required: true
         type: string
-        default: "archives-android64"
+        default: "archives-android32"
       debugBuild:
         description: 'Debug Build'
         type: boolean
@@ -102,7 +102,7 @@ jobs:
       
       - name: Init custom.py
         run: |
-          cp ${{ github.workspace }}/.github/workflows/custom_android_aarch64.py custom.py
+          cp ${{ github.workspace }}/.github/workflows/custom_android_armv7.py custom.py
           sed -i -e 's/{ReleaseVersion}/${{ inputs.releaseVersion }}/g' custom.py
           sed -i -e 's/{BuildVersion}/${{ inputs.buildVersion }}/g' custom.py
           sed -i -e "s@{NdkRoot}@$ANDROID_NDK_ROOT@g" custom.py
@@ -125,7 +125,7 @@ jobs:
         with:
           name: ${{ inputs.artifactArchive }}
           path: |
-            archive/build/dragengine-${{ inputs.releaseVersion }}-android64.tar.bz2
-            archive/build/dragengine-dev-${{ inputs.releaseVersion }}-android64.tar.bz2
-            archive/build/despecial-${{ inputs.releaseVersion }}-android64.tar.bz2
+            archive/build/dragengine-${{ inputs.releaseVersion }}-android32.tar.bz2
+            archive/build/dragengine-dev-${{ inputs.releaseVersion }}-android32.tar.bz2
+            archive/build/despecial-${{ inputs.releaseVersion }}-android32.tar.bz2
           if-no-files-found: error
