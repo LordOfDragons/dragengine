@@ -28,6 +28,7 @@ on:
         type: boolean
         
   workflow_dispatch:
+    inputs:
       branch:
         description: 'Branch'
         required: false
@@ -104,7 +105,7 @@ jobs:
           cp ${{ github.workspace }}/.github/workflows/custom_android_aarch64.py custom.py
           sed -i -e 's/{ReleaseVersion}/${{ inputs.releaseVersion }}/g' custom.py
           sed -i -e 's/{BuildVersion}/${{ inputs.buildVersion }}/g' custom.py
-          sed -i -e 's/{NdkRoot}/$ANDROID_NDK_ROOT/g' custom.py
+          sed -i -e 's/{NdkRoot}/${{ env.ANDROID_NDK_ROOT }}/g' custom.py
       
       - name: DEBUG
         run: |
