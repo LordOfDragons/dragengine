@@ -13,7 +13,7 @@ envLibrary = parent_env.Clone()
 buildStaticLinking = True
 
 # parameters
-srcdir = 'libvpx-1.12.0'
+srcdir = 'libvpx-1.14.1'
 
 libLinkVersion = '1'
 libLinkName = 'vpx'
@@ -57,6 +57,10 @@ def libvpxBuild(target, source, env):
 	untarArchive(buildDir.abspath, source[0].abspath)
 	
 	script = createScriptHeader(env)
+	
+	if env['platform_android'] == 'armv7' and env['AS'].endswith('llvm-as'):
+		script.append('export ASFLAGS="-c"')
+		script.append('export AS="$CC"')
 	
 	script.append('cd "{}" || exit 1'.format(buildDir.Dir(srcdir).abspath))
 	
@@ -103,6 +107,7 @@ def libvpxBuild(target, source, env):
 	
 	script.append('make -j {} install || exit 1'.format(env['with_threads']))
 	
+	print('\n'.join(script))
 	if not env.RunExternalCommand(script):
 		raise Exception('Failed building libvpx')
 
