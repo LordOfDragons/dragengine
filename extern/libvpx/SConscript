@@ -13,7 +13,7 @@ envLibrary = parent_env.Clone()
 buildStaticLinking = True
 
 # parameters
-srcdir = 'libvpx-1.14.1'
+srcdir = 'libvpx-1.12.0'
 
 libLinkVersion = '1'
 libLinkName = 'vpx'
