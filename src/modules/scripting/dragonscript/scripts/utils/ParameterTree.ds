@@ -43,13 +43,13 @@ pin Dragengine.Scenery
  * thought uses '/' as path separator. It is encouraged to use '/' as path separator.
  */
 class ParameterTree
-	private var Dictionary pParameters
+	var Dictionary pParameters
 	
 	
 	
 	/** \brief Create parameter tree. */
-	public func new()
-		this.pParameters = Dictionary.new()
+	func new()
+		pParameters = Dictionary.new()
 	end
 	
 	/**
@@ -58,38 +58,38 @@ class ParameterTree
 	 * Arrays are duplicated but no value inside since all values stored in the parameter
 	 * tree are considered immutable.
 	 */
-	public func new( ParameterTree tree )
-		this.pParameters = tree.pParameters.map( block String key, Object value
+	func new(ParameterTree tree)
+		pParameters = tree.pParameters.map(block String key, Object value
 			if value castable Array
-				return Array.new( value cast Array )
+				return Array.new(value cast Array)
 				
 			else
 				return value
 			end
-		end )
+		end)
 	end
 	
 	
 	
-	/** \brief Number of parameters. */
-	public func int getCount()
-		return this.pParameters.getCount()
+	/** \brief Count of parameters. */
+	func int getCount()
+		return pParameters.getCount()
 	end
 	
 	/** \brief Parameter path list as Array of String. */
-	public func Array getPathList()
-		return this.pParameters.getKeys()
+	func Array getPathList()
+		return pParameters.getKeys()
 	end
 	
 	/** \brief Parameter keys under path as Array of String using '/' separator. */
-	public func Array getKeys( String path )
-		return this.getKeys( path, '/' )
+	func Array getKeys(String path)
+		return getKeys(path, '/')
 	end
 	
 	/** \brief Parameter keys under path as Array of String. */
-	public func Array getKeys( String path, byte separator )
+	func Array getKeys(String path, byte separator)
 		var int len = path.getLength()
-		if len > 0 and path.getAt( len - 1 ) != separator
+		if len > 0 and path.getAt(-1) != separator
 			path = path + separator
 			len++
 		end
@@ -98,132 +98,132 @@ class ParameterTree
 		var String key
 		var int index
 		
-		this.pParameters.getKeys().forEach( block String each
-			if each.substring( 0, len ).equals( path )
-				index = each.find( separator, len )
+		pParameters.getKeys().forEach(block String each
+			if each.startsWith(path)
+				index = each.find(separator, len)
 				if index != -1
-					key = each.substring( len, index )
+					key = each.substring(len, index)
 				else
-					key = each.substring( len )
+					key = each.substring(len)
 				end
-				if not keys.has( key )
-					keys.add( key )
+				if not keys.has(key)
+					keys.add(key)
 				end
 			end
-		end )
+		end)
 		
 		return keys
 	end
 	
 	/** \brief Parameter is present. */
-	public func bool has( String path )
-		return this.pParameters.has( path )
+	func bool has(String path)
+		return pParameters.has(path)
 	end
 	
 	/** \brief Remove value if set. */
-	public func void remove( String path )
-		this.pParameters.removeIfExisting( path )
+	func void remove(String path)
+		pParameters.removeIfExisting(path)
 	end
 	
 	/** \brief Remove all values. */
-	public func void removeAll()
-		this.pParameters.removeAll()
+	func void removeAll()
+		pParameters.removeAll()
 	end
 	
 	/** \brief Visit parameters with block with arguments path(String) and value(Object). */
-	public func void forEach( Block ablock )
-		this.pParameters.forEach( ablock )
+	func void forEach(Block ablock)
+		pParameters.forEach(ablock)
 	end
 	
 	
 	
 	/** \brief Value of parameter or default value if absent. */
-	public func Object getAt( String path, Object default )
-		return this.pParameters.getAt( path, default )
+	func Object getAt(String path, Object default)
+		return pParameters.getAt(path, default)
 	end
 	
 	/** \brief String value of parameter or default value if absent. */
-	public func String getStringAt( String path, String default )
-		return this.pParameters.getAt( path, default ) cast String
+	func String getStringAt(String path, String default)
+		return pParameters.getAt(path, default) cast String
 	end
 	
 	/** \brief Floating point value of parameter or default value if absent. */
-	public func float getFloatAt( String path, float default )
-		return this.pParameters.getAt( path, default ) cast float
+	func float getFloatAt(String path, float default)
+		return pParameters.getAt(path, default) cast float
 	end
 	
 	/** \brief Integer value of parameter or default value if absent. */
-	public func int getIntAt( String path, int default )
-		return this.pParameters.getAt( path, default ) cast int
+	func int getIntAt(String path, int default)
+		return pParameters.getAt(path, default) cast int
 	end
 	
 	/** \brief Boolean value of parameter or default value if absent. */
-	public func bool getBoolAt( String path, bool default )
-		return this.pParameters.getAt( path, default ) cast bool
+	func bool getBoolAt(String path, bool default)
+		return pParameters.getAt(path, default) cast bool
 	end
 	
 	/** \brief Point value of parameter or default value if absent. */
-	public func Point getPointAt( String path, Point default )
-		return this.pParameters.getAt( path, default ) cast Point
+	func Point getPointAt(String path, Point default)
+		return pParameters.getAt(path, default) cast Point
 	end
 	
 	/** \brief Point3 value of parameter or default value if absent. */
-	public func Point3 getPoint3At( String path, Point3 default )
-		return this.pParameters.getAt( path, default ) cast Point3
+	func Point3 getPoint3At(String path, Point3 default)
+		return pParameters.getAt(path, default) cast Point3
 	end
 	
 	/** \brief Vector2 value of parameter or default value if absent. */
-	public func Vector2 getVector2At( String path, Vector2 default )
-		return this.pParameters.getAt( path, default ) cast Vector2
+	func Vector2 getVector2At(String path, Vector2 default)
+		return pParameters.getAt(path, default) cast Vector2
 	end
 	
 	/** \brief Vector value of parameter or default value if absent. */
-	public func Vector getVectorAt( String path, Vector default )
-		return this.pParameters.getAt( path, default ) cast Vector
+	func Vector getVectorAt(String path, Vector default)
+		return pParameters.getAt(path, default) cast Vector
 	end
 	
 	/** \brief Color value of parameter or default value if absent. */
-	public func Color getColorAt( String path, Color default )
-		return this.pParameters.getAt( path, default ) cast Color
+	func Color getColorAt(String path, Color default)
+		return pParameters.getAt(path, default) cast Color
 	end
 	
 	/** \brief BorderSize value of parameter or default value if absent. */
-	public func BorderSize getBorderSizeAt( String path, BorderSize default )
-		return this.pParameters.getAt( path, default ) cast BorderSize
+	func BorderSize getBorderSizeAt(String path, BorderSize default)
+		return pParameters.getAt(path, default) cast BorderSize
 	end
 	
 	/** \brief RectArea value of parameter or default value if absent. */
-	public func RectArea getRectAreaAt( String path, RectArea default )
-		return this.pParameters.getAt( path, default ) cast RectArea
+	func RectArea getRectAreaAt(String path, RectArea default)
+		return pParameters.getAt(path, default) cast RectArea
 	end
 	
 	/** \brief FloatRectArea value of parameter or default value if absent. */
-	public func FloatRectArea getAt( String path, FloatRectArea default )
-		return this.pParameters.getAt( path, default ) cast FloatRectArea
+	func FloatRectArea getAt(String path, FloatRectArea default)
+		return pParameters.getAt(path, default) cast FloatRectArea
 	end
 	
 	/** \brief Array value of parameter or default value if absent. */
-	public func Array getArrayAt( String path, Array default )
-		return this.pParameters.getAt( path, default ) cast Array
+	func Array getArrayAt(String path, Array default)
+		return pParameters.getAt(path, default) cast Array
 	end
 	
 	/** \brief Tree value of parameter or default value if absent. */
-	public func ParameterTree getTreeAt( String path, ParameterTree default )
-		return this.pParameters.getAt( path, default ) cast ParameterTree
+	func ParameterTree getTreeAt(String path, ParameterTree default)
+		return pParameters.getAt(path, default) cast ParameterTree
 	end
 	
 	/** \brief Set value of parameter. */
-	public func void setAt( String path, Object value )
-		this.pParameters.setAt( path, value )
+	func void setAt(String path, Object value)
+		pParameters.setAt(path, value)
 	end
 	
 	
 	
 	/** \brief Print parameters to console. */
-	public func void log( Console console, String name )
-		console.addMessage( "ParameterTree(" + name + ") " + this.pParameters.getCount() + " parameters" )
-		this.pParameters.forEach( block String path, Object value
-			console.addMessage( "- '" + path + "' = " + value )
-		end )
+	func void log(Console console, String name)
+		console.addMessage("ParameterTree(" + name + ") " + pParameters.getCount() + " parameters")
+		pParameters.forEach(block String path, Object value
+			console.addMessage("- '" + path + "' = " + value)
+		end)
 	end
 end

@@ -255,7 +255,7 @@ class ParameterTableEntry
 			
 		elif pValue castable String
 			writer.writeByte(4)
-			writer.writeString(pValue cast String)
+			writer.writeString16(pValue cast String)
 			
 		else
 			writer.writeByte(5)
