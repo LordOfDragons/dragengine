@@ -71,7 +71,7 @@ class StubElementClassNotFound extends StubElement
 		super.verifyPreloading( console )
 		
 		console.addMessage( "Element class '" + this.getClass().getClassname() + "' not found" \
-			+ "' for object with ID " + this.getID() + " located at " + this.getPosition() )
+			+ " for object with ID " + this.getID() + " located at " + this.getPosition() )
 		return false
 	end
 	
