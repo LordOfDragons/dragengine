@@ -1,0 +1,135 @@
+import os
+import sys
+import SCons
+
+from SConsCommon import *
+from SConsExternCommon import *
+
+Import('parent_env parent_targets parent_report')
+
+envLibrary = parent_env.Clone()
+
+# parameters
+srcdir = 'modio-sdk'
+
+libLinkVersion = '62'
+libLinkNames = ['modioStatic', 'mbedcrypto', 'mbedtls', 'mbedx509']
+
+installLibDir = 'install/static/lib'
+
+if envLibrary['OSWindows']:
+	staticFileNames = ['{}/lib{}.a'.format(installLibDir, x) for x in libLinkNames]
+	
+else:
+	staticFileNames = [envLibrary.subst('{}/${{LIBPREFIX}}{}${{LIBSUFFIX}}'.format(installLibDir, x)) for x in libLinkNames]
+
+depUring = None
+if not envLibrary['OSWindows']:
+	depUring = parent_targets['lib_liburing']
+
+libs = libLinkNames[:]
+if depUring:
+	libs.extend(depUring['libs'])
+
+def modioBuild(target, source, env):
+	buildDir = target[0].get_dir().up().up().up()
+	untarArchive(buildDir.abspath, source[0].abspath)
+	
+	cmakeSourceDir = buildDir.Dir(srcdir).abspath
+	
+	cmakeBuildDir = buildDir.Dir('build').abspath
+	if not os.path.isdir(cmakeBuildDir):
+		os.mkdir(cmakeBuildDir)
+	
+	cmakeInstallDir = buildDir.Dir('install').abspath
+	if not os.path.isdir(cmakeInstallDir):
+		os.mkdir(cmakeInstallDir)
+	
+	deps = []
+	if depUring:
+		deps.append(depUring)
+	
+	script = createScriptHeader(env, deps=deps)
+	
+	# modio cmake scripts seem to only look at CXXFLAGS not CPPFLAGS
+	script.append('export CXXFLAGS=$CPPFLAGS')
+	
+	script.append('cd "{}" || exit 1'.format(cmakeBuildDir))
+	
+	cmdline = []
+	cmdline.append('cmake')
+	cmdline.append('-G "Unix Makefiles"')
+	cmdline.append('-S "{}"'.format(cmakeSourceDir))
+	cmdline.append('-B "{}"'.format(cmakeBuildDir))
+	
+	if env['OSWindows']:
+		cmdline.append('--preset=win')
+	else:
+		cmdline.append('--preset=linux64')
+	
+	if 'CROSSCOMPILE_HOST' in env:
+		cmdline.append('-DCMAKE_SYSTEM_NAME="{}"'.format(env['CROSSCOMPILE_HOST']))
+		cmdline.append('-DCMAKE_SYSTEM_PROCESSOR=AMD64')
+	
+	script.append('{} || exit 1'.format(' '.join(cmdline)))
+	
+	script.append('cmake --build "{}" -- -j {} || exit 1'.format(cmakeBuildDir, env['with_threads']))
+	
+	# modio build script has a bug. if build and install directory are custom
+	# the install script tries to access 'cmake_install.cmake' inside 'install dir'
+	# instead of 'build dir'. copy it over to prevent the script from failing
+	script.append('cp "{}/cmake_install.cmake" "{}" || exit 1'.format(cmakeBuildDir, cmakeInstallDir))
+	
+	script.append('cmake --install "{}" || exit 1'.format(cmakeInstallDir))
+	
+	# the bug mentioned above also copies the files into the totally wrong directory.
+	# move them to where they belong
+	script.append('cp -af "{}/out/install/linux64/"* "{}" || exit 1'.format(cmakeSourceDir, cmakeInstallDir))
+	script.append('rm -rf "{}/out" || exit 1'.format(cmakeSourceDir))
+	
+	script.append('rm -f "{}/cmake_install.cmake" || exit 1'.format(cmakeInstallDir))
+	
+	print('>>>')
+	print('\n'.join(script))
+	print('<<<')
+	if not env.RunExternalCommand(script):
+		raise Exception('Failed building libmodio')
+
+targets = staticFileNames[:]
+targets.extend(['install/static/inc/modio/ModioSDK.h'])
+
+library = envLibrary.Command(targets, '{}.tar.bz2'.format(srcdir),
+	envLibrary.Action(modioBuild, 'Build ModIO library'))
+
+if depUring and depUring['depends']:
+	envLibrary.Depends(library, depUring['depends'])
+
+envLibrary.SideEffect('#notParallelCMake', library)
+
+depends = parent_env.Alias('lib_modio', library)
+
+envLibrary.Clean(library, ['install', 'build', srcdir])
+
+cpppath = [envLibrary.Dir('install/static/inc')]
+if depUring:
+	cpppath.extend(depUring['cpppath'])
+
+libpath = [envLibrary.Dir(installLibDir)]
+if depUring:
+	libpath.extend(depUring['libpath'])
+
+libs = [library[0]]
+if depUring:
+	libs.extend(depUring['libs'])
+runtimelibs = []
+
+if depUring:
+	runtimelibs.extend(depUring['runtimelibs'])
+
+parent_targets['lib_modio'] = {
+	'name' : 'Internal ModIO library',
+	'cpppath' : cpppath,
+	'libpath' : libpath,
+	'libs' : libs,
+	'runtimelibs' : runtimelibs,
+	'depends' : depends}

@@ -759,6 +759,7 @@ extdirs.append('extern/libwebm')
 extdirs.append('extern/openxr')
 extdirs.append('extern/steamsdk')
 extdirs.append('extern/liburing')
+extdirs.append('extern/modio')
 
 for extdir in extdirs:
 	SConscript(dirs=extdir, variant_dir='{}/build'.format(extdir),
