@@ -49,7 +49,12 @@ def modioBuild(target, source, env):
 	if depUring:
 		deps.append(depUring)
 	
-	script = createScriptHeader(env, deps=deps)
+	cppflags = []
+	if env['platform_android'] != 'no':
+		cppflags.append('-Wno-error=unused-but-set-variable')
+		cppflags.append('-Wno-error=documentation')
+
+	script = createScriptHeader(env, deps=deps, cppflags=cppflags, cflags=cppflags)
 	
 	# modio cmake scripts seem to only look at CXXFLAGS not CPPFLAGS
 	script.append('export CXXFLAGS=$CPPFLAGS')
