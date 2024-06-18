@@ -190,6 +190,7 @@ params.Add(TernaryVariable('with_system_soundtouch', 'Use System soundtouch'))
 params.Add(TernaryVariable('with_system_libwebp', 'Use System libwebp'))
 params.Add(TernaryVariable('with_system_libwebm', 'Use System libwebm'))
 params.Add(TernaryVariable('with_system_libvpx', 'Use System libvpx'))
+params.Add(TernaryVariable('with_system_liburing', 'Use System liburing'))
 
 params.Add(TernaryVariable('with_opengl', 'Use OpenGL'))
 params.Add(TernaryVariable('with_python', 'Use Python'))
@@ -757,6 +758,7 @@ extdirs.append('extern/libwebp')
 extdirs.append('extern/libwebm')
 extdirs.append('extern/openxr')
 extdirs.append('extern/steamsdk')
+extdirs.append('extern/liburing')
 
 for extdir in extdirs:
 	SConscript(dirs=extdir, variant_dir='{}/build'.format(extdir),
