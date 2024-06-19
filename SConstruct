@@ -220,6 +220,7 @@ params.Add(TernaryVariable('build_archive_delga', 'Build DELGA Archive Module'))
 params.Add(TernaryVariable('build_vr_openvr', 'Build OpenVR VR Module'))
 params.Add(TernaryVariable('build_vr_openxr', 'Build OpenXR VR Module'))
 params.Add(TernaryVariable('build_service_steamsdk', 'Build SteamSDK Service Module'))
+params.Add(TernaryVariable('build_service_modio', 'Build ModIO Service Module'))
 
 params.Add(TernaryVariable('build_igde', 'Build IGDE'))
 params.Add(TernaryVariable('build_editor_animator', 'Build IGDE Animator Editor'))
@@ -844,6 +845,7 @@ scdirs.append('src/modules/vr/openvr')
 scdirs.append('src/modules/vr/openxr')
 
 scdirs.append('src/modules/service/steamsdk')
+scdirs.append('src/modules/service/modio')
 
 # launchers
 scdirs.append('src/launcher/shared')
