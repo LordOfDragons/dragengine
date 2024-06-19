@@ -77,9 +77,7 @@ jobs:
         # certain CMake based projects are problem children that like to get stuck
         # in CMake on Ubuntu. build them first to avoid it loking up things
         run: |
-          scons tools=mingw64 -j 1 lib_openxr
-          scons tools=mingw64 -j 1 lib_openvr
-          scons tools=mingw64 -j 1 lib_libjpeg
+          scons tools=mingw64 -j 1 lib_openxr lib_openvr lib_libjpeg
           scons tools=mingw64 -j 14 archive
           
       - name: Store Archives

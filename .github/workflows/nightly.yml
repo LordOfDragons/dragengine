@@ -4,6 +4,12 @@ on:
   schedule:
     - cron:  '0 3 * * *'
   workflow_dispatch:
+    inputs:
+      codeql:
+        description: 'Run CodeQL'
+        required: false
+        type: boolean
+        default: true
 
 jobs:
   build_linux:
@@ -14,7 +20,7 @@ jobs:
       artifactArchive: archives-linux
       artifactInstaller: installers-linux
       artifactTools: tools-crossplatform
-      codeql: true
+      codeql: ${{ inputs.codeql }}
   
   # build_windows_mingw:
   #   uses: ./.github/workflows/build_windows.yml
