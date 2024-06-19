@@ -83,10 +83,11 @@ jobs:
         # CMake based projects are problem children that like to get stuck forever in CMake
         # on Ubuntu and GitHub. build them first without parallel to avoid hangups
         run: |
-          scons -j 1 lib_openxr
-          scons -j 1 lib_openvr
-          scons -j 1 lib_libjpeg
-          scons -j 1 lib_libwebm
+          scons -j 1 \
+            lib_openxr \
+            lib_openvr \
+            lib_libjpeg \
+            lib_libwebm
           scons -j 14 \
             lib_dragonscript \
             lib_fox \
@@ -101,10 +102,10 @@ jobs:
             lib_libwebp \
             lib_modio \
             lib_openal \
-            lib_sndio \
             lib_soundtouch \
             lib_steamsdk \
             lib_zlib
+        # lib_sndio
       
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
