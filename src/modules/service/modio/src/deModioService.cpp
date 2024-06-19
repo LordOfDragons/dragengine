@@ -42,13 +42,37 @@ const char * const deModioService::serviceName = "ModIO";
 deModioService::deModioService( deModIO &module,
 deService *service, const deServiceObject::Ref &data ) :
 pModule( module ),
-pService( service )
+pService( service ),
+pIsInitialized( false )
+pRequiresEventHandlingCount( 0 )
 {
+	pApiKey = data->GetChildAt( "apiKey" )->GetString();
+	pGameId = data->GetChildAt( "gameId" )->GetString();
+	pUserId = data->GetChildAt( "userId" )->GetString();
+	pGameEnv = data->GetChildAt( "gameEnvironment" )->GetString();
+	pPortal = data->GetChildAt( "portalInUse" )->GetString();
+	
+	//AddRequiresEventHandlingCount();
 }
 
 deModioService::~deModioService(){
 	while( pPendingRequests.GetCount() > 0 ){
 		CancelRequest( ( ( deModioPendingRequest* )pPendingRequests.GetAt( 0 ) )->id );
+	}
+	
+	if( pIsInitialized ){
+		bool done = false;
+		AddRequiresEventHandlingCount();
+		
+		Modio::ShutdownAsync( [ &done ]( Modio::ErrorCode ec ){
+			done = true;
+		});
+		
+		while( ! done ){
+			nanosleep( 100 );
+		}
+		
+		RemoveRequiresEventHandlingCount();
 	}
 }
 
@@ -161,6 +185,26 @@ void deModioService::FailRequest( const decUniqueID &id, const deException &e ){
 		deService::Ref( pService ), id, pr->data );
 }
 
+
+
+void deModioService::AddRequiresEventHandlingCount(){
+	pRequiresEventHandlingCount++;
+	if( pRequiresEventHandlingCount == 1 ){
+		pModule.AddRequiresEventHandlingCount();
+	}
+}
+
+void deModioService::RemoveRequiresEventHandlingCount(){
+	if( pRequiresEventHandlingCount == 0 ){
+		pModule.LogWarn("RemoveRequiresEventHandlingCount called with pRequiresEventHandlingCount == 0");
+		return;
+	}
+	
+	pRequiresEventHandlingCount--;
+	if( pRequiresEventHandlingCount == 0 ) {
+		pModule.RemoveRequiresEventHandlingCount();
+	}
+}
 
 
 // Callbacks

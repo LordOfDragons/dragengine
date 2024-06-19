@@ -68,7 +68,8 @@ deBaseModule *ModioCreateModule( deLoadableModule *loadableModule ){
 ////////////////////////////
 
 deModIO::deModIO( deLoadableModule& loadableModule ) :
-deBaseServiceModule( loadableModule ){
+deBaseServiceModule( loadableModule ),
+pRequiresEventHandlingCount( 0 ){
 }
 
 deModIO::~deModIO(){
@@ -96,4 +97,20 @@ const char *name, const deServiceObject::Ref &data ){
 }
 
 void deModIO::FrameUpdate( float ){
+	if( pRequiresEventHandlingCount > 0 ){
+		Modio::RunPendingHandlers();
+	}
+}
+
+void deModIO::AddRequiresEventHandlingCount(){
+	pRequiresEventHandlingCount++;
+}
+
+void deModIO::RemoveRequiresEventHandlingCount(){
+	if( pRequiresEventHandlingCount == 0 ){
+		LogWarn("RemoveRequiresEventHandlingCount called with pRequiresEventHandlingCount == 0");
+		return;
+	}
+	
+	pRequiresEventHandlingCount--;
 }

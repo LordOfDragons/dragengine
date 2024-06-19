@@ -48,6 +48,9 @@ private:
 	deModIO &pModule;
 	deService * const pService;
 	decObjectList pPendingRequests;
+	decString pApiKey, pGameId, pUserId, pGameEnv, pPortal;
+	bool pIsInitialized;
+	int pRequiresEventHandlingCount;
 	
 	
 public:
@@ -92,6 +95,9 @@ public:
 		const decString &function, const deServiceObject::Ref &data = nullptr );
 	
 	void FailRequest( const decUniqueID &id, const deException &e );
+	
+	void AddRequiresEventHandlingCount();
+	void RemoveRequiresEventHandlingCount();
 	/*@}*/
 	
 	

@@ -50,6 +50,7 @@ def modioBuild(target, source, env):
 		deps.append(depUring)
 	
 	cppflags = []
+	cppflags.append('-fPIC')
 	if env['platform_android'] != 'no':
 		cppflags.append('-Wno-error=unused-but-set-variable')
 		cppflags.append('-Wno-error=documentation')

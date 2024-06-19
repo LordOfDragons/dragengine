@@ -34,6 +34,11 @@
  * ModIO Service Module.
  */
 class deModIO : public deBaseServiceModule{
+private:
+	int pRequiresEventHandlingCount;
+	
+	
+	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
@@ -58,10 +63,11 @@ public:
 	deBaseServiceService *CreateService( deService *service,
 		const char *name, const deServiceObject::Ref &data ) override;
 	
-	/**
-	 * \brief Frame update.
-	 */
+	/** Frame update. */
 	void FrameUpdate( float elapsed ) override;
+	
+	void AddRequiresEventHandlingCount();
+	void RemoveRequiresEventHandlingCount();
 	/*@}*/
 };
 
