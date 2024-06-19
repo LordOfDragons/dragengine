@@ -13,7 +13,7 @@ envLibrary = parent_env.Clone()
 srcdir = 'modio-sdk'
 
 libLinkVersion = '62'
-libLinkNames = ['modioStatic', 'mbedcrypto', 'mbedtls', 'mbedx509']
+libLinkNames = ['modioStatic', 'mbedx509', 'mbedtls', 'mbedcrypto']
 
 installLibDir = 'install/static/lib'
 
@@ -51,6 +51,7 @@ def modioBuild(target, source, env):
 	
 	cppflags = []
 	cppflags.append('-fPIC')
+	cppflags.append('-DMODIO_SEPARATE_COMPILATION')
 	if env['platform_android'] != 'no':
 		cppflags.append('-Wno-error=unused-but-set-variable')
 		cppflags.append('-Wno-error=documentation')
@@ -127,7 +128,7 @@ libpath = [envLibrary.Dir(installLibDir)]
 if depUring:
 	libpath.extend(depUring['libpath'])
 
-libs = [library[0]]
+libs = library[0:len(staticFileNames)]
 if depUring:
 	libs.extend(depUring['libs'])
 runtimelibs = []

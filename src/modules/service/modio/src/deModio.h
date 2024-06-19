@@ -31,9 +31,9 @@
 
 
 /**
- * ModIO Service Module.
+ * Mod.io Service Module.
  */
-class deModIO : public deBaseServiceModule{
+class deModio : public deBaseServiceModule{
 private:
 	int pRequiresEventHandlingCount;
 	
@@ -43,10 +43,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create module. */
-	deModIO( deLoadableModule &loadableModule );
+	deModio( deLoadableModule &loadableModule );
 	
 	/** Delete module. */
-	~deModIO() override;
+	~deModio() override;
 	/*@}*/
 	
 	

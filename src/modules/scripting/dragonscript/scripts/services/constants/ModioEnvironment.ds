@@ -22,35 +22,19 @@
  * SOFTWARE.
  */
 
-#ifndef _deModioPENDINGREQUEST_H_
-#define _deModioPENDINGREQUEST_H_
-
-#include <dragengine/deObject.h>
-#include <dragengine/common/utils/decUniqueID.h>
-#include <dragengine/resources/service/deServiceObject.h>
-
+namespace Dragengine.Services
 
 /**
- * Pending service request.
+ * Environment to use for ServiceModio.
  */
-class deModioPendingRequest : public deObject{
-public:
-	typedef deTObjectReference<deModioPendingRequest> Ref;
+enum ModioEnvironment
+	/**
+	 * Live environment. For use in production.
+	 */
+	live
 	
-	
-	decUniqueID id;
-	decString function;
-	deServiceObject::Ref data;
-	
-	
-	/** \name Constructors and Destructors */
-	/*@{*/
-	/** Create module. */
-	deModioPendingRequest( const deServiceObject::Ref &data = nullptr );
-	
-	/** Delete module. */
-	~deModioPendingRequest() override;
-	/*@}*/
-};
-
-#endif
+	/**
+	 * Test environment. For use in development.
+	 */
+	test
+end

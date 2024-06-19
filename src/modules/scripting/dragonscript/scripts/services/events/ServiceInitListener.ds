@@ -22,35 +22,28 @@
  * SOFTWARE.
  */
 
-#ifndef _deModioPENDINGREQUEST_H_
-#define _deModioPENDINGREQUEST_H_
-
-#include <dragengine/deObject.h>
-#include <dragengine/common/utils/decUniqueID.h>
-#include <dragengine/resources/service/deServiceObject.h>
+namespace Dragengine.Services
 
 
 /**
- * Pending service request.
+ * \brief Listener for service initialization event.
+ * \version 1.23
  */
-class deModioPendingRequest : public deObject{
-public:
-	typedef deTObjectReference<deModioPendingRequest> Ref;
+interface ServiceInitListener
+	/**
+	 * Service initialization succeeded. Service functionality can not be used.
+	 * 
+	 * \param service Service sending the event.
+	 */
+	func void initSucceeded(Object service)
 	
-	
-	decUniqueID id;
-	decString function;
-	deServiceObject::Ref data;
-	
-	
-	/** \name Constructors and Destructors */
-	/*@{*/
-	/** Create module. */
-	deModioPendingRequest( const deServiceObject::Ref &data = nullptr );
-	
-	/** Delete module. */
-	~deModioPendingRequest() override;
-	/*@}*/
-};
-
-#endif
+	/**
+	 * Service initialization failed. Service functionality can not be used.
+	 * Dispose of the service and try again.
+	 * 
+	 * \param service Service sending the event.
+	 * \param code Error code.
+	 * \param message Error message.
+	 */
+	func void initFailed(Object service, int code, String message)
+end

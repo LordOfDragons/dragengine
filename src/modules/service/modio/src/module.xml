@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <module>
-	<name>ModIO</name>
+	<name>Modio</name>
 	<description>
-		Provides access to services provided by ModIO.
+		Provides access to services provided by Mod.io.
 	</description>
 	<author>DragonDreams GmbH (info@dragondreams.ch)</author>
 	<version>VERSION</version>

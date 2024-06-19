@@ -24,7 +24,7 @@
 
 #include <string.h>
 
-#include "deModIO.h"
+#include "deModio.h"
 #include "deModioService.h"
 
 #include <dragengine/deEngine.h>
@@ -54,59 +54,60 @@ MOD_ENTRY_POINT_ATTR deBaseModule *ModioCreateModule( deLoadableModule *loadable
 
 deBaseModule *ModioCreateModule( deLoadableModule *loadableModule ){
 	try{
-		return new deModIO( *loadableModule );
+		return new deModio( *loadableModule );
 	}catch( ... ){
 		return nullptr;
 	}
 }
 
 
-// Class deModIO
+// Class deModio
 //////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-deModIO::deModIO( deLoadableModule& loadableModule ) :
+deModio::deModio( deLoadableModule& loadableModule ) :
 deBaseServiceModule( loadableModule ),
 pRequiresEventHandlingCount( 0 ){
 }
 
-deModIO::~deModIO(){
+deModio::~deModio(){
 }
 
 
 // Management
 ///////////////
 
-decStringSet deModIO::GetSupportedServices(){
+decStringSet deModio::GetSupportedServices(){
 	decStringSet names;
 	names.Add( deModioService::serviceName );
 	return names;
 }
 
-deBaseServiceService* deModIO::CreateService( deService *service,
+deBaseServiceService* deModio::CreateService( deService *service,
 const char *name, const deServiceObject::Ref &data ){
 	DEASSERT_NOTNULL( service )
 	
 	if( strcmp( name, deModioService::serviceName ) == 0 ){
+		LogInfo( "Create deModioService" );
 		return new deModioService( *this, service, data );
 	}
 	
 	return nullptr;
 }
 
-void deModIO::FrameUpdate( float ){
+void deModio::FrameUpdate( float ){
 	if( pRequiresEventHandlingCount > 0 ){
 		Modio::RunPendingHandlers();
 	}
 }
 
-void deModIO::AddRequiresEventHandlingCount(){
+void deModio::AddRequiresEventHandlingCount(){
 	pRequiresEventHandlingCount++;
 }
 
-void deModIO::RemoveRequiresEventHandlingCount(){
+void deModio::RemoveRequiresEventHandlingCount(){
 	if( pRequiresEventHandlingCount == 0 ){
 		LogWarn("RemoveRequiresEventHandlingCount called with pRequiresEventHandlingCount == 0");
 		return;

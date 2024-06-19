@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-#include "deModIO.h"
+#include "deModio.h"
 #include "deModioService.h"
 
 #include <dragengine/deEngine.h>
@@ -34,25 +34,93 @@
 // Class deModioService
 /////////////////////////////
 
-const char * const deModioService::serviceName = "ModIO";
+const char * const deModioService::serviceName = "Mod.io";
+deModioService *deModioService::pGlobalService = nullptr;
+
 
 // Constructor, destructor
 ////////////////////////////
 
-deModioService::deModioService( deModIO &module,
+deModioService::deModioService( deModio &module,
 deService *service, const deServiceObject::Ref &data ) :
 pModule( module ),
 pService( service ),
-pIsInitialized( false )
+pPortal( Modio::Portal::None ),
+pIsInitialized( false ),
 pRequiresEventHandlingCount( 0 )
 {
-	pApiKey = data->GetChildAt( "apiKey" )->GetString();
-	pGameId = data->GetChildAt( "gameId" )->GetString();
-	pUserId = data->GetChildAt( "userId" )->GetString();
-	pGameEnv = data->GetChildAt( "gameEnvironment" )->GetString();
-	pPortal = data->GetChildAt( "portalInUse" )->GetString();
+	if( pGlobalService ){
+		DETHROW_INFO( deeInvalidAction, "Duplicate service" );
+	}
 	
-	//AddRequiresEventHandlingCount();
+	pApiKey = data->GetChildAt( "apiKey" )->GetString();
+	pGameId = ( uint64_t )data->GetChildAt( "gameId" )->GetString().ToLongValid();
+	pUserId = data->GetChildAt( "userId" )->GetString();
+	
+	const decString &environment = data->GetChildAt( "environment" )->GetString();
+	if( environment == "live" ){
+		pEnvironment = Modio::Environment::Live;
+		
+	}else if( environment == "test" ){
+		pEnvironment = Modio::Environment::Test;
+		
+	}else{
+		decString message;
+		message.Format( "Invalid environment: %s", environment.GetString() );
+		DETHROW_INFO( deeInvalidParam, message );
+	}
+	
+	deServiceObject::Ref child( data->GetChildAt( "portal" ) );
+	if( child ){
+		const decString &portal = child->GetString();
+		if( portal == "apple" ){
+			pPortal = Modio::Portal::Apple;
+			
+		}else if( portal == "epicGamesStore" ){
+			pPortal = Modio::Portal::EpicGamesStore;
+			
+		}else if( portal == "gog" ){
+			pPortal = Modio::Portal::GOG;
+			
+		}else if( portal == "google" ){
+			pPortal = Modio::Portal::Google;
+			
+		}else if( portal == "itchio" ){
+			pPortal = Modio::Portal::Itchio;
+			
+		}else if( portal == "nintendo" ){
+			pPortal = Modio::Portal::Nintendo;
+			
+		}else if( portal == "psn" ){
+			pPortal = Modio::Portal::PSN;
+			
+		}else if( portal == "steam" ){
+			pPortal = Modio::Portal::Steam;
+			
+		}else if( portal == "xboxLive" ){
+			pPortal = Modio::Portal::XboxLive;
+			
+		}else{
+			decString message;
+			message.Format( "Invalid portal: %s", portal.GetString() );
+			DETHROW_INFO( deeInvalidParam, message );
+		}
+	}
+	
+	Modio::InitializeOptions options;
+	options.APIKey = Modio::ApiKey( pApiKey.GetString() );
+	options.GameID = Modio::GameID( pGameId );
+	options.User = pUserId;
+	options.GameEnvironment = pEnvironment;
+	options.PortalInUse = pPortal;
+	
+	module.LogInfo( "deModioService: Initialize service" );
+	Modio::InitializeAsync( options, [ this ]( Modio::ErrorCode ec ){
+		pOnInitializeFinished( ec );
+	});
+	
+	pGlobalService = this;
+	AddRequiresEventHandlingCount();
 }
 
 deModioService::~deModioService(){
@@ -62,17 +130,20 @@ deModioService::~deModioService(){
 	
 	if( pIsInitialized ){
 		bool done = false;
-		AddRequiresEventHandlingCount();
 		
-		Modio::ShutdownAsync( [ &done ]( Modio::ErrorCode ec ){
+		Modio::ShutdownAsync( [ &done ]( Modio::ErrorCode ){
 			done = true;
 		});
 		
 		while( ! done ){
-			nanosleep( 100 );
+			Modio::RunPendingHandlers();
 		}
-		
-		RemoveRequiresEventHandlingCount();
+	}
+	
+	pGlobalService = nullptr;
+	
+	if( pRequiresEventHandlingCount > 0 ){
+		pModule.RemoveRequiresEventHandlingCount();
 	}
 }
 
@@ -209,3 +280,25 @@ void deModioService::RemoveRequiresEventHandlingCount(){
 
 // Callbacks
 //////////////
+
+void deModioService::pOnInitializeFinished( Modio::ErrorCode ec ){
+	pModule.LogInfoFormat( "deModioService: Initialize service finished: ec(%d)[%s]",
+		ec.value(), ec.message().c_str() );
+	RemoveRequiresEventHandlingCount();
+	
+	const deServiceObject::Ref data( deServiceObject::Ref::New( new deServiceObject ) );
+	
+	data->SetStringChildAt( "event", "initialized" );
+	
+	if( ec ) {
+		data->SetBoolChildAt( "success", false );
+		data->SetIntChildAt( "code", ec.value() );
+		data->SetStringChildAt( "message", ec.message().c_str() );
+		
+	} else {
+		data->SetBoolChildAt( "success", true );
+		pIsInitialized = true;
+	}
+	
+	pModule.GetGameEngine()->GetServiceManager()->QueueEventReceived( deService::Ref( pService ), data );
+}

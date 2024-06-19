@@ -22,8 +22,10 @@
  * SOFTWARE.
  */
 
-#ifndef _DEMODIOSERVICE_H_
-#define _DEMODIOSERVICE_H_
+#ifndef _deModioSERVICE_H_
+#define _deModioSERVICE_H_
+
+#include <stdint.h>
 
 #include "deModioPendingRequest.h"
 #include "modio.h"
@@ -32,12 +34,12 @@
 #include <dragengine/systems/modules/service/deBaseServiceService.h>
 #include <dragengine/resources/service/deServiceObject.h>
 
-class deModIO;
+class deModio;
 class deService;
 
 
 /**
- * ModIO mods service.
+ * Mod.io mods service.
  */
 class deModioService : public deBaseServiceService{
 public:
@@ -45,19 +47,25 @@ public:
 	
 	
 private:
-	deModIO &pModule;
+	deModio &pModule;
 	deService * const pService;
 	decObjectList pPendingRequests;
-	decString pApiKey, pGameId, pUserId, pGameEnv, pPortal;
+	decString pApiKey;
+	uint64_t pGameId;
+	decString pUserId;
+	Modio::Environment pEnvironment;
+	Modio::Portal pPortal;
 	bool pIsInitialized;
 	int pRequiresEventHandlingCount;
+	
+	static deModioService *pGlobalService;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create module. */
-	deModioService( deModIO &module, deService *service, const deServiceObject::Ref &data );
+	deModioService( deModio &module, deService *service, const deServiceObject::Ref &data );
 	
 	/** Delete module. */
 	~deModioService() override;
@@ -102,8 +110,10 @@ public:
 	
 	
 	
+private:
 	/** \name Callbacks */
 	/*@{*/
+	void pOnInitializeFinished( Modio::ErrorCode ec );
 	/*@}*/
 };
 

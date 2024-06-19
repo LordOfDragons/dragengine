@@ -5,7 +5,7 @@ Import('parent_env parent_targets parent_report')
 envModule = parent_env.Clone()
 
 buildModule = envModule['build_service_modio'] != TernaryVariableNo
-parent_report['build ModIO Service Module'] = 'yes' if buildModule else 'no'
+parent_report['build Mod.io Service Module'] = 'yes' if buildModule else 'no'
 
 if not buildModule or 'lib_modio' not in parent_targets:
 	Return()
@@ -86,7 +86,7 @@ buildCloc = envModule.Alias('srv_modio_cloc', buildClocBare)
 
 # add the targets to the targets list
 parent_targets['srv_modio'] = {
-	'name' : 'ModIO Service Module',
+	'name' : 'Mod.io Service Module',
 	'build' : targetBuild,
 	'install' : targetInstall,
 	'install-engine-runtime' : targetInstall,

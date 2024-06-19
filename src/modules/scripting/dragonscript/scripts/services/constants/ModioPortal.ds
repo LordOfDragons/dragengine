@@ -22,35 +22,54 @@
  * SOFTWARE.
  */
 
-#ifndef _deModioPENDINGREQUEST_H_
-#define _deModioPENDINGREQUEST_H_
-
-#include <dragengine/deObject.h>
-#include <dragengine/common/utils/decUniqueID.h>
-#include <dragengine/resources/service/deServiceObject.h>
-
+namespace Dragengine.Services
 
 /**
- * Pending service request.
+ * Store portal for use with ServiceModio. If know know null is used.
  */
-class deModioPendingRequest : public deObject{
-public:
-	typedef deTObjectReference<deModioPendingRequest> Ref;
+enum ModioPortal
+	/**
+	 * Apple store.
+	 */
+	apple
 	
+	/**
+	 * Epic games store.
+	 */
+	epicGamesStore
 	
-	decUniqueID id;
-	decString function;
-	deServiceObject::Ref data;
+	/**
+	 * GoG store.
+	 */
+	gog
 	
+	/**
+	 * Google store.
+	 */
+	google
 	
-	/** \name Constructors and Destructors */
-	/*@{*/
-	/** Create module. */
-	deModioPendingRequest( const deServiceObject::Ref &data = nullptr );
+	/**
+	 * ItchIO store.
+	 */
+	itchio
 	
-	/** Delete module. */
-	~deModioPendingRequest() override;
-	/*@}*/
-};
-
-#endif
+	/**
+	 * Nintendo store.
+	 */
+	nintendo
+	
+	/**
+	 * Playstation store.
+	 */
+	psn
+	
+	/**
+	 * Steam store.
+	 */
+	steam
+	
+	/**
+	 * XBox live.
+	 */
+	xboxLive
+end
