@@ -59,7 +59,7 @@ def modioBuild(target, source, env):
 	script = createScriptHeader(env, deps=deps, cppflags=cppflags, cflags=cppflags)
 	
 	# modio cmake scripts seem to only look at CXXFLAGS not CPPFLAGS
-	script.append('export CXXFLAGS=$CPPFLAGS')
+	script.append('export CXXFLAGS="$CPPFLAGS"')
 	
 	script.append('cd "{}" || exit 1'.format(cmakeBuildDir))
 	
