@@ -31,7 +31,7 @@ namespace Dragengine.Services
  */
 class DefaultServiceStatsListener implements ServiceStatsListener
 	/**
-	 * Create new instance of DefaultServiceStatsListener.
+	 * \brief Create new instance of DefaultServiceStatsListener.
 	 */
 	func new()
 	end
@@ -39,7 +39,7 @@ class DefaultServiceStatsListener implements ServiceStatsListener
 	
 	
 	/**
-	 * Stats and achievements have been received in response to a service request.
+	 * \brief Stats and achievements have been received in response to a service request.
 	 * 
 	 * \param service Service sending the event.
 	 * 
@@ -53,7 +53,7 @@ class DefaultServiceStatsListener implements ServiceStatsListener
 	end
 	
 	/**
-	 * Failed retrieving stats and achievements in response to a service request.
+	 * \brief Failed retrieving stats and achievements in response to a service request.
 	 * 
 	 * \param service Service sending the event.
 	 * \param message Error message from the steam server.
@@ -76,7 +76,7 @@ class DefaultServiceStatsListener implements ServiceStatsListener
 	end
 	
 	/**
-	 * Failed storing stats and achievements in response to a service request.
+	 * \brief Failed storing stats and achievements in response to a service request.
 	 * 
 	 * \param service Service sending the event.
 	 * \param message Error message from the steam server.

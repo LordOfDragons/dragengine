@@ -315,8 +315,8 @@ deServiceObject::Ref deMCCommon::FileMetadata( const Modio::FileMetadata &data )
 	so->SetChildAt( "dateAdded", DateTime( data.DateAdded ) );
 	so->SetChildAt( "currentVirusScanStatus", VirusScanStatus( data.CurrentVirusScanStatus ) );
 	so->SetChildAt( "currentVirusStatus", VirusStatus( data.CurrentVirusStatus ) );
-	so->SetChildAt( "filesize", Int64( data.Filesize ) );
-	so->SetChildAt( "filesizeUncompressed", Int64( data.FilesizeUncompressed ) );
+	so->SetFloatChildAt( "filesize", ( float )data.Filesize );
+	so->SetFloatChildAt( "filesizeUncompressed", ( float )data.FilesizeUncompressed );
 	so->SetStringChildAt( "filename", data.Filename.c_str() );
 	so->SetStringChildAt( "version", data.Version.c_str() );
 	

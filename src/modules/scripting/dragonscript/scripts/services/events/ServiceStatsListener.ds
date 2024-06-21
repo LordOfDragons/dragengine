@@ -31,7 +31,7 @@ namespace Dragengine.Services
  */
 interface ServiceStatsListener
 	/**
-	 * Stats and achievements have been received in response to a service request.
+	 * \brief Stats and achievements have been received in response to a service request.
 	 * 
 	 * \param service Service sending the event.
 	 * 
@@ -44,7 +44,7 @@ interface ServiceStatsListener
 	func void statsReceived(ServiceStats service, Dictionary stats, Dictionary achievements)
 	
 	/**
-	 * Failed retrieving stats and achievements in response to a service request.
+	 * \brief Failed retrieving stats and achievements in response to a service request.
 	 * 
 	 * \param service Service sending the event.
 	 * \param message Error message from the steam server.
@@ -65,7 +65,7 @@ interface ServiceStatsListener
 	func void statsStored(ServiceStats service, Dictionary stats, Dictionary achievements)
 	
 	/**
-	 * Failed storing stats and achievements in response to a service request.
+	 * \brief Failed storing stats and achievements in response to a service request.
 	 * 
 	 * \param service Service sending the event.
 	 * \param message Error message from the steam server.

@@ -343,6 +343,7 @@ void deClassService::CreateClassMembers( dsEngine *engine ){
 	init.clsObject = engine->GetClassObject();
 	init.clsServiceListener = pDS.GetClassServiceListener();
 	init.clsServiceObject = pDS.GetClassServiceObject();
+	init.clsUniqueID = pDS.GetClassUniqueID();
 	
 	AddFunction( new nfNew( init ) );
 	AddFunction( new nfNew2( init ) );

@@ -25,54 +25,75 @@
 namespace Dragengine.Services
 
 /**
- * \brief Store portal for use with ServiceModio.
+ * \brief Field to use for sorting modifications.
  * \version 1.23
- * 
- * If not know use null.
  */
-enum ModioPortal
+enum ServiceModSortField
 	/**
-	 * \brief Apple store.
+	 * \brief Modification identifier.
+	 * 
+	 * Supported by:
+	 * - ServiceModio
 	 */
-	apple
+	id
 	
 	/**
-	 * \brief Epic games store.
+	 * \brief Count of downloads in last 24 hours.
+	 * 
+	 * Count is given as floating point value.
+	 * 
+	 * Supported by:
+	 * - ServiceModio
 	 */
-	epicGamesStore
+	downloadsToday
 	
 	/**
-	 * \brief GoG store.
+	 * \brief Count of subscribers.
+	 * 
+	 * Count is given as floating point value.
+	 * 
+	 * Supported by:
+	 * - ServiceModio
 	 */
-	gog
+	subscriberCount
 	
 	/**
-	 * \brief Google store.
+	 * \brief Average modification rating.
+	 * 
+	 * Rating is given as floating point value in the range from 0 (worst) to 1 (best).
+	 * 
+	 * Supported by:
+	 * - ServiceModio
 	 */
-	google
+	rating
 	
 	/**
-	 * \brief ItchIO store.
+	 * \brief Date modification has been marked live.
+	 * 
+	 * Value is a DateTime instance.
+	 * 
+	 * Supported by:
+	 * - ServiceModio
 	 */
-	itchio
+	dateMarkedLive
 	
 	/**
-	 * \brief Nintendo store.
+	 * \brief Date modification has been last updated.
+	 * 
+	 * Value is a DateTime instance.
+	 * 
+	 * Supported by:
+	 * - ServiceModio
 	 */
-	nintendo
+	dateUpdated
 	
 	/**
-	 * \brief Playstation store.
+	 * \brief Total count of downloads.
+	 * 
+	 * Count is given as floating point value.
+	 * 
+	 * Supported by:
+	 * - ServiceModio
 	 */
-	psn
-	
-	/**
-	 * \brief Steam store.
-	 */
-	steam
-	
-	/**
-	 * \brief XBox live.
-	 */
-	xboxLive
+	downloadsTotal
 end

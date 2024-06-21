@@ -22,57 +22,20 @@
  * SOFTWARE.
  */
 
-namespace Dragengine.Services
+namespace Dragengine.Gui
 
 /**
- * \brief Store portal for use with ServiceModio.
+ * \brief Sort direction.
  * \version 1.23
- * 
- * If not know use null.
  */
-enum ModioPortal
+enum SortDirection
 	/**
-	 * \brief Apple store.
+	 * Sort in ascending order.
 	 */
-	apple
+	ascending
 	
 	/**
-	 * \brief Epic games store.
+	 * Sort in descending order.
 	 */
-	epicGamesStore
-	
-	/**
-	 * \brief GoG store.
-	 */
-	gog
-	
-	/**
-	 * \brief Google store.
-	 */
-	google
-	
-	/**
-	 * \brief ItchIO store.
-	 */
-	itchio
-	
-	/**
-	 * \brief Nintendo store.
-	 */
-	nintendo
-	
-	/**
-	 * \brief Playstation store.
-	 */
-	psn
-	
-	/**
-	 * \brief Steam store.
-	 */
-	steam
-	
-	/**
-	 * \brief XBox live.
-	 */
-	xboxLive
+	descending
 end

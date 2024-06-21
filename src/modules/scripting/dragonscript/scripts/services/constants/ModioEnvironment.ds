@@ -25,16 +25,17 @@
 namespace Dragengine.Services
 
 /**
- * Environment to use for ServiceModio.
+ * \brief Environment to use for ServiceModio.
+ * \version 1.23
  */
 enum ModioEnvironment
 	/**
-	 * Live environment. For use in production.
+	 * \brief Live environment. For use in production.
 	 */
 	live
 	
 	/**
-	 * Test environment. For use in development.
+	 * \brief Test environment. For use in development.
 	 */
 	test
 end

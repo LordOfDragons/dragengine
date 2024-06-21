@@ -1,0 +1,73 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Services
+
+
+/**
+ * \brief Interface for services supporting managing game modifications.
+ * \version 1.23
+ */
+interface ServiceMods
+	/**
+	 * \brief Add modification listener.
+	 * \param listener Listener to add
+	 */
+	func void addModsListener(ServiceModsListener listener)
+	
+	/**
+	 * \brief Remove modification listener.
+	 * \param listener Listener to remove.
+	 */
+	func void removeModsListener(ServiceModsListener listener)
+	
+	
+	
+	/**
+	 * \brief Filtered list of available game modifications.
+	 * 
+	 * Requests a list of game modifications using the provided filters. All filter
+	 * parameters set to null cause default values to be used as defined by the
+	 * service provider. Filters not supported by the service provider are ignored.
+	 * 
+	 * Once the results are retrieved the service calls
+	 * \ref ServiceModsListener#listModsFinished(ServiceMods,UniqueID,Array) or
+	 * \ref ServiceModsListener#listModsFailed(ServiceMods,UniqueID,String).
+	 * The returned request identifier can be used in the listener methods to identify
+	 * which request the received response belongs to.
+	 * 
+	 * Receiving the results can take considerable amount of time depending on the
+	 * load of the service provider. To cancel the 
+	 */
+	func UniqueID listAllMods(ServiceModFilter filter)
+	
+	/**
+	 * \brief Cancel request.
+	 * 
+	 * Safe to be called if request has been already cancelled or does not exist.
+	 * 
+	 * \param id Identifier of request to cancel.
+	 */
+	func void cancelRequest(UniqueID id)
+end

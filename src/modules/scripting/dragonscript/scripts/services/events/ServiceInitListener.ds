@@ -31,15 +31,18 @@ namespace Dragengine.Services
  */
 interface ServiceInitListener
 	/**
-	 * Service initialization succeeded. Service functionality can not be used.
+	 * \brief Service initialization succeeded.
+	 * 
+	 * Service functionality can not be used.
 	 * 
 	 * \param service Service sending the event.
 	 */
 	func void initSucceeded(Object service)
 	
 	/**
-	 * Service initialization failed. Service functionality can not be used.
-	 * Dispose of the service and try again.
+	 * \brief Service initialization failed.
+	 * 
+	 * Service functionality can not be used. Dispose of the service and try again.
 	 * 
 	 * \param service Service sending the event.
 	 * \param message Error message.

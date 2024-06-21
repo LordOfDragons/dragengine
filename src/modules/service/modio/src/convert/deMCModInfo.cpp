@@ -105,8 +105,7 @@ deServiceObject::Ref deMCModInfo::ModInfo( const Modio::ModInfo &info ){
 	}
 	
 	if( info.FileInfo.has_value() ){
-		/// @brief Information about the mod's most recent public release
-		Modio::Optional<Modio::FileMetadata> FileInfo = {};
+		so->SetChildAt( "fileInfo", deMCCommon::FileMetadata( *info.FileInfo ) );
 	}
 	
 	if( ! info.MetadataKvp.empty() ){

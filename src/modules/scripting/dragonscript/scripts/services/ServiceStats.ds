@@ -26,7 +26,8 @@ namespace Dragengine.Services
 
 
 /**
- * Interface for services supporting stats and achievements.
+ * \brief Interface for services supporting stats and achievements.
+ * \version 1.23
  */
 interface ServiceStats
 	/**

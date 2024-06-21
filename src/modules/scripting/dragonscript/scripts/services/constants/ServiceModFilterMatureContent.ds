@@ -25,54 +25,30 @@
 namespace Dragengine.Services
 
 /**
- * \brief Store portal for use with ServiceModio.
+ * \brief Mature content filter value.
  * \version 1.23
  * 
- * If not know use null.
+ * Supported by:
+ * - ServiceModio
  */
-enum ModioPortal
+enum ServiceModFilterMatureContent
 	/**
-	 * \brief Apple store.
+	 * Contains use or reference to alcohol substances.
 	 */
-	apple
+	alcohol
 	
 	/**
-	 * \brief Epic games store.
+	 * Contains use or reference to drugs and other adictive substances.
 	 */
-	epicGamesStore
+	drugs
 	
 	/**
-	 * \brief GoG store.
+	 * Contains display or reference to violent acts.
 	 */
-	gog
+	violence
 	
 	/**
-	 * \brief Google store.
+	 * Contains explicit content.
 	 */
-	google
-	
-	/**
-	 * \brief ItchIO store.
-	 */
-	itchio
-	
-	/**
-	 * \brief Nintendo store.
-	 */
-	nintendo
-	
-	/**
-	 * \brief Playstation store.
-	 */
-	psn
-	
-	/**
-	 * \brief Steam store.
-	 */
-	steam
-	
-	/**
-	 * \brief XBox live.
-	 */
-	xboxLive
+	explicit
 end

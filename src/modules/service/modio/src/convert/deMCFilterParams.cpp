@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+#include <dragengine/common/math/decMath.h>
+
 #include "deMCFilterParams.h"
 #include "deMCUser.h"
 #include "deMCModInfo.h"
@@ -182,12 +184,12 @@ Modio::FilterParams deMCFilterParams::FilterParams( const deServiceObject &so ){
 	
 	value = so.GetChildAt( "startIndex" );
 	if( value ){
-		startIndex = value->GetInteger();
+		startIndex = decMath::max( value->GetInteger(), 0 );
 	}
 	
 	value = so.GetChildAt( "resultCount" );
 	if( value ){
-		resultCount = value->GetInteger();
+		resultCount = decMath::clamp( value->GetInteger(), 1, 100 );
 	}
 	
 	filter.IndexedResults( startIndex, resultCount );

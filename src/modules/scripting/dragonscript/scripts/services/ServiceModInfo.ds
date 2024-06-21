@@ -1,0 +1,169 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Services
+
+/**
+ * \brief Information about game modification.
+ * \version 1.23
+ */
+class ServiceModInfo
+	/**
+	 * \brief Identifier.
+	 */
+	public var String id
+	
+	/**
+	 * \brief Profile name.
+	 */
+	public var String name
+	
+	/**
+	 * \brief Profile summary.
+	 */
+	public var String summary
+	
+	/**
+	 * \brief Profile description in HTML format.
+	 */
+	public var String descriptionHtml
+	
+	/**
+	 * \brief Profile description in plain text.
+	 */
+	public var String descriptionText
+	
+	/**
+	 * \brief Profil URL.
+	 */
+	public var String url
+	
+	/**
+	 * \brief User who submitted the modification.
+	 */
+	public var Object submittedBy
+	
+	/**
+	 * \brief Date of modification registration.
+	 */
+	public var TimeDate dateAdded
+	
+	/**
+	 * \brief Date of last modificaiton update.
+	 */
+	public var TimeDate dateUpdated
+	
+	/**
+	 * \brief Date of modification marked live.
+	 */
+	public var TimeDate dateReleased
+	
+	/**
+	 * \brief Mature option flags.
+	 * 
+	 * Set of ServiceModFilterMatureContent.
+	 */
+	public var Set maturityOptions
+	
+	/**
+	 * \brief Metadata set by modification developer.
+	 */
+	public var String metadata
+	
+	/**
+	 * \brief Meta data dictionary.
+	 * 
+	 * Dictionary with String key and String value.
+	 */
+	public var Dictionary metadataMap
+	
+	/**
+	 * \brief Information about most recent public release of modification.
+	 */
+	public var Object fileInfo
+	
+	/**
+	 * \brief Tags.
+	 * 
+	 * Set of ...
+	 */
+	public var Set tags
+	
+	/**
+	 * \brief Gallery images.
+	 * 
+	 * Array of ...
+	 */
+	public var Array images
+	
+	/**
+	 * \brief External links like videos or social media platforms.
+	 * 
+	 * Array of ...
+	 */
+	public var Array links
+	
+	/**
+	 * \brief Stats and ratings for modification.
+	 */
+	public var Object stats
+	
+	/**
+	 * \brief Modification logo.
+	 */
+	public var Object logo
+	
+	/**
+	 * \brief Current modification version.
+	 */
+	public var String version
+	
+	/**
+	 * \brief Status of modification.
+	 */
+	public var Object status
+	
+	/**
+	 * \brief Visibility of modification.
+	 */
+	public var Object visibility
+	
+	/**
+	 * \brief Price of modification.
+	 */
+	public var String price
+	
+	/**
+	 * \brief Modification has direct dependencies.
+	 */
+	public var bool hasDependencies
+	
+	
+	
+	/**
+	 * Create new instance of class ServiceModInfo.
+	 */
+	func new()
+	end
+end

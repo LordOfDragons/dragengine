@@ -86,7 +86,7 @@ class ServiceSteamSdk implements ServiceStats, ServiceListener
 	
 	
 	/**
-	 * Steam application identifier.
+	 * \brief Steam application identifier.
 	 */
 	func int getAppId()
 		return pAppId

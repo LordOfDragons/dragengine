@@ -26,6 +26,7 @@
 #include "deModioService.h"
 #include "convert/deMCCommon.h"
 #include "convert/deMCFilterParams.h"
+#include "convert/deMCModInfo.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/utils/decUniqueID.h>
@@ -73,6 +74,13 @@ pRequiresEventHandlingCount( 0 )
 	options.PortalInUse = pPortal;
 	
 	module.LogInfo( "deModioService: Initialize service" );
+	Modio::SetLogLevel( Modio::LogLevel::Trace );
+	// Modio::SetLogLevel( Modio::LogLevel::Info );
+	
+	Modio::SetLogCallback( [ this ]( Modio::LogLevel level, const std::string &message ){
+		pOnLogCallback( level, message );
+	});
+	
 	Modio::InitializeAsync( options, [ this ]( Modio::ErrorCode ec ){
 		pOnInitializeFinished( ec );
 	});
@@ -97,6 +105,8 @@ deModioService::~deModioService(){
 			Modio::RunPendingHandlers();
 		}
 	}
+	
+	Modio::SetLogCallback( []( Modio::LogLevel, const std::string& ){} );
 	
 	pGlobalService = nullptr;
 	
@@ -205,6 +215,7 @@ void deModioService::ListAllMods( const decUniqueID &id, const deServiceObject &
 	
 	NewPendingRequest( id, "listAllMods" );
 	
+	AddRequiresEventHandlingCount();
 	Modio::ListAllModsAsync( filter, [ this, id ]( Modio::ErrorCode ec, Modio::Optional<Modio::ModInfoList> results ){
 		pOnListAllModsFinished( id, ec, results );
 	});
@@ -291,6 +302,7 @@ void deModioService::pOnInitializeFinished( Modio::ErrorCode ec ){
 
 void deModioService::pOnListAllModsFinished( const decUniqueID &id,
 Modio::ErrorCode ec, Modio::Optional<Modio::ModInfoList> results ){
+	RemoveRequiresEventHandlingCount();
 	if( ec ){
 		FailRequest( id, ec );
 		return;
@@ -306,8 +318,7 @@ Modio::ErrorCode ec, Modio::Optional<Modio::ModInfoList> results ){
 		
 		if( results.has_value() ){
 			for( const Modio::ModInfo &mod : *results ){
-				// TODO 
-				( void )mod.ProfileName;
+				outMods->AddChild( deMCModInfo::ModInfo( mod ) );
 			}
 		}
 		
@@ -318,5 +329,22 @@ Modio::ErrorCode ec, Modio::Optional<Modio::ModInfoList> results ){
 		
 	}catch( const deException &e ){
 		FailRequest( pr->id, e );
+	}
+}
+
+void deModioService::pOnLogCallback( Modio::LogLevel level, const std::string &message ){
+	switch( level ){
+	case Modio::LogLevel::Trace:
+	case Modio::LogLevel::Info:
+		pModule.LogInfoFormat( "Log: %s", message.c_str() );
+		break;
+		
+	case Modio::LogLevel::Warning:
+		pModule.LogWarnFormat( "Log: %s", message.c_str() );
+		break;
+		
+	case Modio::LogLevel::Error:
+		pModule.LogErrorFormat( "Log: %s", message.c_str() );
+		break;
 	}
 }

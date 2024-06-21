@@ -24,55 +24,35 @@
 
 namespace Dragengine.Services
 
+
 /**
- * \brief Store portal for use with ServiceModio.
+ * \brief Default implementation of ServiceModsListener.
  * \version 1.23
- * 
- * If not know use null.
  */
-enum ModioPortal
+class DefaultServiceModsListener implements ServiceModsListener
 	/**
-	 * \brief Apple store.
+	 * \brief Create new instance of DefaultServiceModsListener.
 	 */
-	apple
+	func new()
+	end
+	
+	
 	
 	/**
-	 * \brief Epic games store.
+	 * \brief List of modification information received in response to a service request.
+	 * \param service Service sending the event.
+	 * \param requestId Identifier of request this response belongs to.
+	 * \param mods Array containing ServiceModInfo.
 	 */
-	epicGamesStore
+	func void listModsFinished(ServiceMods service, UniqueID requestId, Array mods)
+	end
 	
 	/**
-	 * \brief GoG store.
+	 * \brief Listing modifications failed.
+	 * \param service Service sending the event.
+	 * \param requestId Identifier of failed request.
+	 * \param message Error message from the steam server.
 	 */
-	gog
-	
-	/**
-	 * \brief Google store.
-	 */
-	google
-	
-	/**
-	 * \brief ItchIO store.
-	 */
-	itchio
-	
-	/**
-	 * \brief Nintendo store.
-	 */
-	nintendo
-	
-	/**
-	 * \brief Playstation store.
-	 */
-	psn
-	
-	/**
-	 * \brief Steam store.
-	 */
-	steam
-	
-	/**
-	 * \brief XBox live.
-	 */
-	xboxLive
+	func void listModsFailed(ServiceMods service, UniqueID requestId, String message)
+	end
 end

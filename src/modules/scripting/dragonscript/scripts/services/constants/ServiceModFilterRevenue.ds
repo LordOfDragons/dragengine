@@ -25,54 +25,20 @@
 namespace Dragengine.Services
 
 /**
- * \brief Store portal for use with ServiceModio.
+ * \brief Revenue filter value.
  * \version 1.23
  * 
- * If not know use null.
+ * Supported by:
+ * - ServiceModio
  */
-enum ModioPortal
+enum ServiceModFilterRevenue
 	/**
-	 * \brief Apple store.
+	 * \brief Filter free modifications.
 	 */
-	apple
+	free
 	
 	/**
-	 * \brief Epic games store.
+	 * \brief Filter paid modifications.
 	 */
-	epicGamesStore
-	
-	/**
-	 * \brief GoG store.
-	 */
-	gog
-	
-	/**
-	 * \brief Google store.
-	 */
-	google
-	
-	/**
-	 * \brief ItchIO store.
-	 */
-	itchio
-	
-	/**
-	 * \brief Nintendo store.
-	 */
-	nintendo
-	
-	/**
-	 * \brief Playstation store.
-	 */
-	psn
-	
-	/**
-	 * \brief Steam store.
-	 */
-	steam
-	
-	/**
-	 * \brief XBox live.
-	 */
-	xboxLive
+	paid
 end

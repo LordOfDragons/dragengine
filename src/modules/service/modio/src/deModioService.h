@@ -120,6 +120,8 @@ private:
 	
 	void pOnListAllModsFinished( const decUniqueID &id, Modio::ErrorCode ec,
 		Modio::Optional<Modio::ModInfoList> results );
+	
+	void pOnLogCallback( Modio::LogLevel level, const std::string &message );
 	/*@}*/
 };
 
