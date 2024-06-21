@@ -102,7 +102,10 @@ public:
 	deModioPendingRequest::Ref NewPendingRequest( const decUniqueID &id,
 		const decString &function, const deServiceObject::Ref &data = nullptr );
 	
+	void ListAllMods( const decUniqueID &id, const deServiceObject &request );
+	
 	void FailRequest( const decUniqueID &id, const deException &e );
+	void FailRequest( const decUniqueID &id, const Modio::ErrorCode &ec );
 	
 	void AddRequiresEventHandlingCount();
 	void RemoveRequiresEventHandlingCount();
@@ -114,6 +117,9 @@ private:
 	/** \name Callbacks */
 	/*@{*/
 	void pOnInitializeFinished( Modio::ErrorCode ec );
+	
+	void pOnListAllModsFinished( const decUniqueID &id, Modio::ErrorCode ec,
+		Modio::Optional<Modio::ModInfoList> results );
 	/*@}*/
 };
 

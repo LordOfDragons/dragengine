@@ -25,6 +25,8 @@
 #ifndef _DESERVICEOBJECT_H_
 #define _DESERVICEOBJECT_H_
 
+#include <stdint.h>
+
 #include "../../common/collection/decObjectList.h"
 #include "../../common/collection/decObjectDictionary.h"
 #include "../../common/file/decMemoryFile.h"
@@ -84,7 +86,7 @@ private:
 	union{
 		bool pBoolean;
 		int pInteger;
-		double pFloat;
+		float pFloat;
 	};
 	decString pString;
 	deResource::Ref pResource;
@@ -107,7 +109,7 @@ public:
 	static deServiceObject::Ref NewInt( int value );
 	
 	/** \brief Create service object of type evtFloat. */
-	static deServiceObject::Ref NewFloat( double value );
+	static deServiceObject::Ref NewFloat( float value );
 	
 	/** \brief Create service object of type evtString. */
 	static deServiceObject::Ref NewString( const char *value );
@@ -180,13 +182,13 @@ public:
 	 * \brief Float value.
 	 * \throws EInvalidParam Value type is not evtFloat.
 	 */
-	double GetFloat() const;
+	float GetFloat() const;
 	
 	/**
 	 * \brief Set object to float value.
 	 * \throws EInvalidParam Value type is not evtFloat.
 	 */
-	void SetFloat( double value );
+	void SetFloat( float value );
 	
 	
 	
@@ -320,7 +322,7 @@ public:
 	 * \brief Add float type child object.
 	 * \throws EInvalidParam Value type is not evtList.
 	 */
-	void AddFloatChild( double value );
+	void AddFloatChild( float value );
 	
 	/**
 	 * \brief Add float type child object.
@@ -329,7 +331,7 @@ public:
 	 * 
 	 * \throws EInvalidParam Value type is not evtDictionary.
 	 */
-	void SetFloatChildAt( const char *key, double value );
+	void SetFloatChildAt( const char *key, float value );
 	
 	/**
 	 * \brief Add string type child object.

@@ -42,8 +42,7 @@ interface ServiceInitListener
 	 * Dispose of the service and try again.
 	 * 
 	 * \param service Service sending the event.
-	 * \param code Error code.
 	 * \param message Error message.
 	 */
-	func void initFailed(Object service, int code, String message)
+	func void initFailed(Object service, String message)
 end

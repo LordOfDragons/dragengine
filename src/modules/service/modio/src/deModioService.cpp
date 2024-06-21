@@ -24,6 +24,8 @@
 
 #include "deModio.h"
 #include "deModioService.h"
+#include "convert/deMCCommon.h"
+#include "convert/deMCFilterParams.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/utils/decUniqueID.h>
@@ -56,55 +58,11 @@ pRequiresEventHandlingCount( 0 )
 	pApiKey = data->GetChildAt( "apiKey" )->GetString();
 	pGameId = ( uint64_t )data->GetChildAt( "gameId" )->GetString().ToLongValid();
 	pUserId = data->GetChildAt( "userId" )->GetString();
-	
-	const decString &environment = data->GetChildAt( "environment" )->GetString();
-	if( environment == "live" ){
-		pEnvironment = Modio::Environment::Live;
-		
-	}else if( environment == "test" ){
-		pEnvironment = Modio::Environment::Test;
-		
-	}else{
-		decString message;
-		message.Format( "Invalid environment: %s", environment.GetString() );
-		DETHROW_INFO( deeInvalidParam, message );
-	}
+	pEnvironment = deMCCommon::Environment( data->GetChildAt( "environment" ) );
 	
 	deServiceObject::Ref child( data->GetChildAt( "portal" ) );
 	if( child ){
-		const decString &portal = child->GetString();
-		if( portal == "apple" ){
-			pPortal = Modio::Portal::Apple;
-			
-		}else if( portal == "epicGamesStore" ){
-			pPortal = Modio::Portal::EpicGamesStore;
-			
-		}else if( portal == "gog" ){
-			pPortal = Modio::Portal::GOG;
-			
-		}else if( portal == "google" ){
-			pPortal = Modio::Portal::Google;
-			
-		}else if( portal == "itchio" ){
-			pPortal = Modio::Portal::Itchio;
-			
-		}else if( portal == "nintendo" ){
-			pPortal = Modio::Portal::Nintendo;
-			
-		}else if( portal == "psn" ){
-			pPortal = Modio::Portal::PSN;
-			
-		}else if( portal == "steam" ){
-			pPortal = Modio::Portal::Steam;
-			
-		}else if( portal == "xboxLive" ){
-			pPortal = Modio::Portal::XboxLive;
-			
-		}else{
-			decString message;
-			message.Format( "Invalid portal: %s", portal.GetString() );
-			DETHROW_INFO( deeInvalidParam, message );
-		}
+		pPortal = deMCCommon::Portal( child );
 	}
 	
 	Modio::InitializeOptions options;
@@ -154,8 +112,8 @@ deModioService::~deModioService(){
 void deModioService::StartRequest( const decUniqueID &id, const deServiceObject& request ){
 	const decString &function = request.GetChildAt( "function" )->GetString();
 	
-	if( function == "xxx" ){
-		///RequestCurrentStats( id );
+	if( function == "listAllMods" ){
+		ListAllMods( id, request );
 		
 	}else{
 		DETHROW_INFO( deeInvalidParam, "Unknown function" );
@@ -242,6 +200,18 @@ const decUniqueID &id, const decString &function, const deServiceObject::Ref &da
 
 
 
+void deModioService::ListAllMods( const decUniqueID &id, const deServiceObject &request ){
+	const Modio::FilterParams filter( deMCFilterParams::FilterParams( request ) );
+	
+	NewPendingRequest( id, "listAllMods" );
+	
+	Modio::ListAllModsAsync( filter, [ this, id ]( Modio::ErrorCode ec, Modio::Optional<Modio::ModInfoList> results ){
+		pOnListAllModsFinished( id, ec, results );
+	});
+}
+
+
+
 void deModioService::FailRequest( const decUniqueID &id, const deException &e ){
 	pModule.LogException( e );
 	
@@ -252,6 +222,21 @@ void deModioService::FailRequest( const decUniqueID &id, const deException &e ){
 	
 	pr->data->SetStringChildAt( "error", e.GetName().GetMiddle( 3 ) );
 	pr->data->SetStringChildAt( "message", e.GetDescription() );
+	pModule.GetGameEngine()->GetServiceManager()->QueueRequestFailed(
+		deService::Ref( pService ), id, pr->data );
+}
+
+void deModioService::FailRequest( const decUniqueID &id, const Modio::ErrorCode &ec ){
+	pModule.LogError( ec.message().c_str() );
+	
+	const deModioPendingRequest::Ref pr( RemoveFirstPendingRequestWithId( id ) );
+	if( ! pr ){
+		return;
+	}
+	
+	pr->data->SetIntChildAt( "code", ec.value() );
+	pr->data->SetStringChildAt( "error", ec.category().name() );
+	pr->data->SetStringChildAt( "message", ec.message().c_str() );
 	pModule.GetGameEngine()->GetServiceManager()->QueueRequestFailed(
 		deService::Ref( pService ), id, pr->data );
 }
@@ -293,6 +278,7 @@ void deModioService::pOnInitializeFinished( Modio::ErrorCode ec ){
 	if( ec ) {
 		data->SetBoolChildAt( "success", false );
 		data->SetIntChildAt( "code", ec.value() );
+		data->SetStringChildAt( "error", ec.category().name() );
 		data->SetStringChildAt( "message", ec.message().c_str() );
 		
 	} else {
@@ -301,4 +287,36 @@ void deModioService::pOnInitializeFinished( Modio::ErrorCode ec ){
 	}
 	
 	pModule.GetGameEngine()->GetServiceManager()->QueueEventReceived( deService::Ref( pService ), data );
+}
+
+void deModioService::pOnListAllModsFinished( const decUniqueID &id,
+Modio::ErrorCode ec, Modio::Optional<Modio::ModInfoList> results ){
+	if( ec ){
+		FailRequest( id, ec );
+		return;
+	}
+	
+	const deModioPendingRequest::Ref pr( RemoveFirstPendingRequestWithId( id ) );
+	if( ! pr ){
+		return;
+	}
+	
+	try{
+		const deServiceObject::Ref outMods( deServiceObject::NewList() );
+		
+		if( results.has_value() ){
+			for( const Modio::ModInfo &mod : *results ){
+				// TODO 
+				( void )mod.ProfileName;
+			}
+		}
+		
+		pr->data->SetChildAt( "mods", outMods );
+		
+		pModule.GetGameEngine()->GetServiceManager()->QueueRequestResponse(
+			deService::Ref( pService ), pr->id, pr->data, true );
+		
+	}catch( const deException &e ){
+		FailRequest( pr->id, e );
+	}
 }

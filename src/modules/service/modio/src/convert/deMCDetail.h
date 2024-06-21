@@ -22,34 +22,33 @@
  * SOFTWARE.
  */
 
-#ifndef _DEMODIOPENDINGREQUEST_H_
-#define _DEMODIOPENDINGREQUEST_H_
+#ifndef _DEMCAVATAR_H_
+#define _DEMCAVATAR_H_
 
-#include <dragengine/deObject.h>
-#include <dragengine/common/utils/decUniqueID.h>
+#include "../modio.h"
+
 #include <dragengine/resources/service/deServiceObject.h>
 
 
 /**
- * Pending service request.
+ * Convert user.
  */
-class deModioPendingRequest : public deObject{
+class deMCDetail{
+private:
+	deMCDetail() = default;
+	
 public:
-	typedef deTObjectReference<deModioPendingRequest> Ref;
+	/** Convert avatar. */
+	static deServiceObject::Ref Avatar( const Modio::Detail::Avatar &avatar );
 	
+	/** Convert image. */
+	static deServiceObject::Ref Image( const Modio::Detail::Image &image );
 	
-	decUniqueID id;
-	decString function;
-	deServiceObject::Ref data;
+	/** Convert image list. */
+	static deServiceObject::Ref ImageList( const std::vector<Modio::Detail::Image> &list );
 	
-	
-	/** \name Constructors and Destructors */
-	/*@{*/
-	/** Create module. */
-	deModioPendingRequest( const deServiceObject::Ref &data = nullptr );
-	
-	/** Delete module. */
-	~deModioPendingRequest() override;
+	/** Convert logo. */
+	static deServiceObject::Ref Logo( const Modio::Detail::Logo &logo );
 	/*@}*/
 };
 

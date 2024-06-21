@@ -139,8 +139,7 @@ void deClassServiceObject::nfNewFloat::RunFunction( dsRunTime *rt, dsValue* ){
 	
 	const float value = rt->GetValue( 0 )->GetFloat();
 	
-	const deServiceObject::Ref object( deServiceObject::Ref::New(
-		deServiceObject::NewFloat( ( double )value ) ) );
+	const deServiceObject::Ref object( deServiceObject::Ref::New( deServiceObject::NewFloat( value ) ) );
 	
 	clsServiceObject.PushServiceObject( rt, object );
 }
@@ -749,7 +748,7 @@ void deClassServiceObject::nfAddFloatChild::RunFunction( dsRunTime *rt, dsValue 
 		DSTHROW( dueNullPointer );
 	}
 	
-	nd.object->AddFloatChild( ( double )rt->GetValue( 0 )->GetFloat() );
+	nd.object->AddFloatChild( rt->GetValue( 0 )->GetFloat() );
 }
 
 
@@ -770,7 +769,7 @@ void deClassServiceObject::nfSetFloatChildAt::RunFunction( dsRunTime *rt, dsValu
 	const char * const key = rt->GetValue( 0 )->GetString();
 	const float value = rt->GetValue( 1 )->GetFloat();
 	
-	nd.object->SetFloatChildAt( key, ( double )value );
+	nd.object->SetFloatChildAt( key, value );
 }
 
 

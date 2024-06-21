@@ -51,7 +51,7 @@ deServiceObject::Ref deServiceObject::NewInt( int value ){
 	return object;
 }
 
-deServiceObject::Ref deServiceObject::NewFloat( double value ){
+deServiceObject::Ref deServiceObject::NewFloat( float value ){
 	const deServiceObject::Ref object( deServiceObject::Ref::New( new deServiceObject ) );
 	object->pValueType = evtFloat;
 	object->pFloat = value;
@@ -138,12 +138,12 @@ void deServiceObject::SetInteger( int value ){
 	pInteger = value;
 }
 
-double deServiceObject::GetFloat() const{
+float deServiceObject::GetFloat() const{
 	DEASSERT_TRUE( pValueType == evtFloat )
 	return pFloat;
 }
 
-void deServiceObject::SetFloat( double value ){
+void deServiceObject::SetFloat( float value ){
 	DEASSERT_TRUE( pValueType == evtFloat )
 	pFloat = value;
 }
@@ -231,12 +231,12 @@ void deServiceObject::SetIntChildAt( const char *key, int value ){
 	pDictionary.SetAt( key, NewInt( value ) );
 }
 
-void deServiceObject::AddFloatChild( double value ){
+void deServiceObject::AddFloatChild( float value ){
 	DEASSERT_TRUE( pValueType == evtList )
 	pList.Add( NewFloat( value ) );
 }
 
-void deServiceObject::SetFloatChildAt( const char *key, double value ){
+void deServiceObject::SetFloatChildAt( const char *key, float value ){
 	DEASSERT_TRUE( pValueType == evtDictionary )
 	pDictionary.SetAt( key, NewFloat( value ) );
 }

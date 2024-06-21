@@ -22,34 +22,29 @@
  * SOFTWARE.
  */
 
-#ifndef _DEMODIOPENDINGREQUEST_H_
-#define _DEMODIOPENDINGREQUEST_H_
+#ifndef _DEMCFILTERPARAMS_H_
+#define _DEMCFILTERPARAMS_H_
 
-#include <dragengine/deObject.h>
-#include <dragengine/common/utils/decUniqueID.h>
+#include "../modio.h"
+
 #include <dragengine/resources/service/deServiceObject.h>
 
 
 /**
- * Pending service request.
+ * Convert filter parameters.
  */
-class deModioPendingRequest : public deObject{
+class deMCFilterParams{
+private:
+	deMCFilterParams() = default;
+	
 public:
-	typedef deTObjectReference<deModioPendingRequest> Ref;
+	/** Convert service object string to constant. */
+	static Modio::FilterParams::SortFieldType SortFieldType( const deServiceObject &so );
+	static Modio::FilterParams::SortDirection SortDirection( const deServiceObject &so );
+	static Modio::FilterParams::RevenueFilterType RevenueFilterType( const deServiceObject &so );
 	
-	
-	decUniqueID id;
-	decString function;
-	deServiceObject::Ref data;
-	
-	
-	/** \name Constructors and Destructors */
-	/*@{*/
-	/** Create module. */
-	deModioPendingRequest( const deServiceObject::Ref &data = nullptr );
-	
-	/** Delete module. */
-	~deModioPendingRequest() override;
+	/** Convert service object to modio struct. */
+	static Modio::FilterParams FilterParams( const deServiceObject &so );
 	/*@}*/
 };
 

@@ -1,0 +1,379 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+#include "deMCCommon.h"
+
+
+// Class deMCCommon
+/////////////////////
+
+Modio::Environment deMCCommon::Environment( const deServiceObject &so ){
+	const decString &sval = so.GetString();
+	if( sval == "live" ){
+		return Modio::Environment::Live;
+		
+	}else if( sval == "test" ){
+		return Modio::Environment::Test;
+		
+	}else{
+		decString message;
+		message.Format( "Invalid environment: %s", sval.GetString() );
+		DETHROW_INFO( deeInvalidParam, message );
+	}
+}
+
+Modio::Portal deMCCommon::Portal( const deServiceObject &so ){
+	const decString &sval = so.GetString();
+	if( sval == "apple" ){
+		return Modio::Portal::Apple;
+		
+	}else if( sval == "epicGamesStore" ){
+		return Modio::Portal::EpicGamesStore;
+		
+	}else if( sval == "gog" ){
+		return Modio::Portal::GOG;
+		
+	}else if( sval == "google" ){
+		return Modio::Portal::Google;
+		
+	}else if( sval == "itchio" ){
+		return Modio::Portal::Itchio;
+		
+	}else if( sval == "nintendo" ){
+		return Modio::Portal::Nintendo;
+		
+	}else if( sval == "psn" ){
+		return Modio::Portal::PSN;
+		
+	}else if( sval == "steam" ){
+		return Modio::Portal::Steam;
+		
+	}else if( sval == "xboxLive" ){
+		return Modio::Portal::XboxLive;
+		
+	}else{
+		decString message;
+		message.Format( "Invalid portal: %s", sval.GetString() );
+		DETHROW_INFO( deeInvalidParam, message );
+	}
+}
+
+Modio::MaturityOption deMCCommon::MaturityOption( const deServiceObject &so ){
+	const decString &sval = so.GetString();
+	if( sval == "alcohol" ){
+		return Modio::MaturityOption::Alcohol;
+		
+	}else if( sval == "drugs" ){
+		return Modio::MaturityOption::Drugs;
+		
+	}else if( sval == "violence" ){
+		return Modio::MaturityOption::Violence;
+		
+	}else if( sval == "explicit" ){
+		return Modio::MaturityOption::Explicit;
+		
+	}else{
+		decString message;
+		message.Format( "Invalid maturity option: %s", sval.GetString() );
+		DETHROW_INFO( deeInvalidParam, message );
+	}
+}
+
+deServiceObject::Ref deMCCommon::MaturityOption( Modio::MaturityOption option ){
+	switch( option ){
+	case Modio::MaturityOption::Alcohol:
+		return deServiceObject::NewString( "alcohol" );
+		
+	case Modio::MaturityOption::Drugs:
+		return deServiceObject::NewString( "drugs" );
+		
+	case Modio::MaturityOption::Violence:
+		return deServiceObject::NewString( "violence" );
+		
+	case Modio::MaturityOption::Explicit:
+		return deServiceObject::NewString( "explicit" );
+		
+	default:
+		DETHROW( deeInvalidParam );
+	}
+}
+
+deServiceObject::Ref deMCCommon::ObjectVisibility( Modio::ObjectVisibility visibility ){
+	switch( visibility ){
+	case Modio::ObjectVisibility::Hidden:
+		return deServiceObject::NewString( "hidden" );
+		
+	case Modio::ObjectVisibility::Public:
+		return deServiceObject::NewString( "public" );
+		
+	default:
+		DETHROW( deeInvalidParam );
+	}
+}
+
+deServiceObject::Ref deMCCommon::Metadata( const Modio::Metadata &data ){
+	const deServiceObject::Ref so( deServiceObject::Ref::New( new deServiceObject ) );
+	
+	so->SetStringChildAt( "key", data.Key.c_str() );
+	so->SetStringChildAt( "value", data.Value.c_str() );
+	
+	return so;
+}
+
+deServiceObject::Ref deMCCommon::MetadataList( const std::vector<Modio::Metadata> &list ){
+	const deServiceObject::Ref so( deServiceObject::NewList() );
+	
+	std::vector<Modio::Metadata>::const_iterator iter;
+	for( iter = list.cbegin(); iter != list.cend(); iter++ ){
+		so->AddChild( Metadata( *iter ) );
+	}
+	
+	return so;
+}
+
+deServiceObject::Ref deMCCommon::ModTag( const Modio::ModTag &tag ){
+	const deServiceObject::Ref so( deServiceObject::Ref::New( new deServiceObject ) );
+	
+	so->SetStringChildAt( "tag", tag.Tag.c_str() );
+	so->SetStringChildAt( "tagLocalized", tag.TagLocalized.c_str() );
+	
+	return so;
+}
+
+deServiceObject::Ref deMCCommon::ModTagList( const std::vector<Modio::ModTag> &list ){
+	const deServiceObject::Ref so( deServiceObject::NewList() );
+	
+	std::vector<Modio::ModTag>::const_iterator iter;
+	for( iter = list.cbegin(); iter != list.cend(); iter++ ){
+		so->AddChild( ModTag( *iter ) );
+	}
+	
+	return so;
+}
+
+std::vector<std::string> deMCCommon::StringList( const deServiceObject &so ){
+	const int count = so.GetChildCount();
+	std::vector<std::string> list;
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		list.push_back( so.GetChildAt( i )->GetString().GetString() );
+	}
+	
+	return list;
+}
+
+deServiceObject::Ref deMCCommon::StringList( const std::vector<std::string> &list ){
+	const deServiceObject::Ref so( deServiceObject::NewList() );
+	
+	std::vector<std::string>::const_iterator iter;
+	for( iter = list.cbegin(); iter != list.cend(); iter++ ){
+		so->AddStringChild( iter->c_str()  );
+	}
+	
+	return so;
+}
+
+Modio::ProfileMaturity deMCCommon::ProfileMaturity( const deServiceObject &so ){
+	Modio::ProfileMaturity profileMaturity;
+	const int count = so.GetChildCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		profileMaturity |= MaturityOption( so.GetChildAt( i ) );
+	}
+	
+	return profileMaturity;
+}
+
+deServiceObject::Ref deMCCommon::ProfileMaturity( Modio::ProfileMaturity maturity ){
+	static const Modio::MaturityOption flags[ 4 ] = {
+		Modio::MaturityOption::Alcohol,
+		Modio::MaturityOption::Drugs,
+		Modio::MaturityOption::Violence,
+		Modio::MaturityOption::Explicit };
+	
+	const deServiceObject::Ref so( deServiceObject::NewList() );
+	
+	int i;
+	for( i=0; i<4; i++ ){
+		if( maturity.HasFlag( flags[ i ] ) ){
+			so->AddChild( MaturityOption( flags[ i ] ) );
+		}
+	}
+	
+	return so;
+}
+
+std::int64_t deMCCommon::DateTime( const deServiceObject &so ){
+	deServiceObject::Ref so2;
+	decDateTime dt;
+	
+	so2 = so.GetChildAt( "year" );
+	if( so2 ){
+		dt.SetYear( so2->GetInteger() );
+	}
+	
+	so2 = so.GetChildAt( "month" );
+	if( so2 ){
+		dt.SetMonth( so2->GetInteger() );
+	}
+	
+	so2 = so.GetChildAt( "day" );
+	if( so2 ){
+		dt.SetDay( so2->GetInteger() );
+	}
+	
+	so2 = so.GetChildAt( "hour" );
+	if( so2 ){
+		dt.SetHour( so2->GetInteger() );
+	}
+	
+	so2 = so.GetChildAt( "minute" );
+	if( so2 ){
+		dt.SetMinute( so2->GetInteger() );
+	}
+	
+	so2 = so.GetChildAt( "second" );
+	if( so2 ){
+		dt.SetSecond( so2->GetInteger() );
+	}
+	
+	return ( std::int64_t )dt.ToSystemTime();
+}
+
+deServiceObject::Ref deMCCommon::DateTime( std::int64_t datetime ){
+	const deServiceObject::Ref so( deServiceObject::Ref::New( new deServiceObject ) );
+	const decDateTime dt( ( TIME_SYSTEM )datetime );
+	
+	so->SetIntChildAt( "year", dt.GetYear() );
+	so->SetIntChildAt( "month", dt.GetMonth() );
+	so->SetIntChildAt( "day", dt.GetDay() );
+	so->SetIntChildAt( "hour", dt.GetHour() );
+	so->SetIntChildAt( "minute", dt.GetMinute() );
+	so->SetIntChildAt( "second", dt.GetSecond() );
+	
+	return so;
+}
+
+std::int64_t deMCCommon::Int64( const deServiceObject &so ){
+	return ( std::int64_t )so.GetString().ToLongValid();
+}
+
+deServiceObject::Ref deMCCommon::Int64( std::int64_t value ){
+	decString string;
+	string.AppendValue( ( long long )value );
+	return deServiceObject::NewString( string );
+}
+
+std::int64_t deMCCommon::ID( const deServiceObject &so ){
+	return Int64( so );
+}
+
+deServiceObject::Ref deMCCommon::ID( std::int64_t id ){
+	return Int64( id );
+}
+
+std::vector<std::int64_t> deMCCommon::IDList( const deServiceObject &so ){
+	const int count = so.GetChildCount();
+	std::vector<std::int64_t> list;
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		list.push_back( ID( *so.GetChildAt( i ) ) );
+	}
+	
+	return list;
+}
+
+deServiceObject::Ref deMCCommon::FileMetadata( const Modio::FileMetadata &data ){
+	const deServiceObject::Ref so( deServiceObject::Ref::New( new deServiceObject ) );
+	
+	so->SetChildAt( "metadataId", ID( data.MetadataId ) );
+	so->SetChildAt( "modId", ID( data.ModId ) );
+	so->SetChildAt( "dateAdded", DateTime( data.DateAdded ) );
+	so->SetChildAt( "currentVirusScanStatus", VirusScanStatus( data.CurrentVirusScanStatus ) );
+	so->SetChildAt( "currentVirusStatus", VirusStatus( data.CurrentVirusStatus ) );
+	so->SetChildAt( "filesize", Int64( data.Filesize ) );
+	so->SetChildAt( "filesizeUncompressed", Int64( data.FilesizeUncompressed ) );
+	so->SetStringChildAt( "filename", data.Filename.c_str() );
+	so->SetStringChildAt( "version", data.Version.c_str() );
+	
+	if( ! data.Changelog.empty() ){
+		so->SetStringChildAt( "changelog", data.Changelog.c_str() );
+	}
+	
+	if( ! data.MetadataBlob.empty() ){
+		so->SetStringChildAt( "metadataBlob", data.MetadataBlob.c_str() );
+	}
+	
+	so->SetStringChildAt( "downloadBinaryURL", data.DownloadBinaryURL.c_str() );
+	
+	if( data.DownloadExpiryDate != 0 ){
+	so->SetChildAt( "downloadExpiryDate", DateTime( data.DownloadExpiryDate ) );
+	}
+	
+	return so;
+}
+
+deServiceObject::Ref deMCCommon::VirusScanStatus( Modio::FileMetadata::VirusScanStatus status ){
+	switch( status ){
+	case Modio::FileMetadata::VirusScanStatus::NotScanned:
+		return deServiceObject::NewString( "notScanned" );
+		
+	case Modio::FileMetadata::VirusScanStatus::ScanComplete:
+		return deServiceObject::NewString( "scanComplete" );
+		
+	case Modio::FileMetadata::VirusScanStatus::InProgress:
+		return deServiceObject::NewString( "inProgress" );
+		
+	case Modio::FileMetadata::VirusScanStatus::TooLargeToScan:
+		return deServiceObject::NewString( "tooLargeToScan" );
+		
+	case Modio::FileMetadata::VirusScanStatus::FileNotFound:
+		return deServiceObject::NewString( "fileNotFound" );
+		
+	case Modio::FileMetadata::VirusScanStatus::ErrorScanning:
+		return deServiceObject::NewString( "errorScanning" );
+		
+	default:
+		DETHROW( deeInvalidParam );
+	}
+}
+
+deServiceObject::Ref deMCCommon::VirusStatus( Modio::FileMetadata::VirusStatus status ){
+	switch( status ){
+	case Modio::FileMetadata::VirusStatus::NoThreat:
+		return deServiceObject::NewString( "noThreat" );
+		
+	case Modio::FileMetadata::VirusStatus::Malicious:
+		return deServiceObject::NewString( "malicious" );
+		
+	case Modio::FileMetadata::VirusStatus::PotentiallyHarmful:
+		return deServiceObject::NewString( "potentiallyHarmful" );
+		
+	default:
+		DETHROW( deeInvalidParam );
+	}
+}

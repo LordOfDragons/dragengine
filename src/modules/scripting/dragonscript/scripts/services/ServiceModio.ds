@@ -197,8 +197,7 @@ class ServiceModio implements ServiceListener
 				pIsInitialized = Boolean.new(false)
 				
 				if pInitListener != null
-					pInitListener.initFailed(this, event.getChildAt("code").getInteger(),\
-						event.getChildAt("message").getString())
+					pInitListener.initFailed(this, event.getChildAt("message").getString())
 				end
 			end
 			

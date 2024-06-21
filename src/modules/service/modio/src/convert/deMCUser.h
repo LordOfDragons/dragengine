@@ -22,34 +22,27 @@
  * SOFTWARE.
  */
 
-#ifndef _DEMODIOPENDINGREQUEST_H_
-#define _DEMODIOPENDINGREQUEST_H_
+#ifndef _DEMCUSER_H_
+#define _DEMCUSER_H_
 
-#include <dragengine/deObject.h>
-#include <dragengine/common/utils/decUniqueID.h>
+#include "../modio.h"
+
 #include <dragengine/resources/service/deServiceObject.h>
 
 
 /**
- * Pending service request.
+ * Convert user.
  */
-class deModioPendingRequest : public deObject{
+class deMCUser{
+private:
+	deMCUser() = default;
+	
 public:
-	typedef deTObjectReference<deModioPendingRequest> Ref;
+	/** Convert identifier list. */
+	static std::vector<Modio::UserID> UserIDList( const deServiceObject &so );
 	
-	
-	decUniqueID id;
-	decString function;
-	deServiceObject::Ref data;
-	
-	
-	/** \name Constructors and Destructors */
-	/*@{*/
-	/** Create module. */
-	deModioPendingRequest( const deServiceObject::Ref &data = nullptr );
-	
-	/** Delete module. */
-	~deModioPendingRequest() override;
+	/** Convert user. */
+	static deServiceObject::Ref User( const Modio::User &user );
 	/*@}*/
 };
 

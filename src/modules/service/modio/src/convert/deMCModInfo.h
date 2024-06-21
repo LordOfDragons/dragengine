@@ -22,34 +22,33 @@
  * SOFTWARE.
  */
 
-#ifndef _DEMODIOPENDINGREQUEST_H_
-#define _DEMODIOPENDINGREQUEST_H_
+#ifndef _DEMCMODINFO_H_
+#define _DEMCMODINFO_H_
 
-#include <dragengine/deObject.h>
-#include <dragengine/common/utils/decUniqueID.h>
+#include "../modio.h"
+
 #include <dragengine/resources/service/deServiceObject.h>
 
 
 /**
- * Pending service request.
+ * Convert mod info.
  */
-class deModioPendingRequest : public deObject{
+class deMCModInfo{
+private:
+	deMCModInfo() = default;
+	
 public:
-	typedef deTObjectReference<deModioPendingRequest> Ref;
+	/** Convert identifier list. */
+	static std::vector<Modio::ModID> ModIDList( const deServiceObject &so );
 	
+	/** Convert ModServerSideStatus. */
+	static deServiceObject::Ref ModServerSideStatus( Modio::ModServerSideStatus status );
 	
-	decUniqueID id;
-	decString function;
-	deServiceObject::Ref data;
+	/** Convert mod info. */
+	static deServiceObject::Ref ModInfo( const Modio::ModInfo &info );
 	
-	
-	/** \name Constructors and Destructors */
-	/*@{*/
-	/** Create module. */
-	deModioPendingRequest( const deServiceObject::Ref &data = nullptr );
-	
-	/** Delete module. */
-	~deModioPendingRequest() override;
+	/** Convert mod stats. */
+	static deServiceObject::Ref ModStats( const Modio::ModStats &stats );
 	/*@}*/
 };
 
