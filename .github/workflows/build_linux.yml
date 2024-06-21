@@ -87,7 +87,8 @@ jobs:
             lib_openxr \
             lib_openvr \
             lib_libjpeg \
-            lib_libwebm
+            lib_libwebm \
+            lib_modio
           scons -j 14 \
             lib_dragonscript \
             lib_fox \
@@ -100,7 +101,6 @@ jobs:
             lib_libvorbis \
             lib_libvpx \
             lib_libwebp \
-            lib_modio \
             lib_openal \
             lib_soundtouch \
             lib_steamsdk \

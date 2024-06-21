@@ -70,7 +70,7 @@ jobs:
         # CMake based projects are problem children that like to get stuck forever in CMake
         # on Ubuntu and GitHub. build them first without parallel to avoid hangups
         run: |
-          scons -j 1 lib_openxr lib_openvr lib_libjpeg lib_libwebm
+          scons -j 1 lib_openxr lib_openvr lib_libjpeg lib_libwebm lib_modio
           scons -j 14 archive installer
       
       - name: Get current date

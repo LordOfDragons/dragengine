@@ -20,7 +20,7 @@ jobs:
       artifactArchive: archives-linux
       artifactInstaller: installers-linux
       artifactTools: tools-crossplatform
-      codeql: ${{ inputs.codeql }}
+      codeql: ${{ contains(inputs.codeql, 'true') }}
   
   # build_windows_mingw:
   #   uses: ./.github/workflows/build_windows.yml

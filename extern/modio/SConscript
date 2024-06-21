@@ -96,9 +96,6 @@ def modioBuild(target, source, env):
 	
 	script.append('rm -f "{}/cmake_install.cmake" || exit 1'.format(cmakeInstallDir))
 	
-	print('>>>')
-	print('\n'.join(script))
-	print('<<<')
 	if not env.RunExternalCommand(script):
 		raise Exception('Failed building libmodio')
 
