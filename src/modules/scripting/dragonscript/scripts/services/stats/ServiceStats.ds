@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-namespace Dragengine.Services
+namespace Dragengine.Services.Stats
 
 
 /**

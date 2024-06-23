@@ -23,7 +23,10 @@
  */
 
 namespace Dragengine.Services
+
+pin Dragengine.Services.Mods
 pin Dragengine.Utils
+pin Dragengine.Gui
 
 
 /**
@@ -36,9 +39,80 @@ pin Dragengine.Utils
  * - Mod deinstalling
  */
 class ServiceModio implements ServiceListener, ServiceMods
+	/**
+	 * \brief Environment to use for ServiceModio.
+	 * \version 1.23
+	 */
+	enum Environment
+		/**
+		 * \brief Live environment. For use in production.
+		 */
+		live
+		
+		/**
+		 * \brief Test environment. For use in development.
+		 */
+		test
+	end
+	
+	/**
+	 * \brief Store portal for use with ServiceModio.
+	 * \version 1.23
+	 * 
+	 * If not know use null.
+	 */
+	enum Portal
+		/**
+		 * \brief Apple store.
+		 */
+		apple
+		
+		/**
+		 * \brief Epic games store.
+		 */
+		epicGamesStore
+		
+		/**
+		 * \brief GoG store.
+		 */
+		gog
+		
+		/**
+		 * \brief Google store.
+		 */
+		google
+		
+		/**
+		 * \brief ItchIO store.
+		 */
+		itchio
+		
+		/**
+		 * \brief Nintendo store.
+		 */
+		nintendo
+		
+		/**
+		 * \brief Playstation store.
+		 */
+		psn
+		
+		/**
+		 * \brief Steam store.
+		 */
+		steam
+		
+		/**
+		 * \brief XBox live.
+		 */
+		xboxLive
+	end
+	
+	
+	
 	var String pApiKey, pGameId, pUserId
-	var ModioEnvironment pEnvironment
-	var ModioPortal pPortal
+	var Environment pEnvironment
+	var Portal pPortal
 	var Service pService
 	var ServiceInitListener pInitListener
 	var Boolean pIsInitialized
@@ -63,8 +137,8 @@ class ServiceModio implements ServiceListener, ServiceMods
 	 * \throws EInvalidParam ModIO service module is not present.
 	 * \throws EInvalidParam One or more of the provided parameters is not valid.
 	 */
-	func new(String apiKey, String gameId, String userId, ModioEnvironment environment,\
-	ModioPortal portal, ServiceInitListener listener)
+	func new(String apiKey, String gameId, String userId, Environment environment,\
+	Portal portal, ServiceInitListener listener)
 		pApiKey = apiKey
 		pGameId = gameId
 		pUserId = userId
@@ -138,14 +212,14 @@ class ServiceModio implements ServiceListener, ServiceMods
 	/**
 	 * \brief Game environment.
 	 */
-	func ModioEnvironment getEnvironment()
+	func Environment getEnvironment()
 		return pEnvironment
 	end
 	
 	/**
 	 * \brief Store portal or null if unknown.
 	 */
-	func ModioPortal getPortal()
+	func Portal getPortal()
 		return pPortal
 	end
 	
@@ -207,7 +281,7 @@ class ServiceModio implements ServiceListener, ServiceMods
 		
 		pFilterAddEnum(so, "sortField", filter.sortField)
 		pFilterAddEnum(so, "sortDirection", filter.sortDirection)
-		pFilterAddStringSet(so, "nameContains", filter.nameContains)
+		pFilterAddStringSet(so, "nameContains", filter.matchingName)
 		pFilterAddStringSet(so, "matchingAuthor", filter.matchingAuthor)
 		pFilterAddStringSet(so, "matchingIds", filter.withIds)
 		pFilterAddDate(so, "markedLiveAfter", filter.releasedAfter)
@@ -220,8 +294,12 @@ class ServiceModio implements ServiceListener, ServiceMods
 		pFilterAddEnum(so, "revenueType", filter.revenueType)
 		so.setBoolChildAt("disallowMatureContent", filter.disallowMatureContent)
 		pFilterAddEnumSet(so, "withMatureContentFlags", filter.withMatureContentFlags)
+		
 		so.setIntChildAt("startIndex", filter.startIndex)
-		so.setIntChildAt("resultCount", filter.resultCount)
+		
+		if filter.resultCount != 0
+			so.setIntChildAt("resultCount", filter.resultCount)
+		end
 		
 		var Dictionary d = Dictionary.new()
 		pRecursiveServiceObject(d, "Request", so)
@@ -243,6 +321,24 @@ class ServiceModio implements ServiceListener, ServiceMods
 		pService.cancelRequest(id)
 	end
 	
+	/**
+	 * \brief Load resource asynchronously.
+	 * 
+	 * Loaded resources are cached for faster retrieval. Once the resource is cached locally
+	 * \ref ServiceModsListener#loadResourceFinished(ServiceMods,String,Object) is called
+	 * with the same URL as used in this function call. If loading the image failed
+	 * \ref ServiceModsListener#loadResourceFailed(ServiceMods,String,Exception) is called
+	 * with the same URL as used in this function call.
+	 * 
+	 * \param url URL of image to load
+	 */
+	func void loadResource(String url)
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "loadResource")
+		so.setStringChildAt("url", url)
+		pService.startRequest(so)
+	end
+	
 	
 	
 	/**
@@ -259,6 +355,15 @@ class ServiceModio implements ServiceListener, ServiceMods
 			pModsListeners.forEach(block ServiceModsListener each
 				each.listModsFinished(this, id, Array.new())
 			end)
+			
+		elif function.equals("loadResource")
+			var String url = response.getChildAt("url").getString()
+			var Object resource = response.getChildAt("resource").getResource()
+			// String "resourceType": "image"
+			
+			pModsListeners.forEach(block ServiceModsListener each
+				each.loadResourceFinished(this, url, resource)
+			end)
 		end
 	end
 	
@@ -267,11 +372,18 @@ class ServiceModio implements ServiceListener, ServiceMods
 	 */
 	func void requestFailed(Service service, UniqueID id, ServiceObject error)
 		var String function = error.getChildAt("function").getString()
+		var ServiceException exception = createException(error)
 		
 		if function.equals("listAllMods")
-			var String message = getErrorMessage(error)
 			pModsListeners.forEach(block ServiceModsListener each
-				each.listModsFailed(this, id, message)
+				each.listModsFailed(this, id, exception)
+			end)
+			
+		elif function.equals("loadResource")
+			var String url = error.getChildAt("url").getString()
+			
+			pModsListeners.forEach(block ServiceModsListener each
+				each.loadResourceFailed(this, url, exception)
 			end)
 		end
 	end
@@ -294,7 +406,7 @@ class ServiceModio implements ServiceListener, ServiceMods
 				pIsInitialized = Boolean.new(false)
 				
 				if pInitListener != null
-					pInitListener.initFailed(this, event.getChildAt("message").getString())
+					pInitListener.initFailed(this, ServiceException.new(service, event.getChildAt("message").getString()))
 				end
 			end
 			
@@ -312,11 +424,11 @@ class ServiceModio implements ServiceListener, ServiceMods
 	end
 	
 	/**
-	 * \brief Get error message from response.
+	 * \brief Create exception from response.
 	 */
-	func String getErrorMessage(ServiceObject error)
+	func ServiceException createException(ServiceObject error)
 		error = error.getChildAt("message")
-		return error != null if error.getString() else "Unknown error"
+		return ServiceException.new(pService, error != null if error.getString() else "Unknown error")
 	end
 	
 	
@@ -355,6 +467,192 @@ class ServiceModio implements ServiceListener, ServiceMods
 			so2.setIntChildAt("day", date.getDay())
 			so.setChildAt(key, so2)
 		end
+	end
+	
+	private func String pConvString(ServiceObject so, String key)
+		var ServiceObject so2 = so.getChildAt(key)
+		return so2 != null if so2.getString() else null
+	end
+	
+	private func int pConvInt(ServiceObject so, String key, int defaultValue)
+		var ServiceObject so2 = so.getChildAt(key)
+		return so2 != null if so2.getInteger() else defaultValue
+	end
+	
+	private func bool pConvBool(ServiceObject so, String key, bool defaultValue)
+		var ServiceObject so2 = so.getChildAt(key)
+		return so2 != null if so2.getBoolean() else defaultValue
+	end
+	
+	private func TimeDate pConvTimeDate(ServiceObject so, String key)
+		var ServiceObject so2 = so.getChildAt(key)
+		return so2 != null if TimeDate.new(\
+			pConvInt(so2, "year", 0), pConvInt(so2, "month", 0), pConvInt(so2, "day", 0),\
+			pConvInt(so2, "hour", 0), pConvInt(so2, "minute", 0), pConvInt(so2, "second", 0))\
+			else null
+	end
+	
+	private func Array pConvStringList(ServiceObject so, String key)
+		var ServiceObject so2 = so.getChildAt(key)
+		if so2 == null
+			return null
+		end
+		
+		var int i, count = so2.getChildCount()
+		var Array list = Array.new()
+		
+		for i = 0 to count
+			list.add(so2.getChildAt(i).getString())
+		end
+		
+		return list
+	end
+	
+	private func Set pConvStringSet(ServiceObject so, String key)
+		var ServiceObject so2 = so.getChildAt(key)
+		if so2 == null
+			return null
+		end
+		
+		var int i, count = so2.getChildCount()
+		var Set set = Set.new()
+		
+		for i = 0 to count
+			set.add(so2.getChildAt(i).getString())
+		end
+		
+		return set
+	end
+	
+	private func Dictionary pConvStringDict(ServiceObject so, String key)
+		var ServiceObject so2 = so.getChildAt(key)
+		if so2 == null
+			return null
+		end
+		
+		var int i, count = so2.getChildCount()
+		var Dictionary dict = Dictionary.new()
+		var ServiceObject so3
+		
+		for i = 0 to count
+			so3 = so2.getChildAt(i)
+			dict.setAt(so3.getChildAt("key").getString(), so3.getChildAt("value").getString())
+		end
+		
+		return dict
+	end
+	
+	private func ServiceModInfo pConvModInfo(ServiceObject so)
+		var ServiceObject so2
+		var int i, count
+		
+		var ServiceModInfo info = ServiceModInfo.new()
+		info.id = pConvString(so, "modId")
+		info.name = pConvString(so, "profileName")
+		info.summary = pConvString(so, "profileSummary")
+		info.descriptionHtml = pConvString(so, "profileDescription")
+		info.descriptionText = pConvString(so, "profileDescriptionPlaintext")
+		info.profileUrl = pConvString(so, "profileURL")
+		info.dateAdded = pConvTimeDate(so, "profileDateAdded")
+		info.dateUpdated = pConvTimeDate(so, "profileDateUpdated")
+		info.dateReleased = pConvTimeDate(so, "profileDateLive")
+		info.metadata = pConvString(so, "metadataBlob")
+		info.metadataMap = pConvStringDict(so, "metadataKvp")
+		info.tags = pConvStringSet(so, "tags")
+		info.version = pConvString(so, "version")
+		info.price = pConvInt(so, "price", 0).toString()
+		info.hasDependencies = pConvBool(so, "dependencies", false)
+		
+		so2 = so.getChildAt("modStatus")
+		if so2 != null
+			info.status = ServiceModInfo.Status.named(so2.getString())
+		end
+		
+		so2 = so.getChildAt("visibility")
+		if so2 != null
+			info.visibility = ServiceModInfo.Visibility.named(so2.getString())
+		end
+		
+		info.submittedBy = pConvUser(so.getChildAt("profileSubmittedBy"))
+		info.logo = pConvImage(so.getChildAt("modLogo"))
+		
+		so2 = so.getChildAt("profileMaturityOption")
+		if so2 != null
+			info.maturityOptions = Set.new()
+			count = so2.getChildCount()
+			for i = 0 to count
+				info.maturityOptions.add(ServiceModFilter.MatureContent.named(so2.getChildAt(i).getString()))
+			end
+		end
+		
+		so2 = so.getChildAt("galleryImages")
+		if so2 != null
+			info.galleryImages = Array.new()
+			count = so2.getChildCount()
+			for i = 0 to count
+				info.galleryImages.add(pConvImage(so2.getChildAt(i)))
+			end
+		end
+		
+		/*
+	
+	if( info.FileInfo.has_value() ){
+		so->SetChildAt( "fileInfo", deMCCommon::FileMetadata( *info.FileInfo ) );
+	}
+	
+	if( info.YoutubeURLs.Size() != 0 ){
+		so->SetChildAt( "youtubeURLs", deMCCommon::StringList( info.YoutubeURLs.GetRawList() ) );
+	}
+	
+	if( info.SketchfabURLs.Size() != 0 ){
+		so->SetChildAt( "sketchfabURLs", deMCCommon::StringList( info.SketchfabURLs.GetRawList() ) );
+	}
+	
+	so->SetChildAt( "stats", ModStats( info.Stats ) );
+		*/
+		return info
+	end
+	
+	private func ServiceUser pConvUser(ServiceObject so)
+		if so == null
+			return null
+		end
+		
+		var ServiceUser user = ServiceUser.new()
+		user.id = pConvString(so, "userId")
+		user.name = pConvString(so, "username")
+		user.displayName = pConvString(so, "displayNamePortal")
+		user.profileUrl = pConvString(so, "profileUrl")
+		user.authToken = pConvString(so, "authToken")
+		user.dateOnline = pConvTimeDate(so, "dateOnline")
+		user.avatar = pConvImage(so.getChildAt("avatar"))
+		return user
+	end
+	
+	private func ServiceImage pConvImage(ServiceObject so)
+		var ServiceImage image = ServiceImage.new()
+		image.filename = pConvString(so, "filename")
+		image.url = pConvString(so, "original")
+		
+		// a=avatar, g=gallery-images l=logo
+		pConvAddThumbnail(image, so, "thumb50x50", Point.new(50, 50)) // a
+		pConvAddThumbnail(image, so, "thumb100x100", Point.new(100, 100)) // a
+		pConvAddThumbnail(image, so, "thumb320x180", Point.new(320, 180)) // g,l
+		pConvAddThumbnail(image, so, "thumb640x360", Point.new(640, 360)) // l
+		pConvAddThumbnail(image, so, "thumb1280x720", Point.new(1280, 720)) // g,l
+		return image
+	end
+	
+	private func void pConvAddThumbnail(ServiceImage image, ServiceObject so, String key, Point size)
+		var ServiceObject so2 = so.getChildAt(key)
+		if so2 == null
+			return
+		end
+		
+		var ServiceImage.Thumbnail thumbnail = ServiceImage.Thumbnail.new()
+		thumbnail.size = size
+		thumbnail.url = so2.getString()
+		image.thumbnails.add(thumbnail)
 	end
 	
 	private func void pRecursiveServiceObject(Dictionary d, String key, ServiceObject so)

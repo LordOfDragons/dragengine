@@ -24,6 +24,8 @@
 
 namespace Dragengine.Services
 
+pin Dragengine.Services.Stats
+
 
 /**
  * \brief Service providing access to Steam SDK functionality if supported.
@@ -298,21 +300,21 @@ class ServiceSteamSdk implements ServiceStats, ServiceListener
 				return
 			end
 			
-			var String message = getErrorMessage(error)
+			var ServiceException exception = createException(error)
 			pStatsListeners.forEach(block ServiceStatsListener each
-				each.statsReceivedFailed(this, message)
+				each.statsReceivedFailed(this, exception)
 			end)
 			
 		elif function.equals("getStats")
-			var String message = getErrorMessage(error)
+			var ServiceException exception = createException(error)
 			pStatsListeners.forEach(block ServiceStatsListener each
-				each.statsReceivedFailed(this, message)
+				each.statsReceivedFailed(this, exception)
 			end)
 			
 		elif function.equals("setStats")
-			var String message = getErrorMessage(error)
+			var ServiceException exception = createException(error)
 			pStatsListeners.forEach(block ServiceStatsListener each
-				each.statsStoredFailed(this, message)
+				each.statsStoredFailed(this, exception)
 			end)
 		end
 	end
@@ -333,10 +335,10 @@ class ServiceSteamSdk implements ServiceStats, ServiceListener
 	end
 	
 	/**
-	 * \brief Get error message from response.
+	 * \brief Create exception from response.
 	 */
-	func String getErrorMessage(ServiceObject error)
+	func ServiceException createException(ServiceObject error)
 		error = error.getChildAt("message")
-		return error != null if error.getString() else "Unknown error"
+		return ServiceException.new(pService, error != null if error.getString() else "Unknown error")
 	end
 end

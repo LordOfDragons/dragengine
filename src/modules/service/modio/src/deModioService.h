@@ -31,8 +31,11 @@
 #include "modio.h"
 
 #include <dragengine/common/collection/decObjectList.h>
-#include <dragengine/systems/modules/service/deBaseServiceService.h>
+#include <dragengine/common/collection/decObjectDictionary.h>
+#include <dragengine/common/string/decStringList.h>
+#include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/resources/service/deServiceObject.h>
+#include <dragengine/systems/modules/service/deBaseServiceService.h>
 
 class deModio;
 class deService;
@@ -44,6 +47,13 @@ class deService;
 class deModioService : public deBaseServiceService{
 public:
 	static const char * const serviceName;
+	
+	class cInvalidator : public deObject{
+	public:
+		bool invalidated;
+		typedef deTObjectReference<cInvalidator> Ref;
+		cInvalidator();
+	};
 	
 	
 private:
@@ -57,6 +67,12 @@ private:
 	Modio::Portal pPortal;
 	bool pIsInitialized;
 	int pRequiresEventHandlingCount;
+	decObjectDictionary pResources;
+	cInvalidator::Ref pInvalidator;
+	deVirtualFileSystem::Ref pVFS;
+	decStringList pBaseDirPathStr;
+	decPath *pBaseDirPath;
+	int pBaseDirPathCount;
 	
 	static deModioService *pGlobalService;
 	
@@ -75,6 +91,10 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	inline deModio &GetModule(){ return pModule; }
+	inline const cInvalidator::Ref &GetInvalidator() const{ return pInvalidator; }
+	inline const deVirtualFileSystem::Ref &GetVFS() const{ return pVFS; }
+	
 	/**
 	 * \brief Start service request.
 	 * 
@@ -103,9 +123,14 @@ public:
 		const decString &function, const deServiceObject::Ref &data = nullptr );
 	
 	void ListAllMods( const decUniqueID &id, const deServiceObject &request );
+	void LoadResource( const decUniqueID &id, const deServiceObject &request );
 	
 	void FailRequest( const decUniqueID &id, const deException &e );
 	void FailRequest( const decUniqueID &id, const Modio::ErrorCode &ec );
+	void FailRequest( const deModioPendingRequest::Ref &request, const deException &e );
+	void FailRequest( const deModioPendingRequest::Ref &request, const Modio::ErrorCode &ec );
+	
+	void OnFinishedLoadResource( const decUniqueID &id, const decString &path, deResource *resource );
 	
 	void AddRequiresEventHandlingCount();
 	void RemoveRequiresEventHandlingCount();
@@ -121,8 +146,14 @@ private:
 	void pOnListAllModsFinished( const decUniqueID &id, Modio::ErrorCode ec,
 		Modio::Optional<Modio::ModInfoList> results );
 	
+	void pOnLoadResourceFinished( const decUniqueID &id, Modio::ErrorCode ec,
+		Modio::Optional<std::string> filename );
+	
 	void pOnLogCallback( Modio::LogLevel level, const std::string &message );
 	/*@}*/
+	
+	void pPrintBaseInfos();
+	void pInitVFS();
 };
 
 #endif

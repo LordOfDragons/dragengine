@@ -45,7 +45,7 @@ interface ServiceInitListener
 	 * Service functionality can not be used. Dispose of the service and try again.
 	 * 
 	 * \param service Service sending the event.
-	 * \param message Error message.
+	 * \param exception Exception.
 	 */
-	func void initFailed(Object service, String message)
+	func void initFailed(Object service, Exception exception)
 end

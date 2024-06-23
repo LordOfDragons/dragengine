@@ -24,76 +24,54 @@
 
 namespace Dragengine.Services
 
+
 /**
- * \brief Field to use for sorting modifications.
- * \version 1.23
+ * \brief Information about service user.
+ * 
+ * Used by different services to deliver information about a user. Certain fields
+ * are only present for specific services.
  */
-enum ServiceModSortField
+class ServiceUser
 	/**
-	 * \brief Modification identifier.
-	 * 
-	 * Supported by:
-	 * - ServiceModio
+	 * \brief User identifier.
 	 */
-	id
+	public var String id
 	
 	/**
-	 * \brief Count of downloads in last 24 hours.
-	 * 
-	 * Count is given as floating point value.
-	 * 
-	 * Supported by:
-	 * - ServiceModio
+	 * \brief User name.
 	 */
-	downloadsToday
+	public var String name
 	
 	/**
-	 * \brief Count of subscribers.
-	 * 
-	 * Count is given as floating point value.
-	 * 
-	 * Supported by:
-	 * - ServiceModio
+	 * \brief Display user name.
 	 */
-	subscriberCount
+	public var String displayName
 	
 	/**
-	 * \brief Average modification rating.
-	 * 
-	 * Rating is given as floating point value in the range from 0 (worst) to 1 (best).
-	 * 
-	 * Supported by:
-	 * - ServiceModio
+	 * \brief Authentification token in string encoded form.
 	 */
-	rating
+	public var String authToken
 	
 	/**
-	 * \brief Date modification has been marked live.
-	 * 
-	 * Value is a DateTime instance.
-	 * 
-	 * Supported by:
-	 * - ServiceModio
+	 * \brief Date the user has been last been online.
 	 */
-	dateMarkedLive
+	public var TimeDate dateOnline
 	
 	/**
-	 * \brief Date modification has been last updated.
-	 * 
-	 * Value is a DateTime instance.
-	 * 
-	 * Supported by:
-	 * - ServiceModio
+	 * \brief URL or user profile.
 	 */
-	dateUpdated
+	public var String profileUrl
 	
 	/**
-	 * \brief Total count of downloads.
-	 * 
-	 * Count is given as floating point value.
-	 * 
-	 * Supported by:
-	 * - ServiceModio
+	 * \brief User avatar.
 	 */
-	downloadsTotal
+	public var ServiceImage avatar
+	
+	
+	
+	/**
+	 * \brief Create new instance of class ServiceUser.
+	 */
+	func new()
+	end
 end

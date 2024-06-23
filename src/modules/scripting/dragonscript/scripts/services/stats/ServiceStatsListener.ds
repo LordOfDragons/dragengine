@@ -22,22 +22,14 @@
  * SOFTWARE.
  */
 
-namespace Dragengine.Services
+namespace Dragengine.Services.Stats
 
 
 /**
- * \brief Default implementation of ServiceStatsListener.
+ * \brief Listener for service response and events related to stats and achievements.
  * \version 1.23
  */
-class DefaultServiceStatsListener implements ServiceStatsListener
-	/**
-	 * \brief Create new instance of DefaultServiceStatsListener.
-	 */
-	func new()
-	end
-	
-	
-	
+interface ServiceStatsListener
 	/**
 	 * \brief Stats and achievements have been received in response to a service request.
 	 * 
@@ -50,16 +42,14 @@ class DefaultServiceStatsListener implements ServiceStatsListener
 	 * as String. Value is true or false depending if the achievement is set or not.
 	 */
 	func void statsReceived(ServiceStats service, Dictionary stats, Dictionary achievements)
-	end
 	
 	/**
 	 * \brief Failed retrieving stats and achievements in response to a service request.
 	 * 
 	 * \param service Service sending the event.
-	 * \param message Error message from the steam server.
+	 * \param exception Exception.
 	 */
-	func void statsReceivedFailed(ServiceStats service, String message)
-	end
+	func void statsReceivedFailed(ServiceStats service, Exception exception)
 	
 	/**
 	 * \brief Stats and achievements have been successfully stored on the hosting platform.
@@ -73,16 +63,14 @@ class DefaultServiceStatsListener implements ServiceStatsListener
 	 * as String. Value is true or false depending if the achievement is set or not.
 	 */
 	func void statsStored(ServiceStats service, Dictionary stats, Dictionary achievements)
-	end
 	
 	/**
 	 * \brief Failed storing stats and achievements in response to a service request.
 	 * 
 	 * \param service Service sending the event.
-	 * \param message Error message from the steam server.
+	 * \param exception Exception.
 	 */
-	func void statsStoredFailed(ServiceStats service, String message)
-	end
+	func void statsStoredFailed(ServiceStats service, Exception exception)
 	
 	/**
 	 * \brief Notification stats or achievements changed on the hosting platform.
@@ -97,5 +85,4 @@ class DefaultServiceStatsListener implements ServiceStatsListener
 	 * Can be empty for all achievements.
 	 */
 	func void statsChanged(ServiceStats service, Set stats, Set achievements)
-	end
 end

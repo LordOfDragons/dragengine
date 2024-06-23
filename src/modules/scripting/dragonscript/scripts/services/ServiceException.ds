@@ -1,0 +1,87 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Services
+
+
+/**
+ * \brief Service specific exception.
+ * 
+ * Stores error message and optional error information. Depending on the service the
+ * exception originates from information like error code or error category can be
+ * present. The service throwing the exception is also present to allow interprate
+ * the optional error informationn.
+ */
+class ServiceException extends Exception
+	var Service pService
+	var Enumeration pErrorCode
+	var Enumeration pErrorCategory
+	
+	
+	/**
+	 * \brief Create new instance of class ServiceExceptionn.
+	 */
+	func new(Service service, String message) super(message)
+		pService = service
+	end
+	
+	/**
+	 * \brief Create new instance of class ServiceExceptionn.
+	 */
+	func new(Service service, String message, Enumeration errorCode) super(message)
+		pService = service
+		pErrorCode = errorCode
+	end
+	
+	/**
+	 * \brief Create new instance of class ServiceExceptionn.
+	 */
+	func new(Service service, String message, Enumeration errorCode, Enumeration errorCategory) super(message)
+		pService = service
+		pErrorCode = errorCode
+		pErrorCategory = errorCategory
+	end
+	
+	
+	/**
+	 * \brief Service throwing exception.
+	 */
+	func Service getService()
+		return pService
+	end
+	
+	/**
+	 * \brief Service specific error code or null.
+	 */
+	func Enumeration getErrorCode()
+		return pErrorCode
+	end
+	
+	/**
+	 * \brief Service specific error category or null.
+	 */
+	func Enumeration getErrorCategory()
+		return pErrorCategory
+	end
+end

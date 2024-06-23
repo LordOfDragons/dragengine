@@ -140,7 +140,7 @@ public:
 	 * \param[in] path Path to use.
 	 * \param[in] resourceType Type of resource to load
 	 * 
-	 * \returns parallel task processing the request to use as parellel task dependency.
+	 * \returns parallel task processing the request to use as parallel task dependency.
 	 * If the resource is already loaded the task is marked finished. Do not add
 	 * the task to the parallel processor. This has been done already if required.
 	 * 

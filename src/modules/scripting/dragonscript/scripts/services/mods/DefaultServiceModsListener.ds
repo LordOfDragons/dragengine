@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-namespace Dragengine.Services
+namespace Dragengine.Services.Mods
 
 
 /**
@@ -51,8 +51,26 @@ class DefaultServiceModsListener implements ServiceModsListener
 	 * \brief Listing modifications failed.
 	 * \param service Service sending the event.
 	 * \param requestId Identifier of failed request.
-	 * \param message Error message from the steam server.
+	 * \param exceptionn Exception.
 	 */
-	func void listModsFailed(ServiceMods service, UniqueID requestId, String message)
+	func void listModsFailed(ServiceMods service, UniqueID requestId, Exception exception)
+	end
+	
+	/**
+	 * \brief Loaded resource received in response to a service request.
+	 * \param service Service sending the event.
+	 * \param url URL of resource to load.
+	 * \param resource Loaded resource.
+	 */
+	func void loadResourceFinished(ServiceMods service, String url, Object resource)
+	end
+	
+	/**
+	 * \brief Loading resource failed.
+	 * \param service Service sending the event.
+	 * \param url URL of resource to load.
+	 * \param exception Exception.
+	 */
+	func void loadResourceFailed(ServiceMods service, String url, Exception exception)
 	end
 end

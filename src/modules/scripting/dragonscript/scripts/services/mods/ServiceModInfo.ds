@@ -22,13 +22,36 @@
  * SOFTWARE.
  */
 
-namespace Dragengine.Services
+namespace Dragengine.Services.Mods
 
 /**
  * \brief Information about game modification.
  * \version 1.23
  */
 class ServiceModInfo
+	/** \brief Service side modification status. */
+	enum Status
+		/** \brief Accepted. */
+		accepted
+		
+		/** \brief Not accepted. */
+		notAccepted
+		
+		/** \brief Deleted. */
+		deleted
+	end
+	
+	/** \brief Service side modification status. */
+	enum Visibility
+		/** \brief Public. */
+		publicVisible
+		
+		/** \brief Hidden. */
+		privateHidden
+	end
+	
+	
+	
 	/**
 	 * \brief Identifier.
 	 */
@@ -57,12 +80,12 @@ class ServiceModInfo
 	/**
 	 * \brief Profil URL.
 	 */
-	public var String url
+	public var String profileUrl
 	
 	/**
 	 * \brief User who submitted the modification.
 	 */
-	public var Object submittedBy
+	public var ServiceUser submittedBy
 	
 	/**
 	 * \brief Date of modification registration.
@@ -101,7 +124,7 @@ class ServiceModInfo
 	/**
 	 * \brief Information about most recent public release of modification.
 	 */
-	public var Object fileInfo
+	public var Object latestRelease
 	
 	/**
 	 * \brief Tags.
@@ -111,11 +134,9 @@ class ServiceModInfo
 	public var Set tags
 	
 	/**
-	 * \brief Gallery images.
-	 * 
-	 * Array of ...
+	 * \brief Gallery images as Array of ServiceImage.
 	 */
-	public var Array images
+	public var Array galleryImages
 	
 	/**
 	 * \brief External links like videos or social media platforms.
@@ -132,7 +153,7 @@ class ServiceModInfo
 	/**
 	 * \brief Modification logo.
 	 */
-	public var Object logo
+	public var ServiceImage logo
 	
 	/**
 	 * \brief Current modification version.
@@ -142,12 +163,12 @@ class ServiceModInfo
 	/**
 	 * \brief Status of modification.
 	 */
-	public var Object status
+	public var Status status
 	
 	/**
 	 * \brief Visibility of modification.
 	 */
-	public var Object visibility
+	public var Visibility visibility
 	
 	/**
 	 * \brief Price of modification.

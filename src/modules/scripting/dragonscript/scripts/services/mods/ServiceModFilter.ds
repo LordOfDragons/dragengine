@@ -22,14 +22,90 @@
  * SOFTWARE.
  */
 
-namespace Dragengine.Services
+namespace Dragengine.Services.Mods
+
 pin Dragengine.Gui
+
 
 /**
  * \brief Modification filter for use by ServiceMods.
  * \version 1.23
  */
 class ServiceModFilter
+	/** \brief Mature content filter value. */
+	enum MatureContent
+		/** \brief Contains use or reference to alcohol substances. */
+		alcohol
+		
+		/** \brief Contains use or reference to drugs and other adictive substances. */
+		drugs
+		
+		/** \brief Contains display or reference to violent acts. */
+		violence
+		
+		/** \brief Contains explicit content. */
+		explicit
+	end
+	
+	/** \brief Revenue filter value. */
+	enum Revenue
+		/** \brief Filter free modifications. */
+		free
+		
+		/** \brief Filter paid modifications. */
+		paid
+	end
+	
+	/** \brief Field to use for sorting modifications. */
+	enum SortField
+		/** \brief Modification identifier. */
+		id
+		
+		/**
+		 * \brief Count of downloads in last 24 hours.
+		 * 
+		 * Count is given as floating point value.
+		 */
+		downloadsToday
+		
+		/**
+		 * \brief Count of subscribers.
+		 * 
+		 * Count is given as floating point value.
+		 */
+		subscriberCount
+		
+		/**
+		 * \brief Average modification rating.
+		 * 
+		 * Rating is given as floating point value in the range from 0 (worst) to 1 (best).
+		 */
+		rating
+		
+		/**
+		 * \brief Date modification has been marked live.
+		 * 
+		 * Value is a DateTime instance.
+		 */
+		dateMarkedLive
+		
+		/**
+		 * \brief Date modification has been last updated.
+		 * 
+		 * Value is a DateTime instance.
+		 */
+		dateUpdated
+		
+		/**
+		 * \brief Total count of downloads.
+		 * 
+		 * Count is given as floating point value.
+		 */
+		downloadsTotal
+	end
+	
+	
+	
 	/**
 	 * \brief Field to sort modifications.
 	 * 
@@ -38,7 +114,7 @@ class ServiceModFilter
 	 * Supported by:
 	 * - ServiceModio
 	 */
-	public var ServiceModSortField sortField
+	public var SortField sortField
 	
 	/**
 	 * \brief Sort direction if sortField is not null.
@@ -60,7 +136,7 @@ class ServiceModFilter
 	 * Supported by:
 	 * - ServiceModio
 	 */
-	public var Set nameContains
+	public var Set matchingName
 	
 	/**
 	 * \brief Filter by author user identifier matching one or more identifiers.
@@ -160,7 +236,7 @@ class ServiceModFilter
 	 * Supported by:
 	 * - ServiceModio
 	 */
-	public var ServiceModFilterRevenue revenueType
+	public var Revenue revenueType
 	
 	/**
 	 * \brief Exclude modifications with mature content.
@@ -198,6 +274,7 @@ class ServiceModFilter
 	 * \brief Count of result to show.
 	 * 
 	 * Invalid values are potentially clamped or result in request failure.
+	 * Use 0 for default value as governed by the used service provider.
 	 * 
 	 * Supported by:
 	 * - ServiceModio. Maximum allowed value 100.
@@ -209,6 +286,5 @@ class ServiceModFilter
 	 * \brief Create new instance of class ServiceModFilter.
 	 */
 	func new()
-		resultCount = 100
 	end
 end

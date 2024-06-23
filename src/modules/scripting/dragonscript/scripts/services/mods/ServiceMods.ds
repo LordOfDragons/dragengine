@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-namespace Dragengine.Services
+namespace Dragengine.Services.Mods
 
 
 /**
@@ -70,4 +70,17 @@ interface ServiceMods
 	 * \param id Identifier of request to cancel.
 	 */
 	func void cancelRequest(UniqueID id)
+	
+	/**
+	 * \brief Load resource asynchronously.
+	 * 
+	 * Loaded resources are cached for faster retrieval. Once the resource is cached locally
+	 * \ref ServiceModsListener#loadResourceFinished(ServiceMods,String,Object) is called
+	 * with the same URL as used in this function call. If loading the image failed
+	 * \ref ServiceModsListener#loadResourceFailed(ServiceMods,String,Exception) is called
+	 * with the same URL as used in this function call.
+	 * 
+	 * \param url URL of image to load
+	 */
+	func void loadResource(String url)
 end

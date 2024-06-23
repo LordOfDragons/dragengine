@@ -293,17 +293,22 @@ void deSsdkServiceSteam::SetStats( const decUniqueID &id, const deServiceObject 
 
 
 void deSsdkServiceSteam::FailRequest( const decUniqueID &id, const deException &e ){
-	pModule.LogException( e );
-	
 	const deSsdkPendingRequest::Ref pr( RemoveFirstPendingRequestWithId( id ) );
-	if( ! pr ){
-		return;
+	if( pr ){
+		FailRequest( pr, e );
+		
+	}else{
+		pModule.LogException( e );
 	}
+}
+
+void deSsdkServiceSteam::FailRequest( const deSsdkPendingRequest::Ref &pr, const deException &e ){
+	pModule.LogException( e );
 	
 	pr->data->SetStringChildAt( "error", e.GetName().GetMiddle( 3 ) );
 	pr->data->SetStringChildAt( "message", e.GetDescription() );
 	pModule.GetGameEngine()->GetServiceManager()->QueueRequestFailed(
-		deService::Ref( pService ), id, pr->data );
+		deService::Ref( pService ), pr->id, pr->data );
 }
 
 
@@ -343,7 +348,7 @@ void deSsdkServiceSteam::OnUserStatsReceived( UserStatsReceived_t *response ){
 			deService::Ref( pService ), pr->id, pr->data, true );
 		
 	}catch( const deException &e ){
-		FailRequest( pr->id, e );
+		FailRequest( pr, e );
 	}
 }
 
@@ -375,6 +380,6 @@ void deSsdkServiceSteam::OnUserStatsStored( UserStatsStored_t *response ){
 			deService::Ref( pService ), pr->id, pr->data, true );
 		
 	}catch( const deException &e ){
-		FailRequest( pr->id, e );
+		FailRequest( pr, e );
 	}
 }

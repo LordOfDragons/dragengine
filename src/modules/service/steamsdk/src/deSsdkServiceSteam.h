@@ -98,6 +98,7 @@ public:
 	void ResetAllStats( const decUniqueID &id, const deServiceObject& request );
 	
 	void FailRequest( const decUniqueID &id, const deException &e );
+	void FailRequest( const deSsdkPendingRequest::Ref &request, const deException &e );
 	/*@}*/
 	
 	
