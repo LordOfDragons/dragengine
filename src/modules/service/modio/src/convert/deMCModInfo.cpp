@@ -121,18 +121,18 @@ deServiceObject::Ref deMCModInfo::ModInfo( const Modio::ModInfo &info ){
 	}
 	
 	if( info.YoutubeURLs.Size() != 0 ){
-		so->SetChildAt( "youtubeURLs", deMCCommon::StringList( info.YoutubeURLs.GetRawList() ) );
+		so->SetChildAt( "youtubeUrls", deMCCommon::StringList( info.YoutubeURLs.GetRawList() ) );
 	}
 	
 	if( info.SketchfabURLs.Size() != 0 ){
-		so->SetChildAt( "sketchfabURLs", deMCCommon::StringList( info.SketchfabURLs.GetRawList() ) );
+		so->SetChildAt( "sketchfabUrls", deMCCommon::StringList( info.SketchfabURLs.GetRawList() ) );
 	}
 	
 	so->SetChildAt( "stats", ModStats( info.Stats ) );
 	so->SetChildAt( "modLogo", deMCDetail::Logo( info.ModLogo ) );
 	so->SetStringChildAt( "version", info.Version.c_str() );
 	so->SetChildAt( "modStatus", ModServerSideStatus( info.ModStatus ) );
-	so->SetChildAt( "visibility", deMCCommon::ObjectVisibility( info.Visibility ) );
+	so->SetBoolChildAt( "publicVisible", info.Visibility == Modio::ObjectVisibility::Public );
 	so->SetIntChildAt( "price", info.Price );
 	so->SetBoolChildAt( "dependencies", info.Dependencies );
 	
@@ -142,13 +142,13 @@ deServiceObject::Ref deMCModInfo::ModInfo( const Modio::ModInfo &info ){
 deServiceObject::Ref deMCModInfo::ModStats( const Modio::ModStats &stats ){
 	const deServiceObject::Ref so( deServiceObject::Ref::New( new deServiceObject ) );
 	
-	so->SetIntChildAt( "popularityRankPosition", stats.PopularityRankPosition );
-	so->SetIntChildAt( "popularityRankTotalMods", stats.PopularityRankTotalMods );
-	so->SetIntChildAt( "downloadsTotal", stats.DownloadsTotal );
-	so->SetIntChildAt( "subscribersTotal", stats.SubscribersTotal );
-	so->SetIntChildAt( "ratingTotal", stats.RatingTotal );
-	so->SetIntChildAt( "ratingPositive", stats.RatingPositive );
-	so->SetIntChildAt( "ratingNegative", stats.RatingNegative );
+	so->SetFloatChildAt( "popularityRankPosition", ( float )stats.PopularityRankPosition );
+	so->SetFloatChildAt( "popularityRankTotalMods", ( float )stats.PopularityRankTotalMods );
+	so->SetFloatChildAt( "downloadsTotal", ( float )stats.DownloadsTotal );
+	so->SetFloatChildAt( "subscribersTotal", ( float )stats.SubscribersTotal );
+	so->SetFloatChildAt( "ratingTotal", ( float )stats.RatingTotal );
+	so->SetFloatChildAt( "ratingPositive", ( float )stats.RatingPositive );
+	so->SetFloatChildAt( "ratingNegative", ( float )stats.RatingNegative );
 	so->SetFloatChildAt( "ratingWeightedAggregate", ( float )stats.RatingWeightedAggregate );
 	so->SetStringChildAt( "ratingDisplayText", stats.RatingDisplayText.c_str() );
 	

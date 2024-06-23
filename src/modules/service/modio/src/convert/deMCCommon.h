@@ -48,9 +48,6 @@ public:
 	static Modio::MaturityOption MaturityOption( const deServiceObject &so );
 	static deServiceObject::Ref MaturityOption( Modio::MaturityOption option );
 	
-	/** Convert modio ObjectVisibility. */
-	static deServiceObject::Ref ObjectVisibility( Modio::ObjectVisibility visibility );
-	
 	/** Convert modio Metadata. */
 	static deServiceObject::Ref Metadata( const Modio::Metadata &data );
 	

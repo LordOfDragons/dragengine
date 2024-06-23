@@ -41,13 +41,29 @@ class ServiceModInfo
 		deleted
 	end
 	
-	/** \brief Service side modification status. */
-	enum Visibility
-		/** \brief Public. */
-		publicVisible
+	/**
+	 * \brief Link to an external site.
+	 * 
+	 * External links are typically videos, social media platforms, discussion platforms
+	 * as well as developer specific sites like homepage or documentation pages. Since this
+	 * is generic the link type is stored as free text string.
+	 */
+	class ExternalLink
+		/**
+		 * \brief Description of the link.
+		 */
+		public var String description
 		
-		/** \brief Hidden. */
-		privateHidden
+		/**
+		 * \brief Link URL.
+		 */
+		public var String url
+		
+		/**
+		 * \brief Create new instance of class ExternalLink.
+		 */
+		func new()
+		end
 	end
 	
 	
@@ -124,14 +140,16 @@ class ServiceModInfo
 	/**
 	 * \brief Information about most recent public release of modification.
 	 */
-	public var Object latestRelease
+	public var ServiceModRelease latestRelease
 	
 	/**
 	 * \brief Tags.
 	 * 
-	 * Set of ...
+	 * Dictionary with String tag as key and String transation as value. The tag is used to
+	 * identify the tag while the value is used to display the tag to the user. The value
+	 * is typically translated to the user language by the service provider.
 	 */
-	public var Set tags
+	public var Dictionary tags
 	
 	/**
 	 * \brief Gallery images as Array of ServiceImage.
@@ -141,14 +159,14 @@ class ServiceModInfo
 	/**
 	 * \brief External links like videos or social media platforms.
 	 * 
-	 * Array of ...
+	 * Array of ExternalLink.
 	 */
-	public var Array links
+	public var Array externalLinks
 	
 	/**
 	 * \brief Stats and ratings for modification.
 	 */
-	public var Object stats
+	public var ServiceModStats stats
 	
 	/**
 	 * \brief Modification logo.
@@ -166,9 +184,9 @@ class ServiceModInfo
 	public var Status status
 	
 	/**
-	 * \brief Visibility of modification.
+	 * \brief Modification is public visible.
 	 */
-	public var Visibility visibility
+	public var bool publicVisible
 	
 	/**
 	 * \brief Price of modification.

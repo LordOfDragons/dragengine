@@ -484,6 +484,11 @@ class ServiceModio implements ServiceListener, ServiceMods
 		return so2 != null if so2.getBoolean() else defaultValue
 	end
 	
+	private func float pConvFloat(ServiceObject so, String key, float defaultValue)
+		var ServiceObject so2 = so.getChildAt(key)
+		return so2 != null if so2.getFloat() else defaultValue
+	end
+	
 	private func TimeDate pConvTimeDate(ServiceObject so, String key)
 		var ServiceObject so2 = so.getChildAt(key)
 		return so2 != null if TimeDate.new(\
@@ -558,23 +563,21 @@ class ServiceModio implements ServiceListener, ServiceMods
 		info.dateReleased = pConvTimeDate(so, "profileDateLive")
 		info.metadata = pConvString(so, "metadataBlob")
 		info.metadataMap = pConvStringDict(so, "metadataKvp")
-		info.tags = pConvStringSet(so, "tags")
 		info.version = pConvString(so, "version")
 		info.price = pConvInt(so, "price", 0).toString()
 		info.hasDependencies = pConvBool(so, "dependencies", false)
+		info.publicVisible = pConvBool(so, "publicVisible", true)
 		
 		so2 = so.getChildAt("modStatus")
 		if so2 != null
 			info.status = ServiceModInfo.Status.named(so2.getString())
 		end
 		
-		so2 = so.getChildAt("visibility")
-		if so2 != null
-			info.visibility = ServiceModInfo.Visibility.named(so2.getString())
-		end
-		
 		info.submittedBy = pConvUser(so.getChildAt("profileSubmittedBy"))
 		info.logo = pConvImage(so.getChildAt("modLogo"))
+		info.latestRelease = pConvRelease(so.getChildAt("fileInfo"))
+		info.stats = pConvModStats(so.getChildAt("stats"))
+		info.tags = pConvStringDict(so, "tags")
 		
 		so2 = so.getChildAt("profileMaturityOption")
 		if so2 != null
@@ -594,19 +597,34 @@ class ServiceModio implements ServiceListener, ServiceMods
 			end
 		end
 		
+		var Array youtubeUrls = pConvStringList(so, "youtubeUrls")
+		var Array sketchfabUrls = pConvStringList(so, "sketchfabUrls")
+		
+		if youtubeUrls != null or sketchfabUrls != null
+			var ServiceModInfo.ExternalLink link
+			
+			info.externalLinks = Array.new()
+			
+			if youtubeUrls != null
+				youtubeUrls.forEach(block String url
+					link = ServiceModInfo.ExternalLink.new()
+					link.description = "YouTube"
+					link.url = url
+					info.externalLinks.add(link)
+				end)
+			end
+			
+			if sketchfabUrls != null
+				sketchfabUrls.forEach(block String url
+					link = ServiceModInfo.ExternalLink.new()
+					link.description = "Sketchfab"
+					link.url = url
+					info.externalLinks.add(link)
+				end)
+			end
+		end
+		
 		/*
-	
-	if( info.FileInfo.has_value() ){
-		so->SetChildAt( "fileInfo", deMCCommon::FileMetadata( *info.FileInfo ) );
-	}
-	
-	if( info.YoutubeURLs.Size() != 0 ){
-		so->SetChildAt( "youtubeURLs", deMCCommon::StringList( info.YoutubeURLs.GetRawList() ) );
-	}
-	
-	if( info.SketchfabURLs.Size() != 0 ){
-		so->SetChildAt( "sketchfabURLs", deMCCommon::StringList( info.SketchfabURLs.GetRawList() ) );
-	}
 	
 	so->SetChildAt( "stats", ModStats( info.Stats ) );
 		*/
@@ -653,6 +671,65 @@ class ServiceModio implements ServiceListener, ServiceMods
 		thumbnail.size = size
 		thumbnail.url = so2.getString()
 		image.thumbnails.add(thumbnail)
+	end
+	
+	private func ServiceModRelease pConvRelease(ServiceObject so)
+		if so == null
+			return null
+		end
+		
+		var ServiceModRelease release = ServiceModRelease.new()
+		var ServiceObject so2
+		
+		release.id = pConvString(so, "metadataId")
+		release.modId = pConvString(so, "modId")
+		release.dateAdded = pConvTimeDate(so, "dateAdded")
+		release.filesize = pConvFloat(so, "filesize", 0)
+		release.filesizeUncompressed = pConvFloat(so, "filesizeUncompressed", 0)
+		release.filename = pConvString(so, "filename")
+		release.version = pConvString(so, "version")
+		release.changelog = pConvString(so, "changelog")
+		release.metadata = pConvString(so, "metadataBlob")
+		release.downloadUrl = pConvString(so, "downloadBinaryURL")
+		release.downloadExpiryDate = pConvTimeDate(so, "downloadExpiryDate")
+		
+		so2 = so.getChildAt("currentVirusScanStatus")
+		if so2 != null
+			release.virusScanStatus = ServiceModRelease.VirusScanStatus.named(so2.getString())
+		end
+		
+		so2 = so.getChildAt("currentVirusStatus")
+		if so2 != null
+			release.virusStatus = ServiceModRelease.VirusStatus.named(so2.getString())
+		end
+		
+		return release
+	end
+	
+	private func ServiceModInfo.ExternalLink pConvExternalLink(ServiceObject so)
+		var ServiceModInfo.ExternalLink link = ServiceModInfo.ExternalLink.new()
+		link.description = pConvString(so, "filename")
+		link.url = pConvString(so, "original")
+		return link
+	end
+	
+	private func ServiceModStats pConvModStats(ServiceObject so)
+		if so == null
+			return null
+		end
+		
+		var ServiceModStats stats = ServiceModStats.new()
+		stats.rankPosition = pConvFloat(so, "popularityRankPosition", 0)
+		stats.rankCount = pConvFloat(so, "popularityRankTotalMods", 0)
+		stats.downloadCount = pConvFloat(so, "downloadsTotal", 0)
+		stats.subscriberCount = pConvFloat(so, "subscribersTotal", 0)
+		stats.ratingCount = pConvFloat(so, "ratingTotal", 0)
+		stats.ratingCountPositive = pConvFloat(so, "ratingPositive", 0)
+		stats.ratingCountNegative = pConvFloat(so, "ratingNegative", 0)
+		stats.ratingWeighted = pConvFloat(so, "ratingWeightedAggregate", 0)
+		stats.ratingDisplayText = pConvString(so, "ratingDisplayText")
+		
+		return stats
 	end
 	
 	private func void pRecursiveServiceObject(Dictionary d, String key, ServiceObject so)

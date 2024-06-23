@@ -119,19 +119,6 @@ deServiceObject::Ref deMCCommon::MaturityOption( Modio::MaturityOption option ){
 	}
 }
 
-deServiceObject::Ref deMCCommon::ObjectVisibility( Modio::ObjectVisibility visibility ){
-	switch( visibility ){
-	case Modio::ObjectVisibility::Hidden:
-		return deServiceObject::NewString( "hidden" );
-		
-	case Modio::ObjectVisibility::Public:
-		return deServiceObject::NewString( "public" );
-		
-	default:
-		DETHROW( deeInvalidParam );
-	}
-}
-
 deServiceObject::Ref deMCCommon::Metadata( const Modio::Metadata &data ){
 	const deServiceObject::Ref so( deServiceObject::Ref::New( new deServiceObject ) );
 	
@@ -331,7 +318,7 @@ deServiceObject::Ref deMCCommon::FileMetadata( const Modio::FileMetadata &data )
 	so->SetStringChildAt( "downloadBinaryURL", data.DownloadBinaryURL.c_str() );
 	
 	if( data.DownloadExpiryDate != 0 ){
-	so->SetChildAt( "downloadExpiryDate", DateTime( data.DownloadExpiryDate ) );
+		so->SetChildAt( "downloadExpiryDate", DateTime( data.DownloadExpiryDate ) );
 	}
 	
 	return so;
