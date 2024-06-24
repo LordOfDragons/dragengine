@@ -70,7 +70,6 @@ pBaseDirPathCount( 0 )
 	pApiKey = data->GetChildAt( "apiKey" )->GetString();
 	pGameId = ( uint64_t )data->GetChildAt( "gameId" )->GetString().ToLongValid();
 	pUserId = data->GetChildAt( "userId" )->GetString();
-	pEnvironment = deMCCommon::Environment( data->GetChildAt( "environment" ) );
 	
 	deServiceObject::Ref child( data->GetChildAt( "portal" ) );
 	if( child ){
@@ -81,12 +80,12 @@ pBaseDirPathCount( 0 )
 	options.APIKey = Modio::ApiKey( pApiKey.GetString() );
 	options.GameID = Modio::GameID( pGameId );
 	options.User = pUserId;
-	options.GameEnvironment = pEnvironment;
+	options.GameEnvironment = Modio::Environment::Live;
 	options.PortalInUse = pPortal;
 	
 	module.LogInfo( "deModioService: Initialize service" );
-	Modio::SetLogLevel( Modio::LogLevel::Trace );
-	// Modio::SetLogLevel( Modio::LogLevel::Info );
+	// Modio::SetLogLevel( Modio::LogLevel::Trace );
+	Modio::SetLogLevel( Modio::LogLevel::Info );
 	
 	Modio::SetLogCallback( [ this ]( Modio::LogLevel level, const std::string &message ){
 		pOnLogCallback( level, message );
@@ -263,16 +262,19 @@ void deModioService::LoadResource( const decUniqueID &id, const deServiceObject 
 	switch( resource->type ){
 	case deModioResource::etLogo:
 		data->SetStringChildAt( "resourceType", "image" );
+		AddRequiresEventHandlingCount();
 		Modio::GetModMediaAsync(resource->modId, resource->logoSize, callback);
 		break;
 		
 	case deModioResource::etGalleryImage:
 		data->SetStringChildAt( "resourceType", "image" );
+		AddRequiresEventHandlingCount();
 		Modio::GetModMediaAsync(resource->modId, resource->gallerySize, resource->galleryIndex, callback);
 		break;
 		
 	case deModioResource::etAvatar:
 		data->SetStringChildAt( "resourceType", "image" );
+		AddRequiresEventHandlingCount();
 		Modio::GetModMediaAsync(resource->modId, resource->avatarSize, callback);
 		break;
 		
@@ -563,8 +565,8 @@ Modio::Optional<std::string> filename ){
 			const decPath &bdpath = pBaseDirPath[ i ];
 			if( bdpath.IsParentOf( path ) ){
 				path = path.RelativePath( bdpath, false );
-				pModule.LogInfoFormat( "-> Relative to '%s': %s",
-					pBaseDirPathStr[ i ].GetString(), path.GetPathUnix().GetString() );
+				/*pModule.LogInfoFormat( "-> Relative to '%s': %s",
+					pBaseDirPathStr[ i ].GetString(), path.GetPathUnix().GetString() );*/
 				break;
 			}
 		}
@@ -609,10 +611,18 @@ void deModioService::pPrintBaseInfos(){
 	
 	std::vector<std::string>::const_iterator iter;
 	for( iter = directories.cbegin(); iter != directories.cend(); iter++ ){
-		const char * const path = iter->c_str();
-		pModule.LogInfoFormat( "- %s", path );
-		pBaseDirPathStr.Add( path );
-		pBaseDirPath[ pBaseDirPathCount++ ].SetFromNative( path );
+		pModule.LogInfoFormat( "- %s", iter->c_str() );
+		
+		decPath &path = pBaseDirPath[ pBaseDirPathCount++ ];
+		path.SetFromNative( iter->c_str() );
+		
+		// path returned is of the form: <homedir>/mod.io/common/<game-id>/mods/
+		// cache files are of the form: <homedir>/mod.io/common/<game-id>/cache/mods/<mod-id>/<path>
+		// mounting the base path is not going to work this way. using the parent directory
+		// should work unless the directory structure changes
+		path.RemoveLastComponent();
+		
+		pBaseDirPathStr.Add( path.GetPathNative() );
 	}
 }
 

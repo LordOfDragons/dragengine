@@ -40,22 +40,6 @@ pin Dragengine.Gui
  */
 class ServiceModio implements ServiceListener, ServiceMods
 	/**
-	 * \brief Environment to use for ServiceModio.
-	 * \version 1.23
-	 */
-	enum Environment
-		/**
-		 * \brief Live environment. For use in production.
-		 */
-		live
-		
-		/**
-		 * \brief Test environment. For use in development.
-		 */
-		test
-	end
-	
-	/**
 	 * \brief Store portal for use with ServiceModio.
 	 * \version 1.23
 	 * 
@@ -111,7 +95,6 @@ class ServiceModio implements ServiceListener, ServiceMods
 	
 	
 	var String pApiKey, pGameId, pUserId
-	var Environment pEnvironment
 	var Portal pPortal
 	var Service pService
 	var ServiceInitListener pInitListener
@@ -131,18 +114,15 @@ class ServiceModio implements ServiceListener, ServiceMods
 	 * \param apiKey Application key.
 	 * \param gameId Game identifier. Number in string form.
 	 * \param userId User identifier. Called "Local platform user" in ModIO.
-	 * \param environment Environment to use.
 	 * \param portal Optional portal indicator. Can be null if not known.
 	 * \param listener Listener called if initialization finished. Can be null.
 	 * \throws EInvalidParam ModIO service module is not present.
 	 * \throws EInvalidParam One or more of the provided parameters is not valid.
 	 */
-	func new(String apiKey, String gameId, String userId, Environment environment,\
-	Portal portal, ServiceInitListener listener)
+	func new(String apiKey, String gameId, String userId, Portal portal, ServiceInitListener listener)
 		pApiKey = apiKey
 		pGameId = gameId
 		pUserId = userId
-		pEnvironment = environment
 		pPortal = portal
 		pInitListener = listener
 		pModsListeners = SafeArray.new()
@@ -151,7 +131,6 @@ class ServiceModio implements ServiceListener, ServiceMods
 		so.setStringChildAt("apiKey", apiKey)
 		so.setStringChildAt("gameId", gameId)
 		so.setStringChildAt("userId", userId)
-		so.setStringChildAt("environment", environment.name())
 		if portal != null
 			so.setStringChildAt("portal", portal.name())
 		end
@@ -207,13 +186,6 @@ class ServiceModio implements ServiceListener, ServiceMods
 	 */
 	func String getUserId()
 		return pUserId
-	end
-	
-	/**
-	 * \brief Game environment.
-	 */
-	func Environment getEnvironment()
-		return pEnvironment
 	end
 	
 	/**
@@ -301,11 +273,8 @@ class ServiceModio implements ServiceListener, ServiceMods
 			so.setIntChildAt("resultCount", filter.resultCount)
 		end
 		
-		var Dictionary d = Dictionary.new()
-		pRecursiveServiceObject(d, "Request", so)
-		pLogDictionary(BaseGameApp.getApp().getConsole(), d, "listAllMods")
-		
 		var UniqueID id = pService.nextId()
+		// pDebugRequest(id, so)
 		pService.startRequest(id, so)
 		return id
 	end
@@ -347,13 +316,17 @@ class ServiceModio implements ServiceListener, ServiceMods
 	func void requestResponse(Service service, UniqueID id, ServiceObject response, bool finished)
 		var String function = response.getChildAt("function").getString()
 		
-		var Dictionary d = Dictionary.new()
-		pRecursiveServiceObject(d, "Response", response)
-		pLogDictionary(BaseGameApp.getApp().getConsole(), d, "requestResponse")
-		
 		if function.equals("listAllMods")
+			// pDebugRequestResponse(id, response)
+			var ServiceObject somods = response.getChildAt("mods")
+			var Array mods = Array.new()
+			var int i, count = somods.getChildCount()
+			for i = 0 to count
+				mods.add(pConvModInfo(somods.getChildAt(i)))
+			end
+			
 			pModsListeners.forEach(block ServiceModsListener each
-				each.listModsFinished(this, id, Array.new())
+				each.listModsFinished(this, id, mods)
 			end)
 			
 		elif function.equals("loadResource")
@@ -547,6 +520,24 @@ class ServiceModio implements ServiceListener, ServiceMods
 		return dict
 	end
 	
+	private func Dictionary pConvTagList(ServiceObject so, String key)
+		var ServiceObject so2 = so.getChildAt(key)
+		if so2 == null
+			return null
+		end
+		
+		var int i, count = so2.getChildCount()
+		var Dictionary dict = Dictionary.new()
+		var ServiceObject so3
+		
+		for i = 0 to count
+			so3 = so2.getChildAt(i)
+			dict.setAt(so3.getChildAt("tag").getString(), so3.getChildAt("tagLocalized").getString())
+		end
+		
+		return dict
+	end
+	
 	private func ServiceModInfo pConvModInfo(ServiceObject so)
 		var ServiceObject so2
 		var int i, count
@@ -577,7 +568,7 @@ class ServiceModio implements ServiceListener, ServiceMods
 		info.logo = pConvImage(so.getChildAt("modLogo"))
 		info.latestRelease = pConvRelease(so.getChildAt("fileInfo"))
 		info.stats = pConvModStats(so.getChildAt("stats"))
-		info.tags = pConvStringDict(so, "tags")
+		info.tags = pConvTagList(so, "tags")
 		
 		so2 = so.getChildAt("profileMaturityOption")
 		if so2 != null
@@ -732,6 +723,22 @@ class ServiceModio implements ServiceListener, ServiceMods
 		return stats
 	end
 	
+	private func void pDebugRequest(UniqueID id, ServiceObject request)
+		var Console console = BaseGameApp.getApp().getConsole()
+		console.addMessage("request: " + id)
+		var Dictionary dict = Dictionary.new()
+		pRecursiveServiceObject(dict, "Request", request)
+		pLogDictionary(console, dict, "")
+	end
+	
+	private func void pDebugRequestResponse(UniqueID id, ServiceObject response)
+		var Console console = BaseGameApp.getApp().getConsole()
+		console.addMessage("requestResponse: " + id)
+		var Dictionary dict = Dictionary.new()
+		pRecursiveServiceObject(dict, "Response", response)
+		pLogDictionary(console, dict, "")
+	end
+	
 	private func void pRecursiveServiceObject(Dictionary d, String key, ServiceObject so)
 		select so.getValueType()
 		case ServiceObjectType.boolean
@@ -746,6 +753,13 @@ class ServiceModio implements ServiceListener, ServiceMods
 			d.setAt(key, so.getResource())
 		case ServiceObjectType.data
 			d.setAt(key, so.getData())
+		case ServiceObjectType.list
+			var Dictionary d2 = Dictionary.new()
+			d.setAt(key, d2)
+			var int i, count = so.getChildCount()
+			for i = 0 to count
+				pRecursiveServiceObject(d2, i.toString(), so.getChildAt(i))
+			end
 		case ServiceObjectType.dictionary
 			var Dictionary d2 = Dictionary.new()
 			d.setAt(key, d2)

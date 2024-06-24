@@ -38,9 +38,6 @@ private:
 	deMCCommon() = default;
 	
 public:
-	/** Convert modio environment. */
-	static Modio::Environment Environment( const deServiceObject &so );
-	
 	/** Convert modio portal. */
 	static Modio::Portal Portal( const deServiceObject &so );
 	

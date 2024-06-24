@@ -28,21 +28,6 @@
 // Class deMCCommon
 /////////////////////
 
-Modio::Environment deMCCommon::Environment( const deServiceObject &so ){
-	const decString &sval = so.GetString();
-	if( sval == "live" ){
-		return Modio::Environment::Live;
-		
-	}else if( sval == "test" ){
-		return Modio::Environment::Test;
-		
-	}else{
-		decString message;
-		message.Format( "Invalid environment: %s", sval.GetString() );
-		DETHROW_INFO( deeInvalidParam, message );
-	}
-}
-
 Modio::Portal deMCCommon::Portal( const deServiceObject &so ){
 	const decString &sval = so.GetString();
 	if( sval == "apple" ){

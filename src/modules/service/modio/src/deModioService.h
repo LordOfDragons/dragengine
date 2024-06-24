@@ -63,7 +63,6 @@ private:
 	decString pApiKey;
 	uint64_t pGameId;
 	decString pUserId;
-	Modio::Environment pEnvironment;
 	Modio::Portal pPortal;
 	bool pIsInitialized;
 	int pRequiresEventHandlingCount;
