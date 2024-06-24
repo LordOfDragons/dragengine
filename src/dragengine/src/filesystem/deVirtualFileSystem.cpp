@@ -468,9 +468,7 @@ bool deVirtualFileSystem::HasContainer( deVFSContainer *container ) const{
 }
 
 void deVirtualFileSystem::AddContainer( deVFSContainer *container ){
-	if( ! container ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL( container )
 	pContainers.Add( container );
 }
 
