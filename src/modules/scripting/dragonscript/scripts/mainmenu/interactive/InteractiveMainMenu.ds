@@ -75,7 +75,7 @@ class InteractiveMainMenu extends Window
 		loadingWorld
 		
 		/** \brief Fade in main menu. */
-		maniMenuFadeIn
+		mainMenuFadeIn
 		
 		/** \brief Idle in main menu. */
 		mainMenuIdle
@@ -634,7 +634,7 @@ class InteractiveMainMenu extends Window
 			pMenuFader.setCurTransparency(0)
 			updateLoadWorld(elapsed)
 			
-		case State.maniMenuFadeIn
+		case State.mainMenuFadeIn
 			pMenuFader.update(elapsed)
 			if not pMenuFader.isFading()
 				pState = State.mainMenuIdle
@@ -786,7 +786,7 @@ class InteractiveMainMenu extends Window
 		
 		AudioSystem.setActiveMicrophone(pMicrophone)
 		
-		pState = State.maniMenuFadeIn
+		pState = State.mainMenuFadeIn
 		Engine.resetTimers()
 	end
 	
