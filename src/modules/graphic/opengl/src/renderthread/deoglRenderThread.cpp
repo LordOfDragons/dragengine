@@ -2281,11 +2281,9 @@ void deoglRenderThread::pVRStartBeginFrame(){
 
 void deoglRenderThread::pVRWaitBeginFrameFinished(){
 	deoglVR * const vr = pVRCamera ? pVRCamera->GetVR() : nullptr;
-	if( ! vr ){
-		return;
+	if( vr ){
+		vr->WaitBeginFrameFinished();
 	}
-	
-	vr->WaitBeginFrameFinished();
 	
 	if( pSignalSemaphoreSyncVR ){
 		pSignalSemaphoreSyncVR = false;

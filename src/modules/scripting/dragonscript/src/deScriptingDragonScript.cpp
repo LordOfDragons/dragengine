@@ -554,7 +554,7 @@ const char *deScriptingDragonScript::GetVFSSharedDataDir() const{
 }
 
 bool deScriptingDragonScript::Init( const char *scriptDirectory, const char *gameObject ){
-	if( pState != esStopped ){
+	if( pState != esStopped && pState != esRestartInit ){
 		return false;
 	}
 	
@@ -842,7 +842,7 @@ bool deScriptingDragonScript::ExitGame(){
 	if( ! pGameObj ){
 		return true;
 	}
-	if( pState == esReady && ! pCallFunction( "cleanUp" ) ){
+	if( ( pState == esReady || pState == esRestartShutdown ) && ! pCallFunction( "cleanUp" ) ){
 		return false;
 	}
 	
@@ -888,29 +888,19 @@ extern int timerColliderChanged;
 extern int timerColliderChangedCount;
 #endif
 bool deScriptingDragonScript::OnFrameUpdate(){
-	if( pRestartRequested ){
-		LogInfoFormat( "Restart request using info '%s'", pRestartInfo.GetString() );
-		const decString scriptDirectory( pInitScriptDirectory );
-		const decString gameObject( pInitGameObject );
-		pRestartRequested = false;
-		
-		LogInfo( "Restart: Shutdown..." );
-		ShutDown();
-		
-		LogInfo( "Restart: Init..." );
-		if( ! Init( scriptDirectory, gameObject ) ){
-			return false;
-		}
-		
-		LogInfo( "Restart: Finished" );
-	}
-	
 	if( pLoadingScreen ){
 		pLoadingScreen->Update();
 	}
 	
 	switch( pState ){
 	case esReady:{
+		if( pRestartRequested ){
+			LogInfoFormat( "Restart request using info '%s'", pRestartInfo.GetString() );
+			pRestartRequested = false;
+			pState = esRestartShutdown;
+			return true;
+		}
+		
 		pLoadingScreen = nullptr;
 		
 		#ifdef SPECIAL_DEBUG
@@ -1042,6 +1032,26 @@ bool deScriptingDragonScript::OnFrameUpdate(){
 		
 		pState = esReady;
 		return true;
+		
+	case esRestartShutdown:
+		LogInfo( "Restart: Shutdown..." );
+		ShutDown();
+		pState = esRestartInit;
+		return true;
+		
+	case esRestartInit:{
+		LogInfo( "Restart: Init..." );
+		const decString scriptDir( pInitScriptDirectory ), gameObj( pInitGameObject );
+		if( Init( scriptDir, gameObj ) ){
+			LogInfo( "Restart: Finished" );
+			return true;
+			
+		}else{
+			LogInfo( "Restart: Init failed!" );
+			ShutDown();
+			return false;
+		}
+		}
 		
 	default:
 		return false;

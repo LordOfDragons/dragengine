@@ -27,6 +27,7 @@
 
 #include "modio.h"
 
+#include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/systems/modules/service/deBaseServiceModule.h>
 
 
@@ -36,6 +37,7 @@
 class deModio : public deBaseServiceModule{
 private:
 	int pRequiresEventHandlingCount;
+	deVirtualFileSystem::Ref pVFSMods;
 	
 	
 	
@@ -55,6 +57,9 @@ public:
 	/** Set of supported service names. */
 	decStringSet GetSupportedServices() override;
 	
+	/** Mods virtual file system. */
+	inline const deVirtualFileSystem::Ref &GetVFSMods() const{ return pVFSMods; }
+	
 	/**
 	 * Create service peer.
 	 * 
@@ -65,6 +70,9 @@ public:
 	
 	/** Frame update. */
 	void FrameUpdate( float elapsed ) override;
+	
+	/** Make module add stage specific VFS containers. */
+	void AddVFSContainers( deVirtualFileSystem &vfs, const char *stage ) override;
 	
 	void AddRequiresEventHandlingCount();
 	void RemoveRequiresEventHandlingCount();

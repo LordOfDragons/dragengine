@@ -107,6 +107,7 @@ private:
 	DEF_NATFUNC( nfGetGame );
 	DEF_NATFUNC( nfGetFPSRate );
 	DEF_NATFUNC( nfQuit );
+	DEF_NATFUNC( nfRestart );
 	DEF_NATFUNC( nfGetEditMode );
 	DEF_NATFUNC( nfLoadingResourceCount );
 	DEF_NATFUNC( nfLog );

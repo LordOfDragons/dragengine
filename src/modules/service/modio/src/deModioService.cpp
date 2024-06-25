@@ -100,6 +100,7 @@ pBaseDirPathCount( 0 )
 }
 
 deModioService::~deModioService(){
+	pModule.LogInfo( "Destroy deModioService" );
 	pInvalidator->invalidated = true;
 	
 	while( pPendingRequests.GetCount() > 0 ){

@@ -168,19 +168,22 @@ deService *deServiceManager::CreateService( const char *name, const deServiceObj
 void deServiceManager::QueueRequestResponse( const deService::Ref &service,
 const decUniqueID &id, const deServiceObject::Ref &response, bool finished ){
 	const deMutexGuard lock( pMutex );
-	pEventQueue.Add( new cEvent( cEvent::eeRequestResponse, service, id, response, finished ) );
+	pEventQueue.Add( cEvent::Ref::New( new cEvent(
+		cEvent::eeRequestResponse, service, id, response, finished ) ) );
 }
 
 void deServiceManager::QueueRequestFailed( const deService::Ref &service,
 const decUniqueID &id, const deServiceObject::Ref &error ){
 	const deMutexGuard lock( pMutex );
-	pEventQueue.Add( new cEvent( cEvent::eeRequestFailed, service, id, error, true ) );
+	pEventQueue.Add( cEvent::Ref::New( new cEvent(
+		cEvent::eeRequestFailed, service, id, error, true ) ) );
 }
 
 void deServiceManager::QueueEventReceived( const deService::Ref &service,
 const deServiceObject::Ref &event ){
 	const deMutexGuard lock( pMutex );
-	pEventQueue.Add( new cEvent( cEvent::eeEventReceived, service, decUniqueID(), event, true ) );
+	pEventQueue.Add( cEvent::Ref::New( new cEvent(
+		cEvent::eeEventReceived, service, decUniqueID(), event, true ) ) );
 }
 
 

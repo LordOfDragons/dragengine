@@ -252,7 +252,9 @@ public:
 		esLoadGame,
 		esCreateGameObject,
 		esInitGameObject,
-		esReady
+		esReady,
+		esRestartShutdown,
+		esRestartInit
 	};
 	
 	struct sModuleVersion{

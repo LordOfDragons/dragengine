@@ -98,6 +98,16 @@ void deClassEngine::nfQuit::RunFunction( dsRunTime*, dsValue* ){
 	( ( deClassEngine* )GetOwnerClass() )->GetDS().GetGameEngine()->Quit();
 }
 
+// static public func void restart(String info)
+deClassEngine::nfRestart::nfRestart( const sInitData &init ) :
+dsFunction( init.clsEngine, "restart", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid ){
+	p_AddParameter( init.clsString );
+}
+void deClassEngine::nfRestart::RunFunction( dsRunTime *rt, dsValue* ){
+	( ( deClassEngine* )GetOwnerClass() )->GetDS().RequestRestart( rt->GetValue( 0 )->GetString() );
+}
+
 
 
 // static public func void log( String message )
@@ -511,6 +521,7 @@ void deClassEngine::CreateClassMembers(dsEngine *engine){
 	AddFunction( new nfGetGame( init ) );
 	AddFunction( new nfGetFPSRate( init ) );
 	AddFunction( new nfQuit( init ) );
+	AddFunction( new nfRestart( init ) );
 	AddFunction( new nfGetEditMode( init ) );
 	AddFunction( new nfLoadingResourceCount( init ) );
 	AddFunction( new nfLog( init ) );

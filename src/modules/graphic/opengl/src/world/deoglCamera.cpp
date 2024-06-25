@@ -91,6 +91,10 @@ deoglCamera::~deoglCamera(){
 		pOgl.GetRenderThread().GetDelayedOperations().AddCleanUpCamera( pRCamera );
 	}
 	
+	if( pOgl.GetVRCamera() == this ){
+		pOgl.SetVRCamera( nullptr );
+	}
+	
 	pCleanUp();
 }
 

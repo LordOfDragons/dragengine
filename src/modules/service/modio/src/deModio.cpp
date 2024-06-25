@@ -32,6 +32,7 @@
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decBaseFileWriter.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
+#include <dragengine/filesystem/deVFSRedirect.h>
 #include <dragengine/systems/deModuleSystem.h>
 #include <dragengine/systems/modules/deLoadableModule.h>
 
@@ -100,6 +101,20 @@ const char *name, const deServiceObject::Ref &data ){
 void deModio::FrameUpdate( float ){
 	if( pRequiresEventHandlingCount > 0 ){
 		Modio::RunPendingHandlers();
+	}
+}
+
+void deModio::AddVFSContainers( deVirtualFileSystem &vfs, const char *stage ){
+	DEASSERT_NOTNULL( stage )
+	
+	if( strcmp( stage, deModuleSystem::VFSStageMods ) == 0 ){
+		if( ! pVFSMods ){
+			pVFSMods.TakeOver( new deVirtualFileSystem );
+		}
+		
+		const decPath rootDir( decPath::CreatePathUnix( "/" ) );
+		vfs.AddContainer( deVFSRedirect::Ref::New(
+			new deVFSRedirect( rootDir, rootDir, pVFSMods, true ) ) );
 	}
 }
 
