@@ -34,3 +34,11 @@ deBaseModule( loadableModule ){
 
 deBaseServiceModule::~deBaseServiceModule(){
 }
+
+
+
+// Management
+///////////////
+
+void deBaseServiceModule::AddVFSContainers( deVirtualFileSystem&, const char* ){
+}

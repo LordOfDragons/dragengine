@@ -30,6 +30,7 @@
 class deEngine;
 class deLoadableModule;
 class deBaseModule;
+class deVirtualFileSystem;
 
 
 // definitions
@@ -131,6 +132,27 @@ public:
 		emtService
 	};
 	
+	/**
+	 * \brief VFS Stage name for patches containers.
+	 * \version 1.23
+	 * \see deModuleSystem#ServicesAddVFSContainers(const char*)
+	 */
+	static const char * const VFSStagePatches;
+	
+	/**
+	 * \brief VFS Stage name for mods containers.
+	 * \version 1.23
+	 * \see deModuleSystem#ServicesAddVFSContainers(const char*)
+	 */
+	static const char * const VFSStageMods;
+	
+	/**
+	 * \brief VFS Stage name for overlay containers.
+	 * \version 1.23
+	 * \see deModuleSystem#ServicesAddVFSContainers(const char*)
+	 */
+	static const char * const VFSStageOverlay;
+	
 	
 	
 private:
@@ -215,6 +237,31 @@ public:
 	 * has to be properly initialized to be accepted.
 	 */
 	void AddModule( deLoadableModule *module );
+	
+	/**
+	 * \brief Make service modules add stage specific VFS containers.
+	 * \version 1.23
+	 * 
+	 * If modules require dynamic modification of containers they should add
+	 * add a deVFSRedirect container redirecting to a module owned deVirtualFileSystem.
+	 * This way the containers can be modified while the game is running.
+	 * 
+	 * Stage is defined using a string and depends on the hosting application.
+	 * These types are known (but more can be added):
+	 * - patches: Game and patch containers are present. Allows modules to add
+	 *   containers patching the game. A typical use for this are dynamically
+	 *   downloaded patches as used in auto updating online games.
+	 * - mods: After 'patches'. Allowes to add containers providing game modifications
+	 * - overlay: After 'mods' and before adding the user overlay directory. Allows
+	 *   modules to add containers overriding all containers up to this point in time.
+	 *   The user overlay directory is always aded after this stage. Hence user
+	 *   overlay content is always used first before any other content.
+	 * 
+	 * Applies to modules of type:
+	 * - emtScript
+	 * - emtService
+	 */
+	void ServicesAddVFSContainers( deVirtualFileSystem &vfs, const char *stage );
 	/*@}*/
 	
 	

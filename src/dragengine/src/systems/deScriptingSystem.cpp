@@ -176,7 +176,14 @@ void deScriptingSystem::AddVFSSharedDataDir( deVirtualFileSystem &vfs ) const{
 	}
 }
 
-void deScriptingSystem::SetEditMode( bool editMode ){
+void deScriptingSystem::AddVFSContainers( deVirtualFileSystem &vfs, const char *stage ){
+	if( pActiveModule ){
+		pActiveModule->AddVFSContainers( vfs, stage );
+	}
+}
+
+void deScriptingSystem::SetEditMode(bool editMode)
+{
 	if( GetIsRunning() ) DETHROW( deeInvalidParam );
 	pEditMode = editMode;
 }

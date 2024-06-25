@@ -563,7 +563,20 @@ const char *archivePath, const decStringSet &hiddenPath ){
 	vfs.AddContainer( container );
 }
 
-void delEngineInstanceDirect::SetCmdLineArgs( const char *arguments ){
+void delEngineInstanceDirect::ModulesAddVFSContainers( const char *stage ){
+	DEASSERT_NOTNULL( stage )
+	
+	GetLauncher().GetLogger()->LogInfoFormat( GetLauncher().GetLogSource(),
+		"Processing ModulesAddVFSContainers(stage='%s')", stage );
+	DEASSERT_NOTNULL( pEngine )
+	
+	deVirtualFileSystem &vfs = *pEngine->GetVirtualFileSystem();
+	pEngine->GetModuleSystem()->ServicesAddVFSContainers( vfs, stage );
+	pEngine->GetScriptingSystem()->AddVFSContainers( vfs, stage );
+}
+
+void delEngineInstanceDirect::SetCmdLineArgs(const char *arguments)
+{
 	DEASSERT_NOTNULL( arguments )
 	
 	GetLauncher().GetLogger()->LogInfoFormat( GetLauncher().GetLogSource(),

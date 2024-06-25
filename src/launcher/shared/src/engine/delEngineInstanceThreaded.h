@@ -245,6 +245,12 @@ public:
 	virtual void VFSAddDelgaFile( const char *delgaFile, const char *archivePath,
 		const decStringSet &hiddenPath );
 	
+	/**
+	 * \brief Make modules add stage specific containers to virtual file system.
+	 * \version 1.23
+	 */
+	virtual void ModulesAddVFSContainers( const char *stage );
+	
 	/** \brief Set command line arguments. */
 	virtual void SetCmdLineArgs( const char *arguments );
 	

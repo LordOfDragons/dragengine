@@ -45,10 +45,28 @@ fixed class Engine
 	end
 	
 	/**
-	 * \brief Quit game.
-	 * \details Cleans up the game object and shuts down the game engine.
+	 * \brief Request game to quit.
+	 * 
+	 * Before the next frame update cleans up the game object and shuts down the game
+	 * engine. This call returns.
 	 */
 	static func void quit()
+	end
+	
+	/**
+	 * \brief Request game to restart.
+	 * \version 1.23
+	 * \param info Information to retrieve using \ref Game#getRestartInfo() after restart.
+	 * 
+	 * Before the next frame update cleans up the game object then recreates the game
+	 * object. In the restarted game 'info' can be retrieved using
+	 * \ref Game#getRestartInfo() to restore game state if possible. This call returns.
+	 * 
+	 * Restarting can be used for example if game modifications are enabled changing
+	 * scripts files. In contrary to a full game restart this restart is faster and
+	 * allows to restore the state (typically UI) before the restart using 'info'·
+	 */
+	func void restart(String info)
 	end
 	
 	/**
@@ -65,7 +83,7 @@ fixed class Engine
 	end
 	
 	/** \brief Log message using engine logger. */
-	static func void log( String message )
+	static func void log(String message)
 	end
 	
 	/** \brief Script module states as Dictionary. */

@@ -530,7 +530,8 @@ pResourceLoader( nullptr ),
 pColInfo( nullptr ),
 pColliderListenerClosest( nullptr ),
 pColliderListenerAdaptor( nullptr ),
-pGameObj( nullptr )
+pGameObj( nullptr ),
+pRestartRequested( false )
 {
 	pModuleVersion.SetVersion( DS_MODULE_VERSION );
 }
@@ -887,6 +888,23 @@ extern int timerColliderChanged;
 extern int timerColliderChangedCount;
 #endif
 bool deScriptingDragonScript::OnFrameUpdate(){
+	if( pRestartRequested ){
+		LogInfoFormat( "Restart request using info '%s'", pRestartInfo.GetString() );
+		const decString scriptDirectory( pInitScriptDirectory );
+		const decString gameObject( pInitGameObject );
+		pRestartRequested = false;
+		
+		LogInfo( "Restart: Shutdown..." );
+		ShutDown();
+		
+		LogInfo( "Restart: Init..." );
+		if( ! Init( scriptDirectory, gameObject ) ){
+			return false;
+		}
+		
+		LogInfo( "Restart: Finished" );
+	}
+	
 	if( pLoadingScreen ){
 		pLoadingScreen->Update();
 	}
@@ -1158,7 +1176,10 @@ void deScriptingDragonScript::PushPoint3( dsRunTime *rt, const decPoint3 &pt ){
 	pClsPt3->PushPoint( rt, pt );
 }
 
-
+void deScriptingDragonScript::RequestRestart( const char *info ){
+	pRestartInfo = info;
+	pRestartRequested = true;
+}
 
 void deScriptingDragonScript::AddValueDeleteLater( dsValue *value ){
 	pDeleteValuesLaterList.Add( value );

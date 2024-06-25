@@ -372,6 +372,9 @@ void projTestRunEngine::SetRunArguments(){
 
 void projTestRunEngine::InitVFS(){
 	const projTestRunProcess::sRunParameters &runParameters = pProcess.GetRunParameters();
+	deVirtualFileSystem &vfs = *pEngine->GetVirtualFileSystem();
+	deScriptingSystem &scrsys = *pEngine->GetScriptingSystem();
+	deModuleSystem &modsys = *pEngine->GetModuleSystem();
 	deVFSContainerReference container;
 	decPath path;
 	
@@ -381,17 +384,27 @@ void projTestRunEngine::InitVFS(){
 	container.TakeOver( new deVFSDiskDirectory( decPath::CreatePathUnix( "/" ),
 		decPath::CreatePathNative( runParameters.pathDataDirectory ) ) );
 	( ( deVFSDiskDirectory* )container.operator->() )->SetReadOnly( true );
-	pEngine->GetVirtualFileSystem()->AddContainer( container );
+	vfs.AddContainer( container );
 	
 	// add script module shared data if existing
-	pEngine->GetScriptingSystem()->AddVFSSharedDataDir( *pEngine->GetVirtualFileSystem() );
+	scrsys.AddVFSSharedDataDir( vfs );
+	
+	// make modules add stage containers to virtual file system
+	modsys.ServicesAddVFSContainers( vfs, deModuleSystem::VFSStagePatches );
+	scrsys.AddVFSContainers( vfs, deModuleSystem::VFSStagePatches );
+	
+	modsys.ServicesAddVFSContainers( vfs, deModuleSystem::VFSStageMods );
+	scrsys.AddVFSContainers( vfs, deModuleSystem::VFSStageMods );
+	
+	modsys.ServicesAddVFSContainers( vfs, deModuleSystem::VFSStageOverlay );
+	scrsys.AddVFSContainers( vfs, deModuleSystem::VFSStageOverlay );
 	
 	// add the game overlay directory (writeable).
 	pProcess.GetLogger()->LogInfoFormat( LOGSOURCE, "VFS: '/' => '%s'",
 		runParameters.pathOverlay.GetString() );
 	container.TakeOver( new deVFSDiskDirectory( decPath::CreatePathUnix( "/" ),
 		decPath::CreatePathNative( runParameters.pathOverlay ) ) );
-	pEngine->GetVirtualFileSystem()->AddContainer( container );
+	vfs.AddContainer( container );
 	pEngine->SetPathOverlay( runParameters.pathOverlay );
 	
 	// add the user game configuration directory (writeable)
@@ -401,7 +414,7 @@ void projTestRunEngine::InitVFS(){
 	container.TakeOver( new deVFSDiskDirectory(
 		decPath::CreatePathUnix( runParameters.vfsPathConfig ),
 		decPath::CreatePathNative( runParameters.pathConfig ) ) );
-	pEngine->GetVirtualFileSystem()->AddContainer( container );
+	vfs.AddContainer( container );
 	pEngine->SetPathConfig( runParameters.pathConfig );
 	
 	// add the user game capture directory (writeable)
@@ -411,7 +424,7 @@ void projTestRunEngine::InitVFS(){
 	container.TakeOver( new deVFSDiskDirectory(
 		decPath::CreatePathUnix( runParameters.vfsPathCapture ),
 		decPath::CreatePathNative( runParameters.pathCapture ) ) );
-	pEngine->GetVirtualFileSystem()->AddContainer( container );
+	vfs.AddContainer( container );
 	pEngine->SetPathCapture( runParameters.pathCapture );
 }
 

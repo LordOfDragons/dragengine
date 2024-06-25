@@ -475,6 +475,8 @@ private:
 	
 	// objects
 	dsValue *pGameObj;
+	decString pRestartInfo;
+	bool pRestartRequested;
 	
 public:
 	// constructor, destructor
@@ -807,6 +809,9 @@ public:
 	void PushPoint( dsRunTime *rt, const decPoint &p );
 	const decPoint3 &GetPoint3( dsRealObject *myself ) const;
 	void PushPoint3( dsRunTime *rt, const decPoint3 &pt );
+	
+	inline const decString &GetRestartInfo() const{ return pRestartInfo; }
+	void RequestRestart( const char *info );
 	
 	/** \brief Adds a value to delete later. */
 	void AddValueDeleteLater( dsValue *value );

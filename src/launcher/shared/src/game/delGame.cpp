@@ -371,6 +371,10 @@ void delGame::StartGame( const delGameRunParams &runParams, delEngineInstance::F
 		
 		pEngineInstance->VFSAddScriptSharedDataDir();
 		
+		pEngineInstance->ModulesAddVFSContainers( deModuleSystem::VFSStagePatches );
+		pEngineInstance->ModulesAddVFSContainers( deModuleSystem::VFSStageMods );
+		pEngineInstance->ModulesAddVFSContainers( deModuleSystem::VFSStageOverlay );
+		
 		filePath.SetFromNative( pLauncher.GetPathConfigUser() );
 		filePath.AddComponent( "games" );
 		filePath.AddComponent( pIdentifier.ToHexString( false ) );

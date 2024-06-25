@@ -597,6 +597,10 @@ void dealLauncher::StartGame(){
 		DETHROW( deeInvalidAction );
 	}
 	
+	DEASSERT_TRUE( pEngine.GetEngine()->ModulesAddVFSContainers( deModuleSystem::VFSStagePatches ) )
+	DEASSERT_TRUE( pEngine.GetEngine()->ModulesAddVFSContainers( deModuleSystem::VFSStageMods ) )
+	DEASSERT_TRUE( pEngine.GetEngine()->ModulesAddVFSContainers( deModuleSystem::VFSStageOverlay ) )
+	
 	filePath.SetFromNative( pConfiguration.GetPathConfigUser() );
 	filePath.AddComponent( "games" );
 	filePath.AddComponent( pGame->GetIdentifier() );

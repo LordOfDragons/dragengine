@@ -30,6 +30,7 @@
 #include "modules/deLoadableModule.h"
 #include "modules/deLibraryModule.h"
 #include "modules/deBaseModule.h"
+#include "modules/service/deBaseServiceModule.h"
 #include "../deEngine.h"
 #include "../app/deOS.h"
 #include "../common/file/decPath.h"
@@ -53,6 +54,10 @@
 
 // Class deModuleSystem
 /////////////////////////
+
+const char * const deModuleSystem::VFSStagePatches = "patches";
+const char * const deModuleSystem::VFSStageMods = "mods";
+const char * const deModuleSystem::VFSStageOverlay = "overlay";
 
 // Constructor, destructor
 ////////////////////////////
@@ -396,13 +401,37 @@ deBaseModule *deModuleSystem::GetModuleAbleToLoad( eModuleTypes type, const char
 	return module->GetModule();
 }
 
+void deModuleSystem::ServicesAddVFSContainers( deVirtualFileSystem &vfs, const char *stage ){
+	DEASSERT_NOTNULL( stage )
+	
+	decStringList names;
+	int i;
+	
+	for( i=0; i<pModules.GetCount(); i++ ){
+		const deLoadableModule &module = *( ( deLoadableModule* )pModules.GetAt( i ) );
+		if( module.GetType() == deModuleSystem::eModuleTypes::emtService && ! names.Has( module.GetName() ) ){
+			names.Add( module.GetName() );
+		}
+	}
+	
+	const int count = names.GetCount();
+	for( i=0; i<count; i++ ){
+		const deLoadableModule * const module = GetModuleNamed( names.GetAt( i ) );
+		if( module && module->GetType() == deModuleSystem::eModuleTypes::emtService
+		&& module->IsLoaded() && module->GetEnabled() ){
+			( ( deBaseServiceModule* )module->GetModule() )->AddVFSContainers( vfs, stage );
+		}
+	}
+}
+
 
 
 // Helper functions
 /////////////////////
 
-int deModuleSystem::CompareVersion( const char *version1, const char *version2 ){
-	if( ! version1 || ! version2 ){
+int deModuleSystem::CompareVersion(const char *version1, const char *version2)
+{
+    if( ! version1 || ! version2 ){
 		DETHROW( deeInvalidParam );
 	}
 	

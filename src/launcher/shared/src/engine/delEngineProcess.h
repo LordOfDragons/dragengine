@@ -87,6 +87,9 @@ public:
 		/** \brief Add delga file to virtual file system as root container. */
 		eccVFSAddDelgaFile,
 		
+		/** \brief Make modules add stage specific containers to virtual file system. */
+		eccModulesAddVFSContainers,
+		
 		/** \brief Set command line arguments. */
 		eccSetCmdLineArgs,
 		
@@ -343,6 +346,12 @@ public:
 	
 	/** \brief Command add delga file to virtual file system as root container. */
 	void CommandVFSAddDelgaFile();
+	
+	/**
+	 * \brief Command make modules add stage specific containers to virtual file system.
+	 * \version 1.23
+	 */
+	void CommandModulesAddVFSContainers();
 	
 	/** \brief Command set command line arguments. */
 	void CommandSetCmdLineArgs();
