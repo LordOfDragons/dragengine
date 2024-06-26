@@ -137,21 +137,21 @@ public:
 	 * \version 1.23
 	 * \see deModuleSystem#ServicesAddVFSContainers(const char*)
 	 */
-	static const char * const VFSStagePatches;
+	static constexpr const char * const VFSStagePatches = "patches";
 	
 	/**
 	 * \brief VFS Stage name for mods containers.
 	 * \version 1.23
 	 * \see deModuleSystem#ServicesAddVFSContainers(const char*)
 	 */
-	static const char * const VFSStageMods;
+	static constexpr const char * const VFSStageMods = "mods";
 	
 	/**
 	 * \brief VFS Stage name for overlay containers.
 	 * \version 1.23
 	 * \see deModuleSystem#ServicesAddVFSContainers(const char*)
 	 */
-	static const char * const VFSStageOverlay;
+	static constexpr const char * const VFSStageOverlay = "overlay";
 	
 	
 	

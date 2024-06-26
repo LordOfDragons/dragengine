@@ -55,10 +55,6 @@
 // Class deModuleSystem
 /////////////////////////
 
-const char * const deModuleSystem::VFSStagePatches = "patches";
-const char * const deModuleSystem::VFSStageMods = "mods";
-const char * const deModuleSystem::VFSStageOverlay = "overlay";
-
 // Constructor, destructor
 ////////////////////////////
 

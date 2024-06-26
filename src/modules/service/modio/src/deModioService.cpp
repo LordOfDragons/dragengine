@@ -674,6 +674,7 @@ void deModioService::pUpdateModManagementEnabled(){
 		Modio::DisableModManagement();
 		RemoveRequiresEventHandlingCount();
 		pModManagementEnabled = false;
+		pModule.LogInfo( "deModioService.pUpdateModManagementEnabled: Management disabled" );
 		
 	} else {
 		if( pModManagementEnabled ){
@@ -690,6 +691,7 @@ void deModioService::pUpdateModManagementEnabled(){
 		}else{
 			AddRequiresEventHandlingCount();
 			pModManagementEnabled = true;
+			pModule.LogInfo( "deModioService.pUpdateModManagementEnabled: Management enabled" );
 		}
 	}
 }

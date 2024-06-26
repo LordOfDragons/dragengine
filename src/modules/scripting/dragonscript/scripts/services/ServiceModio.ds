@@ -432,7 +432,7 @@ class ServiceModio implements ServiceListener, ServiceMods
 			pInitListener = null
 			
 		elif eventName.equals("modManagement")
-			var ManagementEvent mev = ManagementEvent.named(event.getChildAt("subEvent").getString())
+			var ServiceMods.ManagementEvent mev = ServiceMods.ManagementEvent.named(event.getChildAt("subEvent").getString())
 			var bool success = event.getChildAt("success").getBoolean()
 			var String modId = event.getChildAt("modId").getString()
 			var ServiceModProgress progress = pConvModProgress(event)
