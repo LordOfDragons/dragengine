@@ -88,6 +88,21 @@ public:
 	
 	/** Convert modio VirusStatus. */
 	static deServiceObject::Ref VirusStatus( Modio::FileMetadata::VirusStatus status );
+	
+	/** Convert mod management event type. */
+	static deServiceObject::Ref ModManagementEventType( Modio::ModManagementEvent::EventType type );
+	
+	/** Convert error. */
+	static void Error( deServiceObject &so, const Modio::ErrorCode &error );
+	
+	/** Convert error outcome. */
+	static void ErrorOutcome( deServiceObject &so, const Modio::ErrorCode &error );
+	
+	/** Convert mod progress state. */
+	static deServiceObject::Ref ModProgressState( const Modio::ModProgressInfo::EModProgressState &state );
+	
+	/** Convert mod progress info. */
+	static deServiceObject::Ref ModProgressInfo( const Modio::ModProgressInfo &info );
 	/*@}*/
 };
 

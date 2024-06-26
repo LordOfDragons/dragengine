@@ -42,7 +42,7 @@ interface ServiceModsListener
 	 * \brief Listing modifications failed.
 	 * \param service Service sending the event.
 	 * \param requestId Identifier of failed request.
-	 * \param exception Exception.
+	 * \param exception Exception or null if sueeded.
 	 */
 	func void listModsFailed(ServiceMods service, UniqueID requestId, Exception exception)
 	
@@ -58,7 +58,18 @@ interface ServiceModsListener
 	 * \brief Loading resource failed.
 	 * \param service Service sending the event.
 	 * \param url URL of resource to load.
-	 * \param exception Exception.
+	 * \param exception Exception or null if sueeded.
 	 */
 	func void loadResourceFailed(ServiceMods service, String url, Exception exception)
+	
+	/**
+	 * \brief Mod mamagement event.
+	 * \param service Service sending the event.
+	 * \param event Management event.
+	 * \param modId Identifier of modification affected by the event.
+	 * \param progress Progress information or null.
+	 * \param exception Exception or null if sueeded.
+	 */
+	func void managementEvent(ServiceMods service, ServiceMods.ManagementEvent event,\
+		String modId, ServiceModProgress progress, Exception exception)
 end

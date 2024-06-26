@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+#include <inttypes.h>
+
 #include "deModio.h"
 #include "deModioResource.h"
 #include "deModioService.h"
@@ -61,7 +63,11 @@ pRequiresEventHandlingCount( 0 ),
 pInvalidator( cInvalidator::Ref::New( new cInvalidator ) ),
 pVFS( deVirtualFileSystem::Ref::New( new deVirtualFileSystem ) ),
 pBaseDirPath( nullptr ),
-pBaseDirPathCount( 0 )
+pBaseDirPathCount( 0 ),
+pPauseModManagement( false ),
+pModManagementEnabled( false ),
+pElapsedUpdateProgress( 0.0f ),
+pUpdateProgressInterval( 1.0f )
 {
 	if( pGlobalService ){
 		DETHROW_INFO( deeInvalidAction, "Duplicate service" );
@@ -100,12 +106,15 @@ pBaseDirPathCount( 0 )
 }
 
 deModioService::~deModioService(){
-	pModule.LogInfo( "Destroy deModioService" );
+	pModule.LogInfo( "deModioService: Destroy" );
 	pInvalidator->invalidated = true;
 	
 	while( pPendingRequests.GetCount() > 0 ){
 		CancelRequest( ( ( deModioPendingRequest* )pPendingRequests.GetAt( 0 ) )->id );
 	}
+	
+	pPauseModManagement = true;
+	pUpdateModManagementEnabled();
 	
 	if( pIsInitialized ){
 		bool done = false;
@@ -137,6 +146,10 @@ deModioService::~deModioService(){
 ///////////////
 
 void deModioService::StartRequest( const decUniqueID &id, const deServiceObject& request ){
+	if( ! pIsInitialized ){
+		DETHROW_INFO( deeInvalidAction, "Not initialized" );
+	}
+	
 	const decString &function = request.GetChildAt( "function" )->GetString();
 	
 	if( function == "listAllMods" ){
@@ -144,6 +157,9 @@ void deModioService::StartRequest( const decUniqueID &id, const deServiceObject&
 		
 	}else if( function == "loadResource" ){
 		LoadResource( id, request );
+		
+	}else if( function == "pauseModManagement" ){
+		PauseModManagement( id, request );
 		
 	}else{
 		DETHROW_INFO( deeInvalidParam, "Unknown function" );
@@ -163,6 +179,10 @@ void deModioService::CancelRequest( const decUniqueID &id ){
 	so->SetStringChildAt( "message", "Request cancelled" );
 	pModule.GetGameEngine()->GetServiceManager()->QueueRequestFailed(
 		deService::Ref( pService ), id, so );
+}
+
+void deModioService::FrameUpdate(float elapsed){
+	pCheckProgressUpdate( elapsed );
 }
 
 
@@ -282,34 +302,19 @@ void deModioService::LoadResource( const decUniqueID &id, const deServiceObject 
 	default:
 		FailRequest( id, deeInvalidParam( __FILE__, __LINE__, "Invalid resource load type" ) );
 	}
-	
-	/*
-	this one here is a problem. the mod information returns URLs for avatar, gallery images
-	and logo but there are multiple functions to fetch the resources:
-	
-	Modio::GetModMediaAsync(Modio::ModID ModId, Modio::LogoSize LogoSize,
-		std::function<void(Modio::ErrorCode, Modio::Optional<std::string>)> Callback);
-	
-	Modio::GetModMediaAsync(Modio::ModID ModId, Modio::GallerySize GallerySize, Modio::GalleryIndex Index,
-		std::function<void(Modio::ErrorCode, Modio::Optional<std::string>)> Callback);
-	
-	Modio::GetModMediaAsync(Modio::ModID ModId, Modio::AvatarSize AvatarSize,
-		std::function<void(Modio::ErrorCode, Modio::Optional<std::string>)> Callback)
-	
-	hence we are required to deduce from the URL what kind of resource the user wants to
-	retrieve and thus which of the functions to call. at least the same same callback can
-	be used for all function variants since it returns the filename on disk. once we have
-	that filename we can use the matching image module to load the image.
-	
-	example urls:
-	- logo: https://thumb.modcdn.io/mods/f04b/4099326/crop_320x180/img_test_red_roo.jpg
-	- gallery: https://thumb.modcdn.io/mods/f04b/4099326/crop_1280x720/img_test_blue_roo.jpg
-	- gallery: https://thumb.modcdn.io/mods/f04b/4099326/crop_320x180/img_test_blue_roo.jpg
-	- avatar: https://thumb.modcdn.io/members/0102/32775296/crop_100x100/6d7efe1dc5d3a94a1782e1a199d0a2b.jpg
-	*/
 }
 
-
+void deModioService::PauseModManagement( const decUniqueID &id, const deServiceObject &request ){
+	pPauseModManagement = request.GetChildAt( "pause" )->GetBoolean();
+	pUpdateModManagementEnabled();
+	
+	const deServiceObject::Ref response( deServiceObject::Ref::New( new deServiceObject ) );
+	response->SetStringChildAt( "function", "pauseModManagement" );
+	response->SetBoolChildAt( "paused", pPauseModManagement );
+	
+	pModule.GetGameEngine()->GetServiceManager()->QueueRequestResponse(
+		deService::Ref( pService ), id, response, true );
+}
 
 void deModioService::FailRequest( const decUniqueID &id, const deException &e ){
 	const deModioPendingRequest::Ref pr( RemoveFirstPendingRequestWithId( id ) );
@@ -327,7 +332,7 @@ void deModioService::FailRequest( const decUniqueID &id, const Modio::ErrorCode 
 		FailRequest( pr, ec );
 		
 	}else{
-		pModule.LogError( ec.message().c_str() );
+		pModule.LogErrorFormat( "deModioService: %s", ec.message().c_str() );
 	}
 }
 
@@ -341,7 +346,7 @@ void deModioService::FailRequest( const deModioPendingRequest::Ref &request, con
 }
 
 void deModioService::FailRequest( const deModioPendingRequest::Ref &request, const Modio::ErrorCode &ec ){
-	pModule.LogError( ec.message().c_str() );
+	pModule.LogErrorFormat( "deModioService: %s", ec.message().c_str() );
 	
 	request->data->SetIntChildAt( "code", ec.value() );
 	request->data->SetStringChildAt( "error", ec.category().name() );
@@ -389,7 +394,8 @@ void deModioService::AddRequiresEventHandlingCount(){
 
 void deModioService::RemoveRequiresEventHandlingCount(){
 	if( pRequiresEventHandlingCount == 0 ){
-		pModule.LogWarn("RemoveRequiresEventHandlingCount called with pRequiresEventHandlingCount == 0");
+		pModule.LogWarn("deModioService.RemoveRequiresEventHandlingCount"
+			" called with pRequiresEventHandlingCount == 0");
 		return;
 	}
 	
@@ -404,22 +410,17 @@ void deModioService::RemoveRequiresEventHandlingCount(){
 //////////////
 
 void deModioService::pOnInitializeFinished( Modio::ErrorCode ec ){
-	pModule.LogInfoFormat( "deModioService: Initialize service finished: ec(%d)[%s]",
+	pModule.LogInfoFormat( "deModioService.pOnInitializeFinished: ec(%d)[%s]",
 		ec.value(), ec.message().c_str() );
 	RemoveRequiresEventHandlingCount();
+	pUpdateModManagementEnabled();
 	
 	const deServiceObject::Ref data( deServiceObject::Ref::New( new deServiceObject ) );
 	
 	data->SetStringChildAt( "event", "initialized" );
+	deMCCommon::ErrorOutcome( data, ec );
 	
-	if( ec ) {
-		data->SetBoolChildAt( "success", false );
-		data->SetIntChildAt( "code", ec.value() );
-		data->SetStringChildAt( "error", ec.category().name() );
-		data->SetStringChildAt( "message", ec.message().c_str() );
-		
-	} else {
-		data->SetBoolChildAt( "success", true );
+	if( ! ec ) {
 		pIsInitialized = true;
 		
 		pPrintBaseInfos();
@@ -557,7 +558,7 @@ Modio::Optional<std::string> filename ){
 			DETHROW_INFO( deeInvalidParam, "Missing filename in server response" );
 		}
 		
-		pModule.LogInfoFormat( "pOnLoadResourceFinished: %s", filename->c_str() );
+		pModule.LogInfoFormat( "deModioService.pOnLoadResourceFinished: %s", filename->c_str() );
 		
 		decPath path( decPath::CreatePathNative( filename->c_str() ) );
 		int i;
@@ -585,18 +586,41 @@ void deModioService::pOnLogCallback( Modio::LogLevel level, const std::string &m
 	switch( level ){
 	case Modio::LogLevel::Trace:
 	case Modio::LogLevel::Info:
-		pModule.LogInfoFormat( "Log: %s", message.c_str() );
+		pModule.LogInfoFormat( "deModioService.pOnLogCallback: %s", message.c_str() );
 		break;
 		
 	case Modio::LogLevel::Warning:
-		pModule.LogWarnFormat( "Log: %s", message.c_str() );
+		pModule.LogWarnFormat( "deModioService.pOnLogCallback: %s", message.c_str() );
 		break;
 		
 	case Modio::LogLevel::Error:
-		pModule.LogErrorFormat( "Log: %s", message.c_str() );
+		pModule.LogErrorFormat( "deModioService.pOnLogCallback: %s", message.c_str() );
 		break;
 	}
 }
+
+void deModioService::pOnModManagement( Modio::ModManagementEvent event ){
+	const bool busy = Modio::IsModManagementBusy();
+	
+	pModule.LogInfoFormat( "deModioService.pOnModManagement: ev=%d id=%" PRIi64 " busy=%d ec(%d)[%s]",
+		( int )event.Event, ( int64_t )event.ID, busy, event.Status.value(), event.Status.message().c_str() );
+	const deServiceObject::Ref data( deServiceObject::Ref::New( new deServiceObject ) );
+	
+	data->SetStringChildAt( "event", "modManagement" );
+	data->SetChildAt( "modId", deMCCommon::ID( event.ID ) );
+	data->SetChildAt( "subEvent", deMCCommon::ModManagementEventType( event.Event ) );
+	data->SetBoolChildAt( "busy", busy );
+	deMCCommon::ErrorOutcome( data, event.Status );
+	
+	const Modio::Optional<Modio::ModProgressInfo> progress = Modio::QueryCurrentModUpdate();
+	if( progress.has_value() ){
+		data->SetChildAt( "progress", deMCCommon::ModProgressInfo( *progress ) );
+	}
+	
+	pModule.GetGameEngine()->GetServiceManager()->QueueEventReceived( deService::Ref( pService ), data );
+}
+
+
 
 void deModioService::pPrintBaseInfos(){
 	pModule.LogInfoFormat( "deModioService: DefaultModInstallationDirectory: %s",
@@ -639,4 +663,58 @@ void deModioService::pInitVFS(){
 		pVFS->AddContainer( deVFSDiskDirectory::Ref::New(
 			new deVFSDiskDirectory( rootPath, diskPath, true ) ) );
 	}
+}
+
+void deModioService::pUpdateModManagementEnabled(){
+	if( pPauseModManagement ){
+		if( ! pModManagementEnabled ){
+			return;
+		}
+		
+		Modio::DisableModManagement();
+		RemoveRequiresEventHandlingCount();
+		pModManagementEnabled = false;
+		
+	} else {
+		if( pModManagementEnabled ){
+			return;
+		}
+		
+		const Modio::ErrorCode ec = Modio::EnableModManagement( [ this ]( Modio::ModManagementEvent event ){
+			pOnModManagement( event );
+		});
+		
+		if( ec ){
+			pModule.LogErrorFormat( "deModioService.pUpdateModManagementEnabled: %s", ec.message().c_str() );
+			
+		}else{
+			AddRequiresEventHandlingCount();
+			pModManagementEnabled = true;
+		}
+	}
+}
+
+void deModioService::pCheckProgressUpdate( float elapsed ){
+	pElapsedUpdateProgress += elapsed;
+	if( pElapsedUpdateProgress < pUpdateProgressInterval ){
+		return;
+	}
+	
+	pElapsedUpdateProgress = 0.0f;
+	
+	const Modio::Optional<Modio::ModProgressInfo> progress = Modio::QueryCurrentModUpdate();
+	if( ! progress.has_value() ){
+		return;
+	}
+	
+	const deServiceObject::Ref data( deServiceObject::Ref::New( new deServiceObject ) );
+	
+	data->SetStringChildAt( "event", "modManagement" );
+	data->SetChildAt( "modId", deMCCommon::ID( progress->ID ) );
+	data->SetStringChildAt( "subEvent", "progress" );
+	data->SetBoolChildAt( "busy", Modio::IsModManagementBusy() );
+	data->SetChildAt( "progress", deMCCommon::ModProgressInfo( *progress ) );
+	data->SetBoolChildAt( "success", true );
+	
+	pModule.GetGameEngine()->GetServiceManager()->QueueEventReceived( deService::Ref( pService ), data );
 }

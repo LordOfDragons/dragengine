@@ -31,6 +31,62 @@ namespace Dragengine.Services.Mods
  */
 interface ServiceMods
 	/**
+	 * \bief Mod management event.
+	 */
+	enum ManagementEvent
+		/**
+		 * \brief Begin installing modification.
+		 */
+		beginInstall
+		
+		/**
+		 * \brief Finished installing modification.
+		 * 
+		 * Modification is now allowed to be activated.
+		 */
+		installed
+		
+		/**
+		 * \brief Begin uninstalling modification.
+		 * 
+		 * Allowed only if the modification is deactivated.
+		 */
+		beginUninstall
+		
+		/**
+		 * \brief Finished uninstalling modification.
+		 */
+		uninstalled
+		
+		/**
+		 * \brief Begin updating modification to latest version.
+		 */
+		beginUpdate
+		
+		/**
+		 * \brief Finished updating modification to latest version.
+		 */
+		updated
+		
+		/**
+		 * \brief Begin uploading modification.
+		 */
+		beginUpload
+		
+		/**
+		 * \brief Finished uploading modification.
+		 */
+		uploaded
+		
+		/**
+		 * \brief Progress information.
+		 */
+		progress
+	end
+	
+	
+	
+	/**
 	 * \brief Add modification listener.
 	 * \param listener Listener to add
 	 */
@@ -63,15 +119,6 @@ interface ServiceMods
 	func UniqueID listAllMods(ServiceModFilter filter)
 	
 	/**
-	 * \brief Cancel request.
-	 * 
-	 * Safe to be called if request has been already cancelled or does not exist.
-	 * 
-	 * \param id Identifier of request to cancel.
-	 */
-	func void cancelRequest(UniqueID id)
-	
-	/**
 	 * \brief Load resource asynchronously.
 	 * 
 	 * Loaded resources are cached for faster retrieval. Once the resource is cached locally
@@ -83,4 +130,39 @@ interface ServiceMods
 	 * \param url URL of image to load
 	 */
 	func void loadResource(String url)
+	
+	/**
+	 * \brief Mod management is paused.
+	 */
+	func bool getPauseManagement()
+	
+	/**
+	 * \brief Pause mod management.
+	 * 
+	 * By default the service automatically downloads, installs and uninstalls mods.
+	 * This process can be temporarily paused for example during game play.
+	 */
+	func void setPauseManagement(bool pause)
+	
+	/**
+	 * \brief Cancel request.
+	 * 
+	 * Safe to be called if request has been already cancelled or does not exist.
+	 * 
+	 * \param id Identifier of request to cancel.
+	 */
+	func void cancelRequest(UniqueID id)
+	
+	/**
+	 * \brief Service is busy managing modifications.
+	 * 
+	 * Typical actions causing true to be returned are (non conclusive list):
+	 * - Installing modification
+	 * - Uninstalling modification
+	 * - Updating modification to latest version
+	 * - Uploading modification
+	 * 
+	 * While this method returns true certain functions will fail.
+	 */
+	func bool isManagementBusy()
 end

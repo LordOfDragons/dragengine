@@ -72,6 +72,10 @@ private:
 	decStringList pBaseDirPathStr;
 	decPath *pBaseDirPath;
 	int pBaseDirPathCount;
+	bool pPauseModManagement;
+	bool pModManagementEnabled;
+	float pElapsedUpdateProgress;
+	float pUpdateProgressInterval;
 	
 	static deModioService *pGlobalService;
 	
@@ -94,6 +98,8 @@ public:
 	inline const cInvalidator::Ref &GetInvalidator() const{ return pInvalidator; }
 	inline const deVirtualFileSystem::Ref &GetVFS() const{ return pVFS; }
 	
+	static inline deModioService *Global(){ return pGlobalService; }
+	
 	/**
 	 * \brief Start service request.
 	 * 
@@ -109,6 +115,9 @@ public:
 	 * \brief Cancel service request if running.
 	 */
 	void CancelRequest( const decUniqueID &id ) override;
+	
+	/** Frame update. */
+	void FrameUpdate( float elapsed );
 	/*@}*/
 	
 	
@@ -123,6 +132,7 @@ public:
 	
 	void ListAllMods( const decUniqueID &id, const deServiceObject &request );
 	void LoadResource( const decUniqueID &id, const deServiceObject &request );
+	void PauseModManagement( const decUniqueID &id, const deServiceObject &request );
 	
 	void FailRequest( const decUniqueID &id, const deException &e );
 	void FailRequest( const decUniqueID &id, const Modio::ErrorCode &ec );
@@ -149,10 +159,14 @@ private:
 		Modio::Optional<std::string> filename );
 	
 	void pOnLogCallback( Modio::LogLevel level, const std::string &message );
+	
+	void pOnModManagement( Modio::ModManagementEvent event );
 	/*@}*/
 	
 	void pPrintBaseInfos();
 	void pInitVFS();
+	void pUpdateModManagementEnabled();
+	void pCheckProgressUpdate( float elapsed );
 };
 
 #endif

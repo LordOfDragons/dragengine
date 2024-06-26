@@ -99,6 +99,8 @@ class ServiceModio implements ServiceListener, ServiceMods
 	var Service pService
 	var ServiceInitListener pInitListener
 	var Boolean pIsInitialized
+	var bool pPauseManagement
+	var bool pIsManagementBusy
 	var SafeArray pModsListeners
 	
 	
@@ -280,17 +282,6 @@ class ServiceModio implements ServiceListener, ServiceMods
 	end
 	
 	/**
-	 * \brief Cancel request.
-	 * 
-	 * Safe to be called if request has been already cancelled or does not exist.
-	 * 
-	 * \param id Identifier of request to cancel.
-	 */
-	func void cancelRequest(UniqueID id)
-		pService.cancelRequest(id)
-	end
-	
-	/**
 	 * \brief Load resource asynchronously.
 	 * 
 	 * Loaded resources are cached for faster retrieval. Once the resource is cached locally
@@ -306,6 +297,61 @@ class ServiceModio implements ServiceListener, ServiceMods
 		so.setStringChildAt("function", "loadResource")
 		so.setStringChildAt("url", url)
 		pService.startRequest(so)
+	end
+	
+	/**
+	 * \brief Mod management is paused.
+	 */
+	func bool getPauseManagement()
+		return pPauseManagement
+	end
+	
+	/**
+	 * \brief Pause mod management.
+	 * 
+	 * By default the service automatically downloads, installs and uninstalls mods
+	 * depending on the settings stored in the user profile on the service provider.
+	 * This process can be temporarily paused for example during game play.
+	 */
+	func void setPauseManagement(bool pause)
+		if pause == pPauseManagement
+			return
+		end
+		
+		pPauseManagement = pause
+		
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "pauseModManagement")
+		so.setBoolChildAt("pause", pause)
+		pService.startRequest(so)
+	end
+	
+	/**
+	 * \brief Service is busy managing modifications.
+	 * 
+	 * Returns true if the service is performing one of these actions:
+	 * - Installing modification
+	 * - Uninstalling modification
+	 * - Updating modification to latest version
+	 * - Uploading modification
+	 * 
+	 * While this method returns true certain functions will fail.
+	 */
+	func bool isManagementBusy()
+		return pIsManagementBusy
+	end
+	
+	
+	
+	/**
+	 * \brief Cancel request.
+	 * 
+	 * Safe to be called if request has been already cancelled or does not exist.
+	 * 
+	 * \param id Identifier of request to cancel.
+	 */
+	func void cancelRequest(UniqueID id)
+		pService.cancelRequest(id)
 	end
 	
 	
@@ -384,6 +430,23 @@ class ServiceModio implements ServiceListener, ServiceMods
 			end
 			
 			pInitListener = null
+			
+		elif eventName.equals("modManagement")
+			var ManagementEvent mev = ManagementEvent.named(event.getChildAt("subEvent").getString())
+			var bool success = event.getChildAt("success").getBoolean()
+			var String modId = event.getChildAt("modId").getString()
+			var ServiceModProgress progress = pConvModProgress(event)
+			var ServiceException exception
+			
+			pIsManagementBusy = event.getChildAt("busy").getBoolean()
+			
+			if not success
+				exception = createException(event)
+			end
+			
+			pModsListeners.forEach(block ServiceModsListener each
+				each.managementEvent(this, mev, modId, progress, exception)
+			end)
 		end
 	end
 	
@@ -721,6 +784,19 @@ class ServiceModio implements ServiceListener, ServiceMods
 		stats.ratingDisplayText = pConvString(so, "ratingDisplayText")
 		
 		return stats
+	end
+	
+	private func ServiceModProgress pConvModProgress(ServiceObject so)
+		if so == null
+			return null
+		end
+		
+		var ServiceModProgress progress = ServiceModProgress.new()
+		progress.status = ServiceModProgress.Status.named(so.getChildAt("status").getString())
+		progress.total = pConvFloat(so, "total", 1)
+		progress.current = pConvFloat(so, "current", 0)
+		progress.progress = pConvFloat(so, "progress", 0)
+		return progress
 	end
 	
 	private func void pDebugRequest(UniqueID id, ServiceObject request)

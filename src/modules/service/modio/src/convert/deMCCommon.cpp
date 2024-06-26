@@ -24,6 +24,8 @@
 
 #include "deMCCommon.h"
 
+#include <dragengine/common/math/decMath.h>
+
 
 // Class deMCCommon
 /////////////////////
@@ -348,4 +350,85 @@ deServiceObject::Ref deMCCommon::VirusStatus( Modio::FileMetadata::VirusStatus s
 	default:
 		DETHROW( deeInvalidParam );
 	}
+}
+
+deServiceObject::Ref deMCCommon::ModManagementEventType( Modio::ModManagementEvent::EventType type ){
+	switch( type ){
+	case Modio::ModManagementEvent::EventType::BeginInstall:
+		return deServiceObject::NewString( "beginInstall" );
+		
+	case Modio::ModManagementEvent::EventType::Installed:
+		return deServiceObject::NewString( "installed" );
+		
+	case Modio::ModManagementEvent::EventType::BeginUninstall:
+		return deServiceObject::NewString( "beginUninstall" );
+		
+	case Modio::ModManagementEvent::EventType::Uninstalled:
+		return deServiceObject::NewString( "uninstalled" );
+		
+	case Modio::ModManagementEvent::EventType::BeginUpdate:
+		return deServiceObject::NewString( "beginUpdate" );
+		
+	case Modio::ModManagementEvent::EventType::Updated:
+		return deServiceObject::NewString( "updated" );
+		
+	case Modio::ModManagementEvent::EventType::BeginUpload:
+		return deServiceObject::NewString( "beginUpload" );
+		
+	default:
+		DETHROW( deeInvalidParam );
+	}
+}
+
+void deMCCommon::Error( deServiceObject &so, const Modio::ErrorCode &error ){
+	so.SetIntChildAt( "code", error.value() );
+	so.SetStringChildAt( "error", error.category().name() );
+	so.SetStringChildAt( "message", error.message().c_str() );
+}
+
+void deMCCommon::ErrorOutcome( deServiceObject &so, const Modio::ErrorCode &error ){
+	if( error ) {
+		so.SetBoolChildAt( "success", false );
+		Error( so, error );
+		
+	} else {
+		so.SetBoolChildAt( "success", true );
+	}
+}
+
+deServiceObject::Ref deMCCommon::ModProgressState( const Modio::ModProgressInfo::EModProgressState &state ){
+	switch( state ){
+	case Modio::ModProgressInfo::EModProgressState::Initializing:
+		return deServiceObject::NewString( "initializing" );
+		
+	case Modio::ModProgressInfo::EModProgressState::Downloading:
+		return deServiceObject::NewString( "downloading" );
+		
+	case Modio::ModProgressInfo::EModProgressState::Extracting:
+		return deServiceObject::NewString( "extracting" );
+		
+	case Modio::ModProgressInfo::EModProgressState::Compressing:
+		return deServiceObject::NewString( "compressing" );
+		
+	case Modio::ModProgressInfo::EModProgressState::Uploading:
+		return deServiceObject::NewString( "uploading" );
+		
+	default:
+		DETHROW( deeInvalidParam );
+	}
+}
+
+deServiceObject::Ref deMCCommon::ModProgressInfo( const Modio::ModProgressInfo &info ){
+	const deServiceObject::Ref so( deServiceObject::Ref::New( new deServiceObject ) );
+	const Modio::ModProgressInfo::EModProgressState state = info.GetCurrentState();
+	const double total = decMath::max( ( double )info.GetTotalProgress( state ), 1.0 );
+	const double current = ( double )info.GetCurrentProgress( state );
+	const double progress = decMath::clamp( current / total, 0.0, 1.0 );
+	
+	so->SetChildAt( "state", ModProgressState( state ) );
+	so->SetFloatChildAt( "total", ( float )total );
+	so->SetFloatChildAt( "current", ( float )current );
+	so->SetFloatChildAt( "progress", ( float )progress );
+	
+	return so;
 }

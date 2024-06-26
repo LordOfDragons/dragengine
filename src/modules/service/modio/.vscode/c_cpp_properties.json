@@ -4,8 +4,9 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}/**",
-                "${workspaceFolder}/../../../../dragengine/build/include",
-                "${workspaceFolder}/../../../../../../testing/include"
+                "${workspaceFolder}/../../../dragengine/build/include",
+                "${workspaceFolder}/../../../../extern/modio/build/install/static/inc",
+                "${workspaceFolder}/../../../../extern/modio/build/install/header_only/linux"
             ],
             "defines": [
                 "DS_MODULE_VERSION=\"9999\"",

@@ -26,6 +26,7 @@ namespace Dragengine.Services.Mods
 
 /**
  * \brief Information about modification release.
+ * \version 1.23
  * 
  * In particular contains information about the release file to download and install.
  */

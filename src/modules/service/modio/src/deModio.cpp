@@ -91,16 +91,20 @@ const char *name, const deServiceObject::Ref &data ){
 	DEASSERT_NOTNULL( service )
 	
 	if( strcmp( name, deModioService::serviceName ) == 0 ){
-		LogInfo( "Create deModioService" );
+		LogInfo( "deModioService: Create" );
 		return new deModioService( *this, service, data );
 	}
 	
 	return nullptr;
 }
 
-void deModio::FrameUpdate( float ){
+void deModio::FrameUpdate( float elapsed ){
 	if( pRequiresEventHandlingCount > 0 ){
 		Modio::RunPendingHandlers();
+	}
+	
+	if( deModioService::Global() ){
+		deModioService::Global()->FrameUpdate( elapsed );
 	}
 }
 
