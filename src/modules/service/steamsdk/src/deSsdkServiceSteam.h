@@ -96,6 +96,7 @@ public:
 	void GetStats( const decUniqueID &id, const deServiceObject& request );
 	void SetStats( const decUniqueID &id, const deServiceObject& request );
 	void ResetAllStats( const decUniqueID &id, const deServiceObject& request );
+	void RequestEncryptedAppTicket( const decUniqueID &id, const deServiceObject& request );
 	
 	void FailRequest( const decUniqueID &id, const deException &e );
 	void FailRequest( const deSsdkPendingRequest::Ref &request, const deException &e );
@@ -107,7 +108,12 @@ public:
 	/*@{*/
 	STEAM_CALLBACK( deSsdkServiceSteam, OnUserStatsReceived, UserStatsReceived_t );
 	STEAM_CALLBACK( deSsdkServiceSteam, OnUserStatsStored, UserStatsStored_t );
+	STEAM_CALLRESULT( deSsdkServiceSteam, OnEncryptedAppTicketResponse, EncryptedAppTicketResponse_t );
 	/*@}*/
+	
+	
+private:
+	void pSetResultFields( EResult result, deServiceObject &so ) const;
 };
 
 #endif

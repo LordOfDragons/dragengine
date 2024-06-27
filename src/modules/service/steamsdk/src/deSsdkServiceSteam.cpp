@@ -22,22 +22,16 @@
  * SOFTWARE.
  */
 
+#include <inttypes.h>
+
 #include "deSteamSdk.h"
 #include "deSsdkServiceSteam.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/utils/decUniqueID.h>
+#include <dragengine/common/utils/decBase64.h>
 #include <dragengine/resources/service/deServiceManager.h>
 #include <dragengine/resources/service/deServiceObject.h>
-
-
-#ifdef OS_W32
-#define SSDKPFLLU "I64u"
-#define SSDKPFLLX "I64x"
-#else
-#define SSDKPFLLU "llu"
-#define SSDKPFLLX "llx"
-#endif
 
 
 // Class deSsdkServiceSteam
@@ -81,6 +75,9 @@ void deSsdkServiceSteam::StartRequest( const decUniqueID &id, const deServiceObj
 	}else if( function == "setStats" ){
 		SetStats( id, request );
 		
+	}else if( function == "requestEncryptedAppTicket" ){
+		RequestEncryptedAppTicket( id, request );
+		
 	}else{
 		DETHROW_INFO( deeInvalidParam, "Unknown function" );
 	}
@@ -97,8 +94,7 @@ void deSsdkServiceSteam::CancelRequest( const decUniqueID &id ){
 	const deServiceObject::Ref so( deServiceObject::Ref::New( new deServiceObject ) );
 	so->SetStringChildAt( "error", "Cancelled" );
 	so->SetStringChildAt( "message", "Request cancelled" );
-	pModule.GetGameEngine()->GetServiceManager()->QueueRequestFailed(
-		deService::Ref( pService ), id, so );
+	pModule.GetGameEngine()->GetServiceManager()->QueueRequestFailed( pService, id, so );
 }
 
 
@@ -213,7 +209,7 @@ void deSsdkServiceSteam::GetStats( const decUniqueID &id, const deServiceObject&
 	}
 	
 	pModule.GetGameEngine()->GetServiceManager()->QueueRequestResponse(
-		deService::Ref( pService ), id, response, true );
+		pService, id, response, true );
 }
 
 void deSsdkServiceSteam::ResetAllStats( const decUniqueID &id, const deServiceObject &request ){
@@ -226,7 +222,12 @@ void deSsdkServiceSteam::ResetAllStats( const decUniqueID &id, const deServiceOb
 	response->SetStringChildAt( "function", "resetAllStats" );
 	
 	pModule.GetGameEngine()->GetServiceManager()->QueueRequestResponse(
-		deService::Ref( pService ), id, response, true );
+		pService, id, response, true );
+}
+
+void deSsdkServiceSteam::RequestEncryptedAppTicket( const decUniqueID &id, const deServiceObject &request ){
+	pCROnEncryptedAppTicketResponse.Run(this, SteamUser()->RequestEncryptedAppTicket( nullptr, 0 ) );
+	NewPendingRequest( id, "requestEncryptedAppTicket" );
 }
 
 void deSsdkServiceSteam::SetStats( const decUniqueID &id, const deServiceObject &request ){
@@ -307,8 +308,7 @@ void deSsdkServiceSteam::FailRequest( const deSsdkPendingRequest::Ref &pr, const
 	
 	pr->data->SetStringChildAt( "error", e.GetName().GetMiddle( 3 ) );
 	pr->data->SetStringChildAt( "message", e.GetDescription() );
-	pModule.GetGameEngine()->GetServiceManager()->QueueRequestFailed(
-		deService::Ref( pService ), pr->id, pr->data );
+	pModule.GetGameEngine()->GetServiceManager()->QueueRequestFailed( pService, pr->id, pr->data );
 }
 
 
@@ -323,29 +323,27 @@ void deSsdkServiceSteam::OnUserStatsReceived( UserStatsReceived_t *response ){
 	}
 	
 	try{
+		pSetResultFields( response->m_eResult, pr->data );
+		
 		switch( response->m_eResult ){
 		case k_EResultOK:
 		case k_EResultFail: // player has no stats yet
+			pr->data->SetBoolChildAt( "success", true );
 			break;
 			
 		default:
-			pr->data->SetStringChildAt( "error", "InvalidAction" );
-			pr->data->SetIntChildAt( "errorResult", response->m_eResult );
-			pr->data->SetStringChildAt( "message", "Request failed" );
-			pModule.GetGameEngine()->GetServiceManager()->QueueRequestFailed(
-				deService::Ref( pService ), pr->id, pr->data );
+			pModule.GetGameEngine()->GetServiceManager()->QueueRequestFailed( pService, pr->id, pr->data );
 			return;
 		}
 		
 		decString string;
-		string.Format( "%" SSDKPFLLU, response->m_nGameID );
+		string.Format( "%" PRIu64, ( uint64_t )response->m_nGameID );
 		pr->data->SetStringChildAt( "gameId", string );
 		
-		string.Format( "%u", response->m_steamIDUser.GetAccountID() );
+		string.Format( "%" PRIu32, ( uint32_t )response->m_steamIDUser.GetAccountID() );
 		pr->data->SetStringChildAt( "accountId", string );
 		
-		pModule.GetGameEngine()->GetServiceManager()->QueueRequestResponse(
-			deService::Ref( pService ), pr->id, pr->data, true );
+		pModule.GetGameEngine()->GetServiceManager()->QueueRequestResponse( pService, pr->id, pr->data, true );
 		
 	}catch( const deException &e ){
 		FailRequest( pr, e );
@@ -359,27 +357,71 @@ void deSsdkServiceSteam::OnUserStatsStored( UserStatsStored_t *response ){
 	}
 	
 	try{
-		switch( response->m_eResult ){
-		case k_EResultOK:
-			break;
-			
-		default:
-			pr->data->SetStringChildAt( "error", "InvalidAction" );
-			pr->data->SetIntChildAt( "errorResult", response->m_eResult );
-			pr->data->SetStringChildAt( "message", "Request failed" );
-			pModule.GetGameEngine()->GetServiceManager()->QueueRequestFailed(
-				deService::Ref( pService ), pr->id, pr->data );
+		pSetResultFields( response->m_eResult, pr->data );
+		
+		if( response->m_eResult != k_EResultOK ){
+			pModule.GetGameEngine()->GetServiceManager()->QueueRequestFailed( pService, pr->id, pr->data );
 			return;
 		}
 		
 		decString string;
-		string.Format( "%" SSDKPFLLU, response->m_nGameID );
+		string.Format( "%" PRIu64, ( uint64_t )response->m_nGameID );
 		pr->data->SetStringChildAt( "gameId", string );
 		
-		pModule.GetGameEngine()->GetServiceManager()->QueueRequestResponse(
-			deService::Ref( pService ), pr->id, pr->data, true );
+		pModule.GetGameEngine()->GetServiceManager()->QueueRequestResponse( pService, pr->id, pr->data, true );
 		
 	}catch( const deException &e ){
 		FailRequest( pr, e );
+	}
+}
+
+void deSsdkServiceSteam::OnEncryptedAppTicketResponse( EncryptedAppTicketResponse_t *response, bool iofailure ){
+	const deSsdkPendingRequest::Ref pr( RemoveFirstPendingRequestWithFunction( "requestEncryptedAppTicket" ) );
+	if( ! pr ){
+		return;
+	}
+	
+	uint8 rgubTicket[ 1024 ];
+	uint32 cubTicket = 0;
+	
+	try{
+		if( iofailure ){
+			response->m_eResult = k_EResultIOFailure;
+		}
+		
+		pSetResultFields( response->m_eResult, pr->data );
+		
+		if( response->m_eResult != k_EResultOK ){
+			pModule.GetGameEngine()->GetServiceManager()->QueueRequestFailed( pService, pr->id, pr->data );
+			return;
+		}
+		
+		if( ! SteamUser()->GetEncryptedAppTicket( rgubTicket, sizeof( rgubTicket ), &cubTicket ) ){
+			DETHROW_INFO( deeInvalidAction, "Failed retrieving encrypted app ticket" );
+		}
+		
+		pr->data->SetStringChildAt( "ticket", decBase64::Encode( rgubTicket, cubTicket ) );
+		
+		pModule.GetGameEngine()->GetServiceManager()->QueueRequestResponse( pService, pr->id, pr->data, true );
+		
+	}catch( const deException &e ){
+		FailRequest( pr, e );
+	}
+}
+
+
+
+// Private Functions
+//////////////////////
+
+void deSsdkServiceSteam::pSetResultFields( EResult result, deServiceObject &so ) const{
+	if( result == k_EResultOK ){
+		so.SetBoolChildAt( "success", true );
+		
+	}else{
+		so.SetBoolChildAt( "success", false );
+		so.SetStringChildAt( "error", "SteamError" );
+		so.SetIntChildAt( "errorResult", result );
+		so.SetStringChildAt( "message", pModule.GetResultMessage( result ) );
 	}
 }

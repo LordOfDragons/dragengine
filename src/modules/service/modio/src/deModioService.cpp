@@ -177,8 +177,7 @@ void deModioService::CancelRequest( const decUniqueID &id ){
 	const deServiceObject::Ref so( deServiceObject::Ref::New( new deServiceObject ) );
 	so->SetStringChildAt( "error", "Cancelled" );
 	so->SetStringChildAt( "message", "Request cancelled" );
-	pModule.GetGameEngine()->GetServiceManager()->QueueRequestFailed(
-		deService::Ref( pService ), id, so );
+	pModule.GetGameEngine()->GetServiceManager()->QueueRequestFailed( pService, id, so );
 }
 
 void deModioService::FrameUpdate(float elapsed){
@@ -313,7 +312,7 @@ void deModioService::PauseModManagement( const decUniqueID &id, const deServiceO
 	response->SetBoolChildAt( "paused", pPauseModManagement );
 	
 	pModule.GetGameEngine()->GetServiceManager()->QueueRequestResponse(
-		deService::Ref( pService ), id, response, true );
+		pService, id, response, true );
 }
 
 void deModioService::FailRequest( const decUniqueID &id, const deException &e ){
@@ -342,7 +341,7 @@ void deModioService::FailRequest( const deModioPendingRequest::Ref &request, con
 	request->data->SetStringChildAt( "error", e.GetName().GetMiddle( 3 ) );
 	request->data->SetStringChildAt( "message", e.GetDescription() );
 	pModule.GetGameEngine()->GetServiceManager()->QueueRequestFailed(
-		deService::Ref( pService ), request->id, request->data );
+		pService, request->id, request->data );
 }
 
 void deModioService::FailRequest( const deModioPendingRequest::Ref &request, const Modio::ErrorCode &ec ){
@@ -352,7 +351,7 @@ void deModioService::FailRequest( const deModioPendingRequest::Ref &request, con
 	request->data->SetStringChildAt( "error", ec.category().name() );
 	request->data->SetStringChildAt( "message", ec.message().c_str() );
 	pModule.GetGameEngine()->GetServiceManager()->QueueRequestFailed(
-		deService::Ref( pService ), request->id, request->data );
+		pService, request->id, request->data );
 }
 
 
@@ -375,7 +374,7 @@ deResource *resource ){
 		pr->data->SetResourceChildAt( "resource", resource );
 		
 		pModule.GetGameEngine()->GetServiceManager()->QueueRequestResponse(
-			deService::Ref( pService ), pr->id, pr->data, true );
+			pService, pr->id, pr->data, true );
 		
 	}catch( const deException &e ){
 		FailRequest( pr, e );
@@ -427,7 +426,7 @@ void deModioService::pOnInitializeFinished( Modio::ErrorCode ec ){
 		pInitVFS();
 	}
 	
-	pModule.GetGameEngine()->GetServiceManager()->QueueEventReceived( deService::Ref( pService ), data );
+	pModule.GetGameEngine()->GetServiceManager()->QueueEventReceived( pService, data );
 }
 
 void deModioService::pOnListAllModsFinished( const decUniqueID &id,
@@ -455,7 +454,7 @@ Modio::ErrorCode ec, Modio::Optional<Modio::ModInfoList> results ){
 		pr->data->SetChildAt( "mods", outMods );
 		
 		pModule.GetGameEngine()->GetServiceManager()->QueueRequestResponse(
-			deService::Ref( pService ), pr->id, pr->data, true );
+			pService, pr->id, pr->data, true );
 		
 	}catch( const deException &e ){
 		FailRequest( pr, e );
@@ -573,8 +572,9 @@ Modio::Optional<std::string> filename ){
 			}
 		}
 		
-		pModule.GetGameEngine()->GetParallelProcessing().AddTask( new cLoadResourceTask(
-			*this, id, path.GetPathUnix(), deResourceLoader::ertImage ) );
+		deThreadSafeObjectReference task;
+		task.TakeOver( new cLoadResourceTask( *this, id, path.GetPathUnix(), deResourceLoader::ertImage ) );
+		pModule.GetGameEngine()->GetParallelProcessing().AddTask( ( deParallelTask* )( deThreadSafeObject* )task );
 		
 	}catch( const deException &e ){
 		FailRequest( id, e );
@@ -617,7 +617,7 @@ void deModioService::pOnModManagement( Modio::ModManagementEvent event ){
 		data->SetChildAt( "progress", deMCCommon::ModProgressInfo( *progress ) );
 	}
 	
-	pModule.GetGameEngine()->GetServiceManager()->QueueEventReceived( deService::Ref( pService ), data );
+	pModule.GetGameEngine()->GetServiceManager()->QueueEventReceived( pService, data );
 }
 
 
@@ -718,5 +718,5 @@ void deModioService::pCheckProgressUpdate( float elapsed ){
 	data->SetChildAt( "progress", deMCCommon::ModProgressInfo( *progress ) );
 	data->SetBoolChildAt( "success", true );
 	
-	pModule.GetGameEngine()->GetServiceManager()->QueueEventReceived( deService::Ref( pService ), data );
+	pModule.GetGameEngine()->GetServiceManager()->QueueEventReceived( pService, data );
 }

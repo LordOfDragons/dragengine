@@ -30,6 +30,17 @@
 #include <dragengine/systems/modules/service/deBaseServiceModule.h>
 
 
+/** Macro to define the CCallResult system SteamSDK does not provide a macro for. */
+#define STEAM_CALLRESULT(cls,method,resptype) \
+	struct sCR##method{\
+		CCallResult<cls,resptype> callresult;\
+		void Run(cls *myself, SteamAPICall_t handle){\
+			callresult.Set(handle, myself, &cls::method);\
+		}\
+	} pCR##method;\
+	void method(resptype *response, bool iofailure);
+
+
 /**
  * Steam SDK Service Module.
  */
@@ -69,10 +80,11 @@ public:
 	deBaseServiceService *CreateService( deService *service,
 		const char *name, const deServiceObject::Ref &data ) override;
 	
-	/**
-	 * \brief Frame update.
-	 */
+	/** Frame update. */
 	void FrameUpdate( float elapsed ) override;
+	
+	/** Get message matching result code. */
+	const char *GetResultMessage( EResult result ) const;
 	/*@}*/
 };
 

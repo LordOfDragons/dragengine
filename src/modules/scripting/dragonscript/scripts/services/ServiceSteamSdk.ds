@@ -211,6 +211,19 @@ class ServiceSteamSdk implements ServiceStats, ServiceListener
 	
 	
 	/**
+	 * \brief Request encrypted appplication ticket.
+	 * 
+	 * The received ticket is Base64 encoded.
+	 */
+	func void requestEncryptedAppTicket()
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "requestEncryptedAppTicket")
+		pService.startRequest(so)
+	end
+	
+	
+	
+	/**
 	 * \brief Service request response received.
 	 */
 	func void requestResponse(Service service, UniqueID id, ServiceObject response, bool finished)
@@ -286,6 +299,14 @@ class ServiceSteamSdk implements ServiceStats, ServiceListener
 			pStatsListeners.forEach(block ServiceStatsListener each
 				each.statsStored(this, stats, achievements)
 			end)
+			
+		elif function.equals("requestEncryptedAppTicket")
+			var String ticket = response.getChildAt("ticket").getString()
+			/*
+			pUserListeners.forEach(block ServiceUserListener each
+				each.authTokenCreated(this, ticket)
+			end)
+			*/
 		end
 	end
 	
@@ -316,6 +337,14 @@ class ServiceSteamSdk implements ServiceStats, ServiceListener
 			pStatsListeners.forEach(block ServiceStatsListener each
 				each.statsStoredFailed(this, exception)
 			end)
+			
+		elif function.equals("requestEncryptedAppTicket")
+			BaseGameApp.getApp().getConsole().addMessage("requestEncryptedAppTicket -> FAILED")
+			/*
+			pUserListeners.forEach(block ServiceUserListener each
+				each.authTokenCreated(this, ticket)
+			end)
+			*/
 		end
 	end
 	
