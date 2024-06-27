@@ -17,6 +17,9 @@
     <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\dedsLoadingScreen.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\dedsEngineException.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\deScriptingDragonScript.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -660,6 +663,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\dedsLoadingScreen.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\dedsEngineException.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\deScriptingDragonScript.cpp">

@@ -30,6 +30,7 @@
 #include <dragengine/systems/modules/scripting/deBaseScriptingModule.h>
 
 #include "dedsLoadingScreen.h"
+#include "dedsEngineException.h"
 
 
 class deClassPhysicsSystem;

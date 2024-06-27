@@ -71,7 +71,9 @@ void deClassService::nfNew::RunFunction( dsRunTime *rt, dsValue *myself ){
 	
 	// create object
 	const char * const name = rt->GetValue( 0 )->GetString();
-	nd.service = ds.GetGameEngine()->GetServiceManager()->CreateService( name, nullptr );
+	DS_WITH_ENGEX( ds,
+		nd.service = ds.GetGameEngine()->GetServiceManager()->CreateService( name, nullptr );
+	)
 }
 
 // func new(String name, ServiceObject data)
@@ -94,7 +96,9 @@ void deClassService::nfNew2::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const deServiceObject::Ref data( ds.GetClassServiceObject()->GetServiceObject(
 		rt->GetValue( 1 )->GetRealObject() ) );
 	
-	nd.service = ds.GetGameEngine()->GetServiceManager()->CreateService( name, data );
+	DS_WITH_ENGEX( ds,
+		nd.service = ds.GetGameEngine()->GetServiceManager()->CreateService( name, data );
+	)
 }
 
 // public func destructor()
@@ -213,7 +217,9 @@ void deClassService::nfStartRequest::RunFunction( dsRunTime *rt, dsValue *myself
 		DSTHROW( dueNullPointer );
 	}
 	
-	nd.service->StartRequest( clsService.NextId(), *request );
+	DS_WITH_ENGEX( clsService.GetDS(),
+		nd.service->StartRequest( clsService.NextId(), *request );
+	)
 }
 
 
@@ -241,7 +247,9 @@ void deClassService::nfStartRequest2::RunFunction( dsRunTime *rt, dsValue *mysel
 		DSTHROW( dueNullPointer );
 	}
 	
-	nd.service->StartRequest( id, *request );
+	DS_WITH_ENGEX( ds,
+		nd.service->StartRequest( id, *request );
+	)
 }
 
 
@@ -262,7 +270,9 @@ void deClassService::nfCancelRequest::RunFunction( dsRunTime *rt, dsValue *mysel
 	const decUniqueID &id = ds.GetClassUniqueID()->GetUniqueID(
 		rt->GetValue( 0 )->GetRealObject() );
 	
-	nd.service->CancelRequest( id );
+	DS_WITH_ENGEX( ds,
+		nd.service->CancelRequest( id );
+	)
 }
 
 
