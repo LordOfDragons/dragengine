@@ -26,9 +26,9 @@
 #define _DEBASESERVICESERVICE_H_
 
 #include "../deBaseModule.h"
+#include "../../../resources/service/deService.h"
 
 class decUniqueID;
-class deServiceObject;
 
 
 /**
@@ -75,6 +75,13 @@ public:
 	 * \brief Cancel service request if running.
 	 */
 	virtual void CancelRequest( const decUniqueID &id ) = 0;
+	
+	/**
+	 * \brief Run action returning result immediately.
+	 * 
+	 * Can return nullptr if action has no return value.
+	 */
+	virtual deServiceObject::Ref RunAction( const deServiceObject &action ) = 0;
 	/*@}*/
 };
 

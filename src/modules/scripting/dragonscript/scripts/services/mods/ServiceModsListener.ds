@@ -72,4 +72,30 @@ interface ServiceModsListener
 	 */
 	func void managementEvent(ServiceMods service, ServiceMods.ManagementEvent event,\
 		String modId, ServiceModProgress progress, Exception exception)
+	
+	/**
+	 * \brief User has been authenticated.
+	 * \param service Service sending the event.
+	 */
+	func void authenticateFinished(ServiceMods service)
+	
+	/**
+	 * \brief User authentication failed.
+	 * \param service Service sending the event.
+	 * \param exception Exception or null if sueeded.
+	 */
+	func void authenticateFailed(ServiceMods service, Exception exception)
+	
+	/**
+	 * \brief User has been deauthenticated.
+	 * \param service Service sending the event.
+	 */
+	func void deauthenticateFinished(ServiceMods service)
+	
+	/**
+	 * \brief User deauthentication failed.
+	 * \param service Service sending the event.
+	 * \param exception Exception or null if sueeded.
+	 */
+	func void deauthenticateFailed(ServiceMods service, Exception exception)
 end

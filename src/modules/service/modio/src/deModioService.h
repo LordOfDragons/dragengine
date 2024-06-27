@@ -116,6 +116,11 @@ public:
 	 */
 	void CancelRequest( const decUniqueID &id ) override;
 	
+	/**
+	 * \brief Run action returning result immediately.
+	 */
+	deServiceObject::Ref RunAction( const deServiceObject &action ) override;
+	
 	/** Frame update. */
 	void FrameUpdate( float elapsed );
 	/*@}*/
@@ -133,6 +138,7 @@ public:
 	void ListAllMods( const decUniqueID &id, const deServiceObject &request );
 	void LoadResource( const decUniqueID &id, const deServiceObject &request );
 	void PauseModManagement( const decUniqueID &id, const deServiceObject &request );
+	void AuthenticateUserExternal( const decUniqueID &id, const deServiceObject &request );
 	
 	void FailRequest( const decUniqueID &id, const deException &e );
 	void FailRequest( const decUniqueID &id, const Modio::ErrorCode &ec );
@@ -159,8 +165,8 @@ private:
 		Modio::Optional<std::string> filename );
 	
 	void pOnLogCallback( Modio::LogLevel level, const std::string &message );
-	
 	void pOnModManagement( Modio::ModManagementEvent event );
+	void pOnAuthenticateUserExternal( const decUniqueID &id, Modio::ErrorCode ec );
 	/*@}*/
 	
 	void pPrintBaseInfos();

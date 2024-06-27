@@ -276,6 +276,34 @@ void deClassService::nfCancelRequest::RunFunction( dsRunTime *rt, dsValue *mysel
 }
 
 
+// func ServiceObject runActionn(ServiceObject action)
+deClassService::nfRunAction::nfRunAction( const sInitData &init ) :
+dsFunction( init.clsService, "runAction", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsServiceObject ){
+	p_AddParameter( init.clsServiceObject ); // action
+}
+
+void deClassService::nfRunAction::RunFunction( dsRunTime *rt, dsValue *myself ){
+	const sServiceNatDat &nd = *( ( sServiceNatDat* )p_GetNativeData( myself ) );
+	if( ! nd.service ){
+		DSTHROW( dueNullPointer );
+	}
+	
+	deClassService &clsService = *( ( deClassService* )GetOwnerClass() );
+	deClassServiceObject &clsServiceObject = *clsService.GetDS().GetClassServiceObject();
+	const deServiceObject * const action = clsServiceObject.GetServiceObject(
+		rt->GetValue( 0 )->GetRealObject() );
+	
+	if( ! action ){
+		DSTHROW( dueNullPointer );
+	}
+	
+	DS_WITH_ENGEX( clsService.GetDS(),
+		clsServiceObject.PushServiceObject( rt, nd.service->RunAction( *action ) );
+	)
+}
+
+
 // func int hashCode()
 deClassService::nfHashCode::nfHashCode( const sInitData &init ) :
 dsFunction( init.clsService, "hashCode", DSFT_FUNCTION,
@@ -368,6 +396,7 @@ void deClassService::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfStartRequest( init ) );
 	AddFunction( new nfStartRequest2( init ) );
 	AddFunction( new nfCancelRequest( init ) );
+	AddFunction( new nfRunAction( init ) );
 	
 	AddFunction( new nfHashCode( init ) );
 	AddFunction( new nfEquals( init ) );

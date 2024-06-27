@@ -118,5 +118,14 @@ class Service
 	 */
 	func void cancelRequest(UniqueID id)
 	end
+	
+	/**
+	 * \brief Run action returning result immediately.
+	 * 
+	 * Can return nullptr if action has no return value.
+	 */
+	func ServiceObject runAction(ServiceObject action)
+		return null
+	end
 	/*@}*/
 end

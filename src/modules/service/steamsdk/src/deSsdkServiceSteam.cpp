@@ -97,7 +97,16 @@ void deSsdkServiceSteam::CancelRequest( const decUniqueID &id ){
 	pModule.GetGameEngine()->GetServiceManager()->QueueRequestFailed( pService, id, so );
 }
 
-
+deServiceObject::Ref deSsdkServiceSteam::RunAction( const deServiceObject &action ){
+	const decString &function = action.GetChildAt( "function" )->GetString();
+	
+	if( function == "dummy" ){
+		return nullptr;
+		
+	}else{
+		DETHROW_INFO( deeInvalidParam, "Unknown function" );
+	}
+}
 
 // Request
 ////////////

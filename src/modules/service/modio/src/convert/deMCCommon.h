@@ -103,6 +103,9 @@ public:
 	
 	/** Convert mod progress info. */
 	static deServiceObject::Ref ModProgressInfo( const Modio::ModProgressInfo &info );
+	
+	/** Convert modio AuthenticationProvider. */
+	static Modio::AuthenticationProvider AuthenticationProvider( const deServiceObject &so );
 	/*@}*/
 };
 

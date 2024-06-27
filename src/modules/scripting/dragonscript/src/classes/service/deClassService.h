@@ -107,6 +107,7 @@ private:
 	DEF_NATFUNC( nfStartRequest );
 	DEF_NATFUNC( nfStartRequest2 );
 	DEF_NATFUNC( nfCancelRequest );
+	DEF_NATFUNC( nfRunAction );
 	
 	DEF_NATFUNC( nfHashCode );
 	DEF_NATFUNC( nfEquals );

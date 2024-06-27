@@ -126,6 +126,13 @@ public:
 	 * \brief Service event received.
 	 */
 	void EventReceived( const deServiceObject::Ref &event );
+	
+	/**
+	 * \brief Run action returning result immediately.
+	 * 
+	 * Can return nullptr if action has no return value.
+	 */
+	deServiceObject::Ref RunAction( const deServiceObject &action );
 	/*@}*/
 	
 	

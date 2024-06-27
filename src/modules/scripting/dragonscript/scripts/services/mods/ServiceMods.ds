@@ -23,6 +23,7 @@
  */
 
 namespace Dragengine.Services.Mods
+pin Dragengine.Services.User
 
 
 /**
@@ -134,6 +135,53 @@ interface ServiceMods
 	 * \param listener If not null called once in addition to added listeners.
 	 */
 	func void loadResource(String url, ServiceModsListener listener)
+	
+	/**
+	 * \brief Determines if the user is authenticated.
+	 * 
+	 * Managing mods typically requires the user to be authenticated to the service provider.
+	 * If the service does not require a remove service provider authenticating is potentially
+	 * not required. See the service documentation for these requirements.
+	 */
+	func bool isAuthenticated()
+	
+	/**
+	 * \brief Authenticate user.
+	 * 
+	 * Managing mods typically requires the user to be authenticated to the service provider.
+	 * If the service does not require a remove service provider authenticating is potentially
+	 * not required. See the service documentation for these requirements.
+	 * 
+	 * Authentication tokens are typically obtained from services supporting ServiceUser
+	 * interface by calling \ref ServiceUser#getAuthToken(ServiceUserListener).
+	 * 
+	 * If user has been successfully authenticated
+	 * \ref ServiceModsListener#authenticateFinished(ServiceMods) is called. If authentication
+	 * failed \ref ServiceModsListener#authenticateFailed(ServiceMods,Exception) is called.
+	 * 
+	 * \param token Authentication token.
+	 * \param listener If not null called once in addition to added listeners.
+	 */
+	func void authenticate(ServiceUserAuthToken token, ServiceModsListener listener)
+	
+	/**
+	 * \brief Deauthenticate user.
+	 * 
+	 * Managing mods typically requires the user to be authenticated to the service provider.
+	 * If the service does not require a remove service provider authenticating is potentially
+	 * not required. See the service documentation for these requirements.
+	 * 
+	 * Deauthentication potentially deletes local user data. See the service documentation
+	 * for side effects of using this call.
+	 * 
+	 * If user has been successfully deauthenticated
+	 * \ref ServiceModsListener#deauthenticateFinished(ServiceMods) is called. If deauthentication
+	 * failed \ref ServiceModsListener#deauthenticateFailed(ServiceMods,Exception) is called.
+	 * 
+	 * \param token Authentication token.
+	 * \param listener If not null called once in addition to added listeners.
+	 */
+	func void deauthenticate(ServiceModsListener listener)
 	
 	/**
 	 * \brief Mod management is paused.

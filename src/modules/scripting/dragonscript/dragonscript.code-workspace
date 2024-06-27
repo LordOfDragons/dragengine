@@ -95,7 +95,14 @@
 			"valarray": "cpp",
 			"variant": "cpp",
 			"hash_map": "cpp",
-			"unordered_set": "cpp"
+			"unordered_set": "cpp",
+			"bitset": "cpp",
+			"cfenv": "cpp",
+			"complex": "cpp",
+			"iostream": "cpp",
+			"shared_mutex": "cpp",
+			"stdfloat": "cpp",
+			"typeindex": "cpp"
 		}
 	}
 }

@@ -81,6 +81,11 @@ public:
 	 * \brief Cancel service request if running.
 	 */
 	void CancelRequest( const decUniqueID &id ) override;
+	
+	/**
+	 * \brief Run action returning result immediately.
+	 */
+	deServiceObject::Ref RunAction( const deServiceObject &action ) override;
 	/*@}*/
 	
 	

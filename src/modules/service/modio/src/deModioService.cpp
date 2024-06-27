@@ -90,8 +90,8 @@ pUpdateProgressInterval( 1.0f )
 	options.PortalInUse = pPortal;
 	
 	module.LogInfo( "deModioService: Initialize service" );
-	// Modio::SetLogLevel( Modio::LogLevel::Trace );
 	Modio::SetLogLevel( Modio::LogLevel::Info );
+	Modio::SetLogLevel( Modio::LogLevel::Trace );
 	
 	Modio::SetLogCallback( [ this ]( Modio::LogLevel level, const std::string &message ){
 		pOnLogCallback( level, message );
@@ -161,6 +161,9 @@ void deModioService::StartRequest( const decUniqueID &id, const deServiceObject&
 	}else if( function == "pauseModManagement" ){
 		PauseModManagement( id, request );
 		
+	}else if( function == "authenticateUserExternal" ){
+		AuthenticateUserExternal( id, request );
+		
 	}else{
 		DETHROW_INFO( deeInvalidParam, "Unknown function" );
 	}
@@ -180,11 +183,25 @@ void deModioService::CancelRequest( const decUniqueID &id ){
 	pModule.GetGameEngine()->GetServiceManager()->QueueRequestFailed( pService, id, so );
 }
 
-void deModioService::FrameUpdate(float elapsed){
-	pCheckProgressUpdate( elapsed );
+deServiceObject::Ref deModioService::RunAction( const deServiceObject &action ){
+	if( ! pIsInitialized ){
+		DETHROW_INFO( deeInvalidAction, "Not initialized" );
+	}
+	
+	const decString &function = action.GetChildAt( "function" )->GetString();
+	
+	if( function == "isAuthenticated" ){
+		return deServiceObject::NewBool( Modio::QueryUserProfile().has_value() );
+		
+	}else{
+		DETHROW_INFO( deeInvalidParam, "Unknown function" );
+	}
 }
 
-
+void deModioService::FrameUpdate(float elapsed)
+{
+	pCheckProgressUpdate( elapsed );
+}
 
 // Request
 ////////////
@@ -313,6 +330,34 @@ void deModioService::PauseModManagement( const decUniqueID &id, const deServiceO
 	
 	pModule.GetGameEngine()->GetServiceManager()->QueueRequestResponse(
 		pService, id, response, true );
+}
+
+void deModioService::AuthenticateUserExternal( const decUniqueID &id, const deServiceObject &request ){
+	const Modio::AuthenticationProvider provider =
+		deMCCommon::AuthenticationProvider( request.GetChildAt( "provider" ) );
+	
+	Modio::AuthenticationParams authParams = {};
+	authParams.AuthToken = request.GetChildAt( "token" )->GetString().GetString();
+	authParams.bURLEncodeAuthToken = true;
+	authParams.bUserHasAcceptedTerms = request.GetChildAt( "termsAccepted" )->GetBoolean();
+	
+	deServiceObject::Ref so( request.GetChildAt( "parameters" ) );
+	if( so ){
+		const decStringList keys( so->GetChildrenKeys() );
+		const int count = keys.GetCount();
+		int i;
+		for( i=0; i<count; i++ ){
+			const decString &key = keys.GetAt( i );
+			authParams.ExtendedParameters[ key.GetString() ] =
+				so->GetChildAt( key.GetString() )->GetString().GetString();
+		}
+	}
+	
+	NewPendingRequest( id, "authenticateUserExternal" );
+	AddRequiresEventHandlingCount();
+	Modio::AuthenticateUserExternalAsync( authParams, provider, [ this, id ]( Modio::ErrorCode ec ){
+		pOnAuthenticateUserExternal( id, ec );
+	});
 }
 
 void deModioService::FailRequest( const decUniqueID &id, const deException &e ){
@@ -620,7 +665,27 @@ void deModioService::pOnModManagement( Modio::ModManagementEvent event ){
 	pModule.GetGameEngine()->GetServiceManager()->QueueEventReceived( pService, data );
 }
 
-
+void deModioService::pOnAuthenticateUserExternal( const decUniqueID &id, Modio::ErrorCode ec ){
+	RemoveRequiresEventHandlingCount();
+	if( ec ){
+		FailRequest( id, ec );
+		return;
+	}
+	
+	const deModioPendingRequest::Ref pr( RemoveFirstPendingRequestWithId( id ) );
+	if( ! pr ){
+		return;
+	}
+	
+	try{
+		pModule.GetGameEngine()->GetServiceManager()->QueueRequestResponse(
+			pService, pr->id, pr->data, true );
+		
+	}catch( const deException &e ){
+		FailRequest( pr, e );
+		return;
+	}
+}
 
 void deModioService::pPrintBaseInfos(){
 	pModule.LogInfoFormat( "deModioService: DefaultModInstallationDirectory: %s",

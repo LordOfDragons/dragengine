@@ -105,7 +105,11 @@ void deService::EventReceived( const deServiceObject::Ref &event ){
 	}
 }
 
-
+deServiceObject::Ref deService::RunAction( const deServiceObject &action ){
+	DEASSERT_NOTNULL( pPeerService )
+	
+	return pPeerService->RunAction( action );
+}
 
 // System Peers
 /////////////////

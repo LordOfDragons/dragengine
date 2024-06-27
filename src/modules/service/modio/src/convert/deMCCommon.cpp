@@ -432,3 +432,51 @@ deServiceObject::Ref deMCCommon::ModProgressInfo( const Modio::ModProgressInfo &
 	
 	return so;
 }
+
+Modio::AuthenticationProvider deMCCommon::AuthenticationProvider( const deServiceObject &so ){
+	const decString &sval = so.GetString();
+	if( sval == "xboxLive" ){
+		return Modio::AuthenticationProvider::XboxLive;
+		
+	}else if( sval == "steam" ){
+		return Modio::AuthenticationProvider::Steam;
+		
+	}else if( sval == "gog" ){
+		return Modio::AuthenticationProvider::GoG;
+		
+	}else if( sval == "itch" ){
+		return Modio::AuthenticationProvider::Itch;
+		
+	}else if( sval == "switch" ){
+		return Modio::AuthenticationProvider::Switch;
+		
+	}else if( sval == "discord" ){
+		return Modio::AuthenticationProvider::Discord;
+		
+	}else if( sval == "psn" ){
+		return Modio::AuthenticationProvider::PSN;
+		
+	}else if( sval == "oculus" ){
+		return Modio::AuthenticationProvider::Oculus;
+		
+	}else if( sval == "epic" ){
+		return Modio::AuthenticationProvider::Epic;
+		
+	}else if( sval == "openId" ){
+		return Modio::AuthenticationProvider::OpenID;
+		
+	}else if( sval == "apple" ){
+		return Modio::AuthenticationProvider::Apple;
+		
+	}else if( sval == "googleIdToken" ){
+		return Modio::AuthenticationProvider::GoogleIDToken;
+		
+	}else if( sval == "googleServerSideToken" ){
+		return Modio::AuthenticationProvider::GoogleServerSideToken;
+		
+	}else{
+		decString message;
+		message.Format( "Invalid authentication provider: %s", sval.GetString() );
+		DETHROW_INFO( deeInvalidParam, message );
+	}
+}
