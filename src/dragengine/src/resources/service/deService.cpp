@@ -45,6 +45,7 @@ pPeerScripting( nullptr ){
 }
 
 deService::~deService(){
+	( ( deServiceManager* )GetResourceManager() )->RemoveAllMatchingEvents( this );
 	if( pPeerScripting ){
 		delete pPeerScripting;
 	}

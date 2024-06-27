@@ -92,23 +92,29 @@ public:
 	
 	/**
 	 * \brief Queue request response event.
-	 * \note Can be called from any thread except the main thread.
+	 * \note Can be called from any thread.
 	 */
-	void QueueRequestResponse( const deService::Ref &service, const decUniqueID &id,
+	void QueueRequestResponse( deService *service, const decUniqueID &id,
 	const deServiceObject::Ref &response, bool finished );
 	
 	/**
 	 * \brief Queue request failed event.
-	 * \note Can be called from any thread except the main thread.
+	 * \note Can be called from any thread.
 	 */
-	void QueueRequestFailed( const deService::Ref &service, const decUniqueID &id,
+	void QueueRequestFailed( deService *service, const decUniqueID &id,
 	const deServiceObject::Ref &error );
 	
 	/**
 	 * \brief Queue event received event.
-	 * \note Can be called from any thread except the main thread.
+	 * \note Can be called from any thread.
 	 */
-	void QueueEventReceived( const deService::Ref &service, const deServiceObject::Ref &event );
+	void QueueEventReceived( deService *service, const deServiceObject::Ref &event );
+	
+	/**
+	 * \brief Remove all events matching service.
+	 * \note Can be called from any thread.
+	 */
+	void RemoveAllMatchingEvents( deService *service );
 	
 	
 	

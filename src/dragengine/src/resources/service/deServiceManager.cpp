@@ -48,12 +48,12 @@ public:
 	};
 	
 	const eEvents type;
-	const deService::Ref service;
+	deService *service;
 	const decUniqueID id;
 	const deServiceObject::Ref data;
 	const bool finished;
 	
-	cEvent( eEvents atype, const deService::Ref &aservice, const decUniqueID &aid,
+	cEvent( eEvents atype, deService *aservice, const decUniqueID &aid,
 	const deServiceObject::Ref &adata, bool afinished ) :
 	type( atype ), service( aservice ), id( aid ), data( adata ), finished( afinished ){
 	}
@@ -165,28 +165,41 @@ deService *deServiceManager::CreateService( const char *name, const deServiceObj
 	DETHROW_INFO( deeInvalidParam, "Named service not supported" );
 }
 
-void deServiceManager::QueueRequestResponse( const deService::Ref &service,
-const decUniqueID &id, const deServiceObject::Ref &response, bool finished ){
+void deServiceManager::QueueRequestResponse( deService *service, const decUniqueID &id,
+const deServiceObject::Ref &response, bool finished ){
 	const deMutexGuard lock( pMutex );
 	pEventQueue.Add( cEvent::Ref::New( new cEvent(
 		cEvent::eeRequestResponse, service, id, response, finished ) ) );
 }
 
-void deServiceManager::QueueRequestFailed( const deService::Ref &service,
-const decUniqueID &id, const deServiceObject::Ref &error ){
+void deServiceManager::QueueRequestFailed( deService *service, const decUniqueID &id,
+const deServiceObject::Ref &error ){
 	const deMutexGuard lock( pMutex );
 	pEventQueue.Add( cEvent::Ref::New( new cEvent(
 		cEvent::eeRequestFailed, service, id, error, true ) ) );
 }
 
-void deServiceManager::QueueEventReceived( const deService::Ref &service,
-const deServiceObject::Ref &event ){
+void deServiceManager::QueueEventReceived( deService *service, const deServiceObject::Ref &event ){
 	const deMutexGuard lock( pMutex );
 	pEventQueue.Add( cEvent::Ref::New( new cEvent(
 		cEvent::eeEventReceived, service, decUniqueID(), event, true ) ) );
 }
 
-
+void deServiceManager::RemoveAllMatchingEvents( deService *service ){
+	const deMutexGuard lock( pMutex );
+	const decObjectList events( pEventQueue );
+	const int count = events.GetCount();
+	int i;
+	
+	pEventQueue.RemoveAll();
+	
+	for( i=0; i<count; i++ ){
+		cEvent * const event = ( cEvent* )events.GetAt( i );
+		if( event->service != service ){
+			pEventQueue.Add( event );
+		}
+	}
+}
 
 void deServiceManager::FrameUpdate(){
 	pUpdateModuleList();
