@@ -193,6 +193,9 @@ globFiles(envDragengine, 'src', '*.h', headers)
 if envDragengine['OSMacOS']:
 	globFiles(envDragengine, 'src', '*.mm', sources)
 
+sources.append('base64/base64.cpp')
+envDragengine.Append(CPPPATH = ['base64'])
+
 ignoreHeaders = []
 ignoreHeaders.append('src/doxy_main.h')
 

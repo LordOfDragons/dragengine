@@ -5,7 +5,7 @@
             "includePath": [
                 "${workspaceFolder}/**",
                 "${workspaceFolder}/../../../dragengine/build/include",
-                "${workspaceFolder}/../../../../../testing/include"
+                "${workspaceFolder}/../../../../extern/steamsdk/build/include"
             ],
             "defines": [
                 "DS_MODULE_VERSION=\"9999\"",

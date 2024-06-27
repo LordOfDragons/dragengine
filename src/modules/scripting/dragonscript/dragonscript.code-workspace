@@ -8,6 +8,9 @@
 		},
 		{
 			"path": "../../service/modio"
+		},
+		{
+			"path": "../../service/steamsdk"
 		}
 	],
 	"settings": {
