@@ -114,9 +114,12 @@ interface ServiceMods
 	 * which request the received response belongs to.
 	 * 
 	 * Receiving the results can take considerable amount of time depending on the
-	 * load of the service provider. To cancel the 
+	 * load of the service provider.
+	 * 
+	 * \param filter Filter to use.
+	 * \param listener If not null called once in addition to added listeners.
 	 */
-	func UniqueID listAllMods(ServiceModFilter filter)
+	func UniqueID listAllMods(ServiceModFilter filter, ServiceModsListener listener)
 	
 	/**
 	 * \brief Load resource asynchronously.
@@ -127,9 +130,10 @@ interface ServiceMods
 	 * \ref ServiceModsListener#loadResourceFailed(ServiceMods,String,Exception) is called
 	 * with the same URL as used in this function call.
 	 * 
-	 * \param url URL of image to load
+	 * \param url URL of image to load.
+	 * \param listener If not null called once in addition to added listeners.
 	 */
-	func void loadResource(String url)
+	func void loadResource(String url, ServiceModsListener listener)
 	
 	/**
 	 * \brief Mod management is paused.

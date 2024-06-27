@@ -27,6 +27,7 @@ namespace Dragengine.Services
 pin Dragengine.Services.Mods
 pin Dragengine.Utils
 pin Dragengine.Gui
+pin Dragengine.Services.User
 
 
 /**
@@ -102,6 +103,7 @@ class ServiceModio implements ServiceListener, ServiceMods
 	var bool pPauseManagement
 	var bool pIsManagementBusy
 	var SafeArray pModsListeners
+	var Dictionary pOnceListeners
 	
 	
 	
@@ -128,6 +130,7 @@ class ServiceModio implements ServiceListener, ServiceMods
 		pPortal = portal
 		pInitListener = listener
 		pModsListeners = SafeArray.new()
+		pOnceListeners = Dictionary.new()
 		
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("apiKey", apiKey)
@@ -148,6 +151,7 @@ class ServiceModio implements ServiceListener, ServiceMods
 	func void dispose()
 		pInitListener = null
 		pModsListeners.removeAll()
+		pOnceListeners.removeAll()
 		
 		if pService != null
 			pService.setListener(null)
@@ -247,9 +251,12 @@ class ServiceModio implements ServiceListener, ServiceMods
 	 * which request the received response belongs to.
 	 * 
 	 * Receiving the results can take considerable amount of time depending on the
-	 * load of the service provider. To cancel the 
+	 * load of the service provider.
+	 * 
+	 * \param filter Filter to use.
+	 * \param listener If not null called once in addition to added listeners.
 	 */
-	func UniqueID listAllMods(ServiceModFilter filter)
+	func UniqueID listAllMods(ServiceModFilter filter, ServiceModsListener listener)
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "listAllMods")
 		
@@ -275,10 +282,7 @@ class ServiceModio implements ServiceListener, ServiceMods
 			so.setIntChildAt("resultCount", filter.resultCount)
 		end
 		
-		var UniqueID id = pService.nextId()
-		// pDebugRequest(id, so)
-		pService.startRequest(id, so)
-		return id
+		return pRunRequest(so, listener)
 	end
 	
 	/**
@@ -290,13 +294,15 @@ class ServiceModio implements ServiceListener, ServiceMods
 	 * \ref ServiceModsListener#loadResourceFailed(ServiceMods,String,Exception) is called
 	 * with the same URL as used in this function call.
 	 * 
-	 * \param url URL of image to load
+	 * \param url URL of image to load.
+	 * \param listener If not null called once in addition to added listeners.
 	 */
-	func void loadResource(String url)
+	func void loadResource(String url, ServiceModsListener listener)
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "loadResource")
 		so.setStringChildAt("url", url)
-		pService.startRequest(so)
+		
+		pRunRequest(so, listener)
 	end
 	
 	/**
@@ -361,6 +367,7 @@ class ServiceModio implements ServiceListener, ServiceMods
 	 */
 	func void requestResponse(Service service, UniqueID id, ServiceObject response, bool finished)
 		var String function = response.getChildAt("function").getString()
+		var Object onceListener = pGetOnceListener(id)
 		
 		if function.equals("listAllMods")
 			// pDebugRequestResponse(id, response)
@@ -374,6 +381,9 @@ class ServiceModio implements ServiceListener, ServiceMods
 			pModsListeners.forEach(block ServiceModsListener each
 				each.listModsFinished(this, id, mods)
 			end)
+			if onceListener != null
+				(onceListener cast ServiceModsListener).listModsFinished(this, id, mods)
+			end
 			
 		elif function.equals("loadResource")
 			var String url = response.getChildAt("url").getString()
@@ -383,6 +393,9 @@ class ServiceModio implements ServiceListener, ServiceMods
 			pModsListeners.forEach(block ServiceModsListener each
 				each.loadResourceFinished(this, url, resource)
 			end)
+			if onceListener != null
+				(onceListener cast ServiceModsListener).loadResourceFinished(this, url, resource)
+			end
 		end
 	end
 	
@@ -392,11 +405,15 @@ class ServiceModio implements ServiceListener, ServiceMods
 	func void requestFailed(Service service, UniqueID id, ServiceObject error)
 		var String function = error.getChildAt("function").getString()
 		var ServiceException exception = createException(error)
+		var Object onceListener = pGetOnceListener(id)
 		
 		if function.equals("listAllMods")
 			pModsListeners.forEach(block ServiceModsListener each
 				each.listModsFailed(this, id, exception)
 			end)
+			if onceListener != null
+				(onceListener cast ServiceModsListener).listModsFailed(this, id, exception)
+			end
 			
 		elif function.equals("loadResource")
 			var String url = error.getChildAt("url").getString()
@@ -404,6 +421,9 @@ class ServiceModio implements ServiceListener, ServiceMods
 			pModsListeners.forEach(block ServiceModsListener each
 				each.loadResourceFailed(this, url, exception)
 			end)
+			if onceListener != null
+				(onceListener cast ServiceModsListener).loadResourceFailed(this, url, exception)
+			end
 		end
 	end
 	
@@ -685,17 +705,17 @@ class ServiceModio implements ServiceListener, ServiceMods
 		return info
 	end
 	
-	private func ServiceUser pConvUser(ServiceObject so)
+	private func ServiceUserInfo pConvUser(ServiceObject so)
 		if so == null
 			return null
 		end
 		
-		var ServiceUser user = ServiceUser.new()
+		var ServiceUserInfo user = ServiceUserInfo.new()
 		user.id = pConvString(so, "userId")
 		user.name = pConvString(so, "username")
 		user.displayName = pConvString(so, "displayNamePortal")
 		user.profileUrl = pConvString(so, "profileUrl")
-		user.authToken = pConvString(so, "authToken")
+		//pConvString(so, "authToken")
 		user.dateOnline = pConvTimeDate(so, "dateOnline")
 		user.avatar = pConvImage(so.getChildAt("avatar"))
 		return user
@@ -797,5 +817,22 @@ class ServiceModio implements ServiceListener, ServiceMods
 		progress.current = pConvFloat(so, "current", 0)
 		progress.progress = pConvFloat(so, "progress", 0)
 		return progress
+	end
+	
+	private func Object pGetOnceListener(UniqueID id)
+		var Object listener = pOnceListeners.getAt(id, null)
+		if listener != null
+			pOnceListeners.remove(id)
+		end
+		return listener
+	end
+	
+	private func UniqueID pRunRequest(ServiceObject request, Object listener)
+		var UniqueID id = pService.nextId()
+		pService.startRequest(id, request)
+		if listener != null
+			pOnceListeners.setAt(id, listener)
+		end
+		return id
 	end
 end

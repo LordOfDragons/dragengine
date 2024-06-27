@@ -226,8 +226,18 @@ void deSsdkServiceSteam::ResetAllStats( const decUniqueID &id, const deServiceOb
 }
 
 void deSsdkServiceSteam::RequestEncryptedAppTicket( const decUniqueID &id, const deServiceObject &request ){
-	pCROnEncryptedAppTicketResponse.Run(this, SteamUser()->RequestEncryptedAppTicket( nullptr, 0 ) );
-	NewPendingRequest( id, "requestEncryptedAppTicket" );
+	if( pEncAppTicket.IsEmpty() ){
+		pCROnEncryptedAppTicketResponse.Run(this, SteamUser()->RequestEncryptedAppTicket( nullptr, 0 ) );
+		NewPendingRequest( id, "requestEncryptedAppTicket" );
+		
+	}else{
+		const deServiceObject::Ref response( deServiceObject::Ref::New( new deServiceObject ) );
+		response->SetStringChildAt( "function", "requestEncryptedAppTicket" );
+		response->SetBoolChildAt( "success", true );
+		response->SetStringChildAt( "ticket", pEncAppTicket );
+		
+		pModule.GetGameEngine()->GetServiceManager()->QueueRequestResponse( pService, id, response, true );
+	}
 }
 
 void deSsdkServiceSteam::SetStats( const decUniqueID &id, const deServiceObject &request ){
@@ -400,7 +410,9 @@ void deSsdkServiceSteam::OnEncryptedAppTicketResponse( EncryptedAppTicketRespons
 			DETHROW_INFO( deeInvalidAction, "Failed retrieving encrypted app ticket" );
 		}
 		
-		pr->data->SetStringChildAt( "ticket", decBase64::Encode( rgubTicket, cubTicket ) );
+		pModule.LogInfo( "deSsdkServiceSteam.OnEncryptedAppTicketResponse: Ticket retrieved");
+		pEncAppTicket = decBase64::Encode( rgubTicket, cubTicket );
+		pr->data->SetStringChildAt( "ticket", pEncAppTicket );
 		
 		pModule.GetGameEngine()->GetServiceManager()->QueueRequestResponse( pService, pr->id, pr->data, true );
 		

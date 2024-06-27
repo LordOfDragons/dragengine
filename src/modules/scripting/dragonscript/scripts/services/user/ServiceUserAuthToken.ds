@@ -22,56 +22,46 @@
  * SOFTWARE.
  */
 
-namespace Dragengine.Services
-
+namespace Dragengine.Services.User
 
 /**
- * \brief Information about service user.
+ * \brief Service user authentification token.
+ * \version 1.23
  * 
- * Used by different services to deliver information about a user. Certain fields
- * are only present for specific services.
+ * Authentification tokens are typically produced by a platform type service to be consumed
+ * by other services (account linking). The authentification token is platform service
+ * specific and the consuming service must support the platform service to use it. The
+ * platform service identifies itself using a string constant the service can freely choose.
  */
-class ServiceUser
+class ServiceUserAuthToken
 	/**
-	 * \brief User identifier.
+	 * \brief Authentification provider identifier.
+	 * 
+	 * See respective ServiceUser implementing service for documentation.
 	 */
-	public var String id
+	public var String provider
 	
 	/**
-	 * \brief User name.
+	 * \brief Authentification token in service specific form.
+	 * 
+	 * Token has to be in textual form. Binary tokens are typically encoded as Base64.
+	 * See the respective service documentation for the used format.
 	 */
-	public var String name
+	public var String token
 	
 	/**
-	 * \brief Display user name.
+	 * \brief Additional parameters if required by the service.
+	 * 
+	 * Dictionary mapping String key to String value. Keys and values are service defined.
 	 */
-	public var String displayName
-	
-	/**
-	 * \brief Authentification token in string encoded form.
-	 */
-	public var String authToken
-	
-	/**
-	 * \brief Date the user has been last been online.
-	 */
-	public var TimeDate dateOnline
-	
-	/**
-	 * \brief URL or user profile.
-	 */
-	public var String profileUrl
-	
-	/**
-	 * \brief User avatar.
-	 */
-	public var ServiceImage avatar
+	public var Dictionary parameters
 	
 	
 	
 	/**
-	 * \brief Create new instance of class ServiceUser.
+	 * \brief Create new instance of class ServiceUserAuthToken.
 	 */
 	func new()
+		parameters = Dictionary.new()
 	end
 end

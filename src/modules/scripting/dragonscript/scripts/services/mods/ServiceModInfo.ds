@@ -23,6 +23,7 @@
  */
 
 namespace Dragengine.Services.Mods
+pin Dragengine.Services.User
 
 /**
  * \brief Information about game modification.
@@ -101,7 +102,7 @@ class ServiceModInfo
 	/**
 	 * \brief User who submitted the modification.
 	 */
-	public var ServiceUser submittedBy
+	public var ServiceUserInfo submittedBy
 	
 	/**
 	 * \brief Date of modification registration.

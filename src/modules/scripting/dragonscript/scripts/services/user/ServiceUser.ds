@@ -1,0 +1,63 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Services.User
+
+
+/**
+ * \brief Interface for services supporting user information and management.
+ * \version 1.23
+ */
+interface ServiceUser
+	/**
+	 * \brief Add user listener.
+	 * \param listener Listener to add
+	 */
+	func void addUserListener(ServiceUserListener listener)
+	
+	/**
+	 * \brief Remove user listener.
+	 * \param listener Listener to remove.
+	 */
+	func void removeUserListener(ServiceUserListener listener)
+	
+	
+	
+	/**
+	 * \brief Request authentification token.
+	 * 
+	 * Requests an encrypted appplication ticket. If one is cached it is returned.
+	 * The received ticket is Base64 encoded.
+	 * 
+	 * \param listener If not null called once in addition to added listeners.
+	 */
+	func void getAuthToken(ServiceUserListener listener)
+	
+	/**
+	 * \brief Retrieve user information.
+	 * 
+	 * \param listener If not null called once in addition to added listeners.
+	 */
+	func void getUserInfo(ServiceUserListener listener)
+end

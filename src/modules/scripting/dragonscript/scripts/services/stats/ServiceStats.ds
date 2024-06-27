@@ -51,8 +51,12 @@ interface ServiceStats
 	 * api names. Once retrieved calls
 	 * \ref ServiceStatsListener#statsReceived(Object,Dictionary,Dictionary) or
 	 * \ref ServiceStatsListener#statsReceivedFailed(Object,String).
+	 * 
+	 * \param stats Stats.
+	 * \param achievements Achievements.
+	 * \param listener If not null called once in addition to added listeners.
 	 */
-	func void getStatsAndAchievements(Set stats, Set achievements)
+	func void getStatsAndAchievements(Set stats, Set achievements, ServiceStatsListener listener)
 	
 	/**
 	 * \brief Set stats and achievements.
@@ -66,8 +70,10 @@ interface ServiceStats
 	 * 
 	 * \param achievements Dictionary of achievements to store. Key is api name as String.
 	 * Value is true or false to set or clear the achievement.
+	 * 
+	 * \param listener If not null called once in addition to added listeners.
 	 */
-	func void setStatsAndAchievements(Dictionary stats, Dictionary achievements)
+	func void setStatsAndAchievements(Dictionary stats, Dictionary achievements, ServiceStatsListener listener)
 	
 	/**
 	 * \brief Reset all stats on steam server.

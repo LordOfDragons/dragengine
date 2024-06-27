@@ -25,6 +25,7 @@
 namespace Dragengine.Services
 
 pin Dragengine.Services.Stats
+pin Dragengine.Services.User
 
 
 /**
@@ -34,10 +35,11 @@ pin Dragengine.Services.Stats
  * Provides acess to these functionalities:
  * - Stats/Achievements
  */
-class ServiceSteamSdk implements ServiceStats, ServiceListener
+class ServiceSteamSdk implements ServiceStats, ServiceUser, ServiceListener
 	var int pAppId
 	var Service pService
-	var Array pStatsListeners
+	var SafeArray pStatsListeners, pUserListeners
+	var Dictionary pOnceListeners
 	var Set pGetStatsApiNames, pGetAchievementsApiNames
 	var Set pSetStatsApiNames, pSetAchievementsApiNames
 	
@@ -52,7 +54,9 @@ class ServiceSteamSdk implements ServiceStats, ServiceListener
 	 */
 	func new(int appId)
 		pAppId = appId
-		pStatsListeners = Array.new()
+		pStatsListeners = SafeArray.new()
+		pUserListeners = SafeArray.new()
+		pOnceListeners = Dictionary.new()
 		
 		var ServiceObject so = ServiceObject.new()
 		so.setIntChildAt("appId", pAppId)
@@ -66,6 +70,8 @@ class ServiceSteamSdk implements ServiceStats, ServiceListener
 	 */
 	func void dispose()
 		pStatsListeners.removeAll()
+		pUserListeners.removeAll()
+		pOnceListeners.removeAll()
 		
 		if pService != null
 			pService.setListener(null)
@@ -84,6 +90,11 @@ class ServiceSteamSdk implements ServiceStats, ServiceListener
 	static func bool isServiceSupported()
 		return Engine.getSupportedServices().has("SteamSDK")
 	end
+	
+	/**
+	 * \brief Authentification provider identifier.
+	 */
+	static fixed var String authProviderId = "steam"
 	
 	
 	
@@ -115,8 +126,6 @@ class ServiceSteamSdk implements ServiceStats, ServiceListener
 		pStatsListeners.remove(listener)
 	end
 	
-	
-	
 	/**
 	 * \brief Get stats and achievements.
 	 * 
@@ -124,8 +133,12 @@ class ServiceSteamSdk implements ServiceStats, ServiceListener
 	 * api names. Once retrieved calls
 	 * \ref ServiceStatsListener#statsReceived(Object,Dictionary,Dictionary) or
 	 * \ref ServiceStatsListener#statsReceivedFailed(Object,String).
+	 * 
+	 * \param stats Stats.
+	 * \param achievements Achievements.
+	 * \param listener If not null called once in addition to added listeners.
 	 */
-	func void getStatsAndAchievements(Set stats, Set achievements)
+	func void getStatsAndAchievements(Set stats, Set achievements, ServiceStatsListener listener)
 		if stats == null
 			throw ENullPointer.new("stats")
 		end
@@ -139,7 +152,7 @@ class ServiceSteamSdk implements ServiceStats, ServiceListener
 		pGetStatsApiNames = Set.new(stats)
 		pGetAchievementsApiNames = Set.new(achievements)
 		
-		pService.startRequest(so)
+		pRunRequest(so, listener)
 	end
 	
 	/**
@@ -154,8 +167,10 @@ class ServiceSteamSdk implements ServiceStats, ServiceListener
 	 * 
 	 * \param achievements Dictionary of achievements to store. Key is api name as String.
 	 * Value is true or false to set or clear the achievement.
+	 * 
+	 * \param listener If not null called once in addition to added listeners.
 	 */
-	func void setStatsAndAchievements(Dictionary stats, Dictionary achievements)
+	func void setStatsAndAchievements(Dictionary stats, Dictionary achievements, ServiceStatsListener listener)
 		if stats == null
 			throw ENullPointer.new("stats")
 		end
@@ -190,7 +205,7 @@ class ServiceSteamSdk implements ServiceStats, ServiceListener
 		pSetStatsApiNames = Set.newFrom(stats.getKeys())
 		pSetAchievementsApiNames = Set.newFrom(achievements.getKeys())
 		
-		pService.startRequest(so)
+		pRunRequest(so, listener)
 	end
 	
 	/**
@@ -211,14 +226,49 @@ class ServiceSteamSdk implements ServiceStats, ServiceListener
 	
 	
 	/**
-	 * \brief Request encrypted appplication ticket.
-	 * 
-	 * The received ticket is Base64 encoded.
+	 * \brief Add user listener.
+	 * \param listener Listener to add
 	 */
-	func void requestEncryptedAppTicket()
+	func void addUserListener(ServiceUserListener listener)
+		if listener == null
+			throw ENullPointer.new("listener")
+		end
+		pUserListeners.add(listener)
+	end
+	
+	/**
+	 * \brief Remove user listener.
+	 * \param listener Listener to remove.
+	 */
+	func void removeUserListener(ServiceUserListener listener)
+		pUserListeners.remove(listener)
+	end
+	
+	/**
+	 * \brief Request authentification token.
+	 * 
+	 * Requests an encrypted appplication ticket. If one is cached it is returned.
+	 * The received ticket is Base64 encoded.
+	 * 
+	 * \param listener If not null called once in addition to added listeners.
+	 */
+	func void getAuthToken(ServiceUserListener listener)
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "requestEncryptedAppTicket")
-		pService.startRequest(so)
+		
+		pRunRequest(so, listener)
+	end
+	
+	/**
+	 * \brief Retrieve user information.
+	 * 
+	 * \param listener If not null called once in addition to added listeners.
+	 */
+	func void getUserInfo(ServiceUserListener listener)
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "getUserInfo")
+		
+		pRunRequest(so, listener)
 	end
 	
 	
@@ -228,6 +278,7 @@ class ServiceSteamSdk implements ServiceStats, ServiceListener
 	 */
 	func void requestResponse(Service service, UniqueID id, ServiceObject response, bool finished)
 		var String function = response.getChildAt("function").getString()
+		var Object onceListener = pGetOnceListener(id)
 		
 		if function.equals("requestCurrentStats")
 			if pGetStatsApiNames == null or pGetAchievementsApiNames == null
@@ -275,6 +326,9 @@ class ServiceSteamSdk implements ServiceStats, ServiceListener
 			pStatsListeners.forEach(block ServiceStatsListener each
 				each.statsReceived(this, stats, achievements)
 			end)
+			if onceListener != null
+				(onceListener cast ServiceStatsListener).statsReceived(this, stats, achievements)
+			end
 			
 		elif function.equals("setStats")
 			var Dictionary stats = Dictionary.new()
@@ -299,14 +353,23 @@ class ServiceSteamSdk implements ServiceStats, ServiceListener
 			pStatsListeners.forEach(block ServiceStatsListener each
 				each.statsStored(this, stats, achievements)
 			end)
+			if onceListener != null
+				(onceListener cast ServiceStatsListener).statsStored(this, stats, achievements)
+			end
 			
 		elif function.equals("requestEncryptedAppTicket")
-			var String ticket = response.getChildAt("ticket").getString()
-			/*
+			var ServiceUserAuthToken token = ServiceUserAuthToken.new()
+			token.provider = authProviderId
+			token.token = response.getChildAt("ticket").getString()
+			
 			pUserListeners.forEach(block ServiceUserListener each
-				each.authTokenCreated(this, ticket)
+				each.authTokenReceived(this, token)
 			end)
-			*/
+			if onceListener != null
+				(onceListener cast ServiceUserListener).authTokenReceived(this, token)
+			end
+			
+		elif function.equals("getUserInfo")
 		end
 	end
 	
@@ -315,36 +378,52 @@ class ServiceSteamSdk implements ServiceStats, ServiceListener
 	 */
 	func void requestFailed(Service service, UniqueID id, ServiceObject error)
 		var String function = error.getChildAt("function").getString()
+		var ServiceException exception = createException(error)
+		var Object onceListener = pGetOnceListener(id)
 		
 		if function.equals("requestCurrentStats")
 			if pGetStatsApiNames == null or pGetAchievementsApiNames == null
 				return
 			end
 			
-			var ServiceException exception = createException(error)
 			pStatsListeners.forEach(block ServiceStatsListener each
 				each.statsReceivedFailed(this, exception)
 			end)
+			if onceListener != null
+				(onceListener cast ServiceStatsListener).statsReceivedFailed(this, exception)
+			end
 			
 		elif function.equals("getStats")
-			var ServiceException exception = createException(error)
 			pStatsListeners.forEach(block ServiceStatsListener each
 				each.statsReceivedFailed(this, exception)
 			end)
+			if onceListener != null
+				(onceListener cast ServiceStatsListener).statsReceivedFailed(this, exception)
+			end
 			
 		elif function.equals("setStats")
-			var ServiceException exception = createException(error)
 			pStatsListeners.forEach(block ServiceStatsListener each
 				each.statsStoredFailed(this, exception)
 			end)
+			if onceListener != null
+				(onceListener cast ServiceStatsListener).statsStoredFailed(this, exception)
+			end
 			
 		elif function.equals("requestEncryptedAppTicket")
-			BaseGameApp.getApp().getConsole().addMessage("requestEncryptedAppTicket -> FAILED")
-			/*
 			pUserListeners.forEach(block ServiceUserListener each
-				each.authTokenCreated(this, ticket)
+				each.authTokenFailed(this, exception)
 			end)
-			*/
+			if onceListener != null
+				(onceListener cast ServiceUserListener).authTokenFailed(this, exception)
+			end
+			
+		elif function.equals("getUserInfo")
+			pUserListeners.forEach(block ServiceUserListener each
+				each.userInfoFailed(this, exception)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceUserListener).userInfoFailed(this, exception)
+			end
 		end
 	end
 	
@@ -369,5 +448,22 @@ class ServiceSteamSdk implements ServiceStats, ServiceListener
 	func ServiceException createException(ServiceObject error)
 		error = error.getChildAt("message")
 		return ServiceException.new(pService, error != null if error.getString() else "Unknown error")
+	end
+	
+	private func Object pGetOnceListener(UniqueID id)
+		var Object listener = pOnceListeners.getAt(id, null)
+		if listener != null
+			pOnceListeners.remove(id)
+		end
+		return listener
+	end
+	
+	private func UniqueID pRunRequest(ServiceObject request, Object listener)
+		var UniqueID id = pService.nextId()
+		pService.startRequest(id, request)
+		if listener != null
+			pOnceListeners.setAt(id, listener)
+		end
+		return id
 	end
 end

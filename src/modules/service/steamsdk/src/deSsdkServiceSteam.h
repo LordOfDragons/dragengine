@@ -49,6 +49,7 @@ private:
 	deSteamSdk &pModule;
 	deService * const pService;
 	decObjectList pPendingRequests;
+	decString pEncAppTicket;
 	
 	
 public:
