@@ -64,3 +64,14 @@ void deGDKServiceSystem::StartRequest(const decUniqueID& id, const deServiceObje
 
 void deGDKServiceSystem::CancelRequest(const decUniqueID& id){
 }
+
+deServiceObject::Ref deGDKServiceSystem::RunAction( const deServiceObject &action ){
+	const decString &function = action.GetChildAt( "function" )->GetString();
+	
+	if( function == "dummy" ){
+		return nullptr;
+		
+	}else{
+		DETHROW_INFO( deeInvalidParam, "Unknown function" );
+	}
+}
