@@ -706,6 +706,7 @@
     <ClCompile Include="..\..\src\dragengine\src\systems\modules\scripting\deBaseScriptingService.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\systems\modules\service\deBaseServiceModule.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\systems\modules\service\deBaseServiceService.cpp" />
+    <ClCompile Include="..\..\src\dragengine\base64\base64.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\dragengine\src\app\deCmdLineArgs.h" />
@@ -1391,6 +1392,7 @@
     <ClInclude Include="..\..\src\dragengine\src\systems\modules\scripting\deBaseScriptingService.h" />
     <ClInclude Include="..\..\src\dragengine\src\systems\modules\service\deBaseServiceModule.h" />
     <ClInclude Include="..\..\src\dragengine\src\systems\modules\service\deBaseServiceService.h" />
+    <ClInclude Include="..\..\src\dragengine\base64\base64.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\extern\zlib\extern_zlib.vcxproj">
