@@ -126,6 +126,7 @@
     <ClCompile Include="..\..\src\dragengine\src\common\string\unicode\decUnicodeStringSet.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\common\string\unicode\decUTF8Decoder.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\common\utils\decCollisionFilter.cpp" />
+    <ClCompile Include="..\..\src\dragengine\src\common\utils\decBase64.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\common\utils\decDateTime.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\common\utils\decLayerMask.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\common\utils\decPRNG.cpp" />
@@ -801,6 +802,7 @@
     <ClInclude Include="..\..\src\dragengine\src\common\string\unicode\decUnicodeStringSet.h" />
     <ClInclude Include="..\..\src\dragengine\src\common\string\unicode\decUTF8Decoder.h" />
     <ClInclude Include="..\..\src\dragengine\src\common\utils\decCollisionFilter.h" />
+    <ClInclude Include="..\..\src\dragengine\src\common\utils\decBase64.h" />
     <ClInclude Include="..\..\src\dragengine\src\common\utils\decDateTime.h" />
     <ClInclude Include="..\..\src\dragengine\src\common\utils\decLayerMask.h" />
     <ClInclude Include="..\..\src\dragengine\src\common\utils\decPRNG.h" />

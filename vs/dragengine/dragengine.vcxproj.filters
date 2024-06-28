@@ -300,6 +300,9 @@
     <ClCompile Include="..\..\src\dragengine\src\common\utils\decCollisionFilter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\dragengine\src\common\utils\decBase64.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\common\utils\decDateTime.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -2319,6 +2322,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\common\utils\decCollisionFilter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\dragengine\src\common\utils\decBase64.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\common\utils\decDateTime.h">
