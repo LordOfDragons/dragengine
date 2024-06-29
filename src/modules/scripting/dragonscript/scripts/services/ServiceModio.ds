@@ -217,6 +217,15 @@ class ServiceModio implements ServiceListener, ServiceMods
 	
 	
 	/**
+	 * \brief Features supported by this service.
+	 */
+	func ServiceModsFeatures getModsFeatures()
+		var ServiceModsFeatures features = ServiceModsFeatures.new()
+		features.modRatingCount = 2
+		return features
+	end
+	
+	/**
 	 * \brief Add modification listener.
 	 * \param listener Listener to add
 	 */
@@ -244,11 +253,9 @@ class ServiceModio implements ServiceListener, ServiceMods
 	 * parameters set to null cause default values to be used as defined by the
 	 * service provider. Filters not supported by the service provider are ignored.
 	 * 
-	 * Once the results are retrieved the service calls
-	 * \ref ServiceModsListener#listModsFinished(ServiceMods,UniqueID,Array) or
-	 * \ref ServiceModsListener#listModsFailed(ServiceMods,UniqueID,String).
-	 * The returned request identifier can be used in the listener methods to identify
-	 * which request the received response belongs to.
+	 * Once finished \ref ServiceModsListener#onListMods(ServiceMods,Array,Exception)
+	 * is called. The returned request identifier can be used in the listener methods to
+	 * identify which request the received response belongs to.
 	 * 
 	 * Receiving the results can take considerable amount of time depending on the
 	 * load of the service provider.
@@ -256,7 +263,7 @@ class ServiceModio implements ServiceListener, ServiceMods
 	 * \param filter Filter to use.
 	 * \param listener If not null called once in addition to added listeners.
 	 */
-	func UniqueID listAllMods(ServiceModFilter filter, ServiceModsListener listener)
+	func void listAllMods(ServiceModFilter filter, ServiceModsListener listener)
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "listAllMods")
 		
@@ -282,16 +289,14 @@ class ServiceModio implements ServiceListener, ServiceMods
 			so.setIntChildAt("resultCount", filter.resultCount)
 		end
 		
-		return pRunRequest(so, listener)
+		pRunRequest(so, listener)
 	end
 	
 	/**
 	 * \brief Load resource asynchronously.
 	 * 
 	 * Loaded resources are cached for faster retrieval. Once the resource is cached locally
-	 * \ref ServiceModsListener#loadResourceFinished(ServiceMods,String,Object) is called
-	 * with the same URL as used in this function call. If loading the image failed
-	 * \ref ServiceModsListener#loadResourceFailed(ServiceMods,String,Exception) is called
+	 * \ref ServiceModsListener#onLoadResource(ServiceMods,String,Object,Exception) is called
 	 * with the same URL as used in this function call.
 	 * 
 	 * \param url URL of image to load.
@@ -370,9 +375,7 @@ class ServiceModio implements ServiceListener, ServiceMods
 	 * Authentication tokens are typically obtained from services supporting ServiceUser
 	 * interface by calling \ref ServiceUser#getAuthToken(ServiceUserListener).
 	 * 
-	 * If user has been successfully authenticated
-	 * \ref ServiceModsListener#authenticateFinished(ServiceMods) is called. If authentication
-	 * failed \ref ServiceModsListener#authenticateFailed(ServiceMods,Exception) is called.
+	 * Once finished \ref ServiceModsListener#onAuthenticate(ServiceMods,Exception) is called.
 	 * 
 	 * \param token Authentication token.
 	 * \param listener If not null called once in addition to added listeners.
@@ -414,6 +417,164 @@ class ServiceModio implements ServiceListener, ServiceMods
 		pRunRequest(so, listener)
 	end
 	
+	/**
+	 * \brief Subscribe to modification.
+	 * 
+	 * The user can also subscribe to a modification from outside the game using different means.
+	 * In both situationsn modifications are installed automatically the next time possible if at
+	 * least one user is subscribed to them. Hence subscribing and installing are different actions.
+	 * 
+	 * Once subscribing finished \ref ServiceModsListener#onSubscribeMod(ServiceMods,String,Exception)
+	 * is called. At this point in time the modification is potentially not yet installed.
+	 * Mod management installs mods as soon as possible if necessary. Listen to
+	 * \ref ServiceModsListener#onModManagement(ServiceMods,ManagementEvent,String,ServiceModProgress,Exception)
+	 * events to know when the modification started and finished installing.
+	 * 
+	 * \param token Authentication token.
+	 * \param id Identifier of modification to subscribe to.
+	 * \param listener If not null called once in addition to added listeners.
+	 */
+	func void subscribeMod(String id, ServiceModsListener listener)
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "subscribeToMod")
+		so.setStringChildAt("modId", id)
+		so.setBoolChildAt("dependencies", true)
+		
+		pRunRequest(so, listener)
+	end
+	
+	/**
+	 * \brief Unsubscribe from modification.
+	 * 
+	 * The user can also unsubscribe from a modification from outside the game using different means.
+	 * In both situationsn modifications are uninstalled automatically the next time possible if
+	 * no user is subscribed to them. Hence unsubscribing and uninstalling are different actions.
+	 * 
+	 * Once unsubscribing finished \ref ServiceModsListener#onUnsubscribeMod(ServiceMods,String,Exception)
+	 * is called. At this point in time the modification is still installed. Mod management
+	 * uninstalls mods as soon as possible if necessary. Listen to
+	 * \ref ServiceModsListener#onModManagement(ServiceMods,ManagementEvent,String,ServiceModProgress,Exception)
+	 * events to know when the modification started and finished uninstalling.
+	 * 
+	 * \param token Authentication token.
+	 * \param id Identifier of modification to unsubscribe from.
+	 * \param listener If not null called once in addition to added listeners.
+	 */
+	func void unsubscribeMod(String id, ServiceModsListener listener)
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "unsubscribeFromMod")
+		so.setStringChildAt("modId", id)
+		
+		pRunRequest(so, listener)
+	end
+	
+	/**
+	 * \brief Current mod install or update progress information.
+	 * 
+	 * If no suitable mod management action is in progress null is returned.
+	 */
+	func ServiceModProgress getCurrentModUpdate()
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "queryCurrentModUpdate")
+		
+		so = pService.runAction(so)
+		return so != null if pConvModProgress(so) else null
+	end
+	
+	/**
+	 * \brief User subscribed mods.
+	 * 
+	 * Returns modifications are potentially not installed. Use \ref ServiceModStatus#status
+	 * to filter modifications of interest. Returns dictionary with String modification
+	 * identifier and ServiceModStatus value.
+	 */
+	func Dictionary getSubscribedMods()
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "queryUserSubscriptions")
+		so = pService.runAction(so)
+		
+		var Dictionary dict = Dictionary.new()
+		var int i, count = so.getChildCount()
+		var ServiceModStatus status
+		
+		for i = 0 to count
+			status = pConvModStatus(so.getChildAt(i))
+			dict.setAt(status.id, status)
+		end
+		
+		return dict
+	end
+	
+	/**
+	 * \brief System mods.
+	 * 
+	 * Returns all modifications installed on the system by all users. Returns dictionary
+	 * with String modification identifier and ServiceModStatus value.
+	 */
+	func Dictionary getSystemMods()
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "querySystemInstallations")
+		so = pService.runAction(so)
+		
+		var Dictionary dict = Dictionary.new()
+		var int i, count = so.getChildCount()
+		var ServiceModStatus status
+		
+		for i = 0 to count
+			status = pConvModStatus(so.getChildAt(i))
+			dict.setAt(status.id, status)
+		end
+		
+		return dict
+	end
+	
+	/**
+	 * \brief User information or null if not know.
+	 * 
+	 * User information is present if the user is authenticated.
+	 */
+	func ServiceUserInfo getUserInfo()
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "queryUserProfile")
+		so = pService.runAction(so)
+		return so != null if pConvUser(so) else null
+	end
+	
+	/**
+	 * \brief Retrieve information about game modification.
+	 * 
+	 * Once finished \ref ServiceModsListener#onGetModInfo(ServiceMods,String,ServiceModInfo,Exception)
+	 * is called.
+	 * 
+	 * \param modId Identifier of modification to retrieve.
+	 * \param listener If not null called once in addition to added listeners.
+	 */
+	func void getModInfo(String id, ServiceModsListener listener)
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "getModInfo")
+		so.setStringChildAt("modId", id)
+		
+		pRunRequest(so, listener)
+	end
+	
+	/**
+	 * \brief Submit rating for modification.
+	 * 
+	 * Once finished \ref ServiceModsListener#onGetModInfo(ServiceMods,String,ServiceModInfo,Exception)
+	 * is called.
+	 * 
+	 * \param modId Identifier of modification to retrieve.
+	 * \param listener If not null called once in addition to added listeners.
+	 */
+	func void submitModRating(String id, int rating, ServiceModsListener listener)
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "submitModRating")
+		so.setStringChildAt("modId", id)
+		so.setIntChildAt("rating", rating)
+		
+		pRunRequest(so, listener)
+	end
+	
 	
 	
 	/**
@@ -437,7 +598,6 @@ class ServiceModio implements ServiceListener, ServiceMods
 		var Object onceListener = pGetOnceListener(id)
 		
 		if function.equals("listAllMods")
-			// pDebugRequestResponse(id, response)
 			var ServiceObject somods = response.getChildAt("mods")
 			var Array mods = Array.new()
 			var int i, count = somods.getChildCount()
@@ -446,10 +606,10 @@ class ServiceModio implements ServiceListener, ServiceMods
 			end
 			
 			pModsListeners.forEach(block ServiceModsListener each
-				each.listModsFinished(this, id, mods)
+				each.onListMods(this, mods, null)
 			end)
 			if onceListener != null
-				(onceListener cast ServiceModsListener).listModsFinished(this, id, mods)
+				(onceListener cast ServiceModsListener).onListMods(this, mods, null)
 			end
 			
 		elif function.equals("loadResource")
@@ -458,26 +618,44 @@ class ServiceModio implements ServiceListener, ServiceMods
 			// String "resourceType": "image"
 			
 			pModsListeners.forEach(block ServiceModsListener each
-				each.loadResourceFinished(this, url, resource)
+				each.onLoadResource(this, url, resource, null)
 			end)
 			if onceListener != null
-				(onceListener cast ServiceModsListener).loadResourceFinished(this, url, resource)
+				(onceListener cast ServiceModsListener).onLoadResource(this, url, resource, null)
 			end
 			
 		elif function.equals("authenticateUserExternal")
 			pModsListeners.forEach(block ServiceModsListener each
-				each.authenticateFinished(this)
+				each.onAuthenticate(this, null)
 			end)
 			if onceListener != null
-				(onceListener cast ServiceModsListener).authenticateFinished(this)
+				(onceListener cast ServiceModsListener).onAuthenticate(this, null)
 			end
 			
 		elif function.equals("clearUserData")
 			pModsListeners.forEach(block ServiceModsListener each
-				each.deauthenticateFinished(this)
+				each.onDeauthenticate(this, null)
 			end)
 			if onceListener != null
-				(onceListener cast ServiceModsListener).deauthenticateFinished(this)
+				(onceListener cast ServiceModsListener).onDeauthenticate(this, null)
+			end
+			
+		elif function.equals("getModInfo")
+			var ServiceModInfo info = pConvModInfo(response.getChildAt("info"))
+			
+			pModsListeners.forEach(block ServiceModsListener each
+				each.onGetModInfo(this, info.id, info, null)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceModsListener).onGetModInfo(this, info.id, info, null)
+			end
+			
+		elif function.equals("submitModRating")
+			pModsListeners.forEach(block ServiceModsListener each
+				each.onSubmitModRating(this, null)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceModsListener).onSubmitModRating(this, null)
 			end
 		end
 	end
@@ -492,36 +670,52 @@ class ServiceModio implements ServiceListener, ServiceMods
 		
 		if function.equals("listAllMods")
 			pModsListeners.forEach(block ServiceModsListener each
-				each.listModsFailed(this, id, exception)
+				each.onListMods(this, null, exception)
 			end)
 			if onceListener != null
-				(onceListener cast ServiceModsListener).listModsFailed(this, id, exception)
+				(onceListener cast ServiceModsListener).onListMods(this, null, exception)
 			end
 			
 		elif function.equals("loadResource")
 			var String url = error.getChildAt("url").getString()
 			
 			pModsListeners.forEach(block ServiceModsListener each
-				each.loadResourceFailed(this, url, exception)
+				each.onLoadResource(this, url, null, exception)
 			end)
 			if onceListener != null
-				(onceListener cast ServiceModsListener).loadResourceFailed(this, url, exception)
+				(onceListener cast ServiceModsListener).onLoadResource(this, url, null, exception)
 			end
 			
 		elif function.equals("authenticateUserExternal")
 			pModsListeners.forEach(block ServiceModsListener each
-				each.authenticateFailed(this, exception)
+				each.onAuthenticate(this, exception)
 			end)
 			if onceListener != null
-				(onceListener cast ServiceModsListener).authenticateFailed(this, exception)
+				(onceListener cast ServiceModsListener).onAuthenticate(this, exception)
 			end
 			
 		elif function.equals("clearUserData")
 			pModsListeners.forEach(block ServiceModsListener each
-				each.deauthenticateFailed(this, exception)
+				each.onDeauthenticate(this, exception)
 			end)
 			if onceListener != null
-				(onceListener cast ServiceModsListener).deauthenticateFailed(this, exception)
+				(onceListener cast ServiceModsListener).onDeauthenticate(this, exception)
+			end
+			
+		elif function.equals("getModInfo")
+			pModsListeners.forEach(block ServiceModsListener each
+				each.onGetModInfo(this, null, null, exception)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceModsListener).onGetModInfo(this, null, null, exception)
+			end
+			
+		elif function.equals("submitModRating")
+			pModsListeners.forEach(block ServiceModsListener each
+				each.onSubmitModRating(this, exception)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceModsListener).onSubmitModRating(this, exception)
 			end
 		end
 	end
@@ -531,40 +725,30 @@ class ServiceModio implements ServiceListener, ServiceMods
 	 */
 	func void eventReceived(Service service, ServiceObject event)
 		var String eventName = event.getChildAt("event").getString()
+		var bool success = event.getChildAt("success").getBoolean()
+		var ServiceException exception
+		
+		if not success
+			exception = createException(event)
+		end
 		
 		if eventName.equals("initialized")
-			if event.getChildAt("success").getBoolean()
-				pIsInitialized = Boolean.new(true)
-				
-				if pInitListener != null
-					pInitListener.initSucceeded(this)
-				end
-				
-			else
-				pIsInitialized = Boolean.new(false)
-				
-				if pInitListener != null
-					pInitListener.initFailed(this, ServiceException.new(service, event.getChildAt("message").getString()))
-				end
-			end
+			pIsInitialized = Boolean.new(success)
 			
+			if pInitListener != null
+				pInitListener.onServiceInit(this, exception)
+			end
 			pInitListener = null
 			
 		elif eventName.equals("modManagement")
 			var ServiceMods.ManagementEvent mev = ServiceMods.ManagementEvent.named(event.getChildAt("subEvent").getString())
-			var bool success = event.getChildAt("success").getBoolean()
 			var String modId = event.getChildAt("modId").getString()
 			var ServiceModProgress progress = pConvModProgress(event)
-			var ServiceException exception
 			
 			pIsManagementBusy = event.getChildAt("busy").getBoolean()
 			
-			if not success
-				exception = createException(event)
-			end
-			
 			pModsListeners.forEach(block ServiceModsListener each
-				each.managementEvent(this, mev, modId, progress, exception)
+				each.onModManagement(this, mev, modId, progress, exception)
 			end)
 		end
 	end
@@ -721,6 +905,10 @@ class ServiceModio implements ServiceListener, ServiceMods
 	end
 	
 	private func ServiceModInfo pConvModInfo(ServiceObject so)
+		if so == null
+			return null
+		end
+		
 		var ServiceObject so2
 		var int i, count
 		
@@ -797,10 +985,6 @@ class ServiceModio implements ServiceListener, ServiceMods
 			end
 		end
 		
-		/*
-	
-	so->SetChildAt( "stats", ModStats( info.Stats ) );
-		*/
 		return info
 	end
 	
@@ -897,8 +1081,9 @@ class ServiceModio implements ServiceListener, ServiceMods
 		stats.downloadCount = pConvFloat(so, "downloadsTotal", 0)
 		stats.subscriberCount = pConvFloat(so, "subscribersTotal", 0)
 		stats.ratingCount = pConvFloat(so, "ratingTotal", 0)
-		stats.ratingCountPositive = pConvFloat(so, "ratingPositive", 0)
-		stats.ratingCountNegative = pConvFloat(so, "ratingNegative", 0)
+		stats.ratingCountPerType.setAt(0, pConvFloat(so, "ratingNegative", 0))
+		stats.ratingCountPerType.setAt(1, pConvFloat(so, "ratingPositive", 0))
+		stats.ratingAverage = pConvFloat(so, "ratingPercentagePositive", 0)
 		stats.ratingWeighted = pConvFloat(so, "ratingWeightedAggregate", 0)
 		stats.ratingDisplayText = pConvString(so, "ratingDisplayText")
 		
@@ -916,6 +1101,19 @@ class ServiceModio implements ServiceListener, ServiceMods
 		progress.current = pConvFloat(so, "current", 0)
 		progress.progress = pConvFloat(so, "progress", 0)
 		return progress
+	end
+	
+	private func ServiceModStatus pConvModStatus(ServiceObject so)
+		if so == null
+			return null
+		end
+		
+		var ServiceModStatus status = ServiceModStatus.new()
+		status.id = so.getChildAt("id").getString()
+		status.status = ServiceModStatus.Status.named(so.getChildAt("status").getString())
+		status.info = pConvModInfo(so.getChildAt("info"))
+		status.sizeOnDisk = pConvFloat(so, "sizeOnDisk", 0)
+		return status
 	end
 	
 	private func Object pGetOnceListener(UniqueID id)

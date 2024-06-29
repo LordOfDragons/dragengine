@@ -39,34 +39,20 @@ class DefaultServiceUserListener implements ServiceUserListener
 	
 	
 	/**
-	 * \brief Authentification token received.
+	 * \brief Receive authentification token finished.
 	 * \param service Service sending the event.
-	 * \param token Authentification token.
+	 * \param token Authentification token. On failure null.
+	 * \param exception On success null. On failure contains error information.
 	 */
-	func void authTokenReceived(ServiceUser service, ServiceUserAuthToken token)
-	end
-	
-	/**
-	 * \brief Receiving authentification token failed.
-	 * \param service Service sending the event.
-	 * \param exception Exception or null if sueeded.
-	 */
-	func void authTokenFailed(ServiceUser service, Exception exception)
+	func void onGetAuthToken(ServiceUser service, ServiceUserAuthToken token, Exception exception)
 	end
 	
 	/**
 	 * \brief User information received.
 	 * \param service Service sending the event.
-	 * \param info User information.
+	 * \param info User information. On failure null.
+	 * \param exception On success null. On failure contains error information.
 	 */
-	func void userInfoReceived(ServiceUser service, ServiceUserInfo info)
-	end
-	
-	/**
-	 * \brief Receiving user information failed.
-	 * \param service Service sending the event.
-	 * \param exception Exception or null if sueeded.
-	 */
-	func void userInfoFailed(ServiceUser service, Exception exception)
+	func void onGetUserInfo(ServiceUser service, ServiceUserInfo info, Exception exception)
 	end
 end

@@ -324,10 +324,10 @@ class ServiceSteamSdk implements ServiceStats, ServiceUser, ServiceListener
 			end)
 			
 			pStatsListeners.forEach(block ServiceStatsListener each
-				each.statsReceived(this, stats, achievements)
+				each.onGetStats(this, stats, achievements, null)
 			end)
 			if onceListener != null
-				(onceListener cast ServiceStatsListener).statsReceived(this, stats, achievements)
+				(onceListener cast ServiceStatsListener).onGetStats(this, stats, achievements, null)
 			end
 			
 		elif function.equals("setStats")
@@ -351,10 +351,10 @@ class ServiceSteamSdk implements ServiceStats, ServiceUser, ServiceListener
 			end)
 			
 			pStatsListeners.forEach(block ServiceStatsListener each
-				each.statsStored(this, stats, achievements)
+				each.onSetStats(this, stats, achievements, null)
 			end)
 			if onceListener != null
-				(onceListener cast ServiceStatsListener).statsStored(this, stats, achievements)
+				(onceListener cast ServiceStatsListener).onSetStats(this, stats, achievements, null)
 			end
 			
 		elif function.equals("requestEncryptedAppTicket")
@@ -363,10 +363,10 @@ class ServiceSteamSdk implements ServiceStats, ServiceUser, ServiceListener
 			token.token = response.getChildAt("ticket").getString()
 			
 			pUserListeners.forEach(block ServiceUserListener each
-				each.authTokenReceived(this, token)
+				each.onGetAuthToken(this, token, null)
 			end)
 			if onceListener != null
-				(onceListener cast ServiceUserListener).authTokenReceived(this, token)
+				(onceListener cast ServiceUserListener).onGetAuthToken(this, token, null)
 			end
 			
 		elif function.equals("getUserInfo")
@@ -387,42 +387,42 @@ class ServiceSteamSdk implements ServiceStats, ServiceUser, ServiceListener
 			end
 			
 			pStatsListeners.forEach(block ServiceStatsListener each
-				each.statsReceivedFailed(this, exception)
+				each.onGetStats(this, null, null, exception)
 			end)
 			if onceListener != null
-				(onceListener cast ServiceStatsListener).statsReceivedFailed(this, exception)
+				(onceListener cast ServiceStatsListener).onGetStats(this, null, null, exception)
 			end
 			
 		elif function.equals("getStats")
 			pStatsListeners.forEach(block ServiceStatsListener each
-				each.statsReceivedFailed(this, exception)
+				each.onGetStats(this, null, null, exception)
 			end)
 			if onceListener != null
-				(onceListener cast ServiceStatsListener).statsReceivedFailed(this, exception)
+				(onceListener cast ServiceStatsListener).onGetStats(this, null, null, exception)
 			end
 			
 		elif function.equals("setStats")
 			pStatsListeners.forEach(block ServiceStatsListener each
-				each.statsStoredFailed(this, exception)
+				each.onSetStats(this, null, null, exception)
 			end)
 			if onceListener != null
-				(onceListener cast ServiceStatsListener).statsStoredFailed(this, exception)
+				(onceListener cast ServiceStatsListener).onSetStats(this, null, null, exception)
 			end
 			
 		elif function.equals("requestEncryptedAppTicket")
 			pUserListeners.forEach(block ServiceUserListener each
-				each.authTokenFailed(this, exception)
+				each.onGetAuthToken(this, null, exception)
 			end)
 			if onceListener != null
-				(onceListener cast ServiceUserListener).authTokenFailed(this, exception)
+				(onceListener cast ServiceUserListener).onGetAuthToken(this, null, exception)
 			end
 			
 		elif function.equals("getUserInfo")
 			pUserListeners.forEach(block ServiceUserListener each
-				each.userInfoFailed(this, exception)
+				each.onGetUserInfo(this, null, exception)
 			end)
 			if onceListener != null
-				(onceListener cast ServiceUserListener).userInfoFailed(this, exception)
+				(onceListener cast ServiceUserListener).onGetUserInfo(this, null, exception)
 			end
 		end
 	end

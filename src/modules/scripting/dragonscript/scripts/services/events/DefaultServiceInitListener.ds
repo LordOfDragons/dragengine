@@ -39,23 +39,15 @@ class DefaultServiceInitListener implements ServiceInitListener
 	
 	
 	/**
-	 * \brief Service initialization succeeded.
+	 * \brief Service initialization finished.
 	 * 
-	 * Service functionality can not be used.
-	 * 
-	 * \param service Service sending the event.
-	 */
-	func void initSucceeded(Object service)
-	end
-	
-	/**
-	 * \brief Service initialization failed.
-	 * 
-	 * Service functionality can not be used. Dispose of the service and try again.
+	 * On success exception is null and service functionality can now be used.
+	 * On failure exception is not null and service functionality can not be used.
+	 * Dispose of the service and try again.
 	 * 
 	 * \param service Service sending the event.
-	 * \param exception Exception.
+	 * \param exception On success null. On failure contains error information.
 	 */
-	func void initFailed(Object service, Exception exception)
+	func void onServiceInit(Object service, Exception exception)
 	end
 end

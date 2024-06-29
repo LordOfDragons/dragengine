@@ -149,8 +149,47 @@ deServiceObject::Ref deMCModInfo::ModStats( const Modio::ModStats &stats ){
 	so->SetFloatChildAt( "ratingTotal", ( float )stats.RatingTotal );
 	so->SetFloatChildAt( "ratingPositive", ( float )stats.RatingPositive );
 	so->SetFloatChildAt( "ratingNegative", ( float )stats.RatingNegative );
+	so->SetFloatChildAt( "ratingPercentagePositive", ( float )stats.RatingPercentagePositive );
 	so->SetFloatChildAt( "ratingWeightedAggregate", ( float )stats.RatingWeightedAggregate );
 	so->SetStringChildAt( "ratingDisplayText", stats.RatingDisplayText.c_str() );
 	
 	return so;
+}
+
+deServiceObject::Ref deMCModInfo::ModCollectionEntry( const Modio::ModCollectionEntry &status ){
+	const deServiceObject::Ref so( deServiceObject::Ref::New( new deServiceObject ) );
+	
+	so->SetChildAt( "id", deMCCommon::ID( status.GetID() ) );
+	so->SetChildAt( "status", ModState( status.GetModState() ) );
+	so->SetChildAt( "info", ModInfo( status.GetModProfile() ) );
+	if( status.GetSizeOnDisk().has_value() ){
+		so->SetFloatChildAt( "sizeOnDisk", ( float )*status.GetSizeOnDisk() );
+	}
+	
+	return so;
+}
+
+deServiceObject::Ref deMCModInfo::ModState( Modio::ModState state ){
+	switch( state ){
+	case Modio::ModState::InstallationPending:
+		return deServiceObject::NewString( "installationPending" );
+		
+	case Modio::ModState::Installed:
+		return deServiceObject::NewString( "installed" );
+		
+	case Modio::ModState::UpdatePending:
+		return deServiceObject::NewString( "updatePending" );
+		
+	case Modio::ModState::Downloading:
+		return deServiceObject::NewString( "downloading" );
+		
+	case Modio::ModState::Extracting:
+		return deServiceObject::NewString( "extracting" );
+		
+	case Modio::ModState::UninstallPending:
+		return deServiceObject::NewString( "uninstallPending" );
+		
+	default:
+		DETHROW( deeInvalidParam );
+	}
 }

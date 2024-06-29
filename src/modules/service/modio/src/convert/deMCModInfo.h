@@ -49,6 +49,12 @@ public:
 	
 	/** Convert mod stats. */
 	static deServiceObject::Ref ModStats( const Modio::ModStats &stats );
+	
+	/** Convert mod stats. */
+	static deServiceObject::Ref ModCollectionEntry( const Modio::ModCollectionEntry &status );
+	
+	/** Convert ModServerSideStatus. */
+	static deServiceObject::Ref ModState( Modio::ModState state );
 	/*@}*/
 };
 

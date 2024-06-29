@@ -31,36 +31,21 @@ namespace Dragengine.Services.Mods
  */
 interface ServiceModsListener
 	/**
-	 * \brief List of modification information received in response to a service request.
+	 * \brief Listing modifications finished.
 	 * \param service Service sending the event.
-	 * \param requestId Identifier of request this response belongs to.
-	 * \param mods Array containing ServiceModInfo.
+	 * \param mods Array containing ServiceModInfo. On failure null.
+	 * \param exception On success null. On failure contains error information.
 	 */
-	func void listModsFinished(ServiceMods service, UniqueID requestId, Array mods)
+	func void onListMods(ServiceMods service, Array mods, Exception exception)
 	
 	/**
-	 * \brief Listing modifications failed.
-	 * \param service Service sending the event.
-	 * \param requestId Identifier of failed request.
-	 * \param exception Exception or null if sueeded.
-	 */
-	func void listModsFailed(ServiceMods service, UniqueID requestId, Exception exception)
-	
-	/**
-	 * \brief Loaded resource received in response to a service request.
+	 * \brief Loading resource finished.
 	 * \param service Service sending the event.
 	 * \param url URL of resource to load.
-	 * \param resource Loaded resource.
+	 * \param resource Loaded resource. On failure null.
+	 * \param exception On success null. On failure contains error information.
 	 */
-	func void loadResourceFinished(ServiceMods service, String url, Object resource)
-	
-	/**
-	 * \brief Loading resource failed.
-	 * \param service Service sending the event.
-	 * \param url URL of resource to load.
-	 * \param exception Exception or null if sueeded.
-	 */
-	func void loadResourceFailed(ServiceMods service, String url, Exception exception)
+	func void onLoadResource(ServiceMods service, String url, Object resource, Exception exception)
 	
 	/**
 	 * \brief Mod mamagement event.
@@ -70,32 +55,52 @@ interface ServiceModsListener
 	 * \param progress Progress information or null.
 	 * \param exception Exception or null if sueeded.
 	 */
-	func void managementEvent(ServiceMods service, ServiceMods.ManagementEvent event,\
+	func void onModManagement(ServiceMods service, ServiceMods.ManagementEvent event,\
 		String modId, ServiceModProgress progress, Exception exception)
 	
 	/**
-	 * \brief User has been authenticated.
-	 * \param service Service sending the event.
-	 */
-	func void authenticateFinished(ServiceMods service)
-	
-	/**
-	 * \brief User authentication failed.
+	 * \brief User authentication finished.
 	 * \param service Service sending the event.
 	 * \param exception Exception or null if sueeded.
 	 */
-	func void authenticateFailed(ServiceMods service, Exception exception)
+	func void onAuthenticate(ServiceMods service, Exception exception)
 	
 	/**
-	 * \brief User has been deauthenticated.
-	 * \param service Service sending the event.
-	 */
-	func void deauthenticateFinished(ServiceMods service)
-	
-	/**
-	 * \brief User deauthentication failed.
+	 * \brief User deauthentication finished.
 	 * \param service Service sending the event.
 	 * \param exception Exception or null if sueeded.
 	 */
-	func void deauthenticateFailed(ServiceMods service, Exception exception)
+	func void onDeauthenticate(ServiceMods service, Exception exception)
+	
+	/**
+	 * \brief Subscribe modification finished.
+	 * \param service Service sending the event.
+	 * \param id Identifier of modification.
+	 * \param exception On success null. On failure contains error information.
+	 */
+	func void onSubscribeMod(ServiceMods service, String id, Exception exception)
+	
+	/**
+	 * \brief Unsubscribe modification finished.
+	 * \param service Service sending the event.
+	 * \param id Identifier of modification.
+	 * \param exception On success null. On failure contains error information.
+	 */
+	func void onUnsubscribeMod(ServiceMods service, String id, Exception exception)
+	
+	/**
+	 * \brief Retrieve modification information finished.
+	 * \param service Service sending the event.
+	 * \param modId Identifier of modification.
+	 * \param info Modification info. On failure null.
+	 * \param exception On success null. On failure contains error information.
+	 */
+	func void onGetModInfo(ServiceMods service, String modId, ServiceModInfo info, Exception exception)
+	
+	/**
+	 * \brief Submit modification rating finished.
+	 * \param service Service sending the event.
+	 * \param exception On success null. On failure contains error information.
+	 */
+	func void onSubmitModRating(ServiceMods service, Exception exception)
 end

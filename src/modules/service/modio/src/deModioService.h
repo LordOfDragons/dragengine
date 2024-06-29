@@ -139,6 +139,16 @@ public:
 	void LoadResource( const decUniqueID &id, const deServiceObject &request );
 	void PauseModManagement( const decUniqueID &id, const deServiceObject &request );
 	void AuthenticateUserExternal( const decUniqueID &id, const deServiceObject &request );
+	void SubscribeToMod( const decUniqueID &id, const deServiceObject &request );
+	void UnsubscribeFromMod( const decUniqueID &id, const deServiceObject &request );
+	void GetModInfo( const decUniqueID &id, const deServiceObject &request );
+	void SubmitModRating( const decUniqueID &id, const deServiceObject &request );
+	
+	deServiceObject::Ref IsAuthenticated();
+	deServiceObject::Ref QueryCurrentModUpdate();
+	deServiceObject::Ref QueryUserSubscriptions();
+	deServiceObject::Ref QuerySystemInstallations();
+	deServiceObject::Ref QueryUserProfile();
 	
 	void FailRequest( const decUniqueID &id, const deException &e );
 	void FailRequest( const decUniqueID &id, const Modio::ErrorCode &ec );
@@ -157,6 +167,7 @@ private:
 	/** \name Callbacks */
 	/*@{*/
 	void pOnInitializeFinished( Modio::ErrorCode ec );
+	void pOnRequestFinished( const decUniqueID &id, Modio::ErrorCode ec );
 	
 	void pOnListAllModsFinished( const decUniqueID &id, Modio::ErrorCode ec,
 		Modio::Optional<Modio::ModInfoList> results );
@@ -164,9 +175,11 @@ private:
 	void pOnLoadResourceFinished( const decUniqueID &id, Modio::ErrorCode ec,
 		Modio::Optional<std::string> filename );
 	
+	void pOnGetModInfoAsync( const decUniqueID &id, Modio::ErrorCode ec,
+		Modio::Optional<Modio::ModInfo> info );
+	
 	void pOnLogCallback( Modio::LogLevel level, const std::string &message );
 	void pOnModManagement( Modio::ModManagementEvent event );
-	void pOnAuthenticateUserExternal( const decUniqueID &id, Modio::ErrorCode ec );
 	/*@}*/
 	
 	void pPrintBaseInfos();

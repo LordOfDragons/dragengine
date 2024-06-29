@@ -39,63 +39,43 @@ class DefaultServiceStatsListener implements ServiceStatsListener
 	
 	
 	/**
-	 * \brief Stats and achievements have been received in response to a service request.
-	 * 
+	 * \brief Receiving stats and achievements finished.
 	 * \param service Service sending the event.
-	 * 
 	 * \param stats Dictionary containing stats. Key is stat id as String.
-	 * Value is stat value as int, float or null if not set yet.
-	 * 
+	 *        Value is stat value as int, float or null if not set yet. On failure null.
 	 * \param achievements Dictionary containing achievements. Key is achievement id
-	 * as String. Value is true or false depending if the achievement is set or not.
+	 *        as String. Value is true or false depending if the achievement is set or not.\
+	 *        On failure null.
+	 * \param exception On success null. On failure contains error information.
 	 */
-	func void statsReceived(ServiceStats service, Dictionary stats, Dictionary achievements)
+	func void onGetStats(ServiceStats service, Dictionary stats,\
+		Dictionary achievements, Exception exception)
 	end
 	
 	/**
-	 * \brief Failed retrieving stats and achievements in response to a service request.
-	 * 
+	 * \brief Store Stats and achievements finished.
 	 * \param service Service sending the event.
-	 * \param exception Exception.
-	 */
-	func void statsReceivedFailed(ServiceStats service, Exception exception)
-	end
-	
-	/**
-	 * \brief Stats and achievements have been successfully stored on the hosting platform.
-	 * 
-	 * \param service Service sending the event.
-	 * 
 	 * \param stats Dictionary containing stored stats. Key is stat id as String.
-	 * Value is stat value as int, float or null if not set yet.
-	 * 
+	 *        Value is stat value as int, float or null if not set yet. On failure null.
 	 * \param achievements Dictionary containing stored achievements. Key is achievement id
-	 * as String. Value is true or false depending if the achievement is set or not.
+	 *        as String. Value is true or false depending if the achievement is set or not.\
+	 *        On failure null.
+	 * \param exception On success null. On failure contains error information.
 	 */
-	func void statsStored(ServiceStats service, Dictionary stats, Dictionary achievements)
+	func void onSetStats(ServiceStats service, Dictionary stats,\
+		Dictionary achievements, Exception exception)
 	end
 	
 	/**
-	 * \brief Failed storing stats and achievements in response to a service request.
-	 * 
-	 * \param service Service sending the event.
-	 * \param exception Exception.
-	 */
-	func void statsStoredFailed(ServiceStats service, Exception exception)
-	end
-	
-	/**
-	 * \brief Notification stats or achievements changed on the hosting platform.
+	 * \brief Stats or achievements changed notification.
 	 * 
 	 * Typically this requires sending a service request to fetch the changes.
 	 * 
 	 * \param service Service sending the event.
-	 * 
 	 * \param stats Set of stat id as String that have changed. Can be empty for all stats.
-	 * 
 	 * \param achievements Set of achievement id as String that have changed.
-	 * Can be empty for all achievements.
+	 *        Can be empty for all achievements.
 	 */
-	func void statsChanged(ServiceStats service, Set stats, Set achievements)
+	func void onStatsChanged(ServiceStats service, Set stats, Set achievements)
 	end
 end

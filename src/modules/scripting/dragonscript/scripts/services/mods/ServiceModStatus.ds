@@ -22,27 +22,75 @@
  * SOFTWARE.
  */
 
-namespace Dragengine.Services.User
-
+namespace Dragengine.Services.Mods
 
 /**
- * \brief Listener for service response and events related to user.
+ * \brief Modification status information.
  * \version 1.23
  */
-interface ServiceUserListener
+class ServiceModStatus
 	/**
-	 * \brief Receive authentification token finished.
-	 * \param service Service sending the event.
-	 * \param token Authentification token. On failure null.
-	 * \param exception On success null. On failure contains error information.
+	 * \brief Modification status.
 	 */
-	func void onGetAuthToken(ServiceUser service, ServiceUserAuthToken token, Exception exception)
+	enum Status
+		/**
+		 * \brief Modification is pending to be installed.
+		 */
+		installationPending
+		
+		/**
+		 * \brief Modification is installed and ready to be used.
+		 */
+		installed
+		
+		/**
+		 * \brief Same as installed but there is an update pending.
+		 */
+		updatePending
+		
+		/**
+		 * \brief Installing modification, downloading.
+		 */
+		downloading
+		
+		/**
+		 * \brief Installing modificationn, extracing.
+		 */
+		extracting
+		
+		/**
+		 * \brief Uninstall pending.
+		 */
+		ininstallPending
+	end
+	
+	
 	
 	/**
-	 * \brief User information received.
-	 * \param service Service sending the event.
-	 * \param info User information. On failure null.
-	 * \param exception On success null. On failure contains error information.
+	 * \brief Modification identifier.
 	 */
-	func void onGetUserInfo(ServiceUser service, ServiceUserInfo info, Exception exception)
+	public var String id
+	
+	/**
+	 * \brief Status of modification.
+	 */
+	public var Status status
+	
+	/**
+	 * \brief Modification information.
+	 */
+	public var ServiceModInfo info
+	
+	/**
+	 * \brief Approximate size of modification on disk or 0 if not known.
+	 */
+	public var float sizeOnDisk
+	
+	
+	
+	/**
+	 * \brief Create new instance of class ServiceModStatus.
+	 */
+	func new()
+	end
 end

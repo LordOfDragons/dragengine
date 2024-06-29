@@ -36,6 +36,7 @@
 #endif
 
 #define MODIO_SEPARATE_COMPILATION
+#define MODIO_NO_DEPRECATED
 
 #include <modio/ModioSDK.h>
 

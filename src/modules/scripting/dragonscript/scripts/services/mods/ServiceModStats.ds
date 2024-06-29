@@ -54,25 +54,27 @@ class ServiceModStats
 	public var float ratingCount
 	
 	/**
-	 * \brief Approximate count of positive ratings.
+	 * \brief Approximate count of ratings per rating type.
+	 * 
+	 * Dictionary with int rating type key and float count value. The rating type is in the
+	 * range from 0 to \ref ServiceModsFeatures#modRatingCount. This allows to show a finer
+	 * grained chart of submitted ratings.
 	 */
-	public var float ratingCountPositive
+	public var Dictionary ratingCountPerType
 	
 	/**
-	 * \brief Approximate count of negative ratings.
+	 * \brief Average rating.
+	 * 
+	 * Value is in the range from 0 to \ref ServiceModsFeatures#modRatingCount.
 	 */
-	public var float ratingCountNegative
+	public var float ratingAverage
 	
 	/**
-	 * \brief Percentage of positive ratings in the range from 0 to 1.
-	 */
-	public var float ratingPercentage
-	
-	/**
-	 * \brief Overall weighted rating.
+	 * \brief Weighted rating.
 	 * 
 	 * Service provider calculate rating with the goal to favor modifications with higher count
 	 * of positive ratings. This value is best used to show rankings to the player.
+	 * Value is in the range from 0 to \ref ServiceModsFeatures#modRatingCount.
 	 */
 	public var float ratingWeighted
 	
@@ -90,5 +92,6 @@ class ServiceModStats
 	 * \brief Create new instance of class ServiceModStats.
 	 */
 	func new()
+		ratingCountPerType = Dictionary.new()
 	end
 end

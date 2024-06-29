@@ -22,27 +22,32 @@
  * SOFTWARE.
  */
 
-namespace Dragengine.Services.User
-
+namespace Dragengine.Services.Mods
 
 /**
- * \brief Listener for service response and events related to user.
- * \version 1.23
+ * \brief Features supported by a ServiceMods instance.
  */
-interface ServiceUserListener
+class ServiceModsFeatures
 	/**
-	 * \brief Receive authentification token finished.
-	 * \param service Service sending the event.
-	 * \param token Authentification token. On failure null.
-	 * \param exception On success null. On failure contains error information.
+	 * \brief Count of rating types.
+	 * 
+	 * Mod rating ranges from 0 to modRatingCount inclusive.
+	 * 
+	 * The UI widget is choosen to represent ratings. For a rating count of 2 a thumbs
+	 * up/down type widget is used to represent 'positive' and 'negative' ratings. For a
+	 * rating count of 3 a thumbs up/down/neutral type widget is used to represent
+	 * 'positive', 'negative' and 'neutral' ratings. For higher rating counts either
+	 * a star or bar type widget is used. The count of shown stars is one less than the
+	 * rating count. Hence a rating count of 5 shows 4 stars which can be all disabled
+	 * which is the rating 0.
 	 */
-	func void onGetAuthToken(ServiceUser service, ServiceUserAuthToken token, Exception exception)
+	public var int modRatingCount
+	
+	
 	
 	/**
-	 * \brief User information received.
-	 * \param service Service sending the event.
-	 * \param info User information. On failure null.
-	 * \param exception On success null. On failure contains error information.
+	 * \brief Create new instance of class ServiceModsFeatures.
 	 */
-	func void onGetUserInfo(ServiceUser service, ServiceUserInfo info, Exception exception)
+	func new()
+	end
 end
