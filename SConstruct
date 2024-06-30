@@ -220,6 +220,7 @@ params.Add(TernaryVariable('build_archive_delga', 'Build DELGA Archive Module'))
 params.Add(TernaryVariable('build_vr_openvr', 'Build OpenVR VR Module'))
 params.Add(TernaryVariable('build_vr_openxr', 'Build OpenXR VR Module'))
 params.Add(TernaryVariable('build_service_steamsdk', 'Build SteamSDK Service Module'))
+params.Add(TernaryVariable('build_service_eossdk', 'Build EOS SDK Service Module'))
 params.Add(TernaryVariable('build_service_modio', 'Build ModIO Service Module'))
 
 params.Add(TernaryVariable('build_igde', 'Build IGDE'))
@@ -759,6 +760,7 @@ extdirs.append('extern/libwebp')
 extdirs.append('extern/libwebm')
 extdirs.append('extern/openxr')
 extdirs.append('extern/steamsdk')
+extdirs.append('extern/eossdk')
 extdirs.append('extern/liburing')
 extdirs.append('extern/modio')
 
@@ -845,6 +847,7 @@ scdirs.append('src/modules/vr/openvr')
 scdirs.append('src/modules/vr/openxr')
 
 scdirs.append('src/modules/service/steamsdk')
+scdirs.append('src/modules/service/eossdk')
 scdirs.append('src/modules/service/modio')
 
 # launchers

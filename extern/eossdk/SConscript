@@ -1,0 +1,135 @@
+import os
+import sys
+import SCons
+import zipfile
+
+from SConsCommon import *
+from SConsExternCommon import *
+
+Import('parent_env parent_targets parent_report')
+
+if parent_env['platform_android'] != 'no':
+	Return()
+
+envLibrary = parent_env.Clone()
+
+if envLibrary['OSWindows']:
+	libFileName = 'bin/EOSSDK.dll'
+	binFileName = 'bin/EOSSDK.dll'
+else:
+	libFileName = 'bin/libEOSSDK.so'
+	binFileName = libFileName
+
+def unpackArchiveFileZip(target, source, env):
+	buildDir = target[0].get_dir().up()
+	with zipfile.ZipFile(source[0].abspath, 'r') as f:
+		f.extractall(buildDir.abspath)
+
+def unpackArchiveFileTar(target, source, env):
+	buildDir = target[0].get_dir().up()
+	untarArchive(buildDir.abspath, source[0].abspath)
+
+targets = []
+
+targets.extend([
+	'include/eos_achievements_types_deprecated.inl',
+	'include/eos_achievements_types.h',
+	'include/eos_achievements.h',
+	'include/eos_anticheatclient_types_deprecated.inl',
+	'include/eos_anticheatclient_types.h',
+	'include/eos_anticheatclient.h',
+	'include/eos_anticheatcommon_types.h',
+	'include/eos_anticheatserver_types.h',
+	'include/eos_anticheatserver.h',
+	'include/eos_auth_types_deprecated.inl',
+	'include/eos_auth_types.h',
+	'include/eos_auth.h',
+	'include/eos_base.h',
+	'include/eos_common.h',
+	'include/eos_connect_types.h',
+	'include/eos_connect.h',
+	'include/eos_custominvites_types.h',
+	'include/eos_custominvites.h',
+	'include/eos_ecom_types.h',
+	'include/eos_ecom.h',
+	'include/eos_friends_types.h',
+	'include/eos_friends.h',
+	'include/eos_init.h',
+	'include/eos_integratedplatform_types.h',
+	'include/eos_integratedplatform.h',
+	'include/eos_kws_types.h',
+	'include/eos_kws.h',
+	'include/eos_leaderboards_types_deprecated.inl',
+	'include/eos_leaderboards_types.h',
+	'include/eos_leaderboards.h',
+	'include/eos_lobby_types.h',
+	'include/eos_lobby.h',
+	'include/eos_logging.h',
+	'include/eos_metrics_types.h',
+	'include/eos_metrics.h',
+	'include/eos_mods_types.h',
+	'include/eos_mods.h',
+	'include/eos_p2p_types.h',
+	'include/eos_p2p.h',
+	'include/eos_platform_prereqs.h',
+	'include/eos_playerdatastorage_types.h',
+	'include/eos_playerdatastorage.h',
+	'include/eos_presence_types.h',
+	'include/eos_presence.h',
+	'include/eos_progressionsnapshot_types.h',
+	'include/eos_progressionsnapshot.h',
+	'include/eos_reports_types.h',
+	'include/eos_reports.h',
+	'include/eos_result.h',
+	'include/eos_rtc_admin_types.h',
+	'include/eos_rtc_admin.h',
+	'include/eos_rtc_audio_types_deprecated.inl',
+	'include/eos_rtc_audio_types.h',
+	'include/eos_rtc_audio.h',
+	'include/eos_rtc_data_types.h',
+	'include/eos_rtc_data.h',
+	'include/eos_rtc_types.h',
+	'include/eos_rtc.h',
+	'include/eos_sanctions_types.h',
+	'include/eos_sanctions.h',
+	'include/eos_sdk.h',
+	'include/eos_sessions_types.h',
+	'include/eos_sessions.h',
+	'include/eos_stats_types.h',
+	'include/eos_stats.h',
+	'include/eos_titlestorage_types.h',
+	'include/eos_titlestorage.h',
+	'include/eos_types.h',
+	'include/eos_ui_buttons.h',
+	'include/eos_ui_keys.h',
+	'include/eos_ui_types.h',
+	'include/eos_ui.h',
+	'include/eos_userinfo_types.h',
+	'include/eos_userinfo.h',
+	'include/eos_version.h',
+	'include/Linux',
+	'include/Linux/eos_Linux_base.h',
+	'include/Linux/eos_Linux.h'])
+
+sdk = envLibrary.Command(targets, 'eossdk.zip',
+    envLibrary.Action(unpackArchiveFileZip, 'Unpack EOS SDK'))
+rtlib = envLibrary.Command(envLibrary.File(binFileName), 'eossdk_bin_linux.tar.xz',
+    envLibrary.Action(unpackArchiveFileTar, 'Unpack EOS Libraries'))
+
+envLibrary.Clean(sdk, ['bin', 'include'])
+
+cpppath = [envLibrary.Dir('include')]
+libpath = [envLibrary.Dir('bin')]
+
+libs = [rtlib[0]]
+runtimelibs = [rtlib[0]]
+
+envLibrary.Alias('lib_eossdk', [sdk, rtlib])
+
+parent_targets['lib_eossdk'] = {
+	'name' : 'Epic EOS SDK',
+	'cpppath' : cpppath,
+	'libpath' : libpath,
+	'libs' : libs,
+	'runtimelibs' : runtimelibs,
+	'depends' : []}

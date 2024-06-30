@@ -1,0 +1,4 @@
+SRVEOSSDK {
+  global: EosSdkCreateModule;
+  local: *;
+};
