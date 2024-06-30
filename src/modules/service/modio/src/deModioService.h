@@ -143,6 +143,7 @@ public:
 	void UnsubscribeFromMod( const decUniqueID &id, const deServiceObject &request );
 	void GetModInfo( const decUniqueID &id, const deServiceObject &request );
 	void SubmitModRating( const decUniqueID &id, const deServiceObject &request );
+	void RevokeModRating( const decUniqueID &id, const deServiceObject &request );
 	
 	deServiceObject::Ref IsAuthenticated();
 	deServiceObject::Ref QueryCurrentModUpdate();

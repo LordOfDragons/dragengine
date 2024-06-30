@@ -11,6 +11,9 @@
 		},
 		{
 			"path": "../../service/steamsdk"
+		},
+		{
+			"path": "../../service/eossdk"
 		}
 	],
 	"settings": {

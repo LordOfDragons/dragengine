@@ -174,6 +174,9 @@ void deModioService::StartRequest( const decUniqueID &id, const deServiceObject&
 	}else if( function == "submitModRating" ){
 		SubmitModRating( id, request );
 		
+	}else if( function == "revokeModRating" ){
+		RevokeModRating( id, request );
+		
 	}else{
 		DETHROW_INFO( deeInvalidParam, "Unknown function" );
 	}
@@ -452,6 +455,20 @@ void deModioService::SubmitModRating( const decUniqueID &id, const deServiceObje
 	AddRequiresEventHandlingCount();
 	
 	Modio::SubmitModRatingAsync( modId, rating, [ this, id ]( Modio::ErrorCode ec ){
+		pOnRequestFinished( id, ec );
+	});
+}
+
+void deModioService::RevokeModRating( const decUniqueID &id, const deServiceObject &request ){
+	const Modio::ModID modId( deMCCommon::ID( *request.GetChildAt( "modId" ) ) );
+	
+	const deServiceObject::Ref data( deServiceObject::Ref::New( new deServiceObject ) );
+	data->SetChildAt( "modId", deMCCommon::ID( modId ) );
+	
+	NewPendingRequest( id, "revokeModRating", data );
+	AddRequiresEventHandlingCount();
+	
+	Modio::SubmitModRatingAsync( modId, Modio::Rating::Neutral, [ this, id ]( Modio::ErrorCode ec ){
 		pOnRequestFinished( id, ec );
 	});
 }

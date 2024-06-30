@@ -303,11 +303,23 @@ interface ServiceMods
 	/**
 	 * \brief Submit rating for modification.
 	 * 
-	 * Once finished \ref ServiceModsListener#onGetModInfo(ServiceMods,String,ServiceModInfo,Exception)
+	 * Once finished \ref ServiceModsListener#onSubmitModRating(ServiceMods,String,Exception)
 	 * is called.
 	 * 
-	 * \param modId Identifier of modification to retrieve.
+	 * \param modId Identifier of modification to submit rating for.
+	 * \param rating Rating to submit.
 	 * \param listener If not null called once in addition to added listeners.
 	 */
 	func void submitModRating(String id, int rating, ServiceModsListener listener)
+	
+	/**
+	 * \brief Revoke rating for modification.
+	 * 
+	 * Once finished \ref ServiceModsListener#onRevokeModRating(ServiceMods,String,Exception)
+	 * is called.
+	 * 
+	 * \param modId Identifier of modification to revoke rating for.
+	 * \param listener If not null called once in addition to added listeners.
+	 */
+	func void revokeModRating(String id, ServiceModsListener listener)
 end

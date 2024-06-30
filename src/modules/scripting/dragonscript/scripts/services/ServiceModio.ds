@@ -560,10 +560,11 @@ class ServiceModio implements ServiceListener, ServiceMods
 	/**
 	 * \brief Submit rating for modification.
 	 * 
-	 * Once finished \ref ServiceModsListener#onGetModInfo(ServiceMods,String,ServiceModInfo,Exception)
+	 * Once finished \ref ServiceModsListener#onSubmitModRating(ServiceMods,String,Exception)
 	 * is called.
 	 * 
-	 * \param modId Identifier of modification to retrieve.
+	 * \param modId Identifier of modification to submit rating for.
+	 * \param rating Rating to submit.
 	 * \param listener If not null called once in addition to added listeners.
 	 */
 	func void submitModRating(String id, int rating, ServiceModsListener listener)
@@ -571,6 +572,23 @@ class ServiceModio implements ServiceListener, ServiceMods
 		so.setStringChildAt("function", "submitModRating")
 		so.setStringChildAt("modId", id)
 		so.setIntChildAt("rating", rating)
+		
+		pRunRequest(so, listener)
+	end
+	
+	/**
+	 * \brief Revoke rating for modification.
+	 * 
+	 * Once finished \ref ServiceModsListener#onRevokeModRating(ServiceMods,String,Exception)
+	 * is called.
+	 * 
+	 * \param modId Identifier of modification to revoke rating for.
+	 * \param listener If not null called once in addition to added listeners.
+	 */
+	func void revokeModRating(String id, ServiceModsListener listener)
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "revokeModRating")
+		so.setStringChildAt("modId", id)
 		
 		pRunRequest(so, listener)
 	end
@@ -651,11 +669,23 @@ class ServiceModio implements ServiceListener, ServiceMods
 			end
 			
 		elif function.equals("submitModRating")
+			var String modId = response.getChildAt("modId").getString()
+			
 			pModsListeners.forEach(block ServiceModsListener each
-				each.onSubmitModRating(this, null)
+				each.onSubmitModRating(this, modId, null)
 			end)
 			if onceListener != null
-				(onceListener cast ServiceModsListener).onSubmitModRating(this, null)
+				(onceListener cast ServiceModsListener).onSubmitModRating(this, modId, null)
+			end
+			
+		elif function.equals("revokeModRating")
+			var String modId = response.getChildAt("modId").getString()
+			
+			pModsListeners.forEach(block ServiceModsListener each
+				each.onSubmitModRating(this, modId, null)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceModsListener).onSubmitModRating(this, modId, null)
 			end
 		end
 	end
@@ -711,11 +741,23 @@ class ServiceModio implements ServiceListener, ServiceMods
 			end
 			
 		elif function.equals("submitModRating")
+			var String modId = error.getChildAt("modId").getString()
+			
 			pModsListeners.forEach(block ServiceModsListener each
-				each.onSubmitModRating(this, exception)
+				each.onSubmitModRating(this, modId, exception)
 			end)
 			if onceListener != null
-				(onceListener cast ServiceModsListener).onSubmitModRating(this, exception)
+				(onceListener cast ServiceModsListener).onSubmitModRating(this, modId, exception)
+			end
+			
+		elif function.equals("revokeModRating")
+			var String modId = error.getChildAt("modId").getString()
+			
+			pModsListeners.forEach(block ServiceModsListener each
+				each.onSubmitModRating(this, modId, exception)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceModsListener).onSubmitModRating(this, modId, exception)
 			end
 		end
 	end

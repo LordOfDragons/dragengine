@@ -118,8 +118,18 @@ class DefaultServiceModsListener implements ServiceModsListener
 	/**
 	 * \brief Submit modification rating finished.
 	 * \param service Service sending the event.
+	 * \param modId Identifier of modification the rating has been submitted for.
 	 * \param exception On success null. On failure contains error information.
 	 */
-	func void onSubmitModRating(ServiceMods service, Exception exception)
+	func void onSubmitModRating(ServiceMods service, String modId, Exception exception)
+	end
+	
+	/**
+	 * \brief Revoke modification rating finished.
+	 * \param service Service sending the event.
+	 * \param modId Identifier of modification the rating has been revoked for.
+	 * \param exception On success null. On failure contains error information.
+	 */
+	func void onRevokeModRating(ServiceMods service, String modId, Exception exception)
 	end
 end
