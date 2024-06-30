@@ -48,12 +48,52 @@ pModule( module ),
 pService( service )
 {
 	pModule.InitSdk( data );
+	
+	const decString &productId = data->GetChildAt( "productId" )->GetString();
+	const decString &sandboxId = data->GetChildAt( "sandboxId" )->GetString();
+	const decString &deploymentId = data->GetChildAt( "deploymentId" )->GetString();
+	
+	const char *clientId = nullptr;
+	const deServiceObject::Ref &soClientId = data->GetChildAt( "clientId" );
+	if( soClientId ){
+		clientId = soClientId->GetString().GetString();
+	}
+	
+	const char *clientSecret = nullptr;
+	const deServiceObject::Ref &soClientSecret = data->GetChildAt( "clientSecret" );
+	if( soClientSecret ){
+		clientSecret = soClientSecret->GetString().GetString();
+	}
+	
+	const deServiceObject::Ref &soIsServer = data->GetChildAt( "isServer" );
+	const bool isServer = soIsServer ? soIsServer->GetBoolean() : false;
+	
+	EOS_Platform_Options options = {};
+	options.ApiVersion = EOS_PLATFORM_OPTIONS_API_LATEST;
+	options.ProductId = productId.GetString();
+	options.SandboxId = sandboxId.GetString();
+	options.ClientCredentials.ClientId = clientId;
+	options.ClientCredentials.ClientSecret = clientSecret;
+	options.bIsServer = isServer ? EOS_TRUE : EOS_FALSE;
+	options.DeploymentId = deploymentId.GetString();
+	
+	pPlatform = EOS_Platform_Create( &options );
+	if( ! pPlatform ){
+		DETHROW_INFO( deeInvalidAction, "Failed create platform interface" );
+	}
+	
+	module.AddFrameUpdater( this );
 }
 
 deEosSdkServiceEos::~deEosSdkServiceEos(){
 	while( pPendingRequests.GetCount() > 0 ){
 		CancelRequest( ( ( deEosSdkPendingRequest* )pPendingRequests.GetAt( 0 ) )->id );
 	}
+	EOS_Platform_Tick( pPlatform );
+	
+	pModule.RemoveFrameUpdater( this );
+	
+	EOS_Platform_Release( pPlatform );
 }
 
 
@@ -178,9 +218,12 @@ void deEosSdkServiceEos::FailRequest( const deEosSdkPendingRequest::Ref &pr, con
 
 
 
-// Steam Callbacks
-////////////////////
+// deEosSdk::cFrameUpdater
+////////////////////////////
 
+void deEosSdkServiceEos::FrameUpdate( float elapsed ){
+	EOS_Platform_Tick( pPlatform );
+}
 
 
 

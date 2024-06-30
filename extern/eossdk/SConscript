@@ -17,17 +17,18 @@ if envLibrary['OSWindows']:
 	libFileName = 'bin/EOSSDK.dll'
 	binFileName = 'bin/EOSSDK.dll'
 else:
-	libFileName = 'bin/libEOSSDK.so'
+	libFileName = 'bin/libEOSSDK-Linux-Shipping.so'
 	binFileName = libFileName
 
-def unpackArchiveFileZip(target, source, env):
+def unpackArchiveFileSdk(target, source, env):
 	buildDir = target[0].get_dir().up()
 	with zipfile.ZipFile(source[0].abspath, 'r') as f:
 		f.extractall(buildDir.abspath)
 
-def unpackArchiveFileTar(target, source, env):
+def unpackArchiveFileBin(target, source, env):
 	buildDir = target[0].get_dir().up()
 	untarArchive(buildDir.abspath, source[0].abspath)
+	os.rename(buildDir.Dir('bin').File('libEOSSDK.so').abspath, target[0].abspath)
 
 targets = []
 
@@ -112,9 +113,9 @@ targets.extend([
 	'include/Linux/eos_Linux.h'])
 
 sdk = envLibrary.Command(targets, 'eossdk.zip',
-    envLibrary.Action(unpackArchiveFileZip, 'Unpack EOS SDK'))
+    envLibrary.Action(unpackArchiveFileSdk, 'Unpack EOS SDK'))
 rtlib = envLibrary.Command(envLibrary.File(binFileName), 'eossdk_bin_linux.tar.xz',
-    envLibrary.Action(unpackArchiveFileTar, 'Unpack EOS Libraries'))
+    envLibrary.Action(unpackArchiveFileBin, 'Unpack EOS Libraries'))
 
 envLibrary.Clean(sdk, ['bin', 'include'])
 

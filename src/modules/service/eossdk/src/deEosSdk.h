@@ -27,6 +27,7 @@
 
 #include "eos_sdk.h"
 
+#include <dragengine/common/collection/decPointerList.h>
 #include <dragengine/systems/modules/service/deBaseServiceModule.h>
 
 
@@ -36,9 +37,17 @@
 class deEosSdk : public deBaseServiceModule{
 private:
 	bool pSdkInited;
+	decPointerList pFrameUpdaters;
 	
 	
 public:
+	class cFrameUpdater{
+	public:
+		cFrameUpdater();
+		virtual ~cFrameUpdater();
+		virtual void FrameUpdate( float elapsed ) = 0;
+	};
+	
 	static deEosSdk *globalModule;
 	
 	
@@ -71,6 +80,12 @@ public:
 	
 	/** Frame update. */
 	void FrameUpdate( float elapsed ) override;
+	
+	/** Add frame updater. */
+	void AddFrameUpdater( cFrameUpdater *updater );
+	
+	/** Remove frame updater. */
+	void RemoveFrameUpdater( cFrameUpdater *updater );
 	/*@}*/
 };
 

@@ -40,7 +40,7 @@ class deService;
 /**
  * Steam SDK Service.
  */
-class deEosSdkServiceEos : public deBaseServiceService{
+class deEosSdkServiceEos : public deBaseServiceService, deEosSdk::cFrameUpdater{
 public:
 	static const char * const serviceName;
 	
@@ -50,6 +50,9 @@ private:
 	deService * const pService;
 	decObjectList pPendingRequests;
 	decString pEncAppTicket;
+	
+	EOS_HPlatform pPlatform;
+	
 	
 	
 public:
@@ -104,8 +107,10 @@ public:
 	
 	
 	
-	/** \name Steam Callbacks */
+	/** \name deEosSdk::cFrameUpdater */
 	/*@{*/
+	/** Frame update. */
+	void FrameUpdate( float elapsed ) override;
 	/*@}*/
 	
 	

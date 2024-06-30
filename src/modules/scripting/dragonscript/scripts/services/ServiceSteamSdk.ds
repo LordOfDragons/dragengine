@@ -32,8 +32,9 @@ pin Dragengine.Services.User
  * \brief Service providing access to Steam SDK functionality if supported.
  * \version 1.23
  * 
- * Provides acess to these functionalities:
+ * Provides access to these functionalities:
  * - Stats/Achievements
+ * - User
  */
 class ServiceSteamSdk implements ServiceStats, ServiceUser, ServiceListener
 	var int pAppId
