@@ -28,6 +28,8 @@
 #include "deEosSdkPendingRequest.h"
 
 #include <eos_sdk.h>
+#include <eos_auth.h>
+#include <eos_userinfo.h>
 
 #include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/systems/modules/service/deBaseServiceService.h>
@@ -51,7 +53,12 @@ private:
 	decObjectList pPendingRequests;
 	decString pEncAppTicket;
 	
-	EOS_HPlatform pPlatform;
+	EOS_HPlatform pHandlePlatform;
+	EOS_HAuth pHandleAuth;
+	EOS_HUserInfo pHandleUserInfo;
+	
+	EOS_EpicAccountId pLocalUserId;
+	EOS_EpicAccountId pSelectedAccountId;
 	
 	
 	
@@ -101,8 +108,35 @@ public:
 	deEosSdkPendingRequest::Ref NewPendingRequest( const decUniqueID &id,
 		const decString &function, const deServiceObject::Ref &data = nullptr );
 	
+	void AuthLoginAuto( const decUniqueID &id, const deServiceObject& request );
+	void AuthLogin( const decUniqueID &id, const deServiceObject& request, bool startRequest );
+	void AuthLogout( const decUniqueID &id, const deServiceObject& request );
+	void QueryUserInfo( const decUniqueID &id, const deServiceObject& request );
+	
+	deServiceObject::Ref CopyIdToken( const deServiceObject& action );
+	
 	void FailRequest( const decUniqueID &id, const deException &e );
+	void FailRequest( const decUniqueID &id, EOS_EResult res );
 	void FailRequest( const deEosSdkPendingRequest::Ref &request, const deException &e );
+	void FailRequest( const deEosSdkPendingRequest::Ref &request, EOS_EResult res );
+	/*@}*/
+	
+	
+	
+	/** \name EOS Callbacks */
+	/*@{*/
+	void OnLoginAutoCallback( const decUniqueID &id, const EOS_Auth_LoginCallbackInfo &data );
+	void OnLoginAutoDeletePersistentAuthCallback( const decUniqueID &id,
+		const EOS_Auth_DeletePersistentAuthCallbackInfo &data );
+	
+	void OnLoginCallback( const decUniqueID &id, const EOS_Auth_LoginCallbackInfo &data );
+	
+	void OnLogoutCallback( const decUniqueID &id, const EOS_Auth_LogoutCallbackInfo &data );
+	void OnLogoutDeletePersistentAuthCallback( const decUniqueID &id,
+		const EOS_Auth_DeletePersistentAuthCallbackInfo &data );
+	
+	void OnQueryUserInfoCallback( const decUniqueID &id,
+		const EOS_UserInfo_QueryUserInfoCallbackInfo &data );
 	/*@}*/
 	
 	
@@ -114,7 +148,11 @@ public:
 	/*@}*/
 	
 	
+	
 private:
+	EOS_HAuth pGetHandleAuth();
+	EOS_HUserInfo pGetHandleUserInfo();
+	EOS_Auth_LoginOptions pCreateLoginOptions( const deServiceObject& request ) const;
 };
 
 #endif

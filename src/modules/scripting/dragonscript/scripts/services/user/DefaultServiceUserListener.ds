@@ -39,6 +39,22 @@ class DefaultServiceUserListener implements ServiceUserListener
 	
 	
 	/**
+	 * \brief Logging in user finished.
+	 * \param service Service sending the event.
+	 * \param exception On success null. On failure contains error information.
+	 */
+	func void onLoginUser(ServiceUser service, Exception exception)
+	end
+	
+	/**
+	 * \brief Logging out user finished.
+	 * \param service Service sending the event.
+	 * \param exception On success null. On failure contains error information.
+	 */
+	func void onLogoutUser(ServiceUser service, Exception exception)
+	end
+	
+	/**
 	 * \brief Receive authentification token finished.
 	 * \param service Service sending the event.
 	 * \param token Authentification token. On failure null.
@@ -49,6 +65,9 @@ class DefaultServiceUserListener implements ServiceUserListener
 	
 	/**
 	 * \brief User information received.
+	 * 
+	 * If logging in is required and no user is logged in failure is returned.
+	 * 
 	 * \param service Service sending the event.
 	 * \param info User information. On failure null.
 	 * \param exception On success null. On failure contains error information.

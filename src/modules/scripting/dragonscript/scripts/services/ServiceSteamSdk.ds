@@ -26,6 +26,7 @@ namespace Dragengine.Services
 
 pin Dragengine.Services.Stats
 pin Dragengine.Services.User
+pin Dragengine.Utils
 
 
 /**
@@ -37,7 +38,26 @@ pin Dragengine.Services.User
  * - User
  */
 class ServiceSteamSdk implements ServiceStats, ServiceUser, ServiceListener
-	var int pAppId
+	/**
+	 * \brief Service initialization parameters.
+	 */
+	class InitParameters
+		/**
+		 * \brief Application identifier.
+		 */
+		public var String appId
+		
+		
+		/**
+		 * \brief Create new instance of class InitOptions.
+		 */
+		func new()
+		end
+	end
+	
+	
+	
+	var InitParameters pInitParameters
 	var Service pService
 	var SafeArray pStatsListeners, pUserListeners
 	var Dictionary pOnceListeners
@@ -48,19 +68,20 @@ class ServiceSteamSdk implements ServiceStats, ServiceUser, ServiceListener
 	
 	/**
 	 * \brief Create service ServiceSteamSdk.
-	 * \param appId Application identifier.
+	 * \param params Init parametetrs.
 	 * \throws EInvalidParam Steam service module is not present.
 	 * \throws EInvalidAction Steam is not running.
 	 * \throws EInvalidAction Steam SDK can not be initialized.
 	 */
-	func new(int appId)
-		pAppId = appId
+	func new(InitParameters params)
+		pInitParameters = InitParameters.new()
+		pInitParameters.appId = params.appId
 		pStatsListeners = SafeArray.new()
 		pUserListeners = SafeArray.new()
 		pOnceListeners = Dictionary.new()
 		
 		var ServiceObject so = ServiceObject.new()
-		so.setIntChildAt("appId", pAppId)
+		so.setStringChildAt("appId", params.appId)
 		pService = Service.new("SteamSDK", so)
 		
 		pService.setListener(this)
@@ -96,15 +117,6 @@ class ServiceSteamSdk implements ServiceStats, ServiceUser, ServiceListener
 	 * \brief Authentification provider identifier.
 	 */
 	static fixed var String authProviderId = "steam"
-	
-	
-	
-	/**
-	 * \brief Steam application identifier.
-	 */
-	func int getAppId()
-		return pAppId
-	end
 	
 	
 	
@@ -243,6 +255,53 @@ class ServiceSteamSdk implements ServiceStats, ServiceUser, ServiceListener
 	 */
 	func void removeUserListener(ServiceUserListener listener)
 		pUserListeners.remove(listener)
+	end
+	
+	/**
+	 * \brief Features supported by this service.
+	 */
+	func ServiceUserFeatures getUserFeatures()
+		var ServiceUserFeatures features = ServiceUserFeatures.new()
+		features.canAutomaticLogin = true
+		features.authTokenProvider = authProviderId
+		return features
+	end
+	
+	/**
+	 * \brief Log in user.
+	 * 
+	 * User can be only logged in automatically.
+	 * 
+	 * Once logging in finished \ref ServiceUserListener#onLoginUser(ServiceUser,Exception)
+	 * is called.
+	 * 
+	 * \param credentials Has to be null or an exception is thrown.
+	 * \param listener If not null called once in addition to added listeners.
+	 */
+	func void loginUser(ServiceUserCredentials credentials, ServiceUserListener listener)
+		if credentials != null
+			throw EInvalidParam.new("credentials has to be null")
+		end
+		
+		TimerBlock.new(0, false, block
+			pUserListeners.forEach(block ServiceUserListener each
+				each.onLoginUser(this, null)
+			end)
+			if listener != null
+				listener.onLoginUser(this, null)
+			end
+		end)
+	end
+	
+	/**
+	 * \brief Log out user.
+	 * 
+	 * Not supported. Throws exception if called.
+	 * 
+	 * \param listener If not null called once in addition to added listeners.
+	 */
+	func void logoutUser(ServiceUserListener listener)
+		throw EInvalidParam.new("not supported")
 	end
 	
 	/**

@@ -22,32 +22,42 @@
  * SOFTWARE.
  */
 
-namespace Dragengine.Services.Mods
+namespace Dragengine.Services.User
 
 /**
- * \brief Features supported by a ServiceMods instance.
+ * \brief Features supported by a ServiceUser instance.
  * \version 1.23
  */
-class ServiceModsFeatures
+class ServiceUserFeatures
 	/**
-	 * \brief Count of rating types.
-	 * 
-	 * Mod rating ranges from 0 to modRatingCount inclusive.
-	 * 
-	 * The UI widget is choosen to represent ratings. For a rating count of 2 a thumbs
-	 * up/down type widget is used to represent 'positive' and 'negative' ratings. For a
-	 * rating count of 3 a thumbs up/down/neutral type widget is used to represent
-	 * 'positive', 'negative' and 'neutral' ratings. For higher rating counts either
-	 * a star or bar type widget is used. The count of shown stars is one less than the
-	 * rating count. Hence a rating count of 5 shows 4 stars which can be all disabled
-	 * which is the rating 0.
+	 * \brief Service supports manually logging in user.
 	 */
-	public var int modRatingCount
+	public var bool canManualLogin
+	
+	/**
+	 * \brief Service supports automatic logging in user.
+	 */
+	public var bool canAutomaticLogin
+	
+	/**
+	 * \brief Service supports logging out user.
+	 */
+	public var bool canLogout
+	
+	/**
+	 * \brief Authentication token provider identifier.
+	 * 
+	 * If service supports requesting authentication tokens this is the provider identifier
+	 * that will be stored in ServiceUserAuthToken instances.
+	 * 
+	 * If service does not support requesting authentication tokens this will be null.
+	 */
+	public var String authTokenProvider
 	
 	
 	
 	/**
-	 * \brief Create new instance of class ServiceModsFeatures.
+	 * \brief Create new instance of class ServiceUserFeatures.
 	 */
 	func new()
 	end

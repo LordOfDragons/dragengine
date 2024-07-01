@@ -25,7 +25,7 @@
 #ifndef _DEEOSSDK_H_
 #define _DEEOSSDK_H_
 
-#include "eos_sdk.h"
+#include <eos_sdk.h>
 
 #include <dragengine/common/collection/decPointerList.h>
 #include <dragengine/systems/modules/service/deBaseServiceModule.h>

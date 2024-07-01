@@ -45,6 +45,45 @@ interface ServiceUser
 	
 	
 	/**
+	 * \brief Features supported by this service.
+	 */
+	func ServiceUserFeatures getUserFeatures()
+	
+	/**
+	 * \brief Log in user.
+	 * 
+	 * User can be logged in automatically or manually. Examine the service features.
+	 * to know if a particular service supports one or both of these methods.
+	 * 
+	 * Automatic logging in is used for example Steam where the user has to log into the
+	 * platform before the game can be launched. Automatic logging in can trigger platform
+	 * specific log in procedure and terms acknowledge process. Typically this has to be
+	 * done once and then logging in is automatic.
+	 * 
+	 * Manual logging in requires the game to obtain the credentials from the user.
+	 * This can be useful for developers to not enter credentials each time they launch
+	 * the game. Production games usually do not require manual logging in unless the
+	 * service in question does not support automatic logging in.
+	 * 
+	 * Once logging in finished \ref ServiceUserListener#onLoginUser(ServiceUser,Exception)
+	 * is called.
+	 * 
+	 * \param credentials Credentials for manual logging in. Use null for automatic logging in.
+	 * \param listener If not null called once in addition to added listeners.
+	 */
+	func void loginUser(ServiceUserCredentials credentials, ServiceUserListener listener)
+	
+	/**
+	 * \brief Log out user.
+	 * 
+	 * Once logging out finished \ref ServiceUserListener#onLogoutUser(ServiceUser,Exception)
+	 * is called.
+	 * 
+	 * \param listener If not null called once in addition to added listeners.
+	 */
+	func void logoutUser(ServiceUserListener listener)
+	
+	/**
 	 * \brief Request authentification token.
 	 * 
 	 * Requests an encrypted appplication ticket. If one is cached it is returned.

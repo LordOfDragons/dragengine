@@ -25,6 +25,8 @@
 namespace Dragengine.Services
 
 pin Dragengine.Services.Stats
+pin Dragengine.Services.User
+pin Dragengine.Utils
 
 
 /**
@@ -35,86 +37,151 @@ pin Dragengine.Services.Stats
  * - Stats/Achievements
  * - User
  */
-class ServiceEosSdk implements ServiceStats
-	var String pProductName
-	var String pProductVersion
-	var String pProductId
-	var String pSandboxId
-	var String pDeploymentId
-	var String pClientId
-	var String pClientSecret
+class ServiceEosSdk implements ServiceStats, ServiceUser, ServiceListener
+	/**
+	 * \brief Service initialization parameters.
+	 */
+	class InitParameters
+		/**
+		 * \brief Name of the product using the Epic Online Services SDK.
+		 * 
+		 * Name is required to be non-empty and at maximum of 64 bytes long.
+		 * Name can consist of the following characters:
+		 * A-Z, a-z, 0-9, dot, underscore, space, exclamation mark, question mark,
+		 * and sign, hyphen, parenthesis, plus, minus, colon.
+		 */
+		public var String productName
+		
+		/**
+		 * \brief Product version of the running application.
+		 * 
+		 * Version is required to be non-empty and at maximum of 64 bytes long.
+		 * Version can consist of the following characters:
+		 * A-Z, a-z, 0-9, dot, underscore, space, exclamation mark, question mark,
+		 * and sign, hyphen, parenthesis, plus, minus, colon.
+		 */
+		public var String productVersion
+		
+		/**
+		 * \brief Product ID as found on the dev portal.
+		 * 
+		 * Max length is 64.
+		 */
+		public var String productId
+		
+		/**
+		 * \brief Sandbox ID as found on the dev portal.
+		 * 
+		 * Max length is 64.
+		 */
+		public var String sandboxId
+		
+		/**
+		 * \brief Deployment ID as found on the dev portal.
+		 * 
+		 * Max length is 64.
+		 */
+		public var String deploymentId
+		
+		/**
+		 * \brief Client ID of service permissions entry.
+		 * 
+		 * Use null if no service permissions are used. Max length is 64.
+		 */
+		public var String clientId
+		
+		/**
+		 * \brief Client secret for accessing the set of permissions.
+		 * 
+		 * Use null if no service permissions are used. Max length is 64.
+		 */
+		public var String clientSecret
+		
+		/**
+		 * \brief Enable support for friends list.
+		 * 
+		 * Requires friends-list scope to be enabled in DevPortal before it can be used.
+		 */
+		public var bool enableFriendsList
+		
+		/**
+		 * \brief Enable support for presence.
+		 * 
+		 * Requires presence scope to be enabled in DevPortal before it can be used.
+		 */
+		public var bool enablePresence
+		
+		
+		
+		/**
+		 * \brief Create new instance of class InitParameters.
+		 */
+		func new()
+		end
+	end
+	
+	
+	
+	var InitParameters pInitParameters
 	
 	var Service pService
 	
-	var SafeArray pStatsListeners
+	var SafeArray pStatsListeners, pUserListeners
 	var Dictionary pOnceListeners
 	
 	
 	/**
 	 * \brief Create service ServiceSteamSdk.
-	 * \param productName Name of the product using the Epic Online Services SDK.
-	 *        Name is required to be non-empty and at maximum of 64 bytes long.
-	 *        Name can consist of the following characters:
-	 *        A-Z, a-z, 0-9, dot, underscore, space, exclamation mark, question mark,
-	 *        and sign, hyphen, parenthesis, plus, minus, colon.
-	 * \param productVersion Product version of the running application. Version is
-	 *        required to be non-empty and at maximum of 64 bytes long.
-	 *        Versionn can consist of the following characters:
-	 *        A-Z, a-z, 0-9, dot, underscore, space, exclamation mark, question mark,
-	 *        and sign, hyphen, parenthesis, plus, minus, colon.
-	 * \param productId Product ID, found on the dev portal. Max length is 64.
-	 * \param sandboxId Sandbox ID, found on the dev portal. Max length is 64.
-	 * \param deploymentId Deployment ID, found on the dev portal. Max length is 64.
-	 * \param clientId Client ID of service permissions entry. Use null if no service
-	 *        permissions are used. Max length is 64.
-	 * \param clientSecret Client secret for accessing the set of permissions. Use null
-	 *        if no service permissions are used. Max length is 64.
-	 * 
+	 * \param parameters Init parameters.
 	 * \throws EInvalidParam EOS SDK service module is not present.
 	 * \throws EInvalidAction EOS SDK can not be initialized.
 	 */
-	func new(String productName, String productVersion, String productId,\
-	String sandboxId, String deploymentId, String clientId, String clientSecret)
-		if productName == null
-			throw ENullPointer.new("productName")
+	func new(InitParameters parameters)
+		if parameters.productName == null
+			throw ENullPointer.new("parameters.productName")
 		end
-		if productVersion == null
-			throw ENullPointer.new("productVersion")
+		if parameters.productVersion == null
+			throw ENullPointer.new("parameters.productVersion")
 		end
-		if productId == null
-			throw ENullPointer.new("productId")
+		if parameters.productId == null
+			throw ENullPointer.new("parameters.productId")
 		end
-		if sandboxId == null
-			throw ENullPointer.new("sandboxId")
+		if parameters.sandboxId == null
+			throw ENullPointer.new("parameters.sandboxId")
 		end
-		if deploymentId == null
-			throw ENullPointer.new("deploymentId")
+		if parameters.deploymentId == null
+			throw ENullPointer.new("parameters.deploymentId")
 		end
 		
-		pProductName = productName
-		pProductVersion = productVersion
-		pProductId = productId
-		pSandboxId = sandboxId
-		pDeploymentId = deploymentId
-		pClientId = clientId
-		pClientSecret = clientSecret
+		pInitParameters = InitParameters.new()
+		pInitParameters.productName = parameters.productName
+		pInitParameters.productVersion = parameters.productVersion
+		pInitParameters.productId = parameters.productId
+		pInitParameters.sandboxId = parameters.sandboxId
+		pInitParameters.deploymentId = parameters.deploymentId
+		pInitParameters.clientId = parameters.clientId
+		pInitParameters.clientSecret = parameters.clientSecret
+		pInitParameters.enableFriendsList = parameters.enableFriendsList
+		pInitParameters.enablePresence = parameters.enablePresence
 		
 		pStatsListeners = SafeArray.new()
+		pUserListeners = SafeArray.new()
 		pOnceListeners = Dictionary.new()
 		
 		var ServiceObject so = ServiceObject.new()
-		so.setStringChildAt("productName", productName)
-		so.setStringChildAt("productVersion", productVersion)
-		so.setStringChildAt("productId", productId)
-		so.setStringChildAt("sandboxId", sandboxId)
-		so.setStringChildAt("deploymentId", deploymentId)
-		if clientId != null
-			so.setStringChildAt("clientId", clientId)
+		so.setStringChildAt("productName", parameters.productName)
+		so.setStringChildAt("productVersion", parameters.productVersion)
+		so.setStringChildAt("productId", parameters.productId)
+		so.setStringChildAt("sandboxId", parameters.sandboxId)
+		so.setStringChildAt("deploymentId", parameters.deploymentId)
+		if parameters.clientId != null
+			so.setStringChildAt("clientId", parameters.clientId)
 		end
-		if clientSecret != null
-			so.setStringChildAt("clientSecret", clientSecret)
+		if parameters.clientSecret != null
+			so.setStringChildAt("clientSecret", parameters.clientSecret)
 		end
 		pService = Service.new("EOSSDK", so)
+		pService.setListener(this)
 	end
 	
 	/**
@@ -122,6 +189,7 @@ class ServiceEosSdk implements ServiceStats
 	 */
 	func void dispose()
 		pStatsListeners.removeAll()
+		pUserListeners.removeAll()
 		pOnceListeners.removeAll()
 		
 		if pService != null
@@ -214,13 +282,189 @@ class ServiceEosSdk implements ServiceStats
 	
 	
 	/**
+	 * \brief Add user listener.
+	 * \param listener Listener to add
+	 */
+	func void addUserListener(ServiceUserListener listener)
+		if listener == null
+			throw ENullPointer.new("listener")
+		end
+		pUserListeners.add(listener)
+	end
+	
+	/**
+	 * \brief Remove user listener.
+	 * \param listener Listener to remove.
+	 */
+	func void removeUserListener(ServiceUserListener listener)
+		pUserListeners.remove(listener)
+	end
+	
+	/**
+	 * \brief Features supported by this service.
+	 */
+	func ServiceUserFeatures getUserFeatures()
+		var ServiceUserFeatures features = ServiceUserFeatures.new()
+		features.canAutomaticLogin = true
+		features.canManualLogin = true
+		features.canLogout = true
+		features.authTokenProvider = authProviderId
+		return features
+	end
+	
+	/**
+	 * \brief Log in user.
+	 * 
+	 * User can be only logged in automatically.
+	 * 
+	 * If the application is launcher by the Epic Game Launcher and the application is
+	 * based on BaseGameApp logging in using exchange mode is used unless credentials
+	 * is not null.
+	 * 
+	 * Once logging in finished \ref ServiceUserListener#onLoginUser(ServiceUser,Exception)
+	 * is called.
+	 * 
+	 * \param credentials Has to be null or an exception is thrown.
+	 * \param listener If not null called once in addition to added listeners.
+	 */
+	func void loginUser(ServiceUserCredentials credentials, ServiceUserListener listener)
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "authLogin")
+		
+		if credentials != null
+			if credentials.exchangeCode != null
+				so.setStringChildAt("exchangeCode", credentials.exchangeCode)
+			end
+			if credentials.id != null
+				so.setStringChildAt("userId", credentials.id)
+			end
+			if credentials.password != null
+				so.setStringChildAt("userPassword", credentials.password)
+			end
+			
+		else
+			// epic game launcher appends these command line parameters:
+			// -AUTH_LOGIN=unused -AUTH_PASSWORD=<password> -AUTH_TYPE=exchangecode
+			// -epicapp=<appid> -epicenv=Prod -EpicPortal  -epicusername=<username>
+			// -epicuserid=<userid> -epiclocale=en-US -epicsandboxid=<sandboxid>
+			// -epicdeploymentid=<deploymentid>
+			var BaseGameApp app = BaseGameApp.getApp()
+			if app != null
+				// find parameters
+				var String exchangeCode
+				var bool foundAuthType
+				var int i, count = app.getArgumentCount()
+				var String argument
+				
+				for i = 0 to count
+					argument = app.getArgumentAt(i)
+					if argument.equals("-AUTH_TYPE=exchangecode")
+						foundAuthType = true
+						
+					elif argument.startsWith("-AUTH_PASSWORD=")
+						exchangeCode = argument.substring(15)
+					end
+				end
+				
+				if foundAuthType and exchangeCode != null
+					so.setStringChildAt("exchangeCode", exchangeCode)
+				end
+			end
+		end
+		
+		so.setBoolChildAt("scopeFriends", pInitParameters.enableFriendsList)
+		so.setBoolChildAt("scopePresence", pInitParameters.enablePresence)
+		
+		pRunRequest(so, listener)
+	end
+	
+	/**
+	 * \brief Log out user.
+	 * 
+	 * Not supported. Throws exception if called.
+	 * 
+	 * \param listener If not null called once in addition to added listeners.
+	 */
+	func void logoutUser(ServiceUserListener listener)
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "authLogout")
+		
+		pRunRequest(so, listener)
+	end
+	
+	/**
+	 * \brief Request authentification token.
+	 * 
+	 * Requests an encrypted appplication ticket. If one is cached it is returned.
+	 * The received ticket is Base64 encoded.
+	 * 
+	 * \param listener If not null called once in addition to added listeners.
+	 */
+	func void getAuthToken(ServiceUserListener listener)
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "copyIdToken")
+		so = pService.runAction(so)
+		
+		var ServiceUserAuthToken token = ServiceUserAuthToken.new()
+		token.provider = authProviderId
+		token.token = so.getString()
+		
+		TimerBlock.new(0, false, block
+			pUserListeners.forEach(block ServiceUserListener each
+				each.onGetAuthToken(this, token, null)
+			end)
+			if listener != null
+				listener.onGetAuthToken(this, token, null)
+			end
+		end)
+	end
+	
+	/**
+	 * \brief Retrieve user information.
+	 * 
+	 * \param listener If not null called once in addition to added listeners.
+	 */
+	func void getUserInfo(ServiceUserListener listener)
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "queryUserInfo")
+		
+		pRunRequest(so, listener)
+	end
+	
+	
+	
+	/**
 	 * \brief Service request response received.
 	 */
 	func void requestResponse(Service service, UniqueID id, ServiceObject response, bool finished)
 		var String function = response.getChildAt("function").getString()
 		var Object onceListener = pGetOnceListener(id)
 		
-		if function.equals("requestCurrentStats")
+		if function.equals("authLogin")
+			pUserListeners.forEach(block ServiceUserListener each
+				each.onLoginUser(this, null)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceUserListener).onLoginUser(this, null)
+			end
+			
+		elif function.equals("authLogout")
+			pUserListeners.forEach(block ServiceUserListener each
+				each.onLogoutUser(this, null)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceUserListener).onLogoutUser(this, null)
+			end
+			
+		elif function.equals("queryUserInfo")
+			var ServiceUserInfo info = pConvUserInfo(response)
+			
+			pUserListeners.forEach(block ServiceUserListener each
+				each.onGetUserInfo(this, info, null)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceUserListener).onGetUserInfo(this, info, null)
+			end
 		end
 	end
 	
@@ -232,7 +476,29 @@ class ServiceEosSdk implements ServiceStats
 		var ServiceException exception = createException(error)
 		var Object onceListener = pGetOnceListener(id)
 		
-		if function.equals("requestCurrentStats")
+		if function.equals("authLogin")
+			pUserListeners.forEach(block ServiceUserListener each
+				each.onLoginUser(this, exception)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceUserListener).onLoginUser(this, exception)
+			end
+			
+		elif function.equals("authLogout")
+			pUserListeners.forEach(block ServiceUserListener each
+				each.onLogoutUser(this, exception)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceUserListener).onLogoutUser(this, exception)
+			end
+			
+		elif function.equals("queryUserInfo")
+			pUserListeners.forEach(block ServiceUserListener each
+				each.onGetUserInfo(this, null, exception)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceUserListener).onGetUserInfo(this, null, exception)
+			end
 		end
 	end
 	
@@ -257,6 +523,21 @@ class ServiceEosSdk implements ServiceStats
 	func ServiceException createException(ServiceObject error)
 		error = error.getChildAt("message")
 		return ServiceException.new(pService, error != null if error.getString() else "Unknown error")
+	end
+	
+	private func String pConvString(ServiceObject so, String key)
+		var ServiceObject so2 = so.getChildAt(key)
+		return so2 != null if so2.getString() else null
+	end
+	
+	private func ServiceUserInfo pConvUserInfo(ServiceObject so)
+		var ServiceUserInfo info = ServiceUserInfo.new()
+		info.id = pConvString(so, "userId")
+		info.displayName = pConvString(so, "displayName")
+		info.nickname = pConvString(so, "nickname")
+		info.country = pConvString(so, "country")
+		info.preferredLanguage = pConvString(so, "preferredLanguage")
+		return info
 	end
 	
 	private func Object pGetOnceListener(UniqueID id)

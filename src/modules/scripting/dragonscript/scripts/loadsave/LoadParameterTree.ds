@@ -89,6 +89,16 @@ class LoadParameterTree extends BaseXmlLoader
 		end)
 	end
 	
+	/**
+	 * \brief Load element class from file into a new ParameterTree.
+	 * \version 1.23
+	 */
+	func ParameterTree loadFromFile(String filename)
+		var ParameterTree parameterTree = ParameterTree.new()
+		loadFromFile(filename, parameterTree)
+		return parameterTree
+	end
+	
 	/** \brief Save parameter tree to file. */
 	func void saveToFile(String filename, ParameterTree parameterTree)
 		if parameterTree == null

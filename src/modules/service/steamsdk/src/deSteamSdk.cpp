@@ -153,8 +153,7 @@ void deSteamSdk::InitSdk( const deServiceObject::Ref &data ){
 	
 	const deServiceObject::Ref objAppId( data->GetChildAt( "appId" ) );
 	if( objAppId ){
-		decString appId;
-		appId.Format( "%d", objAppId->GetInteger() );
+		const decString &appId = objAppId->GetString();
 		
 		LogInfoFormat( "Try initialize Steam SDK using AppID" );
 		result = k_ESteamAPIInitResult_FailedGeneric;

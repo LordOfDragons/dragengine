@@ -29,7 +29,8 @@ namespace Dragengine.Services.User
  * \brief Information about user.
  * 
  * Used by different services to deliver information about a user. Certain fields
- * are only present for specific services.
+ * are only present for specific services. Not all information can be retrieved at
+ * all times. Hence all fields can be null.
  */
 class ServiceUserInfo
 	/**
@@ -39,13 +40,36 @@ class ServiceUserInfo
 	
 	/**
 	 * \brief User name.
+	 * 
+	 * This is usually the login name. Many services do not provide this information
+	 * since it is PII.
 	 */
 	public var String name
 	
 	/**
 	 * \brief Display user name.
+	 * 
+	 * This is the preferred name to display to refer to a user.
 	 */
 	public var String displayName
+	
+	/**
+	 * \brief Nickname.
+	 * 
+	 * Present if the user assigned a nickname to another user. This is private
+	 * information and should not be copied.
+	 */
+	public var String nickname
+	
+	/**
+	 * \brief Country.
+	 */
+	public var String country
+	
+	/**
+	 * \brief Preferred language in ISO 639 language code.
+	 */
+	public var String preferredLanguage
 	
 	/**
 	 * \brief Date the user has been last been online.

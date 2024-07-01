@@ -93,9 +93,47 @@ class ServiceModio implements ServiceListener, ServiceMods
 		xboxLive
 	end
 	
+	/**
+	 * \brief Service initialization parameters.
+	 */
+	class InitParameters
+		/**
+		 * \brief Application key.
+		 */
+		public var String apiKey
+		
+		/**
+		 * \brief Game identifier.
+		 * 
+		 * Number in string form.
+		 */
+		public var String gameId
+		
+		/**
+		 * \brief User identifier.
+		 * 
+		 * Called "Local platform user" in ModIO.
+		 */
+		public var String userId
+		
+		/**
+		 * \brief Optional portal indicator.
+		 * 
+		 * Can be null if not known.
+		 */
+		public var Portal portal
+		
+		
+		/**
+		 * \brief Create new instance of class InitOptions.
+		 */
+		func new()
+		end
+	end
 	
 	
-	var String pApiKey, pGameId, pUserId
+	
+	var InitParameters pInitParameters
 	var Portal pPortal
 	var Service pService
 	var ServiceInitListener pInitListener
@@ -115,29 +153,27 @@ class ServiceModio implements ServiceListener, ServiceMods
 	 * outcome is success the service can be used. If the outcome is failure
 	 * the service can not be used and should be disposed.
 	 * 
-	 * \param apiKey Application key.
-	 * \param gameId Game identifier. Number in string form.
-	 * \param userId User identifier. Called "Local platform user" in ModIO.
-	 * \param portal Optional portal indicator. Can be null if not known.
+	 * \param params Init parameters.
 	 * \param listener Listener called if initialization finished. Can be null.
 	 * \throws EInvalidParam ModIO service module is not present.
 	 * \throws EInvalidParam One or more of the provided parameters is not valid.
 	 */
-	func new(String apiKey, String gameId, String userId, Portal portal, ServiceInitListener listener)
-		pApiKey = apiKey
-		pGameId = gameId
-		pUserId = userId
-		pPortal = portal
+	func new(InitParameters params, ServiceInitListener listener)
+		pInitParameters = InitParameters.new()
+		pInitParameters.apiKey = params.apiKey
+		pInitParameters.gameId = params.gameId
+		pInitParameters.userId = params.userId
+		pInitParameters.portal = params.portal
 		pInitListener = listener
 		pModsListeners = SafeArray.new()
 		pOnceListeners = Dictionary.new()
 		
 		var ServiceObject so = ServiceObject.new()
-		so.setStringChildAt("apiKey", apiKey)
-		so.setStringChildAt("gameId", gameId)
-		so.setStringChildAt("userId", userId)
-		if portal != null
-			so.setStringChildAt("portal", portal.name())
+		so.setStringChildAt("apiKey", params.apiKey)
+		so.setStringChildAt("gameId", params.gameId)
+		so.setStringChildAt("userId", params.userId)
+		if params.portal != null
+			so.setStringChildAt("portal", params.portal.name())
 		end
 		
 		pService = Service.new("Mod.io", so)
@@ -169,36 +205,6 @@ class ServiceModio implements ServiceListener, ServiceMods
 	 */
 	static func bool isServiceSupported()
 		return Engine.getSupportedServices().has("Mod.io")
-	end
-	
-	
-	
-	/**
-	 * \brief Application key.
-	 */
-	func String getApikey()
-		return pApiKey
-	end
-	
-	/**
-	 * \brief Game identifier.
-	 */
-	func String getGameId()
-		return pGameId
-	end
-	
-	/**
-	 * \brief User identifier. Called "Local platform user" in ModIO.
-	 */
-	func String getUserId()
-		return pUserId
-	end
-	
-	/**
-	 * \brief Store portal or null if unknown.
-	 */
-	func Portal getPortal()
-		return pPortal
 	end
 	
 	
