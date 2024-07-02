@@ -178,7 +178,6 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 		end
 		
 		pService = Service.new("Mod.io", so)
-		
 		pService.setListener(this)
 	end
 	

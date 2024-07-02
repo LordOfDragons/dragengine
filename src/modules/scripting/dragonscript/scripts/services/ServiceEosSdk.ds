@@ -128,7 +128,8 @@ class ServiceEosSdk implements ServiceStats, ServiceUser, ServiceListener
 	
 	
 	var InitParameters pInitParameters
-	
+	var ServiceInitListener pInitListener
+	var Boolean pIsInitialized
 	var Service pService
 	
 	var SafeArray pStatsListeners, pUserListeners
@@ -136,28 +137,19 @@ class ServiceEosSdk implements ServiceStats, ServiceUser, ServiceListener
 	
 	
 	/**
-	 * \brief Create service ServiceSteamSdk.
+	 * \brief Create service ServiceEosSdk.
+	 * 
+	 * The service is asynchronously initialized. Once initialization finished
+	 * the provided listener is called with success or failure outcome. If the
+	 * outcome is success the service can be used. If the outcome is failure
+	 * the service can not be used and should be disposed.
+	 * 
 	 * \param parameters Init parameters.
+	 * \param listener Listener called if initialization finished. Can be null.
 	 * \throws EInvalidParam EOS SDK service module is not present.
 	 * \throws EInvalidAction EOS SDK can not be initialized.
 	 */
-	func new(InitParameters parameters)
-		if parameters.productName == null
-			throw ENullPointer.new("parameters.productName")
-		end
-		if parameters.productVersion == null
-			throw ENullPointer.new("parameters.productVersion")
-		end
-		if parameters.productId == null
-			throw ENullPointer.new("parameters.productId")
-		end
-		if parameters.sandboxId == null
-			throw ENullPointer.new("parameters.sandboxId")
-		end
-		if parameters.deploymentId == null
-			throw ENullPointer.new("parameters.deploymentId")
-		end
-		
+	func new(InitParameters parameters, ServiceInitListener listener)
 		pInitParameters = InitParameters.new()
 		pInitParameters.productName = parameters.productName
 		pInitParameters.productVersion = parameters.productVersion
@@ -168,6 +160,7 @@ class ServiceEosSdk implements ServiceStats, ServiceUser, ServiceListener
 		pInitParameters.clientSecret = parameters.clientSecret
 		pInitParameters.enableFriendsList = parameters.enableFriendsList
 		pInitParameters.enablePresence = parameters.enablePresence
+		pInitListener = listener
 		
 		pStatsListeners = SafeArray.new()
 		pUserListeners = SafeArray.new()
@@ -190,9 +183,10 @@ class ServiceEosSdk implements ServiceStats, ServiceUser, ServiceListener
 	end
 	
 	/**
-	 * \brief Dispose of Steam SDK service.
+	 * \brief Dispose of EOS SDK service.
 	 */
 	func void dispose()
+		pInitListener = null
 		pStatsListeners.removeAll()
 		pUserListeners.removeAll()
 		pOnceListeners.removeAll()
@@ -212,6 +206,19 @@ class ServiceEosSdk implements ServiceStats, ServiceUser, ServiceListener
 	 */
 	static func bool isServiceSupported()
 		return Engine.getSupportedServices().has("EOSSDK")
+	end
+	
+	
+	
+	/**
+	 * \brief Determines if service is initialized and ready to be used.
+	 * 
+	 * If null is returned the service is still initializing. If returned object has true
+	 * value the service is initialized and ready to be used. If returned object has false
+	 * value the service failed to initialized and has to be disposed.
+	 */
+	func Boolean isInitialized()
+		return pIsInitialized
 	end
 	
 	
@@ -238,7 +245,7 @@ class ServiceEosSdk implements ServiceStats, ServiceUser, ServiceListener
 	/**
 	 * \brief Get stats and achievements.
 	 * 
-	 * Requests from the steam server the set of stats and achievements with the matching
+	 * Requests from the epic server the set of stats and achievements with the matching
 	 * api names. Once retrieved calls
 	 * \ref ServiceStatsListener#statsReceived(Object,Dictionary,Dictionary) or
 	 * \ref ServiceStatsListener#statsReceivedFailed(Object,String).
@@ -254,7 +261,7 @@ class ServiceEosSdk implements ServiceStats, ServiceUser, ServiceListener
 	/**
 	 * \brief Set stats and achievements.
 	 * 
-	 * Stores stats and achievements to steam server. Once stored calls
+	 * Stores stats and achievements to epic server. Once stored calls
 	 * \ref ServiceStatsListener#statsStored(Object,Set,Set) or
 	 * \ref ServiceStatsListener#statsStoredFailed(Object,String).
 	 * 
@@ -271,7 +278,7 @@ class ServiceEosSdk implements ServiceStats, ServiceUser, ServiceListener
 	end
 	
 	/**
-	 * \brief Reset all stats on steam server.
+	 * \brief Reset all stats on epic server.
 	 * 
 	 * This is mainly for development purpose to test stats and achievements.
 	 * For this reason this call does not send events to listeners.
@@ -384,7 +391,8 @@ class ServiceEosSdk implements ServiceStats, ServiceUser, ServiceListener
 	/**
 	 * \brief Log out user.
 	 * 
-	 * Not supported. Throws exception if called.
+	 * Once logging out finished \ref ServiceUserListener#onLogoutUser(ServiceUser,Exception)
+	 * is called.
 	 * 
 	 * \param listener If not null called once in addition to added listeners.
 	 */
@@ -520,6 +528,22 @@ class ServiceEosSdk implements ServiceStats, ServiceUser, ServiceListener
 	 * \brief Service notification received.
 	 */
 	func void eventReceived(Service service, ServiceObject event)
+		var String eventName = event.getChildAt("event").getString()
+		var bool success = event.getChildAt("success").getBoolean()
+		var ServiceException exception
+		
+		if not success
+			exception = createException(event)
+		end
+		
+		if eventName.equals("initialized")
+			pIsInitialized = Boolean.new(success)
+			
+			if pInitListener != null
+				pInitListener.onServiceInit(this, exception)
+			end
+			pInitListener = null
+		end
 	end
 	
 	

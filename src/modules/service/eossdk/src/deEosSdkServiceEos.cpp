@@ -23,6 +23,7 @@
  */
 
 #include <inttypes.h>
+#include <string.h>
 
 #include "deEosSdk.h"
 #include "deEosSdkServiceEos.h"
@@ -44,6 +45,7 @@ public:
 	deEosSdkServiceEos *service;
 	decUniqueID id;
 	
+	cCallbackInfo( deEosSdkServiceEos *aservice ) : service( aservice ){ }
 	cCallbackInfo( deEosSdkServiceEos *aservice, const decUniqueID &aid ) : service( aservice ), id( aid ){ }
 	cCallbackInfo( const cCallbackInfo &info ) : service( info.service ), id( info.id ) { }
 	
@@ -53,6 +55,16 @@ public:
 		return info;
 	}
 };
+
+static void fEosInitCreateDeviceIdCallback( const EOS_Connect_CreateDeviceIdCallbackInfo *data ){
+	const cCallbackInfo info( cCallbackInfo::Get( data->ClientData ) );
+	info.service->OnInitCreateDeviceIdCallback( info.id, *data );
+}
+
+static void fEosInitLoginCallback( const EOS_Connect_LoginCallbackInfo *data ){
+	const cCallbackInfo info( cCallbackInfo::Get( data->ClientData ) );
+	info.service->OnInitLoginCallback( info.id, *data );
+}
 
 static void fEosLoginAutoCallback( const EOS_Auth_LoginCallbackInfo *data ){
 	const cCallbackInfo info( cCallbackInfo::Get( data->ClientData ) );
@@ -84,6 +96,17 @@ static void fEosQueryUserInfoCallback( const EOS_UserInfo_QueryUserInfoCallbackI
 	info.service->OnQueryUserInfoCallback( info.id, *data );
 }
 
+static void fEosQueryPlayerAchievementsCallback(
+const EOS_Achievements_OnQueryPlayerAchievementsCompleteCallbackInfo *data ){
+	const cCallbackInfo info( cCallbackInfo::Get( data->ClientData ) );
+	info.service->OnQueryPlayerAchievementsCallback( info.id, *data );
+}
+
+static void fEosQueryPlayerStatsCallback( const EOS_Stats_OnQueryStatsCompleteCallbackInfo *data ){
+	const cCallbackInfo info( cCallbackInfo::Get( data->ClientData ) );
+	info.service->OnQueryPlayerStatsCallback( info.id, *data );
+}
+
 // Constructor, destructor
 ////////////////////////////
 
@@ -94,8 +117,12 @@ pService( service ),
 pHandlePlatform( nullptr ),
 pHandleAuth( nullptr ),
 pHandleUserInfo( nullptr ),
+pHandleAchievements( nullptr ),
+pHandleStats( nullptr ),
+pHandleConnect( nullptr ),
 pLocalUserId( nullptr ),
-pSelectedAccountId( nullptr )
+pSelectedAccountId( nullptr ),
+pProductUserId( nullptr )
 {
 	pModule.InitSdk( data );
 	
@@ -133,6 +160,8 @@ pSelectedAccountId( nullptr )
 	}
 	
 	module.AddFrameUpdater( this );
+	
+	pInitCreateDeviceId( data );
 }
 
 deEosSdkServiceEos::~deEosSdkServiceEos(){
@@ -341,6 +370,24 @@ void deEosSdkServiceEos::QueryUserInfo( const decUniqueID &id, const deServiceOb
 		new cCallbackInfo( this, id ), fEosQueryUserInfoCallback );
 }
 
+void deEosSdkServiceEos::QueryPlayerStats( const decUniqueID &id, const deServiceObject &request ){
+	if( ! pProductUserId ){
+		DETHROW_INFO( deeInvalidAction, "Product user id missing" );
+	}
+	
+	EOS_Achievements_QueryPlayerAchievementsOptions options = {};
+	options.ApiVersion = EOS_ACHIEVEMENTS_QUERYPLAYERACHIEVEMENTS_API_LATEST;
+	options.LocalUserId = pProductUserId;
+	options.TargetUserId = pProductUserId;
+	
+	pModule.LogInfo( "deEosSdkServiceEos: Get player achievements");
+	const deEosSdkPendingRequest::Ref pr( NewPendingRequest( id, "queryPlayerAchievements" ) );
+	pr->request.TakeOver( new deServiceObject( request, true ) );
+	
+	EOS_Achievements_QueryPlayerAchievements( pGetHandleAchievements(), &options,
+		new cCallbackInfo( this, id ), fEosQueryPlayerAchievementsCallback );
+}
+
 deServiceObject::Ref deEosSdkServiceEos::CopyIdToken( const deServiceObject &action ){
 	if( ! pSelectedAccountId ){
 		DETHROW_INFO( deeInvalidAction, "No user logged in" );
@@ -418,7 +465,36 @@ void deEosSdkServiceEos::FailRequest( const deEosSdkPendingRequest::Ref &request
 // EOS Callbacks
 //////////////////
 
-void deEosSdkServiceEos::OnLoginAutoCallback( const decUniqueID &id, const EOS_Auth_LoginCallbackInfo &data ){
+void deEosSdkServiceEos::OnInitCreateDeviceIdCallback( const decUniqueID &id,
+const EOS_Connect_CreateDeviceIdCallbackInfo &data ){
+	pModule.LogInfoFormat( "deEosSdkServiceEos.OnInitCreateDeviceIdCallback: res=%d", ( int )data.ResultCode );
+	switch( data.ResultCode ){
+	case EOS_EResult::EOS_DuplicateNotAllowed:
+		pModule.LogInfo( "deEosSdkServiceEos: Init: Device id already created." );
+		pInitConnectLogin();
+		break;
+		
+	case EOS_EResult::EOS_Success:
+		pModule.LogInfo( "deEosSdkServiceEos: Init: Device id created." );
+		pInitConnectLogin();
+		break;
+		
+	default:
+		pFinishInitEvent( data.ResultCode );
+	}
+}
+
+void deEosSdkServiceEos::OnInitLoginCallback( const decUniqueID &id, const EOS_Connect_LoginCallbackInfo &data ){
+	pModule.LogInfoFormat( "deEosSdkServiceEos.OnInitLoginCallback: res=%d", ( int )data.ResultCode );
+	if( data.ResultCode == EOS_EResult::EOS_Success ){
+		pModule.LogInfo( "deEosSdkServiceEos: Init: Device id created." );
+		pProductUserId = data.LocalUserId;
+	}
+	
+	pFinishInitEvent( data.ResultCode );
+}
+
+void deEosSdkServiceEos::OnLoginAutoCallback(const decUniqueID &id, const EOS_Auth_LoginCallbackInfo &data){
 	pModule.LogInfoFormat( "deEosSdkServiceEos.OnLoginAutoCallback: res=%d", ( int )data.ResultCode );
 	if( data.ResultCode == EOS_EResult::EOS_Success ){
 		OnLoginCallback( id, data );
@@ -506,6 +582,11 @@ const EOS_Auth_DeletePersistentAuthCallbackInfo &data ){
 void deEosSdkServiceEos::OnQueryUserInfoCallback( const decUniqueID &id,
 const EOS_UserInfo_QueryUserInfoCallbackInfo &data ){
 	pModule.LogInfoFormat( "deEosSdkServiceEos.OnQueryUserInfoCallback: res=%d", ( int )data.ResultCode );
+	if( data.ResultCode != EOS_EResult::EOS_Success ){
+		FailRequest( id, data.ResultCode );
+		return;
+	}
+	
 	const deEosSdkPendingRequest::Ref pr( RemoveFirstPendingRequestWithId( id ) );
 	if( ! pr ){
 		return;
@@ -557,7 +638,84 @@ const EOS_UserInfo_QueryUserInfoCallbackInfo &data ){
 	}
 }
 
+void deEosSdkServiceEos::OnQueryPlayerAchievementsCallback( const decUniqueID &id,
+const EOS_Achievements_OnQueryPlayerAchievementsCompleteCallbackInfo &data ){
+	pModule.LogInfoFormat( "deEosSdkServiceEos.OnQueryPlayerAchievementsCallback: res=%d", ( int )data.ResultCode );
+	if( data.ResultCode != EOS_EResult::EOS_Success ){
+		FailRequest( id, data.ResultCode );
+		return;
+	}
+	
+	deEosSdkPendingRequest * const pr = GetPendingRequestWithId( id );
+	if( ! pr ){
+		return;
+	}
+	
+	decStringList names;
+	
+	EOS_Stats_QueryStatsOptions options = {};
+	options.ApiVersion = EOS_STATS_QUERYSTATS_API_LATEST;
+	options.StartTime = EOS_STATS_TIME_UNDEFINED;
+	options.EndTime = EOS_STATS_TIME_UNDEFINED;
+	options.LocalUserId = pProductUserId;
+	options.TargetUserId = pProductUserId;
+	
+	try{
+		const deServiceObject::Ref &soStats = pr->request->GetChildAt( "stats" );
+		if( soStats ){
+			const int count = soStats->GetChildCount();
+			if( count > 0 ){
+				int i;
+				for( i=0; i<count; i++ ){
+					names.Add( soStats->GetChildAt( i )->GetString() );
+				}
+				
+				options.StatNames = new char*[ count ];
+				for( i=0; i<count; i++ ){
+					options.StatNames[ i ] = names.GetAt( i );
+				}
+			}
+		}
+		
+		pModule.LogInfo( "deEosSdkServiceEos: Get player stats" );
+		EOS_Stats_QueryStats( pGetHandleStats(), &options,
+			new cCallbackInfo( this, id ), fEosQueryPlayerStatsCallback );
+		
+		if( options.StatNames ){
+			delete [] options.StatNames;
+		}
+		
+	}catch( const deException &e ){
+		if( options.StatNames ){
+			delete [] options.StatNames;
+		}
+		FailRequest( pr, e );
+		return;
+	}
+}
 
+void deEosSdkServiceEos::OnQueryPlayerStatsCallback( const decUniqueID &id,
+const EOS_Stats_OnQueryStatsCompleteCallbackInfo &data ){
+	pModule.LogInfoFormat( "deEosSdkServiceEos.OnQueryPlayerAchievementsCallback: res=%d", ( int )data.ResultCode );
+	if( data.ResultCode != EOS_EResult::EOS_Success ){
+		FailRequest( id, data.ResultCode );
+		return;
+	}
+	
+	const deEosSdkPendingRequest::Ref pr( RemoveFirstPendingRequestWithId( id ) );
+	if( ! pr ){
+		return;
+	}
+	
+	try{
+		pModule.GetGameEngine()->GetServiceManager()->QueueRequestResponse(
+			pService, pr->id, pr->data, true );
+		
+	}catch( const deException &e ){
+		FailRequest( pr, e );
+		return;
+	}
+}
 
 // deEosSdk::cFrameUpdater
 ////////////////////////////
@@ -584,6 +742,80 @@ EOS_HUserInfo deEosSdkServiceEos::pGetHandleUserInfo(){
 		pHandleUserInfo = EOS_Platform_GetUserInfoInterface( pHandlePlatform );
 	}
 	return pHandleUserInfo;
+}
+
+EOS_HAchievements deEosSdkServiceEos::pGetHandleAchievements(){
+	if( ! pHandleAchievements ){
+		pHandleAchievements = EOS_Platform_GetAchievementsInterface( pHandlePlatform );
+	}
+	return pHandleAchievements;
+}
+
+EOS_HStats deEosSdkServiceEos::pGetHandleStats(){
+	if( ! pHandleStats ){
+		pHandleStats = EOS_Platform_GetStatsInterface( pHandlePlatform );
+	}
+	return pHandleStats;
+}
+
+EOS_HConnect deEosSdkServiceEos::pGetHandleConnect(){
+	if( ! pHandleConnect ){
+		pHandleConnect = EOS_Platform_GetConnectInterface( pHandlePlatform );
+	}
+	return pHandleConnect;
+}
+
+void deEosSdkServiceEos::pInitCreateDeviceId( const deServiceObject& data ){
+	EOS_Connect_CreateDeviceIdOptions options = {};
+	options.ApiVersion = EOS_CONNECT_CREATEDEVICEID_API_LATEST;
+	
+	#ifdef OS_W32
+	options.DeviceModel = "Windows";
+	#elif defined OS_MACOS
+	options.DeviceModel = "MacOS";
+	#elif defined OS_BEOS
+	options.DeviceModel = "BeOS";
+	#elif defined OS_ANDROID
+	options.DeviceModel = "Android";
+	#elif defined OS_UNIX
+	options.DeviceModel = "Unix";
+	#else
+	options.DeviceModel = "Unknown";
+	#endif
+	
+	pModule.LogInfo( "deEosSdkServiceEos: Init create device id" );
+	EOS_Connect_CreateDeviceId( pGetHandleConnect(), &options,
+		new cCallbackInfo( this ), fEosInitCreateDeviceIdCallback );
+}
+
+void deEosSdkServiceEos::pInitConnectLogin(){
+	EOS_Connect_Credentials credentials = {};
+	credentials.ApiVersion = EOS_CONNECT_CREDENTIALS_API_LATEST;
+	credentials.Type = EOS_EExternalCredentialType::EOS_ECT_DEVICEID_ACCESS_TOKEN;
+	
+	EOS_Connect_LoginOptions options = {};
+	options.ApiVersion = EOS_CONNECT_LOGIN_API_LATEST;
+	options.Credentials = &credentials;
+	
+	pModule.LogInfo( "deEosSdkServiceEos: Init connect login" );
+	EOS_Connect_Login( pGetHandleConnect(), &options,
+		new cCallbackInfo( this ), fEosInitLoginCallback );
+}
+
+void deEosSdkServiceEos::pFinishInitEvent( EOS_EResult res ){
+	const deServiceObject::Ref event( deServiceObject::Ref::New( new deServiceObject ) );
+	event->SetStringChildAt( "event", "initialized" );
+	
+	if( res == EOS_EResult::EOS_Success ){
+		event->SetBoolChildAt( "success", true );
+		
+	}else{
+		event->SetBoolChildAt( "success", false );
+		event->SetStringChildAt( "error", EOS_EResult_ToString( res ) );
+		event->SetStringChildAt( "message", EOS_EResult_ToString( res ) );
+	}
+	
+	pModule.GetGameEngine()->GetServiceManager()->QueueEventReceived( pService, event );
 }
 
 EOS_Auth_LoginOptions deEosSdkServiceEos::pCreateLoginOptions( const deServiceObject &request ) const{

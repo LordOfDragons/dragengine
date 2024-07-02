@@ -30,6 +30,9 @@
 #include <eos_sdk.h>
 #include <eos_auth.h>
 #include <eos_userinfo.h>
+#include <eos_stats.h>
+#include <eos_achievements.h>
+#include <eos_connect.h>
 
 #include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/systems/modules/service/deBaseServiceService.h>
@@ -56,9 +59,13 @@ private:
 	EOS_HPlatform pHandlePlatform;
 	EOS_HAuth pHandleAuth;
 	EOS_HUserInfo pHandleUserInfo;
+	EOS_HAchievements pHandleAchievements;
+	EOS_HStats pHandleStats;
+	EOS_HConnect pHandleConnect;
 	
 	EOS_EpicAccountId pLocalUserId;
 	EOS_EpicAccountId pSelectedAccountId;
+	EOS_ProductUserId pProductUserId;
 	
 	
 	
@@ -112,6 +119,7 @@ public:
 	void AuthLogin( const decUniqueID &id, const deServiceObject& request, bool startRequest );
 	void AuthLogout( const decUniqueID &id, const deServiceObject& request );
 	void QueryUserInfo( const decUniqueID &id, const deServiceObject& request );
+	void QueryPlayerStats( const decUniqueID &id, const deServiceObject& request );
 	
 	deServiceObject::Ref CopyIdToken( const deServiceObject& action );
 	deServiceObject::Ref IsUserLoggedIn( const deServiceObject& action );
@@ -126,6 +134,12 @@ public:
 	
 	/** \name EOS Callbacks */
 	/*@{*/
+	void OnInitCreateDeviceIdCallback( const decUniqueID &id,
+		const EOS_Connect_CreateDeviceIdCallbackInfo &data );
+	
+	void OnInitLoginCallback( const decUniqueID &id,
+		const EOS_Connect_LoginCallbackInfo &data );
+	
 	void OnLoginAutoCallback( const decUniqueID &id, const EOS_Auth_LoginCallbackInfo &data );
 	void OnLoginAutoDeletePersistentAuthCallback( const decUniqueID &id,
 		const EOS_Auth_DeletePersistentAuthCallbackInfo &data );
@@ -138,6 +152,12 @@ public:
 	
 	void OnQueryUserInfoCallback( const decUniqueID &id,
 		const EOS_UserInfo_QueryUserInfoCallbackInfo &data );
+	
+	void OnQueryPlayerAchievementsCallback( const decUniqueID &id,
+		const EOS_Achievements_OnQueryPlayerAchievementsCompleteCallbackInfo &data );
+	
+	void OnQueryPlayerStatsCallback( const decUniqueID &id,
+		const EOS_Stats_OnQueryStatsCompleteCallbackInfo &data );
 	/*@}*/
 	
 	
@@ -153,6 +173,12 @@ public:
 private:
 	EOS_HAuth pGetHandleAuth();
 	EOS_HUserInfo pGetHandleUserInfo();
+	EOS_HAchievements pGetHandleAchievements();
+	EOS_HStats pGetHandleStats();
+	EOS_HConnect pGetHandleConnect();
+	void pInitCreateDeviceId( const deServiceObject& data );
+	void pInitConnectLogin();
+	void pFinishInitEvent( EOS_EResult res );
 	EOS_Auth_LoginOptions pCreateLoginOptions( const deServiceObject& request ) const;
 };
 

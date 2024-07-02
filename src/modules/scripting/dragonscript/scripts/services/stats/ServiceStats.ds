@@ -47,7 +47,7 @@ interface ServiceStats
 	/**
 	 * \brief Get stats and achievements.
 	 * 
-	 * Requests from the steam server the set of stats and achievements with the matching
+	 * Requests from the service provider the set of stats and achievements with the matching
 	 * api names. Once retrieved calls
 	 * \ref ServiceStatsListener#statsReceived(Object,Dictionary,Dictionary) or
 	 * \ref ServiceStatsListener#statsReceivedFailed(Object,String).
@@ -61,7 +61,7 @@ interface ServiceStats
 	/**
 	 * \brief Set stats and achievements.
 	 * 
-	 * Stores stats and achievements to steam server. Once stored calls
+	 * Stores stats and achievements to service provider. Once stored calls
 	 * \ref ServiceStatsListener#statsStored(Object,Set,Set) or
 	 * \ref ServiceStatsListener#statsStoredFailed(Object,String).
 	 * 
@@ -76,7 +76,7 @@ interface ServiceStats
 	func void setStatsAndAchievements(Dictionary stats, Dictionary achievements, ServiceStatsListener listener)
 	
 	/**
-	 * \brief Reset all stats on steam server.
+	 * \brief Reset all stats on service provider.
 	 * 
 	 * This is mainly for development purpose to test stats and achievements.
 	 * For this reason this call does not send events to listeners.
