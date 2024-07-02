@@ -22,9 +22,10 @@
  * SOFTWARE.
  */
 
-#ifndef _deEosSdkServiceEos_H_
-#define _deEosSdkServiceEos_H_
+#ifndef _DEEOSSDKSERVICEEOS_H_
+#define _DEEOSSDKSERVICEEOS_H_
 
+#include "deEosSdk.h"
 #include "deEosSdkPendingRequest.h"
 
 #include <eos_sdk.h>
@@ -38,7 +39,6 @@
 #include <dragengine/systems/modules/service/deBaseServiceService.h>
 #include <dragengine/resources/service/deServiceObject.h>
 
-class deEosSdk;
 class deService;
 
 
@@ -63,9 +63,12 @@ private:
 	EOS_HStats pHandleStats;
 	EOS_HConnect pHandleConnect;
 	
-	EOS_EpicAccountId pLocalUserId;
-	EOS_EpicAccountId pSelectedAccountId;
-	EOS_ProductUserId pProductUserId;
+	
+	
+public:
+	EOS_EpicAccountId localUserId;
+	EOS_EpicAccountId selectedAccountId;
+	EOS_ProductUserId productUserId;
 	
 	
 	
@@ -83,8 +86,21 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	/** Get module. */
+	inline deEosSdk &GetModule() const{ return pModule; }
+	
+	/** Service. */
+	inline deService *GetService() const{ return pService; }
+	
+	/** Get handles. */
+	EOS_HAuth GetHandleAuth();
+	EOS_HUserInfo GetHandleUserInfo();
+	EOS_HAchievements GetHandleAchievements();
+	EOS_HStats GetHandleStats();
+	EOS_HConnect GetHandleConnect();
+	
 	/**
-	 * \brief Start service request.
+	 * Start service request.
 	 * 
 	 * Script module peer is called with the received answer. Depending on the service the
 	 * answer can be received continuously or as individual responses or in smaller chunks.
@@ -94,14 +110,10 @@ public:
 	 */
 	void StartRequest( const decUniqueID &id, const deServiceObject &request ) override;
 	
-	/**
-	 * \brief Cancel service request if running.
-	 */
+	/** Cancel service request if running. */
 	void CancelRequest( const decUniqueID &id ) override;
 	
-	/**
-	 * \brief Run action returning result immediately.
-	 */
+	/** Run action returning result immediately. */
 	deServiceObject::Ref RunAction( const deServiceObject &action ) override;
 	/*@}*/
 	
@@ -115,8 +127,6 @@ public:
 	deEosSdkPendingRequest::Ref NewPendingRequest( const decUniqueID &id,
 		const decString &function, const deServiceObject::Ref &data = nullptr );
 	
-	void AuthLoginAuto( const decUniqueID &id, const deServiceObject& request );
-	void AuthLogin( const decUniqueID &id, const deServiceObject& request, bool startRequest );
 	void AuthLogout( const decUniqueID &id, const deServiceObject& request );
 	void QueryUserInfo( const decUniqueID &id, const deServiceObject& request );
 	void QueryPlayerStats( const decUniqueID &id, const deServiceObject& request );
@@ -134,18 +144,6 @@ public:
 	
 	/** \name EOS Callbacks */
 	/*@{*/
-	void OnInitCreateDeviceIdCallback( const decUniqueID &id,
-		const EOS_Connect_CreateDeviceIdCallbackInfo &data );
-	
-	void OnInitLoginCallback( const decUniqueID &id,
-		const EOS_Connect_LoginCallbackInfo &data );
-	
-	void OnLoginAutoCallback( const decUniqueID &id, const EOS_Auth_LoginCallbackInfo &data );
-	void OnLoginAutoDeletePersistentAuthCallback( const decUniqueID &id,
-		const EOS_Auth_DeletePersistentAuthCallbackInfo &data );
-	
-	void OnLoginCallback( const decUniqueID &id, const EOS_Auth_LoginCallbackInfo &data );
-	
 	void OnLogoutCallback( const decUniqueID &id, const EOS_Auth_LogoutCallbackInfo &data );
 	void OnLogoutDeletePersistentAuthCallback( const decUniqueID &id,
 		const EOS_Auth_DeletePersistentAuthCallbackInfo &data );
@@ -171,15 +169,6 @@ public:
 	
 	
 private:
-	EOS_HAuth pGetHandleAuth();
-	EOS_HUserInfo pGetHandleUserInfo();
-	EOS_HAchievements pGetHandleAchievements();
-	EOS_HStats pGetHandleStats();
-	EOS_HConnect pGetHandleConnect();
-	void pInitCreateDeviceId( const deServiceObject& data );
-	void pInitConnectLogin();
-	void pFinishInitEvent( EOS_EResult res );
-	EOS_Auth_LoginOptions pCreateLoginOptions( const deServiceObject& request ) const;
 };
 
 #endif

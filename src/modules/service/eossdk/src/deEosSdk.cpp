@@ -173,7 +173,7 @@ void deEosSdk::InitSdk( const deServiceObject::Ref &data ){
 	pSdkInited = true;
 	
 	EOS_Logging_SetCallback( fEosLogging );
-	EOS_Logging_SetLogLevel( EOS_ELogCategory::EOS_LC_ALL_CATEGORIES, EOS_ELogLevel::EOS_LOG_Verbose );
+	EOS_Logging_SetLogLevel( EOS_ELogCategory::EOS_LC_ALL_CATEGORIES, EOS_ELogLevel::EOS_LOG_VeryVerbose );
 }
 
 deBaseServiceService* deEosSdk::CreateService( deService *service,

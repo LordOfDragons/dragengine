@@ -27,6 +27,8 @@
 
 #include "deEosSdk.h"
 #include "deEosSdkServiceEos.h"
+#include "flow/deEosSdkFlowInit.h"
+#include "flow/deEosSdkFlowAuthLogin.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/utils/decUniqueID.h>
@@ -55,31 +57,6 @@ public:
 		return info;
 	}
 };
-
-static void fEosInitCreateDeviceIdCallback( const EOS_Connect_CreateDeviceIdCallbackInfo *data ){
-	const cCallbackInfo info( cCallbackInfo::Get( data->ClientData ) );
-	info.service->OnInitCreateDeviceIdCallback( info.id, *data );
-}
-
-static void fEosInitLoginCallback( const EOS_Connect_LoginCallbackInfo *data ){
-	const cCallbackInfo info( cCallbackInfo::Get( data->ClientData ) );
-	info.service->OnInitLoginCallback( info.id, *data );
-}
-
-static void fEosLoginAutoCallback( const EOS_Auth_LoginCallbackInfo *data ){
-	const cCallbackInfo info( cCallbackInfo::Get( data->ClientData ) );
-	info.service->OnLoginAutoCallback( info.id, *data );
-}
-
-static void fEosLoginAutoDeletePersistentAuthCallback( const EOS_Auth_DeletePersistentAuthCallbackInfo *data ){
-	const cCallbackInfo info( cCallbackInfo::Get( data->ClientData ) );
-	info.service->OnLoginAutoDeletePersistentAuthCallback( info.id, *data );
-}
-
-static void fEosLoginCallback( const EOS_Auth_LoginCallbackInfo *data ){
-	const cCallbackInfo info( cCallbackInfo::Get( data->ClientData ) );
-	info.service->OnLoginCallback( info.id, *data );
-}
 
 static void fEosLogoutCallback( const EOS_Auth_LogoutCallbackInfo *data ){
 	const cCallbackInfo info( cCallbackInfo::Get( data->ClientData ) );
@@ -120,9 +97,9 @@ pHandleUserInfo( nullptr ),
 pHandleAchievements( nullptr ),
 pHandleStats( nullptr ),
 pHandleConnect( nullptr ),
-pLocalUserId( nullptr ),
-pSelectedAccountId( nullptr ),
-pProductUserId( nullptr )
+localUserId( nullptr ),
+selectedAccountId( nullptr ),
+productUserId( nullptr )
 {
 	pModule.InitSdk( data );
 	
@@ -160,8 +137,7 @@ pProductUserId( nullptr )
 	}
 	
 	module.AddFrameUpdater( this );
-	
-	pInitCreateDeviceId( data );
+	new deEosSdkFlowInit( *this );
 }
 
 deEosSdkServiceEos::~deEosSdkServiceEos(){
@@ -179,11 +155,46 @@ deEosSdkServiceEos::~deEosSdkServiceEos(){
 // Management
 ///////////////
 
+EOS_HAuth deEosSdkServiceEos::GetHandleAuth(){
+	if( ! pHandleAuth ){
+		pHandleAuth = EOS_Platform_GetAuthInterface( pHandlePlatform );
+	}
+	return pHandleAuth;
+}
+
+EOS_HUserInfo deEosSdkServiceEos::GetHandleUserInfo(){
+	if( ! pHandleUserInfo ){
+		pHandleUserInfo = EOS_Platform_GetUserInfoInterface( pHandlePlatform );
+	}
+	return pHandleUserInfo;
+}
+
+EOS_HAchievements deEosSdkServiceEos::GetHandleAchievements(){
+	if( ! pHandleAchievements ){
+		pHandleAchievements = EOS_Platform_GetAchievementsInterface( pHandlePlatform );
+	}
+	return pHandleAchievements;
+}
+
+EOS_HStats deEosSdkServiceEos::GetHandleStats(){
+	if( ! pHandleStats ){
+		pHandleStats = EOS_Platform_GetStatsInterface( pHandlePlatform );
+	}
+	return pHandleStats;
+}
+
+EOS_HConnect deEosSdkServiceEos::GetHandleConnect(){
+	if( ! pHandleConnect ){
+		pHandleConnect = EOS_Platform_GetConnectInterface( pHandlePlatform );
+	}
+	return pHandleConnect;
+}
+
 void deEosSdkServiceEos::StartRequest( const decUniqueID &id, const deServiceObject& request ){
 	const decString &function = request.GetChildAt( "function" )->GetString();
 	
 	if( function == "authLogin" ){
-		AuthLoginAuto( id, request );
+		new deEosSdkFlowAuthLogin( *this, id, request );
 		
 	}else if( function == "authLogout" ){
 		AuthLogout( id, request );
@@ -286,122 +297,68 @@ const decUniqueID &id, const decString &function, const deServiceObject::Ref &da
 }
 
 
-void deEosSdkServiceEos::AuthLoginAuto( const decUniqueID &id, const deServiceObject &request ){
-	const deServiceObject::Ref &soExchangeCode = request.GetChildAt( "exchangeCode" );
-	const deServiceObject::Ref &soUserId = request.GetChildAt( "userId" );
-	const deServiceObject::Ref &soUserPassword = request.GetChildAt( "userPassword" );
-	
-	if( soExchangeCode || soUserId || soUserPassword ){
-		AuthLogin( id, request, true );
-		return;
-	}
-	
-	EOS_Auth_Credentials credentials = {};
-	credentials.ApiVersion = EOS_AUTH_CREDENTIALS_API_LATEST;
-	credentials.Type = EOS_ELoginCredentialType::EOS_LCT_PersistentAuth;
-	
-	EOS_Auth_LoginOptions options = pCreateLoginOptions( request );
-	options.Credentials = &credentials;
-	
-	pModule.LogInfo( "deEosSdkServiceEos: Logging in user using persistent authentification");
-	NewPendingRequest( id, "authLogin" )->request.TakeOver( new deServiceObject( request, true ) );
-	EOS_Auth_Login( pGetHandleAuth(), &options, new cCallbackInfo( this, id ), fEosLoginAutoCallback );
-}
-
-void deEosSdkServiceEos::AuthLogin( const decUniqueID &id, const deServiceObject &request,
-bool startRequest ){
-	const deServiceObject::Ref &soExchangeCode = request.GetChildAt( "exchangeCode" );
-	const deServiceObject::Ref &soUserId = request.GetChildAt( "userId" );
-	const deServiceObject::Ref &soUserPassword = request.GetChildAt( "userPassword" );
-	
-	EOS_Auth_Credentials credentials = {};
-	credentials.ApiVersion = EOS_AUTH_CREDENTIALS_API_LATEST;
-	
-	if( soExchangeCode ){
-		credentials.Type = EOS_ELoginCredentialType::EOS_LCT_ExchangeCode;
-		credentials.Token = soExchangeCode->GetString().GetString();
-		
-	} else if( soUserId && soUserPassword ){
-		credentials.Type = EOS_ELoginCredentialType::EOS_LCT_Password;
-		credentials.Id = soUserId->GetString().GetString();
-		credentials.Token = soUserPassword->GetString().GetString();
-		
-	} else {
-		credentials.Type = EOS_ELoginCredentialType::EOS_LCT_AccountPortal;
-	}
-	
-	EOS_Auth_LoginOptions options = pCreateLoginOptions( request );
-	options.Credentials = &credentials;
-	
-	pModule.LogInfo( "deEosSdkServiceEos: Logging in user");
-	if( startRequest ){
-		NewPendingRequest( id, "authLogin" );
-	}
-	EOS_Auth_Login( pGetHandleAuth(), &options, new cCallbackInfo( this, id ), fEosLoginCallback );
-}
-
 void deEosSdkServiceEos::AuthLogout( const decUniqueID &id, const deServiceObject &request ){
-	if( ! pLocalUserId ){
+	if( ! localUserId ){
 		DETHROW_INFO( deeInvalidAction, "No user logged in" );
 	}
 	
 	EOS_Auth_LogoutOptions options = {};
 	options.ApiVersion = EOS_AUTH_LOGOUT_API_LATEST;
-	options.LocalUserId = pLocalUserId;
+	options.LocalUserId = localUserId;
 	
 	pModule.LogInfo( "deEosSdkServiceEos: Logging out user");
 	NewPendingRequest( id, "authLogout" );
-	EOS_Auth_Logout( pGetHandleAuth(), &options, new cCallbackInfo( this, id ), fEosLogoutCallback );
+	EOS_Auth_Logout( GetHandleAuth(), &options, new cCallbackInfo( this, id ), fEosLogoutCallback );
 }
 
 void deEosSdkServiceEos::QueryUserInfo( const decUniqueID &id, const deServiceObject &request ){
-	if( ! pLocalUserId ){
+	if( ! localUserId ){
 		DETHROW_INFO( deeInvalidAction, "No user logged in" );
 	}
 	
 	EOS_UserInfo_QueryUserInfoOptions options = {};
 	options.ApiVersion = EOS_USERINFO_QUERYUSERINFO_API_LATEST;
-	options.LocalUserId = pLocalUserId;
-	options.TargetUserId = pLocalUserId;
+	options.LocalUserId = localUserId;
+	options.TargetUserId = localUserId;
 	
 	pModule.LogInfo( "deEosSdkServiceEos: Get user information");
 	NewPendingRequest( id, "queryUserInfo" );
-	EOS_UserInfo_QueryUserInfo( pGetHandleUserInfo(), &options,
+	EOS_UserInfo_QueryUserInfo( GetHandleUserInfo(), &options,
 		new cCallbackInfo( this, id ), fEosQueryUserInfoCallback );
 }
 
 void deEosSdkServiceEos::QueryPlayerStats( const decUniqueID &id, const deServiceObject &request ){
-	if( ! pProductUserId ){
+	if( ! productUserId ){
 		DETHROW_INFO( deeInvalidAction, "Product user id missing" );
 	}
 	
 	EOS_Achievements_QueryPlayerAchievementsOptions options = {};
 	options.ApiVersion = EOS_ACHIEVEMENTS_QUERYPLAYERACHIEVEMENTS_API_LATEST;
-	options.LocalUserId = pProductUserId;
-	options.TargetUserId = pProductUserId;
+	options.LocalUserId = productUserId;
+	options.TargetUserId = productUserId;
 	
 	pModule.LogInfo( "deEosSdkServiceEos: Get player achievements");
 	const deEosSdkPendingRequest::Ref pr( NewPendingRequest( id, "queryPlayerAchievements" ) );
 	pr->request.TakeOver( new deServiceObject( request, true ) );
 	
-	EOS_Achievements_QueryPlayerAchievements( pGetHandleAchievements(), &options,
+	EOS_Achievements_QueryPlayerAchievements( GetHandleAchievements(), &options,
 		new cCallbackInfo( this, id ), fEosQueryPlayerAchievementsCallback );
 }
 
 deServiceObject::Ref deEosSdkServiceEos::CopyIdToken( const deServiceObject &action ){
-	if( ! pSelectedAccountId ){
+	if( ! selectedAccountId ){
 		DETHROW_INFO( deeInvalidAction, "No user logged in" );
 	}
 	
 	EOS_Auth_CopyIdTokenOptions options = {};
 	options.ApiVersion = EOS_AUTH_COPYIDTOKEN_API_LATEST;
-	options.AccountId = pSelectedAccountId;
+	options.AccountId = selectedAccountId;
 	
 	EOS_Auth_IdToken *token = nullptr;
 	deServiceObject::Ref result;
 	
 	try{
-		const EOS_EResult res = EOS_Auth_CopyIdToken( pGetHandleAuth(), &options, &token );
+		const EOS_EResult res = EOS_Auth_CopyIdToken( GetHandleAuth(), &options, &token );
 		if( res != EOS_EResult::EOS_Success ){
 			DETHROW_INFO( deeInvalidAction, EOS_EResult_ToString( res ) );
 		}
@@ -421,7 +378,7 @@ deServiceObject::Ref deEosSdkServiceEos::CopyIdToken( const deServiceObject &act
 }
 
 deServiceObject::Ref deEosSdkServiceEos::IsUserLoggedIn( const deServiceObject &action ){
-	return deServiceObject::NewBool( pLocalUserId != nullptr );
+	return deServiceObject::NewBool( localUserId != nullptr );
 }
 
 void deEosSdkServiceEos::FailRequest( const decUniqueID &id, const deException &e ){
@@ -465,84 +422,6 @@ void deEosSdkServiceEos::FailRequest( const deEosSdkPendingRequest::Ref &request
 // EOS Callbacks
 //////////////////
 
-void deEosSdkServiceEos::OnInitCreateDeviceIdCallback( const decUniqueID &id,
-const EOS_Connect_CreateDeviceIdCallbackInfo &data ){
-	pModule.LogInfoFormat( "deEosSdkServiceEos.OnInitCreateDeviceIdCallback: res=%d", ( int )data.ResultCode );
-	switch( data.ResultCode ){
-	case EOS_EResult::EOS_DuplicateNotAllowed:
-		pModule.LogInfo( "deEosSdkServiceEos: Init: Device id already created." );
-		pInitConnectLogin();
-		break;
-		
-	case EOS_EResult::EOS_Success:
-		pModule.LogInfo( "deEosSdkServiceEos: Init: Device id created." );
-		pInitConnectLogin();
-		break;
-		
-	default:
-		pFinishInitEvent( data.ResultCode );
-	}
-}
-
-void deEosSdkServiceEos::OnInitLoginCallback( const decUniqueID &id, const EOS_Connect_LoginCallbackInfo &data ){
-	pModule.LogInfoFormat( "deEosSdkServiceEos.OnInitLoginCallback: res=%d", ( int )data.ResultCode );
-	if( data.ResultCode == EOS_EResult::EOS_Success ){
-		pModule.LogInfo( "deEosSdkServiceEos: Init: Device id created." );
-		pProductUserId = data.LocalUserId;
-	}
-	
-	pFinishInitEvent( data.ResultCode );
-}
-
-void deEosSdkServiceEos::OnLoginAutoCallback(const decUniqueID &id, const EOS_Auth_LoginCallbackInfo &data){
-	pModule.LogInfoFormat( "deEosSdkServiceEos.OnLoginAutoCallback: res=%d", ( int )data.ResultCode );
-	if( data.ResultCode == EOS_EResult::EOS_Success ){
-		OnLoginCallback( id, data );
-		return;
-	}
-	
-	EOS_Auth_DeletePersistentAuthOptions options = {};
-	options.ApiVersion = EOS_AUTH_DELETEPERSISTENTAUTH_API_LATEST;
-	
-	pModule.LogInfo( "deEosSdkServiceEos.OnLoginAutoCallback: Login failed. Delete persistent auth token" );
-	EOS_Auth_DeletePersistentAuth( pGetHandleAuth(), &options,
-		new cCallbackInfo( this, id ), fEosLoginAutoDeletePersistentAuthCallback );
-}
-
-void deEosSdkServiceEos::OnLoginAutoDeletePersistentAuthCallback( const decUniqueID &id,
-const EOS_Auth_DeletePersistentAuthCallbackInfo &data ){
-	pModule.LogInfoFormat( "deEosSdkServiceEos.OnLoginAutoDeletePersistentAuthCallback: res=%d", ( int )data.ResultCode );
-	deEosSdkPendingRequest * const pr = GetPendingRequestWithId( id );
-	if( pr ){
-		AuthLogin( id, pr->request, false );
-	}
-}
-
-void deEosSdkServiceEos::OnLoginCallback(const decUniqueID &id, const EOS_Auth_LoginCallbackInfo &data){
-	pModule.LogInfoFormat( "deEosSdkServiceEos.OnLoginCallback: res=%d", ( int )data.ResultCode );
-	if( data.ResultCode != EOS_EResult::EOS_Success ){
-		FailRequest( id, data.ResultCode );
-		return;
-	}
-	
-	pLocalUserId = data.LocalUserId;
-	pSelectedAccountId = data.SelectedAccountId;
-	
-	const deEosSdkPendingRequest::Ref pr( RemoveFirstPendingRequestWithId( id ) );
-	if( ! pr ){
-		return;
-	}
-	
-	try{
-		pModule.GetGameEngine()->GetServiceManager()->QueueRequestResponse(
-			pService, pr->id, pr->data, true );
-		
-	}catch( const deException &e ){
-		FailRequest( pr, e );
-		return;
-	}
-}
-
 void deEosSdkServiceEos::OnLogoutCallback(const decUniqueID &id, const EOS_Auth_LogoutCallbackInfo &data){
 	pModule.LogInfoFormat( "deEosSdkServiceEos.OnLogoutCallback: res=%d", ( int )data.ResultCode );
 	if( data.ResultCode != EOS_EResult::EOS_Success ){
@@ -550,14 +429,14 @@ void deEosSdkServiceEos::OnLogoutCallback(const decUniqueID &id, const EOS_Auth_
 		return;
 	}
 	
-	pLocalUserId = nullptr;
-	pSelectedAccountId = nullptr;
+	localUserId = nullptr;
+	selectedAccountId = nullptr;
 	
 	EOS_Auth_DeletePersistentAuthOptions options = {};
 	options.ApiVersion = EOS_AUTH_DELETEPERSISTENTAUTH_API_LATEST;
 	
 	pModule.LogInfo( "deEosSdkServiceEos.OnLogoutCallback: Delete persistent auth token" );
-	EOS_Auth_DeletePersistentAuth( pGetHandleAuth(), &options,
+	EOS_Auth_DeletePersistentAuth( GetHandleAuth(), &options,
 		new cCallbackInfo( this, id ), fEosLogoutDeletePersistentAuthCallback );
 }
 
@@ -600,7 +479,7 @@ const EOS_UserInfo_QueryUserInfoCallbackInfo &data ){
 		options.LocalUserId = data.LocalUserId;
 		options.TargetUserId = data.TargetUserId;
 		
-		EOS_UserInfo_CopyUserInfo( pGetHandleUserInfo(), &options, &info );
+		EOS_UserInfo_CopyUserInfo( GetHandleUserInfo(), &options, &info );
 		const EOS_UserInfo &ri = *info;
 		
 		char userId[ EOS_EPICACCOUNTID_MAX_LENGTH + 1 ];
@@ -657,8 +536,8 @@ const EOS_Achievements_OnQueryPlayerAchievementsCompleteCallbackInfo &data ){
 	options.ApiVersion = EOS_STATS_QUERYSTATS_API_LATEST;
 	options.StartTime = EOS_STATS_TIME_UNDEFINED;
 	options.EndTime = EOS_STATS_TIME_UNDEFINED;
-	options.LocalUserId = pProductUserId;
-	options.TargetUserId = pProductUserId;
+	options.LocalUserId = productUserId;
+	options.TargetUserId = productUserId;
 	
 	try{
 		const deServiceObject::Ref &soStats = pr->request->GetChildAt( "stats" );
@@ -670,7 +549,7 @@ const EOS_Achievements_OnQueryPlayerAchievementsCompleteCallbackInfo &data ){
 					names.Add( soStats->GetChildAt( i )->GetString() );
 				}
 				
-				options.StatNames = new char*[ count ];
+				options.StatNames = new const char*[ count ];
 				for( i=0; i<count; i++ ){
 					options.StatNames[ i ] = names.GetAt( i );
 				}
@@ -678,7 +557,7 @@ const EOS_Achievements_OnQueryPlayerAchievementsCompleteCallbackInfo &data ){
 		}
 		
 		pModule.LogInfo( "deEosSdkServiceEos: Get player stats" );
-		EOS_Stats_QueryStats( pGetHandleStats(), &options,
+		EOS_Stats_QueryStats( GetHandleStats(), &options,
 			new cCallbackInfo( this, id ), fEosQueryPlayerStatsCallback );
 		
 		if( options.StatNames ){
@@ -722,116 +601,4 @@ const EOS_Stats_OnQueryStatsCompleteCallbackInfo &data ){
 
 void deEosSdkServiceEos::FrameUpdate( float elapsed ){
 	EOS_Platform_Tick( pHandlePlatform );
-}
-
-
-
-// Private Functions
-//////////////////////
-
-EOS_HAuth deEosSdkServiceEos::pGetHandleAuth()
-{
-	if( ! pHandleAuth ){
-		pHandleAuth = EOS_Platform_GetAuthInterface( pHandlePlatform );
-	}
-	return pHandleAuth;
-}
-
-EOS_HUserInfo deEosSdkServiceEos::pGetHandleUserInfo(){
-	if( ! pHandleUserInfo ){
-		pHandleUserInfo = EOS_Platform_GetUserInfoInterface( pHandlePlatform );
-	}
-	return pHandleUserInfo;
-}
-
-EOS_HAchievements deEosSdkServiceEos::pGetHandleAchievements(){
-	if( ! pHandleAchievements ){
-		pHandleAchievements = EOS_Platform_GetAchievementsInterface( pHandlePlatform );
-	}
-	return pHandleAchievements;
-}
-
-EOS_HStats deEosSdkServiceEos::pGetHandleStats(){
-	if( ! pHandleStats ){
-		pHandleStats = EOS_Platform_GetStatsInterface( pHandlePlatform );
-	}
-	return pHandleStats;
-}
-
-EOS_HConnect deEosSdkServiceEos::pGetHandleConnect(){
-	if( ! pHandleConnect ){
-		pHandleConnect = EOS_Platform_GetConnectInterface( pHandlePlatform );
-	}
-	return pHandleConnect;
-}
-
-void deEosSdkServiceEos::pInitCreateDeviceId( const deServiceObject& data ){
-	EOS_Connect_CreateDeviceIdOptions options = {};
-	options.ApiVersion = EOS_CONNECT_CREATEDEVICEID_API_LATEST;
-	
-	#ifdef OS_W32
-	options.DeviceModel = "Windows";
-	#elif defined OS_MACOS
-	options.DeviceModel = "MacOS";
-	#elif defined OS_BEOS
-	options.DeviceModel = "BeOS";
-	#elif defined OS_ANDROID
-	options.DeviceModel = "Android";
-	#elif defined OS_UNIX
-	options.DeviceModel = "Unix";
-	#else
-	options.DeviceModel = "Unknown";
-	#endif
-	
-	pModule.LogInfo( "deEosSdkServiceEos: Init create device id" );
-	EOS_Connect_CreateDeviceId( pGetHandleConnect(), &options,
-		new cCallbackInfo( this ), fEosInitCreateDeviceIdCallback );
-}
-
-void deEosSdkServiceEos::pInitConnectLogin(){
-	EOS_Connect_Credentials credentials = {};
-	credentials.ApiVersion = EOS_CONNECT_CREDENTIALS_API_LATEST;
-	credentials.Type = EOS_EExternalCredentialType::EOS_ECT_DEVICEID_ACCESS_TOKEN;
-	
-	EOS_Connect_LoginOptions options = {};
-	options.ApiVersion = EOS_CONNECT_LOGIN_API_LATEST;
-	options.Credentials = &credentials;
-	
-	pModule.LogInfo( "deEosSdkServiceEos: Init connect login" );
-	EOS_Connect_Login( pGetHandleConnect(), &options,
-		new cCallbackInfo( this ), fEosInitLoginCallback );
-}
-
-void deEosSdkServiceEos::pFinishInitEvent( EOS_EResult res ){
-	const deServiceObject::Ref event( deServiceObject::Ref::New( new deServiceObject ) );
-	event->SetStringChildAt( "event", "initialized" );
-	
-	if( res == EOS_EResult::EOS_Success ){
-		event->SetBoolChildAt( "success", true );
-		
-	}else{
-		event->SetBoolChildAt( "success", false );
-		event->SetStringChildAt( "error", EOS_EResult_ToString( res ) );
-		event->SetStringChildAt( "message", EOS_EResult_ToString( res ) );
-	}
-	
-	pModule.GetGameEngine()->GetServiceManager()->QueueEventReceived( pService, event );
-}
-
-EOS_Auth_LoginOptions deEosSdkServiceEos::pCreateLoginOptions( const deServiceObject &request ) const{
-	EOS_Auth_LoginOptions options = {};
-	options.ApiVersion = EOS_AUTH_LOGIN_API_LATEST;
-	options.ScopeFlags = EOS_EAuthScopeFlags::EOS_AS_BasicProfile;
-	
-	const deServiceObject::Ref &soScopeFriends = request.GetChildAt("scopeFriends");
-	if( soScopeFriends && soScopeFriends->GetBoolean() ){
-		options.ScopeFlags |= EOS_EAuthScopeFlags::EOS_AS_FriendsList;
-	}
-	
-	const deServiceObject::Ref &soScopePresence = request.GetChildAt("scopePresence");
-	if( soScopePresence && soScopePresence->GetBoolean() ){
-		options.ScopeFlags |= EOS_EAuthScopeFlags::EOS_AS_Presence;
-	}
-	
-	return options;
 }
