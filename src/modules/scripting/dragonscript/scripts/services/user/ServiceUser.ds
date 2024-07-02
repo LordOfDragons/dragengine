@@ -70,8 +70,9 @@ interface ServiceUser
 	 * 
 	 * \param credentials Credentials for manual logging in. Use null for automatic logging in.
 	 * \param listener If not null called once in addition to added listeners.
+	 * \returns Request ID. Can be used to cancel request.
 	 */
-	func void loginUser(ServiceUserCredentials credentials, ServiceUserListener listener)
+	func UniqueID loginUser(ServiceUserCredentials credentials, ServiceUserListener listener)
 	
 	/**
 	 * \brief Log out user.
@@ -80,8 +81,14 @@ interface ServiceUser
 	 * is called.
 	 * 
 	 * \param listener If not null called once in addition to added listeners.
+	 * \returns Request ID. Can be used to cancel request.
 	 */
-	func void logoutUser(ServiceUserListener listener)
+	func UniqueID logoutUser(ServiceUserListener listener)
+	
+	/**
+	 * \brief User is logged in.
+	 */
+	func bool isUserLoggedIn()
 	
 	/**
 	 * \brief Request authentification token.
@@ -90,13 +97,24 @@ interface ServiceUser
 	 * The received ticket is Base64 encoded.
 	 * 
 	 * \param listener If not null called once in addition to added listeners.
+	 * \returns Request ID. Can be used to cancel request.
 	 */
-	func void getAuthToken(ServiceUserListener listener)
+	func UniqueID getAuthToken(ServiceUserListener listener)
 	
 	/**
 	 * \brief Retrieve user information.
 	 * 
 	 * \param listener If not null called once in addition to added listeners.
+	 * \returns Request ID. Can be used to cancel request.
 	 */
-	func void getUserInfo(ServiceUserListener listener)
+	func UniqueID getUserInfo(ServiceUserListener listener)
+	
+	/**
+	 * \brief Cancel request.
+	 * 
+	 * Safe to be called if request has been already cancelled or does not exist.
+	 * 
+	 * \param id Identifier of request to cancel.
+	 */
+	func void cancelRequest(UniqueID id)
 end

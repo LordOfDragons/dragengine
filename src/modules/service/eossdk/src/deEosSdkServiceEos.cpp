@@ -187,6 +187,9 @@ deServiceObject::Ref deEosSdkServiceEos::RunAction( const deServiceObject &actio
 	if( function == "copyIdToken" ){
 		return CopyIdToken( action );
 		
+	}else if( function == "isUserLoggedIn" ){
+		return IsUserLoggedIn( action );
+		
 	}else{
 		DETHROW_INFO( deeInvalidParam, "Unknown function" );
 	}
@@ -368,6 +371,10 @@ deServiceObject::Ref deEosSdkServiceEos::CopyIdToken( const deServiceObject &act
 	}
 	
 	return result;
+}
+
+deServiceObject::Ref deEosSdkServiceEos::IsUserLoggedIn( const deServiceObject &action ){
+	return deServiceObject::NewBool( pLocalUserId != nullptr );
 }
 
 void deEosSdkServiceEos::FailRequest( const decUniqueID &id, const deException &e ){

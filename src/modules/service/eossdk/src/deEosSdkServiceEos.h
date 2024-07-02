@@ -114,6 +114,7 @@ public:
 	void QueryUserInfo( const decUniqueID &id, const deServiceObject& request );
 	
 	deServiceObject::Ref CopyIdToken( const deServiceObject& action );
+	deServiceObject::Ref IsUserLoggedIn( const deServiceObject& action );
 	
 	void FailRequest( const decUniqueID &id, const deException &e );
 	void FailRequest( const decUniqueID &id, EOS_EResult res );

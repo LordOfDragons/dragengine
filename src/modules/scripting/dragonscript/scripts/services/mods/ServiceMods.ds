@@ -125,8 +125,9 @@ interface ServiceMods
 	 * 
 	 * \param filter Filter to use.
 	 * \param listener If not null called once in addition to added listeners.
+	 * \returns Request ID. Can be used to cancel request.
 	 */
-	func void listAllMods(ServiceModFilter filter, ServiceModsListener listener)
+	func UniqueID listAllMods(ServiceModFilter filter, ServiceModsListener listener)
 	
 	/**
 	 * \brief Load resource asynchronously.
@@ -137,53 +138,9 @@ interface ServiceMods
 	 * 
 	 * \param url URL of image to load.
 	 * \param listener If not null called once in addition to added listeners.
+	 * \returns Request ID. Can be used to cancel request.
 	 */
-	func void loadResource(String url, ServiceModsListener listener)
-	
-	/**
-	 * \brief Determines if the user is authenticated.
-	 * 
-	 * Managing mods typically requires the user to be authenticated to the service provider.
-	 * If the service does not require a remove service provider authenticating is potentially
-	 * not required. See the service documentation for these requirements.
-	 */
-	func bool isAuthenticated()
-	
-	/**
-	 * \brief Authenticate user.
-	 * 
-	 * Managing mods typically requires the user to be authenticated to the service provider.
-	 * If the service does not require a remove service provider authenticating is potentially
-	 * not required. See the service documentation for these requirements.
-	 * 
-	 * Authentication tokens are typically obtained from services supporting ServiceUser
-	 * interface by calling \ref ServiceUser#getAuthToken(ServiceUserListener).
-	 * 
-	 * If user has been successfully authenticated
-	 * \ref ServiceModsListener#onAuthenticate(ServiceMods,Exception) is called.
-	 * 
-	 * \param token Authentication token.
-	 * \param listener If not null called once in addition to added listeners.
-	 */
-	func void authenticate(ServiceUserAuthToken token, ServiceModsListener listener)
-	
-	/**
-	 * \brief Deauthenticate user.
-	 * 
-	 * Managing mods typically requires the user to be authenticated to the service provider.
-	 * If the service does not require a remove service provider authenticating is potentially
-	 * not required. See the service documentation for these requirements.
-	 * 
-	 * Deauthentication potentially deletes local user data. See the service documentation
-	 * for side effects of using this call.
-	 * 
-	 * If user has been successfully deauthenticated
-	 * \ref ServiceModsListener#onDeauthenticate(ServiceMods,Exception) is called.
-	 * 
-	 * \param token Authentication token.
-	 * \param listener If not null called once in addition to added listeners.
-	 */
-	func void deauthenticate(ServiceModsListener listener)
+	func UniqueID loadResource(String url, ServiceModsListener listener)
 	
 	/**
 	 * \brief Mod management is paused.
@@ -197,15 +154,6 @@ interface ServiceMods
 	 * This process can be temporarily paused for example during game play.
 	 */
 	func void setPauseManagement(bool pause)
-	
-	/**
-	 * \brief Cancel request.
-	 * 
-	 * Safe to be called if request has been already cancelled or does not exist.
-	 * 
-	 * \param id Identifier of request to cancel.
-	 */
-	func void cancelRequest(UniqueID id)
 	
 	/**
 	 * \brief Service is busy managing modifications.
@@ -236,8 +184,9 @@ interface ServiceMods
 	 * \param token Authentication token.
 	 * \param id Identifier of modification to subscribe to.
 	 * \param listener If not null called once in addition to added listeners.
+	 * \returns Request ID. Can be used to cancel request.
 	 */
-	func void subscribeMod(String id, ServiceModsListener listener)
+	func UniqueID subscribeMod(String id, ServiceModsListener listener)
 	
 	/**
 	 * \brief Unsubscribe from modification.
@@ -255,8 +204,9 @@ interface ServiceMods
 	 * \param token Authentication token.
 	 * \param id Identifier of modification to unsubscribe from.
 	 * \param listener If not null called once in addition to added listeners.
+	 * \returns Request ID. Can be used to cancel request.
 	 */
-	func void unsubscribeMod(String id, ServiceModsListener listener)
+	func UniqueID unsubscribeMod(String id, ServiceModsListener listener)
 	
 	/**
 	 * \brief Current mod install or update progress information.
@@ -283,13 +233,6 @@ interface ServiceMods
 	func Dictionary getSystemMods()
 	
 	/**
-	 * \brief User information or null if not know.
-	 * 
-	 * User information is present if the user is authenticated.
-	 */
-	func ServiceUserInfo getUserInfo()
-	
-	/**
 	 * \brief Retrieve information about game modification.
 	 * 
 	 * Once finished \ref ServiceModsListener#onGetModInfo(ServiceMods,String,ServiceModInfo,Exception)
@@ -297,8 +240,9 @@ interface ServiceMods
 	 * 
 	 * \param modId Identifier of modification to retrieve.
 	 * \param listener If not null called once in addition to added listeners.
+	 * \returns Request ID. Can be used to cancel request.
 	 */
-	func void getModInfo(String id, ServiceModsListener listener)
+	func UniqueID getModInfo(String id, ServiceModsListener listener)
 	
 	/**
 	 * \brief Submit rating for modification.
@@ -309,8 +253,9 @@ interface ServiceMods
 	 * \param modId Identifier of modification to submit rating for.
 	 * \param rating Rating to submit.
 	 * \param listener If not null called once in addition to added listeners.
+	 * \returns Request ID. Can be used to cancel request.
 	 */
-	func void submitModRating(String id, int rating, ServiceModsListener listener)
+	func UniqueID submitModRating(String id, int rating, ServiceModsListener listener)
 	
 	/**
 	 * \brief Revoke rating for modification.
@@ -320,6 +265,16 @@ interface ServiceMods
 	 * 
 	 * \param modId Identifier of modification to revoke rating for.
 	 * \param listener If not null called once in addition to added listeners.
+	 * \returns Request ID. Can be used to cancel request.
 	 */
-	func void revokeModRating(String id, ServiceModsListener listener)
+	func UniqueID revokeModRating(String id, ServiceModsListener listener)
+	
+	/**
+	 * \brief Cancel request.
+	 * 
+	 * Safe to be called if request has been already cancelled or does not exist.
+	 * 
+	 * \param id Identifier of request to cancel.
+	 */
+	func void cancelRequest(UniqueID id)
 end

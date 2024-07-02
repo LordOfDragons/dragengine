@@ -55,6 +55,11 @@ class ServiceSteamSdk implements ServiceStats, ServiceUser, ServiceListener
 		end
 	end
 	
+	/**
+	 * \brief Authentification provider identifier.
+	 */
+	static public fixed var String authProviderId = "steam"
+	
 	
 	
 	var InitParameters pInitParameters
@@ -113,11 +118,6 @@ class ServiceSteamSdk implements ServiceStats, ServiceUser, ServiceListener
 		return Engine.getSupportedServices().has("SteamSDK")
 	end
 	
-	/**
-	 * \brief Authentification provider identifier.
-	 */
-	static fixed var String authProviderId = "steam"
-	
 	
 	
 	/**
@@ -150,8 +150,9 @@ class ServiceSteamSdk implements ServiceStats, ServiceUser, ServiceListener
 	 * \param stats Stats.
 	 * \param achievements Achievements.
 	 * \param listener If not null called once in addition to added listeners.
+	 * \returns Request ID. Can be used to cancel request.
 	 */
-	func void getStatsAndAchievements(Set stats, Set achievements, ServiceStatsListener listener)
+	func UniqueID getStatsAndAchievements(Set stats, Set achievements, ServiceStatsListener listener)
 		if stats == null
 			throw ENullPointer.new("stats")
 		end
@@ -165,7 +166,7 @@ class ServiceSteamSdk implements ServiceStats, ServiceUser, ServiceListener
 		pGetStatsApiNames = Set.new(stats)
 		pGetAchievementsApiNames = Set.new(achievements)
 		
-		pRunRequest(so, listener)
+		return pRunRequest(so, listener)
 	end
 	
 	/**
@@ -182,8 +183,9 @@ class ServiceSteamSdk implements ServiceStats, ServiceUser, ServiceListener
 	 * Value is true or false to set or clear the achievement.
 	 * 
 	 * \param listener If not null called once in addition to added listeners.
+	 * \returns Request ID. Can be used to cancel request.
 	 */
-	func void setStatsAndAchievements(Dictionary stats, Dictionary achievements, ServiceStatsListener listener)
+	func UniqueID setStatsAndAchievements(Dictionary stats, Dictionary achievements, ServiceStatsListener listener)
 		if stats == null
 			throw ENullPointer.new("stats")
 		end
@@ -218,7 +220,7 @@ class ServiceSteamSdk implements ServiceStats, ServiceUser, ServiceListener
 		pSetStatsApiNames = Set.newFrom(stats.getKeys())
 		pSetAchievementsApiNames = Set.newFrom(achievements.getKeys())
 		
-		pRunRequest(so, listener)
+		return pRunRequest(so, listener)
 	end
 	
 	/**
@@ -228,6 +230,7 @@ class ServiceSteamSdk implements ServiceStats, ServiceUser, ServiceListener
 	 * For this reason this call does not send events to listeners.
 	 * 
 	 * \param resetAchievements Reset also achievements not just stats.
+	 * \returns Request ID. Can be used to cancel request.
 	 */
 	func void resetAllStats(bool resetAchievements)
 		var ServiceObject so = ServiceObject.new()
@@ -277,8 +280,9 @@ class ServiceSteamSdk implements ServiceStats, ServiceUser, ServiceListener
 	 * 
 	 * \param credentials Has to be null or an exception is thrown.
 	 * \param listener If not null called once in addition to added listeners.
+	 * \returns Request ID. Can be used to cancel request.
 	 */
-	func void loginUser(ServiceUserCredentials credentials, ServiceUserListener listener)
+	func UniqueID loginUser(ServiceUserCredentials credentials, ServiceUserListener listener)
 		if credentials != null
 			throw EInvalidParam.new("credentials has to be null")
 		end
@@ -291,17 +295,24 @@ class ServiceSteamSdk implements ServiceStats, ServiceUser, ServiceListener
 				listener.onLoginUser(this, null)
 			end
 		end)
+		
+		return pService.nextId()
 	end
 	
 	/**
 	 * \brief Log out user.
 	 * 
 	 * Not supported. Throws exception if called.
-	 * 
-	 * \param listener If not null called once in addition to added listeners.
 	 */
-	func void logoutUser(ServiceUserListener listener)
+	func UniqueID logoutUser(ServiceUserListener listener)
 		throw EInvalidParam.new("not supported")
+	end
+	
+	/**
+	 * \brief User is logged in.
+	 */
+	func bool isUserLoggedIn()
+		return true
 	end
 	
 	/**
@@ -311,24 +322,39 @@ class ServiceSteamSdk implements ServiceStats, ServiceUser, ServiceListener
 	 * The received ticket is Base64 encoded.
 	 * 
 	 * \param listener If not null called once in addition to added listeners.
+	 * \returns Request ID. Can be used to cancel request.
 	 */
-	func void getAuthToken(ServiceUserListener listener)
+	func UniqueID getAuthToken(ServiceUserListener listener)
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "requestEncryptedAppTicket")
 		
-		pRunRequest(so, listener)
+		return pRunRequest(so, listener)
 	end
 	
 	/**
 	 * \brief Retrieve user information.
 	 * 
 	 * \param listener If not null called once in addition to added listeners.
+	 * \returns Request ID. Can be used to cancel request.
 	 */
-	func void getUserInfo(ServiceUserListener listener)
+	func UniqueID getUserInfo(ServiceUserListener listener)
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "getUserInfo")
 		
-		pRunRequest(so, listener)
+		return pRunRequest(so, listener)
+	end
+	
+	
+	
+	/**
+	 * \brief Cancel request.
+	 * 
+	 * Safe to be called if request has been already cancelled or does not exist.
+	 * 
+	 * \param id Identifier of request to cancel.
+	 */
+	func void cancelRequest(UniqueID id)
+		pService.cancelRequest(id)
 	end
 	
 	

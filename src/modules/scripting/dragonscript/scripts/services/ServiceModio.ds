@@ -39,7 +39,7 @@ pin Dragengine.Services.User
  * - Mod installing
  * - Mod deinstalling
  */
-class ServiceModio implements ServiceListener, ServiceMods
+class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 	/**
 	 * \brief Store portal for use with ServiceModio.
 	 * \version 1.23
@@ -140,7 +140,7 @@ class ServiceModio implements ServiceListener, ServiceMods
 	var Boolean pIsInitialized
 	var bool pPauseManagement
 	var bool pIsManagementBusy
-	var SafeArray pModsListeners
+	var SafeArray pModsListeners, pUserListeners
 	var Dictionary pOnceListeners
 	
 	
@@ -166,6 +166,7 @@ class ServiceModio implements ServiceListener, ServiceMods
 		pInitParameters.portal = params.portal
 		pInitListener = listener
 		pModsListeners = SafeArray.new()
+		pUserListeners = SafeArray.new()
 		pOnceListeners = Dictionary.new()
 		
 		var ServiceObject so = ServiceObject.new()
@@ -187,6 +188,7 @@ class ServiceModio implements ServiceListener, ServiceMods
 	func void dispose()
 		pInitListener = null
 		pModsListeners.removeAll()
+		pUserListeners.removeAll()
 		pOnceListeners.removeAll()
 		
 		if pService != null
@@ -250,8 +252,6 @@ class ServiceModio implements ServiceListener, ServiceMods
 		pModsListeners.remove(listener)
 	end
 	
-	
-	
 	/**
 	 * \brief Filtered list of available game modifications.
 	 * 
@@ -268,8 +268,9 @@ class ServiceModio implements ServiceListener, ServiceMods
 	 * 
 	 * \param filter Filter to use.
 	 * \param listener If not null called once in addition to added listeners.
+	 * \returns Request ID. Can be used to cancel request.
 	 */
-	func void listAllMods(ServiceModFilter filter, ServiceModsListener listener)
+	func UniqueID listAllMods(ServiceModFilter filter, ServiceModsListener listener)
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "listAllMods")
 		
@@ -295,7 +296,7 @@ class ServiceModio implements ServiceListener, ServiceMods
 			so.setIntChildAt("resultCount", filter.resultCount)
 		end
 		
-		pRunRequest(so, listener)
+		return pRunRequest(so, listener)
 	end
 	
 	/**
@@ -307,13 +308,14 @@ class ServiceModio implements ServiceListener, ServiceMods
 	 * 
 	 * \param url URL of image to load.
 	 * \param listener If not null called once in addition to added listeners.
+	 * \returns Request ID. Can be used to cancel request.
 	 */
-	func void loadResource(String url, ServiceModsListener listener)
+	func UniqueID loadResource(String url, ServiceModsListener listener)
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "loadResource")
 		so.setStringChildAt("url", url)
 		
-		pRunRequest(so, listener)
+		return pRunRequest(so, listener)
 	end
 	
 	/**
@@ -359,71 +361,6 @@ class ServiceModio implements ServiceListener, ServiceMods
 	end
 	
 	/**
-	 * \brief Determines if the user is authenticated.
-	 * 
-	 * Managing mods typically requires the user to be authenticated to the service provider.
-	 * If the service does not require a remove service provider authenticating is potentially
-	 * not required. See the service documentation for these requirements.
-	 */
-	func bool isAuthenticated()
-		var ServiceObject so = ServiceObject.new()
-		so.setStringChildAt("function", "isAuthenticated")
-		return pService.runAction(so).getBoolean()
-	end
-	
-	/**
-	 * \brief Authenticate user.
-	 * 
-	 * Managing mods typically requires the user to be authenticated to the service provider.
-	 * If the service does not require a remove service provider authenticating is potentially
-	 * not required. See the service documentation for these requirements.
-	 * 
-	 * Authentication tokens are typically obtained from services supporting ServiceUser
-	 * interface by calling \ref ServiceUser#getAuthToken(ServiceUserListener).
-	 * 
-	 * Once finished \ref ServiceModsListener#onAuthenticate(ServiceMods,Exception) is called.
-	 * 
-	 * \param token Authentication token.
-	 * \param listener If not null called once in addition to added listeners.
-	 */
-	func void authenticate(ServiceUserAuthToken token, ServiceModsListener listener)
-		var ServiceObject so = ServiceObject.new()
-		so.setStringChildAt("function", "authenticateUserExternal")
-		so.setStringChildAt("provider", token.provider)
-		so.setStringChildAt("token", token.token)
-		so.setBoolChildAt("termsAccepted", false)
-		if token.parameters != null
-			var ServiceObject so2 = ServiceObject.new()
-			token.parameters.forEach(block String key, String value
-				so2.setStringChildAt(key, value)
-			end)
-			so.setChildAt("parameters", so2)
-		end
-		
-		pRunRequest(so, listener)
-	end
-	
-	/**
-	 * \brief Deauthenticate user.
-	 * 
-	 * Managing mods typically requires the user to be authenticated to the service provider.
-	 * If the service does not require a remove service provider authenticating is potentially
-	 * not required. See the service documentation for these requirements.
-	 * 
-	 * Deauthentication potentially deletes local user data. See the service documentation
-	 * for side effects of using this call.
-	 * 
-	 * \param token Authentication token.
-	 * \param listener If not null called once in addition to added listeners.
-	 */
-	func void deauthenticate(ServiceModsListener listener)
-		var ServiceObject so = ServiceObject.new()
-		so.setStringChildAt("function", "clearUserData")
-		
-		pRunRequest(so, listener)
-	end
-	
-	/**
 	 * \brief Subscribe to modification.
 	 * 
 	 * The user can also subscribe to a modification from outside the game using different means.
@@ -439,14 +376,15 @@ class ServiceModio implements ServiceListener, ServiceMods
 	 * \param token Authentication token.
 	 * \param id Identifier of modification to subscribe to.
 	 * \param listener If not null called once in addition to added listeners.
+	 * \returns Request ID. Can be used to cancel request.
 	 */
-	func void subscribeMod(String id, ServiceModsListener listener)
+	func UniqueID subscribeMod(String id, ServiceModsListener listener)
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "subscribeToMod")
 		so.setStringChildAt("modId", id)
 		so.setBoolChildAt("dependencies", true)
 		
-		pRunRequest(so, listener)
+		return pRunRequest(so, listener)
 	end
 	
 	/**
@@ -465,13 +403,14 @@ class ServiceModio implements ServiceListener, ServiceMods
 	 * \param token Authentication token.
 	 * \param id Identifier of modification to unsubscribe from.
 	 * \param listener If not null called once in addition to added listeners.
+	 * \returns Request ID. Can be used to cancel request.
 	 */
-	func void unsubscribeMod(String id, ServiceModsListener listener)
+	func UniqueID unsubscribeMod(String id, ServiceModsListener listener)
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "unsubscribeFromMod")
 		so.setStringChildAt("modId", id)
 		
-		pRunRequest(so, listener)
+		return pRunRequest(so, listener)
 	end
 	
 	/**
@@ -535,18 +474,6 @@ class ServiceModio implements ServiceListener, ServiceMods
 	end
 	
 	/**
-	 * \brief User information or null if not know.
-	 * 
-	 * User information is present if the user is authenticated.
-	 */
-	func ServiceUserInfo getUserInfo()
-		var ServiceObject so = ServiceObject.new()
-		so.setStringChildAt("function", "queryUserProfile")
-		so = pService.runAction(so)
-		return so != null if pConvUser(so) else null
-	end
-	
-	/**
 	 * \brief Retrieve information about game modification.
 	 * 
 	 * Once finished \ref ServiceModsListener#onGetModInfo(ServiceMods,String,ServiceModInfo,Exception)
@@ -554,13 +481,14 @@ class ServiceModio implements ServiceListener, ServiceMods
 	 * 
 	 * \param modId Identifier of modification to retrieve.
 	 * \param listener If not null called once in addition to added listeners.
+	 * \returns Request ID. Can be used to cancel request.
 	 */
-	func void getModInfo(String id, ServiceModsListener listener)
+	func UniqueID getModInfo(String id, ServiceModsListener listener)
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "getModInfo")
 		so.setStringChildAt("modId", id)
 		
-		pRunRequest(so, listener)
+		return pRunRequest(so, listener)
 	end
 	
 	/**
@@ -572,14 +500,15 @@ class ServiceModio implements ServiceListener, ServiceMods
 	 * \param modId Identifier of modification to submit rating for.
 	 * \param rating Rating to submit.
 	 * \param listener If not null called once in addition to added listeners.
+	 * \returns Request ID. Can be used to cancel request.
 	 */
-	func void submitModRating(String id, int rating, ServiceModsListener listener)
+	func UniqueID submitModRating(String id, int rating, ServiceModsListener listener)
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "submitModRating")
 		so.setStringChildAt("modId", id)
 		so.setIntChildAt("rating", rating)
 		
-		pRunRequest(so, listener)
+		return pRunRequest(so, listener)
 	end
 	
 	/**
@@ -590,13 +519,148 @@ class ServiceModio implements ServiceListener, ServiceMods
 	 * 
 	 * \param modId Identifier of modification to revoke rating for.
 	 * \param listener If not null called once in addition to added listeners.
+	 * \returns Request ID. Can be used to cancel request.
 	 */
-	func void revokeModRating(String id, ServiceModsListener listener)
+	func UniqueID revokeModRating(String id, ServiceModsListener listener)
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "revokeModRating")
 		so.setStringChildAt("modId", id)
 		
-		pRunRequest(so, listener)
+		return pRunRequest(so, listener)
+	end
+	
+	
+	
+	/**
+	 * \brief Add user listener.
+	 * \param listener Listener to add
+	 */
+	func void addUserListener(ServiceUserListener listener)
+		if listener == null
+			throw ENullPointer.new("listener")
+		end
+		pUserListeners.add(listener)
+	end
+	
+	/**
+	 * \brief Remove user listener.
+	 * \param listener Listener to remove.
+	 */
+	func void removeUserListener(ServiceUserListener listener)
+		pUserListeners.remove(listener)
+	end
+	
+	/**
+	 * \brief Features supported by this service.
+	 */
+	func ServiceUserFeatures getUserFeatures()
+		var ServiceUserFeatures features = ServiceUserFeatures.new()
+		features.canAuthProviderLogin = Set.new()
+		features.canAuthProviderLogin.add(ServiceSteamSdk.authProviderId)
+		features.canAuthProviderLogin.add(ServiceEosSdk.authProviderId)
+		features.canLogout = true
+		return features
+	end
+	
+	/**
+	 * \brief Log in user.
+	 * 
+	 * Supports only authentication using a supported authentication provider:
+	 * - ServiceSteamSdk
+	 * - ServiceEosSdk
+	 * 
+	 * To authenticate call \ref ServiceUser#getAuthToken(ServiceUserListener).
+	 * Upon receiving the authentication token create a ServiceuserCredentials
+	 * and call loginUser with it.
+	 * 
+	 * Once logging in finished \ref ServiceUserListener#onLoginUser(ServiceUser,Exception)
+	 * is called.
+	 * 
+	 * \param credentials Has to be null or an exception is thrown.
+	 * \param listener If not null called once in addition to added listeners.
+	 * \returns Request ID. Can be used to cancel request.
+	 */
+	func UniqueID loginUser(ServiceUserCredentials credentials, ServiceUserListener listener)
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "authenticateUserExternal")
+		so.setStringChildAt("provider", credentials.authToken.provider)
+		so.setStringChildAt("token", credentials.authToken.token)
+		so.setBoolChildAt("termsAccepted", false)
+		if credentials.authToken.parameters != null
+			var ServiceObject so2 = ServiceObject.new()
+			credentials.authToken.parameters.forEach(block String key, String value
+				so2.setStringChildAt(key, value)
+			end)
+			so.setChildAt("parameters", so2)
+		end
+		
+		return pRunRequest(so, listener)
+	end
+	
+	/**
+	 * \brief Log out user.
+	 * 
+	 * Logging out deletes local user data.
+	 * 
+	 * \param listener If not null called once in addition to added listeners.
+	 * \returns Request ID. Can be used to cancel request.
+	 */
+	func UniqueID logoutUser(ServiceUserListener listener)
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "clearUserData")
+		
+		return pRunRequest(so, listener)
+	end
+	
+	/**
+	 * \brief User is logged in.
+	 */
+	func bool isUserLoggedIn()
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "isAuthenticated")
+		return pService.runAction(so).getBoolean()
+	end
+	
+	/**
+	 * \brief Request authentification token.
+	 * 
+	 * Not supported.
+	 */
+	func UniqueID getAuthToken(ServiceUserListener listener)
+		throw EInvalidAction.new("Not supported")
+	end
+	
+	/**
+	 * \brief Retrieve user information.
+	 * 
+	 * \param listener If not null called once in addition to added listeners.
+	 * \returns Request ID. Can be used to cancel request.
+	 */
+	func UniqueID getUserInfo(ServiceUserListener listener)
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "queryUserProfile")
+		so = pService.runAction(so)
+		
+		var ServiceUserInfo info
+		if so != null
+			info = pConvUser(so)
+		end
+		
+		TimerBlock.new(0, false, block
+			var ServiceException exception
+			if info == null
+				exception = ServiceException.new(pService, "No user logged in")
+			end
+			
+			pUserListeners.forEach(block ServiceUserListener each
+				each.onGetUserInfo(this, info, exception)
+			end)
+			if listener != null
+				listener.onGetUserInfo(this, info, exception)
+			end
+		end)
+		
+		return pService.nextId()
 	end
 	
 	
@@ -649,19 +713,19 @@ class ServiceModio implements ServiceListener, ServiceMods
 			end
 			
 		elif function.equals("authenticateUserExternal")
-			pModsListeners.forEach(block ServiceModsListener each
-				each.onAuthenticate(this, null)
+			pModsListeners.forEach(block ServiceUserListener each
+				each.onLoginUser(this, null)
 			end)
 			if onceListener != null
-				(onceListener cast ServiceModsListener).onAuthenticate(this, null)
+				(onceListener cast ServiceUserListener).onLoginUser(this, null)
 			end
 			
 		elif function.equals("clearUserData")
-			pModsListeners.forEach(block ServiceModsListener each
-				each.onDeauthenticate(this, null)
+			pModsListeners.forEach(block ServiceUserListener each
+				each.onLogoutUser(this, null)
 			end)
 			if onceListener != null
-				(onceListener cast ServiceModsListener).onDeauthenticate(this, null)
+				(onceListener cast ServiceUserListener).onLogoutUser(this, null)
 			end
 			
 		elif function.equals("getModInfo")
@@ -723,19 +787,19 @@ class ServiceModio implements ServiceListener, ServiceMods
 			end
 			
 		elif function.equals("authenticateUserExternal")
-			pModsListeners.forEach(block ServiceModsListener each
-				each.onAuthenticate(this, exception)
+			pModsListeners.forEach(block ServiceUserListener each
+				each.onLoginUser(this, exception)
 			end)
 			if onceListener != null
-				(onceListener cast ServiceModsListener).onAuthenticate(this, exception)
+				(onceListener cast ServiceUserListener).onLoginUser(this, exception)
 			end
 			
 		elif function.equals("clearUserData")
-			pModsListeners.forEach(block ServiceModsListener each
-				each.onDeauthenticate(this, exception)
+			pModsListeners.forEach(block ServiceUserListener each
+				each.onLogoutUser(this, exception)
 			end)
 			if onceListener != null
-				(onceListener cast ServiceModsListener).onDeauthenticate(this, exception)
+				(onceListener cast ServiceUserListener).onLogoutUser(this, exception)
 			end
 			
 		elif function.equals("getModInfo")

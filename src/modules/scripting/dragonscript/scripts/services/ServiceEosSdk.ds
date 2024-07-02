@@ -120,6 +120,11 @@ class ServiceEosSdk implements ServiceStats, ServiceUser, ServiceListener
 		end
 	end
 	
+	/**
+	 * \brief Authentification provider identifier.
+	 */
+	static public fixed var String authProviderId = "epic"
+	
 	
 	
 	var InitParameters pInitParameters
@@ -209,11 +214,6 @@ class ServiceEosSdk implements ServiceStats, ServiceUser, ServiceListener
 		return Engine.getSupportedServices().has("EOSSDK")
 	end
 	
-	/**
-	 * \brief Authentification provider identifier.
-	 */
-	static fixed var String authProviderId = "epic"
-	
 	
 	
 	/**
@@ -246,8 +246,10 @@ class ServiceEosSdk implements ServiceStats, ServiceUser, ServiceListener
 	 * \param stats Stats.
 	 * \param achievements Achievements.
 	 * \param listener If not null called once in addition to added listeners.
+	 * \returns Request ID. Can be used to cancel request.
 	 */
-	func void getStatsAndAchievements(Set stats, Set achievements, ServiceStatsListener listener)
+	func UniqueID getStatsAndAchievements(Set stats, Set achievements, ServiceStatsListener listener)
+		throw EInvalidAction.new("TODO")
 	end
 	
 	/**
@@ -264,8 +266,10 @@ class ServiceEosSdk implements ServiceStats, ServiceUser, ServiceListener
 	 * Value is true or false to set or clear the achievement.
 	 * 
 	 * \param listener If not null called once in addition to added listeners.
+	 * \returns Request ID. Can be used to cancel request.
 	 */
-	func void setStatsAndAchievements(Dictionary stats, Dictionary achievements, ServiceStatsListener listener)
+	func UniqueID setStatsAndAchievements(Dictionary stats, Dictionary achievements, ServiceStatsListener listener)
+		throw EInvalidAction.new("TODO")
 	end
 	
 	/**
@@ -277,6 +281,7 @@ class ServiceEosSdk implements ServiceStats, ServiceUser, ServiceListener
 	 * \param resetAchievements Reset also achievements not just stats.
 	 */
 	func void resetAllStats(bool resetAchievements)
+		throw EInvalidAction.new("TODO")
 	end
 	
 	
@@ -326,8 +331,9 @@ class ServiceEosSdk implements ServiceStats, ServiceUser, ServiceListener
 	 * 
 	 * \param credentials Has to be null or an exception is thrown.
 	 * \param listener If not null called once in addition to added listeners.
+	 * \returns Request ID. Can be used to cancel request.
 	 */
-	func void loginUser(ServiceUserCredentials credentials, ServiceUserListener listener)
+	func UniqueID loginUser(ServiceUserCredentials credentials, ServiceUserListener listener)
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "authLogin")
 		
@@ -375,7 +381,7 @@ class ServiceEosSdk implements ServiceStats, ServiceUser, ServiceListener
 		so.setBoolChildAt("scopeFriends", pInitParameters.enableFriendsList)
 		so.setBoolChildAt("scopePresence", pInitParameters.enablePresence)
 		
-		pRunRequest(so, listener)
+		return pRunRequest(so, listener)
 	end
 	
 	/**
@@ -384,12 +390,22 @@ class ServiceEosSdk implements ServiceStats, ServiceUser, ServiceListener
 	 * Not supported. Throws exception if called.
 	 * 
 	 * \param listener If not null called once in addition to added listeners.
+	 * \returns Request ID. Can be used to cancel request.
 	 */
-	func void logoutUser(ServiceUserListener listener)
+	func UniqueID logoutUser(ServiceUserListener listener)
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "authLogout")
 		
-		pRunRequest(so, listener)
+		return pRunRequest(so, listener)
+	end
+	
+	/**
+	 * \brief User is logged in.
+	 */
+	func bool isUserLoggedIn()
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "isUserLoggedIn")
+		return pService.runAction(so).getBoolean()
 	end
 	
 	/**
@@ -399,8 +415,9 @@ class ServiceEosSdk implements ServiceStats, ServiceUser, ServiceListener
 	 * The received ticket is Base64 encoded.
 	 * 
 	 * \param listener If not null called once in addition to added listeners.
+	 * \returns Request ID. Can be used to cancel request.
 	 */
-	func void getAuthToken(ServiceUserListener listener)
+	func UniqueID getAuthToken(ServiceUserListener listener)
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "copyIdToken")
 		so = pService.runAction(so)
@@ -417,18 +434,34 @@ class ServiceEosSdk implements ServiceStats, ServiceUser, ServiceListener
 				listener.onGetAuthToken(this, token, null)
 			end
 		end)
+		
+		return pService.nextId()
 	end
 	
 	/**
 	 * \brief Retrieve user information.
 	 * 
 	 * \param listener If not null called once in addition to added listeners.
+	 * \returns Request ID. Can be used to cancel request.
 	 */
-	func void getUserInfo(ServiceUserListener listener)
+	func UniqueID getUserInfo(ServiceUserListener listener)
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "queryUserInfo")
 		
-		pRunRequest(so, listener)
+		return pRunRequest(so, listener)
+	end
+	
+	
+	
+	/**
+	 * \brief Cancel request.
+	 * 
+	 * Safe to be called if request has been already cancelled or does not exist.
+	 * 
+	 * \param id Identifier of request to cancel.
+	 */
+	func void cancelRequest(UniqueID id)
+		pService.cancelRequest(id)
 	end
 	
 	

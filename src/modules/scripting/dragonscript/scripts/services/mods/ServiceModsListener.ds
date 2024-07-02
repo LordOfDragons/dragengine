@@ -59,20 +59,6 @@ interface ServiceModsListener
 		String modId, ServiceModProgress progress, Exception exception)
 	
 	/**
-	 * \brief User authentication finished.
-	 * \param service Service sending the event.
-	 * \param exception Exception or null if sueeded.
-	 */
-	func void onAuthenticate(ServiceMods service, Exception exception)
-	
-	/**
-	 * \brief User deauthentication finished.
-	 * \param service Service sending the event.
-	 * \param exception Exception or null if sueeded.
-	 */
-	func void onDeauthenticate(ServiceMods service, Exception exception)
-	
-	/**
 	 * \brief Subscribe modification finished.
 	 * \param service Service sending the event.
 	 * \param id Identifier of modification.

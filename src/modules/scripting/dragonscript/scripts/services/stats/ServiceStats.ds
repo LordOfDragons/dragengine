@@ -55,8 +55,9 @@ interface ServiceStats
 	 * \param stats Stats.
 	 * \param achievements Achievements.
 	 * \param listener If not null called once in addition to added listeners.
+	 * \returns Request ID. Can be used to cancel request.
 	 */
-	func void getStatsAndAchievements(Set stats, Set achievements, ServiceStatsListener listener)
+	func UniqueID getStatsAndAchievements(Set stats, Set achievements, ServiceStatsListener listener)
 	
 	/**
 	 * \brief Set stats and achievements.
@@ -72,8 +73,9 @@ interface ServiceStats
 	 * Value is true or false to set or clear the achievement.
 	 * 
 	 * \param listener If not null called once in addition to added listeners.
+	 * \returns Request ID. Can be used to cancel request.
 	 */
-	func void setStatsAndAchievements(Dictionary stats, Dictionary achievements, ServiceStatsListener listener)
+	func UniqueID setStatsAndAchievements(Dictionary stats, Dictionary achievements, ServiceStatsListener listener)
 	
 	/**
 	 * \brief Reset all stats on steam server.
@@ -84,4 +86,13 @@ interface ServiceStats
 	 * \param resetAchievements Reset also achievements not just stats.
 	 */
 	func void resetAllStats(bool resetAchievements)
+	
+	/**
+	 * \brief Cancel request.
+	 * 
+	 * Safe to be called if request has been already cancelled or does not exist.
+	 * 
+	 * \param id Identifier of request to cancel.
+	 */
+	func void cancelRequest(UniqueID id)
 end

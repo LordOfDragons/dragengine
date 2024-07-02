@@ -40,6 +40,17 @@ class ServiceUserFeatures
 	public var bool canAutomaticLogin
 	
 	/**
+	 * \brief Service supports logging in using authentication provider.
+	 * 
+	 * Set contains strings of all supported login providers. The values in this set
+	 * match \ref #authTokenProvider values of other services.
+	 * 
+	 * Set can be null or empty if service does not support logging in using
+	 * authentication providers.
+	 */
+	public var Set canAuthProviderLogin
+	
+	/**
 	 * \brief Service supports logging out user.
 	 */
 	public var bool canLogout

@@ -70,22 +70,6 @@ class DefaultServiceModsListener implements ServiceModsListener
 	String modId, ServiceModProgress progress, Exception exception)
 	end
 	
-	/**
-	 * \brief User authentication finished.
-	 * \param service Service sending the event.
-	 * \param exception Exception or null if sueeded.
-	 */
-	func void onAuthenticate(ServiceMods service, Exception exception)
-	end
-	
-	/**
-	 * \brief User deauthentication finished.
-	 * \param service Service sending the event.
-	 * \param exception Exception or null if sueeded.
-	 */
-	func void onDeauthenticate(ServiceMods service, Exception exception)
-	end
-	
 	
 	/**
 	 * \brief Subscribe modification finished.
