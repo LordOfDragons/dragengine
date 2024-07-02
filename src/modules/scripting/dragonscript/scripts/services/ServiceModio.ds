@@ -268,9 +268,8 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 	 * 
 	 * \param filter Filter to use.
 	 * \param listener If not null called once in addition to added listeners.
-	 * \returns Request ID. Can be used to cancel request.
 	 */
-	func UniqueID listAllMods(ServiceModFilter filter, ServiceModsListener listener)
+	func void listAllMods(ServiceModFilter filter, ServiceModsListener listener)
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "listAllMods")
 		
@@ -296,7 +295,7 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 			so.setIntChildAt("resultCount", filter.resultCount)
 		end
 		
-		return pRunRequest(so, listener)
+		pRunRequest(so, listener)
 	end
 	
 	/**
@@ -308,14 +307,13 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 	 * 
 	 * \param url URL of image to load.
 	 * \param listener If not null called once in addition to added listeners.
-	 * \returns Request ID. Can be used to cancel request.
 	 */
-	func UniqueID loadResource(String url, ServiceModsListener listener)
+	func void loadResource(String url, ServiceModsListener listener)
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "loadResource")
 		so.setStringChildAt("url", url)
 		
-		return pRunRequest(so, listener)
+		pRunRequest(so, listener)
 	end
 	
 	/**
@@ -376,15 +374,14 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 	 * \param token Authentication token.
 	 * \param id Identifier of modification to subscribe to.
 	 * \param listener If not null called once in addition to added listeners.
-	 * \returns Request ID. Can be used to cancel request.
 	 */
-	func UniqueID subscribeMod(String id, ServiceModsListener listener)
+	func void subscribeMod(String id, ServiceModsListener listener)
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "subscribeToMod")
 		so.setStringChildAt("modId", id)
 		so.setBoolChildAt("dependencies", true)
 		
-		return pRunRequest(so, listener)
+		pRunRequest(so, listener)
 	end
 	
 	/**
@@ -403,14 +400,13 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 	 * \param token Authentication token.
 	 * \param id Identifier of modification to unsubscribe from.
 	 * \param listener If not null called once in addition to added listeners.
-	 * \returns Request ID. Can be used to cancel request.
 	 */
-	func UniqueID unsubscribeMod(String id, ServiceModsListener listener)
+	func void unsubscribeMod(String id, ServiceModsListener listener)
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "unsubscribeFromMod")
 		so.setStringChildAt("modId", id)
 		
-		return pRunRequest(so, listener)
+		pRunRequest(so, listener)
 	end
 	
 	/**
@@ -481,14 +477,13 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 	 * 
 	 * \param modId Identifier of modification to retrieve.
 	 * \param listener If not null called once in addition to added listeners.
-	 * \returns Request ID. Can be used to cancel request.
 	 */
-	func UniqueID getModInfo(String id, ServiceModsListener listener)
+	func void getModInfo(String id, ServiceModsListener listener)
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "getModInfo")
 		so.setStringChildAt("modId", id)
 		
-		return pRunRequest(so, listener)
+		pRunRequest(so, listener)
 	end
 	
 	/**
@@ -500,15 +495,14 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 	 * \param modId Identifier of modification to submit rating for.
 	 * \param rating Rating to submit.
 	 * \param listener If not null called once in addition to added listeners.
-	 * \returns Request ID. Can be used to cancel request.
 	 */
-	func UniqueID submitModRating(String id, int rating, ServiceModsListener listener)
+	func void submitModRating(String id, int rating, ServiceModsListener listener)
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "submitModRating")
 		so.setStringChildAt("modId", id)
 		so.setIntChildAt("rating", rating)
 		
-		return pRunRequest(so, listener)
+		pRunRequest(so, listener)
 	end
 	
 	/**
@@ -519,14 +513,13 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 	 * 
 	 * \param modId Identifier of modification to revoke rating for.
 	 * \param listener If not null called once in addition to added listeners.
-	 * \returns Request ID. Can be used to cancel request.
 	 */
-	func UniqueID revokeModRating(String id, ServiceModsListener listener)
+	func void revokeModRating(String id, ServiceModsListener listener)
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "revokeModRating")
 		so.setStringChildAt("modId", id)
 		
-		return pRunRequest(so, listener)
+		pRunRequest(so, listener)
 	end
 	
 	
@@ -578,9 +571,8 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 	 * 
 	 * \param credentials Has to be null or an exception is thrown.
 	 * \param listener If not null called once in addition to added listeners.
-	 * \returns Request ID. Can be used to cancel request.
 	 */
-	func UniqueID loginUser(ServiceUserCredentials credentials, ServiceUserListener listener)
+	func void loginUser(ServiceUserCredentials credentials, ServiceUserListener listener)
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "authenticateUserExternal")
 		so.setStringChildAt("provider", credentials.authToken.provider)
@@ -594,7 +586,7 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 			so.setChildAt("parameters", so2)
 		end
 		
-		return pRunRequest(so, listener)
+		pRunRequest(so, listener)
 	end
 	
 	/**
@@ -603,13 +595,12 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 	 * Logging out deletes local user data.
 	 * 
 	 * \param listener If not null called once in addition to added listeners.
-	 * \returns Request ID. Can be used to cancel request.
 	 */
-	func UniqueID logoutUser(ServiceUserListener listener)
+	func void logoutUser(ServiceUserListener listener)
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "clearUserData")
 		
-		return pRunRequest(so, listener)
+		pRunRequest(so, listener)
 	end
 	
 	/**
@@ -626,7 +617,7 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 	 * 
 	 * Not supported.
 	 */
-	func UniqueID getAuthToken(ServiceUserListener listener)
+	func void getAuthToken(ServiceUserListener listener)
 		throw EInvalidAction.new("Not supported")
 	end
 	
@@ -634,9 +625,8 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 	 * \brief Retrieve user information.
 	 * 
 	 * \param listener If not null called once in addition to added listeners.
-	 * \returns Request ID. Can be used to cancel request.
 	 */
-	func UniqueID getUserInfo(ServiceUserListener listener)
+	func void getUserInfo(ServiceUserListener listener)
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "queryUserProfile")
 		so = pService.runAction(so)
@@ -660,20 +650,7 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 			end
 		end)
 		
-		return pService.nextId()
-	end
-	
-	
-	
-	/**
-	 * \brief Cancel request.
-	 * 
-	 * Safe to be called if request has been already cancelled or does not exist.
-	 * 
-	 * \param id Identifier of request to cancel.
-	 */
-	func void cancelRequest(UniqueID id)
-		pService.cancelRequest(id)
+		pService.nextId()
 	end
 	
 	

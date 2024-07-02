@@ -125,9 +125,8 @@ interface ServiceMods
 	 * 
 	 * \param filter Filter to use.
 	 * \param listener If not null called once in addition to added listeners.
-	 * \returns Request ID. Can be used to cancel request.
 	 */
-	func UniqueID listAllMods(ServiceModFilter filter, ServiceModsListener listener)
+	func void listAllMods(ServiceModFilter filter, ServiceModsListener listener)
 	
 	/**
 	 * \brief Load resource asynchronously.
@@ -138,9 +137,8 @@ interface ServiceMods
 	 * 
 	 * \param url URL of image to load.
 	 * \param listener If not null called once in addition to added listeners.
-	 * \returns Request ID. Can be used to cancel request.
 	 */
-	func UniqueID loadResource(String url, ServiceModsListener listener)
+	func void loadResource(String url, ServiceModsListener listener)
 	
 	/**
 	 * \brief Mod management is paused.
@@ -184,9 +182,8 @@ interface ServiceMods
 	 * \param token Authentication token.
 	 * \param id Identifier of modification to subscribe to.
 	 * \param listener If not null called once in addition to added listeners.
-	 * \returns Request ID. Can be used to cancel request.
 	 */
-	func UniqueID subscribeMod(String id, ServiceModsListener listener)
+	func void subscribeMod(String id, ServiceModsListener listener)
 	
 	/**
 	 * \brief Unsubscribe from modification.
@@ -204,9 +201,8 @@ interface ServiceMods
 	 * \param token Authentication token.
 	 * \param id Identifier of modification to unsubscribe from.
 	 * \param listener If not null called once in addition to added listeners.
-	 * \returns Request ID. Can be used to cancel request.
 	 */
-	func UniqueID unsubscribeMod(String id, ServiceModsListener listener)
+	func void unsubscribeMod(String id, ServiceModsListener listener)
 	
 	/**
 	 * \brief Current mod install or update progress information.
@@ -240,9 +236,8 @@ interface ServiceMods
 	 * 
 	 * \param modId Identifier of modification to retrieve.
 	 * \param listener If not null called once in addition to added listeners.
-	 * \returns Request ID. Can be used to cancel request.
 	 */
-	func UniqueID getModInfo(String id, ServiceModsListener listener)
+	func void getModInfo(String id, ServiceModsListener listener)
 	
 	/**
 	 * \brief Submit rating for modification.
@@ -253,9 +248,8 @@ interface ServiceMods
 	 * \param modId Identifier of modification to submit rating for.
 	 * \param rating Rating to submit.
 	 * \param listener If not null called once in addition to added listeners.
-	 * \returns Request ID. Can be used to cancel request.
 	 */
-	func UniqueID submitModRating(String id, int rating, ServiceModsListener listener)
+	func void submitModRating(String id, int rating, ServiceModsListener listener)
 	
 	/**
 	 * \brief Revoke rating for modification.
@@ -265,16 +259,6 @@ interface ServiceMods
 	 * 
 	 * \param modId Identifier of modification to revoke rating for.
 	 * \param listener If not null called once in addition to added listeners.
-	 * \returns Request ID. Can be used to cancel request.
 	 */
-	func UniqueID revokeModRating(String id, ServiceModsListener listener)
-	
-	/**
-	 * \brief Cancel request.
-	 * 
-	 * Safe to be called if request has been already cancelled or does not exist.
-	 * 
-	 * \param id Identifier of request to cancel.
-	 */
-	func void cancelRequest(UniqueID id)
+	func void revokeModRating(String id, ServiceModsListener listener)
 end
