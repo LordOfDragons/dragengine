@@ -689,7 +689,7 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 			end
 			
 		elif function.equals("authenticateUserExternal")
-			pModsListeners.forEach(block ServiceUserListener each
+			pUserListeners.forEach(block ServiceUserListener each
 				each.onLoginUser(this, null)
 			end)
 			if onceListener != null
@@ -697,7 +697,7 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 			end
 			
 		elif function.equals("clearUserData")
-			pModsListeners.forEach(block ServiceUserListener each
+			pUserListeners.forEach(block ServiceUserListener each
 				each.onLogoutUser(this, null)
 			end)
 			if onceListener != null
@@ -763,7 +763,7 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 			end
 			
 		elif function.equals("authenticateUserExternal")
-			pModsListeners.forEach(block ServiceUserListener each
+			pUserListeners.forEach(block ServiceUserListener each
 				each.onLoginUser(this, exception)
 			end)
 			if onceListener != null
@@ -771,7 +771,7 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 			end
 			
 		elif function.equals("clearUserData")
-			pModsListeners.forEach(block ServiceUserListener each
+			pUserListeners.forEach(block ServiceUserListener each
 				each.onLogoutUser(this, exception)
 			end)
 			if onceListener != null
@@ -831,7 +831,7 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 		elif eventName.equals("modManagement")
 			var ServiceMods.ManagementEvent mev = ServiceMods.ManagementEvent.named(event.getChildAt("subEvent").getString())
 			var String modId = event.getChildAt("modId").getString()
-			var ServiceModProgress progress = pConvModProgress(event)
+			var ServiceModProgress progress = pConvModProgress(event.getChildAt("progress"))
 			
 			pIsManagementBusy = event.getChildAt("busy").getBoolean()
 			
@@ -1184,7 +1184,7 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 		end
 		
 		var ServiceModProgress progress = ServiceModProgress.new()
-		progress.status = ServiceModProgress.Status.named(so.getChildAt("status").getString())
+		progress.status = ServiceModProgress.State.named(so.getChildAt("state").getString())
 		progress.total = pConvFloat(so, "total", 1)
 		progress.current = pConvFloat(so, "current", 0)
 		progress.progress = pConvFloat(so, "progress", 0)
@@ -1198,7 +1198,7 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 		
 		var ServiceModStatus status = ServiceModStatus.new()
 		status.id = so.getChildAt("id").getString()
-		status.status = ServiceModStatus.Status.named(so.getChildAt("status").getString())
+		status.status = ServiceModStatus.Status.named(so.getChildAt("state").getString())
 		status.info = pConvModInfo(so.getChildAt("info"))
 		status.sizeOnDisk = pConvFloat(so, "sizeOnDisk", 0)
 		return status

@@ -139,6 +139,7 @@ public:
 	void LoadResource( const decUniqueID &id, const deServiceObject &request );
 	void PauseModManagement( const decUniqueID &id, const deServiceObject &request );
 	void AuthenticateUserExternal( const decUniqueID &id, const deServiceObject &request );
+	void ClearUserData( const decUniqueID &id, const deServiceObject &request );
 	void SubscribeToMod( const decUniqueID &id, const deServiceObject &request );
 	void UnsubscribeFromMod( const decUniqueID &id, const deServiceObject &request );
 	void GetModInfo( const decUniqueID &id, const deServiceObject &request );
@@ -176,8 +177,11 @@ private:
 	void pOnLoadResourceFinished( const decUniqueID &id, Modio::ErrorCode ec,
 		Modio::Optional<std::string> filename );
 	
-	void pOnGetModInfoAsync( const decUniqueID &id, Modio::ErrorCode ec,
+	void pOnGetModInfo( const decUniqueID &id, Modio::ErrorCode ec,
 		Modio::Optional<Modio::ModInfo> info );
+	
+	void pOnAuthenticateUserExternal( const decUniqueID &id, Modio::ErrorCode ec );
+	void pOnClearUserData( const decUniqueID &id, Modio::ErrorCode ec );
 	
 	void pOnLogCallback( Modio::LogLevel level, const std::string &message );
 	void pOnModManagement( Modio::ModManagementEvent event );

@@ -92,7 +92,7 @@ pUpdateProgressInterval( 1.0f )
 	
 	module.LogInfo( "deModioService: Initialize service" );
 	Modio::SetLogLevel( Modio::LogLevel::Info );
-	Modio::SetLogLevel( Modio::LogLevel::Trace );
+	// Modio::SetLogLevel( Modio::LogLevel::Trace );
 	
 	Modio::SetLogCallback( [ this ]( Modio::LogLevel level, const std::string &message ){
 		pOnLogCallback( level, message );
@@ -164,6 +164,9 @@ void deModioService::StartRequest( const decUniqueID &id, const deServiceObject&
 		
 	}else if( function == "authenticateUserExternal" ){
 		AuthenticateUserExternal( id, request );
+		
+	}else if( function == "clearUserData" ){
+		ClearUserData( id, request );
 		
 	}else if( function == "subscribeToMod" ){
 		SubscribeToMod( id, request );
@@ -381,6 +384,14 @@ void deModioService::AuthenticateUserExternal( const decUniqueID &id, const deSe
 	NewPendingRequest( id, "authenticateUserExternal" );
 	AddRequiresEventHandlingCount();
 	Modio::AuthenticateUserExternalAsync( authParams, provider, [ this, id ]( Modio::ErrorCode ec ){
+		pOnAuthenticateUserExternal( id, ec );
+	});
+}
+
+void deModioService::ClearUserData( const decUniqueID &id, const deServiceObject &request ){
+	NewPendingRequest( id, "clearUserData" );
+	AddRequiresEventHandlingCount();
+	Modio::ClearUserDataAsync( [ this, id ]( Modio::ErrorCode ec ){
 		pOnRequestFinished( id, ec );
 	});
 }
@@ -424,7 +435,7 @@ void deModioService::GetModInfo( const decUniqueID &id, const deServiceObject &r
 	AddRequiresEventHandlingCount();
 	
 	Modio::GetModInfoAsync( modId, [ this, id ]( Modio::ErrorCode ec, Modio::Optional<Modio::ModInfo> info ){
-		pOnGetModInfoAsync( id, ec, info );
+		pOnGetModInfo( id, ec, info );
 	});
 }
 
@@ -800,7 +811,7 @@ Modio::Optional<std::string> filename ){
 	}
 }
 
-void deModioService::pOnGetModInfoAsync( const decUniqueID &id, Modio::ErrorCode ec,
+void deModioService::pOnGetModInfo( const decUniqueID &id, Modio::ErrorCode ec,
 Modio::Optional<Modio::ModInfo> info ){
 	RemoveRequiresEventHandlingCount();
 	if( ec ){
@@ -831,6 +842,55 @@ Modio::Optional<Modio::ModInfo> info ){
 	// store information required to load images later
 	if( info.has_value() ){
 		deModioResource::Register( pResources, *info );
+	}
+}
+
+void deModioService::pOnAuthenticateUserExternal( const decUniqueID &id, Modio::ErrorCode ec ){
+	RemoveRequiresEventHandlingCount();
+	if( ec ){
+		FailRequest( id, ec );
+		return;
+	}
+	
+	const deModioPendingRequest::Ref pr( RemoveFirstPendingRequestWithId( id ) );
+	if( ! pr ){
+		return;
+	}
+	
+	pModManagementEnabled = false;
+	pUpdateModManagementEnabled();
+	
+	try{
+		pModule.GetGameEngine()->GetServiceManager()->QueueRequestResponse(
+			pService, pr->id, pr->data, true );
+		
+	}catch( const deException &e ){
+		FailRequest( pr, e );
+		return;
+	}
+}
+
+void deModioService::pOnClearUserData( const decUniqueID &id, Modio::ErrorCode ec ){
+	RemoveRequiresEventHandlingCount();
+	if( ec ){
+		FailRequest( id, ec );
+		return;
+	}
+	
+	const deModioPendingRequest::Ref pr( RemoveFirstPendingRequestWithId( id ) );
+	if( ! pr ){
+		return;
+	}
+	
+	pModManagementEnabled = false;
+	
+	try{
+		pModule.GetGameEngine()->GetServiceManager()->QueueRequestResponse(
+			pService, pr->id, pr->data, true );
+		
+	}catch( const deException &e ){
+		FailRequest( pr, e );
+		return;
 	}
 }
 

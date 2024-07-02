@@ -31,12 +31,27 @@
 // Constructor
 ////////////////
 
-dedsEngineException::dedsEngineException( const deException &exception ) :
-duException(
-	/*exception.GetName().GetString()*/ "InvalidAction",
-	exception.GetDescription().GetString(),
-	exception.GetDescription().GetString(),
-	//( exception.GetDescription() + ":\n" + exception.GetBacktrace().Join("\n") ).GetString(),
-	exception.GetFile(),
-	exception.GetLine() ){
+dedsEngineException::dedsEngineException( const char *description, const char *file, int line ) :
+duException( "InvalidAction", description, description, file, line ),
+pStrDescription( description ),
+pStrFile( file ){
+}
+
+dedsEngineException::~dedsEngineException(){
+	delete [] pStrDescription;
+	delete [] pStrFile;
+}
+
+dedsEngineException dedsEngineException::Wrap( const deException &exception ){
+	const decString &file = exception.GetFile();
+	const decString &description = exception.GetDescription();
+	// const decString description( exception.GetDescription() + ":\n" + exception.GetBacktrace().Join("\n") );
+	
+	char * const strDescription = new char( description.GetLength() + 1 );
+	strcpy( strDescription, description );
+	
+	char * const strFile = new char( file.GetLength() + 1 );
+	strcpy( strFile, file );
+	
+	return dedsEngineException( strDescription, strFile, exception.GetLine() );
 }

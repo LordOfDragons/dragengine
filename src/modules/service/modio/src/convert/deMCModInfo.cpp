@@ -160,7 +160,7 @@ deServiceObject::Ref deMCModInfo::ModCollectionEntry( const Modio::ModCollection
 	const deServiceObject::Ref so( deServiceObject::Ref::New( new deServiceObject ) );
 	
 	so->SetChildAt( "id", deMCCommon::ID( status.GetID() ) );
-	so->SetChildAt( "status", ModState( status.GetModState() ) );
+	so->SetChildAt( "state", ModState( status.GetModState() ) );
 	so->SetChildAt( "info", ModInfo( status.GetModProfile() ) );
 	if( status.GetSizeOnDisk().has_value() ){
 		so->SetFloatChildAt( "sizeOnDisk", ( float )*status.GetSizeOnDisk() );

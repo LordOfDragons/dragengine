@@ -30,11 +30,14 @@
 
 
 class dedsEngineException : public duException{
+private:
+	const char * const pStrDescription;
+	const char * const pStrFile;
+	dedsEngineException( const char *description, const char *file, int line );
+	
 public:
-	/**
-	 * Create engine exception. Wraps a thrown deException.
-	 */
-	dedsEngineException( const deException &exception );
+	~dedsEngineException() override;
+	static dedsEngineException Wrap( const deException &exception );
 };
 
 /**
@@ -45,7 +48,7 @@ public:
 		__VA_ARGS__\
 	}catch( const deException &e ){\
 		ds.LogException( e );\
-		throw dedsEngineException( e );\
+		throw dedsEngineException::Wrap( e );\
 	}
 
 #endif
