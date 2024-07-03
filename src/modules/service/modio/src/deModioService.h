@@ -169,7 +169,8 @@ public:
 private:
 	/** \name Callbacks */
 	/*@{*/
-	void pOnInitializeFinished( Modio::ErrorCode ec );
+	void pOnInitialize( Modio::ErrorCode ec );
+	void pOnInitializeFetchUpdates( Modio::ErrorCode ec );
 	void pOnRequestFinished( const decUniqueID &id, Modio::ErrorCode ec );
 	
 	void pOnListAllModsFinished( const decUniqueID &id, Modio::ErrorCode ec,
@@ -182,6 +183,7 @@ private:
 		Modio::Optional<Modio::ModInfo> info );
 	
 	void pOnAuthenticateUserExternal( const decUniqueID &id, Modio::ErrorCode ec );
+	void pOnAuthenticateUserExternalFetchUpdates( const decUniqueID &id, Modio::ErrorCode ec );
 	void pOnClearUserData( const decUniqueID &id, Modio::ErrorCode ec );
 	
 	void pOnSubscribeToMod( const decUniqueID &id, Modio::ErrorCode ec );
@@ -195,9 +197,10 @@ private:
 	void pInitVFS();
 	void pUpdateModManagementEnabled();
 	void pCheckProgressUpdate( float elapsed );
+	void pUpdateModConfigs();
 	
-	deModioPendingRequest::Ref pOnBaseResponseInit(
-		const decUniqueID &id, Modio::ErrorCode ec );
+	deModioPendingRequest::Ref pOnBaseResponseInit( const decUniqueID &id, Modio::ErrorCode ec,
+		bool peekPendingRequest = false );
 	
 	bool pOnBaseResponseExit( const deModioPendingRequest::Ref &pr );
 };

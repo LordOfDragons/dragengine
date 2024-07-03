@@ -27,6 +27,7 @@
 #include "deModio.h"
 #include "deModioResource.h"
 #include "deModioService.h"
+#include "deModioModConfig.h"
 #include "convert/deMCCommon.h"
 #include "convert/deMCFilterParams.h"
 #include "convert/deMCModInfo.h"
@@ -99,7 +100,7 @@ pUpdateProgressInterval( 1.0f )
 	});
 	
 	Modio::InitializeAsync( options, [ this ]( Modio::ErrorCode ec ){
-		pOnInitializeFinished( ec );
+		pOnInitialize( ec );
 	});
 	
 	pGlobalService = this;
@@ -411,7 +412,7 @@ void deModioService::SubscribeToMod( const decUniqueID &id, const deServiceObjec
 	AddRequiresEventHandlingCount();
 	
 	Modio::SubscribeToModAsync( modId, dependencies, [ this, id ]( Modio::ErrorCode ec ){
-		pOnRequestFinished( id, ec );
+		pOnSubscribeToMod( id, ec );
 	});
 }
 
@@ -425,7 +426,7 @@ void deModioService::UnsubscribeFromMod( const decUniqueID &id, const deServiceO
 	AddRequiresEventHandlingCount();
 	
 	Modio::UnsubscribeFromModAsync( modId, [ this, id ]( Modio::ErrorCode ec ){
-		pOnRequestFinished( id, ec );
+		pOnUnsubscribeFromMod( id, ec );
 	});
 }
 
@@ -629,7 +630,7 @@ void deModioService::RemoveRequiresEventHandlingCount(){
 // Callbacks
 //////////////
 
-void deModioService::pOnInitializeFinished( Modio::ErrorCode ec ){
+void deModioService::pOnInitialize( Modio::ErrorCode ec ){
 	pModule.LogInfoFormat( "deModioService.pOnInitializeFinished: ec(%d)[%s]",
 		ec.value(), ec.message().c_str() );
 	RemoveRequiresEventHandlingCount();
@@ -645,8 +646,28 @@ void deModioService::pOnInitializeFinished( Modio::ErrorCode ec ){
 		
 		pPrintBaseInfos();
 		pInitVFS();
+		
+		if( Modio::QueryUserProfile().has_value() ){
+			pModule.LogInfo( "deModioService.pOnInitializeFinished: User logged in. Fetch updates" );
+			Modio::FetchExternalUpdatesAsync( [ this ]( Modio::ErrorCode ec2 ){
+				pOnInitializeFetchUpdates( ec2 );
+			});
+			return;
+		}
 	}
 	
+	pModule.GetGameEngine()->GetServiceManager()->QueueEventReceived( pService, data );
+}
+
+void deModioService::pOnInitializeFetchUpdates( Modio::ErrorCode ec ){
+	pModule.LogInfoFormat( "deModioService.pOnInitializeFetchUpdates: ec(%d)[%s]",
+		ec.value(), ec.message().c_str() );
+	
+	pUpdateModConfigs();
+	
+	const deServiceObject::Ref data( deServiceObject::Ref::New( new deServiceObject ) );
+	data->SetStringChildAt( "event", "initialized" );
+	data->SetBoolChildAt( "success", true );
 	pModule.GetGameEngine()->GetServiceManager()->QueueEventReceived( pService, data );
 }
 
@@ -832,13 +853,28 @@ Modio::Optional<Modio::ModInfo> info ){
 }
 
 void deModioService::pOnAuthenticateUserExternal( const decUniqueID &id, Modio::ErrorCode ec ){
-	const deModioPendingRequest::Ref pr( pOnBaseResponseInit( id, ec ) );
+	const deModioPendingRequest::Ref pr( pOnBaseResponseInit( id, ec, true ) );
 	if( ! pr ){
 		return;
 	}
 	
 	pModManagementEnabled = false;
 	pUpdateModManagementEnabled();
+	
+	pModule.LogInfo( "deModioService.pOnAuthenticateUserExternal: Fetch updates" );
+	Modio::FetchExternalUpdatesAsync( [ this, id ]( Modio::ErrorCode ec2 ){
+		pOnAuthenticateUserExternalFetchUpdates( id, ec2 );
+	});
+}
+
+void deModioService::pOnAuthenticateUserExternalFetchUpdates(
+const decUniqueID &id, Modio::ErrorCode ec ){
+	const deModioPendingRequest::Ref pr( pOnBaseResponseInit( id, ec ) );
+	if( ! pr ){
+		return;
+	}
+	
+	pUpdateModConfigs();
 	pOnBaseResponseExit( pr );
 }
 
@@ -858,7 +894,7 @@ void deModioService::pOnSubscribeToMod( const decUniqueID &id, Modio::ErrorCode 
 		return;
 	}
 	
-	pModule.ActiveModsChanged();
+	pUpdateModConfigs();
 	pOnBaseResponseExit( pr );
 }
 
@@ -868,7 +904,7 @@ void deModioService::pOnUnsubscribeFromMod( const decUniqueID &id, Modio::ErrorC
 		return;
 	}
 	
-	pModule.ActiveModsChanged();
+	pUpdateModConfigs();
 	pOnBaseResponseExit( pr );
 	
 }
@@ -913,7 +949,7 @@ void deModioService::pOnModManagement( Modio::ModManagementEvent event ){
 	switch( event.Event ){
 	case Modio::ModManagementEvent::EventType::Installed:
 	case Modio::ModManagementEvent::EventType::Updated:
-		pModule.ActiveModsChanged();
+		pUpdateModConfigs();
 		break;
 		
 	default:
@@ -1020,14 +1056,49 @@ void deModioService::pCheckProgressUpdate( float elapsed ){
 	pModule.GetGameEngine()->GetServiceManager()->QueueEventReceived( pService, data );
 }
 
-deModioPendingRequest::Ref deModioService::pOnBaseResponseInit(
-const decUniqueID &id, Modio::ErrorCode ec ){
+void deModioService::pUpdateModConfigs(){
+	pModule.LogInfo( "deModioService.pUpdateModConfigs" );
+	
+	const std::map<Modio::ModID, Modio::ModCollectionEntry> result( Modio::QueryUserSubscriptions() );
+	std::map<Modio::ModID, Modio::ModCollectionEntry>::const_iterator iter;
+	deModioModConfig::Ref config;
+	decObjectList configs;
+	
+	for( iter = result.cbegin(); iter != result.cend(); iter++ ){
+		const Modio::ModCollectionEntry &mod = iter->second;
+		
+		switch( mod.GetModState() ){
+		case Modio::ModState::Installed:
+		case Modio::ModState::UpdatePending:
+			config.TakeOver( new deModioModConfig );
+			config->id = deMCCommon::IDToString( mod.GetID() );
+			config->path = mod.GetPath().c_str();
+			configs.Add( config );
+			break;
+			
+		default:
+			break;
+		}
+	}
+	
+	pModule.SetModConfigs( configs );
+	pModule.ActiveModsChanged();
+}
+
+deModioPendingRequest::Ref deModioService::pOnBaseResponseInit( const decUniqueID &id,
+Modio::ErrorCode ec, bool peekPendingRequest ){
 	RemoveRequiresEventHandlingCount();
 	if( ec ){
 		FailRequest( id, ec );
 		return nullptr;
 	}
-	return RemoveFirstPendingRequestWithId( id );
+	
+	if( peekPendingRequest ){
+		return GetPendingRequestWithId( id );
+		
+	}else{
+		return RemoveFirstPendingRequestWithId( id );
+	}
 }
 
 bool deModioService::pOnBaseResponseExit( const deModioPendingRequest::Ref &pr ){
