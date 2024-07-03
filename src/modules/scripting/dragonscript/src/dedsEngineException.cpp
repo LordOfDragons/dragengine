@@ -47,10 +47,10 @@ dedsEngineException dedsEngineException::Wrap( const deException &exception ){
 	const decString &description = exception.GetDescription();
 	// const decString description( exception.GetDescription() + ":\n" + exception.GetBacktrace().Join("\n") );
 	
-	char * const strDescription = new char( description.GetLength() + 1 );
+	char * const strDescription = new char[ description.GetLength() + 1 ];
 	strcpy( strDescription, description );
 	
-	char * const strFile = new char( file.GetLength() + 1 );
+	char * const strFile = new char[ file.GetLength() + 1 ];
 	strcpy( strFile, file );
 	
 	return dedsEngineException( strDescription, strFile, exception.GetLine() );
