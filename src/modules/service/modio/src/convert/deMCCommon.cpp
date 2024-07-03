@@ -252,13 +252,21 @@ deServiceObject::Ref deMCCommon::DateTime( std::int64_t datetime ){
 }
 
 std::int64_t deMCCommon::Int64( const deServiceObject &so ){
-	return ( std::int64_t )so.GetString().ToLongValid();
+	return Int64( so.GetString() );
 }
 
 deServiceObject::Ref deMCCommon::Int64( std::int64_t value ){
+	return deServiceObject::NewString( Int64ToString( value ) );
+}
+
+std::int64_t deMCCommon::Int64( const decString &string ){
+	return ( std::int64_t )string.ToLongValid();
+}
+
+decString deMCCommon::Int64ToString( std::int64_t value ){
 	decString string;
 	string.AppendValue( ( long long )value );
-	return deServiceObject::NewString( string );
+	return string;
 }
 
 std::int64_t deMCCommon::ID( const deServiceObject &so ){
@@ -267,6 +275,14 @@ std::int64_t deMCCommon::ID( const deServiceObject &so ){
 
 deServiceObject::Ref deMCCommon::ID( std::int64_t id ){
 	return Int64( id );
+}
+
+std::int64_t deMCCommon::ID( const decString &string ){
+	return Int64( string );
+}
+
+decString deMCCommon::IDToString( std::int64_t id ){
+	return Int64ToString( id );
 }
 
 std::vector<std::int64_t> deMCCommon::IDList( const deServiceObject &so ){

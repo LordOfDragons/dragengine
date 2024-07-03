@@ -86,6 +86,14 @@ class ServiceModStatus
 	 */
 	public var float sizeOnDisk
 	
+	/**
+	 * \brief Modification is disabled.
+	 * 
+	 * Modifications can be disabled by the user or the game if a modification
+	 * is missbehaving or preventing the game from running.
+	 */
+	public var bool disabled
+	
 	
 	
 	/**

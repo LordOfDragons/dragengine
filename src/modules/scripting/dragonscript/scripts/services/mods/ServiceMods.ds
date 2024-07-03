@@ -261,4 +261,15 @@ interface ServiceMods
 	 * \param listener If not null called once in addition to added listeners.
 	 */
 	func void revokeModRating(String id, ServiceModsListener listener)
+	
+	/**
+	 * \brief Disable modification.
+	 * 
+	 * Modifications can be disabled by the user or the game if a modification
+	 * is missbehaving or preventing the game from running. To get the disabled
+	 * state of a modification use \ref #getSubscribedMods().
+	 * 
+	 * If modification is not found nothing is done.
+	 */
+	func void setModDisabled(String id, bool disabled)
 end

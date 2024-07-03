@@ -151,6 +151,7 @@ public:
 	deServiceObject::Ref QueryUserSubscriptions();
 	deServiceObject::Ref QuerySystemInstallations();
 	deServiceObject::Ref QueryUserProfile();
+	void SetModDisabled( const deServiceObject &action );
 	
 	void FailRequest( const decUniqueID &id, const deException &e );
 	void FailRequest( const decUniqueID &id, const Modio::ErrorCode &ec );
@@ -183,6 +184,9 @@ private:
 	void pOnAuthenticateUserExternal( const decUniqueID &id, Modio::ErrorCode ec );
 	void pOnClearUserData( const decUniqueID &id, Modio::ErrorCode ec );
 	
+	void pOnSubscribeToMod( const decUniqueID &id, Modio::ErrorCode ec );
+	void pOnUnsubscribeFromMod( const decUniqueID &id, Modio::ErrorCode ec );
+	
 	void pOnLogCallback( Modio::LogLevel level, const std::string &message );
 	void pOnModManagement( Modio::ModManagementEvent event );
 	/*@}*/
@@ -191,6 +195,11 @@ private:
 	void pInitVFS();
 	void pUpdateModManagementEnabled();
 	void pCheckProgressUpdate( float elapsed );
+	
+	deModioPendingRequest::Ref pOnBaseResponseInit(
+		const decUniqueID &id, Modio::ErrorCode ec );
+	
+	bool pOnBaseResponseExit( const deModioPendingRequest::Ref &pr );
 };
 
 #endif

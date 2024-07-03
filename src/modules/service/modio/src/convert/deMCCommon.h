@@ -73,9 +73,15 @@ public:
 	static std::int64_t Int64( const deServiceObject &so );
 	static deServiceObject::Ref Int64( std::int64_t value );
 	
+	static std::int64_t Int64( const decString &string );
+	static decString Int64ToString( std::int64_t value );
+	
 	/** Convert identifier. */
 	static std::int64_t ID( const deServiceObject &so );
 	static deServiceObject::Ref ID( std::int64_t id );
+	
+	static std::int64_t ID( const decString &string );
+	static decString IDToString( std::int64_t id );
 	
 	/** Convert identifier list. */
 	static std::vector<std::int64_t> IDList( const deServiceObject &so );

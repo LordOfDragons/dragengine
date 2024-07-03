@@ -221,6 +221,10 @@ deServiceObject::Ref deModioService::RunAction( const deServiceObject &action ){
 	}else if( function == "queryUserProfile" ){
 		return QuerySystemInstallations();
 		
+	}else if( function == "setModDisabled" ){
+		SetModDisabled( action );
+		return nullptr;
+		
 	}else{
 		DETHROW_INFO( deeInvalidParam, "Unknown function" );
 	}
@@ -499,7 +503,10 @@ deServiceObject::Ref deModioService::QueryUserSubscriptions(){
 	
 	const deServiceObject::Ref so( deServiceObject::NewList() );
 	for( iter = result.cbegin(); iter != result.cend(); iter++ ){
-		so->AddChild( deMCModInfo::ModCollectionEntry( iter->second ) );
+		const Modio::ModCollectionEntry &mod = iter->second;
+		const deServiceObject::Ref soMod( deMCModInfo::ModCollectionEntry( mod ) );
+		soMod->SetBoolChildAt( "disabled", pModule.GetModDisabled( deMCCommon::IDToString( mod.GetID() ) ) );
+		so->AddChild( soMod );
 	}
 	return so;
 }
@@ -510,7 +517,10 @@ deServiceObject::Ref deModioService::QuerySystemInstallations(){
 	
 	const deServiceObject::Ref so( deServiceObject::NewList() );
 	for( iter = result.cbegin(); iter != result.cend(); iter++ ){
-		so->AddChild( deMCModInfo::ModCollectionEntry( iter->second ) );
+		const Modio::ModCollectionEntry &mod = iter->second;
+		const deServiceObject::Ref soMod( deMCModInfo::ModCollectionEntry( mod ) );
+		soMod->SetBoolChildAt( "disabled", pModule.GetModDisabled( deMCCommon::IDToString( mod.GetID() ) ) );
+		so->AddChild( soMod );
 	}
 	return so;
 }
@@ -520,7 +530,11 @@ deServiceObject::Ref deModioService::QueryUserProfile(){
 	return result.has_value() ? deMCUser::User( *result ) : nullptr;
 }
 
-
+void deModioService::SetModDisabled( const deServiceObject &action ){
+	const decString &modId = action.GetChildAt( "modId" )->GetString();
+	const bool disabled = action.GetChildAt( "disabled" )->GetBoolean();
+	pModule.SetModDisabled( modId, disabled );
+}
 
 void deModioService::FailRequest( const decUniqueID &id, const deException &e ){
 	const deModioPendingRequest::Ref pr( RemoveFirstPendingRequestWithId( id ) );
@@ -637,36 +651,15 @@ void deModioService::pOnInitializeFinished( Modio::ErrorCode ec ){
 }
 
 void deModioService::pOnRequestFinished( const decUniqueID &id, Modio::ErrorCode ec ){
-	RemoveRequiresEventHandlingCount();
-	if( ec ){
-		FailRequest( id, ec );
-		return;
-	}
-	
-	const deModioPendingRequest::Ref pr( RemoveFirstPendingRequestWithId( id ) );
-	if( ! pr ){
-		return;
-	}
-	
-	try{
-		pModule.GetGameEngine()->GetServiceManager()->QueueRequestResponse(
-			pService, pr->id, pr->data, true );
-		
-	}catch( const deException &e ){
-		FailRequest( pr, e );
-		return;
+	const deModioPendingRequest::Ref pr( pOnBaseResponseInit( id, ec ) );
+	if( pr ){
+		pOnBaseResponseExit( pr );
 	}
 }
 
 void deModioService::pOnListAllModsFinished( const decUniqueID &id,
 Modio::ErrorCode ec, Modio::Optional<Modio::ModInfoList> results ){
-	RemoveRequiresEventHandlingCount();
-	if( ec ){
-		FailRequest( id, ec );
-		return;
-	}
-	
-	const deModioPendingRequest::Ref pr( RemoveFirstPendingRequestWithId( id ) );
+	const deModioPendingRequest::Ref pr( pOnBaseResponseInit( id, ec ) );
 	if( ! pr ){
 		return;
 	}
@@ -813,13 +806,7 @@ Modio::Optional<std::string> filename ){
 
 void deModioService::pOnGetModInfo( const decUniqueID &id, Modio::ErrorCode ec,
 Modio::Optional<Modio::ModInfo> info ){
-	RemoveRequiresEventHandlingCount();
-	if( ec ){
-		FailRequest( id, ec );
-		return;
-	}
-	
-	const deModioPendingRequest::Ref pr( RemoveFirstPendingRequestWithId( id ) );
+	const deModioPendingRequest::Ref pr( pOnBaseResponseInit( id, ec ) );
 	if( ! pr ){
 		return;
 	}
@@ -836,7 +823,6 @@ Modio::Optional<Modio::ModInfo> info ){
 		
 	}catch( const deException &e ){
 		FailRequest( pr, e );
-		return;
 	}
 	
 	// store information required to load images later
@@ -846,52 +832,45 @@ Modio::Optional<Modio::ModInfo> info ){
 }
 
 void deModioService::pOnAuthenticateUserExternal( const decUniqueID &id, Modio::ErrorCode ec ){
-	RemoveRequiresEventHandlingCount();
-	if( ec ){
-		FailRequest( id, ec );
-		return;
-	}
-	
-	const deModioPendingRequest::Ref pr( RemoveFirstPendingRequestWithId( id ) );
+	const deModioPendingRequest::Ref pr( pOnBaseResponseInit( id, ec ) );
 	if( ! pr ){
 		return;
 	}
 	
 	pModManagementEnabled = false;
 	pUpdateModManagementEnabled();
-	
-	try{
-		pModule.GetGameEngine()->GetServiceManager()->QueueRequestResponse(
-			pService, pr->id, pr->data, true );
-		
-	}catch( const deException &e ){
-		FailRequest( pr, e );
-		return;
-	}
+	pOnBaseResponseExit( pr );
 }
 
 void deModioService::pOnClearUserData( const decUniqueID &id, Modio::ErrorCode ec ){
-	RemoveRequiresEventHandlingCount();
-	if( ec ){
-		FailRequest( id, ec );
-		return;
-	}
-	
-	const deModioPendingRequest::Ref pr( RemoveFirstPendingRequestWithId( id ) );
+	const deModioPendingRequest::Ref pr( pOnBaseResponseInit( id, ec ) );
 	if( ! pr ){
 		return;
 	}
 	
 	pModManagementEnabled = false;
-	
-	try{
-		pModule.GetGameEngine()->GetServiceManager()->QueueRequestResponse(
-			pService, pr->id, pr->data, true );
-		
-	}catch( const deException &e ){
-		FailRequest( pr, e );
+	pOnBaseResponseExit( pr );
+}
+
+void deModioService::pOnSubscribeToMod( const decUniqueID &id, Modio::ErrorCode ec ){
+	const deModioPendingRequest::Ref pr( pOnBaseResponseInit( id, ec ) );
+	if( ! pr ){
 		return;
 	}
+	
+	pModule.ActiveModsChanged();
+	pOnBaseResponseExit( pr );
+}
+
+void deModioService::pOnUnsubscribeFromMod( const decUniqueID &id, Modio::ErrorCode ec ){
+	const deModioPendingRequest::Ref pr( pOnBaseResponseInit( id, ec ) );
+	if( ! pr ){
+		return;
+	}
+	
+	pModule.ActiveModsChanged();
+	pOnBaseResponseExit( pr );
+	
 }
 
 void deModioService::pOnLogCallback( Modio::LogLevel level, const std::string &message ){
@@ -930,6 +909,16 @@ void deModioService::pOnModManagement( Modio::ModManagementEvent event ){
 	}
 	
 	pModule.GetGameEngine()->GetServiceManager()->QueueEventReceived( pService, data );
+	
+	switch( event.Event ){
+	case Modio::ModManagementEvent::EventType::Installed:
+	case Modio::ModManagementEvent::EventType::Updated:
+		pModule.ActiveModsChanged();
+		break;
+		
+	default:
+		break;
+	}
 }
 
 void deModioService::pPrintBaseInfos(){
@@ -1029,4 +1018,26 @@ void deModioService::pCheckProgressUpdate( float elapsed ){
 	data->SetBoolChildAt( "success", true );
 	
 	pModule.GetGameEngine()->GetServiceManager()->QueueEventReceived( pService, data );
+}
+
+deModioPendingRequest::Ref deModioService::pOnBaseResponseInit(
+const decUniqueID &id, Modio::ErrorCode ec ){
+	RemoveRequiresEventHandlingCount();
+	if( ec ){
+		FailRequest( id, ec );
+		return nullptr;
+	}
+	return RemoveFirstPendingRequestWithId( id );
+}
+
+bool deModioService::pOnBaseResponseExit( const deModioPendingRequest::Ref &pr ){
+	try{
+		pModule.GetGameEngine()->GetServiceManager()->QueueRequestResponse(
+			pService, pr->id, pr->data, true );
+		return true;
+		
+	}catch( const deException &e ){
+		FailRequest( pr, e );
+		return false;
+	}
 }

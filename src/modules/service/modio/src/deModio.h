@@ -27,8 +27,12 @@
 
 #include "modio.h"
 
+#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/string/decStringSet.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/systems/modules/service/deBaseServiceModule.h>
+
+class decBaseFileReader;
 
 
 /**
@@ -38,6 +42,8 @@ class deModio : public deBaseServiceModule{
 private:
 	int pRequiresEventHandlingCount;
 	deVirtualFileSystem::Ref pVFSMods;
+	decStringSet pDisabledMods;
+	decObjectList pModConfigs;
 	
 	
 	
@@ -60,6 +66,23 @@ public:
 	/** Mods virtual file system. */
 	inline const deVirtualFileSystem::Ref &GetVFSMods() const{ return pVFSMods; }
 	
+	/** Mod configurations (deModioModConfig). */
+	inline const decObjectList &GetModConfigs() const{ return pModConfigs; }
+	void SetModConfigs( const decObjectList &configs );
+	
+	/** Disabled modifications. */
+	inline const decStringSet &GetDisabledMods() const{ return pDisabledMods; }
+	void SetDisabledMods( const decStringSet &mods );
+	
+	/** Mod disabled. */
+	bool GetModDisabled( const decString &id ) const;
+	void SetModDisabled( const decString &id, bool disabled );
+	
+	/** Active modifications changed. Update VFS and save configuration. */
+	void ActiveModsChanged();
+	
+	
+	
 	/**
 	 * Create service peer.
 	 * 
@@ -77,6 +100,15 @@ public:
 	void AddRequiresEventHandlingCount();
 	void RemoveRequiresEventHandlingCount();
 	/*@}*/
+	
+	
+	
+private:
+	void pLoadConfig();
+	void pLoadConfigV0( decBaseFileReader &reader );
+	void pSaveConfig();
+	void pDeleteConfig();
+	void pUpdateVFS();
 };
 
 #endif

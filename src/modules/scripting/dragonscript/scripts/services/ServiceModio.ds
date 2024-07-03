@@ -521,6 +521,23 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 		pRunRequest(so, listener)
 	end
 	
+	/**
+	 * \brief Disable modification.
+	 * 
+	 * Modifications can be disabled by the user or the game if a modification
+	 * is missbehaving or preventing the game from running. To get the disabled
+	 * state of a modification use \ref #getSubscribedMods().
+	 * 
+	 * If modification is not found nothing is done.
+	 */
+	func void setModDisabled(String id, bool disables)
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "setModDisabled")
+		so.setStringChildAt("modId", id)
+		so.setBoolChildAt("disabled", disables)
+		pService.runAction(so)
+	end
+	
 	
 	
 	/**
@@ -1201,6 +1218,7 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 		status.status = ServiceModStatus.Status.named(so.getChildAt("state").getString())
 		status.info = pConvModInfo(so.getChildAt("info"))
 		status.sizeOnDisk = pConvFloat(so, "sizeOnDisk", 0)
+		status.disabled = pConvBool(so, "disabled", false)
 		return status
 	end
 	
