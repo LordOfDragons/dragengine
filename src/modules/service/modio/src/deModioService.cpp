@@ -27,7 +27,8 @@
 #include "deModio.h"
 #include "deModioResource.h"
 #include "deModioService.h"
-#include "deModioModConfig.h"
+#include "config/deModioModConfig.h"
+#include "config/deModioUserConfig.h"
 #include "convert/deMCCommon.h"
 #include "convert/deMCFilterParams.h"
 #include "convert/deMCModInfo.h"
@@ -208,7 +209,11 @@ deServiceObject::Ref deModioService::RunAction( const deServiceObject &action ){
 	
 	const decString &function = action.GetChildAt( "function" )->GetString();
 	
-	if( function == "isAuthenticated" ){
+	if( function == "activateMods" ){
+		ActivateMods();
+		return nullptr;
+		
+	}else if( function == "isAuthenticated" ){
 		return IsAuthenticated();
 		
 	}else if( function == "queryCurrentModUpdate" ){
@@ -530,6 +535,10 @@ void deModioService::RevokeModRating( const decUniqueID &id, const deServiceObje
 	});
 }
 
+void deModioService::ActivateMods(){
+	pActivateMods();
+}
+
 deServiceObject::Ref deModioService::IsAuthenticated(){
 	return deServiceObject::NewBool( Modio::QueryUserProfile().has_value() );
 }
@@ -547,7 +556,8 @@ deServiceObject::Ref deModioService::QueryUserSubscriptions(){
 	for( iter = result.cbegin(); iter != result.cend(); iter++ ){
 		const Modio::ModCollectionEntry &mod = iter->second;
 		const deServiceObject::Ref soMod( deMCModInfo::ModCollectionEntry( mod ) );
-		soMod->SetBoolChildAt( "disabled", pModule.GetModDisabled( deMCCommon::IDToString( mod.GetID() ) ) );
+		soMod->SetBoolChildAt( "disabled", pModule.GetUserConfig( pUserId ).GetModDisabled(
+			deMCCommon::IDToString( mod.GetID() ) ) );
 		so->AddChild( soMod );
 	}
 	return so;
@@ -561,7 +571,8 @@ deServiceObject::Ref deModioService::QuerySystemInstallations(){
 	for( iter = result.cbegin(); iter != result.cend(); iter++ ){
 		const Modio::ModCollectionEntry &mod = iter->second;
 		const deServiceObject::Ref soMod( deMCModInfo::ModCollectionEntry( mod ) );
-		soMod->SetBoolChildAt( "disabled", pModule.GetModDisabled( deMCCommon::IDToString( mod.GetID() ) ) );
+		soMod->SetBoolChildAt( "disabled", pModule.GetUserConfig( pUserId ).GetModDisabled(
+			deMCCommon::IDToString( mod.GetID() ) ) );
 		so->AddChild( soMod );
 	}
 	return so;
@@ -575,7 +586,7 @@ deServiceObject::Ref deModioService::QueryUserProfile(){
 void deModioService::SetModDisabled( const deServiceObject &action ){
 	const decString &modId = action.GetChildAt( "modId" )->GetString();
 	const bool disabled = action.GetChildAt( "disabled" )->GetBoolean();
-	pModule.SetModDisabled( modId, disabled );
+	pModule.GetUserConfig( pUserId ).SetModDisabled( modId, disabled );
 }
 
 class cHasModMatchingFilesSearch : public deFileSearchVisitor{
@@ -627,27 +638,39 @@ public:
 };
 
 deServiceObject::Ref deModioService::ModHasMatchingFiles( const deServiceObject &action ){
-	const decString &modId = action.GetChildAt( "modId" )->GetString();
-	deVFSContainer * const vfsContainer = pModule.GetModVFSContainer( modId );
-	if( ! vfsContainer ){
-		return deServiceObject::NewBool( false );
-	}
-	
-	const deServiceObject &soPatterns = action.GetChildAt( "patterns" );
-	const int count = soPatterns.GetChildCount();
-	if( count == 0 ){
-		return deServiceObject::NewBool( false );
-	}
-	
 	const decPath directory( decPath::CreatePathUnix( action.GetChildAt( "directory" )->GetString() ) );
 	const bool recursive = action.GetChildAt( "recursive" )->GetBoolean();
-	cHasModMatchingFilesSearch visitor( recursive, soPatterns );
+	const deServiceObject &soPatterns = action.GetChildAt( "patterns" );
+	const deServiceObject &soModId = action.GetChildAt( "modId" );
 	
-	const deVirtualFileSystem::Ref vfsTemp( deVirtualFileSystem::Ref::New( new deVirtualFileSystem ) );
-	vfsTemp->AddContainer( vfsContainer );
-	vfsTemp->SearchFiles( directory, visitor );
+	const std::map<Modio::ModID, Modio::ModCollectionEntry> mods( Modio::QueryUserSubscriptions() );
+	const std::map<Modio::ModID, Modio::ModCollectionEntry>::const_iterator iter(
+		mods.find( ( Modio::ModID )deMCCommon::ID( soModId ) ) );
+	if( iter == mods.cend() ){
+		DETHROW_INFO( deeInvalidAction, "Modification not installed" );
+	}
 	
-	return deServiceObject::NewBool( visitor.GetMatched() );
+	try{
+		const deVFSDiskDirectory::Ref container( deVFSDiskDirectory::Ref::New(
+			new deVFSDiskDirectory( decPath::CreatePathUnix( "/" ),
+				decPath::CreatePathNative( iter->second.GetPath().c_str() ), true ) ) );
+		
+		const int count = soPatterns.GetChildCount();
+		if( count == 0 ){
+			return deServiceObject::NewBool( false );
+		}
+		
+		cHasModMatchingFilesSearch visitor( recursive, soPatterns );
+		
+		const deVirtualFileSystem::Ref vfs( deVirtualFileSystem::Ref::New( new deVirtualFileSystem ) );
+		vfs->AddContainer( container );
+		vfs->SearchFiles( directory, visitor );
+		
+		return deServiceObject::NewBool( visitor.GetMatched() );
+		
+	}catch( const deException &e ){
+		DETHROW_INFO( deeInvalidAction, "Modification files unavailable" );
+	}
 }
 
 void deModioService::FailRequest( const decUniqueID &id, const deException &e ){
@@ -776,8 +799,6 @@ void deModioService::pOnInitialize( Modio::ErrorCode ec ){
 void deModioService::pOnInitializeFetchUpdates( Modio::ErrorCode ec ){
 	pModule.LogInfoFormat( "deModioService.pOnInitializeFetchUpdates: ec(%d)[%s]",
 		ec.value(), ec.message().c_str() );
-	
-	pUpdateModConfigs();
 	
 	const deServiceObject::Ref data( deServiceObject::Ref::New( new deServiceObject ) );
 	data->SetStringChildAt( "event", "initialized" );
@@ -997,12 +1018,9 @@ const decUniqueID &id, Modio::ErrorCode ec ){
 		ec.value(), ec.message().c_str() );
 	
 	const deModioPendingRequest::Ref pr( pOnBaseResponseInit( id, ec ) );
-	if( ! pr ){
-		return;
+	if( pr ){
+		pOnBaseResponseExit( pr );
 	}
-	
-	pUpdateModConfigs();
-	pOnBaseResponseExit( pr );
 }
 
 void deModioService::pOnClearUserData( const decUniqueID &id, Modio::ErrorCode ec ){
@@ -1023,25 +1041,21 @@ void deModioService::pOnSubscribeToMod( const decUniqueID &id, Modio::ErrorCode 
 		ec.value(), ec.message().c_str() );
 	
 	const deModioPendingRequest::Ref pr( pOnBaseResponseInit( id, ec ) );
-	if( ! pr ){
-		return;
+	if( pr ){
+		pOnBaseResponseExit( pr );
 	}
-	
-	pUpdateModConfigs();
-	pOnBaseResponseExit( pr );
 }
 
 void deModioService::pOnUnsubscribeFromMod( const decUniqueID &id, Modio::ErrorCode ec ){
 	pModule.LogInfoFormat( "deModioService.pOnUnsubscribeFromMod: ec(%d)[%s]",
 		ec.value(), ec.message().c_str() );
 	
-	const deModioPendingRequest::Ref pr( pOnBaseResponseInit( id, ec ) );
-	if( ! pr ){
-		return;
-	}
+	pActivateMods();
 	
-	pUpdateModConfigs();
-	pOnBaseResponseExit( pr );
+	const deModioPendingRequest::Ref pr( pOnBaseResponseInit( id, ec ) );
+	if( pr ){
+		pOnBaseResponseExit( pr );
+	}
 }
 
 void deModioService::pOnLogCallback( Modio::LogLevel level, const std::string &message ){
@@ -1067,6 +1081,15 @@ void deModioService::pOnModManagement( Modio::ModManagementEvent event ){
 	pModule.LogInfoFormat( "deModioService.pOnModManagement: ev=%d id=%" PRIi64 " busy=%d ec(%d)[%s]",
 		( int )event.Event, ( int64_t )event.ID, busy, event.Status.value(), event.Status.message().c_str() );
 	
+	switch( event.Event ){
+	case Modio::ModManagementEvent::EventType::BeginUpdate:
+		pActivateMods();
+		break;
+		
+	default:
+		break;
+	}
+	
 	const deServiceObject::Ref data( deServiceObject::Ref::New( new deServiceObject ) );
 	
 	data->SetStringChildAt( "event", "modManagement" );
@@ -1081,16 +1104,6 @@ void deModioService::pOnModManagement( Modio::ModManagementEvent event ){
 	}
 	
 	pModule.GetGameEngine()->GetServiceManager()->QueueEventReceived( pService, data );
-	
-	switch( event.Event ){
-	case Modio::ModManagementEvent::EventType::Installed:
-	case Modio::ModManagementEvent::EventType::Updated:
-		pUpdateModConfigs();
-		break;
-		
-	default:
-		break;
-	}
 }
 
 void deModioService::pPrintBaseInfos(){
@@ -1192,7 +1205,7 @@ void deModioService::pCheckProgressUpdate( float elapsed ){
 	pModule.GetGameEngine()->GetServiceManager()->QueueEventReceived( pService, data );
 }
 
-void deModioService::pUpdateModConfigs(){
+void deModioService::pActivateMods(){
 	pModule.LogInfo( "deModioService.pUpdateModConfigs" );
 	
 	const std::map<Modio::ModID, Modio::ModCollectionEntry> result( Modio::QueryUserSubscriptions() );
@@ -1218,7 +1231,7 @@ void deModioService::pUpdateModConfigs(){
 	}
 	
 	pModule.SetModConfigs( configs );
-	pModule.ActiveModsChanged();
+	pModule.ActivateMods( pUserId );
 }
 
 deModioPendingRequest::Ref deModioService::pOnBaseResponseInit( const decUniqueID &id,

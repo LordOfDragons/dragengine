@@ -26,7 +26,8 @@
 
 #include "deModio.h"
 #include "deModioService.h"
-#include "deModioModConfig.h"
+#include "config/deModioModConfig.h"
+#include "config/deModioUserConfig.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/app/deOS.h>
@@ -96,42 +97,53 @@ void deModio::SetModConfigs( const decObjectList &configs ){
 	pModConfigs = configs;
 }
 
-void deModio::SetDisabledMods(const decStringSet &mods){
-	if( mods == pDisabledMods ){
+deModioUserConfig *deModio::GetUserConfigIfPresent( const decString &id ) const{
+	deObject *user = nullptr;
+	return pUserConfigs.GetAt( id, &user ) ? ( deModioUserConfig* )user : nullptr;
+}
+
+deModioUserConfig &deModio::GetUserConfig( const decString &id ){
+	deModioUserConfig * const user = GetUserConfigIfPresent( id );
+	if( user ){
+		return *user;
+	}
+	
+	const deModioUserConfig::Ref newUser( deModioUserConfig::Ref::New(
+		new deModioUserConfig( *this, id ) ) );
+	pUserConfigs.SetAt( id, newUser );
+	
+	pSaveConfig();
+	
+	return newUser;
+}
+
+void deModio::SetCurUserId( const decString &id ){
+	if( pCurUserId == id ){
 		return;
 	}
 	
-	pDisabledMods = mods;
+	pCurUserId = id;
 	
-	pUpdateVFS();
-	pSaveConfig();
-}
-
-bool deModio::GetModDisabled( const decString &id ) const{
-	return pDisabledMods.Has( id );
-}
-
-void deModio::SetModDisabled( const decString &id, bool disabled ){
-	decStringSet mods( pDisabledMods );
-	
-	if( disabled ){
-		mods.Add( id );
-		
-	}else{
-		mods.Remove( id );
+	if( ! pUserConfigs.Has( id ) ){
+		pUserConfigs.SetAt( id, deModioUserConfig::Ref::New( new deModioUserConfig( *this, id ) ) );
 	}
 	
-	SetDisabledMods( mods );
-}
-
-void deModio::ActiveModsChanged(){
-	pUpdateVFS();
 	pSaveConfig();
 }
 
-deVFSContainer *deModio::GetModVFSContainer( const decString &id ) const{
-	deObject *container = nullptr;
-	return pModVFSContainers.GetAt( id, &container ) ? ( deVFSContainer* )container : nullptr;
+void deModio::UserConfigChanged(){
+	pSaveConfig();
+}
+
+void deModio::ActivateMods( const decString &userId ){
+	LogInfoFormat( "Activate mods: userId='%s'", userId.GetString() );
+	
+	( void )GetUserConfig( userId ); // ensure user exists
+	pCurUserId = userId;
+	
+	pUpdateVFS();
+	
+	pSaveConfig();
 }
 
 deBaseServiceService* deModio::CreateService( deService *service,
@@ -197,7 +209,7 @@ void deModio::RemoveRequiresEventHandlingCount(){
 void deModio::pLoadConfig(){
 	LogInfo( "Load configuration");
 	pModConfigs.RemoveAll();
-	pDisabledMods.RemoveAll();
+	pUserConfigs.RemoveAll();
 	
 	try{
 		const decBaseFileReader::Ref reader( GetVFS().OpenFileForReading(
@@ -216,6 +228,8 @@ void deModio::pLoadConfig(){
 	}catch( const deException &e ){
 		LogException( e );
 		LogError( "Load configuration failed. Delete configuration.");
+		pModConfigs.RemoveAll();
+		pUserConfigs.RemoveAll();
 		pDeleteConfig();
 	}
 }
@@ -228,10 +242,14 @@ void deModio::pLoadConfigV0( decBaseFileReader &reader ){
 		pModConfigs.Add( deModioModConfig::Ref::New( new deModioModConfig( reader ) ) );
 	}
 	
+	deModioUserConfig::Ref userConfig;
 	count = reader.ReadInt();
 	for( i=0; i<count; i++ ){
-		pDisabledMods.Add( reader.ReadString8() );
+		userConfig.TakeOver( new deModioUserConfig( *this, reader ) );
+		pUserConfigs.SetAt( userConfig->GetId(), userConfig );
 	}
+	
+	pCurUserId = reader.ReadString8();
 }
 
 void deModio::pSaveConfig(){
@@ -249,11 +267,14 @@ void deModio::pSaveConfig(){
 			( ( deModioModConfig* )pModConfigs.GetAt( i ) )->WriteToFile( writer );
 		}
 		
-		count = pDisabledMods.GetCount();
+		const decObjectList users( pUserConfigs.GetValues() );
+		count = users.GetCount();
 		writer->WriteInt( count );
 		for( i=0; i<count; i++ ){
-			writer->WriteString8( pDisabledMods.GetAt( i ) );
+			( ( deModioUserConfig* )users.GetAt( i ) )->WriteToFile( writer );
 		}
+		
+		writer->WriteString8( pCurUserId );
 		
 	}catch( const deException &e ){
 		LogException( e );
@@ -277,34 +298,39 @@ void deModio::pDeleteConfig(){
 }
 
 void deModio::pUpdateVFS(){
+	deModioUserConfig * const userConfig = GetUserConfigIfPresent( pCurUserId );
 	const decPath rootPath( decPath::CreatePathUnix( "/" ) );
 	const int count = pModConfigs.GetCount();
 	deVFSDiskDirectory::Ref vfsContainer;
 	bool requiresSaving = false;
 	int i;
 	
-	LogInfoFormat( "Updating Mods VFS: %d modifications", count );
+	LogInfoFormat( "Updating Mods VFS: user='%s' mods=%d", pCurUserId.GetString(), count );
 	pVFSMods->RemoveAllContainers();
-	pModVFSContainers.RemoveAll();
+	
+	if( ! userConfig ){
+		LogInfoFormat( "-> User missing. Skipping" );
+		return;
+	}
 	
 	for( i=0; i<count; i++ ){
 		const deModioModConfig &config = *( ( deModioModConfig* )pModConfigs.GetAt( i ) );
-		if( pDisabledMods.Has( config.id ) ){
+		if( userConfig->GetModDisabled( config.id ) ){
 			LogInfoFormat( "- %s: Mod disabled. Skipping mod", config.id.GetString() );
 			continue;
 		}
 		
 		try{
-			LogInfoFormat( "- %s: Add mod using path '%s'", config.id.GetString(), config.path.GetString() );
+			LogInfoFormat( "- %s: Add mod using path '%s'",
+				config.id.GetString(), config.path.GetString() );
 			vfsContainer.TakeOver( new deVFSDiskDirectory( rootPath,
 				decPath::CreatePathNative( config.path ), true ) );
 			pVFSMods->AddContainer( vfsContainer );
-			pModVFSContainers.SetAt( config.id, vfsContainer );
 			
 		}catch( const deException &e ){
 			LogException( e );
 			LogWarnFormat( "Adding mod failed. Disable mod and skip it" );
-			pDisabledMods.Add( config.id );
+			userConfig->GetDisabledMods().Add( config.id );
 			requiresSaving = true;
 		}
 	}

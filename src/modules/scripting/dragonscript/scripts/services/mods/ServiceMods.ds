@@ -167,6 +167,26 @@ interface ServiceMods
 	func bool isManagementBusy()
 	
 	/**
+	 * \brief Activate subscribed and installed modifications.
+	 * 
+	 * Installing modifications does not automatically activate them. This avoids
+	 * interrupting a running game flow while modifications are beeing installed.
+	 * A typical use case is calling activateMods() upon leaving the modification
+	 * management dialog. This ensures modifications start affecting the game at
+	 * a well known point in time.
+	 * 
+	 * Unsubscribing from a modification calls activateMods() to avoid the game
+	 * potentially accessing to be deleted modification files.
+	 * 
+	 * Disabling and re-enabling modifications does not trigger activateMods().
+	 * 
+	 * Activating modifications runs immediately.
+	 * 
+	 * Starting a game automatically calls activateMods().
+	 */
+	func void activateMods()
+	
+	/**
 	 * \brief Subscribe to modification.
 	 * 
 	 * The user can also subscribe to a modification from outside the game using different means.
@@ -276,17 +296,16 @@ interface ServiceMods
 	/**
 	 * \brief Modification has files matching one or more patterns.
 	 * 
-	 * Typically used to determine if an installed and enabled modification contains specific
-	 * files. For example if a modification contains script code \ref Engine#restart(String)
-	 * has to be called to restart the game to re-parse the script. Another example is reloading
-	 * cached data if files are touched that have been cached before.
-	 * 
-	 * If the modification does not exist, is not installed or is disabled false is returned.
+	 * Typically used to determine if an installed modification contains specific files.
+	 * For example if a modification contains script code \ref Engine#restart(String) has
+	 * to be called to restart the game to re-parse the script. Another example is
+	 * reloading cached game data if files are touched that have been cached before.
 	 * 
 	 * \param id Identifier of installed and enabled modification to scan for files.
 	 * \param directory Root directory to start searching in.
 	 * \param recursive Recursively scan directories for matching files.
 	 * \param patterns Set of String file patterns without directories.
+	 * \throws EInvalidAction Modification does not exist or is not installed.
 	 */
 	func bool modHasMatchingFiles(String id, String directory, bool recursive, Set patterns)
 end

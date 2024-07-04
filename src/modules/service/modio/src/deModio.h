@@ -29,11 +29,11 @@
 
 #include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/collection/decObjectDictionary.h>
-#include <dragengine/common/string/decStringSet.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/systems/modules/service/deBaseServiceModule.h>
 
 class decBaseFileReader;
+class deModioUserConfig;
 
 
 /**
@@ -43,9 +43,9 @@ class deModio : public deBaseServiceModule{
 private:
 	int pRequiresEventHandlingCount;
 	deVirtualFileSystem::Ref pVFSMods;
-	decStringSet pDisabledMods;
+	decObjectDictionary pUserConfigs;
 	decObjectList pModConfigs;
-	decObjectDictionary pModVFSContainers;
+	decString pCurUserId;
 	
 	
 	
@@ -72,19 +72,27 @@ public:
 	inline const decObjectList &GetModConfigs() const{ return pModConfigs; }
 	void SetModConfigs( const decObjectList &configs );
 	
-	/** Disabled modifications. */
-	inline const decStringSet &GetDisabledMods() const{ return pDisabledMods; }
-	void SetDisabledMods( const decStringSet &mods );
+	/** User configurations (deModioUserConfig). */
+	inline decObjectDictionary &GetUserConfigs(){ return pUserConfigs; }
+	inline const decObjectDictionary &GetUserConfigs() const{ return pUserConfigs; }
 	
-	/** Mod disabled. */
-	bool GetModDisabled( const decString &id ) const;
-	void SetModDisabled( const decString &id, bool disabled );
+	/** User configuration with ID or nullptr if not found. */
+	deModioUserConfig *GetUserConfigIfPresent( const decString &id ) const;
 	
-	/** Active modifications changed. Update VFS and save configuration. */
-	void ActiveModsChanged();
+	/** User configuration with ID creating it if not found. */
+	deModioUserConfig &GetUserConfig( const decString &id );
 	
-	/** Mod VFS container or nullptr. */
-	deVFSContainer *GetModVFSContainer( const decString &id ) const;
+	/** Current user id. */
+	inline const decString &GetCurUserId() const{ return pCurUserId; }
+	
+	/** Set current user id. Create user if not existing. */
+	void SetCurUserId( const decString &id );
+	
+	/** User config changed. Save configuration. */
+	void UserConfigChanged();
+	
+	/** Activate modifications. Sets current user, updates VFS and saves configuration. */
+	void ActivateMods( const decString &userId );
 	
 	
 	

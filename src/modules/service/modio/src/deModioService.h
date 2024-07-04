@@ -146,6 +146,7 @@ public:
 	void SubmitModRating( const decUniqueID &id, const deServiceObject &request );
 	void RevokeModRating( const decUniqueID &id, const deServiceObject &request );
 	
+	void ActivateMods();
 	deServiceObject::Ref IsAuthenticated();
 	deServiceObject::Ref QueryCurrentModUpdate();
 	deServiceObject::Ref QueryUserSubscriptions();
@@ -198,7 +199,7 @@ private:
 	void pInitVFS();
 	void pUpdateModManagementEnabled();
 	void pCheckProgressUpdate( float elapsed );
-	void pUpdateModConfigs();
+	void pActivateMods();
 	
 	deModioPendingRequest::Ref pOnBaseResponseInit( const decUniqueID &id, Modio::ErrorCode ec,
 		bool peekPendingRequest = false );
