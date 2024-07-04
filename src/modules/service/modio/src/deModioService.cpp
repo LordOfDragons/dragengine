@@ -959,7 +959,7 @@ Modio::Optional<std::string> filename ){
 		
 		deThreadSafeObjectReference task;
 		task.TakeOver( new cLoadResourceTask( *this, id, path.GetPathUnix(), deResourceLoader::ertImage ) );
-		pModule.GetGameEngine()->GetParallelProcessing().AddTask( ( deParallelTask* )( deThreadSafeObject* )task );
+		pModule.GetGameEngine()->GetParallelProcessing().AddTaskAsync( ( deParallelTask* )( deThreadSafeObject* )task );
 		
 	}catch( const deException &e ){
 		FailRequest( id, e );
