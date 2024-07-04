@@ -280,7 +280,7 @@ void deServiceManager::pProcessEvents(){
 	int i;
 	
 	for( i=0; i<count; i++ ){
-		const cEvent &event = *( ( cEvent* )events.GetAt( 0 ) );
+		const cEvent &event = *( ( cEvent* )events.GetAt( i ) );
 		switch( event.type ){
 		case cEvent::eEvents::eeRequestResponse:
 			event.service->RequestResponse( event.id, event.data, event.finished );

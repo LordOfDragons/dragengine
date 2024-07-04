@@ -1085,6 +1085,11 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 		return dict
 	end
 	
+	private func Image pConvImage(ServiceObject so, String key)
+		var ServiceObject so2 = so.getChildAt(key)
+		return so2 != null if so2.getResource() cast Image else null
+	end
+	
 	private func Dictionary pConvTagList(ServiceObject so, String key)
 		var ServiceObject so2 = so.getChildAt(key)
 		if so2 == null

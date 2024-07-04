@@ -8,6 +8,7 @@
 	<translation name='UI.No'>Nein</translation>
 	<translation name='UI.Accept'>Bestätigen</translation>
 	<translation name='UI.Cancel'>Abbrechen</translation>
+	<translation name='UI.Close'>Schliessen</translation>
 	<translation name='UI.Menu.Cut'>Ausschneiden</translation>
 	<translation name='UI.Menu.Copy'>Kopieren</translation>
 	<translation name='UI.Menu.Paste'>Einfügen</translation>

@@ -336,9 +336,10 @@ void deModioService::LoadResource( const decUniqueID &id, const deServiceObject 
 		return;
 	}
 	
-	auto callback = [ this, id ]( Modio::ErrorCode ec, Modio::Optional<std::string> filename ){
-		pOnLoadResourceFinished( id, ec, filename );
-	};
+	std::function<void(Modio::ErrorCode, Modio::Optional<std::string>)> callback =
+		[ this, id ]( Modio::ErrorCode ec, Modio::Optional<std::string> filename ){
+			pOnLoadResourceFinished( id, ec, filename );
+		};
 	
 	switch( resource->type ){
 	case deModioResource::etLogo:
@@ -722,6 +723,8 @@ deResource *resource ){
 		FailRequest( id, deeInvalidAction( __FILE__, __LINE__, message ) );
 		return;
 	}
+	
+	pModule.LogInfoFormat( "deModioService.OnFinishedLoadResource: path=%s", path.GetString() );
 	
 	const deModioPendingRequest::Ref pr( RemoveFirstPendingRequestWithId( id ) );
 	if( ! pr ){
