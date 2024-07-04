@@ -255,8 +255,8 @@ abstract class ClickedActionListener extends DefaultMouseListener
 			return
 		end
 		
-		resetMultiClickDetection()
 		onAction()
+		resetMultiClickDetection()
 	end
 	
 	
