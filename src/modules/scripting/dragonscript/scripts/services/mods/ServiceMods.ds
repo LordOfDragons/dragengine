@@ -272,4 +272,21 @@ interface ServiceMods
 	 * If modification is not found nothing is done.
 	 */
 	func void setModDisabled(String id, bool disabled)
+	
+	/**
+	 * \brief Modification has files matching one or more patterns.
+	 * 
+	 * Typically used to determine if an installed and enabled modification contains specific
+	 * files. For example if a modification contains script code \ref Engine#restart(String)
+	 * has to be called to restart the game to re-parse the script. Another example is reloading
+	 * cached data if files are touched that have been cached before.
+	 * 
+	 * If the modification does not exist, is not installed or is disabled false is returned.
+	 * 
+	 * \param id Identifier of installed and enabled modification to scan for files.
+	 * \param directory Root directory to start searching in.
+	 * \param recursive Recursively scan directories for matching files.
+	 * \param patterns Set of String file patterns without directories.
+	 */
+	func bool modHasMatchingFiles(String id, String directory, bool recursive, Set patterns)
 end

@@ -28,6 +28,7 @@
 #include "modio.h"
 
 #include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decObjectDictionary.h>
 #include <dragengine/common/string/decStringSet.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/systems/modules/service/deBaseServiceModule.h>
@@ -44,6 +45,7 @@ private:
 	deVirtualFileSystem::Ref pVFSMods;
 	decStringSet pDisabledMods;
 	decObjectList pModConfigs;
+	decObjectDictionary pModVFSContainers;
 	
 	
 	
@@ -80,6 +82,9 @@ public:
 	
 	/** Active modifications changed. Update VFS and save configuration. */
 	void ActiveModsChanged();
+	
+	/** Mod VFS container or nullptr. */
+	deVFSContainer *GetModVFSContainer( const decString &id ) const;
 	
 	
 	

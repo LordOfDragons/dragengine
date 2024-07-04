@@ -538,6 +538,37 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 		pService.runAction(so)
 	end
 	
+	/**
+	 * \brief Modification has files matching one or more patterns.
+	 * 
+	 * Typically used to determine if an installed and enabled modification contains specific
+	 * files. For example if a modification contains script code \ref Engine#restart(String)
+	 * has to be called to restart the game to re-parse the script. Another example is reloading
+	 * cached data if files are touched that have been cached before.
+	 * 
+	 * If the modification does not exist, is not installed or is disabled false is returned.
+	 * 
+	 * \param id Identifier of installed and enabled modification to scan for files.
+	 * \param directory Root directory to start searching in.
+	 * \param recursive Recursively scan directories for matching files.
+	 * \param patterns Set of String file patterns without directories.
+	 */
+	func bool modHasMatchingFiles(String id, String directory, bool recursive, Set patterns)
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "modHasMatchingFiles")
+		so.setStringChildAt("modId", id)
+		so.setStringChildAt("directory", directory)
+		so.setBoolChildAt("recursive", recursive)
+		
+		var ServiceObject soPatterns = ServiceObject.newList()
+		patterns.forEach(block String each
+			soPatterns.addStringChild(each)
+		end)
+		so.setChildAt("patterns", soPatterns)
+		
+		return pService.runAction(so).getBoolean()
+	end
+	
 	
 	
 	/**
@@ -731,6 +762,26 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 				(onceListener cast ServiceModsListener).onGetModInfo(this, info.id, info, null)
 			end
 			
+		elif function.equals("subscribeToMod")
+			var String modId = response.getChildAt("modId").getString()
+			
+			pModsListeners.forEach(block ServiceModsListener each
+				each.onSubscribeMod(this, modId, null)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceModsListener).onSubscribeMod(this, modId, null)
+			end
+			
+		elif function.equals("unsubscribeFromMod")
+			var String modId = response.getChildAt("modId").getString()
+			
+			pModsListeners.forEach(block ServiceModsListener each
+				each.onUnsubscribeMod(this, modId, null)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceModsListener).onUnsubscribeMod(this, modId, null)
+			end
+			
 		elif function.equals("submitModRating")
 			var String modId = response.getChildAt("modId").getString()
 			
@@ -801,6 +852,26 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 			end)
 			if onceListener != null
 				(onceListener cast ServiceModsListener).onGetModInfo(this, null, null, exception)
+			end
+			
+		elif function.equals("subscribeToMod")
+			var String modId = error.getChildAt("modId").getString()
+			
+			pModsListeners.forEach(block ServiceModsListener each
+				each.onSubscribeMod(this, modId, exception)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceModsListener).onSubscribeMod(this, modId, exception)
+			end
+			
+		elif function.equals("unsubscribeFromMod")
+			var String modId = error.getChildAt("modId").getString()
+			
+			pModsListeners.forEach(block ServiceModsListener each
+				each.onUnsubscribeMod(this, modId, exception)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceModsListener).onUnsubscribeMod(this, modId, exception)
 			end
 			
 		elif function.equals("submitModRating")

@@ -96,9 +96,8 @@ void deModio::SetModConfigs( const decObjectList &configs ){
 	pModConfigs = configs;
 }
 
-void deModio::SetDisabledMods(const decStringSet &mods)
-{
-    if( mods == pDisabledMods ){
+void deModio::SetDisabledMods(const decStringSet &mods){
+	if( mods == pDisabledMods ){
 		return;
 	}
 	
@@ -130,7 +129,10 @@ void deModio::ActiveModsChanged(){
 	pSaveConfig();
 }
 
-
+deVFSContainer *deModio::GetModVFSContainer( const decString &id ) const{
+	deObject *container = nullptr;
+	return pModVFSContainers.GetAt( id, &container ) ? ( deVFSContainer* )container : nullptr;
+}
 
 deBaseServiceService* deModio::CreateService( deService *service,
 const char *name, const deServiceObject::Ref &data ){
@@ -277,11 +279,13 @@ void deModio::pDeleteConfig(){
 void deModio::pUpdateVFS(){
 	const decPath rootPath( decPath::CreatePathUnix( "/" ) );
 	const int count = pModConfigs.GetCount();
+	deVFSDiskDirectory::Ref vfsContainer;
 	bool requiresSaving = false;
 	int i;
 	
 	LogInfoFormat( "Updating Mods VFS: %d modifications", count );
 	pVFSMods->RemoveAllContainers();
+	pModVFSContainers.RemoveAll();
 	
 	for( i=0; i<count; i++ ){
 		const deModioModConfig &config = *( ( deModioModConfig* )pModConfigs.GetAt( i ) );
@@ -292,8 +296,10 @@ void deModio::pUpdateVFS(){
 		
 		try{
 			LogInfoFormat( "- %s: Add mod using path '%s'", config.id.GetString(), config.path.GetString() );
-			pVFSMods->AddContainer( deVFSDiskDirectory::Ref::New( new deVFSDiskDirectory(
-				rootPath, decPath::CreatePathNative( config.path ), true ) ) );
+			vfsContainer.TakeOver( new deVFSDiskDirectory( rootPath,
+				decPath::CreatePathNative( config.path ), true ) );
+			pVFSMods->AddContainer( vfsContainer );
+			pModVFSContainers.SetAt( config.id, vfsContainer );
 			
 		}catch( const deException &e ){
 			LogException( e );

@@ -152,6 +152,7 @@ public:
 	deServiceObject::Ref QuerySystemInstallations();
 	deServiceObject::Ref QueryUserProfile();
 	void SetModDisabled( const deServiceObject &action );
+	deServiceObject::Ref ModHasMatchingFiles( const deServiceObject &action );
 	
 	void FailRequest( const decUniqueID &id, const deException &e );
 	void FailRequest( const decUniqueID &id, const Modio::ErrorCode &ec );

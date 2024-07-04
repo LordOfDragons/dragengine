@@ -36,6 +36,7 @@
 #include <dragengine/deEngine.h>
 #include <dragengine/common/utils/decUniqueID.h>
 #include <dragengine/filesystem/deVFSDiskDirectory.h>
+#include <dragengine/filesystem/deFileSearchVisitor.h>
 #include <dragengine/resources/loader/tasks/deResourceLoaderTask.h>
 #include <dragengine/resources/service/deServiceManager.h>
 #include <dragengine/resources/service/deServiceObject.h>
@@ -226,6 +227,9 @@ deServiceObject::Ref deModioService::RunAction( const deServiceObject &action ){
 		SetModDisabled( action );
 		return nullptr;
 		
+	}else if( function == "modHasMatchingFiles" ){
+		return ModHasMatchingFiles( action );
+		
 	}else{
 		DETHROW_INFO( deeInvalidParam, "Unknown function" );
 	}
@@ -302,9 +306,11 @@ const decUniqueID &id, const decString &function, const deServiceObject::Ref &da
 void deModioService::ListAllMods( const decUniqueID &id, const deServiceObject &request ){
 	const Modio::FilterParams filter( deMCFilterParams::FilterParams( request ) );
 	
-	NewPendingRequest( id, "listAllMods" );
+	pModule.LogInfo( "deModioService.ListAllMods" );
 	
+	NewPendingRequest( id, "listAllMods" );
 	AddRequiresEventHandlingCount();
+	
 	Modio::ListAllModsAsync( filter, [ this, id ]( Modio::ErrorCode ec, Modio::Optional<Modio::ModInfoList> results ){
 		pOnListAllModsFinished( id, ec, results );
 	});
@@ -331,20 +337,36 @@ void deModioService::LoadResource( const decUniqueID &id, const deServiceObject 
 	
 	switch( resource->type ){
 	case deModioResource::etLogo:
+		pModule.LogInfoFormat(
+			"deModioService.LoadResource: image mod=%" PRIi64 " type=logo(%d) url=%s",
+			( int64_t )resource->modId, ( int )resource->logoSize, url.GetString() );
+		
 		data->SetStringChildAt( "resourceType", "image" );
 		AddRequiresEventHandlingCount();
+		
 		Modio::GetModMediaAsync(resource->modId, resource->logoSize, callback);
 		break;
 		
 	case deModioResource::etGalleryImage:
+		pModule.LogInfoFormat(
+			"deModioService.LoadResource: image mod=%" PRIi64 " type=gallery(%d@%d) url=%s",
+			( int64_t )resource->modId, ( int )resource->gallerySize,
+			( int )resource->galleryIndex, url.GetString() );
+		
 		data->SetStringChildAt( "resourceType", "image" );
 		AddRequiresEventHandlingCount();
+		
 		Modio::GetModMediaAsync(resource->modId, resource->gallerySize, resource->galleryIndex, callback);
 		break;
 		
 	case deModioResource::etAvatar:
+		pModule.LogInfoFormat(
+			"deModioService.LoadResource: image mod=%" PRIi64 " type=avatar(%d) url=%s",
+			( int64_t )resource->modId, ( int )resource->avatarSize, url.GetString() );
+		
 		data->SetStringChildAt( "resourceType", "image" );
 		AddRequiresEventHandlingCount();
+		
 		Modio::GetModMediaAsync(resource->modId, resource->avatarSize, callback);
 		break;
 		
@@ -356,6 +378,8 @@ void deModioService::LoadResource( const decUniqueID &id, const deServiceObject 
 void deModioService::PauseModManagement( const decUniqueID &id, const deServiceObject &request ){
 	pPauseModManagement = request.GetChildAt( "pause" )->GetBoolean();
 	pUpdateModManagementEnabled();
+	
+	pModule.LogInfoFormat( "deModioService.PauseModManagement: pause=%d", pPauseModManagement );
 	
 	const deServiceObject::Ref response( deServiceObject::Ref::New( new deServiceObject ) );
 	response->SetStringChildAt( "function", "pauseModManagement" );
@@ -386,16 +410,22 @@ void deModioService::AuthenticateUserExternal( const decUniqueID &id, const deSe
 		}
 	}
 	
+	pModule.LogInfoFormat( "deModioService.AuthenticateUserExternal: provider=%d", ( int )provider );
+	
 	NewPendingRequest( id, "authenticateUserExternal" );
 	AddRequiresEventHandlingCount();
+	
 	Modio::AuthenticateUserExternalAsync( authParams, provider, [ this, id ]( Modio::ErrorCode ec ){
 		pOnAuthenticateUserExternal( id, ec );
 	});
 }
 
 void deModioService::ClearUserData( const decUniqueID &id, const deServiceObject &request ){
+	pModule.LogInfo( "deModioService.ClearUserData" );
+	
 	NewPendingRequest( id, "clearUserData" );
 	AddRequiresEventHandlingCount();
+	
 	Modio::ClearUserDataAsync( [ this, id ]( Modio::ErrorCode ec ){
 		pOnRequestFinished( id, ec );
 	});
@@ -407,6 +437,8 @@ void deModioService::SubscribeToMod( const decUniqueID &id, const deServiceObjec
 	
 	const deServiceObject::Ref data( deServiceObject::Ref::New( new deServiceObject ) );
 	data->SetChildAt( "modId", deMCCommon::ID( modId ) );
+	
+	pModule.LogInfoFormat( "deModioService.SubscribeToMod: id=%" PRIi64, ( int64_t )modId );
 	
 	NewPendingRequest( id, "subscribeToMod", data );
 	AddRequiresEventHandlingCount();
@@ -422,6 +454,8 @@ void deModioService::UnsubscribeFromMod( const decUniqueID &id, const deServiceO
 	const deServiceObject::Ref data( deServiceObject::Ref::New( new deServiceObject ) );
 	data->SetChildAt( "modId", deMCCommon::ID( modId ) );
 	
+	pModule.LogInfoFormat( "deModioService.UnsubscribeFromMod: id=%" PRIi64, ( int64_t )modId );
+	
 	NewPendingRequest( id, "unsubscribeFromMod", data );
 	AddRequiresEventHandlingCount();
 	
@@ -435,6 +469,8 @@ void deModioService::GetModInfo( const decUniqueID &id, const deServiceObject &r
 	
 	const deServiceObject::Ref data( deServiceObject::Ref::New( new deServiceObject ) );
 	data->SetChildAt( "modId", deMCCommon::ID( modId ) );
+	
+	pModule.LogInfoFormat( "deModioService.GetModInfo: id=%" PRIi64, ( int64_t )modId );
 	
 	NewPendingRequest( id, "getModInfo", data );
 	AddRequiresEventHandlingCount();
@@ -467,6 +503,9 @@ void deModioService::SubmitModRating( const decUniqueID &id, const deServiceObje
 	const deServiceObject::Ref data( deServiceObject::Ref::New( new deServiceObject ) );
 	data->SetChildAt( "modId", deMCCommon::ID( modId ) );
 	
+	pModule.LogInfoFormat( "deModioService.SubmitModRating: id=%" PRIi64 " rating=%d",
+		( int64_t )modId, ( int )rating );
+	
 	NewPendingRequest( id, "submitModRating", data );
 	AddRequiresEventHandlingCount();
 	
@@ -480,6 +519,8 @@ void deModioService::RevokeModRating( const decUniqueID &id, const deServiceObje
 	
 	const deServiceObject::Ref data( deServiceObject::Ref::New( new deServiceObject ) );
 	data->SetChildAt( "modId", deMCCommon::ID( modId ) );
+	
+	pModule.LogInfoFormat( "deModioService.RevokeModRating: id=%" PRIi64, ( int64_t )modId );
 	
 	NewPendingRequest( id, "revokeModRating", data );
 	AddRequiresEventHandlingCount();
@@ -535,6 +576,78 @@ void deModioService::SetModDisabled( const deServiceObject &action ){
 	const decString &modId = action.GetChildAt( "modId" )->GetString();
 	const bool disabled = action.GetChildAt( "disabled" )->GetBoolean();
 	pModule.SetModDisabled( modId, disabled );
+}
+
+class cHasModMatchingFilesSearch : public deFileSearchVisitor{
+private:
+	const bool pRecursive;
+	decPath *pPatterns;
+	const int pPatternCount;
+	bool pMatched;
+	
+public:
+	cHasModMatchingFilesSearch( bool recursive, const deServiceObject &soPatterns ) :
+	pRecursive( recursive ),
+	pPatterns( nullptr ),
+	pPatternCount( soPatterns.GetChildCount() ),
+	pMatched( false )
+	{
+		int i;
+		pPatterns = new decPath[ pPatternCount ];
+		for( i=0; i<pPatternCount; i++ ){
+			pPatterns[ i ].SetFromUnix( soPatterns.GetChildAt( i )->GetString() );
+		}
+	}
+	
+	~cHasModMatchingFilesSearch() override{
+		if( pPatterns ){
+			delete [] pPatterns;
+		}
+	}
+	
+	inline bool GetMatched() const{ return pMatched; }
+	
+	bool VisitFile( const deVirtualFileSystem &vfs, const decPath &path ) override{
+		int i;
+		for( i=0; i<pPatternCount; i++ ){
+			if( path.MatchesPattern( pPatterns[ i ] ) ){
+				pMatched = true;
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	bool VisitDirectory( const deVirtualFileSystem &vfs, const decPath &path ) override{
+		if( pRecursive ){
+			vfs.SearchFiles( path, *this );
+		}
+		return true;
+	}
+};
+
+deServiceObject::Ref deModioService::ModHasMatchingFiles( const deServiceObject &action ){
+	const decString &modId = action.GetChildAt( "modId" )->GetString();
+	deVFSContainer * const vfsContainer = pModule.GetModVFSContainer( modId );
+	if( ! vfsContainer ){
+		return deServiceObject::NewBool( false );
+	}
+	
+	const deServiceObject &soPatterns = action.GetChildAt( "patterns" );
+	const int count = soPatterns.GetChildCount();
+	if( count == 0 ){
+		return deServiceObject::NewBool( false );
+	}
+	
+	const decPath directory( decPath::CreatePathUnix( action.GetChildAt( "directory" )->GetString() ) );
+	const bool recursive = action.GetChildAt( "recursive" )->GetBoolean();
+	cHasModMatchingFilesSearch visitor( recursive, soPatterns );
+	
+	const deVirtualFileSystem::Ref vfsTemp( deVirtualFileSystem::Ref::New( new deVirtualFileSystem ) );
+	vfsTemp->AddContainer( vfsContainer );
+	vfsTemp->SearchFiles( directory, visitor );
+	
+	return deServiceObject::NewBool( visitor.GetMatched() );
 }
 
 void deModioService::FailRequest( const decUniqueID &id, const deException &e ){
@@ -633,6 +746,7 @@ void deModioService::RemoveRequiresEventHandlingCount(){
 void deModioService::pOnInitialize( Modio::ErrorCode ec ){
 	pModule.LogInfoFormat( "deModioService.pOnInitializeFinished: ec(%d)[%s]",
 		ec.value(), ec.message().c_str() );
+	
 	RemoveRequiresEventHandlingCount();
 	pUpdateModManagementEnabled();
 	
@@ -680,6 +794,9 @@ void deModioService::pOnRequestFinished( const decUniqueID &id, Modio::ErrorCode
 
 void deModioService::pOnListAllModsFinished( const decUniqueID &id,
 Modio::ErrorCode ec, Modio::Optional<Modio::ModInfoList> results ){
+	pModule.LogInfoFormat( "deModioService.pOnListAllModsFinished: ec(%d)[%s]",
+		ec.value(), ec.message().c_str() );
+	
 	const deModioPendingRequest::Ref pr( pOnBaseResponseInit( id, ec ) );
 	if( ! pr ){
 		return;
@@ -789,6 +906,9 @@ private:
 
 void deModioService::pOnLoadResourceFinished( const decUniqueID &id, Modio::ErrorCode ec,
 Modio::Optional<std::string> filename ){
+	pModule.LogInfoFormat( "deModioService.pOnLoadResourceFinished: ec(%d)[%s] filename=%s",
+		ec.value(), ec.message().c_str(), filename.has_value() ? filename->c_str() : "-" );
+	
 	RemoveRequiresEventHandlingCount();
 	if( ec ){
 		FailRequest( id, ec );
@@ -799,8 +919,6 @@ Modio::Optional<std::string> filename ){
 		if( ! filename.has_value() ){
 			DETHROW_INFO( deeInvalidParam, "Missing filename in server response" );
 		}
-		
-		pModule.LogInfoFormat( "deModioService.pOnLoadResourceFinished: %s", filename->c_str() );
 		
 		decPath path( decPath::CreatePathNative( filename->c_str() ) );
 		int i;
@@ -827,6 +945,9 @@ Modio::Optional<std::string> filename ){
 
 void deModioService::pOnGetModInfo( const decUniqueID &id, Modio::ErrorCode ec,
 Modio::Optional<Modio::ModInfo> info ){
+	pModule.LogInfoFormat( "deModioService.pOnGetModInfo: ec(%d)[%s]",
+		ec.value(), ec.message().c_str() );
+	
 	const deModioPendingRequest::Ref pr( pOnBaseResponseInit( id, ec ) );
 	if( ! pr ){
 		return;
@@ -853,6 +974,9 @@ Modio::Optional<Modio::ModInfo> info ){
 }
 
 void deModioService::pOnAuthenticateUserExternal( const decUniqueID &id, Modio::ErrorCode ec ){
+	pModule.LogInfoFormat( "deModioService.pOnAuthenticateUserExternal: ec(%d)[%s]",
+		ec.value(), ec.message().c_str() );
+	
 	const deModioPendingRequest::Ref pr( pOnBaseResponseInit( id, ec, true ) );
 	if( ! pr ){
 		return;
@@ -869,6 +993,9 @@ void deModioService::pOnAuthenticateUserExternal( const decUniqueID &id, Modio::
 
 void deModioService::pOnAuthenticateUserExternalFetchUpdates(
 const decUniqueID &id, Modio::ErrorCode ec ){
+	pModule.LogInfoFormat( "deModioService.pOnAuthenticateUserExternalFetchUpdates: ec(%d)[%s]",
+		ec.value(), ec.message().c_str() );
+	
 	const deModioPendingRequest::Ref pr( pOnBaseResponseInit( id, ec ) );
 	if( ! pr ){
 		return;
@@ -879,6 +1006,9 @@ const decUniqueID &id, Modio::ErrorCode ec ){
 }
 
 void deModioService::pOnClearUserData( const decUniqueID &id, Modio::ErrorCode ec ){
+	pModule.LogInfoFormat( "deModioService.pOnClearUserData: ec(%d)[%s]",
+		ec.value(), ec.message().c_str() );
+	
 	const deModioPendingRequest::Ref pr( pOnBaseResponseInit( id, ec ) );
 	if( ! pr ){
 		return;
@@ -889,6 +1019,9 @@ void deModioService::pOnClearUserData( const decUniqueID &id, Modio::ErrorCode e
 }
 
 void deModioService::pOnSubscribeToMod( const decUniqueID &id, Modio::ErrorCode ec ){
+	pModule.LogInfoFormat( "deModioService.pOnSubscribeToMod: ec(%d)[%s]",
+		ec.value(), ec.message().c_str() );
+	
 	const deModioPendingRequest::Ref pr( pOnBaseResponseInit( id, ec ) );
 	if( ! pr ){
 		return;
@@ -899,6 +1032,9 @@ void deModioService::pOnSubscribeToMod( const decUniqueID &id, Modio::ErrorCode 
 }
 
 void deModioService::pOnUnsubscribeFromMod( const decUniqueID &id, Modio::ErrorCode ec ){
+	pModule.LogInfoFormat( "deModioService.pOnUnsubscribeFromMod: ec(%d)[%s]",
+		ec.value(), ec.message().c_str() );
+	
 	const deModioPendingRequest::Ref pr( pOnBaseResponseInit( id, ec ) );
 	if( ! pr ){
 		return;
@@ -906,7 +1042,6 @@ void deModioService::pOnUnsubscribeFromMod( const decUniqueID &id, Modio::ErrorC
 	
 	pUpdateModConfigs();
 	pOnBaseResponseExit( pr );
-	
 }
 
 void deModioService::pOnLogCallback( Modio::LogLevel level, const std::string &message ){
@@ -931,6 +1066,7 @@ void deModioService::pOnModManagement( Modio::ModManagementEvent event ){
 	
 	pModule.LogInfoFormat( "deModioService.pOnModManagement: ev=%d id=%" PRIi64 " busy=%d ec(%d)[%s]",
 		( int )event.Event, ( int64_t )event.ID, busy, event.Status.value(), event.Status.message().c_str() );
+	
 	const deServiceObject::Ref data( deServiceObject::Ref::New( new deServiceObject ) );
 	
 	data->SetStringChildAt( "event", "modManagement" );
@@ -1087,7 +1223,6 @@ void deModioService::pUpdateModConfigs(){
 
 deModioPendingRequest::Ref deModioService::pOnBaseResponseInit( const decUniqueID &id,
 Modio::ErrorCode ec, bool peekPendingRequest ){
-	RemoveRequiresEventHandlingCount();
 	if( ec ){
 		FailRequest( id, ec );
 		return nullptr;
@@ -1102,6 +1237,7 @@ Modio::ErrorCode ec, bool peekPendingRequest ){
 }
 
 bool deModioService::pOnBaseResponseExit( const deModioPendingRequest::Ref &pr ){
+	RemoveRequiresEventHandlingCount();
 	try{
 		pModule.GetGameEngine()->GetServiceManager()->QueueRequestResponse(
 			pService, pr->id, pr->data, true );

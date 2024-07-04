@@ -26,6 +26,7 @@
 #define _DEMODIOMODCONFIG_H_
 
 #include <dragengine/deObject.h>
+#include <dragengine/filesystem/deVFSContainer.h>
 
 class decBaseFileReader;
 class decBaseFileWriter;
