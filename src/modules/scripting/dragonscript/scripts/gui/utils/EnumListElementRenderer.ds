@@ -160,9 +160,19 @@ class EnumListElementRenderer extends DefaultListElementRenderer
 			text = nameFor(value)
 			
 			if text == null and pTranslationPrefix != null
-				var UnicodeString translated = (pTranslationManager != null\
-					if pTranslationManager else TranslationManager.get()).translate(\
-						pTranslationPrefix + value.name(), null)
+				var String name = pTranslationPrefix + value.name()
+				var UnicodeString translated
+				
+				if pTranslationManager != null
+					translated = pTranslationManager.translate(name, null)
+					if translated == null
+						translated = EngineTranslations.get().translate(name, null)
+					end
+					
+				else
+					translated = listBox.translateEntry(name)
+				end
+				
 				if translated != null
 					text = translated.toUTF8()
 				end

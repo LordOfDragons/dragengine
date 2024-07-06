@@ -273,7 +273,6 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 		so.setStringChildAt("function", "listAllMods")
 		
 		pFilterAddEnum(so, "sortField", filter.sortField)
-		pFilterAddEnum(so, "sortDirection", filter.sortDirection)
 		pFilterAddStringSet(so, "nameContains", filter.matchingName)
 		pFilterAddStringSet(so, "matchingAuthor", filter.matchingAuthor)
 		pFilterAddStringSet(so, "matchingIds", filter.withIds)

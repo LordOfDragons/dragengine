@@ -102,6 +102,16 @@ class ServiceModFilter
 		 * Count is given as floating point value.
 		 */
 		downloadsTotal
+		
+		/**
+		 * \brief Modification name in ascending order.
+		 */
+		nameAscending
+		
+		/**
+		 * \brief Modification name in descending order.
+		 */
+		nameDescending
 	end
 	
 	
@@ -115,16 +125,6 @@ class ServiceModFilter
 	 * - ServiceModio
 	 */
 	public var SortField sortField
-	
-	/**
-	 * \brief Sort direction if sortField is not null.
-	 * 
-	 * Use null to use the default direction as defined by the service module.
-	 * 
-	 * Supported by:
-	 * - ServiceModio
-	 */
-	public var SortDirection sortDirection
 	
 	/**
 	 * \brief Filter by name matching one or more strings.
@@ -283,8 +283,43 @@ class ServiceModFilter
 	
 	
 	/**
-	 * \brief Create new instance of class ServiceModFilter.
+	 * \brief Create new instance of ServiceModFilter.
 	 */
 	func new()
+	end
+	
+	/**
+	 * \brief Create copy of ServiceModFilter.
+	 */
+	func new(ServiceModFilter filter)
+		sortField = filter.sortField
+		if filter.matchingName != null
+			matchingName = Set.new(filter.matchingName)
+		end
+		if filter.matchingAuthor != null
+			matchingAuthor = Set.new(filter.matchingAuthor)
+		end
+		if filter.withIds != null
+			withIds = Set.new(filter.withIds)
+		end
+		if filter.withoutIds != null
+			withoutIds = Set.new(filter.withoutIds)
+		end
+		releasedAfter = filter.releasedAfter
+		releasedBefore = filter.releasedBefore
+		if filter.withTags != null
+			withTags = Set.new(filter.withTags)
+		end
+		if filter.withoutTags != null
+			withoutTags = Set.new(filter.withoutTags)
+		end
+		metadataLike = filter.metadataLike
+		revenueType = filter.revenueType
+		disallowMatureContent = filter.disallowMatureContent
+		if filter.withMatureContentFlags != null
+			withMatureContentFlags = Set.new(filter.withMatureContentFlags)
+		end
+		startIndex = filter.startIndex
+		resultCount = filter.resultCount
 	end
 end

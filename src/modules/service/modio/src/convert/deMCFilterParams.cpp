@@ -33,48 +33,67 @@
 // Class deMCFilterParams
 ///////////////////////////
 
-Modio::FilterParams::SortFieldType deMCFilterParams::SortFieldType( const deServiceObject &so ){
+deMCFilterParams::sSortBy deMCFilterParams::SortFieldType( const deServiceObject &so ){
 	const decString &sval = so.GetString();
 	if( sval == "id" ){
-		return Modio::FilterParams::SortFieldType::ID;
+		return {
+			Modio::FilterParams::SortFieldType::ID,
+			Modio::FilterParams::SortDirection::Ascending
+		};
 		
 	}else if( sval == "downloadsToday" ){
-		return Modio::FilterParams::SortFieldType::DownloadsToday;
+		return {
+			Modio::FilterParams::SortFieldType::DownloadsToday,
+			Modio::FilterParams::SortDirection::Descending
+		};
 		
 	}else if( sval == "subscriberCount" ){
-		return Modio::FilterParams::SortFieldType::SubscriberCount;
+		return {
+			Modio::FilterParams::SortFieldType::SubscriberCount,
+			Modio::FilterParams::SortDirection::Descending
+		};
 		
 	}else if( sval == "rating" ){
-		return Modio::FilterParams::SortFieldType::Rating;
+		return {
+			Modio::FilterParams::SortFieldType::Rating,
+			Modio::FilterParams::SortDirection::Descending
+		};
 		
 	}else if( sval == "dateMarkedLive" ){
-		return Modio::FilterParams::SortFieldType::DateMarkedLive;
+		return {
+			Modio::FilterParams::SortFieldType::DateMarkedLive,
+			Modio::FilterParams::SortDirection::Descending
+		};
 		
 	}else if( sval == "dateUpdated" ){
-		return Modio::FilterParams::SortFieldType::DateUpdated;
+		return {
+			Modio::FilterParams::SortFieldType::DateUpdated,
+			Modio::FilterParams::SortDirection::Descending
+		};
 		
 	}else if( sval == "downloadsTotal" ){
-		return Modio::FilterParams::SortFieldType::DownloadsTotal;
+		return {
+			Modio::FilterParams::SortFieldType::DownloadsTotal,
+			Modio::FilterParams::SortDirection::Descending
+		};
+		
+	}else if( sval == "nameAscending" ){
+		return {
+			Modio::FilterParams::SortFieldType::Alphabetical,
+			Modio::FilterParams::SortDirection::Ascending
+		};
+		
+	}else if( sval == "nameDescending" ){
+		return {
+			Modio::FilterParams::SortFieldType::Alphabetical,
+			Modio::FilterParams::SortDirection::Descending
+		};
 		
 	}else{
-		decString message;
-		message.Format( "Invalid sort field: %s", sval.GetString() );
-		DETHROW_INFO( deeInvalidParam, message );
-	}
-}
-
-Modio::FilterParams::SortDirection deMCFilterParams::SortDirection( const deServiceObject &so ){
-	const decString &sval2 = so.GetString();
-	if( sval2 == "ascending" ){
-		return Modio::FilterParams::SortDirection::Ascending;
-		
-	}else if( sval2 == "descending" ){
-		return Modio::FilterParams::SortDirection::Descending;
-		
-	}else{
-		decString message;
-		message.Format( "Invalid sort direction: %s", sval2.GetString() );
-		DETHROW_INFO( deeInvalidParam, message );
+		return {
+			Modio::FilterParams::SortFieldType::ID,
+			Modio::FilterParams::SortDirection::Ascending
+		};
 	}
 }
 
@@ -91,9 +110,7 @@ Modio::FilterParams::RevenueFilterType deMCFilterParams::RevenueFilterType( cons
 		return Modio::FilterParams::RevenueFilterType::FreeAndPaid;
 		
 	}else{
-		decString message;
-		message.Format( "Invalid revenue type: %s", sval.GetString() );
-		DETHROW_INFO( deeInvalidParam, message );
+		return Modio::FilterParams::RevenueFilterType::FreeAndPaid;
 	}
 }
 
@@ -103,15 +120,8 @@ Modio::FilterParams deMCFilterParams::FilterParams( const deServiceObject &so ){
 	
 	value = so.GetChildAt( "sortField" );
 	if( value ){
-		Modio::FilterParams::SortFieldType field = SortFieldType( value );
-		
-		Modio::FilterParams::SortDirection direction = Modio::FilterParams::SortDirection::Ascending;
-		value = so.GetChildAt( "sortDirection" );
-		if( value ){
-			direction = SortDirection( value );
-		}
-		
-		filter.SortBy( field, direction );
+		const sSortBy sortBy = SortFieldType( value );
+		filter.SortBy( sortBy.field, sortBy.direction );
 	}
 	
 	value = so.GetChildAt( "nameContains" );
@@ -177,7 +187,7 @@ Modio::FilterParams deMCFilterParams::FilterParams( const deServiceObject &so ){
 	
 	value = so.GetChildAt( "withMatureContentFlags" );
 	if( value ){
-		filter.WithMatureContentFlags( ( Modio::MaturityOption )deMCCommon::ProfileMaturity( value ).RawValue() );
+		filter.WithMatureContentFlags( ( Modio::MaturityOption )deMCCommon::ProfileMaturity( *value ).RawValue() );
 	}
 	
 	std::size_t startIndex = 0, resultCount = 100;

@@ -38,9 +38,13 @@ private:
 	deMCFilterParams() = default;
 	
 public:
+	struct sSortBy{
+		Modio::FilterParams::SortFieldType field;
+		Modio::FilterParams::SortDirection direction;
+	};
+	
 	/** Convert service object string to constant. */
-	static Modio::FilterParams::SortFieldType SortFieldType( const deServiceObject &so );
-	static Modio::FilterParams::SortDirection SortDirection( const deServiceObject &so );
+	static sSortBy SortFieldType( const deServiceObject &so );
 	static Modio::FilterParams::RevenueFilterType RevenueFilterType( const deServiceObject &so );
 	
 	/** Convert service object to modio struct. */

@@ -98,4 +98,23 @@ Do you want to re-assign?</translation>
 	<translation name='UI.Command.MenuLeft.Description'>Menu left hand.</translation>
 	<translation name='UI.EditBinding.DeleteBinding.ToolTip'>Delete binding</translation>
 	<translation name='UI.EditBinding.AddBinding.ToolTip'>Add binding</translation>
+	<translation name='UI.ModManagement.Close'>Close</translation>
+	<translation name='UI.ModManagement.Close.ToolTip'>Close modification management. Activates subscribed and installed modifications</translation>
+	<translation name='UI.ModManagement.Search'>Search</translation>
+	<translation name='UI.ModManagement.Search.ToolTip'>Search for modifications. Displays the first results</translation>
+	<translation name='UI.ModManagement.SearchMore'>More results</translation>
+	<translation name='UI.ModManagement.SearchMore.ToolTip'>Continue searching. Displays the next results</translation>
+	<translation name='UI.ModManagement.SearchName'>Name:</translation>
+	<translation name='UI.ModManagement.SearchName.ToolTip'>Display modifications with name containing one or more of the entered words</translation>
+	<translation name='UI.ModManagement.SortBy'>Sort:</translation>
+	<translation name='UI.ModManagement.SortBy.ToolTip'>Sort modifications</translation>
+	<translation name='UI.ModManagement.Enum.SortField.id'>ID</translation>
+	<translation name='UI.ModManagement.Enum.SortField.downloadsToday'>Downloads Today</translation>
+	<translation name='UI.ModManagement.Enum.SortField.subscriberCount'>Subscriber Count</translation>
+	<translation name='UI.ModManagement.Enum.SortField.rating'>Rating</translation>
+	<translation name='UI.ModManagement.Enum.SortField.dateMarkedLive'>Date Released</translation>
+	<translation name='UI.ModManagement.Enum.SortField.dateUpdated'>Date Last Updated</translation>
+	<translation name='UI.ModManagement.Enum.SortField.downloadsTotal'>Downloads Total</translation>
+	<translation name='UI.ModManagement.Enum.SortField.nameAscending'>Name Ascending</translation>
+	<translation name='UI.ModManagement.Enum.SortField.nameDescending'>Name Descending</translation>
 </languagePack>
