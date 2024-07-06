@@ -106,21 +106,12 @@ deServiceObject::Ref deMCCommon::MaturityOption( Modio::MaturityOption option ){
 	}
 }
 
-deServiceObject::Ref deMCCommon::Metadata( const Modio::Metadata &data ){
-	const deServiceObject::Ref so( deServiceObject::Ref::New( new deServiceObject ) );
-	
-	so->SetStringChildAt( "key", data.Key.c_str() );
-	so->SetStringChildAt( "value", data.Value.c_str() );
-	
-	return so;
-}
-
-deServiceObject::Ref deMCCommon::MetadataList( const std::vector<Modio::Metadata> &list ){
+deServiceObject::Ref deMCCommon::MetadataMap( const std::vector<Modio::Metadata> &list ){
 	const deServiceObject::Ref so( deServiceObject::NewList() );
 	
 	std::vector<Modio::Metadata>::const_iterator iter;
 	for( iter = list.cbegin(); iter != list.cend(); iter++ ){
-		so->AddChild( Metadata( *iter ) );
+		so->SetStringChildAt( iter->Key.c_str(), iter->Value.c_str() );
 	}
 	
 	return so;
@@ -163,7 +154,32 @@ deServiceObject::Ref deMCCommon::StringList( const std::vector<std::string> &lis
 	
 	std::vector<std::string>::const_iterator iter;
 	for( iter = list.cbegin(); iter != list.cend(); iter++ ){
-		so->AddStringChild( iter->c_str()  );
+		so->AddStringChild( iter->c_str() );
+	}
+	
+	return so;
+}
+
+std::map<std::string, std::string> deMCCommon::StringMap( const deServiceObject &so ){
+	const decStringList keys( so.GetChildrenKeys() );
+	std::map<std::string, std::string> map;
+	const int count = keys.GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		const decString &key = keys.GetAt( i );
+		map[ key.GetString() ] = so.GetChildAt( key )->GetString().GetString();
+	}
+	
+	return map;
+}
+
+deServiceObject::Ref deMCCommon::StringMap( const std::map<std::string, std::string> &map ){
+	const deServiceObject::Ref so( deServiceObject::Ref::New( new deServiceObject ) );
+	
+	std::map<std::string, std::string>::const_iterator iter;
+	for( iter = map.cbegin(); iter != map.cend(); iter++ ){
+		so->SetStringChildAt( iter->first.c_str(), iter->second.c_str() );
 	}
 	
 	return so;

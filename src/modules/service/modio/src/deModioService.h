@@ -145,6 +145,7 @@ public:
 	void GetModInfo( const decUniqueID &id, const deServiceObject &request );
 	void SubmitModRating( const decUniqueID &id, const deServiceObject &request );
 	void RevokeModRating( const decUniqueID &id, const deServiceObject &request );
+	void GetModTagOptions( const decUniqueID &id, const deServiceObject &request );
 	
 	void ActivateMods();
 	deServiceObject::Ref IsAuthenticated();
@@ -190,6 +191,9 @@ private:
 	
 	void pOnSubscribeToMod( const decUniqueID &id, Modio::ErrorCode ec );
 	void pOnUnsubscribeFromMod( const decUniqueID &id, Modio::ErrorCode ec );
+	
+	void pOnGetModTagOptions( const decUniqueID &id, Modio::ErrorCode ec,
+		Modio::Optional<Modio::ModTagOptions> tagOptions );
 	
 	void pOnLogCallback( Modio::LogLevel level, const std::string &message );
 	void pOnModManagement( Modio::ModManagementEvent event );

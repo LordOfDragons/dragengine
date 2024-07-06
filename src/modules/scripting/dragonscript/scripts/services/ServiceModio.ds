@@ -591,6 +591,21 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 		return pService.runAction(so).getBoolean()
 	end
 	
+	/**
+	 * \brief Tags that can be used for ServiceModFilter.
+	 * 
+	 * Once finished \ref ServiceModsListener#onGetTags(ServiceMods,Array,Exception)
+	 * is called with the list of ServiceModTagCategory. Each category contains a list
+	 * of tags usable for this category.
+	 * 
+	 * \param listener If not null called once in addition to added listeners.
+	 */
+	func void getTags(ServiceModsListener listener)
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "getModTagOptions")
+		pRunRequest(so, listener)
+	end
+	
 	
 	
 	/**
@@ -823,6 +838,16 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 			if onceListener != null
 				(onceListener cast ServiceModsListener).onSubmitModRating(this, modId, null)
 			end
+			
+		elif function.equals("getModTagOptions")
+			var Array categories = pConvTagCategoryList(response.getChildAt("categories"))
+			
+			pModsListeners.forEach(block ServiceModsListener each
+				each.onGetTags(this, categories, null)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceModsListener).onGetTags(this, categories, null)
+			end
 		end
 	end
 	
@@ -914,6 +939,14 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 			end)
 			if onceListener != null
 				(onceListener cast ServiceModsListener).onSubmitModRating(this, modId, exception)
+			end
+			
+		elif function.equals("getModTagOptions")
+			pModsListeners.forEach(block ServiceModsListener each
+				each.onGetTags(this, null, exception)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceModsListener).onGetTags(this, null, exception)
 			end
 		end
 	end
@@ -1072,15 +1105,10 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 			return null
 		end
 		
-		var int i, count = so2.getChildCount()
 		var Dictionary dict = Dictionary.new()
-		var ServiceObject so3
-		
-		for i = 0 to count
-			so3 = so2.getChildAt(i)
-			dict.setAt(so3.getChildAt("key").getString(), so3.getChildAt("value").getString())
-		end
-		
+		so2.getChildrenKeys().forEach(block String key
+			dict.setAt(key, so2.getChildAt(key).getString())
+		end)
 		return dict
 	end
 	
@@ -1318,6 +1346,44 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 		status.sizeOnDisk = pConvFloat(so, "sizeOnDisk", 0)
 		status.disabled = pConvBool(so, "disabled", false)
 		return status
+	end
+	
+	private func Array pConvTagCategoryList(ServiceObject so)
+		if so == null
+			return Array.new()
+		end
+		
+		var int i, count = so.getChildCount()
+		var Array categories = Array.new()
+		for i = 0 to count
+			categories.add(pConvTagCategory(so.getChildAt(i)))
+		end
+		return categories
+	end
+	
+	private func ServiceModTagCategory pConvTagCategory(ServiceObject so)
+		var ServiceModTagCategory category = ServiceModTagCategory.new()
+		category.id = category.name = so.getChildAt("name").getString()
+		category.nameTranslations = pConvStringDict(so, "nameTranslations")
+		category.multiSelection = pConvBool(so, "allowMultipleSelection", false)
+		category.tags = pConvTagCategoryTagList(so.getChildAt("tags"))
+		return category
+	end
+	
+	private func Array pConvTagCategoryTagList(ServiceObject so)
+		var int i, count = so.getChildCount()
+		var Array tags = Array.new()
+		for i = 0 to count
+			tags.add(pConvTagCategoryTag(so.getChildAt(i)))
+		end
+		return tags
+	end
+	
+	private func ServiceModTagCategory.Tag pConvTagCategoryTag(ServiceObject so)
+		var ServiceModTagCategory.Tag tag = ServiceModTagCategory.Tag.new()
+		tag.id = tag.name = so.getChildAt("name").getString()
+		tag.nameTranslations = pConvStringDict(so, "nameTranslations")
+		return tag
 	end
 	
 	private func Object pGetOnceListener(UniqueID id)

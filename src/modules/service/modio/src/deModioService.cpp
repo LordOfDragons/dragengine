@@ -33,6 +33,7 @@
 #include "convert/deMCFilterParams.h"
 #include "convert/deMCModInfo.h"
 #include "convert/deMCUser.h"
+#include "convert/deMCTagOptions.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/utils/decUniqueID.h>
@@ -182,6 +183,9 @@ void deModioService::StartRequest( const decUniqueID &id, const deServiceObject&
 		
 	}else if( function == "revokeModRating" ){
 		RevokeModRating( id, request );
+		
+	}else if( function == "getModTagOptions" ){
+		GetModTagOptions( id, request );
 		
 	}else{
 		DETHROW_INFO( deeInvalidParam, "Unknown function" );
@@ -533,6 +537,18 @@ void deModioService::RevokeModRating( const decUniqueID &id, const deServiceObje
 	
 	Modio::SubmitModRatingAsync( modId, Modio::Rating::Neutral, [ this, id ]( Modio::ErrorCode ec ){
 		pOnRequestFinished( id, ec );
+	});
+}
+
+void deModioService::GetModTagOptions( const decUniqueID &id, const deServiceObject &request ){
+	pModule.LogInfo( "deModioService.GetModTagOptions" );
+	
+	NewPendingRequest( id, "getModTagOptions" );
+	AddRequiresEventHandlingCount();
+	
+	Modio::GetModTagOptionsAsync( [ this, id ]( Modio::ErrorCode ec,
+	Modio::Optional<Modio::ModTagOptions> tagOptions ){
+		pOnGetModTagOptions( id, ec, tagOptions );
 	});
 }
 
@@ -1057,6 +1073,20 @@ void deModioService::pOnUnsubscribeFromMod( const decUniqueID &id, Modio::ErrorC
 	
 	const deModioPendingRequest::Ref pr( pOnBaseResponseInit( id, ec ) );
 	if( pr ){
+		pOnBaseResponseExit( pr );
+	}
+}
+
+void deModioService::pOnGetModTagOptions( const decUniqueID &id, Modio::ErrorCode ec,
+Modio::Optional<Modio::ModTagOptions> tagOptions ){
+	pModule.LogInfoFormat( "deModioService.pOnGetModTagOptions: ec(%d)[%s]",
+		ec.value(), ec.message().c_str() );
+	
+	const deModioPendingRequest::Ref pr( pOnBaseResponseInit( id, ec ) );
+	if( pr ){
+		if( tagOptions.has_value() ){
+			pr->data->SetChildAt( "categories", deMCTagOptions::ModTagOptions( *tagOptions ) );
+		}
 		pOnBaseResponseExit( pr );
 	}
 }

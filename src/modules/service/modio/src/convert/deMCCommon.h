@@ -45,11 +45,8 @@ public:
 	static Modio::MaturityOption MaturityOption( const deServiceObject &so );
 	static deServiceObject::Ref MaturityOption( Modio::MaturityOption option );
 	
-	/** Convert modio Metadata. */
-	static deServiceObject::Ref Metadata( const Modio::Metadata &data );
-	
-	/** Convert modio Metadata list. */
-	static deServiceObject::Ref MetadataList( const std::vector<Modio::Metadata> &list );
+	/** Convert modio Metadata map. */
+	static deServiceObject::Ref MetadataMap( const std::vector<Modio::Metadata> &list );
 	
 	/** Convert modio ModTag. */
 	static deServiceObject::Ref ModTag( const Modio::ModTag &tag );
@@ -60,6 +57,10 @@ public:
 	/** Convert modio string list. */
 	static std::vector<std::string> StringList( const deServiceObject &so );
 	static deServiceObject::Ref StringList( const std::vector<std::string> &list );
+	
+	/** Convert modio string map. */
+	static std::map<std::string, std::string> StringMap( const deServiceObject &so );
+	static deServiceObject::Ref StringMap( const std::map<std::string, std::string> &map );
 	
 	/** Convert maturity content flags. */
 	static Modio::ProfileMaturity ProfileMaturity( const deServiceObject &so );

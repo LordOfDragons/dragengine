@@ -116,4 +116,13 @@ class DefaultServiceModsListener implements ServiceModsListener
 	 */
 	func void onRevokeModRating(ServiceMods service, String modId, Exception exception)
 	end
+	
+	/**
+	 * \brief Retrieve tags finished.
+	 * \param service Service sending the event.
+	 * \param categories Array of ServiceModTagCategory.
+	 * \param exception On success null. On failure contains error information.
+	 */
+	func void onGetTags(ServiceMods service, Array categories, Exception exception)
+	end
 end

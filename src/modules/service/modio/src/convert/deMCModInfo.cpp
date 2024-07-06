@@ -109,7 +109,7 @@ deServiceObject::Ref deMCModInfo::ModInfo( const Modio::ModInfo &info ){
 	}
 	
 	if( ! info.MetadataKvp.empty() ){
-		so->SetChildAt( "metadataKvp", deMCCommon::MetadataList( info.MetadataKvp ) );
+		so->SetChildAt( "metadataKvp", deMCCommon::MetadataMap( info.MetadataKvp ) );
 	}
 	
 	if( ! info.Tags.empty() ){

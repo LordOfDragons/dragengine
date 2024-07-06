@@ -117,4 +117,6 @@ Do you want to re-assign?</translation>
 	<translation name='UI.ModManagement.Enum.SortField.downloadsTotal'>Downloads Total</translation>
 	<translation name='UI.ModManagement.Enum.SortField.nameAscending'>Name Ascending</translation>
 	<translation name='UI.ModManagement.Enum.SortField.nameDescending'>Name Descending</translation>
+	<translation name='UI.ModManagement.Tags.ToolTip'>Select tags to search for.</translation>
+	<translation name='UI.ModManagement.Value.NoTagSelected'>&#60; No Selection &#62;</translation>
 </languagePack>

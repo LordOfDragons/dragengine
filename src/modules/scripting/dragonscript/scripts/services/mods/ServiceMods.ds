@@ -308,4 +308,15 @@ interface ServiceMods
 	 * \throws EInvalidAction Modification does not exist or is not installed.
 	 */
 	func bool modHasMatchingFiles(String id, String directory, bool recursive, Set patterns)
+	
+	/**
+	 * \brief Tags that can be used for ServiceModFilter.
+	 * 
+	 * Once finished \ref ServiceModsListener#onGetTags(ServiceMods,Array,Exception)
+	 * is called with the list of ServiceModTagCategory. Each category contains a list
+	 * of tags usable for this category.
+	 * 
+	 * \param listener If not null called once in addition to added listeners.
+	 */
+	func void getTags(ServiceModsListener listener)
 end
