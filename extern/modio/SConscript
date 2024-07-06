@@ -12,7 +12,6 @@ envLibrary = parent_env.Clone()
 # parameters
 srcdir = 'modio-sdk'
 
-libLinkVersion = '62'
 libLinkNames = ['modioStatic', 'mbedx509', 'mbedtls', 'mbedcrypto']
 
 installLibDir = 'install/static/lib'
@@ -34,6 +33,7 @@ if depUring:
 def modioBuild(target, source, env):
 	buildDir = target[0].get_dir().up().up().up()
 	untarArchive(buildDir.abspath, source[0].abspath)
+	untarArchive(buildDir.abspath, source[0].abspath[:-7] + '-ext.tar.xz')
 	
 	cmakeSourceDir = buildDir.Dir(srcdir).abspath
 	
@@ -102,7 +102,7 @@ def modioBuild(target, source, env):
 targets = staticFileNames[:]
 targets.extend(['install/static/inc/modio/ModioSDK.h'])
 
-library = envLibrary.Command(targets, '{}.tar.bz2'.format(srcdir),
+library = envLibrary.Command(targets, '{}.tar.xz'.format(srcdir),
 	envLibrary.Action(modioBuild, 'Build ModIO library'))
 
 if depUring and depUring['depends']:

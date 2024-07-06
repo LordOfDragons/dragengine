@@ -33,6 +33,7 @@
 	#pragma GCC diagnostic push
 	#pragma GCC diagnostic ignored "-Wshadow"
 	#pragma GCC diagnostic ignored "-Wsign-compare"
+	#pragma GCC diagnostic ignored "-Wunknown-pragmas"
 #endif
 
 #define MODIO_SEPARATE_COMPILATION

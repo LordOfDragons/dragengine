@@ -133,7 +133,7 @@ deServiceObject::Ref deMCModInfo::ModInfo( const Modio::ModInfo &info ){
 	so->SetStringChildAt( "version", info.Version.c_str() );
 	so->SetChildAt( "modStatus", ModServerSideStatus( info.ModStatus ) );
 	so->SetBoolChildAt( "publicVisible", info.Visibility == Modio::ObjectVisibility::Public );
-	so->SetIntChildAt( "price", info.Price );
+	so->SetIntChildAt( "price", ( int )info.Price );
 	so->SetBoolChildAt( "dependencies", info.Dependencies );
 	
 	return so;
