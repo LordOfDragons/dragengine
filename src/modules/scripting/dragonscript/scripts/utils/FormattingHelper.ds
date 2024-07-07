@@ -1,0 +1,147 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Utils
+
+/**
+ * \brief Provides common text formatting support for UI.
+ * \version 1.23
+ */
+class FormattingHelper
+	/**
+	 * \brief Create FormattingHelper instance.
+	 */
+	func new()
+	end
+	
+	
+	
+	/**
+	 * \brief Format count.
+	 * 
+	 * Returns text in the form "1.2T", "1.2G", "1.2M", "1.2K" or just "12".
+	 */
+	func String formatCount(float count)
+		return formatCount(count, 1)
+	end
+	
+	/**
+	 * \brief Format count with custom digit count.
+	 * 
+	 * Same as \ref #formatCount(float) but with the choice of digits clamped to the
+	 * range from 0 to 3.
+	 */
+	func String formatCount(float count, int digits)
+		digits = DEMath.clamp(digits, 0, 3)
+		var String fmt
+		
+		if count >= DEMath.pow(10, 12)
+			fmt = "{{:.{}f}T".format(Array.newWith(digits))
+			count /= DEMath.pow(10, 12)
+			
+		elif count >= 1000000000
+			fmt = "{{:.{}f}G".format(Array.newWith(digits))
+			count /= 1000000000
+			
+		elif count >= 1000000
+			fmt = "{{:.{}f}M".format(Array.newWith(digits))
+			count /= 1000000
+			
+		elif count >= 1000
+			fmt = "{{:.{}f}K".format(Array.newWith(digits))
+			count /= 1000
+			
+		else
+			fmt = "{:.0f}"
+		end
+		
+		return fmt.format(Array.newWith(count))
+	end
+	
+	
+	
+	/**
+	 * \brief Format size.
+	 * 
+	 * Returns text in the form "1.2TB", "1.2GB", "1.2MB", "1.2Kk" or just "12b".
+	 * Uses 1024 as divisor instead of 1000.
+	 */
+	func String formatSize(float size)
+		return formatSize(size, 1)
+	end
+	
+	/**
+	 * \brief Format size.
+	 * 
+	 * Same as \ref #formatSize(float) but with the choice of digits clamped to the
+	 * range from 0 to 3.
+	 */
+	func String formatSize(float size, int digits)
+		digits = DEMath.clamp(digits, 0, 3)
+		var String fmt
+		
+		if size >= 1024 * DEMath.pow(10, 9)
+			fmt = "{{:.{}f}TB".format(Array.newWith(digits))
+			size /= 1024 * DEMath.pow(10, 9)
+			
+		elif size >= 1024000000
+			fmt = "{{:.{}f}GB".format(Array.newWith(digits))
+			size /= 1024000000
+			
+		elif size >= 1024000
+			fmt = "{{:.{}f}MB".format(Array.newWith(digits))
+			size /= 1024000
+			
+		elif size >= 1024
+			fmt = "{{:.{}f}Kb".format(Array.newWith(digits))
+			size /= 1024
+			
+		else
+			fmt = "{:.0f}b"
+		end
+		
+		return fmt.format(Array.newWith(size))
+	end
+	
+	
+	
+	/**
+	 * \brief Format percentage.
+	 * 
+	 * Returns text in the form "12.3%".
+	 */
+	func String formatRating(float rating)
+		return "{:0.1f}%".format(Array.newWith(rating))
+	end
+	
+	/**
+	 * \brief Format percentage.
+	 * 
+	 * Same as \ref #formatPercentags(float) but with the choice of digits clamped to the
+	 * range from 0 to 3.
+	 */
+	func String formatRating(float rating, int digits)
+		return "{{:0.{}f}%".format(Array.newWith(DEMath.clamp(digits, 0, 3))).format(Array.newWith(rating))
+	end
+end
