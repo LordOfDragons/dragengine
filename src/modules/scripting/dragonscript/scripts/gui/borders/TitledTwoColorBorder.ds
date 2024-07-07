@@ -118,7 +118,7 @@ class TitledTwoColorBorder extends TwoColorBorder
 	 * \version 1.13
 	 */
 	func void setTextColor(Color color)
-// 		pTextColor = color
+		pTextColor = color
 		
 		layoutContainer()
 		updateCanvas()
