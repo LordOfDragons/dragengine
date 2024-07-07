@@ -1228,6 +1228,9 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 		user.id = pConvString(so, "userId")
 		user.name = pConvString(so, "username")
 		user.displayName = pConvString(so, "displayNamePortal")
+		if user.displayName == null
+			user.displayName = user.name
+		end
 		user.profileUrl = pConvString(so, "profileUrl")
 		//pConvString(so, "authToken")
 		user.dateOnline = pConvTimeDate(so, "dateOnline")
