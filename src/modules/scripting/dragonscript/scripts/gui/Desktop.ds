@@ -78,6 +78,8 @@ class Desktop extends Container
 	var WindowVirtualKeyboard pWindowVirtualKeyboard
 	var GamepadController pGamepadController
 	
+	var bool pBlockSetHoverWidget
+	
 	
 	
 	/** \brief Create desktop widget. */
@@ -171,6 +173,10 @@ class Desktop extends Container
 	 * \details If widget is different than the old one enter and leave messages are send.
 	 */
 	protected func void setHoverWidget(Widget widget, MouseEvent event)
+		if pBlockSetHoverWidget
+			return
+		end
+		
 		var Widget hoverWidget = getHoverWidget()
 		if widget == hoverWidget
 			return
@@ -179,25 +185,36 @@ class Desktop extends Container
 		var Widget leaveWidget = hoverWidget
 		
 		pHoverWidget = widget
-		hoverWidgetChanged()
 		
-		if leaveWidget != null
-			// runWhileBlockingLayout added to deal with problem of layoutParent calling updateHoverWidget
-			// which in turn overwrites pHoverWidget while the next call is running. this results in
-			// pHoverWidget different than widget which is wrong
-			runWhileBlockingLayout(block
-				leaveWidget.sendEvent(MouseEvent.new(leaveWidget, MouseEvent.idMouseLeave, \
-					event.getButton(), event.getModifiers(), event.getSystem(), event.getDevice()))
-			end)
-		end
-		
-		if widget == null
-			setActiveMousePointer(getFirstMousePointer())
+		try
+			pBlockSetHoverWidget = true
 			
-		else
-			setActiveMousePointer(widget.getFirstMousePointer())
-			widget.sendEvent(MouseEvent.new(widget, MouseEvent.idMouseEnter, \
-				event.getButton(), event.getModifiers(), event.getSystem(), event.getDevice()))
+			hoverWidgetChanged()
+			
+			if leaveWidget != null
+				// runWhileBlockingLayout added to deal with problem of layoutParent calling updateHoverWidget
+				// which in turn overwrites pHoverWidget while the next call is running. this results in
+				// pHoverWidget different than widget which is wrong
+				runWhileBlockingLayout(block
+					leaveWidget.sendEvent(MouseEvent.new(leaveWidget, MouseEvent.idMouseLeave, \
+						event.getButton(), event.getModifiers(), event.getSystem(), event.getDevice()))
+				end)
+			end
+			
+			if widget == null
+				setActiveMousePointer(getFirstMousePointer())
+				
+			else
+				setActiveMousePointer(widget.getFirstMousePointer())
+				widget.sendEvent(MouseEvent.new(widget, MouseEvent.idMouseEnter, \
+					event.getButton(), event.getModifiers(), event.getSystem(), event.getDevice()))
+			end
+			
+			pBlockSetHoverWidget = false
+			
+		catch Exception e
+			pBlockSetHoverWidget = false
+			throw
 		end
 	end
 	
@@ -241,14 +258,7 @@ class Desktop extends Container
 			return
 		end
 		
-		var MouseEvent event = MouseEvent.new(hoverWidget, MouseEvent.idMouseMoved, 0, 0, Point.new(), -1)
-		
-		if hoverWidget == null
-			setHoverWidget(null, event)
-			
-		else
-			setHoverWidget(hoverWidget, event)
-		end
+		setHoverWidget(hoverWidget, MouseEvent.new(hoverWidget, MouseEvent.idMouseMoved, 0, 0, Point.new(), -1))
 	end
 	
 	/** \brief Clear hover widget. */

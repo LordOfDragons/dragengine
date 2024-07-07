@@ -136,6 +136,9 @@ class Widget
 	
 	var TranslationManager pTranslationManager
 	
+	var bool pBlockLayoutParent
+	var bool pHasBlockedLayoutParent
+	
 	
 	
 	/** \brief Create widget. */
@@ -202,6 +205,8 @@ class Widget
 	 * Use \ref #safeDispose() to safely dispose of a widget.
 	 */
 	func void dispose()
+		pBlockLayoutParent = true
+		
 		if pWidgetListeners == null
 			return // already disposed
 		end
@@ -270,6 +275,8 @@ class Widget
 		end
 	end
 	
+	
+	
 	/** Layout parent if existing. Call if a change potentially alters the size requirements. */
 	func void layoutParent()
 		// this is an optimization which causes a problem with one particular situation.
@@ -287,8 +294,98 @@ class Widget
 			return
 		end
 		
+		if pBlockLayoutParent
+			pHasBlockedLayoutParent = true
+			return
+		end
+		
+		pHasBlockedLayoutParent = false
 		pParent.doLayout()
 	end
+	
+	/**
+	 * \brief Calls layoutParent if getHasBlockedLayoutParent() is true.
+	 * \version 1.23
+	 * 
+	 * Call this instead of calling layoutParent() directly to improve performance by not
+	 * calling layoutParent() if not required. This method is typically called after calling
+	 * runWhileBlockingLayoutParent().
+	 */
+	func void layoutParentIfBlocked()
+		if pHasBlockedLayoutParent
+			layoutParent()
+		end
+	end
+	
+	/**
+	 * \brief layoutParent calls happened during runWhileBlockingLayoutParent.
+	 * \version 1.23
+	 */
+	func bool getHasBlockedLayoutParent()
+		return pHasBlockedLayoutParent
+	end
+	
+	/**
+	 * \brief Set if layoutParent calls happened during runWhileBlockingLayoutParent.
+	 * \version 1.23
+	 */
+	func void setHasBlockedLayoutParent(bool hasBlockedLayoutParent)
+		pHasBlockedLayoutParent = hasBlockedLayoutParent
+	end
+	
+	/**
+	 * \brief Block layoutParent calls.
+	 * \version 1.23
+	 * 
+	 * Used to prevent deadloops and performance problems with layoutParent/doLayout calls.
+	 * Be careful to disable blocking even in case of exceptions. Also make sure to restore
+	 * the block layout call in place before changing it by yourself to not break chains.
+	 */
+	func bool getBlockLayoutParent()
+		return pBlockLayoutParent
+	end
+	
+	/**
+	 * \brief Set block layoutParent calls.
+	 * \version 1.23
+	 * 
+	 * Used to prevent deadloops and performance problems with layoutParent/doLayout calls.
+	 * Be careful to disable blocking even in case of exceptions. Also make sure to restore
+	 * the block layout call in place before changing it by yourself to not break chains.
+	 */
+	func void setBlockLayoutParent(bool blockLayoutParent)
+		pBlockLayoutParent = blockLayoutParent
+	end
+	
+	/**
+	 * \brief Run block while layouting is blocked.
+	 * \version 1.23
+	 * 
+	 * This method is useful when you do multiple changes to a widget avoiding layoutParent
+	 * calls to be done for each modification except once to avoid performance loss. The
+	 * method ensures the blocking state is restored to the value present before even in
+	 * case of exceptions. You still have to call layoutParent() to trigger an update after
+	 * returning from the method call. This method call can be nested safely.
+	 */
+	func void runWhileBlockingLayoutParent(Block ablock)
+		if pBlockLayoutParent
+			ablock.run()
+			return
+		end
+		
+		pBlockLayoutParent = true
+		
+		try
+			ablock.run()
+			pBlockLayoutParent = false
+			
+		catch Exception e
+			pBlockLayoutParent = false
+			throw
+		end
+	end
+	
+	
 	
 	/** Retrieves the border or null if not set. */
 	func Border getBorder()
@@ -2183,9 +2280,14 @@ class Widget
 	
 	/** \brief Design widget using WidgetDesigner. */
 	func void design()
-		if pDesigner != null
-			pDesigner.designWidget(this)
+		if pDesigner == null
+			return
 		end
+		
+		runWhileBlockingLayoutParent(block
+			pDesigner.designWidget(this)
+		end)
+		layoutParentIfBlocked()
 	end
 	
 	

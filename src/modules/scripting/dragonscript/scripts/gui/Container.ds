@@ -61,8 +61,6 @@ class Container extends Widget
 	func new(Point position, Point size) super(position, size)
 		pChildren = Array.new()
 		pLayout = BoxLayout.new(LayoutAxis.y, 0)
-		pBlockLayout = false
-		pHasBlockedDoLayout = false
 	end
 	
 	/** \brief Create container with layout. */
@@ -72,8 +70,6 @@ class Container extends Widget
 		end
 		pChildren = Array.new()
 		pLayout = layout
-		pBlockLayout = false
-		pHasBlockedDoLayout = false
 	end
 	
 	/**
@@ -896,6 +892,18 @@ class Container extends Widget
 			pChildren.forEach(block Widget each
 				each.onTranslationChanged()
 			end)
+		end)
+		doLayoutIfBlocked()
+	end
+	
+	/** \brief Design widget using WidgetDesigner. */
+	func void design()
+		if getDesigner() == null
+			return
+		end
+		
+		runWhileBlockingLayout(block
+			super.design()
 		end)
 		doLayoutIfBlocked()
 	end
