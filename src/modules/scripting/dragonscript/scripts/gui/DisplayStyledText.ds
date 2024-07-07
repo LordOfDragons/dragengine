@@ -220,6 +220,15 @@ class DisplayStyledText extends Widget
 		pMinSizeForWidthSize = calcMinSize(Point.new(width, pMinPageSize.getY()))
 		pMinSizeForWidthWidth = width
 		
+		// this here is required otherwise the parent container layout can start exploding
+		if pStyledTextDocument != null
+			width = pStyledTextDocument.getDefinition().getPageSize().getX()
+			
+		else
+			width = pMinPageSize.getX()
+		end
+		pMinSizeForWidthSize = Point.new(DEMath.min(pMinSizeForWidthSize.getX(), width), pMinSizeForWidthSize.getY())
+		
 		return pMinSizeForWidthSize
 	end
 	
