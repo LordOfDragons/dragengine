@@ -800,6 +800,8 @@ class Window extends Container
 		if not pActivated and pCanActivate and getEnabled()
 			activeWidgetGrabFocus()
 		end
+		
+		doLayout()
 	end
 	
 	/** \brief State changed. */
