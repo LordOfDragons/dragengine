@@ -146,7 +146,7 @@ class ServiceModInfo
 	/**
 	 * \brief Tags.
 	 * 
-	 * Dictionary with String tag as key and String transation as value. The tag is used to
+	 * Dictionary with String tag as key and String translation as value. The tag is used to
 	 * identify the tag while the value is used to display the tag to the user. The value
 	 * is typically translated to the user language by the service provider.
 	 */

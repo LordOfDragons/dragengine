@@ -430,6 +430,17 @@ void dexsiDeviceManager::pCreateEvdevDevices(){
 				refDevice.TakeOver( new dexsiDeviceLibEvent( pModule, pathDevice ) );
 				dexsiDeviceLibEvent * const device = ( dexsiDeviceLibEvent* )( deObject* )refDevice;
 				
+				// devices without buttons and axes are not interesting to us. this weeds out
+				// non-input devices like audio devices
+				if( device->GetButtonCount() == 0 && device->GetAxisCount() == 0 ){
+					continue;
+				}
+				
+				// we can end up with duplicates for whatever reason
+				if( GetWithID( device->GetID() ) ){
+					continue;
+				}
+				
 				switch( device->GetType() ){
 				case deInputDevice::edtGamepad:
 					device->SetIndex( pDevices.GetCount() );
