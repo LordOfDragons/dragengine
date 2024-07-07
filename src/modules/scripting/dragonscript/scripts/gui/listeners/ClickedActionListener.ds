@@ -255,14 +255,19 @@ abstract class ClickedActionListener extends DefaultMouseListener
 			return
 		end
 		
-		onAction()
 		resetMultiClickDetection()
+		onAction()
 	end
 	
 	
 	
 	/**
 	 * \brief Action to perform.
+	 * 
+	 * If you need to know the mouse location at the time of the click use
+	 * \ref Widget#getLocalMouseLocation() on the desired widget. You can not use
+	 * \ref #getPosition() for this since this position is relative to whatever widget
+	 * caused the mouse events to be send and it is cleared before calling onAction.
 	 */
 	abstract public func void onAction()
 	

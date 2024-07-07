@@ -1071,6 +1071,22 @@ class Widget
 		return RectArea.new(getScreenPosition(), pSize)
 	end
 	
+	/**
+	 * \brief Parent desktop mouse location in widget coordinates.
+	 * \version 1.23
+	 * 
+	 * If no parent desktop is found zero point is returned.
+	 */
+	func Point getLocalMouseLocation()
+		var Desktop desktop = getDesktop()
+		if desktop != null
+			return desktop.getMouseLocation() - getDesktopPosition()
+			
+		else
+			return Point.new()
+		end
+	end
+	
 	
 	
 	/** Sets if widget is visible. */

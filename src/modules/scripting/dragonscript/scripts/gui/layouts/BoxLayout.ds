@@ -239,7 +239,7 @@ class BoxLayout implements Layout
 	/**
 	 * \brief Minimum size of layout using reference and variable size.
 	 * \details If LayoutAxis.x is used height is the reference size. If LayoutAxis.y is used
-	 *          widthis the reference size.
+	 *          width is the reference size.
 	 */
 	protected func Point getMinimumSizeFor( Container container, int width, int height )
 		var int count = container.getWidgetCount()
