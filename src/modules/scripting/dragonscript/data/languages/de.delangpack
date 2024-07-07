@@ -104,9 +104,9 @@ Neu zuweisen?</translation>
 	<translation name='UI.ModManagement.Search.ToolTip'>Nach Modifikationen suchen. Zeigt die ersten Suchresultate an</translation>
 	<translation name='UI.ModManagement.SearchMore'>Mehr Resultate</translation>
 	<translation name='UI.ModManagement.SearchMore.ToolTip'>Suche vorsetzen. Zeigt die nächsten Suchresultate an</translation>
-	<translation name='UI.ModManagement.SearchName'>Name:</translation>
+	<translation name='UI.ModManagement.SearchName'>Name</translation>
 	<translation name='UI.ModManagement.SearchName.ToolTip'>Zeigt Modifikationen an, deren Namen ein oder mehrere der eingegebenen Wörter enthält</translation>
-	<translation name='UI.ModManagement.SortBy'>Sortieren:</translation>
+	<translation name='UI.ModManagement.SortBy'>Sortieren</translation>
 	<translation name='UI.ModManagement.SortBy.ToolTip'>Modifikationen sortieren</translation>
 	<translation name='UI.ModManagement.Enum.SortField.id'>ID</translation>
 	<translation name='UI.ModManagement.Enum.SortField.downloadsToday'>Downloads Heute</translation>
@@ -119,4 +119,17 @@ Neu zuweisen?</translation>
 	<translation name='UI.ModManagement.Enum.SortField.nameDescending'>Name Absteigend</translation>
 	<translation name='UI.ModManagement.Tags.ToolTip'>Tags zum Suchen wählen.</translation>
 	<translation name='UI.ModManagement.Value.NoTagSelected'>&#60; Keine Auswahl &#62;</translation>
+	<translation name='UI.ModManagementMod.DetailsDetails'>Details</translation>
+	<translation name='UI.ModManagementMod.DetailsTags'>Tags</translation>
+	<translation name='UI.ModManagementMod.Subscribers'>Abonnenten:</translation>
+	<translation name='UI.ModManagementMod.Downloads'>Downloads:</translation>
+	<translation name='UI.ModManagementMod.DownloadsToday'>Downloads Heute:</translation>
+	<translation name='UI.ModManagementMod.LastUpdated'>Letzte Aktualisierung:</translation>
+	<translation name='UI.ModManagementMod.Released'>Veröffentlichung:</translation>
+	<translation name='UI.ModManagementMod.Size'>Grösse:</translation>
+	<translation name='UI.ModManagementMod.Version'>Version:</translation>
+	<translation name='UI.ModManagementMod.Author'>Autor:</translation>
+	<translation name='UI.ModManagementMod.Profile'>Profil:</translation>
+	<translation name='UI.ModManagementMod.Id'>ID:</translation>
+	<translation name='UI.ModManagementMod.Close'>Schliessen</translation>
 </languagePack>
