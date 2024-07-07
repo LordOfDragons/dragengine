@@ -117,7 +117,7 @@ Do you want to re-assign?</translation>
 	<translation name='UI.ModManagement.Enum.SortField.downloadsTotal'>Downloads Total</translation>
 	<translation name='UI.ModManagement.Enum.SortField.nameAscending'>Name Ascending</translation>
 	<translation name='UI.ModManagement.Enum.SortField.nameDescending'>Name Descending</translation>
-	<translation name='UI.ModManagement.Tags.ToolTip'>Select tags to search for.</translation>
+	<translation name='UI.ModManagement.Tags.ToolTip'>Select tags to search for</translation>
 	<translation name='UI.ModManagement.Value.NoTagSelected'>&#60; No Selection &#62;</translation>
 	<translation name='UI.ModManagementMod.DetailsDetails'>Details</translation>
 	<translation name='UI.ModManagementMod.DetailsTags'>Tags</translation>
@@ -132,4 +132,5 @@ Do you want to re-assign?</translation>
 	<translation name='UI.ModManagementMod.Profile'>Profile:</translation>
 	<translation name='UI.ModManagementMod.Id'>ID:</translation>
 	<translation name='UI.ModManagementMod.Close'>Close</translation>
+	<translation name='UI.ModManagementMod.Link.ToolTip'>Open link in system browser</translation>
 </languagePack>

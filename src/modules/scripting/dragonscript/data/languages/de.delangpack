@@ -117,7 +117,7 @@ Neu zuweisen?</translation>
 	<translation name='UI.ModManagement.Enum.SortField.downloadsTotal'>Downloads Total</translation>
 	<translation name='UI.ModManagement.Enum.SortField.nameAscending'>Name Aufsteigend</translation>
 	<translation name='UI.ModManagement.Enum.SortField.nameDescending'>Name Absteigend</translation>
-	<translation name='UI.ModManagement.Tags.ToolTip'>Tags zum Suchen wählen.</translation>
+	<translation name='UI.ModManagement.Tags.ToolTip'>Tags zum Suchen wählen</translation>
 	<translation name='UI.ModManagement.Value.NoTagSelected'>&#60; Keine Auswahl &#62;</translation>
 	<translation name='UI.ModManagementMod.DetailsDetails'>Details</translation>
 	<translation name='UI.ModManagementMod.DetailsTags'>Tags</translation>
@@ -132,4 +132,5 @@ Neu zuweisen?</translation>
 	<translation name='UI.ModManagementMod.Profile'>Profil:</translation>
 	<translation name='UI.ModManagementMod.Id'>ID:</translation>
 	<translation name='UI.ModManagementMod.Close'>Schliessen</translation>
+	<translation name='UI.ModManagementMod.Link.ToolTip'>Link im System-Browser öffnen</translation>
 </languagePack>
