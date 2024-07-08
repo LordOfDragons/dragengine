@@ -34,6 +34,7 @@
 #include "convert/deMCModInfo.h"
 #include "convert/deMCUser.h"
 #include "convert/deMCTagOptions.h"
+#include "parameters/deMPLogLevel.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/utils/decUniqueID.h>
@@ -95,8 +96,7 @@ pUpdateProgressInterval( 1.0f )
 	options.PortalInUse = pPortal;
 	
 	module.LogInfo( "deModioService: Initialize service" );
-	Modio::SetLogLevel( Modio::LogLevel::Info );
-	// Modio::SetLogLevel( Modio::LogLevel::Trace );
+	Modio::SetLogLevel( module.GetParamLogLevel().GetLogLevel() );
 	
 	Modio::SetLogCallback( [ this ]( Modio::LogLevel level, const std::string &message ){
 		pOnLogCallback( level, message );

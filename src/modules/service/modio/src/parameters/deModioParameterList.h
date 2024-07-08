@@ -22,41 +22,52 @@
  * SOFTWARE.
  */
 
-#ifndef _DEOGLPARAMETERINT_H_
-#define _DEOGLPARAMETERINT_H_
+#ifndef _DEMODIOPARAMETERLIST_H_
+#define _DEMODIOPARAMETERLIST_H_
 
-#include "deoglParameter.h"
+#include <dragengine/common/collection/decPointerList.h>
+
+class deModioParameter;
 
 
 /**
- * Int parameter.
- * 
- * Base class for all openal parameters. Every parameter stores information about
- * the parameter itself and provides methods to retrieves or alter the current value.
+ * Parameter list.
  */
-class deoglParameterInt : public deoglParameter{
+class deModioParameterList{
+private:
+	decPointerList pParameters;
+	
+	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Create parameter. */
-	deoglParameterInt( deGraphicOpenGl &oal );
+	/** Create parameter list. */
+	deModioParameterList();
+	
+	/** Clean up parameter list. */
+	~deModioParameterList();
 	/*@}*/
 	
 	
-	
-	/** \name Parameter Value */
+	/** \name Management */
 	/*@{*/
-	/** Current value. */
-	virtual decString GetParameterValue();
+	/** Number of parameters. */
+	int GetParameterCount() const;
 	
-	/** Set current value. */
-	virtual void SetParameterValue( const char *value );
+	/** Index of named parameter or -1 if absent. */
+	int IndexOfParameterNamed( const char *name ) const;
 	
-	/** Current value. */
-	virtual int GetParameterInt() = 0;
+	/** Parameter at index. */
+	deModioParameter &GetParameterAt( int index ) const;
 	
-	/** Set current value. */
-	virtual void SetParameterInt( int value ) = 0;
+	/** Named parameter. */
+	deModioParameter &GetParameterNamed( const char *name ) const;
+	
+	/** Add parameter. */
+	void AddParameter( deModioParameter *parameter );
+	
+	/** Remove all parameters. */
+	void RemoveAllParameters();
 	/*@}*/
 };
 

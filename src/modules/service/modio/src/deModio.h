@@ -26,6 +26,7 @@
 #define _DEMODIO_H_
 
 #include "modio.h"
+#include "parameters/deModioParameterList.h"
 
 #include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/collection/decObjectDictionary.h>
@@ -34,7 +35,7 @@
 
 class decBaseFileReader;
 class deModioUserConfig;
-
+class deMPLogLevel;
 
 /**
  * Mod.io Service Module.
@@ -47,6 +48,8 @@ private:
 	decObjectList pModConfigs;
 	decString pCurUserId;
 	
+	deModioParameterList pParameters;
+	deMPLogLevel *pParamLogLevel;
 	
 	
 public:
@@ -94,6 +97,8 @@ public:
 	/** Activate modifications. Sets current user, updates VFS and saves configuration. */
 	void ActivateMods( const decString &userId );
 	
+	/** Log level module parameter. */
+	inline const deMPLogLevel &GetParamLogLevel() const{ return *pParamLogLevel; }
 	
 	
 	/**
@@ -112,6 +117,29 @@ public:
 	
 	void AddRequiresEventHandlingCount();
 	void RemoveRequiresEventHandlingCount();
+	/*@}*/
+	
+	
+	/** \name Parameters */
+	/*@{*/
+	/** Number of parameters. */
+	int GetParameterCount() const override;
+	
+	/**
+	 * Get information about parameter.
+	 * \param[in] index Index of the parameter
+	 * \param[in] parameter Object to fill with information about the parameter
+	 */
+	void GetParameterInfo( int index, deModuleParameter &parameter ) const override;
+	
+	/** Index of named parameter or -1 if not found. */
+	int IndexOfParameterNamed( const char *name ) const override;
+	
+	/** Value of named parameter. */
+	decString GetParameterValue( const char *name ) const override;
+	
+	/** Set value of named parameter. */
+	void SetParameterValue( const char *name, const char *value ) override;
 	/*@}*/
 	
 	

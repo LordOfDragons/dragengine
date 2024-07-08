@@ -28,6 +28,7 @@
 #include "deModioService.h"
 #include "config/deModioModConfig.h"
 #include "config/deModioUserConfig.h"
+#include "parameters/deMPLogLevel.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/app/deOS.h>
@@ -74,8 +75,11 @@ deBaseModule *ModioCreateModule( deLoadableModule *loadableModule ){
 
 deModio::deModio( deLoadableModule& loadableModule ) :
 deBaseServiceModule( loadableModule ),
-pRequiresEventHandlingCount( 0 )
+pRequiresEventHandlingCount( 0 ),
+pParamLogLevel( new deMPLogLevel( *this ) )
 {
+	pParameters.AddParameter( pParamLogLevel );
+	
 	pLoadConfig();
 }
 
@@ -197,6 +201,31 @@ void deModio::RemoveRequiresEventHandlingCount(){
 	}
 	
 	pRequiresEventHandlingCount--;
+}
+
+
+
+// Parameters
+///////////////
+
+int deModio::GetParameterCount() const{
+	return pParameters.GetParameterCount();
+}
+
+void deModio::GetParameterInfo( int index, deModuleParameter &info ) const{
+	info = pParameters.GetParameterAt( index );
+}
+
+int deModio::IndexOfParameterNamed( const char *name ) const{
+	return pParameters.IndexOfParameterNamed( name );
+}
+
+decString deModio::GetParameterValue( const char *name ) const{
+	return pParameters.GetParameterNamed( name ).GetParameterValue();
+}
+
+void deModio::SetParameterValue( const char *name, const char *value ){
+	pParameters.GetParameterNamed( name ).SetParameterValue( value );
 }
 
 

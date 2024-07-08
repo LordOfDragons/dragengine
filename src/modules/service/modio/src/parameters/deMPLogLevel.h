@@ -22,41 +22,42 @@
  * SOFTWARE.
  */
 
-#ifndef _DEOGLPARAMETERINT_H_
-#define _DEOGLPARAMETERINT_H_
+#ifndef _DEMODIOPLOGLEVEL_H_
+#define _DEMODIOPLOGLEVEL_H_
 
-#include "deoglParameter.h"
+#include "deModioParameter.h"
+#include "../modio.h"
 
 
 /**
- * Int parameter.
- * 
- * Base class for all openal parameters. Every parameter stores information about
- * the parameter itself and provides methods to retrieves or alter the current value.
+ * Log Level Parameter.
  */
-class deoglParameterInt : public deoglParameter{
+class deMPLogLevel : public deModioParameter{
+private:
+	Modio::LogLevel pLogLevel;
+	
+	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Create parameter. */
-	deoglParameterInt( deGraphicOpenGl &oal );
-	/*@}*/
+	/** Creates a new parameter. */
+	deMPLogLevel( deModio &module );
 	
+	/** Cleans up the parameter. */
+	~deMPLogLevel() override;
+	/*@}*/
 	
 	
 	/** \name Parameter Value */
 	/*@{*/
-	/** Current value. */
-	virtual decString GetParameterValue();
-	
-	/** Set current value. */
-	virtual void SetParameterValue( const char *value );
+	/** Log level. */
+	inline Modio::LogLevel GetLogLevel() const{ return pLogLevel; }
 	
 	/** Current value. */
-	virtual int GetParameterInt() = 0;
+	decString GetParameterValue() override;
 	
 	/** Set current value. */
-	virtual void SetParameterInt( int value ) = 0;
+	void SetParameterValue( const char *value ) override;
 	/*@}*/
 };
 

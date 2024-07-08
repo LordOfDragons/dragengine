@@ -22,41 +22,43 @@
  * SOFTWARE.
  */
 
-#ifndef _DEOGLPARAMETERINT_H_
-#define _DEOGLPARAMETERINT_H_
+#ifndef _DEMODIOPARAMETER_H_
+#define _DEMODIOPARAMETER_H_
 
-#include "deoglParameter.h"
+#include <dragengine/systems/modules/deModuleParameter.h>
+
+class deModio;
 
 
 /**
- * Int parameter.
+ * Parameter.
  * 
  * Base class for all openal parameters. Every parameter stores information about
  * the parameter itself and provides methods to retrieves or alter the current value.
  */
-class deoglParameterInt : public deoglParameter{
+class deModioParameter : public deModuleParameter{
+protected:
+	deModio &pModule;
+	
+	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create parameter. */
-	deoglParameterInt( deGraphicOpenGl &oal );
+	deModioParameter( deModio &module );
+	
+	/** Clean up parameter. */
+	virtual ~deModioParameter();
 	/*@}*/
 	
 	
-	
-	/** \name Parameter Value */
+	/** \name Management */
 	/*@{*/
 	/** Current value. */
-	virtual decString GetParameterValue();
+	virtual decString GetParameterValue() = 0;
 	
 	/** Set current value. */
-	virtual void SetParameterValue( const char *value );
-	
-	/** Current value. */
-	virtual int GetParameterInt() = 0;
-	
-	/** Set current value. */
-	virtual void SetParameterInt( int value ) = 0;
+	virtual void SetParameterValue( const char *value ) = 0;
 	/*@}*/
 };
 

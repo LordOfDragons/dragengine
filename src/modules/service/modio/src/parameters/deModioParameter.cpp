@@ -22,42 +22,17 @@
  * SOFTWARE.
  */
 
-#ifndef _DEOGLPARAMETERINT_H_
-#define _DEOGLPARAMETERINT_H_
-
-#include "deoglParameter.h"
+#include "deModioParameter.h"
 
 
-/**
- * Int parameter.
- * 
- * Base class for all openal parameters. Every parameter stores information about
- * the parameter itself and provides methods to retrieves or alter the current value.
- */
-class deoglParameterInt : public deoglParameter{
-public:
-	/** \name Constructors and Destructors */
-	/*@{*/
-	/** Create parameter. */
-	deoglParameterInt( deGraphicOpenGl &oal );
-	/*@}*/
-	
-	
-	
-	/** \name Parameter Value */
-	/*@{*/
-	/** Current value. */
-	virtual decString GetParameterValue();
-	
-	/** Set current value. */
-	virtual void SetParameterValue( const char *value );
-	
-	/** Current value. */
-	virtual int GetParameterInt() = 0;
-	
-	/** Set current value. */
-	virtual void SetParameterInt( int value ) = 0;
-	/*@}*/
-};
+// class deModioParameter
+///////////////////////////
 
-#endif
+// Constructor, destructor
+////////////////////////////
+
+deModioParameter::deModioParameter( deModio &module ) : pModule( module ){
+}
+
+deModioParameter::~deModioParameter(){
+}

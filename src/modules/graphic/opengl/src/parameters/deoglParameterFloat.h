@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-#ifndef _DEOALPARAMETERFLOAT_H_
-#define _DEOALPARAMETERFLOAT_H_
+#ifndef _DEOGLPARAMETERFLOAT_H_
+#define _DEOGLPARAMETERFLOAT_H_
 
 #include "deoglParameter.h"
 

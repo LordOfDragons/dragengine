@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-#ifndef _DEOALPARAMETER_H_
-#define _DEOALPARAMETER_H_
+#ifndef _DEOGLPARAMETER_H_
+#define _DEOGLPARAMETER_H_
 
 #include <dragengine/common/string/decStringSet.h>
 #include <dragengine/systems/modules/deModuleParameter.h>
@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create parameter. */
-	deoglParameter( deGraphicOpenGl &oal );
+	deoglParameter( deGraphicOpenGl &ogl );
 	
 	/** Clean up parameter. */
 	virtual ~deoglParameter();
