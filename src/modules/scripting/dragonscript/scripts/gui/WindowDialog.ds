@@ -435,7 +435,7 @@ class WindowDialog extends WindowModal
 				
 				var Button widgetButton
 				if button == null
-					widgetButton = Button.new("Close", CloseDialog.new(dialog, null))
+					widgetButton = Button.new("@UI.Close", CloseDialog.new(dialog, null))
 					widgetButton.setDesignerSelector("Button.WindowDialog")
 					
 				else

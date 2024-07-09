@@ -74,19 +74,19 @@ class DefaultServiceModsListener implements ServiceModsListener
 	/**
 	 * \brief Subscribe modification finished.
 	 * \param service Service sending the event.
-	 * \param id Identifier of modification.
+	 * \param modId Identifier of modification.
 	 * \param exception On success null. On failure contains error information.
 	 */
-	func void onSubscribeMod(ServiceMods service, String id, Exception exception)
+	func void onSubscribeMod(ServiceMods service, String modId, Exception exception)
 	end
 	
 	/**
 	 * \brief Unsubscribe modification finished.
 	 * \param service Service sending the event.
-	 * \param id Identifier of modification.
+	 * \param modId Identifier of modification.
 	 * \param exception On success null. On failure contains error information.
 	 */
-	func void onUnsubscribeMod(ServiceMods service, String id, Exception exception)
+	func void onUnsubscribeMod(ServiceMods service, String modId, Exception exception)
 	end
 	
 	/**
