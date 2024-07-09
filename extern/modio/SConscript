@@ -79,8 +79,15 @@ def modioBuild(target, source, env):
 		cmdline.append('--preset=linux64')
 	
 	if 'CROSSCOMPILE_HOST' in env:
-		cmdline.append('-DCMAKE_SYSTEM_NAME="{}"'.format(env['CROSSCOMPILE_HOST']))
-		cmdline.append('-DCMAKE_SYSTEM_PROCESSOR=AMD64')
+		if env['platform_android'] != 'no':
+			cmdline.append('-DCMAKE_ANDROID_NDK="{}"'.format(env['ANDROID_NDKROOT']))
+			cmdline.append('-DCMAKE_ANDROID_ARCH_ABI="{}"'.format(env['ANDROID_JNIDIR']))
+			cmdline.append('-DANDROID_ABI="{}"'.format(env['ANDROID_JNIDIR']))
+			cmdline.append('-DANDROID_PLATFORM="android-{}"'.format(env['ANDROID_APILEVEL']))
+			cmdline.append('-DMODIO_PLATFORM="ANDROID"')
+		else:
+			cmdline.append('-DCMAKE_SYSTEM_NAME="{}"'.format(env['CROSSCOMPILE_HOST']))
+			cmdline.append('-DCMAKE_SYSTEM_PROCESSOR=AMD64')
 	
 	script.append('{} || exit 1'.format(' '.join(cmdline)))
 	
