@@ -366,7 +366,7 @@ class StubGameWorld extends StubWithProperties
 					+ " located at " + stub.getPosition())
 				
 				elementDataReader.setPosition(0)
-				stub = pGameWorld.onFailLoadAndAddPersistableElements(env, elementDataReader, stub, elementDataSize)
+				stub = pGameWorld.onFailLoadAndAddPersistableElements(env, elementDataReader, stub, elementDataSize, e)
 				if stub == null
 					throw
 				end

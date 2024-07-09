@@ -889,9 +889,10 @@ class GameWorld
 	 * \param reader Reader positioned at the beginning of the element data.
 	 * \param stub Element stub the dynamic data is linked to.
 	 * \param dataSize Size in bytes of the data starting at the reader position.
+	 * \param exception Exception causing the failure.
 	 */
 	func StubElement onFailLoadAndAddPersistableElements(PersistencyEnvironment env,\
-	FileReader reader, StubElement stub, int dataSize)
+	FileReader reader, StubElement stub, int dataSize, Exception exception)
 		return null
 	end
 	
