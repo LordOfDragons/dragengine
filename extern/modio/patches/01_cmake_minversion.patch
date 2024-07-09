@@ -1,0 +1,12 @@
+diff -rupN modio-sdk-org/modio/CMakeLists.txt modio-sdk-new/modio/CMakeLists.txt
+--- modio-sdk-org/modio/CMakeLists.txt	2024-06-26 07:38:05.000000000 +0200
++++ modio-sdk-new/modio/CMakeLists.txt	2024-07-09 10:43:15.754265926 +0200
+@@ -7,7 +7,7 @@
+ #   view online at <https://github.com/modio/modio-sdk/blob/main/LICENSE>)
+ # 
+ 
+-cmake_minimum_required(VERSION 3.28)
++cmake_minimum_required(VERSION 3.20)
+ 
+ 
+ include(split-compilation)

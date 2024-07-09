@@ -61,6 +61,10 @@ def modioBuild(target, source, env):
 	# modio cmake scripts seem to only look at CXXFLAGS not CPPFLAGS
 	script.append('export CXXFLAGS="$CPPFLAGS"')
 	
+	script.append('cd "{}" || exit 1'.format(cmakeSourceDir))
+	for p in env['PATCHES']:
+		script.append('patch -p1 <{} || exit 1'.format(p.srcnode().abspath))
+	
 	script.append('cd "{}" || exit 1'.format(cmakeBuildDir))
 	
 	cmdline = []
@@ -102,11 +106,19 @@ def modioBuild(target, source, env):
 targets = staticFileNames[:]
 targets.extend(['install/static/inc/modio/ModioSDK.h'])
 
+patches = [] # create with 'diff -rupN original_sources patches_sources'
+envLibrary.Append(PATCHES = [])
+
+globFiles(envLibrary, os.path.join('patches'), '*.patch', patches, recursive=False)
+envLibrary.Append(PATCHES = [envLibrary.File(x) for x in sorted(patches)])
+
 library = envLibrary.Command(targets, '{}.tar.xz'.format(srcdir),
 	envLibrary.Action(modioBuild, 'Build ModIO library'))
 
 if depUring and depUring['depends']:
 	envLibrary.Depends(library, depUring['depends'])
+
+envLibrary.Depends(library, envLibrary['PATCHES'])
 
 envLibrary.SideEffect('#notParallelCMake', library)
 

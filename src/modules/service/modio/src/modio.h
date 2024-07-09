@@ -39,6 +39,10 @@
 #define MODIO_SEPARATE_COMPILATION
 #define MODIO_NO_DEPRECATED
 
+// broken pragmas. on some compilers not even silenceable with
+// diagnostic ignore. hence prevent the macro from ever existing
+#define MODIO_PRAGMA(Value)
+
 #include <modio/ModioSDK.h>
 
 #ifdef OS_ANDROID
