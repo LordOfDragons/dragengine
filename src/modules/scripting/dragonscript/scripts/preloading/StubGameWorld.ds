@@ -37,18 +37,18 @@ pin Dragengine.LoadSave
  * Supports preloading resources in the background as well as game world creation.
  */
 class StubGameWorld extends StubWithProperties
-	private var GameWorld pGameWorld
-	private var Array pWorldDecals
-	private var Array pElements
-	private var Array pNavSpaces
-	private var PreloadCounter pCounter
-	private var UniqueID pNextObjectID
-	private var UniqueIDRemapper.RemapEntry pNewElementsRange
+	var GameWorld pGameWorld
+	var Array pWorldDecals
+	var Array pElements
+	var Array pNavSpaces
+	var PreloadCounter pCounter
+	var UniqueID pNextObjectID
+	var UniqueIDRemapper.RemapEntry pNewElementsRange
 	
 	
 	
 	/** \brief Create stub. */
-	public func new(GameWorld gameWorld, PreloadCounter parentCounter)
+	func new(GameWorld gameWorld, PreloadCounter parentCounter)
 		if gameWorld == null
 			throw EInvalidParam.new()
 		end
@@ -65,7 +65,7 @@ class StubGameWorld extends StubWithProperties
 	end
 	
 	/** \brief Create copy of stub. */
-	public func new(StubGameWorld stub) super(stub)
+	func new(StubGameWorld stub) super(stub)
 		pWorldDecals = stub.pWorldDecals.map(block StubWorldDecal each
 			return StubWorldDecal.new(each)
 		end)
@@ -78,24 +78,24 @@ class StubGameWorld extends StubWithProperties
 	
 	
 	/** \brief Game world. */
-	public func GameWorld getGameWorld()
+	func GameWorld getGameWorld()
 		return pGameWorld
 	end
 	
 	
 	
 	/** \brief Number of world decal stubs. */
-	public func int getWorldDecalCount()
+	func int getWorldDecalCount()
 		return pWorldDecals.getCount()
 	end
 	
 	/** \brief World decal stub at index. */
-	public func StubWorldDecal getWorldDecalAt(int index)
+	func StubWorldDecal getWorldDecalAt(int index)
 		return pWorldDecals.getAt(index) cast StubWorldDecal
 	end
 	
 	/** \brief Add world decal stub. */
-	public func void addWorldDecal(StubWorldDecal worldDecal)
+	func void addWorldDecal(StubWorldDecal worldDecal)
 		if worldDecal == null
 			throw EInvalidParam.new()
 		end
@@ -104,26 +104,26 @@ class StubGameWorld extends StubWithProperties
 	end
 	
 	/** \brief Visit world decal stubs using block with StubWorldDecal as parameter. */
-	public func void forEachWorldDecal(Block ablock)
+	func void forEachWorldDecal(Block ablock)
 		pWorldDecals.forEach(ablock)
 	end
 	
 	/** \brief Preload world decal resources. */
-	public func void preloadWorldDecalResources()
+	func void preloadWorldDecalResources()
 		pWorldDecals.forEach(block StubWorldDecal each
 			each.preloadResources()
 		end)
 	end
 	
 	/** \brief Load world decal resources. */
-	public func void loadWorldDecalResources()
+	func void loadWorldDecalResources()
 		pWorldDecals.forEach(block StubWorldDecal each
 			each.loadResources()
 		end)
 	end
 	
 	/** \brief Create world decals from stubs. */
-	public func void createWorldDecals(DecalBuilder builder, Console console)
+	func void createWorldDecals(DecalBuilder builder, Console console)
 		pWorldDecals.forEach(block StubWorldDecal each
 			try
 				each.createWorldDecal(pGameWorld, builder)
@@ -138,17 +138,17 @@ class StubGameWorld extends StubWithProperties
 	
 	
 	/** \brief Number of element stubs. */
-	public func int getElementCount()
+	func int getElementCount()
 		return pElements.getCount()
 	end
 	
 	/** \brief Element stub at index. */
-	public func StubElement getElementAt(int index)
+	func StubElement getElementAt(int index)
 		return pElements.getAt(index) cast StubElement
 	end
 	
 	/** \brief Add element stub. */
-	public func void addElement(StubElement element)
+	func void addElement(StubElement element)
 		if element == null
 			throw EInvalidParam.new()
 		end
@@ -157,17 +157,17 @@ class StubGameWorld extends StubWithProperties
 	end
 	
 	/** \brief Remove all elements. */
-	public func void removeAllElements()
+	func void removeAllElements()
 		pElements = Array.new()
 	end
 	
 	/** \brief Visit element stubs using block with StubElement as parameter. */
-	public func void forEachElement(Block ablock)
+	func void forEachElement(Block ablock)
 		pElements.forEach(ablock)
 	end
 	
 	/** \brief Add all element classes to the preload manager. */
-	public func void addElementClassesTo(PreloadManager preloadManager)
+	func void addElementClassesTo(PreloadManager preloadManager)
 		pElements.forEach(block StubElement each
 			preloadManager.addElementClass(each.getClass())
 		end)
@@ -183,7 +183,7 @@ class StubGameWorld extends StubWithProperties
 	 * preloading their resources. Once finished call GameWorld.readDynamicElementDataFromFile()
 	 * to create the elements.
 	 */
-	public func void readElementStubsFromFile(PersistencyEnvironment env, FileReader reader, \
+	func void readElementStubsFromFile(PersistencyEnvironment env, FileReader reader, \
 	ElementClassList elementClassList)
 		var StubElement stub
 		
@@ -204,7 +204,7 @@ class StubGameWorld extends StubWithProperties
 	 * - createAndAddPersistableElements()
 	 * - loadAndAddPersistableElements()
 	 */
-	public func void createAndAddElements(Console console)
+	func void createAndAddElements(Console console)
 		pElements.forEach(block StubElement each
 			try
 				each.createAndAddElement(pGameWorld)
@@ -224,7 +224,7 @@ class StubGameWorld extends StubWithProperties
 	 * Call for loading game worlds from file readers (save stated for example). For creating
 	 * new game worlds from world files use createAndAddElements().
 	 */
-	public func void createAndAddNonPersistableElements(Console console)
+	func void createAndAddNonPersistableElements(Console console)
 		pElements.forEach(block StubElement each
 			try
 				if not each.getClass().getPersistable()
@@ -265,7 +265,7 @@ class StubGameWorld extends StubWithProperties
 	 * way. The most simple solution is to save the UniqueIDRemapper entry for the newly
 	 * added range of elements aside at the time you have to add the range.
 	 */
-	public func void createAndAddPersistableElements(Console console, UniqueIDRemapper.RemapEntry range)
+	func void createAndAddPersistableElements(Console console, UniqueIDRemapper.RemapEntry range)
 		pElements.forEach(block StubElement each
 			try
 				if each.getClass().getPersistable() and range.inRemappedRange(each.getID())
@@ -286,62 +286,98 @@ class StubGameWorld extends StubWithProperties
 	 * 
 	 * Call for loading game worlds from file readers (save stated for example).
 	 */
-	public func void loadAndAddPersistableElements(Console console, PersistencyEnvironment env, FileReader reader)
-		if env.getPersistency().getDebugEnableCanaryValue()
-			pElements.forEach(block StubElement each
-				try
-					if each.getClass().getPersistable()
-						if not reader.readString(Persistency.debugCanaryValue_BEGIN.getLength()) \
-						.equals(Persistency.debugCanaryValue_BEGIN)
-							env.getPersistency().getConsole().addMessage(each.getClass().getClassname() \
-								+ ": Canary value invalid at reader position " + reader.getPosition())
-							throw EInvalidParam.new()
-						end
-						
-						each.loadAndAddElement(env, reader, pGameWorld)
-						
-						if not reader.readString(Persistency.debugCanaryValue_END.getLength()) \
-						.equals(Persistency.debugCanaryValue_END)
-							env.getPersistency().getConsole().addMessage(each.getClass().getClassname() \
-								+ ": Canary value invalid at reader position " + reader.getPosition())
-							throw EInvalidParam.new()
-						end
-					end
-					
-				catch Exception e
-					console.addMessage("Failed to loadAndAddPersistableElements object with class '" \
-						+ each.getClass().getClassname() + "' with ID " + each.getID() \
-						+ " located at " + each.getPosition())
-					throw
-				end
-			end)
+	func void loadAndAddPersistableElements(Console console, PersistencyEnvironment env, FileReader reader)
+		if pGameWorld.getEnableReadDynDataWithSize()
+			loadAndAddPersistableElementsNew(console, env, reader)
 			
 		else
-			pElements.forEach(block StubElement each
-				try
-					if each.getClass().getPersistable()
-						each.loadAndAddElement(env, reader, pGameWorld)
-					end
-					
-				catch Exception e
-					console.addMessage("Failed to loadAndAddPersistableElements object with class '" \
-						+ each.getClass().getClassname() + "' with ID " + each.getID() \
-						+ " located at " + each.getPosition())
-					throw
-				end
-			end)
+			loadAndAddPersistableElementsOld(console, env, reader)
 		end
 	end
 	
+	protected func void loadAndAddPersistableElementsOld(Console console, PersistencyEnvironment env, FileReader reader)
+		var bool enableDebugCanaryValue = env.getPersistency().getDebugEnableCanaryValue()
+		
+		pElements.forEach(block StubElement each
+			try
+				if each.getClass().getPersistable()
+					if enableDebugCanaryValue and not reader.readString(Persistency.debugCanaryValue_BEGIN.getLength()) \
+					.equals(Persistency.debugCanaryValue_BEGIN)
+						env.getPersistency().getConsole().addMessage(each.getClass().getClassname() \
+							+ ": Canary value invalid at reader position " + reader.getPosition())
+						throw EInvalidParam.new()
+					end
+					
+					each.loadAndAddElement(env, reader, pGameWorld)
+					
+					if enableDebugCanaryValue and not reader.readString(Persistency.debugCanaryValue_END.getLength()) \
+					.equals(Persistency.debugCanaryValue_END)
+						env.getPersistency().getConsole().addMessage(each.getClass().getClassname() \
+							+ ": Canary value invalid at reader position " + reader.getPosition())
+						throw EInvalidParam.new()
+					end
+				end
+				
+			catch Exception e
+				console.addMessage("Failed to loadAndAddPersistableElements object with class '" \
+					+ each.getClass().getClassname() + "' with ID " + each.getID() \
+					+ " located at " + each.getPosition())
+				throw
+			end
+		end)
+	end
+	
+	protected func void loadAndAddPersistableElementsNew(Console console, PersistencyEnvironment env, FileReader reader)
+		var bool enableDebugCanaryValue = env.getPersistency().getDebugEnableCanaryValue()
+		var MemoryFile elementData = MemoryFile.new("")
+		var FileWriter elementDataWriter = elementData.getWriter(false)
+		var FileReader elementDataReader = elementData.getReader()
+		var int elementDataSize
+		
+		elementData.setSize(8192) // 8k as starting capacity should be good enough
+		
+		pElements.forEach(block StubElement each
+			try
+				if each.getClass().getPersistable()
+					elementDataWriter.setPosition(0)
+					elementDataReader.setPosition(0)
+					elementDataSize = reader.readInt()
+					elementData.setSize(elementDataSize)
+					elementDataWriter.writeData(reader, elementDataSize)
+					
+					each.loadAndAddElement(env, elementDataReader, pGameWorld)
+					
+					if enableDebugCanaryValue and elementDataReader.getPosition() != elementDataSize
+						env.getPersistency().getConsole().addMessage(\
+							"{}: Not all element data consumed by element: offset={} size={} consumed={}".format(\
+							Array.newWith(each.getClass().getClassname(), reader.getPosition() - elementDataSize,\
+								elementDataSize, elementDataReader.getPosition())))
+						throw EInvalidParam.new()
+					end
+				end
+				
+			catch Exception e
+				console.addMessage("Failed to loadAndAddPersistableElements object with class '" \
+					+ each.getClass().getClassname() + "' with ID " + each.getID() \
+					+ " located at " + each.getPosition())
+				
+				elementDataReader.setPosition(0)
+				if not pGameWorld.onFailLoadAndAddPersistableElements(env, elementDataReader, each, elementDataSize)
+					throw
+				end
+			end
+		end)
+	end
+	
 	/** \brief Preload element resources. */
-	public func void preloadElementResources()
+	func void preloadElementResources()
 		pElements.forEach(block StubElement each
 			each.preloadResources()
 		end)
 	end
 	
 	/** \brief Load element resources. */
-	public func void loadElementResources()
+	func void loadElementResources()
 		pElements.forEach(block StubElement each
 			each.loadResources()
 		end)
@@ -350,24 +386,24 @@ class StubGameWorld extends StubWithProperties
 	
 	
 	/** \brief Loading has finished. */
-	public func bool hasLoadingFinished()
+	func bool hasLoadingFinished()
 		return pCounter.isZero()
 	end
 	
 	
 	
 	/** \brief Number of navigation spaces. */
-	public func int getNavigationSpaceCount()
+	func int getNavigationSpaceCount()
 		return pNavSpaces.getCount()
 	end
 	
 	/** \brief Navigation space at index. */
-	public func NavigationSpace getNavigationSpaceAt(int index)
+	func NavigationSpace getNavigationSpaceAt(int index)
 		return pNavSpaces.getAt(index) cast NavigationSpace
 	end
 	
 	/** \brief Add navigation space. */
-	public func void addNavigationSpace(NavigationSpace navspace)
+	func void addNavigationSpace(NavigationSpace navspace)
 		if navspace == null
 			throw EInvalidParam.new()
 		end
@@ -375,12 +411,12 @@ class StubGameWorld extends StubWithProperties
 	end
 	
 	/** \brief Remove all navigation spaces. */
-	public func void removeAllNavigationSpaces()
+	func void removeAllNavigationSpaces()
 		pNavSpaces = Array.new()
 	end
 	
 	/** \brief Add navigation spaces to world. */
-	public func void worldAddNavigationSpaces()
+	func void worldAddNavigationSpaces()
 		pNavSpaces.forEach(block NavigationSpace each
 			pGameWorld.getWorld().addNavigationSpace(each)
 		end)
@@ -389,17 +425,17 @@ class StubGameWorld extends StubWithProperties
 	
 	
 	/** \brief Next object ID. */
-	public func UniqueID getNextObjectID()
+	func UniqueID getNextObjectID()
 		return pNextObjectID
 	end
 	
 	/** \brief Set next object ID. */
-	public func void setNextObjectID(UniqueID nextObjectID)
+	func void setNextObjectID(UniqueID nextObjectID)
 		pNextObjectID = nextObjectID
 	end
 	
 	/** \brief Remap object IDs. */
-	public func void remapObjectIDs(UniqueIDRemapper remapper)
+	func void remapObjectIDs(UniqueIDRemapper remapper)
 		pElements.forEach(block StubElement each
 			each.setID(remapper.remap(each.getID()))
 			
@@ -410,19 +446,19 @@ class StubGameWorld extends StubWithProperties
 	end
 	
 	/** \brief Range of new elements added since the last saving or null. */
-	public func  UniqueIDRemapper.RemapEntry getNewElementsRange()
+	func  UniqueIDRemapper.RemapEntry getNewElementsRange()
 		return pNewElementsRange
 	end
 	
 	/** \brief Set range of new elements added since the last saving or null. */
-	public func void setNewElementsRange(UniqueIDRemapper.RemapEntry range)
+	func void setNewElementsRange(UniqueIDRemapper.RemapEntry range)
 		pNewElementsRange = range
 	end
 	
 	
 	
 	/** \brief Begin preloading resources. */
-	public func void beginPreloading()
+	func void beginPreloading()
 		preloadElementResources()
 		preloadWorldDecalResources()
 	end
@@ -434,7 +470,7 @@ class StubGameWorld extends StubWithProperties
 	 * loaded the game world and the individual elements are updated and the
 	 * required engine objects created. Once all this has been done true is returned.
 	 */
-	public func bool updatePreloading()
+	func bool updatePreloading()
 		if pCounter.isZero()
 			worldAddNavigationSpaces()  // still required? deprecated?
 			return true
@@ -448,7 +484,7 @@ class StubGameWorld extends StubWithProperties
 	 * 
 	 * \returns true if all resources loaded successfully or false otherwise.
 	 */
-	public func bool verifyPreloading(Console console)
+	func bool verifyPreloading(Console console)
 		var bool success = true
 		var int count
 		var int i
@@ -467,7 +503,7 @@ class StubGameWorld extends StubWithProperties
 	end
 	
 	/** \brief Loading resources. */
-	public func void loadResources()
+	func void loadResources()
 		loadElementResources()
 		loadWorldDecalResources()
 	end

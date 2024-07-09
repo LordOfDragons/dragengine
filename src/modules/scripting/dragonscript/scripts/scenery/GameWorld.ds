@@ -64,13 +64,14 @@ class GameWorld
 	var bool pBehaviorsInited
 	var Array pThinkingBehaviors
 	var bool pEnablePersistency
+	var bool pEnableReadDynDataWithSize
 	
 	var GWBehaviorOneShotSpeaker pBehaviorOneShotSpeaker
 	
 	
 	
 	/** \brief Create game world. */
-	public func new()
+	func new()
 		pWorld = World.new()
 		pEnablePersistency = not Engine.isCompatibleVersionOlder(1, 17)
 		
@@ -97,7 +98,7 @@ class GameWorld
 	
 	
 	/** \brief Dispose of game world. */
-	public func void dispose()
+	func void dispose()
 		/*
 		// for debugging purpose this code here can be used
 		removeAllElements()
@@ -149,7 +150,7 @@ class GameWorld
 	
 	
 	/** \brief Engine world resource. */
-	public func World getWorld()
+	func World getWorld()
 		return pWorld
 	end
 	
@@ -159,7 +160,7 @@ class GameWorld
 	 * \brief Count of behaviors.
 	 * \version 1.17
 	 */
-	public func int getBehaviorCount()
+	func int getBehaviorCount()
 		return pBehaviors.getCount()
 	end
 	
@@ -167,7 +168,7 @@ class GameWorld
 	 * \brief Behavior at index.
 	 * \version 1.17
 	 */
-	public func GWBehavior getBehaviorAt(int index)
+	func GWBehavior getBehaviorAt(int index)
 		return pBehaviors.getAt(index) cast GWBehavior
 	end
 	
@@ -178,7 +179,7 @@ class GameWorld
 	 * This is called by constructors of class implementing GWBehavior. Usually you do not
 	 * have to call this manually.
 	 */
-	public func void addBehavior(GWBehavior behavior)
+	func void addBehavior(GWBehavior behavior)
 		if behavior == null or pBehaviors.has(behavior)
 			throw EInvalidParam.new("duplicate behavior")
 		end
@@ -201,7 +202,7 @@ class GameWorld
 	 * Block is required to have one parameter of type GWBehavior or subclass thereof.
 	 * Block is called only for behaviors castable to block parameter type.
 	 */
-	public func void forEachBehavior(Block ablock)
+	func void forEachBehavior(Block ablock)
 		pBehaviors.forEachCastable(ablock)
 	end
 	
@@ -213,7 +214,7 @@ class GameWorld
 	 * true if the right behavior is found otherwise false. Block is called only for
 	 * behaviors castable to block parameter type.
 	 */
-	public func GWBehavior findBehavior(Block ablock)
+	func GWBehavior findBehavior(Block ablock)
 		return pBehaviors.findCastable(ablock) cast GWBehavior
 	end
 	
@@ -225,7 +226,7 @@ class GameWorld
 	 * true if the right behavior is found otherwise false. Block is called only for
 	 * behaviors castable to block parameter type.
 	 */
-	public func Array collectBehaviors(Block ablock)
+	func Array collectBehaviors(Block ablock)
 		return pBehaviors.collectCastable(ablock)
 	end
 	
@@ -239,7 +240,7 @@ class GameWorld
 	 * to reduce script processing load by not making calling update(), think() and postThink()
 	 * on behaviors not requiring it.
 	 */
-	public func void requiresThinkChanged()
+	func void requiresThinkChanged()
 		pThinkingBehaviors = pBehaviors.collect(block GWBehavior each
 			return each.requiresThink()
 		end)
@@ -251,7 +252,7 @@ class GameWorld
 	 * \brief One shot speaker game world behavior.
 	 * \version 1.17
 	 */
-	public func GWBehaviorOneShotSpeaker getBehaviorOneShotSpeaker()
+	func GWBehaviorOneShotSpeaker getBehaviorOneShotSpeaker()
 		return pBehaviorOneShotSpeaker
 	end
 	
@@ -277,18 +278,28 @@ class GameWorld
 	 * will always operate with enable persistency set to false keeping them compatible while
 	 * projects requiring 1.17 or newer enable persistency.
 	 */
-	public func bool getEnablePersistency()
+	func bool getEnablePersistency()
 		return pEnablePersistency
 	end
 	
-	public func void setEnablePersistency(bool enable)
+	func void setEnablePersistency(bool enable)
 		pEnablePersistency = enable
+	end
+	
+	/**
+	 * \brief Enable reading dynamic element data from persistency with size.
+	 * \version 1.23
+	 * 
+	 * Returns true if readElementStubsFromFile() encountered version 1 or higher.
+	 */
+	func bool getEnableReadDynDataWithSize()
+		return pEnableReadDynDataWithSize
 	end
 	
 	
 	
 	/** \brief Add Element. */
-	public func void addElement(Element element)
+	func void addElement(Element element)
 		if element.getGameWorld() == this
 			return // adding more than once is allowed to make scripts simpler and more robust
 		end
@@ -303,7 +314,7 @@ class GameWorld
 	
 // 	public static var RuntimeMeter rtm = null
 	/** \brief Remove Element without disposing it. */
-	public func void removeElement(Element element)
+	func void removeElement(Element element)
 		/*if rtm != null
 			rtm.reset(0, 1)
 			
@@ -344,7 +355,7 @@ class GameWorld
 	end
 	
 	/** \brief Remove all elements calling safeDispose() on them. */
-	public func void removeAllElements()
+	func void removeAllElements()
 		pElements.removeAll(block Element each
 			each.setGameWorld(null)
 			each.safeDispose()
@@ -353,36 +364,36 @@ class GameWorld
 	end
 	
 	/** \brief Element is present. */
-	public func bool hasElement(Element element)
+	func bool hasElement(Element element)
 		return pElements.has(element)
 	end
 	
 	/** \brief Element with identifier or \em null if absent. */
-	public func Element getElementWithID(UniqueID id)
+	func Element getElementWithID(UniqueID id)
 		return pElementIDMap.getAt(id, null) cast Element
 	end
 	
 	/** \brief Visit elements. */
-	public func void visitElements(ElementVisitor visitor)
+	func void visitElements(ElementVisitor visitor)
 		pElements.forEach(block Element each
 			each.visit(visitor)
 		end)
 	end
 	
 	/** \brief Visit elements with block with parameter Element. */
-	public func void forEachElement(Block ablock)
+	func void forEachElement(Block ablock)
 		pElements.forEach(ablock)
 	end
 	
 	/** \brief Find element with block with parameter Element. */
-	public func Element findElement(Block ablock)
+	func Element findElement(Block ablock)
 		return pElements.find(ablock) cast Element
 	end
 	
 	
 	
 	/** \brief Add element requiring thinking on frame updates. */
-	public func void addThinker(Element element)
+	func void addThinker(Element element)
 		if element == null
 			throw EInvalidParam.new()
 		end
@@ -390,19 +401,19 @@ class GameWorld
 	end
 	
 	/** \brief Remove element requiring thinking on frame updates. */
-	public func void removeThinker(Element element)
+	func void removeThinker(Element element)
 		pThinkers.removeIfPresent(element)
 	end
 	
 	/** \brief Visit thinkers with block with parameter Element. */
-	public func void forEachThinker(Block ablock)
+	func void forEachThinker(Block ablock)
 		pThinkers.forEach(ablock)
 	end
 	
 	
 	
 	/** \brief Call Element.enterFrame() on element once at start of next frame update. */
-	public func void addEnterFrameOnce(Element element)
+	func void addEnterFrameOnce(Element element)
 		if element == null
 			throw EInvalidParam.new()
 		end
@@ -414,7 +425,7 @@ class GameWorld
 	end
 	
 	/** \brief Stop call Element.enterFrame() on element once at start of next frame update. */
-	public func void removeEnterFrameOnce(Element element)
+	func void removeEnterFrameOnce(Element element)
 		var int index = pEnterFrameOnce.indexOf(element)
 		if index != -1
 			pPrepareUpdateEnterFrameOnce()
@@ -425,12 +436,12 @@ class GameWorld
 	
 	
 	/** \brief Cached vegetation. */
-	public func CachedVegetation getCachedVegetation()
+	func CachedVegetation getCachedVegetation()
 		return pCachedVegetation
 	end
 	
 	/** \brief Set cached vegetation. */
-	public func void setCachedVegetation(CachedVegetation cachedVegetation)
+	func void setCachedVegetation(CachedVegetation cachedVegetation)
 		pCachedVegetation = cachedVegetation
 		if cachedVegetation != null
 			cachedVegetation.setWorld(pWorld)
@@ -438,12 +449,12 @@ class GameWorld
 	end
 	
 	/** \brief Gravity. */
-	public func Vector getGravity()
+	func Vector getGravity()
 		return pGravity
 	end
 	
 	/** \brief Set gravity. */
-	public func void setGravity(Vector gravity)
+	func void setGravity(Vector gravity)
 		if gravity == null
 			throw ENullPointer.new("gravity")
 		end
@@ -454,68 +465,68 @@ class GameWorld
 	
 	
 	/** \deprecated Use getBehaviorOneShotSpeaker(). */
-	public func LayerMask getLayerMaskOneShotSpeaker()
+	func LayerMask getLayerMaskOneShotSpeaker()
 		return pBehaviorOneShotSpeaker.getLayerMask()
 	end
 	
 	/** \deprecated Use getBehaviorOneShotSpeaker(). */
-	public func void setLayerMaskOneShotSpeaker(LayerMask layerMask)
+	func void setLayerMaskOneShotSpeaker(LayerMask layerMask)
 		pBehaviorOneShotSpeaker.setLayerMask(layerMask)
 	end
 	
 	/** \deprecated Use getBehaviorOneShotSpeaker(). */
-	public func void addOneShotSpeaker(Speaker speaker)
+	func void addOneShotSpeaker(Speaker speaker)
 		pBehaviorOneShotSpeaker.addSpeaker(speaker)
 	end
 	
 	/** \deprecated Use getBehaviorOneShotSpeaker(). */
-	public func void playSoundOnce(Sound sound, Element element, float volume, float range)
+	func void playSoundOnce(Sound sound, Element element, float volume, float range)
 		pBehaviorOneShotSpeaker.playSoundOnce(sound, element, volume, range)
 	end
 	
 	/** \deprecated Use getBehaviorOneShotSpeaker(). */
-	public func void playSoundOnce(Sound sound, DVector position, float volume, float range)
+	func void playSoundOnce(Sound sound, DVector position, float volume, float range)
 		pBehaviorOneShotSpeaker.playSoundOnce(sound, position, volume, range)
 	end
 	
 	/** \deprecated Use getBehaviorOneShotSpeaker(). */
-	public func void playSoundOnce(Sound sound, DVector position, Quaternion orientation, \
+	func void playSoundOnce(Sound sound, DVector position, Quaternion orientation, \
 	float volume, float range)
 		pBehaviorOneShotSpeaker.playSoundOnce(sound, position, orientation, volume, range)
 	end
 	
 	/** \deprecated Use getBehaviorOneShotSpeaker(). */
-	public func void playSynthesizerOnce(SynthesizerInstance synthesizer, Element element, \
+	func void playSynthesizerOnce(SynthesizerInstance synthesizer, Element element, \
 	float volume, float range)
 		pBehaviorOneShotSpeaker.playSynthesizerOnce(synthesizer, element, volume, range)
 	end
 	
 	/** \deprecated Use getBehaviorOneShotSpeaker(). */
-	public func void playSynthesizerOnce(SynthesizerInstance synthesizer, DVector position, \
+	func void playSynthesizerOnce(SynthesizerInstance synthesizer, DVector position, \
 	float volume, float range)
 		pBehaviorOneShotSpeaker.playSynthesizerOnce(synthesizer, position, volume, range)
 	end
 	
 	/** \deprecated Use getBehaviorOneShotSpeaker(). */
-	public func void playSynthesizerOnce(SynthesizerInstance synthesizer, DVector position, \
+	func void playSynthesizerOnce(SynthesizerInstance synthesizer, DVector position, \
 	Quaternion orientation, float volume, float range)
 		pBehaviorOneShotSpeaker.playSynthesizerOnce(synthesizer, position, orientation, volume, range)
 	end
 	
 	/** \deprecated Use getBehaviorOneShotSpeaker(). */
-	public func void removeFinishedOneShotSpeakers()
+	func void removeFinishedOneShotSpeakers()
 		pBehaviorOneShotSpeaker.removeFinishedSpeakers()
 	end
 	
 	/** \deprecated Use getBehaviorOneShotSpeaker(). */
-	public func void removeAllOneShotSpeakers()
+	func void removeAllOneShotSpeakers()
 		pBehaviorOneShotSpeaker.removeAllSpeakers()
 	end
 	
 	
 	
 	/** \brief Make elements think. */
-	public func void think(float elapsed)
+	func void think(float elapsed)
 		pThinkingBehaviors.forEach(block GWBehavior each
 			each.think(elapsed)
 		end)
@@ -526,7 +537,7 @@ class GameWorld
 	end
 	
 	/** \brief Make elements think after physics simulation. */
-	public func void postThink(float elapsed)
+	func void postThink(float elapsed)
 		pThinkers.forEach(block Element each
 			each.postThink(elapsed)
 		end)
@@ -541,7 +552,7 @@ class GameWorld
 	 * 
 	 * Calling addEnterFrameOnce and removeEnterFrameOnce from inside enterFrame() is allowed.
 	 */
-	public func void enterFrame()
+	func void enterFrame()
 		while pEnterFrameOnce.getCount() > 0
 			var Array list = pEnterFrameOnce
 			pLockEnterFrameOnce = true
@@ -559,7 +570,7 @@ class GameWorld
 	 * \details Call once at beginning of frame update cycle. Afterwards world can
 	 *          be rendered multiple times.
 	 */
-	public func void update(float elapsed)
+	func void update(float elapsed)
 		pThinkingBehaviors.forEach(block GWBehavior each
 			each.update(elapsed)
 		end)
@@ -575,7 +586,7 @@ class GameWorld
 	end
 	
 	/** \brief Update game world with debug timing. */
-	public func void updateDebug(float elapsed, \
+	func void updateDebug(float elapsed, \
 			Debugging.DebugPerformanceCounter debugUpdate, \
 			Debugging.DebugPerformanceCounter debugThink, \
 			Debugging.DebugPerformanceCounter debugCollisions, \
@@ -605,22 +616,22 @@ class GameWorld
 	
 	
 	/** \brief Next object ID from world file required for saving and remapping ID ranges. */
-	public func UniqueID getNextObjectID()
+	func UniqueID getNextObjectID()
 		return pNextObjectID
 	end
 	
 	/** \brief Set next object ID from world file required for saving and remapping ID ranges. */
-	public func void setNextObjectID(UniqueID nextObjectID)
+	func void setNextObjectID(UniqueID nextObjectID)
 		pNextObjectID = nextObjectID
 	end
 	
 	/** \brief Unique ID remapper. */
-	public func UniqueIDRemapper getUniqueIDRemapper()
+	func UniqueIDRemapper getUniqueIDRemapper()
 		return pUniqueIDRemapper
 	end
 	
 	/** \brief Set Unique ID remapper. */
-	public func void setUniqueIDRemapper(UniqueIDRemapper remapper)
+	func void setUniqueIDRemapper(UniqueIDRemapper remapper)
 		if remapper == null
 			throw EInvalidParam.new()
 		end
@@ -633,7 +644,7 @@ class GameWorld
 	 * \brief Stub used to create game world.
 	 * \version 1.17
 	 */
-	public func StubGameWorld getStub()
+	func StubGameWorld getStub()
 		return pStub
 	end
 	
@@ -641,7 +652,7 @@ class GameWorld
 	 * \brief Set stub used to create game world.
 	 * \version 1.17
 	 */
-	public func void setStub(StubGameWorld stub)
+	func void setStub(StubGameWorld stub)
 		pStub = stub
 	end
 	
@@ -653,7 +664,7 @@ class GameWorld
 	 * 
 	 * Subclass is required to super-call init() to init behaviors properly.
 	 */
-	public func void init(StubGameWorld stub)
+	func void init(StubGameWorld stub)
 		pBehaviors.forEach(block GWBehavior each
 			each.init(stub)
 		end)
@@ -667,7 +678,7 @@ class GameWorld
 	 * 
 	 * Subclass has to super-call readFromFile() to save behaviors properly.
 	 */
-	public func void readFromFile(PersistencyEnvironment env, FileReader reader)
+	func void readFromFile(PersistencyEnvironment env, FileReader reader)
 		if not pEnablePersistency
 			return
 		end
@@ -715,7 +726,7 @@ class GameWorld
 	 * 
 	 * Subclass has to super-call writeToFile() to save behaviors properly.
 	 */
-	public func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+	func void writeToFile(PersistencyEnvironment env, FileWriter writer)
 		if not pEnablePersistency
 			return
 		end
@@ -746,26 +757,41 @@ class GameWorld
 	 * Reads first the next object ID and Unique ID remapper. Then remaps the stub elements
 	 * in the stub world. Then reads the element stubs.
 	 */
-	public func void readElementStubsFromFile(PersistencyEnvironment env, FileReader reader, \
+	func void readElementStubsFromFile(PersistencyEnvironment env, FileReader reader, \
 	MutableID idGenerator, ElementClassList elementClassList, StubGameWorld stubWorld)
 		select reader.readByte() // version
 		case 0
-			var UniqueID lastNextObjectID = UniqueID.readFromFile(reader)
-			pUniqueIDRemapper = UniqueIDRemapper.readFromFile(reader)
+			readElementStubsFromFileV0(env, reader, idGenerator, elementClassList, stubWorld)
 			
-			var UniqueID nextObjectID = stubWorld.getNextObjectID()
-			if nextObjectID > lastNextObjectID
-				stubWorld.setNewElementsRange(pUniqueIDRemapper.add(\
-					lastNextObjectID, nextObjectID, idGenerator.toUniqueID()))
-				idGenerator.incrementBy(nextObjectID - lastNextObjectID)
-			end
-			
-			stubWorld.remapObjectIDs(pUniqueIDRemapper)
-			stubWorld.readElementStubsFromFile(env, reader, elementClassList)
+		case 1
+			readElementStubsFromFileV0(env, reader, idGenerator, elementClassList, stubWorld)
+			pEnableReadDynDataWithSize = true
 			
 		else
 			throw EInvalidParam.new("unsupported version")
 		end
+	end
+	
+	/**
+	 * \brief Read element stubs from file.
+	 * 
+	 * Reads first the next object ID and Unique ID remapper. Then remaps the stub elements
+	 * in the stub world. Then reads the element stubs.
+	 */
+	protected func void readElementStubsFromFileV0(PersistencyEnvironment env, FileReader reader, \
+	MutableID idGenerator, ElementClassList elementClassList, StubGameWorld stubWorld)
+		var UniqueID lastNextObjectID = UniqueID.readFromFile(reader)
+		pUniqueIDRemapper = UniqueIDRemapper.readFromFile(reader)
+		
+		var UniqueID nextObjectID = stubWorld.getNextObjectID()
+		if nextObjectID > lastNextObjectID
+			stubWorld.setNewElementsRange(pUniqueIDRemapper.add(\
+				lastNextObjectID, nextObjectID, idGenerator.toUniqueID()))
+			idGenerator.incrementBy(nextObjectID - lastNextObjectID)
+		end
+		
+		stubWorld.remapObjectIDs(pUniqueIDRemapper)
+		stubWorld.readElementStubsFromFile(env, reader, elementClassList)
 	end
 	
 	/**
@@ -786,8 +812,8 @@ class GameWorld
 	 * Once done the elements are created and their dynamic data read. The order of stubs
 	 * has to stay the same for them to properly read their dynamic data.
 	 */
-	public func void writeElementStubsToFile(PersistencyEnvironment env, FileWriter writer)
-		writer.writeByte(0) // version
+	func void writeElementStubsToFile(PersistencyEnvironment env, FileWriter writer)
+		writer.writeByte(1) // version
 		
 		pNextObjectID.writeToFile(writer)
 		pUniqueIDRemapper.writeToFile(writer)
@@ -812,61 +838,89 @@ class GameWorld
 	 * Once done the elements are created and their dynamic data read. The order of stubs
 	 * has to stay the same for them to properly read their dynamic data.
 	 */
-	public func void writeDynamicElementDataToFile(PersistencyEnvironment env, FileWriter writer)
-		if env.getPersistency().getDebugEnableCanaryValue()
-			pElements.forEach(block Element each
-				if each.getClass().getPersistable()
-					writer.writeString(Persistency.debugCanaryValue_BEGIN)
-					each.writeToFile(env, writer)
-					writer.writeString(Persistency.debugCanaryValue_END)
-				end
-			end)
-			
-		else
-			pElements.forEach(block Element each
-				if each.getClass().getPersistable()
-					each.writeToFile(env, writer)
-				end
-			end)
-		end
+	func void writeDynamicElementDataToFile(PersistencyEnvironment env, FileWriter writer)
+		var MemoryFile elementData = MemoryFile.new("")
+		var FileWriter elementDataWriter = elementData.getWriter(false)
+		var FileReader elementDataReader = elementData.getReader()
+		var int elementDataSize
+		
+		elementData.setSize(8192) // 8k as starting capacity should be good enough
+		
+		pElements.forEach(block Element each
+			if each.getClass().getPersistable()
+				elementDataWriter.setPosition(0)
+				elementDataReader.setPosition(0)
+				
+				each.writeToFile(env, elementDataWriter)
+				
+				elementDataSize = elementDataWriter.getPosition()
+				writer.writeInt(elementDataSize)
+				writer.writeData(elementDataReader, elementDataSize)
+			end
+		end)
+	end
+	
+	/**
+	 * \brief Call to \ref StubGameWorld#loadAndAddPersistableElementsNew(Console,PersistencyEnvironment,FileReader) failed.
+	 * \version 1.23
+	 * 
+	 * Allows subclass of GameWorld to handle failure of loading a dynamic element differently
+	 * than throwing an exception and failing loading the game world. For example the subclass
+	 * can decide to replace the element with a placeholder or ignoring it. Mostly useful for
+	 * games supporting user modifications and hardening against loading problems.
+	 * 
+	 * Default implementation returns false.
+	 * 
+	 * Only called if \ref #getEnableReadDynDataWithSize() returns true.
+	 * 
+	 * \param env Persistency environment.
+	 * \param reader Reader positioned at the beginning of the element data.
+	 * \param stub Element stub the dynamic data is linked to.
+	 * \param dataSize Size in bytes of the data starting at the reader position.
+	 * \retval true Subclass handled failure. Caller can continue loading.
+	 * \retval false Subclass did not handle failure. Caller throws exception failing loading.
+	 */
+	func bool onFailLoadAndAddPersistableElements(PersistencyEnvironment env,\
+	FileReader reader, StubElement stub, int dataSize)
+		return false
 	end
 	
 	
 	
 	/** \brief Spawn point list. */
-	public func SpawnPointList getSpawnPoints()
+	func SpawnPointList getSpawnPoints()
 		return pSpawnPoints
 	end
 	
 	/** \brief Rail list. */
-	public func RailList getRailList()
+	func RailList getRailList()
 		return pRailList
 	end
 	
 	/** \brief Conversation actor list. */
-	public func ConversationActorList getConvoActorList()
+	func ConversationActorList getConvoActorList()
 		return pConvoActorList
 	end
 	
 	/** \brief Conversation coordinate system list. */
-	public func ConversationCoordSystemList getConvoCoordSystemList()
+	func ConversationCoordSystemList getConvoCoordSystemList()
 		return pConvoCoordSystemList
 	end
 	
 	/** \brief Anchored element list. */
-	public func AnchoredElementList getAnchoredElementList()
+	func AnchoredElementList getAnchoredElementList()
 		return pAnchoredElementList
 	end
 	
 	
 	
 	/** \brief Temporary decal manager. */
-	public func TemporaryDecalManager getTemporaryDecalManager()
+	func TemporaryDecalManager getTemporaryDecalManager()
 		return pTempDecalMgr
 	end
 	
 	/** \brief Set temporary decal manager. */
-	public func void setTemporaryDecalManager(TemporaryDecalManager manager)
+	func void setTemporaryDecalManager(TemporaryDecalManager manager)
 		if manager == null
 			throw EInvalidParam.new()
 		end
@@ -912,7 +966,7 @@ class GameWorld
 	 * - 'resources.navigator': Number of navigator resources.
 	 * - 'resources.envMapProbe': Number of environment map probe resources.
 	 */
-	public func Dictionary debugStatistics()
+	func Dictionary debugStatistics()
 		var Dictionary stats = Dictionary.new()
 		stats.setAt("elements", pElements.getCount())
 		stats.setAt("thinkers", pThinkers.getCount())
@@ -950,7 +1004,7 @@ class GameWorld
 	 * - 'enterFrameOnce': Dictionary containing as keys the element class name of all
 	 *                     enter frame once with value occurance count.
 	 */
-	public func Dictionary debugStatisticsSummary()
+	func Dictionary debugStatisticsSummary()
 		var Dictionary summary, stats = Dictionary.new()
 		var String key
 		
@@ -972,7 +1026,7 @@ class GameWorld
 	end
 	
 	/** \brief Print statistics to console. */
-	public func void debugPrintStatistics(Console console)
+	func void debugPrintStatistics(Console console)
 		var Dictionary stats = debugStatistics()
 		stats.getKeys().sorted().forEach(block String key
 			console.addMessage("- " + key + ": " + stats.getAt(key))
@@ -980,7 +1034,7 @@ class GameWorld
 	end
 	
 	/** \brief Print statistics summary to console. */
-	public func void debugPrintStatisticsSummary(Console console)
+	func void debugPrintStatisticsSummary(Console console)
 		var Dictionary summary, stats = debugStatisticsSummary()
 		stats.getKeys().sorted().forEach(block String key
 			console.addMessage("- " + key + ":")

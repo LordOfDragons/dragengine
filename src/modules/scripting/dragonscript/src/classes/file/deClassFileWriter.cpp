@@ -145,6 +145,42 @@ void deClassFileWriter::nfSetStreamVersion::RunFunction( dsRunTime *rt, dsValue 
 
 
 
+// func int getPosition()
+deClassFileWriter::nfGetPosition::nfGetPosition( const sInitData &init ) : dsFunction( init.clsFileWriter,
+"getPosition", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt ){
+}
+void deClassFileWriter::nfGetPosition::RunFunction( dsRunTime *rt, dsValue *myself ){
+	rt->PushInt( ( ( const sFileWriterNatDat * )p_GetNativeData( myself ) )->fileWriter->GetPosition() );
+}
+
+// func void setPosition(int position)
+deClassFileWriter::nfSetPosition::nfSetPosition( const sInitData &init ) : dsFunction( init.clsFileWriter,
+"setPosition", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsInt ); // position
+}
+void deClassFileWriter::nfSetPosition::RunFunction( dsRunTime *rt, dsValue *myself ){
+	( ( sFileWriterNatDat* )p_GetNativeData( myself ) )->fileWriter->SetPosition(rt->GetValue( 0 )->GetInt());
+}
+
+// func void movePosition(int offset)
+deClassFileWriter::nfMovePosition::nfMovePosition( const sInitData &init ) : dsFunction( init.clsFileWriter,
+"movePosition", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsInt ); // offset
+}
+void deClassFileWriter::nfMovePosition::RunFunction( dsRunTime *rt, dsValue *myself ){
+	( ( sFileWriterNatDat* )p_GetNativeData( myself ) )->fileWriter->MovePosition(rt->GetValue( 0 )->GetInt());
+}
+
+// func void setPositionEnd(int position)
+deClassFileWriter::nfSetPositionEnd::nfSetPositionEnd( const sInitData &init ) : dsFunction( init.clsFileWriter,
+"setPositionEnd", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsInt ); // position
+}
+void deClassFileWriter::nfSetPositionEnd::RunFunction( dsRunTime *rt, dsValue *myself ){
+	( ( sFileWriterNatDat* )p_GetNativeData( myself ) )->fileWriter->SetPositionEnd(rt->GetValue( 0 )->GetInt());
+}
+
+
 
 // public func void writeChar( int value )
 deClassFileWriter::nfWriteChar::nfWriteChar( const sInitData &init ) : dsFunction( init.clsFileWriter,
@@ -497,6 +533,11 @@ void deClassFileWriter::CreateClassMembers( dsEngine *engine ){
 	
 	AddFunction( new nfGetStreamVersion( init ) );
 	AddFunction( new nfSetStreamVersion( init ) );
+	
+	AddFunction( new nfGetPosition( init ) );
+	AddFunction( new nfSetPosition( init ) );
+	AddFunction( new nfMovePosition( init ) );
+	AddFunction( new nfSetPositionEnd( init ) );
 	
 	AddFunction( new nfWriteChar( init ) );
 	AddFunction( new nfWriteByte( init ) );
