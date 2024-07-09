@@ -187,6 +187,9 @@ void deModioService::StartRequest( const decUniqueID &id, const deServiceObject&
 	}else if( function == "getModTagOptions" ){
 		GetModTagOptions( id, request );
 		
+	}else if( function == "getModInfo" ){
+		GetModInfo( id, request );
+		
 	}else{
 		DETHROW_INFO( deeInvalidParam, "Unknown function" );
 	}

@@ -136,6 +136,11 @@ deServiceObject::Ref deMCModInfo::ModInfo( const Modio::ModInfo &info ){
 	so->SetIntChildAt( "price", ( int )info.Price );
 	so->SetBoolChildAt( "dependencies", info.Dependencies );
 	
+	// TODO: how to get this value?
+	//if( user has rated mod ){
+	//	so->SetIntChildAt( "userRating", 0 );
+	//}
+	
 	return so;
 }
 

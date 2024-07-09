@@ -99,7 +99,7 @@ Neu zuweisen?</translation>
 	<translation name='UI.EditBinding.DeleteBinding.ToolTip'>Steuerung löschen</translation>
 	<translation name='UI.EditBinding.AddBinding.ToolTip'>Steuerung hinzufügen</translation>
 	<translation name='UI.ModManagement.Close'>Schliessen</translation>
-	<translation name='UI.ModManagement.Close.ToolTip'>Modifikationen Verwalten schliessen. Aktiviert all abonierte und installierte Modifikationen.</translation>
+	<translation name='UI.ModManagement.Close.ToolTip'>Modifikationen Verwalten schliessen. Aktiviert all abonnierte und installierte Modifikationen.</translation>
 	<translation name='UI.ModManagement.Search'>Suchen</translation>
 	<translation name='UI.ModManagement.Search.ToolTip'>Nach Modifikationen suchen. Zeigt die ersten Suchresultate an</translation>
 	<translation name='UI.ModManagement.SearchMore'>Mehr Resultate</translation>
@@ -133,4 +133,8 @@ Neu zuweisen?</translation>
 	<translation name='UI.ModManagementMod.Id'>ID:</translation>
 	<translation name='UI.ModManagementMod.Close'>Schliessen</translation>
 	<translation name='UI.ModManagementMod.Link.ToolTip'>Link im System-Browser öffnen</translation>
+	<translation name='UI.ModManagementMod.Subscribe'>Abonnieren</translation>
+	<translation name='UI.ModManagementMod.Subscribe.ToolTip'>Modifikation abonnieren</translation>
+	<translation name='UI.ModManagementMod.Unsubscribe'>Abonnieren löschen</translation>
+	<translation name='UI.ModManagementMod.Unsubscribe.ToolTip'>Abonnieren von Modifikation löschen.</translation>
 </languagePack>

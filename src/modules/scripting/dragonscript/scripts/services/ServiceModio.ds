@@ -1160,6 +1160,11 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 		info.hasDependencies = pConvBool(so, "dependencies", false)
 		info.publicVisible = pConvBool(so, "publicVisible", true)
 		
+		so2 = so.getChildAt("userRating")
+		if so2 != null
+			info.userRating = Integer.new(so2.getInteger())
+		end
+		
 		so2 = so.getChildAt("modStatus")
 		if so2 != null
 			info.status = ServiceModInfo.Status.named(so2.getString())

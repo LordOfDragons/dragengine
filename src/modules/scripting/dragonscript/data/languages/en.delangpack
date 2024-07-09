@@ -133,4 +133,8 @@ Do you want to re-assign?</translation>
 	<translation name='UI.ModManagementMod.Id'>ID:</translation>
 	<translation name='UI.ModManagementMod.Close'>Close</translation>
 	<translation name='UI.ModManagementMod.Link.ToolTip'>Open link in system browser</translation>
+	<translation name='UI.ModManagementMod.Subscribe'>Subscribe</translation>
+	<translation name='UI.ModManagementMod.Subscribe.ToolTip'>Subscribe to modification</translation>
+	<translation name='UI.ModManagementMod.Unsubscribe'>Unsubscribe</translation>
+	<translation name='UI.ModManagementMod.Unsubscribe.ToolTip'>Unsubscribe from modification</translation>
 </languagePack>

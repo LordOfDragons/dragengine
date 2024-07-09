@@ -199,6 +199,11 @@ class ServiceModInfo
 	 */
 	public var bool hasDependencies
 	
+	/**
+	 * \brief Rating submitted by user or null.
+	 */
+	public var Integer userRating
+	
 	
 	
 	/**
