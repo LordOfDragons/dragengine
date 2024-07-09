@@ -43,20 +43,20 @@ pin Dragengine.Utils
  */
 class StubElementClassNotFound extends StubElement
 	/** \brief Create element stub. */
-	public func new( String eclassName ) this( eclassName, UniqueID.new() )
+	func new(String eclassName) this(eclassName, UniqueID.new())
 	end
 	
 	/** \brief Create element stub. */
-	public func new( String eclassName, UniqueID id ) super( ElementClass.new( eclassName ), id )
+	func new(String eclassName, UniqueID id) super(ElementClass.new(eclassName), id)
 	end
 	
 	/** \brief Create element stub. */
-	public func new( String eclassName, UniqueID id, StubWithProperties properties ) this( eclassName, id )
-		this.setFrom( properties )
+	func new(String eclassName, UniqueID id, StubWithProperties properties) this(eclassName, id)
+		setFrom(properties)
 	end
 	
 	/** \brief Create copy of element stub. */
-	public func new( StubElement stub ) super( stub )
+	func new(StubElement stub) super(stub)
 	end
 	
 	
@@ -67,45 +67,45 @@ class StubElementClassNotFound extends StubElement
 	 * In addition to StubElement.verifyPreloading() logs the missing element class and
 	 * always returns \em false.
 	 */
-	public func bool verifyPreloading( Console console )
-		super.verifyPreloading( console )
+	func bool verifyPreloading(Console console)
+		super.verifyPreloading(console)
 		
-		console.addMessage( "Element class '" + this.getClass().getClassname() + "' not found" \
-			+ " for object with ID " + this.getID() + " located at " + this.getPosition() )
+		console.addMessage("Element class '" + getClass().getClassname() + "' not found" \
+			+ " for object with ID " + getID() + " located at " + getPosition())
 		return false
 	end
 	
 	
 	
 	/** \brief Always throws an exception. */
-	public func Element createElement()
+	func Element createElement()
 		throw EInvalidParam.new()
 	end
 	
 	/** \brief Always throws an exception. */
-	public func void createAndAddElement( GameWorld gameWorld )
+	func void createAndAddElement(GameWorld gameWorld)
 		throw EInvalidParam.new()
 	end
 	
 	/** \brief Always throws an exception. */
-	public func Element loadElement( PersistencyEnvironment env, FileReader reader )
+	func Element loadElement(PersistencyEnvironment env, FileReader reader)
 		throw EInvalidParam.new()
 	end
 	
 	/** \brief Always throws an exception. */
-	public func void loadAndAddElement( PersistencyEnvironment env, FileReader reader, GameWorld gameWorld )
+	func void loadAndAddElement(PersistencyEnvironment env, FileReader reader, GameWorld gameWorld)
 		throw EInvalidParam.new()
 	end
 	
 	
 	
 	/** \brief Always throws an exception. */
-	public static func StubElement readFromFile( FileReader reader, ElementClassList ElementClassList )
+	public static func StubElement readFromFile(FileReader reader, ElementClassList ElementClassList)
 		throw EInvalidParam.new()
 	end
 	
 	/** \brief Always throws an exception. */
-	public func void writeToFile( FileWriter writer )
+	func void writeToFile(FileWriter writer)
 		throw EInvalidParam.new()
 	end
 end

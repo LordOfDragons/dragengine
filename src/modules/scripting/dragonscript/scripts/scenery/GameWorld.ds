@@ -804,13 +804,19 @@ class GameWorld
 	 * Ignores elements with element classes marked not persistable. For each element the
 	 * element stub is written used to load or create the element.
 	 * 
-	 * Not persistable elements have to be loaded from a world file even if using a file reader. 
+	 * Not persistable elements have to be loaded from a world file even if using a file reader.
 	 * 
 	 * The two methods writeElementStubsToFile() and writeDynamicElementDataToFile() are
 	 * both required to properly restore elements. They are not merged in one to allow
 	 * preloading. For this to work element stubs have to be read first to start preloading.
 	 * Once done the elements are created and their dynamic data read. The order of stubs
 	 * has to stay the same for them to properly read their dynamic data.
+	 * 
+	 * \par Version 1.23
+	 * 
+	 * Element stubs are updated with the corresponding element position, rotation and scaling
+	 * before saving. This allows loading failed elements to be located in a reasonable position
+	 * since they can not read the element data properly to position themselves.
 	 */
 	func void writeElementStubsToFile(PersistencyEnvironment env, FileWriter writer)
 		writer.writeByte(1) // version
@@ -820,6 +826,7 @@ class GameWorld
 		
 		pElements.forEach(block Element each
 			if each.getClass().getPersistable()
+				each.updateStubGeometryFromElement()
 				each.getStub().writeToFile(writer)
 			end
 		end)

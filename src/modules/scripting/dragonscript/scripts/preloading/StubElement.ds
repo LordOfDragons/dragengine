@@ -258,6 +258,22 @@ class StubElement extends StubWithProperties
 		pTextures.forEach(ablock)
 	end
 	
+	/**
+	 * \brief Remove texture.
+	 * \version 1.23
+	 */
+	func void removeTexture(StubElementTexture texture)
+		pTextures.remove(texture)
+	end
+	
+	/**
+	 * \brief Remove all textures.
+	 * \version 1.23
+	 */
+	func void removeAllTextures()
+		pTextures.removeAll()
+	end
+	
 	
 	
 	/** \brief Preload resources. */
@@ -311,6 +327,8 @@ class StubElement extends StubWithProperties
 	/**
 	 * \brief Read stub from file.
 	 * 
+	 * If the element class is not found an instance of StubElementClassNotFound is returned.
+	 * 
 	 * \returns stub element or \em null if classname is empty. This is used to find the
 	 *          end of stub list since the total number of elements is often not known.
 	 */
@@ -320,10 +338,19 @@ class StubElement extends StubWithProperties
 			return null
 		end
 		
+		var ElementClass eclass = elementClassList.getNamed(classname)
+		
 		select reader.readByte() // version
 		case 0
 			var UniqueID id = UniqueID.readFromFile(reader)
-			var StubElement stub = StubElement.new(elementClassList.getNamed(classname), id)
+			var StubElement stub
+			if eclass != null
+				stub = StubElement.new(elementClassList.getNamed(classname), id)
+				
+			else
+				stub = StubElementClassNotFound.new(classname, id)
+			end
+			
 			stub.pPosition = DVector.readFromFile(reader)
 			stub.pRotation = Vector.readFromFile(reader)
 			stub.pScaling = Vector.readFromFile(reader)

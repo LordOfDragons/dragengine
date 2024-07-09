@@ -34,35 +34,35 @@ pin Dragengine.LoadSave
  * \brief Game world element.
  */
 class Element 
-	private var ElementClass pClass
-	private var DVector pPosition
-	private var Quaternion pOrientation
-	private var Vector pScaling
-	private var bool pIsScaled
-	private var Element pParent
-	private var GameWorld pGameWorld
-	private var bool pVisible
-	private var bool pTouchable
-	private var UniqueID pID
-	private var DMatrix pMatrix
-	private var DMatrix pMatrixInverse
-	private var StubElement pStub
+	var ElementClass pClass
+	var DVector pPosition
+	var Quaternion pOrientation
+	var Vector pScaling
+	var bool pIsScaled
+	var Element pParent
+	var GameWorld pGameWorld
+	var bool pVisible
+	var bool pTouchable
+	var UniqueID pID
+	var DMatrix pMatrix
+	var DMatrix pMatrixInverse
+	var StubElement pStub
 	
 	
 	
 	/** Creates a new element object. */
-	public func new( ElementClass elementClass )
+	func new(ElementClass elementClass)
 		if elementClass == null
 			throw EInvalidParam.new()
 		end
 		
-		this.pClass = elementClass
-		this.pPosition = DVector.new()
-		this.pOrientation = Quaternion.new()
-		this.pScaling = Vector.new( 1, 1, 1 )
-		this.pIsScaled = false
-		this.pVisible = true
-		this.pTouchable = true
+		pClass = elementClass
+		pPosition = DVector.new()
+		pOrientation = Quaternion.new()
+		pScaling = Vector.new(1, 1, 1)
+		pIsScaled = false
+		pVisible = true
+		pTouchable = true
 	end
 	
 	/**
@@ -70,23 +70,23 @@ class Element
 	 * 
 	 * Breaks reference loops and cleans up.
 	 */
-	public func void dispose()
-		this.pGameWorld = null
-		this.pStub = null
-		this.pParent = null
-		this.pClass = null
+	func void dispose()
+		pGameWorld = null
+		pStub = null
+		pParent = null
+		pClass = null
 	end
 	
 	
 	
 	/** \brief Element has been disposed of. */
-	public func bool isDisposed()
-		return this.pClass == null
+	func bool isDisposed()
+		return pClass == null
 	end
 	
 	/** \brief Element has not been disposed of. */
-	public func bool isNotDisposed()
-		return this.pClass != null
+	func bool isNotDisposed()
+		return pClass != null
 	end
 	
 	
@@ -97,230 +97,230 @@ class Element
 	 * Stub is stored in element for saving. Stub can be changed in certain situations.
 	 * In general though the stub should be kept unchanged.
 	 */
-	public func void init( StubElement stub )
+	func void init(StubElement stub)
 		if stub == null
 			throw EInvalidParam.new()
 		end
 		
-		this.pStub = stub
-		this.pID = stub.getID()
-		this.pPosition = stub.getPosition()
-		this.pOrientation = Quaternion.newFromEuler( stub.getRotation() )
-		this.pScaling = stub.getScaling()
-		this.pIsScaled = not Vector.new( 1, 1, 1 ).equals( this.pScaling )
+		pStub = stub
+		pID = stub.getID()
+		pPosition = stub.getPosition()
+		pOrientation = Quaternion.newFromEuler(stub.getRotation())
+		pScaling = stub.getScaling()
+		pIsScaled = not Vector.new(1, 1, 1).equals(pScaling)
 	end
 	
 	
 	
 	/** Retrieves the unique id or null if not set. */
-	public func UniqueID getID()
-		return this.pID
+	func UniqueID getID()
+		return pID
 	end
 	
 	/** Sets the unique id or null to unset it. */
-	public func void setID( UniqueID id )
-		this.pID = id
+	func void setID(UniqueID id)
+		pID = id
 	end
 	
 	/** Retrieves the element class. */
-	public func ElementClass getClass()
-		return this.pClass
+	func ElementClass getClass()
+		return pClass
 	end
 	
 	
 	
 	/** \brief Position. */
-	public func DVector getPosition()
-		return this.pPosition
+	func DVector getPosition()
+		return pPosition
 	end
 	
 	/** \brief Set position. */
-	public func void setPosition( DVector position )
-		if position.equals( this.pPosition )
+	func void setPosition(DVector position)
+		if position.equals(pPosition)
 			return
 		end
 		
-		this.pPosition = position
-		this.pMatrix = null
-		this.pMatrixInverse = null
+		pPosition = position
+		pMatrix = null
+		pMatrixInverse = null
 		
-		this.onSetPosition()
+		onSetPosition()
 	end
 	
 	/** \brief Orientation. */
-	public func Quaternion getOrientation()
-		return this.pOrientation
+	func Quaternion getOrientation()
+		return pOrientation
 	end
 	
 	/** \brief Set orientation. */
-	public func void setOrientation( Quaternion orientation )
-		if orientation.equals( this.pOrientation )
+	func void setOrientation(Quaternion orientation)
+		if orientation.equals(pOrientation)
 			return
 		end
 		
-		this.pOrientation = orientation
-		this.pMatrix = null
-		this.pMatrixInverse = null
+		pOrientation = orientation
+		pMatrix = null
+		pMatrixInverse = null
 		
-		this.onSetOrientation()
+		onSetOrientation()
 	end
 	
 	/** \brief Scaling. */
-	public func Vector getScaling()
-		return this.pScaling
+	func Vector getScaling()
+		return pScaling
 	end
 	
 	/** \brief Set scaling. */
-	public func void setScaling( Vector scaling )
-		if scaling.equals( this.pScaling )
+	func void setScaling(Vector scaling)
+		if scaling.equals(pScaling)
 			return
 		end
 		
-		this.pScaling = scaling
-		this.pIsScaled = not Vector.new( 1, 1, 1 ).equals( scaling )
-		this.pMatrix = null
-		this.pMatrixInverse = null
+		pScaling = scaling
+		pIsScaled = not Vector.new(1, 1, 1).equals(scaling)
+		pMatrix = null
+		pMatrixInverse = null
 		
-		this.onSetScaling()
+		onSetScaling()
 	end
 	
 	/** \brief Is scaled. */
-	public func bool getIsScaled()
-		return this.pIsScaled
+	func bool getIsScaled()
+		return pIsScaled
 	end
 	
 	/** \brief Set position and orientation. */
-	public func void setGeometry( DVector position, Quaternion orientation )
-		if position.equals( this.pPosition ) and orientation.equals( this.pOrientation )
+	func void setGeometry(DVector position, Quaternion orientation)
+		if position.equals(pPosition) and orientation.equals(pOrientation)
 			return
 		end
 		
-		this.pPosition = position
-		this.pOrientation = orientation
-		this.pMatrix = null
-		this.pMatrixInverse = null
+		pPosition = position
+		pOrientation = orientation
+		pMatrix = null
+		pMatrixInverse = null
 		
-		this.onSetGeometry()
+		onSetGeometry()
 	end
 	
 	/** \brief Set position, orientation and scaling of element. */
-	public func void setGeometry( DVector position, Quaternion orientation, Vector scaling )
-		if position.equals( this.pPosition ) and orientation.equals( this.pOrientation ) \
-		and scaling.equals( this.pScaling )
+	func void setGeometry(DVector position, Quaternion orientation, Vector scaling)
+		if position.equals(pPosition) and orientation.equals(pOrientation) \
+		and scaling.equals(pScaling)
 			return
 		end
 		
-		this.pPosition = position
-		this.pOrientation = orientation
-		this.pScaling = scaling
+		pPosition = position
+		pOrientation = orientation
+		pScaling = scaling
 		pIsScaled = not Vector.new(1, 1, 1).equals(scaling)
-		this.pMatrix = null
-		this.pMatrixInverse = null
+		pMatrix = null
+		pMatrixInverse = null
 		
-		this.onSetGeometry()
+		onSetGeometry()
 	end
 	
 	
 	
 	/** Retrieves the parent or null if not attached. */
-	public func Element getParent()
-		return this.pParent
+	func Element getParent()
+		return pParent
 	end
 	
 	/** Sets the parent or null if not attached. */
-	public func void setParent( Element parent )
-		if this.pParent != parent
-			this.pParent = parent
+	func void setParent(Element parent)
+		if pParent != parent
+			pParent = parent
 			
-			this.onSetParent()
+			onSetParent()
 		end
 	end
 	
 	
 	
 	/** Retrieves the game world or null if not attached. */
-	public func GameWorld getGameWorld()
-		return this.pGameWorld
+	func GameWorld getGameWorld()
+		return pGameWorld
 	end
 	
 	/** Sets the game world or null if not attached. */
-	public func void setGameWorld( GameWorld gameWorld )
-		if this.pGameWorld == gameWorld
+	func void setGameWorld(GameWorld gameWorld)
+		if pGameWorld == gameWorld
 			return
 		end
 		
-		if this.pGameWorld != null
-			this.removeFromGameWorld()
+		if pGameWorld != null
+			removeFromGameWorld()
 		end
 		
-		this.pGameWorld = gameWorld
+		pGameWorld = gameWorld
 		
 		if gameWorld != null
-			this.addToGameWorld()
+			addToGameWorld()
 		end
 		
-		this.onSetGameWorld()
+		onSetGameWorld()
 	end
 	
 	/** Determines if the element is visible. */
-	public func bool getVisible()
-		return this.pVisible
+	func bool getVisible()
+		return pVisible
 	end
 	
 	/** Sets if the element is visible. */
-	public func void setVisible( bool visible )
-		if this.pVisible != visible
-			this.pVisible = visible
+	func void setVisible(bool visible)
+		if pVisible != visible
+			pVisible = visible
 			
-			this.onSetVisible()
+			onSetVisible()
 		end
 	end
 	
 	/** Determines if the element is touchable. */
-	public func bool getTouchable()
-		return this.pTouchable
+	func bool getTouchable()
+		return pTouchable
 	end
 	
 	/** Sets if the element is touchable. */
-	public func void setTouchable( bool touchable )
-		if this.pTouchable != touchable
-			this.pTouchable = touchable
+	func void setTouchable(bool touchable)
+		if pTouchable != touchable
+			pTouchable = touchable
 			
-			this.onSetTouchable()
+			onSetTouchable()
 		end
 	end
 	
 	
 	
 	/** \brief Element stub used to create the element. */
-	public func StubElement getStub()
-		return this.pStub
+	func StubElement getStub()
+		return pStub
 	end
 	
 	/** \brief Set element stub used to create the element. */
-	public func void setStub( StubElement stub )
-		this.pStub = stub
+	func void setStub(StubElement stub)
+		pStub = stub
 	end
 	
 	
 	
 	/** \brief Matrix to transform from element space into world space. */
-	public func DMatrix getElementMatrix()
-		if this.pMatrix == null
-			this.pMatrix = DMatrix.newWorld( this.pPosition, this.pOrientation )
-			if this.pIsScaled
-				this.pMatrix = DMatrix.newScaling( DVector.new( this.pScaling ) ) * this.pMatrix
+	func DMatrix getElementMatrix()
+		if pMatrix == null
+			pMatrix = DMatrix.newWorld(pPosition, pOrientation)
+			if pIsScaled
+				pMatrix = DMatrix.newScaling(DVector.new(pScaling)) * pMatrix
 			end
 		end
-		return this.pMatrix
+		return pMatrix
 	end
 	
 	/** \brief Matrix to transform from world space into element space. */
-	public func DMatrix getInverseElementMatrix()
-		if this.pMatrixInverse == null
-			this.pMatrixInverse = this.getElementMatrix().getInverse()
+	func DMatrix getInverseElementMatrix()
+		if pMatrixInverse == null
+			pMatrixInverse = getElementMatrix().getInverse()
 		end
-		return this.pMatrixInverse
+		return pMatrixInverse
 	end
 	
 	
@@ -330,8 +330,8 @@ class Element
 	 * to the given element. If the element is the same as the given
 	 * element false is returned.
 	 */
-	public func bool isChildOf( Element parent )
-		var Element testParent = this.getParent()
+	func bool isChildOf(Element parent)
+		var Element testParent = getParent()
 		
 		while testParent != null
 			if testParent == parent
@@ -349,16 +349,16 @@ class Element
 	 * to the given element. If the element is the same as the given
 	 * element true is returned.
 	 */
-	public func bool isMyselfOrChildOf( Element parent )
-		return ( this == parent ) or this.isChildOf( parent )
+	func bool isMyselfOrChildOf(Element parent)
+		return (this == parent) or isChildOf(parent)
 	end
 	
 	
 	
 	/** \brief Remove element from game world if present. */
-	public func void removeFromGameWorldIfPresent()
-		if this.pGameWorld != null
-			this.pGameWorld.removeElement( this )
+	func void removeFromGameWorldIfPresent()
+		if pGameWorld != null
+			pGameWorld.removeElement(this)
 		end
 	end
 	
@@ -369,21 +369,21 @@ class Element
 	 * world or not. Do not use dispose() directly otherwise clean up logic done by
 	 * removeFromGameWorld() is skipped.
 	 */
-	public func void safeDispose()
-		if this.pGameWorld != null
-			this.pGameWorld.removeElement( this )
+	func void safeDispose()
+		if pGameWorld != null
+			pGameWorld.removeElement(this)
 		end
-		this.dispose()
+		dispose()
 	end
 	
 	
 	
 	/** Adds the element content to the game world if required. */
-	public func void addToGameWorld()
+	func void addToGameWorld()
 	end
 	
 	/** Removes the element content from the game world if placed there before. */
-	public func void removeFromGameWorld()
+	func void removeFromGameWorld()
 	end
 	
 	/**
@@ -402,7 +402,7 @@ class Element
 	 *          from inside enterFrame(). Do this from addToGameWorld(), removeFromGameWorld(),
 	 *          think() or postThink().
 	 */
-	public func void enterFrame()
+	func void enterFrame()
 	end
 	
 	/**
@@ -418,7 +418,7 @@ class Element
 	 *
 	 * @param elapsed Time elapsed since last frame update in seconds
 	 */
-	public func void think( float elapsed )
+	func void think(float elapsed)
 	end
 	
 	/**
@@ -430,12 +430,12 @@ class Element
 	 *
 	 * @param elapsed Time elapsed since last frame update in seconds
 	 */
-	public func void postThink( float elapsed )
+	func void postThink(float elapsed)
 	end
 	
 	/** Visit this element. */
-	public func void visit( ElementVisitor visitor )
-		visitor.visitElement( this )
+	func void visit(ElementVisitor visitor)
+		visitor.visitElement(this)
 	end
 	
 	
@@ -447,9 +447,9 @@ class Element
 	 * This allows subclasses to add persistency support by overwriting this method without
 	 * super calling it.
 	 */
-	public func void readFromFile( PersistencyEnvironment env, FileReader reader )
+	func void readFromFile(PersistencyEnvironment env, FileReader reader)
 		if reader.readByte() !=  0 // version
-			throw EInvalidParam.new( "unsupported version" )
+			throw EInvalidParam.new("unsupported version")
 		end
 	end
 	
@@ -460,8 +460,8 @@ class Element
 	 * This allows subclasses to add persistency support by overwriting this method without
 	 * super calling it.
 	 */
-	public func void writeToFile( PersistencyEnvironment env, FileWriter writer )
-		writer.writeByte( 0 ) // version
+	func void writeToFile(PersistencyEnvironment env, FileWriter writer)
+		writer.writeByte(0) // version
 	end
 	
 	/**
@@ -470,9 +470,9 @@ class Element
 	 * Writes element class name, then the stub parameters and then the element parameters.
 	 * If no stub exists an empty one is used for writing stub parameters.
 	 */
-	public func void writeToFileWithStub( PersistencyEnvironment env, FileWriter writer )
-		this.pStub.writeToFile( writer )
-		this.writeToFile( env, writer )
+	func void writeToFileWithStub(PersistencyEnvironment env, FileWriter writer)
+		pStub.writeToFile(writer)
+		writeToFile(env, writer)
 	end
 	
 	/**
@@ -483,15 +483,26 @@ class Element
 	 * \em null empty element class name is written. Empty element class name is used
 	 * during loading to indicate a \em null element.
 	 */
-	public static func void writeElementToFileWithStub( PersistencyEnvironment env, \
-	FileWriter writer, Element element )
+	static func void writeElementToFileWithStub(PersistencyEnvironment env, \
+	FileWriter writer, Element element)
 		if element != null
-			element.writeToFileWithStub( env, writer )
+			element.writeToFileWithStub(env, writer)
 			
 		else
-			writer.writeString8( "" )
+			writer.writeString8("")
 		end
 	end
+	
+	/**
+	 * \brief Update stub position, rotation and scaling from element.
+	 * \version 1.23
+	 */
+	func void updateStubGeometryFromElement()
+		pStub.setPosition(pPosition)
+		pStub.setRotation(pOrientation.getEulerAngles())
+		pStub.setScaling(pScaling)
+	end
+	
 	
 	/**
 	 * \brief Load element from file reader with stub supporting null element.
@@ -500,80 +511,80 @@ class Element
 	 * is returned. Otherwise stub and element is read from file reader. Uses
 	 * ElementClass.loadElement() if supported.
 	 */
-	public static func Element readElementFromFileWithStub( PersistencyEnvironment env, \
-	FileReader reader, ElementClassList ElementClassList )
-		var StubElement stub = StubElement.readFromFile( reader, ElementClassList )
+	static func Element readElementFromFileWithStub(PersistencyEnvironment env, \
+	FileReader reader, ElementClassList ElementClassList)
+		var StubElement stub = StubElement.readFromFile(reader, ElementClassList)
 		if stub == null
 			return null
 		end
-		return stub.loadElement( env, reader )
+		return stub.loadElement(env, reader)
 	end
 	
 	
 	
 	/** \brief Position changed. */
-	public func void onSetPosition()
+	func void onSetPosition()
 	end
 	
 	/** \brief Orientation changed. */
-	public func void onSetOrientation()
+	func void onSetOrientation()
 	end
 	
 	/** \brief Scaling changed. */
-	public func void onSetScaling()
+	func void onSetScaling()
 	end
 	
 	/** \brief Position, orientation or scaling changed. */
-	public func void onSetGeometry()
+	func void onSetGeometry()
 	end
 	
 	/** Parent changed. */
-	public func void onSetParent()
+	func void onSetParent()
 	end
 	
 	/** Game world changed. */
-	public func void onSetGameWorld()
+	func void onSetGameWorld()
 	end
 	
 	/** Visible state changed. */
-	public func void onSetVisible()
+	func void onSetVisible()
 	end
 	
 	/** Touchable state changed. */
-	public func void onSetTouchable()
+	func void onSetTouchable()
 	end
 	
 	
 	
 	/** Return string representation of this Element. */
-	public func String toString()
-		return "a " + this.pClass.getClassname() + "(ID " + this.pID + ")"
+	func String toString()
+		return "a " + pClass.getClassname() + "(ID " + pID + ")"
 	end
 	
 	
 	
 	/** \brief Log using BaseGameApp Console if present. */
-	public func void log( String message )
+	func void log(String message)
 		var BaseGameApp app = BaseGameApp.getApp()
 		if app != null
-			app.getConsole().addMessage( this.pClass.getClassname() \
-				+ "(ID " + this.pID + ") at " + this.pPosition + ": " + message )
+			app.getConsole().addMessage(pClass.getClassname() \
+				+ "(ID " + pID + ") at " + pPosition + ": " + message)
 		end
 	end
 	
 	
 	
 	/** \brief Debug information as Dictionary. */
-	public func Dictionary debugInformation()
+	func Dictionary debugInformation()
 		var Dictionary info = Dictionary.new()
-		info.setAt( "class", this.pClass != null if this.pClass.getClassname() else null )
-		info.setAt( "position", this.pPosition )
-		info.setAt( "orientation", this.pOrientation.getEulerAngles() )
-		info.setAt( "scaling", this.pScaling )
-		info.setAt( "parent", this.pParent != null if this.pParent.pID else null )
-		info.setAt( "visible", this.pVisible )
-		info.setAt( "touchable", this.pTouchable )
-		info.setAt( "id", this.pID )
+		info.setAt("class", pClass != null if pClass.getClassname() else null)
+		info.setAt("position", pPosition)
+		info.setAt("orientation", pOrientation.getEulerAngles())
+		info.setAt("scaling", pScaling)
+		info.setAt("parent", pParent != null if pParent.pID else null)
+		info.setAt("visible", pVisible)
+		info.setAt("touchable", pTouchable)
+		info.setAt("id", pID)
 		return info
 	end
 end
