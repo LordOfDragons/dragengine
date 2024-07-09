@@ -869,7 +869,19 @@ class GameWorld
 	 * can decide to replace the element with a placeholder or ignoring it. Mostly useful for
 	 * games supporting user modifications and hardening against loading problems.
 	 * 
-	 * Default implementation returns false.
+	 * If the subclass handles the failure it has to return a StubElement instance. This can
+	 * be the element stub provided to the function call or a new one derived from it. If the
+	 * element class can not be found an instance of StubElementClassNotFound is used with a
+	 * fake ElementClass instance. Subclass has to check first if the element class is valid.
+	 * If it is not valid or if the subclass wants to change the element class a new instance
+	 * of StubElement has to be created with the same properties as the provided one. To ignore
+	 * the element add no element to the game world and return a StubElement with element
+	 * class IgnoreElementClass.
+	 * 
+	 * If the subclass does not or can not handle the failure it has to return null. In this
+	 * case regular error processing throws an exception and the loading is aborted.
+	 * 
+	 * Default implementation returns null.
 	 * 
 	 * Only called if \ref #getEnableReadDynDataWithSize() returns true.
 	 * 
@@ -877,12 +889,10 @@ class GameWorld
 	 * \param reader Reader positioned at the beginning of the element data.
 	 * \param stub Element stub the dynamic data is linked to.
 	 * \param dataSize Size in bytes of the data starting at the reader position.
-	 * \retval true Subclass handled failure. Caller can continue loading.
-	 * \retval false Subclass did not handle failure. Caller throws exception failing loading.
 	 */
-	func bool onFailLoadAndAddPersistableElements(PersistencyEnvironment env,\
+	func StubElement onFailLoadAndAddPersistableElements(PersistencyEnvironment env,\
 	FileReader reader, StubElement stub, int dataSize)
-		return false
+		return null
 	end
 	
 	

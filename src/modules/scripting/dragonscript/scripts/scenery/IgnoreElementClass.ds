@@ -38,14 +38,14 @@ pin Dragengine.Preloading
  */
 class IgnoreElementClass extends ElementClass
 	/** \brief Create element class. */
-	public func new( String classname ) super( classname )
-		this.setPersistable( false )
+	func new(String classname) super(classname)
+		setPersistable(false)
 	end
 	
 	
 	
 	/** \brief No XML subclassing supported. */
-	public func ElementClass duplicateNamed( String classname )
+	func ElementClass duplicateNamed(String classname)
 		return null
 	end
 	
@@ -55,22 +55,21 @@ class IgnoreElementClass extends ElementClass
 	end
 	
 	/** \brief Element class is ignored. */
-	public func Element createElement( StubElement stub )
+	func Element createElement(StubElement stub)
 		return null
 	end
 	
 	/** \brief Element class is ignored. */
-	public func void createAndAddElement( StubElement stub, GameWorld gameWorld )
+	func void createAndAddElement(StubElement stub, GameWorld gameWorld)
+	end
+	
+	/** \brief Element class is ignored. */
+	func Element loadElement(PersistencyEnvironment env, StubElement stub, FileReader reader)
+		throw null
 	end
 	
 	/** \brief Element class can not be persisted. */
-	public func Element loadElement( PersistencyEnvironment env, \
-	StubElement stub, FileReader reader )
-		throw EInvalidParam.new()
-	end
-	
-	/** \brief Element class can not be persisted. */
-	public func void loadAndAddElement( PersistencyEnvironment env, \
-	StubElement stub, FileReader reader, GameWorld gameWorld )
+	func void loadAndAddElement(PersistencyEnvironment env,\
+	StubElement stub, FileReader reader, GameWorld gameWorld)
 	end
 end

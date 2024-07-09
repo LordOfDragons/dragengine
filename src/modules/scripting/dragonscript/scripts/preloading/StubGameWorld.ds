@@ -332,25 +332,29 @@ class StubGameWorld extends StubWithProperties
 		var MemoryFile elementData = MemoryFile.new("")
 		var FileWriter elementDataWriter = elementData.getWriter(false)
 		var FileReader elementDataReader = elementData.getReader()
+		var int i, elementCount = pElements.getCount()
 		var int elementDataSize
+		var StubElement stub
 		
 		elementData.setSize(8192) // 8k as starting capacity should be good enough
 		
-		pElements.forEach(block StubElement each
+		for i = 0 to elementCount
+			stub = pElements.getAt(i) cast StubElement
+			
 			try
-				if each.getClass().getPersistable()
+				if stub.getClass().getPersistable()
 					elementDataWriter.setPosition(0)
 					elementDataReader.setPosition(0)
 					elementDataSize = reader.readInt()
 					elementData.setSize(elementDataSize)
 					elementDataWriter.writeData(reader, elementDataSize)
 					
-					each.loadAndAddElement(env, elementDataReader, pGameWorld)
+					stub.loadAndAddElement(env, elementDataReader, pGameWorld)
 					
 					if enableDebugCanaryValue and elementDataReader.getPosition() != elementDataSize
 						env.getPersistency().getConsole().addMessage(\
 							"{}: Not all element data consumed by element: offset={} size={} consumed={}".format(\
-							Array.newWith(each.getClass().getClassname(), reader.getPosition() - elementDataSize,\
+							Array.newWith(stub.getClass().getClassname(), reader.getPosition() - elementDataSize,\
 								elementDataSize, elementDataReader.getPosition())))
 						throw EInvalidParam.new()
 					end
@@ -358,15 +362,17 @@ class StubGameWorld extends StubWithProperties
 				
 			catch Exception e
 				console.addMessage("Failed to loadAndAddPersistableElements object with class '" \
-					+ each.getClass().getClassname() + "' with ID " + each.getID() \
-					+ " located at " + each.getPosition())
+					+ stub.getClass().getClassname() + "' with ID " + stub.getID() \
+					+ " located at " + stub.getPosition())
 				
 				elementDataReader.setPosition(0)
-				if not pGameWorld.onFailLoadAndAddPersistableElements(env, elementDataReader, each, elementDataSize)
+				stub = pGameWorld.onFailLoadAndAddPersistableElements(env, elementDataReader, stub, elementDataSize)
+				if stub == null
 					throw
 				end
+				pElements.setAt(i, stub)
 			end
-		end)
+		end
 	end
 	
 	/** \brief Preload element resources. */
