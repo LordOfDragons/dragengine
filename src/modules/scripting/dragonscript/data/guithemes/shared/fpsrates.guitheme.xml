@@ -1,0 +1,67 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<guiTheme>
+	<!--
+	PanelFPSRates.
+	- "Panel.FPSRates": Entire panel
+	- "Label.Panel.FPSRates.{Module}": Label for module
+	- "Label.Panel.FPSRates.Rate.{Module}": Rate for module
+	
+	Where "{Module}" can be:
+	- "Script": Scripting module (Engine itself)
+	- "Graphic": Graphic module
+	- "Audio": Audio module
+	- "Physics": Physics module
+	- "Network": Network module
+	-->
+	
+	<designer name='Panel.FPSRates' type='Widget'>
+		<canvasCreator parameter='normal.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='0' g='0' b='0' a='0.75'/>
+		</canvasCreator>
+		<borderSize parameter='normal.padding' left='3' top='1' right='3' bottom='1'/>
+	</designer>
+	
+	<designer name='Label.Panel.FPSRates' extendNamed='Label'>
+		<color parameter='normal.textColor' r='1' g='1' b='1'/>
+		<string parameter='normal.alignment'>left,middle</string>
+	</designer>
+	<designer name='Label.Panel.FPSRates.Rate' extendNamed='Label'>
+		<color parameter='normal.textColor' r='1' g='1' b='1'/>
+		<string parameter='normal.alignment'>center,middle</string>
+	</designer>
+	
+	<designer name='Label.Panel.FPSRates.Script' extendNamed='Label.Panel.FPSRates'>
+		<color parameter='normal.textColor' r='1' g='1' b='1'/>
+	</designer>
+	<designer name='Label.Panel.FPSRates.Rate.Script' extendNamed='Label.Panel.FPSRates.Rate'>
+		<color parameter='normal.textColor' r='1' g='1' b='1'/>
+	</designer>
+	
+	<designer name='Label.Panel.FPSRates.Graphic' extendNamed='Label.Panel.FPSRates'>
+		<color parameter='normal.textColor' r='1' g='0.5' b='0.5'/>
+	</designer>
+	<designer name='Label.Panel.FPSRates.Rate.Graphic' extendNamed='Label.Panel.FPSRates.Rate'>
+		<color parameter='normal.textColor' r='1' g='0.5' b='0.5'/>
+	</designer>
+	
+	<designer name='Label.Panel.FPSRates.Audio' extendNamed='Label.Panel.FPSRates'>
+		<color parameter='normal.textColor' r='0.5' g='1' b='0.5'/>
+	</designer>
+	<designer name='Label.Panel.FPSRates.Rate.Audio' extendNamed='Label.Panel.FPSRates.Rate'>
+		<color parameter='normal.textColor' r='0.5' g='1' b='0.5'/>
+	</designer>
+	
+	<designer name='Label.Panel.FPSRates.Physics' extendNamed='Label.Panel.FPSRates'>
+		<color parameter='normal.textColor' r='0.75' g='0.75' b='1'/>
+	</designer>
+	<designer name='Label.Panel.FPSRates.Rate.Physics' extendNamed='Label.Panel.FPSRates.Rate'>
+		<color parameter='normal.textColor' r='0.75' g='0.75' b='1'/>
+	</designer>
+	
+	<designer name='Label.Panel.FPSRates.Network' extendNamed='Label.Panel.FPSRates'>
+		<color parameter='normal.textColor' r='1' g='0.5' b='1'/>
+	</designer>
+	<designer name='Label.Panel.FPSRates.Rate.Network' extendNamed='Label.Panel.FPSRates.Rate'>
+		<color parameter='normal.textColor' r='1' g='0.5' b='1'/>
+	</designer>
+</guiTheme>

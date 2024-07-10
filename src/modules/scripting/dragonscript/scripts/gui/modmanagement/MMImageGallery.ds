@@ -1,0 +1,186 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Gui
+pin Dragengine.Services.Mods
+pin Dragengine.Gui.Layouts
+
+/**
+ * \brief Widget showing modification gallery images.
+ * \version 1.23
+ * 
+ * Designer selectors:
+ * - Main widget panel: Panel.MMImageGallery.Main
+ * - Image displaying original image: Image.MMImageGallery.Original
+ * - Preview image: Image.MMImageGallery.Preview
+ * - Preview image, selected: Image.MMImageGallery.Preview.Selected
+ */
+class MMImageGallery extends Panel
+	/**
+	 * \brief Show gallery image listener.
+	 */
+	class ShowGalleryImage extends DefaultListModelListener
+		var DisplayImage pDisplayImage
+		var Array pPreviewWidgets
+		var String pPreviewImageDesignerSelector
+		
+		
+		/** \brief Create listener. */
+		func new(DisplayImage displayImage, Array previewWidgets, String previewImageDesignerSelector)
+			pDisplayImage = displayImage
+			pPreviewWidgets = previewWidgets
+			pPreviewImageDesignerSelector = previewImageDesignerSelector
+		end
+		
+		
+		/** \brief Selection changed. */
+		func void selectionChanged(ListModel listModel)
+			var int selection = listModel.getSelected()
+			if selection == -1
+				return
+			end
+			
+			var MMModification.GalleryImage galleryImage = \
+				listModel.getAt(selection) cast MMModification.GalleryImage
+			
+			pDisplayImage.setImage(galleryImage.imageOriginal)
+			
+			pPreviewWidgets.forEach(block MMImageGalleryPreviewImage each
+				if each.getGalleryImage() == galleryImage
+					each.setDesignerSelector(pPreviewImageDesignerSelector + ".Selected")
+					
+				else
+					each.setDesignerSelector(pPreviewImageDesignerSelector)
+				end
+			end)
+		end
+		
+		/** \brief Content changed. */
+		func void contentChanged(ListModel listModel, int fromIndex, int toIndex)
+			selectionChanged(listModel)
+		end
+	end
+	
+	
+	/**
+	 * \brief Show gallery image if clicked listener.
+	 */
+	class ClickShowGalleryImage extends ClickedActionListener
+		var ListModel pModel
+		var MMModification.GalleryImage pGalleryImage
+		
+		/** \brief Create listener. */
+		func new(ListModel model, MMModification.GalleryImage galleryImage)
+			pModel = model
+			pGalleryImage = galleryImage
+		end
+		
+		/** \brief Show image. */
+		func void onAction()
+			pModel.setSelected(pModel.indexOf(pGalleryImage))
+		end
+	end
+	
+	
+	var ServiceMods pServiceMods
+	var MMModification pMod
+	var DisplayImage pImageOriginal
+	var DefaultListModel pModel
+	var String pPreviewImageDesignerSelector
+	var Array pPreviewWidgets
+	
+	
+	/** \brief Create image gallery widget. */
+	func new(ServiceMods serviceMods, MMModification mod)
+		pServiceMods = serviceMods
+		pMod = mod
+		pModel = DefaultListModel.new()
+		pPreviewImageDesignerSelector = "Image.MMImageGallery.Preview"
+		pPreviewWidgets = Array.new()
+		
+		if mod.info.galleryImages != null
+			mod.info.galleryImages.forEach(block ServiceImage each
+				pModel.add(MMModification.GalleryImage.new(each))
+			end)
+		end
+		
+		runWhileBlockingLayout(block
+			createContent()
+		end)
+		
+		pModel.addListener(ShowGalleryImage.new(pImageOriginal,\
+			pPreviewWidgets, pPreviewImageDesignerSelector))
+	end
+	
+	/** \brief Dispose of widget. */
+	func void dispose()
+		pImageOriginal = null
+		pModel = null
+		pPreviewWidgets = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Set parent. */
+	func void setParent(Container parent)
+		super.setParent(parent)
+		
+		if parent != null and pPreviewWidgets.getCount() > 0
+			pPreviewWidgets.forEach(block int index, MMImageGalleryPreviewImage each
+				each.setGalleryImage(pServiceMods, pModel.getAt(index) cast MMModification.GalleryImage)
+			end)
+			
+			pModel.notifyElementChanged(0)
+		end
+	end
+	
+	
+	/** \brief Create content. */
+	protected func void createContent()
+		setLayout(BorderLayout.new())
+		setDesignerSelector("Panel.MMImageGallery.Main")
+		
+		pImageOriginal = DisplayImage.new(null, RepeatMode.stretchRatio)
+		pImageOriginal.setDesignerSelector("Image.MMImageGallery.Original")
+		addWidget(pImageOriginal, BorderLayout.Area.content)
+		
+		var MMImageGalleryPreviewImage widget
+		var Panel panelImages = Panel.new(FlowLayout.new(LayoutAxis.x), block Panel p
+			pModel.forEach(block MMModification.GalleryImage each
+				widget = MMImageGalleryPreviewImage.new(pPreviewImageDesignerSelector, pModel)
+				widget.addMouseListener(ClickShowGalleryImage.new(pModel, each))
+				widget.addMouseListener(ParentWheelActionListener.new(this))
+				p.addWidget(widget)
+				pPreviewWidgets.add(widget)
+			end)
+			
+			p.addMouseListener(ParentWheelActionListener.new(this))
+		end)
+		
+		var Viewport viewport = Viewport.new(panelImages)
+		viewport.setLayout(FlowLayout.new(LayoutAxis.x))
+		addWidget(ScrollPanel.new(viewport, ScrollPanel.Policy.visible, ScrollPanel.Policy.hidden), BorderLayout.Area.bottom)
+	end
+end

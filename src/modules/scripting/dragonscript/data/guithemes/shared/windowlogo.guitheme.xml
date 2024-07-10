@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<guiTheme>
+	<!--
+	Logo window. These designer can be defined:
+	- WindowLogo: Window itself
+	- Panel.WindowLogo: Aspect ratio panel containing logo
+	- Video.WindowLogo: Video widget
+	- Image.WindowLogo: Image widget
+	-->
+	
+	<designer name='WindowLogo' type='Window'>
+		<canvasCreator parameter='normal.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='0' g='0' b='0'/>
+		</canvasCreator>
+		<mousePointer parameter='normal.mousePointer' type='Default'/>
+	</designer>
+</guiTheme>

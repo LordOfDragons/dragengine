@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<guiTheme>
+	<!--
+	MMImageGallery.
+	
+	Main widget panel:
+	- Panel.MMImageGallery.Main
+	
+	Image displaying original image:
+	- Image.MMImageGallery.Original
+	
+	Preview image:
+	- Image.MMImageGallery.Preview
+	- Image.MMImageGallery.Preview.Selected
+	-->
+	
+	<designer name='Panel.MMImageGallery.Main' type='Widget'>
+		<canvasCreator parameter='normal.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='0.1' g='0.1' b='0.1'/>
+		</canvasCreator>
+	</designer>
+	
+	<designer name='Image.MMImageGallery.Original' type='Image'>
+		<point parameter='normal.minimumSize' x='100' y='360'/>
+	</designer>
+	
+	<designer name='Image.MMImageGallery.Preview' type='Image'>
+		<border parameter='normal.border' type='Combined'>
+			<border parameter='outer' type='Empty'>
+				<borderSize parameter='size' left='5' top='5' right='5' bottom='5'/>
+			</border>
+			<border parameter='inner' type='Line'>
+				<color parameter='color' r='0.3' g='0.3' b='0.3'/>
+			</border>
+		</border>
+		<point parameter='normal.minimumSize' x='260' y='140'/>
+	</designer>
+	
+	<designer name='Image.MMImageGallery.Preview.Selected' extendNamed='Image.MMImageGallery.Preview'>
+		<border parameter='normal.border' type='Combined'>
+			<border parameter='outer' type='Empty'>
+				<borderSize parameter='size' left='5' top='5' right='5' bottom='5'/>
+			</border>
+			<border parameter='inner' type='Line'>
+				<color parameter='color' r='0.4' g='0.4' b='1'/>
+			</border>
+		</border>
+	</designer>
+</guiTheme>

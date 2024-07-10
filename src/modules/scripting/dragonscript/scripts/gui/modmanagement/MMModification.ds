@@ -1,0 +1,99 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Gui
+pin Dragengine.Services.Mods
+
+/**
+ * \brief Modification information for use in modification listing.
+ * \version 1.23
+ * 
+ * Stores ServiceModInfo, ServiceModStatus and cached resources.
+ */
+class MMModification
+	/**
+	 * \brief Gallery image.
+	 */
+	class GalleryImage
+		/**
+		 * \brief Modification gallery image.
+		 */
+		public var ServiceImage info
+		
+		/**
+		 * \brief Cached original image or null.
+		 */
+		public var Image imageOriginal
+		
+		/**
+		 * \brief Thumbnail.
+		 */
+		public var ServiceImage.Thumbnail thumbnail
+		
+		/**
+		 * \brief Cached thumbnail or null.
+		 */
+		public var Image imageThumbnail
+		
+		/**
+		 * \brief Create new instance of class GalleryImage.
+		 */
+		func new(ServiceImage info)
+			this.info = info
+		end
+	end
+	
+	
+	
+	/**
+	 * \brief Modification information.
+	 */
+	public var ServiceModInfo info
+	
+	/**
+	 * \brief Modification status or null.
+	 */
+	public var ServiceModStatus status
+	
+	/**
+	 * \brief Cached logo image or null.
+	 */
+	public var Image logo
+	
+	/**
+	 * \brief Gallery images as Array of GalleryImage or null if not loaded.
+	 */
+	public var Array galleryImages
+	
+	
+	
+	/**
+	 * \brief Create new instance of class ModListEntry.
+	 */
+	func new(ServiceModInfo info, ServiceModStatus status)
+		this.info = info
+		this.status = status
+	end
+end
+

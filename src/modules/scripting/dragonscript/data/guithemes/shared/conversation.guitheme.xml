@@ -1,0 +1,68 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<guiTheme>
+	<!--
+	Player choice widgets for conversation. These designers can be defined:
+	- 'WindowPlayerChoice' -> WindowPlayerChoice
+	- 'PlayerChoice' -> PanelPlayerChoice
+	- 'PlayerChoiceEntry' -> PanelPlayerChoiceEntry
+	- 'Label.PlayerChoiceEntry' -> PanelPlayerChoiceEntry Label
+	- 'Image.PlayerChoiceEntry' -> PanelPlayerChoiceEntry DisplayImage
+	-->
+	
+	<designer name='PlayerChoiceEntry' type='PlayerChoiceEntry'>
+		<canvasCreator parameter='normal.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='0' g='0' b='0' a='0.5'/>
+		</canvasCreator>
+		<border parameter='normal.border' type='Line'>
+			<color parameter='color' r='0' g='0' b='0' a='0.5'/>
+			<integer parameter='thickness'>5</integer>
+		</border>
+		
+		<canvasCreator parameter='hover.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='0' g='0' b='0.5' a='0.5'/>
+		</canvasCreator>
+		<border parameter='hover.border' type='Line'>
+			<color parameter='color' r='0' g='0' b='0.5' a='0.5'/>
+			<integer parameter='thickness'>5</integer>
+		</border>
+	</designer>
+	
+	<designer name='Label.PlayerChoiceEntry' extendNamed='Label'>
+		<color parameter='normal.textColor' r='0.6' g='0.6' b='0.6'/>
+		<font parameter='normal.font' size='31'>../modern/fonts/subtitle.defont</font>
+	</designer>
+	
+	
+	
+	<!--
+	Sub-title widgets for conversation and other purpose. These designer can be defined:
+	- 'WindowSubTitle' -> WindowSubTitle
+	- 'SubTitleBox' -> SubTitleBox
+	- 'SubTitleBoxText' -> SubTitleBoxText
+	-->
+	
+	<designer name='SubTitleBoxText' type='Widget'>
+		<canvasCreator parameter='normal.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='0' g='0' b='0' a='0.5'/>
+		</canvasCreator>
+		<border parameter='normal.border' type='Line'>
+			<color parameter='color' r='0' g='0' b='1' a='0.5'/>
+			<integer parameter='thickness'>2</integer>
+		</border>
+		<borderSize parameter='normal.padding' left='20' top='5' right='20' bottom='5'/>
+	</designer>
+	
+	<designer name='Label.SubTitleBoxText' type='Label'>
+		<borderSize parameter='normal.padding' left='5' top='0' right='5' bottom='0'/>
+		<font parameter='normal.font' size='31'>../modern/fonts/subtitle.defont</font>
+		<color parameter='normal.textColor' r='1' g='1' b='1'/>
+	</designer>
+	
+	<designer name='Label.SubTitleBoxText.Text' extendNamed='Label.SubTitleBoxText'>
+		<borderSize parameter='normal.padding' left='20' top='0' right='20' bottom='0'/>
+	</designer>
+	
+	<designer name='Label.SubTitleBoxText.Text.Binding' extendNamed='Label.SubTitleBoxText'>
+		<color parameter='normal.textColor' r='1' g='1' b='0'/>
+	</designer>
+</guiTheme>
