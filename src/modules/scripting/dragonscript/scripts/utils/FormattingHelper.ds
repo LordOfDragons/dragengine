@@ -144,4 +144,27 @@ class FormattingHelper
 	func String formatRating(float rating, int digits)
 		return "{{:0.{}f}%".format(Array.newWith(DEMath.clamp(digits, 0, 3))).format(Array.newWith(rating))
 	end
+	
+	
+	
+	/**
+	 * \brief Time difference.
+	 * 
+	 * Returns text in the form "1d", "1h", "1min", "1s". For use with the return
+	 * value of \ref TimeDate#secondsSince(TimeDate).
+	 */
+	func String formatTimeDifference(int seconds)
+		if seconds >= 86400
+			return "{:d}h".format(Array.newWith(seconds / 86400))
+			
+		elif seconds >= 3600
+			return "{:d}m".format(Array.newWith(seconds / 3600))
+			
+		elif seconds >= 60
+			return "{:d}s".format(Array.newWith(seconds / 60))
+			
+		else
+			return "{:d}s".format(Array.newWith(seconds))
+		end
+	end
 end
