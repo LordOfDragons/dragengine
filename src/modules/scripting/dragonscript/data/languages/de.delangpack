@@ -9,6 +9,10 @@
 	<translation name='UI.Accept'>Bestätigen</translation>
 	<translation name='UI.Cancel'>Abbrechen</translation>
 	<translation name='UI.Close'>Schliessen</translation>
+	<translation name='UI.Restart'>Neustart</translation>
+	<translation name='UI.Error'>Fehler</translation>
+	<translation name='UI.Search'>Suchen</translation>
+	<translation name='UI.SortBy'>Sortieren</translation>
 	<translation name='UI.Menu.Cut'>Ausschneiden</translation>
 	<translation name='UI.Menu.Copy'>Kopieren</translation>
 	<translation name='UI.Menu.Paste'>Einfügen</translation>
@@ -98,15 +102,14 @@ Neu zuweisen?</translation>
 	<translation name='UI.Command.MenuLeft.Description'>Menu anzeigen mit der linken Hand.</translation>
 	<translation name='UI.EditBinding.DeleteBinding.ToolTip'>Steuerung löschen</translation>
 	<translation name='UI.EditBinding.AddBinding.ToolTip'>Steuerung hinzufügen</translation>
-	<translation name='UI.ModManagement.Close'>Schliessen</translation>
+	<translation name='UI.Modifications'>Modifikationen</translation>
+	<translation name='UI.Modifications.ToolTip'>Modifikationen verwalten)</translation>
 	<translation name='UI.ModManagement.Close.ToolTip'>Modifikationen Verwalten schliessen. Aktiviert all abonnierte und installierte Modifikationen.</translation>
-	<translation name='UI.ModManagement.Search'>Suchen</translation>
 	<translation name='UI.ModManagement.Search.ToolTip'>Nach Modifikationen suchen. Zeigt die ersten Suchresultate an</translation>
 	<translation name='UI.ModManagement.SearchMore'>Mehr Resultate</translation>
 	<translation name='UI.ModManagement.SearchMore.ToolTip'>Suche vorsetzen. Zeigt die nächsten Suchresultate an</translation>
 	<translation name='UI.ModManagement.SearchName'>Name</translation>
 	<translation name='UI.ModManagement.SearchName.ToolTip'>Zeigt Modifikationen an, deren Namen ein oder mehrere der eingegebenen Wörter enthält</translation>
-	<translation name='UI.ModManagement.SortBy'>Sortieren</translation>
 	<translation name='UI.ModManagement.SortBy.ToolTip'>Modifikationen sortieren</translation>
 	<translation name='UI.ModManagement.Enum.SortField.id'>ID</translation>
 	<translation name='UI.ModManagement.Enum.SortField.downloadsToday'>Downloads Heute</translation>
@@ -131,7 +134,6 @@ Neu zuweisen?</translation>
 	<translation name='UI.ModManagementMod.Author'>Autor:</translation>
 	<translation name='UI.ModManagementMod.Profile'>Profil:</translation>
 	<translation name='UI.ModManagementMod.Id'>ID:</translation>
-	<translation name='UI.ModManagementMod.Close'>Schliessen</translation>
 	<translation name='UI.ModManagementMod.Link.ToolTip'>Link im System-Browser öffnen</translation>
 	<translation name='UI.ModManagementMod.Subscribe'>Abonnieren</translation>
 	<translation name='UI.ModManagementMod.Subscribe.ToolTip'>Modifikation abonnieren</translation>
@@ -150,4 +152,12 @@ Neu zuweisen?</translation>
 	<translation name='UI.ModManagement.Enum.ModStatus.downloading'>Herunterladen</translation>
 	<translation name='UI.ModManagement.Enum.ModStatus.extracting'>Entpacken</translation>
 	<translation name='UI.ModManagement.Enum.ModStatus.uninstallPending'>Deinstallation ausstehend</translation>
+	<translation name='UI.ModManagement.Message.RestartRequired'>Eine oder mehrere Modifikationen enthalten scripts. Ein Neustart ist erforderlich.</translation>
+	<translation name='UI.ModManagement.AvailableMods'>Verfügbar</translation>
+	<translation name='UI.ModManagement.AvailableMods.ToolTip'>In verfügbare Modifikationen stöbern</translation>
+	<translation name='UI.ModManagement.SubscribedMods'>Abonniert</translation>
+	<translation name='UI.ModManagement.SubscribedMods.ToolTip'>Abonnierte Modifikationen</translation>
+	<translation name='UI.ModManagement.ModsTransfer'>Transfer</translation>
+	<translation name='UI.ModManagement.ModsTransfer.ToolTip'>Fortschritt der Transfers von Modifikationen</translation>
+	<translation name='UI.ModManagementMod.Message.RestartRequired'>Modifikation enthältt scripts. Ein Neustart ist erforderlich.</translation>
 </languagePack>
