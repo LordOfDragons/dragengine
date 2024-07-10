@@ -1059,6 +1059,11 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 		return so2 != null if so2.getFloat() else defaultValue
 	end
 	
+	private func Float pConvFloatOptional(ServiceObject so, String key)
+		var ServiceObject so2 = so.getChildAt(key)
+		return so2 != null if Float.new(so2.getFloat()) else null
+	end
+	
 	private func TimeDate pConvTimeDate(ServiceObject so, String key)
 		var ServiceObject so2 = so.getChildAt(key)
 		return so2 != null if TimeDate.new(\
@@ -1333,6 +1338,7 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 		progress.total = pConvFloat(so, "total", 1)
 		progress.current = pConvFloat(so, "current", 0)
 		progress.progress = pConvFloat(so, "progress", 0)
+		progress.remainingTime = pConvFloatOptional(so, "remainingTime")
 		return progress
 	end
 	

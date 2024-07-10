@@ -462,6 +462,9 @@ deServiceObject::Ref deMCCommon::ModProgressInfo( const Modio::ModProgressInfo &
 	so->SetFloatChildAt( "current", ( float )current );
 	so->SetFloatChildAt( "progress", ( float )progress );
 	
+	// estimated remaining time in seconds
+	// so->SetFloatChildAt( "remainingTime", ( float )remainingTime );
+	
 	return so;
 }
 

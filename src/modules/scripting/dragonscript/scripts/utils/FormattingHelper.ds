@@ -76,7 +76,7 @@ class FormattingHelper
 			fmt = "{:.0f}"
 		end
 		
-		return fmt.format(Array.newWith(count))
+		return fmt.format(Array.newWith(count + 0.5))
 	end
 	
 	
@@ -121,7 +121,7 @@ class FormattingHelper
 			fmt = "{:.0f}b"
 		end
 		
-		return fmt.format(Array.newWith(size))
+		return fmt.format(Array.newWith(size + 0.5))
 	end
 	
 	
@@ -150,21 +150,28 @@ class FormattingHelper
 	/**
 	 * \brief Time difference.
 	 * 
-	 * Returns text in the form "1d", "1h", "1min", "1s". For use with the return
-	 * value of \ref TimeDate#secondsSince(TimeDate).
+	 * Returns text in the form "1d", "1h", "1min", "1s". For use with
+	 * \ref TimeDate#secondsSince(TimeDate) or remaining time calculations.
 	 */
-	func String formatTimeDifference(int seconds)
+	func String formatTimeDifference(float seconds)
+		var String fmt
+		
 		if seconds >= 86400
-			return "{:d}h".format(Array.newWith(seconds / 86400))
+			fmt = "{:.0f}h"
+			seconds /= 86400
 			
 		elif seconds >= 3600
-			return "{:d}m".format(Array.newWith(seconds / 3600))
+			fmt = "{:.0f}m"
+			seconds /= 3600
 			
 		elif seconds >= 60
-			return "{:d}s".format(Array.newWith(seconds / 60))
+			fmt = "{:.0f}s"
+			seconds /= 60
 			
 		else
-			return "{:d}s".format(Array.newWith(seconds))
+			fmt = "{:.0f}s"
 		end
+		
+		return fmt.format(Array.newWith(seconds + 0.5))
 	end
 end

@@ -138,6 +138,7 @@ Neu zuweisen?</translation>
 	<translation name='UI.ModManagementMod.Unsubscribe'>Abonnieren löschen</translation>
 	<translation name='UI.ModManagementMod.Unsubscribe.ToolTip'>Abonnieren von Modifikation löschen.</translation>
 	<translation name='UI.ModManagementMod.DetailsStatus'>Status</translation>
+	<translation name='UI.ModManagementMod.RemainingTime'>Verbleibende Zeit:</translation>
 	<translation name='UI.ModManagement.Enum.ModProgressState.initializing'>Initializing</translation>
 	<translation name='UI.ModManagement.Enum.ModProgressState.downloading'>Herunterladen</translation>
 	<translation name='UI.ModManagement.Enum.ModProgressState.extracting'>Entpacken</translation>

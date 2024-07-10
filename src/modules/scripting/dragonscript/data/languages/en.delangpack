@@ -138,6 +138,7 @@ Do you want to re-assign?</translation>
 	<translation name='UI.ModManagementMod.Unsubscribe'>Unsubscribe</translation>
 	<translation name='UI.ModManagementMod.Unsubscribe.ToolTip'>Unsubscribe from modification</translation>
 	<translation name='UI.ModManagementMod.DetailsStatus'>Status</translation>
+	<translation name='UI.ModManagementMod.RemainingTime'>Remaining Time:</translation>
 	<translation name='UI.ModManagement.Enum.ModProgressState.initializing'>Initializing</translation>
 	<translation name='UI.ModManagement.Enum.ModProgressState.downloading'>Downloading</translation>
 	<translation name='UI.ModManagement.Enum.ModProgressState.extracting'>Extracting</translation>

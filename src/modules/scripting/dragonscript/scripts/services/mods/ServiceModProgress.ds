@@ -89,6 +89,12 @@ class ServiceModProgress
 	 */
 	public var float progress
 	
+	/**
+	 * \brief Estimated remaining time in seconds until progress is finished.
+	 * 
+	 * Is null if the service module can not give a reasonable estimation.
+	 */
+	public var Float remainingTime
 	
 	
 	/**
