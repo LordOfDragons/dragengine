@@ -36,29 +36,47 @@ pin Dragengine.Scenery
 class DefaultVideoDesigner extends DefaultWidgetDesigner
 	/** \brief Design for a particular widget state. */
 	public class VideoStateDesign extends StateDesign
-		private var ColorMatrix pVideoColorTransform
+		var ColorMatrix pVideoColorTransform
+		var Video pVideo
 		
 		
 		
 		/** \brief Create state design. */
-		public func new()
+		func new()
 		end
 		
 		/** \brief Create copy of state design. */
-		public func new( VideoStateDesign stateDesign ) super( stateDesign )
-			this.pVideoColorTransform = stateDesign.pVideoColorTransform
+		func new(VideoStateDesign stateDesign) super(stateDesign)
+			pVideoColorTransform = stateDesign.pVideoColorTransform
+			pVideo = stateDesign.pVideo
 		end
 		
 		
 		
 		/** \brief Video color transform or null. */
-		public func ColorMatrix getVideoColorTransform()
-			return this.pVideoColorTransform
+		func ColorMatrix getVideoColorTransform()
+			return pVideoColorTransform
 		end
 		
 		/** \brief Set video color transform or null. */
-		public func void setVideoColorTransform( ColorMatrix colorMatrix )
-			this.pVideoColorTransform = colorMatrix
+		func void setVideoColorTransform(ColorMatrix colorMatrix)
+			pVideoColorTransform = colorMatrix
+		end
+		
+		/**
+		 * \brief Video.
+		 * \version 1.23
+		 */
+		func Video getVideo()
+			return pVideo
+		end
+		
+		/**
+		 * \brief Set Video.
+		 * \version 1.23
+		 */
+		func void setVideo(Video video)
+			pVideo = video
 		end
 		
 		
@@ -68,22 +86,27 @@ class DefaultVideoDesigner extends DefaultWidgetDesigner
 		 * 
 		 * Supported parameters:
 		 * | name | value | Setter |
+		 * | --- | --- | --- |
 		 * | videoColorTransform | ColorMatrix | setVideoColorTransform |
+		 * | video | Video | setVideo |
 		 */
-		public func void setParameter( String name, Object value )
-			if name.equals( "videoColorTransform" )
-				this.setVideoColorTransform( value cast ColorMatrix )
+		func void setParameter(String name, Object value)
+			if name.equals("videoColorTransform")
+				setVideoColorTransform(value cast ColorMatrix)
+				
+			elif name.equals("video")
+				setVideo(value cast Video)
 				
 			else
-				super.setParameter( name, value )
+				super.setParameter(name, value)
 			end
 		end
 		
 		
 		
 		/** \brief Create copy of state. */
-		public func DefaultWidgetDesigner.StateDesign copyDesign()
-			return VideoStateDesign.new( this )
+		func DefaultWidgetDesigner.StateDesign copyDesign()
+			return VideoStateDesign.new(this)
 		end
 		
 		/**
@@ -92,13 +115,34 @@ class DefaultVideoDesigner extends DefaultWidgetDesigner
 		 * Updates state with parameters of this state if defined. Used to find the first
 		 * defined parameter for a series of states acting as fallback for each other.
 		 */
-		public func void merge( DefaultWidgetDesigner.StateDesign state )
-			super.merge( state )
+		func void merge(DefaultWidgetDesigner.StateDesign state)
+			super.merge(state)
 			
 			var VideoStateDesign vdesign = state cast VideoStateDesign
 			
-			if this.pVideoColorTransform != null
-				vdesign.pVideoColorTransform = this.pVideoColorTransform
+			if pVideoColorTransform != null
+				vdesign.pVideoColorTransform = pVideoColorTransform
+				vdesign.pVideo = pVideo
+			end
+		end
+		
+		/**
+		 * \brief Apply state design to widget.
+		 * \deprected Use \ref #apply(Widget,DefaultVideoDesigner)
+		 * 
+		 * This is typically called on a merged design to find the first defined parameters.
+		 */
+		func void apply(Widget widget)
+			super.apply(widget)
+			
+			var DisplayVideo displayVideo = widget cast DisplayVideo
+			if not displayVideo.getProtectVideoColorTransform()
+				if pVideoColorTransform != null
+					displayVideo.setVideoColorTransform(pVideoColorTransform)
+					
+				else
+					displayVideo.setVideoColorTransform(ColorMatrix.new())
+				end
 			end
 		end
 		
@@ -107,61 +151,87 @@ class DefaultVideoDesigner extends DefaultWidgetDesigner
 		 * 
 		 * This is typically called on a merged design to find the first defined parameters.
 		 */
-		public func void apply( Widget widget )
-			super.apply( widget )
+		func void apply(Widget widget, DefaultVideoDesigner designer)
+			super.apply(widget)
 			
 			var DisplayVideo displayVideo = widget cast DisplayVideo
 			if not displayVideo.getProtectVideoColorTransform()
-				if this.pVideoColorTransform != null
-					displayVideo.setVideoColorTransform( this.pVideoColorTransform )
+				if pVideoColorTransform != null
+					displayVideo.setVideoColorTransform(pVideoColorTransform)
 					
 				else
-					displayVideo.setVideoColorTransform( ColorMatrix.new() )
+					displayVideo.setVideoColorTransform(ColorMatrix.new())
 				end
+			end
+			
+			if designer.getReplaceVideo()
+				displayVideo.setVideo(pVideo)
 			end
 		end
 	end
 	
 	
 	
+	var bool pReplaceVideo
+	
+	
+	
 	/** \brief Create new video designer. */
-	public func new()
-		this.setDesignNormal( VideoStateDesign.new() )
-		this.setDesignDisabled( VideoStateDesign.new() )
-		this.setDesignFocused( VideoStateDesign.new() )
-		this.setDesignHover( VideoStateDesign.new() )
-		this.setDesignFocusedHover( VideoStateDesign.new() )
+	func new()
+		setDesignNormal(VideoStateDesign.new())
+		setDesignDisabled(VideoStateDesign.new())
+		setDesignFocused(VideoStateDesign.new())
+		setDesignHover(VideoStateDesign.new())
+		setDesignFocusedHover(VideoStateDesign.new())
 	end
 	
 	/** \brief Create copy of widget designer designer. */
-	public func new( DefaultVideoDesigner designer ) super( designer )
+	func new(DefaultVideoDesigner designer) super(designer)
 	end
 	
 	
 	
 	/** \brief Design for normal state. */
-	public func VideoStateDesign getVideoDesignNormal()
-		return this.getDesignNormal() cast VideoStateDesign
+	func VideoStateDesign getVideoDesignNormal()
+		return getDesignNormal() cast VideoStateDesign
 	end
 	
 	/** \brief Design for disabled state. */
-	public func VideoStateDesign getVideoDesignDisabled()
-		return this.getDesignDisabled() cast VideoStateDesign
+	func VideoStateDesign getVideoDesignDisabled()
+		return getDesignDisabled() cast VideoStateDesign
 	end
 	
 	/** \brief Design for focused state. */
-	public func VideoStateDesign getVideoDesignFocused()
-		return this.getDesignFocused() cast VideoStateDesign
+	func VideoStateDesign getVideoDesignFocused()
+		return getDesignFocused() cast VideoStateDesign
 	end
 	
 	/** \brief Design for hover state. */
-	public func VideoStateDesign getVideoDesignHover()
-		return this.getDesignHover() cast VideoStateDesign
+	func VideoStateDesign getVideoDesignHover()
+		return getDesignHover() cast VideoStateDesign
 	end
 	
 	/** \brief Design for focused hover state. */
-	public func VideoStateDesign getVideoDesignFocusedHover()
-		return this.getDesignFocusedHover() cast VideoStateDesign
+	func VideoStateDesign getVideoDesignFocusedHover()
+		return getDesignFocusedHover() cast VideoStateDesign
+	end
+	
+	
+	
+	/**
+	 * \brief Replace video in widget.
+	 * \version 1.23
+	 */
+	func bool getReplaceVideo()
+		return pReplaceVideo
+	end
+	
+	/**
+	 * \brief Set replace video in widget.
+	 * \version 1.23
+	 */
+	func void setReplaceVideo(bool ReplaceVideo)
+		pReplaceVideo = ReplaceVideo
 	end
 	
 	
@@ -173,14 +243,27 @@ class DefaultVideoDesigner extends DefaultWidgetDesigner
 	 * 
 	 * Additional supported parameters:
 	 * | name | value | Setter |
+	 * | --- | --- | --- |
+	 * | replaceVideo | bool | setReplaceVideo |
 	 * | {state}.videoColorTransform | ColorMatrix | getDesign{state}.setVideoColorTransform |
+	 * | {state}.video | Video | getDesign{state}.setVideo |
 	 */
-	public func void setParameter( String name, Object value )
-		super.setParameter( name, value )
+	func void setParameter(String name, Object value)
+		if name.equals("replaceVideo")
+			setReplaceVideo(value cast bool)
+			
+		else
+			super.setParameter(name, value)
+		end
 	end
 	
 	/** \brief Create copy of designer. */
-	public func WidgetDesigner copyDesigner()
-		return DefaultVideoDesigner.new( this )
+	func WidgetDesigner copyDesigner()
+		return DefaultVideoDesigner.new(this)
+	end
+	
+	/** \brief Design widget. */
+	public func void designWidget(Widget widget)
+		(widgetStateFindDesign(widget) cast VideoStateDesign).apply(widget, this)
 	end
 end
