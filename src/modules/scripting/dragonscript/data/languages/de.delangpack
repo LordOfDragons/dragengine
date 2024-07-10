@@ -137,4 +137,16 @@ Neu zuweisen?</translation>
 	<translation name='UI.ModManagementMod.Subscribe.ToolTip'>Modifikation abonnieren</translation>
 	<translation name='UI.ModManagementMod.Unsubscribe'>Abonnieren löschen</translation>
 	<translation name='UI.ModManagementMod.Unsubscribe.ToolTip'>Abonnieren von Modifikation löschen.</translation>
+	<translation name='UI.ModManagementMod.DetailsStatus'>Status</translation>
+	<translation name='UI.ModManagement.Enum.ModProgressState.initializing'>Initializing</translation>
+	<translation name='UI.ModManagement.Enum.ModProgressState.downloading'>Herunterladen</translation>
+	<translation name='UI.ModManagement.Enum.ModProgressState.extracting'>Entpacken</translation>
+	<translation name='UI.ModManagement.Enum.ModProgressState.compressing'>Komprimieren</translation>
+	<translation name='UI.ModManagement.Enum.ModProgressState.uploading'>Hochladen</translation>
+	<translation name='UI.ModManagement.Enum.ModStatus.installationPending'>Installation ausstehend</translation>
+	<translation name='UI.ModManagement.Enum.ModStatus.installed'>Installiert</translation>
+	<translation name='UI.ModManagement.Enum.ModStatus.updatePending'>Update ausstehend</translation>
+	<translation name='UI.ModManagement.Enum.ModStatus.downloading'>Herunterladen</translation>
+	<translation name='UI.ModManagement.Enum.ModStatus.extracting'>Entpacken</translation>
+	<translation name='UI.ModManagement.Enum.ModStatus.uninstallPending'>Deinstallation ausstehend</translation>
 </languagePack>

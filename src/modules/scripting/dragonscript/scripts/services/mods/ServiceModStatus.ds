@@ -61,7 +61,7 @@ class ServiceModStatus
 		/**
 		 * \brief Uninstall pending.
 		 */
-		ininstallPending
+		uninstallPending
 	end
 	
 	

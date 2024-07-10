@@ -137,4 +137,16 @@ Do you want to re-assign?</translation>
 	<translation name='UI.ModManagementMod.Subscribe.ToolTip'>Subscribe to modification</translation>
 	<translation name='UI.ModManagementMod.Unsubscribe'>Unsubscribe</translation>
 	<translation name='UI.ModManagementMod.Unsubscribe.ToolTip'>Unsubscribe from modification</translation>
+	<translation name='UI.ModManagementMod.DetailsStatus'>Status</translation>
+	<translation name='UI.ModManagement.Enum.ModProgressState.initializing'>Initializing</translation>
+	<translation name='UI.ModManagement.Enum.ModProgressState.downloading'>Downloading</translation>
+	<translation name='UI.ModManagement.Enum.ModProgressState.extracting'>Extracting</translation>
+	<translation name='UI.ModManagement.Enum.ModProgressState.compressing'>Compressing</translation>
+	<translation name='UI.ModManagement.Enum.ModProgressState.uploading'>Uploading</translation>
+	<translation name='UI.ModManagement.Enum.ModStatus.installationPending'>Installation pending</translation>
+	<translation name='UI.ModManagement.Enum.ModStatus.installed'>Installed</translation>
+	<translation name='UI.ModManagement.Enum.ModStatus.updatePending'>Update pending</translation>
+	<translation name='UI.ModManagement.Enum.ModStatus.downloading'>Downloading</translation>
+	<translation name='UI.ModManagement.Enum.ModStatus.extracting'>Extracting</translation>
+	<translation name='UI.ModManagement.Enum.ModStatus.uninstallPending'>Uninstall pending</translation>
 </languagePack>

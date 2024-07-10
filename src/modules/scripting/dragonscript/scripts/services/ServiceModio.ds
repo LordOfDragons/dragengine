@@ -1158,16 +1158,10 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 		info.version = pConvString(so, "version")
 		info.price = pConvInt(so, "price", 0).toString()
 		info.hasDependencies = pConvBool(so, "dependencies", false)
-		info.publicVisible = pConvBool(so, "publicVisible", true)
 		
 		so2 = so.getChildAt("userRating")
 		if so2 != null
 			info.userRating = Integer.new(so2.getInteger())
-		end
-		
-		so2 = so.getChildAt("modStatus")
-		if so2 != null
-			info.status = ServiceModInfo.Status.named(so2.getString())
 		end
 		
 		info.submittedBy = pConvUser(so.getChildAt("profileSubmittedBy"))
@@ -1335,7 +1329,7 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 		end
 		
 		var ServiceModProgress progress = ServiceModProgress.new()
-		progress.status = ServiceModProgress.State.named(so.getChildAt("state").getString())
+		progress.state = ServiceModProgress.State.named(so.getChildAt("state").getString())
 		progress.total = pConvFloat(so, "total", 1)
 		progress.current = pConvFloat(so, "current", 0)
 		progress.progress = pConvFloat(so, "progress", 0)

@@ -30,18 +30,6 @@ pin Dragengine.Services.User
  * \version 1.23
  */
 class ServiceModInfo
-	/** \brief Service side modification status. */
-	enum Status
-		/** \brief Accepted. */
-		accepted
-		
-		/** \brief Not accepted. */
-		notAccepted
-		
-		/** \brief Deleted. */
-		deleted
-	end
-	
 	/**
 	 * \brief Link to an external site.
 	 * 
@@ -178,16 +166,6 @@ class ServiceModInfo
 	 * \brief Current modification version.
 	 */
 	public var String version
-	
-	/**
-	 * \brief Status of modification.
-	 */
-	public var Status status
-	
-	/**
-	 * \brief Modification is public visible.
-	 */
-	public var bool publicVisible
 	
 	/**
 	 * \brief Price of modification.

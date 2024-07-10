@@ -64,9 +64,9 @@ class ServiceModProgress
 	
 	
 	/**
-	 * \brief Progress status.
+	 * \brief Progress state.
 	 */
-	public var State status
+	public var State state
 	
 	/**
 	 * \brief Total progress value.
