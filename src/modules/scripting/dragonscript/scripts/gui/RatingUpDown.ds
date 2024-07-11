@@ -145,6 +145,16 @@ class RatingUpDown extends Panel implements RatingModelListener
 	end
 	
 	
+	/** \brief Up vote button. */
+	protected func ToggleButton getButtonUp()
+		return pButtonUp
+	end
+	
+	/** \brief Down vote button. */
+	protected func ToggleButton getButtonDown()
+		return pButtonDown
+	end
+	
 	/** \brief Create content. */
 	protected func void createContent()
 		setLayout(GridLayout.new(2, 1))

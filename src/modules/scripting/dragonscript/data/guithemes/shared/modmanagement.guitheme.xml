@@ -186,4 +186,124 @@
 		<color parameter='normal.textColor' r='0' g='0' b='0'/>
 		<borderSize parameter='normal.padding' left='0' top='15' right='0' bottom='0'/>
 	</designer>
+	
+	
+	
+	<!--
+	MMModificationListRenderer.
+	
+	Base designer selector: ListRenderer.MMModificationListRenderer
+	-->
+	
+	<designer name='Panel.ListRenderer.MMModificationListRenderer' type='Widget'>
+		<canvasCreator parameter='normal.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='0.9' g='0.9' b='0.9'/>
+		</canvasCreator>
+		<border parameter='normal.border' type='Combined'>
+			<border parameter='outer' type='Empty'>
+				<borderSize parameter='size' left='5' top='5' right='5' bottom='5'/>
+			</border>
+			<border parameter='inner' type='Line'>
+				<color parameter='color' r='0.6' g='0.6' b='0.6'/>
+			</border>
+		</border>
+	</designer>
+	
+	<designer name='Panel.ListRenderer.MMModificationListRenderer.Selected'
+			extendNamed='Panel.ListRenderer.MMModificationListRenderer'>
+		<canvasCreator parameter='normal.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='0.9' g='0.9' b='1'/>
+		</canvasCreator>
+		<border parameter='normal.border' type='Combined'>
+			<border parameter='outer' type='Empty'>
+				<borderSize parameter='size' left='5' top='5' right='5' bottom='5'/>
+			</border>
+			<border parameter='inner' type='Line'>
+				<color parameter='color' r='0.8' g='0.8' b='1'/>
+			</border>
+		</border>
+	</designer>
+	
+	<designer name='Image.ListRenderer.MMModificationListRenderer' type='Image'>
+		<point parameter='normal.minimumSize' x='260' y='140'/>
+	</designer>
+	
+	<designer name='Panel.ListRenderer.MMModificationListRenderer.Info' type='Widget'>
+		<borderSize parameter='normal.padding' left='10' top='10' right='10' bottom='10'/>
+	</designer>
+	
+	<designer name='Label.ListRenderer.MMModificationListRenderer' extendNamed='Label'>
+		<color parameter='normal.textColor' r='0' g='0' b='0'/>
+		<string parameter='normal.alignment'>left,middle</string>
+	</designer>
+	
+	<designer name='Label.ListRenderer.MMModificationListRenderer.Name'
+			extendNamed='Label.ListRenderer.MMModificationListRenderer'>
+		<font parameter='normal.font' size='22'>/shareddata/guithemes/modern/fonts/sans22.defont</font>
+		<color parameter='normal.textColor' r='0.2' g='0.1' b='1'/>
+	</designer>
+	
+	<designer name='Icon.ListRenderer.MMModificationListRenderer.Downloads' type='Image'>
+		<colorMatrix parameter='normal.imageColorTransform'>
+			<!-- <scale r='0.1' g='0.1' b='0.15'/> -->
+			<scale r='0.1' g='0.3' b='0.1'/>
+		</colorMatrix>
+		<image parameter='normal.image'>/shareddata/guithemes/modern/icons/16/download.webp</image>
+	</designer>
+	
+	<designer name='Label.ListRenderer.MMModificationListRenderer.Downloads'
+			extendNamed='Label.ListRenderer.MMModificationListRenderer'>
+		<borderSize parameter='normal.padding' left='5'/>
+	</designer>
+	
+	<designer name='Icon.ListRenderer.MMModificationListRenderer.Size' type='Image'>
+		<colorMatrix parameter='normal.imageColorTransform'>
+			<!-- <scale r='0.1' g='0.1' b='0.15'/> -->
+			<scale r='0.1' g='0.3' b='0.1'/>
+		</colorMatrix>
+		<image parameter='normal.image'>/shareddata/guithemes/modern/icons/16/filesize.webp</image>
+	</designer>
+	
+	<designer name='Label.ListRenderer.MMModificationListRenderer.Size'
+			extendNamed='Label.ListRenderer.MMModificationListRenderer'>
+		<borderSize parameter='normal.padding' left='2'/>
+	</designer>
+	
+	<designer name='Icon.ListRenderer.MMModificationListRenderer.Rating' type='Image'>
+		<colorMatrix parameter='normal.imageColorTransform'>
+			<!-- <scale r='0.1' g='0.1' b='0.15'/> -->
+			<scale r='0.1' g='0.3' b='0.1'/>
+		</colorMatrix>
+		<image parameter='normal.image'>/shareddata/guithemes/modern/icons/16/rating.webp</image>
+	</designer>
+	
+	<designer name='Label.ListRenderer.MMModificationListRenderer.Rating'
+			extendNamed='Label.ListRenderer.MMModificationListRenderer'>
+		<borderSize parameter='normal.padding' left='2'/>
+	</designer>
+	
+	<designer name='Label.ListRenderer.MMModificationListRenderer.Subscribed'
+			extendNamed='Label.ListRenderer.MMModificationListRenderer'>
+		<canvasCreator parameter='normal.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='0.8' g='1' b='0.8'/>
+		</canvasCreator>
+		<border parameter='normal.border' type='Line'>
+			<color parameter='color' r='0.4' g='0.5' b='0.4'/>
+		</border>
+		<borderSize parameter='normal.padding' left='2' top='2' right='2' bottom='2'/>
+		<string parameter='normal.alignment'>center,middle</string>
+	</designer>
+	
+	<designer name='Label.ListRenderer.MMModificationListRenderer.Unsubscribed'
+			extendNamed='Label.ListRenderer.MMModificationListRenderer'>
+		<canvasCreator parameter='normal.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='0.8' g='0.8' b='0.8'/>
+		</canvasCreator>
+		<border parameter='normal.border' type='Line'>
+			<color parameter='color' r='0.4' g='0.4' b='0.4'/>
+		</border>
+		<borderSize parameter='normal.padding' left='2' top='2' right='2' bottom='2'/>
+		<string parameter='normal.alignment'>center,middle</string>
+	</designer>
+	
 </guiTheme>

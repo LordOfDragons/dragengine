@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-namespace Dragengine.Gui
+namespace Dragengine.Gui.ModManagement
 pin Dragengine.Services.Mods
 pin Dragengine.Gui.Layouts
 pin Dragengine.Gui.Events
