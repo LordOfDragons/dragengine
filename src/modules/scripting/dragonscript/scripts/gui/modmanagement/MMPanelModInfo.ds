@@ -1,0 +1,633 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Gui
+pin Dragengine.Services.Mods
+pin Dragengine.Gui.Layouts
+pin Dragengine.Gui.Events
+pin Dragengine.Gui.Designers
+pin Dragengine.Utils.StyledText.Definition.Nodes
+
+
+/**
+ * \brief Panel showing modification information.
+ * \version 1.23
+ * 
+ * Designer selectors:
+ * - Main widget panel: Panel.MMPanelModInfo.Main
+ * 
+ * - Header panel: Panel.MMPanelModInfo.Header
+ *   - Title label: Label.MMPanelModInfo.HeaderTitle
+ * 
+ * - Description panel: Panel.MMPanelModInfo.Description
+ *   - Styled document: StyledTextStyle.MMPanelModInfo.Description
+ * 
+ * - Details panel: Panel.MMPanelModInfo.Details
+ *   - Subscribe button: Button.MMPanelModInfo.Subscribe
+ * 
+ *   - Rating panel: Panel.MMPanelModInfo.Group.DetailsDetails
+ *     - Rating text: Label.MMPanelModInfo.Details.RatingText
+ *     - Rating percentage: Label.MMPanelModInfo.Details.Rating
+ *     - Rating progress bar: ProgressBar.MMPanelModInfo.Rating
+ * 
+ *   - Details panel (form): Panel.MMPanelModInfo.DetailsDetailsForm
+ *     - Line label: Label.MMPanelModInfo.DetailsFormLabel
+ *     - Line value: Label.MMPanelModInfo.DetailsFormValue
+ *     - Line URL value: Label.MMPanelModInfo.DetailsFormValue.Link
+ *     - Line specific label/value can have these suffixes:
+ *       - .Subscribers
+ *       - .Downloads
+ *       - .DateUpdated
+ *       - .DateReleased
+ *       - .Size
+ *       - .Version
+ *       - .Author (URL value)
+ *       - .Profile (URL value)
+ *       - .Id
+ * 
+ *   - Tags panel: Panel.MMPanelModInfo.Group.DetailsTags
+ *     - Tag label. Label.MMPanelModInfo.DetailsFormValue.Tag
+ * 
+ *   - Status/progress panel: Panel.MMPanelModInfo.Group.DetailsStatus
+ *     - Status label: Label.MMPanelModInfo.Details.Status
+ *     - Status progress bar: ProgressBar.MMPanelModInfo.Details.StatusProgress
+ *     - Line specific label/value can have these suffixes:
+ *       - .RemainingTime
+ * 
+ * For generating the styled document the following designer selectors are used:
+ * - base style: StyledTextStyle.MMPanelModInfo.Description.Base
+ * - paragraph: StyledTextStyle.MMPanelModInfo.Description.Paragraph
+ * - header1: StyledTextStyle.MMPanelModInfo.Description.Header1
+ */
+class MMPanelModInfo extends Panel
+	/**
+	 * \brief Mod management event listener.
+	 */
+	class ModEventListener extends DefaultServiceModsListener
+		var MMPanelModInfo pPanel
+		
+		/** \brief Create listener. */
+		func new(MMPanelModInfo panel)
+			pPanel = panel
+		end
+		
+		/** \brief Modification information received. */
+		func void onGetModInfo(ServiceMods service, String modId, ServiceModInfo info, Exception exception)
+			if info != null
+				pPanel.updateModInfo(modId, info)
+			end
+		end
+		
+		/** \brief Subscribed to modification. */
+		func void onSubscribeMod(ServiceMods service, String modId, Exception exception)
+			if exception == null
+				pPanel.updateModInfo(modId, null)
+			end
+		end
+		
+		/** \brief Unsubscribed from modification. */
+		func void onUnsubscribeMod(ServiceMods service, String modId, Exception exception)
+			if exception == null
+				pPanel.updateModInfo(modId, null)
+			end
+		end
+		
+		/** \brief Modification rating submitted. */
+		func void onSubmitModRating(ServiceMods service, String modId, Exception exception)
+			if exception == null
+				pPanel.updateModInfo(modId, null)
+			end
+		end
+		
+		/** \brief Modification rating revoked. */
+		func void onRevokeModRating(ServiceMods service, String modId, Exception exception)
+			if exception == null
+				pPanel.updateModInfo(modId, null)
+			end
+		end
+		
+		/** \brief Mod management event received. */
+		func void onModManagement(ServiceMods service, ServiceMods.ManagementEvent event,\
+		String modId, ServiceModProgress progress, Exception exception)
+			if exception == null
+				pPanel.updateModProgress(modId, progress)
+			end
+		end
+	end
+	
+	
+	
+	var ServiceMods pServiceMods
+	var ServiceModsFeatures pServiceModFeatures
+	var MMModification pMod
+	var Button pButtonSubscribe
+	var Dictionary pSubscribedMods, pSystemMods
+	var ModEventListener pModEventListener
+	var DefaultTextModel pModelStatus
+	var DefaultRatingModel pModelRating
+	var ProgressBar pProgressStatus
+	var Label pLabProgressRemaining
+	var String pRestartInfo
+	var DisplayStyledText pStyledDescription
+	
+	
+	
+	/** \brief Create modification information panel. */
+	func new(ServiceMods serviceMods, MMModification mod)
+		pServiceMods = serviceMods
+		pServiceModFeatures = serviceMods.getModsFeatures()
+		pMod = mod
+		pSubscribedMods = serviceMods.getSubscribedMods()
+		pSystemMods = serviceMods.getSystemMods()
+		pModelStatus = DefaultTextModel.new()
+		pRestartInfo = "modsRequiredRestart"
+		
+		pModelRating = DefaultRatingModel.new(pServiceModFeatures.modRatingCount,\
+			mod.info.userRating, mod.info.stats.ratingCountPerType)
+		
+		runWhileBlockingLayout(block
+			setDesignerSelector("Panel.MMPanelModInfo.Main")
+			createContent()
+			updateButtonSubscribe()
+			updateModProgress(mod.info.id, null)
+		end)
+		doLayout()
+		
+		pModEventListener = ModEventListener.new(this)
+		serviceMods.addModsListener(pModEventListener)
+		
+		pModelRating.addListener(MMSubmitModRatingListener.new(serviceMods, mod))
+	end
+	
+	/** \brief Dispose of widget. */
+	func void dispose()
+		if pModEventListener != null
+			pServiceMods.removeModsListener(pModEventListener)
+			pModEventListener = null
+		end
+		
+		pButtonSubscribe = null
+		pModelStatus = null
+		pModelRating = null
+		pLabProgressRemaining = null
+		pProgressStatus = null
+		pStyledDescription = null
+		
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Modification info. */
+	func MMModification getMod()
+		return pMod
+	end
+	
+	/**
+	 * \brief Restart info used for call to \ref Engine#restart(String).
+	 * 
+	 * Default is "modsRequiredRestart".
+	 */
+	func String getRestartInfo()
+		return pRestartInfo
+	end
+	
+	/**
+	 * \brief Set restart info used for call to \ref Engine#restart(String).
+	 */
+	func void setRestartInfo(String info)
+		if info == null
+			throw ENullPointer.new("info")
+		end
+		pRestartInfo = info
+	end
+	
+	
+	
+	/** \brief Update subscribed mods dictionary. */
+	func void updateSubscribedMods()
+		pSubscribedMods = pServiceMods.getSubscribedMods()
+	end
+	
+	/** \brief Update system mods dictionary. */
+	func void updateSystemMods()
+		pSystemMods = pServiceMods.getSystemMods()
+	end
+	
+	
+	
+	/**
+	 * \brief Subscribe/unsubscribe button clicked.
+	 * 
+	 * If user is not subscribed to modification subscribes to it. Otherwise unsubscribes.
+	 * If unsubscribing from a modification containing dragonscript scripts calls
+	 * promptRequiresRestart() to ask for restarting the application.
+	 */
+	func void onSubscribe()
+		if pSubscribedMods.has(pMod.info.id)
+			var bool hasScripts = pServiceMods.modHasMatchingFiles(\
+				pMod.info.id, "/scripts", true, Set.newWith("*.ds"))
+			
+			pServiceMods.unsubscribeMod(pMod.info.id, null)
+			
+			if hasScripts
+				promptRequiresRestart()
+			end
+			
+		else
+			pServiceMods.subscribeMod(pMod.info.id, null)
+		end
+	end
+	
+	/**
+	 * \brief Show unsubscribe requires restart input prompt and restart.
+	 * 
+	 * Default implementation shows input dialog informing user unsubscribed modification
+	 * contains dragonscript scripts and a restart is required. If the user chooses to
+	 * restart calls \ref Engine#restart(String) with the restart info set with
+	 * setRestartInfo(). If the user chooses to not restart does nothing.
+	 */
+	func void promptRequiresRestart()
+		WindowDialog.question(getWindow(), "@UI.Modifications",\
+			"@UI.ModManagementMod.Message.RestartRequired.", null,\
+			Array.newWith(WindowDialog.ButtonConfiguration.new("@UI.Restart", true),\
+				WindowDialog.ButtonConfiguration.new("Cancel", false)),\
+			WindowDialog.BlockResultListener.new(block Object result
+				Engine.restart(pRestartInfo)
+			end))
+	end
+	
+	
+	
+	/** \brief Gui theme changed. */
+	func void onGuiThemeChanged()
+		super.onGuiThemeChanged()
+		pStyledDescription.setStyledTextDefinition(getDescriptionStyledText())
+	end
+	
+	
+	
+	/** \brief Update subscribe button. */
+	protected func void updateButtonSubscribe()
+		pButtonSubscribe.runWhileBlockingLayout(block
+			if pSubscribedMods.has(pMod.info.id)
+				pButtonSubscribe.setDesignerSelector("Button.WindowModManagementMod.Unsubscribe")
+				pButtonSubscribe.setText("@UI.ModManagementMod.Unsubscribe")
+				pButtonSubscribe.setToolTip("@UI.ModManagementMod.Unsubscribe.ToolTip")
+				
+			else
+				pButtonSubscribe.setDesignerSelector("Button.WindowModManagementMod.Subscribe")
+				pButtonSubscribe.setText("@UI.ModManagementMod.Subscribe")
+				pButtonSubscribe.setToolTip("@UI.ModManagementMod.Subscribe.ToolTip")
+			end
+		end)
+		pButtonSubscribe.doLayoutIfBlocked()
+	end
+	
+	/**
+	 * \brief Update modification information.
+	 * 
+	 * If info is not null it is assigned to the stored modification object. Always calls
+	 * updateSubscribedMods() and updateButtonSubscribe().
+	 */
+	func void updateModInfo(String modId, ServiceModInfo info)
+		if not pMod.info.id.equals(modId)
+			return
+		end
+		
+		if info != null
+			pMod.info = info
+		end
+		
+		updateSubscribedMods()
+		updateButtonSubscribe()
+	end
+	
+	/** \brief Update modification progress. */
+	func void updateModProgress(String modId, ServiceModProgress progress)
+		if not pMod.info.id.equals(modId)
+			return
+		end
+		
+		var String textState = ""
+		
+		if progress != null
+			textState = "@UI.ModManagement.Enum.ModProgressState." + progress.state.name()
+			
+			pProgressStatus.getModel().setValue((progress.progress * 100 + 0.5) cast int)
+			pProgressStatus.setVisible(true)
+			
+			if progress.remainingTime != null
+				pLabProgressRemaining.setText(FormattingHelper.new().\
+					formatTimeDifference(progress.remainingTime.value()))
+				
+			else
+				pLabProgressRemaining.setText("-")
+			end
+			pLabProgressRemaining.setVisible(true)
+			
+		else
+			pProgressStatus.setVisible(false)
+			pLabProgressRemaining.setVisible(false)
+			
+			updateSystemMods()
+			var ServiceModStatus status = pSystemMods.getAt(modId, null) cast ServiceModStatus
+			if status != null
+				textState = "@UI.ModManagement.Enum.ModStatus." + status.status.name()
+			end
+		end
+		
+		pModelStatus.setText(textState)
+	end
+	
+	/** Create window content. */
+	protected func void createContent()
+		var FormattingHelper fh = FormattingHelper.new()
+		var TimeDate now = TimeDate.new()
+		var ProgressBar progressBar
+		var Viewport viewport
+		var int seconds
+		var String text
+		
+		setLayout(BorderLayout.new(10))
+		
+		// top: header
+		addWidget(Panel.new(FlowLayout.new(LayoutAxis.x), block Panel p
+			p.setDesignerSelector("Panel.MMPanelModInfo.Header")
+			
+			p.addWidget(Label.new(pMod.info.name, "Label.MMPanelModInfo.HeaderTitle"))
+		end), BorderLayout.Area.top)
+		
+		// content: description
+		viewport = Viewport.new(Panel.new(FlowLayout.new(LayoutAxis.y), block Panel p
+			p.setDesignerSelector("Panel.MMPanelModInfo.Description")
+			
+			p.addWidget(createGallery())
+			pStyledDescription = createStyledDocument(".Description")
+			p.addWidget(pStyledDescription)
+			
+			// TODO p.addWidget(Label.new("Comments"))
+			
+		end), FlowLayout.new(LayoutAxis.y))
+		addWidget(ScrollPanel.new(viewport, ScrollPanel.Policy.hidden,\
+			ScrollPanel.Policy.needed), BorderLayout.Area.content)
+		
+		// right side: details
+		viewport = Viewport.new(Panel.new(FlowLayout.new(LayoutAxis.y), block Panel p
+			p.setDesignerSelector("Panel.MMPanelModInfo.Details")
+			
+			pButtonSubscribe = createButton("@UI.ModManagementMod.Subscribe",\
+				"@UI.ModManagementMod.Subscribe.ToolTip", ".Subscribe",\
+				BlockActionListener.new(block ActionEvent e
+					onSubscribe()
+				end))
+			p.addWidget(pButtonSubscribe)
+			
+			p.addWidget(Panel.new(FlowLayout.new(LayoutAxis.y), block Panel p2
+				p2.setDesignerSelector("Panel.MMPanelModInfo.Group.DetailsDetails")
+				p2.setTitle("@UI.ModManagementMod.DetailsDetails")
+				
+				p2.addWidget(Panel.new(BorderLayout.new(), block Panel p3
+					p3.addWidget(Label.new(pMod.info.stats.ratingDisplayText,\
+						"Label.MMPanelModInfo.Details.RatingText"),\
+						BorderLayout.Area.left)
+					
+					p3.addWidget(Label.new("{:.0f}%".format(\
+						Array.newWith(pMod.info.stats.ratingAverage)),\
+						"Label.MMPanelModInfo.Details.Rating"),\
+						BorderLayout.Area.right)
+				end))
+				
+				progressBar = ProgressBar.new()
+				progressBar.getModel().setAll(0, 100, 10,\
+					(pMod.info.stats.ratingAverage * 100 + 0.5) cast int, 1)
+				progressBar.setDesignerSelector("ProgressBar.MMPanelModInfo.Rating")
+				p2.addWidget(progressBar)
+				
+				p2.addWidget(createRating())
+				
+				p2.addWidget(Panel.new(FormLayout.new(), block Panel p3
+					p3.setDesignerSelector("Panel.MMPanelModInfo.DetailsDetailsForm")
+					
+					p3.addWidget(Label.new("@UI.ModManagementMod.Subscribers",\
+						"Label.MMPanelModInfo.DetailsFormLabel.Subscribers"))
+					p3.addWidget(Label.new(fh.formatCount(pMod.info.stats.subscriberCount),\
+						"Label.MMPanelModInfo.DetailsFormValue.Subscribers"))
+					
+					p3.addWidget(Label.new("@UI.ModManagementMod.Downloads",\
+						"Label.MMPanelModInfo.DetailsFormLabel.Downloads"))
+					p3.addWidget(Label.new(fh.formatCount(pMod.info.stats.downloadCount),\
+						"Label.MMPanelModInfo.DetailsFormValue.Downloads"))
+					
+					/*
+					p3.addWidget(Label.new("@UI.ModManagementMod.DownloadsToday",\
+						"Label.MMPanelModInfo.DetailsFormLabel.DownloadsToday"))
+					p3.addWidget(Label.new(formatCount(pModEntry.info.stats.downloadCount),\
+						"Label.MMPanelModInfo.DetailsFormValue.DownloadsToday"))
+					*/
+					
+					p3.addWidget(Label.new("@UI.ModManagementMod.LastUpdated",\
+						"Label.MMPanelModInfo.DetailsFormLabel.DateUpdated"))
+					if pMod.info.dateUpdated != null
+						seconds = now.secondsSince(pMod.info.dateUpdated)
+						if seconds > 432000 // 5 days
+							text = pMod.info.dateUpdated.format("%x")
+							
+						else
+							text = fh.formatTimeDifference(seconds)
+						end
+						
+					else
+						text = "-"
+					end
+					p3.addWidget(Label.new(text,\
+						"Label.MMPanelModInfo.DetailsFormValue.DateUpdated"))
+					
+					p3.addWidget(Label.new("@UI.ModManagementMod.Released",\
+						"Label.MMPanelModInfo.DetailsFormLabel.DateReleased"))
+					if pMod.info.dateReleased != null
+						seconds = now.secondsSince(pMod.info.dateReleased)
+						if seconds > 432000 // 5 days
+							text = pMod.info.dateReleased.format("%x")
+							
+						else
+							text = fh.formatTimeDifference(seconds)
+						end
+						
+					else
+						text = "-"
+					end
+					p3.addWidget(Label.new(text,\
+						"Label.MMPanelModInfo.DetailsFormValue.DateReleased"))
+					
+					p3.addWidget(Label.new("@UI.ModManagementMod.Size",\
+						"Label.MMPanelModInfo.DetailsFormLabel.Size"))
+					p3.addWidget(Label.new(fh.formatSize(pMod.info.latestRelease.filesize),\
+						"Label.MMPanelModInfo.DetailsFormValue.Size"))
+					
+					p3.addWidget(Label.new("@UI.ModManagementMod.Version",\
+						"Label.MMPanelModInfo.DetailsFormLabel.Version"))
+					p3.addWidget(Label.new(pMod.info.version,\
+						"Label.MMPanelModInfo.DetailsFormValue.Version"))
+					
+					p3.addWidget(Label.new("@UI.ModManagementMod.Author",\
+						"Label.MMPanelModInfo.DetailsFormLabel.Author"))
+					p3.addWidget(createLabelUrlLink(pMod.info.submittedBy.displayName,\
+						pMod.info.submittedBy.profileUrl, ".DetailsFormValue.Link.Author"))
+					
+					p3.addWidget(Label.new("@UI.ModManagementMod.Profile",\
+						"Label.MMPanelModInfo.DetailsFormLabel.Profile"))
+					p3.addWidget(createLabelUrlLink("Open in Browser", pMod.info.profileUrl,\
+						".DetailsFormValue.Link.Profile"))
+					
+					p3.addWidget(Label.new("@UI.ModManagementMod.Id",\
+						"Label.MMPanelModInfo.DetailsFormLabel.Id"))
+					p3.addWidget(Label.new(pMod.info.id,\
+						"Label.MMPanelModInfo.DetailsFormValue.Id"))
+				end))
+			end))
+			
+			p.addWidget(Panel.new(GridLayout.new(2, 0), block Panel p2
+				p2.setDesignerSelector("Panel.MMPanelModInfo.Group.DetailsTags")
+				p2.setTitle("@UI.ModManagementMod.DetailsTags")
+				
+				pMod.info.tags.forEachValue(block String tag
+					p2.addWidget(Label.new(tag, "Label.MMPanelModInfo.DetailsFormValue.Tag"))
+				end)
+			end))
+			
+			p.addWidget(Panel.new(FlowLayout.new(LayoutAxis.y, 0, FlowLayout.Stretch.first), block Panel p2
+				p2.setDesignerSelector("Panel.MMPanelModInfo.Group.DetailsStatus")
+				p2.setTitle("@UI.ModManagementMod.DetailsStatus")
+				
+				p2.addWidget(Label.new(pModelStatus, "Label.MMPanelModInfo.Details.Status"))
+				
+				pProgressStatus = ProgressBar.new()
+				pProgressStatus.getModel().setAll(0, 100, 10, 0, 1)
+				pProgressStatus.setDesignerSelector("ProgressBar.MMPanelModInfo.Details.StatusProgress")
+				pProgressStatus.setVisible(false)
+				p2.addWidget(pProgressStatus)
+				
+				p2.addWidget(Panel.new(FormLayout.new(), block Panel p3
+					p3.addWidget(Label.new("@UI.ModManagementMod.RemainingTime",\
+						"Label.MMPanelModInfo.DetailsFormLabel.RemainingTime"))
+					
+					pLabProgressRemaining = Label.new("",\
+						"Label.MMPanelModInfo.DetailsFormValue.RemainingTime")
+					p3.addWidget(pLabProgressRemaining)
+				end))
+			end))
+		end))
+		viewport.setLayout(FlowLayout.new(LayoutAxis.y))
+		addWidget(ScrollPanel.new(viewport, ScrollPanel.Policy.hidden,\
+			ScrollPanel.Policy.needed), BorderLayout.Area.right)
+	end
+	
+	/** \brief Create button. */
+	protected func Button createButton(String text, String toolTip,\
+	String designerSelectorSuffix, ActionListener action)
+		var Button button = Button.new(text, action)
+		button.setDesignerSelector("Button.MMPanelModInfo" + designerSelectorSuffix)
+		button.setToolTip(toolTip)
+		return button
+	end
+	
+	/** \brief Create url link label. */
+	protected func Label createLabelUrlLink(String text, String url, String designerSelectorSuffix)
+		var Label label = Label.new(text, "Label.MMPanelModInfo" + designerSelectorSuffix)
+		label.addMouseListener(ClickedOpenLink.new(url))
+		label.setToolTip("@UI.ModManagementMod.Link.ToolTip")
+		return label
+	end
+	
+	/** \brief Create gallery widget. */
+	protected func Widget createGallery()
+		return MMImageGallery.new(pServiceMods, pMod)
+	end
+	
+	/** \brief Create rating widget. */
+	protected func Widget createRating()
+		if pServiceModFeatures.modRatingCount == 2
+			return RatingUpDown.new(pModelRating)
+			
+		elif pServiceModFeatures.modRatingCount == 3
+			return RatingUpDown.new(pModelRating)
+			
+		elif pServiceModFeatures.modRatingCount > 3
+			return Label.new("Rating type unsupported")
+			
+		else
+			return Label.new("Rating type unsupported")
+		end
+	end
+	
+	/** \brief Create styled document widget. */
+	protected func DisplayStyledText createStyledDocument(String designerSelectorSuffix)
+		var DisplayStyledText dst = DisplayStyledText.new()
+		dst.setDesignerSelector("StyledText.MMPanelModInfo" + designerSelectorSuffix)
+		dst.setPagedMode(false)
+		return dst
+	end
+	
+	/** \brief Modification description as styled text definition. */
+	protected func StyledTextDefinition getDescriptionStyledText()
+		var StyledTextDefinition std = StyledTextDefinition.new()
+		var GuiTheme guiTheme = getGuiTheme()
+		if guiTheme == null
+			return std
+		end
+		
+		var STDStyle baseStyle = STDStyle.new("default",\
+			(guiTheme.getWidgetDesigner("StyledTextStyle.MMPanelModInfo.Description.Base")\
+				cast DefaultLabelDesigner).getLabelDesignNormal())
+		std.addStyle(baseStyle)
+		std.setDefaultStyle(baseStyle)
+		
+		var STDStyle styleParagraph = STDStyle.new("paragraph",\
+			(guiTheme.getWidgetDesigner("StyledTextStyle.MMPanelModInfo.Description.Paragraph")\
+				cast DefaultLabelDesigner).getLabelDesignNormal())
+		std.addStyle(styleParagraph)
+		
+		var STDStyle styleHeader = STDStyle.new("header1",\
+			(guiTheme.getWidgetDesigner("StyledTextStyle.MMPanelModInfo.Description.Header1")\
+				cast DefaultLabelDesigner).getLabelDesignNormal())
+		std.addStyle(styleHeader)
+		
+		var Array paragraphs = pMod.info.descriptionText.split('\n')
+		var int i, paragraphCount = paragraphs.getCount()
+		var STDNText nodeText
+		var String paragraph
+		
+		for i = 0 to paragraphCount
+			paragraph = (paragraphs.getAt(i) cast String).trimBoth()
+			
+			nodeText = STDNText.new()
+			nodeText.setStyle("paragraph")
+			nodeText.addSpan(STDNTextSpan.new(paragraph))
+			std.addNode(nodeText)
+		end
+		
+		return std
+	end
+end

@@ -46,4 +46,144 @@
 			</border>
 		</border>
 	</designer>
+	
+	
+	
+	<!--
+	MMPanelModInfo.
+	
+	- Main widget panel: Panel.MMPanelModInfo.Main
+	
+	- Header panel: Panel.MMPanelModInfo.Header
+	- Title label: Label.MMPanelModInfo.HeaderTitle
+	
+	- Description panel: Panel.MMPanelModInfo.Description
+	- Styled document: StyledText.MMPanelModInfo.Description
+	
+	- Details panel: Panel.MMPanelModInfo.Details
+	- Subscribe button: Button.MMPanelModInfo.Subscribe
+	
+	- Rating panel: Panel.MMPanelModInfo.Group.DetailsDetails
+		- Rating text: Label.MMPanelModInfo.Details.RatingText
+		- Rating percentage: Label.MMPanelModInfo.Details.Rating
+		- Rating progress bar: ProgressBar.MMPanelModInfo.Rating
+	
+	- Details panel (form): Panel.MMPanelModInfo.DetailsDetailsForm
+		- Line label: Label.MMPanelModInfo.DetailsFormLabel
+		- Line value: Label.MMPanelModInfo.DetailsFormValue
+		- Line URL value: Label.MMPanelModInfo.DetailsFormValue.Link
+		- Line specific label/value can have these suffixes:
+			- .Subscribers
+			- .Downloads
+			- .DateUpdated
+			- .DateReleased
+			- .Size
+			- .Version
+			- .Author (URL value)
+			- .Profile (URL value)
+			- .Id
+	
+	- Tags panel: Panel.MMPanelModInfo.Group.DetailsTags
+		- Tag label. Label.MMPanelModInfo.DetailsFormValue.Tag
+	
+	- Status/progress panel: Panel.MMPanelModInfo.Group.DetailsStatus
+		- Status label: Label.MMPanelModInfo.Details.Status
+		- Status progress bar: ProgressBar.MMPanelModInfo.Details.StatusProgress
+		- Line specific label/value can have these suffixes:
+			- .RemainingTime
+	
+	For generating the styled document the following designer selectors are used:
+	- base style: StyledTextStyle.MMPanelModInfo.Description.Base
+	- paragraph: StyledTextStyle.MMPanelModInfo.Description.Paragraph
+	- header1: StyledTextStyle.MMPanelModInfo.Description.Header1
+	-->
+	
+	<designer name='Label.MMPanelModInfo.HeaderTitle' extendNamed='Label'>
+		<font parameter='normal.font' size='46'>/shareddata/guithemes/modern/fonts/sans46.defont</font>
+		<color parameter='normal.textColor' r='0.1' g='0.1' b='0.1'/>
+		<string parameter='normal.alignment'>left,middle</string>
+	</designer>
+	
+	<designer name='Button.MMPanelModInfo.Subscribe' extendNamed='Button'>
+	</designer>
+	
+	<designer name='Button.MMPanelModInfo.Unsubscribe' extendNamed='Button'>
+	</designer>
+	
+	<designer name='ProgressBar.MMPanelModInfo.Rating' extendNamed='ProgressBar'>
+		<boolean parameter='normal.showPercentage'>false</boolean>
+		<point parameter='normal.minimumSize' x='20' y='6'/>
+	</designer>
+	
+	<designer name='Panel.MMPanelModInfo.Group' extendNamed='Panel.Titled'>
+		<border parameter='normal.border' type='Combined'>
+			<border parameter='outer' type='Empty'>
+				<borderSize parameter='size' left='0' top='10' right='0' bottom='2'/>
+			</border>
+			<border parameter='inner' type='TitledEtched'>
+				<color parameter='colorHighlight' r='0.9' g='0.9' b='0.9'/>
+				<color parameter='colorShadow' r='0.7' g='0.7' b='0.7'/>
+				<color parameter='textColor' r='0.25' g='0.25' b='0.25'/>
+				<font parameter='font' size='15'>/shareddata/guithemes/modern/fonts/sans15.defont</font>
+			</border>
+		</border>
+		<borderSize parameter='normal.padding' left='5' top='5' right='5' bottom='5'/>
+	</designer>
+	
+	<designer name='Panel.MMPanelModInfo.DetailsDetailsForm' type='Widget'>
+		<borderSize parameter='normal.padding' left='5' top='10' right='5' bottom='5'/>
+	</designer>
+	
+	<designer name='Label.MMPanelModInfo.DetailsFormLabel' extendNamed='Label'>
+		<color parameter='normal.textColor' r='0.15' g='0.15' b='0.15'/>
+		<string parameter='normal.alignment'>left,middle</string>
+		<borderSize parameter='normal.padding' left='0' top='5' right='30' bottom='0'/>
+	</designer>
+	
+	<designer name='Label.MMPanelModInfo.DetailsFormValue' extendNamed='Label'>
+		<color parameter='normal.textColor' r='0' g='0' b='0'/>
+		<string parameter='normal.alignment'>right,middle</string>
+	</designer>
+	
+	<designer name='Label.MMPanelModInfo.DetailsFormValue.Link' extendNamed='Label.MMPanelModInfo.DetailsFormValue'>
+		<color parameter='normal.textColor' r='0' g='0' b='0.75'/>
+		<mousePointer parameter='normal.mousePointer' type='Image'>
+			<image parameter='image'>/shareddata/guithemes/modern/mousepointer/hover_link.webp</image>
+			<point parameter='offset' x='-8' y='0'/>
+		</mousePointer>
+	</designer>
+	
+	<designer name='Label.MMPanelModInfo.DetailsFormValue.Tag' extendNamed='Label'>
+		<canvasCreator parameter='normal.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='0.85' g='0.86' b='0.85'/>
+		</canvasCreator>
+		<border parameter='normal.border' type='Combined'>
+			<border parameter='outer' type='Empty'>
+				<borderSize parameter='size' left='2' top='1' right='2' bottom='1'/>
+			</border>
+			<border parameter='inner' type='Line'>
+				<color parameter='color' r='0.6' g='0.6' b='0.6'/>
+			</border>
+		</border>
+		<color parameter='normal.textColor' r='0' g='0.1' b='0'/>
+		<string parameter='normal.alignment'>center,middle</string>
+		<borderSize parameter='normal.padding' left='2' top='2' right='2' bottom='2'/>
+	</designer>
+	
+	
+	<designer name='StyledTextStyle.MMPanelModInfo.Description.Base' extendNamed='Label'>
+		<color parameter='normal.textColor' r='0' g='0' b='0'/>
+	</designer>
+	
+	<designer name='StyledTextStyle.MMPanelModInfo.Description.Paragraph'
+			extendNamed='StyledTextStyle.MMPanelModInfo.Description.Base'>
+		<borderSize parameter='normal.padding' left='0' top='15' right='0' bottom='0'/>
+	</designer>
+	
+	<designer name='StyledTextStyle.MMPanelModInfo.Description.Header1'
+			extendNamed='StyledTextStyle.MMPanelModInfo.Description.Base'>
+		<font parameter='normal.font' size='46'>/shareddata/guithemes/modern/fonts/sans46.defont</font>
+		<color parameter='normal.textColor' r='0' g='0' b='0'/>
+		<borderSize parameter='normal.padding' left='0' top='15' right='0' bottom='0'/>
+	</designer>
 </guiTheme>
