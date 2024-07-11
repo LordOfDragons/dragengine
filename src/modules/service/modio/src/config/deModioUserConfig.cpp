@@ -94,15 +94,68 @@ void deModioUserConfig::SetModDisabled( const decString &id, bool disabled ){
 	SetDisabledMods( mods );
 }
 
-void deModioUserConfig::WriteToFile(decBaseFileWriter &writer){
+
+
+Modio::Rating deModioUserConfig::GetUserRating( const decString &id ) const{
+	int rating = 0;
+	if( ! pUserRatings.GetAt( id, &rating ) ){
+		return Modio::Rating::Neutral;
+	}
+	
+	switch( rating ){
+	case 0:
+		return Modio::Rating::Negative;
+		
+	case 1:
+		return Modio::Rating::Positive;
+		
+	default:
+		return Modio::Rating::Neutral;
+	}
+}
+
+void deModioUserConfig::SetUserRating( const decString &id, Modio::Rating rating ){
+	if( GetUserRating( id ) == rating ){
+		return;
+	}
+	
+	switch( rating ){
+	case Modio::Rating::Negative:
+		pUserRatings.SetAt( id, 0 );
+		break;
+		
+	case Modio::Rating::Positive:
+		pUserRatings.SetAt( id, 1 );
+		break;
+		
+	case Modio::Rating::Neutral:
+	default:
+		pUserRatings.RemoveIfPresent( id );
+		break;
+	}
+	
+	pModule.UserConfigChanged();
+}
+
+
+
+void deModioUserConfig::WriteToFile( decBaseFileWriter &writer ){
 	writer.WriteByte( 0 );
 	writer.WriteString8( pId );
 	
-	const int count = pDisabledMods.GetCount();
-	int i;
+	int i, count = pDisabledMods.GetCount();
 	writer.WriteInt( count );
 	for( i=0; i<count; i++ ){
 		writer.WriteString8( pDisabledMods.GetAt( i ) );
+	}
+	
+	decStringList keys( pUserRatings.GetKeys() );
+	count = keys.GetCount();
+	writer.WriteInt( count );
+	for( i=0; i<count; i++ ){
+		const decString &key = keys.GetAt( i );
+		writer.WriteString8( key );
+		writer.WriteByte( ( uint8_t )pUserRatings.GetAt( key ) );
 	}
 }
 
@@ -112,12 +165,20 @@ void deModioUserConfig::WriteToFile(decBaseFileWriter &writer){
 //////////////////////
 
 void deModioUserConfig::pReadFromFileV0( decBaseFileReader &reader ){
-	int i, count;
+	int i, count, intValue;
+	decString key;
 	
 	pId = reader.ReadString8();
 	
 	count = reader.ReadInt();
 	for( i=0; i<count; i++ ){
 		pDisabledMods.Add( reader.ReadString8() );
+	}
+	
+	count = reader.ReadInt();
+	for( i=0; i<count; i++ ){
+		key = reader.ReadString8();
+		intValue = reader.ReadByte();
+		pUserRatings.SetAt( key, intValue );
 	}
 }

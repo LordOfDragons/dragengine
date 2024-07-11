@@ -29,6 +29,8 @@
 
 #include <dragengine/resources/service/deServiceObject.h>
 
+class deModioUserConfig;
+
 
 /**
  * Convert mod info.
@@ -45,13 +47,14 @@ public:
 	static deServiceObject::Ref ModServerSideStatus( Modio::ModServerSideStatus status );
 	
 	/** Convert mod info. */
-	static deServiceObject::Ref ModInfo( const Modio::ModInfo &info );
+	static deServiceObject::Ref ModInfo( const Modio::ModInfo &info, const deModioUserConfig &config );
 	
 	/** Convert mod stats. */
 	static deServiceObject::Ref ModStats( const Modio::ModStats &stats );
 	
 	/** Convert mod stats. */
-	static deServiceObject::Ref ModCollectionEntry( const Modio::ModCollectionEntry &status );
+	static deServiceObject::Ref ModCollectionEntry(
+		const Modio::ModCollectionEntry &status, const deModioUserConfig &config );
 	
 	/** Convert ModServerSideStatus. */
 	static deServiceObject::Ref ModState( Modio::ModState state );

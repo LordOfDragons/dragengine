@@ -514,10 +514,13 @@ void deModioService::SubmitModRating( const decUniqueID &id, const deServiceObje
 	}
 	
 	const deServiceObject::Ref data( deServiceObject::Ref::New( new deServiceObject ) );
-	data->SetChildAt( "modId", deMCCommon::ID( modId ) );
+	const decString strModId( deMCCommon::IDToString( modId ) );
+	data->SetChildAt( "modId", deServiceObject::NewString( strModId ) );
 	
 	pModule.LogInfoFormat( "deModioService.SubmitModRating: id=%" PRIi64 " rating=%d",
 		( int64_t )modId, ( int )rating );
+	
+	pModule.GetUserConfig( pUserId ).SetUserRating( strModId, rating );
 	
 	NewPendingRequest( id, "submitModRating", data );
 	AddRequiresEventHandlingCount();
@@ -531,9 +534,12 @@ void deModioService::RevokeModRating( const decUniqueID &id, const deServiceObje
 	const Modio::ModID modId( deMCCommon::ID( *request.GetChildAt( "modId" ) ) );
 	
 	const deServiceObject::Ref data( deServiceObject::Ref::New( new deServiceObject ) );
-	data->SetChildAt( "modId", deMCCommon::ID( modId ) );
+	const decString strModId( deMCCommon::IDToString( modId ) );
+	data->SetChildAt( "modId", deServiceObject::NewString( strModId ) );
 	
 	pModule.LogInfoFormat( "deModioService.RevokeModRating: id=%" PRIi64, ( int64_t )modId );
+	
+	pModule.GetUserConfig( pUserId ).SetUserRating( strModId, Modio::Rating::Neutral );
 	
 	NewPendingRequest( id, "revokeModRating", data );
 	AddRequiresEventHandlingCount();
@@ -571,12 +577,13 @@ deServiceObject::Ref deModioService::QueryCurrentModUpdate(){
 deServiceObject::Ref deModioService::QueryUserSubscriptions(){
 	const std::map<Modio::ModID, Modio::ModCollectionEntry> result( Modio::QueryUserSubscriptions() );
 	std::map<Modio::ModID, Modio::ModCollectionEntry>::const_iterator iter;
+	const deModioUserConfig &config = pModule.GetUserConfig( pUserId );
 	
 	const deServiceObject::Ref so( deServiceObject::NewList() );
 	for( iter = result.cbegin(); iter != result.cend(); iter++ ){
 		const Modio::ModCollectionEntry &mod = iter->second;
-		const deServiceObject::Ref soMod( deMCModInfo::ModCollectionEntry( mod ) );
-		soMod->SetBoolChildAt( "disabled", pModule.GetUserConfig( pUserId ).GetModDisabled(
+		const deServiceObject::Ref soMod( deMCModInfo::ModCollectionEntry( mod, config ) );
+		soMod->SetBoolChildAt( "disabled", config.GetModDisabled(
 			deMCCommon::IDToString( mod.GetID() ) ) );
 		so->AddChild( soMod );
 	}
@@ -586,12 +593,13 @@ deServiceObject::Ref deModioService::QueryUserSubscriptions(){
 deServiceObject::Ref deModioService::QuerySystemInstallations(){
 	const std::map<Modio::ModID, Modio::ModCollectionEntry> result( Modio::QuerySystemInstallations() );
 	std::map<Modio::ModID, Modio::ModCollectionEntry>::const_iterator iter;
+	const deModioUserConfig &config = pModule.GetUserConfig( pUserId );
 	
 	const deServiceObject::Ref so( deServiceObject::NewList() );
 	for( iter = result.cbegin(); iter != result.cend(); iter++ ){
 		const Modio::ModCollectionEntry &mod = iter->second;
-		const deServiceObject::Ref soMod( deMCModInfo::ModCollectionEntry( mod ) );
-		soMod->SetBoolChildAt( "disabled", pModule.GetUserConfig( pUserId ).GetModDisabled(
+		const deServiceObject::Ref soMod( deMCModInfo::ModCollectionEntry( mod, config ) );
+		soMod->SetBoolChildAt( "disabled", config.GetModDisabled(
 			deMCCommon::IDToString( mod.GetID() ) ) );
 		so->AddChild( soMod );
 	}
@@ -847,10 +855,11 @@ Modio::ErrorCode ec, Modio::Optional<Modio::ModInfoList> results ){
 	
 	try{
 		const deServiceObject::Ref outMods( deServiceObject::NewList() );
+		const deModioUserConfig &config = pModule.GetUserConfig( pUserId );
 		
 		if( results.has_value() ){
 			for( const Modio::ModInfo &mod : *results ){
-				outMods->AddChild( deMCModInfo::ModInfo( mod ) );
+				outMods->AddChild( deMCModInfo::ModInfo( mod, config ) );
 			}
 		}
 		
@@ -1001,7 +1010,8 @@ Modio::Optional<Modio::ModInfo> info ){
 			DETHROW_INFO( deeInvalidParam, "Mod info not received from server" );
 		}
 		
-		pr->data->SetChildAt( "info", deMCModInfo::ModInfo( *info ) );
+		const deModioUserConfig &config = pModule.GetUserConfig( pUserId );
+		pr->data->SetChildAt( "info", deMCModInfo::ModInfo( *info, config ) );
 		
 		pModule.GetGameEngine()->GetServiceManager()->QueueRequestResponse(
 			pService, pr->id, pr->data, true );

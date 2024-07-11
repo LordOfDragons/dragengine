@@ -793,7 +793,6 @@ class Widget
 		onDesignerChanged()
 		
 		design()
-		layoutParent()
 	end
 	
 	/** \brief Get designer from gui theme. */

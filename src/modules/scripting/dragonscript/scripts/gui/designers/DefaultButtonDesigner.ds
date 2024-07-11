@@ -34,24 +34,24 @@ pin Dragengine.Scenery
  * \brief Default implementation of WidgetDesigner for Button.
  */
 class DefaultButtonDesigner extends DefaultWidgetDesigner
-	private var StateDesign pDesignPressed
+	var StateDesign pDesignPressed
 	
 	
 	
 	/** \brief Create new button designer. */
-	public func new()
+	func new()
 		pDesignPressed = StateDesign.new()
 	end
 	
 	/** \brief Create copy of widget designer. */
-	public func new(DefaultButtonDesigner designer) super(designer)
+	func new(DefaultButtonDesigner designer) super(designer)
 		pDesignPressed = designer.pDesignPressed.copyDesign()
 	end
 	
 	
 	
 	/** \brief Design for pressed state. */
-	public func StateDesign getDesignPressed()
+	func StateDesign getDesignPressed()
 		return pDesignPressed
 	end
 	
@@ -72,9 +72,10 @@ class DefaultButtonDesigner extends DefaultWidgetDesigner
 	 * 
 	 * Additional supported states:
 	 * | name | value |
+	 * | --- | --- |
 	 * | pressed | Widget is in pressed state |
 	 */
-	public func void setParameter(String name, Object value)
+	func void setParameter(String name, Object value)
 		super.setParameter(name, value)
 	end
 	
@@ -89,7 +90,7 @@ class DefaultButtonDesigner extends DefaultWidgetDesigner
 	end
 	
 	/** \brief Create copy of designer. */
-	public func WidgetDesigner copyDesigner()
+	func WidgetDesigner copyDesigner()
 		return DefaultButtonDesigner.new(this)
 	end
 	

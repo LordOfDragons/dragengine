@@ -26,6 +26,7 @@
 #include "deMCUser.h"
 #include "deMCDetail.h"
 #include "deMCCommon.h"
+#include "../config/deModioUserConfig.h"
 
 
 // Class deMCModInfo
@@ -59,10 +60,10 @@ deServiceObject::Ref deMCModInfo::ModServerSideStatus( Modio::ModServerSideStatu
 	}
 }
 
-deServiceObject::Ref deMCModInfo::ModInfo( const Modio::ModInfo &info ){
+deServiceObject::Ref deMCModInfo::ModInfo( const Modio::ModInfo &info, const deModioUserConfig &config ){
 	const deServiceObject::Ref so( deServiceObject::Ref::New( new deServiceObject ) );
-	
-	so->SetChildAt( "modId", deMCCommon::ID( info.ModId ) );
+	const decString strModId( deMCCommon::IDToString( info.ModId ) );
+	so->SetChildAt( "modId", deServiceObject::NewString( strModId ) );
 	
 	if( ! info.ProfileName.empty() ){
 		so->SetStringChildAt( "profileName", info.ProfileName.c_str() );
@@ -136,10 +137,19 @@ deServiceObject::Ref deMCModInfo::ModInfo( const Modio::ModInfo &info ){
 	so->SetIntChildAt( "price", ( int )info.Price );
 	so->SetBoolChildAt( "dependencies", info.Dependencies );
 	
-	// TODO: how to get this value?
-	//if( user has rated mod ){
-	//	so->SetIntChildAt( "userRating", 0 );
-	//}
+	const Modio::Rating rating = config.GetUserRating( strModId );
+	switch( rating ){
+	case Modio::Rating::Positive:
+		so->SetIntChildAt( "userRating", 1 );
+		break;
+		
+	case Modio::Rating::Negative:
+		so->SetIntChildAt( "userRating", 0 );
+		break;
+		
+	default:
+		break;
+	}
 	
 	return so;
 }
@@ -161,12 +171,13 @@ deServiceObject::Ref deMCModInfo::ModStats( const Modio::ModStats &stats ){
 	return so;
 }
 
-deServiceObject::Ref deMCModInfo::ModCollectionEntry( const Modio::ModCollectionEntry &status ){
+deServiceObject::Ref deMCModInfo::ModCollectionEntry(
+const Modio::ModCollectionEntry &status, const deModioUserConfig &config ){
 	const deServiceObject::Ref so( deServiceObject::Ref::New( new deServiceObject ) );
 	
 	so->SetChildAt( "id", deMCCommon::ID( status.GetID() ) );
 	so->SetChildAt( "state", ModState( status.GetModState() ) );
-	so->SetChildAt( "info", ModInfo( status.GetModProfile() ) );
+	so->SetChildAt( "info", ModInfo( status.GetModProfile(), config ) );
 	if( status.GetSizeOnDisk().has_value() ){
 		so->SetFloatChildAt( "sizeOnDisk", ( float )*status.GetSizeOnDisk() );
 	}

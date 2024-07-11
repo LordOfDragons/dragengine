@@ -349,6 +349,24 @@ class Button extends Container
 		end
 	end
 	
+	/** \brief Gui theme changed. */
+	func void onGuiThemeChanged()
+		runWhileBlockingLayout(block
+			super.onGuiThemeChanged()
+			
+			// if the image widget has a designer assigned changing the image then the setVisible
+			// does not work in updateWidgetImage() if the button has not been added to a container
+			// and thus no image designer can be resolved. while adding the button to a container
+			// the gui theme is changed and the image designer can be resolved and applied. for
+			// this reason the visibility has to evaluated here too
+			if pWidgetImage != null
+				pWidgetImage.setVisible(pWidgetImage.getImage() != null)
+			end
+		end)
+		
+		doLayoutIfBlocked()
+	end
+	
 	
 	
 	/** \brief Label or \em null if not used. */
@@ -400,26 +418,29 @@ class Button extends Container
 		end
 		
 		var bool enabled = getEnabled()
-		
-		pWidgetImage.setEnabled(enabled)
-		
-		if enabled
-			if isMouseInside()
-				if pHoverImage == null
-					pWidgetImage.setImage(pImage)
+		pWidgetImage.runWhileBlockingLayoutParent(block
+			pWidgetImage.setEnabled(enabled)
+			
+			if enabled
+				if isMouseInside()
+					if pHoverImage == null
+						pWidgetImage.setImage(pImage)
+						
+					else
+						pWidgetImage.setImage(pHoverImage)
+					end
 					
 				else
-					pWidgetImage.setImage(pHoverImage)
+					pWidgetImage.setImage(pImage)
 				end
 				
 			else
 				pWidgetImage.setImage(pImage)
 			end
 			
-		else
-			pWidgetImage.setImage(pImage)
-		end
-		
-		pWidgetImage.setVisible(pWidgetImage.getImage() != null)
+			pWidgetImage.design()
+			pWidgetImage.setVisible(pWidgetImage.getImage() != null)
+		end)
+		pWidgetImage.layoutParentIfBlocked()
 	end
 end

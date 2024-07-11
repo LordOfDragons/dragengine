@@ -25,8 +25,11 @@
 #ifndef _DEMODIOUSERCONFIG_H_
 #define _DEMODIOUSERCONFIG_H_
 
+#include "../modio.h"
+
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decStringSet.h>
+#include <dragengine/common/collection/decIntDictionary.h>
 
 class deModio;
 class decBaseFileReader;
@@ -45,7 +48,7 @@ private:
 	deModio &pModule;
 	decString pId;
 	decStringSet pDisabledMods;
-	
+	decIntDictionary pUserRatings;
 	
 	
 public:
@@ -70,6 +73,8 @@ public:
 	/** User id. */
 	inline const decString &GetId() const{ return pId; }
 	
+	
+	
 	/** Disabled modifications. */
 	inline const decStringSet &GetDisabledMods() const{ return pDisabledMods; }
 	
@@ -84,6 +89,19 @@ public:
 	
 	/** Set mod disabled. */
 	void SetModDisabled( const decString &id, bool disabled );
+	
+	
+	
+	/** User ratings. */
+	inline const decIntDictionary &GetUserRatings() const{ return pUserRatings; }
+	
+	/** User rating for mod. */
+	Modio::Rating GetUserRating( const decString &id ) const;
+	
+	/** Set user rating for mod. */
+	void SetUserRating( const decString &id, Modio::Rating rating );
+	
+	
 	
 	/** Write config to file. */
 	void WriteToFile( decBaseFileWriter &writer );

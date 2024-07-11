@@ -233,7 +233,7 @@ void deModio::SetParameterValue( const char *name, const char *value ){
 // Private Functions
 //////////////////////
 
-#define DEM_PATH_MODS "/config/mods"
+#define DEM_PATH_MODS "/config/config"
 
 void deModio::pLoadConfig(){
 	LogInfo( "Load configuration");
