@@ -476,6 +476,24 @@
 		<mousePointer parameter='normal.mousePointer' type='Default'/>
 	</designer>
 	
+	<!-- RatingUpDown -->
+	<designer name='Image.Button.RatingUpDown.Up' type='Image'>
+		<colorMatrix parameter='normal.imageColorTransform'>
+			<scale r='0' g='0.5' b='0'/>
+		</colorMatrix>
+		<borderSize parameter='normal.padding' left='0' top='0' right='5' bottom='0'/>
+		<image parameter='normal.image'>/shareddata/guithemes/modern/icons/16/rate_up.webp</image>
+	</designer>
+	
+	<designer name='Image.Button.RatingUpDown.Down' type='Image'>
+		<colorMatrix parameter='normal.imageColorTransform'>
+			<scale r='0.5' g='0' b='0'/>
+		</colorMatrix>
+		<borderSize parameter='normal.padding' left='0' top='0' right='5' bottom='0'/>
+		<image parameter='normal.image'>/shareddata/guithemes/modern/icons/16/rate_down.webp</image>
+	</designer>
+	
+	
 	
 	<import>../shared/virtualkeyboard.guitheme.xml</import>
 	<import>../shared/console.guitheme.xml</import>
