@@ -122,13 +122,14 @@ class DefaultImageDesigner extends DefaultWidgetDesigner
 			
 			if pImageColorTransform != null
 				idesign.pImageColorTransform = pImageColorTransform
+			end
+			if pImage != null
 				idesign.pImage = pImage
 			end
 		end
 		
 		/**
 		 * \brief Apply state design to widget.
-		 * \deprected Use \ref #apply(Widget,DefaultImageDesigner)
 		 * 
 		 * This is typically called on a merged design to find the first defined parameters.
 		 */
@@ -144,35 +145,12 @@ class DefaultImageDesigner extends DefaultWidgetDesigner
 					displayImage.setImageColorTransform(ColorMatrix.new())
 				end
 			end
-		end
-		
-		/**
-		 * \brief Apply state design to widget.
-		 * 
-		 * This is typically called on a merged design to find the first defined parameters.
-		 */
-		func void apply(Widget widget, DefaultImageDesigner designer)
-			super.apply(widget)
 			
-			var DisplayImage displayImage = widget cast DisplayImage
-			if not displayImage.getProtectImageColorTransform()
-				if pImageColorTransform != null
-					displayImage.setImageColorTransform(pImageColorTransform)
-					
-				else
-					displayImage.setImageColorTransform(ColorMatrix.new())
-				end
-			end
-			
-			if designer.getReplaceImage()
+			if pImage != null
 				displayImage.setImage(pImage)
 			end
 		end
 	end
-	
-	
-	
-	var bool pReplaceImage
 	
 	
 	
@@ -187,7 +165,6 @@ class DefaultImageDesigner extends DefaultWidgetDesigner
 	
 	/** \brief Create copy of widget designer designer. */
 	func new(DefaultImageDesigner designer) super(designer)
-		pReplaceImage = designer.pReplaceImage
 	end
 	
 	
@@ -220,24 +197,6 @@ class DefaultImageDesigner extends DefaultWidgetDesigner
 	
 	
 	/**
-	 * \brief Replace image in widget.
-	 * \version 1.23
-	 */
-	func bool getReplaceImage()
-		return pReplaceImage
-	end
-	
-	/**
-	 * \brief Set replace image in widget.
-	 * \version 1.23
-	 */
-	func void setReplaceImage(bool ReplaceImage)
-		pReplaceImage = ReplaceImage
-	end
-	
-	
-	
-	/**
 	 * \brief Set parameter.
 	 * 
 	 * See DefaultWidgetDesigner.setParameter for supported parameters.
@@ -245,26 +204,15 @@ class DefaultImageDesigner extends DefaultWidgetDesigner
 	 * Additional supported parameters:
 	 * | name | value | Setter |
 	 * | --- | --- | --- |
-	 * | replaceImage | bool | setReplaceImage |
 	 * | {state}.imageColorTransform | ColorMatrix | getDesign{state}.setImageColorTransform |
 	 * | {state}.image | Image | getDesign{state}.setImage |
 	 */
 	func void setParameter(String name, Object value)
-		if name.equals("replaceImage")
-			setReplaceImage(value cast bool)
-			
-		else
-			super.setParameter(name, value)
-		end
+		super.setParameter(name, value)
 	end
 	
 	/** \brief Create copy of designer. */
 	func WidgetDesigner copyDesigner()
 		return DefaultImageDesigner.new(this)
-	end
-	
-	/** \brief Design widget. */
-	public func void designWidget(Widget widget)
-		(widgetStateFindDesign(widget) cast ImageStateDesign).apply(widget, this)
 	end
 end

@@ -109,9 +109,8 @@ class DisplayImage extends Widget
 			// image is null. if size is equal the minimum size is also equal and layouting
 			// results in the same
 			layoutParent()
+			updateCanvasImage()
 		end
-		
-		updateCanvasImage()
 	end
 	
 	/** \brief Repeat mode. */
