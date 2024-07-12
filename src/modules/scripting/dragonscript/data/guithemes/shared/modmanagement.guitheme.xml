@@ -306,4 +306,54 @@
 		<string parameter='normal.alignment'>center,middle</string>
 	</designer>
 	
+	
+	
+	<!--
+	MMPanelModManagement.
+	
+	Designer selectors:
+	- Main panel: Panel.MMPanelModManagement.Main
+	
+	- Top panel:
+	  - Category buttons:
+	   - Button.MMPanelModManagement.ViewCategory.BrowseMods
+	   - Button.MMPanelModManagement.ViewCategory.SubscribedMods
+	   - Button.MMPanelModManagement.ViewCategory.ModsTransfer
+	
+	- Mods list box: ListBox.MMPanelModManagement.Mods
+	
+	- Side panel:
+	  - Search button: Button.MMPanelModManagement.Search
+	
+	  - Panel search name: Panel.MMPanelModManagement.Group.Search.Name
+	    - Name text field: TextField.MMPanelModManagement.Search.Name
+	
+	  - Panel sort by: Panel.MMPanelModManagement.Group.Search.SortBy
+	    - Name text field: TextField.MMPanelModManagement.Search.SortBy
+	
+	  - Tag category panels:
+	    - Single type: Panel.MMPanelModManagement.Group.Search.TagCategory.Single
+	      - Combo box: ComboBox.MMPanelModManagement.Tags
+	    - Multiple type: Panel.MMPanelModManagement.Group.Search.TagCategory.Multiple
+	       - Check box: CheckBox.MMPanelModManagement.Tags
+	
+	- Bottom panel:
+	  - Search more button: Button.MMPanelModManagement.MoreResults
+	-->
+	
+	<designer name='Panel.MMPanelModManagement.Group' extendNamed='Panel.Titled'>
+		<border parameter='normal.border' type='Combined'>
+			<border parameter='outer' type='Empty'>
+				<borderSize parameter='size' left='0' top='10' right='0' bottom='2'/>
+			</border>
+			<border parameter='inner' type='TitledEtched'>
+				<color parameter='colorHighlight' r='0.9' g='0.9' b='0.9'/>
+				<color parameter='colorShadow' r='0.7' g='0.7' b='0.7'/>
+				<color parameter='textColor' r='0.25' g='0.25' b='0.25'/>
+				<font parameter='font' size='15'>/shareddata/guithemes/modern/fonts/sans15.defont</font>
+			</border>
+		</border>
+		<borderSize parameter='normal.padding' left='5' top='5' right='5' bottom='5'/>
+	</designer>
+	
 </guiTheme>

@@ -1,0 +1,870 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Gui.ModManagement
+pin Dragengine.Services.Mods
+pin Dragengine.Utils
+pin Dragengine.Gui.Layouts
+pin Dragengine.Gui.Events
+
+
+/**
+ * \brief Panel managing modifications.
+ * \version 1.23
+ * 
+ * Designer selectors:
+ * - Main panel: Panel.MMPanelModManagement.Main
+ * 
+ * - Top panel:
+ *   - Category buttons:
+ *     - Button.MMPanelModManagement.ViewCategory.BrowseMods
+ *     - Button.MMPanelModManagement.ViewCategory.SubscribedMods
+ *     - Button.MMPanelModManagement.ViewCategory.ModsTransfer
+ * 
+ * - Mods list box: ListBox.MMPanelModManagement.Mods
+ * 
+ * - Side panel:
+ *   - Search button: Button.MMPanelModManagement.Search
+ * 
+ *   - Panel search name: Panel.MMPanelModManagement.Group.Search.Name
+ *     - Name text field: TextField.MMPanelModManagement.Search.Name
+ * 
+ *   - Panel sort by: Panel.MMPanelModManagement.Group.Search.SortBy
+ *     - Name text field: TextField.MMPanelModManagement.Search.SortBy
+ * 
+ *   - Tag category panels:
+ *     - Single type: Panel.MMPanelModManagement.Group.Search.TagCategory.Single
+ *       - Combo box: ComboBox.MMPanelModManagement.Tags
+ *     - Multiple type: Panel.MMPanelModManagement.Group.Search.TagCategory.Multiple
+ *       - Check box: CheckBox.MMPanelModManagement.Tags
+ * 
+ * - Bottom panel:
+ *   - Search more button: Button.MMPanelModManagement.MoreResults
+ */
+class MMPanelModManagement extends Panel
+	/** \brief View category. */
+	enum ViewCategory
+		/** \brief Browse mods. */
+		browseMods
+		
+		/** \brief Subscribed mods. */
+		subscribedMods
+		
+		/** \brief Mod transfer. */
+		transfer
+	end
+	
+	/** \brief View category changed listener. */
+	class ViewCategoryChanged extends DefaultListModelListener
+		var MMPanelModManagement pPanel
+		
+		func new(MMPanelModManagement panel)
+			pPanel = panel
+		end
+		
+		func void selectionChanged(ListModel listModel)
+			pPanel.onViewCategoryChanged()
+		end
+	end
+	
+	/** \brief Mod management event listener. */
+	class ModEventListener extends DefaultServiceModsListener
+		var MMPanelModManagement pPanel
+		
+		func new(MMPanelModManagement panel)
+			pPanel = panel
+		end
+		
+		func void onGetTags(ServiceMods service, Array categories, Exception exception)
+			if exception == null
+				pPanel.updateSearchTagCategories(categories)
+			end
+		end
+		
+		func void onGetModInfo(ServiceMods service, String modId, ServiceModInfo info, Exception exception)
+			if info != null
+				pPanel.updateModInfo(modId, info)
+			end
+		end
+		
+		func void onSubscribeMod(ServiceMods service, String modId, Exception exception)
+			if exception == null
+				pPanel.updateModInfo(modId, null)
+			end
+		end
+		
+		func void onUnsubscribeMod(ServiceMods service, String modId, Exception exception)
+			if exception == null
+				pPanel.updateModInfo(modId, null)
+			end
+		end
+		
+		func void onModManagement(ServiceMods service, ServiceMods.ManagementEvent event,\
+		String modId, ServiceModProgress progress, Exception exception)
+			if progress != null
+				pPanel.updateModProgress(modId, progress)
+			end
+		end
+	end
+	
+	/** \brief Search mods listener. */
+	class SearchModsListener extends DefaultServiceModsListener
+		var MMPanelModManagement pPanel
+		
+		func new(MMPanelModManagement panel)
+			pPanel = panel
+		end
+		
+		func void onListMods(ServiceMods service, Array mods, Exception exception)
+			pPanel.onSearchResult(this, mods, exception)
+		end
+	end
+	
+	/** \brief Show mod details when clicking on a list item. */
+	class ClickedModDetails extends ClickedActionListener
+		var MMPanelModManagement pPanel
+		var ListBox pListBox
+		
+		func new(MMPanelModManagement panel, ListBox listBox)
+			pPanel = panel
+			pListBox = listBox
+		end
+		
+		func void onAction()
+			var int index = pListBox.getElementAt(pListBox.getLocalMouseLocation())
+			if index != -1
+				pPanel.showModInfo(pListBox.getModel().getAt(index) cast MMModification)
+			end
+		end
+	end
+	
+	/** \brief Start searching if selection changed. */
+	class SearchSelectionChanged extends DefaultListModelListener
+		var MMPanelModManagement pPanel
+		
+		func new(MMPanelModManagement panel)
+			pPanel = panel
+		end
+		
+		func void selectionChanged(ListModel listModel)
+			pPanel.searchMods()
+		end
+	end
+	
+	/** \brief Start searching if toggle changed. */
+	class SearchToggleChanged extends DefaultToggleModelListener
+		var MMPanelModManagement pPanel
+		
+		func new(MMPanelModManagement panel)
+			pPanel = panel
+		end
+		
+		func void toggledChanged(ToggleModel model)
+			pPanel.searchMods()
+		end
+	end
+	
+	/** \brief Interface for search tag categories. */
+	interface SearchTagCategory
+		/** \brief Create and add widgets to container. */
+		func void createWidgets(Panel container)
+		
+		/** \brief Update filter with current category tag state. */
+		func void updateFilter(ServiceModFilter filter)
+		
+		/** \brief Reset tag category to initial state. */
+		func void reset()
+	end
+	
+	/** \brief Single selection search category using a ComboBox. */
+	class SearchCategoryComboBox implements SearchTagCategory
+		var MMPanelModManagement pPanel
+		var ServiceModTagCategory pCategory
+		var DefaultListModel pModel
+		
+		func new(MMPanelModManagement panel, ServiceModTagCategory category)
+			pPanel = panel
+			pCategory = category
+			
+			var String lang = TranslationManager.get().getActive().getIdentifier()
+			var String text
+			
+			pModel = DefaultListModel.new()
+			pModel.add(panel.translateEntry("UI.ModManagement.Value.NoTagSelected").toUTF8())
+			category.tags.forEach(block ServiceModTagCategory.Tag each
+				text = each.name
+				if each.nameTranslations != null
+					text = each.nameTranslations.getAt(lang, text) cast String
+				end
+				pModel.add(text)
+			end)
+			
+			pModel.addListener(SearchSelectionChanged.new(panel))
+		end
+		
+		func void createWidgets(Panel container)
+			var String lang = TranslationManager.get().getActive().getIdentifier()
+			var String text = pCategory.name
+			if pCategory.nameTranslations != null
+				text = pCategory.nameTranslations.getAt(lang, text) cast String
+			end
+			
+			container.addWidget(Panel.new(FlowLayout.new(LayoutAxis.y), block Panel p
+				p.setDesignerSelector("Panel.MMPanelModManagement.Group.Search.TagCategory.Single")
+				p.setTitle(text + ":")
+				
+				var ComboBox comboBox = pPanel.createComboBox(pModel, DefaultListElementRenderer.new(), ".Tags")
+				comboBox.setToolTip("@UI.ModManagement.Tags.ToolTip")
+				p.addWidget(comboBox)
+			end))
+		end
+		
+		func void updateFilter(ServiceModFilter filter)
+			var int selection = pModel.getSelected()
+			if selection > 0
+				filter.withTags.add((pCategory.tags.getAt(DEMath.max(selection - 1, 0)) cast ServiceModTagCategory.Tag).id)
+			end
+		end
+		
+		func void reset()
+			pModel.setSelected(0)
+		end
+	end
+	
+	/** \brief Multiple selection search category using a CheckBox. */
+	class SearchCategoryCheckBox implements SearchTagCategory
+		var MMPanelModManagement pPanel
+		var ServiceModTagCategory pCategory
+		var Array pModels
+		
+		func new(MMPanelModManagement panel, ServiceModTagCategory category)
+			pPanel = panel
+			pCategory = category
+			
+			var DefaultToggleModel model
+			pModels = Array.new(category.tags.map(block ServiceModTagCategory.Tag each
+				model = DefaultToggleModel.new()
+				model.addListener(SearchToggleChanged.new(panel))
+				return model
+			end))
+		end
+		
+		func void createWidgets(Panel container)
+			var String lang = TranslationManager.get().getActive().getIdentifier()
+			var String text = pCategory.name
+			if pCategory.nameTranslations != null
+				text = pCategory.nameTranslations.getAt(lang, text) cast String
+			end
+			
+			var CheckBox checkBox
+			
+			container.addWidget(Panel.new(FlowLayout.new(LayoutAxis.y), block Panel p
+				p.setDesignerSelector("Panel.MMPanelModManagement.Group.Search.TagCategory.Multiple")
+				p.setTitle(text + ":")
+				
+				pCategory.tags.forEach(block int index, ServiceModTagCategory.Tag each
+					text = each.name
+					if each.nameTranslations != null
+						text = each.nameTranslations.getAt(lang, text) cast String
+					end
+					
+					checkBox = pPanel.createCheckBox(text, pModels.getAt(index) cast ToggleModel, ".Tags")
+					checkBox.setToolTip("@UI.ModManagement.Tags.ToolTip")
+					p.addWidget(checkBox)
+				end)
+			end))
+		end
+		
+		func void updateFilter(ServiceModFilter filter)
+			pCategory.tags.forEach(block int index, ServiceModTagCategory.Tag each
+				if (pModels.getAt(index) cast ToggleModel).getToggled()
+					filter.withTags.add(each.id)
+				end
+			end)
+		end
+		
+		func void reset()
+			pModels.forEach(block ToggleModel each
+				each.setToggled(false)
+			end)
+		end
+	end
+	
+	
+	
+	var ServiceMods pServiceMods
+	var ServiceModsFeatures pServiceModFeatures
+	var DefaultListModel pModelViewCategory, pModelMods, pModelSortBy
+	var ListBox pListMods
+	var Button pButtonSearchMore
+	var DefaultTextModel pModelSearchName
+	var Panel pPanelTags, pPanelSearchName, pPanelSearchSort, pPanelBottomLine
+	var SearchModsListener pSearchModsListener
+	var Dictionary pSubscribedMods, pOrgSubscribedMods, pSystemMods
+	var ServiceModFilter pSearchFilter
+	var CodecPropertyString pCodecPropertyString
+	var Array pSearchTagCategories
+	var bool pPreventSearch
+	var ModEventListener pModEventListener
+	
+	
+	
+	/**
+	 * \brief Create mod management panel.
+	 */
+	func new(ServiceMods serviceMods)
+		if serviceMods == null
+			throw ENullPointer.new("serviceMods")
+		end
+		
+		pServiceMods = serviceMods
+		pServiceModFeatures = serviceMods.getModsFeatures()
+		pCodecPropertyString = CodecPropertyString.new()
+		pSearchTagCategories = Array.new()
+		
+		pModelViewCategory = DefaultListModel.new()
+		pModelViewCategory.add(ViewCategory.browseMods)
+		pModelViewCategory.add(ViewCategory.subscribedMods)
+		pModelViewCategory.add(ViewCategory.transfer)
+		pModelViewCategory.setSelectedElement(ViewCategory.browseMods)
+		
+		pModelMods = DefaultListModel.new()
+		pModelSearchName = DefaultTextModel.new()
+		pSubscribedMods = Dictionary.new()
+		pSystemMods = Dictionary.new()
+		
+		pModelSortBy = DefaultListModel.new()
+		pModelSortBy.add(ServiceModFilter.SortField.nameAscending)
+		pModelSortBy.add(ServiceModFilter.SortField.nameDescending)
+		pModelSortBy.add(ServiceModFilter.SortField.rating)
+		pModelSortBy.add(ServiceModFilter.SortField.subscriberCount)
+		pModelSortBy.add(ServiceModFilter.SortField.downloadsTotal)
+		pModelSortBy.add(ServiceModFilter.SortField.downloadsToday)
+		pModelSortBy.add(ServiceModFilter.SortField.dateUpdated)
+		pModelSortBy.add(ServiceModFilter.SortField.dateMarkedLive)
+		pModelSortBy.setSelectedElement(ServiceModFilter.SortField.rating)
+		
+		runWhileBlockingLayout(block
+			setDesignerSelector("Panel.MMPanelModManagement.Main")
+			createContent()
+		end)
+		doLayout()
+		
+		pModelSortBy.addListener(SearchSelectionChanged.new(this))
+		
+		pModEventListener = ModEventListener.new(this)
+		serviceMods.addModsListener(pModEventListener)
+		
+		updateSubscribedMods()
+		pOrgSubscribedMods = Dictionary.new(pSubscribedMods)
+		updateSystemMods()
+		
+		serviceMods.getTags(null)
+		searchMods(ServiceModFilter.new())
+		
+		pModelViewCategory.addListener(ViewCategoryChanged.new(this))
+	end
+	
+	/** \brief Dispose of widget. */
+	func void dispose()
+		if pModEventListener != null
+			pServiceMods.removeModsListener(pModEventListener)
+			pModEventListener = null
+		end
+		
+		pModelViewCategory = pModelMods = pModelSortBy = null
+		pListMods = null
+		pButtonSearchMore = null
+		pModelSearchName = null
+		pPanelTags = pPanelSearchName = pPanelSearchSort = pPanelBottomLine = null
+		pSearchTagCategories = null
+		
+		pSearchModsListener = null
+		pServiceMods = null
+		
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Service. */
+	func ServiceMods getServiceMods()
+		return pServiceMods
+	end
+	
+	/** \brief Service mods features. */
+	func ServiceModsFeatures getServiceModsFeatures()
+		return pServiceModFeatures
+	end
+	
+	/** \brief Active view category. */
+	func ViewCategory getViewCategory()
+		return pModelViewCategory.getSelectedElement() cast ViewCategory
+	end
+	
+	/** \brief Search filter. */
+	func ServiceModFilter getSearchFilter()
+		return pSearchFilter
+	end
+	
+	
+	
+	/** \brief Update dictionary of subscribed modifications. */
+	func void updateSubscribedMods()
+		pSubscribedMods = pServiceMods.getSubscribedMods()
+	end
+	
+	/** \brief Update dictionary of system modifications. */
+	func void updateSystemMods()
+		pSystemMods = pServiceMods.getSystemMods()
+	end
+	
+	
+	
+	/** \brief Index of modification with matching id or -1 if absent. */
+	func int indexOfModWithId(String modId)
+		var int i, count = pModelMods.getCount()
+		var MMModification mod
+		
+		for i = 0 to count
+			mod = pModelMods.getAt(i) cast MMModification
+			if mod.info.id.equals(modId)
+				return i
+			end
+		end
+		
+		return -1
+	end
+	
+	/**
+	 * \brief Search for modifications.
+	 * 
+	 * Builds search filter from current widget states then calls
+	 * \ref #searchMods(ServiceModFilter).
+	 */
+	func void searchMods()
+		if pPreventSearch
+			return
+		end
+		
+		var ServiceModFilter filter = ServiceModFilter.new()
+		
+		filter.matchingName = Set.newFrom(pCodecPropertyString.decodeStringList(pModelSearchName.getText()))
+		filter.sortField = pModelSortBy.getSelectedElement() cast ServiceModFilter.SortField
+		filter.withTags = Set.new()
+		pSearchTagCategories.forEach(block SearchTagCategory each
+			each.updateFilter(filter)
+		end)
+		
+		if getViewCategory() == ViewCategory.subscribedMods
+			if pSubscribedMods.getCount() > 0
+				filter.withIds = Set.newFrom(pSubscribedMods.getKeys())
+				
+			else
+				filter.withIds = Set.newWith("0")
+			end
+		end
+		
+		searchMods(filter)
+	end
+	
+	/**
+	 * \brief Search for modifications.
+	 * 
+	 * Clears the list and starts searching for the first page of modifications.
+	 */
+	func void searchMods(ServiceModFilter filter)
+		pSearchFilter = ServiceModFilter.new(filter)
+		pModelMods.removeAll()
+		pButtonSearchMore.setEnabled(false)
+		pSearchModsListener = SearchModsListener.new(this)
+		pServiceMods.listAllMods(filter, pSearchModsListener)
+	end
+	
+	/** \brief Continue searching modifications. */
+	func void searchMoreMods()
+		if pSearchFilter == null or pSearchModsListener != null
+			return
+		end
+		
+		pButtonSearchMore.setEnabled(false)
+		pSearchModsListener = SearchModsListener.new(this)
+		pServiceMods.listAllMods(pSearchFilter, pSearchModsListener)
+	end
+	
+	/** \brief Clear search parameters then search again. */
+	func void clearSearchParameters()
+		try
+			pPreventSearch = true
+			pModelSearchName.setText("")
+			pPanelTags.runWhileBlockingLayout(block
+				pSearchTagCategories.forEach(block SearchTagCategory each
+					each.reset()
+				end)
+			end)
+			pPanelTags.doLayoutIfBlocked()
+			pPreventSearch = false
+			
+		catch Exception e
+			pPreventSearch = false
+			throw
+		end
+		
+		searchMods()
+	end
+	
+	
+	
+	/**
+	 * \brief Show modification information in a new window.
+	 * 
+	 * Default implementation shows instance of \ref MMWindowModInfo.
+	 */
+	func void showModInfo(MMModification mod)
+		var Window window = getWindow()
+		var MMWindowModInfo windowModInfo = MMWindowModInfo.new(window, pServiceMods, mod)
+		windowModInfo.setResultListener(WindowDialog.BlockResultListener.new(block Object results
+			var int index = pModelMods.indexOf(mod)
+			if index != -1
+				pModelMods.notifyContentChanged(index, index)
+			end
+		end))
+		windowModInfo.show(window, false, WindowModal.Placement.window)
+	end
+	
+	
+	
+	/**
+	 * \brief Check for modification changes and activate mods.
+	 * 
+	 * If there are no changes nothing is done. If there are changes activates the modifications
+	 * then checks for subscribed and unsubscribed modifications. Depending on the changes do
+	 * an update on the respective data. If script changes are required ask for restarting.
+	 * 
+	 * Returns true if any modification has been subscribed to or unsubscribed from.
+	 * In this case the application usually has to drop caches or reload data modifications
+	 * can potentially affect. Requesting restarting is already handled by this class.
+	 * Keep in mind that subscribed to modifications are potentially not yet activated.
+	 * Only installed and ready modifications will be activated and can affect the application.
+	 */
+	func bool activateMods()
+		pServiceMods.activateMods()
+		
+		var Array unsubscribed = pOrgSubscribedMods.getKeys().collect(block String each
+			return not pSubscribedMods.has(each)
+		end)
+		var Array subscribed = pSubscribedMods.getKeys().collect(block String each
+			return not pOrgSubscribedMods.has(each)
+		end)
+		var Array changed = subscribed
+		
+		if anyHasMatchingFiles(changed, "/scripts", Set.newWith("*.ds"))
+			WindowDialog.question(getWindow(), "@UI.Modifications", "@UI.ModManagement.Message.RestartRequired",\
+			null, Array.newWith(WindowDialog.ButtonConfiguration.new("@UI.Restart", true),\
+				WindowDialog.ButtonConfiguration.new("@UI.Cancel", false)),\
+			WindowDialog.BlockResultListener.new(block Object result
+				Engine.restart("modsRequiredRestart")
+			end))
+		end
+		
+		return subscribed.getCount() > 0 or unsubscribed.getCount() > 0
+	end
+	
+	/** 
+	 * \brief At least one modification has files matching.
+	 */
+	protected func bool anyHasMatchingFiles(Array mods, String directory, Set patterns)
+		return mods.find(block String each
+			return pServiceMods.modHasMatchingFiles(each, directory, true, patterns)
+		end) != null
+	end
+	
+	
+	
+	/** \brief View category changed. */
+	func void onViewCategoryChanged()
+		select getViewCategory()
+		case ViewCategory.browseMods
+			searchMods()
+			
+		case ViewCategory.subscribedMods
+			searchMods()
+			
+		case ViewCategory.transfer
+			
+		end
+	end
+	
+	/**
+	 * \brief Search results retrieved from service provider.
+	 * 
+	 * For use by SearchModsListener only.
+	 */
+	func void onSearchResult(SearchModsListener listener, Array mods, Exception exception)
+		if listener != pSearchModsListener
+			return
+		end
+		
+		pSearchModsListener = null
+		pButtonSearchMore.setEnabled(true)
+		
+		if exception != null
+			var BaseGameApp app = BaseGameApp.getApp()
+			if app != null
+				app.getConsole().addError("onSearchResult", exception)
+			end
+			WindowDialog.message(getWindow(), "@UI.Error", exception.toString(), null, null, null)
+			return
+		end
+		
+		pModelMods.addAll(mods.map(block ServiceModInfo each
+			return MMModification.new(each, pSubscribedMods.getAt(each.id, null) cast ServiceModStatus)
+		end))
+		
+		var int count = pModelMods.getCount()
+		if pSearchFilter.startIndex < pModelMods.getCount()
+			pSearchFilter.startIndex = count
+			
+		else
+			//WindowDialog.message(getWindow(), "Search Mods", "No more search results", null, null, null)
+		end
+		pButtonSearchMore.setEnabled(true)
+	end
+	
+	
+	
+	/** \brief Update modification. */
+	func void updateModInfo(String modId, ServiceModInfo info)
+		var int index = indexOfModWithId(modId)
+		if index == -1
+			return
+		end
+		
+		var MMModification mod = pModelMods.getAt(index) cast MMModification
+		
+		if info != null
+			mod.info = info
+		end
+		
+		updateSubscribedMods()
+		mod.status = pSubscribedMods.getAt(modId, null) cast ServiceModStatus
+		
+		pModelMods.notifyContentChanged(index, index)
+	end
+	
+	/** \brief Update modification list entry progress. */
+	func void updateModProgress(String modId, ServiceModProgress progress)
+		var int index = indexOfModWithId(modId)
+		if index == -1
+			return
+		end
+		
+		// var ModListEntry entry = pModelMods.getAt(index) cast ModListEntry
+		
+		// TODO
+		
+		// pModelMods.notifyContentChanged(index, index)
+	end
+	
+	
+	/**
+	 * \brief Bottom line panel.
+	 * 
+	 * Can be used by panel embedders to add their own content, for example a close button
+	 * activating the mods. Avoids the need for a second button line. The panel uses
+	 * BorderLayout with buttons added to a CentrizedBoxLayout Panel in the content area.
+	 */
+	func Panel getPanelBottomLine()
+		return pPanelBottomLine
+	end
+	
+	
+	/** \brief Create content. */
+	protected func void createContent()
+		var TextField textField
+		var ComboBox comboBox
+		var Viewport viewport
+		
+		setLayout(BorderLayout.new(10))
+		
+		// top: view buttons
+		addWidget(Panel.new(FlowLayout.new(LayoutAxis.y, 10), block Panel p
+			p.addWidget(Panel.new(FlowLayout.new(LayoutAxis.x, 5), block Panel p2
+				p2.addWidget(createToggleButton("@UI.ModManagement.AvailableMods",\
+					"@UI.ModManagement.AvailableMods.ToolTip",\
+					OptionGroupModel.newFor(pModelViewCategory, ViewCategory.browseMods),\
+					".ViewCategory.BrowseMods"))
+				
+				p2.addWidget(createToggleButton("@UI.ModManagement.SubscribedMods",\
+					"@UI.ModManagement.SubscribedMods.ToolTip",\
+					OptionGroupModel.newFor(pModelViewCategory, ViewCategory.subscribedMods),\
+					".ViewCategory.SubscribedMods"))
+				
+				p2.addWidget(createToggleButton("@UI.ModManagement.ModsTransfer",\
+					"@UI.ModManagement.ModsTransfer.ToolTip",\
+					OptionGroupModel.newFor(pModelViewCategory, ViewCategory.transfer),\
+					".ViewCategory.ModsTransfer"))
+			end))
+		end), BorderLayout.Area.top)
+		
+		// content: listing
+		pListMods = ListBox.new(pModelMods, createModListElementRenderer())
+		pListMods.setDesignerSelector("ListBox.MMPanelModManagement.Mods")
+		pListMods.setType(ListBox.Type.verticalWrap)
+		pListMods.setNumberDisplayLines(1)
+		pListMods.addMouseListener(ClickedModDetails.new(this, pListMods))
+		addWidget(ScrollPanel.new(pListMods, ScrollPanel.Policy.hidden, ScrollPanel.Policy.visible), BorderLayout.Area.content)
+		
+		// right side: search parameters
+		viewport = Viewport.new(Panel.new(FlowLayout.new(LayoutAxis.y), block Panel p
+			// search button
+			p.addWidget(createButton("@UI.Search", "@UI.ModManagement.Search.ToolTip",\
+				".Search", BlockActionListener.new(block ActionEvent e
+					searchMods()
+				end)))
+			
+			// search name
+			pPanelSearchName = Panel.new(FlowLayout.new(LayoutAxis.y), block Panel p2
+				p2.setDesignerSelector("Panel.MMPanelModManagement.Group.Search.Name")
+				p2.setTitle("@UI.ModManagement.SearchName")
+				
+				textField = createTextField(pModelSearchName, ".Search.Name", 20)
+				textField.setToolTip("@UI.ModManagement.SearchName.ToolTip")
+				p2.addWidget(textField)
+				textField.addActionListener(BlockActionListener.new(block ActionEvent event
+					searchMods()
+				end))
+			end)
+			p.addWidget(pPanelSearchName)
+			
+			
+			// sort by
+			pPanelSearchSort = Panel.new(FlowLayout.new(LayoutAxis.y), block Panel p2
+				p2.setDesignerSelector("Panel.MMPanelModManagement.Group.Search.SortBy")
+				p2.setTitle("@UI.SortBy")
+				
+				var EnumListElementRenderer renderer = EnumListElementRenderer.new()
+				renderer.setTranslationPrefix("UI.ModManagement.Enum.SortField.")
+				comboBox = createComboBox(pModelSortBy, renderer, ".Search.SortBy")
+				comboBox.setToolTip("@UI.ModManagement.SortBy.ToolTip")
+				p2.addWidget(comboBox)
+			end)
+			p.addWidget(pPanelSearchSort)
+			
+			// tags. will be filled once data has been retrieved from service
+			pPanelTags = Panel.new(FlowLayout.new(LayoutAxis.y))
+			p.addWidget(pPanelTags)
+		end))
+		viewport.setLayout(FlowLayout.new(LayoutAxis.y))
+		addWidget(ScrollPanel.new(viewport, ScrollPanel.Policy.hidden, ScrollPanel.Policy.needed), BorderLayout.Area.right)
+		
+		// button line at bottom
+		pPanelBottomLine = Panel.new(CentrizedBoxLayout.new(LayoutAxis.x, 20), block Panel p
+			pButtonSearchMore = createButton("@UI.ModManagement.SearchMore", "@UI.ModManagement.SearchMore.ToolTip",\
+				".MoreResults", BlockActionListener.new(block ActionEvent e
+					searchMoreMods()
+				end))
+			p.addWidget(pButtonSearchMore)
+		end )
+		addWidget(pPanelBottomLine, BorderLayout.Area.bottom)
+	end
+	
+	/** \brief Create search tag widgets. */
+	func void updateSearchTagCategories(Array categories)
+		try
+			pPreventSearch = true
+			pPanelTags.runWhileBlockingLayout(block
+				pPanelTags.removeAllWidgets()
+				
+				pSearchTagCategories.removeAll()
+				categories.forEach(block ServiceModTagCategory category
+					pSearchTagCategories.add(createTagCategory(category))
+				end)
+				
+				pSearchTagCategories.forEach(block SearchTagCategory each
+					each.createWidgets(pPanelTags)
+				end)
+			end)
+			pPanelTags.doLayout()
+			pPreventSearch = false
+			
+		catch Exception e
+			pPreventSearch = false
+			throw
+		end
+	end
+	
+	/** \brief Create service tag category. */
+	protected func SearchTagCategory createTagCategory(ServiceModTagCategory category)
+		if category.multiSelection
+			return SearchCategoryCheckBox.new(this, category)
+			
+		else
+			return SearchCategoryComboBox.new(this, category)
+		end
+	end
+	
+	/** \brief Create button. */
+	protected func Button createButton(String text, String toolTip, String designerSelectorSuffix, ActionListener action)
+		var Button button = Button.new(text, action)
+		button.setDesignerSelector("Button.MMPanelModManagement" + designerSelectorSuffix)
+		button.setToolTip(toolTip)
+		return button
+	end
+	
+	/** \brief Create toggle button. */
+	protected func ToggleButton createToggleButton(String text, String toolTip, ToggleModel model, String designerSelectorSuffix)
+		var ToggleButton button = ToggleButton.new(model, text)
+		button.setStickyToggled(true)
+		button.setDesignerSelector("Button.MMPanelModManagement" + designerSelectorSuffix)
+		button.setToolTip(toolTip)
+		return button
+	end
+	
+	/** \brief Create text field. */
+	protected func TextField createTextField(TextModel model, String designerSelectorSuffix, int displayCharCount)
+		var TextField textField = TextField.new(model, displayCharCount)
+		textField.setDesignerSelector("TextField.MMPanelModManagement" + designerSelectorSuffix)
+		return textField
+	end
+	
+	/** \brief Create combo box. */
+	func ComboBox createComboBox(ListModel model, ListElementRenderer renderer, String designerSelectorSuffix)
+		var ComboBox comboBox = ComboBox.new(model, renderer)
+		comboBox.setDesignerSelector("ComboBox.MMPanelModManagement" + designerSelectorSuffix)
+		return comboBox
+	end
+	
+	/** \brief Create check box. */
+	func CheckBox createCheckBox(String text, ToggleModel model, String designerSelectorSuffix)
+		var CheckBox checkBox = CheckBox.new(model, text)
+		checkBox.setDesignerSelector("CheckBox.MMPanelModManagement" + designerSelectorSuffix)
+		return checkBox
+	end
+	
+	/** \brief Create modification list element renderer. */
+	protected func ListElementRenderer createModListElementRenderer()
+		return MMModificationListRenderer.new(pServiceMods)
+	end
+end
