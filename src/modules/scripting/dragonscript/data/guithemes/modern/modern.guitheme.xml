@@ -493,6 +493,18 @@
 		<image parameter='normal.image'>/shareddata/guithemes/modern/icons/16/rate_down.webp</image>
 	</designer>
 	
+	<designer name='Panel.RatingUpDown.ReadOnly.Up' type='Widget'>
+		<canvasCreator parameter='normal.canvas' type='Rectangle'>
+			<color parameter='colorLine' r='0.15' g='0.15' b='0.15'/>
+			<color parameter='colorFill' r='0.85' g='0.82' b='0.82'/>
+		</canvasCreator>
+		<borderSize parameter='normal.padding' all='5'/>
+	</designer>
+	<designer name='Panel.RatingUpDown.ReadOnly.Down' type='Widget' extendNamed='Panel.RatingUpDown.ReadOnly.Up'/>
+	
+	<designer name='Image.RatingUpDown.ReadOnly.Up' extendNamed='Image.Button.RatingUpDown.Up'/>
+	<designer name='Image.RatingUpDown.ReadOnly.Down' extendNamed='Image.Button.RatingUpDown.Down'/>
+	
 	
 	
 	<import>../shared/virtualkeyboard.guitheme.xml</import>

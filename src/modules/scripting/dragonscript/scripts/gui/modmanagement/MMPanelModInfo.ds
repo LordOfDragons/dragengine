@@ -199,6 +199,16 @@ class MMPanelModInfo extends Panel
 	
 	
 	
+	/** \brief Service. */
+	func ServiceMods getServiceMods()
+		return pServiceMods
+	end
+	
+	/** \brief Service features. */
+	func ServiceModsFeatures getServiceModsFeatures()
+		return pServiceModFeatures
+	end
+	
 	/** \brief Modification info. */
 	func MMModification getMod()
 		return pMod
@@ -367,6 +377,7 @@ class MMPanelModInfo extends Panel
 		var TimeDate now = TimeDate.new()
 		var ProgressBar progressBar
 		var Viewport viewport
+		var Widget widget
 		var int seconds
 		var String text
 		
@@ -408,24 +419,29 @@ class MMPanelModInfo extends Panel
 				p2.setDesignerSelector("Panel.MMPanelModInfo.Group.DetailsDetails")
 				p2.setTitle("@UI.ModManagementMod.DetailsDetails")
 				
-				p2.addWidget(Panel.new(BorderLayout.new(), block Panel p3
-					p3.addWidget(Label.new(pMod.info.stats.ratingDisplayText,\
-						"Label.MMPanelModInfo.Details.RatingText"),\
-						BorderLayout.Area.left)
+				if pServiceModFeatures.modRatingCount >= 2
+					p2.addWidget(Panel.new(BorderLayout.new(), block Panel p3
+						p3.addWidget(Label.new(pMod.info.stats.ratingDisplayText,\
+							"Label.MMPanelModInfo.Details.RatingText"),\
+							BorderLayout.Area.left)
+						
+						p3.addWidget(Label.new("{:.0f}%".format(\
+							Array.newWith(pMod.info.stats.ratingAverage)),\
+							"Label.MMPanelModInfo.Details.Rating"),\
+							BorderLayout.Area.right)
+					end))
 					
-					p3.addWidget(Label.new("{:.0f}%".format(\
-						Array.newWith(pMod.info.stats.ratingAverage)),\
-						"Label.MMPanelModInfo.Details.Rating"),\
-						BorderLayout.Area.right)
-				end))
-				
-				progressBar = ProgressBar.new()
-				progressBar.getModel().setAll(0, 100, 10,\
-					(pMod.info.stats.ratingAverage * 100 + 0.5) cast int, 1)
-				progressBar.setDesignerSelector("ProgressBar.MMPanelModInfo.Rating")
-				p2.addWidget(progressBar)
-				
-				p2.addWidget(createRating())
+					progressBar = ProgressBar.new()
+					progressBar.getModel().setAll(0, 100, 10,\
+						(pMod.info.stats.ratingAverage * 100 + 0.5) cast int, 1)
+					progressBar.setDesignerSelector("ProgressBar.MMPanelModInfo.Rating")
+					p2.addWidget(progressBar)
+					
+					widget = createRating()
+					if widget != null
+						p2.addWidget(widget)
+					end
+				end
 				
 				p2.addWidget(Panel.new(FormLayout.new(), block Panel p3
 					p3.setDesignerSelector("Panel.MMPanelModInfo.DetailsDetailsForm")
@@ -566,19 +582,26 @@ class MMPanelModInfo extends Panel
 		return MMImageGallery.new(pServiceMods, pMod)
 	end
 	
-	/** \brief Create rating widget. */
+	/**
+	 * \brief Create rating widget.
+	 * 
+	 * If rating is not supported by service null is returned. Uses
+	 * getServiceModsFeatures().userCanRateMods to set read-only if required.
+	 */
 	protected func Widget createRating()
+		var bool readOnly = not pServiceModFeatures.userCanRateMods
+		
 		if pServiceModFeatures.modRatingCount == 2
-			return RatingUpDown.new(pModelRating)
+			return RatingUpDown.new(pModelRating, readOnly)
 			
 		elif pServiceModFeatures.modRatingCount == 3
-			return RatingUpDown.new(pModelRating)
+			return RatingUpDown.new(pModelRating, readOnly)
 			
 		elif pServiceModFeatures.modRatingCount > 3
 			return Label.new("Rating type unsupported")
 			
 		else
-			return Label.new("Rating type unsupported")
+			return null
 		end
 	end
 	
