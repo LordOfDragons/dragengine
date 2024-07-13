@@ -311,6 +311,21 @@ class MMPanelModManagement extends Panel
 		end
 	end
 	
+	/** \brief Activate modification result. */
+	enum ActivateModsResult
+		/** \brief No new subscribed/unsubscribed modifications. */
+		unchanged
+		
+		/** \brief Modifications changed and have been activated. */
+		activated
+		
+		/** \brief Modifications changed and restart has been requested. */
+		restart
+		
+		/** \brief Activate mods has been cancelled. */
+		cancelled
+	end
+	
 	
 	
 	var ServiceMods pServiceMods
@@ -327,6 +342,7 @@ class MMPanelModManagement extends Panel
 	var Array pSearchTagCategories
 	var bool pPreventSearch
 	var ModEventListener pModEventListener
+	var String pRestartInfo
 	
 	
 	
@@ -342,6 +358,7 @@ class MMPanelModManagement extends Panel
 		pServiceModFeatures = serviceMods.getModsFeatures()
 		pCodecPropertyString = CodecPropertyString.new()
 		pSearchTagCategories = Array.new()
+		pRestartInfo = "modsRequiredRestart"
 		
 		pModelViewCategory = DefaultListModel.new()
 		pModelViewCategory.add(ViewCategory.browseMods)
@@ -426,6 +443,25 @@ class MMPanelModManagement extends Panel
 	/** \brief Search filter. */
 	func ServiceModFilter getSearchFilter()
 		return pSearchFilter
+	end
+	
+	/**
+	 * \brief Restart info used for call to \ref Engine#restart(String).
+	 * 
+	 * Default is "modsRequiredRestart".
+	 */
+	func String getRestartInfo()
+		return pRestartInfo
+	end
+	
+	/**
+	 * \brief Set restart info used for call to \ref Engine#restart(String).
+	 */
+	func void setRestartInfo(String info)
+		if info == null
+			throw ENullPointer.new("info")
+		end
+		pRestartInfo = info
 	end
 	
 	
@@ -556,20 +592,32 @@ class MMPanelModManagement extends Panel
 	
 	
 	/**
-	 * \brief Check for modification changes and activate mods.
+	 * \brief Activate modifications.
 	 * 
-	 * If there are no changes nothing is done. If there are changes activates the modifications
-	 * then checks for subscribed and unsubscribed modifications. Depending on the changes do
-	 * an update on the respective data. If script changes are required ask for restarting.
+	 * Checks first if all subscribed modifications are installed. If any subscribed modification
+	 * is pending installing or updating the user is asked if he wants to activate only the
+	 * ready modifications. If the user declines listener is called with
+	 * \ref ActivateModsResult#cancelled.
 	 * 
-	 * Returns true if any modification has been subscribed to or unsubscribed from.
-	 * In this case the application usually has to drop caches or reload data modifications
-	 * can potentially affect. Requesting restarting is already handled by this class.
-	 * Keep in mind that subscribed to modifications are potentially not yet activated.
-	 * Only installed and ready modifications will be activated and can affect the application.
+	 * If the user accepts or all subscribed modifications are installed
+	 * \ref ServiceMods#activateMods() is called.
+	 * 
+	 * Afterwards the list of newly subscribed and unsubscribed modifications is build. If any
+	 * newly installed modification contains script code the user is asked to restart the game.
+	 * If the user accepts \ref Engine#restart(String) is called with the value of
+	 * \ref #getRestartInfo() and listener is called with \ref ActivateModsResult#restart.
+	 * 
+	 * If the user declined or no newly installed modification contains script the list of
+	 * changed modifications is checked. If the list of changed modifications is not empty
+	 * listener is called with \ref ActivateModsResult#activated. If the list of changed
+	 * modifications is empty listener is called with \ref ActivateModsResult#unchanged.
 	 */
-	func bool activateMods()
-		pServiceMods.activateMods()
+	func void activateMods(WindowDialog.ResultListener listener)
+		// TODO: requires also including modifications that have been updated
+		//       requires comparing release file version before and after
+		
+		// build list of newly subscribed and unsubscribed modifications
+		updateSubscribedMods()
 		
 		var Array unsubscribed = pOrgSubscribedMods.getKeys().collect(block String each
 			return not pSubscribedMods.has(each)
@@ -579,16 +627,52 @@ class MMPanelModManagement extends Panel
 		end)
 		var Array changed = subscribed
 		
-		if anyHasMatchingFiles(changed, "/scripts", Set.newWith("*.ds"))
-			WindowDialog.question(getWindow(), "@UI.Modifications", "@UI.ModManagement.Message.RestartRequired",\
-			null, Array.newWith(WindowDialog.ButtonConfiguration.new("@UI.Restart", true),\
-				WindowDialog.ButtonConfiguration.new("@UI.Cancel", false)),\
-			WindowDialog.BlockResultListener.new(block Object result
-				Engine.restart("modsRequiredRestart")
-			end))
+		// code block: active modification
+		var Block blockActivate = block bool result
+			if not result
+				listener.onResult(ActivateModsResult.cancelled)
+				
+			elif subscribed.getCount() == 0 and unsubscribed.getCount() == 0
+				listener.onResult(ActivateModsResult.unchanged)
+				
+			else
+				pServiceMods.activateMods()
+				
+				// check for modifications with script file changes requiring restart
+				if anyHasMatchingFiles(changed, "/scripts", Set.newWith("*.ds"))
+					WindowDialog.question(getWindow(), "@UI.ModManagement.ActivateMods",\
+					"@UI.ModManagement.Message.RestartRequired", null, Array.newWith(\
+						WindowDialog.ButtonConfiguration.new("@UI.Restart", true),\
+						WindowDialog.ButtonConfiguration.new("@UI.Cancel", false)),\
+					WindowDialog.BlockResultListener.new(block bool result
+						if result
+							Engine.restart(pRestartInfo)
+							listener.onResult(ActivateModsResult.restart)
+							
+						else
+							listener.onResult(ActivateModsResult.activated)
+						end
+					end))
+					
+				else
+					listener.onResult(ActivateModsResult.activated)
+				end
+			end
 		end
 		
-		return subscribed.getCount() > 0 or unsubscribed.getCount() > 0
+		// check if all modifications are ready to be activated
+		if pSubscribedMods.find(block String key, ServiceModStatus value
+			return value.status != ServiceModStatus.Status.installed
+		end) != null
+			WindowDialog.question(getWindow(), "@UI.ModManagement.ActivateMods",\
+			"@UI.ModManagement.Message.ActivateStillPending", null, Array.newWith(\
+				WindowDialog.ButtonConfiguration.new("@UI.Yes", true),\
+				WindowDialog.ButtonConfiguration.new("@UI.No", false)),\
+			WindowDialog.BlockResultListener.new(blockActivate))
+			
+		else
+			blockActivate.run(true)
+		end
 	end
 	
 	/** 

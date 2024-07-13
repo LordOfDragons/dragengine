@@ -160,4 +160,6 @@ Neu zuweisen?</translation>
 	<translation name='UI.ModManagement.ModsTransfer'>Transfer</translation>
 	<translation name='UI.ModManagement.ModsTransfer.ToolTip'>Fortschritt der Transfers von Modifikationen</translation>
 	<translation name='UI.ModManagementMod.Message.RestartRequired'>Modifikation enthältt scripts. Ein Neustart ist erforderlich.</translation>
+	<translation name='UI.ModManagement.ActivateMods'>Modifikationen aktivieren</translation>
+	<translation name='UI.ModManagement.Message.ActivateStillPending'>Eine oder mehrere abonnierte Modifikationen sind noch nicht installiert oder aktualisiert. Alle bereite Modifikationen aktivieren?</translation>
 </languagePack>
