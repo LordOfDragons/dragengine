@@ -619,47 +619,6 @@ class MMPanelModManagement extends Panel
 		// build list of newly subscribed and unsubscribed modifications
 		updateSubscribedMods()
 		
-		var Array unsubscribed = pOrgSubscribedMods.getKeys().collect(block String each
-			return not pSubscribedMods.has(each)
-		end)
-		var Array subscribed = pSubscribedMods.getKeys().collect(block String each
-			return not pOrgSubscribedMods.has(each)
-		end)
-		var Array changed = subscribed
-		
-		// code block: active modification
-		var Block blockActivate = block bool result
-			if not result
-				listener.onResult(ActivateModsResult.cancelled)
-				
-			elif subscribed.getCount() == 0 and unsubscribed.getCount() == 0
-				listener.onResult(ActivateModsResult.unchanged)
-				
-			else
-				pServiceMods.activateMods()
-				
-				// check for modifications with script file changes requiring restart
-				if anyHasMatchingFiles(changed, "/scripts", Set.newWith("*.ds"))
-					WindowDialog.question(getWindow(), "@UI.ModManagement.ActivateMods",\
-					"@UI.ModManagement.Message.RestartRequired", null, Array.newWith(\
-						WindowDialog.ButtonConfiguration.new("@UI.Restart", true),\
-						WindowDialog.ButtonConfiguration.new("@UI.Cancel", false)),\
-					WindowDialog.BlockResultListener.new(block bool result
-						if result
-							Engine.restart(pRestartInfo)
-							listener.onResult(ActivateModsResult.restart)
-							
-						else
-							listener.onResult(ActivateModsResult.activated)
-						end
-					end))
-					
-				else
-					listener.onResult(ActivateModsResult.activated)
-				end
-			end
-		end
-		
 		// check if all modifications are ready to be activated
 		if pSubscribedMods.find(block String key, ServiceModStatus value
 			return value.status != ServiceModStatus.Status.installed
@@ -668,11 +627,71 @@ class MMPanelModManagement extends Panel
 			"@UI.ModManagement.Message.ActivateStillPending", null, Array.newWith(\
 				WindowDialog.ButtonConfiguration.new("@UI.Yes", true),\
 				WindowDialog.ButtonConfiguration.new("@UI.No", false)),\
-			WindowDialog.BlockResultListener.new(blockActivate))
+			WindowDialog.BlockResultListener.new(block bool result
+				if result
+					activateModsStep1(listener)
+					
+				else
+					listener.onResult(ActivateModsResult.cancelled)
+				end
+			end))
 			
 		else
-			blockActivate.run(true)
+			activateModsStep1(listener)
 		end
+	end
+	
+	/**
+	 * \brief Function activateMods() did initial checks and is ready to activate mods.
+	 * 
+	 * Calls \ref ServiceMods#activateMods() then checks for restart to be required due to
+	 * any of the subscribed modifications containing script code. On success calls next
+	 * \ref #activateModsStep2(WindowDialog.ResultListener).
+	 */
+	protected func void activateModsStep1(WindowDialog.ResultListener listener)
+		var Array unsubscribed = pOrgSubscribedMods.getKeys().collect(block String each
+			return not pSubscribedMods.has(each)
+		end)
+		var Array subscribed = pSubscribedMods.getKeys().collect(block String each
+			return not pOrgSubscribedMods.has(each)
+		end)
+		var Array changed = subscribed
+		
+		if subscribed.getCount() == 0 and unsubscribed.getCount() == 0
+			listener.onResult(ActivateModsResult.unchanged)
+			return
+		end
+		
+		pServiceMods.activateMods()
+		
+		// check for modifications with script file changes requiring restart
+		if anyHasMatchingFiles(changed, "/scripts", Set.newWith("*.ds"))
+			WindowDialog.question(getWindow(), "@UI.ModManagement.ActivateMods",\
+			"@UI.ModManagement.Message.RestartRequired", null, Array.newWith(\
+				WindowDialog.ButtonConfiguration.new("@UI.Restart", true),\
+				WindowDialog.ButtonConfiguration.new("@UI.Cancel", false)),\
+			WindowDialog.BlockResultListener.new(block bool result
+				if result
+					Engine.restart(pRestartInfo)
+					listener.onResult(ActivateModsResult.restart)
+					
+				else
+					activateModsStep2(listener)
+				end
+			end))
+			
+		else
+			activateModsStep2(listener)
+		end
+	end
+	
+	/**
+	 * \brief Function activateModsStep1() succeeded and is ready to activate mods.
+	 * 
+	 * Placeholder for further checks. Calls listener with \ref ActivateModsResult#activated.
+	 */
+	protected func void activateModsStep2(WindowDialog.ResultListener listener)
+		listener.onResult(ActivateModsResult.activated)
 	end
 	
 	/** 
