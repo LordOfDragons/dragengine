@@ -1,0 +1,113 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Gui.ModManagement
+pin Dragengine.Services.Mods
+pin Dragengine.Gui.Layouts
+pin Dragengine.Gui.Events
+
+
+/**
+ * \brief Window managing modifications.
+ * \version 1.23
+ * 
+ * The default result of the dialog is \ref MMPanelModManagement#ActivateModsResult "unchanged".
+ */
+class MMWindowModManagement extends WindowDialog
+	var MMPanelModManagement pPanelModManagement
+	
+	
+	/** \brief Create mod management window. */
+	func new(Window window, ServiceMods serviceMods)
+		setResult(MMPanelModManagement.ActivateModsResult.unchanged)
+		runWhileBlockingLayout(block
+			setGuiTheme(window.getGuiTheme())
+			setTitle("@UI.Modifications")
+			setDesignerSelector("Window.Dialog.MMWindowModManagement")
+			setSize(window.getDesktop().getContainerSize() - Point.new(100, 100))
+			createContent(serviceMods)
+		end)
+		doLayout()
+	end
+	
+	/** \brief Dispose of widget. */
+	func void dispose()
+		pPanelModManagement = null
+		super.dispose()
+	end
+	
+	
+	
+	/**
+	 * \brief Request close window.
+	 * 
+	 * Called by decoration close button and the UI close button. Calls MMPanelModManagement
+	 * activateMods. If the result is
+	 * \ref MMPanelModManagement#ActivateModsResult "activated", "restart" or "unchanged" the
+	 * result is set as dialog result and the dialog is closed. With all other results
+	 * the dialog is kept open.
+	 */
+	func void requestClose()
+		pPanelModManagement.activateMods(WindowDialog.BlockResultListener.new(\
+		block MMPanelModManagement.ActivateModsResult result
+			select result
+			case MMPanelModManagement.ActivateModsResult.activated,\
+			MMPanelModManagement.ActivateModsResult.restart,\
+			MMPanelModManagement.ActivateModsResult.unchanged
+				setResult(result)
+				close()
+			end
+		end))
+	end
+	
+	
+	
+	/** \brief Create content. */
+	protected func void createContent(ServiceMods serviceMods)
+		setLayout(BorderLayout.new(10))
+		
+		pPanelModManagement = createPanelModManagement(serviceMods)
+		addWidget(pPanelModManagement, BorderLayout.Area.content)
+		
+		pPanelModManagement.getPanelBottomLine().addWidget(createButton("@UI.Close",\
+			"@UI.ModManagement.Close.ToolTip", ".Close", CloseWindowActionListener.new(this)))
+	end
+	
+	/**
+	 * \brief Create mod management panel.
+	 * 
+	 * Default implementation creates instance of \ref MMPanelModManagement.
+	 */
+	protected func MMPanelModManagement createPanelModManagement(ServiceMods serviceMods)
+		return MMPanelModManagement.new(serviceMods)
+	end
+	
+	/** \brief Create button. */
+	protected func Button createButton(String text, String toolTip, String designerSelectorSuffix, ActionListener action)
+		var Button button = Button.new(text, action)
+		button.setDesignerSelector("Button.MMWindowModManagement" + designerSelectorSuffix)
+		button.setToolTip(toolTip)
+		return button
+	end
+end

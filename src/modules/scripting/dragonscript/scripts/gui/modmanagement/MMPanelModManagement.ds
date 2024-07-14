@@ -613,9 +613,6 @@ class MMPanelModManagement extends Panel
 	 * modifications is empty listener is called with \ref ActivateModsResult#unchanged.
 	 */
 	func void activateMods(WindowDialog.ResultListener listener)
-		// TODO: requires also including modifications that have been updated
-		//       requires comparing release file version before and after
-		
 		// build list of newly subscribed and unsubscribed modifications
 		updateSubscribedMods()
 		
@@ -655,9 +652,17 @@ class MMPanelModManagement extends Panel
 		var Array subscribed = pSubscribedMods.getKeys().collect(block String each
 			return not pOrgSubscribedMods.has(each)
 		end)
-		var Array changed = subscribed
+		var Array updated = pSubscribedMods.getKeys().collect(block String each
+			var ServiceModStatus orgStatus = pOrgSubscribedMods.getAt(each, null) cast ServiceModStatus
+			if orgStatus == null
+				return false
+			end
+			var ServiceModStatus status = pSubscribedMods.getAt(each) cast ServiceModStatus
+			return not status.info.latestRelease.version.equals(orgStatus.info.latestRelease.version)
+		end)
+		var Array changed = subscribed + updated
 		
-		if subscribed.getCount() == 0 and unsubscribed.getCount() == 0
+		if changed.getCount() == 0 and unsubscribed.getCount() == 0
 			listener.onResult(ActivateModsResult.unchanged)
 			return
 		end

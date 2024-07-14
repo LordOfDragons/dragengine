@@ -104,7 +104,7 @@ class WindowDialog extends WindowModal
 		/** \brief Perform action. */
 		func void onAction(ActionEvent event)
 			pDialog.setResult(pResult)
-			pDialog.close()
+			pDialog.requestClose()
 		end
 	end
 	
@@ -125,7 +125,7 @@ class WindowDialog extends WindowModal
 		/** \brief Perform action. */
 		func void onAction(ActionEvent event)
 			pDialog.setResult(pGroup.getSelected())
-			pDialog.close()
+			pDialog.requestClose()
 		end
 	end
 	
@@ -149,7 +149,7 @@ class WindowDialog extends WindowModal
 		/** \brief Perform action. */
 		func void onAction(ActionEvent event)
 			pDialog.setResult(pListBox.getSelectedElement())
-			pDialog.close()
+			pDialog.requestClose()
 		end
 	end
 	
@@ -182,7 +182,7 @@ class WindowDialog extends WindowModal
 			end
 			
 			pDialog.setResult(selectedElements)
-			pDialog.close()
+			pDialog.requestClose()
 		end
 	end
 	
@@ -206,7 +206,7 @@ class WindowDialog extends WindowModal
 		/** \brief Perform action. */
 		func void onAction(ActionEvent event)
 			pDialog.setResult(pModel.getText())
-			pDialog.close()
+			pDialog.requestClose()
 		end
 	end
 	

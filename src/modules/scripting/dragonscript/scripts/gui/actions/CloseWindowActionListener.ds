@@ -22,34 +22,31 @@
  * SOFTWARE.
  */
 
-
 namespace Dragengine.Gui
-
 pin Dragengine.Gui.Events
 
 
 /**
  * \brief Action listener closing a window.
+ * 
+ * Calls \ref Window#requestClose() on action.
  */
 class CloseWindowActionListener extends DefaultActionListener
 	/** \brief Window to close. */
-	private var Window pWindow
-	
+	var Window pWindow
 	
 	
 	/** \brief Create action listener. */
-	public func new( Window window )
+	func new(Window window)
 		if window == null
 			throw EInvalidParam.new()
 		end
-		
-		this.pWindow = window
+		pWindow = window
 	end
 	
 	
-	
 	/** \brief Perform action. */
-	public func void onAction( ActionEvent event )
-		this.pWindow.close()
+	 func void onAction(ActionEvent event)
+		pWindow.requestClose()
 	end
 end

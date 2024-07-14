@@ -1279,7 +1279,7 @@ class Desktop extends Container
 			case Decoration.Area.close
 				if pDragWindow.getDecoration().areaHitBy(pMouseLocation) == Decoration.Area.close
 					pDragWindow.getDecoration().setButtonState(Decoration.Button.close, true, false)
-					pDragWindow.close()
+					pDragWindow.requestClose()
 					
 				else
 					pDragWindow.getDecoration().setButtonState(Decoration.Button.close, false, false)

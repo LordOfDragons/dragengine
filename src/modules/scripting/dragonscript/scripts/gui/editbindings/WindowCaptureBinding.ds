@@ -404,7 +404,7 @@ public class WindowCaptureBinding extends WindowDialog
 		
 		setResult(CaptureResult.new(EditBindingsListModelEntry.InputSource.button,\
 			event.getSystem(), event.getDevice(), event.getButtonCode(), false))
-		close()
+		requestClose()
 	end
 	
 	/** \brief Mouse button pressed. */
@@ -423,7 +423,7 @@ public class WindowCaptureBinding extends WindowDialog
 		if decoration != null
 			var Desktop desktop = getDesktop()
 			if decoration.areaHitBy(desktop.getMouseLocation()) == Decoration.Area.close
-				close()
+				requestClose()
 				return
 			end
 		end
@@ -437,7 +437,7 @@ public class WindowCaptureBinding extends WindowDialog
 		
 		setResult(CaptureResult.new(EditBindingsListModelEntry.InputSource.button,\
 			event.getSystem(), event.getDevice(), event.getButton(), false))
-		close()
+		requestClose()
 	end
 	
 	/** \brief Mouse wheel moved. */
@@ -458,22 +458,22 @@ public class WindowCaptureBinding extends WindowDialog
 		if position.getX() > 0
 			setResult(CaptureResult.new(EditBindingsListModelEntry.InputSource.axis,\
 				event.getSystem(), event.getDevice(), event.getButton(), false))
-			close()
+			requestClose()
 			
 		elif position.getX() < 0
 			setResult(CaptureResult.new(EditBindingsListModelEntry.InputSource.axis,\
 				event.getSystem(), event.getDevice(), event.getButton(), true))
-			close()
+			requestClose()
 			
 		elif position.getY() > 0
 			setResult(CaptureResult.new(EditBindingsListModelEntry.InputSource.axis,\
 				event.getSystem(), event.getDevice(), event.getButton(), false))
-			close()
+			requestClose()
 			
 		elif position.getY() < 0
 			setResult(CaptureResult.new(EditBindingsListModelEntry.InputSource.axis,\
 				event.getSystem(), event.getDevice(), event.getButton(), true))
-			close()
+			requestClose()
 		end
 	end
 	
@@ -501,7 +501,7 @@ public class WindowCaptureBinding extends WindowDialog
 			
 			setResult(CaptureResult.new(EditBindingsListModelEntry.InputSource.axis,\
 				event.getSystem(), event.getDevice(), event.getCode(), inverseAxis))
-			close()
+			requestClose()
 			
 		else
 			if event.getAxisValue() < 0.8
@@ -511,7 +511,7 @@ public class WindowCaptureBinding extends WindowDialog
 			
 			setResult(CaptureResult.new(EditBindingsListModelEntry.InputSource.axis,\
 				event.getSystem(), event.getDevice(), event.getCode(), false))
-			close()
+			requestClose()
 		end
 	end
 	
@@ -524,6 +524,6 @@ public class WindowCaptureBinding extends WindowDialog
 		
 		setResult(CaptureResult.new(EditBindingsListModelEntry.InputSource.button,\
 			event.getSystem(), event.getDevice(), event.getCode(), false))
-		close()
+		requestClose()
 	end
 end

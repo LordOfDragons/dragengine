@@ -423,14 +423,14 @@ class WindowSettings extends WindowModal
 	 */
 	public func void saveAndClose()
 		saveSettings()
-		close()
+		requestClose()
 	end
 	
 	/**
 	 * Discard changes and close dialog.
 	 */
 	public func void cancelAndClose()
-		close()
+		requestClose()
 	end
 	
 	

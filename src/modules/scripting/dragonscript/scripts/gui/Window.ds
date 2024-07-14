@@ -135,6 +135,19 @@ class Window extends Container
 		safeDispose()
 	end
 	
+	/**
+	 * \brief Request closing window.
+	 * \version 1.23
+	 * 
+	 * Called by Desktop if user clicks on close window decoration button. Optionally can be
+	 * called by other scripts to request closing window if there is the possibility to reject
+	 * this request. Implementation has to call \ref #close() if the request is honored otherwise
+	 * do nothing. The default implementation calls \ref #close().
+	 */
+	func void requestClose()
+		close()
+	end
+	
 	
 	
 	/** \brief Set window title. */
