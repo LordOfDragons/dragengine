@@ -43,7 +43,7 @@ class ServiceUserFeatures
 	 * \brief Service supports logging in using authentication provider.
 	 * 
 	 * Set contains strings of all supported login providers. The values in this set
-	 * match \ref #authTokenProvider values of other services.
+	 * match \ref #authTokenProvider values of other service feature object.
 	 * 
 	 * Set can be null or empty if service does not support logging in using
 	 * authentication providers.

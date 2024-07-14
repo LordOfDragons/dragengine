@@ -152,6 +152,22 @@ class BaseGameServices
 		return Array.new(pUser)
 	end
 	
+	/**
+	 * \brief Find ServiceUser supported by another service for authentification.
+	 * 
+	 * Returns Array of ServiceUser.
+	 * 
+	 * \param ids Set of String authentication provider identifiers. Get this set from
+	 *        feature instances obtained from the respective service.
+	 */
+	func Array getSupportedAuthProviders(Set ids)
+		var ServiceUserFeatures features
+		return pUser.collect(block ServiceUser each
+			features = each.getUserFeatures()
+			return features.authTokenProvider != null and ids.has(features.authTokenProvider)
+		end)
+	end
+	
 	
 	
 	/** \brief Count of initialized stats services. */
