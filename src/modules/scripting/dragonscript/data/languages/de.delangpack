@@ -162,4 +162,5 @@ Neu zuweisen?</translation>
 	<translation name='UI.ModManagementMod.Message.RestartRequired'>Modifikation enthältt scripts. Ein Neustart ist erforderlich.</translation>
 	<translation name='UI.ModManagement.ActivateMods'>Modifikationen aktivieren</translation>
 	<translation name='UI.ModManagement.Message.ActivateStillPending'>Eine oder mehrere abonnierte Modifikationen sind noch nicht installiert oder aktualisiert. Alle bereite Modifikationen aktivieren?</translation>
+	<translation name='UI.ModManagement.Message.NoModService'>Kein Modifikations-Service gefunden.</translation>
 </languagePack>

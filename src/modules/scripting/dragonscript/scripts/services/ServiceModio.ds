@@ -634,8 +634,8 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 	func ServiceUserFeatures getUserFeatures()
 		var ServiceUserFeatures features = ServiceUserFeatures.new()
 		features.canAuthProviderLogin = Set.new()
-		features.canAuthProviderLogin.add(ServiceSteamSdk.authProviderId)
-		features.canAuthProviderLogin.add(ServiceEosSdk.authProviderId)
+		features.canAuthProviderLogin.add(ServiceSteam.authProviderId)
+		features.canAuthProviderLogin.add(ServiceEos.authProviderId)
 		features.canLogout = true
 		return features
 	end

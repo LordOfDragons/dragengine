@@ -1,0 +1,677 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Services
+pin Dragengine.Utils
+pin Dragengine.Services.Mods
+pin Dragengine.Services.User
+pin Dragengine.Services.Stats
+
+/**
+ * \brief Base class managing basic game services.
+ * \version 1.23
+ * 
+ * Stores list of basic game services. User can request instances of supported services to be
+ * created. The user can either request them individually or all automatically. Supports services
+ * of implementing these interfaces:
+ * - \ref ServiceUser: Authenticate user and managing user account
+ * - \ref ServiceStats: Manage user statistics and achievements
+ * - \ref ServiceMods: Manage game modifications
+ * 
+ * See the documentation of the respective service create function for the parameters required
+ * to successfully start the service. The information is stored in the game configuration
+ * parameter tree. Supports being used by BaseGameApp and other base classes as long as the
+ * required object instances can be provided on construction time.
+ * 
+ * Make sue to call \ref BaseGameServices#dispose() upon closing the game to properly clean up
+ * all service resources.
+ */
+class BaseGameServices
+	var ParameterTree pConfiguration
+	var Console pConsole
+	
+	var ServiceSteam pSteam
+	var ServiceEos pEos
+	var ServiceModio pModio
+	
+	var Array pUser, pStats, pMods
+	var int pInitializeCount
+	
+	
+	
+	/**
+	 * \brief Create base game services instance using \ref BaseGameApp#getApp().
+	 */
+	func new() this(BaseGameApp.getApp().getConfiguration(), BaseGameApp.getApp().getConsole())
+	end
+	
+	/**
+	 * \brief Create base game services instance.
+	 */
+	func new(ParameterTree configuration, Console console)
+		if configuration == null
+			ENullPointer.new("configuration")
+		end
+		
+		pConfiguration = configuration
+		pConsole = console
+		
+		pUser = Array.new()
+		pStats = Array.new()
+		pMods = Array.new()
+	end
+	
+	/**
+	 * \brief Dispose of base game services.
+	 */
+	func void dispose()
+		closeModio()
+		closeSteam()
+		closeEos()
+		
+		pMods = pStats = pUser = null
+	end
+	
+	
+	
+	/** \brief Count of initialized user services. */
+	func int getUserServiceCount()
+		return pUser.getCount()
+	end
+	
+	/** \brief Add user service. */
+	func void addUserService(ServiceUser service)
+		if service == null
+			throw EInvalidParam.new("service")
+		end
+		if pUser.has(service)
+			throw EInvalidParam.new("Already present")
+		end
+		
+		pUser.add(service)
+	end
+	
+	/** \brief Remove user service if present. */
+	func void removeUserService(ServiceUser service)
+		if pUser.has(service)
+			pUser.remove(service)
+		end
+	end
+	
+	/**
+	 * \brief Visit user services with block.
+	 * 
+	 * Block receives as parameter ServiceUser.
+	 */
+	func void forEachUserService(Block ablock)
+		pUser.forEach(ablock)
+	end
+	
+	/**
+	 * \brief Find user services with block.
+	 * 
+	 * Block receives as parameter ServiceUser and has to return true if found or false otherwise.
+	 */
+	func ServiceUser findUserService(Block ablock)
+		return pUser.find(ablock) cast ServiceUser
+	end
+	
+	/**
+	 * \brief Collect user services using block.
+	 * 
+	 * Block receives as parameter ServiceUser and has to return true to include the service
+	 * in the returned list or false to not include.
+	 */
+	func Array collectUserService(Block ablock)
+		return pUser.collect(ablock)
+	end
+	
+	/** \brief All user services as Array of ServiceUser. */
+	func Array getAllUserServices()
+		return Array.new(pUser)
+	end
+	
+	
+	
+	/** \brief Count of initialized stats services. */
+	func int getStatsServiceCount()
+		return pStats.getCount()
+	end
+	
+	/** \brief Add stats service. */
+	func void addStatsService(ServiceStats service)
+		if service == null
+			throw EInvalidParam.new("service")
+		end
+		if pStats.has(service)
+			throw EInvalidParam.new("Already present")
+		end
+		
+		pStats.add(service)
+	end
+	
+	/** \brief Remove stats service if present. */
+	func void removeStatsService(ServiceStats service)
+		if pStats.has(service)
+			pStats.remove(service)
+		end
+	end
+	
+	/**
+	 * \brief Visit stats services with block.
+	 * 
+	 * Block receives as parameter ServiceStats.
+	 */
+	func void forEachStatsService(Block ablock)
+		pStats.forEach(ablock)
+	end
+	
+	/**
+	 * \brief Find stats services with block.
+	 * 
+	 * Block receives as parameter ServiceStats and has to return true if found or false otherwise.
+	 */
+	func ServiceStats findStatsService(Block ablock)
+		return pStats.find(ablock) cast ServiceStats
+	end
+	
+	/**
+	 * \brief Collect stats services using block.
+	 * 
+	 * Block receives as parameter ServiceStats and has to return true to include the service
+	 * in the returned list or false to not include.
+	 */
+	func Array collectStatsService(Block ablock)
+		return pStats.collect(ablock)
+	end
+	
+	/** \brief All stats services as Array of ServiceStats. */
+	func Array getAllStatsServices()
+		return Array.new(pStats)
+	end
+	
+	
+	
+	/** \brief Count of initialized modification services. */
+	func int getModsServiceCount()
+		return pMods.getCount()
+	end
+	
+	/** \brief Add modification service. */
+	func void addModsService(ServiceMods service)
+		if service == null
+			throw EInvalidParam.new("service")
+		end
+		if pMods.has(service)
+			throw EInvalidParam.new("Already present")
+		end
+		
+		pMods.add(service)
+	end
+	
+	/** \brief Remove modification service if present. */
+	func void removeModsService(ServiceMods service)
+		if pMods.has(service)
+			pMods.remove(service)
+		end
+	end
+	
+	/**
+	 * \brief Visit modification services with block.
+	 * 
+	 * Block receives as parameter ServiceMods.
+	 */
+	func void forEachModsService(Block ablock)
+		pMods.forEach(ablock)
+	end
+	
+	/**
+	 * \brief Find modification services with block.
+	 * 
+	 * Block receives as parameter ServiceMods and has to return true if found or false otherwise.
+	 */
+	func ServiceMods findModsService(Block ablock)
+		return pMods.find(ablock) cast ServiceMods
+	end
+	
+	/**
+	 * \brief Collect modification services using block.
+	 * 
+	 * Block receives as parameter ServiceMods and has to return true to include the service
+	 * in the returned list or false to not include.
+	 */
+	func Array collectModsService(Block ablock)
+		return pMods.collect(ablock)
+	end
+	
+	/** \brief All modification services as Array of ServiceMods. */
+	func Array getAllModsServices()
+		return Array.new(pMods)
+	end
+	
+	
+	
+	/** \brief Count of services in progress of being initialized. */
+	func int getInitializeServiceCount()
+		return pInitializeCount
+	end
+	
+	/** \brief Increment initialize service count by 1. */
+	func void addInitializeService()
+		pInitializeCount++
+	end
+	
+	/** \brief Decrement initialize service count by 1. */
+	func void removeInitializeService()
+		pInitializeCount--
+	end
+	
+	
+	
+	/** \brief Steam service or null. */
+	func ServiceSteam getSteam()
+		return pSteam
+	end
+	
+	/**
+	 * \brief Initialize Steam service using parameters from configuration parameter tree.
+	 * 
+	 * Requires these configuration parameters to be present:
+	 * - steam.appid: String value containing Steam appid.
+	 * 
+	 * Service will be added to the following type specific service lists:
+	 * - User services
+	 * - Stats services
+	 * 
+	 * \throws EInvalidParam One or more required configuration parameter is missing.
+	 * \throws EInvalidAction Steam is already initialized.
+	 */
+	func void initSteam()
+		var ServiceSteam.InitParameters params = ServiceSteam.InitParameters.new()
+		params.appId = pConfiguration.getStringAt("steam.appid", null)
+		initSteam(params)
+	end
+	
+	/**
+	 * \brief Initialize Steam service.
+	 * 
+	 * Service will be added to the following type specific service lists:
+	 * - User services
+	 * - Stats services
+	 * 
+	 * \throws EInvalidParam One or more parameter is invalid.
+	 * \throws EInvalidAction Steam is already initialized.
+	 */
+	func void initSteam(ServiceSteam.InitParameters params)
+		if pSteam != null
+			throw EInvalidAction.new("Already initialized")
+		end
+		
+		pConsole.addMessage("Initialize Steam service")
+		pSteam = ServiceSteam.new(params)
+		
+		pUser.add(pSteam)
+		pStats.add(pSteam)
+		pConsole.addMessage("Initialize Steam service succeeded")
+	end
+	
+	/**
+	 * \brief Automatically initialize steam if supported.
+	 * 
+	 * Initializes Steam if all of the following conditions are fulfilled:
+	 * - Steam service module is present and running
+	 * - Steam is running
+	 * - Has configuration parameters:
+	 *   - steam.appid
+	 * 
+	 * Failure to initialize is only logged and does not throw an exception.
+	 */
+	func void autoInitSteam()
+		if ServiceSteam.isServiceSupported() and pConfiguration.has("steam.appid")
+			try
+				initSteam()
+				
+			catch Exception e
+				closeSteam()
+				pConsole.addError("Failed initialize Steam service", e)
+			end
+		end
+	end
+	
+	/**
+	 * \brief Close and dispose Steam service.
+	 * 
+	 * Does nothing if service is not initialized.
+	 */
+	func void closeSteam()
+		if pSteam == null
+			return
+		end
+		
+		if pStats.has(pSteam)
+			pStats.remove(pSteam)
+		end
+		if pUser.has(pSteam)
+			pUser.remove(pSteam)
+		end
+		
+		pSteam.dispose()
+		pSteam = null
+	end
+	
+	
+	
+	/** EOS service or null. */
+	func ServiceEos getEos()
+		return pEos
+	end
+	
+	/**
+	 * \brief Initialize EOS service using parameters from configuration parameter tree.
+	 * 
+	 * Requires these configuration parameters to be present:
+	 * - eos.productName: String value containing product name.
+	 * - eos.productVersion: String value containing product version.
+	 * - eos.productId: String value containing product identifier.
+	 * - eos.sandboxId: String value containing sandbox identifier.
+	 * - eos.deploymentId: String value containing deployment identifier.
+	 * 
+	 * Optional configuration paramenets:
+	 * - eos.clientId: String value containing client identifier.
+	 * - eos.clientSecret: String value containing client secret.
+	 * 
+	 * Once initialized successfully the service will be added to following type
+	 * specific service lists:
+	 * - User services
+	 * - Stats services
+	 * 
+	 * \param listener Listener to call if initialization finished or null.
+	 * \throws EInvalidParam One or more required configuration parameter is missing.
+	 * \throws EInvalidAction EOS is already initialized.
+	 */
+	func void initEos(ServiceInitListener listener)
+		var ServiceEos.InitParameters params = ServiceEos.InitParameters.new()
+		params.productName = pConfiguration.getStringAt("eos.productName", null)
+		params.productVersion = pConfiguration.getStringAt("eos.productVersion", null)
+		params.productId = pConfiguration.getStringAt("eos.productId", null)
+		params.sandboxId = pConfiguration.getStringAt("eos.sandboxId", null)
+		params.deploymentId = pConfiguration.getStringAt("eos.deploymentId", null)
+		params.clientId = pConfiguration.getStringAt("eos.clientId", null)
+		params.clientSecret = pConfiguration.getStringAt("eos.clientSecret", null)
+		initEos(params, null)
+	end
+	
+	/**
+	 * \brief Initialize EOS service.
+	 * 
+	 * Once initialized successfully the service will be added to following type
+	 * specific service lists:
+	 * - User services
+	 * - Stats services
+	 * 
+	 * \param params Initialization parameters.
+	 * \param listener Listener to call if initialization finished or null.
+	 * \throws EInvalidParam One or more parameter is invalid.
+	 * \throws EInvalidAction EOS is already initialized.
+	 */
+	func void initEos(ServiceEos.InitParameters params, ServiceInitListener listener)
+		if pEos != null
+			throw EInvalidAction.new("Already initialized")
+		end
+		
+		pConsole.addMessage("Initialize EOS service")
+		
+		pEos = ServiceEos.new(params, BlockServiceInitListener.new(block Object service, Exception exception
+			pInitializeCount--
+			if exception == null
+				pUser.add(pEos)
+				pStats.add(pEos)
+				pConsole.addMessage("Initialize EOS service succeeded")
+				if listener != null
+					listener.onServiceInit(service, exception)
+				end
+				
+			else
+				pConsole.addError("Failed initialize EOS service", exception)
+				if listener != null
+					listener.onServiceInit(service, exception)
+				end
+				closeEos()
+			end
+		end))
+		pInitializeCount++
+	end
+	
+	/**
+	 * \brief Automatically initialize EOS if supported.
+	 * 
+	 * Initializes EOS if all of the following conditions are fulfilled:
+	 * - EOS service module is present and running
+	 * - Application has been launched by the Epic Game Launcher
+	 * - Has configuration parameters:
+	 *   - eos.productName
+	 *   - eos.productVersion
+	 *   - eos.productId
+	 *   - eos.sandboxId
+	 *   - eos.deploymentId
+	 * 
+	 * Failure to initialize is only logged and does not throw an exception.
+	 */
+	func void autoInitEos()
+		if ServiceEos.isServiceSupported() and pConfiguration.has("eos.productName")\
+		and pConfiguration.has("eos.productVersion") and pConfiguration.has("eos.productId")\
+		and pConfiguration.has("eos.sandboxId") and pConfiguration.has("eos.deploymentId")
+			try
+				initEos(null)
+				
+			catch Exception e
+				closeEos()
+				pConsole.addError("Failed initialize EOS service", e)
+			end
+		end
+	end
+	
+	/**
+	 * \brief Close and dispose Eos service.
+	 * 
+	 * Does nothing if service is not initialized.
+	 */
+	func void closeEos()
+		if pEos == null
+			return
+		end
+		
+		if pStats.has(pEos)
+			pStats.remove(pEos)
+		end
+		if pUser.has(pEos)
+			pUser.remove(pEos)
+		end
+		
+		pEos.dispose()
+		pEos = null
+	end
+	
+	
+	
+	/** Mod.io service or null. */
+	func ServiceModio getModio()
+		return pModio
+	end
+	
+	/**
+	 * \brief Initialize Mod.io service using parameters from configuration parameter tree.
+	 * 
+	 * Requires these configuration parameters to be present:
+	 * - modio.gameid: String value containing Mod.io gameid.
+	 * - modio.appkey: String value containing Mod.io appkey.
+	 * 
+	 * Optional configuration parameters:
+	 * - modio.user: String value containing local user name to use. Default "user"
+	 * 
+	 * Portal is chosen depending on the initialized user services.
+	 * 
+	 * Once initialized successfully the service will be added to following type
+	 * specific service lists:
+	 * - User services
+	 * - Mods services
+	 * 
+	 * \param listener Listener to call if initialization finished or null.
+	 * \throws EInvalidParam One or more required configuration parameter is missing.
+	 * \throws EInvalidAction Mod.io is already initialized.
+	 */
+	func void initModio(ServiceInitListener listener)
+		var ServiceModio.InitParameters params = ServiceModio.InitParameters.new()
+		params.apiKey = pConfiguration.getStringAt("modio.appkey", null)
+		params.gameId = pConfiguration.getStringAt("modio.gameid", null)
+		params.userId = pConfiguration.getStringAt("modio.user", "user")
+		
+		if pSteam != null
+			params.portal = ServiceModio.Portal.steam
+			
+		elif pEos != null
+			params.portal = ServiceModio.Portal.epicGamesStore
+		end
+		
+		initModio(params, listener)
+	end
+	
+	/**
+	 * \brief Initialize Mod.io service.
+	 * 
+	 * Once initialized successfully the service will be added to following type
+	 * specific service lists:
+	 * - User services
+	 * - Mods services
+	 * 
+	 * \param params Initialization parameters
+	 * \param listener Listener to call if initialization finished or null.
+	 * \throws EInvalidParam One or more parameter is invalid.
+	 * \throws EInvalidAction Mod.io is already initialized.
+	 */
+	func void initModio(ServiceModio.InitParameters params, ServiceInitListener listener)
+		if pModio != null
+			throw EInvalidAction.new("Already initialized")
+		end
+		
+		pConsole.addMessage("Initialize Mod.io service")
+		
+		pModio = ServiceModio.new(params, BlockServiceInitListener.new(block Object service, Exception exception
+			pInitializeCount--
+			if exception == null
+				pUser.add(pModio)
+				pMods.add(pModio)
+				pConsole.addMessage("Initialize Mod.io service succeeded")
+				if listener != null
+					listener.onServiceInit(service, exception)
+				end
+				
+			else
+				pConsole.addError("Failed initialize Mod.io service", exception)
+				if listener != null
+					listener.onServiceInit(service, exception)
+				end
+				closeModio()
+			end
+		end))
+		pInitializeCount++
+	end
+	
+	/**
+	 * \brief Automatically initialize Mod.io if supported.
+	 * 
+	 * Initializes Mod.io if all of the following conditions are fulfilled:
+	 * - Mod.io service module is present and running
+	 * - Has configuration parameters:
+	 *   - modio.gameid
+	 *   - modio.appkey
+	 * 
+	 * Failure to initialize is only logged and does not throw an exception.
+	 */
+	func void autoInitModio()
+		if ServiceModio.isServiceSupported() and pConfiguration.has("modio.gameid")\
+		and pConfiguration.has("modio.appkey")
+			try
+				initModio(null)
+				
+			catch Exception e
+				closeModio()
+				pConsole.addError("Failed initialize Mod.io service", e)
+			end
+		end
+	end
+	
+	/**
+	 * \brief Close and dispose Mod.io service.
+	 * 
+	 * Does nothing if service is not initialized.
+	 */
+	func void closeModio()
+		if pModio == null
+			return
+		end
+		
+		if pMods.has(pModio)
+			pMods.remove(pModio)
+		end
+		if pUser.has(pModio)
+			pUser.remove(pModio)
+		end
+		
+		pModio.dispose()
+		pModio = null
+	end
+	
+	
+	
+	/**
+	 * \brief Automatically initialize supported services.
+	 * 
+	 * Uses presence of configuration options and command line parameters to initialize all
+	 * supported services.
+	 * 
+	 * Some service are asynchronously initialized and will be only available in the type
+	 * specific lists once successfully initialized. Use \ref #getInitializeServiceCount() to
+	 * know if there are still service initializing. Once all services finished initializing
+	 * it is safe to examine which services are actually usable.
+	 * 
+	 * Failure to initialize services is only logged and does not throw exceptions.
+	 * 
+	 * The following services are supported:
+	 * - Steam: autoInitSteam()
+	 * - EOS: autoInitEos()
+	 * 
+	 * \par Mod.io (ServiceModio)
+	 * 
+	 * Requires configuration parameters:
+	 * - modio.gameid
+	 * - modio.appkey
+	 */
+	func void autoInitServices()
+		pConsole.addMessage("Auto initialize services")
+		autoInitSteam()
+		autoInitEos()
+		autoInitModio()
+	end
+end

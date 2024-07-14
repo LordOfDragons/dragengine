@@ -37,7 +37,7 @@ pin Dragengine.Utils
  * - Stats/Achievements
  * - User
  */
-class ServiceSteamSdk implements ServiceStats, ServiceUser, ServiceListener
+class ServiceSteam implements ServiceStats, ServiceUser, ServiceListener
 	/**
 	 * \brief Service initialization parameters.
 	 */

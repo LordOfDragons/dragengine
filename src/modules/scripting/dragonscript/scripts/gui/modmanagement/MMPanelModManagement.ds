@@ -348,14 +348,11 @@ class MMPanelModManagement extends Panel
 	
 	/**
 	 * \brief Create mod management panel.
+	 * \todo For the time being only the first service is used.
 	 */
-	func new(ServiceMods serviceMods)
-		if serviceMods == null
-			throw ENullPointer.new("serviceMods")
-		end
-		
-		pServiceMods = serviceMods
-		pServiceModFeatures = serviceMods.getModsFeatures()
+	func new(Array services)
+		pServiceMods = services.getAt(0) cast ServiceMods
+		pServiceModFeatures = pServiceMods.getModsFeatures()
 		pCodecPropertyString = CodecPropertyString.new()
 		pSearchTagCategories = Array.new()
 		pRestartInfo = "modsRequiredRestart"
@@ -391,13 +388,13 @@ class MMPanelModManagement extends Panel
 		pModelSortBy.addListener(SearchSelectionChanged.new(this))
 		
 		pModEventListener = ModEventListener.new(this)
-		serviceMods.addModsListener(pModEventListener)
+		pServiceMods.addModsListener(pModEventListener)
 		
 		updateSubscribedMods()
 		pOrgSubscribedMods = Dictionary.new(pSubscribedMods)
 		updateSystemMods()
 		
-		serviceMods.getTags(null)
+		pServiceMods.getTags(null)
 		searchMods(ServiceModFilter.new())
 		
 		pModelViewCategory.addListener(ViewCategoryChanged.new(this))
