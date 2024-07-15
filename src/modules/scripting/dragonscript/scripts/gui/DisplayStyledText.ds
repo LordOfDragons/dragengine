@@ -221,6 +221,10 @@ class DisplayStyledText extends Widget
 		pMinSizeForWidthWidth = width
 		
 		// this here is required otherwise the parent container layout can start exploding
+		// note: commented out since it causes problems in conversation subtitles.
+		//       maybe reactivate using a parameter to switch it on if required?
+		//       is it really enough of a problem to risk breaking things?
+		/*
 		if pStyledTextDocument != null
 			width = pStyledTextDocument.getDefinition().getPageSize().getX()
 			
@@ -228,6 +232,7 @@ class DisplayStyledText extends Widget
 			width = pMinPageSize.getX()
 		end
 		pMinSizeForWidthSize = Point.new(DEMath.min(pMinSizeForWidthSize.getX(), width), pMinSizeForWidthSize.getY())
+		*/
 		
 		return pMinSizeForWidthSize
 	end
