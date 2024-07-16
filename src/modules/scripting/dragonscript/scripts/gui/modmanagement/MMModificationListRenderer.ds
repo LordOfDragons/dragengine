@@ -179,9 +179,8 @@ class MMModificationListRenderer implements ListElementRenderer
 		
 		/** \brief Update modification status information. */
 		func void updateStatusInfo()
-			var bool subscribed = pMod.status != null
 			runWhileBlockingLayout(block
-				if subscribed
+				if pMod.status != null
 					if pMod.status.disabled
 						pModelSubscribed.setText("@UI.ModManagement.Status.Disabled")
 						pLabelSubscribed.setDesignerSelector("Label." + pDesignerSelectorBase\
@@ -248,8 +247,20 @@ class MMModificationListRenderer implements ListElementRenderer
 			pIconRating.setDesignerSelector(dsico + ".Rating" + pDesignerSelectorSuffix)
 			pLabelRating.setDesignerSelector(dslab + ".Rating" + pDesignerSelectorSuffix)
 			
-			pLabelSubscribed.setDesignerSelector(dslab + (pMod != null and pMod.status != null\
-				if ".Subscribed" else ".Unsubscribed") + pDesignerSelectorSuffix)
+			if pMod != null and pMod.status != null
+				if pMod.status.disabled
+					pLabelSubscribed.setDesignerSelector("Label." + pDesignerSelectorBase\
+							+ ".Disabled" + pDesignerSelectorSuffix)
+					
+				else
+					pLabelSubscribed.setDesignerSelector("Label." + pDesignerSelectorBase\
+							+ ".Subscribed" + pDesignerSelectorSuffix)
+				end
+				
+			else
+				pLabelSubscribed.setDesignerSelector("Label." + pDesignerSelectorBase\
+					+ ".Unsubscribed" + pDesignerSelectorSuffix)
+			end
 		end
 		
 		/** \brief Create content. */

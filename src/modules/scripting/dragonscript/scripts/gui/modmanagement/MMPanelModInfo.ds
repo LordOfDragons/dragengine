@@ -118,6 +118,14 @@ class MMPanelModInfo extends Panel
 			end
 		end
 		
+		/** \brief Modification disabled changed. */
+		func void onSetModDisabled(ServiceMods service, String modId, bool disabled, Exception exception)
+			if exception == null
+				pPanel.getMod().status.disabled = disabled
+				pPanel.updateModInfo(modId, null)
+			end
+		end
+		
 		/** \brief Modification rating submitted. */
 		func void onSubmitModRating(ServiceMods service, String modId, Exception exception)
 			if exception == null
@@ -287,7 +295,7 @@ class MMPanelModInfo extends Panel
 			pMod.info.id, "/scripts", true, Set.newWith("*.ds"))
 		var bool disabled = not pMod.status.disabled
 		
-		pServiceMods.setModDisabled(pMod.info.id, disabled)
+		pServiceMods.setModDisabled(pMod.info.id, disabled, null)
 		
 		if disabled and hasScripts and pSubscribedMods.has(pMod.info.id)
 			promptRequiresRestart()
@@ -339,7 +347,7 @@ class MMPanelModInfo extends Panel
 		pButtonSubscribe.doLayoutIfBlocked()
 		
 		pButtonDisable.runWhileBlockingLayout(block
-			if pMod.status.disabled
+			if pMod.status == null or pMod.status.disabled
 				pButtonDisable.setDesignerSelector("Button.WindowModManagementMod.Enable")
 				pButtonDisable.setText("@UI.ModManagementMod.Enable")
 				pButtonDisable.setToolTip("@UI.ModManagementMod.Enable.ToolTip")
@@ -349,6 +357,8 @@ class MMPanelModInfo extends Panel
 				pButtonDisable.setText("@UI.ModManagementMod.Disable")
 				pButtonDisable.setToolTip("@UI.ModManagementMod.Disable.ToolTip")
 			end
+			
+			pButtonDisable.setEnabled(pMod.status != null)
 		end)
 		pButtonDisable.doLayoutIfBlocked()
 	end

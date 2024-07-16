@@ -122,6 +122,21 @@ class MMPanelModManagement extends Panel
 			end
 		end
 		
+		func void onSetModDisabled(ServiceMods service, String modId, bool disabled, Exception exception)
+			if exception != null
+				return
+			end
+			
+			var MMModification mod = pPanel.getModelMods().find(block MMModification each
+				return each.info.id.equals(modId)
+			end) cast MMModification
+			if mod != null and mod.status != null
+				mod.status.disabled = disabled
+			end
+			
+			pPanel.updateModInfo(modId, null)
+		end
+		
 		func void onModManagement(ServiceMods service, ServiceMods.ManagementEvent event,\
 		String modId, ServiceModProgress progress, Exception exception)
 			if progress != null
@@ -395,11 +410,13 @@ class MMPanelModManagement extends Panel
 		pServiceMods.addModsListener(pModEventListener)
 		
 		updateSubscribedMods()
-		pOrgSubscribedMods = Dictionary.new(pSubscribedMods)
+		pOrgSubscribedMods = pServiceMods.getSubscribedMods() // requires full copy
 		updateSystemMods()
 		
 		pServiceMods.getTags(null)
 		searchMods(ServiceModFilter.new())
+		
+		updateModelTransfers()
 		
 		pModelViewCategory.addListener(ViewCategoryChanged.new(this))
 	end
@@ -495,6 +512,11 @@ class MMPanelModManagement extends Panel
 		return -1
 	end
 	
+	/** \brief Modifications list model. */
+	func DefaultListModel getModelMods()
+		return pModelMods
+	end
+	
 	/**
 	 * \brief Search for modifications.
 	 * 
@@ -574,11 +596,27 @@ class MMPanelModManagement extends Panel
 	
 	
 	
+	/** \brief Transfer list model. */
+	func DefaultListModel getModelTransfer()
+		return pModelTransfers
+	end
+	
 	/**
 	 * \brief Update transfers model.
 	 */
 	func void updateModelTransfers()
-		pModelTransfers.setContent(pServiceMods.getSubscribedMods().getValues().collect(\
+		var Dictionary fake = pServiceMods.getSubscribedMods()
+		fake.forEachValue(block ServiceModStatus each
+			if each.id.equals("4099326")
+				each.status = ServiceModStatus.Status.installationPending
+			elif each.id.equals("4099373")
+				each.status = ServiceModStatus.Status.downloading
+			else
+				each.status = ServiceModStatus.Status.installationPending
+			end
+		end)
+		
+		pModelTransfers.setContent(/*pServiceMods.getSubscribedMods()*/fake.getValues().collect(\
 			block ServiceModStatus each
 				return each.status != ServiceModStatus.Status.installed
 			end).map(block ServiceModStatus each
@@ -742,13 +780,15 @@ class MMPanelModManagement extends Panel
 	func void onViewCategoryChanged()
 		select getViewCategory()
 		case ViewCategory.browseMods
+			pSwitchContent.getModel().setValue(0)
 			searchMods()
 			
 		case ViewCategory.subscribedMods
+			pSwitchContent.getModel().setValue(0)
 			searchMods()
 			
 		case ViewCategory.transfer
-			
+			pSwitchContent.getModel().setValue(1)
 		end
 	end
 	
@@ -878,7 +918,6 @@ class MMPanelModManagement extends Panel
 			pListTransfers = ListBox.new(pModelTransfers, createTransferListElementRenderer())
 			pListTransfers.setDesignerSelector("ListBox.MMPanelModManagement.Transfers")
 			pListTransfers.setNumberDisplayLines(1)
-			pListTransfers.addMouseListener(ClickedModDetails.new(this, pListTransfers))
 			p.addWidget(ScrollPanel.new(pListTransfers, ScrollPanel.Policy.hidden, ScrollPanel.Policy.visible))
 		end)
 		addWidget(pSwitchContent, BorderLayout.Area.content)

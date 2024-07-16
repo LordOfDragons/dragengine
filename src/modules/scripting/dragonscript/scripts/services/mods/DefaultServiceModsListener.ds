@@ -90,6 +90,16 @@ class DefaultServiceModsListener implements ServiceModsListener
 	end
 	
 	/**
+	 * \brief Set modification disabled finished.
+	 * \param service Service sending the event.
+	 * \param modId Identifier of modification.
+	 * \param disabled Disabled state of modification.
+	 * \param exception On success null. On failure contains error information.
+	 */
+	func void onSetModDisabled(ServiceMods service, String modId, bool disabled, Exception exception)
+	end
+	
+	/**
 	 * \brief Retrieve modification information finished.
 	 * \param service Service sending the event.
 	 * \param modId Identifier of modification.

@@ -290,8 +290,12 @@ interface ServiceMods
 	 * state of a modification use \ref #getSubscribedMods().
 	 * 
 	 * If modification is not found nothing is done.
+	 * 
+	 * \param modId Identifier of modification to revoke rating for.
+	 * \param disabled Disabled state.
+	 * \param listener If not null called once in addition to added listeners.
 	 */
-	func void setModDisabled(String id, bool disabled)
+	func void setModDisabled(String id, bool disabled, ServiceModsListener listener)
 	
 	/**
 	 * \brief Modification has files matching one or more patterns.

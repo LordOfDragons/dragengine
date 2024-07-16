@@ -68,6 +68,7 @@ class MMTransferListRenderer implements ListElementRenderer
 		var ServiceMods pServiceMods
 		var TextModel pModelName, pModelStatus, pModelStatusDetails
 		var RangeModel pModelProgress
+		var Panel pPanelInfo
 		var DisplayImage pImageLogo
 		var Label pLabelName, pLabelStatus, pLabelStatusDetails
 		var ProgressBar pProgressBar
@@ -105,6 +106,7 @@ class MMTransferListRenderer implements ListElementRenderer
 			pImageLogo = null
 			pLabelName = pLabelStatus = pLabelStatusDetails = null
 			pProgressBar = null
+			pPanelInfo = null
 			super.dispose()
 		end
 		
@@ -216,8 +218,8 @@ class MMTransferListRenderer implements ListElementRenderer
 		 * getDesignerSelectorSuffix() to construct designer selector all affected widgets.
 		 */
 		protected func void setAllDesignerSelectorsBlocked()
-			setDesignerSelector("Panel." + pDesignerSelectorBase + pDesignerSelectorSuffix)
-			
+			setDesignerSelector("Panel." + pDesignerSelectorBase + ".Main" + pDesignerSelectorSuffix)
+			pPanelInfo.setDesignerSelector("Panel." + pDesignerSelectorBase + ".Info" + pDesignerSelectorSuffix)
 			pImageLogo.setDesignerSelector("Image." + pDesignerSelectorBase + pDesignerSelectorSuffix)
 			
 			var String dslab = "Label." + pDesignerSelectorBase
@@ -232,7 +234,7 @@ class MMTransferListRenderer implements ListElementRenderer
 			pImageLogo = DisplayImage.new(null, RepeatMode.stretchRatio)
 			addWidget(pImageLogo, BorderLayout.Area.left)
 			
-			addWidget(Panel.new(FlowLayout.new(LayoutAxis.y, 0), block Panel p
+			pPanelInfo = Panel.new(FlowLayout.new(LayoutAxis.y, 0), block Panel p
 				pLabelName = Label.new(pModelName)
 				p.addWidget(pLabelName)
 				
@@ -246,7 +248,9 @@ class MMTransferListRenderer implements ListElementRenderer
 				
 				pProgressBar = ProgressBar.new(Orientation.horizontal, pModelProgress)
 				p.addWidget(pProgressBar)
-			end), BorderLayout.Area.content)
+			end)
+			
+			addWidget(pPanelInfo, BorderLayout.Area.content)
 		end
 	end
 	

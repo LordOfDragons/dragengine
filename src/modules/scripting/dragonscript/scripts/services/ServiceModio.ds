@@ -553,13 +553,36 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 	 * state of a modification use \ref #getSubscribedMods().
 	 * 
 	 * If modification is not found nothing is done.
+	 * 
+	 * \param modId Identifier of modification to revoke rating for.
+	 * \param disabled Disabled state.
+	 * \param listener If not null called once in addition to added listeners.
 	 */
-	func void setModDisabled(String id, bool disables)
+	func void setModDisabled(String id, bool disabled, ServiceModsListener listener)
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "setModDisabled")
 		so.setStringChildAt("modId", id)
-		so.setBoolChildAt("disabled", disables)
-		pService.runAction(so)
+		so.setBoolChildAt("disabled", disabled)
+		
+		try
+			pService.runAction(so)
+			
+		catch Exception e
+			pModsListeners.forEach(block ServiceModsListener each
+				each.onSetModDisabled(this, id, disabled, e)
+			end)
+			if listener != null
+				listener.onSetModDisabled(this, id, disabled, e)
+			end
+			return
+		end
+		
+		pModsListeners.forEach(block ServiceModsListener each
+			each.onSetModDisabled(this, id, disabled, null)
+		end)
+		if listener != null
+			listener.onSetModDisabled(this, id, disabled, null)
+		end
 	end
 	
 	/**

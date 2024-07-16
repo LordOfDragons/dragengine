@@ -75,6 +75,15 @@ interface ServiceModsListener
 	func void onUnsubscribeMod(ServiceMods service, String modId, Exception exception)
 	
 	/**
+	 * \brief Set modification disabled finished.
+	 * \param service Service sending the event.
+	 * \param modId Identifier of modification.
+	 * \param disabled Disabled state of modification.
+	 * \param exception On success null. On failure contains error information.
+	 */
+	func void onSetModDisabled(ServiceMods service, String modId, bool disabled, Exception exception)
+	
+	/**
 	 * \brief Retrieve modification information finished.
 	 * \param service Service sending the event.
 	 * \param modId Identifier of modification.
