@@ -339,6 +339,8 @@
 	
 	- Mods list box: ListBox.MMPanelModManagement.Mods
 	
+	- Transfer list box: ListBox.MMPanelModManagement.Transfers
+	
 	- Side panel:
 	  - Search button: Button.MMPanelModManagement.Search
 	

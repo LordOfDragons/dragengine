@@ -66,24 +66,22 @@ class MMModification
 	
 	
 	
-	/**
-	 * \brief Modification information.
-	 */
+	/** \brief Modification information. */
 	public var ServiceModInfo info
 	
-	/**
-	 * \brief Modification status or null.
-	 */
+	/** \brief Modification status or null. */
 	public var ServiceModStatus status
 	
-	/**
-	 * \brief Cached logo image or null.
-	 */
+	/** \brief Modification progress or null. */
+	public var ServiceModProgress progress
+	
+	/** \brief Cached logo image or null. */
 	public var Image logo
 	
-	/**
-	 * \brief Gallery images as Array of GalleryImage or null if not loaded.
-	 */
+	/** \brief Cached small logo image or null. */
+	public var Image logoSmall
+	
+	/** \brief Gallery images as Array of GalleryImage or null if not loaded. */
 	public var Array galleryImages
 	
 	

@@ -131,8 +131,8 @@ class FormattingHelper
 	 * 
 	 * Returns text in the form "12.3%".
 	 */
-	func String formatRating(float rating)
-		return "{:0.1f}%".format(Array.newWith(rating))
+	func String formatPercentage(float percentage)
+		return "{:0.1f}%".format(Array.newWith(percentage))
 	end
 	
 	/**
@@ -141,8 +141,8 @@ class FormattingHelper
 	 * Same as \ref #formatPercentags(float) but with the choice of digits clamped to the
 	 * range from 0 to 3.
 	 */
-	func String formatRating(float rating, int digits)
-		return "{{:0.{}f}%".format(Array.newWith(DEMath.clamp(digits, 0, 3))).format(Array.newWith(rating))
+	func String formatPercentage(float percentage, int digits)
+		return "{{:0.{}f}%".format(Array.newWith(DEMath.clamp(digits, 0, 3))).format(Array.newWith(percentage))
 	end
 	
 	

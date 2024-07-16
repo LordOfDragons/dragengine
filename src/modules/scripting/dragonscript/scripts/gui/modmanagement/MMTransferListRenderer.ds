@@ -32,8 +32,10 @@ pin Dragengine.Gui.Designers
 /**
  * \brief List element renderer lists with MMModification instances.
  * \version 1.23
+ * 
+ * For use in transfer list box.
  */
-class MMModificationListRenderer implements ListElementRenderer
+class MMTransferListRenderer implements ListElementRenderer
 	/** \brief Widget representing modification. */
 	class ModWidget extends Panel
 		/** \brief Listener updating logo image once loaded. */
@@ -41,16 +43,14 @@ class MMModificationListRenderer implements ListElementRenderer
 			var ModWidget pWidget
 			var MMModification pMod
 			
-			/** \brief Create listener. */
 			func new(ModWidget widget, MMModification mod)
 				pWidget = widget
 				pMod = mod
 			end
 			
-			/** \brief Loading resource finished. */
 			func void onLoadResource(ServiceMods service, String url, Object resource, Exception exception)
 				if exception == null
-					pMod.logo = resource cast Image
+					pMod.logoSmall = resource cast Image
 					if pWidget.getMod() == pMod
 						pWidget.update()
 					end
@@ -66,11 +66,11 @@ class MMModificationListRenderer implements ListElementRenderer
 		
 		
 		var ServiceMods pServiceMods
-		var TextModel pModelName, pModelDownloads, pModelSize, pModelRating, pModelSubscribed
+		var TextModel pModelName, pModelStatus, pModelStatusDetails
+		var RangeModel pModelProgress
 		var DisplayImage pImageLogo
-		var Panel pPanelInfo
-		var DisplayIcon pIconDownloads, pIconSize, pIconRating
-		var Label pLabelName, pLabelDownloads, pLabelSize, pLabelRating, pLabelSubscribed
+		var Label pLabelName, pLabelStatus, pLabelStatusDetails
+		var ProgressBar pProgressBar
 		var String pDesignerSelectorBase, pDesignerSelectorSuffix
 		var MMModification pMod
 		
@@ -80,7 +80,7 @@ class MMModificationListRenderer implements ListElementRenderer
 		 * \param serviceMods Service required to load resources.
 		 * \param designerSelector Base designer selector to use.
 		 */
-		func new(ServiceMods serviceMods, String designerSelector) super(FlowLayout.new(LayoutAxis.y))
+		func new(ServiceMods serviceMods, String designerSelector) super(BorderLayout.new())
 			if serviceMods == null
 				throw ENullPointer.new("serviceMods")
 			end
@@ -88,10 +88,9 @@ class MMModificationListRenderer implements ListElementRenderer
 			pServiceMods = serviceMods
 			
 			pModelName = DefaultTextModel.new()
-			pModelDownloads = DefaultTextModel.new()
-			pModelSize = DefaultTextModel.new()
-			pModelRating = DefaultTextModel.new()
-			pModelSubscribed = DefaultTextModel.new()
+			pModelStatus = DefaultTextModel.new()
+			pModelStatusDetails = DefaultTextModel.new()
+			pModelProgress = DefaultRangeModel.new(0, 1000, 100, 0, 1)
 			
 			runWhileBlockingLayout(block
 				createContent()
@@ -101,11 +100,11 @@ class MMModificationListRenderer implements ListElementRenderer
 		
 		/** \brief Dispose of widget. */
 		func void dispose()
-			pModelName = pModelDownloads = pModelSize = pModelRating = pModelSubscribed = null
+			pModelName = pModelStatus = pModelStatusDetails = null
+			pModelProgress = null
 			pImageLogo = null
-			pPanelInfo = null
-			pIconDownloads = pIconSize = pIconRating = null
-			pLabelName = pLabelDownloads = pLabelSize = pLabelRating = pLabelSubscribed = null
+			pLabelName = pLabelStatus = pLabelStatusDetails = null
+			pProgressBar = null
 			super.dispose()
 		end
 		
@@ -147,10 +146,8 @@ class MMModificationListRenderer implements ListElementRenderer
 			
 			var ServiceModInfo info = mod.info
 			
-			if mod.logo == null and info.logo != null
-				mod.logo = info.logo.image
-				
-				if mod.logo == null
+			if mod.logoSmall == null and info.logo != null
+				if mod.logoSmall == null
 					var String url = findLoadLogoImage(info.logo)
 					if url != null
 						pServiceMods.loadResource(url, LoadLogoListener.new(this, mod))
@@ -165,38 +162,29 @@ class MMModificationListRenderer implements ListElementRenderer
 		/** \brief Update content from modification. */
 		func void update()
 			var FormattingHelper fh = FormattingHelper.new()
+			var ServiceModProgress progress = pMod.progress
+			var ServiceModStatus status = pMod.status
 			var ServiceModInfo info = pMod.info
+			
 			runWhileBlockingLayout(block
-				pImageLogo.setImage(pMod.logo)
+				pImageLogo.setImage(pMod.logoSmall)
 				pModelName.setText(info.name != null if info.name else "?")
-				pModelDownloads.setText(fh.formatCount(info.stats != null if info.stats.downloadCount else 0))
-				pModelSize.setText(fh.formatSize(info.latestRelease != null if info.latestRelease.filesize else 0))
-				pModelRating.setText(fh.formatPercentage(info.stats != null if info.stats.ratingAverage else 0))
-				updateStatusInfo()
-			end)
-			doLayoutIfBlocked()
-		end
-		
-		/** \brief Update modification status information. */
-		func void updateStatusInfo()
-			var bool subscribed = pMod.status != null
-			runWhileBlockingLayout(block
-				if subscribed
-					if pMod.status.disabled
-						pModelSubscribed.setText("@UI.ModManagement.Status.Disabled")
-						pLabelSubscribed.setDesignerSelector("Label." + pDesignerSelectorBase\
-							 + ".Disabled" + pDesignerSelectorSuffix)
+				pModelStatus.setText("@UI.ModManagement.Enum.ModStatus." + status.status.name())
+				
+				select status.status
+				case ServiceModStatus.Status.downloading, ServiceModStatus.Status.extracting
+					if progress != null
+						pModelStatusDetails.setText(fh.formatPercentage(progress.progress))
+						pModelProgress.setValue((progress.progress * 1000 + 0.5) cast int)
 						
 					else
-						pModelSubscribed.setText("@UI.ModManagement.Status.Subscribed")
-						pLabelSubscribed.setDesignerSelector("Label." + pDesignerSelectorBase\
-							 + ".Subscribed" + pDesignerSelectorSuffix)
+						pModelStatusDetails.setText("-")
+						pModelProgress.setValue(0)
 					end
 					
 				else
-					pModelSubscribed.setText("@UI.ModManagement.Status.Unsubscribed")
-					pLabelSubscribed.setDesignerSelector("Label." + pDesignerSelectorBase\
-						+ ".Unsubscribed" + pDesignerSelectorSuffix)
+					pModelStatusDetails.setText("")
+					pModelProgress.setValue(0)
 				end
 			end)
 			doLayoutIfBlocked()
@@ -221,11 +209,6 @@ class MMModificationListRenderer implements ListElementRenderer
 		end
 		
 		
-		/** \brief Panel containing modification information. */
-		protected func Panel getPanelInfo()
-			return pPanelInfo
-		end
-		
 		/**
 		 * \brief Set all designer selectors.
 		 * 
@@ -236,61 +219,34 @@ class MMModificationListRenderer implements ListElementRenderer
 			setDesignerSelector("Panel." + pDesignerSelectorBase + pDesignerSelectorSuffix)
 			
 			pImageLogo.setDesignerSelector("Image." + pDesignerSelectorBase + pDesignerSelectorSuffix)
-			pPanelInfo.setDesignerSelector("Panel." + pDesignerSelectorBase + ".Info" + pDesignerSelectorSuffix)
 			
 			var String dslab = "Label." + pDesignerSelectorBase
-			var String dsico = "Icon." + pDesignerSelectorBase
 			pLabelName.setDesignerSelector(dslab + ".Name" + pDesignerSelectorSuffix)
-			pIconDownloads.setDesignerSelector(dsico + ".Downloads" + pDesignerSelectorSuffix)
-			pLabelDownloads.setDesignerSelector(dslab + ".Downloads" + pDesignerSelectorSuffix)
-			pIconSize.setDesignerSelector(dsico + ".Size" + pDesignerSelectorSuffix)
-			pLabelSize.setDesignerSelector(dslab + ".Size" + pDesignerSelectorSuffix)
-			pIconRating.setDesignerSelector(dsico + ".Rating" + pDesignerSelectorSuffix)
-			pLabelRating.setDesignerSelector(dslab + ".Rating" + pDesignerSelectorSuffix)
-			
-			pLabelSubscribed.setDesignerSelector(dslab + (pMod != null and pMod.status != null\
-				if ".Subscribed" else ".Unsubscribed") + pDesignerSelectorSuffix)
+			pLabelStatus.setDesignerSelector(dslab + ".Status" + pDesignerSelectorSuffix)
+			pLabelStatusDetails.setDesignerSelector(dslab + ".StatusDetails" + pDesignerSelectorSuffix)
+			pProgressBar.setDesignerSelector("ProgressBar." + pDesignerSelectorBase + pDesignerSelectorSuffix)
 		end
 		
 		/** \brief Create content. */
 		protected func void createContent()
 			pImageLogo = DisplayImage.new(null, RepeatMode.stretchRatio)
-			addWidget(pImageLogo)
+			addWidget(pImageLogo, BorderLayout.Area.left)
 			
-			pPanelInfo = Panel.new(FlowLayout.new(LayoutAxis.y, 10), block Panel p
+			addWidget(Panel.new(FlowLayout.new(LayoutAxis.y, 0), block Panel p
 				pLabelName = Label.new(pModelName)
 				p.addWidget(pLabelName)
 				
-				p.addWidget(Panel.new(FlowLayout.new(LayoutAxis.x, 15), block Panel p2
-					p2.addWidget(Panel.new(FlowLayout.new(LayoutAxis.x), block Panel p3
-						pIconDownloads = DisplayIcon.new()
-						p3.addWidget(pIconDownloads)
-						
-						pLabelDownloads = Label.new(pModelDownloads)
-						p3.addWidget(pLabelDownloads)
-					end))
+				p.addWidget(Panel.new(BorderLayout.new(), block Panel p2
+					pLabelStatus = Label.new(pModelStatus)
+					p2.addWidget(pLabelStatus, BorderLayout.Area.left)
 					
-					p2.addWidget(Panel.new(FlowLayout.new(LayoutAxis.x), block Panel p3
-						pIconSize = DisplayIcon.new()
-						p3.addWidget(pIconSize)
-						
-						pLabelSize = Label.new(pModelSize)
-						p3.addWidget(pLabelSize)
-					end))
-					
-					p2.addWidget(Panel.new(FlowLayout.new(LayoutAxis.x), block Panel p3
-						pIconRating = DisplayIcon.new()
-						p3.addWidget(pIconRating)
-						
-						pLabelRating = Label.new(pModelRating)
-						p3.addWidget(pLabelRating)
-					end))
+					pLabelStatusDetails = Label.new(pModelStatusDetails)
+					p2.addWidget(pLabelStatusDetails, BorderLayout.Area.right)
 				end))
 				
-				pLabelSubscribed = Label.new(pModelSubscribed)
-				p.addWidget(pLabelSubscribed)
-			end)
-			addWidget(pPanelInfo)
+				pProgressBar = ProgressBar.new(Orientation.horizontal, pModelProgress)
+				p.addWidget(pProgressBar)
+			end), BorderLayout.Area.content)
 		end
 	end
 	
@@ -304,9 +260,9 @@ class MMModificationListRenderer implements ListElementRenderer
 	/**
 	 * \brief Create modification list model renderer.
 	 * 
-	 * Uses base designer selector "ListRenderer.MMModificationListRenderer".
+	 * Uses base designer selector "ListRenderer.MMTransferListRenderer".
 	 */
-	func new(ServiceMods serviceMods) this(serviceMods, "ListRenderer.MMModificationListRenderer")
+	func new(ServiceMods serviceMods) this(serviceMods, "ListRenderer.MMTransferListRenderer")
 	end
 	
 	/**
@@ -318,14 +274,10 @@ class MMModificationListRenderer implements ListElementRenderer
 		pDefaultMinimumSize = Point.new()
 		
 		pDefaultMod = MMModification.new(ServiceModInfo.new(), null)
-		pDefaultMod.info.descriptionText = "X"
 		pDefaultMod.info.id = ""
 		pDefaultMod.info.name = "X"
-		pDefaultMod.info.stats = ServiceModStats.new()
-		pDefaultMod.info.stats.downloadCount = 0
-		pDefaultMod.info.stats.ratingWeighted = 1
-		pDefaultMod.info.latestRelease = ServiceModRelease.new()
-		pDefaultMod.info.latestRelease.filesize = 1
+		pDefaultMod.status = ServiceModStatus.new()
+		pDefaultMod.status.status = ServiceModStatus.Status.installationPending
 	end
 	
 	

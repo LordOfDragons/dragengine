@@ -44,6 +44,8 @@ pin Dragengine.Gui.Events
  * 
  * - Mods list box: ListBox.MMPanelModManagement.Mods
  * 
+ * - Transfers list box: ListBox.MMPanelModManagement.Transfers
+ * 
  * - Side panel:
  *   - Search button: Button.MMPanelModManagement.Search
  * 
@@ -330,8 +332,9 @@ class MMPanelModManagement extends Panel
 	
 	var ServiceMods pServiceMods
 	var ServiceModsFeatures pServiceModFeatures
-	var DefaultListModel pModelViewCategory, pModelMods, pModelSortBy
-	var ListBox pListMods
+	var DefaultListModel pModelViewCategory, pModelMods, pModelSortBy, pModelTransfers
+	var SwitchPanel pSwitchContent
+	var ListBox pListMods, pListTransfers
 	var Button pButtonSearchMore
 	var DefaultTextModel pModelSearchName
 	var Panel pPanelTags, pPanelSearchName, pPanelSearchSort, pPanelBottomLine
@@ -365,6 +368,7 @@ class MMPanelModManagement extends Panel
 		
 		pModelMods = DefaultListModel.new()
 		pModelSearchName = DefaultTextModel.new()
+		pModelTransfers = DefaultListModel.new()
 		pSubscribedMods = Dictionary.new()
 		pSystemMods = Dictionary.new()
 		
@@ -407,12 +411,13 @@ class MMPanelModManagement extends Panel
 			pModEventListener = null
 		end
 		
-		pModelViewCategory = pModelMods = pModelSortBy = null
-		pListMods = null
+		pModelViewCategory = pModelMods = pModelSortBy = pModelTransfers = null
+		pListMods = pListTransfers = null
 		pButtonSearchMore = null
 		pModelSearchName = null
 		pPanelTags = pPanelSearchName = pPanelSearchSort = pPanelBottomLine = null
 		pSearchTagCategories = null
+		pSwitchContent = null
 		
 		pSearchModsListener = null
 		pServiceMods = null
@@ -570,6 +575,20 @@ class MMPanelModManagement extends Panel
 	
 	
 	/**
+	 * \brief Update transfers model.
+	 */
+	func void updateModelTransfers()
+		pModelTransfers.setContent(pServiceMods.getSubscribedMods().getValues().collect(\
+			block ServiceModStatus each
+				return each.status != ServiceModStatus.Status.installed
+			end).map(block ServiceModStatus each
+				return MMModification.new(each.info, each)
+			end))
+	end
+	
+	
+	
+	/**
 	 * \brief Show modification information in a new window.
 	 * 
 	 * Default implementation shows instance of \ref MMWindowModInfo.
@@ -581,6 +600,11 @@ class MMPanelModManagement extends Panel
 			var int index = pModelMods.indexOf(mod)
 			if index != -1
 				pModelMods.notifyContentChanged(index, index)
+			end
+			
+			index = pModelTransfers.indexOf(mod)
+			if index != -1
+				pModelTransfers.notifyContentChanged(index, index)
 			end
 		end))
 		windowModInfo.show(window, false, WindowModal.Placement.window)
@@ -840,13 +864,24 @@ class MMPanelModManagement extends Panel
 			end))
 		end), BorderLayout.Area.top)
 		
-		// content: listing
-		pListMods = ListBox.new(pModelMods, createModListElementRenderer())
-		pListMods.setDesignerSelector("ListBox.MMPanelModManagement.Mods")
-		pListMods.setType(ListBox.Type.verticalWrap)
-		pListMods.setNumberDisplayLines(1)
-		pListMods.addMouseListener(ClickedModDetails.new(this, pListMods))
-		addWidget(ScrollPanel.new(pListMods, ScrollPanel.Policy.hidden, ScrollPanel.Policy.visible), BorderLayout.Area.content)
+		// content
+		pSwitchContent = SwitchPanel.new(block Panel p
+			// content: mod listing
+			pListMods = ListBox.new(pModelMods, createModListElementRenderer())
+			pListMods.setDesignerSelector("ListBox.MMPanelModManagement.Mods")
+			pListMods.setType(ListBox.Type.verticalWrap)
+			pListMods.setNumberDisplayLines(1)
+			pListMods.addMouseListener(ClickedModDetails.new(this, pListMods))
+			p.addWidget(ScrollPanel.new(pListMods, ScrollPanel.Policy.hidden, ScrollPanel.Policy.visible))
+			
+			// content: transfer listing
+			pListTransfers = ListBox.new(pModelTransfers, createTransferListElementRenderer())
+			pListTransfers.setDesignerSelector("ListBox.MMPanelModManagement.Transfers")
+			pListTransfers.setNumberDisplayLines(1)
+			pListTransfers.addMouseListener(ClickedModDetails.new(this, pListTransfers))
+			p.addWidget(ScrollPanel.new(pListTransfers, ScrollPanel.Policy.hidden, ScrollPanel.Policy.visible))
+		end)
+		addWidget(pSwitchContent, BorderLayout.Area.content)
 		
 		// right side: search parameters
 		viewport = Viewport.new(Panel.new(FlowLayout.new(LayoutAxis.y), block Panel p
@@ -978,5 +1013,10 @@ class MMPanelModManagement extends Panel
 	/** \brief Create modification list element renderer. */
 	protected func ListElementRenderer createModListElementRenderer()
 		return MMModificationListRenderer.new(pServiceMods)
+	end
+	
+	/** \brief Create transfer list element renderer. */
+	protected func ListElementRenderer createTransferListElementRenderer()
+		return MMTransferListRenderer.new(pServiceMods)
 	end
 end

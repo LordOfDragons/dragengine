@@ -383,7 +383,7 @@ class MMPanelModInfo extends Panel
 		if progress != null
 			textState = "@UI.ModManagement.Enum.ModProgressState." + progress.state.name()
 			
-			pProgressStatus.getModel().setValue((progress.progress * 100 + 0.5) cast int)
+			pProgressStatus.getModel().setValue((progress.progress * 1000 + 0.5) cast int)
 			pProgressStatus.setVisible(true)
 			
 			if progress.remainingTime != null
@@ -479,8 +479,8 @@ class MMPanelModInfo extends Panel
 					end))
 					
 					progressBar = ProgressBar.new()
-					progressBar.getModel().setAll(0, 100, 10,\
-						(pMod.info.stats.ratingAverage * 100 + 0.5) cast int, 1)
+					progressBar.getModel().setAll(0, 1000, 100,\
+						(pMod.info.stats.ratingAverage * 1000 + 0.5) cast int, 1)
 					progressBar.setDesignerSelector("ProgressBar.MMPanelModInfo.Rating")
 					p2.addWidget(progressBar)
 					
@@ -587,7 +587,7 @@ class MMPanelModInfo extends Panel
 				p2.addWidget(Label.new(pModelStatus, "Label.MMPanelModInfo.Details.Status"))
 				
 				pProgressStatus = ProgressBar.new()
-				pProgressStatus.getModel().setAll(0, 100, 10, 0, 1)
+				pProgressStatus.getModel().setAll(0, 1000, 100, 0, 1)
 				pProgressStatus.setDesignerSelector("ProgressBar.MMPanelModInfo.Details.StatusProgress")
 				pProgressStatus.setVisible(false)
 				p2.addWidget(pProgressStatus)
