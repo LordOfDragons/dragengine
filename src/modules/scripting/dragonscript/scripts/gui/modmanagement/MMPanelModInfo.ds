@@ -92,33 +92,28 @@ class MMPanelModInfo extends Panel
 	class ModEventListener extends DefaultServiceModsListener
 		var MMPanelModInfo pPanel
 		
-		/** \brief Create listener. */
 		func new(MMPanelModInfo panel)
 			pPanel = panel
 		end
 		
-		/** \brief Modification information received. */
 		func void onGetModInfo(ServiceMods service, String modId, ServiceModInfo info, Exception exception)
 			if info != null
 				pPanel.updateModInfo(modId, info)
 			end
 		end
 		
-		/** \brief Subscribed to modification. */
 		func void onSubscribeMod(ServiceMods service, String modId, Exception exception)
 			if exception == null
 				pPanel.updateModInfo(modId, null)
 			end
 		end
 		
-		/** \brief Unsubscribed from modification. */
 		func void onUnsubscribeMod(ServiceMods service, String modId, Exception exception)
 			if exception == null
 				pPanel.updateModInfo(modId, null)
 			end
 		end
 		
-		/** \brief Modification disabled changed. */
 		func void onSetModDisabled(ServiceMods service, String modId, bool disabled, Exception exception)
 			if exception == null
 				pPanel.getMod().status.disabled = disabled
@@ -126,21 +121,18 @@ class MMPanelModInfo extends Panel
 			end
 		end
 		
-		/** \brief Modification rating submitted. */
 		func void onSubmitModRating(ServiceMods service, String modId, Exception exception)
 			if exception == null
 				pPanel.updateModInfo(modId, null)
 			end
 		end
 		
-		/** \brief Modification rating revoked. */
 		func void onRevokeModRating(ServiceMods service, String modId, Exception exception)
 			if exception == null
 				pPanel.updateModInfo(modId, null)
 			end
 		end
 		
-		/** \brief Mod management event received. */
 		func void onModManagement(ServiceMods service, ServiceMods.ManagementEvent event,\
 		String modId, ServiceModProgress progress, Exception exception)
 			if exception == null

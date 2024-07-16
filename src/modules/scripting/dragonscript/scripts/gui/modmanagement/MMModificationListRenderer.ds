@@ -138,18 +138,12 @@ class MMModificationListRenderer implements ListElementRenderer
 		
 		/** \brief Set modification. */
 		func void setMod(MMModification mod)
-			if mod == pMod
-				update()
-				return
-			end
-			
 			pMod = mod
 			
 			var ServiceModInfo info = mod.info
 			
 			if mod.logo == null and info.logo != null
 				mod.logo = info.logo.image
-				
 				if mod.logo == null
 					var String url = findLoadLogoImage(info.logo)
 					if url != null

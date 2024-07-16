@@ -140,7 +140,7 @@ class MMPanelModManagement extends Panel
 		func void onModManagement(ServiceMods service, ServiceMods.ManagementEvent event,\
 		String modId, ServiceModProgress progress, Exception exception)
 			if progress != null
-				pPanel.updateModProgress(modId, progress)
+				pPanel.updateModProgress(modId, event, progress)
 			end
 		end
 	end
@@ -155,6 +155,7 @@ class MMPanelModManagement extends Panel
 		
 		func void onListMods(ServiceMods service, Array mods, Exception exception)
 			pPanel.onSearchResult(this, mods, exception)
+			pPanel.updateModelTransfers()
 		end
 	end
 	
@@ -363,6 +364,45 @@ class MMPanelModManagement extends Panel
 	var String pRestartInfo
 	
 	
+	/*
+	class DebugTimer extends Timer
+		var MMPanelModManagement pPanel
+		
+		func new(MMPanelModManagement panel) super(0.1, true)
+			pPanel = panel
+		end
+		
+		func void fire()
+			var DefaultListModel model = pPanel.getModelTransfer()
+			if model == null or model.getCount() == 0
+				giveUp()
+				return
+			end
+			
+			var MMModification mod = model.getAt(0) cast MMModification
+			if mod.progress == null
+				mod.progress = ServiceModProgress.new()
+				mod.progress.current = 0
+				mod.progress.progress = 0
+				mod.progress.remainingTime = Float.new(60)
+				mod.progress.total = 1000
+				mod.status.status = ServiceModStatus.Status.downloading
+			end
+			
+			mod.progress.current = DEMath.min(mod.progress.current + 10, mod.progress.total)
+			mod.progress.progress = mod.progress.current / mod.progress.total
+			
+			if mod.progress.progress > 0.999
+				mod.progress = null
+				mod.status.status = ServiceModStatus.Status.installed
+				pPanel.updateModProgress(mod.info.id, ServiceMods.ManagementEvent.installed, mod.progress)
+				
+			else
+				pPanel.updateModProgress(mod.info.id, ServiceMods.ManagementEvent.progress, mod.progress)
+			end
+		end
+	end
+	*/
 	
 	/**
 	 * \brief Create mod management panel.
@@ -419,6 +459,12 @@ class MMPanelModManagement extends Panel
 		updateModelTransfers()
 		
 		pModelViewCategory.addListener(ViewCategoryChanged.new(this))
+		
+		/*
+		TimerBlock.new(5, false, block
+			DebugTimer.new(this)
+		end)
+		*/
 	end
 	
 	/** \brief Dispose of widget. */
@@ -596,6 +642,21 @@ class MMPanelModManagement extends Panel
 	
 	
 	
+	/** \brief Index of transfer with matching id or -1 if absent. */
+	func int indexOfTransferWithId(String modId)
+		var int i, count = pModelTransfers.getCount()
+		var MMModification mod
+		
+		for i = 0 to count
+			mod = pModelTransfers.getAt(i) cast MMModification
+			if mod.info.id.equals(modId)
+				return i
+			end
+		end
+		
+		return -1
+	end
+	
 	/** \brief Transfer list model. */
 	func DefaultListModel getModelTransfer()
 		return pModelTransfers
@@ -605,22 +666,37 @@ class MMPanelModManagement extends Panel
 	 * \brief Update transfers model.
 	 */
 	func void updateModelTransfers()
+		/*
 		var Dictionary fake = pServiceMods.getSubscribedMods()
 		fake.forEachValue(block ServiceModStatus each
-			if each.id.equals("4099326")
-				each.status = ServiceModStatus.Status.installationPending
-			elif each.id.equals("4099373")
-				each.status = ServiceModStatus.Status.downloading
-			else
-				each.status = ServiceModStatus.Status.installationPending
-			end
+			each.status = ServiceModStatus.Status.installationPending
 		end)
+		if pModelTransfers.getCount() > 0
+			fake = Dictionary.new()
+			pModelTransfers.forEach(block MMModification each
+				fake.setAt(each.info.id, each.status)
+			end)
+		end
+		*/
 		
-		pModelTransfers.setContent(/*pServiceMods.getSubscribedMods()*/fake.getValues().collect(\
+		var MMModification mod
+		var int index
+		
+		pModelTransfers.setContent(pServiceMods.getSubscribedMods()/*fake*/.getValues().collect(\
 			block ServiceModStatus each
 				return each.status != ServiceModStatus.Status.installed
 			end).map(block ServiceModStatus each
-				return MMModification.new(each.info, each)
+				index = indexOfTransferWithId(each.id)
+				if index != -1
+					mod = pModelTransfers.getAt(index) cast MMModification
+					mod.status = each
+					
+				else
+					mod = MMModification.new(each.info, each)
+				end
+				return mod
+			end).sorted(block MMModification a, MMModification b
+				return a.info.name.compare(b.info.name)
 			end))
 	end
 	
@@ -832,35 +908,51 @@ class MMPanelModManagement extends Panel
 	
 	/** \brief Update modification. */
 	func void updateModInfo(String modId, ServiceModInfo info)
-		var int index = indexOfModWithId(modId)
-		if index == -1
-			return
-		end
-		
-		var MMModification mod = pModelMods.getAt(index) cast MMModification
-		
-		if info != null
-			mod.info = info
-		end
-		
 		updateSubscribedMods()
-		mod.status = pSubscribedMods.getAt(modId, null) cast ServiceModStatus
 		
-		pModelMods.notifyContentChanged(index, index)
+		var int index = indexOfModWithId(modId)
+		if index != -1
+			var MMModification mod = pModelMods.getAt(index) cast MMModification
+			if info != null
+				mod.info = info
+			end
+			
+			mod.status = pSubscribedMods.getAt(modId, null) cast ServiceModStatus
+			
+			pModelMods.notifyContentChanged(index, index)
+		end
+		
+		index = indexOfTransferWithId(modId)
+		if index != -1
+			var MMModification mod = pModelTransfers.getAt(index) cast MMModification
+			if info != null
+				mod.info = info
+			end
+			
+			mod.status = pSubscribedMods.getAt(modId, null) cast ServiceModStatus
+			
+			pModelTransfers.notifyContentChanged(index, index)
+		end
 	end
 	
 	/** \brief Update modification list entry progress. */
-	func void updateModProgress(String modId, ServiceModProgress progress)
-		var int index = indexOfModWithId(modId)
-		if index == -1
-			return
+	func void updateModProgress(String modId, ServiceMods.ManagementEvent event,\
+	ServiceModProgress progress)
+		var int index = indexOfTransferWithId(modId)
+		if index != -1
+			var MMModification mod = pModelTransfers.getAt(index) cast MMModification
+			if progress != null
+				mod.progress = progress
+			end
+			
+			pModelTransfers.notifyContentChanged(index, index)
 		end
 		
-		// var ModListEntry entry = pModelMods.getAt(index) cast ModListEntry
-		
-		// TODO
-		
-		// pModelMods.notifyContentChanged(index, index)
+		select event
+		case ServiceMods.ManagementEvent.installed, ServiceMods.ManagementEvent.updated,\
+		ServiceMods.ManagementEvent.uninstalled
+			updateModelTransfers()
+		end
 	end
 	
 	

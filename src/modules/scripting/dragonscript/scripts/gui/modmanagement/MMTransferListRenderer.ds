@@ -139,21 +139,14 @@ class MMTransferListRenderer implements ListElementRenderer
 		
 		/** \brief Set modification. */
 		func void setMod(MMModification mod)
-			if mod == pMod
-				update()
-				return
-			end
-			
 			pMod = mod
 			
-			var ServiceModInfo info = mod.info
+			var ServiceImage logo = mod.info.logo
 			
-			if mod.logoSmall == null and info.logo != null
-				if mod.logoSmall == null
-					var String url = findLoadLogoImage(info.logo)
-					if url != null
-						pServiceMods.loadResource(url, LoadLogoListener.new(this, mod))
-					end
+			if mod.logoSmall == null and logo != null
+				var String url = findLoadLogoImage(logo)
+				if url != null
+					pServiceMods.loadResource(url, LoadLogoListener.new(this, mod))
 				end
 			end
 			
@@ -176,7 +169,7 @@ class MMTransferListRenderer implements ListElementRenderer
 				select status.status
 				case ServiceModStatus.Status.downloading, ServiceModStatus.Status.extracting
 					if progress != null
-						pModelStatusDetails.setText(fh.formatPercentage(progress.progress))
+						pModelStatusDetails.setText(fh.formatPercentage(progress.progress * 100))
 						pModelProgress.setValue((progress.progress * 1000 + 0.5) cast int)
 						
 					else
