@@ -114,6 +114,8 @@ deModioService::~deModioService(){
 	pModule.LogInfo( "deModioService: Destroy" );
 	pInvalidator->invalidated = true;
 	
+	pModule.StoreFailureStateIfFailed();
+	
 	while( pPendingRequests.GetCount() > 0 ){
 		CancelRequest( ( ( deModioPendingRequest* )pPendingRequests.GetAt( 0 ) )->id );
 	}

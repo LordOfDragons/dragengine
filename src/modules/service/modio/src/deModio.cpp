@@ -80,10 +80,12 @@ pParamLogLevel( new deMPLogLevel( *this ) )
 {
 	pParameters.AddParameter( pParamLogLevel );
 	
+	pInitPath();
 	pLoadConfig();
 }
 
 deModio::~deModio(){
+	StoreFailureStateIfFailed();
 }
 
 
@@ -176,6 +178,8 @@ void deModio::AddVFSContainers( deVirtualFileSystem &vfs, const char *stage ){
 	DEASSERT_NOTNULL( stage )
 	
 	if( strcmp( stage, deModuleSystem::VFSStageMods ) == 0 ){
+		pCheckFailureState();
+		
 		LogInfo( "Add VFS containers for stage 'VFSStageMods'" );
 		
 		if( ! pVFSMods ){
@@ -201,6 +205,33 @@ void deModio::RemoveRequiresEventHandlingCount(){
 	}
 	
 	pRequiresEventHandlingCount--;
+}
+
+void deModio::StoreFailureStateIfFailed(){
+	const bool failure = GetGameEngine()->GetScriptFailed() || GetGameEngine()->GetSystemFailed();
+	if( ! failure ){
+		return;
+	}
+	
+	LogInfo( "Store failure state: Failed" );
+	try{
+		decBaseFileWriter::Ref::New( GetVFS().OpenFileForWriting(
+			pPathFailureState ) )->WriteByte( '1' );
+		
+	}catch( const deException &e ){
+		LogException( e );
+	}
+}
+
+void deModio::ClearFailureState(){
+	LogInfo( "Clear failure state" );
+	try{
+		decBaseFileWriter::Ref::New( GetVFS().OpenFileForWriting(
+			pPathFailureState ) )->WriteByte( '0' );
+		
+	}catch( const deException &e ){
+		LogException( e );
+	}
 }
 
 
@@ -233,7 +264,24 @@ void deModio::SetParameterValue( const char *name, const char *value ){
 // Private Functions
 //////////////////////
 
-#define DEM_PATH_MODS "/config/config"
+void deModio::pInitPath(){
+	const decString &appid = GetGameEngine()->GetCacheAppID();
+	decPath basePath( decPath::CreatePathUnix( "/config" ) );
+	
+	if( appid.IsEmpty() ){
+		basePath.AddComponent( "global" );
+		
+	}else{
+		basePath.AddComponent( "local" );
+		basePath.AddComponent( appid );
+	}
+	
+	pPathConfig = basePath;
+	pPathConfig.AddComponent( "config" );
+	
+	pPathFailureState = basePath;
+	pPathFailureState.AddComponent( "failureState" );
+}
 
 void deModio::pLoadConfig(){
 	LogInfo( "Load configuration");
@@ -241,8 +289,7 @@ void deModio::pLoadConfig(){
 	pUserConfigs.RemoveAll();
 	
 	try{
-		const decBaseFileReader::Ref reader( GetVFS().OpenFileForReading(
-			decPath::CreatePathUnix( DEM_PATH_MODS ) ) );
+		const decBaseFileReader::Ref reader( GetVFS().OpenFileForReading( pPathConfig ) );
 		
 		const int version = reader->ReadByte();
 		switch( version ){
@@ -286,8 +333,7 @@ void deModio::pSaveConfig(){
 	int i, count;
 	
 	try{
-		const decBaseFileWriter::Ref writer( GetVFS().OpenFileForWriting(
-			decPath::CreatePathUnix( DEM_PATH_MODS ) ) );
+		const decBaseFileWriter::Ref writer( GetVFS().OpenFileForWriting( pPathConfig ) );
 		writer->WriteByte( 0 );
 		
 		count = pModConfigs.GetCount();
@@ -313,16 +359,67 @@ void deModio::pSaveConfig(){
 }
 
 void deModio::pDeleteConfig(){
-	const decPath path( decPath::CreatePathUnix( DEM_PATH_MODS ) );
-	deVirtualFileSystem &vfs = GetVFS();
+	const deVirtualFileSystem &vfs = GetVFS();
+	if( ! vfs.ExistsFile( pPathConfig ) ){
+		return;
+	}
 	
-	if( vfs.ExistsFile( path ) ){
-		try{
-			vfs.DeleteFile( path );
-			
-		}catch( const deException &e ){
-			LogException( e );
+	try{
+		vfs.DeleteFile( pPathConfig );
+		
+	}catch( const deException &e ){
+		LogException( e );
+	}
+}
+
+void deModio::pCheckFailureState(){
+	bool failure = pReadFailureState();
+	if( ! failure ){
+		return;
+	}
+	
+	LogWarn( "Failure state is set to 1. Disabling all modifications.");
+	deModioUserConfig * const userConfig = GetUserConfigIfPresent( pCurUserId );
+	if( ! userConfig ){
+		ClearFailureState();
+		return;
+	}
+	
+	decStringSet &disabledMods = userConfig->GetDisabledMods();
+	const int count = pModConfigs.GetCount();
+	bool requiresSaving = false;
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		const deModioModConfig &modConfig = *( ( deModioModConfig* )pModConfigs.GetAt( i ) );
+		if( userConfig->GetModDisabled( modConfig.id ) ){
+			continue;
 		}
+		
+		LogWarnFormat( "-> Disable modification: %s", modConfig.id.GetString() );
+		disabledMods.Add( modConfig.id );
+		requiresSaving = true;
+	}
+	
+	if( requiresSaving ){
+		pSaveConfig();
+	}
+	ClearFailureState();
+}
+
+bool deModio::pReadFailureState(){
+	const deVirtualFileSystem &vfs = GetVFS();
+	if( ! vfs.ExistsFile( pPathFailureState ) ){
+		return false;
+	}
+	
+	try{
+		return decBaseFileReader::Ref::New( vfs.OpenFileForReading(
+			pPathFailureState ) )->ReadByte() == '1';
+		
+	}catch( const deException &e ){
+		LogException( e );
+		return false;
 	}
 }
 

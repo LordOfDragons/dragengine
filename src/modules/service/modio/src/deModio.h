@@ -30,6 +30,7 @@
 
 #include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/collection/decObjectDictionary.h>
+#include <dragengine/common/file/decPath.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/systems/modules/service/deBaseServiceModule.h>
 
@@ -50,6 +51,8 @@ private:
 	
 	deModioParameterList pParameters;
 	deMPLogLevel *pParamLogLevel;
+	
+	decPath pPathConfig, pPathFailureState;
 	
 	
 public:
@@ -117,6 +120,12 @@ public:
 	
 	void AddRequiresEventHandlingCount();
 	void RemoveRequiresEventHandlingCount();
+	
+	/** Store failure state. */
+	void StoreFailureStateIfFailed();
+	
+	/** Clear failure state. */
+	void ClearFailureState();
 	/*@}*/
 	
 	
@@ -145,10 +154,13 @@ public:
 	
 	
 private:
+	void pInitPath();
 	void pLoadConfig();
 	void pLoadConfigV0( decBaseFileReader &reader );
 	void pSaveConfig();
 	void pDeleteConfig();
+	void pCheckFailureState();
+	bool pReadFailureState();
 	void pUpdateVFS();
 };
 
