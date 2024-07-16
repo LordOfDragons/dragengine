@@ -44,7 +44,12 @@ pin Dragengine.Utils.StyledText.Definition.Nodes
  *   - Styled document: StyledTextStyle.MMPanelModInfo.Description
  * 
  * - Details panel: Panel.MMPanelModInfo.Details
- *   - Subscribe button: Button.MMPanelModInfo.Subscribe
+ *   - Subscribe button:
+ *     - Button.MMPanelModInfo.Subscribe
+ *     - Button.MMPanelModInfo.Unsubscribe
+ *   - Disable button:
+ *     - Button.MMPanelModInfo.Disable
+ *     - Button.MMPanelModInfo.Enable
  * 
  *   - Rating panel: Panel.MMPanelModInfo.Group.DetailsDetails
  *     - Rating text: Label.MMPanelModInfo.Details.RatingText
@@ -141,7 +146,7 @@ class MMPanelModInfo extends Panel
 	var ServiceMods pServiceMods
 	var ServiceModsFeatures pServiceModFeatures
 	var MMModification pMod
-	var Button pButtonSubscribe
+	var Button pButtonSubscribe, pButtonDisable
 	var Dictionary pSubscribedMods, pSystemMods
 	var ModEventListener pModEventListener
 	var DefaultTextModel pModelStatus
@@ -169,7 +174,7 @@ class MMPanelModInfo extends Panel
 		runWhileBlockingLayout(block
 			setDesignerSelector("Panel.MMPanelModInfo.Main")
 			createContent()
-			updateButtonSubscribe()
+			updateButtonStates()
 			updateModProgress(mod.info.id, null)
 		end)
 		doLayout()
@@ -187,7 +192,7 @@ class MMPanelModInfo extends Panel
 			pModEventListener = null
 		end
 		
-		pButtonSubscribe = null
+		pButtonSubscribe = pButtonDisable = null
 		pModelStatus = null
 		pModelRating = null
 		pLabProgressRemaining = null
@@ -261,12 +266,31 @@ class MMPanelModInfo extends Panel
 			
 			pServiceMods.unsubscribeMod(pMod.info.id, null)
 			
-			if hasScripts
+			if hasScripts and not pMod.status.disabled
 				promptRequiresRestart()
 			end
 			
 		else
 			pServiceMods.subscribeMod(pMod.info.id, null)
+		end
+	end
+	
+	/**
+	 * \brief Disable/enable button clicked.
+	 * 
+	 * Toggles between disabled and enabled state of modification. If disabling a
+	 * modification containing dragonscript scripts calls promptRequiresRestart() to
+	 * ask for restarting the application.
+	 */
+	func void onDisable()
+		var bool hasScripts = pServiceMods.modHasMatchingFiles(\
+			pMod.info.id, "/scripts", true, Set.newWith("*.ds"))
+		var bool disabled = not pMod.status.disabled
+		
+		pServiceMods.setModDisabled(pMod.info.id, disabled)
+		
+		if disabled and hasScripts and pSubscribedMods.has(pMod.info.id)
+			promptRequiresRestart()
 		end
 	end
 	
@@ -298,8 +322,8 @@ class MMPanelModInfo extends Panel
 	
 	
 	
-	/** \brief Update subscribe button. */
-	protected func void updateButtonSubscribe()
+	/** \brief Update buttons. */
+	protected func void updateButtonStates()
 		pButtonSubscribe.runWhileBlockingLayout(block
 			if pSubscribedMods.has(pMod.info.id)
 				pButtonSubscribe.setDesignerSelector("Button.WindowModManagementMod.Unsubscribe")
@@ -313,6 +337,20 @@ class MMPanelModInfo extends Panel
 			end
 		end)
 		pButtonSubscribe.doLayoutIfBlocked()
+		
+		pButtonDisable.runWhileBlockingLayout(block
+			if pMod.status.disabled
+				pButtonDisable.setDesignerSelector("Button.WindowModManagementMod.Enable")
+				pButtonDisable.setText("@UI.ModManagementMod.Enable")
+				pButtonDisable.setToolTip("@UI.ModManagementMod.Enable.ToolTip")
+				
+			else
+				pButtonDisable.setDesignerSelector("Button.WindowModManagementMod.Disable")
+				pButtonDisable.setText("@UI.ModManagementMod.Disable")
+				pButtonDisable.setToolTip("@UI.ModManagementMod.Disable.ToolTip")
+			end
+		end)
+		pButtonDisable.doLayoutIfBlocked()
 	end
 	
 	/**
@@ -331,7 +369,7 @@ class MMPanelModInfo extends Panel
 		end
 		
 		updateSubscribedMods()
-		updateButtonSubscribe()
+		updateButtonStates()
 	end
 	
 	/** \brief Update modification progress. */
@@ -408,12 +446,21 @@ class MMPanelModInfo extends Panel
 		viewport = Viewport.new(Panel.new(FlowLayout.new(LayoutAxis.y), block Panel p
 			p.setDesignerSelector("Panel.MMPanelModInfo.Details")
 			
-			pButtonSubscribe = createButton("@UI.ModManagementMod.Subscribe",\
-				"@UI.ModManagementMod.Subscribe.ToolTip", ".Subscribe",\
-				BlockActionListener.new(block ActionEvent e
-					onSubscribe()
-				end))
-			p.addWidget(pButtonSubscribe)
+			p.addWidget(Panel.new(GridLayout.new(2, 1), block Panel p2
+				pButtonSubscribe = createButton("@UI.ModManagementMod.Subscribe",\
+					"@UI.ModManagementMod.Subscribe.ToolTip", ".Subscribe",\
+					BlockActionListener.new(block ActionEvent e
+						onSubscribe()
+					end))
+				p2.addWidget(pButtonSubscribe)
+				
+				pButtonDisable = createButton("@UI.ModManagementMod.Disable",\
+					"@UI.ModManagementMod.Disable.ToolTip", ".Disable",\
+					BlockActionListener.new(block ActionEvent e
+						onDisable()
+					end))
+				p2.addWidget(pButtonDisable)
+			end))
 			
 			p.addWidget(Panel.new(FlowLayout.new(LayoutAxis.y), block Panel p2
 				p2.setDesignerSelector("Panel.MMPanelModInfo.Group.DetailsDetails")

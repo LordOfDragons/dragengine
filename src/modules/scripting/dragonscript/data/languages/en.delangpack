@@ -139,6 +139,10 @@ Do you want to re-assign?</translation>
 	<translation name='UI.ModManagementMod.Subscribe.ToolTip'>Subscribe to modification</translation>
 	<translation name='UI.ModManagementMod.Unsubscribe'>Unsubscribe</translation>
 	<translation name='UI.ModManagementMod.Unsubscribe.ToolTip'>Unsubscribe from modification</translation>
+	<translation name='UI.ModManagementMod.Disable'>Disable</translation>
+	<translation name='UI.ModManagementMod.Disable.ToolTip'>Disable modification for example to solve problems without unsubscribing</translation>
+	<translation name='UI.ModManagementMod.Enable'>Enable</translation>
+	<translation name='UI.ModManagementMod.Enable.ToolTip'>Enable modification</translation>
 	<translation name='UI.ModManagementMod.DetailsStatus'>Status</translation>
 	<translation name='UI.ModManagementMod.RemainingTime'>Remaining Time:</translation>
 	<translation name='UI.ModManagement.Enum.ModProgressState.initializing'>Initializing</translation>
@@ -163,4 +167,7 @@ Do you want to re-assign?</translation>
 	<translation name='UI.ModManagement.ActivateMods'>Activate Modifications</translation>
 	<translation name='UI.ModManagement.Message.ActivateStillPending'>One or more subscribed modifications are pending installing or updating. Activate only ready modifications?</translation>
 	<translation name='UI.ModManagement.Message.NoModService'>No modification service present.</translation>
+	<translation name='UI.ModManagement.Status.Subscribed'>Subscribed</translation>
+	<translation name='UI.ModManagement.Status.Unsubscribed'>Not subscribed</translation>
+	<translation name='UI.ModManagement.Status.Disabled'>Disabled</translation>
 </languagePack>

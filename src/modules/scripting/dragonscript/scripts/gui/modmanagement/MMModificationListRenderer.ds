@@ -191,10 +191,23 @@ class MMModificationListRenderer implements ListElementRenderer
 		func void updateStatusInfo()
 			var bool subscribed = pMod.status != null
 			runWhileBlockingLayout(block
-				pModelSubscribed.setText(subscribed if "Subscribed" else "Not Subscribed")
-				pLabelSubscribed.setDesignerSelector("Label." + pDesignerSelectorBase\
-					+ (subscribed if ".Subscribed" else ".Unsubscribed")\
-					+ pDesignerSelectorSuffix)
+				if subscribed
+					if pMod.status.disabled
+						pModelSubscribed.setText("@UI.ModManagement.Status.Disabled")
+						pLabelSubscribed.setDesignerSelector("Label." + pDesignerSelectorBase\
+							 + ".Disabled" + pDesignerSelectorSuffix)
+						
+					else
+						pModelSubscribed.setText("@UI.ModManagement.Status.Subscribed")
+						pLabelSubscribed.setDesignerSelector("Label." + pDesignerSelectorBase\
+							 + ".Subscribed" + pDesignerSelectorSuffix)
+					end
+					
+				else
+					pModelSubscribed.setText("@UI.ModManagement.Status.Unsubscribed")
+					pLabelSubscribed.setDesignerSelector("Label." + pDesignerSelectorBase\
+						+ ".Unsubscribed" + pDesignerSelectorSuffix)
+				end
 			end)
 			doLayoutIfBlocked()
 		end

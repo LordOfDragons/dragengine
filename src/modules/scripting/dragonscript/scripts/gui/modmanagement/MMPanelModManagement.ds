@@ -615,7 +615,7 @@ class MMPanelModManagement extends Panel
 		
 		// check if all modifications are ready to be activated
 		if pSubscribedMods.find(block String key, ServiceModStatus value
-			return value.status != ServiceModStatus.Status.installed
+			return value.status != ServiceModStatus.Status.installed and not value.disabled
 		end) != null
 			WindowDialog.question(getWindow(), "@UI.ModManagement.ActivateMods",\
 			"@UI.ModManagement.Message.ActivateStillPending", null, Array.newWith(\
@@ -643,18 +643,25 @@ class MMPanelModManagement extends Panel
 	 * \ref #activateModsStep2(WindowDialog.ResultListener).
 	 */
 	protected func void activateModsStep1(WindowDialog.ResultListener listener)
-		var Array unsubscribed = pOrgSubscribedMods.getKeys().collect(block String each
-			return not pSubscribedMods.has(each)
+		var Dictionary orgEnabled = pOrgSubscribedMods.collect(block String key, ServiceModStatus value
+			return not value.disabled
 		end)
-		var Array subscribed = pSubscribedMods.getKeys().collect(block String each
-			return not pOrgSubscribedMods.has(each)
+		var Dictionary enabled = pSubscribedMods.collect(block String key, ServiceModStatus value
+			return not value.disabled
 		end)
-		var Array updated = pSubscribedMods.getKeys().collect(block String each
-			var ServiceModStatus orgStatus = pOrgSubscribedMods.getAt(each, null) cast ServiceModStatus
+		
+		var Array unsubscribed = orgEnabled.getKeys().collect(block String each
+			return not enabled.has(each)
+		end)
+		var Array subscribed = enabled.getKeys().collect(block String each
+			return not orgEnabled.has(each)
+		end)
+		var Array updated = enabled.getKeys().collect(block String each
+			var ServiceModStatus orgStatus = orgEnabled.getAt(each, null) cast ServiceModStatus
 			if orgStatus == null
 				return false
 			end
-			var ServiceModStatus status = pSubscribedMods.getAt(each) cast ServiceModStatus
+			var ServiceModStatus status = enabled.getAt(each) cast ServiceModStatus
 			return not status.info.latestRelease.version.equals(orgStatus.info.latestRelease.version)
 		end)
 		var Array changed = subscribed + updated

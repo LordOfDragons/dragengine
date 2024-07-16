@@ -61,7 +61,12 @@
 	- Styled document: StyledText.MMPanelModInfo.Description
 	
 	- Details panel: Panel.MMPanelModInfo.Details
-	- Subscribe button: Button.MMPanelModInfo.Subscribe
+	- Subscribe button:
+		- Button.MMPanelModInfo.Subscribe
+		- Button.MMPanelModInfo.Unsubscribe
+	- Disable button:
+		- Button.MMPanelModInfo.Disable
+		- Button.MMPanelModInfo.Enable
 	
 	- Rating panel: Panel.MMPanelModInfo.Group.DetailsDetails
 		- Rating text: Label.MMPanelModInfo.Details.RatingText
@@ -104,11 +109,11 @@
 		<string parameter='normal.alignment'>left,middle</string>
 	</designer>
 	
-	<designer name='Button.MMPanelModInfo.Subscribe' extendNamed='Button'>
-	</designer>
+	<designer name='Button.MMPanelModInfo.Subscribe' extendNamed='Button'/>
+	<designer name='Button.MMPanelModInfo.Unsubscribe' extendNamed='Button'/>
 	
-	<designer name='Button.MMPanelModInfo.Unsubscribe' extendNamed='Button'>
-	</designer>
+	<designer name='Button.MMPanelModInfo.Enable' extendNamed='Button'/>
+	<designer name='Button.MMPanelModInfo.Disable' extendNamed='Button'/>
 	
 	<designer name='ProgressBar.MMPanelModInfo.Rating' extendNamed='ProgressBar'>
 		<boolean parameter='normal.showPercentage'>false</boolean>
@@ -301,6 +306,18 @@
 		</canvasCreator>
 		<border parameter='normal.border' type='Line'>
 			<color parameter='color' r='0.4' g='0.4' b='0.4'/>
+		</border>
+		<borderSize parameter='normal.padding' left='2' top='2' right='2' bottom='2'/>
+		<string parameter='normal.alignment'>center,middle</string>
+	</designer>
+	
+	<designer name='Label.ListRenderer.MMModificationListRenderer.Disabled'
+			extendNamed='Label.ListRenderer.MMModificationListRenderer'>
+		<canvasCreator parameter='normal.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='1' g='0.8' b='0.8'/>
+		</canvasCreator>
+		<border parameter='normal.border' type='Line'>
+			<color parameter='color' r='0.5' g='0.4' b='0.4'/>
 		</border>
 		<borderSize parameter='normal.padding' left='2' top='2' right='2' bottom='2'/>
 		<string parameter='normal.alignment'>center,middle</string>

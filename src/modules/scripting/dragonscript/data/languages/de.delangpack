@@ -139,6 +139,10 @@ Neu zuweisen?</translation>
 	<translation name='UI.ModManagementMod.Subscribe.ToolTip'>Modifikation abonnieren</translation>
 	<translation name='UI.ModManagementMod.Unsubscribe'>Abonnieren löschen</translation>
 	<translation name='UI.ModManagementMod.Unsubscribe.ToolTip'>Abonnieren von Modifikation löschen.</translation>
+	<translation name='UI.ModManagementMod.Disable'>Blockieren</translation>
+	<translation name='UI.ModManagementMod.Disable.ToolTip'>Modifikation blockieren, zum Beispiel um Problem zu lösen ohne die Modifikation zu deabonnieren</translation>
+	<translation name='UI.ModManagementMod.Enable'>Deblockieren</translation>
+	<translation name='UI.ModManagementMod.Enable.ToolTip'>Modifikation deblockieren</translation>
 	<translation name='UI.ModManagementMod.DetailsStatus'>Status</translation>
 	<translation name='UI.ModManagementMod.RemainingTime'>Verbleibende Zeit:</translation>
 	<translation name='UI.ModManagement.Enum.ModProgressState.initializing'>Initializing</translation>
@@ -163,4 +167,7 @@ Neu zuweisen?</translation>
 	<translation name='UI.ModManagement.ActivateMods'>Modifikationen aktivieren</translation>
 	<translation name='UI.ModManagement.Message.ActivateStillPending'>Eine oder mehrere abonnierte Modifikationen sind noch nicht installiert oder aktualisiert. Alle bereite Modifikationen aktivieren?</translation>
 	<translation name='UI.ModManagement.Message.NoModService'>Kein Modifikations-Service gefunden.</translation>
+	<translation name='UI.ModManagement.Status.Subscribed'>Abonniert</translation>
+	<translation name='UI.ModManagement.Status.Unsubscribed'>Nicht abonniert</translation>
+	<translation name='UI.ModManagement.Status.Disabled'>Blockiert</translation>
 </languagePack>
