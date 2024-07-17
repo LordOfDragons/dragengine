@@ -99,8 +99,10 @@ class MMWindowModManagement extends WindowDialog
 		pPanelModManagement = createPanelModManagement(services)
 		addWidget(pPanelModManagement, BorderLayout.Area.content)
 		
-		pPanelModManagement.getPanelBottomLine().addWidget(createButton("@UI.Close",\
-			"@UI.ModManagement.Close.ToolTip", ".Close", CloseWindowActionListener.new(this)))
+		addWidget(Panel.new(CentrizedBoxLayout.new(LayoutAxis.x), block Panel p
+			p.addWidget(createButton("@UI.Close", "@UI.ModManagement.Close.ToolTip",\
+				".Close", CloseWindowActionListener.new(this)))
+		end), BorderLayout.Area.bottom)
 	end
 	
 	/**

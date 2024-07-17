@@ -358,7 +358,7 @@ class MMPanelModManagement extends Panel
 	var ListBox pListMods, pListTransfers
 	var Button pButtonSearchMore
 	var DefaultTextModel pModelSearchName
-	var Panel pPanelTags, pPanelSearchName, pPanelSearchSort, pPanelBottomLine
+	var Panel pPanelTags, pPanelSearchName, pPanelSearchSort, pPanelSearchBottomLine
 	var SearchModsListener pSearchModsListener
 	var Dictionary pSubscribedMods, pOrgSubscribedMods, pSystemMods
 	var ServiceModFilter pSearchFilter
@@ -496,7 +496,7 @@ class MMPanelModManagement extends Panel
 		pListMods = pListTransfers = null
 		pButtonSearchMore = null
 		pModelSearchName = null
-		pPanelTags = pPanelSearchName = pPanelSearchSort = pPanelBottomLine = null
+		pPanelTags = pPanelSearchName = pPanelSearchSort = pPanelSearchBottomLine = null
 		pSearchTagCategories = null
 		pSwitchContent = null
 		pPanelUserAccount = null
@@ -983,17 +983,10 @@ class MMPanelModManagement extends Panel
 	end
 	
 	
-	/**
-	 * \brief Bottom line panel.
-	 * 
-	 * Can be used by panel embedders to add their own content, for example a close button
-	 * activating the mods. Avoids the need for a second button line. The panel uses
-	 * BorderLayout with buttons added to a CentrizedBoxLayout Panel in the content area.
-	 */
-	func Panel getPanelBottomLine()
-		return pPanelBottomLine
+	/** \brief Search bottom line panel. */
+	protected func Panel getPanelSearchBottomLine()
+		return pPanelSearchBottomLine
 	end
-	
 	
 	/** \brief Create content. */
 	protected func void createContent()
@@ -1033,12 +1026,73 @@ class MMPanelModManagement extends Panel
 		// content
 		pSwitchContent = SwitchPanel.new(block Panel p
 			// content: mod listing
-			pListMods = ListBox.new(pModelMods, createModListElementRenderer())
-			pListMods.setDesignerSelector("ListBox.MMPanelModManagement.Mods")
-			pListMods.setType(ListBox.Type.verticalWrap)
-			pListMods.setNumberDisplayLines(1)
-			pListMods.addMouseListener(ClickedModDetails.new(this, pListMods))
-			p.addWidget(ScrollPanel.new(pListMods, ScrollPanel.Policy.hidden, ScrollPanel.Policy.visible))
+			p.addWidget(Panel.new(BorderLayout.new(20), block Panel p2
+				// content: list
+				p2.addWidget(Panel.new(BorderLayout.new(), block Panel p3
+					pListMods = ListBox.new(pModelMods, createModListElementRenderer())
+					pListMods.setDesignerSelector("ListBox.MMPanelModManagement.Mods")
+					pListMods.setType(ListBox.Type.verticalWrap)
+					pListMods.setNumberDisplayLines(1)
+					pListMods.addMouseListener(ClickedModDetails.new(this, pListMods))
+					p3.addWidget(ScrollPanel.new(pListMods, ScrollPanel.Policy.hidden,\
+						ScrollPanel.Policy.visible), BorderLayout.Area.content)
+					
+					// button line at bottom
+					pPanelSearchBottomLine = Panel.new(CentrizedBoxLayout.new(LayoutAxis.x, 20), block Panel p4
+						pButtonSearchMore = createButton("@UI.ModManagement.SearchMore",\
+							"@UI.ModManagement.SearchMore.ToolTip", ".MoreResults",\
+							BlockActionListener.new(block ActionEvent e
+								searchMoreMods()
+							end))
+						p4.addWidget(pButtonSearchMore)
+					end )
+					p3.addWidget(pPanelSearchBottomLine, BorderLayout.Area.bottom)
+				end), BorderLayout.Area.content)
+				
+				// right side: search parameters
+				viewport = Viewport.new(Panel.new(FlowLayout.new(LayoutAxis.y), block Panel p3
+					// search button
+					p3.addWidget(createButton("@UI.Search", "@UI.ModManagement.Search.ToolTip",\
+						".Search", BlockActionListener.new(block ActionEvent e
+							searchMods()
+						end)))
+					
+					// search name
+					pPanelSearchName = Panel.new(FlowLayout.new(LayoutAxis.y), block Panel p4
+						p4.setDesignerSelector("Panel.MMPanelModManagement.Group.Search.Name")
+						p4.setTitle("@UI.ModManagement.SearchName")
+						
+						textField = createTextField(pModelSearchName, ".Search.Name", 20)
+						textField.setToolTip("@UI.ModManagement.SearchName.ToolTip")
+						p4.addWidget(textField)
+						textField.addActionListener(BlockActionListener.new(block ActionEvent event
+							searchMods()
+						end))
+					end)
+					p3.addWidget(pPanelSearchName)
+					
+					
+					// sort by
+					pPanelSearchSort = Panel.new(FlowLayout.new(LayoutAxis.y), block Panel p4
+						p4.setDesignerSelector("Panel.MMPanelModManagement.Group.Search.SortBy")
+						p4.setTitle("@UI.SortBy")
+						
+						var EnumListElementRenderer renderer = EnumListElementRenderer.new()
+						renderer.setTranslationPrefix("UI.ModManagement.Enum.SortField.")
+						comboBox = createComboBox(pModelSortBy, renderer, ".Search.SortBy")
+						comboBox.setToolTip("@UI.ModManagement.SortBy.ToolTip")
+						p4.addWidget(comboBox)
+					end)
+					p3.addWidget(pPanelSearchSort)
+					
+					// tags. will be filled once data has been retrieved from service
+					pPanelTags = Panel.new(FlowLayout.new(LayoutAxis.y))
+					p3.addWidget(pPanelTags)
+				end))
+				viewport.setLayout(FlowLayout.new(LayoutAxis.y))
+				p2.addWidget(ScrollPanel.new(viewport, ScrollPanel.Policy.hidden,\
+					ScrollPanel.Policy.needed), BorderLayout.Area.right)
+			end))
 			
 			// content: transfer listing
 			pListTransfers = ListBox.new(pModelTransfers, createTransferListElementRenderer())
@@ -1053,59 +1107,6 @@ class MMPanelModManagement extends Panel
 			end
 		end)
 		addWidget(pSwitchContent, BorderLayout.Area.content)
-		
-		// right side: search parameters
-		viewport = Viewport.new(Panel.new(FlowLayout.new(LayoutAxis.y), block Panel p
-			// search button
-			p.addWidget(createButton("@UI.Search", "@UI.ModManagement.Search.ToolTip",\
-				".Search", BlockActionListener.new(block ActionEvent e
-					searchMods()
-				end)))
-			
-			// search name
-			pPanelSearchName = Panel.new(FlowLayout.new(LayoutAxis.y), block Panel p2
-				p2.setDesignerSelector("Panel.MMPanelModManagement.Group.Search.Name")
-				p2.setTitle("@UI.ModManagement.SearchName")
-				
-				textField = createTextField(pModelSearchName, ".Search.Name", 20)
-				textField.setToolTip("@UI.ModManagement.SearchName.ToolTip")
-				p2.addWidget(textField)
-				textField.addActionListener(BlockActionListener.new(block ActionEvent event
-					searchMods()
-				end))
-			end)
-			p.addWidget(pPanelSearchName)
-			
-			
-			// sort by
-			pPanelSearchSort = Panel.new(FlowLayout.new(LayoutAxis.y), block Panel p2
-				p2.setDesignerSelector("Panel.MMPanelModManagement.Group.Search.SortBy")
-				p2.setTitle("@UI.SortBy")
-				
-				var EnumListElementRenderer renderer = EnumListElementRenderer.new()
-				renderer.setTranslationPrefix("UI.ModManagement.Enum.SortField.")
-				comboBox = createComboBox(pModelSortBy, renderer, ".Search.SortBy")
-				comboBox.setToolTip("@UI.ModManagement.SortBy.ToolTip")
-				p2.addWidget(comboBox)
-			end)
-			p.addWidget(pPanelSearchSort)
-			
-			// tags. will be filled once data has been retrieved from service
-			pPanelTags = Panel.new(FlowLayout.new(LayoutAxis.y))
-			p.addWidget(pPanelTags)
-		end))
-		viewport.setLayout(FlowLayout.new(LayoutAxis.y))
-		addWidget(ScrollPanel.new(viewport, ScrollPanel.Policy.hidden, ScrollPanel.Policy.needed), BorderLayout.Area.right)
-		
-		// button line at bottom
-		pPanelBottomLine = Panel.new(CentrizedBoxLayout.new(LayoutAxis.x, 20), block Panel p
-			pButtonSearchMore = createButton("@UI.ModManagement.SearchMore", "@UI.ModManagement.SearchMore.ToolTip",\
-				".MoreResults", BlockActionListener.new(block ActionEvent e
-					searchMoreMods()
-				end))
-			p.addWidget(pButtonSearchMore)
-		end )
-		addWidget(pPanelBottomLine, BorderLayout.Area.bottom)
 	end
 	
 	/** \brief Create search tag widgets. */
