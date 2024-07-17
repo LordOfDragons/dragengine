@@ -146,7 +146,7 @@ class MMTransferListRenderer implements ListElementRenderer
 			if mod.logoSmall == null and logo != null
 				var String url = findLoadLogoImage(logo)
 				if url != null
-					pServiceMods.loadResource(url, LoadLogoListener.new(this, mod))
+					pServiceMods.loadModResource(url, LoadLogoListener.new(this, mod))
 				end
 			end
 			

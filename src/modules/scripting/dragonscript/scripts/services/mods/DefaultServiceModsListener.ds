@@ -55,7 +55,7 @@ class DefaultServiceModsListener implements ServiceModsListener
 	 * \param resource Loaded resource. On failure null.
 	 * \param exception On success null. On failure contains error information.
 	 */
-	func void onLoadResource(ServiceMods service, String url, Object resource, Exception exception)
+	func void onLoadModResource(ServiceMods service, String url, Object resource, Exception exception)
 	end
 	
 	/**

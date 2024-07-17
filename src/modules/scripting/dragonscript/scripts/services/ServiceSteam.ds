@@ -27,6 +27,7 @@ namespace Dragengine.Services
 pin Dragengine.Services.Stats
 pin Dragengine.Services.User
 pin Dragengine.Utils
+pin Dragengine.Gui
 
 
 /**
@@ -64,6 +65,8 @@ class ServiceSteam implements ServiceStats, ServiceUser, ServiceListener
 	
 	var InitParameters pInitParameters
 	var Service pService
+	var Image authProviderIcon, authProviderImage
+	
 	var SafeArray pStatsListeners, pUserListeners
 	var Dictionary pOnceListeners
 	var Set pGetStatsApiNames, pGetAchievementsApiNames
@@ -84,6 +87,9 @@ class ServiceSteam implements ServiceStats, ServiceUser, ServiceListener
 		pStatsListeners = SafeArray.new()
 		pUserListeners = SafeArray.new()
 		pOnceListeners = Dictionary.new()
+		
+		authProviderIcon = null // TODO
+		authProviderImage = null // TODO
 		
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("appId", params.appId)
@@ -263,7 +269,11 @@ class ServiceSteam implements ServiceStats, ServiceUser, ServiceListener
 	func ServiceUserFeatures getUserFeatures()
 		var ServiceUserFeatures features = ServiceUserFeatures.new()
 		features.canAutomaticLogin = true
-		features.authTokenProvider = authProviderId
+		features.authTokenProvider = ServiceUserFeatures.AuthTokenProvider.new()
+		features.authTokenProvider.id = authProviderId
+		features.authTokenProvider.name = "Steam"
+		features.authTokenProvider.icon = authProviderIcon
+		features.authTokenProvider.image = authProviderImage
 		return features
 	end
 	
@@ -336,6 +346,20 @@ class ServiceSteam implements ServiceStats, ServiceUser, ServiceListener
 		so.setStringChildAt("function", "getUserInfo")
 		
 		pRunRequest(so, listener)
+	end
+	
+	/**
+	 * \brief Load resource asynchronously.
+	 * 
+	 * Loaded resources are cached for faster retrieval. Once the resource is cached locally
+	 * \ref ServiceModsListener#onLoadResource(ServiceMods,String,Object,Exception) is called
+	 * with the same URL as used in this function call.
+	 * 
+	 * \param url URL of image to load.
+	 * \param listener If not null called once in addition to added listeners.
+	 */
+	func void loadUserResource(String url, ServiceUserListener listener)
+		throw EInvalidParam.new("not supported")
 	end
 	
 	

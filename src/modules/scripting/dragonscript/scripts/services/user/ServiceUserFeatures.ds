@@ -23,12 +23,52 @@
  */
 
 namespace Dragengine.Services.User
+pin Dragengine.Gui
 
 /**
  * \brief Features supported by a ServiceUser instance.
  * \version 1.23
  */
 class ServiceUserFeatures
+	/**
+	 * \brief Authentication token provider information.
+	 */
+	class AuthTokenProvider
+		/**
+		 * \brief Unique identifier stored in ServiceUserAuthToken instances.
+		 */
+		public var String id
+		
+		/**
+		 * \brief Name displayed in authentication provider listings.
+		 */
+		public var String name
+		
+		/**
+		 * \brief Small icon representing authentication token provider in listings.
+		 * 
+		 * Image size is 64x64. Used for authentication provider selection screen.
+		 */
+		public var Image icon
+		
+		/**
+		 * \brief Large image representing authentication token provider.
+		 * 
+		 * Used for authenticate screens if the authentication provider has been selected
+		 * and a separate dialog window is required.
+		 */
+		public var Image image
+		
+		
+		/**
+		 * \brief Create new instance of class AuthTokenProviderInfo.
+		 */
+		func new()
+		end
+	end
+	
+	
+	
 	/**
 	 * \brief Service supports manually logging in user.
 	 */
@@ -56,14 +96,12 @@ class ServiceUserFeatures
 	public var bool canLogout
 	
 	/**
-	 * \brief Authentication token provider identifier.
+	 * \brief Authentication token provider information.
 	 * 
-	 * If service supports requesting authentication tokens this is the provider identifier
-	 * that will be stored in ServiceUserAuthToken instances.
-	 * 
-	 * If service does not support requesting authentication tokens this will be null.
+	 * Present if service supports requesting authentication. If service does not
+	 * support requesting authentication tokens this will be null.
 	 */
-	public var String authTokenProvider
+	public var AuthTokenProvider authTokenProvider
 	
 	
 	

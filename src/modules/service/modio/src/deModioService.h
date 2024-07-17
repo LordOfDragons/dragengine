@@ -136,7 +136,7 @@ public:
 		const decString &function, const deServiceObject::Ref &data = nullptr );
 	
 	void ListAllMods( const decUniqueID &id, const deServiceObject &request );
-	void LoadResource( const decUniqueID &id, const deServiceObject &request );
+	void LoadModResource( const decUniqueID &id, const deServiceObject &request );
 	void PauseModManagement( const decUniqueID &id, const deServiceObject &request );
 	void AuthenticateUserExternal( const decUniqueID &id, const deServiceObject &request );
 	void ClearUserData( const decUniqueID &id, const deServiceObject &request );
@@ -146,6 +146,7 @@ public:
 	void SubmitModRating( const decUniqueID &id, const deServiceObject &request );
 	void RevokeModRating( const decUniqueID &id, const deServiceObject &request );
 	void GetModTagOptions( const decUniqueID &id, const deServiceObject &request );
+	void LoadUserResource( const decUniqueID &id, const deServiceObject &request );
 	
 	void ActivateMods();
 	deServiceObject::Ref IsAuthenticated();

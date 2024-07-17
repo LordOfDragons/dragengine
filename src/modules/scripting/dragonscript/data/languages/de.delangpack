@@ -163,6 +163,8 @@ Neu zuweisen?</translation>
 	<translation name='UI.ModManagement.SubscribedMods.ToolTip'>Abonnierte Modifikationen</translation>
 	<translation name='UI.ModManagement.ModsTransfer'>Transfer</translation>
 	<translation name='UI.ModManagement.ModsTransfer.ToolTip'>Fortschritt der Transfers von Modifikationen</translation>
+	<translation name='UI.ModManagement.UserAccount'>Benutzerkonto</translation>
+	<translation name='UI.ModManagement.UserAccount.ToolTip'>Benutzerkonto verwalten</translation>
 	<translation name='UI.ModManagementMod.Message.RestartRequired'>Modifikation enthältt scripts. Ein Neustart ist erforderlich.</translation>
 	<translation name='UI.ModManagement.ActivateMods'>Modifikationen aktivieren</translation>
 	<translation name='UI.ModManagement.Message.ActivateStillPending'>Eine oder mehrere abonnierte Modifikationen sind noch nicht installiert oder aktualisiert. Alle bereite Modifikationen aktivieren?</translation>
@@ -170,4 +172,5 @@ Neu zuweisen?</translation>
 	<translation name='UI.ModManagement.Status.Subscribed'>Abonniert</translation>
 	<translation name='UI.ModManagement.Status.Unsubscribed'>Nicht abonniert</translation>
 	<translation name='UI.ModManagement.Status.Disabled'>Blockiert</translation>
+	<translation name='UI.ModManagementUserAccount.UserProfile'>Profil</translation>
 </languagePack>

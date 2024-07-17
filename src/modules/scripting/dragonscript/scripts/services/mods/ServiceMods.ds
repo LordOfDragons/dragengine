@@ -138,12 +138,12 @@ interface ServiceMods
 	 * \param url URL of image to load.
 	 * \param listener If not null called once in addition to added listeners.
 	 */
-	func void loadResource(String url, ServiceModsListener listener)
+	func void loadModResource(String url, ServiceModsListener listener)
 	
 	/**
 	 * \brief Mod management is paused.
 	 */
-	func bool getPauseManagement()
+	func bool getPauseModManagement()
 	
 	/**
 	 * \brief Pause mod management.
@@ -151,7 +151,7 @@ interface ServiceMods
 	 * By default the service automatically downloads, installs and uninstalls mods.
 	 * This process can be temporarily paused for example during game play.
 	 */
-	func void setPauseManagement(bool pause)
+	func void setPauseModManagement(bool pause)
 	
 	/**
 	 * \brief Service is busy managing modifications.
@@ -164,7 +164,7 @@ interface ServiceMods
 	 * 
 	 * While this method returns true certain functions will fail.
 	 */
-	func bool isManagementBusy()
+	func bool isModManagementBusy()
 	
 	/**
 	 * \brief Activate subscribed and installed modifications.

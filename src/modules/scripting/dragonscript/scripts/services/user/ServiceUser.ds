@@ -104,4 +104,16 @@ interface ServiceUser
 	 * \param listener If not null called once in addition to added listeners.
 	 */
 	func void getUserInfo(ServiceUserListener listener)
+	
+	/**
+	 * \brief Load resource asynchronously.
+	 * 
+	 * Loaded resources are cached for faster retrieval. Once the resource is cached locally
+	 * \ref ServiceModsListener#onLoadResource(ServiceMods,String,Object,Exception) is called
+	 * with the same URL as used in this function call.
+	 * 
+	 * \param url URL of image to load.
+	 * \param listener If not null called once in addition to added listeners.
+	 */
+	func void loadUserResource(String url, ServiceUserListener listener)
 end

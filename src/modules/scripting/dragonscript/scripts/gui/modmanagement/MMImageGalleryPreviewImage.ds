@@ -108,7 +108,7 @@ class MMImageGalleryPreviewImage extends DisplayImage
 			if galleryImage.imageThumbnail == null and service != null
 				galleryImage.thumbnail = findLoadThumbnail(galleryImage.info)
 				if galleryImage.thumbnail != null
-					service.loadResource(galleryImage.thumbnail.url, LoadImageListener.new(this, galleryImage))
+					service.loadModResource(galleryImage.thumbnail.url, LoadImageListener.new(this, galleryImage))
 				end
 			end
 		end
@@ -116,7 +116,7 @@ class MMImageGalleryPreviewImage extends DisplayImage
 		if galleryImage.imageOriginal == null and galleryImage.info != null
 			galleryImage.imageOriginal = galleryImage.info.image
 			if galleryImage.imageOriginal == null and service != null
-				service.loadResource(galleryImage.info.url, LoadImageListener.new(this, galleryImage))
+				service.loadModResource(galleryImage.info.url, LoadImageListener.new(this, galleryImage))
 			end
 		end
 		

@@ -1,0 +1,286 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Gui.ModManagement
+pin Dragengine.Services.User
+pin Dragengine.Gui.Layouts
+pin Introspection
+
+
+/**
+ * \brief User account management panel for use in MMPanelModManagement.
+ * \version 1.23
+ */
+class MMPanelModUserAccount extends Panel
+	/** \brief User event listener. */
+	class UserEventListener extends DefaultServiceUserListener
+		var MMPanelModUserAccount pPanel
+		
+		func new(MMPanelModUserAccount panel)
+			pPanel = panel
+		end
+		
+		func void onGetUserInfo(ServiceUser service, ServiceUserInfo info, Exception exception)
+			if info != null
+				pPanel.updateUserInfo(info)
+			end
+		end
+		
+		func void onLoginUser(ServiceUser service, Exception exception)
+			if exception == null
+				pPanel.updateUserInfo(null)
+				service.getUserInfo(null)
+			end
+		end
+		
+		func void onLogoutUser(ServiceUser service, Exception exception)
+			if exception == null
+				pPanel.updateUserInfo(null)
+			end
+		end
+	end
+	
+	/** \brief Open profile URL if clicked. */
+	class ClickedOpenProfileUrl extends ClickedActionListener
+		var MMPanelModUserAccount pPanel
+		
+		func new(MMPanelModUserAccount panel)
+			pPanel = panel
+		end
+		
+		func void onAction()
+			var ServiceUserInfo info = pPanel.getUserInfo()
+			if info != null and info.profileUrl != null
+				FileSystem.openUrl(info.profileUrl)
+			end
+		end
+	end
+	
+	/** \brief Listener updating avatar image once loaded. */
+	class LoadAvatarListener extends DefaultServiceUserListener
+		var MMPanelModUserAccount pPanel
+		
+		func new(MMPanelModUserAccount panel)
+			pPanel = panel
+		end
+		
+		func void onLoadUserResource(ServiceUser service, String url, Object resource, Exception exception)
+			if exception == null
+				pPanel.setCachedAvatarImage(resource cast Image)
+				pPanel.updateUserInfo(null)
+				
+			else
+				var BaseGameApp app = BaseGameApp.getApp()
+				if app != null
+					app.getConsole().addError("Load avatar failed: " + url, exception)
+				end
+			end
+		end
+	end
+	
+	
+	
+	var ServiceUser pServiceUser
+	var ServiceUserFeatures pServiceUserFeatures
+	var UserEventListener pUserEventListener
+	var SwitchPanel pSwitchContent
+	var Panel pPanelUserInfo
+	var DisplayImage pImageAvatar
+	var ServiceUserInfo pUserInfo
+	var DefaultTextModel pModelName, pModelProfileUrl
+	var DefaultListModel pModelAuthTokenProviders
+	var Image pCachedAvatarImage
+	
+	
+	
+	/**
+	 * \brief Create user account management panel.
+	 */
+	func new() super(FlowLayout.new(LayoutAxis.y))
+		pModelName = DefaultTextModel.new()
+		pModelProfileUrl = DefaultTextModel.new()
+		pModelAuthTokenProviders = DefaultListModel.new()
+		
+		runWhileBlockingLayout(block
+			createContent()
+		end)
+		
+		pUserEventListener = UserEventListener.new(this)
+	end
+	
+	/** \brief Dispose of widget. */
+	func void dispose()
+		pUserEventListener = null
+		pModelAuthTokenProviders = null
+		pModelName = pModelProfileUrl = null
+		pImageAvatar = null
+		pSwitchContent = null
+		pPanelUserInfo = null
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Service user or null. */
+	func ServiceUser getServiceUser()
+		return pServiceUser
+	end
+	
+	/** \brief Service user features or null. */
+	func ServiceUserFeatures getServiceUserFeatures()
+		return pServiceUserFeatures
+	end
+	
+	/** \brief Set service user or null. */
+	func void setServiceUser(ServiceUser serviceUser)
+		if serviceUser == pServiceUser
+			return
+		end
+		
+		if pServiceUser != null
+			pServiceUser.removeUserListener(pUserEventListener)
+		end
+		
+		pServiceUser = serviceUser
+		pServiceUserFeatures = null
+		
+		if serviceUser != null
+			pServiceUserFeatures = serviceUser.getUserFeatures()
+			pServiceUser.addUserListener(pUserEventListener)
+			serviceUser.getUserInfo(null)
+			
+		else
+			updateUserInfo(null)
+		end
+	end
+	
+	/** \brief Update user information. */
+	func void updateUserInfo(ServiceUserInfo info)
+		pUserInfo = info
+		
+		if info == null
+			return
+		end
+		
+		if pCachedAvatarImage == null and info.avatar != null
+			pCachedAvatarImage = info.avatar.image
+			if pCachedAvatarImage == null
+				var String url = findLoadAvatarImage(info.avatar)
+				if url != null
+					pServiceUser.loadUserResource(url, LoadAvatarListener.new(this))
+				end
+			end
+		end
+		
+		runWhileBlockingLayout(block
+			if pCachedAvatarImage != null
+				pImageAvatar.setImage(pCachedAvatarImage)
+				
+			else
+				// set placeholder image
+			end
+			
+			if info.displayName != null
+				pModelName.setText(info.displayName)
+				
+			elif info.name != null
+				pModelName.setText(info.name)
+				
+			else
+				pModelName.setText("??")
+			end
+		end)
+		doLayoutIfBlocked()
+	end
+	
+	/** \brief User information or null. */
+	func ServiceUserInfo getUserInfo()
+		return pUserInfo
+	end
+	
+	/** \brief Set cached avatar image or null. */
+	func void setCachedAvatarImage(Image image)
+		pCachedAvatarImage = image
+	end
+	
+	
+	
+	/** \brief Find URL of best matching avatar image to load. */
+	protected func String findLoadAvatarImage(ServiceImage image)
+		var Point reqSize = pImageAvatar.getMinimumSize()
+		
+		if image.thumbnails != null
+			var Array found = image.thumbnails.collect(block ServiceImage.Thumbnail each
+				return each.size >= reqSize
+			end).sorted(block ServiceImage.Thumbnail a, ServiceImage.Thumbnail b
+				return a.size.compare(b)
+			end)
+			if found.getCount() > 0
+				return (found.getAt(0) cast ServiceImage.Thumbnail).url
+			end
+		end
+		
+		return image.url
+	end
+	
+	/** \brief User information panel. */
+	protected func Panel getPanelUserInfo()
+		return pPanelUserInfo
+	end
+	
+	/** \brief Create content. */
+	protected func void createContent()
+		var Viewport viewport
+		var Label label
+		
+		pSwitchContent = SwitchPanel.new(block Panel p
+			// content: user account
+			pPanelUserInfo = Panel.new(FlowLayout.new(LayoutAxis.y), block Panel p2
+				p2.setDesignerSelector("Panel.MMPanelModUserAccount.UserInfo")
+				
+				pImageAvatar = DisplayImage.new(null, RepeatMode.stretchRatio, "Image.MMPanelModUserAccount.Avatar")
+				p2.addWidget(pImageAvatar)
+				
+				p2.addWidget(Label.new(pModelName, "Label.MMPanelModUserAccount.Name"))
+				
+				label = Label.new("@UI.ModManagementUserAccount.UserProfile", "Label.MMPanelModUserAccount.ProfileUrl")
+				label.setToolTip("@UI.ModManagementMod.Link.ToolTip")
+				label.addMouseListener(ClickedOpenProfileUrl.new(this))
+				p2.addWidget(label)
+			end)
+			viewport = Viewport.new(pPanelUserInfo)
+			viewport.setLayout(FlowLayout.new(LayoutAxis.y))
+			p.addWidget(ScrollPanel.new(viewport, ScrollPanel.Policy.hidden, ScrollPanel.Policy.needed))
+			
+			// content: login
+			viewport = Viewport.new(Panel.new(FlowLayout.new(LayoutAxis.y), block Panel p2
+				p2.addWidget(Label.new("Login"))
+			end))
+			viewport.setLayout(FlowLayout.new(LayoutAxis.y))
+			p.addWidget(ScrollPanel.new(viewport, ScrollPanel.Policy.hidden, ScrollPanel.Policy.needed))
+		end)
+		addWidget(pSwitchContent, BorderLayout.Area.content)
+		
+	end
+end

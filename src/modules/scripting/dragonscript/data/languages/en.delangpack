@@ -163,6 +163,8 @@ Do you want to re-assign?</translation>
 	<translation name='UI.ModManagement.SubscribedMods.ToolTip'>Browse subscribed modifications</translation>
 	<translation name='UI.ModManagement.ModsTransfer'>Transfer</translation>
 	<translation name='UI.ModManagement.ModsTransfer.ToolTip'>Modification transfer progress</translation>
+	<translation name='UI.ModManagement.UserAccount'>User Account</translation>
+	<translation name='UI.ModManagement.UserAccount.ToolTip'>Manage user account</translation>
 	<translation name='UI.ModManagementMod.Message.RestartRequired'>Modification contains scripts. Restarting is required.</translation>
 	<translation name='UI.ModManagement.ActivateMods'>Activate Modifications</translation>
 	<translation name='UI.ModManagement.Message.ActivateStillPending'>One or more subscribed modifications are pending installing or updating. Activate only ready modifications?</translation>
@@ -170,4 +172,5 @@ Do you want to re-assign?</translation>
 	<translation name='UI.ModManagement.Status.Subscribed'>Subscribed</translation>
 	<translation name='UI.ModManagement.Status.Unsubscribed'>Not subscribed</translation>
 	<translation name='UI.ModManagement.Status.Disabled'>Disabled</translation>
+	<translation name='UI.ModManagementUserAccount.UserProfile'>Profile</translation>
 </languagePack>

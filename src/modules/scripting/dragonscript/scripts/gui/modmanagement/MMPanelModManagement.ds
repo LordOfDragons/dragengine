@@ -27,6 +27,7 @@ pin Dragengine.Services.Mods
 pin Dragengine.Utils
 pin Dragengine.Gui.Layouts
 pin Dragengine.Gui.Events
+pin Dragengine.Services.User
 
 
 /**
@@ -75,6 +76,9 @@ class MMPanelModManagement extends Panel
 		
 		/** \brief Mod transfer. */
 		transfer
+		
+		/** \brief User account. */
+		userAccount
 	end
 	
 	/** \brief View category changed listener. */
@@ -348,6 +352,7 @@ class MMPanelModManagement extends Panel
 	
 	var ServiceMods pServiceMods
 	var ServiceModsFeatures pServiceModFeatures
+	var ServiceUser pServiceUser
 	var DefaultListModel pModelViewCategory, pModelMods, pModelSortBy, pModelTransfers
 	var SwitchPanel pSwitchContent
 	var ListBox pListMods, pListTransfers
@@ -362,6 +367,7 @@ class MMPanelModManagement extends Panel
 	var bool pPreventSearch
 	var ModEventListener pModEventListener
 	var String pRestartInfo
+	var MMPanelModUserAccount pPanelUserAccount
 	
 	
 	/*
@@ -411,6 +417,11 @@ class MMPanelModManagement extends Panel
 	func new(Array services)
 		pServiceMods = services.getAt(0) cast ServiceMods
 		pServiceModFeatures = pServiceMods.getModsFeatures()
+		
+		if pServiceMods castable ServiceUser
+			pServiceUser = pServiceMods cast ServiceUser
+		end
+		
 		pCodecPropertyString = CodecPropertyString.new()
 		pSearchTagCategories = Array.new()
 		pRestartInfo = "modsRequiredRestart"
@@ -419,6 +430,9 @@ class MMPanelModManagement extends Panel
 		pModelViewCategory.add(ViewCategory.browseMods)
 		pModelViewCategory.add(ViewCategory.subscribedMods)
 		pModelViewCategory.add(ViewCategory.transfer)
+		if pServiceUser != null
+			pModelViewCategory.add(ViewCategory.userAccount)
+		end
 		pModelViewCategory.setSelectedElement(ViewCategory.browseMods)
 		
 		pModelMods = DefaultListModel.new()
@@ -441,24 +455,28 @@ class MMPanelModManagement extends Panel
 		runWhileBlockingLayout(block
 			setDesignerSelector("Panel.MMPanelModManagement.Main")
 			createContent()
+			
+			if pPanelUserAccount != null
+				pPanelUserAccount.setServiceUser(pServiceUser)
+			end
+			
+			pModelSortBy.addListener(SearchSelectionChanged.new(this))
+			
+			pModEventListener = ModEventListener.new(this)
+			pServiceMods.addModsListener(pModEventListener)
+			
+			updateSubscribedMods()
+			pOrgSubscribedMods = pServiceMods.getSubscribedMods() // requires full copy
+			updateSystemMods()
+			
+			pServiceMods.getTags(null)
+			searchMods(ServiceModFilter.new())
+			
+			updateModelTransfers()
+			
+			pModelViewCategory.addListener(ViewCategoryChanged.new(this))
 		end)
 		doLayout()
-		
-		pModelSortBy.addListener(SearchSelectionChanged.new(this))
-		
-		pModEventListener = ModEventListener.new(this)
-		pServiceMods.addModsListener(pModEventListener)
-		
-		updateSubscribedMods()
-		pOrgSubscribedMods = pServiceMods.getSubscribedMods() // requires full copy
-		updateSystemMods()
-		
-		pServiceMods.getTags(null)
-		searchMods(ServiceModFilter.new())
-		
-		updateModelTransfers()
-		
-		pModelViewCategory.addListener(ViewCategoryChanged.new(this))
 		
 		/*
 		TimerBlock.new(5, false, block
@@ -481,6 +499,7 @@ class MMPanelModManagement extends Panel
 		pPanelTags = pPanelSearchName = pPanelSearchSort = pPanelBottomLine = null
 		pSearchTagCategories = null
 		pSwitchContent = null
+		pPanelUserAccount = null
 		
 		pSearchModsListener = null
 		pServiceMods = null
@@ -527,6 +546,11 @@ class MMPanelModManagement extends Panel
 			throw ENullPointer.new("info")
 		end
 		pRestartInfo = info
+	end
+	
+	/** \brief User account panel or null. */
+	func MMPanelModUserAccount getPanelUserAccount()
+		return pPanelUserAccount
 	end
 	
 	
@@ -865,6 +889,9 @@ class MMPanelModManagement extends Panel
 			
 		case ViewCategory.transfer
 			pSwitchContent.getModel().setValue(1)
+			
+		case ViewCategory.userAccount
+			pSwitchContent.getModel().setValue(2)
 		end
 	end
 	
@@ -993,6 +1020,13 @@ class MMPanelModManagement extends Panel
 					"@UI.ModManagement.ModsTransfer.ToolTip",\
 					OptionGroupModel.newFor(pModelViewCategory, ViewCategory.transfer),\
 					".ViewCategory.ModsTransfer"))
+				
+				if pServiceUser != null
+					p2.addWidget(createToggleButton("@UI.ModManagement.UserAccount",\
+						"@UI.ModManagement.UserAccount.ToolTip",\
+						OptionGroupModel.newFor(pModelViewCategory, ViewCategory.userAccount),\
+						".ViewCategory.UserAccount"))
+				end
 			end))
 		end), BorderLayout.Area.top)
 		
@@ -1011,6 +1045,12 @@ class MMPanelModManagement extends Panel
 			pListTransfers.setDesignerSelector("ListBox.MMPanelModManagement.Transfers")
 			pListTransfers.setNumberDisplayLines(1)
 			p.addWidget(ScrollPanel.new(pListTransfers, ScrollPanel.Policy.hidden, ScrollPanel.Policy.visible))
+			
+			// content: user account
+			if pServiceUser != null
+				pPanelUserAccount = createUserAccountPanel()
+				p.addWidget(pPanelUserAccount)
+			end
 		end)
 		addWidget(pSwitchContent, BorderLayout.Area.content)
 		
@@ -1149,5 +1189,10 @@ class MMPanelModManagement extends Panel
 	/** \brief Create transfer list element renderer. */
 	protected func ListElementRenderer createTransferListElementRenderer()
 		return MMTransferListRenderer.new(pServiceMods)
+	end
+	
+	/** \brief Create user account panel. */
+	protected func MMPanelModUserAccount createUserAccountPanel()
+		return MMPanelModUserAccount.new()
 	end
 end
