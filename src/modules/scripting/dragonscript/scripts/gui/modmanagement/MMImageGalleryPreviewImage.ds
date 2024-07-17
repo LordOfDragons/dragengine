@@ -44,7 +44,7 @@ class MMImageGalleryPreviewImage extends DisplayImage
 		end
 		
 		/** \brief Finished loading resource. */
-		func void onLoadResource(ServiceMods service, String url, Object resource, Exception exception)
+		func void onLoadModResource(ServiceMods service, String url, Object resource, Exception exception)
 			if exception != null
 				var BaseGameApp app = BaseGameApp.getApp()
 				if app != null

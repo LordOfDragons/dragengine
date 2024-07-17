@@ -466,7 +466,7 @@ class ServiceEos implements ServiceStats, ServiceUser, ServiceListener
 	 * \brief Load resource asynchronously.
 	 * 
 	 * Loaded resources are cached for faster retrieval. Once the resource is cached locally
-	 * \ref ServiceModsListener#onLoadResource(ServiceMods,String,Object,Exception) is called
+	 * \ref ServiceUserListener#onLoadUserResource(ServiceUser,String,Object,Exception) is called
 	 * with the same URL as used in this function call.
 	 * 
 	 * \param url URL of image to load.

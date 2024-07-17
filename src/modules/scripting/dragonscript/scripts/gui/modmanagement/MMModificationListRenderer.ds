@@ -48,7 +48,7 @@ class MMModificationListRenderer implements ListElementRenderer
 			end
 			
 			/** \brief Loading resource finished. */
-			func void onLoadResource(ServiceMods service, String url, Object resource, Exception exception)
+			func void onLoadModResource(ServiceMods service, String url, Object resource, Exception exception)
 				if exception == null
 					pMod.logo = resource cast Image
 					if pWidget.getMod() == pMod

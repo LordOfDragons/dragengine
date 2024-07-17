@@ -132,7 +132,7 @@ interface ServiceMods
 	 * \brief Load resource asynchronously.
 	 * 
 	 * Loaded resources are cached for faster retrieval. Once the resource is cached locally
-	 * \ref ServiceModsListener#onLoadResource(ServiceMods,String,Object,Exception) is called
+	 * \ref ServiceModsListener#onLoadModResource(ServiceMods,String,Object,Exception) is called
 	 * with the same URL as used in this function call.
 	 * 
 	 * \param url URL of image to load.
@@ -247,6 +247,15 @@ interface ServiceMods
 	 * with String modification identifier and ServiceModStatus value.
 	 */
 	func Dictionary getSystemMods()
+	
+	/**
+	 * \brief Active mods.
+	 * 
+	 * Returns Set of String identifiers of all active modifications. Active modifications
+	 * are changed when \ref #activateMods() is called. This call is useful to know if a
+	 * game save state has been created with the same set of active modifications.
+	 */
+	func Set getActiveMods()
 	
 	/**
 	 * \brief Retrieve information about game modification.

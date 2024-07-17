@@ -64,6 +64,11 @@ class ServiceModProgress
 	
 	
 	/**
+	 * \brief Modification identifier.
+	 */
+	public var String modId
+	
+	/**
 	 * \brief Progress state.
 	 */
 	public var State state

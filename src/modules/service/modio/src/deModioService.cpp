@@ -238,7 +238,7 @@ deServiceObject::Ref deModioService::RunAction( const deServiceObject &action ){
 		return QuerySystemInstallations();
 		
 	}else if( function == "queryUserProfile" ){
-		return QuerySystemInstallations();
+		return QueryUserProfile();
 		
 	}else if( function == "setModDisabled" ){
 		SetModDisabled( action );
@@ -246,6 +246,9 @@ deServiceObject::Ref deModioService::RunAction( const deServiceObject &action ){
 		
 	}else if( function == "modHasMatchingFiles" ){
 		return ModHasMatchingFiles( action );
+		
+	}else if( function == "getActiveMods" ){
+		return GetActiveMods();
 		
 	}else{
 		DETHROW_INFO( deeInvalidParam, "Unknown function" );
@@ -746,6 +749,26 @@ deServiceObject::Ref deModioService::ModHasMatchingFiles( const deServiceObject 
 	}catch( const deException &e ){
 		DETHROW_INFO( deeInvalidAction, "Modification files unavailable" );
 	}
+}
+
+deServiceObject::Ref deModioService::GetActiveMods(){
+	const deModioUserConfig * const userConfig = pModule.GetUserConfigIfPresent( pModule.GetCurUserId() );
+	const deServiceObject::Ref so( deServiceObject::NewList() );
+	
+	if( userConfig ){
+		const decObjectList &modConfigs = pModule.GetModConfigs();
+		const int count = modConfigs.GetCount();
+		int i;
+		
+		for( i=0; i<count; i++ ){
+			const deModioModConfig &config = *( ( deModioModConfig* )modConfigs.GetAt( i ) );
+			if( ! userConfig->GetModDisabled( config.id ) ){
+				so->AddStringChild( config.id );
+			}
+		}
+	}
+	
+	return so;
 }
 
 void deModioService::FailRequest( const decUniqueID &id, const deException &e ){

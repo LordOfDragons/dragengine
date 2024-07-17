@@ -48,7 +48,7 @@ class MMTransferListRenderer implements ListElementRenderer
 				pMod = mod
 			end
 			
-			func void onLoadResource(ServiceMods service, String url, Object resource, Exception exception)
+			func void onLoadModResource(ServiceMods service, String url, Object resource, Exception exception)
 				if exception == null
 					pMod.logoSmall = resource cast Image
 					if pWidget.getMod() == pMod

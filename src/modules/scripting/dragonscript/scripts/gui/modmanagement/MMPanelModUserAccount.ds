@@ -56,7 +56,7 @@ class MMPanelModUserAccount extends Panel
 		
 		func void onLogoutUser(ServiceUser service, Exception exception)
 			if exception == null
-				pPanel.updateUserInfo(null)
+				pPanel.clearUserInfo()
 			end
 		end
 	end
@@ -177,16 +177,14 @@ class MMPanelModUserAccount extends Panel
 	
 	/** \brief Update user information. */
 	func void updateUserInfo(ServiceUserInfo info)
-		pUserInfo = info
-		
-		if info == null
-			return
+		if info != null
+			pUserInfo = info
 		end
 		
-		if pCachedAvatarImage == null and info.avatar != null
-			pCachedAvatarImage = info.avatar.image
+		if pCachedAvatarImage == null and pUserInfo != null and pUserInfo.avatar != null
+			pCachedAvatarImage = pUserInfo.avatar.image
 			if pCachedAvatarImage == null
-				var String url = findLoadAvatarImage(info.avatar)
+				var String url = findLoadAvatarImage(pUserInfo.avatar)
 				if url != null
 					pServiceUser.loadUserResource(url, LoadAvatarListener.new(this))
 				end
@@ -201,17 +199,33 @@ class MMPanelModUserAccount extends Panel
 				// set placeholder image
 			end
 			
-			if info.displayName != null
-				pModelName.setText(info.displayName)
-				
-			elif info.name != null
-				pModelName.setText(info.name)
+			if pUserInfo != null
+				if pUserInfo.displayName != null
+					pModelName.setText(pUserInfo.displayName)
+					
+				elif pUserInfo.name != null
+					pModelName.setText(pUserInfo.name)
+					
+				else
+					pModelName.setText("??")
+				end
 				
 			else
 				pModelName.setText("??")
 			end
 		end)
 		doLayoutIfBlocked()
+	end
+	
+	/** \brief Clear user info. */
+	func void clearUserInfo()
+		if pUserInfo == null
+			return
+		end
+		
+		pUserInfo = null
+		pCachedAvatarImage = null
+		updateUserInfo(null)
 	end
 	
 	/** \brief User information or null. */

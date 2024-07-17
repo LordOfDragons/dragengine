@@ -487,5 +487,6 @@
 			<image parameter='image'>/shareddata/guithemes/modern/mousepointer/hover_link.webp</image>
 			<point parameter='offset' x='-8' y='0'/>
 		</mousePointer>
+		<borderSize parameter='normal.padding' top='10'/>
 	</designer>
 </guiTheme>

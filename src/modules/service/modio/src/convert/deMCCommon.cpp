@@ -457,6 +457,7 @@ deServiceObject::Ref deMCCommon::ModProgressInfo( const Modio::ModProgressInfo &
 	const double current = ( double )info.GetCurrentProgress( state );
 	const double progress = decMath::clamp( current / total, 0.0, 1.0 );
 	
+	so->SetChildAt( "id", deMCCommon::ID( info.ID ) );
 	so->SetChildAt( "state", ModProgressState( state ) );
 	so->SetFloatChildAt( "total", ( float )total );
 	so->SetFloatChildAt( "current", ( float )current );

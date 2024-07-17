@@ -301,7 +301,7 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 	 * \brief Load resource asynchronously.
 	 * 
 	 * Loaded resources are cached for faster retrieval. Once the resource is cached locally
-	 * \ref ServiceModsListener#onLoadResource(ServiceMods,String,Object,Exception) is called
+	 * \ref ServiceModsListener#onLoadModResource(ServiceMods,String,Object,Exception) is called
 	 * with the same URL as used in this function call.
 	 * 
 	 * \param url URL of image to load.
@@ -490,6 +490,26 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 		end
 		
 		return dict
+	end
+	
+	/**
+	 * \brief Active mods.
+	 * 
+	 * Returns Set of String identifiers of all active modifications. Active modifications
+	 * are changed when \ref #activateMods() is called. This call is useful to know if a
+	 * game save state has been created with the same set of active modifications.
+	 */
+	func Set getActiveMods()
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "getActiveMods")
+		so = pService.runAction(so)
+		
+		var int i, count = so.getChildCount()
+		var Set set = Set.new()
+		for i = 0 to count
+			set.add(so.getChildAt(i).getString())
+		end
+		return set
 	end
 	
 	/**
@@ -765,7 +785,7 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 	 * \brief Load resource asynchronously.
 	 * 
 	 * Loaded resources are cached for faster retrieval. Once the resource is cached locally
-	 * \ref ServiceModsListener#onLoadResource(ServiceMods,String,Object,Exception) is called
+	 * \ref ServiceUserListener#onLoadUserResource(ServiceUser,String,Object,Exception) is called
 	 * with the same URL as used in this function call.
 	 * 
 	 * \param url URL of image to load.
@@ -1398,6 +1418,7 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 		end
 		
 		var ServiceModProgress progress = ServiceModProgress.new()
+		progress.modId = so.getChildAt("id").getString()
 		progress.state = ServiceModProgress.State.named(so.getChildAt("state").getString())
 		progress.total = pConvFloat(so, "total", 1)
 		progress.current = pConvFloat(so, "current", 0)
