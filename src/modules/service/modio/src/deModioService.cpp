@@ -250,6 +250,9 @@ deServiceObject::Ref deModioService::RunAction( const deServiceObject &action ){
 	}else if( function == "getActiveMods" ){
 		return GetActiveMods();
 		
+	}else if( function == "getUserFeatures" ){
+		return GetUserFeatures();
+		
 	}else{
 		DETHROW_INFO( deeInvalidParam, "Unknown function" );
 	}
@@ -416,7 +419,7 @@ void deModioService::AuthenticateUserExternal( const decUniqueID &id, const deSe
 	
 	Modio::AuthenticationParams authParams = {};
 	authParams.AuthToken = request.GetChildAt( "token" )->GetString().GetString();
-	authParams.bURLEncodeAuthToken = true;
+	authParams.bURLEncodeAuthToken = false; //true;
 	authParams.bUserHasAcceptedTerms = request.GetChildAt( "termsAccepted" )->GetBoolean();
 	
 	deServiceObject::Ref so( request.GetChildAt( "parameters" ) );
@@ -448,7 +451,7 @@ void deModioService::ClearUserData( const decUniqueID &id, const deServiceObject
 	AddRequiresEventHandlingCount();
 	
 	Modio::ClearUserDataAsync( [ this, id ]( Modio::ErrorCode ec ){
-		pOnRequestFinished( id, ec );
+		pOnClearUserData( id, ec );
 	});
 }
 
@@ -771,6 +774,20 @@ deServiceObject::Ref deModioService::GetActiveMods(){
 	return so;
 }
 
+deServiceObject::Ref deModioService::GetUserFeatures(){
+	const deServiceObject::Ref so( deServiceObject::Ref::New( new deServiceObject ) );
+	so->SetBoolChildAt( "canManualLogin", true );
+	so->SetBoolChildAt( "canAutomaticLogin", true );
+	so->SetBoolChildAt( "canLogout", true );
+	
+	const deServiceObject::Ref soAuthProviders( deServiceObject::NewList() );
+	soAuthProviders->AddStringChild( "steam" );
+	soAuthProviders->AddStringChild( "epic" );
+	so->SetChildAt( "canAuthProviderLogin", soAuthProviders );
+	
+	return so;
+}
+
 void deModioService::FailRequest( const decUniqueID &id, const deException &e ){
 	const deModioPendingRequest::Ref pr( RemoveFirstPendingRequestWithId( id ) );
 	if( pr ){
@@ -806,6 +823,32 @@ void deModioService::FailRequest( const deModioPendingRequest::Ref &request, con
 	request->data->SetIntChildAt( "code", ec.value() );
 	request->data->SetStringChildAt( "error", ec.category().name() );
 	request->data->SetStringChildAt( "message", ec.message().c_str() );
+	
+	if( ec == Modio::ApiError::UserNoAcceptTermsOfUse ){
+		if( ! pPendingRequests.Has( request ) ){
+			pPendingRequests.Add( request );
+		}
+		
+		const decUniqueID id( request->id );
+		AddRequiresEventHandlingCount();
+		Modio::GetTermsOfUseAsync( [ this, id ]( Modio::ErrorCode ec2, Modio::Optional<Modio::Terms> terms ){
+			pModule.LogInfoFormat( "deModioService.GetTermsOfUseAsync: ec(%d)[%s]",
+				ec2.value(), ec2.message().c_str() );
+			
+			const deModioPendingRequest::Ref pr( pOnBaseResponseInit( id, ec2 ) );
+			if( pr ){
+				if( terms.has_value() ){
+					pr->data->SetChildAt( "needAcceptTerms", deMCCommon::NeedAcceptTerms( terms.value() ) );
+				}
+				
+				RemoveRequiresEventHandlingCount();
+				pModule.GetGameEngine()->GetServiceManager()->QueueRequestFailed(
+					pService, pr->id, pr->data );
+			}
+		});
+		return;
+	}
+	
 	pModule.GetGameEngine()->GetServiceManager()->QueueRequestFailed(
 		pService, request->id, request->data );
 }
@@ -1135,6 +1178,7 @@ void deModioService::pOnClearUserData( const decUniqueID &id, Modio::ErrorCode e
 	}
 	
 	pModManagementEnabled = false;
+	pActivateMods();
 	pOnBaseResponseExit( pr );
 }
 
@@ -1322,7 +1366,7 @@ void deModioService::pCheckProgressUpdate( float elapsed ){
 }
 
 void deModioService::pActivateMods(){
-	pModule.LogInfo( "deModioService.pUpdateModConfigs" );
+	pModule.LogInfo( "deModioService.pActivateMods" );
 	
 	const std::map<Modio::ModID, Modio::ModCollectionEntry> result( Modio::QueryUserSubscriptions() );
 	std::map<Modio::ModID, Modio::ModCollectionEntry>::const_iterator iter;

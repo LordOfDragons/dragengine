@@ -31,6 +31,25 @@ namespace Dragengine.Services.User
  */
 interface ServiceUser
 	/**
+	 * \brief Errors.
+	 */
+	enum Errors
+		/**
+		 * \brief User has to accept terms of service.
+		 * 
+		 * Receiving this error the caller has to first present to the user the terms of service.
+		 * Upon accepting the terms of service the caller has to restart the failed action
+		 * including the provided credentials parameters.
+		 * 
+		 * The terms of service and the credentials parameters are found in the
+		 * ServiceUserErrorNeedAcceptToS instance assigned as additional error data.
+		 */
+		NeedAcceptTos
+	end
+	
+	
+	
+	/**
 	 * \brief Add user listener.
 	 * \param listener Listener to add
 	 */

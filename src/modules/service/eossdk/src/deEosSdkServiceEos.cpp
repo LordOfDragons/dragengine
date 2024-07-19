@@ -33,6 +33,7 @@
 #include <dragengine/deEngine.h>
 #include <dragengine/common/utils/decUniqueID.h>
 #include <dragengine/common/utils/decBase64.h>
+#include <dragengine/resources/image/deImageManager.h>
 #include <dragengine/resources/service/deServiceManager.h>
 #include <dragengine/resources/service/deServiceObject.h>
 
@@ -230,6 +231,9 @@ deServiceObject::Ref deEosSdkServiceEos::RunAction( const deServiceObject &actio
 	}else if( function == "isUserLoggedIn" ){
 		return IsUserLoggedIn( action );
 		
+	}else if( function == "getUserFeatures" ){
+		return GetUserFeatures();
+		
 	}else{
 		DETHROW_INFO( deeInvalidParam, "Unknown function" );
 	}
@@ -379,6 +383,31 @@ deServiceObject::Ref deEosSdkServiceEos::CopyIdToken( const deServiceObject &act
 
 deServiceObject::Ref deEosSdkServiceEos::IsUserLoggedIn( const deServiceObject &action ){
 	return deServiceObject::NewBool( localUserId != nullptr );
+}
+
+deServiceObject::Ref deEosSdkServiceEos::GetUserFeatures(){
+	if( ! pAuthProviderIcon ){
+		pAuthProviderIcon.TakeOver( pModule.GetGameEngine()->GetImageManager()->LoadImage(
+			&pModule.GetVFS(), "/share/image/authProviderIcon.webp", "/" ) );
+	}
+	if( ! pAuthProviderImage ){
+		pAuthProviderImage.TakeOver( pModule.GetGameEngine()->GetImageManager()->LoadImage(
+			&pModule.GetVFS(), "/share/image/authProviderImage.webp", "/" ) );
+	}
+	
+	const deServiceObject::Ref so( deServiceObject::Ref::New( new deServiceObject ) );
+	so->SetBoolChildAt( "canManualLogin", false ); // maybe later
+	so->SetBoolChildAt( "canAutomaticLogin", true );
+	so->SetBoolChildAt( "canLogout", false ); // maybe later
+	
+	const deServiceObject::Ref soAtp( deServiceObject::Ref::New( new deServiceObject ) );
+	soAtp->SetStringChildAt( "id", "epic" );
+	soAtp->SetResourceChildAt( "icon", pAuthProviderIcon );
+	soAtp->SetResourceChildAt( "image", pAuthProviderImage );
+	soAtp->SetStringChildAt( "name", "EPIC Games" );
+	so->SetChildAt( "authTokenProvider", soAtp );
+	
+	return so;
 }
 
 void deEosSdkServiceEos::FailRequest( const decUniqueID &id, const deException &e ){

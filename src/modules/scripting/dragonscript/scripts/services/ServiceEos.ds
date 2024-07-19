@@ -38,7 +38,7 @@ pin Dragengine.Gui
  * - Stats/Achievements
  * - User
  */
-class ServiceEos implements ServiceStats, ServiceUser, ServiceListener
+class ServiceEos extends BaseGameService implements ServiceStats, ServiceUser, ServiceListener
 	/**
 	 * \brief Service initialization parameters.
 	 */
@@ -131,11 +131,9 @@ class ServiceEos implements ServiceStats, ServiceUser, ServiceListener
 	var InitParameters pInitParameters
 	var ServiceInitListener pInitListener
 	var Boolean pIsInitialized
-	var Service pService
 	var Image authProviderIcon, authProviderImage
 	
 	var SafeArray pStatsListeners, pUserListeners
-	var Dictionary pOnceListeners
 	
 	
 	/**
@@ -166,7 +164,6 @@ class ServiceEos implements ServiceStats, ServiceUser, ServiceListener
 		
 		pStatsListeners = SafeArray.new()
 		pUserListeners = SafeArray.new()
-		pOnceListeners = Dictionary.new()
 		
 		authProviderIcon = null // TODO
 		authProviderImage = null // TODO
@@ -183,8 +180,8 @@ class ServiceEos implements ServiceStats, ServiceUser, ServiceListener
 		if parameters.clientSecret != null
 			so.setStringChildAt("clientSecret", parameters.clientSecret)
 		end
-		pService = Service.new("EOSSDK", so)
-		pService.setListener(this)
+		service = Service.new("EOSSDK", so)
+		service.setListener(this)
 	end
 	
 	/**
@@ -194,12 +191,8 @@ class ServiceEos implements ServiceStats, ServiceUser, ServiceListener
 		pInitListener = null
 		pStatsListeners.removeAll()
 		pUserListeners.removeAll()
-		pOnceListeners.removeAll()
 		
-		if pService != null
-			pService.setListener(null)
-		end
-		pService = null
+		super.dispose()
 	end
 	
 	
@@ -319,16 +312,9 @@ class ServiceEos implements ServiceStats, ServiceUser, ServiceListener
 	 * \brief Features supported by this service.
 	 */
 	func ServiceUserFeatures getUserFeatures()
-		var ServiceUserFeatures features = ServiceUserFeatures.new()
-		features.canAutomaticLogin = true
-		features.canManualLogin = true
-		features.canLogout = true
-		features.authTokenProvider = ServiceUserFeatures.AuthTokenProvider.new()
-		features.authTokenProvider.id = authProviderId
-		features.authTokenProvider.name = "Epic"
-		features.authTokenProvider.icon = authProviderIcon
-		features.authTokenProvider.image = authProviderImage
-		return features
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "getAuthProviderInfo")
+		return pConvUserFeatures(service.runAction(so))
 	end
 	
 	/**
@@ -394,7 +380,7 @@ class ServiceEos implements ServiceStats, ServiceUser, ServiceListener
 		so.setBoolChildAt("scopeFriends", pInitParameters.enableFriendsList)
 		so.setBoolChildAt("scopePresence", pInitParameters.enablePresence)
 		
-		pRunRequest(so, listener)
+		runRequest(so, listener)
 	end
 	
 	/**
@@ -409,7 +395,7 @@ class ServiceEos implements ServiceStats, ServiceUser, ServiceListener
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "authLogout")
 		
-		pRunRequest(so, listener)
+		runRequest(so, listener)
 	end
 	
 	/**
@@ -418,7 +404,7 @@ class ServiceEos implements ServiceStats, ServiceUser, ServiceListener
 	func bool isUserLoggedIn()
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "isUserLoggedIn")
-		return pService.runAction(so).getBoolean()
+		return service.runAction(so).getBoolean()
 	end
 	
 	/**
@@ -432,7 +418,7 @@ class ServiceEos implements ServiceStats, ServiceUser, ServiceListener
 	func void getAuthToken(ServiceUserListener listener)
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "copyIdToken")
-		so = pService.runAction(so)
+		so = service.runAction(so)
 		
 		var ServiceUserAuthToken token = ServiceUserAuthToken.new()
 		token.provider = authProviderId
@@ -447,7 +433,7 @@ class ServiceEos implements ServiceStats, ServiceUser, ServiceListener
 			end
 		end)
 		
-		pService.nextId()
+		service.nextId()
 	end
 	
 	/**
@@ -459,7 +445,7 @@ class ServiceEos implements ServiceStats, ServiceUser, ServiceListener
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "queryUserInfo")
 		
-		pRunRequest(so, listener)
+		runRequest(so, listener)
 	end
 	
 	/**
@@ -483,7 +469,7 @@ class ServiceEos implements ServiceStats, ServiceUser, ServiceListener
 	 */
 	func void requestResponse(Service service, UniqueID id, ServiceObject response, bool finished)
 		var String function = response.getChildAt("function").getString()
-		var Object onceListener = pGetOnceListener(id)
+		var Object onceListener = getOnceListener(id)
 		
 		if function.equals("authLogin")
 			pUserListeners.forEach(block ServiceUserListener each
@@ -519,7 +505,7 @@ class ServiceEos implements ServiceStats, ServiceUser, ServiceListener
 	func void requestFailed(Service service, UniqueID id, ServiceObject error)
 		var String function = error.getChildAt("function").getString()
 		var ServiceException exception = createException(error)
-		var Object onceListener = pGetOnceListener(id)
+		var Object onceListener = getOnceListener(id)
 		
 		if function.equals("authLogin")
 			pUserListeners.forEach(block ServiceUserListener each
@@ -572,50 +558,21 @@ class ServiceEos implements ServiceStats, ServiceUser, ServiceListener
 	
 	
 	/**
-	 * \brief Service module service instance.
-	 */
-	protected func Service getService()
-		return pService
-	end
-	
-	/**
 	 * \brief Create exception from response.
 	 */
 	func ServiceException createException(ServiceObject error)
-		error = error.getChildAt("message")
-		return ServiceException.new(pService, error != null if error.getString() else "Unknown error")
-	end
-	
-	private func String pConvString(ServiceObject so, String key)
-		var ServiceObject so2 = so.getChildAt(key)
-		return so2 != null if so2.getString() else null
+		var String message = convString(error, "message", "Unknown error")
+		return ServiceException.new(service, message, null, null, null)
 	end
 	
 	private func ServiceUserInfo pConvUserInfo(ServiceObject so)
 		var ServiceUserInfo info = ServiceUserInfo.new()
-		info.id = pConvString(so, "userId")
-		info.displayName = pConvString(so, "displayName")
-		info.nickname = pConvString(so, "nickname")
-		info.country = pConvString(so, "country")
-		info.preferredLanguage = pConvString(so, "preferredLanguage")
+		info.id = convString(so, "userId")
+		info.displayName = convString(so, "displayName")
+		info.nickname = convString(so, "nickname")
+		info.country = convString(so, "country")
+		info.preferredLanguage = convString(so, "preferredLanguage")
 		return info
-	end
-	
-	private func Object pGetOnceListener(UniqueID id)
-		var Object listener = pOnceListeners.getAt(id, null)
-		if listener != null
-			pOnceListeners.remove(id)
-		end
-		return listener
-	end
-	
-	private func UniqueID pRunRequest(ServiceObject request, Object listener)
-		var UniqueID id = pService.nextId()
-		pService.startRequest(id, request)
-		if listener != null
-			pOnceListeners.setAt(id, listener)
-		end
-		return id
 	end
 end
 

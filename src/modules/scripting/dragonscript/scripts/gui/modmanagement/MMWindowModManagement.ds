@@ -43,19 +43,20 @@ class MMWindowModManagement extends WindowDialog
 	 * 
 	 * Uses service mods from \ref BaseGameApp#getBaseGameServices().
 	 */
-	func new() this(Array.new(BaseGameApp.getApp().getBaseGameServices().getAllModsServices()))
+	func new() this(Array.new(BaseGameApp.getApp().getBaseGameServices().getAllModsServices()),\
+		Array.new(BaseGameApp.getApp().getBaseGameServices().getAllUserServices()))
 	end
 	
 	/**
 	 * \brief Create mod management window.
 	 * \param services Array of ServiceMods.
 	 */
-	func new(Array services) super(0, 0, 1000, 800)
+	func new(Array modsServices, Array userServices) super(0, 0, 1000, 800)
 		setResult(MMPanelModManagement.ActivateModsResult.unchanged)
 		runWhileBlockingLayout(block
 			setTitle("@UI.Modifications")
 			setDesignerSelector("Window.Dialog.MMWindowModManagement")
-			createContent(services)
+			createContent(modsServices, userServices)
 		end)
 		doLayout()
 	end
@@ -93,10 +94,10 @@ class MMWindowModManagement extends WindowDialog
 	
 	
 	/** \brief Create content. */
-	protected func void createContent(Array services)
+	protected func void createContent(Array modsServices, Array userServices)
 		setLayout(BorderLayout.new(10))
 		
-		pPanelModManagement = createPanelModManagement(services)
+		pPanelModManagement = createPanelModManagement(modsServices, userServices)
 		addWidget(pPanelModManagement, BorderLayout.Area.content)
 		
 		addWidget(Panel.new(CentrizedBoxLayout.new(LayoutAxis.x), block Panel p
@@ -110,8 +111,8 @@ class MMWindowModManagement extends WindowDialog
 	 * 
 	 * Default implementation creates instance of \ref MMPanelModManagement.
 	 */
-	protected func MMPanelModManagement createPanelModManagement(Array services)
-		return MMPanelModManagement.new(services)
+	protected func MMPanelModManagement createPanelModManagement(Array modsServices, Array userServices)
+		return MMPanelModManagement.new(modsServices, userServices)
 	end
 	
 	/** \brief Create button. */

@@ -113,6 +113,12 @@ public:
 	
 	/** Convert modio AuthenticationProvider. */
 	static Modio::AuthenticationProvider AuthenticationProvider( const deServiceObject &so );
+	
+	/** Convert modio terms. */
+	static deServiceObject::Ref NeedAcceptTerms( const Modio::Terms &terms );
+	
+	/** Convert modio terms link. */
+	static deServiceObject::Ref TermsLink( const Modio::Terms::Link &link );
 	/*@}*/
 };
 

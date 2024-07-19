@@ -31,6 +31,7 @@
 
 #include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/systems/modules/service/deBaseServiceService.h>
+#include <dragengine/resources/image/deImage.h>
 #include <dragengine/resources/service/deServiceObject.h>
 
 class deSteamSdk;
@@ -50,6 +51,8 @@ private:
 	deService * const pService;
 	decObjectList pPendingRequests;
 	decString pEncAppTicket;
+	
+	deImage::Ref pAuthProviderIcon, pAuthProviderImage;
 	
 	
 public:
@@ -77,14 +80,10 @@ public:
 	 */
 	void StartRequest( const decUniqueID &id, const deServiceObject &request ) override;
 	
-	/**
-	 * \brief Cancel service request if running.
-	 */
+	/** Cancel service request if running. */
 	void CancelRequest( const decUniqueID &id ) override;
 	
-	/**
-	 * \brief Run action returning result immediately.
-	 */
+	/** Run action returning result immediately. */
 	deServiceObject::Ref RunAction( const deServiceObject &action ) override;
 	/*@}*/
 	
@@ -103,6 +102,8 @@ public:
 	void SetStats( const decUniqueID &id, const deServiceObject& request );
 	void ResetAllStats( const decUniqueID &id, const deServiceObject& request );
 	void RequestEncryptedAppTicket( const decUniqueID &id, const deServiceObject& request );
+	
+	deServiceObject::Ref GetUserFeatures();
 	
 	void FailRequest( const decUniqueID &id, const deException &e );
 	void FailRequest( const deSsdkPendingRequest::Ref &request, const deException &e );

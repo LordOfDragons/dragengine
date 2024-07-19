@@ -26,6 +26,7 @@ namespace Dragengine.Gui.ModManagement
 pin Dragengine.Services.User
 pin Dragengine.Gui.Layouts
 pin Introspection
+pin Dragengine.Gui.Events
 
 
 /**
@@ -48,16 +49,11 @@ class MMPanelModUserAccount extends Panel
 		end
 		
 		func void onLoginUser(ServiceUser service, Exception exception)
-			if exception == null
-				pPanel.updateUserInfo(null)
-				service.getUserInfo(null)
-			end
+			pPanel.onUserLoggedIn(exception)
 		end
 		
 		func void onLogoutUser(ServiceUser service, Exception exception)
-			if exception == null
-				pPanel.clearUserInfo()
-			end
+			pPanel.onUserLoggedOut(exception)
 		end
 	end
 	
@@ -99,25 +95,47 @@ class MMPanelModUserAccount extends Panel
 		end
 	end
 	
+	/** \brief Login upon receiving authentication token. */
+	class GetAuthTokenLogin extends DefaultServiceUserListener
+		var MMPanelModUserAccount pPanel
+		var MMAuthProviderListRenderer.ListEntry pProvider
+		
+		func new(MMPanelModUserAccount panel, MMAuthProviderListRenderer.ListEntry provider)
+			pPanel = panel
+			pProvider = provider
+		end
+		
+		func void onGetAuthToken(ServiceUser service, ServiceUserAuthToken token, Exception exception)
+			pPanel.loginUser(this, pProvider, token, exception)
+		end
+	end
 	
 	
+	
+	var Array pUserServices
 	var ServiceUser pServiceUser
 	var ServiceUserFeatures pServiceUserFeatures
 	var UserEventListener pUserEventListener
 	var SwitchPanel pSwitchContent
 	var Panel pPanelUserInfo
 	var DisplayImage pImageAvatar
+	var ListBox pListAuthTokenProviders
 	var ServiceUserInfo pUserInfo
 	var DefaultTextModel pModelName, pModelProfileUrl
 	var DefaultListModel pModelAuthTokenProviders
 	var Image pCachedAvatarImage
+	var Button pButtonLogin
+	var GetAuthTokenLogin pGetAuthTokenLogin
+	var Dictionary pCredentialParameters
 	
 	
 	
 	/**
 	 * \brief Create user account management panel.
 	 */
-	func new() super(FlowLayout.new(LayoutAxis.y))
+	func new(Array userServices) super(BorderLayout.new())
+		pUserServices = Array.new(userServices)
+		
 		pModelName = DefaultTextModel.new()
 		pModelProfileUrl = DefaultTextModel.new()
 		pModelAuthTokenProviders = DefaultListModel.new()
@@ -137,6 +155,10 @@ class MMPanelModUserAccount extends Panel
 		pImageAvatar = null
 		pSwitchContent = null
 		pPanelUserInfo = null
+		pListAuthTokenProviders = null
+		pButtonLogin = null
+		pGetAuthTokenLogin = null
+		
 		super.dispose()
 	end
 	
@@ -167,12 +189,34 @@ class MMPanelModUserAccount extends Panel
 		
 		if serviceUser != null
 			pServiceUserFeatures = serviceUser.getUserFeatures()
+			
+			var Array providers = Array.new()
+			
+			if pServiceUserFeatures.canAuthProviderLogin != null
+				pUserServices.forEach(block ServiceUser each
+					var ServiceUserFeatures features = each.getUserFeatures()
+					if features.authTokenProvider != null\
+					and pServiceUserFeatures.canAuthProviderLogin.has(features.authTokenProvider.id)
+						providers.add(MMAuthProviderListRenderer.ListEntry.new(each, features))
+					end
+				end)
+			end
+			
+			providers.sort(block MMAuthProviderListRenderer.ListEntry a, MMAuthProviderListRenderer.ListEntry b
+				return a.features.authTokenProvider.id.compare(b.features.authTokenProvider.id)
+			end)
+			
+			pModelAuthTokenProviders.setContent(providers)
+			
 			pServiceUser.addUserListener(pUserEventListener)
 			serviceUser.getUserInfo(null)
 			
 		else
+			pModelAuthTokenProviders.setContent(null)
 			updateUserInfo(null)
 		end
+		
+		switchContentPanel()
 	end
 	
 	/** \brief Update user information. */
@@ -238,6 +282,114 @@ class MMPanelModUserAccount extends Panel
 		pCachedAvatarImage = image
 	end
 	
+	/** \brief Switch content panel to match logged in state. */
+	func void switchContentPanel()
+		if pServiceUser.isUserLoggedIn()
+			pSwitchContent.getModel().setValue(0)
+			
+		else
+			pSwitchContent.getModel().setValue(1)
+		end
+	end
+	
+	/** \brief Log out user. */
+	func void logoutUser()
+		pServiceUser.logoutUser(null)
+	end
+	
+	/** \brief Log in user. */
+	func void loginUser(Dictionary credentialParameters)
+		if not pButtonLogin.getEnabled()
+			return
+		end
+		
+		var MMAuthProviderListRenderer.ListEntry provider =\
+			pModelAuthTokenProviders.getSelectedElement() cast MMAuthProviderListRenderer.ListEntry
+		if provider == null
+			return
+		end
+		
+		pGetAuthTokenLogin = GetAuthTokenLogin.new(this, provider)
+		pButtonLogin.setEnabled(false)
+		pCredentialParameters = credentialParameters
+		
+		try
+			provider.service.getAuthToken(pGetAuthTokenLogin)
+			
+		catch Exception e
+			pGetAuthTokenLogin = null
+			pButtonLogin.setEnabled(true)
+			WindowDialog.message(getWindow(), "@UI.Authenticate", e.getReason(), null, null, null)
+			return
+		end
+	end
+	
+	/** \brief Login user with authentication token. */
+	func void loginUser(GetAuthTokenLogin listener, MMAuthProviderListRenderer.ListEntry provider,\
+	ServiceUserAuthToken token, Exception exception)
+		if listener != pGetAuthTokenLogin
+			return
+		end
+		
+		pGetAuthTokenLogin = null
+		
+		if exception != null
+			pButtonLogin.setEnabled(true)
+			WindowDialog.message(getWindow(), "@UI.Authenticate", exception.getReason(), null, null, null)
+			return
+		end
+		
+		var ServiceUserCredentials credentials = ServiceUserCredentials.new()
+		credentials.authToken = token
+		credentials.parameters = pCredentialParameters
+		pServiceUser.loginUser(credentials, null)
+	end
+	
+	/** \brief User logged in. */
+	func void onUserLoggedIn(Exception exception)
+		pButtonLogin.setEnabled(true)
+		updateUserInfo(null)
+		switchContentPanel()
+		
+		if exception == null
+			pServiceUser.getUserInfo(null)
+			
+		elif exception castable ServiceException
+			var ServiceException sexcep = exception cast ServiceException
+			select sexcep.getErrorCode()
+			case ServiceUser.Errors.NeedAcceptTos
+				var ServiceUserErrorNeedAcceptTos tos =\
+					sexcep.getAdditionalData() cast ServiceUserErrorNeedAcceptTos
+				DialogServiceUserAcceptTos.showTermsOfService(getWindow(), tos,\
+					WindowDialog.BlockResultListener.new(block bool result
+						if result
+							loginUser(pCredentialParameters + tos.credentialParameters)
+						end
+					end))
+				
+			else
+				WindowDialog.message(getWindow(), "@UI.Login", sexcep.getReason(), null, null, null)
+			end
+			
+		else
+			WindowDialog.message(getWindow(), "@UI.Login", exception.getReason(), null, null, null)
+		end
+	end
+	
+	/** \brief User logged out. */
+	func void onUserLoggedOut(Exception exception)
+		if exception == null
+			clearUserInfo()
+		end
+		
+		pButtonLogin.setEnabled(true)
+		switchContentPanel()
+		
+		if exception != null
+			WindowDialog.message(getWindow(), "@UI.Logout", exception.getReason(), null, null, null)
+		end
+	end
+	
 	
 	
 	/** \brief Find URL of best matching avatar image to load. */
@@ -282,19 +434,62 @@ class MMPanelModUserAccount extends Panel
 				label.setToolTip("@UI.ModManagementMod.Link.ToolTip")
 				label.addMouseListener(ClickedOpenProfileUrl.new(this))
 				p2.addWidget(label)
+				
+				p2.addWidget(Panel.new(CentrizedBoxLayout.new(LayoutAxis.x, 20), block Panel p3
+					p3.setDesignerSelector("Panel.MMPanelModUserAccount.Buttons")
+					
+					p3.addWidget(createButton("@UI.Logout",\
+						"@UI.ModManagementUserAccount.Logout.ToolTip", ".Logout",\
+						BlockActionListener.new(block ActionEvent e
+							logoutUser()
+						end)))
+				end))
 			end)
 			viewport = Viewport.new(pPanelUserInfo)
 			viewport.setLayout(FlowLayout.new(LayoutAxis.y))
 			p.addWidget(ScrollPanel.new(viewport, ScrollPanel.Policy.hidden, ScrollPanel.Policy.needed))
 			
 			// content: login
-			viewport = Viewport.new(Panel.new(FlowLayout.new(LayoutAxis.y), block Panel p2
-				p2.addWidget(Label.new("Login"))
+			p.addWidget(Panel.new(CentrizedBoxLayout.new(LayoutAxis.y), block Panel p2
+				label = Label.new("@UI.ModManagementUserAccount.SelectAuthProvider",\
+					"Label.ModManagementUserAccount.SelectAuthProvider")
+				label.setWordWrap(true)
+				label.setMaximalWidth(500)
+				p2.addWidget(label)
+				
+				pListAuthTokenProviders = ListBox.new(\
+					pModelAuthTokenProviders, createAuthProviderListElementRenderer())
+				pListAuthTokenProviders.setDesignerSelector("ListBox.ModManagementUserAccount.AuthProviders")
+				pListAuthTokenProviders.setNumberDisplayLines(4)
+				p2.addWidget(ScrollPanel.new(pListAuthTokenProviders,\
+					ScrollPanel.Policy.hidden, ScrollPanel.Policy.visible))
+				
+				p2.addWidget(Panel.new(CentrizedBoxLayout.new(LayoutAxis.x, 20), block Panel p3
+					p3.setDesignerSelector("Panel.MMPanelModUserAccount.Buttons")
+					
+					pButtonLogin = createButton("@UI.Login",\
+						"@UI.ModManagementUserAccount.Login.ToolTip", ".Login",\
+						BlockActionListener.new(block ActionEvent e
+							loginUser(Dictionary.new())
+						end))
+					p3.addWidget(pButtonLogin)
+				end))
 			end))
-			viewport.setLayout(FlowLayout.new(LayoutAxis.y))
-			p.addWidget(ScrollPanel.new(viewport, ScrollPanel.Policy.hidden, ScrollPanel.Policy.needed))
 		end)
 		addWidget(pSwitchContent, BorderLayout.Area.content)
-		
+	end
+	
+	/** \brief Create button. */
+	protected func Button createButton(String text, String toolTip,\
+	String designerSelectorSuffix, ActionListener action)
+		var Button button = Button.new(text, action)
+		button.setDesignerSelector("Button.ModManagementUserAccount" + designerSelectorSuffix)
+		button.setToolTip(toolTip)
+		return button
+	end
+	
+	/** \brief Create authentication provider list element renderer. */
+	protected func ListElementRenderer createAuthProviderListElementRenderer()
+		return MMAuthProviderListRenderer.new()
 	end
 end

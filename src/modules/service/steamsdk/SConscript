@@ -21,6 +21,7 @@ if envModule['force_version']:
 
 pathConfig = '{}/modules/service/steamsdk/{}'.format(envModule.subst(envModule['path_de_config']), versionString)
 pathModule = '{}/modules/service/steamsdk/{}'.format(envModule.subst(envModule['path_de_data']), versionString)
+pathShared = '{}/modules/service/steamsdk/{}'.format(envModule.subst(envModule['path_de_share']), versionString)
 
 envModule.Append(CPPFLAGS = parent_env['MODULE_CPPFLAGS'])
 envModule.Append(LINKFLAGS = parent_env['MODULE_LINKFLAGS'])
@@ -30,6 +31,9 @@ sources = []
 headers = []
 globFiles(envModule, 'src', '*.cpp', sources)
 globFiles(envModule, 'src', '*.h', headers)
+
+data = []
+globFiles(envModule, 'data', '*', data)
 
 # setup the builders
 objects = [envModule.SharedObject(s) for s in sources]
@@ -72,6 +76,11 @@ Depends(updateManifest, rtlibs)
 
 install.append(envModule.Install(pathModule, updateManifest))
 archive[os.path.join(pathModule, 'module.xml')] = updateManifest[0]
+
+for s in data:
+	filename = os.path.join(pathShared, s[5:])
+	install.append(envModule.InstallAs(filename, s))
+	archive[filename] = envModule.File(s).srcnode()
 
 targetInstall = envModule.Alias('srv_steamsdk', install)
 

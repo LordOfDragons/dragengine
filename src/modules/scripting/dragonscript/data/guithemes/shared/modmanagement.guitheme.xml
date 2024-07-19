@@ -489,4 +489,83 @@
 		</mousePointer>
 		<borderSize parameter='normal.padding' top='10'/>
 	</designer>
+	
+	<designer name='Panel.MMPanelModUserAccount.Buttons' type='Widget'>
+		<borderSize parameter='normal.padding' top='20'/>
+	</designer>
+	
+	<designer name='Label.ModManagementUserAccount.SelectAuthProvider' extendNamed='Label'>
+		<font parameter='normal.font' size='22'>/shareddata/guithemes/modern/fonts/sans22.defont</font>
+		<color parameter='normal.textColor' r='0' g='0' b='0'/>
+		<string parameter='normal.alignment'>center,top</string>
+		<borderSize parameter='normal.padding' bottom='10'/>
+	</designer>
+	
+	
+	
+	<!--
+	MMAuthProviderListRenderer.
+	
+	- Panel: Panel.ListRenderer.MMAuthProviderListRenderer
+	- Icon: Image.ListRenderer.MMAuthProviderListRenderer
+	- Name: Label.ListRenderer.MMAuthProviderListRenderer
+	-->
+	
+	<designer name='Panel.ListRenderer.MMAuthProviderListRenderer' type='Widget'>
+		<canvasCreator parameter='normal.canvas' type='Default'/>
+		<borderSize parameter='normal.padding' left='5' top='5' right='5' bottom='5'/>
+		
+		<canvasCreator parameter='hover.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='0.2' g='0.2' b='0.5' a='0.1'/>
+		</canvasCreator>
+	</designer>
+	
+	<designer name='Panel.ListRenderer.MMAuthProviderListRenderer.Selected'
+			extendNamed='Panel.ListRenderer.MMAuthProviderListRenderer'>
+		<canvasCreator parameter='normal.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='0.2' g='0.2' b='0.5'/>
+		</canvasCreator>
+		
+		<canvasCreator parameter='hover.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='0.3' g='0.3' b='0.5'/>
+		</canvasCreator>
+	</designer>
+	
+	<designer name='Image.ListRenderer.MMAuthProviderListRenderer' type='Image'>
+		<point parameter='normal.minimumSize' x='64' y='64'/>
+	</designer>
+	
+	<designer name='Label.ListRenderer.MMAuthProviderListRenderer' extendNamed='Label'>
+		<font parameter='normal.font' size='46'>/shareddata/guithemes/modern/fonts/sans46.defont</font>
+		<color parameter='normal.textColor' r='0' g='0' b='0'/>
+		<borderSize parameter='normal.padding' left='20'/>
+		<string parameter='normal.alignment'>left,middle</string>
+	</designer>
+	
+	<designer name='Label.ListRenderer.MMAuthProviderListRenderer.Selected'
+			extendNamed='Label.ListRenderer.MMAuthProviderListRenderer'>
+		<color parameter='normal.textColor' r='1' g='1' b='1'/>
+	</designer>
+	
+	
+	
+	<!--
+	DialogServiceUserAcceptTos
+	- Dialog: Window.Dialog.UserAcceptTos
+	- Terms TextArea: TextArea.WindowDialog.UserAcceptTos
+	- Link panel: Panel.WindowDialog.UserAcceptTos.Link
+	- Link label: Label.WindowDialog.UserAcceptTos.Link
+	- Panel with buttons: Panel.WindowDialogButtons.UserAcceptTos
+	- Button accept: Button.WindowDialog.UserAcceptTos.Accept
+	- Button decline: Button.WindowDialog.UserAcceptTos.Decline
+	-->
+	
+	<designer name='Label.WindowDialog.UserAcceptTos.Link' extendNamed='Label'>
+		<font parameter='normal.font' size='22'>/shareddata/guithemes/modern/fonts/sans22.defont</font>
+		<color parameter='normal.textColor' r='0' g='0' b='0.75'/>
+		<mousePointer parameter='normal.mousePointer' type='Image'>
+			<image parameter='image'>/shareddata/guithemes/modern/mousepointer/hover_link.webp</image>
+			<point parameter='offset' x='-8' y='0'/>
+		</mousePointer>
+	</designer>
 </guiTheme>

@@ -149,6 +149,27 @@ class MMPanelModManagement extends Panel
 		end
 	end
 	
+	/** \brief User event listener. */
+	class UserEventListener extends DefaultServiceUserListener
+		var MMPanelModManagement pPanel
+		
+		func new(MMPanelModManagement panel)
+			pPanel = panel
+		end
+		
+		func void onLoginUser(ServiceUser service, Exception exception)
+			if exception == null
+				pPanel.updateAllMods()
+			end
+		end
+		
+		func void onLogoutUser(ServiceUser service, Exception exception)
+			if exception == null
+				pPanel.updateAllMods()
+			end
+		end
+	end
+	
 	/** \brief Search mods listener. */
 	class SearchModsListener extends DefaultServiceModsListener
 		var MMPanelModManagement pPanel
@@ -350,6 +371,7 @@ class MMPanelModManagement extends Panel
 	
 	
 	
+	var Array pModsServices, pUserServices
 	var ServiceMods pServiceMods
 	var ServiceModsFeatures pServiceModFeatures
 	var ServiceUser pServiceUser
@@ -414,8 +436,11 @@ class MMPanelModManagement extends Panel
 	 * \brief Create mod management panel.
 	 * \todo For the time being only the first service is used.
 	 */
-	func new(Array services)
-		pServiceMods = services.getAt(0) cast ServiceMods
+	func new(Array modsServices, Array userServices)
+		pModsServices = Array.new(modsServices)
+		pUserServices = Array.new(userServices)
+		
+		pServiceMods = modsServices.getAt(0) cast ServiceMods
 		pServiceModFeatures = pServiceMods.getModsFeatures()
 		
 		if pServiceMods castable ServiceUser
@@ -464,6 +489,9 @@ class MMPanelModManagement extends Panel
 			
 			pModEventListener = ModEventListener.new(this)
 			pServiceMods.addModsListener(pModEventListener)
+			if pServiceUser != null
+				pServiceUser.addUserListener(UserEventListener.new(this))
+			end
 			
 			updateSubscribedMods()
 			pOrgSubscribedMods = pServiceMods.getSubscribedMods() // requires full copy
@@ -508,6 +536,16 @@ class MMPanelModManagement extends Panel
 	end
 	
 	
+	
+	/** \brief Array of all ServiceMods. */
+	func Array getModsServices()
+		return pModsServices
+	end
+	
+	/** \brief Array of all ServiceUser. */
+	func Array getUserServices()
+		return pUserServices
+	end
 	
 	/** \brief Service. */
 	func ServiceMods getServiceMods()
@@ -962,6 +1000,19 @@ class MMPanelModManagement extends Panel
 		end
 	end
 	
+	/** \brief Update all mods. */
+	func void updateAllMods()
+		updateSubscribedMods()
+		
+		if pModelMods.getCount() > 0
+			pModelMods.notifyContentChanged(0, pModelMods.getCount() - 1)
+		end
+		
+		if pModelTransfers.getCount() > 0
+			pModelTransfers.notifyContentChanged(0, pModelTransfers.getCount() - 1)
+		end
+	end
+	
 	/** \brief Update modification list entry progress. */
 	func void updateModProgress(String modId, ServiceMods.ManagementEvent event,\
 	ServiceModProgress progress)
@@ -1194,6 +1245,6 @@ class MMPanelModManagement extends Panel
 	
 	/** \brief Create user account panel. */
 	protected func MMPanelModUserAccount createUserAccountPanel()
-		return MMPanelModUserAccount.new()
+		return MMPanelModUserAccount.new(pUserServices)
 	end
 end

@@ -516,3 +516,31 @@ Modio::AuthenticationProvider deMCCommon::AuthenticationProvider( const deServic
 		DETHROW_INFO( deeInvalidParam, message );
 	}
 }
+
+deServiceObject::Ref deMCCommon::NeedAcceptTerms( const Modio::Terms &terms ){
+	const deServiceObject::Ref so( deServiceObject::Ref::New( new deServiceObject ) );
+	so->SetStringChildAt( "terms", terms.TermsText.c_str() );
+	so->SetStringChildAt( "buttonAccept", terms.Buttons.AgreeText.c_str() );
+	so->SetStringChildAt( "buttonDecline", terms.Buttons.DisagreeText.c_str() );
+	
+	const deServiceObject::Ref soLinks( deServiceObject::NewList() );
+	soLinks->AddChild( TermsLink( terms.Links.Website ) );
+	soLinks->AddChild( TermsLink( terms.Links.Terms ) );
+	soLinks->AddChild( TermsLink( terms.Links.Privacy ) );
+	soLinks->AddChild( TermsLink( terms.Links.Manage ) );
+	so->SetChildAt( "links", soLinks );
+	
+	const deServiceObject::Ref soCredParams( deServiceObject::Ref::New( new deServiceObject ) );
+	soCredParams->SetStringChildAt( "termsAccepted", "1" );
+	so->SetChildAt( "credentialParameters", soCredParams );
+	
+	return so;
+}
+
+deServiceObject::Ref deMCCommon::TermsLink( const Modio::Terms::Link &link ){
+	const deServiceObject::Ref so( deServiceObject::Ref::New( new deServiceObject ) );
+	so->SetStringChildAt( "label", link.Text.c_str() );
+	so->SetStringChildAt( "url", link.URL.c_str() );
+	so->SetBoolChildAt( "required", link.bRequired );
+	return so;
+}

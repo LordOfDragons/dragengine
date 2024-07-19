@@ -13,6 +13,11 @@
 	<translation name='UI.Error'>Error</translation>
 	<translation name='UI.Search'>Search</translation>
 	<translation name='UI.SortBy'>Sort</translation>
+	<translation name='UI.Login'>Login</translation>
+	<translation name='UI.Logout'>Logout</translation>
+	<translation name='UI.Autheticate'>Authenticate</translation>
+	<translation name='UI.Deautheticate'>Deauthenticate</translation>
+	<translation name='UI.TermsOfService'>Terms of service</translation>
 	<translation name='UI.Menu.Cut'>Cut</translation>
 	<translation name='UI.Menu.Copy'>Copy</translation>
 	<translation name='UI.Menu.Paste'>Paste</translation>
@@ -173,4 +178,7 @@ Do you want to re-assign?</translation>
 	<translation name='UI.ModManagement.Status.Unsubscribed'>Not subscribed</translation>
 	<translation name='UI.ModManagement.Status.Disabled'>Disabled</translation>
 	<translation name='UI.ModManagementUserAccount.UserProfile'>Profile</translation>
+	<translation name='UI.ModManagementUserAccount.Login.ToolTip'>Log in to user account</translation>
+	<translation name='UI.ModManagementUserAccount.Logout.ToolTip'>Log out of user account</translation>
+	<translation name='UI.ModManagementUserAccount.SelectAuthProvider'>Select authentification provider to use to log into your account. Only providers supported by the modification service are listed. If no account is present a new one is created.</translation>
 </languagePack>

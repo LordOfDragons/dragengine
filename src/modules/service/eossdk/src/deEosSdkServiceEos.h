@@ -37,6 +37,7 @@
 
 #include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/systems/modules/service/deBaseServiceService.h>
+#include <dragengine/resources/image/deImage.h>
 #include <dragengine/resources/service/deServiceObject.h>
 
 class deService;
@@ -62,6 +63,8 @@ private:
 	EOS_HAchievements pHandleAchievements;
 	EOS_HStats pHandleStats;
 	EOS_HConnect pHandleConnect;
+	
+	deImage::Ref pAuthProviderIcon, pAuthProviderImage;
 	
 	
 	
@@ -133,6 +136,7 @@ public:
 	
 	deServiceObject::Ref CopyIdToken( const deServiceObject& action );
 	deServiceObject::Ref IsUserLoggedIn( const deServiceObject& action );
+	deServiceObject::Ref GetUserFeatures();
 	
 	void FailRequest( const decUniqueID &id, const deException &e );
 	void FailRequest( const decUniqueID &id, EOS_EResult res );

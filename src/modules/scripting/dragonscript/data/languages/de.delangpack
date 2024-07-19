@@ -13,6 +13,11 @@
 	<translation name='UI.Error'>Fehler</translation>
 	<translation name='UI.Search'>Suchen</translation>
 	<translation name='UI.SortBy'>Sortieren</translation>
+	<translation name='UI.Login'>Anmelden</translation>
+	<translation name='UI.Logout'>Abmelden</translation>
+	<translation name='UI.Autheticate'>Authentifizieren</translation>
+	<translation name='UI.Deautheticate'>Authentifizierung aufheben</translation>
+	<translation name='UI.TermsOfService'>Nutzungsbedingungen</translation>
 	<translation name='UI.Menu.Cut'>Ausschneiden</translation>
 	<translation name='UI.Menu.Copy'>Kopieren</translation>
 	<translation name='UI.Menu.Paste'>Einfügen</translation>
@@ -173,4 +178,7 @@ Neu zuweisen?</translation>
 	<translation name='UI.ModManagement.Status.Unsubscribed'>Nicht abonniert</translation>
 	<translation name='UI.ModManagement.Status.Disabled'>Blockiert</translation>
 	<translation name='UI.ModManagementUserAccount.UserProfile'>Profil</translation>
+	<translation name='UI.ModManagementUserAccount.Login.ToolTip'>Bei Benutzerkonto anmelden</translation>
+	<translation name='UI.ModManagementUserAccount.Logout.ToolTip'>Von Benutzerkonto abmelden</translation>
+	<translation name='UI.ModManagementUserAccount.SelectAuthProvider'>Wählen Sie den Authentifizierungsanbieter aus, mit dem Sie sich bei Ihrem Konto anmelden möchten. Es werden nur Anbieter aufgelistet, die vom Modifizierungsdienst unterstützt werden. Ist kein Konto vorhanden wird ein neues erstellt.</translation>
 </languagePack>

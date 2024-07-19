@@ -1,0 +1,204 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Services
+pin Dragengine.Gui
+pin Dragengine.Services.User
+
+/**
+ * \brief Base class for services.
+ * 
+ * Contains helper functions for common tasks.
+ */
+class BaseGameService
+	protected var Service service
+	var Dictionary pOnceListeners
+	
+	
+	
+	/** \brief Create BaseGameService instance. */
+	func new()
+		pOnceListeners = Dictionary.new()
+	end
+	
+	/**
+	 * \brief Dispose of ModIO service.
+	 */
+	func void dispose()
+		pOnceListeners.removeAll()
+		
+		if service != null
+			service.setListener(null)
+		end
+		service = null
+	end
+	
+	
+	
+	/** \brief Convert service object string value. */
+	protected func String convString(ServiceObject so, String key)
+		return convString(so, key, null)
+	end
+	
+	/** \brief Convert service object string value. */
+	protected func String convString(ServiceObject so, String key, String defaultValue)
+		var ServiceObject so2 = so.getChildAt(key)
+		return so2 != null if so2.getString() else defaultValue
+	end
+	
+	/** \brief Convert service object integer value. */
+	protected func int convInt(ServiceObject so, String key, int defaultValue)
+		var ServiceObject so2 = so.getChildAt(key)
+		return so2 != null if so2.getInteger() else defaultValue
+	end
+	
+	/** \brief Convert service object boolean value. */
+	protected func bool convBool(ServiceObject so, String key, bool defaultValue)
+		var ServiceObject so2 = so.getChildAt(key)
+		return so2 != null if so2.getBoolean() else defaultValue
+	end
+	
+	/** \brief Convert service object float value. */
+	protected func float convFloat(ServiceObject so, String key, float defaultValue)
+		var ServiceObject so2 = so.getChildAt(key)
+		return so2 != null if so2.getFloat() else defaultValue
+	end
+	
+	/** \brief Convert service object Float object value. */
+	protected func Float convFloatOptional(ServiceObject so, String key)
+		var ServiceObject so2 = so.getChildAt(key)
+		return so2 != null if Float.new(so2.getFloat()) else null
+	end
+	
+	/** \brief Convert service object TimeDate value. */
+	protected func TimeDate convTimeDate(ServiceObject so, String key)
+		var ServiceObject so2 = so.getChildAt(key)
+		return so2 != null if TimeDate.new(\
+			convInt(so2, "year", 0), convInt(so2, "month", 0), convInt(so2, "day", 0),\
+			convInt(so2, "hour", 0), convInt(so2, "minute", 0), convInt(so2, "second", 0))\
+			else null
+	end
+	
+	/** \brief Convert service object string list value. */
+	protected func Array convStringList(ServiceObject so, String key)
+		var ServiceObject so2 = so.getChildAt(key)
+		if so2 == null
+			return null
+		end
+		
+		var int i, count = so2.getChildCount()
+		var Array list = Array.new()
+		
+		for i = 0 to count
+			list.add(so2.getChildAt(i).getString())
+		end
+		
+		return list
+	end
+	
+	/** \brief Convert service object string set value. */
+	protected func Set convStringSet(ServiceObject so, String key)
+		var ServiceObject so2 = so.getChildAt(key)
+		if so2 == null
+			return null
+		end
+		
+		var int i, count = so2.getChildCount()
+		var Set set = Set.new()
+		
+		for i = 0 to count
+			set.add(so2.getChildAt(i).getString())
+		end
+		
+		return set
+	end
+	
+	/** \brief Convert service object string dictionary value. */
+	protected func Dictionary convStringDict(ServiceObject so, String key)
+		var ServiceObject so2 = so.getChildAt(key)
+		if so2 == null
+			return null
+		end
+		
+		var Dictionary dict = Dictionary.new()
+		so2.getChildrenKeys().forEach(block String key
+			dict.setAt(key, so2.getChildAt(key).getString())
+		end)
+		return dict
+	end
+	
+	/** \brief Convert service object Image value. */
+	protected func Image convImage(ServiceObject so, String key)
+		var ServiceObject so2 = so.getChildAt(key)
+		return so2 != null if so2.getResource() cast Image else null
+	end
+	
+	
+	
+	/** \brief Once listener matching id or null. */
+	protected func Object getOnceListener(UniqueID id)
+		var Object listener = pOnceListeners.getAt(id, null)
+		if listener != null
+			pOnceListeners.remove(id)
+		end
+		return listener
+	end
+	
+	/** \brief Run request with optional once listener. */
+	protected func UniqueID runRequest(ServiceObject request, Object listener)
+		var UniqueID id = service.nextId()
+		service.startRequest(id, request)
+		if listener != null
+			pOnceListeners.setAt(id, listener)
+		end
+		return id
+	end
+	
+	
+	
+	/** \brief Convert service user features. */
+	protected func ServiceUserFeatures pConvUserFeatures(ServiceObject so)
+		var ServiceUserFeatures features = ServiceUserFeatures.new()
+		features.canManualLogin = convBool(so, "canManualLogin", false)
+		features.canAutomaticLogin = convBool(so, "canAutomaticLogin", false)
+		features.canLogout = convBool(so, "canLogout", false)
+		features.canAuthProviderLogin = convStringSet(so, "canAuthProviderLogin")
+		features.authTokenProvider = pConvAuthTokenProvider(so.getChildAt("authTokenProvider"))
+		return features
+	end
+	
+	/** \brief Convert service user features auth token provider. */
+	protected func ServiceUserFeatures.AuthTokenProvider pConvAuthTokenProvider(ServiceObject so)
+		if so == null
+			return null
+		end
+		
+		var ServiceUserFeatures.AuthTokenProvider atp = ServiceUserFeatures.AuthTokenProvider.new()
+		atp.id = convString(so, "id")
+		atp.name = convString(so, "name")
+		atp.icon = convImage(so, "icon")
+		atp.image = convImage(so, "image")
+		return atp
+	end
+end
