@@ -30,6 +30,7 @@
 #include <dragengine/deEngine.h>
 #include <dragengine/common/utils/decUniqueID.h>
 #include <dragengine/common/utils/decBase64.h>
+#include <dragengine/resources/image/deImageManager.h>
 #include <dragengine/resources/service/deServiceManager.h>
 #include <dragengine/resources/service/deServiceObject.h>
 
@@ -100,8 +101,8 @@ void deSsdkServiceSteam::CancelRequest( const decUniqueID &id ){
 deServiceObject::Ref deSsdkServiceSteam::RunAction( const deServiceObject &action ){
 	const decString &function = action.GetChildAt( "function" )->GetString();
 	
-	if( function == "dummy" ){
-		return nullptr;
+	if( function == "getUserFeatures" ){
+		return GetUserFeatures();
 		
 	}else{
 		DETHROW_INFO( deeInvalidParam, "Unknown function" );
@@ -247,6 +248,31 @@ void deSsdkServiceSteam::RequestEncryptedAppTicket( const decUniqueID &id, const
 		
 		pModule.GetGameEngine()->GetServiceManager()->QueueRequestResponse( pService, id, response, true );
 	}
+}
+
+deServiceObject::Ref deSsdkServiceSteam::GetUserFeatures(){
+	if( ! pAuthProviderIcon ){
+		pAuthProviderIcon.TakeOver( pModule.GetGameEngine()->GetImageManager()->LoadImage(
+			&pModule.GetVFS(), "/share/image/authProviderIcon.webp", "/" ) );
+	}
+	if( ! pAuthProviderImage ){
+		pAuthProviderImage.TakeOver( pModule.GetGameEngine()->GetImageManager()->LoadImage(
+			&pModule.GetVFS(), "/share/image/authProviderImage.webp", "/" ) );
+	}
+	
+	const deServiceObject::Ref so( deServiceObject::Ref::New( new deServiceObject ) );
+	so->SetBoolChildAt( "canManualLogin", false );
+	so->SetBoolChildAt( "canAutomaticLogin", true );
+	so->SetBoolChildAt( "canLogout", false );
+	
+	const deServiceObject::Ref soAtp( deServiceObject::Ref::New( new deServiceObject ) );
+	soAtp->SetStringChildAt( "id", "steam" );
+	soAtp->SetResourceChildAt( "icon", pAuthProviderIcon );
+	soAtp->SetResourceChildAt( "image", pAuthProviderImage );
+	soAtp->SetStringChildAt( "name", "Steam" );
+	so->SetChildAt( "authTokenProvider", soAtp );
+	
+	return so;
 }
 
 void deSsdkServiceSteam::SetStats( const decUniqueID &id, const deServiceObject &request ){

@@ -419,7 +419,7 @@ void deModioService::AuthenticateUserExternal( const decUniqueID &id, const deSe
 	
 	Modio::AuthenticationParams authParams = {};
 	authParams.AuthToken = request.GetChildAt( "token" )->GetString().GetString();
-	authParams.bURLEncodeAuthToken = false; //true;
+	authParams.bURLEncodeAuthToken = true;
 	authParams.bUserHasAcceptedTerms = request.GetChildAt( "termsAccepted" )->GetBoolean();
 	
 	deServiceObject::Ref so( request.GetChildAt( "parameters" ) );
