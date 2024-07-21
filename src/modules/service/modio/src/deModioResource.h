@@ -25,11 +25,14 @@
 #ifndef _DEMODIORESOURCE_H_
 #define _DEMODIORESOURCE_H_
 
+// has to come before the deImage.h include since on windows an external
+// library included by mod.io fails to build if windows.h is included
+// before this library
+#include "modio.h"
+
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decObjectDictionary.h>
 #include <dragengine/resources/image/deImage.h>
-
-#include "modio.h"
 
 
 /**

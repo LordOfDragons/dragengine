@@ -23,6 +23,11 @@ Copy-Manifest -Path (Join-Path -Path $SourceDir -ChildPath "module.xml")`
 $Library = "$SolutionDir\extern\steamsdk\steamsdk\bin\steam_api64.dll"
 Install-Files -Path $Library -Destination $TargetDir
 
+$DataTargetDir = "$OutputDir\$PathDistDESharesModules\service\steamsdk\$Version"
+Write-Host "SteamSDK Module: Copy Data to '$DataTargetDir'"
+
+Copy-Files -SourceDir "$SourceDir\..\data" -TargetDir $DataTargetDir -Pattern "*.*"
+
 
 # debug
 $TargetDir = "$OutputDir\$PathDistDEPdbDataModules\service\steamsdk\$Version"

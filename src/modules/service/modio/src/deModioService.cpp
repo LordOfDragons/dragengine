@@ -749,7 +749,7 @@ deServiceObject::Ref deModioService::ModHasMatchingFiles( const deServiceObject 
 		
 		return deServiceObject::NewBool( visitor.GetMatched() );
 		
-	}catch( const deException &e ){
+	}catch( const deException & ){
 		DETHROW_INFO( deeInvalidAction, "Modification files unavailable" );
 	}
 }

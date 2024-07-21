@@ -90,6 +90,9 @@ jobs:
       - name: Add MSBuild to PATH
         uses: microsoft/setup-msbuild@v2
         
+      - name: Install required packages
+        run: choco install cmake ninja 7zip
+
       - name: Restore NuGet packages
         working-directory: vs
         run: nuget restore dragengine.sln

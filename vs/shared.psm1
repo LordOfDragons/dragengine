@@ -131,6 +131,32 @@ function Expand-TarBz2 {
 }
 
 
+# Unpack *.tar.xz
+###################
+
+function Expand-TarXz {
+    param (
+        [Parameter(Mandatory=$true)][string]$Path,
+        [Parameter(Mandatory=$true)][string]$Destination
+    )
+
+    # we can not use the piping solution since windows sucks so hard at piping
+    # the data gets corrupted along the pipe and tar fails
+    # & $PSScriptRoot\bin\7z.exe x "$Path" -so -tbzip2 | tar -xf - -C "$Destination"
+    $TarXzFile = Split-Path -Path $Path -Leaf
+    $TarFile = $TarXzFile.Substring(0, $TarXzFile.Length - 3)
+    $UnpackDir = $TarFile.Substring(0, $TarFile.Length - 4)
+
+    if (Test-Path $UnpackDir) {
+        Remove-Item $UnpackDir -Force -Recurse
+    }
+
+    7z.exe x "$Path" -txz -y
+    7z.exe x "$TarFile" -ttar -y -o"$Destination"
+    Remove-Item -Path $TarFile -Force
+}
+
+
 # Various path constants
 ##########################
 

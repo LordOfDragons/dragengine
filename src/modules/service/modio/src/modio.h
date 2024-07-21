@@ -45,6 +45,10 @@
 
 #include <modio/ModioSDK.h>
 
+#ifdef OS_W32
+	#undef DeleteFile
+#endif
+
 #ifdef OS_ANDROID
 
 #elif defined OS_UNIX
