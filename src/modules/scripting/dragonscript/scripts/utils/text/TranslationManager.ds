@@ -133,7 +133,7 @@ class TranslationManager
 	end
 	
 	/**
-	 * \brief Translation text if it starts with a translation character.
+	 * \brief Translate text if it starts with a translation character.
 	 * \version 1.16
 	 *
 	 * This call can be used for plain text and text prefixed with a marker

@@ -158,13 +158,22 @@ class MMTransferListRenderer implements ListElementRenderer
 		func void update()
 			var FormattingHelper fh = FormattingHelper.new()
 			var ServiceModProgress progress = pMod.progress
+			var Exception exception = pMod.exception
 			var ServiceModStatus status = pMod.status
 			var ServiceModInfo info = pMod.info
 			
 			runWhileBlockingLayout(block
 				pImageLogo.setImage(pMod.logoSmall)
 				pModelName.setText(info.name != null if info.name else "?")
-				pModelStatus.setText("@UI.ModManagement.Enum.ModStatus." + status.status.name())
+				
+				if exception == null
+					pModelStatus.setText("@UI.ModManagement.Enum.ModStatus." + status.status.name())
+					
+				else
+					pModelStatus.setText(TranslationManager.get().translate(\
+						"UI.ModManagement.Enum.ModStatus." + status.status.name()).toUTF8()\
+						+ ": " + exception.getReason())
+				end
 				
 				select status.status
 				case ServiceModStatus.Status.downloading, ServiceModStatus.Status.extracting

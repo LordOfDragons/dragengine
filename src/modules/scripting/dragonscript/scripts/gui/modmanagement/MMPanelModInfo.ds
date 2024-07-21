@@ -135,9 +135,7 @@ class MMPanelModInfo extends Panel
 		
 		func void onModManagement(ServiceMods service, ServiceMods.ManagementEvent event,\
 		String modId, ServiceModProgress progress, Exception exception)
-			if exception == null
-				pPanel.updateModProgress(modId, progress)
-			end
+			pPanel.updateModProgress(modId, progress, exception)
 		end
 	end
 	
@@ -175,7 +173,7 @@ class MMPanelModInfo extends Panel
 			setDesignerSelector("Panel.MMPanelModInfo.Main")
 			createContent()
 			updateButtonStates()
-			updateModProgress(mod.info.id, null)
+			updateModProgress(mod.info.id, null, null)
 		end)
 		doLayout()
 		
@@ -375,7 +373,7 @@ class MMPanelModInfo extends Panel
 	end
 	
 	/** \brief Update modification progress. */
-	func void updateModProgress(String modId, ServiceModProgress progress)
+	func void updateModProgress(String modId, ServiceModProgress progress, Exception exception)
 		if not pMod.info.id.equals(modId)
 			return
 		end
@@ -406,6 +404,11 @@ class MMPanelModInfo extends Panel
 			if status != null
 				textState = "@UI.ModManagement.Enum.ModStatus." + status.status.name()
 			end
+		end
+		
+		if exception != null
+			textState = TranslationManager.get().translateIf(\
+				UnicodeString.newFromUTF8(textState), '@').toUTF8() + exception.getReason()
 		end
 		
 		pModelStatus.setText(textState)
@@ -586,7 +589,9 @@ class MMPanelModInfo extends Panel
 				p2.setDesignerSelector("Panel.MMPanelModInfo.Group.DetailsStatus")
 				p2.setTitle("@UI.ModManagementMod.DetailsStatus")
 				
-				p2.addWidget(Label.new(pModelStatus, "Label.MMPanelModInfo.Details.Status"))
+				var Label label = Label.new(pModelStatus, "Label.MMPanelModInfo.Details.Status")
+				label.setWordWrap(true)
+				p2.addWidget(label)
 				
 				pProgressStatus = ProgressBar.new()
 				pProgressStatus.getModel().setAll(0, 1000, 100, 0, 1)

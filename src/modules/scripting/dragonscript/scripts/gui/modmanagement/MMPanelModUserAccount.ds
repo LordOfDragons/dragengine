@@ -221,6 +221,10 @@ class MMPanelModUserAccount extends Panel
 	
 	/** \brief Update user information. */
 	func void updateUserInfo(ServiceUserInfo info)
+		if pImageAvatar == null
+			return // dispose protection
+		end
+		
 		if info != null
 			pUserInfo = info
 		end

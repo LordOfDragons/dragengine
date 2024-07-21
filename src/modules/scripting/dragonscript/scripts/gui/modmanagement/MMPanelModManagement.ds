@@ -143,9 +143,7 @@ class MMPanelModManagement extends Panel
 		
 		func void onModManagement(ServiceMods service, ServiceMods.ManagementEvent event,\
 		String modId, ServiceModProgress progress, Exception exception)
-			if progress != null
-				pPanel.updateModProgress(modId, event, progress)
-			end
+			pPanel.updateModProgress(modId, event, progress, exception)
 		end
 	end
 	
@@ -1015,12 +1013,15 @@ class MMPanelModManagement extends Panel
 	
 	/** \brief Update modification list entry progress. */
 	func void updateModProgress(String modId, ServiceMods.ManagementEvent event,\
-	ServiceModProgress progress)
+	ServiceModProgress progress, Exception exception)
 		var int index = indexOfTransferWithId(modId)
 		if index != -1
 			var MMModification mod = pModelTransfers.getAt(index) cast MMModification
 			if progress != null
 				mod.progress = progress
+			end
+			if exception != null
+				mod.exception = exception
 			end
 			
 			pModelTransfers.notifyContentChanged(index, index)

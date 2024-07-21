@@ -75,6 +75,9 @@ class MMModification
 	/** \brief Modification progress or null. */
 	public var ServiceModProgress progress
 	
+	/** \brief Last exception or null. */
+	public var Exception exception
+	
 	/** \brief Cached logo image or null. */
 	public var Image logo
 	
