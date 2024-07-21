@@ -68,12 +68,10 @@ void deModioUserConfig::SetDisabledMods( const decStringSet &mods ){
 	}
 	
 	pDisabledMods = mods;
+	pModule.UserConfigChanged();
 	
 	if( pModule.GetCurUserId() == pId ){
 		pModule.ActivateMods( pId );
-		
-	}else{
-		pModule.UserConfigChanged();
 	}
 }
 
@@ -82,16 +80,24 @@ bool deModioUserConfig::GetModDisabled( const decString &id ) const{
 }
 
 void deModioUserConfig::SetModDisabled( const decString &id, bool disabled ){
-	decStringSet mods( pDisabledMods );
-	
 	if( disabled ){
-		mods.Add( id );
+		if( pDisabledMods.Has( id ) ){
+			return;
+		}
+		pDisabledMods.Add( id );
 		
 	}else{
-		mods.Remove( id );
+		if( ! pDisabledMods.Has( id ) ){
+			return;
+		}
+		pDisabledMods.Remove( id );
 	}
 	
-	SetDisabledMods( mods );
+	pModule.UserConfigChanged();
+	
+	if( disabled && pModule.GetCurUserId() == pId ){
+		pModule.ActivateMods( pId );
+	}
 }
 
 

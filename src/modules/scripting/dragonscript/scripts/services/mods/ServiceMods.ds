@@ -169,14 +169,13 @@ interface ServiceMods
 	/**
 	 * \brief Activate subscribed and installed modifications.
 	 * 
-	 * Installing modifications does not automatically activate them. This avoids
-	 * interrupting a running game flow while modifications are beeing installed.
-	 * A typical use case is calling activateMods() upon leaving the modification
-	 * management dialog. This ensures modifications start affecting the game at
-	 * a well known point in time.
+	 * Installing modifications does not automatically activate them. This avoids interrupting a
+	 * running game flow while modifications are beeing installed. A typical use case is calling
+	 * activateMods() upon leaving the modification management dialog. This ensures modifications
+	 * start affecting the game at a well known point in time.
 	 * 
-	 * Unsubscribing from a modification calls activateMods() to avoid the game
-	 * potentially accessing to be deleted modification files.
+	 * Unsubscribing from a modification calls activateMods() to avoid the game potentially
+	 * accessing to be deleted modification files.
 	 * 
 	 * Disabling and re-enabling modifications does not trigger activateMods().
 	 * 
@@ -251,11 +250,12 @@ interface ServiceMods
 	/**
 	 * \brief Active mods.
 	 * 
-	 * Returns Set of String identifiers of all active modifications. Active modifications
-	 * are changed when \ref #activateMods() is called. This call is useful to know if a
-	 * game save state has been created with the same set of active modifications.
+	 * Returns all active modifications (subscribed and enabled). Active modifications are
+	 * changed when \ref #activateMods() is called. This call is useful to know if a
+	 * game save state has been created with the same set of active modifications. Returns
+	 * dictionary with String modification identifier and ServiceModStatus value.
 	 */
-	func Set getActiveMods()
+	func Dictionary getActiveMods()
 	
 	/**
 	 * \brief Retrieve information about game modification.

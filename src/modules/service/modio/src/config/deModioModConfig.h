@@ -42,6 +42,7 @@ public:
 	
 	decString id;
 	decString path;
+	decString releaseVersion;
 	
 	
 	/** \name Constructors and Destructors */

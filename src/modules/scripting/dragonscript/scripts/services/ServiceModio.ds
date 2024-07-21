@@ -489,21 +489,26 @@ class ServiceModio extends BaseGameService implements ServiceListener, ServiceMo
 	/**
 	 * \brief Active mods.
 	 * 
-	 * Returns Set of String identifiers of all active modifications. Active modifications
-	 * are changed when \ref #activateMods() is called. This call is useful to know if a
-	 * game save state has been created with the same set of active modifications.
+	 * Returns all active modifications (subscribed and enabled). Active modifications are
+	 * changed when \ref #activateMods() is called. This call is useful to know if a
+	 * game save state has been created with the same set of active modifications. Returns
+	 * dictionary with String modification identifier and ServiceModStatus value.
 	 */
-	func Set getActiveMods()
+	func Dictionary getActiveMods()
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "getActiveMods")
 		so = service.runAction(so)
 		
+		var Dictionary dict = Dictionary.new()
 		var int i, count = so.getChildCount()
-		var Set set = Set.new()
+		var ServiceModStatus status
+		
 		for i = 0 to count
-			set.add(so.getChildAt(i).getString())
+			status = pConvModStatus(so.getChildAt(i))
+			dict.setAt(status.id, status)
 		end
-		return set
+		
+		return dict
 	end
 	
 	/**

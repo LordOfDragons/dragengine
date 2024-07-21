@@ -377,10 +377,11 @@ class MMPanelModManagement extends Panel
 	var SwitchPanel pSwitchContent
 	var ListBox pListMods, pListTransfers
 	var Button pButtonSearchMore
-	var DefaultTextModel pModelSearchName
+	var Panel pPanelCategoryTransferCount
+	var DefaultTextModel pModelSearchName, pModelTransferCount
 	var Panel pPanelTags, pPanelSearchName, pPanelSearchSort, pPanelSearchBottomLine
 	var SearchModsListener pSearchModsListener
-	var Dictionary pSubscribedMods, pOrgSubscribedMods, pSystemMods
+	var Dictionary pSubscribedMods, pSystemMods, pActiveMods
 	var ServiceModFilter pSearchFilter
 	var CodecPropertyString pCodecPropertyString
 	var Array pSearchTagCategories
@@ -461,6 +462,7 @@ class MMPanelModManagement extends Panel
 		pModelMods = DefaultListModel.new()
 		pModelSearchName = DefaultTextModel.new()
 		pModelTransfers = DefaultListModel.new()
+		pModelTransferCount = DefaultTextModel.new()
 		pSubscribedMods = Dictionary.new()
 		pSystemMods = Dictionary.new()
 		
@@ -492,8 +494,8 @@ class MMPanelModManagement extends Panel
 			end
 			
 			updateSubscribedMods()
-			pOrgSubscribedMods = pServiceMods.getSubscribedMods() // requires full copy
 			updateSystemMods()
+			updateActiveMods()
 			
 			pServiceMods.getTags(null)
 			searchMods(ServiceModFilter.new())
@@ -521,11 +523,12 @@ class MMPanelModManagement extends Panel
 		pModelViewCategory = pModelMods = pModelSortBy = pModelTransfers = null
 		pListMods = pListTransfers = null
 		pButtonSearchMore = null
-		pModelSearchName = null
+		pModelSearchName = pModelTransferCount = null
 		pPanelTags = pPanelSearchName = pPanelSearchSort = pPanelSearchBottomLine = null
 		pSearchTagCategories = null
 		pSwitchContent = null
 		pPanelUserAccount = null
+		pPanelCategoryTransferCount = null
 		
 		pSearchModsListener = null
 		pServiceMods = null
@@ -599,6 +602,11 @@ class MMPanelModManagement extends Panel
 	/** \brief Update dictionary of system modifications. */
 	func void updateSystemMods()
 		pSystemMods = pServiceMods.getSystemMods()
+	end
+	
+	/** \brief Update dictionary of active modifications. */
+	func void updateActiveMods()
+		pActiveMods = pServiceMods.getActiveMods()
 	end
 	
 	
@@ -841,21 +849,18 @@ class MMPanelModManagement extends Panel
 	 * \ref #activateModsStep2(WindowDialog.ResultListener).
 	 */
 	protected func void activateModsStep1(WindowDialog.ResultListener listener)
-		var Dictionary orgEnabled = pOrgSubscribedMods.collect(block String key, ServiceModStatus value
-			return not value.disabled
-		end)
 		var Dictionary enabled = pSubscribedMods.collect(block String key, ServiceModStatus value
 			return not value.disabled
 		end)
 		
-		var Array unsubscribed = orgEnabled.getKeys().collect(block String each
+		var Array unsubscribed = pActiveMods.getKeys().collect(block String each
 			return not enabled.has(each)
 		end)
 		var Array subscribed = enabled.getKeys().collect(block String each
-			return not orgEnabled.has(each)
+			return not pActiveMods.has(each)
 		end)
 		var Array updated = enabled.getKeys().collect(block String each
-			var ServiceModStatus orgStatus = orgEnabled.getAt(each, null) cast ServiceModStatus
+			var ServiceModStatus orgStatus = pActiveMods.getAt(each, null) cast ServiceModStatus
 			if orgStatus == null
 				return false
 			end
@@ -1032,6 +1037,12 @@ class MMPanelModManagement extends Panel
 		ServiceMods.ManagementEvent.uninstalled
 			updateModelTransfers()
 		end
+		
+		pPanelCategoryTransferCount.runWhileBlockingLayout(block
+			pModelTransferCount.setText(pModelTransfers.getCount().toString())
+			pPanelCategoryTransferCount.setVisible(pModelTransfers.getCount() > 0)
+		end)
+		pPanelCategoryTransferCount.doLayoutIfBlocked()
 	end
 	
 	
@@ -1042,6 +1053,7 @@ class MMPanelModManagement extends Panel
 	
 	/** \brief Create content. */
 	protected func void createContent()
+		var ToggleButton toggleButton
 		var TextField textField
 		var ComboBox comboBox
 		var Viewport viewport
@@ -1061,10 +1073,22 @@ class MMPanelModManagement extends Panel
 					OptionGroupModel.newFor(pModelViewCategory, ViewCategory.subscribedMods),\
 					".ViewCategory.SubscribedMods"))
 				
-				p2.addWidget(createToggleButton("@UI.ModManagement.ModsTransfer",\
+				toggleButton = createToggleButton("@UI.ModManagement.ModsTransfer",\
 					"@UI.ModManagement.ModsTransfer.ToolTip",\
 					OptionGroupModel.newFor(pModelViewCategory, ViewCategory.transfer),\
-					".ViewCategory.ModsTransfer"))
+					".ViewCategory.ModsTransfer")
+				pPanelCategoryTransferCount = Panel.new(StackLayout.new(), block Panel p3
+					p3.setDesignerSelector("Panel.MMPanelModManagement.TransferCount")
+					p3.addWidget(DisplayImage.new(Image.new(\
+						"/shareddata/guithemes/modern/icons/count_circle.webp"),\
+						RepeatMode.stretchRatio, "Image.MMPanelModManagement.TransferCount"))
+					p3.addWidget(Label.new(pModelTransferCount,\
+						"Label.MMPanelModManagement.TransferCount"))
+				end)
+				toggleButton.setLayout(FlowLayout.new(LayoutAxis.x))
+				toggleButton.addWidget(pPanelCategoryTransferCount)
+				pPanelCategoryTransferCount.setVisible(false)
+				p2.addWidget(toggleButton)
 				
 				if pServiceUser != null
 					p2.addWidget(createToggleButton("@UI.ModManagement.UserAccount",\

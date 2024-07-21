@@ -755,20 +755,19 @@ deServiceObject::Ref deModioService::ModHasMatchingFiles( const deServiceObject 
 }
 
 deServiceObject::Ref deModioService::GetActiveMods(){
-	const deModioUserConfig * const userConfig = pModule.GetUserConfigIfPresent( pModule.GetCurUserId() );
+	const std::map<Modio::ModID, Modio::ModCollectionEntry> subscribed( Modio::QueryUserSubscriptions() );
+	std::map<Modio::ModID, Modio::ModCollectionEntry>::const_iterator iter;
+	const deModioUserConfig &userConfig = pModule.GetUserConfig( pUserId );
 	const deServiceObject::Ref so( deServiceObject::NewList() );
+	const decObjectList &modConfigs = pModule.GetActiveMods();
+	const int modCount = modConfigs.GetCount();
+	int i;
 	
-	if( userConfig ){
-		const decObjectList &modConfigs = pModule.GetModConfigs();
-		const int count = modConfigs.GetCount();
-		int i;
-		
-		for( i=0; i<count; i++ ){
-			const deModioModConfig &config = *( ( deModioModConfig* )modConfigs.GetAt( i ) );
-			if( ! userConfig->GetModDisabled( config.id ) ){
-				so->AddStringChild( config.id );
-			}
-		}
+	for( i=0; i<modCount; i++ ){
+		const deModioModConfig &modConfig = *( ( deModioModConfig* )modConfigs.GetAt( i ) );
+		iter = subscribed.find( ( Modio::ModID )deMCCommon::ID( modConfig.id ) );
+		DEASSERT_FALSE( iter == subscribed.cend() )
+		so->AddChild( deMCModInfo::ModCollectionEntry( iter->second, userConfig ) );
 	}
 	
 	return so;
@@ -1382,6 +1381,9 @@ void deModioService::pActivateMods(){
 			config.TakeOver( new deModioModConfig );
 			config->id = deMCCommon::IDToString( mod.GetID() );
 			config->path = mod.GetPath().c_str();
+			if( mod.GetModProfile().FileInfo.has_value() ){
+				config->releaseVersion = mod.GetModProfile().FileInfo.value().Version.c_str();
+			}
 			configs.Add( config );
 			break;
 			

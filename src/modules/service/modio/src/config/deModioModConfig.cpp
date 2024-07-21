@@ -43,6 +43,7 @@ deModioModConfig::deModioModConfig( decBaseFileReader &reader ){
 	case 0:
 		id = reader.ReadString8();
 		path = reader.ReadString16();
+		releaseVersion = reader.ReadString8();
 		break;
 		
 	default:
@@ -62,4 +63,5 @@ void deModioModConfig::WriteToFile( decBaseFileWriter &writer ){
 	writer.WriteByte( 0 );
 	writer.WriteString8( id );
 	writer.WriteString16( path );
+	writer.WriteString8( releaseVersion );
 }

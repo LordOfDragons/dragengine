@@ -417,6 +417,10 @@
 	   - Button.MMPanelModManagement.ViewCategory.BrowseMods
 	   - Button.MMPanelModManagement.ViewCategory.SubscribedMods
 	   - Button.MMPanelModManagement.ViewCategory.ModsTransfer
+	     - Transfer count panel: Panel.MMPanelModManagement.TransferCount
+	     - Transfer count image: Image.MMPanelModManagement.TransferCount
+		 - Transfer count label: Label.MMPanelModManagement.TransferCount
+	   - Button.MMPanelModManagement.ViewCategory.UserAccount
 	
 	- Mods list box: ListBox.MMPanelModManagement.Mods
 	
@@ -440,6 +444,23 @@
 	- Bottom panel:
 	  - Search more button: Button.MMPanelModManagement.MoreResults
 	-->
+	
+	<designer name='Panel.MMPanelModManagement.TransferCount' type='Widget'>
+		<borderSize parameter='normal.padding' left='5'/>
+	</designer>
+	
+	<designer name='Image.MMPanelModManagement.TransferCount' type='Image'>
+		<colorMatrix parameter='normal.imageColorTransform'>
+			<scale r='0' g='0' b='0.5'/>
+		</colorMatrix>
+		<point parameter='normal.minimumSize' x='1' y='1'/>
+	</designer>
+	
+	<designer name='Label.MMPanelModManagement.TransferCount' extendNamed='Label'>
+		<color parameter='normal.textColor' r='1' g='1' b='1'/>
+		<string parameter='normal.alignment'>center,middle</string>
+		<borderSize parameter='normal.padding' left='5' right='5'/>
+	</designer>
 	
 	<designer name='Panel.MMPanelModManagement.Group' extendNamed='Panel.Titled'>
 		<border parameter='normal.border' type='Combined'>

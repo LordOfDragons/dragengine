@@ -46,7 +46,7 @@ private:
 	int pRequiresEventHandlingCount;
 	deVirtualFileSystem::Ref pVFSMods;
 	decObjectDictionary pUserConfigs;
-	decObjectList pModConfigs;
+	decObjectList pModConfigs, pActivateConfigs;
 	decString pCurUserId;
 	
 	deModioParameterList pParameters;
@@ -99,6 +99,9 @@ public:
 	
 	/** Activate modifications. Sets current user, updates VFS and saves configuration. */
 	void ActivateMods( const decString &userId );
+	
+	/** Active modifications (deModioUserConfig). */
+	inline const decObjectList &GetActiveMods() const{ return pActivateConfigs; }
 	
 	/** Log level module parameter. */
 	inline const deMPLogLevel &GetParamLogLevel() const{ return *pParamLogLevel; }

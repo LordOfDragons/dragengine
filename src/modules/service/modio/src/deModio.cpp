@@ -148,7 +148,6 @@ void deModio::ActivateMods( const decString &userId ){
 	pCurUserId = userId;
 	
 	pUpdateVFS();
-	
 	pSaveConfig();
 }
 
@@ -433,6 +432,7 @@ void deModio::pUpdateVFS(){
 	
 	LogInfoFormat( "Updating Mods VFS: user='%s' mods=%d", pCurUserId.GetString(), count );
 	pVFSMods->RemoveAllContainers();
+	pActivateConfigs.RemoveAll();
 	
 	if( ! userConfig ){
 		LogInfoFormat( "-> User missing. Skipping" );
@@ -447,11 +447,13 @@ void deModio::pUpdateVFS(){
 		}
 		
 		try{
-			LogInfoFormat( "- %s: Add mod using path '%s'",
-				config.id.GetString(), config.path.GetString() );
+			LogInfoFormat( "- %s: Add mod using path '%s' version '%s'", config.id.GetString(),
+				config.path.GetString(), config.releaseVersion.GetString() );
 			vfsContainer.TakeOver( new deVFSDiskDirectory( rootPath,
 				decPath::CreatePathNative( config.path ), true ) );
 			pVFSMods->AddContainer( vfsContainer );
+			
+			pActivateConfigs.Add( pModConfigs.GetAt( i ) );
 			
 		}catch( const deException &e ){
 			LogException( e );
