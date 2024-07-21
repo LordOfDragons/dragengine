@@ -172,6 +172,46 @@ Abstract:
 //
 #define E_GAMERUNTIME_SUSPEND_ACTIVEOBJECTS ((HRESULT)0x89240108L)
 
+// 0x89240109
+//
+// MessageId: E_GAMERUNTIME_OPTIONS_MISMATCH
+//
+// MessageText:
+//
+// The runtime has already been initialized with a different set of options.
+//
+#define E_GAMERUNTIME_OPTIONS_MISMATCH   ((HRESULT)0x89240109L)
+
+// 0x8924010A
+//
+// MessageId: E_GAMERUNTIME_OPTIONS_NOT_SUPPORTED
+//
+// MessageText:
+//
+// Custom initialization options cannot be used with packaged builds.
+//
+#define E_GAMERUNTIME_OPTIONS_NOT_SUPPORTED ((HRESULT)0x8924010AL)
+
+// 0x8924010B
+//
+// MessageId: E_GAMERUNTIME_GAMECONFIG_BAD_FORMAT
+//
+// MessageText:
+//
+// There was as problem parsing the game config.
+//
+#define E_GAMERUNTIME_GAMECONFIG_BAD_FORMAT ((HRESULT)0x8924010BL)
+
+// 0x8924010C
+//
+// MessageId: E_GAMERUNTIME_INVALID_HANDLE
+//
+// MessageText:
+//
+// This handle value is no longer valid.
+//
+#define E_GAMERUNTIME_INVALID_HANDLE     ((HRESULT)0x8924010CL)
+
 /*++
 
  MessageId's 0x5100 - 0x51ff (inclusive) are reserved for GAMEUSER.

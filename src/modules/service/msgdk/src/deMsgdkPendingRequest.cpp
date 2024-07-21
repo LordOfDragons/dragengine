@@ -22,58 +22,18 @@
  * SOFTWARE.
  */
 
-#ifndef _DEMICROSOFTGDK_H_
-#define _DEMICROSOFTGDK_H_
-
-#include "gdk_include.h"
-
-#include <dragengine/systems/modules/service/deBaseServiceModule.h>
+#include "deMsgdkPendingRequest.h"
 
 
-/**
- * Microsoft GDK Service Module.
- */
-class deMicrosoftGdk : public deBaseServiceModule{
-private:
-	bool pSdkInited;
+// Class deMsgdkPendingRequest
+////////////////////////////////
 
+// Constructor, destructor
+////////////////////////////
 
-public:
-	/** \name Constructors and Destructors */
-	/*@{*/
-	/** Create module. */
-	deMicrosoftGdk(deLoadableModule &loadableModule);
-	
-	/** Delete module. */
-	~deMicrosoftGdk() override;
-	/*@}*/
-	
-	
-	/** \name Management */
-	/*@{*/
-	/** Map error code to string. */
-	decString GetErrorCodeString(HRESULT code) const;
+deMsgdkPendingRequest::deMsgdkPendingRequest( const deServiceObject::Ref &ndata ) :
+data( ndata ? ndata : deServiceObject::Ref::New( new deServiceObject ) ){
+}
 
-
-	/** \brief Set of supported service names. */
-	decStringSet GetSupportedServices() override;
-	
-	/**
-	 * \brief Create service peer.
-	 * 
-	 * If service name is not supported nullptr is returned.
-	 */
-	deBaseServiceService *CreateService(deService *service,
-		const char *name, const deServiceObject::Ref &data) override;
-
-	/**
-	 * \brief Frame update.
-	 */
-	void FrameUpdate(float elapsed) override;
-
-	/** Init SDK if not already inited. */
-	void InitSdk(const deServiceObject::Ref &data);
-	/*@}*/
-};
-
-#endif
+deMsgdkPendingRequest::~deMsgdkPendingRequest(){
+}

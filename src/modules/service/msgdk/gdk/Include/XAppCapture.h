@@ -227,11 +227,7 @@ extern "C"
 
     // Screenshot APIs
 
-    struct XAppCaptureScreenshotStream
-    {
-    };
-
-    typedef XAppCaptureScreenshotStream* XAppCaptureScreenshotStreamHandle;
+    typedef struct XAppCaptureScreenshotStream* XAppCaptureScreenshotStreamHandle;
 
     struct XAppCaptureTakeScreenshotResult
     {

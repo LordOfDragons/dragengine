@@ -304,3 +304,15 @@ STDAPI XGameUiTextEntryUpdateVisibility(
     _In_ XGameUiTextEntryHandle handle,
     _In_ XGameUiTextEntryVisibilityFlags visibilityFlags
 ) noexcept;
+
+// State Share
+
+STDAPI XGameUiShowStateShareAsync(
+    _In_ XAsyncBlock* async,
+    _In_ XUserHandle requestingUser,
+    _In_z_ const char* linkToken
+    ) noexcept;
+
+STDAPI XGameUiShowStateShareResult(
+    _In_ XAsyncBlock* async
+    ) noexcept;

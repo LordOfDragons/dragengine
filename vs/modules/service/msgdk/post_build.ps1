@@ -19,6 +19,11 @@ Copy-Manifest -Path (Join-Path -Path $SourceDir -ChildPath "module.xml")`
     -Destination (Join-Path -Path $TargetDir -ChildPath "module.xml")`
     -Library $Library -Version $Version
 
+$DataTargetDir = "$OutputDir\$PathDistDESharesModules\service\msgdk\$Version"
+Write-Host "MicrosoftGDK Module: Copy Data to '$DataTargetDir'"
+
+Copy-Files -SourceDir "$SourceDir\..\data" -TargetDir $DataTargetDir -Pattern "*.*"
+
 
 # debug
 $TargetDir = "$OutputDir\$PathDistDEPdbDataModules\service\msgdk\$Version"

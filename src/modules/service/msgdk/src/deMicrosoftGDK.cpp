@@ -25,9 +25,13 @@
 #include <string.h>
 
 #include "deMicrosoftGDK.h"
-#include "deGDKServiceSystem.h"
+#include "deMsgdkServiceMsgdk.h"
 
+#include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/file/decPath.h>
+#include <dragengine/common/file/decBaseFileReader.h>
+#include <dragengine/filesystem/deVirtualFileSystem.h>
 
 
 // export definition
@@ -46,10 +50,14 @@ __declspec(dllexport) deBaseModule *MSGDKCreateModule(deLoadableModule *loadable
 // returns NULL on error.
 /////////////////////////////////////////////////////////
 
-deBaseModule *MSGDKCreateModule(deLoadableModule *loadableModule){
-	try{
-		return new deMicrosoftGDK(*loadableModule);
-	}catch(...){
+deBaseModule *MSGDKCreateModule(deLoadableModule *loadableModule)
+{
+	try
+	{
+		return new deMicrosoftGdk(*loadableModule);
+	}
+	catch(...)
+	{
 		return nullptr;
 	}
 }
@@ -61,7 +69,7 @@ deBaseModule *MSGDKCreateModule(deLoadableModule *loadableModule){
 #define E_GAME_MISSING_GAME_CONFIG 0x87e5001f
 #define E_GAMEPACKAGE_CONFIG_NO_MSAAPPID_NOTITLEID 0x8924520b
 
-const int vErrorCodeCount = 49;
+const int vErrorCodeCount = 55;
 static struct sErrorCode{
 	HRESULT code;
 	const char *string;
@@ -114,7 +122,13 @@ static struct sErrorCode{
 	{E_GAMESTREAMING_CLIENT_NOT_CONNECTED, "E_GAMESTREAMING_CLIENT_NOT_CONNECTED"},
 	{E_GAMESTREAMING_NO_DATA, "E_GAMESTREAMING_NO_DATA"},
 	{E_GAMESTREAMING_NO_DATACENTER, "E_GAMESTREAMING_NO_DATACENTER"},
-	{E_GAMESTREAMING_NOT_STREAMING_CONTROLLER, "E_GAMESTREAMING_NOT_STREAMING_CONTROLLER"}
+	{E_GAMESTREAMING_NOT_STREAMING_CONTROLLER, "E_GAMESTREAMING_NOT_STREAMING_CONTROLLER"},
+	{E_GAMERUNTIME_OPTIONS_MISMATCH, "E_GAMERUNTIME_OPTIONS_MISMATCH"},
+	{E_GAMERUNTIME_OPTIONS_NOT_SUPPORTED, "E_GAMERUNTIME_OPTIONS_NOT_SUPPORTED"},
+	{E_GAMERUNTIME_GAMECONFIG_BAD_FORMAT, "E_GAMERUNTIME_GAMECONFIG_BAD_FORMAT"},
+	{E_GAMERUNTIME_INVALID_HANDLE, "E_GAMERUNTIME_INVALID_HANDLE"},
+	{E_INVALIDARG, "E_INVALIDARG"},
+	{E_ABORT, "E_ABORT"}
 };
 
 
@@ -124,15 +138,16 @@ static struct sErrorCode{
 // Constructor, destructor
 ////////////////////////////
 
-deMicrosoftGDK::deMicrosoftGDK(deLoadableModule& loadableModule) :
+deMicrosoftGdk::deMicrosoftGdk(deLoadableModule& loadableModule) :
 deBaseServiceModule(loadableModule),
 pSdkInited(false)
 {
-	InitSdk();
 }
 
-deMicrosoftGDK::~deMicrosoftGDK(){
-	if(pSdkInited){
+deMicrosoftGdk::~deMicrosoftGdk()
+{
+	if(pSdkInited)
+	{
 		LogInfo("Shutdown GDK");
 		XGameRuntimeUninitialize();
 	}
@@ -142,49 +157,89 @@ deMicrosoftGDK::~deMicrosoftGDK(){
 // Management
 ///////////////
 
-const char *deMicrosoftGDK::GetErrorCodeString(HRESULT code) const{
-	static const char * const unknown = "?";
-
+decString deMicrosoftGdk::GetErrorCodeString(HRESULT code) const
+{
 	int i;
-	for(i=0; i<vErrorCodeCount; i++){
-		if(vErrorCodes[i].code == code){
+	for(i=0; i<vErrorCodeCount; i++)
+	{
+		if(vErrorCodes[i].code == code)
+		{
 			return vErrorCodes[i].string;
 		}
 	}
 
-	return unknown;
+	decString message;
+	message.Format("Unknown Error: %x", code);
+	return message;
 }
 
-decStringSet deMicrosoftGDK::GetSupportedServices(){
+decStringSet deMicrosoftGdk::GetSupportedServices()
+{
 	decStringSet names;
-	names.Add(deGDKServiceSystem::serviceName);
+	names.Add(deMsgdkServiceMsgdk::serviceName);
 	return names;
 }
 
-deBaseServiceService* deMicrosoftGDK::CreateService(deService *service,
-const char *name, const deServiceObject::Ref &data){
+deBaseServiceService* deMicrosoftGdk::CreateService(deService *service,
+	const char *name, const deServiceObject::Ref &data)
+{
 	DEASSERT_NOTNULL(service)
 
-	if(strcmp(name, deGDKServiceSystem::serviceName) == 0){
-		return new deGDKServiceSystem(*this, service);
+	if(strcmp(name, deMsgdkServiceMsgdk::serviceName) == 0)
+	{
+		return new deMsgdkServiceMsgdk(*this, service, data);
 	}
 
 	return nullptr;
 }
 
-void deMicrosoftGDK::FrameUpdate(float elapsed){
+void deMicrosoftGdk::FrameUpdate(float elapsed)
+{
 }
 
-void deMicrosoftGDK::InitSdk(){
-	if(pSdkInited){
+void deMicrosoftGdk::InitSdk(const deServiceObject::Ref &data)
+{
+	if(pSdkInited)
+	{
 		return;
 	}
 
 	LogInfo("Initialize GDK");
-	HRESULT rc = XGameRuntimeInitialize();
-	if(FAILED(rc)){
-		LogErrorFormat("Failed initialize GDK: %s", GetErrorCodeString(rc));
-		DETHROW(deeInvalidAction);
+
+	const decPath pathGameConfig(decPath::CreatePathUnix(
+		data->GetChildAt("pathGameConfig")->GetString()));
+	const decBaseFileReader::Ref reader(decBaseFileReader::Ref::New(
+		GetGameEngine()->GetVirtualFileSystem()->OpenFileForReading(pathGameConfig)));
+	const int lenGameConfig = reader->GetLength();
+	char *gameConfig = nullptr;
+
+	DEASSERT_TRUE(lenGameConfig > 0)
+
+	try
+	{
+		gameConfig = new char[lenGameConfig + 1];
+		reader->Read(gameConfig, lenGameConfig);
+		gameConfig[lenGameConfig] = 0;
+
+		XGameRuntimeOptions options = {};
+		options.gameConfigSource = XGameRuntimeGameConfigSource::Inline;
+		options.gameConfig = gameConfig;
+
+		HRESULT result = XGameRuntimeInitializeWithOptions(&options);
+		if(FAILED(result))
+		{
+			LogErrorFormat("Failed initialize GDK: %s", GetErrorCodeString(result));
+			DETHROW(deeInvalidAction);
+		}
+		pSdkInited = true;
+
+	}catch(const deException &e)
+	{
+		if(gameConfig)
+		{
+			delete [] gameConfig;
+		}
+		LogException(e);
+		throw;
 	}
-	pSdkInited = true;
 }

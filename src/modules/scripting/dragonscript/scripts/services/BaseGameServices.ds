@@ -53,6 +53,7 @@ class BaseGameServices
 	
 	var ServiceSteam pSteam
 	var ServiceEos pEos
+	var ServiceMsgdk pMsgdk
 	var ServiceModio pModio
 	
 	var Array pUser, pStats, pMods
@@ -89,6 +90,7 @@ class BaseGameServices
 		closeModio()
 		closeSteam()
 		closeEos()
+		closeMsgdk()
 		
 		pMods = pStats = pUser = null
 	end
@@ -531,6 +533,106 @@ class BaseGameServices
 	
 	
 	
+	/** \brief Microsoft GDK service or null. */
+	func ServiceMsgdk getMsgdk()
+		return pMsgdk
+	end
+	
+	/**
+	 * \brief Initialize Microsoft GDK service using parameters from configuration parameter tree.
+	 * 
+	 * Requires these configuration parameters to be present:
+	 * - msgdk.pathGameConfig: String value containing path to Microsoft game config.
+	 * 
+	 * Service will be added to the following type specific service lists:
+	 * - User services
+	 * 
+	 * \throws EInvalidParam One or more required configuration parameter is missing.
+	 * \throws EInvalidAction Microsoft GDK is already initialized.
+	 */
+	func void initMsgdk(ServiceInitListener listener)
+		var ServiceMsgdk.InitParameters params = ServiceMsgdk.InitParameters.new()
+		params.pathGameConfig = pConfiguration.getStringAt("msgdk.pathGameConfig", null)
+		initMsgdk(params, listener)
+	end
+	
+	/**
+	 * \brief Initialize Microsoft GDK service.
+	 * 
+	 * Service will be added to the following type specific service lists:
+	 * - User services
+	 * 
+	 * \throws EInvalidParam One or more parameter is invalid.
+	 * \throws EInvalidAction Microsoft GDK is already initialized.
+	 */
+	func void initMsgdk(ServiceMsgdk.InitParameters params, ServiceInitListener listener)
+		if pMsgdk != null
+			throw EInvalidAction.new("Already initialized")
+		end
+		
+		pConsole.addMessage("Initialize Microsoft GDK service")
+		pMsgdk = ServiceMsgdk.new(params, BlockServiceInitListener.new(block Object service, Exception exception
+			pInitializeCount--
+			if exception == null
+				pUser.add(pModio)
+				pConsole.addMessage("Initialize Microsoft GDK service succeeded")
+				if listener != null
+					listener.onServiceInit(service, exception)
+				end
+				
+			else
+				pConsole.addError("Failed initialize Microsoft GDK service", exception)
+				if listener != null
+					listener.onServiceInit(service, exception)
+				end
+				closeModio()
+			end
+		end))
+		pInitializeCount++
+	end
+	
+	/**
+	 * \brief Automatically initialize Microsoft GDK if supported.
+	 * 
+	 * Initializes Microsoft GDK if all of the following conditions are fulfilled:
+	 * - Microsoft GDK service module is present and running
+	 * - Has configuration parameters:
+	 *   - msgdk.pathGameConfig
+	 * 
+	 * Failure to initialize is only logged and does not throw an exception.
+	 */
+	func void autoInitMsgdk()
+		if ServiceMsgdk.isServiceSupported() and pConfiguration.has("msgdk.pathGameConfig")
+			try
+				initMsgdk(null)
+				
+			catch Exception e
+				closeMsgdk()
+				pConsole.addError("Failed initialize Microsoft GDK service", e)
+			end
+		end
+	end
+	
+	/**
+	 * \brief Close and dispose Microsoft GDK service.
+	 * 
+	 * Does nothing if service is not initialized.
+	 */
+	func void closeMsgdk()
+		if pMsgdk == null
+			return
+		end
+		
+		if pUser.has(pMsgdk)
+			pUser.remove(pMsgdk)
+		end
+		
+		pMsgdk.dispose()
+		pMsgdk = null
+	end
+	
+	
+	
 	/** Mod.io service or null. */
 	func ServiceModio getModio()
 		return pModio
@@ -568,6 +670,9 @@ class BaseGameServices
 			
 		elif pEos != null
 			params.portal = ServiceModio.Portal.epicGamesStore
+			
+		elif pMsgdk != null
+			params.portal = ServiceModio.Portal.xboxLive
 		end
 		
 		initModio(params, listener)
@@ -677,6 +782,7 @@ class BaseGameServices
 	 * The following services are supported:
 	 * - Steam: autoInitSteam()
 	 * - EOS: autoInitEos()
+	 * - Microsoft GDK: autoInitMsgdk()
 	 * 
 	 * \par Mod.io (ServiceModio)
 	 * 
@@ -688,6 +794,7 @@ class BaseGameServices
 		pConsole.addMessage("Auto initialize services")
 		autoInitSteam()
 		autoInitEos()
+		autoInitMsgdk()
 		autoInitModio()
 	end
 end

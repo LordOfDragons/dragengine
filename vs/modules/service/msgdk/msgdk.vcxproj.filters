@@ -15,21 +15,27 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\deMicrosoftGDK.h">
+    <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\deMicrosoftGdk.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\deGDKServiceSystem.h">
+    <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\deMsgdkServiceMsgdk.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\gdk_include.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\deMsgdkPendingRequest.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\src\modules\service\msgdk\src\deMicrosoftGDK.cpp">
+    <ClCompile Include="..\..\..\..\src\modules\service\msgdk\src\deMicrosoftGdk.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\service\msgdk\src\deGDKServiceSystem.cpp">
+    <ClCompile Include="..\..\..\..\src\modules\service\msgdk\src\deMsgdkServiceMsgdk.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\service\msgdk\src\deMsgdkPendingRequest.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

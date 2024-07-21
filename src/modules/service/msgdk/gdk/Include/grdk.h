@@ -11,7 +11,7 @@
 #endif
 
 /* Version */
-#define _GRDK_VER                0x63360C63
+#define _GRDK_VER                0x633610AF
 
 #if !defined (_GRDK_NO_XBLD_INFO)
 
@@ -22,12 +22,12 @@
 
 /*  Edition  */
 #define _GRDK_YY                 24
-#define _GRDK_MM_NUM             3
-#define _GRDK_MM                 03
-#define _GRDK_QFE_NUM            1            /* QFE version used in comparisons */
-#define _GRDK_QFE                01        /* This goes into the 6 digit edition */
+#define _GRDK_MM_NUM             6
+#define _GRDK_MM                 06
+#define _GRDK_QFE_NUM            0            /* QFE version used in comparisons */
+#define _GRDK_QFE                00        /* This goes into the 6 digit edition */
 #define _GRDK_FULLYY             2024
-#define _GRDK_EDITION            240301
+#define _GRDK_EDITION            240600
 
 
 #if (_GRDK_YY > 0)
@@ -113,8 +113,8 @@
 
 #define _GRDKVER_PRODUCTMAJORVERSION     10
 #define _GRDKVER_PRODUCTMINORVERSION     0
-#define _GRDKVER_PRODUCTBUILD_QFE        3171
-#define _GRDKVER_PRODUCTBUILDVER_FULL    10.0.25398.3171
+#define _GRDKVER_PRODUCTBUILD_QFE        4271
+#define _GRDKVER_PRODUCTBUILDVER_FULL    10.0.25398.4271
 
 /* Compiler */
 #ifdef __clang__
@@ -143,31 +143,31 @@ extern "C" {
 
 /* Leaving this variable for backwards compatibility but only need the edition-specific one preserved by the linker */
     __declspec(allocate(".xbld")) __declspec(selectany) char underscore(XBLD_GRDK_NAME)[] = "_xbld_name=" _GRDK_VER_STRING;
-#pragma comment(linker, "/include:_XBLD_GRDK_NAME_240301")
-    __declspec(allocate(".xbld")) __declspec(selectany) char underscore(XBLD_GRDK_NAME_240301)[] = "_xbld_edition_name=GRDK," _GRDK_VER_STRING;
+#pragma comment(linker, "/include:_XBLD_GRDK_NAME_240600")
+    __declspec(allocate(".xbld")) __declspec(selectany) char underscore(XBLD_GRDK_NAME_240600)[] = "_xbld_edition_name=GRDK," _GRDK_VER_STRING;
 /* Leaving this variable for backwards compatibility but only need the edition-specific one preserved by the linker */
     __declspec(allocate(".xbld")) __declspec(selectany) char underscore(XBLD_GRDK_PRODUCTBUILDVER_FULL)[] = "_xbld_full_productbuild=" GRDK_STRINGIZE(_GRDKVER_PRODUCTBUILDVER_FULL);
-#pragma comment(linker, "/include:_XBLD_GRDK_PRODUCTBUILDVER_FULL_240301")
-    __declspec(allocate(".xbld")) __declspec(selectany) char underscore(XBLD_GRDK_PRODUCTBUILDVER_FULL_240301)[] = "_xbld_edition_full_productbuild=GRDK," GRDK_STRINGIZE(_GRDKVER_PRODUCTBUILDVER_FULL);
+#pragma comment(linker, "/include:_XBLD_GRDK_PRODUCTBUILDVER_FULL_240600")
+    __declspec(allocate(".xbld")) __declspec(selectany) char underscore(XBLD_GRDK_PRODUCTBUILDVER_FULL_240600)[] = "_xbld_edition_full_productbuild=GRDK," GRDK_STRINGIZE(_GRDKVER_PRODUCTBUILDVER_FULL);
 /* Leaving this variable for backwards compatibility but only need the edition-specific one preserved by the linker */
     __declspec(allocate(".xbld")) __declspec(selectany) char underscore(XBLD_GRDK_EDITION)[] = "_xbld_edition=" GRDK_STRINGIZE(_GRDK_EDITION);
-#pragma comment(linker, "/include:_XBLD_GRDK_EDITION_240301")
-    __declspec(allocate(".xbld")) __declspec(selectany) char underscore(XBLD_GRDK_EDITION_240301)[] = "_xbld_edition_sdktype=GRDK," GRDK_STRINGIZE(_GRDK_EDITION);
+#pragma comment(linker, "/include:_XBLD_GRDK_EDITION_240600")
+    __declspec(allocate(".xbld")) __declspec(selectany) char underscore(XBLD_GRDK_EDITION_240600)[] = "_xbld_edition_sdktype=GRDK," GRDK_STRINGIZE(_GRDK_EDITION);
 /* Leaving this variable for backwards compatibility but only need the edition-specific one preserved by the linker */
  __declspec(allocate(".xbld")) __declspec(selectany) char underscore(XBLD_GRDK_MSCVER)[]    = "_xbld_mscver=" _GRDK_FULLMSCVVER_;
-#pragma comment(linker, "/include:_XBLD_GRDK_MSCVER_240301")
-    __declspec(allocate(".xbld")) __declspec(selectany) char underscore(XBLD_GRDK_MSCVER_240301)[]    = "_xbld_edition_mscver=GRDK," _GRDK_FULLMSCVVER_;
+#pragma comment(linker, "/include:_XBLD_GRDK_MSCVER_240600")
+    __declspec(allocate(".xbld")) __declspec(selectany) char underscore(XBLD_GRDK_MSCVER_240600)[]    = "_xbld_edition_mscver=GRDK," _GRDK_FULLMSCVVER_;
 /* Leaving this variable for backwards compatibility but only need the edition-specific one preserved by the linker */
 __declspec(allocate(".xbld")) __declspec(selectany) char underscore(XBLD_GRDK_BUILD)[] = "_xbld_build=" GRDK_STRINGIZE(_GRDK_VER);
-#pragma comment(linker, "/include:_XBLD_GRDK_BUILD_240301")
-    __declspec(allocate(".xbld")) __declspec(selectany) char underscore(XBLD_GRDK_BUILD_240301)[] = "_xbld_edition_build=GRDK," GRDK_STRINGIZE(_GRDK_VER);
+#pragma comment(linker, "/include:_XBLD_GRDK_BUILD_240600")
+    __declspec(allocate(".xbld")) __declspec(selectany) char underscore(XBLD_GRDK_BUILD_240600)[] = "_xbld_edition_build=GRDK," GRDK_STRINGIZE(_GRDK_VER);
 
 
 #if defined (_GRDK_CLIENTBLDMODE)
 /* Leaving this variable for backwards compatibility but only need the edition-specific one preserved by the linker */
    __declspec(allocate(".xbld")) __declspec(selectany) char underscore(XBLD_GRDK_CLIENT_BUILD_TYPE)[] = "_xbld_clientbldtype=" _GRDK_CLIENTBLDMODE;
-#pragma comment(linker, "/include:_XBLD_GRDK_CLIENT_BUILD_TYPE_240301")
-    __declspec(allocate(".xbld")) __declspec(selectany) char underscore(XBLD_GRDK_CLIENT_BUILD_TYPE_240301)[] = "_xbld_edition_clientbldtype=GRDK," _GRDK_CLIENTBLDMODE;
+#pragma comment(linker, "/include:_XBLD_GRDK_CLIENT_BUILD_TYPE_240600")
+    __declspec(allocate(".xbld")) __declspec(selectany) char underscore(XBLD_GRDK_CLIENT_BUILD_TYPE_240600)[] = "_xbld_edition_clientbldtype=GRDK," _GRDK_CLIENTBLDMODE;
 #endif
 
 #pragma data_seg()

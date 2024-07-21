@@ -23,7 +23,6 @@
  */
 
 namespace Dragengine.Services
-
 pin Dragengine.Services.Stats
 pin Dragengine.Services.User
 pin Dragengine.Utils
@@ -50,7 +49,7 @@ class ServiceSteam extends BaseGameService implements ServiceStats, ServiceUser,
 		
 		
 		/**
-		 * \brief Create new instance of class InitOptions.
+		 * \brief Create new instance of class InitParameters.
 		 */
 		func new()
 		end
@@ -73,7 +72,7 @@ class ServiceSteam extends BaseGameService implements ServiceStats, ServiceUser,
 	
 	/**
 	 * \brief Create service ServiceSteamSdk.
-	 * \param params Init parametetrs.
+	 * \param params Init parameters.
 	 * \throws EInvalidParam Steam service module is not present.
 	 * \throws EInvalidAction Steam is not running.
 	 * \throws EInvalidAction Steam SDK can not be initialized.
@@ -445,6 +444,7 @@ class ServiceSteam extends BaseGameService implements ServiceStats, ServiceUser,
 			end
 			
 		elif function.equals("getUserInfo")
+			// NOT IMPLEMENTED YET IN SERVICE MODULE
 		end
 	end
 	

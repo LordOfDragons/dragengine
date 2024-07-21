@@ -1,0 +1,318 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Services
+pin Dragengine.Services.User
+pin Dragengine.Utils
+
+
+/**
+ * \brief Service providing access to Microsoft GDK functionality if supported.
+ * \version 1.23
+ * 
+ * Provides access to these functionalities:
+ * - Stats/Achievements
+ * - User
+ */
+class ServiceMsgdk extends BaseGameService implements ServiceUser, ServiceListener
+	/**
+	 * \brief Service initialization parameters.
+	 */
+	class InitParameters
+		/**
+		 * \brief Path to Microsoft game config.
+		 * 
+		 * File is typically named "MicrosoftGame.config" and is best placed in the root
+		 * of the game content directory. Hence the typically value is "/MicrosoftGame.config".
+		 */
+		public var String pathGameConfig
+		
+		
+		/**
+		 * \brief Create new instance of class InitParameters.
+		 */
+		func new()
+		end
+	end
+	
+	/**
+	 * \brief Authentification provider identifier.
+	 */
+	static public fixed var String authProviderId = "xboxLive"
+	
+	
+	
+	var InitParameters pInitParameters
+	var ServiceInitListener pInitListener
+	var Boolean pIsInitialized
+	
+	var SafeArray pUserListeners
+	
+	/**
+	 * \brief Create service ServiceMsgdk.
+	 * \param params Init parameters.
+	 * \param listener Listener called if initialization finished. Can be null.
+	 * \throws EInvalidParam Microsoft GDK service module is not present.
+	 * \throws EInvalidAction Microsoft GDK can not be initialized.
+	 */
+	func new(InitParameters params, ServiceInitListener listener)
+		pInitParameters = InitParameters.new()
+		pInitParameters.pathGameConfig = params.pathGameConfig
+		pInitListener = listener
+
+		pUserListeners = SafeArray.new()
+		
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("pathGameConfig", params.pathGameConfig)
+		service = Service.new("MicrosoftGdk", so)
+		
+		service.setListener(this)
+	end
+	
+	/**
+	 * \brief Dispose of Microsoft GDK service.
+	 */
+	func void dispose()
+		pInitListener = null
+		pUserListeners.removeAll()
+		
+		super.dispose()
+	end
+	
+	
+	
+	/**
+	 * \brief Checks if Microsoft GDK service is supported.
+	 * 
+	 * Service is reported supported if the Microsoft GDK Service Module is present.
+	 * Creating the service can still fail if Microsoft GDK can not be initialized.
+	 */
+	static func bool isServiceSupported()
+		return Engine.getSupportedServices().has("MicrosoftGdk")
+	end
+	
+	
+	
+	/**
+	 * \brief Determines if service is initialized and ready to be used.
+	 * 
+	 * If null is returned the service is still initializing. If returned object has true
+	 * value the service is initialized and ready to be used. If returned object has false
+	 * value the service failed to initialized and has to be disposed.
+	 */
+	func Boolean isInitialized()
+		return pIsInitialized
+	end
+	
+	
+	
+	/**
+	 * \brief Add user listener.
+	 * \param listener Listener to add
+	 */
+	func void addUserListener(ServiceUserListener listener)
+		if listener == null
+			throw ENullPointer.new("listener")
+		end
+		pUserListeners.add(listener)
+	end
+	
+	/**
+	 * \brief Remove user listener.
+	 * \param listener Listener to remove.
+	 */
+	func void removeUserListener(ServiceUserListener listener)
+		pUserListeners.remove(listener)
+	end
+	
+	/**
+	 * \brief Features supported by this service.
+	 */
+	func ServiceUserFeatures getUserFeatures()
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "getUserFeatures")
+		return pConvUserFeatures(service.runAction(so))
+	end
+	
+	/**
+	 * \brief Log in user.
+	 * 
+	 * User can be only logged in automatically.
+	 * 
+	 * Once logging in finished \ref ServiceUserListener#onLoginUser(ServiceUser,Exception)
+	 * is called.
+	 * 
+	 * \param credentials Has to be null or an exception is thrown.
+	 * \param listener If not null called once in addition to added listeners.
+	 */
+	func void loginUser(ServiceUserCredentials credentials, ServiceUserListener listener)
+		if credentials != null
+			throw EInvalidParam.new("credentials has to be null")
+		end
+		
+		TimerBlock.new(0, false, block
+			pUserListeners.forEach(block ServiceUserListener each
+				each.onLoginUser(this, null)
+			end)
+			if listener != null
+				listener.onLoginUser(this, null)
+			end
+		end)
+		
+		service.nextId()
+	end
+	
+	/**
+	 * \brief Log out user.
+	 * 
+	 * Not supported. Throws exception if called.
+	 */
+	func void logoutUser(ServiceUserListener listener)
+		throw EInvalidParam.new("not supported")
+	end
+	
+	/**
+	 * \brief User is logged in.
+	 */
+	func bool isUserLoggedIn()
+		return true
+	end
+	
+	/**
+	 * \brief Request authentification token.
+	 * 
+	 * Requests an encrypted appplication ticket. If one is cached it is returned.
+	 * The received ticket is Base64 encoded.
+	 * 
+	 * \param listener If not null called once in addition to added listeners.
+	 */
+	func void getAuthToken(ServiceUserListener listener)
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "requestAuthToken")
+		
+		runRequest(so, listener)
+	end
+	
+	/**
+	 * \brief Retrieve user information.
+	 * 
+	 * \param listener If not null called once in addition to added listeners.
+	 */
+	func void getUserInfo(ServiceUserListener listener)
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "getUserInfo")
+		
+		runRequest(so, listener)
+	end
+	
+	/**
+	 * \brief Load resource asynchronously.
+	 * 
+	 * Loaded resources are cached for faster retrieval. Once the resource is cached locally
+	 * \ref ServiceUserListener#onLoadUserResource(ServiceUser,String,Object,Exception) is called
+	 * with the same URL as used in this function call.
+	 * 
+	 * \param url URL of image to load.
+	 * \param listener If not null called once in addition to added listeners.
+	 */
+	func void loadUserResource(String url, ServiceUserListener listener)
+		throw EInvalidParam.new("not supported")
+	end
+	
+	
+	
+	/**
+	 * \brief Service request response received.
+	 */
+	func void requestResponse(Service service, UniqueID id, ServiceObject response, bool finished)
+		var String function = response.getChildAt("function").getString()
+		var Object onceListener = getOnceListener(id)
+		
+		if function.equals("requestAuthToken")
+			var ServiceUserAuthToken token = ServiceUserAuthToken.new()
+			token.provider = authProviderId
+			token.token = response.getChildAt("token").getString()
+			
+			pUserListeners.forEach(block ServiceUserListener each
+				each.onGetAuthToken(this, token, null)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceUserListener).onGetAuthToken(this, token, null)
+			end
+			
+		elif function.equals("getUserInfo")
+			// NOT IMPLEMENTED YET IN SERVICE MODULE
+		end
+	end
+	
+	/**
+	 * \brief Service request failed.
+	 */
+	func void requestFailed(Service service, UniqueID id, ServiceObject error)
+		var String function = error.getChildAt("function").getString()
+		var ServiceException exception = createException(error)
+		var Object onceListener = getOnceListener(id)
+		
+		if function.equals("getUserInfo")
+			pUserListeners.forEach(block ServiceUserListener each
+				each.onGetUserInfo(this, null, exception)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceUserListener).onGetUserInfo(this, null, exception)
+			end
+		end
+	end
+	
+	/**
+	 * \brief Service notification received.
+	 */
+	func void eventReceived(Service service, ServiceObject event)
+		var String eventName = event.getChildAt("event").getString()
+		var bool success = event.getChildAt("success").getBoolean()
+		var ServiceException exception
+		
+		if not success
+			exception = createException(event)
+		end
+		
+		if eventName.equals("initialized")
+			pIsInitialized = Boolean.new(success)
+			
+			if pInitListener != null
+				pInitListener.onServiceInit(this, exception)
+			end
+			pInitListener = null
+		end
+	end
+	
+	
+	
+	/**
+	 * \brief Create exception from response.
+	 */
+	func ServiceException createException(ServiceObject error)
+		var String message = convString(error, "message", "Unknown error")
+		return ServiceException.new(service, message, null, null, null)
+	end
+end

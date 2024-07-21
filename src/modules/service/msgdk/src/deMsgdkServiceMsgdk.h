@@ -25,35 +25,63 @@
 #ifndef _DEGDKSERVICEGDK_H_
 #define _DEGDKSERVICEGDK_H_
 
+#include <memory>
+
 #include "gdk_include.h"
+#include "deMsgdkPendingRequest.h"
 
+#include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/systems/modules/service/deBaseServiceService.h>
+#include <dragengine/resources/image/deImage.h>
+#include <dragengine/resources/service/deServiceObject.h>
 
-class deMicrosoftGDK;
+class deMicrosoftGdk;
 class deService;
 
 
 /**
  * Microsoft GDK Service.
  */
-class deGDKServiceSystem : public deBaseServiceService{
+class deMsgdkServiceMsgdk : public deBaseServiceService
+{
 public:
 	static const char * const serviceName;
 	
 
 private:
-	deMicrosoftGDK &pModule;
+	class cContext : public deObject
+	{
+	public:
+		typedef deTObjectReference<cContext> Ref;
+		deMsgdkServiceMsgdk &context;
+		bool valid;
+		cContext(deMsgdkServiceMsgdk &context);
+	};
+
+	typedef std::unique_ptr<XAsyncBlock> AsyncBlockPtr;
+
+
+	deMicrosoftGdk &pModule;
 	deService * const pService;
+	decObjectList pPendingRequests;
+	bool pIsInitialized;
+	const cContext::Ref pContext;
+	
+	XUserHandle pUser;
+	XUserLocalId pUserLocalId;
+
+	deImage::Ref pAuthProviderIcon, pAuthProviderImage;
 
 
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create module. */
-	deGDKServiceSystem(deMicrosoftGDK &module, deService *service);
+	deMsgdkServiceMsgdk(deMicrosoftGdk &module, deService *service,
+		const deServiceObject::Ref &data);
 	
 	/** Delete module. */
-	~deGDKServiceSystem() override;
+	~deMsgdkServiceMsgdk() override;
 	/*@}*/
 	
 	
@@ -80,6 +108,33 @@ public:
 	 * \brief Run action returning result immediately.
 	 */
 	deServiceObject::Ref RunAction( const deServiceObject &action ) override;
+	/*@}*/
+	
+	
+	
+	/** \name Request */
+	/*@{*/
+	deMsgdkPendingRequest *GetPendingRequestWithId(const decUniqueID &id) const;
+	deMsgdkPendingRequest::Ref RemoveFirstPendingRequestWithId(const decUniqueID &id);
+	deMsgdkPendingRequest::Ref RemoveFirstPendingRequestWithFunction(const char *function);
+	deMsgdkPendingRequest::Ref NewPendingRequest(const decUniqueID &id,
+		const decString &function, const deServiceObject::Ref &data = nullptr);
+	
+	deServiceObject::Ref GetUserFeatures();
+	
+	void FailRequest(const decUniqueID &id, const deException &e);
+	void FailRequest(const deMsgdkPendingRequest::Ref &request, const deException &e);
+	void AssertAsync(HRESULT result, std::unique_ptr<XAsyncBlock> &ab);
+	/*@}*/
+	
+	
+	
+private:
+	/** \name Callbacks */
+	/*@{*/
+	void pOnInitialize(XAsyncBlock* ab);
+	
+	void pSetResultFields(HRESULT result, deServiceObject &so) const;
 	/*@}*/
 };
 
