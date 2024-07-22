@@ -19,28 +19,40 @@
     <None Include="..\..\..\..\src\modules\service\steamsdk\SConscript" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\src\modules\service\steamsdk\src\deSteamSdk.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\service\steamsdk\src\deSsdkServiceSteam.cpp">
+    <Xml Include="..\..\..\..\src\modules\service\steamsdk\src\module.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\modules\service\steamsdk\src\convert\deSCCommon.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\service\steamsdk\src\deSsdkPendingRequest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\service\steamsdk\src\deSsdkResourceUrl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\service\steamsdk\src\deSsdkServiceSteam.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\service\steamsdk\src\deSteamSdk.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\src\modules\service\steamsdk\src\deSteamSdk.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\service\steamsdk\src\deSsdkServiceSteam.h">
+    <ClInclude Include="..\..\..\..\src\modules\service\steamsdk\src\convert\deSCCommon.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\service\steamsdk\src\deSsdkPendingRequest.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <Xml Include="..\..\..\..\src\modules\service\steamsdk\src\module.xml" />
+    <ClInclude Include="..\..\..\..\src\modules\service\steamsdk\src\deSsdkResourceUrl.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\service\steamsdk\src\deSsdkServiceSteam.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\service\steamsdk\src\deSteamSdk.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

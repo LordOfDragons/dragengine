@@ -39,17 +39,21 @@
     <None Include="post_build.ps1" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\src\modules\service\steamsdk\src\deSteamSdk.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\service\steamsdk\src\deSsdkServiceSteam.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\service\steamsdk\src\deSsdkPendingRequest.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\..\..\src\modules\service\steamsdk\src\deSteamSdk.h" />
-    <ClInclude Include="..\..\..\..\src\modules\service\steamsdk\src\deSsdkServiceSteam.h" />
-    <ClInclude Include="..\..\..\..\src\modules\service\steamsdk\src\deSsdkPendingRequest.h" />
-  </ItemGroup>
-  <ItemGroup>
     <Xml Include="..\..\..\..\src\modules\service\steamsdk\src\module.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\modules\service\steamsdk\src\convert\deSCCommon.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\service\steamsdk\src\deSsdkPendingRequest.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\service\steamsdk\src\deSsdkResourceUrl.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\service\steamsdk\src\deSsdkServiceSteam.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\service\steamsdk\src\deSteamSdk.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\src\modules\service\steamsdk\src\convert\deSCCommon.h" />
+    <ClInclude Include="..\..\..\..\src\modules\service\steamsdk\src\deSsdkPendingRequest.h" />
+    <ClInclude Include="..\..\..\..\src\modules\service\steamsdk\src\deSsdkResourceUrl.h" />
+    <ClInclude Include="..\..\..\..\src\modules\service\steamsdk\src\deSsdkServiceSteam.h" />
+    <ClInclude Include="..\..\..\..\src\modules\service\steamsdk\src\deSteamSdk.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
