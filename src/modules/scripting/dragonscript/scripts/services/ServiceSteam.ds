@@ -478,7 +478,11 @@ class ServiceSteam extends BaseGameService implements ServiceStats, ServiceUser,
 			
 		elif function.equals("loadUserResource")
 			var String url = response.getChildAt("url").getString()
-			var Object resource = response.getChildAt("resource").getResource()
+			var Object resource
+			var ServiceObject so = response.getChildAt("resource")
+			if so != null
+				resource = response.getChildAt("resource").getResource()
+			end
 			
 			pUserListeners.forEach(block ServiceUserListener each
 				each.onLoadUserResource(this, url, resource, null)
