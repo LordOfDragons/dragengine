@@ -52,6 +52,10 @@ pModule( module ),
 pService( service )
 {
 	pModule.InitSdk( data );
+	
+	// some information like avatars can be missing. update them in the hope
+	// the information is ready soon enough.
+	SteamFriends()->RequestUserInformation( SteamUser()->GetSteamID(), false );
 }
 
 deSsdkServiceSteam::~deSsdkServiceSteam(){
