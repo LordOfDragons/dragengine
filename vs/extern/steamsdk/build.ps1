@@ -12,4 +12,4 @@ if (Test-Path $ExpandedDir) {
     Remove-Item $ExpandedDir -Force -Recurse
 }
 
-Expand-Archive -Path (Join-Path -Path $SourceDir -ChildPath "steamsdk.zip") -DestinationPath $ProjectDir\steamsdk
+Expand-TarXz -Path "$SourceDir\steamsdk160.tar.xz" -Destination "$ProjectDir\steamsdk"

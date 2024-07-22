@@ -22,36 +22,33 @@
  * SOFTWARE.
  */
 
-#ifndef _DESSDKPENDINGREQUEST_H_
-#define _DESSDKPENDINGREQUEST_H_
-
-#include <dragengine/deObject.h>
-#include <dragengine/common/utils/decUniqueID.h>
-#include <dragengine/resources/service/deServiceObject.h>
+#include "deSsdkResourceUrl.h"
+#include <dragengine/common/exceptions.h>
 
 
-/**
- * Pending service request.
- */
-class deSsdkPendingRequest : public deObject{
-public:
-	typedef deTObjectReference<deSsdkPendingRequest> Ref;
-	
-	
-	decUniqueID id;
-	decString function;
-	deServiceObject::Ref data;
-	deServiceObject::Ref request;
-	
-	
-	/** \name Constructors and Destructors */
-	/*@{*/
-	/** Create module. */
-	deSsdkPendingRequest( const deServiceObject::Ref &data = nullptr );
-	
-	/** Delete module. */
-	~deSsdkPendingRequest() override;
-	/*@}*/
-};
+// Class deSsdkResourceUrl
+////////////////////////////
 
-#endif
+// Constructor, destructor
+////////////////////////////
+
+deSsdkResourceUrl::deSsdkResourceUrl( const decString &nurl ) :
+url( nurl )
+{
+	const int index = nurl.FindString( "://" );
+	DEASSERT_TRUE( index != -1 );
+	
+	type = nurl.GetLeft( index );
+	components = nurl.GetMiddle( index + 3 ).Split( '/' );
+}
+
+
+// Management
+///////////////
+
+const decString &deSsdkResourceUrl::getComponentAt( int index ) const{
+	if( index < 0 || index >= components.GetCount() ){
+		DETHROW_INFO( deeInvalidParam, "url" );
+	}
+	return components.GetAt( index );
+}

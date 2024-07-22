@@ -583,25 +583,24 @@ class ServiceModio extends BaseGameService implements ServiceListener, ServiceMo
 		so.setStringChildAt("modId", id)
 		so.setBoolChildAt("disabled", disabled)
 		
-		try
-			service.runAction(so)
+		TimerBlock.new(0, false, block
+			var Exception exception
+			try
+				service.runAction(so)
+				
+			catch Exception e
+				exception = e
+			end
 			
-		catch Exception e
 			pModsListeners.forEach(block ServiceModsListener each
-				each.onSetModDisabled(this, id, disabled, e)
+				each.onSetModDisabled(this, id, disabled, exception)
 			end)
 			if listener != null
-				listener.onSetModDisabled(this, id, disabled, e)
+				listener.onSetModDisabled(this, id, disabled, exception)
 			end
-			return
-		end
-		
-		pModsListeners.forEach(block ServiceModsListener each
-			each.onSetModDisabled(this, id, disabled, null)
 		end)
-		if listener != null
-			listener.onSetModDisabled(this, id, disabled, null)
-		end
+		
+		service.nextId()
 	end
 	
 	/**

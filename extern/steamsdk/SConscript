@@ -1,7 +1,6 @@
 import os
 import sys
 import SCons
-import zipfile
 
 from SConsCommon import *
 from SConsExternCommon import *
@@ -13,6 +12,8 @@ if parent_env['platform_android'] != 'no':
 
 envLibrary = parent_env.Clone()
 
+steamSdkVersion = '160'
+
 if envLibrary['OSWindows']:
 	libFileName = 'bin/steam_api64.lib'
 	binFileName = 'bin/steam_api64.dll'
@@ -22,9 +23,7 @@ else:
 
 def unpackArchiveFile(target, source, env):
 	buildDir = target[0].get_dir().up()
-	#untarArchive(buildDir.abspath, source[0].abspath)
-	with zipfile.ZipFile(source[0].abspath, 'r') as f:
-		f.extractall(buildDir.abspath)
+	untarArchive(buildDir.abspath, source[0].abspath)
 
 targets = []
 targets.append(libFileName)
@@ -32,6 +31,7 @@ targets.append(binFileName)
 
 targets.extend([
 	'include/matchmakingtypes.h',
+	'include/isteamtimeline.h',
 	'include/steamtypes.h',
 	'include/steamclientpublic.h',
 	'include/isteamgamecoordinator.h',
@@ -77,7 +77,8 @@ targets.extend([
 	'include/steam_api.json',
 	'include/isteaminventory.h'])
 
-sdk = envLibrary.Command(targets, 'steamsdk.zip', envLibrary.Action(unpackArchiveFile, 'Unpack SDK'))
+sdk = envLibrary.Command(targets, 'steamsdk{}.tar.xz'.format(steamSdkVersion),
+	envLibrary.Action(unpackArchiveFile, 'Unpack SDK'))
 
 envLibrary.Clean(sdk, ['bin', 'include'])
 

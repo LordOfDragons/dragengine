@@ -26,10 +26,13 @@
 
 #include "deSteamSdk.h"
 #include "deSsdkServiceSteam.h"
+#include "deSsdkResourceUrl.h"
+#include "convert/deSCCommon.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/utils/decUniqueID.h>
 #include <dragengine/common/utils/decBase64.h>
+#include <dragengine/resources/image/deImage.h>
 #include <dragengine/resources/image/deImageManager.h>
 #include <dragengine/resources/service/deServiceManager.h>
 #include <dragengine/resources/service/deServiceObject.h>
@@ -79,6 +82,9 @@ void deSsdkServiceSteam::StartRequest( const decUniqueID &id, const deServiceObj
 	}else if( function == "requestEncryptedAppTicket" ){
 		RequestEncryptedAppTicket( id, request );
 		
+	}else if( function == "loadUserResource" ){
+		LoadUserResource( id, request );
+		
 	}else{
 		DETHROW_INFO( deeInvalidParam, "Unknown function" );
 	}
@@ -103,6 +109,9 @@ deServiceObject::Ref deSsdkServiceSteam::RunAction( const deServiceObject &actio
 	
 	if( function == "getUserFeatures" ){
 		return GetUserFeatures();
+		
+	}else if( function == "getUserInfo" ){
+		return GetUserInfo();
 		
 	}else{
 		DETHROW_INFO( deeInvalidParam, "Unknown function" );
@@ -250,6 +259,26 @@ void deSsdkServiceSteam::RequestEncryptedAppTicket( const decUniqueID &id, const
 	}
 }
 
+void deSsdkServiceSteam::LoadUserResource( const decUniqueID &id, const deServiceObject &request ){
+	const deSsdkResourceUrl url( request.GetChildAt( "url" )->GetString() );
+	pModule.LogInfoFormat( "deSsdkServiceSteam.LoadUserResource: url=%s", url.url.GetString() );
+	
+	const int handle = pLoadResource( url );
+	
+	const deServiceObject::Ref data( deServiceObject::Ref::New( new deServiceObject ) );
+	data->SetStringChildAt( "url", url.url );
+	NewPendingRequest( id, "loadUserResource", data );
+	
+	if( handle == -1 ){
+		// image will be loaded asynchronously. wait for OnAvatarImageLoaded
+		// then call GetLargeFriendAvatar again
+		
+	}else{
+		// image ready to process or user has no avatar. the callback handles this
+		OnAvatarImageLoaded( nullptr );
+	}
+}
+
 deServiceObject::Ref deSsdkServiceSteam::GetUserFeatures(){
 	if( ! pAuthProviderIcon ){
 		pAuthProviderIcon.TakeOver( pModule.GetGameEngine()->GetImageManager()->LoadImage(
@@ -271,6 +300,29 @@ deServiceObject::Ref deSsdkServiceSteam::GetUserFeatures(){
 	soAtp->SetResourceChildAt( "image", pAuthProviderImage );
 	soAtp->SetStringChildAt( "name", "Steam" );
 	so->SetChildAt( "authTokenProvider", soAtp );
+	
+	return so;
+}
+
+deServiceObject::Ref deSsdkServiceSteam::GetUserInfo(){
+	const deServiceObject::Ref so( deServiceObject::Ref::New( new deServiceObject ) );
+	const decString id( deSCCommon::SteamIDToString( SteamUser()->GetSteamID() ) );
+	decString string;
+	
+	so->SetStringChildAt( "id", id );
+	so->SetStringChildAt( "displayName", SteamFriends()->GetPersonaName() );
+	
+	string.Format( "https://steamcommunity.com/profiles/%s", id.GetString() );
+	so->SetStringChildAt( "profileUrl", string );
+	
+	string.Format( "image://user/%s/avatar/small", id.GetString() );
+	so->SetStringChildAt( "avatarSmall", string );
+	
+	string.Format( "image://user/%s/avatar/medium", id.GetString() );
+	so->SetStringChildAt( "avatarMedium", string );
+	
+	string.Format( "image://user/%s/avatar/large", id.GetString() );
+	so->SetStringChildAt( "avatarLarge", string );
 	
 	return so;
 }
@@ -456,6 +508,41 @@ void deSsdkServiceSteam::OnEncryptedAppTicketResponse( EncryptedAppTicketRespons
 	}
 }
 
+void deSsdkServiceSteam::OnAvatarImageLoaded( AvatarImageLoaded_t *response ){
+	const deSsdkPendingRequest::Ref pr( RemoveFirstPendingRequestWithFunction( "loadUserResource" ) );
+	if( ! pr ){
+		return;
+	}
+	
+	try{
+		pr->data->SetBoolChildAt( "success", true );
+		
+		const deSsdkResourceUrl url( pr->data->GetChildAt( "url" )->GetString() );
+		pModule.LogInfoFormat( "deSsdkServiceSteam.OnAvatarImageLoaded: url=%s response=%d",
+			url.url.GetString(), response ? 1 : 0 );
+		
+		const int handle = pLoadResource( url );
+		
+		if( handle == 0 ){
+			// user has no avatar image
+			
+		}else if( handle == -1 ){
+			// image will be loaded asynchronously. wait for OnAvatarImageLoaded then call
+			// GetLargeFriendAvatar again. can not happen here
+			DETHROW_INFO( deeInvalidAction, "Loading resource resulted in -1");
+			
+		}else{
+			// good. we can load the image
+			pCreateImage( handle, pr->data, "resource" );
+		}
+		
+		pModule.GetGameEngine()->GetServiceManager()->QueueRequestResponse( pService, pr->id, pr->data, true );
+		
+	}catch( const deException &e ){
+		FailRequest( pr, e );
+	}
+}
+
 
 
 // Private Functions
@@ -470,5 +557,50 @@ void deSsdkServiceSteam::pSetResultFields( EResult result, deServiceObject &so )
 		so.SetStringChildAt( "error", "SteamError" );
 		so.SetIntChildAt( "errorResult", result );
 		so.SetStringChildAt( "message", pModule.GetResultMessage( result ) );
+	}
+}
+
+void deSsdkServiceSteam::pCreateImage( int handle, deServiceObject &so, const char *key ){
+	uint32 width, height;
+	DEASSERT_TRUE( SteamUtils()->GetImageSize( handle, &width, &height ) )
+	
+	const deImage::Ref image( deImage::Ref::New( pModule.GetGameEngine()->
+		GetImageManager()->CreateImage( width, height, 1, 4, 8 ) ) );
+	DEASSERT_TRUE( SteamUtils()->GetImageRGBA( handle,
+		( uint8* )image->GetData(), width * height * 4 ) )
+	
+	image->NotifyImageDataChanged();
+	
+	so.SetResourceChildAt( key, image );
+}
+
+int deSsdkServiceSteam::pLoadResource( const deSsdkResourceUrl &url ){
+	if( url.type == "image" ){
+		if( url.getComponentAt( 0 ) == "user" ){
+			const CSteamID sid( deSCCommon::SteamID( url.getComponentAt( 1 ) ) );
+			if( url.getComponentAt( 2 ) == "avatar" ){
+				if( url.getComponentAt( 3 ) == "large" ){
+					return SteamFriends()->GetLargeFriendAvatar( sid );
+					
+				}else if( url.getComponentAt( 3 ) == "medium" ){
+					return SteamFriends()->GetMediumFriendAvatar( sid );
+					
+				}else if( url.getComponentAt( 3 ) == "small" ){
+					return SteamFriends()->GetSmallFriendAvatar( sid );
+					
+				}else{
+					DETHROW_INFO( deeInvalidParam, "url" );
+				}
+				
+			}else{
+				DETHROW_INFO( deeInvalidParam, "url" );
+			}
+			
+		}else{
+			DETHROW_INFO( deeInvalidParam, "url" );
+		}
+		
+	}else{
+		DETHROW_INFO( deeInvalidParam, "url" );
 	}
 }

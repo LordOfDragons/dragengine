@@ -22,36 +22,42 @@
  * SOFTWARE.
  */
 
-#ifndef _DESSDKPENDINGREQUEST_H_
-#define _DESSDKPENDINGREQUEST_H_
+#ifndef _DESCCOMMON_H_
+#define _DESCCOMMON_H_
 
-#include <dragengine/deObject.h>
-#include <dragengine/common/utils/decUniqueID.h>
+#include "steam_api.h"
+
 #include <dragengine/resources/service/deServiceObject.h>
 
 
 /**
- * Pending service request.
+ * Convert common data.
  */
-class deSsdkPendingRequest : public deObject{
+class deSCCommon{
+private:
+	deSCCommon() = default;
+	
 public:
-	typedef deTObjectReference<deSsdkPendingRequest> Ref;
+	/** Convert uint32. */
+	static uint32 UInt32( const deServiceObject &so );
+	static deServiceObject::Ref UInt32( uint32 value );
 	
+	static uint32 UInt32( const decString &string );
+	static decString UInt32ToString( uint32 value );
 	
-	decUniqueID id;
-	decString function;
-	deServiceObject::Ref data;
-	deServiceObject::Ref request;
+	/** Convert uint64. */
+	static uint64 UInt64( const deServiceObject &so );
+	static deServiceObject::Ref UInt64( uint64 value );
 	
+	static uint64 UInt64( const decString &string );
+	static decString UInt64ToString( uint64 value );
 	
-	/** \name Constructors and Destructors */
-	/*@{*/
-	/** Create module. */
-	deSsdkPendingRequest( const deServiceObject::Ref &data = nullptr );
+	/** Convert SteamID. */
+	static CSteamID SteamID( const deServiceObject::Ref &so );
+	static deServiceObject::Ref SteamID( const CSteamID &id );
 	
-	/** Delete module. */
-	~deSsdkPendingRequest() override;
-	/*@}*/
+	static CSteamID SteamID( const decString &string );
+	static decString SteamIDToString( const CSteamID &id );
 };
 
 #endif

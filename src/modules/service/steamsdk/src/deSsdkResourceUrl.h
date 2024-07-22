@@ -22,35 +22,35 @@
  * SOFTWARE.
  */
 
-#ifndef _DESSDKPENDINGREQUEST_H_
-#define _DESSDKPENDINGREQUEST_H_
+#ifndef _DESSDKRESOURCEURL_H_
+#define _DESSDKRESOURCEURL_H_
 
-#include <dragengine/deObject.h>
-#include <dragengine/common/utils/decUniqueID.h>
-#include <dragengine/resources/service/deServiceObject.h>
+#include <dragengine/common/string/decString.h>
+#include <dragengine/common/string/decStringList.h>
 
 
 /**
- * Pending service request.
+ * Resource URL.
  */
-class deSsdkPendingRequest : public deObject{
+class deSsdkResourceUrl{
 public:
-	typedef deTObjectReference<deSsdkPendingRequest> Ref;
-	
-	
-	decUniqueID id;
-	decString function;
-	deServiceObject::Ref data;
-	deServiceObject::Ref request;
+	decString url;
+	decString type;
+	decStringList components;
 	
 	
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Create module. */
-	deSsdkPendingRequest( const deServiceObject::Ref &data = nullptr );
+	/** Create resource URL. */
+	deSsdkResourceUrl( const decString &url );
+	/*@}*/
 	
-	/** Delete module. */
-	~deSsdkPendingRequest() override;
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** Component at index or throws invalid URL exceptionn. */
+	const decString &getComponentAt( int index ) const;
 	/*@}*/
 };
 

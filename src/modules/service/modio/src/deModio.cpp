@@ -287,6 +287,10 @@ void deModio::pLoadConfig(){
 	pModConfigs.RemoveAll();
 	pUserConfigs.RemoveAll();
 	
+	if( ! GetVFS().ExistsFile( pPathConfig ) ){
+		return;
+	}
+	
 	try{
 		const decBaseFileReader::Ref reader( GetVFS().OpenFileForReading( pPathConfig ) );
 		

@@ -36,6 +36,7 @@
 
 class deSteamSdk;
 class deService;
+class deSsdkResourceUrl;
 
 
 /**
@@ -102,8 +103,10 @@ public:
 	void SetStats( const decUniqueID &id, const deServiceObject& request );
 	void ResetAllStats( const decUniqueID &id, const deServiceObject& request );
 	void RequestEncryptedAppTicket( const decUniqueID &id, const deServiceObject& request );
+	void LoadUserResource( const decUniqueID &id, const deServiceObject& request );
 	
 	deServiceObject::Ref GetUserFeatures();
+	deServiceObject::Ref GetUserInfo();
 	
 	void FailRequest( const decUniqueID &id, const deException &e );
 	void FailRequest( const deSsdkPendingRequest::Ref &request, const deException &e );
@@ -116,11 +119,14 @@ public:
 	STEAM_CALLBACK( deSsdkServiceSteam, OnUserStatsReceived, UserStatsReceived_t );
 	STEAM_CALLBACK( deSsdkServiceSteam, OnUserStatsStored, UserStatsStored_t );
 	STEAM_CALLRESULT( deSsdkServiceSteam, OnEncryptedAppTicketResponse, EncryptedAppTicketResponse_t );
+	STEAM_CALLBACK( deSsdkServiceSteam, OnAvatarImageLoaded, AvatarImageLoaded_t );
 	/*@}*/
 	
 	
 private:
 	void pSetResultFields( EResult result, deServiceObject &so ) const;
+	void pCreateImage( int handle, deServiceObject &so, const char *key );
+	int pLoadResource( const deSsdkResourceUrl &url );
 };
 
 #endif
