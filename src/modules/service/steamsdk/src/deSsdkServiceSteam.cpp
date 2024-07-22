@@ -261,9 +261,10 @@ void deSsdkServiceSteam::RequestEncryptedAppTicket( const decUniqueID &id, const
 
 void deSsdkServiceSteam::LoadUserResource( const decUniqueID &id, const deServiceObject &request ){
 	const deSsdkResourceUrl url( request.GetChildAt( "url" )->GetString() );
-	pModule.LogInfoFormat( "deSsdkServiceSteam.LoadUserResource: url=%s", url.url.GetString() );
 	
 	const int handle = pLoadResource( url );
+	pModule.LogInfoFormat( "deSsdkServiceSteam.LoadUserResource: url=%s handle=%d",
+		url.url.GetString(), handle );
 	
 	const deServiceObject::Ref data( deServiceObject::Ref::New( new deServiceObject ) );
 	data->SetStringChildAt( "url", url.url );
@@ -518,10 +519,9 @@ void deSsdkServiceSteam::OnAvatarImageLoaded( AvatarImageLoaded_t *response ){
 		pr->data->SetBoolChildAt( "success", true );
 		
 		const deSsdkResourceUrl url( pr->data->GetChildAt( "url" )->GetString() );
-		pModule.LogInfoFormat( "deSsdkServiceSteam.OnAvatarImageLoaded: url=%s response=%d",
-			url.url.GetString(), response ? 1 : 0 );
-		
 		const int handle = pLoadResource( url );
+		pModule.LogInfoFormat( "deSsdkServiceSteam.OnAvatarImageLoaded: url=%s handle=%d  response=%d",
+			url.url.GetString(), handle, response ? 1 : 0 );
 		
 		if( handle == 0 ){
 			// user has no avatar image
