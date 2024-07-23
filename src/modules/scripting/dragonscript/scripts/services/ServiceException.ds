@@ -41,43 +41,49 @@ class ServiceException extends Exception
 	
 	
 	
-	/**
-	 * \brief Create new instance of class ServiceException.
-	 */
+	/** \brief Create ServiceException. */
 	func new(Service service, String message, Enumeration errorCode,\
-	Enumeration errorCategory, Object additionalData) super(message)
+	Enumeration errorCategory) super(message)
 		pService = service
 		pErrorCode = errorCode
 		pErrorCategory = errorCategory
+	end
+	
+	/** \brief Create ServiceException. */
+	func new(Service service, String message, Enumeration errorCode, Enumeration errorCategory,\
+	Object additionalData) this(service, message, errorCode, errorCategory)
 		pAdditionalData = additionalData
 	end
 	
+	/** \brief Create copy of ServiceException with additional data. */
+	func new(ServiceException exception, Object additionalData) this(exception.pService,\
+	exception.getReason(), exception.pErrorCode, exception.pErrorCategory, additionalData)
+	end
 	
-	/**
-	 * \brief Service throwing exception.
-	 */
+	
+	
+	/** \brief Service throwing exception. */
 	func Service getService()
 		return pService
 	end
 	
-	/**
-	 * \brief Service specific error code or null.
-	 */
+	/** \brief Service specific error code or null. */
 	func Enumeration getErrorCode()
 		return pErrorCode
 	end
 	
-	/**
-	 * \brief Service specific error category or null.
-	 */
+	/** \brief Service specific error category or null. */
 	func Enumeration getErrorCategory()
 		return pErrorCategory
 	end
 	
-	/**
-	 * \brief Error specific additional data or null.
-	 */
+	/** \brief Error specific additional data or null. */
 	func Object getAdditionalData()
 		return pAdditionalData
+	end
+	
+	/** \brief Create copy of ServiceException with new additional data. */
+	func ServiceException withAdditionalData(Object additionalData)
+		return new(this, additionalData)
 	end
 end

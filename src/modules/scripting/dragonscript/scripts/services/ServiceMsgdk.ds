@@ -35,7 +35,7 @@ pin Dragengine.Utils
  * - Stats/Achievements
  * - User
  */
-class ServiceMsgdk extends BaseGameService implements ServiceUser, ServiceListener
+class ServiceMsgdk implements ServiceUser, ServiceListener
 	/**
 	 * \brief Service initialization parameters.
 	 */
@@ -63,11 +63,13 @@ class ServiceMsgdk extends BaseGameService implements ServiceUser, ServiceListen
 	
 	
 	
+	var Service pService
 	var InitParameters pInitParameters
 	var ServiceInitListener pInitListener
 	var Boolean pIsInitialized
-	
 	var SafeArray pUserListeners
+	var BaseServiceConversions pConversions
+	var Dictionary pOnceListeners
 	
 	/**
 	 * \brief Create service ServiceMsgdk.
@@ -82,12 +84,14 @@ class ServiceMsgdk extends BaseGameService implements ServiceUser, ServiceListen
 		pInitListener = listener
 
 		pUserListeners = SafeArray.new()
+		pConversions = BaseServiceConversions.new()
+		pOnceListeners = Dictionary.new()
 		
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("pathGameConfig", params.pathGameConfig)
-		service = Service.new("MicrosoftGdk", so)
+		pService = Service.new("MicrosoftGdk", so)
 		
-		service.setListener(this)
+		pService.setListener(this)
 	end
 	
 	/**
@@ -95,9 +99,17 @@ class ServiceMsgdk extends BaseGameService implements ServiceUser, ServiceListen
 	 */
 	func void dispose()
 		pInitListener = null
-		pUserListeners.removeAll()
+		if pUserListeners != null
+			pUserListeners.removeAll()
+		end
+		if pOnceListeners != null
+			pOnceListeners.removeAll()
+		end
 		
-		super.dispose()
+		if pService != null
+			pService.setListener(null)
+		end
+		pService = null
 	end
 	
 	
@@ -152,7 +164,7 @@ class ServiceMsgdk extends BaseGameService implements ServiceUser, ServiceListen
 	func ServiceUserFeatures getUserFeatures()
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "getUserFeatures")
-		return pConvUserFeatures(service.runAction(so))
+		return pConversions.convUserFeatures(pService.runAction(so))
 	end
 	
 	/**
@@ -180,7 +192,7 @@ class ServiceMsgdk extends BaseGameService implements ServiceUser, ServiceListen
 			end
 		end)
 		
-		service.nextId()
+		pService.nextId()
 	end
 	
 	/**
@@ -242,6 +254,13 @@ class ServiceMsgdk extends BaseGameService implements ServiceUser, ServiceListen
 	
 	
 	
+	/** \brief Conversion helper */
+	public func BaseServiceConversions getConversions()
+		return pConversions
+	end
+	
+	
+	
 	/**
 	 * \brief Service request response received.
 	 */
@@ -271,7 +290,7 @@ class ServiceMsgdk extends BaseGameService implements ServiceUser, ServiceListen
 	 */
 	func void requestFailed(Service service, UniqueID id, ServiceObject error)
 		var String function = error.getChildAt("function").getString()
-		var ServiceException exception = createException(error)
+		var ServiceException exception = pConversions.createException(service, error)
 		var Object onceListener = getOnceListener(id)
 		
 		if function.equals("getUserInfo")
@@ -293,7 +312,7 @@ class ServiceMsgdk extends BaseGameService implements ServiceUser, ServiceListen
 		var ServiceException exception
 		
 		if not success
-			exception = createException(event)
+			exception = pConversions.createException(service, event)
 		end
 		
 		if eventName.equals("initialized")
@@ -308,11 +327,22 @@ class ServiceMsgdk extends BaseGameService implements ServiceUser, ServiceListen
 	
 	
 	
-	/**
-	 * \brief Create exception from response.
-	 */
-	func ServiceException createException(ServiceObject error)
-		var String message = convString(error, "message", "Unknown error")
-		return ServiceException.new(service, message, null, null, null)
+	/** \brief Once listener matching id or null. */
+	protected func Object getOnceListener(UniqueID id)
+		var Object listener = pOnceListeners.getAt(id, null)
+		if listener != null
+			pOnceListeners.remove(id)
+		end
+		return listener
+	end
+	
+	/** \brief Run request with optional once listener. */
+	protected func UniqueID runRequest(ServiceObject request, Object listener)
+		var UniqueID id = pService.nextId()
+		pService.startRequest(id, request)
+		if listener != null
+			pOnceListeners.setAt(id, listener)
+		end
+		return id
 	end
 end

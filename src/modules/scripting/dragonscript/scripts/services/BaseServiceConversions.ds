@@ -26,73 +26,69 @@ namespace Dragengine.Services
 pin Dragengine.Gui
 pin Dragengine.Services.User
 
+
 /**
- * \brief Base class for services.
- * 
- * Contains helper functions for common tasks.
+ * \brief Helper functions for common conversion tasks.
+ * \version 1.23
  */
-class BaseGameService
-	protected var Service service
-	var Dictionary pOnceListeners
-	
-	
-	
-	/** \brief Create BaseGameService instance. */
-	func new()
-		pOnceListeners = Dictionary.new()
-	end
+class BaseServiceConversions
+	/**
+	 * \brief Map from int error code to Enumeration constant.
+	 */
+	public var Dictionary mapErrorCode
 	
 	/**
-	 * \brief Dispose of ModIO service.
+	 * \brief Map from int error category to Enumeration constant.
 	 */
-	func void dispose()
-		pOnceListeners.removeAll()
-		
-		if service != null
-			service.setListener(null)
-		end
-		service = null
+	public var Dictionary mapErrorCategory
+	
+	
+	
+	/** \brief Create base conversion helper instance. */
+	func new()
+		mapErrorCode = Dictionary.new()
+		mapErrorCategory = Dictionary.new()
 	end
 	
 	
 	
 	/** \brief Convert service object string value. */
-	protected func String convString(ServiceObject so, String key)
+	func String convString(ServiceObject so, String key)
 		return convString(so, key, null)
 	end
 	
 	/** \brief Convert service object string value. */
-	protected func String convString(ServiceObject so, String key, String defaultValue)
+	func String convString(ServiceObject so, String key, String defaultValue)
 		var ServiceObject so2 = so.getChildAt(key)
 		return so2 != null if so2.getString() else defaultValue
 	end
 	
 	/** \brief Convert service object integer value. */
-	protected func int convInt(ServiceObject so, String key, int defaultValue)
+	func int convInt(ServiceObject so, String key, int defaultValue)
 		var ServiceObject so2 = so.getChildAt(key)
 		return so2 != null if so2.getInteger() else defaultValue
 	end
 	
 	/** \brief Convert service object boolean value. */
-	protected func bool convBool(ServiceObject so, String key, bool defaultValue)
+	func bool convBool(ServiceObject so, String key, bool defaultValue)
 		var ServiceObject so2 = so.getChildAt(key)
 		return so2 != null if so2.getBoolean() else defaultValue
 	end
 	
 	/** \brief Convert service object float value. */
-	protected func float convFloat(ServiceObject so, String key, float defaultValue)
+	func float convFloat(ServiceObject so, String key, float defaultValue)
 		var ServiceObject so2 = so.getChildAt(key)
 		return so2 != null if so2.getFloat() else defaultValue
 	end
 	
 	/** \brief Convert service object Float object value. */
-	protected func Float convFloatOptional(ServiceObject so, String key)
+	func Float convFloatOptional(ServiceObject so, String key)
 		var ServiceObject so2 = so.getChildAt(key)
 		return so2 != null if Float.new(so2.getFloat()) else null
 	end
 	
 	/** \brief Convert service object TimeDate value. */
-	protected func TimeDate convTimeDate(ServiceObject so, String key)
+	func TimeDate convTimeDate(ServiceObject so, String key)
 		var ServiceObject so2 = so.getChildAt(key)
 		return so2 != null if TimeDate.new(\
 			convInt(so2, "year", 0), convInt(so2, "month", 0), convInt(so2, "day", 0),\
@@ -101,7 +97,7 @@ class BaseGameService
 	end
 	
 	/** \brief Convert service object string list value. */
-	protected func Array convStringList(ServiceObject so, String key)
+	func Array convStringList(ServiceObject so, String key)
 		var ServiceObject so2 = so.getChildAt(key)
 		if so2 == null
 			return null
@@ -118,7 +114,7 @@ class BaseGameService
 	end
 	
 	/** \brief Convert service object string set value. */
-	protected func Set convStringSet(ServiceObject so, String key)
+	func Set convStringSet(ServiceObject so, String key)
 		var ServiceObject so2 = so.getChildAt(key)
 		if so2 == null
 			return null
@@ -135,7 +131,7 @@ class BaseGameService
 	end
 	
 	/** \brief Convert service object string dictionary value. */
-	protected func Dictionary convStringDict(ServiceObject so, String key)
+	func Dictionary convStringDict(ServiceObject so, String key)
 		var ServiceObject so2 = so.getChildAt(key)
 		if so2 == null
 			return null
@@ -149,47 +145,46 @@ class BaseGameService
 	end
 	
 	/** \brief Convert service object Image value. */
-	protected func Image convImage(ServiceObject so, String key)
+	func Image convImage(ServiceObject so, String key)
 		var ServiceObject so2 = so.getChildAt(key)
 		return so2 != null if so2.getResource() cast Image else null
 	end
 	
 	
 	
-	/** \brief Once listener matching id or null. */
-	protected func Object getOnceListener(UniqueID id)
-		var Object listener = pOnceListeners.getAt(id, null)
-		if listener != null
-			pOnceListeners.remove(id)
+	/** \brief Create exception from response. */
+	func ServiceException createException(Service service, ServiceObject error)
+		var String message = convString(error, "message", "Unknown error")
+		var Enumeration errorCode, errorCategory
+		
+		var ServiceObject so = error.getChildAt("code")
+		if so != null
+			errorCode = mapErrorCode.getAt(so.getInteger(), null) cast Enumeration
 		end
-		return listener
-	end
-	
-	/** \brief Run request with optional once listener. */
-	protected func UniqueID runRequest(ServiceObject request, Object listener)
-		var UniqueID id = service.nextId()
-		service.startRequest(id, request)
-		if listener != null
-			pOnceListeners.setAt(id, listener)
+		
+		so = error.getChildAt("category")
+		if so != null
+			errorCategory = mapErrorCategory.getAt(so.getInteger(), null) cast Enumeration
 		end
-		return id
+		
+		return ServiceException.new(service, message, errorCode, errorCategory)
 	end
 	
 	
 	
 	/** \brief Convert service user features. */
-	protected func ServiceUserFeatures pConvUserFeatures(ServiceObject so)
+	func ServiceUserFeatures convUserFeatures(ServiceObject so)
 		var ServiceUserFeatures features = ServiceUserFeatures.new()
 		features.canManualLogin = convBool(so, "canManualLogin", false)
 		features.canAutomaticLogin = convBool(so, "canAutomaticLogin", false)
 		features.canLogout = convBool(so, "canLogout", false)
 		features.canAuthProviderLogin = convStringSet(so, "canAuthProviderLogin")
-		features.authTokenProvider = pConvAuthTokenProvider(so.getChildAt("authTokenProvider"))
+		features.authTokenProvider = convAuthTokenProvider(so.getChildAt("authTokenProvider"))
 		return features
 	end
 	
 	/** \brief Convert service user features auth token provider. */
-	protected func ServiceUserFeatures.AuthTokenProvider pConvAuthTokenProvider(ServiceObject so)
+	func ServiceUserFeatures.AuthTokenProvider convAuthTokenProvider(ServiceObject so)
 		if so == null
 			return null
 		end
