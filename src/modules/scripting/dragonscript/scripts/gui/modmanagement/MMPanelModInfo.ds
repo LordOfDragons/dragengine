@@ -302,7 +302,7 @@ class MMPanelModInfo extends Panel
 	 */
 	func void promptRequiresRestart()
 		WindowDialog.question(getWindow(), "@UI.Modifications",\
-			"@UI.ModManagementMod.Message.RestartRequired.", null,\
+			"@UI.ModManagementMod.Message.RestartRequired", null,\
 			Array.newWith(WindowDialog.ButtonConfiguration.new("@UI.Restart", true),\
 				WindowDialog.ButtonConfiguration.new("Cancel", false)),\
 			WindowDialog.BlockResultListener.new(block Object result
