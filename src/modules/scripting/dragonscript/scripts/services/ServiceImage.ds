@@ -72,11 +72,6 @@ class ServiceImage
 	
 	
 	/**
-	 * \brief Filename with extension.
-	 */
-	public var String filename
-	
-	/**
 	 * \brief URL from where the image can be loaded.
 	 * 
 	 * If null loading the image by url is not supported and the image member is used instead.

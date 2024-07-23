@@ -25,8 +25,8 @@
 #include <inttypes.h>
 
 #include "deModio.h"
-#include "deModioResource.h"
 #include "deModioService.h"
+#include "deModioResourceUrl.h"
 #include "config/deModioModConfig.h"
 #include "config/deModioUserConfig.h"
 #include "convert/deMCCommon.h"
@@ -40,6 +40,7 @@
 #include <dragengine/common/utils/decUniqueID.h>
 #include <dragengine/filesystem/deVFSDiskDirectory.h>
 #include <dragengine/filesystem/deFileSearchVisitor.h>
+#include <dragengine/resources/deFileResource.h>
 #include <dragengine/resources/loader/tasks/deResourceLoaderTask.h>
 #include <dragengine/resources/service/deServiceManager.h>
 #include <dragengine/resources/service/deServiceObject.h>
@@ -340,62 +341,107 @@ void deModioService::ListAllMods( const decUniqueID &id, const deServiceObject &
 }
 
 void deModioService::LoadModResource( const decUniqueID &id, const deServiceObject &request ){
-	const decString &url = request.GetChildAt( "url" )->GetString();
+	const deModioResourceUrl url( request.GetChildAt( "url" )->GetString() );
+	DEASSERT_TRUE( url.type == "res" )
 	
 	const deServiceObject::Ref data( deServiceObject::Ref::New( new deServiceObject ) );
-	data->SetStringChildAt( "url", url );
-	
-	NewPendingRequest( id, "loadModResource", data );
-	
-	const deModioResource *resource = nullptr;
-	if( ! pResources.GetAt( url, ( deObject** )&resource ) ){
-		FailRequest( id, deeInvalidAction( __FILE__, __LINE__,
-			"Resource information missing. List/Fetch mod info first" ) );
-		return;
-	}
+	data->SetStringChildAt( "url", url.url );
+	data->SetStringChildAt( "resourceType", "image" );
 	
 	std::function<void(Modio::ErrorCode, Modio::Optional<std::string>)> callback =
 		[ this, id ]( Modio::ErrorCode ec, Modio::Optional<std::string> filename ){
 			pOnLoadResourceFinished( id, ec, filename );
 		};
 	
-	switch( resource->type ){
-	case deModioResource::etLogo:
-		pModule.LogInfoFormat(
-			"deModioService.LoadModResource: image mod=%" PRIi64 " type=logo(%d) url=%s",
-			( int64_t )resource->modId, ( int )resource->logoSize, url.GetString() );
+	if( url.getComponentAt( 0 ) == "mod" ){
+		const Modio::ModID modId( deMCCommon::ID( url.getComponentAt( 1 ) ) );
+		const decString &type1 = url.getComponentAt( 2 );
 		
-		data->SetStringChildAt( "resourceType", "image" );
-		AddRequiresEventHandlingCount();
+		if( type1 == "logo" ){
+			const decString &type2 = url.getComponentAt( 3 );
+			Modio::LogoSize size;
+			
+			if( type2 == "original" ){
+				size = Modio::LogoSize::Original;
+				
+			}else if( type2 == "thumb320x180" ){
+				size = Modio::LogoSize::Thumb320;
+				
+			}else if( type2 == "thumb640x360" ){
+				size = Modio::LogoSize::Thumb640;
+				
+			}else if( type2 == "thumb1280x720" ){
+				size = Modio::LogoSize::Thumb1280;
+				
+			}else{
+				DETHROW_INFO( deeInvalidParam, "url" );
+			}
+			
+			pModule.LogInfoFormat(
+				"deModioService.LoadModResource: image mod=%" PRIi64 " type=logo(%d) url=%s",
+				( int64_t )modId, ( int )size, url.url.GetString() );
+			
+			NewPendingRequest( id, "loadModResource", data );
+			AddRequiresEventHandlingCount();
+			Modio::GetModMediaAsync( modId, size, callback );
+			
+		}else if( type1 == "gallery" ){
+			const Modio::GalleryIndex index = url.getComponentAt( 3 ).ToInt();
+			const decString &type2 = url.getComponentAt( 4 );
+			Modio::GallerySize size;
+			
+			if( type2 == "original" ){
+				size = Modio::GallerySize::Original;
+				
+			}else if( type2 == "thumb320x180" ){
+				size = Modio::GallerySize::Thumb320;
+				
+			}else if( type2 == "thumb1280x720" ){
+				size = Modio::GallerySize::Thumb1280;
+				
+			}else{
+				DETHROW_INFO( deeInvalidParam, "url" );
+			}
+			
+			pModule.LogInfoFormat(
+				"deModioService.LoadModResource: image mod=%" PRIi64 " type=gallery(%d@%d) url=%s",
+				( int64_t )modId, ( int )size, ( int )index, url.url.GetString() );
+			
+			NewPendingRequest( id, "loadModResource", data );
+			AddRequiresEventHandlingCount();
+			Modio::GetModMediaAsync( modId, size, index, callback );
+			
+		}else if( type1 == "avatar" ){
+			const decString &type2 = url.getComponentAt( 3 );
+			Modio::AvatarSize size;
+			
+			if( type2 == "original" ){
+				size = Modio::AvatarSize::Original;
+				
+			}else if( type2 == "thumb50x50" ){
+				size = Modio::AvatarSize::Thumb50;
+				
+			}else if( type2 == "thumb100x100" ){
+				size = Modio::AvatarSize::Thumb100;
+				
+			}else{
+				DETHROW_INFO( deeInvalidParam, "url" );
+			}
+			
+			pModule.LogInfoFormat(
+				"deModioService.LoadModResource: image mod=%" PRIi64 " type=avatar(%d) url=%s",
+				( int64_t )modId, ( int )size, url.url.GetString() );
+			
+			NewPendingRequest( id, "loadModResource", data );
+			AddRequiresEventHandlingCount();
+			Modio::GetModMediaAsync( modId, size, callback );
+			
+		}else{
+			DETHROW_INFO( deeInvalidParam, "url" );
+		}
 		
-		Modio::GetModMediaAsync(resource->modId, resource->logoSize, callback);
-		break;
-		
-	case deModioResource::etGalleryImage:
-		pModule.LogInfoFormat(
-			"deModioService.LoadModResource: image mod=%" PRIi64 " type=gallery(%d@%d) url=%s",
-			( int64_t )resource->modId, ( int )resource->gallerySize,
-			( int )resource->galleryIndex, url.GetString() );
-		
-		data->SetStringChildAt( "resourceType", "image" );
-		AddRequiresEventHandlingCount();
-		
-		Modio::GetModMediaAsync(resource->modId, resource->gallerySize, resource->galleryIndex, callback);
-		break;
-		
-	case deModioResource::etAvatar:
-		pModule.LogInfoFormat(
-			"deModioService.LoadModResource: image mod=%" PRIi64 " type=avatar(%d) url=%s",
-			( int64_t )resource->modId, ( int )resource->avatarSize, url.GetString() );
-		
-		data->SetStringChildAt( "resourceType", "image" );
-		AddRequiresEventHandlingCount();
-		
-		Modio::GetModMediaAsync(resource->modId, resource->avatarSize, callback);
-		break;
-		
-	default:
-		FailRequest( id, deeInvalidParam( __FILE__, __LINE__, "Invalid resource load type" ) );
+	}else{
+		DETHROW_INFO( deeInvalidParam, "url" );
 	}
 }
 
@@ -573,45 +619,57 @@ void deModioService::GetModTagOptions( const decUniqueID &id, const deServiceObj
 }
 
 void deModioService::LoadUserResource( const decUniqueID &id, const deServiceObject &request ){
-	const decString &url = request.GetChildAt( "url" )->GetString();
+	const deModioResourceUrl url( request.GetChildAt( "url" )->GetString() );
 	
 	const deServiceObject::Ref data( deServiceObject::Ref::New( new deServiceObject ) );
-	data->SetStringChildAt( "url", url );
+	data->SetStringChildAt( "url", url.url );
+	data->SetStringChildAt( "resourceType", "image" );
 	
-	NewPendingRequest( id, "loadUserResource", data );
-	
-	const Modio::Optional<Modio::User> user( Modio::QueryUserProfile() );
-	if( ! user.has_value() ){
-		FailRequest( id, deeInvalidAction( __FILE__, __LINE__,
-			"Resource information missing. User not logged in" ) );
-		return;
-	}
-	
-	Modio::AvatarSize avatarSize;
-	
-	if( url == user.value().Avatar.Original.c_str() ){
-		avatarSize = Modio::AvatarSize::Original;
+	if( url.getComponentAt( 0 ) == "user" ){
+		const Modio::UserID userId( deMCCommon::ID( url.getComponentAt( 1 ) ) );
+		const decString &type1 = url.getComponentAt( 2 );
 		
-	}else if( url == user.value().Avatar.Thumb100x100.c_str() ){
-		avatarSize = Modio::AvatarSize::Thumb100;
+		const Modio::Optional<Modio::User> user( Modio::QueryUserProfile() );
+		if( ! user.has_value() ){
+			DETHROW_INFO( deeInvalidParam, "User not logged in" );
+		}
+		if( user.value().UserId != userId ){
+			DETHROW_INFO( deeInvalidParam, "Not authenticated user" );
+		}
 		
-	}else if( url == user.value().Avatar.Thumb50x50.c_str() ){
-		avatarSize = Modio::AvatarSize::Thumb50;
+		if( type1 == "avatar" ){
+			const decString &type2 = url.getComponentAt( 3 );
+			Modio::AvatarSize size;
+			
+			if( type2 == "original" ){
+				size = Modio::AvatarSize::Original;
+				
+			}else if( type2 == "thumb50x50" ){
+				size = Modio::AvatarSize::Thumb50;
+				
+			}else if( type2 == "thumb100x100" ){
+				size = Modio::AvatarSize::Thumb100;
+				
+			}else{
+				DETHROW_INFO( deeInvalidParam, "url" );
+			}
+			
+			pModule.LogInfoFormat( "deModioService.LoadUserResource: image type=avatar(%d) url=%s",
+				( int )size, url.url.GetString() );
+			
+			NewPendingRequest( id, "loadUserResource", data );
+			AddRequiresEventHandlingCount();
+			Modio::GetUserMediaAsync( size, [ this, id ]( Modio::ErrorCode ec, Modio::Optional<std::string> filename ){
+				pOnLoadResourceFinished( id, ec, filename );
+			});
+			
+		}else{
+			DETHROW_INFO( deeInvalidParam, "url" );
+		}
 		
 	}else{
-		FailRequest( id, deeInvalidAction( __FILE__, __LINE__, "Resource not found" ) );
-		return;
+		DETHROW_INFO( deeInvalidParam, "url" );
 	}
-	
-	pModule.LogInfoFormat( "deModioService.LoadUserResource: image type=avatar(%d) url=%s",
-		( int )avatarSize, url.GetString() );
-	
-	data->SetStringChildAt( "resourceType", "image" );
-	AddRequiresEventHandlingCount();
-	
-	Modio::GetUserMediaAsync( avatarSize, [ this, id ]( Modio::ErrorCode ec, Modio::Optional<std::string> filename ){
-		pOnLoadResourceFinished( id, ec, filename );
-	});
 }
 
 void deModioService::ActivateMods(){
@@ -984,13 +1042,6 @@ Modio::ErrorCode ec, Modio::Optional<Modio::ModInfoList> results ){
 		FailRequest( pr, e );
 		return;
 	}
-	
-	// store information required to load images later
-	if( results.has_value() ){
-		for( const Modio::ModInfo &mod : *results ){
-			deModioResource::Register( pResources, mod );
-		}
-	}
 }
 
 class cLoadResourceTask : public deParallelTask{
@@ -1130,11 +1181,6 @@ Modio::Optional<Modio::ModInfo> info ){
 		
 	}catch( const deException &e ){
 		FailRequest( pr, e );
-	}
-	
-	// store information required to load images later
-	if( info.has_value() ){
-		deModioResource::Register( pResources, *info );
 	}
 }
 

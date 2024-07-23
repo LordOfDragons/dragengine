@@ -1250,7 +1250,6 @@ class ServiceModio extends BaseGameService implements ServiceListener, ServiceMo
 	
 	private func ServiceImage pConvImage(ServiceObject so)
 		var ServiceImage image = ServiceImage.new()
-		image.filename = convString(so, "filename")
 		image.url = convString(so, "original")
 		
 		// a=avatar, g=gallery-images l=logo

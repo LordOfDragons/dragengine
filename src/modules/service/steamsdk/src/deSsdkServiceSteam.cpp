@@ -312,22 +312,13 @@ deServiceObject::Ref deSsdkServiceSteam::GetUserFeatures(){
 deServiceObject::Ref deSsdkServiceSteam::GetUserInfo(){
 	const deServiceObject::Ref so( deServiceObject::Ref::New( new deServiceObject ) );
 	const decString id( deSCCommon::SteamIDToString( SteamUser()->GetSteamID() ) );
-	decString string;
 	
 	so->SetStringChildAt( "id", id );
 	so->SetStringChildAt( "displayName", SteamFriends()->GetPersonaName() );
-	
-	string.Format( "https://steamcommunity.com/profiles/%s", id.GetString() );
-	so->SetStringChildAt( "profileUrl", string );
-	
-	string.Format( "image://user/%s/avatar/small", id.GetString() );
-	so->SetStringChildAt( "avatarSmall", string );
-	
-	string.Format( "image://user/%s/avatar/medium", id.GetString() );
-	so->SetStringChildAt( "avatarMedium", string );
-	
-	string.Format( "image://user/%s/avatar/large", id.GetString() );
-	so->SetStringChildAt( "avatarLarge", string );
+	so->SetStringChildAt( "profileUrl", decString( "https://steamcommunity.com/profiles/" ) + id );
+	so->SetStringChildAt( "avatarSmall", deSsdkResourceUrl::FormatUrl( "user", id, "avatar", "small" ) );
+	so->SetStringChildAt( "avatarMedium", deSsdkResourceUrl::FormatUrl( "user", id, "avatar", "medium" ) );
+	so->SetStringChildAt( "avatarLarge", deSsdkResourceUrl::FormatUrl( "user", id, "avatar", "large" ) );
 	
 	return so;
 }
@@ -579,22 +570,21 @@ void deSsdkServiceSteam::pCreateImage( int handle, deServiceObject &so, const ch
 }
 
 int deSsdkServiceSteam::pLoadResource( const deSsdkResourceUrl &url ){
-	if( url.type == "image" ){
-		if( url.getComponentAt( 0 ) == "user" ){
-			const CSteamID sid( deSCCommon::SteamID( url.getComponentAt( 1 ) ) );
-			if( url.getComponentAt( 2 ) == "avatar" ){
-				if( url.getComponentAt( 3 ) == "large" ){
-					return SteamFriends()->GetLargeFriendAvatar( sid );
-					
-				}else if( url.getComponentAt( 3 ) == "medium" ){
-					return SteamFriends()->GetMediumFriendAvatar( sid );
-					
-				}else if( url.getComponentAt( 3 ) == "small" ){
-					return SteamFriends()->GetSmallFriendAvatar( sid );
-					
-				}else{
-					DETHROW_INFO( deeInvalidParam, "url" );
-				}
+	if( url.type != "res" ){
+		DETHROW_INFO( deeInvalidParam, "url" );
+	}
+	
+	if( url.getComponentAt( 0 ) == "user" ){
+		const CSteamID sid( deSCCommon::SteamID( url.getComponentAt( 1 ) ) );
+		if( url.getComponentAt( 2 ) == "avatar" ){
+			if( url.getComponentAt( 3 ) == "large" ){
+				return SteamFriends()->GetLargeFriendAvatar( sid );
+				
+			}else if( url.getComponentAt( 3 ) == "medium" ){
+				return SteamFriends()->GetMediumFriendAvatar( sid );
+				
+			}else if( url.getComponentAt( 3 ) == "small" ){
+				return SteamFriends()->GetSmallFriendAvatar( sid );
 				
 			}else{
 				DETHROW_INFO( deeInvalidParam, "url" );

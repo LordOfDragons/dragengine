@@ -52,7 +52,7 @@
     <ClCompile Include="..\..\..\..\src\modules\service\modio\src\convert\deMCUser.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\service\modio\src\deModio.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\service\modio\src\deModioPendingRequest.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\service\modio\src\deModioResource.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\service\modio\src\deModioResourceUrl.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\service\modio\src\deModioService.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\service\modio\src\parameters\deModioParameter.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\service\modio\src\parameters\deModioParameterList.cpp" />
@@ -69,7 +69,7 @@
     <ClInclude Include="..\..\..\..\src\modules\service\modio\src\convert\deMCUser.h" />
     <ClInclude Include="..\..\..\..\src\modules\service\modio\src\deModio.h" />
     <ClInclude Include="..\..\..\..\src\modules\service\modio\src\deModioPendingRequest.h" />
-    <ClInclude Include="..\..\..\..\src\modules\service\modio\src\deModioResource.h" />
+    <ClInclude Include="..\..\..\..\src\modules\service\modio\src\deModioResourceUrl.h" />
     <ClInclude Include="..\..\..\..\src\modules\service\modio\src\deModioService.h" />
     <ClInclude Include="..\..\..\..\src\modules\service\modio\src\modio.h" />
     <ClInclude Include="..\..\..\..\src\modules\service\modio\src\parameters\deModioParameter.h" />

@@ -61,7 +61,7 @@
     <ClCompile Include="..\..\..\..\src\modules\service\modio\src\deModioPendingRequest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\service\modio\src\deModioResource.cpp">
+    <ClCompile Include="..\..\..\..\src\modules\service\modio\src\deModioResourceUrl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\service\modio\src\deModioService.cpp">
@@ -108,7 +108,7 @@
     <ClInclude Include="..\..\..\..\src\modules\service\modio\src\deModioPendingRequest.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\service\modio\src\deModioResource.h">
+    <ClInclude Include="..\..\..\..\src\modules\service\modio\src\deModioResourceUrl.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\service\modio\src\deModioService.h">

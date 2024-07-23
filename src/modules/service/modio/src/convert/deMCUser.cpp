@@ -63,7 +63,7 @@ deServiceObject::Ref deMCUser::User( const Modio::User &user ){
 		so->SetStringChildAt( "authToken", user.AuthToken->GetToken()->c_str() );
 	}
 	
-	so->SetChildAt( "avatar", deMCDetail::Avatar( user.Avatar ) );
+	so->SetChildAt( "avatar", deMCDetail::Avatar( user.UserId, user.Avatar ) );
 	
 	if( user.DateOnline != 0 ){
 		so->SetChildAt( "dateOnline", deMCCommon::DateTime( user.DateOnline ) );

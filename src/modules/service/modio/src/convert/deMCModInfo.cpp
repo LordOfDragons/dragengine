@@ -118,7 +118,7 @@ deServiceObject::Ref deMCModInfo::ModInfo( const Modio::ModInfo &info, const deM
 	}
 	
 	if( info.GalleryImages.Size() != 0 ){
-		so->SetChildAt( "galleryImages", deMCDetail::ImageList( info.GalleryImages.GetRawList() ) );
+		so->SetChildAt( "galleryImages", deMCDetail::ImageList( info.ModId, info.GalleryImages.GetRawList() ) );
 	}
 	
 	if( info.YoutubeURLs.Size() != 0 ){
@@ -130,7 +130,7 @@ deServiceObject::Ref deMCModInfo::ModInfo( const Modio::ModInfo &info, const deM
 	}
 	
 	so->SetChildAt( "stats", ModStats( info.Stats ) );
-	so->SetChildAt( "modLogo", deMCDetail::Logo( info.ModLogo ) );
+	so->SetChildAt( "modLogo", deMCDetail::Logo( info.ModId, info.ModLogo ) );
 	so->SetStringChildAt( "version", info.Version.c_str() );
 	so->SetChildAt( "modStatus", ModServerSideStatus( info.ModStatus ) );
 	so->SetBoolChildAt( "publicVisible", info.Visibility == Modio::ObjectVisibility::Public );

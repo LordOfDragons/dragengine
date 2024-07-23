@@ -22,34 +22,46 @@
  * SOFTWARE.
  */
 
-#ifndef _DEMCAVATAR_H_
-#define _DEMCAVATAR_H_
+#ifndef _DEMODIORESOURCEURL_H_
+#define _DEMODIORESOURCEURL_H_
 
-#include "../modio.h"
-
-#include <dragengine/resources/service/deServiceObject.h>
+#include "modio.h"
+#include <dragengine/common/string/decString.h>
+#include <dragengine/common/string/decStringList.h>
 
 
 /**
- * Convert user.
+ * Resource URL.
  */
-class deMCDetail{
-private:
-	deMCDetail() = default;
-	
+class deModioResourceUrl{
 public:
-	/** Convert avatar. */
-	static deServiceObject::Ref Avatar( Modio::ModID modId, const Modio::Detail::Avatar &avatar );
-	static deServiceObject::Ref Avatar( Modio::UserID userId, const Modio::Detail::Avatar &avatar );
+	decString url;
+	decString type;
+	decStringList components;
 	
-	/** Convert image. */
-	static deServiceObject::Ref Image( Modio::ModID modId, int index, const Modio::Detail::Image &image );
 	
-	/** Convert image list. */
-	static deServiceObject::Ref ImageList( Modio::ModID modId, const std::vector<Modio::Detail::Image> &list );
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** Create resource URL. */
+	deModioResourceUrl( const decString &url );
+	/*@}*/
 	
-	/** Convert logo. */
-	static deServiceObject::Ref Logo( Modio::ModID modId, const Modio::Detail::Logo &logo );
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** Component at index or throws invalid URL exception. */
+	const decString &getComponentAt( int index, const char *paramName = "url" ) const;
+	
+	/** Format URL. */
+	static decString FormatUrl( const char *part1, const char *part2,
+		const char *part3, const char *part4 );
+	
+	static decString FormatUrl( const char *part1, std::int64_t id,
+		const char *part2, const char *part3 );
+	
+	static decString FormatUrl( const char *part1, std::int64_t id,
+		const char *part2, int index, const char *part3 );
 	/*@}*/
 };
 

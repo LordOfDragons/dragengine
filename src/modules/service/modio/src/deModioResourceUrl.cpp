@@ -22,18 +22,18 @@
  * SOFTWARE.
  */
 
-#include "deSsdkResourceUrl.h"
-#include "convert/deSCCommon.h"
+#include "deModioResourceUrl.h"
+#include "convert/deMCCommon.h"
 #include <dragengine/common/exceptions.h>
 
 
-// Class deSsdkResourceUrl
-////////////////////////////
+// Class deModioResourceUrl
+/////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-deSsdkResourceUrl::deSsdkResourceUrl( const decString &nurl ) :
+deModioResourceUrl::deModioResourceUrl( const decString &nurl ) :
 url( nurl )
 {
 	const int index = nurl.FindString( "://" );
@@ -47,21 +47,28 @@ url( nurl )
 // Management
 ///////////////
 
-const decString &deSsdkResourceUrl::getComponentAt( int index, const char *paramName ) const{
+const decString &deModioResourceUrl::getComponentAt( int index, const char *paramName ) const{
 	if( index < 0 || index >= components.GetCount() ){
 		DETHROW_INFO( deeInvalidParam, paramName );
 	}
 	return components.GetAt( index );
 }
 
-decString deSsdkResourceUrl::FormatUrl( const char *part1, const char *part2,
+decString deModioResourceUrl::FormatUrl( const char *part1, const char *part2,
 const char *part3, const char *part4 ){
 	decString url;
 	url.Format( "res://%s/%s/%s/%s", part1, part2, part3, part4 );
 	return url;
 }
 
-decString deSsdkResourceUrl::FormatUrl( const char *part1, uint32 id,
+decString deModioResourceUrl::FormatUrl( const char *part1, std::int64_t id,
 const char *part2, const char *part3 ){
-	return FormatUrl( part1, deSCCommon::UInt32ToString( id ), part2, part3 );
+	return FormatUrl( part1, deMCCommon::IDToString( id ), part2, part3 );
+}
+
+decString deModioResourceUrl::FormatUrl( const char *part1, std::int64_t id,
+const char *part2, int index, const char *part3 ){
+	decString url;
+	url.Format( "res://%s/%s/%s/%d/%s", part1, deMCCommon::IDToString( id ).GetString(), part2, index, part3 );
+	return url;
 }

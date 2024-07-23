@@ -25,6 +25,7 @@
 #ifndef _DESSDKRESOURCEURL_H_
 #define _DESSDKRESOURCEURL_H_
 
+#include "convert/deSCCommon.h"
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringList.h>
 
@@ -50,7 +51,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Component at index or throws invalid URL exceptionn. */
-	const decString &getComponentAt( int index ) const;
+	const decString &getComponentAt( int index, const char *paramName = "url" ) const;
+	
+	static decString FormatUrl( const char *part1, const char *part2,
+		const char *part3, const char *part4 );
+	
+	static decString FormatUrl( const char *part1, uint32 id,
+		const char *part2, const char *part3 );
 	/*@}*/
 };
 
