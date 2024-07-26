@@ -318,7 +318,9 @@ class ServiceSteam implements ServiceStats, ServiceUser, ServiceListener
 			so.setChildAt("stats", soApiNames)
 			
 			soApiNames = ServiceObject.newList()
-			soApiNames.addStringChild("achieveTest1")
+			pGetAchievementsApiNames.forEach(block String each
+				soApiNames.addStringChild(each)
+			end)
 			so.setChildAt("achievements", soApiNames)
 			
 			pGetStatsApiNames = null

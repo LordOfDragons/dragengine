@@ -22,41 +22,54 @@
  * SOFTWARE.
  */
 
-#ifndef _deECCommon_H_
-#define _deECCommon_H_
-
-#include <stdint.h>
-#include <eos_common.h>
+#ifndef _DEEOSSDKFLOWGETSTATSANDACHIEVEMENTS_H_
+#define _DEEOSSDKFLOWGETSTATSANDACHIEVEMENTS_H_
 
 #include <dragengine/common/string/decStringList.h>
-#include <dragengine/resources/service/deServiceObject.h>
+
+#include <eos_achievements.h>
+#include <eos_stats.h>
+
+#include "deEosSdkFlow.h"
 
 
 /**
- * Convert common data.
+ * EOS SDK flow get stats and achievements.
  */
-class deECCommon{
-private:
-	deECCommon() = default;
-	
+class deEosSdkFlowGetStatsAndAchievements : public deEosSdkFlow{
 public:
-	/** Convert uint32_t. */
-	static uint32_t UInt32( const deServiceObject &so );
-	static deServiceObject::Ref UInt32( uint32_t value );
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** Create flow. */
+	deEosSdkFlowGetStatsAndAchievements( deEosSdkServiceEos &service, const decUniqueID &id,
+		const deServiceObject &request );
 	
-	static uint32_t UInt32( const decString &string );
-	static decString UInt32ToString( uint32_t value );
+	/** Clean up flow. */
+	~deEosSdkFlowGetStatsAndAchievements() override;
+	/*@}*/
 	
-	/** Convert AccountID. */
-	static EOS_EpicAccountId AccountID( const deServiceObject &so );
-	static deServiceObject::Ref AccountID( const EOS_EpicAccountId &id );
 	
-	static EOS_EpicAccountId AccountID( const decString &string );
-	static decString AccountIDToString( const EOS_EpicAccountId &id );
 	
-	/** Convert string list. */
-	static decStringList StringList( const deServiceObject &so );
-	static deServiceObject::Ref StringList( const decStringList &list );
+	/** \name Management */
+	/*@{*/
+	void QueryStats();
+	void QueryPlayerAchievements();
+	
+	void OnQueryStatsCompleted( const EOS_Stats_OnQueryStatsCompleteCallbackInfo &data );
+	
+	void OnQueryPlayerAchievementsCompleted(
+		const EOS_Achievements_OnQueryPlayerAchievementsCompleteCallbackInfo &data );
+	
+	void CheckFinished();
+	/*@}*/
+	
+	
+	
+private:
+	decStringList pStats, pAchievements;
+	const char **pStatNames, **pAchievementNames;
+	bool pStatsReceived, pAchievementsReceived;
+	const deServiceObject::Ref pResultData;
 };
 
 #endif

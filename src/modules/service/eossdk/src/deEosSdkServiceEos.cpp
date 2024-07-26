@@ -29,6 +29,8 @@
 #include "deEosSdkServiceEos.h"
 #include "flow/deEosSdkFlowInit.h"
 #include "flow/deEosSdkFlowAuthLogin.h"
+#include "flow/deEosSdkFlowGetStatsAndAchievements.h"
+#include "flow/deEosSdkFlowSetStatsAndAchievements.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/utils/decUniqueID.h>
@@ -72,17 +74,6 @@ static void fEosLogoutDeletePersistentAuthCallback( const EOS_Auth_DeletePersist
 static void fEosQueryUserInfoCallback( const EOS_UserInfo_QueryUserInfoCallbackInfo *data ){
 	const cCallbackInfo info( cCallbackInfo::Get( data->ClientData ) );
 	info.service->OnQueryUserInfoCallback( info.id, *data );
-}
-
-static void fEosQueryPlayerAchievementsCallback(
-const EOS_Achievements_OnQueryPlayerAchievementsCompleteCallbackInfo *data ){
-	const cCallbackInfo info( cCallbackInfo::Get( data->ClientData ) );
-	info.service->OnQueryPlayerAchievementsCallback( info.id, *data );
-}
-
-static void fEosQueryPlayerStatsCallback( const EOS_Stats_OnQueryStatsCompleteCallbackInfo *data ){
-	const cCallbackInfo info( cCallbackInfo::Get( data->ClientData ) );
-	info.service->OnQueryPlayerStatsCallback( info.id, *data );
 }
 
 // Constructor, destructor
@@ -202,6 +193,12 @@ void deEosSdkServiceEos::StartRequest( const decUniqueID &id, const deServiceObj
 		
 	}else if( function == "queryUserInfo" ){
 		QueryUserInfo( id, request );
+		
+	}else if( function == "getStatsAndAchievements" ){
+		new deEosSdkFlowGetStatsAndAchievements( *this, id, request );
+		
+	}else if( function == "setStatsAndAchievements" ){
+		new deEosSdkFlowSetStatsAndAchievements( *this, id, request );
 		
 	}else{
 		DETHROW_INFO( deeInvalidParam, "Unknown function" );
@@ -329,24 +326,6 @@ void deEosSdkServiceEos::QueryUserInfo( const decUniqueID &id, const deServiceOb
 	NewPendingRequest( id, "queryUserInfo" );
 	EOS_UserInfo_QueryUserInfo( GetHandleUserInfo(), &options,
 		new cCallbackInfo( this, id ), fEosQueryUserInfoCallback );
-}
-
-void deEosSdkServiceEos::QueryPlayerStats( const decUniqueID &id, const deServiceObject &request ){
-	if( ! productUserId ){
-		DETHROW_INFO( deeInvalidAction, "Product user id missing" );
-	}
-	
-	EOS_Achievements_QueryPlayerAchievementsOptions options = {};
-	options.ApiVersion = EOS_ACHIEVEMENTS_QUERYPLAYERACHIEVEMENTS_API_LATEST;
-	options.LocalUserId = productUserId;
-	options.TargetUserId = productUserId;
-	
-	pModule.LogInfo( "deEosSdkServiceEos: Get player achievements");
-	const deEosSdkPendingRequest::Ref pr( NewPendingRequest( id, "queryPlayerAchievements" ) );
-	pr->request.TakeOver( new deServiceObject( request, true ) );
-	
-	EOS_Achievements_QueryPlayerAchievements( GetHandleAchievements(), &options,
-		new cCallbackInfo( this, id ), fEosQueryPlayerAchievementsCallback );
 }
 
 deServiceObject::Ref deEosSdkServiceEos::CopyIdToken( const deServiceObject &action ){
@@ -541,85 +520,6 @@ const EOS_UserInfo_QueryUserInfoCallbackInfo &data ){
 			EOS_UserInfo_Release( info );
 		}
 		
-		FailRequest( pr, e );
-		return;
-	}
-}
-
-void deEosSdkServiceEos::OnQueryPlayerAchievementsCallback( const decUniqueID &id,
-const EOS_Achievements_OnQueryPlayerAchievementsCompleteCallbackInfo &data ){
-	pModule.LogInfoFormat( "deEosSdkServiceEos.OnQueryPlayerAchievementsCallback: res=%d", ( int )data.ResultCode );
-	if( data.ResultCode != EOS_EResult::EOS_Success ){
-		FailRequest( id, data.ResultCode );
-		return;
-	}
-	
-	deEosSdkPendingRequest * const pr = GetPendingRequestWithId( id );
-	if( ! pr ){
-		return;
-	}
-	
-	decStringList names;
-	
-	EOS_Stats_QueryStatsOptions options = {};
-	options.ApiVersion = EOS_STATS_QUERYSTATS_API_LATEST;
-	options.StartTime = EOS_STATS_TIME_UNDEFINED;
-	options.EndTime = EOS_STATS_TIME_UNDEFINED;
-	options.LocalUserId = productUserId;
-	options.TargetUserId = productUserId;
-	
-	try{
-		const deServiceObject::Ref &soStats = pr->request->GetChildAt( "stats" );
-		if( soStats ){
-			const int count = soStats->GetChildCount();
-			if( count > 0 ){
-				int i;
-				for( i=0; i<count; i++ ){
-					names.Add( soStats->GetChildAt( i )->GetString() );
-				}
-				
-				options.StatNames = new const char*[ count ];
-				for( i=0; i<count; i++ ){
-					options.StatNames[ i ] = names.GetAt( i );
-				}
-			}
-		}
-		
-		pModule.LogInfo( "deEosSdkServiceEos: Get player stats" );
-		EOS_Stats_QueryStats( GetHandleStats(), &options,
-			new cCallbackInfo( this, id ), fEosQueryPlayerStatsCallback );
-		
-		if( options.StatNames ){
-			delete [] options.StatNames;
-		}
-		
-	}catch( const deException &e ){
-		if( options.StatNames ){
-			delete [] options.StatNames;
-		}
-		FailRequest( pr, e );
-		return;
-	}
-}
-
-void deEosSdkServiceEos::OnQueryPlayerStatsCallback( const decUniqueID &id,
-const EOS_Stats_OnQueryStatsCompleteCallbackInfo &data ){
-	pModule.LogInfoFormat( "deEosSdkServiceEos.OnQueryPlayerAchievementsCallback: res=%d", ( int )data.ResultCode );
-	if( data.ResultCode != EOS_EResult::EOS_Success ){
-		FailRequest( id, data.ResultCode );
-		return;
-	}
-	
-	const deEosSdkPendingRequest::Ref pr( RemoveFirstPendingRequestWithId( id ) );
-	if( ! pr ){
-		return;
-	}
-	
-	try{
-		pModule.GetGameEngine()->GetServiceManager()->QueueRequestResponse(
-			pService, pr->id, pr->data, true );
-		
-	}catch( const deException &e ){
 		FailRequest( pr, e );
 		return;
 	}

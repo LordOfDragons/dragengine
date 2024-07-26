@@ -22,41 +22,49 @@
  * SOFTWARE.
  */
 
-#ifndef _deECCommon_H_
-#define _deECCommon_H_
-
-#include <stdint.h>
-#include <eos_common.h>
+#ifndef _DEEOSSDKFLOWSETSTATSANDACHIEVEMENTS_H_
+#define _DEEOSSDKFLOWSETSTATSANDACHIEVEMENTS_H_
 
 #include <dragengine/common/string/decStringList.h>
-#include <dragengine/resources/service/deServiceObject.h>
+
+#include <eos_achievements.h>
+#include <eos_stats.h>
+
+#include "deEosSdkFlow.h"
 
 
 /**
- * Convert common data.
+ * EOS SDK flow set stats and achievements.
  */
-class deECCommon{
-private:
-	deECCommon() = default;
-	
+class deEosSdkFlowSetStatsAndAchievements : public deEosSdkFlow{
 public:
-	/** Convert uint32_t. */
-	static uint32_t UInt32( const deServiceObject &so );
-	static deServiceObject::Ref UInt32( uint32_t value );
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** Create flow. */
+	deEosSdkFlowSetStatsAndAchievements( deEosSdkServiceEos &service, const decUniqueID &id,
+		const deServiceObject &request );
+	/*@}*/
 	
-	static uint32_t UInt32( const decString &string );
-	static decString UInt32ToString( uint32_t value );
 	
-	/** Convert AccountID. */
-	static EOS_EpicAccountId AccountID( const deServiceObject &so );
-	static deServiceObject::Ref AccountID( const EOS_EpicAccountId &id );
 	
-	static EOS_EpicAccountId AccountID( const decString &string );
-	static decString AccountIDToString( const EOS_EpicAccountId &id );
+	/** \name Management */
+	/*@{*/
+	void IngestStat( const deServiceObject &request );
+	void UnlockAchievements( const deServiceObject &request );
 	
-	/** Convert string list. */
-	static decStringList StringList( const deServiceObject &so );
-	static deServiceObject::Ref StringList( const decStringList &list );
+	void OnIngestStatCompleted( const EOS_Stats_IngestStatCompleteCallbackInfo &data );
+	
+	void OnUnlockAchievementsCompleted(
+		const EOS_Achievements_OnUnlockAchievementsCompleteCallbackInfo &data );
+	
+	void CheckFinished();
+	/*@}*/
+	
+	
+	
+private:
+	bool pStatsCompleted, pAchievementsCompleted;
+	const deServiceObject::Ref pResultData;
 };
 
 #endif

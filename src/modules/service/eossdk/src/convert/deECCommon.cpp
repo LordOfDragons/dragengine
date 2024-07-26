@@ -48,8 +48,8 @@ decString deECCommon::UInt32ToString( uint32_t value ){
 	return string;
 }
 
-EOS_EpicAccountId deECCommon::AccountID( const deServiceObject::Ref &so ){
-	return AccountID( so->GetString() );
+EOS_EpicAccountId deECCommon::AccountID( const deServiceObject &so ){
+	return AccountID( so.GetString() );
 }
 
 deServiceObject::Ref deECCommon::AccountID( const EOS_EpicAccountId &id ){
@@ -66,4 +66,28 @@ decString deECCommon::AccountIDToString( const EOS_EpicAccountId &id ){
 	const EOS_EResult res = EOS_EpicAccountId_ToString( id, buffer, &len );
 	DEASSERT_TRUE( res == EOS_EResult::EOS_Success )
 	return buffer;
+}
+
+decStringList deECCommon::StringList( const deServiceObject &so ){
+	const int count = so.GetChildCount();
+	decStringList list;
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		list.Add( so.GetChildAt( i )->GetString() );
+	}
+	
+	return list;
+}
+
+deServiceObject::Ref deECCommon::StringList( const decStringList &list ){
+	const deServiceObject::Ref so( deServiceObject::NewList() );
+	const int count = list.GetCount();
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		so->AddStringChild( list.GetAt( i ) );
+	}
+	
+	return so;
 }

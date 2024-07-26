@@ -132,7 +132,6 @@ public:
 	
 	void AuthLogout( const decUniqueID &id, const deServiceObject& request );
 	void QueryUserInfo( const decUniqueID &id, const deServiceObject& request );
-	void QueryPlayerStats( const decUniqueID &id, const deServiceObject& request );
 	
 	deServiceObject::Ref CopyIdToken( const deServiceObject& action );
 	deServiceObject::Ref IsUserLoggedIn( const deServiceObject& action );
@@ -154,12 +153,6 @@ public:
 	
 	void OnQueryUserInfoCallback( const decUniqueID &id,
 		const EOS_UserInfo_QueryUserInfoCallbackInfo &data );
-	
-	void OnQueryPlayerAchievementsCallback( const decUniqueID &id,
-		const EOS_Achievements_OnQueryPlayerAchievementsCompleteCallbackInfo &data );
-	
-	void OnQueryPlayerStatsCallback( const decUniqueID &id,
-		const EOS_Stats_OnQueryStatsCompleteCallbackInfo &data );
 	/*@}*/
 	
 	
