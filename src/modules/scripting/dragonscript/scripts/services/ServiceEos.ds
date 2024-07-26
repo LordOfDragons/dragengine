@@ -112,6 +112,11 @@ class ServiceEos implements ServiceStats, ServiceUser, ServiceListener
 		 */
 		public var bool enablePresence
 		
+		/**
+		 * \brief Server mode.
+		 */
+		public var bool isServer
+		
 		
 		
 		/**
@@ -132,7 +137,6 @@ class ServiceEos implements ServiceStats, ServiceUser, ServiceListener
 	var InitParameters pInitParameters
 	var ServiceInitListener pInitListener
 	var Boolean pIsInitialized
-	var Image authProviderIcon, authProviderImage
 	var SafeArray pStatsListeners, pUserListeners
 	var BaseServiceConversions pConversions
 	var Dictionary pOnceListeners
@@ -162,15 +166,13 @@ class ServiceEos implements ServiceStats, ServiceUser, ServiceListener
 		pInitParameters.clientSecret = parameters.clientSecret
 		pInitParameters.enableFriendsList = parameters.enableFriendsList
 		pInitParameters.enablePresence = parameters.enablePresence
+		pInitParameters.isServer = parameters.isServer
 		pInitListener = listener
 		
 		pStatsListeners = SafeArray.new()
 		pUserListeners = SafeArray.new()
 		pConversions = BaseServiceConversions.new()
 		pOnceListeners = Dictionary.new()
-		
-		authProviderIcon = null // TODO
-		authProviderImage = null // TODO
 		
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("productName", parameters.productName)
@@ -184,6 +186,7 @@ class ServiceEos implements ServiceStats, ServiceUser, ServiceListener
 		if parameters.clientSecret != null
 			so.setStringChildAt("clientSecret", parameters.clientSecret)
 		end
+		so.setBoolChildAt("isServer", parameters.isServer)
 		pService = Service.new("EOSSDK", so)
 		pService.setListener(this)
 	end
@@ -235,10 +238,6 @@ class ServiceEos implements ServiceStats, ServiceUser, ServiceListener
 	
 	
 	
-	/**
-	 * \brief Add stats and achievements listener.
-	 * \param listener Listener to add
-	 */
 	func void addStatListener(ServiceStatsListener listener)
 		if listener == null
 			throw ENullPointer.new("listener")
@@ -246,67 +245,24 @@ class ServiceEos implements ServiceStats, ServiceUser, ServiceListener
 		pStatsListeners.add(listener)
 	end
 	
-	/**
-	 * \brief Remove stats and achievements listener.
-	 * \param listener Listener to remove.
-	 */
 	func void removeStatsListener(ServiceStatsListener listener)
 		pStatsListeners.remove(listener)
 	end
 	
-	/**
-	 * \brief Get stats and achievements.
-	 * 
-	 * Requests from the epic server the set of stats and achievements with the matching
-	 * api names. Once retrieved calls
-	 * \ref ServiceStatsListener#statsReceived(Object,Dictionary,Dictionary) or
-	 * \ref ServiceStatsListener#statsReceivedFailed(Object,String).
-	 * 
-	 * \param stats Stats.
-	 * \param achievements Achievements.
-	 * \param listener If not null called once in addition to added listeners.
-	 */
 	func void getStatsAndAchievements(Set stats, Set achievements, ServiceStatsListener listener)
 		throw EInvalidAction.new("TODO")
 	end
 	
-	/**
-	 * \brief Set stats and achievements.
-	 * 
-	 * Stores stats and achievements to epic server. Once stored calls
-	 * \ref ServiceStatsListener#statsStored(Object,Set,Set) or
-	 * \ref ServiceStatsListener#statsStoredFailed(Object,String).
-	 * 
-	 * \param stats Dictionary of stats to store. Key is api name as String. Values is
-	 * either an int or float value depending on the stat type.
-	 * 
-	 * \param achievements Dictionary of achievements to store. Key is api name as String.
-	 * Value is true or false to set or clear the achievement.
-	 * 
-	 * \param listener If not null called once in addition to added listeners.
-	 */
 	func void setStatsAndAchievements(Dictionary stats, Dictionary achievements, ServiceStatsListener listener)
 		throw EInvalidAction.new("TODO")
 	end
 	
-	/**
-	 * \brief Reset all stats on epic server.
-	 * 
-	 * This is mainly for development purpose to test stats and achievements.
-	 * For this reason this call does not send events to listeners.
-	 * 
-	 * \param resetAchievements Reset also achievements not just stats.
-	 */
 	func void resetAllStats(bool resetAchievements)
 		throw EInvalidAction.new("TODO")
 	end
 	
 	
 	
-	/**
-	 * \brief Add user listener.
-	 * \param listener Listener to add
-	 */
 	func void addUserListener(ServiceUserListener listener)
 		if listener == null
 			throw ENullPointer.new("listener")
@@ -314,38 +270,16 @@ class ServiceEos implements ServiceStats, ServiceUser, ServiceListener
 		pUserListeners.add(listener)
 	end
 	
-	/**
-	 * \brief Remove user listener.
-	 * \param listener Listener to remove.
-	 */
 	func void removeUserListener(ServiceUserListener listener)
 		pUserListeners.remove(listener)
 	end
 	
-	/**
-	 * \brief Features supported by this service.
-	 */
 	func ServiceUserFeatures getUserFeatures()
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "getAuthProviderInfo")
-		return pConversions.convUserFeatures(pService.runAction(so))
+		return pConversions.convertUserFeatures(pService.runAction(so))
 	end
 	
-	/**
-	 * \brief Log in user.
-	 * 
-	 * User can be only logged in automatically.
-	 * 
-	 * If the application is launcher by the Epic Game Launcher and the application is
-	 * based on BaseGameApp logging in using exchange mode is used unless credentials
-	 * is not null.
-	 * 
-	 * Once logging in finished \ref ServiceUserListener#onLoginUser(ServiceUser,Exception)
-	 * is called.
-	 * 
-	 * \param credentials Has to be null or an exception is thrown.
-	 * \param listener If not null called once in addition to added listeners.
-	 */
 	func void loginUser(ServiceUserCredentials credentials, ServiceUserListener listener)
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "authLogin")
@@ -397,14 +331,6 @@ class ServiceEos implements ServiceStats, ServiceUser, ServiceListener
 		runRequest(so, listener)
 	end
 	
-	/**
-	 * \brief Log out user.
-	 * 
-	 * Once logging out finished \ref ServiceUserListener#onLogoutUser(ServiceUser,Exception)
-	 * is called.
-	 * 
-	 * \param listener If not null called once in addition to added listeners.
-	 */
 	func void logoutUser(ServiceUserListener listener)
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "authLogout")
@@ -412,23 +338,12 @@ class ServiceEos implements ServiceStats, ServiceUser, ServiceListener
 		runRequest(so, listener)
 	end
 	
-	/**
-	 * \brief User is logged in.
-	 */
 	func bool isUserLoggedIn()
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "isUserLoggedIn")
 		return pService.runAction(so).getBoolean()
 	end
 	
-	/**
-	 * \brief Request authentification token.
-	 * 
-	 * Requests an encrypted appplication ticket. If one is cached it is returned.
-	 * The received ticket is Base64 encoded.
-	 * 
-	 * \param listener If not null called once in addition to added listeners.
-	 */
 	func void getAuthToken(ServiceUserListener listener)
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "copyIdToken")
@@ -450,11 +365,6 @@ class ServiceEos implements ServiceStats, ServiceUser, ServiceListener
 		pService.nextId()
 	end
 	
-	/**
-	 * \brief Retrieve user information.
-	 * 
-	 * \param listener If not null called once in addition to added listeners.
-	 */
 	func void getUserInfo(ServiceUserListener listener)
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "queryUserInfo")
@@ -462,16 +372,6 @@ class ServiceEos implements ServiceStats, ServiceUser, ServiceListener
 		runRequest(so, listener)
 	end
 	
-	/**
-	 * \brief Load resource asynchronously.
-	 * 
-	 * Loaded resources are cached for faster retrieval. Once the resource is cached locally
-	 * \ref ServiceUserListener#onLoadUserResource(ServiceUser,String,Object,Exception) is called
-	 * with the same URL as used in this function call.
-	 * 
-	 * \param url URL of image to load.
-	 * \param listener If not null called once in addition to added listeners.
-	 */
 	func void loadUserResource(String url, ServiceUserListener listener)
 		throw EInvalidParam.new("not supported")
 	end
@@ -485,9 +385,6 @@ class ServiceEos implements ServiceStats, ServiceUser, ServiceListener
 	
 	
 	
-	/**
-	 * \brief Service request response received.
-	 */
 	func void requestResponse(Service service, UniqueID id, ServiceObject response, bool finished)
 		var String function = response.getChildAt("function").getString()
 		var Object onceListener = getOnceListener(id)
@@ -509,7 +406,7 @@ class ServiceEos implements ServiceStats, ServiceUser, ServiceListener
 			end
 			
 		elif function.equals("queryUserInfo")
-			var ServiceUserInfo info = pConvUserInfo(response)
+			var ServiceUserInfo info = convertUserInfo(response)
 			
 			pUserListeners.forEach(block ServiceUserListener each
 				each.onGetUserInfo(this, info, null)
@@ -520,9 +417,6 @@ class ServiceEos implements ServiceStats, ServiceUser, ServiceListener
 		end
 	end
 	
-	/**
-	 * \brief Service request failed.
-	 */
 	func void requestFailed(Service service, UniqueID id, ServiceObject error)
 		var String function = error.getChildAt("function").getString()
 		var ServiceException exception = pConversions.createException(service, error)
@@ -554,9 +448,6 @@ class ServiceEos implements ServiceStats, ServiceUser, ServiceListener
 		end
 	end
 	
-	/**
-	 * \brief Service notification received.
-	 */
 	func void eventReceived(Service service, ServiceObject event)
 		var String eventName = event.getChildAt("event").getString()
 		var bool success = event.getChildAt("success").getBoolean()
@@ -599,13 +490,13 @@ class ServiceEos implements ServiceStats, ServiceUser, ServiceListener
 	
 	
 	
-	private func ServiceUserInfo pConvUserInfo(ServiceObject so)
+	protected func ServiceUserInfo convertUserInfo(ServiceObject so)
 		var ServiceUserInfo info = ServiceUserInfo.new()
-		info.id = pConversions.convString(so, "userId")
-		info.displayName = pConversions.convString(so, "displayName")
-		info.nickname = pConversions.convString(so, "nickname")
-		info.country = pConversions.convString(so, "country")
-		info.preferredLanguage = pConversions.convString(so, "preferredLanguage")
+		info.id = pConversions.convertString(so, "userId")
+		info.displayName = pConversions.convertString(so, "displayName")
+		info.nickname = pConversions.convertString(so, "nickname")
+		info.country = pConversions.convertString(so, "country")
+		info.preferredLanguage = pConversions.convertString(so, "preferredLanguage")
 		return info
 	end
 end

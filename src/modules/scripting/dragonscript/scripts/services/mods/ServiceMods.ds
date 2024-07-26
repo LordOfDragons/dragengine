@@ -117,8 +117,7 @@ interface ServiceMods
 	 * parameters set to null cause default values to be used as defined by the
 	 * service provider. Filters not supported by the service provider are ignored.
 	 * 
-	 * Once finished \ref ServiceModsListener#onListMods(ServiceMods,Array,Exception)
-	 * is called.
+	 * Once finished \ref ServiceModsListener#onListMods() is called.
 	 * 
 	 * Receiving the results can take considerable amount of time depending on the
 	 * load of the service provider.
@@ -132,8 +131,8 @@ interface ServiceMods
 	 * \brief Load resource asynchronously.
 	 * 
 	 * Loaded resources are cached for faster retrieval. Once the resource is cached locally
-	 * \ref ServiceModsListener#onLoadModResource(ServiceMods,String,Object,Exception) is called
-	 * with the same URL as used in this function call.
+	 * \ref ServiceModsListener#onLoadModResource() is called with the same URL as used in
+	 * this function call.
 	 * 
 	 * \param url URL of image to load.
 	 * \param listener If not null called once in addition to added listeners.
@@ -192,10 +191,9 @@ interface ServiceMods
 	 * In both situationsn modifications are installed automatically the next time possible if at
 	 * least one user is subscribed to them. Hence subscribing and installing are different actions.
 	 * 
-	 * Once subscribing finished \ref ServiceModsListener#onSubscribeMod(ServiceMods,String,Exception)
-	 * is called. At this point in time the modification is potentially not yet installed.
-	 * Mod management installs mods as soon as possible if necessary. Listen to
-	 * \ref ServiceModsListener#onModManagement(ServiceMods,ManagementEvent,String,ServiceModProgress,Exception)
+	 * Once subscribing finished \ref ServiceModsListener#onSubscribeMod() is called. At this
+	 * point in time the modification is potentially not yet installed. Mod management installs
+	 * mods as soon as possible if necessary. Listen to \ref ServiceModsListener#onModManagement()
 	 * events to know when the modification started and finished installing.
 	 * 
 	 * \param token Authentication token.
@@ -211,11 +209,10 @@ interface ServiceMods
 	 * In both situationsn modifications are uninstalled automatically the next time possible if
 	 * no user is subscribed to them. Hence unsubscribing and uninstalling are different actions.
 	 * 
-	 * Once unsubscribing finished \ref ServiceModsListener#onUnsubscribeMod(ServiceMods,String,Exception)
-	 * is called. At this point in time the modification is still installed. Mod management
-	 * uninstalls mods as soon as possible if necessary. Listen to
-	 * \ref ServiceModsListener#onModManagement(ServiceMods,ManagementEvent,String,ServiceModProgress,Exception)
-	 * events to know when the modification started and finished uninstalling.
+	 * Once unsubscribing finished \ref ServiceModsListener#onUnsubscribeMod() is called. At this
+	 * point in time the modification is still installed. Mod management uninstalls mods as soon
+	 * as possible if necessary. Listen to \ref ServiceModsListener#onModManagement() events to
+	 * know when the modification started and finished uninstalling.
 	 * 
 	 * \param token Authentication token.
 	 * \param id Identifier of modification to unsubscribe from.
@@ -260,8 +257,7 @@ interface ServiceMods
 	/**
 	 * \brief Retrieve information about game modification.
 	 * 
-	 * Once finished \ref ServiceModsListener#onGetModInfo(ServiceMods,String,ServiceModInfo,Exception)
-	 * is called.
+	 * Once finished \ref ServiceModsListener#onGetModInfo() is called.
 	 * 
 	 * \param modId Identifier of modification to retrieve.
 	 * \param listener If not null called once in addition to added listeners.
@@ -271,8 +267,7 @@ interface ServiceMods
 	/**
 	 * \brief Submit rating for modification.
 	 * 
-	 * Once finished \ref ServiceModsListener#onSubmitModRating(ServiceMods,String,Exception)
-	 * is called.
+	 * Once finished \ref ServiceModsListener#onSubmitModRating() is called.
 	 * 
 	 * \param modId Identifier of modification to submit rating for.
 	 * \param rating Rating to submit.
@@ -283,8 +278,7 @@ interface ServiceMods
 	/**
 	 * \brief Revoke rating for modification.
 	 * 
-	 * Once finished \ref ServiceModsListener#onRevokeModRating(ServiceMods,String,Exception)
-	 * is called.
+	 * Once finished \ref ServiceModsListener#onRevokeModRating() is called.
 	 * 
 	 * \param modId Identifier of modification to revoke rating for.
 	 * \param listener If not null called once in addition to added listeners.
@@ -325,11 +319,10 @@ interface ServiceMods
 	/**
 	 * \brief Tags that can be used for ServiceModFilter.
 	 * 
-	 * Once finished \ref ServiceModsListener#onGetTags(ServiceMods,Array,Exception)
-	 * is called with the list of ServiceModTagCategory. Each category contains a list
-	 * of tags usable for this category.
+	 * Once finished \ref ServiceModsListener#onGetTags() is called with the list of
+	 * ServiceModTagCategory. Each category contains a list of tags usable for this category.
 	 * 
 	 * \param listener If not null called once in addition to added listeners.
 	 */
-	func void getTags(ServiceModsListener listener)
+	func void getModTags(ServiceModsListener listener)
 end

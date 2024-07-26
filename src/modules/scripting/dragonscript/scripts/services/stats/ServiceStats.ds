@@ -48,9 +48,7 @@ interface ServiceStats
 	 * \brief Get stats and achievements.
 	 * 
 	 * Requests from the service provider the set of stats and achievements with the matching
-	 * api names. Once retrieved calls
-	 * \ref ServiceStatsListener#statsReceived(Object,Dictionary,Dictionary) or
-	 * \ref ServiceStatsListener#statsReceivedFailed(Object,String).
+	 * api names. Once retrieved calls \ref ServiceStatsListener#onGetStats().
 	 * 
 	 * \param stats Stats.
 	 * \param achievements Achievements.
@@ -62,8 +60,7 @@ interface ServiceStats
 	 * \brief Set stats and achievements.
 	 * 
 	 * Stores stats and achievements to service provider. Once stored calls
-	 * \ref ServiceStatsListener#statsStored(Object,Set,Set) or
-	 * \ref ServiceStatsListener#statsStoredFailed(Object,String).
+	 * \ref ServiceStatsListener#onSetStats().
 	 * 
 	 * \param stats Dictionary of stats to store. Key is api name as String. Values is
 	 * either an int or float value depending on the stat type.

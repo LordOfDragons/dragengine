@@ -48,16 +48,12 @@ class ServiceSteam implements ServiceStats, ServiceUser, ServiceListener
 		public var String appId
 		
 		
-		/**
-		 * \brief Create new instance of class InitParameters.
-		 */
+		/** \brief Create new instance of class InitParameters. */
 		func new()
 		end
 	end
 	
-	/**
-	 * \brief Authentification provider identifier.
-	 */
+	/** \brief Authentification provider identifier. */
 	static public fixed var String authProviderId = "steam"
 	
 	
@@ -94,9 +90,7 @@ class ServiceSteam implements ServiceStats, ServiceUser, ServiceListener
 		pService.setListener(this)
 	end
 	
-	/**
-	 * \brief Dispose of Steam SDK service.
-	 */
+	/** \brief Dispose of Steam SDK service. */
 	func void dispose()
 		if pStatsListeners != null
 			pStatsListeners.removeAll()
@@ -128,10 +122,6 @@ class ServiceSteam implements ServiceStats, ServiceUser, ServiceListener
 	
 	
 	
-	/**
-	 * \brief Add stats and achievements listener.
-	 * \param listener Listener to add
-	 */
 	func void addStatListener(ServiceStatsListener listener)
 		if listener == null
 			throw ENullPointer.new("listener")
@@ -139,26 +129,10 @@ class ServiceSteam implements ServiceStats, ServiceUser, ServiceListener
 		pStatsListeners.add(listener)
 	end
 	
-	/**
-	 * \brief Remove stats and achievements listener.
-	 * \param listener Listener to remove.
-	 */
 	func void removeStatsListener(ServiceStatsListener listener)
 		pStatsListeners.remove(listener)
 	end
 	
-	/**
-	 * \brief Get stats and achievements.
-	 * 
-	 * Requests from the steam server the set of stats and achievements with the matching
-	 * api names. Once retrieved calls
-	 * \ref ServiceStatsListener#statsReceived(Object,Dictionary,Dictionary) or
-	 * \ref ServiceStatsListener#statsReceivedFailed(Object,String).
-	 * 
-	 * \param stats Stats.
-	 * \param achievements Achievements.
-	 * \param listener If not null called once in addition to added listeners.
-	 */
 	func void getStatsAndAchievements(Set stats, Set achievements, ServiceStatsListener listener)
 		if stats == null
 			throw ENullPointer.new("stats")
@@ -176,21 +150,6 @@ class ServiceSteam implements ServiceStats, ServiceUser, ServiceListener
 		runRequest(so, listener)
 	end
 	
-	/**
-	 * \brief Set stats and achievements.
-	 * 
-	 * Stores stats and achievements to steam server. Once stored calls
-	 * \ref ServiceStatsListener#statsStored(Object,Set,Set) or
-	 * \ref ServiceStatsListener#statsStoredFailed(Object,String).
-	 * 
-	 * \param stats Dictionary of stats to store. Key is api name as String. Values is
-	 * either an int or float value depending on the stat type.
-	 * 
-	 * \param achievements Dictionary of achievements to store. Key is api name as String.
-	 * Value is true or false to set or clear the achievement.
-	 * 
-	 * \param listener If not null called once in addition to added listeners.
-	 */
 	func void setStatsAndAchievements(Dictionary stats, Dictionary achievements, ServiceStatsListener listener)
 		if stats == null
 			throw ENullPointer.new("stats")
@@ -229,14 +188,6 @@ class ServiceSteam implements ServiceStats, ServiceUser, ServiceListener
 		runRequest(so, listener)
 	end
 	
-	/**
-	 * \brief Reset all stats on steam server.
-	 * 
-	 * This is mainly for development purpose to test stats and achievements.
-	 * For this reason this call does not send events to listeners.
-	 * 
-	 * \param resetAchievements Reset also achievements not just stats.
-	 */
 	func void resetAllStats(bool resetAchievements)
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "resetAllStats")
@@ -246,10 +197,6 @@ class ServiceSteam implements ServiceStats, ServiceUser, ServiceListener
 	
 	
 	
-	/**
-	 * \brief Add user listener.
-	 * \param listener Listener to add
-	 */
 	func void addUserListener(ServiceUserListener listener)
 		if listener == null
 			throw ENullPointer.new("listener")
@@ -257,34 +204,16 @@ class ServiceSteam implements ServiceStats, ServiceUser, ServiceListener
 		pUserListeners.add(listener)
 	end
 	
-	/**
-	 * \brief Remove user listener.
-	 * \param listener Listener to remove.
-	 */
 	func void removeUserListener(ServiceUserListener listener)
 		pUserListeners.remove(listener)
 	end
 	
-	/**
-	 * \brief Features supported by this service.
-	 */
 	func ServiceUserFeatures getUserFeatures()
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "getUserFeatures")
-		return pConversions.convUserFeatures(pService.runAction(so))
+		return pConversions.convertUserFeatures(pService.runAction(so))
 	end
 	
-	/**
-	 * \brief Log in user.
-	 * 
-	 * User can be only logged in automatically.
-	 * 
-	 * Once logging in finished \ref ServiceUserListener#onLoginUser(ServiceUser,Exception)
-	 * is called.
-	 * 
-	 * \param credentials Has to be null or an exception is thrown.
-	 * \param listener If not null called once in addition to added listeners.
-	 */
 	func void loginUser(ServiceUserCredentials credentials, ServiceUserListener listener)
 		if credentials != null
 			throw EInvalidParam.new("credentials has to be null")
@@ -302,30 +231,14 @@ class ServiceSteam implements ServiceStats, ServiceUser, ServiceListener
 		pService.nextId()
 	end
 	
-	/**
-	 * \brief Log out user.
-	 * 
-	 * Not supported. Throws exception if called.
-	 */
 	func void logoutUser(ServiceUserListener listener)
 		throw EInvalidParam.new("not supported")
 	end
 	
-	/**
-	 * \brief User is logged in.
-	 */
 	func bool isUserLoggedIn()
 		return true
 	end
 	
-	/**
-	 * \brief Request authentification token.
-	 * 
-	 * Requests an encrypted appplication ticket. If one is cached it is returned.
-	 * The received ticket is Base64 encoded.
-	 * 
-	 * \param listener If not null called once in addition to added listeners.
-	 */
 	func void getAuthToken(ServiceUserListener listener)
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "requestEncryptedAppTicket")
@@ -333,11 +246,6 @@ class ServiceSteam implements ServiceStats, ServiceUser, ServiceListener
 		runRequest(so, listener)
 	end
 	
-	/**
-	 * \brief Retrieve user information.
-	 * 
-	 * \param listener If not null called once in addition to added listeners.
-	 */
 	func void getUserInfo(ServiceUserListener listener)
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "getUserInfo")
@@ -374,16 +282,6 @@ class ServiceSteam implements ServiceStats, ServiceUser, ServiceListener
 		pService.nextId()
 	end
 	
-	/**
-	 * \brief Load resource asynchronously.
-	 * 
-	 * Loaded resources are cached for faster retrieval. Once the resource is cached locally
-	 * \ref ServiceUserListener#onLoadUserResource(ServiceUser,String,Object,Exception) is called
-	 * with the same URL as used in this function call.
-	 * 
-	 * \param url URL of image to load.
-	 * \param listener If not null called once in addition to added listeners.
-	 */
 	func void loadUserResource(String url, ServiceUserListener listener)
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "loadUserResource")
@@ -401,9 +299,6 @@ class ServiceSteam implements ServiceStats, ServiceUser, ServiceListener
 	
 	
 	
-	/**
-	 * \brief Service request response received.
-	 */
 	func void requestResponse(Service service, UniqueID id, ServiceObject response, bool finished)
 		var String function = response.getChildAt("function").getString()
 		var Object onceListener = getOnceListener(id)
@@ -514,9 +409,6 @@ class ServiceSteam implements ServiceStats, ServiceUser, ServiceListener
 		end
 	end
 	
-	/**
-	 * \brief Service request failed.
-	 */
 	func void requestFailed(Service service, UniqueID id, ServiceObject error)
 		var String function = error.getChildAt("function").getString()
 		var ServiceException exception = pConversions.createException(service, error)
@@ -578,9 +470,6 @@ class ServiceSteam implements ServiceStats, ServiceUser, ServiceListener
 		end
 	end
 	
-	/**
-	 * \brief Service notification received.
-	 */
 	func void eventReceived(Service service, ServiceObject event)
 	end
 	

@@ -30,109 +30,40 @@ namespace Dragengine.Services.Mods
  * \version 1.23
  */
 class DefaultServiceModsListener implements ServiceModsListener
-	/**
-	 * \brief Create new instance of DefaultServiceModsListener.
-	 */
+	/** \brief Create new instance of DefaultServiceModsListener. */
 	func new()
 	end
 	
 	
-	
-	/**
-	 * \brief Listing modifications finished.
-	 * \param service Service sending the event.
-	 * \param requestId Identifier of request this response belongs to.
-	 * \param mods Array containing ServiceModInfo. On failure null.
-	 * \param exception On success null. On failure contains error information.
-	 */
 	func void onListMods(ServiceMods service, Array mods, Exception exception)
 	end
 	
-	/**
-	 * \brief Loading resource finished.
-	 * \param service Service sending the event.
-	 * \param url URL of resource to load.
-	 * \param resource Loaded resource. On failure null.
-	 * \param exception On success null. On failure contains error information.
-	 */
 	func void onLoadModResource(ServiceMods service, String url, Object resource, Exception exception)
 	end
 	
-	/**
-	 * \brief Mod mamagement event.
-	 * \param service Service sending the event.
-	 * \param event Management event.
-	 * \param modId Identifier of modification affected by the event.
-	 * \param progress Progress information or null.
-	 * \param exception Exception or null if sueeded.
-	 */
 	func void onModManagement(ServiceMods service, ServiceMods.ManagementEvent event,\
 	String modId, ServiceModProgress progress, Exception exception)
 	end
 	
 	
-	/**
-	 * \brief Subscribe modification finished.
-	 * \param service Service sending the event.
-	 * \param modId Identifier of modification.
-	 * \param exception On success null. On failure contains error information.
-	 */
 	func void onSubscribeMod(ServiceMods service, String modId, Exception exception)
 	end
 	
-	/**
-	 * \brief Unsubscribe modification finished.
-	 * \param service Service sending the event.
-	 * \param modId Identifier of modification.
-	 * \param exception On success null. On failure contains error information.
-	 */
 	func void onUnsubscribeMod(ServiceMods service, String modId, Exception exception)
 	end
 	
-	/**
-	 * \brief Set modification disabled finished.
-	 * \param service Service sending the event.
-	 * \param modId Identifier of modification.
-	 * \param disabled Disabled state of modification.
-	 * \param exception On success null. On failure contains error information.
-	 */
 	func void onSetModDisabled(ServiceMods service, String modId, bool disabled, Exception exception)
 	end
 	
-	/**
-	 * \brief Retrieve modification information finished.
-	 * \param service Service sending the event.
-	 * \param modId Identifier of modification.
-	 * \param info Modification info. On failure null.
-	 * \param exception On success null. On failure contains error information.
-	 */
 	func void onGetModInfo(ServiceMods service, String modId, ServiceModInfo info, Exception exception)
 	end
 	
-	/**
-	 * \brief Submit modification rating finished.
-	 * \param service Service sending the event.
-	 * \param modId Identifier of modification the rating has been submitted for.
-	 * \param exception On success null. On failure contains error information.
-	 */
 	func void onSubmitModRating(ServiceMods service, String modId, Exception exception)
 	end
 	
-	/**
-	 * \brief Revoke modification rating finished.
-	 * \param service Service sending the event.
-	 * \param modId Identifier of modification the rating has been revoked for.
-	 * \param exception On success null. On failure contains error information.
-	 */
 	func void onRevokeModRating(ServiceMods service, String modId, Exception exception)
 	end
 	
-	/**
-	 * \brief Retrieve tags finished.
-	 * \param service Service sending the event.
-	 * \param categories Array of ServiceModTagCategory.
-	 * \param exception On success null. On failure contains error information.
-	 */
 	func void onGetTags(ServiceMods service, Array categories, Exception exception)
 	end
 end

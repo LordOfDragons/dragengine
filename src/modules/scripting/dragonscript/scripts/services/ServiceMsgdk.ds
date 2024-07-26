@@ -49,16 +49,12 @@ class ServiceMsgdk implements ServiceUser, ServiceListener
 		public var String pathGameConfig
 		
 		
-		/**
-		 * \brief Create new instance of class InitParameters.
-		 */
+		/** \brief Create new instance of class InitParameters. */
 		func new()
 		end
 	end
 	
-	/**
-	 * \brief Authentification provider identifier.
-	 */
+	/** \brief Authentification provider identifier. */
 	static public fixed var String authProviderId = "xboxLive"
 	
 	
@@ -94,9 +90,7 @@ class ServiceMsgdk implements ServiceUser, ServiceListener
 		pService.setListener(this)
 	end
 	
-	/**
-	 * \brief Dispose of Microsoft GDK service.
-	 */
+	/** \brief Dispose of Microsoft GDK service. */
 	func void dispose()
 		pInitListener = null
 		if pUserListeners != null
@@ -139,10 +133,6 @@ class ServiceMsgdk implements ServiceUser, ServiceListener
 	
 	
 	
-	/**
-	 * \brief Add user listener.
-	 * \param listener Listener to add
-	 */
 	func void addUserListener(ServiceUserListener listener)
 		if listener == null
 			throw ENullPointer.new("listener")
@@ -150,34 +140,16 @@ class ServiceMsgdk implements ServiceUser, ServiceListener
 		pUserListeners.add(listener)
 	end
 	
-	/**
-	 * \brief Remove user listener.
-	 * \param listener Listener to remove.
-	 */
 	func void removeUserListener(ServiceUserListener listener)
 		pUserListeners.remove(listener)
 	end
 	
-	/**
-	 * \brief Features supported by this service.
-	 */
 	func ServiceUserFeatures getUserFeatures()
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "getUserFeatures")
-		return pConversions.convUserFeatures(pService.runAction(so))
+		return pConversions.convertUserFeatures(pService.runAction(so))
 	end
 	
-	/**
-	 * \brief Log in user.
-	 * 
-	 * User can be only logged in automatically.
-	 * 
-	 * Once logging in finished \ref ServiceUserListener#onLoginUser(ServiceUser,Exception)
-	 * is called.
-	 * 
-	 * \param credentials Has to be null or an exception is thrown.
-	 * \param listener If not null called once in addition to added listeners.
-	 */
 	func void loginUser(ServiceUserCredentials credentials, ServiceUserListener listener)
 		if credentials != null
 			throw EInvalidParam.new("credentials has to be null")
@@ -195,30 +167,14 @@ class ServiceMsgdk implements ServiceUser, ServiceListener
 		pService.nextId()
 	end
 	
-	/**
-	 * \brief Log out user.
-	 * 
-	 * Not supported. Throws exception if called.
-	 */
 	func void logoutUser(ServiceUserListener listener)
 		throw EInvalidParam.new("not supported")
 	end
 	
-	/**
-	 * \brief User is logged in.
-	 */
 	func bool isUserLoggedIn()
 		return true
 	end
 	
-	/**
-	 * \brief Request authentification token.
-	 * 
-	 * Requests an encrypted appplication ticket. If one is cached it is returned.
-	 * The received ticket is Base64 encoded.
-	 * 
-	 * \param listener If not null called once in addition to added listeners.
-	 */
 	func void getAuthToken(ServiceUserListener listener)
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "requestAuthToken")
@@ -226,11 +182,6 @@ class ServiceMsgdk implements ServiceUser, ServiceListener
 		runRequest(so, listener)
 	end
 	
-	/**
-	 * \brief Retrieve user information.
-	 * 
-	 * \param listener If not null called once in addition to added listeners.
-	 */
 	func void getUserInfo(ServiceUserListener listener)
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "getUserInfo")
@@ -238,16 +189,6 @@ class ServiceMsgdk implements ServiceUser, ServiceListener
 		runRequest(so, listener)
 	end
 	
-	/**
-	 * \brief Load resource asynchronously.
-	 * 
-	 * Loaded resources are cached for faster retrieval. Once the resource is cached locally
-	 * \ref ServiceUserListener#onLoadUserResource(ServiceUser,String,Object,Exception) is called
-	 * with the same URL as used in this function call.
-	 * 
-	 * \param url URL of image to load.
-	 * \param listener If not null called once in addition to added listeners.
-	 */
 	func void loadUserResource(String url, ServiceUserListener listener)
 		throw EInvalidParam.new("not supported")
 	end
@@ -261,9 +202,6 @@ class ServiceMsgdk implements ServiceUser, ServiceListener
 	
 	
 	
-	/**
-	 * \brief Service request response received.
-	 */
 	func void requestResponse(Service service, UniqueID id, ServiceObject response, bool finished)
 		var String function = response.getChildAt("function").getString()
 		var Object onceListener = getOnceListener(id)
@@ -285,9 +223,6 @@ class ServiceMsgdk implements ServiceUser, ServiceListener
 		end
 	end
 	
-	/**
-	 * \brief Service request failed.
-	 */
 	func void requestFailed(Service service, UniqueID id, ServiceObject error)
 		var String function = error.getChildAt("function").getString()
 		var ServiceException exception = pConversions.createException(service, error)
@@ -303,9 +238,6 @@ class ServiceMsgdk implements ServiceUser, ServiceListener
 		end
 	end
 	
-	/**
-	 * \brief Service notification received.
-	 */
 	func void eventReceived(Service service, ServiceObject event)
 		var String eventName = event.getChildAt("event").getString()
 		var bool success = event.getChildAt("success").getBoolean()

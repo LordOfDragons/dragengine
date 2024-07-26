@@ -30,24 +30,11 @@ namespace Dragengine.Services
  * \version 1.23
  */
 class DefaultServiceInitListener implements ServiceInitListener
-	/**
-	 * \brief Create new instance of DefaultServiceInitListener.
-	 */
+	/** \brief Create new instance of DefaultServiceInitListener. */
 	func new()
 	end
 	
 	
-	
-	/**
-	 * \brief Service initialization finished.
-	 * 
-	 * On success exception is null and service functionality can now be used.
-	 * On failure exception is not null and service functionality can not be used.
-	 * Dispose of the service and try again.
-	 * 
-	 * \param service Service sending the event.
-	 * \param exception On success null. On failure contains error information.
-	 */
 	func void onServiceInit(Object service, Exception exception)
 	end
 end

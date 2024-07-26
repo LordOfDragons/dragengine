@@ -361,7 +361,7 @@ class MMPanelModUserAccount extends Panel
 		elif exception castable ServiceException
 			var ServiceException sexcep = exception cast ServiceException
 			select sexcep.getErrorCode()
-			case ServiceUser.Errors.NeedAcceptTos
+			case ServiceUser.Errors.needAcceptTos
 				var ServiceUserErrorNeedAcceptTos tos =\
 					sexcep.getAdditionalData() cast ServiceUserErrorNeedAcceptTos
 				DialogServiceUserAcceptTos.showTermsOfService(getWindow(), tos,\

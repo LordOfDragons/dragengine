@@ -780,9 +780,9 @@ class BaseGameServices
 	 * Failure to initialize services is only logged and does not throw exceptions.
 	 * 
 	 * The following services are supported:
-	 * - Steam: autoInitSteam()
-	 * - EOS: autoInitEos()
-	 * - Microsoft GDK: autoInitMsgdk()
+	 * - Steam: \ref #autoInitSteam()
+	 * - EOS: \ref #autoInitEos()
+	 * - Microsoft GDK: \ref #autoInitMsgdk()
 	 * 
 	 * \par Mod.io (ServiceModio)
 	 * 

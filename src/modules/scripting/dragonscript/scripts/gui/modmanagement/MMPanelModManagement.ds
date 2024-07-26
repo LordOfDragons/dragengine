@@ -497,7 +497,7 @@ class MMPanelModManagement extends Panel
 			updateSystemMods()
 			updateActiveMods()
 			
-			pServiceMods.getTags(null)
+			pServiceMods.getModTags(null)
 			searchMods(ServiceModFilter.new())
 			
 			updateModelTransfers()

@@ -44,7 +44,7 @@ interface ServiceUser
 		 * The terms of service and the credentials parameters are found in the
 		 * ServiceUserErrorNeedAcceptToS instance assigned as additional error data.
 		 */
-		NeedAcceptTos
+		needAcceptTos
 	end
 	
 	
@@ -71,8 +71,7 @@ interface ServiceUser
 	/**
 	 * \brief Log in user.
 	 * 
-	 * User can be logged in automatically or manually. Examine the service features.
-	 * to know if a particular service supports one or both of these methods.
+	 * User can be logged in automatically or manually.
 	 * 
 	 * Automatic logging in is used for example Steam where the user has to log into the
 	 * platform before the game can be launched. Automatic logging in can trigger platform
@@ -84,8 +83,12 @@ interface ServiceUser
 	 * the game. Production games usually do not require manual logging in unless the
 	 * service in question does not support automatic logging in.
 	 * 
-	 * Once logging in finished \ref ServiceUserListener#onLoginUser(ServiceUser,Exception)
-	 * is called.
+	 * Manual logging in is also possible using authentification tokens from other services.
+	 * For example a user can log into certain services using his Steam user account. See
+	 * \ref ServiceUserFeatures#canAuthProviderLogin obtained from \ref #getUserFeatures()
+	 * to know which other services are supported for manual login using auth tokens.
+	 * 
+	 * Once logging in finished \ref ServiceUserListener#onLoginUser() is called.
 	 * 
 	 * \param credentials Credentials for manual logging in. Use null for automatic logging in.
 	 * \param listener If not null called once in addition to added listeners.
@@ -95,8 +98,7 @@ interface ServiceUser
 	/**
 	 * \brief Log out user.
 	 * 
-	 * Once logging out finished \ref ServiceUserListener#onLogoutUser(ServiceUser,Exception)
-	 * is called.
+	 * Once logging out finished \ref ServiceUserListener#onLogoutUser() is called.
 	 * 
 	 * \param listener If not null called once in addition to added listeners.
 	 */
@@ -128,8 +130,8 @@ interface ServiceUser
 	 * \brief Load resource asynchronously.
 	 * 
 	 * Loaded resources are cached for faster retrieval. Once the resource is cached locally
-	 * \ref ServiceUserListener#onLoadUserResource(ServiceUser,String,Object,Exception) is called
-	 * with the same URL as used in this function call.
+	 * \ref ServiceUserListener#onLoadUserResource() is called with the same URL as used
+	 * in this function call.
 	 * 
 	 * \param url URL of image to load.
 	 * \param listener If not null called once in addition to added listeners.

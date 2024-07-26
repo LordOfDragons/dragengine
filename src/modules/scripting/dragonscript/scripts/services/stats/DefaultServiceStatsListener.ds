@@ -30,52 +30,19 @@ namespace Dragengine.Services.Stats
  * \version 1.23
  */
 class DefaultServiceStatsListener implements ServiceStatsListener
-	/**
-	 * \brief Create new instance of DefaultServiceStatsListener.
-	 */
+	/** \brief Create new instance of DefaultServiceStatsListener. */
 	func new()
 	end
 	
 	
-	
-	/**
-	 * \brief Receiving stats and achievements finished.
-	 * \param service Service sending the event.
-	 * \param stats Dictionary containing stats. Key is stat id as String.
-	 *        Value is stat value as int, float or null if not set yet. On failure null.
-	 * \param achievements Dictionary containing achievements. Key is achievement id
-	 *        as String. Value is true or false depending if the achievement is set or not.\
-	 *        On failure null.
-	 * \param exception On success null. On failure contains error information.
-	 */
 	func void onGetStats(ServiceStats service, Dictionary stats,\
 		Dictionary achievements, Exception exception)
 	end
 	
-	/**
-	 * \brief Store Stats and achievements finished.
-	 * \param service Service sending the event.
-	 * \param stats Dictionary containing stored stats. Key is stat id as String.
-	 *        Value is stat value as int, float or null if not set yet. On failure null.
-	 * \param achievements Dictionary containing stored achievements. Key is achievement id
-	 *        as String. Value is true or false depending if the achievement is set or not.\
-	 *        On failure null.
-	 * \param exception On success null. On failure contains error information.
-	 */
 	func void onSetStats(ServiceStats service, Dictionary stats,\
 		Dictionary achievements, Exception exception)
 	end
 	
-	/**
-	 * \brief Stats or achievements changed notification.
-	 * 
-	 * Typically this requires sending a service request to fetch the changes.
-	 * 
-	 * \param service Service sending the event.
-	 * \param stats Set of stat id as String that have changed. Can be empty for all stats.
-	 * \param achievements Set of achievement id as String that have changed.
-	 *        Can be empty for all achievements.
-	 */
 	func void onStatsChanged(ServiceStats service, Set stats, Set achievements)
 	end
 end

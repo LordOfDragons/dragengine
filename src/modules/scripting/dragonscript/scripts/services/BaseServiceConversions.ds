@@ -53,51 +53,51 @@ class BaseServiceConversions
 	
 	
 	/** \brief Convert service object string value. */
-	func String convString(ServiceObject so, String key)
-		return convString(so, key, null)
+	func String convertString(ServiceObject so, String key)
+		return convertString(so, key, null)
 	end
 	
 	/** \brief Convert service object string value. */
-	func String convString(ServiceObject so, String key, String defaultValue)
+	func String convertString(ServiceObject so, String key, String defaultValue)
 		var ServiceObject so2 = so.getChildAt(key)
 		return so2 != null if so2.getString() else defaultValue
 	end
 	
 	/** \brief Convert service object integer value. */
-	func int convInt(ServiceObject so, String key, int defaultValue)
+	func int convertInteger(ServiceObject so, String key, int defaultValue)
 		var ServiceObject so2 = so.getChildAt(key)
 		return so2 != null if so2.getInteger() else defaultValue
 	end
 	
 	/** \brief Convert service object boolean value. */
-	func bool convBool(ServiceObject so, String key, bool defaultValue)
+	func bool convertBool(ServiceObject so, String key, bool defaultValue)
 		var ServiceObject so2 = so.getChildAt(key)
 		return so2 != null if so2.getBoolean() else defaultValue
 	end
 	
 	/** \brief Convert service object float value. */
-	func float convFloat(ServiceObject so, String key, float defaultValue)
+	func float convertFloat(ServiceObject so, String key, float defaultValue)
 		var ServiceObject so2 = so.getChildAt(key)
 		return so2 != null if so2.getFloat() else defaultValue
 	end
 	
 	/** \brief Convert service object Float object value. */
-	func Float convFloatOptional(ServiceObject so, String key)
+	func Float convertFloatObject(ServiceObject so, String key)
 		var ServiceObject so2 = so.getChildAt(key)
 		return so2 != null if Float.new(so2.getFloat()) else null
 	end
 	
 	/** \brief Convert service object TimeDate value. */
-	func TimeDate convTimeDate(ServiceObject so, String key)
+	func TimeDate convertTimeDate(ServiceObject so, String key)
 		var ServiceObject so2 = so.getChildAt(key)
 		return so2 != null if TimeDate.new(\
-			convInt(so2, "year", 0), convInt(so2, "month", 0), convInt(so2, "day", 0),\
-			convInt(so2, "hour", 0), convInt(so2, "minute", 0), convInt(so2, "second", 0))\
+			convertInteger(so2, "year", 0), convertInteger(so2, "month", 0), convertInteger(so2, "day", 0),\
+			convertInteger(so2, "hour", 0), convertInteger(so2, "minute", 0), convertInteger(so2, "second", 0))\
 			else null
 	end
 	
 	/** \brief Convert service object string list value. */
-	func Array convStringList(ServiceObject so, String key)
+	func Array convertStringList(ServiceObject so, String key)
 		var ServiceObject so2 = so.getChildAt(key)
 		if so2 == null
 			return null
@@ -114,7 +114,7 @@ class BaseServiceConversions
 	end
 	
 	/** \brief Convert service object string set value. */
-	func Set convStringSet(ServiceObject so, String key)
+	func Set convertStringSet(ServiceObject so, String key)
 		var ServiceObject so2 = so.getChildAt(key)
 		if so2 == null
 			return null
@@ -131,7 +131,7 @@ class BaseServiceConversions
 	end
 	
 	/** \brief Convert service object string dictionary value. */
-	func Dictionary convStringDict(ServiceObject so, String key)
+	func Dictionary convertStringDict(ServiceObject so, String key)
 		var ServiceObject so2 = so.getChildAt(key)
 		if so2 == null
 			return null
@@ -145,7 +145,7 @@ class BaseServiceConversions
 	end
 	
 	/** \brief Convert service object Image value. */
-	func Image convImage(ServiceObject so, String key)
+	func Image convertImage(ServiceObject so, String key)
 		var ServiceObject so2 = so.getChildAt(key)
 		return so2 != null if so2.getResource() cast Image else null
 	end
@@ -154,7 +154,7 @@ class BaseServiceConversions
 	
 	/** \brief Create exception from response. */
 	func ServiceException createException(Service service, ServiceObject error)
-		var String message = convString(error, "message", "Unknown error")
+		var String message = convertString(error, "message", "Unknown error")
 		var Enumeration errorCode, errorCategory
 		
 		var ServiceObject so = error.getChildAt("code")
@@ -173,27 +173,27 @@ class BaseServiceConversions
 	
 	
 	/** \brief Convert service user features. */
-	func ServiceUserFeatures convUserFeatures(ServiceObject so)
+	func ServiceUserFeatures convertUserFeatures(ServiceObject so)
 		var ServiceUserFeatures features = ServiceUserFeatures.new()
-		features.canManualLogin = convBool(so, "canManualLogin", false)
-		features.canAutomaticLogin = convBool(so, "canAutomaticLogin", false)
-		features.canLogout = convBool(so, "canLogout", false)
-		features.canAuthProviderLogin = convStringSet(so, "canAuthProviderLogin")
-		features.authTokenProvider = convAuthTokenProvider(so.getChildAt("authTokenProvider"))
+		features.canManualLogin = convertBool(so, "canManualLogin", false)
+		features.canAutomaticLogin = convertBool(so, "canAutomaticLogin", false)
+		features.canLogout = convertBool(so, "canLogout", false)
+		features.canAuthProviderLogin = convertStringSet(so, "canAuthProviderLogin")
+		features.authTokenProvider = convertAuthTokenProvider(so.getChildAt("authTokenProvider"))
 		return features
 	end
 	
 	/** \brief Convert service user features auth token provider. */
-	func ServiceUserFeatures.AuthTokenProvider convAuthTokenProvider(ServiceObject so)
+	func ServiceUserFeatures.AuthTokenProvider convertAuthTokenProvider(ServiceObject so)
 		if so == null
 			return null
 		end
 		
 		var ServiceUserFeatures.AuthTokenProvider atp = ServiceUserFeatures.AuthTokenProvider.new()
-		atp.id = convString(so, "id")
-		atp.name = convString(so, "name")
-		atp.icon = convImage(so, "icon")
-		atp.image = convImage(so, "image")
+		atp.id = convertString(so, "id")
+		atp.name = convertString(so, "name")
+		atp.icon = convertImage(so, "icon")
+		atp.image = convertImage(so, "image")
 		return atp
 	end
 end

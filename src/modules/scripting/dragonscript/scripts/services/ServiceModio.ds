@@ -171,7 +171,7 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 		pConversions = BaseServiceConversions.new()
 		pOnceListeners = Dictionary.new()
 		
-		pConversions.mapErrorCode.setAt(11074, ServiceUser.Errors.NeedAcceptTos)
+		pConversions.mapErrorCode.setAt(11074, ServiceUser.Errors.needAcceptTos)
 		
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("apiKey", params.apiKey)
@@ -185,9 +185,7 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 		pService.setListener(this)
 	end
 	
-	/**
-	 * \brief Dispose of ModIO service.
-	 */
+	/** \brief Dispose of ModIO service. */
 	func void dispose()
 		pInitListener = null
 		if pModsListeners != null
@@ -233,9 +231,6 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 	
 	
 	
-	/**
-	 * \brief Features supported by this service.
-	 */
 	func ServiceModsFeatures getModsFeatures()
 		var ServiceModsFeatures features = ServiceModsFeatures.new()
 		features.modRatingCount = 2
@@ -243,10 +238,6 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 		return features
 	end
 	
-	/**
-	 * \brief Add modification listener.
-	 * \param listener Listener to add
-	 */
 	func void addModsListener(ServiceModsListener listener)
 		if listener == null
 			throw ENullPointer.new("listener")
@@ -254,49 +245,28 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 		pModsListeners.add(listener)
 	end
 	
-	/**
-	 * \brief Remove modification listener.
-	 * \param listener Listener to remove.
-	 */
 	func void removeModsListener(ServiceModsListener listener)
 		pModsListeners.remove(listener)
 	end
 	
-	/**
-	 * \brief Filtered list of available game modifications.
-	 * 
-	 * Requests a list of game modifications using the provided filters. All filter
-	 * parameters set to null cause default values to be used as defined by the
-	 * service provider. Filters not supported by the service provider are ignored.
-	 * 
-	 * Once finished \ref ServiceModsListener#onListMods(ServiceMods,Array,Exception)
-	 * is called. The returned request identifier can be used in the listener methods to
-	 * identify which request the received response belongs to.
-	 * 
-	 * Receiving the results can take considerable amount of time depending on the
-	 * load of the service provider.
-	 * 
-	 * \param filter Filter to use.
-	 * \param listener If not null called once in addition to added listeners.
-	 */
 	func void listAllMods(ServiceModFilter filter, ServiceModsListener listener)
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "listAllMods")
 		
-		pFilterAddEnum(so, "sortField", filter.sortField)
-		pFilterAddStringSet(so, "nameContains", filter.matchingName)
-		pFilterAddStringSet(so, "matchingAuthor", filter.matchingAuthor)
-		pFilterAddStringSet(so, "matchingIds", filter.withIds)
-		pFilterAddDate(so, "markedLiveAfter", filter.releasedAfter)
-		pFilterAddDate(so, "markedLiveBefore", filter.releasedBefore)
-		pFilterAddStringSet(so, "withTags", filter.withTags)
-		pFilterAddStringSet(so, "withoutTags", filter.withoutTags)
+		filterAddEnum(so, "sortField", filter.sortField)
+		filterAddStringSet(so, "nameContains", filter.matchingName)
+		filterAddStringSet(so, "matchingAuthor", filter.matchingAuthor)
+		filterAddStringSet(so, "matchingIds", filter.withIds)
+		filterAddDate(so, "markedLiveAfter", filter.releasedAfter)
+		filterAddDate(so, "markedLiveBefore", filter.releasedBefore)
+		filterAddStringSet(so, "withTags", filter.withTags)
+		filterAddStringSet(so, "withoutTags", filter.withoutTags)
 		if filter.metadataLike != null
 			so.setStringChildAt("metadataLike", filter.metadataLike)
 		end
-		pFilterAddEnum(so, "revenueType", filter.revenueType)
+		filterAddEnum(so, "revenueType", filter.revenueType)
 		so.setBoolChildAt("disallowMatureContent", filter.disallowMatureContent)
-		pFilterAddEnumSet(so, "withMatureContentFlags", filter.withMatureContentFlags)
+		filterAddEnumSet(so, "withMatureContentFlags", filter.withMatureContentFlags)
 		
 		so.setIntChildAt("startIndex", filter.startIndex)
 		
@@ -307,16 +277,6 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 		runRequest(so, listener)
 	end
 	
-	/**
-	 * \brief Load resource asynchronously.
-	 * 
-	 * Loaded resources are cached for faster retrieval. Once the resource is cached locally
-	 * \ref ServiceModsListener#onLoadModResource(ServiceMods,String,Object,Exception) is called
-	 * with the same URL as used in this function call.
-	 * 
-	 * \param url URL of image to load.
-	 * \param listener If not null called once in addition to added listeners.
-	 */
 	func void loadModResource(String url, ServiceModsListener listener)
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "loadModResource")
@@ -325,20 +285,10 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 		runRequest(so, listener)
 	end
 	
-	/**
-	 * \brief Mod management is paused.
-	 */
 	func bool getPauseModManagement()
 		return pPauseManagement
 	end
 	
-	/**
-	 * \brief Pause mod management.
-	 * 
-	 * By default the service automatically downloads, installs and uninstalls mods
-	 * depending on the settings stored in the user profile on the service provider.
-	 * This process can be temporarily paused for example during game play.
-	 */
 	func void setPauseModManagement(bool pause)
 		if pause == pPauseManagement
 			return
@@ -352,62 +302,16 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 		pService.startRequest(so)
 	end
 	
-	/**
-	 * \brief Service is busy managing modifications.
-	 * 
-	 * Returns true if the service is performing one of these actions:
-	 * - Installing modification
-	 * - Uninstalling modification
-	 * - Updating modification to latest version
-	 * - Uploading modification
-	 * 
-	 * While this method returns true certain functions will fail.
-	 */
 	func bool isModManagementBusy()
 		return pIsManagementBusy
 	end
 	
-	/**
-	 * \brief Activate subscribed and installed modifications.
-	 * 
-	 * Installing modifications does not automatically activate them. This avoids
-	 * interrupting a running game flow while modifications are beeing installed.
-	 * A typical use case is calling activateMods() upon leaving the modification
-	 * management dialog. This ensures modifications start affecting the game at
-	 * a well known point in time.
-	 * 
-	 * Unsubscribing from a modification calls activateMods() to avoid the game
-	 * potentially accessing to be deleted modification files.
-	 * 
-	 * Disabling and re-enabling modifications does not trigger activateMods().
-	 * 
-	 * Activating modifications runs immediately.
-	 * 
-	 * Starting a game automatically calls activateMods().
-	 */
 	func void activateMods()
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "activateMods")
 		pService.runAction(so)
 	end
 	
-	/**
-	 * \brief Subscribe to modification.
-	 * 
-	 * The user can also subscribe to a modification from outside the game using different means.
-	 * In both situationsn modifications are installed automatically the next time possible if at
-	 * least one user is subscribed to them. Hence subscribing and installing are different actions.
-	 * 
-	 * Once subscribing finished \ref ServiceModsListener#onSubscribeMod(ServiceMods,String,Exception)
-	 * is called. At this point in time the modification is potentially not yet installed.
-	 * Mod management installs mods as soon as possible if necessary. Listen to
-	 * \ref ServiceModsListener#onModManagement(ServiceMods,ManagementEvent,String,ServiceModProgress,Exception)
-	 * events to know when the modification started and finished installing.
-	 * 
-	 * \param token Authentication token.
-	 * \param id Identifier of modification to subscribe to.
-	 * \param listener If not null called once in addition to added listeners.
-	 */
 	func void subscribeMod(String id, ServiceModsListener listener)
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "subscribeToMod")
@@ -417,23 +321,6 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 		runRequest(so, listener)
 	end
 	
-	/**
-	 * \brief Unsubscribe from modification.
-	 * 
-	 * The user can also unsubscribe from a modification from outside the game using different means.
-	 * In both situationsn modifications are uninstalled automatically the next time possible if
-	 * no user is subscribed to them. Hence unsubscribing and uninstalling are different actions.
-	 * 
-	 * Once unsubscribing finished \ref ServiceModsListener#onUnsubscribeMod(ServiceMods,String,Exception)
-	 * is called. At this point in time the modification is still installed. Mod management
-	 * uninstalls mods as soon as possible if necessary. Listen to
-	 * \ref ServiceModsListener#onModManagement(ServiceMods,ManagementEvent,String,ServiceModProgress,Exception)
-	 * events to know when the modification started and finished uninstalling.
-	 * 
-	 * \param token Authentication token.
-	 * \param id Identifier of modification to unsubscribe from.
-	 * \param listener If not null called once in addition to added listeners.
-	 */
 	func void unsubscribeMod(String id, ServiceModsListener listener)
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "unsubscribeFromMod")
@@ -442,26 +329,14 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 		runRequest(so, listener)
 	end
 	
-	/**
-	 * \brief Current mod install or update progress information.
-	 * 
-	 * If no suitable mod management action is in progress null is returned.
-	 */
 	func ServiceModProgress getCurrentModUpdate()
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "queryCurrentModUpdate")
 		
 		so = pService.runAction(so)
-		return so != null if pConvModProgress(so) else null
+		return so != null if convertModProgress(so) else null
 	end
 	
-	/**
-	 * \brief User subscribed mods.
-	 * 
-	 * Returns modifications are potentially not installed. Use \ref ServiceModStatus#status
-	 * to filter modifications of interest. Returns dictionary with String modification
-	 * identifier and ServiceModStatus value.
-	 */
 	func Dictionary getSubscribedMods()
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "queryUserSubscriptions")
@@ -472,19 +347,13 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 		var ServiceModStatus status
 		
 		for i = 0 to count
-			status = pConvModStatus(so.getChildAt(i))
+			status = convertModStatus(so.getChildAt(i))
 			dict.setAt(status.id, status)
 		end
 		
 		return dict
 	end
 	
-	/**
-	 * \brief System mods.
-	 * 
-	 * Returns all modifications installed on the system by all users. Returns dictionary
-	 * with String modification identifier and ServiceModStatus value.
-	 */
 	func Dictionary getSystemMods()
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "querySystemInstallations")
@@ -495,21 +364,13 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 		var ServiceModStatus status
 		
 		for i = 0 to count
-			status = pConvModStatus(so.getChildAt(i))
+			status = convertModStatus(so.getChildAt(i))
 			dict.setAt(status.id, status)
 		end
 		
 		return dict
 	end
 	
-	/**
-	 * \brief Active mods.
-	 * 
-	 * Returns all active modifications (subscribed and enabled). Active modifications are
-	 * changed when \ref #activateMods() is called. This call is useful to know if a
-	 * game save state has been created with the same set of active modifications. Returns
-	 * dictionary with String modification identifier and ServiceModStatus value.
-	 */
 	func Dictionary getActiveMods()
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "getActiveMods")
@@ -520,22 +381,13 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 		var ServiceModStatus status
 		
 		for i = 0 to count
-			status = pConvModStatus(so.getChildAt(i))
+			status = convertModStatus(so.getChildAt(i))
 			dict.setAt(status.id, status)
 		end
 		
 		return dict
 	end
 	
-	/**
-	 * \brief Retrieve information about game modification.
-	 * 
-	 * Once finished \ref ServiceModsListener#onGetModInfo(ServiceMods,String,ServiceModInfo,Exception)
-	 * is called.
-	 * 
-	 * \param modId Identifier of modification to retrieve.
-	 * \param listener If not null called once in addition to added listeners.
-	 */
 	func void getModInfo(String id, ServiceModsListener listener)
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "getModInfo")
@@ -544,16 +396,6 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 		runRequest(so, listener)
 	end
 	
-	/**
-	 * \brief Submit rating for modification.
-	 * 
-	 * Once finished \ref ServiceModsListener#onSubmitModRating(ServiceMods,String,Exception)
-	 * is called.
-	 * 
-	 * \param modId Identifier of modification to submit rating for.
-	 * \param rating Rating to submit.
-	 * \param listener If not null called once in addition to added listeners.
-	 */
 	func void submitModRating(String id, int rating, ServiceModsListener listener)
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "submitModRating")
@@ -563,15 +405,6 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 		runRequest(so, listener)
 	end
 	
-	/**
-	 * \brief Revoke rating for modification.
-	 * 
-	 * Once finished \ref ServiceModsListener#onRevokeModRating(ServiceMods,String,Exception)
-	 * is called.
-	 * 
-	 * \param modId Identifier of modification to revoke rating for.
-	 * \param listener If not null called once in addition to added listeners.
-	 */
 	func void revokeModRating(String id, ServiceModsListener listener)
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "revokeModRating")
@@ -580,19 +413,6 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 		runRequest(so, listener)
 	end
 	
-	/**
-	 * \brief Disable modification.
-	 * 
-	 * Modifications can be disabled by the user or the game if a modification
-	 * is missbehaving or preventing the game from running. To get the disabled
-	 * state of a modification use \ref #getSubscribedMods().
-	 * 
-	 * If modification is not found nothing is done.
-	 * 
-	 * \param modId Identifier of modification to revoke rating for.
-	 * \param disabled Disabled state.
-	 * \param listener If not null called once in addition to added listeners.
-	 */
 	func void setModDisabled(String id, bool disabled, ServiceModsListener listener)
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "setModDisabled")
@@ -619,20 +439,6 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 		pService.nextId()
 	end
 	
-	/**
-	 * \brief Modification has files matching one or more patterns.
-	 * 
-	 * Typically used to determine if an installed modification contains specific files.
-	 * For example if a modification contains script code \ref Engine#restart(String) has
-	 * to be called to restart the game to re-parse the script. Another example is
-	 * reloading cached game data if files are touched that have been cached before.
-	 * 
-	 * \param id Identifier of installed and enabled modification to scan for files.
-	 * \param directory Root directory to start searching in.
-	 * \param recursive Recursively scan directories for matching files.
-	 * \param patterns Set of String file patterns without directories.
-	 * \throws EInvalidAction Modification does not exist or is not installed.
-	 */
 	func bool modHasMatchingFiles(String id, String directory, bool recursive, Set patterns)
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "modHasMatchingFiles")
@@ -649,16 +455,7 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 		return pService.runAction(so).getBoolean()
 	end
 	
-	/**
-	 * \brief Tags that can be used for ServiceModFilter.
-	 * 
-	 * Once finished \ref ServiceModsListener#onGetTags(ServiceMods,Array,Exception)
-	 * is called with the list of ServiceModTagCategory. Each category contains a list
-	 * of tags usable for this category.
-	 * 
-	 * \param listener If not null called once in addition to added listeners.
-	 */
-	func void getTags(ServiceModsListener listener)
+	func void getModTags(ServiceModsListener listener)
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "getModTagOptions")
 		runRequest(so, listener)
@@ -666,10 +463,6 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 	
 	
 	
-	/**
-	 * \brief Add user listener.
-	 * \param listener Listener to add
-	 */
 	func void addUserListener(ServiceUserListener listener)
 		if listener == null
 			throw ENullPointer.new("listener")
@@ -677,40 +470,16 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 		pUserListeners.add(listener)
 	end
 	
-	/**
-	 * \brief Remove user listener.
-	 * \param listener Listener to remove.
-	 */
 	func void removeUserListener(ServiceUserListener listener)
 		pUserListeners.remove(listener)
 	end
 	
-	/**
-	 * \brief Features supported by this service.
-	 */
 	func ServiceUserFeatures getUserFeatures()
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "getUserFeatures")
-		return pConversions.convUserFeatures(pService.runAction(so))
+		return pConversions.convertUserFeatures(pService.runAction(so))
 	end
 	
-	/**
-	 * \brief Log in user.
-	 * 
-	 * Supports only authentication using a supported authentication provider:
-	 * - ServiceSteamSdk
-	 * - ServiceEosSdk
-	 * 
-	 * To authenticate call \ref ServiceUser#getAuthToken(ServiceUserListener).
-	 * Upon receiving the authentication token create a ServiceuserCredentials
-	 * and call loginUser with it.
-	 * 
-	 * Once logging in finished \ref ServiceUserListener#onLoginUser(ServiceUser,Exception)
-	 * is called.
-	 * 
-	 * \param credentials Has to be null or an exception is thrown.
-	 * \param listener If not null called once in addition to added listeners.
-	 */
 	func void loginUser(ServiceUserCredentials credentials, ServiceUserListener listener)
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "authenticateUserExternal")
@@ -733,13 +502,6 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 		runRequest(so, listener)
 	end
 	
-	/**
-	 * \brief Log out user.
-	 * 
-	 * Logging out deletes local user data.
-	 * 
-	 * \param listener If not null called once in addition to added listeners.
-	 */
 	func void logoutUser(ServiceUserListener listener)
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "clearUserData")
@@ -747,29 +509,16 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 		runRequest(so, listener)
 	end
 	
-	/**
-	 * \brief User is logged in.
-	 */
 	func bool isUserLoggedIn()
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "isAuthenticated")
 		return pService.runAction(so).getBoolean()
 	end
 	
-	/**
-	 * \brief Request authentification token.
-	 * 
-	 * Not supported.
-	 */
 	func void getAuthToken(ServiceUserListener listener)
 		throw EInvalidAction.new("Not supported")
 	end
 	
-	/**
-	 * \brief Retrieve user information.
-	 * 
-	 * \param listener If not null called once in addition to added listeners.
-	 */
 	func void getUserInfo(ServiceUserListener listener)
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "queryUserProfile")
@@ -777,7 +526,7 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 		
 		var ServiceUserInfo info
 		if so != null
-			info = pConvUser(so)
+			info = convertUser(so)
 		end
 		
 		TimerBlock.new(0, false, block
@@ -797,16 +546,6 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 		pService.nextId()
 	end
 	
-	/**
-	 * \brief Load resource asynchronously.
-	 * 
-	 * Loaded resources are cached for faster retrieval. Once the resource is cached locally
-	 * \ref ServiceUserListener#onLoadUserResource(ServiceUser,String,Object,Exception) is called
-	 * with the same URL as used in this function call.
-	 * 
-	 * \param url URL of image to load.
-	 * \param listener If not null called once in addition to added listeners.
-	 */
 	func void loadUserResource(String url, ServiceUserListener listener)
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "loadUserResource")
@@ -824,9 +563,6 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 	
 	
 	
-	/**
-	 * \brief Service request response received.
-	 */
 	func void requestResponse(Service service, UniqueID id, ServiceObject response, bool finished)
 		var String function = response.getChildAt("function").getString()
 		var Object onceListener = getOnceListener(id)
@@ -836,7 +572,7 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 			var Array mods = Array.new()
 			var int i, count = somods.getChildCount()
 			for i = 0 to count
-				mods.add(pConvModInfo(somods.getChildAt(i)))
+				mods.add(convertModInfo(somods.getChildAt(i)))
 			end
 			
 			pModsListeners.forEach(block ServiceModsListener each
@@ -875,7 +611,7 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 			end
 			
 		elif function.equals("getModInfo")
-			var ServiceModInfo info = pConvModInfo(response.getChildAt("info"))
+			var ServiceModInfo info = convertModInfo(response.getChildAt("info"))
 			
 			pModsListeners.forEach(block ServiceModsListener each
 				each.onGetModInfo(this, info.id, info, null)
@@ -925,7 +661,7 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 			end
 			
 		elif function.equals("getModTagOptions")
-			var Array categories = pConvTagCategoryList(response.getChildAt("categories"))
+			var Array categories = convertTagCategoryList(response.getChildAt("categories"))
 			
 			pModsListeners.forEach(block ServiceModsListener each
 				each.onGetTags(this, categories, null)
@@ -948,9 +684,6 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 		end
 	end
 	
-	/**
-	 * \brief Service request failed.
-	 */
 	func void requestFailed(Service service, UniqueID id, ServiceObject error)
 		var String function = error.getChildAt("function").getString()
 		var ServiceException exception = createException(error)
@@ -1058,9 +791,6 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 		end
 	end
 	
-	/**
-	 * \brief Service notification received.
-	 */
 	func void eventReceived(Service service, ServiceObject event)
 		var String eventName = event.getChildAt("event").getString()
 		var bool success = event.getChildAt("success").getBoolean()
@@ -1081,7 +811,7 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 		elif eventName.equals("modManagement")
 			var ServiceMods.ManagementEvent mev = ServiceMods.ManagementEvent.named(event.getChildAt("subEvent").getString())
 			var String modId = event.getChildAt("modId").getString()
-			var ServiceModProgress progress = pConvModProgress(event.getChildAt("progress"))
+			var ServiceModProgress progress = convertModProgress(event.getChildAt("progress"))
 			
 			pIsManagementBusy = event.getChildAt("busy").getBoolean()
 			
@@ -1119,9 +849,9 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 		var ServiceException exception = pConversions.createException(pService, error)
 		
 		select exception.getErrorCode()
-		case ServiceUser.Errors.NeedAcceptTos
+		case ServiceUser.Errors.needAcceptTos
 			exception = exception.withAdditionalData(\
-				pConvErrorTerms(error.getChildAt("needAcceptTerms")))
+				convertErrorTerms(error.getChildAt("needAcceptTerms")))
 		end
 		
 		return exception
@@ -1129,13 +859,13 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 	
 	
 	
-	private func void pFilterAddEnum(ServiceObject so, String key, Enumeration value)
+	protected func void filterAddEnum(ServiceObject so, String key, Enumeration value)
 		if value != null
 			so.setStringChildAt(key, value.name())
 		end
 	end
 	
-	private func void pFilterAddStringSet(ServiceObject so, String key, Set values)
+	protected func void filterAddStringSet(ServiceObject so, String key, Set values)
 		if values != null
 			var ServiceObject so2 = ServiceObject.newList()
 			values.forEach(block String each
@@ -1145,7 +875,7 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 		end
 	end
 	
-	private func void pFilterAddEnumSet(ServiceObject so, String key, Set values)
+	protected func void filterAddEnumSet(ServiceObject so, String key, Set values)
 		if values != null
 			var ServiceObject so2 = ServiceObject.newList()
 			values.forEach(block Enumeration each
@@ -1155,7 +885,7 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 		end
 	end
 	
-	private func void pFilterAddDate(ServiceObject so, String key, TimeDate date)
+	protected func void filterAddDate(ServiceObject so, String key, TimeDate date)
 		if date != null
 			var ServiceObject so2 = ServiceObject.new()
 			so2.setIntChildAt("year", date.getYear())
@@ -1165,7 +895,7 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 		end
 	end
 	
-	private func Dictionary pConvTagList(ServiceObject so, String key)
+	protected func Dictionary convertTagList(ServiceObject so, String key)
 		var ServiceObject so2 = so.getChildAt(key)
 		if so2 == null
 			return null
@@ -1183,7 +913,7 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 		return dict
 	end
 	
-	private func ServiceModInfo pConvModInfo(ServiceObject so)
+	protected func ServiceModInfo convertModInfo(ServiceObject so)
 		if so == null
 			return null
 		end
@@ -1192,31 +922,31 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 		var int i, count
 		
 		var ServiceModInfo info = ServiceModInfo.new()
-		info.id = pConversions.convString(so, "modId")
-		info.name = pConversions.convString(so, "profileName")
-		info.summary = pConversions.convString(so, "profileSummary")
-		info.descriptionHtml = pConversions.convString(so, "profileDescription")
-		info.descriptionText = pConversions.convString(so, "profileDescriptionPlaintext")
-		info.profileUrl = pConversions.convString(so, "profileURL")
-		info.dateAdded = pConversions.convTimeDate(so, "profileDateAdded")
-		info.dateUpdated = pConversions.convTimeDate(so, "profileDateUpdated")
-		info.dateReleased = pConversions.convTimeDate(so, "profileDateLive")
-		info.metadata = pConversions.convString(so, "metadataBlob")
-		info.metadataMap = pConversions.convStringDict(so, "metadataKvp")
-		info.version = pConversions.convString(so, "version")
-		info.price = pConversions.convInt(so, "price", 0).toString()
-		info.hasDependencies = pConversions.convBool(so, "dependencies", false)
+		info.id = pConversions.convertString(so, "modId")
+		info.name = pConversions.convertString(so, "profileName")
+		info.summary = pConversions.convertString(so, "profileSummary")
+		info.descriptionHtml = pConversions.convertString(so, "profileDescription")
+		info.descriptionText = pConversions.convertString(so, "profileDescriptionPlaintext")
+		info.profileUrl = pConversions.convertString(so, "profileURL")
+		info.dateAdded = pConversions.convertTimeDate(so, "profileDateAdded")
+		info.dateUpdated = pConversions.convertTimeDate(so, "profileDateUpdated")
+		info.dateReleased = pConversions.convertTimeDate(so, "profileDateLive")
+		info.metadata = pConversions.convertString(so, "metadataBlob")
+		info.metadataMap = pConversions.convertStringDict(so, "metadataKvp")
+		info.version = pConversions.convertString(so, "version")
+		info.price = pConversions.convertInteger(so, "price", 0).toString()
+		info.hasDependencies = pConversions.convertBool(so, "dependencies", false)
 		
 		so2 = so.getChildAt("userRating")
 		if so2 != null
 			info.userRating = Integer.new(so2.getInteger())
 		end
 		
-		info.submittedBy = pConvUser(so.getChildAt("profileSubmittedBy"))
-		info.logo = pConvImage(so.getChildAt("modLogo"))
-		info.latestRelease = pConvRelease(so.getChildAt("fileInfo"))
-		info.stats = pConvModStats(so.getChildAt("stats"))
-		info.tags = pConvTagList(so, "tags")
+		info.submittedBy = convertUser(so.getChildAt("profileSubmittedBy"))
+		info.logo = convertImage(so.getChildAt("modLogo"))
+		info.latestRelease = convertRelease(so.getChildAt("fileInfo"))
+		info.stats = convertModStats(so.getChildAt("stats"))
+		info.tags = convertTagList(so, "tags")
 		
 		so2 = so.getChildAt("profileMaturityOption")
 		if so2 != null
@@ -1232,12 +962,12 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 			info.galleryImages = Array.new()
 			count = so2.getChildCount()
 			for i = 0 to count
-				info.galleryImages.add(pConvImage(so2.getChildAt(i)))
+				info.galleryImages.add(convertImage(so2.getChildAt(i)))
 			end
 		end
 		
-		var Array youtubeUrls = pConversions.convStringList(so, "youtubeUrls")
-		var Array sketchfabUrls = pConversions.convStringList(so, "sketchfabUrls")
+		var Array youtubeUrls = pConversions.convertStringList(so, "youtubeUrls")
+		var Array sketchfabUrls = pConversions.convertStringList(so, "sketchfabUrls")
 		
 		if youtubeUrls != null or sketchfabUrls != null
 			var ServiceModInfo.ExternalLink link
@@ -1266,38 +996,38 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 		return info
 	end
 	
-	private func ServiceUserInfo pConvUser(ServiceObject so)
+	protected func ServiceUserInfo convertUser(ServiceObject so)
 		if so == null
 			return null
 		end
 		
 		var ServiceUserInfo user = ServiceUserInfo.new()
-		user.id = pConversions.convString(so, "userId")
-		user.name = pConversions.convString(so, "username")
-		user.displayName = pConversions.convString(so, "displayNamePortal")
+		user.id = pConversions.convertString(so, "userId")
+		user.name = pConversions.convertString(so, "username")
+		user.displayName = pConversions.convertString(so, "displayNamePortal")
 		if user.displayName == null
 			user.displayName = user.name
 		end
-		user.profileUrl = pConversions.convString(so, "profileUrl")
-		user.dateOnline = pConversions.convTimeDate(so, "dateOnline")
-		user.avatar = pConvImage(so.getChildAt("avatar"))
+		user.profileUrl = pConversions.convertString(so, "profileUrl")
+		user.dateOnline = pConversions.convertTimeDate(so, "dateOnline")
+		user.avatar = convertImage(so.getChildAt("avatar"))
 		return user
 	end
 	
-	private func ServiceImage pConvImage(ServiceObject so)
+	protected func ServiceImage convertImage(ServiceObject so)
 		var ServiceImage image = ServiceImage.new()
-		image.url = pConversions.convString(so, "original")
+		image.url = pConversions.convertString(so, "original")
 		
 		// a=avatar, g=gallery-images l=logo
-		pConvAddThumbnail(image, so, "thumb50x50", Point.new(50, 50)) // a
-		pConvAddThumbnail(image, so, "thumb100x100", Point.new(100, 100)) // a
-		pConvAddThumbnail(image, so, "thumb320x180", Point.new(320, 180)) // g,l
-		pConvAddThumbnail(image, so, "thumb640x360", Point.new(640, 360)) // l
-		pConvAddThumbnail(image, so, "thumb1280x720", Point.new(1280, 720)) // g,l
+		convertAddThumbnail(image, so, "thumb50x50", Point.new(50, 50)) // a
+		convertAddThumbnail(image, so, "thumb100x100", Point.new(100, 100)) // a
+		convertAddThumbnail(image, so, "thumb320x180", Point.new(320, 180)) // g,l
+		convertAddThumbnail(image, so, "thumb640x360", Point.new(640, 360)) // l
+		convertAddThumbnail(image, so, "thumb1280x720", Point.new(1280, 720)) // g,l
 		return image
 	end
 	
-	private func void pConvAddThumbnail(ServiceImage image, ServiceObject so, String key, Point size)
+	protected func void convertAddThumbnail(ServiceImage image, ServiceObject so, String key, Point size)
 		var ServiceObject so2 = so.getChildAt(key)
 		if so2 == null
 			return
@@ -1309,7 +1039,7 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 		image.thumbnails.add(thumbnail)
 	end
 	
-	private func ServiceModRelease pConvRelease(ServiceObject so)
+	protected func ServiceModRelease convertRelease(ServiceObject so)
 		if so == null
 			return null
 		end
@@ -1317,17 +1047,17 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 		var ServiceModRelease release = ServiceModRelease.new()
 		var ServiceObject so2
 		
-		release.id = pConversions.convString(so, "metadataId")
-		release.modId = pConversions.convString(so, "modId")
-		release.dateAdded = pConversions.convTimeDate(so, "dateAdded")
-		release.filesize = pConversions.convFloat(so, "filesize", 0)
-		release.filesizeUncompressed = pConversions.convFloat(so, "filesizeUncompressed", 0)
-		release.filename = pConversions.convString(so, "filename")
-		release.version = pConversions.convString(so, "version")
-		release.changelog = pConversions.convString(so, "changelog")
-		release.metadata = pConversions.convString(so, "metadataBlob")
-		release.downloadUrl = pConversions.convString(so, "downloadBinaryURL")
-		release.downloadExpiryDate = pConversions.convTimeDate(so, "downloadExpiryDate")
+		release.id = pConversions.convertString(so, "metadataId")
+		release.modId = pConversions.convertString(so, "modId")
+		release.dateAdded = pConversions.convertTimeDate(so, "dateAdded")
+		release.filesize = pConversions.convertFloat(so, "filesize", 0)
+		release.filesizeUncompressed = pConversions.convertFloat(so, "filesizeUncompressed", 0)
+		release.filename = pConversions.convertString(so, "filename")
+		release.version = pConversions.convertString(so, "version")
+		release.changelog = pConversions.convertString(so, "changelog")
+		release.metadata = pConversions.convertString(so, "metadataBlob")
+		release.downloadUrl = pConversions.convertString(so, "downloadBinaryURL")
+		release.downloadExpiryDate = pConversions.convertTimeDate(so, "downloadExpiryDate")
 		
 		so2 = so.getChildAt("currentVirusScanStatus")
 		if so2 != null
@@ -1342,34 +1072,34 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 		return release
 	end
 	
-	private func ServiceModInfo.ExternalLink pConvExternalLink(ServiceObject so)
+	protected func ServiceModInfo.ExternalLink convertExternalLink(ServiceObject so)
 		var ServiceModInfo.ExternalLink link = ServiceModInfo.ExternalLink.new()
-		link.description = pConversions.convString(so, "filename")
-		link.url = pConversions.convString(so, "original")
+		link.description = pConversions.convertString(so, "filename")
+		link.url = pConversions.convertString(so, "original")
 		return link
 	end
 	
-	private func ServiceModStats pConvModStats(ServiceObject so)
+	protected func ServiceModStats convertModStats(ServiceObject so)
 		if so == null
 			return null
 		end
 		
 		var ServiceModStats stats = ServiceModStats.new()
-		stats.rankPosition = pConversions.convFloat(so, "popularityRankPosition", 0)
-		stats.rankCount = pConversions.convFloat(so, "popularityRankTotalMods", 0)
-		stats.downloadCount = pConversions.convFloat(so, "downloadsTotal", 0)
-		stats.subscriberCount = pConversions.convFloat(so, "subscribersTotal", 0)
-		stats.ratingCount = pConversions.convFloat(so, "ratingTotal", 0)
-		stats.ratingCountPerType.setAt(0, pConversions.convFloat(so, "ratingNegative", 0))
-		stats.ratingCountPerType.setAt(1, pConversions.convFloat(so, "ratingPositive", 0))
-		stats.ratingAverage = pConversions.convFloat(so, "ratingPercentagePositive", 0)
-		stats.ratingWeighted = pConversions.convFloat(so, "ratingWeightedAggregate", 0)
-		stats.ratingDisplayText = pConversions.convString(so, "ratingDisplayText")
+		stats.rankPosition = pConversions.convertFloat(so, "popularityRankPosition", 0)
+		stats.rankCount = pConversions.convertFloat(so, "popularityRankTotalMods", 0)
+		stats.downloadCount = pConversions.convertFloat(so, "downloadsTotal", 0)
+		stats.subscriberCount = pConversions.convertFloat(so, "subscribersTotal", 0)
+		stats.ratingCount = pConversions.convertFloat(so, "ratingTotal", 0)
+		stats.ratingCountPerType.setAt(0, pConversions.convertFloat(so, "ratingNegative", 0))
+		stats.ratingCountPerType.setAt(1, pConversions.convertFloat(so, "ratingPositive", 0))
+		stats.ratingAverage = pConversions.convertFloat(so, "ratingPercentagePositive", 0)
+		stats.ratingWeighted = pConversions.convertFloat(so, "ratingWeightedAggregate", 0)
+		stats.ratingDisplayText = pConversions.convertString(so, "ratingDisplayText")
 		
 		return stats
 	end
 	
-	private func ServiceModProgress pConvModProgress(ServiceObject so)
+	protected func ServiceModProgress convertModProgress(ServiceObject so)
 		if so == null
 			return null
 		end
@@ -1377,14 +1107,14 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 		var ServiceModProgress progress = ServiceModProgress.new()
 		progress.modId = so.getChildAt("id").getString()
 		progress.state = ServiceModProgress.State.named(so.getChildAt("state").getString())
-		progress.total = pConversions.convFloat(so, "total", 1)
-		progress.current = pConversions.convFloat(so, "current", 0)
-		progress.progress = pConversions.convFloat(so, "progress", 0)
-		progress.remainingTime = pConversions.convFloatOptional(so, "remainingTime")
+		progress.total = pConversions.convertFloat(so, "total", 1)
+		progress.current = pConversions.convertFloat(so, "current", 0)
+		progress.progress = pConversions.convertFloat(so, "progress", 0)
+		progress.remainingTime = pConversions.convertFloatObject(so, "remainingTime")
 		return progress
 	end
 	
-	private func ServiceModStatus pConvModStatus(ServiceObject so)
+	protected func ServiceModStatus convertModStatus(ServiceObject so)
 		if so == null
 			return null
 		end
@@ -1392,13 +1122,13 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 		var ServiceModStatus status = ServiceModStatus.new()
 		status.id = so.getChildAt("id").getString()
 		status.status = ServiceModStatus.Status.named(so.getChildAt("state").getString())
-		status.info = pConvModInfo(so.getChildAt("info"))
-		status.sizeOnDisk = pConversions.convFloat(so, "sizeOnDisk", 0)
-		status.disabled = pConversions.convBool(so, "disabled", false)
+		status.info = convertModInfo(so.getChildAt("info"))
+		status.sizeOnDisk = pConversions.convertFloat(so, "sizeOnDisk", 0)
+		status.disabled = pConversions.convertBool(so, "disabled", false)
 		return status
 	end
 	
-	private func Array pConvTagCategoryList(ServiceObject so)
+	protected func Array convertTagCategoryList(ServiceObject so)
 		if so == null
 			return Array.new()
 		end
@@ -1406,61 +1136,61 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 		var int i, count = so.getChildCount()
 		var Array categories = Array.new()
 		for i = 0 to count
-			categories.add(pConvTagCategory(so.getChildAt(i)))
+			categories.add(convertTagCategory(so.getChildAt(i)))
 		end
 		return categories
 	end
 	
-	private func ServiceModTagCategory pConvTagCategory(ServiceObject so)
+	protected func ServiceModTagCategory convertTagCategory(ServiceObject so)
 		var ServiceModTagCategory category = ServiceModTagCategory.new()
 		category.id = category.name = so.getChildAt("name").getString()
-		category.nameTranslations = pConversions.convStringDict(so, "nameTranslations")
-		category.multiSelection = pConversions.convBool(so, "allowMultipleSelection", false)
-		category.tags = pConvTagCategoryTagList(so.getChildAt("tags"))
+		category.nameTranslations = pConversions.convertStringDict(so, "nameTranslations")
+		category.multiSelection = pConversions.convertBool(so, "allowMultipleSelection", false)
+		category.tags = convertTagCategoryTagList(so.getChildAt("tags"))
 		return category
 	end
 	
-	private func Array pConvTagCategoryTagList(ServiceObject so)
+	protected func Array convertTagCategoryTagList(ServiceObject so)
 		var int i, count = so.getChildCount()
 		var Array tags = Array.new()
 		for i = 0 to count
-			tags.add(pConvTagCategoryTag(so.getChildAt(i)))
+			tags.add(convertTagCategoryTag(so.getChildAt(i)))
 		end
 		return tags
 	end
 	
-	private func ServiceModTagCategory.Tag pConvTagCategoryTag(ServiceObject so)
+	protected func ServiceModTagCategory.Tag convertTagCategoryTag(ServiceObject so)
 		var ServiceModTagCategory.Tag tag = ServiceModTagCategory.Tag.new()
 		tag.id = tag.name = so.getChildAt("name").getString()
-		tag.nameTranslations = pConversions.convStringDict(so, "nameTranslations")
+		tag.nameTranslations = pConversions.convertStringDict(so, "nameTranslations")
 		return tag
 	end
 	
-	private func ServiceUserErrorNeedAcceptTos pConvErrorTerms(ServiceObject so)
+	protected func ServiceUserErrorNeedAcceptTos convertErrorTerms(ServiceObject so)
 		if so == null
 			return null
 		end
 		
 		var ServiceUserErrorNeedAcceptTos terms = ServiceUserErrorNeedAcceptTos.new()
-		terms.terms = pConversions.convString(so, "terms")
-		terms.buttonAccept = pConversions.convString(so, "buttonAccept")
-		terms.buttonDecline = pConversions.convString(so, "buttonDecline")
-		terms.credentialParameters = pConversions.convStringDict(so, "credentialParameters")
+		terms.terms = pConversions.convertString(so, "terms")
+		terms.buttonAccept = pConversions.convertString(so, "buttonAccept")
+		terms.buttonDecline = pConversions.convertString(so, "buttonDecline")
+		terms.credentialParameters = pConversions.convertStringDict(so, "credentialParameters")
 		
 		var ServiceObject soLinks = so.getChildAt("links")
 		var int i, count = soLinks.getChildCount()
 		for i = 0 to count
-			terms.links.add(pConvErrorTermsLink(soLinks.getChildAt(i)))
+			terms.links.add(convertErrorTermsLink(soLinks.getChildAt(i)))
 		end
 		
 		return terms
 	end
 	
-	private func ServiceUserErrorNeedAcceptTos.Link pConvErrorTermsLink(ServiceObject so)
+	protected func ServiceUserErrorNeedAcceptTos.Link convertErrorTermsLink(ServiceObject so)
 		var ServiceUserErrorNeedAcceptTos.Link link = ServiceUserErrorNeedAcceptTos.Link.new()
-		link.label = pConversions.convString(so, "label")
-		link.url = pConversions.convString(so, "url")
-		link.required = pConversions.convBool(so, "required", true)
+		link.label = pConversions.convertString(so, "label")
+		link.url = pConversions.convertString(so, "url")
+		link.required = pConversions.convertBool(so, "required", true)
 		return link
 	end
 end
