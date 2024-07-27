@@ -76,10 +76,11 @@ public:
 		extHUAWEIControllerInteraction, // <! XR_HUAWEI_controller_interaction
 		extMSFTHandInteraction, // <! XR_MSFT_hand_interaction
 		extEXTDebugUtils, //<! XR_EXT_debug_utils
-		extKHRCompositionLayerDepth //<! XR_KHR_composition_layer_depth
+		extKHRCompositionLayerDepth, //<! XR_KHR_composition_layer_depth
+		extEXTHandInteraction //<! XR_EXT_hand_interaction
 	};
 	
-	static const int ExtensionCount = extKHRCompositionLayerDepth + 1;
+	static const int ExtensionCount = extEXTHandInteraction + 1;
 	
 	/** Layers. */
 	enum eLayer{

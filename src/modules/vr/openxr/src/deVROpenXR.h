@@ -81,6 +81,9 @@ public:
 		eiaGripSqueeze,
 		eiaGripPinch,
 		eiaGripHaptic,
+		eiaGesturePinch,
+		eiaGestureAim,
+		eiaGestureGrasp,
 		eiaPose,
 		eiaPoseLeft,
 		eiaPoseRight

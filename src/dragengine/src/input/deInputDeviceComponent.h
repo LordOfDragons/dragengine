@@ -56,7 +56,10 @@ public:
 		ectJoystick,
 		
 		/** \brief Touch pad. */
-		ectTouchPad
+		ectTouchPad,
+		
+		/** \brief Gesture. */
+		ectGesture
 	};
 	
 	

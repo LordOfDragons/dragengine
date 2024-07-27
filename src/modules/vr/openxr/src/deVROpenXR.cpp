@@ -51,6 +51,7 @@
 #include "device/profile/deoxrDPMSFTHandInteraction.h"
 #include "device/profile/deoxrDPNoControllerHands.h"
 #include "device/profile/deoxrDPEyeGazeInteraction.h"
+#include "device/profile/deoxrDPHTCHandInteraction.h"
 #include "loader/deoxrLoader.h"
 
 #include <dragengine/deEngine.h>
@@ -925,6 +926,10 @@ void deVROpenXR::pCreateActionSet(){
 	pActionSet->AddFloatAction( "grip_pinch", "Grip Pinch" );
 	pActionSet->AddVibrationAction( "grip_haptic", "Haptic Grip" );
 	
+	pActionSet->AddFloatAction( "gesture_pinch", "Gesture Pinch" );
+	pActionSet->AddFloatAction( "gesture_aim", "Gesture Aim" );
+	pActionSet->AddFloatAction( "gesture_grasp", "Gesture Grasp" );
+	
 	pActionSet->AddPoseAction( "pose", "Pose" );
 	pActionSet->AddPoseAction( "pose_left", "Pose Left" );
 	pActionSet->AddPoseAction( "pose_right", "Pose Right" );
@@ -965,6 +970,8 @@ void deVROpenXR::pCreateDeviceProfiles(){
 	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPOculusTouchController( pInstance ) ) );
 	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPSamsungOdysseyController( pInstance ) ) );
 	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPValveIndexController( pInstance ) ) );
+	
+	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPHTCHandInteraction( pInstance ) ) );
 	
 	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPHtcViveTracker( pInstance ) ) );
 	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPEyeGazeInteraction( pInstance ) ) );

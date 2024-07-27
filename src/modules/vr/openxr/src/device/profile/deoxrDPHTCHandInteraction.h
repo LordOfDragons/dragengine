@@ -22,30 +22,40 @@
  * SOFTWARE.
  */
 
+#ifndef _DEOXRDPHTCHANDINTERACTION_H_
+#define _DEOXRDPHTCHANDINTERACTION_H_
 
-namespace Dragengine
+#include "deoxrDPBaseTwoHandController.h"
 
 
 /**
- * \brief InputDeviceComponentType type.
- * \version 1.6
+ * HTC Vive Controller profile.
  */
-enum InputDeviceComponentType
-	/** \brief Generic component. */
-	generic
+class deoxrDPHTCHandInteraction : public deoxrDPBaseTwoHandController{
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** Create device profile. */
+	deoxrDPHTCHandInteraction( deoxrInstance &instance );
 	
-	/** \brief Button. */
-	button
+protected:
+	/** Clean up device profile. */
+	~deoxrDPHTCHandInteraction() override;
+	/*@}*/
 	
-	/** \brief Trigger. */
-	trigger
 	
-	/** \brief Joystick. */
-	joystick
 	
-	/** \brief Touch pad. */
-	touchPad
+public:
+	/** \name Management */
+	/*@{*/
+	void CheckAttached() override;
+	/*@}*/
 	
-	/** \brief Gesture. */
-	gesture
-end
+	
+protected:
+	void pSuggestBindings() override;
+	void pAddDevice( bool left ) override;
+};
+
+#endif
+

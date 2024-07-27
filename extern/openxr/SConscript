@@ -13,7 +13,7 @@ envLibrary = parent_env.Clone()
 buildStaticLinking = True
 
 # parameters
-openxrVersion = '1.0.22'
+openxrVersion = '1.1.38'
 
 srcdir = 'OpenXR-SDK-release-{}'.format(openxrVersion)
 
@@ -40,8 +40,8 @@ def openxrBuild(target, source, env):
 	buildDir = target[0].get_dir().up()
 	
 	untarArchive(buildDir.abspath, source[ 0 ].abspath)
-	untarArchive(buildDir.Dir(srcdir).abspath,
-		env.File('#extern/mingw/mingw_stdthreads.tar.bz2').abspath)
+	#untarArchive(buildDir.Dir(srcdir).abspath,
+	#	env.File('#extern/mingw/mingw_stdthreads.tar.bz2').abspath)
 	
 	script = createScriptHeader(env)
 	script.append('cd "{}" || exit 1'.format(buildDir.Dir(srcdir).abspath))
@@ -116,7 +116,7 @@ targets.extend([
 	'include/openxr/openxr_reflection.h',
 	'include/openxr/openxr.h'])
 
-library = envLibrary.Command(targets, '{}.tar.bz2'.format(srcdir),
+library = envLibrary.Command(targets, '{}.tar.xz'.format(srcdir),
 	envLibrary.Action(openxrBuild, 'Build OpenXR'))
 
 envLibrary.SideEffect('#notParallelCMake', library)

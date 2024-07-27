@@ -209,8 +209,8 @@ deVROpenXR::eInputActions actionAnalog, const char *name, const char *id, const 
 	axis->SetActionAnalog( pOxr.GetAction( actionAnalog ) );
 	axis->SetType( type );
 	axis->SetRange( 0.0f, 1.0f );
-	axis->SetCenter( -1.0f );
-	axis->SetValue( -1.0f );
+	axis->SetCenter( 0.0f );
+	axis->SetValue( 0.0f );
 	axis->SetName( name );
 	axis->SetID( id );
 	axis->SetDisplayText( displayText );
@@ -224,8 +224,8 @@ int finger, const char *name, const char *id, const char *displayText ){
 	const deoxrDeviceAxis::Ref axis( deoxrDeviceAxis::Ref::New( new deoxrDeviceAxis( *this ) ) );
 	axis->SetType( type );
 	axis->SetRange( 0.0f, 1.0f );
-	axis->SetCenter( -1.0f );
-	axis->SetValue( -1.0f );
+	axis->SetCenter( 0.0f );
+	axis->SetValue( 0.0f );
 	axis->SetName( name );
 	axis->SetID( id );
 	axis->SetDisplayText( displayText );

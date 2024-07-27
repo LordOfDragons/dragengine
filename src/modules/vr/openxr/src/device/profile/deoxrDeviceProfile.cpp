@@ -162,8 +162,8 @@ void deoxrDeviceProfile::pAddAxisTrigger( deoxrDevice &device, deoxrDeviceCompon
 	axis->SetActionAnalog( pInstance.GetOxr().GetAction( deVROpenXR::eiaTriggerAnalog ) );
 	axis->SetType( deInputDeviceAxis::eatTrigger );
 	axis->SetRange( 0.0f, 1.0f );
-	axis->SetCenter( -1.0f );
-	axis->SetValue( -1.0f );
+	axis->SetCenter( 0.0f );
+	axis->SetValue( 0.0f );
 	axis->SetName( "Trigger" );
 	axis->SetID( "trig" );
 	axis->SetDisplayText( "Tri" );
@@ -302,8 +302,8 @@ void deoxrDeviceProfile::pAddAxesGripGrab( deoxrDevice &device, deoxrDeviceCompo
 	axis->SetActionAnalog( pInstance.GetOxr().GetAction( deVROpenXR::eiaGripGrab ) );
 	axis->SetType( deInputDeviceAxis::eatGripGrab );
 	axis->SetRange( 0.0f, 1.0f );
-	axis->SetCenter( -1.0f );
-	axis->SetValue( -1.0f );
+	axis->SetCenter( 0.0f );
+	axis->SetValue( 0.0f );
 	axis->SetName( "Grab" );
 	axis->SetID( "gg" );
 	axis->SetDisplayText( "Grab" );
@@ -317,8 +317,8 @@ void deoxrDeviceProfile::pAddAxesGripSqueeze( deoxrDevice &device, deoxrDeviceCo
 	axis->SetActionAnalog( pInstance.GetOxr().GetAction( deVROpenXR::eiaGripSqueeze ) );
 	axis->SetType( deInputDeviceAxis::eatGripSqueeze );
 	axis->SetRange( 0.0f, 1.0f );
-	axis->SetCenter( -1.0f );
-	axis->SetValue( -1.0f );
+	axis->SetCenter( 0.0f );
+	axis->SetValue( 0.0f );
 	axis->SetName( "Squeeze" );
 	axis->SetID( "gs" );
 	axis->SetDisplayText( "Squ" );
@@ -332,8 +332,8 @@ void deoxrDeviceProfile::pAddAxesGripPinch( deoxrDevice &device, deoxrDeviceComp
 	axis->SetActionAnalog( pInstance.GetOxr().GetAction( deVROpenXR::eiaGripSqueeze ) );
 	axis->SetType( deInputDeviceAxis::eatGripPinch );
 	axis->SetRange( 0.0f, 1.0f );
-	axis->SetCenter( -1.0f );
-	axis->SetValue( -1.0f );
+	axis->SetCenter( 0.0f );
+	axis->SetValue( 0.0f );
 	axis->SetName( "Pinch" );
 	axis->SetID( "gp" );
 	axis->SetDisplayText( "Pin" );
@@ -551,8 +551,8 @@ deoxrHandTracker *deoxrDeviceProfile::pAddHandTracker( deoxrDevice &device, bool
 		const deoxrDeviceAxis::Ref axis( deoxrDeviceAxis::Ref::New( new deoxrDeviceAxis( device ) ) );
 		axis->SetType( deInputDeviceAxis::eatFingerBend );
 		axis->SetRange( 0.0f, 1.0f );
-		axis->SetCenter( -1.0f );
-		axis->SetValue( -1.0f );
+		axis->SetCenter( 0.0f );
+		axis->SetValue( 0.0f );
 		axis->SetName( bendData[ i ].name );
 		axis->SetID( bendData[ i ].id );
 		axis->SetDisplayText( bendData[ i ].displayText );
@@ -572,8 +572,8 @@ deoxrHandTracker *deoxrDeviceProfile::pAddHandTracker( deoxrDevice &device, bool
 		const deoxrDeviceAxis::Ref axis( deoxrDeviceAxis::Ref::New( new deoxrDeviceAxis( device ) ) );
 		axis->SetType( deInputDeviceAxis::eatFingerSpread );
 		axis->SetRange( 0.0f, 1.0f );
-		axis->SetCenter( -1.0f );
-		axis->SetValue( -1.0f );
+		axis->SetCenter( 0.0f );
+		axis->SetValue( 0.0f );
 		axis->SetName( bendSpread[ i ].name );
 		axis->SetID( bendSpread[ i ].id );
 		axis->SetDisplayText( bendSpread[ i ].displayText );
