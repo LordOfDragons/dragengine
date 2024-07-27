@@ -58,8 +58,8 @@ void deoxrDPNoControllerHands::CheckAttached(){
 	bool useHandsLeft = false;
 	bool useHandsRight = false;
 
-	if( GetInstance().SupportsExtension( deoxrInstance::extEXTHandTracking )
-	&& GetInstance().GetOxr().GetSystem()->GetSupportsHandTracking() ){
+	if( instance.SupportsExtension( deoxrInstance::extEXTHandTracking )
+	&& instance.GetOxr().GetSystem()->GetSupportsHandTracking() ){
 		// use hands if no device has been added covering hands
 		bool hasLeft = false, hasRight = false;
 		pHasHandDevices( pDeviceLeft, pDeviceRight, hasLeft, hasRight );
