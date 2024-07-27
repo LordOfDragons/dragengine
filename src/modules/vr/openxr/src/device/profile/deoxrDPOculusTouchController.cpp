@@ -174,7 +174,7 @@ void deoxrDPOculusTouchController::pAddDevice( bool left ){
 	pAddButtonThumbrest( device, thumbrest );
 	
 	deoxrDeviceComponent * const grip = pAddComponentGrip( device );
-	pAddAxesGripGrab( device, grip );
+	pAddAxisGripGrab( device, grip );
 	pAddButtonGrip( device, grip, false );
 	
 	pAddHandTracker( device, left );

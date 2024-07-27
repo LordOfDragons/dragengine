@@ -155,7 +155,7 @@ void deoxrDPHPMixedRealityController::pAddDevice( bool left ){
 	pAddButtonJoystick( device, joystick, true, false );
 	
 	deoxrDeviceComponent * const grip = pAddComponentGrip( device );
-	pAddAxesGripGrab( device, grip );
+	pAddAxisGripGrab( device, grip );
 	pAddButtonGrip( device, grip, false );
 	
 	pAddHandTracker( device, left );

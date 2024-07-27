@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Source Files\device">
+      <UniqueIdentifier>{67c4dde8-15e2-4b19-af11-5e3adec335cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\device\profile">
+      <UniqueIdentifier>{03f355f3-7671-4629-8870-1678bf6e0afb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\..\src\modules\vr\openxr\SConscript" />
@@ -74,90 +80,6 @@
     <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\action\deoxrActionSet.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\deoxrDevice.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\deoxrDeviceAxis.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\deoxrDeviceButton.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\deoxrDeviceComponent.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\deoxrDeviceFeedback.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\deoxrDeviceManager.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDeviceProfile.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDeviceProfileManager.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPBaseTwoHandController.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPEyeGazeInteraction.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPGoogleDaydreamController.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPHMD.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPHPMixedRealityController.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPHTCViveController.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPHTCViveCosmosControllerInteraction.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPHTCViveFocus3ControllerInteraction.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPHTCVivePro.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPHtcViveTracker.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPHUAWEIControllerInteraction.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPMicrosoftMixedRealityMotionController.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPMicrosoftXboxController.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPMSFTHandInteraction.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPNoControllerHands.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPOculusGoController.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPOculusTouchController.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPSamsungOdysseyController.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPSimpleController.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPValveIndexController.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\graphicapi\deoxrGraphicApiOpenGL.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -176,8 +98,95 @@
     <ClInclude Include="module_version.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\deoxrDevice.h">
+      <Filter>Source Files\device</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\deoxrDeviceAxis.h">
+      <Filter>Source Files\device</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\deoxrDeviceButton.h">
+      <Filter>Source Files\device</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\deoxrDeviceComponent.h">
+      <Filter>Source Files\device</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\deoxrDeviceFeedback.h">
+      <Filter>Source Files\device</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\deoxrDeviceManager.h">
+      <Filter>Source Files\device</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPBaseTwoHandController.h">
+      <Filter>Source Files\device\profile</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPEyeGazeInteraction.h">
+      <Filter>Source Files\device\profile</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPGoogleDaydreamController.h">
+      <Filter>Source Files\device\profile</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPHMD.h">
+      <Filter>Source Files\device\profile</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPHPMixedRealityController.h">
+      <Filter>Source Files\device\profile</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPHTCHandInteraction.h">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\device\profile</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPHTCViveController.h">
+      <Filter>Source Files\device\profile</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPHTCViveCosmosControllerInteraction.h">
+      <Filter>Source Files\device\profile</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPHTCViveFocus3ControllerInteraction.h">
+      <Filter>Source Files\device\profile</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPHTCVivePro.h">
+      <Filter>Source Files\device\profile</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPHtcViveTracker.h">
+      <Filter>Source Files\device\profile</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPHUAWEIControllerInteraction.h">
+      <Filter>Source Files\device\profile</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPMicrosoftMixedRealityMotionController.h">
+      <Filter>Source Files\device\profile</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPMicrosoftXboxController.h">
+      <Filter>Source Files\device\profile</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPMSFTHandInteraction.h">
+      <Filter>Source Files\device\profile</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPNoControllerHands.h">
+      <Filter>Source Files\device\profile</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPOculusGoController.h">
+      <Filter>Source Files\device\profile</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPOculusTouchController.h">
+      <Filter>Source Files\device\profile</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPSamsungOdysseyController.h">
+      <Filter>Source Files\device\profile</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPSimpleController.h">
+      <Filter>Source Files\device\profile</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPValveIndexController.h">
+      <Filter>Source Files\device\profile</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDeviceProfile.h">
+      <Filter>Source Files\device\profile</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDeviceProfileManager.h">
+      <Filter>Source Files\device\profile</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPHandInteraction.h">
+      <Filter>Source Files\device\profile</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -226,90 +235,6 @@
     <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\action\deoxrActionSet.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\deoxrDevice.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\deoxrDeviceAxis.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\deoxrDeviceButton.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\deoxrDeviceComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\deoxrDeviceFeedback.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\deoxrDeviceManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDeviceProfile.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDeviceProfileManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPBaseTwoHandController.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPEyeGazeInteraction.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPGoogleDaydreamController.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPHMD.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPHPMixedRealityController.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPHTCViveController.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPHTCViveCosmosControllerInteraction.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPHTCViveFocus3ControllerInteraction.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPHTCVivePro.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPHtcViveTracker.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPHUAWEIControllerInteraction.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPMicrosoftMixedRealityMotionController.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPMicrosoftXboxController.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPMSFTHandInteraction.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPNoControllerHands.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPOculusGoController.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPOculusTouchController.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPSamsungOdysseyController.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPSimpleController.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPValveIndexController.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\graphicapi\deoxrGraphicApiOpenGL.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -328,8 +253,95 @@
     <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\deoxrThreadSync.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\deoxrDevice.cpp">
+      <Filter>Source Files\device</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\deoxrDeviceAxis.cpp">
+      <Filter>Source Files\device</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\deoxrDeviceButton.cpp">
+      <Filter>Source Files\device</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\deoxrDeviceComponent.cpp">
+      <Filter>Source Files\device</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\deoxrDeviceFeedback.cpp">
+      <Filter>Source Files\device</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\deoxrDeviceManager.cpp">
+      <Filter>Source Files\device</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPBaseTwoHandController.cpp">
+      <Filter>Source Files\device\profile</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPEyeGazeInteraction.cpp">
+      <Filter>Source Files\device\profile</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPGoogleDaydreamController.cpp">
+      <Filter>Source Files\device\profile</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPHMD.cpp">
+      <Filter>Source Files\device\profile</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPHPMixedRealityController.cpp">
+      <Filter>Source Files\device\profile</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPHTCHandInteraction.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\device\profile</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPHTCViveController.cpp">
+      <Filter>Source Files\device\profile</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPHTCViveCosmosControllerInteraction.cpp">
+      <Filter>Source Files\device\profile</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPHTCViveFocus3ControllerInteraction.cpp">
+      <Filter>Source Files\device\profile</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPHTCVivePro.cpp">
+      <Filter>Source Files\device\profile</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPHtcViveTracker.cpp">
+      <Filter>Source Files\device\profile</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPHUAWEIControllerInteraction.cpp">
+      <Filter>Source Files\device\profile</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPMicrosoftMixedRealityMotionController.cpp">
+      <Filter>Source Files\device\profile</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPMicrosoftXboxController.cpp">
+      <Filter>Source Files\device\profile</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPMSFTHandInteraction.cpp">
+      <Filter>Source Files\device\profile</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPNoControllerHands.cpp">
+      <Filter>Source Files\device\profile</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPOculusGoController.cpp">
+      <Filter>Source Files\device\profile</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPOculusTouchController.cpp">
+      <Filter>Source Files\device\profile</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPSamsungOdysseyController.cpp">
+      <Filter>Source Files\device\profile</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPSimpleController.cpp">
+      <Filter>Source Files\device\profile</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPValveIndexController.cpp">
+      <Filter>Source Files\device\profile</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDeviceProfile.cpp">
+      <Filter>Source Files\device\profile</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDeviceProfileManager.cpp">
+      <Filter>Source Files\device\profile</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPHandInteraction.cpp">
+      <Filter>Source Files\device\profile</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -77,10 +77,11 @@ public:
 		extMSFTHandInteraction, // <! XR_MSFT_hand_interaction
 		extEXTDebugUtils, //<! XR_EXT_debug_utils
 		extKHRCompositionLayerDepth, //<! XR_KHR_composition_layer_depth
-		extEXTHandInteraction //<! XR_EXT_hand_interaction
+		extEXTHandInteraction, //<! XR_EXT_hand_interaction
+		extHTCHandInteraction //<! XR_HTC_hand_interaction
 	};
 	
-	static const int ExtensionCount = extEXTHandInteraction + 1;
+	static const int ExtensionCount = extHTCHandInteraction + 1;
 	
 	/** Layers. */
 	enum eLayer{

@@ -69,6 +69,7 @@
     <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPBaseTwoHandController.h" />
     <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPEyeGazeInteraction.h" />
     <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPGoogleDaydreamController.h" />
+    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPHandInteraction.h" />
     <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPHMD.h" />
     <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPHPMixedRealityController.h" />
     <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPHTCHandInteraction.h" />
@@ -123,6 +124,7 @@
     <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPBaseTwoHandController.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPEyeGazeInteraction.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPGoogleDaydreamController.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPHandInteraction.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPHMD.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPHPMixedRealityController.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPHTCHandInteraction.cpp" />

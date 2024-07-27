@@ -22,31 +22,25 @@
  * SOFTWARE.
  */
 
-#ifndef _DEOXRDPDPBASETWOHANDCONTROLLER_H_
-#define _DEOXRDPDPBASETWOHANDCONTROLLER_H_
+#ifndef _DEOXRDPHANDINTERACTION_H_
+#define _DEOXRDPHANDINTERACTION_H_
 
-#include "deoxrDeviceProfile.h"
-#include "../deoxrDevice.h"
+#include "deoxrDPBaseTwoHandController.h"
 
 
 /**
- * Base class for two hand controller profile.
+ * Hand interaction profile.
  */
-class deoxrDPBaseTwoHandController : public deoxrDeviceProfile{
-protected:
-	deoxrDevice::Ref pDeviceLeft, pDeviceRight;
-	deoxrPath pPathHandLeft,pPathHandRight;
-	
-	
+class deoxrDPHandInteraction : public deoxrDPBaseTwoHandController{
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create device profile. */
-	deoxrDPBaseTwoHandController( deoxrInstance &instance, const deoxrPath &path, const char *name );
+	deoxrDPHandInteraction( deoxrInstance &instance );
 	
 protected:
 	/** Clean up device profile. */
-	virtual ~deoxrDPBaseTwoHandController();
+	~deoxrDPHandInteraction() override;
 	/*@}*/
 	
 	
@@ -54,28 +48,13 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** Check attached. */
-	virtual void CheckAttached();
-	
-	/** Suggest bindings. */
-	virtual void SuggestBindings();
-	
-	/** Clear actions. */
-	virtual void ClearActions();
-	
-	/** Remove device if matching type. */
-	virtual void RemoveDevice( deInputDevice::eDeviceTypes type );
+	void CheckAttached() override;
 	/*@}*/
 	
 	
-	
 protected:
-	virtual bool pProfileEnabled() const;
-	virtual void pSuggestBindings() = 0;
-	
-	virtual void pAddDevice( bool left ) = 0;
-	
-	void pRemoveDevice( bool left );
+	void pSuggestBindings() override;
+	void pAddDevice( bool left ) override;
 };
 
 #endif

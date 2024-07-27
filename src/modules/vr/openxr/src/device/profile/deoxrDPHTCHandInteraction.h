@@ -29,7 +29,7 @@
 
 
 /**
- * HTC Vive Controller profile.
+ * HTC hand interaction profile.
  */
 class deoxrDPHTCHandInteraction : public deoxrDPBaseTwoHandController{
 public:

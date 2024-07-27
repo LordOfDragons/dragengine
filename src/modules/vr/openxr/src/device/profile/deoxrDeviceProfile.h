@@ -161,6 +161,11 @@ public:
 protected:
 	deoxrSession *pGetSession() const;
 	
+	void pHasHandDevices( deoxrDevice *deviceLeft, deoxrDevice *deviceRight,
+		bool &hasLeft, bool &hasRight ) const;
+	
+	bool pHasAnyHandDevice( deoxrDevice *deviceLeft, deoxrDevice *deviceRight ) const;
+
 	deVROpenXR::eInputActions pGripPoseAction( bool left ) const;
 	
 	void pAdd( deoxrInstance::sSuggestBinding *&bindings,
@@ -192,9 +197,9 @@ protected:
 	void pAddButtonThumbrest( deoxrDevice &device, deoxrDeviceComponent *component );
 	
 	deoxrDeviceComponent *pAddComponentGrip( deoxrDevice &device );
-	void pAddAxesGripGrab( deoxrDevice &device, deoxrDeviceComponent *component );
-	void pAddAxesGripSqueeze( deoxrDevice &device, deoxrDeviceComponent *component );
-	void pAddAxesGripPinch( deoxrDevice &device, deoxrDeviceComponent *component );
+	void pAddAxisGripGrab( deoxrDevice &device, deoxrDeviceComponent *component );
+	void pAddAxisGripSqueeze( deoxrDevice &device, deoxrDeviceComponent *component );
+	void pAddAxisGripPinch( deoxrDevice &device, deoxrDeviceComponent *component );
 	void pAddButtonGrip( deoxrDevice &device, deoxrDeviceComponent *component, bool withTouch );
 	
 	void pAddButton( deoxrDevice &device, eButtonAction action, eButtonLabel label, bool withTouch );

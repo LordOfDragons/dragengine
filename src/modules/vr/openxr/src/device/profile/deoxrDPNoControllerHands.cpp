@@ -54,38 +54,18 @@ deoxrDPNoControllerHands::~deoxrDPNoControllerHands(){
 ///////////////
 
 void deoxrDPNoControllerHands::CheckAttached(){
+	const deoxrInstance &instance = GetInstance();
 	bool useHandsLeft = false;
 	bool useHandsRight = false;
-	
+
 	if( GetInstance().SupportsExtension( deoxrInstance::extEXTHandTracking )
 	&& GetInstance().GetOxr().GetSystem()->GetSupportsHandTracking() ){
 		// use hands if no device has been added covering hands
-		useHandsLeft = true;
-		useHandsRight = true;
-		
-		const deoxrDeviceManager &devices = GetInstance().GetOxr().GetDevices();
-		const int count = devices.GetCount();
-		int i;
-		
-		for( i=0; i<count; i++ ){
-			deoxrDevice * const device = devices.GetAt( i );
-			if( pDeviceLeft == device || pDeviceRight == device ){
-				continue;
-			}
-			
-			switch( device->GetType() ){
-			case deInputDevice::edtVRLeftHand:
-				useHandsLeft = false;
-				break;
-				
-			case deInputDevice::edtVRRightHand:
-				useHandsRight = false;
-				break;
-				
-			default:
-				break;
-			}
-		}
+		bool hasLeft = false, hasRight = false;
+		pHasHandDevices( pDeviceLeft, pDeviceRight, hasLeft, hasRight );
+
+		useHandsLeft = not hasLeft;
+		useHandsRight = not hasRight;
 	}
 	
 	if( useHandsLeft ){

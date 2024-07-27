@@ -95,6 +95,7 @@ pInstance( XR_NULL_HANDLE )
 	pSupportsExtension[ extMSFTHandInteraction ].name = XR_MSFT_HAND_INTERACTION_EXTENSION_NAME;
 	pSupportsExtension[ extKHRCompositionLayerDepth ].name = XR_KHR_COMPOSITION_LAYER_DEPTH_EXTENSION_NAME;
 	pSupportsExtension[ extEXTHandInteraction ].name = XR_EXT_HAND_INTERACTION_EXTENSION_NAME;
+	pSupportsExtension[ extHTCHandInteraction ].name = XR_HTC_HAND_INTERACTION_EXTENSION_NAME;
 	
 	pSupportsExtension[ extKHROpenglEnable ].enableIfSupported = true;
 	pSupportsExtension[ extKHRVisibilityMask ].enableIfSupported = true;
@@ -130,6 +131,7 @@ pInstance( XR_NULL_HANDLE )
 	pSupportsExtension[ extMSFTHandInteraction ].enableIfSupported = true;
 	pSupportsExtension[ extKHRCompositionLayerDepth ].enableIfSupported = true;
 	pSupportsExtension[ extEXTHandInteraction ].enableIfSupported = true;
+	pSupportsExtension[ extHTCHandInteraction ].enableIfSupported = true;
 	
 	memset( &pSupportsLayer, 0, sizeof( pSupportsLayer ) );
 	pSupportsLayer[ layerLunarCoreValidation ].name = "XR_APILAYER_LUNARG_core_validation";
@@ -455,7 +457,10 @@ void deoxrInstance::pCreateInstance( bool enableValidationLayers ){
 		| ( moduleVersion.GetAt( 2 ).ToInt() & 0xff );
 	instanceCreateInfo.applicationInfo.engineVersion =
 		instanceCreateInfo.applicationInfo.applicationVersion;
-	instanceCreateInfo.applicationInfo.apiVersion = XR_CURRENT_API_VERSION;
+
+	// we have to use a low enough version to not trip runtimes.
+	// should be no problem since we use extension loading
+	instanceCreateInfo.applicationInfo.apiVersion = XR_API_VERSION_1_0;
 	
 	// detect extensions and layers
 	pDetectExtensions();

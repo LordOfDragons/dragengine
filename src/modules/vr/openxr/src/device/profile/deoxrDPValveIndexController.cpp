@@ -153,8 +153,8 @@ void deoxrDPValveIndexController::pAddDevice( bool left ){
 	pAddButtonTrackpad( device, trackpad, true, true );
 	
 	deoxrDeviceComponent * const grip = pAddComponentGrip( device );
-	pAddAxesGripGrab( device, grip );
-	pAddAxesGripSqueeze( device, grip );
+	pAddAxisGripGrab( device, grip );
+	pAddAxisGripSqueeze( device, grip );
 // 	pAddAxesGripPinch( device, grip );
 	pAddButtonGrip( device, grip, false );
 	

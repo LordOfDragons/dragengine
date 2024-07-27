@@ -105,7 +105,7 @@ void deoxrDPMSFTHandInteraction::pAddDevice( bool left ){
 	pAddButtonTrigger( device, trigger, false ); // has to be button 0
 	
 	deoxrDeviceComponent * const grip = pAddComponentGrip( device );
-	pAddAxesGripGrab( device, grip );
+	pAddAxisGripGrab( device, grip );
 	pAddButtonGrip( device, grip, false );
 	
 	pAddHandTracker( device, left );
