@@ -221,9 +221,20 @@ void deMicrosoftGdk::InitSdk(const deServiceObject::Ref &data)
 		reader->Read(gameConfig, lenGameConfig);
 		gameConfig[lenGameConfig] = 0;
 
+		char *useGameConfig = gameConfig;
+
+		// tools like the game definition editor from microsoft love to add BOM
+		// to the beginning of the configuration. interestingly the initialize
+		// call below fails if this BOM is present. why add a BOM if the function
+		// consuming the data later fails if BOM is present? detect the BOM and
+		// remove it to avoid problems
+		if( strncmp( useGameConfig, "\xef\xbb\xbf", 3 ) == 0 ){
+			useGameConfig += 3;
+		}
+
 		XGameRuntimeOptions options = {};
 		options.gameConfigSource = XGameRuntimeGameConfigSource::Inline;
-		options.gameConfig = gameConfig;
+		options.gameConfig = useGameConfig;
 
 		HRESULT result = XGameRuntimeInitializeWithOptions(&options);
 		if(FAILED(result))

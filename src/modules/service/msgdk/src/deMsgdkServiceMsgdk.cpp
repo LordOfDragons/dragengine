@@ -83,6 +83,7 @@ pUserLocalId({})
 	//AssertAsync(XUserAddAsync(XUserAddOptions::AllowGuests, ab.get()), ab);
 	AssertAsync(XUserAddAsync(XUserAddOptions::AddDefaultUserSilently, ab.get()), ab);
 	//AssertAsync(XUserAddAsync(XUserAddOptions::AddDefaultUserAllowingUI, ab.get()), ab);
+	//AssertAsync(XUserAddAsync(XUserAddOptions::None, ab.get()), ab);
 }
 
 deMsgdkServiceMsgdk::~deMsgdkServiceMsgdk()
