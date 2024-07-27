@@ -57,14 +57,14 @@ deoxrDPHTCHandInteraction::~deoxrDPHTCHandInteraction(){
 
 void deoxrDPHTCHandInteraction::CheckAttached(){
 	const deoxrInstance &instance = GetInstance();
-
+	
 	if( ! instance.SupportsExtension( deoxrInstance::extHTCHandInteraction ) ){
 		return;
 	}
 	if( pHasAnyHandDevice( pDeviceLeft, pDeviceRight ) ){
 		return;
 	}
-
+	
 	deoxrDPBaseTwoHandController::CheckAttached();
 }
 
@@ -73,9 +73,9 @@ void deoxrDPHTCHandInteraction::CheckAttached(){
 //////////////////////
 
 void deoxrDPHTCHandInteraction::pSuggestBindings(){
-	// Valid for user paths:
-	// - /user/hand/left
-	// - /user/hand/right
+	// Valid for user path:
+	// - /user/hand_htc/left
+	// - /user/hand_htc/right
 	// 
 	// Supported component paths:
 	// - /input/aim/pose
@@ -97,7 +97,7 @@ void deoxrDPHTCHandInteraction::pSuggestBindings(){
 		if( ! devices[ i ] ){
 			continue;
 		}
-
+		
 		const decString &basePath = basePathList[ i ];
 		
 		pAdd( b, pGripPoseAction( i == 0 ), basePath + "/input/aim/pose" );
@@ -107,7 +107,7 @@ void deoxrDPHTCHandInteraction::pSuggestBindings(){
 		
 		pAdd( b, deVROpenXR::eiaGesturePinch, basePath + "/input/select/value" );
 		pAdd( b, deVROpenXR::eiaGestureGrasp, basePath + "/input/squeeze/value" );
-
+		
 		usedBindingCount += bindingCountPerHand;
 	}
 	
@@ -125,7 +125,7 @@ void deoxrDPHTCHandInteraction::pAddDevice( bool left ){
 	deVROpenXR &oxr = GetInstance().GetOxr();
 	deoxrDeviceButton::Ref button;
 	deoxrDeviceAxis::Ref axis;
-
+	
 	pCreateDevice( device, left, "htchi_" );
 	
 	// controller simulation
@@ -144,7 +144,7 @@ void deoxrDPHTCHandInteraction::pAddDevice( bool left ){
 	
 	deoxrDeviceComponent * const grip = pAddComponentGrip( device );
 	pAddAxisGripGrab( device, grip );
-
+	
 	button.TakeOver( new deoxrDeviceButton( device ) );
 	button->SetID( "grip" );
 	button->SetName( "Grip" );
