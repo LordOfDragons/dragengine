@@ -40,14 +40,21 @@ public:
 	
 protected:
 	/** Clean up device profile. */
-	virtual ~deoxrDPMSFTHandInteraction();
+	~deoxrDPMSFTHandInteraction() override;
+	/*@}*/
+	
+	
+	
+public:
+	/** \name Management */
+	/*@{*/
+	void CheckAttached() override;
 	/*@}*/
 	
 	
 protected:
-	virtual bool pProfileEnabled() const;
-	virtual void pSuggestBindings();
-	virtual void pAddDevice( bool left );
+	void pSuggestBindings() override;
+	void pAddDevice( bool left ) override;
 };
 
 #endif

@@ -49,47 +49,69 @@ deoxrDPMSFTHandInteraction::~deoxrDPMSFTHandInteraction(){
 }
 
 
+// Management
+///////////////
+
+void deoxrDPMSFTHandInteraction::CheckAttached(){
+	const deoxrInstance &instance = GetInstance();
+	
+	if( ! instance.SupportsExtension( deoxrInstance::extMSFTHandInteraction ) ){
+		return;
+	}
+	if( pHasAnyHandDevice( pDeviceLeft, pDeviceRight ) ){
+		return;
+	}
+	
+	deoxrDPBaseTwoHandController::CheckAttached();
+}
+
+
 
 // Private Functions
 //////////////////////
 
 void deoxrDPMSFTHandInteraction::pSuggestBindings(){
-	// Valid for top level user path:
+	// Valid for user path:
 	// - /user/hand/left
 	// - /user/hand/right
 	// 
 	// Supported component paths:
-	// - /input/select/value
-	// - /input/squeeze/value
 	// - /input/aim/pose
 	// - /input/grip/pose
+	// - /input/select/value
+	// - /input/squeeze/value
 	
-	const int bindingCount = 5 * 2;
+	const int bindingCountPerHand = 5;
+	const int bindingCount = bindingCountPerHand * 2;
 	deoxrInstance::sSuggestBinding bindings[ bindingCount ];
 	deoxrInstance::sSuggestBinding *b = bindings;
+	int usedBindingCount = 0;
 	
-	
-	const decString basePathList[ 2 ] = { "/user/hand/left", "/user/hand/right" };
+	const deoxrPath basePathList[ 2 ] = { pPathHandLeft, pPathHandRight };
+	const deoxrDevice * const devices[ 2 ] = { pDeviceLeft, pDeviceRight };
 	int i;
 	
 	for( i=0; i<2; i++ ){
+		if( ! devices[ i ] ){
+			continue;
+		}
+		
 		const decString &basePath = basePathList[ i ];
 		
 		pAdd( b, pGripPoseAction( i == 0 ), basePath + "/input/aim/pose" );
 		
-		pAdd( b, deVROpenXR::eiaGripPress, basePath + "/input/squeeze/value" );
+		pAdd( b, deVROpenXR::eiaTriggerAnalog, basePath + "/input/select/value" );
 		pAdd( b, deVROpenXR::eiaGripGrab, basePath + "/input/squeeze/value" );
 		
-		pAdd( b, deVROpenXR::eiaTriggerAnalog, basePath + "/input/select/value" );
-		pAdd( b, deVROpenXR::eiaTriggerPress, basePath + "/input/select/value" );
+		pAdd( b, deVROpenXR::eiaGesturePinch, basePath + "/input/select/value" );
+		pAdd( b, deVROpenXR::eiaGestureGrasp, basePath + "/input/squeeze/value" );
+		
+		usedBindingCount += bindingCountPerHand;
 	}
 	
-	
-	GetInstance().SuggestBindings( GetPath(), bindings, bindingCount );
-}
-
-bool deoxrDPMSFTHandInteraction::pProfileEnabled() const{
-	return GetInstance().SupportsExtension( deoxrInstance::extMSFTHandInteraction );
+	if( usedBindingCount > 0 ){
+		GetInstance().SuggestBindings( GetPath(), bindings, usedBindingCount );
+	}
 }
 
 void deoxrDPMSFTHandInteraction::pAddDevice( bool left ){
@@ -98,17 +120,71 @@ void deoxrDPMSFTHandInteraction::pAddDevice( bool left ){
 		return;
 	}
 	
-	pCreateDevice( device, left, "msfthc_" );
+	deVROpenXR &oxr = GetInstance().GetOxr();
+	deoxrDeviceButton::Ref button;
+	deoxrDeviceAxis::Ref axis;
 	
+	pCreateDevice( device, left, "msfthi_" );
+	
+	// controller simulation
 	deoxrDeviceComponent * const trigger = pAddComponentTrigger( device );
 	pAddAxisTrigger( device, trigger );
-	pAddButtonTrigger( device, trigger, false ); // has to be button 0
+	
+	button.TakeOver( new deoxrDeviceButton( device ) );
+	button->SetID( "trig" );
+	button->SetName( "Trigger" );
+	button->SetType( deInputDeviceButton::ebtTrigger );
+	button->SetDisplayText( "Tri" );
+	button->SetInputDeviceComponent( trigger );
+	button->SetFakeFromAxis( device->GetAxisAt( device->GetAxisCount() - 1 ) );
+	button->SetIndex( device->GetButtonCount() );
+	device->AddButton( button ); // has to be button 0
 	
 	deoxrDeviceComponent * const grip = pAddComponentGrip( device );
 	pAddAxisGripGrab( device, grip );
-	pAddButtonGrip( device, grip, false );
 	
+	button.TakeOver( new deoxrDeviceButton( device ) );
+	button->SetID( "grip" );
+	button->SetName( "Grip" );
+	button->SetType( deInputDeviceButton::ebtTrigger );
+	button->SetDisplayText( "Grip" );
+	button->SetInputDeviceComponent( grip );
+	button->SetFakeFromAxis( device->GetAxisAt( device->GetAxisCount() - 1 ) );
+	button->SetIndex( device->GetButtonCount() );
+	device->AddButton( button );
+	
+	// gestures
+	deoxrDeviceComponent * const gesture = device->AddComponent(
+		deInputDeviceComponent::ectGesture, "Hand Gesture", "handGesture", "Hand Gesture" );
+	
+	axis.TakeOver( new deoxrDeviceAxis( device ) );
+	axis->SetActionAnalog( oxr.GetAction( deVROpenXR::eiaGesturePinch ) );
+	axis->SetType( deInputDeviceAxis::eatGesture );
+	axis->SetRange( 0.0f, 1.0f );
+	axis->SetCenter( -1.0f );
+	axis->SetValue( -1.0f );
+	axis->SetName( "Pinch" );
+	axis->SetID( "ghpinch" );
+	axis->SetDisplayText( "Pinch" );
+	axis->SetIndex( device->GetAxisCount() );
+	axis->SetInputDeviceComponent( gesture );
+	device->AddAxis( axis );
+	
+	axis.TakeOver( new deoxrDeviceAxis( device ) );
+	axis->SetActionAnalog( oxr.GetAction( deVROpenXR::eiaGestureGrasp ) );
+	axis->SetType( deInputDeviceAxis::eatGesture );
+	axis->SetRange( 0.0f, 1.0f );
+	axis->SetCenter( -1.0f );
+	axis->SetValue( -1.0f );
+	axis->SetName( "Grasp" );
+	axis->SetID( "ghgrasp" );
+	axis->SetDisplayText( "Grasp" );
+	axis->SetIndex( device->GetAxisCount() );
+	axis->SetInputDeviceComponent( gesture );
+	device->AddAxis( axis );
+	
+	// hand tracking
 	pAddHandTracker( device, left );
 	
-	GetInstance().GetOxr().GetDevices().Add( device );
+	oxr.GetDevices().Add( device );
 }
