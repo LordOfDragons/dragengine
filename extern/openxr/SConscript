@@ -96,6 +96,11 @@ def openxrBuild(target, source, env):
 	cmdline.append('../{}'.format(srcdir))
 	script.append('{} || exit 1'.format(' '.join(cmdline)))
 	
+	if env['platform_android'] != 'no':
+		# fix bug in build system
+		script.append('sed -i -e \'s@DESTINATION "/openxr"@DESTINATION "${{CMAKE_INSTALL_PREFIX}}/include/openxr"@\' "{}"'.format(
+			 buildDir.Dir(srcdir).Dir("include").Dir("openxr").File("cmake_install.cmake").abspath))
+	
 	script.append('make -j {} install || exit 1'.format(env['with_threads']))
 	
 	if not env.RunExternalCommand(script):
