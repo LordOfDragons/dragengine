@@ -25,7 +25,34 @@
 #ifndef _GDKINCLUDE_H_
 #define _GDKINCLUDE_H_
 
-#include <dragengine/app/include_windows.h>
-#include <XGameRuntime.h>
+#include <Windows.h>
+
+// windows has the stupid idea of using macros to hack its own incompetence. this results in
+// tons of strange compiler errors. undo here all the crap that is in our way. windows really
+// should be shot to the moon with only a one-way ticket U_U
+#undef CreateFont
+#undef CreateImage
+#undef CreateFile
+#undef DeleteFile
+#undef DrawText
+#undef FindResource
+#undef GetObject
+#undef LoadFont
+#undef LoadImage
+#undef RemoveProp
+#undef GetMessage
+#undef GetProp
+#undef GetClassName
+#undef CreateService
+
+// these conflict with type save min/max implementation in decMath
+#undef min
+#undef max
+
+// GDK includes
+#include <XGameRuntimeInit.h>
+#include <XAsync.h>
+#include <XUser.h>
+#include <XGameErr.h>
 
 #endif

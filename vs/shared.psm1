@@ -157,6 +157,32 @@ function Expand-TarXz {
 }
 
 
+# Sanitize script input path
+# --------------------------
+# Visual Studio has the tendency to forget strip double quote from the end
+# of path send to script files causing various failures. This function
+# strips trailing double quote.
+# 
+# Furthermore such path can also contain a trailing backslash where there
+# should be none. This function also strips those
+
+function SanitizeScriptInputPath {
+    param (
+        [Parameter(Mandatory=$true)][string]$Path
+    )
+
+    if($Path.EndsWith('"')){
+        $Path = $Path.Substring(0, $Path.Length - 1)
+    }
+
+    if($Path.EndsWith('\\')){
+        $Path = $Path.Substring(0, $Path.Length - 1)
+    }
+
+    return $Path
+}
+
+
 # Various path constants
 ##########################
 

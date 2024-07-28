@@ -46,7 +46,6 @@
     <Xml Include="..\..\..\..\src\modules\service\msgdk\src\module.xml" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\..\..\src\modules\service\msgdk\SConscript" />
     <None Include="post_build.ps1" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -122,14 +121,20 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\de_module\service\msgdk\</OutDir>
     <TargetName>srvmsgdk</TargetName>
+    <ExternalIncludePath>$(GRDKLatest)\GameKit\Include;$(GRDKLatest)\ExtensionLibraries\Xbox.Services.API.C\DesignTime\CommonConfiguration\Neutral\Include;$(ExternalIncludePath)</ExternalIncludePath>
+    <LibraryPath>$(GRDKLatest)\GameKit\Lib\amd64;$(GRDKLatest)\ExtensionLibraries\Xbox.Services.API.C\DesignTime\CommonConfiguration\Neutral\Lib\Release;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\de_module\service\msgdk\</OutDir>
     <TargetName>srvmsgdk</TargetName>
+    <ExternalIncludePath>$(GRDKLatest)\GameKit\Include;$(GRDKLatest)\ExtensionLibraries\Xbox.Services.API.C\DesignTime\CommonConfiguration\Neutral\Include;$(ExternalIncludePath)</ExternalIncludePath>
+    <LibraryPath>$(GRDKLatest)\GameKit\Lib\amd64;$(GRDKLatest)\ExtensionLibraries\Xbox.Services.API.C\DesignTime\CommonConfiguration\Neutral\Lib\Release;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebug|x64'">
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\de_module\service\msgdk\</OutDir>
     <TargetName>srvmsgdk</TargetName>
+    <ExternalIncludePath>$(GRDKLatest)\GameKit\Include;$(GRDKLatest)\ExtensionLibraries\Xbox.Services.API.C\DesignTime\CommonConfiguration\Neutral\Include;$(ExternalIncludePath)</ExternalIncludePath>
+    <LibraryPath>$(GRDKLatest)\GameKit\Lib\amd64;$(GRDKLatest)\ExtensionLibraries\Xbox.Services.API.C\DesignTime\CommonConfiguration\Neutral\Lib\Release;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -196,16 +201,17 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalIncludeDirectories>$(SolutionDir)..\src\modules\service\msgdk\gdk\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/D "_GAMING_DESKTOP" /D "WINAPI_FAMILY=WINAPI_FAMILY_DESKTOP_APP" %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>xgameruntime.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(GRDKLatest)\GameKit\Lib\amd64\xgameruntime.lib;$(GRDKLatest)\ExtensionLibraries\Xbox.Services.API.C\DesignTime\CommonConfiguration\Neutral\Lib\Release\Microsoft.Xbox.Services.GDK.C.Thunks.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)..\src\modules\service\msgdk\gdk\lib\amd64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\modules\service\msgdk\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)"</Command>
+      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\modules\service\msgdk\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)" -GrdkDir "$(GRDKLatest)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -222,6 +228,7 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalIncludeDirectories>$(SolutionDir)..\src\modules\service\msgdk\gdk\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/D "_GAMING_DESKTOP" /D "WINAPI_FAMILY=WINAPI_FAMILY_DESKTOP_APP" %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -229,11 +236,11 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>xgameruntime.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(GRDKLatest)\GameKit\Lib\amd64\xgameruntime.lib;$(GRDKLatest)\ExtensionLibraries\Xbox.Services.API.C\DesignTime\CommonConfiguration\Neutral\Lib\Release\Microsoft.Xbox.Services.GDK.C.Thunks.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)..\src\modules\service\msgdk\gdk\lib\amd64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\modules\service\msgdk\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)"</Command>
+      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\modules\service\msgdk\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)" -GrdkDir "$(GRDKLatest)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebug|x64'">
@@ -250,6 +257,7 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalIncludeDirectories>$(SolutionDir)..\src\modules\service\msgdk\gdk\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/D "_GAMING_DESKTOP" /D "WINAPI_FAMILY=WINAPI_FAMILY_DESKTOP_APP" %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -257,11 +265,11 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>xgameruntime.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(GRDKLatest)\GameKit\Lib\amd64\xgameruntime.lib;$(GRDKLatest)\ExtensionLibraries\Xbox.Services.API.C\DesignTime\CommonConfiguration\Neutral\Lib\Release\Microsoft.Xbox.Services.GDK.C.Thunks.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)..\src\modules\service\msgdk\gdk\lib\amd64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\modules\service\msgdk\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)"</Command>
+      <Command>powershell.exe -NoProfile -ExecutionPolicy Bypass -NonInteractive -File "$(ProjectDir)post_build.ps1" -SourceDir "$(SolutionDir)..\src\modules\service\msgdk\src" -OutputDir "$(SolutionDir)$(Platform)\$(Configuration)" -GrdkDir "$(GRDKLatest)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

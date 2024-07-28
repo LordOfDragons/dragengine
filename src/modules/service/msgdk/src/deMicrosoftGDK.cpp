@@ -66,8 +66,8 @@ deBaseModule *MSGDKCreateModule(deLoadableModule *loadableModule)
 // Error code strings
 ///////////////////////
 
-#define E_GAME_MISSING_GAME_CONFIG 0x87e5001f
-#define E_GAMEPACKAGE_CONFIG_NO_MSAAPPID_NOTITLEID 0x8924520b
+#define E_GAME_MISSING_GAME_CONFIG ((HRESULT)0x87e5001f)
+#define E_GAMEPACKAGE_CONFIG_NO_MSAAPPID_NOTITLEID ((HRESULT)0x8924520b)
 
 const int vErrorCodeCount = 55;
 static struct sErrorCode{

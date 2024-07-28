@@ -44,6 +44,5 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="post_build.ps1" />
-    <None Include="..\..\..\..\src\modules\service\msgdk\SConscript" />
   </ItemGroup>
 </Project>
