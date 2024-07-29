@@ -1,0 +1,97 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.Preloading
+pin Dragengine.Utils
+pin Dragengine.LoadSave
+
+
+/**
+ * \brief Attachable behavior for BehaviorElement.
+ * \version 1.23
+ * 
+ * Classes implementing this interface can be added to BehaviorElement during runtime
+ * in contrary to ECBehavior based behaviors which are added to BehaviorElementClass.
+ */
+interface ECAttachableBehavior implements Persistable
+	/** \brief Behavior element to apply behavior to or null. */
+	func BehaviorElement getElement()
+	
+	/**
+	 * \brief Set behavior element to apply behavior to or null.
+	 * \param element Element to set. Can be null if removed from an element.
+	 */
+	func void setElement(BehaviorElement element)
+	
+	/** \brief Dispose of behavior. */
+	func void dispose()
+	
+	/** \brief State changed (visble, touchable). */
+	func void stateChanged()
+	
+	/** \brief Position, orientation or size changed. */
+	func void geometryChanged()
+	
+	/** \brief Add element to game world. */
+	func void addToGameWorld()
+	
+	/** \brief Remove element from game world. */
+	func void removeFromGameWorld()
+	
+	/** \brief Behavior requires enterFrame() to be called. */
+	func bool requiresEnterFrame()
+	
+	/** \brief Frame update started. */
+	func void enterFrame()
+	
+	/** \brief Behavior requires think() to be called. */
+	func bool requiresThink()
+	
+	/**
+	 * \brief Think about what to do for the next frame update.
+	 * \param elapse Elapsed time in seconds.
+	 */
+	func void think(float elapsed)
+	
+	/**
+	 * \brief Post thinking after physics processing is finished.
+	 * \param elapse Elapsed time in seconds.
+	 */
+	func void postThink(float elapsed)
+	
+	/**
+	 * \brief Attach element to object set by the mapper in the IGDE World Editor.
+	 * 
+	 * Behavior instance is responsible to call \ref BehaviorElement#setParent() if the
+	 * attaching succeedes. If multiple behaviors support attaching they have to negotiate
+	 * with each other who does the attaching for example by using
+	 * \ref BehaviorElement#getParent().
+	 * 
+	 * \param parent Parent to attach element to.
+	 */
+	func void attachToParent(Element parent)
+end

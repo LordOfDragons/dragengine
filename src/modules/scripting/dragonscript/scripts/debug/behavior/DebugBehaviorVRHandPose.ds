@@ -1,0 +1,364 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Debugging
+pin Dragengine.Scenery
+pin Dragengine.Gui
+
+
+/**
+ * \brief Debug BehaviorVRHandPose.
+ * \versoin 1.23
+ * 
+ * To use create an instance of DebugBehaviorVRHandPose with the behavior to monitor
+ * then call \ref BehaviorElement#addAttachableBehavior().
+ * The debug class attaches to the behavior element owning the behavior instance.
+ * To remove the debug class from the behavior element call \ref #safeDispose().
+ * 
+ * Displays a debug skeleton.
+ */
+class DebugBehaviorVRHandPose extends DefaultECAttachableBehavior
+	var ECBehaviorVRHandPose.Instance pBehavior
+	var DebugDrawer pDDSkeleton, pDDBoneCoordSys
+	var float pThicknessSkeletonLine
+	var float pLengthFingerTip
+	var float pThicknessCoordAxis
+	var float pLengthCoordAxis
+	var bool pPoseWithController
+	
+	
+	/** \brief Create debug instance for behavior. */
+	func new(ECBehaviorVRHandPose.Instance behavior)
+		pBehavior = behavior
+		
+		pDDSkeleton = DebugDrawer.new()
+		pDDSkeleton.setVisible(true)
+		pDDSkeleton.setXRay(true)
+		pDDSkeleton.setShapeCount(5)
+		pDDSkeleton.shapeSetEdgeColor(0, Color.new(0.4, 0, 1, 1))
+		pDDSkeleton.shapeSetFillColor(0, Color.new(0.4, 0, 1, 0.2))
+		pDDSkeleton.shapeSetEdgeColor(1, Color.new(0.7, 0, 1, 1))
+		pDDSkeleton.shapeSetFillColor(1, Color.new(0.7, 0, 1, 0.2))
+		pDDSkeleton.shapeSetEdgeColor(2, Color.new(1, 0, 1, 1))
+		pDDSkeleton.shapeSetFillColor(2, Color.new(1, 0, 1, 0.2))
+		pDDSkeleton.shapeSetEdgeColor(3, Color.new(0.7, 0, 1, 1))
+		pDDSkeleton.shapeSetFillColor(3, Color.new(0.7, 0, 1, 0.2))
+		pDDSkeleton.shapeSetEdgeColor(4, Color.new(0.4, 0, 1, 1))
+		pDDSkeleton.shapeSetFillColor(4, Color.new(0.4, 0, 1, 0.2))
+		
+		pDDBoneCoordSys = DebugDrawer.new()
+		pDDBoneCoordSys.setVisible(true)
+		pDDBoneCoordSys.setXRay(true)
+		pDDBoneCoordSys.setShapeCount(3)
+		pDDBoneCoordSys.shapeSetEdgeColor(0, Color.new(1, 0, 0, 1))
+		pDDBoneCoordSys.shapeSetFillColor(0, Color.new(1, 0, 0, 0.2))
+		pDDBoneCoordSys.shapeSetEdgeColor(1, Color.new(0, 1, 0, 1))
+		pDDBoneCoordSys.shapeSetFillColor(1, Color.new(0, 1, 0, 0.2))
+		pDDBoneCoordSys.shapeSetEdgeColor(2, Color.new(0, 0, 1, 1))
+		pDDBoneCoordSys.shapeSetFillColor(2, Color.new(0, 0, 1, 0.2))
+		
+		pThicknessSkeletonLine = 0.004
+		pLengthFingerTip = 0.02
+		
+		pThicknessCoordAxis = 0.001
+		pLengthCoordAxis = 0.01
+		
+		pPoseWithController = true
+		
+		setRequiresThink(true)
+	end
+	
+	
+	/** \ brief Monitored behavior. */
+	func ECBehaviorVRHandPose.Instance getBehavior()
+		return pBehavior
+	end
+	
+	
+	
+	/** \brief Skeleton is visible. */
+	func bool getSkeletonVisible()
+		return pDDSkeleton.getVisible()
+	end
+	
+	/** \brief Set if skeleton is visible. */
+	func void setSkeletonVisible(bool visible)
+		pDDSkeleton.setVisible(visible)
+	end
+	
+	/** \brief Bone coordinate systems are visible. */
+	func bool getBoneCoordSystemsVisible()
+		return pDDBoneCoordSys.getVisible()
+	end
+	
+	/** \brief Set if bone coordinate systems are visible. */
+	func void setBoneCoordSystemsVisible(bool visible)
+		pDDBoneCoordSys.setVisible(visible)
+	end
+	
+	/**
+	 * \brief Get use bone pose with controller.
+	 * 
+	 * If true returns bone pose as accurate as possible to the real hand position.
+	 * If false remaps the pose to simulate not holding the controller in hand.
+	 */
+	func bool getPoseWithController()
+		return pPoseWithController
+	end
+	
+	/**
+	 * \brief Set use bone pose with controller.
+	 * 
+	 * If true returns bone pose as accurate as possible to the real hand position.
+	 * If false remaps the pose to simulate not holding the controller in hand.
+	 */
+	func void setPoseWithController(bool withController)
+		pPoseWithController = withController
+	end
+	
+	
+	
+	func void postThink(float elapsed)
+		update()
+	end
+	
+	func void addToGameWorld()
+		var World world = getElement().getGameWorld().getWorld()
+		world.addDebugDrawer(pDDSkeleton)
+		world.addDebugDrawer(pDDBoneCoordSys)
+	end
+	
+	func void removeFromGameWorld()
+		var World world = getElement().getGameWorld().getWorld()
+		world.removeDebugDrawer(pDDSkeleton)
+		world.removeDebugDrawer(pDDBoneCoordSys)
+	end
+	
+	func void onAddToElement()
+		log("DebugBehaviorVRHandPose.onAddToElement: " + getElement().getClass().getClassname())
+		if getElement().getGameWorld() != null
+			addToGameWorld()
+		end
+	end
+	
+	func void onRemoveFromElement()
+		log("DebugBehaviorVRHandPose.onRemoveFromElement: " + getElement().getClass().getClassname())
+		if getElement().getGameWorld() != null
+			removeFromGameWorld()
+		end
+	end
+	
+	
+	
+	protected func InputDevice getInputDevice()
+		var InputDevice device = pBehavior.getVRHand().getInputDevice()
+		
+		if device == null\
+		or device.getBoneConfiguration() != InputDeviceBoneConfiguration.hand\
+		or device.getDeviceBonePoseCount() != 21
+			return null
+		end
+		
+		return device
+	end
+	
+	protected func void update()
+		var InputDevice device = getInputDevice()
+		if device == null
+			return
+		end
+		
+		var DMatrix matrix = pBehavior.getVRHand().getMatrix()
+		updateSkeleton(device, matrix)
+		updateCoordSystems(device, matrix)
+	end
+	
+	protected func void updateSkeleton(InputDevice device, DMatrix matrix)
+		var ShapeList shapes
+		
+		pDDSkeleton.setPosition(matrix.getPosition())
+		pDDSkeleton.setOrientation(matrix.toQuaternion())
+		
+		// thumb
+		shapes = ShapeList.new()
+		addLineShape(shapes, device, InputDeviceHandBone.wrist, InputDeviceHandBone.thumb0)
+		addLineShape(shapes, device, InputDeviceHandBone.thumb0, InputDeviceHandBone.thumb1)
+		addLineShape(shapes, device, InputDeviceHandBone.thumb1, InputDeviceHandBone.thumb2)
+		addLineShape(shapes, device, InputDeviceHandBone.thumb2)
+		pDDSkeleton.shapeSetShapes(0, shapes)
+		
+		// index finger
+		shapes = ShapeList.new()
+		addLineShape(shapes, device, InputDeviceHandBone.wrist, InputDeviceHandBone.index0)
+		addLineShape(shapes, device, InputDeviceHandBone.index0, InputDeviceHandBone.index1)
+		addLineShape(shapes, device, InputDeviceHandBone.index1, InputDeviceHandBone.index2)
+		addLineShape(shapes, device, InputDeviceHandBone.index2, InputDeviceHandBone.index3)
+		addLineShape(shapes, device, InputDeviceHandBone.index3)
+		pDDSkeleton.shapeSetShapes(1, shapes)
+		
+		// middle finger
+		shapes = ShapeList.new()
+		addLineShape(shapes, device, InputDeviceHandBone.wrist, InputDeviceHandBone.middle0)
+		addLineShape(shapes, device, InputDeviceHandBone.middle0, InputDeviceHandBone.middle1)
+		addLineShape(shapes, device, InputDeviceHandBone.middle1, InputDeviceHandBone.middle2)
+		addLineShape(shapes, device, InputDeviceHandBone.middle2, InputDeviceHandBone.middle3)
+		addLineShape(shapes, device, InputDeviceHandBone.middle3)
+		pDDSkeleton.shapeSetShapes(2, shapes)
+		
+		// ring finger
+		shapes = ShapeList.new()
+		addLineShape(shapes, device, InputDeviceHandBone.wrist, InputDeviceHandBone.ring0)
+		addLineShape(shapes, device, InputDeviceHandBone.ring0, InputDeviceHandBone.ring1)
+		addLineShape(shapes, device, InputDeviceHandBone.ring1, InputDeviceHandBone.ring2)
+		addLineShape(shapes, device, InputDeviceHandBone.ring2, InputDeviceHandBone.ring3)
+		addLineShape(shapes, device, InputDeviceHandBone.ring3)
+		pDDSkeleton.shapeSetShapes(3, shapes)
+		
+		// pinky finger
+		shapes = ShapeList.new()
+		addLineShape(shapes, device, InputDeviceHandBone.wrist, InputDeviceHandBone.pinky0)
+		addLineShape(shapes, device, InputDeviceHandBone.pinky0, InputDeviceHandBone.pinky1)
+		addLineShape(shapes, device, InputDeviceHandBone.pinky1, InputDeviceHandBone.pinky2)
+		addLineShape(shapes, device, InputDeviceHandBone.pinky2, InputDeviceHandBone.pinky3)
+		addLineShape(shapes, device, InputDeviceHandBone.pinky3)
+		pDDSkeleton.shapeSetShapes(4, shapes)
+	end
+	
+	protected func void updateCoordSystems(InputDevice device, DMatrix matrix)
+		var ShapeList shapesX = ShapeList.new()
+		var ShapeList shapesY = ShapeList.new()
+		var ShapeList shapesZ = ShapeList.new()
+		
+		pDDBoneCoordSys.setPosition(matrix.getPosition())
+		pDDBoneCoordSys.setOrientation(matrix.toQuaternion())
+		
+		// device origin
+		addCoordSystem(shapesX, shapesY, shapesZ, Matrix.new(), 2)
+		
+		// wrist
+		addCoordSystem(shapesX, shapesY, shapesZ, device.getDeviceBonePoseMatrix(InputDeviceHandBone.wrist, pPoseWithController))
+		
+		// thumb
+		addCoordSystem(shapesX, shapesY, shapesZ, device.getDeviceBonePoseMatrix(InputDeviceHandBone.thumb0, pPoseWithController))
+		addCoordSystem(shapesX, shapesY, shapesZ, device.getDeviceBonePoseMatrix(InputDeviceHandBone.thumb1, pPoseWithController))
+		addCoordSystem(shapesX, shapesY, shapesZ, device.getDeviceBonePoseMatrix(InputDeviceHandBone.thumb2, pPoseWithController))
+		
+		// index finger
+		addCoordSystem(shapesX, shapesY, shapesZ, device.getDeviceBonePoseMatrix(InputDeviceHandBone.index0, pPoseWithController))
+		addCoordSystem(shapesX, shapesY, shapesZ, device.getDeviceBonePoseMatrix(InputDeviceHandBone.index1, pPoseWithController))
+		addCoordSystem(shapesX, shapesY, shapesZ, device.getDeviceBonePoseMatrix(InputDeviceHandBone.index2, pPoseWithController))
+		addCoordSystem(shapesX, shapesY, shapesZ, device.getDeviceBonePoseMatrix(InputDeviceHandBone.index3, pPoseWithController))
+		
+		// middle finger
+		addCoordSystem(shapesX, shapesY, shapesZ, device.getDeviceBonePoseMatrix(InputDeviceHandBone.middle0, pPoseWithController))
+		addCoordSystem(shapesX, shapesY, shapesZ, device.getDeviceBonePoseMatrix(InputDeviceHandBone.middle1, pPoseWithController))
+		addCoordSystem(shapesX, shapesY, shapesZ, device.getDeviceBonePoseMatrix(InputDeviceHandBone.middle2, pPoseWithController))
+		addCoordSystem(shapesX, shapesY, shapesZ, device.getDeviceBonePoseMatrix(InputDeviceHandBone.middle3, pPoseWithController))
+		
+		// ring finger
+		addCoordSystem(shapesX, shapesY, shapesZ, device.getDeviceBonePoseMatrix(InputDeviceHandBone.ring0, pPoseWithController))
+		addCoordSystem(shapesX, shapesY, shapesZ, device.getDeviceBonePoseMatrix(InputDeviceHandBone.ring1, pPoseWithController))
+		addCoordSystem(shapesX, shapesY, shapesZ, device.getDeviceBonePoseMatrix(InputDeviceHandBone.ring2, pPoseWithController))
+		addCoordSystem(shapesX, shapesY, shapesZ, device.getDeviceBonePoseMatrix(InputDeviceHandBone.ring3, pPoseWithController))
+		
+		// pinky finger
+		addCoordSystem(shapesX, shapesY, shapesZ, device.getDeviceBonePoseMatrix(InputDeviceHandBone.pinky0, pPoseWithController))
+		addCoordSystem(shapesX, shapesY, shapesZ, device.getDeviceBonePoseMatrix(InputDeviceHandBone.pinky1, pPoseWithController))
+		addCoordSystem(shapesX, shapesY, shapesZ, device.getDeviceBonePoseMatrix(InputDeviceHandBone.pinky2, pPoseWithController))
+		addCoordSystem(shapesX, shapesY, shapesZ, device.getDeviceBonePoseMatrix(InputDeviceHandBone.pinky3, pPoseWithController))
+		
+		pDDBoneCoordSys.shapeSetShapes(0, shapesX)
+		pDDBoneCoordSys.shapeSetShapes(1, shapesY)
+		pDDBoneCoordSys.shapeSetShapes(2, shapesZ)
+	end
+	
+	protected func void addLineShape(ShapeList shapes, InputDevice device, int indexHead, int indexTail)
+		var Vector posHead = device.getDeviceBonePosePosition(indexHead, pPoseWithController)
+		var Vector posTail = device.getDeviceBonePosePosition(indexTail, pPoseWithController)
+		
+		var Vector direction = posTail - posHead
+		var float length = direction.getLength()
+		if length < 0.01
+			return
+		end
+		
+		var Vector view = direction / length
+		var Vector up = DEMath.fabs(view.getY()) < 0.99 if Vector.new(0, 1, 0) else Vector.new(0, 0, 1)
+		var Quaternion orientation = Matrix.newVU(view, up).toQuaternion()
+		
+		shapes.addBox((posHead + posTail) / 2,\
+			Vector.new(pThicknessSkeletonLine / 2, length / 2, pThicknessSkeletonLine / 2),\
+			Vector2.new(0.2, 0.2),\
+			Quaternion.newFromEulerX(-90) * orientation)
+		
+		/*
+		var Matrix matrixHead = device.getDeviceBonePoseMatrix(indexHead, pPoseWithController)
+		var Matrix matrixTail = device.getDeviceBonePoseMatrix(indexTail, pPoseWithController)
+		var Matrix matrixTailInHead = matrixTail * (matrixHead.getInverse())
+		
+		var Vector center = matrixHead * (matrixTailInHead.getPosition() / 2)
+		var float length = DEMath.max(matrixTailInHead.getPosition().getLength(), 0.001)
+		
+		shapes.addBox(center,\
+			Vector.new(pThicknessSkeletonLine / 2, length / 2, pThicknessSkeletonLine / 2),\
+			Vector2.new(0.2, 0.2),\
+			Quaternion.newFromEulerX(-90) * matrixHead.toQuaternion())
+		*/
+	end
+	
+	protected func void addLineShape(ShapeList shapes, InputDevice device, int indexHead)
+		var Matrix matrixHead = device.getDeviceBonePoseMatrix(indexHead, pPoseWithController)
+		
+		var Vector center = matrixHead * Vector.new(0, 0, pLengthFingerTip / 2)
+		
+		shapes.addBox(center,\
+			Vector.new(pThicknessSkeletonLine / 2, pLengthFingerTip / 2, pThicknessSkeletonLine / 2),\
+			Vector2.new(0.2, 0.2),\
+			Quaternion.newFromEulerX(-90) * matrixHead.toQuaternion())
+	end
+	
+	protected func void addCoordSystem(ShapeList shapesX, ShapeList shapesY, ShapeList shapesZ, Matrix matrix)
+		addCoordSystem(shapesX, shapesY, shapesZ, matrix, 1)
+	end
+	
+	protected func void addCoordSystem(ShapeList shapesX, ShapeList shapesY, ShapeList shapesZ, Matrix matrix, float scale)
+		var Quaternion orientation = matrix.toQuaternion()
+		var float offset = (pLengthCoordAxis / 2) * scale
+		var Vector hs = Vector.new(pThicknessCoordAxis / 2, pThicknessCoordAxis / 2, offset) * scale
+		
+		shapesX.addBox(matrix * Vector.new(offset, 0, 0), hs, Quaternion.newFromEulerY(-90) * orientation)
+		shapesY.addBox(matrix * Vector.new(0, offset, 0), hs, Quaternion.newFromEulerX(90) * orientation)
+		shapesZ.addBox(matrix * Vector.new(0, 0, offset), hs, orientation)
+	end
+	
+	protected func void log(String message)
+		var BaseGameApp app = BaseGameApp.getApp()
+		if app != null
+			app.getConsole().addMessage(message)
+			
+		else
+			Engine.log(message)
+		end
+	end
+end
