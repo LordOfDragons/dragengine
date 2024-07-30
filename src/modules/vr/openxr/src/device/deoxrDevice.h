@@ -71,7 +71,9 @@ private:
 	deoxrPath pSubactionPath;
 	
 	deoxrAction::Ref pActionPose;
+	deoxrAction::Ref pActionPoseOrientation;
 	deoxrSpace::Ref pSpacePose;
+	deoxrSpace::Ref pSpacePoseOrientation;
 	decVector pPosePosition;
 	decQuaternion pPoseOrientation;
 	decVector pPoseLinearVelocity;
@@ -140,11 +142,23 @@ public:
 	/** Set pose action. */
 	void SetActionPose( deoxrAction *action );
 	
+	/** Orientation pose action. */
+	inline const deoxrAction::Ref &GetActionPoseOrientation() const{ return pActionPoseOrientation; }
+	
+	/** Set orientation pose action. */
+	void SetActionPoseOrientation( deoxrAction *action );
+	
 	/** Pose space. */
 	inline const deoxrSpace::Ref &GetSpacePose() const{ return pSpacePose; }
 	
 	/** Set pose space. */
 	void SetSpacePose( deoxrSpace *space );
+	
+	/** Pose space orientation. */
+	inline const deoxrSpace::Ref &GetSpacePoseOrientation() const{ return pSpacePoseOrientation; }
+	
+	/** Set pose space orientation. */
+	void SetSpacePoseOrientation( deoxrSpace *space );
 	
 	
 	

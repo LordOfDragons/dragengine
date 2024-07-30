@@ -86,10 +86,12 @@ public:
 		eiaGestureGrasp,
 		eiaPose,
 		eiaPoseLeft,
-		eiaPoseRight
+		eiaPoseRight,
+		eiaPoseLeft2,
+		eiaPoseRight2
 	};
 	
-	static const int InputActionCount = eiaPoseRight + 1;
+	static const int InputActionCount = eiaPoseRight2 + 1;
 	
 	
 	

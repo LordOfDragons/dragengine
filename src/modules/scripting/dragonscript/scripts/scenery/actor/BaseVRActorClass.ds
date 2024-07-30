@@ -148,6 +148,15 @@ class BaseVRActorClass extends BaseActorClass
 		pVRRightHandPointAt = ECBehaviorVRHandPointAt.new(this, pVRRightHand, idVRRightHand)
 		pVRLeftHandPointAt = ECBehaviorVRHandPointAt.new(this, pVRLeftHand, idVRLeftHand)
 		
+		// the coordinate system of hand devices is located at the center of the palm pointing
+		// forward (grip pose position with aim pose orientation). this provides a predictable
+		// coordinate system in contrary to grip or aim pose only. to get an aim offset similar
+		// to what aim pose provides with common controllers an offset is set. this offset
+		// can be adjusted depending on the hand model used. the default works well for human
+		// sized hands
+		pVRRightHandPointAt.getOrigin().setVector(Vector.new(0, 0.07, 0.07))
+		pVRLeftHandPointAt.getOrigin().setVector(Vector.new(0, 0.07, 0.07))
+		
 		// ignore actor collider for point at behaviors. this avoids problems if the actor
 		// has a full body collider touching the hands
 		pVRRightHandPointAt.setIgnoreCollider(getCollider())

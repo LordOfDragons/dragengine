@@ -104,7 +104,7 @@ void deoxrDPHandInteraction::pSuggestBindings(){
 
 		const decString &basePath = basePathList[ i ];
 		
-		pAdd( b, pGripPoseAction( i == 0 ), basePath + "/input/aim/pose" );
+		pAdd( b, pPoseAction( i == 0 ), basePath + "/input/grip/pose" );
 		
 		pAdd( b, deVROpenXR::eiaTriggerPress, basePath + "/input/pinch_ext/value" );
 		pAdd( b, deVROpenXR::eiaTriggerAnalog, basePath + "/input/pinch_ext/value" );
@@ -133,7 +133,7 @@ void deoxrDPHandInteraction::pAddDevice( bool left ){
 	}
 	
 	deVROpenXR &oxr = GetInstance().GetOxr();
-	pCreateDevice( device, left, "hi_" );
+	pCreateDevice( device, left, "hi_", false );
 	
 	// controller simulation
 	deoxrDeviceComponent * const trigger = pAddComponentTrigger( device );

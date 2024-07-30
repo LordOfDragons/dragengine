@@ -83,7 +83,7 @@ void deoxrDPHPMixedRealityController::pSuggestBindings(){
 	// - /input/aim/pose
 	// - /output/haptic
 	
-	const int bindingCount = 9 * 2 + 2 + 2;
+	const int bindingCount = 10 * 2 + 2 + 2;
 	deoxrInstance::sSuggestBinding bindings[ bindingCount ];
 	deoxrInstance::sSuggestBinding *b = bindings;
 	
@@ -95,7 +95,8 @@ void deoxrDPHPMixedRealityController::pSuggestBindings(){
 	for( i=0; i<2; i++ ){
 		const decString &basePath = basePathList[ i ];
 		
-		pAdd( b, pGripPoseAction( i == 0 ), basePath + "/input/aim/pose" );
+		pAdd( b, pPoseAction( i == 0 ), basePath + "/input/grip/pose" );
+		pAdd( b, pPoseAction2( i == 0 ), basePath + "/input/aim/pose" );
 		
 		pAdd( b, deVROpenXR::eiaGripPress, basePath + "/input/squeeze/value" );
 		pAdd( b, deVROpenXR::eiaGripGrab, basePath + "/input/squeeze/value" );
@@ -133,7 +134,7 @@ void deoxrDPHPMixedRealityController::pAddDevice( bool left ){
 		return;
 	}
 	
-	pCreateDevice( device, left, "hpmrc_" );
+	pCreateDevice( device, left, "hpmrc_", true );
 	
 	deoxrDeviceComponent * const trigger = pAddComponentTrigger( device );
 	pAddAxisTrigger( device, trigger );

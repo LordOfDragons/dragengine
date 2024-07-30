@@ -165,8 +165,9 @@ protected:
 		bool &hasLeft, bool &hasRight ) const;
 	
 	bool pHasAnyHandDevice( deoxrDevice *deviceLeft, deoxrDevice *deviceRight ) const;
-
-	deVROpenXR::eInputActions pGripPoseAction( bool left ) const;
+	
+	deVROpenXR::eInputActions pPoseAction( bool left ) const;
+	deVROpenXR::eInputActions pPoseAction2( bool left ) const;
 	
 	void pAdd( deoxrInstance::sSuggestBinding *&bindings,
 		deVROpenXR::eInputActions inputAction, const char *path ) const;
@@ -174,7 +175,8 @@ protected:
 	bool pMatchesProfile( const deoxrPath &path ) const;
 	
 	/** Add device with basic parameters for left or right hand. */
-	void pCreateDevice( deoxrDevice::Ref &device, bool leftHand, const char *idPrefix );
+	void pCreateDevice( deoxrDevice::Ref &device, bool leftHand,
+		const char *idPrefix, bool withOrientationAction );
 	
 	/** Add component. */
 	deoxrDeviceComponent *pAddComponent( deoxrDevice &device,

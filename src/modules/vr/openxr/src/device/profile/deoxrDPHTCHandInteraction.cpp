@@ -100,7 +100,7 @@ void deoxrDPHTCHandInteraction::pSuggestBindings(){
 		
 		const decString &basePath = basePathList[ i ];
 		
-		pAdd( b, pGripPoseAction( i == 0 ), basePath + "/input/aim/pose" );
+		pAdd( b, pPoseAction( i == 0 ), basePath + "/input/grip/pose" );
 		
 		pAdd( b, deVROpenXR::eiaTriggerAnalog, basePath + "/input/select/value" );
 		pAdd( b, deVROpenXR::eiaGripGrab, basePath + "/input/squeeze/value" );
@@ -126,7 +126,7 @@ void deoxrDPHTCHandInteraction::pAddDevice( bool left ){
 	deoxrDeviceButton::Ref button;
 	deoxrDeviceAxis::Ref axis;
 	
-	pCreateDevice( device, left, "htchi_" );
+	pCreateDevice( device, left, "htchi_", false );
 	
 	// controller simulation
 	deoxrDeviceComponent * const trigger = pAddComponentTrigger( device );

@@ -78,7 +78,7 @@ void deoxrDPHUAWEIControllerInteraction::pSuggestBindings(){
 	// - /input/grip/pose
 	// - /output/haptic
 	
-	const int bindingCount = 11 * 2;
+	const int bindingCount = 12 * 2;
 	deoxrInstance::sSuggestBinding bindings[ bindingCount ];
 	deoxrInstance::sSuggestBinding *b = bindings;
 	
@@ -90,7 +90,8 @@ void deoxrDPHUAWEIControllerInteraction::pSuggestBindings(){
 	for( i=0; i<2; i++ ){
 		const decString &basePath = basePathList[ i ];
 		
-		pAdd( b, pGripPoseAction( i == 0 ), basePath + "/input/aim/pose" );
+		pAdd( b, pPoseAction( i == 0 ), basePath + "/input/grip/pose" );
+		pAdd( b, pPoseAction2( i == 0 ), basePath + "/input/aim/pose" );
 		
 		pAdd( b, deVROpenXR::eiaButtonPrimaryPress, basePath + "/input/home/click" );
 		pAdd( b, deVROpenXR::eiaButtonSecondaryPress, basePath + "/input/back/click" );
@@ -121,7 +122,7 @@ void deoxrDPHUAWEIControllerInteraction::pAddDevice( bool left ){
 		return;
 	}
 	
-	pCreateDevice( device, left, "hci_" );
+	pCreateDevice( device, left, "hci_", true );
 	
 	deoxrDeviceComponent * const trigger = pAddComponentTrigger( device );
 	pAddAxisTrigger( device, trigger );

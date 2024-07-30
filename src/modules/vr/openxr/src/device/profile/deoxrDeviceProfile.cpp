@@ -125,9 +125,12 @@ bool deoxrDeviceProfile::pHasAnyHandDevice( deoxrDevice *deviceLeft, deoxrDevice
 	return hasLeft || hasRight;
 }
 
-deVROpenXR::eInputActions deoxrDeviceProfile::pGripPoseAction( bool left ) const{
-// 	return deVROpenXR::eiaPose;
+deVROpenXR::eInputActions deoxrDeviceProfile::pPoseAction( bool left ) const{
 	return left ? deVROpenXR::eiaPoseLeft : deVROpenXR::eiaPoseRight;
+}
+
+deVROpenXR::eInputActions deoxrDeviceProfile::pPoseAction2( bool left ) const{
+	return left ? deVROpenXR::eiaPoseLeft2 : deVROpenXR::eiaPoseRight2;
 }
 
 void deoxrDeviceProfile::pAdd( deoxrInstance::sSuggestBinding *&bindings,
@@ -149,7 +152,8 @@ bool deoxrDeviceProfile::pMatchesProfile( const deoxrPath &path ) const{
 		&& pPath == state.interactionProfile;
 }
 
-void deoxrDeviceProfile::pCreateDevice( deoxrDevice::Ref &device, bool leftHand, const char *idPrefix ){
+void deoxrDeviceProfile::pCreateDevice( deoxrDevice::Ref &device, bool leftHand,
+const char *idPrefix, bool withOrientationAction ){
 	deVROpenXR &oxr = GetInstance().GetOxr();
 	device.TakeOver( new deoxrDevice( oxr, *this ) );
 	
@@ -168,11 +172,19 @@ void deoxrDeviceProfile::pCreateDevice( deoxrDevice::Ref &device, bool leftHand,
 		device->SetSubactionPath( GetInstance().GetPathHandRight() );
 	}
 	
-	device->SetActionPose( oxr.GetAction( pGripPoseAction( leftHand ) ) );
+	device->SetActionPose( oxr.GetAction( pPoseAction( leftHand ) ) );
+	if( withOrientationAction ){
+		device->SetActionPoseOrientation( oxr.GetAction( pPoseAction2( leftHand ) ) );
+	}
+	
 	device->SetID( id );
 	
 	device->SetSpacePose( deoxrSpace::Ref::New( new deoxrSpace( *pGetSession(),
 		device->GetActionPose(), device->GetSubactionPath(), pDeviceRotation ) ) );
+	if( withOrientationAction ){
+		device->SetSpacePoseOrientation( deoxrSpace::Ref::New( new deoxrSpace( *pGetSession(),
+			device->GetActionPoseOrientation(), device->GetSubactionPath(), pDeviceRotation ) ) );
+	}
 }
 
 deoxrDeviceComponent *deoxrDeviceProfile::pAddComponent( deoxrDevice &device,

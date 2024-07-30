@@ -98,7 +98,7 @@ void deoxrDPMSFTHandInteraction::pSuggestBindings(){
 		
 		const decString &basePath = basePathList[ i ];
 		
-		pAdd( b, pGripPoseAction( i == 0 ), basePath + "/input/aim/pose" );
+		pAdd( b, pPoseAction( i == 0 ), basePath + "/input/grip/pose" );
 		
 		pAdd( b, deVROpenXR::eiaTriggerAnalog, basePath + "/input/select/value" );
 		pAdd( b, deVROpenXR::eiaGripGrab, basePath + "/input/squeeze/value" );
@@ -124,7 +124,7 @@ void deoxrDPMSFTHandInteraction::pAddDevice( bool left ){
 	deoxrDeviceButton::Ref button;
 	deoxrDeviceAxis::Ref axis;
 	
-	pCreateDevice( device, left, "msfthi_" );
+	pCreateDevice( device, left, "msfthi_", false );
 	
 	// controller simulation
 	deoxrDeviceComponent * const trigger = pAddComponentTrigger( device );

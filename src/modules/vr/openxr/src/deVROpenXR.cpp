@@ -934,6 +934,8 @@ void deVROpenXR::pCreateActionSet(){
 	pActionSet->AddPoseAction( "pose", "Pose" );
 	pActionSet->AddPoseAction( "pose_left", "Pose Left" );
 	pActionSet->AddPoseAction( "pose_right", "Pose Right" );
+	pActionSet->AddPoseAction( "pose_left2", "Pose Left 2" );
+	pActionSet->AddPoseAction( "pose_right2", "Pose Right 2" );
 	
 	// allow device profiles to add actions
 	const int count = pDeviceProfiles.GetCount();

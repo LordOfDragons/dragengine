@@ -69,7 +69,7 @@ void deoxrDPOculusGoController::pSuggestBindings(){
 	// - /input/grip/pose
 	// - /input/aim/pose
 	
-	const int bindingCount = 7 * 2;
+	const int bindingCount = 8 * 2;
 	deoxrInstance::sSuggestBinding bindings[ bindingCount ];
 	deoxrInstance::sSuggestBinding *b = bindings;
 	
@@ -80,7 +80,8 @@ void deoxrDPOculusGoController::pSuggestBindings(){
 	for( i=0; i<2; i++ ){
 		const decString &basePath = basePathList[ i ];
 		
-		pAdd( b, pGripPoseAction( i == 0 ), basePath + "/input/aim/pose" );
+		pAdd( b, pPoseAction( i == 0 ), basePath + "/input/grip/pose" );
+		pAdd( b, pPoseAction2( i == 0 ), basePath + "/input/aim/pose" );
 		
 		pAdd( b, deVROpenXR::eiaTriggerPress, basePath + "/input/trigger/click" );
 		
@@ -103,7 +104,7 @@ void deoxrDPOculusGoController::pAddDevice( bool left ){
 		return;
 	}
 	
-	pCreateDevice( device, left, "ogc_" );
+	pCreateDevice( device, left, "ogc_", true );
 	
 	deoxrDeviceComponent * const trigger = pAddComponentTrigger( device );
 	pAddButtonTrigger( device, trigger, false ); // has to be button 0
