@@ -92,10 +92,10 @@ class ToolTipManager
 	
 	/** \brief Dispose of tool tip manager. */
 	func void dispose()
+		pDesktop = null // has to come first as dispose protection
+		
 		setPopup(null)
 		pToolTip = null
-		
-		pDesktop = null
 	end
 	
 	
@@ -163,6 +163,10 @@ class ToolTipManager
 	
 	/** \brief Update tool tip. */
 	func void update()
+		if pDesktop == null
+			return // dispose protection
+		end
+		
 		var Widget widget = pDesktop.getHoverWidget()
 		var Object toolTip
 		
