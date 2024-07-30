@@ -44,6 +44,7 @@ deoxrDPBaseTwoHandController( instance,
 	deoxrPath( instance, "/interaction_profiles/ext/hand_interaction_ext" ),
 	"Hand Interaction" )
 {
+	SetDeviceRotation( decVector( DEG2RAD * -90.0f, 0.0f, 0.0f ) );
 }
 
 deoxrDPHandInteraction::~deoxrDPHandInteraction(){

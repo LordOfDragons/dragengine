@@ -46,6 +46,8 @@ deoxrDPBaseTwoHandController( instance,
 {
 	pPathHandLeft = deoxrPath( instance, "/user/hand_htc/left" );
 	pPathHandRight = deoxrPath( instance, "/user/hand_htc/right" );
+	
+	SetDeviceRotation( decVector( DEG2RAD * -90.0f, 0.0f, 0.0f ) );
 }
 
 deoxrDPHTCHandInteraction::~deoxrDPHTCHandInteraction(){

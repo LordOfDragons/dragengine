@@ -43,6 +43,7 @@ deoxrDPBaseTwoHandController( instance,
 	deoxrPath( instance, "/interaction_profiles/microsoft/hand_interaction" ),
 	"MSFT Hand Controller" )
 {
+	SetDeviceRotation( decVector( DEG2RAD * -90.0f, 0.0f, 0.0f ) );
 }
 
 deoxrDPMSFTHandInteraction::~deoxrDPMSFTHandInteraction(){
