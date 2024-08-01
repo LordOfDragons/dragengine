@@ -32,15 +32,19 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\deMsgdkAsyncTask.h" />
     <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\deMsgdkPendingRequest.h" />
     <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\deMsgdkServiceMsgdk.h" />
     <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\deMicrosoftGdk.h" />
     <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\gdk_include.h" />
+    <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\tasks\deMTInitialize.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\modules\service\msgdk\src\deMsgdkAsyncTask.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\service\msgdk\src\deMsgdkPendingRequest.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\service\msgdk\src\deMsgdkServiceMsgdk.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\service\msgdk\src\deMicrosoftGdk.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\service\msgdk\src\tasks\deMTInitialize.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\..\..\..\src\modules\service\msgdk\src\module.xml" />

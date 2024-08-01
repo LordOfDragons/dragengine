@@ -25,6 +25,7 @@
 #include "gdk_include.h"
 #include "deMicrosoftGdk.h"
 #include "deMsgdkServiceMsgdk.h"
+#include "tasks/deMTInitialize.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/utils/decUniqueID.h>
@@ -39,25 +40,6 @@
 
 const char * const deMsgdkServiceMsgdk::serviceName = "MicrosoftGdk";
 
-deMsgdkServiceMsgdk::cContext::cContext(deMsgdkServiceMsgdk& acontext) :
-context(acontext),
-valid(true)
-{
-}
-
-#define GDK_ASYNC_CALLBACK(ab,func)\
-	ab = std::make_unique<XAsyncBlock>();\
-    ZeroMemory(ab.get(), sizeof(*ab));\
-    ab->queue = nullptr;\
-    ab->context = pContext;\
-    ab->callback = [](XAsyncBlock* ab2){\
-        const AsyncBlockPtr abref = std::unique_ptr<XAsyncBlock>(ab2);\
-		const cContext::Ref context(static_cast<cContext*>(ab2->context));\
-		if(context->valid){\
-			context->context.func(ab2);\
-		}\
-    };
-
 // Constructor, destructor
 ////////////////////////////
 
@@ -66,24 +48,12 @@ deMsgdkServiceMsgdk::deMsgdkServiceMsgdk(deMicrosoftGdk &module,
 pModule(module),
 pService(service),
 pIsInitialized(false),
-pContext(cContext::Ref::New(new cContext(*this))),
+pInvalidator(deMsgdkAsyncTask::Invalidator::Ref::New(new deMsgdkAsyncTask::Invalidator)),
 pUser(nullptr),
 pUserLocalId({})
 {
 	pModule.InitSdk(data);
-
-	AsyncBlockPtr ab;
-	GDK_ASYNC_CALLBACK(ab, pOnInitialize);
-
-	// according to documentation:
-	// - use first AddDefaultUserSilently
-	// - if E_GAMEUSER_NO_DEFAULT_USER use None to show login dialog
-	//   - if cancelled this causes E_ABORT error
-	pModule.LogInfo("Calling XUserAddAsync");
-	//AssertAsync(XUserAddAsync(XUserAddOptions::AllowGuests, ab.get()), ab);
-	//AssertAsync(XUserAddAsync(XUserAddOptions::AddDefaultUserSilently, ab.get()), ab);
-	//AssertAsync(XUserAddAsync(XUserAddOptions::AddDefaultUserAllowingUI, ab.get()), ab);
-	AssertAsync(XUserAddAsync(XUserAddOptions::None, ab.get()), ab);
+	new deMTInitialize(*this);
 }
 
 deMsgdkServiceMsgdk::~deMsgdkServiceMsgdk()
@@ -99,7 +69,7 @@ deMsgdkServiceMsgdk::~deMsgdkServiceMsgdk()
 		pUser = nullptr;
 	}
 
-	pContext->valid = false;
+	pInvalidator->Invalidate();
 }
 
 
@@ -154,6 +124,22 @@ deServiceObject::Ref deMsgdkServiceMsgdk::RunAction( const deServiceObject &acti
 
 // Request
 ////////////
+
+void deMsgdkServiceMsgdk::SetUser(XUserHandle user)
+{
+	if(pUser)
+	{
+		XUserCloseHandle(pUser);
+		pUser = nullptr;
+		pUserLocalId = {};
+	}
+
+	pUser = user;
+
+	if(pUser){
+		AssertResult(XUserGetLocalId(pUser, &pUserLocalId));
+	}
+}
 
 deMsgdkPendingRequest *deMsgdkServiceMsgdk::GetPendingRequestWithId(const decUniqueID &id) const
 {
@@ -276,16 +262,10 @@ void deMsgdkServiceMsgdk::FailRequest(const deMsgdkPendingRequest::Ref &pr, cons
 	pModule.GetGameEngine()->GetServiceManager()->QueueRequestFailed(pService, pr->id, pr->data);
 }
 
-void deMsgdkServiceMsgdk::AssertAsync(HRESULT result, std::unique_ptr<XAsyncBlock> &ab){
-	if (SUCCEEDED(result))
+void deMsgdkServiceMsgdk::AssertResult(HRESULT result)
+{
+	if (FAILED(result))
     {
-        // The call succeeded, so release the std::unique_ptr ownership of
-		// XAsyncBlock* since the callback will take over ownership.
-        // If the call fails, the std::unique_ptr will keep ownership
-		// and delete the XAsyncBlock*
-        ab.release();
-
-	}else{
 		DETHROW_INFO(deeInvalidAction, pModule.GetErrorCodeString(result));
     }
 }
@@ -295,42 +275,12 @@ void deMsgdkServiceMsgdk::AssertAsync(HRESULT result, std::unique_ptr<XAsyncBloc
 // Callbacks
 //////////////
 
-void deMsgdkServiceMsgdk::pOnInitialize(XAsyncBlock* ab)
+void deMsgdkServiceMsgdk::SetInitialized()
 {
-	if(pUser)
-	{
-		XUserCloseHandle(pUser);
-		pUser = nullptr;
-	}
-
-	HRESULT result = XUserAddResult(ab, &pUser);
-	pModule.LogInfoFormat("deMsgdkServiceMsgdk.pOnInitialize: res(%d)[%s]",
-		result, pModule.GetErrorCodeString(result));
-
-	const deServiceObject::Ref data(deServiceObject::Ref::New(new deServiceObject));
-	
-	data->SetStringChildAt("event", "initialized");
-	pSetResultFields(result, data);
-	
-	if(SUCCEEDED(result))
-	{
-		result = XUserGetLocalId(pUser, &pUserLocalId);
-		if(SUCCEEDED(result))
-		{
-			pIsInitialized = true;
-		}
-		else
-		{
-			pSetResultFields(result, data);
-		}
-	}
-	
-	pModule.GetGameEngine()->GetServiceManager()->QueueEventReceived(pService, data);
+	pIsInitialized = true;
 }
 
-
-
-void deMsgdkServiceMsgdk::pSetResultFields(HRESULT result, deServiceObject& so) const
+void deMsgdkServiceMsgdk::SetResultFields(HRESULT result, deServiceObject& so) const
 {
 	if(SUCCEEDED(result)){
 		so.SetBoolChildAt("success", true);
@@ -341,4 +291,11 @@ void deMsgdkServiceMsgdk::pSetResultFields(HRESULT result, deServiceObject& so) 
 		so.SetIntChildAt("errorResult", result);
 		so.SetStringChildAt("message", pModule.GetErrorCodeString(result));
 	}
+}
+
+void deMsgdkServiceMsgdk::SetResultFields(const deException& exception, deServiceObject& so) const
+{
+	so.SetBoolChildAt("success", false);
+	so.SetStringChildAt("error", exception.GetName().GetMiddle(3));
+	so.SetStringChildAt("message", exception.GetDescription());
 }

@@ -69,7 +69,7 @@ deBaseModule *MSGDKCreateModule(deLoadableModule *loadableModule)
 #define E_GAME_MISSING_GAME_CONFIG ((HRESULT)0x87e5001f)
 #define E_GAMEPACKAGE_CONFIG_NO_MSAAPPID_NOTITLEID ((HRESULT)0x8924520b)
 
-const int vErrorCodeCount = 55;
+const int vErrorCodeCount = 56;
 static struct sErrorCode{
 	HRESULT code;
 	const char *string;
@@ -128,7 +128,8 @@ static struct sErrorCode{
 	{E_GAMERUNTIME_GAMECONFIG_BAD_FORMAT, "E_GAMERUNTIME_GAMECONFIG_BAD_FORMAT"},
 	{E_GAMERUNTIME_INVALID_HANDLE, "E_GAMERUNTIME_INVALID_HANDLE"},
 	{E_INVALIDARG, "E_INVALIDARG"},
-	{E_ABORT, "E_ABORT"}
+	{E_ABORT, "E_ABORT"},
+	{ERROR_SUCCESS, "SUCCEEDED"}
 };
 
 

@@ -29,6 +29,7 @@
 
 #include "gdk_include.h"
 #include "deMsgdkPendingRequest.h"
+#include "deMsgdkAsyncTask.h"
 
 #include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/systems/modules/service/deBaseServiceService.h>
@@ -49,23 +50,11 @@ public:
 	
 
 private:
-	class cContext : public deObject
-	{
-	public:
-		typedef deTObjectReference<cContext> Ref;
-		deMsgdkServiceMsgdk &context;
-		bool valid;
-		cContext(deMsgdkServiceMsgdk &context);
-	};
-
-	typedef std::unique_ptr<XAsyncBlock> AsyncBlockPtr;
-
-
 	deMicrosoftGdk &pModule;
 	deService * const pService;
 	decObjectList pPendingRequests;
 	bool pIsInitialized;
-	const cContext::Ref pContext;
+	const deMsgdkAsyncTask::Invalidator::Ref pInvalidator;
 	
 	XUserHandle pUser;
 	XUserLocalId pUserLocalId;
@@ -114,6 +103,14 @@ public:
 	
 	/** \name Request */
 	/*@{*/
+	inline deMicrosoftGdk &GetModule() const{ return pModule; }
+	inline deService *GetService() const{ return pService; }
+	inline const deMsgdkAsyncTask::Invalidator::Ref &GetInvalidator() const{ return pInvalidator; }
+	
+	inline XUserHandle GetUser() const{ return pUser; }
+	inline const XUserLocalId &GetUserLocalId() const{ return pUserLocalId; }
+	void SetUser(XUserHandle user);
+
 	deMsgdkPendingRequest *GetPendingRequestWithId(const decUniqueID &id) const;
 	deMsgdkPendingRequest::Ref RemoveFirstPendingRequestWithId(const decUniqueID &id);
 	deMsgdkPendingRequest::Ref RemoveFirstPendingRequestWithFunction(const char *function);
@@ -124,17 +121,17 @@ public:
 	
 	void FailRequest(const decUniqueID &id, const deException &e);
 	void FailRequest(const deMsgdkPendingRequest::Ref &request, const deException &e);
-	void AssertAsync(HRESULT result, std::unique_ptr<XAsyncBlock> &ab);
+	void AssertResult(HRESULT result);
 	/*@}*/
 	
 	
 	
-private:
 	/** \name Callbacks */
 	/*@{*/
-	void pOnInitialize(XAsyncBlock* ab);
+	void SetInitialized();
 	
-	void pSetResultFields(HRESULT result, deServiceObject &so) const;
+	void SetResultFields(HRESULT result, deServiceObject &so) const;
+	void SetResultFields(const deException &exception, deServiceObject &so) const;
 	/*@}*/
 };
 
