@@ -336,8 +336,8 @@ class ServiceEos implements ServiceStats, ServiceUser, ServiceListener
 			if credentials.exchangeCode != null
 				so.setStringChildAt("exchangeCode", credentials.exchangeCode)
 			end
-			if credentials.id != null
-				so.setStringChildAt("userId", credentials.id)
+			if credentials.username != null
+				so.setStringChildAt("userId", credentials.username)
 			end
 			if credentials.password != null
 				so.setStringChildAt("userPassword", credentials.password)

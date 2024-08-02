@@ -121,6 +121,7 @@ public:
 	
 	deServiceObject::Ref GetUserFeatures();
 	deServiceObject::Ref GetUserInfo();
+	deServiceObject::Ref IsUserLoggedIn();
 	
 	void FailRequest(const decUniqueID &id, HRESULT result);
 	void FailRequest(const decUniqueID &id, const deException &e);
@@ -133,8 +134,6 @@ public:
 	
 	/** \name Callbacks */
 	/*@{*/
-	void SetInitialized();
-	
 	void SetResultFields(HRESULT result, deServiceObject &so) const;
 	void SetResultFields(const deException &exception, deServiceObject &so) const;
 	/*@}*/

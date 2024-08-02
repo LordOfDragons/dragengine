@@ -39,7 +39,8 @@
     <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\deMsgdkServiceMsgdk.h" />
     <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\deMicrosoftGdk.h" />
     <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\gdk_include.h" />
-    <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\tasks\deMTInitialize.h" />
+    <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\tasks\deMTAddUser.h" />
+    <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\tasks\deMTGetTokenAndSignature.h" />
     <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\tasks\deMTLoadUserResource.h" />
   </ItemGroup>
   <ItemGroup>
@@ -49,7 +50,8 @@
     <ClCompile Include="..\..\..\..\src\modules\service\msgdk\src\deMsgdkResourceUrl.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\service\msgdk\src\deMsgdkServiceMsgdk.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\service\msgdk\src\deMicrosoftGdk.cpp" />
-    <ClCompile Include="..\..\..\..\src\modules\service\msgdk\src\tasks\deMTInitialize.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\service\msgdk\src\tasks\deMTAddUser.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\service\msgdk\src\tasks\deMTGetTokenAndSignature.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\service\msgdk\src\tasks\deMTLoadUserResource.cpp" />
   </ItemGroup>
   <ItemGroup>

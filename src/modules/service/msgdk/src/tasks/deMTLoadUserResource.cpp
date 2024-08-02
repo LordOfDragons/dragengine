@@ -103,8 +103,8 @@ public:
 			return;
 		}
 		
-		pService.GetModule().LogInfoFormat("deMTLoadUserResource.FinishRequest: url=%s resource=%p",
-			pUrl.url.GetString(), resource);
+		pService.GetModule().LogInfoFormat("deMTLoadUserResource.FinishRequest: url=%s resource=%s",
+			pUrl.url.GetString(), resource ? "valid" : "null");
 		
 		const deMsgdkPendingRequest::Ref pr(pService.RemoveFirstPendingRequestWithId(pRequestId));
 		if(!pr)
@@ -206,8 +206,16 @@ void deMTLoadUserResource::GetGamerPicture()
 			}
 
 			pService.NewPendingRequest(pRequestId, "loadUserResource", data);
-			pService.AssertResult(XUserGetGamerPictureAsync(user, size, GetAsyncBlockPtr()),
-				"deMTLoadUserResource.GetGamerPicture.XUserGetGamerPictureAsync");
+			try
+			{
+				pService.AssertResult(XUserGetGamerPictureAsync(user, size, GetAsyncBlockPtr()),
+					"deMTLoadUserResource.GetGamerPicture.XUserGetGamerPictureAsync");
+			}
+			catch(const deException &e)
+			{
+				pService.FailRequest(pRequestId, e);
+				FreeReference();
+			}
 		}
 		else
 		{

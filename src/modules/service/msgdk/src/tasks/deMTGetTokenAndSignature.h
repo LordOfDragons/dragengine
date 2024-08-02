@@ -22,37 +22,39 @@
  * SOFTWARE.
  */
 
-#ifndef DEMTINITIALIZE_H
-#define DEMTINITIALIZE_H
+#ifndef _DEMTGETTOKENANDSIGNATURE_H
+#define _DEMTGETTOKENANDSIGNATURE_H
 
 #include "../deMsgdkAsyncTask.h"
+
+#include <dragengine/common/utils/decUniqueID.h>
+#include <dragengine/resources/service/deServiceObject.h>
 
 class deMsgdkServiceMsgdk;
 
 
 /**
- * Initialize task.
+ * Add user task.
  */
-class deMTInitialize : public deMsgdkAsyncTask{
+class deMTGetTokenAndSignature : public deMsgdkAsyncTask{
 private:
 	deMsgdkServiceMsgdk &pService;
-
+	const decUniqueID pRequestId;
 
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create asynchronous task. Object destroys itself automatically once finished. */
-	deMTInitialize(deMsgdkServiceMsgdk &service);
+	deMTGetTokenAndSignature(deMsgdkServiceMsgdk &service,
+		const decUniqueID &id, const deServiceObject &request);
 	
 protected:
 	/** Delete asynchronous task. */
-	~deMTInitialize() override;
+	~deMTGetTokenAndSignature() override;
 	/*@}*/
 
 
 protected:
-	void pAutoLoginUser();
-
 	void OnFinished() override;
 };
 

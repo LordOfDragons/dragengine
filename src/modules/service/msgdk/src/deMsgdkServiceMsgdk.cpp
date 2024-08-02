@@ -27,8 +27,9 @@
 #include "deMsgdkServiceMsgdk.h"
 #include "deMsgdkResourceUrl.h"
 #include "convert/deMCCommon.h"
-#include "tasks/deMTInitialize.h"
 #include "tasks/deMTLoadUserResource.h"
+#include "tasks/deMTAddUser.h"
+#include "tasks/deMTGetTokenAndSignature.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/utils/decUniqueID.h>
@@ -53,15 +54,16 @@ pService(service),
 pIsInitialized(false),
 pInvalidator(deMsgdkAsyncTask::Invalidator::Ref::New(new deMsgdkAsyncTask::Invalidator)),
 pUser(nullptr),
-pUserId(0)
+pUserId(0),
+pUserLocalId({})
 {
 	pModule.InitSdk(data);
-	new deMTInitialize(*this);
+	pIsInitialized = true;
 }
 
 deMsgdkServiceMsgdk::~deMsgdkServiceMsgdk()
 {
-	while( pPendingRequests.GetCount() > 0 )
+	while(pPendingRequests.GetCount() > 0)
 	{
 		CancelRequest(((deMsgdkPendingRequest*)pPendingRequests.GetAt(0))->id);
 	}
@@ -86,6 +88,14 @@ void deMsgdkServiceMsgdk::StartRequest(const decUniqueID& id, const deServiceObj
 	if(function == "loadUserResource")
 	{
 		new deMTLoadUserResource(*this, id, request);
+	}
+	else if(function == "userAdd")
+	{
+		new deMTAddUser(*this, id, request);
+	}
+	else if(function == "getTokenAndSignature")
+	{
+		new deMTGetTokenAndSignature(*this, id, request);
 	}
 	else
 	{
@@ -116,11 +126,19 @@ deServiceObject::Ref deMsgdkServiceMsgdk::RunAction( const deServiceObject &acti
 	if(function == "getUserFeatures")
 	{
 		return GetUserFeatures();
-
 	}
 	else if(function == "getUserInfo")
 	{
 		return GetUserInfo();
+	}
+	else if(function == "isUserLoggedIn")
+	{
+		return IsUserLoggedIn();
+	}
+	else if(function == "userRemove")
+	{
+		SetUser(nullptr);
+		return nullptr;
 	}
 	else
 	{
@@ -287,6 +305,11 @@ deServiceObject::Ref deMsgdkServiceMsgdk::GetUserInfo()
 	return so;
 }
 
+deServiceObject::Ref deMsgdkServiceMsgdk::IsUserLoggedIn()
+{
+	return deServiceObject::NewBool(pUser != nullptr);
+}
+
 
 
 void deMsgdkServiceMsgdk::FailRequest(const decUniqueID& id, HRESULT result)
@@ -349,11 +372,6 @@ void deMsgdkServiceMsgdk::AssertResult(HRESULT result, const char *source)
 
 // Callbacks
 //////////////
-
-void deMsgdkServiceMsgdk::SetInitialized()
-{
-	pIsInitialized = true;
-}
 
 void deMsgdkServiceMsgdk::SetResultFields(HRESULT result, deServiceObject& so) const
 {

@@ -550,10 +550,10 @@ class BaseGameServices
 	 * \throws EInvalidParam One or more required configuration parameter is missing.
 	 * \throws EInvalidAction Microsoft GDK is already initialized.
 	 */
-	func void initMsgdk(ServiceInitListener listener)
+	func void initMsgdk()
 		var ServiceMsgdk.InitParameters params = ServiceMsgdk.InitParameters.new()
 		params.pathGameConfig = pConfiguration.getStringAt("msgdk.pathGameConfig", null)
-		initMsgdk(params, listener)
+		initMsgdk(params)
 	end
 	
 	/**
@@ -565,30 +565,16 @@ class BaseGameServices
 	 * \throws EInvalidParam One or more parameter is invalid.
 	 * \throws EInvalidAction Microsoft GDK is already initialized.
 	 */
-	func void initMsgdk(ServiceMsgdk.InitParameters params, ServiceInitListener listener)
+	func void initMsgdk(ServiceMsgdk.InitParameters params)
 		if pMsgdk != null
 			throw EInvalidAction.new("Already initialized")
 		end
 		
 		pConsole.addMessage("Initialize Microsoft GDK service")
-		pMsgdk = ServiceMsgdk.new(params, BlockServiceInitListener.new(block Object service, Exception exception
-			pInitializeCount--
-			if exception == null
-				pUser.add(pModio)
-				pConsole.addMessage("Initialize Microsoft GDK service succeeded")
-				if listener != null
-					listener.onServiceInit(service, exception)
-				end
-				
-			else
-				pConsole.addError("Failed initialize Microsoft GDK service", exception)
-				if listener != null
-					listener.onServiceInit(service, exception)
-				end
-				closeModio()
-			end
-		end))
-		pInitializeCount++
+		pMsgdk = ServiceMsgdk.new(params)
+		
+		pUser.add(pMsgdk)
+		pConsole.addMessage("Initialize Microsoft GDK service succeeded")
 	end
 	
 	/**
@@ -604,7 +590,7 @@ class BaseGameServices
 	func void autoInitMsgdk()
 		if ServiceMsgdk.isServiceSupported() and pConfiguration.has("msgdk.pathGameConfig")
 			try
-				initMsgdk(null)
+				initMsgdk()
 				
 			catch Exception e
 				closeMsgdk()

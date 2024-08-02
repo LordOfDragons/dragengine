@@ -42,10 +42,13 @@
     <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\deMsgdkResourceUrl.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\tasks\deMTInitialize.h">
+    <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\tasks\deMTLoadUserResource.h">
       <Filter>Headerdateien\tasks</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\tasks\deMTLoadUserResource.h">
+    <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\tasks\deMTAddUser.h">
+      <Filter>Headerdateien\tasks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\tasks\deMTGetTokenAndSignature.h">
       <Filter>Headerdateien\tasks</Filter>
     </ClInclude>
   </ItemGroup>
@@ -71,7 +74,10 @@
     <ClCompile Include="..\..\..\..\src\modules\service\msgdk\src\tasks\deMTLoadUserResource.cpp">
       <Filter>Quelldateien\tasks</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\service\msgdk\src\tasks\deMTInitialize.cpp">
+    <ClCompile Include="..\..\..\..\src\modules\service\msgdk\src\tasks\deMTAddUser.cpp">
+      <Filter>Quelldateien\tasks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\service\msgdk\src\tasks\deMTGetTokenAndSignature.cpp">
       <Filter>Quelldateien\tasks</Filter>
     </ClCompile>
   </ItemGroup>

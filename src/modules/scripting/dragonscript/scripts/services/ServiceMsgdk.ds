@@ -62,8 +62,6 @@ class ServiceMsgdk implements ServiceUser, ServiceListener
 	
 	var Service pService
 	var InitParameters pInitParameters
-	var ServiceInitListener pInitListener
-	var Boolean pIsInitialized
 	var SafeArray pUserListeners
 	var BaseServiceConversions pConversions
 	var Dictionary pOnceListeners
@@ -71,15 +69,13 @@ class ServiceMsgdk implements ServiceUser, ServiceListener
 	/**
 	 * \brief Create service ServiceMsgdk.
 	 * \param params Init parameters.
-	 * \param listener Listener called if initialization finished. Can be null.
 	 * \throws EInvalidParam Microsoft GDK service module is not present.
 	 * \throws EInvalidAction Microsoft GDK can not be initialized.
 	 */
-	func new(InitParameters params, ServiceInitListener listener)
+	func new(InitParameters params)
 		pInitParameters = InitParameters.new()
 		pInitParameters.pathGameConfig = params.pathGameConfig
-		pInitListener = listener
-
+		
 		pUserListeners = SafeArray.new()
 		pConversions = BaseServiceConversions.new()
 		pOnceListeners = Dictionary.new()
@@ -93,7 +89,6 @@ class ServiceMsgdk implements ServiceUser, ServiceListener
 	
 	/** \brief Dispose of Microsoft GDK service. */
 	func void dispose()
-		pInitListener = null
 		if pUserListeners != null
 			pUserListeners.removeAll()
 		end
@@ -121,19 +116,6 @@ class ServiceMsgdk implements ServiceUser, ServiceListener
 	
 	
 	
-	/**
-	 * \brief Determines if service is initialized and ready to be used.
-	 * 
-	 * If null is returned the service is still initializing. If returned object has true
-	 * value the service is initialized and ready to be used. If returned object has false
-	 * value the service failed to initialized and has to be disposed.
-	 */
-	func Boolean isInitialized()
-		return pIsInitialized
-	end
-	
-	
-	
 	func void addUserListener(ServiceUserListener listener)
 		if listener == null
 			throw ENullPointer.new("listener")
@@ -152,33 +134,47 @@ class ServiceMsgdk implements ServiceUser, ServiceListener
 	end
 	
 	func void loginUser(ServiceUserCredentials credentials, ServiceUserListener listener)
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "userAdd")
+		
 		if credentials != null
-			throw EInvalidParam.new("credentials has to be null")
+			so.setBoolChildAt("defaultUser", false)
+			so.setBoolChildAt("allowGuests", true)
+			
+		else
+			so.setBoolChildAt("defaultUser", true)
+			so.setBoolChildAt("allowGuests", false)
 		end
+		
+		runRequest(so, listener)
+	end
+	
+	func void logoutUser(ServiceUserListener listener)
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "userRemove")
+		pService.runAction(so)
 		
 		TimerBlock.new(0, false, block
 			pUserListeners.forEach(block ServiceUserListener each
-				each.onLoginUser(this, null)
+				each.onLogoutUser(this, null)
 			end)
 			if listener != null
-				listener.onLoginUser(this, null)
+				listener.onLogoutUser(this, null)
 			end
 		end)
 		
 		pService.nextId()
 	end
 	
-	func void logoutUser(ServiceUserListener listener)
-		throw EInvalidParam.new("not supported")
-	end
-	
 	func bool isUserLoggedIn()
-		return true
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "isUserLoggedIn")
+		return pService.runAction(so).getBoolean()
 	end
 	
 	func void getAuthToken(ServiceUserListener listener)
 		var ServiceObject so = ServiceObject.new()
-		so.setStringChildAt("function", "requestAuthToken")
+		so.setStringChildAt("function", "getTokenAndSignature")
 		
 		runRequest(so, listener)
 	end
@@ -246,7 +242,7 @@ class ServiceMsgdk implements ServiceUser, ServiceListener
 		var String function = response.getChildAt("function").getString()
 		var Object onceListener = getOnceListener(id)
 		
-		if function.equals("requestAuthToken")
+		if function.equals("getTokenAndSignature")
 			var ServiceUserAuthToken token = ServiceUserAuthToken.new()
 			token.provider = authProviderId
 			token.token = response.getChildAt("token").getString()
@@ -256,6 +252,14 @@ class ServiceMsgdk implements ServiceUser, ServiceListener
 			end)
 			if onceListener != null
 				(onceListener cast ServiceUserListener).onGetAuthToken(this, token, null)
+			end
+			
+		elif function.equals("userAdd")
+			pUserListeners.forEach(block ServiceUserListener each
+				each.onLoginUser(this, null)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceUserListener).onLoginUser(this, null)
 			end
 			
 		elif function.equals("loadUserResource")
@@ -280,7 +284,23 @@ class ServiceMsgdk implements ServiceUser, ServiceListener
 		var ServiceException exception = pConversions.createException(service, error)
 		var Object onceListener = getOnceListener(id)
 		
-		if function.equals("loadUserResource")
+		if function.equals("getTokenAndSignature")
+			pUserListeners.forEach(block ServiceUserListener each
+				each.onGetAuthToken(this, null, exception)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceUserListener).onGetAuthToken(this, null, exception)
+			end
+			
+		elif function.equals("userAdd")
+			pUserListeners.forEach(block ServiceUserListener each
+				each.onLoginUser(this, exception)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceUserListener).onLoginUser(this, exception)
+			end
+			
+		elif function.equals("loadUserResource")
 			var String url = error.getChildAt("url").getString()
 			
 			pUserListeners.forEach(block ServiceUserListener each
@@ -301,13 +321,8 @@ class ServiceMsgdk implements ServiceUser, ServiceListener
 			exception = pConversions.createException(service, event)
 		end
 		
-		if eventName.equals("initialized")
-			pIsInitialized = Boolean.new(success)
+		if eventName.equals("dummy")
 			
-			if pInitListener != null
-				pInitListener.onServiceInit(this, exception)
-			end
-			pInitListener = null
 		end
 	end
 	
