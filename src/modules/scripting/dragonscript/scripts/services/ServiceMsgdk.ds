@@ -25,6 +25,7 @@
 namespace Dragengine.Services
 pin Dragengine.Services.User
 pin Dragengine.Utils
+pin Dragengine.Gui
 
 
 /**
@@ -185,12 +186,51 @@ class ServiceMsgdk implements ServiceUser, ServiceListener
 	func void getUserInfo(ServiceUserListener listener)
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "getUserInfo")
+		so = pService.runAction(so)
 		
-		runRequest(so, listener)
+		var ServiceUserInfo info  = ServiceUserInfo.new()
+		var ServiceImage.Thumbnail thumbnail
+		
+		info.id = so.getChildAt("id").getString()
+		info.name = so.getChildAt("gamertagUniqueModern").getString()
+		info.displayName = so.getChildAt("gamertagModern").getString()
+		//info.profileUrl = so.getChildAt("profileUrl").getString()
+		info.avatar = ServiceImage.new()
+		info.avatar.url = so.getChildAt("gamerPicture").getString()
+		
+		thumbnail = ServiceImage.Thumbnail.new()
+		thumbnail.size = Point.new(64, 64)
+		thumbnail.url = so.getChildAt("gamerPictureSmall").getString()
+		info.avatar.thumbnails.add(thumbnail)
+		
+		thumbnail = ServiceImage.Thumbnail.new()
+		thumbnail.size = Point.new(208, 208)
+		thumbnail.url = so.getChildAt("gamerPictureMedium").getString()
+		info.avatar.thumbnails.add(thumbnail)
+		
+		thumbnail = ServiceImage.Thumbnail.new()
+		thumbnail.size = Point.new(424, 424)
+		thumbnail.url = so.getChildAt("gamerPictureLarge").getString()
+		info.avatar.thumbnails.add(thumbnail)
+		
+		TimerBlock.new(0, false, block
+			pUserListeners.forEach(block ServiceUserListener each
+				each.onGetUserInfo(this, info, null)
+			end)
+			if listener != null
+				listener.onGetUserInfo(this, info, null)
+			end
+		end)
+		
+		pService.nextId()
 	end
 	
 	func void loadUserResource(String url, ServiceUserListener listener)
-		throw EInvalidParam.new("not supported")
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "loadUserResource")
+		so.setStringChildAt("url", url)
+		
+		runRequest(so, listener)
 	end
 	
 	
@@ -218,8 +258,20 @@ class ServiceMsgdk implements ServiceUser, ServiceListener
 				(onceListener cast ServiceUserListener).onGetAuthToken(this, token, null)
 			end
 			
-		elif function.equals("getUserInfo")
-			// NOT IMPLEMENTED YET IN SERVICE MODULE
+		elif function.equals("loadUserResource")
+			var String url = response.getChildAt("url").getString()
+			var Object resource
+			var ServiceObject so = response.getChildAt("resource")
+			if so != null
+				resource = response.getChildAt("resource").getResource()
+			end
+			
+			pUserListeners.forEach(block ServiceUserListener each
+				each.onLoadUserResource(this, url, resource, null)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceUserListener).onLoadUserResource(this, url, resource, null)
+			end
 		end
 	end
 	
@@ -228,12 +280,14 @@ class ServiceMsgdk implements ServiceUser, ServiceListener
 		var ServiceException exception = pConversions.createException(service, error)
 		var Object onceListener = getOnceListener(id)
 		
-		if function.equals("getUserInfo")
+		if function.equals("loadUserResource")
+			var String url = error.getChildAt("url").getString()
+			
 			pUserListeners.forEach(block ServiceUserListener each
-				each.onGetUserInfo(this, null, exception)
+				each.onLoadUserResource(this, url, null, exception)
 			end)
 			if onceListener != null
-				(onceListener cast ServiceUserListener).onGetUserInfo(this, null, exception)
+				(onceListener cast ServiceUserListener).onLoadUserResource(this, url, null, exception)
 			end
 		end
 	end

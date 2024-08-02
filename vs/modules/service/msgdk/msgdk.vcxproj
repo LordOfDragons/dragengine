@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -32,19 +32,25 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\convert\deMCCommon.h" />
     <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\deMsgdkAsyncTask.h" />
     <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\deMsgdkPendingRequest.h" />
+    <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\deMsgdkResourceUrl.h" />
     <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\deMsgdkServiceMsgdk.h" />
     <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\deMicrosoftGdk.h" />
     <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\gdk_include.h" />
     <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\tasks\deMTInitialize.h" />
+    <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\tasks\deMTLoadUserResource.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\modules\service\msgdk\src\convert\deMCCommon.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\service\msgdk\src\deMsgdkAsyncTask.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\service\msgdk\src\deMsgdkPendingRequest.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\service\msgdk\src\deMsgdkResourceUrl.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\service\msgdk\src\deMsgdkServiceMsgdk.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\service\msgdk\src\deMicrosoftGdk.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\service\msgdk\src\tasks\deMTInitialize.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\service\msgdk\src\tasks\deMTLoadUserResource.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\..\..\..\src\modules\service\msgdk\src\module.xml" />

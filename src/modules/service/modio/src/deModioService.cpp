@@ -1053,7 +1053,7 @@ private:
 	const decString pPath;
 	
 public:
-	cLoadResourceTask ( deModioService &service, const decUniqueID &requestId,
+	cLoadResourceTask( deModioService &service, const decUniqueID &requestId,
 		const decString &path, deResourceLoader::eResourceType resourceType ) :
 	deParallelTask( &service.GetModule() ),
 	pService( service ),

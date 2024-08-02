@@ -36,8 +36,17 @@
     <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\deMsgdkAsyncTask.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\convert\deMCCommon.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\deMsgdkResourceUrl.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\tasks\deMTInitialize.h">
-      <Filter>Quelldateien\tasks</Filter>
+      <Filter>Headerdateien\tasks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\tasks\deMTLoadUserResource.h">
+      <Filter>Headerdateien\tasks</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -53,8 +62,17 @@
     <ClCompile Include="..\..\..\..\src\modules\service\msgdk\src\deMsgdkAsyncTask.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\service\msgdk\src\convert\deMCCommon.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\service\msgdk\src\deMsgdkResourceUrl.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\service\msgdk\src\tasks\deMTLoadUserResource.cpp">
+      <Filter>Quelldateien\tasks</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\service\msgdk\src\tasks\deMTInitialize.cpp">
-      <Filter>Headerdateien\tasks</Filter>
+      <Filter>Quelldateien\tasks</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -57,6 +57,7 @@ private:
 	const deMsgdkAsyncTask::Invalidator::Ref pInvalidator;
 	
 	XUserHandle pUser;
+	uint64_t pUserId;
 	XUserLocalId pUserLocalId;
 
 	deImage::Ref pAuthProviderIcon, pAuthProviderImage;
@@ -108,9 +109,10 @@ public:
 	inline const deMsgdkAsyncTask::Invalidator::Ref &GetInvalidator() const{ return pInvalidator; }
 	
 	inline XUserHandle GetUser() const{ return pUser; }
+	inline uint64_t GetUserId() const{ return pUserId; }
 	inline const XUserLocalId &GetUserLocalId() const{ return pUserLocalId; }
 	void SetUser(XUserHandle user);
-
+	
 	deMsgdkPendingRequest *GetPendingRequestWithId(const decUniqueID &id) const;
 	deMsgdkPendingRequest::Ref RemoveFirstPendingRequestWithId(const decUniqueID &id);
 	deMsgdkPendingRequest::Ref RemoveFirstPendingRequestWithFunction(const char *function);
@@ -118,10 +120,13 @@ public:
 		const decString &function, const deServiceObject::Ref &data = nullptr);
 	
 	deServiceObject::Ref GetUserFeatures();
+	deServiceObject::Ref GetUserInfo();
 	
+	void FailRequest(const decUniqueID &id, HRESULT result);
 	void FailRequest(const decUniqueID &id, const deException &e);
+	void FailRequest(const deMsgdkPendingRequest::Ref &request, HRESULT result);
 	void FailRequest(const deMsgdkPendingRequest::Ref &request, const deException &e);
-	void AssertResult(HRESULT result);
+	void AssertResult(HRESULT result, const char *source);
 	/*@}*/
 	
 	

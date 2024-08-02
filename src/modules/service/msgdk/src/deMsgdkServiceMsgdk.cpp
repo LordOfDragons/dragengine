@@ -25,7 +25,10 @@
 #include "gdk_include.h"
 #include "deMicrosoftGdk.h"
 #include "deMsgdkServiceMsgdk.h"
+#include "deMsgdkResourceUrl.h"
+#include "convert/deMCCommon.h"
 #include "tasks/deMTInitialize.h"
+#include "tasks/deMTLoadUserResource.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/utils/decUniqueID.h>
@@ -50,7 +53,7 @@ pService(service),
 pIsInitialized(false),
 pInvalidator(deMsgdkAsyncTask::Invalidator::Ref::New(new deMsgdkAsyncTask::Invalidator)),
 pUser(nullptr),
-pUserLocalId({})
+pUserId(0)
 {
 	pModule.InitSdk(data);
 	new deMTInitialize(*this);
@@ -80,9 +83,9 @@ void deMsgdkServiceMsgdk::StartRequest(const decUniqueID& id, const deServiceObj
 {
 	const decString &function = request.GetChildAt( "function" )->GetString();
 	
-	if(function == "dummy")
+	if(function == "loadUserResource")
 	{
-		
+		new deMTLoadUserResource(*this, id, request);
 	}
 	else
 	{
@@ -113,6 +116,11 @@ deServiceObject::Ref deMsgdkServiceMsgdk::RunAction( const deServiceObject &acti
 	if(function == "getUserFeatures")
 	{
 		return GetUserFeatures();
+
+	}
+	else if(function == "getUserInfo")
+	{
+		return GetUserInfo();
 	}
 	else
 	{
@@ -131,14 +139,21 @@ void deMsgdkServiceMsgdk::SetUser(XUserHandle user)
 	{
 		XUserCloseHandle(pUser);
 		pUser = nullptr;
+		pUserId = 0;
 		pUserLocalId = {};
 	}
 
-	pUser = user;
+	if(user){
+		uint64_t userId;
+		AssertResult(XUserGetId(user, &userId), "deMsgdkServiceMsgdk.SetUser.XUserGetId");
 
-	if(pUser){
-		AssertResult(XUserGetLocalId(pUser, &pUserLocalId));
+		XUserLocalId userLocalId;
+		AssertResult(XUserGetLocalId(user, &userLocalId), "deMsgdkServiceMsgdk.SetUser.XUserGetLocalId");
+
+		pUserId = userId;
+		pUserLocalId = userLocalId;
 	}
+	pUser = user;
 }
 
 deMsgdkPendingRequest *deMsgdkServiceMsgdk::GetPendingRequestWithId(const decUniqueID &id) const
@@ -238,7 +253,54 @@ deServiceObject::Ref deMsgdkServiceMsgdk::GetUserFeatures()
 	return so;
 }
 
+deServiceObject::Ref deMsgdkServiceMsgdk::GetUserInfo()
+{
+	if(!pUser)
+	{
+		DETHROW_INFO(deeInvalidAction, "No user logged in");
+	}
 
+	const deServiceObject::Ref so(deServiceObject::Ref::New(new deServiceObject));
+	char gamertag[101] = {};
+	size_t gamertagLen;
+
+	uint64_t id;
+	AssertResult(XUserGetId(pUser, &id), "deMsgdkServiceMsgdk.GetUserInfo.XUserGetId");
+	so->SetStringChildAt("id", deMCCommon::UInt64ToString(id));
+
+	AssertResult(XUserGetGamertag(pUser, XUserGamertagComponent::Modern, sizeof(gamertag),
+		gamertag, &gamertagLen), "deMsgdkServiceMsgdk.GetUserInfo.XUserGetGamertag1");
+	so->SetStringChildAt("gamertagModern", gamertag);
+
+	AssertResult(XUserGetGamertag(pUser, XUserGamertagComponent::UniqueModern, sizeof(gamertag),
+		gamertag, &gamertagLen), "deMsgdkServiceMsgdk.GetUserInfo.XUserGetGamertag2");
+	so->SetStringChildAt("gamertagUniqueModern", gamertag);
+
+	so->SetStringChildAt("gamerPicture", deMsgdkResourceUrl::FormatUrl(
+		"user", id, "gamerPicture", "extraLarge"));
+	so->SetStringChildAt("gamerPictureSmall", deMsgdkResourceUrl::FormatUrl(
+		"user", id, "gamerPicture", "small"));
+	so->SetStringChildAt("gamerPictureMedium", deMsgdkResourceUrl::FormatUrl(
+		"user", id, "gamerPicture", "medium"));
+	so->SetStringChildAt("gamerPictureLarge", deMsgdkResourceUrl::FormatUrl(
+		"user", id, "gamerPicture", "large"));
+	return so;
+}
+
+
+
+void deMsgdkServiceMsgdk::FailRequest(const decUniqueID& id, HRESULT result)
+{
+	const deMsgdkPendingRequest::Ref pr(RemoveFirstPendingRequestWithId(id));
+	if(pr)
+	{
+		FailRequest(pr, result);
+	}
+	else
+	{
+		pModule.LogErrorFormat("Failed: %s", pModule.GetErrorCodeString(result).GetString());
+	}
+}
 
 void deMsgdkServiceMsgdk::FailRequest(const decUniqueID &id, const deException &e)
 {
@@ -253,6 +315,17 @@ void deMsgdkServiceMsgdk::FailRequest(const decUniqueID &id, const deException &
 	}
 }
 
+void deMsgdkServiceMsgdk::FailRequest(const deMsgdkPendingRequest::Ref &pr, HRESULT result)
+{
+	const decString message(pModule.GetErrorCodeString(result));
+	pModule.LogErrorFormat("Failed: %s", message.GetString());
+	
+	pr->data->SetStringChildAt("error", "MsgdkError");
+	pr->data->SetIntChildAt("errorResult", result);
+	pr->data->SetStringChildAt("message", message);
+	pModule.GetGameEngine()->GetServiceManager()->QueueRequestFailed(pService, pr->id, pr->data);
+}
+
 void deMsgdkServiceMsgdk::FailRequest(const deMsgdkPendingRequest::Ref &pr, const deException &e)
 {
 	pModule.LogException(e);
@@ -262,11 +335,13 @@ void deMsgdkServiceMsgdk::FailRequest(const deMsgdkPendingRequest::Ref &pr, cons
 	pModule.GetGameEngine()->GetServiceManager()->QueueRequestFailed(pService, pr->id, pr->data);
 }
 
-void deMsgdkServiceMsgdk::AssertResult(HRESULT result)
+void deMsgdkServiceMsgdk::AssertResult(HRESULT result, const char *source)
 {
 	if (FAILED(result))
     {
-		DETHROW_INFO(deeInvalidAction, pModule.GetErrorCodeString(result));
+		const decString message(pModule.GetErrorCodeString(result));
+		pModule.LogErrorFormat("%s: %s", source, message.GetString());
+		DETHROW_INFO(deeInvalidAction, message);
     }
 }
 

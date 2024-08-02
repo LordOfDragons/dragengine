@@ -34,9 +34,8 @@ void deMTInitialize::pAutoLoginUser()
 	// - if E_GAMEUSER_NO_DEFAULT_USER use None to show login dialog
 	//   - if cancelled this causes E_ABORT error
 	pService.GetModule().LogInfo("deMTInitialize.pAutoLoginUser");
-	pService.AssertResult(XUserAddAsync(
-		XUserAddOptions::AddDefaultUserSilently,
-		GetAsyncBlockPtr()));
+	pService.AssertResult(XUserAddAsync(XUserAddOptions::AddDefaultUserSilently,
+		GetAsyncBlockPtr()), "deMTInitialize.pAutoLoginUser.XUserAddAsync");
 
 	//AssertAsync(XUserAddAsync(XUserAddOptions::AllowGuests, ab.get()), ab);
 	//AssertAsync(XUserAddAsync(XUserAddOptions::AddDefaultUserAllowingUI, ab.get()), ab);

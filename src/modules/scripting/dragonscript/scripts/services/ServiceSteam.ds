@@ -452,14 +452,6 @@ class ServiceSteam implements ServiceStats, ServiceUser, ServiceListener
 				(onceListener cast ServiceUserListener).onGetAuthToken(this, null, exception)
 			end
 			
-		elif function.equals("getUserInfo")
-			pUserListeners.forEach(block ServiceUserListener each
-				each.onGetUserInfo(this, null, exception)
-			end)
-			if onceListener != null
-				(onceListener cast ServiceUserListener).onGetUserInfo(this, null, exception)
-			end
-			
 		elif function.equals("loadUserResource")
 			var String url = error.getChildAt("url").getString()
 			
