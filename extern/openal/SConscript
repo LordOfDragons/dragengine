@@ -86,6 +86,10 @@ def openalBuild(target, source, env):
 	for p in env['PATCHES']:
 		script.append('patch -p1 <{} || exit 1'.format(p.srcnode().abspath))
 	
+	if env['platform_android'] != 'no':
+		# fix for android ndk 27+ breaking cmake
+		script.append('sed -i -e "s/cmake_minimum_required(VERSION 3.0.2)/cmake_minimum_required(VERSION 3.5)/" ../openal-soft-1.22.2/CMakeLists.txt')
+	
 	script.append('cd "{}" || exit 1'.format(cmakeBuildDir))
 	cmdline = ['cmake']
 	cmdline.append('-DCMAKE_INSTALL_PREFIX="{}"'.format(buildDir.abspath))
