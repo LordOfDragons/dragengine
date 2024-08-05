@@ -79,6 +79,10 @@ def jpegBuild(target, source, env):
 	
 	script.append('cd "{}" || exit 1'.format(cmakeBuildDir))
 	
+	if env['platform_android'] != 'no':
+		# fix for android ndk 27+ breaking cmake
+		script.append('sed -i -e "s/cmake_minimum_required(VERSION 2.8.12)/cmake_minimum_required(VERSION 3.5.0)/" ../libjpeg-turbo-2.0.3/CMakeLists.txt')
+	
 	cmdline = []
 	cmdline.append('cmake')
 	cmdline.append('-G"Unix Makefiles"')
