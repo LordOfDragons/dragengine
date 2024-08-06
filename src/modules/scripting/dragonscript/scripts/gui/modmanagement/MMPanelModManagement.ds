@@ -248,7 +248,8 @@ class MMPanelModManagement extends Panel
 			pPanel = panel
 			pCategory = category
 			
-			var String lang = TranslationManager.get().getActive().getIdentifier()
+			var LanguagePack langPack = TranslationManager.get().getActive()
+			var String lang = langPack != null if langPack.getIdentifier() else "en"
 			var String text
 			
 			pModel = DefaultListModel.new()
@@ -265,7 +266,8 @@ class MMPanelModManagement extends Panel
 		end
 		
 		func void createWidgets(Panel container)
-			var String lang = TranslationManager.get().getActive().getIdentifier()
+			var LanguagePack langPack = TranslationManager.get().getActive()
+			var String lang = langPack != null if langPack.getIdentifier() else "en"
 			var String text = pCategory.name
 			if pCategory.nameTranslations != null
 				text = pCategory.nameTranslations.getAt(lang, text) cast String
@@ -312,7 +314,8 @@ class MMPanelModManagement extends Panel
 		end
 		
 		func void createWidgets(Panel container)
-			var String lang = TranslationManager.get().getActive().getIdentifier()
+			var LanguagePack langPack = TranslationManager.get().getActive()
+			var String lang = langPack != null if langPack.getIdentifier() else "en"
 			var String text = pCategory.name
 			if pCategory.nameTranslations != null
 				text = pCategory.nameTranslations.getAt(lang, text) cast String

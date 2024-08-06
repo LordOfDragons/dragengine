@@ -178,12 +178,17 @@ void deClassStringID::nfEquals::RunFunction( dsRunTime *rt, dsValue *myself ){
 	dsClass * const scString = rt->GetEngine()->GetClassString();
 	dsValue * const object = rt->GetValue( 0 );
 	
-	if( p_IsObjOfType( object, sclass ) ){
-		const int otherIndex = ( ( sStrIDNatDat* )p_GetNativeData( object ) )->index;
-		rt->PushBool( index == otherIndex );
-		
-	}else if( p_IsObjOfType( object, scString ) ){
-		rt->PushBool( sclass->GetStringAt( index ) == object->GetString() );
+	if( object ){
+		if( p_IsObjOfType( object, sclass ) ){
+			const int otherIndex = ( ( sStrIDNatDat* )p_GetNativeData( object ) )->index;
+			rt->PushBool( index == otherIndex );
+			
+		}else if( p_IsObjOfType( object, scString ) ){
+			rt->PushBool( sclass->GetStringAt( index ) == object->GetString() );
+			
+		}else{
+			rt->PushBool( false );
+		}
 		
 	}else{
 		rt->PushBool( false );
