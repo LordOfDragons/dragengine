@@ -25,7 +25,7 @@ pRequestId(id)
 
 	pService.GetModule().LogInfo("deMTGetTokenAndSignature: Request token");
 
-	pService.NewPendingRequest(pRequestId, "userAdd");
+	pService.NewPendingRequest(pRequestId, "getTokenAndSignature");
 	try
 	{
 		pService.AssertResult(XUserGetTokenAndSignatureAsync(service.GetUser(),

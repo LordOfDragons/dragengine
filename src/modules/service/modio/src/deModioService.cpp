@@ -840,6 +840,7 @@ deServiceObject::Ref deModioService::GetUserFeatures(){
 	const deServiceObject::Ref soAuthProviders( deServiceObject::NewList() );
 	soAuthProviders->AddStringChild( "steam" );
 	soAuthProviders->AddStringChild( "epic" );
+	soAuthProviders->AddStringChild( "xboxLive" );
 	so->SetChildAt( "canAuthProviderLogin", soAuthProviders );
 	
 	return so;
