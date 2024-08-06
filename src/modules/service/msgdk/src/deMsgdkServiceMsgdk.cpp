@@ -30,6 +30,7 @@
 #include "tasks/deMTLoadUserResource.h"
 #include "tasks/deMTAddUser.h"
 #include "tasks/deMTGetTokenAndSignature.h"
+#include "tasks/deMTGetStatsAndAchievements.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/utils/decUniqueID.h>
@@ -43,6 +44,8 @@
 //////////////////////////////
 
 const char * const deMsgdkServiceMsgdk::serviceName = "MicrosoftGdk";
+deMsgdkServiceMsgdk *deMsgdkServiceMsgdk::pGlobalService = nullptr;
+
 
 // Constructor, destructor
 ////////////////////////////
@@ -55,10 +58,18 @@ pIsInitialized(false),
 pInvalidator(deMsgdkAsyncTask::Invalidator::Ref::New(new deMsgdkAsyncTask::Invalidator)),
 pUser(nullptr),
 pUserId(0),
-pUserLocalId({})
+pUserLocalId({}),
+pXblContext(nullptr)
 {
+	if(pGlobalService)
+	{
+		DETHROW_INFO(deeInvalidAction, "Duplicate service");
+	}
+
 	pModule.InitSdk(data);
+
 	pIsInitialized = true;
+	pGlobalService = this;
 }
 
 deMsgdkServiceMsgdk::~deMsgdkServiceMsgdk()
@@ -68,13 +79,10 @@ deMsgdkServiceMsgdk::~deMsgdkServiceMsgdk()
 		CancelRequest(((deMsgdkPendingRequest*)pPendingRequests.GetAt(0))->id);
 	}
 
-	if(pUser)
-	{
-		XUserCloseHandle(pUser);
-		pUser = nullptr;
-	}
+	SetUser(nullptr);
 
 	pInvalidator->Invalidate();
+	pGlobalService = nullptr;
 }
 
 
@@ -96,6 +104,14 @@ void deMsgdkServiceMsgdk::StartRequest(const decUniqueID& id, const deServiceObj
 	else if(function == "getTokenAndSignature")
 	{
 		new deMTGetTokenAndSignature(*this, id, request);
+	}
+	else if(function == "getStatsAndAchievements")
+	{
+		new deMTGetStatsAndAchievements(*this, id, request);
+	}
+	else if(function == "setStatsAndAchievements")
+	{
+		//new deMTGetTokenAndSignature(*this, id, request);
 	}
 	else
 	{
@@ -146,6 +162,23 @@ deServiceObject::Ref deMsgdkServiceMsgdk::RunAction( const deServiceObject &acti
 	}
 }
 
+void deMsgdkServiceMsgdk::FrameUpdate(float elapsed)
+{
+	const XblAchievementsManagerEvent *achievementsEvents = nullptr;
+	size_t achievementsEventsCount = 0;
+	HRESULT result = XblAchievementsManagerDoWork(&achievementsEvents, &achievementsEventsCount);
+	if(SUCCEEDED(result))
+	{
+		// TODO
+
+	}
+	else
+	{
+		const decString message(pModule.GetErrorCodeString(result));
+		pModule.LogErrorFormat("deMsgdkServiceMsgdk.FrameUpdate.XblAchievementsManagerDoWork: %s", message.GetString());
+	}
+}
+
 
 
 // Request
@@ -155,6 +188,12 @@ void deMsgdkServiceMsgdk::SetUser(XUserHandle user)
 {
 	if(pUser)
 	{
+		if(pXblContext)
+		{
+			XblContextCloseHandle(pXblContext);
+			pXblContext = nullptr;
+		}
+		XblAchievementsManagerRemoveLocalUser(pUser);
 		XUserCloseHandle(pUser);
 		pUser = nullptr;
 		pUserId = 0;
@@ -167,6 +206,14 @@ void deMsgdkServiceMsgdk::SetUser(XUserHandle user)
 
 		XUserLocalId userLocalId;
 		AssertResult(XUserGetLocalId(user, &userLocalId), "deMsgdkServiceMsgdk.SetUser.XUserGetLocalId");
+
+		pModule.LogInfo("deMsgdkServiceMsgdk.SetUser: Add user to achievements manager");
+		AssertResult(XblAchievementsManagerAddLocalUser(user, nullptr),
+			"deMsgdkServiceMsgdk.SetUser.XblAchievementsManagerAddLocalUser");
+		
+		pModule.LogInfo("deMsgdkServiceMsgdk.SetUser: Create XBL context");
+		AssertResult(XblContextCreateHandle(user, &pXblContext),
+			"deMsgdkServiceMsgdk.SetUser.XblContextCreateHandle");
 
 		pUserId = userId;
 		pUserLocalId = userLocalId;

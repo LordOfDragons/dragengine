@@ -26,8 +26,10 @@
 
 #include "deMicrosoftGDK.h"
 #include "deMsgdkServiceMsgdk.h"
+#include "deMsgdkGameConfig.h"
 
 #include <dragengine/deEngine.h>
+#include <dragengine/app/deOS.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/file/decBaseFileReader.h>
@@ -141,17 +143,16 @@ static struct sErrorCode{
 
 deMicrosoftGdk::deMicrosoftGdk(deLoadableModule& loadableModule) :
 deBaseServiceModule(loadableModule),
-pSdkInited(false)
+pGameConfig(nullptr),
+pGdkInited(false),
+pXblInited(false)
 {
 }
 
 deMicrosoftGdk::~deMicrosoftGdk()
 {
-	if(pSdkInited)
-	{
-		LogInfo("Shutdown GDK");
-		XGameRuntimeUninitialize();
-	}
+	pShutdownXbl();
+	pShutdownGdk();
 }
 
 
@@ -196,11 +197,31 @@ deBaseServiceService* deMicrosoftGdk::CreateService(deService *service,
 
 void deMicrosoftGdk::FrameUpdate(float elapsed)
 {
+	if(deMsgdkServiceMsgdk::GlobalService())
+	{
+		deMsgdkServiceMsgdk::GlobalService()->FrameUpdate(elapsed);
+	}
 }
 
 void deMicrosoftGdk::InitSdk(const deServiceObject::Ref &data)
 {
-	if(pSdkInited)
+	pInitGdk(data);
+	pInitXbl(data);
+}
+
+const deMsgdkGameConfig& deMicrosoftGdk::GetGameConfig() const
+{
+	DEASSERT_NOTNULL(pGameConfig)
+	return *pGameConfig;
+}
+
+
+// Private Functions
+//////////////////////
+
+void deMicrosoftGdk::pInitGdk(const deServiceObject::Ref& data)
+{
+	if(pGdkInited)
 	{
 		return;
 	}
@@ -233,7 +254,9 @@ void deMicrosoftGdk::InitSdk(const deServiceObject::Ref &data)
 			useGameConfig += 3;
 		}
 
-		XGameRuntimeOptions options = {};
+		pGameConfig = new deMsgdkGameConfig(*this, useGameConfig);
+
+		XGameRuntimeOptions options{};
 		options.gameConfigSource = XGameRuntimeGameConfigSource::Inline;
 		options.gameConfig = useGameConfig;
 
@@ -243,15 +266,85 @@ void deMicrosoftGdk::InitSdk(const deServiceObject::Ref &data)
 			LogErrorFormat("Failed initialize GDK: %s", GetErrorCodeString(result));
 			DETHROW(deeInvalidAction);
 		}
-		pSdkInited = true;
-
-	}catch(const deException &e)
+		pGdkInited = true;
+	}
+	catch(const deException &e)
 	{
+		if(pGameConfig)
+		{
+			delete pGameConfig;
+			pGameConfig = nullptr;
+		}
+
 		if(gameConfig)
 		{
 			delete [] gameConfig;
 		}
+
 		LogException(e);
 		throw;
 	}
+}
+
+void deMicrosoftGdk::pShutdownGdk()
+{
+	if(!pGdkInited)
+	{
+		return;
+	}
+
+	LogInfo("Shutdown GDK");
+	XGameRuntimeUninitialize();
+
+	if(pGameConfig)
+	{
+		delete pGameConfig;
+		pGameConfig = nullptr;
+	}
+	
+	pGdkInited = false;
+}
+
+void deMicrosoftGdk::pInitXbl(const deServiceObject::Ref& data)
+{
+	if(pXblInited)
+	{
+		return;
+	}
+
+	LogInfo("Initialize XBL");
+
+	XblInitArgs args{};
+	args.scid = GetGameConfig().scid;
+
+	HRESULT result = XblInitialize(&args);
+	if(FAILED(result))
+	{
+		LogErrorFormat("Failed initialize XBL: %s", GetErrorCodeString(result));
+		DETHROW(deeInvalidAction);
+	}
+	pXblInited = true;
+}
+
+void deMicrosoftGdk::pShutdownXbl()
+{
+	if(!pXblInited)
+	{
+		return;
+	}
+	
+	LogInfo("Shutdown XBL");
+	bool finished = false;
+	XAsyncBlock ab{};
+	ab.queue = nullptr;
+	ab.context = &finished;
+	ab.callback = [](XAsyncBlock* ab){
+		*((bool*)(ab->context)) = true;
+	};
+	XblCleanupAsync(&ab);
+	while(!finished)
+	{
+		SleepEx(250, FALSE);
+	}
+	pXblInited = false;
 }

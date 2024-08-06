@@ -26,6 +26,7 @@ namespace Dragengine.Services
 pin Dragengine.Services.User
 pin Dragengine.Utils
 pin Dragengine.Gui
+pin Dragengine.Services.Stats
 
 
 /**
@@ -36,7 +37,7 @@ pin Dragengine.Gui
  * - Stats/Achievements
  * - User
  */
-class ServiceMsgdk implements ServiceUser, ServiceListener
+class ServiceMsgdk implements ServiceStats, ServiceUser, ServiceListener
 	/**
 	 * \brief Service initialization parameters.
 	 */
@@ -62,7 +63,7 @@ class ServiceMsgdk implements ServiceUser, ServiceListener
 	
 	var Service pService
 	var InitParameters pInitParameters
-	var SafeArray pUserListeners
+	var SafeArray pStatsListeners, pUserListeners
 	var BaseServiceConversions pConversions
 	var Dictionary pOnceListeners
 	
@@ -76,6 +77,7 @@ class ServiceMsgdk implements ServiceUser, ServiceListener
 		pInitParameters = InitParameters.new()
 		pInitParameters.pathGameConfig = params.pathGameConfig
 		
+		pStatsListeners = SafeArray.new()
 		pUserListeners = SafeArray.new()
 		pConversions = BaseServiceConversions.new()
 		pOnceListeners = Dictionary.new()
@@ -89,6 +91,9 @@ class ServiceMsgdk implements ServiceUser, ServiceListener
 	
 	/** \brief Dispose of Microsoft GDK service. */
 	func void dispose()
+		if pStatsListeners != null
+			pStatsListeners.removeAll()
+		end
 		if pUserListeners != null
 			pUserListeners.removeAll()
 		end
@@ -112,6 +117,79 @@ class ServiceMsgdk implements ServiceUser, ServiceListener
 	 */
 	static func bool isServiceSupported()
 		return Engine.getSupportedServices().has("MicrosoftGdk")
+	end
+	
+	
+	
+	func void addStatListener(ServiceStatsListener listener)
+		if listener == null
+			throw ENullPointer.new("listener")
+		end
+		pStatsListeners.add(listener)
+	end
+	
+	func void removeStatsListener(ServiceStatsListener listener)
+		pStatsListeners.remove(listener)
+	end
+	
+	func void getStatsAndAchievements(Set stats, Set achievements, ServiceStatsListener listener)
+		if stats == null
+			throw ENullPointer.new("stats")
+		end
+		if achievements == null
+			throw ENullPointer.new("achievements")
+		end
+		
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "getStatsAndAchievements")
+		
+		var ServiceObject so2 = ServiceObject.newList()
+		stats.forEach(block String each
+			so2.addStringChild(each)
+		end)
+		so.setResourceChildAt("stats", so2)
+		
+		so2 = ServiceObject.newList()
+		achievements.forEach(block String each
+			so2.addStringChild(each)
+		end)
+		so.setResourceChildAt("achievements", so2)
+		
+		runRequest(so, listener)
+	end
+	
+	func void setStatsAndAchievements(Dictionary stats, Dictionary achievements, ServiceStatsListener listener)
+		if stats == null
+			throw ENullPointer.new("stats")
+		end
+		if achievements == null
+			throw ENullPointer.new("achievements")
+		end
+		
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "setStatsAndAchievements")
+		
+		if stats.getCount() > 0
+			var ServiceObject so2 = ServiceObject.new()
+			stats.forEach(block String key, int value
+				so2.setIntChildAt(key, value)
+			end)
+			so.setChildAt("stats", so2)
+		end
+		
+		if achievements.getCount() > 0
+			var ServiceObject so2 = ServiceObject.new()
+			achievements.forEach(block String key, bool value
+				so2.setBoolChildAt(key, value)
+			end)
+			so.setChildAt("achievements", so2)
+		end
+		
+		runRequest(so, listener)
+	end
+	
+	func void resetAllStats(bool resetAchievements)
+		throw EInvalidAction.new("Not supported")
 	end
 	
 	
@@ -276,6 +354,46 @@ class ServiceMsgdk implements ServiceUser, ServiceListener
 			if onceListener != null
 				(onceListener cast ServiceUserListener).onLoadUserResource(this, url, resource, null)
 			end
+			
+		elif function.equals("getStatsAndAchievements")
+			var Dictionary stats = Dictionary.new()
+			var ServiceObject so = response.getChildAt("stats")
+			so.getChildrenKeys().forEach(block String each
+				stats.setAt(each, so.getChildAt(each).getInteger())
+			end)
+			
+			var Dictionary achievements = Dictionary.new()
+			so = response.getChildAt("achievements")
+			so.getChildrenKeys().forEach(block String each
+				stats.setAt(each, so.getChildAt(each).getBoolean())
+			end)
+			
+			pStatsListeners.forEach(block ServiceStatsListener each
+				each.onGetStats(this, stats, achievements, null)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceStatsListener).onGetStats(this, stats, achievements, null)
+			end
+			
+		elif function.equals("setStatsAndAchievements")
+			var Dictionary stats = Dictionary.new()
+			var ServiceObject so = response.getChildAt("stats")
+			so.getChildrenKeys().forEach(block String each
+				stats.setAt(each, so.getChildAt(each).getInteger())
+			end)
+			
+			var Dictionary achievements = Dictionary.new()
+			so = response.getChildAt("achievements")
+			so.getChildrenKeys().forEach(block String each
+				stats.setAt(each, so.getChildAt(each).getBoolean())
+			end)
+			
+			pStatsListeners.forEach(block ServiceStatsListener each
+				each.onSetStats(this, stats, achievements, null)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceStatsListener).onSetStats(this, stats, achievements, null)
+			end
 		end
 	end
 	
@@ -308,6 +426,22 @@ class ServiceMsgdk implements ServiceUser, ServiceListener
 			end)
 			if onceListener != null
 				(onceListener cast ServiceUserListener).onLoadUserResource(this, url, null, exception)
+			end
+			
+		elif function.equals("getStatsAndAchievements")
+			pStatsListeners.forEach(block ServiceStatsListener each
+				each.onGetStats(this, null, null, exception)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceStatsListener).onGetStats(this, null, null, exception)
+			end
+			
+		elif function.equals("setStatsAndAchievements")
+			pStatsListeners.forEach(block ServiceStatsListener each
+				each.onSetStats(this, null, null, exception)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceStatsListener).onSetStats(this, null, null, exception)
 			end
 		end
 	end

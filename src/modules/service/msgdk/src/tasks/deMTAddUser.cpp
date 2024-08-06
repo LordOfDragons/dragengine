@@ -1,6 +1,7 @@
 #include "deMTAddUser.h"
 #include "../deMsgdkServiceMsgdk.h"
 #include "../deMicrosoftGdk.h"
+#include "../deMsgdkGameConfig.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/resources/service/deServiceManager.h>
@@ -21,7 +22,7 @@ pRequestId(id)
 	// - use first AddDefaultUserSilently
 	// - if E_GAMEUSER_NO_DEFAULT_USER use None to show login dialog
 	//   - if cancelled this causes E_ABORT error
-	
+
 	XUserAddOptions options = XUserAddOptions::None;
 	bool defaultUser = false;
 	bool allowGuests = false;
@@ -41,11 +42,25 @@ pRequestId(id)
 
 	if(defaultUser)
 	{
+		if(!service.GetModule().GetGameConfig().advancedUserModel)
+		{
+			service.GetModule().LogWarn("deMTAddUser: Advanced user model is disabled."
+				" Logging in default user hard-aborts game if no user is logged in!");
+		}
+			
 		service.GetModule().LogInfo("deMTAddUser: Add default user to game session");
 		options |= XUserAddOptions::AddDefaultUserSilently;
 	}
 	else
 	{
+		if(!service.GetModule().GetGameConfig().advancedUserModel)
+		{
+			service.GetModule().LogWarn("deMTAddUser: Advanced user model is disabled."
+				" Logging in non-default user is not supported.");
+			DETHROW_INFO(deeInvalidParam, "Advanced user model is disabled."
+				" Logging in non-default user is not supported.");
+		}
+
 		service.GetModule().LogInfo("deMTAddUser: Add user using system UI to game session");
 		if(allowGuests)
 		{

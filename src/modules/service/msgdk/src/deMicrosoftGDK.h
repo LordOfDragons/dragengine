@@ -29,13 +29,17 @@
 
 #include <dragengine/systems/modules/service/deBaseServiceModule.h>
 
+class deMsgdkGameConfig;
+
 
 /**
  * Microsoft GDK Service Module.
  */
 class deMicrosoftGdk : public deBaseServiceModule{
 private:
-	bool pSdkInited;
+	deMsgdkGameConfig *pGameConfig;
+	bool pGdkInited;
+	bool pXblInited;
 
 
 public:
@@ -66,14 +70,22 @@ public:
 	deBaseServiceService *CreateService(deService *service,
 		const char *name, const deServiceObject::Ref &data) override;
 
-	/**
-	 * \brief Frame update.
-	 */
+	/** Frame update. */
 	void FrameUpdate(float elapsed) override;
 
 	/** Init SDK if not already inited. */
 	void InitSdk(const deServiceObject::Ref &data);
+
+	/** Game config. */
+	const deMsgdkGameConfig &GetGameConfig() const;
 	/*@}*/
+
+
+private:
+	void pInitGdk(const deServiceObject::Ref &data);
+	void pShutdownGdk();
+	void pInitXbl(const deServiceObject::Ref &data);
+	void pShutdownXbl();
 };
 
 #endif

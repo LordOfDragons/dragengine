@@ -48,6 +48,13 @@ $CopySrcPath = Join-Path -Path $CopySrcPath -ChildPath "neutral"
 $CopySrcPath = Join-Path -Path $CopySrcPath -ChildPath "XCurl.dll"
 Copy-Item -Path $CopySrcPath -Destination $TargetDir
 
+$CopySrcPath = Join-Path -Path $GrdkDir -ChildPath "ExtensionLibraries"
+$CopySrcPath = Join-Path -Path $CopySrcPath -ChildPath "Xbox.LibHttpClient"
+$CopySrcPath = Join-Path -Path $CopySrcPath -ChildPath "Redist"
+$CopySrcPath = Join-Path -Path $CopySrcPath -ChildPath "CommonConfiguration"
+$CopySrcPath = Join-Path -Path $CopySrcPath -ChildPath "neutral"
+$CopySrcPath = Join-Path -Path $CopySrcPath -ChildPath "libHttpClient.GDK.dll"
+Copy-Item -Path $CopySrcPath -Destination $TargetDir
 
 # debug
 $TargetDir = "$OutputDir\$PathDistDEPdbDataModules\service\msgdk\$Version"
