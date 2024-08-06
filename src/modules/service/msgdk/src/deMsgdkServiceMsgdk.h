@@ -60,7 +60,11 @@ private:
 	uint64_t pUserId;
 	XUserLocalId pUserLocalId;
 
+	XblContextHandle pXblContext;
+
 	deImage::Ref pAuthProviderIcon, pAuthProviderImage;
+
+	static deMsgdkServiceMsgdk *pGlobalService;
 
 
 public:
@@ -98,12 +102,19 @@ public:
 	 * \brief Run action returning result immediately.
 	 */
 	deServiceObject::Ref RunAction( const deServiceObject &action ) override;
+	
+	/**
+	 * \brief Frame update.
+	 */
+	void FrameUpdate(float elapsed);
 	/*@}*/
 	
 	
 	
 	/** \name Request */
 	/*@{*/
+	static deMsgdkServiceMsgdk *GlobalService(){return pGlobalService;}
+
 	inline deMicrosoftGdk &GetModule() const{ return pModule; }
 	inline deService *GetService() const{ return pService; }
 	inline const deMsgdkAsyncTask::Invalidator::Ref &GetInvalidator() const{ return pInvalidator; }
@@ -112,6 +123,8 @@ public:
 	inline uint64_t GetUserId() const{ return pUserId; }
 	inline const XUserLocalId &GetUserLocalId() const{ return pUserLocalId; }
 	void SetUser(XUserHandle user);
+	
+	inline XblContextHandle GetXblContext() const{return pXblContext;}
 	
 	deMsgdkPendingRequest *GetPendingRequestWithId(const decUniqueID &id) const;
 	deMsgdkPendingRequest::Ref RemoveFirstPendingRequestWithId(const decUniqueID &id);

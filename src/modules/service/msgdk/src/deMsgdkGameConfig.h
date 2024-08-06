@@ -22,41 +22,52 @@
  * SOFTWARE.
  */
 
-#ifndef _GDKINCLUDE_H_
-#define _GDKINCLUDE_H_
+#ifndef _DEMSGDKGAMECONFIG_H_
+#define _DEMSGDKGAMECONFIG_H_
 
-#include <Windows.h>
+#include <dragengine/common/string/decString.h>
 
-// windows has the stupid idea of using macros to hack its own incompetence. this results in
-// tons of strange compiler errors. undo here all the crap that is in our way. windows really
-// should be shot to the moon with only a one-way ticket U_U
-#undef CreateFont
-#undef CreateImage
-#undef CreateFile
-#undef DeleteFile
-#undef DrawText
-#undef FindResource
-#undef GetObject
-#undef LoadFont
-#undef LoadImage
-#undef RemoveProp
-#undef GetMessage
-#undef GetProp
-#undef GetClassName
-#undef CreateService
+class decXmlElementTag;
+class decXmlAttValue;
+class deMicrosoftGdk;
 
-// these conflict with type save min/max implementation in decMath
-#undef min
-#undef max
 
-// GDK includes
-#include <XGameRuntimeInit.h>
-#include <XAsync.h>
-#include <XUser.h>
-#include <XGameErr.h>
-#include <xsapi-c/types_c.h>
-#include <xsapi-c/xbox_live_global_c.h>
-#include <xsapi-c/xbox_live_context_c.h>
-#include <xsapi-c/achievements_manager_c.h>
+/**
+ * Game configuration (MicrosoftGame.config).
+ */
+class deMsgdkGameConfig{
+private:
+	deMicrosoftGdk &pModule;
+
+
+public:
+	decString scid;
+	bool advancedUserModel;
+	
+	
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** Load game config. */
+	deMsgdkGameConfig(deMicrosoftGdk &module, const decString &config);
+	/*@}*/
+	
+	
+	/** \name Management */
+	/*@{*/
+	
+	/*@}*/
+
+
+private:
+	decXmlElementTag *pGetTagAt(decXmlElementTag &tag, int index);
+	const decXmlAttValue *pFindAttribute(decXmlElementTag &tag, const char *name);
+	const char *pGetAttributeString(decXmlElementTag &tag, const char *name);
+	int pGetAttributeInt(decXmlElementTag &tag, const char *name);
+	float pGetAttributeFloat(decXmlElementTag &tag, const char *name);
+
+	void pLoadFromXml(const decString &config);
+	void pReadTagGame(decXmlElementTag &root);
+	void pReadTagExtendedAttributeList(decXmlElementTag &root);
+};
 
 #endif

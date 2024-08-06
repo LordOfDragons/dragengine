@@ -22,41 +22,47 @@
  * SOFTWARE.
  */
 
-#ifndef _GDKINCLUDE_H_
-#define _GDKINCLUDE_H_
+#ifndef _DEMTGETSTATSANDACHIEVEMENTS_H
+#define _DEMTGETSTATSANDACHIEVEMENTS_H
 
-#include <Windows.h>
+#include "../deMsgdkAsyncTask.h"
+#include <xsapi-c/user_statistics_c.h>
 
-// windows has the stupid idea of using macros to hack its own incompetence. this results in
-// tons of strange compiler errors. undo here all the crap that is in our way. windows really
-// should be shot to the moon with only a one-way ticket U_U
-#undef CreateFont
-#undef CreateImage
-#undef CreateFile
-#undef DeleteFile
-#undef DrawText
-#undef FindResource
-#undef GetObject
-#undef LoadFont
-#undef LoadImage
-#undef RemoveProp
-#undef GetMessage
-#undef GetProp
-#undef GetClassName
-#undef CreateService
+#include <dragengine/common/utils/decUniqueID.h>
+#include <dragengine/common/string/decStringList.h>
+#include <dragengine/resources/service/deServiceObject.h>
 
-// these conflict with type save min/max implementation in decMath
-#undef min
-#undef max
+class deMsgdkServiceMsgdk;
 
-// GDK includes
-#include <XGameRuntimeInit.h>
-#include <XAsync.h>
-#include <XUser.h>
-#include <XGameErr.h>
-#include <xsapi-c/types_c.h>
-#include <xsapi-c/xbox_live_global_c.h>
-#include <xsapi-c/xbox_live_context_c.h>
-#include <xsapi-c/achievements_manager_c.h>
+
+/**
+ * Add user task.
+ */
+class deMTGetStatsAndAchievements : public deMsgdkAsyncTask{
+private:
+	deMsgdkServiceMsgdk &pService;
+	const decUniqueID pRequestId;
+	decStringList pStats, pAchievements;
+	const char **pStatNames;
+	const deServiceObject::Ref pResultData;
+
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** Create asynchronous task. Object destroys itself automatically once finished. */
+	deMTGetStatsAndAchievements(deMsgdkServiceMsgdk &service,
+		const decUniqueID &id, const deServiceObject &request);
+	
+protected:
+	/** Delete asynchronous task. */
+	~deMTGetStatsAndAchievements() override;
+	/*@}*/
+
+
+protected:
+	void pGetAchievements();
+	void pGetStarts();
+	void OnFinished() override;
+};
 
 #endif

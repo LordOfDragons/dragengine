@@ -27,6 +27,7 @@
 
 #include "../gdk_include.h"
 
+#include <dragengine/common/string/decStringList.h>
 #include <dragengine/resources/service/deServiceObject.h>
 
 
@@ -51,6 +52,10 @@ public:
 	
 	static uint64_t UInt64( const decString &string );
 	static decString UInt64ToString( uint64_t value );
+	
+	/** Convert string list. */
+	static decStringList StringList( const deServiceObject &so );
+	static deServiceObject::Ref StringList( const decStringList &list );
 };
 
 #endif

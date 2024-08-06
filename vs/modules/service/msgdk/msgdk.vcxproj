@@ -34,23 +34,27 @@
   <ItemGroup>
     <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\convert\deMCCommon.h" />
     <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\deMsgdkAsyncTask.h" />
+    <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\deMsgdkGameConfig.h" />
     <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\deMsgdkPendingRequest.h" />
     <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\deMsgdkResourceUrl.h" />
     <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\deMsgdkServiceMsgdk.h" />
     <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\deMicrosoftGdk.h" />
     <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\gdk_include.h" />
     <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\tasks\deMTAddUser.h" />
+    <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\tasks\deMTGetStatsAndAchievements.h" />
     <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\tasks\deMTGetTokenAndSignature.h" />
     <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\tasks\deMTLoadUserResource.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\src\modules\service\msgdk\src\convert\deMCCommon.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\service\msgdk\src\deMsgdkAsyncTask.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\service\msgdk\src\deMsgdkGameConfig.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\service\msgdk\src\deMsgdkPendingRequest.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\service\msgdk\src\deMsgdkResourceUrl.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\service\msgdk\src\deMsgdkServiceMsgdk.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\service\msgdk\src\deMicrosoftGdk.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\service\msgdk\src\tasks\deMTAddUser.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\service\msgdk\src\tasks\deMTGetStatsAndAchievements.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\service\msgdk\src\tasks\deMTGetTokenAndSignature.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\service\msgdk\src\tasks\deMTLoadUserResource.cpp" />
   </ItemGroup>
@@ -133,19 +137,19 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\de_module\service\msgdk\</OutDir>
     <TargetName>srvmsgdk</TargetName>
-    <ExternalIncludePath>$(GRDKLatest)\GameKit\Include;$(GRDKLatest)\ExtensionLibraries\Xbox.Services.API.C\DesignTime\CommonConfiguration\Neutral\Include;$(ExternalIncludePath)</ExternalIncludePath>
+    <ExternalIncludePath>$(GRDKLatest)GameKit\Include;$(GRDKLatest)ExtensionLibraries\Xbox.Services.API.C\DesignTime\CommonConfiguration\Neutral\Include;$(GRDKLatest)ExtensionLibraries\Xbox.LibHttpClient\DesignTime\CommonConfiguration\Neutral\Include;$(ExternalIncludePath)</ExternalIncludePath>
     <LibraryPath>$(GRDKLatest)\GameKit\Lib\amd64;$(GRDKLatest)\ExtensionLibraries\Xbox.Services.API.C\DesignTime\CommonConfiguration\Neutral\Lib\Release;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\de_module\service\msgdk\</OutDir>
     <TargetName>srvmsgdk</TargetName>
-    <ExternalIncludePath>$(GRDKLatest)\GameKit\Include;$(GRDKLatest)\ExtensionLibraries\Xbox.Services.API.C\DesignTime\CommonConfiguration\Neutral\Include;$(ExternalIncludePath)</ExternalIncludePath>
+    <ExternalIncludePath>$(GRDKLatest)GameKit\Include;$(GRDKLatest)ExtensionLibraries\Xbox.Services.API.C\DesignTime\CommonConfiguration\Neutral\Include;$(GRDKLatest)ExtensionLibraries\Xbox.LibHttpClient\DesignTime\CommonConfiguration\Neutral\Include;$(ExternalIncludePath)</ExternalIncludePath>
     <LibraryPath>$(GRDKLatest)\GameKit\Lib\amd64;$(GRDKLatest)\ExtensionLibraries\Xbox.Services.API.C\DesignTime\CommonConfiguration\Neutral\Lib\Release;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebug|x64'">
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\de_module\service\msgdk\</OutDir>
     <TargetName>srvmsgdk</TargetName>
-    <ExternalIncludePath>$(GRDKLatest)\GameKit\Include;$(GRDKLatest)\ExtensionLibraries\Xbox.Services.API.C\DesignTime\CommonConfiguration\Neutral\Include;$(ExternalIncludePath)</ExternalIncludePath>
+    <ExternalIncludePath>$(GRDKLatest)GameKit\Include;$(GRDKLatest)ExtensionLibraries\Xbox.Services.API.C\DesignTime\CommonConfiguration\Neutral\Include;$(GRDKLatest)ExtensionLibraries\Xbox.LibHttpClient\DesignTime\CommonConfiguration\Neutral\Include;$(ExternalIncludePath)</ExternalIncludePath>
     <LibraryPath>$(GRDKLatest)\GameKit\Lib\amd64;$(GRDKLatest)\ExtensionLibraries\Xbox.Services.API.C\DesignTime\CommonConfiguration\Neutral\Lib\Release;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -219,7 +223,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>$(GRDKLatest)\GameKit\Lib\amd64\xgameruntime.lib;$(GRDKLatest)\ExtensionLibraries\Xbox.Services.API.C\DesignTime\CommonConfiguration\Neutral\Lib\Release\Microsoft.Xbox.Services.GDK.C.Thunks.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(GRDKLatest)GameKit\Lib\amd64\xgameruntime.lib;$(GRDKLatest)ExtensionLibraries\Xbox.Services.API.C\DesignTime\CommonConfiguration\Neutral\Lib\Release\v142\Microsoft.Xbox.Services.142.GDK.C.lib;$(GRDKLatest)ExtensionLibraries\Xbox.LibHttpClient\DesignTime\CommonConfiguration\Neutral\Lib\libHttpClient.GDK.lib;Appnotify.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)..\src\modules\service\msgdk\gdk\lib\amd64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
@@ -248,7 +252,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>$(GRDKLatest)\GameKit\Lib\amd64\xgameruntime.lib;$(GRDKLatest)\ExtensionLibraries\Xbox.Services.API.C\DesignTime\CommonConfiguration\Neutral\Lib\Release\Microsoft.Xbox.Services.GDK.C.Thunks.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(GRDKLatest)GameKit\Lib\amd64\xgameruntime.lib;$(GRDKLatest)ExtensionLibraries\Xbox.Services.API.C\DesignTime\CommonConfiguration\Neutral\Lib\Release\v142\Microsoft.Xbox.Services.142.GDK.C.lib;$(GRDKLatest)ExtensionLibraries\Xbox.LibHttpClient\DesignTime\CommonConfiguration\Neutral\Lib\libHttpClient.GDK.lib;Appnotify.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)..\src\modules\service\msgdk\gdk\lib\amd64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
@@ -277,7 +281,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>$(GRDKLatest)\GameKit\Lib\amd64\xgameruntime.lib;$(GRDKLatest)\ExtensionLibraries\Xbox.Services.API.C\DesignTime\CommonConfiguration\Neutral\Lib\Release\Microsoft.Xbox.Services.GDK.C.Thunks.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(GRDKLatest)GameKit\Lib\amd64\xgameruntime.lib;$(GRDKLatest)ExtensionLibraries\Xbox.Services.API.C\DesignTime\CommonConfiguration\Neutral\Lib\Release\v142\Microsoft.Xbox.Services.142.GDK.C.lib;$(GRDKLatest)ExtensionLibraries\Xbox.LibHttpClient\DesignTime\CommonConfiguration\Neutral\Lib\libHttpClient.GDK.lib;Appnotify.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)..\src\modules\service\msgdk\gdk\lib\amd64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
