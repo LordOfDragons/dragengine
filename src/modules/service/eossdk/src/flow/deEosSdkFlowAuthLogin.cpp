@@ -118,7 +118,7 @@ void deEosSdkFlowAuthLogin::AutoLogin(){
 	options.ScopeFlags = pScope;
 	options.Credentials = &credentials;
 	
-	GetModule().LogInfo( "deEosSdkFlowAuthLogin: Logging in user using persistent authentification" );
+	GetModule().LogInfo( "deEosSdkFlowAuthLogin.AutoLogin: Logging in user using persistent authentification" );
 	EOS_Auth_Login( pService.GetHandleAuth(), &options, this, fAutoLoginCallback );
 }
 
@@ -129,14 +129,20 @@ void deEosSdkFlowAuthLogin::Login(){
 	if( ! pExchangeCode.IsEmpty() ){
 		credentials.Type = EOS_ELoginCredentialType::EOS_LCT_ExchangeCode;
 		credentials.Token = pExchangeCode;
+		GetModule().LogInfo( "deEosSdkFlowAuthLogin.Login: Logging in user using exchange code" );
 		
 	} else if( ! pUserId.IsEmpty() && ! pUserPassword.IsEmpty() ){
+		/*
 		credentials.Type = EOS_ELoginCredentialType::EOS_LCT_Password;
 		credentials.Id = pUserId;
 		credentials.Token = pUserPassword;
+		GetModule().LogInfo( "deEosSdkFlowAuthLogin.Login: Logging in user using username and password" );
+		*/
+		DETHROW_INFO( deeInvalidParam, "Logging in using username and password not allowed anymore");
 		
 	} else {
 		credentials.Type = EOS_ELoginCredentialType::EOS_LCT_AccountPortal;
+		GetModule().LogInfo( "deEosSdkFlowAuthLogin.Login: Logging in user using account portal" );
 	}
 	
 	EOS_Auth_LoginOptions options = {};
@@ -144,13 +150,14 @@ void deEosSdkFlowAuthLogin::Login(){
 	options.ScopeFlags = pScope;
 	options.Credentials = &credentials;
 	
-	GetModule().LogInfo( "deEosSdkFlowAuthLogin: Logging in user" );
 	EOS_Auth_Login( pService.GetHandleAuth(), &options, this, fLoginCallback );
 }
 
+#define TEST_MODE 0
+
 void deEosSdkFlowAuthLogin::ConnectLogin(){
 	// get auth token from logged in user
-	/*
+	#if TEST_MODE==1
 	EOS_Auth_CopyIdTokenOptions ctoptions = {};
 	ctoptions.ApiVersion = EOS_AUTH_COPYIDTOKEN_API_LATEST;
 	ctoptions.AccountId = pService.selectedAccountId;
@@ -161,8 +168,8 @@ void deEosSdkFlowAuthLogin::ConnectLogin(){
 		Fail( res );
 		return;
 	}
-	*/
 	
+	#else
 	EOS_Auth_CopyUserAuthTokenOptions cuatoptions = {};
 	cuatoptions.ApiVersion = EOS_AUTH_COPYUSERAUTHTOKEN_API_LATEST;
 	
@@ -173,13 +180,17 @@ void deEosSdkFlowAuthLogin::ConnectLogin(){
 		Fail( res );
 		return;
 	}
+	#endif
 	
 	// use auth token to connect game service
 	EOS_Connect_Credentials credentials = {};
 	credentials.ApiVersion = EOS_CONNECT_CREDENTIALS_API_LATEST;
 	credentials.Type = EOS_EExternalCredentialType::EOS_ECT_EPIC;
-	//credentials.Token = token->JsonWebToken;
+	#if TEST_MODE==1
+	credentials.Token = token->JsonWebToken;
+	#else
 	credentials.Token = token->AccessToken;
+	#endif
 	
 	EOS_Connect_UserLoginInfo userLoginInfo = {};
 	userLoginInfo.ApiVersion = EOS_CONNECT_USERLOGININFO_API_LATEST;
@@ -189,11 +200,14 @@ void deEosSdkFlowAuthLogin::ConnectLogin(){
 	options.Credentials = &credentials;
 	options.UserLoginInfo = &userLoginInfo;
 	
-	GetModule().LogInfo( "deEosSdkFlowInit: Connect login using logged in user" );
+	GetModule().LogInfo( "deEosSdkFlowAuthLogin.ConnectLogin: Connect login using logged in user" );
 	EOS_Connect_Login( pService.GetHandleConnect(), &options, this, fConnectLoginCallback );
 	
-	//EOS_Auth_IdToken_Release( token );
+	#if TEST_MODE==1
+	EOS_Auth_IdToken_Release( token );
+	#else
 	EOS_Auth_Token_Release( token );
+	#endif
 }
 
 
@@ -223,7 +237,12 @@ const EOS_Auth_DeletePersistentAuthCallbackInfo &data ){
 		( int )data.ResultCode );
 	
 	if( pService.GetPendingRequestWithId( pId ) ){
-		Login();
+		try{
+			Login();
+			
+		}catch( const deException &e ){
+			Fail( e );
+		}
 		
 	} else {
 		Abandon();
@@ -236,7 +255,7 @@ void deEosSdkFlowAuthLogin::OnLoginCallback( const EOS_Auth_LoginCallbackInfo &d
 		( int )data.ResultCode );
 	
 	if( data.ResultCode == EOS_EResult::EOS_Success ){
-		GetModule().LogInfo( "deEosSdkFlowAuthLogin: User logged in." );
+		GetModule().LogInfo( "deEosSdkFlowAuthLogin.OnLoginCallback: User logged in." );
 		pService.localUserId = data.LocalUserId;
 		pService.selectedAccountId = data.SelectedAccountId;
 		ConnectLogin();
@@ -252,7 +271,7 @@ void deEosSdkFlowAuthLogin::OnConnectLoginCallback( const EOS_Connect_LoginCallb
 		( int )data.ResultCode );
 	
 	if( data.ResultCode == EOS_EResult::EOS_Success ){
-		GetModule().LogInfo( "deEosSdkFlowAuthLogin: Game service connected using logged in user." );
+		GetModule().LogInfo( "deEosSdkFlowAuthLogin.OnConnectLoginCallback: Game service connected using logged in user." );
 		pService.productUserId = data.LocalUserId;
 		Success();
 		
