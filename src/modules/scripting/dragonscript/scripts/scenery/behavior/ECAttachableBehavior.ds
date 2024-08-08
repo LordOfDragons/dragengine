@@ -43,6 +43,12 @@ interface ECAttachableBehavior implements Persistable
 	
 	/**
 	 * \brief Set behavior element to apply behavior to or null.
+	 * 
+	 * Called by BehaviorElement in these situations:
+	 * - \ref BehaviorElement#addAttachableBehavior()
+	 * - \ref BehaviorElement#removeAttachableBehavior()
+	 * - \ref BehaviorElement#readFromFile()
+	 * 
 	 * \param element Element to set. Can be null if removed from an element.
 	 */
 	func void setElement(BehaviorElement element)

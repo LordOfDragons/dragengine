@@ -192,8 +192,8 @@ class BehaviorElement extends Element
 			throw ENullPointer.new("behavior")
 		end
 		
-		behavior.setElement(this)
 		pAttachableBehaviors.add(behavior)
+		behavior.setElement(this)
 		pThinkingAttachableBehaviors = null
 		updateThinking()
 	end
@@ -640,6 +640,7 @@ class BehaviorElement extends Element
 					break
 				end
 				pAttachableBehaviors.add(AttachableBehavior)
+				AttachableBehavior.setElement(this)
 			end
 			
 		else

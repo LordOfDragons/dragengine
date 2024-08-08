@@ -180,7 +180,9 @@ class DefaultECAttachableBehavior implements ECAttachableBehavior
 	/**
 	 * \brief Behavior has been added to element.
 	 * 
-	 * Called by \ref #setElement() after element has been set.
+	 * Called by \ref #setElement() after element has been set in these situations:
+	 * - \ref BehaviorElement#addAttachableBehavior()
+	 * - \ref BehaviorElement#readFromFile()
 	 */
 	func void onAddToElement()
 	end
@@ -188,7 +190,8 @@ class DefaultECAttachableBehavior implements ECAttachableBehavior
 	/**
 	 * \brief Behavior has been removed from element.
 	 * 
-	 * Called by \ref #setElement() before element is set to null.
+	 * Called by \ref #setElement() before element is set to null in these situations:
+	 * - \ref BehaviorElement#removeAttachableBehavior()
 	 */
 	func void onRemoveFromElement()
 	end
