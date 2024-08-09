@@ -324,7 +324,7 @@ class ServiceEos implements ServiceStats, ServiceUser, ServiceListener
 	
 	func ServiceUserFeatures getUserFeatures()
 		var ServiceObject so = ServiceObject.new()
-		so.setStringChildAt("function", "getAuthProviderInfo")
+		so.setStringChildAt("function", "getUserFeatures")
 		return pConversions.convertUserFeatures(pService.runAction(so))
 	end
 	

@@ -27,6 +27,7 @@ pin Dragengine.Utils
 pin Dragengine.Services.Mods
 pin Dragengine.Services.User
 pin Dragengine.Services.Stats
+pin Dragengine.Gui.Events
 
 /**
  * \brief Base class managing basic game services.
@@ -44,7 +45,11 @@ pin Dragengine.Services.Stats
  * parameter tree. Supports being used by BaseGameApp and other base classes as long as the
  * required object instances can be provided on construction time.
  * 
- * Make sue to call \ref BaseGameServices#dispose() upon closing the game to properly clean up
+ * The user can set an action listener using \ref #setActionInitialized() to be notified once
+ * all services have finished initialize. If all services are already initialized the provided
+ * action is immediately run.
+ * 
+ * Make sue to call \ref #dispose() upon closing the game to properly clean up
  * all service resources.
  */
 class BaseGameServices
@@ -58,7 +63,7 @@ class BaseGameServices
 	
 	var Array pUser, pStats, pMods
 	var int pInitializeCount
-	
+	var ActionListener pActionInitialized
 	
 	
 	/**
@@ -93,6 +98,7 @@ class BaseGameServices
 		closeMsgdk()
 		
 		pMods = pStats = pUser = null
+		pActionInitialized = null
 	end
 	
 	
@@ -303,6 +309,7 @@ class BaseGameServices
 	/** \brief Decrement initialize service count by 1. */
 	func void removeInitializeService()
 		pInitializeCount--
+		checkAllServicesFinishedInitialize()
 	end
 	
 	
@@ -477,6 +484,7 @@ class BaseGameServices
 				end
 				closeEos()
 			end
+			checkAllServicesFinishedInitialize()
 		end))
 		pInitializeCount++
 	end
@@ -701,6 +709,7 @@ class BaseGameServices
 				end
 				closeModio()
 			end
+			checkAllServicesFinishedInitialize()
 		end))
 		pInitializeCount++
 	end
@@ -775,6 +784,10 @@ class BaseGameServices
 	 * Requires configuration parameters:
 	 * - modio.gameid
 	 * - modio.appkey
+	 * 
+	 * The user can set an action listener using \ref #setActionInitialized() to be notified once
+	 * all services have finished initialize. If all services are already initialized the provided
+	 * action is immediately run.
 	 */
 	func void autoInitServices()
 		pConsole.addMessage("Auto initialize services")
@@ -782,5 +795,28 @@ class BaseGameServices
 		autoInitEos()
 		autoInitMsgdk()
 		autoInitModio()
+	end
+	
+	/**
+	 * \brief Set action to be called if all services finished initialization.
+	 * 
+	 * If all services are already initialized the provided action is immediately run.
+	 * Listener can be null in which case the listener is cleared.
+	 */
+	func void setActionInitialized(ActionListener listener)
+		pActionInitialized = listener
+		checkAllServicesFinishedInitialize()
+	end
+	
+	private func void checkAllServicesFinishedInitialize()
+		if pInitializeCount > 0 or pActionInitialized == null
+			return
+		end
+		
+		var ActionListener listener = pActionInitialized
+		pActionInitialized = null
+		if listener != null
+			listener.onAction(ActionEvent.new(this, ActionEvent.idAction, 0))
+		end
 	end
 end
