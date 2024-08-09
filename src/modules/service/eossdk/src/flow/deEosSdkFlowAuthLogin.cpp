@@ -51,6 +51,10 @@ static void fConnectLoginCallback( const EOS_Connect_LoginCallbackInfo *data ){
 	( ( deEosSdkFlowAuthLogin* )data->ClientData )->OnConnectLoginCallback( *data );
 }
 
+static void fCreateUserCallback( const EOS_Connect_CreateUserCallbackInfo *data ){
+	( ( deEosSdkFlowAuthLogin* )data->ClientData )->OnCreateUserCallback( *data );
+}
+
 // Constructor, destructor
 ////////////////////////////
 
@@ -109,11 +113,11 @@ pScope( EOS_EAuthScopeFlags::EOS_AS_BasicProfile )
 ///////////////
 
 void deEosSdkFlowAuthLogin::AutoLogin(){
-	EOS_Auth_Credentials credentials = {};
+	EOS_Auth_Credentials credentials{};
 	credentials.ApiVersion = EOS_AUTH_CREDENTIALS_API_LATEST;
 	credentials.Type = EOS_ELoginCredentialType::EOS_LCT_PersistentAuth;
 	
-	EOS_Auth_LoginOptions options = {};
+	EOS_Auth_LoginOptions options{};
 	options.ApiVersion = EOS_AUTH_LOGIN_API_LATEST;
 	options.ScopeFlags = pScope;
 	options.Credentials = &credentials;
@@ -123,7 +127,7 @@ void deEosSdkFlowAuthLogin::AutoLogin(){
 }
 
 void deEosSdkFlowAuthLogin::Login(){
-	EOS_Auth_Credentials credentials = {};
+	EOS_Auth_Credentials credentials{};
 	credentials.ApiVersion = EOS_AUTH_CREDENTIALS_API_LATEST;
 	
 	if( ! pExchangeCode.IsEmpty() ){
@@ -145,7 +149,7 @@ void deEosSdkFlowAuthLogin::Login(){
 		GetModule().LogInfo( "deEosSdkFlowAuthLogin.Login: Logging in user using account portal" );
 	}
 	
-	EOS_Auth_LoginOptions options = {};
+	EOS_Auth_LoginOptions options{};
 	options.ApiVersion = EOS_AUTH_LOGIN_API_LATEST;
 	options.ScopeFlags = pScope;
 	options.Credentials = &credentials;
@@ -153,12 +157,12 @@ void deEosSdkFlowAuthLogin::Login(){
 	EOS_Auth_Login( pService.GetHandleAuth(), &options, this, fLoginCallback );
 }
 
-#define TEST_MODE 0
+#define TEST_MODE 1
 
 void deEosSdkFlowAuthLogin::ConnectLogin(){
 	// get auth token from logged in user
 	#if TEST_MODE==1
-	EOS_Auth_CopyIdTokenOptions ctoptions = {};
+	EOS_Auth_CopyIdTokenOptions ctoptions{};
 	ctoptions.ApiVersion = EOS_AUTH_COPYIDTOKEN_API_LATEST;
 	ctoptions.AccountId = pService.selectedAccountId;
 	
@@ -170,7 +174,7 @@ void deEosSdkFlowAuthLogin::ConnectLogin(){
 	}
 	
 	#else
-	EOS_Auth_CopyUserAuthTokenOptions cuatoptions = {};
+	EOS_Auth_CopyUserAuthTokenOptions cuatoptions{};
 	cuatoptions.ApiVersion = EOS_AUTH_COPYUSERAUTHTOKEN_API_LATEST;
 	
 	EOS_Auth_Token *token = nullptr;
@@ -183,19 +187,20 @@ void deEosSdkFlowAuthLogin::ConnectLogin(){
 	#endif
 	
 	// use auth token to connect game service
-	EOS_Connect_Credentials credentials = {};
+	EOS_Connect_Credentials credentials{};
 	credentials.ApiVersion = EOS_CONNECT_CREDENTIALS_API_LATEST;
-	credentials.Type = EOS_EExternalCredentialType::EOS_ECT_EPIC;
 	#if TEST_MODE==1
+	credentials.Type = EOS_EExternalCredentialType::EOS_ECT_EPIC_ID_TOKEN;
 	credentials.Token = token->JsonWebToken;
 	#else
+	credentials.Type = EOS_EExternalCredentialType::EOS_ECT_EPIC;
 	credentials.Token = token->AccessToken;
 	#endif
 	
-	EOS_Connect_UserLoginInfo userLoginInfo = {};
+	EOS_Connect_UserLoginInfo userLoginInfo{};
 	userLoginInfo.ApiVersion = EOS_CONNECT_USERLOGININFO_API_LATEST;
 	
-	EOS_Connect_LoginOptions options = {};
+	EOS_Connect_LoginOptions options{};
 	options.ApiVersion = EOS_CONNECT_LOGIN_API_LATEST;
 	options.Credentials = &credentials;
 	options.UserLoginInfo = &userLoginInfo;
@@ -210,7 +215,14 @@ void deEosSdkFlowAuthLogin::ConnectLogin(){
 	#endif
 }
 
-
+void deEosSdkFlowAuthLogin::CreateUser( EOS_ContinuanceToken token ){
+	EOS_Connect_CreateUserOptions options{};
+	options.ApiVersion = EOS_CONNECT_CREATEUSER_API_LATEST;
+	options.ContinuanceToken = token;
+	
+	GetModule().LogInfo( "deEosSdkFlowAuthLogin.CreateUser: Create user" );
+	EOS_Connect_CreateUser( pService.GetHandleConnect(), &options, this, fCreateUserCallback );
+}
 
 void deEosSdkFlowAuthLogin::OnAutoLoginCallback( const EOS_Auth_LoginCallbackInfo &data ){
 	GetModule().LogInfoFormat(
@@ -222,7 +234,7 @@ void deEosSdkFlowAuthLogin::OnAutoLoginCallback( const EOS_Auth_LoginCallbackInf
 		return;
 	}
 	
-	EOS_Auth_DeletePersistentAuthOptions options = {};
+	EOS_Auth_DeletePersistentAuthOptions options{};
 	options.ApiVersion = EOS_AUTH_DELETEPERSISTENTAUTH_API_LATEST;
 	
 	GetModule().LogInfo( "deEosSdkFlowAuthLogin.OnAutoLoginCallback: Login failed. Delete persistent auth token" );
@@ -266,12 +278,32 @@ void deEosSdkFlowAuthLogin::OnLoginCallback( const EOS_Auth_LoginCallbackInfo &d
 }
 
 void deEosSdkFlowAuthLogin::OnConnectLoginCallback( const EOS_Connect_LoginCallbackInfo &data ){
-	GetModule().LogInfoFormat(
-		"deEosSdkFlowAuthLogin.OnConnectLoginCallback: res=%d",
+	GetModule().LogInfoFormat( "deEosSdkFlowAuthLogin.OnConnectLoginCallback: res=%d",
 		( int )data.ResultCode );
 	
 	if( data.ResultCode == EOS_EResult::EOS_Success ){
-		GetModule().LogInfo( "deEosSdkFlowAuthLogin.OnConnectLoginCallback: Game service connected using logged in user." );
+		GetModule().LogInfo( "deEosSdkFlowAuthLogin.OnConnectLoginCallback: "
+			"Game service connected using logged in user." );
+		pService.productUserId = data.LocalUserId;
+		Success();
+		
+	}else if( data.ResultCode == EOS_EResult::EOS_InvalidUser ){
+		GetModule().LogInfo( "deEosSdkFlowAuthLogin.OnConnectLoginCallback: "
+			"Game service connect failed due to invalid user. Creating new user." );
+		CreateUser( data.ContinuanceToken );
+		
+	}else{
+		Fail( data.ResultCode );
+	}
+}
+
+void deEosSdkFlowAuthLogin::OnCreateUserCallback( const EOS_Connect_CreateUserCallbackInfo &data )
+{
+	GetModule().LogInfoFormat( "deEosSdkFlowAuthLogin.OnCreateUserCallback: res=%d",
+		( int )data.ResultCode );
+	
+	if( data.ResultCode == EOS_EResult::EOS_Success ){
+		GetModule().LogInfo( "deEosSdkFlowAuthLogin.OnCreateUserCallback: User created." );
 		pService.productUserId = data.LocalUserId;
 		Success();
 		

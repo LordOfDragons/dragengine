@@ -196,7 +196,8 @@ class MMPanelModUserAccount extends Panel
 				pUserServices.forEach(block ServiceUser each
 					var ServiceUserFeatures features = each.getUserFeatures()
 					if features.authTokenProvider != null\
-					and pServiceUserFeatures.canAuthProviderLogin.has(features.authTokenProvider.id)
+					and pServiceUserFeatures.canAuthProviderLogin.has(features.authTokenProvider.id)\
+					and each.isUserLoggedIn()
 						providers.add(MMAuthProviderListRenderer.ListEntry.new(each, features))
 					end
 				end)

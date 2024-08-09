@@ -50,15 +50,13 @@ public:
 	void AutoLogin();
 	void Login();
 	void ConnectLogin();
+	void CreateUser( EOS_ContinuanceToken token );
 	
 	void OnAutoLoginCallback( const EOS_Auth_LoginCallbackInfo &data );
-	
-	void OnAutoLoginDeletePersistentAuthCallback(
-		const EOS_Auth_DeletePersistentAuthCallbackInfo &data );
-	
+	void OnAutoLoginDeletePersistentAuthCallback( const EOS_Auth_DeletePersistentAuthCallbackInfo &data );
 	void OnLoginCallback( const EOS_Auth_LoginCallbackInfo &data );
-	
 	void OnConnectLoginCallback( const EOS_Connect_LoginCallbackInfo &data );
+	void OnCreateUserCallback( const EOS_Connect_CreateUserCallbackInfo &data );
 	/*@}*/
 	
 	
