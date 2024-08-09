@@ -157,11 +157,8 @@ void deEosSdkFlowAuthLogin::Login(){
 	EOS_Auth_Login( pService.GetHandleAuth(), &options, this, fLoginCallback );
 }
 
-#define TEST_MODE 1
-
 void deEosSdkFlowAuthLogin::ConnectLogin(){
 	// get auth token from logged in user
-	#if TEST_MODE==1
 	EOS_Auth_CopyIdTokenOptions ctoptions{};
 	ctoptions.ApiVersion = EOS_AUTH_COPYIDTOKEN_API_LATEST;
 	ctoptions.AccountId = pService.selectedAccountId;
@@ -173,29 +170,11 @@ void deEosSdkFlowAuthLogin::ConnectLogin(){
 		return;
 	}
 	
-	#else
-	EOS_Auth_CopyUserAuthTokenOptions cuatoptions{};
-	cuatoptions.ApiVersion = EOS_AUTH_COPYUSERAUTHTOKEN_API_LATEST;
-	
-	EOS_Auth_Token *token = nullptr;
-	EOS_EResult res = EOS_Auth_CopyUserAuthToken( pService.GetHandleAuth(),
-		&cuatoptions, pService.localUserId, &token );
-	if( res != EOS_EResult::EOS_Success ){
-		Fail( res );
-		return;
-	}
-	#endif
-	
 	// use auth token to connect game service
 	EOS_Connect_Credentials credentials{};
 	credentials.ApiVersion = EOS_CONNECT_CREDENTIALS_API_LATEST;
-	#if TEST_MODE==1
 	credentials.Type = EOS_EExternalCredentialType::EOS_ECT_EPIC_ID_TOKEN;
 	credentials.Token = token->JsonWebToken;
-	#else
-	credentials.Type = EOS_EExternalCredentialType::EOS_ECT_EPIC;
-	credentials.Token = token->AccessToken;
-	#endif
 	
 	EOS_Connect_UserLoginInfo userLoginInfo{};
 	userLoginInfo.ApiVersion = EOS_CONNECT_USERLOGININFO_API_LATEST;
@@ -208,11 +187,7 @@ void deEosSdkFlowAuthLogin::ConnectLogin(){
 	GetModule().LogInfo( "deEosSdkFlowAuthLogin.ConnectLogin: Connect login using logged in user" );
 	EOS_Connect_Login( pService.GetHandleConnect(), &options, this, fConnectLoginCallback );
 	
-	#if TEST_MODE==1
 	EOS_Auth_IdToken_Release( token );
-	#else
-	EOS_Auth_Token_Release( token );
-	#endif
 }
 
 void deEosSdkFlowAuthLogin::CreateUser( EOS_ContinuanceToken token ){

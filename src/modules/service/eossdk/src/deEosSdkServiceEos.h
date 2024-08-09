@@ -130,7 +130,6 @@ public:
 	deEosSdkPendingRequest::Ref NewPendingRequest( const decUniqueID &id,
 		const decString &function, const deServiceObject::Ref &data = nullptr );
 	
-	void AuthLogout( const decUniqueID &id, const deServiceObject& request );
 	void QueryUserInfo( const decUniqueID &id, const deServiceObject& request );
 	
 	deServiceObject::Ref CopyIdToken( const deServiceObject& action );
@@ -147,10 +146,6 @@ public:
 	
 	/** \name EOS Callbacks */
 	/*@{*/
-	void OnLogoutCallback( const decUniqueID &id, const EOS_Auth_LogoutCallbackInfo &data );
-	void OnLogoutDeletePersistentAuthCallback( const decUniqueID &id,
-		const EOS_Auth_DeletePersistentAuthCallbackInfo &data );
-	
 	void OnQueryUserInfoCallback( const decUniqueID &id,
 		const EOS_UserInfo_QueryUserInfoCallbackInfo &data );
 	/*@}*/

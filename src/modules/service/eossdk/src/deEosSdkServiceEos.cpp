@@ -29,6 +29,7 @@
 #include "deEosSdkServiceEos.h"
 #include "flow/deEosSdkFlowInit.h"
 #include "flow/deEosSdkFlowAuthLogin.h"
+#include "flow/deEosSdkFlowAuthLogout.h"
 #include "flow/deEosSdkFlowGetStatsAndAchievements.h"
 #include "flow/deEosSdkFlowSetStatsAndAchievements.h"
 
@@ -60,16 +61,6 @@ public:
 		return info;
 	}
 };
-
-static void fEosLogoutCallback( const EOS_Auth_LogoutCallbackInfo *data ){
-	const cCallbackInfo info( cCallbackInfo::Get( data->ClientData ) );
-	info.service->OnLogoutCallback( info.id, *data );
-}
-
-static void fEosLogoutDeletePersistentAuthCallback( const EOS_Auth_DeletePersistentAuthCallbackInfo *data ){
-	const cCallbackInfo info( cCallbackInfo::Get( data->ClientData ) );
-	info.service->OnLogoutDeletePersistentAuthCallback( info.id, *data );
-}
 
 static void fEosQueryUserInfoCallback( const EOS_UserInfo_QueryUserInfoCallbackInfo *data ){
 	const cCallbackInfo info( cCallbackInfo::Get( data->ClientData ) );
@@ -189,7 +180,7 @@ void deEosSdkServiceEos::StartRequest( const decUniqueID &id, const deServiceObj
 		new deEosSdkFlowAuthLogin( *this, id, request );
 		
 	}else if( function == "authLogout" ){
-		AuthLogout( id, request );
+		new deEosSdkFlowAuthLogout( *this, id );
 		
 	}else if( function == "queryUserInfo" ){
 		QueryUserInfo( id, request );
@@ -297,20 +288,6 @@ const decUniqueID &id, const decString &function, const deServiceObject::Ref &da
 	return pr;
 }
 
-
-void deEosSdkServiceEos::AuthLogout( const decUniqueID &id, const deServiceObject &request ){
-	if( ! localUserId ){
-		DETHROW_INFO( deeInvalidAction, "No user logged in" );
-	}
-	
-	EOS_Auth_LogoutOptions options = {};
-	options.ApiVersion = EOS_AUTH_LOGOUT_API_LATEST;
-	options.LocalUserId = localUserId;
-	
-	pModule.LogInfo( "deEosSdkServiceEos: Logging out user");
-	NewPendingRequest( id, "authLogout" );
-	EOS_Auth_Logout( GetHandleAuth(), &options, new cCallbackInfo( this, id ), fEosLogoutCallback );
-}
 
 void deEosSdkServiceEos::QueryUserInfo( const decUniqueID &id, const deServiceObject &request ){
 	if( ! localUserId ){
@@ -429,42 +406,6 @@ void deEosSdkServiceEos::FailRequest( const deEosSdkPendingRequest::Ref &request
 
 // EOS Callbacks
 //////////////////
-
-void deEosSdkServiceEos::OnLogoutCallback(const decUniqueID &id, const EOS_Auth_LogoutCallbackInfo &data){
-	pModule.LogInfoFormat( "deEosSdkServiceEos.OnLogoutCallback: res=%d", ( int )data.ResultCode );
-	if( data.ResultCode != EOS_EResult::EOS_Success ){
-		FailRequest( id, data.ResultCode );
-		return;
-	}
-	
-	localUserId = nullptr;
-	selectedAccountId = nullptr;
-	
-	EOS_Auth_DeletePersistentAuthOptions options = {};
-	options.ApiVersion = EOS_AUTH_DELETEPERSISTENTAUTH_API_LATEST;
-	
-	pModule.LogInfo( "deEosSdkServiceEos.OnLogoutCallback: Delete persistent auth token" );
-	EOS_Auth_DeletePersistentAuth( GetHandleAuth(), &options,
-		new cCallbackInfo( this, id ), fEosLogoutDeletePersistentAuthCallback );
-}
-
-void deEosSdkServiceEos::OnLogoutDeletePersistentAuthCallback( const decUniqueID &id,
-const EOS_Auth_DeletePersistentAuthCallbackInfo &data ){
-	pModule.LogInfoFormat( "deEosSdkServiceEos.OnLogoutDeletePersistentAuthCallback: res=%d", ( int )data.ResultCode );
-	const deEosSdkPendingRequest::Ref pr( RemoveFirstPendingRequestWithId( id ) );
-	if( ! pr ){
-		return;
-	}
-	
-	try{
-		pModule.GetGameEngine()->GetServiceManager()->QueueRequestResponse(
-			pService, pr->id, pr->data, true );
-		
-	}catch( const deException &e ){
-		FailRequest( pr, e );
-		return;
-	}
-}
 
 void deEosSdkServiceEos::OnQueryUserInfoCallback( const decUniqueID &id,
 const EOS_UserInfo_QueryUserInfoCallbackInfo &data ){
