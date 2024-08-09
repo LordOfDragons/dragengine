@@ -59,8 +59,34 @@ class GameApp extends BaseGameApp
 		
 		WindowLogo.showDragengineLogo(getDesktop(), BlockActionListener.new(\
 			block ActionEvent event
-				launchApplication()
+				// You can show more than one logo by chaining another call to
+				// WindowLogo.showImageLogo() or similar here. Inside the action listener
+				// you can then continue with chaining more WindowLogo or going straight
+				// for checking base game services having finished initialize.
+				/*
+				WindowLogo.showImageLogo(getDesktop(), Image.new("/content/myGameLogo.webp"),\
+					BlockActionListener.new(block ActionEvent event
+						// Continue here for example with the code block below
+					end)
+				*/
+				
+				// If you have configured game services in your "configuration.ptree.xml"
+				// file then you should make sure all services have finished initialize
+				// (either successfully or not). If you show logos chances are high the
+				// initialization finished in time but to be safe set an action listener
+				// to be notified once ready. This is fully valid to be done at any time.
+				// If initialization already finished the action will be called right away.
+				getBaseGameServices().setActionInitialized(BlockActionListener.new(\
+					block ActionEvent event
+						// Now the logos have finished and the game services are ready
+						// (if there are any). It is now safe to launch the application
+						launchApplication()
+					end))
 			end))
+		
+		// By the way. You can wrap the content of the blocks in function calls. This way
+		// it is easier to chain multiple actions with the possibility to alter the flow.
+		// This can be used for example for developer builds to get to action faster.
 	end
 	
 	/**
