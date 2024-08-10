@@ -332,7 +332,7 @@ deServiceObject::Ref deEosSdkServiceEos::CopyIdToken( const deServiceObject &act
 		
 		EOS_Auth_IdToken_Release( token );
 		
-	}catch( const deException &e ){
+	}catch( const deException & ){
 		if( token ){
 			EOS_Auth_IdToken_Release( token );
 		}

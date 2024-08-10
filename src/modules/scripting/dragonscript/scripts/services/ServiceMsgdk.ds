@@ -147,13 +147,13 @@ class ServiceMsgdk implements ServiceStats, ServiceUser, ServiceListener
 		stats.forEach(block String each
 			so2.addStringChild(each)
 		end)
-		so.setResourceChildAt("stats", so2)
+		so.setChildAt("stats", so2)
 		
 		so2 = ServiceObject.newList()
 		achievements.forEach(block String each
 			so2.addStringChild(each)
 		end)
-		so.setResourceChildAt("achievements", so2)
+		so.setChildAt("achievements", so2)
 		
 		runRequest(so, listener)
 	end
