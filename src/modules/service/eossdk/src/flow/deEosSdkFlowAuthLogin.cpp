@@ -102,6 +102,7 @@ pScope( EOS_EAuthScopeFlags::EOS_AS_BasicProfile )
 		
 	}catch( const deException &e ){
 		Fail( e );
+		Finish();
 	}
 }
 
@@ -165,6 +166,7 @@ void deEosSdkFlowAuthLogin::ConnectLogin(){
 	EOS_EResult res = EOS_Auth_CopyIdToken( pService.GetHandleAuth(), &ctoptions, &token );
 	if( res != EOS_EResult::EOS_Success ){
 		Fail( res );
+		Finish();
 		return;
 	}
 	
@@ -227,6 +229,7 @@ const EOS_Auth_DeletePersistentAuthCallbackInfo &data ){
 			
 		}catch( const deException &e ){
 			Fail( e );
+			Finish();
 		}
 		
 	} else {
@@ -247,6 +250,7 @@ void deEosSdkFlowAuthLogin::OnLoginCallback( const EOS_Auth_LoginCallbackInfo &d
 		
 	}else{
 		Fail( data.ResultCode );
+		Finish();
 	}
 }
 
@@ -258,7 +262,7 @@ void deEosSdkFlowAuthLogin::OnConnectLoginCallback( const EOS_Connect_LoginCallb
 		GetModule().LogInfo( "deEosSdkFlowAuthLogin.OnConnectLoginCallback: "
 			"Game service connected using logged in user." );
 		pService.productUserId = data.LocalUserId;
-		Success();
+		Finish();
 		
 	}else if( data.ResultCode == EOS_EResult::EOS_InvalidUser ){
 		GetModule().LogInfo( "deEosSdkFlowAuthLogin.OnConnectLoginCallback: "
@@ -267,6 +271,7 @@ void deEosSdkFlowAuthLogin::OnConnectLoginCallback( const EOS_Connect_LoginCallb
 		
 	}else{
 		Fail( data.ResultCode );
+		Finish();
 	}
 }
 
@@ -278,9 +283,10 @@ void deEosSdkFlowAuthLogin::OnCreateUserCallback( const EOS_Connect_CreateUserCa
 	if( data.ResultCode == EOS_EResult::EOS_Success ){
 		GetModule().LogInfo( "deEosSdkFlowAuthLogin.OnCreateUserCallback: User created." );
 		pService.productUserId = data.LocalUserId;
-		Success();
 		
 	}else{
 		Fail( data.ResultCode );
 	}
+	
+	Finish();
 }

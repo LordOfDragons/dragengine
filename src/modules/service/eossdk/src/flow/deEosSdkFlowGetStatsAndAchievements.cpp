@@ -70,21 +70,27 @@ pResultData( deServiceObject::Ref::New( new deServiceObject ) )
 		pAchievements = deECCommon::StringList( so );
 	}
 	
-	service.NewPendingRequest( id, "GetStatsAndAchievements", pResultData );
+	service.NewPendingRequest( id, "getStatsAndAchievements", pResultData );
 	
 	try{
 		if( ! service.productUserId ){
 			DETHROW_INFO( deeInvalidAction, "No user logged in" );
 		}
-		
 		QueryStats();
-		QueryPlayerAchievements();
 		
-		CheckFinished();
+	}catch( const deException &e ){
+		Fail( e );
+		Finish();
+		return;
+	}
+	
+	try{
+		QueryPlayerAchievements();
 		
 	}catch( const deException &e ){
 		Fail( e );
 	}
+	CheckFinished();
 }
 
 deEosSdkFlowGetStatsAndAchievements::~deEosSdkFlowGetStatsAndAchievements(){
@@ -159,9 +165,11 @@ const EOS_Stats_OnQueryStatsCompleteCallbackInfo &data ){
 	GetModule().LogInfoFormat(
 		"deEosSdkFlowGetStatsAndAchievements.OnQueryStatsCompleted: res=%d",
 		( int )data.ResultCode );
+	pStatsReceived = true;
 	
 	if( data.ResultCode != EOS_EResult::EOS_Success ){
 		Fail( data.ResultCode );
+		CheckFinished();
 		return;
 	}
 	
@@ -184,19 +192,28 @@ const EOS_Stats_OnQueryStatsCompleteCallbackInfo &data ){
 			const char * const name = pStatNames[ i ];
 			options.Name = name;
 			result = EOS_Stats_CopyStatByName( pService.GetHandleStats(), &options, &stat );
-			if( result != EOS_EResult::EOS_Success ){
+			
+			switch( result ){
+			case EOS_EResult::EOS_Success:
+				so->SetIntChildAt( name, ( int )stat->Value );
+				EOS_Stats_Stat_Release( stat );
+				stat = nullptr;
+				break;
+				
+			case EOS_EResult::EOS_NotFound:
+				// either the stat really does not exist or it has not been set yet.
+				// we assume the stat has not been set yet so we use the value 0
+				so->SetIntChildAt( name, 0 );
+				break;
+				
+			default:
 				Fail( result );
+				CheckFinished();
 				return;
 			}
-			
-			so->SetIntChildAt( name, ( int )stat->Value );
-			
-			EOS_Stats_Stat_Release( stat );
-			stat = nullptr;
 		}
 		
 		pResultData->SetChildAt( "stats", so );
-		pStatsReceived = true;
 		CheckFinished();
 		
 	}catch( const deException &e ){
@@ -204,6 +221,7 @@ const EOS_Stats_OnQueryStatsCompleteCallbackInfo &data ){
 			EOS_Stats_Stat_Release( stat );
 		}
 		Fail( e );
+		CheckFinished();
 	}
 }
 
@@ -212,9 +230,11 @@ const EOS_Achievements_OnQueryPlayerAchievementsCompleteCallbackInfo &data ){
 	GetModule().LogInfoFormat(
 		"deEosSdkFlowGetStatsAndAchievements.OnQueryPlayerAchievementsCompleted: res=%d",
 		( int )data.ResultCode );
+	pAchievementsReceived = true;
 	
 	if( data.ResultCode != EOS_EResult::EOS_Success ){
 		Fail( data.ResultCode );
+		CheckFinished();
 		return;
 	}
 	
@@ -239,20 +259,30 @@ const EOS_Achievements_OnQueryPlayerAchievementsCompleteCallbackInfo &data ){
 			options.AchievementId = name;
 			result = EOS_Achievements_CopyPlayerAchievementByAchievementId(
 				pService.GetHandleAchievements(), &options, &achievement );
-			if( result != EOS_EResult::EOS_Success ){
+			
+			switch( result ){
+			case EOS_EResult::EOS_Success:
+				so->SetBoolChildAt( name, ( int )achievement->UnlockTime
+					!= EOS_ACHIEVEMENTS_ACHIEVEMENT_UNLOCKTIME_UNDEFINED );
+				
+				EOS_Achievements_PlayerAchievement_Release( achievement );
+				achievement = nullptr;
+				break;
+				
+			case EOS_EResult::EOS_NotFound:
+				// either the achievement really does not exist or it has not been set yet.
+				// we assume the achievement has not been set yet so we use the value false
+				so->SetBoolChildAt( name, false );
+				break;
+				
+			default:
 				Fail( result );
+				CheckFinished();
 				return;
 			}
-			
-			so->SetBoolChildAt( name, ( int )achievement->UnlockTime
-				!= EOS_ACHIEVEMENTS_ACHIEVEMENT_UNLOCKTIME_UNDEFINED );
-			
-			EOS_Achievements_PlayerAchievement_Release( achievement );
-			achievement = nullptr;
 		}
 		
 		pResultData->SetChildAt( "achievements", so );
-		pAchievementsReceived = true;
 		CheckFinished();
 		
 	}catch( const deException &e ){
@@ -260,6 +290,7 @@ const EOS_Achievements_OnQueryPlayerAchievementsCompleteCallbackInfo &data ){
 			EOS_Achievements_PlayerAchievement_Release( achievement );
 		}
 		Fail( e );
+		CheckFinished();
 	}
 }
 
@@ -267,6 +298,6 @@ const EOS_Achievements_OnQueryPlayerAchievementsCompleteCallbackInfo &data ){
 
 void deEosSdkFlowGetStatsAndAchievements::CheckFinished(){
 	if( pStatsReceived && pAchievementsReceived ){
-		Success();
+		Finish();
 	}
 }

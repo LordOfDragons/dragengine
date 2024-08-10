@@ -59,6 +59,7 @@ deEosSdkFlow( service, id )
 		
 	}catch( const deException &e ){
 		Fail( e );
+		Finish();
 	}
 }
 
@@ -105,10 +106,12 @@ void deEosSdkFlowAuthLogout::OnConnectLogoutCallback( const EOS_Connect_LogoutCa
 			
 		}catch( const deException &e ){
 			Fail( e );
+			Finish();
 		}
 		
 	}else{
 		Fail( data.ResultCode );
+		Finish();
 	}
 }
 
@@ -120,9 +123,9 @@ void deEosSdkFlowAuthLogout::OnAuthLogoutCallback( const EOS_Auth_LogoutCallback
 		GetModule().LogInfo( "deEosSdkFlowAuthLogout.OnAuthLogoutCallback: User logged out." );
 		pService.localUserId = nullptr;
 		
-		Success();
-		
 	}else{
 		Fail( data.ResultCode );
 	}
+	
+	Finish();
 }

@@ -57,12 +57,14 @@ public:
 	/*@{*/
 	deEosSdk &GetModule() const;
 	
-	void Success();
 	void Fail( const deException &e );
 	void Fail( EOS_EResult res );
 	void Fail( const deEosSdkPendingRequest::Ref &request, const deException &e );
 	void Fail( const deEosSdkPendingRequest::Ref &request, EOS_EResult res );
+	void Finish();
 	void Abandon();
+	
+	inline bool HasFailed() const{ return pHasFailed; }
 	/*@}*/
 	
 	
@@ -70,6 +72,7 @@ public:
 protected:
 	deEosSdkServiceEos &pService;
 	const decUniqueID pId;
+	bool pHasFailed;
 };
 
 #endif

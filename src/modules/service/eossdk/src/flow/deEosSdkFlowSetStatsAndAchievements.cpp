@@ -56,21 +56,28 @@ pStatsCompleted( false ),
 pAchievementsCompleted( false ),
 pResultData( deServiceObject::Ref::New( new deServiceObject ) )
 {
-	service.NewPendingRequest( id, "GetStatsAndAchievements", pResultData );
+	service.NewPendingRequest( id, "setStatsAndAchievements", pResultData );
 	
 	try{
 		if( ! service.productUserId ){
 			DETHROW_INFO( deeInvalidAction, "No user logged in" );
 		}
-		
 		IngestStat( request );
-		UnlockAchievements( request );
 		
-		CheckFinished();
+	}catch( const deException &e ){
+		Fail( e );
+		Finish();
+		return;
+	}
+	
+	try{
+		UnlockAchievements( request );
 		
 	}catch( const deException &e ){
 		Fail( e );
 	}
+	
+	CheckFinished();
 }
 
 
@@ -169,7 +176,7 @@ void deEosSdkFlowSetStatsAndAchievements::UnlockAchievements( const deServiceObj
 				ids[ i ] = name.GetString();
 				
 			}else{
-				DETHROW_INFO( deeInvalidParam, name );
+				DETHROW_INFO( deeInvalidParam, "Reverting unlocking achievements is not supported" );
 			}
 		}
 		
@@ -198,14 +205,13 @@ const EOS_Stats_IngestStatCompleteCallbackInfo &data ){
 	GetModule().LogInfoFormat(
 		"deEosSdkFlowSetStatsAndAchievements.OnIngestStatCompleted: res=%d",
 		( int )data.ResultCode );
+	pStatsCompleted = true;
 	
-	if( data.ResultCode == EOS_EResult::EOS_Success ){
-		pStatsCompleted = true;
-		CheckFinished();
-		
-	}else{
+	if( data.ResultCode != EOS_EResult::EOS_Success ){
 		Fail( data.ResultCode );
 	}
+	
+	CheckFinished();
 }
 
 void deEosSdkFlowSetStatsAndAchievements::OnUnlockAchievementsCompleted(
@@ -213,21 +219,19 @@ const EOS_Achievements_OnUnlockAchievementsCompleteCallbackInfo &data ){
 	GetModule().LogInfoFormat(
 		"deEosSdkFlowSetStatsAndAchievements.OnUnlockAchievementsCompleted: res=%d",
 		( int )data.ResultCode );
+	pAchievementsCompleted = true;
 	
-	if( data.ResultCode == EOS_EResult::EOS_Success ){
-		pAchievementsCompleted = true;
-		CheckFinished();
-		
-	}else{
+	if( data.ResultCode != EOS_EResult::EOS_Success ){
 		Fail( data.ResultCode );
-		return;
 	}
+	
+	CheckFinished();
 }
 
 
 
 void deEosSdkFlowSetStatsAndAchievements::CheckFinished(){
 	if( pStatsCompleted && pAchievementsCompleted ){
-		Success();
+		Finish();
 	}
 }

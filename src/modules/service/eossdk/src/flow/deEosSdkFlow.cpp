@@ -37,7 +37,8 @@
 
 deEosSdkFlow::deEosSdkFlow( deEosSdkServiceEos &service, const decUniqueID &id ) :
 pService( service ),
-pId( id ){
+pId( id ),
+pHasFailed( false ){
 }
 
 deEosSdkFlow::~deEosSdkFlow(){
@@ -53,50 +54,33 @@ deEosSdk &deEosSdkFlow::GetModule() const{
 }
 
 
-void deEosSdkFlow::Success(){
-	const deEosSdkPendingRequest::Ref pr( pService.RemoveFirstPendingRequestWithId( pId ) );
-	if( ! pr ){
-		Abandon();
-		return;
-	}
-	
-	try{
-		GetModule().GetGameEngine()->GetServiceManager()->QueueRequestResponse(
-			pService.GetService(), pr->id, pr->data, true );
-		
-	}catch( const deException &e ){
-		Fail( pr, e );
-		return;
-	}
-	
-	Abandon();
-}
-
 void deEosSdkFlow::Fail( const deException &e ){
 	const deEosSdkPendingRequest::Ref pr( pService.RemoveFirstPendingRequestWithId( pId ) );
-	if( pr ){
+	if( pr && ! pHasFailed ){
 		Fail( pr, e );
 		
 	}else{
 		GetModule().LogException( e );
-		
-		Abandon();
+		pHasFailed = true;
 	}
 }
 
 void deEosSdkFlow::Fail( EOS_EResult res ){
 	const deEosSdkPendingRequest::Ref pr( pService.RemoveFirstPendingRequestWithId( pId ) );
-	if( pr ){
+	if( pr && ! pHasFailed ){
 		Fail( pr, res );
 		
 	}else{
 		GetModule().LogErrorFormat( "deEosSdkFlow: %s", EOS_EResult_ToString( res ) );
-		
-		Abandon();
+		pHasFailed = true;
 	}
 }
 
 void deEosSdkFlow::Fail( const deEosSdkPendingRequest::Ref &pr, const deException &e ){
+	if( pHasFailed ){
+		return;
+	}
+	
 	GetModule().LogException( e );
 	
 	pr->data->SetStringChildAt( "error", e.GetName().GetMiddle( 3 ) );
@@ -104,12 +88,15 @@ void deEosSdkFlow::Fail( const deEosSdkPendingRequest::Ref &pr, const deExceptio
 	
 	GetModule().GetGameEngine()->GetServiceManager()->QueueRequestFailed(
 		pService.GetService(), pr->id, pr->data );
-	
-	Abandon();
+	pHasFailed = true;
 }
 
 void deEosSdkFlow::Fail( const deEosSdkPendingRequest::Ref &request, EOS_EResult res ){
 	GetModule().LogErrorFormat( "deEosSdkFlow: %s", EOS_EResult_ToString( res ) );
+	
+	if( pHasFailed ){
+		return;
+	}
 	
 	request->data->SetIntChildAt( "code", ( int )res );
 	request->data->SetStringChildAt( "error", EOS_EResult_ToString( res ) );
@@ -117,6 +104,20 @@ void deEosSdkFlow::Fail( const deEosSdkPendingRequest::Ref &request, EOS_EResult
 	
 	GetModule().GetGameEngine()->GetServiceManager()->QueueRequestFailed(
 		pService.GetService(), request->id, request->data );
+	pHasFailed = true;
+}
+
+void deEosSdkFlow::Finish(){
+	const deEosSdkPendingRequest::Ref pr( pService.RemoveFirstPendingRequestWithId( pId ) );
+	if( pr && ! pHasFailed ){
+		try{
+			GetModule().GetGameEngine()->GetServiceManager()->QueueRequestResponse(
+				pService.GetService(), pr->id, pr->data, true );
+			
+		}catch( const deException &e ){
+			Fail( pr, e );
+		}
+	}
 	
 	Abandon();
 }

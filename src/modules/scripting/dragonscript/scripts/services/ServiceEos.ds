@@ -264,13 +264,13 @@ class ServiceEos implements ServiceStats, ServiceUser, ServiceListener
 		stats.forEach(block String each
 			so2.addStringChild(each)
 		end)
-		so.setResourceChildAt("stats", so2)
+		so.setChildAt("stats", so2)
 		
 		so2 = ServiceObject.newList()
 		achievements.forEach(block String each
 			so2.addStringChild(each)
 		end)
-		so.setResourceChildAt("achievements", so2)
+		so.setChildAt("achievements", so2)
 		
 		runRequest(so, listener)
 	end
@@ -473,7 +473,7 @@ class ServiceEos implements ServiceStats, ServiceUser, ServiceListener
 			var Dictionary achievements = Dictionary.new()
 			so = response.getChildAt("achievements")
 			so.getChildrenKeys().forEach(block String each
-				stats.setAt(each, so.getChildAt(each).getBoolean())
+				achievements.setAt(each, so.getChildAt(each).getBoolean())
 			end)
 			
 			pStatsListeners.forEach(block ServiceStatsListener each
@@ -493,7 +493,7 @@ class ServiceEos implements ServiceStats, ServiceUser, ServiceListener
 			var Dictionary achievements = Dictionary.new()
 			so = response.getChildAt("achievements")
 			so.getChildrenKeys().forEach(block String each
-				stats.setAt(each, so.getChildAt(each).getBoolean())
+				achievements.setAt(each, so.getChildAt(each).getBoolean())
 			end)
 			
 			pStatsListeners.forEach(block ServiceStatsListener each
