@@ -629,14 +629,6 @@ void deModioService::LoadUserResource( const decUniqueID &id, const deServiceObj
 		const Modio::UserID userId( deMCCommon::ID( url.getComponentAt( 1 ) ) );
 		const decString &type1 = url.getComponentAt( 2 );
 		
-		const Modio::Optional<Modio::User> user( Modio::QueryUserProfile() );
-		if( ! user.has_value() ){
-			DETHROW_INFO( deeInvalidParam, "User not logged in" );
-		}
-		if( user.value().UserId != userId ){
-			DETHROW_INFO( deeInvalidParam, "Not authenticated user" );
-		}
-		
 		if( type1 == "avatar" ){
 			const decString &type2 = url.getComponentAt( 3 );
 			Modio::AvatarSize size;
@@ -658,6 +650,20 @@ void deModioService::LoadUserResource( const decUniqueID &id, const deServiceObj
 				( int )size, url.url.GetString() );
 			
 			NewPendingRequest( id, "loadUserResource", data );
+			
+			try{
+				const Modio::Optional<Modio::User> user( Modio::QueryUserProfile() );
+				if( ! user.has_value() ){
+					DETHROW_INFO( deeInvalidParam, "User not logged in" );
+				}
+				if( user.value().UserId != userId ){
+					DETHROW_INFO( deeInvalidParam, "Not authenticated user" );
+				}
+				
+			}catch( const deException &e ){
+				FailRequest( id, e );
+			}
+			
 			AddRequiresEventHandlingCount();
 			Modio::GetUserMediaAsync( size, [ this, id ]( Modio::ErrorCode ec, Modio::Optional<std::string> filename ){
 				pOnLoadResourceFinished( id, ec, filename );

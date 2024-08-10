@@ -184,8 +184,16 @@ const decUniqueID &id, const decString &function, const deServiceObject::Ref &da
 }
 
 void deSsdkServiceSteam::RequestCurrentStats( const decUniqueID &id ){
-	DEASSERT_TRUE( SteamUserStats()->RequestCurrentStats() );
 	NewPendingRequest( id, "requestCurrentStats" );
+	
+	try{
+		if( ! SteamUserStats()->RequestCurrentStats() ){
+			DETHROW_INFO( deeInvalidAction, "SteamUserStats.RequestCurrentStats Failed" );
+		}
+		
+	}catch( const deException &e ){
+		FailRequest( id, e );
+	}
 }
 
 void deSsdkServiceSteam::GetStats( const decUniqueID &id, const deServiceObject& request ){
@@ -250,8 +258,8 @@ void deSsdkServiceSteam::ResetAllStats( const decUniqueID &id, const deServiceOb
 
 void deSsdkServiceSteam::RequestEncryptedAppTicket( const decUniqueID &id, const deServiceObject &request ){
 	if( pEncAppTicket.IsEmpty() ){
-		pCROnEncryptedAppTicketResponse.Run(this, SteamUser()->RequestEncryptedAppTicket( nullptr, 0 ) );
 		NewPendingRequest( id, "requestEncryptedAppTicket" );
+		pCROnEncryptedAppTicketResponse.Run(this, SteamUser()->RequestEncryptedAppTicket( nullptr, 0 ) );
 		
 	}else{
 		const deServiceObject::Ref response( deServiceObject::Ref::New( new deServiceObject ) );
@@ -380,8 +388,15 @@ void deSsdkServiceSteam::SetStats( const decUniqueID &id, const deServiceObject 
 	}
 	
 	// store
-	DEASSERT_TRUE( SteamUserStats()->StoreStats() );
 	NewPendingRequest( id, "setStats", response );
+	try{
+		if( ! SteamUserStats()->StoreStats() ){
+			DETHROW_INFO( deeInvalidAction, "SteamUserStats.StoreStats Failed" );
+		}
+		
+	}catch( const deException &e ){
+		FailRequest( id, e );
+	}
 }
 
 

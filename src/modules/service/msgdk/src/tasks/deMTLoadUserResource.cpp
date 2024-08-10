@@ -174,11 +174,6 @@ void deMTLoadUserResource::GetGamerPicture()
 		{
 			user = pService.GetUser();
 		}
-		else
-		{
-			pService.AssertResult(XUserFindUserById(uid, &user),
-				"deMTLoadUserResource.GetGamerPicture.XUserFindUserById");
-		}
 
 		if(pUrl.getComponentAt(2) == "gamerPicture")
 		{
@@ -208,6 +203,12 @@ void deMTLoadUserResource::GetGamerPicture()
 			pService.NewPendingRequest(pRequestId, "loadUserResource", data);
 			try
 			{
+				if(!user)
+				{
+					pService.AssertResult(XUserFindUserById(uid, &user),
+						"deMTLoadUserResource.GetGamerPicture.XUserFindUserById");
+				}
+
 				pService.AssertResult(XUserGetGamerPictureAsync(user, size, GetAsyncBlockPtr()),
 					"deMTLoadUserResource.GetGamerPicture.XUserGetGamerPictureAsync");
 			}

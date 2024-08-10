@@ -21,12 +21,6 @@ pService(service),
 pRequestId(id),
 pResultData(deServiceObject::Ref::New(new deServiceObject))
 {
-	if(!service.GetUser() || !service.GetXblContext())
-	{
-		DETHROW_INFO(deeInvalidAction, "No user logged in");
-	}
-
-	// get parameters
 	deServiceObject::Ref so;
 	
 	so = request.GetChildAt("stats");
@@ -39,16 +33,16 @@ pResultData(deServiceObject::Ref::New(new deServiceObject))
 		pAchievements = deMCCommon::StringList(so);
 	}
 	
-	// verify preconditions
-	DEASSERT_TRUE(pStats.GetCount() > 0)
-	DEASSERT_TRUE(pAchievements.GetCount() > 0)
-		
 	pService.GetModule().LogInfo("deMTGetStatsAndAchievements: Get stats and achievements");
-
 
 	pService.NewPendingRequest(pRequestId, "getStatsAndAchievements", pResultData);
 	try
 	{
+		if(!service.GetUser() || !service.GetXblContext())
+		{
+			DETHROW_INFO(deeInvalidAction, "No user logged in");
+		}
+
 		pGetAchievements();
 		pGetStarts();
 	}
@@ -69,6 +63,12 @@ deMTGetStatsAndAchievements::~deMTGetStatsAndAchievements()
 
 void deMTGetStatsAndAchievements::pGetAchievements()
 {
+	if(pAchievements.GetCount() == 0)
+	{
+		pResultData->SetChildAt("achievements", deServiceObject::Ref::New( new deServiceObject ));
+		return;
+	}
+	
 	XblAchievementsManagerResultHandle achievementResult;
 	pService.AssertResult(XblAchievementsManagerGetAchievements(
 		pService.GetUserId(), XblAchievementOrderBy::DefaultOrder,
@@ -107,8 +107,20 @@ void deMTGetStatsAndAchievements::pGetAchievements()
 void deMTGetStatsAndAchievements::pGetStarts()
 {
 	const int count = pStats.GetCount();
-	int i;
+	if(count == 0)
+	{
+		const deMsgdkPendingRequest::Ref pr(pService.GetPendingRequestWithId(pRequestId));
+		if(pr)
+		{
+			pResultData->SetChildAt("stats", deServiceObject::Ref::New(new deServiceObject));
+			pService.GetModule().GetGameEngine()->GetServiceManager()->
+				QueueRequestResponse(pService.GetService(), pr->id, pr->data, true);
+		}
+		FreeReference();
+		return;
+	}
 	
+	int i;
 	pStatNames = new const char*[count];
 	for( i=0; i<count; i++ ){
 		pStatNames[i] = pStats.GetAt(i).GetString();

@@ -57,8 +57,6 @@ pRequestId(id)
 		{
 			service.GetModule().LogWarn("deMTAddUser: Advanced user model is disabled."
 				" Logging in non-default user is not supported.");
-			DETHROW_INFO(deeInvalidParam, "Advanced user model is disabled."
-				" Logging in non-default user is not supported.");
 		}
 
 		service.GetModule().LogInfo("deMTAddUser: Add user using system UI to game session");
@@ -71,6 +69,12 @@ pRequestId(id)
 	pService.NewPendingRequest(pRequestId, "userAdd");
 	try
 	{
+		if(!defaultUser && !service.GetModule().GetGameConfig().advancedUserModel)
+		{
+			DETHROW_INFO(deeInvalidParam, "Advanced user model is disabled."
+				" Logging in non-default user is not supported.");
+		}
+		
 		pService.AssertResult(XUserAddAsync(options, GetAsyncBlockPtr()), "deMTAddUser.XUserAddAsync");
 	}
 	catch(const deException &e)

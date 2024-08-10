@@ -18,16 +18,15 @@ deMsgdkAsyncTask(service.GetInvalidator()),
 pService(service),
 pRequestId(id)
 {
-	if(!service.GetUser())
-	{
-		DETHROW_INFO(deeInvalidAction, "No user logged in");
-	}
-
 	pService.GetModule().LogInfo("deMTGetTokenAndSignature: Request token");
-
 	pService.NewPendingRequest(pRequestId, "getTokenAndSignature");
 	try
 	{
+		if(!service.GetUser())
+		{
+			DETHROW_INFO(deeInvalidAction, "No user logged in");
+		}
+
 		pService.AssertResult(XUserGetTokenAndSignatureAsync(service.GetUser(),
 			XUserGetTokenAndSignatureOptions::None, "POST", "https://*.modapi.io",
 			0, nullptr, 0, nullptr, GetAsyncBlockPtr()),

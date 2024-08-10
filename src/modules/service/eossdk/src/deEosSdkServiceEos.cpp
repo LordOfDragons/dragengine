@@ -290,10 +290,6 @@ const decUniqueID &id, const decString &function, const deServiceObject::Ref &da
 
 
 void deEosSdkServiceEos::QueryUserInfo( const decUniqueID &id, const deServiceObject &request ){
-	if( ! localUserId ){
-		DETHROW_INFO( deeInvalidAction, "No user logged in" );
-	}
-	
 	EOS_UserInfo_QueryUserInfoOptions options = {};
 	options.ApiVersion = EOS_USERINFO_QUERYUSERINFO_API_LATEST;
 	options.LocalUserId = localUserId;
@@ -301,8 +297,17 @@ void deEosSdkServiceEos::QueryUserInfo( const decUniqueID &id, const deServiceOb
 	
 	pModule.LogInfo( "deEosSdkServiceEos: Get user information");
 	NewPendingRequest( id, "queryUserInfo" );
-	EOS_UserInfo_QueryUserInfo( GetHandleUserInfo(), &options,
-		new cCallbackInfo( this, id ), fEosQueryUserInfoCallback );
+	try{
+		if( ! localUserId ){
+			DETHROW_INFO( deeInvalidAction, "No user logged in" );
+		}
+		
+		EOS_UserInfo_QueryUserInfo( GetHandleUserInfo(), &options,
+			new cCallbackInfo( this, id ), fEosQueryUserInfoCallback );
+		
+	}catch( const deException &e ){
+		FailRequest( id, e );
+	}
 }
 
 deServiceObject::Ref deEosSdkServiceEos::CopyIdToken( const deServiceObject &action ){

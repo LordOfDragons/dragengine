@@ -58,7 +58,6 @@ pStatsReceived( false ),
 pAchievementsReceived( false ),
 pResultData( deServiceObject::Ref::New( new deServiceObject ) )
 {
-	// get parameters
 	deServiceObject::Ref so;
 	
 	so = request.GetChildAt( "stats" );
@@ -71,17 +70,17 @@ pResultData( deServiceObject::Ref::New( new deServiceObject ) )
 		pAchievements = deECCommon::StringList( so );
 	}
 	
-	// verify preconditions
-	DEASSERT_NOTNULL( service.productUserId )
-	DEASSERT_TRUE( pStats.GetCount() > 0 )
-	DEASSERT_TRUE( pAchievements.GetCount() > 0 )
-	
-	// begin get stats and achievements
 	service.NewPendingRequest( id, "GetStatsAndAchievements", pResultData );
 	
 	try{
+		if( ! service.productUserId ){
+			DETHROW_INFO( deeInvalidAction, "No user logged in" );
+		}
+		
 		QueryStats();
 		QueryPlayerAchievements();
+		
+		CheckFinished();
 		
 	}catch( const deException &e ){
 		Fail( e );
@@ -104,8 +103,13 @@ deEosSdkFlowGetStatsAndAchievements::~deEosSdkFlowGetStatsAndAchievements(){
 
 void deEosSdkFlowGetStatsAndAchievements::QueryStats(){
 	const int count = pStats.GetCount();
-	int i;
+	if( count == 0 ){
+		pResultData->SetChildAt( "stats", deServiceObject::Ref::New( new deServiceObject ) );
+		pStatsReceived = true;
+		return;
+	}
 	
+	int i;
 	pStatNames = new const char*[count];
 	for( i=0; i<count; i++ ){
 		pStatNames[ i ] = pStats.GetAt( i ).GetString();
@@ -126,8 +130,13 @@ void deEosSdkFlowGetStatsAndAchievements::QueryStats(){
 
 void deEosSdkFlowGetStatsAndAchievements::QueryPlayerAchievements(){
 	const int count = pAchievements.GetCount();
-	int i;
+	if( count == 0 ){
+		pResultData->SetChildAt( "achievements", deServiceObject::Ref::New( new deServiceObject ) );
+		pAchievementsReceived = true;
+		return;
+	}
 	
+	int i;
 	pAchievementNames = new const char*[count];
 	for( i=0; i<count; i++ ){
 		pAchievementNames[ i ] = pAchievements.GetAt( i ).GetString();

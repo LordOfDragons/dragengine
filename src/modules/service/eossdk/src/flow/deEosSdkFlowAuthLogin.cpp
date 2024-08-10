@@ -63,7 +63,6 @@ deEosSdkFlowAuthLogin::deEosSdkFlowAuthLogin( deEosSdkServiceEos &service,
 deEosSdkFlow( service, id ),
 pScope( EOS_EAuthScopeFlags::EOS_AS_BasicProfile )
 {
-	// get parameters
 	deServiceObject::Ref so;
 	
 	so = request.GetChildAt( "exchangeCode" );
@@ -91,7 +90,6 @@ pScope( EOS_EAuthScopeFlags::EOS_AS_BasicProfile )
 		pScope |= EOS_EAuthScopeFlags::EOS_AS_Presence;
 	}
 	
-	// begin login
 	service.NewPendingRequest( id, "authLogin" );
 	
 	try{

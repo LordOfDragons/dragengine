@@ -56,13 +56,13 @@ pStatsCompleted( false ),
 pAchievementsCompleted( false ),
 pResultData( deServiceObject::Ref::New( new deServiceObject ) )
 {
-	// verify preconditions
-	DEASSERT_NOTNULL( service.productUserId )
-	
-	// begin get stats and achievements
 	service.NewPendingRequest( id, "GetStatsAndAchievements", pResultData );
 	
 	try{
+		if( ! service.productUserId ){
+			DETHROW_INFO( deeInvalidAction, "No user logged in" );
+		}
+		
 		IngestStat( request );
 		UnlockAchievements( request );
 		

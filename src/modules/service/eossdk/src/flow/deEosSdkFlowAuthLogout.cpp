@@ -48,13 +48,13 @@ deEosSdkFlowAuthLogout::deEosSdkFlowAuthLogout(
 	deEosSdkServiceEos &service, const decUniqueID &id ) :
 deEosSdkFlow( service, id )
 {
-	if( ! pService.localUserId ){
-		DETHROW_INFO( deeInvalidAction, "No user logged in" );
-	}
-	
 	service.NewPendingRequest( id, "authLogout" );
 	
 	try{
+		if( ! service.localUserId ){
+			DETHROW_INFO( deeInvalidAction, "No user logged in" );
+		}
+		
 		ConnectLogout();
 		
 	}catch( const deException &e ){
