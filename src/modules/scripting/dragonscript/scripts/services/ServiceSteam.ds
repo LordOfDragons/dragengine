@@ -345,7 +345,7 @@ class ServiceSteam implements ServiceStats, ServiceUser, ServiceListener
 			var Dictionary achievements = Dictionary.new()
 			so = response.getChildAt("achievements")
 			so.getChildrenKeys().forEach(block String each
-				stats.setAt(each, so.getChildAt(each).getBoolean())
+				achievements.setAt(each, so.getChildAt(each).getBoolean())
 			end)
 			
 			pStatsListeners.forEach(block ServiceStatsListener each
@@ -372,7 +372,7 @@ class ServiceSteam implements ServiceStats, ServiceUser, ServiceListener
 			var Dictionary achievements = Dictionary.new()
 			so = response.getChildAt("achievements")
 			so.getChildrenKeys().forEach(block String each
-				stats.setAt(each, so.getChildAt(each).getBoolean())
+				achievements.setAt(each, so.getChildAt(each).getBoolean())
 			end)
 			
 			pStatsListeners.forEach(block ServiceStatsListener each
