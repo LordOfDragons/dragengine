@@ -48,9 +48,11 @@ public:
 	/*@{*/
 	void ConnectLogout();
 	void AuthLogout();
+	void DeletePersistentAuth();
 	
 	void OnConnectLogoutCallback( const EOS_Connect_LogoutCallbackInfo &data );
 	void OnAuthLogoutCallback( const EOS_Auth_LogoutCallbackInfo &data );
+	void OnDeletePersistentAuthCallback( const EOS_Auth_DeletePersistentAuthCallbackInfo &data );
 	/*@}*/
 };
 

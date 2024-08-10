@@ -41,6 +41,10 @@ static void fAuthLogoutCallback( const EOS_Auth_LogoutCallbackInfo *data ){
 	( ( deEosSdkFlowAuthLogout* )data->ClientData )->OnAuthLogoutCallback( *data );
 }
 
+static void fDeletePersistentAuthCallback( const EOS_Auth_DeletePersistentAuthCallbackInfo *data ){
+	( ( deEosSdkFlowAuthLogout* )data->ClientData )->OnDeletePersistentAuthCallback( *data );
+}
+
 // Constructor, destructor
 ////////////////////////////
 
@@ -93,6 +97,14 @@ void deEosSdkFlowAuthLogout::AuthLogout(){
 	EOS_Auth_Logout( pService.GetHandleAuth(), &options, this, fAuthLogoutCallback );
 }
 
+void deEosSdkFlowAuthLogout::DeletePersistentAuth(){
+	EOS_Auth_DeletePersistentAuthOptions options{};
+	options.ApiVersion = EOS_AUTH_DELETEPERSISTENTAUTH_API_LATEST;
+	
+	GetModule().LogInfo( "deEosSdkFlowAuthLogout.DeletePersistentAuth: Delete persistent auth token" );
+	EOS_Auth_DeletePersistentAuth( pService.GetHandleAuth(), &options, this, fDeletePersistentAuthCallback );
+}
+
 void deEosSdkFlowAuthLogout::OnConnectLogoutCallback( const EOS_Connect_LogoutCallbackInfo &data ){
 	GetModule().LogInfoFormat( "deEosSdkFlowAuthLogout.OnConnectLogoutCallback: res=%d",
 		( int )data.ResultCode );
@@ -123,8 +135,30 @@ void deEosSdkFlowAuthLogout::OnAuthLogoutCallback( const EOS_Auth_LogoutCallback
 		GetModule().LogInfo( "deEosSdkFlowAuthLogout.OnAuthLogoutCallback: User logged out." );
 		pService.localUserId = nullptr;
 		
+		try{
+			DeletePersistentAuth();
+			
+		}catch( const deException &e ){
+			GetModule().LogException( e );
+			Finish();
+		}
+		
 	}else{
 		Fail( data.ResultCode );
+		Finish();
+	}
+}
+
+void deEosSdkFlowAuthLogout::OnDeletePersistentAuthCallback(
+const EOS_Auth_DeletePersistentAuthCallbackInfo &data ){
+	GetModule().LogInfoFormat( "deEosSdkFlowAuthLogout.OnDeletePersistentAuthCallback: res=%d",
+		( int )data.ResultCode );
+	
+	if( data.ResultCode == EOS_EResult::EOS_Success ){
+		GetModule().LogInfo( "deEosSdkFlowAuthLogout.OnDeletePersistentAuthCallback: Persistent auth token deleted." );
+		
+	}else{
+		GetModule().LogErrorFormat( "deEosSdkFlow: %s", EOS_EResult_ToString( data.ResultCode ) );
 	}
 	
 	Finish();
