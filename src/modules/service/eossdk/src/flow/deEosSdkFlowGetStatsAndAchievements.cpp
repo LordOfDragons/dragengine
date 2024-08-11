@@ -202,8 +202,8 @@ const EOS_Stats_OnQueryStatsCompleteCallbackInfo &data ){
 				
 			case EOS_EResult::EOS_NotFound:
 				// either the stat really does not exist or it has not been set yet.
-				// we assume the stat has not been set yet so we use the value 0
-				so->SetIntChildAt( name, 0 );
+				// we assume the stat has not been set yet so we set it to nullptr.
+				so->SetChildAt( name, nullptr );
 				break;
 				
 			default:

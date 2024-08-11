@@ -36,7 +36,7 @@ class deMsgdkServiceMsgdk;
 
 
 /**
- * Add user task.
+ * Get user stats and achievements task.
  */
 class deMTGetStatsAndAchievements : public deMsgdkAsyncTask{
 private:
@@ -45,6 +45,7 @@ private:
 	decStringList pStats, pAchievements;
 	const char **pStatNames;
 	const deServiceObject::Ref pResultData;
+	bool pWaitAchievementsSynced;
 
 public:
 	/** \name Constructors and Destructors */
@@ -59,9 +60,16 @@ protected:
 	/*@}*/
 
 
+public:
+	/** \name Management */
+	/*@{*/
+	void OnFrameUpdate(float elapsed) override;
+	/*@}*/
+
+
 protected:
 	void pGetAchievements();
-	void pGetStarts();
+	void pGetStats();
 	void OnFinished() override;
 };
 

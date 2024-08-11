@@ -171,8 +171,20 @@ class ServiceMsgdk implements ServiceStats, ServiceUser, ServiceListener
 		
 		if stats.getCount() > 0
 			var ServiceObject so2 = ServiceObject.new()
-			stats.forEach(block String key, int value
-				so2.setIntChildAt(key, value)
+			stats.forEach(block String key, Object value
+				if value castable String
+					so2.setStringChildAt(key, value cast String)
+					
+				elif value castable float
+					so2.setFloatChildAt(key, value cast float)
+					
+				elif value castable int
+					so2.setIntChildAt(key, value cast int)
+					
+				else
+					throw EInvalidParam.new("Invalid value for stat '{}': {}".format(\
+						Array.newWith(key, value)))
+				end
 			end)
 			so.setChildAt("stats", so2)
 		end
@@ -189,7 +201,10 @@ class ServiceMsgdk implements ServiceStats, ServiceUser, ServiceListener
 	end
 	
 	func void resetAllStats(bool resetAchievements)
-		throw EInvalidAction.new("Not supported")
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "resetAllStats")
+		so.setBoolChildAt("withAchievements", resetAchievements)
+		pService.runAction(so)
 	end
 	
 	
@@ -268,7 +283,7 @@ class ServiceMsgdk implements ServiceStats, ServiceUser, ServiceListener
 		info.id = so.getChildAt("id").getString()
 		info.name = so.getChildAt("gamertagUniqueModern").getString()
 		info.displayName = so.getChildAt("gamertagModern").getString()
-		//info.profileUrl = so.getChildAt("profileUrl").getString()
+		info.profileUrl = so.getChildAt("profileUrl").getString()
 		info.avatar = ServiceImage.new()
 		info.avatar.url = so.getChildAt("gamerPicture").getString()
 		
@@ -357,9 +372,28 @@ class ServiceMsgdk implements ServiceStats, ServiceUser, ServiceListener
 			
 		elif function.equals("getStatsAndAchievements")
 			var Dictionary stats = Dictionary.new()
-			var ServiceObject so = response.getChildAt("stats")
+			var ServiceObject soChild, so = response.getChildAt("stats")
 			so.getChildrenKeys().forEach(block String each
-				stats.setAt(each, so.getChildAt(each).getInteger())
+				soChild = so.getChildAt(each)
+				if soChild != null
+					select soChild.getValueType()
+					case ServiceObjectType.string
+						stats.setAt(each, soChild.getString())
+						
+					case ServiceObjectType.floating
+						stats.setAt(each, soChild.getFloat())
+						
+					case ServiceObjectType.integer
+						stats.setAt(each, soChild.getInteger())
+						
+					else
+						throw EInvalidParam.new("Invalid value for stat '{}': {}".format(\
+							Array.newWith(each, soChild.getValueType())))
+					end
+					
+				else
+					stats.setAt(each, null)
+				end
 			end)
 			
 			var Dictionary achievements = Dictionary.new()
@@ -377,9 +411,23 @@ class ServiceMsgdk implements ServiceStats, ServiceUser, ServiceListener
 			
 		elif function.equals("setStatsAndAchievements")
 			var Dictionary stats = Dictionary.new()
-			var ServiceObject so = response.getChildAt("stats")
+			var ServiceObject soChild, so = response.getChildAt("stats")
 			so.getChildrenKeys().forEach(block String each
-				stats.setAt(each, so.getChildAt(each).getInteger())
+				soChild = so.getChildAt(each)
+				select soChild.getValueType()
+				case ServiceObjectType.string
+					stats.setAt(each, soChild.getString())
+					
+				case ServiceObjectType.floating
+					stats.setAt(each, soChild.getFloat())
+					
+				case ServiceObjectType.integer
+					stats.setAt(each, soChild.getInteger())
+					
+				else
+					throw EInvalidParam.new("Invalid value for stat '{}': {}".format(\
+						Array.newWith(each, soChild.getValueType())))
+				end
 			end)
 			
 			var Dictionary achievements = Dictionary.new()

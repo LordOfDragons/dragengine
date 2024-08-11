@@ -31,13 +31,19 @@
 #include "tasks/deMTAddUser.h"
 #include "tasks/deMTGetTokenAndSignature.h"
 #include "tasks/deMTGetStatsAndAchievements.h"
+#include "tasks/deMTSetStatsAndAchievements.h"
+#include "tasks/deMTResetAllStats.h"
 
 #include <dragengine/deEngine.h>
+#include <dragengine/app/deOSWindows.h>
 #include <dragengine/common/utils/decUniqueID.h>
 #include <dragengine/common/utils/decBase64.h>
 #include <dragengine/resources/image/deImageManager.h>
 #include <dragengine/resources/service/deServiceManager.h>
 #include <dragengine/resources/service/deServiceObject.h>
+
+#include <shlwapi.h>
+
 
 
 // Class deMsgdkServiceMsgdk
@@ -59,7 +65,8 @@ pInvalidator(deMsgdkAsyncTask::Invalidator::Ref::New(new deMsgdkAsyncTask::Inval
 pUser(nullptr),
 pUserId(0),
 pUserLocalId({}),
-pXblContext(nullptr)
+pXblContext(nullptr),
+pAchievementsSynced(false)
 {
 	if(pGlobalService)
 	{
@@ -80,6 +87,7 @@ deMsgdkServiceMsgdk::~deMsgdkServiceMsgdk()
 	}
 
 	SetUser(nullptr);
+	pFrameUpdateTasks.RemoveAll();
 
 	pInvalidator->Invalidate();
 	pGlobalService = nullptr;
@@ -111,7 +119,7 @@ void deMsgdkServiceMsgdk::StartRequest(const decUniqueID& id, const deServiceObj
 	}
 	else if(function == "setStatsAndAchievements")
 	{
-		//new deMTGetTokenAndSignature(*this, id, request);
+		new deMTSetStatsAndAchievements(*this, id, request);
 	}
 	else
 	{
@@ -156,27 +164,22 @@ deServiceObject::Ref deMsgdkServiceMsgdk::RunAction( const deServiceObject &acti
 		SetUser(nullptr);
 		return nullptr;
 	}
+	else if(function == "resetAllStats")
+	{
+		//new deMTResetAllStats(*this, action);
+		//return nullptr;
+		DETHROW_INFO(deeInvalidAction, "Not supported");
+	}
 	else
 	{
 		DETHROW_INFO(deeInvalidParam, "Unknown function");
 	}
 }
 
-void deMsgdkServiceMsgdk::FrameUpdate(float elapsed)
+void deMsgdkServiceMsgdk::OnFrameUpdate(float elapsed)
 {
-	const XblAchievementsManagerEvent *achievementsEvents = nullptr;
-	size_t achievementsEventsCount = 0;
-	HRESULT result = XblAchievementsManagerDoWork(&achievementsEvents, &achievementsEventsCount);
-	if(SUCCEEDED(result))
-	{
-		// TODO
-
-	}
-	else
-	{
-		const decString message(pModule.GetErrorCodeString(result));
-		pModule.LogErrorFormat("deMsgdkServiceMsgdk.FrameUpdate.XblAchievementsManagerDoWork: %s", message.GetString());
-	}
+	UpdateAchievementManager();
+	FrameUpdateTasks(elapsed);
 }
 
 
@@ -193,7 +196,10 @@ void deMsgdkServiceMsgdk::SetUser(XUserHandle user)
 			XblContextCloseHandle(pXblContext);
 			pXblContext = nullptr;
 		}
+		
 		XblAchievementsManagerRemoveLocalUser(pUser);
+		pAchievementsSynced = false;
+
 		XUserCloseHandle(pUser);
 		pUser = nullptr;
 		pUserId = 0;
@@ -341,6 +347,10 @@ deServiceObject::Ref deMsgdkServiceMsgdk::GetUserInfo()
 		gamertag, &gamertagLen), "deMsgdkServiceMsgdk.GetUserInfo.XUserGetGamertag2");
 	so->SetStringChildAt("gamertagUniqueModern", gamertag);
 
+	decString profileUrl;
+	profileUrl.Format("https://www.xbox.com/play/user/%s", UriEncode(gamertag).GetString());
+	so->SetStringChildAt("profileUrl", profileUrl);
+
 	so->SetStringChildAt("gamerPicture", deMsgdkResourceUrl::FormatUrl(
 		"user", id, "gamerPicture", "extraLarge"));
 	so->SetStringChildAt("gamerPictureSmall", deMsgdkResourceUrl::FormatUrl(
@@ -405,7 +415,7 @@ void deMsgdkServiceMsgdk::FailRequest(const deMsgdkPendingRequest::Ref &pr, cons
 	pModule.GetGameEngine()->GetServiceManager()->QueueRequestFailed(pService, pr->id, pr->data);
 }
 
-void deMsgdkServiceMsgdk::AssertResult(HRESULT result, const char *source)
+void deMsgdkServiceMsgdk::AssertResult(HRESULT result, const char *source) const
 {
 	if (FAILED(result))
     {
@@ -413,6 +423,97 @@ void deMsgdkServiceMsgdk::AssertResult(HRESULT result, const char *source)
 		pModule.LogErrorFormat("%s: %s", source, message.GetString());
 		DETHROW_INFO(deeInvalidAction, message);
     }
+}
+
+void deMsgdkServiceMsgdk::UpdateAchievementManager()
+{
+	const XblAchievementsManagerEvent *events = nullptr;
+	size_t eventCount = 0;
+	HRESULT result = XblAchievementsManagerDoWork(&events, &eventCount);
+	if(FAILED(result))
+	{
+		const decString message(pModule.GetErrorCodeString(result));
+		pModule.LogErrorFormat(
+			"deMsgdkServiceMsgdk.UpdateAchievementManager.XblAchievementsManagerDoWork: %s",
+			message.GetString());
+		return;
+	}
+
+	if(!events || eventCount == 0 || !pXblContext)
+	{
+		return;
+	}
+
+	uint32_t i;
+	for(i=0; i<eventCount; i++)
+	{
+		switch(events[i].eventType)
+		{
+		case XblAchievementsManagerEventType::LocalUserInitialStateSynced:
+			pAchievementsSynced = true;
+			break;
+
+		case XblAchievementsManagerEventType::AchievementProgressUpdated:
+			//events[i].progressInfo.achievementId;
+			break;
+
+		case XblAchievementsManagerEventType::AchievementUnlocked:
+			//events[i].progressInfo.achievementId;
+			break;
+		}
+	}
+}
+
+void deMsgdkServiceMsgdk::AddFrameUpdateTask(deMsgdkAsyncTask* task)
+{
+	DEASSERT_NOTNULL(task)
+	DEASSERT_FALSE(pFrameUpdateTasks.Has(task))
+	pFrameUpdateTasks.Add(task);
+}
+
+void deMsgdkServiceMsgdk::RemoveFrameUpdateTask(deMsgdkAsyncTask* task)
+{
+	DEASSERT_NOTNULL(task)
+
+	const int index = pFrameUpdateTasks.IndexOf(task);
+	if(index != -1)
+	{
+		pFrameUpdateTasks.RemoveFrom(index);
+	}
+}
+
+void deMsgdkServiceMsgdk::FrameUpdateTasks(float elapsed)
+{
+	const int count = pFrameUpdateTasks.GetCount();
+	if(count == 0)
+	{
+		return;
+	}
+
+	const decObjectList tasks(pFrameUpdateTasks);
+	int i;
+	for(i=0; i<count; i++)
+	{
+		((deMsgdkAsyncTask*)tasks.GetAt(i))->OnFrameUpdate(elapsed);
+	}
+}
+
+decString deMsgdkServiceMsgdk::UriEncode(const char *url) const
+{
+	decUnicodeString wurl( decUnicodeString::NewFromUTF8( url ) );
+	wchar_t * const wwurl = new wchar_t[wurl.GetLength()];
+	deOSWindows::UnicodeToWide(wurl, wwurl, wurl.GetLength() + 1);
+
+	const DWORD flags = 0;
+	DWORD lenEscaped = 1;
+	wchar_t dummy = 0;
+	UrlEscape(wwurl, &dummy, &lenEscaped, flags);
+
+	wchar_t * const escaped = new wchar_t[lenEscaped + 1];
+	memset(escaped, 0, sizeof(wchar_t) * (lenEscaped + 1));
+	AssertResult(UrlEscape(wwurl, escaped, &lenEscaped, flags), "deMsgdkServiceMsgdk.UriEncode.UrlEscape");
+	
+	return deOSWindows::WideToUtf8(escaped);
 }
 
 

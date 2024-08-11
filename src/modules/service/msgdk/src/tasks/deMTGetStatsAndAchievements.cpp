@@ -19,7 +19,9 @@ deMTGetStatsAndAchievements::deMTGetStatsAndAchievements(deMsgdkServiceMsgdk &se
 deMsgdkAsyncTask(service.GetInvalidator()),
 pService(service),
 pRequestId(id),
-pResultData(deServiceObject::Ref::New(new deServiceObject))
+pStatNames(nullptr),
+pResultData(deServiceObject::Ref::New(new deServiceObject)),
+pWaitAchievementsSynced(false)
 {
 	deServiceObject::Ref so;
 	
@@ -43,8 +45,15 @@ pResultData(deServiceObject::Ref::New(new deServiceObject))
 			DETHROW_INFO(deeInvalidAction, "No user logged in");
 		}
 
+		if(!service.GetAchievementsSynced())
+		{
+			pWaitAchievementsSynced = true;
+			service.AddFrameUpdateTask(this);
+			return;
+		}
+
 		pGetAchievements();
-		pGetStarts();
+		pGetStats();
 	}
 	catch(const deException &e)
 	{
@@ -55,6 +64,37 @@ pResultData(deServiceObject::Ref::New(new deServiceObject))
 
 deMTGetStatsAndAchievements::~deMTGetStatsAndAchievements()
 {
+}
+
+
+// Management
+///////////////
+
+void deMTGetStatsAndAchievements::OnFrameUpdate(float elapsed)
+{
+	if(!pWaitAchievementsSynced || !pService.GetAchievementsSynced())
+	{
+		return;
+	}
+
+	pWaitAchievementsSynced = false;
+	pService.RemoveFrameUpdateTask(this);
+
+	try
+	{
+		if(!pService.GetUser() || !pService.GetXblContext())
+		{
+			DETHROW_INFO(deeInvalidAction, "No user logged in");
+		}
+
+		pGetAchievements();
+		pGetStats();
+	}
+	catch(const deException &e)
+	{
+		pService.FailRequest(pRequestId, e);
+		FreeReference();
+	}
 }
 
 
@@ -72,7 +112,7 @@ void deMTGetStatsAndAchievements::pGetAchievements()
 	XblAchievementsManagerResultHandle achievementResult;
 	pService.AssertResult(XblAchievementsManagerGetAchievements(
 		pService.GetUserId(), XblAchievementOrderBy::DefaultOrder,
-		XblAchievementsManagerSortOrder::Ascending, &achievementResult),
+		XblAchievementsManagerSortOrder::Unsorted, &achievementResult),
 		"deMTGetStatsAndAchievements.XblAchievementsManagerGetAchievements");
 
 	try
@@ -104,7 +144,7 @@ void deMTGetStatsAndAchievements::pGetAchievements()
 	}
 }
 
-void deMTGetStatsAndAchievements::pGetStarts()
+void deMTGetStatsAndAchievements::pGetStats()
 {
 	const int count = pStats.GetCount();
 	if(count == 0)
@@ -149,7 +189,10 @@ void deMTGetStatsAndAchievements::OnFinished()
 		return;
 	}
 
+	const int statCount = pStats.GetCount();
+	bool *found = nullptr;
 	uint8_t *buffer = new uint8_t[bufferSize];
+
 	try
 	{
 		XblUserStatisticsResult *usr;
@@ -159,6 +202,7 @@ void deMTGetStatsAndAchievements::OnFinished()
 		if(FAILED(result))
 		{
 			delete [] buffer;
+			buffer = nullptr;
 			pService.FailRequest(pr, result);
 			return;
 		}
@@ -167,10 +211,16 @@ void deMTGetStatsAndAchievements::OnFinished()
 		const decString &scid = pService.GetModule().GetGameConfig().scid;
 		uint32_t i, j;
 
+		found = new bool[statCount];
+		for(i=0; i<statCount; i++)
+		{
+			found[i] = false;
+		}
+
 		for(i=0; i<usr->serviceConfigStatisticsCount; i++)
 		{
 			const XblServiceConfigurationStatistic &scs = usr->serviceConfigStatistics[i];
-			if(scs.serviceConfigurationId != scid)
+			if(scid != scs.serviceConfigurationId)
 			{
 				continue;
 			}
@@ -178,12 +228,53 @@ void deMTGetStatsAndAchievements::OnFinished()
 			for(j=0; j<scs.statisticsCount; j++)
 			{
 				const char * const name = scs.statistics[j].statisticName;
-				if(pStats.Has(name))
+				const int statIndex = pStats.IndexOf(name);
+
+				if(statIndex == -1)
 				{
-					so->SetIntChildAt(name, decString(scs.statistics[j].value).ToIntValid());
+					continue;
 				}
+
+				// statisticType values (undocumented, from observations):
+				// - Double: for "Integer" format stats. Most probably also for "Decimal"
+				//           and "Percentage" format stats. "Short timespan" and "Long timespan"
+				//           are most probably also covered but this is unknown.
+				// - String: for "String" format stats.
+				//pService.GetModule().LogInfoFormat("DEBUG: '%s' -> '%s'",
+				//	scs.statistics[j].statisticType, scs.statistics[j].value);
+				const char * const type = scs.statistics[j].statisticType;
+				if(strcmp(type, "Double") == 0)
+				{
+					so->SetFloatChildAt(name, decString(scs.statistics[j].value).ToFloatValid());
+				}
+				else if(strcmp(type, "String") == 0)
+				{
+					so->SetStringChildAt(name, scs.statistics[j].value);
+				}
+				else
+				{
+					decString message;
+					message.Format("Invalid value for stat '%s': type='%s'", name, type);
+					DETHROW_INFO(deeInvalidParam, message);
+				}
+
+				found[statIndex] = true;
 			}
 		}
+
+		delete [] buffer;
+		buffer = nullptr;
+
+		for(i=0; i<statCount; i++)
+		{
+			if(!found[i])
+			{
+				so->SetChildAt(pStats.GetAt(i), nullptr);
+			}
+		}
+
+		delete [] found;
+		found = nullptr;
 
 		pResultData->SetChildAt("stats", so);
 
@@ -194,7 +285,14 @@ void deMTGetStatsAndAchievements::OnFinished()
 	}
 	catch(const deException &e)
 	{
-		delete [] buffer;
+		if(found)
+		{
+			delete [] found;
+		}
+		if(buffer)
+		{
+			delete [] buffer;
+		}
 		pService.FailRequest(pr, e);
 		return;
 	}

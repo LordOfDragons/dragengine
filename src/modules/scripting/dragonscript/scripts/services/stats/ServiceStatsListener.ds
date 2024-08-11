@@ -34,10 +34,11 @@ interface ServiceStatsListener
 	 * \brief Receiving stats and achievements finished.
 	 * \param service Service sending the event.
 	 * \param stats Dictionary containing stats. Key is stat id as String.
-	 *        Value is stat value as int, float or null if not set yet. On failure null.
+	 *        Value is stat value as int, float, string or null if not set yet.
+	 *        On failure stats is null.
 	 * \param achievements Dictionary containing achievements. Key is achievement id
-	 *        as String. Value is true or false depending if the achievement is set or not.\
-	 *        On failure null.
+	 *        as String. Value is true or false depending if the achievement is set or not.
+	 *        On failure achievements is null.
 	 * \param exception On success null. On failure contains error information.
 	 */
 	func void onGetStats(ServiceStats service, Dictionary stats,\
@@ -47,10 +48,10 @@ interface ServiceStatsListener
 	 * \brief Store Stats and achievements finished.
 	 * \param service Service sending the event.
 	 * \param stats Dictionary containing stored stats. Key is stat id as String.
-	 *        Value is stat value as int, float or null if not set yet. On failure null.
+	 *        Value is stat value as int, float or string. On failure stats is null.
 	 * \param achievements Dictionary containing stored achievements. Key is achievement id
-	 *        as String. Value is true or false depending if the achievement is set or not.\
-	 *        On failure null.
+	 *        as String. Value is true or false depending if the achievement is set or not.
+	 *        On failure achievements is null.
 	 * \param exception On success null. On failure contains error information.
 	 */
 	func void onSetStats(ServiceStats service, Dictionary stats,\

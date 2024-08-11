@@ -199,7 +199,7 @@ void deMicrosoftGdk::FrameUpdate(float elapsed)
 {
 	if(deMsgdkServiceMsgdk::GlobalService())
 	{
-		deMsgdkServiceMsgdk::GlobalService()->FrameUpdate(elapsed);
+		deMsgdkServiceMsgdk::GlobalService()->OnFrameUpdate(elapsed);
 	}
 }
 

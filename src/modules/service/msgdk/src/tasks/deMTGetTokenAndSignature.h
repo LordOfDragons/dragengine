@@ -34,7 +34,7 @@ class deMsgdkServiceMsgdk;
 
 
 /**
- * Add user task.
+ * Get token and signature task.
  */
 class deMTGetTokenAndSignature : public deMsgdkAsyncTask{
 private:

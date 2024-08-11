@@ -61,6 +61,8 @@ private:
 	XUserLocalId pUserLocalId;
 
 	XblContextHandle pXblContext;
+	bool pAchievementsSynced;
+	decObjectList pFrameUpdateTasks;
 
 	deImage::Ref pAuthProviderIcon, pAuthProviderImage;
 
@@ -106,7 +108,7 @@ public:
 	/**
 	 * \brief Frame update.
 	 */
-	void FrameUpdate(float elapsed);
+	void OnFrameUpdate(float elapsed);
 	/*@}*/
 	
 	
@@ -140,7 +142,16 @@ public:
 	void FailRequest(const decUniqueID &id, const deException &e);
 	void FailRequest(const deMsgdkPendingRequest::Ref &request, HRESULT result);
 	void FailRequest(const deMsgdkPendingRequest::Ref &request, const deException &e);
-	void AssertResult(HRESULT result, const char *source);
+	void AssertResult(HRESULT result, const char *source) const;
+
+	void UpdateAchievementManager();
+	inline bool GetAchievementsSynced() const{ return pAchievementsSynced; }
+
+	void AddFrameUpdateTask(deMsgdkAsyncTask *task);
+	void RemoveFrameUpdateTask(deMsgdkAsyncTask *task);
+	void FrameUpdateTasks(float elapsed);
+
+	decString UriEncode(const char *url) const;
 	/*@}*/
 	
 	

@@ -44,6 +44,8 @@
     <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\tasks\deMTGetStatsAndAchievements.h" />
     <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\tasks\deMTGetTokenAndSignature.h" />
     <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\tasks\deMTLoadUserResource.h" />
+    <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\tasks\deMTResetAllStats.h" />
+    <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\tasks\deMTSetStatsAndAchievements.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\src\modules\service\msgdk\src\convert\deMCCommon.cpp" />
@@ -57,6 +59,8 @@
     <ClCompile Include="..\..\..\..\src\modules\service\msgdk\src\tasks\deMTGetStatsAndAchievements.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\service\msgdk\src\tasks\deMTGetTokenAndSignature.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\service\msgdk\src\tasks\deMTLoadUserResource.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\service\msgdk\src\tasks\deMTResetAllStats.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\service\msgdk\src\tasks\deMTSetStatsAndAchievements.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\..\..\..\src\modules\service\msgdk\src\module.xml" />
@@ -223,7 +227,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>$(GRDKLatest)GameKit\Lib\amd64\xgameruntime.lib;$(GRDKLatest)ExtensionLibraries\Xbox.Services.API.C\DesignTime\CommonConfiguration\Neutral\Lib\Release\v142\Microsoft.Xbox.Services.142.GDK.C.lib;$(GRDKLatest)ExtensionLibraries\Xbox.LibHttpClient\DesignTime\CommonConfiguration\Neutral\Lib\libHttpClient.GDK.lib;Appnotify.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(GRDKLatest)GameKit\Lib\amd64\xgameruntime.lib;$(GRDKLatest)ExtensionLibraries\Xbox.Services.API.C\DesignTime\CommonConfiguration\Neutral\Lib\Release\v142\Microsoft.Xbox.Services.142.GDK.C.lib;$(GRDKLatest)ExtensionLibraries\Xbox.LibHttpClient\DesignTime\CommonConfiguration\Neutral\Lib\libHttpClient.GDK.lib;Appnotify.lib;Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)..\src\modules\service\msgdk\gdk\lib\amd64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
@@ -252,7 +256,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>$(GRDKLatest)GameKit\Lib\amd64\xgameruntime.lib;$(GRDKLatest)ExtensionLibraries\Xbox.Services.API.C\DesignTime\CommonConfiguration\Neutral\Lib\Release\v142\Microsoft.Xbox.Services.142.GDK.C.lib;$(GRDKLatest)ExtensionLibraries\Xbox.LibHttpClient\DesignTime\CommonConfiguration\Neutral\Lib\libHttpClient.GDK.lib;Appnotify.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(GRDKLatest)GameKit\Lib\amd64\xgameruntime.lib;$(GRDKLatest)ExtensionLibraries\Xbox.Services.API.C\DesignTime\CommonConfiguration\Neutral\Lib\Release\v142\Microsoft.Xbox.Services.142.GDK.C.lib;$(GRDKLatest)ExtensionLibraries\Xbox.LibHttpClient\DesignTime\CommonConfiguration\Neutral\Lib\libHttpClient.GDK.lib;Appnotify.lib;Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)..\src\modules\service\msgdk\gdk\lib\amd64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
@@ -281,7 +285,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>$(GRDKLatest)GameKit\Lib\amd64\xgameruntime.lib;$(GRDKLatest)ExtensionLibraries\Xbox.Services.API.C\DesignTime\CommonConfiguration\Neutral\Lib\Release\v142\Microsoft.Xbox.Services.142.GDK.C.lib;$(GRDKLatest)ExtensionLibraries\Xbox.LibHttpClient\DesignTime\CommonConfiguration\Neutral\Lib\libHttpClient.GDK.lib;Appnotify.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(GRDKLatest)GameKit\Lib\amd64\xgameruntime.lib;$(GRDKLatest)ExtensionLibraries\Xbox.Services.API.C\DesignTime\CommonConfiguration\Neutral\Lib\Release\v142\Microsoft.Xbox.Services.142.GDK.C.lib;$(GRDKLatest)ExtensionLibraries\Xbox.LibHttpClient\DesignTime\CommonConfiguration\Neutral\Lib\libHttpClient.GDK.lib;Appnotify.lib;Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)..\src\modules\service\msgdk\gdk\lib\amd64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>

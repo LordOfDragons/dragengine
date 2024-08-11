@@ -465,9 +465,15 @@ class ServiceEos implements ServiceStats, ServiceUser, ServiceListener
 			
 		elif function.equals("getStatsAndAchievements")
 			var Dictionary stats = Dictionary.new()
-			var ServiceObject so = response.getChildAt("stats")
+			var ServiceObject soChild, so = response.getChildAt("stats")
 			so.getChildrenKeys().forEach(block String each
-				stats.setAt(each, so.getChildAt(each).getInteger())
+				soChild = so.getChildAt(each)
+				if soChild != null
+					stats.setAt(each, soChild.getInteger())
+					
+				else
+					stats.setAt(each, null)
+				end
 			end)
 			
 			var Dictionary achievements = Dictionary.new()

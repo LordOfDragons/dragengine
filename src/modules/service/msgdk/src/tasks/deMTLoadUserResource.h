@@ -33,7 +33,7 @@ class deMsgdkServiceMsgdk;
 
 
 /**
- * Initialize task.
+ * Load user resource task.
  */
 class deMTLoadUserResource : public deMsgdkAsyncTask{
 private:

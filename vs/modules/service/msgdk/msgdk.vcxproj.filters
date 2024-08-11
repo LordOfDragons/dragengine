@@ -63,6 +63,12 @@
     <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\deMsgdkGameConfig.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\tasks\deMTSetStatsAndAchievements.h">
+      <Filter>Headerdateien\tasks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\service\msgdk\src\tasks\deMTResetAllStats.h">
+      <Filter>Headerdateien\tasks</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\src\modules\service\msgdk\src\deMicrosoftGdk.cpp">
@@ -97,6 +103,12 @@
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\service\msgdk\src\deMsgdkGameConfig.cpp">
       <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\service\msgdk\src\tasks\deMTSetStatsAndAchievements.cpp">
+      <Filter>Quelldateien\tasks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\service\msgdk\src\tasks\deMTResetAllStats.cpp">
+      <Filter>Quelldateien\tasks</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -22,69 +22,54 @@
  * SOFTWARE.
  */
 
-#ifndef DEMSGDKASYNCTASK_H
-#define DEMSGDKASYNCTASK_H
+#ifndef _DEMTSETSTATSANDACHIEVEMENTS_H
+#define _DEMTSETSTATSANDACHIEVEMENTS_H
 
-#include "gdk_include.h"
-#include <dragengine/deObject.h>
+#include "../deMsgdkAsyncTask.h"
+#include <xsapi-c/user_statistics_c.h>
+#include <xsapi-c/title_managed_statistics_c.h>
+
+#include <dragengine/common/utils/decUniqueID.h>
+#include <dragengine/common/string/decStringList.h>
+#include <dragengine/resources/service/deServiceObject.h>
+
+class deMsgdkServiceMsgdk;
 
 
 /**
- * Asynchronous task.
+ * Set user stats and achievements task.
  */
-class deMsgdkAsyncTask : public deObject
-{
-public:
-	/**
-	 * Invalidator used if owner of task is destroyed to avoid segfaults.
-	 * Owner has one invalidator shared between all running tasks.
-	 */
-	class Invalidator : public deObject
-	{
-	private:
-		bool pValid;
-
-	public:
-		typedef deTObjectReference<Invalidator> Ref;
-
-		Invalidator();
-		inline bool IsValid() const{ return pValid; }
-		void Invalidate();
-	};
-
-
-
+class deMTSetStatsAndAchievements : public deMsgdkAsyncTask{
 private:
-	const Invalidator::Ref pInvalidator;
-	XAsyncBlock pAsyncBlock;
-
-
+	deMsgdkServiceMsgdk &pService;
+	const decUniqueID pRequestId;
+	const deServiceObject::Ref pResultData;
+	bool pWaitAchievementsSynced;
 
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Create asynchronous task. Object removed reference itself once finished. */
-	deMsgdkAsyncTask(const Invalidator::Ref &invalidator);
+	/** Create asynchronous task. Object destroys itself automatically once finished. */
+	deMTSetStatsAndAchievements(deMsgdkServiceMsgdk &service,
+		const decUniqueID &id, const deServiceObject &request);
 	
 protected:
 	/** Delete asynchronous task. */
-	~deMsgdkAsyncTask() override;
+	~deMTSetStatsAndAchievements() override;
 	/*@}*/
 
 
-
 public:
-	/** Frame update task if registered. */
-	virtual void OnFrameUpdate(float elapsed);
-
+	/** \name Management */
+	/*@{*/
+	void OnFrameUpdate(float elapsed) override;
+	/*@}*/
 
 
 protected:
-	inline XAsyncBlock &GetAsyncBlock(){ return pAsyncBlock; }
-	inline const XAsyncBlock &GetAsyncBlock() const{ return pAsyncBlock; }
-	inline XAsyncBlock *GetAsyncBlockPtr(){ return &pAsyncBlock; }
-	void ResetAsyncBlock();
-	virtual void OnFinished() = 0;
+	void pSetAchievements();
+	void pSetStats();
+	void OnFinished() override;
 };
 
 #endif

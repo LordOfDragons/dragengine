@@ -30,6 +30,10 @@ deMsgdkAsyncTask::~deMsgdkAsyncTask()
 {
 }
 
+void deMsgdkAsyncTask::OnFrameUpdate(float elapsed)
+{
+}
+
 
 // Protected Functions
 ////////////////////////
