@@ -357,9 +357,9 @@ deServiceObject::Ref deEosSdkServiceEos::GetUserFeatures(){
 	}
 	
 	const deServiceObject::Ref so( deServiceObject::Ref::New( new deServiceObject ) );
-	so->SetBoolChildAt( "canManualLogin", false ); // maybe later
+	so->SetBoolChildAt( "canManualLogin", true );
 	so->SetBoolChildAt( "canAutomaticLogin", true );
-	so->SetBoolChildAt( "canLogout", false ); // maybe later
+	so->SetBoolChildAt( "canLogout", true );
 	
 	const deServiceObject::Ref soAtp( deServiceObject::Ref::New( new deServiceObject ) );
 	soAtp->SetStringChildAt( "id", "epic" );
