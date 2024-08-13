@@ -100,6 +100,11 @@ private:
 	
 	
 public:
+	decString importSkinLastPath, importSkinLastGD;
+	
+	
+	
+public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create main window. */
