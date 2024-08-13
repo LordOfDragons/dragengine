@@ -154,18 +154,25 @@ class WindowModal extends Window
 	 */
 	func void show(Window blockWindow, bool fitSize, Placement placement)
 		if blockWindow == null
-			throw EInvalidParam.new()
+			throw ENullPointer.new("blockWindow")
+		end
+		if blockWindow.getBlockingWindow() != null
+			throw EInvalidParam.new("blockWindow is already blocked by "\
+				+ blockWindow.getBlockingWindow().className())
 		end
 		
 		var Desktop desktop = blockWindow.getDesktop()
 		if desktop == null
-			throw EInvalidParam.new()
+			throw ENullPointer.new("blockWindow.getDesktop()")
 		end
 		
+		desktop.addWindow(this) // has to come first otherwise miminimum size can be wrong
+		
+		// set block windows has to come after adding the window to the desktop. this is required
+		// since setBlockingWindow can trigger moveWindow() calls which expect blocking and
+		// blocked windows to exist in the desktop.
 		pBlockWindow = blockWindow
 		blockWindow.setBlockingWindow(this)
-		
-		desktop.addWindow(this) // has to come first otherwise miminimum size can be wrong
 		
 		if fitSize
 			fitToContent()
@@ -193,10 +200,12 @@ class WindowModal extends Window
 			throw EInvalidParam.new()
 		end
 		
+		desktop.addWindow(this)
+		
+		// see show() function above for the reason why this is located after addWindow()
 		pBlockWindow = blockWindow
 		blockWindow.setBlockingWindow(this)
 		
-		desktop.addWindow(this)
 		setPosition(position)
 		setVisible(true)
 		moveToTop()
@@ -209,8 +218,10 @@ class WindowModal extends Window
 	 * \details Unblocks window.
 	 */
 	func void close()
-		pBlockWindow.setBlockingWindow(null)
-		pBlockWindow = null
+		if pBlockWindow != null
+			pBlockWindow.setBlockingWindow(null)
+			pBlockWindow = null
+		end
 		
 		super.close()
 	end

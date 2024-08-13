@@ -113,7 +113,12 @@ productUserId( nullptr )
 	options.ClientCredentials.ClientSecret = clientSecret;
 	options.bIsServer = isServer ? EOS_TRUE : EOS_FALSE;
 	options.DeploymentId = deploymentId.GetString();
-	
+
+	#ifdef OS_W32
+	// options.Flags |= EOS_PF_WINDOWS_ENABLE_OVERLAY_OPENGL;
+	options.Flags |= EOS_PF_DISABLE_OVERLAY;
+	#endif
+
 	pHandlePlatform = EOS_Platform_Create( &options );
 	if( ! pHandlePlatform ){
 		DETHROW_INFO( deeInvalidAction, "Failed create platform interface" );
