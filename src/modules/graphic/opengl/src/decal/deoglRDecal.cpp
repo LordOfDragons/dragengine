@@ -606,7 +606,7 @@ void deoglRDecal::PrepareGILocalBVH(){
 	if( faceCount > 10000 ){
 		pParentComponent->GetRenderThread().GetLogger().LogWarnFormat(
 			"Decal(%s): Very high face count (%d). Disable decal to not slow down global illumination.",
-			pParentComponent->GetModelRef().GetFilename().GetString(), faceCount );
+			pParentComponent->GetModel()->GetFilename().GetString(), faceCount );
 		disable = true;
 	}
 	
@@ -698,7 +698,7 @@ void deoglRDecal::PrepareGILocalBVH(){
 		pRenderThread.GetLogger().LogInfoFormat(
 			"Decal(%s): High face count slows down global illumination (%d)."
 			" Consider adding highest LOD variation with less than 300 faces.",
-			pParentComponent->GetModelRef().GetFilename().GetString(), faceCount );
+			pParentComponent->GetModel()->GetFilename().GetString(), faceCount );
 	}
 }
 

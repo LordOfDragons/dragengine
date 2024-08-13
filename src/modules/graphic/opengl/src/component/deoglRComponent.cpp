@@ -45,7 +45,6 @@
 #include "../extensions/deoglExtensions.h"
 #include "../light/deoglRLight.h"
 #include "../model/deoglModelLOD.h"
-#include "../model/deoglRModel.h"
 #include "../model/face/deoglModelFace.h"
 #include "../model/texture/deoglModelTexture.h"
 #include "../occlusiontest/mesh/deoglDynamicOcclusionMesh.h"
@@ -157,7 +156,6 @@ pLLPrepareForRenderWorld( this )
 {
 	pLODErrorScaling = 1.0f;
 	
-	pModel = NULL;
 	pSkin = NULL;
 	pDynamicSkin = NULL;
 	pOcclusionMesh = NULL;
@@ -410,25 +408,14 @@ void deoglRComponent::SetLayerMask( const decLayerMask &layerMask ){
 
 
 
-deoglRModel &deoglRComponent::GetModelRef() const{
-	if( ! pModel ){
-		DETHROW( deeInvalidParam );
-	}
-	return *pModel;
-}
-
 void deoglRComponent::SetModel( deoglRModel *model ){
-	if( model == pModel ){
+	if( pModel == model ){
 		return;
 	}
 	
-	if( pModel ){
-		pModel->FreeReference();
-	}
+	// required to be guarded until listeners are notified to avoid memory corruptions
+	const deoglRModel::Ref guardModel( pModel );
 	pModel = model;
-	if( model ){
-		model->AddReference();
-	}
 	
 	InvalidateVAO();
 	
@@ -444,6 +431,8 @@ void deoglRComponent::SetModel( deoglRModel *model ){
 	pResizeModelRigMappings();
 	pResizeBoneMatrices();
 	pUpdateRenderMode();
+	
+	NotifyModelChanged();
 	NotifyBoundariesChanged();
 	
 	pRequiresPrepareForRender();
@@ -784,7 +773,7 @@ deoglVAO *deoglRComponent::GetVAO( int lodLevel ) const{
 	if( lod.GetVAO() ){
 		return lod.GetVAO();
 	}
-	deoglSharedVBOBlock * const block = GetModelRef().GetLODAt( lodLevel ).GetVBOBlock();
+	deoglSharedVBOBlock * const block = GetModel()->GetLODAt( lodLevel ).GetVBOBlock();
 	if( block ){
 		return block->GetVBO()->GetVAO();
 	}
@@ -930,6 +919,7 @@ void deoglRComponent::SetMatrix( const decDMatrix &matrix ){
 void deoglRComponent::UpdateExtends( deComponent &component ){
 	if( pModel ){
 		const int boneCount = component.GetBoneCount();
+		const deoglRModel &model = pModel;
 		decDVector corners[ 8 ];
 		int i, j;
 		
@@ -938,9 +928,9 @@ void deoglRComponent::UpdateExtends( deComponent &component ){
 			const decDMatrix &matrix = component.GetMatrix();
 			bool extendsSet = false;
 			
-			if( pModel->GetHasWeightlessExtends() ){
-				corners[7].Set( pModel->GetWeightlessExtends().minimum );
-				corners[1].Set( pModel->GetWeightlessExtends().maximum );
+			if( model.GetHasWeightlessExtends() ){
+				corners[7].Set( model.GetWeightlessExtends().minimum );
+				corners[1].Set( model.GetWeightlessExtends().maximum );
 				corners[0].Set( corners[7].x, corners[1].y, corners[1].z );
 				corners[2].Set( corners[1].x, corners[7].y, corners[1].z );
 				corners[3].Set( corners[7].x, corners[7].y, corners[1].z );
@@ -966,7 +956,7 @@ void deoglRComponent::UpdateExtends( deComponent &component ){
 					continue;
 				}
 				
-				const deoglRModel::sExtends &boneExtends = pModel->GetBoneExtends()[ i ];
+				const deoglRModel::sExtends &boneExtends = model.GetBoneExtends()[ i ];
 				const decDMatrix boneMatrix( decDMatrix( component.GetBoneAt(
 					pModelRigMappings.GetAt( i ) ).GetMatrix() ) * matrix );
 				
@@ -995,8 +985,8 @@ void deoglRComponent::UpdateExtends( deComponent &component ){
 			
 		}else{
 			const decDMatrix &matrix = component.GetMatrix();
-			corners[7] = decDVector( pModel->GetExtends().minimum );
-			corners[1] = decDVector( pModel->GetExtends().maximum );
+			corners[7] = decDVector( model.GetExtends().minimum );
+			corners[1] = decDVector( model.GetExtends().maximum );
 			corners[0].Set( corners[7].x, corners[1].y, corners[1].z );
 			corners[2].Set( corners[1].x, corners[7].y, corners[1].z );
 			corners[3].Set( corners[7].x, corners[7].y, corners[1].z );
@@ -1750,6 +1740,13 @@ void deoglRComponent::NotifyVisibilityChanged(){
 	}
 }
 
+void deoglRComponent::NotifyModelChanged(){
+	pListenerIndex = 0;
+	while( pListenerIndex < pListeners.GetCount() ){
+		( ( deoglComponentListener* )pListeners.GetAt( pListenerIndex ) )->ModelChanged( *this );
+		pListenerIndex++;
+	}
+}
 
 
 // Render world usage
@@ -1799,9 +1796,6 @@ void deoglRComponent::pCleanUp(){
 	
 	if( pSkin ){
 		pSkin->FreeReference();
-	}
-	if( pModel ){
-		pModel->FreeReference();
 	}
 	if( pDynamicSkin ){
 		pDynamicSkin->FreeReference();
@@ -2104,11 +2098,12 @@ void deoglRComponent::pPrepareModelVBOs(){
 		return;
 	}
 	
-	const int count = pModel->GetLODCount();
+	const deoglRModel &model = pModel;
+	const int count = model.GetLODCount();
 	int i;
 	
 	for( i=0; i<count; i++ ){
-		deoglModelLOD &modelLOD = pModel->GetLODAt( i );
+		deoglModelLOD &modelLOD = model.GetLODAt( i );
 		
 		modelLOD.PrepareVBOBlock();
 		modelLOD.PrepareVBOBlockVertPosSet();
@@ -2416,11 +2411,7 @@ void deoglRComponent::pPrepareDynOccMesh(){
 
 
 void deoglRComponent::pResizeBoneMatrices(){
-	int boneCount = 0;
-	if( pModel ){
-		boneCount = pModel->GetBoneCount();
-	}
-	
+	const int boneCount = pModel ? pModel->GetBoneCount() : 0;
 	oglMatrix3x4 *matrices = NULL;
 	
 	if( boneCount > 0 ){

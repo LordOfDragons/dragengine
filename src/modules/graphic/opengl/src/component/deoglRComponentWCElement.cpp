@@ -76,7 +76,7 @@ void deoglRComponentWCElement::UpdateData( sDataElement &data ) const{
 		data.highestLod = lodCount - 1;
 		
 		const int textureCount = pComponent.GetTextureCount();
-		const deoglRModel &model = *pComponent.GetModel();
+		const deoglRModel &model = pComponent.GetModel();
 		int i, j;
 		
 		const int modelLodCount = decMath::min( model.GetLODCount(), 5 );

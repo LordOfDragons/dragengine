@@ -965,6 +965,7 @@ void seSkin::pCleanUp(){
 		pEngAnimatorInstance->SetComponent( NULL );
 		pEngAnimatorInstance->FreeReference();
 	}
+	pEngAnimatorAnim = nullptr;
 	if( pEngAnimator ){
 		pEngAnimator->FreeReference();
 	}

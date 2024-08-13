@@ -80,6 +80,9 @@ public:
 	
 	/** Visibility changed. */
 	virtual void VisibilityChanged( deoglRComponent &component );
+	
+	/** Model changed. */
+	virtual void ModelChanged( deoglRComponent &component );
 	/*@}*/
 };
 

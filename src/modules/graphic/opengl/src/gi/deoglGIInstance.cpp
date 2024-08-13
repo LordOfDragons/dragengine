@@ -163,6 +163,10 @@ void deoglGIInstance::cComponentListener::GIImportanceChanged( deoglRComponent &
 	}
 }
 
+void deoglGIInstance::cComponentListener::ModelChanged( deoglRComponent& ){
+	pLink.RemoveInstance();
+}
+
 
 // Class deoglGIInstance::cDecalListener
 //////////////////////////////////////////

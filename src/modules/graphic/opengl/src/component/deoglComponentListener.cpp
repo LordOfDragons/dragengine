@@ -75,3 +75,6 @@ void deoglComponentListener::GIImportanceChanged( deoglRComponent& ){
 
 void deoglComponentListener::VisibilityChanged( deoglRComponent& ){
 }
+
+void deoglComponentListener::ModelChanged( deoglRComponent& ){
+}

@@ -234,7 +234,7 @@ void deoglSkinRenderedTexture::pPlaneFromTexture( sMirrorMatrix &mirrorMatrix ) 
 	const oglVector3 * const compFaceNormals = componentLOD.GetFaceNormals();
 	const oglVector3 * const compPositions = componentLOD.GetPositions();
 	
-	const deoglModelLOD &modelLOD = component.GetModelRef().GetLODAt( 0 );
+	const deoglModelLOD &modelLOD = component.GetModel()->GetLODAt( 0 );
 	const oglModelVertex * const modelVertices = modelLOD.GetVertices();
 	deoglModelFace * const faces = modelLOD.GetFaces();
 	const int faceCount = modelLOD.GetFaceCount();
@@ -308,7 +308,7 @@ double near, double far, const decDMatrix &matrixInvCamera, const decMatrix &mat
 	
 	deoglRComponent &component = *pSkinRendered.GetOwnerComponent();
 	deoglRComponentLOD &componentLOD = component.GetLODAt( 0 );
-	const deoglModelLOD &modelLOD = component.GetModelRef().GetLODAt( 0 );
+	const deoglModelLOD &modelLOD = component.GetModel()->GetLODAt( 0 );
 	const oglModelVertex * const modelVertices = modelLOD.GetVertices();
 	deoglModelFace * const faces = modelLOD.GetFaces();
 	int f, faceCount = modelLOD.GetFaceCount();
