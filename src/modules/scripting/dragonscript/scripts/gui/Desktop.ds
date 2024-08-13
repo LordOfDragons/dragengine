@@ -979,7 +979,7 @@ class Desktop extends Container
 	
 	/**
 	 * \brief Raise windows with getAlwaysOnTop() set.
-	 * \versoin 1.15.
+	 * \version 1.15
 	 */
 	func void raiseWindowsAlwaysOnTop()
 		var Array list = Array.new()
