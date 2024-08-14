@@ -945,7 +945,8 @@ void deEngine::RunSingleFrame(){
 	deGraphicSystem &graSys = *GetGraphicSystem();
 	deNetworkSystem &netSys = *GetNetworkSystem();
 	deAudioSystem &audSys = *GetAudioSystem();
-	deInputEventQueue &eventQueue = GetInputSystem()->GetEventQueue();
+	deInputSystem &inpSys = *GetInputSystem();
+	deInputEventQueue &eventQueue = inpSys.GetEventQueue();
 	deInputEventQueue &vrEventQueue = GetVRSystem()->GetEventQueue();
 	deInputEvent event;
 	int i, count;
@@ -956,7 +957,11 @@ void deEngine::RunSingleFrame(){
 	// process inputs
 	count = eventQueue.GetEventCount();
 	for( i=0; i<count; i++ ){
-		scrSys.SendEvent( ( deInputEvent* )&eventQueue.GetEventAt( i ) );
+		const deInputEvent &event = eventQueue.GetEventAt( i );
+		if( inpSys.DropEvent( event ) ){
+			continue;
+		}
+		scrSys.SendEvent( ( deInputEvent* )&event );
 		if( pScriptFailed ){
 			deErrorTracePoint *tracePoint = pErrorTrace->AddPoint( NULL, "deEngine::RunDoSingleFrame", __LINE__ );
 			tracePoint->AddValueFloat( "elapsedTime", pElapsedTime );
@@ -970,7 +975,11 @@ DEBUG_PRINT_TIMER( "DoFrame: Process input events" );
 	// process vr inputs
 	count = vrEventQueue.GetEventCount();
 	for( i=0; i<count; i++ ){
-		scrSys.SendEvent( ( deInputEvent* )&vrEventQueue.GetEventAt( i ) );
+		const deInputEvent &event = vrEventQueue.GetEventAt( i );
+		if( inpSys.DropEvent( event ) ){
+			continue;
+		}
+		scrSys.SendEvent( ( deInputEvent* )&event );
 		if( pScriptFailed ){
 			deErrorTracePoint *tracePoint = pErrorTrace->AddPoint( NULL, "deEngine::RunDoSingleFrame", __LINE__ );
 			tracePoint->AddValueFloat( "elapsedTime", pElapsedTime );

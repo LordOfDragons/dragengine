@@ -43,6 +43,7 @@ private:
 	deBaseInputModule *pActiveModule;
 	deInputEventQueue *pEventQueue;
 	bool pCaptureInputDevices;
+	int pDropInputCount;
 	
 	
 	
@@ -80,6 +81,48 @@ public:
 	
 	/** \brief Set if input devices are captured by the active input module if supported. */
 	void SetCaptureInputDevices( bool captureInputDevices );
+
+	/**
+	 * \brief Start drop input.
+	 * \version 1.23
+	 * 
+	 * Increments the drop input counter by 1. If the drop input counter is 1 enables
+	 * drop input mode. If drop input mode is enabled input events are discarded. This is
+	 * useful for modules displaying overlays required to consume inputs without these
+	 * inputs affecting the application. To leave drop input mode call StopDropInput().
+	 * This fuction can be called multiple times. Calls to StartDropInput() and
+	 * StopDropInput() have to be balanced.
+	 */
+	void StartDropInput();
+
+	/**
+	 * \brief Stop drop input.
+	 * \version 1.23
+	 * 
+	 * Decrements the drop input counter by 1. If the drop input counter is 0 disables
+	 * drop input mode. If drop input mode is enabled input events are discarded. This is
+	 * useful for modules displaying overlays required to consume inputs without these
+	 * inputs affecting the application. To leave drop input mode call StopDropInput().
+	 * This fuction can be called multiple times. Calls to StartDropInput() and
+	 * StopDropInput() have to be balanced.
+	 */
+	void StopDropInput();
+
+	/**
+	 * \brief Drop input is enabled.
+	 * \version 1.23
+	 * 
+	 * Returns true if the drop input counter is larger than 0.
+	 */
+	bool GetDropModeEnabled() const;
+
+	/**
+	 * \brief Determine if event has to be dropped due to drop input mode.
+	 * \version 1.23
+	 * 
+	 * Returns true if the event must be dropped.
+	 */
+	bool DropEvent( const deInputEvent &event ) const;
 	/*@}*/
 	
 	

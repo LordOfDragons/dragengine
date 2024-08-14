@@ -34,6 +34,7 @@
 #include <eos_stats.h>
 #include <eos_achievements.h>
 #include <eos_connect.h>
+#include <eos_ui.h>
 
 #include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/systems/modules/service/deBaseServiceService.h>
@@ -63,9 +64,12 @@ private:
 	EOS_HAchievements pHandleAchievements;
 	EOS_HStats pHandleStats;
 	EOS_HConnect pHandleConnect;
+	EOS_HUI pHandleUI;
 	
 	deImage::Ref pAuthProviderIcon, pAuthProviderImage;
 	
+	EOS_NotificationId pNotifyIdUi;
+	bool pUiExclusiveModeEnabled;
 	
 	
 public:
@@ -101,6 +105,7 @@ public:
 	EOS_HAchievements GetHandleAchievements();
 	EOS_HStats GetHandleStats();
 	EOS_HConnect GetHandleConnect();
+	EOS_HUI GetHandleUI();
 	
 	/**
 	 * Start service request.
@@ -148,6 +153,9 @@ public:
 	/*@{*/
 	void OnQueryUserInfoCallback( const decUniqueID &id,
 		const EOS_UserInfo_QueryUserInfoCallbackInfo &data );
+
+	void OnDisplaySettingsUpdatedCallback(
+		const EOS_UI_OnDisplaySettingsUpdatedCallbackInfo &data );
 	/*@}*/
 	
 	
@@ -161,6 +169,9 @@ public:
 	
 	
 private:
+	void pCleanUp();
+	void pAddListenUIUpdate();
+	void pRemoveListenUIUpdate();
 };
 
 #endif

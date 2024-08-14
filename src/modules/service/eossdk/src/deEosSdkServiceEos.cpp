@@ -39,6 +39,7 @@
 #include <dragengine/resources/image/deImageManager.h>
 #include <dragengine/resources/service/deServiceManager.h>
 #include <dragengine/resources/service/deServiceObject.h>
+#include <dragengine/systems/deInputSystem.h>
 
 
 // Class deEosSdkServiceEos
@@ -67,6 +68,11 @@ static void fEosQueryUserInfoCallback( const EOS_UserInfo_QueryUserInfoCallbackI
 	info.service->OnQueryUserInfoCallback( info.id, *data );
 }
 
+static void fEosOnDisplaySettingsUpdatedCallback(
+const EOS_UI_OnDisplaySettingsUpdatedCallbackInfo *data ){
+	( ( deEosSdkServiceEos* )( data->ClientData ) )->OnDisplaySettingsUpdatedCallback( *data );
+}
+
 // Constructor, destructor
 ////////////////////////////
 
@@ -80,63 +86,67 @@ pHandleUserInfo( nullptr ),
 pHandleAchievements( nullptr ),
 pHandleStats( nullptr ),
 pHandleConnect( nullptr ),
+pHandleUI( nullptr ),
+pNotifyIdUi( 0 ),
+pUiExclusiveModeEnabled( false ),
 localUserId( nullptr ),
 selectedAccountId( nullptr ),
 productUserId( nullptr )
 {
-	pModule.InitSdk( data );
+	try{
+		pModule.InitSdk( data );
 	
-	const decString &productId = data->GetChildAt( "productId" )->GetString();
-	const decString &sandboxId = data->GetChildAt( "sandboxId" )->GetString();
-	const decString &deploymentId = data->GetChildAt( "deploymentId" )->GetString();
+		const decString &productId = data->GetChildAt( "productId" )->GetString();
+		const decString &sandboxId = data->GetChildAt( "sandboxId" )->GetString();
+		const decString &deploymentId = data->GetChildAt( "deploymentId" )->GetString();
 	
-	const char *clientId = nullptr;
-	const deServiceObject::Ref &soClientId = data->GetChildAt( "clientId" );
-	if( soClientId ){
-		clientId = soClientId->GetString().GetString();
-	}
+		const char *clientId = nullptr;
+		const deServiceObject::Ref &soClientId = data->GetChildAt( "clientId" );
+		if( soClientId ){
+			clientId = soClientId->GetString().GetString();
+		}
 	
-	const char *clientSecret = nullptr;
-	const deServiceObject::Ref &soClientSecret = data->GetChildAt( "clientSecret" );
-	if( soClientSecret ){
-		clientSecret = soClientSecret->GetString().GetString();
-	}
+		const char *clientSecret = nullptr;
+		const deServiceObject::Ref &soClientSecret = data->GetChildAt( "clientSecret" );
+		if( soClientSecret ){
+			clientSecret = soClientSecret->GetString().GetString();
+		}
 	
-	const deServiceObject::Ref &soIsServer = data->GetChildAt( "isServer" );
-	const bool isServer = soIsServer ? soIsServer->GetBoolean() : false;
+		const deServiceObject::Ref &soIsServer = data->GetChildAt( "isServer" );
+		const bool isServer = soIsServer ? soIsServer->GetBoolean() : false;
 	
-	EOS_Platform_Options options = {};
-	options.ApiVersion = EOS_PLATFORM_OPTIONS_API_LATEST;
-	options.ProductId = productId.GetString();
-	options.SandboxId = sandboxId.GetString();
-	options.ClientCredentials.ClientId = clientId;
-	options.ClientCredentials.ClientSecret = clientSecret;
-	options.bIsServer = isServer ? EOS_TRUE : EOS_FALSE;
-	options.DeploymentId = deploymentId.GetString();
+		EOS_Platform_Options options = {};
+		options.ApiVersion = EOS_PLATFORM_OPTIONS_API_LATEST;
+		options.ProductId = productId.GetString();
+		options.SandboxId = sandboxId.GetString();
+		options.ClientCredentials.ClientId = clientId;
+		options.ClientCredentials.ClientSecret = clientSecret;
+		options.bIsServer = isServer ? EOS_TRUE : EOS_FALSE;
+		options.DeploymentId = deploymentId.GetString();
 
-	#ifdef OS_W32
-	// options.Flags |= EOS_PF_WINDOWS_ENABLE_OVERLAY_OPENGL;
-	options.Flags |= EOS_PF_DISABLE_OVERLAY;
-	#endif
+		#ifdef OS_W32
+		options.Flags |= EOS_PF_WINDOWS_ENABLE_OVERLAY_OPENGL;
+		// options.Flags |= EOS_PF_DISABLE_OVERLAY;
+		#endif
 
-	pHandlePlatform = EOS_Platform_Create( &options );
-	if( ! pHandlePlatform ){
-		DETHROW_INFO( deeInvalidAction, "Failed create platform interface" );
+		pHandlePlatform = EOS_Platform_Create( &options );
+		if( ! pHandlePlatform ){
+			DETHROW_INFO( deeInvalidAction, "Failed create platform interface" );
+		}
+		
+		pAddListenUIUpdate();
+
+		module.AddFrameUpdater( this );
+		new deEosSdkFlowInit( *this );
+
+	}catch( const deException & ){
+		pCleanUp();
+		throw;
 	}
-	
-	module.AddFrameUpdater( this );
-	new deEosSdkFlowInit( *this );
 }
 
 deEosSdkServiceEos::~deEosSdkServiceEos(){
-	while( pPendingRequests.GetCount() > 0 ){
-		CancelRequest( ( ( deEosSdkPendingRequest* )pPendingRequests.GetAt( 0 ) )->id );
-	}
-	EOS_Platform_Tick( pHandlePlatform );
-	
-	pModule.RemoveFrameUpdater( this );
-	
-	EOS_Platform_Release( pHandlePlatform );
+	pCleanUp();
 }
 
 
@@ -176,6 +186,14 @@ EOS_HConnect deEosSdkServiceEos::GetHandleConnect(){
 		pHandleConnect = EOS_Platform_GetConnectInterface( pHandlePlatform );
 	}
 	return pHandleConnect;
+}
+
+EOS_HUI deEosSdkServiceEos::GetHandleUI()
+{
+	if( ! pHandleUI ){
+		pHandleUI = EOS_Platform_GetUIInterface( pHandlePlatform );
+	}
+	return pHandleUI;
 }
 
 void deEosSdkServiceEos::StartRequest( const decUniqueID &id, const deServiceObject& request ){
@@ -476,9 +494,84 @@ const EOS_UserInfo_QueryUserInfoCallbackInfo &data ){
 	}
 }
 
+void deEosSdkServiceEos::OnDisplaySettingsUpdatedCallback(
+const EOS_UI_OnDisplaySettingsUpdatedCallbackInfo &data ){
+	if( data.bIsExclusiveInput ){
+		if( ! pUiExclusiveModeEnabled ){
+			pModule.LogInfo( "deEosSdkServiceEos.OnDisplaySettingsUpdatedCallback: Start drop input" );
+			pModule.GetGameEngine()->GetInputSystem()->StartDropInput();
+			pUiExclusiveModeEnabled = true;
+		}
+
+	}else{
+		if( pUiExclusiveModeEnabled ){
+			pModule.LogInfo( "deEosSdkServiceEos.OnDisplaySettingsUpdatedCallback: Stop drop input" );
+			pModule.GetGameEngine()->GetInputSystem()->StopDropInput();
+			pUiExclusiveModeEnabled = false;
+		}
+	}
+}
+
+
+
 // deEosSdk::cFrameUpdater
 ////////////////////////////
 
 void deEosSdkServiceEos::FrameUpdate( float elapsed ){
 	EOS_Platform_Tick( pHandlePlatform );
+}
+
+
+
+// Private Functions
+//////////////////////
+
+void deEosSdkServiceEos::pCleanUp(){
+	while( pPendingRequests.GetCount() > 0 ){
+		CancelRequest( ( ( deEosSdkPendingRequest* )pPendingRequests.GetAt( 0 ) )->id );
+	}
+	if( pHandlePlatform ){
+		EOS_Platform_Tick( pHandlePlatform );
+	}
+
+	pModule.RemoveFrameUpdater( this );
+	
+	pRemoveListenUIUpdate();
+
+	if( pHandlePlatform ){
+		EOS_Platform_Release( pHandlePlatform );
+	}
+
+	pHandlePlatform = nullptr;
+	pHandleAuth = nullptr;
+	pHandleUserInfo = nullptr;
+	pHandleAchievements = nullptr;
+	pHandleStats = nullptr;
+	pHandleConnect = nullptr;
+	pHandleUI = nullptr;
+}
+
+void deEosSdkServiceEos::pAddListenUIUpdate(){
+	EOS_UI_AddNotifyDisplaySettingsUpdatedOptions options{};
+	options.ApiVersion = EOS_UI_ADDNOTIFYDISPLAYSETTINGSUPDATED_API_LATEST;
+	
+	pNotifyIdUi = EOS_UI_AddNotifyDisplaySettingsUpdated( GetHandleUI(),
+		&options, this, fEosOnDisplaySettingsUpdatedCallback );
+	if( pNotifyIdUi ){
+		pModule.LogInfo( "deEosSdkServiceEos.pAddListenUIUpdate: Registered" );
+		
+	}else{
+		pModule.LogInfo( "deEosSdkServiceEos.pAddListenUIUpdate: Register failed" );
+	}
+}
+
+void deEosSdkServiceEos::pRemoveListenUIUpdate()
+{
+	if( ! pNotifyIdUi ){
+		return;
+	}
+
+	EOS_UI_RemoveNotifyDisplaySettingsUpdated( GetHandleUI(), pNotifyIdUi );
+	pNotifyIdUi = 0;
+	pModule.LogInfo( "deEosSdkServiceEos.pRemoveListenUIUpdate: Unregistered" );
 }
