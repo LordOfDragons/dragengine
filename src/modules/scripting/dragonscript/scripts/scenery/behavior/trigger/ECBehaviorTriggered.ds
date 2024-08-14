@@ -166,8 +166,13 @@ class ECBehaviorTriggered extends DefaultECBehavior
 				return
 			end
 			
-			pTriggerExpression = getElement().getClass()\
-				.getTriggerExpressionParser().stringToExpression(value)
+			try
+				pTriggerExpression = getElement().getClass()\
+					.getTriggerExpressionParser().stringToExpression(value)
+				
+			catch Exception e
+				throw EInvalidParam.new("Failed parsing trigger expression: '{}'".format(Array.newWith(value)))
+			end
 			
 			pECBehavior.createListeners(this)
 		end
