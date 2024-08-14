@@ -115,7 +115,7 @@ bool deInputSystem::DropEvent(const deInputEvent& event) const{
 	if( pDropInputCount == 0 ){
 		return false;
 	}
-
+	
 	switch( event.GetType() ){
 	case deInputEvent::eeKeyPress:
 	case deInputEvent::eeKeyRelease:
@@ -129,11 +129,14 @@ bool deInputSystem::DropEvent(const deInputEvent& event) const{
 	case deInputEvent::eeButtonTouch:
 	case deInputEvent::eeButtonUntouch:
 		return true;
-
+		
 	case deInputEvent::eeDeviceAttached:
 	case deInputEvent::eeDeviceDetached:
 	case deInputEvent::eeDeviceParamsChanged:
 	case deInputEvent::eeDevicesAttachedDetached:
+		return false;
+		
+	default:
 		return false;
 	}
 }

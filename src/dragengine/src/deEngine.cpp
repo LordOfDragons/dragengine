@@ -948,7 +948,6 @@ void deEngine::RunSingleFrame(){
 	deInputSystem &inpSys = *GetInputSystem();
 	deInputEventQueue &eventQueue = inpSys.GetEventQueue();
 	deInputEventQueue &vrEventQueue = GetVRSystem()->GetEventQueue();
-	deInputEvent event;
 	int i, count;
 	
 	// print out fps
