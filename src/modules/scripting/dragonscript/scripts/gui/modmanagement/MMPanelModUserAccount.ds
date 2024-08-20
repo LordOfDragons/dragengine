@@ -209,11 +209,11 @@ class MMPanelModUserAccount extends Panel
 			
 			pModelAuthTokenProviders.setContent(providers)
 			
-			pServiceUser.addUserListener(pUserEventListener)
+			serviceUser.addUserListener(pUserEventListener)
 			serviceUser.getUserInfo(null)
 			
 		else
-			pModelAuthTokenProviders.setContent(null)
+			pModelAuthTokenProviders.setContent(Array.new())
 			updateUserInfo(null)
 		end
 		
@@ -289,7 +289,7 @@ class MMPanelModUserAccount extends Panel
 	
 	/** \brief Switch content panel to match logged in state. */
 	func void switchContentPanel()
-		if pServiceUser.isUserLoggedIn()
+		if pServiceUser != null and pServiceUser.isUserLoggedIn()
 			pSwitchContent.getModel().setValue(0)
 			
 		else
@@ -299,7 +299,9 @@ class MMPanelModUserAccount extends Panel
 	
 	/** \brief Log out user. */
 	func void logoutUser()
-		pServiceUser.logoutUser(null)
+		if pServiceUser != null
+			pServiceUser.logoutUser(null)
+		end
 	end
 	
 	/** \brief Log in user. */
@@ -332,7 +334,7 @@ class MMPanelModUserAccount extends Panel
 	/** \brief Login user with authentication token. */
 	func void loginUser(GetAuthTokenLogin listener, MMAuthProviderListRenderer.ListEntry provider,\
 	ServiceUserAuthToken token, Exception exception)
-		if listener != pGetAuthTokenLogin
+		if listener != pGetAuthTokenLogin or pServiceUser == null
 			return
 		end
 		
