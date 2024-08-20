@@ -421,6 +421,7 @@
 	     - Transfer count image: Image.MMPanelModManagement.TransferCount
 		 - Transfer count label: Label.MMPanelModManagement.TransferCount
 	   - Button.MMPanelModManagement.ViewCategory.UserAccount
+	  - ComboBox.MMPanelModManagement.ServiceMods
 	
 	- Mods list box: ListBox.MMPanelModManagement.Mods
 	

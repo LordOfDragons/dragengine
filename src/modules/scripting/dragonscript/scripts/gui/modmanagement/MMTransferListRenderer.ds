@@ -82,10 +82,6 @@ class MMTransferListRenderer implements ListElementRenderer
 		 * \param designerSelector Base designer selector to use.
 		 */
 		func new(ServiceMods serviceMods, String designerSelector) super(BorderLayout.new())
-			if serviceMods == null
-				throw ENullPointer.new("serviceMods")
-			end
-			
 			pServiceMods = serviceMods
 			
 			pModelName = DefaultTextModel.new()
@@ -143,7 +139,7 @@ class MMTransferListRenderer implements ListElementRenderer
 			
 			var ServiceImage logo = mod.info.logo
 			
-			if mod.logoSmall == null and logo != null
+			if mod.logoSmall == null and logo != null and pServiceMods != null
 				var String url = findLoadLogoImage(logo)
 				if url != null
 					pServiceMods.loadModResource(url, LoadLogoListener.new(this, mod))

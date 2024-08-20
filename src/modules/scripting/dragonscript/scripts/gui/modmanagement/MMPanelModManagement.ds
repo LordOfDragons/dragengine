@@ -42,6 +42,7 @@ pin Dragengine.Services.User
  *     - Button.MMPanelModManagement.ViewCategory.BrowseMods
  *     - Button.MMPanelModManagement.ViewCategory.SubscribedMods
  *     - Button.MMPanelModManagement.ViewCategory.ModsTransfer
+ *   - ComboBox.MMPanelModManagement.ServiceMods
  * 
  * - Mods list box: ListBox.MMPanelModManagement.Mods
  * 
@@ -370,13 +371,59 @@ class MMPanelModManagement extends Panel
 		cancelled
 	end
 	
+	/** \brief List element renderer for \ref ServiceMods. */
+	class ServiceModsRenderer extends DefaultListElementRenderer
+		func new()
+		end
+		
+		func void updateRenderer(ListBox listBox, Widget renderer, Object element, bool selected, bool focused)
+			var String text
+			if element != null
+				text = (element cast ServiceMods).getModsFeatures().name
+			else
+				text = String.new('X', 8)
+			end
+			super.updateRenderer(listBox, renderer, text, selected, focused)
+		end
+	end
+	
+	/** \brief Service mods changed. */
+	class ServiceModsSelectionChanged extends DefaultListModelListener
+		var MMPanelModManagement pPanel
+		
+		func new(MMPanelModManagement panel)
+			pPanel = panel
+		end
+		
+		func void selectionChanged(ListModel listModel)
+			var ServiceMods selectedService, service = pPanel.getServiceMods()
+			if listModel.getSelected() != -1
+				selectedService = listModel.getAt(listModel.getSelected()) cast ServiceMods
+			end
+			
+			if service == selectedService
+				return
+			end
+			
+			pPanel.activateMods(WindowDialog.BlockResultListener.new(block ActivateModsResult result
+				select result
+				case ActivateModsResult.cancelled, ActivateModsResult.restart
+					listModel.setSelected(listModel.indexOf(service))
+					
+				else
+					pPanel.setServiceMods(selectedService)
+				end
+			end))
+		end
+	end
 	
 	
-	var Array pModsServices, pUserServices
+	
+	var Array pUserServices
 	var ServiceMods pServiceMods
 	var ServiceModsFeatures pServiceModFeatures
 	var ServiceUser pServiceUser
-	var DefaultListModel pModelViewCategory, pModelMods, pModelSortBy, pModelTransfers
+	var DefaultListModel pModelServices, pModelViewCategory, pModelMods, pModelSortBy, pModelTransfers
 	var SwitchPanel pSwitchContent
 	var ListBox pListMods, pListTransfers
 	var Button pButtonSearchMore
@@ -390,6 +437,7 @@ class MMPanelModManagement extends Panel
 	var Array pSearchTagCategories
 	var bool pPreventSearch
 	var ModEventListener pModEventListener
+	var UserEventListener pUserEventListener
 	var String pRestartInfo
 	var MMPanelModUserAccount pPanelUserAccount
 	
@@ -439,15 +487,18 @@ class MMPanelModManagement extends Panel
 	 * \todo For the time being only the first service is used.
 	 */
 	func new(Array modsServices, Array userServices)
-		pModsServices = Array.new(modsServices)
-		pUserServices = Array.new(userServices)
-		
-		pServiceMods = modsServices.getAt(0) cast ServiceMods
-		pServiceModFeatures = pServiceMods.getModsFeatures()
-		
-		if pServiceMods castable ServiceUser
-			pServiceUser = pServiceMods cast ServiceUser
+		if modsServices == null
+			throw ENullPointer.new("modServices")
 		end
+		if userServices == null
+			throw ENullPointer.new("userServices")
+		end
+		if modsServices.getCount() == 0
+			throw ENullPointer.new("modServices is empty")
+		end
+		
+		pUserServices = Array.new(userServices)
+		pModelServices = DefaultListModel.new(userServices)
 		
 		pCodecPropertyString = CodecPropertyString.new()
 		pSearchTagCategories = Array.new()
@@ -457,9 +508,7 @@ class MMPanelModManagement extends Panel
 		pModelViewCategory.add(ViewCategory.browseMods)
 		pModelViewCategory.add(ViewCategory.subscribedMods)
 		pModelViewCategory.add(ViewCategory.transfer)
-		if pServiceUser != null
-			pModelViewCategory.add(ViewCategory.userAccount)
-		end
+		pModelViewCategory.add(ViewCategory.userAccount)
 		pModelViewCategory.setSelectedElement(ViewCategory.browseMods)
 		
 		pModelMods = DefaultListModel.new()
@@ -484,28 +533,14 @@ class MMPanelModManagement extends Panel
 			setDesignerSelector("Panel.MMPanelModManagement.Main")
 			createContent()
 			
-			if pPanelUserAccount != null
-				pPanelUserAccount.setServiceUser(pServiceUser)
-			end
-			
 			pModelSortBy.addListener(SearchSelectionChanged.new(this))
+			pModelViewCategory.addListener(ViewCategoryChanged.new(this))
 			
 			pModEventListener = ModEventListener.new(this)
-			pServiceMods.addModsListener(pModEventListener)
-			if pServiceUser != null
-				pServiceUser.addUserListener(UserEventListener.new(this))
-			end
+			pUserEventListener = UserEventListener.new(this)
 			
-			updateSubscribedMods()
-			updateSystemMods()
-			updateActiveMods()
-			
-			pServiceMods.getModTags(null)
-			searchMods(ServiceModFilter.new())
-			
-			updateModelTransfers()
-			
-			pModelViewCategory.addListener(ViewCategoryChanged.new(this))
+			pModelServices.addListener(ServiceModsSelectionChanged.new(this))
+			setServiceMods(pModelServices.getSelectedElement() cast ServiceMods)
 		end)
 		doLayout()
 		
@@ -518,12 +553,11 @@ class MMPanelModManagement extends Panel
 	
 	/** \brief Dispose of widget. */
 	func void dispose()
-		if pModEventListener != null
-			pServiceMods.removeModsListener(pModEventListener)
-			pModEventListener = null
-		end
+		setServiceMods(null)
+		pModEventListener = null
+		pUserEventListener = null
 		
-		pModelViewCategory = pModelMods = pModelSortBy = pModelTransfers = null
+		pModelServices = pModelViewCategory = pModelMods = pModelSortBy = pModelTransfers = null
 		pListMods = pListTransfers = null
 		pButtonSearchMore = null
 		pModelSearchName = pModelTransferCount = null
@@ -534,7 +568,6 @@ class MMPanelModManagement extends Panel
 		pPanelCategoryTransferCount = null
 		
 		pSearchModsListener = null
-		pServiceMods = null
 		
 		super.dispose()
 	end
@@ -543,7 +576,7 @@ class MMPanelModManagement extends Panel
 	
 	/** \brief Array of all ServiceMods. */
 	func Array getModsServices()
-		return pModsServices
+		return pModelServices.getContent()
 	end
 	
 	/** \brief Array of all ServiceUser. */
@@ -551,12 +584,63 @@ class MMPanelModManagement extends Panel
 		return pUserServices
 	end
 	
-	/** \brief Service. */
+	/** \brief Service mods or null if none is selected. */
 	func ServiceMods getServiceMods()
 		return pServiceMods
 	end
 	
-	/** \brief Service mods features. */
+	/** \brief Set service mods or null. */
+	func void setServiceMods(ServiceMods service)
+		if pServiceMods == service
+			return
+		end
+		
+		if pServiceUser != null
+			pServiceUser.removeUserListener(pUserEventListener)
+		end
+		if pServiceMods != null
+			pServiceMods.removeModsListener(pModEventListener)
+		end
+		
+		pServiceUser = null
+		pServiceModFeatures = null
+		pServiceMods = service
+		
+		if service != null
+			pServiceModFeatures = service.getModsFeatures()
+			service.addModsListener(pModEventListener)
+			
+			if service castable ServiceUser
+				pServiceUser = service cast ServiceUser
+				pServiceUser.addUserListener(pUserEventListener)
+			end
+			
+			pListMods.setElementRenderer(createModListElementRenderer())
+			pListTransfers.setElementRenderer(createTransferListElementRenderer())
+		end
+		
+		runWhileBlockingLayout(block
+			updateSubscribedMods()
+			updateSystemMods()
+			updateActiveMods()
+			
+			if service != null
+				service.getModTags(null)
+				
+			else
+				updateSearchTagCategories(Array.new())
+			end
+			
+			searchMods(ServiceModFilter.new())
+			
+			updateModelTransfers()
+			
+			pPanelUserAccount.setServiceUser(pServiceUser)
+		end)
+		doLayoutIfBlocked()
+	end
+	
+	/** \brief Service mods features or null. */
 	func ServiceModsFeatures getServiceModsFeatures()
 		return pServiceModFeatures
 	end
@@ -599,17 +683,32 @@ class MMPanelModManagement extends Panel
 	
 	/** \brief Update dictionary of subscribed modifications. */
 	func void updateSubscribedMods()
-		pSubscribedMods = pServiceMods.getSubscribedMods()
+		if pServiceMods != null
+			pSubscribedMods = pServiceMods.getSubscribedMods()
+			
+		else
+			pSubscribedMods = Dictionary.new()
+		end
 	end
 	
 	/** \brief Update dictionary of system modifications. */
 	func void updateSystemMods()
-		pSystemMods = pServiceMods.getSystemMods()
+		if pServiceMods != null
+			pSystemMods = pServiceMods.getSystemMods()
+			
+		else
+			pSystemMods = Dictionary.new()
+		end
 	end
 	
 	/** \brief Update dictionary of active modifications. */
 	func void updateActiveMods()
-		pActiveMods = pServiceMods.getActiveMods()
+		if pServiceMods != null
+			pActiveMods = pServiceMods.getActiveMods()
+			
+		else
+			pActiveMods = Dictionary.new()
+		end
 	end
 	
 	
@@ -672,6 +771,10 @@ class MMPanelModManagement extends Panel
 	 * Clears the list and starts searching for the first page of modifications.
 	 */
 	func void searchMods(ServiceModFilter filter)
+		if pServiceMods == null
+			return
+		end
+		
 		pSearchFilter = ServiceModFilter.new(filter)
 		pModelMods.removeAll()
 		pButtonSearchMore.setEnabled(false)
@@ -681,7 +784,7 @@ class MMPanelModManagement extends Panel
 	
 	/** \brief Continue searching modifications. */
 	func void searchMoreMods()
-		if pSearchFilter == null or pSearchModsListener != null
+		if pSearchFilter == null or pSearchModsListener != null or pServiceMods == null
 			return
 		end
 		
@@ -749,6 +852,11 @@ class MMPanelModManagement extends Panel
 			end)
 		end
 		*/
+		
+		if pServiceMods == null
+			pModelTransfers.removeAll()
+			return
+		end
 		
 		var MMModification mod
 		var int index
@@ -819,6 +927,11 @@ class MMPanelModManagement extends Panel
 	 * modifications is empty listener is called with \ref ActivateModsResult#unchanged.
 	 */
 	func void activateMods(WindowDialog.ResultListener listener)
+		if pServiceMods == null
+			listener.onResult(ActivateModsResult.unchanged)
+			return
+		end
+		
 		// build list of newly subscribed and unsubscribed modifications
 		updateSubscribedMods()
 		
@@ -1064,7 +1177,7 @@ class MMPanelModManagement extends Panel
 		setLayout(BorderLayout.new(10))
 		
 		// top: view buttons
-		addWidget(Panel.new(FlowLayout.new(LayoutAxis.y, 10), block Panel p
+		addWidget(Panel.new(BorderLayout.new(10), block Panel p
 			p.addWidget(Panel.new(FlowLayout.new(LayoutAxis.x, 5), block Panel p2
 				p2.addWidget(createToggleButton("@UI.ModManagement.AvailableMods",\
 					"@UI.ModManagement.AvailableMods.ToolTip",\
@@ -1093,13 +1206,17 @@ class MMPanelModManagement extends Panel
 				pPanelCategoryTransferCount.setVisible(false)
 				p2.addWidget(toggleButton)
 				
-				if pServiceUser != null
-					p2.addWidget(createToggleButton("@UI.ModManagement.UserAccount",\
-						"@UI.ModManagement.UserAccount.ToolTip",\
-						OptionGroupModel.newFor(pModelViewCategory, ViewCategory.userAccount),\
-						".ViewCategory.UserAccount"))
-				end
-			end))
+				p2.addWidget(createToggleButton("@UI.ModManagement.UserAccount",\
+					"@UI.ModManagement.UserAccount.ToolTip",\
+					OptionGroupModel.newFor(pModelViewCategory, ViewCategory.userAccount),\
+					".ViewCategory.UserAccount"))
+			end), BorderLayout.Area.content)
+			
+			p.addWidget(Panel.new(FlowLayout.new(LayoutAxis.x, 5), block Panel p2
+				comboBox = createComboBox(pModelServices, ServiceModsRenderer.new(), ".ServiceMods")
+				comboBox.setToolTip("@UI.ModManagement.ServiceMods.ToolTip")
+				p2.addWidget(comboBox)
+			end), BorderLayout.Area.right)
 		end), BorderLayout.Area.top)
 		
 		// content
@@ -1180,10 +1297,8 @@ class MMPanelModManagement extends Panel
 			p.addWidget(ScrollPanel.new(pListTransfers, ScrollPanel.Policy.hidden, ScrollPanel.Policy.visible))
 			
 			// content: user account
-			if pServiceUser != null
-				pPanelUserAccount = createUserAccountPanel()
-				p.addWidget(pPanelUserAccount)
-			end
+			pPanelUserAccount = createUserAccountPanel()
+			p.addWidget(pPanelUserAccount)
 		end)
 		addWidget(pSwitchContent, BorderLayout.Area.content)
 	end

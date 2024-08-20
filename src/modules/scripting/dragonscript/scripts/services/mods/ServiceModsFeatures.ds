@@ -30,6 +30,11 @@ namespace Dragengine.Services.Mods
  */
 class ServiceModsFeatures
 	/**
+	 * \brief Display name for example for use in UI elements.
+	 */
+	public var String name
+	
+	/**
 	 * \brief Count of rating types.
 	 * 
 	 * Mod rating ranges from 0 to modRatingCount inclusive. The UI widget is choosen

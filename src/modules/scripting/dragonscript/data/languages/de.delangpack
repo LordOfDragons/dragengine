@@ -109,6 +109,7 @@ Neu zuweisen?</translation>
 	<translation name='UI.EditBinding.AddBinding.ToolTip'>Steuerung hinzufügen</translation>
 	<translation name='UI.Modifications'>Modifikationen</translation>
 	<translation name='UI.Modifications.ToolTip'>Modifikationen verwalten)</translation>
+	<translation name='UI.ModManagement.ServiceMods.ToolTip'>Modifikations-Quelle</translation>
 	<translation name='UI.ModManagement.Close.ToolTip'>Modifikationen Verwalten schliessen. Aktiviert all abonnierte und installierte Modifikationen.</translation>
 	<translation name='UI.ModManagement.Search.ToolTip'>Nach Modifikationen suchen. Zeigt die ersten Suchresultate an</translation>
 	<translation name='UI.ModManagement.SearchMore'>Mehr Resultate</translation>

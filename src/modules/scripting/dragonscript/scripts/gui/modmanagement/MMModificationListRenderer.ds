@@ -81,10 +81,6 @@ class MMModificationListRenderer implements ListElementRenderer
 		 * \param designerSelector Base designer selector to use.
 		 */
 		func new(ServiceMods serviceMods, String designerSelector) super(FlowLayout.new(LayoutAxis.y))
-			if serviceMods == null
-				throw ENullPointer.new("serviceMods")
-			end
-			
 			pServiceMods = serviceMods
 			
 			pModelName = DefaultTextModel.new()
@@ -142,7 +138,7 @@ class MMModificationListRenderer implements ListElementRenderer
 			
 			var ServiceModInfo info = mod.info
 			
-			if mod.logo == null and info.logo != null
+			if mod.logo == null and info.logo != null and pServiceMods != null
 				mod.logo = info.logo.image
 				if mod.logo == null
 					var String url = findLoadLogoImage(info.logo)

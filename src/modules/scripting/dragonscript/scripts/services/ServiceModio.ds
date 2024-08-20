@@ -233,6 +233,7 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 	
 	func ServiceModsFeatures getModsFeatures()
 		var ServiceModsFeatures features = ServiceModsFeatures.new()
+		features.name = "Mod.io"
 		features.modRatingCount = 2
 		features.userCanRateMods = true
 		return features

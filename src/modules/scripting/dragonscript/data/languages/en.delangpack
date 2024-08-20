@@ -109,6 +109,7 @@ Do you want to re-assign?</translation>
 	<translation name='UI.EditBinding.AddBinding.ToolTip'>Add binding</translation>
 	<translation name='UI.Modifications'>Modifications</translation>
 	<translation name='UI.Modifications.ToolTip'>Manage modifications</translation>
+	<translation name='UI.ModManagement.ServiceMods.ToolTip'>Modification source</translation>
 	<translation name='UI.ModManagement.Close.ToolTip'>Close modification management. Activates subscribed and installed modifications</translation>
 	<translation name='UI.ModManagement.Search.ToolTip'>Search for modifications. Displays the first results</translation>
 	<translation name='UI.ModManagement.SearchMore'>More results</translation>
