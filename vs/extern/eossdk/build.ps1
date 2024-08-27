@@ -12,8 +12,8 @@ if (Test-Path $ExpandedDir) {
     Remove-Item $ExpandedDir -Force -Recurse
 }
 
-DownloadArtifact -SourceDir $ProjectDir -FilenameArtifact "eossdk.zip" -UrlPath "modio"
-DownloadArtifact -SourceDir $ProjectDir -FilenameArtifact "eossdk_bin_windows.tar.xz" -UrlPath "modio"
+DownloadArtifact -SourceDir $ProjectDir -FilenameArtifact "eossdk.zip" -UrlPath "eossdk"
+DownloadArtifact -SourceDir $ProjectDir -FilenameArtifact "eossdk_bin_windows.tar.xz" -UrlPath "eossdk"
 
 Expand-Archive -Path "$ProjectDir\eossdk.zip" -DestinationPath "$ProjectDir\eossdk"
 Expand-TarXz -Path "$ProjectDir\eossdk_bin_windows.tar.xz" -Destination "$ProjectDir\eossdk"

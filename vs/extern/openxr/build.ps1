@@ -1,10 +1,11 @@
 ﻿param (
+    [Parameter(Mandatory=$true)][string]$ProjectDir,
     [Parameter(Mandatory=$true)][string]$SourceDir
 )
 
 Import-Module "$PSScriptRoot\..\..\shared.psm1"
 
-$ExpandedDir = "$SourceDir\build"
+$ExpandedDir = "$ProjectDir\build"
 if (Test-Path $ExpandedDir) {
     Remove-Item $ExpandedDir -Force -Recurse
 }

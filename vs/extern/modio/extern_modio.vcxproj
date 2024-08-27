@@ -78,17 +78,17 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <CustomBuildAfterTargets>
     </CustomBuildAfterTargets>
-    <OutDir>$(SolutionDir)..\extern\modio\build\install\static\lib\</OutDir>
+    <OutDir>$(ProjectDir)\build\install\static\lib\</OutDir>
     <TargetName>modioStatic</TargetName>
-    <PublicIncludeDirectories>$(SolutionDir)..\extern\modio\build\install\header_only\ms-common;$(SolutionDir)..\extern\modio\build\install\header_only\win32;$(SolutionDir)..\extern\modio\build\install\header_only;$(SolutionDir)..\extern\modio\build\install\static\inc;$(PublicIncludeDirectories)</PublicIncludeDirectories>
+    <PublicIncludeDirectories>$(ProjectDir)\build\install\header_only\ms-common;$(ProjectDir)\build\install\header_only\win32;$(ProjectDir)\build\install\header_only;$(ProjectDir)\build\install\static\inc;$(PublicIncludeDirectories)</PublicIncludeDirectories>
     <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <CustomBuildAfterTargets>
     </CustomBuildAfterTargets>
-    <OutDir>$(SolutionDir)..\extern\modio\build\install\static\lib\</OutDir>
+    <OutDir>$(ProjectDir)\build\install\static\lib\</OutDir>
     <TargetName>modioStatic</TargetName>
-    <PublicIncludeDirectories>$(SolutionDir)..\extern\modio\build\install\header_only\ms-common;$(SolutionDir)..\extern\modio\build\install\header_only\win32;$(SolutionDir)..\extern\modio\build\install\header_only;$(SolutionDir)..\extern\modio\build\install\static\inc;$(PublicIncludeDirectories)</PublicIncludeDirectories>
+    <PublicIncludeDirectories>$(ProjectDir)\build\install\header_only\ms-common;$(ProjectDir)\build\install\header_only\win32;$(ProjectDir)\build\install\header_only;$(ProjectDir)\build\install\static\inc;$(PublicIncludeDirectories)</PublicIncludeDirectories>
     <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

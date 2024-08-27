@@ -5,7 +5,7 @@
 
 Import-Module "$PSScriptRoot\..\..\shared.psm1"
 
-$ExpandedDir = Join-Path -Path $SourceDir -ChildPath "build"
+$ExpandedDir = Join-Path -Path $ProjectDir -ChildPath "build"
 if (Test-Path $ExpandedDir) {
     Remove-Item $ExpandedDir -Force -Recurse
 }
