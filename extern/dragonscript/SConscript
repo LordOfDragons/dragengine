@@ -28,6 +28,9 @@ else:
 		distVersionMajor, distVersionMinor) )
 	libLinkName = 'dscript'
 
+# fetching is always allowed
+nodeArtifacts = envLibrary.DownloadArtifactHelper('{}.tar.bz2'.format(srcdir), 'dragonscript', 'lib_dragonscript_fetch')
+
 # check if system dragonscript is present
 envLibrary.Append( CPPPATH = [ envLibrary[ 'with_dragonscript_inc' ] ] )
 envLibrary.Append( LIBPATH = [ envLibrary[ 'with_dragonscript_lib' ] ] )
@@ -127,8 +130,7 @@ with open( envLibrary.File( 'data_file_list' ).srcnode().abspath, 'r' ) as f:
 	runtimedata.extend( [ envLibrary.File( envLibrary.subst( x[:-1] ) ) for x in f.readlines() ] )
 targets.extend( runtimedata )
 
-library = envLibrary.Command( targets, '{}.tar.bz2'.format( srcdir ),
-	envLibrary.Action( dragonscriptBuild, 'Build DragonScript' ) )
+library = envLibrary.Command( targets, nodeArtifacts, envLibrary.Action( dragonscriptBuild, 'Build DragonScript' ) )
 
 depends = parent_env.Alias( 'lib_dragonscript', library )
 

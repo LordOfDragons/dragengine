@@ -27,6 +27,10 @@ else:
 	libFileName = envLibrary.subst('lib/${{SHLIBPREFIX}}{}${{SHLIBSUFFIX}}'.format(libLinkName))
 	staticFileName = envLibrary.subst('lib/${{LIBPREFIX}}{}${{LIBSUFFIX}}'.format(libLinkName))
 
+# fetching is always allowed
+nodeArtifacts = envLibrary.DownloadArtifactHelper(
+	'{}.tar.bz2'.format(srcdir), 'soundtouch', 'lib_soundtouch_fetch')
+
 # check if system soundtouch is present
 hasSystemSoundTouch = False
 conf = envLibrary.Configure()
@@ -106,7 +110,7 @@ targets.extend(['include/soundtouch/{}'.format(x) for x in [
 	'SoundTouch.h',
 	'soundtouch_config.h']])
 
-library = envLibrary.Command(targets, '{}.tar.bz2'.format(srcdir),
+library = envLibrary.Command(targets, nodeArtifacts,
 	envLibrary.Action(soundtouchBuild, 'Build SoundTouch'))
 
 if not buildStaticLinking:

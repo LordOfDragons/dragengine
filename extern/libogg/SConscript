@@ -26,7 +26,7 @@ else:
 	staticFileName = envLibrary.subst( 'lib/${{LIBPREFIX}}{}${{LIBSUFFIX}}'.format( libLinkName ) )
 
 # fetching is always allowed
-nodeArtifact = envLibrary.DownloadArtifactHelper('{}.tar.bz2'.format(srcdir), 'libogg', 'lib_libogg_fetch')
+nodeArtifacts = envLibrary.DownloadArtifactHelper('{}.tar.bz2'.format(srcdir), 'libogg', 'lib_libogg_fetch')
 
 # check if system libogg is present
 hasSystemOGG = False
@@ -91,7 +91,7 @@ if buildStaticLinking:
 else:
 	targets = [ libFileName ]
 targets.extend( [ 'include/ogg/ogg.h', 'include/ogg/config_types.h', 'include/ogg/os_types.h' ] )
-library = envLibrary.Command( targets, nodeArtifact, envLibrary.Action(liboggBuild, 'Build libogg' ) )
+library = envLibrary.Command( targets, nodeArtifacts, envLibrary.Action(liboggBuild, 'Build libogg' ) )
 
 #envLibrary.SideEffect('#notParallelCMake', library)
 

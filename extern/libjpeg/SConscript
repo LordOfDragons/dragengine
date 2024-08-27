@@ -33,6 +33,9 @@ else:
 	libFileName = envLibrary.subst('lib/${{SHLIBPREFIX}}{}${{SHLIBSUFFIX}}.{}'.format(libLinkName, libLinkVersion))
 	staticFileName = envLibrary.subst('lib/${{LIBPREFIX}}{}${{LIBSUFFIX}}'.format(libLinkName))
 
+# fetching is always allowed
+nodeArtifacts = envLibrary.DownloadArtifactHelper('{}.tar.bz2'.format(srcdir), 'libjpeg', 'lib_libjpeg_fetch')
+
 # check if system libjpeg is present.
 # NOTE some OS have compilers causing errors on the check below because "true" is used.
 #      the error looks like "cannot convert bool to boolean". to prevent this "TRUE" is
@@ -140,8 +143,7 @@ else:
 	targets = [libFileName]
 targets.extend(['include/jconfig.h', 'include/jerror.h', 'include/jmorecfg.h', 'include/jpeglib.h'])
 
-library = envLibrary.Command(targets, '{}.tar.bz2'.format(srcdir),
-	envLibrary.Action(jpegBuild, 'Build JPEG library'))
+library = envLibrary.Command(targets, nodeArtifacts, envLibrary.Action(jpegBuild, 'Build JPEG library'))
 
 envLibrary.SideEffect('#notParallelCMake', library)
 

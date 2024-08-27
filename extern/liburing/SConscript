@@ -24,6 +24,9 @@ libLinkName = 'uring'
 libFileName = envLibrary.subst('lib/${{SHLIBPREFIX}}{}${{SHLIBSUFFIX}}.{}'.format(libLinkName, libLinkVersion))
 staticFileName = envLibrary.subst('lib/${{LIBPREFIX}}{}${{LIBSUFFIX}}'.format(libLinkName))
 
+# fetching is always allowed
+nodeArtifacts = envLibrary.DownloadArtifactHelper('{}.tar.bz2'.format(srcdir), 'liburing', 'lib_liburing_fetch')
+
 # check if system liburing is present
 hasSystemUring = False
 conf = envLibrary.Configure()
@@ -93,8 +96,7 @@ targets.extend([
 	'include/liburing/io_uring.h',
 	'include/liburing/io_uring_version.h'])
 
-library = envLibrary.Command(targets, '{}.tar.bz2'.format(srcdir),
-	envLibrary.Action(liburingBuild, 'Build liburing'))
+library = envLibrary.Command(targets, nodeArtifacts, envLibrary.Action(liburingBuild, 'Build liburing'))
 
 if not buildStaticLinking:
 	envLibrary.Depends(library, envLibrary['PATCHES'])

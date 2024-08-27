@@ -30,6 +30,9 @@ else:
 	staticFileName = envLibrary.subst('lib/${{LIBPREFIX}}{}${{LIBSUFFIX}}'.format(libLinkName))
 	staticFileName2 = envLibrary.subst('lib/${{LIBPREFIX}}{}${{LIBSUFFIX}}'.format(libLinkName2))
 
+# fetching is always allowed
+nodeArtifacts = envLibrary.DownloadArtifactHelper('{}.tar.bz2'.format(srcdir), 'libwebp', 'lib_libwebp_fetch')
+
 # check if system libwebp is present
 hasSystemWebp = False
 conf = envLibrary.Configure()
@@ -103,8 +106,7 @@ targets.append('include/webp/encode.h')
 targets.append('include/webp/types.h')
 targets.append('include/webp/demux.h')
 targets.append('include/webp/mux_types.h')
-library = envLibrary.Command(targets, '{}.tar.bz2'.format(srcdir),
-	envLibrary.Action(libwebpBuild, 'Build libwebp'))
+library = envLibrary.Command(targets, nodeArtifacts, envLibrary.Action(libwebpBuild, 'Build libwebp'))
 
 depends = parent_env.Alias('lib_libwebp', library)
 

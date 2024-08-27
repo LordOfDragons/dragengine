@@ -17,9 +17,19 @@ def generate(env):
 			shutil.copyfileobj(r, f)
 
 	def downloadArtifactHelper(filenameArtifact, urlPath, alias, fakeSource='SConscript'):
-		node = env.File(filenameArtifact).srcnode()
-		env.Alias(alias, env.DownloadArtifact(node, fakeSource, url="{}/{}".format(urlPath, filenameArtifact)))
-		return node
+		if type(filenameArtifact) not in [list, tuple]:
+			filenameArtifact = [filenameArtifact]
+
+		nodes = []
+		buildNodes = []
+
+		for x in filenameArtifact:
+			node = env.File(x).srcnode()
+			nodes.append(node)
+			buildNodes.append(env.DownloadArtifact(node, fakeSource, url="{}/{}".format(urlPath, x)))
+		
+		env.Alias(alias, buildNodes)
+		return nodes
 
 	env.Append(BUILDERS={'DownloadArtifact': Builder(action=Action(
 		builderDownloadArtifact, '$DOWNLOADARTIFACTCOMSTR'))})
