@@ -12,4 +12,6 @@ if (Test-Path $ExpandedDir) {
     Remove-Item $ExpandedDir -Force -Recurse
 }
 
-Expand-Archive -Path (Join-Path -Path $SourceDir -ChildPath "libogg-1.3.2-vc64.zip") -DestinationPath $ProjectDir
+DownloadArtifact -SourceDir $ProjectDir -FilenameArtifact "libogg-1.3.2-vc64.zip" -UrlPath "libogg"
+
+Expand-Archive -Path "$ProjectDir\libogg-1.3.2-vc64.zip" -DestinationPath $ProjectDir

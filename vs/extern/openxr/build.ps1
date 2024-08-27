@@ -11,7 +11,9 @@ if (Test-Path $ExpandedDir) {
 
 $OpenXRVersion = "1.1.38"
 
-Expand-TarXz -Path "$SourceDir\OpenXR-SDK-release-$OpenXRVersion.tar.xz" -Destination $ExpandedDir
+DownloadArtifact -SourceDir $ProjectDir -FilenameArtifact "OpenXR-SDK-release-$OpenXRVersion.tar.xz" -UrlPath "openxr"
+
+Expand-TarXz -Path "$ProjectDir\OpenXR-SDK-release-$OpenXRVersion.tar.xz" -Destination $ExpandedDir
 
 $CmakeBuildDir = "$ExpandedDir\build"
 $CmakeSourceDir = "$ExpandedDir\OpenXR-SDK-release-$OpenXRVersion"

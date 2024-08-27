@@ -12,4 +12,6 @@ if (Test-Path $ExpandedDir) {
     Remove-Item $ExpandedDir -Force -Recurse
 }
 
-Expand-Archive -Path (Join-Path -Path $SourceDir -ChildPath "libevdev-1.5.6-vc64.zip") -DestinationPath $ProjectDir
+DownloadArtifact -SourceDir $ProjectDir -FilenameArtifact "libevdev-1.5.6-vc64.zip" -UrlPath "libevdev"
+
+Expand-Archive -Path "$ProjectDir\libevdev-1.5.6-vc64.zip" -DestinationPath $ProjectDir

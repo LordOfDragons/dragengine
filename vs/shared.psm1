@@ -183,8 +183,29 @@ function SanitizeScriptInputPath {
 }
 
 
+# Download artifact if not present
+# --------------------------------
+
+function DownloadArtifact {
+    param (
+        [Parameter(Mandatory=$true)][string]$SourceDir,
+        [Parameter(Mandatory=$true)][string]$FilenameArtifact,
+        [Parameter(Mandatory=$true)][string]$UrlPath
+    )
+
+    if (!(Test-Path "$SourceDir\$FilenameArtifact")) {
+        Invoke-WebRequest "$UrlExternArtifacts/$UrlPath/$FilenameArtifact" -OutFile "$SourceDir\$FilenameArtifact"
+    }
+}
+
+
 # Various path constants
 ##########################
+
+New-Variable -Name UrlExternArtifacts -Scope Global -Option ReadOnly -Force `
+    -Value "https://dragondreams.s3.eu-central-1.amazonaws.com/dragengine/extern"
+
+
 
 New-Variable -Name PathDistDE -Value "Distribute\Dragengine\Application" -Scope Global -Option ReadOnly -Force
 New-Variable -Name PathDistDEBase -Value "$PathDistDE\@ProgramFiles\Dragengine" -Scope Global -Option ReadOnly -Force

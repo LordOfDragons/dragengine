@@ -12,4 +12,6 @@ if (Test-Path $ExpandedDir) {
     Remove-Item $ExpandedDir -Force -Recurse
 }
 
-Expand-Archive -Path (Join-Path -Path $SourceDir -ChildPath "openal-soft-1.22.2-vc64.zip") -DestinationPath $ProjectDir
+DownloadArtifact -SourceDir $ProjectDir -FilenameArtifact "openal-soft-1.22.2-vc64.zip" -UrlPath "openal"
+
+Expand-Archive -Path "$ProjectDir\openal-soft-1.22.2-vc64.zip" -DestinationPath $ProjectDir

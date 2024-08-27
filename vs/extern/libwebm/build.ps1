@@ -12,4 +12,6 @@ if (Test-Path $ExpandedDir) {
     Remove-Item $ExpandedDir -Force -Recurse
 }
 
-Expand-Archive -Path (Join-Path -Path $SourceDir -ChildPath "libwebm-libwebm-1.0.0.29-vc64.zip") -DestinationPath $ProjectDir
+DownloadArtifact -SourceDir $ProjectDir -FilenameArtifact "libwebm-libwebm-1.0.0.29-vc64.zip" -UrlPath "libwebm"
+
+Expand-Archive -Path "$ProjectDir\libwebm-libwebm-1.0.0.29-vc64.zip" -DestinationPath $ProjectDir

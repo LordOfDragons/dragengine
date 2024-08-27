@@ -12,4 +12,6 @@ if (Test-Path $ExpandedDir) {
     Remove-Item $ExpandedDir -Force -Recurse
 }
 
-Expand-Archive -Path (Join-Path -Path $SourceDir -ChildPath "libvorbis-1.3.5-vc64.zip") -DestinationPath $ProjectDir
+DownloadArtifact -SourceDir $ProjectDir -FilenameArtifact "libvorbis-1.3.5-vc64.zip" -UrlPath "libvorbis"
+
+Expand-Archive -Path "$ProjectDir\libvorbis-1.3.5-vc64.zip" -DestinationPath $ProjectDir

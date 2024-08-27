@@ -10,8 +10,11 @@ if (Test-Path $ExpandedDir) {
     Remove-Item $ExpandedDir -Force -Recurse
 }
 
-Expand-TarXz -Path "$SourceDir\modio-sdk.tar.xz" -Destination $ExpandedDir
-Expand-TarXz -Path "$SourceDir\modio-sdk-ext.tar.xz" -Destination $ExpandedDir
+DownloadArtifact -SourceDir $ProjectDir -FilenameArtifact "modio-sdk.tar.xz" -UrlPath "modio"
+DownloadArtifact -SourceDir $ProjectDir -FilenameArtifact "modio-sdk-ext.tar.xz" -UrlPath "modio"
+
+Expand-TarXz -Path "$ProjectDir\modio-sdk.tar.xz" -Destination $ExpandedDir
+Expand-TarXz -Path "$ProjectDir\modio-sdk-ext.tar.xz" -Destination $ExpandedDir
 
 $CmakeSourceDir = Join-Path -Path $ExpandedDir -ChildPath "modio-sdk"
 $CmakeBuildDir = Join-Path -Path $ExpandedDir -ChildPath "build"

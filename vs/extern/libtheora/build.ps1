@@ -12,4 +12,6 @@ if (Test-Path $ExpandedDir) {
     Remove-Item $ExpandedDir -Force -Recurse
 }
 
-Expand-Archive -Path (Join-Path -Path $SourceDir -ChildPath "libtheora-1.1.1-vc64.zip") -DestinationPath $ProjectDir
+DownloadArtifact -SourceDir $ProjectDir -FilenameArtifact "libtheora-1.1.1-vc64.zip" -UrlPath "libtheora"
+
+Expand-Archive -Path "$ProjectDir\libtheora-1.1.1-vc64.zip" -DestinationPath $ProjectDir

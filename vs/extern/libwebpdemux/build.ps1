@@ -12,4 +12,6 @@ if (Test-Path $ExpandedDir) {
     Remove-Item $ExpandedDir -Force -Recurse
 }
 
-Expand-Archive -Path (Join-Path -Path $SourceDir -ChildPath "libwebp-1.3.0-vc64.zip") -DestinationPath $ProjectDir
+DownloadArtifact -SourceDir $ProjectDir -FilenameArtifact "libwebp-1.3.0-vc64.zip" -UrlPath "libwebp"
+
+Expand-Archive -Path "$ProjectDir\libwebp-1.3.0-vc64.zip" -DestinationPath $ProjectDir
