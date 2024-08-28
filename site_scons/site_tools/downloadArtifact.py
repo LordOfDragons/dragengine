@@ -25,8 +25,11 @@ def generate(env):
 
 		for x in filenameArtifact:
 			node = env.File(x).srcnode()
-			nodes.append(node)
-			buildNodes.append(env.DownloadArtifact(node, fakeSource, url="{}/{}".format(urlPath, x)))
+			if node.exists():
+				nodes.append(x)
+			else:
+				nodes.append(node)
+				buildNodes.append(env.DownloadArtifact(node, fakeSource, url="{}/{}".format(urlPath, x)))
 		
 		env.Alias(alias, buildNodes)
 		return nodes
