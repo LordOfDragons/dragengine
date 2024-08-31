@@ -144,30 +144,6 @@ void deEosSdkFlowAuthLogin::Login(){
 		DETHROW_INFO( deeInvalidParam, "Logging in using username and password not allowed anymore" );
 		
 	} else {
-		#ifdef OS_W32
-		// login using account portal is not working on windows since the EOS SDK requires
-		// a feature called "desktop crossplay". this though requires the application to be
-		// launcher through a bootstrapper which is a problem. without this bootstrapper the
-		// overlay steals the input from the game but fails to render a window/overlay causing
-		// the game to break. since the game does not get any input anymore the user is force
-		// to kill the application. for this reason fail the login here until EPIC provides
-		// a solution that does not horribly break the game.
-		// 
-		// See EOS_Platform_GetDesktopCrossplayStatus
-		//
-		// more info about the problem:
-		// 1) if the overlay has been installed by epic launcher already the overlay can be
-		//    enabled using the create platform call. in this case the overlay would work but
-		//    all the mouse/keyboard inputs end up in the input module causing havoc in the
-		//    game. this is not a stable solution.
-		// 2) if the overlay is disabled the browser window is launched. on linux this seems
-		//    to work but on windows this causes nothing but problems. if the user closes the
-		//    browser window the eos sdk never sends back a notification causing the login
-		//    request to never finish and making all future login attempts impossible.
-		// 
-		// for this reason account portal login is diasabled on windows until further notice
-		DETHROW_INFO( deeInvalidParam, "Logging in user using account portal is broken on Windows" );
-		#endif
 		credentials.Type = EOS_ELoginCredentialType::EOS_LCT_AccountPortal;
 		GetModule().LogInfo( "deEosSdkFlowAuthLogin.Login: Logging in user using account portal" );
 	}
