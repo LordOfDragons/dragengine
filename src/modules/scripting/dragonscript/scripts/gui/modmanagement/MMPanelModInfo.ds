@@ -523,7 +523,8 @@ class MMPanelModInfo extends Panel
 							text = pMod.info.dateUpdated.format("%x")
 							
 						else
-							text = fh.formatTimeDifference(seconds)
+							// deal with clock skew causing difference to be negative
+							text = fh.formatTimeDifference(DEMath.max(seconds, 0))
 						end
 						
 					else
@@ -540,7 +541,8 @@ class MMPanelModInfo extends Panel
 							text = pMod.info.dateReleased.format("%x")
 							
 						else
-							text = fh.formatTimeDifference(seconds)
+							// deal with clock skew causing difference to be negative
+							text = fh.formatTimeDifference(DEMath.max(seconds, 0))
 						end
 						
 					else

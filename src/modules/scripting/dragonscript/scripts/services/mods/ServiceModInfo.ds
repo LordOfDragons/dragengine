@@ -98,7 +98,7 @@ class ServiceModInfo
 	public var TimeDate dateAdded
 	
 	/**
-	 * \brief Date of last modificaiton update.
+	 * \brief Date of last modification update.
 	 */
 	public var TimeDate dateUpdated
 	
