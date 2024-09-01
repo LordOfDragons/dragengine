@@ -463,6 +463,10 @@ const EOS_UserInfo_QueryUserInfoCallbackInfo &data ){
 		int32_t userIdLen = sizeof( userId );
 		if( EOS_EpicAccountId_ToString( ri.UserId, userId, &userIdLen ) == EOS_EResult::EOS_Success ){
 			pr->data->SetStringChildAt( "userId", userId );
+			
+			decString profileUrl;
+			profileUrl.Format( "https://store.epicgames.com/en-US/u/%s", userId );
+			pr->data->SetStringChildAt( "profileUrl", profileUrl );
 		}
 		
 		if( ri.DisplayName ){

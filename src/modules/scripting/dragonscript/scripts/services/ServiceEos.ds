@@ -607,6 +607,7 @@ class ServiceEos implements ServiceStats, ServiceUser, ServiceListener
 		info.nickname = pConversions.convertString(so, "nickname")
 		info.country = pConversions.convertString(so, "country")
 		info.preferredLanguage = pConversions.convertString(so, "preferredLanguage")
+		info.profileUrl = pConversions.convertString(so, "profileUrl")
 		return info
 	end
 end
