@@ -251,6 +251,9 @@ deServiceObject::Ref deModioService::RunAction( const deServiceObject &action ){
 	}else if( function == "getActiveMods" ){
 		return GetActiveMods();
 		
+	}else if( function == "getModsFeatures" ){
+		return GetModsFeatures();
+		
 	}else if( function == "getUserFeatures" ){
 		return GetUserFeatures();
 		
@@ -837,6 +840,25 @@ deServiceObject::Ref deModioService::GetActiveMods(){
 	return so;
 }
 
+deServiceObject::Ref deModioService::GetModsFeatures(){
+	const deServiceObject::Ref so( deServiceObject::Ref::New( new deServiceObject ) );
+	so->SetStringChildAt( "name", "Mod.io" );
+	so->SetIntChildAt( "modRatingCount", 2 );
+	so->SetBoolChildAt( "canRateMods", true );
+	so->SetBoolChildAt( "canReportMods", true );
+	
+	if( pGameInfo.has_value() && ( pGameInfo->GameMonetizationOptions
+			& Modio::GameMonetizationOptions::Marketplace ) != 0 ){
+		so->SetBoolChildAt( "hasMarketplace", true );
+		so->SetStringChildAt( "currency", pGameInfo->VirtualTokenName.c_str() );
+		
+	}else{
+		so->SetBoolChildAt( "hasMarketplace", false );
+	}
+	
+	return so;
+}
+
 deServiceObject::Ref deModioService::GetUserFeatures(){
 	const deServiceObject::Ref so( deServiceObject::Ref::New( new deServiceObject ) );
 	so->SetBoolChildAt( "canManualLogin", true );
@@ -977,35 +999,67 @@ void deModioService::pOnInitialize( Modio::ErrorCode ec ){
 	pModule.LogInfoFormat( "deModioService.pOnInitializeFinished: ec(%d)[%s]",
 		ec.value(), ec.message().c_str() );
 	
-	RemoveRequiresEventHandlingCount();
-	pUpdateModManagementEnabled();
-	
-	const deServiceObject::Ref data( deServiceObject::Ref::New( new deServiceObject ) );
-	
-	data->SetStringChildAt( "event", "initialized" );
-	deMCCommon::ErrorOutcome( data, ec );
-	
-	if( ! ec ) {
-		pIsInitialized = true;
+	if( ec ){ // failure
+		RemoveRequiresEventHandlingCount();
 		
-		pPrintBaseInfos();
-		pInitVFS();
-		
-		if( Modio::QueryUserProfile().has_value() ){
-			pModule.LogInfo( "deModioService.pOnInitializeFinished: User logged in. Fetch updates" );
-			Modio::FetchExternalUpdatesAsync( [ this ]( Modio::ErrorCode ec2 ){
-				pOnInitializeFetchUpdates( ec2 );
-			});
-			return;
-		}
+		const deServiceObject::Ref data( deServiceObject::Ref::New( new deServiceObject ) );
+		data->SetStringChildAt( "event", "initialized" );
+		deMCCommon::ErrorOutcome( data, ec );
+		pModule.GetGameEngine()->GetServiceManager()->QueueEventReceived( pService, data );
+		return;
 	}
 	
+	pUpdateModManagementEnabled();
+	
+	pModule.LogInfo( "deModioService.pOnInitializeFinished: Get game information" );
+	Modio::GetGameInfoAsync( Modio::GameID( pGameId ),
+		[ this ]( Modio::ErrorCode ec2, Modio::Optional<Modio::GameInfo> info ){
+			pOnInitializeGetGameInfo( ec2, info );
+		});
+}
+
+void deModioService::pOnInitializeGetGameInfo( Modio::ErrorCode ec, Modio::Optional<Modio::GameInfo> info ){
+	pModule.LogInfoFormat( "deModioService.pOnInitializeGetGameInfo: ec(%d)[%s]",
+		ec.value(), ec.message().c_str() );
+	
+	if( ec ){ // failure
+		RemoveRequiresEventHandlingCount();
+		
+		const deServiceObject::Ref data( deServiceObject::Ref::New( new deServiceObject ) );
+		data->SetStringChildAt( "event", "initialized" );
+		deMCCommon::ErrorOutcome( data, ec );
+		pModule.GetGameEngine()->GetServiceManager()->QueueEventReceived( pService, data );
+		return;
+	}
+	
+	pIsInitialized = true;
+	pGameInfo = info;
+	
+	pPrintBaseInfos();
+	pInitVFS();
+	
+	if( Modio::QueryUserProfile().has_value() ){
+		pModule.LogInfo( "deModioService.pOnInitializeFinished: User logged in. Fetch updates" );
+		Modio::FetchExternalUpdatesAsync( [ this ]( Modio::ErrorCode ec2 ){
+			pOnInitializeFetchUpdates( ec2 );
+		});
+		return;
+	}
+	
+	// finished successfully
+	RemoveRequiresEventHandlingCount();
+	
+	const deServiceObject::Ref data( deServiceObject::Ref::New( new deServiceObject ) );
+	data->SetStringChildAt( "event", "initialized" );
+	data->SetBoolChildAt( "success", true );
 	pModule.GetGameEngine()->GetServiceManager()->QueueEventReceived( pService, data );
 }
 
 void deModioService::pOnInitializeFetchUpdates( Modio::ErrorCode ec ){
 	pModule.LogInfoFormat( "deModioService.pOnInitializeFetchUpdates: ec(%d)[%s]",
 		ec.value(), ec.message().c_str() );
+	
+	RemoveRequiresEventHandlingCount();
 	
 	const deServiceObject::Ref data( deServiceObject::Ref::New( new deServiceObject ) );
 	data->SetStringChildAt( "event", "initialized" );

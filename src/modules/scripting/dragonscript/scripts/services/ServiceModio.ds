@@ -232,11 +232,9 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 	
 	
 	func ServiceModsFeatures getModsFeatures()
-		var ServiceModsFeatures features = ServiceModsFeatures.new()
-		features.name = "Mod.io"
-		features.modRatingCount = 2
-		features.userCanRateMods = true
-		return features
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "getModsFeatures")
+		return pConversions.convertModsFeatures(pService.runAction(so))
 	end
 	
 	func void addModsListener(ServiceModsListener listener)

@@ -25,6 +25,7 @@
 namespace Dragengine.Services
 pin Dragengine.Gui
 pin Dragengine.Services.User
+pin Dragengine.Services.Mods
 
 
 /**
@@ -195,5 +196,19 @@ class BaseServiceConversions
 		atp.icon = convertImage(so, "icon")
 		atp.image = convertImage(so, "image")
 		return atp
+	end
+	
+	
+	
+	/** \brief Convert service mods features. */
+	func ServiceModsFeatures convertModsFeatures(ServiceObject so)
+		var ServiceModsFeatures features = ServiceModsFeatures.new()
+		features.name = convertString(so, "name", null)
+		features.modRatingCount = convertInteger(so, "modRatingCount", 0)
+		features.canRateMods = convertBool(so, "canRateMods", false)
+		features.canReportMods = convertBool(so, "canReportMods", false)
+		features.hasMarketplace = convertBool(so, "hasMarketplace", false)
+		features.currency = convertString(so, "currency", null)
+		return features
 	end
 end

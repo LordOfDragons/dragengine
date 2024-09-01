@@ -643,7 +643,7 @@ class MMPanelModInfo extends Panel
 	 * getServiceModsFeatures().userCanRateMods to set read-only if required.
 	 */
 	protected func Widget createRating()
-		var bool readOnly = not pServiceModFeatures.userCanRateMods
+		var bool readOnly = not pServiceModFeatures.canRateMods
 		
 		if pServiceModFeatures.modRatingCount == 2
 			return RatingUpDown.new(pModelRating, readOnly)

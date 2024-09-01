@@ -76,6 +76,7 @@ private:
 	bool pModManagementEnabled;
 	float pElapsedUpdateProgress;
 	float pUpdateProgressInterval;
+	Modio::Optional<Modio::GameInfo> pGameInfo;
 	
 	static deModioService *pGlobalService;
 	
@@ -157,6 +158,7 @@ public:
 	void SetModDisabled( const deServiceObject &action );
 	deServiceObject::Ref ModHasMatchingFiles( const deServiceObject &action );
 	deServiceObject::Ref GetActiveMods();
+	deServiceObject::Ref GetModsFeatures();
 	deServiceObject::Ref GetUserFeatures();
 	
 	void FailRequest( const decUniqueID &id, const deException &e );
@@ -176,6 +178,7 @@ private:
 	/** \name Callbacks */
 	/*@{*/
 	void pOnInitialize( Modio::ErrorCode ec );
+	void pOnInitializeGetGameInfo( Modio::ErrorCode ec, Modio::Optional<Modio::GameInfo> info );
 	void pOnInitializeFetchUpdates( Modio::ErrorCode ec );
 	void pOnRequestFinished( const decUniqueID &id, Modio::ErrorCode ec );
 	
