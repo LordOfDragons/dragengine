@@ -27,6 +27,7 @@
 
 #include <libdscript/libdscript.h>
 #include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/filesystem/deVFSContainer.h>
 #include <dragengine/systems/modules/scripting/deBaseScriptingModule.h>
 
 #include "dedsLoadingScreen.h"
@@ -481,6 +482,8 @@ private:
 	decString pRestartInfo;
 	bool pRestartRequested;
 	
+	deVFSContainer::Ref pVFSContainerHideScriptDirectory;
+	
 public:
 	// constructor, destructor
 	deScriptingDragonScript( deLoadableModule &loadableModule );
@@ -836,6 +839,8 @@ private:
 	int pGetConstantValue(dsClass *Class, const char *name) const;
 	bool pCallFunction(const char *name);
 	decString BuildFullName( const dsClass *theClass ) const;
+	void pAddVFSContainerHideScriptDirectory();
+	void pRemoveVFSContainerHideScriptDirectory();
 	
 public:
 	void pAddExceptionTrace( deErrorTracePoint *tracePoint );
