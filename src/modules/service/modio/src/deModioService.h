@@ -150,6 +150,7 @@ public:
 	void GetModTagOptions( const decUniqueID &id, const deServiceObject &request );
 	void LoadUserResource( const decUniqueID &id, const deServiceObject &request );
 	void GetUserWalletBalance( const decUniqueID &id, const deServiceObject &request );
+	void ReportUser( const decUniqueID &id, const deServiceObject &request );
 	
 	void ActivateMods();
 	deServiceObject::Ref IsAuthenticated();

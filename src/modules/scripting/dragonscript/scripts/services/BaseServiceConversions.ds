@@ -165,6 +165,13 @@ class BaseServiceConversions
 		return so
 	end
 	
+	/** \brief Convert report to service object. */
+	func ServiceObject convertReport(ServiceUserReport report)
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("description", report.description)
+		return so
+	end
+	
 	
 	
 	/** \brief Create exception from response. */

@@ -202,6 +202,9 @@ void deModioService::StartRequest( const decUniqueID &id, const deServiceObject&
 	}else if( function == "getUserWalletBalance" ){
 		GetUserWalletBalance( id, request );
 		
+	}else if( function == "reportUser" ){
+		ReportUser( id, request );
+		
 	}else{
 		DETHROW_INFO( deeInvalidParam, "Unknown function" );
 	}
@@ -721,6 +724,26 @@ void deModioService::GetUserWalletBalance( const decUniqueID &id, const deServic
 		Modio::Optional<uint64_t> amount ){
 			pOnGetUserWalletBalance( id, ec, amount );
 		});
+}
+
+void deModioService::ReportUser( const decUniqueID &id, const deServiceObject &request ){
+	const Modio::UserID userId( deMCCommon::ID( *request.GetChildAt( "userId" ) ) );
+	const deServiceObject::Ref soReport( request.GetChildAt( "report" ) );
+	const Modio::ReportParams params( userId, Modio::ReportType::Other,
+		soReport->GetChildAt( "description" )->GetString().GetString(), "", "" );
+	
+	const deServiceObject::Ref data( deServiceObject::Ref::New( new deServiceObject ) );
+	const decString strUserId( deMCCommon::IDToString( userId ) );
+	data->SetChildAt( "userId", deServiceObject::NewString( strUserId ) );
+	
+	pModule.LogInfoFormat( "deModioService.ReportUser: id=%" PRIi64, ( int64_t )userId );
+	
+	NewPendingRequest( id, "reportUser", data );
+	AddRequiresEventHandlingCount();
+	
+	Modio::ReportContentAsync( params, [ this, id ]( Modio::ErrorCode ec ){
+		pOnRequestFinished( id, ec );
+	});
 }
 
 void deModioService::ActivateMods(){

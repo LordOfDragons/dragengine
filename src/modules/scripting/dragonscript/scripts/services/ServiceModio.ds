@@ -562,7 +562,11 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 	end
 	
 	func void reportUser(String id, ServiceUserReport report, ServiceUserListener listener)
-		throw EInvalidParam.new("not supported")
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "reportUser")
+		so.setStringChildAt("userId", id)
+		so.setChildAt("report", pConversions.convertReport(report))
+		runRequest(so, listener)
 	end
 	
 	func void getUserWalletBalance(ServiceUserListener listener)
@@ -719,6 +723,16 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 			if onceListener != null
 				(onceListener cast ServiceUserListener).onUserWalletBalance(this, amount, null)
 			end
+			
+		elif function.equals("reportUser")
+			var String userId = response.getChildAt("userId").getString()
+			
+			pUserListeners.forEach(block ServiceUserListener each
+				each.onReportUser(this, userId, null)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceUserListener).onReportUser(this, userId, null)
+			end
 		end
 	end
 	
@@ -843,6 +857,16 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 			end)
 			if onceListener != null
 				(onceListener cast ServiceUserListener).onUserWalletBalance(this, 0, exception)
+			end
+			
+		elif function.equals("reportUser")
+			var String userId = error.getChildAt("userId").getString()
+			
+			pUserListeners.forEach(block ServiceUserListener each
+				each.onReportUser(this, userId, exception)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceUserListener).onReportUser(this, userId, exception)
 			end
 		end
 	end
