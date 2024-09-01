@@ -286,6 +286,17 @@ interface ServiceMods
 	func void revokeModRating(String id, ServiceModsListener listener)
 	
 	/**
+	 * \brief Report modification.
+	 * 
+	 * Once finished \ref ServiceModsListener#onReportMod() is called.
+	 * 
+	 * \param modId Identifier of modification to revoke rating for.
+	 * \param report Report to submit.
+	 * \param listener If not null called once in addition to added listeners.
+	 */
+	func void reportMod(String id, ServiceModReport report, ServiceModsListener listener)
+	
+	/**
 	 * \brief Disable modification.
 	 * 
 	 * Modifications can be disabled by the user or the game if a modification

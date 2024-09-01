@@ -109,6 +109,14 @@ interface ServiceModsListener
 	func void onRevokeModRating(ServiceMods service, String modId, Exception exception)
 	
 	/**
+	 * \brief Report modification finished.
+	 * \param service Service sending the event.
+	 * \param modId Identifier of modification the report has been submitted for.
+	 * \param exception On success null. On failure contains error information.
+	 */
+	func void onReportMod(ServiceMods service, String modId, Exception exception)
+	
+	/**
 	 * \brief Retrieve tags finished.
 	 * \param service Service sending the event.
 	 * \param categories Array of ServiceModTagCategory.

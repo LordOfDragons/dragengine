@@ -197,6 +197,13 @@
 		<borderSize parameter='normal.padding' left='0' top='15' right='0' bottom='0'/>
 	</designer>
 	
+	<designer name='Image.Button.MMPanelModInfo.ReportMod' type='Image'>
+		<colorMatrix parameter='normal.imageColorTransform'>
+			<scale r='1' g='0' b='0'/>
+		</colorMatrix>
+		<!-- <borderSize parameter='normal.padding' left='0' top='0' right='5' bottom='0'/> -->
+		<image parameter='normal.image'>/shareddata/guithemes/modern/icons/16/report.webp</image>
+	</designer>
 	
 	
 	<!--
@@ -477,6 +484,15 @@
 		</border>
 		<borderSize parameter='normal.padding' left='5' top='5' right='5' bottom='5'/>
 	</designer>
+	
+	
+	
+	<!--
+	MMDialogReportMod.
+	-->
+	<designer name='Label.MMDialogReportMod' extendNamed='Label'>
+		<string parameter='normal.alignment'>left,top</string>
+	</designer>	
 	
 	
 	

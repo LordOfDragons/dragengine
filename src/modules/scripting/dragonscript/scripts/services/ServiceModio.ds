@@ -412,6 +412,14 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 		runRequest(so, listener)
 	end
 	
+	func void reportMod(String id, ServiceModReport report, ServiceModsListener listener)
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "reportMod")
+		so.setStringChildAt("modId", id)
+		so.setChildAt("report", pConversions.convertReport(report))
+		runRequest(so, listener)
+	end
+	
 	func void setModDisabled(String id, bool disabled, ServiceModsListener listener)
 		var ServiceObject so = ServiceObject.new()
 		so.setStringChildAt("function", "setModDisabled")
@@ -659,6 +667,16 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 				(onceListener cast ServiceModsListener).onSubmitModRating(this, modId, null)
 			end
 			
+		elif function.equals("reportMod")
+			var String modId = response.getChildAt("modId").getString()
+			
+			pModsListeners.forEach(block ServiceModsListener each
+				each.onReportMod(this, modId, null)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceModsListener).onReportMod(this, modId, null)
+			end
+			
 		elif function.equals("getModTagOptions")
 			var Array categories = convertTagCategoryList(response.getChildAt("categories"))
 			
@@ -768,6 +786,16 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 			end)
 			if onceListener != null
 				(onceListener cast ServiceModsListener).onSubmitModRating(this, modId, exception)
+			end
+			
+		elif function.equals("reportMod")
+			var String modId = error.getChildAt("modId").getString()
+			
+			pModsListeners.forEach(block ServiceModsListener each
+				each.onReportMod(this, modId, exception)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceModsListener).onReportMod(this, modId, exception)
 			end
 			
 		elif function.equals("getModTagOptions")

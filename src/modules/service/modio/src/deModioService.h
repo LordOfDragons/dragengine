@@ -146,6 +146,7 @@ public:
 	void GetModInfo( const decUniqueID &id, const deServiceObject &request );
 	void SubmitModRating( const decUniqueID &id, const deServiceObject &request );
 	void RevokeModRating( const decUniqueID &id, const deServiceObject &request );
+	void ReportMod( const decUniqueID &id, const deServiceObject &request );
 	void GetModTagOptions( const decUniqueID &id, const deServiceObject &request );
 	void LoadUserResource( const decUniqueID &id, const deServiceObject &request );
 	

@@ -187,6 +187,9 @@ void deModioService::StartRequest( const decUniqueID &id, const deServiceObject&
 	}else if( function == "revokeModRating" ){
 		RevokeModRating( id, request );
 		
+	}else if( function == "reportMod" ){
+		ReportMod( id, request );
+		
 	}else if( function == "getModTagOptions" ){
 		GetModTagOptions( id, request );
 		
@@ -605,6 +608,29 @@ void deModioService::RevokeModRating( const decUniqueID &id, const deServiceObje
 	AddRequiresEventHandlingCount();
 	
 	Modio::SubmitModRatingAsync( modId, Modio::Rating::Neutral, [ this, id ]( Modio::ErrorCode ec ){
+		pOnRequestFinished( id, ec );
+	});
+}
+
+void deModioService::ReportMod( const decUniqueID &id, const deServiceObject &request ){
+	const Modio::ModID modId( deMCCommon::ID( *request.GetChildAt( "modId" ) ) );
+	const deServiceObject::Ref soReport( request.GetChildAt( "report" ) );
+	const Modio::ReportParams params( modId,
+		deMCCommon::ReportParamsType( soReport->GetChildAt( "type" ) ),
+		soReport->GetChildAt( "description" )->GetString().GetString(),
+		deMCCommon::StringOrEmpty( soReport, "reporterName" ),
+		deMCCommon::StringOrEmpty( soReport, "reporterContact" ) );
+	
+	const deServiceObject::Ref data( deServiceObject::Ref::New( new deServiceObject ) );
+	const decString strModId( deMCCommon::IDToString( modId ) );
+	data->SetChildAt( "modId", deServiceObject::NewString( strModId ) );
+	
+	pModule.LogInfoFormat( "deModioService.ReportMod: id=%" PRIi64, ( int64_t )modId );
+	
+	NewPendingRequest( id, "reportMod", data );
+	AddRequiresEventHandlingCount();
+	
+	Modio::ReportContentAsync( params, [ this, id ]( Modio::ErrorCode ec ){
 		pOnRequestFinished( id, ec );
 	});
 }

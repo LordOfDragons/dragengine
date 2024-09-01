@@ -236,6 +236,13 @@ class MMPanelModInfo extends Panel
 		pRestartInfo = info
 	end
 	
+	/**
+	 * \brief Widget to activate.
+	 */
+	func Widget getInitActivateWidget()
+		return pButtonSubscribe
+	end
+	
 	
 	
 	/** \brief Update subscribed mods dictionary. */
@@ -290,6 +297,37 @@ class MMPanelModInfo extends Panel
 		if disabled and hasScripts and pSubscribedMods.has(pMod.info.id)
 			promptRequiresRestart()
 		end
+	end
+	
+	/**
+	 * \brief Report modification button clicked.
+	 * 
+	 * Shows \ref MMDialogReportMod. Upon accepting the dialog \ref #onReportMod(ServiceModReport)
+	 * is called to submit the report.
+	 */
+	func void onReportMod()
+		var Window window = getWindow()
+		MMDialogReportMod.new(window, WindowDialog.BlockResultListener.new(block ServiceModReport report
+			if report != null
+				onReportMod(report)
+			end
+		end)).show(window, true, WindowDialog.Placement.window)
+	end
+	
+	/**
+	 * \brief Report modification.
+	 * 
+	 * Called by \ref #onReportMod() after dialog is accepted.
+	 */
+	func void onReportMod(ServiceModReport report)
+		if report == null
+			throw ENullPointer.new("report")
+		end
+		if pMod == null
+			return
+		end
+		
+		pServiceMods.reportMod(pMod.info.id, report, null)
 	end
 	
 	/**
@@ -427,10 +465,18 @@ class MMPanelModInfo extends Panel
 		setLayout(BorderLayout.new(10))
 		
 		// top: header
-		addWidget(Panel.new(FlowLayout.new(LayoutAxis.x), block Panel p
-			p.setDesignerSelector("Panel.MMPanelModInfo.Header")
+		addWidget(Panel.new(BorderLayout.new(), block Panel p
+			p.addWidget(Panel.new(FlowLayout.new(LayoutAxis.x), block Panel p2
+				p2.setDesignerSelector("Panel.MMPanelModInfo.Header")
+				p2.addWidget(Label.new(pMod.info.name, "Label.MMPanelModInfo.HeaderTitle"))
+			end), BorderLayout.Area.content)
 			
-			p.addWidget(Label.new(pMod.info.name, "Label.MMPanelModInfo.HeaderTitle"))
+			p.addWidget(Panel.new(CentrizedBoxLayout.new(LayoutAxis.y), block Panel p2
+				p2.addWidget(createButton("", "@UI.ModManagementMod.ReportMod.ToolTip", ".ReportMod",\
+					BlockActionListener.new(block ActionEvent e
+						onReportMod()
+					end)))
+			end), BorderLayout.Area.right)
 		end), BorderLayout.Area.top)
 		
 		// content: description

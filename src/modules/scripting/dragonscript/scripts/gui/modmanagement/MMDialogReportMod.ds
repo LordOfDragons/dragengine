@@ -1,0 +1,169 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Gui.ModManagement
+pin Dragengine.Gui.Layouts
+pin Dragengine.Gui.Events
+pin Dragengine.Services.Mods
+
+
+/**
+ * \brief Dialog for modification report.
+ * \version 1.23
+ */
+class MMDialogReportMod extends WindowDialog
+	protected var DefaultTextModel pModelDescription, pModelReporterName, pModelReporterContact
+	protected var DefaultListModel pModelType
+	protected var Panel pPanelContent, pPanelBottomLine
+	
+	
+	/**
+	 * \brief Create report modification dialog.
+	 */
+	func new(Window window, ResultListener listener)
+		pModelType = DefaultListModel.new(ServiceModReport.Type.all().toArray().sorted())
+		pModelType.setSelectedElement(ServiceModReport.Type.other)
+		
+		pModelDescription = DefaultTextModel.new()
+		pModelReporterName = DefaultTextModel.new()
+		pModelReporterContact = DefaultTextModel.new()
+		
+		runWhileBlockingLayout(block
+			setGuiTheme(window.getGuiTheme())
+			setTitle("@UI.ModManagementReportMod.Title")
+			setDesignerSelector("Window.Dialog.MMDialogReportMod")
+			createContent()
+		end)
+		doLayout()
+		
+		setResultListener(listener)
+	end
+	
+	func void dispose()
+		pModelDescription = pModelReporterName = pModelReporterContact = null
+		pPanelContent = pPanelBottomLine = null
+		super.dispose()
+	end
+	
+	
+	/** Create window content. */
+	protected func void createContent()
+		var TextField textField
+		var TextArea textArea
+		var ComboBox comboBox
+		var Label label
+		
+		setLayout(BorderLayout.new(10))
+		
+		pPanelContent = Panel.new(FormLayout.new(true, 5, 2), block Panel p
+			// type
+			label = Label.new("@UI.ModManagementReportMod.Type", "Label.MMDialogReportMod.Type")
+			label.setToolTip("@UI.ModManagementReportMod.Type.ToolTip")
+			p.addWidget(label)
+			
+			var EnumListElementRenderer renderer = EnumListElementRenderer.new()
+			renderer.setTranslationPrefix("UI.ModManagementReportMod.Enum.ReportType.")
+			renderer.setDesignerSelector("Label.ListRenderer.MMDialogReportMod.Type")
+			
+			comboBox = ComboBox.new(pModelType, renderer)
+			comboBox.setDesignerSelector("ComboBox.MMDialogReportMod.Type")
+			// comboBox.setToolTip("@UI.ModManagementReportMod.Type.ToolTip")
+			p.addWidget(comboBox)
+			
+			// report name
+			label = Label.new("@UI.ModManagementReportMod.ReporterName",\
+				"Label.MMDialogReportMod.ReporterName")
+			label.setToolTip("@UI.ModManagementReportMod.ReporterName.ToolTip")
+			p.addWidget(label)
+			
+			textField = TextField.new(pModelReporterName, 20)
+			textField.setDesignerSelector("TextField.MMDialogReportMod.ReporterName")
+			textField.setToolTip("@UI.ModManagementReportMod.ReporterName.ToolTip")
+			p.addWidget(textField)
+			
+			// report contact
+			label = Label.new("@UI.ModManagementReportMod.ReporterContact",\
+				"Label.MMDialogReportMod.ReporterContact")
+			label.setToolTip("@UI.ModManagementReportMod.ReporterContact.ToolTip")
+			p.addWidget(label)
+			
+			textField = TextField.new(pModelReporterContact, 20)
+			textField.setDesignerSelector("TextField.MMDialogReportMod.ReporterContact")
+			textField.setToolTip("@UI.ModManagementReportMod.ReporterContact.ToolTip")
+			p.addWidget(textField)
+			
+			// description
+			label = Label.new("@UI.ModManagementReportMod.Description",\
+				"Label.MMDialogReportMod.Description")
+			label.setToolTip("@UI.ModManagementReportMod.Description.ToolTip")
+			p.addWidget(label)
+			
+			textArea = TextArea.new(pModelDescription, 6)
+			textArea.setDesignerSelector("TextArea.MMDialogReportMod.Description")
+			textArea.setToolTip("@UI.ModManagementReportMod.Description.ToolTip")
+			p.addWidget(ScrollPanel.new(textArea, ScrollPanel.Policy.hidden, ScrollPanel.Policy.needed),\
+				FormLayout.LayoutSettings.new(true, true))
+			setAcceptWidget(textArea)
+		end)
+		addWidget(pPanelContent, BorderLayout.Area.content)
+		
+		pPanelBottomLine = Panel.new(CentrizedBoxLayout.new(LayoutAxis.x, 20), block Panel p
+			p.addWidget(createButton("@UI.Submit", null, ".Submit",\
+				BlockActionListener.new(block ActionEvent event
+					onSubmit()
+				end)))
+			
+			p.addWidget(createButton("@UI.Close", null, ".Close", CloseWindowActionListener.new(this)))
+		end)
+		addWidget(pPanelBottomLine, BorderLayout.Area.bottom)
+	end
+	
+	/** \brief Create button. */
+	protected func Button createButton(String text, String toolTip,\
+	String designerSelectorSuffix, ActionListener action)
+		var Button button = Button.new(text, action)
+		button.setDesignerSelector("Button.MMDialogReportMod" + designerSelectorSuffix)
+		button.setToolTip(toolTip)
+		return button
+	end
+	
+	/**
+	 * \brief Submit report.
+	 * 
+	 * Builds \ref ServiceModReport from entered data, sets it as dialog result and closes dialog.
+	 */
+	func void onSubmit()
+		var ServiceModReport report = ServiceModReport.new()
+		report.type = pModelType.getSelectedElement() cast ServiceModReport.Type
+		report.description = pModelDescription.getText()
+		report.reporterName = pModelReporterName.getText()
+		report.reporterContact = pModelReporterContact.getText()
+		
+		if not report.description.empty()
+			setResult(report)
+		end
+		
+		requestClose()
+	end
+end

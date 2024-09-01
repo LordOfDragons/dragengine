@@ -64,6 +64,9 @@ class DefaultServiceModsListener implements ServiceModsListener
 	func void onRevokeModRating(ServiceMods service, String modId, Exception exception)
 	end
 	
+	func void onReportMod(ServiceMods service, String modId, Exception exception)
+	end
+	
 	func void onGetTags(ServiceMods service, Array categories, Exception exception)
 	end
 end

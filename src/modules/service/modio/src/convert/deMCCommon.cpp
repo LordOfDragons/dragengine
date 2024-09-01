@@ -185,6 +185,11 @@ deServiceObject::Ref deMCCommon::StringMap( const std::map<std::string, std::str
 	return so;
 }
 
+std::string deMCCommon::StringOrEmpty( const deServiceObject &so, const char *key ){
+	const deServiceObject::Ref child( so.GetChildAt( key ) );
+	return child ? std::string( child->GetString().GetString() ) : std::string();
+}
+
 Modio::ProfileMaturity deMCCommon::ProfileMaturity( const deServiceObject &so ){
 	Modio::ProfileMaturity profileMaturity;
 	const int count = so.GetChildCount();
@@ -543,4 +548,27 @@ deServiceObject::Ref deMCCommon::TermsLink( const Modio::Terms::Link &link ){
 	so->SetStringChildAt( "url", link.URL.c_str() );
 	so->SetBoolChildAt( "required", link.bRequired );
 	return so;
+}
+
+Modio::ReportType deMCCommon::ReportParamsType( const deServiceObject &so ){
+	const decString &sval = so.GetString();
+	
+	if( sval == "broken" ){
+		return Modio::ReportType::NotWorking;
+		
+	}else if( sval == "falseInformation" ){
+		return Modio::ReportType::FalseInformation;
+		
+	}else if( sval == "copyrightInfringement" ){
+		return Modio::ReportType::DMCA;
+		
+	}else if( sval == "inappropriateContent" ){
+		return Modio::ReportType::RudeContent;
+		
+	}else if( sval == "illegalContent" ){
+		return Modio::ReportType::IllegalContent;
+		
+	}else{
+		return Modio::ReportType::Other;
+	}
 }

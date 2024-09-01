@@ -151,6 +151,20 @@ class BaseServiceConversions
 		return so2 != null if so2.getResource() cast Image else null
 	end
 	
+	/** \brief Convert report to service object. */
+	func ServiceObject convertReport(ServiceModReport report)
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("type", report.type.name())
+		so.setStringChildAt("description", report.description)
+		if report.reporterName != null
+			so.setStringChildAt("reporterName", report.reporterName)
+		end
+		if report.reporterContact != null
+			so.setStringChildAt("reporterContact", report.reporterContact)
+		end
+		return so
+	end
+	
 	
 	
 	/** \brief Create exception from response. */
