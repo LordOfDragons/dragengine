@@ -561,6 +561,17 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 		runRequest(so, listener)
 	end
 	
+	func void reportUser(String id, ServiceUserReport report, ServiceUserListener listener)
+		throw EInvalidParam.new("not supported")
+	end
+	
+	func void getUserWalletBalance(ServiceUserListener listener)
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "getUserWalletBalance")
+		
+		runRequest(so, listener)
+	end
+	
 	
 	
 	/** \brief Conversion helper */
@@ -698,6 +709,16 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 			if onceListener != null
 				(onceListener cast ServiceUserListener).onLoadUserResource(this, url, resource, null)
 			end
+			
+		elif function.equals("getUserWalletBalance")
+			var float amount = response.getChildAt("amount").getFloat()
+			
+			pUserListeners.forEach(block ServiceUserListener each
+				each.onUserWalletBalance(this, amount, null)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceUserListener).onUserWalletBalance(this, amount, null)
+			end
 		end
 	end
 	
@@ -814,6 +835,14 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 			end)
 			if onceListener != null
 				(onceListener cast ServiceUserListener).onLoadUserResource(this, url, null, exception)
+			end
+			
+		elif function.equals("getUserWalletBalance")
+			pUserListeners.forEach(block ServiceUserListener each
+				each.onUserWalletBalance(this, 0, exception)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceUserListener).onUserWalletBalance(this, 0, exception)
 			end
 		end
 	end

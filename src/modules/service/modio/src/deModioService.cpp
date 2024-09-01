@@ -199,6 +199,9 @@ void deModioService::StartRequest( const decUniqueID &id, const deServiceObject&
 	}else if( function == "loadUserResource" ){
 		LoadUserResource( id, request );
 		
+	}else if( function == "getUserWalletBalance" ){
+		GetUserWalletBalance( id, request );
+		
 	}else{
 		DETHROW_INFO( deeInvalidParam, "Unknown function" );
 	}
@@ -694,9 +697,10 @@ void deModioService::LoadUserResource( const decUniqueID &id, const deServiceObj
 			}
 			
 			AddRequiresEventHandlingCount();
-			Modio::GetUserMediaAsync( size, [ this, id ]( Modio::ErrorCode ec, Modio::Optional<std::string> filename ){
-				pOnLoadResourceFinished( id, ec, filename );
-			});
+			Modio::GetUserMediaAsync( size, [ this, id ](
+				Modio::ErrorCode ec, Modio::Optional<std::string> filename ){
+					pOnLoadResourceFinished( id, ec, filename );
+				});
 			
 		}else{
 			DETHROW_INFO( deeInvalidParam, "url" );
@@ -705,6 +709,18 @@ void deModioService::LoadUserResource( const decUniqueID &id, const deServiceObj
 	}else{
 		DETHROW_INFO( deeInvalidParam, "url" );
 	}
+}
+
+void deModioService::GetUserWalletBalance( const decUniqueID &id, const deServiceObject &request ){
+	pModule.LogInfo( "deModioService.GetUserWalletBalance" );
+	
+	NewPendingRequest( id, "getUserWalletBalance" );
+	AddRequiresEventHandlingCount();
+	
+	Modio::GetUserWalletBalanceAsync( [ this, id ]( Modio::ErrorCode ec,
+		Modio::Optional<uint64_t> amount ){
+			pOnGetUserWalletBalance( id, ec, amount );
+		});
 }
 
 void deModioService::ActivateMods(){
@@ -1345,6 +1361,20 @@ Modio::Optional<Modio::ModTagOptions> tagOptions ){
 	if( pr ){
 		if( tagOptions.has_value() ){
 			pr->data->SetChildAt( "categories", deMCTagOptions::ModTagOptions( *tagOptions ) );
+		}
+		pOnBaseResponseExit( pr );
+	}
+}
+
+void deModioService::pOnGetUserWalletBalance( const decUniqueID &id,
+Modio::ErrorCode ec, Modio::Optional<uint64_t> amount ){
+	pModule.LogInfoFormat( "deModioService.pOnGetUserWalletBalance: ec(%d)[%s]",
+		ec.value(), ec.message().c_str() );
+	
+	const deModioPendingRequest::Ref pr( pOnBaseResponseInit( id, ec ) );
+	if( pr ){
+		if( amount.has_value() ){
+			pr->data->SetFloatChildAt( "amount", ( float )*amount );
 		}
 		pOnBaseResponseExit( pr );
 	}

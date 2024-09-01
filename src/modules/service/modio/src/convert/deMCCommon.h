@@ -80,6 +80,13 @@ public:
 	static std::int64_t Int64( const decString &string );
 	static decString Int64ToString( std::int64_t value );
 	
+	/** Convert uint64. */
+	static std::uint64_t UInt64( const deServiceObject &so );
+	static deServiceObject::Ref UInt64( std::uint64_t value );
+	
+	static std::uint64_t UInt64( const decString &string );
+	static decString UInt64ToString( std::uint64_t value );
+	
 	/** Convert identifier. */
 	static std::int64_t ID( const deServiceObject &so );
 	static deServiceObject::Ref ID( std::int64_t id );

@@ -71,4 +71,20 @@ interface ServiceUserListener
 	 * \param exception On success null. On failure contains error information.
 	 */
 	func void onLoadUserResource(ServiceUser service, String url, Object resource, Exception exception)
+	
+	/**
+	 * \brief Report user finished.
+	 * \param service Service sending the event.
+	 * \param userId Identifier of user the report has been submitted for.
+	 * \param exception On success null. On failure contains error information.
+	 */
+	func void onReportUser(ServiceUser service, String userId, Exception exception)
+	
+	/**
+	 * \brief User wallet balance finished.
+	 * \param service Service sending the event.
+	 * \param amount Approximate amount in store currency.
+	 * \param exception On success null. On failure contains error information.
+	 */
+	func void onUserWalletBalance(ServiceUser service, float amount, Exception exception)
 end

@@ -149,6 +149,7 @@ public:
 	void ReportMod( const decUniqueID &id, const deServiceObject &request );
 	void GetModTagOptions( const decUniqueID &id, const deServiceObject &request );
 	void LoadUserResource( const decUniqueID &id, const deServiceObject &request );
+	void GetUserWalletBalance( const decUniqueID &id, const deServiceObject &request );
 	
 	void ActivateMods();
 	deServiceObject::Ref IsAuthenticated();
@@ -201,6 +202,9 @@ private:
 	
 	void pOnGetModTagOptions( const decUniqueID &id, Modio::ErrorCode ec,
 		Modio::Optional<Modio::ModTagOptions> tagOptions );
+	
+	void pOnGetUserWalletBalance( const decUniqueID &id, Modio::ErrorCode ec,
+		Modio::Optional<uint64_t> amount );
 	
 	void pOnLogCallback( Modio::LogLevel level, const std::string &message );
 	void pOnModManagement( Modio::ModManagementEvent event );

@@ -290,6 +290,24 @@ decString deMCCommon::Int64ToString( std::int64_t value ){
 	return string;
 }
 
+std::uint64_t deMCCommon::UInt64( const deServiceObject &so ){
+	return UInt64( so.GetString() );
+}
+
+deServiceObject::Ref deMCCommon::UInt64( std::uint64_t value ){
+	return deServiceObject::NewString( UInt64ToString( value ) );
+}
+
+std::uint64_t deMCCommon::UInt64( const decString &string ){
+	return ( std::uint64_t )string.ToLongValid();
+}
+
+decString deMCCommon::UInt64ToString( std::uint64_t value ){
+	decString string;
+	string.AppendValue( ( unsigned long long )value );
+	return string;
+}
+
 std::int64_t deMCCommon::ID( const deServiceObject &so ){
 	return Int64( so );
 }

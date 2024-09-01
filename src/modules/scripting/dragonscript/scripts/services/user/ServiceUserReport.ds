@@ -22,81 +22,22 @@
  * SOFTWARE.
  */
 
-namespace Dragengine.Services.Mods
+namespace Dragengine.Services.User
 
 /**
- * \brief Content report of a modification submitted by a user.
+ * \brief Report of a user submitted by a user.
  * \version 1.23
  */
-class ServiceModReport
-	/**
-	 * \brief Type of report.
-	 */
-	enum Type
-		/**
-		 * \brief Modification is not working or causes application to malfunction.
-		 */
-		broken
-		
-		/**
-		 * \brief Modification contains missleading or incorrect information.
-		 */
-		falseInformation
-		
-		/**
-		 * \brief Copyright infringement (for example DMCA) or stolen content.
-		 */
-		copyrightInfringement
-		
-		/**
-		 * \brief Inappropriate, offensive or explicit content that is not allowed.
-		 */
-		inappropriateContent
-		
-		/**
-		 * \brief Content containing or encouraging illegal content or actions.
-		 */
-		illegalContent
-		
-		/**
-		 * \brief Reason not covered by other types.
-		 */
-		other
-	end
-	
-	
-	
-	/**
-	 * \brief Report type.
-	 * 
-	 * Default value is \ref Type#other.
-	 */
-	public var Type type
-	
+class ServiceUserReport
 	/**
 	 * \brief Description of the issue.
 	 */
 	public var String description
 	
-	/**
-	 * \brief Report name.
-	 * 
-	 * Optional name for use with copyright infringement cases. Can be null.
-	 */
-	public var String reporterName
 	
 	/**
-	 * \brief Reporter contact information.
-	 * 
-	 * Optional name for use with copyright infringement cases. Can be null.
-	 */
-	public var String reporterContact
-	
-	
-	/**
-	 * Create new instance of class ServiceModReport.
+	 * Create new instance of class ServiceUserReport.
 	 */
 	func new()
-		type = Type.other
 	end
 end

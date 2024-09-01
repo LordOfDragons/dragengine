@@ -195,6 +195,9 @@ class BaseServiceConversions
 		features.canLogout = convertBool(so, "canLogout", false)
 		features.canAuthProviderLogin = convertStringSet(so, "canAuthProviderLogin")
 		features.authTokenProvider = convertAuthTokenProvider(so.getChildAt("authTokenProvider"))
+		features.canReportUser = convertBool(so, "canReportUser", false)
+		features.hasMarketplace = convertBool(so, "hasMarketplace", false)
+		features.currency = convertString(so, "currency", null)
 		return features
 	end
 	

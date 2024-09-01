@@ -290,6 +290,14 @@ class ServiceSteam implements ServiceStats, ServiceUser, ServiceListener
 		runRequest(so, listener)
 	end
 	
+	func void reportUser(String id, ServiceUserReport report, ServiceUserListener listener)
+		throw EInvalidParam.new("not supported")
+	end
+	
+	func void getUserWalletBalance(ServiceUserListener listener)
+		throw EInvalidParam.new("not supported")
+	end
+	
 	
 	
 	/** \brief Conversion helper */
