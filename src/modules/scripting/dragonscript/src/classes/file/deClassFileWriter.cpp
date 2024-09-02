@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -140,6 +143,42 @@ void deClassFileWriter::nfSetStreamVersion::RunFunction( dsRunTime *rt, dsValue 
 	( ( sFileWriterNatDat* )p_GetNativeData( myself ) )->streamVersion = rt->GetValue( 0 )->GetInt();
 }
 
+
+
+// func int getPosition()
+deClassFileWriter::nfGetPosition::nfGetPosition( const sInitData &init ) : dsFunction( init.clsFileWriter,
+"getPosition", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt ){
+}
+void deClassFileWriter::nfGetPosition::RunFunction( dsRunTime *rt, dsValue *myself ){
+	rt->PushInt( ( ( const sFileWriterNatDat * )p_GetNativeData( myself ) )->fileWriter->GetPosition() );
+}
+
+// func void setPosition(int position)
+deClassFileWriter::nfSetPosition::nfSetPosition( const sInitData &init ) : dsFunction( init.clsFileWriter,
+"setPosition", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsInt ); // position
+}
+void deClassFileWriter::nfSetPosition::RunFunction( dsRunTime *rt, dsValue *myself ){
+	( ( sFileWriterNatDat* )p_GetNativeData( myself ) )->fileWriter->SetPosition(rt->GetValue( 0 )->GetInt());
+}
+
+// func void movePosition(int offset)
+deClassFileWriter::nfMovePosition::nfMovePosition( const sInitData &init ) : dsFunction( init.clsFileWriter,
+"movePosition", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsInt ); // offset
+}
+void deClassFileWriter::nfMovePosition::RunFunction( dsRunTime *rt, dsValue *myself ){
+	( ( sFileWriterNatDat* )p_GetNativeData( myself ) )->fileWriter->MovePosition(rt->GetValue( 0 )->GetInt());
+}
+
+// func void setPositionEnd(int position)
+deClassFileWriter::nfSetPositionEnd::nfSetPositionEnd( const sInitData &init ) : dsFunction( init.clsFileWriter,
+"setPositionEnd", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsInt ); // position
+}
+void deClassFileWriter::nfSetPositionEnd::RunFunction( dsRunTime *rt, dsValue *myself ){
+	( ( sFileWriterNatDat* )p_GetNativeData( myself ) )->fileWriter->SetPositionEnd(rt->GetValue( 0 )->GetInt());
+}
 
 
 
@@ -494,6 +533,11 @@ void deClassFileWriter::CreateClassMembers( dsEngine *engine ){
 	
 	AddFunction( new nfGetStreamVersion( init ) );
 	AddFunction( new nfSetStreamVersion( init ) );
+	
+	AddFunction( new nfGetPosition( init ) );
+	AddFunction( new nfSetPosition( init ) );
+	AddFunction( new nfMovePosition( init ) );
+	AddFunction( new nfSetPositionEnd( init ) );
 	
 	AddFunction( new nfWriteChar( init ) );
 	AddFunction( new nfWriteByte( init ) );

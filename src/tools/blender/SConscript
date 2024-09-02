@@ -9,23 +9,75 @@ envAddon = parent_env.Clone()
 
 pathShare = envAddon.subst(envAddon['path_igde_share'])
 
-files = []
-globFiles(envAddon, 'dragengine-import-export', '*.py', files)
-files.append('dragengine-import-export/blender_manifest.toml')
-
-archiveFiles = {f:envAddon.File(f) for f in files}
-def archiveZip(env, target, source):
-	with zipfile.ZipFile(target[0].abspath, 'w', zipfile.ZIP_DEFLATED) as arcfile:
-		for path, node in archiveFiles.items():
-			arcfile.write(node.srcnode().abspath, path)
 
 versionString = envAddon['version']
 if envAddon['force_version']:
         versionString = envAddon['force_version']
 
+try:
+	# blender repository version has to be "X.Y.Z" whereas "X.Y" matches drag[en]gine
+	# release version and Z starts at 0 incrementally updated with each release.
+	# Z does not line up with potential drag[en]gine patch since blender repository
+	# package can be released more often if required
+	blenderVersion = [int(x) for x in versionString.split('.')]
+	while len(blenderVersion) < 3:
+		blenderVersion.append(0)
+
+	# set custom patch version number. it is a bit annoying to handle this in the script
+	# hence a version based custom value is used. the version check ensures the patch
+	# version goes back to 0 if the drag[en]gine release version is bumped
+	blenderVersion[2] = 0
+
+	if blenderVersion[1] == 22:
+		blenderVersion[2] = 2
+except:
+	blenderVersion = [9999, 0, 0]
+
+blenderVersion = [str(x) for x in blenderVersion]
+
+
+addonSrcDir = 'dragengine-import-export'
+addonDestDir = 'dragengine-import-export'
+
+files = []
+globFiles(envAddon, addonSrcDir, '*', files)
+
+specialFiles = [
+	'{}/__init__.py'.format(addonSrcDir),
+	'{}/de_version.py'.format(addonSrcDir),
+	'{}/blender_manifest.toml'.format(addonSrcDir)]
+
+def copyModifyFile(env, target, source):
+	with open(source[0].abspath, 'r') as f:
+		content = f.read()
+	content = content.replace('{VERSION_MAJOR}', blenderVersion[0])
+	content = content.replace('{VERSION_MINOR}', blenderVersion[1])
+	content = content.replace('{VERSION_PATCH}', blenderVersion[2])
+	with open(target[0].abspath, 'w') as f:
+		f.write(content)
+
+files2 = []
+for f in files:
+	if f in specialFiles:
+		files2.extend(envAddon.Command(
+			'{}/{}'.format(addonDestDir, f[len(addonSrcDir)+1:]),
+			envAddon.File(f).srcnode(),
+			envAddon.Action(copyModifyFile, 'Copy-Modify $TARGET')))
+	else:
+		files2.extend(envAddon.Install(addonDestDir, envAddon.File(f).srcnode()))
+
+
+buildDir = envAddon.Dir('.')
+
+archiveFiles = {buildDir.rel_path(f): f for f in files2}
+def archiveZip(env, target, source):
+	with zipfile.ZipFile(target[0].abspath, 'w', zipfile.ZIP_DEFLATED) as arcfile:
+		for path, node in archiveFiles.items():
+			arcfile.write(node.abspath, path)
+
 filename = '{}-{}.zip'.format(envAddon['addon_name_blender'], versionString)
 
-targetBuild = envAddon.Command(filename, files, envAddon.Action(archiveZip, 'Archiving $TARGET'))
+targetBuild = envAddon.Command(filename, files2, envAddon.Action(archiveZip, 'Archiving $TARGET'))
 
 install = envAddon.Install(os.path.join(pathShare, 'tools'), targetBuild)
 targetInstall = envAddon.Alias('blender-addon', install)

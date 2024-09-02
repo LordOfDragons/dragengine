@@ -131,8 +131,81 @@ function Expand-TarBz2 {
 }
 
 
+# Unpack *.tar.xz
+###################
+
+function Expand-TarXz {
+    param (
+        [Parameter(Mandatory=$true)][string]$Path,
+        [Parameter(Mandatory=$true)][string]$Destination
+    )
+
+    # we can not use the piping solution since windows sucks so hard at piping
+    # the data gets corrupted along the pipe and tar fails
+    # & $PSScriptRoot\bin\7z.exe x "$Path" -so -tbzip2 | tar -xf - -C "$Destination"
+    $TarXzFile = Split-Path -Path $Path -Leaf
+    $TarFile = $TarXzFile.Substring(0, $TarXzFile.Length - 3)
+    $UnpackDir = $TarFile.Substring(0, $TarFile.Length - 4)
+
+    if (Test-Path $UnpackDir) {
+        Remove-Item $UnpackDir -Force -Recurse
+    }
+
+    7z.exe x "$Path" -txz -y
+    7z.exe x "$TarFile" -ttar -y -o"$Destination"
+    Remove-Item -Path $TarFile -Force
+}
+
+
+# Sanitize script input path
+# --------------------------
+# Visual Studio has the tendency to forget strip double quote from the end
+# of path send to script files causing various failures. This function
+# strips trailing double quote.
+# 
+# Furthermore such path can also contain a trailing backslash where there
+# should be none. This function also strips those
+
+function SanitizeScriptInputPath {
+    param (
+        [Parameter(Mandatory=$true)][string]$Path
+    )
+
+    if($Path.EndsWith('"')){
+        $Path = $Path.Substring(0, $Path.Length - 1)
+    }
+
+    if($Path.EndsWith('\\')){
+        $Path = $Path.Substring(0, $Path.Length - 1)
+    }
+
+    return $Path
+}
+
+
+# Download artifact if not present
+# --------------------------------
+
+function DownloadArtifact {
+    param (
+        [Parameter(Mandatory=$true)][string]$SourceDir,
+        [Parameter(Mandatory=$true)][string]$FilenameArtifact,
+        [Parameter(Mandatory=$true)][string]$UrlPath
+    )
+
+    if (!(Test-Path "$SourceDir\$FilenameArtifact")) {
+        Invoke-WebRequest "$UrlExternArtifacts/$UrlPath/$FilenameArtifact" -OutFile "$SourceDir\$FilenameArtifact"
+    }
+}
+
+
 # Various path constants
 ##########################
+
+New-Variable -Name UrlExternArtifacts -Scope Global -Option ReadOnly -Force `
+    -Value "https://dragondreams.s3.eu-central-1.amazonaws.com/dragengine/extern"
+
+
 
 New-Variable -Name PathDistDE -Value "Distribute\Dragengine\Application" -Scope Global -Option ReadOnly -Force
 New-Variable -Name PathDistDEBase -Value "$PathDistDE\@ProgramFiles\Dragengine" -Scope Global -Option ReadOnly -Force

@@ -28,7 +28,13 @@ import operator  # to get function names for operators like @, +, -
 # helper file for blender 2.8 porting only
 
 
+knownClasses = []
 registeredClasses = []
+logPrefix = "Drag[en]gine Add-On: "
+
+
+def delog(message):
+    print(logPrefix + message)
 
 
 def make_annotations(cls):
@@ -37,9 +43,9 @@ def make_annotations(cls):
         return cls
     bl_props = {k: v for k, v in cls.__dict__.items() if isinstance(v, tuple)}
     if bl_props:
-        if '__annotations__' not in cls.__dict__:
-            setattr(cls, '__annotations__', {})
-        annotations = cls.__dict__['__annotations__']
+        if "__annotations__" not in cls.__dict__:
+            setattr(cls, "__annotations__", {})
+        annotations = cls.__dict__["__annotations__"]
         for k, v in bl_props.items():
             annotations[k] = v
             delattr(cls, k)
@@ -47,16 +53,32 @@ def make_annotations(cls):
 
 
 def registerClass(cls):
+    global knownClasses
     global registeredClasses
-    make_annotations(cls)
-    bpy.utils.register_class(cls)
-    registeredClasses.append(cls)
+
+    if cls not in knownClasses:
+        # delog("Remember class: {}".format(cls))
+        make_annotations(cls)
+        knownClasses.append(cls)
+
+    if cls not in registeredClasses:
+        # delog("Register class: {}".format(cls))
+        bpy.utils.register_class(cls)
+        registeredClasses.append(cls)
+
+
+def registerKnownClasses():
+    global knownClasses
+    for cls in knownClasses:
+        registerClass(cls)
 
 
 def unregisterRegisteredClasses():
     global registeredClasses
     for cls in reversed(registeredClasses):
+        # delog("unregisterRegisteredClasses: {}".format(cls))
         bpy.utils.unregister_class(cls)
+    del registeredClasses[:]
 
 
 def appendToMenu(menu, cls):
@@ -106,5 +128,8 @@ def matmul28(a, b):
     return operator.matmul(a, b)  # the same as writing a @ b
 
 
+"""
 matmul = matmul28 if hasattr(bpy.app, "version") \
     and bpy.app.version >= (2, 80) else matmul27
+"""
+matmul = matmul28

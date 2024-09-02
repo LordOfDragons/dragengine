@@ -1,0 +1,145 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Services.Mods
+
+
+/**
+ * \brief Listener for service response and events related to modification management.
+ * \version 1.23
+ */
+interface ServiceModsListener
+	/**
+	 * \brief Listing modifications finished.
+	 * \param service Service sending the event.
+	 * \param mods Array containing ServiceModInfo. On failure null.
+	 * \param exception On success null. On failure contains error information.
+	 */
+	func void onListMods(ServiceMods service, Array mods, Exception exception)
+	
+	/**
+	 * \brief Loading resource finished.
+	 * \param service Service sending the event.
+	 * \param url URL of resource to load.
+	 * \param resource Loaded resource. On failure null.
+	 * \param exception On success null. On failure contains error information.
+	 */
+	func void onLoadModResource(ServiceMods service, String url, Object resource, Exception exception)
+	
+	/**
+	 * \brief Mod mamagement event.
+	 * \param service Service sending the event.
+	 * \param event Management event.
+	 * \param modId Identifier of modification affected by the event.
+	 * \param progress Progress information or null.
+	 * \param exception Exception or null if sueeded.
+	 */
+	func void onModManagement(ServiceMods service, ServiceMods.ManagementEvent event,\
+		String modId, ServiceModProgress progress, Exception exception)
+	
+	/**
+	 * \brief Subscribe modification finished.
+	 * \param service Service sending the event.
+	 * \param modId Identifier of modification.
+	 * \param exception On success null. On failure contains error information.
+	 */
+	func void onSubscribeMod(ServiceMods service, String modId, Exception exception)
+	
+	/**
+	 * \brief Unsubscribe modification finished.
+	 * \param service Service sending the event.
+	 * \param modId Identifier of modification.
+	 * \param exception On success null. On failure contains error information.
+	 */
+	func void onUnsubscribeMod(ServiceMods service, String modId, Exception exception)
+	
+	/**
+	 * \brief Set modification disabled finished.
+	 * \param service Service sending the event.
+	 * \param modId Identifier of modification.
+	 * \param disabled Disabled state of modification.
+	 * \param exception On success null. On failure contains error information.
+	 */
+	func void onSetModDisabled(ServiceMods service, String modId, bool disabled, Exception exception)
+	
+	/**
+	 * \brief Retrieve modification information finished.
+	 * \param service Service sending the event.
+	 * \param modId Identifier of modification.
+	 * \param info Modification info. On failure null.
+	 * \param exception On success null. On failure contains error information.
+	 */
+	func void onGetModInfo(ServiceMods service, String modId, ServiceModInfo info, Exception exception)
+	
+	/**
+	 * \brief Submit modification rating finished.
+	 * \param service Service sending the event.
+	 * \param modId Identifier of modification the rating has been submitted for.
+	 * \param exception On success null. On failure contains error information.
+	 */
+	func void onSubmitModRating(ServiceMods service, String modId, Exception exception)
+	
+	/**
+	 * \brief Revoke modification rating finished.
+	 * \param service Service sending the event.
+	 * \param modId Identifier of modification the rating has been revoked for.
+	 * \param exception On success null. On failure contains error information.
+	 */
+	func void onRevokeModRating(ServiceMods service, String modId, Exception exception)
+	
+	/**
+	 * \brief Report modification finished.
+	 * \param service Service sending the event.
+	 * \param modId Identifier of modification the report has been submitted for.
+	 * \param exception On success null. On failure contains error information.
+	 */
+	func void onReportMod(ServiceMods service, String modId, Exception exception)
+	
+	/**
+	 * \brief Retrieve tags finished.
+	 * \param service Service sending the event.
+	 * \param categories Array of ServiceModTagCategory.
+	 * \param exception On success null. On failure contains error information.
+	 */
+	func void onGetTags(ServiceMods service, Array categories, Exception exception)
+	
+	/**
+	 * \brief Get purchased mods finished.
+	 * \param service Service sending the event.
+	 * \param mods Array of ServiceModInfo.
+	 * \param exception On success null. On failure contains error information.
+	 */
+	func void onGetPurchasedMods(ServiceMods service, Array mods, Exception exception)
+	
+	/**
+	 * \brief Purchase mod finished.
+	 * \param service Service sending the event.
+	 * \param modId Identifier of modification the user purchased.
+	 * \param price Price paid for the modification.
+	 * \param walletBalance Wallet balance after purchase.
+	 * \param exception On success null. On failure contains error information.
+	 */
+	func void onPurchaseMod(ServiceMods service, String modId, String price,\
+		String walletBalance, Exception exception)
+end

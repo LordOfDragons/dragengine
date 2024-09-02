@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenXR
+/*
+ * MIT License
  *
- * Copyright (C) 2022, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdlib.h>
@@ -58,7 +61,11 @@ pFrameRunning( false ),
 pSwapchainFormats( nullptr ),
 pSwapchainFormatCount( 0 ),
 pIsGACOpenGL( false ),
-#ifdef OS_UNIX
+#ifdef OS_ANDROID
+	pGACOpenGLDisplay( nullptr ),
+	pGACOpenGLConfig( nullptr ),
+	pGACOpenGLContext( nullptr )
+#elif defined OS_UNIX
 	pGACOpenGLDisplay( nullptr ),
 	pGACOpenGLDrawable( 0 ),
 	pGACOpenGLContext( nullptr )
@@ -92,6 +99,10 @@ pIsGACOpenGL( false ),
 		
 		#ifdef OS_BEOS
 			#error Unsupported
+		#elif defined OS_ANDROID
+			pGACOpenGLDisplay = ( EGLDisplay )gacon.opengl.display;
+			pGACOpenGLConfig = ( EGLConfig )gacon.opengl.config;
+			pGACOpenGLContext = ( EGLContext )gacon.opengl.context;
 		#elif defined OS_UNIX
 			pGACOpenGLDisplay = ( Display* )gacon.opengl.display;
 			pGACOpenGLDrawable = ( GLXDrawable )gacon.opengl.glxDrawable;
@@ -110,7 +121,9 @@ pIsGACOpenGL( false ),
 		const void *graphicBinding = nullptr;
 		
 		// opengl
-		#ifdef OS_UNIX
+		#ifdef OS_ANDROID
+		XrGraphicsBindingOpenGLESAndroidKHR gbopengl;
+		#elif defined OS_UNIX
 		XrGraphicsBindingOpenGLXlibKHR gbopengl;
 		#elif defined OS_W32
 		XrGraphicsBindingOpenGLWin32KHR gbopengl;
@@ -119,15 +132,40 @@ pIsGACOpenGL( false ),
 		if( instance.SupportsExtension( deoxrInstance::extKHROpenglEnable ) ){
 			oxr.LogInfo( "Create Session: Testing OpenGL Support" );
 			// openxr specification requires this call to be done although the result is not used
-			XrGraphicsRequirementsOpenGLKHR requirements;
-			memset( &requirements, 0, sizeof( requirements ) );
-			requirements.type = XR_TYPE_GRAPHICS_REQUIREMENTS_OPENGL_KHR;
-			
-			instance.xrGetOpenGLGraphicsRequirementsKHR(
-				instance.GetInstance(), system.GetSystemId(), &requirements );
+			#ifdef OS_ANDROID
+				XrGraphicsRequirementsOpenGLESKHR requirements;
+				memset( &requirements, 0, sizeof( requirements ) );
+				requirements.type = XR_TYPE_GRAPHICS_REQUIREMENTS_OPENGL_ES_KHR;
+				
+				instance.xrGetOpenGLESGraphicsRequirementsKHR(
+					instance.GetInstance(), system.GetSystemId(), &requirements );
+			#else
+				XrGraphicsRequirementsOpenGLKHR requirements;
+				memset( &requirements, 0, sizeof( requirements ) );
+				requirements.type = XR_TYPE_GRAPHICS_REQUIREMENTS_OPENGL_KHR;
+				
+				instance.xrGetOpenGLGraphicsRequirementsKHR(
+					instance.GetInstance(), system.GetSystemId(), &requirements );
+			#endif
 			
 			// add opengl connection struct
-			#ifdef OS_UNIX
+			#ifdef OS_ANDROID
+				if( gacon.opengl.display && gacon.opengl.config && gacon.opengl.context ){
+					oxr.GetGraphicApiOpenGL().Load();
+					
+					memset( &gbopengl, 0, sizeof( gbopengl ) );
+					gbopengl.type = XR_TYPE_GRAPHICS_BINDING_OPENGL_ES_ANDROID_KHR;
+					gbopengl.display = pGACOpenGLDisplay;
+					gbopengl.config = pGACOpenGLConfig;
+					gbopengl.context = pGACOpenGLContext;
+					
+					pGraphicApi = egaOpenGL;
+					graphicBinding = &gbopengl;
+					pIsGACOpenGL = true;
+					oxr.LogInfo( "Create Session: Using OpenGL on Android" );
+				}
+				
+			#elif defined OS_UNIX
 				if( gacon.opengl.display && gacon.opengl.display
 				&& gacon.opengl.glxFBConfig && gacon.opengl.glxDrawable ){
 					oxr.GetGraphicApiOpenGL().Load();
@@ -561,10 +599,11 @@ void deoxrSession::UpdateRightEyeHiddenMesh(){
 }
 
 void deoxrSession::RestoreOpenGLCurrent(){
-	#ifdef OS_UNIX
+	#ifdef OS_ANDROID
+		// nothing
+	#elif defined OS_UNIX
 		pSystem.GetInstance().GetOxr().GetGraphicApiOpenGL().MakeCurrent(
 			pGACOpenGLDisplay, pGACOpenGLDrawable, pGACOpenGLContext );
-		
 	#elif defined OS_W32
 		pSystem.GetInstance().GetOxr().GetGraphicApiOpenGL().MakeCurrent(
 			pGACOpenGLHDC, pGACOpenGLContext );

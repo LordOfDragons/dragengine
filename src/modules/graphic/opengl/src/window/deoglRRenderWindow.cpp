@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -36,12 +39,13 @@
 #include "../renderthread/deoglRTLogger.h"
 #include "../renderthread/deoglRTRenderers.h"
 
-#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! OS_MACOS
+#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! OS_MACOS
 #include <dragengine/app/deOSUnix.h>
+#include <X11/Xatom.h>
 #include "../extensions/deoglXExtResult.h"
 #endif
 
-#ifdef ANDROID
+#ifdef OS_ANDROID
 #include <dragengine/app/deOSAndroid.h>
 #endif
 
@@ -76,7 +80,7 @@
 
 //#define REUSE_WINDOW 1
 
-#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 #define WSA_MASK             ( CWColormap | CWEventMask | CWDontPropagate | CWCursor \
                              | CWOverrideRedirect | CWSaveUnder | CWWinGravity \
                              | CWBitGravity | CWBorderPixel | CWBackingStore )
@@ -198,7 +202,7 @@ void deoglRRenderWindow::cGLWindow::SetBlockQuitRequested( bool blockQuitRequest
 deoglRRenderWindow::deoglRRenderWindow( deoglRenderThread &renderThread ) :
 pRenderThread( renderThread ),
 
-#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 pHostWindow( 0 ),
 pWindow( 0 ),
 pNullCursor( 0 ),
@@ -249,13 +253,13 @@ deoglRRenderWindow::~deoglRRenderWindow(){
 // Management
 ///////////////
 
-#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 void deoglRRenderWindow::SetHostWindow( Window window ){
 	pHostWindow = window;
 };
 #endif
 
-#ifdef ANDROID
+#ifdef OS_ANDROID
 void deoglRRenderWindow::SetHostWindow( void *window ){
 };
 #endif
@@ -378,7 +382,7 @@ void deoglRRenderWindow::CreateWindow(){
 	// NOTE It might be possible to hold an own display connection in the main thread. It should
 	//      not be required since CreateWindow runs only while the render thread is waiting
 	
-#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 	// if the window exists we do nothing
 	if( pWindow > 255 ){
 		return;
@@ -451,6 +455,8 @@ void deoglRRenderWindow::CreateWindow(){
 				XMapWindow( display, pWindow );
 			}
 			XSync( display, False ); // required or strange problems can happen
+			
+			pUpdateFullScreen();
 			
 		}catch( const deException &e ){
 			if( pWindow > 255 ){
@@ -567,7 +573,7 @@ void deoglRRenderWindow::SwapBuffers(){
 	
 	const deoglDebugTraceGroup debugTrace( pRenderThread, "Window.SwapBuffers" );
 	
-#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 	pUpdateVSync();
 	
 	// [XERR] BadMatch (invalid parameter attributes): request_code(155) minor_code(11)
@@ -598,7 +604,7 @@ void deoglRRenderWindow::SwapBuffers(){
 		//XSync( pRenderThread.GetContext().GetDisplay(), False );
 #endif
 	
-#ifdef ANDROID
+#ifdef OS_ANDROID
 	if( eglSwapBuffers( pRenderThread.GetContext().GetDisplay(), pRenderThread.GetContext().GetSurface() ) == EGL_FALSE ){
 		// log failure but do not thow exception
 	}
@@ -723,7 +729,7 @@ void deoglRRenderWindow::Capture(){
 }
 
 void deoglRRenderWindow::CenterOnScreen(){
-	#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+	#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 	if( pWindow < 255 ){
 		return;
 	}
@@ -769,7 +775,7 @@ void deoglRRenderWindow::OnResize( int width, int height ){
 	pWidth = width;
 	pHeight = height;
 	
-	#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+	#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 	#endif
 	
 	#ifdef OS_BEOS
@@ -814,7 +820,7 @@ void deoglRRenderWindow::pDestroyWindow(){
 	}
 	
 	// Linux
-	#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+	#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 	if( pWindow > 255 ){
 		if( pRenderThread.HasContext() ){
 			Display * const display = pRenderThread.GetContext().GetDisplay();
@@ -872,7 +878,7 @@ void deoglRRenderWindow::pDestroyWindow(){
 }
 
 void deoglRRenderWindow::pResizeWindow(){
-#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 	if( pWindow > 255 ){
 		Display * const display = pRenderThread.GetContext().GetDisplay();
 		
@@ -917,7 +923,7 @@ void deoglRRenderWindow::pResizeWindow(){
 }
 
 void deoglRRenderWindow::pSetWindowTitle(){
-#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 	if( pWindow > 255 ){
 		Display * const display = pRenderThread.GetContext().GetDisplay();
 		XTextProperty textProp;
@@ -959,7 +965,7 @@ void deoglRRenderWindow::pUpdateFullScreen(){
 	}else{
 	}
 	
-#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 	if( pWindow > 255 ){
 		Display * const display = pRenderThread.GetContext().GetDisplay();
 		const XVisualInfo &visInfo = *pRenderThread.GetContext().GetVisualInfo();
@@ -970,26 +976,27 @@ void deoglRRenderWindow::pUpdateFullScreen(){
 		const Atom atomWMState = XInternAtom( display, "_NET_WM_STATE", False );
 		const Atom atomFullScreen = XInternAtom( display, "_NET_WM_STATE_FULLSCREEN", False );
 		
+		XChangeProperty( display, pWindow, atomWMState, XA_ATOM, 32,
+			PropModeReplace, ( const unsigned char* )&atomFullScreen, 1 );
+		
 		XEvent event;
 		memset( &event, 0, sizeof( event ) );
 		event.xclient.type = ClientMessage;
 		event.xclient.send_event = True;
+		event.xclient.display = display;
 		event.xclient.window = pWindow;
 		event.xclient.message_type = atomWMState;
 		event.xclient.format = 32;
-		
-		if( pFullScreen ){ // 0(unset property), 1(set property), 2(toggle property)
-			event.xclient.data.l[ 0 ] = 1;
-			
-		}else{
-			event.xclient.data.l[ 0 ] = 0;
-		}
-		
-		event.xclient.data.l[ 1 ] = atomFullScreen; // property to change
+		event.xclient.data.l[ 0 ] = pFullScreen ? 1 : 0; // 0(unset property), 1(set property), 2(toggle property)
+		event.xclient.data.l[ 1 ] = atomFullScreen;
 		event.xclient.data.l[ 2 ] = 0; // must be set to zero if only one property is to be changed
 		event.xclient.data.l[ 3 ] = 1; // source indicator: 0(legacy application), 1(application), 2(direct user input)
 		
-		XSendEvent( display, rootWindow, False, SubstructureRedirectMask | SubstructureNotifyMask, &event );
+		int rc = XSendEvent( display, rootWindow, False,
+			SubstructureRedirectMask | SubstructureNotifyMask, &event );
+		if( rc != Success ){
+			pRenderThread.GetLogger().LogErrorFormat("Switch fullscreen failed: %d", rc);
+		}
 		XSync( display, False ); // make sure the request is processed before going on
 	}
 #endif
@@ -1054,7 +1061,7 @@ void deoglRRenderWindow::pUpdateFullScreen(){
 }
 
 void deoglRRenderWindow::pSetIcon(){
-#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 	if( pWindow <= 255 ){
 		return;
 	}
@@ -1325,7 +1332,7 @@ void deoglRRenderWindow::pSetIcon(){
 }
 
 
-#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 void deoglRRenderWindow::pCreateNullCursor(){
 	if( pNullCursor ){
 		return;
@@ -1367,12 +1374,10 @@ void deoglRRenderWindow::pUpdateVSync(){
 	
 	pInitSwapInterval = false;
 	
-	#ifndef OS_BEOS
+#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 	const deoglExtensions &ext = pRenderThread.GetExtensions();
 	deoglRTLogger &logger = pRenderThread.GetLogger();
-	#endif
 	
-#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 	if( ext.GetHasExtension( deoglExtensions::ext_GLX_EXT_swap_control ) ){
 		switch( pVSyncMode ){
 		case deoglConfiguration::evsmAdaptive:
@@ -1399,6 +1404,9 @@ void deoglRRenderWindow::pUpdateVSync(){
 #endif
 	
 #ifdef OS_W32
+	const deoglExtensions &ext = pRenderThread.GetExtensions();
+	deoglRTLogger &logger = pRenderThread.GetLogger();
+	
 	if( ext.GetHasExtension( deoglExtensions::ext_WGL_EXT_swap_control ) ){
 		switch( pVSyncMode ){
 		case deoglConfiguration::evsmAdaptive:

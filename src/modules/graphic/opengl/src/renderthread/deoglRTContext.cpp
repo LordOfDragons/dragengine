@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -42,12 +45,12 @@
 #include <dragengine/systems/deScriptingSystem.h>
 #include <dragengine/systems/modules/input/deBaseInputModule.h>
 
-#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 #include <dragengine/app/deOSUnix.h>
 #include "../extensions/deoglXExtResult.h"
 #endif
 
-#ifdef ANDROID
+#ifdef OS_ANDROID
 #include <dragengine/app/deOSAndroid.h>
 #include <android/native_window.h>
 #endif
@@ -70,7 +73,7 @@
 
 
 // event function (local)
-#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 /*
 static Bool lfWaitForNotify( Display *d, XEvent *e, char *arg ){
 	return ( e->type == MapNotify ) && ( e->xmap.window == (Window)arg );
@@ -92,6 +95,7 @@ static LRESULT CALLBACK oglW32WndFunc( HWND hwnd, UINT message, WPARAM wParam, L
 }
 #endif
 
+#ifndef OS_ANDROID
 struct sOpenGlVersion{
 	int major;
 	int minor;
@@ -99,6 +103,7 @@ struct sOpenGlVersion{
 static const int vOpenGLVersionCount = 9;
 static const sOpenGlVersion vOpenGLVersions[ vOpenGLVersionCount ] = {
 	{ 4, 6 }, { 4, 5 }, { 4, 4 }, { 4, 3 }, { 4, 2 }, { 4, 1 }, { 4, 0 }, { 3, 3 }, { 3, 2 } };
+#endif
 
 
 
@@ -111,7 +116,7 @@ static const sOpenGlVersion vOpenGLVersions[ vOpenGLVersionCount ] = {
 deoglRTContext::deoglRTContext( deoglRenderThread &renderThread ) :
 pRenderThread( renderThread ),
 
-#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 pOSUnix( renderThread.GetOgl().GetOS()->CastToOSUnix() ),
 
 pDisplay( NULL ),
@@ -124,7 +129,7 @@ pColMap( 0 ),
 pVisInfo( NULL ),
 #endif
 
-#ifdef ANDROID
+#ifdef OS_ANDROID
 pOSAndroid( renderThread.GetOgl().GetOS()->CastToOSAndroid() ),
 
 pDisplay( EGL_NO_DISPLAY ),
@@ -183,7 +188,7 @@ void deoglRTContext::InitPhase2( deRenderWindow* ){
 	//      to be linked to the render thread after prerequisited have been done in the main thread
 	pRenderThread.GetLogger().LogInfo( "RTContext Init Phase 2 Entering" );
 	
-	#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+	#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 	pOpenDisplay();
 	pChooseVisual();
 	pChooseFBConfig();
@@ -192,7 +197,7 @@ void deoglRTContext::InitPhase2( deRenderWindow* ){
 	pCreateGLContext();
 	#endif
 	
-	#ifdef ANDROID
+	#ifdef OS_ANDROID
 	pInitDisplay();
 	#endif
 	
@@ -240,11 +245,11 @@ void deoglRTContext::InitPhase3( deRenderWindow *renderWindow ){
 	}
 	
 	// HACK assign window. the constructor above ensures the window is created
-	#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+	#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 	pOSUnix->SetWindow( renderWindow->GetWindow() );
 	#endif
 	
-	#ifdef ANDROID
+	#ifdef OS_ANDROID
 	//pOSAndroid->SetWindow( renderWindow->GetWindow() );
 	#endif
 	
@@ -296,7 +301,7 @@ void deoglRTContext::CleanUp(){
 	ActivateRRenderWindow( NULL, true );
 	
 	// HACK unassign window
-	#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+	#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 	pOSUnix->SetWindow( 0 );
 	#endif
 	
@@ -313,13 +318,13 @@ void deoglRTContext::CleanUp(){
 	#endif
 	
 	// free operating system specific objects
-	#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+	#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 	pFreeContext();
 	pFreeVisualInfo();
 	pCloseDisplay();
 	#endif
 	
-	#ifdef ANDROID
+	#ifdef OS_ANDROID
 	pCloseDisplay();
 	#endif
 	
@@ -337,7 +342,7 @@ void deoglRTContext::CleanUp(){
 	#endif
 }
 
-#ifdef ANDROID
+#ifdef OS_ANDROID
 void deoglRTContext::InitAppWindow(){
 	pInitDisplay();
 }
@@ -379,12 +384,12 @@ void deoglRTContext::ActivateRRenderWindow( deoglRRenderWindow *rrenderWindow, b
 	pActiveRRenderWindow = rrenderWindow;
 	
 	if( rrenderWindow ){
-		#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+		#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 // 		printf( "glXMakeCurrent(%lu,%p) previous(%lu,%p)\n", rrenderWindow->GetWindow(), pContext, glXGetCurrentDrawable(), glXGetCurrentContext() );
 		OGLX_CHECK( pRenderThread, glXMakeCurrent( pDisplay, rrenderWindow->GetWindow(), pContext ) );
 		#endif
 		
-		#ifdef ANDROID
+		#ifdef OS_ANDROID
 		if( eglMakeCurrent( pDisplay, pSurface, pSurface, pContext ) == EGL_FALSE ){
 			DETHROW( deeInvalidParam );
 		}
@@ -416,12 +421,12 @@ void deoglRTContext::ActivateRRenderWindow( deoglRRenderWindow *rrenderWindow, b
 	}else{
 		pRenderThread.GetLoaderThread().EnableContext( false );
 		
-		#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+		#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 // 		printf( "glXMakeCurrent(clear) previous(%lu,%p)\n", glXGetCurrentDrawable(), glXGetCurrentContext() );
 		OGLX_CHECK( pRenderThread, glXMakeCurrent( pDisplay, None, NULL ) );
 		#endif
 		
-		#ifdef ANDROID
+		#ifdef OS_ANDROID
 		if( eglMakeCurrent( pDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT ) == EGL_FALSE ){
 			DETHROW( deeInvalidParam );
 		}
@@ -450,7 +455,7 @@ bool deoglRTContext::GetUserRequestedQuit(){
 
 void *deoglRTContext::GetFunctionPointer( const char *funcName ){
 	// linux
-	#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+	#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 	#ifndef HAS_OGL_GETPROC
 	return ( void* )glXGetProcAddressARB( ( const GLubyte * )funcName );
 	#endif
@@ -458,7 +463,7 @@ void *deoglRTContext::GetFunctionPointer( const char *funcName ){
 	#endif
 	
 	// android
-	#ifdef ANDROID
+	#ifdef OS_ANDROID
 	return ( void* )androidGetProcAddress( funcName );
 	#endif
 	
@@ -483,7 +488,7 @@ void *deoglRTContext::GetFunctionPointer( const char *funcName ){
 
 
 
-#ifdef ANDROID
+#ifdef OS_ANDROID
 void deoglRTContext::CheckConfigurationChanged(){
 	// check if screen size is still the same. listening to config changed is not going to
 	// work since android delays screen changes for an undefinite time.
@@ -622,7 +627,7 @@ LRESULT deoglRTContext::ProcessWindowMessage( HWND hwnd, UINT message, WPARAM wP
 // Private Functions
 //////////////////////
 
-#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 
 Display *deoglRTContext::GetMainThreadDisplay() const{
 	return pOSUnix->GetDisplay();
@@ -963,7 +968,7 @@ void deoglRTContext::pCloseDisplay(){
 
 
 
-#ifdef ANDROID
+#ifdef OS_ANDROID
 
 void deoglRTContext::pInitDisplay(){
 	if( pSurface != EGL_NO_SURFACE ){

@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<guiTheme>
+	<!--
+		Behavior ECBehaviorRenderablePanel
+	-->
+	
+	<designer name='RenderablePanel' type='Widget'>
+		<canvasCreator parameter='normal.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='1' g='1' b='1'/>
+		</canvasCreator>
+	</designer>
+</guiTheme>

@@ -1,0 +1,176 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Gui
+
+/**
+ * \brief Default implementation of RatingModel.
+ * \version 1.23
+ */
+class DefaultRatingModel implements RatingModel
+	var int pTypeCount
+	var Integer pRating
+	var Dictionary pCountsPerType
+	var Array pListeners
+	
+	
+	
+	/**
+	 * \brief Create default rating model.
+	 * \param typeCount Count of rating types.
+	 * \throws EInvalidParam typeCount is less than 1
+	 */
+	func new(int typeCount)
+		if typeCount < 1
+			throw EInvalidParam.new("typeCount < 1")
+		end
+		
+		pTypeCount = typeCount
+		pCountsPerType = Dictionary.new()
+		pListeners = Array.new()
+	end
+	
+	/**
+	 * \brief Create default rating model with initial rating.
+	 * \param typeCount Count of rating types.
+	 * \param rating Rating in the range from 0 to getTypeCount() - 1 or null.
+	 * \throws EInvalidParam typeCount is less than 1
+	 */
+	func new(int typeCount, Integer rating) this(typeCount)
+		setRating(rating)
+	end
+	
+	/**
+	 * \brief Create default rating model with initial rating and counts per type.
+	 * \param typeCount Count of rating types.
+	 * \param rating Rating in the range from 0 to getTypeCount() - 1 or null.
+	 * \param countsPerType Dictionary with rating type as key (int) and count for this rating
+	 *        type as value (float). For rating types not present in the dictionary a count
+	 *        of 0 will be used.
+	 * \throws EInvalidParam typeCount is less than 1
+	 */
+	func new(int typeCount, Integer rating, Dictionary countsPerType) this(typeCount, rating)
+		setCountsPerType(countsPerType)
+	end
+	
+	
+	
+	/**
+	 * \brief Count of rating types.
+	 * 
+	 * The maximum rating value the user can submit is getTypeCount() - 1.
+	 */
+	func int getTypeCount()
+		return pTypeCount
+	end
+	
+	/**
+	 * \brief Rating or null.
+	 * 
+	 * If not null the value is in the range from 0 to getTypeCount() - 1.
+	 */
+	func Integer getRating()
+		return pRating
+	end
+	
+	/**
+	 * \brief Set rating or null.
+	 * \param rating Rating in the range from 0 to getTypeCount() - 1 or null.
+	 */
+	func void setRating(Integer rating)
+		if rating == null
+			if pRating == null
+				return
+			end
+			
+		else
+			if rating.equals(pRating)
+				return
+			end
+			if rating.value() < 0
+				throw EInvalidParam.new("rating.value < 0")
+			end
+			if rating.value() >= pTypeCount
+				throw EInvalidParam.new("rating.value >= getTypeCount()")
+			end
+		end
+		
+		pRating = rating
+		
+		pListeners.forEach(block RatingModelListener each
+			each.ratingChanged(this)
+		end)
+	end
+	
+	/**
+	 * \brief Breakdown of submitted ratings per rating type.
+	 * 
+	 * Dictionary has the rating type as key (int) and count for this rating type as value
+	 * (float). For rating types not present in the dictionary a count of 0 has to be used.
+	 */
+	func Dictionary getCountsPerType()
+		return Dictionary.new(pCountsPerType)
+	end
+	
+	/**
+	 * \brief Set breakdown of submitted ratings per rating type.
+	 * \param countsPerType Dictionary with rating type as key (int) and count for this rating
+	 *        type as value (float). For rating types not present in the dictionary a count
+	 *        of 0 will be used.
+	 */
+	func void setCountsPerType(Dictionary countsPerType)
+		if countsPerType.equals(pCountsPerType)
+			return
+		end
+		countsPerType.forEachKey(block int key
+			if key < 0
+				throw EInvalidParam.new("countsPerType.key < 0")
+			end
+			if key >= pTypeCount
+				throw EInvalidParam.new("countsPerType.key >= getTypeCount()")
+			end
+		end)
+		
+		pCountsPerType = Dictionary.new(countsPerType)
+		
+		pListeners.forEach(block RatingModelListener each
+			each.countsPerTypeChanged(this)
+		end)
+	end
+	
+	
+	
+	/** \brief Add listener. */
+	func void addListener(RatingModelListener listener)
+		if listener == null
+			throw EInvalidParam.new()
+		end
+		pListeners.add(listener)
+	end
+	
+	/** \brief Remove listener. */
+	func void removeListener(RatingModelListener listener)
+		pListeners.remove(listener)
+	end
+end

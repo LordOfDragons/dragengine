@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -603,7 +606,7 @@ void deoglRDecal::PrepareGILocalBVH(){
 	if( faceCount > 10000 ){
 		pParentComponent->GetRenderThread().GetLogger().LogWarnFormat(
 			"Decal(%s): Very high face count (%d). Disable decal to not slow down global illumination.",
-			pParentComponent->GetModelRef().GetFilename().GetString(), faceCount );
+			pParentComponent->GetModel()->GetFilename().GetString(), faceCount );
 		disable = true;
 	}
 	
@@ -695,7 +698,7 @@ void deoglRDecal::PrepareGILocalBVH(){
 		pRenderThread.GetLogger().LogInfoFormat(
 			"Decal(%s): High face count slows down global illumination (%d)."
 			" Consider adding highest LOD variation with less than 300 faces.",
-			pParentComponent->GetModelRef().GetFilename().GetString(), faceCount );
+			pParentComponent->GetModel()->GetFilename().GetString(), faceCount );
 	}
 }
 

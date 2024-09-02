@@ -12,4 +12,6 @@ if (Test-Path $ExpandedDir) {
     Remove-Item $ExpandedDir -Force -Recurse
 }
 
-Expand-Archive -Path (Join-Path -Path $SourceDir -ChildPath "libvpx-1.12.0-vc64.zip") -DestinationPath $ProjectDir
+DownloadArtifact -SourceDir $ProjectDir -FilenameArtifact "libvpx-1.12.0-vc64.zip" -UrlPath "libvpx"
+
+Expand-Archive -Path "$ProjectDir\libvpx-1.12.0-vc64.zip" -DestinationPath $ProjectDir

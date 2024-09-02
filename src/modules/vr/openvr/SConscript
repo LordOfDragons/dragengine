@@ -12,7 +12,7 @@ parent_report['build OpenVR VR Module' ] = 'yes' if buildModule else 'no'
 if not buildModule:
 	Return()
 
-if envModule['OSBeOS']:
+if envModule['OSBeOS'] or envModule['platform_android'] != 'no':
 	Return()
 
 # fetch values in expanded form for later use

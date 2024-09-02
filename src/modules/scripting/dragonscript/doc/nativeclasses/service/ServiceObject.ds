@@ -1,0 +1,343 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine
+
+pin Dragengine.Gui
+
+/**
+ * \brief Service object.
+ * \version 1.23
+ * 
+ * Stores data object for use with platform services. Object value can be a boolean,
+ * an integer, a float, a string, a resource, data or a dictionary of objects.
+ * A list of objects is represented as a dictionary with the string index as key.
+ * 
+ * This is a native class.
+ */
+class ServiceObject
+	/** \name Constructors */
+	/*@{*/
+	/** \brief Create service object of type \ref ServiceObjectType#dictionary. */
+	func new()
+	end
+	
+	/** \brief Create service object of type \ref ServiceObjectType#boolean with value. */
+	static func ServiceObject newBool(bool value)
+		return null
+	end
+	
+	/** \brief Create service object of type \ref ServiceObjectType#integer with value. */
+	static func ServiceObject newInt(int value)
+		return null
+	end
+	
+	/** \brief Create service object of type \ref ServiceObjectType#floating with value. */
+	static func ServiceObject newFloat(float value)
+		return null
+	end
+	
+	/** \brief Create service object of type \ref ServiceObjectType#string with value. */
+	static func ServiceObject newString(String value)
+		return null
+	end
+	
+	/** \brief Create service object of type \ref ServiceObjectType#resource with value. */
+	static func ServiceObject newResource(Object value)
+		return null
+	end
+	
+	/** \brief Create service object of type \ref ServiceObjectType#data with value. */
+	static func ServiceObject newData(MemoryFile value)
+		return null
+	end
+	
+	/** \brief Create service object of type \ref ServiceObjectType#list with value. */
+	static func ServiceObject newList()
+		return null
+	end
+	
+	/** \brief Create copy of service object. */
+	func new(ServiceObject copy, bool deep)
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Value type. */
+	func ServiceObjectType getValueType()
+		return null
+	end
+	
+	
+	
+	/** \brief Is boolean value. */
+	func bool isBoolean()
+		return false
+	end
+	
+	/**
+	 * \brief Boolean value.
+	 * \throws EInvalidParam Value type is not \ref ServiceObjectType#boolean.
+	 */
+	func bool getBoolean()
+		return false
+	end
+	
+	
+	
+	/** \brief Is integer value. */
+	func bool isInteger()
+		return false
+	end
+	
+	/**
+	 * \brief Integer value.
+	 * \throws EInvalidParam Value type is not \ref ServiceObjectType#integer.
+	 */
+	func int getInteger()
+		return 0
+	end
+	
+	
+	
+	/** \brief Is float value. */
+	func bool isFloat()
+		return false
+	end
+	
+	/**
+	 * \brief Float value.
+	 * \throws EInvalidParam Value type is not \ref ServiceObjectType#floating.
+	 */
+	func float getFloat()
+		return 0.0
+	end
+	
+	
+	
+	/** \brief Is string value. */
+	func bool isString()
+		return false
+	end
+	
+	/**
+	 * \brief String value.
+	 * \throws EInvalidParam Value type is not \ref ServiceObjectType#string.
+	 */
+	func String getString()
+		return null
+	end
+	
+	
+	
+	/** \brief Is resource value. */
+	func bool isResource()
+		return false
+	end
+	
+	/**
+	 * \brief Resource value.
+	 * \throws EInvalidParam Value type is not \ref ServiceObjectType#resource.
+	 */
+	func Object getResource()
+		return null
+	end
+	
+	
+	
+	/** \brief Is data value. */
+	func bool isData()
+		return false
+	end
+	
+	/**
+	 * \brief Data value.
+	 * \throws EInvalidParam Value type is not \ref ServiceObjectType#data.
+	 */
+	func MemoryFile getData()
+		return null
+	end
+	
+	
+	
+	/** \brief Is list value. */
+	func bool isList()
+		return false
+	end
+	
+	/** \brief Is dictionary value. */
+	func bool isDictionary()
+		return false
+	end
+	
+	/**
+	 * \brief Count of child objects.
+	 * \throws EInvalidParam Value type is not \ref ServiceObjectType#list nor \ref ServiceObjectType#dictionary.
+	 */
+	func int getChildCount()
+		return 0
+	end
+	
+	/**
+	 * \brief List of all children keys.
+	 * \throws EInvalidParam Value type is not \ref ServiceObjectType#dictionary.
+	 */
+	func Array getChildrenKeys()
+		return null
+	end
+	
+	/**
+	 * \brief Child object at index.
+	 * \throws EInvalidParam Value type is not \ref ServiceObjectType#list.
+	 */
+	func ServiceObject getChildAt(int index)
+		return null
+	end
+	
+	/**
+	 * \brief Child object with key or nullptr if absent.
+	 * \throws EInvalidParam Value type is not \ref ServiceObjectType#dictionary.
+	 */
+	func ServiceObject getChildAt(String key)
+		return null
+	end
+	
+	/**
+	 * \brief Add child object.
+	 * \throws EInvalidParam Value type is not \ref ServiceObjectType#list.
+	 */
+	func void addChild(ServiceObject value)
+	end
+	
+	/**
+	 * \brief Set child object with key overwriting existing child if present.
+	 * \throws EInvalidParam Value type is not \ref ServiceObjectType#dictionary.
+	 */
+	func void setChildAt(String key, ServiceObject value)
+	end
+	
+	/**
+	 * \brief Add boolean child object.
+	 * \throws EInvalidParam Value type is not \ref ServiceObjectType#list.
+	 */
+	func void addBoolChild(bool value)
+	end
+	
+	/**
+	 * \brief Set boolean child with key overwriting existing child if present.
+	 * \throws EInvalidParam Value type is not \ref ServiceObjectType#dictionary.
+	 */
+	func void setBoolChildAt(String key, bool value)
+	end
+	
+	/**
+	 * \brief Add integer child object.
+	 * \throws EInvalidParam Value type is not \ref ServiceObjectType#list.
+	 */
+	func void addIntChild(int value)
+	end
+	
+	/**
+	 * \brief Set integer child with key overwriting existing child if present.
+	 * \throws EInvalidParam Value type is not \ref ServiceObjectType#dictionary.
+	 */
+	func void setIntChildAt(String key, int value)
+	end
+	
+	/**
+	 * \brief Add float child object.
+	 * \throws EInvalidParam Value type is not \ref ServiceObjectType#list.
+	 */
+	func void addFloatChild(float value)
+	end
+	
+	/**
+	 * \brief Set float child with key overwriting existing child if present.
+	 * \throws EInvalidParam Value type is not \ref ServiceObjectType#dictionary.
+	 */
+	func void setFloatChildAt(String key, float value)
+	end
+	
+	/**
+	 * \brief Add string child object.
+	 * \throws EInvalidParam Value type is not \ref ServiceObjectType#list.
+	 */
+	func void addStringChild(String value)
+	end
+	
+	/**
+	 * \brief Set string child with key overwriting existing child if present.
+	 * \throws EInvalidParam Value type is not \ref ServiceObjectType#dictionary.
+	 */
+	func void setStringChildAt(String key, String value)
+	end
+	
+	/**
+	 * \brief Add resource child object.
+	 * \throws EInvalidParam Value type is not \ref ServiceObjectType#list.
+	 */
+	func void addResourceChild(Object value)
+	end
+	
+	/**
+	 * \brief Set resource child with key overwriting existing child if present.
+	 * \throws EInvalidParam Value type is not \ref ServiceObjectType#dictionary.
+	 */
+	func void setResourceChildAt(String key, Object value)
+	end
+	
+	/**
+	 * \brief Add data child object.
+	 * \throws EInvalidParam Value type is not \ref ServiceObjectType#list.
+	 */
+	func void addDataChild(MemoryFile value)
+	end
+	
+	/**
+	 * \brief Set data child with key overwriting existing child if present.
+	 * \throws EInvalidParam Value type is not \ref ServiceObjectType#dictionary.
+	 */
+	func void setDataChildAt(String key, MemoryFile value)
+	end
+	
+	/**
+	 * \brief Remove child at index.
+	 * \throws EInvalidParam Value type is not \ref ServiceObjectType#list.
+	 */
+	func void removeChild(int index)
+	end
+	
+	/**
+	 * \brief Remove child object with key if present.
+	 * \throws EInvalidParam Value type is not \ref ServiceObjectType#dictionary.
+	 */
+	func void removeChild(String key)
+	end
+	
+	/**
+	 * \brief Remove all child objects.
+	 * \throws EInvalidParam Value type is not \ref ServiceObjectType#list or \ref ServiceObjectType#dictionary.
+	 */
+	func void removeAllChildren()
+	end
+	
+	
+	
+	/**
+	 * \brief Service objects are equal.
+	 * \details Implements \ref Object#equals(Object).
+	 * \returns \em true if \em other is of type ServiceObject and both contents are equal.
+	 */
+	func bool equals(Object other)
+		return false
+	end
+	/*@}*/
+end

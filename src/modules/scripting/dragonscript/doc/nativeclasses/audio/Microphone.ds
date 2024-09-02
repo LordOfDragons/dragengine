@@ -17,7 +17,7 @@ class Microphone
 	/** \name Constructors */
 	/*@{*/
 	/** \brief Create microphone. */
-	public func new()
+	func new()
 	end
 	/*@}*/
 	
@@ -26,75 +26,75 @@ class Microphone
 	/** \name Management */
 	/*@{*/
 	/** \brief Type. */
-	public func MicrophoneType getType()
+	func MicrophoneType getType()
 		return null
 	end
 	
 	/** \brief Set type. */
-	public func void setType( MicrophoneType type )
+	func void setType(MicrophoneType type)
 	end
 	
 	/** \brief Position. */
-	public func DVector getPosition()
+	func DVector getPosition()
 		return null
 	end
 	
 	/** \brief Set position. */
-	public func void setPosition( DVector position )
+	func void setPosition(DVector position)
 	end
 	
 	/** \brief Orientation. */
-	public func Quaternion getOrientation()
+	func Quaternion getOrientation()
 		return null
 	end
 	
 	/** \brief Set orientation. */
-	public func void setOrientation( Quaternion orientation )
+	func void setOrientation(Quaternion orientation)
 	end
 	
 	/** \brief Velocity in m/s. */
-	public func Vector getVelocity()
+	func Vector getVelocity()
 		return null
 	end
 	
 	/** \brief Set velocity in m/s. */
-	public func void setVelocity( Vector velocity )
+	func void setVelocity(Vector velocity)
 	end
 	
 	
 	
 	/** \brief Microphone is muted. */
-	public func bool getMuted()
+	func bool getMuted()
 		return false
 	end
 	
 	/** \brief Set if microphone is muted. */
-	public func void setMuted( bool muted )
+	func void setMuted(bool muted)
 	end
 	
 	/** \brief Volume. */
-	public func float getVolume()
+	func float getVolume()
 		return 0.0
 	end
 	
 	/** \brief Set volume. */
-	public func void setVolume( float volume )
+	func void setVolume(float volume)
 	end
 	
 	/** \brief Layer mask for visibility masking. */
-	public func LayerMask getLayerMask()
+	func LayerMask getLayerMask()
 		return null
 	end
 	
 	/** \brief Set layer mask for visibility masking. */
-	public func void setLayerMask( LayerMask layerMask )
+	func void setLayerMask(LayerMask layerMask)
 	end
 	
 	/**
 	 * \brief Gain to multiply all speakers with.
 	 * \version 1.16
 	 */
-	public func float getSpeakerGain()
+	func float getSpeakerGain()
 		return 0.0
 	end
 	
@@ -102,12 +102,29 @@ class Microphone
 	 * \brief Set gain to multiply all speakers with.
 	 * \version 1.16
 	 */
-	public func void setSpeakerGain(float gain)
+	func void setSpeakerGain(float gain)
 	end
 	
 	/** \brief Parent world or \em null if not added to a world. */
-	public func World getParentWorld()
+	func World getParentWorld()
 		return null
+	end
+	
+	
+	
+	/**
+	 * \brief Enable auralization if supported.
+	 * \version 1.23
+	 */
+	func bool getEnableAuralization()
+		return false
+	end
+	
+	/**
+	 * \brief Set to enable auralization if supported.
+	 * \version 1.23
+	 */
+	func void setEnableAuralization(bool enable)
 	end
 	/*@}*/
 	
@@ -116,18 +133,18 @@ class Microphone
 	/** \name Speakers */
 	/*@{*/
 	/** \brief Add speaker. */
-	public func void addSpeaker( Speaker speaker )
+	func void addSpeaker(Speaker speaker)
 	end
 	
 	/**
 	 * \brief Remove speaker.
 	 * \throws EInvalidParam \em speaker is absent.
 	 */
-	public func void removeSpeaker( Speaker speaker )
+	func void removeSpeaker(Speaker speaker)
 	end
 	
 	/** \brief Remove all speakers. */
-	public func void removeAllSpeakers()
+	func void removeAllSpeakers()
 	end
 	/*@}*/
 end

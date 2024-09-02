@@ -26,13 +26,17 @@ on:
         required: false
         default: true
         type: boolean
+      codeql:
+        required: false
+        default: false
+        type: boolean
 
 jobs:
   build:
     runs-on: ubuntu-20.04
     
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           lfs: ${{ !inputs.lfscache }}
           submodules: 'recursive'
@@ -41,9 +45,9 @@ jobs:
       - name: Create LFS file hash list
         if: ${{ inputs.lfscache }}
         run: git lfs ls-files -l | cut -d' ' -f1 | sort > .lfs-objects-id
-
+      
       - name: Restore LFS Cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         id: lfs-cache
         if: ${{ inputs.lfscache }}
         with:
@@ -66,7 +70,7 @@ jobs:
           sudo apt -y install build-essential scons cmake autoconf libtool nasm \
             patchelf libx11-dev libxrandr-dev libgl-dev libxi-dev libpulse-dev \
             libasound2-dev portaudio19-dev libxft-dev extra-cmake-modules \
-            flex bison gettext
+            flex bison gettext doxygen
       
       - name: Init custom.py
         run: |
@@ -74,22 +78,58 @@ jobs:
           sed -i -e 's/{ReleaseVersion}/${{ inputs.releaseVersion }}/g' custom.py
           sed -i -e 's/{BuildVersion}/${{ inputs.buildVersion }}/g' custom.py
       
-      - name: Build
+      - name: Build external
+        # Build first all external libraries. Aboids avoid running CodeQL on them.
         # CMake based projects are problem children that like to get stuck forever in CMake
         # on Ubuntu and GitHub. build them first without parallel to avoid hangups
         run: |
-          scons -j 1 lib_openxr
-          scons -j 1 lib_openvr
-          scons -j 1 lib_libjpeg
-          scons -j 1 lib_libwebm
+          scons -j 1 \
+            lib_openxr \
+            lib_openvr \
+            lib_libjpeg \
+            lib_libwebm \
+            lib_modio
+          scons -j 14 \
+            lib_dragonscript \
+            lib_fox \
+            lib_libapng \
+            lib_libevdev \
+            lib_libogg \
+            lib_libpng \
+            lib_liburing \
+            lib_libtheora \
+            lib_libvorbis \
+            lib_libvpx \
+            lib_libwebp \
+            lib_openal \
+            lib_soundtouch \
+            lib_steamsdk \
+            lib_zlib
+        # lib_sndio
+      
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        if: ${{ inputs.codeql }}
+        with:
+          languages: c-cpp
+          build-mode: manual
+      
+      - name: Build
+        run: |
           scons -j 14 archive installer
+      
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        if: ${{ inputs.codeql }}
+        with:
+          category: "/language:c-cpp"
       
       - name: Get current date
         id: date
         run: echo "date=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
         
       - name: Store Archives
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ inputs.artifactArchive }}
           path: |
@@ -101,7 +141,7 @@ jobs:
           if-no-files-found: error
         
       - name: Store Installers
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ inputs.artifactInstaller }}
           path: |
@@ -112,7 +152,7 @@ jobs:
           if-no-files-found: error
         
       - name: Store Tools
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ inputs.artifactTools }}
           path: |

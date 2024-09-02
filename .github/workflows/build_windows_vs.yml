@@ -62,7 +62,7 @@ jobs:
     runs-on: windows-latest
     
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           lfs: ${{ !inputs.lfscache }}
           submodules: 'recursive'
@@ -73,7 +73,7 @@ jobs:
         run: (git lfs ls-files -l) | ForEach-Object { $_.Split(" ")[0] } | sort | Out-File -FilePath ".lfs-objects-id"
 
       - name: Restore LFS Cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         id: lfs-vs-cache
         if: ${{ inputs.lfscache }}
         with:
@@ -88,8 +88,11 @@ jobs:
           git lfs logs last
       
       - name: Add MSBuild to PATH
-        uses: microsoft/setup-msbuild@v1.1
+        uses: microsoft/setup-msbuild@v2
         
+      - name: Install required packages
+        run: choco install cmake ninja 7zip
+
       - name: Restore NuGet packages
         working-directory: vs
         run: nuget restore dragengine.sln
@@ -121,7 +124,7 @@ jobs:
           Compress-Archive -Path "$DistributeDir/Live/*" -DestinationPath "despecial-${{ inputs.releaseVersion }}-windows64.zip"
         
       - name: Store Archives
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ inputs.artifactArchive }}
           path: |

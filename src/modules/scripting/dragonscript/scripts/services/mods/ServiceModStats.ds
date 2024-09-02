@@ -1,0 +1,97 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Services.Mods
+
+/**
+ * \brief Modification statistics
+ */
+class ServiceModStats
+	/**
+	 * \brief Approximate ranking position.
+	 */
+	public var float rankPosition
+	
+	/**
+	 * \brief Approximate count of entries in the ranking.
+	 */
+	public var float rankCount
+	
+	/**
+	 * \brief Approximate total count of downloads.
+	 */
+	public var float downloadCount
+	
+	/**
+	 * \brief Approximate total count of subscribers.
+	 */
+	public var float subscriberCount
+	
+	/**
+	 * \brief Approximate count of ratings.
+	 */
+	public var float ratingCount
+	
+	/**
+	 * \brief Approximate count of ratings per rating type.
+	 * 
+	 * Dictionary with int rating type key and float count value. The rating type is in the
+	 * range from 0 to \ref ServiceModsFeatures#modRatingCount. This allows to show a finer
+	 * grained chart of submitted ratings.
+	 */
+	public var Dictionary ratingCountPerType
+	
+	/**
+	 * \brief Average rating.
+	 * 
+	 * Value is in the range from 0 to \ref ServiceModsFeatures#modRatingCount.
+	 */
+	public var float ratingAverage
+	
+	/**
+	 * \brief Weighted rating.
+	 * 
+	 * Service provider calculate rating with the goal to favor modifications with higher count
+	 * of positive ratings. This value is best used to show rankings to the player.
+	 * Value is in the range from 0 to \ref ServiceModsFeatures#modRatingCount.
+	 */
+	public var float ratingWeighted
+	
+	/**
+	 * \brief Tex representation of rating.
+	 * 
+	 * Typically contains values like "Positive", "Very Positive" or similar.
+	 * The service provider is responsible for the translation.
+	 */
+	public var String ratingDisplayText
+	
+	
+	
+	/**
+	 * \brief Create new instance of class ServiceModStats.
+	 */
+	func new()
+		ratingCountPerType = Dictionary.new()
+	end
+end

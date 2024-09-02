@@ -1,0 +1,99 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Services
+pin Dragengine.Gui
+
+/**
+ * \brief Loadable service image.
+ * 
+ * Images in services (like logo, avatar or gallery images) are typically provided by URL
+ * and have to be loaded when needed. Each image contains the filename and URL to load the
+ * image from. Loading support is provided by the service the image information originated
+ * from. The service caches the loaded image. If the service does not support loading
+ * images the image is stored directly. Furthermore each image can contain thumbnails
+ * which are resized versions of the image.
+ */
+class ServiceImage
+	/**
+	 * \brief Loadable service image thumbnail.
+	 * 
+	 * Thumbnails contain the size and url to load the thumbnail from. The same loading
+	 * mechanims with ServiceImage itself.
+	 */
+	class Thumbnail
+		/**
+		 * \brief Size of thumbnail.
+		 */
+		public var Point size
+		
+		/**
+		 * \brief URL from where the thumbnail can be loaded or null.
+		 * 
+		 * If null loading the thumbnail by url is not supported and the image member is used instead.
+		 */
+		public var String url
+		
+		/**
+		 * \brief Thumbnail image is null.
+		 * 
+		 * If url is null the thumbnail image is stored directly.
+		 */
+		public var Image image
+		
+		/**
+		 * \brief Create new instance of class Thumbnail.
+		 */
+		func new()
+		end
+	end
+	
+	
+	
+	/**
+	 * \brief URL from where the image can be loaded.
+	 * 
+	 * If null loading the image by url is not supported and the image member is used instead.
+	 */
+	public var String url
+	
+	/**
+	 * \brief Loaded image or null.
+	 * 
+	 * If url is null the image is stored directly.
+	 */
+	public var Image image
+	
+	/**
+	 * \brief List of thumbnails as Array of Thumbnail.
+	 */
+	public var Array thumbnails
+	
+	/**
+	 * \brief Create new instance of class ServiceImage.
+	 */
+	func new()
+		thumbnails = Array.new()
+	end
+end

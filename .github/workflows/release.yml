@@ -98,27 +98,27 @@ jobs:
     
     steps:
       - name: Get Linux Installers
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: installers-linux
       
       - name: Get Windows Installers
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: installers-windows
       
       - name: Get Crossplatform Tools
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: tools-crossplatform
       
       - name: Get Linux CI Installers
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: installers-linux-ci
       
       - name: Get Live Launcher
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: archive-livelauncher
       

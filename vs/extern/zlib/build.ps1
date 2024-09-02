@@ -12,4 +12,6 @@ if (Test-Path $ExpandedDir) {
     Remove-Item $ExpandedDir -Force -Recurse
 }
 
-Expand-Archive -Path (Join-Path -Path $SourceDir -ChildPath "zlib-1.2.13-vc64.zip") -DestinationPath $ProjectDir
+DownloadArtifact -SourceDir $ProjectDir -FilenameArtifact "zlib-1.2.13-vc64.zip" -UrlPath "zlib"
+
+Expand-Archive -Path "$ProjectDir\zlib-1.2.13-vc64.zip" -DestinationPath $ProjectDir

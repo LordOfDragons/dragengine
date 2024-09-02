@@ -1,0 +1,660 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<guiTheme>
+	<!--
+	MMImageGallery.
+	
+	Main widget panel:
+	- Panel.MMImageGallery.Main
+	
+	Image displaying original image:
+	- Image.MMImageGallery.Original
+	
+	Preview image:
+	- Image.MMImageGallery.Preview
+	- Image.MMImageGallery.Preview.Selected
+	-->
+	
+	<designer name='Panel.MMImageGallery.Main' type='Widget'>
+		<canvasCreator parameter='normal.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='0.1' g='0.1' b='0.1'/>
+		</canvasCreator>
+	</designer>
+	
+	<designer name='Image.MMImageGallery.Original' type='Image'>
+		<point parameter='normal.minimumSize' x='100' y='360'/>
+	</designer>
+	
+	<designer name='Image.MMImageGallery.Preview' type='Image'>
+		<border parameter='normal.border' type='Combined'>
+			<border parameter='outer' type='Empty'>
+				<borderSize parameter='size' left='5' top='5' right='5' bottom='5'/>
+			</border>
+			<border parameter='inner' type='Line'>
+				<color parameter='color' r='0.3' g='0.3' b='0.3'/>
+			</border>
+		</border>
+		<point parameter='normal.minimumSize' x='260' y='140'/>
+	</designer>
+	
+	<designer name='Image.MMImageGallery.Preview.Selected' extendNamed='Image.MMImageGallery.Preview'>
+		<border parameter='normal.border' type='Combined'>
+			<border parameter='outer' type='Empty'>
+				<borderSize parameter='size' left='5' top='5' right='5' bottom='5'/>
+			</border>
+			<border parameter='inner' type='Line'>
+				<color parameter='color' r='0.4' g='0.4' b='1'/>
+			</border>
+		</border>
+	</designer>
+	
+	
+	
+	<!--
+	MMPanelModInfo.
+	
+	- Main widget panel: Panel.MMPanelModInfo.Main
+	
+	- Header panel: Panel.MMPanelModInfo.Header
+	- Title label: Label.MMPanelModInfo.HeaderTitle
+	
+	- Description panel: Panel.MMPanelModInfo.Description
+	- Styled document: StyledText.MMPanelModInfo.Description
+	
+	- Details panel: Panel.MMPanelModInfo.Details
+	- Subscribe button:
+		- Button.MMPanelModInfo.Subscribe
+		- Button.MMPanelModInfo.Unsubscribe
+	- Disable button:
+		- Button.MMPanelModInfo.Disable
+		- Button.MMPanelModInfo.Enable
+	
+	- Rating panel: Panel.MMPanelModInfo.Group.DetailsDetails
+		- Rating text: Label.MMPanelModInfo.Details.RatingText
+		- Rating percentage: Label.MMPanelModInfo.Details.Rating
+		- Rating progress bar: ProgressBar.MMPanelModInfo.Rating
+	
+	- Details panel (form): Panel.MMPanelModInfo.DetailsDetailsForm
+		- Line label: Label.MMPanelModInfo.DetailsFormLabel
+		- Line value: Label.MMPanelModInfo.DetailsFormValue
+		- Line URL value: Label.MMPanelModInfo.DetailsFormValue.Link
+		- Line specific label/value can have these suffixes:
+			- .Subscribers
+			- .Downloads
+			- .DateUpdated
+			- .DateReleased
+			- .Size
+			- .Version
+			- .Author (URL value)
+			- .Profile (URL value)
+			- .Id
+	
+	- Tags panel: Panel.MMPanelModInfo.Group.DetailsTags
+		- Tag label. Label.MMPanelModInfo.DetailsFormValue.Tag
+	
+	- Status/progress panel: Panel.MMPanelModInfo.Group.DetailsStatus
+		- Status label: Label.MMPanelModInfo.Details.Status
+		- Status progress bar: ProgressBar.MMPanelModInfo.Details.StatusProgress
+		- Line specific label/value can have these suffixes:
+			- .RemainingTime
+	
+	For generating the styled document the following designer selectors are used:
+	- base style: StyledTextStyle.MMPanelModInfo.Description.Base
+	- paragraph: StyledTextStyle.MMPanelModInfo.Description.Paragraph
+	- header1: StyledTextStyle.MMPanelModInfo.Description.Header1
+	-->
+	
+	<designer name='Label.MMPanelModInfo.HeaderTitle' extendNamed='Label'>
+		<font parameter='normal.font' size='46'>/shareddata/guithemes/modern/fonts/sans46.defont</font>
+		<color parameter='normal.textColor' r='0.1' g='0.1' b='0.1'/>
+		<string parameter='normal.alignment'>left,middle</string>
+	</designer>
+	
+	<designer name='Button.MMPanelModInfo.Subscribe' extendNamed='Button'/>
+	<designer name='Button.MMPanelModInfo.Unsubscribe' extendNamed='Button'/>
+	
+	<designer name='Button.MMPanelModInfo.Enable' extendNamed='Button'/>
+	<designer name='Button.MMPanelModInfo.Disable' extendNamed='Button'/>
+	
+	<designer name='Button.MMPanelModInfo.Purchase' extendNamed='Button'/>
+	<designer name='Button.MMPanelModInfo.Purchased' extendNamed='Button'/>
+	<designer name='Button.MMPanelModInfo.Free' extendNamed='Button'/>
+	
+	<designer name='Image.Button.MMPanelModInfo.Purchase' type='Image'>
+		<colorMatrix parameter='normal.imageColorTransform'>
+			<scale r='1' g='0.9' b='0'/>
+		</colorMatrix>
+		<image parameter='normal.image'>/shareddata/guithemes/modern/icons/16/coin.webp</image>
+		<null parameter='normal.minimumSize'/>
+	</designer>
+	
+	<designer name='Label.Button.MMPanelModInfo.Purchase' extendNamed='Label'>
+		<string parameter='normal.alignment'>center,middle</string>
+		<borderSize parameter='normal.padding' left='5'/>
+	</designer>
+	
+	<designer name='Image.Button.MMPanelModInfo.Purchased' type='Image'>
+		<colorMatrix parameter='normal.imageColorTransform'>
+			<scale r='0' g='0.5' b='0'/>
+		</colorMatrix>
+		<image parameter='normal.image'>/shareddata/guithemes/modern/icons/16/check.webp</image>
+		<null parameter='normal.minimumSize'/>
+	</designer>
+	
+	<designer name='Label.Button.MMPanelModInfo.Purchased' extendNamed='Label.Button.MMPanelModInfo.Purchase'/>
+	
+	<designer name='Image.Button.MMPanelModInfo.Free' type='Image'>
+		<point parameter='normal.minimumSize' x='0' y='0'/>
+	</designer>
+	
+	<designer name='Label.Button.MMPanelModInfo.Free' extendNamed='Label.Button.MMPanelModInfo.Purchase'/>
+	
+	<designer name='ProgressBar.MMPanelModInfo.Rating' extendNamed='ProgressBar'>
+		<boolean parameter='normal.showPercentage'>false</boolean>
+		<point parameter='normal.minimumSize' x='20' y='6'/>
+	</designer>
+	
+	<designer name='ProgressBar.MMPanelModInfo.Details.StatusProgress' extendNamed='ProgressBar'>
+		<boolean parameter='normal.showPercentage'>false</boolean>
+		<point parameter='normal.minimumSize' x='20' y='6'/>
+	</designer>
+	
+	<designer name='Panel.MMPanelModInfo.Group' extendNamed='Panel.Titled'>
+		<border parameter='normal.border' type='Combined'>
+			<border parameter='outer' type='Empty'>
+				<borderSize parameter='size' left='0' top='10' right='0' bottom='2'/>
+			</border>
+			<border parameter='inner' type='TitledEtched'>
+				<color parameter='colorHighlight' r='0.9' g='0.9' b='0.9'/>
+				<color parameter='colorShadow' r='0.7' g='0.7' b='0.7'/>
+				<color parameter='textColor' r='0.25' g='0.25' b='0.25'/>
+				<font parameter='font' size='15'>/shareddata/guithemes/modern/fonts/sans15.defont</font>
+			</border>
+		</border>
+		<borderSize parameter='normal.padding' left='5' top='5' right='5' bottom='5'/>
+	</designer>
+	
+	<designer name='Panel.MMPanelModInfo.DetailsDetailsForm' type='Widget'>
+		<borderSize parameter='normal.padding' left='5' top='10' right='5' bottom='5'/>
+	</designer>
+	
+	<designer name='Label.MMPanelModInfo.DetailsFormLabel' extendNamed='Label'>
+		<color parameter='normal.textColor' r='0.15' g='0.15' b='0.15'/>
+		<string parameter='normal.alignment'>left,middle</string>
+		<borderSize parameter='normal.padding' left='0' top='5' right='30' bottom='0'/>
+	</designer>
+	
+	<designer name='Label.MMPanelModInfo.DetailsFormValue' extendNamed='Label'>
+		<color parameter='normal.textColor' r='0' g='0' b='0'/>
+		<string parameter='normal.alignment'>right,middle</string>
+	</designer>
+	
+	<designer name='Label.MMPanelModInfo.DetailsFormValue.Link' extendNamed='Label.MMPanelModInfo.DetailsFormValue'>
+		<color parameter='normal.textColor' r='0' g='0' b='0.75'/>
+		<mousePointer parameter='normal.mousePointer' type='Image'>
+			<image parameter='image'>/shareddata/guithemes/modern/mousepointer/hover_link.webp</image>
+			<point parameter='offset' x='-8' y='0'/>
+		</mousePointer>
+	</designer>
+	
+	<designer name='Label.MMPanelModInfo.DetailsFormValue.Tag' extendNamed='Label'>
+		<canvasCreator parameter='normal.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='0.85' g='0.86' b='0.85'/>
+		</canvasCreator>
+		<border parameter='normal.border' type='Combined'>
+			<border parameter='outer' type='Empty'>
+				<borderSize parameter='size' left='2' top='1' right='2' bottom='1'/>
+			</border>
+			<border parameter='inner' type='Line'>
+				<color parameter='color' r='0.6' g='0.6' b='0.6'/>
+			</border>
+		</border>
+		<color parameter='normal.textColor' r='0' g='0.1' b='0'/>
+		<string parameter='normal.alignment'>center,middle</string>
+		<borderSize parameter='normal.padding' left='2' top='2' right='2' bottom='2'/>
+	</designer>
+	
+	
+	<designer name='StyledTextStyle.MMPanelModInfo.Description.Base' extendNamed='Label'>
+		<color parameter='normal.textColor' r='0' g='0' b='0'/>
+	</designer>
+	
+	<designer name='StyledTextStyle.MMPanelModInfo.Description.Paragraph'
+			extendNamed='StyledTextStyle.MMPanelModInfo.Description.Base'>
+		<borderSize parameter='normal.padding' left='0' top='15' right='0' bottom='0'/>
+	</designer>
+	
+	<designer name='StyledTextStyle.MMPanelModInfo.Description.Header1'
+			extendNamed='StyledTextStyle.MMPanelModInfo.Description.Base'>
+		<font parameter='normal.font' size='46'>/shareddata/guithemes/modern/fonts/sans46.defont</font>
+		<color parameter='normal.textColor' r='0' g='0' b='0'/>
+		<borderSize parameter='normal.padding' left='0' top='15' right='0' bottom='0'/>
+	</designer>
+	
+	<designer name='Image.Button.MMPanelModInfo.ReportMod' type='Image'>
+		<colorMatrix parameter='normal.imageColorTransform'>
+			<scale r='0.4' g='0.3' b='0.2'/>
+		</colorMatrix>
+		<!-- <borderSize parameter='normal.padding' left='0' top='0' right='5' bottom='0'/> -->
+		<image parameter='normal.image'>/shareddata/guithemes/modern/icons/16/report.webp</image>
+	</designer>
+	
+	
+	<!--
+	MMModificationListRenderer.
+	
+	Base designer selector: ListRenderer.MMModificationListRenderer
+	-->
+	
+	<designer name='Panel.ListRenderer.MMModificationListRenderer' type='Widget'>
+		<canvasCreator parameter='normal.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='0.9' g='0.9' b='0.9'/>
+		</canvasCreator>
+		<border parameter='normal.border' type='Combined'>
+			<border parameter='outer' type='Empty'>
+				<borderSize parameter='size' left='5' top='5' right='5' bottom='5'/>
+			</border>
+			<border parameter='inner' type='Line'>
+				<color parameter='color' r='0.6' g='0.6' b='0.6'/>
+			</border>
+		</border>
+	</designer>
+	
+	<designer name='Panel.ListRenderer.MMModificationListRenderer.Selected'
+			extendNamed='Panel.ListRenderer.MMModificationListRenderer'>
+		<canvasCreator parameter='normal.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='0.9' g='0.9' b='1'/>
+		</canvasCreator>
+		<border parameter='normal.border' type='Combined'>
+			<border parameter='outer' type='Empty'>
+				<borderSize parameter='size' left='5' top='5' right='5' bottom='5'/>
+			</border>
+			<border parameter='inner' type='Line'>
+				<color parameter='color' r='0.8' g='0.8' b='1'/>
+			</border>
+		</border>
+	</designer>
+	
+	<designer name='Image.ListRenderer.MMModificationListRenderer' type='Image'>
+		<point parameter='normal.minimumSize' x='260' y='140'/>
+	</designer>
+	
+	<designer name='Panel.ListRenderer.MMModificationListRenderer.Info' type='Widget'>
+		<borderSize parameter='normal.padding' left='10' top='10' right='10' bottom='10'/>
+	</designer>
+	
+	<designer name='Label.ListRenderer.MMModificationListRenderer' extendNamed='Label'>
+		<color parameter='normal.textColor' r='0' g='0' b='0'/>
+		<string parameter='normal.alignment'>left,middle</string>
+	</designer>
+	
+	<designer name='Label.ListRenderer.MMModificationListRenderer.Name'
+			extendNamed='Label.ListRenderer.MMModificationListRenderer'>
+		<font parameter='normal.font' size='22'>/shareddata/guithemes/modern/fonts/sans22.defont</font>
+		<color parameter='normal.textColor' r='0.2' g='0.1' b='1'/>
+	</designer>
+	
+	<designer name='Icon.ListRenderer.MMModificationListRenderer.Downloads' type='Image'>
+		<colorMatrix parameter='normal.imageColorTransform'>
+			<!-- <scale r='0.1' g='0.1' b='0.15'/> -->
+			<scale r='0.1' g='0.3' b='0.1'/>
+		</colorMatrix>
+		<image parameter='normal.image'>/shareddata/guithemes/modern/icons/16/download.webp</image>
+	</designer>
+	
+	<designer name='Label.ListRenderer.MMModificationListRenderer.Downloads'
+			extendNamed='Label.ListRenderer.MMModificationListRenderer'>
+		<borderSize parameter='normal.padding' left='5'/>
+	</designer>
+	
+	<designer name='Icon.ListRenderer.MMModificationListRenderer.Size' type='Image'>
+		<colorMatrix parameter='normal.imageColorTransform'>
+			<!-- <scale r='0.1' g='0.1' b='0.15'/> -->
+			<scale r='0.1' g='0.3' b='0.1'/>
+		</colorMatrix>
+		<image parameter='normal.image'>/shareddata/guithemes/modern/icons/16/filesize.webp</image>
+	</designer>
+	
+	<designer name='Label.ListRenderer.MMModificationListRenderer.Size'
+			extendNamed='Label.ListRenderer.MMModificationListRenderer'>
+		<borderSize parameter='normal.padding' left='2'/>
+	</designer>
+	
+	<designer name='Icon.ListRenderer.MMModificationListRenderer.Rating' type='Image'>
+		<colorMatrix parameter='normal.imageColorTransform'>
+			<!-- <scale r='0.1' g='0.1' b='0.15'/> -->
+			<scale r='0.1' g='0.3' b='0.1'/>
+		</colorMatrix>
+		<image parameter='normal.image'>/shareddata/guithemes/modern/icons/16/rating.webp</image>
+	</designer>
+	
+	<designer name='Label.ListRenderer.MMModificationListRenderer.Rating'
+			extendNamed='Label.ListRenderer.MMModificationListRenderer'>
+		<borderSize parameter='normal.padding' left='2'/>
+	</designer>
+	
+	<designer name='Label.ListRenderer.MMModificationListRenderer.Subscribed'
+			extendNamed='Label.ListRenderer.MMModificationListRenderer'>
+		<canvasCreator parameter='normal.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='0.8' g='1' b='0.8'/>
+		</canvasCreator>
+		<border parameter='normal.border' type='Line'>
+			<color parameter='color' r='0.4' g='0.5' b='0.4'/>
+		</border>
+		<borderSize parameter='normal.padding' left='2' top='2' right='2' bottom='2'/>
+		<string parameter='normal.alignment'>center,middle</string>
+	</designer>
+	
+	<designer name='Label.ListRenderer.MMModificationListRenderer.Unsubscribed'
+			extendNamed='Label.ListRenderer.MMModificationListRenderer'>
+		<canvasCreator parameter='normal.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='0.8' g='0.8' b='0.8'/>
+		</canvasCreator>
+		<border parameter='normal.border' type='Line'>
+			<color parameter='color' r='0.4' g='0.4' b='0.4'/>
+		</border>
+		<borderSize parameter='normal.padding' left='2' top='2' right='2' bottom='2'/>
+		<string parameter='normal.alignment'>center,middle</string>
+	</designer>
+	
+	<designer name='Label.ListRenderer.MMModificationListRenderer.Disabled'
+			extendNamed='Label.ListRenderer.MMModificationListRenderer'>
+		<canvasCreator parameter='normal.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='1' g='0.8' b='0.8'/>
+		</canvasCreator>
+		<border parameter='normal.border' type='Line'>
+			<color parameter='color' r='0.5' g='0.4' b='0.4'/>
+		</border>
+		<borderSize parameter='normal.padding' left='2' top='2' right='2' bottom='2'/>
+		<string parameter='normal.alignment'>center,middle</string>
+	</designer>
+	
+	
+	
+	<!--
+	MMTransferListRenderer.
+	
+	Base designer selector: ListRenderer.MMTransferListRenderer
+	-->
+	
+	<designer name='Panel.ListRenderer.MMTransferListRenderer.Main' type='Widget'>
+		<canvasCreator parameter='normal.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='0.9' g='0.9' b='0.9'/>
+		</canvasCreator>
+		<border parameter='normal.border' type='Combined'>
+			<border parameter='outer' type='Empty'>
+				<borderSize parameter='size' left='5' top='5' right='5' bottom='5'/>
+			</border>
+			<border parameter='inner' type='Line'>
+				<color parameter='color' r='0.6' g='0.6' b='0.6'/>
+			</border>
+		</border>
+		<borderSize parameter='normal.padding' left='5' top='5' right='5' bottom='5'/>
+	</designer>
+	
+	<designer name='Panel.ListRenderer.MMTransferListRenderer.Main.Selected'
+			extendNamed='Panel.ListRenderer.MMTransferListRenderer.Main'>
+		<canvasCreator parameter='normal.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='0.9' g='0.9' b='1'/>
+		</canvasCreator>
+		<border parameter='normal.border' type='Combined'>
+			<border parameter='outer' type='Empty'>
+				<borderSize parameter='size' left='5' top='5' right='5' bottom='5'/>
+			</border>
+			<border parameter='inner' type='Line'>
+				<color parameter='color' r='0.8' g='0.8' b='1'/>
+			</border>
+		</border>
+		<borderSize parameter='normal.padding' left='5' top='5' right='5' bottom='5'/>
+	</designer>
+	
+	<designer name='Panel.ListRenderer.MMTransferListRenderer.Info' type='Widget'>
+		<borderSize parameter='normal.padding' left='20'/>
+	</designer>
+	
+	<designer name='Image.ListRenderer.MMTransferListRenderer' type='Image'>
+		<point parameter='normal.minimumSize' x='160' y='90'/>
+	</designer>
+	
+	<designer name='Label.ListRenderer.MMTransferListRenderer' extendNamed='Label'>
+		<color parameter='normal.textColor' r='0' g='0' b='0'/>
+		<string parameter='normal.alignment'>left,middle</string>
+	</designer>
+	
+	<designer name='Label.ListRenderer.MMTransferListRenderer.Name'
+			extendNamed='Label.ListRenderer.MMTransferListRenderer'>
+		<font parameter='normal.font' size='46'>/shareddata/guithemes/modern/fonts/sans46.defont</font>
+		<color parameter='normal.textColor' r='0.2' g='0.1' b='1'/>
+		<borderSize parameter='normal.padding' bottom='5'/>
+	</designer>
+	
+	<designer name='Label.ListRenderer.MMTransferListRenderer.Status'
+			extendNamed='Label.ListRenderer.MMTransferListRenderer'>
+		<string parameter='normal.alignment'>left,middle</string>
+		<borderSize parameter='normal.padding' bottom='10'/>
+	</designer>
+	
+	<designer name='Label.ListRenderer.MMTransferListRenderer.StatusDetails'
+			extendNamed='Label.ListRenderer.MMTransferListRenderer'>
+		<string parameter='normal.alignment'>right,middle</string>
+		<borderSize parameter='normal.padding' bottom='10'/>
+	</designer>
+	
+	<designer name='ProgressBar.ListRenderer.MMTransferListRenderer' extendNamed='ProgressBar'>
+		<boolean parameter='normal.showPercentage'>false</boolean>
+		<point parameter='normal.minimumSize' x='20' y='6'/>
+	</designer>
+	
+	
+	
+	<!--
+	MMPanelModManagement.
+	
+	Designer selectors:
+	- Main panel: Panel.MMPanelModManagement.Main
+	
+	- Top panel:
+	  - Category buttons:
+	   - Button.MMPanelModManagement.ViewCategory.BrowseMods
+	   - Button.MMPanelModManagement.ViewCategory.SubscribedMods
+	   - Button.MMPanelModManagement.ViewCategory.ModsTransfer
+	     - Transfer count panel: Panel.MMPanelModManagement.TransferCount
+	     - Transfer count image: Image.MMPanelModManagement.TransferCount
+		 - Transfer count label: Label.MMPanelModManagement.TransferCount
+	   - Button.MMPanelModManagement.ViewCategory.UserAccount
+	  - ComboBox.MMPanelModManagement.ServiceMods
+	
+	- Mods list box: ListBox.MMPanelModManagement.Mods
+	
+	- Transfer list box: ListBox.MMPanelModManagement.Transfers
+	
+	- Side panel:
+	  - Search button: Button.MMPanelModManagement.Search
+	
+	  - Panel search name: Panel.MMPanelModManagement.Group.Search.Name
+	    - Name text field: TextField.MMPanelModManagement.Search.Name
+	
+	  - Panel sort by: Panel.MMPanelModManagement.Group.Search.SortBy
+	    - Name text field: TextField.MMPanelModManagement.Search.SortBy
+	
+	  - Tag category panels:
+	    - Single type: Panel.MMPanelModManagement.Group.Search.TagCategory.Single
+	      - Combo box: ComboBox.MMPanelModManagement.Tags
+	    - Multiple type: Panel.MMPanelModManagement.Group.Search.TagCategory.Multiple
+	       - Check box: CheckBox.MMPanelModManagement.Tags
+	
+	- Bottom panel:
+	  - Search more button: Button.MMPanelModManagement.MoreResults
+	-->
+	
+	<designer name='Panel.MMPanelModManagement.TransferCount' type='Widget'>
+		<borderSize parameter='normal.padding' left='5'/>
+	</designer>
+	
+	<designer name='Image.MMPanelModManagement.TransferCount' type='Image'>
+		<colorMatrix parameter='normal.imageColorTransform'>
+			<scale r='0' g='0' b='0.5'/>
+		</colorMatrix>
+		<point parameter='normal.minimumSize' x='1' y='1'/>
+	</designer>
+	
+	<designer name='Label.MMPanelModManagement.TransferCount' extendNamed='Label'>
+		<color parameter='normal.textColor' r='1' g='1' b='1'/>
+		<string parameter='normal.alignment'>center,middle</string>
+		<borderSize parameter='normal.padding' left='5' right='5'/>
+	</designer>
+	
+	<designer name='Panel.MMPanelModManagement.Group' extendNamed='Panel.Titled'>
+		<border parameter='normal.border' type='Combined'>
+			<border parameter='outer' type='Empty'>
+				<borderSize parameter='size' left='0' top='10' right='0' bottom='2'/>
+			</border>
+			<border parameter='inner' type='TitledEtched'>
+				<color parameter='colorHighlight' r='0.9' g='0.9' b='0.9'/>
+				<color parameter='colorShadow' r='0.7' g='0.7' b='0.7'/>
+				<color parameter='textColor' r='0.25' g='0.25' b='0.25'/>
+				<font parameter='font' size='15'>/shareddata/guithemes/modern/fonts/sans15.defont</font>
+			</border>
+		</border>
+		<borderSize parameter='normal.padding' left='5' top='5' right='5' bottom='5'/>
+	</designer>
+	
+	
+	
+	<!--
+	MMDialogReportMod.
+	-->
+	<designer name='Label.MMDialogReportMod' extendNamed='Label'>
+		<string parameter='normal.alignment'>left,top</string>
+	</designer>	
+	
+	
+	
+	<!--
+	MMPanelModUserAccount.
+	
+	- User info panel: Panel.MMPanelModUserAccount.UserInfo
+	- Avatar: Image.MMPanelModUserAccount.Avatar
+	- User name: Label.MMPanelModUserAccount.Name
+	- User profile url: Label.MMPanelModUserAccount.ProfileUrl
+	-->
+	<designer name='Panel.MMPanelModUserAccount.UserInfo' type='Widget'>
+		<borderSize parameter='normal.padding' left='20' top='20' right='20' bottom='20'/>
+	</designer>
+	
+	<designer name='Image.MMPanelModUserAccount.Avatar' type='Image'>
+		<point parameter='normal.minimumSize' x='100' y='100'/>
+	</designer>
+	
+	<designer name='Label.MMPanelModUserAccount.Name' extendNamed='Label'>
+		<font parameter='normal.font' size='46'>/shareddata/guithemes/modern/fonts/sans46.defont</font>
+		<color parameter='normal.textColor' r='0' g='0' b='0'/>
+		<string parameter='normal.alignment'>center,middle</string>
+		<borderSize parameter='normal.padding' top='10'/>
+	</designer>
+	
+	<designer name='Label.MMPanelModUserAccount.ProfileUrl' extendNamed='Label'>
+		<font parameter='normal.font' size='22'>/shareddata/guithemes/modern/fonts/sans22.defont</font>
+		<color parameter='normal.textColor' r='0' g='0' b='0.75'/>
+		<mousePointer parameter='normal.mousePointer' type='Image'>
+			<image parameter='image'>/shareddata/guithemes/modern/mousepointer/hover_link.webp</image>
+			<point parameter='offset' x='-8' y='0'/>
+		</mousePointer>
+		<borderSize parameter='normal.padding' top='10'/>
+	</designer>
+	
+	<designer name='Panel.MMPanelModUserAccount.WalletBalance' type='Widget'>
+		<borderSize parameter='normal.padding' top='10'/>
+	</designer>
+	
+	<designer name='Image.MMPanelModUserAccount.WalletBalanceCoin' type='Image'>
+		<image parameter='normal.image'>/shareddata/guithemes/modern/icons/16/coin.webp</image>
+		<colorMatrix parameter='normal.imageColorTransform'>
+			<scale r='1' g='0.9' b='0'/>
+		</colorMatrix>
+	</designer>
+	
+	<designer name='Label.MMPanelModUserAccount.WalletBalanceAmount' extendNamed='Label'>
+		<font parameter='normal.font' size='22'>/shareddata/guithemes/modern/fonts/sans22.defont</font>
+		<string parameter='normal.alignment'>center,middle</string>
+		<borderSize parameter='normal.padding' left='10'/>
+	</designer>
+	
+	<designer name='Panel.MMPanelModUserAccount.Buttons' type='Widget'>
+		<borderSize parameter='normal.padding' top='20'/>
+	</designer>
+	
+	<designer name='Label.ModManagementUserAccount.SelectAuthProvider' extendNamed='Label'>
+		<font parameter='normal.font' size='22'>/shareddata/guithemes/modern/fonts/sans22.defont</font>
+		<color parameter='normal.textColor' r='0' g='0' b='0'/>
+		<string parameter='normal.alignment'>center,top</string>
+		<borderSize parameter='normal.padding' bottom='10'/>
+	</designer>
+	
+	
+	
+	<!--
+	MMAuthProviderListRenderer.
+	
+	- Panel: Panel.ListRenderer.MMAuthProviderListRenderer
+	- Icon: Image.ListRenderer.MMAuthProviderListRenderer
+	- Name: Label.ListRenderer.MMAuthProviderListRenderer
+	-->
+	
+	<designer name='Panel.ListRenderer.MMAuthProviderListRenderer' type='Widget'>
+		<canvasCreator parameter='normal.canvas' type='Default'/>
+		<borderSize parameter='normal.padding' left='5' top='5' right='5' bottom='5'/>
+		
+		<canvasCreator parameter='hover.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='0.2' g='0.2' b='0.5' a='0.1'/>
+		</canvasCreator>
+	</designer>
+	
+	<designer name='Panel.ListRenderer.MMAuthProviderListRenderer.Selected'
+			extendNamed='Panel.ListRenderer.MMAuthProviderListRenderer'>
+		<canvasCreator parameter='normal.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='0.2' g='0.2' b='0.5'/>
+		</canvasCreator>
+		
+		<canvasCreator parameter='hover.canvas' type='Rectangle'>
+			<color parameter='colorFill' r='0.3' g='0.3' b='0.5'/>
+		</canvasCreator>
+	</designer>
+	
+	<designer name='Image.ListRenderer.MMAuthProviderListRenderer' type='Image'>
+		<point parameter='normal.minimumSize' x='64' y='64'/>
+	</designer>
+	
+	<designer name='Label.ListRenderer.MMAuthProviderListRenderer' extendNamed='Label'>
+		<font parameter='normal.font' size='46'>/shareddata/guithemes/modern/fonts/sans46.defont</font>
+		<color parameter='normal.textColor' r='0' g='0' b='0'/>
+		<borderSize parameter='normal.padding' left='20'/>
+		<string parameter='normal.alignment'>left,middle</string>
+	</designer>
+	
+	<designer name='Label.ListRenderer.MMAuthProviderListRenderer.Selected'
+			extendNamed='Label.ListRenderer.MMAuthProviderListRenderer'>
+		<color parameter='normal.textColor' r='1' g='1' b='1'/>
+	</designer>
+	
+	
+	
+	<!--
+	DialogServiceUserAcceptTos
+	- Dialog: Window.Dialog.UserAcceptTos
+	- Terms TextArea: TextArea.WindowDialog.UserAcceptTos
+	- Link panel: Panel.WindowDialog.UserAcceptTos.Link
+	- Link label: Label.WindowDialog.UserAcceptTos.Link
+	- Panel with buttons: Panel.WindowDialogButtons.UserAcceptTos
+	- Button accept: Button.WindowDialog.UserAcceptTos.Accept
+	- Button decline: Button.WindowDialog.UserAcceptTos.Decline
+	-->
+	
+	<designer name='Label.WindowDialog.UserAcceptTos.Link' extendNamed='Label'>
+		<font parameter='normal.font' size='22'>/shareddata/guithemes/modern/fonts/sans22.defont</font>
+		<color parameter='normal.textColor' r='0' g='0' b='0.75'/>
+		<mousePointer parameter='normal.mousePointer' type='Image'>
+			<image parameter='image'>/shareddata/guithemes/modern/mousepointer/hover_link.webp</image>
+			<point parameter='offset' x='-8' y='0'/>
+		</mousePointer>
+	</designer>
+</guiTheme>

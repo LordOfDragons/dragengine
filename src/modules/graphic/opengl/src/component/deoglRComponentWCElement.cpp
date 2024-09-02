@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2023, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include "deoglRComponent.h"
@@ -28,6 +31,8 @@
 #include "../model/texture/deoglModelTexture.h"
 #include "../occlusiontest/mesh/deoglDynamicOcclusionMesh.h"
 #include "../occlusiontest/mesh/deoglROcclusionMesh.h"
+#include "../renderthread/deoglRenderThread.h"
+#include "../renderthread/deoglRTLogger.h"
 #include "../shaders/paramblock/shared/deoglSharedSPBElement.h"
 #include "../vao/deoglVAO.h"
 #include "../vbo/deoglSharedVBO.h"
@@ -35,6 +40,9 @@
 #include "../world/deoglWorldCompute.h"
 
 #include <dragengine/common/exceptions.h>
+
+
+// #define SPECIAL_DEBUG
 
 
 // Class deoglRComponentWCElement
@@ -68,7 +76,7 @@ void deoglRComponentWCElement::UpdateData( sDataElement &data ) const{
 		data.highestLod = lodCount - 1;
 		
 		const int textureCount = pComponent.GetTextureCount();
-		const deoglRModel &model = *pComponent.GetModel();
+		const deoglRModel &model = pComponent.GetModel();
 		int i, j;
 		
 		const int modelLodCount = decMath::min( model.GetLODCount(), 5 );
@@ -95,23 +103,39 @@ void deoglRComponentWCElement::UpdateData( sDataElement &data ) const{
 			
 			for( j=0; j<textureCount; j++ ){
 				if( modelLod.GetTextureAt( j ).GetFaceCount() == 0 ){
+#ifdef SPECIAL_DEBUG
+					pComponent.GetRenderThread().GetLogger().LogInfoFormat(
+						"U1-A %p: i=%d j=%d scc=%d d=%d",
+						this, i, j, shadowCombineCount, data.geometryCount );
+#endif
 					continue;
 				}
 				
-				const deoglSkinTexture * const texture = pComponent.GetTextureAt( j ).GetUseSkinTexture();
-				if( ! texture ){
+				const deoglRComponentTexture &texture = pComponent.GetTextureAt( j );
+				deoglSkinTexture * const skinTexture = texture.GetUseSkinTexture();
+				if( ! skinTexture ){
 					if( shadowCombineCount > 1 ){
 						data.geometryCount++;
 					}
+#ifdef SPECIAL_DEBUG
+					pComponent.GetRenderThread().GetLogger().LogInfoFormat(
+						"U1-B %p: i=%d j=%d scc=%d d=%d",
+						this, i, j, shadowCombineCount, data.geometryCount );
+#endif
 					shadowCombineCount = 0;
 					continue;
 				}
 				
 				data.geometryCount++;
 				
-				if( texture->GetHasOutline() ){
+				if( skinTexture->GetHasOutline() ){
 					data.geometryCount++;
 				}
+#ifdef SPECIAL_DEBUG
+				pComponent.GetRenderThread().GetLogger().LogInfoFormat(
+					"U1-C %p: i=%d j=%d scc=%d d=%d",
+					this, i, j, shadowCombineCount, data.geometryCount );
+#endif
 				
 				// this one is a bit annoying. at the time of updating element data the RenderTaskConfig
 				// of component lods have not been updated yet. we can use it only during update of element
@@ -129,13 +153,12 @@ void deoglRComponentWCElement::UpdateData( sDataElement &data ) const{
 				//   - not part of a previous combine group
 				//   with mask = ertfRender|ertfSolid|ertfShadowNone|ertfHoles|ertfDecal|ertfDoubleSided
 				//   - (texture.renderTaskFilters & mask) == (renderTaskFilters & mask)
+				bool init = false;
+				
 				if( shadowCombineCount == 0 ){
-					shadowCombineFilter = texture->GetRenderTaskFilters() & shadowCombineMask;
-					if( ( shadowCombineFilter & ( ertfRender | ertfShadowNone | ertfDecal | ertfSolid | ertfHoles ) ) == ( ertfRender | ertfSolid ) ){
-						shadowCombineCount = 1;
-					}
+					init = true;
 					
-				}else if( ( texture->GetRenderTaskFilters() & shadowCombineMask ) == shadowCombineFilter ){
+				}else if( ( texture.GetRenderTaskFilters() & shadowCombineMask ) == shadowCombineFilter ){
 					shadowCombineCount++;
 					
 				}else{
@@ -143,14 +166,34 @@ void deoglRComponentWCElement::UpdateData( sDataElement &data ) const{
 						data.geometryCount++;
 					}
 					shadowCombineCount = 0;
+					init = true;
 				}
+				
+				if( init ){
+					shadowCombineFilter = texture.GetRenderTaskFilters() & shadowCombineMask;
+					if( ( shadowCombineFilter & ( ertfRender | ertfShadowNone | ertfDecal | ertfSolid | ertfHoles ) ) == ( ertfRender | ertfSolid ) ){
+						shadowCombineCount = 1;
+					}
+				}
+#ifdef SPECIAL_DEBUG
+				pComponent.GetRenderThread().GetLogger().LogInfoFormat(
+					"U1-D %p: i=%d j=%d scc=%d d=%d trf=%x scf=%x", this, i, j, shadowCombineCount,
+					data.geometryCount, texture.GetRenderTaskFilters(), shadowCombineFilter );
+#endif
 			}
 			
 			if( shadowCombineCount > 1 ){
 				data.geometryCount++;
 			}
+#ifdef SPECIAL_DEBUG
+			pComponent.GetRenderThread().GetLogger().LogInfoFormat(
+				"U1-E %p: i=%d scc=%d d=%d", this, i, shadowCombineCount, data.geometryCount );
+#endif
 		}
 	}
+#ifdef SPECIAL_DEBUG
+	pComponent.GetRenderThread().GetLogger().LogInfoFormat( "U1-F %p: d=%d", this, data.geometryCount );
+#endif
 	
 	const deoglROcclusionMesh * const occmesh = pComponent.GetOcclusionMesh();
 	if( occmesh ){
@@ -174,6 +217,9 @@ void deoglRComponentWCElement::UpdateDataGeometries( sDataElementGeometry *data 
 	const int textureCount = pComponent.GetTextureCount();
 	int i, j;
 	
+#ifdef SPECIAL_DEBUG
+	sDataElementGeometry * const debug = data;
+#endif
 	sDataElementGeometry *lastData = data;
 	if( GetSPBGeometries() ){
 		lastData += GetSPBGeometries()->GetCount();
@@ -199,12 +245,22 @@ void deoglRComponentWCElement::UpdateDataGeometries( sDataElementGeometry *data 
 			}
 			
 			if( modelLod.GetTextureAt( j ).GetFaceCount() == 0 ){
+#ifdef SPECIAL_DEBUG
+				pComponent.GetRenderThread().GetLogger().LogInfoFormat(
+					"U2-A %p: i=%d j=%d scc=%d d=%d",
+					this, i, j, shadowCombineCount, ( int )( data - debug ) );
+#endif
 				continue;
 			}
 			
 			const deoglRComponentTexture &texture = pComponent.GetTextureAt( j );
 			deoglSkinTexture * const skinTexture = texture.GetUseSkinTexture();
 			if( ! skinTexture ){
+#ifdef SPECIAL_DEBUG
+				pComponent.GetRenderThread().GetLogger().LogInfoFormat(
+					"U2-B %p: i=%d j=%d scc=%d d=%d",
+					this, i, j, shadowCombineCount, ( int )( data - debug ) );
+#endif
 				continue;
 			}
 			
@@ -221,6 +277,11 @@ void deoglRComponentWCElement::UpdateDataGeometries( sDataElementGeometry *data 
 					
 					data++;
 					shadowCombineCount = shadowCombineGroup->GetTextureCount();
+#ifdef SPECIAL_DEBUG
+					pComponent.GetRenderThread().GetLogger().LogInfoFormat(
+						"U2-C %p: i=%d j=%d scc=%d d=%d",
+						this, i, j, shadowCombineCount, ( int )( data - debug ) );
+#endif
 				}
 			}
 			
@@ -256,8 +317,16 @@ void deoglRComponentWCElement::UpdateDataGeometries( sDataElementGeometry *data 
 				SetDataGeometryTUCs( *data, info2 );
 				data++;
 			}
+#ifdef SPECIAL_DEBUG
+			pComponent.GetRenderThread().GetLogger().LogInfoFormat(
+				"U2-D %p: i=%d j=%d scc=%d d=%d",
+				this, i, j, shadowCombineCount, ( int )( data - debug ) );
+#endif
 		}
 	}
+#ifdef SPECIAL_DEBUG
+	pComponent.GetRenderThread().GetLogger().LogInfoFormat( "U2-E %p: d=%d", this, ( int )( data - debug ) );
+#endif
 	
 	if( pComponent.GetOcclusionMesh() ){
 		const deoglROcclusionMesh &occmesh = *pComponent.GetOcclusionMesh();
@@ -279,5 +348,11 @@ void deoglRComponentWCElement::UpdateDataGeometries( sDataElementGeometry *data 
 		}
 	}
 	
+#ifdef SPECIAL_DEBUG
+	if( data > lastData ){
+		pComponent.GetRenderThread().GetLogger().LogErrorFormat(
+			"PROBLEM: %d %d\n", (int)(data-lastData), GetSPBGeometries()->GetCount() );
+	}
+#endif
 	DEASSERT_TRUE( data <= lastData )
 }

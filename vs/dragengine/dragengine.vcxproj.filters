@@ -300,6 +300,9 @@
     <ClCompile Include="..\..\src\dragengine\src\common\utils\decCollisionFilter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\dragengine\src\common\utils\decBase64.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\common\utils\decDateTime.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -2019,6 +2022,27 @@
     <ClCompile Include="..\..\src\dragengine\src\resources\animator\rule\deAnimatorRuleMirror.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\dragengine\src\resources\service\deService.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\dragengine\src\resources\service\deServiceObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\dragengine\src\resources\service\deServiceManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\scripting\deBaseScriptingService.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\service\deBaseServiceModule.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\dragengine\src\systems\modules\service\deBaseServiceService.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\dragengine\base64\base64.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\dragengine\src\app\deCmdLineArgs.h">
@@ -2301,6 +2325,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\common\utils\decCollisionFilter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\dragengine\src\common\utils\decBase64.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\common\utils\decDateTime.h">
@@ -4033,6 +4060,27 @@
     </ClInclude>
     <ClInclude Include="dragengine_configuration.h" />
     <ClInclude Include="..\..\src\dragengine\src\dragengine_configuration.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\dragengine\src\resources\service\deService.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\dragengine\src\resources\service\deServiceObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\dragengine\src\resources\service\deServiceManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\scripting\deBaseScriptingService.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\service\deBaseServiceModule.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\dragengine\src\systems\modules\service\deBaseServiceService.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\dragengine\base64\base64.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

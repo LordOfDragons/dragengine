@@ -26,7 +26,7 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           lfs: ${{ !inputs.lfscache }}
           submodules: 'recursive'
@@ -37,7 +37,7 @@ jobs:
         run: git lfs ls-files -l | cut -d' ' -f1 | sort > .lfs-objects-id
 
       - name: Restore LFS Cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         id: lfs-cache
         if: ${{ inputs.lfscache }}
         with:
@@ -55,7 +55,7 @@ jobs:
           fi
       
       - name: Get Windows Archives
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: ${{ inputs.artifactArchive }}
       
@@ -99,7 +99,7 @@ jobs:
           mv install-deigde-sdk-windows64.exe install-deigde-sdk-${{ inputs.releaseVersion }}-windows64.exe
         
       - name: Store Installers
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ inputs.artifactInstaller }}
           path: |

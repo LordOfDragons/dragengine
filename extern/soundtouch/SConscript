@@ -7,8 +7,8 @@ from SConsExternCommon import *
 
 Import('parent_env parent_targets parent_report')
 
-if parent_env['platform_android'] != 'no':
-	Return()
+#if parent_env['platform_android'] != 'no':
+#	Return()
 
 envLibrary = parent_env.Clone()
 
@@ -26,6 +26,10 @@ if envLibrary['OSWindows']:
 else:
 	libFileName = envLibrary.subst('lib/${{SHLIBPREFIX}}{}${{SHLIBSUFFIX}}'.format(libLinkName))
 	staticFileName = envLibrary.subst('lib/${{LIBPREFIX}}{}${{LIBSUFFIX}}'.format(libLinkName))
+
+# fetching is always allowed
+nodeArtifacts = envLibrary.DownloadArtifactHelper(
+	'{}.tar.bz2'.format(srcdir), 'soundtouch', 'lib_soundtouch_fetch')
 
 # check if system soundtouch is present
 hasSystemSoundTouch = False
@@ -106,7 +110,7 @@ targets.extend(['include/soundtouch/{}'.format(x) for x in [
 	'SoundTouch.h',
 	'soundtouch_config.h']])
 
-library = envLibrary.Command(targets, '{}.tar.bz2'.format(srcdir),
+library = envLibrary.Command(targets, nodeArtifacts,
 	envLibrary.Action(soundtouchBuild, 'Build SoundTouch'))
 
 if not buildStaticLinking:

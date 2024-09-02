@@ -1,0 +1,71 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Services.Stats
+
+
+/**
+ * \brief Listener for service response and events related to stats and achievements.
+ * \version 1.23
+ */
+interface ServiceStatsListener
+	/**
+	 * \brief Receiving stats and achievements finished.
+	 * \param service Service sending the event.
+	 * \param stats Dictionary containing stats. Key is stat id as String.
+	 *        Value is stat value as int, float, string or null if not set yet.
+	 *        On failure stats is null.
+	 * \param achievements Dictionary containing achievements. Key is achievement id
+	 *        as String. Value is true or false depending if the achievement is set or not.
+	 *        On failure achievements is null.
+	 * \param exception On success null. On failure contains error information.
+	 */
+	func void onGetStats(ServiceStats service, Dictionary stats,\
+		Dictionary achievements, Exception exception)
+	
+	/**
+	 * \brief Store Stats and achievements finished.
+	 * \param service Service sending the event.
+	 * \param stats Dictionary containing stored stats. Key is stat id as String.
+	 *        Value is stat value as int, float or string. On failure stats is null.
+	 * \param achievements Dictionary containing stored achievements. Key is achievement id
+	 *        as String. Value is true or false depending if the achievement is set or not.
+	 *        On failure achievements is null.
+	 * \param exception On success null. On failure contains error information.
+	 */
+	func void onSetStats(ServiceStats service, Dictionary stats,\
+		Dictionary achievements, Exception exception)
+	
+	/**
+	 * \brief Stats or achievements changed notification.
+	 * 
+	 * Typically this requires sending a service request to fetch the changes.
+	 * 
+	 * \param service Service sending the event.
+	 * \param stats Set of stat id as String that have changed. Can be empty for all stats.
+	 * \param achievements Set of achievement id as String that have changed.
+	 *        Can be empty for all achievements.
+	 */
+	func void onStatsChanged(ServiceStats service, Set stats, Set achievements)
+end

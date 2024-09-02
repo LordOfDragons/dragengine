@@ -1,0 +1,548 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Gui.ModManagement
+pin Dragengine.Services.User
+pin Dragengine.Gui.Layouts
+pin Introspection
+pin Dragengine.Gui.Events
+
+
+/**
+ * \brief User account management panel for use in MMPanelModManagement.
+ * \version 1.23
+ */
+class MMPanelModUserAccount extends Panel
+	/** \brief User event listener. */
+	class UserEventListener extends DefaultServiceUserListener
+		var MMPanelModUserAccount pPanel
+		
+		func new(MMPanelModUserAccount panel)
+			pPanel = panel
+		end
+		
+		func void onGetUserInfo(ServiceUser service, ServiceUserInfo info, Exception exception)
+			if info != null
+				pPanel.updateUserInfo(info)
+			end
+		end
+		
+		func void onLoginUser(ServiceUser service, Exception exception)
+			pPanel.onUserLoggedIn(exception)
+		end
+		
+		func void onLogoutUser(ServiceUser service, Exception exception)
+			pPanel.onUserLoggedOut(exception)
+		end
+		
+		func void onUserWalletBalance(ServiceUser service, String amount, Exception exception)
+			pPanel.onUserWalletBalance(amount, exception)
+		end
+	end
+	
+	/** \brief Open profile URL if clicked. */
+	class ClickedOpenProfileUrl extends ClickedActionListener
+		var MMPanelModUserAccount pPanel
+		
+		func new(MMPanelModUserAccount panel)
+			pPanel = panel
+		end
+		
+		func void onAction()
+			var ServiceUserInfo info = pPanel.getUserInfo()
+			if info != null and info.profileUrl != null
+				FileSystem.openUrl(info.profileUrl)
+			end
+		end
+	end
+	
+	/** \brief Listener updating avatar image once loaded. */
+	class LoadAvatarListener extends DefaultServiceUserListener
+		var MMPanelModUserAccount pPanel
+		
+		func new(MMPanelModUserAccount panel)
+			pPanel = panel
+		end
+		
+		func void onLoadUserResource(ServiceUser service, String url, Object resource, Exception exception)
+			if exception == null
+				pPanel.setCachedAvatarImage(resource cast Image)
+				pPanel.updateUserInfo(null)
+				
+			else
+				var BaseGameApp app = BaseGameApp.getApp()
+				if app != null
+					app.getConsole().addError("Load avatar failed: " + url, exception)
+				end
+			end
+		end
+	end
+	
+	/** \brief Login upon receiving authentication token. */
+	class GetAuthTokenLogin extends DefaultServiceUserListener
+		var MMPanelModUserAccount pPanel
+		var MMAuthProviderListRenderer.ListEntry pProvider
+		
+		func new(MMPanelModUserAccount panel, MMAuthProviderListRenderer.ListEntry provider)
+			pPanel = panel
+			pProvider = provider
+		end
+		
+		func void onGetAuthToken(ServiceUser service, ServiceUserAuthToken token, Exception exception)
+			pPanel.loginUser(this, pProvider, token, exception)
+		end
+	end
+	
+	
+	
+	var Array pUserServices
+	var ServiceUser pServiceUser
+	var ServiceUserFeatures pServiceUserFeatures
+	var UserEventListener pUserEventListener
+	var SwitchPanel pSwitchContent
+	var Panel pPanelUserInfo
+	var DisplayImage pImageAvatar
+	var ListBox pListAuthTokenProviders
+	var ServiceUserInfo pUserInfo
+	var DefaultTextModel pModelName, pModelProfileUrl, pModelWalletBalance
+	var DefaultListModel pModelAuthTokenProviders
+	var Panel pPanelWalletBalance
+	var Image pCachedAvatarImage
+	var Button pButtonLogin
+	var GetAuthTokenLogin pGetAuthTokenLogin
+	var Dictionary pCredentialParameters
+	
+	
+	
+	/**
+	 * \brief Create user account management panel.
+	 */
+	func new(Array userServices) super(BorderLayout.new())
+		pUserServices = Array.new(userServices)
+		
+		pModelName = DefaultTextModel.new()
+		pModelProfileUrl = DefaultTextModel.new()
+		pModelAuthTokenProviders = DefaultListModel.new()
+		pModelWalletBalance = DefaultTextModel.new()
+		
+		runWhileBlockingLayout(block
+			createContent()
+		end)
+		
+		pUserEventListener = UserEventListener.new(this)
+	end
+	
+	/** \brief Dispose of widget. */
+	func void dispose()
+		pUserEventListener = null
+		pModelAuthTokenProviders = null
+		pModelName = pModelProfileUrl = pModelWalletBalance = null
+		pImageAvatar = null
+		pSwitchContent = null
+		pPanelWalletBalance = pPanelUserInfo = null
+		pListAuthTokenProviders = null
+		pButtonLogin = null
+		pGetAuthTokenLogin = null
+		
+		super.dispose()
+	end
+	
+	
+	
+	/** \brief Service user or null. */
+	func ServiceUser getServiceUser()
+		return pServiceUser
+	end
+	
+	/** \brief Service user features or null. */
+	func ServiceUserFeatures getServiceUserFeatures()
+		return pServiceUserFeatures
+	end
+	
+	/** \brief Set service user or null. */
+	func void setServiceUser(ServiceUser serviceUser)
+		if serviceUser == pServiceUser
+			return
+		end
+		
+		if pServiceUser != null
+			pServiceUser.removeUserListener(pUserEventListener)
+		end
+		pPanelWalletBalance.setVisible(false)
+		
+		pServiceUser = serviceUser
+		pServiceUserFeatures = null
+		
+		if serviceUser != null
+			pServiceUserFeatures = serviceUser.getUserFeatures()
+			
+			var Array providers = Array.new()
+			
+			if pServiceUserFeatures.canAuthProviderLogin != null
+				pUserServices.forEach(block ServiceUser each
+					var ServiceUserFeatures features = each.getUserFeatures()
+					if features.authTokenProvider != null\
+					and pServiceUserFeatures.canAuthProviderLogin.has(features.authTokenProvider.id)\
+					and each.isUserLoggedIn()
+						providers.add(MMAuthProviderListRenderer.ListEntry.new(each, features))
+					end
+				end)
+			end
+			
+			providers.sort(block MMAuthProviderListRenderer.ListEntry a, MMAuthProviderListRenderer.ListEntry b
+				return a.features.authTokenProvider.id.compare(b.features.authTokenProvider.id)
+			end)
+			
+			pModelAuthTokenProviders.setContent(providers)
+			
+			serviceUser.addUserListener(pUserEventListener)
+			serviceUser.getUserInfo(null)
+			if pServiceUserFeatures.hasMarketplace
+				serviceUser.getUserWalletBalance(null)
+			end
+			
+		else
+			pModelAuthTokenProviders.setContent(Array.new())
+			updateUserInfo(null)
+		end
+		
+		switchContentPanel()
+	end
+	
+	/** \brief Update user information. */
+	func void updateUserInfo(ServiceUserInfo info)
+		if pImageAvatar == null
+			return // dispose protection
+		end
+		
+		if info != null
+			pUserInfo = info
+		end
+		
+		if pCachedAvatarImage == null and pUserInfo != null and pUserInfo.avatar != null
+			pCachedAvatarImage = pUserInfo.avatar.image
+			if pCachedAvatarImage == null
+				var String url = findLoadAvatarImage(pUserInfo.avatar)
+				if url != null
+					pServiceUser.loadUserResource(url, LoadAvatarListener.new(this))
+				end
+			end
+		end
+		
+		runWhileBlockingLayout(block
+			if pCachedAvatarImage != null
+				pImageAvatar.setImage(pCachedAvatarImage)
+				
+			else
+				// set placeholder image
+			end
+			
+			if pUserInfo != null
+				if pUserInfo.displayName != null
+					pModelName.setText(pUserInfo.displayName)
+					
+				elif pUserInfo.name != null
+					pModelName.setText(pUserInfo.name)
+					
+				else
+					pModelName.setText("??")
+				end
+				
+			else
+				pModelName.setText("??")
+			end
+		end)
+		doLayoutIfBlocked()
+	end
+	
+	/** \brief Clear user info. */
+	func void clearUserInfo()
+		if pUserInfo == null
+			return
+		end
+		
+		pUserInfo = null
+		pCachedAvatarImage = null
+		updateUserInfo(null)
+	end
+	
+	/** \brief User information or null. */
+	func ServiceUserInfo getUserInfo()
+		return pUserInfo
+	end
+	
+	/** \brief Set cached avatar image or null. */
+	func void setCachedAvatarImage(Image image)
+		pCachedAvatarImage = image
+	end
+	
+	/** \brief Switch content panel to match logged in state. */
+	func void switchContentPanel()
+		if pServiceUser != null and pServiceUser.isUserLoggedIn()
+			pSwitchContent.getModel().setValue(0)
+			
+		else
+			pSwitchContent.getModel().setValue(1)
+		end
+	end
+	
+	/** \brief Log out user. */
+	func void logoutUser()
+		if pServiceUser != null
+			pServiceUser.logoutUser(null)
+		end
+	end
+	
+	/** \brief Log in user. */
+	func void loginUser(Dictionary credentialParameters)
+		if not pButtonLogin.getEnabled()
+			return
+		end
+		
+		var MMAuthProviderListRenderer.ListEntry provider =\
+			pModelAuthTokenProviders.getSelectedElement() cast MMAuthProviderListRenderer.ListEntry
+		if provider == null
+			return
+		end
+		
+		pGetAuthTokenLogin = GetAuthTokenLogin.new(this, provider)
+		pButtonLogin.setEnabled(false)
+		pCredentialParameters = credentialParameters
+		
+		try
+			provider.service.getAuthToken(pGetAuthTokenLogin)
+			
+		catch Exception e
+			pGetAuthTokenLogin = null
+			pButtonLogin.setEnabled(true)
+			WindowDialog.message(getWindow(), "@UI.Authenticate", e.getReason(), null, null, null)
+			return
+		end
+	end
+	
+	/** \brief Login user with authentication token. */
+	func void loginUser(GetAuthTokenLogin listener, MMAuthProviderListRenderer.ListEntry provider,\
+	ServiceUserAuthToken token, Exception exception)
+		if listener != pGetAuthTokenLogin or pServiceUser == null
+			return
+		end
+		
+		pGetAuthTokenLogin = null
+		
+		if exception != null
+			pButtonLogin.setEnabled(true)
+			WindowDialog.message(getWindow(), "@UI.Authenticate", exception.getReason(), null, null, null)
+			return
+		end
+		
+		var ServiceUserCredentials credentials = ServiceUserCredentials.new()
+		credentials.authToken = token
+		credentials.parameters = pCredentialParameters
+		pServiceUser.loginUser(credentials, null)
+	end
+	
+	/** \brief User logged in. */
+	func void onUserLoggedIn(Exception exception)
+		pButtonLogin.setEnabled(true)
+		updateUserInfo(null)
+		switchContentPanel()
+		
+		if exception == null
+			pServiceUser.getUserInfo(null)
+			
+		elif exception castable ServiceException
+			var ServiceException sexcep = exception cast ServiceException
+			select sexcep.getErrorCode()
+			case ServiceUser.Errors.needAcceptTos
+				var ServiceUserErrorNeedAcceptTos tos =\
+					sexcep.getAdditionalData() cast ServiceUserErrorNeedAcceptTos
+				DialogServiceUserAcceptTos.showTermsOfService(getWindow(), tos,\
+					WindowDialog.BlockResultListener.new(block bool result
+						if result
+							loginUser(pCredentialParameters + tos.credentialParameters)
+						end
+					end))
+				
+			else
+				WindowDialog.message(getWindow(), "@UI.Login", sexcep.getReason(), null, null, null)
+			end
+			
+		else
+			WindowDialog.message(getWindow(), "@UI.Login", exception.getReason(), null, null, null)
+		end
+	end
+	
+	/** \brief User logged out. */
+	func void onUserLoggedOut(Exception exception)
+		if exception == null
+			clearUserInfo()
+		end
+		
+		pButtonLogin.setEnabled(true)
+		switchContentPanel()
+		
+		if exception != null
+			WindowDialog.message(getWindow(), "@UI.Logout", exception.getReason(), null, null, null)
+		end
+	end
+	
+	/** \brief User wallet balance. */
+	func void onUserWalletBalance(String amount, Exception exception)
+		var String text
+		
+		if exception == null
+			if pServiceUserFeatures.currency != null
+				text = pServiceUserFeatures.currency + " " + amount
+				
+			else
+				text = amount
+			end
+			pPanelWalletBalance.setVisible(true)
+			
+		else
+			text = ""
+		end
+		
+		pModelWalletBalance.setText(text)
+	end
+	
+	
+	
+	/** \brief Find URL of best matching avatar image to load. */
+	protected func String findLoadAvatarImage(ServiceImage image)
+		var Point reqSize = pImageAvatar.getMinimumSize()
+		
+		if image.thumbnails != null
+			var Array found = image.thumbnails.collect(block ServiceImage.Thumbnail each
+				return each.size >= reqSize
+			end).sorted(block ServiceImage.Thumbnail a, ServiceImage.Thumbnail b
+				return a.size.compare(b)
+			end)
+			if found.getCount() > 0
+				return (found.getAt(0) cast ServiceImage.Thumbnail).url
+			end
+		end
+		
+		return image.url
+	end
+	
+	/** \brief User information panel. */
+	protected func Panel getPanelUserInfo()
+		return pPanelUserInfo
+	end
+	
+	/** \brief Create content. */
+	protected func void createContent()
+		var Viewport viewport
+		var Label label
+		
+		pSwitchContent = SwitchPanel.new(block Panel p
+			// content: user account
+			pPanelUserInfo = Panel.new(FlowLayout.new(LayoutAxis.y), block Panel p2
+				p2.setDesignerSelector("Panel.MMPanelModUserAccount.UserInfo")
+				
+				p2.addWidget(Panel.new(CentrizedBoxLayout.new(LayoutAxis.x), block Panel p3
+					p3.setDesignerSelector("Panel.MMPanelModUserAccount.Avatar")
+					
+					pImageAvatar = DisplayImage.new(null, RepeatMode.stretchRatio, "Image.MMPanelModUserAccount.Avatar")
+					p3.addWidget(pImageAvatar)
+				end))
+				
+				p2.addWidget(Panel.new(CentrizedBoxLayout.new(LayoutAxis.x), block Panel p3
+					p3.setDesignerSelector("Panel.MMPanelModUserAccount.Name")
+					
+					p3.addWidget(Label.new(pModelName, "Label.MMPanelModUserAccount.Name"))
+				end))
+				
+				label = Label.new("@UI.ModManagementUserAccount.UserProfile", "Label.MMPanelModUserAccount.ProfileUrl")
+				label.setToolTip("@UI.ModManagementMod.Link.ToolTip")
+				label.addMouseListener(ClickedOpenProfileUrl.new(this))
+				p2.addWidget(label)
+				
+				pPanelWalletBalance = Panel.new(CentrizedBoxLayout.new(LayoutAxis.x), block Panel p3
+					p3.setDesignerSelector("Panel.MMPanelModUserAccount.WalletBalance")
+					p3.addWidget(DisplayIcon.new(null, "Image.MMPanelModUserAccount.WalletBalanceCoin"))
+					p3.addWidget(Label.new(pModelWalletBalance, "Label.MMPanelModUserAccount.WalletBalanceAmount"))
+				end)
+				pPanelWalletBalance.setVisible(false)
+				p2.addWidget(pPanelWalletBalance)
+				
+				p2.addWidget(Panel.new(CentrizedBoxLayout.new(LayoutAxis.x, 20), block Panel p3
+					p3.setDesignerSelector("Panel.MMPanelModUserAccount.Buttons")
+					
+					p3.addWidget(createButton("@UI.Logout",\
+						"@UI.ModManagementUserAccount.Logout.ToolTip", ".Logout",\
+						BlockActionListener.new(block ActionEvent e
+							logoutUser()
+						end)))
+				end))
+			end)
+			viewport = Viewport.new(pPanelUserInfo)
+			viewport.setLayout(FlowLayout.new(LayoutAxis.y))
+			p.addWidget(ScrollPanel.new(viewport, ScrollPanel.Policy.hidden, ScrollPanel.Policy.needed))
+			
+			// content: login
+			p.addWidget(Panel.new(CentrizedBoxLayout.new(LayoutAxis.y), block Panel p2
+				label = Label.new("@UI.ModManagementUserAccount.SelectAuthProvider",\
+					"Label.ModManagementUserAccount.SelectAuthProvider")
+				label.setWordWrap(true)
+				label.setMaximalWidth(500)
+				p2.addWidget(label)
+				
+				pListAuthTokenProviders = ListBox.new(\
+					pModelAuthTokenProviders, createAuthProviderListElementRenderer())
+				pListAuthTokenProviders.setDesignerSelector("ListBox.ModManagementUserAccount.AuthProviders")
+				pListAuthTokenProviders.setNumberDisplayLines(4)
+				p2.addWidget(ScrollPanel.new(pListAuthTokenProviders,\
+					ScrollPanel.Policy.hidden, ScrollPanel.Policy.visible))
+				
+				p2.addWidget(Panel.new(CentrizedBoxLayout.new(LayoutAxis.x, 20), block Panel p3
+					p3.setDesignerSelector("Panel.MMPanelModUserAccount.Buttons")
+					
+					pButtonLogin = createButton("@UI.Login",\
+						"@UI.ModManagementUserAccount.Login.ToolTip", ".Login",\
+						BlockActionListener.new(block ActionEvent e
+							loginUser(Dictionary.new())
+						end))
+					p3.addWidget(pButtonLogin)
+				end))
+			end))
+		end)
+		addWidget(pSwitchContent, BorderLayout.Area.content)
+	end
+	
+	/** \brief Create button. */
+	protected func Button createButton(String text, String toolTip,\
+	String designerSelectorSuffix, ActionListener action)
+		var Button button = Button.new(text, action)
+		button.setDesignerSelector("Button.ModManagementUserAccount" + designerSelectorSuffix)
+		button.setToolTip(toolTip)
+		return button
+	end
+	
+	/** \brief Create authentication provider list element renderer. */
+	protected func ListElementRenderer createAuthProviderListElementRenderer()
+		return MMAuthProviderListRenderer.new()
+	end
+end

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine IGDE World Editor
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdlib.h>
@@ -95,6 +98,7 @@
 meWorld::meWorld( meWindowMain &windowMain, igdeEnvironment *environment ) :
 igdeEditableEntity( environment ),
 pWindowMain( windowMain ),
+pBgObject( nullptr ),
 pNextObjectID( 1 ) // 0 is reserved for invalid or undefined IDs
 {
 	deEngine * const engine = GetEngine();
@@ -159,6 +163,10 @@ pNextObjectID( 1 ) // 0 is reserved for invalid or undefined IDs
 		pSky->SetGDDefaultSky();
 		pSky->SetWorld( pDEWorld );
 		
+		// background object
+		pBgObject = new igdeWObject( *environment );
+		pBgObject->SetWorld( pDEWorld );
+		
 		// create weather
 		pWeather = new meWeather( this );
 		
@@ -186,6 +194,7 @@ pNextObjectID( 1 ) // 0 is reserved for invalid or undefined IDs
 		decLayerMask layerMaskMicrophone;
 		layerMaskMicrophone.SetBit( elmAudio );
 		pEngMicrophone->SetLayerMask( layerMaskMicrophone );
+		pEngMicrophone->SetEnableAuralization( windowMain.GetConfiguration().GetEnableAuralization() );
 		pDEWorld->AddMicrophone( pEngMicrophone );
 		
 		// create path find test
@@ -362,6 +371,14 @@ void meWorld::EnableGIChanged(){
 		if( object.GetCamera() ){
 			object.GetCamera()->SetEnableGI( enable );
 		}
+	}
+}
+
+void meWorld::EnableAuralizationChanged(){
+	const bool enable = pWindowMain.GetConfiguration().GetEnableAuralization();
+	
+	if( pEngMicrophone ){
+		pEngMicrophone->SetEnableAuralization( enable );
 	}
 }
 
@@ -768,6 +785,8 @@ DEBUG_PRINT_TIMER( "Update World" );
 	// detect collisions
 	pDEWorld->ProcessPhysics( elapsed );
 DEBUG_PRINT_TIMER( "Detect Collisions" );
+	
+	pBgObject->Update( elapsed );
 DEBUG_PRINT_TIMER_TOTAL();
 }
 
@@ -893,6 +912,16 @@ void meWorld::NotifySkyChanged(){
 	}
 	
 	SetChanged( true ); // this is correct. sky information is saved as world-editor specific data
+}
+
+void meWorld::NotifyBgObjectChanged(){
+	int i;
+	
+	for( i=0; i<pNotifierCount; i++ ){
+		pNotifiers[ i ]->BgObjectChanged( this );
+	}
+	
+	// SetChanged( true ); // not required until we save this
 }
 
 void meWorld::NotifyModeChanged(){
@@ -1718,6 +1747,9 @@ void meWorld::pCleanUp(){
 		pEngColCollider->FreeReference();
 	}
 	
+	if( pBgObject ){
+		delete pBgObject;
+	}
 	if( pSky ){
 		delete pSky;
 	}

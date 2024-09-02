@@ -1,0 +1,4 @@
+SRVMODIO {
+  global: ModioCreateModule;
+  local: *;
+};

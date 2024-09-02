@@ -69,8 +69,10 @@
     <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPBaseTwoHandController.h" />
     <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPEyeGazeInteraction.h" />
     <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPGoogleDaydreamController.h" />
+    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPHandInteraction.h" />
     <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPHMD.h" />
     <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPHPMixedRealityController.h" />
+    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPHTCHandInteraction.h" />
     <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPHTCViveController.h" />
     <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPHTCViveCosmosControllerInteraction.h" />
     <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPHTCViveFocus3ControllerInteraction.h" />
@@ -122,8 +124,10 @@
     <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPBaseTwoHandController.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPEyeGazeInteraction.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPGoogleDaydreamController.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPHandInteraction.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPHMD.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPHPMixedRealityController.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPHTCHandInteraction.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPHTCViveController.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPHTCViveCosmosControllerInteraction.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPHTCViveFocus3ControllerInteraction.cpp" />

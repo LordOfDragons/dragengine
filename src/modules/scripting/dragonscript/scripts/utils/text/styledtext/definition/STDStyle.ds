@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 namespace Dragengine.Utils.StyledText.Definition
@@ -56,44 +59,44 @@ class STDStyle
 	
 	
 	
-	private var String pName
-	private var Font pFont
-	private var Align pAlignment
-	private var Color pTextColor
-	private var Color pBackgroundColor
-	private var RectArea pMargins
-	private var int pFirstLineIndent
-	private var int pLineSpacing
-	private var int pCharacterSpacing
+	var String pName
+	var Font pFont
+	var Align pAlignment
+	var Color pTextColor
+	var Color pBackgroundColor
+	var RectArea pMargins
+	var int pFirstLineIndent
+	var int pLineSpacing
+	var int pCharacterSpacing
 	
 	
 	
 	/** \brief Create style. */
-	public func new( String name )
-		this.pName = name
-		this.pAlignment = Align.left
-		this.pTextColor = Color.black
-		this.pMargins = RectArea.new()
-		this.pFirstLineIndent = 0
-		this.pLineSpacing = 0
-		this.pCharacterSpacing = 0
+	func new(String name)
+		pName = name
+		pAlignment = Align.left
+		pTextColor = Color.black
+		pMargins = RectArea.new()
+		pFirstLineIndent = 0
+		pLineSpacing = 0
+		pCharacterSpacing = 0
 	end
 	
 	/** \brief Create copy of style. */
-	public func new( STDStyle style ) this( style.pName, style )
+	func new(STDStyle style) this(style.pName, style)
 	end
 	
 	/** \brief Create copy of style with different name. */
-	public func new( String name, STDStyle style )
-		this.pName = name
-		this.pFont = style.pFont
-		this.pAlignment = style.pAlignment
-		this.pTextColor = style.pTextColor
-		this.pBackgroundColor = style.pBackgroundColor
-		this.pMargins = RectArea.new( style.pMargins )
-		this.pFirstLineIndent = style.pFirstLineIndent
-		this.pLineSpacing = style.pLineSpacing
-		this.pCharacterSpacing = style.pCharacterSpacing
+	func new(String name, STDStyle style)
+		pName = name
+		pFont = style.pFont
+		pAlignment = style.pAlignment
+		pTextColor = style.pTextColor
+		pBackgroundColor = style.pBackgroundColor
+		pMargins = RectArea.new(style.pMargins)
+		pFirstLineIndent = style.pFirstLineIndent
+		pLineSpacing = style.pLineSpacing
+		pCharacterSpacing = style.pCharacterSpacing
 	end
 	
 	/**
@@ -106,33 +109,33 @@ class STDStyle
 	 * \todo Support canvas designer as background. This way the canvas creator
 	 *       from the design can be used. Right now Color.transparent is used.
 	 */
-	public func new( String name, DefaultWidgetDesigner.StateDesign design )
-		this.pName = name
-		this.pAlignment = Align.left
+	func new(String name, DefaultWidgetDesigner.StateDesign design)
+		pName = name
+		pAlignment = Align.left
 		
-		this.pFont = design.getFont()
+		pFont = design.getFont()
 		
 		if design.getTextColor() != null
-			this.pTextColor = design.getTextColor()
+			pTextColor = design.getTextColor()
 			
 		else
-			this.pTextColor = Color.black
+			pTextColor = Color.black
 		end
 		
-		this.pBackgroundColor = null
+		pBackgroundColor = null
 		
 		var BorderSize padding = design.getPadding()
 		if padding != null
-			this.pMargins = RectArea.new( padding.getLeft(), padding.getTop(), \
-				padding.getRight(), padding.getBottom() )
+			pMargins = RectArea.new(padding.getLeft(), padding.getTop(), \
+				padding.getRight(), padding.getBottom())
 			
 		else
-			this.pMargins = RectArea.new()
+			pMargins = RectArea.new()
 		end
 		
-		this.pFirstLineIndent = 0
-		this.pLineSpacing = 0
-		this.pCharacterSpacing = 0
+		pFirstLineIndent = 0
+		pLineSpacing = 0
+		pCharacterSpacing = 0
 	end
 	
 	/**
@@ -145,144 +148,144 @@ class STDStyle
 	 * \todo Support canvas designer as background. This way the canvas creator
 	 *       from the design can be used. Right now Color.transparent is used.
 	 */
-	public func new( String name, DefaultLabelDesigner.LabelStateDesign design )
-		this.pName = name
+	func new(String name, DefaultLabelDesigner.LabelStateDesign design)
+		pName = name
 		
-		this.pFont = design.getFont()
+		pFont = design.getFont()
 		
 		if design.getTextColor() != null
-			this.pTextColor = design.getTextColor()
+			pTextColor = design.getTextColor()
 			
 		else
-			this.pTextColor = Color.black
+			pTextColor = Color.black
 		end
 		
-		this.pAlignment = Align.left
+		pAlignment = Align.left
 		if design.getAlignment() != null
 			select design.getAlignment().value()
 			case Label.left
-				this.pAlignment = Align.left
+				pAlignment = Align.left
 				
 			case Label.right
-				this.pAlignment = Align.right
+				pAlignment = Align.right
 				
 			case Label.center
-				this.pAlignment = Align.center
+				pAlignment = Align.center
 			end
 		end
 		
-		this.pBackgroundColor = null
+		pBackgroundColor = null
 		
 		var BorderSize padding = design.getPadding()
 		if padding != null
-			this.pMargins = RectArea.new( padding.getLeft(), padding.getTop(), \
-				padding.getRight(), padding.getBottom() )
+			pMargins = RectArea.new(padding.getLeft(), padding.getTop(), \
+				padding.getRight(), padding.getBottom())
 			
 		else
-			this.pMargins = RectArea.new()
+			pMargins = RectArea.new()
 		end
 		
-		this.pFirstLineIndent = 0
-		this.pLineSpacing = 0
-		this.pCharacterSpacing = 0
+		pFirstLineIndent = 0
+		pLineSpacing = 0
+		pCharacterSpacing = 0
 	end
 	
 	
 	
 	/** \brief Name of style. */
-	public func String getName()
-		return this.pName
+	func String getName()
+		return pName
 	end
 	
 	/** \brief Font. */
-	public func Font getFont()
-		return this.pFont
+	func Font getFont()
+		return pFont
 	end
 	
 	/** \brief Set font. */
-	public func void setFont( Font font )
+	func void setFont(Font font)
 		if font == null
 			throw EInvalidParam.new()
 		end
-		this.pFont = font
+		pFont = font
 	end
 	
 	/** \brief Align. */
-	public func Align getAlignment()
-		return this.pAlignment
+	func Align getAlignment()
+		return pAlignment
 	end
 	
 	/** \brief Set alignment. */
-	public func void setAlignment( Align alignment )
-		this.pAlignment = alignment
+	func void setAlignment(Align alignment)
+		pAlignment = alignment
 	end
 	
 	/** \brief Text color. */
-	public func Color getTextColor()
-		return this.pTextColor
+	func Color getTextColor()
+		return pTextColor
 	end
 	
 	/** \brief Set text color. */
-	public func void setTextColor( Color color )
+	func void setTextColor(Color color)
 		if color == null
 			throw EInvalidParam.new()
 		end
-		this.pTextColor = color
+		pTextColor = color
 	end
 	
 	/** \brief Background color. */
-	public func Color getBackgroundColor()
-		return this.pBackgroundColor
+	func Color getBackgroundColor()
+		return pBackgroundColor
 	end
 	
 	/** \brief Set background color. */
-	public func void setBackgroundColor( Color color )
+	func void setBackgroundColor(Color color)
 		if color == null
 			throw EInvalidParam.new()
 		end
-		this.pBackgroundColor = color
+		pBackgroundColor = color
 	end
 	
 	/** \brief Margins in pixels. */
-	public func RectArea getMargins()
-		return this.pMargins
+	func RectArea getMargins()
+		return pMargins
 	end
 	
 	/** \brief Set margins in pixels. */
-	public func void setMargins( RectArea margins )
+	func void setMargins(RectArea margins)
 		if margins == null
 			throw EInvalidParam.new()
 		end
-		this.pMargins = margins
+		pMargins = margins
 	end
 	
 	/** \brief Indention of the first line in pixels. */
-	public func int getFirstLineIndent()
-		return this.pFirstLineIndent
+	func int getFirstLineIndent()
+		return pFirstLineIndent
 	end
 	
 	/** \brief Set indention of the first line in pixels. */
-	public func void setFirstLineIndent( int indent )
-		this.pFirstLineIndent = indent
+	func void setFirstLineIndent(int indent)
+		pFirstLineIndent = indent
 	end
 	
 	/** \brief Spacing between lines in pixels. */
-	public func int getLineSpacing()
-		return this.pLineSpacing
+	func int getLineSpacing()
+		return pLineSpacing
 	end
 	
 	/** \brief Set spacing between lines in pixels. */
-	public func void setLineSpacing( int spacing )
-		this.pLineSpacing = spacing
+	func void setLineSpacing(int spacing)
+		pLineSpacing = spacing
 	end
 	
 	/** \brief Spacing between characters in pixels. */
-	public func int getCharacterSpacing()
-		return this.pCharacterSpacing
+	func int getCharacterSpacing()
+		return pCharacterSpacing
 	end
 	
 	/** \brief Set spacing between characters in pixels. */
-	public func void setCharacterSpacing( int spacing )
-		this.pCharacterSpacing = spacing
+	func void setCharacterSpacing(int spacing)
+		pCharacterSpacing = spacing
 	end
 end

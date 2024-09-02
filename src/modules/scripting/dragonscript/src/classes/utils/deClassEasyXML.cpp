@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -134,6 +137,70 @@ void deClassEasyXML::nfNewFile::RunFunction( dsRunTime *rt, dsValue *myself ){
 		if( parser.ParseXml( reader, nd.document ) ){
 			nd.document->StripComments();
 			nd.document->CleanCharData();
+			
+		}else{
+			nd.document->SetParseFailed( true );
+			nd.document->SetParseLog( parser.GetParseLog() );
+		}
+		
+	}catch( const deException &e ){
+		( ( deClassEasyXML* )GetOwnerClass() )->GetDS().LogException( e );
+		if( nd.document ){
+			nd.document->FreeReference();
+			nd.document = NULL;
+		}
+		throw;
+		
+	}catch( ... ){
+		if( nd.document ){
+			nd.document->FreeReference();
+			nd.document = NULL;
+		}
+		throw;
+	}
+}
+
+// public func new(String filename, bool stripComments, bool cleanCharData)
+deClassEasyXML::nfNewFile2::nfNewFile2( const sInitData &init ) :
+dsFunction( init.clsXmlDocument, DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsString ); // filename
+	p_AddParameter( init.clsBool ); // stripComments
+	p_AddParameter( init.clsBool ); // cleanCharData
+}
+void deClassEasyXML::nfNewFile2::RunFunction( dsRunTime *rt, dsValue *myself ){
+	sXMLNatDat &nd = *( ( sXMLNatDat* )p_GetNativeData( myself ) );
+	deScriptingDragonScript &ds = ( ( deClassEasyXML* )GetOwnerClass() )->GetDS();
+	
+	// prepare
+	nd.document = nullptr;
+	
+	// check arguments
+	const char * const filename = rt->GetValue( 0 )->GetString();
+	if( ! filename ){
+		DSTHROW( dueNullPointer );
+	}
+	
+	const bool stripComments = rt->GetValue( 1 )->GetBool();
+	const bool cleanCharData = rt->GetValue( 2 )->GetBool();
+	
+	// load xml
+	deVirtualFileSystem &vfs = *ds.GetGameEngine()->GetVirtualFileSystem();
+	dedsXmlParser parser( ds.GetGameEngine()->GetLogger() );
+	
+	try{
+		decBaseFileReaderReference reader;
+		reader.TakeOver( vfs.OpenFileForReading( decPath::CreatePathUnix( filename ) ) );
+		
+		nd.document = new dedsXmlDocument( filename );
+		
+		if( parser.ParseXml( reader, nd.document ) ){
+			if( stripComments ){
+				nd.document->StripComments();
+			}
+			if( cleanCharData ){
+				nd.document->CleanCharData();
+			}
 			
 		}else{
 			nd.document->SetParseFailed( true );
@@ -337,6 +404,7 @@ void deClassEasyXML::CreateClassMembers( dsEngine *engine ){
 	
 	AddFunction( new nfNew( init ) );
 	AddFunction( new nfNewFile( init ) );
+	AddFunction( new nfNewFile2( init ) );
 	AddFunction( new nfDestructor( init ) );
 	
 	AddFunction( new nfGetFilename( init ) );

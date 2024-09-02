@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Game Engine
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <ctype.h>
@@ -27,6 +30,7 @@
 
 #ifdef OS_W32
 	#include <direct.h>
+	#include "../string/unicode/decUnicodeString.h"
 #endif
 #ifdef OS_UNIX
 	#include <unistd.h>
@@ -106,25 +110,31 @@ decPath decPath::CreateWorkingDirectory(){
 decPath decPath::AbsolutePathUnix( const char *path, const char *baseDirectory ){
 	if( IsUnixPathAbsolute( path ) ){
 		return CreatePathUnix( path );
-		
-	}else{
-		decPath absolute;
-		absolute.SetFromUnix( baseDirectory );
-		absolute.AddUnixPath( path );
-		return absolute;
 	}
+	
+	decPath absolute;
+	absolute.SetFromUnix( baseDirectory );
+	absolute.AddUnixPath( path );
+	return absolute;
 }
 
 decPath decPath::AbsolutePathNative( const char *path, const char *baseDirectory ){
 	if( IsNativePathAbsolute( path ) ){
 		return CreatePathNative( path );
-		
-	}else{
-		decPath absolute;
-		absolute.SetFromNative( baseDirectory );
-		absolute.AddNativePath( path );
-		return absolute;
 	}
+	
+	decPath absolute;
+	absolute.SetFromNative( baseDirectory );
+	absolute.AddNativePath( path );
+	return absolute;
+}
+
+decPath decPath::RelativePathUnix( const char *path, const char *baseDirectory, bool onlyBelow ){
+	return decPath::CreatePathUnix( path ).RelativePath( decPath::CreatePathUnix( baseDirectory ), onlyBelow );
+}
+
+decPath decPath::RelativePathNative( const char *path, const char *baseDirectory, bool onlyBelow ){
+	return decPath::CreatePathNative( path ).RelativePath( decPath::CreatePathNative( baseDirectory ), onlyBelow );
 }
 
 void decPath::SetPrefix( const char *prefix ){
@@ -168,11 +178,20 @@ void decPath::SetWorkingDirectory(){
 	SetFromNative( buffer );
 	
 	#elif defined OS_W32
-	char buffer[ FILENAME_MAX ];
-	if( ! _getcwd( buffer, FILENAME_MAX ) ){
+	wchar_t buffer[ FILENAME_MAX ];
+	if( ! _wgetcwd( buffer, FILENAME_MAX ) ){
 		DETHROW( deeInvalidAction );
 	}
-	SetFromNative( buffer );
+	
+	const int count = wcslen( buffer );
+	decUnicodeString unicode;
+	int i;
+	unicode.Set( 0, count );
+	for( i=0; i<count; i++ ){
+		unicode.SetAt( i, buffer[ i ] );
+	}
+	
+	SetFromNative( unicode.ToUTF8() );
 	
 	#else
 	#error "Missing implementation for decPath::SetWorkingDirectory for platform"
@@ -275,6 +294,49 @@ bool decPath::MatchesPattern( const decPath &filePattern ) const{
 	}
 	
 	return true;
+}
+
+decPath decPath::AbsolutePath( const decPath &baseDirectory ) const{
+	if( IsAbsolute() ){
+		return decPath( *this );
+		
+	}else{
+		return baseDirectory + *this;
+	}
+}
+
+decPath decPath::RelativePath( const decPath &baseDirectory, bool onlyBelow ) const{
+	if( ! IsAbsolute() || ! baseDirectory.IsAbsolute() || pPrefix != baseDirectory.pPrefix ){
+		return decPath( *this );
+	}
+	
+	// source /a/b/c/d/e
+	// base   /a/b/c       => d/e
+	// base   /a/x/c/y     => ../../../b/c/d/e
+	
+	const int baseDirCount = baseDirectory.pComponents.GetCount();
+	const int count = pComponents.GetCount();
+	int i;
+	
+	for( i=0; i<baseDirCount; i++ ){
+		if( i >= count || baseDirectory.pComponents.GetAt( i ) != pComponents.GetAt( i ) ){
+			break;
+		}
+	}
+	
+	if( onlyBelow && i < baseDirCount ){
+		return decPath( *this );
+	}
+	
+	const int index = i;
+	decPath newPath;
+	for( i=index; i<baseDirCount; i++ ){
+		newPath.pComponents.Add( ".." );
+	}
+	for( i=index; i<count; i++ ){
+		newPath.pComponents.Add( pComponents.GetAt( i ) );
+	}
+	return newPath;
 }
 
 

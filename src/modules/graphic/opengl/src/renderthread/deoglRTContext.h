@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DEOGLRRTCONTEXT_H_
@@ -24,13 +27,13 @@
 
 #include "../deoglBasics.h"
 
-#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 #include <GL/glx.h>
 #include "../extensions/glxext.h"
 class deOSUnix;
 #endif
 
-#ifdef ANDROID
+#ifdef OS_ANDROID
 class deOSAndroid;
 #endif
 
@@ -60,11 +63,11 @@ class deOSWindows;
 #endif
 
 // HACK HACK HACK
-#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 #include <dragengine/app/deOSUnix.h>
 #endif
 
-#ifdef ANDROID
+#ifdef OS_ANDROID
 #include <dragengine/app/deOSAndroid.h>
 #endif
 
@@ -97,7 +100,7 @@ private:
 	
 	
 	
-#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 	deOSUnix *pOSUnix;
 	
 	Display *pDisplay;
@@ -114,7 +117,7 @@ private:
 	Atom pAtomDeleteWindow;
 #endif
 	
-#ifdef ANDROID
+#ifdef OS_ANDROID
 	deOSAndroid *pOSAndroid;
 	
 	EGLDisplay pDisplay;
@@ -203,7 +206,7 @@ public:
 	
 	
 
-#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 	/** OS Unix. */
 	inline deOSUnix *GetOSUnix(){ return pOSUnix; }
 	
@@ -234,7 +237,7 @@ public:
 	void ProcessEventLoop();
 #endif
 
-#ifdef ANDROID
+#ifdef OS_ANDROID
 	/** OS Android. */
 	inline deOSAndroid *GetOSAndroid(){ return pOSAndroid; }
 	
@@ -317,7 +320,7 @@ public:
 	
 	
 private:
-	#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+	#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 	void pOpenDisplay();
 	void pChooseVisual();
 	void pPrintVisualInfo();
@@ -330,7 +333,7 @@ private:
 	void pCloseDisplay();
 	#endif
 	
-	#ifdef ANDROID
+	#ifdef OS_ANDROID
 	void pInitDisplay();
 	void pCloseDisplay();
 	#endif

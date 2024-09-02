@@ -1,0 +1,359 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Gui.ModManagement
+pin Dragengine.Services.Mods
+pin Dragengine.Gui.Layouts
+pin Dragengine.Utils
+pin Dragengine.Gui.Designers
+
+
+/**
+ * \brief List element renderer lists with MMModification instances.
+ * \version 1.23
+ * 
+ * For use in transfer list box.
+ */
+class MMTransferListRenderer implements ListElementRenderer
+	/** \brief Widget representing modification. */
+	class ModWidget extends Panel
+		/** \brief Listener updating logo image once loaded. */
+		class LoadLogoListener extends DefaultServiceModsListener
+			var ModWidget pWidget
+			var MMModification pMod
+			
+			func new(ModWidget widget, MMModification mod)
+				pWidget = widget
+				pMod = mod
+			end
+			
+			func void onLoadModResource(ServiceMods service, String url, Object resource, Exception exception)
+				if exception == null
+					pMod.logoSmall = resource cast Image
+					if pWidget.getMod() == pMod
+						pWidget.update()
+					end
+					
+				else
+					var BaseGameApp app = BaseGameApp.getApp()
+					if app != null
+						app.getConsole().addError("Load logo failed: " + url, exception)
+					end
+				end
+			end
+		end
+		
+		
+		var ServiceMods pServiceMods
+		var TextModel pModelName, pModelStatus, pModelStatusDetails
+		var RangeModel pModelProgress
+		var Panel pPanelInfo
+		var DisplayImage pImageLogo
+		var Label pLabelName, pLabelStatus, pLabelStatusDetails
+		var ProgressBar pProgressBar
+		var String pDesignerSelectorBase, pDesignerSelectorSuffix
+		var MMModification pMod
+		
+		
+		/**
+		 * \brief Create widget displaying modification.
+		 * \param serviceMods Service required to load resources.
+		 * \param designerSelector Base designer selector to use.
+		 */
+		func new(ServiceMods serviceMods, String designerSelector) super(BorderLayout.new())
+			pServiceMods = serviceMods
+			
+			pModelName = DefaultTextModel.new()
+			pModelStatus = DefaultTextModel.new()
+			pModelStatusDetails = DefaultTextModel.new()
+			pModelProgress = DefaultRangeModel.new(0, 1000, 100, 0, 1)
+			
+			runWhileBlockingLayout(block
+				createContent()
+				setAllDesignerSelectors(designerSelector, "")
+			end)
+		end
+		
+		/** \brief Dispose of widget. */
+		func void dispose()
+			pModelName = pModelStatus = pModelStatusDetails = null
+			pModelProgress = null
+			pImageLogo = null
+			pLabelName = pLabelStatus = pLabelStatusDetails = null
+			pProgressBar = null
+			pPanelInfo = null
+			super.dispose()
+		end
+		
+		
+		/** \brief Base designer selector. */
+		func String getDesignerSelectorBase()
+			return pDesignerSelectorBase
+		end
+		
+		/** \brief Designer selector suffix. */
+		func String getDesignerSelectorSuffix()
+			return pDesignerSelectorSuffix
+		end
+		
+		/** \brief Set all designer selectors. */
+		func void setAllDesignerSelectors(String selector, String suffix)
+			pDesignerSelectorBase = selector
+			pDesignerSelectorSuffix = suffix
+			
+			runWhileBlockingLayout(block
+				setAllDesignerSelectorsBlocked()
+			end)
+			doLayoutIfBlocked()
+		end
+		
+		/** \brief Modification. */
+		func MMModification getMod()
+			return pMod
+		end
+		
+		/** \brief Set modification. */
+		func void setMod(MMModification mod)
+			pMod = mod
+			
+			var ServiceImage logo = mod.info.logo
+			
+			if mod.logoSmall == null and logo != null and pServiceMods != null
+				var String url = findLoadLogoImage(logo)
+				if url != null
+					pServiceMods.loadModResource(url, LoadLogoListener.new(this, mod))
+				end
+			end
+			
+			update()
+		end
+		
+		
+		/** \brief Update content from modification. */
+		func void update()
+			var FormattingHelper fh = FormattingHelper.new()
+			var ServiceModProgress progress = pMod.progress
+			var Exception exception = pMod.exception
+			var ServiceModStatus status = pMod.status
+			var ServiceModInfo info = pMod.info
+			
+			runWhileBlockingLayout(block
+				pImageLogo.setImage(pMod.logoSmall)
+				pModelName.setText(info.name != null if info.name else "?")
+				
+				if exception == null
+					pModelStatus.setText("@UI.ModManagement.Enum.ModStatus." + status.status.name())
+					
+				else
+					pModelStatus.setText(TranslationManager.get().translate(\
+						"UI.ModManagement.Enum.ModStatus." + status.status.name()).toUTF8()\
+						+ ": " + exception.getReason())
+				end
+				
+				select status.status
+				case ServiceModStatus.Status.downloading, ServiceModStatus.Status.extracting
+					if progress != null
+						pModelStatusDetails.setText(fh.formatPercentage(progress.progress * 100))
+						pModelProgress.setValue((progress.progress * 1000 + 0.5) cast int)
+						
+					else
+						pModelStatusDetails.setText("-")
+						pModelProgress.setValue(0)
+					end
+					
+				else
+					pModelStatusDetails.setText("")
+					pModelProgress.setValue(0)
+				end
+			end)
+			doLayoutIfBlocked()
+		end
+		
+		/** \brief Find URL of best matching logo image to load. */
+		func String findLoadLogoImage(ServiceImage image)
+			var Point reqSize = pImageLogo.getMinimumSize()
+			
+			if image.thumbnails != null
+				var Array found = image.thumbnails.collect(block ServiceImage.Thumbnail each
+					return each.size >= reqSize
+				end).sorted(block ServiceImage.Thumbnail a, ServiceImage.Thumbnail b
+					return a.size.compare(b)
+				end)
+				if found.getCount() > 0
+					return (found.getAt(0) cast ServiceImage.Thumbnail).url
+				end
+			end
+			
+			return image.url
+		end
+		
+		
+		/**
+		 * \brief Set all designer selectors.
+		 * 
+		 * Called from inside runWhileBlockingLayout(). Use getDesignerSelectorBase() and
+		 * getDesignerSelectorSuffix() to construct designer selector all affected widgets.
+		 */
+		protected func void setAllDesignerSelectorsBlocked()
+			setDesignerSelector("Panel." + pDesignerSelectorBase + ".Main" + pDesignerSelectorSuffix)
+			pPanelInfo.setDesignerSelector("Panel." + pDesignerSelectorBase + ".Info" + pDesignerSelectorSuffix)
+			pImageLogo.setDesignerSelector("Image." + pDesignerSelectorBase + pDesignerSelectorSuffix)
+			
+			var String dslab = "Label." + pDesignerSelectorBase
+			pLabelName.setDesignerSelector(dslab + ".Name" + pDesignerSelectorSuffix)
+			pLabelStatus.setDesignerSelector(dslab + ".Status" + pDesignerSelectorSuffix)
+			pLabelStatusDetails.setDesignerSelector(dslab + ".StatusDetails" + pDesignerSelectorSuffix)
+			pProgressBar.setDesignerSelector("ProgressBar." + pDesignerSelectorBase + pDesignerSelectorSuffix)
+		end
+		
+		/** \brief Create content. */
+		protected func void createContent()
+			pImageLogo = DisplayImage.new(null, RepeatMode.stretchRatio)
+			addWidget(pImageLogo, BorderLayout.Area.left)
+			
+			pPanelInfo = Panel.new(FlowLayout.new(LayoutAxis.y, 0), block Panel p
+				pLabelName = Label.new(pModelName)
+				p.addWidget(pLabelName)
+				
+				p.addWidget(Panel.new(BorderLayout.new(), block Panel p2
+					pLabelStatus = Label.new(pModelStatus)
+					p2.addWidget(pLabelStatus, BorderLayout.Area.left)
+					
+					pLabelStatusDetails = Label.new(pModelStatusDetails)
+					p2.addWidget(pLabelStatusDetails, BorderLayout.Area.right)
+				end))
+				
+				pProgressBar = ProgressBar.new(Orientation.horizontal, pModelProgress)
+				p.addWidget(pProgressBar)
+			end)
+			
+			addWidget(pPanelInfo, BorderLayout.Area.content)
+		end
+	end
+	
+	
+	var ServiceMods pServiceMods
+	var String pDesignerSelector
+	var MMModification pDefaultMod
+	var Point pDefaultMinimumSize
+	
+	
+	/**
+	 * \brief Create modification list model renderer.
+	 * 
+	 * Uses base designer selector "ListRenderer.MMTransferListRenderer".
+	 */
+	func new(ServiceMods serviceMods) this(serviceMods, "ListRenderer.MMTransferListRenderer")
+	end
+	
+	/**
+	 * \brief Create modification list model renderer.
+	 */
+	func new(ServiceMods serviceMods, String designerSelector)
+		pServiceMods = serviceMods
+		pDesignerSelector = designerSelector
+		pDefaultMinimumSize = Point.new()
+		
+		pDefaultMod = MMModification.new(ServiceModInfo.new(), null)
+		pDefaultMod.info.id = ""
+		pDefaultMod.info.name = "X"
+		pDefaultMod.status = ServiceModStatus.new()
+		pDefaultMod.status.status = ServiceModStatus.Status.installationPending
+	end
+	
+	
+	
+	/** \brief Designer selector. */
+	func String getDesignerSelector()
+		return pDesignerSelector
+	end
+	
+	/** \brief Default modification used to measure default size. */
+	func MMModification getDefaultMod()
+		return pDefaultMod
+	end
+	
+	/** \brief Minimum size to use unless default element is larger. */
+	func Point getDefaultMinimumSize()
+		return pDefaultMinimumSize
+	end
+	
+	/** \brief Set minimum size to use unless default element is larger. */
+	func void setDefaultMinimumSize(Point size)
+		if size == null
+			throw ENullPointer.new("size")
+		end
+		pDefaultMinimumSize = Point.new().largest(size)
+	end
+	
+	
+	
+	/**
+	 * \brief Create widget representing modification in list box.
+	 * 
+	 * Creates instance of \ref #ModWidget.
+	 */
+	func Widget createRenderer(ListBox listBox)
+		return ModWidget.new(pServiceMods, pDesignerSelector)
+	end
+	
+	/** \brief Update widget representing modification in list box. */
+	func void updateRenderer(ListBox listBox, Widget renderer, Object element, bool selected, bool focused)
+		var MMModification mod = element cast MMModification
+		if mod == null
+			mod = pDefaultMod
+		end
+		
+		var String selector = pDesignerSelector, suffix = ""
+		if selected
+			suffix = ".Selected"
+		end
+		
+		var ModWidget widget = renderer cast ModWidget
+		widget.setMod(mod)
+		widget.setAllDesignerSelectors(selector, suffix)
+	end
+	
+	/** \brief Default size of widget in list box. */
+	func Point getDefaultSize(ListBox listBox)
+		// to properly measure the size a Container instance is created with the gui theme
+		// from the listBox. if the gui theme would be assigned directly to the renderer
+		// potentially use of gui theme selectors are skipped causing strange to find
+		// errors. the empty widget designer ensures the container has no padding nor any
+		// other unwanted designer parameters applied
+		var Container container = Container.new(BoxLayout.new(LayoutAxis.y), block Container c
+			c.setDesigner(DefaultWidgetDesigner.new())
+			c.setGuiTheme(listBox.getGuiTheme())
+			
+			var Widget renderer = createRenderer(listBox)
+			c.addWidget(renderer)
+			updateRenderer(listBox, renderer, pDefaultMod, false, false)
+		end)
+		container.doLayout()
+		
+		var Point size = container.getMinimumSize()
+		container.dispose()
+		return size.largest(pDefaultMinimumSize)
+	end
+end

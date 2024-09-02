@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <time.h>
@@ -79,7 +82,7 @@
 #include <dragengine/systems/deScriptingSystem.h>
 #include <dragengine/threading/deMutexGuard.h>
 
-#ifdef ANDROID
+#ifdef OS_ANDROID
 #include <dragengine/systems/deInputSystem.h>
 #include <dragengine/systems/deGraphicSystem.h>
 #endif
@@ -417,7 +420,7 @@ void deoglRenderThread::CleanUp(){
 	}
 }
 
-#ifdef ANDROID
+#ifdef OS_ANDROID
 void deoglRenderThread::InitAppWindow(){
 	if( pAsyncRendering ){
 		if( pThreadState != etsWindowDown ){
@@ -616,7 +619,7 @@ void deoglRenderThread::Run(){
 				1.0f / decMath::max( pLastFrameTime, 0.001f ) );
 			*/
 			
-		#ifdef ANDROID
+		#ifdef OS_ANDROID
 		}else if( pThreadState == etsWindowTerminate ){
 			try{
 				pContext->TerminateAppWindow();
@@ -667,7 +670,7 @@ void deoglRenderThread::FinalizeAsyncResLoading(){
 void deoglRenderThread::Synchronize(){
 	pLogger->Synchronize(); // send asynchronous logs to game logger
 	
-	#ifdef ANDROID
+	#ifdef OS_ANDROID
 	if( pContext->GetScreenResized() ){
 		pContext->ClearScreenResized();
 		
@@ -1513,7 +1516,7 @@ void deoglRenderThread::pInitCapabilities(){
 	pCapabilities = new deoglCapabilities( *this );
 	pCapabilities->DetectCapabilities();
 	
-	#ifdef ANDROID
+	#ifdef OS_ANDROID
 	pLogger->LogInfo( "Hardware information:" );
 	
 	int i, j;
@@ -1761,7 +1764,8 @@ void deoglRenderThread::pRenderSingleFrame(){
 #ifdef OS_ANDROID
 #include "../texture/texture2d/deoglRenderableColorTextureManager.h"
 #include "../texture/texture2d/deoglRenderableDepthTextureManager.h"
-#include "../texture/arraytexture/deoglRenderableArrayTextureManager.h"
+#include "../texture/arraytexture/deoglRenderableColorArrayTextureManager.h"
+#include "../texture/arraytexture/deoglRenderableDepthArrayTextureManager.h"
 #include "../model/deoglModel.h"
 #include "../model/deoglRModel.h"
 #include "../model/deoglModelLOD.h"
@@ -1806,6 +1810,7 @@ void deoglRenderThread::DebugMemoryUsage( const char *prefix ){
 	
 	pLogger->LogInfoFormat( "DebugMemoryUsage: %s", prefix );
 	
+#if 0
 	const char * const fmtTex2D  = "Tex2D (%4i): %4uM %4uM(%2i%%) %3uM | C(%4i) %4uM %4uM(%2i%%) %3uM | D(%3i) %3uM";
 	const char * const fmtTexArr = "TexArr(%4i): %4uM %4uM(%2i%%) %3uM | C(%4i) %4uM %4uM(%2i%%) %3uM | D(%3i) %3uM";
 	const char * const fmtCube   = "Cube  (%4i): %4uM %4uM(%2i%%) %3uM | C(%4i) %4uM %4uM(%2i%%) %3uM | D(%3i) %3uM";
@@ -1815,7 +1820,7 @@ void deoglRenderThread::DebugMemoryUsage( const char *prefix ){
 	const char * const fmtVBO    = "VBO   (%4i): %4uM | S(%4i) %4uM | I(%4i) %4uM | T(%4i) %4uM";
 	const char * const fmtDefRen = "DefRen      : %3uM | T %3uM | R %3uM";
 	
-	const deoglMemoryConsumptionTexture &consumptionTexture2D = pMemoryManager.GetConsumption().GetTexture2D();
+	const deoglMemoryConsumptionTexture &consumptionTexture2D = pMemoryManager.GetConsumption().texture2D;
 	const int textureCount = consumptionTexture2D.GetCount();
 	const int textureColorCount = consumptionTexture2D.GetColorCount();
 	const int textureDepthCount = consumptionTexture2D.GetDepthCount();
@@ -1849,7 +1854,7 @@ void deoglRenderThread::DebugMemoryUsage( const char *prefix ){
 		( int )textureColorRatioCompressed, textureColorGPUUncompressed, textureDepthCount, textureDepthGPU );
 	
 	// textures array
-	const deoglMemoryConsumptionTexture &consumptionTextureArray = pMemoryManager.GetConsumption().GetTextureArray();
+	const deoglMemoryConsumptionTexture &consumptionTextureArray = pMemoryManager.GetConsumption().textureArray;
 	const int textureArrayCount = consumptionTextureArray.GetCount();
 	const int textureArrayColorCount = consumptionTextureArray.GetColorCount();
 	const int textureArrayDepthCount = consumptionTextureArray.GetDepthCount();
@@ -1883,7 +1888,7 @@ void deoglRenderThread::DebugMemoryUsage( const char *prefix ){
 		( int )textureArrayColorRatioCompressed, textureArrayColorGPUUncompressed, textureArrayDepthCount, textureArrayDepthGPU );
 	
 	// cube maps
-	const deoglMemoryConsumptionTexture &consumptionTextureCube = pMemoryManager.GetConsumption().GetTextureCube();
+	const deoglMemoryConsumptionTexture &consumptionTextureCube = pMemoryManager.GetConsumption().textureCube;
 	const int cubemapCount = consumptionTextureCube.GetCount();
 	const int cubemapColorCount = consumptionTextureCube.GetColorCount();
 	const int cubemapDepthCount = consumptionTextureCube.GetDepthCount();
@@ -1917,7 +1922,7 @@ void deoglRenderThread::DebugMemoryUsage( const char *prefix ){
 		cubemapDepthCount, cubemapDepthGPU );
 	
 	// skin memory consumption
-	const deoglMemoryConsumptionTexture &consumptionSkin = pMemoryManager.GetConsumption().GetSkin();
+	const deoglMemoryConsumptionTexture &consumptionSkin = pMemoryManager.GetConsumption().skin;
 	const int skinCount = consumptionSkin.GetCount();
 	unsigned int skinGPU = consumptionSkin.GetGPU();
 	unsigned int skinGPUCompressed = consumptionSkin.GetGPUCompressed();
@@ -1950,7 +1955,7 @@ void deoglRenderThread::DebugMemoryUsage( const char *prefix ){
 		renderableArrayCount, renderableArrayGPU );
 	
 	// vbo
-	const deoglMemoryConsumptionBufferObject &consumptionVBO = pMemoryManager.GetConsumption().GetVBO();
+	const deoglMemoryConsumptionBufferObject &consumptionVBO = pMemoryManager.GetConsumption().vbo;
 	const int vboCount = consumptionVBO.GetCount();
 	const int vboSharedCount = consumptionVBO.GetSharedCount();
 	const int vboIBOCount = consumptionVBO.GetIBOCount();
@@ -1978,6 +1983,7 @@ void deoglRenderThread::DebugMemoryUsage( const char *prefix ){
 	totalGPU /= 1000000;
 	
 	pLogger->LogInfoFormat( "Total %4iM", totalGPU );
+#endif
 	
 	// proc/self/statm info
 	char bufstatm[256];
@@ -1993,7 +1999,7 @@ void deoglRenderThread::DebugMemoryUsage( const char *prefix ){
 	// malloc info
 	const struct mallinfo minfo( mallinfo() );
 	//pLogger->LogInfoFormat( "HeapSize=%d HeapAllocSize=%d", minfo.usmblks, minfo.uordblks );
-	pLogger->LogInfoFormat( "TotalAllocSpace=%d TotalFreeSpace=%d", minfo.uordblks, minfo.fordblks );
+	pLogger->LogInfoFormat( "TotalAllocSpace=%zu TotalFreeSpace=%zu", minfo.uordblks, minfo.fordblks );
 	
 	#if 0
 	char *minfoString = NULL;
@@ -2046,8 +2052,9 @@ void deoglRenderThread::DebugMemoryUsage( const char *prefix ){
 		free( minfoString );
 	}
 	pLogger->LogInfoFormat( "SystemCurrent=%ld SystemMax=%ld", systemCurrent, systemMax );
-	#endif
+#endif
 	
+#if 0
 	// resource consumption
 	deImage *scanImage = pOgl.GetGameEngine()->GetImageManager()->GetRootImage();
 	int imageMemUsage = 0;
@@ -2080,9 +2087,6 @@ void deoglRenderThread::DebugMemoryUsage( const char *prefix ){
 				+ sizeof( deModelFace ) * lod.GetFaceCount()
 				+ sizeof( decVector2 ) * ( lod.GetTextureCoordinatesSetCount() * lod.GetTextureCoordinatesCount() );
 		}
-		modelMemUsage += sizeof( decVector ) * scanModel->GetNormalCount() /* deprecated */
-			+ sizeof( decVector ) * scanModel->GetTangentCount() /* deprecated */
-			+ sizeof( deModel::sHackWeight ) * scanModel->GetHackWeightCount() /* deprecated */ ;
 		modelCount++;
 		scanModel = ( deModel* )scanModel->GetLLManagerNext();
 	}
@@ -2134,8 +2138,7 @@ void deoglRenderThread::DebugMemoryUsage( const char *prefix ){
 	int componentCount = 0;
 	while( scanComponent ){
 		if( scanComponent->GetModel() ){
-			componentMemUsage += sizeof( decVector ) * scanComponent->GetModel()->GetLODAt( 0 )->GetVertexCount()
-				+ sizeof( decMatrix ) * scanComponent->GetModel()->GetHackWeightCount();
+			componentMemUsage += sizeof( decVector ) * scanComponent->GetModel()->GetLODAt( 0 )->GetVertexCount();
 		}
 		componentCount++;
 		scanComponent = ( deComponent* )scanComponent->GetLLManagerNext();
@@ -2184,13 +2187,14 @@ void deoglRenderThread::DebugMemoryUsage( const char *prefix ){
 	}
 	pLogger->LogInfoFormat( "OGL-Components: Usage=%dM Bare=%dB Count=%d",
 		componentMemUsage / 1000000, componentBareUsage, componentCount );
+#endif
 }
 
 void deoglRenderThread::DebugMemoryUsageSmall( const char *prefix ){
 	if( ! DoesDebugMemoryUsage() ) return;
 	
 	const struct mallinfo minfo( mallinfo() );
-	pLogger->LogInfoFormat( "DebugMemoryUsageSmall: %s) TotalAllocSpace=%d TotalFreeSpace=%d",
+	pLogger->LogInfoFormat( "DebugMemoryUsageSmall: %s) TotalAllocSpace=%zu TotalFreeSpace=%zu",
 		prefix, minfo.uordblks, minfo.fordblks );
 }
 #endif
@@ -2206,7 +2210,7 @@ void deoglRenderThread::pSwapBuffers(){
 
 void deoglRenderThread::pBeginFrame(){
 	const deoglDebugTraceGroup debugTrace( *this, "BeginFrame" );
-	#ifdef ANDROID
+	#ifdef OS_ANDROID
 	pContext->CheckConfigurationChanged();
 	#endif
 	
@@ -2223,7 +2227,7 @@ void deoglRenderThread::pBeginFrame(){
 	pBufferObject->GetSharedVBOListList().PrepareAllLists();
 	pEnvMapSlotManager->IncreaseSlotLastUsedCounters();
 	
-	#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+	#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 	pContext->ProcessEventLoop();
 	#endif
 	
@@ -2277,11 +2281,9 @@ void deoglRenderThread::pVRStartBeginFrame(){
 
 void deoglRenderThread::pVRWaitBeginFrameFinished(){
 	deoglVR * const vr = pVRCamera ? pVRCamera->GetVR() : nullptr;
-	if( ! vr ){
-		return;
+	if( vr ){
+		vr->WaitBeginFrameFinished();
 	}
-	
-	vr->WaitBeginFrameFinished();
 	
 	if( pSignalSemaphoreSyncVR ){
 		pSignalSemaphoreSyncVR = false;

@@ -20,9 +20,9 @@
  * | \b not int | true if integer value is not 0 |
  * 
  * This is a native class. It can not be subclassed.
- * \author Roland Plüss
+ * \author DragonDreams GmbH
  * \version 1.0
- * \date 2015
+ * \date 2024
  */
 fixed class int
 	/** \name Constructors */

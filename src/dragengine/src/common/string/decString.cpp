@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Game Engine
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -583,6 +586,52 @@ void decString::AppendValue( unsigned int value ){
 		strcpy( newString, pString );
 	#endif
 	if( snprintf( newString + length1, length2 + 1, "%u", value ) != length2 ){
+		delete [] newString;
+		DETHROW( deeInvalidParam ); // broken vsnprintf implementation
+	}
+	newString[ length1 + length2 ] = '\0';
+	
+	delete [] pString;
+	pString = newString;
+}
+
+void decString::AppendValue( long long value ){
+	const int length1 = ( int )strlen( pString );
+	const int length2 = snprintf( NULL, 0, "%lli", value );
+	if( length2 < 0 ){
+		DETHROW( deeInvalidParam ); // broken snprintf implementation
+	}
+	
+	char * const newString = new char[ length1 + length2 + 1 ];
+	#ifdef OS_W32_VS
+		strcpy_s( newString, length1 + 1, pString );
+	#else
+		strcpy( newString, pString );
+	#endif
+	if( snprintf( newString + length1, length2 + 1, "%lli", value ) != length2 ){
+		delete [] newString;
+		DETHROW( deeInvalidParam ); // broken vsnprintf implementation
+	}
+	newString[ length1 + length2 ] = '\0';
+	
+	delete [] pString;
+	pString = newString;
+}
+
+void decString::AppendValue( unsigned long long value ){
+	const int length1 = ( int )strlen( pString );
+	const int length2 = snprintf( NULL, 0, "%llu", value );
+	if( length2 < 0 ){
+		DETHROW( deeInvalidParam ); // broken snprintf implementation
+	}
+	
+	char * const newString = new char[ length1 + length2 + 1 ];
+	#ifdef OS_W32_VS
+		strcpy_s( newString, length1 + 1, pString );
+	#else
+		strcpy( newString, pString );
+	#endif
+	if( snprintf( newString + length1, length2 + 1, "%llu", value ) != length2 ){
 		delete [] newString;
 		DETHROW( deeInvalidParam ); // broken vsnprintf implementation
 	}
@@ -1433,11 +1482,11 @@ decString decString::GetUpper() const{
 
 
 int decString::ToInt() const{
-	return ( int )strtol( pString, nullptr, 10 );
+	return ( int )strtoll( pString, nullptr, 10 );
 }
 
 long long decString::ToLong() const{
-	return strtol( pString, nullptr, 10 );
+	return strtoll( pString, nullptr, 10 );
 }
 
 float decString::ToFloat() const{
@@ -1450,14 +1499,14 @@ double decString::ToDouble() const{
 
 int decString::ToIntValid() const{
 	char *end = nullptr;
-	const int value = ( int )strtol( pString, &end, 10 );
+	const int value = ( int )strtoll( pString, &end, 10 );
 	DEASSERT_TRUE( *end == 0 )
 	return value;
 }
 
 long long decString::ToLongValid() const{
 	char *end = nullptr;
-	const long long value = strtol( pString, &end, 10 );
+	const long long value = strtoll( pString, &end, 10 );
 	DEASSERT_TRUE( *end == 0 )
 	return value;
 }

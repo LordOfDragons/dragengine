@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenXR VR Module
+/*
+ * MIT License
  *
- * Copyright (C) 2022, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdlib.h>
@@ -77,8 +80,16 @@ void deoxrDevice::SetActionPose( deoxrAction *action ){
 	pActionPose = action;
 }
 
+void deoxrDevice::SetActionPoseOrientation( deoxrAction *action ){
+	pActionPoseOrientation = action;
+}
+
 void deoxrDevice::SetSpacePose( deoxrSpace *space ){
 	pSpacePose = space;
+}
+
+void deoxrDevice::SetSpacePoseOrientation( deoxrSpace *space ){
+	pSpacePoseOrientation = space;
 }
 
 void deoxrDevice::SetType( deInputDevice::eDeviceTypes type ){
@@ -467,26 +478,23 @@ void deoxrDevice::TrackStates(){
 	}
 	
 	if( pActionPose && pSpacePose ){
-		XrActionStateGetInfo getInfo;
-		memset( &getInfo, 0, sizeof( getInfo ) );
+		XrActionStateGetInfo getInfo{};
 		getInfo.type = XR_TYPE_ACTION_STATE_GET_INFO;
 		getInfo.action = pActionPose->GetAction();
 		getInfo.subactionPath = pSubactionPath;
 		
-		XrActionStatePose state;
-		memset( &state, 0, sizeof( state ) );
+		XrActionStatePose state{};
 		state.type = XR_TYPE_ACTION_STATE_POSE;
 		
 		void **nextState = &state.next;
-
-		XrEyeGazeSampleTimeEXT sampleTime;
+		
+		XrEyeGazeSampleTimeEXT sampleTime{};
 		if( pType == deInputDevice::edtVREyeTracker ){
-			memset( &sampleTime, 0, sizeof( sampleTime ) );
 			sampleTime.type = XR_TYPE_EYE_GAZE_SAMPLE_TIME_EXT;
 			*nextState = &sampleTime;
 			nextState = &sampleTime.next;
 		}
-
+		
 		if( XR_SUCCEEDED( instance.xrGetActionStatePose( session.GetSession(), &getInfo, &state ) )
 		&& state.isActive == XR_TRUE ){
 			if( pType == deInputDevice::edtVREyeTracker ){
@@ -497,12 +505,29 @@ void deoxrDevice::TrackStates(){
 				// using local space requires locating space without converting coordinate system
 				pSpacePose->LocateSpaceEye( session.GetPredictedDisplayTime(),
 					pPosePosition, pPoseOrientation, pPoseLinearVelocity, pPoseAngularVelocity );
-
+				
 			}else{
 				pSpacePose->LocateSpace( session.GetSpace(), session.GetPredictedDisplayTime(),
 					pPosePosition, pPoseOrientation, pPoseLinearVelocity, pPoseAngularVelocity );
+				
+				if( pActionPoseOrientation && pSpacePoseOrientation ){
+					getInfo = {};
+					getInfo.type = XR_TYPE_ACTION_STATE_GET_INFO;
+					getInfo.action = pActionPoseOrientation->GetAction();
+					getInfo.subactionPath = pSubactionPath;
+					
+					state = {};
+					state.type = XR_TYPE_ACTION_STATE_POSE;
+					
+					if( XR_SUCCEEDED( instance.xrGetActionStatePose( session.GetSession(), &getInfo, &state ) )
+					&& state.isActive == XR_TRUE ){
+						decVector ignore;
+						pSpacePoseOrientation->LocateSpace( session.GetSpace(),
+							session.GetPredictedDisplayTime(), ignore, pPoseOrientation );
+					}
+				}
 			}
-
+			
 			pPoseDevice.SetPosition( pPosePosition );
 			pPoseDevice.SetOrientation( pPoseOrientation );
 			pPoseDevice.SetLinearVelocity( pPoseLinearVelocity );
@@ -545,14 +570,14 @@ void deoxrDevice::TrackStates(){
 		pFaceTracker->Update();
 	}
 	
-	int i, count = pButtons.GetCount();
-	for( i=0; i<count; i++ ){
-		GetButtonAt( i )->TrackState();
-	}
-	
-	count = pAxes.GetCount();
+	int i, count = pAxes.GetCount();
 	for( i=0; i<count; i++ ){
 		GetAxisAt( i )->TrackState();
+	}
+	
+	count = pButtons.GetCount();
+	for( i=0; i<count; i++ ){
+		GetButtonAt( i )->TrackState();
 	}
 }
 

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -32,30 +35,48 @@ pin Dragengine.Scenery
  */
 class DefaultImageDesigner extends DefaultWidgetDesigner
 	/** \brief Design for a particular widget state. */
-	public class ImageStateDesign extends StateDesign
-		private var ColorMatrix pImageColorTransform
+	class ImageStateDesign extends StateDesign
+		var ColorMatrix pImageColorTransform
+		var Image pImage
 		
 		
 		
 		/** \brief Create state design. */
-		public func new()
+		func new()
 		end
 		
 		/** \brief Create copy of state design. */
-		public func new( ImageStateDesign stateDesign ) super( stateDesign )
-			this.pImageColorTransform = stateDesign.pImageColorTransform
+		func new(ImageStateDesign stateDesign) super(stateDesign)
+			pImageColorTransform = stateDesign.pImageColorTransform
+			pImage = stateDesign.pImage
 		end
 		
 		
 		
 		/** \brief Image color transform or null. */
-		public func ColorMatrix getImageColorTransform()
-			return this.pImageColorTransform
+		func ColorMatrix getImageColorTransform()
+			return pImageColorTransform
 		end
 		
 		/** \brief Set image color transform or null. */
-		public func void setImageColorTransform( ColorMatrix colorMatrix )
-			this.pImageColorTransform = colorMatrix
+		func void setImageColorTransform(ColorMatrix colorMatrix)
+			pImageColorTransform = colorMatrix
+		end
+		
+		/**
+		 * \brief Image.
+		 * \version 1.23
+		 */
+		func Image getImage()
+			return pImage
+		end
+		
+		/**
+		 * \brief Set image.
+		 * \version 1.23
+		 */
+		func void setImage(Image image)
+			pImage = image
 		end
 		
 		
@@ -65,22 +86,27 @@ class DefaultImageDesigner extends DefaultWidgetDesigner
 		 * 
 		 * Supported parameters:
 		 * | name | value | Setter |
+		 * | --- | --- | --- |
 		 * | imageColorTransform | ColorMatrix | setImageColorTransform |
+		 * | image | Image | setImage |
 		 */
-		public func void setParameter( String name, Object value )
-			if name.equals( "imageColorTransform" )
-				this.setImageColorTransform( value cast ColorMatrix )
+		func void setParameter(String name, Object value)
+			if name.equals("imageColorTransform")
+				setImageColorTransform(value cast ColorMatrix)
+				
+			elif name.equals("image")
+				setImage(value cast Image)
 				
 			else
-				super.setParameter( name, value )
+				super.setParameter(name, value)
 			end
 		end
 		
 		
 		
 		/** \brief Create copy of state. */
-		public func DefaultWidgetDesigner.StateDesign copyDesign()
-			return ImageStateDesign.new( this )
+		func DefaultWidgetDesigner.StateDesign copyDesign()
+			return ImageStateDesign.new(this)
 		end
 		
 		/**
@@ -89,13 +115,16 @@ class DefaultImageDesigner extends DefaultWidgetDesigner
 		 * Updates state with parameters of this state if defined. Used to find the first
 		 * defined parameter for a series of states acting as fallback for each other.
 		 */
-		public func void merge( DefaultWidgetDesigner.StateDesign state )
-			super.merge( state )
+		func void merge(DefaultWidgetDesigner.StateDesign state)
+			super.merge(state)
 			
 			var ImageStateDesign idesign = state cast ImageStateDesign
 			
-			if this.pImageColorTransform != null
-				idesign.pImageColorTransform = this.pImageColorTransform
+			if pImageColorTransform != null
+				idesign.pImageColorTransform = pImageColorTransform
+			end
+			if pImage != null
+				idesign.pImage = pImage
 			end
 		end
 		
@@ -104,17 +133,21 @@ class DefaultImageDesigner extends DefaultWidgetDesigner
 		 * 
 		 * This is typically called on a merged design to find the first defined parameters.
 		 */
-		public func void apply( Widget widget )
-			super.apply( widget )
+		func void apply(Widget widget)
+			super.apply(widget)
 			
 			var DisplayImage displayImage = widget cast DisplayImage
 			if not displayImage.getProtectImageColorTransform()
-				if this.pImageColorTransform != null
-					displayImage.setImageColorTransform( this.pImageColorTransform )
+				if pImageColorTransform != null
+					displayImage.setImageColorTransform(pImageColorTransform)
 					
 				else
-					displayImage.setImageColorTransform( ColorMatrix.new() )
+					displayImage.setImageColorTransform(ColorMatrix.new())
 				end
+			end
+			
+			if pImage != null
+				displayImage.setImage(pImage)
 			end
 		end
 	end
@@ -122,43 +155,43 @@ class DefaultImageDesigner extends DefaultWidgetDesigner
 	
 	
 	/** \brief Create new image designer. */
-	public func new()
-		this.setDesignNormal( ImageStateDesign.new() )
-		this.setDesignDisabled( ImageStateDesign.new() )
-		this.setDesignFocused( ImageStateDesign.new() )
-		this.setDesignHover( ImageStateDesign.new() )
-		this.setDesignFocusedHover( ImageStateDesign.new() )
+	func new()
+		setDesignNormal(ImageStateDesign.new())
+		setDesignDisabled(ImageStateDesign.new())
+		setDesignFocused(ImageStateDesign.new())
+		setDesignHover(ImageStateDesign.new())
+		setDesignFocusedHover(ImageStateDesign.new())
 	end
 	
 	/** \brief Create copy of widget designer designer. */
-	public func new( DefaultImageDesigner designer ) super( designer )
+	func new(DefaultImageDesigner designer) super(designer)
 	end
 	
 	
 	
 	/** \brief Design for normal state. */
-	public func ImageStateDesign getImageDesignNormal()
-		return this.getDesignNormal() cast ImageStateDesign
+	func ImageStateDesign getImageDesignNormal()
+		return getDesignNormal() cast ImageStateDesign
 	end
 	
 	/** \brief Design for disabled state. */
-	public func ImageStateDesign getImageDesignDisabled()
-		return this.getDesignDisabled() cast ImageStateDesign
+	func ImageStateDesign getImageDesignDisabled()
+		return getDesignDisabled() cast ImageStateDesign
 	end
 	
 	/** \brief Design for focused state. */
-	public func ImageStateDesign getImageDesignFocused()
-		return this.getDesignFocused() cast ImageStateDesign
+	func ImageStateDesign getImageDesignFocused()
+		return getDesignFocused() cast ImageStateDesign
 	end
 	
 	/** \brief Design for hover state. */
-	public func ImageStateDesign getImageDesignHover()
-		return this.getDesignHover() cast ImageStateDesign
+	func ImageStateDesign getImageDesignHover()
+		return getDesignHover() cast ImageStateDesign
 	end
 	
 	/** \brief Design for focused hover state. */
-	public func ImageStateDesign getImageDesignFocusedHover()
-		return this.getDesignFocusedHover() cast ImageStateDesign
+	func ImageStateDesign getImageDesignFocusedHover()
+		return getDesignFocusedHover() cast ImageStateDesign
 	end
 	
 	
@@ -170,14 +203,16 @@ class DefaultImageDesigner extends DefaultWidgetDesigner
 	 * 
 	 * Additional supported parameters:
 	 * | name | value | Setter |
+	 * | --- | --- | --- |
 	 * | {state}.imageColorTransform | ColorMatrix | getDesign{state}.setImageColorTransform |
+	 * | {state}.image | Image | getDesign{state}.setImage |
 	 */
-	public func void setParameter( String name, Object value )
-		super.setParameter( name, value )
+	func void setParameter(String name, Object value)
+		super.setParameter(name, value)
 	end
 	
 	/** \brief Create copy of designer. */
-	public func WidgetDesigner copyDesigner()
-		return DefaultImageDesigner.new( this )
+	func WidgetDesigner copyDesigner()
+		return DefaultImageDesigner.new(this)
 	end
 end

@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenXR VR Module
+/*
+ * MIT License
  *
- * Copyright (C) 2022, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdlib.h>
@@ -40,9 +43,27 @@ deoxrDPBaseTwoHandController( instance,
 	deoxrPath( instance, "/interaction_profiles/microsoft/hand_interaction" ),
 	"MSFT Hand Controller" )
 {
+	SetDeviceRotation( decVector( DEG2RAD * -90.0f, 0.0f, 0.0f ) );
 }
 
 deoxrDPMSFTHandInteraction::~deoxrDPMSFTHandInteraction(){
+}
+
+
+// Management
+///////////////
+
+void deoxrDPMSFTHandInteraction::CheckAttached(){
+	const deoxrInstance &instance = GetInstance();
+	
+	if( ! instance.SupportsExtension( deoxrInstance::extMSFTHandInteraction ) ){
+		return;
+	}
+	if( pHasAnyHandDevice( pDeviceLeft, pDeviceRight ) ){
+		return;
+	}
+	
+	deoxrDPBaseTwoHandController::CheckAttached();
 }
 
 
@@ -51,42 +72,47 @@ deoxrDPMSFTHandInteraction::~deoxrDPMSFTHandInteraction(){
 //////////////////////
 
 void deoxrDPMSFTHandInteraction::pSuggestBindings(){
-	// Valid for top level user path:
+	// Valid for user path:
 	// - /user/hand/left
 	// - /user/hand/right
 	// 
 	// Supported component paths:
-	// - /input/select/value
-	// - /input/squeeze/value
 	// - /input/aim/pose
 	// - /input/grip/pose
+	// - /input/select/value
+	// - /input/squeeze/value
 	
-	const int bindingCount = 5 * 2;
+	const int bindingCountPerHand = 5;
+	const int bindingCount = bindingCountPerHand * 2;
 	deoxrInstance::sSuggestBinding bindings[ bindingCount ];
 	deoxrInstance::sSuggestBinding *b = bindings;
+	int usedBindingCount = 0;
 	
-	
-	const decString basePathList[ 2 ] = { "/user/hand/left", "/user/hand/right" };
+	const deoxrPath basePathList[ 2 ] = { pPathHandLeft, pPathHandRight };
+	const deoxrDevice * const devices[ 2 ] = { pDeviceLeft, pDeviceRight };
 	int i;
 	
 	for( i=0; i<2; i++ ){
+		if( ! devices[ i ] ){
+			continue;
+		}
+		
 		const decString &basePath = basePathList[ i ];
 		
-		pAdd( b, pGripPoseAction( i == 0 ), basePath + "/input/aim/pose" );
-		
-		pAdd( b, deVROpenXR::eiaGripPress, basePath + "/input/squeeze/value" );
-		pAdd( b, deVROpenXR::eiaGripGrab, basePath + "/input/squeeze/value" );
+		pAdd( b, pPoseAction( i == 0 ), basePath + "/input/grip/pose" );
 		
 		pAdd( b, deVROpenXR::eiaTriggerAnalog, basePath + "/input/select/value" );
-		pAdd( b, deVROpenXR::eiaTriggerPress, basePath + "/input/select/value" );
+		pAdd( b, deVROpenXR::eiaGripGrab, basePath + "/input/squeeze/value" );
+		
+		pAdd( b, deVROpenXR::eiaGesturePinch, basePath + "/input/select/value" );
+		pAdd( b, deVROpenXR::eiaGestureGrasp, basePath + "/input/squeeze/value" );
+		
+		usedBindingCount += bindingCountPerHand;
 	}
 	
-	
-	GetInstance().SuggestBindings( GetPath(), bindings, bindingCount );
-}
-
-bool deoxrDPMSFTHandInteraction::pProfileEnabled() const{
-	return GetInstance().SupportsExtension( deoxrInstance::extMSFTHandInteraction );
+	if( usedBindingCount > 0 ){
+		GetInstance().SuggestBindings( GetPath(), bindings, usedBindingCount );
+	}
 }
 
 void deoxrDPMSFTHandInteraction::pAddDevice( bool left ){
@@ -95,17 +121,71 @@ void deoxrDPMSFTHandInteraction::pAddDevice( bool left ){
 		return;
 	}
 	
-	pCreateDevice( device, left, "msfthc_" );
+	deVROpenXR &oxr = GetInstance().GetOxr();
+	deoxrDeviceButton::Ref button;
+	deoxrDeviceAxis::Ref axis;
 	
+	pCreateDevice( device, left, "msfthi_", false );
+	
+	// controller simulation
 	deoxrDeviceComponent * const trigger = pAddComponentTrigger( device );
 	pAddAxisTrigger( device, trigger );
-	pAddButtonTrigger( device, trigger, false ); // has to be button 0
+	
+	button.TakeOver( new deoxrDeviceButton( device ) );
+	button->SetID( "trig" );
+	button->SetName( "Trigger" );
+	button->SetType( deInputDeviceButton::ebtTrigger );
+	button->SetDisplayText( "Tri" );
+	button->SetInputDeviceComponent( trigger );
+	button->SetFakeFromAxis( device->GetAxisAt( device->GetAxisCount() - 1 ) );
+	button->SetIndex( device->GetButtonCount() );
+	device->AddButton( button ); // has to be button 0
 	
 	deoxrDeviceComponent * const grip = pAddComponentGrip( device );
-	pAddAxesGripGrab( device, grip );
-	pAddButtonGrip( device, grip, false );
+	pAddAxisGripGrab( device, grip );
 	
+	button.TakeOver( new deoxrDeviceButton( device ) );
+	button->SetID( "grip" );
+	button->SetName( "Grip" );
+	button->SetType( deInputDeviceButton::ebtTrigger );
+	button->SetDisplayText( "Grip" );
+	button->SetInputDeviceComponent( grip );
+	button->SetFakeFromAxis( device->GetAxisAt( device->GetAxisCount() - 1 ) );
+	button->SetIndex( device->GetButtonCount() );
+	device->AddButton( button );
+	
+	// gestures
+	deoxrDeviceComponent * const gesture = device->AddComponent(
+		deInputDeviceComponent::ectGesture, "Hand Gesture", "handGesture", "Hand Gesture" );
+	
+	axis.TakeOver( new deoxrDeviceAxis( device ) );
+	axis->SetActionAnalog( oxr.GetAction( deVROpenXR::eiaGesturePinch ) );
+	axis->SetType( deInputDeviceAxis::eatGesture );
+	axis->SetRange( 0.0f, 1.0f );
+	axis->SetCenter( -1.0f );
+	axis->SetValue( -1.0f );
+	axis->SetName( "Pinch" );
+	axis->SetID( "ghpinch" );
+	axis->SetDisplayText( "Pinch" );
+	axis->SetIndex( device->GetAxisCount() );
+	axis->SetInputDeviceComponent( gesture );
+	device->AddAxis( axis );
+	
+	axis.TakeOver( new deoxrDeviceAxis( device ) );
+	axis->SetActionAnalog( oxr.GetAction( deVROpenXR::eiaGestureGrasp ) );
+	axis->SetType( deInputDeviceAxis::eatGesture );
+	axis->SetRange( 0.0f, 1.0f );
+	axis->SetCenter( -1.0f );
+	axis->SetValue( -1.0f );
+	axis->SetName( "Grasp" );
+	axis->SetID( "ghgrasp" );
+	axis->SetDisplayText( "Grasp" );
+	axis->SetIndex( device->GetAxisCount() );
+	axis->SetInputDeviceComponent( gesture );
+	device->AddAxis( axis );
+	
+	// hand tracking
 	pAddHandTracker( device, left );
 	
-	GetInstance().GetOxr().GetDevices().Add( device );
+	oxr.GetDevices().Add( device );
 }

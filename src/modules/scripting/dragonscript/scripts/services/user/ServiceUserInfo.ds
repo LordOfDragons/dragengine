@@ -1,0 +1,96 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Services.User
+
+
+/**
+ * \brief Information about user.
+ * 
+ * Used by different services to deliver information about a user. Certain fields
+ * are only present for specific services. Not all information can be retrieved at
+ * all times. Hence all fields can be null.
+ */
+class ServiceUserInfo
+	/**
+	 * \brief User identifier.
+	 */
+	public var String id
+	
+	/**
+	 * \brief User name.
+	 * 
+	 * This is usually the login name. Many services do not provide this information
+	 * since it is PII.
+	 */
+	public var String name
+	
+	/**
+	 * \brief Display user name.
+	 * 
+	 * This is the preferred name to display to refer to a user.
+	 */
+	public var String displayName
+	
+	/**
+	 * \brief Nickname.
+	 * 
+	 * Present if the user assigned a nickname to another user. This is private
+	 * information and should not be copied.
+	 */
+	public var String nickname
+	
+	/**
+	 * \brief Country.
+	 */
+	public var String country
+	
+	/**
+	 * \brief Preferred language in ISO 639 language code.
+	 */
+	public var String preferredLanguage
+	
+	/**
+	 * \brief Date the user has been last been online.
+	 */
+	public var TimeDate dateOnline
+	
+	/**
+	 * \brief URL or user profile.
+	 */
+	public var String profileUrl
+	
+	/**
+	 * \brief User avatar.
+	 */
+	public var ServiceImage avatar
+	
+	
+	
+	/**
+	 * \brief Create new instance of class ServiceUser.
+	 */
+	func new()
+	end
+end

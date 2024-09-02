@@ -178,10 +178,15 @@ class OBJECT_OT_ToolExportMerger(bpy.types.Operator):
             each.select_set(True)
 
         # note: 'convert' requires active_object which is bonkers
-        vl.objects.active = context.selected_objects[0]
+        o = context.selected_objects[0]
+        vl.objects.active = o
+
+        if o.library or o.data.library:
+            bpy.ops.object.make_local(type='SELECT_OBDATA')
 
         bpy.ops.object.make_single_user(
             object=True, obdata=True, material=False, animation=False)
+
         bpy.ops.object.convert(target='MESH')
 
         merge_object.select_set(True)
@@ -206,6 +211,14 @@ class OBJECT_OT_ToolExportMerger(bpy.types.Operator):
             # create working copy as full duplicate
             bpy.ops.object.duplicate(linked=False)
             workobj = vl.objects.active
+
+            # linking from another file can mess up this process
+            """
+            if workobj.library or workobj.data.library:
+                bpy.ops.object.make_local(type='SELECT_OBDATA')
+                bpy.ops.object.duplicate(linked=False)
+                workobj = vl.objects.active
+            """
 
             # remove all shape keys. this keeps the base shape.
             # this is required for certain modifiers to work

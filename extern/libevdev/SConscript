@@ -30,6 +30,9 @@ else:
 	staticFileName = envLibrary.subst(
 		'lib/${{LIBPREFIX}}{}${{LIBSUFFIX}}'.format(libLinkName))
 
+# fetching is always allowed
+nodeArtifacts = envLibrary.DownloadArtifactHelper('{}.tar.bz2'.format(srcdir), 'libevdev', 'lib_libevdev_fetch')
+
 # check if system libevdev is present
 hasSystemEvdev = False
 conf = envLibrary.Configure()
@@ -105,7 +108,7 @@ targets.extend([
 	'include/libevdev-1.0/libevdev/libevdev.h',
 	'include/libevdev-1.0/libevdev/libevdev-uinput.h'])
 
-library = envLibrary.Command(targets, '{}.tar.bz2'.format(srcdir),
+library = envLibrary.Command(targets, nodeArtifacts,
 	envLibrary.Action(libevdevBuild, 'Build libevdev'))
 
 if not buildStaticLinking:

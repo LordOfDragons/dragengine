@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 // includes
@@ -32,11 +35,12 @@
 #include "../deClassPathes.h"
 
 #include <dragengine/deEngine.h>
-#include <dragengine/systems/deScriptingSystem.h>
+#include <dragengine/app/deOS.h>
 #include <dragengine/errortracing/deErrorTrace.h>
 #include <dragengine/errortracing/deErrorTracePoint.h>
 #include <dragengine/errortracing/deErrorTraceValue.h>
-#include <dragengine/app/deOS.h>
+#include <dragengine/resources/service/deServiceManager.h>
+#include <dragengine/systems/deScriptingSystem.h>
 
 #include <libdscript/exceptions.h>
 #include <libdscript/dsMemoryManager.h>
@@ -92,6 +96,16 @@ DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid ){
 }
 void deClassEngine::nfQuit::RunFunction( dsRunTime*, dsValue* ){
 	( ( deClassEngine* )GetOwnerClass() )->GetDS().GetGameEngine()->Quit();
+}
+
+// static public func void restart(String info)
+deClassEngine::nfRestart::nfRestart( const sInitData &init ) :
+dsFunction( init.clsEngine, "restart", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid ){
+	p_AddParameter( init.clsString );
+}
+void deClassEngine::nfRestart::RunFunction( dsRunTime *rt, dsValue* ){
+	( ( deClassEngine* )GetOwnerClass() )->GetDS().RequestRestart( rt->GetValue( 0 )->GetString() );
 }
 
 
@@ -382,6 +396,25 @@ void deClassEngine::nfSetDefaultEnableGI::RunFunction( dsRunTime *rt, dsValue* )
 	( ( deClassEngine* )GetOwnerClass() )->SetDefaultEnableGI( rt->GetValue( 0 )->GetBool() );
 }
 
+// static public func bool getDefaultEnableAuralization()
+deClassEngine::nfGetDefaultEnableAuralization::nfGetDefaultEnableAuralization( const sInitData &init ) :
+dsFunction( init.clsEngine, "getDefaultEnableAuralization", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsBoolean ){
+}
+void deClassEngine::nfGetDefaultEnableAuralization::RunFunction( dsRunTime *rt, dsValue* ){
+	rt->PushBool( ( ( ( deClassEngine* )GetOwnerClass() )->GetDefaultEnableAuralization() ) );
+}
+
+// static public func void setDefaultEnableAuralization(bool enable)
+deClassEngine::nfSetDefaultEnableAuralization::nfSetDefaultEnableAuralization( const sInitData &init ) :
+dsFunction( init.clsEngine, "setDefaultEnableAuralization", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid ){
+	p_AddParameter( init.clsBoolean ); // enable
+}
+void deClassEngine::nfSetDefaultEnableAuralization::RunFunction( dsRunTime *rt, dsValue* ){
+	( ( deClassEngine* )GetOwnerClass() )->SetDefaultEnableAuralization( rt->GetValue( 0 )->GetBool() );
+}
+
 
 
 // static public func String getUserLocaleLanguage()
@@ -406,6 +439,41 @@ void deClassEngine::nfGetUserLocaleTerritory::RunFunction( dsRunTime *rt, dsValu
 
 
 
+// static public func Set getSupportedServices()
+deClassEngine::nfGetSupportedServices::nfGetSupportedServices( const sInitData &init ) :
+dsFunction( init.clsEngine, "getSupportedServices", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsSet ){
+}
+void deClassEngine::nfGetSupportedServices::RunFunction( dsRunTime *rt, dsValue* ){
+	const deScriptingDragonScript &ds = ( ( deClassEngine* )GetOwnerClass() )->GetDS();
+	const decStringSet names( ds.GetGameEngine()->GetServiceManager()->GetAllSupportedSerices() );
+	const dsEngine &sengine = *ds.GetScriptEngine();
+	const int count = names.GetCount();
+	int i;
+	
+	dsValue * const valueNames = rt->CreateValue( sengine.GetClassSet() );
+	
+	try{
+		rt->CreateObject( valueNames, sengine.GetClassSet(), 0 );
+		
+		for( i=0; i<count; i++ ){
+			rt->PushString( names.GetAt( i ) );
+			rt->RunFunction( valueNames, "add", 1 );
+		}
+		
+		rt->PushValue( valueNames );
+		rt->FreeValue( valueNames );
+		
+	}catch( ... ){
+		if( valueNames ){
+			rt->FreeValue( valueNames );
+		}
+		throw;
+	}
+}
+
+
+
 // Class deClassEngine
 ////////////////////////
 
@@ -415,7 +483,8 @@ void deClassEngine::nfGetUserLocaleTerritory::RunFunction( dsRunTime *rt, dsValu
 deClassEngine::deClassEngine( deScriptingDragonScript &ds ) :
 dsClass("Engine", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE),
 pDS( ds ),
-pDefaultEnableGI( false )
+pDefaultEnableGI( false ),
+pDefaultEnableAuralization( true )
 {
 	GetParserInfo()->SetParent( DENS_DRAGENGINE );
 	GetParserInfo()->SetBase( "Object" );
@@ -441,6 +510,7 @@ void deClassEngine::CreateClassMembers(dsEngine *engine){
 	init.clsFloat = engine->GetClassFloat();
 	init.clsBoolean = engine->GetClassBool();
 	init.clsString = engine->GetClassString();
+	init.clsSet = engine->GetClassSet();
 	init.clsDictionary = engine->GetClassDictionary();
 	init.clsWindow = engine->GetClass( DECN_WINDOW );
 	init.clsGame = pDS.GetClassGame();
@@ -451,6 +521,7 @@ void deClassEngine::CreateClassMembers(dsEngine *engine){
 	AddFunction( new nfGetGame( init ) );
 	AddFunction( new nfGetFPSRate( init ) );
 	AddFunction( new nfQuit( init ) );
+	AddFunction( new nfRestart( init ) );
 	AddFunction( new nfGetEditMode( init ) );
 	AddFunction( new nfLoadingResourceCount( init ) );
 	AddFunction( new nfLog( init ) );
@@ -474,9 +545,13 @@ void deClassEngine::CreateClassMembers(dsEngine *engine){
 	
 	AddFunction( new nfGetDefaultEnableGI( init ) );
 	AddFunction( new nfSetDefaultEnableGI( init ) );
+	AddFunction( new nfGetDefaultEnableAuralization( init ) );
+	AddFunction( new nfSetDefaultEnableAuralization( init ) );
 	
 	AddFunction( new nfGetUserLocaleLanguage( init ) );
 	AddFunction( new nfGetUserLocaleTerritory( init ) );
+	
+	AddFunction( new nfGetSupportedServices( init ) );
 
 	// calculate member offsets
 	CalcMemberOffsets();
@@ -484,4 +559,8 @@ void deClassEngine::CreateClassMembers(dsEngine *engine){
 
 void deClassEngine::SetDefaultEnableGI( bool enable ){
 	pDefaultEnableGI = enable;
+}
+
+void deClassEngine::SetDefaultEnableAuralization( bool enable ){
+	pDefaultEnableAuralization = enable;
 }

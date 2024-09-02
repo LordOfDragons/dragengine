@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -34,7 +37,7 @@
 #include "../../renderthread/deoglRTTexture.h"
 #include "../../renderthread/deoglRTDebug.h"
 
-#ifdef ANDROID
+#ifdef OS_ANDROID
 #include "../../framebuffer/deoglFramebuffer.h"
 #include "../../framebuffer/deoglFramebufferManager.h"
 #include "../../renderthread/deoglRTFramebuffer.h"
@@ -280,7 +283,7 @@ void deoglCubeMap::GetPixelsLevel( int level, deoglPixelBuffer &pixelBuffer ) co
 		return;
 	}
 	
-	#ifdef ANDROID
+	#ifdef OS_ANDROID
 	// glReadPixels under OpenGL ES does only support GL_RGBA and GL_RGBA_INTEGRAL.
 	// if something else is required (for exampel GL_RGB, GL_RG or GL_RED) we have
 	// to use a temporary texture containing 4 components and copy over from there.
@@ -289,7 +292,8 @@ void deoglCubeMap::GetPixelsLevel( int level, deoglPixelBuffer &pixelBuffer ) co
 	case deoglPixelBuffer::epfByte1:
 	case deoglPixelBuffer::epfByte2:
 	case deoglPixelBuffer::epfByte3:{
-		deoglPixelBuffer tempPixBuf( deoglPixelBuffer::epfByte4, size, size, 6 );
+		const deoglPixelBuffer::Ref tempPixBuf( deoglPixelBuffer::Ref::New(
+			new deoglPixelBuffer( deoglPixelBuffer::epfByte4, size, size, 6 ) ) );
 		const int count = size * size;
 		int i, j;
 		
@@ -299,7 +303,7 @@ void deoglCubeMap::GetPixelsLevel( int level, deoglPixelBuffer &pixelBuffer ) co
 		case deoglPixelBuffer::epfByte1:{
 			for( j=0; j<6; j++ ){
 				deoglPixelBuffer::sByte1 *dataDest = pixelBuffer.GetPointerByte1() + count;
-				const deoglPixelBuffer::sByte4 *dataSrc = tempPixBuf.GetPointerByte4() + count;
+				const deoglPixelBuffer::sByte4 *dataSrc = tempPixBuf->GetPointerByte4() + count;
 				for( i=0; i<count; i++ ){
 					dataDest[ i ].r = dataSrc[ i ].r;
 				}
@@ -309,7 +313,7 @@ void deoglCubeMap::GetPixelsLevel( int level, deoglPixelBuffer &pixelBuffer ) co
 		case deoglPixelBuffer::epfByte2:{
 			for( j=0; j<6; j++ ){
 				deoglPixelBuffer::sByte2 *dataDest = pixelBuffer.GetPointerByte2() + count;
-				const deoglPixelBuffer::sByte4 *dataSrc = tempPixBuf.GetPointerByte4() + count;
+				const deoglPixelBuffer::sByte4 *dataSrc = tempPixBuf->GetPointerByte4() + count;
 				for( i=0; i<count; i++ ){
 					dataDest[ i ].r = dataSrc[ i ].r;
 					dataDest[ i ].g = dataSrc[ i ].g;
@@ -320,7 +324,7 @@ void deoglCubeMap::GetPixelsLevel( int level, deoglPixelBuffer &pixelBuffer ) co
 		case deoglPixelBuffer::epfByte3:{
 			for( j=0; j<6; j++ ){
 				deoglPixelBuffer::sByte3 *dataDest = pixelBuffer.GetPointerByte3() + count;
-				const deoglPixelBuffer::sByte4 *dataSrc = tempPixBuf.GetPointerByte4() + count;
+				const deoglPixelBuffer::sByte4 *dataSrc = tempPixBuf->GetPointerByte4() + count;
 				for( i=0; i<count; i++ ){
 					dataDest[ i ].r = dataSrc[ i ].r;
 					dataDest[ i ].g = dataSrc[ i ].g;
@@ -337,7 +341,8 @@ void deoglCubeMap::GetPixelsLevel( int level, deoglPixelBuffer &pixelBuffer ) co
 	case deoglPixelBuffer::epfFloat1:
 	case deoglPixelBuffer::epfFloat2:
 	case deoglPixelBuffer::epfFloat3:{
-		deoglPixelBuffer tempPixBuf( deoglPixelBuffer::epfFloat4, size, size, 6 );
+		const deoglPixelBuffer::Ref tempPixBuf( deoglPixelBuffer::Ref::New(
+			new deoglPixelBuffer( deoglPixelBuffer::epfFloat4, size, size, 6 ) ) );
 		const int count = size * size;
 		int i, j;
 		
@@ -347,7 +352,7 @@ void deoglCubeMap::GetPixelsLevel( int level, deoglPixelBuffer &pixelBuffer ) co
 		case deoglPixelBuffer::epfFloat1:{
 			for( j=0; j<6; j++ ){
 				deoglPixelBuffer::sFloat1 *dataDest = pixelBuffer.GetPointerFloat1() + count;
-				const deoglPixelBuffer::sFloat4 *dataSrc = tempPixBuf.GetPointerFloat4() + count;
+				const deoglPixelBuffer::sFloat4 *dataSrc = tempPixBuf->GetPointerFloat4() + count;
 				for( i=0; i<count; i++ ){
 					dataDest[ i ].r = dataSrc[ i ].r;
 				}
@@ -357,7 +362,7 @@ void deoglCubeMap::GetPixelsLevel( int level, deoglPixelBuffer &pixelBuffer ) co
 		case deoglPixelBuffer::epfFloat2:{
 			for( j=0; j<6; j++ ){
 				deoglPixelBuffer::sFloat2 *dataDest = pixelBuffer.GetPointerFloat2() + count;
-				const deoglPixelBuffer::sFloat4 *dataSrc = tempPixBuf.GetPointerFloat4() + count;
+				const deoglPixelBuffer::sFloat4 *dataSrc = tempPixBuf->GetPointerFloat4() + count;
 				for( i=0; i<count; i++ ){
 					dataDest[ i ].r = dataSrc[ i ].r;
 					dataDest[ i ].g = dataSrc[ i ].g;
@@ -368,7 +373,7 @@ void deoglCubeMap::GetPixelsLevel( int level, deoglPixelBuffer &pixelBuffer ) co
 		case deoglPixelBuffer::epfFloat3:{
 			for( j=0; j<6; j++ ){
 				deoglPixelBuffer::sFloat3 *dataDest = pixelBuffer.GetPointerFloat3() + count;
-				const deoglPixelBuffer::sFloat4 *dataSrc = tempPixBuf.GetPointerFloat4() + count;
+				const deoglPixelBuffer::sFloat4 *dataSrc = tempPixBuf->GetPointerFloat4() + count;
 				for( i=0; i<count; i++ ){
 					dataDest[ i ].r = dataSrc[ i ].r;
 					dataDest[ i ].g = dataSrc[ i ].g;
@@ -572,7 +577,7 @@ void deoglCubeMap::UpdateMemoryUsage(){
 		return;
 	}
 	
-	#ifdef ANDROID
+	#ifdef OS_ANDROID
 	pMemUse.SetUncompressed( *pFormat, pSize, pSize, 6, pRealMipMapLevelCount );
 	
 	#else

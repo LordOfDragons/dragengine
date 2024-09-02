@@ -1,0 +1,834 @@
+diff -rupN org-dragonscript-1.4/doc/nativeclasses/float.ds cur-dragonscript-1.4/doc/nativeclasses/float.ds
+--- org-dragonscript-1.4/doc/nativeclasses/float.ds	2023-01-28 23:41:53.000000000 +0100
++++ cur-dragonscript-1.4/doc/nativeclasses/float.ds	2024-06-11 09:34:52.305267000 +0200
+@@ -28,7 +28,7 @@ fixed class float
+ 	/** \name Constructors */
+ 	/*@{*/
+ 	/** \brief Create float. */
+-	public func new()
++	func new()
+ 	end
+ 	/*@}*/
+ 	
+@@ -43,7 +43,7 @@ fixed class float
+ 	 * \retval <0 This float value is less than the other float value.
+ 	 * \retval >0 This float value is greater than the other float value.
+ 	 */
+-	public func int compare( Object other )
++	func int compare(Object other)
+ 		return 0
+ 	end
+ 	
+@@ -51,17 +51,17 @@ fixed class float
+ 	 * \brief Integer is equal to another float.
+ 	 * \returns \em true if \em other is of type float and both are equal.
+ 	 */
+-	public func bool equals( Object other )
++	func bool equals(Object other)
+ 		return false
+ 	end
+ 	
+ 	/** \brief Hash code for use as dictionary keys. */
+-	public func int hashCode()
++	func int hashCode()
+ 		return 0
+ 	end
+ 	
+ 	/** \brief String representation of float value. */
+-	public func String toString()
++	func String toString()
+ 		return null
+ 	end
+ 	/*@}*/
+@@ -70,63 +70,179 @@ fixed class float
+ 	
+ 	/** \name Operators */
+ 	/*@{*/
+-	/** \brief Integer value is less than another float value. */
+-	public func bool <( float other )
++	/** \brief Float value is less than another float value. */
++	func bool <(float other)
+ 		return false
+ 	end
+ 	
+-	/** \brief Integer value is less than or equal to another float value. */
+-	public func bool <=( float other )
++	/** \brief Float value is less than another int value. */
++	func bool <(int other)
+ 		return false
+ 	end
+ 	
+-	/** \brief Integer value is greater than another float value. */
+-	public func bool >( float other )
++	/** \brief Float value is less than another byte value. */
++	func bool <(byte other)
+ 		return false
+ 	end
+ 	
+-	/** \brief Integer value is greater than or equal to another float value. */
+-	public func bool >=( float other )
++	/** \brief Float value is less than or equal to another float value. */
++	func bool <=(float other)
+ 		return false
+ 	end
+ 	
++	/** \brief Float value is less than or equal to another integer value. */
++	func bool <=(int other)
++		return false
++	end
++	
++	/** \brief Float value is less than or equal to another byte value. */
++	func bool <=(byte other)
++		return false
++	end
++	
++	/** \brief Float value is greater than another float value. */
++	func bool >(float other)
++		return false
++	end
++	
++	/** \brief Float value is greater than another integer value. */
++	func bool >(int other)
++		return false
++	end
++	
++	/** \brief Float value is greater than another byte value. */
++	func bool >(byte other)
++		return false
++	end
++	
++	/** \brief Float value is greater than or equal to another float value. */
++	func bool >=(float other)
++		return false
++	end
++	
++	/** \brief Float value is greater than or equal to another int value. */
++	func bool >=(int other)
++		return false
++	end
++	
++	/** \brief Float value is greater than or equal to another byte value. */
++	func bool >=(byte other)
++		return false
++	end
++	
++	
++	
++	/** \brief Float plus another float value. */
++	func float +(float other)
++		return 0.0
++	end
++	
++	/** \brief Float plus another integer value. */
++	func float +(int other)
++		return 0.0
++	end
++	
++	/** \brief Float plus another byte value. */
++	func float +(byte other)
++		return 0.0
++	end
++	
++	/** \brief Float minus another float value. */
++	func float -(float other)
++		return 0.0
++	end
++	
++	/** \brief Float minus another integer value. */
++	func float -(int other)
++		return 0.0
++	end
++	
++	/** \brief Float minus another byte value. */
++	func float -(byte other)
++		return 0.0
++	end
+ 	
++	/** \brief Float value timer another float value. */
++	func float *(float other)
++		return 0.0
++	end
+ 	
+-	/** \brief Integer plus another float value. */
+-	public func float +( float other )
++	/** \brief Float value timer another integer value. */
++	func float *(int other)
+ 		return 0.0
+ 	end
+ 	
+-	/** \brief Integer minus another float value. */
+-	public func float -( float other )
++	/** \brief Float value timer another byte value. */
++	func float *(byte other)
+ 		return 0.0
+ 	end
+ 	
+-	/** \brief Integer value timer another float value. */
+-	public func float *( float other )
++	/**
++	 * \brief Float value divided by another float value.
++	 * \throws EDivisionByZero \em other is 0.
++	 */
++	func float /(float other)
+ 		return 0.0
+ 	end
+ 	
+ 	/**
+-	 * \brief Integer value divided by another float value.
++	 * \brief Float value divided by another integer value.
+ 	 * \throws EDivisionByZero \em other is 0.
+ 	 */
+-	public func float /( float other )
++	func float /(int other)
++		return 0.0
++	end
++	
++	/**
++	 * \brief Float value divided by another byte value.
++	 * \throws EDivisionByZero \em other is 0.
++	 */
++	func float /(byte other)
+ 		return 0.0
+ 	end
+ 	
+ 	/** \brief Set float value to float value plus another float value. */
+-	public func float +=( float other )
++	func float +=(float other)
++		return 0.0
++	end
++	
++	/** \brief Set float value to float value plus another integer value. */
++	func float +=(int other)
++		return 0.0
++	end
++	
++	/** \brief Set float value to float value plus another byte value. */
++	func float +=(byte other)
+ 		return 0.0
+ 	end
+ 	
+ 	/** \brief Set float value to float value minus another float value. */
+-	public func float -=( float other )
++	func float -=(float other)
++		return 0.0
++	end
++	
++	/** \brief Set float value to float value minus another integer value. */
++	func float -=(int other)
++		return 0.0
++	end
++	
++	/** \brief Set float value to float value minus another byte value. */
++	func float -=(byte other)
+ 		return 0.0
+ 	end
+ 	
+ 	/** \brief Set float value to float value timer another float value. */
+-	public func float *=( float other )
++	func float *=(float other)
++		return 0.0
++	end
++	
++	/** \brief Set float value to float value timer another integer value. */
++	func float *=(int other)
++		return 0.0
++	end
++	
++	/** \brief Set float value to float value timer another byte value. */
++	func float *=(byte other)
+ 		return 0.0
+ 	end
+ 	
+@@ -134,24 +250,40 @@ fixed class float
+ 	 * \brief Set float value to float value divided by another float value.
+ 	 * \throws EDivisionByZero \em other is 0.
+ 	 */
+-	public func float /=( float other )
++	func float /=(float other)
++		return 0.0
++	end
++	
++	/**
++	 * \brief Set float value to float value divided by another integer value.
++	 * \throws EDivisionByZero \em other is 0.
++	 */
++	func float /=(int other)
++		return 0.0
++	end
++	
++	/**
++	 * \brief Set float value to float value divided by another byte value.
++	 * \throws EDivisionByZero \em other is 0.
++	 */
++	func float /=(byte other)
+ 		return 0.0
+ 	end
+ 	
+ 	
+ 	
+ 	/** \brief Increment float value by one. */
+-	public func float ++()
++	func float ++()
+ 		return 0.0
+ 	end
+ 	
+ 	/** \brief Decrement float value by one. */
+-	public func float --()
++	func float --()
+ 		return 0.0
+ 	end
+ 	
+ 	/** \brief Negated value. */
+-	public func float -()
++	func float -()
+ 		return 0.0
+ 	end
+ end
+@@ -167,7 +299,7 @@ fixed class Float
+ 	/** \name Constructors */
+ 	/*@{*/
+ 	/** \brief Create float. */
+-	public func new( float value )
++	func new(float value)
+ 	end
+ 	/*@}*/
+ 	
+@@ -176,7 +308,7 @@ fixed class Float
+ 	/** \name Management */
+ 	/*@{*/
+ 	/** \brief Float value. */
+-	public func float value()
++	func float value()
+ 		return 0.0
+ 	end
+ 	
+@@ -184,22 +316,22 @@ fixed class Float
+ 	 * \brief Float is equal to another float.
+ 	 * \returns \em true if \em other is of type Float and both are equal.
+ 	 */
+-	public func bool equals( Object other )
++	func bool equals(Object other)
+ 		return false
+ 	end
+ 	
+ 	/** \brief Value difference between objects. */
+-	public func int compare( Object other )
++	func int compare(Object other)
+ 		return 0
+ 	end
+ 	
+ 	/** \brief Hash code for use as dictionary keys. */
+-	public func int hashCode()
++	func int hashCode()
+ 		return 0
+ 	end
+ 	
+ 	/** \brief String representation of float value. */
+-	public func String toString()
++	func String toString()
+ 		return null
+ 	end
+ 	/*@}*/
+diff -rupN org-dragonscript-1.4/doc/nativeclasses/int.ds cur-dragonscript-1.4/doc/nativeclasses/int.ds
+--- org-dragonscript-1.4/doc/nativeclasses/int.ds	2023-01-28 23:41:53.000000000 +0100
++++ cur-dragonscript-1.4/doc/nativeclasses/int.ds	2024-06-11 09:34:52.305267000 +0200
+@@ -28,7 +28,7 @@ fixed class int
+ 	/** \name Constructors */
+ 	/*@{*/
+ 	/** \brief Create integer. */
+-	public func new()
++	func new()
+ 	end
+ 	/*@}*/
+ 	
+@@ -43,7 +43,7 @@ fixed class int
+ 	 * \retval <0 This integer value is less than the other integer value.
+ 	 * \retval >0 This integer value is greater than the other integer value.
+ 	 */
+-	public func int compare( Object other )
++	func int compare(Object other)
+ 		return 0
+ 	end
+ 	
+@@ -51,17 +51,17 @@ fixed class int
+ 	 * \brief Integer is equal to another integer.
+ 	 * \returns \em true if \em other is of type integer and both are equal.
+ 	 */
+-	public func bool equals( Object other )
++	func bool equals(Object other)
+ 		return false
+ 	end
+ 	
+ 	/** \brief Hash code for use as dictionary keys. */
+-	public func int hashCode()
++	func int hashCode()
+ 		return 0
+ 	end
+ 	
+ 	/** \brief String representation of integer value. */
+-	public func String toString()
++	func String toString()
+ 		return null
+ 	end
+ 	/*@}*/
+@@ -71,109 +71,109 @@ fixed class int
+ 	/** \name Operators */
+ 	/*@{*/
+ 	/** \brief Integer value is less than another integereger value. */
+-	public func bool <( byte other )
++	func bool <(byte other)
+ 		return false
+ 	end
+ 	
+ 	/** \brief Integer value is less than another integereger value. */
+-	public func bool <( int other )
++	func bool <(int other)
+ 		return false
+ 	end
+ 	
+ 	/** \brief Integer value is less than another integereger value. */
+-	public func bool <( float other )
++	func bool <(float other)
+ 		return false
+ 	end
+ 	
+ 	/** \brief Integer value is less than or equal to another integereger value. */
+-	public func bool <=( byte other )
++	func bool <=(byte other)
+ 		return false
+ 	end
+ 	
+ 	/** \brief Integer value is less than or equal to another integereger value. */
+-	public func bool <=( int other )
++	func bool <=(int other)
+ 		return false
+ 	end
+ 	
+ 	/** \brief Integer value is less than or equal to another integereger value. */
+-	public func bool <=( float other )
++	func bool <=(float other)
+ 		return false
+ 	end
+ 	
+ 	/** \brief Integer value is greater than another integereger value. */
+-	public func bool >( byte other )
++	func bool >(byte other)
+ 		return false
+ 	end
+ 	
+ 	/** \brief Integer value is greater than another integereger value. */
+-	public func bool >( int other )
++	func bool >(int other)
+ 		return false
+ 	end
+ 	
+ 	/** \brief Integer value is greater than another integereger value. */
+-	public func bool >( float other )
++	func bool >(float other)
+ 		return false
+ 	end
+ 	
+ 	/** \brief Integer value is greater than or equal to another integereger value. */
+-	public func bool >=( byte other )
++	func bool >=(byte other)
+ 		return false
+ 	end
+ 	
+ 	/** \brief Integer value is greater than or equal to another integereger value. */
+-	public func bool >=( int other )
++	func bool >=(int other)
+ 		return false
+ 	end
+ 	
+ 	/** \brief Integer value is greater than or equal to another integereger value. */
+-	public func bool >=( float other )
++	func bool >=(float other)
+ 		return false
+ 	end
+ 	
+ 	
+ 	
+ 	/** \brief Integer plus another integereger value. */
+-	public func int +( byte other )
++	func int +(byte other)
+ 		return 0
+ 	end
+ 	
+ 	/** \brief Integer plus another integereger value. */
+-	public func int +( int other )
++	func int +(int other)
+ 		return 0
+ 	end
+ 	
+ 	/** \brief Integer plus another integereger value. */
+-	public func float +( float other )
++	func float +(float other)
+ 		return 0.0
+ 	end
+ 	
+ 	/** \brief Integer minus another integereger value. */
+-	public func int -( byte other )
++	func int -(byte other)
+ 		return 0
+ 	end
+ 	
+ 	/** \brief Integer minus another integereger value. */
+-	public func int -( int other )
++	func int -(int other)
+ 		return 0
+ 	end
+ 	
+ 	/** \brief Integer minus another integereger value. */
+-	public func float -( float other )
++	func float -(float other)
+ 		return 0.0
+ 	end
+ 	
+ 	/** \brief Integer value timer another integereger value. */
+-	public func int *( byte other )
++	func int *(byte other)
+ 		return 0
+ 	end
+ 	
+ 	/** \brief Integer value timer another integereger value. */
+-	public func int *( int other )
++	func int *(int other)
+ 		return 0
+ 	end
+ 	
+ 	/** \brief Integer value timer another integereger value. */
+-	public func float *( float other )
++	func float *(float other)
+ 		return 0.0
+ 	end
+ 	
+@@ -181,7 +181,7 @@ fixed class int
+ 	 * \brief Integer value divided by another integereger value.
+ 	 * \throws EDivisionByZero \em other is 0.
+ 	 */
+-	public func int /( byte other )
++	func int /(byte other)
+ 		return 0
+ 	end
+ 	
+@@ -189,7 +189,7 @@ fixed class int
+ 	 * \brief Integer value divided by another integereger value.
+ 	 * \throws EDivisionByZero \em other is 0.
+ 	 */
+-	public func int /( int other )
++	func int /(int other)
+ 		return 0
+ 	end
+ 	
+@@ -197,67 +197,67 @@ fixed class int
+ 	 * \brief Integer value divided by another integereger value.
+ 	 * \throws EDivisionByZero \em other is 0.
+ 	 */
+-	public func float /( float other )
++	func float /(float other)
+ 		return 0.0
+ 	end
+ 	
+ 	/** \brief Integer modulo another integereger value. */
+-	public func int %( byte other )
++	func int %(byte other)
+ 		return 0
+ 	end
+ 	
+ 	/** \brief Integer modulo another integereger value. */
+-	public func int %( int other )
++	func int %(int other)
+ 		return 0
+ 	end
+ 	
+ 	/** \brief Integer left shifted by digits. */
+-	public func int <<( byte digits )
++	func int <<(byte digits)
+ 		return 0
+ 	end
+ 	
+ 	/** \brief Integer left shifted by digits. */
+-	public func int <<( int digits )
++	func int <<(int digits)
+ 		return 0
+ 	end
+ 	
+ 	/** \brief Integer right shifted by digits. */
+-	public func int >>( byte digits )
++	func int >>(byte digits)
+ 		return 0
+ 	end
+ 	
+ 	/** \brief Integer right shifted by digits. */
+-	public func int >>( int digits )
++	func int >>(int digits)
+ 		return 0
+ 	end
+ 	
+ 	/** \brief Set integer value to integer value plus another integereger value. */
+-	public func int +=( byte other )
++	func int +=(byte other)
+ 		return 0
+ 	end
+ 	
+ 	/** \brief Set integer value to integer value plus another integereger value. */
+-	public func int +=( int other )
++	func int +=(int other)
+ 		return 0
+ 	end
+ 	
+ 	/** \brief Set integer value to integer value minus another integereger value. */
+-	public func int -=( byte other )
++	func int -=(byte other)
+ 		return 0
+ 	end
+ 	
+ 	/** \brief Set integer value to integer value minus another integereger value. */
+-	public func int -=( int other )
++	func int -=(int other)
+ 		return 0
+ 	end
+ 	
+ 	/** \brief Set integer value to integer value timer another integereger value. */
+-	public func int *=( byte other )
++	func int *=(byte other)
+ 		return 0
+ 	end
+ 	
+ 	/** \brief Set integer value to integer value timer another integereger value. */
+-	public func int *=( int other )
++	func int *=(int other)
+ 		return 0
+ 	end
+ 	
+@@ -265,7 +265,7 @@ fixed class int
+ 	 * \brief Set integer value to integer value divided by another integereger value.
+ 	 * \throws EDivisionByZero \em other is 0.
+ 	 */
+-	public func int /=( int other )
++	func int /=(int other)
+ 		return 0
+ 	end
+ 	
+@@ -273,116 +273,116 @@ fixed class int
+ 	 * \brief Set integer value to integer value divided by another integereger value.
+ 	 * \throws EDivisionByZero \em other is 0.
+ 	 */
+-	public func int /=( byte other )
++	func int /=(byte other)
+ 		return 0
+ 	end
+ 	
+ 	/** \brief Set integer value to integer modulo another integereger value. */
+-	public func int %=( byte other )
++	func int %=(byte other)
+ 		return 0
+ 	end
+ 	
+ 	/** \brief Set integer value to integer modulo another integereger value. */
+-	public func int %=( int other )
++	func int %=(int other)
+ 		return 0
+ 	end
+ 	
+ 	/** \brief Set integer value to integer value left shifted by digits. */
+-	public func int <<=( byte digits )
++	func int <<=(byte digits)
+ 		return 0
+ 	end
+ 	
+ 	/** \brief Set integer value to integer value left shifted by digits. */
+-	public func int <<=( int digits )
++	func int <<=(int digits)
+ 		return 0
+ 	end
+ 	
+ 	/** \brief Set integer value to integer value right shifted by digits. */
+-	public func int >>=( byte digits )
++	func int >>=(byte digits)
+ 		return 0
+ 	end
+ 	
+ 	/** \brief Set integer value to integer value right shifted by digits. */
+-	public func int >>=( int digits )
++	func int >>=(int digits)
+ 		return 0
+ 	end
+ 	
+ 	
+ 	
+ 	/** \brief Bitwise and between this integer and another integer. */
+-	public func int &( byte other )
++	func int &(byte other)
+ 		return 0
+ 	end
+ 	
+ 	/** \brief Bitwise and between this integer and another integer. */
+-	public func int &( int other )
++	func int &(int other)
+ 		return 0
+ 	end
+ 	
+ 	/** \brief Bitwise  or between this integer and another integer. */
+-	public func int |( byte other )
++	func int |(byte other)
+ 		return 0
+ 	end
+ 	
+ 	/** \brief Bitwise  or between this integer and another integer. */
+-	public func int |( int other )
++	func int |(int other)
+ 		return 0
+ 	end
+ 	
+ 	/** \brief Bitwise xor between this integer and another integer. */
+-	public func int ^( byte other )
++	func int ^(byte other)
+ 		return 0
+ 	end
+ 	
+ 	/** \brief Bitwise xor between this integer and another integer. */
+-	public func int ^( int other )
++	func int ^(int other)
+ 		return 0
+ 	end
+ 	
+ 	/** \brief Set integer value to bitwise and between this integer and another integer and return new value. */
+-	public func int &=( byte other )
++	func int &=(byte other)
+ 		return 0
+ 	end
+ 	
+ 	/** \brief Set integer value to bitwise and between this integer and another integer and return new value. */
+-	public func int &=( int other )
++	func int &=(int other)
+ 		return 0
+ 	end
+ 	
+ 	/** \brief Set integer value to bitwise or between this integer and another integer and return new value. */
+-	public func int |=( byte other )
++	func int |=(byte other)
+ 		return 0
+ 	end
+ 	
+ 	/** \brief Set integer value to bitwise or between this integer and another integer and return new value. */
+-	public func int |=( int other )
++	func int |=(int other)
+ 		return 0
+ 	end
+ 	
+ 	/** \brief Set integer value to bitwise xor between this integer and another integer and return new value. */
+-	public func int ^=( byte other )
++	func int ^=(byte other)
+ 		return 0
+ 	end
+ 	
+ 	/** \brief Set integer value to bitwise xor between this integer and another integer and return new value. */
+-	public func int ^=( int other )
++	func int ^=(int other)
+ 		return 0
+ 	end
+ 	
+ 	
+ 	
+ 	/** \brief Increment integer value by one. */
+-	public func int ++()
++	func int ++()
+ 		return 0
+ 	end
+ 	
+ 	/** \brief Decrement integer value by one. */
+-	public func int --()
++	func int --()
+ 		return 0
+ 	end
+ 	
+ 	/** \brief Negated value. */
+-	public func int -()
++	func int -()
+ 		return 0
+ 	end
+ end
+diff -rupN org-dragonscript-1.4/doc/nativeclasses/String.ds cur-dragonscript-1.4/doc/nativeclasses/String.ds
+--- org-dragonscript-1.4/doc/nativeclasses/String.ds	2023-01-28 23:41:53.000000000 +0100
++++ cur-dragonscript-1.4/doc/nativeclasses/String.ds	2024-06-11 09:34:52.305267000 +0200
+@@ -304,6 +304,22 @@ fixed class String
+ 		return null
+ 	end
+ 	
++	/**
++	 * \brief String split by character.
++	 * \details Consecutive runs of \em character produce empty string entries.
++	 */
++	public func Array splitExact( byte character )
++		return null
++	end
++	
++	/**
++	 * \brief String split by any character from a list of characters.
++	 * \details Consecutive runs of any character from \em characters produce empty string entries.
++	 */
++	public func Array splitExact( String characters )
++		return null
++	end
++	
+ 	/** \brief String with replaced characters. */
+ 	public func String replace( byte replace, byte with )
+ 		return null
+diff -rupN org-dragonscript-1.4/site_scons/site_tools/crosscompile/android.py cur-dragonscript-1.4/site_scons/site_tools/crosscompile/android.py
+--- org-dragonscript-1.4/site_scons/site_tools/crosscompile/android.py	2023-01-28 23:41:53.000000000 +0100
++++ cur-dragonscript-1.4/site_scons/site_tools/crosscompile/android.py	2024-06-11 11:29:44.186705989 +0200
+@@ -27,13 +27,17 @@ from SCons.Variables import Variables, P
+ from SCons.Script import ARGUMENTS
+ 
+ def generate(env, configGroup):
++	ndkroot = ''
++	if 'NDK_ROOT' in os.environ:
++		ndkroot = os.path.expanduser(os.environ['NDK_ROOT'])
++	
+ 	# add parameters to configurate toolchain
+ 	params = Variables(env['PARAMETER_SOURCE'], ARGUMENTS)
+ 	params.Add(PathVariable('android_ndkroot',
+ 		'Path to Android NDK toolchain (NDK_ROOT env-param by default)',
+-		os.path.expanduser(os.environ['NDK_ROOT']), PathVariable.PathAccept ) )
++		ndkroot, PathVariable.PathAccept ) )
+ 	params.Add(EnumVariable('android_arch', 'Android architecture to build for',
+-		'armv7a', ['armv7','armv7a','armv8','x86','x86_64'] ) )
++		'armv7a', ['armv7','armv7a','aarch64','x86','x86_64'] ) )
+ 	params.Add(('android_apilevel', 'Android API level', '18'))
+ 	params.Add(('android_gccversion', 'Android NDK GCC version', '4.9'))
+ 	params.Update(env)
+@@ -66,9 +70,9 @@ def generate(env, configGroup):
+ 		fullarch = 'armeabi-v7a'
+ 		hardfp = True
+ 		
+-	elif env['android_arch'] == 'armv8':
+-		abi = 'androideabi'
+-		fullarch = 'armeabi-v8'
++	elif env['android_arch'] == 'aarch64':
++		abi = 'android'
++		fullarch = 'arm64-v8a'
+ 		hardfp = True
+ 		
+ 	elif env['android_arch'] == 'x86':
+diff -rupN org-dragonscript-1.4/src/scriptengine/dsRunTime.cpp dragonscript-1.4/src/scriptengine/dsRunTime.cpp
+--- org-dragonscript-1.4/src/scriptengine/dsRunTime.cpp	2023-01-28 23:41:53.000000000 +0100
++++ dragonscript-1.4/src/scriptengine/dsRunTime.cpp	2024-06-11 14:10:59.799320409 +0200
+@@ -1631,7 +1631,7 @@ void dsRunTime::p_ExecFunc(dsRealObject
+ 				if( primType == DSPT_BYTE ){
+ 					SetByte( &tmpVal, execObj->GetByte() & vTmpValPtr->GetByte() );
+ 				}else if( primType == DSPT_BOOL ){
+-					SetBool( &tmpVal, execObj->GetBool() & vTmpValPtr->GetBool() );
++					SetBool( &tmpVal, execObj->GetBool() && vTmpValPtr->GetBool() );
+ 				}else if( primType == DSPT_INT ){
+ 					SetInt( &tmpVal, execObj->GetInt() & vTmpValPtr->GetInt() );
+ 				}
+@@ -1646,7 +1646,7 @@ void dsRunTime::p_ExecFunc(dsRealObject
+ 				if( primType == DSPT_BYTE ){
+ 					SetByte( &tmpVal, execObj->GetByte() | vTmpValPtr->GetByte() );
+ 				}else if( primType == DSPT_BOOL ){
+-					SetBool( &tmpVal, execObj->GetBool() | vTmpValPtr->GetBool() );
++					SetBool( &tmpVal, execObj->GetBool() || vTmpValPtr->GetBool() );
+ 				}else if( primType == DSPT_INT ){
+ 					SetInt( &tmpVal, execObj->GetInt() | vTmpValPtr->GetInt() );
+ 				}

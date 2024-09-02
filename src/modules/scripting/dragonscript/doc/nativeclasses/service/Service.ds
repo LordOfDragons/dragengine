@@ -1,0 +1,131 @@
+//////////////////////////////////////////////////////////////////////////////////
+//                                                                              //
+//                 This is a native class documentation                         //
+//                                                                              //
+//                  This file is used only for DoxyGen                          //
+//                                                                              //
+//////////////////////////////////////////////////////////////////////////////////
+
+namespace Dragengine
+
+pin Dragengine.Gui
+
+/**
+ * \brief Service.
+ * \version 1.23
+ * 
+ * Services provide various platform or community functionality not handled by other modules.
+ * Such services are typically queried infrequently and take a certain time time complete.
+ * For this reason service request are asynchronous. Data is carried in a generic
+ * deServiceObject object. Users have to know the interface of the service. There is no
+ * support to query interface structure unless a service desires to provide these using
+ * a special service query.
+ * 
+ * Each service has a unique name across the entire game engine instance. If the name of
+ * services of different service modules collide it is undefined which service the user
+ * receives.
+ * 
+ * This is a native class.
+ */
+class Service
+	/** \name Constructors */
+	/*@{*/
+	/**
+	 * \brief Create named service.
+	 * \throw EInvalidParam Named service not supported by any loaded service module.
+	 * \param name Unique name of service to create.
+	 */
+	func new(String name)
+	end
+	
+	/**
+	 * \brief Create named service with additional creation data.
+	 * \throw EInvalidParam Named service not supported by any loaded service module.
+	 * \param name Unique name of service to create.
+	 * \param data Additional data required for creating service.
+	 */
+	func new(String name, ServiceObject data)
+	end
+	/*@}*/
+	
+	
+	
+	/** \name Management */
+	/*@{*/
+	/** \brief Service name. */
+	func String getName()
+		return null
+	end
+	
+	
+	
+	/** \brief Get listener or null. */
+	func ServiceListener getListener()
+		return null
+	end
+	
+	/** \brief Set listener or null. */
+	func void setListener(ServiceListener listener)
+	end
+	
+	
+	
+	/**
+	 * \brief Next request identifier.
+	 *
+	 * Call this method to obtain the next global request identifier to use for calling
+	 * \ref #startRequest(UniqueID,ServiceObject). The returned identifier is unique
+	 * across all services for until the application is shut down.
+	 */
+	static func UniqueID nextId()
+		return null
+	end
+	
+	
+	
+	/**
+	 * \brief Start service request.
+	 * 
+	 * Assigned service listener will be called with the received answer. Depending on the
+	 * service one or more responses can be received. Use this call if you are only interested
+	 * in the response not which request it belongs to and if you do not need to cancel
+	 * the request later on.
+	 *
+	 * \param request Request to send. Content depends on service and function to invoke.
+	 */
+	func void startRequest(ServiceObject request)
+	end
+	
+	/**
+	 * \brief Start service request.
+	 * 
+	 * Assigned service listener will be called with the received answer. Depending on the
+	 * service one or more responses can be received. Call \ref #nextId() to obtain the next
+	 * unique identifier to use for the request. This allows to identify which response has
+	 * been triggered by which request by matching the identifier in the response against
+	 * the identifier used in the request. Using this call is required if you have the need
+	 * to potentially cancel the request.
+	 *
+	 * \param id Identifier to use to match responses.
+	 * \param request Request to send. Content depends on service and function to invoke.
+	 */
+	func void startRequest(UniqueID id, ServiceObject request)
+	end
+	
+	/**
+	 * \brief Cancel service request if running.
+	 * \param id Identifier of request to cancel.
+	 */
+	func void cancelRequest(UniqueID id)
+	end
+	
+	/**
+	 * \brief Run action returning result immediately.
+	 * 
+	 * Can return nullptr if action has no return value.
+	 */
+	func ServiceObject runAction(ServiceObject action)
+		return null
+	end
+	/*@}*/
+end

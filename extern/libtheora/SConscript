@@ -35,6 +35,10 @@ else:
 		format( libLinkName[ x ] ) )
 			for x in range( len( libLinkName ) ) ]
 
+# fetching is always allowed
+nodeArtifacts = envLibrary.DownloadArtifactHelper(
+	'{}.tar.bz2'.format(srcdir), 'libtheora', 'lib_libtheora_fetch')
+
 # check if system libtheora is present
 hasSystemVorbis = False
 conf = envLibrary.Configure()
@@ -90,8 +94,12 @@ def libtheoraBuild( target, source, env ):
 		cmdline.append( '--enable-static=no' )
 	
 	if 'CROSSCOMPILE_HOST' in env:
-		cmdline.append('--host={}'.format(env['CROSSCOMPILE_HOST']))
-		cmdline.append('--target={}'.format(env['CROSSCOMPILE_HOST']))
+		if env['platform_android'] == 'armv8':
+			cmdline.append('--host=armv8-android-linux')
+			cmdline.append('--target=armv8-android-linux')
+		else:
+			cmdline.append('--host={}'.format(env['CROSSCOMPILE_HOST']))
+			cmdline.append('--target={}'.format(env['CROSSCOMPILE_HOST']))
 	
 	script.append( '{} || exit 1'.format( ' '.join( cmdline ) ) )
 	
@@ -119,8 +127,7 @@ targets.append( 'include/theora/theoradec.h' )
 targets.append( 'include/theora/theoraenc.h' )
 targets.append( 'include/theora/theora.h' )
 targets.append( 'include/theora/codec.h' )
-library = envLibrary.Command( targets, '{}.tar.bz2'.format( srcdir ),
-	envLibrary.Action(libtheoraBuild, 'Build libtheora' ) )
+library = envLibrary.Command( targets, nodeArtifacts, envLibrary.Action(libtheoraBuild, 'Build libtheora' ) )
 
 if gnuConfigUpdate:
 	envLibrary.Depends(library, gnuConfigUpdate)

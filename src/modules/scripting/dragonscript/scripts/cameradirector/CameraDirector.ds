@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -77,6 +80,7 @@ class CameraDirector
 	var LayerMask pLayerMask
 	var bool pEnableHDRR
 	var bool pEnableGI
+	var bool pEnableAuralization
 	var float pWhiteIntensity
 	var float pBloomIntensity
 	var float pBloomStrength
@@ -98,6 +102,7 @@ class CameraDirector
 		pViewDistance = 200
 		pEnableHDRR = true
 		pEnableGI = Engine.getDefaultEnableGI()
+		pEnableAuralization = Engine.getDefaultEnableAuralization()
 		pWhiteIntensity = 3
 		pBloomIntensity = 4
 		pBloomStrength = 1
@@ -274,6 +279,22 @@ class CameraDirector
 		pEnableGI = enable
 	end
 	
+	/**
+	 * \brief Enable auralization if supported.
+	 * \version 1.23
+	 */
+	func bool getEnableAuralization()
+		return pEnableAuralization
+	end
+	
+	/**
+	 * \brief Set to enable auralization if supported.
+	 * \version 1.23
+	 */
+	func void setEnableAuralization(bool enable)
+		pEnableAuralization = enable
+	end
+	
 	
 	
 	/**
@@ -407,6 +428,7 @@ class CameraDirector
 		setAdaptionTime(director.pAdaptionTime)
 		
 		setEnableGI(director.pEnableGI)
+		setEnableAuralization(director.pEnableAuralization)
 		
 		setWhiteIntensity(director.pWhiteIntensity)
 		setBloomIntensity(director.pBloomIntensity)
@@ -444,6 +466,14 @@ class CameraDirector
 		setToneMapCurve(camera.getToneMapCurve())
 		
 		setLayerMask(camera.getLayerMask())
+	end
+	
+	/**
+	 * \brief Copy parameters from microphone.
+	 * \version 1.23
+	 */
+	func void copyParameters(Microphone microphone)
+		setEnableAuralization(microphone.getEnableAuralization())
 	end
 	
 	
@@ -491,15 +521,41 @@ class CameraDirector
 		pCamera.resetAdaptedIntensity()
 	end
 	
+	
+	
+	/**
+	 * \brief Init microphone parameters.
+	 * \version 1.23
+	 */
+	func void initMicrophoneParameters()
+		if pMicrophone != null
+			applyParameters(pMicrophone)
+		end
+	end
+	
+	/**
+	 * \brief Apply parameters to microphone.
+	 * \version 1.23
+	 */
+	func void applyParameters(Microphone microphone)
+		microphone.setEnableAuralization(pEnableAuralization)
+	end
+	
+	
+	
 	/**
 	 * \brief Director has been activated.
 	 * 
 	 * Useful for init camera parameters that do not change over time. Default implementation
-	 * calls initCameraParameters if camera is not null.
+	 * calls initCameraParameters if camera is not null and initMicrophoneParameters if
+	 * microphone is not null.
 	 */
 	func void activate()
 		if pCamera != null
 			initCameraParameters()
+		end
+		if pMicrophone != null
+			initMicrophoneParameters()
 		end
 	end
 	

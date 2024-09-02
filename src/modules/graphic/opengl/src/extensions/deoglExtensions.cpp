@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenGL Graphic Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -30,7 +33,7 @@
 #include "../renderthread/deoglRTContext.h"
 #include "../renderthread/deoglRTLogger.h"
 
-#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 #include <GL/glx.h>
 #include "deoglXExtResult.h"
 #endif
@@ -40,7 +43,7 @@
 #include "../window/deoglRRenderWindow.h"
 #endif
 
-#ifdef ANDROID
+#ifdef OS_ANDROID
 extern __eglMustCastToProperFunctionPointerType androidGetProcAddress( const char *name );
 #endif
 
@@ -548,14 +551,14 @@ void deoglExtensions::pScanVersion(){
 }
 
 void deoglExtensions::pScanExtensions(){
-#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 	const char *strXExtensions = ( const char * )glXGetClientString( pRenderThread.GetContext().GetDisplay(), GLX_EXTENSIONS );
 	if( ! strXExtensions ){
 		strXExtensions = "";
 	}
 #endif
 	
-#ifdef ANDROID
+#ifdef OS_ANDROID
 	const char *strAExtensions = ( const char * )eglQueryString( pRenderThread.GetContext().GetDisplay(), EGL_EXTENSIONS );
 	if( ! strAExtensions ){
 		strAExtensions = "";
@@ -580,7 +583,7 @@ void deoglExtensions::pScanExtensions(){
 		}
 	}
 	
-#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 	pStrListExtensions += decString( strXExtensions ).Split( ' ' );
 #endif
 	
@@ -694,15 +697,15 @@ void deoglExtensions::pFetchRequiredFunctions(){
 	// GL_ARB_texture_compression : opengl version 1.3
 	pGetRequiredFunction( (void**)&pglCompressedTexImage3D, "glCompressedTexImage3D" );
 	pGetRequiredFunction( (void**)&pglCompressedTexImage2D, "glCompressedTexImage2D" );
-	#ifndef ANDROID
+	#ifndef OS_ANDROID
 	pGetRequiredFunction( (void**)&pglCompressedTexImage1D, "glCompressedTexImage1D" );
 	#endif
 	pGetRequiredFunction( (void**)&pglCompressedTexSubImage3D, "glCompressedTexSubImage3D" );
 	pGetRequiredFunction( (void**)&pglCompressedTexSubImage2D, "glCompressedTexSubImage2D" );
-	#ifndef ANDROID
+	#ifndef OS_ANDROID
 	pGetRequiredFunction( (void**)&pglCompressedTexSubImage1D, "glCompressedTexSubImage1D" );
 	#endif
-	#ifndef ANDROID
+	#ifndef OS_ANDROID
 	pGetRequiredFunction( (void**)&pglGetCompressedTexImage, "glGetCompressedTexImage" );
 	#endif
 	
@@ -716,7 +719,7 @@ void deoglExtensions::pFetchRequiredFunctions(){
 	pGetRequiredFunction( (void**)&pglBufferData, "glBufferData" );
 	pGetRequiredFunction( (void**)&pglBufferSubData, "glBufferSubData" );
 	pGetRequiredFunction( (void**)&pglGetBufferSubData, "glGetBufferSubData" );
-	#ifndef ANDROID
+	#ifndef OS_ANDROID
 	pGetRequiredFunction( (void**)&pglMapBuffer, "glMapBuffer" );
 	#endif
 	pGetRequiredFunction( (void**)&pglMapBufferRange, "glMapBufferRange" );
@@ -833,7 +836,7 @@ void deoglExtensions::pFetchRequiredFunctions(){
 	// GL_ARB_uniform_buffer_object : opengl version 3.1
 	pGetRequiredFunction( (void**)&pglGetUniformIndices, "glGetUniformIndices" );
 	pGetRequiredFunction( (void**)&pglGetActiveUniformsiv, "glGetActiveUniformsiv" );
-	#ifndef ANDROID
+	#ifndef OS_ANDROID
 	pGetRequiredFunction( (void**)&pglGetActiveUniformName, "glGetActiveUniformName" );
 	#endif
 	pGetRequiredFunction( (void**)&pglGetUniformBlockIndex, "glGetUniformBlockIndex" );
@@ -868,13 +871,13 @@ void deoglExtensions::pFetchRequiredFunctions(){
 	pGetRequiredFunction( (void**)&pglGenFramebuffers, "glGenFramebuffers" );
 	pGetRequiredFunction( (void**)&pglCheckFramebufferStatus, "glCheckFramebufferStatus" );
 	pGetRequiredFunction( (void**)&pglFramebufferTexture2D, "glFramebufferTexture2D" );
-	#ifndef ANDROID
+	#ifndef OS_ANDROID
 	pGetRequiredFunction( (void**)&pglFramebufferTexture3D, "glFramebufferTexture3D" );
 	#endif
 	pGetRequiredFunction( (void**)&pglFramebufferRenderbuffer, "glFramebufferRenderbuffer" );
 	pGetRequiredFunction( (void**)&pglGenerateMipmap, "glGenerateMipmap" );
 	pGetRequiredFunction( (void**)&pglBlitFramebuffer, "glBlitFramebuffer" );
-	#ifndef ANDROID
+	#ifndef OS_ANDROID
 	pGetRequiredFunction( (void**)&pglFramebufferTexture, "glFramebufferTexture" );
 	#endif
 	
@@ -890,7 +893,7 @@ void deoglExtensions::pFetchRequiredFunctions(){
 	// GL_EXT_subtexture : no opengl version
 	#ifdef OS_W32
 	pglTexSubImage1D = &glTexSubImage1D;
-	#elif ! defined ANDROID
+	#elif ! defined OS_ANDROID
 	pGetRequiredFunction( (void**)&pglTexSubImage1D, "glTexSubImage1D" );
 	#endif
 	
@@ -905,12 +908,12 @@ void deoglExtensions::pFetchRequiredFunctions(){
 	// GL_EXT_texture_object : no opengl version
 	
 	// GL_ARB_compute_shader : opengl version 4.3
-	#ifdef ANDROID
+	#ifdef OS_ANDROID
 	if( ! pSupportsComputeShader ){
 		DETHROW_INFO( deeInvalidParam, "Computer Shader support missing" );
 	}
-	pglDispatchCompute = eglDispatchCompute;
-	pglDispatchComputeIndirect = eglDispatchComputeIndirect;
+	pglDispatchCompute = glDispatchCompute;
+	pglDispatchComputeIndirect = glDispatchComputeIndirect;
 	#else
 	pGetRequiredFunction( (void**)&pglDispatchCompute, "glDispatchCompute" );
 	pGetRequiredFunction( (void**)&pglDispatchComputeIndirect, "glDispatchComputeIndirect" );
@@ -1026,7 +1029,7 @@ void deoglExtensions::pFetchOptionalFunctions(){
 	// GL_ARB_shader_storage_buffer_object : opengl version 4.3
 	pHasExtension[ ext_ARB_shader_storage_buffer_object ] &= ! pDisableExtension[ ext_ARB_shader_storage_buffer_object ];
 	if( pHasExtension[ ext_ARB_shader_storage_buffer_object ] ){
-		#ifdef ANDROID
+		#ifdef OS_ANDROID
 		pglShaderStorageBlockBinding = eglShaderStorageBlockBinding;
 		#else
 		pGetOptionalFunction( (void**)&pglShaderStorageBlockBinding,
@@ -1037,9 +1040,9 @@ void deoglExtensions::pFetchOptionalFunctions(){
 	// GL_ARB_program_interface_query : opengl version 4.3
 	pHasExtension[ ext_ARB_program_interface_query ] &= ! pDisableExtension[ ext_ARB_program_interface_query ];
 	if( pHasExtension[ ext_ARB_program_interface_query ] ){
-		#ifdef ANDROID
-		pglGetProgramInterfaceiv = eglGetProgramInterfaceiv;
-		pglGetProgramResourceIndex = eglGetProgramResourceIndex;
+		#ifdef OS_ANDROID
+		pglGetProgramInterfaceiv = glGetProgramInterfaceiv;
+		pglGetProgramResourceIndex = glGetProgramResourceIndex;
 		#else
 		pGetOptionalFunction( (void**)&pglGetProgramInterfaceiv,
 			"glGetProgramInterfaceiv", ext_ARB_program_interface_query );
@@ -1217,7 +1220,7 @@ void deoglExtensions::pFetchOptionalFunctions(){
 	}
 	
 	// GL_NV_texture_barrier : no opengl version
-	#ifndef ANDROID
+	#ifndef OS_ANDROID
 	if( pHasExtension[ ext_NV_texture_barrier ] ){
 		pGetOptionalFunction( (void**)&pglTextureBarrier, "glTextureBarrierNV", ext_NV_texture_barrier );
 	}
@@ -1256,7 +1259,7 @@ void deoglExtensions::pFetchOptionalFunctions(){
 		pGetOptionalFunction( (void**)&pglGetVertexAttribLui64vARB, "glGetVertexAttribLui64vARB", ext_ARB_bindless_texture );
 	}
 	
-#if defined OS_UNIX && ! defined ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
+#if defined OS_UNIX && ! defined OS_ANDROID && ! defined OS_BEOS && ! defined OS_MACOS
 	// GLX_EXT_swap_control
 	if( pHasExtension[ ext_GLX_EXT_swap_control ] ){
 		pGetOptionalFunction( (void**)&pglXSwapInterval, "glXSwapInterval", "glXSwapIntervalEXT", ext_GLX_EXT_swap_control );

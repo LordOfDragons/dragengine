@@ -1,0 +1,1340 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Services
+
+pin Dragengine.Services.Mods
+pin Dragengine.Utils
+pin Dragengine.Gui
+pin Dragengine.Services.User
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Service providing access to Mod.io functionality if supported.
+ * \version 1.23
+ * 
+ * Provides access to these functionalities:
+ * - Mod browsing
+ * - Mod installing
+ * - Mod deinstalling
+ */
+class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
+	/**
+	 * \brief Store portal for use with ServiceModio.
+	 * \version 1.23
+	 * 
+	 * If not know use null.
+	 */
+	enum Portal
+		/**
+		 * \brief Apple store.
+		 */
+		apple
+		
+		/**
+		 * \brief Epic games store.
+		 */
+		epicGamesStore
+		
+		/**
+		 * \brief GoG store.
+		 */
+		gog
+		
+		/**
+		 * \brief Google store.
+		 */
+		google
+		
+		/**
+		 * \brief ItchIO store.
+		 */
+		itchio
+		
+		/**
+		 * \brief Nintendo store.
+		 */
+		nintendo
+		
+		/**
+		 * \brief Playstation store.
+		 */
+		psn
+		
+		/**
+		 * \brief Steam store.
+		 */
+		steam
+		
+		/**
+		 * \brief XBox live.
+		 */
+		xboxLive
+	end
+	
+	/**
+	 * \brief Service initialization parameters.
+	 */
+	class InitParameters
+		/**
+		 * \brief Application key.
+		 */
+		public var String apiKey
+		
+		/**
+		 * \brief Game identifier.
+		 * 
+		 * Number in string form.
+		 */
+		public var String gameId
+		
+		/**
+		 * \brief User identifier.
+		 * 
+		 * Called "Local platform user" in ModIO.
+		 */
+		public var String userId
+		
+		/**
+		 * \brief Optional portal indicator.
+		 * 
+		 * Can be null if not known.
+		 */
+		public var Portal portal
+		
+		
+		/**
+		 * \brief Create new instance of class InitOptions.
+		 */
+		func new()
+		end
+	end
+	
+	
+	var Service pService
+	var InitParameters pInitParameters
+	var Portal pPortal
+	var ServiceInitListener pInitListener
+	var Boolean pIsInitialized
+	var bool pPauseManagement
+	var bool pIsManagementBusy
+	var SafeArray pModsListeners, pUserListeners
+	var BaseServiceConversions pConversions
+	var Dictionary pOnceListeners
+	
+	
+	
+	/**
+	 * \brief Create service ServiceModIO.
+	 * 
+	 * The service is asynchronously initialized. Once initialization finished
+	 * the provided listener is called with success or failure outcome. If the
+	 * outcome is success the service can be used. If the outcome is failure
+	 * the service can not be used and should be disposed.
+	 * 
+	 * \param params Init parameters.
+	 * \param listener Listener called if initialization finished. Can be null.
+	 * \throws EInvalidParam ModIO service module is not present.
+	 * \throws EInvalidParam One or more of the provided parameters is not valid.
+	 */
+	func new(InitParameters params, ServiceInitListener listener)
+		pInitParameters = InitParameters.new()
+		pInitParameters.apiKey = params.apiKey
+		pInitParameters.gameId = params.gameId
+		pInitParameters.userId = params.userId
+		pInitParameters.portal = params.portal
+		pInitListener = listener
+		pModsListeners = SafeArray.new()
+		pUserListeners = SafeArray.new()
+		pConversions = BaseServiceConversions.new()
+		pOnceListeners = Dictionary.new()
+		
+		pConversions.mapErrorCode.setAt(11074, ServiceUser.Errors.needAcceptTos)
+		
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("apiKey", params.apiKey)
+		so.setStringChildAt("gameId", params.gameId)
+		so.setStringChildAt("userId", params.userId)
+		if params.portal != null
+			so.setStringChildAt("portal", params.portal.name())
+		end
+		
+		pService = Service.new("Mod.io", so)
+		pService.setListener(this)
+	end
+	
+	/** \brief Dispose of ModIO service. */
+	func void dispose()
+		pInitListener = null
+		if pModsListeners != null
+			pModsListeners.removeAll()
+		end
+		if pUserListeners != null
+			pUserListeners.removeAll()
+		end
+		if pOnceListeners != null
+			pOnceListeners.removeAll()
+		end
+		
+		if pService != null
+			pService.setListener(null)
+		end
+		pService = null
+	end
+	
+	
+	
+	/**
+	 * \brief Checks if ModIO service is supported.
+	 * 
+	 * Service is reported supported if the ModIO Service Module is present.
+	 * Creating the service can still fail.
+	 */
+	static func bool isServiceSupported()
+		return Engine.getSupportedServices().has("Mod.io")
+	end
+	
+	
+	
+	/**
+	 * \brief Determines if service is initialized and ready to be used.
+	 * 
+	 * If null is returned the service is still initializing. If returned object has true
+	 * value the service is initialized and ready to be used. If returned object has false
+	 * value the service failed to initialized and has to be disposed.
+	 */
+	func Boolean isInitialized()
+		return pIsInitialized
+	end
+	
+	
+	
+	func ServiceModsFeatures getModsFeatures()
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "getModsFeatures")
+		return pConversions.convertModsFeatures(pService.runAction(so))
+	end
+	
+	func void addModsListener(ServiceModsListener listener)
+		if listener == null
+			throw ENullPointer.new("listener")
+		end
+		pModsListeners.add(listener)
+	end
+	
+	func void removeModsListener(ServiceModsListener listener)
+		pModsListeners.remove(listener)
+	end
+	
+	func void listAllMods(ServiceModFilter filter, ServiceModsListener listener)
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "listAllMods")
+		
+		filterAddEnum(so, "sortField", filter.sortField)
+		filterAddStringSet(so, "nameContains", filter.matchingName)
+		filterAddStringSet(so, "matchingAuthor", filter.matchingAuthor)
+		filterAddStringSet(so, "matchingIds", filter.withIds)
+		filterAddDate(so, "markedLiveAfter", filter.releasedAfter)
+		filterAddDate(so, "markedLiveBefore", filter.releasedBefore)
+		filterAddStringSet(so, "withTags", filter.withTags)
+		filterAddStringSet(so, "withoutTags", filter.withoutTags)
+		if filter.metadataLike != null
+			so.setStringChildAt("metadataLike", filter.metadataLike)
+		end
+		filterAddEnum(so, "revenueType", filter.revenueType)
+		so.setBoolChildAt("disallowMatureContent", filter.disallowMatureContent)
+		filterAddEnumSet(so, "withMatureContentFlags", filter.withMatureContentFlags)
+		
+		so.setIntChildAt("startIndex", filter.startIndex)
+		
+		if filter.resultCount != 0
+			so.setIntChildAt("resultCount", filter.resultCount)
+		end
+		
+		runRequest(so, listener)
+	end
+	
+	func void loadModResource(String url, ServiceModsListener listener)
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "loadModResource")
+		so.setStringChildAt("url", url)
+		
+		runRequest(so, listener)
+	end
+	
+	func bool getPauseModManagement()
+		return pPauseManagement
+	end
+	
+	func void setPauseModManagement(bool pause)
+		if pause == pPauseManagement
+			return
+		end
+		
+		pPauseManagement = pause
+		
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "pauseModManagement")
+		so.setBoolChildAt("pause", pause)
+		pService.startRequest(so)
+	end
+	
+	func bool isModManagementBusy()
+		return pIsManagementBusy
+	end
+	
+	func void activateMods()
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "activateMods")
+		pService.runAction(so)
+	end
+	
+	func void subscribeMod(String id, ServiceModsListener listener)
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "subscribeToMod")
+		so.setStringChildAt("modId", id)
+		so.setBoolChildAt("dependencies", true)
+		
+		runRequest(so, listener)
+	end
+	
+	func void unsubscribeMod(String id, ServiceModsListener listener)
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "unsubscribeFromMod")
+		so.setStringChildAt("modId", id)
+		
+		runRequest(so, listener)
+	end
+	
+	func ServiceModProgress getCurrentModUpdate()
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "queryCurrentModUpdate")
+		
+		so = pService.runAction(so)
+		return so != null if convertModProgress(so) else null
+	end
+	
+	func Dictionary getSubscribedMods()
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "queryUserSubscriptions")
+		so = pService.runAction(so)
+		
+		var Dictionary dict = Dictionary.new()
+		var int i, count = so.getChildCount()
+		var ServiceModStatus status
+		
+		for i = 0 to count
+			status = convertModStatus(so.getChildAt(i))
+			dict.setAt(status.id, status)
+		end
+		
+		return dict
+	end
+	
+	func Dictionary getSystemMods()
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "querySystemInstallations")
+		so = pService.runAction(so)
+		
+		var Dictionary dict = Dictionary.new()
+		var int i, count = so.getChildCount()
+		var ServiceModStatus status
+		
+		for i = 0 to count
+			status = convertModStatus(so.getChildAt(i))
+			dict.setAt(status.id, status)
+		end
+		
+		return dict
+	end
+	
+	func Dictionary getActiveMods()
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "getActiveMods")
+		so = pService.runAction(so)
+		
+		var Dictionary dict = Dictionary.new()
+		var int i, count = so.getChildCount()
+		var ServiceModStatus status
+		
+		for i = 0 to count
+			status = convertModStatus(so.getChildAt(i))
+			dict.setAt(status.id, status)
+		end
+		
+		return dict
+	end
+	
+	func void getModInfo(String id, ServiceModsListener listener)
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "getModInfo")
+		so.setStringChildAt("modId", id)
+		
+		runRequest(so, listener)
+	end
+	
+	func void submitModRating(String id, int rating, ServiceModsListener listener)
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "submitModRating")
+		so.setStringChildAt("modId", id)
+		so.setIntChildAt("rating", rating)
+		
+		runRequest(so, listener)
+	end
+	
+	func void revokeModRating(String id, ServiceModsListener listener)
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "revokeModRating")
+		so.setStringChildAt("modId", id)
+		
+		runRequest(so, listener)
+	end
+	
+	func void reportMod(String id, ServiceModReport report, ServiceModsListener listener)
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "reportMod")
+		so.setStringChildAt("modId", id)
+		so.setChildAt("report", pConversions.convertReport(report))
+		runRequest(so, listener)
+	end
+	
+	func void setModDisabled(String id, bool disabled, ServiceModsListener listener)
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "setModDisabled")
+		so.setStringChildAt("modId", id)
+		so.setBoolChildAt("disabled", disabled)
+		
+		TimerBlock.new(0, false, block
+			var Exception exception
+			try
+				pService.runAction(so)
+				
+			catch Exception e
+				exception = e
+			end
+			
+			pModsListeners.forEach(block ServiceModsListener each
+				each.onSetModDisabled(this, id, disabled, exception)
+			end)
+			if listener != null
+				listener.onSetModDisabled(this, id, disabled, exception)
+			end
+		end)
+		
+		pService.nextId()
+	end
+	
+	func bool modHasMatchingFiles(String id, String directory, bool recursive, Set patterns)
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "modHasMatchingFiles")
+		so.setStringChildAt("modId", id)
+		so.setStringChildAt("directory", directory)
+		so.setBoolChildAt("recursive", recursive)
+		
+		var ServiceObject soPatterns = ServiceObject.newList()
+		patterns.forEach(block String each
+			soPatterns.addStringChild(each)
+		end)
+		so.setChildAt("patterns", soPatterns)
+		
+		return pService.runAction(so).getBoolean()
+	end
+	
+	func void getModTags(ServiceModsListener listener)
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "getModTagOptions")
+		runRequest(so, listener)
+	end
+	
+	func void getPurchasedMods(ServiceModsListener listener)
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "getUserPurchasedMods")
+		runRequest(so, listener)
+	end
+	
+	func void purchaseMod(String id, String price, ServiceModsListener listener)
+		if id == null
+			throw ENullPointer.new("id")
+		end
+		if price == null
+			throw ENullPointer.new("price")
+		end
+		
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "purchaseMod")
+		so.setStringChildAt("modId", id)
+		so.setStringChildAt("price", price)
+		runRequest(so, listener)
+	end
+	
+	
+	
+	func void addUserListener(ServiceUserListener listener)
+		if listener == null
+			throw ENullPointer.new("listener")
+		end
+		pUserListeners.add(listener)
+	end
+	
+	func void removeUserListener(ServiceUserListener listener)
+		pUserListeners.remove(listener)
+	end
+	
+	func ServiceUserFeatures getUserFeatures()
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "getUserFeatures")
+		return pConversions.convertUserFeatures(pService.runAction(so))
+	end
+	
+	func void loginUser(ServiceUserCredentials credentials, ServiceUserListener listener)
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "authenticateUserExternal")
+		so.setStringChildAt("provider", credentials.authToken.provider)
+		so.setStringChildAt("token", credentials.authToken.token)
+		so.setBoolChildAt("termsAccepted", false) // true
+		
+		if credentials.parameters != null
+			so.setBoolChildAt("termsAccepted", credentials.parameters.getAt("termsAccepted", "").equals("1"))
+		end
+		
+		if credentials.authToken.parameters != null
+			var ServiceObject so2 = ServiceObject.new()
+			credentials.authToken.parameters.forEach(block String key, String value
+				so2.setStringChildAt(key, value)
+			end)
+			so.setChildAt("parameters", so2)
+		end
+		
+		runRequest(so, listener)
+	end
+	
+	func void logoutUser(ServiceUserListener listener)
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "clearUserData")
+		
+		runRequest(so, listener)
+	end
+	
+	func bool isUserLoggedIn()
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "isAuthenticated")
+		return pService.runAction(so).getBoolean()
+	end
+	
+	func void getAuthToken(ServiceUserListener listener)
+		throw EInvalidAction.new("Not supported")
+	end
+	
+	func void getUserInfo(ServiceUserListener listener)
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "queryUserProfile")
+		so = pService.runAction(so)
+		
+		var ServiceUserInfo info
+		if so != null
+			info = convertUser(so)
+		end
+		
+		TimerBlock.new(0, false, block
+			var ServiceException exception
+			if info == null
+				exception = ServiceException.new(pService, "No user logged in", null, null, null)
+			end
+			
+			pUserListeners.forEach(block ServiceUserListener each
+				each.onGetUserInfo(this, info, exception)
+			end)
+			if listener != null
+				listener.onGetUserInfo(this, info, exception)
+			end
+		end)
+		
+		pService.nextId()
+	end
+	
+	func void loadUserResource(String url, ServiceUserListener listener)
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "loadUserResource")
+		so.setStringChildAt("url", url)
+		
+		runRequest(so, listener)
+	end
+	
+	func void reportUser(String id, ServiceUserReport report, ServiceUserListener listener)
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "reportUser")
+		so.setStringChildAt("userId", id)
+		so.setChildAt("report", pConversions.convertReport(report))
+		runRequest(so, listener)
+	end
+	
+	func void getUserWalletBalance(ServiceUserListener listener)
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "getUserWalletBalance")
+		
+		runRequest(so, listener)
+	end
+	
+	
+	
+	/** \brief Conversion helper */
+	public func BaseServiceConversions getConversions()
+		return pConversions
+	end
+	
+	
+	
+	func void requestResponse(Service service, UniqueID id, ServiceObject response, bool finished)
+		var String function = response.getChildAt("function").getString()
+		var Object onceListener = getOnceListener(id)
+		
+		if function.equals("listAllMods")
+			var ServiceObject somods = response.getChildAt("mods")
+			var Array mods = Array.new()
+			var int i, count = somods.getChildCount()
+			for i = 0 to count
+				mods.add(convertModInfo(somods.getChildAt(i)))
+			end
+			
+			pModsListeners.forEach(block ServiceModsListener each
+				each.onListMods(this, mods, null)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceModsListener).onListMods(this, mods, null)
+			end
+			
+		elif function.equals("loadModResource")
+			var String url = response.getChildAt("url").getString()
+			var Object resource = response.getChildAt("resource").getResource()
+			// String "resourceType": "image"
+			
+			pModsListeners.forEach(block ServiceModsListener each
+				each.onLoadModResource(this, url, resource, null)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceModsListener).onLoadModResource(this, url, resource, null)
+			end
+			
+		elif function.equals("authenticateUserExternal")
+			pUserListeners.forEach(block ServiceUserListener each
+				each.onLoginUser(this, null)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceUserListener).onLoginUser(this, null)
+			end
+			
+		elif function.equals("clearUserData")
+			pUserListeners.forEach(block ServiceUserListener each
+				each.onLogoutUser(this, null)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceUserListener).onLogoutUser(this, null)
+			end
+			
+		elif function.equals("getModInfo")
+			var ServiceModInfo info = convertModInfo(response.getChildAt("info"))
+			
+			pModsListeners.forEach(block ServiceModsListener each
+				each.onGetModInfo(this, info.id, info, null)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceModsListener).onGetModInfo(this, info.id, info, null)
+			end
+			
+		elif function.equals("subscribeToMod")
+			var String modId = response.getChildAt("modId").getString()
+			
+			pModsListeners.forEach(block ServiceModsListener each
+				each.onSubscribeMod(this, modId, null)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceModsListener).onSubscribeMod(this, modId, null)
+			end
+			
+		elif function.equals("unsubscribeFromMod")
+			var String modId = response.getChildAt("modId").getString()
+			
+			pModsListeners.forEach(block ServiceModsListener each
+				each.onUnsubscribeMod(this, modId, null)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceModsListener).onUnsubscribeMod(this, modId, null)
+			end
+			
+		elif function.equals("submitModRating")
+			var String modId = response.getChildAt("modId").getString()
+			
+			pModsListeners.forEach(block ServiceModsListener each
+				each.onSubmitModRating(this, modId, null)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceModsListener).onSubmitModRating(this, modId, null)
+			end
+			
+		elif function.equals("revokeModRating")
+			var String modId = response.getChildAt("modId").getString()
+			
+			pModsListeners.forEach(block ServiceModsListener each
+				each.onSubmitModRating(this, modId, null)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceModsListener).onSubmitModRating(this, modId, null)
+			end
+			
+		elif function.equals("reportMod")
+			var String modId = response.getChildAt("modId").getString()
+			
+			pModsListeners.forEach(block ServiceModsListener each
+				each.onReportMod(this, modId, null)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceModsListener).onReportMod(this, modId, null)
+			end
+			
+		elif function.equals("getModTagOptions")
+			var Array categories = convertTagCategoryList(response.getChildAt("categories"))
+			
+			pModsListeners.forEach(block ServiceModsListener each
+				each.onGetTags(this, categories, null)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceModsListener).onGetTags(this, categories, null)
+			end
+			
+		elif function.equals("loadUserResource")
+			var String url = response.getChildAt("url").getString()
+			var Object resource = response.getChildAt("resource").getResource()
+			// String "resourceType": "image"
+			
+			pUserListeners.forEach(block ServiceUserListener each
+				each.onLoadUserResource(this, url, resource, null)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceUserListener).onLoadUserResource(this, url, resource, null)
+			end
+			
+		elif function.equals("getUserWalletBalance")
+			var String amount = response.getChildAt("amount").getString()
+			
+			pUserListeners.forEach(block ServiceUserListener each
+				each.onUserWalletBalance(this, amount, null)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceUserListener).onUserWalletBalance(this, amount, null)
+			end
+			
+		elif function.equals("reportUser")
+			var String userId = response.getChildAt("userId").getString()
+			
+			pUserListeners.forEach(block ServiceUserListener each
+				each.onReportUser(this, userId, null)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceUserListener).onReportUser(this, userId, null)
+			end
+			
+		elif function.equals("getUserPurchasedMods")
+			var ServiceObject soMods = response.getChildAt("mods")
+			var Array mods = Array.new()
+			var int i, count = soMods.getChildCount()
+			for i = 0 to count
+				mods.add(convertModInfo(soMods.getChildAt(i)))
+			end
+			
+			pModsListeners.forEach(block ServiceModsListener each
+				each.onGetPurchasedMods(this, mods, null)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceModsListener).onGetPurchasedMods(this, mods, null)
+			end
+			
+		elif function.equals("purchaseMod")
+			var String modId = response.getChildAt("modId").getString()
+			var String price = response.getChildAt("price").getString()
+			var String walletBalance = response.getChildAt("walletBalance").getString()
+			
+			pModsListeners.forEach(block ServiceModsListener each
+				each.onPurchaseMod(this, modId, price, walletBalance, null)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceModsListener).onPurchaseMod(this, modId, price, walletBalance, null)
+			end
+		end
+	end
+	
+	func void requestFailed(Service service, UniqueID id, ServiceObject error)
+		var String function = error.getChildAt("function").getString()
+		var ServiceException exception = createException(error)
+		var Object onceListener = getOnceListener(id)
+		
+		if function.equals("listAllMods")
+			pModsListeners.forEach(block ServiceModsListener each
+				each.onListMods(this, null, exception)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceModsListener).onListMods(this, null, exception)
+			end
+			
+		elif function.equals("loadModResource")
+			var String url = error.getChildAt("url").getString()
+			
+			pModsListeners.forEach(block ServiceModsListener each
+				each.onLoadModResource(this, url, null, exception)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceModsListener).onLoadModResource(this, url, null, exception)
+			end
+			
+		elif function.equals("authenticateUserExternal")
+			pUserListeners.forEach(block ServiceUserListener each
+				each.onLoginUser(this, exception)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceUserListener).onLoginUser(this, exception)
+			end
+			
+		elif function.equals("clearUserData")
+			pUserListeners.forEach(block ServiceUserListener each
+				each.onLogoutUser(this, exception)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceUserListener).onLogoutUser(this, exception)
+			end
+			
+		elif function.equals("getModInfo")
+			pModsListeners.forEach(block ServiceModsListener each
+				each.onGetModInfo(this, null, null, exception)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceModsListener).onGetModInfo(this, null, null, exception)
+			end
+			
+		elif function.equals("subscribeToMod")
+			var String modId = error.getChildAt("modId").getString()
+			
+			pModsListeners.forEach(block ServiceModsListener each
+				each.onSubscribeMod(this, modId, exception)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceModsListener).onSubscribeMod(this, modId, exception)
+			end
+			
+		elif function.equals("unsubscribeFromMod")
+			var String modId = error.getChildAt("modId").getString()
+			
+			pModsListeners.forEach(block ServiceModsListener each
+				each.onUnsubscribeMod(this, modId, exception)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceModsListener).onUnsubscribeMod(this, modId, exception)
+			end
+			
+		elif function.equals("submitModRating")
+			var String modId = error.getChildAt("modId").getString()
+			
+			pModsListeners.forEach(block ServiceModsListener each
+				each.onSubmitModRating(this, modId, exception)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceModsListener).onSubmitModRating(this, modId, exception)
+			end
+			
+		elif function.equals("revokeModRating")
+			var String modId = error.getChildAt("modId").getString()
+			
+			pModsListeners.forEach(block ServiceModsListener each
+				each.onSubmitModRating(this, modId, exception)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceModsListener).onSubmitModRating(this, modId, exception)
+			end
+			
+		elif function.equals("reportMod")
+			var String modId = error.getChildAt("modId").getString()
+			
+			pModsListeners.forEach(block ServiceModsListener each
+				each.onReportMod(this, modId, exception)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceModsListener).onReportMod(this, modId, exception)
+			end
+			
+		elif function.equals("getModTagOptions")
+			pModsListeners.forEach(block ServiceModsListener each
+				each.onGetTags(this, null, exception)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceModsListener).onGetTags(this, null, exception)
+			end
+			
+		elif function.equals("loadUserResource")
+			var String url = error.getChildAt("url").getString()
+			
+			pUserListeners.forEach(block ServiceUserListener each
+				each.onLoadUserResource(this, url, null, exception)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceUserListener).onLoadUserResource(this, url, null, exception)
+			end
+			
+		elif function.equals("getUserWalletBalance")
+			pUserListeners.forEach(block ServiceUserListener each
+				each.onUserWalletBalance(this, null, exception)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceUserListener).onUserWalletBalance(this, null, exception)
+			end
+			
+		elif function.equals("reportUser")
+			var String userId = error.getChildAt("userId").getString()
+			
+			pUserListeners.forEach(block ServiceUserListener each
+				each.onReportUser(this, userId, exception)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceUserListener).onReportUser(this, userId, exception)
+			end
+			
+		elif function.equals("getUserPurchasedMods")
+			pModsListeners.forEach(block ServiceModsListener each
+				each.onGetPurchasedMods(this, null, exception)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceModsListener).onGetPurchasedMods(this, null, exception)
+			end
+			
+		elif function.equals("purchaseMod")
+			pModsListeners.forEach(block ServiceModsListener each
+				each.onPurchaseMod(this, null, null, null, exception)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceModsListener).onPurchaseMod(this, null, null, null, exception)
+			end
+		end
+	end
+	
+	func void eventReceived(Service service, ServiceObject event)
+		var String eventName = event.getChildAt("event").getString()
+		var bool success = event.getChildAt("success").getBoolean()
+		var ServiceException exception
+		
+		if not success
+			exception = createException(event)
+		end
+		
+		if eventName.equals("initialized")
+			pIsInitialized = Boolean.new(success)
+			
+			if pInitListener != null
+				pInitListener.onServiceInit(this, exception)
+			end
+			pInitListener = null
+			
+		elif eventName.equals("modManagement")
+			var ServiceMods.ManagementEvent mev = ServiceMods.ManagementEvent.named(event.getChildAt("subEvent").getString())
+			var String modId = event.getChildAt("modId").getString()
+			var ServiceModProgress progress = convertModProgress(event.getChildAt("progress"))
+			
+			pIsManagementBusy = event.getChildAt("busy").getBoolean()
+			
+			pModsListeners.forEach(block ServiceModsListener each
+				each.onModManagement(this, mev, modId, progress, exception)
+			end)
+		end
+	end
+	
+	
+	
+	/** \brief Once listener matching id or null. */
+	protected func Object getOnceListener(UniqueID id)
+		var Object listener = pOnceListeners.getAt(id, null)
+		if listener != null
+			pOnceListeners.remove(id)
+		end
+		return listener
+	end
+	
+	/** \brief Run request with optional once listener. */
+	protected func UniqueID runRequest(ServiceObject request, Object listener)
+		var UniqueID id = pService.nextId()
+		pService.startRequest(id, request)
+		if listener != null
+			pOnceListeners.setAt(id, listener)
+		end
+		return id
+	end
+	
+	
+	
+	/** \brief Create exception from response. */
+	func ServiceException createException(ServiceObject error)
+		var ServiceException exception = pConversions.createException(pService, error)
+		
+		select exception.getErrorCode()
+		case ServiceUser.Errors.needAcceptTos
+			exception = exception.withAdditionalData(\
+				convertErrorTerms(error.getChildAt("needAcceptTerms")))
+		end
+		
+		return exception
+	end
+	
+	
+	
+	protected func void filterAddEnum(ServiceObject so, String key, Enumeration value)
+		if value != null
+			so.setStringChildAt(key, value.name())
+		end
+	end
+	
+	protected func void filterAddStringSet(ServiceObject so, String key, Set values)
+		if values != null
+			var ServiceObject so2 = ServiceObject.newList()
+			values.forEach(block String each
+				so2.addStringChild(each)
+			end)
+			so.setChildAt(key, so2)
+		end
+	end
+	
+	protected func void filterAddEnumSet(ServiceObject so, String key, Set values)
+		if values != null
+			var ServiceObject so2 = ServiceObject.newList()
+			values.forEach(block Enumeration each
+				so2.addStringChild(each.name())
+			end)
+			so.setChildAt(key, so2)
+		end
+	end
+	
+	protected func void filterAddDate(ServiceObject so, String key, TimeDate date)
+		if date != null
+			var ServiceObject so2 = ServiceObject.new()
+			so2.setIntChildAt("year", date.getYear())
+			so2.setIntChildAt("month", date.getMonth())
+			so2.setIntChildAt("day", date.getDay())
+			so.setChildAt(key, so2)
+		end
+	end
+	
+	protected func Dictionary convertTagList(ServiceObject so, String key)
+		var ServiceObject so2 = so.getChildAt(key)
+		if so2 == null
+			return null
+		end
+		
+		var int i, count = so2.getChildCount()
+		var Dictionary dict = Dictionary.new()
+		var ServiceObject so3
+		
+		for i = 0 to count
+			so3 = so2.getChildAt(i)
+			dict.setAt(so3.getChildAt("tag").getString(), so3.getChildAt("tagLocalized").getString())
+		end
+		
+		return dict
+	end
+	
+	protected func ServiceModInfo convertModInfo(ServiceObject so)
+		if so == null
+			return null
+		end
+		
+		var ServiceObject so2
+		var int i, count
+		
+		var ServiceModInfo info = ServiceModInfo.new()
+		info.id = pConversions.convertString(so, "modId")
+		info.name = pConversions.convertString(so, "profileName")
+		info.summary = pConversions.convertString(so, "profileSummary")
+		info.descriptionHtml = pConversions.convertString(so, "profileDescription")
+		info.descriptionText = pConversions.convertString(so, "profileDescriptionPlaintext")
+		info.profileUrl = pConversions.convertString(so, "profileURL")
+		info.dateAdded = pConversions.convertTimeDate(so, "profileDateAdded")
+		info.dateUpdated = pConversions.convertTimeDate(so, "profileDateUpdated")
+		info.dateReleased = pConversions.convertTimeDate(so, "profileDateLive")
+		info.metadata = pConversions.convertString(so, "metadataBlob")
+		info.metadataMap = pConversions.convertStringDict(so, "metadataKvp")
+		info.version = pConversions.convertString(so, "version")
+		info.price = pConversions.convertString(so, "price")
+		info.hasDependencies = pConversions.convertBool(so, "dependencies", false)
+		
+		so2 = so.getChildAt("userRating")
+		if so2 != null
+			info.userRating = Integer.new(so2.getInteger())
+		end
+		
+		info.submittedBy = convertUser(so.getChildAt("profileSubmittedBy"))
+		info.logo = convertImage(so.getChildAt("modLogo"))
+		info.latestRelease = convertRelease(so.getChildAt("fileInfo"))
+		info.stats = convertModStats(so.getChildAt("stats"))
+		info.tags = convertTagList(so, "tags")
+		
+		so2 = so.getChildAt("profileMaturityOption")
+		if so2 != null
+			info.maturityOptions = Set.new()
+			count = so2.getChildCount()
+			for i = 0 to count
+				info.maturityOptions.add(ServiceModFilter.MatureContent.named(so2.getChildAt(i).getString()))
+			end
+		end
+		
+		so2 = so.getChildAt("galleryImages")
+		if so2 != null
+			info.galleryImages = Array.new()
+			count = so2.getChildCount()
+			for i = 0 to count
+				info.galleryImages.add(convertImage(so2.getChildAt(i)))
+			end
+		end
+		
+		var Array youtubeUrls = pConversions.convertStringList(so, "youtubeUrls")
+		var Array sketchfabUrls = pConversions.convertStringList(so, "sketchfabUrls")
+		
+		if youtubeUrls != null or sketchfabUrls != null
+			var ServiceModInfo.ExternalLink link
+			
+			info.externalLinks = Array.new()
+			
+			if youtubeUrls != null
+				youtubeUrls.forEach(block String url
+					link = ServiceModInfo.ExternalLink.new()
+					link.description = "YouTube"
+					link.url = url
+					info.externalLinks.add(link)
+				end)
+			end
+			
+			if sketchfabUrls != null
+				sketchfabUrls.forEach(block String url
+					link = ServiceModInfo.ExternalLink.new()
+					link.description = "Sketchfab"
+					link.url = url
+					info.externalLinks.add(link)
+				end)
+			end
+		end
+		
+		return info
+	end
+	
+	protected func ServiceUserInfo convertUser(ServiceObject so)
+		if so == null
+			return null
+		end
+		
+		var ServiceUserInfo user = ServiceUserInfo.new()
+		user.id = pConversions.convertString(so, "userId")
+		user.name = pConversions.convertString(so, "username")
+		user.displayName = pConversions.convertString(so, "displayNamePortal")
+		if user.displayName == null
+			user.displayName = user.name
+		end
+		user.profileUrl = pConversions.convertString(so, "profileUrl")
+		user.dateOnline = pConversions.convertTimeDate(so, "dateOnline")
+		user.avatar = convertImage(so.getChildAt("avatar"))
+		return user
+	end
+	
+	protected func ServiceImage convertImage(ServiceObject so)
+		var ServiceImage image = ServiceImage.new()
+		image.url = pConversions.convertString(so, "original")
+		
+		// a=avatar, g=gallery-images l=logo
+		convertAddThumbnail(image, so, "thumb50x50", Point.new(50, 50)) // a
+		convertAddThumbnail(image, so, "thumb100x100", Point.new(100, 100)) // a
+		convertAddThumbnail(image, so, "thumb320x180", Point.new(320, 180)) // g,l
+		convertAddThumbnail(image, so, "thumb640x360", Point.new(640, 360)) // l
+		convertAddThumbnail(image, so, "thumb1280x720", Point.new(1280, 720)) // g,l
+		return image
+	end
+	
+	protected func void convertAddThumbnail(ServiceImage image, ServiceObject so, String key, Point size)
+		var ServiceObject so2 = so.getChildAt(key)
+		if so2 == null
+			return
+		end
+		
+		var ServiceImage.Thumbnail thumbnail = ServiceImage.Thumbnail.new()
+		thumbnail.size = size
+		thumbnail.url = so2.getString()
+		image.thumbnails.add(thumbnail)
+	end
+	
+	protected func ServiceModRelease convertRelease(ServiceObject so)
+		if so == null
+			return null
+		end
+		
+		var ServiceModRelease release = ServiceModRelease.new()
+		var ServiceObject so2
+		
+		release.id = pConversions.convertString(so, "metadataId")
+		release.modId = pConversions.convertString(so, "modId")
+		release.dateAdded = pConversions.convertTimeDate(so, "dateAdded")
+		release.filesize = pConversions.convertFloat(so, "filesize", 0)
+		release.filesizeUncompressed = pConversions.convertFloat(so, "filesizeUncompressed", 0)
+		release.filename = pConversions.convertString(so, "filename")
+		release.version = pConversions.convertString(so, "version")
+		release.changelog = pConversions.convertString(so, "changelog")
+		release.metadata = pConversions.convertString(so, "metadataBlob")
+		release.downloadUrl = pConversions.convertString(so, "downloadBinaryURL")
+		release.downloadExpiryDate = pConversions.convertTimeDate(so, "downloadExpiryDate")
+		
+		so2 = so.getChildAt("currentVirusScanStatus")
+		if so2 != null
+			release.virusScanStatus = ServiceModRelease.VirusScanStatus.named(so2.getString())
+		end
+		
+		so2 = so.getChildAt("currentVirusStatus")
+		if so2 != null
+			release.virusStatus = ServiceModRelease.VirusStatus.named(so2.getString())
+		end
+		
+		return release
+	end
+	
+	protected func ServiceModInfo.ExternalLink convertExternalLink(ServiceObject so)
+		var ServiceModInfo.ExternalLink link = ServiceModInfo.ExternalLink.new()
+		link.description = pConversions.convertString(so, "filename")
+		link.url = pConversions.convertString(so, "original")
+		return link
+	end
+	
+	protected func ServiceModStats convertModStats(ServiceObject so)
+		if so == null
+			return null
+		end
+		
+		var ServiceModStats stats = ServiceModStats.new()
+		stats.rankPosition = pConversions.convertFloat(so, "popularityRankPosition", 0)
+		stats.rankCount = pConversions.convertFloat(so, "popularityRankTotalMods", 0)
+		stats.downloadCount = pConversions.convertFloat(so, "downloadsTotal", 0)
+		stats.subscriberCount = pConversions.convertFloat(so, "subscribersTotal", 0)
+		stats.ratingCount = pConversions.convertFloat(so, "ratingTotal", 0)
+		stats.ratingCountPerType.setAt(0, pConversions.convertFloat(so, "ratingNegative", 0))
+		stats.ratingCountPerType.setAt(1, pConversions.convertFloat(so, "ratingPositive", 0))
+		stats.ratingAverage = pConversions.convertFloat(so, "ratingPercentagePositive", 0)
+		stats.ratingWeighted = pConversions.convertFloat(so, "ratingWeightedAggregate", 0)
+		stats.ratingDisplayText = pConversions.convertString(so, "ratingDisplayText")
+		
+		return stats
+	end
+	
+	protected func ServiceModProgress convertModProgress(ServiceObject so)
+		if so == null
+			return null
+		end
+		
+		var ServiceModProgress progress = ServiceModProgress.new()
+		progress.modId = so.getChildAt("id").getString()
+		progress.state = ServiceModProgress.State.named(so.getChildAt("state").getString())
+		progress.total = pConversions.convertFloat(so, "total", 1)
+		progress.current = pConversions.convertFloat(so, "current", 0)
+		progress.progress = pConversions.convertFloat(so, "progress", 0)
+		progress.remainingTime = pConversions.convertFloatObject(so, "remainingTime")
+		return progress
+	end
+	
+	protected func ServiceModStatus convertModStatus(ServiceObject so)
+		if so == null
+			return null
+		end
+		
+		var ServiceModStatus status = ServiceModStatus.new()
+		status.id = so.getChildAt("id").getString()
+		status.status = ServiceModStatus.Status.named(so.getChildAt("state").getString())
+		status.info = convertModInfo(so.getChildAt("info"))
+		status.sizeOnDisk = pConversions.convertFloat(so, "sizeOnDisk", 0)
+		status.disabled = pConversions.convertBool(so, "disabled", false)
+		return status
+	end
+	
+	protected func Array convertTagCategoryList(ServiceObject so)
+		if so == null
+			return Array.new()
+		end
+		
+		var int i, count = so.getChildCount()
+		var Array categories = Array.new()
+		for i = 0 to count
+			categories.add(convertTagCategory(so.getChildAt(i)))
+		end
+		return categories
+	end
+	
+	protected func ServiceModTagCategory convertTagCategory(ServiceObject so)
+		var ServiceModTagCategory category = ServiceModTagCategory.new()
+		category.id = category.name = so.getChildAt("name").getString()
+		category.nameTranslations = pConversions.convertStringDict(so, "nameTranslations")
+		category.multiSelection = pConversions.convertBool(so, "allowMultipleSelection", false)
+		category.tags = convertTagCategoryTagList(so.getChildAt("tags"))
+		return category
+	end
+	
+	protected func Array convertTagCategoryTagList(ServiceObject so)
+		var int i, count = so.getChildCount()
+		var Array tags = Array.new()
+		for i = 0 to count
+			tags.add(convertTagCategoryTag(so.getChildAt(i)))
+		end
+		return tags
+	end
+	
+	protected func ServiceModTagCategory.Tag convertTagCategoryTag(ServiceObject so)
+		var ServiceModTagCategory.Tag tag = ServiceModTagCategory.Tag.new()
+		tag.id = tag.name = so.getChildAt("name").getString()
+		tag.nameTranslations = pConversions.convertStringDict(so, "nameTranslations")
+		return tag
+	end
+	
+	protected func ServiceUserErrorNeedAcceptTos convertErrorTerms(ServiceObject so)
+		if so == null
+			return null
+		end
+		
+		var ServiceUserErrorNeedAcceptTos terms = ServiceUserErrorNeedAcceptTos.new()
+		terms.terms = pConversions.convertString(so, "terms")
+		terms.buttonAccept = pConversions.convertString(so, "buttonAccept")
+		terms.buttonDecline = pConversions.convertString(so, "buttonDecline")
+		terms.credentialParameters = pConversions.convertStringDict(so, "credentialParameters")
+		
+		var ServiceObject soLinks = so.getChildAt("links")
+		var int i, count = soLinks.getChildCount()
+		for i = 0 to count
+			terms.links.add(convertErrorTermsLink(soLinks.getChildAt(i)))
+		end
+		
+		return terms
+	end
+	
+	protected func ServiceUserErrorNeedAcceptTos.Link convertErrorTermsLink(ServiceObject so)
+		var ServiceUserErrorNeedAcceptTos.Link link = ServiceUserErrorNeedAcceptTos.Link.new()
+		link.label = pConversions.convertString(so, "label")
+		link.url = pConversions.convertString(so, "url")
+		link.required = pConversions.convertBool(so, "required", true)
+		return link
+	end
+end

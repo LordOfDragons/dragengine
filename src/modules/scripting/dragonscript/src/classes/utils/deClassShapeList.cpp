@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdio.h>
@@ -436,6 +439,68 @@ void deClassShapeList::nfAddBox2::RunFunction( dsRunTime *rt, dsValue *myself ){
 	
 	try{
 		box = new decShapeBox( extends, center, orientation );
+		shapeList.Add( box );
+		
+	}catch( ... ){
+		if( box ){
+			delete box;
+		}
+		throw;
+	}
+}
+
+// public func void addBox( Vector center, Vector extends, Vector2 tapering )
+deClassShapeList::nfAddBox3::nfAddBox3( const sInitData &init ) :
+dsFunction( init.clsShaList, "addBox", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsVec ); // center
+	p_AddParameter( init.clsVec ); // extends
+	p_AddParameter( init.clsVec2 ); // tapering
+}
+
+void deClassShapeList::nfAddBox3::RunFunction( dsRunTime *rt, dsValue *myself ){
+	decShapeList &shapeList = *( ( ( sShaListNatDat* )p_GetNativeData( myself ) )->shapeList );
+	const deScriptingDragonScript &ds = *( ( ( deClassShapeList* )GetOwnerClass() )->GetDS() );
+	
+	const decVector &center = ds.GetClassVector()->GetVector( rt->GetValue( 0 )->GetRealObject() );
+	const decVector &extends = ds.GetClassVector()->GetVector( rt->GetValue( 1 )->GetRealObject() );
+	const decVector2 &tapering = ds.GetClassVector2()->GetVector2( rt->GetValue( 2 )->GetRealObject() );
+	
+	decShapeBox *box = nullptr;
+	
+	try{
+		box = new decShapeBox( extends, tapering, center );
+		shapeList.Add( box );
+		
+	}catch( ... ){
+		if( box ){
+			delete box;
+		}
+		throw;
+	}
+}
+
+// public func void addBox( Vector center, Vector extends, Vector2 tapering, Quaternion orientation )
+deClassShapeList::nfAddBox4::nfAddBox4( const sInitData &init ) :
+dsFunction( init.clsShaList, "addBox", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
+	p_AddParameter( init.clsVec ); // center
+	p_AddParameter( init.clsVec ); // extends
+	p_AddParameter( init.clsVec2 ); // tapering
+	p_AddParameter( init.clsQuat ); // orientation
+}
+
+void deClassShapeList::nfAddBox4::RunFunction( dsRunTime *rt, dsValue *myself ){
+	decShapeList &shapeList = *( ( ( sShaListNatDat* )p_GetNativeData( myself ) )->shapeList );
+	const deScriptingDragonScript &ds = *( ( ( deClassShapeList* )GetOwnerClass() )->GetDS() );
+	
+	const decVector &center = ds.GetClassVector()->GetVector( rt->GetValue( 0 )->GetRealObject() );
+	const decVector &extends = ds.GetClassVector()->GetVector( rt->GetValue( 1 )->GetRealObject() );
+	const decVector2 &tapering = ds.GetClassVector2()->GetVector2( rt->GetValue( 2 )->GetRealObject() );
+	const decQuaternion &orientation = ds.GetClassQuaternion()->GetQuaternion( rt->GetValue( 3 )->GetRealObject() );
+	
+	decShapeBox *box = nullptr;
+	
+	try{
+		box = new decShapeBox( extends, tapering, center, orientation );
 		shapeList.Add( box );
 		
 	}catch( ... ){
@@ -1413,6 +1478,8 @@ void deClassShapeList::CreateClassMembers( dsEngine *engine ){
 	
 	AddFunction( new nfAddBox( init ) );
 	AddFunction( new nfAddBox2( init ) );
+	AddFunction( new nfAddBox3( init ) );
+	AddFunction( new nfAddBox4( init ) );
 	
 	AddFunction( new nfAddCylinder( init ) );
 	AddFunction( new nfAddCylinder2( init ) );

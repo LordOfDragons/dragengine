@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine OpenXR VR Module
+/*
+ * MIT License
  *
- * Copyright (C) 2021, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdlib.h>
@@ -48,6 +51,8 @@
 #include "device/profile/deoxrDPMSFTHandInteraction.h"
 #include "device/profile/deoxrDPNoControllerHands.h"
 #include "device/profile/deoxrDPEyeGazeInteraction.h"
+#include "device/profile/deoxrDPHandInteraction.h"
+#include "device/profile/deoxrDPHTCHandInteraction.h"
 #include "loader/deoxrLoader.h"
 
 #include <dragengine/deEngine.h>
@@ -124,7 +129,7 @@ void deVROpenXR::InputEventSetTimestamp( deInputEvent &event ) const{
 	#ifdef OS_W32
 	event.SetTime( { ( long )decDateTime().ToSystemTime(), 0 } );
 	#else
-	event.SetTime( { decDateTime().ToSystemTime(), 0 } );
+	event.SetTime( { ( time_t )decDateTime().ToSystemTime(), 0 } );
 	#endif
 }
 
@@ -922,9 +927,15 @@ void deVROpenXR::pCreateActionSet(){
 	pActionSet->AddFloatAction( "grip_pinch", "Grip Pinch" );
 	pActionSet->AddVibrationAction( "grip_haptic", "Haptic Grip" );
 	
+	pActionSet->AddFloatAction( "gesture_pinch", "Gesture Pinch" );
+	pActionSet->AddFloatAction( "gesture_aim", "Gesture Aim" );
+	pActionSet->AddFloatAction( "gesture_grasp", "Gesture Grasp" );
+	
 	pActionSet->AddPoseAction( "pose", "Pose" );
 	pActionSet->AddPoseAction( "pose_left", "Pose Left" );
 	pActionSet->AddPoseAction( "pose_right", "Pose Right" );
+	pActionSet->AddPoseAction( "pose_left2", "Pose Left 2" );
+	pActionSet->AddPoseAction( "pose_right2", "Pose Right 2" );
 	
 	// allow device profiles to add actions
 	const int count = pDeviceProfiles.GetCount();
@@ -957,11 +968,14 @@ void deVROpenXR::pCreateDeviceProfiles(){
 	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPHUAWEIControllerInteraction( pInstance ) ) );
 	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPMicrosoftMixedRealityMotionController( pInstance ) ) );
 	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPMicrosoftXboxController( pInstance ) ) );
-	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPMSFTHandInteraction( pInstance ) ) );
 	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPOculusGoController( pInstance ) ) );
 	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPOculusTouchController( pInstance ) ) );
 	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPSamsungOdysseyController( pInstance ) ) );
 	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPValveIndexController( pInstance ) ) );
+	
+	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPHandInteraction( pInstance ) ) );
+	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPHTCHandInteraction( pInstance ) ) );
+	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPMSFTHandInteraction( pInstance ) ) );
 	
 	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPHtcViveTracker( pInstance ) ) );
 	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPEyeGazeInteraction( pInstance ) ) );

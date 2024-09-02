@@ -1,0 +1,165 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Services.Mods
+
+/**
+ * \brief Information about modification release.
+ * \version 1.23
+ * 
+ * In particular contains information about the release file to download and install.
+ */
+class ServiceModRelease
+	/**
+	 * \brief Virus scan status of file.
+	 */
+	enum VirusScanStatus
+		/**
+		 * \brief Virus scan has not started yet.
+		 */
+		notScanned
+		
+		/**
+		 * \brief Virus scan has completed.
+		 */
+		scanComplete
+		
+		/**
+		 * \brief Virus scan is in progress.
+		 */
+		inProgress
+		
+		/**
+		 * \brief File is too large to be scanned.
+		 */
+		tooLargeToScan
+		
+		/**
+		 * \brief File to scan can not be found.
+		 */
+		fileNotFound
+		
+		/**
+		 * \brief Scanning failed for some other reason.
+		 */
+		errorScanning
+	end
+	
+	/**
+	 * \brief Virus status of file.
+	 */
+	enum VirusStatus
+		/**
+		 * \brief File is found to be safe.
+		 */
+		noThreat
+		
+		/**
+		 * \brief File is found to contain malicious data.
+		 */
+		malicious
+		
+		/**
+		 * \brief File is found to be potentially harmful.
+		 */
+		potentiallyHarmful
+	end
+	
+	
+	
+	/**
+	 * \brief Release identifier.
+	 */
+	public var String id
+	
+	/**
+	 * \brief Identifier of modification this release belongs to.
+	 */
+	public var String modId
+	
+	/**
+	 * \brief Date of adding release to modification.
+	 */
+	public var TimeDate dateAdded
+	
+	/**
+	 * \brief Latest virus scan status of release file.
+	 */
+	public var VirusScanStatus virusScanStatus
+	
+	/**
+	 * \brief Latest virus status of release file.
+	 */
+	public var VirusStatus virusStatus
+	
+	/**
+	 * \brief Approximate file size.
+	 */
+	public var float filesize
+	
+	/**
+	 * \brief Approximate uncompressed file size.
+	 */
+	public var float filesizeUncompressed
+	
+	/**
+	 * \brief Filename.
+	 */
+	public var String filename
+	
+	/**
+	 * \brief Release version.
+	 */
+	public var String version
+	
+	/**
+	 * \brief Release changelog.
+	 */
+	public var String changelog
+	
+	/**
+	 * \brief Metadata stored by game developer for this release.
+	 */
+	public var String metadata
+	
+	/**
+	 * \brief File download URL.
+	 */
+	public var String downloadUrl
+	
+	/**
+	 * \brief Download expiry date.
+	 * 
+	 * Used to phase out a release version.
+	 */
+	public var TimeDate downloadExpiryDate
+	
+	
+	
+	/**
+	 * Create new instance of class ServiceModRelease.
+	 */
+	func new()
+	end
+end

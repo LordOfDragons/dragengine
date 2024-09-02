@@ -1,1286 +1,1314 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{72d5186c-8048-4b5d-a2f6-abddfb40055b}</UniqueIdentifier>
-    </Filter>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassAISystem.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\deClassAnimation.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\deClassAnimationBuilder.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\deClassAnimator.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\deClassAnimatorController.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\deClassAnimatorInstance.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\deClassAnimatorRule.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassAnimatorSystem.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARAnimation.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARAnimationDifference.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARAnimationSelect.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARBoneTransformator.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARForeignState.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARGroup.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARInverseKinematic.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARLimit.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARMirror.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARStateManipulator.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARStateSnapshot.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARSubAnimator.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARTrackTo.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassAudioSystem.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassBillboard.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\deClassCache.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\cachedveg\deClassCachedVegetation.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassCamera.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\canvas\deClassCanvas.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\canvas\deClassCanvasCanvasView.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\canvas\deClassCanvasImage.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\canvas\deClassCanvasPaint.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\canvas\deClassCanvasRenderWorld.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\canvas\deClassCanvasText.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\canvas\deClassCanvasVideoPlayer.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\canvas\deClassCanvasView.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\canvas\deClassCaptureCanvas.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\collider\deClassCollider.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\collider\deClassColliderBreakingListener.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\collider\deClassColliderCollisionTest.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\collider\deClassColliderComponent.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\collider\deClassColliderConstraint.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\collider\deClassColliderListener.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\collider\deClassColliderRig.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\collider\deClassColliderVolume.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\physics\deClassCollisionFilter.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\physics\deClassCollisionInfo.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\physics\deClassCollisionTester.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassColor.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassColorMatrix.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassComponent.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\network\deClassConnection.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\network\deClassConnectionListener.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassCrashRecoverySystem.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\curve\deClassCurve2D.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\curve\deClassCurveBezier.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\curve\deClassCurveBezier3D.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\curve\deClassCurveDistanceMapping.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\debug\deClassDebugDrawer.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\world\deClassDecal.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassDMatrix.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassDMatrix4.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassDVector.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\world\deClassDynamicSkin.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\utils\deClassEasyXML.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\utils\deClassEasyXMLElement.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassEditableImage.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\effects\deClassEffect.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\effects\deClassEffectColorMatrix.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\effects\deClassEffectDistortImage.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\effects\deClassEffectFilterKernel.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\effects\deClassEffectOverlayImage.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\deClassEngine.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassEnvMapProbe.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\file\deClassFileReader.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassFileSystem.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\file\deClassFileWriter.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassFont.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassFontBuilder.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\physics\deClassForceField.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\deClassGame.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassGraphicSystem.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\heightterrain\deClassHeightTerrain.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassImage.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassImagePixels.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\input\deClassInputDevice.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\input\deClassInputDeviceAxis.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\input\deClassInputDeviceButton.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\input\deClassInputDeviceComponent.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\input\deClassInputDeviceFeedback.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\input\deClassInputEvent.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassInputSystem.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\translation\deClassLanguagePack.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\translation\deClassLanguagePackBuilder.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\physics\deClassLayerMask.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassLight.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\ai\deClassLocomotion.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassLumimeter.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassMath.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassMatrix.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassMatrix4.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\file\deClassMemoryFile.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sound\deClassMicrophone.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\world\deClassModel.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\world\deClassModelBuilder.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\deClassModuleParameter.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\utils\deClassMutableID.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\ai\deClassNavigationBlocker.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\ai\deClassNavigationInfo.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\ai\deClassNavigationSpace.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\ai\deClassNavigator.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\ai\deClassNavigatorPath.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\network\deClassNetworkMessage.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\network\deClassNetworkState.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\network\deClassNetworkStateListener.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassNetworkSystem.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassOcclusionMesh.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassOcclusionMeshBuilder.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\particle\deClassParticleEmitter.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\particle\deClassParticleEmitterController.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\particle\deClassParticleEmitterInstance.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\particle\deClassParticleEmitterInstanceListener.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassPhysicsSystem.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassPoint.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassPoint3.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\propfield\deClassPropField.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\propfield\deClassPropFieldListener.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassQuaternion.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\resources\deClassResourceListener.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\world\deClassRig.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\world\deClassRigBuilder.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\utils\deClassRuntimeMeter.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\utils\deClassSafeArray.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassScriptSystem.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\network\deClassServer.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\network\deClassServerListener.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\service\deClassService.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\service\deClassServiceListener.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\service\deClassServiceObject.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\synthesizer\effects\deClassSEStretch.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\utils\deClassShapeList.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\world\deClassSkin.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\world\deClassSkinBuilder.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sky\deClassSky.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sky\deClassSkyBody.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sky\deClassSkyController.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sky\deClassSkyInstance.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sky\deClassSkyLayer.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sky\deClassSkyLink.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sky\deClassSkyTarget.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\smooth\deClassSmoothDouble.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\smooth\deClassSmoothDVector.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\smooth\deClassSmoothFloat.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\smooth\deClassSmoothVector.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\smooth\deClassSmoothVector2.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sound\deClassSound.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sound\deClassSoundLevelMeter.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sound\deClassSoundLevelMeterListener.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sound\deClassSoundLevelMeterSpeaker.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sound\deClassSpeaker.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\synthesizer\sources\deClassSSChain.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\synthesizer\sources\deClassSSGroup.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\synthesizer\sources\deClassSSSound.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\synthesizer\sources\deClassSSSynthesizer.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\synthesizer\sources\deClassSSWave.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\string\deClassStringID.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\synthesizer\deClassSynthesizer.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\synthesizer\deClassSynthesizerController.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\synthesizer\deClassSynthesizerEffect.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\synthesizer\deClassSynthesizerInstance.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\synthesizer\deClassSynthesizerSource.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassSynthesizerSystem.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassSystem.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassTexMatrix.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassTexMatrix2.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\physics\deClassTouchSensor.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\physics\deClassTouchSensorListener.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\string\deClassUnicodeString.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\utils\deClassUniqueID.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\string\deClassUTF8Decoder.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassVector.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassVector2.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\video\deClassVideo.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\video\deClassVideoPlayer.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassVRSystem.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\world\deClassWorld.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\peers\dedsCollider.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\utils\dedsColliderListenerAdaptor.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\utils\dedsColliderListenerClosest.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\utils\dedsCollisionTester.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\peers\dedsConnection.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\dedsEngineException.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\deDSEngineManager.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\utils\dedsInputDevice.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\locomotion\dedsLControllerMapping.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\dedsLoadingScreen.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\locomotion\dedsLocomotion.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\utils\dedsNavigationInfo.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\peers\dedsNetworkState.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\peers\dedsParticleEmitter.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\peers\dedsPropField.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\resourceloader\dedsResourceLoader.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\resourceloader\dedsResourceLoaderTask.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\peers\dedsServer.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\peers\dedsService.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\peers\dedsSoundLevelMeter.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\peers\dedsSpeaker.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\styledtext\nodes\dedsSTNImage.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\styledtext\nodes\dedsSTNParagraph.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\styledtext\nodes\dedsSTNText.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\styledtext\dedsStyledText.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\styledtext\nodes\dedsStyledTextNode.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\peers\dedsTouchSensor.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\xml\dedsXmlDocument.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\xml\dedsXmlParser.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\deScriptingDragonScript.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\deScriptSource.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="post_build.ps1" />
+    <ClInclude Include="module_version.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassAISystem.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\deClassAnimation.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\deClassAnimationBuilder.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\deClassAnimator.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\deClassAnimatorController.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\deClassAnimatorInstance.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\deClassAnimatorRule.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassAnimatorSystem.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARAnimation.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARAnimationDifference.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARAnimationSelect.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARBoneTransformator.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARForeignState.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARGroup.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARInverseKinematic.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARLimit.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARMirror.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARStateManipulator.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARStateSnapshot.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARSubAnimator.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARTrackTo.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassAudioSystem.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassBillboard.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\deClassCache.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\cachedveg\deClassCachedVegetation.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassCamera.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\canvas\deClassCanvas.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\canvas\deClassCanvasCanvasView.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\canvas\deClassCanvasImage.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\canvas\deClassCanvasPaint.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\canvas\deClassCanvasRenderWorld.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\canvas\deClassCanvasText.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\canvas\deClassCanvasVideoPlayer.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\canvas\deClassCanvasView.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\canvas\deClassCaptureCanvas.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\collider\deClassCollider.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\collider\deClassColliderBreakingListener.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\collider\deClassColliderCollisionTest.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\collider\deClassColliderComponent.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\collider\deClassColliderConstraint.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\collider\deClassColliderListener.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\collider\deClassColliderRig.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\collider\deClassColliderVolume.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\physics\deClassCollisionFilter.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\physics\deClassCollisionInfo.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\physics\deClassCollisionTester.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassColor.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassColorMatrix.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassComponent.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\network\deClassConnection.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\network\deClassConnectionListener.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassCrashRecoverySystem.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\curve\deClassCurve2D.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\curve\deClassCurveBezier.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\curve\deClassCurveBezier3D.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\curve\deClassCurveDistanceMapping.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\debug\deClassDebugDrawer.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\world\deClassDecal.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassDMatrix.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassDMatrix4.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassDVector.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\world\deClassDynamicSkin.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\utils\deClassEasyXML.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\utils\deClassEasyXMLElement.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassEditableImage.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\effects\deClassEffect.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\effects\deClassEffectColorMatrix.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\effects\deClassEffectDistortImage.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\effects\deClassEffectFilterKernel.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\effects\deClassEffectOverlayImage.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\deClassEngine.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassEnvMapProbe.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\file\deClassFileReader.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassFileSystem.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\file\deClassFileWriter.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassFont.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassFontBuilder.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\physics\deClassForceField.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\deClassGame.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassGraphicSystem.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\heightterrain\deClassHeightTerrain.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassImage.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassImagePixels.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\input\deClassInputDevice.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\input\deClassInputDeviceAxis.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\input\deClassInputDeviceButton.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\input\deClassInputDeviceComponent.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\input\deClassInputDeviceFeedback.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\input\deClassInputEvent.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassInputSystem.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\translation\deClassLanguagePack.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\translation\deClassLanguagePackBuilder.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\physics\deClassLayerMask.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassLight.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\ai\deClassLocomotion.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassLumimeter.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassMath.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassMatrix.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassMatrix4.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\file\deClassMemoryFile.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sound\deClassMicrophone.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\world\deClassModel.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\world\deClassModelBuilder.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\deClassModuleParameter.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\utils\deClassMutableID.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\ai\deClassNavigationBlocker.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\ai\deClassNavigationInfo.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\ai\deClassNavigationSpace.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\ai\deClassNavigator.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\ai\deClassNavigatorPath.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\network\deClassNetworkMessage.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\network\deClassNetworkState.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\network\deClassNetworkStateListener.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassNetworkSystem.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassOcclusionMesh.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassOcclusionMeshBuilder.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\particle\deClassParticleEmitter.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\particle\deClassParticleEmitterController.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\particle\deClassParticleEmitterInstance.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\particle\deClassParticleEmitterInstanceListener.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\deClassPathes.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassPhysicsSystem.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassPoint.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassPoint3.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\propfield\deClassPropField.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\propfield\deClassPropFieldListener.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassQuaternion.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\resources\deClassResourceListener.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\world\deClassRig.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\world\deClassRigBuilder.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\utils\deClassRuntimeMeter.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\utils\deClassSafeArray.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassScriptSystem.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\network\deClassServer.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\network\deClassServerListener.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\service\deClassService.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\service\deClassServiceListener.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\service\deClassServiceObject.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\synthesizer\effects\deClassSEStretch.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\utils\deClassShapeList.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\world\deClassSkin.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\world\deClassSkinBuilder.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sky\deClassSky.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sky\deClassSkyBody.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sky\deClassSkyController.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sky\deClassSkyInstance.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sky\deClassSkyLayer.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sky\deClassSkyLink.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sky\deClassSkyTarget.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\smooth\deClassSmoothDouble.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\smooth\deClassSmoothDVector.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\smooth\deClassSmoothFloat.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\smooth\deClassSmoothVector.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\smooth\deClassSmoothVector2.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sound\deClassSound.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sound\deClassSoundLevelMeter.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sound\deClassSoundLevelMeterListener.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sound\deClassSoundLevelMeterSpeaker.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sound\deClassSpeaker.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\synthesizer\sources\deClassSSChain.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\synthesizer\sources\deClassSSGroup.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\synthesizer\sources\deClassSSSound.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\synthesizer\sources\deClassSSSynthesizer.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\synthesizer\sources\deClassSSWave.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\string\deClassStringID.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\synthesizer\deClassSynthesizer.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\synthesizer\deClassSynthesizerController.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\synthesizer\deClassSynthesizerEffect.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\synthesizer\deClassSynthesizerInstance.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\synthesizer\deClassSynthesizerSource.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassSynthesizerSystem.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassSystem.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassTexMatrix.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassTexMatrix2.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\physics\deClassTouchSensor.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\physics\deClassTouchSensorListener.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\string\deClassUnicodeString.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\utils\deClassUniqueID.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\string\deClassUTF8Decoder.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassVector.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassVector2.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\video\deClassVideo.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\video\deClassVideoPlayer.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassVRSystem.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\world\deClassWorld.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\peers\dedsCollider.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\utils\dedsColliderListenerAdaptor.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\utils\dedsColliderListenerClosest.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\utils\dedsCollisionTester.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\peers\dedsConnection.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\dedsEngineException.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\deDSEngineManager.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\utils\dedsInputDevice.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\locomotion\dedsLControllerMapping.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\dedsLoadingScreen.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\locomotion\dedsLocomotion.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\utils\dedsNavigationInfo.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\peers\dedsNetworkState.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\peers\dedsParticleEmitter.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\peers\dedsPropField.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\resourceloader\dedsResourceLoader.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\resourceloader\dedsResourceLoaderTask.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\peers\dedsServer.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\peers\dedsService.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\peers\dedsSoundLevelMeter.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\peers\dedsSpeaker.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\styledtext\nodes\dedsSTNImage.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\styledtext\nodes\dedsSTNParagraph.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\styledtext\nodes\dedsSTNText.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\styledtext\dedsStyledText.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\styledtext\nodes\dedsStyledTextNode.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\peers\dedsTouchSensor.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\xml\dedsXmlDocument.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\xml\dedsXmlParser.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\deScriptingDragonScript.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\deScriptSource.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="..\..\..\..\src\modules\scripting\dragonscript\src\module.xml" />
+  </ItemGroup>
+  <ItemGroup>
     <None Include="..\..\..\..\src\modules\scripting\dragonscript\SConscript" />
+    <None Include="post_build.ps1" />
     <None Include="pre_build.ps1" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\deDSEngineManager.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\dedsLoadingScreen.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\deScriptingDragonScript.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\deScriptSource.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\ai\deClassLocomotion.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\ai\deClassNavigationBlocker.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\ai\deClassNavigationInfo.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\ai\deClassNavigationSpace.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\ai\deClassNavigator.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\ai\deClassNavigatorPath.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\deClassAnimation.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\deClassAnimationBuilder.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\deClassAnimator.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\deClassAnimatorController.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\deClassAnimatorInstance.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\deClassAnimatorRule.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARAnimation.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARAnimationDifference.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARAnimationSelect.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARBoneTransformator.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARForeignState.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARGroup.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARInverseKinematic.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARLimit.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARMirror.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARStateManipulator.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARStateSnapshot.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARSubAnimator.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARTrackTo.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\cachedveg\deClassCachedVegetation.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\canvas\deClassCanvas.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\canvas\deClassCanvasCanvasView.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\canvas\deClassCanvasImage.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\canvas\deClassCanvasPaint.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\canvas\deClassCanvasRenderWorld.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\canvas\deClassCanvasText.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\canvas\deClassCanvasVideoPlayer.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\canvas\deClassCanvasView.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\canvas\deClassCaptureCanvas.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\collider\deClassCollider.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\collider\deClassColliderBreakingListener.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\collider\deClassColliderCollisionTest.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\collider\deClassColliderComponent.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\collider\deClassColliderConstraint.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\collider\deClassColliderListener.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\collider\deClassColliderRig.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\collider\deClassColliderVolume.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\curve\deClassCurve2D.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\curve\deClassCurveBezier.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\curve\deClassCurveBezier3D.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\curve\deClassCurveDistanceMapping.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\debug\deClassDebugDrawer.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\deClassCache.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\deClassEngine.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\deClassGame.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\deClassModuleParameter.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\effects\deClassEffect.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\effects\deClassEffectColorMatrix.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\effects\deClassEffectDistortImage.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\effects\deClassEffectFilterKernel.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\effects\deClassEffectOverlayImage.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\file\deClassFileReader.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\file\deClassFileWriter.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\file\deClassMemoryFile.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassBillboard.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassCamera.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassColor.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassComponent.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassEditableImage.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassEnvMapProbe.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassFont.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassFontBuilder.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassImage.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassImagePixels.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassLight.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassLumimeter.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassOcclusionMesh.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassOcclusionMeshBuilder.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\heightterrain\deClassHeightTerrain.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\input\deClassInputDevice.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\input\deClassInputDeviceAxis.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\input\deClassInputDeviceButton.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\input\deClassInputDeviceComponent.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\input\deClassInputDeviceFeedback.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\input\deClassInputEvent.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassColorMatrix.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassDMatrix.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassDMatrix4.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassDVector.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassMath.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassMatrix.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassMatrix4.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassPoint.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassPoint3.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassQuaternion.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassTexMatrix.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassTexMatrix2.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassVector.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassVector2.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\smooth\deClassSmoothDouble.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\smooth\deClassSmoothDVector.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\smooth\deClassSmoothFloat.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\smooth\deClassSmoothVector.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\smooth\deClassSmoothVector2.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\network\deClassConnection.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\network\deClassConnectionListener.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\network\deClassNetworkMessage.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\network\deClassNetworkState.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\network\deClassNetworkStateListener.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\network\deClassServer.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\network\deClassServerListener.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\particle\deClassParticleEmitter.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\particle\deClassParticleEmitterController.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\particle\deClassParticleEmitterInstance.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\particle\deClassParticleEmitterInstanceListener.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\physics\deClassCollisionFilter.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\physics\deClassCollisionInfo.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\physics\deClassCollisionTester.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\physics\deClassForceField.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\physics\deClassLayerMask.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\physics\deClassTouchSensor.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\physics\deClassTouchSensorListener.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\propfield\deClassPropField.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\propfield\deClassPropFieldListener.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\resources\deClassResourceListener.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sky\deClassSky.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sky\deClassSkyBody.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sky\deClassSkyController.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sky\deClassSkyInstance.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sky\deClassSkyLayer.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sky\deClassSkyLink.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sky\deClassSkyTarget.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sound\deClassMicrophone.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sound\deClassSound.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sound\deClassSoundLevelMeter.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sound\deClassSoundLevelMeterListener.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sound\deClassSoundLevelMeterSpeaker.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sound\deClassSpeaker.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\string\deClassStringID.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\string\deClassUnicodeString.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\string\deClassUTF8Decoder.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\synthesizer\deClassSynthesizer.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\synthesizer\deClassSynthesizerController.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\synthesizer\deClassSynthesizerEffect.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\synthesizer\deClassSynthesizerInstance.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\synthesizer\deClassSynthesizerSource.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\synthesizer\effects\deClassSEStretch.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\synthesizer\sources\deClassSSChain.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\synthesizer\sources\deClassSSGroup.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\synthesizer\sources\deClassSSSound.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\synthesizer\sources\deClassSSSynthesizer.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\synthesizer\sources\deClassSSWave.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassAISystem.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassAnimatorSystem.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassAudioSystem.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassCrashRecoverySystem.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassFileSystem.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassGraphicSystem.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassInputSystem.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassNetworkSystem.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassPhysicsSystem.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassScriptSystem.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassSynthesizerSystem.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassSystem.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassVRSystem.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\translation\deClassLanguagePack.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\translation\deClassLanguagePackBuilder.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\utils\deClassEasyXML.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\utils\deClassEasyXMLElement.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\utils\deClassMutableID.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\utils\deClassRuntimeMeter.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\utils\deClassSafeArray.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\utils\deClassShapeList.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\utils\deClassUniqueID.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\video\deClassVideo.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\video\deClassVideoPlayer.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\world\deClassDecal.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\world\deClassDynamicSkin.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\world\deClassModel.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\world\deClassModelBuilder.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\world\deClassRig.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\world\deClassRigBuilder.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\world\deClassSkin.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\world\deClassSkinBuilder.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\world\deClassWorld.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\locomotion\dedsLControllerMapping.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\locomotion\dedsLocomotion.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\peers\dedsCollider.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\peers\dedsConnection.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\peers\dedsNetworkState.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\peers\dedsParticleEmitter.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\peers\dedsPropField.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\peers\dedsServer.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\peers\dedsSoundLevelMeter.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\peers\dedsSpeaker.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\peers\dedsTouchSensor.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\resourceloader\dedsResourceLoader.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\resourceloader\dedsResourceLoaderTask.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\styledtext\dedsStyledText.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\styledtext\nodes\dedsSTNImage.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\styledtext\nodes\dedsSTNParagraph.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\styledtext\nodes\dedsSTNText.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\styledtext\nodes\dedsStyledTextNode.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\utils\dedsColliderListenerAdaptor.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\utils\dedsColliderListenerClosest.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\utils\dedsCollisionTester.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\utils\dedsInputDevice.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\utils\dedsNavigationInfo.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\xml\dedsXmlDocument.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\xml\dedsXmlParser.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\deClassPathes.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="module_version.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\dedsLoadingScreen.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\deScriptingDragonScript.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\deScriptSource.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\ai\deClassLocomotion.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\ai\deClassNavigationBlocker.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\ai\deClassNavigationInfo.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\ai\deClassNavigationSpace.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\ai\deClassNavigator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\ai\deClassNavigatorPath.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\deClassAnimation.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\deClassAnimationBuilder.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\deClassAnimator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\deClassAnimatorController.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\deClassAnimatorInstance.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\deClassAnimatorRule.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARAnimation.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARAnimationDifference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARAnimationSelect.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARBoneTransformator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARForeignState.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARGroup.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARInverseKinematic.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARLimit.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARMirror.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARStateManipulator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARStateSnapshot.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARSubAnimator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\animation\rules\deClassARTrackTo.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\cachedveg\deClassCachedVegetation.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\canvas\deClassCanvas.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\canvas\deClassCanvasCanvasView.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\canvas\deClassCanvasImage.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\canvas\deClassCanvasPaint.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\canvas\deClassCanvasRenderWorld.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\canvas\deClassCanvasText.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\canvas\deClassCanvasVideoPlayer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\canvas\deClassCanvasView.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\canvas\deClassCaptureCanvas.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\collider\deClassCollider.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\collider\deClassColliderBreakingListener.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\collider\deClassColliderCollisionTest.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\collider\deClassColliderComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\collider\deClassColliderConstraint.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\collider\deClassColliderListener.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\collider\deClassColliderRig.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\collider\deClassColliderVolume.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\curve\deClassCurve2D.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\curve\deClassCurveBezier.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\curve\deClassCurveBezier3D.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\curve\deClassCurveDistanceMapping.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\debug\deClassDebugDrawer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\deClassCache.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\deClassEngine.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\deClassGame.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\deClassModuleParameter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\effects\deClassEffect.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\effects\deClassEffectColorMatrix.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\effects\deClassEffectDistortImage.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\effects\deClassEffectFilterKernel.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\effects\deClassEffectOverlayImage.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\file\deClassFileReader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\file\deClassFileWriter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\file\deClassMemoryFile.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassBillboard.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassCamera.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassColor.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassEditableImage.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassEnvMapProbe.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassFont.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassFontBuilder.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassImage.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassImagePixels.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassLight.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassLumimeter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassOcclusionMesh.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\graphics\deClassOcclusionMeshBuilder.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\heightterrain\deClassHeightTerrain.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\input\deClassInputDevice.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\input\deClassInputDeviceAxis.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\input\deClassInputDeviceButton.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\input\deClassInputDeviceComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\input\deClassInputDeviceFeedback.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\input\deClassInputEvent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassColorMatrix.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassDMatrix.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassDMatrix4.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassDVector.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassMath.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassMatrix.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassMatrix4.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassPoint.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassPoint3.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassQuaternion.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassTexMatrix.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassTexMatrix2.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassVector.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\deClassVector2.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\smooth\deClassSmoothDouble.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\smooth\deClassSmoothDVector.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\smooth\deClassSmoothFloat.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\smooth\deClassSmoothVector.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\math\smooth\deClassSmoothVector2.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\network\deClassConnection.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\network\deClassConnectionListener.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\network\deClassNetworkMessage.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\network\deClassNetworkState.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\network\deClassNetworkStateListener.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\network\deClassServer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\network\deClassServerListener.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\particle\deClassParticleEmitter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\particle\deClassParticleEmitterController.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\particle\deClassParticleEmitterInstance.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\particle\deClassParticleEmitterInstanceListener.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\physics\deClassCollisionFilter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\physics\deClassCollisionInfo.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\physics\deClassCollisionTester.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\physics\deClassForceField.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\physics\deClassLayerMask.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\physics\deClassTouchSensor.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\physics\deClassTouchSensorListener.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\propfield\deClassPropField.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\propfield\deClassPropFieldListener.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\resources\deClassResourceListener.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sky\deClassSky.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sky\deClassSkyBody.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sky\deClassSkyController.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sky\deClassSkyInstance.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sky\deClassSkyLayer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sky\deClassSkyLink.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sky\deClassSkyTarget.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sound\deClassMicrophone.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sound\deClassSound.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sound\deClassSoundLevelMeter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sound\deClassSoundLevelMeterListener.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sound\deClassSoundLevelMeterSpeaker.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\sound\deClassSpeaker.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\string\deClassStringID.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\string\deClassUnicodeString.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\string\deClassUTF8Decoder.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\synthesizer\deClassSynthesizer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\synthesizer\deClassSynthesizerController.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\synthesizer\deClassSynthesizerEffect.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\synthesizer\deClassSynthesizerInstance.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\synthesizer\deClassSynthesizerSource.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\synthesizer\effects\deClassSEStretch.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\synthesizer\sources\deClassSSChain.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\synthesizer\sources\deClassSSGroup.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\synthesizer\sources\deClassSSSound.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\synthesizer\sources\deClassSSSynthesizer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\synthesizer\sources\deClassSSWave.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassAISystem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassAnimatorSystem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassAudioSystem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassCrashRecoverySystem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassFileSystem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassGraphicSystem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassInputSystem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassNetworkSystem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassPhysicsSystem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassScriptSystem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassSynthesizerSystem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassSystem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\systems\deClassVRSystem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\translation\deClassLanguagePack.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\translation\deClassLanguagePackBuilder.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\utils\deClassEasyXML.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\utils\deClassEasyXMLElement.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\utils\deClassMutableID.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\utils\deClassRuntimeMeter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\utils\deClassSafeArray.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\utils\deClassShapeList.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\utils\deClassUniqueID.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\video\deClassVideo.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\video\deClassVideoPlayer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\world\deClassDecal.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\world\deClassDynamicSkin.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\world\deClassModel.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\world\deClassModelBuilder.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\world\deClassRig.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\world\deClassRigBuilder.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\world\deClassSkin.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\world\deClassSkinBuilder.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\world\deClassWorld.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\locomotion\dedsLControllerMapping.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\locomotion\dedsLocomotion.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\peers\dedsCollider.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\peers\dedsConnection.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\peers\dedsNetworkState.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\peers\dedsParticleEmitter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\peers\dedsPropField.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\peers\dedsServer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\peers\dedsSoundLevelMeter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\peers\dedsSpeaker.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\peers\dedsTouchSensor.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\resourceloader\dedsResourceLoader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\resourceloader\dedsResourceLoaderTask.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\styledtext\dedsStyledText.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\styledtext\nodes\dedsSTNImage.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\styledtext\nodes\dedsSTNParagraph.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\styledtext\nodes\dedsSTNText.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\styledtext\nodes\dedsStyledTextNode.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\utils\dedsColliderListenerAdaptor.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\utils\dedsColliderListenerClosest.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\utils\dedsCollisionTester.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\utils\dedsInputDevice.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\utils\dedsNavigationInfo.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\xml\dedsXmlDocument.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\xml\dedsXmlParser.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\deDSEngineManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Xml Include="..\..\..\..\src\modules\scripting\dragonscript\src\module.xml">
-      <Filter>Source Files</Filter>
-    </Xml>
+    <Filter Include="Sources">
+      <UniqueIdentifier>{afa68ed1-fd96-44e1-87f1-2f2724231f9c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

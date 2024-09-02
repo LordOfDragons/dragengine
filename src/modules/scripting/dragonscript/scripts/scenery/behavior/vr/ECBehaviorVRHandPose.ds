@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2022, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 
@@ -71,7 +74,7 @@ pin Dragengine.Utils
 class ECBehaviorVRHandPose extends DefaultECBehavior
 	/** \brief Behavior instance. */
 	class Instance extends DefaultECBehaviorInstance
-		class Bone
+		protected class Bone
 			public var String bone
 			public var int poseIndex
 			public var String namePrefix
@@ -82,57 +85,41 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 			public var Vector posePosition
 			public var Quaternion poseOrientation
 			
-			public func new(String bone, int poseIndex, String namePrefix)
+			func new(String bone, int poseIndex, String namePrefix)
 				this.bone = bone
 				this.poseIndex = poseIndex
 				this.namePrefix = namePrefix
 			end
 		end
 		
-		enum BoneEntry
+		protected enum BoneEntry
 			wrist
-			thumb1
-			thumb2
-			thumb3
-			index1
-			index2
-			index3
-			index4
-			middle1
-			middle2
-			middle3
-			middle4
-			ring1
-			ring2
-			ring3
-			ring4
-			pinky1
-			pinky2
-			pinky3
-			pinky4
+			thumb1: thumb2: thumb3
+			index1: index2: index3: index4
+			middle1: middle2: middle3: middle4
+			ring1: ring2: ring3: ring4
+			pinky1: pinky2: pinky3: pinky4
 		end
 		
 		
 		
-		private var ECBehaviorVRHandPose pECBehavior
-		private var ECBehaviorVRHand.Instance pVRHand
+		var ECBehaviorVRHandPose pECBehavior
+		var ECBehaviorVRHand.Instance pVRHand
 		
-		private var bool pOnlyRotation
-		private var String pBoneOrigin
-		private var Array pBones
-		private var Array pAnimateBones
-		private var AnimatorInstance pAnimatorInstance
-		private var ADController pADControllerEnableFingers
-		private var AnimatorController pControllerEnableFingers
+		var bool pOnlyRotation
+		var String pBoneOrigin
+		var Array pBones, pAnimateBones
+		var AnimatorInstance pAnimatorInstance
+		var ADController pADControllerEnableFingers
+		var AnimatorController pControllerEnableFingers
 		
-		private var Matrix pHandScale
-		private var float pModelFingerTipDistance
-		private var float pPoseFingerTipDistance
+		var Matrix pHandScale
+		var float pModelFingerTipDistance, pPoseFingerTipDistance
 		
 		
 		
 		/** \brief Create element. */
-		public func new(ECBehaviorVRHandPose ecbehavior, BehaviorElement element) super(element)
+		func new(ECBehaviorVRHandPose ecbehavior, BehaviorElement element) super(element)
 			pECBehavior = ecbehavior
 			pBones = Array.new()
 			pHandScale = Matrix.new()
@@ -141,7 +128,7 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 		end
 		
 		/** \brief Dispose of composeable instance. */
-		public func void dispose()
+		func void dispose()
 			pVRHand = null
 			
 			super.dispose()
@@ -150,7 +137,7 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 		
 		
 		/** \brief Initialize element from stub. */
-		public func void init(StubElement stub)
+		func void init(StubElement stub)
 			pOnlyRotation = pECBehavior.getOnlyRotation().getValue(stub)
 			
 			pModelFingerTipDistance = pECBehavior.getFingerTipDistance().getValue(stub)
@@ -300,19 +287,19 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 		
 		
 		/** \brief Behavior. */
-		public func ECBehaviorVRHandPose getECBehavior()
+		func ECBehaviorVRHandPose getECBehavior()
 			return pECBehavior
 		end
 		
 		/** \brief VR Hand behavior instance. */
-		public func ECBehaviorVRHand.Instance getVRHand()
+		func ECBehaviorVRHand.Instance getVRHand()
 			return pVRHand
 		end
 		
 		
 		
 		/** \brief Apply only rotation instead of position and rotation. */
-		public func bool getOnlyRotation()
+		func bool getOnlyRotation()
 			return pOnlyRotation
 		end
 		
@@ -331,7 +318,7 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 		
 		
 		/** \brief Update controllers. */
-		public func void updateControllers()
+		func void updateControllers()
 			// get device and check if values can be fetched
 			var InputDevice device = pVRHand.getInputDevice()
 			
@@ -369,7 +356,7 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 		end
 		
 		/** \brief Apply animations. */
-		public func void applyAnimations()
+		func void applyAnimations()
 			if pAnimatorInstance != null
 				pAnimatorInstance.apply()
 			end
@@ -409,7 +396,7 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 				pPoseFingerTipDistance += (next - last).getLength()
 			end
 			
-			if pPoseFingerTipDistance == 0
+			if pPoseFingerTipDistance < 0.1
 				pPoseFingerTipDistance = pModelFingerTipDistance
 			end
 		end
@@ -433,132 +420,75 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 	
 	
 	
-	private var ECBehaviorVRHand pVRHand
-	private var ECPString pBoneOrigin
-	private var ECPString pBoneWrist
-	private var ECPString pBoneThumb1
-	private var ECPString pBoneThumb2
-	private var ECPString pBoneThumb3
-	private var ECPString pBoneIndex1
-	private var ECPString pBoneIndex2
-	private var ECPString pBoneIndex3
-	private var ECPString pBoneIndex4
-	private var ECPString pBoneMiddle1
-	private var ECPString pBoneMiddle2
-	private var ECPString pBoneMiddle3
-	private var ECPString pBoneMiddle4
-	private var ECPString pBoneRing1
-	private var ECPString pBoneRing2
-	private var ECPString pBoneRing3
-	private var ECPString pBoneRing4
-	private var ECPString pBonePinky1
-	private var ECPString pBonePinky2
-	private var ECPString pBonePinky3
-	private var ECPString pBonePinky4
-	private var ECPFloat pFingerTipDistance
-	private var ECPBoolean pEnabled
-	private var ECPBoolean pOnlyRotation
+	var ECBehaviorVRHand pVRHand
+	var ECPString pBoneOrigin, pBoneWrist
+	var ECPString pBoneThumb1, pBoneThumb2, pBoneThumb3
+	var ECPString pBoneIndex1, pBoneIndex2, pBoneIndex3, pBoneIndex4
+	var ECPString pBoneMiddle1, pBoneMiddle2, pBoneMiddle3, pBoneMiddle4
+	var ECPString pBoneRing1, pBoneRing2, pBoneRing3, pBoneRing4
+	var ECPString pBonePinky1, pBonePinky2, pBonePinky3, pBonePinky4
+	var ECPFloat pFingerTipDistance
+	var ECPBoolean pEnabled, pOnlyRotation
 	
 	
 	
 	/** \brief Create behavior element class. */
-	public func new(BehaviorElementClass eclass, ECBehaviorVRHand vrHand) this(eclass, vrHand, "")
+	func new(BehaviorElementClass eclass, ECBehaviorVRHand vrHand) this(eclass, vrHand, "")
 	end
 	
 	/** \brief Create behavior element class. */
-	public func new(BehaviorElementClass eclass, ECBehaviorVRHand vrHand, String id) \
+	func new(BehaviorElementClass eclass, ECBehaviorVRHand vrHand, String id) \
 	this(eclass, vrHand, id, id.empty() if "vrHandPose." else "vrHandPose(" + id + ").")
 	end
 	
 	/** \brief Create behavior element class. */
-	public func new(BehaviorElementClass eclass, ECBehaviorVRHand vrHand, String id, \
+	func new(BehaviorElementClass eclass, ECBehaviorVRHand vrHand, String id, \
 	String prefix) super(eclass, id)
 		pVRHand = vrHand
 		
-		pBoneOrigin = ECPString.new(prefix + "boneOrigin", "origin")
-		eclass.addProperty(pBoneOrigin)
-		
-		pBoneWrist = ECPString.new(prefix + "boneWrist", "wrist")
-		eclass.addProperty(pBoneWrist)
+		eclass.addProperty(pBoneOrigin = ECPString.new(prefix + "boneOrigin", "origin"))
+		eclass.addProperty(pBoneWrist = ECPString.new(prefix + "boneWrist", "wrist"))
 		
 		// thumb
-		pBoneThumb1 = ECPString.new(prefix + "boneThumb1", "thumb1")
-		eclass.addProperty(pBoneThumb1)
-		
-		pBoneThumb2 = ECPString.new(prefix + "boneThumb2", "thumb2")
-		eclass.addProperty(pBoneThumb2)
-		
-		pBoneThumb3 = ECPString.new(prefix + "boneThumb3", "thumb3")
-		eclass.addProperty(pBoneThumb3)
+		eclass.addProperty(pBoneThumb1 = ECPString.new(prefix + "boneThumb1", "thumb1"))
+		eclass.addProperty(pBoneThumb2 = ECPString.new(prefix + "boneThumb2", "thumb2"))
+		eclass.addProperty(pBoneThumb3 = ECPString.new(prefix + "boneThumb3", "thumb3"))
 		
 		// index
-		pBoneIndex1 = ECPString.new(prefix + "boneIndex1", "index1")
-		eclass.addProperty(pBoneIndex1)
-		
-		pBoneIndex2 = ECPString.new(prefix + "boneIndex2", "index2")
-		eclass.addProperty(pBoneIndex2)
-		
-		pBoneIndex3 = ECPString.new(prefix + "boneIndex3", "index3")
-		eclass.addProperty(pBoneIndex3)
-		
-		pBoneIndex4 = ECPString.new(prefix + "boneIndex4", "index4")
-		eclass.addProperty(pBoneIndex4)
+		eclass.addProperty(pBoneIndex1 = ECPString.new(prefix + "boneIndex1", "index1"))
+		eclass.addProperty(pBoneIndex2 = ECPString.new(prefix + "boneIndex2", "index2"))
+		eclass.addProperty(pBoneIndex3 = ECPString.new(prefix + "boneIndex3", "index3"))
+		eclass.addProperty(pBoneIndex4 = ECPString.new(prefix + "boneIndex4", "index4"))
 		
 		// middle
-		pBoneMiddle1 = ECPString.new(prefix + "boneMiddle1", "middle1")
-		eclass.addProperty(pBoneMiddle1)
-		
-		pBoneMiddle2 = ECPString.new(prefix + "boneMiddle2", "middle2")
-		eclass.addProperty(pBoneMiddle2)
-		
-		pBoneMiddle3 = ECPString.new(prefix + "boneMiddle3", "middle3")
-		eclass.addProperty(pBoneMiddle3)
-		
-		pBoneMiddle4 = ECPString.new(prefix + "boneMiddle4", "middle4")
-		eclass.addProperty(pBoneMiddle4)
+		eclass.addProperty(pBoneMiddle1 = ECPString.new(prefix + "boneMiddle1", "middle1"))
+		eclass.addProperty(pBoneMiddle2 = ECPString.new(prefix + "boneMiddle2", "middle2"))
+		eclass.addProperty(pBoneMiddle3 = ECPString.new(prefix + "boneMiddle3", "middle3"))
+		eclass.addProperty(pBoneMiddle4 = ECPString.new(prefix + "boneMiddle4", "middle4"))
 		
 		// ring
-		pBoneRing1 = ECPString.new(prefix + "boneRing1", "ring1")
-		eclass.addProperty(pBoneRing1)
-		
-		pBoneRing2 = ECPString.new(prefix + "boneRing2", "ring2")
-		eclass.addProperty(pBoneRing2)
-		
-		pBoneRing3 = ECPString.new(prefix + "boneRing3", "ring3")
-		eclass.addProperty(pBoneRing3)
-		
-		pBoneRing4 = ECPString.new(prefix + "boneRing4", "ring4")
-		eclass.addProperty(pBoneRing4)
+		eclass.addProperty(pBoneRing1 = ECPString.new(prefix + "boneRing1", "ring1"))
+		eclass.addProperty(pBoneRing2 = ECPString.new(prefix + "boneRing2", "ring2"))
+		eclass.addProperty(pBoneRing3 = ECPString.new(prefix + "boneRing3", "ring3"))
+		eclass.addProperty(pBoneRing4 = ECPString.new(prefix + "boneRing4", "ring4"))
 		
 		// pinky
-		pBonePinky1 = ECPString.new(prefix + "bonePinky1", "pinky1")
-		eclass.addProperty(pBonePinky1)
-		
-		pBonePinky2 = ECPString.new(prefix + "bonePinky2", "pinky2")
-		eclass.addProperty(pBonePinky2)
-		
-		pBonePinky3 = ECPString.new(prefix + "bonePinky3", "pinky3")
-		eclass.addProperty(pBonePinky3)
-		
-		pBonePinky4 = ECPString.new(prefix + "bonePinky4", "pinky4")
-		eclass.addProperty(pBonePinky4)
+		eclass.addProperty(pBonePinky1 = ECPString.new(prefix + "bonePinky1", "pinky1"))
+		eclass.addProperty(pBonePinky2 = ECPString.new(prefix + "bonePinky2", "pinky2"))
+		eclass.addProperty(pBonePinky3 = ECPString.new(prefix + "bonePinky3", "pinky3"))
+		eclass.addProperty(pBonePinky4 = ECPString.new(prefix + "bonePinky4", "pinky4"))
 		
 		// properties
-		pFingerTipDistance = ECPFloat.new(prefix + "fingerTipDistance", 0.165, 0.01)
-		eclass.addProperty(pFingerTipDistance)
-		
-		pEnabled = ECPBoolean.new(prefix + "enabled", true)
-		eclass.addProperty(pEnabled)
-		
-		pOnlyRotation = ECPBoolean.new(prefix + "onlyRotation", true)
-		eclass.addProperty(pOnlyRotation)
+		eclass.addProperty(pFingerTipDistance = ECPFloat.new(prefix + "fingerTipDistance", 0.165, 0.01))
+		eclass.addProperty(pEnabled = ECPBoolean.new(prefix + "enabled", true))
+		eclass.addProperty(pOnlyRotation = ECPBoolean.new(prefix + "onlyRotation", true))
 		
 		// add to class
 		eclass.addBehavior(this)
 	end
 	
 	/** \brief Dispose of behavior. */
-	public func void dispose()
+	func void dispose()
 		pVRHand = null
 		super.dispose()
 	end
@@ -566,115 +496,115 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 	
 	
 	/** \brief VR Hand behavior or null. */
-	public func ECBehaviorVRHand getVRHand()
+	func ECBehaviorVRHand getVRHand()
 		return pVRHand
 	end
 	
 	/** \brief Origin bone name. */
-	public func ECPString getBoneOrigin()
+	func ECPString getBoneOrigin()
 		return pBoneOrigin
 	end
 	
 	/** \brief Wrist bone name. */
-	public func ECPString getBoneWrist()
+	func ECPString getBoneWrist()
 		return pBoneWrist
 	end
 	
 	/** \brief Thumb bone name. */
-	public func ECPString getBoneThumb1()
+	func ECPString getBoneThumb1()
 		return pBoneThumb1
 	end
 	
-	public func ECPString getBoneThumb2()
+	func ECPString getBoneThumb2()
 		return pBoneThumb2
 	end
 	
-	public func ECPString getBoneThumb3()
+	func ECPString getBoneThumb3()
 		return pBoneThumb3
 	end
 	
 	/** \brief Index bone name. */
-	public func ECPString getBoneIndex1()
+	func ECPString getBoneIndex1()
 		return pBoneIndex1
 	end
 	
-	public func ECPString getBoneIndex2()
+	func ECPString getBoneIndex2()
 		return pBoneIndex2
 	end
 	
-	public func ECPString getBoneIndex3()
+	func ECPString getBoneIndex3()
 		return pBoneIndex3
 	end
 	
-	public func ECPString getBoneIndex4()
+	func ECPString getBoneIndex4()
 		return pBoneIndex4
 	end
 	
 	/** \brief Middle bone name. */
-	public func ECPString getBoneMiddle1()
+	func ECPString getBoneMiddle1()
 		return pBoneMiddle1
 	end
 	
-	public func ECPString getBoneMiddle2()
+	func ECPString getBoneMiddle2()
 		return pBoneMiddle2
 	end
 	
-	public func ECPString getBoneMiddle3()
+	func ECPString getBoneMiddle3()
 		return pBoneMiddle3
 	end
 	
-	public func ECPString getBoneMiddle4()
+	func ECPString getBoneMiddle4()
 		return pBoneMiddle4
 	end
 	
 	/** \brief Ring bone name. */
-	public func ECPString getBoneRing1()
+	func ECPString getBoneRing1()
 		return pBoneRing1
 	end
 	
-	public func ECPString getBoneRing2()
+	func ECPString getBoneRing2()
 		return pBoneRing2
 	end
 	
-	public func ECPString getBoneRing3()
+	func ECPString getBoneRing3()
 		return pBoneRing3
 	end
 	
-	public func ECPString getBoneRing4()
+	func ECPString getBoneRing4()
 		return pBoneRing4
 	end
 	
 	/** \brief Pinky bone name. */
-	public func ECPString getBonePinky1()
+	func ECPString getBonePinky1()
 		return pBonePinky1
 	end
 	
-	public func ECPString getBonePinky2()
+	func ECPString getBonePinky2()
 		return pBonePinky2
 	end
 	
-	public func ECPString getBonePinky3()
+	func ECPString getBonePinky3()
 		return pBonePinky3
 	end
 	
-	public func ECPString getBonePinky4()
+	func ECPString getBonePinky4()
 		return pBonePinky4
 	end
 	
 	
 	
 	/** \brief Distance between middle finger tip and wrist in fully stretched pose. */
-	public func ECPFloat getFingerTipDistance()
+	func ECPFloat getFingerTipDistance()
 		return pFingerTipDistance
 	end
 	
 	/** \brief Enable hand pose. */
-	public func ECPBoolean getEnabled()
+	func ECPBoolean getEnabled()
 		return pEnabled
 	end
 	
 	/** \brief Apply only rotation instead of position and rotation. */
-	public func ECPBoolean getOnlyRotation()
+	func ECPBoolean getOnlyRotation()
 		return pOnlyRotation
 	end
 	
@@ -686,7 +616,7 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 	 * 
 	 * For example "wrist" becomes "wrist.r" if rightHand is true otherwise "wrist.l"
 	 */
-	public func void setHandBoneNames(bool rightHand)
+	func void setHandBoneNames(bool rightHand)
 		var String suffix = rightHand if ".r" else ".l"
 		
 		pBoneOrigin.setValue("origin" + suffix)
@@ -720,7 +650,7 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 	
 	
 	/** \brief Get instance in element from owner element class. */
-	public func Instance instance(BehaviorElement element)
+	func Instance instance(BehaviorElement element)
 		return element.getInstanceAt(getInstanceIndex()) cast Instance
 	end
 	
@@ -732,7 +662,7 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorVRHandPose.
 	 */
-	static public func ECBehaviorVRHandPose getBehaviorIn(BehaviorElementClass eclass)
+	static func ECBehaviorVRHandPose getBehaviorIn(BehaviorElementClass eclass)
 		return eclass.findBehavior(block ECBehaviorVRHandPose each
 			return true
 		end) cast ECBehaviorVRHandPose
@@ -744,7 +674,7 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElementClass contains a behavior
 	 * of type ECBehaviorVRHandPose with specific identifier.
 	 */
-	static public func ECBehaviorVRHandPose getBehaviorIn(BehaviorElementClass eclass, String id)
+	static func ECBehaviorVRHandPose getBehaviorIn(BehaviorElementClass eclass, String id)
 		return eclass.findBehavior(block ECBehaviorVRHandPose each
 			return each.getID().equals(id)
 		end) cast ECBehaviorVRHandPose
@@ -756,7 +686,7 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 	 * Returns list contains ECBehaviorVRHandPose behaviors in the order they have
 	 * been created in the element.
 	 */
-	static public func Array getAllBehaviorsIn(BehaviorElementClass eclass)
+	static func Array getAllBehaviorsIn(BehaviorElementClass eclass)
 		return eclass.collectBehaviors(block ECBehaviorVRHandPose each
 			return true
 		end)
@@ -770,7 +700,7 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
 	 * of type ECBehaviorVRHandPose.Instance .
 	 */
-	static public func Instance getInstanceIn(BehaviorElement element)
+	static func Instance getInstanceIn(BehaviorElement element)
 		return element.findInstance(block Instance each
 			return true
 		end) cast Instance
@@ -782,7 +712,7 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 	 * Use this method to check if a particular BehaviorElement contains a behavior instance
 	 * of type ECBehaviorRenderableCamera.Instance with specific identifier.
 	 */
-	static public func Instance getInstanceIn(BehaviorElement element, String id)
+	static func Instance getInstanceIn(BehaviorElement element, String id)
 		return element.findInstance(block Instance each
 			return each.getECBehavior().getID().equals(id)
 		end) cast Instance
@@ -794,7 +724,7 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 	 * Returns list contains ECBehaviorRenderableCamera.Instance instances in the order they have
 	 * been created in the element.
 	 */
-	static public func Array getAllInstancesIn(BehaviorElement element)
+	static func Array getAllInstancesIn(BehaviorElement element)
 		return element.collectInstances(block Instance each
 			return true
 		end)
@@ -803,7 +733,7 @@ class ECBehaviorVRHandPose extends DefaultECBehavior
 	
 	
 	/** \brief Create Behavior instance. */
-	public func ECBehaviorInstance createInstance(BehaviorElement element)
+	func ECBehaviorInstance createInstance(BehaviorElement element)
 		return Instance.new(this, element)
 	end
 end

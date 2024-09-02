@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine DragonScript Script Module
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DESCRIPTINGDRAGONSCRIPT_H_
@@ -24,9 +27,11 @@
 
 #include <libdscript/libdscript.h>
 #include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/filesystem/deVFSContainer.h>
 #include <dragengine/systems/modules/scripting/deBaseScriptingModule.h>
 
 #include "dedsLoadingScreen.h"
+#include "dedsEngineException.h"
 
 
 class deClassPhysicsSystem;
@@ -211,6 +216,9 @@ class deClassVideo;
 class deClassVideoPlayer;
 class deClassVRSystem;
 class deClassWorld;
+class deClassService;
+class deClassServiceListener;
+class deClassServiceObject;
 
 class deCollisionInfo;
 class dedsColliderListenerClosest;
@@ -246,7 +254,9 @@ public:
 		esLoadGame,
 		esCreateGameObject,
 		esInitGameObject,
-		esReady
+		esReady,
+		esRestartShutdown,
+		esRestartInit
 	};
 	
 	struct sModuleVersion{
@@ -398,6 +408,9 @@ private:
 	deClassSafeArray *pClsSA;
 	deClassScriptSystem *pClsScrSys;
 	deClassShapeList *pClsShaList;
+	deClassService *pClsService;
+	deClassServiceListener *pClsServiceListener;
+	deClassServiceObject *pClsServiceObject;
 	deClassServer *pClsSvr;
 	deClassSkin *pClsSkin;
 	deClassSkinBuilder *pClsSkinBuilder;
@@ -466,6 +479,10 @@ private:
 	
 	// objects
 	dsValue *pGameObj;
+	decString pRestartInfo;
+	bool pRestartRequested;
+	
+	deVFSContainer::Ref pVFSContainerHideScriptDirectory;
 	
 public:
 	// constructor, destructor
@@ -514,6 +531,12 @@ public:
 	
 	/** \brief Create deSpeaker peer. */
 	virtual deBaseScriptingSpeaker *CreateSpeaker( deSpeaker *speaker );
+	
+	/**
+	 * \brief Create deService peer.
+	 * \version 1.23
+	 */
+	virtual deBaseScriptingService *CreateService( deService *service );
 	
 	/**
 	 * Initializes the game scripts. This usually involves creating the
@@ -721,6 +744,9 @@ public:
 	inline deClassServer *GetClassServer() const{ return pClsSvr; }
 	inline deClassServerListener *GetClassServerListener() const{ return pClsSvrL; }
 	inline deClassShapeList *GetClassShapeList() const{ return pClsShaList; }
+	inline deClassService *GetClassService() const{ return pClsService; }
+	inline deClassServiceListener *GetClassServiceListener() const{ return pClsServiceListener; }
+	inline deClassServiceObject *GetClassServiceObject() const{ return pClsServiceObject; }
 	inline deClassSkin *GetClassSkin() const{ return pClsSkin; }
 	inline deClassSkinBuilder *GetClassSkinBuilder() const{ return pClsSkinBuilder; }
 	inline deClassSky *GetClassSky() const{ return pClsSky; }
@@ -790,6 +816,9 @@ public:
 	const decPoint3 &GetPoint3( dsRealObject *myself ) const;
 	void PushPoint3( dsRunTime *rt, const decPoint3 &pt );
 	
+	inline const decString &GetRestartInfo() const{ return pRestartInfo; }
+	void RequestRestart( const char *info );
+	
 	/** \brief Adds a value to delete later. */
 	void AddValueDeleteLater( dsValue *value );
 	/** \brief Delete all values registered to be deleted later. */
@@ -810,6 +839,8 @@ private:
 	int pGetConstantValue(dsClass *Class, const char *name) const;
 	bool pCallFunction(const char *name);
 	decString BuildFullName( const dsClass *theClass ) const;
+	void pAddVFSContainerHideScriptDirectory();
+	void pRemoveVFSContainerHideScriptDirectory();
 	
 public:
 	void pAddExceptionTrace( deErrorTracePoint *tracePoint );

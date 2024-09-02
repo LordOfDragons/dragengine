@@ -33,6 +33,9 @@ else:
 	libFileName = envLibrary.subst('lib/${{SHLIBPREFIX}}{}${{SHLIBSUFFIX}}.{}'.format(libLinkName, libLinkVersion))
 	staticFileName = envLibrary.subst('lib/${{LIBPREFIX}}{}${{LIBSUFFIX}}'.format(libLinkName))
 
+# fetching is always allowed
+nodeArtifacts = envLibrary.DownloadArtifactHelper('{}.tar.bz2'.format(srcdir), 'libjpeg', 'lib_libjpeg_fetch')
+
 # check if system libjpeg is present.
 # NOTE some OS have compilers causing errors on the check below because "true" is used.
 #      the error looks like "cannot convert bool to boolean". to prevent this "TRUE" is
@@ -79,6 +82,10 @@ def jpegBuild(target, source, env):
 	
 	script.append('cd "{}" || exit 1'.format(cmakeBuildDir))
 	
+	if env['platform_android'] != 'no':
+		# fix for android ndk 27+ breaking cmake
+		script.append('sed -i -e "s/cmake_minimum_required(VERSION 2.8.12)/cmake_minimum_required(VERSION 3.5)/" ../libjpeg-turbo-2.0.3/CMakeLists.txt')
+	
 	cmdline = []
 	cmdline.append('cmake')
 	cmdline.append('-G"Unix Makefiles"')
@@ -89,10 +96,21 @@ def jpegBuild(target, source, env):
 	if env['OSWindows']:
 		# libjpeg fails if system name is not this value
 		cmdline.append('-DCMAKE_SYSTEM_NAME=Windows')
+		cmdline.append('-DCMAKE_SYSTEM_PROCESSOR=AMD64')
+	elif env['platform_android'] != 'no':
+		cmdline.append('-DANDROID_ABI="{}"'.format(env['ANDROID_ABI']))
+		cmdline.append('-DANDROID_ARM_MODE="{}"'.format(env['ANDROID_ARCH']))
+		cmdline.append('-DANDROID_PLATFORM=android-{}'.format(env['ANDROID_APILEVEL']))
+		cmdline.append('-DANDROID_TOOLCHAIN=clang')
+		cmdline.append('-DCMAKE_ASM_FLAGS="--target={}"'.format(env['ANDROID_COMPILER']))
+		cmdline.append('-DCMAKE_C_FLAGS="-Wall"')
+		cmdline.append('-DCMAKE_TOOLCHAIN_FILE="{}"'.format(env['ANDROID_CMAKETOOLCHAIN']))
+		cmdline.append('-DWITH_JAVA=0')
+		cmdline.append('-DREQUIRE_SIMD=1')
+		cmdline.append('-DWITH_SIMD=1')
 	elif 'CROSSCOMPILE_HOST' in env:
 		cmdline.append('-DCMAKE_SYSTEM_NAME="{}"'.format(env['CROSSCOMPILE_HOST']))
-	
-	cmdline.append('-DCMAKE_SYSTEM_PROCESSOR=AMD64')
+		cmdline.append('-DCMAKE_SYSTEM_PROCESSOR=AMD64')
 	
 	#cmdline.append('-DWITH_SIMD=0')
 	if env['OSBeOS']:
@@ -125,8 +143,7 @@ else:
 	targets = [libFileName]
 targets.extend(['include/jconfig.h', 'include/jerror.h', 'include/jmorecfg.h', 'include/jpeglib.h'])
 
-library = envLibrary.Command(targets, '{}.tar.bz2'.format(srcdir),
-	envLibrary.Action(jpegBuild, 'Build JPEG library'))
+library = envLibrary.Command(targets, nodeArtifacts, envLibrary.Action(jpegBuild, 'Build JPEG library'))
 
 envLibrary.SideEffect('#notParallelCMake', library)
 

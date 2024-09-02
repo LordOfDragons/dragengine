@@ -1,22 +1,25 @@
-/* 
- * Drag[en]gine Game Engine
+/*
+ * MIT License
  *
- * Copyright (C) 2020, Roland Plüss (roland@rptd.ch)
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #ifndef _DECPATH_H_
@@ -88,6 +91,22 @@ public:
 	 */
 	static decPath AbsolutePathNative( const char *path, const char *baseDirectory );
 	
+	/**
+	 * \brief Create relative or absolute path of source path relative to base directory.
+	 * \param[in] path Source path.
+	 * \param[in] baseDirectory Base directory.
+	 * \param[in] onlyBelow Allow only relative path below \em baseDirectory.
+	 */
+	static decPath RelativePathUnix( const char *path, const char *baseDirectory, bool onlyBelow = false );
+	
+	/**
+	 * \brief Create relative or absolute path of source path relative to base directory.
+	 * \param[in] path Source path.
+	 * \param[in] baseDirectory Base directory.
+	 * \param[in] onlyBelow Allow only relative path below \em baseDirectory.
+	 */
+	static decPath RelativePathNative( const char *path, const char *baseDirectory, bool onlyBelow = false );
+	
 	/** \brief Path prefix. */
 	inline const decString &GetPrefix() const{ return pPrefix; }
 	
@@ -158,6 +177,25 @@ public:
 	
 	/** \brief Path matches file pattern. */
 	bool MatchesPattern( const decPath &filePattern ) const;
+	
+	/**
+	 * \brief Create absolute path of base directory and a potential relative path.
+	 * 
+	 * Used for loading files relative to a base path where the file path can be absolute
+	 * or relative. If path is absolute a File instance of path is returned.  If path is
+	 * relative a File instance of baseDirectory with path appended is returned.
+	 * 
+	 * This method is safe to be used with path containing '..' at the beginning.
+	 */
+	decPath AbsolutePath( const decPath &baseDirectory ) const;
+	
+	/**
+	 * \brief Relative path of source path relative to base directory if possible.
+	 * \note Relative path is returned it possible otherwise copy of this path.
+	 * \param[in] baseDirectory Base directory.
+	 * \param[in] onlyBelow Allow only relative path below \em baseDirectory.
+	 */
+	decPath RelativePath( const decPath &baseDirectory, bool onlyBelow = false ) const;
 	/*@}*/
 	
 	

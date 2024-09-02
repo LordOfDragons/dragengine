@@ -1,0 +1,125 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Debugging
+pin Dragengine.Utils
+
+
+/**
+ * \brief Helper class to debug service requests.
+ * \version 1.23
+ */
+class DebugServiceRequests
+	var Console pConsole
+	
+	
+	/**
+	 * \brief Create new instance of class DebugServiceRequests.
+	 */
+	func new() this(BaseGameApp.getApp().getConsole())
+	end
+	
+	/**
+	 * \brief Create new instance of class DebugServiceRequests.
+	 */
+	func new(Console console)
+		pConsole = console
+	end
+	
+	
+	/**
+	 * \brief Log request to console.
+	 */
+	func void logRequest(UniqueID id, ServiceObject request)
+		pConsole.addMessage("request: " + id)
+		var Dictionary dict = Dictionary.new()
+		recursiveServiceObject(dict, "Request", request)
+		logDictionary(dict, "")
+	end
+	
+	/**
+	 * \brief Log response to console.
+	 */
+	func void logResponse(UniqueID id, ServiceObject response)
+		pConsole.addMessage("requestResponse: " + id)
+		var Dictionary dict = Dictionary.new()
+		recursiveServiceObject(dict, "Response", response)
+		logDictionary(dict, "")
+	end
+	
+	/**
+	 * \brief Recursive log disctionary to console.
+	 */
+	func void recursiveServiceObject(Dictionary dict, String key, ServiceObject so)
+		select so.getValueType()
+		case ServiceObjectType.boolean
+			dict.setAt(key, so.getBoolean())
+			
+		case ServiceObjectType.integer
+			dict.setAt(key, so.getInteger())
+			
+		case ServiceObjectType.floating
+			dict.setAt(key, so.getFloat())
+			
+		case ServiceObjectType.string
+			dict.setAt(key, so.getString())
+			
+		case ServiceObjectType.resource
+			dict.setAt(key, so.getResource())
+			
+		case ServiceObjectType.data
+			dict.setAt(key, so.getData())
+			
+		case ServiceObjectType.list
+			var Dictionary d2 = Dictionary.new()
+			dict.setAt(key, d2)
+			var int i, count = so.getChildCount()
+			for i = 0 to count
+				recursiveServiceObject(d2, i.toString(), so.getChildAt(i))
+			end
+			
+		case ServiceObjectType.dictionary
+			var Dictionary d2 = Dictionary.new()
+			dict.setAt(key, d2)
+			so.getChildrenKeys().forEach(block String key2
+				recursiveServiceObject(d2, key2, so.getChildAt(key2))
+			end)
+		end
+	end
+	
+	/**
+	 * \brief Log dictionary to console.
+	 */
+	func void logDictionary(Dictionary dict, String prefix)
+		dict.forEach(block String key, Object value
+			if value castable Dictionary
+				pConsole.addMessage("{}- {}:".format(Array.newWith(prefix, key)))
+				logDictionary(value cast Dictionary, prefix + "  ")
+				
+			else
+				pConsole.addMessage("{}- {}: {}".format(Array.newWith(prefix, key, value)))
+			end
+		end)
+	end
+end

@@ -1,22 +1,25 @@
-/* 
- * DEIGDE Project
+/*
+ * MIT License
  *
- * Copyright (C) 2018, Plüss Roland ( roland@rptd.ch )
- * 
- * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License 
- * as published by the Free Software Foundation; either 
- * version 2 of the License, or (at your option) any later 
- * version.
+ * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
  *
- * This program is projributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdlib.h>
@@ -369,6 +372,9 @@ void projTestRunEngine::SetRunArguments(){
 
 void projTestRunEngine::InitVFS(){
 	const projTestRunProcess::sRunParameters &runParameters = pProcess.GetRunParameters();
+	deVirtualFileSystem &vfs = *pEngine->GetVirtualFileSystem();
+	deScriptingSystem &scrsys = *pEngine->GetScriptingSystem();
+	deModuleSystem &modsys = *pEngine->GetModuleSystem();
 	deVFSContainerReference container;
 	decPath path;
 	
@@ -378,17 +384,27 @@ void projTestRunEngine::InitVFS(){
 	container.TakeOver( new deVFSDiskDirectory( decPath::CreatePathUnix( "/" ),
 		decPath::CreatePathNative( runParameters.pathDataDirectory ) ) );
 	( ( deVFSDiskDirectory* )container.operator->() )->SetReadOnly( true );
-	pEngine->GetVirtualFileSystem()->AddContainer( container );
+	vfs.AddContainer( container );
 	
 	// add script module shared data if existing
-	pEngine->GetScriptingSystem()->AddVFSSharedDataDir( *pEngine->GetVirtualFileSystem() );
+	scrsys.AddVFSSharedDataDir( vfs );
+	
+	// make modules add stage containers to virtual file system
+	modsys.ServicesAddVFSContainers( vfs, deModuleSystem::VFSStagePatches );
+	scrsys.AddVFSContainers( vfs, deModuleSystem::VFSStagePatches );
+	
+	modsys.ServicesAddVFSContainers( vfs, deModuleSystem::VFSStageMods );
+	scrsys.AddVFSContainers( vfs, deModuleSystem::VFSStageMods );
+	
+	modsys.ServicesAddVFSContainers( vfs, deModuleSystem::VFSStageOverlay );
+	scrsys.AddVFSContainers( vfs, deModuleSystem::VFSStageOverlay );
 	
 	// add the game overlay directory (writeable).
 	pProcess.GetLogger()->LogInfoFormat( LOGSOURCE, "VFS: '/' => '%s'",
 		runParameters.pathOverlay.GetString() );
 	container.TakeOver( new deVFSDiskDirectory( decPath::CreatePathUnix( "/" ),
 		decPath::CreatePathNative( runParameters.pathOverlay ) ) );
-	pEngine->GetVirtualFileSystem()->AddContainer( container );
+	vfs.AddContainer( container );
 	pEngine->SetPathOverlay( runParameters.pathOverlay );
 	
 	// add the user game configuration directory (writeable)
@@ -398,7 +414,7 @@ void projTestRunEngine::InitVFS(){
 	container.TakeOver( new deVFSDiskDirectory(
 		decPath::CreatePathUnix( runParameters.vfsPathConfig ),
 		decPath::CreatePathNative( runParameters.pathConfig ) ) );
-	pEngine->GetVirtualFileSystem()->AddContainer( container );
+	vfs.AddContainer( container );
 	pEngine->SetPathConfig( runParameters.pathConfig );
 	
 	// add the user game capture directory (writeable)
@@ -408,7 +424,7 @@ void projTestRunEngine::InitVFS(){
 	container.TakeOver( new deVFSDiskDirectory(
 		decPath::CreatePathUnix( runParameters.vfsPathCapture ),
 		decPath::CreatePathNative( runParameters.pathCapture ) ) );
-	pEngine->GetVirtualFileSystem()->AddContainer( container );
+	vfs.AddContainer( container );
 	pEngine->SetPathCapture( runParameters.pathCapture );
 }
 
@@ -418,11 +434,13 @@ void projTestRunEngine::CreateMainWindow(){
 	int width = runParameters.windowSizeX;
 	int height = runParameters.windowSizeY;
 	
+	/*
 	if( runParameters.fullScreen ){
 		const decPoint resolution( pEngine->GetOS()->GetDisplayCurrentResolution( 0 ) );
 		width = resolution.x;
 		height = resolution.y;
 	}
+	*/
 	
 	pProcess.GetLogger()->LogInfoFormat( LOGSOURCE, "Creating window %i x %i", width, height );
 	pEngine->GetGraphicSystem()->CreateAndSetRenderWindow( width, height,
