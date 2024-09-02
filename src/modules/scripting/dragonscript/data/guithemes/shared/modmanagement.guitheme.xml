@@ -115,6 +115,39 @@
 	<designer name='Button.MMPanelModInfo.Enable' extendNamed='Button'/>
 	<designer name='Button.MMPanelModInfo.Disable' extendNamed='Button'/>
 	
+	<designer name='Button.MMPanelModInfo.Purchase' extendNamed='Button'/>
+	<designer name='Button.MMPanelModInfo.Purchased' extendNamed='Button'/>
+	<designer name='Button.MMPanelModInfo.Free' extendNamed='Button'/>
+	
+	<designer name='Image.Button.MMPanelModInfo.Purchase' type='Image'>
+		<colorMatrix parameter='normal.imageColorTransform'>
+			<scale r='1' g='0.9' b='0'/>
+		</colorMatrix>
+		<image parameter='normal.image'>/shareddata/guithemes/modern/icons/16/coin.webp</image>
+		<null parameter='normal.minimumSize'/>
+	</designer>
+	
+	<designer name='Label.Button.MMPanelModInfo.Purchase' extendNamed='Label'>
+		<string parameter='normal.alignment'>center,middle</string>
+		<borderSize parameter='normal.padding' left='5'/>
+	</designer>
+	
+	<designer name='Image.Button.MMPanelModInfo.Purchased' type='Image'>
+		<colorMatrix parameter='normal.imageColorTransform'>
+			<scale r='0' g='0.5' b='0'/>
+		</colorMatrix>
+		<image parameter='normal.image'>/shareddata/guithemes/modern/icons/16/check.webp</image>
+		<null parameter='normal.minimumSize'/>
+	</designer>
+	
+	<designer name='Label.Button.MMPanelModInfo.Purchased' extendNamed='Label.Button.MMPanelModInfo.Purchase'/>
+	
+	<designer name='Image.Button.MMPanelModInfo.Free' type='Image'>
+		<point parameter='normal.minimumSize' x='0' y='0'/>
+	</designer>
+	
+	<designer name='Label.Button.MMPanelModInfo.Free' extendNamed='Label.Button.MMPanelModInfo.Purchase'/>
+	
 	<designer name='ProgressBar.MMPanelModInfo.Rating' extendNamed='ProgressBar'>
 		<boolean parameter='normal.showPercentage'>false</boolean>
 		<point parameter='normal.minimumSize' x='20' y='6'/>
@@ -520,12 +553,30 @@
 	</designer>
 	
 	<designer name='Label.MMPanelModUserAccount.ProfileUrl' extendNamed='Label'>
+		<font parameter='normal.font' size='22'>/shareddata/guithemes/modern/fonts/sans22.defont</font>
 		<color parameter='normal.textColor' r='0' g='0' b='0.75'/>
 		<mousePointer parameter='normal.mousePointer' type='Image'>
 			<image parameter='image'>/shareddata/guithemes/modern/mousepointer/hover_link.webp</image>
 			<point parameter='offset' x='-8' y='0'/>
 		</mousePointer>
 		<borderSize parameter='normal.padding' top='10'/>
+	</designer>
+	
+	<designer name='Panel.MMPanelModUserAccount.WalletBalance' type='Widget'>
+		<borderSize parameter='normal.padding' top='10'/>
+	</designer>
+	
+	<designer name='Image.MMPanelModUserAccount.WalletBalanceCoin' type='Image'>
+		<image parameter='normal.image'>/shareddata/guithemes/modern/icons/16/coin.webp</image>
+		<colorMatrix parameter='normal.imageColorTransform'>
+			<scale r='1' g='0.9' b='0'/>
+		</colorMatrix>
+	</designer>
+	
+	<designer name='Label.MMPanelModUserAccount.WalletBalanceAmount' extendNamed='Label'>
+		<font parameter='normal.font' size='22'>/shareddata/guithemes/modern/fonts/sans22.defont</font>
+		<string parameter='normal.alignment'>center,middle</string>
+		<borderSize parameter='normal.padding' left='10'/>
 	</designer>
 	
 	<designer name='Panel.MMPanelModUserAccount.Buttons' type='Widget'>

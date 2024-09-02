@@ -151,6 +151,8 @@ public:
 	void LoadUserResource( const decUniqueID &id, const deServiceObject &request );
 	void GetUserWalletBalance( const decUniqueID &id, const deServiceObject &request );
 	void ReportUser( const decUniqueID &id, const deServiceObject &request );
+	void GetUserPurchasedMods( const decUniqueID &id, const deServiceObject &request );
+	void PurchaseMod( const decUniqueID &id, const deServiceObject &request );
 	
 	void ActivateMods();
 	deServiceObject::Ref IsAuthenticated();
@@ -206,6 +208,11 @@ private:
 	
 	void pOnGetUserWalletBalance( const decUniqueID &id, Modio::ErrorCode ec,
 		Modio::Optional<uint64_t> amount );
+	
+	void pOnGetUserPurchasedMods( const decUniqueID &id, Modio::ErrorCode ec );
+	
+	void pOnPurchaseMod( const decUniqueID &id, Modio::ErrorCode ec,
+		Modio::Optional<Modio::TransactionRecord> record );
 	
 	void pOnLogCallback( Modio::LogLevel level, const std::string &message );
 	void pOnModManagement( Modio::ModManagementEvent event );

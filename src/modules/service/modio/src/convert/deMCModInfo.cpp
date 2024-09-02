@@ -134,7 +134,7 @@ deServiceObject::Ref deMCModInfo::ModInfo( const Modio::ModInfo &info, const deM
 	so->SetStringChildAt( "version", info.Version.c_str() );
 	so->SetChildAt( "modStatus", ModServerSideStatus( info.ModStatus ) );
 	so->SetBoolChildAt( "publicVisible", info.Visibility == Modio::ObjectVisibility::Public );
-	so->SetIntChildAt( "price", ( int )info.Price );
+	so->SetChildAt( "price", deMCCommon::UInt64( info.Price ) );
 	so->SetBoolChildAt( "dependencies", info.Dependencies );
 	
 	const Modio::Rating rating = config.GetUserRating( strModId );

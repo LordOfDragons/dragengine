@@ -468,6 +468,27 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 		runRequest(so, listener)
 	end
 	
+	func void getPurchasedMods(ServiceModsListener listener)
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "getUserPurchasedMods")
+		runRequest(so, listener)
+	end
+	
+	func void purchaseMod(String id, String price, ServiceModsListener listener)
+		if id == null
+			throw ENullPointer.new("id")
+		end
+		if price == null
+			throw ENullPointer.new("price")
+		end
+		
+		var ServiceObject so = ServiceObject.new()
+		so.setStringChildAt("function", "purchaseMod")
+		so.setStringChildAt("modId", id)
+		so.setStringChildAt("price", price)
+		runRequest(so, listener)
+	end
+	
 	
 	
 	func void addUserListener(ServiceUserListener listener)
@@ -715,7 +736,7 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 			end
 			
 		elif function.equals("getUserWalletBalance")
-			var float amount = response.getChildAt("amount").getFloat()
+			var String amount = response.getChildAt("amount").getString()
 			
 			pUserListeners.forEach(block ServiceUserListener each
 				each.onUserWalletBalance(this, amount, null)
@@ -732,6 +753,33 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 			end)
 			if onceListener != null
 				(onceListener cast ServiceUserListener).onReportUser(this, userId, null)
+			end
+			
+		elif function.equals("getUserPurchasedMods")
+			var ServiceObject soMods = response.getChildAt("mods")
+			var Array mods = Array.new()
+			var int i, count = soMods.getChildCount()
+			for i = 0 to count
+				mods.add(convertModInfo(soMods.getChildAt(i)))
+			end
+			
+			pModsListeners.forEach(block ServiceModsListener each
+				each.onGetPurchasedMods(this, mods, null)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceModsListener).onGetPurchasedMods(this, mods, null)
+			end
+			
+		elif function.equals("purchaseMod")
+			var String modId = response.getChildAt("modId").getString()
+			var String price = response.getChildAt("price").getString()
+			var String walletBalance = response.getChildAt("walletBalance").getString()
+			
+			pModsListeners.forEach(block ServiceModsListener each
+				each.onPurchaseMod(this, modId, price, walletBalance, null)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceModsListener).onPurchaseMod(this, modId, price, walletBalance, null)
 			end
 		end
 	end
@@ -853,10 +901,10 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 			
 		elif function.equals("getUserWalletBalance")
 			pUserListeners.forEach(block ServiceUserListener each
-				each.onUserWalletBalance(this, 0, exception)
+				each.onUserWalletBalance(this, null, exception)
 			end)
 			if onceListener != null
-				(onceListener cast ServiceUserListener).onUserWalletBalance(this, 0, exception)
+				(onceListener cast ServiceUserListener).onUserWalletBalance(this, null, exception)
 			end
 			
 		elif function.equals("reportUser")
@@ -867,6 +915,22 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 			end)
 			if onceListener != null
 				(onceListener cast ServiceUserListener).onReportUser(this, userId, exception)
+			end
+			
+		elif function.equals("getUserPurchasedMods")
+			pModsListeners.forEach(block ServiceModsListener each
+				each.onGetPurchasedMods(this, null, exception)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceModsListener).onGetPurchasedMods(this, null, exception)
+			end
+			
+		elif function.equals("purchaseMod")
+			pModsListeners.forEach(block ServiceModsListener each
+				each.onPurchaseMod(this, null, null, null, exception)
+			end)
+			if onceListener != null
+				(onceListener cast ServiceModsListener).onPurchaseMod(this, null, null, null, exception)
 			end
 		end
 	end
@@ -1014,7 +1078,7 @@ class ServiceModio implements ServiceListener, ServiceMods, ServiceUser
 		info.metadata = pConversions.convertString(so, "metadataBlob")
 		info.metadataMap = pConversions.convertStringDict(so, "metadataKvp")
 		info.version = pConversions.convertString(so, "version")
-		info.price = pConversions.convertInteger(so, "price", 0).toString()
+		info.price = pConversions.convertString(so, "price")
 		info.hasDependencies = pConversions.convertBool(so, "dependencies", false)
 		
 		so2 = so.getChildAt("userRating")

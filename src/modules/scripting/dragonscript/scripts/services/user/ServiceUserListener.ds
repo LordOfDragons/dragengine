@@ -83,8 +83,8 @@ interface ServiceUserListener
 	/**
 	 * \brief User wallet balance finished.
 	 * \param service Service sending the event.
-	 * \param amount Approximate amount in store currency.
+	 * \param amount Amount in store currency.
 	 * \param exception On success null. On failure contains error information.
 	 */
-	func void onUserWalletBalance(ServiceUser service, float amount, Exception exception)
+	func void onUserWalletBalance(ServiceUser service, String amount, Exception exception)
 end

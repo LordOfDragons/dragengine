@@ -53,6 +53,6 @@ class DefaultServiceUserListener implements ServiceUserListener
 	func void onReportUser(ServiceUser service, String userId, Exception exception)
 	end
 	
-	func void onUserWalletBalance(ServiceUser service, float amount, Exception exception)
+	func void onUserWalletBalance(ServiceUser service, String amount, Exception exception)
 	end
 end

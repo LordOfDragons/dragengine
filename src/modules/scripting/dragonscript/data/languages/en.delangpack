@@ -130,6 +130,7 @@ Do you want to re-assign?</translation>
 	<translation name='UI.ModManagement.Value.NoTagSelected'>&#60; No Selection &#62;</translation>
 	<translation name='UI.ModManagementMod.DetailsDetails'>Details</translation>
 	<translation name='UI.ModManagementMod.DetailsTags'>Tags</translation>
+	<translation name='UI.ModManagementMod.DetailsPurchase'>Purchase</translation>
 	<translation name='UI.ModManagementMod.Subscribers'>Subscribers:</translation>
 	<translation name='UI.ModManagementMod.Downloads'>Downloads:</translation>
 	<translation name='UI.ModManagementMod.DownloadsToday'>Downloads Today:</translation>
@@ -151,6 +152,12 @@ Do you want to re-assign?</translation>
 	<translation name='UI.ModManagementMod.Enable.ToolTip'>Enable modification</translation>
 	<translation name='UI.ModManagementMod.DetailsStatus'>Status</translation>
 	<translation name='UI.ModManagementMod.RemainingTime'>Remaining Time:</translation>
+	<translation name='UI.ModManagementMod.Purchase'>Purchase</translation>
+	<translation name='UI.ModManagementMod.Purchase.ToolTip'>Purchase modification</translation>
+	<translation name='UI.ModManagementMod.Free'>Free</translation>
+	<translation name='UI.ModManagementMod.Purchased'>Purchased</translation>
+	<translation name='UI.ModManagementMod.SubmitRating'>Submit Rating</translation>
+	<translation name='UI.ModManagementMod.RevokeRating'>Revoke Rating</translation>
 	<translation name='UI.ModManagement.Enum.ModProgressState.initializing'>Initializing</translation>
 	<translation name='UI.ModManagement.Enum.ModProgressState.downloading'>Downloading</translation>
 	<translation name='UI.ModManagement.Enum.ModProgressState.extracting'>Extracting</translation>

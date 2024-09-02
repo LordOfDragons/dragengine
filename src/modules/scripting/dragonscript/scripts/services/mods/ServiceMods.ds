@@ -339,4 +339,25 @@ interface ServiceMods
 	 * \param listener If not null called once in addition to added listeners.
 	 */
 	func void getModTags(ServiceModsListener listener)
+	
+	/**
+	 * \brief Purchased mods.
+	 * 
+	 * Once finished \ref ServiceModsListener#onGetPurchasedMods() is called with
+	 * array of \ref ServiceModInfo value.
+	 * 
+	 * \param listener If not null called once in addition to added listeners.
+	 */
+	func void getPurchasedMods(ServiceModsListener listener)
+	
+	/**
+	 * \brief Purchase mod.
+	 * 
+	 * Once finished \ref ServiceModsListener#onPurchaseMod() is called.
+	 * 
+	 * \param id Identifier of modification to purchase.
+	 * \param price Price shown to the user. Used to verify the price matches.
+	 * \param listener If not null called once in addition to added listeners.
+	 */
+	func void purchaseMod(String id, String price, ServiceModsListener listener)
 end

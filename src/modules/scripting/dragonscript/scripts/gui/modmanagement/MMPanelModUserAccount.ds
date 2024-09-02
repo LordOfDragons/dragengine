@@ -55,6 +55,10 @@ class MMPanelModUserAccount extends Panel
 		func void onLogoutUser(ServiceUser service, Exception exception)
 			pPanel.onUserLoggedOut(exception)
 		end
+		
+		func void onUserWalletBalance(ServiceUser service, String amount, Exception exception)
+			pPanel.onUserWalletBalance(amount, exception)
+		end
 	end
 	
 	/** \brief Open profile URL if clicked. */
@@ -121,8 +125,9 @@ class MMPanelModUserAccount extends Panel
 	var DisplayImage pImageAvatar
 	var ListBox pListAuthTokenProviders
 	var ServiceUserInfo pUserInfo
-	var DefaultTextModel pModelName, pModelProfileUrl
+	var DefaultTextModel pModelName, pModelProfileUrl, pModelWalletBalance
 	var DefaultListModel pModelAuthTokenProviders
+	var Panel pPanelWalletBalance
 	var Image pCachedAvatarImage
 	var Button pButtonLogin
 	var GetAuthTokenLogin pGetAuthTokenLogin
@@ -139,6 +144,7 @@ class MMPanelModUserAccount extends Panel
 		pModelName = DefaultTextModel.new()
 		pModelProfileUrl = DefaultTextModel.new()
 		pModelAuthTokenProviders = DefaultListModel.new()
+		pModelWalletBalance = DefaultTextModel.new()
 		
 		runWhileBlockingLayout(block
 			createContent()
@@ -151,10 +157,10 @@ class MMPanelModUserAccount extends Panel
 	func void dispose()
 		pUserEventListener = null
 		pModelAuthTokenProviders = null
-		pModelName = pModelProfileUrl = null
+		pModelName = pModelProfileUrl = pModelWalletBalance = null
 		pImageAvatar = null
 		pSwitchContent = null
-		pPanelUserInfo = null
+		pPanelWalletBalance = pPanelUserInfo = null
 		pListAuthTokenProviders = null
 		pButtonLogin = null
 		pGetAuthTokenLogin = null
@@ -183,6 +189,7 @@ class MMPanelModUserAccount extends Panel
 		if pServiceUser != null
 			pServiceUser.removeUserListener(pUserEventListener)
 		end
+		pPanelWalletBalance.setVisible(false)
 		
 		pServiceUser = serviceUser
 		pServiceUserFeatures = null
@@ -211,6 +218,9 @@ class MMPanelModUserAccount extends Panel
 			
 			serviceUser.addUserListener(pUserEventListener)
 			serviceUser.getUserInfo(null)
+			if pServiceUserFeatures.hasMarketplace
+				serviceUser.getUserWalletBalance(null)
+			end
 			
 		else
 			pModelAuthTokenProviders.setContent(Array.new())
@@ -397,6 +407,26 @@ class MMPanelModUserAccount extends Panel
 		end
 	end
 	
+	/** \brief User wallet balance. */
+	func void onUserWalletBalance(String amount, Exception exception)
+		var String text
+		
+		if exception == null
+			if pServiceUserFeatures.currency != null
+				text = pServiceUserFeatures.currency + " " + amount
+				
+			else
+				text = amount
+			end
+			pPanelWalletBalance.setVisible(true)
+			
+		else
+			text = ""
+		end
+		
+		pModelWalletBalance.setText(text)
+	end
+	
 	
 	
 	/** \brief Find URL of best matching avatar image to load. */
@@ -432,15 +462,31 @@ class MMPanelModUserAccount extends Panel
 			pPanelUserInfo = Panel.new(FlowLayout.new(LayoutAxis.y), block Panel p2
 				p2.setDesignerSelector("Panel.MMPanelModUserAccount.UserInfo")
 				
-				pImageAvatar = DisplayImage.new(null, RepeatMode.stretchRatio, "Image.MMPanelModUserAccount.Avatar")
-				p2.addWidget(pImageAvatar)
+				p2.addWidget(Panel.new(CentrizedBoxLayout.new(LayoutAxis.x), block Panel p3
+					p3.setDesignerSelector("Panel.MMPanelModUserAccount.Avatar")
+					
+					pImageAvatar = DisplayImage.new(null, RepeatMode.stretchRatio, "Image.MMPanelModUserAccount.Avatar")
+					p3.addWidget(pImageAvatar)
+				end))
 				
-				p2.addWidget(Label.new(pModelName, "Label.MMPanelModUserAccount.Name"))
+				p2.addWidget(Panel.new(CentrizedBoxLayout.new(LayoutAxis.x), block Panel p3
+					p3.setDesignerSelector("Panel.MMPanelModUserAccount.Name")
+					
+					p3.addWidget(Label.new(pModelName, "Label.MMPanelModUserAccount.Name"))
+				end))
 				
 				label = Label.new("@UI.ModManagementUserAccount.UserProfile", "Label.MMPanelModUserAccount.ProfileUrl")
 				label.setToolTip("@UI.ModManagementMod.Link.ToolTip")
 				label.addMouseListener(ClickedOpenProfileUrl.new(this))
 				p2.addWidget(label)
+				
+				pPanelWalletBalance = Panel.new(CentrizedBoxLayout.new(LayoutAxis.x), block Panel p3
+					p3.setDesignerSelector("Panel.MMPanelModUserAccount.WalletBalance")
+					p3.addWidget(DisplayIcon.new(null, "Image.MMPanelModUserAccount.WalletBalanceCoin"))
+					p3.addWidget(Label.new(pModelWalletBalance, "Label.MMPanelModUserAccount.WalletBalanceAmount"))
+				end)
+				pPanelWalletBalance.setVisible(false)
+				p2.addWidget(pPanelWalletBalance)
 				
 				p2.addWidget(Panel.new(CentrizedBoxLayout.new(LayoutAxis.x, 20), block Panel p3
 					p3.setDesignerSelector("Panel.MMPanelModUserAccount.Buttons")

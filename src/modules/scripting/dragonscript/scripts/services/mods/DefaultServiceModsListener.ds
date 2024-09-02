@@ -69,4 +69,10 @@ class DefaultServiceModsListener implements ServiceModsListener
 	
 	func void onGetTags(ServiceMods service, Array categories, Exception exception)
 	end
+	
+	func void onGetPurchasedMods(ServiceMods service, Array mods, Exception exception)
+	end
+	
+	func void onPurchaseMod(ServiceMods service, String modId, String price, String walletBalance, Exception exception)
+	end
 end

@@ -205,6 +205,12 @@ void deModioService::StartRequest( const decUniqueID &id, const deServiceObject&
 	}else if( function == "reportUser" ){
 		ReportUser( id, request );
 		
+	}else if( function == "getUserPurchasedMods" ){
+		GetUserPurchasedMods( id, request );
+		
+	}else if( function == "purchaseMod" ){
+		PurchaseMod( id, request );
+		
 	}else{
 		DETHROW_INFO( deeInvalidParam, "Unknown function" );
 	}
@@ -744,6 +750,35 @@ void deModioService::ReportUser( const decUniqueID &id, const deServiceObject &r
 	Modio::ReportContentAsync( params, [ this, id ]( Modio::ErrorCode ec ){
 		pOnRequestFinished( id, ec );
 	});
+}
+
+void deModioService::GetUserPurchasedMods( const decUniqueID &id, const deServiceObject &request ){
+	pModule.LogInfo( "deModioService.GetUserPurchasedMods" );
+	const deServiceObject::Ref data( deServiceObject::Ref::New( new deServiceObject ) );
+	
+	NewPendingRequest( id, "getUserPurchasedMods", data );
+	AddRequiresEventHandlingCount();
+	
+	Modio::FetchUserPurchasesAsync( [ this, id ]( Modio::ErrorCode ec ){
+		pOnGetUserPurchasedMods( id, ec );
+	});
+}
+
+void deModioService::PurchaseMod( const decUniqueID &id, const deServiceObject &request ){
+	const Modio::ModID modId( deMCCommon::ID( *request.GetChildAt( "modId" ) ) );
+	const uint64_t price = deMCCommon::UInt64( *request.GetChildAt( "price" ) );
+	
+	const deServiceObject::Ref data( deServiceObject::Ref::New( new deServiceObject ) );
+	pModule.LogInfoFormat( "deModioService.PurchaseMod: id=%" PRIi64, ( int64_t )modId );
+	data->SetChildAt( "modId", deMCCommon::ID( modId ) );
+	
+	NewPendingRequest( id, "purchaseMod", data );
+	AddRequiresEventHandlingCount();
+	
+	Modio::PurchaseModAsync( modId, price, [ this, id ](
+		Modio::ErrorCode ec, Modio::Optional<Modio::TransactionRecord> record ){
+			pOnPurchaseMod( id, ec, record );
+		});
 }
 
 void deModioService::ActivateMods(){
@@ -1397,13 +1432,53 @@ Modio::ErrorCode ec, Modio::Optional<uint64_t> amount ){
 	const deModioPendingRequest::Ref pr( pOnBaseResponseInit( id, ec ) );
 	if( pr ){
 		if( amount.has_value() ){
-			pr->data->SetFloatChildAt( "amount", ( float )*amount );
+			pr->data->SetChildAt( "amount", deMCCommon::UInt64( *amount ) );
 		}
 		pOnBaseResponseExit( pr );
 	}
 }
 
-void deModioService::pOnLogCallback( Modio::LogLevel level, const std::string &message ){
+void deModioService::pOnGetUserPurchasedMods( const decUniqueID &id, Modio::ErrorCode ec ){
+	pModule.LogInfoFormat( "deModioService.pOnGetUserPurchasedMods: ec(%d)[%s]",
+		ec.value(), ec.message().c_str() );
+	
+	const deModioPendingRequest::Ref pr( pOnBaseResponseInit( id, ec ) );
+	if( ! pr ){
+		return;
+	}
+	
+	const std::map<Modio::ModID, Modio::ModInfo> result( Modio::QueryUserPurchasedMods() );
+	const deModioUserConfig &config = pModule.GetUserConfig( pUserId );
+	std::map<Modio::ModID, Modio::ModInfo>::const_iterator iter;
+	
+	const deServiceObject::Ref so( deServiceObject::NewList() );
+	for( iter = result.cbegin(); iter != result.cend(); iter++ ){
+		so->AddChild( deMCModInfo::ModInfo( iter->second, config ) );
+	}
+	pr->data->SetChildAt( "mods", so );
+	
+	pOnBaseResponseExit( pr );
+}
+
+void deModioService::pOnPurchaseMod( const decUniqueID &id, Modio::ErrorCode ec,
+Modio::Optional<Modio::TransactionRecord> record ){
+	pModule.LogInfoFormat( "deModioService.pOnPurchaseMod: ec(%d)[%s]",
+		ec.value(), ec.message().c_str() );
+	
+	const deModioPendingRequest::Ref pr( pOnBaseResponseInit( id, ec ) );
+	if( ! pr ){
+		return;
+	}
+	
+	if( record.has_value() ){
+		pr->data->SetChildAt( "price", deMCCommon::UInt64( record->Price ) );
+		pr->data->SetChildAt( "walletBalance", deMCCommon::UInt64( record->UpdatedUserWalletBalance ) );
+	}
+	
+	pOnBaseResponseExit( pr );
+}
+
+void deModioService::pOnLogCallback(Modio::LogLevel level, const std::string &message){
 	switch( level ){
 	case Modio::LogLevel::Trace:
 	case Modio::LogLevel::Info:
