@@ -181,6 +181,7 @@ class MMImageGallery extends Panel
 		
 		var Viewport viewport = Viewport.new(panelImages)
 		viewport.setLayout(FlowLayout.new(LayoutAxis.x))
+		viewport.addMouseListener(ParentWheelActionListener.new(this))
 		addWidget(ScrollPanel.new(viewport, ScrollPanel.Policy.visible, ScrollPanel.Policy.hidden), BorderLayout.Area.bottom)
 	end
 end

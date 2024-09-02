@@ -232,7 +232,7 @@
 	
 	<designer name='Image.Button.MMPanelModInfo.ReportMod' type='Image'>
 		<colorMatrix parameter='normal.imageColorTransform'>
-			<scale r='1' g='0' b='0'/>
+			<scale r='0.4' g='0.3' b='0.2'/>
 		</colorMatrix>
 		<!-- <borderSize parameter='normal.padding' left='0' top='0' right='5' bottom='0'/> -->
 		<image parameter='normal.image'>/shareddata/guithemes/modern/icons/16/report.webp</image>
